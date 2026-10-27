@@ -1242,6 +1242,7 @@ internal static partial class AcceptedMechanicsCarrierAssembler
         EffectIdentityParseResult? stagedIdentityParse = null;
         EffectIdentityParseResult? identityParse = null;
         if (woundStages.PreparedPlan.RecoveryContinuationAuthority is not null ||
+            woundStages.PreparedPlan.SpiritualHealingContinuationAuthority is not null ||
             woundStages.EffectBatchPlan.ApplicationResults.Count != 0 ||
             woundStages.EffectBatchPlan.TerminationResults.Count != 0)
         {
@@ -1281,7 +1282,8 @@ internal static partial class AcceptedMechanicsCarrierAssembler
                         .Select(static issue => issue.Code ?? issue.FilePath)));
         }
 
-        if (woundStages.PreparedPlan.RecoveryContinuationAuthority is not null)
+        if (woundStages.PreparedPlan.RecoveryContinuationAuthority is not null ||
+            woundStages.PreparedPlan.SpiritualHealingContinuationAuthority is not null)
             return ValidateMortalRecoveryEffectMembership(finalEffectPlan, woundStages,
                 stagedCatalog, finalRuntimeCatalog, finalPublicationCatalog,
                 stagedIdentityParse!.State!, identityParse!.State!);

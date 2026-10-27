@@ -579,6 +579,17 @@ public partial class ProgressionScheduleService
         var issues = new List<ValidationIssue>();
         if (control == null)
             return issues;
+        try
+        {
+            if (await IsPublishedSpiritualCycleAsync(control)) return issues;
+        }
+        catch (Exception failure) when (failure is InvalidDataException or JsonException or InvalidOperationException)
+        {
+            issues.Add(new ValidationIssue(WoundHistoryState.HistoryPath, IssueSeverity.Error,
+                "Published spiritual progression no longer matches its exact accepted result.",
+                code: "spiritual_healing_progression_replay_conflict", actual: failure.Message));
+            return issues;
+        }
 
         if (!HasResolvedRealm(control.CurrentRealm))
         {
@@ -615,6 +626,8 @@ public partial class ProgressionScheduleService
             await DeleteTransientReportAsync();
             return;
         }
+
+        if (await IsPublishedSpiritualCycleAsync(control)) return;
 
         _ = await EnsureInitializedAsync();
         var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();

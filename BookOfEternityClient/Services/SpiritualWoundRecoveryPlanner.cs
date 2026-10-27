@@ -35,7 +35,7 @@ internal static class SpiritualWoundRecoveryPlanner
                 active.HealsWound, attemptId);
             if (active.HealsWound)
             {
-                Add("heal", 1, progress, false, attemptId);
+                Add("heal", 1, progress, false, null);
                 return rows;
             }
         }

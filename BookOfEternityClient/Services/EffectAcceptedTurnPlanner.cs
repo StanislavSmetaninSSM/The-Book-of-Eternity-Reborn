@@ -4121,6 +4121,8 @@ internal static partial class EffectAcceptedTurnPlanner
         ArgumentNullException.ThrowIfNull(prepared);
         ArgumentNullException.ThrowIfNull(identityFactory);
 
+        if (prepared.SpiritualHealingContinuationAuthority is not null)
+            return BuildSpiritualHealing(input, prepared, identityFactory);
         if (prepared.RecoveryContinuationAuthority is not null)
             return BuildMortalRecovery(input, prepared, identityFactory);
 
@@ -4184,7 +4186,8 @@ internal static partial class EffectAcceptedTurnPlanner
         EffectIdentityFactory identityFactory,
         IReadOnlyList<WoundApplicationRequest> woundApplications,
         IReadOnlyList<WoundTerminalRequest> woundTerminations,
-        WoundPreparedAcceptedTurnPlan? recoveryPrepared = null)
+        WoundPreparedAcceptedTurnPlan? recoveryPrepared = null,
+        WoundPreparedAcceptedTurnPlan? spiritualHealingPrepared = null)
     {
         ArgumentNullException.ThrowIfNull(input);
         ArgumentNullException.ThrowIfNull(identityFactory);
@@ -4367,6 +4370,15 @@ internal static partial class EffectAcceptedTurnPlanner
                 return Failed(issues);
         }
 
+        SpiritualHealingExecutionProof? healingProof = null;
+        if (spiritualHealingPrepared is not null)
+        {
+            healingProof = ExecuteSpiritualHealing(input, spiritualHealingPrepared, workspace, identityRoot,
+                identityFactory, turn, effectIds, transitionIds, activeEffects, processedEventRefs,
+                usedSources, usedTargets, woundApplicationRootEffectBindings, issues, out finalSourceAuthority);
+            if (healingProof is null || issues.Count != 0) return Failed(issues);
+        }
+
         foreach (var request in woundApplications)
         {
             var issueCount = issues.Count;
@@ -4497,8 +4509,10 @@ internal static partial class EffectAcceptedTurnPlanner
                 mortalRecoveryExecutionAuthority: recoveryProof,
                 lifecycleExecutionLedger: CreateInitialLifecycleLedger(
                     input, fingerprint, carrierAuthorityFingerprint, targetAuthority, boundLifecyclePass),
-                lifecycleLedgerIssuer: LifecycleLedgerIssuer);
+                lifecycleLedgerIssuer: LifecycleLedgerIssuer,
+                spiritualHealingExecutionAuthority: healingProof);
         recoveryProof?.Seal(completedPlan);
+        healingProof?.Seal(completedPlan);
         return new EffectAcceptedTurnPlanningResult(
             completedPlan,
             Array.Empty<ValidationIssue>());

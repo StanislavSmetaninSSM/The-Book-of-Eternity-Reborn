@@ -2941,7 +2941,7 @@ internal static partial class WoundAcceptedTurnPlannerCore
                     actual)
             });
 
-    private static Dictionary<
+    internal static Dictionary<
         (string DefinitionKey, string DomainKind, string? ComplicationId),
         string> BuildPriorRootCoordinateMap(
             WoundMaterializationEnvelope beforeWound)

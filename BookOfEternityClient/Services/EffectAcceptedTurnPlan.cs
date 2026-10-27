@@ -116,6 +116,7 @@ internal sealed class EffectAcceptedTurnPlan
     /// detached copies. Only the owning planner can authenticate this value.
     /// </summary>
     internal object? MortalRecoveryExecutionAuthority { get; }
+    internal object? SpiritualHealingExecutionAuthority { get; }
 
     /// <summary>
     /// Freezes one effect execution result and retains any private continuation proof.
@@ -248,10 +249,12 @@ internal sealed class EffectAcceptedTurnPlan
         EffectRollSkillScopeAuthority? skillScopeAuthority = null,
         object? mortalRecoveryExecutionAuthority = null,
         EffectLifecycleExecutionLedger? lifecycleExecutionLedger = null,
-        object? lifecycleLedgerIssuer = null)
+        object? lifecycleLedgerIssuer = null,
+        object? spiritualHealingExecutionAuthority = null)
     {
         InputFingerprint = inputFingerprint;
         MortalRecoveryExecutionAuthority = mortalRecoveryExecutionAuthority;
+        SpiritualHealingExecutionAuthority = spiritualHealingExecutionAuthority;
         SkillScopeAuthority = skillScopeAuthority;
         CarrierAuthorityFingerprint = carrierAuthorityFingerprint;
         SourceAuthorityFingerprint = sourceAuthorityFingerprint;
@@ -509,7 +512,8 @@ internal sealed class EffectAcceptedTurnPlan
             source.WoundApplicationRootEffectBindings,
             source.SkillScopeAuthority,
             source.MortalRecoveryExecutionAuthority,
-            source.LifecycleExecutionLedger);
+            source.LifecycleExecutionLedger,
+            spiritualHealingExecutionAuthority: source.SpiritualHealingExecutionAuthority);
     }
 
     private static ReadOnlyCollection<T> ReadOnly<T>(IReadOnlyList<T> values) =>

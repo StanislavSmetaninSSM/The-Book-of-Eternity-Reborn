@@ -20,6 +20,14 @@ internal static class AfterlifeWoundHealingPlanner
         private readonly IReadOnlyList<SpiritualWoundStage> _stages;
         private readonly IReadOnlyList<WoundMaterializationEnvelope> _wounds;
         private bool _published;
+        private readonly AfterlifeWoundTreatmentAuthority.SourceData _data;
+        private readonly string _controlJson;
+        private readonly CanonicalBeforeImage _responseImage;
+        private readonly Dictionary<string, WoundWorkingOwnedGraph> _graphs = new(StringComparer.Ordinal);
+        private readonly List<WoundExecutedBoundary> _executed = new();
+
+        private sealed record RecoveryConsumptionProof(Continuation Owner, int Index,
+            string BeforeFingerprint, string AfterFingerprint);
 
         private Continuation(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease,
             PendingTurnSnapshotReadAuthority snapshot, PendingTurnSnapshotReader.OriginalReadEvidence original,
@@ -27,25 +35,25 @@ internal static class AfterlifeWoundHealingPlanner
             AfterlifeWoundTreatmentAuthority.SourceData data, WoundAcceptedTurnInput input,
             IReadOnlyList<WoundMaterializationEnvelope> wounds, IReadOnlyList<SpiritualWoundStage> stages,
             ProgressionControl control, ProgressionScheduleService scheduler,
-            ProgressionScheduleService.AcceptedTurnOutcomeMutation schedulerMutation)
+            ProgressionScheduleService.AcceptedTurnOutcomeMutation schedulerMutation, CanonicalBeforeImage responseImage)
         {
             _files = files; _lease = lease; _snapshot = snapshot; _original = original;
             _sources = AcceptedMechanicsPlanBinding.CloneReadOnlyBeforeImages(sources);
             _request = request.DeepClone().AsObject(); _input = WoundAcceptedTurnData.CloneInput(input)!;
             _wounds = wounds.Select(w => WoundAcceptedTurnData.CloneWound(w)!).ToArray();
-            _stages = stages.ToArray(); Data = data; Control = control;
+            _stages = stages.ToArray(); _data = data; _controlJson = JsonSerializer.Serialize(control);
             Scheduler = scheduler; SchedulerMutation = schedulerMutation;
+            _responseImage = new(responseImage.Existed, responseImage.Bytes);
             Fingerprint = WoundAcceptedTurnFingerprintWriter.Compute(new[]
             {
                 "book_of_eternity.spiritual_self_treatment.continuation", "1", snapshot.SnapshotToken,
                 request["requestFingerprint"]!.GetValue<string>(), data.SourceFingerprint,
-                JsonSerializer.Serialize(_stages), schedulerMutation.Fingerprint
+                JsonSerializer.Serialize(_stages), schedulerMutation.Fingerprint, _responseImage.Fingerprint
             });
         }
 
         internal string Fingerprint { get; }
-        internal AfterlifeWoundTreatmentAuthority.SourceData Data { get; }
-        internal ProgressionControl Control { get; }
+        internal ProgressionControl Control => JsonSerializer.Deserialize<ProgressionControl>(_controlJson)!;
         internal ProgressionScheduleService Scheduler { get; }
         internal ProgressionScheduleService.AcceptedTurnOutcomeMutation SchedulerMutation { get; }
         internal WoundAcceptedTurnInput Input => WoundAcceptedTurnData.CloneInput(_input)!;
@@ -53,6 +61,13 @@ internal static class AfterlifeWoundHealingPlanner
         internal IReadOnlyList<SpiritualWoundStage> Stages => _stages.ToArray();
         internal IReadOnlyList<WoundMaterializationEnvelope> Wounds => _wounds.Select(w => WoundAcceptedTurnData.CloneWound(w)!).ToArray();
         internal string EventRef => _input.Binding.AcceptedEvents.Single().EventRef;
+        internal JsonObject PersistenceSource => new()
+        {
+            ["healingTier"] = _data.Source.HealingTier, ["complicationModifier"] = _data.Source.ComplicationModifier,
+            ["rollMode"] = _data.Source.RollMode, ["sourceFingerprint"] = _data.SourceFingerprint,
+            ["rollContributions"] = JsonSerializer.SerializeToNode(_data.Source.RollContributions),
+            ["graphResponseFingerprint"] = _responseImage.Fingerprint
+        };
         internal IReadOnlyDictionary<string, JsonNode?> SourceRoots => _sources.ToDictionary(p => p.Key,
             p => p.Value.Existed ? JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(p.Value.Bytes!)) : null,
             StringComparer.Ordinal);
@@ -72,6 +87,9 @@ internal static class AfterlifeWoundHealingPlanner
                 if (new CanonicalBeforeImage(current is not null, current).Fingerprint != pair.Value.Fingerprint)
                     throw new InvalidDataException("Spiritual treatment source changed: " + pair.Key);
             }
+            var response = files.ReadFileBytesSync(lease, "output/interface_updates.json");
+            if (new CanonicalBeforeImage(response is not null, response).Fingerprint != _responseImage.Fingerprint)
+                throw new InvalidDataException("The admitted spiritual graph/output response changed.");
             var request = files.ReadFileBytesSync(lease, AcceptedMechanicsPlan.WoundCommandPath);
             if (request is null || !request.AsSpan().SequenceEqual(_snapshot.ReadRequiredBytes(AcceptedMechanicsPlan.WoundCommandPath)))
                 throw new InvalidDataException("The retained spiritual treatment request changed.");
@@ -79,6 +97,7 @@ internal static class AfterlifeWoundHealingPlanner
 
         internal bool PreparedAgrees(WoundPreparedAcceptedTurnPlan prepared) =>
             ReferenceEquals(prepared.SpiritualHealingContinuationAuthority, this) &&
+            ProgramAgrees() &&
             WoundAcceptedTurnFingerprints.ComputeInput(_input) == prepared.InputFingerprint &&
             prepared.AllocatedTransitionIds.SequenceEqual(_stages.Select(s => s.TransitionId), StringComparer.Ordinal) &&
             prepared.AllocatedWoundIds.SequenceEqual(_wounds.Select(w => w.WoundId), StringComparer.Ordinal) &&
@@ -88,7 +107,8 @@ internal static class AfterlifeWoundHealingPlanner
 
         internal WoundPreparedAcceptedTurnPlan Prepare()
         {
-            RequireCurrent(_files, _lease);
+            _files.EnsureCanonicalWriteLeaseActive(_lease);
+            _original.RequireOwner(_files, _lease, _snapshot);
             var input = Input;
             var fingerprint = WoundAcceptedTurnFingerprints.ComputeInput(input);
             var baseline = WoundAcceptedTurnPlannerCore.CreateBaselineAuthority(fingerprint, input);
@@ -101,6 +121,127 @@ internal static class AfterlifeWoundHealingPlanner
         }
 
         internal void MarkPublished() => _published = true;
+        internal void RequireExecutionCurrent() => RequireCurrent(_files, _lease);
+
+        internal WoundWorkingOwnedGraph ResolveGraph(WoundMaterializationEnvelope before, SpiritualWoundStage stage)
+        {
+            if (stage.SeverityRank == before.Severity.Rank || stage.Kind == "heal")
+                return WoundMaterializationContract.ImportOwnedGraph(before.Complications, before.Consequences);
+            var key = GraphRef(before.WoundId, stage.SeverityRank);
+            if (!_graphs.TryGetValue(key, out var graph))
+                throw new InvalidDataException("Missing GM-authored spiritual destination graph: " + key);
+            return WoundResponseInputComposer.BindSpiritualHealingGraphPredecessors(graph, before);
+        }
+
+        private string GraphRef(string woundId, int rank) => SpiritualWoundRecoveryPlanner.Coordinate(
+            "spiritual_healing_graph", _request["requestFingerprint"]!.GetValue<string>(), woundId, rank);
+
+        private void AdmitGraphs(JsonObject? interfaceUpdates)
+        {
+            var required = _stages.Where(s => s.Kind != "heal" && s.SeverityRank < _wounds.Single(w => w.WoundId == s.WoundId).Severity.Rank)
+                .Select(s => (s.WoundId, s.SeverityRank)).Distinct().ToArray();
+            var rows = interfaceUpdates?["spiritualHealingGraphs"] as JsonArray;
+            if (required.Length == 0 && rows is null) return;
+            if (rows is null || rows.Count != required.Length)
+                throw new InvalidDataException("GM-authored spiritual destination graphs are required: " +
+                    new JsonArray(required.Select(r => (JsonNode)new JsonObject
+                    {
+                        ["stageRef"] = GraphRef(r.WoundId, r.SeverityRank), ["severityRank"] = r.SeverityRank,
+                        ["woundName"] = _wounds.Single(w => w.WoundId == r.WoundId).Display.Name,
+                        ["complications"] = ComplicationRefs(_wounds.Single(w => w.WoundId == r.WoundId))
+                    }).ToArray()).ToJsonString());
+            foreach (var item in rows)
+            {
+                if (item is not JsonObject row || row.Count != 2 || !row.ContainsKey("stageRef") || !row.ContainsKey("consequenceDefinitions"))
+                    throw new InvalidDataException("Each spiritual destination graph has exactly stageRef and consequenceDefinitions.");
+                var reference = row["stageRef"]!.GetValue<string>();
+                var matching = required.Where(r => GraphRef(r.WoundId, r.SeverityRank) == reference).ToArray();
+                if (matching.Length != 1 || _graphs.ContainsKey(reference))
+                    throw new InvalidDataException("Duplicate or foreign spiritual destination graph.");
+                var target = matching[0];
+                var wound = _wounds.Single(w => w.WoundId == target.WoundId);
+                var map = wound.Complications.ToDictionary(c => ComplicationRef(c.ComplicationId), c => c.ComplicationId, StringComparer.Ordinal);
+                _graphs.Add(reference, WoundResponseInputComposer.ParseSpiritualHealingGraph(
+                    JsonSerializer.SerializeToElement(row["consequenceDefinitions"]), wound, target.SeverityRank, reference, map));
+            }
+        }
+
+        private string ComplicationRef(string id) => SpiritualWoundRecoveryPlanner.Coordinate("spiritual_complication_ref",
+            _request["requestFingerprint"]!.GetValue<string>(), id, 0);
+        private JsonArray ComplicationRefs(WoundMaterializationEnvelope wound) => new(wound.Complications.Select(c =>
+            (JsonNode)new JsonObject { ["complicationRef"] = ComplicationRef(c.ComplicationId), ["displayName"] = c.DisplayName }).ToArray());
+
+        internal EffectAcceptedTurnInput ComposeEffectInput(WoundPreparedAcceptedTurnPlan prepared)
+        {
+            if (!PreparedAgrees(prepared)) throw new InvalidDataException("Foreign spiritual preparation.");
+            var input = Input;
+            return EffectAcceptedTurnInputComposer.Compose(input.Binding.SessionId, input.Binding.SnapshotToken,
+                input.Binding.Turn, new JsonObject(), input.PreTurnEffectCarriers!, input.PreTurnEffectCarriers!,
+                input.PreTurnEffectIdentityIndex, SourceRoots,
+                currentWorldTime: EffectAcceptedTurnInputComposer.ReadCanonicalWorldTime(
+                    SourceRoots[EffectAcceptedTurnInputComposer.WorldTimePath]?.ToJsonString()),
+                publicationCarrierBaselines: input.PreTurnEffectCarriers, realm: input.Binding.Realm,
+                preparedWoundPlan: prepared);
+        }
+
+        internal object CreateRecoveryConsumptionProof(int index, WoundMaterializationEnvelope before,
+            WoundMaterializationEnvelope after)
+        {
+            if (_published || index != _executed.Count || index >= _stages.Count)
+                throw new InvalidDataException("Spiritual stage execution lost its actual cursor.");
+            var expectedBefore = _executed.LastOrDefault(s => s.Before.WoundId == before.WoundId)?.After ??
+                _wounds.Single(w => w.WoundId == before.WoundId);
+            if (WoundMaterializationContract.SerializeCanonical(expectedBefore) != WoundMaterializationContract.SerializeCanonical(before))
+                throw new InvalidDataException("Spiritual recovery does not follow its actual previous stage.");
+            return new RecoveryConsumptionProof(this, index, WoundIdentityState.ComputeSemanticFingerprint(before),
+                WoundIdentityState.ComputeSemanticFingerprint(after));
+        }
+
+        internal void AcceptExecuted(WoundExecutedBoundary stage)
+        {
+            var expected = _stages[_executed.Count];
+            if (stage.OperationKey != expected.OperationKey || stage.TransitionId != expected.TransitionId ||
+                stage.Kind != expected.Kind || stage.After.Severity.Rank != expected.SeverityRank ||
+                stage.After.Recovery.CurrentStepProgress != expected.Progress)
+                throw new InvalidDataException("Actual spiritual stage differs from the owned scalar program.");
+            _executed.Add(stage.DetachedCopy());
+        }
+
+        internal static bool ProvesRecoveryConsumption(object? authority, WoundTransitionRequest request,
+            WoundMaterializationEnvelope before, WoundMaterializationEnvelope after)
+        {
+            if (authority is not RecoveryConsumptionProof proof || proof.Owner._published ||
+                request.Evidence is not WoundRecoveryEvidence { MortalContinuationAuthority: null } evidence)
+                return false;
+            var owner = proof.Owner;
+            owner._files.EnsureCanonicalWriteLeaseActive(owner._lease);
+            owner._files.VerifyCurrentSessionOperation(owner._lease);
+            owner._original.RequireOwner(owner._files, owner._lease, owner._snapshot);
+            var stage = owner._stages[proof.Index];
+            return owner.ProgramAgrees() && proof.Index + 1 < owner._stages.Count &&
+                owner._stages[proof.Index + 1] is { Kind: "heal" } next && next.WoundId == stage.WoundId &&
+                stage.Kind == "recover" && stage.PreparesHeal && before.Lifecycle == "active" && after.Lifecycle == "active" &&
+                before.Severity.Rank == 1 && after.Severity.Rank == 1 &&
+                before.Recovery.CurrentStepThreshold == 2 && after.Recovery.CurrentStepThreshold == 2 &&
+                stage.Progress == 0 && after.Recovery.CurrentStepProgress == 0 && evidence.Outcome.Heals && !evidence.Outcome.AllowsWorsening &&
+                request.Kind == stage.Kind && request.OperationKey == stage.OperationKey && request.TransitionId == stage.TransitionId &&
+                request.EventRef == owner.EventRef && request.Turn == owner._input.Binding.Turn &&
+                before.WoundId == stage.WoundId && before.Owner == owner._data.Wound.Owner && after.Owner == before.Owner &&
+                after.Recovery.LastTickKey == stage.TickKey &&
+                proof.BeforeFingerprint == WoundIdentityState.ComputeSemanticFingerprint(before) &&
+                proof.AfterFingerprint == WoundIdentityState.ComputeSemanticFingerprint(after) &&
+                evidence.ExpectedBeforeFingerprint == proof.BeforeFingerprint && evidence.ExpectedAfterFingerprint == proof.AfterFingerprint;
+        }
+
+        private bool ProgramAgrees()
+        {
+            var attempt = _request["attempt"]!;
+            var resolution = SpiritualHealingResolver.ResolvePrepared(_data.Source, _data.Source.RollMode,
+                attempt["roll"]!["values"]!.AsArray().Select(v => v!.GetValue<int>()).ToArray()).Resolution;
+            return resolution is not null && _wounds.SelectMany(w => SpiritualWoundRecoveryPlanner.Build(w,
+                _data.Source.HealingTier, attempt["attemptId"]!.GetValue<string>(), attempt["cycleKey"]!.GetValue<string>(),
+                w.WoundId == _data.Wound.WoundId ? resolution.Calculation : null)).SequenceEqual(_stages);
+        }
 
         internal static async Task<Continuation> AdmitAsync(FileSystemManager files,
             FileSystemManager.CanonicalWriteLease lease, LiveTurnPendingSnapshotManifest manifest)
@@ -147,7 +288,8 @@ internal static class AfterlifeWoundHealingPlanner
                 snapshot.Realm, snapshot.TurnNumber, acceptedEvents.Events, WoundAcceptedEventSetFingerprint.Compute(acceptedEvents.Events));
             var roots = sources.ToDictionary(s => s.Path, s => s.Root, StringComparer.Ordinal);
             var wounds = WoundCarrierCatalog.Build(data.Carriers).Occurrences.Where(o => o.Wound.Owner == data.Wound.Owner)
-                .Select(o => o.Wound).OrderBy(w => w.WoundId, StringComparer.Ordinal).ToArray();
+                .Select(o => o.Wound).OrderBy(w => w.WoundId == data.Wound.WoundId ? 0 : 1)
+                .ThenBy(w => w.WoundId, StringComparer.Ordinal).ToArray();
             var cycleKey = AfterlifeWoundTreatmentAuthority.CycleKey(data.Realm, data.CycleOrdinal);
             var stages = wounds.SelectMany(w => SpiritualWoundRecoveryPlanner.Build(w, data.Source.HealingTier,
                 attempt["attemptId"]!.GetValue<string>(), cycleKey, w.WoundId == data.Wound.WoundId ? resolution.Calculation : null)).ToArray();
@@ -158,14 +300,20 @@ internal static class AfterlifeWoundHealingPlanner
                     data.Carriers.AllyCombatants, data.Carriers.AfterlifeProfiles, roots[EffectCarrierCatalog.SpiritualConflictPath]),
                 roots[EffectIdentityState.StatePath]);
             var scheduler = new ProgressionScheduleService(files, Microsoft.Extensions.Logging.Abstractions.NullLogger<ProgressionScheduleService>.Instance);
-            var errors = await scheduler.ValidateAcceptedTurnOutcomeAsync(context.Progression);
+            var errors = await scheduler.ValidateSpiritualTreatmentOutcomeAsync(lease, context.Progression);
             if (errors.Any(i => i.Severity == IssueSeverity.Error)) throw new InvalidDataException("Spiritual treatment requires its exact progression report.");
             var mutation = await scheduler.PrepareAcceptedTurnOutcomeMutationAsync(lease, context.Progression);
             var schedule = JsonNode.Parse(mutation.ScheduleAfterJson)!;
             if (schedule["currentChaosSeaTurnOrdinal"]!.GetValue<int>() != data.CycleOrdinal || mutation.ReportAfter.Existed)
                 throw new InvalidDataException("Spiritual treatment must advance exactly its one admitted cycle.");
+            var updatesBytes = await files.ReadFileBytesAsync(lease, "output/interface_updates.json");
+            var updates = updatesBytes is null ? null : StrictJsonAuthority.Deserialize<JsonObject>(
+                CanonicalJsonUtf8.DecodeOneOptionalBom(updatesBytes), new JsonSerializerOptions(), "spiritual treatment graph response");
+            AfterlifeWoundTreatmentAuthority.MaterializeProperties(updates);
             var owner = new Continuation(files, lease, snapshot, evidence, sources.ToDictionary(s => s.Path, s => s.Image,
-                StringComparer.Ordinal), request, data, input, wounds, stages, context.Progression, scheduler, mutation);
+                StringComparer.Ordinal), request, data, input, wounds, stages, context.Progression, scheduler, mutation,
+                new(updatesBytes is not null, updatesBytes));
+            owner.AdmitGraphs(updates);
             owner.RequireCurrent(files, lease);
             return owner;
         }

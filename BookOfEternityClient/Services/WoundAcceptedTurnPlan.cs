@@ -2646,6 +2646,11 @@ internal static partial class WoundAcceptedTurnFingerprints
             fields.Add("mortal_recovery_execution");
             fields.Add(recoveryExecution);
         }
+        if (EffectAcceptedTurnPlanner.GetSpiritualHealingExecutionFingerprint(plan) is { } healingExecution)
+        {
+            fields.Add("spiritual_healing_execution");
+            fields.Add(healingExecution);
+        }
         AppendOrdered(fields, plan.AllocatedCombatantIds, includeCount: true);
         AppendOrdered(fields, plan.AllocatedEffectIds, includeCount: true);
         AppendOrdered(fields, plan.AllocatedTransitionIds, includeCount: true);

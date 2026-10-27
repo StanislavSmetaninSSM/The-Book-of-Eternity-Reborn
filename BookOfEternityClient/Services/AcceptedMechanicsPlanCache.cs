@@ -998,6 +998,12 @@ internal static class AcceptedMechanicsPlanAuthority
         ArgumentNullException.ThrowIfNull(bundle);
         fileSystem.EnsureCanonicalWriteLeaseActive(writeLease);
 
+        if (bundle.PreparedPlan.SpiritualHealingContinuationAuthority is not null)
+        {
+            var healing = AcceptedMechanicsWoundCommonInputComposer.ComposeSpiritualHealingContinuation(fileSystem, writeLease, bundle);
+            if (!healing.Success || healing.Input is null) return new(null, healing.Issues);
+            return AcceptedTurnAuthorityRegistry.GetOrBuildCommonWoundValidated(fileSystem, writeLease, healing.Input, bundle);
+        }
         if (bundle.PreparedPlan.RecoveryContinuationAuthority is not null)
         {
             var recovery = AcceptedMechanicsWoundCommonInputComposer.ComposeRecoveryContinuation(

@@ -2,6 +2,10 @@ namespace BookOfEternityClient.Services;
 
 internal static partial class WoundPlayerProjection
 {
+    private sealed record HistoricalHealStage(string TransitionId, string Kind, bool Terminal,
+        WoundMaterializationEnvelope BeforeWound, WoundMaterializationEnvelope AfterWound,
+        string BeforeFingerprint, string AfterFingerprint);
+
     private static IReadOnlyList<WoundPlayerHistoryEntry> ProjectHistory(WoundPlayerProjectionInput input)
     {
         var history = new List<WoundPlayerHistoryEntry>();
@@ -15,8 +19,15 @@ internal static partial class WoundPlayerProjection
             // A readableSummary alone carries no historical visibility authority.
             // Use complete strictly reconstructed terminal before/after evidence only.
             var stages = input.History.Transitions.Where(t => t.WoundId == identity.WoundId)
-                .Select(t => t.TransitionResult).OfType<MortalWoundRecoveryPersistedResult>()
-                .SelectMany(r => r.Stages).Where(s => s.TransitionId == terminal.TransitionId).ToArray();
+                .Select(t => t.TransitionResult).SelectMany(r => r switch
+                {
+                    MortalWoundRecoveryPersistedResult mortal => mortal.Stages.Select(s => new HistoricalHealStage(
+                        s.TransitionId, s.Kind, s.Terminal, s.BeforeWound, s.AfterWound, s.BeforeFingerprint, s.AfterFingerprint)),
+                    SpiritualHealingPersistedResult spiritual => spiritual.Stages.Select(s => new HistoricalHealStage(
+                        s.TransitionId, s.Kind, s.Terminal, s.Before, s.After, WoundIdentityState.ComputeSemanticFingerprint(s.Before),
+                        WoundIdentityState.ComputeSemanticFingerprint(s.After))),
+                    _ => Enumerable.Empty<HistoricalHealStage>()
+                }).Where(s => s.TransitionId == terminal.TransitionId).ToArray();
             if (stages.Length != 1) continue;
             var stage = stages[0];
             var before = stage.BeforeWound;

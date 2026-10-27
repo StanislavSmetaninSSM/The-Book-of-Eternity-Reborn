@@ -80,6 +80,13 @@ internal sealed partial class WoundHistoryState
     private static WoundTransitionResult? ParseTransitionResult(JsonElement element,
         string kind, string path, ICollection<ValidationIssue> issues)
     {
+        if (element.ValueKind == JsonValueKind.Object && element.TryGetProperty("kind", out var spiritualKind) &&
+            spiritualKind.ValueKind == JsonValueKind.String && spiritualKind.GetString() == "spiritual_healing")
+        {
+            if (kind != "treat")
+            { AddIssue(issues, path, "spiritual_healing_history_invalid", "spiritual result only on its primary treat row", kind); return null; }
+            return SpiritualHealingPersistedResult.Parse(element, path, issues);
+        }
         var required = kind is "diagnose" or "author_alternative_treatment";
         // An explicitly supplied treatment result, including null, must still pass
         // the original strict treatment codec. Only omission keeps its old meaning.
@@ -201,6 +208,12 @@ internal sealed partial class WoundHistoryState
     private static void ValidateTransitionResult(WoundHistoryTransition transition,
         string path, ICollection<ValidationIssue> issues)
     {
+        if (transition.TransitionResult is SpiritualHealingPersistedResult)
+        {
+            ParseTransitionResult(JsonSerializer.SerializeToElement(transition.TransitionResult.ToCanonicalJson()),
+                transition.Kind, path + ".transitionResult", issues);
+            return;
+        }
         if (transition.TransitionResult is MortalWoundRecoveryPersistedResult)
         {
             ParseTransitionResult(JsonSerializer.SerializeToElement(transition.TransitionResult.ToCanonicalJson()),

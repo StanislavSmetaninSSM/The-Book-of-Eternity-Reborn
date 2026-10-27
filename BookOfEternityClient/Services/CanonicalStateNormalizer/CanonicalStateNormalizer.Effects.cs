@@ -86,6 +86,21 @@ public partial class CanonicalStateNormalizer
                 : await ReadSpiritualFinalSourceAsync(spiritualPublicationReceipt.Plan, path);
         }
 
+        if (woundStageBundle?.PreparedPlan.SpiritualHealingContinuationAuthority is AfterlifeWoundHealingPlanner.Continuation)
+        {
+            var woundInput = woundStageBundle.Input;
+            foreach (var contribution in woundStageBundle.FinalPlan.CarrierContributions)
+            {
+                if (sourceRoots.GetValueOrDefault(contribution.Owner.CarrierPath) is not JsonObject carrier ||
+                    !WoundCarrierCollectionAuthority.TryResolve(carrier, contribution.Owner, out var wounds, out _))
+                    throw new InvalidDataException("Spiritual publication source carrier is absent.");
+                foreach (var mutation in contribution.Mutations)
+                {
+                    var issue = AcceptedMechanicsCarrierAssembler.ApplyMutation(wounds, contribution.Owner, mutation);
+                    if (issue is not null) throw new InvalidDataException(issue.Code + ":" + issue.Actual);
+                }
+            }
+        }
         var catalog = EffectCarrierCatalog.Build(effectiveCarriers);
         var sourceAuthority =
             EffectAcceptedTurnInputComposer.BuildCanonicalSourceAuthority(

@@ -116,6 +116,8 @@ public partial class CanonicalStateNormalizer
         }
 
         var plan = validated.Plan;
+        var spiritualHealing = plan.WoundStageBundle?.PreparedPlan.SpiritualHealingContinuationAuthority as AfterlifeWoundHealingPlanner.Continuation;
+        spiritualHealing?.RequireCurrent(_fs, _writeLease);
         _mortalQteCommittedChanges = null;
         if (plan.JointRepairCommonAuthority is not null && jointTransaction is null)
             throw new InvalidOperationException("Joint repair common publication requires its distinct owning transaction.");
@@ -298,7 +300,34 @@ public partial class CanonicalStateNormalizer
             throw new InvalidDataException("Joint publication cannot fall back to individual ordinary writes without its actual QTE receipt.");
         try
         {
-        if (mortalQtePublication)
+        if (spiritualHealing is not null)
+        {
+            spiritualHealing.RequireCurrent(_fs, _writeLease);
+            spiritualHealing.Scheduler.ClaimSpiritualTreatmentMutation(_writeLease, spiritualHealing.SchedulerMutation);
+            var changes = new List<CanonicalLocalFileChange>();
+            foreach (var pair in writes.OrderBy(p => p.Key, StringComparer.Ordinal))
+            {
+                if (!plan.BeforeImages.TryGetValue(pair.Key, out var before))
+                    throw new InvalidDataException("Spiritual publication lost an exact original member: " + pair.Key);
+                var after = pair.Key == ProgressionScheduleService.SchedulePath
+                    ? spiritualHealing.SchedulerMutation.ScheduleAfter.Bytes!
+                    : MortalQteDecisionPublication.SerializePublicationRoot(pair.Value);
+                changes.Add(new(pair.Key, before.Bytes, after));
+            }
+            foreach (var path in deletePaths)
+            {
+                if (writes.ContainsKey(path) || !plan.BeforeImages.TryGetValue(path, out var before))
+                    throw new InvalidDataException("Spiritual publication has a missing/conflicting delete: " + path);
+                changes.Add(new(path, before.Bytes, null));
+            }
+            retainedPublicationBeforeImages = await CaptureRetainedPublicationAgreementBeforeImagesAsync(plan, writes.Keys, deletePaths);
+            await _fs.VerifySourceDataAsync(_writeLease);
+            _fs.RequireCommittedLocalPublication(await _fs.PublishLocalFilesAsync(_writeLease, changes));
+            foreach (var change in changes)
+                if (!ExactBytes(await _fs.ReadFileBytesAsync(_writeLease, change.RelativePath), change.After))
+                    throw new InvalidDataException("Spiritual common publication readback differs: " + change.RelativePath);
+        }
+        else if (mortalQtePublication)
         {
             using var innerTiming6 = _fs.MeasureOperation("MechanicsPublish.PrepareBeforeImages");
             var prepared = new List<CanonicalLocalFileChange>();
@@ -391,6 +420,7 @@ public partial class CanonicalStateNormalizer
             RequireCurrentSpiritualPublication(spiritualPublicationReceipt, plan);
             await ValidatePublishedSpiritualReceiptAsync(plan);
         }
+        spiritualHealing?.MarkPublished();
         return plan;
         }
         catch (Exception failure) when (failure is not CoordinatedStatePublicationUncertainException)

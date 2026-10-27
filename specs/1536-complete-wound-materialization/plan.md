@@ -1,5 +1,27 @@
 # US4 safe self-treatment — active functional work, 2026-10-27
 
+Connected functional SOURCE WIP (2026-10-27, following5896ce5e): the signed v2
+request now dispatches to an actual spiritual owner before unchanged v1 parsing;
+private prepared/effect proof, shared real effect executor, ordered wound stages,
+strict persisted result/cohort and visible healed History are connected to the
+existing common assembler. Scheduler contribution is claimed once by its existing
+service and joins a single existing PublishLocalFilesAsync union with wound/effect/
+identity/History, request/report consumption and existing output before-images.
+Durable History/control/complete schedule-after agreement makes later scheduler
+validation/application inert before initialization. GM lower-rank graphs use the
+existing closed consequenceDefinitions parser and exact predecessor coordinates;
+there is no automatic graph survivor selection. All current C# is UNCOMPILED/UNRUN.
+Finite connected SOURCE review is next, then fresh affected builds and exact3
+causal GREEN attempt. Negative/replay/graph/overflow controls, GM synchronization,
+actual GameEngine player-selection staging and guided command remain open; three
+baseline cases will not close T101/T104–T108 or claim user availability.
+Optimization: reuse one parsed original source set, one bounded scalar program and
+one parsed destination graph per rank; physical publication/source/identity and
+owner/lease checks stay fresh. No new cache/diagnostics framework or budget change.
+The temporary filesystem delay returned no Git output in one completed tool cell;
+subsequent explicit pwd/status exited0 and confirmed the complete WIP. No files
+were deleted and no build/test is active. Raw remains external.
+
 Connected implementation WIP after causal RED (2026-10-27): shared detached
 source reconstruction is factored from existing staging; a private signed-reader
 continuation now owns the actual request, scalar active/recovery program and

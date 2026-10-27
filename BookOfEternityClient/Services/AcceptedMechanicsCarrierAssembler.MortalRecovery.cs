@@ -41,12 +41,14 @@ internal static partial class AcceptedMechanicsCarrierAssembler
     {
         var stagedPlan = bundle.EffectBatchPlan.EffectPlan;
         var prepared = bundle.PreparedPlan;
-        if (!EffectAcceptedTurnPlanner.TryReadMortalRecoveryExecution(prepared, stagedPlan, out var stages) ||
-            stages.Count == 0 || !finalPlan.IsAcceptedBoundaryComplete ||
-            finalPlan.AcceptedBoundaryBasePlanFingerprint !=
-                WoundAcceptedTurnFingerprints.ComputeAcceptedEffectPlanPayload(stagedPlan) ||
-            finalPlan.AcceptedBoundaryFinalPlanFingerprint !=
-                WoundAcceptedTurnFingerprints.ComputeAcceptedEffectPlanPayload(finalPlan))
+        var spiritual = prepared.SpiritualHealingContinuationAuthority is not null;
+        IReadOnlyList<WoundExecutedBoundary> stages;
+        var read = spiritual
+            ? EffectAcceptedTurnPlanner.TryReadSpiritualHealingExecution(prepared, stagedPlan, out stages)
+            : EffectAcceptedTurnPlanner.TryReadMortalRecoveryExecution(prepared, stagedPlan, out stages);
+        if (!read || stages.Count == 0 || !finalPlan.IsAcceptedBoundaryComplete ||
+            finalPlan.AcceptedBoundaryBasePlanFingerprint != WoundAcceptedTurnFingerprints.ComputeAcceptedEffectPlanPayload(stagedPlan) ||
+            finalPlan.AcceptedBoundaryFinalPlanFingerprint != WoundAcceptedTurnFingerprints.ComputeAcceptedEffectPlanPayload(finalPlan))
             return RecoveryMembershipFailure("missing private execution or changed common completion ancestry");
 
         var applications = stages.SelectMany(stage => stage.Applications).ToArray();
@@ -94,20 +96,30 @@ internal static partial class AcceptedMechanicsCarrierAssembler
                 return RecoveryMembershipFailure("retirement chronology changed: " + result.EffectId);
         }
 
-        var finalWound = stages[^1].After;
         for (var stageIndex = 0; stageIndex < stages.Count; stageIndex++)
         {
             var stage = stages[stageIndex];
+            var finalWound = stages.Last(s => s.After.WoundId == stage.After.WoundId).After;
             foreach (var result in stage.Applications)
             {
                 string? predecessor = null;
                 if (stage.Before.Severity.Rank != stage.After.Severity.Rank)
                 {
-                    var predecessors = stage.Before.Consequences.OwnedEffectSources.RootBindings
-                        .Where(root => root.DefinitionKey == result.SourceKey.DefinitionKey).ToArray();
-                    if (predecessors.Length != 1)
-                        return RecoveryMembershipFailure("generation has no unique private predecessor: " + result.EffectId);
-                    predecessor = predecessors[0].EffectId;
+                    if (spiritual)
+                    {
+                        var complication = stage.After.Complications.SingleOrDefault(c => c.OwnedEffectIds.Contains(result.EffectId, StringComparer.Ordinal));
+                        var domain = complication is null ? WoundRootOwnershipDomain.BaseWound : WoundRootOwnershipDomain.ForComplication(complication.ComplicationId);
+                        WoundAcceptedTurnPlannerCore.BuildPriorRootCoordinateMap(stage.Before).TryGetValue(
+                            (result.SourceKey.DefinitionKey, domain.Kind, domain.ComplicationId), out predecessor);
+                    }
+                    else
+                    {
+                        var predecessors = stage.Before.Consequences.OwnedEffectSources.RootBindings
+                            .Where(root => root.DefinitionKey == result.SourceKey.DefinitionKey).ToArray();
+                        if (predecessors.Length != 1)
+                            return RecoveryMembershipFailure("generation has no unique private predecessor: " + result.EffectId);
+                        predecessor = predecessors[0].EffectId;
+                    }
                 }
                 if (!stagedIdentities.TryGetEntry(result.EffectId, out var stagedIdentity) ||
                     !finalIdentities.TryGetEntry(result.EffectId, out var identity) ||

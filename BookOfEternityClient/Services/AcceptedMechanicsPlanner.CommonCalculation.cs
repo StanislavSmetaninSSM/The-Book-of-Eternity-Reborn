@@ -455,6 +455,12 @@ internal static partial class AcceptedMechanicsPlanner
             touched.Add("output/narrative_response.json");
         }
 
+        if (woundStages?.PreparedPlan.SpiritualHealingContinuationAuthority is not null)
+        {
+            touched.Add(ProgressionScheduleService.ReportPath);
+            consumed.Add(ProgressionScheduleService.ReportPath);
+        }
+
         if (isJointRepair)
         {
             touched.Add(WoundAcceptedTurnSnapshotContract.PendingResolutionPath);

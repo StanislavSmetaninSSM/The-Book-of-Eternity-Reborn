@@ -210,15 +210,15 @@ internal static partial class AfterlifeWoundTreatmentAuthority
         "spiritual_safe_cycle:" + realm + ":" + ordinal.ToString(CultureInfo.InvariantCulture);
 
     private const string SoulPath = "game_state/meta/soul_state.json";
-    internal static readonly string[] SourcePaths =
-    [
+    internal static IReadOnlyList<string> SourcePaths { get; } = Array.AsReadOnly(new[]
+    {
         SoulPath, WoundCarrierCatalog.PlayerPath, WoundCarrierCatalog.NpcPath,
         WoundCarrierCatalog.EnemiesPath, WoundCarrierCatalog.AlliesPath, WoundCarrierCatalog.AfterlifeProfilesPath,
         WoundIdentityState.StatePath, WoundHistoryState.HistoryPath,
         EffectCarrierCatalog.PlayerPath, EffectCarrierCatalog.NpcPath, EffectIdentityState.StatePath,
         AfterlifeSpiritualConflictState.StatePath, ProgressionScheduleService.SchedulePath,
         ProgressionScheduleService.ReportPath, EffectAcceptedTurnInputComposer.WorldTimePath, ShiningAbodeState.StatePath
-    ];
+    });
 
     internal sealed record SourceFile(string Path, CanonicalBeforeImage Image, JsonObject? Root);
 

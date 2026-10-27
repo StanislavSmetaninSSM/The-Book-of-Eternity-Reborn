@@ -111,7 +111,8 @@ internal sealed record WoundRecoveryEvidence(
     string TickKey,
     string ClockOrCycleRef,
     WoundDeclaredTransitionOutcome Outcome,
-    [property: System.Text.Json.Serialization.JsonIgnore] object? MortalContinuationAuthority = null)
+    [property: System.Text.Json.Serialization.JsonIgnore] object? MortalContinuationAuthority = null,
+    [property: System.Text.Json.Serialization.JsonIgnore] object? SpiritualContinuationAuthority = null)
     : WoundTransitionEvidence(AuthorityRef, ExpectedBeforeFingerprint, ExpectedAfterFingerprint);
 
 internal sealed record WoundHealingEvidence(
@@ -1693,6 +1694,11 @@ internal static partial class WoundTransitionReducer
             EvidenceKindMismatch(issues, "WoundRecoveryEvidence", request.Evidence);
             return;
         }
+        if (evidence.MortalContinuationAuthority is not null && evidence.SpiritualContinuationAuthority is not null)
+        {
+            Add(issues, "wound_transition_evidence_invalid", "one exact domain continuation family", "competing Mortal and spiritual authority");
+            return;
+        }
         if (!ActivePair(before, after))
         {
             ActiveSourceInvalid(issues, before, after);
@@ -1747,8 +1753,10 @@ internal static partial class WoundTransitionReducer
         if (after.Severity.Rank == before.Severity.Rank &&
             after.Recovery.CurrentStepProgress < before.Recovery.CurrentStepProgress &&
             !(evidence.Outcome.Heals && FollowUpHealStageIsLegal(before, after) &&
-              WoundAcceptedTurnPlanner.RecoveryContinuationProvesFullHeal(
-                  evidence.MortalContinuationAuthority, before)))
+              (WoundAcceptedTurnPlanner.RecoveryContinuationProvesFullHeal(
+                  evidence.MortalContinuationAuthority, before) ||
+               AfterlifeWoundHealingPlanner.Continuation.ProvesRecoveryConsumption(
+                   evidence.SpiritualContinuationAuthority, request, before, after))))
         {
             Add(
                 issues,

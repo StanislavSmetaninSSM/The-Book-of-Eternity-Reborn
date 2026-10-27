@@ -37,6 +37,9 @@ public partial class ValidationService
 
         AcceptedMechanicsPlanAuthority.InvalidateValidated(_fs, writeLease);
         EffectAcceptedTurnPlanAuthority.InvalidateValidated(_fs, writeLease);
+        var spiritualTreatment = await TryPrepareSpiritualSelfTreatmentAsync(writeLease);
+        if (spiritualTreatment is not null)
+            return spiritualTreatment;
         var keepCommonHandoff = false;
         var keepSpiritualSourceHandoff = false;
         try

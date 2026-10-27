@@ -239,6 +239,8 @@ internal sealed partial class WoundHistoryState
             ValidateState(nextOrdinal, transitions, path, issues);
             if (issues.Count == 0)
                 ValidateRecoveryReplayAgreement(transitions, path, issues);
+            if (issues.Count == 0)
+                ValidateSpiritualHealingReplayAgreement(transitions, path, issues);
             return issues.Count == 0
                 ? new WoundHistoryParseResult(
                     new WoundHistoryState(nextOrdinal, transitions),

@@ -9,7 +9,7 @@ namespace BookOfEternityClient.Services;
 /// Retains detached results of one actual unpublished recovery boundary.
 /// Its existence alone does not grant execution or publication authority.
 /// </summary>
-internal sealed class MortalWoundRecoveryExecutedStage
+internal sealed class WoundExecutedBoundary
 {
     private readonly WoundMaterializationEnvelope _before;
     private readonly WoundMaterializationEnvelope _after;
@@ -44,7 +44,7 @@ internal sealed class MortalWoundRecoveryExecutedStage
     /// <param name="intents">
     /// Ordered output from the existing wound transition reducer.
     /// </param>
-    internal MortalWoundRecoveryExecutedStage(WoundMaterializationEnvelope before,
+    internal WoundExecutedBoundary(WoundMaterializationEnvelope before,
         WoundMaterializationEnvelope after, string operationKey, string eventRef, string tickKey,
         IReadOnlyList<EffectAcceptedApplicationResult> applications,
         IReadOnlyList<EffectAcceptedTerminationResult> terminations,
@@ -110,7 +110,7 @@ internal sealed class MortalWoundRecoveryExecutedStage
     /// <returns>
     /// A detached copy of all wound, effect and reducer facts.
     /// </returns>
-    internal MortalWoundRecoveryExecutedStage DetachedCopy() => new(_before, _after,
+    internal WoundExecutedBoundary DetachedCopy() => new(_before, _after,
         OperationKey, EventRef, TickKey, _applications, _terminations, _intents);
 }
 
@@ -123,7 +123,7 @@ internal static partial class EffectAcceptedTurnPlanner
     {
         private readonly object _continuation;
         private readonly string _preparationFingerprint;
-        private readonly MortalWoundRecoveryExecutedStage[] _stages;
+        private readonly WoundExecutedBoundary[] _stages;
         private readonly JsonObject _identity;
         private readonly string _identityFingerprint;
         private string? _payloadFingerprint;
@@ -141,7 +141,7 @@ internal static partial class EffectAcceptedTurnPlanner
         /// Actual complete identity image after the ordered execution.
         /// </param>
         internal MortalRecoveryExecutionProof(WoundPreparedAcceptedTurnPlan prepared,
-            IReadOnlyList<MortalWoundRecoveryExecutedStage> stages, JsonObject identity)
+            IReadOnlyList<WoundExecutedBoundary> stages, JsonObject identity)
         {
             _continuation = prepared.RecoveryContinuationAuthority!;
             _preparationFingerprint = prepared.WoundPreparationFingerprint;
@@ -198,7 +198,7 @@ internal static partial class EffectAcceptedTurnPlanner
         /// <returns>
         /// Read-only detached stage facts in execution order.
         /// </returns>
-        internal IReadOnlyList<MortalWoundRecoveryExecutedStage> Read() =>
+        internal IReadOnlyList<WoundExecutedBoundary> Read() =>
             Array.AsReadOnly(_stages.Select(static stage => stage.DetachedCopy()).ToArray());
 
         /// <summary>
@@ -254,9 +254,9 @@ internal static partial class EffectAcceptedTurnPlanner
     /// True only when the private provenance and complete payload seal agree.
     /// </returns>
     internal static bool TryReadMortalRecoveryExecution(WoundPreparedAcceptedTurnPlan prepared,
-        EffectAcceptedTurnPlan plan, out IReadOnlyList<MortalWoundRecoveryExecutedStage> stages)
+        EffectAcceptedTurnPlan plan, out IReadOnlyList<WoundExecutedBoundary> stages)
     {
-        stages = Array.Empty<MortalWoundRecoveryExecutedStage>();
+        stages = Array.Empty<WoundExecutedBoundary>();
         if (plan.MortalRecoveryExecutionAuthority is not MortalRecoveryExecutionProof proof ||
             !proof.Agrees(prepared, plan))
             return false;
@@ -419,7 +419,7 @@ internal static partial class EffectAcceptedTurnPlanner
             AddRecoveryIssue(issues, "Recovery boundary count differs from allocated transition coordinates.");
             return null;
         }
-        var stages = new List<MortalWoundRecoveryExecutedStage>();
+        var stages = new List<WoundExecutedBoundary>();
         var wound = view.Before;
         var finalRecoverIndex = boundaries.Select((row, index) => (row, index)).Last(pair => !pair.row.Heal).index;
         for (var index = 0; index < boundaries.Count; index++)
@@ -522,7 +522,7 @@ internal static partial class EffectAcceptedTurnPlanner
     /// <returns>
     /// Detached actual stage facts, or null when validation fails.
     /// </returns>
-    private static MortalWoundRecoveryExecutedStage? ExecuteRecoveryBoundary(
+    private static WoundExecutedBoundary? ExecuteRecoveryBoundary(
         EffectAcceptedTurnInput input, WoundAcceptedTurnPlanner.RecoveryContinuationView view,
         object continuation, WoundMaterializationEnvelope before, RecoveryScalarBoundary boundary,
         int index, string tick, CarrierWorkspace workspace, EffectIdentityHistoryOwner identityRoot,
