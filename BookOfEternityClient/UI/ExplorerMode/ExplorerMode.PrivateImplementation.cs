@@ -281,6 +281,7 @@ public partial class ExplorerMode
 
     private static readonly HashSet<string> LocalUiSessionMutatingCommands = new(StringComparer.OrdinalIgnoreCase)
     {
+        "/лечить", "/treat", "/исцелить", "/heal",
         "/validate",
         "/валидация",
         "/world_setup",

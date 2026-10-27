@@ -105,6 +105,9 @@ public class GameResponse
     [JsonPropertyName("effectEventReports")]
     public JsonElement[]? EffectEventReports { get; set; }
 
+    [JsonPropertyName("spiritualHealingGraphs")]
+    public JsonElement[]? SpiritualHealingGraphs { get; set; }
+
     [JsonPropertyName("woundDecisions")]
     public JsonElement[]? WoundDecisions { get; set; }
 

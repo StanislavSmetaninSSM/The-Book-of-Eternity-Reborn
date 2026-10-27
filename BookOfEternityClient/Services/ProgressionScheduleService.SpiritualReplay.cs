@@ -22,16 +22,34 @@ public partial class ProgressionScheduleService
         _fs.VerifyCurrentSessionOperation(lease);
         var context = await ReadCurrentTurnRequestContextAsync(lease);
         if (context is null) return false;
-        var historyJson = await _fs.ReadFileAsync(lease, WoundHistoryState.HistoryPath);
+        return await IsPublishedSpiritualCycleCoreAsync(control, context.Value.SessionId, context.Value.RequestId,
+            context.Value.TurnNumber, path => _fs.ReadFileBytesAsync(lease, path), expectedSnapshotToken, expectedRequest);
+    }
+
+    // Same strict durable agreement for an authenticated original whose physical artifacts were already cleaned.
+    // The caller still owns its current lease/receipt/generation and cleanup admission.
+    internal static async Task<bool> IsPublishedSpiritualCycleCoreAsync(ProgressionControl control,
+        string sessionId, string requestId, int turn, Func<string, Task<byte[]?>> read,
+        string? expectedSnapshotToken = null, JsonObject? expectedRequest = null)
+    {
+        if (!HasResolvedRealm(control.CurrentRealm) || !IsAfterlifeRealm(control.CurrentRealm)) return false;
+        if ((expectedSnapshotToken is null) != (expectedRequest is null))
+            throw new InvalidDataException("Published spiritual original binding is incomplete.");
+        async Task<string?> Text(string path)
+        {
+            var bytes = await read(path);
+            return bytes is null ? null : CanonicalJsonUtf8.DecodeOneOptionalBom(bytes);
+        }
+        var historyJson = await Text(WoundHistoryState.HistoryPath);
         if (historyJson is null) return false;
         var history = WoundHistoryState.Parse(historyJson, WoundHistoryState.HistoryPath);
         if (!history.IsValid)
             throw new InvalidDataException("Published spiritual cycle history is not canonical.");
         var matching = history.State!.Transitions.Select(t => t.TransitionResult).OfType<SpiritualHealingPersistedResult>()
             .Select(r => (Result: r, Root: r.ToCanonicalJson())).Where(p =>
-                p.Root["binding"]!["sessionId"]!.GetValue<string>() == context.Value.SessionId &&
-                p.Root["binding"]!["requestId"]!.GetValue<string>() == context.Value.RequestId &&
-                p.Root["binding"]!["turn"]!.GetValue<int>() == context.Value.TurnNumber).ToArray();
+                p.Root["binding"]!["sessionId"]!.GetValue<string>() == sessionId &&
+                p.Root["binding"]!["requestId"]!.GetValue<string>() == requestId &&
+                p.Root["binding"]!["turn"]!.GetValue<int>() == turn).ToArray();
         if (matching.Length == 0) return false;
         if (matching.Length != 1) throw new InvalidDataException("Published spiritual cycle identity is ambiguous.");
         var accepted = matching[0];
@@ -41,21 +59,21 @@ public partial class ProgressionScheduleService
             throw new InvalidDataException("Published spiritual replay differs from the exact signed original request and snapshot.");
         var suppliedControl = WoundAcceptedTurnFingerprintWriter.CanonicalJson(JsonSerializer.SerializeToNode(control)!);
         if (suppliedControl != WoundAcceptedTurnFingerprintWriter.CanonicalJson(accepted.Root["control"]!) ||
-            await _fs.ReadFileBytesAsync(lease, ReportPath) is not null ||
-            await _fs.ReadFileBytesAsync(lease, AcceptedMechanicsPlan.WoundCommandPath) is not null)
+            await read(ReportPath) is not null ||
+            await read(AcceptedMechanicsPlan.WoundCommandPath) is not null)
             throw new InvalidDataException("A published spiritual cycle has changed control or a replaced consumed input.");
-        var schedule = await _fs.ReadFileBytesAsync(lease, SchedulePath);
+        var schedule = await read(SchedulePath);
         if (schedule is null || new CanonicalBeforeImage(true, schedule).Fingerprint != accepted.Root["scheduleAfterFingerprint"]!.GetValue<string>())
             throw new InvalidDataException("A published spiritual cycle has changed its complete scheduler after-image.");
         var roots = new Dictionary<string, JsonObject?>(StringComparer.Ordinal);
         foreach (var path in WoundAcceptedTurnSnapshotContract.CarrierPaths)
         {
-            var text = await _fs.ReadFileAsync(lease, path);
+            var text = await Text(path);
             roots[path] = text is null ? null : StrictJsonAuthority.Deserialize<JsonObject>(text, new JsonSerializerOptions(), path);
         }
         var catalog = WoundCarrierCatalog.Build(new(roots[WoundCarrierCatalog.PlayerPath], roots[WoundCarrierCatalog.NpcPath],
             roots[WoundCarrierCatalog.EnemiesPath], roots[WoundCarrierCatalog.AlliesPath], roots[WoundCarrierCatalog.AfterlifeProfilesPath]));
-        var identities = WoundIdentityState.Parse(await _fs.ReadFileAsync(lease, WoundIdentityState.StatePath), WoundIdentityState.StatePath);
+        var identities = WoundIdentityState.Parse(await Text(WoundIdentityState.StatePath), WoundIdentityState.StatePath);
         if (catalog.Issues.Count != 0 || !identities.IsValid || history.State.ValidateAgreement(identities.State!, catalog).Count != 0)
             throw new InvalidDataException("Published spiritual cycle lost current wound/identity/history agreement.");
         foreach (var group in accepted.Result.Stages.GroupBy(s => s.After.WoundId))

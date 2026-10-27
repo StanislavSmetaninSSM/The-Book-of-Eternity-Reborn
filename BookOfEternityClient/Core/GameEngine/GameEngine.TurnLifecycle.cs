@@ -1695,8 +1695,9 @@ public partial class GameEngine
             reminderTiming?.Dispose();
             using (_fs.MeasureOperation("PlayerTurn.Stage.BuildProgressionControl"))
                 request.ProgressionControl = await _progressionSchedule.BuildControlForNextTurnAsync();
-            var healingSelection = browserAction?.SpiritualSelfTreatment ??
-                _explorer.ConsumePendingSpiritualSelfTreatment(action, sessionGeneration);
+            var healingSelection = browserAction is null
+                ? _explorer.ConsumePendingSpiritualSelfTreatment(action, sessionGeneration)
+                : browserAction.SpiritualSelfTreatment;
             if (healingSelection is not null)
             {
                 using var healingTiming = _fs.MeasureOperation("PlayerTurn.Stage.SpiritualSelfTreatment");

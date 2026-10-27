@@ -31,6 +31,9 @@ internal static class GameResponseRefreshMerger
             refreshed.WoundNotifications = current.WoundNotifications.ToArray();
         }
 
+        if (refreshed.SpiritualHealingGraphs is null && current.SpiritualHealingGraphs is not null)
+            refreshed.SpiritualHealingGraphs = current.SpiritualHealingGraphs.Select(g => g.Clone()).ToArray();
+
         return refreshed;
     }
 }

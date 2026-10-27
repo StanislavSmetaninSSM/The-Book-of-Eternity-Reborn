@@ -94,6 +94,13 @@ public sealed class ExplorerWoundSelfTreatmentTests
             Assert.NotNull(original);
             var manifest = GameEngine.ValidateDetachedBrowserBinding(original!);
             Assert.Equal(turn!.RequestId, manifest.RequestId);
+            foreach (var artifact in manifest.Files.Values)
+                Assert.Null(await fixture.Files.ReadFileBytesAsync(artifact));
+            // Byte identity survives artifact cleanup; semantic JSON equivalence is insufficient.
+            var respelled = System.Text.Encoding.UTF8.GetBytes(" " + CanonicalJsonUtf8.DecodeOneOptionalBom(
+                Convert.FromBase64String(original!.SpiritualWoundRequestBytesBase64!)));
+            Assert.Throws<InvalidDataException>(() => GameEngine.ValidateDetachedBrowserBinding(original with
+                { SpiritualWoundRequestBytesBase64 = Convert.ToBase64String(respelled) }));
             Assert.Empty((await fixture.ReadWoundsAsync()).Occurrences);
             var history = await fixture.ReadHistoryAsync();
             Assert.Single(history.Transitions, t => t.Terminal);

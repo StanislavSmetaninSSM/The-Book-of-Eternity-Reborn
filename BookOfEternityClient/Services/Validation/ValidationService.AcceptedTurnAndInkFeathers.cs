@@ -583,11 +583,13 @@ public partial class ValidationService
         try
         {
             using var doc = JsonDocument.Parse(json);
-            if (!EvaluateAcceptedInterfacePrefix(doc.RootElement, interfacePath, issues))
+            await using var boundSpiritualInterface = await BindSpiritualHealingInterfaceAsync(doc.RootElement, json, issues);
+            var policyRoot = boundSpiritualInterface?.Root ?? doc.RootElement;
+            if (!EvaluateAcceptedInterfacePrefix(policyRoot, interfacePath, issues))
                 return issues;
 
             ValidateRequiredIsoTimestampField(
-                doc.RootElement,
+                policyRoot,
                 interfacePath,
                 issues,
                 "timestamp",
@@ -596,7 +598,7 @@ public partial class ValidationService
                 "interface_updates_invalid_timestamp",
                 "Добавь в output/interface_updates.json поле timestamp в ISO 8601 формате вместе с dialogueOptions и/или image_prompt текущего accepted turn.");
 
-            EvaluateAcceptedInterfaceTail(doc.RootElement, interfacePath, issues);
+            EvaluateAcceptedInterfaceTail(policyRoot, interfacePath, issues);
         }
         catch (JsonException ex)
         {

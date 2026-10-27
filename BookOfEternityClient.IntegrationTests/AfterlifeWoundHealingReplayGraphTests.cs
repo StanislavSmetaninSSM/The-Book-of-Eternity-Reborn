@@ -95,8 +95,11 @@ public sealed class AfterlifeWoundHealingReplayGraphTests
                 });
             }
             await fixture.Files.WriteFileAtomicAsync(lease, "output/interface_updates.json",
-                new JsonObject { ["spiritualHealingGraphs"] = graphs }.ToJsonString());
+                new JsonObject { ["spiritualHealingGraphs"] = graphs, ["timestamp"] = DateTime.UtcNow.ToString("o") }.ToJsonString());
         }
+        var interfaceIssues = await new ValidationService(fixture.Files, NullLogger<ValidationService>.Instance)
+            .ValidateAcceptedTurnInterfacePayloadAsync();
+        Assert.DoesNotContain(interfaceIssues, i => i.Severity == IssueSeverity.Error);
         await fixture.PublishAsync();
         var after = Assert.Single((await fixture.ReadWoundsAsync()).Occurrences).Wound;
         Assert.Equal(1, after.Severity.Rank);

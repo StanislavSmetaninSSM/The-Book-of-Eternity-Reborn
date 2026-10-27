@@ -321,6 +321,7 @@ public partial class GameEngine
             throw new InvalidOperationException(BrowserRecoveryMessage);
         var manifest = ValidateDetachedBrowserBinding(staged);
         await ValidateBrowserHistoryAsync(lease, staged.HistoryJson, exact: false);
+        await RequireAcceptedSpiritualResultAsync(staged, manifest, path => _fs.ReadFileBytesAsync(lease, path));
         var inventory = new JsonObject();
         foreach (var path in OriginalBrowserArtifactInventory(manifest))
         {
@@ -445,6 +446,21 @@ public partial class GameEngine
         await ValidateBrowserHistoryCoreAsync(staged.HistoryJson,true,read,physicalInventory);
     }
 
+    private static async Task RequireAcceptedSpiritualResultAsync(PendingPlayerActionService.Staged staged,
+        PendingTurnSnapshotManifest manifest, Func<string, Task<byte[]?>> read)
+    {
+        if (staged.Binding.SpiritualSelfTreatment is null) return;
+        // The enclosing detached-original validator already authenticated the exact bytes/maps.
+        // Parse the retained DATA without issuing another live snapshot authority after cleanup.
+        var request = StrictJsonAuthority.Deserialize<TurnRequest>(staged.RequestJson, JsonOpts, "accepted browser healing request")!;
+        var source = StrictJsonAuthority.Deserialize<JsonObject>(CanonicalJsonUtf8.DecodeOneOptionalBom(
+            Convert.FromBase64String(staged.SpiritualWoundRequestBytesBase64!)), JsonOpts, "accepted original healing source")!;
+        if (request.ProgressionControl is null || !await ProgressionScheduleService.IsPublishedSpiritualCycleCoreAsync(
+                request.ProgressionControl, manifest.SessionId, manifest.RequestId, manifest.TurnNumber, read,
+                manifest.ManifestPayloadHash, source))
+            throw new InvalidDataException(BrowserRecoveryMessage);
+    }
+
     private Task ValidateAcceptedBrowserRecordAsync(FileSystemManager.CanonicalWriteLease lease,
         PendingPlayerActionService.State state,PendingTurnSnapshotManifest manifest) =>
         ValidateAcceptedBrowserRecordCoreAsync(state,manifest,path=>_fs.ReadFileBytesAsync(lease,path),
@@ -453,7 +469,9 @@ public partial class GameEngine
     private static async Task ValidateAcceptedBrowserRecordCoreAsync(PendingPlayerActionService.State state,
         PendingTurnSnapshotManifest manifest,Func<string,Task<byte[]?>> read,Func<string,bool> exists,string[] physicalInventory)
 {
-        await ValidateBrowserHistoryCoreAsync(PendingPlayerActionService.ReadStaged(state).HistoryJson,false,read,physicalInventory);
+        var staged = PendingPlayerActionService.ReadStaged(state);
+        await ValidateBrowserHistoryCoreAsync(staged.HistoryJson,false,read,physicalInventory);
+        await RequireAcceptedSpiritualResultAsync(staged, manifest, read);
         var proof = JsonNode.Parse(state.ProofJson!)!.AsObject();
         if (proof["terminalDisposition"]?.GetValue<string>() != "ordinaryAcceptedAndCleanupComplete")
             throw new InvalidDataException(BrowserRecoveryMessage);

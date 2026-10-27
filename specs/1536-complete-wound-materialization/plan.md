@@ -1,5 +1,26 @@
 # US4 safe self-treatment — active functional work, 2026-10-27
 
+Second connected WIP boundary (still UNCOMPILED/UNRUN): Graphs now survive typed
+GameResponse/distributor/refresh and both shared readbacks. Pure ordinary interface
+policy remains byte-identical; field-present async adapter authenticates actual
+signed v2 original under current held lease and closes request/response/evidence
+fences, while the original source-reversal hash remains checked through an exact
+adapter reversal. Supplied DTO/live kind cannot authorize graphs. Mortal joint
+value policy gains no graph permission. Shared readback transport changed, so its
+source separation remains part of coherent review; Mortal semantics/held runtime
+group are not being changed or rerun. Accepted cleanup reuses one strict durable
+History/control/schedule/current-cohort core with exact original token/request;
+settled retains restored-before checks and makes no application claim.
+
+Parent narrow findings corrected: choose browser-vs-console owner explicitly,
+never fall through ordinary browser selection into console; propagate coordinated
+publication uncertainty; new adapter releases an owned lease on every pre-transfer
+failure through existing ReleaseOwnedLeaseAsync, preserving borrowed ownership.
+Tests now assert detached original byte hash after artifact cleanup and exercise
+bound graphs-only interface validation before real authored graph publication.
+GM docs/manifest/help and focused pending/transport proofs are still in progress
+in the same finite slice. No new runtime or new cache/registry/receipt is added.
+
 Connected caller/guided WIP boundary (UNCOMPILED/UNRUN, not production ACCEPT):
 shared WoundApplication/CommandState and renderer-neutral detail/History/prompt
 blocks now feed browser and console aliases. Existing prompt-session storage owns
