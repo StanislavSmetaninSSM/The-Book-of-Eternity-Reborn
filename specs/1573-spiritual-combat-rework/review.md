@@ -127,5 +127,23 @@ Clean restore UNRUN. Из review не следует доказательств�
 Spec расширена AC10–AC13/D7–D9; старые gameplay/plan/tasks явно не исполняемый v2.
 Нет реализации или нового runtime поведения. Builds/tests/gameplay UNRUN.
 Оптимизация: описаны reuse immutable definitions/профилей существующим сервисом,
-полные зависимости/инвалидирование, exact action checks свежие; скорость не заявлена.
-Проверка согласованности документационного среза и независимое review — pending.
+основные зависимости/инвалидирование, exact action checks свежие; скорость не заявлена.
+Конкретный владелец ValidationOperation, algorithm/source identities и revisions,
+failure/cancel/Dispose/rollback invalidation и source execution counters ещё должны
+попасть в новый plan до реализации; текущий текст — эскиз, не полный контракт кэша.
+
+WIP22add4683cc28b4ea92495533833d95b8c740c9b опубликован, remote SHA и exact GitHub
+readback нового документа подтверждены. Независимое review отдельного контекста
+/root/review_combat_system_v2_1573, явно выбранные gpt-6-astra/high, diff5af465b1…22add4683:
+одно P2, P1 нет. Дробные результаты броска могли попасть в пробелы между полосами;
+исправлено на непрерывные полуинтервалы без неявного округления. Уточнены ссылки
+partial/crit, добавлена полная исходная mortal D/N формула. Это исправления
+документа, не заявление о проверке игрового runtime.
+
+Consistency: spec AC10–13/D7–9 связаны с кандидатом; старые plan/tasks явно не
+исполняемы, T001 охватывает D1–9 и обязательную пересборку. Нет отмеченных новых
+implementation tasks. Spec Kit prerequisites с -RequireTasks/-IncludeTasks указал
+feature1573; все12 Markdown файлов имеют разрешающиеся локальные ссылки;
+diff-check успешен, арифметика примера8/17 проверена отдельно. Пограничные полосы
+и scoped повторное review после исправления проверяются перед финальной записью.
+Clean restore/runtime/build/gameplay UNRUN. Полный gameplay tuning остаётся открытым.

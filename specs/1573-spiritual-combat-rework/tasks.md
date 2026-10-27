@@ -19,7 +19,7 @@ US4=единая работающая модель/интерфейсы.
 
 ## Gate и фундамент
 
-- [ ] T001 Утвердить точную spec/gameplay/arts-migration D1–D6 с автором; записать version/решения, актуальный опубликованный baseline #1535/#1536, владение общими файлами; обновить analysis в specs/1573-spiritual-combat-rework/review.md. Без этого нет production кода/балансного probe.
+- [ ] T001 Утвердить точную spec/актуальную gameplay-модель/arts-migration D1–D9 с автором; записать version/решения, актуальный опубликованный baseline #1535/#1536, владение общими файлами; пересобрать plan/tasks/contracts и обновить analysis в specs/1573-spiritual-combat-rework/review.md. Без этого нет production кода/балансного probe.
 - [ ] T002 Зафиксировать исполняемый контракт в specs/1573-spiritual-combat-rework/data-model.md и contracts/commands.md: exact owners/instances, scopes, schedule/reaction/cost clocks, tuning, mutation order, schema cutover. Согласовать interfaces с #1572/#1563–#1565.
 - [ ] T003 Определить категории и tests/selection.json по контрактам; узкие новые owners health/scheduler/decision в tests/categories.json; -PlanOnly и discovery -ValidateCatalog без suite. Подготовить BookOfEternityClient.TestSupport/SpiritualCombatFixture.cs: typed immutable templates/per-test copies, internal seams, без reflection/генерации мира.
 
