@@ -1,5 +1,18 @@
 # US4 safe self-treatment — active functional work, 2026-10-27
 
+First cheap gate on docs-only e88/compiled1d: exact46cases/4descriptors planned
+10.3767368s; actual36executed35PASS1FAIL/3completed descriptors,28.5388989s, no
+timeout/duplicates, bothcleanuptrue. Boundary2 and ordinary regression33 PASS;
+source1 FAIL before the new inline inverse: shared DebugPrefixSourceInventory
+checks its frozen current-owner SHA first. New guided-contract10 remains UNRUN
+due fail-fast. Correction composes one exact four-replacement spiritual inverse
+at the existing shared outer helper before ALL older frozen hashes, rather than
+inline after them. All old hash constants/pure-policy assertions stay unchanged;
+production unchanged. Fresh Unit-only build then source1+contract10; retain the
+unaffected35PASS and do not repeat them automatically. Heavy guided2 stays UNRUN
+until that gate. This is a guard-inventory correction, not a gameplay semanticRED.
+Raw guided-cheap-controls-1 remains external.
+
 Fresh caller owning builds now compile source1d1127d02: Integration0errors/
 137warnings/7:24.25; Main41d66fc582156f66d734fc1664776e0f1a5190603604d8ee10699717226597f1,
 Support323e19840135de7fa4629c32cb11c429c3087d0c1b40ac1de33a214b1b9e5ee9,

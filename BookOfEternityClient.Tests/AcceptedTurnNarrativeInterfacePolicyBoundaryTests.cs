@@ -53,14 +53,6 @@ public sealed class AcceptedTurnNarrativeInterfacePolicyBoundaryTests(ITestOutpu
         source = DebugPrefixSourceInventory.ReverseIfPresent(source);
         source = NarrativePolicySourceInventory.ReverseIfPresent(source);
         source = ReasoningPolicySourceInventory.ReverseIfPresent(source);
-        // Reverse only the new signed spiritual-field adapter. The ordinary owner and
-        // entire pure policy still reconstruct to the same original reviewed hash.
-        const string spiritualAdapter = "            await using var boundSpiritualInterface = await BindSpiritualHealingInterfaceAsync(doc.RootElement, json, issues);\n            var policyRoot = boundSpiritualInterface?.Root ?? doc.RootElement;\n";
-        Assert.Equal(1, source.Split(spiritualAdapter, StringSplitOptions.None).Length - 1);
-        source = source.Replace(spiritualAdapter, string.Empty, StringComparison.Ordinal)
-            .Replace("EvaluateAcceptedInterfacePrefix(policyRoot, interfacePath, issues)", "EvaluateAcceptedInterfacePrefix(doc.RootElement, interfacePath, issues)", StringComparison.Ordinal)
-            .Replace("ValidateRequiredIsoTimestampField(\n                policyRoot,\n                interfacePath,", "ValidateRequiredIsoTimestampField(\n                doc.RootElement,\n                interfacePath,", StringComparison.Ordinal)
-            .Replace("EvaluateAcceptedInterfaceTail(policyRoot, interfacePath, issues)", "EvaluateAcceptedInterfaceTail(doc.RootElement, interfacePath, issues)", StringComparison.Ordinal);
         var partialPath = Path.Combine(root,
             "BookOfEternityClient/Services/Validation/ValidationService.NarrativeInterfacePolicy.cs");
         Assert.True(File.Exists(partialPath), "The shared value-only policy partial has not been implemented.");
