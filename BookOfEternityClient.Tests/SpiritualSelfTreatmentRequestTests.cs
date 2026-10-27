@@ -199,6 +199,7 @@ public sealed class SpiritualSelfTreatmentRequestTests
                     entry["owner"]!["carrierPath"] = EffectCarrierCatalog.AfterlifeProfilesPath;
                     entry["transitions"]![0]!["transitionId"] = effects.Single(e =>
                         e["effectId"]!.GetValue<string>() == entry["effectId"]!.GetValue<string>())["chronology"]!["lastTransitionId"]!.DeepClone();
+                    entry["transitions"]![0]!["eventRef"] = "seed_event_" + entry["effectId"]!.GetValue<string>();
                 }
                 var roots = new Dictionary<string, JsonObject>(StringComparer.Ordinal)
                 {

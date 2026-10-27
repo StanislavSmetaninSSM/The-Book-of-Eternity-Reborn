@@ -1,5 +1,20 @@
 # US4 safe self-treatment — active functional work, 2026-10-27
 
+Request scaffold evidence on `3dad78af016ca3ec03835685627e4486ed8f5643`:
+fresh owning Unit build exit0/75 warnings/0 errors in7:42.53; official PlanOnly
+selected exactly8 methods/8 cases/one exclusive60-second descriptor. Actual run
+completed8 failures in37.8781982s, no skip/timeout/duplicates, both cleanup flags
+true. All eight failed during fixture admission, before StageSelfTreatmentAsync:
+the two seeded effects inherited the same helper eventRef, violating the strict
+identity replay registry. This is setup failure, not functional semantic RED.
+The fixture now assigns each independently seeded effect its own eventRef;
+production identity validation is unchanged. Exact affected rebuild/run remains
+pending. No healing request, wound/world/History publication is implemented yet.
+Raw remains external at `us4-self-healing/request-red-prep-1` and `request-red-1`.
+The fixture is small and independently owned; no cache or extra source read is
+introduced by this identifier correction. The whole canonical no-mutation oracle
+and fresh effect/wound agreement checks remain intact.
+
 Current source block T104/T108: add the actual filesystem/lease-owned request
 staging entry point and eight typed tests using independent small canonical
 wound/profile/effect/History inputs. The new body is deliberately an unavailable
