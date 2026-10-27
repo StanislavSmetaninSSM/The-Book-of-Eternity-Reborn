@@ -226,5 +226,11 @@ diff62922a8b…d3bec37d4: P1/P2 нет. Git diff --check и Spec Kit prerequisit
 неизменёнными до согласования исполняемого плана. Следующий шаг — обсудить
 постоянную progression и условия повторного входа без сброса Просветления.
 
-WIP до независимого ревью. Только документы; runtime/build/balance/clean restore
-UNRUN. Новых исполняемых затрат или кэша нет, reuse DATA/fresh authority сохранены.
+Независимое ревью /root/review_art_progression_approval1573, gpt-6.1-sol/xhigh,
+diff9fafdf92…3d8dcf55: P1/P2 нет. Сохранение Просветления, фактические пути входа
+и разграничение принятого решения/предложения подтверждены. Git diff --check и
+Spec Kit prerequisites успешны. Срез 3d8dcf55ac451133fd383b2ece1c1c3fa7ae23d2
+опубликован; полный remote SHA и GitHub readback spec подтверждены.
+Только документы; runtime/build/balance/clean restore UNRUN. Новых исполняемых
+затрат или кэша нет, reuse DATA/fresh authority сохранены. Полная spec и план
+реализации ещё требуют согласования.
