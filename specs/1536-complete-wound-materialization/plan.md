@@ -1,3 +1,31 @@
+# T609 helper controls — actual 10/10 PASS, independent OUTCOME pending
+
+Linux runtime `640a545788efd3250ada0b0c6e706e7dfc26db74` used fresh compiled
+source `040aef9f6d0b6b33cc71fbc8986a32d40c0e164b`; exact plan-only delta and
+all current artifact/source/native bindings were rechecked. Independent Sol PREP
+admitted one official focused invocation: policy5, causal-source1, cost1 and
+fingerprint-data3 all completed PASS (10/10), no skip/duplicate/underfill/timeout,
+both process cleanup flags true. Category times respectively 12.9060499,
+11.5481895, 17.0600846 and 13.1815467 seconds, original 60-second bounds unchanged.
+The same accepted causal oracle now records four actual parses across two equal
+reads (original RED eight), preserving its original equality/error/alias/closing
+prerequisites. Local policies, ReferenceHandler callback/failure, unrelated/ancestor
+survival, owner/path/null/copy/fresh/closed/overlap controls all passed.
+
+Updated equal-work prototype includes actual allowlist/policy-key overhead and
+explicit null-operation original baseline: original/prototype parses 16/4, cold
+copy calls 8 (6 nonnull), then 4 (3 nonnull) per hit. Steady whole-read allocation
+273,208 bytes original versus 162,096 hit, cold 282,104 bytes. Original whole-read
+samples 1.999–4.215ms, cold 4.112ms and hits 0.064–0.130ms. This remains one
+fixed-order synthetic comparison; nested intervals must not be summed and genuine
+speedup/DFR fit are unproved. Full four-TRX/summary/counter proof is external at
+`dfr-prefix/actual-t609-effect-source-helper-1`, with verified receipts under
+`t608-counter-scaffold`. Source GREEN TRX SHA256:
+`19169f0831b5666fc6485ce941893f7a651202ea64d080d0a9f7f5aa0247dc0a`.
+Independent OUTCOME and acceptance pending. Existing genuine callers remain null/
+uncached; actual StageReplayOperation wiring and one genuine consumer proof are
+the next bounded task after helper acceptance. No full DFR repeat is admitted.
+
 # T609 optional-operation helper — SOURCE/build accepted, runtime pending
 
 Frozen source `040aef9f6d0b6b33cc71fbc8986a32d40c0e164b` received independent
