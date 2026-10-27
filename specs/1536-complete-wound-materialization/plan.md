@@ -12,6 +12,13 @@ Unit methods exclusively and retains a60-second runtime bound. It does not
 claim signed-source reconstruction, accepted healing/recovery, cycle advancement,
 terminal History or guided UI. Source/freshness and fixture review precede its
 first build/run; actual source implementation follows observed semantic RED.
+Sol scaffold review grouped four fixture findings before execution: wrong effect
+identity owner kind, source-definition display mismatch, failed-construction
+cleanup and a too-narrow no-world-mutation oracle. They are corrected together:
+retain player index owner kind on its afterlife carrier, clone exact definition
+display with a runtime sourceLabel, close failed fixture creation, and compare the
+whole canonical file namespace excluding only the allowed request. The known
+UTF8-BOM mutation helper is corrected too. All eight cases remain UNCOMPILED/UNRUN.
 
 Reuse plan: read each canonical source once, share the parsed profile/wound/effect
 DATA, and prepare the check source once before selecting its mode-dependent draw.

@@ -144,10 +144,9 @@ public sealed class SpiritualSelfTreatmentRequestTests
     private sealed class Fixture : IAsyncDisposable
     {
         private readonly string _root;
-        private readonly string[] _paths;
         private Fixture(string root, FileSystemManager files, SpiritualSelfTreatmentStageContext context,
-            SpiritualSelfTreatmentSelection selection, IEnumerable<string> paths)
-        { _root = root; Files = files; Context = context; Selection = selection; _paths = paths.ToArray(); }
+            SpiritualSelfTreatmentSelection selection)
+        { _root = root; Files = files; Context = context; Selection = selection; }
         internal FileSystemManager Files { get; }
         internal SpiritualSelfTreatmentStageContext Context { get; }
         internal SpiritualSelfTreatmentSelection Selection { get; }
@@ -156,91 +155,106 @@ public sealed class SpiritualSelfTreatmentRequestTests
         {
             var root = Path.Combine(Path.GetTempPath(), "boe-spiritual-self-request-" + Guid.NewGuid().ToString("N"));
             Directory.CreateDirectory(root);
-            var files = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
-            var wound = WoundContractTestData.CreateSpiritualActiveWound(ownerId: "player_soul",
-                carrierPath: WoundCarrierCatalog.AfterlifeProfilesPath);
-            var seed = WoundPlayerProjectionTestData.InputInRealm("chaos_sea", wound);
-            var profiles = seed.Carriers.AfterlifeProfiles!;
-            var profile = profiles["profiles"]![0]!.AsObject();
-            var arts = AfterlifeSpiritualConflictState.CreateDefaultArtTiers();
-            arts["spiritual_healing"] = tier;
-            profile["standardArts"] = arts.DeepClone();
-            var soulProfile = AfterlifeSpiritualConflictState.CreateDefaultCombatProfile();
-            soulProfile["artTiers"] = arts.DeepClone();
-            var soul = new JsonObject { ["currentRealm"] = "Chaos Sea", ["afterlifeCombatProfile"] = soulProfile };
-            var parsed = WoundCarrierCatalog.Build(seed.Carriers);
-            Assert.Empty(parsed.Issues);
-            var current = Assert.Single(parsed.Occurrences).Wound;
-            var effects = new List<JsonObject>();
-            foreach (var binding in current.Consequences.OwnedEffectSources.RootBindings)
+            try
             {
-                var definition = JsonNode.Parse(current.Consequences.OwnedEffectSources.Definitions.Single(d =>
-                    d.GetProperty("definitionKey").GetString() == binding.DefinitionKey).GetRawText())!.AsObject();
-                var key = current.Consequences.Entries.Single(e => e.EffectId == binding.EffectId).ProfileKey;
-                var effect = EffectMaterializationTestFixture.CreateSpiritualWoundCanonicalEffect(key,
-                    targetKind: "player", woundId: current.WoundId);
-                effect["effectId"] = binding.EffectId;
-                effect["target"]!["targetId"] = "player_soul";
-                effect["source"]!["definitionKey"] = binding.DefinitionKey;
-                effect["components"] = definition["components"]!.DeepClone();
-                effect["triggers"] = definition["triggers"]!.DeepClone();
-                effect["removal"] = definition["removal"]!.DeepClone();
-                effect["stacking"]!["stackKey"] = definition["stacking"]!["stackKey"]!.DeepClone();
-                effect["chronology"]!["lastTransitionId"] = "seed_effect_" + effects.Count;
-                effects.Add(effect);
+                var files = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+                var wound = WoundContractTestData.CreateSpiritualActiveWound(ownerId: "player_soul",
+                    carrierPath: WoundCarrierCatalog.AfterlifeProfilesPath);
+                var seed = WoundPlayerProjectionTestData.InputInRealm("chaos_sea", wound);
+                var profiles = seed.Carriers.AfterlifeProfiles!;
+                var profile = profiles["profiles"]![0]!.AsObject();
+                var arts = AfterlifeSpiritualConflictState.CreateDefaultArtTiers();
+                arts["spiritual_healing"] = tier;
+                profile["standardArts"] = arts.DeepClone();
+                var soulProfile = AfterlifeSpiritualConflictState.CreateDefaultCombatProfile();
+                soulProfile["artTiers"] = arts.DeepClone();
+                var soul = new JsonObject { ["currentRealm"] = "Chaos Sea", ["afterlifeCombatProfile"] = soulProfile };
+                var parsed = WoundCarrierCatalog.Build(seed.Carriers);
+                Assert.Empty(parsed.Issues);
+                var current = Assert.Single(parsed.Occurrences).Wound;
+                var effects = new List<JsonObject>();
+                foreach (var binding in current.Consequences.OwnedEffectSources.RootBindings)
+                {
+                    var definition = JsonNode.Parse(current.Consequences.OwnedEffectSources.Definitions.Single(d =>
+                        d.GetProperty("definitionKey").GetString() == binding.DefinitionKey).GetRawText())!.AsObject();
+                    var key = current.Consequences.Entries.Single(e => e.EffectId == binding.EffectId).ProfileKey;
+                    var effect = EffectMaterializationTestFixture.CreateSpiritualWoundCanonicalEffect(key,
+                        targetKind: "player", woundId: current.WoundId);
+                    effect["effectId"] = binding.EffectId;
+                    effect["target"]!["targetId"] = "player_soul";
+                    effect["source"]!["definitionKey"] = binding.DefinitionKey;
+                    effect["display"] = definition["display"]!.DeepClone();
+                    effect["display"]!["sourceLabel"] = current.Display.Name;
+                    effect["components"] = definition["components"]!.DeepClone();
+                    effect["triggers"] = definition["triggers"]!.DeepClone();
+                    effect["removal"] = definition["removal"]!.DeepClone();
+                    effect["stacking"]!["stackKey"] = definition["stacking"]!["stackKey"]!.DeepClone();
+                    effect["chronology"]!["lastTransitionId"] = "seed_effect_" + effects.Count;
+                    effects.Add(effect);
+                }
+                profile["activeEffects"] = new JsonArray(effects.Select(e => (JsonNode)e.DeepClone()).ToArray());
+                var effectIndex = EffectMaterializationTestFixture.CreateIdentityIndex(effects.ToArray());
+                foreach (var entry in effectIndex["entries"]!.AsArray().OfType<JsonObject>())
+                {
+                    entry["owner"]!["carrierPath"] = EffectCarrierCatalog.AfterlifeProfilesPath;
+                    entry["transitions"]![0]!["transitionId"] = effects.Single(e =>
+                        e["effectId"]!.GetValue<string>() == entry["effectId"]!.GetValue<string>())["chronology"]!["lastTransitionId"]!.DeepClone();
+                }
+                var roots = new Dictionary<string, JsonObject>(StringComparer.Ordinal)
+                {
+                    ["game_state/meta/soul_state.json"] = soul,
+                    [WoundCarrierCatalog.AfterlifeProfilesPath] = profiles,
+                    [WoundIdentityState.StatePath] = JsonNode.Parse(WoundIdentityState.SerializeCanonical(seed.Identities))!.AsObject(),
+                    [WoundHistoryState.HistoryPath] = JsonNode.Parse(WoundHistoryState.SerializeCanonical(seed.History))!.AsObject(),
+                    [EffectIdentityState.StatePath] = effectIndex
+                };
+                await using (var lease = await files.AcquireCanonicalWriteLeaseAsync())
+                    foreach (var pair in roots)
+                        await files.WriteFileAtomicAsync(lease, pair.Key, pair.Value.ToJsonString());
+                var mechanics = EffectMechanicsSnapshot.Build(new(new(null, null, null, null, profiles, null), effectIndex));
+                Assert.True(mechanics.IsAccepted, string.Join(";", mechanics.Issues.Select(i => i.Code + ":" + i.Message)));
+                Assert.Empty(seed.History.ValidateAgreement(seed.Identities, WoundCarrierCatalog.Build(seed.Carriers)));
+                var schedule = new ProgressionScheduleService(files, NullLogger<ProgressionScheduleService>.Instance);
+                var control = await schedule.BuildControlForNextTurnAsync();
+                Assert.Equal(1, control.ChaosSeaCyclesExpectedThisTurn);
+                var context = new SpiritualSelfTreatmentStageContext("session_spiritual_self", "request_spiritual_self", 43, control);
+                return new(root, files, context, new(current.WoundId, WoundIdentityState.ComputeSemanticFingerprint(current)));
             }
-            profile["activeEffects"] = new JsonArray(effects.Select(e => (JsonNode)e.DeepClone()).ToArray());
-            var effectIndex = EffectMaterializationTestFixture.CreateIdentityIndex(effects.ToArray());
-            foreach (var entry in effectIndex["entries"]!.AsArray().OfType<JsonObject>())
+            catch
             {
-                entry["owner"]!["kind"] = "afterlife_profile";
-                entry["owner"]!["carrierPath"] = EffectCarrierCatalog.AfterlifeProfilesPath;
-                entry["transitions"]![0]!["transitionId"] = effects.Single(e =>
-                    e["effectId"]!.GetValue<string>() == entry["effectId"]!.GetValue<string>())["chronology"]!["lastTransitionId"]!.DeepClone();
+                DeleteOwnedRoot(root);
+                throw;
             }
-            var roots = new Dictionary<string, JsonObject>(StringComparer.Ordinal)
-            {
-                ["game_state/meta/soul_state.json"] = soul,
-                [WoundCarrierCatalog.AfterlifeProfilesPath] = profiles,
-                [WoundIdentityState.StatePath] = JsonNode.Parse(WoundIdentityState.SerializeCanonical(seed.Identities))!.AsObject(),
-                [WoundHistoryState.HistoryPath] = JsonNode.Parse(WoundHistoryState.SerializeCanonical(seed.History))!.AsObject(),
-                [EffectIdentityState.StatePath] = effectIndex
-            };
-            await using (var lease = await files.AcquireCanonicalWriteLeaseAsync())
-                foreach (var pair in roots)
-                    await files.WriteFileAtomicAsync(lease, pair.Key, pair.Value.ToJsonString());
-            var mechanics = EffectMechanicsSnapshot.Build(new(new(null, null, null, null, profiles, null), effectIndex));
-            Assert.True(mechanics.IsAccepted, string.Join(";", mechanics.Issues.Select(i => i.Code + ":" + i.Message)));
-            Assert.Empty(seed.History.ValidateAgreement(seed.Identities, WoundCarrierCatalog.Build(seed.Carriers)));
-            var schedule = new ProgressionScheduleService(files, NullLogger<ProgressionScheduleService>.Instance);
-            var control = await schedule.BuildControlForNextTurnAsync();
-            Assert.Equal(1, control.ChaosSeaCyclesExpectedThisTurn);
-            var context = new SpiritualSelfTreatmentStageContext("session_spiritual_self", "request_spiritual_self", 43, control);
-            return new(root, files, context, new(current.WoundId, WoundIdentityState.ComputeSemanticFingerprint(current)),
-                roots.Keys.Append(ProgressionScheduleService.SchedulePath));
         }
 
         internal async Task<JsonObject> ReadRequestAsync(FileSystemManager.CanonicalWriteLease lease) =>
             JsonNode.Parse((await Files.ReadFileAsync(lease, AcceptedMechanicsPlan.WoundCommandPath))!)!.AsObject();
 
-        internal string[] CanonicalBytes() => _paths.Order(StringComparer.Ordinal).Select(path =>
-            Convert.ToBase64String(File.ReadAllBytes(Path.Combine(_root, path.Replace('/', Path.DirectorySeparatorChar))))).ToArray();
+        internal string[] CanonicalBytes() => Directory.EnumerateFiles(Path.Combine(_root, "game_state"), "*",
+                SearchOption.AllDirectories)
+            .Where(path => Path.GetRelativePath(_root, path).Replace(Path.DirectorySeparatorChar, '/') != AcceptedMechanicsPlan.WoundCommandPath)
+            .Order(StringComparer.Ordinal).Select(path => Path.GetRelativePath(_root, path) + "\u001f" +
+                Convert.ToBase64String(File.ReadAllBytes(path))).ToArray();
 
         internal void ChangeSoulTierDuringEntropy()
         {
             var path = Path.Combine(_root, "game_state", "meta", "soul_state.json");
-            var root = JsonNode.Parse(File.ReadAllBytes(path))!.AsObject();
+            var root = JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(File.ReadAllBytes(path)))!.AsObject();
             root["afterlifeCombatProfile"]!["artTiers"]!["spiritual_healing"] = 3;
             File.WriteAllText(path, root.ToJsonString());
         }
 
         public ValueTask DisposeAsync()
         {
-            if (!Path.GetFileName(_root).StartsWith("boe-spiritual-self-request-", StringComparison.Ordinal) ||
-                Path.GetDirectoryName(_root) != Path.GetTempPath().TrimEnd(Path.DirectorySeparatorChar))
-                throw new InvalidOperationException("Fixture cleanup refused a foreign root.");
-            Directory.Delete(_root, recursive: true);
+            DeleteOwnedRoot(_root);
             return ValueTask.CompletedTask;
+        }
+        private static void DeleteOwnedRoot(string root)
+        {
+            if (!Path.GetFileName(root).StartsWith("boe-spiritual-self-request-", StringComparison.Ordinal) ||
+                Path.GetDirectoryName(root) != Path.GetTempPath().TrimEnd(Path.DirectorySeparatorChar))
+                throw new InvalidOperationException("Fixture cleanup refused a foreign root.");
+            if (Directory.Exists(root)) Directory.Delete(root, recursive: true);
         }
     }
 }
