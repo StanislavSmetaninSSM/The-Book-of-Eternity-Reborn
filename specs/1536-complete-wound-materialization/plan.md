@@ -1,5 +1,19 @@
 # US4 safe self-treatment — active functional work, 2026-10-27
 
+Actual causal RED at0d03cabf7161c19be8a0b2fb3a2119e5db4e7d77:
+independent Sol SOURCE accepted the exact two-line fixture correction. Fresh
+Integration-only build with BuildProjectReferences=false exited0/0errors/
+102warnings in6:47.62; Main/TestSupport sources remain fresh b51. Main and copied
+Integration Main DLL both hash97494a78f96b1fd094ce1e7d9fe76efe483330b00c50b379c768bcd8b8e86566.
+Official PlanOnly selected3cases/one descriptor, exit0 in42.1978899s.
+Actual selected3/3executed,0PASS/3FAIL in40.7007946s; no timeout/duplicates,
+owned cleanup complete. Every failure now reaches accepted validation and is the
+missing v2 self-treatment adapter: unchanged v1 parser rejects source kind/turn/
+attempt/requestFingerprint and requires snapshotToken/commands. This is causal
+functional RED; the former setup failure remains separately recorded below.
+Raw is external at us4-self-healing/lifecycle-fixture-causal-2. Next implement
+actual authenticated treatment/recovery/effect/common atomic publication.
+
 Fixture correction WIP, source base321d867ef (2026-10-27): remove only the
 non-player materialization envelope mistakenly supplied by the NPC profile helper;
 retain exact player_soul identity and invoke existing player-soul mirror authority
