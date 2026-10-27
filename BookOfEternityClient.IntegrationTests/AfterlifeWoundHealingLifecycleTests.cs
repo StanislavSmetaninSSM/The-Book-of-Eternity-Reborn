@@ -181,7 +181,12 @@ public sealed class AfterlifeWoundHealingLifecycleTests
                     [EffectIdentityState.StatePath] = index
                 };
                 await using (var lease = await files.AcquireCanonicalWriteLeaseAsync())
+                {
                     foreach (var pair in roots) await files.WriteFileAtomicAsync(lease, pair.Key, pair.Value.ToJsonString());
+                    if (!stageRequest)
+                        await files.WriteFileAtomicAsync(lease, MortalItemIdentityState.StatePath,
+                            MortalItemIdentityState.CreateEmptyRoot().ToJsonString());
+                }
                 await CanonicalResourceQuartetTestFixture.CommitFreshBootstrapAsync(files,
                     new(Profiles: profiles, SoulState: soul));
                 if (stageRequest)

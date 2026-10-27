@@ -30,9 +30,16 @@ public partial class ProgressionScheduleService
     // The caller still owns its current lease/receipt/generation and cleanup admission.
     internal static async Task<bool> IsPublishedSpiritualCycleCoreAsync(ProgressionControl control,
         string sessionId, string requestId, int turn, Func<string, Task<byte[]?>> read,
+        string? expectedSnapshotToken = null, JsonObject? expectedRequest = null) =>
+        await ReadPublishedSpiritualCycleCoreAsync(control, sessionId, requestId, turn, read,
+            expectedSnapshotToken, expectedRequest) is not null;
+
+    // Verified immutable DATA, not a new mutation or publication capability. The caller owns fresh closing guards.
+    internal static async Task<SpiritualHealingPersistedResult?> ReadPublishedSpiritualCycleCoreAsync(ProgressionControl control,
+        string sessionId, string requestId, int turn, Func<string, Task<byte[]?>> read,
         string? expectedSnapshotToken = null, JsonObject? expectedRequest = null)
     {
-        if (!HasResolvedRealm(control.CurrentRealm) || !IsAfterlifeRealm(control.CurrentRealm)) return false;
+        if (!HasResolvedRealm(control.CurrentRealm) || !IsAfterlifeRealm(control.CurrentRealm)) return null;
         if ((expectedSnapshotToken is null) != (expectedRequest is null))
             throw new InvalidDataException("Published spiritual original binding is incomplete.");
         async Task<string?> Text(string path)
@@ -41,7 +48,7 @@ public partial class ProgressionScheduleService
             return bytes is null ? null : CanonicalJsonUtf8.DecodeOneOptionalBom(bytes);
         }
         var historyJson = await Text(WoundHistoryState.HistoryPath);
-        if (historyJson is null) return false;
+        if (historyJson is null) return null;
         var history = WoundHistoryState.Parse(historyJson, WoundHistoryState.HistoryPath);
         if (!history.IsValid)
             throw new InvalidDataException("Published spiritual cycle history is not canonical.");
@@ -50,7 +57,7 @@ public partial class ProgressionScheduleService
                 p.Root["binding"]!["sessionId"]!.GetValue<string>() == sessionId &&
                 p.Root["binding"]!["requestId"]!.GetValue<string>() == requestId &&
                 p.Root["binding"]!["turn"]!.GetValue<int>() == turn).ToArray();
-        if (matching.Length == 0) return false;
+        if (matching.Length == 0) return null;
         if (matching.Length != 1) throw new InvalidDataException("Published spiritual cycle identity is ambiguous.");
         var accepted = matching[0];
         if (expectedSnapshotToken is not null &&
@@ -79,6 +86,6 @@ public partial class ProgressionScheduleService
         foreach (var group in accepted.Result.Stages.GroupBy(s => s.After.WoundId))
             if (history.State.Transitions.Last(t => t.WoundId == group.Key).TransitionId != group.Last().TransitionId)
                 throw new InvalidDataException("A published spiritual result no longer describes the current wound cohort.");
-        return true;
+        return accepted.Result;
     }
 }

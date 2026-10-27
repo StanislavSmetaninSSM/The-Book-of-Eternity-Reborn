@@ -22,6 +22,7 @@ internal sealed class SpiritualHealingPersistedResult : WoundTransitionResult
     private SpiritualHealingPersistedResult(JsonObject root, IEnumerable<SpiritualHealingPublishedStage> stages)
     { _root = root.DeepClone().AsObject(); _stages = stages.ToImmutableArray(); }
     public override string Kind => "spiritual_healing";
+    internal string GraphResponseFingerprint => _root["source"]!["graphResponseFingerprint"]!.GetValue<string>();
     internal IReadOnlyList<SpiritualHealingPublishedStage> Stages => _stages.Select(s => s with
     { Before = WoundAcceptedTurnData.CloneWound(s.Before)!, After = WoundAcceptedTurnData.CloneWound(s.After)! }).ToArray();
     internal override JsonObject ToCanonicalJson() => _root.DeepClone().AsObject();

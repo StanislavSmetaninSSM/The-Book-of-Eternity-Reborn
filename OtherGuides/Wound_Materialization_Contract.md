@@ -1587,6 +1587,9 @@ For III/H3/d12, for example, author the requested II graph (roll hindrance plus
 cost burden1) and then I graph (roll hindrance). Both are independently authored;
 the client checks profile restrictions, exact budget and intermediate retirement.
 A missing/invalid graph enters repair with the SAME attempt/dice and no publication.
+After publication consumes the request, interface validation still binds graphs to
+the exact signed original and verified accepted stages. Ordinary dialogue normalization
+remains legal; replacing a stageRef or its accepted consequence content is refused.
 
 When destinationGraphs is empty, omit spiritualHealingGraphs (or use an empty
 array); no graph is needed for rank-I terminal healing. Graphs-only interface payload

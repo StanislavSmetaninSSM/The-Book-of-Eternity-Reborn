@@ -114,12 +114,24 @@ public sealed class AfterlifeWoundHealingReplayGraphTests
         var normalizedInterface = (await fixture.Files.ReadFileAsync("output/interface_updates.json"))!;
         var normalizedRoot = JsonNode.Parse(normalizedInterface)!.AsObject();
         Assert.IsType<JsonObject>(Assert.Single(normalizedRoot["dialogueOptions"]!.AsArray()));
+        var acceptedMechanics = fixture.CaptureMutationRoots();
+        // A legal weaker II roll-only graph under the SAME accepted ref still changes accepted authorship.
+        normalizedRoot["spiritualHealingGraphs"]![0]!["consequenceDefinitions"]!.AsArray().RemoveAt(1);
+        var replacedBody = normalizedRoot.ToJsonString();
+        await fixture.Files.WriteFileAtomicAsync("output/interface_updates.json", replacedBody);
+        var changedBodyIssues = await publishedInterface.ValidateAcceptedTurnInterfacePayloadAsync();
+        Assert.Contains(changedBodyIssues, i => i.Code == "spiritual_healing_interface_unbound" &&
+            i.Actual!.Contains("content differs", StringComparison.Ordinal));
+        Assert.Equal(replacedBody, await fixture.Files.ReadFileAsync("output/interface_updates.json"));
+        fixture.AssertMutationRootsUnchanged(acceptedMechanics);
+        normalizedRoot = JsonNode.Parse(normalizedInterface)!.AsObject();
         normalizedRoot["spiritualHealingGraphs"]![0]!["stageRef"] = "foreign_published_graph";
         var replacedGraph = normalizedRoot.ToJsonString();
         await fixture.Files.WriteFileAtomicAsync("output/interface_updates.json", replacedGraph);
         var changedGraphIssues = await publishedInterface.ValidateAcceptedTurnInterfacePayloadAsync();
         Assert.Contains(changedGraphIssues, i => i.Code == "spiritual_healing_interface_unbound");
         Assert.Equal(replacedGraph, await fixture.Files.ReadFileAsync("output/interface_updates.json"));
+        fixture.AssertMutationRootsUnchanged(acceptedMechanics);
         await fixture.Files.WriteFileAtomicAsync("output/interface_updates.json", normalizedInterface);
         var after = Assert.Single((await fixture.ReadWoundsAsync()).Occurrences).Wound;
         Assert.Equal(1, after.Severity.Rank);

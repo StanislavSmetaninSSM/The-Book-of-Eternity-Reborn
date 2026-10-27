@@ -1,5 +1,44 @@
 # US4 safe self-treatment — active functional work, 2026-10-27
 
+Finite causal outcomes on clean3ee/compiled1d+fresh Integration5bc37c8a69d145a1116db390c593359e38be45942145c22b91fdc8795400dcf8:
+Integration-only build0errors/102warnings/3:48.13; exact combined PlanOnly3cases/
+2descriptors11.5534210s,0executed. Separate guided2 actual1PASS1FAIL31.4821087s/
+category19.1305852<180; existing logger records exactly ONE pre-turn error:
+mortal_item_identity_invalid_index, missing item_identity_index.json. TRX
+b5c337b2e6e5bda9decf4cc2433d4faab2fc08891b969be549857fb2ce83f8af.
+Fix only actual caller fixture(false): seed existing MortalItemIdentityState.CreateEmptyRoot,
+as existing lifecycle constructor does; no other bootstrap/global default/validator change.
+Independent authoredgraph singleton genuine post-Publish semanticRED:1/1FAIL,
+34.9076598s/category24.7785649<120; exact originalrequest-consumed refusal at
+publicI107 after successful real common publication. TRX
+4a9ab501231380026d5036c21d398d8eb9fbfe2c22f10a9909d75b700348664b.
+Both runs complete/no timeout/duplicates, bothcleanuptrue; raw guided-caller-issues-1,
+guided-caller-issues-build-1/post-publication-graph-red-1 external. No downstream
+numeric assertion after new postI executed; retain earlier graph baseline separately.
+
+Consumed-I DESIGN accepted by existing independent architectural reviewer. WIP fix
+reuses strict replay core's immutable result DATA (old boolwrapper unchanged),
+actual signed original/token/request/control, complete current cohort and current
+lease. Every helper read beforeimage (including request/report absence) is retained
+in this short-lived private Bound and freshly compared on Dispose with original
+currentness and response bytes. Nonnull replaced source always refuses. Fullresponse
+FP is only a fastpath after strict agreement; legally normalized non-graph fields
+use closed parser+exact requiredrefs and actual stage.After graph DATA, preserving
+all definition bodies/non-root definitions, ownership/complications and ordered
+profile+summary per root. Only allocated rootIDs/global slotrenumber spellings are
+normalized. SameRef validIIroll-only substitution now has precise-refusal/no-canonical-
+mutation oracle in existing Fact. No receipt/cache/authority flag/framework added.
+Optimization: helper parses current History/catalog once; returned immutable DATA
+is reused; closing compares byteimages without reparsing. Scalar graphResponse FP
+getter avoids deepcloning whole stages for fastpath. Fallback bounded graph DATA
+comparison runs only when response bytes differ; no measured speedup claimed.
+GM wound contract documents post-consumption binding and legal ordinary normalization;
+no new GM field/grammar, Mortal mechanic/prompt or command needed for this correction.
+CodeUNCOMPILED/UNRUN; finite independent SOURCE incl design followthrough and fresh
+owning Integration+Unit builds before contract10, guided2, authoredgraph1, replay1.
+Prior35+source1 unchanged need no repeat; original5/staging24/browser/help affected
+gates remain tracked, not silently qualified. Mortal/preparation timeouts,HOLDs unchanged.
+
 Same finite test-only build will also carry the accepted known graph-I causal
 question in the EXISTING authored-graph Fact: after real common Publish, public I
 must admit its accepted graphs with consumed source, allow ordinary dialogue
