@@ -1,5 +1,20 @@
 # US4 safe self-treatment — active functional work, 2026-10-27
 
+Console7b actual1/1 PASS after independent SOURCE/PREP and fresh Integration-only
+refsfalse build0errors/105warnings/2:45.45; Mainf53b2c2d/Support4d0dc57c and all
+copies unchanged, Integrationdacdb163. OfficialPlanOnly1case/1descriptor/0executed
+11.6199230s; actual43.1600290s/category31.8587061<180,exit0,complete,no skips/
+duplicates/timeout,bothcleanuptrue. TRX4abb579ab50b56ed08ca9adeba89c1f734b48035a68b1a9602546956db390d43.
+Raw console-self-build-1/console-self-functional-1 external. One case combines
+console cancel, confirm, actual same-Explorer/Engine publication and settled
+repeat. All final wound/History/retained request/one-cycle/no-cost/one-shot
+assertions executed. This is actual console handler with controlled native-shaped
+GM completion, not external provider or fresh-process qualification. Browser2
+retained by unchanged default path/body/dependencies. Independent OUTCOME pending.
+Next: rankIII/H5 actual graph-bearing caller and ordinary same-attempt repair;
+then selected final affected gates. Mortal/T609/fullDFR/Windows HOLD unchanged.
+
+
 Console parity scaffold WIP, UNCOMPILED/UNRUN. The existing runtime now exposes
 its actual injected Explorer and accepts optional IExplorerConsole; null still
 constructs the unchanged default TestExplorerConsole. No production change,

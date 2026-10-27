@@ -14383,7 +14383,9 @@ close full source-action/terminal/pending contracts or any top-level story task.
   Independent Sol SOURCE + OUTCOME accepted these finite contracts.
   Actual browser guided/GameEngine rank-I self flow also passes2/2 on316ee621,
   including final wound, one cycle, terminal History, cleanup and no self cost;
-  owner/output controls pass2/2. Full T101 remains open for actual console,
+  owner/output controls pass2/2. Actual console cancel/confirm/same Engine
+  publication and settled repeat now pass1/1 on7b (43.1600290s; controlled native
+  completion, not provider/fresh-process). Full T101 remains open for actual graph-bearing caller/repair,
   graph-bearing caller/repair and shared NPC/command/roleplay integration;
   same-PID service reopen is not fresh-process replay.
   See current plan for exact source, builds, evidence and limitations.
