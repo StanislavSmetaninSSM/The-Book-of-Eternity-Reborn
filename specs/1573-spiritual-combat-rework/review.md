@@ -343,7 +343,11 @@ Spec v1.11 / кандидат v2.6 возвращают адаптацию morta
 не выбраны, cap62 не восстановлен автоматически. Исправление не разрешает код.
 Plan/tasks остаются неисполняемым инвентарём до согласования полной spec.
 
-WIP до независимого review. Git diff --check и Spec Kit prerequisites успешны.
-Только документы; runtime/build/balance/clean restore UNRUN.
+Независимое review: /root/review_rank_cap_clarification1573, выбран
+gpt-6.1-sol/xhigh; фактический diff afde01b9…4dd94401 — P1/P2 не обнаружено.
+Проверены соответствие уточнению, T/C/B, исторический статус логарифма и источник
+Rules/Block_12.txt:598,620–621. Git diff --check и Spec Kit prerequisites успешны.
+4dd9440114d12f4355db9d3c62ced2d19cc45355 опубликован; remote SHA и GitHub readback
+spec/review подтверждены. Только документы; runtime/build/balance/clean restore UNRUN.
 Новых исполняемых затрат или повторных чтений нет; кэш этой правкой не меняется.
 Следующий шаг: проверить точность фиксации и продолжить адаптацию T/C/B с автором.
