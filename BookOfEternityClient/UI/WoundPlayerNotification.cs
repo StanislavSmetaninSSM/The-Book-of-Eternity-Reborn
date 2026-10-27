@@ -107,6 +107,10 @@ internal sealed record WoundPlayerNotification(
         string finalSceneText)
     {
         ArgumentNullException.ThrowIfNull(bundle);
+        if (bundle.SpiritualHealingContinuation is not null)
+            return ComposeAcceptedSpiritualHealing(bundle, bundle.FinalPlan.CarrierContributions
+                .SelectMany(static value => value.Mutations).ToArray());
+
         var input = bundle.Input;
         var prepared = bundle.PreparedPlan;
         var final = bundle.FinalPlan;
@@ -115,9 +119,6 @@ internal sealed record WoundPlayerNotification(
         var mutations = final.CarrierContributions
             .SelectMany(static value => value.Mutations)
             .ToArray();
-
-        if (prepared.SpiritualHealingContinuationAuthority is not null)
-            return ComposeAcceptedSpiritualHealing(bundle, mutations);
 
         if (prepared.JointRepairContinuationAuthority is not null)
             return ComposeAcceptedJointRepair(bundle, finalSceneText, mutations);
