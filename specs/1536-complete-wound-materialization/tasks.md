@@ -24,7 +24,7 @@
   observation DATA (legacy unavailable), preserve old strict reader semantics,
   and qualify a minimal actual returned-phase producer causal RED after complete
   source/storage/root prerequisites. Independent DESIGN/SOURCE first.
-- [ ] T608-COPY-TREE-GREEN Correct only the fixture hierarchy/lifetime contract:
+- [x] T608-COPY-TREE-GREEN Correct only the fixture hierarchy/lifetime contract:
   strict lexical function identity plus the one documented returned-phase factory
   link, all rows consumed/pairs verified and unknown crossings refused. Preserve
   production/default/authority/source/chain assertions; cheap causal/negative
