@@ -1,3 +1,46 @@
+# T608 continuing visibility accepted — Linux 34/34, genuine held
+
+Source and compiled Integration: `df0055ae2dfcad7949c93304aae9e8325ede2375` on
+`1536-linux-qualification-20261025`; four unchanged owning projects remain at
+`f6ef4d62178f74fcd3afe58c66617496cbb9c43f`. Fresh affected build: 0 errors,
+101 unchanged warnings / 0 introduced, 2:50.69. Current 33 DLL/PDB/XML artifacts,
+11 PE/PDB identities and 83 current Git/source/PDB joins checked. Official discovery:
+968 owners / 12,599 methods; exact 7-descriptor / 34-case PlanOnly, zero executed.
+
+Actual staged selections, `scripts/test-csharp.ps1 -SelectionFile <external file>
+-NoBuild`, original one-minute budgets: `core-joint-candidate-continuing-visibility`
+3/3 PASS (12.5559207 s); then lifecycle visibility 1, lifetime 19, copy ranges 3,
+copy tail 1, function/lifetime tree 5 and component diagnostics 2: 31/31 PASS,
+75.2203882 s total wall. No skip, duplicate, underfill or timeout; both cleanup flags
+true. Independent SOURCE, PREP and combined OUTCOME accepted. This completes the
+bounded observation proof, not genuine Candidate or materialization qualification.
+
+Original Subject.begin is persistent while the synchronous body is still blocked;
+the unchanged literal bytes/read/return and 2..4 range prerequisites pass. Physical
+reset/completion markers follow exactly 2/4 events. Three successful own captures
+have complete original fields, source pairs/accounting and strict full gzip hashes;
+the fourth intentionally loses the detached pair and honestly retains source 3/4
+versus writer 1/2, incomplete diagnostics and its marked root. Related 29 receipts
+include ten expected incomplete negatives; no universal completeness claim. Actual
+TRXs, loaded pins, ended owners, successful root absence and retained fault receipts
+were checked; all raw stays external.
+
+Evidence: external `dfr-prefix/actual-t608-candidate-visibility-green-own-1`,
+`actual-t608-candidate-visibility-green-related-1`, and `t608-counter-scaffold/`
+`candidate-visibility-green-*-outcome-verification.json` / independent reviews.
+Own verifier SHA256 `76a01bbfa98fa99b29a1b2391ffad00e02298373a50f34ee21699e1c963c2aa9`.
+Optimization assessment: same existing sealed window/queue, continuing consumer,
+writer and original clocks; no cache, event loss, quota, compiler/budget or fresh
+integrity/authority change. No whole-case speedup/cause is inferred from cheap tests.
+No game/GM contract changed; prompts/examples need no update for this fixture-only
+transport. Windows and fresh clean-source recovery remain unclaimed.
+
+Next: one named-argument opt-in at the genuine Candidate constructor, preserving
+its entire workload/defaults/assertions, with SOURCE/fresh affected bindings and
+separate exact original 120-second/full-capture PREP before a diagnostic attempt.
+The question is the actual synchronous Miss phase hidden by after-return transfer;
+existing timers suffice once visible. No new labels or general diagnostic stack.
+
 # T608 ordered visibility GREEN package frozen — UNCOMPILED / UNRUN
 
 The coherent five-path source/catalog package is frozen. Three C# paths implement the same worker startup, minimal closed drain fault seam and two finite controls; the final control includes nine direct marker-position assertions requested by independent review. The other two C# WIP hashes are unchanged. Two whole-file inverses, seventeen protected files, the complete original RED Fact/genuine Candidate/COPY and shared lifecycle/default/recording/writer/codec preservation checks pass; 31 XML blocks parse. Source changes and actual runtime remain unqualified until compiler/PREP/outcome.

@@ -14,7 +14,7 @@
 - [x] T608-CANDIDATE-VISIBILITY-RED Compile and qualify the one actual blocked-SYNC
   source/visibility control with the unstarted component transfer; final missing-begin
   failure only after full source/storage/root prerequisites, independently accepted.
-- [ ] T608-CANDIDATE-VISIBILITY-PROOF After accepted bounded design, prove a real
+- [x] T608-CANDIDATE-VISIBILITY-PROOF After accepted bounded design, prove a real
   blocked synchronous-call visibility RED/GREEN and relevant ordering/context/failure/
   default contracts. Independent SOURCE, fresh bindings and exact PREP precede runtime.
 - [ ] T608-CANDIDATE-QUALIFY Complete any reviewed minimal correction, fresh affected
