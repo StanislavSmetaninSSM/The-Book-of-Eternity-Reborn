@@ -1,5 +1,43 @@
 # US4 safe self-treatment — active functional work, 2026-10-27
 
+Fresh c6fb owning builds PASS: Integration0errors/137warnings/8:43.29;
+Main46909ecb60481a0f644d304c5b62b2458386e59e1342f4abb453dd14f8a8511e,
+Support937bcded09b21db00b31864143aac4f5e7677d281976149825740bd6e463a57f,
+Integration70fa9e427d8852df2a0334aa7612ca6dfd18f959c4c13788bb06d5a546dd57f9.
+Unit refsfalse0errors/26warnings/1:20.81,
+71318f1c3bf5e14ce14951fc73bf970f77040f887e896d3a372757eeb5b8cb82;
+all dependency copies match. Raw consumed-graph-owning-build-1 external.
+PlanOnly exact14/4descriptors41.3830762s,0executed. Separate actuals on clean c6fb:
+contract10PASS16.9597710s/category8.1070099<120,
+TRX12886035cdefb91d60d2875ded1b7b48b7d6f31315444b55ce7793014fd540e2;
+authoredgraph1PASS37.0936286s/category27.03711<120,
+TRX7753816d56a1cd829854415b973b690b75a908f34550c7f82fdabf58a39374c0;
+completedreplay1PASS30.0230161s/category19.8999055<120,
+TRXcdb023573759abb0d22f97901dbf172fccdac1e4cf6221e33b5ce860ee8660ee.
+Graph actual now proves post-Publish publicI, legal dialogue normalization, lawful
+sameRef changed-summary and foreignref refusal without mechanics mutation, plus
+retained authoredII/I content/effect-generation/no-cost assertions. Replay remains
+same-PID fresh services, not freshprocess. Finite independent OUTCOME requested.
+
+Guided actual2complete1PASS cancellation/1FAIL confirmed26.7443201s/
+category18.3573979<180,TRX0ca43821e6ec07493fb00512e26e45321771a93b990241c34b0ff2ebf5ad9e65.
+Index preflight is fixed; real source Stage and authenticated snapshot complete,
+but PublishBrowserStaging256 finds no WoundCommandPath in signed Payload.Files.
+Initial loader-null interpretation was wrong: loader253 succeeds, missingmember256
+is actual cause. Newly stagedsource is created AFTER preturnbackup; existing
+RegisterOrdinaryTurnStagingValidationSnapshotFiles registers onlyScenarioCore/Dice.
+Next narrow fix must capture signed staginginput WITHOUT claiming it was a preturn
+rollback baseline. LoadCanonicalBaselineSnapshot827 currently demands all wound
+publication paths as rollbackcoverage, so distinguish actual authenticated v2source
+from rollbackbeforeimages while preserving v1. Also existing snapshot initializer
+creates absent spiritual_conflict AFTER Stage source16FP; initialize that owned
+root through same existing lease/rollback machinery BEFORE sealing source/draw,
+retain later idempotent initializer and strictFP. No speculative fixture defaults,
+blanket Mortal guard relaxation, new snapshot/receipt stack or diagnostic rerun.
+All four actuals complete/no timeout/skip/duplicates,bothcleanuptrue. Raw
+consumed-graph-functional-1 external. No active builds/tests at this checkpoint;
+no guidednativeGMhook or finalhealed/console/provider/freshprocess claim.
+
 Finite architectural SOURCE found the unrun sameRef test substitution was not
 legal: removing one II slot violates the existing EXACT rank slot rule before
 semantic comparison. Corrected only that oracle to preserve both definitions/slots
