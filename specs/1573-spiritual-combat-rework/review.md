@@ -277,5 +277,10 @@ Read-only runtime-аудит /root/audit_mortal_check_runtime1573, gpt-6.1-sol/h
 effect/wound checks не названы отсутствующими. Следующий шаг — согласовать
 перенос уровневой роли на последовательные духовные ранги и противодействие.
 
-WIP до независимого ревью. Только документы; runtime/build/balance/clean restore
-UNRUN. Новых исполняемых затрат/кэша нет; reuse DATA/fresh authority сохранены.
+Независимое ревью /root/review_art_progression_approval1573, gpt-6.1-sol/xhigh,
+diff29acb84b…0c2f6d48: P1/P2 нет. Формулы/округление/примеры, границы runtime
+и атрибуция «как основы» подтверждены. Git diff --check и Spec Kit prerequisites
+успешны. Арифметически проверены33/52.5/85/150, X84→85 и нижняя граница11.
+Срез 0c2f6d488eae301af98e05eeb84add3418e78b4d опубликован, полный remote SHA и
+GitHub readback spec подтверждены. Только документы; runtime/build/balance/clean
+restore UNRUN. Новых исполняемых затрат/кэша нет; reuse DATA/fresh authority сохранены.
