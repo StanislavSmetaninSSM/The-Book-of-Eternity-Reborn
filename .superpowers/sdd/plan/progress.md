@@ -1,3 +1,21 @@
+# T608 concrete fixture function/lifetime DESIGN — no implementation yet
+
+The proposed correction addresses the proven global-LIFO fixture error only. Carry
+original ScopeId as one scalar in the same fixture observation queue (legacy0 means
+unavailable). A strict function tree must still reject unknown crossings; only the
+existing returned OrdinaryReadPath.Phase receives a separately checked exact factory/
+identity/return-before-close lifetime link. Every original row remains validated.
+No production timing/clock, source/authority guard, cache, writer or recorder changes.
+
+First a minimal actual FileSystemManager/BeginOrdinaryReadPathPhase/Dispose control
+must compile with the old strict reader and reach a prerequisite-complete causal RED.
+Only after independent acceptance may the fixed one-producer interpretation and
+truthful function/lifetime marker semantics be implemented. Required admission/QTE
+chains, scalar/source pairing and the original legacy strict path remain. Existing
+range/tail controls protect export/default/closing seams; no generic lifetime registry
+or world/native fixture is needed. Fresh affected build/bindings, exact discovery and
+cheap negative/causal proof precede any new genuine COPY PREP; no runtime is admitted.
+
 # T608 COPY completed with a concrete fixture-tree FAIL
 
 The one admitted finite-tail COPY at runtime86bcc80c5635bdcc38926e52f05f5a89f235c6ee /

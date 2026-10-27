@@ -30,6 +30,15 @@ successful full closing before its final live-visibility assertion. Existing fix
 disposal exceptions remain unchanged; no blanket primary-preservation claim follows.
 No omitted events, quota, new owner/cache/transport, tree rewrite or budget change.
 
+COPYOBS7: a returned OrdinaryReadPath.Phase is an existing object lifetime,
+not a lexical function child that must close before its OpenPhase factory returns.
+Fixture hierarchy checks must consume every original row and preserve exact recorded
+ScopeId pairing, strict function nesting and the explicit one-producer factory/
+return/lifetime link. Legacy rows without IDs retain the original strict path and
+receive no fabricated identity proof. Unknown crossings and malformed/incomplete
+links still refuse. No producer clock, recorded event, fresh authority or required
+admission/QTE chain may be dropped or weakened to make the fixture pass.
+
 # T608 expected-projection reuse DESIGN scope — #1536
 
 REPLAY-REUSE1: accepted causal RED releases only a separately reviewed design of pure

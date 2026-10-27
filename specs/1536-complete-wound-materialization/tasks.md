@@ -20,6 +20,16 @@
   defaults and all assertions. Fresh affected build/cheap proof/review before any
   separate original-budget COPY-only diagnostic PREP.
 
+- [ ] T608-COPY-TREE-RED Carry original recorded ScopeId in the same fixture
+  observation DATA (legacy unavailable), preserve old strict reader semantics,
+  and qualify a minimal actual returned-phase producer causal RED after complete
+  source/storage/root prerequisites. Independent DESIGN/SOURCE first.
+- [ ] T608-COPY-TREE-GREEN Correct only the fixture hierarchy/lifetime contract:
+  strict lexical function identity plus the one documented returned-phase factory
+  link, all rows consumed/pairs verified and unknown crossings refused. Preserve
+  production/default/authority/source/chain assertions; cheap causal/negative
+  qualification and review precede any separate original-budget genuine PREP.
+
 - [ ] T608-COPY-CAUSE Establish the persisted direct-copy timeout phase and cause,
   actual source/owner/observer differences and a minimal independent cheap proof.
   No blind runtime repeat, mode change, new cache or budget increase.
