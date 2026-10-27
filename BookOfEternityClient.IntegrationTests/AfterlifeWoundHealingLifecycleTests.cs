@@ -87,6 +87,7 @@ public sealed class AfterlifeWoundHealingLifecycleTests
                 }
                 var seed = WoundPlayerProjectionTestData.InputInRealm("chaos_sea", rawWound);
                 var profile = AfterlifeActorMaterializationTestFixture.CreateCompleteProfile("player_soul", "player_soul", "Chaos Sea", 42);
+                profile.Remove(ActorMaterializationContract.PropertyName);
                 profile["activeWounds"] = seed.Carriers.AfterlifeProfiles!["profiles"]![0]!["activeWounds"]!.DeepClone();
                 var arts = AfterlifeSpiritualConflictState.CreateDefaultArtTiers();
                 arts["spiritual_healing"] = tier;
@@ -129,6 +130,7 @@ public sealed class AfterlifeWoundHealingLifecycleTests
                 soulCombat["artTiers"] = arts.DeepClone();
                 var soul = new JsonObject { ["soulName"] = "Лечащаяся душа", ["currentRealm"] = "Chaos Sea",
                     ["afterlifeCombatProfile"] = soulCombat };
+                AfterlifeEntityProfileState.ApplyPlayerSoulProfileClientAuthority(profiles, soul, null);
                 var roots = new Dictionary<string, JsonObject>(StringComparer.Ordinal)
                 {
                     ["game_state/meta/soul_state.json"] = soul,

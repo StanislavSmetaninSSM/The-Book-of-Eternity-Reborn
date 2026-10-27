@@ -1,5 +1,16 @@
 # US4 safe self-treatment — active functional work, 2026-10-27
 
+Fixture correction WIP, source base321d867ef (2026-10-27): remove only the
+non-player materialization envelope mistakenly supplied by the NPC profile helper;
+retain exact player_soul identity and invoke existing player-soul mirror authority
+for soul-owned art/currency/progression before resource bootstrap. Strict production
+validators are unchanged. Actual prior TRX confirms all3 failures precede request
+staging; semantic healing RED remains UNOBSERVED. Independent Sol delta SOURCE
+review requested. Fresh Integration-only ownership build and exact3-case causal
+selection are next; Main/TestSupport sources remain identical to fresh b51.
+No runtime or performance success is claimed. Optimization: test-only fixture
+correction reuses existing mirror projection, no cache or production I/O changes.
+
 Actual lifecycle baseline on `b51db6f9137028c222f2f0b37d397a815b9dd8d2`:
 fresh Integration ownership build exit0/137 warnings/0errors in21:22.27;
 Unit-only follow-up exit0/26 warnings/0errors in3:49.57. Official PlanOnly
@@ -17,7 +28,7 @@ duplicates, both cleanup flags true; overall9-case selection is incomplete3/9.
 The independent preparation selection then executed6/6 assertions successfully,
 but category time60.2055449s exceeded its unchanged60-second bound; runner
 exit124/TimedOut=true, total95.6058776s, both cleanup flags true. This is NOT a
-qualified PASS. Individual TRX durations sum17.6533734s; investigate the recorded
+qualified PASS. Individual TRX durations sum17.6533736s; investigate the recorded
 process/startup/closing cost before deciding a minimal category/fixture correction.
 Do not raise limits, blindly retry or launch an optimization/diagnostic project.
 Raw: `us4-self-healing/lifecycle-preparation-1`. Existing136-case request source
