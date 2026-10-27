@@ -271,13 +271,26 @@ public sealed class ExplorerWoundSelfTreatmentTests(ITestOutputHelper output)
     private async Task<byte[]?> ObserveGraphRepairPacketAsync(FileSystemManager files, string path, byte[]? handled,
         Func<FileSystemManager.CanonicalWriteLease, byte[], Task> processFirst, CancellationToken stop)
     {
-        if (!files.FileExists(path)) return handled;
+        // Observation-only file-GM signal: these bytes can skip work or refuse,
+        // but only the fresh leased reread below permits first-response authoring.
+        byte[] observed;
+        try
+        {
+            await using var stream = new FileStream(files.ResolvePath(path), FileMode.Open, FileAccess.Read,
+                FileShare.ReadWrite | FileShare.Delete, 4096, FileOptions.Asynchronous);
+            using var buffer = new MemoryStream();
+            await stream.CopyToAsync(buffer, stop);
+            observed = buffer.ToArray();
+        }
+        catch (FileNotFoundException) { return handled; }
+        if (handled is not null && observed.AsSpan().SequenceEqual(handled)) return handled;
+        output.WriteLine("Observed graph repair packet:\n" + CanonicalJsonUtf8.DecodeOneOptionalBom(observed));
+        if (handled is not null)
+            throw new InvalidDataException("Unexpected further graph repair packet:\n" + CanonicalJsonUtf8.DecodeOneOptionalBom(observed));
         await using var lease = await files.AcquireCanonicalWriteLeaseAsync(cancellationToken: stop);
         var raw = await files.ReadFileBytesAsync(lease, path);
-        if (raw is null || handled is not null && raw.AsSpan().SequenceEqual(handled)) return handled;
-        output.WriteLine("Observed graph repair packet:\n" + CanonicalJsonUtf8.DecodeOneOptionalBom(raw));
-        if (handled is not null)
-            throw new InvalidDataException("Unexpected further graph repair packet:\n" + CanonicalJsonUtf8.DecodeOneOptionalBom(raw));
+        if (raw is null || !raw.AsSpan().SequenceEqual(observed))
+            throw new InvalidDataException("The first graph repair packet changed before its actual leased admission.");
         await processFirst(lease, raw);
         return raw;
     }

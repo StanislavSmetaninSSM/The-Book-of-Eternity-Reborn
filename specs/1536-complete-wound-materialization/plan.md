@@ -1,5 +1,27 @@
 # US4 safe self-treatment — active functional work, 2026-10-27
 
+Cheap observer causal RED on clean6b5704 verified: exact1/1complete FAIL,
+15.6852908s total/category8.0374118<60, case0.4174644s, no timeout/duplicates,
+bothcleanuptrue. TRXb1dcc16f1bbdcd4f551583e161685f7d776b93caf07c58917c596c7790d03fba.
+Failure is exactly the armed unwanted-physical-open hook atTest40→FS4769→same
+ObserveGraphRepairPacket helper275, after legitimate first handling and actual
+main participation. This is genuine regression RED, not setup/Main refusal or
+10s contention. Fresh Integration-only0errors/105warnings/2:33.98;
+Main/Support316 unchanged, Integration0ac6c8f7. Heavy caller was not rerun.
+Raw graph-repair-observer-red-build-1/graph-repair-observer-red-1 external.
+
+Minimal GREEN WIP, UNCOMPILED/UNRUN: same helper first observes exact own fixture
+control bytes with share-read/write/delete; these diagnostic bytes only skip
+unchanged work or refuse a distinct second packet (full body retained in existing
+ITestOutput/failure). It closes that stream before any fresh lease. FIRST response
+still acquires actual inherited-main canonical lease and rereads exact current
+bytes before invoking unchanged original/source/graph authoring guards. Changed
+first packet refuses. No permission from observation, no fs/validator/Engine guard
+change, no quota/cache/framework/budget increase. Same cheap assertions unchanged;
+finite SOURCE then Integration-onlyrefsfalse build→cheap1 GREEN first. Heavy1 is
+conditional on cheapPASS; expected world2 issues must be recovered, not guessed.
+
+
 Combined-log inference was narrowed and then independently resolved by root,
 Sol and the bounded architectural reviewer: post-seal count1 alone was ambiguous,
 but the later ValidateCurrentGameStateOrShowErrors log with source обработки хода
