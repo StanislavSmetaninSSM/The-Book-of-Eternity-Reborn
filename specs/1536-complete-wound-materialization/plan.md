@@ -1,3 +1,36 @@
+# Continuation boundary: component accepted, full DFR preparation WIP
+
+Same environment recovered at 2026-10-27T07:17:53Z. Confirmed clean HEAD 65fa4cfe6ff42ae9a2873337740c1f4d4ad8bdba and no active managed build/test.
+Accepted component foundation: 69 distinct cases across retained lineages. Push
+and full source restoration are not repeated. The post-restore task checkbox below records already completed evidence.
+
+User now selects Terra 6.1/xhigh as next primary; this Sol turn saves a safe boundary.
+Sol remains independent substantive reviewer and existing Astra/high review stays.
+No passing test/review is repeated for model comparison; token/cost data unavailable.
+
+External t608-counter-scaffold/verify-lifecycle-full-stream-v1.py is a finite 75ed
+scanner-prefix successor: same gzip/fields/clocks/pairs/cost logic, actual lifecycle
+mode-marker count 0 instead of component 1. Author's offline same 393-byte real source
+control plus 21 malformed-container/event refusal checks pass. No event is injected.
+The coherent lifecycle outcome wrapper/pins and independent Astra/high review remain
+in progress; no genuine/full-positive qualification follows from parser checks.
+
+Next runtime is ONLY fr063-joint-live-n-source-unchanged, exact one original Fact,
+original 300s. Reuse maintained run-current-live-singleton.sh, current 33/84 metadata
+(Integration 408, other four F6), existing TRX-only prefix/N functional checks and
+one strict full-stream decode. Fresh exact PlanOnly, resources and independent PREP
+are required. Dependent legacy/cold and remaining materialization stay held.
+
+Recovery-copy retirement is proposed ONLY for the expendable source-only directory
+/workspace/tboe-clean-recovery-candidate-20261027, allocated 1,199,476,736 bytes;
+current reserve about 599 MB. Exact external manifest/checker was independently reviewed as conditionally eligible.
+After rerun, compare device 27/inode 1835009 and inventory 04d55b71609eddedc68cd1ab93e58d450e0f46a8c5582644da2d6387d71b1f2a
+with the frozen proposal explicitly; checker success alone does not compare them.
+NO deletion has occurred; main checkout, all raw/evidence and saves
+remain. Next primary must read the final review, rerun exact identity/clean/owner
+checks and honor environment deletion rules before acting. No full DFR runtime,
+new build, cleanup, large raw replay or history operation was started at this boundary.
+
 # T608 genuine Candidate accepted — retained feature union 69/69
 
 Runtime and fresh Integration source `408171484ed7735b9af8555114a266677ad92807`;
@@ -43,9 +76,14 @@ admission/outcomes. COPY-CAUSE's original timeout attribution remains unresolved
 superseded; successful later COPY is not proof of that old cause. Windows deferred;
 first-guardian intermittent and cross-OS DATA remain open. No GM/game contract changed.
 
-Next: publish this compact checkpoint and verify remote/source recovery, then exact
-resource/PREP for ONE current full DFR positive with complete uncapped lossless
-capture. Current external raw and all unmatched earlier attempts remain retained;
+Remote checkpoint `65fa4cfe6ff42ae9a2873337740c1f4d4ad8bdba` was pushed and
+read back exactly. Its clean source-only recovery completed at 2026-10-27T07:00:15Z:
+all 30,934 blobs/modes, 773,464,924 logical bytes, no build/test or copied binary.
+External candidate-qualified-source-recovery-verification records this proof.
+T608-REUSE-QUALIFY is therefore complete; no accepted runtime or restore is repeated.
+
+Next: minimal existing lifecycle-verifier adaptation and exact resource/PlanOnly/PREP
+for ONE current full DFR positive with complete uncapped lossless capture. Current external raw and all unmatched earlier attempts remain retained;
 any expendable recovery-copy retirement needs its own exact reviewed manifest and
 fresh ownership/clean-tree checks. No budget increase, blind retry or new framework.
 

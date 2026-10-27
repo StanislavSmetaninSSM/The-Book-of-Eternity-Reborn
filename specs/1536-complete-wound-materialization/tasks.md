@@ -110,7 +110,7 @@
 - [x] T608-REUSE-IMPLEMENT After accepted DESIGN, implement only the minimal agreed
   existing-service reuse and its causal/negative controls. Preserve fresh actual
   graph/authority/source checks, existing unsupported/refusal paths and full diagnostics.
-- [ ] T608-REUSE-QUALIFY Coherent independent SOURCE, fresh affected build/warning/
+- [x] T608-REUSE-QUALIFY Coherent independent SOURCE, fresh affected build/warning/
   PE-PDB/source/copy proofs, exact catalog/selection, cheap actual computation counts
   and genuine component GREEN with full capture/cleanup; independent OUTCOME and
   remote checkpoint/recovery. Any later full-positive PREP is separate, not automatic.
