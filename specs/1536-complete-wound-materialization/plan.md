@@ -1,3 +1,37 @@
+# T608 COPY completed with a concrete fixture-tree FAIL
+
+The one admitted finite-tail COPY at runtime86bcc80c5635bdcc38926e52f05f5a89f235c6ee /
+compiled Integration0045cb90e3e3f28db07e316c678bed097636452c completed within the
+original category budget: framework99.7198768s, category113.3266505s. One completed
+failed case, exit1/not timeout, original TRX present, no skip/duplicate/underfill,
+both process cleanup flags and actual root removal. This is not COPY PASS.
+
+The final heavy assertion fails ReadStrictAdmissionTree: expected
+OrdinaryReadPath.Phase, actual OrdinaryReadPath.OpenPhase. Source and the sole full
+capture parse prove a returned object-lifetime overlap, not a lexical function tree:
+OpenPhase746 begin1488, Phase747 begin1489, Open746 end1490, Phase747 end1543.
+All1437 crossings have exactly this same name pair; all1,032,675 original ScopeId
+pairs close with no source/sequence/schema issues. The fixture's global lexical-LIFO
+premise is wrong for this existing lifetime contour. Do not disable Phase events,
+relocate production clocks or relax true lexical/source/authority checks to hide it.
+
+Full capture is verified:112,930,801 stored bytes,1,055,256,349 decoded bytes,
+2,065,370 rows including2,065,350 timing events. Exactly one gzip member, full EOF/CRC,
+stored/decoded identity, zero trailing fragment, all queue/snapshot/per-name writer
+counts and current33/76/loaded bindings agree. Stored SHA256:
+ad3063ccba9701044a5687911ef8ecfb57fc4b7d024e87dd32218f3c9221fa3e.
+Evidence: external actual-t608-copy-tail-genuine-1 and t608-counter-scaffold/
+copy-tail-genuine-capture-analysis plus independent failed-outcome review.
+
+The bounded source intervals completed: Invalid3.539816738s, history1.984616092s,
+abort2.177142224s, AdmissionAssertions1.682824501s, HeavyAssertions2.770205458s.
+This answers the finite observation question for this failed run; no sum/extrapolation
+or explanation of the previous whole timeouts follows. Next is the smallest typed
+real-producer causal regression and independent DESIGN for a test-only hierarchy/
+lifetime correction retaining all events and strict pairing/lexical-chain assertions.
+No further genuine/candidate/full-positive runtime is admitted. All previous incomplete
+raw and roots remain protected pending any separate matching-measurement review.
+
 # T608 finite tail visibility GREEN accepted — genuine COPY PREP next
 
 Independent SOURCE/PREP/OUTCOME accept six distinct cheap PASS at runtime/compiled
