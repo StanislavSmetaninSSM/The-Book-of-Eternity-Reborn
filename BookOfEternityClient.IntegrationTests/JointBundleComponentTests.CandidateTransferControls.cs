@@ -270,6 +270,15 @@ public sealed partial class JointBundleComponentTests
         Assert.Equal(phase, reset.GetProperty("Phase").GetString()); Assert.Equal(2, reset.GetProperty("Offset").GetInt32());
         Assert.Equal(phase, completed.GetProperty("Phase").GetString()); Assert.Equal(2, completed.GetProperty("Offset").GetInt32());
         Assert.Equal(4, completed.GetProperty("EndOffset").GetInt32());
+        var timingIndices = Enumerable.Range(0, rows.Length).Where(index => rows[index].TryGetProperty("Boundary", out var boundary) &&
+            boundary.GetString() == "joint_operation_timing").ToArray();
+        Assert.Equal(6, timingIndices.Length);
+        var resetIndex = Array.FindIndex(rows, row => row.TryGetProperty("Kind", out var kind) && kind.GetString() == "CandidateCaptureReset");
+        var completedIndex = Array.FindIndex(rows, row => row.TryGetProperty("Kind", out var kind) && kind.GetString() == "CandidateCaptureCompleted");
+        Assert.Equal(2, timingIndices.Count(index => index < resetIndex));
+        Assert.Equal(4, timingIndices.Count(index => index < completedIndex));
+        Assert.True(resetIndex < timingIndices[2]);
+        Assert.True(timingIndices[3] < completedIndex && completedIndex < timingIndices[4]);
         var actual = Assert.Single(completed.GetProperty("Operations").EnumerateArray()); Assert.Equal(operation, actual.GetProperty("Name").GetString());
         Assert.Equal(1, actual.GetProperty("Count").GetInt32()); Assert.Equal(events[3].GetProperty("Milliseconds").GetDouble(), actual.GetProperty("InclusiveMilliseconds").GetDouble());
         Assert.Equal(operation, events[2].GetProperty("Operation").GetString()); Assert.Equal(operation, events[3].GetProperty("Operation").GetString());

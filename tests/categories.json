@@ -3,15 +3,16 @@
     "categories": [
     {
       "id": "core-joint-candidate-continuing-visibility",
-      "responsibility": "T608 COPYOBS9 RED singleton: ctor-only real synchronous measured body remains blocked while a bounded read-only poll saves the existing gzip prefix, with no manual drain/message flush; same ordered transfer/observation queue, exact reset/subject/tail ranges, physical source bytes and full source17/clocks/queue/writer/hash/root prerequisites BEFORE the sole missing-begin visibility oracle. Component shared route intentionally remains normal unstarted after-return policy until accepted RED.",
-      "excludes": "No Initialize/world/native/lease/issuer/authority or fake NamedEvents, no new genuine timer labels, no continuing component worker/GREEN policy, genuine CANDIDATE/COPY opt-in, new serializer/cache/recorders/writers/codec/schema/quota/time/budget changes. Setup/body/storage/closing/noncompile/timeout failures are not causal RED. Failed lifecycle scheduling remains incomplete; no fabricated worker/final-tail or component primary-exception guarantee.",
+      "responsibility": "T608 COPYOBS9 GREEN after accepted actual missing-begin RED: same continuing ordered Window/queue/ObserveRecorded transfer, original blocked synchronous visibility Fact byte-exact, actual concurrent repeated boundaries and exact phase snapshots/two-instance isolation, existing drain-after-detach loss/final-tail/shared-completion and original component AggregateException/retained-root policy. Full original events/clocks/fields/writer/storage/closing diagnostics remain; incomplete intentional fault reports never qualify complete capture.",
+      "excludes": "No Initialize/world/native/lease/issuer/authority/fake NamedEvents or new genuine timer names; no genuine CANDIDATE/COPY constructor opt-in, new serializer/cache/recorder/writer/codec/schema/quota/time/budget change, scheduling-fault framework or component primary-preservation repair. Only the existing closed drain-after-detach control is exposed to these file-only fixtures. Failed scheduling remains incomplete, no fabricated worker/tail or whole-fixture concurrent-disposal claim.",
       "changeHints": [
         "BookOfEternityClient.IntegrationTests/LifecyclePassiveTimingDiagnostics.cs",
         "BookOfEternityClient.IntegrationTests/LifecyclePassiveTimingDiagnostics.RecordedTransfer.cs",
         "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.cs",
         "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.PassiveTimings.cs",
         "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.Candidate.cs",
-        "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.CandidateVisibility.cs"
+        "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.CandidateVisibility.cs",
+        "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.CandidateTransferControls.cs"
       ],
       "related": [
         {
@@ -54,7 +55,9 @@
         {
           "project": "integration",
           "tests": [
-            "BookOfEternityClient.Tests.JointBundleComponentTests.ComponentCandidateEvents_ArePersistentWhileSynchronousBodyIsBlocked"
+            "BookOfEternityClient.Tests.JointBundleComponentTests.ComponentCandidateEvents_ArePersistentWhileSynchronousBodyIsBlocked",
+            "BookOfEternityClient.Tests.JointBundleComponentTests.ComponentTransfer_BoundariesKeepOneOrderedQueueAndMarkerSnapshot",
+            "BookOfEternityClient.Tests.JointBundleComponentTests.ComponentTransfer_FaultAndFinalTailKeepExistingClosePolicy"
           ]
         }
       ]

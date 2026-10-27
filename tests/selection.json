@@ -332,9 +332,9 @@
     },
     {
       "category": "core-joint-candidate-continuing-visibility",
-      "reason": "T608 COPYOBS9 tests-first RED: one actual blocked synchronous scope must be physically persistent before return through the shared ordered component transfer; all source/ordinal/clocks/storage/root prerequisites close first. Existing after-return policy intentionally remains, genuine CANDIDATE/COPY unchanged; no continuing component worker or runtime admission.",
+      "reason": "T608 COPYOBS9 GREEN after accepted actual singleton RED: original blocked-SYNC Fact unchanged, same worker factory enabled, two finite controls prove concurrent queue/phase/instance ordering and actual lost-batch/final-tail/shared completion with unchanged component AggregateException/retained-root policy. Same source clocks/full fields/gzip/guards/defaults; genuine constructor opt-ins remain held.",
       "contracts": [
-        "#1536 T608-CANDIDATE-VISIBILITY-RED / COPYOBS9; single transfer owner, atomic queue/snapshot boundaries, unchanged caller failure policies"
+        "#1536 T608-CANDIDATE-VISIBILITY-GREEN / COPYOBS9; same ordered transfer, atomic snapshot markers, caller-specific existing failure policies"
       ]
     }
   ]

@@ -1,3 +1,11 @@
+# T608 ordered visibility GREEN package frozen — UNCOMPILED / UNRUN
+
+The coherent five-path source/catalog package is frozen. Three C# paths implement the same worker startup, minimal closed drain fault seam and two finite controls; the final control includes nine direct marker-position assertions requested by independent review. The other two C# WIP hashes are unchanged. Two whole-file inverses, seventeen protected files, the complete original RED Fact/genuine Candidate/COPY and shared lifecycle/default/recording/writer/codec preservation checks pass; 31 XML blocks parse. Source changes and actual runtime remain unqualified until compiler/PREP/outcome.
+
+Catalog stays 968 owners / CI 48 IDs with unchanged budgets and existing IDs. The new owner now has three static cases; agreed related owners add 31, for 7 IDs / 25 methods / 34 cases, pending official discovery. Same queue/window/consumer/writer and original clocks, no production/cache/authority/format/compiler/budget change. Genuine callsites remain unmodified and held.
+
+External packet: t608-counter-scaffold/candidate-visibility-green-*; the one source-review oracle finding is corrected without widening implementation. Root preserves this complete boundary before final SOURCE, fresh affected Integration/current bindings, discovery/PlanOnly and staged cheap PREP. No new runtime or raw deletion is admitted by preservation.
+
 # T608 ordered visibility GREEN C# WIP — unfinished, uncataloged
 
 Three C# paths are frozen for remote preservation: the component factory now starts the same recorded transfer, a minimal existing closed drain-after-detach control seam is wired, and two finite queue/boundary/instance plus fault/final-tail/completion-policy Facts are authored. The original complete RED Fact and genuine Candidate/COPY callsites remain exact according to the author; shared lifecycle/consumer loop bodies are unchanged apart from the reviewed component startup policy. Full inverse/protected review still follows.
