@@ -1,4 +1,23 @@
-# T609 equal-work prototype — DESIGN and SOURCE accepted, UNCOMPILED
+# T609 equal-work prototype — fresh build and PlanOnly, runtime pending
+
+At source/runtime candidate `73ba6d307132fcf37f3c29a6f0e8307f00d5ef54`, all five
+managed projects built successfully with zero errors and exact baseline warning
+multisets/counts 33/23/14/26/101. Fresh verification matched 33 DLL/PDB/XML
+artifacts, 11 PE/PDB pairs and 88 Git/source/PDB bindings. Catalog discovery
+completed at 972 categories / 12,603 methods without executing tests. PlanOnly
+selected exactly one exclusive `fr063-joint-private-effect-source-cost` case,
+`JointPrivateEffectSourceCostTests.EqualWorkOriginalColdAndHitCost`, at its
+unchanged 60-second budget. Both discovery and PlanOnly reported no timeout and
+both cleanup flags true; neither executed a test. The external preparation and
+outcome verifiers were reviewed, with their finite findings corrected. Actual
+preflight, independent runtime PREP, the cost case and OUTCOME remain pending.
+
+Evidence stays outside checkout under
+`/workspace/tboe-linux-evidence-20261025/dfr-prefix/t608-counter-scaffold/`.
+The preflight currently pins the candidate SHA above. A later documentation-only
+checkpoint must be explicitly validated against that source and its discovery
+receipt before changing the preflight head guard; do not silently treat a new
+commit as the compiled runtime. No production cache, GREEN or full DFR is admitted.
 
 The accepted RED exposes duplicate actual parsing but its clone-only comparison
 does not establish savings. Astra admits one file-free test-only prototype with
