@@ -1,3 +1,41 @@
+# DFR timeout independently reviewed — bounded DATA audit
+
+Independent Sol OUTCOME accepts the incomplete timeout classification and the
+single streaming prefix analysis. Runtime `964c1096bab43c92334546ccbc119ac831e94a77`,
+category 300.1806894s / 300s, zero completed cases/TRX/report. External original
+222,784,708-byte gzip SHA256 eb9b2202e573a2e7c6774b176093f9fd95e6ea9b2d9f7664b9a04467852b45dc;
+decoded prefix 2,047,745,880 bytes, 3,977,938 events, 1,988,963 pairs, 12 scopes
+open at the persisted boundary, zero parser issues, no EOF/CRC. Current fixture
+remains; both process cleanup flags do not prove fixture or writer closure.
+
+The last persisted frontier is postpublication GameState / source fresh fence; it
+is not a known execution point at timeout. Completed nested RefreshCanonicalState
+196.579s contains publication 192.262s, including common plan 89.677s and normalize /
+validate 66.208s. These inclusive intervals and overlapping observer costs must not
+be added. Previous T607 and current prefixes are at different points, so neither a
+speedup nor a full timeout cause is established. Keep both captures, all provenance,
+and the current marked fixture. Corrected a false external analysis annotation about
+save-derived message values; original report remains external and no raw data changed.
+
+Measured candidate for bounded read-only audit: 84 JointFinal.ReplayAgreement calls,
+28.907s inclusive, including 84 Finalize calls / 19.736s; final reduction already
+uses the existing operation DATA service and ran only five times / 0.208s. Every
+fresh actual handoff/admission and seal remains required. JointEffectInput.Compose
+ran 227 times / 13.542s inclusive; it reads 15 private captured source paths and
+parses detached roots. Actual per-path parse count/cost and same-input eligibility
+are not yet measured; no saving or full-budget fit is inferred. QTE cache already
+recorded 2 source calculations and 12 reused calculations with fresh source checks.
+
+T609 is a read-only source/key/owner/freshness audit and independent DESIGN question:
+assess whether immutable before-image parsing is stable and worth reusing via the
+existing operation service, preserving exact ordered path/byte/parser identity,
+absent/empty/error order, detached mutable clones, fresh physical reads, actual graph,
+lease/authority/seals and original refusal behavior. Do not skip fresh checks or add
+a cache based on timer counts alone. Astra/high independently reviews alternatives;
+cheap actual parse-source counters and clone-cost proof precede any implementation.
+No additional runtime, quota, new diagnostic stack, timeout change or dependent
+gate is admitted by this checkpoint. Windows and materialization remain open.
+
 # Full DFR positive: timeout, partial analysis pending
 
 One independently admitted Linux singleton ran at runtime
