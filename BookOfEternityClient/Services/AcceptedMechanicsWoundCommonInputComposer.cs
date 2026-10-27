@@ -321,6 +321,8 @@ internal static partial class AcceptedMechanicsWoundCommonInputComposer
                 if (WoundAcceptedTurnFingerprints.ComputeBinding(binding) !=
                     WoundAcceptedTurnFingerprints.ComputeBinding(spiritualHealingAuthority.Input.Binding))
                     return Failed(WoundIdentityState.StatePath, "spiritual_healing_common_binding_invalid", "exact private binding", "changed binding");
+                _ = Read(LiveTurnPreparationService.PendingTurnSnapshotManifestPath);
+                _ = Read(PendingTurnSnapshotAuthority.AuthorityPath);
             }
             else
             {
@@ -356,6 +358,8 @@ internal static partial class AcceptedMechanicsWoundCommonInputComposer
                     $"{snapshot.SessionId}/{snapshot.RequestId}/{snapshot.SnapshotToken}/{snapshot.Realm}/{snapshot.TurnNumber}"));
                 return new AcceptedMechanicsWoundCommonInputCompositionResult(null, issues);
             }
+            _ = Read(LiveTurnPreparationService.PendingTurnSnapshotManifestPath);
+            _ = Read(PendingTurnSnapshotAuthority.AuthorityPath);
             var worldTimeJson = Read(EffectAcceptedTurnInputComposer.WorldTimePath);
             var currentTime = EffectAcceptedTurnInputComposer.ReadCanonicalWorldTime(
                 worldTimeJson);
@@ -375,8 +379,6 @@ internal static partial class AcceptedMechanicsWoundCommonInputComposer
 
             }
 
-            _ = Read(LiveTurnPreparationService.PendingTurnSnapshotManifestPath);
-            _ = Read(PendingTurnSnapshotAuthority.AuthorityPath);
             ValidateLiveWoundRoots(Read, bundle.Input, issues);
             var stagedEffectPlan = bundle.EffectBatchPlan.EffectPlan;
             ValidateLiveEffectRoots(Read, stagedEffectPlan, issues);

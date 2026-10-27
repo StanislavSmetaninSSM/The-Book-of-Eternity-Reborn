@@ -20,7 +20,8 @@ admission. The same reader additionally owns the signed original resource quarte
 and fresh physical closing guards, without changing Stage's qualified16-path
 fingerprint. Current resource validity does not substitute for original equality.
 The existing common manifest/authority before-image reads now apply to spiritual
-publication too. One operation owns parsed16-root DATA/catalog; no new cache or
+publication too; the non-spiritual branch keeps its original read positions.
+One operation owns parsed16-root DATA/catalog; no new cache or
 authority stack. Ordinary v1 requires only a fresh original-request classification
 here and retains its existing parser; that narrow read proves family selection.
 Two-pass reading is confined to changed/misclassified live input, not normal v2.
