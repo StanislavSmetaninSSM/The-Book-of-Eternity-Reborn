@@ -45,7 +45,7 @@ public sealed class JointPrivateEffectSourceTests(ITestOutputHelper output)
         {
             new[] { "bad-json", "unknown" }, new[] { "unknown", "bad-json" },
             new[] { "duplicate" }, new[] { "bad-utf8" }, new[] { "array" }, new[] { "empty" },
-            new[] { "alpha", "alpha" }, new[] { null! }
+            new[] { "alpha", "alpha" }, new string[] { null! }
         })
         {
             var oldError = Record.Exception(() => ReadOriginal(data, badPaths));

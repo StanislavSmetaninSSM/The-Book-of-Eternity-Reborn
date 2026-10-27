@@ -1,3 +1,12 @@
+# T609 RED fixture compile correction — WIP
+
+Fresh build at `4e02c5786d59c9fec7b1d9c6efb7cd114f70dcea` compiled client,
+TestSupport, bridge and Unit successfully; Integration failed before execution:
+CS0826 on the untyped `new[] { null! }` and two cascading CS1503 errors. This is
+not the intended RED. The fixture now supplies the same null element as an explicit
+`string[]`; assertions, source, category, original errors and budgets are unchanged.
+Independent delta review and a fresh Integration build/bindings/PREP are required.
+
 # T609 passive-only timing correction — WIP
 
 Astra identified a concrete diagnostic observer side effect: the newly named parse
