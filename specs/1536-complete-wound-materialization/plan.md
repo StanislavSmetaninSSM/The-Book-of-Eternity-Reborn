@@ -1,5 +1,13 @@
 # US4 safe self-treatment — active functional work, 2026-10-27
 
+Guided owning build1 on8a59 failed in Main before Integration/Unit/runtime:
+actual exit1/12warnings/oneCS0103/1:49.27 at SpiritualHealingRequestProjection51,
+SharedJsonOptions namespace missing. Corrected only import Core→Configuration,
+matching its real declaration; no behavioral/selector/budget change. Coherent
+SOURCE report is now confirmed saved by readback; historical transport failures
+remain recorded. Narrow compile delta review and fresh same owning build follow.
+Raw guided-owning-build-1 is external. No new production runtime qualification.
+
 Finite coherent SOURCE corrections: read context now stores the one computed
 projection DATA; its existing Build checks history agreement once, with no permission
 flag/cache or skipped fresh Confirm. New private raw-request registry row is also
