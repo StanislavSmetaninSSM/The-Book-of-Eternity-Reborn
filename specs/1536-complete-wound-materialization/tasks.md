@@ -11,6 +11,9 @@
 - [x] T608-CANDIDATE-VISIBILITY-DESIGN Map the existing continuing consumer to one
   ordered observation/write transfer, preserving exact offsets, defaults and lifetime.
   Existing Miss timers need pre-return persistence; no new general stack or runtime.
+- [x] T608-CANDIDATE-VISIBILITY-RED Compile and qualify the one actual blocked-SYNC
+  source/visibility control with the unstarted component transfer; final missing-begin
+  failure only after full source/storage/root prerequisites, independently accepted.
 - [ ] T608-CANDIDATE-VISIBILITY-PROOF After accepted bounded design, prove a real
   blocked synchronous-call visibility RED/GREEN and relevant ordering/context/failure/
   default contracts. Independent SOURCE, fresh bindings and exact PREP precede runtime.
