@@ -387,8 +387,12 @@ C=20+25g/7, B=floor(40g/7), собственное противодействи�
 
 Консультация /root/consult_mortal_transfer1573, gpt-6.1-sol/high, read-only:
 сверены источник, численные последствия, критическая ветка и противодействие.
-WIP до независимого review. Арифметические примеры выполнены без запуска игры;
-git diff --check и Spec Kit prerequisites успешны. Runtime/build/balance/
+Независимый review /root/review_mortal_transfer1573, выбран gpt-6-astra/high:
+diff6801949…8346af1 — P1/P2 не обнаружены. Сверены Block_12, все C/B,
+примеры/полосы, активная/пассивная роли, критическая ветка и статус адаптаций.
+Арифметические примеры выполнены без запуска игры; git diff --check и Spec Kit
+prerequisites успешны. Опубликован8346af1bece9c429b895295da04b6bbedae7d1cf;
+remote SHA и GitHub readback spec/review подтверждены. Runtime/build/balance/
 clean restore UNRUN. Меняются только документы, новых исполняемых затрат/кэша нет;
 применимость источников один раз и reuse DATA/fresh authority сохраняются.
 Следующий шаг: предъявить конкретный кандидат автору, включая честные ограничения.
