@@ -20,6 +20,88 @@ public sealed class ExplorerWoundSelfTreatmentTests(ITestOutputHelper output)
     private const string Owner = "wound-guided-client";
 
     [Fact]
+    public async Task ConsoleCancellationAndConfirmationUseTheSameExplorerAndActualGameEngine()
+    {
+        await using var fixture = await HealingFixture.CreateAsync(1, 1, 20, stageRequest: false);
+        var wound = Assert.Single((await fixture.ReadWoundsAsync()).Occurrences).Wound;
+        var console = new TestExplorerConsole();
+        console.QueueAnySelection("Отмена", "1. " + WoundPlayerProjection.Text(wound.Display.Name) + " — I");
+        console.QueueAnyConfirmResponse(true);
+        JsonObject? retainedRequest = null;
+        TurnRequest? turn = null;
+        var responseWritten = false;
+        var diagnostics = new GameEngineTurnLifecycleTests.SpiritualLifecycleTestLogger();
+        var runtime = GameEngineTurnLifecycleTests.CreateGameEngineRuntime(fixture.Files,
+            inputSource: new NoPlayerInput(diagnostics), logger: diagnostics, explorerConsole: console,
+            finalizationHooks: new GameEngineSessionFinalizationHooks
+            {
+                AtCheckpointAsync = async checkpoint =>
+                {
+                    if (checkpoint != SessionFinalizationCheckpoint.TerminalWaitStarted || responseWritten) return;
+                    await using var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync();
+                    Assert.Null(await PendingPlayerActionService.ReadAsync(fixture.Files, lease));
+                    turn = JsonSerializer.Deserialize<TurnRequest>((await fixture.Files.ReadFileAsync(lease, "input/turn_request.json"))!,
+                        SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)!;
+                    var projected = JsonSerializer.SerializeToNode(turn, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)!;
+                    Assert.Empty(projected["spiritualHealing"]!["destinationGraphs"]!.AsArray());
+                    var bytes = (await fixture.Files.ReadFileBytesAsync(lease, AcceptedMechanicsPlan.WoundCommandPath))!;
+                    retainedRequest = JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(bytes))!.AsObject();
+                    Assert.Equal("spiritual_self_treatment_request", retainedRequest["kind"]!.GetValue<string>());
+                    Assert.Null(retainedRequest["snapshotToken"]);
+                    Assert.Single(retainedRequest["attempt"]!["roll"]!["values"]!.AsArray());
+                    await WriteNativeCompletionAsync(fixture.Files, lease, turn);
+                    responseWritten = true;
+                }
+            });
+        try
+        {
+            runtime.GameLoop.SetSession("session_console_spiritual_healing", 42);
+            await runtime.StateManager.RefreshGameStateAsync();
+            var before = fixture.CaptureMutationRoots();
+            Assert.Equal(string.Empty, await runtime.Explorer.TryProcessCommand("/лечить"));
+            fixture.AssertMutationRootsUnchanged(before);
+            Assert.Empty(console.ConfirmPrompts);
+            Assert.Null(await fixture.Files.ReadFileBytesAsync(AcceptedMechanicsPlan.WoundCommandPath));
+            Assert.Null(await fixture.Files.ReadFileBytesAsync(PendingPlayerActionService.PendingPath));
+            await using (var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync())
+                Assert.Null(runtime.Explorer.ConsumePendingSpiritualSelfTreatment(WoundApplicationService.ActionText,
+                    fixture.Files.GetOrCreateSessionGeneration(lease)));
+
+            var action = await runtime.Explorer.TryProcessCommand("/лечить");
+            Assert.Equal(WoundApplicationService.ActionText, action);
+            Assert.Single(console.ConfirmPrompts);
+            fixture.AssertMutationRootsUnchanged(before);
+            Assert.Null(await fixture.Files.ReadFileBytesAsync(AcceptedMechanicsPlan.WoundCommandPath));
+            Assert.Null(await fixture.Files.ReadFileBytesAsync(LiveTurnPreparationService.PendingTurnSnapshotManifestPath));
+            Assert.Null(await fixture.Files.ReadFileBytesAsync(PendingPlayerActionService.PendingPath));
+            await runtime.Engine.ProcessPlayerTurn(action!);
+            Assert.True(responseWritten, "The console action did not reach the native-shaped GM fixture.");
+            Assert.Empty((await fixture.ReadWoundsAsync()).Occurrences);
+            var history = await fixture.ReadHistoryAsync();
+            Assert.Single(history.Transitions, t => t.Terminal);
+            var result = Assert.IsType<SpiritualHealingPersistedResult>(Assert.Single(history.Transitions, t => t.AttemptId is not null).TransitionResult);
+            Assert.True(JsonNode.DeepEquals(retainedRequest, result.ToCanonicalJson()["request"]));
+            var schedule = JsonNode.Parse((await fixture.Files.ReadFileAsync(ProgressionScheduleService.SchedulePath))!)!;
+            Assert.Equal(turn!.ProgressionControl!.NextChaosSeaTurnOrdinal, schedule["currentChaosSeaTurnOrdinal"]!.GetValue<int>());
+            Assert.Null(await fixture.Files.ReadFileBytesAsync(AcceptedMechanicsPlan.WoundCommandPath));
+            Assert.Null(await fixture.Files.ReadFileBytesAsync(ProgressionScheduleService.ReportPath));
+            Assert.Null(await fixture.Files.ReadFileBytesAsync(PendingPlayerActionService.PendingPath));
+            fixture.AssertResourcesUnchanged();
+            await using (var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync())
+                Assert.Null(runtime.Explorer.ConsumePendingSpiritualSelfTreatment(action!, fixture.Files.GetOrCreateSessionGeneration(lease)));
+            var settled = fixture.CaptureMutationRoots();
+            Assert.Equal(string.Empty, await runtime.Explorer.TryProcessCommand("/лечить"));
+            fixture.AssertMutationRootsUnchanged(settled);
+            Assert.Single(console.ConfirmPrompts);
+        }
+        finally
+        {
+            output.WriteLine(diagnostics.Describe());
+            await runtime.AudioService.DisposeAsync();
+        }
+    }
+
+    [Fact]
     public async Task ConfirmedBrowserSelfTreatmentStagesAndCompletesThroughActualGameEngine()
     {
         await using var fixture = await HealingFixture.CreateAsync(1, 1, 20, stageRequest: false);

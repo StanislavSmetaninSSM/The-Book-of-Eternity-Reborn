@@ -1,5 +1,24 @@
 # US4 safe self-treatment — active functional work, 2026-10-27
 
+Console parity scaffold WIP, UNCOMPILED/UNRUN. The existing runtime now exposes
+its actual injected Explorer and accepts optional IExplorerConsole; null still
+constructs the unchanged default TestExplorerConsole. No production change,
+reflection or parallel runtime. One independent rank-I fixture uses console
+cancel/confirm through that Explorer, then the same actual Engine without a
+browser binding. It requires no pre-stage request/draw/browser queue, actual
+native-shaped completion, terminal wound/History, retained request/die, one cycle,
+no cost, consumed one-shot intent and an inert settled repeat. Exact new console
+category has one case/180s; original guided2 membership/budget remain unchanged.
+Optimization: reuses the existing typed fixture, native completion and runtime;
+no repeated expensive preparation or new cache. Fresh confirmation and actual
+signed-source/publication fences remain production-owned. Real console operation
+is the subject, so one complete Engine integration is required. Existing browser2
+and owner2 are independently accepted on316; default factory dependencies remain
+unchanged, so no repeat solely for this test-only seam. Next finite SOURCE then
+fresh Integration-only refsfalse build and console1 PlanOnly/actual. Graph-bearing
+actual caller/repair, final affected gates and held limits remain open.
+
+
 OUTPUT slice316ee621 SOURCE/PREP accepted by independent Sol; fresh owning
 Integration0errors/165warnings/5:21.82. Master/dependency copies match:
 Mainf53b2c2d, Support4d0dc57c, Integration2122d934. OfficialPlanOnly exact4cases/
@@ -10,7 +29,7 @@ TRX44d9120f5a945e2030c3c46615db2b56cd91d9188626d9af6eed30d8df991914.
 Both exact complete selections exit0/no timeout/skips/duplicates/bothcleanuptrue;
 four unique test/execution IDs union. Raw healing-output-owning-build-1 and
 healing-output-functional-1 external; root independently verified summaries/hashes.
-Finite independent OUTCOME requested, no speedup or warning-clean claim.
+Independent Sol OUTPUT OUTCOME accepted these exact results; no speedup or warning-clean claim.
 
 The real browser confirmed /лечить now completes actual GameEngine staging,
 native-shaped controlled GM hook, common generic normalization/publication,

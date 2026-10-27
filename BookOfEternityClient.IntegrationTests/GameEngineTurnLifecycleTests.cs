@@ -11030,6 +11030,9 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
     /// <param name="qteInputSource">
     /// Optional independent QTE input; <see langword="null"/> preserves the original system source.
     /// </param>
+    /// <param name="explorerConsole">
+    /// Optional explorer input; <see langword="null"/> preserves the existing test console.
+    /// </param>
     /// <returns>
     /// The engine and the same state, loop, audio, validation, QTE and hooks supplied during construction.
     /// </returns>
@@ -11040,7 +11043,8 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
         GameEngineSessionFinalizationHooks? finalizationHooks = null,
         Microsoft.Extensions.Logging.ILogger<GameEngine>? logger = null,
         SaveLoadServiceHooks? loadHooks = null,
-        IConsoleInputSource? qteInputSource = null)
+        IConsoleInputSource? qteInputSource = null,
+        IExplorerConsole? explorerConsole = null)
     {
         ArgumentNullException.ThrowIfNull(fileSystem);
         var fs = fileSystem;
@@ -11053,7 +11057,8 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
         var progressionSchedule = new ProgressionScheduleService(fs, NullLogger<ProgressionScheduleService>.Instance);
         var gameInterface = new GameInterface(localization, settings);
         var clipboardService = new TestClipboardService();
-        var explorer = new ExplorerMode(stateManager, fs, localization, clipboardService: clipboardService, console: new TestExplorerConsole());
+        var explorer = new ExplorerMode(stateManager, fs, localization, clipboardService: clipboardService,
+            console: explorerConsole ?? new TestExplorerConsole());
         var saveLoad = new SaveLoadService(fs, stateManager, NullLogger<SaveLoadService>.Instance, loadHooks);
         var imageService = new ImageService(fs, settings, localization, NullLogger<ImageService>.Instance);
         var validator = new ValidationService(fs, NullLogger<ValidationService>.Instance);
@@ -11118,7 +11123,8 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
             logger ?? NullLogger<GameEngine>.Instance,
             inputSource);
         engine.ConfigureSessionFinalizationHooksForTesting(finalizationHooks);
-        return new GameEngineTestRuntime(engine, stateManager, gameLoop, audioService, validator, qteSceneService, finalizationHooks);
+        return new GameEngineTestRuntime(engine, stateManager, gameLoop, audioService, validator, qteSceneService, finalizationHooks)
+        { Explorer = explorer };
     }
 
     private void ArmCanonicalWriteFailure(string relativePath, int matchingWrite = 1)

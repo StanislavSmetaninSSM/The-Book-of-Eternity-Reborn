@@ -1,5 +1,6 @@
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
+using BookOfEternityClient.UI;
 
 namespace BookOfEternityClient.Tests;
 
@@ -34,4 +35,8 @@ internal sealed record GameEngineTestRuntime(
     AudioService AudioService,
     ValidationService ValidationService,
     QteSceneService QteSceneService,
-    GameEngineSessionFinalizationHooks? FinalizationHooks);
+    GameEngineSessionFinalizationHooks? FinalizationHooks)
+{
+    /// <summary>The same explorer supplied to <see cref="Engine"/>.</summary>
+    internal ExplorerMode Explorer { get; init; } = null!;
+}

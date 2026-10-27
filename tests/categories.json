@@ -2,6 +2,36 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "spiritual-healing-console-self",
+  "responsibility": "One actual console /лечить cancellation, confirmation and settled repeat through the same Explorer supplied to GameEngine; real pre-snapshot staging, controlled native-shaped completion, wound/History/one-cycle/no-cost publication without a browser queue.",
+  "excludes": "Browser qualification, real GM provider, fresh-process recovery, graph-bearing repair, other wound families and held Mortal/performance workloads.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/ExplorerWoundSelfTreatmentTests.cs",
+    "BookOfEternityClient.IntegrationTests/GameEngineTestRuntime.cs"
+  ],
+  "related": [
+    {
+      "id": "spiritual-healing-guided-self",
+      "when": "Only rerun the accepted browser route if its default runtime or gameplay dependencies change."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 3,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.ConsoleCancellationAndConfirmationUseTheSameExplorerAndActualGameEngine"
+      ]
+    }
+  ]
+},
+{
   "id": "spiritual-healing-publication-owner",
   "responsibility": "Two typed real-snapshot controls for deferred raw routing without an executable plan, actual preparation/publication under a later lease, and absent/replaced source refusal without a stale earlier-lease fallback.",
   "excludes": "Actual GameEngine guided flow, broad admission matrices, other wound families, Mortal timeout work and performance diagnostics.",
