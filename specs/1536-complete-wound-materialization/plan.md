@@ -1,3 +1,54 @@
+# T608 genuine Candidate accepted — retained feature union 69/69
+
+Runtime and fresh Integration source `408171484ed7735b9af8555114a266677ad92807`;
+other four owning projects retain qualified F6 unchanged bytes. Build: 0 errors /
+101 exact baseline warnings, 3:24.12; current 33 artifacts / 11 PE-PDB pairs / 84
+Git-source-PDB joins. Fresh exact one-case PlanOnly and complete current source
+recovery at408 verified all 30,934 blobs/modes, 773,461,446 logical bytes. No old
+binary was copied into runtime or recovery; this is not an all-five rebuild.
+
+ONE admitted original fr063-joint-bundle-candidate completed 1 PASS, no skip,
+duplicate, underfill or timeout. Category 69.5718698s / original 120s; framework
+62.4771535s. Both process-cleanup flags true, PID 224249 ended and actual marked
+fixture root removed. All original miss/hit retained-plan/rotated-fence, foreign /
+stale refusal, canonical bytes, Beginning-owner, copy/private-history/abort and
+null-owner boundaries pass. Four separate qualified source-DATA lifetimes and
+all original timer spans/assertions remain exact. Independent SOURCE/PREP/OUTCOME
+accepted; Terra's additional check was limited to mechanical four-splice identity.
+Required Astra/high design and shared-helper reviews remain accepted.
+
+External actual-t608-candidate-per-call-wiring-1, nonce fa65766295394cbb83005c8070e11990:
+full gzip 168,674,787 bytes, SHA256
+9720A9904982BD53F1290C8D3E49F9060E6E290406D67D86C94AF295FD0D5F21;
+decoded 1,574,485,314 bytes, SHA256
+3C35FAF61C191A4028082881CC46F47C2290376819D0804D75B63507B2D0075E.
+Single strict streaming decode verifies 3,077,658 rows, 3,077,380 original timing
+events, 278 messages and 1,538,690 exact pairs; EOF/footer/CRC/ISIZE/no trailing,
+original clocks, all queue/snapshot/phase/writer accounting and genuine oracles.
+The first verifier invocation used the outer directory and failed before reading
+raw; corrected component directory used unchanged frozen verifiers, no test retry.
+
+Optimization: existing complete-key semantic DATA reuse and its fresh guards are
+unchanged. Accepted cheap same-Fact proof reduces actual Replay/Core computations
+[2,2] to [1,1] across four real reads, with distinct empty/completed/closed owners.
+Actual genuine setup records 409 logical requests, 203 sources, 206 reuse, plus 203
+fresh completion source checks. No syscall saving, per-registry-role source vector,
+equal-work wall-speedup or full-game budget fit is inferred from these counts.
+
+This completes 69 distinct selected feature cases across their explicitly retained
+compiled lineages: 65 unit controls, expected-source 1, semantic 1, genuine COPY 1 and
+now Candidate 1. It is not one current 69 batch. Full DFR positive under original 300s,
+dependent N/legacy/cold and remaining wound materialization still need their own
+admission/outcomes. COPY-CAUSE's original timeout attribution remains unresolved /
+superseded; successful later COPY is not proof of that old cause. Windows deferred;
+first-guardian intermittent and cross-OS DATA remain open. No GM/game contract changed.
+
+Next: publish this compact checkpoint and verify remote/source recovery, then exact
+resource/PREP for ONE current full DFR positive with complete uncapped lossless
+capture. Current external raw and all unmatched earlier attempts remain retained;
+any expendable recovery-copy retirement needs its own exact reviewed manifest and
+fresh ownership/clean-tree checks. No budget increase, blind retry or new framework.
+
 # T608 genuine Candidate wiring frozen — UNCOMPILED / UNRUN
 
 Base accepted cheap GREEN checkpoint `f6bd9a436fba470457d5ee5530574f7ddc2de934`.

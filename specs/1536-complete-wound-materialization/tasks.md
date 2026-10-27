@@ -13,7 +13,7 @@
   prove actual Replay/Core [1,1] / richer [0,0], distinct empty/closed owners and
   null entry/exit after the source oracle; finite no-world lifecycle/error control.
   Independent SOURCE/PREP/OUTCOME and retained exact negative/freshness lineage.
-- [ ] T608-CANDIDATE-OWNER-WIRE After accepted cheap qualification, replace only
+- [x] T608-CANDIDATE-OWNER-WIRE After accepted cheap qualification, replace only
   the four genuine registry invocations with the fixed typed adapter; preserve
   original timer meaning/assertions/copy boundaries, fresh affected bindings and
   separate original 120-second/full-capture PREP and actual outcome. No automatic
@@ -38,7 +38,7 @@
 - [x] T608-CANDIDATE-VISIBILITY-PROOF After accepted bounded design, prove a real
   blocked synchronous-call visibility RED/GREEN and relevant ordering/context/failure/
   default contracts. Independent SOURCE, fresh bindings and exact PREP precede runtime.
-- [ ] T608-CANDIDATE-QUALIFY Complete any reviewed minimal correction, fresh affected
+- [x] T608-CANDIDATE-QUALIFY Complete any reviewed minimal correction, fresh affected
   bindings and relevant cheap proof, then separate original-budget/full-capture PREP
   and actual candidate outcome. No automatic full-positive or dependent gate release.
 
@@ -50,7 +50,7 @@
 - [x] T608-COPY-RANGE-GREEN Drain before all five samples, prove exact original-event
   ranges, nonempty genuine prepared/effect evidence and unchanged null-owner/default
   contracts; explicit selected existing passive/gzip caller wiring only after RED.
-- [ ] T608-COPY-OBS-QUALIFY Coherent SOURCE, fresh affected owning build/warnings/
+- [x] T608-COPY-OBS-QUALIFY Coherent SOURCE, fresh affected owning build/warnings/
   source/PDB/copies, exact cheap regressions, strict complete storage and resource/PREP
   before copy then candidate in original bounds. No automatic full-positive release.
 
@@ -107,7 +107,7 @@
   reconcile actual caller versus private retained input and warmed scalar reuse;
   select cheap actual-source/negative proofs and the genuine vertical. Independent
   DESIGN is required before implementation, with measured benefit limits explicit.
-- [ ] T608-REUSE-IMPLEMENT After accepted DESIGN, implement only the minimal agreed
+- [x] T608-REUSE-IMPLEMENT After accepted DESIGN, implement only the minimal agreed
   existing-service reuse and its causal/negative controls. Preserve fresh actual
   graph/authority/source checks, existing unsupported/refusal paths and full diagnostics.
 - [ ] T608-REUSE-QUALIFY Coherent independent SOURCE, fresh affected build/warning/
