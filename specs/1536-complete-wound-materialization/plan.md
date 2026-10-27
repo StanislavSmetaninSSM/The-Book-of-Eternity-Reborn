@@ -1,5 +1,27 @@
 # US4 safe self-treatment — active functional work, 2026-10-27
 
+Fresh caller owning builds now compile source1d1127d02: Integration0errors/
+137warnings/7:24.25; Main41d66fc582156f66d734fc1664776e0f1a5190603604d8ee10699717226597f1,
+Support323e19840135de7fa4629c32cb11c429c3087d0c1b40ac1de33a214b1b9e5ee9,
+Integration4bbcc10f6c1a7dbb4e6e7ef6e734b2546d24a7dee5554fab4c056069ee408dfd;
+dependency copies match. Unit follow-up finished successfully on those fresh
+dependencies:0errors/26warnings/1:08.55, Unit9b3d41a3339397e3bde57de00e45bd0a93cbce070149978d073bd833830f12a9.
+Exact copies/pins retained in external guided-owning-build-2.
+No new production runtime has executed. Next exact cheap guided-contract plus
+ordinary policy source/boundary/regression gate, then original guided2 rank-I case.
+
+Actual caller-order SOURCE finding remains OPEN: normal accepted I validation is
+after common publication/consumption. Current graph adapter requires live v2 bytes,
+so a rank-changing graph-bearing caller would refuse after publication. Rank-I
+guided2 writes no graph field and is independent; root permits its first GREEN
+without claiming full I–IV. Then extend the existing authored-graph Fact with a
+post-Publish publicI causal assertion and bind the published branch to actual
+observed original, strict matching History and accepted authored graph DATA, with
+closing absence/current response bytes. History-only or diagnostic scalar hash
+alone is insufficient; reuse current graph parser/stages, no new receipt. Do not
+interrupt/duplicate builds or rerun passed guided2 automatically for that adapter
+delta. Mortal/preparation timeout and console/freshprocess/provider limits remain.
+
 Guided owning build1 on8a59 failed in Main before Integration/Unit/runtime:
 actual exit1/12warnings/oneCS0103/1:49.27 at SpiritualHealingRequestProjection51,
 SharedJsonOptions namespace missing. Corrected only import Core→Configuration,
