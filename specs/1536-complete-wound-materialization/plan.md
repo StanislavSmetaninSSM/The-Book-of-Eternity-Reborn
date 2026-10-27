@@ -1,3 +1,21 @@
+# T608 per-call source control — C# WIP, UNCATALOGED / UNCOMPILED / UNRUN
+
+Base `853e106712ff4f64c52f6c85c1212e136d53c734`; accepted COPYOBS10–12 DESIGN.
+One new partial CandidateDataInvocation.cs is frozen for immediate remote preservation,
+SHA256 70a8d566dc5933dd09c847559abe6ffc2165354a194eb239966f27b186b991d4.
+It contains the original no-owner shared lexical scaffold, fixed unwired typed
+Candidate adapter, real paired-stage source Fact and GREEN-only no-world lifecycle
+Fact. All existing C# files, genuine Candidate callsites and production are unchanged.
+No fake/borrowed owner, cache or new diagnostic transport is introduced.
+
+The source oracle is [1,1] after applicable genuine frame/storage/root closing;
+original RED is expected to supply actual Replay/Core [2,2], richer [0,0]. Owned
+identity/empty/closed assertions follow the source oracle and are unavailable in
+RED. Static diff/XML checks passed; no compiler, test or outcome claim. Category /
+CI metadata, complete preservation packet and coherent independent SOURCE remain
+pending before fresh affected build/current bindings/discovery/exact RED PREP.
+No genuine retry, GREEN, full-positive or dependent runtime is admitted.
+
 # T608 per-call DATA design accepted — explicit technical scope, code UNIMPLEMENTED
 
 Base/checkpoint `017ac2835c6459d142d8d3a35028ed426836726d`, #1536. Fresh clean
