@@ -1,3 +1,26 @@
+# T609 equal-work cost control — actual PASS, independent OUTCOME pending
+
+On Linux, runtime checkpoint `f1855971c9df93a50bad91d6ea862b586d814437`
+used compiled source `73ba6d307132fcf37f3c29a6f0e8307f00d5ef54`; the exact
+documentation-only delta was verified. After independent Sol PREP and a fresh
+preflight, one official `-Category fr063-joint-private-effect-source-cost -NoBuild`
+completed 1/1 PASS in 46.3509998s / 60s, no timeout/skip/duplicate/underfill,
+both cleanup flags true. Complete TRX SHA256:
+`9a957ea44577e8051325e586a8c85a69a6315207ecf25be1b5bf4e43bf256a86`.
+
+The identical 31,110-byte synthetic inputs, four reads and recursive consumption
+produced original/prototype actual parse counts 16/4, 16 lookups, cold copy calls
+8 (6 nonnull clones), then 4 (3 nonnull) per hit, with detached equal outputs and
+closed owners. Per-read allocations: original 273,200 then 272,952 bytes;
+prototype cold 281,688 bytes, each hit 161,680 bytes. Original per-read times range
+0.633–7.602ms and hits 0.037–2.690ms; this noisy fixed-order single sample does
+not prove production speedup. RunThroughClose includes fixture/assertion overhead:
+21.516ms / 1,118,720 bytes original, 10.129ms / 793,512 bytes prototype.
+Nested key/lookup/copy intervals overlap and must not be summed. Raw remains in
+external `dfr-prefix/actual-t609-effect-source-cost-1`, with verification and
+PREP under `t608-counter-scaffold`. Production parser-policy eligibility, failure
+parity, GREEN and a new full DFR admission remain open; no runtime retry is admitted.
+
 # T609 equal-work prototype — fresh build and PlanOnly, runtime pending
 
 At source/runtime candidate `73ba6d307132fcf37f3c29a6f0e8307f00d5ef54`, all five
