@@ -44,6 +44,10 @@ public class TurnRequest
     [JsonPropertyName("afterlifeSpiritualConflictPreview")]
     public JsonObject? AfterlifeSpiritualConflictPreview { get; set; }
 
+    [JsonPropertyName("spiritualHealing")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public JsonObject? SpiritualHealing { get; set; }
+
     [JsonPropertyName("effectSkillScopeCatalog")]
     public JsonObject EffectSkillScopeCatalog { get; set; } = new()
     {

@@ -29,6 +29,7 @@ public sealed class ExplorerWebPromptSessionService
     private readonly LocalUiSessionLockService _lockService;
     private readonly TimeProvider _timeProvider;
     private readonly BrowserMortalWorldWriteService _mortalWorldWriteService;
+    private readonly BrowserWoundWriteService _woundWriteService;
     private readonly BrowserAfterlifeWriteService _afterlifeWriteService;
     private readonly BrowserSarefStoryWriteService _sarefStoryWriteService;
 
@@ -45,6 +46,7 @@ public sealed class ExplorerWebPromptSessionService
         _lockService = lockService ?? new LocalUiSessionLockService(fs, timeProvider);
         _timeProvider = timeProvider ?? TimeProvider.System;
         var coordinator = new BrowserLocalWriteCoordinator(fs, _lockService, _timeProvider);
+        _woundWriteService = new BrowserWoundWriteService(fs, coordinator);
         var effectiveStateManager = stateManager ?? new StateManager(fs, new Configuration.GameSettings(), NullLogger<StateManager>.Instance);
         _mortalWorldWriteService = mortalWorldWriteService ?? new BrowserMortalWorldWriteService(
             fs,
@@ -308,6 +310,11 @@ public sealed class ExplorerWebPromptSessionService
         PromptSessionSnapshot snapshot,
         IReadOnlyDictionary<string, JsonNode?> answers)
     {
+        if (snapshot.Result.WoundCommandState is { } woundState &&
+            ExplorerCommandCatalog.FindByAlias(snapshot.Result.Command)?.Id == "wound_treatment")
+            return await BuildDomainWriteSubmitResultAsync(sessionId, snapshot,
+                await _woundWriteService.ApplyAsync(woundState, answers, snapshot.Owner));
+
         var writeResult = await _mortalWorldWriteService.TryApplyAsync(
             snapshot.Result.Command,
             answers,
@@ -554,6 +561,7 @@ public sealed class ExplorerWebPromptSessionService
 
         var token = command.Trim().Split(' ', 2, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault() ?? string.Empty;
         return token is
+            "/лечить" or "/treat" or "/исцелить" or "/heal" or
             "/validate" or "/валидация" or
             "/world_setup" or "/настройка_мира" or
             "/distribute" or "/распределить" or
@@ -628,7 +636,8 @@ public sealed class ExplorerWebPromptSessionService
             Actions = result.Actions,
             Prompts = prompts.ToList(),
             Notifications = notifications,
-            InteractiveSession = session
+            InteractiveSession = session,
+            WoundCommandState = result.WoundCommandState
         };
     }
 

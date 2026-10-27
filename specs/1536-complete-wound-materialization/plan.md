@@ -1,5 +1,28 @@
 # US4 safe self-treatment — active functional work, 2026-10-27
 
+Connected caller/guided WIP boundary (UNCOMPILED/UNRUN, not production ACCEPT):
+shared WoundApplication/CommandState and renderer-neutral detail/History/prompt
+blocks now feed browser and console aliases. Existing prompt-session storage owns
+detached opaque-choice/generation DATA; confirmation freshly revalidates exact
+wound/art/effect availability and queues only typed selection. Console retains a
+one-shot companion to its actual GM action, not a browser queue or new registry.
+Actual StagePlayerTurn now stages a separate retained healing draw under actual
+control/lease before snapshot and exports derived GM graph refs from the shared
+scalar program. Pending schema1 preserves absent-field legacy shape; new source
+requires closed selection, staged raw source bytes, phase equality and both original
+tuple comparisons. Detached proof validates selected manifest/payload map, bytes
+hash-mode/hash and exact v2 request binding. Broader phases still retain live guards.
+
+Optimization: existing coherent wound read now retains its parsed input/catalog
+for detail plus choice projection inside one operation; no second full read solely
+for selection. Prompt storage retains only detached strings/choices; no authority.
+Stage and accepted continuation share graph/program derivation and continue owning
+fresh source checks; only eligible active spiritual I–IV wounds enter natural stages.
+Fresh confirmation/staging/accepted fences remain. GM transport/bound interface
+policy, accepted cold History check, contract docs/guards and focused proof tests
+remain in progress in the same slice; no current UI qualification/feature closure.
+Guided first2RED independently accepted by Sol; held Mortal work remains untouched.
+
 Guided first semanticRED on clean78077e23adb48d6540816fecb21f841624cd1c7b:
 fresh Integration-only build2 exit0/102warnings/0errors3:02.06; Mainc2300613…/
 Supporteb21bbf6… copies match owning originals, Integrationc85a481c28740e52627b1d64

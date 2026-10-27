@@ -133,6 +133,9 @@ public sealed class ExplorerWebCommandService
             });
         }
 
+        if (descriptor.BrowserHandlerKind == ExplorerCommandBrowserHandlerKind.Wounds)
+            return await WoundApplicationService.OpenAsync(_fs, commandToken, descriptor.Id == "wound_treatment");
+
         var result = descriptor.BrowserHandlerKind switch
         {
             ExplorerCommandBrowserHandlerKind.UniversalMeta => await ExplorerUniversalMetaCommandResultBuilder.TryBuildAsync(

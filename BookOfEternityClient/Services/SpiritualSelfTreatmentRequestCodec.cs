@@ -38,8 +38,21 @@ internal static class SpiritualSelfTreatmentRequestCodec
         SpiritualSelfTreatmentSelection selection, string realm, int ordinal,
         string sourceFingerprint, SpiritualHealingPreparedSource source)
     {
+        if (!IsBound(root, context, selection, realm, ordinal)) return false;
+        var attempt = root["attempt"]!.AsObject();
+        var roll = attempt["roll"]!.AsObject();
+        return Text(attempt["sourceFingerprint"]) == sourceFingerprint && Text(roll["mode"]) == source.RollMode &&
+            SpiritualHealingResolver.ResolvePrepared(source, source.RollMode,
+                roll["values"]!.AsArray().Select(v => Int(v)!.Value).ToArray()).IsValid;
+    }
+
+    // Closed detached DATA validation; source admission and publication still require their original owners.
+    internal static bool IsBound(JsonObject root, SpiritualSelfTreatmentStageContext context,
+        SpiritualSelfTreatmentSelection selection, string realm, int ordinal)
+    {
         if (!Closed(root, "schemaVersion", "kind", "sessionId", "requestId", "turn", "attempt", "requestFingerprint") ||
-            Int(root["schemaVersion"]) != 2 || Text(root["kind"]) != Kind ||
+            Int(root["schemaVersion"]) != 2 || Text(root["kind"]) != Kind || ordinal < 1 ||
+            realm is not ("chaos_sea" or "shining_abode") ||
             Text(root["sessionId"]) != context.SessionId || Text(root["requestId"]) != context.RequestId ||
             Int(root["turn"]) != context.Turn || root["attempt"] is not JsonObject attempt ||
             !Closed(attempt, "attemptId", "woundId", "woundFingerprint", "realm", "cycleOrdinal", "cycleKey", "sourceFingerprint", "roll") ||
@@ -47,13 +60,13 @@ internal static class SpiritualSelfTreatmentRequestCodec
             Text(attempt["woundId"]) != selection.WoundId || Text(attempt["woundFingerprint"]) != selection.ExpectedWoundFingerprint ||
             Text(attempt["realm"]) != realm || Int(attempt["cycleOrdinal"]) != ordinal ||
             Text(attempt["cycleKey"]) != AfterlifeWoundTreatmentAuthority.CycleKey(realm, ordinal) ||
-            Text(attempt["sourceFingerprint"]) != sourceFingerprint || attempt["roll"] is not JsonObject roll ||
-            !Closed(roll, "mode", "values") || Text(roll["mode"]) != source.RollMode || roll["values"] is not JsonArray values ||
-            values.Count != (source.RollMode == "normal" ? 1 : 2) || values.Any(v => Int(v) is null or < 1 or > 20) ||
+            !ResourceMaterializationContract.IsAuthorityFingerprint(Text(attempt["sourceFingerprint"])) ||
+            attempt["roll"] is not JsonObject roll || !Closed(roll, "mode", "values") ||
+            Text(roll["mode"]) is not ("normal" or "advantage" or "disadvantage") || roll["values"] is not JsonArray values ||
+            values.Count != (Text(roll["mode"]) == "normal" ? 1 : 2) || values.Any(v => Int(v) is null or < 1 or > 20) ||
             Text(root["requestFingerprint"]) != Fingerprint(root))
             return false;
-        return SpiritualHealingResolver.ResolvePrepared(source, source.RollMode,
-            values.Select(v => Int(v)!.Value).ToArray()).IsValid;
+        return true;
     }
 
     private static string AttemptId(SpiritualSelfTreatmentStageContext context,

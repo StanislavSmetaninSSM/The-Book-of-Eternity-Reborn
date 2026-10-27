@@ -1695,6 +1695,20 @@ public partial class GameEngine
             reminderTiming?.Dispose();
             using (_fs.MeasureOperation("PlayerTurn.Stage.BuildProgressionControl"))
                 request.ProgressionControl = await _progressionSchedule.BuildControlForNextTurnAsync();
+            var healingSelection = browserAction?.SpiritualSelfTreatment ??
+                _explorer.ConsumePendingSpiritualSelfTreatment(action, sessionGeneration);
+            if (healingSelection is not null)
+            {
+                using var healingTiming = _fs.MeasureOperation("PlayerTurn.Stage.SpiritualSelfTreatment");
+                await using var healingLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+                if (!_fs.IsCurrentSessionGeneration(healingLease, sessionGeneration))
+                    throw new SessionReplacedException("Healing selection belongs to a replaced session.", sessionGeneration, actualGeneration: null);
+                var stagedHealing = await AfterlifeWoundTreatmentAuthority.StageSelfTreatmentAsync(_fs, healingLease,
+                    new(request.SessionId, request.RequestId, request.TurnNumber, request.ProgressionControl!), healingSelection);
+                if (!stagedHealing.IsStaged || stagedHealing.GmContext is null)
+                    throw new InvalidDataException("Self-treatment selection can no longer be staged: " + stagedHealing.IssueCode);
+                request.SpiritualHealing = stagedHealing.GmContext.DeepClone().AsObject();
+            }
             using (_fs.MeasureOperation("PlayerTurn.Stage.AttachDiceAndGacha"))
                 await AttachPendingDiceAndGachaAsync(request);
             using (_fs.MeasureOperation("PlayerTurn.Stage.BuildSpiritualPreview"))

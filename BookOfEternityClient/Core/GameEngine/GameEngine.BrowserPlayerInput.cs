@@ -171,7 +171,41 @@ public partial class GameEngine
             request.Timestamp != manifest.RequestTimestamp || request.PlayerAction != staged.Binding.Action ||
             manifest.PlayerAction != staged.Binding.Action || manifest.SourceLabel != OrdinaryPlayerTurnSourceLabel || manifest.BrowserOriginalMainCondition == null)
             throw new InvalidDataException(BrowserRecoveryMessage);
+        _ = ReadDetachedSpiritualRequest(staged, manifest, request, authority);
         return manifest;
+    }
+
+    private static JsonObject? ReadDetachedSpiritualRequest(PendingPlayerActionService.Staged staged,
+        PendingTurnSnapshotManifest manifest, TurnRequest request,
+        PendingTurnSnapshotAuthority.PendingTurnSnapshotAuthorityPayload authority)
+    {
+        var selection = staged.Binding.SpiritualSelfTreatment;
+        if (selection is null)
+        {
+            if (staged.SpiritualWoundRequestBytesBase64 is not null)
+                throw new InvalidDataException(BrowserRecoveryMessage);
+            return null;
+        }
+        var path = AcceptedMechanicsPlan.WoundCommandPath;
+        if (staged.SpiritualWoundRequestBytesBase64 is null || request.ProgressionControl is null ||
+            authority.SnapshotHashMode != PendingTurnSnapshotAuthority.ExactSnapshotHashMode ||
+            !manifest.Files.TryGetValue(path, out var declaredPath) ||
+            !authority.Files.TryGetValue(path, out var signedPath) || declaredPath != signedPath ||
+            !PendingTurnSnapshotAuthority.IsSafeRelativePath(signedPath) || signedPath.Contains('\\') ||
+            !manifest.SnapshotFileHashes.TryGetValue(path, out var declaredHash) ||
+            !authority.SnapshotFileHashes.TryGetValue(path, out var signedHash) || declaredHash != signedHash)
+            throw new InvalidDataException(BrowserRecoveryMessage);
+        var bytes = Convert.FromBase64String(staged.SpiritualWoundRequestBytesBase64);
+        if (PendingTurnSnapshotAuthority.ComputeSnapshotFileHash(authority, bytes) != signedHash)
+            throw new InvalidDataException(BrowserRecoveryMessage);
+        var source = StrictJsonAuthority.Deserialize<JsonObject>(CanonicalJsonUtf8.DecodeOneOptionalBom(bytes),
+            JsonOpts, "original spiritual wound source") ?? throw new InvalidDataException(BrowserRecoveryMessage);
+        if (!AfterlifeEntityProfileState.TryNormalizeEffectRealm(request.ProgressionControl.CurrentRealm, out var realm) ||
+            !SpiritualSelfTreatmentRequestCodec.IsBound(source,
+                new(manifest.SessionId, manifest.RequestId, manifest.TurnNumber, request.ProgressionControl), selection,
+                realm, request.ProgressionControl.NextChaosSeaTurnOrdinal))
+            throw new InvalidDataException(BrowserRecoveryMessage);
+        return source;
     }
 
     private Task<bool> ClaimBrowserPreparationAsync(PendingPlayerActionService.Binding binding) =>
@@ -212,6 +246,17 @@ public partial class GameEngine
             await _fs.ReadFileAsync(lease, PendingTurnSnapshotManifestPath) ?? throw new InvalidDataException(BrowserRecoveryMessage),
             await _fs.ReadFileAsync(lease, PendingTurnSnapshotAuthority.AuthorityPath) ?? throw new InvalidDataException(BrowserRecoveryMessage), "",
             JsonNode.Parse(state.ProofJson!)!["historyBeforeJson"]?.GetValue<string>() ?? throw new InvalidDataException(BrowserRecoveryMessage));
+        if (binding.SpiritualSelfTreatment is not null)
+        {
+            var manifest = StrictJsonAuthority.Deserialize<PendingTurnSnapshotManifest>(captured.ManifestJson, JsonOpts, "browser healing snapshot")!;
+            var validated = await LoadValidatedPendingTurnSnapshotContextCoreAsync(manifest, requireCurrentContext: false, lease)
+                ?? throw new InvalidDataException(BrowserRecoveryMessage);
+            var path = AcceptedMechanicsPlan.WoundCommandPath;
+            if (!validated.Payload.Files.TryGetValue(path, out var artifact))
+                throw new InvalidDataException(BrowserRecoveryMessage);
+            var bytes = await _fs.ReadFileBytesAsync(lease, artifact) ?? throw new InvalidDataException(BrowserRecoveryMessage);
+            captured = captured with { SpiritualWoundRequestBytesBase64 = Convert.ToBase64String(bytes) };
+        }
         ValidateDetachedBrowserBinding(captured);
         var stagedJson = PendingPlayerActionService.CreatePhase(state, "staged", PendingPlayerActionService.StagingProof(captured));
         await PendingPlayerActionService.PublishAsync(_fs, lease, state.Json, stagedJson,

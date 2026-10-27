@@ -22,7 +22,7 @@ internal static partial class WoundPlayerProjection
 {
     internal const string UnavailableMessage = "Сейчас невозможно надёжно определить состояние ран.";
     internal static WoundPlayerProjectionResult Unavailable() => new(false, UnavailableMessage, [], []);
-    internal static WoundPlayerProjectionResult Build(WoundPlayerProjectionInput input)
+    internal static WoundPlayerProjectionResult Build(WoundPlayerProjectionInput input, WoundCarrierCatalog? preparedCatalog = null)
     {
         ArgumentNullException.ThrowIfNull(input);
         if (input.Realm is not ("mortal_world" or "chaos_sea" or "shining_abode") ||
@@ -31,7 +31,7 @@ internal static partial class WoundPlayerProjection
             input.Carriers.AfterlifeProfiles is null || !input.Effects.IsAccepted)
             return Unavailable();
 
-        var catalog = WoundCarrierCatalog.Build(input.Carriers);
+        var catalog = preparedCatalog ?? WoundCarrierCatalog.Build(input.Carriers);
         if (catalog.Issues.Count != 0 || input.History.ValidateAgreement(input.Identities, catalog).Count != 0)
             return Unavailable();
         if (!input.SelfVisible)

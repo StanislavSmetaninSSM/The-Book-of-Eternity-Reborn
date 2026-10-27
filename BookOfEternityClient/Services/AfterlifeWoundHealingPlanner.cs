@@ -150,20 +150,18 @@ internal static class AfterlifeWoundHealingPlanner
             return WoundResponseInputComposer.BindSpiritualHealingGraphPredecessors(graph, before);
         }
 
-        private string GraphRef(string woundId, int rank) => SpiritualWoundRecoveryPlanner.Coordinate(
-            "spiritual_healing_graph", _request["requestFingerprint"]!.GetValue<string>(), woundId, rank);
+        private string GraphRef(string woundId, int rank) => SpiritualHealingRequestProjection.GraphRef(_request["requestFingerprint"]!.GetValue<string>(), woundId, rank);
 
         private void AdmitGraphs(JsonObject? interfaceUpdates)
         {
-            var required = _stages.Where(s => s.Kind != "heal" && s.SeverityRank < _wounds.Single(w => w.WoundId == s.WoundId).Severity.Rank)
-                .Select(s => (s.WoundId, s.SeverityRank)).Distinct().ToArray();
+            var required = SpiritualHealingRequestProjection.RequiredGraphs(_wounds, _stages).ToArray();
             var rows = interfaceUpdates?["spiritualHealingGraphs"] as JsonArray;
             if (required.Length == 0 && rows is null) return;
             if (rows is null || rows.Count != required.Length)
                 throw new InvalidDataException("GM-authored spiritual destination graphs are required: " +
                     new JsonArray(required.Select(r => (JsonNode)new JsonObject
                     {
-                        ["stageRef"] = GraphRef(r.WoundId, r.SeverityRank), ["severityRank"] = r.SeverityRank,
+                        ["stageRef"] = GraphRef(r.WoundId, r.Rank), ["severityRank"] = r.Rank,
                         ["woundName"] = _wounds.Single(w => w.WoundId == r.WoundId).Display.Name,
                         ["complications"] = ComplicationRefs(_wounds.Single(w => w.WoundId == r.WoundId))
                     }).ToArray()).ToJsonString());
@@ -172,19 +170,18 @@ internal static class AfterlifeWoundHealingPlanner
                 if (item is not JsonObject row || row.Count != 2 || !row.ContainsKey("stageRef") || !row.ContainsKey("consequenceDefinitions"))
                     throw new InvalidDataException("Each spiritual destination graph has exactly stageRef and consequenceDefinitions.");
                 var reference = row["stageRef"]!.GetValue<string>();
-                var matching = required.Where(r => GraphRef(r.WoundId, r.SeverityRank) == reference).ToArray();
+                var matching = required.Where(r => GraphRef(r.WoundId, r.Rank) == reference).ToArray();
                 if (matching.Length != 1 || _graphs.ContainsKey(reference))
                     throw new InvalidDataException("Duplicate or foreign spiritual destination graph.");
                 var target = matching[0];
                 var wound = _wounds.Single(w => w.WoundId == target.WoundId);
                 var map = wound.Complications.ToDictionary(c => ComplicationRef(c.ComplicationId), c => c.ComplicationId, StringComparer.Ordinal);
                 _graphs.Add(reference, WoundResponseInputComposer.ParseSpiritualHealingGraph(
-                    JsonSerializer.SerializeToElement(row["consequenceDefinitions"]), wound, target.SeverityRank, reference, map));
+                    JsonSerializer.SerializeToElement(row["consequenceDefinitions"]), wound, target.Rank, reference, map));
             }
         }
 
-        private string ComplicationRef(string id) => SpiritualWoundRecoveryPlanner.Coordinate("spiritual_complication_ref",
-            _request["requestFingerprint"]!.GetValue<string>(), id, 0);
+        private string ComplicationRef(string id) => SpiritualHealingRequestProjection.ComplicationRef(_request["requestFingerprint"]!.GetValue<string>(), id);
         private JsonArray ComplicationRefs(WoundMaterializationEnvelope wound) => new(wound.Complications.Select(c =>
             (JsonNode)new JsonObject { ["complicationRef"] = ComplicationRef(c.ComplicationId), ["displayName"] = c.DisplayName }).ToArray());
 
@@ -318,12 +315,7 @@ internal static class AfterlifeWoundHealingPlanner
             var binding = new WoundAcceptedTurnBinding(snapshot.SessionId, snapshot.RequestId, snapshot.SnapshotToken,
                 snapshot.Realm, snapshot.TurnNumber, acceptedEvents.Events, WoundAcceptedEventSetFingerprint.Compute(acceptedEvents.Events));
             var roots = sources.ToDictionary(s => s.Path, s => s.Root, StringComparer.Ordinal);
-            var wounds = data.Catalog.Occurrences.Where(o => o.Wound.Owner == data.Wound.Owner)
-                .Select(o => o.Wound).OrderBy(w => w.WoundId == data.Wound.WoundId ? 0 : 1)
-                .ThenBy(w => w.WoundId, StringComparer.Ordinal).ToArray();
-            var cycleKey = AfterlifeWoundTreatmentAuthority.CycleKey(data.Realm, data.CycleOrdinal);
-            var stages = wounds.SelectMany(w => SpiritualWoundRecoveryPlanner.Build(w, data.Source.HealingTier,
-                attempt["attemptId"]!.GetValue<string>(), cycleKey, w.WoundId == data.Wound.WoundId ? resolution.Calculation : null)).ToArray();
+            var (wounds, stages) = SpiritualHealingRequestProjection.BuildProgram(data, request, resolution);
             var input = new WoundAcceptedTurnInput(binding, Array.Empty<WoundOpportunityAuthority>(),
                 Array.Empty<WoundAcceptedTransitionDraft>(), data.Carriers,
                 roots[WoundIdentityState.StatePath]!, roots[WoundHistoryState.HistoryPath]!,

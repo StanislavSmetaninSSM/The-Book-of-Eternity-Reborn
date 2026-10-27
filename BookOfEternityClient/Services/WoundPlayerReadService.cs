@@ -6,6 +6,12 @@ using BookOfEternityClient.UI;
 namespace BookOfEternityClient.Services;
 
 /// <summary>Coherent read-only wound status; never issues command or healing authority.</summary>
+internal sealed record WoundPlayerReadContext(WoundPlayerProjectionInput Input, WoundCarrierCatalog Catalog,
+    JsonObject Soul, JsonObject? SpiritualConflict)
+{
+    internal WoundPlayerProjectionResult Projection => WoundPlayerProjection.Build(Input, Catalog);
+}
+
 internal static class WoundPlayerReadService
 {
     private static readonly JsonSerializerOptions StrictOptions = new();
@@ -26,6 +32,11 @@ internal static class WoundPlayerReadService
 
     /// <summary>Reads under a caller-owned lease; never reacquires or disposes it.</summary>
     internal static async Task<WoundPlayerProjectionResult> LoadAsync(FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease lease) =>
+        (await LoadContextAsync(fs, lease))?.Projection ?? WoundPlayerProjection.Unavailable();
+
+    // Parsed DATA lives only in this read operation; UI exports detached choices, not these roots.
+    internal static async Task<WoundPlayerReadContext?> LoadContextAsync(FileSystemManager fs,
         FileSystemManager.CanonicalWriteLease lease)
     {
         ArgumentNullException.ThrowIfNull(fs);
@@ -42,14 +53,16 @@ internal static class WoundPlayerReadService
                 await Root(fs, lease, WoundCarrierCatalog.AfterlifeProfilesPath));
             var identities = WoundIdentityState.Parse(await RequiredText(fs, lease, WoundIdentityState.StatePath), WoundIdentityState.StatePath);
             var history = WoundHistoryState.Parse(await RequiredText(fs, lease, WoundHistoryState.HistoryPath), WoundHistoryState.HistoryPath);
-            if (!identities.IsValid || !history.IsValid) return WoundPlayerProjection.Unavailable();
+            if (!identities.IsValid || !history.IsValid) return null;
+            var catalog = WoundCarrierCatalog.Build(carriers);
+            if (catalog.Issues.Count != 0 || history.State!.ValidateAgreement(identities.State!, catalog).Count != 0) return null;
             var soul = (await Root(fs, lease, "game_state/meta/soul_state.json"))!;
             var currentRealm = ExactString(soul["currentRealm"]);
             string realm;
             if (AfterlifeEntityProfileState.TryNormalizeEffectRealm(currentRealm, out var afterlifeRealm))
                 realm = afterlifeRealm;
             else if (RealmSemantics.IsMortalRealm(currentRealm)) realm = "mortal_world";
-            else return WoundPlayerProjection.Unavailable();
+            else return null;
 
             var selfVisible = true;
             if (realm != "mortal_world")
@@ -59,26 +72,30 @@ internal static class WoundPlayerReadService
                 if (matches is null || matches.Length != 1 ||
                     !AfterlifeEntityProfileState.TryResolveEffectTarget(matches[0], out var target) ||
                     target.Realm != realm || target.Kind != "player" || target.TargetId != "player_soul")
-                    return WoundPlayerProjection.Unavailable();
+                    return null;
                 selfVisible = AfterlifeProfileVisibility.IsVisibleToPlayer(matches[0]);
             }
             // A persistent old afterlife profile is intentionally retained during Mortal life.
             var resources = ResourceDefinitionCatalog.ParseCanonical(
                 await RequiredText(fs, lease, ResourceMaterializationContract.DefinitionsPath), allowMissingPristine: false);
-            if (!resources.IsValid || resources.Catalog is null) return WoundPlayerProjection.Unavailable();
+            if (!resources.IsValid || resources.Catalog is null) return null;
             var names = KnownItems(await Root(fs, lease, "game_state/inventory/items.json", required: false));
+            JsonObject? spiritualConflict = null;
             foreach (var path in new[] { EffectCarrierCatalog.PlayerPath, EffectCarrierCatalog.NpcPath,
                 EffectCarrierCatalog.SpiritualConflictPath, EffectIdentityState.StatePath,
                 "game_state/player/skills_active.json", "game_state/player/skills_passive.json", "game_state/npcs/npc_core.json" })
-                _ = await Root(fs, lease, path, required: false);
+            {
+                var parsed = await Root(fs, lease, path, required: false);
+                if (path == EffectCarrierCatalog.SpiritualConflictPath) spiritualConflict = parsed;
+            }
             var effects = await EffectMechanicsSnapshot.LoadAsync(fs, lease);
-            return WoundPlayerProjection.Build(new(carriers, identities.State!, history.State!, effects,
-                realm, resources.Catalog, names, selfVisible));
+            return new(new(carriers, identities.State!, history.State!, effects,
+                realm, resources.Catalog, names, selfVisible), catalog, soul, spiritualConflict);
         }
         catch (Exception failure) when (failure is IOException or InvalidDataException or UnauthorizedAccessException or JsonException or InvalidOperationException)
         {
             // Detailed authority errors belong in diagnostics, never a player/NPC privacy channel.
-            return WoundPlayerProjection.Unavailable();
+            return null;
         }
     }
 

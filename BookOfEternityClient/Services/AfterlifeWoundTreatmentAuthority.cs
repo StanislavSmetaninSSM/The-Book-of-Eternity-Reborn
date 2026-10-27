@@ -7,7 +7,19 @@ using System.Text.Json.Nodes;
 namespace BookOfEternityClient.Services;
 
 /// <summary>Exact self selection; display names and visible indexes never identify a wound.</summary>
-internal sealed record SpiritualSelfTreatmentSelection(string WoundId, string ExpectedWoundFingerprint);
+internal sealed record SpiritualSelfTreatmentSelection(string WoundId, string ExpectedWoundFingerprint)
+{
+    internal JsonObject ToJson() => new() { ["woundId"] = WoundId, ["expectedWoundFingerprint"] = ExpectedWoundFingerprint };
+    internal static SpiritualSelfTreatmentSelection Parse(JsonNode? node)
+    {
+        if (node is not JsonObject root || root.Count != 2 ||
+            root["woundId"] is not JsonValue id || !id.TryGetValue<string>(out var woundId) ||
+            root["expectedWoundFingerprint"] is not JsonValue fp || !fp.TryGetValue<string>(out var fingerprint) ||
+            !ResourceMaterializationContract.IsExactIdentifier(woundId) || !ResourceMaterializationContract.IsAuthorityFingerprint(fingerprint))
+            throw new InvalidDataException("Invalid exact spiritual wound selection.");
+        return new(woundId!, fingerprint!);
+    }
+}
 
 /// <summary>Client staging coordinates and the existing scheduler's ordinary turn control.</summary>
 internal sealed record SpiritualSelfTreatmentStageContext(
@@ -15,7 +27,11 @@ internal sealed record SpiritualSelfTreatmentStageContext(
 
 /// <summary>Staging status only; it grants no wound, cycle or accepted-publication authority.</summary>
 internal sealed record SpiritualSelfTreatmentStageResult(
-    bool IsStaged, bool AlreadyStaged, string? IssueCode, string? RequestFingerprint);
+    bool IsStaged, bool AlreadyStaged, string? IssueCode, string? RequestFingerprint)
+{
+    // Detached GM reference DATA, derived before snapshot without a snapshot token.
+    internal JsonObject? GmContext { get; init; }
+}
 
 /// <summary>Owns exact source admission for spiritual treatment requests.</summary>
 internal static partial class AfterlifeWoundTreatmentAuthority
@@ -81,7 +97,8 @@ internal static partial class AfterlifeWoundTreatmentAuthority
                 if (!await CoordinatedStateWriteHelper.TryCommitAsync(files, lease,
                         sources.Append(pending).Select(s => CoordinatedStateWriteHelper.CreateExactGuardWrite(s.Path, s.Image)).ToArray()))
                     return Refuse("source_changed");
-                return new(true, true, null, String(existingRoot["requestFingerprint"]));
+                return new(true, true, null, String(existingRoot["requestFingerprint"]))
+                    { GmContext = SpiritualHealingRequestProjection.Create(data, existingRoot) };
             }
 
             var draws = (drawDice ?? GameLoop.GenerateSecureRandomDice)(source.RollMode == "normal" ? 1 : 2);
@@ -90,6 +107,7 @@ internal static partial class AfterlifeWoundTreatmentAuthority
                 return Refuse("draw_invalid");
             var request = SpiritualSelfTreatmentRequestCodec.Create(context, selection, realm, ordinal,
                 sourceFingerprint, source.RollMode, resolution.Resolution!.SourceRolls);
+            var gmContext = SpiritualHealingRequestProjection.Create(data, request, resolution.Resolution);
             var json = request.ToJsonString();
             using var fresh = FileSystemManager.SuppressValidationReuse();
             var writes = sources.Select(s => CoordinatedStateWriteHelper.CreateExactGuardWrite(s.Path, s.Image))
@@ -107,7 +125,8 @@ internal static partial class AfterlifeWoundTreatmentAuthority
             {
                 throw new CoordinatedStatePublicationUncertainException(failure);
             }
-            return new(true, false, null, String(request["requestFingerprint"]));
+            return new(true, false, null, String(request["requestFingerprint"]))
+                { GmContext = gmContext };
         }
         catch (Exception failure) when (failure is JsonException or InvalidDataException)
         {

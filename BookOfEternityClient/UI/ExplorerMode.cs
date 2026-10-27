@@ -75,6 +75,8 @@ public partial class ExplorerMode
         _universalCommands = BuildCommandMap(
             ("help", ShowHelpDto),
             ("math", ShowMathAssistantAsync),
+            ("wounds", ShowWoundsAsync),
+            ("wound_treatment", ShowWoundTreatmentAsync),
             ("soul", ShowSoulInfo),
             ("soul_relics", ShowSoulRelics),
             ("afterlife_archive", ShowAfterlifeArchive),
@@ -242,6 +244,7 @@ public partial class ExplorerMode
         var isAfterlife = RealmSemantics.IsAfterlifeRealm(currentRealm);
         var isMortal = RealmSemantics.IsMortalRealm(currentRealm);
         _pendingGmAction = null;
+        _pendingSpiritualSelfTreatment = null;
 
         if (_universalCommands.TryGetValue(cmd, out var handler))
         {

@@ -175,6 +175,7 @@ public partial class FileSystemManager
         {
             if(state.Binding.ActionId!=Binding.ActionId || state.Binding.Generation!=Binding.Generation ||
                 state.Binding.Action!=Binding.Action || state.Binding.Source!=Binding.Source ||
+                state.Binding.SpiritualSelfTreatment!=Binding.SpiritualSelfTreatment ||
                 JsonNode.Parse(state.Json)!["submittedAtUtc"]!.GetValue<string>()!=_submittedAtUtc)
                 throw BrowserOriginalMainCondition.Invalid();
         }
@@ -184,7 +185,8 @@ public partial class FileSystemManager
         private static void RequireOriginalTuple(PendingPlayerActionService.Staged current,PendingPlayerActionService.Staged original)
         {
             if(current.RequestJson!=original.RequestJson || current.ManifestJson!=original.ManifestJson ||
-                current.AuthorityJson!=original.AuthorityJson || current.HistoryJson!=original.HistoryJson)
+                current.AuthorityJson!=original.AuthorityJson || current.HistoryJson!=original.HistoryJson ||
+                current.SpiritualWoundRequestBytesBase64!=original.SpiritualWoundRequestBytesBase64)
                 throw BrowserOriginalMainCondition.Invalid();
         }
         public void Dispose()
@@ -434,7 +436,8 @@ public partial class FileSystemManager
                 state.Phase=="terminalProcessing" && !scope.Processing)throw BrowserOriginalMainCondition.Invalid();
             var retained=scope.ExpectedStaged??throw BrowserOriginalMainCondition.Invalid();
             if(retained.RequestJson!=scope.Staged.RequestJson || retained.ManifestJson!=scope.Staged.ManifestJson ||
-                retained.AuthorityJson!=scope.Staged.AuthorityJson || retained.HistoryJson!=scope.Staged.HistoryJson)
+                retained.AuthorityJson!=scope.Staged.AuthorityJson || retained.HistoryJson!=scope.Staged.HistoryJson ||
+                retained.SpiritualWoundRequestBytesBase64!=scope.Staged.SpiritualWoundRequestBytesBase64)
                 throw BrowserOriginalMainCondition.Invalid();
             if(!scope.Cleanup)ValidateOriginalBrowserAdmission(retained,verifyPhysical:true,physicalLease);
             else scope.ValidateCleanupInventory();

@@ -12,6 +12,8 @@ public sealed class ExplorerCommandResult
     public List<UiNotification> Notifications { get; init; } = [];
     public UiPromptSession? InteractiveSession { get; init; }
     public string? PendingGmAction { get; init; }
+    [JsonIgnore]
+    internal Services.WoundCommandState? WoundCommandState { get; init; }
 }
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
