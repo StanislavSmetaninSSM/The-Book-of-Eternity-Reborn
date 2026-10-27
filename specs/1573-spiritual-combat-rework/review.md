@@ -261,3 +261,21 @@ Git diff --check и Spec Kit prerequisites успешны; отдельно пр
 GitHub readback spec подтверждены. Только документы; runtime/build/balance/clean
 restore UNRUN. Арифметика не названа игровым прогоном. Новых исполняемых затрат
 или кэша нет; reuse DATA/fresh authority и gate реализации сохранены.
+
+## 2026-10-28 — таблица как основа и полный mortal action check
+
+База: 29acb84b306be41e27c0d37dc1dd632ad1157eee, #1573, ветка
+story/golden-mask-backstory-20261025. Автор принял таблицу рангов «как основу»
+и поручил изучить Mortal проверки со стандартными шкалами. Spec v1.8 отражает
+ограниченный статус принятия; кандидат v2.3 снимает прежнее предположение, что
+большой итоговый бонус к d20 сам по себе недопустим. Mortal comparison содержит
+полную цепочку stat cap/level scaling/difficulty и границы клиентского исполнения.
+Числа духовной проверки не выбраны, разрешение реализации не получено.
+
+Read-only runtime-аудит /root/audit_mortal_check_runtime1573, gpt-6.1-sol/high:
+клиентские характеристики/кубики и GM reminder подтверждены; отдельные typed
+effect/wound checks не названы отсутствующими. Следующий шаг — согласовать
+перенос уровневой роли на последовательные духовные ранги и противодействие.
+
+WIP до независимого ревью. Только документы; runtime/build/balance/clean restore
+UNRUN. Новых исполняемых затрат/кэша нет; reuse DATA/fresh authority сохранены.
