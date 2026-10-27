@@ -9,6 +9,15 @@ coordinator now calls the same private complete builder under its own lease befo
 any preflight/normalization. Preparation errors return ordinary Result.Issues with
 no writes, allowing current repair handling; no old executable plan is fallback.
 
+Root review caught and removed a live-absence invocation bypass before build:
+publication always authenticates the original family; missing live v2 requires
+its strict matching published result or issues, never generic NoPlan fallback.
+Retirement is limited to deferred-routing/publication boundaries; direct-held-
+lease defaults keep their prior cache behavior. Current narrow reader DATA is
+shared into full Admit, while earlier routing observes only the request; no large
+catalog parsing repeats. Separate leases require fresh original authentication;
+supplied DTO/closed-lease evidence cannot replace it. No speedup is claimed.
+
 Targeted existing-cache invalidation drops self _planningResult/input fingerprint
 as well as any validated self slot and closes its private owner. Other families
 remain intact. Actual self preparation calls static Prepare/effect/Finalize APIs,
@@ -20,8 +29,14 @@ complete graph admission, common atomic publisher and scheduler claim stay stric
 No reissuer/lease transfer, new coordinator/cache, duplicate effect algorithm or
 GM field is introduced. Early raw work no longer duplicates large catalog parsing;
 full operation DATA is prepared/reused once under the actual publication owner.
-Two-lease/no-executable-early/changed-source typed controls and finite SOURCE follow
-before fresh owning Integration and guided2; costs and runtime remain UNRUN.
+Two new independent typed controls use the existing minimal signed fixture:
+no executable common/effect/wound entry or writes during early routing, fresh
+publication under B (old A rejected), actual wound/cycle/History/no-cost; and an
+earlier cached full plan followed by absent and byte-replaced source under B,
+precise issues/no canonical mutation/no validated fallback. Exact owner category2
+has120s; guided2 retains180s. No new matrix/setup/cache/diagnostic framework.
+Finite architecture/Sol SOURCE before one fresh owning Integration, owner2 then
+guided2; costs and runtime remain UNRUN, other passing gates retained by impact.
 
 Existing-logger readout on clean94e8: Integration-only refsfalse build0errors/
 105warnings/3:23.11; Main31a887a8 and Support6d679b7b masters/copies unchanged,

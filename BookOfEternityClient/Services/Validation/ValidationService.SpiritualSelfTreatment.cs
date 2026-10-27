@@ -6,6 +6,8 @@ namespace BookOfEternityClient.Services;
 
 public partial class ValidationService
 {
+    private enum SpiritualSelfTreatmentPhase { DirectHeldLease, DeferredRouting, Publication }
+
     /// <summary>Prepares the self contribution only under the coordinator's actual publication lease.</summary>
     /// <param name="lease">The active lease held through preparation and common publication.</param>
     /// <returns>Fresh preparation issues, without writes or an executable fallback on failure.</returns>
@@ -13,16 +15,17 @@ public partial class ValidationService
         FileSystemManager.CanonicalWriteLease lease)
     {
         _fs.EnsureCanonicalWriteLeaseActive(lease);
-        // Presence only avoids an unnecessary original read on ordinary turns.
-        // The actual signed original below still selects and authenticates the family.
-        if (!_fs.FileExists(lease, AcceptedMechanicsPlan.WoundCommandPath))
-            return Array.Empty<ValidationIssue>();
-        return await TryPrepareSpiritualSelfTreatmentAsync(lease) ?? Array.Empty<ValidationIssue>();
+        // A missing live request still requires its signed family's strict replay
+        // proof. Mutable absence cannot select the ordinary no-plan route.
+        return await TryPrepareSpiritualSelfTreatmentAsync(lease, SpiritualSelfTreatmentPhase.Publication)
+            ?? Array.Empty<ValidationIssue>();
     }
 
     private async Task<IReadOnlyList<ValidationIssue>?> TryPrepareSpiritualSelfTreatmentAsync(
-        FileSystemManager.CanonicalWriteLease lease, bool deferPublication = false)
+        FileSystemManager.CanonicalWriteLease lease,
+        SpiritualSelfTreatmentPhase phase = SpiritualSelfTreatmentPhase.DirectHeldLease)
     {
+        var deferPublication = phase == SpiritualSelfTreatmentPhase.DeferredRouting;
         var currentBytes = await _fs.ReadFileBytesAsync(lease, AcceptedMechanicsPlan.WoundCommandPath);
         var liveCandidate = false;
         if (currentBytes is not null)
@@ -66,7 +69,8 @@ public partial class ValidationService
             evidence.RequireCurrent(_fs, lease, signed);
             // A former self entry may retain its full planning result after the
             // generic validated slot was cleared. Its old live owner cannot cross leases.
-            AcceptedMechanicsPlanAuthority.InvalidateSpiritualSelfTreatment(_fs, lease);
+            if (phase != SpiritualSelfTreatmentPhase.DirectHeldLease)
+                AcceptedMechanicsPlanAuthority.InvalidateSpiritualSelfTreatment(_fs, lease);
             if (currentBytes is null)
             {
                 var scheduler = new ProgressionScheduleService(_fs, Microsoft.Extensions.Logging.Abstractions.NullLogger<ProgressionScheduleService>.Instance);

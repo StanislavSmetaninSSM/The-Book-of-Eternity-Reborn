@@ -2,6 +2,24 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "spiritual-healing-publication-owner",
+  "responsibility": "Two typed real-snapshot controls for deferred raw routing without an executable plan, actual preparation/publication under a later lease, and absent/replaced source refusal without a stale earlier-lease fallback.",
+  "excludes": "Actual GameEngine guided flow, broad admission matrices, other wound families, Mortal timeout work and performance diagnostics.",
+  "changeHints": [
+    "BookOfEternityClient/Services/Validation/ValidationService.SpiritualSelfTreatment.cs",
+    "BookOfEternityClient/Services/AcceptedMechanicsPlanCache.cs",
+    "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.MortalItems.cs"
+  ],
+  "related": [{ "id": "spiritual-healing-guided-self", "when": "The real caller must use the same deferred routing and publication owner." }],
+  "requirements": { "frontendBuild": false, "exclusive": true },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [{ "project": "integration", "tests": [
+    "BookOfEternityClient.Tests.AfterlifeWoundHealingPublicationOwnerTests.DeferredRoutingLeavesNoExecutablePlanAndPublicationUsesItsOwnLease",
+    "BookOfEternityClient.Tests.AfterlifeWoundHealingPublicationOwnerTests.MissingOrReplacedSourceCannotFallBackToAnEarlierLeasePlan"
+  ] }]
+},
+{
   "id": "spiritual-healing-snapshot-beforeimage-controls",
   "responsibility": "Three existing generic wound snapshot coverage methods: all-present authority, each missing canonical before-image refusal, and exact signed absence of new surfaces. Keeps the generic authority contract strict while actual signed spiritual preparation input receives its narrow GameEngine role.",
   "excludes": "No new theory/data matrix; no game-world setup, Mortal recovery timeout workload, broad snapshot suite or spiritual source admission expansion.",

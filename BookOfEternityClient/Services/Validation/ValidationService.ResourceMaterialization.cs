@@ -39,7 +39,8 @@ public partial class ValidationService
         AcceptedMechanicsPlanAuthority.InvalidateValidated(_fs, writeLease);
         EffectAcceptedTurnPlanAuthority.InvalidateValidated(_fs, writeLease);
         var spiritualTreatment = await TryPrepareSpiritualSelfTreatmentAsync(writeLease,
-            deferSpiritualSelfTreatmentPublication);
+            deferSpiritualSelfTreatmentPublication ? SpiritualSelfTreatmentPhase.DeferredRouting
+                : SpiritualSelfTreatmentPhase.DirectHeldLease);
         if (spiritualTreatment is not null)
             return spiritualTreatment;
         var keepCommonHandoff = false;
