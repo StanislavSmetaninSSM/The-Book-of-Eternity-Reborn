@@ -1,3 +1,36 @@
+# T609 actual no-world causal RED — independent OUTCOME accepted
+
+Runtime / Integration source `7ea9297c62e7870e04327a48dcb40c214c5df7d1`;
+other four fresh owning projects `4e02c5786d59c9fec7b1d9c6efb7cd114f70dcea`.
+All five builds succeeded, no errors, exact previous warning multisets/counts
+33/23/14/26/101, 33 DLL/PDB/XML artifacts, 11 PE/PDB and 87 Git/source/PDB joins.
+Three unchanged native assets matched. Catalog discovery valid 971/12,602 and
+fresh PlanOnly selected exactly one exclusive case under its original 60s budget.
+
+The one admitted no-world case completed Failed in 14.4540956s / 60s, with no
+timeout/skip/duplicate/underfill and both process cleanup flags true. Exact
+original TRX failure is ONLY the final source-count assertion, expected 4 versus
+actual 8, at current source line 119. Earlier unchanged-reference, literal data,
+error/order/alias, arbitrary-observer isolation, real operation and closed passive
+window assertions are source-bound by that final failure location. The default
+window recorded complete named aggregates, not individual timing events; no full
+trace or event-clock proof is claimed. Independent Sol OUTCOME accepts this
+causal RED only; no cache or genuine-consumer outcome follows.
+
+External actual-t609-effect-source-red-1 holds original TRX SHA256
+94199a01a68b587de169d5d34da78d89158dd08483856f9a1d5948425c98ea91 and logs.
+The selected synthetic input is 31,110 bytes: two complete reads 5.278332ms /
+293,064 allocated bytes, eight actual strict-parse scopes 3.733581ms; 50 loops
+of DeepClone alone 0.175737ms / 68,824 bytes. Clone-only timing does not include
+identical downstream traversal, and key/lookup/cold/hit costs are unmeasured.
+No benefit or 300-second fit follows. Original captured before-image sizes remain
+unknown. Astra is assessing the cost gate; no implementation/GREEN is admitted.
+
+Keep DFR timeout and all previous incomplete raw/fixture evidence. No retry,
+quota, budget increase, external raw deletion, new full DFR or dependent gate.
+Next is a bounded independent equal-work cost decision, preserving
+strict parser order, live path iteration and all fresh authority/history checks.
+
 # T609 RED fixture compile correction — WIP
 
 Fresh build at `4e02c5786d59c9fec7b1d9c6efb7cd114f70dcea` compiled client,
