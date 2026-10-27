@@ -115,8 +115,9 @@ public sealed class AfterlifeWoundHealingReplayGraphTests
         var normalizedRoot = JsonNode.Parse(normalizedInterface)!.AsObject();
         Assert.IsType<JsonObject>(Assert.Single(normalizedRoot["dialogueOptions"]!.AsArray()));
         var acceptedMechanics = fixture.CaptureMutationRoots();
-        // A legal weaker II roll-only graph under the SAME accepted ref still changes accepted authorship.
-        normalizedRoot["spiritualHealingGraphs"]![0]!["consequenceDefinitions"]!.AsArray().RemoveAt(1);
+        // Both lawful II slots remain; a changed summary under the SAME ref still changes accepted authorship.
+        normalizedRoot["spiritualHealingGraphs"]![0]!["consequenceDefinitions"]![1]!["root"]!["slots"]![0]!["readableSummary"] =
+            "Подменённое описание ослабленного последствия.";
         var replacedBody = normalizedRoot.ToJsonString();
         await fixture.Files.WriteFileAtomicAsync("output/interface_updates.json", replacedBody);
         var changedBodyIssues = await publishedInterface.ValidateAcceptedTurnInterfacePayloadAsync();

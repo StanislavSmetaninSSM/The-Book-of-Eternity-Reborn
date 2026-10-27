@@ -1,5 +1,12 @@
 # US4 safe self-treatment — active functional work, 2026-10-27
 
+Finite architectural SOURCE found the unrun sameRef test substitution was not
+legal: removing one II slot violates the existing EXACT rank slot rule before
+semantic comparison. Corrected only that oracle to preserve both definitions/slots
+and change one nonempty readableSummary; parser remains strict and expected error
+still specifically accepted graph content differs. No runtime/failed compile occurred
+for the invalid oracle. Production semantic comparison already includes each summary.
+
 Finite causal outcomes on clean3ee/compiled1d+fresh Integration5bc37c8a69d145a1116db390c593359e38be45942145c22b91fdc8795400dcf8:
 Integration-only build0errors/102warnings/3:48.13; exact combined PlanOnly3cases/
 2descriptors11.5534210s,0executed. Separate guided2 actual1PASS1FAIL31.4821087s/
@@ -26,7 +33,7 @@ FP is only a fastpath after strict agreement; legally normalized non-graph field
 use closed parser+exact requiredrefs and actual stage.After graph DATA, preserving
 all definition bodies/non-root definitions, ownership/complications and ordered
 profile+summary per root. Only allocated rootIDs/global slotrenumber spellings are
-normalized. SameRef validIIroll-only substitution now has precise-refusal/no-canonical-
+normalized. SameRef lawful changed-slot-summary substitution now has precise-refusal/no-canonical-
 mutation oracle in existing Fact. No receipt/cache/authority flag/framework added.
 Optimization: helper parses current History/catalog once; returned immutable DATA
 is reused; closing compares byteimages without reparsing. Scalar graphResponse FP
