@@ -1,3 +1,21 @@
+# T609 optional-operation helper — SOURCE/build accepted, runtime pending
+
+Frozen source `040aef9f6d0b6b33cc71fbc8986a32d40c0e164b` received independent
+Sol SOURCE and Astra/high policy/helper contract ACCEPT. All five fresh managed
+builds exited 0 with no errors and exact normalized baseline warning multisets
+33/23/14/26/101. Verified 33 artifacts, 11 PE/PDB pairs and 90 Git/source/PDB
+bindings. Actual catalog discovery: 973 categories / 12,608 methods, no unmapped
+or stale selectors. PlanOnly selected four descriptors / ten cases: policy5,
+causal-source1, equal-work-cost1 and private-fingerprint-data3; each category keeps
+its original 60-second budget. Discovery and PlanOnly executed zero tests and
+reported no timeout and both cleanup flags true. External helpers and corrected
+SOURCE-report guards received independent Sol review. Actual preflight, independent
+runtime PREP, helper GREEN and cost/policy OUTCOME remain pending. No genuine owner
+wiring or DFR repeat has started; new code is compiled but not runtime-qualified.
+Diagnostic evidence remains external under `dfr-prefix/t608-counter-scaffold`.
+Any subsequent documentation checkpoint must preserve the exact compiled-source
+SHA and validate its documentation-only delta before adapting preflight guards.
+
 # T609 optional-operation helper — DESIGN accepted, implementation WIP
 
 Astra/high accepted the bounded helper after accepted Sol cost OUTCOME. Restrict
