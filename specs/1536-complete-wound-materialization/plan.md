@@ -1,3 +1,28 @@
+# T609 bounded source extraction — design accepted, code UNRUN
+
+Independent Astra/high DESIGN reviewed per-root private before-image parsing, source
+identity, error ordering, operation failure side effects and actual sync lookup.
+Report SHA256 dce29dae9f72b0349c5e1f34a1594098a8f1087e957d7fe95aaad70703dbd47a.
+Only exact original reader extraction and one typed no-world causal / cost scaffold
+are released. Preserve original live ToDictionary, fresh map, each private byte
+clone and strict parser; no cache behavior or new owner in this phase. Reuse the
+existing passive named timing path to count actual parse invocations. An initial
+compilable shared-source baseline must complete original equivalence and owner /
+error/alias checks before its final 2*N vs N intended RED; failed setup/compile
+is not RED. Record declared input sizes and baseline parse/clone cost; key/lookup /
+cold/hit costs require separately admitted GREEN. Actual prior before-images remain
+unknown. No wall-time threshold.
+
+Possible GREEN remains conditional on separate policy/key/copy/failure proof and
+measured net value. Direct GetOrCompute around parser is rejected because it poisons
+other operation work on handled parse failure. Cache-only TryGetAsync is currently
+nonblocking by source proof (compute-null returns before its sole await) and is used
+with IsCompleted elsewhere; no blocking wait or orphan fallback is permitted. The
+shared options object needs proven immutable resolver/converter policy or direct-source
+fallback. Any implementation must retain original exception order and demonstrate
+an unrelated cached entry and an outer successful frame survive handled parse errors.
+Original DFR timeout, diagnostics/fixtures and dependent gates remain untouched.
+
 # DFR timeout independently reviewed — bounded DATA audit
 
 Independent Sol OUTCOME accepts the incomplete timeout classification and the

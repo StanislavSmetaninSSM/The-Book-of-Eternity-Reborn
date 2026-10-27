@@ -1,9 +1,9 @@
 # T609 retained effect-source DATA audit — #1536
 
-- [ ] T609-AUDIT Trace the existing private before-image parsing consumers, complete
+- [x] T609-AUDIT Trace the existing private before-image parsing consumers, complete
   key/dependencies/owner/fallback/detachment/fresh checks and actual source work;
   report if reuse is unsafe or its measured cost too small. Do not alter code.
-- [ ] T609-DESIGN Independent bounded design review of any worthwhile safe reuse;
+- [x] T609-DESIGN Independent bounded design review of any worthwhile safe reuse;
   preserve current authority, mutable-input, path/error/order and cache lifetimes.
 - [ ] T609-CAUSAL If design supports it, prove actual parse-source counts, detached
   results and applicable mutation/failure/freshness controls cheaply before a change;

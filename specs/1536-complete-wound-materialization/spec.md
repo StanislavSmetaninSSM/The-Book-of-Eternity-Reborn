@@ -1,3 +1,46 @@
+# T609 private effect-source parsing — bounded technical amendment
+
+EFFECTSRC-1: First extract the original per-path lookup / strict UTF-8 decode /
+TrimStart BOM / StrictJsonAuthority JsonObject parse into the existing private
+fingerprint DATA owner, called by the SAME live SourceAuthorityPaths.ToDictionary
+expression. Preserve each original ReadBeforeBytes(path) byte clone, absent/null /
+empty distinctions, exact lookup and value-selector order, duplicate/null/missing
+path errors, mutable returned roots, outer fresh map, source exceptions and all
+Compose admission/authority/history/fresh-byte checks. The extraction does not add
+reuse, change game contracts or import a new source/cache framework.
+
+EFFECTSRC-2: A file-free typed control uses actual immutable BeforeImages, the
+same extracted production reader and an existing serial ValidationOperation. It
+first proves original equivalence, detached aliases, exact failure order and owner
+closing, then an actual parser-source count for two identical reads: original 2*N
+versus required N for N present valid roots. A causal RED fails only that final
+count after all prerequisites. Measure original strict parse and actual clone cost
+first; any later GREEN must also measure key/lookup and cold/hit allocation costs
+independently under declared equal-size input; no wall
+threshold or extrapolation to full DFR. Existing named timing mechanism may observe
+actual parser invocations without installing arbitrary filesystem callbacks.
+
+EFFECTSRC-3: Conditional future per-root reuse is a narrowly scoped exception to
+IMMUTABLEFP-3 only after independent review and meaningful cost proof. Preserve
+fresh outer maps, every byte clone, detached root outputs and every original fresh
+guard; acknowledge extra cache insertion/return copies. Key exact immutable byte
+owner, current path and proven immutable strict parser policy/revision; retain live
+per-item iteration and no eager whole-array snapshot. Null/unsupported/suppressed/
+fresh contours use the original parser; no owner or permission is cached.
+
+EFFECTSRC-4: Direct GetOrCompute(strict parser) is prohibited: a parse failure would
+invalidate unrelated entries and poison active ancestor frames. Any later design
+must use the already proven nonblocking cache-only lookup, original parse OUTSIDE
+the operation request on miss, then insertion of successful DATA without a second
+parse. Check IsCompleted and preserve existing serial/closed/overlap behavior; if
+the synchronous cache-only invariant or immutable parser/resolver policy is not
+proven, retain the original reader. Verify handled malformed parse preserves an
+unrelated warm entry and outer successful frame, original exception type/message /
+first-path order, no partial insertion, owner isolation and fresh/disposal behavior.
+This amendment admits extraction and cheap causal/cost checks only; cache GREEN,
+genuine vertical and original-budget full DFR require separate gates. No budget,
+raw retention, diagnostic collection or user-facing gameplay contract changes.
+
 # T608 candidate per-invocation DATA owner — bounded consumer correction
 
 COPYOBS10: separately from COPYOBS8's PREPARATION-only experiment, the component
