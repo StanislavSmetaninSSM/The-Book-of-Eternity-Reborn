@@ -55,8 +55,17 @@ the new typed positive fixtures. Those fixtures now use spiritual_instability;
 two additional canonical-parse inactive/suppressed cases form the targeted
 regression (37 expected cases total). The first implementation build on
 `8bcd2513e045d23d04782b15867f9c537eff146f` exited0, 0 errors/75 warnings,
-6:17.40; this is compilation only. The new regression is UNCOMPILED/UNRUN and
-the production correction has deliberately not been applied before its RED.
+6:17.40; this is compilation only. The test-only owning Unit build on
+`c05a3fa6b49124caf1b62a3ab072a5eba305fafd` exited0/0errors/26 baseline warnings
+in2:31.49; unchanged production/reference sources were separately checked against
+the successful8bcd build. Official PlanOnly discovered13methods/37cases. Actual
+37/37 complete execution in31.4737137s produced35PASS and precisely the two
+canonical inactive/suppressed FAILS at the new state gate, no timeout/skips/
+duplicates and both cleanup flags true. Raw/TRX is external at
+`us4-self-healing/inactive-red-1/actual`. The correction now uses the very same
+exact-identifier predicate as canonical parsing and still sums only exact active
+complications. Corrected source is UNCOMPILED/UNRUN pending fresh owning build
+and37-case GREEN; no session/publication completion is claimed.
 
 Implementation sequence (WIP, no new runtime claim):
 

@@ -103,7 +103,7 @@ internal static class SpiritualHealingResolver
         };
         if (before.Complications is null || before.Complications.Count > 16 ||
             before.Complications.Any(static value => value is null ||
-                value.State is not ("active" or "resolved") ||
+                !ResourceMaterializationContract.IsExactIdentifier(value.State) ||
                 value.TreatmentDifficultyModifier is < 0 or > 4))
             return Invalid("spiritual_healing_complications_invalid");
         long complications = 0;
