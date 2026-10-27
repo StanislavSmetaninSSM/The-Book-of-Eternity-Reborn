@@ -24,7 +24,7 @@ public sealed partial class ExplorerWebCommandServiceTestsSpiritualConflictArtDr
         Assert.Contains("Не является отдельным боевым приёмом", resilience.Summary, StringComparison.OrdinalIgnoreCase);
         var healing = Assert.Single(arts.Cards, card => card.Title == "Духовное исцеление");
         Assert.Equal("Целительное духовное искусство", healing.Subtitle);
-        Assert.Contains("пока недоступны", healing.Summary, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Самолечение духовной раны вне конфликта доступно через /лечить", healing.Summary, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Правила искусства", healing.Summary, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain(
             "Искусство диагностики и лечения духовных ран; на нулевой ступени доступна только диагностика.",

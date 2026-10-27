@@ -10037,7 +10037,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     [Theory]
     [InlineData("pressure", "Давление", null)]
     [InlineData("spiritual_resilience", "Духовная стойкость", "Пассивное действие, без затрат ОД")]
-    [InlineData("spiritual_healing", "Духовное исцеление", "Диагностика и лечение духовных ран пока недоступны; искусство уже можно развивать")]
+    [InlineData("spiritual_healing", "Духовное исцеление", "Самолечение духовной раны вне конфликта доступно через /лечить; /раны показывает известные раны")]
     public async Task StandardWoundArt_TryProcessCommand_SpiritualArts_UpgradesArtAndSpendsInkFeathers(
         string artId,
         string displayName,
@@ -10074,8 +10074,8 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
             Assert.Contains(expectedRule, ExtractRenderedText(), StringComparison.OrdinalIgnoreCase);
         if (artId == AfterlifeSpiritualConflictState.SpiritualHealingArtId)
         {
-            Assert.Contains("Будущее правило искусства, когда лечение станет доступно: нулевая ступень предназначена для диагностики", ExtractRenderedText(), StringComparison.OrdinalIgnoreCase);
-            Assert.Contains("Будущее правило лечения, когда лечение станет доступно: в бою база 5 ОД", ExtractRenderedText(), StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("Правила искусства: нулевая ступень предназначена для диагностики", ExtractRenderedText(), StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("Боевое лечение пока не подключено: база 5 ОД", ExtractRenderedText(), StringComparison.OrdinalIgnoreCase);
         }
         Assert.DoesNotContain("лечение не влияет на запас ОД", ExtractRenderedText(), StringComparison.OrdinalIgnoreCase);
     }

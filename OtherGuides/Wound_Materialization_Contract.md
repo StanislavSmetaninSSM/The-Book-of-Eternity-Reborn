@@ -1545,8 +1545,55 @@ resolver or an Ink Feather quote.
 
 Validated healed snapshots appear separately under `История ран`, never in the active
 list. Missing or incoherent wound authority gives `Сейчас невозможно надёжно определить
-состояние ран.` rather than claiming the player is healthy. No `/раны`/`/wounds`,
-`/лечить`/`/treat`, target/provider selection, quote or staging is enabled by this
-read-only slice; full guided behavior remains a separate accepted-plan task. See the
+состояние ран.` rather than claiming the player is healthy. This read-only status
+inspection itself creates no treatment intent. The separate guided self-only route
+below now owns `/раны`/`/wounds` and `/лечить`/`/treat` (`/исцелить`/`/heal` aliases);
+helper/entity/combat routes and Ink Feather quotes remain outside this slice. See the
 `wound_player_status_readonly_v1` display examples in
 `Examples/E_CLI_Wound_Materialization.txt` and `Examples/E_CLI_Afterlife_Turns.txt`.
+
+
+## spiritual_self_treatment_v2 — guided self treatment outside conflict
+
+In Chaos Sea / Shining Abode, `/раны` (`/wounds`) shows visible current-self active
+wounds and separate healed History. `/лечить`, `/treat`, `/исцелить`, `/heal` opens
+self wound selection plus confirmation. Tier0 may inspect known facts; treatment
+requires mastered Spiritual Healing at least the selected severity I–IV. Hidden,
+foreign and former-realm wounds are not selectable. Helper/entity/combat treatment
+and Ink Feather service/quotes are not enabled by this self-only flow.
+
+Opening/cancelling the form creates no gameplay mutation, draw or world cycle.
+Confirmation queues only client-owned exact selection; staging under the actual
+turn/control creates `game_state/wounds/wound_commands.json` schemaVersion2,
+kind `spiritual_self_treatment_request`. GM MUST NOT write/replace/delete it, mint
+snapshotToken, change the attempt/roll, or spend self OD. This is separate from v1
+wound commands. The independent retained die is not taken from the GM dice pool.
+Failure still advances one ordinary safe cycle. Active treatment runs before one
+natural recovery grant to eligible self wounds; client publishes all wound/effect,
+identity, History, scheduler and output members atomically. Healing removes the
+active wound and retains one verified terminal History entry.
+
+Read `input/turn_request.json.spiritualHealing` and its `destinationGraphs`.
+The client computes active/natural destination ranks and opaque stageRefs from the
+retained attempt. For EVERY requested stageRef, author exactly one row in
+`output/interface_updates.json.spiritualHealingGraphs` with exactly `stageRef` and
+`consequenceDefinitions`. Each definition wrapper has `definitionRef`, `definition`,
+and `root` with `ownership` (`kind`, explicit nullable `complicationRef`) and `slots`
+(`profileKey`, `readableSummary`), using the existing closed wound consequence grammar.
+Use only client-provided complicationRefs. Definitions contain `links: []`; the
+client binds predecessor identities, ownership and generations. No effect IDs,
+manual wound edits, automatic survivor choice or substitute rank is accepted.
+For III/H3/d12, for example, author the requested II graph (roll hindrance plus
+cost burden1) and then I graph (roll hindrance). Both are independently authored;
+the client checks profile restrictions, exact budget and intermediate retirement.
+A missing/invalid graph enters repair with the SAME attempt/dice and no publication.
+
+When destinationGraphs is empty, omit spiritualHealingGraphs (or use an empty
+array); no graph is needed for rank-I terminal healing. Graphs-only interface payload
+is legal only for the actual signed v2 family; ordinary/Mortal/unbound payloads keep
+their prior refusal. Always include a fresh ISO timestamp. Write ordinary narrative,
+mandatory NPC Scope reasoning and the progression report from actual progressionControl.
+Never recreate consumed request/report or alter accepted output on replay. Retained
+browser original bytes prove identity after cleanup; accepted cleanup also verifies
+strict matching spiritual History/control/schedule/cohort, while settled means restored,
+not healed. No additional GM receipt or lifecycle acknowledgement is authored.

@@ -651,7 +651,7 @@ Special wound costs (`spiritual_wound_special_action_costs_v1`) apply equally to
             
             1. **Narrative & UI Elements:**
                - output/narrative_response.json (response)
-               - output/interface_updates.json (dialogueOptions, image_prompt) - only when this turn actually changes dialogueOptions and/or image_prompt
+               - output/interface_updates.json (dialogueOptions, image_prompt; spiritualHealingGraphs ONLY for actual signed spiritual_self_treatment_request v2) - only when this turn supplies one of these allowed payloads
                - output/debug_logs.json (gm_thoughts_markdown)
                - these output/*.json files are fresh per-turn transient artifacts for the current request only
                - rewrite them fully for the current turn; do not append cross-turn history there and do not leave stale previous-turn payloads in place
@@ -790,3 +790,14 @@ Special wound costs (`spiritual_wound_special_action_costs_v1`) apply equally to
         Receipt-only state does not prove whole-turn acceptance; do not reconstruct private authority.
     </SpiritualTerminalClosure>
 </InstructionBlock>
+
+spiritual_self_treatment_v2: when input/turn_request.json.spiritualHealing is present,
+keep client-owned game_state/wounds/wound_commands.json unchanged. Use its retained
+attempt/dice, not the general dice pool. Answer every destinationGraphs.stageRef with
+exactly one spiritualHealingGraphs row (stageRef + consequenceDefinitions) in fresh
+interface_updates.json, using the closed wound grammar and client complicationRefs.
+The client computes rank, active-before-natural effects, one cycle even on failure,
+History and no self OD cost. Do not author receipts/IDs/tokens or recreate consumed
+request/report on continuation. Empty destinationGraphs needs no graph. Ordinary and
+Mortal payloads cannot use this field. Read Wound_Materialization_Contract.md and the
+spiritual_self_treatment_v2 worked example before resolving this request.

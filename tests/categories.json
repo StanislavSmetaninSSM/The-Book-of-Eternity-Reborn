@@ -2,6 +2,70 @@
     "schemaVersion": 1,
     "categories": [
     {
+      "id": "spiritual-healing-guided-contract",
+      "responsibility": "Five focused typed selection/phase/blob, actual response transport/ordinary absence, unbound graph refusal and GM worked-example contracts, with directly affected existing afterlife inventory and read-only documentation guards.",
+      "excludes": "Actual GameEngine caller, fresh-process cleanup, full pending admission matrices, unrelated afterlife documentation and held Mortal runtime.",
+      "changeHints": [
+        "BookOfEternityClient/Services/PendingPlayerActionService.cs",
+        "BookOfEternityClient/Services/Validation/ValidationService.SpiritualHealingInterface.cs",
+        "BookOfEternityClient/IO/StateDistributor.cs",
+        "OtherGuides/Wound_Materialization_Contract.md"
+      ],
+      "related": [
+        {
+          "id": "spiritual-healing-guided-self",
+          "when": "Actual confirmed public caller is qualified separately."
+        },
+        {
+          "id": "fr063-ordinary-output-policy-source",
+          "when": "The exact new signed adapter must still reverse to the unchanged original ordinary policy."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.SpiritualHealingGuidedContractTests.*",
+            "BookOfEternityClient.Tests.AfterlifeContractRegistryTests.RegistryPathsMatchMachineReadableInventory",
+            "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifePendingControlSurfaceInventoryIsMachineReadable",
+            "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.WoundTerminalGeneration_PreservesHistoryWithoutEnablingSpiritualTreatment",
+            "BookOfEternityClient.Tests.WoundPlayerStatusDocumentationTests.CurrentReadonlyStatusIsSynchronizedForGm"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "spiritual-healing-guided-help",
+      "responsibility": "Existing actual console/browser help consumers now describe available self-only /лечить and keep combat treatment explicitly unavailable.",
+      "excludes": "Art purchases, treatment mechanics, full UI explorer and held Mortal runtime.",
+      "changeHints": [
+        "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Afterlife.SpiritualConflict.cs",
+        "BookOfEternityClient/UI/ExplorerAfterlifeCombatCommandResultBuilder.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.StandardWoundArt_ConsoleHelpFramesHealingAsUnavailableFutureRules",
+            "BookOfEternityClient.Tests.ExplorerWebCommandServiceTestsSpiritualConflictArtDrilldowns.StandardWoundArt_SpiritualConflictHelpRendersPassiveAndFutureHealingRulesTruthfully"
+          ]
+        }
+      ]
+    },
+    {
       "id": "spiritual-healing-guided-self",
       "responsibility": "Confirmed browser /лечить selection uses the existing prompt and pending action lifecycle, actual GameEngine pre-snapshot staging and a native-shaped controlled GM completion to publish self wound/effects, one cycle and History; cancellation is inert.",
       "excludes": "Fresh-process recovery, helper/entity/combat healing, broad pending admission matrices, held Mortal timeout controls and full DFR. The controlled terminal fixture is not a real GM-provider qualification.",

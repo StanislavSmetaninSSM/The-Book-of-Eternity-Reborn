@@ -4361,7 +4361,7 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
             "champion_coordination" => "помогает стороне, когда за душу действует чемпион",
             "recover_spiritual_power" => "собирает Средоточие и возвращает запас ОД",
             AfterlifeSpiritualConflictState.SpiritualResilienceArtId => "пассивно повышает стойкость души к духовным ранам; не требует отдельного действия и не расходует ОД. Не является отдельным боевым приёмом",
-            AfterlifeSpiritualConflictState.SpiritualHealingArtId => "Диагностика и лечение духовных ран пока недоступны; искусство уже можно развивать. Правила искусства, когда лечение станет доступно: нулевая ступень предназначена для диагностики, ступени I–IV — для лечения ран не тяжелее освоенной ступени, ступень V — любых духовных ран",
+            AfterlifeSpiritualConflictState.SpiritualHealingArtId => "Самолечение духовной раны вне конфликта доступно через /лечить; /раны показывает известные раны. Правила искусства: нулевая ступень предназначена для диагностики, ступени I–IV — для лечения ран не тяжелее освоенной ступени, ступень V — любых духовных ран",
             _ => "применяется по контексту духовного боя"
         };
 
@@ -4399,7 +4399,7 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
             "champion_coordination" => "база 2 ОД, поддержка чемпиона",
             "recover_spiritual_power" => "восстанавливает ОД",
             AfterlifeSpiritualConflictState.SpiritualResilienceArtId => "Пассивное действие, без затрат ОД",
-            AfterlifeSpiritualConflictState.SpiritualHealingArtId => "Планируемое правило лечения: в бою база 5 ОД, обычное снижение по искусству, минимум 2 ОД; вне боя ОД не расходуются",
+            AfterlifeSpiritualConflictState.SpiritualHealingArtId => "Боевое лечение пока не подключено: база 5 ОД, обычное снижение по искусству, минимум 2 ОД; вне боя ОД не расходуются",
             _ => "стоимость зависит от аудита"
         };
 
@@ -4423,7 +4423,7 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
             "champion_coordination" => "бой через союзника",
             "recover_spiritual_power" => "защита, ожидание",
             AfterlifeSpiritualConflictState.SpiritualResilienceArtId => "духовные раны и их последствия (пассивно; не отдельный приём)",
-            AfterlifeSpiritualConflictState.SpiritualHealingArtId => "не применяется: диагностика и лечение пока недоступны",
+            AfterlifeSpiritualConflictState.SpiritualHealingArtId => "собственные духовные раны вне конфликта; лечение в бою пока не подключено",
             _ => "контекст сцены"
         };
 

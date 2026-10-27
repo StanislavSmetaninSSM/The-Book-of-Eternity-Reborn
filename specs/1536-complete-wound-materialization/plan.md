@@ -1,5 +1,47 @@
 # US4 safe self-treatment — active functional work, 2026-10-27
 
+Connected caller/GM/guided SOURCE freeze candidate (all new production UNCOMPILED/
+UNRUN): shared self UI/console one-shot, typed browser pending/phase/raw-byte tuple,
+actual pre-snapshot GameEngine draw and reference packet, strict accepted History
+cleanup and isolated graph transport/interface adapter are now accompanied by GM
+contract/matrix/API/CLI/daemon guidance, one worked actor-free rank-I failure→natural
+terminal example, manifest/inventory and updated actual help consumers. New5 cheap
+contract Facts cover exact phase/selection/blob, no prose/preparing proof, real
+StateDistributor/refresh/ordinary absent field, unbound graph refusal and GM registry
+synchronization. They use typed calls/isolated minimal roots; no reflection or new
+admission matrix. Private request registry also synchronizes machine inventory;
+output-only FileMapping knows the graph field without a canonical mapping.
+
+No callback bypass was added: actual signed-v2 raw admission already returns before
+Mortal command-only distributor callbacks; pre-intake Mortal narrative/revoke routes
+leave foreign v2 intact. Generic StateDistributor is a supported response transport,
+not claimed as the actual file-GM GameEngine path. Existing source/ordinary policy
+guards remain required; Mortal shared readback gains transport only, no permission.
+Existing independent architectural reviewer found0blocking SOURCE findings atb5
+for the four retained-proof boundaries/new I adapter; runtime was not claimed.
+
+Finite verification sequence after coherent Sol SOURCE: fresh owning Integration
+(Main/Support included), Unit refsfalse using those fresh dependencies; exact guided
+contract/policy checks and first actual guided2 GREEN attempt, then directly affected
+original5, replay1, authored graph1, staging24, two legacy pending/snapshot controls
+and existing console/browser help2. Categories own responsibilities separately;
+full selection includes an explicitly held Mortal group, so NEVER run that selection
+file wholesale. Reviewer to assess exact subset/sufficiency; no held Mortal retry,
+DFR, broad matrices, budget change, real-provider or fresh-process claim. Required
+afterlife docs subset is the new contract category plus affected existing inventory/
+read-only guards; unrelated global documentation cases are not added automatically.
+
+Optimization assessment: parsed wound input/catalog is reused for display/selection
+within one operation, existing prompt storage retains detached strings only, active
+stage shares its retained draw/program for GM refs and accepted continuation. New I
+original authentication happens only when graph field exists and lives under its
+actual lease; final physical/source/response checks stay fresh. Strict duplicate-key
+prechecks and EffectMechanicsSnapshot loading in the existing read service remain
+fresh integrity checks; this change adds no repeated full read for choice construction
+and makes no measured speedup claim. Costs for new caller and five cheap proofs are
+UNRUN. Parent narrow routing/uncertainty/lifetime findings are corrected; no cached
+DATA replaces live generation/owner/main/phase/settlement authority.
+
 Second connected WIP boundary (still UNCOMPILED/UNRUN): Graphs now survive typed
 GameResponse/distributor/refresh and both shared readbacks. Pure ordinary interface
 policy remains byte-identical; field-present async adapter authenticates actual

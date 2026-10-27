@@ -89,10 +89,10 @@ public sealed partial class ExplorerModeCommandTests
         Assert.Null(ex);
         var rendered = ExtractRenderedText();
         Assert.Contains(
-            "Диагностика и лечение духовных ран пока недоступны",
+            "Самолечение духовной раны вне конфликта доступно через /лечить; /раны показывает известные раны",
             rendered,
             StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Будущее правило искусства", rendered, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Правила искусства", rendered, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain(
             "Сильнее против: диагностику и лечение духовных ран",
             rendered,

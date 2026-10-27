@@ -2,6 +2,31 @@
   "version": 1,
   "effectMaterializationCoverage": [
     {
+      "contractId": "spiritual_self_treatment_v2",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "statePath": "client-owned signed v2 wound_commands.json and strict History/scheduler after-image",
+      "responseSurface": "input/turn_request.json.spiritualHealing.destinationGraphs -> output/interface_updates.json.spiritualHealingGraphs",
+      "realms": [
+        "Chaos Sea",
+        "Shining Abode"
+      ],
+      "description": "Confirmed current-self spiritual treatment outside conflict with no self OD cost, retained independent draw, one safe cycle even on failure, active-before-natural recovery and verified healed History. GM authors exact requested weaker graphs.",
+      "validationKind": "focused-fragment",
+      "focusedFragmentReason": "SpiritualHealingGuidedContractTests synchronizes the GM/client surfaces and actual transport/refusal; ExplorerWoundSelfTreatmentTests drives actual confirmed browser GameEngine caller and cancellation; AfterlifeWoundHealingReplayGraphTests validates authored II/I definitions/effect generations and durable service reopen.",
+      "coverageLimit": "Self-only outside conflict. Controlled native-shaped GM fixture and same-PID service reopen do not claim real provider, fresh-process, helper/entity/combat or service quote qualification. Mortal compatibility timeout remains unqualified.",
+      "requiredText": [
+        "spiritual_self_treatment_v2",
+        "destinationGraphs",
+        "spiritualHealingGraphs",
+        "consequenceDefinitions",
+        "SAME attempt/dice",
+        "NPC Scope",
+        "no self OD cost",
+        "one terminal History",
+        "Ordinary/Mortal/unbound"
+      ]
+    },
+    {
       "contractId": "wound_player_status_readonly_v1",
       "file": "E_CLI_Wound_Materialization.txt",
       "statePath": "current self/realm, complete canonical wound carriers plus common identity/history and accepted effects; read only",

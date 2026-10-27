@@ -3,6 +3,23 @@
   "purpose": "Machine-readable inventory for Chaos Sea / Shining Abode pending, control, and meta lifecycle surfaces. This file is the audit baseline for issue #510; issue #511 migrates this data into runtime registry code.",
   "surfaces": [
     {
+      "path": "game_state/wounds/wound_commands.json",
+      "surfaceType": "private_mechanics_retained_request",
+      "owner": "spiritual_self_treatment_request_v2",
+      "realm": "Chaos Sea|Shining Abode",
+      "authority": "Client-owned retained signed v2 self request; GM must not write. Existing Mortal v1 remains under its separate owner.",
+      "privateMechanics": true,
+      "emptyWrapperSemantics": "Absence is absence; v2 has one closed retained attempt and no pre-snapshot snapshotToken.",
+      "malformedBehavior": "Actual authenticated original selects family; changed source is refused, never regenerated from prose or a supplied DTO.",
+      "blockerBehavior": "One exact self selection outside conflict; retry preserves the same attempt and independent draw.",
+      "closureSurface": "The common accepted publisher consumes request/report and persists strict spiritual History plus exact scheduler after-image.",
+      "docAnchors": [
+        "OtherGuides/Wound_Materialization_Contract.md#spiritual_self_treatment_v2",
+        "Examples/E_CLI_Afterlife_Turns.txt#spiritual_self_treatment_v2"
+      ],
+      "notes": "Typed browser selection and retained raw bytes remain client DATA; accepted cleanup also requires exact strict History, settled proves restored-before only."
+    },
+    {
       "path": "game_state/control/spiritual_wound_capture_checkpoint.json",
       "surfaceType": "private_mechanics_checkpoint",
       "owner": "spiritual_wound_capture_checkpoint",

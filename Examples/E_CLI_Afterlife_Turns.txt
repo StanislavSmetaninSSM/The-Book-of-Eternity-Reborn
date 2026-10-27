@@ -13262,3 +13262,63 @@ This example proves the display contract only. Full guided /раны /wounds /л
 /treat, targeting, providers, quotes, staging and full treatment-only History remain
 outside this slice. Native consumers are covered by WoundPlayerStatusTests; focused
 source/documentation guards bind this example marker and its limitations.
+
+spiritual_self_treatment_v2 — confirmed self treatment, failure still heals naturally
+
+Worked GM example, actor-free Chaos Sea safe turn. Client-issued reference DATA:
+spiritualHealing.healingTier=1, retained roll normal/[1], selected visible wound I,
+destinationGraphs=[]. The active check fails, then natural 1+H=2 points complete I.
+The client owns wound/effect retirement, one terminal History row, one cycle and
+no self OD cost. Do not write wound_commands.json or fabricate snapshotToken.
+Coordinates below are example DATA: copy the actual request IDs and all expected
+counts/Next ordinals from progressionControl in a real response.
+
+GM response envelope:
+```json
+{
+  "response": "Ты удерживаешь рассеянные нити души. Первое усилие не помогает, но спокойное течение даёт трещине затянуться, пока жизнь Моря продолжается.",
+  "gm_thoughts_markdown": "## NPC Scope\n- Mode: Scene-local\n- Relevant actors: нет\n- Why relevant: Душа восстанавливается самостоятельно, NPC не участвуют.\n- Actors outside scope: нет\n- Why outside scope: Структурные акторы не меняются.\n\n## Reasoning\nСохранённый бросок 1 не даёт активного улучшения; клиент применяет естественное восстановление после проверки. Мастер не редактирует рану или эффекты.",
+  "dialogueOptions": [],
+  "progressionProcessingReport": {
+    "sessionId": "session_spiritual_self_demo",
+    "requestId": "request_spiritual_self_demo",
+    "turnNumber": 43,
+    "worldCyclesProcessed": 0,
+    "factionCyclesProcessed": 0,
+    "newLastWorldSimulationTimeInMinutes": 0,
+    "newLastFactionSimulationTimeInMinutes": 0,
+    "chaosSeaCyclesProcessed": 1,
+    "guardianProjectCyclesProcessed": 0,
+    "residentAgencyCyclesProcessed": 0,
+    "shiningAbodeCyclesProcessed": 0,
+    "shiningFactionCyclesProcessed": 0,
+    "shiningTradeCyclesProcessed": 0,
+    "newLastChaosSeaSimulationOrdinal": 1,
+    "newLastGuardianProjectCycleOrdinal": 0,
+    "newLastResidentAgencyCycleOrdinal": 0,
+    "newLastShiningAbodeCycleOrdinal": 0,
+    "newLastShiningFactionCycleOrdinal": 0,
+    "newLastShiningTradeCycleOrdinal": 0,
+    "afterlifeCatchupProcessed": false,
+    "afterlifeCatchupSummaryEventsProcessed": 0
+  }
+}
+```
+
+File-mode GM writes fresh narrative_response.json, interface_updates.json,
+debug_logs.json (mandatory NPC Scope), and progression report, then the existing
+native completion with actual session/request/turn, ISO timestamp, success and the
+real filesModified. This example does not manufacture a completion or authority.
+No spiritualHealingGraphs is needed because destinationGraphs is empty.
+
+For a III/H3 retained d12 request, the client instead asks destinationGraphs for
+II then I. Author both requested stageRefs in spiritualHealingGraphs using the
+existing closed consequenceDefinitions wrappers (definitionRef, definition, root
+ownership plus slots). Choose a legal II roll-hindrance + action-cost-burden1 graph,
+then I roll-hindrance graph; use links:[] and only supplied complicationRefs.
+These are authored weaker graphs, not surviving effect IDs or an automatic choice.
+The client validates rank/budget/profiles, binds predecessors and retires the
+intermediate generation. Missing/invalid graphs preserve SAME attempt/dice and
+publish nothing. Ordinary/Mortal/unbound graphs are refused. This fragment plus
+AfterlifeWoundHealingReplayGraphTests qualifies explicit authored definitions;
+it does not claim helper/entity/combat or fresh-process/provider qualification.

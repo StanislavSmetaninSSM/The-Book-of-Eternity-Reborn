@@ -24,7 +24,8 @@ internal static class WoundPlayerReadService
             await using var lease = await fs.AcquireCanonicalWriteLeaseAsync(CanonicalWritePurpose.PublicationReadQuiescence);
             return await LoadAsync(fs, lease);
         }
-        catch (Exception failure) when (failure is IOException or InvalidDataException or UnauthorizedAccessException or JsonException or InvalidOperationException)
+        catch (Exception failure) when (failure is not CoordinatedStatePublicationUncertainException &&
+            failure is (IOException or InvalidDataException or UnauthorizedAccessException or JsonException or InvalidOperationException))
         {
             return WoundPlayerProjection.Unavailable();
         }
@@ -92,7 +93,8 @@ internal static class WoundPlayerReadService
             return new(new(carriers, identities.State!, history.State!, effects,
                 realm, resources.Catalog, names, selfVisible), catalog, soul, spiritualConflict);
         }
-        catch (Exception failure) when (failure is IOException or InvalidDataException or UnauthorizedAccessException or JsonException or InvalidOperationException)
+        catch (Exception failure) when (failure is not CoordinatedStatePublicationUncertainException &&
+            failure is (IOException or InvalidDataException or UnauthorizedAccessException or JsonException or InvalidOperationException))
         {
             // Detailed authority errors belong in diagnostics, never a player/NPC privacy channel.
             return null;

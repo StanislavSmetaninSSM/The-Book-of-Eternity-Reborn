@@ -961,3 +961,18 @@ list. Missing or incoherent wound authority gives `Сейчас невозмож
 read-only slice; full guided behavior remains a separate accepted-plan task. See the
 `wound_player_status_readonly_v1` display examples in
 `Examples/E_CLI_Wound_Materialization.txt` and `Examples/E_CLI_Afterlife_Turns.txt`.
+
+
+spiritual_self_treatment_v2: `/раны`/`/wounds` reads current-self visible wounds and
+healed History; `/лечить`/`/treat`/`/исцелить`/`/heal` confirms self-only spiritual
+treatment outside conflict in Chaos Sea / Shining Abode. No draw or world mutation
+on inspection/cancel; no self OD cost, one ordinary safe cycle even on failure.
+Client stages retained `game_state/wounds/wound_commands.json` schemaVersion2
+kind=spiritual_self_treatment_request before signed snapshot; GM never authors it.
+Read `input/turn_request.json.spiritualHealing.destinationGraphs`, author exactly
+requested `output/interface_updates.json.spiritualHealingGraphs` stageRefs and
+closed consequenceDefinitions; client computes ranks/validates/applies. Preserve the
+SAME attempt/dice through repair/replay. No automatic survivor selection, helper,
+entity, combat healing or service quote is implied. Ordinary/Mortal interface
+payload does not gain this field. See OtherGuides/Wound_Materialization_Contract.md
+and worked spiritual_self_treatment_v2 example in Examples/E_CLI_Afterlife_Turns.txt.
