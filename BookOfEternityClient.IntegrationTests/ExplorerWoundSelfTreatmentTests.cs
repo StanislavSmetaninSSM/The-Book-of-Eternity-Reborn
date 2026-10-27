@@ -9,12 +9,13 @@ using BookOfEternityClient.UI;
 using BookOfEternityClient.WebUi;
 using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
+using Xunit.Abstractions;
 using HealingFixture = BookOfEternityClient.Tests.AfterlifeWoundHealingLifecycleTests.Fixture;
 
 namespace BookOfEternityClient.Tests;
 
 /// <summary>The confirmed public command reaches the actual ordinary GameEngine caller.</summary>
-public sealed class ExplorerWoundSelfTreatmentTests
+public sealed class ExplorerWoundSelfTreatmentTests(ITestOutputHelper output)
 {
     private const string Owner = "wound-guided-client";
 
@@ -102,7 +103,7 @@ public sealed class ExplorerWoundSelfTreatmentTests
                 Convert.FromBase64String(original!.SpiritualWoundRequestBytesBase64!)));
             Assert.Throws<InvalidDataException>(() => GameEngine.ValidateDetachedBrowserBinding(original with
                 { SpiritualWoundRequestBytesBase64 = Convert.ToBase64String(respelled) }));
-            Assert.True(!(await fixture.ReadWoundsAsync()).Occurrences.Any(), diagnostics.Describe());
+            Assert.Empty((await fixture.ReadWoundsAsync()).Occurrences);
             var history = await fixture.ReadHistoryAsync();
             Assert.Single(history.Transitions, t => t.Terminal);
             var result = Assert.IsType<SpiritualHealingPersistedResult>(Assert.Single(history.Transitions, t => t.AttemptId is not null).TransitionResult);
@@ -113,7 +114,11 @@ public sealed class ExplorerWoundSelfTreatmentTests
             Assert.Null(await fixture.Files.ReadFileBytesAsync(ProgressionScheduleService.ReportPath));
             fixture.AssertResourcesUnchanged();
         }
-        finally { await runtime.AudioService.DisposeAsync(); }
+        finally
+        {
+            output.WriteLine(diagnostics.Describe());
+            await runtime.AudioService.DisposeAsync();
+        }
     }
 
     [Fact]

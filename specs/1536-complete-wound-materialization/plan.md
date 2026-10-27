@@ -16,8 +16,10 @@ world changes and preturn restoration; do not call this accepted publication or
 healing. The underlying refusal is recorded only in the existing in-memory
 SpiritualLifecycleTestLogger; the old final Assert.Empty discarded that DATA on
 failure, and normal fixture cleanup removed its transient diagnostic file.
-Next test-only delta retains the exact empty-wound condition while attaching the
-already captured full Describe() to the assertion. No new collector/framework,
+Next test-only delta emits the already captured full Describe() through ordinary
+ITestOutputHelper in finally, preserving all original assertions/exceptions and
+both scenarios (supersedes the initial assertion-message-only correction).
+No new collector/framework,
 input fake, validator change, budget change or speculative production fix.
 Fresh Integration refsfalse + same guided2 causal readout pending finite SOURCE.
 The completed rollback outcome and earlier timeout remain preserved separately.
