@@ -6,8 +6,22 @@ namespace BookOfEternityClient.Services;
 
 public partial class ValidationService
 {
-    private async Task<IReadOnlyList<ValidationIssue>?> TryPrepareSpiritualSelfTreatmentAsync(
+    /// <summary>Prepares the self contribution only under the coordinator's actual publication lease.</summary>
+    /// <param name="lease">The active lease held through preparation and common publication.</param>
+    /// <returns>Fresh preparation issues, without writes or an executable fallback on failure.</returns>
+    internal async Task<IReadOnlyList<ValidationIssue>> PrepareSpiritualSelfTreatmentPublicationAsync(
         FileSystemManager.CanonicalWriteLease lease)
+    {
+        _fs.EnsureCanonicalWriteLeaseActive(lease);
+        // Presence only avoids an unnecessary original read on ordinary turns.
+        // The actual signed original below still selects and authenticates the family.
+        if (!_fs.FileExists(lease, AcceptedMechanicsPlan.WoundCommandPath))
+            return Array.Empty<ValidationIssue>();
+        return await TryPrepareSpiritualSelfTreatmentAsync(lease) ?? Array.Empty<ValidationIssue>();
+    }
+
+    private async Task<IReadOnlyList<ValidationIssue>?> TryPrepareSpiritualSelfTreatmentAsync(
+        FileSystemManager.CanonicalWriteLease lease, bool deferPublication = false)
     {
         var currentBytes = await _fs.ReadFileBytesAsync(lease, AcceptedMechanicsPlan.WoundCommandPath);
         var liveCandidate = false;
@@ -37,7 +51,7 @@ public partial class ValidationService
             if (frame?.Files.ContainsKey(AcceptedMechanicsPlan.WoundCommandPath) != true) return null;
             // Ordinary v1 needs only its original family classification here. A live
             // v2 candidate shares the full observed source DATA directly with admission.
-            var observed = liveCandidate ? AfterlifeWoundHealingPlanner.ReadOriginalSource(_fs, lease) :
+            var observed = liveCandidate && !deferPublication ? AfterlifeWoundHealingPlanner.ReadOriginalSource(_fs, lease) :
                 PendingTurnSnapshotReader.ReadObservedCurrent(_fs, lease, new[] { AcceptedMechanicsPlan.WoundCommandPath });
             if (!observed.Success || observed.Snapshot is not { } signed || observed.Evidence is not { } evidence)
                 return liveCandidate ? observed.Issues : null;
@@ -50,6 +64,9 @@ public partial class ValidationService
                     static m => m.ManifestPayloadHash, static (m, hash) => m.ManifestPayloadHash = hash) != signed.SnapshotToken)
                 throw new InvalidDataException("Spiritual treatment lost its original signed control.");
             evidence.RequireCurrent(_fs, lease, signed);
+            // A former self entry may retain its full planning result after the
+            // generic validated slot was cleared. Its old live owner cannot cross leases.
+            AcceptedMechanicsPlanAuthority.InvalidateSpiritualSelfTreatment(_fs, lease);
             if (currentBytes is null)
             {
                 var scheduler = new ProgressionScheduleService(_fs, Microsoft.Extensions.Logging.Abstractions.NullLogger<ProgressionScheduleService>.Instance);
@@ -63,6 +80,10 @@ public partial class ValidationService
                          ResourcePendingResolutionState.PendingPath })
                 if (await _fs.ReadFileBytesAsync(lease, path) is not null)
                     throw new InvalidDataException("Concurrent resource/effect/pending work requires its ordinary owner: " + path);
+            // The real GameEngine releases this diagnostic lease before refresh.
+            // Full catalog admission, scheduler mutation and all identity allocation
+            // occur once, under the coordinator's later publication lease.
+            if (deferPublication) return Array.Empty<ValidationIssue>();
             owner = await AfterlifeWoundHealingPlanner.Continuation.AdmitAsync(_fs, lease, frame,
                 liveCandidate ? observed : null);
             var prepared = owner.Prepare();

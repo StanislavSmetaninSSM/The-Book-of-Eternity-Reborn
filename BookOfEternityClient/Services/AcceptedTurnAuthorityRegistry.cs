@@ -700,6 +700,10 @@ internal static partial class AcceptedTurnAuthorityRegistry
         FileSystemManager.CanonicalWriteLease writeLease) =>
         GetState(fileSystem, writeLease).InvalidateAll();
 
+    internal static void InvalidateSpiritualSelfTreatment(
+        FileSystemManager fileSystem, FileSystemManager.CanonicalWriteLease writeLease) =>
+        GetState(fileSystem, writeLease).InvalidateSpiritualSelfTreatment();
+
     /// <summary>
     /// Forwards validated item input and its optional scoped allocator to the root-owned cache.
     /// </summary>
@@ -3583,6 +3587,12 @@ internal static partial class AcceptedTurnAuthorityRegistry
                 _commonPlan.InvalidateValidated();
                 ClearValidatedTreatmentPublicationCore();
             }
+        }
+
+        internal void InvalidateSpiritualSelfTreatment()
+        {
+            lock (_gate)
+                _commonPlan.InvalidateSpiritualSelfTreatment();
         }
 
         internal bool HasCommonValidated()

@@ -1756,6 +1756,9 @@ internal static class AcceptedTurnCanonicalStateRefresh
         try
         {
             var boundNormalizer = normalizer.BindTo(writeLease);
+            var selfPreparationIssues = await validator.PrepareSpiritualSelfTreatmentPublicationAsync(writeLease);
+            if (selfPreparationIssues.Any(issue => issue.Severity == IssueSeverity.Error))
+                return new Result(selfPreparationIssues, null);
             var guardianMusings = await validator.CaptureGuardianMusingsPublicationAsync(writeLease);
             var spiritualPreflight = await boundNormalizer.PrevalidateSpiritualPublicationTransactionAsync();
             var beforeImages = await CaptureBeforeImagesAsync(fs, writeLease);

@@ -1,5 +1,28 @@
 # US4 safe self-treatment — active functional work, 2026-10-27
 
+Publication-owner correction WIP, UNCOMPILED/UNRUN: only actual GameEngine raw
+calls select deferred self preparation. That signed-original route checks exact
+request/control and competing commands using one selected original source, then
+returns diagnostic success BEFORE full Admit/catalog/scheduler/effect allocation.
+Existing direct single-lease raw API defaults are unchanged. The existing refresh
+coordinator now calls the same private complete builder under its own lease before
+any preflight/normalization. Preparation errors return ordinary Result.Issues with
+no writes, allowing current repair handling; no old executable plan is fallback.
+
+Targeted existing-cache invalidation drops self _planningResult/input fingerprint
+as well as any validated self slot and closes its private owner. Other families
+remain intact. Actual self preparation calls static Prepare/effect/Finalize APIs,
+so its owner-specific effect/reducer/scheduler dependencies are contained in that
+common plan, not separate registry caches. A narrow scalar private-family getter
+avoids copying/revalidating the full bundle just to clear its cached owner.
+ReferenceEquals lease guards, fresh observed originals/source20, attempt/dice,
+complete graph admission, common atomic publisher and scheduler claim stay strict.
+No reissuer/lease transfer, new coordinator/cache, duplicate effect algorithm or
+GM field is introduced. Early raw work no longer duplicates large catalog parsing;
+full operation DATA is prepared/reused once under the actual publication owner.
+Two-lease/no-executable-early/changed-source typed controls and finite SOURCE follow
+before fresh owning Integration and guided2; costs and runtime remain UNRUN.
+
 Existing-logger readout on clean94e8: Integration-only refsfalse build0errors/
 105warnings/3:23.11; Main31a887a8 and Support6d679b7b masters/copies unchanged,
 fresh Integration1e811553. PlanOnly exact2/1descriptor13.5194247s/0executed;

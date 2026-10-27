@@ -22,7 +22,8 @@ public partial class ValidationService
             Func<FileSystemManager.CanonicalWriteLease, IReadOnlyDictionary<string, CanonicalBeforeImage>, Task<IReadOnlyList<ValidationIssue>>>? sealMortalQteDecision = null,
             Func<MortalWoundOpportunityReceiptConsumePlanResult?>? readMortalQteReplay = null,
             Func<FileSystemManager.CanonicalWriteLease, Task<IReadOnlyList<ValidationIssue>?>>? prepareMortalGuaranteedTreatment = null,
-            Func<FileSystemManager.CanonicalWriteLease, Task<GameEngine.MortalJointRepairRawAdmission>>? inspectMortalJointRepair = null)
+            Func<FileSystemManager.CanonicalWriteLease, Task<GameEngine.MortalJointRepairRawAdmission>>? inspectMortalJointRepair = null,
+            bool deferSpiritualSelfTreatmentPublication = false)
     {
         ArgumentNullException.ThrowIfNull(writeLease);
         _fs.EnsureCanonicalWriteLeaseActive(writeLease);
@@ -37,7 +38,8 @@ public partial class ValidationService
 
         AcceptedMechanicsPlanAuthority.InvalidateValidated(_fs, writeLease);
         EffectAcceptedTurnPlanAuthority.InvalidateValidated(_fs, writeLease);
-        var spiritualTreatment = await TryPrepareSpiritualSelfTreatmentAsync(writeLease);
+        var spiritualTreatment = await TryPrepareSpiritualSelfTreatmentAsync(writeLease,
+            deferSpiritualSelfTreatmentPublication);
         if (spiritualTreatment is not null)
             return spiritualTreatment;
         var keepCommonHandoff = false;

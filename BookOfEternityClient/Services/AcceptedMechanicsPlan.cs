@@ -369,6 +369,8 @@ internal sealed class AcceptedMechanicsWoundStageBundle
     private readonly WoundPreparedAcceptedTurnPlan _preparedPlan;
     private readonly WoundEffectBatchAcceptedPlan _effectBatchPlan;
     private readonly WoundAcceptedTurnPlan _finalPlan;
+    internal AfterlifeWoundHealingPlanner.Continuation? SpiritualHealingContinuation =>
+        _preparedPlan.SpiritualHealingContinuationAuthority as AfterlifeWoundHealingPlanner.Continuation;
     private readonly Dictionary<string, EffectAcceptedApplicationResult>
         _applicationResults;
     private readonly Dictionary<string, EffectAcceptedTerminationResult>
@@ -1694,6 +1696,11 @@ internal sealed class AcceptedMechanicsPlan
     }
 
     internal bool IsMortalReceiptOnlyWoundPublication { get; }
+
+    // Inspect the sealed private family without cloning/revalidating the complete bundle.
+    // Publication still requires the owner's current lease and original-source proof.
+    internal AfterlifeWoundHealingPlanner.Continuation? SpiritualHealingContinuation =>
+        _woundStageBundle?.SpiritualHealingContinuation;
 
     /// <summary>
     /// Gets the ordered owner-sealed live wound proof fingerprint, when present.
