@@ -339,14 +339,14 @@
     },
     {
       "category": "core-joint-candidate-per-call-source",
-      "reason": "T608 COPYOBS10–12 tests-first no-owner RED: same private lexical wrapper, two fixed genuine paired-read invocations with real Replay/Core [2,2] versus final [1,1], richer[0,0]; full applicable stage/projection/physical/source/storage/root prerequisites first, unavailable ownership honest DATA. Genuine Candidate unchanged/unwired.",
+      "reason": "T608 COPYOBS10–12 GREEN after accepted no-owner Replay/Core [2,2] RED: same genuine paired-read workload and strict [1,1] source oracle, richer[0,0], now with two distinct real initially empty completed/disposed owners; unchanged projection/physical/source/storage/root prerequisites. Genuine Candidate unchanged/unwired.",
       "contracts": [
-        "#1536 T608-CANDIDATE-OWNER-RED / COPYOBS10–12; original no-owner inline body, fixed source oracle before GREEN-only owned-state checks"
+        "#1536 T608-CANDIDATE-OWNER-GREEN / COPYOBS10–12; accepted no-owner RED, same fixed source oracle and actual fresh lexical owner checks"
       ]
     },
     {
       "category": "core-joint-candidate-per-call-lifetime",
-      "reason": "T608 COPYOBS11–12 GREEN-only compiled no-world owner/error/preexisting-registration contract for the SAME lexical helper; excluded from actual no-owner RED execution. No fake timing rows for a legitimate zero-event trace; no runtime/genuine qualification from source compilation.",
+      "reason": "T608 COPYOBS11–12 no-world GREEN owner/error/preexisting-registration contract for the SAME real lexical helper after accepted source RED. No fake timing rows for a legitimate zero-event trace; actual qualification remains pending fresh build and execution.",
       "contracts": [
         "#1536 T608-CANDIDATE-OWNER-GREEN / COPYOBS11–12; normal/refusal/throw once, actual source completion/disposal and untouched existing owner after accepted RED"
       ]

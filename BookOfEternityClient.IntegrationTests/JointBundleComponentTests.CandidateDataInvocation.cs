@@ -242,18 +242,36 @@ public sealed partial class JointBundleComponentTests
         /// <summary>The fixed fixture-only preexisting-owner protocol diagnostic.</summary>
         internal const string CandidateDataOwnerRequiredMessage = "Candidate source invocation requires no preexisting semantic DATA owner.";
 
-        /// <summary>Shares ONLY lexical invocation wiring; RED executes the original body inline once with no owner.</summary>
+        /// <summary>Owns one fresh existing source DATA lifetime for one fixed synchronous invocation, then closes it before return.</summary>
         /// <typeparam name="TResult">The actual fixed typed adapter result.</typeparam>
         /// <param name="invoke">One of exactly three fixed fixture-local synchronous bodies; never stored, scheduled or registered.</param>
-        /// <returns>The original result and honest unavailable ownership DATA, not a fabricated completed fence.</returns>
-        private Task<CandidateDataInvocation<TResult>> WithFreshSourceDataAsync<TResult>(Func<TResult> invoke)
+        /// <returns>The original result and actual completed/disposed ownership DATA, never reusable cached DATA or authority.</returns>
+        private async Task<CandidateDataInvocation<TResult>> WithFreshSourceDataAsync<TResult>(Func<TResult> invoke)
         {
             var entryNull = Files.GetCurrentSemanticDataOperation() is null;
             if (!entryNull) throw new InvalidOperationException(CandidateDataOwnerRequiredMessage);
-            var result = invoke(); // original synchronous call exactly once, before any await or Task is returned
+            var owner = Files.BeginSourceDataOperationIfNeeded()
+                ?? throw new InvalidOperationException(CandidateDataOwnerRequiredMessage);
+            ValidationOperation operation;
+            ValidationOperationState entryState;
+            TResult result;
+            var completeReturned = false;
+            try
+            {
+                operation = Files.GetCurrentSemanticDataOperation()
+                    ?? throw new InvalidOperationException(CandidateDataOwnerRequiredMessage);
+                entryState = operation.CaptureState();
+                result = invoke(); // original synchronous call exactly once, before the first await
+                await owner.CompleteAsync();
+                completeReturned = true;
+            }
+            finally
+            {
+                owner.Dispose();
+            }
             var exitNull = Files.GetCurrentSemanticDataOperation() is null;
-            return Task.FromResult(new CandidateDataInvocation<TResult>(result,
-                new(null, null, null, null, null, entryNull, exitNull)));
+            return new CandidateDataInvocation<TResult>(result,
+                new(owner, operation, entryState, operation.CaptureState(), completeReturned, entryNull, exitNull));
         }
 
         /// <summary>Unwired typed candidate adapter; its original literal timer contains ONLY the exact synchronous registry call.</summary>

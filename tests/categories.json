@@ -3,7 +3,7 @@
     "categories": [
     {
       "id": "core-joint-candidate-per-call-source",
-      "responsibility": "T608 COPYOBS10–12 RED source singleton: one existing genuine issued-stage setup, SAME private lexical invocation helper twice with two actual PreparedAgrees reads each, exact real Replay/Core vectors [2,2] baseline versus required [1,1], richer-source [0,0], full input/ordered stage projection/current bytes/companion/G and successful complete storage/root prerequisites BEFORE final source oracle. RED ownership is honestly unavailable; stronger distinct/empty/completed/closed-owner assertions follow the source oracle for later GREEN.",
+      "responsibility": "T608 COPYOBS10–12 GREEN source singleton after accepted no-owner Replay/Core [2,2] RED: SAME genuine stage setup and four actual PreparedAgrees reads now require exact per-invocation Replay/Core [1,1], richer-source [0,0], unchanged full projection/current bytes/companion/G and complete source/storage/root prerequisites. Distinct real initially empty owners complete and dispose before return; ownership assertions follow the unchanged strict source oracle.",
       "excludes": "No common binding/registry Miss+Hit setup, fake issuer/owner/NamedEvents or missing-API/setup/noncompile/timeout causal RED, dummy/suspended owner, pre-validator warmup, new cache/service/production/diagnostic stack/timer/codec/limit/quota/GM change or genuine wiring. Actual registry/cold cache/source/authority qualification remains separate; no [1,0], zero or one-source-per-registry-role claim.",
       "changeHints": [
         "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.CandidateDataInvocation.cs"
@@ -11,7 +11,7 @@
       "related": [
         {
           "id": "core-joint-candidate-per-call-lifetime",
-          "when": "GREEN-only no-world owner/error/registration control compiles with the same helper, excluded from no-owner RED execution."
+          "when": "No-world owner/error/registration control qualifies the same real lexical helper after independently accepted no-owner source RED."
         },
         {
           "id": "fr063-joint-prepared-expected-replay-source",
@@ -48,7 +48,7 @@
     },
     {
       "id": "core-joint-candidate-per-call-lifetime",
-      "responsibility": "T608 COPYOBS11–12 GREEN-only compiled no-world singleton: exactly-once normal and structured-refusal return, original throwing-body object/stack, actual fresh owner completion/disposal/null ambient and untouched preexisting registration through the SAME fixed private lexical helper. This case is intentionally NOT part of no-owner RED execution.",
+      "responsibility": "T608 COPYOBS11–12 no-world GREEN singleton after accepted source RED: exactly-once normal and structured-refusal return, original throwing-body object/stack, actual fresh owner completion/disposal/null ambient and untouched preexisting registration through the SAME fixed private lexical helper. A legitimate zero-event trace requires honest closed storage and zero accounting, never fabricated scopes.",
       "excludes": "No world/runtime/native/lease/issuer/fake authority, source-counter RED claim, scheduling/hook/storage callback framework, production/service/cache/codec/diagnostic/budget change or genuine candidate admission. Does not repair existing caller/disposal exception policy or qualify common-baseline private-history mutation.",
       "changeHints": [
         "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.CandidateDataInvocation.cs"
@@ -56,7 +56,7 @@
       "related": [
         {
           "id": "core-joint-candidate-per-call-source",
-          "when": "Shared no-owner source scaffold must first reach an independently accepted final source-count RED before owner-enabled GREEN/lifetime execution."
+          "when": "Independently accepted no-owner source RED precedes this real-owner GREEN source/lifecycle qualification; original genuine candidate remains unwired."
         }
       ],
       "requirements": {

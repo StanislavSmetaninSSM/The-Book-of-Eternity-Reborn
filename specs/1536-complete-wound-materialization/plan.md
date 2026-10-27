@@ -1,3 +1,35 @@
+# T608 per-call GREEN source frozen — UNCOMPILED / UNRUN
+
+Accepted RED checkpoint `59a78ef1ce69d223c4e99d8a47d4817b8fec9bc9`. Only the
+private documented WithFreshSourceDataAsync block now opens a real existing source
+owner, observes its actual empty operation, invokes the fixed synchronous body
+once before its first await, awaits actual CompleteAsync, and disposes in finally
+before returning the closed receipt. Acquisition/state/body/completion failures
+stay inside the original disposal policy; no permission/result is manufactured.
+
+Whole-file inverse to the accepted RED passes. Causal Fact/oracle, both other
+adapters and every genuine Candidate callsite remain byte-exact. Three fixed
+consumers only. No owner crosses calls or COPY boundaries; existing complete-key,
+fresh graph/private-history/authority and invalidation rules are unchanged. No
+production, cache algorithm, recorder/writer/codec/timer/compiler/GM change.
+
+Three-path source/catalog inventory is frozen: C# SHA256
+634b376be071709690ab60fe637cfd6acb1f4a81141962c2b3ee229d41f86d3e;
+only the two new owners' descriptions/CI reasons are updated to GREEN. Catalog
+970 / CI 50, all selectors and budgets remain exact. Static proof: 21 protected
+files, six F6 semantic guard/test files, 22 XML blocks and exact helper inverse.
+Report SHA256 9f52f6e949576c56b80c229d2fc0f2761414d0459fab7d8afaf15a7a39c8bcce;
+external candidate-per-call-green-* contains full hashes/patch/proof/selections.
+
+No compiler, new source-count result or runtime qualification is claimed. Next
+coherent independent SOURCE, one fresh affected Integration build and bindings,
+exact source singleton then GREEN-only no-world lifetime singleton under separate
+PREP. The same final source oracle must pass [1, 1] / Core [1, 1], richer [0, 0],
+then all actual distinct/empty/completed/closed owner assertions. Legitimate zero
+events in the no-world case need zero accounting and full stored-container proof,
+not a fabricated origin. Genuine Candidate 120-second and full DFR 300-second
+runtime remain held until their separate gates; Windows is deferred.
+
 # T608 per-call meaningful source RED accepted — GREEN not implemented
 
 Linux source/runtime/fresh Integration `6f7ed504f44a21225f9a304f0a21f427a3aee135`;
