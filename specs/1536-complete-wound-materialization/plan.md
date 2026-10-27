@@ -1,5 +1,32 @@
 # US4 safe self-treatment — active functional work, 2026-10-27
 
+Latest bounded result: corrected source
+`dbbec440b7ae8ea6497c011ea8cc7c4a51f3ec8e` freshly built the selected Unit
+ownership graph, exit0/0errors/75 warnings in9:19.05. Official PlanOnly selected
+13 methods/37 cases, one descriptor, original60-second category. Actual exact
+`-Category spiritual-healing-check -NoBuild` completed37/37PASS in48.2411323s
+total, no timeout/skip/duplicate/underfill; both cleanup flags true. Summary
+records that exact clean HEAD. Root verified all37 unique TRX test/execution IDs
+and matching current main/Unit-copy assembly bytes. TRX SHA256:
+`d05ad12df84684692b3a65722785336dcb423e80b9d997787644756461e9b14e`.
+Raw remains external at `us4-self-healing/check-green-1/actual`. Independent
+Sol SOURCE and OUTCOME both accepted the exact detached check; both findings
+are closed. Category time22.11s/60s, total48.24s. This qualifies
+only the detached check groundwork: full T101 and the actual treatment session
+remain open, with no new Windows or full-DFR claim.
+
+The user approved GM authorship of weaker destination consequences after a
+concrete III→II graph exposed that the existing legality table does not define
+a total deterministic downgrade. FR-043A and the afterlife healing contract now
+record that choice. Client-calculated severity, legal destination profile/slot/
+owner/source validation and existing effect materialization remain mandatory.
+Do not choose survivors by opaque effect IDs or persisted slot order. Missing or
+invalid graphs retain the same attempt/dice for ordinary repair, with no partial
+wound/effect/cycle/History publication. This is no longer an unresolved product
+choice; no automatic replacement rule was authorized. Next: persist/authenticate
+the same-root closed pre-snapshot self-treatment request, then connect its actual
+GM-authored destination graphs to the one-cycle accepted publication.
+
 Issue #1536; branch `1536-linux-qualification-20261025`; recovered clean base and
 remote `8c53d9fac8c3810fa1b962eb976122a9a769f3e7`. The same environment is
 available again; no prior owned build/test is running. The user's current order

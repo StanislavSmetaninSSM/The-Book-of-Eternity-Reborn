@@ -14372,6 +14372,15 @@ close full source-action/terminal/pending contracts or any top-level story task.
   T101-T112 and #1536 remain open. Top-level accepted count is now 79/177;
   that unweighted task count is not a full-feature completion percentage.
 - [ ] T101 [US4] Implement the single tier gate, roll authority, result bands, natural 1/20 precedence, complication modifier, and bounded transitions in `BookOfEternityClient/Services/SpiritualHealingResolver.cs`
+  Current functional continuation (2026-10-27): the detached actor/art/effect/draw
+  check on `dbbec440b7ae8ea6497c011ea8cc7c4a51f3ec8e` completed the exact
+  `spiritual-healing-check` selection: 13 methods/37 cases, 37 PASS, no
+  timeout/skip/duplicate, both cleanup flags true. Initial 14-case semantic RED
+  and review-found canonical inactive-state RED (35 PASS/2 FAIL) are retained
+  outside checkout. Full T101 remains open: source/request authority and the
+  accepted treatment caller, transitions, world cycle and History are not yet
+  implemented. Independent Sol SOURCE + OUTCOME ACCEPT; both findings closed.
+  See current plan for exact source, builds, evidence and limitations.
   The accepted T094-linked prerequisite (`4711d6a8`) adds unused
   `BookOfEternityClient/Services/SpiritualHealingOutcomeMath.cs`. It returns
   recomputable arithmetic, not accepted healing authority. T101 remains open for
@@ -14395,6 +14404,11 @@ close full source-action/terminal/pending contracts or any top-level story task.
 - [ ] T103 [US4] Resolve combat healing cost through `AfterlifeActionCostRules` and typed spiritual-action-point outcomes in `BookOfEternityClient/Services/AfterlifeActionCostRules.cs` and `BookOfEternityClient/Services/AfterlifeSpiritualConflictResourceOutcome.cs`
 - [ ] T104 [US4] Implement exact safe-cycle session/attempt identity, no-OD self/helper treatment, and world-cycle outcome composition in `BookOfEternityClient/Services/AfterlifeWoundHealingPlanner.cs`
 - [ ] T105 [US4] Implement universal natural recovery reducer, overflow/reset, per-wound cycle seals, and player/entity eligibility in `BookOfEternityClient/Services/SpiritualWoundRecoveryPlanner.cs`
+  User-approved FR-043A (2026-10-27) resolves destination consequences:
+  GM-authored weaker graphs, client-verified computed severity/legal graph and
+  application. T105/T107 must not infer survivors from slot/effect-ID order or
+  introduce automatic replacements. Missing/invalid graph retains the same
+  sealed attempt/draw through repair and publishes no partial cycle or wound.
   The accepted T097-linked prerequisite (`45beccd1`, `8aff3325`) adds unused
   `BookOfEternityClient/Services/SpiritualWoundRecoveryMath.cs`, not an accepted
   cycle or transition producer. T105/T107 must preserve all carried progress and

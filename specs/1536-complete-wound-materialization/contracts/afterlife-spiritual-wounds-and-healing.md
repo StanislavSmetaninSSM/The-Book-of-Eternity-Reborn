@@ -166,6 +166,23 @@ A natural 1 overrides a numerically successful total. A result that would cross 
 severity I heals the wound and archives it. The transition rematerializes effects at
 the resulting severity.
 
+### Weaker consequences: approved authorship, 2026-10-27
+
+The GM authors the weaker consequence graph needed for a computed lower severity;
+the client determines the healing/recovery result and validates the proposed
+consequences and their application. Existing destination profile/magnitude rules,
+exact `rank` slot count, target/source ownership and #1535 materialization remain
+mandatory. A legal current graph need not have a legal subset at the next rank:
+for example, a severity-III strain burden is unavailable at II. The client does
+not invent replacement profiles or choose survivors by effect ID or slot order.
+Persisted slots are correlation ordinals, not a healing priority.
+
+Missing or invalid destination consequences use the ordinary repair path with
+the original retained attempt/draw. Wound/effect/time/History publication remains
+one atomic outcome. The GM cannot replace the client-computed severity, roll,
+result band or cycle cost. This clarification records the approved rule; the
+executable spiritual continuation and response adapter remain implementation WIP.
+
 ### In conflict
 
 - base cost 5 spiritual action points;
