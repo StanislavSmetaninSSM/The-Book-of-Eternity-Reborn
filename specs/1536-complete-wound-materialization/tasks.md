@@ -4,10 +4,16 @@
   assess existing read-only preparation DATA reuse without changing cold miss/hit,
   caller owner lifetime, fresh authority or any original assertion. Independent
   assessment and bounded causal proof precede a source change or justified retry.
-- [ ] T608-CANDIDATE-PREP-REUSE Select only the existing read-only preparation DATA
+- [x] T608-CANDIDATE-PREP-REUSE Select only the existing read-only preparation DATA
   operation at the single candidate call site. Preserve helper defaults/lifetime,
   caller null-owner and actual cold miss/hit/fence/negative assertions. Retain exact
   qualified service/counter evidence, independent SOURCE and fresh Integration pins.
+- [ ] T608-CANDIDATE-VISIBILITY-DESIGN Map the existing continuing consumer to one
+  ordered observation/write transfer, preserving exact offsets, defaults and lifetime.
+  Existing Miss timers need pre-return persistence; no new general stack or runtime.
+- [ ] T608-CANDIDATE-VISIBILITY-PROOF After accepted bounded design, prove a real
+  blocked synchronous-call visibility RED/GREEN and relevant ordering/context/failure/
+  default contracts. Independent SOURCE, fresh bindings and exact PREP precede runtime.
 - [ ] T608-CANDIDATE-QUALIFY Complete any reviewed minimal correction, fresh affected
   bindings and relevant cheap proof, then separate original-budget/full-capture PREP
   and actual candidate outcome. No automatic full-positive or dependent gate release.
