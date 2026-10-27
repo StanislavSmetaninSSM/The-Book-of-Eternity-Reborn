@@ -1,5 +1,18 @@
 # US4 safe self-treatment — active functional work, 2026-10-27
 
+Finite two-scenario SOURCE/PREP accepted the c9 scaffold with one strengthened
+oracle: reuse parsed strict persisted stages to assert exactII/I ranks, authored
+intermediate roll/cost1 profiles and actual original/intermediate effect identity
+retirement plus final active roots. No new Fact, setup or production behavior.
+Test-only Integration build with BuildProjectReferences=false and exact two new
+one-case categories is released after this checkpoint; original5 and heldMortal
+are excluded from the next workload. Current new tests remain UNCOMPILED/UNRUN.
+Separate existing Astra consultation accepts the next typed-pending/raw-byte
+retention shape with exact phase/tuple equality, new-route bytes hash-mode and
+selected manifest map binding, staged-selection/blob iff, and accepted strict
+History versus settled restored-before proof. These are implementation boundaries
+for the next connected caller/GM/guided slice, not new runtime authority or receipt.
+
 Affected staging follow-through is qualified24/24 on clean8bd0c9ea9 (only docs
 beyond compiled d5cd). Fresh Unit build0errors/26warnings/3:41.12; Unit
 e541b5a38093615a6de7ad2c609f70cc5553929f6215b9cd7c0dc50ce56c5389,

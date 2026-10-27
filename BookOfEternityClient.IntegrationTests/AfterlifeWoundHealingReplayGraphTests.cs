@@ -1,3 +1,4 @@
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
@@ -106,6 +107,30 @@ public sealed class AfterlifeWoundHealingReplayGraphTests
         var history = await fixture.ReadHistoryAsync();
         Assert.Equal(new[] { "treat", "recover" }, history.Transitions.Where(t => t.Turn == 43).Select(t => t.Kind));
         Assert.DoesNotContain(history.Transitions, t => t.Terminal);
+        var result = Assert.IsType<SpiritualHealingPersistedResult>(Assert.Single(history.Transitions,
+            t => t.Turn == 43 && t.AttemptId is not null).TransitionResult);
+        var stages = result.Stages;
+        Assert.Equal(new[] { 2, 1 }, stages.Select(s => s.After.Severity.Rank));
+        var intermediate = stages[0].After;
+        Assert.Equal(new[] { "spiritual_action_cost_burden", "spiritual_roll_hindrance" },
+            intermediate.Consequences.Entries.Select(e => e.ProfileKey).Order(StringComparer.Ordinal));
+        var intermediateCost = intermediate.Consequences.OwnedEffectSources.Definitions
+            .SelectMany(d => d.GetProperty("components").EnumerateArray())
+            .Single(c => c.GetProperty("profile").GetString() == "spiritual_action_cost_burden");
+        Assert.Equal(1m, intermediateCost.GetProperty("payload").GetProperty("magnitude").GetDecimal());
+        using var identityDocument = JsonDocument.Parse((await fixture.Files.ReadFileAsync(EffectIdentityState.StatePath))!);
+        var identity = EffectIdentityState.Parse(identityDocument.RootElement, EffectIdentityState.StatePath);
+        Assert.Empty(identity.Issues);
+        foreach (var id in originalRoots.Concat(intermediate.Consequences.OwnedEffectSources.RootBindings.Select(b => b.EffectId)).Distinct())
+        {
+            Assert.True(identity.State!.TryGetEntry(id, out var retired));
+            Assert.Equal("expired", retired.State);
+        }
+        foreach (var binding in after.Consequences.OwnedEffectSources.RootBindings)
+        {
+            Assert.True(identity.State!.TryGetEntry(binding.EffectId, out var active));
+            Assert.Equal("active", active.State);
+        }
         await fixture.AssertOneCycleAndRetainedAttemptAsync();
         fixture.AssertResourcesUnchanged();
     }
