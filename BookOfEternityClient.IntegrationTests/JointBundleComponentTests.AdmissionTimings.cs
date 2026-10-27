@@ -40,7 +40,8 @@ public sealed partial class JointBundleComponentTests
                 Assert.Equal(began, ended);
             }
 
-            var nodes = ReadStrictAdmissionTree(rows);
+            var analysis = ReadAdmissionTimingTree(rows);
+            var nodes = analysis.Functions;
             string[][] chains =
             [
                 ["JointPreparation.PreparedAgrees", "JointPreparation.Replay", "WoundPreparation.PrepareCore", "WoundPreparation.ValidateInput"],
@@ -73,7 +74,7 @@ public sealed partial class JointBundleComponentTests
             var initialEnd = Array.FindIndex(beforeCopy, initialStart + 1,
                 row => row.Name == "JointContinuation.InitialFingerprint" && row.Boundary == "end");
             var initialRows = beforeCopy.Skip(initialStart).Take(initialEnd - initialStart + 1).ToArray();
-            _ = ReadStrictAdmissionTree(initialRows);
+            _ = ReadAdmissionTimingTree(initialRows);
             Assert.Single(initialRows, row => row.Name == "JointContinuation.ComputeFingerprint" && row.Boundary == "begin");
             Assert.Single(initialRows, row => row.Name == "JointContinuation.ComputeFingerprint" && row.Boundary == "end");
             Assert.Single(initialRows, row => row.Name == "JointContinuation.HashBeforeImages" && row.Boundary == "begin");
@@ -90,7 +91,9 @@ public sealed partial class JointBundleComponentTests
             _output.WriteLine(JsonSerializer.Serialize(new
             {
                 Kind = "JointAdmissionTimingTree", range.Start, range.End, Events = rows.Length,
-                RequiredNames = required, StrictLifo = true, DeclaredChains = chains,
+                RequiredNames = required, FunctionStrictLifo = true, AllObservedRowsConsumed = analysis.RowsConsumed == rows.Length,
+                analysis.SourceScopeIdPairingAvailable, ReturnedReadPathLifetimeProof = DescribeReturnedReadPathLifetimes(analysis),
+                DeclaredChains = chains,
                 SealContainsResourceAndFingerprint = true
             }));
             Assert.Equal(0, copyHashBegins);
@@ -145,41 +148,6 @@ public sealed partial class JointBundleComponentTests
             Assert.InRange(range.End, range.Start, observations.Length);
             Assert.True(range.End > range.Start, "The recorded timing interval must be nonempty.");
             return observations.Skip(range.Start).Take(range.End - range.Start).ToArray();
-        }
-
-        /// <summary>
-        /// Builds the recorded tree while requiring matching begin/end events in strict LIFO order.
-        /// </summary>
-        /// <param name="rows">
-        /// Every event from one complete synchronous observation interval, in original order.
-        /// </param>
-        /// <returns>
-        /// Every node, retaining its direct children for the declared chain checks.
-        /// </returns>
-        private static IReadOnlyList<AdmissionTimingNode> ReadStrictAdmissionTree(
-            (string Name, string Boundary, double Milliseconds, long SourceScopeId)[] rows)
-        {
-            var nodes = new List<AdmissionTimingNode>();
-            var stack = new Stack<AdmissionTimingNode>();
-            foreach (var row in rows)
-            {
-                Assert.True(double.IsFinite(row.Milliseconds) && row.Milliseconds >= 0);
-                if (row.Boundary == "begin")
-                {
-                    var node = new AdmissionTimingNode(row.Name, []);
-                    nodes.Add(node);
-                    if (stack.TryPeek(out var parent)) parent.Children.Add(node);
-                    stack.Push(node);
-                }
-                else
-                {
-                    Assert.Equal("end", row.Boundary);
-                    Assert.NotEmpty(stack);
-                    Assert.Equal(stack.Pop().Name, row.Name);
-                }
-            }
-            Assert.Empty(stack);
-            return nodes;
         }
 
         /// <summary>

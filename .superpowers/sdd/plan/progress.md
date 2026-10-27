@@ -1,3 +1,17 @@
+# T608 function/lifetime GREEN coherent WIP — unfinished, uncataloged
+
+Five C# paths are frozen for remote preservation: the focused function/lifetime
+reader, its admission/heavy callers, the existing actual producer's private adapter,
+and finite controls. Original producer public Fact and prerequisites remain unchanged.
+The all-zero legacy reader body is retained; recorded mode uses strict function IDs
+and one explicit returned-phase factory/order/lifetime proof. No production changes.
+
+This is unfinished WIP, not SOURCE acceptance or qualification. Catalog/selection,
+finite inverse/protected receipts and the separately versioned external marker consumer
+remain pending. New control Facts are not yet cataloged. No compilation or runtime
+has been performed. All existing genuine/candidate/full-positive gates remain held.
+Root preserves this safe boundary before resuming the same sole source writer.
+
 # T608 actual returned-phase TREE-RED accepted — GREEN implementation next
 
 Independent SOURCE/PREP/OUTCOME accept the prerequisite-complete real-producer RED

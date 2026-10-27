@@ -52,7 +52,8 @@ public sealed partial class JointBundleComponentTests
                 Assert.True(entry.Begin > 0, entry.Name);
                 Assert.Equal(entry.Begin, entry.End);
             }
-            var nodes = ReadStrictAdmissionTree(rows);
+            var analysis = ReadAdmissionTimingTree(rows);
+            var nodes = analysis.Functions;
             string[][] chains =
             [
                 ["JointOriginal.CreateBackup", "OriginalBackup.Total"],
@@ -85,7 +86,9 @@ public sealed partial class JointBundleComponentTests
             {
                 Kind = "JointHeavyPreparationTimingTree", Start = 0, End = directCopy.Start,
                 Events = rows.Length, RequiredPatterns = required, Inventory = inventory,
-                StrictLifo = true, DeclaredChains = chains, BackupReadInsideBackup = true,
+                FunctionStrictLifo = true, AllObservedRowsConsumed = analysis.RowsConsumed == rows.Length,
+                analysis.SourceScopeIdPairingAvailable, ReturnedReadPathLifetimeProof = DescribeReturnedReadPathLifetimes(analysis),
+                DeclaredChains = chains, BackupReadInsideBackup = true,
                 QteRecomputations = qteRecomputations.Length, QteBaselineChecksPerReuse = 2,
                 QteExitProofsPerReuse = 1, RepeatedQteCalculationAbsent = true,
                 OptionalItemMarkers = inventory.Where(entry =>

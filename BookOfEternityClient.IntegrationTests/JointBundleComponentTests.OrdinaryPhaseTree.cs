@@ -164,11 +164,24 @@ public sealed partial class JointBundleComponentTests
         /// <returns>Detached existing-queue DATA; legacy zero is not upgraded into an identity.</returns>
         internal (string Name, string Boundary, double Milliseconds, long SourceScopeId)[] CaptureOwnedOrdinaryPhaseRows() => _observations.ToArray();
 
-        /// <summary>Applies the existing actual admission-tree interpretation to this complete source-owned observation range.</summary>
+        /// <summary>Requires strict function nesting and the exact actual returned-lifetime association for this source-owned interval.</summary>
         internal void AssertOwnedOrdinaryPhaseTree()
         {
-            var nodes = ReadStrictAdmissionTree(ReadAdmissionTimingRange((0, _observations.Count)));
-            Assert.NotEmpty(nodes);
+            var rows = ReadAdmissionTimingRange((0, _observations.Count));
+            var analysis = ReadAdmissionTimingTree(rows);
+            Assert.True(analysis.SourceScopeIdPairingAvailable); Assert.Equal(4, analysis.RowsConsumed);
+            Assert.Equal("OrdinaryReadPath.OpenPhase", Assert.Single(analysis.Functions).Name);
+            var lifetime = Assert.Single(analysis.Lifetimes);
+            Assert.Equal(rows[0].SourceScopeId, lifetime.FactoryScopeId);
+            Assert.Equal(rows[1].SourceScopeId, lifetime.SourceScopeId);
+            Assert.Equal(1, lifetime.BeginOrdinal); Assert.Equal(2, lifetime.FactoryEndOrdinal); Assert.Equal(3, lifetime.EndOrdinal);
+            File.WriteAllText(Path.Combine(_output.DiagnosticDirectory, "ordinary-phase-tree-result.json"), JsonSerializer.Serialize(new
+            {
+                Kind = "T608OrdinaryPhaseTreeResult", FunctionStrictLifo = true,
+                AllObservedRowsConsumed = analysis.RowsConsumed == rows.Length, analysis.SourceScopeIdPairingAvailable,
+                FunctionNames = analysis.Functions.Select(node => node.Name).ToArray(), ReturnedLifetime = lifetime,
+                ReturnedReadPathLifetimeProof = DescribeReturnedReadPathLifetimes(analysis), ActualGenuineAuthorityClaim = false
+            }, new JsonSerializerOptions { WriteIndented = true }));
         }
     }
 }
