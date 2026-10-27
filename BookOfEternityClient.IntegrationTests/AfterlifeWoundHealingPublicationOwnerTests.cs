@@ -62,23 +62,40 @@ public sealed class AfterlifeWoundHealingPublicationOwnerTests
             original = (await fixture.Files.ReadFileBytesAsync(lease, AcceptedMechanicsPlan.WoundCommandPath))!;
         }
 
-        await using var current = await fixture.Files.AcquireCanonicalWriteLeaseAsync();
-        fixture.Files.DeleteFile(current, AcceptedMechanicsPlan.WoundCommandPath);
-        var missing = fixture.CaptureMutationRoots();
-        var missingIssues = await validator.PrepareSpiritualSelfTreatmentPublicationAsync(current);
-        Assert.Contains(missingIssues, issue => issue.Code == "spiritual_self_treatment_replay_conflict");
-        Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(fixture.Files, current));
-        fixture.AssertMutationRootsUnchanged(missing);
+        await using (var current = await fixture.Files.AcquireCanonicalWriteLeaseAsync())
+        {
+            fixture.Files.DeleteFile(current, AcceptedMechanicsPlan.WoundCommandPath);
+            var missing = fixture.CaptureMutationRoots();
+            var missingIssues = await validator.PrepareSpiritualSelfTreatmentPublicationAsync(current);
+            Assert.Contains(missingIssues, issue => issue.Code == "spiritual_self_treatment_replay_conflict");
+            Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(fixture.Files, current));
+            fixture.AssertMutationRootsUnchanged(missing);
 
-        await fixture.Files.WriteFileAtomicAsync(current, AcceptedMechanicsPlan.WoundCommandPath,
-            " " + CanonicalJsonUtf8.DecodeOneOptionalBom(original));
-        var replaced = fixture.CaptureMutationRoots();
-        var replacedIssues = await validator.PrepareSpiritualSelfTreatmentPublicationAsync(current);
-        Assert.Contains(replacedIssues, issue => issue.Code == "spiritual_self_treatment_admission_invalid" &&
-            issue.Actual == "The retained spiritual treatment request changed.");
-        Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(fixture.Files, current));
-        fixture.AssertMutationRootsUnchanged(replaced);
-        Assert.Throws<InvalidDataException>(() => earlier.SpiritualHealingContinuation!.RequireCurrent(fixture.Files, current));
+            await fixture.Files.WriteFileAtomicAsync(current, AcceptedMechanicsPlan.WoundCommandPath,
+                " " + CanonicalJsonUtf8.DecodeOneOptionalBom(original));
+            var replaced = fixture.CaptureMutationRoots();
+            var replacedIssues = await validator.PrepareSpiritualSelfTreatmentPublicationAsync(current);
+            Assert.Contains(replacedIssues, issue => issue.Code == "spiritual_self_treatment_admission_invalid" &&
+                issue.Actual == "The retained spiritual treatment request changed.");
+            Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(fixture.Files, current));
+            fixture.AssertMutationRootsUnchanged(replaced);
+            Assert.Throws<InvalidDataException>(() => earlier.SpiritualHealingContinuation!.RequireCurrent(fixture.Files, current));
+
+            await fixture.Files.WriteFileAtomicBytesAsync(current, AcceptedMechanicsPlan.WoundCommandPath, original);
+            var restored = fixture.CaptureMutationRoots();
+            AssertNoErrors(await validator.PrepareSpiritualSelfTreatmentPublicationAsync(current));
+            Assert.True(AcceptedMechanicsPlanAuthority.TryPeekValidated(fixture.Files, current, out _, out var ready));
+            Assert.NotSame(earlier, ready.Plan);
+            Assert.NotSame(earlier.SpiritualHealingContinuation, ready.Plan!.SpiritualHealingContinuation);
+            ready.Plan.SpiritualHealingContinuation!.RequireCurrent(fixture.Files, current);
+            fixture.AssertMutationRootsUnchanged(restored);
+            var published = await new CanonicalStateNormalizer(fixture.Files, NullLogger<CanonicalStateNormalizer>.Instance)
+                .BindTo(current).NormalizeAcceptedMechanicsAsync(backups: null);
+            Assert.Same(ready.Plan, published);
+        }
+        Assert.Empty((await fixture.ReadWoundsAsync()).Occurrences);
+        await fixture.AssertOneCycleAndRetainedAttemptAsync();
+        fixture.AssertResourcesUnchanged();
     }
 
     private static void AssertNoErrors(IReadOnlyList<ValidationIssue> issues) =>
