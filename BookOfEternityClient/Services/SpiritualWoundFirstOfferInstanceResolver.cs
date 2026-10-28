@@ -84,7 +84,9 @@ internal static class SpiritualWoundFirstOfferInstanceResolver
                 SpiritualWoundOpportunityReceiptState.SerializeCanonical(parsed.State));
             if (history["sources"]!.AsArray().Any(row =>
                     (string?)row?["witness"]?["turnEvidence"]?["sessionId"] == sessionId &&
-                    (string?)row?["witness"]?["turnEvidence"]?["requestId"] == requestId))
+                    (string?)row?["witness"]?["turnEvidence"]?["requestId"] == requestId) ||
+                history["healingSources"] is JsonArray healing && healing.Any(row =>
+                    (string?)row?["witness"]?["sessionId"] == sessionId && (string?)row?["witness"]?["requestId"] == requestId))
                 return Fail("spiritual_first_offer_already_accepted");
             var instances = history["instances"]!.AsArray();
             var displayKey = MortalLocationIdentityState.BuildConfusableKey(display);

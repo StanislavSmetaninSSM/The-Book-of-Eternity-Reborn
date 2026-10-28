@@ -85,6 +85,8 @@ public partial class ValidationService
                     }
                 }
 
+                if (_combatHealingOrigin is not null && _combatHealingOutcome is null)
+                    return Failure("spiritual_combat_healing_decision_required", "the mandatory owner-issued paid healing disposition");
                 using var allocationScope = _allocations.Clock.BeginSpeculation();
                 attempted = true;
                 var resources = _resources.Result ?? _resources.Drain();
@@ -100,7 +102,7 @@ public partial class ValidationService
                         "the final transcript from the retained spiritual resource owner");
                 }
                 EffectAcceptedTurnPlanningResult completed;
-                if (_materializedWounds.Count == 0)
+                if (_materializedWounds.Count == 0 && _registeredCombatHealingInsertion is null)
                 {
                     completed = _effects.Complete(resources.EffectBoundaryTranscript);
                 }
@@ -241,7 +243,7 @@ public partial class ValidationService
                 var reduced = resources.SealOriginalSpiritualReduction(
                     effects.Plan,
                     sourceProjection,
-                    satisfactionReceiptIdentity: _terminal != null || _woundOpportunities.Values.Any(
+                    satisfactionReceiptIdentity: _combatHealingOrigin != null || _terminal != null || _woundOpportunities.Values.Any(
                         static value => value.Satisfaction is not null)
                         ? _satisfactionReceiptIdentity : null);
                 if (!reduced.Success)
@@ -249,7 +251,7 @@ public partial class ValidationService
                     RevokeUnderLease(lease);
                     return reduced;
                 }
-                if (_materializedWounds.Count != 0)
+                if (_materializedWounds.Count != 0 || _registeredCombatHealingInsertion is not null)
                 {
                     if (_registeredWoundInsertions.Count != _materializedWounds.Count ||
                         resources.Routing is null ||
@@ -261,10 +263,13 @@ public partial class ValidationService
                     }
                     var selected = _registeredWoundInsertions
                         .OrderBy(pair => pair.Value.VersionAfter)
-                        .Select(pair => (pair.Key, pair.Value))
-                        .ToArray();
+                        .Select(pair => (EffectAcceptedTurnPlanner.EffectAcceptedDraft.EffectDraftWoundSelection.From(pair.Key), pair.Value))
+                        .ToList();
+                    if (_registeredCombatHealingInsertion is { } combatInsertion && _combatHealingSelection is { } combatSelection)
+                        selected.Add((EffectAcceptedTurnPlanner.EffectAcceptedDraft.EffectDraftWoundSelection.From(combatSelection), combatInsertion));
+                    var ordered = selected.OrderBy(pair => pair.Item2.VersionAfter).ToArray();
                     var proof = SpiritualLiveWoundCompletion.Seal(effectOwner,
-                        effects.Plan, resources.Routing, transcript, resources, selected);
+                        effects.Plan, resources.Routing, transcript, resources, ordered);
                     if (proof is null)
                     {
                         RevokeUnderLease(lease);

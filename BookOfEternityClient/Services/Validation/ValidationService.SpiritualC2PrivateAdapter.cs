@@ -323,6 +323,19 @@ public partial class ValidationService
                     new SpiritualC2PrivateSession(this, capture, null, null, null, null), dependentIssues);
             }
             var next = await capture.ReadC2NextSourceAsync(lease);
+            if (next.Healing && next.Interval is not null && next.Issues.Count == 0)
+            {
+                if (!allowAutomaticTransport)
+                {
+                    retained = true;
+                    return new("automatic_continuation", new SpiritualC2PrivateSession(this, capture, null, null, null, null), []);
+                }
+                var transported = await capture.CommitC2SavedTransportAsync(lease);
+                if (transported.Disposition != "committed")
+                    return new(transported.Disposition == "repair_required" ? "repair_required" : "blocked", null, transported.Issues);
+                capture.Dispose();
+                return await OpenC2PrivateSessionAsync(lease);
+            }
             if (next.Source is null || next.Interval is null || next.Issues.Count != 0)
             {
                 if (next.Issues.Count == 1 &&
@@ -420,7 +433,7 @@ public partial class ValidationService
                 return [];
             }
             catch (Exception error) when (error is IOException or UnauthorizedAccessException or
-                InvalidOperationException or FormatException or JsonException or OverflowException)
+                InvalidOperationException or InvalidDataException or FormatException or JsonException or OverflowException)
             {
                 if (IsCurrentOwner)
                     RevokeUnderLease(lease);

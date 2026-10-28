@@ -96,7 +96,7 @@ public partial class ValidationService
             try
             {
                 EnsureCurrent(lease);
-                if (_matchedC2Pair is not null || _usesColdOriginalInputs || _originalOutputProjection is null ||
+                if (_combatHealingOrigin is not null || _matchedC2Pair is not null || _usesColdOriginalInputs || _originalOutputProjection is null ||
                     _completedOrdinaryReduction?.Reduction is not { } completed || _resources is null || _effects is null ||
                     _woundSelections.Count != 0 || _woundDeclines.Count != 0 || _woundOpportunities.Count != 0 ||
                     completed.HasLiveWoundWork || completed.LiveWoundCompletion is not null ||

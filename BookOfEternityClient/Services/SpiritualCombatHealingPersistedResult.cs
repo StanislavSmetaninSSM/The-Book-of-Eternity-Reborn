@@ -142,6 +142,12 @@ internal sealed class SpiritualCombatHealingPersistedResult : WoundTransitionRes
             resolution.Resolution is not { } resolved || !resolved.Calculation.HasSufficientTier ||
             !JsonNode.DeepEquals(root["calculation"], JsonSerializer.SerializeToNode(resolved.Calculation)))
             throw new InvalidDataException("Combat calculation differs from admitted player dice/source.");
+        var chosen = claim.Count == 1 ? claim[0]!.AsObject() : claim.OfType<JsonObject>().Single(row =>
+            string.Equals(row["selection"]?.GetValue<string>(), "selected", StringComparison.OrdinalIgnoreCase));
+        if (Number(chosen, "value") != resolved.Calculation.Input.NaturalRoll || claim.Count > 1 &&
+            claim.OfType<JsonObject>().Where(row => !ReferenceEquals(row, chosen)).Any(row =>
+                !string.Equals(row["selection"]?.GetValue<string>(), "discarded", StringComparison.OrdinalIgnoreCase)))
+            throw new InvalidDataException("Combat audit differs from the die selected by its actual roll mode.");
         return new(intent, before, source, resolved.Calculation, Text(root, "sourceId"), fingerprint,
             Text(root, "eventRef"), Text(root, "exchangeId"), disposition, turn);
     }

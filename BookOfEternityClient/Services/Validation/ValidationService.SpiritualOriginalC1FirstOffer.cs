@@ -115,8 +115,27 @@ public partial class ValidationService
                     return FirstOfferFailure("spiritual_first_offer_prior_decision_unresolved");
                 if (!_closedExchangeEvidence[^1].Sources.Any(source =>
                         source.Calculation.MaximumSeverityRank > 0 ||
-                        source.GuaranteedSeverityRank != null))
+                        source.GuaranteedSeverityRank != null) && _combatHealingOrigin is null)
                     return new(null, null, []);
+                if (_combatHealingOrigin is not null)
+                {
+                    // Required graphs are admitted as response DATA before committing
+                    // an immutable initial pair; missing graphs can use ordinary
+                    // response repair on the same signed intent/original dice.
+                    try
+                    {
+                        var graphIssues = new List<ValidationIssue>();
+                        var selected = CombatHealingSelection.CaptureAtClosedInterval(this, interval, graphIssues);
+                        if (graphIssues.Count != 0) return new(null, null, graphIssues);
+                        selected?.AdmitDestinationGraph();
+                    }
+                    catch (Exception error) when (error is InvalidDataException or InvalidOperationException or
+                        FormatException or ArgumentException or System.Text.Json.JsonException)
+                    {
+                        return new(null, null, [new ValidationIssue("output/interface_updates.json", IssueSeverity.Error,
+                            "Combat destination graph admission failed.", code: "spiritual_combat_healing_graph_required", expected: error.Message)]);
+                    }
+                }
                 var instance = SpiritualWoundFirstOfferInstanceResolver.Resolve(
                     signed.Receipt, signed.Conflict, _source.Realm, _source.SessionId,
                     _source.RequestId, _source.SnapshotToken, _source.TurnNumber);
@@ -197,6 +216,22 @@ public partial class ValidationService
                     sources.Add(ComposeFirstOfferSource(source, entry, sources.Count,
                         bounds, originalDice, exchangeClaims, originalFingerprint));
             }
+            var healingSources = new JsonArray();
+            if (_combatHealingOrigin is not null)
+            {
+                var entry = _closedExchangeEvidence.Single();
+                var healing = entry.Healing ?? throw new InvalidOperationException("Actual retained healing exchange required.");
+                var evidence = new JsonObject
+                {
+                    ["sessionId"] = _source.SessionId, ["requestId"] = _source.RequestId, ["snapshotToken"] = _source.SnapshotToken,
+                    ["turn"] = _source.TurnNumber, ["realm"] = _source.Realm, ["originalSnapshotFingerprint"] = originalFingerprint,
+                    ["bounds"] = bounds.DeepClone(),
+                    ["acceptedD20Values"] = new JsonArray(originalDice.Select(v => (JsonNode?)JsonValue.Create(v)).ToArray()),
+                    ["diceClaims"] = claims.DeepClone()
+                };
+                healingSources.Add(new JsonObject { ["sourceOrdinal"] = 0, ["turnEvidence"] = evidence,
+                    ["witness"] = SpiritualWoundStateJson.Parse(healing.WitnessJson) });
+            }
             var nextSource = 0;
             foreach (var source in sources)
             {
@@ -234,11 +269,16 @@ public partial class ValidationService
                 },
                 ["packetFingerprint"] = ""
             };
+            if (healingSources.Count != 0)
+            {
+                packet["healingSources"] = healingSources; packet["healingDecisions"] = new JsonArray();
+                packet["cursor"]!["nextHealingSourceOrdinal"] = 0;
+            }
             packet["retainedPrefixFingerprint"] =
                 SpiritualWoundDecisionPendingState.ComputePrefixFingerprint(packet);
             packet["packetFingerprint"] =
                 SpiritualWoundStateJson.Hash(packet, "pending_packet", "packetFingerprint");
-            return new JsonObject { ["schemaVersion"] = 1, ["pending"] = packet };
+            return new JsonObject { ["schemaVersion"] = healingSources.Count == 0 ? 1 : 2, ["pending"] = packet };
         }
 
         private JsonObject ComposeFirstOfferSource(PreparedSpiritualSource source,

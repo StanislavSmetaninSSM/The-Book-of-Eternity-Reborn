@@ -7,7 +7,7 @@ namespace BookOfEternityClient.Services;
 /// <summary>
 /// Validates immutable spiritual opportunity history without granting source or publication authority.
 /// </summary>
-internal sealed class SpiritualWoundOpportunityReceiptState
+internal sealed partial class SpiritualWoundOpportunityReceiptState
 {
     /// <summary>
     /// Identifies the private client-owned accepted spiritual opportunity ledger.
@@ -44,10 +44,12 @@ internal sealed class SpiritualWoundOpportunityReceiptState
         try
         {
             var root = SpiritualWoundStateJson.Parse(json);
-            Closed(root, "schemaVersion nextInstanceOrdinal nextClosureOrdinal nextSourceOrdinal nextDecisionOrdinal instances closures sources decisions");
+            var version = (int)Integer(root["schemaVersion"], 1, 2);
+            Closed(root, "schemaVersion nextInstanceOrdinal nextClosureOrdinal nextSourceOrdinal nextDecisionOrdinal instances closures sources decisions" +
+                (version == 2 ? " nextHealingSourceOrdinal nextHealingDecisionOrdinal healingSources healingDecisions" : ""));
             var lifecycle = new JsonObject();
             foreach (var field in new[] { "schemaVersion", "nextInstanceOrdinal", "nextClosureOrdinal", "instances", "closures" })
-                lifecycle[field] = root[field]?.DeepClone();
+                lifecycle[field] = field == "schemaVersion" ? JsonValue.Create(1) : root[field]?.DeepClone();
             Require(SpiritualWoundConflictInstanceState.Parse(lifecycle.ToJsonString(), path).IsValid,
                 "Invalid receipt lifecycle projection.");
             var sources = Rows(root, "sources", "nextSourceOrdinal");
@@ -97,9 +99,10 @@ internal sealed class SpiritualWoundOpportunityReceiptState
             foreach (var row in decisions)
                 ValidateDecision(row, sourceById, decided, decisionIds, opportunityIds, transitionIds);
             ValidateDecisionWaves(decisions);
+            ValidateHealingLedger(root, version, instances, closures, sources, decisions);
             return new(true, new(root), Array.Empty<ValidationIssue>());
         }
-        catch (Exception error) when (error is JsonException or FormatException or InvalidOperationException or OverflowException)
+        catch (Exception error) when (error is JsonException or FormatException or InvalidOperationException or OverflowException or InvalidDataException or ArgumentException or NullReferenceException or KeyNotFoundException)
         {
             return new(false, null, Array.AsReadOnly(new[]
             {
@@ -248,6 +251,7 @@ internal sealed class SpiritualWoundOpportunityReceiptState
     {
         ArgumentNullException.ThrowIfNull(before);
         ArgumentNullException.ThrowIfNull(candidate);
+        if (!HealingAppendAgrees(before._root, candidate._root)) return new("conflict", null);
         foreach (var field in new[] { "instances", "closures", "sources", "decisions" })
         {
             var prior = before._root[field]!.AsArray();
@@ -258,7 +262,8 @@ internal sealed class SpiritualWoundOpportunityReceiptState
         var closed = before._root["closures"]!.AsArray()
             .Select(row => Text(row!["instanceId"])).ToHashSet(StringComparer.Ordinal);
         var acceptedTurns = before._root["sources"]!.AsArray()
-            .Select(row => OriginalRequest(Object(row!["witness"]))).ToHashSet();
+            .Select(row => OriginalRequest(Object(row!["witness"])))
+            .Concat(HealingRequests(before._root)).ToHashSet();
         if (candidate._root["sources"]!.AsArray().Skip(before._root["sources"]!.AsArray().Count)
             .Any(row => closed.Contains(Text(row!["instanceId"])) ||
                 acceptedTurns.Contains(OriginalRequest(Object(row["witness"])))))

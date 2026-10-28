@@ -61,7 +61,7 @@ public partial class ValidationService
             internal IReadOnlyList<SpiritualWoundStage> Stages => _stages.ToArray();
             internal ResourceTransition ReadActualSpend() => ReadCombatSpend(Interval, JsonNode.Parse(_source.ExchangeJson)!.AsObject());
 
-            private static ResourceTransition ReadCombatSpend(AcceptedMechanicsPlanner.SpiritualExchangeInterval interval, JsonObject exchange)
+            internal static ResourceTransition ReadCombatSpend(AcceptedMechanicsPlanner.SpiritualExchangeInterval interval, JsonObject exchange)
             {
                 var rows = interval.AppliedTransitions.Concat(interval.ReplayTransitions).Where(t =>
                     t.OriginKind == "afterlife_cost" && t.OriginId == interval.ExchangeId &&
@@ -126,8 +126,9 @@ public partial class ValidationService
                 return new(Build(WoundAcceptedTurnFingerprints.ComputePreparation(provisional)), Array.Empty<ValidationIssue>());
             }
 
-            private void AdmitDestinationGraph()
+            internal void AdmitDestinationGraph()
             {
+                if (_destinationGraph is not null) return;
                 var required = SpiritualHealingRequestProjection.RequiredGraphs(new[] { Target }, _stages).ToArray();
                 var response = StrictJsonAuthority.Deserialize<JsonObject>(_interfaceJson, new JsonSerializerOptions(), "combat interface")
                     ?? throw new InvalidDataException("Combat interface must be an object.");
@@ -171,8 +172,8 @@ public partial class ValidationService
                     interval.Ordinal != owner._nextResourceOrdinal - 1 || interval.Ordinal >= owner._source.CheckedExchanges.Count)
                     throw new InvalidOperationException("Actual closed combat resource interval required.");
                 var exchange = JsonNode.Parse(owner._source.CheckedExchanges[interval.Ordinal])!.AsObject();
-                var conflict = owner._source.ReadMechanicsConflict(owner)["activeConflict"]!.AsObject();
-                var source = owner.ResolveCombatHealingExchange(conflict, exchange, interval.Ordinal);
+                var source = owner._closedExchangeEvidence.Single(e => ReferenceEquals(e.Interval, interval)).Healing
+                    ?? throw new InvalidOperationException("Actual closed healing source required.");
                 _ = ReadCombatSpend(interval, exchange);
                 if (source.Disposition != "resolved") return null; // Blocked never gets a wound insertion.
                 if (owner._combatHealingSelection is { } retained)

@@ -103,7 +103,7 @@ public partial class ValidationService
                 if (_c2DecisionDrafted || _c2SelectionVerified || _matchedC2Pair is null)
                     return DecisionDraftFailure("spiritual_c2_decision_pair_required");
                 var next = await ReadC2NextSourceCoreAsync(lease);
-                if (next.Source is null || next.Interval is null || next.Issues.Count != 0)
+                if (!next.Healing && next.Source is null || next.Interval is null || next.Issues.Count != 0)
                     return new(null, null, next.Issues);
                 var pair = _matchedC2Pair;
                 var baseline = SpiritualWoundCaptureCheckpointState.Parse(
@@ -160,7 +160,7 @@ public partial class ValidationService
                 return stagedResult;
             }
             catch (Exception error) when (error is IOException or UnauthorizedAccessException or
-                InvalidOperationException or FormatException or JsonException or OverflowException or
+                InvalidOperationException or InvalidDataException or FormatException or JsonException or OverflowException or
                 DecoderFallbackException)
             {
                 return DecisionDraftFailure("spiritual_c2_decision_draft_failed");
@@ -223,7 +223,7 @@ public partial class ValidationService
                 return result;
             }
             catch (Exception error) when (error is IOException or UnauthorizedAccessException or
-                InvalidOperationException or FormatException or JsonException or OverflowException or
+                InvalidOperationException or InvalidDataException or FormatException or JsonException or OverflowException or
                 DecoderFallbackException)
             {
                 return DecisionDraftFailure("spiritual_c2_saved_layer_replay_failed");
@@ -328,6 +328,16 @@ public partial class ValidationService
                                       change.Path != FixedOriginalOutputPaths[0] &&
                                       change.Path != AfterlifeSpiritualConflictState.StatePath))
                 return DecisionDraftFailure("spiritual_c2_input_change_outside_decision_layer");
+            var priorPacket = SpiritualWoundStateJson.Parse(SpiritualWoundDecisionPendingState.SerializeCanonical(priorPending))["pending"]!.AsObject();
+            if (SpiritualWoundDecisionPendingState.HasPendingHealing(priorPacket))
+            {
+                if (selectionOnly || changes.Count != 0)
+                    return DecisionDraftFailure("spiritual_c2_healing_automatic_input_changed");
+                if (append) _allocations.Journal.EnableAppendAfterReplay();
+                var selected = ApplyC2CombatHealingDecision(priorPending);
+                _c2SelectedDecision = selected;
+                return await ContinueC2SelectedDecisionCoreAsync(lease, priorPending, priorCheckpoint, changes, selected);
+            }
             var next = ResolveC2NextSourceFromPending(priorPending);
             if (next.Source is null || next.Interval is null || next.Issues.Count != 0)
                 return new(null, null, next.Issues);
@@ -519,7 +529,7 @@ public partial class ValidationService
             if (conflictChange.Path is not null &&
                 (nextOrdinal != sourceRows.Count || !conflictChange.Image.Existed))
                 return DecisionDraftFailure("spiritual_c2_conflict_continuation_before_source_resolution");
-            if (nextOrdinal == sourceRows.Count)
+            if (SpiritualWoundDecisionPendingState.AllSourcesHandled(packet))
             {
                 if (!_source.TryReadInitialActiveExchangeInventory(out _,
                         out var originalExchangeIds) ||
@@ -605,7 +615,7 @@ public partial class ValidationService
                 return pendingParsed.Issues.Count != 0
                     ? new(null, null, pendingParsed.Issues)
                     : DecisionDraftFailure("spiritual_c2_decision_packet_invalid");
-            if (packet["cursor"]!["nextSourceOrdinal"]!.GetValue<int>() == sourceRows.Count)
+            if (SpiritualWoundDecisionPendingState.AllSourcesHandled(packet))
             {
                 var completed = await CompleteOrdinaryReductionUnderGateAsync(lease);
                 if (!completed.Success || completed.Reduction is null)
@@ -789,7 +799,7 @@ public partial class ValidationService
                 packet["bounds"]!["exchangeCount"]!.GetValue<int>(), originalDice,
                 inventory.RegisteredPaths, inventory.BeforeImages, inventory.BeforeImages,
                 responseBytes)["pending"]!.AsObject();
-            foreach (var field in new[] { "sources", "diceClaims" })
+            foreach (var field in new[] { "sources", "diceClaims" }.Concat(SpiritualWoundDecisionPendingState.HasHealing(packet) ? new[] { "healingSources" } : []))
             {
                 var oldRows = packet[field]!.AsArray();
                 var rebuiltRows = rebuilt[field]!.AsArray();

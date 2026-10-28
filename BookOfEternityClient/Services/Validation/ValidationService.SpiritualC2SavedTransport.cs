@@ -66,8 +66,12 @@ public partial class ValidationService
                     ((FileSystemManager.CanonicalWriteLease heldLease,
                         SpiritualOriginalTurnCapture _, string path, byte[] bytes) =>
                         _validator._fs.WriteFileAtomicBytesAsync(heldLease, path, bytes));
-                if (!_c2PendingSubmission)
+                var packet = SpiritualWoundStateJson.Parse(SpiritualWoundDecisionPendingState.SerializeCanonical(pair.Pending))["pending"]!.AsObject();
+                var automaticHealing = !_c2PendingSubmission && SpiritualWoundDecisionPendingState.HasPendingHealing(packet);
+                if (!_c2PendingSubmission && !automaticHealing)
                     return await StageAndResumeC2SubmissionCoreAsync(lease, writer, expectedCommandBytes);
+                if (automaticHealing && expectedCommandBytes is not null)
+                    return SavedTransportFailure("blocked", "spiritual_c2_healing_command_forbidden");
                 if (expectedCommandBytes is not null && !ExactBytes(
                         await _validator._fs.ReadFileBytesAsync(lease, AcceptedMechanicsPlan.WoundCommandPath),
                         expectedCommandBytes))
@@ -75,7 +79,9 @@ public partial class ValidationService
                     RevokeUnderLease(lease);
                     return SavedTransportFailure("blocked", "spiritual_c2_submitted_command_changed");
                 }
-                var draft = await ResumeC2DecisionDraftCoreAsync(lease, dependentPolicy);
+                var draft = automaticHealing
+                    ? await AdvanceC2NextDecisionDraftCoreAsync(lease)
+                    : await ResumeC2DecisionDraftCoreAsync(lease, dependentPolicy);
                 if (draft.Checkpoint is not { } checkpoint || draft.Pending is not { } pending ||
                     draft.Issues.Count != 0)
                     return new("blocked", null, null, draft.Issues,

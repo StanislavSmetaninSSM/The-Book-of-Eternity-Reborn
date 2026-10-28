@@ -102,6 +102,7 @@ public partial class ValidationService
             private readonly IReadOnlyList<OriginalGuaranteeSatisfaction> _satisfactions;
             private readonly object _satisfactionReceiptIdentity;
             private readonly PreparedTerminal? _terminal;
+            private readonly JsonObject? _healingOutcome;
 
             /// <summary>
             /// Retains the capture's private issuance key and immutable packet identity.
@@ -128,7 +129,7 @@ public partial class ValidationService
             /// </param>
             internal AuthenticatedC3Pair(object issuanceKey, SpiritualSignedC1Origin signed,
                 JsonObject packet, IReadOnlyList<OriginalGuaranteeSatisfaction>? satisfactions,
-                object satisfactionReceiptIdentity, PreparedTerminal? terminal = null)
+                object satisfactionReceiptIdentity, PreparedTerminal? terminal = null, JsonObject? healingOutcome = null)
             {
                 _issuanceKey = issuanceKey;
                 _signed = signed;
@@ -137,6 +138,7 @@ public partial class ValidationService
                 _satisfactions = satisfactions?.ToArray() ?? [];
                 _satisfactionReceiptIdentity = satisfactionReceiptIdentity;
                 _terminal = terminal;
+                _healingOutcome = healingOutcome?.DeepClone().AsObject();
             }
 
             /// <summary>
@@ -160,6 +162,10 @@ public partial class ValidationService
             /// Gets the number of owner-issued no-transition results that the reducer must consume.
             /// </summary>
             internal int SatisfactionCount => _satisfactions.Count;
+
+            internal bool MatchesHealing(SpiritualSignedC1Origin signed, JsonObject packet, JsonObject outcome) =>
+                Matches(signed, packet) && _healingOutcome is not null && JsonNode.DeepEquals(_healingOutcome, outcome);
+
 
             /// <summary>
             /// Gets the identity of the capture that issued these satisfaction results.
@@ -252,7 +258,7 @@ public partial class ValidationService
                 authenticatedPair = new AuthenticatedC3Pair(C3PairIssuanceKey, signed, packet,
                     _woundOpportunities.Values.Where(value => value.Satisfaction is not null)
                         .Select(value => value.Satisfaction!).ToArray(),
-                    _satisfactionReceiptIdentity, _terminal);
+                    _satisfactionReceiptIdentity, _terminal, _combatHealingOutcome);
                 if (_completedOrdinaryReduction?.Reduction is null)
                     return DeclineFailure("spiritual_c3_completed_reduction_missing");
             }
@@ -266,7 +272,7 @@ public partial class ValidationService
             var ordinary = await CompleteOrdinaryReductionAsync(lease);
             if (!ordinary.Success || ordinary.Reduction is null)
                 return new(null, null, ordinary.Issues);
-            if (requireDeclines && ordinary.Reduction.HasLiveWoundWork)
+            if (requireDeclines && (ordinary.Reduction.HasLiveWoundWork || _combatHealingOrigin is not null))
                 return DeclineFailure("spiritual_c3_decline_materialization_deferred");
             var receipt = SpiritualWoundDeclineReceiptReducer.Reduce(signed, packet,
                 ordinary.Reduction.LiveWoundCompletion, authenticatedPair);

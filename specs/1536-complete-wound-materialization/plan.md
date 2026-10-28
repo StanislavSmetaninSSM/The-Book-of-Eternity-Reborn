@@ -1,3 +1,30 @@
+# Combat paired decision / ledger WIP — UNCOMPILED/UNRUN, 2026-10-28
+
+Closed pending schema2 and its first source composition are now written. The same
+saved transport can automatically advance the owner-issued healing decision only
+after the actual matched initial pair; saved checkpoint replay reexecutes that
+same branch and compares the full successor. Injury schema1 remains closed and
+uses its existing command/submission route. Both source families participate in
+prefix/append checks and completion, with one union wave per eligible exchange.
+
+The source/calc is retained with the real closed interval and reused locally;
+required destination graph DATA is checked before initial-pair commit, so missing
+graphs can use ordinary response repair on the unchanged signed intent/dice.
+Actual draft application still happens only after initial-pair authentication.
+Resolved healing joins the ordered live completion; blocked has no insertion but
+requires its capture-issued outcome and real typed Spend. C3 now appends the
+closed nonempty healing source/outcome family in the existing schema2 ledger,
+with separate family identity and common lifecycle/claim/overlap checks. No new
+file or publisher is introduced. Standalone source DATA now verifies that the
+selected die is the actual winner of the recorded roll mode, not only its math.
+
+Remaining consumers before coherent SOURCE/build: durable full ledger↔wound/
+resource/signed-intent settled agreement (including omission-only closure), exact
+scheduler no-op settlement/replay, browser accepted-result authentication, causal
+paired/injury-v1 regression controls and actual console/browser/GM sync. These
+written paths have not compiled or executed; old accepted aid/cost evidence has
+not been rerun and is not current combat qualification.
+
 # Combat completion / pending consumer checkpoint — UNCOMPILED/UNRUN, 2026-10-28
 
 The common live completion now carries the concrete combat selection alongside

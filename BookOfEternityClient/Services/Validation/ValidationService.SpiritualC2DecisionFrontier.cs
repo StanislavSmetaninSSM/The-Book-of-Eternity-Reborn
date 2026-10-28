@@ -20,7 +20,7 @@ public partial class ValidationService
     /// </param>
     internal sealed record SpiritualC2NextSourceResult(
         AcceptedMechanicsPlanner.SpiritualExchangeInterval? Interval,
-        PreparedSpiritualSource? Source, IReadOnlyList<ValidationIssue> Issues);
+        PreparedSpiritualSource? Source, IReadOnlyList<ValidationIssue> Issues, bool Healing = false);
 
     internal sealed partial class SpiritualOriginalTurnCapture
     {
@@ -138,6 +138,13 @@ public partial class ValidationService
                 var root = SpiritualWoundStateJson.Parse(
                     SpiritualWoundDecisionPendingState.SerializeCanonical(pending));
                 var packet = root["pending"]!.AsObject();
+                if (SpiritualWoundDecisionPendingState.HasPendingHealing(packet))
+                {
+                    if (_combatHealingOrigin is null || _closedExchangeEvidence.Count != 1 ||
+                        !ReferenceEquals(_lastResourceStep?.Interval, _closedExchangeEvidence[0].Interval))
+                        return NextSourceFailure("spiritual_c2_healing_source_mismatch");
+                    return new(_closedExchangeEvidence[0].Interval, null, [], Healing: true);
+                }
                 var nextOrdinal = packet["cursor"]!["nextSourceOrdinal"]!.GetValue<int>();
                 var sources = _closedExchangeEvidence.SelectMany(entry => entry.Sources
                     .Select(source => (Entry: entry, Source: source))).ToArray();

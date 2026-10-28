@@ -171,7 +171,7 @@ public partial class ValidationService
             return new(capture, priorPending, []);
         }
         catch (Exception error) when (error is IOException or UnauthorizedAccessException or
-            InvalidOperationException or FormatException or JsonException or OverflowException or
+            InvalidOperationException or InvalidDataException or FormatException or JsonException or OverflowException or
             DecoderFallbackException)
         {
             return SavedReplayFailure("spiritual_c2_saved_replay_failed");
