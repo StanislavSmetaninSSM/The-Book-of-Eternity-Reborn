@@ -1,5 +1,19 @@
 # US4 safe self-treatment — active functional work, 2026-10-28
 
+Aid reader WIP is now connected to the existing strict published reader's parsed
+DATA export (UNCOMPILED/UNRUN). Actual pre-control read proves the prior real
+accepted tuple/control/projection, full v3 record+digest, current full cohort,
+unconsumed-input absence, current Guardian locality/known wound, actual healer art
+and effect lineage; each exact read image is freshly closed. The same strict
+reader implementation returns operation-local parsed catalog/identity/History to
+avoid a second large cohort parse for staging. Source reads are unique within this
+short operation; serialized witness is comparison DATA, never permission.
+Exact current Guardian predicate is shared with the issuer; proposals now detach
+before its first callback/await. No aid draw is activated yet. Remaining wiring:
+leased control→fresh pre-draw checks→shared retained request, original-bound aid
+admission/result and existing Engine/guided console/browser, plus causal controls
+and GM synchronization before coherent SOURCE/build. No old accepted suite rerun.
+
 Active aid WIP is now written but UNCOMPILED/UNRUN: the same scalar program uses
 the target's natural tier and rederives the full active calculation instead of
 equating the two tiers. Actual owned source still binds healer identity/art; pure

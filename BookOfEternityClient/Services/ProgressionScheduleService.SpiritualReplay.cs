@@ -40,6 +40,19 @@ public partial class ProgressionScheduleService
     internal static async Task<SpiritualHealingPersistedResult?> ReadPublishedSpiritualCycleCoreAsync(ProgressionControl control,
         string sessionId, string requestId, int turn, Func<string, Task<byte[]?>> read,
         string? expectedSnapshotToken = null, JsonObject? expectedRequest = null,
+        JsonObject? expectedNaturalProjection = null) =>
+        (await ReadPublishedSpiritualCycleDataAsync(control, sessionId, requestId, turn, read,
+            expectedSnapshotToken, expectedRequest, expectedNaturalProjection))?.Result;
+
+    // Operation-local parsed DATA export for pre-control aid admission. No caller
+    // can pass this object instead of the actual lease/source closing checks.
+    internal sealed record PublishedSpiritualCycleData(SpiritualHealingPersistedResult Result,
+        JsonObject Root, WoundHistoryState History, WoundIdentityState Identities,
+        WoundCarrierCatalog Catalog, IReadOnlyDictionary<string, JsonObject?> CarrierRoots);
+
+    internal static async Task<PublishedSpiritualCycleData?> ReadPublishedSpiritualCycleDataAsync(ProgressionControl control,
+        string sessionId, string requestId, int turn, Func<string, Task<byte[]?>> read,
+        string? expectedSnapshotToken = null, JsonObject? expectedRequest = null,
         JsonObject? expectedNaturalProjection = null)
     {
         if (!HasResolvedRealm(control.CurrentRealm) || !IsAfterlifeRealm(control.CurrentRealm)) return null;
@@ -104,7 +117,7 @@ public partial class ProgressionScheduleService
         foreach (var group in accepted.Result.Stages.GroupBy(s => s.After.WoundId))
             if (history.State.Transitions.Last(t => t.WoundId == group.Key).TransitionId != group.Last().TransitionId)
                 throw new InvalidDataException("A published spiritual result no longer describes the current wound cohort.");
-        return accepted.Result;
+        return new(accepted.Result, accepted.Root, history.State, identities.State!, catalog, roots);
     }
 
     // Independent current completeness witness, not reconstruction of the historical

@@ -137,6 +137,21 @@ internal static class SpiritualTreatmentParticipation
 
     internal static string Fingerprint(JsonObject record) => WoundAcceptedTurnFingerprintWriter.Compute(new[]
         { "book_of_eternity.spiritual_treatment_participation", "1", WoundAcceptedTurnFingerprintWriter.CanonicalJson(record) });
+    internal static LocalInteractionScope RequireCurrentGuardianScope(JsonObject guardians, JsonObject? residents, string targetId)
+    {
+        var scope = LocalInteractionScopeService.ResolveChaosSeaScope(guardians, residents,
+            Array.Empty<LocalInteractionAuthoritySnapshot>());
+        var exact = (guardians["guardians"] as JsonArray)?.OfType<JsonObject>().Where(g =>
+            string.Equals(g["guardianId"]?.GetValue<string>(), targetId, StringComparison.OrdinalIgnoreCase)).ToArray();
+        var activeAbode = guardians["activeGuardian"]?["abode"]?["abodeId"]?.GetValue<string>();
+        if (!scope.IsResolved || scope.CurrentGuardianId != targetId || exact is not { Length: 1 } ||
+            exact[0]["guardianId"]?.GetValue<string>() != targetId || guardians["activeGuardian"]?["guardianId"]?.GetValue<string>() != targetId ||
+            guardians["chaosSeaNavigation"]?["currentGuardianId"]?.GetValue<string>() != targetId ||
+            guardians["chaosSeaNavigation"]?["currentAbodeId"]?.GetValue<string>() != scope.LocationId ||
+            exact[0]["abode"]?["abodeId"]?.GetValue<string>() != scope.LocationId || activeAbode is not null && activeAbode != scope.LocationId)
+            throw new InvalidDataException("Participation cannot use an alias, ambiguous Guardian or foreign Abode.");
+        return scope;
+    }
     internal static string ProfileId(JsonObject profile)
     {
         var id = profile["actorId"]?.GetValue<string>(); var reference = profile["actorRef"]?.GetValue<string>();

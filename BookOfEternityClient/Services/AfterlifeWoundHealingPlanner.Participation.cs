@@ -22,6 +22,8 @@ internal static partial class AfterlifeWoundHealingPlanner
             if (changes.Count == 0) return;
             if (!IsNatural || _participationChanges is not null)
                 throw new InvalidDataException("Only one actual natural owner may issue participation outcomes.");
+            var detachedChanges = changes.Select(c => new SpiritualTreatmentParticipation.Change(c.TargetId,
+                c.Proposal.DeepClone().AsObject())).ToArray();
             RequireCurrent(_files, _lease);
             var observed = PendingTurnSnapshotReader.ReadObservedCurrent(_files, _lease,
                 new PendingTurnSnapshotPathSelection(new[] { ParticipationGuardiansPath }, new[] { GuardianAbodeResidentState.StatePath }));
@@ -44,9 +46,7 @@ internal static partial class AfterlifeWoundHealingPlanner
                     CanonicalJsonUtf8.DecodeOneOptionalBom(current), new JsonSerializerOptions(), path);
                 currentRoots.Add(path, root);
             }
-            var scope = LocalInteractionScopeService.ResolveChaosSeaScope(currentRoots[ParticipationGuardiansPath],
-                currentRoots[GuardianAbodeResidentState.StatePath], Array.Empty<LocalInteractionAuthoritySnapshot>());
-            if (!scope.IsResolved || _input.Binding.Realm != "chaos_sea")
+            if (_input.Binding.Realm != "chaos_sea")
                 throw new InvalidDataException("Participation requires the exact current safe Chaos Abode.");
             var binding = new JsonObject
             {
@@ -54,18 +54,10 @@ internal static partial class AfterlifeWoundHealingPlanner
                 ["snapshotToken"] = _input.Binding.SnapshotToken, ["realm"] = _input.Binding.Realm, ["turn"] = _input.Binding.Turn
             };
             var outcomes = new JsonArray();
-            foreach (var change in changes)
+            foreach (var change in detachedChanges)
             {
-                var guardians = currentRoots[ParticipationGuardiansPath]!;
-                var exact = (guardians["guardians"] as JsonArray)?.OfType<JsonObject>().Where(g =>
-                    string.Equals(g["guardianId"]?.GetValue<string>(), change.TargetId, StringComparison.OrdinalIgnoreCase)).ToArray();
-                if (scope.CurrentGuardianId != change.TargetId || exact is not { Length: 1 } ||
-                    exact[0]["guardianId"]?.GetValue<string>() != change.TargetId ||
-                    guardians["activeGuardian"]?["guardianId"]?.GetValue<string>() != change.TargetId ||
-                    guardians["chaosSeaNavigation"]?["currentGuardianId"]?.GetValue<string>() != change.TargetId ||
-                    guardians["chaosSeaNavigation"]?["currentAbodeId"]?.GetValue<string>() != scope.LocationId ||
-                    exact[0]["abode"]?["abodeId"]?.GetValue<string>() != scope.LocationId)
-                    throw new InvalidDataException("Participation cannot use an alias, ambiguous Guardian or foreign Abode.");
+                var scope = SpiritualTreatmentParticipation.RequireCurrentGuardianScope(currentRoots[ParticipationGuardiansPath]!,
+                    currentRoots[GuardianAbodeResidentState.StatePath], change.TargetId);
                 var target = (acceptedProfiles[AfterlifeEntityProfileState.ProfilesProperty] as JsonArray)?.OfType<JsonObject>()
                     .Where(p => p["actorType"]?.GetValue<string>() == "guardian" && SpiritualTreatmentParticipation.ProfileId(p) == change.TargetId &&
                         AfterlifeEntityProfileState.TryNormalizeEffectRealm(p["realm"]?.GetValue<string>(), out var realm) && realm == "chaos_sea").ToArray();
@@ -77,8 +69,7 @@ internal static partial class AfterlifeWoundHealingPlanner
                     _natural!.CycleOrdinal, _stages[0].TransitionId));
             }
             _participationSnapshot = snapshot; _participationOriginal = evidence; _participationSources = sources;
-            _participationChanges = changes.Select(c => new SpiritualTreatmentParticipation.Change(c.TargetId,
-                c.Proposal.DeepClone().AsObject())).ToArray();
+            _participationChanges = detachedChanges;
             _participationOutcomes = outcomes;
             RequireCurrent(_files, _lease);
         }
