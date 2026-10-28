@@ -1,3 +1,43 @@
+# Combat pair checkpoint — one actual gameplay PASS, four bounded failures
+
+2026-10-28 20:15 UTC: same Linux machine1d64a0ce397b is reachable after the
+reported disconnect; HEAD/remote858cb74d47a3f361aa786576db6b03f1c65aa9a6 agree,
+clean tree and no live owned build/test. Existing outcomes were inspected, not
+restarted. Main/Support/Integration retain source-equivalent06fad artifacts;
+Unit import-only rebuild858 completed0errors/26baseline warnings. All nine
+selected master/copy pins match. Official PlanOnly51cases/11descriptors/27methods
+executed zero cases. Cheap guaranteed codec11 plus affected witness/receipt21:
+32/32PASS,19.9233125s, both cleanup flags true, independently accepted by Sol.
+These intrinsic DATA checks do not establish gameplay publication.
+
+The actual paired category on858 completed all5 once:1PASS/4FAIL, no timeout,
+wall93.2563296s/category84.8652383<120, no duplicates, owned/runtime cleanuptrue.
+TRX SHA256dd635c9a3e2b97b3d1024f5f05164e31499566f6dc74b4dfd1f029a21dddf1ab.
+Full raw stays outside checkout at
+/workspace/tboe-linux-evidence-20261025/us4-self-healing/spiritual-combat-functional-8.
+The blocked_worsen case passes actual C2/C3/C4: one OD spend, counterharm worsens
+the selected wound, zero healing stages and no natural/safe world cycle. This is
+one bounded combat gameplay PASS, not acceptance of the whole feature.
+
+Four exact failures remain: healed reaches the publication wound-envelope check;
+no_improvement reaches a detached History-removal negative whose parsed fixture
+is invalid; guaranteed counterharm reaches C4 and exact-preimage tamper refusal,
+then fails the detached later-injury DATA baseline; next_boundary rejects the
+saved automatic selection's authorized later-exchange correction. Production
+versus fixture causality is under bounded independent Astra/Sol investigation;
+no guard relaxation or diagnosis is claimed from these symptoms alone. Downstream
+14 remain UNRUN. The original allocation/join failures and all raw are retained.
+
+Next finite block: confirm these four causes against existing terminal/replay
+contracts, correct only confirmed defects with their causal controls, independently
+review source/selection, build changed owners/dependencies and execute the affected
+pair before the conditional downstream14. Retain unchanged32 and historical17 at
+their separate lineages where source/consumer equivalence is proved. No T609,
+fullDFR, Mortal3, Windows or broad diagnostic work is released. T095/T102/T103,
+fullUS4 and #1536 remain open. Optimization uses existing sealed completed-state
+and replay DATA, with all fresh owner/lease/source/history checks retained; no new
+cache, file read framework or speedup claim is planned for these bounded fixes.
+
 # Unit import correction after fresh owning build — runtime UNRUN
 
 2026-10-28 source06fad8577 owning Main/Support/Integration build completed:
