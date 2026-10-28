@@ -439,6 +439,7 @@ public partial class ValidationService
                 preTurnAfterlifeOwners,
                 acceptedAfterlifeOwners));
         var ownerComposition = ResourceOwnerComposition.Combine(
+            persistedOwnerAuthority.Authority!.ExportHistoricalOwners(),
             mortalOwnerComposition,
             afterlifeOwnerComposition);
         issues.AddRange(ownerComposition.Issues);

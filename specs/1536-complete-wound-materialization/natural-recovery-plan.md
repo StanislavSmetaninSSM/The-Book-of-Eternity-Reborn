@@ -203,3 +203,51 @@ singleton PlanOnly and actual120; exact runtime outcome decides acceptance.
   comparison against actual Engine ordinary-owner preparation; no rebootstrap,
   historical-entry removal or authority exemption. C4 reset is reached, but this
   singleton is not accepted PASS and safe tick/replay assertions remain unreached.
+
+
+## Verified historical owner carry (WIP, UNCOMPILED/UNRUN)
+
+Independent Sol/Astra and root agree on the exact split from actual3. The fixture
+must run the actual Engine's upstream location/item admission for the new43
+session/snapshot; this registers the real canonical C4-created item, rather than
+borrowing old registration or persisted current exports. Separate production loss:
+ResourceCore already freshly validates the complete canonical persisted authority
+and reconstructs retired owners from valid History, then discards its historical
+keys when composing current accepted owners. An already closed conflict cannot
+re-emit its historical side from current active/terminal transition data.
+
+Carry only detached historical keys from that freshly validated authority into
+existing ResourceOwnerComposition/ResourceOwnerAuthority Combine and ONE final
+Build. Current preturn/same-turn exports remain exclusively the actual current
+composers. No persisted current items/capacity/grants or new TerminalOwners; current
+spend/live-state permission remains separate. Canonical persisted equality and all
+source/lease/closing checks remain unchanged. Default empty carry avoids new set
+allocations and keeps ordinary Combine behavior. A scoped exact cross-source
+historical overlap is the same DATA fact; duplicates within either input and
+confusable/current-reused identities still reach existing builder refusal. This
+is defensive merge behavior, not a claimed cause of actual3.
+
+One new cheap Unit Fact uses real CanonComposer-derived valid initialize/retire
+History DATA (state-null composer mode, not claimed as full persisted-root proof),
+then the production Combine/Resolve/ValidateCanonicalAgreement. It proves absent
+ledger history accepted, live state/spend denied, persisted current item not
+imported, no terminal grant, overlap acceptance and duplicate/confusable/reuse
+refusal. Actual Core retains its full state/History/persisted equality validation.
+Actual3 is already the genuine consumer RED; no artificial API bridge/extra RED
+build is required. The original reset Fact adds standard same-lease upstream
+location/item validation and binds the actual C4 item ID on the new snapshot.
+
+Optimization: reuse the already computed validated historical DATA; no source
+reread/reparse/cache or second full owner rebuild. Narrow export copies only the
+small historical key set, not all current exports/capabilities. No speedup claim.
+No new GM/schema/game rule: this private carry restores existing historical-ledger
+semantics; existing afterlife worked reset example remains sufficient, Mortal
+prompts and manifests require no new format. Relevant generic owner negatives
+cover preserved domain separation, without held Mortal/DFR/Windows execution.
+
+Finite proposed gate: fresh owning Integration/Main/Support then Unitrefsfalse;
+official combined exact three categories (static11cases/3descriptors), actual
+cheap history-carry6/60 → existing natural-publication4/120 → reset1/120 separately.
+Independent SOURCE/PREP chooses final selection. Prior19 retain their original
+lineages; changed shared Core requires these affected controls, not an automatic
+all19/current-SHA claim or complete selection.json run.

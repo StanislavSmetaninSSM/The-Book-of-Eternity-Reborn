@@ -122,6 +122,7 @@ public sealed partial class AfterlifeResourceCutoverTests
         Assert.Single(receipts["decisions"]!.AsArray());
         Assert.Null(await context.FileSystem.ReadFileBytesAsync(AcceptedMechanicsPlan.WoundCommandPath));
         var publishedProfileBytes = await context.FileSystem.ReadFileBytesAsync(AfterlifeEntityProfileState.StatePath);
+        var publishedItemId = Assert.Single((await context.ReadJsonAsync(InventoryEquipmentService.ItemsPath))!["items"]!.AsArray())!["itemId"]!.GetValue<string>();
         var resourceRoots = new Dictionary<string, JsonNode?>();
         foreach (var path in new[] { ResourceMaterializationContract.DefinitionsPath, ResourceMaterializationContract.StatePath,
                      ResourceMaterializationContract.HistoryPath, CanonicalResourceOwnerAuthorityComposer.AuthorityPath })
@@ -169,8 +170,13 @@ public sealed partial class AfterlifeResourceCutoverTests
         }));
         await using (var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync())
         {
-            var issues = await new ValidationService(context.FileSystem, NullLogger<ValidationService>.Instance)
-                .PrepareSpiritualSelfTreatmentPublicationAsync(lease);
+            var safeValidator = new ValidationService(context.FileSystem, NullLogger<ValidationService>.Instance);
+            // Match the actual Engine upstream owner admission for this new snapshot.
+            AssertNoConflictFrameErrors(await safeValidator.ValidateAcceptedTurnRawMortalLocationMaterializationAsync());
+            AssertNoConflictFrameErrors(await safeValidator.ValidateAcceptedTurnRawMortalItemMaterializationAsync(lease));
+            Assert.Contains(MortalItemAcceptedTurnAuthority.GetValidatedOwners(context.FileSystem, lease,
+                frame.SessionId, frame.ManifestPayloadHash), item => item.ItemId == publishedItemId);
+            var issues = await safeValidator.PrepareSpiritualSelfTreatmentPublicationAsync(lease);
             AssertNoConflictFrameErrors(issues);
             Assert.NotNull(await context.Normalizer.BindTo(lease).NormalizeAcceptedMechanicsAsync(backups: null));
         }

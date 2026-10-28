@@ -9,6 +9,69 @@ public sealed class ResourceOwnerAuthorityTests
     private const string FingerprintA =
         "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
 
+    [Fact]
+    public async Task AcceptedCompositionCarriesVerifiedHistoryWithoutImportingCurrentOwnersOrSpendPermission()
+    {
+        var definitions = ResourceDefinitionCatalog.CreateBuiltIn();
+        var retired = new ResourceOwnerKey("chaos_sea", ResourceOwnerKind.AfterlifeConflictSide, "closed_conflict_side");
+        var coordinate = new ResourceCoordinate(retired.Realm, retired.OwnerKind, retired.ResourceOwnerId, "spiritual_action_points");
+        var snapshot = new ResourceStateSnapshot(6, 6,
+            new(ResourceCapacityKind.RegisteredFormula, ResourceCapacityFormulaCatalog.AfterlifeSpiritualActionPointsV1, FingerprintA),
+            ResourceLifecycleState.Active);
+        var initialize = new ResourceTransition("initialize_closed_side", "initialize_closed_side", "turn_1:closed_side",
+            "owner_lifecycle", "closed_conflict", ResourceMutationPhase.RegisteredSystemOutcome, 100, 0,
+            coordinate, ResourceTransitionOperation.Initialize, 0, 0, ResourceTransitionOutcome.Applied,
+            ResourceCapacityDisposition.InitializeFromDefinition, null, snapshot,
+            new("owner_lifecycle", "closed_conflict", FingerprintA), FingerprintA, null, 1);
+        var retire = initialize with
+        {
+            TransitionId = "retire_closed_side", OperationId = "retire_closed_side", EventRef = "turn_2:closed_side",
+            Operation = ResourceTransitionOperation.Retire, CapacityDisposition = null,
+            BeforeState = snapshot, AfterState = null, Turn = 2
+        };
+        var history = ResourceHistoryState.CreateValidated(new[] { initialize, retire }, definitions);
+        Assert.True(history.IsValid, string.Join(";", history.Issues));
+        var item = MortalItemTestFixture.CreateCanonicalRoot();
+        var inventory = new JsonObject { ["items"] = new JsonArray(item), ["equippedItems"] = new JsonObject() }.ToJsonString();
+        var verified = await CanonicalResourceOwnerAuthorityComposer.ComposeAsync(definitions,
+            path => Task.FromResult<string?>(path == InventoryEquipmentService.ItemsPath ? inventory :
+                path == "game_state/meta/soul_state.json" ? "{\"currentRealm\":\"Mortal World\"}" : null),
+            state: null, history: history.History, CanonicalResourceOwnerAuthorityPurpose.FinalAfterImage);
+        Assert.True(verified.IsValid, string.Join(";", verified.Issues));
+        Assert.Contains(retired, verified.Authority!.ExportHistoricalOwners());
+        Assert.Contains(verified.Authority.Entries.Keys, key => key.OwnerKind == ResourceOwnerKind.Item &&
+            key.ResourceOwnerId == MortalItemTestFixture.ItemId);
+        var emptyCurrent = Build(Array.Empty<ResourceOwnerExport>());
+        var current = new ResourceOwnerCompositionResult(emptyCurrent, new Dictionary<string, JsonObject>(),
+            Array.Empty<AcceptedMechanicsOwnerTransition>(), null, Array.Empty<ResourceOwnerCapacityDraft>(),
+            Array.Empty<ResourceOwnerKey>(), Array.Empty<ValidationIssue>());
+        var combined = ResourceOwnerComposition.Combine(verified.Authority.ExportHistoricalOwners(), current);
+        Assert.True(combined.IsValid, string.Join(";", combined.Issues));
+        Assert.Empty(combined.TerminalOwners);
+        Assert.Empty(combined.Authority!.Entries);
+        Assert.Empty(combined.Authority.ValidateCanonicalAgreement(new ResourceStateLedger(Array.Empty<ResourceStateEntry>()), history.History!));
+        Assert.Contains(ResolveId(combined.Authority, retired.Realm, retired.OwnerKind, retired.ResourceOwnerId,
+            coordinate.ResourceKey).Issues, issue => issue.Code == "resource_owner_historical");
+        Assert.False(ResolveId(combined.Authority, "mortal_world", ResourceOwnerKind.Item, MortalItemTestFixture.ItemId, "durability").Success);
+        var live = new ResourceStateLedger(new[] { new ResourceStateEntry(coordinate, 6, 6, snapshot.CapacityBinding,
+            ResourceLifecycleState.Active, new(1, initialize.EventRef, initialize.TransitionId, initialize.EventRef, 1)) });
+        Assert.Contains(combined.Authority.ValidateCanonicalAgreement(live, history.History!),
+            issue => issue.FilePath.StartsWith("resourceState.entries", StringComparison.Ordinal));
+        var overlap = current with { Authority = Build(Array.Empty<ResourceOwnerExport>(), historical: new[] { retired }) };
+        Assert.True(ResourceOwnerComposition.Combine(verified.Authority.ExportHistoricalOwners(), overlap).IsValid);
+        Assert.Contains(ResourceOwnerComposition.Combine(new[] { retired, retired }, current).Issues,
+            issue => issue.Code == "resource_owner_identity_duplicate");
+        Assert.Contains(ResourceOwnerComposition.Combine(new[] { retired, retired }, overlap).Issues,
+            issue => issue.Code == "resource_owner_identity_duplicate");
+        Assert.Contains(ResourceOwnerComposition.Combine(Array.Empty<ResourceOwnerKey>(), overlap, overlap).Issues,
+            issue => issue.Code == "resource_owner_identity_duplicate");
+        Assert.Contains(ResourceOwnerComposition.Combine(new[] { retired with { ResourceOwnerId = "CLOSED_CONFLICT_SIDE" } }, overlap).Issues,
+            issue => issue.Code == "resource_owner_identity_confusable");
+        var reused = current with { Authority = Build(new[] { Owner(retired.Realm, retired.OwnerKind, retired.ResourceOwnerId, coordinate.ResourceKey) }) };
+        Assert.Contains(ResourceOwnerComposition.Combine(verified.Authority.ExportHistoricalOwners(), reused).Issues,
+            issue => issue.Code == "resource_owner_historical_conflict");
+    }
+
     [Theory]
     [InlineData("identical_cross_carrier", true)]
     [InlineData("divergent_cross_carrier", false)]

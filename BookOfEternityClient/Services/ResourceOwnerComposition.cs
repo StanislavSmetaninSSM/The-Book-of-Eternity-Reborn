@@ -6,8 +6,15 @@ namespace BookOfEternityClient.Services;
 internal static class ResourceOwnerComposition
 {
     internal static ResourceOwnerCompositionResult Combine(
+        params ResourceOwnerCompositionResult[] compositions) =>
+        Combine(Array.Empty<ResourceOwnerKey>(), compositions);
+
+    /// <summary>Retains verified earlier ledger owners without adding current exports or terminal permissions.</summary>
+    internal static ResourceOwnerCompositionResult Combine(
+        IReadOnlyList<ResourceOwnerKey> historicalOwners,
         params ResourceOwnerCompositionResult[] compositions)
     {
+        ArgumentNullException.ThrowIfNull(historicalOwners);
         ArgumentNullException.ThrowIfNull(compositions);
         var issues = compositions
             .SelectMany(static result => result.Issues)
@@ -16,6 +23,7 @@ internal static class ResourceOwnerComposition
             return Invalid(issues);
 
         var authority = ResourceOwnerAuthority.Combine(
+            historicalOwners,
             compositions.Select(static result => result.Authority!).ToArray());
         issues.AddRange(authority.Issues);
 

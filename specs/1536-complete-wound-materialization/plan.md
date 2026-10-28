@@ -1,6 +1,18 @@
 # US4 safe self-treatment — active functional work, 2026-10-28
 
 
+Historical-carry correction WIP (UNCOMPILED/UNRUN): independent source review
+separates missing new-snapshot fixture item preflight from actual ResourceCore
+loss of already verified retired owner keys. Carry historical-only detached DATA
+through existing Combine/single Build; no current exports/capacity/TerminalOwners
+permission. One pure typed chain and existing owner negatives plus ordinary
+publication4/reset1 are proposed affected gates, not all prior19. Existing fresh
+canonical/persisted/source/lease/closing checks remain. No GM format/cache or
+rebootstrap; optimization and precise causal/selection rationale are in
+natural-recovery-plan.md. Freeze coherent source/test/catalog before review/build.
+
+
+
 Current reset follow-through on clean/compiled f9b5f4e33: exact1/1 PlanOnly
 6.6853345s/zero executed; actual1 completeFAIL26.1879931s, no timeout/skip/dup and
 both cleanup flags true. Real C2 decision and common C4 publication now succeed:

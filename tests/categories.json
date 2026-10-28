@@ -2,6 +2,45 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "spiritual-resource-history-carry",
+  "responsibility": "Cheap typed CanonicalResourceOwnerAuthorityComposer retire-history to accepted composition carry: historical ledger accepted, live state/spend denied, persisted current item never imported, TerminalOwners unchanged; exact overlap accepted while duplicate/confusable/reused identities remain refused. Existing owner historical/Resolve/lifecycle negatives protect the shared boundary.",
+  "excludes": "No new current item permission, terminal retirement grant, runtime cache, synthetic world setup or generic DFR/Mortal timeout retry. Actual conflict-to-safe consumer is selected separately.",
+  "changeHints": [
+    "BookOfEternityClient/Services/ResourceOwnerAuthority.cs",
+    "BookOfEternityClient/Services/ResourceOwnerComposition.cs",
+    "BookOfEternityClient/Services/Validation/ValidationService.ResourceMaterialization.cs",
+    "BookOfEternityClient.Tests/ResourceOwnerAuthorityTests.cs"
+  ],
+  "related": [
+    {
+      "id": "spiritual-recovery-conflict-reset",
+      "when": "After cheap history-carry/owner negatives pass, qualify the original actual C4-to-safe publication consumer separately."
+    },
+    {
+      "id": "spiritual-natural-recovery-publication",
+      "when": "Changed shared ResourceCore must retain accepted ordinary natural neighbors and strict source/omission behavior."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.ResourceOwnerAuthorityTests.AcceptedCompositionCarriesVerifiedHistoryWithoutImportingCurrentOwnersOrSpendPermission",
+        "BookOfEternityClient.Tests.ResourceOwnerAuthorityTests.Build_RejectsDuplicateAndConfusableHistoricalOwnerIdentities",
+        "BookOfEternityClient.Tests.ResourceOwnerAuthorityTests.Resolve_RejectsCapabilityLifecycleRealmHistoricalNameAndIndexInference",
+        "BookOfEternityClient.Tests.ResourceOwnerAuthorityTests.CanonicalAgreement_RejectsOwnerAndResourceLifecycleMismatch"
+      ]
+    }
+  ]
+},
+{
   "id": "spiritual-recovery-conflict-reset",
   "responsibility": "One real C2 re-trauma decision and C4 common publication over a lawful initial spiritual I/progress1 guardian baseline: worsening II resets only current progress, retains prior tick/origin/history, no conflict natural row; fresh signed next safe cycle gives II1/H0, preserves actual conflict costs and receipts, exact scheduler replay is inert.",
   "excludes": "Initial baseline is not evidence of an earlier natural producer; no speculative ordinary joint wound codec, new conflict entry producer, full Engine/DFR interruption matrix, helper/provider/fresh-process/Mortal/Windows qualification. Previous19 retained by unchanged production and fixture defaults.",
