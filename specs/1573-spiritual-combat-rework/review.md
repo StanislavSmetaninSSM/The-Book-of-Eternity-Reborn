@@ -899,3 +899,10 @@ remote SHA подтверждён. Runtime/build/gameplay/clean restore UNRUN.
 договор evidence/receipt и полный plan/tasks не утверждены; T001 сохраняется.
 Оптимизация неприменима к статусной правке, cache/runtime не меняются.
 Diff/consistency и routine independent review; runtime/build/gameplay/clean restore UNRUN.
+
+Независимый follow-up /root/review_life_rubric1573 с сохранённой явной
+конфигурацией gpt-6.1-sol/xhigh проверил diff8bf6920..6b3c222: замечаний нет.
+Четыре документа согласованно принимают только игровой регламент, остальные
+цены/QD/technical contract и T001 открыты; правила/числа не изменены.
+Parent проверил actual diff/consistency и diff --check. WIP6b3c22225a357e87bd02f4f2f13e63b8bc123ea5
+опубликован, remote SHA подтверждён. Повтор source/maths/runtime не требовался.
