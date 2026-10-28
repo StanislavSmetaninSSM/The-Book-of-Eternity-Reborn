@@ -21,6 +21,11 @@ internal static partial class AfterlifeWoundHealingPlanner
             new PendingTurnSnapshotPathSelection(new[] { AcceptedMechanicsPlan.WoundCommandPath }.Concat(ResourceSourcePaths).ToArray(),
                 AfterlifeWoundTreatmentAuthority.SourcePaths));
 
+    internal static PendingTurnSnapshotObservedReadResult ReadOriginalAidLocalitySource(FileSystemManager files,
+        FileSystemManager.CanonicalWriteLease lease) => PendingTurnSnapshotReader.ReadObservedCurrent(files, lease,
+            new PendingTurnSnapshotPathSelection(new[] { AfterlifeWoundTreatmentAuthority.AidLocalityPaths[0] },
+                new[] { AfterlifeWoundTreatmentAuthority.AidLocalityPaths[1] }));
+
     internal sealed partial class Continuation
     {
         private readonly FileSystemManager _files;
@@ -61,7 +66,9 @@ internal static partial class AfterlifeWoundHealingPlanner
             _sources = AcceptedMechanicsPlanBinding.CloneReadOnlyBeforeImages(sources);
             _request = request?.DeepClone().AsObject(); _input = WoundAcceptedTurnData.CloneInput(input)!;
             _wounds = wounds.Select(w => WoundAcceptedTurnData.CloneWound(w)!).ToArray();
-            _stages = stages.ToArray(); _data = data; _natural = natural; _controlJson = JsonSerializer.Serialize(control);
+            _stages = stages.ToArray();
+            _data = data?.AidWitness is { } aidWitness ? data with { AidWitness = aidWitness.DeepClone().AsObject() } : data;
+            _natural = natural; _controlJson = JsonSerializer.Serialize(control);
             Scheduler = scheduler; SchedulerMutation = schedulerMutation;
             _responseImage = new(responseImage.Existed, responseImage.Bytes);
             _parsedSourceRoots = parsedSourceRoots.ToDictionary(p => p.Key, p => p.Value?.DeepClone(), StringComparer.Ordinal);
@@ -75,7 +82,7 @@ internal static partial class AfterlifeWoundHealingPlanner
 
         internal string Fingerprint { get; }
         internal bool IsNatural => _natural is not null;
-        internal string Mode => IsNatural ? "natural" : "self";
+        internal string Mode => IsNatural ? "natural" : _data?.AidWitness is not null ? "aid" : "self";
         internal string SourceFingerprint => _natural?.SourceFingerprint ?? _data!.SourceFingerprint;
         internal string ProgramReference => _request?["requestFingerprint"]!.GetValue<string>() ?? SourceFingerprint;
         internal string CycleKey => AfterlifeWoundTreatmentAuthority.CycleKey(_input.Binding.Realm,
@@ -321,12 +328,28 @@ internal static partial class AfterlifeWoundHealingPlanner
                 snapshot.ReadRequiredBytes(AcceptedMechanicsPlan.WoundCommandPath)), new JsonSerializerOptions(), "signed spiritual treatment")!;
             AfterlifeWoundTreatmentAuthority.MaterializeProperties(request);
             var attempt = request["attempt"] as JsonObject ?? throw new InvalidDataException("Spiritual attempt is missing.");
-            var selection = new SpiritualSelfTreatmentSelection(attempt["woundId"]!.GetValue<string>(), attempt["woundFingerprint"]!.GetValue<string>());
+            var selection = SpiritualSelfTreatmentRequestCodec.ReadActiveSelection(request);
+            PendingTurnSnapshotObservedReadResult? aidLocality = null;
+            if (selection.Aid is not null)
+            {
+                if (!PendingTurnSnapshotAuthority.HasValidatedRollbackSnapshotCoverage(manifest, m => m.Files,
+                        m => m.SnapshotFileHashes, m => m.RollbackBaselineFiles, AfterlifeWoundTreatmentAuthority.AidLocalityPaths, out _))
+                    throw new InvalidDataException("Aid lacks its signed locality baseline coverage.");
+                aidLocality = ReadOriginalAidLocalitySource(files, lease);
+                if (!aidLocality.Success || aidLocality.Snapshot is not { } local || aidLocality.Evidence is not { } localEvidence ||
+                    local.SessionId != snapshot.SessionId || local.RequestId != snapshot.RequestId ||
+                    local.TurnNumber != snapshot.TurnNumber || local.SnapshotToken != snapshot.SnapshotToken)
+                    throw new InvalidDataException("Aid locality is not the same actual signed original.");
+                localEvidence.RequireCurrent(files, lease, local);
+                sources.AddRange(ReadSignedSources(local, AfterlifeWoundTreatmentAuthority.AidLocalityPaths));
+            }
             var context = new SpiritualSelfTreatmentStageContext(snapshot.SessionId, snapshot.RequestId, snapshot.TurnNumber,
                 JsonSerializer.Deserialize<ProgressionControl>(JsonSerializer.Serialize(manifest.ProgressionControl))!);
-            var admitted = AfterlifeWoundTreatmentAuthority.PrepareSourceData(context, selection, sources);
-            if (admitted.Data is not { } data || !SpiritualSelfTreatmentRequestCodec.IsExact(request, context,
-                    selection, snapshot.Realm, data.CycleOrdinal, data.SourceFingerprint, data.Source))
+            var admitted = selection.Aid is null
+                ? AfterlifeWoundTreatmentAuthority.PrepareSourceData(context, selection, sources)
+                : AfterlifeWoundTreatmentAuthority.PrepareAidSourceData(context, selection, sources,
+                    request["participation"]!.AsObject());
+            if (admitted.Data is not { } data || !SpiritualSelfTreatmentRequestCodec.IsExactActive(request, context, selection, data))
                 throw new InvalidDataException("Signed spiritual treatment admission failed: " + admitted.IssueCode);
             var rolls = attempt["roll"]!["values"]!.AsArray().Select(v => v!.GetValue<int>()).ToArray();
             var resolution = SpiritualHealingResolver.ResolvePrepared(data.Source, data.Source.RollMode, rolls).Resolution
@@ -344,15 +367,23 @@ internal static partial class AfterlifeWoundHealingPlanner
             var owner = new Continuation(files, lease, snapshot, evidence, sourceImages,
                 request, data, input, wounds, stages, context.Progression, scheduler, mutation,
                 new(updatesBytes is not null, updatesBytes), sources.ToDictionary(s => s.Path, s => (JsonNode?)s.Root, StringComparer.Ordinal));
+            if (aidLocality is not null)
+            {
+                owner._participationSnapshot = aidLocality.Snapshot;
+                owner._participationOriginal = aidLocality.Evidence;
+                // Fresh live locality is already part of _sources; this field
+                // closes only its additional actual-original evidence.
+            }
             owner.AdmitGraphs(updates);
             owner.RequireCurrent(files, lease);
             return owner;
         }
 
-        internal static List<AfterlifeWoundTreatmentAuthority.SourceFile> ReadSignedSources(PendingTurnSnapshotReadAuthority snapshot)
+        internal static List<AfterlifeWoundTreatmentAuthority.SourceFile> ReadSignedSources(PendingTurnSnapshotReadAuthority snapshot,
+            IEnumerable<string>? selectedPaths = null)
         {
             var sources = new List<AfterlifeWoundTreatmentAuthority.SourceFile>();
-            foreach (var path in AfterlifeWoundTreatmentAuthority.SourcePaths)
+            foreach (var path in selectedPaths ?? AfterlifeWoundTreatmentAuthority.SourcePaths)
             {
                 var bytes = snapshot.CoveredLogicalPaths.Contains(path, StringComparer.Ordinal) ? snapshot.ReadRequiredBytes(path) : null;
                 var root = bytes is null ? null : JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(bytes)) as JsonObject

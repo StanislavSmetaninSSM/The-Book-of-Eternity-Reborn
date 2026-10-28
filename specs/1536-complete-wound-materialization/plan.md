@@ -1,5 +1,22 @@
 # US4 safe self-treatment — active functional work, 2026-10-28
 
+Aid original/B/result WIP is connected (UNCOMPILED/UNRUN). The actual signed
+original selects the closed active family; aid observes the additional locality
+original under the same current lease and closes that evidence with canonical18
+live source images. Both baseline input-role and I binding use the exact v3 aid
+request, never live kind as permission. Aid result v3 has no new participation
+outcomes: its retained full grant witness and explicit activeSource bind actual
+healer H/roll evidence independently from target natural H. The strict parser
+rederives the single active-plus-natural program. Self v2 and participation-natural
+v3 remain explicit current forms. Pending grant/revoke proposals in any profile
+representation refuse before an active draw; no mixed active issuer is claimed.
+This source boundary is saved before shared guided UI and finite controls/docs;
+no aid production or scalar GREEN/runtime qualification is claimed. Existing
+producer13/scalar RED evidence is retained, not rerun. Optimization: reuse the
+already observed locality/original and natural catalog/mechanics within B;
+additional fresh evidence and current byte closures are authority boundaries,
+not a new cache or transferable permission.
+
 Shared aid stage WIP is connected (UNCOMPILED/UNRUN): Engine resolves explicit aid
 selection before control or preceding input overwrite; under its actual healing
 lease and existing backup scope it reads the committed grant, uses the one leased

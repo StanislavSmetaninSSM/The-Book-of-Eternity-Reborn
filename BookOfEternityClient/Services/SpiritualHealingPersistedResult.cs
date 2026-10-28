@@ -47,7 +47,7 @@ internal sealed class SpiritualHealingPersistedResult : WoundTransitionResult
         var participation = owner.ParticipationOutcomes;
         var root = new JsonObject
         {
-            ["kind"] = "spiritual_healing", ["schemaVersion"] = participation is null ? 2 : 3, ["mode"] = owner.Mode,
+            ["kind"] = "spiritual_healing", ["schemaVersion"] = participation is null && owner.Mode != "aid" ? 2 : 3, ["mode"] = owner.Mode,
             ["binding"] = new JsonObject { ["sessionId"] = binding.SessionId, ["requestId"] = binding.RequestId,
                 ["snapshotToken"] = binding.SnapshotToken, ["realm"] = binding.Realm, ["turn"] = binding.Turn },
             ["request"] = owner.Request, ["source"] = owner.PersistenceSource,
@@ -82,11 +82,11 @@ internal sealed class SpiritualHealingPersistedResult : WoundTransitionResult
             AfterlifeWoundTreatmentAuthority.MaterializeProperties(root);
             var rootFields = new[] { "kind", "schemaVersion", "binding", "request", "source", "control", "scheduleBeforeJson", "progressionReportJson", "scheduleAfterJson", "scheduleAfterFingerprint", "stages", "resultFingerprint" };
             var version = root["schemaVersion"]!.GetValue<int>();
-            Closed(root, version == 3 ? rootFields.Append("mode").Append("participationOutcomes").ToArray()
-                : rootFields.Append("mode").ToArray());
             var mode = Text(root, "mode");
-            if (Text(root, "kind") != "spiritual_healing" || version is not (2 or 3) || mode is not ("self" or "natural") ||
-                version == 3 && mode != "natural" ||
+            Closed(root, version == 3 && mode == "natural" ? rootFields.Append("mode").Append("participationOutcomes").ToArray()
+                : rootFields.Append("mode").ToArray());
+            if (Text(root, "kind") != "spiritual_healing" || version is not (2 or 3) || mode is not ("self" or "natural" or "aid") ||
+                version == 2 && mode == "aid" || version == 3 && mode == "self" ||
                 Text(root, "resultFingerprint") != WoundHistoryState.ComputeTransitionResultFingerprint(root))
                 throw new InvalidDataException("Spiritual result kind/schema/fingerprint differs.");
             var binding = root["binding"]!.AsObject();
@@ -152,16 +152,38 @@ internal sealed class SpiritualHealingPersistedResult : WoundTransitionResult
                 var request = root["request"]!.AsObject();
                 var attempt = request["attempt"]!.AsObject();
                 selected = original.Single(w => w.WoundId == Text(attempt, "woundId"));
-                if (selected.Owner.OwnerKind != "player_soul" || selected.Owner.OwnerId != "player_soul" ||
-                    stages[0].Before.WoundId != selected.WoundId || stages[0].Kind != "treat")
-                    throw new InvalidDataException("Foreign spiritual self target or stage ordering.");
+                if (stages[0].Before.WoundId != selected.WoundId || stages[0].Kind != "treat")
+                    throw new InvalidDataException("Foreign spiritual active target or stage ordering.");
                 tiers = ReadOwnerTiers(source, original);
-                if (tiers[selected.Owner] != tier) throw new InvalidDataException("Active tier differs from its natural owner tier.");
+                var healer = new WoundOwnerCoordinate(Text(binding, "realm"), "player_soul", "player_soul", WoundCarrierCatalog.AfterlifeProfilesPath);
+                var context = new SpiritualSelfTreatmentStageContext(Text(binding, "sessionId"), Text(binding, "requestId"),
+                    binding["turn"]!.GetValue<int>(), control);
+                var selection = SpiritualSelfTreatmentRequestCodec.ReadActiveSelection(request);
+                if (mode == "self")
+                {
+                    if (selected.Owner != healer || selection.Aid is not null || tiers[selected.Owner] != tier)
+                        throw new InvalidDataException("Active self target or natural owner tier differs.");
+                }
+                else
+                {
+                    var activeSource = new JsonObject
+                    {
+                        ["healingTier"] = tier, ["complicationModifier"] = source["complicationModifier"]!.DeepClone(),
+                        ["rollMode"] = source["rollMode"]!.DeepClone(), ["rollContributions"] = source["rollContributions"]!.DeepClone()
+                    };
+                    if (selected.Owner.OwnerKind != "guardian" || selection.Aid is null ||
+                        selection.WoundId != selected.WoundId || selection.ExpectedWoundFingerprint != WoundIdentityState.ComputeSemanticFingerprint(selected) ||
+                        !SpiritualSelfTreatmentRequestCodec.IsBoundAid(request, context, selection, Text(binding, "realm"), control.NextChaosSeaTurnOrdinal) ||
+                        !JsonNode.DeepEquals(request["target"], SpiritualHealingRequestProjection.OwnerJson(selected.Owner)) ||
+                        !JsonNode.DeepEquals(request["activeSource"], activeSource) ||
+                        Text(attempt, "sourceFingerprint") != Text(source, "sourceFingerprint") ||
+                        tiers.TryGetValue(healer, out var healerNaturalTier) && healerNaturalTier != tier)
+                        throw new InvalidDataException("Aid healer/target/source differs from its exact retained request.");
+                }
                 var complicationModifier = source["complicationModifier"]!.GetValue<long>();
-                var preparedSource = new SpiritualHealingPreparedSource(selected.WoundId, selected.Owner, selected.Owner,
+                var preparedSource = new SpiritualHealingPreparedSource(selected.WoundId, selected.Owner, healer,
                     selected.Severity.Rank, tier, complicationModifier, Text(source, "rollMode"), Array.Empty<EffectRollContributionEvidence>());
-                if (!SpiritualSelfTreatmentRequestCodec.IsExact(request,
-                        new(Text(binding, "sessionId"), Text(binding, "requestId"), binding["turn"]!.GetValue<int>(), control),
+                if (mode == "self" && !SpiritualSelfTreatmentRequestCodec.IsExact(request, context,
                         new(selected.WoundId, WoundIdentityState.ComputeSemanticFingerprint(selected)), Text(binding, "realm"),
                         control.NextChaosSeaTurnOrdinal, Text(source, "sourceFingerprint"), preparedSource) ||
                     Text(attempt, "cycleKey") != cycle)
@@ -195,7 +217,7 @@ internal sealed class SpiritualHealingPersistedResult : WoundTransitionResult
                 ValidateStageScope(stage, e);
                 current[before.WoundId] = after;
             }
-            if (version == 3)
+            if (version == 3 && mode == "natural")
                 SpiritualTreatmentParticipation.ValidateOutcomes(root["participationOutcomes"]!.AsArray(), binding,
                     control.NextChaosSeaTurnOrdinal, stages);
             return new(root, stages);

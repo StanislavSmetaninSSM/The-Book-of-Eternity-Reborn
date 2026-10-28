@@ -11,6 +11,11 @@ internal static class SpiritualTreatmentParticipation
     internal const string RecordProperty = "spiritualTreatmentParticipation";
     internal sealed record Change(string TargetId, JsonObject Proposal);
 
+    internal static bool HasUnsettledChange(JsonObject? root) => root is not null &&
+        new[] { AfterlifeEntityProfileState.ProfilesProperty, AfterlifeEntityProfileState.ResponseProfilesProperty,
+            AfterlifeEntityProfileState.UpdateProperty }.Any(property => root[property] is JsonArray rows &&
+                rows.OfType<JsonObject>().Any(row => row.ContainsKey(ChangeProperty)));
+
     internal static IReadOnlyList<Change> ReadChanges(JsonObject current, JsonObject previous)
     {
         var changes = new List<Change>();

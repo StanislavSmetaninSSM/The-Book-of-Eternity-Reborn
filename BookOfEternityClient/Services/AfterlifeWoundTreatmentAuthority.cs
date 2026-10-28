@@ -173,6 +173,8 @@ internal static partial class AfterlifeWoundTreatmentAuthority
         if (selection.Aid is not null) return SourceRefuse("target_invalid");
         var control = context.Progression;
         JsonObject? Root(string path) => sources.Single(s => s.Path == path).Root;
+        if (SpiritualTreatmentParticipation.HasUnsettledChange(Root(WoundCarrierCatalog.AfterlifeProfilesPath)))
+            return SourceRefuse("participation_change_unsupported");
         var soul = Root(SoulPath);
         if (!AfterlifeEntityProfileState.TryNormalizeEffectRealm(String(soul?["currentRealm"]), out var realm))
             return SourceRefuse("source_invalid");

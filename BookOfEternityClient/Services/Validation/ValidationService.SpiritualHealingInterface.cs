@@ -50,13 +50,12 @@ public partial class ValidationService
                 sourceBytes = snapshot.ReadRequiredBytes(AcceptedMechanicsPlan.WoundCommandPath);
                 request = StrictJsonAuthority.Deserialize<JsonObject>(CanonicalJsonUtf8.DecodeOneOptionalBom(sourceBytes),
                     new JsonSerializerOptions(), "original spiritual graph request")!;
-                var attempt = request["attempt"]!.AsObject();
-                var selection = new SpiritualSelfTreatmentSelection(attempt["woundId"]!.GetValue<string>(), attempt["woundFingerprint"]!.GetValue<string>());
+                var selection = SpiritualSelfTreatmentRequestCodec.ReadActiveSelection(request);
                 if (!AfterlifeEntityProfileState.TryNormalizeEffectRealm(frame.ProgressionControl.CurrentRealm, out var realm) ||
-                    !SpiritualSelfTreatmentRequestCodec.IsBound(request,
+                    !SpiritualSelfTreatmentRequestCodec.IsBoundActive(request,
                         new(snapshot.SessionId, snapshot.RequestId, snapshot.TurnNumber, frame.ProgressionControl), selection,
                         realm, frame.ProgressionControl.NextChaosSeaTurnOrdinal))
-                    throw new InvalidDataException("Interface graphs require the exact signed self family.");
+                    throw new InvalidDataException("Interface graphs require the exact signed active family.");
             }
             else
             {

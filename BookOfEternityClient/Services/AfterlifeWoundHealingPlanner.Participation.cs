@@ -78,7 +78,8 @@ internal static partial class AfterlifeWoundHealingPlanner
         {
             if (_participationOriginal is null) return;
             _participationOriginal.RequireCurrent(_files, _lease, _participationSnapshot!);
-            foreach (var source in _participationSources!)
+            if (_participationSources is null) return; // Active aid guards these live bytes in the main source set.
+            foreach (var source in _participationSources)
             {
                 var bytes = _files.ReadFileBytesSync(_lease, source.Key);
                 if (new CanonicalBeforeImage(bytes is not null, bytes).Fingerprint != source.Value.Fingerprint)

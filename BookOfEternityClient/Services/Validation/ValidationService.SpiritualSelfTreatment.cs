@@ -66,7 +66,8 @@ public partial class ValidationService
                 var root = classifier.RootElement;
                 liveCandidate = root.ValueKind == JsonValueKind.Object &&
                     (root.TryGetProperty("schemaVersion", out var version) && version.ValueKind == JsonValueKind.Number && version.TryGetInt32(out var v) && v == 2 ||
-                     root.TryGetProperty("kind", out var kind) && kind.ValueKind == JsonValueKind.String && kind.GetString() == "spiritual_self_treatment_request");
+                     root.TryGetProperty("kind", out var kind) && kind.ValueKind == JsonValueKind.String &&
+                        kind.GetString() is "spiritual_self_treatment_request" or "spiritual_treatment_request");
             }
             catch (Exception failure) when (failure is JsonException or System.Text.DecoderFallbackException)
             { } // The authenticated original still selects the family.
@@ -102,13 +103,19 @@ public partial class ValidationService
                 return sourceExpected ? observed.Issues : null;
             var original = StrictJsonAuthority.Deserialize<JsonObject>(CanonicalJsonUtf8.DecodeOneOptionalBom(
                 signed.ReadRequiredBytes(AcceptedMechanicsPlan.WoundCommandPath)), new JsonSerializerOptions(), "original wound request")!;
-            if (original["kind"]?.GetValue<string>() != "spiritual_self_treatment_request") return null;
+            if (!SpiritualSelfTreatmentRequestCodec.IsActiveKind(original)) return null;
             spiritualOriginal = true;
             if (frame.ProgressionControl is null || frame.ManifestPayloadHash != signed.SnapshotToken ||
                 PendingTurnSnapshotAuthority.ComputeManifestPayloadHash(frame, LiveTurnPreparationService.ManifestHashJsonOptions,
                     static m => m.ManifestPayloadHash, static (m, hash) => m.ManifestPayloadHash = hash) != signed.SnapshotToken)
                 throw new InvalidDataException("Spiritual treatment lost its original signed control.");
             evidence.RequireCurrent(_fs, lease, signed);
+            var selection = SpiritualSelfTreatmentRequestCodec.ReadActiveSelection(original);
+            if (!AfterlifeEntityProfileState.TryNormalizeEffectRealm(frame.ProgressionControl.CurrentRealm, out var realm) ||
+                !SpiritualSelfTreatmentRequestCodec.IsBoundActive(original,
+                    new(signed.SessionId, signed.RequestId, signed.TurnNumber, frame.ProgressionControl),
+                    selection, realm, frame.ProgressionControl.NextChaosSeaTurnOrdinal))
+                throw new InvalidDataException("Spiritual treatment requires its exact closed signed active family.");
             // A former self entry may retain its full planning result after the
             // generic validated slot was cleared. Its old live owner cannot cross leases.
             if (phase == SpiritualSelfTreatmentPhase.DeferredRouting)

@@ -97,6 +97,8 @@ internal static partial class AfterlifeWoundTreatmentAuthority
         SpiritualSelfTreatmentSelection selection, IReadOnlyList<SourceFile> sources, JsonObject witness)
     {
         if (selection.Aid is not { } aid) return SourceRefuse("target_invalid");
+        if (SpiritualTreatmentParticipation.HasUnsettledChange(sources.Single(s => s.Path == WoundCarrierCatalog.AfterlifeProfilesPath).Root))
+            return SourceRefuse("participation_change_unsupported");
         var natural = PrepareNaturalSourceData(context, sources);
         if (natural is null || natural.Realm != "chaos_sea") return SourceRefuse("cycle_invalid");
         JsonObject? Root(string path) => sources.Single(s => s.Path == path).Root;
@@ -216,6 +218,8 @@ internal static partial class AfterlifeWoundTreatmentAuthority
         if (record["locationId"]?.GetValue<string>() != scope.LocationId)
             throw new InvalidDataException("Aid participation belongs to a different Abode.");
         var profiles = published.CarrierRoots[WoundCarrierCatalog.AfterlifeProfilesPath]!;
+        if (SpiritualTreatmentParticipation.HasUnsettledChange(profiles))
+            throw new InvalidDataException("Active aid cannot issue a new participation change in the same turn.");
         var target = profiles["profiles"]!.AsArray().OfType<JsonObject>().Where(p =>
             p["actorType"]?.GetValue<string>() == "guardian" && SpiritualTreatmentParticipation.ProfileId(p) == aid.TargetId).ToArray();
         var player = profiles["profiles"]!.AsArray().OfType<JsonObject>().Where(p =>

@@ -32,12 +32,11 @@ public partial class GameEngine
         {
             var request = StrictJsonAuthority.Deserialize<JsonObject>(CanonicalJsonUtf8.DecodeOneOptionalBom(bytes),
                 new JsonSerializerOptions(), "signed spiritual preparation input")!;
-            if (request["kind"]?.GetValue<string>() != "spiritual_self_treatment_request" || request["attempt"] is not JsonObject attempt ||
+            if (!SpiritualSelfTreatmentRequestCodec.IsActiveKind(request) || request["attempt"] is not JsonObject ||
                 !AfterlifeEntityProfileState.TryNormalizeEffectRealm(context.ProgressionControl.CurrentRealm, out var realm))
                 return false;
-            var selection = new SpiritualSelfTreatmentSelection(attempt["woundId"]!.GetValue<string>(),
-                attempt["woundFingerprint"]!.GetValue<string>());
-            var bound = SpiritualSelfTreatmentRequestCodec.IsBound(request,
+            var selection = SpiritualSelfTreatmentRequestCodec.ReadActiveSelection(request);
+            var bound = SpiritualSelfTreatmentRequestCodec.IsBoundActive(request,
                 new(context.SessionId, context.RequestId, context.TurnNumber, context.ProgressionControl),
                 selection, realm, context.ProgressionControl.NextChaosSeaTurnOrdinal);
             evidence.RequireCurrent(_fs, lease, snapshot);
