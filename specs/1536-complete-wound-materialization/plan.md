@@ -1,3 +1,33 @@
+# Console combat healing GREEN; backend fault contract correction — WIP/UNCOMPILED
+
+2026-10-28 actual56c3 fresh owning Integration137/Unit26 unchanged warnings,
+0errors3:39.28/59.50;18current artifact pins, independent Astra SOURCE and Sol
+SOURCE/PREP accepted. Catalog1037/12718 and exact27/8descriptors/15methods
+PlanOnly zeroexec13.2940867s verified. Cheap source refusals14/14PASS12.4544872s
+(category5.8863675<120), TRX
+9ad995a1ff974061eb4f67c6f450bf8cdf7b18da3c5d2b89a6e7bd13ec27e4e4.
+Actual console combat1/1PASS48.1797546s/category41.4395176<180, TRX
+74dcab9ae5a852d9bc183d568df6157e8129976eee2254f970d45cfe619b305c:
+real cancellation/confirmation/Engine acceptance, d20=14/H3/II -> I1, OD6->4
+once, History, unchanged world/schedule/LastTick and original cleanup. Browser1
+and prepared-input fault1 retain reviewed897c lineage; no redundant UI repeat.
+
+First remaining12 case FAIL25.1859301s/category17.9825905<120, TRX
+94e708ae52ddb99c8c12a99813c78efea79ee562c96f2f4549693ae10d51fef7:
+fixture expected scalar CanonicalStateWriteException, actual IOException.
+Complete1FAIL/11UNRUN, no timeout/duplicates/both cleanuptrue; overall27 is not
+GREEN. Live bulk publication invokes the exact before-mutation hook before its
+publisher, and the coordinator rethrows that same original failure after restore.
+The scalar normalizer wrapper is a different route. Current test-only correction
+captures/asserts the actual resource cut path and exact original exception identity;
+cut1, every signed rollback byte and authority revocation assertions remain.
+No arbitrary exception alternative or production change is added. SOURCE review
+also checks already-visible assumptions in the remaining11 before one fresh
+Integrationrefsfalse build, exactremaining12 PlanOnly/PREP and conditional runtime.
+Retain14guards/console at56c3 and older explicit lineages; public ownership/catalog
+are unchanged. Source-closure six-pin debt, fullDFR/T609/Mortal/Windows stay open.
+Raw build17/functional15 remains outside checkout; no raw or saves are deleted.
+
 # Console completed comparison: avoid absent override mutation — WIP/UNCOMPILED
 
 2026-10-28 independent Astra/high DESIGN accepts skipping only the redundant

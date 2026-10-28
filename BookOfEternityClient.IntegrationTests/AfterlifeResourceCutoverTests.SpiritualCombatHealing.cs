@@ -41,6 +41,7 @@ public sealed partial class AfterlifeResourceCutoverTests
         string? originalCommandPath = null;
         var uncertaintyCuts = 0;
         var publicationCuts = 0;
+        string? publicationCutPath = null;
         var uncertainty = new CoordinatedStatePublicationUncertainException(new IOException("Combat original read uncertainty."));
         var publicationFailure = new IOException("Combat common publication write failure.");
         var hooks = new FileSystemManagerHooks
@@ -60,6 +61,7 @@ public sealed partial class AfterlifeResourceCutoverTests
                 {
                     injectPublication = false;
                     publicationCuts++;
+                    publicationCutPath = path;
                     throw publicationFailure;
                 }
                 return Task.CompletedTask;
@@ -425,9 +427,10 @@ public sealed partial class AfterlifeResourceCutoverTests
             }
             finally { injectPublication = false; }
             Assert.Equal(1, publicationCuts);
-            var writeFailure = Assert.IsType<CanonicalStateWriteException>(failure);
-            Assert.Equal(ResourceMaterializationContract.StatePath, writeFailure.RelativePath);
-            Assert.Same(publicationFailure, writeFailure.InnerException);
+            // The bulk publication checks this boundary before entering its publisher;
+            // the original hook failure is not a scalar normalizer write wrapper.
+            Assert.Equal(ResourceMaterializationContract.StatePath, publicationCutPath);
+            Assert.Same(publicationFailure, failure);
             foreach (var pair in rollbackImages) Assert.Equal(pair.Value, await context.FileSystem.ReadFileBytesAsync(pair.Key));
             await using var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
             Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(context.FileSystem, lease));
