@@ -131,11 +131,16 @@ internal static class SpiritualHealingRequestProjection
         };
         if (data.AidWitness is not null)
         {
-            projection["schemaVersion"] = 3;
+            projection["schemaVersion"] = request["schemaVersion"]!.DeepClone();
             projection["mode"] = "aid";
             projection["healer"] = OwnerJson(data.Source.Healer);
             projection["target"] = OwnerJson(data.Source.Target);
             projection["targetNaturalHealingTier"] = data.NaturalMembers.First(m => m.Wound.Owner == data.Wound.Owner).HealingTier;
+            if (SpiritualSelfTreatmentRequestCodec.IsReceiveAidHeader(request))
+            {
+                projection["direction"] = "guardian_to_player";
+                projection["playerConfirmationVerified"] = true; // Exact client original, not GM consent.
+            }
             projection["participationVerified"] = true; // GM comparison DATA, never permission to author a grant or request.
         }
         return projection;

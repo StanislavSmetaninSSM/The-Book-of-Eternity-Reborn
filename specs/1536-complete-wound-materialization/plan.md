@@ -1,5 +1,15 @@
 # Next T108 slice — private current Guardian → player, 2026-10-28
 
+Shared reverse production WIP is now connected but UNCOMPILED/UNRUN: closed
+schema2 offer and enclosing Guardian record ownership; v4 natural/request/result;
+confirmed receive_aid selection/queue/staging gate; actual Guardian healer + player
+target source roles; v4 historical offer linkage and strict committed cleanup
+reader; same shared UI choices/ConfirmAsync and old one-shot/queued Engine entry.
+Original/input/source18/closing machinery remains shared. No new permission
+registry, receipt, source path or executor. The existing actual caller tests and
+GM contract/example still need extension and independent coherent SOURCE/PREP
+before any owning build. Prior accepted results retain their recorded lineages.
+
 Accepted player→Guardian17 is recorded below; no unchanged runtime repeats.
 The next bounded design is in spiritual-aid-design.md: real accepted provider
 willingness on the existing Guardian profile, explicit guided player confirmation,

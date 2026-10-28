@@ -10,7 +10,7 @@ internal sealed partial class WoundHistoryState
         // history reads retain their prior allocation/work; duplicates stay visible.
         var grants = rows.Any(r => r.TransitionResult is SpiritualHealingPersistedResult { Mode: "aid" })
             ? rows.Select(r => r.TransitionResult).OfType<SpiritualHealingPersistedResult>()
-                .Where(r => r.IsNatural && r.SchemaVersion == 3).ToLookup(r => r.ResultFingerprint, StringComparer.Ordinal)
+                .Where(r => r.IsNatural && r.SchemaVersion is 3 or 4).ToLookup(r => r.ResultFingerprint, StringComparer.Ordinal)
             : null;
         foreach (var primary in rows.Where(r => r.TransitionResult is SpiritualHealingPersistedResult))
         {

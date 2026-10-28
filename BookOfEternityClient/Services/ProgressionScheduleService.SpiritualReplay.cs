@@ -83,7 +83,7 @@ public partial class ProgressionScheduleService
         var parsed = WoundHistoryState.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(bytes), WoundHistoryState.HistoryPath);
         if (!parsed.IsValid) throw new InvalidDataException("Published participation History is not canonical.");
         var candidates = parsed.State!.Transitions.Where(t => t.TransitionResult is SpiritualHealingPersistedResult
-            { IsNatural: true, SchemaVersion: 3 } result && result.MatchesTurn(sessionId, grantTurn)).Select(t =>
+            { IsNatural: true } result && result.SchemaVersion == (aid.ReceiveAid ? 4 : 3) && result.MatchesTurn(sessionId, grantTurn)).Select(t =>
             (Row: t, Root: t.TransitionResult!.ToCanonicalJson())).ToArray();
         if (candidates.Length == 0) return null;
         if (candidates.Length != 1) throw new InvalidDataException("Published participation identity is ambiguous.");

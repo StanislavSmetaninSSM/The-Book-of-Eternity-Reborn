@@ -62,7 +62,8 @@ internal static partial class AfterlifeWoundHealingPlanner
                     .Where(p => p["actorType"]?.GetValue<string>() == "guardian" && SpiritualTreatmentParticipation.ProfileId(p) == change.TargetId &&
                         AfterlifeEntityProfileState.TryNormalizeEffectRealm(p["realm"]?.GetValue<string>(), out var realm) && realm == "chaos_sea").ToArray();
                 if (target is not { Length: 1 } || target[0]["locationId"]?.GetValue<string>() != scope.LocationId ||
-                    !_wounds.Any(w => w.Owner.OwnerKind == "guardian" && w.Owner.OwnerId == change.TargetId &&
+                    !_wounds.Any(w => w.Owner.OwnerKind == (change.Proposal["schemaVersion"]!.GetValue<int>() == 2 ? "player_soul" : "guardian") &&
+                        w.Owner.OwnerId == (change.Proposal["schemaVersion"]!.GetValue<int>() == 2 ? "player_soul" : change.TargetId) &&
                         w.WoundId == change.Proposal["woundId"]!.GetValue<string>()))
                     throw new InvalidDataException("Participation lost the exact admitted Guardian/wound binding.");
                 outcomes.Add(SpiritualTreatmentParticipation.CreateOutcome(change, scope.LocationId, binding,
@@ -96,7 +97,7 @@ internal static partial class AfterlifeWoundHealingPlanner
             foreach (var outcome in _participationOutcomes.OfType<JsonObject>())
             {
                 var record = outcome["record"]!.AsObject();
-                var id = record["targetId"]!.GetValue<string>();
+                var id = SpiritualTreatmentParticipation.RecordOwnerId(record);
                 var target = profiles[AfterlifeEntityProfileState.ProfilesProperty]!.AsArray().OfType<JsonObject>()
                     .Single(p => p["actorType"]?.GetValue<string>() == "guardian" && SpiritualTreatmentParticipation.ProfileId(p) == id);
                 var expected = _participationChanges!.Single(c => c.TargetId == id).Proposal;

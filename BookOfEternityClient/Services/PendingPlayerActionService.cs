@@ -151,6 +151,8 @@ internal static class PendingPlayerActionService
         if ((spiritualSelfTreatment is not null) != (source == "browser-wound-action"))
             throw new InvalidDataException("Wound input requires its exact typed selection.");
         if (spiritualSelfTreatment is not null) _ = SpiritualSelfTreatmentSelection.Parse(spiritualSelfTreatment.ToJson());
+        if (spiritualSelfTreatment?.Aid is { ReceiveAid: true, PlayerConfirmed: false })
+            throw new InvalidDataException("Guardian help requires the player's actual guided confirmation before queueing.");
         var queued = new JsonObject
         {
             ["schemaVersion"] = 1,

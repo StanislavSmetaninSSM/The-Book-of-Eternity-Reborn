@@ -44,15 +44,7 @@ internal static class SpiritualTreatmentParticipation
                         row["realm"]?.GetValue<string>() ?? Text(original[0], "realm"), out var realm) || realm != "chaos_sea")
                     throw new InvalidDataException("Participation changes support only the current Chaos Sea Guardian.");
                 var proposal = row[ChangeProperty] as JsonObject ?? throw new InvalidDataException("Participation change must be a closed object.");
-                Closed(proposal, "schemaVersion", "operation", "healerId", "woundId", "conscious", "capable", "readableEvidence");
-                if (Scalar<int>(proposal, "schemaVersion") != 1 || Text(proposal, "operation") is not ("grant" or "revoke") ||
-                    Text(proposal, "healerId") != "player_soul" || !ResourceMaterializationContract.IsExactIdentifier(Text(proposal, "woundId")) ||
-                    string.IsNullOrWhiteSpace(Text(proposal, "readableEvidence")))
-                    throw new InvalidDataException("Invalid Guardian participation proposal.");
-                var conscious = Scalar<bool>(proposal, "conscious");
-                var capable = Scalar<bool>(proposal, "capable");
-                if (Text(proposal, "operation") == "grant" && (!conscious || !capable))
-                    throw new InvalidDataException("A grant requires conscious, capable and affirmative participation.");
+                ValidateProposal(proposal);
                 var mirrored = changes.SingleOrDefault(c => c.TargetId == id);
                 if (mirrored is not null)
                 {
@@ -67,62 +59,131 @@ internal static class SpiritualTreatmentParticipation
         return changes;
     }
 
+    private static void ValidateProposal(JsonObject proposal)
+    {
+        var version = Scalar<int>(proposal, "schemaVersion");
+        if (version == 1)
+        {
+            Closed(proposal, "schemaVersion", "operation", "healerId", "woundId", "conscious", "capable", "readableEvidence");
+            if (Text(proposal, "operation") is not ("grant" or "revoke") || Text(proposal, "healerId") != "player_soul")
+                throw new InvalidDataException("Invalid Guardian target-consent proposal.");
+            var conscious = Scalar<bool>(proposal, "conscious");
+            var capable = Scalar<bool>(proposal, "capable");
+            if (Text(proposal, "operation") == "grant" && (!conscious || !capable))
+                throw new InvalidDataException("A grant requires conscious, capable and affirmative participation.");
+        }
+        else if (version == 2)
+        {
+            Closed(proposal, "schemaVersion", "kind", "operation", "targetId", "woundId", "providerConscious",
+                "providerCapable", "targetConscious", "targetCapable", "readableEvidence");
+            if (Text(proposal, "kind") != "provider_offer" || Text(proposal, "operation") is not ("offer" or "revoke") ||
+                Text(proposal, "targetId") != "player_soul")
+                throw new InvalidDataException("Invalid private Guardian provider-offer proposal.");
+            foreach (var field in OfferConditionFields)
+                if (!Scalar<bool>(proposal, field) && Text(proposal, "operation") == "offer")
+                    throw new InvalidDataException("A provider offer requires a conscious and capable healer and target.");
+        }
+        else throw new InvalidDataException("Unknown participation proposal schema.");
+        if (!ResourceMaterializationContract.IsExactIdentifier(Text(proposal, "woundId")) ||
+            string.IsNullOrWhiteSpace(Text(proposal, "readableEvidence")))
+            throw new InvalidDataException("Participation proposal requires exact wound and readable evidence.");
+    }
+
+    private static readonly string[] OfferConditionFields =
+        ["providerConscious", "providerCapable", "targetConscious", "targetCapable"];
+    internal static bool IsProviderOffer(JsonObject record) => Scalar<int>(record, "schemaVersion") == 2;
+    internal static string RecordOwnerId(JsonObject record) => Text(record, IsProviderOffer(record) ? "healerId" : "targetId");
+    internal static string TargetKind(JsonObject record) => IsProviderOffer(record) ? "player_soul" : "guardian";
+    internal static int ResultVersion(JsonObject record) => IsProviderOffer(record) ? 4 : 3;
+    internal static bool IsAvailable(JsonObject record) => Text(record, "status") == (IsProviderOffer(record) ? "offered" : "granted");
+
     internal static JsonObject CreateOutcome(Change change, string locationId, JsonObject binding,
         int cycleOrdinal, string primaryTransitionId)
     {
         var proposal = change.Proposal;
+        ValidateProposal(proposal);
+        var offer = Scalar<int>(proposal, "schemaVersion") == 2;
         var record = new JsonObject
         {
-            ["schemaVersion"] = 1, ["status"] = Text(proposal, "operation") == "grant" ? "granted" : "revoked",
-            ["healerId"] = "player_soul", ["targetKind"] = "guardian", ["targetId"] = change.TargetId,
+            ["schemaVersion"] = offer ? 2 : 1,
+            ["status"] = Text(proposal, "operation") == "revoke" ? "revoked" : offer ? "offered" : "granted",
+            ["healerId"] = offer ? change.TargetId : "player_soul",
+            ["targetKind"] = offer ? "player_soul" : "guardian", ["targetId"] = offer ? "player_soul" : change.TargetId,
             ["realm"] = "chaos_sea", ["woundId"] = Text(proposal, "woundId"), ["locationId"] = locationId,
-            ["conscious"] = proposal["conscious"]!.GetValue<bool>(), ["capable"] = proposal["capable"]!.GetValue<bool>(),
             ["readableEvidence"] = Text(proposal, "readableEvidence"), ["binding"] = binding.DeepClone(),
             ["acceptedCycleOrdinal"] = cycleOrdinal, ["eligibleCycleOrdinal"] = checked(cycleOrdinal + 1),
             ["primaryTransitionId"] = primaryTransitionId
         };
+        if (offer)
+        {
+            record["kind"] = "provider_offer"; record["healerKind"] = "guardian";
+            foreach (var field in OfferConditionFields) record[field] = proposal[field]!.DeepClone();
+        }
+        else
+        {
+            record["conscious"] = proposal["conscious"]!.DeepClone();
+            record["capable"] = proposal["capable"]!.DeepClone();
+        }
         ValidateRecord(record);
         return new() { ["record"] = record, ["contentFingerprint"] = Fingerprint(record) };
     }
 
     internal static void ValidateRecord(JsonObject record)
     {
-        Closed(record, "schemaVersion", "status", "healerId", "targetKind", "targetId", "realm", "woundId", "locationId",
-            "conscious", "capable", "readableEvidence", "binding", "acceptedCycleOrdinal", "eligibleCycleOrdinal", "primaryTransitionId");
-        if (record["schemaVersion"]!.GetValue<int>() != 1 || Text(record, "status") is not ("granted" or "revoked") ||
-            Text(record, "healerId") != "player_soul" || Text(record, "targetKind") != "guardian" || Text(record, "realm") != "chaos_sea" ||
-            string.IsNullOrWhiteSpace(Text(record, "readableEvidence")))
-            throw new InvalidDataException("Invalid canonical Guardian participation record.");
-        foreach (var field in new[] { "targetId", "woundId", "locationId", "primaryTransitionId" })
+        var version = Scalar<int>(record, "schemaVersion");
+        var common = new[] { "schemaVersion", "status", "healerId", "targetKind", "targetId", "realm", "woundId", "locationId",
+            "readableEvidence", "binding", "acceptedCycleOrdinal", "eligibleCycleOrdinal", "primaryTransitionId" };
+        if (version == 1)
+        {
+            Closed(record, common.Concat(new[] { "conscious", "capable" }).ToArray());
+            if (Text(record, "status") is not ("granted" or "revoked") || Text(record, "healerId") != "player_soul" ||
+                Text(record, "targetKind") != "guardian")
+                throw new InvalidDataException("Invalid canonical Guardian target-consent record.");
+            var conscious = Scalar<bool>(record, "conscious"); var capable = Scalar<bool>(record, "capable");
+            if (Text(record, "status") == "granted" && (!conscious || !capable))
+                throw new InvalidDataException("A canonical grant requires conscious and capable participation.");
+        }
+        else if (version == 2)
+        {
+            Closed(record, common.Concat(new[] { "kind", "healerKind" }).Concat(OfferConditionFields).ToArray());
+            if (Text(record, "kind") != "provider_offer" || Text(record, "status") is not ("offered" or "revoked") ||
+                Text(record, "healerKind") != "guardian" || Text(record, "healerId") == "player_soul" ||
+                Text(record, "targetKind") != "player_soul" || Text(record, "targetId") != "player_soul")
+                throw new InvalidDataException("Invalid canonical private Guardian offer record.");
+            foreach (var field in OfferConditionFields)
+                if (!Scalar<bool>(record, field) && Text(record, "status") == "offered")
+                    throw new InvalidDataException("A canonical offer requires conscious and capable healer and target.");
+        }
+        else throw new InvalidDataException("Unknown participation record schema.");
+        if (Text(record, "realm") != "chaos_sea" || string.IsNullOrWhiteSpace(Text(record, "readableEvidence")))
+            throw new InvalidDataException("Participation requires the current Chaos realm and readable evidence.");
+        foreach (var field in new[] { "healerId", "targetId", "woundId", "locationId", "primaryTransitionId" })
             if (!ResourceMaterializationContract.IsExactIdentifier(Text(record, field)))
                 throw new InvalidDataException("Participation identities must be exact identifiers.");
-        var conscious = record["conscious"]!.GetValue<bool>(); var capable = record["capable"]!.GetValue<bool>();
-        if (Text(record, "status") == "granted" && (!conscious || !capable))
-            throw new InvalidDataException("A canonical grant requires conscious and capable participation.");
-        var cycle = record["acceptedCycleOrdinal"]!.GetValue<int>();
-        if (cycle < 1 || record["eligibleCycleOrdinal"]!.GetValue<int>() != checked(cycle + 1))
+        var cycle = Scalar<int>(record, "acceptedCycleOrdinal");
+        if (cycle < 1 || Scalar<int>(record, "eligibleCycleOrdinal") != checked(cycle + 1))
             throw new InvalidDataException("Participation authorizes exactly the next accepted safe cycle.");
-        var binding = record["binding"]!.AsObject();
+        var binding = record["binding"] as JsonObject ?? throw new InvalidDataException("Participation requires its actual accepted binding.");
         Closed(binding, "sessionId", "requestId", "snapshotToken", "realm", "turn");
         foreach (var field in new[] { "sessionId", "requestId", "snapshotToken" })
             if (!ResourceMaterializationContract.IsExactIdentifier(Text(binding, field)))
                 throw new InvalidDataException("Participation lost its actual accepted binding.");
-        if (Text(binding, "realm") != "chaos_sea" || binding["turn"]!.GetValue<int>() < 1)
+        if (Text(binding, "realm") != "chaos_sea" || Scalar<int>(binding, "turn") < 1)
             throw new InvalidDataException("Participation binding realm/turn differs.");
     }
 
     internal static void ValidateOutcomes(JsonArray outcomes, JsonObject binding, int ordinal,
-        IReadOnlyList<SpiritualHealingPublishedStage> stages)
+        IReadOnlyList<SpiritualHealingPublishedStage> stages, int resultVersion)
     {
         if (outcomes.Count != 1) throw new InvalidDataException("Participation natural result requires one nonempty bounded outcome.");
         foreach (var item in outcomes)
         {
             var outcome = item!.AsObject(); Closed(outcome, "record", "contentFingerprint");
             var record = outcome["record"]!.AsObject(); ValidateRecord(record);
-            if (Text(outcome, "contentFingerprint") != Fingerprint(record) || !JsonNode.DeepEquals(record["binding"], binding) ||
+            if (ResultVersion(record) != resultVersion || Text(outcome, "contentFingerprint") != Fingerprint(record) || !JsonNode.DeepEquals(record["binding"], binding) ||
                 record["acceptedCycleOrdinal"]!.GetValue<int>() != ordinal ||
                 Text(record, "primaryTransitionId") != stages[0].TransitionId || !stages.Any(s =>
-                    s.Before.WoundId == Text(record, "woundId") && s.Before.Owner.OwnerKind == "guardian" &&
+                    s.Before.WoundId == Text(record, "woundId") && s.Before.Owner.OwnerKind == TargetKind(record) &&
                     s.Before.Owner.OwnerId == Text(record, "targetId") && s.Before.Owner.Realm == "chaos_sea"))
                 throw new InvalidDataException("Participation outcome differs from its complete accepted natural result.");
         }
@@ -134,14 +195,14 @@ internal static class SpiritualTreatmentParticipation
         {
             var record = outcome["record"]!.AsObject();
             var current = (profiles?[AfterlifeEntityProfileState.ProfilesProperty] as JsonArray)?.OfType<JsonObject>()
-                .Where(p => p["actorType"]?.GetValue<string>() == "guardian" && ProfileId(p) == Text(record, "targetId")).ToArray();
+                .Where(p => p["actorType"]?.GetValue<string>() == "guardian" && ProfileId(p) == RecordOwnerId(record)).ToArray();
             if (current is not { Length: 1 } || !JsonNode.DeepEquals(current[0][RecordProperty], record) || current[0].ContainsKey(ChangeProperty))
                 throw new InvalidDataException("Published participation no longer matches its exact accepted profile content.");
         }
     }
 
     internal static string Fingerprint(JsonObject record) => WoundAcceptedTurnFingerprintWriter.Compute(new[]
-        { "book_of_eternity.spiritual_treatment_participation", "1", WoundAcceptedTurnFingerprintWriter.CanonicalJson(record) });
+        { "book_of_eternity.spiritual_treatment_participation", Scalar<int>(record, "schemaVersion").ToString(System.Globalization.CultureInfo.InvariantCulture), WoundAcceptedTurnFingerprintWriter.CanonicalJson(record) });
     internal static LocalInteractionScope RequireCurrentGuardianScope(JsonObject guardians, JsonObject? residents, string targetId)
     {
         var scope = LocalInteractionScopeService.ResolveChaosSeaScope(guardians, residents,

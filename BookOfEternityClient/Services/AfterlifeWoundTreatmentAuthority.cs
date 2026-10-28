@@ -7,19 +7,30 @@ using System.Text.Json.Nodes;
 namespace BookOfEternityClient.Services;
 
 /// <summary>Exact active selection DATA; display names and indexes never identify a wound.</summary>
-internal sealed record SpiritualAidSelection(string HealerId, string TargetId, string ParticipationFingerprint);
+internal sealed record SpiritualAidSelection(string HealerId, string TargetId, string ParticipationFingerprint)
+{
+    internal bool ReceiveAid { get; init; }
+    internal bool PlayerConfirmed { get; init; }
+    internal string GuardianId => ReceiveAid ? HealerId : TargetId;
+    internal WoundOwnerCoordinate Healer(string realm) => new(realm, ReceiveAid ? "guardian" : "player_soul", HealerId, WoundCarrierCatalog.AfterlifeProfilesPath);
+    internal WoundOwnerCoordinate Target(string realm) => new(realm, ReceiveAid ? "player_soul" : "guardian", TargetId, WoundCarrierCatalog.AfterlifeProfilesPath);
+}
 
 internal sealed record SpiritualSelfTreatmentSelection(string WoundId, string ExpectedWoundFingerprint)
 {
     internal SpiritualAidSelection? Aid { get; init; }
-    internal JsonObject ToJson() => Aid is null
-        ? new() { ["woundId"] = WoundId, ["expectedWoundFingerprint"] = ExpectedWoundFingerprint }
-        : new()
+    internal JsonObject ToJson()
+    {
+        if (Aid is null) return new() { ["woundId"] = WoundId, ["expectedWoundFingerprint"] = ExpectedWoundFingerprint };
+        var root = new JsonObject
         {
-            ["schemaVersion"] = 3, ["mode"] = "aid", ["woundId"] = WoundId,
+            ["schemaVersion"] = Aid.ReceiveAid ? 4 : 3, ["mode"] = Aid.ReceiveAid ? "receive_aid" : "aid", ["woundId"] = WoundId,
             ["expectedWoundFingerprint"] = ExpectedWoundFingerprint, ["healerId"] = Aid.HealerId,
             ["targetId"] = Aid.TargetId, ["participationFingerprint"] = Aid.ParticipationFingerprint
         };
+        if (Aid.ReceiveAid) root["confirmation"] = Aid.PlayerConfirmed ? "player_target_confirmed" : "required";
+        return root;
+    }
     internal static SpiritualSelfTreatmentSelection Parse(JsonNode? node)
     {
         if (node is not JsonObject root ||
@@ -29,15 +40,22 @@ internal sealed record SpiritualSelfTreatmentSelection(string WoundId, string Ex
             throw new InvalidDataException("Invalid exact spiritual wound selection.");
         var selection = new SpiritualSelfTreatmentSelection(woundId!, fingerprint!);
         if (root.Count == 2) return selection; // Still-produced exact self form.
-        if (root.Count != 7 || root["schemaVersion"] is not JsonValue version || !version.TryGetValue<int>(out var schema) || schema != 3 ||
-            root["mode"] is not JsonValue mode || !mode.TryGetValue<string>(out var treatmentMode) || treatmentMode != "aid" ||
-            root["healerId"] is not JsonValue healer || !healer.TryGetValue<string>(out var healerId) || healerId != "player_soul" ||
+        if (root["schemaVersion"] is not JsonValue version || !version.TryGetValue<int>(out var schema) || schema is not (3 or 4) ||
+            root.Count != (schema == 4 ? 8 : 7) ||
+            root["mode"] is not JsonValue mode || !mode.TryGetValue<string>(out var treatmentMode) || treatmentMode != (schema == 4 ? "receive_aid" : "aid") ||
+            root["healerId"] is not JsonValue healer || !healer.TryGetValue<string>(out var healerId) ||
+            !ResourceMaterializationContract.IsExactIdentifier(healerId) ||
             root["targetId"] is not JsonValue target || !target.TryGetValue<string>(out var targetId) ||
             !ResourceMaterializationContract.IsExactIdentifier(targetId) || root["participationFingerprint"] is not JsonValue participation ||
             !participation.TryGetValue<string>(out var participationFingerprint) ||
             !ResourceMaterializationContract.IsAuthorityFingerprint(participationFingerprint))
             throw new InvalidDataException("Invalid exact spiritual aid selection.");
-        return selection with { Aid = new("player_soul", targetId!, participationFingerprint!) };
+        if (schema == 3 && healerId != "player_soul" || schema == 4 &&
+            (healerId == "player_soul" || targetId != "player_soul" || root["confirmation"] is not JsonValue confirmation ||
+                !confirmation.TryGetValue<string>(out var confirmed) || confirmed is not ("required" or "player_target_confirmed")))
+            throw new InvalidDataException("Aid selection direction or player confirmation differs.");
+        return selection with { Aid = new(healerId!, targetId!, participationFingerprint!)
+            { ReceiveAid = schema == 4, PlayerConfirmed = schema == 4 && root["confirmation"]!.GetValue<string>() == "player_target_confirmed" } };
     }
 }
 

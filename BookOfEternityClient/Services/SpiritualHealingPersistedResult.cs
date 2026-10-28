@@ -38,7 +38,7 @@ internal sealed class SpiritualHealingPersistedResult : WoundTransitionResult
         WoundAcceptedTurnData.CloneWound(_stages.LastOrDefault(s => s.After.WoundId == woundId)?.After);
     internal bool AidGrantAgrees(SpiritualHealingPersistedResult grant)
     {
-        if (Mode != "aid" || !grant.IsNatural || grant.SchemaVersion != 3) return false;
+        if (Mode != "aid" || !grant.IsNatural || grant.SchemaVersion != SchemaVersion) return false;
         var witness = _root["request"]!["participation"]!;
         var record = witness["record"]!;
         var selected = _stages[0].Before;
@@ -65,12 +65,15 @@ internal sealed class SpiritualHealingPersistedResult : WoundTransitionResult
         var binding = owner.Input.Binding;
         var cycle = owner.CycleKey;
         var participation = owner.ParticipationOutcomes;
+        var request = owner.Request;
+        var version = owner.Mode == "aid" ? request!["schemaVersion"]!.GetValue<int>()
+            : participation is null ? 2 : SpiritualTreatmentParticipation.ResultVersion(participation[0]!["record"]!.AsObject());
         var root = new JsonObject
         {
-            ["kind"] = "spiritual_healing", ["schemaVersion"] = participation is null && owner.Mode != "aid" ? 2 : 3, ["mode"] = owner.Mode,
+            ["kind"] = "spiritual_healing", ["schemaVersion"] = version, ["mode"] = owner.Mode,
             ["binding"] = new JsonObject { ["sessionId"] = binding.SessionId, ["requestId"] = binding.RequestId,
                 ["snapshotToken"] = binding.SnapshotToken, ["realm"] = binding.Realm, ["turn"] = binding.Turn },
-            ["request"] = owner.Request, ["source"] = owner.PersistenceSource,
+            ["request"] = request, ["source"] = owner.PersistenceSource,
             ["control"] = JsonSerializer.SerializeToNode(owner.Control),
             ["scheduleBeforeJson"] = CanonicalJsonUtf8.DecodeOneOptionalBom(owner.SchedulerMutation.ScheduleBefore.Bytes!),
             ["progressionReportJson"] = CanonicalJsonUtf8.DecodeOneOptionalBom(owner.SchedulerMutation.ReportBefore.Bytes!),
@@ -86,6 +89,7 @@ internal sealed class SpiritualHealingPersistedResult : WoundTransitionResult
             }).ToArray())
         };
         if (participation is not null) root["participationOutcomes"] = participation;
+        if (version == 4 && owner.Mode == "aid") root["direction"] = "guardian_to_player";
         root["resultFingerprint"] = WoundHistoryState.ComputeTransitionResultFingerprint(root);
         var issues = new List<ValidationIssue>();
         return Parse(JsonSerializer.SerializeToElement(root), "spiritualHealing.result", issues)
@@ -103,10 +107,12 @@ internal sealed class SpiritualHealingPersistedResult : WoundTransitionResult
             var rootFields = new[] { "kind", "schemaVersion", "binding", "request", "source", "control", "scheduleBeforeJson", "progressionReportJson", "scheduleAfterJson", "scheduleAfterFingerprint", "stages", "resultFingerprint" };
             var version = root["schemaVersion"]!.GetValue<int>();
             var mode = Text(root, "mode");
-            Closed(root, version == 3 && mode == "natural" ? rootFields.Append("mode").Append("participationOutcomes").ToArray()
+            Closed(root, version is 3 or 4 && mode == "natural" ? rootFields.Append("mode").Append("participationOutcomes").ToArray()
+                : version == 4 && mode == "aid" ? rootFields.Append("mode").Append("direction").ToArray()
                 : rootFields.Append("mode").ToArray());
-            if (Text(root, "kind") != "spiritual_healing" || version is not (2 or 3) || mode is not ("self" or "natural" or "aid") ||
-                version == 2 && mode == "aid" || version == 3 && mode == "self" ||
+            if (Text(root, "kind") != "spiritual_healing" || version is not (2 or 3 or 4) || mode is not ("self" or "natural" or "aid") ||
+                version == 2 && mode == "aid" || version is 3 or 4 && mode == "self" ||
+                version == 4 && mode == "aid" && Text(root, "direction") != "guardian_to_player" ||
                 Text(root, "resultFingerprint") != WoundHistoryState.ComputeTransitionResultFingerprint(root))
                 throw new InvalidDataException("Spiritual result kind/schema/fingerprint differs.");
             var binding = root["binding"]!.AsObject();
@@ -186,12 +192,15 @@ internal sealed class SpiritualHealingPersistedResult : WoundTransitionResult
                 }
                 else
                 {
+                    if (selection.Aid is null) throw new InvalidDataException("Aid result lacks its explicit selected direction.");
+                    healer = selection.Aid.Healer(Text(binding, "realm"));
                     var activeSource = new JsonObject
                     {
                         ["healingTier"] = tier, ["complicationModifier"] = source["complicationModifier"]!.DeepClone(),
                         ["rollMode"] = source["rollMode"]!.DeepClone(), ["rollContributions"] = source["rollContributions"]!.DeepClone()
                     };
-                    if (selected.Owner.OwnerKind != "guardian" || selection.Aid is null ||
+                    if (selected.Owner != selection.Aid.Target(Text(binding, "realm")) ||
+                        request["schemaVersion"]!.GetValue<int>() != version ||
                         selection.WoundId != selected.WoundId || selection.ExpectedWoundFingerprint != WoundIdentityState.ComputeSemanticFingerprint(selected) ||
                         !SpiritualSelfTreatmentRequestCodec.IsBoundAid(request, context, selection, Text(binding, "realm"), control.NextChaosSeaTurnOrdinal) ||
                         !JsonNode.DeepEquals(request["target"], SpiritualHealingRequestProjection.OwnerJson(selected.Owner)) ||
@@ -237,9 +246,9 @@ internal sealed class SpiritualHealingPersistedResult : WoundTransitionResult
                 ValidateStageScope(stage, e);
                 current[before.WoundId] = after;
             }
-            if (version == 3 && mode == "natural")
+            if (version is 3 or 4 && mode == "natural")
                 SpiritualTreatmentParticipation.ValidateOutcomes(root["participationOutcomes"]!.AsArray(), binding,
-                    control.NextChaosSeaTurnOrdinal, stages);
+                    control.NextChaosSeaTurnOrdinal, stages, version);
             return new(root, stages);
         }
         catch (Exception failure) when (failure is JsonException or InvalidDataException or InvalidOperationException or ArgumentException or OverflowException or KeyNotFoundException or NullReferenceException)

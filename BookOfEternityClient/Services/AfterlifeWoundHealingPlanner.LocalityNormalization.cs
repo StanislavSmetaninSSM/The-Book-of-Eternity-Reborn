@@ -22,7 +22,8 @@ internal static partial class AfterlifeWoundHealingPlanner
             using var fresh = FileSystemManager.SuppressValidationReuse();
             RequireCurrent(files, lease);
             var images = _participationSources ?? _sources;
-            var targetId = _data?.AidWitness is not null ? _data.Source.Target.OwnerId : _participationChanges!.Single().TargetId;
+            var targetId = _data?.AidWitness is { } witness ? SpiritualTreatmentParticipation.RecordOwnerId(witness["record"]!.AsObject())
+                : _participationChanges!.Single().TargetId;
             JsonObject? Root(string selectedPath, string? replacement = null)
             {
                 var image = images[selectedPath];
