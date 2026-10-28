@@ -26,6 +26,17 @@ regression PASS follows from this WIP. Full physical/live authority remains due 
 the publication boundary. Generic wound work must compose or explicitly refuse,
 never be overwritten. No resource/lease/currentness rule has been relaxed.
 
+Next private-owner WIP, still UNCOMPILED/UNRUN: the same Continuation now has
+explicit self/natural source modes and nullable request only for natural mode.
+Natural admission authenticates actual signed source/absence and one scheduler
+mutation under its own lease, captures current B before-images and refuses
+concurrent wound work. Ordinary effect binding protects original wound/effect
+subgraphs while retaining real ordinary composed input. Shared signed-root/input/
+scheduler preparation was factored, not duplicated. Strict natural result codec,
+dispatcher/sink/publication/replay/I, actual staging and GM/control tests are still
+to connect; self codec is temporarily incompatible with new WIP source fields.
+No build/test or capability acceptance is claimed for this intermediate code.
+
 Actual graph-bearing console caller on clean/compiled 926f70af: exact1/1 PASS,
 58.1503082s total/category50.2515017<180, complete/no skips/duplicates/timeout,
 both cleanup flags true. Real retained d20=7; final healed/rankI/progress0;

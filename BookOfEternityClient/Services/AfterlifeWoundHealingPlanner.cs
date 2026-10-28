@@ -6,7 +6,7 @@ using BookOfEternityClient.Models;
 namespace BookOfEternityClient.Services;
 
 /// <summary>Owns one signed, unpublished self-treatment contribution in the existing turn pipeline.</summary>
-internal static class AfterlifeWoundHealingPlanner
+internal static partial class AfterlifeWoundHealingPlanner
 {
     // The qualified staging fingerprint remains its original sixteen source paths.
     // Acceptance also owns the signed no-cost resource baseline, through the same reader.
@@ -21,19 +21,20 @@ internal static class AfterlifeWoundHealingPlanner
             new PendingTurnSnapshotPathSelection(new[] { AcceptedMechanicsPlan.WoundCommandPath }.Concat(ResourceSourcePaths).ToArray(),
                 AfterlifeWoundTreatmentAuthority.SourcePaths));
 
-    internal sealed class Continuation
+    internal sealed partial class Continuation
     {
         private readonly FileSystemManager _files;
         private readonly FileSystemManager.CanonicalWriteLease _lease;
         private readonly PendingTurnSnapshotReadAuthority _snapshot;
         private readonly PendingTurnSnapshotReader.OriginalReadEvidence _original;
         private readonly IReadOnlyDictionary<string, CanonicalBeforeImage> _sources;
-        private readonly JsonObject _request;
+        private readonly JsonObject? _request;
         private readonly WoundAcceptedTurnInput _input;
         private readonly IReadOnlyList<SpiritualWoundStage> _stages;
         private readonly IReadOnlyList<WoundMaterializationEnvelope> _wounds;
         private bool _published;
-        private readonly AfterlifeWoundTreatmentAuthority.SourceData _data;
+        private readonly AfterlifeWoundTreatmentAuthority.SourceData? _data;
+        private readonly AfterlifeWoundTreatmentAuthority.NaturalSourceData? _natural;
         private readonly string _controlJson;
         private readonly CanonicalBeforeImage _responseImage;
         private readonly IReadOnlyDictionary<string, JsonNode?> _parsedSourceRoots;
@@ -46,45 +47,63 @@ internal static class AfterlifeWoundHealingPlanner
 
         private Continuation(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease,
             PendingTurnSnapshotReadAuthority snapshot, PendingTurnSnapshotReader.OriginalReadEvidence original,
-            IReadOnlyDictionary<string, CanonicalBeforeImage> sources, JsonObject request,
-            AfterlifeWoundTreatmentAuthority.SourceData data, WoundAcceptedTurnInput input,
+            IReadOnlyDictionary<string, CanonicalBeforeImage> sources, JsonObject? request,
+            AfterlifeWoundTreatmentAuthority.SourceData? data, WoundAcceptedTurnInput input,
             IReadOnlyList<WoundMaterializationEnvelope> wounds, IReadOnlyList<SpiritualWoundStage> stages,
             ProgressionControl control, ProgressionScheduleService scheduler,
             ProgressionScheduleService.AcceptedTurnOutcomeMutation schedulerMutation, CanonicalBeforeImage responseImage,
-            IReadOnlyDictionary<string, JsonNode?> parsedSourceRoots)
+            IReadOnlyDictionary<string, JsonNode?> parsedSourceRoots,
+            AfterlifeWoundTreatmentAuthority.NaturalSourceData? natural = null)
         {
+            if ((data is null) == (natural is null) || (request is null) != (natural is not null))
+                throw new InvalidDataException("A spiritual cycle has exactly one active-self or ordinary-natural source.");
             _files = files; _lease = lease; _snapshot = snapshot; _original = original;
             _sources = AcceptedMechanicsPlanBinding.CloneReadOnlyBeforeImages(sources);
-            _request = request.DeepClone().AsObject(); _input = WoundAcceptedTurnData.CloneInput(input)!;
+            _request = request?.DeepClone().AsObject(); _input = WoundAcceptedTurnData.CloneInput(input)!;
             _wounds = wounds.Select(w => WoundAcceptedTurnData.CloneWound(w)!).ToArray();
-            _stages = stages.ToArray(); _data = data; _controlJson = JsonSerializer.Serialize(control);
+            _stages = stages.ToArray(); _data = data; _natural = natural; _controlJson = JsonSerializer.Serialize(control);
             Scheduler = scheduler; SchedulerMutation = schedulerMutation;
             _responseImage = new(responseImage.Existed, responseImage.Bytes);
             _parsedSourceRoots = parsedSourceRoots.ToDictionary(p => p.Key, p => p.Value?.DeepClone(), StringComparer.Ordinal);
             Fingerprint = WoundAcceptedTurnFingerprintWriter.Compute(new[]
             {
-                "book_of_eternity.spiritual_self_treatment.continuation", "1", snapshot.SnapshotToken,
-                request["requestFingerprint"]!.GetValue<string>(), data.SourceFingerprint,
+                "book_of_eternity.spiritual_wound_cycle.continuation", "2", Mode, snapshot.SnapshotToken,
+                ProgramReference, SourceFingerprint,
                 JsonSerializer.Serialize(_stages), schedulerMutation.Fingerprint, _responseImage.Fingerprint
             });
         }
 
         internal string Fingerprint { get; }
+        internal bool IsNatural => _natural is not null;
+        internal string Mode => IsNatural ? "natural" : "self";
+        internal string SourceFingerprint => _natural?.SourceFingerprint ?? _data!.SourceFingerprint;
+        internal string ProgramReference => _request?["requestFingerprint"]!.GetValue<string>() ?? SourceFingerprint;
+        internal string CycleKey => AfterlifeWoundTreatmentAuthority.CycleKey(_input.Binding.Realm,
+            _natural?.CycleOrdinal ?? _request!["attempt"]!["cycleOrdinal"]!.GetValue<int>());
         internal bool IsClosed => _published;
         internal ProgressionControl Control => JsonSerializer.Deserialize<ProgressionControl>(_controlJson)!;
         internal ProgressionScheduleService Scheduler { get; }
         internal ProgressionScheduleService.AcceptedTurnOutcomeMutation SchedulerMutation { get; }
         internal WoundAcceptedTurnInput Input => WoundAcceptedTurnData.CloneInput(_input)!;
-        internal JsonObject Request => _request.DeepClone().AsObject();
+        internal JsonObject? Request => _request?.DeepClone().AsObject();
         internal IReadOnlyList<SpiritualWoundStage> Stages => _stages.ToArray();
         internal IReadOnlyList<WoundMaterializationEnvelope> Wounds => _wounds.Select(w => WoundAcceptedTurnData.CloneWound(w)!).ToArray();
         internal string EventRef => _input.Binding.AcceptedEvents.Single().EventRef;
-        internal JsonObject PersistenceSource => new()
+        internal JsonArray RecoveryTiers => new((_natural?.Members ?? _data!.NaturalMembers)
+            .GroupBy(m => m.Wound.Owner).Select(g => (JsonNode)new JsonObject
+            {
+                ["owner"] = JsonSerializer.SerializeToNode(g.Key), ["healingTier"] = g.First().HealingTier
+            }).ToArray());
+        internal JsonObject PersistenceSource => IsNatural ? new JsonObject
         {
-            ["healingTier"] = _data.Source.HealingTier, ["complicationModifier"] = _data.Source.ComplicationModifier,
-            ["rollMode"] = _data.Source.RollMode, ["sourceFingerprint"] = _data.SourceFingerprint,
+            ["sourceFingerprint"] = SourceFingerprint, ["graphResponseFingerprint"] = _responseImage.Fingerprint,
+            ["ownerTiers"] = RecoveryTiers, ["projection"] = SpiritualHealingRequestProjection.CreateNatural(_natural!)
+        } : new()
+        {
+            ["healingTier"] = _data!.Source.HealingTier, ["complicationModifier"] = _data.Source.ComplicationModifier,
+            ["rollMode"] = _data.Source.RollMode, ["sourceFingerprint"] = SourceFingerprint,
             ["rollContributions"] = JsonSerializer.SerializeToNode(_data.Source.RollContributions),
-            ["graphResponseFingerprint"] = _responseImage.Fingerprint
+            ["graphResponseFingerprint"] = _responseImage.Fingerprint, ["ownerTiers"] = RecoveryTiers
         };
         internal IReadOnlyDictionary<string, JsonNode?> SourceRoots => _parsedSourceRoots.ToDictionary(
             p => p.Key, p => p.Value?.DeepClone(), StringComparer.Ordinal);
@@ -99,7 +118,7 @@ internal static class AfterlifeWoundHealingPlanner
             foreach (var pair in _sources)
             {
                 // The GM authors the request-bound progression outcome after the original snapshot.
-                if (pair.Key == ProgressionScheduleService.ReportPath) continue;
+                if (!IsNatural && pair.Key == ProgressionScheduleService.ReportPath) continue;
                 var current = files.ReadFileBytesSync(lease, pair.Key);
                 if (new CanonicalBeforeImage(current is not null, current).Fingerprint != pair.Value.Fingerprint)
                     throw new InvalidDataException("Spiritual treatment source changed: " + pair.Key);
@@ -108,7 +127,8 @@ internal static class AfterlifeWoundHealingPlanner
             if (new CanonicalBeforeImage(response is not null, response).Fingerprint != _responseImage.Fingerprint)
                 throw new InvalidDataException("The admitted spiritual graph/output response changed.");
             var request = files.ReadFileBytesSync(lease, AcceptedMechanicsPlan.WoundCommandPath);
-            if (request is null || !request.AsSpan().SequenceEqual(_snapshot.ReadRequiredBytes(AcceptedMechanicsPlan.WoundCommandPath)))
+            if (IsNatural ? request is not null : request is null ||
+                !request.AsSpan().SequenceEqual(_snapshot.ReadRequiredBytes(AcceptedMechanicsPlan.WoundCommandPath)))
                 throw new InvalidDataException("The retained spiritual treatment request changed.");
         }
 
@@ -151,7 +171,7 @@ internal static class AfterlifeWoundHealingPlanner
             return WoundResponseInputComposer.BindSpiritualHealingGraphPredecessors(graph, before);
         }
 
-        private string GraphRef(string woundId, int rank) => SpiritualHealingRequestProjection.GraphRef(_request["requestFingerprint"]!.GetValue<string>(), woundId, rank);
+        private string GraphRef(string woundId, int rank) => SpiritualHealingRequestProjection.GraphRef(ProgramReference, woundId, rank);
 
         private void AdmitGraphs(JsonObject? interfaceUpdates)
         {
@@ -182,7 +202,7 @@ internal static class AfterlifeWoundHealingPlanner
             }
         }
 
-        private string ComplicationRef(string id) => SpiritualHealingRequestProjection.ComplicationRef(_request["requestFingerprint"]!.GetValue<string>(), id);
+        private string ComplicationRef(string id) => SpiritualHealingRequestProjection.ComplicationRef(ProgramReference, id);
         private JsonArray ComplicationRefs(WoundMaterializationEnvelope wound) => new(wound.Complications.Select(c =>
             (JsonNode)new JsonObject { ["complicationRef"] = ComplicationRef(c.ComplicationId), ["displayName"] = c.DisplayName }).ToArray());
 
@@ -260,8 +280,10 @@ internal static class AfterlifeWoundHealingPlanner
 
         private bool ProgramAgrees()
         {
-            var attempt = _request["attempt"]!;
-            var resolution = SpiritualHealingResolver.ResolvePrepared(_data.Source, _data.Source.RollMode,
+            if (_natural is not null)
+                return SpiritualHealingRequestProjection.BuildNaturalProgram(_natural).Stages.SequenceEqual(_stages);
+            var attempt = _request!["attempt"]!;
+            var resolution = SpiritualHealingResolver.ResolvePrepared(_data!.Source, _data.Source.RollMode,
                 attempt["roll"]!["values"]!.AsArray().Select(v => v!.GetValue<int>()).ToArray()).Resolution;
             return resolution is not null && SpiritualHealingRequestProjection.BuildProgram(_data, _request, resolution).Stages.SequenceEqual(_stages);
         }
@@ -285,15 +307,7 @@ internal static class AfterlifeWoundHealingPlanner
             evidence.RequireCurrent(files, lease, snapshot);
             var resourceImages = ResourceSourcePaths.ToDictionary(path => path,
                 path => new CanonicalBeforeImage(true, snapshot.ReadRequiredBytes(path)), StringComparer.Ordinal);
-            var sources = new List<AfterlifeWoundTreatmentAuthority.SourceFile>();
-            foreach (var path in paths)
-            {
-                var bytes = snapshot.CoveredLogicalPaths.Contains(path, StringComparer.Ordinal) ? snapshot.ReadRequiredBytes(path) : null;
-                var root = bytes is null ? null : JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(bytes)) as JsonObject
-                    ?? throw new InvalidDataException("Spiritual source must be a strict object: " + path);
-                AfterlifeWoundTreatmentAuthority.MaterializeProperties(root);
-                sources.Add(new(path, new(bytes is not null, bytes), root));
-            }
+            var sources = ReadSignedSources(snapshot);
             var request = StrictJsonAuthority.Deserialize<JsonObject>(CanonicalJsonUtf8.DecodeOneOptionalBom(
                 snapshot.ReadRequiredBytes(AcceptedMechanicsPlan.WoundCommandPath)), new JsonSerializerOptions(), "signed spiritual treatment")!;
             AfterlifeWoundTreatmentAuthority.MaterializeProperties(request);
@@ -308,26 +322,10 @@ internal static class AfterlifeWoundHealingPlanner
             var rolls = attempt["roll"]!["values"]!.AsArray().Select(v => v!.GetValue<int>()).ToArray();
             var resolution = SpiritualHealingResolver.ResolvePrepared(data.Source, data.Source.RollMode, rolls).Resolution
                 ?? throw new InvalidDataException("The signed healing roll cannot be resolved.");
-            var acceptedEvents = WoundAcceptedEventAuthorityComposer.ComposeDefaultAcceptedTurn(snapshot.SessionId,
-                snapshot.RequestId, snapshot.SnapshotToken, snapshot.TurnNumber);
-            if (!acceptedEvents.Success) throw new InvalidDataException("Spiritual treatment has no exact accepted event.");
-            var binding = new WoundAcceptedTurnBinding(snapshot.SessionId, snapshot.RequestId, snapshot.SnapshotToken,
-                snapshot.Realm, snapshot.TurnNumber, acceptedEvents.Events, WoundAcceptedEventSetFingerprint.Compute(acceptedEvents.Events));
             var roots = sources.ToDictionary(s => s.Path, s => s.Root, StringComparer.Ordinal);
             var (wounds, stages) = SpiritualHealingRequestProjection.BuildProgram(data, request, resolution);
-            var input = new WoundAcceptedTurnInput(binding, Array.Empty<WoundOpportunityAuthority>(),
-                Array.Empty<WoundAcceptedTransitionDraft>(), data.Carriers,
-                roots[WoundIdentityState.StatePath]!, roots[WoundHistoryState.HistoryPath]!,
-                new(roots[EffectCarrierCatalog.PlayerPath], roots[EffectCarrierCatalog.NpcPath], data.Carriers.EnemyCombatants,
-                    data.Carriers.AllyCombatants, data.Carriers.AfterlifeProfiles, roots[EffectCarrierCatalog.SpiritualConflictPath]),
-                roots[EffectIdentityState.StatePath]);
-            var scheduler = new ProgressionScheduleService(files, Microsoft.Extensions.Logging.Abstractions.NullLogger<ProgressionScheduleService>.Instance);
-            var errors = await scheduler.ValidateSpiritualTreatmentOutcomeAsync(lease, context.Progression);
-            if (errors.Any(i => i.Severity == IssueSeverity.Error)) throw new InvalidDataException("Spiritual treatment requires its exact progression report.");
-            var mutation = await scheduler.PrepareAcceptedTurnOutcomeMutationAsync(lease, context.Progression);
-            var schedule = JsonNode.Parse(mutation.ScheduleAfterJson)!;
-            if (schedule["currentChaosSeaTurnOrdinal"]!.GetValue<int>() != data.CycleOrdinal || mutation.ReportAfter.Existed)
-                throw new InvalidDataException("Spiritual treatment must advance exactly its one admitted cycle.");
+            var input = CreateCycleInput(snapshot, data.Carriers, roots);
+            var (scheduler, mutation) = await PrepareCycleSchedulerAsync(files, lease, context.Progression, data.CycleOrdinal);
             var updatesBytes = await files.ReadFileBytesAsync(lease, "output/interface_updates.json");
             var updates = updatesBytes is null ? null : StrictJsonAuthority.Deserialize<JsonObject>(
                 CanonicalJsonUtf8.DecodeOneOptionalBom(updatesBytes), new JsonSerializerOptions(), "spiritual treatment graph response");
@@ -340,6 +338,48 @@ internal static class AfterlifeWoundHealingPlanner
             owner.AdmitGraphs(updates);
             owner.RequireCurrent(files, lease);
             return owner;
+        }
+
+        private static List<AfterlifeWoundTreatmentAuthority.SourceFile> ReadSignedSources(PendingTurnSnapshotReadAuthority snapshot)
+        {
+            var sources = new List<AfterlifeWoundTreatmentAuthority.SourceFile>();
+            foreach (var path in AfterlifeWoundTreatmentAuthority.SourcePaths)
+            {
+                var bytes = snapshot.CoveredLogicalPaths.Contains(path, StringComparer.Ordinal) ? snapshot.ReadRequiredBytes(path) : null;
+                var root = bytes is null ? null : JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(bytes)) as JsonObject
+                    ?? throw new InvalidDataException("Spiritual source must be a strict object: " + path);
+                AfterlifeWoundTreatmentAuthority.MaterializeProperties(root);
+                sources.Add(new(path, new(bytes is not null, bytes), root));
+            }
+            return sources;
+        }
+
+        private static WoundAcceptedTurnInput CreateCycleInput(PendingTurnSnapshotReadAuthority snapshot,
+            WoundCarrierCatalogInput carriers, IReadOnlyDictionary<string, JsonObject?> roots)
+        {
+            var accepted = WoundAcceptedEventAuthorityComposer.ComposeDefaultAcceptedTurn(snapshot.SessionId,
+                snapshot.RequestId, snapshot.SnapshotToken, snapshot.TurnNumber);
+            if (!accepted.Success) throw new InvalidDataException("Spiritual recovery has no exact accepted event.");
+            var binding = new WoundAcceptedTurnBinding(snapshot.SessionId, snapshot.RequestId, snapshot.SnapshotToken,
+                snapshot.Realm, snapshot.TurnNumber, accepted.Events, WoundAcceptedEventSetFingerprint.Compute(accepted.Events));
+            return new(binding, Array.Empty<WoundOpportunityAuthority>(), Array.Empty<WoundAcceptedTransitionDraft>(), carriers,
+                roots[WoundIdentityState.StatePath]!, roots[WoundHistoryState.HistoryPath]!,
+                new(roots[EffectCarrierCatalog.PlayerPath], roots[EffectCarrierCatalog.NpcPath], carriers.EnemyCombatants,
+                    carriers.AllyCombatants, carriers.AfterlifeProfiles, roots[EffectCarrierCatalog.SpiritualConflictPath]),
+                roots[EffectIdentityState.StatePath]);
+        }
+
+        private static async Task<(ProgressionScheduleService Scheduler, ProgressionScheduleService.AcceptedTurnOutcomeMutation Mutation)>
+            PrepareCycleSchedulerAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease,
+                ProgressionControl control, int ordinal)
+        {
+            var scheduler = new ProgressionScheduleService(files, Microsoft.Extensions.Logging.Abstractions.NullLogger<ProgressionScheduleService>.Instance);
+            var errors = await scheduler.ValidateSpiritualTreatmentOutcomeAsync(lease, control);
+            if (errors.Any(i => i.Severity == IssueSeverity.Error)) throw new InvalidDataException("Spiritual recovery requires its exact progression report.");
+            var mutation = await scheduler.PrepareAcceptedTurnOutcomeMutationAsync(lease, control);
+            if (JsonNode.Parse(mutation.ScheduleAfterJson)!["currentChaosSeaTurnOrdinal"]!.GetValue<int>() != ordinal || mutation.ReportAfter.Existed)
+                throw new InvalidDataException("Spiritual recovery must advance exactly its one admitted cycle.");
+            return (scheduler, mutation);
         }
     }
 }
