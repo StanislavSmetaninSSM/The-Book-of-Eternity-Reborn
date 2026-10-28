@@ -1,6 +1,30 @@
 # Проверка проекта #1573
 
-## Текущий checkpoint: принятый HP, предложение урона/innate/критов
+## Текущий checkpoint: принятые воздействия и предложение экономики ОД
+
+2026-10-29, baseline56f8e4146b0db34e66146410f0b7613bd4f0eaa4.
+Specv1.42/modelv2.32 и приложение ОДv1. Автор принял damage/innate/crit;
+новый OD/слоты/цены/recovery/lifecycle остаются предложением. T001 закрывает
+production. Повторно использованы feature1573, brainstorming/Spec Kit bridge,
+plan/tasks до численного probe. Это исследование, не реализация.
+
+Узкий read-only Sol6.1/high audit_spiritual_od1573 проверил реальные OD источники;
+parent сверил capacity семантически через Serena и cost/recovery/event composer.
+Serena ready, csharp/typescript/python сохранены. Главный технический вывод:
+existing owner_turn_end привязан к accepted response, нужна настоящая личная
+боeвая граница; общий side owner не переносится в персональные ОД.
+
+Parent:15 распределений дуэлей (400 парыd20, сумма S_t²), mean5.298…7.314;
+1944 перехода (1669 допустимых,275 неизменяющих отказов), B+4ΔOD≤28.
+Остаток ожидания <6.70e−16; вместимость16/20/24,0 старт и burden2 отдельно.
+Воспроизводимые правила/допущения в приложении, Fast-урон/control/heal/gear
+не симулировались. Кэш простой арифметике не нужен; authority/current свежие.
+Bridge consistency: принятые формулы сохранены, scope→plan→tasks→probe,
+индивидуальные ресурсы/отсутствие refill и новое согласование явно отмечены.
+Независимый Astra/high review и remote checkpoint ожидаются. Game/build/600s
+и clean restore UNRUN. Не заявлять готовность полного баланса или реализации.
+
+## Предыдущий checkpoint: принятый HP, предложение урона/innate/критов
 
 2026-10-29, T045–T047, baselinefdbfb83f85da15753ca5b8c298982225136b74bb,
 ветка story/golden-mask-backstory-20261025. Автор принял HealthCore и ориентир5–8,

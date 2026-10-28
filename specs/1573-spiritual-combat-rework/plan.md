@@ -1,5 +1,25 @@
 # План перехода к личной модели духовного боя — #1573
 
+## Текущий срез: принятые воздействия, запас ОД и восстановление
+
+T048→T049→T050, baseline56f8e4146b0db34e66146410f0b7613bd4f0eaa4. Продолжение
+brainstorming/Spec Kit bridge в feature1573, без нового setup или production.
+1. Записать согласие на damage/innate/crit, прочитать источники OD/max/recovery и
+   mortal action economy, разделить code/GM/design. Bounded Sol6.1/high source audit;
+   parent проверяет ключевые свидетельства и сохраняет границы spec→plan→tasks.
+2. Сравнить2–3 подхода к запасу/росту/cost/regen; конкретизировать основной ход,
+   быстрые действия и ответы настолько, насколько нужно для ресурса. Проверить
+   дешёвые последовательности5–8 ходов, burst/sustain/recovery/дефицит/late/контроль,
+   реальные антициклические ограничения и отсутствие refill от reentry.
+3. Записать новый кандидат с решениями/альтернативами/открытым, independent
+   Astra/high review, targeted correction/verification, remote checkpoint и issue.
+   Предъявить автору новый пакет; T001 не снимается.
+
+Bridge consistency до исполнения численной модели: старые arts/prices не обязательны,
+принятые формулы/валютные контракты не меняются. Кэш не нужен для простой арифметики;
+stable definitions через existing operation service, current OD/ownership/revision
+и разрешение действия свежие. Нет новых обязательных cooldown/таймеров без обоснования.
+
 ## Текущий срез: принятие HP и совместная настройка урона/врождённой защиты
 
 T045→T046→T047, baselinefdbfb83f85da15753ca5b8c298982225136b74bb. Только
