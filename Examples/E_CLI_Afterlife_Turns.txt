@@ -13368,8 +13368,10 @@ For an ordinary II wound at progress0 and signed H3, the supplied destinationGra
 instead requests I: exactly4 points consume II threshold4, leaving I progress0/2.
 Author that ACTUAL stageRef using one legal I roll-hindrance definition wrapper, the
 same closed consequenceDefinitions grammar and client complicationRefs; do not pick
-surviving IDs or author a rank. At H5 the same II wound reaches terminal healing and
-needs no nonterminal graph. Persistent Guardian/resident/other eligible profiles use
+surviving IDs or author a rank. At H5 the same II wound also reaches I before terminal healing; author its
+requested intermediate I stageRef too. The client applies and retires that
+intermediate generation before healing; only an original rank-I terminal path
+requires no lower-rank graph. Persistent Guardian/resident/other eligible profiles use
 their own signed tiers even offscreen; their hidden wounds are not narrated merely
 because the mechanical cohort includes them. A lawful ordinary cost still applies;
 natural recovery itself charges nothing. Same-cycle art progress does not replace

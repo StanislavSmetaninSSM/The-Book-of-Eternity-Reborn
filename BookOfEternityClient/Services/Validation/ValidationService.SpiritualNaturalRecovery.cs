@@ -129,11 +129,12 @@ public partial class ValidationService
         var final = WoundAcceptedTurnPlanner.Finalize(prepared, effects);
         issues.AddRange(final.Issues);
         if (!final.Success) return;
-        var bundle = new AcceptedMechanicsWoundStageBundle(owner.Input, prepared, effects.Plan!, final.Plan!);
+        var woundInput = owner.Input;
+        var bundle = new AcceptedMechanicsWoundStageBundle(woundInput, prepared, effects.Plan!, final.Plan!);
         sink.Value = new(new JsonObject
         {
             ["schemaVersion"] = 1, ["authorityKind"] = "accepted_spiritual_natural_recovery",
             ["inputFingerprint"] = bundle.InputFingerprint, ["bundleFingerprint"] = bundle.BundleFingerprint
-        }, owner.Input, bundle, null);
+        }, woundInput, bundle, null);
     }
 }
