@@ -77,7 +77,7 @@
   "id": "spiritual-combat-healing-console",
   "responsibility": "Real console cancellation/confirmation, original pool, native-shaped controlled C2/C4, weaker graph, paid wound/effect/History and exact no-cycle cleanup.",
   "excludes": "Bounded current #1536 combat contour only. No full owner/suite, Mortal compatibility, T609/full DFR/Windows or external-provider/fresh-process qualification. DATA controls do not grant publication permission.",
-  "changeHints": ["BookOfEternityClient.IntegrationTests/ExplorerWoundSelfTreatmentTests.Combat.cs", "BookOfEternityClient/Core/GameEngine.TurnLifecycle.cs"],
+  "changeHints": ["BookOfEternityClient.IntegrationTests/ExplorerWoundSelfTreatmentTests.Combat.cs", "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs"],
   "related": [],
   "requirements": {
     "frontendBuild": false,
@@ -192,7 +192,7 @@
   "id": "spiritual-combat-safe-browser",
   "responsibility": "One exact existing safe confirmed browser Engine route protects default staging/retained source after combat fork, without the unrelated whole owner.",
   "excludes": "Bounded current #1536 combat contour only. No full owner/suite, Mortal compatibility, T609/full DFR/Windows or external-provider/fresh-process qualification. DATA controls do not grant publication permission.",
-  "changeHints": ["BookOfEternityClient/Services/WoundApplicationService.cs", "BookOfEternityClient/Core/GameEngine.TurnLifecycle.cs"],
+  "changeHints": ["BookOfEternityClient/Services/WoundApplicationService.cs", "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs"],
   "related": [],
   "requirements": {
     "frontendBuild": false,
