@@ -2,6 +2,19 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "spiritual-aid-participation-producer",
+  "responsibility": "One causal actual natural/common-publication Guardian grant producer: legitimate initial wound/locality agreement and accepted III/H0 progress1/one cycle precede missing canonical participation/full witness RED. Later GREEN must bind the full client-derived record in the same v3 natural History result.",
+  "excludes": "No full Engine/profile producer claim from this direct common publisher, no guided aid completion, no fake accepted stamp, provider/reverse/helpless/conflict/Shining aid or held Mortal/DFR retries. Prior qualified cases retain their separate lineages.",
+  "changeHints": ["BookOfEternityClient.IntegrationTests/AfterlifeSpiritualNaturalRecoveryTests.Aid.cs"],
+  "related": [],
+  "requirements": { "frontendBuild": false, "exclusive": true, "ciRunner": "ubuntu-24.04" },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [{ "project": "integration", "tests": [
+    "BookOfEternityClient.Tests.AfterlifeSpiritualNaturalRecoveryTests.AcceptedNaturalTurnCommitsGuardianParticipationWithItsFullContentWitness"
+  ] }]
+},
+{
   "id": "spiritual-resource-history-carry",
   "responsibility": "Cheap typed CanonicalResourceOwnerAuthorityComposer retire-history to accepted composition carry: historical ledger accepted, live state/spend denied, persisted current item never imported, TerminalOwners unchanged; exact overlap accepted while duplicate/confusable/reused identities remain refused. Existing owner historical/Resolve/lifecycle negatives protect the shared boundary.",
   "excludes": "No new current item permission, terminal retirement grant, runtime cache, synthetic world setup or generic DFR/Mortal timeout retry. Actual conflict-to-safe consumer is selected separately.",

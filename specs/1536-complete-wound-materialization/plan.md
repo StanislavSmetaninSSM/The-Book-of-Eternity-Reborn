@@ -1,5 +1,14 @@
 # US4 safe self-treatment — active functional work, 2026-10-28
 
+T108 first backend causal scaffold is test-only and UNCOMPILED/UNRUN. One new
+literal participation-producer singleton/120s uses existing natural ResourceCore
+and common publisher. Initial exact Guardian locality/wound agreement and actual
+III1/one-cycle/no-cost publication precede the intended missing canonical grant
+and full accepted witness RED. It does not claim Engine grant or guided aid yet.
+No production/default fixture/old body changes; independent SOURCE/PREP precedes
+Integration-only refsfalse and exact PlanOnly/actual. The implementation sequence
+and cost/retention rationale are in spiritual-aid-design.md.
+
 
 T108 technical DESIGN WIP is now in spiritual-aid-design.md. Finite user result:
 ordinary player request → accepted GM participation for the current visible

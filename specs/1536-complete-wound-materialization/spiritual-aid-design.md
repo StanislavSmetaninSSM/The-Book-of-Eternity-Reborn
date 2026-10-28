@@ -193,3 +193,26 @@ compensation contract; quote the one safe cycle and bind every actual requiremen
 Backend, producer and UI may be separate bounded checkpoints but must converge on
 that actual user result. Full T108/provider symmetry, helpless/conflict routes,
 Shining aid and broader producer qualification remain explicit follow-through.
+
+### First backend causal checkpoint (test-only, UNCOMPILED/UNRUN)
+
+Existing HealingFixture seeds a single current Guardian III/H0 wound and playerH3
+before its sole resource bootstrap. This is lawful initial canonical create DATA,
+not an earlier participation grant. Initial catalog/identity/History and real local
+scope agreement must pass; the actual signed natural ResourceCore/common publisher
+must first produce III1, one cycle and no treatment attempt/cost. Only then does
+the test require the canonical participation and full v3 result witness. Missing
+grant is the intended semantic RED; fixture refusal or failed publication is not.
+The new literal spiritual-aid-participation-producer singleton/120s owns this
+bounded control. Fresh Integration-only refsfalse against unchanged qualified
+Main/Support, exact PlanOnly then one actual RED after independent SOURCE/PREP.
+Existing defaults/bodies and production remain unchanged, so no prior reruns.
+No shared mutable fixture/cache is added; the one actual common publisher is the
+subject, and no repeated full-world setup or speedup claim is introduced.
+
+After causal RED, implement in order: closed profile participation codec and
+all-three-representation issuer validation; natural owner-bound full-record
+outcome/profile contribution and v3 strict reader; pre-control aid staging and
+separate healer/target program binding; guided console/browser plus actual Engine
+grant/aid journey and GM synchronization. Preserve staged attempts through repair
+and all fresh ownership/original/closing guards at each boundary.
