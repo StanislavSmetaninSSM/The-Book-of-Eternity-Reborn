@@ -27,6 +27,21 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
         // the actual Engine's first snapshot; no second bootstrap or postaccept seed.
         await using var context = await AfterlifeResourceCutoverTests.CreateSpiritualGameEngineOriginalAsync(async original =>
         {
+            // The direct-exchange scaffold omits Mortal wound carriers. The
+            // real wound UI reads their canonical empty shapes even in Chaos.
+            // Seed them before UI/original capture, without another bootstrap.
+            var empty = WoundPlayerProjectionTestData.InputInRealm("chaos_sea").Carriers;
+            foreach (var (path, root) in new[]
+            {
+                (WoundCarrierCatalog.PlayerPath, empty.PlayerWounds),
+                (WoundCarrierCatalog.NpcPath, empty.NpcWounds),
+                (WoundCarrierCatalog.EnemiesPath, empty.EnemyCombatants),
+                (WoundCarrierCatalog.AlliesPath, empty.AllyCombatants)
+            })
+            {
+                Assert.Null(await original.FileSystem.ReadFileBytesAsync(path));
+                await original.WriteExactJsonAsync(path, root!.ToJsonString());
+            }
             await AfterlifeResourceCutoverTests.SeedCombatHealingOriginalAsync(original, tier: 3, rank: 2);
             var chat = (await original.ReadJsonAsync("game_state/history/chat_log.json"))!; chat["sessionId"] = session;
             await original.WriteExactJsonAsync("game_state/history/chat_log.json", chat.ToJsonString());
@@ -36,7 +51,10 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
             await original.WriteExactJsonAsync(PendingTurnStateService.PendingDiceStatePath, JsonSerializer.Serialize(pending, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
         });
         var files = context.FileSystem;
-        var catalog = WoundCarrierCatalog.Build(new(null, null, null, null, (await context.ReadJsonAsync(AfterlifeEntityProfileState.StatePath))!.AsObject()));
+        WoundPlayerReadContext initial;
+        await using (var lease = await files.AcquireCanonicalWriteLeaseAsync())
+            initial = Assert.IsType<WoundPlayerReadContext>(await WoundPlayerReadService.LoadContextAsync(files, lease));
+        var catalog = initial.Catalog;
         Assert.Empty(catalog.Issues); var originalWound = Assert.Single(catalog.Occurrences).Wound;
         Assert.Equal(2, originalWound.Severity.Rank);
         Assert.Equal(1, originalWound.Recovery.CurrentStepProgress);
@@ -92,9 +110,13 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
             {
                 var service = CreateCommands(files);
                 var cancelled = await service.ExecuteAsync(new("/лечить", Owner));
+                Assert.Equal(CommandExecutionState.RequiresInput, cancelled.State);
+                Assert.True(cancelled.InteractiveSession is not null, JsonSerializer.Serialize(cancelled));
                 await service.CancelPromptSessionAsync(new(cancelled.InteractiveSession!.SessionId, Owner));
                 foreach (var pair in before) Assert.Equal(pair.Value, await files.ReadFileBytesAsync(pair.Key));
                 var opened = await service.ExecuteAsync(new("/лечить", Owner));
+                Assert.Equal(CommandExecutionState.RequiresInput, opened.State);
+                Assert.True(opened.InteractiveSession is not null, JsonSerializer.Serialize(opened));
                 var prompt = Assert.IsType<UiSelectionPrompt>(Assert.Single(opened.Prompts, p => p.Id == "wound_selection"));
                 var option = Assert.Single(prompt.Options, p => !p.Disabled);
                 Assert.DoesNotContain(originalWound.WoundId, JsonSerializer.Serialize(opened));

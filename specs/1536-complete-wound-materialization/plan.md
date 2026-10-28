@@ -1,3 +1,45 @@
+# Combat pair fully qualified; UI fixture initial carrier preparation — WIP
+
+2026-10-28: narrow4d587 singleton1/1PASS32.6912305s/category22.8437921<120,
+TRXde36f85279e7377cfe1bfa484e4a9fe35939213fc02068d6d533c18545130551.
+All later interface tamper/ledger/scheduler assertions now execute. Independent
+Sol OUTCOME accepts full pair union: four complete138 PASS + one complete4d587
+PASS, not a repeated five-case run. Shared ordinary dependent context also1/1PASS
+23.5172778s/category15.6253942<120, TRX
+0075ef12247302ef7282402d2ffbf1a5e69b6d1cf6fab7f1e180538493d499ad.
+
+The conditional14 command stopped at its FIRST browser case:1FAIL/13UNRUN,
+18.7119698s/category11.4205554<180, no timeout/duplicates, both cleanuptrue.
+TRXb674c1dafc2d1fa0c8c2b1b20174233213a1e365827bdb353bab36c4996a9eeb.
+It stopped before ProcessPlayerTurn: required interactive selection was absent.
+Root/Sol source tracing confirms four missing empty wound carriers in the direct
+exchange baseline. WoundPlayerReadService requires player/NPC wounds/enemies/allies;
+the accepted full healing UI fixture seeds all4, while this combat UI seed only
+writes the profile wound/identity/history/effect index. The same helper owns both
+console and browser, so fix their common INITIAL preparation before any UI or
+snapshot. Resource composer already treats absent combatants as these same empty
+collections; no new owners, resource bootstrap or product guard change is needed.
+World clock, scheduler, known wound, visible profile, H3/II, prepared effects and
+original dice14/5 were checked against the working full Engine scaffold.
+
+Current test-only correction creates those4 typed empty roots from existing
+WoundPlayerProjectionTestData, asserts original absence, and replaces the partial
+profile-only catalog read with the actual coherent UI context read. Explicit
+RequiresInput/interactive-session assertions replace an opaque null dereference.
+Production, backend pair helper, Main/Support/Unit and all other test bodies are
+unchanged. Fresh Integration refsfalse + current pins are pending; retain previous
+catalog1033/12715 because all public tests/selectors are unchanged, but run literal
+remaining14 PlanOnly. Then execute affected browser1+console1 first and untouched
+remaining12. Do not rerun accepted pair5/data4/cheap32/ordinary1/historical17.
+
+Optimization reuses the existing typed empty DATA factory and actual coherent
+context catalog rather than rereading a partial profile catalog. This per-case
+initial state has no shared mutable fixture/cache. Real UI+Engine is the subject,
+not an excuse for another preparation framework; no speedup claim. GM authoring
+is unchanged, and no postaccept files or diagnostic artifacts are added to bypass
+validation. Full raw remains outside checkout in functional9/10/build11/12. The
+browser failure is preserved; actual UI acceptance and full US4/#1536 stay open.
+
 # Combat four complete PASS; final dependent case output fixture correction — WIP
 
 2026-10-28 source13883142f fresh owning Main/Support/Integration completed0errors,
