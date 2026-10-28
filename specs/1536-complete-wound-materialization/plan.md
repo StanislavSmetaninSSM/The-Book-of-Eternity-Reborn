@@ -7,9 +7,14 @@ Guardian → existing guided /лечить selection/quote/confirmation → real
 turn. Exact locality uses existing service; consent requires content-bound witness
 in the existing natural accepted result, atomic with canonical profile grant.
 Healer active tier and target natural tier remain separate in one existing program.
-No registry/receipt file/cache or implicit consent. Staging-order and exact current
-version split are explicitly bounded DESIGN questions, not implementation/PASS.
-All prior code/evidence is unchanged; no new runtime until the design is closed.
+No registry/receipt file/cache or implicit consent. The finite decisions now place
+aid grant-read before control writes inside the existing rollback scope, with one
+actual lease and a lease-aware single BuildControl implementation. Current v2
+self/no-participation natural writers remain active; closed v3 natural outcomes
+and aid require their full mandatory payload. Witness stores the full canonical
+participation record plus digest. Foreign-content, rollback and cross-version
+causal controls are required. Independent DESIGN closure binds this document;
+all prior code/evidence is unchanged and implementation/runtime remain UNRUN.
 
 
 

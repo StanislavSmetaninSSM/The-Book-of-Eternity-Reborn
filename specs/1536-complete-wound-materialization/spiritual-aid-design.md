@@ -2,7 +2,8 @@
 
 Issue: https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536
 
-Status: technical DESIGN WIP, no implementation or runtime qualification. The
+Status: finite technical decisions recorded; independent DESIGN closure pending,
+no implementation or runtime qualification. The
 approved FR-054/FR-074 already require consent and fresh access; this document
 chooses their representation and existing consumers. Routine technical decisions
 do not require a new user approval pause. Independent bounded DESIGN remains
@@ -10,7 +11,8 @@ required. Full T108, combat/helper services and #1536 remain open.
 
 ## User result and exclusions
 
-The player asks the current Guardian for help through an ordinary in-game action.
+The player offers to heal the current Guardian through an ordinary in-game action
+and asks that Guardian for permission to treat its wound.
 The GM records that Guardian's affirmative participation through the existing
 profile update contract. Once that turn is accepted, the existing guided
 `/лечить` lets the player choose that exact visible Guardian's known active
@@ -68,13 +70,15 @@ expired, revoked or mismatched content never becomes implicit consent.
 
 For this wounded-Guardian safe grant turn, the existing natural cohort/publisher
 already produces a client-owned spiritual result. Extend THAT existing family
-with a closed typed participation outcome: exact canonical record CONTENT digest
-and identities/scope/status, linked to the deterministic primary recovery
+with a closed typed participation outcome: the FULL closed canonical record,
+including exact identities/scope/status, plus its derived content digest, linked
+to the deterministic primary recovery
 transition and actual binding. Publish profile grant + witness + natural effects/
 History/scheduler atomically in the same common plan. Do not bind only a tuple
 that could be copied onto another record. Do not create a separate receipt.
 Avoid a hash cycle: record references stable primary transition/binding; the
-result contains the record digest; the record does not contain the final result FP.
+result contains the full record and its digest; the record does not contain the
+final result FP.
 
 The strict committed grant reader proves matching result, current cohort/identity/
 History, real schedule and exact record content before draw. A raw same-turn grant
@@ -82,20 +86,26 @@ or failed/prepublication proposal lacks that witness. Current revocation or move
 must still refuse before aid publication. Settled aid replay validates the already
 accepted aid result and original binding, not a newly granted live consent.
 
-### Remaining bounded DESIGN question: staging order
+### Staging order and actual lease
 
 The existing strict published-cycle reader requires consumed command/report
 absence and the exact accepted schedule afterimage. Next-turn control preparation
 changes pending fields, and aid B later has new commands/report. Do not weaken that
-reader or add a bypass flag. Pin its exact placement BEFORE those changes, then
-carry comparison DATA only through the existing owned staging operation; enforce
-fresh unchanged witness/profile/locality and the exact client-prepared scheduler
-delta before draw. At B use the actual signed-start aid witness and fresh closing
-checks, not a rerun of the old grant reader against the new aid phase.
+reader or add a bypass flag. Resolve the aid selection before BuildControl, inside
+StagePlayerTurnBodyAsync's existing try/rollback scope after preturn backup and
+TurnRequest construction. Hold ONE actual aid staging canonical lease through
+strict committed-grant read, control preparation, fresh witness/profile/locality
+and source checks, then draw/stage. Release it before existing baseline capture.
 
-Bounded review must choose the concrete existing lease/control seam and confirm
-that DATA is not a transferable publication capability. No new coordinator/cache
-or cross-lease owner rebinding is authorized by this draft.
+Add a narrow lease-aware overload/internal core to the existing BuildControl,
+plumbing the same lease through its actual read/write helpers and retaining ONE
+control calculation. Do not invoke the old no-lease method under a held lock or
+copy the Chaos control algorithm. The non-aid branch retains its existing path.
+Carry only comparison DATA within this owned operation; validate the exact
+client-prepared scheduler delta before draw. At B use actual signed-start aid
+witness and fresh closing checks, not the old grant reader against new aid
+commands/report. No new coordinator/cache, transferable publication capability
+or cross-lease owner rebinding is introduced.
 
 ## One active family and one natural pass
 
@@ -107,11 +117,22 @@ private player/UI internals. Missing/invalid lower graphs retains the same attem
 and draws through repair. Actual original family/proof selects the bound I route;
 live kind, graph-field presence or a serialized participation DTO grants nothing.
 
-Keep currently PRODUCED self-v2 and no-participation natural contracts as active
-closed forms, not compatibility fallbacks for old saves. A participation/aid form
-must have an explicit new closed version/variant; no absent-mode defaults or
-legacy migrations. Bounded review decides the exact current wire/result version
-split before implementation. Update active writers/parsers/fixtures/docs together.
+Keep these currently PRODUCED forms as closed current contracts, not save
+compatibility or migrations. The exact exhaustive writer/parser table is:
+
+| Surface | Version / mode | Required content |
+| --- | --- | --- |
+| Self request | v2 self | Existing exact self request |
+| Self result | v2 self | Existing active self result, no participation |
+| Ordinary natural result | v2 natural | Existing natural result, no participation |
+| Aid request | v3 aid | Exact healer, target/wound and accepted grant witness |
+| Participation natural result | v3 natural | NONEMPTY bounded participationOutcomes, each full record + digest |
+| Aid result | v3 aid | Exact accepted grant witness and active healer/target source, no new grant outcomes |
+
+V2 writers remain active for turns without participation. Reject v2 aid or any
+v2 participation payload, v3 missing its mandatory payload, unknown versions or
+modes, absent-mode defaults, and self treatment mixed with a new grant/revoke.
+Update active writers/parsers/fixtures/docs together; no legacy fallback branch.
 
 `SpiritualHealingRequestProjection.BuildProgram` already applies active only to
 the selected wound and then per-member natural recovery. Reuse that pass. Separate
@@ -143,9 +164,11 @@ compensation contract; quote the one safe cycle and bind every actual requiremen
 
 ## Finite implementation and acceptance sequence
 
-1. Close the staging-order/version decisions through bounded DESIGN. Add causal
+1. Bind these concrete staging-order/version decisions through bounded DESIGN. Add causal
    controls for the real accepted profile issuer/witness, not just a valid-looking
-   current stamp. Make no user-facing completion claim from a codec alone.
+   current stamp. Include copied accepted tuple with foreign record content,
+   prepublication/rollback grant absence, and cross-version payload refusal.
+   Make no user-facing completion claim from a codec alone.
 2. Implement the closed proposal/record/result witness and existing natural grant
    producer atomically. Prove all three raw profile representations and raw stamp
    forgery/prepublication rollback paths. Earlier grant's natural wound FP change
@@ -156,7 +179,7 @@ compensation contract; quote the one safe cycle and bind every actual requiremen
    missing/revoked/expired/wrong healer/location/wound/capability and after-draw
    revocation/move refusal retains exact attempt/dice without partial publication.
 4. Connect real guided console/browser selection/quote/confirm/cancel to the SAME
-   Explorer/Engine. Controlled native-shaped GM journey: player asks through an
+   Explorer/Engine. Controlled native-shaped GM journey: player offers aid through an
    ordinary turn, GM authors participation, accepted natural result witnesses it,
    then guided aid executes wound/effect/History and one new cycle. Include graph
    repair as actually required by its computed stages. No manual player JSON.
