@@ -20,6 +20,70 @@ public sealed class ExplorerWoundSelfTreatmentTests(ITestOutputHelper output)
     private const string Owner = "wound-guided-client";
 
     [Fact]
+    public async Task OrdinaryRankThreeTurnUsesRequestedGraphWithoutTreatmentEntropy()
+    {
+        await using var fixture = await HealingFixture.CreateAsync(3, 5, 20, stageRequest: false);
+        var original = Assert.Single((await fixture.ReadWoundsAsync()).Occurrences).Wound;
+        var diagnostics = new GameEngineTurnLifecycleTests.SpiritualLifecycleTestLogger();
+        TurnRequest? turn = null;
+        JsonArray? graphs = null;
+        var responseWritten = false;
+        var runtime = GameEngineTurnLifecycleTests.CreateGameEngineRuntime(fixture.Files,
+            inputSource: new NoPlayerInput(diagnostics), logger: diagnostics,
+            finalizationHooks: new GameEngineSessionFinalizationHooks
+            {
+                AtCheckpointAsync = async checkpoint =>
+                {
+                    if (checkpoint != SessionFinalizationCheckpoint.TerminalWaitStarted || responseWritten) return;
+                    await using var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync();
+                    turn = JsonSerializer.Deserialize<TurnRequest>((await fixture.Files.ReadFileAsync(lease, "input/turn_request.json"))!,
+                        SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)!;
+                    Assert.Equal("natural", turn.SpiritualHealing!["mode"]!.GetValue<string>());
+                    Assert.Null(turn.SpiritualHealing["attemptId"]);
+                    Assert.Null(turn.SpiritualHealing["roll"]);
+                    Assert.Null(await fixture.Files.ReadFileBytesAsync(lease, AcceptedMechanicsPlan.WoundCommandPath));
+                    Assert.Equal(2, Assert.Single(turn.SpiritualHealing["destinationGraphs"]!.AsArray())!["severityRank"]!.GetValue<int>());
+                    graphs = AfterlifeSpiritualNaturalRecoveryTests.AuthorNaturalGraphs(original,
+                        turn.SpiritualHealing["destinationGraphs"]!.AsArray());
+                    await WriteNativeCompletionAsync(fixture.Files, lease, turn, graphs);
+                    responseWritten = true;
+                }
+            });
+        try
+        {
+            runtime.GameLoop.SetSession("session_ordinary_spiritual_graph", 42);
+            await runtime.StateManager.RefreshGameStateAsync();
+            await runtime.Engine.ProcessPlayerTurn("Спокойно наблюдать за безопасным течением Моря Хаоса.");
+            Assert.True(responseWritten);
+            Assert.Equal(43, runtime.GameLoop.TurnNumber);
+            var after = Assert.Single((await fixture.ReadWoundsAsync()).Occurrences).Wound;
+            Assert.Equal(2, after.Severity.Rank);
+            Assert.Equal(0, after.Recovery.CurrentStepProgress); // One natural6 crosses III threshold6.
+            Assert.Null(after.Care.LastAttemptId);
+            var history = await fixture.ReadHistoryAsync();
+            Assert.DoesNotContain(history.Transitions, t => t.AttemptId is not null || t.Kind == "treat");
+            var result = Assert.IsType<SpiritualHealingPersistedResult>(Assert.Single(history.Transitions,
+                t => t.TransitionResult is SpiritualHealingPersistedResult).TransitionResult);
+            Assert.True(result.IsNatural);
+            Assert.Equal("recover", Assert.Single(result.Stages).Kind);
+            Assert.Null(result.ToCanonicalJson()["request"]);
+            Assert.True(JsonNode.DeepEquals(graphs, JsonNode.Parse((await fixture.Files.ReadFileAsync("output/interface_updates.json"))!)!["spiritualHealingGraphs"]));
+            var schedule = JsonNode.Parse((await fixture.Files.ReadFileAsync(ProgressionScheduleService.SchedulePath))!)!;
+            Assert.Equal(turn!.ProgressionControl!.NextChaosSeaTurnOrdinal, schedule["currentChaosSeaTurnOrdinal"]!.GetValue<int>());
+            foreach (var path in new[] { AcceptedMechanicsPlan.WoundCommandPath, ProgressionScheduleService.ReportPath,
+                         PendingPlayerActionService.PendingPath, LiveTurnPreparationService.PendingTurnSnapshotManifestPath })
+                Assert.Null(await fixture.Files.ReadFileBytesAsync(path));
+            fixture.AssertResourcesUnchanged();
+            output.WriteLine("Ordinary natural graph: III→II, progress0, tierV, healingDraw=none, attempt=none, cycle=1.");
+        }
+        finally
+        {
+            output.WriteLine(diagnostics.Describe());
+            await runtime.AudioService.DisposeAsync();
+        }
+    }
+
+    [Fact]
     public async Task OrdinarySafeTurnRecoversWithoutTreatmentAttemptOrDraw()
     {
         await using var fixture = await HealingFixture.CreateAsync(1, 0, 20, stageRequest: false);
@@ -673,13 +737,18 @@ public sealed class ExplorerWoundSelfTreatmentTests(ITestOutputHelper output)
         return new(files, state, new LocalizationManager(), new ValidationService(files, NullLogger<ValidationService>.Instance));
     }
 
-    private static async Task WriteNativeCompletionAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease, TurnRequest request)
+    private static async Task WriteNativeCompletionAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease,
+        TurnRequest request, JsonArray? healingGraphs = null)
     {
         var timestamp = DateTime.UtcNow.ToString("o");
         async Task Write(string path, object value) => await files.WriteFileAtomicAsync(lease, path,
             JsonSerializer.Serialize(value, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
         await Write("output/narrative_response.json", new { response = "Душа собирает свою целостность, пока жизнь Моря Хаоса продолжается.", timestamp });
-        await Write("output/interface_updates.json", new { dialogueOptions = Array.Empty<object>(), timestamp });
+        if (healingGraphs is null)
+            await Write("output/interface_updates.json", new { dialogueOptions = Array.Empty<object>(), timestamp });
+        else
+            await Write("output/interface_updates.json", new { dialogueOptions = Array.Empty<object>(),
+                spiritualHealingGraphs = healingGraphs.DeepClone(), timestamp });
         await Write("output/debug_logs.json", new { gm_thoughts_markdown = string.Join("\n",
             "## NPC Scope", "- Mode: Scene-local", "- Relevant actors: нет",
             "- Why relevant: Душа восстанавливается самостоятельно; NPC не участвуют.",

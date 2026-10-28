@@ -2,6 +2,79 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "spiritual-natural-recovery-actors",
+  "responsibility": "One owned persistent cohort journey: player/hidden offscreen Guardian/resident/custom actor use own H0/V/II, terminal owner/realm loss refuses replay, real next cycle excludes old healed wounds, stale cohort/control refuses, replay is inert and empty third cycle creates no fake History.",
+  "excludes": "Full NPC scene/training producer, conflict/catchup/realm-transfer execution, newborn exemption edge and external provider/fresh-process; existing first14 is retained unless default branches change.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/AfterlifeSpiritualNaturalRecoveryTests.Cohort.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.AfterlifeSpiritualNaturalRecoveryTests.PersistentOffscreenOwnersPublishOwnTierRecoveryAndTerminalOwnerLossRefusesReplay"
+      ]
+    }
+  ]
+},
+{
+  "id": "spiritual-natural-recovery-overflow",
+  "responsibility": "One IV carry/terminal domain control with independently owned canonical seeds: IV7+H5→III5 with explicit III graph; IV14+H5 crosses III/II/I to one terminal. Requires missing-graph no-write refusal, actual effect retirement, strict stage completeness and inert scheduler replay.",
+  "excludes": "Actual GameEngine caller, every numerical vector (already owned by natural arithmetic categories), resource/training producer and held Mortal/DFR.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/AfterlifeSpiritualNaturalRecoveryTests.Cohort.cs",
+    "BookOfEternityClient.IntegrationTests/AfterlifeWoundHealingLifecycleTests.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.AfterlifeSpiritualNaturalRecoveryTests.RankFourCarriesOverflowThroughAnAuthoredRankThreeGraph"
+      ]
+    }
+  ]
+},
+{
+  "id": "spiritual-natural-recovery-graph-caller",
+  "responsibility": "One actual ordinary rankIII/H5 GameEngine safe turn receives authentic natural projection, authors the requested II graph before native completion and accepts II0 with strict natural History/no treatment entropy/one cycle/no cost/cleanup.",
+  "excludes": "Self caller/repair already qualified separately; no external provider/fresh-process/combat/catchup or every actor/graph branch.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/ExplorerWoundSelfTreatmentTests.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 3,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.OrdinaryRankThreeTurnUsesRequestedGraphWithoutTreatmentEntropy"
+      ]
+    }
+  ]
+},
+{
   "id": "spiritual-natural-recovery-contract",
   "responsibility": "Three cheap typed/source contracts: full persistent current-realm cohort uses explicit own start tiers independently of player visibility; missing tier refuses. Natural GM prompt/example/manifest synchronization. Existing worked-family manifest inventory must match all current entries.",
   "excludes": "Actual GameEngine publication, source drift and durable omission/replay controls run in separate natural categories; no general doc matrix or held Mortal/DFR.",

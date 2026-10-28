@@ -81,7 +81,8 @@ public sealed class AfterlifeWoundHealingLifecycleTests
         internal FileSystemManager Files { get; }
 
         internal static async Task<Fixture> CreateAsync(int rank, int tier, int die, bool stageRequest = true,
-            FileSystemManagerHooks? hooks = null)
+            FileSystemManagerHooks? hooks = null, long initialProgress = 0,
+            Func<FileSystemManager, JsonObject, Task>? beforeResourceBootstrap = null)
         {
             var root = Path.Combine(Path.GetTempPath(), "boe-spiritual-healing-lifecycle-" + Guid.NewGuid().ToString("N"));
             Directory.CreateDirectory(root);
@@ -105,15 +106,15 @@ public sealed class AfterlifeWoundHealingLifecycleTests
                     rawWound["consequences"]!["ownedEffectSources"]!["definitions"]!.AsArray().RemoveAt(1);
                     rawWound["consequences"]!["ownedEffectSources"]!["rootBindings"]!.AsArray().RemoveAt(1);
                 }
-                else if (rank == 3)
+                else if (rank is 3 or 4)
                 {
-                    rawWound["severity"]!["rank"] = 3;
-                    rawWound["severity"]!["value"] = "III";
-                    rawWound["severity"]!["maximumAtCreation"] = "III";
-                    rawWound["recovery"]!["currentStepThreshold"] = 6;
-                    rawWound["consequences"]!["slotBudget"] = 3;
-                    rawWound["consequences"]!["slotsUsed"] = 3;
-                    rawWound["consequences"]!["ownedEffectSources"]!["definitions"]![1]!["components"]![0]!["payload"]!["magnitude"] = 2;
+                    rawWound["severity"]!["rank"] = rank;
+                    rawWound["severity"]!["value"] = rank == 3 ? "III" : "IV";
+                    rawWound["severity"]!["maximumAtCreation"] = rank == 3 ? "III" : "IV";
+                    rawWound["recovery"]!["currentStepThreshold"] = 2 * rank;
+                    rawWound["consequences"]!["slotBudget"] = rank;
+                    rawWound["consequences"]!["slotsUsed"] = rank;
+                    rawWound["consequences"]!["ownedEffectSources"]!["definitions"]![1]!["components"]![0]!["payload"]!["magnitude"] = rank - 1;
                     var strain = WoundContractTestData.CreateOwnedEffectDefinition(WoundId, "chaos_sea",
                         "definition_spiritual_strain", "spiritual_strain_burden");
                     strain["components"]![0]!["componentId"] = "component_spiritual_strain";
@@ -125,7 +126,22 @@ public sealed class AfterlifeWoundHealingLifecycleTests
                     rawWound["consequences"]!["entries"]!.AsArray().Add(new JsonObject
                     { ["slot"] = 3, ["profileKey"] = "spiritual_strain_burden", ["effectId"] = "effect_spiritual_strain",
                         ["readableSummary"] = "Духовное напряжение усиливает неудачи." });
+                    if (rank == 4)
+                    {
+                        var position = WoundContractTestData.CreateOwnedEffectDefinition(WoundId, "chaos_sea",
+                            "definition_spiritual_position", "spiritual_position_burden");
+                        position["components"]![0]!["componentId"] = "component_spiritual_position";
+                        position["components"]![0]!["payload"]!["magnitude"] = 2;
+                        position["triggers"]![0]!["componentIds"] = new JsonArray("component_spiritual_position");
+                        rawWound["consequences"]!["ownedEffectSources"]!["definitions"]!.AsArray().Add(position);
+                        rawWound["consequences"]!["ownedEffectSources"]!["rootBindings"]!.AsArray().Add(new JsonObject
+                        { ["effectId"] = "effect_spiritual_position", ["definitionKey"] = "definition_spiritual_position" });
+                        rawWound["consequences"]!["entries"]!.AsArray().Add(new JsonObject
+                        { ["slot"] = 4, ["profileKey"] = "spiritual_position_burden", ["effectId"] = "effect_spiritual_position",
+                            ["readableSummary"] = "Повреждение нарушает духовную позицию." });
+                    }
                 }
+                rawWound["recovery"]!["currentStepProgress"] = initialProgress;
                 var seed = WoundPlayerProjectionTestData.InputInRealm("chaos_sea", rawWound);
                 var profile = AfterlifeActorMaterializationTestFixture.CreateCompleteProfile("player_soul", "player_soul", "Chaos Sea", 42);
                 profile.Remove(ActorMaterializationContract.PropertyName);
@@ -191,6 +207,8 @@ public sealed class AfterlifeWoundHealingLifecycleTests
                         await files.WriteFileAtomicAsync(lease, MortalItemIdentityState.StatePath,
                             MortalItemIdentityState.CreateEmptyRoot().ToJsonString());
                 }
+                if (beforeResourceBootstrap is not null)
+                    await beforeResourceBootstrap(files, profiles);
                 await CanonicalResourceQuartetTestFixture.CommitFreshBootstrapAsync(files,
                     new(Profiles: profiles, SoulState: soul));
                 if (stageRequest)

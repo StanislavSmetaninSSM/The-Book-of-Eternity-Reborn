@@ -9,7 +9,7 @@ using HealingFixture = BookOfEternityClient.Tests.AfterlifeWoundHealingLifecycle
 
 namespace BookOfEternityClient.Tests;
 
-public sealed class AfterlifeSpiritualNaturalRecoveryTests
+public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
 {
     [Fact]
     public async Task NaturalEffectExecutionKeepsTheOrdinaryAcceptedSourceReplacement()

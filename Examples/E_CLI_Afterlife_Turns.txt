@@ -13377,3 +13377,10 @@ because the mechanical cohort includes them. A lawful ordinary cost still applie
 natural recovery itself charges nothing. Same-cycle art progress does not replace
 the signed tier used for this tick. Mortal/catchup/conflict/helper treatment is outside
 this fragment. Unbound ordinary/Mortal graphs remain refused.
+
+Worked IV carry: a signed H5 owner with original IV progress7 gets6 points.
+Subtract IV threshold8 and retain III progress5/6: author the requested III graph,
+not an automatic subset of the old four roots. With original IV progress14, the
+same6 points traverse IV→III→II→I→healed; author all requested intermediate III,
+II and I graphs even though their generations retire before terminal healing.
+No treatment roll, extra cycle, extra charge or second terminal History is created.
