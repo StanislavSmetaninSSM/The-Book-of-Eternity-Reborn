@@ -27,29 +27,51 @@ public partial class ValidationService
                 ownsLease = true;
             }
             _fs.VerifyCurrentSessionOperation(lease);
-            var observed = PendingTurnSnapshotReader.ReadObservedCurrent(_fs, lease, new[] { AcceptedMechanicsPlan.WoundCommandPath });
-            if (!observed.Success || observed.Snapshot is not { } snapshot || observed.Evidence is not { } evidence)
-                throw new InvalidDataException("No authenticated original spiritual request.");
             var frameJson = await _fs.ReadFileAsync(lease, LiveTurnPreparationService.PendingTurnSnapshotManifestPath);
             var frame = StrictJsonAuthority.Deserialize<LiveTurnPendingSnapshotManifest>(frameJson!,
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true }, "spiritual graph interface manifest")!;
+            // The unauthenticated map only chooses the inventory to read. Actual
+            // observed original evidence below must independently select the family.
+            var observed = frame.Files.ContainsKey(AcceptedMechanicsPlan.WoundCommandPath)
+                ? PendingTurnSnapshotReader.ReadObservedCurrent(_fs, lease, new[] { AcceptedMechanicsPlan.WoundCommandPath })
+                : AfterlifeWoundHealingPlanner.ReadOriginalNaturalSource(_fs, lease);
+            if (!observed.Success || observed.Snapshot is not { } snapshot || observed.Evidence is not { } evidence)
+                throw new InvalidDataException("No authenticated original spiritual request.");
             if (frame.ProgressionControl is null || frame.SessionId != snapshot.SessionId || frame.RequestId != snapshot.RequestId ||
                 frame.TurnNumber != snapshot.TurnNumber || PendingTurnSnapshotAuthority.ComputeManifestPayloadHash(frame,
                     LiveTurnPreparationService.ManifestHashJsonOptions, static m => m.ManifestPayloadHash,
                     static (m, hash) => m.ManifestPayloadHash = hash) != snapshot.SnapshotToken)
                 throw new InvalidDataException("The original graph request lost its control binding.");
-            var sourceBytes = snapshot.ReadRequiredBytes(AcceptedMechanicsPlan.WoundCommandPath);
-            var request = StrictJsonAuthority.Deserialize<JsonObject>(CanonicalJsonUtf8.DecodeOneOptionalBom(sourceBytes),
-                new JsonSerializerOptions(), "original spiritual graph request")!;
-            var attempt = request["attempt"]!.AsObject();
-            var selection = new SpiritualSelfTreatmentSelection(attempt["woundId"]!.GetValue<string>(), attempt["woundFingerprint"]!.GetValue<string>());
-            if (!AfterlifeEntityProfileState.TryNormalizeEffectRealm(frame.ProgressionControl.CurrentRealm, out var realm) ||
-                !SpiritualSelfTreatmentRequestCodec.IsBound(request,
-                    new(snapshot.SessionId, snapshot.RequestId, snapshot.TurnNumber, frame.ProgressionControl), selection,
-                    realm, frame.ProgressionControl.NextChaosSeaTurnOrdinal))
-                throw new InvalidDataException("Interface graphs require the exact signed v2 family.");
+            JsonObject? request = null;
+            JsonObject? naturalProjection = null;
+            byte[]? sourceBytes = null;
+            if (snapshot.CoveredLogicalPaths.Contains(AcceptedMechanicsPlan.WoundCommandPath, StringComparer.Ordinal))
+            {
+                sourceBytes = snapshot.ReadRequiredBytes(AcceptedMechanicsPlan.WoundCommandPath);
+                request = StrictJsonAuthority.Deserialize<JsonObject>(CanonicalJsonUtf8.DecodeOneOptionalBom(sourceBytes),
+                    new JsonSerializerOptions(), "original spiritual graph request")!;
+                var attempt = request["attempt"]!.AsObject();
+                var selection = new SpiritualSelfTreatmentSelection(attempt["woundId"]!.GetValue<string>(), attempt["woundFingerprint"]!.GetValue<string>());
+                if (!AfterlifeEntityProfileState.TryNormalizeEffectRealm(frame.ProgressionControl.CurrentRealm, out var realm) ||
+                    !SpiritualSelfTreatmentRequestCodec.IsBound(request,
+                        new(snapshot.SessionId, snapshot.RequestId, snapshot.TurnNumber, frame.ProgressionControl), selection,
+                        realm, frame.ProgressionControl.NextChaosSeaTurnOrdinal))
+                    throw new InvalidDataException("Interface graphs require the exact signed self family.");
+            }
+            else
+            {
+                if (!PendingTurnSnapshotAuthority.HasValidatedRollbackSnapshotCoverage(frame, m => m.Files,
+                        m => m.SnapshotFileHashes, m => m.RollbackBaselineFiles,
+                        AfterlifeWoundTreatmentAuthority.SourcePaths.Append(AcceptedMechanicsPlan.WoundCommandPath).ToArray(), out _))
+                    throw new InvalidDataException("Natural interface lacks the actual signed ordinary source/absence coverage.");
+                var originalData = AfterlifeWoundTreatmentAuthority.PrepareNaturalSourceData(
+                    new(snapshot.SessionId, snapshot.RequestId, snapshot.TurnNumber, frame.ProgressionControl),
+                    AfterlifeWoundHealingPlanner.Continuation.ReadSignedSources(snapshot))
+                    ?? throw new InvalidDataException("Interface graphs have no authenticated ordinary natural cohort.");
+                naturalProjection = SpiritualHealingRequestProjection.CreateNatural(originalData);
+            }
             var live = await _fs.ReadFileBytesAsync(lease, AcceptedMechanicsPlan.WoundCommandPath);
-            if (live is not null && !live.AsSpan().SequenceEqual(sourceBytes))
+            if (live is not null && (sourceBytes is null || !live.AsSpan().SequenceEqual(sourceBytes)))
                 throw new InvalidDataException("The original healing request was replaced before interface admission.");
             if (graphs.ValueKind != JsonValueKind.Array)
                 throw new InvalidDataException("spiritualHealingGraphs must be an array.");
@@ -70,19 +92,34 @@ public partial class ValidationService
             {
                 async Task<byte[]?> ReadPublished(string path)
                 {
+                    if (publishedImages.TryGetValue(path, out var captured)) return captured.Bytes;
                     var bytes = await _fs.ReadFileBytesAsync(lease, path);
                     publishedImages.Add(path, new(bytes is not null, bytes));
                     return bytes;
                 }
                 var published = await ProgressionScheduleService.ReadPublishedSpiritualCycleCoreAsync(
                     frame.ProgressionControl, snapshot.SessionId, snapshot.RequestId, snapshot.TurnNumber,
-                    ReadPublished, snapshot.SnapshotToken, request)
-                    ?? throw new InvalidDataException("The consumed spiritual request has no matching published result.");
+                    ReadPublished, snapshot.SnapshotToken, request, naturalProjection);
+                if (published is null)
+                {
+                    if (naturalProjection is null)
+                        throw new InvalidDataException("The consumed spiritual request has no matching published result.");
+                    // Ordinary natural mode has no consumable request even before
+                    // publication. Its unpublished client baselines must still agree.
+                    foreach (var path in new[] { ProgressionScheduleService.SchedulePath,
+                                 WoundIdentityState.StatePath, WoundHistoryState.HistoryPath, EffectIdentityState.StatePath })
+                    {
+                        var actual = await ReadPublished(path);
+                        var before = snapshot.ReadRequiredBytes(path);
+                        if (actual is null || !actual.AsSpan().SequenceEqual(before))
+                            throw new InvalidDataException("Natural interface has neither its unpublished baseline nor its exact published result.");
+                    }
+                }
                 // Exact accepted bytes need no graph reconstruction. Unrelated legal interface normalization
                 // may change those bytes, so compare its closed graph DATA to the actual accepted stages.
-                if (new CanonicalBeforeImage(true, responseBytes).Fingerprint !=
+                else if (new CanonicalBeforeImage(true, responseBytes).Fingerprint !=
                     published.GraphResponseFingerprint)
-                    ValidatePublishedSpiritualGraphs(graphs, published, request);
+                    ValidatePublishedSpiritualGraphs(graphs, published);
             }
             var projected = JsonNode.Parse(root.GetRawText())!.AsObject();
             projected.Remove("spiritualHealingGraphs");
@@ -101,9 +138,9 @@ public partial class ValidationService
         {
             operationFailure = failure;
             issues.Add(new("output/interface_updates.json.spiritualHealingGraphs", IssueSeverity.Error,
-                "Spiritual healing graphs require the actual signed self-treatment request.",
+                "Spiritual healing graphs require the actual signed self or ordinary natural-cycle source.",
                 code: "spiritual_healing_interface_unbound", actual: failure.Message,
-                repairHint: "Keep the original attempt/dice. Supply only the requested stageRefs; never replace the retained source."));
+                repairHint: "Keep the original turn/cycle and any existing treatment attempt/dice. Supply only requested stageRefs; never replace the source."));
             return null;
         }
         catch (Exception failure)
@@ -118,12 +155,11 @@ public partial class ValidationService
         }
     }
 
-    private static void ValidatePublishedSpiritualGraphs(JsonElement rows, SpiritualHealingPersistedResult result,
-        JsonObject request)
+    private static void ValidatePublishedSpiritualGraphs(JsonElement rows, SpiritualHealingPersistedResult result)
     {
         var stages = result.Stages;
         var initial = stages.GroupBy(s => s.Before.WoundId).ToDictionary(g => g.Key, g => g.First().Before, StringComparer.Ordinal);
-        var fingerprint = request["requestFingerprint"]!.GetValue<string>();
+        var fingerprint = result.ProgramReference;
         var required = stages.Where(s => s.Kind != "heal" && s.After.Severity.Rank < initial[s.After.WoundId].Severity.Rank)
             .GroupBy(s => (s.After.WoundId, s.After.Severity.Rank)).Select(g => g.First()).ToDictionary(
                 s => SpiritualHealingRequestProjection.GraphRef(fingerprint, s.After.WoundId, s.After.Severity.Rank),

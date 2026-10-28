@@ -65,6 +65,8 @@ internal static partial class AfterlifeWoundTreatmentAuthority
         if (catalog.Issues.Count != 0 || !identities.IsValid || !history.IsValid ||
             history.State!.ValidateAgreement(identities.State!, catalog).Count != 0)
             throw new InvalidDataException("Natural recovery requires canonical original wound/identity/History agreement.");
+        if (members.Any(m => !identities.State!.TryGetEntry(m.Wound.WoundId, out var identity) || identity.CreatedAtTurn >= context.Turn))
+            throw new InvalidDataException("Natural recovery requires an original wound from an earlier completed turn.");
         if (!ProgressionScheduleService.TryBindPreparedSpiritualCycle(Root(ProgressionScheduleService.SchedulePath),
                 sources.Single(s => s.Path == EffectAcceptedTurnInputComposer.WorldTimePath).Image.Bytes,
                 Root(ShiningAbodeState.StatePath), control, realm, out var ordinal))

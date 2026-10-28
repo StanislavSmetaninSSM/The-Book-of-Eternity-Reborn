@@ -64,6 +64,21 @@ pending. The current all-null natural settlement check is not yet accepted as a
 completeness proof; it will use independent canonical identity/catalog/History,
 while original-bound callers retain mandatory actual source/token/projection.
 
+Natural I/completeness WIP, UNCOMPILED/UNRUN: bound I now authenticates actual
+self or natural source and retains complete current read images under its lease.
+Published natural calls supply actual token plus recomputed original projection;
+unpublished natural I requires unchanged client baselines. Independent settlement
+cohort comes from current canonical identity/catalog/History, including preexisting
+wounds healed THIS turn and strict persistent terminal-owner presence. It checks
+stage/actual-row bijection selected by independent cohort/event/turn before testing
+SourceFingerprint. Same-turn newborn exclusion requires actual creation History
+with this accepted event; future/reset chronology refuses. Original-bound tier/
+token proof remains separate; no new receipt/manifest/source witness file.
+Player notifications stay on the already authorized player-soul surface; adding
+NPC recovery mechanics does not introduce NPC notification/disclosure authority.
+Trim-active/terminal/row and owner-loss controls, cost/art/entity/graph interactions,
+GM/source guards, coherent SOURCE and fresh builds/actual GREEN still remain.
+
 Actual graph-bearing console caller on clean/compiled 926f70af: exact1/1 PASS,
 58.1503082s total/category50.2515017<180, complete/no skips/duplicates/timeout,
 both cleanup flags true. Real retained d20=7; final healed/rankI/progress0;

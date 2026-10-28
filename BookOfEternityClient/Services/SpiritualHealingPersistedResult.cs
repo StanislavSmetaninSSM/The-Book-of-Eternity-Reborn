@@ -24,6 +24,8 @@ internal sealed class SpiritualHealingPersistedResult : WoundTransitionResult
     public override string Kind => "spiritual_healing";
     internal string Mode => _root["mode"]!.GetValue<string>();
     internal bool IsNatural => Mode == "natural";
+    internal string ProgramReference => IsNatural ? _root["source"]!["sourceFingerprint"]!.GetValue<string>()
+        : _root["request"]!["requestFingerprint"]!.GetValue<string>();
     internal string GraphResponseFingerprint => _root["source"]!["graphResponseFingerprint"]!.GetValue<string>();
     internal IReadOnlyList<SpiritualHealingPublishedStage> Stages => _stages.Select(s => s with
     { Before = WoundAcceptedTurnData.CloneWound(s.Before)!, After = WoundAcceptedTurnData.CloneWound(s.After)! }).ToArray();

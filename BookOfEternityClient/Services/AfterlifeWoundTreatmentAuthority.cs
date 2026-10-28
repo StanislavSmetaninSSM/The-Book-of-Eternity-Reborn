@@ -202,6 +202,8 @@ internal static partial class AfterlifeWoundTreatmentAuthority
         }.Concat(sources.SelectMany(s => new[] { s.Path, s.Image.Fingerprint })));
 
         var members = SpiritualHealingRequestProjection.ReadNaturalMembers(catalog, carriers.AfterlifeProfiles, soul, realm);
+        if (members.Any(m => !identities.State!.TryGetEntry(m.Wound.WoundId, out var identity) || identity.CreatedAtTurn >= context.Turn))
+            return SourceRefuse("source_invalid");
         return new(new(wound, source, realm, ordinal, sourceFingerprint, carriers, effectCatalog, identities.State!, history.State!, catalog, members), null);
     }
 

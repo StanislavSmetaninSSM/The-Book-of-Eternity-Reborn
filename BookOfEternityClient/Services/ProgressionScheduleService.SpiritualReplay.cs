@@ -95,9 +95,58 @@ public partial class ProgressionScheduleService
         var identities = WoundIdentityState.Parse(await Text(WoundIdentityState.StatePath), WoundIdentityState.StatePath);
         if (catalog.Issues.Count != 0 || !identities.IsValid || history.State.ValidateAgreement(identities.State!, catalog).Count != 0)
             throw new InvalidDataException("Published spiritual cycle lost current wound/identity/history agreement.");
+        RequireCompleteSpiritualSettlementCohort(accepted.Result, history.State, identities.State!,
+            catalog, roots[WoundCarrierCatalog.AfterlifeProfilesPath], accepted.Root["binding"]!["realm"]!.GetValue<string>(), turn);
         foreach (var group in accepted.Result.Stages.GroupBy(s => s.After.WoundId))
             if (history.State.Transitions.Last(t => t.WoundId == group.Key).TransitionId != group.Last().TransitionId)
                 throw new InvalidDataException("A published spiritual result no longer describes the current wound cohort.");
         return accepted.Result;
     }
+
+    // Independent current completeness witness, not reconstruction of the historical
+    // start tier or permission to replace the required original on source-bound calls.
+    private static void RequireCompleteSpiritualSettlementCohort(SpiritualHealingPersistedResult result,
+        WoundHistoryState history, WoundIdentityState identities, WoundCarrierCatalog catalog,
+        JsonObject? profiles, string realm, int turn)
+    {
+        var stages = result.Stages;
+        var eventRef = stages[0].EventRef; // The strict result codec rederives this from the exact turn binding.
+        var expected = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var identity in identities.Entries.Where(e => e.Domain == "spiritual" && e.Realm == realm &&
+                     e.CarrierPath == WoundCarrierCatalog.AfterlifeProfilesPath))
+        {
+            var terminal = identity.TerminalTransitionId is null ? null : history.Transitions.SingleOrDefault(t =>
+                t.TransitionId == identity.TerminalTransitionId);
+            if (identity.Status != "active" && terminal?.Turn != turn) continue;
+            if (identity.CreatedAtTurn > turn)
+                throw new InvalidDataException("Spiritual settlement cannot skip a future or reset wound chronology.");
+            if (identity.CreatedAtTurn == turn)
+            {
+                var creation = history.Transitions.SingleOrDefault(t => t.WoundId == identity.WoundId && t.Kind == "create");
+                if (creation is null || creation.Turn != turn || creation.EventRef != identity.CreatedEventRef ||
+                    creation.EventRef != eventRef || creation.WoundTransitionOrdinal != 1)
+                    throw new InvalidDataException("Newborn exemption lacks this accepted turn's actual creation provenance.");
+                continue;
+            }
+            var owner = new WoundOwnerCoordinate(identity.Realm, identity.OwnerKind, identity.OwnerId, identity.CarrierPath);
+            var matching = (profiles?["profiles"] as JsonArray)?.OfType<JsonObject>()
+                .Where(p => WoundCarrierCollectionAuthority.AfterlifeProfileMatches(p, owner)).ToArray();
+            if (matching is not { Length: 1 } || !AfterlifeEntityProfileState.TryReadRequiredWoundArtTier(matching[0],
+                    AfterlifeSpiritualConflictState.SpiritualHealingArtId, out _, out _))
+                throw new InvalidDataException("Spiritual settlement lost a persistent original owner or its current canonical art.");
+            if (identity.Status == "active" && !catalog.Occurrences.Any(o => o.WoundId == identity.WoundId && o.Wound.Owner == owner))
+                throw new InvalidDataException("Spiritual settlement lost an active original wound.");
+            expected.Add(identity.WoundId);
+        }
+        if (!expected.SetEquals(stages.Select(s => s.Before.WoundId)))
+            throw new InvalidDataException("Spiritual settlement omitted an independently eligible original wound cohort.");
+        var primary = history.Transitions.Single(t => t.TransitionId == stages[0].TransitionId);
+        // Select from independent cohort/event/turn first. Filtering by an already
+        // matching SourceFingerprint would let altered omitted rows evade this check.
+        var actual = history.Transitions.Where(t => expected.Contains(t.WoundId) && t.Turn == turn && t.EventRef == eventRef).ToArray();
+        if (actual.Length != stages.Count || !actual.Select(t => t.TransitionId).ToHashSet(StringComparer.Ordinal)
+                .SetEquals(stages.Select(s => s.TransitionId)) || actual.Any(t => t.SourceFingerprint != primary.SourceFingerprint))
+            throw new InvalidDataException("Spiritual settlement stages do not biject with the independently witnessed cycle rows.");
+    }
+
 }
