@@ -40,12 +40,12 @@ internal static class SpiritualTreatmentParticipation
                     throw new InvalidDataException("Participation changes support only the current Chaos Sea Guardian.");
                 var proposal = row[ChangeProperty] as JsonObject ?? throw new InvalidDataException("Participation change must be a closed object.");
                 Closed(proposal, "schemaVersion", "operation", "healerId", "woundId", "conscious", "capable", "readableEvidence");
-                if (proposal["schemaVersion"]!.GetValue<int>() != 1 || Text(proposal, "operation") is not ("grant" or "revoke") ||
+                if (Scalar<int>(proposal, "schemaVersion") != 1 || Text(proposal, "operation") is not ("grant" or "revoke") ||
                     Text(proposal, "healerId") != "player_soul" || !ResourceMaterializationContract.IsExactIdentifier(Text(proposal, "woundId")) ||
                     string.IsNullOrWhiteSpace(Text(proposal, "readableEvidence")))
                     throw new InvalidDataException("Invalid Guardian participation proposal.");
-                var conscious = proposal["conscious"]!.GetValue<bool>();
-                var capable = proposal["capable"]!.GetValue<bool>();
+                var conscious = Scalar<bool>(proposal, "conscious");
+                var capable = Scalar<bool>(proposal, "capable");
                 if (Text(proposal, "operation") == "grant" && (!conscious || !capable))
                     throw new InvalidDataException("A grant requires conscious, capable and affirmative participation.");
                 var mirrored = changes.SingleOrDefault(c => c.TargetId == id);
@@ -147,6 +147,8 @@ internal static class SpiritualTreatmentParticipation
             ? result : throw new InvalidDataException("Participation profile requires an exact actor identity.");
     }
     private static string Text(JsonObject root, string key) => root[key]?.GetValue<string>() ?? throw new InvalidDataException("Missing participation " + key);
+    private static T Scalar<T>(JsonObject root, string key) => root[key] is JsonValue value && value.TryGetValue<T>(out var scalar)
+        ? scalar : throw new InvalidDataException("Participation requires a typed nonnull " + key);
     private static void Closed(JsonObject root, params string[] fields)
     {
         if (root.Count != fields.Length || fields.Any(f => !root.ContainsKey(f)))

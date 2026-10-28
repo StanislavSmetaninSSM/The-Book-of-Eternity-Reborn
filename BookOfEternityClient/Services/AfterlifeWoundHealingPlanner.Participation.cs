@@ -77,7 +77,9 @@ internal static partial class AfterlifeWoundHealingPlanner
                     _natural!.CycleOrdinal, _stages[0].TransitionId));
             }
             _participationSnapshot = snapshot; _participationOriginal = evidence; _participationSources = sources;
-            _participationChanges = changes; _participationOutcomes = outcomes;
+            _participationChanges = changes.Select(c => new SpiritualTreatmentParticipation.Change(c.TargetId,
+                c.Proposal.DeepClone().AsObject())).ToArray();
+            _participationOutcomes = outcomes;
             RequireCurrent(_files, _lease);
         }
 

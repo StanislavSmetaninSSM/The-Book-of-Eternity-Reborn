@@ -1,5 +1,12 @@
 # US4 safe self-treatment — active functional work, 2026-10-28
 
+Grouped producer source closure retains detached proposal copies in its owner,
+uses explicit typed nonnull proposal scalars, and records the actual raw-validation
+order and proposal-only fresh locality decode rationale. The ordinary outer path
+already refused malformed null DATA; no unhandled-exception defect is claimed.
+Same13/5 selection/old budgets; no new matrix or production capability beyond the
+issuer/witness candidate. Independent final narrow closure precedes its build.
+
 T108 coherent producer candidate now includes closed proposal/record/full v3
 natural witness, all-three raw representation and real ProjectCanonicalRoot
 record-omission/actorRef/mirror controls, raw stamp/current content/cross-version

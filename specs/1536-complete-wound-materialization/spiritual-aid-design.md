@@ -231,7 +231,8 @@ common carrier assembly and strict current published record agreement. V3 aid is
 still intentionally refused until its active-family block is implemented. V2
 self and no-participation natural remain actively written, not legacy fallback.
 
-Raw parsing sees all three original profile representations before projection.
+Raw validation inspects all three retained original response representations,
+independently of the already computed canonical projection.
 The existing exact actorId/actorRef identity is reused; command rows may obtain
 unchanged realm from the existing profile. Identical mirrored proposals coalesce
 as one DATA intent; conflicting mirrors refuse. Existing projection preserves an
@@ -244,6 +245,10 @@ existing locality calculation. Extra signed/current Guardian/resident reads occu
 only for participation proposals; required fresh original/source closing is not
 cached permission. No repeated catalog/control calculation, new receipt/cache or
 second publisher is added. Pure afterimage assembly performs no new file I/O.
+Core's earlier current.Guardians DTO carries no exact-byte read image/original
+evidence. Proposal admission therefore freshly authenticates both locality images
+and decodes its Guardian bytes once; byte equality lets the signed/current locality
+check share that parse. The older owner DTO is not substituted for this proof.
 Default non-participation paths only inspect property presence; no extra locality
 read or outcome clone. No runtime cost or speedup is claimed before verification.
 

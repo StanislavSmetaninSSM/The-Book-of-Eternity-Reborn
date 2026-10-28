@@ -59,6 +59,13 @@ public sealed class SpiritualTreatmentParticipationTests
         Assert.Throws<InvalidDataException>(() => SpiritualTreatmentParticipation.ReadChanges(current, previous));
         row[SpiritualTreatmentParticipation.ChangeProperty]!["operation"] = "revoke";
         Assert.Single(SpiritualTreatmentParticipation.ReadChanges(current, previous));
+        foreach (var field in new[] { "schemaVersion", "conscious", "capable" })
+        {
+            var malformed = Proposal(); malformed[field] = null;
+            row[SpiritualTreatmentParticipation.ChangeProperty] = malformed;
+            Assert.Contains("typed nonnull", Assert.Throws<InvalidDataException>(() =>
+                SpiritualTreatmentParticipation.ReadChanges(current, previous)).Message);
+        }
     }
 
     private static JsonObject Proposal() => new()
