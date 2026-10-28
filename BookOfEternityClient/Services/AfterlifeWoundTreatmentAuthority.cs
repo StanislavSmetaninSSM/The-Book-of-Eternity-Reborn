@@ -158,7 +158,7 @@ internal static partial class AfterlifeWoundTreatmentAuthority
         SpiritualHealingPreparedSource Source, string Realm, int CycleOrdinal,
         string SourceFingerprint, WoundCarrierCatalogInput Carriers, EffectCarrierCatalog Effects,
         WoundIdentityState Identities, WoundHistoryState History, WoundCarrierCatalog Catalog,
-        IReadOnlyList<SpiritualWoundRecoveryMember> NaturalMembers);
+        IReadOnlyList<SpiritualWoundRecoveryMember> NaturalMembers, JsonObject? AidWitness = null);
     internal sealed record SourceResult(SourceData? Data, string? IssueCode);
     private static SourceResult SourceRefuse(string suffix) => new(null, suffix);
 

@@ -4,7 +4,7 @@ using System.Text.Json.Nodes;
 namespace BookOfEternityClient.Services;
 
 /// <summary>Closed pre-snapshot source DATA. It is neither an accepted command nor publication authority.</summary>
-internal static class SpiritualSelfTreatmentRequestCodec
+internal static partial class SpiritualSelfTreatmentRequestCodec
 {
     private const string Kind = "spiritual_self_treatment_request";
 

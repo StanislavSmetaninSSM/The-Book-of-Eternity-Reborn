@@ -1,5 +1,16 @@
 # US4 safe self-treatment — active functional work, 2026-10-28
 
+Aid request codec WIP (UNCOMPILED/UNRUN) extends the existing active codec with
+explicit v3 neutral spiritual_treatment_request/mode=aid. Actual healer/target,
+full accepted record/content/grant-result fingerprints and source/cycle enter the
+attempt/request identity; missing/cross-family payload cannot downgrade to self.
+V2 self writer remains unchanged. This is not active staging yet: grant read must
+remain before BOTH BuildControl and input/turn_request overwrite. The initial
+reader requires the actual immediately preceding accepted grant turn (nextTurn-1);
+intervening non-cycle turns are not claimed by this first journey. Still remaining:
+shared retained draw staging, original B admission/result and existing Engine/UI,
+meaningful negatives and synchronized aid GM projection before SOURCE/build.
+
 Aid reader WIP is now connected to the existing strict published reader's parsed
 DATA export (UNCOMPILED/UNRUN). Actual pre-control read proves the prior real
 accepted tuple/control/projection, full v3 record+digest, current full cohort,
