@@ -182,6 +182,43 @@ public sealed class SpiritualHealingGuidedContractTests : IDisposable
         Assert.Throws<InvalidDataException>(() => SpiritualSelfTreatmentSelection.Parse(root));
     }
 
+    [Fact]
+    public void GuardianHelpHasAClosedOfferExampleAndAnExplicitPlayerConfirmedSelection()
+    {
+        const string marker = "spiritual_guardian_help_v4";
+        foreach (var file in new[] { "OtherGuides/Wound_Materialization_Contract.md", "OtherGuides/Afterlife_Contract_Matrix.md",
+            "CLI_API_Specification.md", "Rules/Block_CLI_Operations.txt", "TaskGuides/CLI_Step_Main.txt", "BookOfEternityClient/game_master_daemon.ps1" })
+            Assert.Contains(marker, File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, file)));
+        var entry = Assert.Single(ExampleValidationManifest.Load().EffectMaterializationCoverage, c => c.ContractId == marker);
+        var text = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "Examples", entry.File));
+        Assert.All(entry.RequiredText, token => Assert.Contains(token, text));
+        var start = text.IndexOf(marker, StringComparison.Ordinal);
+        var fence = text.IndexOf("```json", start, StringComparison.Ordinal) + "```json".Length;
+        var end = text.IndexOf("```", fence, StringComparison.Ordinal);
+        var proposal = JsonNode.Parse(text[fence..end])!.AsObject();
+        var previous = new JsonObject { ["profiles"] = new JsonArray(new JsonObject
+        { ["actorType"] = "guardian", ["actorId"] = "guardian_example", ["realm"] = "Chaos Sea" }) };
+        var response = previous.DeepClone().AsObject();
+        response["profiles"]![0]![SpiritualTreatmentParticipation.ChangeProperty] = proposal;
+        var parsed = Assert.Single(SpiritualTreatmentParticipation.ReadChanges(response, previous));
+        Assert.Equal("offer", parsed.Proposal["operation"]!.GetValue<string>());
+        Assert.Equal("player_soul", parsed.Proposal["targetId"]!.GetValue<string>());
+        Assert.False(parsed.Proposal.ContainsKey("playerConsent"));
+        var candidate = Selection with { Aid = new("guardian_example", "player_soul", "sha256:" + new string('b', 64)) { ReceiveAid = true } };
+        Assert.Equal(candidate, SpiritualSelfTreatmentSelection.Parse(candidate.ToJson()));
+        Assert.False(candidate.Aid!.PlayerConfirmed); // These are menu comparison DATA, not an issued event.
+        Assert.Equal(WoundApplicationService.ReceiveAidActionText, WoundApplicationService.ActionFor(candidate));
+        var unknown = candidate.ToJson(); unknown["playerConsent"] = true;
+        Assert.Throws<InvalidDataException>(() => SpiritualSelfTreatmentSelection.Parse(unknown));
+        var crossVersion = candidate.ToJson(); crossVersion["schemaVersion"] = 3;
+        Assert.Throws<InvalidDataException>(() => SpiritualSelfTreatmentSelection.Parse(crossVersion));
+        // A detached marker can be round-tripped as DATA; only actual ConfirmAsync
+        // plus one-shot/queued Engine binding issues the real player action.
+        var confirmed = candidate with { Aid = candidate.Aid with { PlayerConfirmed = true } };
+        Assert.Equal(confirmed, SpiritualSelfTreatmentSelection.Parse(confirmed.ToJson()));
+        Assert.NotEqual(candidate, confirmed);
+    }
+
     public void Dispose()
     {
         if (Directory.Exists(_root)) Directory.Delete(_root, recursive: true);

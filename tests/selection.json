@@ -2,6 +2,34 @@
   "schemaVersion": 1,
   "selections": [
 {
+  "category": "spiritual-guardian-help-guidance",
+  "reason": "Closed current provider-offer worked example and explicit receive_aid candidate/confirmed selection, no GM consent, cross-version rejection; actual confirmation/source authority is in backend and Engine categories.",
+  "contracts": [
+    "#1536 T108 free private Guardian-to-player aid, real player confirmation and shared original/publication"
+  ]
+},
+{
+  "category": "spiritual-guardian-help-publication",
+  "reason": "Actual natural provider-offer result4 on healer Guardian for player wound, unconfirmed queue/stage no-draw, real shared confirmation, GuardianH3/playerH0, fresh source/condition refusals, same request4 through repair/common publication/historical omission/I/replay.",
+  "contracts": [
+    "#1536 T108 free private Guardian-to-player aid, real player confirmation and shared original/publication"
+  ]
+},
+{
+  "category": "spiritual-guardian-help-console",
+  "reason": "Actual two-turn same-Explorer Engine offer43/cleanup/player cancellation/confirmation/aid44; real Guardian Brain/journal, retained request4, GuardianH3/playerH0, computed graphs/effects/History/onecycle/no private charge.",
+  "contracts": [
+    "#1536 T108 free private Guardian-to-player aid, real player confirmation and shared original/publication"
+  ]
+},
+{
+  "category": "spiritual-guardian-help-browser",
+  "reason": "Actual Engine offer43 then cleanup and real shared browser cancel/confirm/queued original aid44; no GM player consent, exact request4/binding, GuardianH3/playerH0 and wound/effects/History/onecycle/no private charge.",
+  "contracts": [
+    "#1536 T108 free private Guardian-to-player aid, real player confirmation and shared original/publication"
+  ]
+},
+{
   "category": "spiritual-guardian-offer-contract",
   "reason": "Next T108 reverse slice needs a provider offer distinct from target consent. Existing ReadChanges must admit the closed schema2 Guardian offer for player wound, without GM-issued player consent. RED-only singleton before shared implementation; no Main/Support rebuild.",
   "contracts": ["#1536 T108 current private free Guardian-to-player aid, real guided player confirmation"]

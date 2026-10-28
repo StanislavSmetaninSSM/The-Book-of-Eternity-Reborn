@@ -1597,7 +1597,7 @@ remains legal; replacing a stageRef or its accepted consequence content is refus
 
 When destinationGraphs is empty, omit spiritualHealingGraphs (or use an empty
 array); no graph is needed for rank-I terminal healing. Graphs-only interface payload
-is legal only for the actual signed self-v2, explicit spiritual_guardian_aid_v3 or authenticated natural family below;
+is legal only for the actual signed self-v2, explicit spiritual_guardian_aid_v3 / spiritual_guardian_help_v4 or authenticated natural family below;
 unbound ordinary/Mortal payloads keep their prior refusal. Always include a fresh ISO timestamp. Write ordinary narrative,
 mandatory NPC Scope reasoning and the progression report from actual progressionControl.
 Never recreate consumed request/report or alter accepted output on replay. Retained
@@ -1737,3 +1737,52 @@ only a complete root actually contributed by that private validated plan. Raw
 profile currency/art mirrors cannot grant player currency or healing capability;
 exact precommit source bytes and signed evidence remain frozen. This is client
 composition, with no new GM field or permission.
+
+
+spiritual_guardian_help_v4 — current Guardian helps the player after real confirmation
+
+This is FREE PRIVATE help in the current safe Chaos Abode, not a public/paid US6
+service. The player asks the exact visible current Guardian for help with a known
+active I–IV player spiritual wound. GM may express the Guardian's willingness and
+current conscious/capable facts, NEVER player consent. On that existing Guardian
+profile only, author closed spiritualTreatmentParticipationChange schema2:
+kind=provider_offer, operation=offer|revoke, targetId=player_soul, stable woundId,
+providerConscious/providerCapable/targetConscious/targetCapable and readableEvidence.
+All four facts must be true for offer. Healer identity comes from the exact
+Guardian profile/current locality; do not supply client stamps or playerConsent.
+All three profile representations use the same rule; mirrored exact intent is one.
+
+The actual ordinary natural owner atomically commits the Guardian's record2 plus
+FULL record/content digest in natural result4/History with the PLAYER wound's
+natural tick, real binding/primary row and next eligible cycle. The Guardian need
+not be wounded. Raw/same-turn/failed/rolled-back offers authorize no treatment.
+A changed player wound fingerprint from that natural tick does not invalidate a
+stable-wound offer; later selection binds the fresh exact wound fingerprint.
+
+After normal Engine cleanup, /лечить lists Self first and shows the available
+Guardian method for the player's wound. Menu receive_aid selection is unconfirmed;
+only actual console confirmation or browser confirm_wound_treatment plus the
+existing ConfirmAsync/one-shot/queued binding issues player_target_confirmed.
+Cancellation creates no treatment request/draw/cycle. A serialized marker or GM
+text is comparison DATA, not consent authority. Never write confirmation for the
+player or manufacture an original/pending entry.
+
+Before control/input writes or draw the client proves actual prior offer result,
+exact next cycle, both actors' current condition, player wound and Guardian art/
+locality. Active spiritual_treatment_request v4 has mode=aid,
+direction=guardian_to_player, playerConfirmation=player_target_confirmed and exact
+healer/target/participation/activeSource/retained attempt/dice. Preserve it. GM reads
+the actual turn_request.spiritualHealing schema4/direction and authors ONLY its
+requested spiritualHealingGraphs through the existing closed grammar. Guardian H
+controls active math/roll effects; player H controls natural recovery. One active
+then ONE full natural pass, one safe cycle and no private treatment charge.
+
+Current revocation/move/condition/capability drift refuses before entropy or
+publication; after a draw keep the SAME retained request/dice through repair.
+Settled result4 resolves the actual historical offer, never renewed live consent
+or the old grant schedule. Existing v2 self/plain natural and v3 player→Guardian/
+consent-natural are STILL produced closed forms; cross-version fields, v4 missing
+confirmation and mixed active+new offers refuse. Use actual Guardian Brain with
+canonical name and guardianThoughtJournalUpdates, keeping locality roots unchanged.
+No Mortal authority, unwilling/conflict, helpless, Shining helper or public/paid
+permission is added. See the two-turn worked example and manifest.

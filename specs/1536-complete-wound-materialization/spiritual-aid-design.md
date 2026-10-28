@@ -408,6 +408,9 @@ process recovery and existing Mortal/T609/DFR/Windows limits remain open.
 
 ### Reverse implementation checklist (inline, existing tracked plan)
 
+Source/test/GM steps below are now written, not accepted GREEN. Compilation and
+all later assertions remain UNRUN; the first codec RED is independently accepted.
+
 - [x] Add `GuardianProviderOfferNamesThePlayerWoundWithoutIssuingPlayerConsent`
   to SpiritualTreatmentParticipationTests. It calls the existing ReadChanges and
   CreateOutcome APIs with a schema2 offer on a preexisting Guardian profile;

@@ -13510,3 +13510,49 @@ only a complete root actually contributed by that private validated plan. Raw
 profile currency/art mirrors cannot grant player currency or healing capability;
 exact precommit source bytes and signed evidence remain frozen. This is client
 composition, with no new GM field or permission.
+
+
+spiritual_guardian_help_v4 — offered private help, real player decision, one aid cycle
+
+Turn43 / cycle10: player asks the current Хранитель целостности for free private
+help with the PLAYER'S spiritual III0 wound. Guardian H3, player H0, both conscious
+and capable. Guardian may be unwounded. GM authors only this nested proposal on
+its already existing exact current Guardian profile:
+```json
+{"schemaVersion":2,"kind":"provider_offer","operation":"offer","targetId":"player_soul","woundId":"wound_player_example","providerConscious":true,"providerCapable":true,"targetConscious":true,"targetCapable":true,"readableEvidence":"Хранитель добровольно готов помочь сознательной душе бесплатно; решение принять помощь остаётся за игроком."}
+```
+No healerId/client binding is supplied in this proposal; the actual enclosing
+Guardian and current Abode determine identity. No playerConsent/playerConfirmation
+field is allowed. Current plain upsert cannot issue an offer. Full natural common
+publication commits PLAYER III0→III1 at signedH0, Guardian record2, FULL record/content
+digest in natural result4/History, primary row, accepted cycle10/eligible11 together.
+Failed or rolled-back publication leaves neither accepted offer nor witness.
+Use first-person guardianThoughtJournalUpdates with the canonical-name Brain;
+do not write musings into guarded locality roots.
+
+Actual Engine cleanup removes transient request/report/manifest. Player opens
+/лечить: Self first, own wound, then the current Guardian method with readable
+context. The menu's receive_aid selection has confirmation=required. Cancel means
+NO request/draw/cycle. Only actual guided confirmation returns
+player_target_confirmed through console one-shot action/generation or browser
+queued binding. This is the player's action, NEVER GM-authored consent.
+
+Turn44 / cycle11: prior full witness and current scope/conditions/art/wound are
+proved BEFORE control/draw. Client request4/result4 use
+mode=aid/direction=guardian_to_player, playerConfirmation=player_target_confirmed,
+healerGuardian/targetPlayer and frozen attempt/dice. For d20=14, GuardianH3 total20
+vs difficulty16 changes III1→II1; PLAYER naturalH0 adds1, final II2. Giving the
+Guardian's H3 to player natural recovery would be wrong. Other actual rolls use
+the actual requested intermediate destinationGraphs even when they end healed.
+
+GM authors exactly requested weaker graphs under spiritualHealingGraphs using
+PLAYER target, original legal sources and exact stageRefs; do not copy prior
+Guardian wound graph targets or opaque IDs. Preserve the same source/attempt/dice,
+complete profile projection and owned locality normalization. One active pass,
+ONE natural pass/aid cycle, no private-treatment charge, exact effects and History.
+Missing graph repairs retain the attempt; revocation/move/condition drift refuses,
+never rerolls. Settled replay resolves historical offer, not live consent.
+V4 missing confirmation and cross-version payloads fail; active self v2, plain
+natural v2, v3 target consent/player→Guardian aid remain actively produced closed
+contracts. No public/paid US6, other healers, unwilling/conflict/helpless/Shining,
+Mortal, provider transport or fresh-process recovery qualification is claimed.

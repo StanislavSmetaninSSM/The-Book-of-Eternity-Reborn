@@ -112,6 +112,13 @@ public sealed class SpiritualTreatmentParticipationTests
         Assert.False(record.ContainsKey("playerConsent"));
         Assert.False(record.ContainsKey("playerConfirmation"));
         SpiritualTreatmentParticipation.ValidateRecord(record);
+        foreach (var property in new[] { "profiles", "afterlifeEntityProfiles", "afterlifeEntityProfileUpdates" })
+        {
+            var mirrored = new JsonObject { [property] = current["afterlifeEntityProfileUpdates"]!.DeepClone() };
+            Assert.Single(SpiritualTreatmentParticipation.ReadChanges(mirrored, previous));
+            var projected = AfterlifeEntityProfileState.ProjectCanonicalRoot(mirrored, previous);
+            Assert.Equal("provider_offer", projected["profiles"]![0]![SpiritualTreatmentParticipation.ChangeProperty]!["kind"]!.GetValue<string>());
+        }
         proposal["playerConsent"] = true;
         Assert.Throws<InvalidDataException>(() => SpiritualTreatmentParticipation.ReadChanges(current, previous));
         proposal.Remove("playerConsent");

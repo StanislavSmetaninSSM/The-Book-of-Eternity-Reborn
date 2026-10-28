@@ -621,6 +621,7 @@ public sealed partial class ExampleDocumentationValidationTests
         {
             ["spiritual_treatment_participation_v1"] = "E_CLI_Afterlife_Turns.txt",
             ["spiritual_guardian_aid_v3"] = "E_CLI_Afterlife_Turns.txt",
+            ["spiritual_guardian_help_v4"] = "E_CLI_Afterlife_Turns.txt",
             ["spiritual_natural_recovery_v2"] = "E_CLI_Afterlife_Turns.txt",
             ["spiritual_self_treatment_v2"] = "E_CLI_Afterlife_Turns.txt",
             ["wound_player_status_readonly_v1"] = "E_CLI_Wound_Materialization.txt",

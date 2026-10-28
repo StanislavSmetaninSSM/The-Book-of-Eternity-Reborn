@@ -14504,7 +14504,9 @@ close full source-action/terminal/pending contracts or any top-level story task.
   provider-offer on Guardian profile + full v4 natural witness, explicit receive_aid
   selection confirmed by actual console/browser guided flow, v4 request/result,
   same Stage/B/History/common publication and separate Guardian H/player natural H.
-  Design is recorded; implementation and runtime are UNWRITTEN/UNRUN. GM facts
+  Design dd41 is accepted; codec RED ee738 is independently accepted. Shared
+  producer/stage/result/History/UI and finite tests/GM sync are now written but
+  UNCOMPILED/UNRUN; SOURCE/PREP and addressed qualification follow. GM facts
   cannot issue player consent. Other/helpless/conflict/Shining helper routes remain open.
 
 ### GM contract synchronization

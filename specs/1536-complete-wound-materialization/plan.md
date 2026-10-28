@@ -1,5 +1,33 @@
 # Next T108 slice — private current Guardian → player, 2026-10-28
 
+Coherent reverse source/tests/GM sync are written, all UNCOMPILED/UNRUN beyond the
+accepted codec RED. Proposed finite first-GREEN selection is 17 cases / 11
+descriptors / 10 categories: cheap offer-contract1 + new guidance1 + existing
+participation-contract6 (including full example inventory), then existing issuer2,
+existing player→Guardian backend1, reverse backend1, affected consumed SELF
+graphs1, existing player→Guardian console2, reverse console1 and reverse browser1.
+Budgets remain 60 s for cheap categories, 120 s for issuer/backend/SELF, 180 s for
+actual caller categories. Existing four helper controls/FS are unchanged and
+retain their earlier8a receipt. Prior17 is not automatically relabelled current.
+
+Selection reasoning: the new parser branch and enclosing record owner affect
+both participation forms/all raw surfaces, requiring cheap old+new controls and
+actual old issuer atomic rollback. The generalized actor/source/result/history
+branch needs both active directions plus smallest consumed SELF parser/I consumer.
+Shared choice/one-shot flow and callback fixture default need existing console2;
+new queued browser receives actual confirmed selection/request4. Unchanged browser
+phase-refusal/CSWH/full ordinary/Shining machinery has no independent new route or
+source predicate and is not automatically repeated. Independent SOURCE/PREP must
+assess this exact selection before one owning Integration/MainSupport build and
+Unit refsfalse, official combined PlanOnly and the ordered actual categories.
+
+Optimization: provider/player/catalog/history/effect/locality DATA reuse the same
+existing operation and source18; no new roots/cache/permission owner or second
+natural pass. Record schema/cross-version checks add bounded scalar work. Current
+locality/original/readback closures remain fresh. Test helpers share existing
+canonical initial/Engine/lore setup with defaults preserved; expensive runtimes
+are reserved for actual console/browser journeys. No measured speedup claimed.
+
 Shared reverse production WIP is now connected but UNCOMPILED/UNRUN: closed
 schema2 offer and enclosing Guardian record ownership; v4 natural/request/result;
 confirmed receive_aid selection/queue/staging gate; actual Guardian healer + player

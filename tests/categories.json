@@ -2,6 +2,110 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "spiritual-guardian-help-guidance",
+  "responsibility": "Closed current provider-offer worked example and explicit receive_aid candidate/confirmed selection, no GM consent, cross-version rejection; actual confirmation/source authority is in backend and Engine categories.",
+  "excludes": "Private free current Chaos Guardian only. Controlled native-shaped GM; no paid/public US6, other helpers, conflict/helpless/Shining, provider transport/fresh-process recovery or held Mortal/DFR/Windows qualification.",
+  "changeHints": [
+    "BookOfEternityClient/Services/SpiritualTreatmentParticipation.cs",
+    "BookOfEternityClient/Services/AfterlifeWoundTreatmentAuthority.Aid.cs",
+    "BookOfEternityClient/Services/WoundApplicationService.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.SpiritualHealingGuidedContractTests.GuardianHelpHasAClosedOfferExampleAndAnExplicitPlayerConfirmedSelection"
+      ]
+    }
+  ]
+},
+{
+  "id": "spiritual-guardian-help-publication",
+  "responsibility": "Actual natural provider-offer result4 on healer Guardian for player wound, unconfirmed queue/stage no-draw, real shared confirmation, GuardianH3/playerH0, fresh source/condition refusals, same request4 through repair/common publication/historical omission/I/replay.",
+  "excludes": "Private free current Chaos Guardian only. Controlled native-shaped GM; no paid/public US6, other helpers, conflict/helpless/Shining, provider transport/fresh-process recovery or held Mortal/DFR/Windows qualification.",
+  "changeHints": [
+    "BookOfEternityClient/Services/SpiritualTreatmentParticipation.cs",
+    "BookOfEternityClient/Services/AfterlifeWoundTreatmentAuthority.Aid.cs",
+    "BookOfEternityClient/Services/WoundApplicationService.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.AfterlifeSpiritualNaturalRecoveryTests.ConfirmedGuardianOfferUsesGuardianArtAndPlayerNaturalTierThroughPublicationAndReplay"
+      ]
+    }
+  ]
+},
+{
+  "id": "spiritual-guardian-help-console",
+  "responsibility": "Actual two-turn same-Explorer Engine offer43/cleanup/player cancellation/confirmation/aid44; real Guardian Brain/journal, retained request4, GuardianH3/playerH0, computed graphs/effects/History/onecycle/no private charge.",
+  "excludes": "Private free current Chaos Guardian only. Controlled native-shaped GM; no paid/public US6, other helpers, conflict/helpless/Shining, provider transport/fresh-process recovery or held Mortal/DFR/Windows qualification.",
+  "changeHints": [
+    "BookOfEternityClient/Services/SpiritualTreatmentParticipation.cs",
+    "BookOfEternityClient/Services/AfterlifeWoundTreatmentAuthority.Aid.cs",
+    "BookOfEternityClient/Services/WoundApplicationService.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 3,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.ConsoleGuardianHelpRequiresActualPlayerConfirmationThenHealsThePlayer"
+      ]
+    }
+  ]
+},
+{
+  "id": "spiritual-guardian-help-browser",
+  "responsibility": "Actual Engine offer43 then cleanup and real shared browser cancel/confirm/queued original aid44; no GM player consent, exact request4/binding, GuardianH3/playerH0 and wound/effects/History/onecycle/no private charge.",
+  "excludes": "Private free current Chaos Guardian only. Controlled native-shaped GM; no paid/public US6, other helpers, conflict/helpless/Shining, provider transport/fresh-process recovery or held Mortal/DFR/Windows qualification.",
+  "changeHints": [
+    "BookOfEternityClient/Services/SpiritualTreatmentParticipation.cs",
+    "BookOfEternityClient/Services/AfterlifeWoundTreatmentAuthority.Aid.cs",
+    "BookOfEternityClient/Services/WoundApplicationService.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 3,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.BrowserGuardianHelpRequiresActualPlayerConfirmationThenHealsThePlayer"
+      ]
+    }
+  ]
+},
+{
   "id": "spiritual-owned-locality-beforeimage",
   "responsibility": "Cheap actual CSWH ordinary ExactPrevious late-cut: second GuardOnly baseline read injects foreign bytes or creates an absent target after its exact check; helper must pin the declared beforeimage into the real trusted publisher, retain foreign state/refuse, plus existing shared lease/rollback controls.",
   "excludes": "No new guard-only atomic protocol or original-recorder migration, no world/actor fixture, synthetic hook API, Mortal/DFR/Windows qualification. Initial RED deliberately links unchanged qualified BA Main helper; normalization WIP is not run by this unit selection.",

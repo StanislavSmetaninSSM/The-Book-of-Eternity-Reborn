@@ -2,6 +2,31 @@
   "version": 1,
   "effectMaterializationCoverage": [
 {
+  "contractId": "spiritual_guardian_help_v4",
+  "file": "E_CLI_Afterlife_Turns.txt",
+  "statePath": "current healer Guardian provider offer2 -> natural result4 -> actual confirmed player-target aid4",
+  "responseSurface": "closed provider_offer proposal on existing Guardian profile and exact requested spiritualHealingGraphs",
+  "realms": [
+    "Chaos Sea"
+  ],
+  "description": "Free private Guardian-to-player help with actual player guided confirmation and separate healer art/player natural tier.",
+  "validationKind": "focused-fragment",
+  "focusedFragmentReason": "SpiritualHealingGuidedContractTests parses the nested proposal using the production codec and closed receive_aid selection; actual two-turn publication/console/browser is separate.",
+  "coverageLimit": "No standalone DATA permission, paid/public US6, combat/helpless/Shining, external provider or fresh-process proof.",
+  "requiredText": [
+    "spiritual_guardian_help_v4",
+    "provider_offer",
+    "player_target_confirmed",
+    "FULL record/content",
+    "III0→III1",
+    "III1→II1",
+    "II2",
+    "guardianThoughtJournalUpdates",
+    "ONE natural pass",
+    "V4 missing confirmation"
+  ]
+},
+{
   "contractId": "spiritual_guardian_aid_v3",
   "file": "E_CLI_Afterlife_Turns.txt",
   "statePath": "current Guardian accepted participation to next-cycle client request3/result3 aid",
