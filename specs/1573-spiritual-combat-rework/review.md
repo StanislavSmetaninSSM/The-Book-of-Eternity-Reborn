@@ -3,7 +3,7 @@
 ## Текущий checkpoint: принятый допуск ручной покупки
 
 2026-10-29, T041, baselineb0ec03a9d38e2d1baead22d5ad77614482a1fcd6,
-branch `story/golden-mask-backstory-20261025`. WIP: отдельное Sol6.1/xhigh review ожидается.
+branch `story/golden-mask-backstory-20261025`. Принятое правило записано и проверено.
 Автор явно принял base<C для четырёх статов, последний частичный пункт,
 исключение Favor и полные auto. Section5.11 и актуальные spec/модель/приёмка
 синхронизированы; ceil(n/5) не объявлено принятым. T001 сохранён.
@@ -12,8 +12,17 @@ Bridge consistency scope→plan→T041 до проверки примеров; �
 Parent проверяет простой2B<40+D и граничные ΔM; это арифметика документа,
 не новый игровой probe. Дешёвый предикат не требует кэша; DATA/authority границы
 сохранены. Game/build/runtime/600s tests/clean restore UNRUN, source не менялся.
-Raw diagnostics не созданы, чужой untracked obj не тронут. Следующий шаг —
-review/remote checkpoint и предъявление зафиксированного правила автору.
+Raw diagnostics не созданы, чужой untracked obj не тронут.
+Отдельный GPT-6.1 Sol/xhigh reviewer review_manual_admission1573 проверил
+b0ec03a9..fa104cf1c550acb55b74b5306114578f80420506 и дополнительную синхронизацию
+актуальной повестки spec в working tree. Замечаний нет; пять примеров и границы
+partial/auto/Favor/bulk/equipment/authority подтверждены. `git diff --check` PASS.
+WIPfa104cf1c remote SHA и шесть exact-ref blob readbacks совпали с локальным Git.
+Final checkpoint включает эту запись и повестку; проверяется по полному SHA
+после push, clean restore UNRUN. Следующий шаг — предъявление зафиксированного
+правила и выбор следующего блока дизайна. Для небольшого docs-only решения
+использован routine Sol6.1/xhigh, без дополнительного source audit/численного
+консультанта; измеренной экономии времени или токенов не заявляем.
 
 ## Текущий checkpoint: принятая культивация и ручная специализация
 
