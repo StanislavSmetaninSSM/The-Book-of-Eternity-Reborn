@@ -1,5 +1,35 @@
 # Проверка проекта #1573
 
+## Текущий checkpoint: принятая культивация и ручная специализация
+
+2026-10-29, T038–T040, baseline36fcfadb1ec57878c6a95705b020df27324d60ed,
+branch `story/golden-mask-backstory-20261025`. WIP: independent review ожидается.
+Автор принял E5+2r/R100+25r и заказал пересчитать ручные5n. Результат5.10:
+ceil(n/5) предлагается, не утверждён. Культивация/D/M/+3/+5/Favor не изменены;
+насыщение/порядок покупки/денежная окупаемость раскрыты. Нет новых gates/валют.
+
+Продолжается brainstorming + Spec Kit bridge в существующей feature: scope
+spec→plan→T038–T040 согласован до арифметического probe. Полные setup-plan/tasks
+не перезапускались; production T001 остаётся gate. Requesting-code-review и
+verification-before-completion применяются к цельному блоку документов.
+
+Parent exact integer/rational calculations через functions.exec (JS V8): пять
+начальных состояний×3 тарифа (ceil(n/5),ceil(n/10),5n), три partial comparisons,
+насыщение от прошлых покупок/реликвий, start10, три near-threshold сравнения,
+before/after R auto180/193, Favor1000/2800/4200 и пакеты1280/1434.78.
+5000 единичных цен проверены через prefix S,264 разбиения покупки;6000 случаев
+(r0…999×start5…10) подтверждают доступность14 ручных пунктов за бюджет полного
+R-ранга и6000 случаев подтверждают +13 к цене13 пунктов после auto+5.
+Отдельная Sol6.1/high консультация consult_manual_price1573 дала те же цены/M,
+рекомендовала ceil(n/5) вместо более щедрого ceil(n/10); это не независимое review.
+Входы/формулы/таблицы в5.10 воспроизводимы без сырых журналов.
+
+Оптимизация: S/M тривиальны, новый кэш не нужен; stable profiles/definitions через
+существующий whole-operation service, current wallet/revision/phase/authority свежие.
+Никаких performance claims без измерения. Game/build/runtime tests/600s recovery/
+clean restore UNRUN: менялись только спецификации. Raw diagnostics не созданы,
+чужой untracked obj не тронут. Следующий шаг — независимое review и предъявление.
+
 ## Текущий checkpoint 2026-10-29: реальные Перья и доступная культивация
 
 Task1573/T035–T037, branch `story/golden-mask-backstory-20261025`, baseline
