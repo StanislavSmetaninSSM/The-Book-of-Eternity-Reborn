@@ -14335,9 +14335,11 @@ close full source-action/terminal/pending contracts or any top-level story task.
   spiritual-combat-healing-design.md (DESIGN ACCEPT c3caf534c): player self treatment in actual active
   direct Chaos duel, counterable typed operation, exact original die/art/target,
   registered OD spend and C2/C4 wound/effects/History, without natural/safe-cycle
-  publication. First existing-API cost singleton is written, UNCOMPILED/UNRUN;
-  independent SOURCE/PREP precedes Unit-only literal1 RED/60. No combat production
-  change, enum/cost-only completion or wider-target claim.
+  publication. Genuine existing-API RED compiled3babe633d: exact1 completeFAIL
+  missing healing definition at line14 after pressure precondition,13.0227590s,
+  category5.0967248<60, both cleanup true, no timeout/duplicate. Later costs and
+  passive assertions are unreached; full checkpoint in plan. No enum/cost-only
+  completion or wider-target claim.
 - [ ] T096 [P] [US4] Add RED one safe-cycle session, no OD, self no currency/item, one attempt per wound/cycle, active-treatment-then-natural-recovery ordering, failed-attempt world advance, and duplicate suppression tests in `BookOfEternityClient.Tests/SpiritualHealingSafeCycleTests.cs`
 - [ ] T097 [P] [US4] Add RED `1+tier`, I=2/II=4/III=6/IV=8 thresholds, overflow, worsening reset, unsafe suppression, tier-0 20-cycle, and tier-V 4-cycle tests in `BookOfEternityClient.Tests/SpiritualWoundNaturalRecoveryTests.cs`
   Accepted numerical prerequisite (2026-09-07), shared with T105, commits

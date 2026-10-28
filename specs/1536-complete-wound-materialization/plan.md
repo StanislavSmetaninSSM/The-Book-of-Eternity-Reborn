@@ -8,10 +8,25 @@ spiritual-combat-healing-design.md (DESIGN ACCEPT c3caf534c). Exact admitted-die
 intent/original, scheduler no-cycle/no-op, active-only draft and persistent existing
 ledger blocked-overlap boundaries are now written from the bounded source map;
 final independent DESIGN review found no concrete blocker. The first T095 existing-
-API singleton now targets missing healing-cost admission; all combat implementation
-and runtime remain UNRUN. Prior accepted
+API singleton now proves missing healing-cost admission; combat implementation
+and its later assertions remain UNRUN. Prior accepted
 controls are not repeated for this design checkpoint; wider actors/targets stay
 explicitly separate and all standing limits remain.
+
+## T095 cost admission — genuine RED, 2026-10-28
+
+Compiled clean3babe633d: Unit refsfalse build0 errors/26 baseline warnings/1:19.89;
+Main8b8df4e4 and Support9b5141e6 unchanged. Official literal1 case/1 descriptor
+PlanOnly8.3368716 seconds/0 executed. Actual1 complete semantic FAIL13.0227590
+seconds (category5.0967248<60), at test line14 missing healing definition AFTER
+valid pressure tierI cost2. No skip/duplicate/timeout, both cleanup flags true;
+all six current master/copy pins match. TRX SHA256
+bf167101a35ac32fb0062ebc93eb7ea452d3cc88057d20a2538b6fc5656700e1.
+Raw: external us4-self-healing/spiritual-combat-cost-1/{plan,actual}; build and
+pins external alongside it. Later healing cost/floor/passive assertions are
+unreached; this proves no art mapping, Spend, combat wound or UI authority.
+Independent bounded OUTCOME is pending; implementation proceeds under accepted
+DESIGN without repeating this unchanged RED or accepted reverse17.
 
 # T108 private current Guardian → player — bounded GREEN, 2026-10-28
 
