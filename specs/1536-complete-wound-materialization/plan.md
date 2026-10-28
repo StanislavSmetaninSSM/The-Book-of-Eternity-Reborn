@@ -1,4 +1,43 @@
-# T112 World source closure accepted; T093 known-wound assessment — WIP
+# T093 known-wound assessment — 17 PASS, independent OUTCOME pending
+
+2026-10-28. Compiled/tested source24826353427bb3d2c1d671fbfa23f19eb8635911.
+Both actual console and shared browser handlers now explain current H0/H1 versus
+known wound II in Chaos Sea/Shining Abode without offering insufficient self
+healing. Invalid/mismatching source is unavailable, not H0. Disabled self reasons
+remain visible alongside available help. Valid treatment/cancellation is retained.
+There is no new diagnosis roll/time rule, hidden-fact reveal, healing authority or
+GM response. This does not complete FR071, broader T093 or US4.
+
+| Exact category | PASS | Category seconds / original budget |
+| --- | --- | --- |
+| spiritual-treatment-assessment | 11/11 | 4.4592184 / 60s |
+| spiritual-treatment-assessment-handlers | 5/5 | 9.1526105 / 120s |
+| documentation-afterlife-treatment-assessment | 1/1 | 4.8679327 / 60s |
+
+Actual wall30.7322354s, exact17/3descriptors/8methods, all executed/completed;
+no skips/timeouts/duplicates, both cleanup flags true. Four handler rows prove
+profileRefreshReads0 for both interfaces, zero gameplay mutations, identical full
+gameplay trees and the same verified console UI lock after browser. The old causal
+browser count1 is preserved; no repair-write or speedup claim is inferred.
+All18 DLL/PDB and14 frozen source hashes were unchanged through execution.
+Fresh owning Unit/Main/Support/dependencies build0errors/75warnings/3:34.08;
+only expected RED xUnit2002 disappeared from76, no new warning. Fresh Integration
+refsfalse0errors/102identicalwarnings/1:57.91. Catalog1041/12724 valid; PlanOnly
+17/3/8 in15.4836633s executed0. Independent Sol SOURCE/selection/PREP accepted;
+final OUTCOME is pending. T093-ASSESSMENT checkbox stays open until acceptance.
+GM matrix, Wound contract, worked no-turn example and manifest are synchronized.
+Optimization reuses one prepared source per wound and parsed catalog; renderer
+reads nothing. Wounds retain their fresh current-session/source/confirmation checks
+while avoiding only the unrelated normalizing StateManager refresh. No new cache.
+Raw: /workspace/tboe-linux-evidence-20261025/us4-self-healing/assessment-green-1/
+and assessment-green-build-1/. Full logs/TRX/JSON, prior RED/fixture failures remain
+outside checkout/GitHub. No raw, save or recovery copy was deleted. No new restore.
+Accepted combat39 keep old lineages; DFR/Mortal/Windows/performance remain HOLD.
+Next functional remainder is T108 other-entity treatment; resident aid architecture
+consultation found no missing game rule, but its implementation/design is not yet
+qualified. No resident capability is claimed by this checkpoint.
+
+## T112/T093 source and preparation chronology (historical WIP labels)
 
 2026-10-28. Same machine and clean remote18795be638682f0196dd871f7b69c8f36dae3195
 were verified; no build/test remained active. Astra/high substantively reviewed
