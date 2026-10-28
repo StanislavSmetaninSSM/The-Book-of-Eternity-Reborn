@@ -1,11 +1,12 @@
-# T095/T102/T103: counterable spiritual combat healing (DESIGN WIP)
+# T095/T102/T103: counterable spiritual combat healing (DESIGN ACCEPTED)
 
 Issue: https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536
 
 Current baseline: bounded free safe-cycle self and both current-Guardian aid
 flows are accepted. This document selects the next missing combat behavior;
 it is not an acceptance of implementation or a new prerequisite for those flows.
-No combat-healing source has been changed or run yet.
+Bounded independent DESIGN ACCEPT: c3caf534c (Astra, 2026-10-28).
+Implementation and runtime acceptance remain open.
 
 ## Player result and first scope
 
@@ -209,3 +210,30 @@ SOURCE/PREP and dependency-based official category selection → fresh affected
 owning builds/PlanOnly/actuals → independent OUTCOME. Existing holds are not new
 combat prerequisites. Reuse operation-local source/cost/roll/effect DATA; retain
 fresh actual lease/original/current closing checks. No speedup claim or new cache.
+
+## Inline implementation checklist
+
+- [ ] T095 existing-API cost singleton: unchanged pressure precondition, then
+  missing heal_spiritual_wound definition RED; independent literal costs4/3/2/2
+  for artI/II/III/V and passive resilience. The initial failure qualifies only
+  the missing cost contract, not art mapping, spend or healing.
+- [ ] Extend the actual operation/art/counter consumers and shared active-only
+  wound program; add closed combat intent to the existing guided selection and
+  original validators, without a safe attempt or extra draw.
+- [ ] Extend the same admitted exchange/draft/resource/completion and existing
+  receipt ledger with resolved/blocked healing, exact source/outcome bijection
+  and the closed combat History result. Prove blocked+same-wound worsening and
+  omission-only refusal after closure.
+- [ ] Wire scheduler-owned no-cycle staging and authenticated exact no-op
+  settlement; preserve existing safe routes and all source/effect/resource guards.
+- [ ] Complete real console/browser C2/C4 journeys, graph repair, rollback and
+  inert replay; synchronise GM contracts/worked example/manifest and focused guards.
+- [ ] Freeze coherent source/tests/docs, independent SOURCE/PREP, fresh affected
+  owning builds, literal official PlanOnly and bounded actuals, then OUTCOME.
+
+The first RED uses one pure existing static API and allocates no session, files,
+game fixture or cache. Unit refsfalse against current accepted Main/Support is
+sufficient because this scaffold changes no production source. Category
+spiritual-combat-healing-cost owns exactly that one Fact/60 seconds. Later owning
+build/selection is chosen from the complete implementation's actual dependencies;
+the current singleton is not an end-to-end completion claim.

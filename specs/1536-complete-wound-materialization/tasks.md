@@ -14332,11 +14332,12 @@ close full source-action/terminal/pending contracts or any top-level story task.
   accepted treatment authority is claimed; T094 remains open for integration.
 - [ ] T095 [P] [US4] Add RED combat base-5/reduction/floor-2 spend, explicit operation-to-art mapping, counter/matchup legality, and rollback tests in `BookOfEternityClient.Tests/SpiritualHealingCombatActionTests.cs`
   Next bounded player-result is tracked jointly with T102/T103 in
-  spiritual-combat-healing-design.md (WIP): player self treatment in actual active
+  spiritual-combat-healing-design.md (DESIGN ACCEPT c3caf534c): player self treatment in actual active
   direct Chaos duel, counterable typed operation, exact original die/art/target,
   registered OD spend and C2/C4 wound/effects/History, without natural/safe-cycle
-  publication. Read-only exact-source design is in progress; no combat code/tests
-  written or run, no enum/cost-only completion or wider-target claim.
+  publication. First existing-API cost singleton is written, UNCOMPILED/UNRUN;
+  independent SOURCE/PREP precedes Unit-only literal1 RED/60. No combat production
+  change, enum/cost-only completion or wider-target claim.
 - [ ] T096 [P] [US4] Add RED one safe-cycle session, no OD, self no currency/item, one attempt per wound/cycle, active-treatment-then-natural-recovery ordering, failed-attempt world advance, and duplicate suppression tests in `BookOfEternityClient.Tests/SpiritualHealingSafeCycleTests.cs`
 - [ ] T097 [P] [US4] Add RED `1+tier`, I=2/II=4/III=6/IV=8 thresholds, overflow, worsening reset, unsafe suppression, tier-0 20-cycle, and tier-V 4-cycle tests in `BookOfEternityClient.Tests/SpiritualWoundNaturalRecoveryTests.cs`
   Accepted numerical prerequisite (2026-09-07), shared with T105, commits

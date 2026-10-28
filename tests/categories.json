@@ -2,6 +2,31 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "spiritual-combat-healing-cost",
+  "responsibility": "#1536 T095 existing-API causal cost admission: unchanged pressure precondition then missing healing operation; independent art-tier I/II/III/V costs4/3/2/2 and passive resilience. First release is RED-only.",
+  "excludes": "No operation-to-art mapping, counter legality, typed Spend, C2/C4 wound/effect/History, UI, combat scheduler or authority qualification. No old accepted-suite repeat.",
+  "changeHints": [
+    "BookOfEternityClient.Tests/SpiritualHealingCombatActionTests.cs",
+    "BookOfEternityClient/Services/AfterlifeActionCostRules.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.SpiritualHealingCombatActionTests.StandardHealingUsesItsOwnBaseFiveCostAndNeverFallsBelowTwo"
+      ]
+    }
+  ]
+},
+{
   "id": "spiritual-guardian-help-guidance",
   "responsibility": "Closed current provider-offer worked example and explicit receive_aid candidate/confirmed selection, no GM consent, cross-version rejection; actual confirmation/source authority is in backend and Engine categories.",
   "excludes": "Private free current Chaos Guardian only. Controlled native-shaped GM; no paid/public US6, other helpers, conflict/helpless/Shining, provider transport/fresh-process recovery or held Mortal/DFR/Windows qualification.",
