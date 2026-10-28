@@ -3,7 +3,7 @@
     "categories": [
 {
   "id": "spiritual-natural-recovery-contract",
-  "responsibility": "Two cheap typed contracts: full persistent current-realm cohort uses explicit own start tiers independently of player visibility; missing tier refuses. Natural GM prompt/example/manifest synchronization.",
+  "responsibility": "Three cheap typed/source contracts: full persistent current-realm cohort uses explicit own start tiers independently of player visibility; missing tier refuses. Natural GM prompt/example/manifest synchronization. Existing worked-family manifest inventory must match all current entries.",
   "excludes": "Actual GameEngine publication, source drift and durable omission/replay controls run in separate natural categories; no general doc matrix or held Mortal/DFR.",
   "changeHints": [
     "BookOfEternityClient.Tests/SpiritualNaturalCohortTests.cs",
@@ -24,6 +24,12 @@
       "tests": [
         "BookOfEternityClient.Tests.SpiritualNaturalCohortTests.PersistentCurrentRealmOwnersUseTheirOwnTierRegardlessOfVisibility",
         "BookOfEternityClient.Tests.SpiritualHealingGuidedContractTests.NaturalModeHasOneClosedResultAndSynchronizedOrdinaryGmExample"
+      ]
+    },
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.ExampleDocumentationValidationTests.CompleteEffectMaterializationManifest_CoversEveryRequiredWorkedFamily"
       ]
     }
   ]

@@ -131,7 +131,9 @@ public sealed class AfterlifeSpiritualNaturalRecoveryTests
         var reopened = new FileSystemManager(fixture.Files.BasePath, NullLogger<FileSystemManager>.Instance);
         await using (var lease = await reopened.AcquireCanonicalWriteLeaseAsync())
         {
-            var manifest = await fixture.ReadManifestAsync(lease);
+            var manifest = JsonSerializer.Deserialize<LiveTurnPendingSnapshotManifest>(
+                (await reopened.ReadFileAsync(lease, LiveTurnPreparationService.PendingTurnSnapshotManifestPath))!,
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
             async Task<SpiritualHealingPersistedResult?> Read(JsonObject? changedHistory = null) =>
                 await ProgressionScheduleService.ReadPublishedSpiritualCycleCoreAsync(control,
                     manifest.SessionId, manifest.RequestId, manifest.TurnNumber,
