@@ -1,3 +1,15 @@
+# Next T108 slice — private current Guardian → player, 2026-10-28
+
+Accepted player→Guardian17 is recorded below; no unchanged runtime repeats.
+The next bounded design is in spiritual-aid-design.md: real accepted provider
+willingness on the existing Guardian profile, explicit guided player confirmation,
+closed v4 request/result, current Guardian art vs player natural tier, and the SAME
+Stage/B/History/common publication and console/browser workflows. Provider-offer
+facts are not player consent. First scope is free private safe Chaos cooperation,
+not US6 public/paid service. Bounded independent design recommendation is applied;
+freeze/readback precedes causal contract TDD and coherent implementation.
+All new reverse code/runtime remains UNWRITTEN/UNRUN. Existing limits remain open.
+
 # US4 safe self-treatment — active functional work, 2026-10-28
 
 Player→current consenting Guardian bounded end-to-end slice is now GREEN.

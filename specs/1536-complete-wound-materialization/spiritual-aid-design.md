@@ -287,3 +287,121 @@ recovery. A forged calculation must still refuse after the shared program suppor
 independent tiers. This pure DATA control grants no healer/consent/turn authority.
 One Unit singleton/60s, fresh Unit refsfalse against current Main/Support; no
 artificial API, new scalar stack or repeat of the qualified producer13.
+
+## Next bounded slice: current Guardian helps the player (bounded DESIGN)
+
+Tracked by T108/T121, continuing the accepted first direction. The player asks
+its current visible Guardian for free private help with a known active spiritual
+wound. An ordinary accepted GM turn records the Guardian's willingness and the
+current conscious/capable conditions. After normal cleanup, `/лечить` offers
+that Guardian's help for the player's wound. The player can cancel without a
+request/draw or explicitly confirm; confirmation submits the actual console or
+browser Engine action, which applies active Guardian healing followed by the
+player's natural recovery exactly once. This is not the public/paid US6 service.
+
+Chosen approach: extend the same typed participation/profile/result family and
+shared active pipeline. A separate helper registry/publisher would duplicate
+fresh checks and world-cycle ownership; copying target consent to the player
+would let GM DATA substitute for player choice. Both are rejected. The existing
+v1 record remains the still-produced player→Guardian target-consent form. A new
+closed schema2 provider-offer/revoke form lives on the Guardian profile and names
+that exact Guardian healer, exact player_soul target and stable player wound.
+The record's enclosing owner is the Guardian, not the treatment target. It states
+provider willingness and conscious/capable conditions; it never asserts player
+consent. The exact closed field sets and confirmation binding below follow the bounded
+independent design recommendation; no new consent policy is inferred.
+
+Closed forms for the new direction:
+
+- Proposal schema2 on the exact Guardian profile: `schemaVersion`,
+  `kind=provider_offer`, `operation=offer|revoke`, `targetId=player_soul`, `woundId`,
+  `providerConscious`, `providerCapable`, `targetConscious`, `targetCapable`,
+  `readableEvidence`. Healer identity comes from the enclosing profile. All four
+  factual flags must be true for an offer; no player-consent field is admitted.
+- Record schema2: `schemaVersion`, `kind=provider_offer`, `status=offered|revoked`,
+  `healerKind=guardian`, `healerId`, `targetKind=player_soul`, `targetId=player_soul`,
+  `realm=chaos_sea`, `woundId`, `locationId`, the four factual flags,
+  `readableEvidence`, `binding`, `acceptedCycleOrdinal`, `eligibleCycleOrdinal`,
+  `primaryTransitionId`. The actual owner derives provenance, cycles and identities.
+- Natural result v4 contains exactly one schema2 full provider-offer outcome.
+  Active request/result v4 require `mode=aid`, `direction=guardian_to_player`,
+  exact offer witness/source and explicit `playerConfirmation=player_target_confirmed`.
+  V4 with missing/unknown confirmation/direction or v2/v3 provider payload refuses.
+- Selection has an explicit v4 `mode=receive_aid` with exact healer/target/wound/
+  content identity and `confirmation=required|player_target_confirmed`. The menu
+  emits only `required`. The existing ConfirmAsync returns the confirmed form
+  after its fresh choice equality check. PrepareQueued and active staging reject
+  an unconfirmed receive-aid selection. The marker remains comparison DATA;
+  only the real UI one-shot/queued action supplies the event and actual original.
+
+A provider offer must be issued by the actual natural owner with the same exact
+current Guardian/Abode proof and accepted session/request/token/turn/cycle/primary
+binding. The player's wound must be in the full original natural cohort; the
+Guardian need not itself be wounded. Store the full offer plus content digest in
+the same atomic profile + natural History result. Grant-turn natural recovery
+may change wound fingerprint, so the offer binds stable woundId while the later
+selection/request binds its fresh semantic fingerprint. Eligibility is the next
+safe cycle after the actual offer turn, and this first journey uses the immediately
+preceding accepted turn, just as the first direction. No new receipt file.
+
+Use explicitly closed v4 natural-with-provider-offer and v4 active request/result
+for guardian_to_player. Continue actively producing v2 self/plain natural and v3
+player→Guardian aid/target-consent natural. Reject cross-version payloads,
+GM-authored player-consent fields, empty/unknown outcomes and mixed unrelated
+participation changes. Do not add a legacy schema fallback.
+
+Real confirmation is issued by the existing shared ConfirmAsync path: console
+confirmation stores the private one-shot exact action/generation selection;
+browser confirmation queues the exact selection through its current bound
+transaction and action/generation/source binding. A serialized comparison field
+cannot create that event. Staging runs only from this actual player action and
+binds it into the retained request before signed snapshot capture. B checks the
+actual signed request/original, not a GM assertion. Cancellation never creates
+this selection/request. The strict committed offer reader still runs before
+BuildControl and before input overwrite; B reuses the frozen original witness
+plus fresh current closing, and settled replay resolves the historical offer
+without requiring live consent, locality or its old settled schedule again.
+
+Use the exact current Guardian coordinate in the HEALER role for locality, art
+and active roll effects. Use player_soul as TARGET with its own natural tier and
+soul/profile mirror. One shared scalar stage program/executor performs active
+then all eligible natural ticks; no second universal pass. Existing owned two-path
+normalization and full profile projection apply unchanged to the actual owner.
+Old SourceRoots/Input/fingerprints remain frozen. Current revocation, loss of
+conscious/capable condition, move, invalid art or changed wound blocks staging
+before entropy, and after a draw refuses publication with that same retained
+attempt/dice. No implicit consent from UI visibility, friendship or teaching.
+
+Acceptance is finite and user-facing:
+
+1. A real accepted offer turn naturally advances the player's III/H0 wound, then
+   normal cleanup preserves the full provider-offer witness. No manual receipt,
+   between-turn seed or resource/scheduler rebootstrap is allowed.
+2. Both interfaces show Self first and the current visible Guardian route with
+   safely rendered context, no technical IDs. Cancellation makes no request,
+   draw or cycle. Actual confirmation drives offer43→cleanup→aid44 through Engine.
+3. Unequal Guardian H3 / player H0 proves active healing uses Guardian art/effects
+   while natural recovery uses player H0; one attempt, one cycle, exact graphs,
+   wound/effects/History, no private-treatment charge or repeated natural tick.
+4. Missing/raw/unaccepted/revoked/expired/foreign offer and unconfirmed selection
+   refuse before draw. Current provider/target condition and locality are fresh;
+   post-draw revocation/move refuses without reroll or partial publication.
+5. Exact retained request/original and settled historical offer linkage reject
+   altered content, wrong identities/version and omitted prior result. A later
+   live offer change does not invalidate an already settled aid result.
+6. Existing self and player→Guardian affected consumers remain covered according
+   to the final dependency-based selection; no automatic old-suite rerun.
+
+Implementation order: accepted design → minimal causal existing-API control →
+closed offer/result producer → shared staged/B/History role binding → shared
+choice/confirmation + actual console/browser journey → GM CLI/Matrix/Wound
+contract/example/manifest guards → coherent SOURCE/PREP → fresh owning build and
+reviewed exact categories → independent OUTCOME. No intermediate reader-only or
+math-only build, no new actor framework. Provider/target parsed profiles, catalog,
+History and locality DATA are reused within the existing operation owner; actual
+lease/original/current closing reads remain fresh. No speedup is claimed.
+
+Scope remains safe Chaos/current persistent Guardian, free private conscious and
+capable cooperation. Paid/public services, combat, unwilling/helpless exceptions,
+other entities, Shining helper locality, longer offer lifetime, provider/fresh-
+process recovery and existing Mortal/T609/DFR/Windows limits remain open.

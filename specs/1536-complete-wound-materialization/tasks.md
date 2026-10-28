@@ -14500,8 +14500,12 @@ close full source-action/terminal/pending contracts or any top-level story task.
   Existing backend/affected consumers retain13 fb/8f cases; caller-only canonical
   EMPTY lore is seeded before the sole bootstrap. Full helper completion
   remains open.
-  Reverse entity→player needs real guided player
-  consent, and other/helpless/conflict/Shining helper routes remain open.
+  Next bounded work is current Guardian→player private free aid: closed schema2
+  provider-offer on Guardian profile + full v4 natural witness, explicit receive_aid
+  selection confirmed by actual console/browser guided flow, v4 request/result,
+  same Stage/B/History/common publication and separate Guardian H/player natural H.
+  Design is recorded; implementation and runtime are UNWRITTEN/UNRUN. GM facts
+  cannot issue player consent. Other/helpless/conflict/Shining helper routes remain open.
 
 ### GM contract synchronization
 
