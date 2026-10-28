@@ -1,5 +1,14 @@
 # US4 safe self-treatment — active functional work, 2026-10-28
 
+Browser refusal oracle closure (UNCOMPILED/UNRUN): compare preparing Generation,
+Action, Source and the full queued body after removing only legitimate phase/proof
+fields (including submittedAtUtc unchanged). Capture exact preparing-slot bytes
+and require them unchanged after the second real admission refusal, separately
+from the canonical source map. Counts/budgets stay35/9/8. Default Self menu retention
+is source-justified: unchanged CreateState/no-record branch and ActionFor(self),
+with request24/pending2/consumedSELFgraph1 plus new typed ActionFor/selection guards;
+unchanged art-help2 is not added merely because its category name says guided.
+
 Final grouped source freeze (UNCOMPILED/UNRUN) separates injected failures from
 normal qualification. Positive console/browser fixtures have hooks=null. A separate
 console Fact owns the immutable filesystem hook, disarms in finally and ends after
