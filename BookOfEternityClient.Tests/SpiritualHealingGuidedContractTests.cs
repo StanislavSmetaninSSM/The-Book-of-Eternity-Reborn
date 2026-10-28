@@ -128,6 +128,29 @@ public sealed class SpiritualHealingGuidedContractTests : IDisposable
         Assert.All(entry.RequiredText, token => Assert.Contains(token, example));
     }
 
+    [Fact]
+    public void GuardianParticipationProposalHasAClosedWorkedExampleAndSynchronizedGmGuidance()
+    {
+        const string marker = "spiritual_treatment_participation_v1";
+        foreach (var file in new[] { "OtherGuides/Wound_Materialization_Contract.md", "OtherGuides/Afterlife_Contract_Matrix.md",
+            "CLI_API_Specification.md", "Rules/Block_CLI_Operations.txt", "TaskGuides/CLI_Step_Main.txt", "BookOfEternityClient/game_master_daemon.ps1" })
+            Assert.Contains(marker, File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, file)));
+        var entry = Assert.Single(ExampleValidationManifest.Load().EffectMaterializationCoverage, c => c.ContractId == marker);
+        var text = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "Examples", entry.File));
+        Assert.All(entry.RequiredText, token => Assert.Contains(token, text));
+        var start = text.IndexOf(marker, StringComparison.Ordinal);
+        var fence = text.IndexOf("```json", start, StringComparison.Ordinal) + "```json".Length;
+        var end = text.IndexOf("```", fence, StringComparison.Ordinal);
+        var proposal = JsonNode.Parse(text[fence..end])!.AsObject();
+        var previous = new JsonObject { ["profiles"] = new JsonArray(new JsonObject
+        { ["actorType"] = "guardian", ["actorId"] = "guardian_example", ["realm"] = "Chaos Sea" }) };
+        var response = previous.DeepClone().AsObject();
+        response["profiles"]![0]![SpiritualTreatmentParticipation.ChangeProperty] = proposal;
+        var parsed = Assert.Single(SpiritualTreatmentParticipation.ReadChanges(response, previous));
+        Assert.Equal("grant", parsed.Proposal["operation"]!.GetValue<string>());
+        Assert.Equal("player_soul", parsed.Proposal["healerId"]!.GetValue<string>());
+    }
+
     public void Dispose()
     {
         if (Directory.Exists(_root)) Directory.Delete(_root, recursive: true);

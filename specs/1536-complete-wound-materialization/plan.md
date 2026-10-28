@@ -1,5 +1,16 @@
 # US4 safe self-treatment — active functional work, 2026-10-28
 
+T108 coherent producer candidate now includes closed proposal/record/full v3
+natural witness, all-three raw representation and real ProjectCanonicalRoot
+record-omission/actorRef/mirror controls, raw stamp/current content/cross-version
+refusals, actual profile-member rollback and synchronized GM nested proposal
+example/manifest/source guard. UNCOMPILED/UNRUN; v3 aid, staging and real guided
+Engine journey remain next. Proposed finite source-reviewed release: owning
+Integration + Unitrefsfalse → exact13/5 PlanOnly → contract6/60 → producer2/120 →
+existing naturalpublication4/120 → existing authoredselfgraph1/120. No prior suite
+repeat. Optimization/fresh-read and no-Mortal/Shining-update rationale are in the
+existing spiritual-aid-design.md; independent coherent SOURCE required.
+
 T108 producer functional WIP is now wired but UNCOMPILED/UNRUN. The actual natural
 owner validates all three raw profile representations, derives a full closed
 participation record from its real binding/cycle/primary transition, and carries

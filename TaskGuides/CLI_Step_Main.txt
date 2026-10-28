@@ -839,3 +839,37 @@ silently overwritten. It does not expose NPC/private wound details or implement
 helper/entity active healing. Mortal mechanics are unchanged; no new Mortal output
 or command is introduced. Read the worked spiritual_natural_recovery_v2 example in
 Examples/E_CLI_Afterlife_Turns.txt and use the actual progressionControl report.
+
+
+spiritual_treatment_participation_v1 — accepted permission to help the current Guardian
+
+During an ordinary safe Chaos Sea turn the player may OFFER to heal the current
+conscious/capable Guardian. Consent is affirmative roleplay evidence, never inferred
+from friendliness, visibility, canTeach/canFight or mere presence. On the exact
+current Guardian's existing complete profile, author the CLOSED nested
+spiritualTreatmentParticipationChange: schemaVersion1, operation=grant|revoke,
+healerId=player_soul, actual stable woundId, conscious/capable booleans and nonblank
+readableEvidence. Grant requires both booleans true. Preserve the profile's other
+required fields. profiles, afterlifeEntityProfiles and afterlifeEntityProfileUpdates
+use the same rule; identical mirrored intent is one change, conflicting mirrors fail.
+
+The client alone creates spiritualTreatmentParticipation with the real accepted
+session/request/token/turn, exact Guardian/Abode/wound, accepted cycle, next eligible
+cycle and primary transition. Never author, copy, delete or alter that canonical
+record, a participationOutcomes witness, History or a receipt. Omitting the old
+record in a legitimate profile replacement preserves it; revoke through the proposal.
+The actual natural/common publisher commits FULL record + content digest in one
+schemaVersion3/mode=natural result together with profile/wounds/effects/History and
+one cycle, or rolls them all back. A raw/same-turn/failed proposal grants no healing
+draw. The grant's natural tick may change woundFingerprint; consent scopes the
+stable woundId, and later selection must use the fresh wound fingerprint.
+
+Grant accepted in shared cycle10 permits only the NEXT safe cycle11. Missing,
+expired, revoked, wrong healer/Guardian/Abode or stale wound refuses before any
+healing entropy. Current revocation or movement also blocks unpublished aid.
+This first authoring slice supports only player→current Guardian; no Mortal,
+entity→player substitute consent, helpless/unwilling/conflict/paid/Shining aid.
+Existing self request/resultv2 and no-participation natural resultv2 remain actively
+produced closed current forms. V2 participation and payload-free V3 are invalid,
+not migrations. This authoring step does not itself start treatment or let the GM
+write an aid request. Read the worked participation example in E_CLI_Afterlife_Turns.txt.

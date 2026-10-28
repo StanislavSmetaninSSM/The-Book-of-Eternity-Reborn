@@ -628,6 +628,10 @@ internal static class AfterlifeEntityProfileState
             PreserveResourceOwnerBindings(existing, replacement);
             PreserveActiveEffects(existing, replacement);
             PreserveActiveWounds(existing, replacement);
+            if (HasExactActorIdentity(existing, replacement))
+                foreach (var field in new[] { SpiritualTreatmentParticipation.RecordProperty, SpiritualTreatmentParticipation.ChangeProperty })
+                    if (!replacement.ContainsKey(field) && existing[field] is { } participation)
+                        replacement[field] = participation.DeepClone();
             profiles[index] = replacement;
             return;
         }

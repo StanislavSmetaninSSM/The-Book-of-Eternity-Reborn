@@ -23,17 +23,20 @@ internal static class SpiritualTreatmentParticipation
                 var hasChange = row.ContainsKey(ChangeProperty);
                 var hasRecord = row.ContainsKey(RecordProperty);
                 if (!hasChange && !hasRecord) continue;
-                var id = Text(row, "actorId");
+                var id = ProfileId(row);
                 var kind = Text(row, "actorType");
                 var original = (previous[AfterlifeEntityProfileState.ProfilesProperty] as JsonArray)?.OfType<JsonObject>()
-                    .Where(p => p["actorId"]?.GetValue<string>() == id && p["actorType"]?.GetValue<string>() == kind).ToArray();
+                    .Where(p => ProfileId(p) == id && p["actorType"]?.GetValue<string>() == kind).ToArray();
                 if (original is not { Length: 1 }) throw new InvalidDataException("Participation requires an exact preexisting persistent profile.");
                 if (hasRecord && !JsonNode.DeepEquals(row[RecordProperty], original[0][RecordProperty]))
                     throw new InvalidDataException("Raw profile data cannot mint or change a client-owned participation record.");
                 if (hasRecord && row[RecordProperty] is not null)
                     ValidateRecord(row[RecordProperty]!.AsObject());
                 if (!hasChange) continue;
-                if (kind != "guardian" || !AfterlifeEntityProfileState.TryNormalizeEffectRealm(Text(row, "realm"), out var realm) || realm != "chaos_sea")
+                if (original[0].ContainsKey(ChangeProperty))
+                    throw new InvalidDataException("Participation proposal must be a new response, not retained original input.");
+                if (kind != "guardian" || !AfterlifeEntityProfileState.TryNormalizeEffectRealm(
+                        row["realm"]?.GetValue<string>() ?? Text(original[0], "realm"), out var realm) || realm != "chaos_sea")
                     throw new InvalidDataException("Participation changes support only the current Chaos Sea Guardian.");
                 var proposal = row[ChangeProperty] as JsonObject ?? throw new InvalidDataException("Participation change must be a closed object.");
                 Closed(proposal, "schemaVersion", "operation", "healerId", "woundId", "conscious", "capable", "readableEvidence");
@@ -45,8 +48,13 @@ internal static class SpiritualTreatmentParticipation
                 var capable = proposal["capable"]!.GetValue<bool>();
                 if (Text(proposal, "operation") == "grant" && (!conscious || !capable))
                     throw new InvalidDataException("A grant requires conscious, capable and affirmative participation.");
-                if (changes.Any(c => c.TargetId == id))
-                    throw new InvalidDataException("A profile cannot propose participation through multiple response representations.");
+                var mirrored = changes.SingleOrDefault(c => c.TargetId == id);
+                if (mirrored is not null)
+                {
+                    if (!JsonNode.DeepEquals(mirrored.Proposal, proposal))
+                        throw new InvalidDataException("Mirrored profile representations contain conflicting participation changes.");
+                    continue; // Same exact intent, not a second grant or a new capability.
+                }
                 changes.Add(new(id, proposal.DeepClone().AsObject()));
             }
         }
@@ -121,7 +129,7 @@ internal static class SpiritualTreatmentParticipation
         {
             var record = outcome["record"]!.AsObject();
             var current = (profiles?[AfterlifeEntityProfileState.ProfilesProperty] as JsonArray)?.OfType<JsonObject>()
-                .Where(p => p["actorType"]?.GetValue<string>() == "guardian" && p["actorId"]?.GetValue<string>() == Text(record, "targetId")).ToArray();
+                .Where(p => p["actorType"]?.GetValue<string>() == "guardian" && ProfileId(p) == Text(record, "targetId")).ToArray();
             if (current is not { Length: 1 } || !JsonNode.DeepEquals(current[0][RecordProperty], record) || current[0].ContainsKey(ChangeProperty))
                 throw new InvalidDataException("Published participation no longer matches its exact accepted profile content.");
         }
@@ -129,6 +137,15 @@ internal static class SpiritualTreatmentParticipation
 
     internal static string Fingerprint(JsonObject record) => WoundAcceptedTurnFingerprintWriter.Compute(new[]
         { "book_of_eternity.spiritual_treatment_participation", "1", WoundAcceptedTurnFingerprintWriter.CanonicalJson(record) });
+    internal static string ProfileId(JsonObject profile)
+    {
+        var id = profile["actorId"]?.GetValue<string>(); var reference = profile["actorRef"]?.GetValue<string>();
+        if (id is not null && reference is not null && id != reference)
+            throw new InvalidDataException("Participation profile has conflicting exact actor identity fields.");
+        var result = id ?? reference;
+        return result is not null && ResourceMaterializationContract.IsExactIdentifier(result)
+            ? result : throw new InvalidDataException("Participation profile requires an exact actor identity.");
+    }
     private static string Text(JsonObject root, string key) => root[key]?.GetValue<string>() ?? throw new InvalidDataException("Missing participation " + key);
     private static void Closed(JsonObject root, params string[] fields)
     {

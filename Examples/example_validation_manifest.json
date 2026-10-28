@@ -2,6 +2,18 @@
   "version": 1,
   "effectMaterializationCoverage": [
 {
+  "contractId": "spiritual_treatment_participation_v1",
+  "file": "E_CLI_Afterlife_Turns.txt",
+  "statePath": "current Guardian profile participation proposal -> client record and full v3 natural History witness",
+  "responseSurface": "spiritualTreatmentParticipationChange on existing profiles/afterlifeEntityProfiles/afterlifeEntityProfileUpdates",
+  "realms": ["Chaos Sea"],
+  "description": "Closed affirmative/revoked current-Guardian participation; actual owner-derived full record+digest commits with one natural cycle, not an implicit or raw stamp permission.",
+  "validationKind": "focused-fragment",
+  "focusedFragmentReason": "SpiritualHealingGuidedContractTests validates nested proposal grammar with the production reader and synchronized guidance; typed actual producer/rollback/replay are separately selected.",
+  "coverageLimit": "Proposal fragment and direct common publisher; full Engine grant and guided active aid, reverse/helper/provider/fresh-process remain pending.",
+  "requiredText": ["spiritual_treatment_participation_v1", "spiritualTreatmentParticipationChange", "FULL record/content digest", "III0→III1", "eligibleCycleOrdinal11", "rollback leaves no accepted grant", "V2 participation and V3 without its mandatory payload fail"]
+},
+{
   "contractId": "spiritual_natural_recovery_v2",
   "file": "E_CLI_Afterlife_Turns.txt",
   "statePath": "authenticated ordinary safe-cycle source16 and schema2 natural History/scheduler after-image",

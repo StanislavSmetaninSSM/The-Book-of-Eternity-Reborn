@@ -2,8 +2,26 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "spiritual-aid-participation-contract",
+  "responsibility": "Cheap closed participation proposal DATA/projection controls for all three actual profile representations, actorRef and mirrored intent, preservation of owned records, stamp/null/conflicting/ incapable refusals; synchronized GM nested-fragment example and complete worked-family manifest inventory.",
+  "excludes": "Codec/projection DATA grants no live permission. Actual natural producer and rollback are separate; no active aid/UI/provider/reverse/conflict/helpless/Shining or held DFR/Mortal qualification.",
+  "changeHints": ["BookOfEternityClient/Services/SpiritualTreatmentParticipation.cs", "BookOfEternityClient.Tests/SpiritualTreatmentParticipationTests.cs", "BookOfEternityClient.Tests/SpiritualHealingGuidedContractTests.cs"],
+  "related": [{ "id": "spiritual-aid-participation-producer", "when": "After cheap codec/docs controls pass, qualify actual accepted record/witness atomic producer and rollback." }],
+  "requirements": { "frontendBuild": false, "exclusive": true, "ciRunner": "ubuntu-24.04" },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    { "project": "unit", "tests": [
+      "BookOfEternityClient.Tests.SpiritualTreatmentParticipationTests.EveryProfileRepresentationUsesTheSameProposalAndPreservesTheOwnedRecord",
+      "BookOfEternityClient.Tests.SpiritualTreatmentParticipationTests.RawStampForgeryConflictingMirrorsAndIncapableGrantNeverBecomeParticipation",
+      "BookOfEternityClient.Tests.SpiritualHealingGuidedContractTests.GuardianParticipationProposalHasAClosedWorkedExampleAndSynchronizedGmGuidance"
+    ] },
+    { "project": "integration", "tests": ["BookOfEternityClient.Tests.ExampleDocumentationValidationTests.CompleteEffectMaterializationManifest_CoversEveryRequiredWorkedFamily"] }
+  ]
+},
+{
   "id": "spiritual-aid-participation-producer",
-  "responsibility": "One causal actual natural/common-publication Guardian grant producer: legitimate initial wound/locality agreement and accepted III/H0 progress1/one cycle precede missing canonical participation/full witness RED. Later GREEN must bind the full client-derived record in the same v3 natural History result.",
+  "responsibility": "Two actual natural/common-publication Guardian grant controls: initial wound/locality and accepted III1/onecycle/nocost, prewrite raw-stamp refusal, full v3 record/witness, cross-version and copied-tuple/content refusal; actual profile-member publication fault must roll record/witness/mechanics back together. Original causal singleton RED is retained separately.",
   "excludes": "No full Engine/profile producer claim from this direct common publisher, no guided aid completion, no fake accepted stamp, provider/reverse/helpless/conflict/Shining aid or held Mortal/DFR retries. Prior qualified cases retain their separate lineages.",
   "changeHints": ["BookOfEternityClient.IntegrationTests/AfterlifeSpiritualNaturalRecoveryTests.Aid.cs"],
   "related": [],
@@ -11,7 +29,8 @@
   "timeoutMinutes": 2,
   "expectedSeconds": null,
   "selectors": [{ "project": "integration", "tests": [
-    "BookOfEternityClient.Tests.AfterlifeSpiritualNaturalRecoveryTests.AcceptedNaturalTurnCommitsGuardianParticipationWithItsFullContentWitness"
+    "BookOfEternityClient.Tests.AfterlifeSpiritualNaturalRecoveryTests.AcceptedNaturalTurnCommitsGuardianParticipationWithItsFullContentWitness",
+    "BookOfEternityClient.Tests.AfterlifeSpiritualNaturalRecoveryTests.RolledBackNaturalGrantCannotLeaveAParticipationRecordOrAcceptedWitness"
   ] }]
 },
 {

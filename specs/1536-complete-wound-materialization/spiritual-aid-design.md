@@ -222,3 +222,36 @@ outcome/profile contribution and v3 strict reader; pre-control aid staging and
 separate healer/target program binding; guided console/browser plus actual Engine
 grant/aid journey and GM synchronization. Preserve staged attempts through repair
 and all fresh ownership/original/closing guards at each boundary.
+
+### Producer SOURCE/PREP candidate (UNCOMPILED/UNRUN)
+
+The first code block extends only accepted participation issuance: real natural
+owner/control/primary transition, immutable full record+digest in v3 result, pure
+common carrier assembly and strict current published record agreement. V3 aid is
+still intentionally refused until its active-family block is implemented. V2
+self and no-participation natural remain actively written, not legacy fallback.
+
+Raw parsing sees all three original profile representations before projection.
+The existing exact actorId/actorRef identity is reused; command rows may obtain
+unchanged realm from the existing profile. Identical mirrored proposals coalesce
+as one DATA intent; conflicting mirrors refuse. Existing projection preserves an
+omitted owned record and an earlier same-turn proposal across exact replacements;
+explicit null/modified raw canonical record refuses. Actual owner/profile/wound/
+locality checks remain necessary beyond those cheap projection DATA controls.
+
+Cost assessment: reuse already parsed raw/current/previous profile inputs and the
+existing locality calculation. Extra signed/current Guardian/resident reads occur
+only for participation proposals; required fresh original/source closing is not
+cached permission. No repeated catalog/control calculation, new receipt/cache or
+second publisher is added. Pure afterimage assembly performs no new file I/O.
+Default non-participation paths only inspect property presence; no extra locality
+read or outcome clone. No runtime cost or speedup is claimed before verification.
+
+Proposed exact release after independent coherent SOURCE: fresh owning Integration
+(Main/Support) then Unit refsfalse; official four-category PlanOnly expected13 cases
+in5 descriptors; cheap participation-contract6/60 → producer2/120 → existing
+natural-publication4/120 → existing authored-self-graphs1/120, separate actual calls.
+The last two protect changed common assembly/result/replay and real SELF consumed-I
+semantics; no browser/console/whole19/held matrix repeat. GM CLI/daemon/Wound guide/
+Matrix/rules, worked nested proposal and manifest/source guards are synchronized.
+No Mortal or Shining aid contract is introduced. Full user journey remains open.

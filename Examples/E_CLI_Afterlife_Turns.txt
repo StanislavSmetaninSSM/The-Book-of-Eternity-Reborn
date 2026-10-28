@@ -13403,3 +13403,45 @@ signed safe turn with that owner's H0 adds only1 point, leaving II1. The old poi
 is not carried through worsening, and the previous conflict cost is not charged
 again. Author the actual conflict decision/scene and then the later real control/
 report; never fabricate a healing attempt, roll, History row or completed result.
+
+
+spiritual_treatment_participation_v1 — player offers help; Guardian accepts
+
+The player offers to heal the current Guardian. The actual signed source has one
+known Guardian III wound at progress0, targetH0, player/healerH3, current safe Abode.
+Keep the full current Guardian profile (including its ordinary required fields,
+exact identity, arts, active wound/effect and resource bindings) and add only this
+nested proposal fragment. This JSON is the proposal VALUE, not a replacement profile:
+```json
+{
+  "schemaVersion": 1,
+  "operation": "grant",
+  "healerId": "player_soul",
+  "woundId": "COPY_ACTUAL_CURRENT_GUARDIAN_WOUND_ID",
+  "conscious": true,
+  "capable": true,
+  "readableEvidence": "Хранитель понимает предложение души и явно разрешает ей лечить эту духовную рану."
+}
+```
+Place it under spiritualTreatmentParticipationChange in the exact current
+Guardian entry of profiles, afterlifeEntityProfiles or afterlifeEntityProfileUpdates.
+Use the real stable woundId, not the placeholder; do not supply accepted stamps.
+Write ordinary narrative/dialogue/NPC-scope debug describing the offer and explicit
+consent, actual progressionProcessingReport counts/ordinals and normal completion.
+Author only any actual client-requested weaker destinationGraphs (this III0/H0
+grant turn needs none). No wound_commands, healing attempt/draw, fee or new receipt.
+
+At actual accepted shared cycle10 the client naturally changes III0→III1 and
+atomically creates spiritualTreatmentParticipation + a FULL record/content digest
+in participationOutcomes of schemaVersion3/mode=natural. The witness has the real
+accepted tuple and primary recovery transition; rollback leaves no accepted grant.
+The stable woundId consent permits next eligibleCycleOrdinal11 despite the natural
+woundFingerprint change. Later guided aid must select the fresh III1 fingerprint
+and recheck accepted witness, exact healer, Guardian locality and consent before
+any draw; do not pretend this grant turn itself performed active treatment.
+
+To withdraw consent on a later supported ordinary turn, use the same closed
+proposal with operation=revoke and readable evidence of withdrawal. Never delete
+or forge the client record. Self/no-participation natural V2 are still current;
+V2 participation and V3 without its mandatory payload fail. Mortal/reverse-player/
+helpless/conflict/paid/Shining aid are outside this bounded permission authoring.

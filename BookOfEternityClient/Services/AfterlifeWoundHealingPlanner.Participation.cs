@@ -67,7 +67,7 @@ internal static partial class AfterlifeWoundHealingPlanner
                     exact[0]["abode"]?["abodeId"]?.GetValue<string>() != scope.LocationId)
                     throw new InvalidDataException("Participation cannot use an alias, ambiguous Guardian or foreign Abode.");
                 var target = (acceptedProfiles[AfterlifeEntityProfileState.ProfilesProperty] as JsonArray)?.OfType<JsonObject>()
-                    .Where(p => p["actorType"]?.GetValue<string>() == "guardian" && p["actorId"]?.GetValue<string>() == change.TargetId &&
+                    .Where(p => p["actorType"]?.GetValue<string>() == "guardian" && SpiritualTreatmentParticipation.ProfileId(p) == change.TargetId &&
                         AfterlifeEntityProfileState.TryNormalizeEffectRealm(p["realm"]?.GetValue<string>(), out var realm) && realm == "chaos_sea").ToArray();
                 if (target is not { Length: 1 } || target[0]["locationId"]?.GetValue<string>() != scope.LocationId ||
                     !_wounds.Any(w => w.Owner.OwnerKind == "guardian" && w.Owner.OwnerId == change.TargetId &&
@@ -96,13 +96,15 @@ internal static partial class AfterlifeWoundHealingPlanner
         internal void ApplyParticipationAfterImage(JsonObject profiles)
         {
             if (_participationOutcomes is null) return;
-            RequireCurrent(_files, _lease);
+            // Pure detached composition; current authority is checked by the
+            // actual owner at preparation and immediately before common publish.
+            if (_published) throw new InvalidDataException("A closed participation owner cannot compose another afterimage.");
             foreach (var outcome in _participationOutcomes.OfType<JsonObject>())
             {
                 var record = outcome["record"]!.AsObject();
                 var id = record["targetId"]!.GetValue<string>();
                 var target = profiles[AfterlifeEntityProfileState.ProfilesProperty]!.AsArray().OfType<JsonObject>()
-                    .Single(p => p["actorType"]?.GetValue<string>() == "guardian" && p["actorId"]?.GetValue<string>() == id);
+                    .Single(p => p["actorType"]?.GetValue<string>() == "guardian" && SpiritualTreatmentParticipation.ProfileId(p) == id);
                 var expected = _participationChanges!.Single(c => c.TargetId == id).Proposal;
                 if (!JsonNode.DeepEquals(target[SpiritualTreatmentParticipation.ChangeProperty], expected))
                     throw new InvalidDataException("Participation afterimage lost the actual accepted proposal.");

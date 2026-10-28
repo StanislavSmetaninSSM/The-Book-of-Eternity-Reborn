@@ -1,3 +1,4 @@
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
@@ -48,6 +49,22 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
             await fixture.Files.WriteFileAtomicAsync(lease, WoundCarrierCatalog.AfterlifeProfilesPath, profiles.ToJsonString());
         }
 
+        await using (var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync())
+        {
+            await fixture.WriteReportAsync(lease);
+            var raw = (await fixture.Files.ReadFileBytesAsync(lease, WoundCarrierCatalog.AfterlifeProfilesPath))!;
+            var forged = JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(raw))!.AsObject();
+            forged["profiles"]!.AsArray().OfType<JsonObject>().Single(p => p["actorId"]!.GetValue<string>() == AidGuardianId)
+                [SpiritualTreatmentParticipation.RecordProperty] = new JsonObject { ["status"] = "granted" };
+            await fixture.Files.WriteFileAtomicAsync(lease, WoundCarrierCatalog.AfterlifeProfilesPath, forged.ToJsonString());
+            var before = fixture.CaptureMutationRoots();
+            var refusal = await new ValidationService(fixture.Files, NullLogger<ValidationService>.Instance)
+                .PrepareSpiritualSelfTreatmentPublicationAsync(lease);
+            Assert.Contains(refusal, i => i.Code == "spiritual_participation_invalid" &&
+                i.Actual!.Contains("cannot mint or change", StringComparison.Ordinal));
+            fixture.AssertMutationRootsUnchanged(before);
+            await fixture.Files.WriteFileAtomicBytesAsync(lease, WoundCarrierCatalog.AfterlifeProfilesPath, raw);
+        }
         var published = await PublishAsync(fixture);
         Assert.NotNull(published); // A refusal cannot masquerade as missing-grant causal RED.
         var after = Assert.Single((await fixture.ReadWoundsAsync()).Occurrences).Wound;
@@ -78,9 +95,100 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
         Assert.Equal(3, result["schemaVersion"]!.GetValue<int>());
         var outcome = Assert.Single(result["participationOutcomes"]!.AsArray());
         Assert.True(JsonNode.DeepEquals(participation, outcome!["record"]));
-        Assert.False(string.IsNullOrWhiteSpace(outcome["contentFingerprint"]!.GetValue<string>()));
+        Assert.Equal(SpiritualTreatmentParticipation.Fingerprint(participation.AsObject()), outcome["contentFingerprint"]!.GetValue<string>());
+        var parserIssues = new List<ValidationIssue>();
+        Assert.NotNull(SpiritualHealingPersistedResult.Parse(JsonSerializer.SerializeToElement(result), "valid.participation", parserIssues));
+        Assert.Empty(parserIssues);
+        foreach (var invalid in new[] { "v2_payload", "v3_missing", "v3_empty", "v3_foreign_content" })
+        {
+            var changed = result.DeepClone().AsObject();
+            switch (invalid)
+            {
+                case "v2_payload": changed["schemaVersion"] = 2; break;
+                case "v3_missing": changed.Remove("participationOutcomes"); break;
+                case "v3_empty": changed["participationOutcomes"] = new JsonArray(); break;
+                default: changed["participationOutcomes"]![0]!["record"]!["readableEvidence"] = "Иное согласие с тем же принятым tuple."; break;
+            }
+            changed["resultFingerprint"] = WoundHistoryState.ComputeTransitionResultFingerprint(changed);
+            parserIssues.Clear();
+            Assert.Null(SpiritualHealingPersistedResult.Parse(JsonSerializer.SerializeToElement(changed), invalid, parserIssues));
+            Assert.Contains(parserIssues, i => i.Code == "spiritual_healing_history_invalid");
+        }
+        await using (var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync())
+        {
+            var manifest = await fixture.ReadManifestAsync(lease);
+            Task<SpiritualHealingPersistedResult?> Read() => ProgressionScheduleService.ReadPublishedSpiritualCycleCoreAsync(
+                control, manifest.SessionId, manifest.RequestId, manifest.TurnNumber,
+                p => fixture.Files.ReadFileBytesAsync(lease, p), manifest.ManifestPayloadHash, expectedNaturalProjection: projection);
+            Assert.NotNull(await Read());
+            var bytes = (await fixture.Files.ReadFileBytesAsync(lease, WoundCarrierCatalog.AfterlifeProfilesPath))!;
+            acceptedGuardian[SpiritualTreatmentParticipation.RecordProperty]!["readableEvidence"] = "Подмена содержимого с чужим прежним accepted tuple.";
+            await fixture.Files.WriteFileAtomicAsync(lease, WoundCarrierCatalog.AfterlifeProfilesPath, current.ToJsonString());
+            var before = fixture.CaptureMutationRoots();
+            var refusal = await Assert.ThrowsAsync<InvalidDataException>(() => Read());
+            Assert.Contains("exact accepted profile content", refusal.Message);
+            fixture.AssertMutationRootsUnchanged(before);
+            await fixture.Files.WriteFileAtomicBytesAsync(lease, WoundCarrierCatalog.AfterlifeProfilesPath, bytes);
+            Assert.NotNull(await Read());
+        }
         fixture.AssertResourcesUnchanged();
     }
+
+    [Fact]
+    public async Task RolledBackNaturalGrantCannotLeaveAParticipationRecordOrAcceptedWitness()
+    {
+        var armed = false;
+        var reached = 0;
+        FileSystemManager? owned = null;
+        var fault = new ParticipationPublicationFault();
+        await using var fixture = await HealingFixture.CreateAsync(3, 3, 20, stageRequest: false,
+            beforeResourceBootstrap: SeedAidGuardianAsync, hooks: new FileSystemManagerHooks
+            {
+                LocalPublicationObserver = (phase, _) =>
+                {
+                    if (!armed || phase != TrustedLocalPublicationPhase.MemberPublished) return;
+                    var root = JsonNode.Parse(File.ReadAllText(owned!.ResolvePath(WoundCarrierCatalog.AfterlifeProfilesPath)))!;
+                    if (!root["profiles"]!.AsArray().OfType<JsonObject>().Any(p =>
+                            p[SpiritualTreatmentParticipation.RecordProperty] is not null)) return;
+                    reached++; armed = false;
+                    throw fault; // After actual profile publication, before transaction completion.
+                }
+            });
+        owned = fixture.Files;
+        await StageAsync(fixture);
+        await using var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync();
+        var profiles = JsonNode.Parse((await fixture.Files.ReadFileAsync(lease, WoundCarrierCatalog.AfterlifeProfilesPath))!)!.AsObject();
+        profiles["profiles"]!.AsArray().OfType<JsonObject>().Single(p => p["actorId"]!.GetValue<string>() == AidGuardianId)
+            [SpiritualTreatmentParticipation.ChangeProperty] = new JsonObject
+            {
+                ["schemaVersion"] = 1, ["operation"] = "grant", ["healerId"] = "player_soul",
+                ["woundId"] = "wound_spiritual_session", ["conscious"] = true, ["capable"] = true,
+                ["readableEvidence"] = "Хранитель разрешает душе лечить эту рану."
+            };
+        await fixture.Files.WriteFileAtomicAsync(lease, WoundCarrierCatalog.AfterlifeProfilesPath, profiles.ToJsonString());
+        await fixture.WriteReportAsync(lease);
+        var issues = await new ValidationService(fixture.Files, NullLogger<ValidationService>.Instance)
+            .PrepareSpiritualSelfTreatmentPublicationAsync(lease);
+        Assert.DoesNotContain(issues, i => i.Severity == IssueSeverity.Error);
+        var before = fixture.CaptureMutationRoots();
+        Exception? failure;
+        armed = true;
+        try
+        {
+            failure = await Record.ExceptionAsync(() => new CanonicalStateNormalizer(fixture.Files,
+                NullLogger<CanonicalStateNormalizer>.Instance).BindTo(lease).NormalizeAcceptedMechanicsAsync(backups: null));
+        }
+        finally { armed = false; }
+        Assert.Equal(1, reached);
+        Assert.NotNull(failure);
+        Assert.IsNotType<CoordinatedStatePublicationUncertainException>(failure);
+        fixture.AssertMutationRootsUnchanged(before);
+        Assert.DoesNotContain((await fixture.ReadHistoryAsync()).Transitions, t => t.TransitionResult is SpiritualHealingPersistedResult);
+        var after = JsonNode.Parse((await fixture.Files.ReadFileAsync(lease, WoundCarrierCatalog.AfterlifeProfilesPath))!)!;
+        Assert.All(after["profiles"]!.AsArray().OfType<JsonObject>(), p => Assert.Null(p[SpiritualTreatmentParticipation.RecordProperty]));
+    }
+
+    private sealed class ParticipationPublicationFault : InvalidOperationException { }
 
     private static async Task SeedAidGuardianAsync(FileSystemManager files, JsonObject profiles)
     {
