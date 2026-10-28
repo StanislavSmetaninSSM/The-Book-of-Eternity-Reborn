@@ -54,7 +54,7 @@ public sealed class AfterlifeSpiritualNaturalRecoveryTests
             owner.BindOrdinaryEffectInput(prepared, input);
             var executed = WoundEffectBatchPlanner.Build(prepared, input, new EffectIdentityFactory());
             Assert.True(executed.Success, string.Join(";", executed.Issues.Select(i => i.Actual)));
-            var authority = executed.Plan!.SourceAuthority;
+            var authority = executed.Plan!.EffectPlan.SourceAuthority;
             var current = authority.ResolveCanonicalBinding(new("chaos_sea", "spiritual_art", "art_ordinary_companion",
                 "definition_new_ordinary_source"), "player");
             Assert.True(current.Success);

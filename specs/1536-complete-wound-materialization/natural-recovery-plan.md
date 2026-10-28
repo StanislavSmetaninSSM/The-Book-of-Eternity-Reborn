@@ -82,3 +82,5 @@
 - Final static candidate is14cases/6descriptors over five categories: contract3 → publication4 → caller1 → lifecycle5 → authored-graphs1. Added existing authored-graphs singleton is the smallest changed consumed-self-I/schema2 regression, without browser/heavyselfgraph repetition. All these current sources remain UNCOMPILED/UNRUN.
 
 - Final finite SOURCE closures: worked H5/II example requires the actual intermediate I graph even when the same cycle later heals. Natural handoff now reads one detached owner.Input for bundle+sink (bundle keeps its own defensive copy), avoiding a redundant full input clone; no cache/lifetime/authority change.
+
+- First owning build atd691 completed Main+TestSupport but Integration exited1:137warnings/oneCS1061 at new source-control line57 (batch wrapper exposes EffectPlan.SourceAuthority, not SourceAuthority).6:14.60, no runtime. Exact existing nested typed access corrected; production unchanged, successful Main/Support masters and Support Main-copy pinned externally. Narrow delta SOURCE then fresh Integration-only refsfalse retry, Unitrefsfalse and the same released14/6 PlanOnly/actuals; no second owning rebuild needed.
