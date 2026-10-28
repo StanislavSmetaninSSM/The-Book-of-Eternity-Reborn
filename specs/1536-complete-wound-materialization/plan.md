@@ -1,5 +1,31 @@
 # US4 safe self-treatment — active functional work, 2026-10-28
 
+Warning-clean fb8157618 qualification: owning build 0 errors / 137 baseline
+warnings / 4:22.52; Unit refsfalse 0 errors / 26 warnings / 59.49 s. All 9 pins
+match (Main9bb64d85…, Support130a2d82…, Integration5957de6d…, Unitf38c5fbd…).
+Official PlanOnly exactly 17 cases / 11 descriptors, 0 executed, 13.5544817 s.
+Guidance2, full-locality/profile1, natural-publication4 and issuer2 all PASS:
+9 unique passing cases, original budgets, complete/no skip/duplicate/timeout,
+both cleanup flags true. Locality now executes real H0→H1 progression, old-H0
+recovery1, client mirror999→Soul0 and every independent foreign-write guard.
+Raw external spiritual-aid-profile-1; no speedup claim from these elapsed values.
+
+Backend1 completed FAIL in 45.9151985 s without timeout/duplicate, both cleanup
+flags true; TRX 4eaf31b6bacc1d79c2d292eb0a956d59321ff7b0373031280ec331a23f2a9388.
+It manually advanced locality AFTER plan creation, then started a NEW common
+preflight, which correctly rejected old guardians BeforeImages at1290/647.
+Actual fullCore prevalidates first, performs owned writes, then closes only its
+captured snapshot authority plus owner inputs; no plan-beforeimage rebase is needed.
+The test now uses the real full normalizer route, full Guardian pre-bootstrap
+seed and standard raw-location/item admission. It asserts actual changed locality,
+closed owner, frozen source fingerprint/signed locality and all original strict
+result/replay/History/no-cost outcomes. This test-only correction is UNCOMPILED/
+UNRUN; production/guards remain unchanged. Remaining7 actuals were not launched.
+Narrow SOURCE must release fresh Integration refsfalse and remaining8cases/6desc
+PlanOnly: backend1/120 → SELFgraphs1/120 → selfconsole1/180 → Shining1/180 →
+aidconsole2/180 → aidbrowser2/180. Retain 9 current PASS + Main/Support/Unit;
+do not repeat the entire17 or change sealed plan/closing semantics for this fixture.
+
 First full-profile build on de192bd75 passed: owning Integration/Main/Support
 0 errors, 138 warnings, 4:08.64; Unit refsfalse 0 errors, 26 warnings, 1:09.28.
 One introduced CS8602 at Planner78 is recorded separately from baseline warnings:

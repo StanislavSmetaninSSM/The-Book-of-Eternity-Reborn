@@ -14,7 +14,7 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
     public async Task ActiveAidRequiresTheCommittedGrantAndRetainsOneAttemptThroughPublicationAndReplay()
     {
         await using var fixture = await HealingFixture.CreateAsync(3, 3, 14, stageRequest: false,
-            beforeResourceBootstrap: SeedAidGuardianAsync);
+            beforeResourceBootstrap: ExplorerWoundSelfTreatmentTests.SeedEngineAidGuardianAsync);
         var selection = await CommitAidGrantAsync(fixture);
         var original = Assert.Single((await fixture.ReadWoundsAsync()).Occurrences).Wound;
         Assert.Equal(1, original.Recovery.CurrentStepProgress); // Actual grant-turn natural tick changed the selected FP.
@@ -114,6 +114,8 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
         {
             await WriteAidReportAsync(files, lease, control);
             var validator = new ValidationService(files, NullLogger<ValidationService>.Instance);
+            Assert.DoesNotContain(await validator.ValidateAcceptedTurnRawMortalLocationMaterializationAsync(), i => i.Severity == IssueSeverity.Error);
+            Assert.DoesNotContain(await validator.ValidateAcceptedTurnRawMortalItemMaterializationAsync(lease), i => i.Severity == IssueSeverity.Error);
             var missingGraphs = await validator.PrepareSpiritualSelfTreatmentPublicationAsync(lease);
             Assert.Contains(missingGraphs, i => i.Actual?.Contains("GM-authored spiritual destination graphs are required", StringComparison.Ordinal) == true);
             Assert.True(JsonNode.DeepEquals(request, JsonNode.Parse((await files.ReadFileAsync(lease, AcceptedMechanicsPlan.WoundCommandPath))!)));
@@ -149,18 +151,19 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
             var aidOwner = Assert.IsType<AfterlifeWoundHealingPlanner.Continuation>(ready.Plan!.SpiritualHealingContinuation);
             var originalSourceFingerprint = aidOwner.SourceFingerprint;
             var signedLocality = (await files.ReadFileBytesAsync(lease, manifest.Files[localPath]))!;
-            var ownedLocality = JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(locality))!.AsObject();
-            foreach (var guardian in ownedLocality["guardians"]!.AsArray().OfType<JsonObject>())
-                GuardianTradeRequestState.NormalizeGuardianTradeReceiptsShape(guardian);
-            ownedLocality["activeGuardian"] = ownedLocality["guardians"]![0]!.DeepClone();
-            var ownedContent = ownedLocality.ToJsonString();
-            await aidOwner.PublishOwnedLocalityNormalizationAsync(files, lease, localPath, ownedContent,
-                _ => files.WriteFileAtomicAsync(lease, localPath, ownedContent));
-            aidOwner.RequireCurrent(files, lease); // Aid main18 closing map, not issuer extra2.
+            Assert.True(aidOwner.HasCompleteProfileProjection);
+            // Real preflight must precede owned normalization. A manual write
+            // followed by a second preflight correctly fails the sealed plan's
+            // original BeforeImages and is not the production writer route.
+            Assert.NotNull(await new CanonicalStateNormalizer(files, NullLogger<CanonicalStateNormalizer>.Instance)
+                .BindTo(lease).NormalizeAccumulatedStateWithPlanAsync(manifest.Files));
+            Assert.True(aidOwner.IsClosed); // Actual publication re-proved the aid main18 closing map.
             Assert.Equal(originalSourceFingerprint, aidOwner.SourceFingerprint);
             Assert.Equal(signedLocality, await files.ReadFileBytesAsync(lease, manifest.Files[localPath]));
-            Assert.NotNull(await new CanonicalStateNormalizer(files, NullLogger<CanonicalStateNormalizer>.Instance)
-                .BindTo(lease).NormalizeAcceptedMechanicsAsync(backups: null));
+            var normalizedLocality = (await files.ReadFileBytesAsync(lease, localPath))!;
+            Assert.False(locality.AsSpan().SequenceEqual(normalizedLocality));
+            Assert.Empty(JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(normalizedLocality))!
+                ["guardians"]![0]![GuardianTradeRequestState.ReceiptsProperty]!.AsArray());
             Assert.NotNull(await ProgressionScheduleService.ReadPublishedSpiritualCycleCoreAsync(control,
                 manifest.SessionId, manifest.RequestId, 44, p => files.ReadFileBytesAsync(lease, p), manifest.ManifestPayloadHash, request));
         }
