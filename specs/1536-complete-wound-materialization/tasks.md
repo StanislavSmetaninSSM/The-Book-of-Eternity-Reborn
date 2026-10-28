@@ -14349,10 +14349,14 @@ then failed only at Begin's unsupported signed observed-optional path set. The
 second currently produced combat presence form compiled at ddcb; observation
 8 / 8 PASS is independently accepted. Paired quartet then reached full Begin but
 three lawful healing responses hit the old unchanged-strain guard; one test read
-its original C1 owner after transport commit. Narrow declared paid-treatment shape
-and precommit candidate observation are written UNCOMPILED/UNRUN. Original/dice/
-cost/source authority remains exact; proposed remaining 18 / 9 adds only two old
-no_effect/pressure-success guards. No combat gameplay PASS or full task closure.
+its original C1 owner after transport commit. Narrow declared paid-treatment shape and precommit candidate observation compiled
+at 275; actual quartet now reaches real pairs, then resolved automatic draft gives
+an opaque refusal and one player-worsening proposal inherits guardian definitions.
+Phase/inner issues are written to the EXISTING technical Actual carrier; exact
+draft cause remains UNKNOWN, not fixed. Proven targetKind and sync-read-hook fixture
+corrections are grouped UNCOMPILED/UNRUN. Remaining18/9 are Integration-only: fresh
+Main/Support/Integration and six pins, no unnecessary Unit rebuild. Prior17 Passed
+rows retain their own lineages; no combat gameplay PASS or full task closure.
   Next bounded player-result is tracked jointly with T102/T103 in
   spiritual-combat-healing-design.md (DESIGN ACCEPT c3caf534c): player self treatment in actual active
   direct Chaos duel, counterable typed operation, exact original die/art/target,

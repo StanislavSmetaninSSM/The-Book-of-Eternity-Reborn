@@ -1,3 +1,53 @@
+# Combat draft phase visibility + proven fixture corrections — UNCOMPILED/UNRUN
+
+2026-10-28: owning 275 build8 completed with 0 errors, 137 baseline warnings,
+4:47.24; Unit refsfalse 0 errors, 26 warnings, 1:32.29. Actual official PlanOnly
+18 cases / 9 descriptors / 9 categories, zero executions, 13.3544583 seconds.
+All 9 pre/post DLL pins matched that lineage. Paired quartet completed 0 PASS /
+4 FAIL, 45.2666974 seconds, category 32.8234988 < 120, complete/no timeout or
+duplicates/both cleanup flags true; TRX 0a337ee4…a2773. All initial pairs and C1
+assertions now execute. No-improvement/next-boundary Open returns the generic
+saved-decision draft failure; healed's ordinary read fault hook is not reached.
+Blocked reaches Submit, where both guardian-default definitions reject the actual
+player target. No downstream 14 cases ran. Observation8 + historical9 remain
+accepted at their distinct lineages; no combat gameplay PASS is established.
+
+Finite source analysis by writer/Astra cannot honestly select a unique resolved
+failure: the existing outer catch discards the exception message and new combat
+wrappers discard their inner ValidationIssues. The written change preserves only
+phase and original issue details in existing ValidationIssue.Actual for an actual
+combat owner. It does NOT fix or guess that failure, suppress a guard, add a
+logger/callback/framework or alter the outcome. Noncombat Actual/default and the
+existing CSPU exclusion remain exact. Message, ToString, narrative, notifications
+and result builders are unchanged. The actual Engine consumer logs the existing
+Actual field; existing manual validation/advanced diagnostics use sanitized facts
+or ordinary React text rendering, not new raw markup or narrative fields. No new
+player-facing field or hidden actor/wound presentation route is introduced.
+
+Two independent fixture corrections are proven by full source comparison:
+CreateSpiritualWorseningLifecycleDecision now forwards optional targetKind with
+unchanged guardian default; combat explicitly requests player, so BOTH its guard
+and cloned maneuver definitions/labels have the exact actual effect target kind.
+All other proposal classification/recovery/policy/blockers/threshold/treatment/
+complication sections already match the real worsening composer. The original
+fault cut uses existing AfterCanonicalReadInitialValidationAsync at the SAME
+session-relative archived command path from manifest.Files. This is the sync
+ReadFileBytesSync consumer used by the actual observed snapshot reader; neither
+async BeforeCanonicalReadOpenAsync nor exact-physical read hooks cover that path.
+One-cut/exact exception/unchanged pair and finally-disarm/fresh-positive assertions
+remain unchanged. This is hook placement, not a new production uncertainty fix.
+
+After bounded grouped SOURCE/PREP: one already planned paired attempt under its
+original 120-second category budget must expose the actual phase or pass. No new
+run matrix and no downstream work before a real PASS. The official remaining18/9
+are ALL Integration descriptors, so the next affected owning build is Main/Support/
+Integration only, with SIX master/copy pins. Unit is not rebuilt or relabelled
+current: its retained results stay at their historical binaries. The external
+proof wrapper now derives selected projects from the unchanged catalog selectors
+and records only those owning copies; official runner/commands remain unchanged.
+Fresh PlanOnly18/9 precedes pair4; remaining14 follow only on its actual outcome.
+No new GM authoring schema or user rule is introduced. Broader tasks/HOLDs remain.
+
 # Combat declared response shape + first-pair observer — UNCOMPILED/UNRUN
 
 2026-10-28: owning ddcb build completed with 0 errors, 137 baseline warnings,

@@ -36,7 +36,7 @@ public sealed partial class AfterlifeResourceCutoverTests
         var publicationFailure = new IOException("Combat common publication write failure.");
         var hooks = new FileSystemManagerHooks
         {
-            BeforeCanonicalReadOpenAsync = path =>
+            AfterCanonicalReadInitialValidationAsync = path =>
             {
                 if (injectOriginalRead && path == originalCommandPath)
                 {
@@ -333,7 +333,8 @@ public sealed partial class AfterlifeResourceCutoverTests
             {
                 Assert.Equal("offer", opened.Disposition);
                 using var offered = opened.Session!;
-                var proposal = JsonNode.Parse(CreateSpiritualWorseningLifecycleDecision(offered.Offer!.OpportunityRef, true).GetRawText())!;
+                var proposal = JsonNode.Parse(CreateSpiritualWorseningLifecycleDecision(offered.Offer!.OpportunityRef, true,
+                    targetKind: "player").GetRawText())!;
                 var retained = JsonNode.Parse(WoundMaterializationContract.SerializeCanonical(before))!;
                 proposal["proposal"]!["classification"] = new JsonObject
                 { ["woundType"] = retained["classification"]!["woundType"]!.DeepClone(), ["locationProfile"] = retained["classification"]!["locationProfile"]!.DeepClone() };

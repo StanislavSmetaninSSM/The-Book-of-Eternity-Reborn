@@ -164,7 +164,11 @@ public partial class ValidationService
                 InvalidOperationException or InvalidDataException or FormatException or JsonException or OverflowException or
                 DecoderFallbackException))
             {
-                return DecisionDraftFailure("spiritual_c2_decision_draft_failed");
+                // Technical details stay in the existing diagnostic report field;
+                // Message/player narrative is unchanged. Legacy injury diagnostics keep
+                // their current shape; actual combat ownership selects this detail.
+                return DecisionDraftFailure("spiritual_c2_decision_draft_failed",
+                    _combatHealingOrigin is null ? null : "combat saved-decision preparation: " + error.Message);
             }
             finally
             {
@@ -283,12 +287,12 @@ public partial class ValidationService
             row["contentFingerprint"] = image.Fingerprint;
         }
 
-        private static SpiritualC2DecisionDraftResult DecisionDraftFailure(string code) =>
+        private static SpiritualC2DecisionDraftResult DecisionDraftFailure(string code, string? actual = null) =>
             new(null, null,
             [
                 new ValidationIssue(SpiritualWoundCaptureCheckpointState.StatePath,
                     IssueSeverity.Error, "The saved spiritual decision cannot be derived from its owners.",
-                    code: code, section: "AcceptedTurnWoundMaterialization")
+                    code: code, section: "AcceptedTurnWoundMaterialization", actual: actual)
             ]);
         /// <summary>
         /// Reexecutes one registered decision layer through source, wound, resource and effect owners.

@@ -33,18 +33,18 @@ public partial class ValidationService
             var issues = new List<ValidationIssue>();
             var selection = CombatHealingSelection.CaptureAtClosedInterval(this, interval, issues);
             if (issues.Count != 0 || source.Disposition == "resolved" && selection is null)
-                throw new InvalidDataException("Healing selection could not be admitted from the actual owners.");
+                throw CombatDecisionFailure("selection", issues);
             SpiritualCombatHealingPersistedResult? result = null;
             if (selection is not null)
             {
                 var before = _effects.AdvanceForWoundInsertion(selection, issues);
-                if (before is null || issues.Count != 0) throw new InvalidDataException("Combat wound-before admission failed.");
+                if (before is null || issues.Count != 0) throw CombatDecisionFailure("wound-before admission", issues);
                 var prepared = before.Prepare(); issues.AddRange(prepared.Issues);
-                if (!prepared.Success || issues.Count != 0) throw new InvalidDataException("Combat preparation failed.");
+                if (!prepared.Success || issues.Count != 0) throw CombatDecisionFailure("preparation", issues);
                 var insertion = before.Apply(issues);
-                if (insertion is null || issues.Count != 0) throw new InvalidDataException("Combat wound insertion failed.");
+                if (insertion is null || issues.Count != 0) throw CombatDecisionFailure("wound insertion", issues);
                 var registered = _resources.RegisterWoundInstances(insertion, issues);
-                if (registered is null || issues.Count != 0) throw new InvalidDataException("Combat routing registration failed.");
+                if (registered is null || issues.Count != 0) throw CombatDecisionFailure("routing registration", issues);
                 _effects.AcceptInstalledWoundRouting(insertion, _resources);
                 _registeredCombatHealingInsertion = insertion;
                 result = SpiritualCombatHealingPersistedResult.Create(selection, insertion.CombatStages);
@@ -63,5 +63,9 @@ public partial class ValidationService
             var staged = new JsonObject { ["family"] = "combat_healing", ["decisionFingerprint"] = decision["decisionFingerprint"]!.DeepClone(), ["outcome"] = decision.DeepClone() };
             return new(root, staged, interval, null, null);
         }
+
+        private static InvalidDataException CombatDecisionFailure(string phase, IReadOnlyList<ValidationIssue> issues) =>
+            new("Combat healing " + phase + " failed. " + string.Join("; ", issues.Select(issue =>
+                issue.Code + ": " + issue + "; expected=" + issue.Expected + "; actual=" + issue.Actual)));
     }
 }

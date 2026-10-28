@@ -86,17 +86,20 @@ public sealed partial class AfterlifeResourceCutoverTests
     /// <param name="worsening">
     /// <see langword="true"/> for rank II with a maneuver consequence and distinct later narration; <see langword="false"/> for the first rank-I acquisition.
     /// </param>
+    /// <param name="targetKind">Exact effect target kind; existing callers retain guardian.</param>
     /// <returns>
     /// A detached GM decision containing no client identity or private continuation authority.
     /// </returns>
-    internal static JsonElement CreateSpiritualWorseningLifecycleDecision(string opportunityRef, bool worsening)
+    internal static JsonElement CreateSpiritualWorseningLifecycleDecision(string opportunityRef, bool worsening,
+        string targetKind = "guardian")
     {
         var decision = JsonNode.Parse(OriginalSpiritualWoundDecision(opportunityRef,
-            "spiritual_action_cost_burden", "guard").GetRawText())!;
+            "spiritual_action_cost_burden", "guard", targetKind).GetRawText())!;
         if (worsening)
         {
             decision["proposal"]!["severity"] = "II";
-            decision["proposal"]!["display"]!["acquisitionNarration"] = "Новый натиск углубил надлом воли хранителя.";
+            decision["proposal"]!["display"]!["acquisitionNarration"] = targetKind == "player"
+                ? "Новый натиск углубил надлом воли души." : "Новый натиск углубил надлом воли хранителя.";
             var definitions = decision["proposal"]!["consequenceDefinitions"]!.AsArray();
             var extra = definitions[0]!.DeepClone();
             extra["definitionRef"] = "maneuver_burden";
