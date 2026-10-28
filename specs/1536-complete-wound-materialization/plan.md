@@ -6,8 +6,10 @@ confirmed receive_aid selection/queue/staging gate; actual Guardian healer + pla
 target source roles; v4 historical offer linkage and strict committed cleanup
 reader; same shared UI choices/ConfirmAsync and old one-shot/queued Engine entry.
 Original/input/source18/closing machinery remains shared. No new permission
-registry, receipt, source path or executor. The existing actual caller tests and
-GM contract/example still need extension and independent coherent SOURCE/PREP
+registry, receipt, source path or executor. The existing actual caller helper now has explicit reverse console/browser
+journeys plus typed reverse backend refusal/replay controls, all UNRUN. GM
+contract/example and final category ownership still need synchronization before
+independent coherent SOURCE/PREP
 before any owning build. Prior accepted results retain their recorded lineages.
 
 Accepted player→Guardian17 is recorded below; no unchanged runtime repeats.

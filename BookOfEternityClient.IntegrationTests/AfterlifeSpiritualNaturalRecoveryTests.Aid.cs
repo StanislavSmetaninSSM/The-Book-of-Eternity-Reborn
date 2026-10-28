@@ -190,38 +190,46 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
 
     private sealed class ParticipationPublicationFault : InvalidOperationException { }
 
-    internal static async Task SeedAidGuardianAsync(FileSystemManager files, JsonObject profiles)
+    internal static Task SeedAidGuardianAsync(FileSystemManager files, JsonObject profiles) =>
+        SeedAidGuardianCoreAsync(files, profiles, guardianIsHealer: false);
+    internal static Task SeedReceivingGuardianAsync(FileSystemManager files, JsonObject profiles) =>
+        SeedAidGuardianCoreAsync(files, profiles, guardianIsHealer: true);
+
+    private static async Task SeedAidGuardianCoreAsync(FileSystemManager files, JsonObject profiles, bool guardianIsHealer)
     {
         // This is canonical initial create DATA, not an invented accepted grant.
         // It runs before the fixture's one real resource bootstrap.
         await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
         var player = profiles["profiles"]![0]!.AsObject();
         var wound = player["activeWounds"]![0]!.DeepClone().AsObject();
-        wound["owner"]!["ownerKind"] = "guardian";
-        wound["owner"]!["ownerId"] = AidGuardianId;
+        if (!guardianIsHealer)
+        {
+            wound["owner"]!["ownerKind"] = "guardian";
+            wound["owner"]!["ownerId"] = AidGuardianId;
+        }
         wound["display"]!["visibility"] = "public";
         foreach (var definition in wound["consequences"]!["ownedEffectSources"]!["definitions"]!.AsArray().OfType<JsonObject>())
-            definition["allowedTargetKinds"] = new JsonArray("guardian");
+            definition["allowedTargetKinds"] = new JsonArray(guardianIsHealer ? "player_soul" : "guardian");
         var effects = player["activeEffects"]!.AsArray().OfType<JsonObject>().Select(e => e.DeepClone().AsObject()).ToArray();
         foreach (var effect in effects)
         {
-            effect["target"]!["kind"] = "guardian";
-            effect["target"]!["targetId"] = AidGuardianId;
+            effect["target"]!["kind"] = guardianIsHealer ? "player_soul" : "guardian";
+            effect["target"]!["targetId"] = guardianIsHealer ? "player_soul" : AidGuardianId;
         }
         var guardian = AfterlifeActorMaterializationTestFixture.CreateCompleteProfile("guardian", AidGuardianId, "Chaos Sea", 42);
         guardian["displayName"] = "Хранитель целостности";
         guardian["locationId"] = AidAbodeId;
-        guardian["standardArts"]!["spiritual_healing"] = 0;
-        guardian["activeWounds"] = new JsonArray(wound);
-        guardian["activeEffects"] = new JsonArray(effects.Select(e => (JsonNode)e.DeepClone()).ToArray());
-        player["activeWounds"] = new JsonArray();
-        player["activeEffects"] = new JsonArray();
+        guardian["standardArts"]!["spiritual_healing"] = guardianIsHealer ? 3 : 0;
+        guardian["activeWounds"] = guardianIsHealer ? new JsonArray() : new JsonArray(wound.DeepClone());
+        guardian["activeEffects"] = guardianIsHealer ? new JsonArray() : new JsonArray(effects.Select(e => (JsonNode)e.DeepClone()).ToArray());
+        player["activeWounds"] = guardianIsHealer ? new JsonArray(wound.DeepClone()) : new JsonArray();
+        player["activeEffects"] = guardianIsHealer ? new JsonArray(effects.Select(e => (JsonNode)e.DeepClone()).ToArray()) : new JsonArray();
         profiles["profiles"]!.AsArray().Add(guardian);
         var parsed = WoundMaterializationContract.Parse(wound.ToJsonString(), "aid.seed");
         Assert.True(parsed.IsValid, string.Join(";", parsed.Issues.Select(i => i.Actual)));
         var w = parsed.Wound!;
         var fp = WoundIdentityState.ComputeSemanticFingerprint(w);
-        var identity = WoundContractTestData.CreateIdentityEntry(w.WoundId, "chaos_sea", "guardian", AidGuardianId,
+        var identity = WoundContractTestData.CreateIdentityEntry(w.WoundId, "chaos_sea", w.Owner.OwnerKind, w.Owner.OwnerId,
             WoundCarrierCatalog.AfterlifeProfilesPath, "spiritual", semanticFingerprint: fp);
         var row = WoundContractTestData.CreateTransition();
         row["woundId"] = w.WoundId; row["transitionId"] = w.LastTransition.TransitionId;
