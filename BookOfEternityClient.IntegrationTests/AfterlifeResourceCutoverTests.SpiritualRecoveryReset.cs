@@ -26,8 +26,16 @@ public sealed partial class AfterlifeResourceCutoverTests
                 await SeedOriginalIntakeBaselinesAsync(original);
                 await SeedSpiritualWorseningTierAuthorityAsync(original);
                 await SeedRecoveryResetOriginalAsync(original);
-                await new ProgressionScheduleService(original.FileSystem,
-                    NullLogger<ProgressionScheduleService>.Instance).EnsureInitializedAsync();
+            },
+            captureOriginalSnapshot: async original =>
+            {
+                var conflictControl = await new ProgressionScheduleService(original.FileSystem,
+                    NullLogger<ProgressionScheduleService>.Instance).BuildControlForNextTurnAsync();
+                await using (var lease = await original.FileSystem.AcquireCanonicalWriteLeaseAsync())
+                    Assert.Null(await AfterlifeWoundTreatmentAuthority.ProjectNaturalRecoveryAsync(original.FileSystem, lease,
+                        new("session_resource_materialization", "request_resource_materialization", 42, conflictControl)));
+                await original.CaptureValidatedPendingSnapshotAsync(turn: 42, currentRealm: "Chaos Sea",
+                    preGeneratedDices1d20: [15, 5, 12, 8]);
             });
         var originalWound = await ReadRecoveryResetWoundAsync(context);
         Assert.Equal(1, originalWound.Severity.Rank);
@@ -38,15 +46,9 @@ public sealed partial class AfterlifeResourceCutoverTests
         var originalHistory = WoundHistoryState.Parse(
             (await context.ReadJsonAsync(WoundHistoryState.HistoryPath))!.ToJsonString(), WoundHistoryState.HistoryPath).State!;
         var scheduler = new ProgressionScheduleService(context.FileSystem, NullLogger<ProgressionScheduleService>.Instance);
-        var conflictControl = await scheduler.BuildControlForNextTurnAsync();
-        await using (var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync())
-            Assert.Null(await AfterlifeWoundTreatmentAuthority.ProjectNaturalRecoveryAsync(context.FileSystem, lease,
-                new("session_resource_materialization", "request_resource_materialization", 42, conflictControl)));
 
         // The normal first-pair issuer captures its own original; no decision,
         // receipt or completed plan is synthesized by this fixture.
-        await context.CaptureValidatedPendingSnapshotAsync(turn: 42, currentRealm: "Chaos Sea",
-            preGeneratedDices1d20: [15, 5, 12, 8]);
         await CommitInitialC2PairAsync(context, candidate =>
         {
             var exchange = candidate["activeConflict"]!["exchangeLog"]![0]!;

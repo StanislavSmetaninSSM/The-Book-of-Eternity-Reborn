@@ -150,3 +150,8 @@ machinery; no second expensive fixture or general cache/framework. No production
 change, previous19 default/body dependencies retained. Need finite SOURCE/PREP,
 one fresh Integration refsfalse build against unchanged Main/Support, official
 singleton PlanOnly and actual120; exact runtime outcome decides acceptance.
+
+- Preparation reuses the existing typed captureOriginalSnapshot callback after
+  seed/authority composition: BuildControl and active-conflict projection refusal
+  precede ONE original capture. This removes the otherwise discarded initial
+  snapshot/recapture, without changing context defaults or freshness checks.
