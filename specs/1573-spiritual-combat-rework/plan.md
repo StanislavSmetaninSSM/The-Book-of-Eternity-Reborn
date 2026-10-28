@@ -21,6 +21,14 @@ Bridge consistency перед probe: сохраняются принятые ф�
 кэш не нужен, стабильные определения используют existing operation service;
 current/ownership/authority/revision остаются свежими.
 
+Результат T051–T053: reserve-and-harmony-proposal.mdv1, specv1.43/modelv2.33.
+Raw S/H без C,Max40P+S,Regen4P+H/5,шкала8P/16P/24P и active16P предложены
+вместе со стартом5/общими10очками/переносомceil(n/5)/+3/+5. Старые пять неизменны.
+Parent и независимый Astra/high подтвердили107 профилей/321 дуэль,12006core,
+4500границ и таблицы цен. Запрошенная сетка воспроизведения добавлена; blocking
+findings нет.187 links/diff PASS, WIP remoteSHA/8blobs совпали. Кандидат готов
+к предъявлению, full balance/runtime/поздние доходы не объявлены проверенными.
+
 ## Текущий срез: принятые воздействия, запас ОД и восстановление
 
 T048→T049→T050, baseline56f8e4146b0db34e66146410f0b7613bd4f0eaa4. Продолжение
