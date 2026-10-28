@@ -62,17 +62,54 @@ public partial class ProgressionScheduleService
         if (expectedSnapshotToken is null ? expectedRequest is not null || expectedNaturalProjection is not null
             : (expectedRequest is null) == (expectedNaturalProjection is null))
             throw new InvalidDataException("Published spiritual original binding is incomplete.");
+        var historyBytes = await read(WoundHistoryState.HistoryPath);
+        if (historyBytes is null) return null;
+        var history = WoundHistoryState.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(historyBytes), WoundHistoryState.HistoryPath);
+        if (!history.IsValid) throw new InvalidDataException("Published spiritual cycle history is not canonical.");
+        return await ReadPublishedSpiritualCycleDataCoreAsync(control, sessionId, requestId, turn, read, history.State!,
+            expectedSnapshotToken, expectedRequest, expectedNaturalProjection);
+    }
+
+    // A completed Engine turn cleans its transient request. Select the actual
+    // client-owned participation result from current History, then apply exactly
+    // the same strict current settlement proof. Its own token is not an
+    // independently supplied expectedOriginal claim.
+    internal static async Task<PublishedSpiritualCycleData?> ReadPublishedParticipationCycleDataAsync(
+        string sessionId, int grantTurn, SpiritualSelfTreatmentSelection selection, Func<string, Task<byte[]?>> read)
+    {
+        var aid = selection.Aid ?? throw new InvalidDataException("A participation reader requires an exact aid selection.");
+        var bytes = await read(WoundHistoryState.HistoryPath);
+        if (bytes is null) return null;
+        var parsed = WoundHistoryState.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(bytes), WoundHistoryState.HistoryPath);
+        if (!parsed.IsValid) throw new InvalidDataException("Published participation History is not canonical.");
+        var candidates = parsed.State!.Transitions.Where(t => t.TransitionResult is SpiritualHealingPersistedResult
+            { IsNatural: true, SchemaVersion: 3 } result && result.MatchesTurn(sessionId, grantTurn)).Select(t =>
+            (Row: t, Root: t.TransitionResult!.ToCanonicalJson())).ToArray();
+        if (candidates.Length == 0) return null;
+        if (candidates.Length != 1) throw new InvalidDataException("Published participation identity is ambiguous.");
+        var candidate = candidates[0];
+        var outcomes = candidate.Root["participationOutcomes"]!.AsArray();
+        var record = outcomes[0]!["record"]!.AsObject();
+        if (outcomes.Count != 1 || record["primaryTransitionId"]!.GetValue<string>() != candidate.Row.TransitionId ||
+            record["healerId"]!.GetValue<string>() != aid.HealerId || record["targetId"]!.GetValue<string>() != aid.TargetId ||
+            record["woundId"]!.GetValue<string>() != selection.WoundId ||
+            SpiritualTreatmentParticipation.Fingerprint(record) != aid.ParticipationFingerprint)
+            throw new InvalidDataException("Published participation does not match its actual primary row and selected content.");
+        var control = candidate.Root["control"]!.Deserialize<ProgressionControl>()!;
+        return await ReadPublishedSpiritualCycleDataCoreAsync(control, sessionId,
+            candidate.Root["binding"]!["requestId"]!.GetValue<string>(), grantTurn, read, parsed.State);
+    }
+
+    private static async Task<PublishedSpiritualCycleData?> ReadPublishedSpiritualCycleDataCoreAsync(ProgressionControl control,
+        string sessionId, string requestId, int turn, Func<string, Task<byte[]?>> read, WoundHistoryState history,
+        string? expectedSnapshotToken = null, JsonObject? expectedRequest = null, JsonObject? expectedNaturalProjection = null)
+    {
         async Task<string?> Text(string path)
         {
             var bytes = await read(path);
             return bytes is null ? null : CanonicalJsonUtf8.DecodeOneOptionalBom(bytes);
         }
-        var historyJson = await Text(WoundHistoryState.HistoryPath);
-        if (historyJson is null) return null;
-        var history = WoundHistoryState.Parse(historyJson, WoundHistoryState.HistoryPath);
-        if (!history.IsValid)
-            throw new InvalidDataException("Published spiritual cycle history is not canonical.");
-        var matching = history.State!.Transitions.Select(t => t.TransitionResult).OfType<SpiritualHealingPersistedResult>()
+        var matching = history.Transitions.Select(t => t.TransitionResult).OfType<SpiritualHealingPersistedResult>()
             .Where(r => r.MatchesBinding(sessionId, requestId, turn))
             .Select(r => (Result: r, Root: r.ToCanonicalJson())).ToArray();
         if (matching.Length == 0) return null;
@@ -106,16 +143,16 @@ public partial class ProgressionScheduleService
         var catalog = WoundCarrierCatalog.Build(new(roots[WoundCarrierCatalog.PlayerPath], roots[WoundCarrierCatalog.NpcPath],
             roots[WoundCarrierCatalog.EnemiesPath], roots[WoundCarrierCatalog.AlliesPath], roots[WoundCarrierCatalog.AfterlifeProfilesPath]));
         var identities = WoundIdentityState.Parse(await Text(WoundIdentityState.StatePath), WoundIdentityState.StatePath);
-        if (catalog.Issues.Count != 0 || !identities.IsValid || history.State.ValidateAgreement(identities.State!, catalog).Count != 0)
+        if (catalog.Issues.Count != 0 || !identities.IsValid || history.ValidateAgreement(identities.State!, catalog).Count != 0)
             throw new InvalidDataException("Published spiritual cycle lost current wound/identity/history agreement.");
-        RequireCompleteSpiritualSettlementCohort(accepted.Result, history.State, identities.State!,
+        RequireCompleteSpiritualSettlementCohort(accepted.Result, history, identities.State!,
             catalog, roots[WoundCarrierCatalog.AfterlifeProfilesPath], accepted.Root["binding"]!["realm"]!.GetValue<string>(), turn);
         if (accepted.Root["participationOutcomes"] is JsonArray participation)
             SpiritualTreatmentParticipation.RequirePublishedRecords(participation, roots[WoundCarrierCatalog.AfterlifeProfilesPath]);
         foreach (var group in accepted.Result.Stages.GroupBy(s => s.After.WoundId))
-            if (history.State.Transitions.Last(t => t.WoundId == group.Key).TransitionId != group.Last().TransitionId)
+            if (history.Transitions.Last(t => t.WoundId == group.Key).TransitionId != group.Last().TransitionId)
                 throw new InvalidDataException("A published spiritual result no longer describes the current wound cohort.");
-        return new(accepted.Result, accepted.Root, history.State, identities.State!, catalog, roots);
+        return new(accepted.Result, accepted.Root, history, identities.State!, catalog, roots);
     }
 
     // Independent current completeness witness, not reconstruction of the historical

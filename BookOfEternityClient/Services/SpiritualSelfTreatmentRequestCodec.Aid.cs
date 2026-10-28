@@ -121,7 +121,7 @@ internal static partial class SpiritualSelfTreatmentRequestCodec
                 return false;
             return true;
         }
-        catch (Exception failure) when (failure is InvalidDataException or InvalidOperationException or ArgumentException or OverflowException)
+        catch (Exception failure) when (failure is JsonException or InvalidDataException or InvalidOperationException or ArgumentException or OverflowException or NullReferenceException)
         { return false; }
     }
 

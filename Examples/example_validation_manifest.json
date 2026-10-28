@@ -2,6 +2,29 @@
   "version": 1,
   "effectMaterializationCoverage": [
 {
+  "contractId": "spiritual_guardian_aid_v3",
+  "file": "E_CLI_Afterlife_Turns.txt",
+  "statePath": "current Guardian accepted participation to next-cycle client request3/result3 aid",
+  "responseSurface": "existing spiritualHealingGraphs plus ordinary GuardianThoughtJournalState; no GM request/result writes",
+  "realms": [
+    "Chaos Sea"
+  ],
+  "description": "Actual accepted consent then player-to-current-Guardian guided aid, separate active healerH and target naturalH in one program.",
+  "validationKind": "focused-fragment",
+  "focusedFragmentReason": "SpiritualHealingGuidedContractTests parses the closed detached selection with the production codec and guards synchronized guidance; exact actual publication/console/browser are separate.",
+  "coverageLimit": "First current Guardian and dedicated journal surface; no reverse/paid/conflict/helpless/Shining/musings/provider/fresh-process/full T108.",
+  "requiredText": [
+    "spiritual_guardian_aid_v3",
+    "III0→III1",
+    "III1→II1",
+    "II2",
+    "FULL record/content digest",
+    "guardianThoughtJournalUpdates",
+    "DuplicateStage refuses/no reroll/no pending deletion",
+    "V2 aid/participation"
+  ]
+},
+{
   "contractId": "spiritual_treatment_participation_v1",
   "file": "E_CLI_Afterlife_Turns.txt",
   "statePath": "current Guardian profile participation proposal -> client record and full v3 natural History witness",

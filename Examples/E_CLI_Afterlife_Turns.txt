@@ -13445,3 +13445,48 @@ proposal with operation=revoke and readable evidence of withdrawal. Never delete
 or forge the client record. Self/no-participation natural V2 are still current;
 V2 participation and V3 without its mandatory payload fail. Mortal/reverse-player/
 helpless/conflict/paid/Shining aid are outside this bounded permission authoring.
+
+
+spiritual_guardian_aid_v3 — accepted offer, then actual guided help
+
+Turn43 / accepted cycle10: player OFFERS to heal Хранитель целостности. The GM
+writes the closed spiritualTreatmentParticipationChange grant from the preceding
+spiritual_treatment_participation_v1 example on this existing Guardian profile.
+Conscious/capable=true and readableEvidence explicitly states affirmative consent.
+The real ordinary owner publishes III0→III1 at targetH0, FULL record/content digest,
+primary recovery row and eligibleCycleOrdinal11 atomically. A raw proposal, copied
+tuple/content, failed or rolled-back grant is insufficient. Actor Brain names the
+canonical Guardian and appends first-person guardianThoughtJournalUpdates to
+game_state/meta/guardian_thought_journal.json. Engine accepts turn43 and cleans its
+transient request; the player neither edits JSON nor recreates that request.
+
+Turn44 / cycle11: player opens /лечить (Self first), selects that visible current
+Guardian's known wound and confirms. Cancellation creates no intent/draw. Before
+control or draw, the client proves current full History/profile/schedule witness
+and exact local Guardian. The client stages spiritual_treatment_request v3 aid,
+not selfv2. This detached SELECTION example is client-owned DATA, never GM output:
+```json
+{"schemaVersion":3,"mode":"aid","woundId":"wound_guardian_example","expectedWoundFingerprint":"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","healerId":"player_soul","targetId":"guardian_example","participationFingerprint":"sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"}
+```
+
+For the worked actual d20=14 / healerH3 / targetH0, total20 vs difficulty16 reduces
+III1→II1 actively; the target's natural1 then gives II2. Using healerH3 for natural
+would incorrectly carry4. GM reads the ACTUAL stageRef from destinationGraphs and
+authors its II consequenceDefinitions using the exact weaker-II graph grammar
+already demonstrated under spiritual_self_treatment_v2 above (roll hindrance plus
+cost burden magnitude1, target kind guardian, empty links, only client complication
+refs). Do not copy that self example's actor, stageRef or IDs: use this request's
+actual Guardian target, graph stageRef and legal original source definitions.
+Other real rolls use their actual computed destinationGraphs, including every
+intermediate lower rank even if the wound is healed in the same cycle.
+
+Keep activeSource/participation/attempt/dice unchanged; no new grant/revoke this
+active turn. Narrative explains help without private IDs/seals. Use the same
+GuardianThoughtJournalState memory surface and canonical-name Brain; do not modify
+locality to write musings in this first slice. B publishes one aid resultv3/History,
+actual weaker effects, ONE aid cycle and no OD cost. Missing graphs keep sameattempt
+through repair. DuplicateStage refuses/no reroll/no pending deletion. Current
+revocation/move or altered consent fails before writes; settled replay is inert.
+Console and browser share choices/confirmation and the same retained original.
+V2 aid/participation, V3 self/missing mandatory payload and new aid grant outcomes
+all refuse. No reverse/paid/conflict/helpless/Shining/helper completion is claimed.

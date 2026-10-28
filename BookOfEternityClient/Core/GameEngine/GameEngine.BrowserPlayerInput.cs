@@ -201,7 +201,7 @@ public partial class GameEngine
         var source = StrictJsonAuthority.Deserialize<JsonObject>(CanonicalJsonUtf8.DecodeOneOptionalBom(bytes),
             JsonOpts, "original spiritual wound source") ?? throw new InvalidDataException(BrowserRecoveryMessage);
         if (!AfterlifeEntityProfileState.TryNormalizeEffectRealm(request.ProgressionControl.CurrentRealm, out var realm) ||
-            !SpiritualSelfTreatmentRequestCodec.IsBound(source,
+            !SpiritualSelfTreatmentRequestCodec.IsBoundActive(source,
                 new(manifest.SessionId, manifest.RequestId, manifest.TurnNumber, request.ProgressionControl), selection,
                 realm, request.ProgressionControl.NextChaosSeaTurnOrdinal))
             throw new InvalidDataException(BrowserRecoveryMessage);

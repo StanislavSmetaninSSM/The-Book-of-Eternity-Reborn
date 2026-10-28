@@ -1,14 +1,17 @@
 using System.Text.Json.Nodes;
+using System.Text.Json;
 using BookOfEternityClient.CommandProtocol;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.UI;
 
 namespace BookOfEternityClient.Services;
 
-/// <summary>Shared guided self workflow. Selection is DATA; actual staging owns the draw and authority.</summary>
+/// <summary>Shared guided treatment workflow. Selection is DATA; actual staging owns the draw and authority.</summary>
 internal static class WoundApplicationService
 {
     internal const string ActionText = "Самостоятельно лечить выбранную духовную рану вне конфликта. Продолжить обычный безопасный цикл мира.";
+    internal const string AidActionText = "Помочь текущему согласившемуся Хранителю вылечить выбранную духовную рану вне конфликта. Продолжить обычный безопасный цикл мира.";
+    internal static string ActionFor(SpiritualSelfTreatmentSelection selection) => selection.Aid is null ? ActionText : AidActionText;
 
     internal static async Task<ExplorerCommandResult> OpenAsync(FileSystemManager fs, string command, bool treatment)
     {
@@ -16,7 +19,7 @@ internal static class WoundApplicationService
         fs.VerifyCurrentSessionOperation(lease);
         var context = await WoundPlayerReadService.LoadContextAsync(fs, lease);
         if (context is null) return ExplorerWoundCommandResultBuilder.Build(command, WoundPlayerProjection.Unavailable(), null, treatment);
-        var state = CreateState(fs.GetOrCreateSessionGeneration(lease), context);
+        var state = await CreateStateAsync(fs, lease, fs.GetOrCreateSessionGeneration(lease), context);
         return ExplorerWoundCommandResultBuilder.Build(command, context.Projection, state, treatment);
     }
 
@@ -29,7 +32,7 @@ internal static class WoundApplicationService
         var selected = state.Resolve(value);
         var current = await WoundPlayerReadService.LoadContextAsync(fs, lease)
             ?? throw new InvalidDataException(WoundPlayerProjection.UnavailableMessage);
-        var choices = CreateState(state.Generation, current).Choices;
+        var choices = (await CreateStateAsync(fs, lease, state.Generation, current)).Choices;
         if (!choices.Any(c => c.Available && c.Selection == selected.Selection))
             throw new InvalidDataException("Состояние раны или доступность лечения изменились; откройте /лечить заново.");
         return selected.Selection;
@@ -57,5 +60,73 @@ internal static class WoundApplicationService
                 available ? "Без затрат ОД; один обычный цикл мира даже при неудаче." : "Требуется освоенная ступень Исцеления не ниже степени раны; V степень этим способом не лечится."));
         }
         return new(generation, choices);
+    }
+
+    private static async Task<WoundCommandState> CreateStateAsync(FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease lease, string generation, WoundPlayerReadContext context)
+    {
+        var self = CreateState(generation, context);
+        if (!context.Input.SelfVisible || context.Input.Realm != "chaos_sea" || context.SpiritualConflict?["activeConflict"] is not null)
+            return self;
+        var profiles = (context.Input.Carriers.AfterlifeProfiles?["profiles"] as JsonArray)?.OfType<JsonObject>().ToArray() ?? [];
+        var candidates = profiles.Where(p => p["actorType"]?.GetValue<string>() == "guardian" &&
+            p[SpiritualTreatmentParticipation.RecordProperty] is JsonObject && AfterlifeProfileVisibility.IsVisibleToPlayer(p)).ToArray();
+        if (candidates.Length == 0) return self; // Ordinary/self menus acquire no additional locality inputs.
+        try
+        {
+            async Task<JsonObject?> Root(string path)
+            {
+                var bytes = await fs.ReadFileBytesAsync(lease, path);
+                return bytes is null ? null : StrictJsonAuthority.Deserialize<JsonObject>(CanonicalJsonUtf8.DecodeOneOptionalBom(bytes),
+                    new JsonSerializerOptions(), path);
+            }
+            var guardians = await Root(AfterlifeWoundTreatmentAuthority.AidLocalityPaths[0]);
+            var residents = await Root(GuardianAbodeResidentState.StatePath);
+            var scheduleBytes = await fs.ReadFileBytesAsync(lease, ProgressionScheduleService.SchedulePath);
+            if (guardians is null || scheduleBytes is null || fs.FileExists(lease, AcceptedMechanicsPlan.WoundCommandPath) ||
+                fs.FileExists(lease, ProgressionScheduleService.ReportPath)) return self;
+            var currentGuardianId = guardians["chaosSeaNavigation"]?["currentGuardianId"]?.GetValue<string>();
+            if (string.IsNullOrWhiteSpace(currentGuardianId)) return self;
+            var scope = SpiritualTreatmentParticipation.RequireCurrentGuardianScope(guardians, residents, currentGuardianId);
+            candidates = candidates.Where(p => SpiritualTreatmentParticipation.ProfileId(p) == currentGuardianId).ToArray();
+            if (candidates.Length != 1) return self;
+            var healer = profiles.SingleOrDefault(p => p["actorType"]?.GetValue<string>() == "player_soul" &&
+                SpiritualTreatmentParticipation.ProfileId(p) == "player_soul");
+            if (healer is null) return self;
+            var choices = self.Choices.ToList();
+            foreach (var target in candidates)
+            {
+                var record = target[SpiritualTreatmentParticipation.RecordProperty]!.AsObject();
+                SpiritualTreatmentParticipation.ValidateRecord(record);
+                if (record["status"]!.GetValue<string>() != "granted" || SpiritualTreatmentParticipation.HasUnsettledChange(context.Input.Carriers.AfterlifeProfiles)) continue;
+                var targetId = SpiritualTreatmentParticipation.ProfileId(target);
+                if (target["locationId"]?.GetValue<string>() != scope.LocationId || record["locationId"]!.GetValue<string>() != scope.LocationId) continue;
+                var primary = context.Input.History.Transitions.SingleOrDefault(t => t.TransitionId == record["primaryTransitionId"]!.GetValue<string>());
+                if (primary?.TransitionResult is not SpiritualHealingPersistedResult { IsNatural: true, SchemaVersion: 3 } grant ||
+                    grant.ParticipationOutcomes is not JsonArray outcomes || outcomes.Count != 1 || !JsonNode.DeepEquals(outcomes[0]?["record"], record)) continue;
+                var result = grant.ToCanonicalJson();
+                if (result["scheduleAfterFingerprint"]!.GetValue<string>() != new CanonicalBeforeImage(true, scheduleBytes).Fingerprint) continue;
+                var wound = context.Catalog.Occurrences.Select(o => o.Wound).SingleOrDefault(w => w.WoundId == record["woundId"]!.GetValue<string>());
+                if (wound is not { Lifecycle: "active", Classification.Domain: "spiritual" } ||
+                    wound.Owner != new WoundOwnerCoordinate("chaos_sea", "guardian", targetId, WoundCarrierCatalog.AfterlifeProfilesPath) ||
+                    wound.Display.Visibility is not ("public" or "known_to_player")) continue;
+                var source = SpiritualHealingResolver.PrepareSource(new(wound,
+                    new("chaos_sea", "player_soul", "player_soul", WoundCarrierCatalog.AfterlifeProfilesPath), healer, context.Soul, context.Input.Effects)).Source;
+                if (source is null || source.HealingTier < wound.Severity.Rank) continue;
+                var name = WoundPlayerProjection.Text(target["name"]?.GetValue<string>() ?? target["displayName"]?.GetValue<string>());
+                choices.Add(new("wound_" + choices.Count,
+                    new SpiritualSelfTreatmentSelection(wound.WoundId, WoundIdentityState.ComputeSemanticFingerprint(wound))
+                        { Aid = new("player_soul", targetId, SpiritualTreatmentParticipation.Fingerprint(record)) },
+                    "Хранитель" + (name.Length == 0 ? "" : " «" + name + "»") + ": " + WoundPlayerProjection.Text(wound.Display.Name),
+                    wound.Severity.Value, source.HealingTier, true,
+                    "Согласие получено на следующий безопасный цикл. Без затрат ОД; перед броском согласие и близость проверяются заново."));
+            }
+            return new(generation, choices);
+        }
+        catch (Exception failure) when (failure is not CoordinatedStatePublicationUncertainException &&
+            failure is (JsonException or InvalidDataException or InvalidOperationException or ArgumentException or OverflowException))
+        {
+            return self; // No available aid choice is authority to skip admission or to infer consent.
+        }
     }
 }

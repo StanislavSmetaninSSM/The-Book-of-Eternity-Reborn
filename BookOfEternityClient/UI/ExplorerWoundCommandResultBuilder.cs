@@ -26,7 +26,7 @@ internal static class ExplorerWoundCommandResultBuilder
         var canTreat = treatment && state?.Choices.Any(c => c.Available) == true;
         if (treatment)
             blocks.Add(new UiTextBlock { Text = canTreat
-                ? "Самолечение вне духовного конфликта: выберите свою рану и подтвердите. ОД не тратятся; мир совершит один обычный цикл и при неудаче. Бросок сохраняется после отправки."
+                ? "Лечение вне духовного конфликта: сначала ваши раны, затем доступные раны текущего согласившегося Хранителя. ОД не тратятся; мир совершит один обычный цикл и при неудаче. Бросок сохраняется после отправки."
                 : "Сейчас самостоятельное лечение духовной раны вне конфликта недоступно. Нужны видимая активная рана I–IV степени и освоенная ступень Исцеления не ниже её степени." });
         return new()
         {
@@ -34,10 +34,10 @@ internal static class ExplorerWoundCommandResultBuilder
             Blocks = blocks, WoundCommandState = state,
             Prompts = !canTreat ? [] :
             [
-                new UiSelectionPrompt { Id = "wound_selection", Prompt = "Какую свою рану лечить?", Required = true,
+                new UiSelectionPrompt { Id = "wound_selection", Prompt = "Какую рану лечить?", Required = true,
                     Options = state!.Choices.Select(c => new UiSelectionOption { Value = c.Value, Label = c.Name + " — " + c.Severity,
                         Description = c.Reason, Disabled = !c.Available }).ToList() },
-                new UiConfirmationPrompt { Id = "confirm_wound_treatment", Prompt = "Подтвердить самолечение и один цикл мира?", Required = true }
+                new UiConfirmationPrompt { Id = "confirm_wound_treatment", Prompt = "Подтвердить лечение и один цикл мира?", Required = true }
             ]
         };
     }

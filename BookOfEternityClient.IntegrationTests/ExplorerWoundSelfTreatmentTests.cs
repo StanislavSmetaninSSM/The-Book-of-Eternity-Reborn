@@ -15,7 +15,7 @@ using HealingFixture = BookOfEternityClient.Tests.AfterlifeWoundHealingLifecycle
 namespace BookOfEternityClient.Tests;
 
 /// <summary>The confirmed public command reaches the actual ordinary GameEngine caller.</summary>
-public sealed class ExplorerWoundSelfTreatmentTests(ITestOutputHelper output)
+public sealed partial class ExplorerWoundSelfTreatmentTests(ITestOutputHelper output)
 {
     private const string Owner = "wound-guided-client";
 

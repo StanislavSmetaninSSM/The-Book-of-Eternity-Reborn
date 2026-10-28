@@ -83,6 +83,9 @@ internal static partial class AfterlifeWoundHealingPlanner
         internal string Fingerprint { get; }
         internal bool IsNatural => _natural is not null;
         internal string Mode => IsNatural ? "natural" : _data?.AidWitness is not null ? "aid" : "self";
+        internal bool IsVisibleAidTarget(WoundMaterializationEnvelope wound) => Mode == "aid" &&
+            _data!.Wound.WoundId == wound.WoundId && _data.Wound.Owner == wound.Owner &&
+            WoundPlayerProjection.Visible(_data.Wound.Display.Visibility);
         internal string SourceFingerprint => _natural?.SourceFingerprint ?? _data!.SourceFingerprint;
         internal string ProgramReference => _request?["requestFingerprint"]!.GetValue<string>() ?? SourceFingerprint;
         internal string CycleKey => AfterlifeWoundTreatmentAuthority.CycleKey(_input.Binding.Realm,

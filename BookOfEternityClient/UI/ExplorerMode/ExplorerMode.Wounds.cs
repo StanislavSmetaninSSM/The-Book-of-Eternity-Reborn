@@ -16,7 +16,7 @@ public partial class ExplorerMode
         _pendingSpiritualSelfTreatment = null;
         if (pending is null) return null;
         if (pending.Action != action || _pendingGmAction != action || pending.Generation != generation)
-            throw new InvalidDataException("Выбор самолечения устарел; откройте /лечить заново.");
+            throw new InvalidDataException("Выбор лечения устарел; откройте /лечить заново.");
         return pending.Selection;
     }
 
@@ -33,13 +33,13 @@ public partial class ExplorerMode
         }
         var choices = state.Choices.Where(c => c.Available).ToArray();
         var labels = choices.Select((c, i) => (i + 1) + ". " + c.Name + " — " + c.Severity).Append("Отмена").ToArray();
-        var label = _console.Prompt(new SelectionPrompt<string>().Title("Какую свою рану лечить?")
+        var label = _console.Prompt(new SelectionPrompt<string>().Title("Какую рану лечить?")
             .UseConverter(GameInterface.EscapeMarkup).AddChoices(labels));
         var index = Array.IndexOf(labels, label);
-        if (index < 0 || index >= choices.Length || !_console.Confirm("Подтвердить самолечение без затрат ОД и один цикл мира?")) return;
+        if (index < 0 || index >= choices.Length || !_console.Confirm("Подтвердить лечение без затрат ОД и один цикл мира?")) return;
         await using var lease = await _fs.AcquireCanonicalWriteLeaseAsync();
         var selection = await WoundApplicationService.ConfirmAsync(_fs, lease, state, choices[index].Value);
-        _pendingGmAction = WoundApplicationService.ActionText;
+        _pendingGmAction = WoundApplicationService.ActionFor(selection);
         _pendingSpiritualSelfTreatment = new(_pendingGmAction, state.Generation, selection);
     }
 }

@@ -151,6 +151,34 @@ public sealed class SpiritualHealingGuidedContractTests : IDisposable
         Assert.Equal("player_soul", parsed.Proposal["healerId"]!.GetValue<string>());
     }
 
+    [Fact]
+    public void GuardianAidUsesClosedSelectionAndTheDocumentedTwoTurnGmContract()
+    {
+        const string marker = "spiritual_guardian_aid_v3";
+        foreach (var file in new[] { "OtherGuides/Wound_Materialization_Contract.md", "OtherGuides/Afterlife_Contract_Matrix.md",
+            "CLI_API_Specification.md", "Rules/Block_CLI_Operations.txt", "TaskGuides/CLI_Step_Main.txt", "BookOfEternityClient/game_master_daemon.ps1" })
+            Assert.Contains(marker, File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, file)));
+        var entry = Assert.Single(ExampleValidationManifest.Load().EffectMaterializationCoverage, c => c.ContractId == marker);
+        var example = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "Examples", entry.File));
+        Assert.All(entry.RequiredText, token => Assert.Contains(token, example));
+        var start = example.IndexOf(marker, StringComparison.Ordinal);
+        var fence = example.IndexOf("```json", start, StringComparison.Ordinal) + "```json".Length;
+        var end = example.IndexOf("```", fence, StringComparison.Ordinal);
+        var root = JsonNode.Parse(example[fence..end])!.AsObject();
+        var selection = SpiritualSelfTreatmentSelection.Parse(root);
+        Assert.Equal("player_soul", selection.Aid!.HealerId);
+        Assert.Equal("guardian_example", selection.Aid.TargetId);
+        Assert.Equal(WoundApplicationService.AidActionText, WoundApplicationService.ActionFor(selection));
+        Assert.Equal(WoundApplicationService.ActionText, WoundApplicationService.ActionFor(Selection));
+        Assert.Equal(selection, SpiritualSelfTreatmentSelection.Parse(selection.ToJson()));
+        root["schemaVersion"] = 2;
+        Assert.Throws<InvalidDataException>(() => SpiritualSelfTreatmentSelection.Parse(root));
+        root["schemaVersion"] = 3; root["healerId"] = "guardian_example";
+        Assert.Throws<InvalidDataException>(() => SpiritualSelfTreatmentSelection.Parse(root));
+        root["healerId"] = "player_soul"; root["permission"] = true;
+        Assert.Throws<InvalidDataException>(() => SpiritualSelfTreatmentSelection.Parse(root));
+    }
+
     public void Dispose()
     {
         if (Directory.Exists(_root)) Directory.Delete(_root, recursive: true);

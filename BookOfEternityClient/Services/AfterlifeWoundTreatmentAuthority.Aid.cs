@@ -182,20 +182,27 @@ internal static partial class AfterlifeWoundTreatmentAuthority
             return parsed;
         }
 
-        var requestRoot = await Root(LiveTurnPreparationService.TurnRequestPath)
-            ?? throw new InvalidDataException("Aid lost its actual preceding accepted turn context.");
-        var previous = requestRoot.Deserialize<TurnRequest>(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)
-            ?? throw new InvalidDataException("Aid preceding turn is invalid.");
-        if (previous.SessionId != sessionId || previous.TurnNumber != checked(turn - 1) || previous.ProgressionControl is not { } control ||
-            !AfterlifeEntityProfileState.TryNormalizeEffectRealm(control.CurrentRealm, out var realm) || realm != "chaos_sea")
-            throw new InvalidDataException("Aid grant must belong to the actual immediately preceding accepted Chaos turn.");
-        var published = await ProgressionScheduleService.ReadPublishedSpiritualCycleDataAsync(control,
-            previous.SessionId, previous.RequestId, previous.TurnNumber, Read)
-            ?? throw new InvalidDataException("Aid requires an actually published participation turn, not a raw stamp.");
-        if (!published.Result.IsNatural || published.Root["schemaVersion"]?.GetValue<int>() != 3 ||
-            published.Root["participationOutcomes"] is not JsonArray outcomes || outcomes.Count != 1 ||
-            !JsonNode.DeepEquals(previous.SpiritualHealing, published.Root["source"]?["projection"]))
-            throw new InvalidDataException("The preceding accepted turn did not issue a matching participation outcome.");
+        // Accepted Engine cleanup normally removes the old request. Its absence
+        // is captured as an exact guard; the durable result remains mandatory.
+        var requestRoot = await Root(LiveTurnPreparationService.TurnRequestPath);
+        var published = await ProgressionScheduleService.ReadPublishedParticipationCycleDataAsync(
+            sessionId, checked(turn - 1), selection, Read)
+            ?? throw new InvalidDataException("Aid requires the actual immediately preceding published participation turn.");
+        var control = published.Root["control"]!.Deserialize<ProgressionControl>()!;
+        var realm = "chaos_sea";
+        if (!AfterlifeEntityProfileState.TryNormalizeEffectRealm(control.CurrentRealm, out var acceptedRealm) || acceptedRealm != realm)
+            throw new InvalidDataException("Aid requires a published Chaos participation cycle.");
+        if (requestRoot is not null)
+        {
+            var previous = requestRoot.Deserialize<TurnRequest>(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)
+                ?? throw new InvalidDataException("Aid preceding request is invalid.");
+            if (previous.SessionId != sessionId || previous.TurnNumber != turn - 1 ||
+                previous.RequestId != String(published.Root["binding"]?["requestId"]) ||
+                !JsonNode.DeepEquals(JsonSerializer.SerializeToNode(previous.ProgressionControl), published.Root["control"]) ||
+                !JsonNode.DeepEquals(previous.SpiritualHealing, published.Root["source"]?["projection"]))
+                throw new InvalidDataException("A present preceding request differs from the accepted grant.");
+        }
+        var outcomes = published.Root["participationOutcomes"]!.AsArray();
         foreach (var carrier in published.CarrierRoots)
         {
             var index = reads.FindIndex(s => s.Path == carrier.Key);

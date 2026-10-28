@@ -972,8 +972,8 @@ kind=spiritual_self_treatment_request before signed snapshot; GM never authors i
 Read `input/turn_request.json.spiritualHealing.destinationGraphs`, author exactly
 requested `output/interface_updates.json.spiritualHealingGraphs` stageRefs and
 closed consequenceDefinitions; client computes ranks/validates/applies. Preserve the
-SAME attempt/dice through repair/replay. No automatic survivor selection, helper,
-entity active healing, combat healing or service quote is implied. Unbound ordinary/Mortal interface
+SAME attempt/dice through repair/replay. No automatic survivor selection, combat healing or service quote is implied.
+Only explicit spiritual_guardian_aid_v3 below adds the bounded current-Guardian helper route. Unbound ordinary/Mortal interface
 payload does not gain this field; authenticated natural mode is the exception below. See OtherGuides/Wound_Materialization_Contract.md
 and worked spiritual_self_treatment_v2 example in Examples/E_CLI_Afterlife_Turns.txt.
 
@@ -1048,3 +1048,44 @@ Existing self request/resultv2 and no-participation natural resultv2 remain acti
 produced closed current forms. V2 participation and payload-free V3 are invalid,
 not migrations. This authoring step does not itself start treatment or let the GM
 write an aid request. Read the worked participation example in E_CLI_Afterlife_Turns.txt.
+
+
+spiritual_guardian_aid_v3 — player helps the current consenting Guardian
+
+After an ordinary accepted spiritual_treatment_participation_v1 grant turn,
+the player may confirm that current visible Guardian's known I–IV wound in the
+shared /лечить flow. This first route is player→current Guardian in a safe Chaos
+Abode, not Guardian→player, paid/conflict/helpless/Shining aid or implicit consent.
+The client proves FULL accepted record/content digest, actual previous turn and
+next eligible cycle BEFORE control writes and entropy. Successful Engine cleanup
+removes the preceding input/turn_request.json; do not recreate it. Current
+History/profile/schedule must independently prove the committed grant.
+
+The actual turn_request.spiritualHealing schema3/mode=aid names healer and target,
+healingTier (HEALER H), targetNaturalHealingTier (TARGET H), participationVerified,
+retained roll/activeResult and computed destinationGraphs. Keep the client-owned
+spiritual_treatment_request schema3/mode=aid in wound_commands unchanged, including
+healer/target/activeSource/participation/attempt/requestFingerprint. A field saying
+participationVerified is GM comparison DATA, not permission to mint a grant.
+Self requestv2 and resultv2 remain current; no-participation natural resultv2 and
+participation-natural resultv3 are separate closed forms. Aid resultv3 has the
+exact accepted grant/active source, NO new participationOutcomes. Cross-version
+payloads and self+new grant/revoke refuse; no migration or fallback.
+
+Author exactly each requested destinationGraphs stageRef through the EXISTING
+spiritualHealingGraphs closed consequenceDefinitions grammar. Do not infer target
+natural H from healer H, roll again, alter wound/effect/History identities, author
+client results or recreate consumed request/report. One active result precedes the
+ONE universal natural pass; one safe cycle runs even on failure, with no aid OD
+charge. Missing graphs repair retains the same attempt/dice. A second Stage call
+refuses before another control/draw and preserves exact pending; continue that
+same signed original through B/repair/I. Never delete pending to obtain a new roll.
+
+For this scoped actual Guardian journey, publish Actor Brain first-person memory
+through guardianThoughtJournalUpdates in game_state/meta/guardian_thought_journal.json,
+with the canonical Guardian name in Relevant actors and a full Brain block. Keep
+guardians.json/residents locality unchanged. Concurrent musings append in the
+locality file is NOT qualified by this slice and may refuse. Current revocation,
+move, missing/incapable consent or changed selected source blocks aid publication;
+settled replay checks its accepted result, not renewed live consent. No changes to
+Mortal treatment permission or other unsupported afterlife helper routes.

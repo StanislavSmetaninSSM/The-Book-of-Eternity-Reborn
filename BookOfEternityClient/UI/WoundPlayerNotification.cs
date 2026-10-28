@@ -328,12 +328,14 @@ internal sealed record WoundPlayerNotification(
                     WoundMaterializationContract.SerializeCanonical(actualAfter) != WoundMaterializationContract.SerializeCanonical(after)))
                 return SpiritualHealingBindingFailure("final carrier differs from chronological execution");
 
-            // This slice adds persistent-actor mechanics, not a new NPC disclosure
-            // authority. Entity notifications stay with the later target/privacy UI.
-            if (after.Owner.OwnerKind != "player_soul" || !WoundPlayerProjection.Visible(after.Display.Visibility)) continue;
+            // Only the explicitly selected known aid target gains a notification;
+            // unrelated natural actor recovery remains outside this disclosure.
+            if (after.Owner.OwnerKind != "player_soul" && !owner.IsVisibleAidTarget(after) ||
+                !WoundPlayerProjection.Visible(after.Display.Visibility)) continue;
+            var target = after.Owner.OwnerKind == "player_soul" ? "" : " Хранителя";
             var text = terminal
-                ? $"Исцелена духовная рана: {after.Display.Name}. Подробнее: {Command}"
-                : $"Духовная рана: {after.Display.Name} ({after.Severity.Value}); восстановление {after.Recovery.CurrentStepProgress}/{after.Recovery.CurrentStepThreshold}. Подробнее: {Command}";
+                ? $"Исцелена духовная рана{target}: {after.Display.Name}. Подробнее: {Command}"
+                : $"Духовная рана{target}: {after.Display.Name} ({after.Severity.Value}); восстановление {after.Recovery.CurrentStepProgress}/{after.Recovery.CurrentStepThreshold}. Подробнее: {Command}";
             notifications.Add(new(Project(text), Command));
         }
         return new(notifications, Array.Empty<ValidationIssue>());

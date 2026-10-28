@@ -10,8 +10,8 @@ namespace BookOfEternityClient.Tests;
 
 public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
 {
-    private const string AidGuardianId = "guardian_spiritual_aid";
-    private const string AidAbodeId = "abode_spiritual_aid";
+    internal const string AidGuardianId = "guardian_spiritual_aid";
+    internal const string AidAbodeId = "abode_spiritual_aid";
 
     [Fact]
     public async Task AcceptedNaturalTurnCommitsGuardianParticipationWithItsFullContentWitness()
@@ -190,7 +190,7 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
 
     private sealed class ParticipationPublicationFault : InvalidOperationException { }
 
-    private static async Task SeedAidGuardianAsync(FileSystemManager files, JsonObject profiles)
+    internal static async Task SeedAidGuardianAsync(FileSystemManager files, JsonObject profiles)
     {
         // This is canonical initial create DATA, not an invented accepted grant.
         // It runs before the fixture's one real resource bootstrap.

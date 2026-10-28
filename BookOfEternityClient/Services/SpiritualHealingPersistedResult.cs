@@ -27,9 +27,11 @@ internal sealed class SpiritualHealingPersistedResult : WoundTransitionResult
     internal int SchemaVersion => _root["schemaVersion"]!.GetValue<int>();
     internal string ResultFingerprint => _root["resultFingerprint"]!.GetValue<string>();
     internal JsonArray? ParticipationOutcomes => _root["participationOutcomes"]?.DeepClone().AsArray();
-    internal bool MatchesBinding(string sessionId, string requestId, int turn) =>
+    internal bool MatchesTurn(string sessionId, int turn) =>
         _root["binding"]!["sessionId"]!.GetValue<string>() == sessionId &&
-        _root["binding"]!["requestId"]!.GetValue<string>() == requestId && _root["binding"]!["turn"]!.GetValue<int>() == turn;
+        _root["binding"]!["turn"]!.GetValue<int>() == turn;
+    internal bool MatchesBinding(string sessionId, string requestId, int turn) => MatchesTurn(sessionId, turn) &&
+        _root["binding"]!["requestId"]!.GetValue<string>() == requestId;
     internal WoundMaterializationEnvelope? ReadFinalWound(string woundId) =>
         WoundAcceptedTurnData.CloneWound(_stages.LastOrDefault(s => s.After.WoundId == woundId)?.After);
     internal string ProgramReference => IsNatural ? _root["source"]!["sourceFingerprint"]!.GetValue<string>()

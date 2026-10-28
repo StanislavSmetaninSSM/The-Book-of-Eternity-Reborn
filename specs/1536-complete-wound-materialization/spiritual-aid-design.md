@@ -3,7 +3,7 @@
 Issue: https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536
 
 Status: bounded DESIGN accepted8e279e8c. Participation issuer/witness SOURCE
-acceptedef406058 and exact13 runtime cases PASS; independent OUTCOME pending.
+acceptedef406058 and exact13 runtime cases PASS; independent OUTCOME ACCEPT.
 Active aid staging/draw/result/UI and full Engine grant remain implementation work.
 FR-054/FR-074 already require consent and fresh access. Technical decisions need
 no new user approval pause. Full T108, combat/helper services and #1536 remain open.
@@ -88,7 +88,14 @@ accepted aid result and original binding, not a newly granted live consent.
 ### Staging order and actual lease
 
 The existing strict published-cycle reader requires consumed command/report
-absence and the exact accepted schedule afterimage. Next-turn control preparation
+absence and the exact accepted schedule afterimage. Actual successful Engine
+cleanup removes input/turn_request.json. The accepted cleanup seam therefore
+selects the unique v3 natural result from actual current History by real Engine
+session/nextTurn-1 and primary row/full record, parses History once, then applies
+the SAME strict current settlement proof. The result's own token/projection is
+not an independent expectedOriginal. If the preceding request is present, require
+exact agreement; its normal absence is a guarded input. Never retain or recreate
+the deleted request solely to make a fixture pass. Next-turn control preparation
 changes pending fields, and aid B later has new commands/report. Do not weaken that
 reader or add a bypass flag. Resolve the aid selection before BuildControl, inside
 StagePlayerTurnBodyAsync's existing try/rollback scope after preturn backup and

@@ -13,15 +13,15 @@ internal sealed class BrowserWoundWriteService(FileSystemManager files, BrowserL
         {
             if (!answers.TryGetValue("confirm_wound_treatment", out var confirmation) ||
                 confirmation is not JsonValue flag || !flag.TryGetValue<bool>(out var confirmed) || !confirmed)
-                return BrowserPromptWriteResult.ValidationError("Подтвердите самолечение и один обычный цикл мира.");
+                return BrowserPromptWriteResult.ValidationError("Подтвердите лечение и один обычный цикл мира.");
             try
             {
                 var value = answers["wound_selection"]?.GetValue<string>() ?? string.Empty;
                 var selection = await WoundApplicationService.ConfirmAsync(files, lease, state, value);
-                var pending = PendingPlayerActionService.PrepareQueued(files, lease, WoundApplicationService.ActionText,
+                var pending = PendingPlayerActionService.PrepareQueued(files, lease, WoundApplicationService.ActionFor(selection),
                     "browser-wound-action", DateTime.UtcNow.ToString("o"), selection);
                 var result = await coordinator.ExecuteAtomicWithinTransactionAsync(lease,
-                    new(owner.OwnerId, owner.OwnerLabel, "Отправка самолечения", owner.Lease), [PendingPlayerActionService.PendingPath],
+                    new(owner.OwnerId, owner.OwnerLabel, "Отправка лечения", owner.Lease), [PendingPlayerActionService.PendingPath],
                     writeLease => files.WriteFileAtomicAsync(writeLease, PendingPlayerActionService.PendingPath, pending.ToJsonString()));
                 return (result.Success
                     ? BrowserPromptWriteResult.Completed("Лечение отправлено", "Выбранная рана повторно проверена. Мир продолжит один обычный цикл; результат появится после хода Мастера.")

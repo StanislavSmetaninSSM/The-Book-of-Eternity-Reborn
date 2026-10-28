@@ -1597,7 +1597,7 @@ remains legal; replacing a stageRef or its accepted consequence content is refus
 
 When destinationGraphs is empty, omit spiritualHealingGraphs (or use an empty
 array); no graph is needed for rank-I terminal healing. Graphs-only interface payload
-is legal only for the actual signed self-v2 or authenticated natural family below;
+is legal only for the actual signed self-v2, explicit spiritual_guardian_aid_v3 or authenticated natural family below;
 unbound ordinary/Mortal payloads keep their prior refusal. Always include a fresh ISO timestamp. Write ordinary narrative,
 mandatory NPC Scope reasoning and the progression report from actual progressionControl.
 Never recreate consumed request/report or alter accepted output on replay. Retained
@@ -1676,3 +1676,44 @@ Existing self request/resultv2 and no-participation natural resultv2 remain acti
 produced closed current forms. V2 participation and payload-free V3 are invalid,
 not migrations. This authoring step does not itself start treatment or let the GM
 write an aid request. Read the worked participation example in E_CLI_Afterlife_Turns.txt.
+
+
+spiritual_guardian_aid_v3 — player helps the current consenting Guardian
+
+After an ordinary accepted spiritual_treatment_participation_v1 grant turn,
+the player may confirm that current visible Guardian's known I–IV wound in the
+shared /лечить flow. This first route is player→current Guardian in a safe Chaos
+Abode, not Guardian→player, paid/conflict/helpless/Shining aid or implicit consent.
+The client proves FULL accepted record/content digest, actual previous turn and
+next eligible cycle BEFORE control writes and entropy. Successful Engine cleanup
+removes the preceding input/turn_request.json; do not recreate it. Current
+History/profile/schedule must independently prove the committed grant.
+
+The actual turn_request.spiritualHealing schema3/mode=aid names healer and target,
+healingTier (HEALER H), targetNaturalHealingTier (TARGET H), participationVerified,
+retained roll/activeResult and computed destinationGraphs. Keep the client-owned
+spiritual_treatment_request schema3/mode=aid in wound_commands unchanged, including
+healer/target/activeSource/participation/attempt/requestFingerprint. A field saying
+participationVerified is GM comparison DATA, not permission to mint a grant.
+Self requestv2 and resultv2 remain current; no-participation natural resultv2 and
+participation-natural resultv3 are separate closed forms. Aid resultv3 has the
+exact accepted grant/active source, NO new participationOutcomes. Cross-version
+payloads and self+new grant/revoke refuse; no migration or fallback.
+
+Author exactly each requested destinationGraphs stageRef through the EXISTING
+spiritualHealingGraphs closed consequenceDefinitions grammar. Do not infer target
+natural H from healer H, roll again, alter wound/effect/History identities, author
+client results or recreate consumed request/report. One active result precedes the
+ONE universal natural pass; one safe cycle runs even on failure, with no aid OD
+charge. Missing graphs repair retains the same attempt/dice. A second Stage call
+refuses before another control/draw and preserves exact pending; continue that
+same signed original through B/repair/I. Never delete pending to obtain a new roll.
+
+For this scoped actual Guardian journey, publish Actor Brain first-person memory
+through guardianThoughtJournalUpdates in game_state/meta/guardian_thought_journal.json,
+with the canonical Guardian name in Relevant actors and a full Brain block. Keep
+guardians.json/residents locality unchanged. Concurrent musings append in the
+locality file is NOT qualified by this slice and may refuse. Current revocation,
+move, missing/incapable consent or changed selected source blocks aid publication;
+settled replay checks its accepted result, not renewed live consent. No changes to
+Mortal treatment permission or other unsupported afterlife helper routes.

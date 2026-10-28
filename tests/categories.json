@@ -2,6 +2,115 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "spiritual-aid-stage-publication",
+  "responsibility": "One actual natural grant followed by next-cycle player aid with different healer/target tiers: committed content/locality before control/draw, wrong context/content/missing/incapable refusal, unrelated Guardian record menu, duplicate-stage exact pending preservation, actual original B drift/graph repair, strict v3 result/I/replay.",
+  "excludes": "Direct shared publisher and scalar source controls; simulated request cleanup here is not actual Engine acceptance. No paid/reverse/conflict/helpless/Shining/musings/provider or held DFR/Mortal qualification.",
+  "changeHints": [
+    "BookOfEternityClient/Services/AfterlifeWoundTreatmentAuthority.Aid.cs",
+    "BookOfEternityClient/Services/WoundApplicationService.cs",
+    "BookOfEternityClient/Services/SpiritualHealingPersistedResult.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.AfterlifeSpiritualNaturalRecoveryTests.ActiveAidRequiresTheCommittedGrantAndRetainsOneAttemptThroughPublicationAndReplay"
+      ]
+    }
+  ]
+},
+{
+  "id": "spiritual-aid-console",
+  "responsibility": "One real console Engine grant43 then cleanup, cancel/confirm through the SAME Explorer, aid44 with real entropy and computed weaker graphs, full actual NPC Brain/journal, targetH0 vs healerH3, exact request/result/cycle/History/no-cost/cleanup.",
+  "excludes": "First current Guardian scope only. Controlled native-shaped GM, no external provider/fresh process/reverse/paid/conflict/helpless/Shining/musings or full T108.",
+  "changeHints": [
+    "BookOfEternityClient/Services/AfterlifeWoundTreatmentAuthority.Aid.cs",
+    "BookOfEternityClient/Services/WoundApplicationService.cs",
+    "BookOfEternityClient/Services/SpiritualHealingPersistedResult.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 3,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.ConsoleAidUsesAnActualAcceptedGrantThenTheSameExplorerAndEngine"
+      ]
+    }
+  ]
+},
+{
+  "id": "spiritual-aid-browser",
+  "responsibility": "One real Engine grant43 then cleanup, shared browser cancellation/confirmation and exact queued original aid44, real entropy/computed graphs/retained request3 binding, NPC Brain/journal, independent tiers/cycle/History/no-cost/cleanup.",
+  "excludes": "First current Guardian scope only. Controlled native-shaped GM, no provider/fresh process/reverse/paid/conflict/helpless/Shining/musings or full T108.",
+  "changeHints": [
+    "BookOfEternityClient/Services/AfterlifeWoundTreatmentAuthority.Aid.cs",
+    "BookOfEternityClient/Services/WoundApplicationService.cs",
+    "BookOfEternityClient/Services/SpiritualHealingPersistedResult.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 3,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.BrowserAidUsesAnActualAcceptedGrantThenTheOriginalQueuedEngineAction"
+      ]
+    }
+  ]
+},
+{
+  "id": "spiritual-aid-guidance",
+  "responsibility": "Current v3 aid two-turn GM example, closed detached selection/source guards, current v2/v3 family guidance and full worked-family inventory.",
+  "excludes": "Documentation/selection DATA only; actual grant and active publication/callers are separate categories. No serialized permission or unsupported helper route.",
+  "changeHints": [
+    "BookOfEternityClient.Tests/SpiritualHealingGuidedContractTests.cs",
+    "Examples/E_CLI_Afterlife_Turns.txt"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.SpiritualHealingGuidedContractTests.GuardianAidUsesClosedSelectionAndTheDocumentedTwoTurnGmContract"
+      ]
+    },
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.ExampleDocumentationValidationTests.CompleteEffectMaterializationManifest_CoversEveryRequiredWorkedFamily"
+      ]
+    }
+  ]
+},
+{
   "id": "spiritual-aid-active-program",
   "responsibility": "One causal cheap typed call of the existing scalar recovery program: validated active H3/II/d20=8 reduces one step, while target natural H0 adds exactly1 and does not inherit healerH3. Equal-tier control terminates; forged active calculation refuses after GREEN.",
   "excludes": "Scalar DATA only, no healer/consent/publication permission, staged entropy, request codec, real actor producer or guided aid completion. No stub/unused argument/API solely for RED.",

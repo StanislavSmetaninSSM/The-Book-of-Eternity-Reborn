@@ -1,5 +1,45 @@
 # US4 safe self-treatment — active functional work, 2026-10-28
 
+Shared guided aid + cleaned grant reader WIP is connected (UNCOMPILED/UNRUN).
+The real Engine removes the preceding transient request after acceptance. A narrow
+participation selector now parses actual History once, selects one v3 natural
+result for the actual Engine session/nextTurn-1 and its primary carrier row/full
+record, then uses the SAME strict current settlement body. No supplied-original
+claim is made from that result's own token/projection. Optional request presence
+must exactly agree; normal absence is captured and closed before control/draw.
+No old request is recreated. Scalar matching precedes any historical result copy.
+
+Existing shared /лечить now offers Self first and one exact current Guardian,
+filters foreign retained records before the single scope calculation, and uses
+semantic immutable selections for fresh confirmation. Console and browser share
+ActionFor/confirmation; browser detached original binding accepts only the actual
+closed active family. Only the explicitly selected known aid target gains escaped
+output; other natural actors remain private. Three new actual controls are written:
+one direct stage/source/result/replay Fact and separate console/browser two-turn
+Engine journeys. The direct fixture models cleaned absence; actual callers must
+prove real grant43 acceptance and cleanup before aid44. Controls are UNRUN.
+
+Finite tentative qualification: scalar1, new guidance2, current request24 and
+browser pending2 cheap regressions, new backend1, existing consumed SELF graphs1,
+then new console1/browser1 (33 cases / 9 descriptors across 8 categories, official
+discovery controls actual membership). Independent coherent SOURCE/PREP must
+assess this selection before one fresh owning Integration/Main/Support + Unit
+refsfalse build. Prior issuer13 and old natural/self lineages are not repeated
+by default. Exact pending preservation on duplicate direct Stage is asserted;
+actual Engine rollback/queue refusal coverage remains a finite review item, not
+an AlreadyStaged success claim.
+
+GM guidance/daemon/registry/example/manifest/source guards now describe explicit
+spiritual_guardian_aid_v3, actual two-turn grant→aid, unequal tiers and sameattempt
+repair. The scoped actual GM uses the EXISTING GuardianThoughtJournalState path
+for full canonical-name Actor Brain memory, preserving locality18. Concurrent
+musings edits inside guardians.json are not qualified or fixed by choosing that
+journal route. No Mortal/reverse/paid/helpless/conflict/Shining aid permission is
+added; full T108 and standing HOLDs stay open. Optimization: reuse parsed UI
+catalog/History/effects, no extra locality reads for self/no-record menus; one
+current scope, operation-local grant read images and strict fresh closing only.
+No speedup is claimed; source/build/runtime remain pending.
+
 Aid original/B/result WIP is connected (UNCOMPILED/UNRUN). The actual signed
 original selects the closed active family; aid observes the additional locality
 original under the same current lease and closes that evidence with canonical18
