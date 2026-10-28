@@ -2,6 +2,13 @@
   "schemaVersion": 1,
   "selections": [
 {
+  "category": "spiritual-owned-locality-beforeimage",
+  "reason": "New owned-normalizer writer relies on ExactPrevious. Existing ordinary helper checks it, then rereads/adopts foreign bytes as publisher.Before. Real existing-API GuardOnly/readhook cut proves present/absent late overwrite and existing lease/rollback semantics; no separate framework or held suite.",
+  "contracts": [
+    "#1536 exact owned-normalizer source beforeimage through actual trusted-local publisher"
+  ]
+},
+{
   "category": "spiritual-aid-locality-normalization",
   "reason": "Authentic caller2 grant failed at owner closing after generic client normalization. Qualify only the actual-owned writer transition for two locality paths, full-normalization producer and foreign-before/after refusals; no whole-source semantic exemption or rerun of unchanged scalar/request/pending controls.",
   "contracts": [

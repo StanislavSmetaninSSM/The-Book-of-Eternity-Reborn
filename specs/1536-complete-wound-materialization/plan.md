@@ -1,5 +1,26 @@
 # US4 safe self-treatment — active functional work, 2026-10-28
 
+Owned-normalization build release is HELD for one concrete downstream finding.
+Astra independently found that existing CSWH checks ExactPrevious at core167,
+then ordinary249 rereads current and feeds those newer bytes to the trusted
+publisher as Before. The publisher correctly checks its supplied Before; the
+helper can adopt a foreign replacement between those reads. No generic semantic
+baseline or publisher rule should be changed. Ordinary fix will pin detached
+ExactPrevious bytes/absence into that existing publisher input; non-exact/default
+behavior and original recorder route stay outside this narrow correction.
+
+A meaningful test-first existing-API unit control is now written, UNCOMPILED/UNRUN:
+first target is an ExactPrevious mutation, second GuardOnly read hook changes its
+bytes/absence after the first check. The cut remains reachable in RED and GREEN.
+Expected old result is committed=true (foreign overwritten), then corrected result
+must refuse via existing uncertain outcome without claiming restoration. Two
+existing helper lease/rollback Facts accompany the two Theory rows: exact4/1/60s.
+Target helper/FS source is unchanged from qualified compiled BA Main, so one
+Unitrefsfalse RED build may use those pinned dependencies; it makes NO claim to
+run the uncompiled normalization WIP. Separate independent SOURCE/PREP is required
+before that RED, then grouped helper correction/normalization SOURCE before one
+fresh owning build and affected14/8/7 controls. No held/Mortal/DFR expansion.
+
 Final owned-write source detail (UNCOMPILED/UNRUN): the normalizer uses existing
 CoordinatedStateWriteHelper with ExactPrevious equal to the owner's captured live
 closing image for the two selected paths, then verifies exact encoded readback

@@ -99,6 +99,59 @@ public sealed class CoordinatedStateWriteHelperTests : IDisposable
         Assert.Equal(nextJson, await _fs.ReadFileAsync(secondPath));
     }
 
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public async Task ExactPreviousCannotAdoptForeignBytesAfterItsFirstCheck(bool existed)
+    {
+        const string target = "game_state/meta/exact_locality_target.json";
+        const string guard = "game_state/meta/exact_locality_guard.json";
+        var foreign = System.Text.Encoding.UTF8.GetBytes("{\"value\":\"foreign-after-baseline\"}");
+        var armed = false;
+        var cutReached = 0;
+        FileSystemManager? files = null;
+        files = new FileSystemManager(Path.Combine(_rootPath, "exact-before-cut"), NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance, new FileSystemManagerHooks
+            {
+                BeforeCanonicalReadOpenAsync = path =>
+                {
+                    if (!armed || path != guard) return Task.CompletedTask;
+                    armed = false; cutReached++;
+                    // The first target's ExactPrevious has already passed. This
+                    // separate guard read exists before the old/new publisher
+                    // selection alike, so fixing the reread cannot erase the cut.
+                    File.WriteAllBytes(files!.ResolvePath(target), foreign);
+                    return Task.CompletedTask;
+                }
+            });
+        files.EnsureDirectoryStructure();
+        if (existed) await files.WriteFileAtomicAsync(target, "{\"value\":\"original\"}");
+        await files.WriteFileAtomicAsync(guard, "{}");
+        await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+        var before = await files.ReadFileBytesAsync(lease, target);
+        Assert.Equal(existed, before is not null);
+        var committed = false;
+        Exception? failure;
+        armed = true;
+        try
+        {
+            failure = await Record.ExceptionAsync(async () =>
+            {
+                committed = await CoordinatedStateWriteHelper.TryCommitAsync(files, lease,
+                    new(target, null, "{\"value\":\"client-next\"}", RequireCurrentBaseline: true,
+                        ExactPrevious: new CanonicalBeforeImage(existed, before)),
+                    CoordinatedStateWriteHelper.CreateGuardWrite(guard, "{}"));
+            });
+        }
+        finally { armed = false; }
+        Assert.Equal(1, cutReached);
+        Assert.False(committed);
+        // A precondition conflict cannot claim that foreign state was restored.
+        Assert.IsType<CoordinatedStatePublicationUncertainException>(failure);
+        Assert.Equal(foreign, File.ReadAllBytes(files.ResolvePath(target)));
+        Assert.Equal("{}", File.ReadAllText(files.ResolvePath(guard)));
+    }
+
     public void Dispose()
     {
         if (Directory.Exists(_rootPath)) Directory.Delete(_rootPath, recursive: true);

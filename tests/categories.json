@@ -2,6 +2,38 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "spiritual-owned-locality-beforeimage",
+  "responsibility": "Cheap actual CSWH ordinary ExactPrevious late-cut: second GuardOnly baseline read injects foreign bytes or creates an absent target after its exact check; helper must pin the declared beforeimage into the real trusted publisher, retain foreign state/refuse, plus existing shared lease/rollback controls.",
+  "excludes": "No new guard-only atomic protocol or original-recorder migration, no world/actor fixture, synthetic hook API, Mortal/DFR/Windows qualification. Initial RED deliberately links unchanged qualified BA Main helper; normalization WIP is not run by this unit selection.",
+  "changeHints": [
+    "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
+    "BookOfEternityClient.Tests/CoordinatedStateWriteHelperTests.cs"
+  ],
+  "related": [
+    {
+      "id": "spiritual-aid-locality-normalization",
+      "when": "After helper late-cut GREEN, qualify the owning spiritual normalizer consumer."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.CoordinatedStateWriteHelperTests.ExactPreviousCannotAdoptForeignBytesAfterItsFirstCheck",
+        "BookOfEternityClient.Tests.CoordinatedStateWriteHelperTests.TryCommitAsync_ConcurrentChangeAfterFirstWrite_IsNotOverwrittenByRollback",
+        "BookOfEternityClient.Tests.CoordinatedStateWriteHelperTests.TryCommitAsync_HoldsCanonicalLeaseAcrossBaselineChecksAndEveryWrite"
+      ]
+    }
+  ]
+},
+{
   "id": "spiritual-aid-locality-normalization",
   "responsibility": "One bounded current-owner control: actual full accumulated normalization must commit a real natural participation grant over a changed canonical Guardian afterimage while signed locality/source fingerprint stay frozen; independent issuer rejects foreign-before, changed scope, mismatched write readback and foreign-after closing. Active aid main18 advancement is also covered in its stage-publication category.",
   "excludes": "No semantic-ignore, source/original rebinding, transferred owner, general normalizer/cache framework or live consent requirement on settled replay. Current caller2 exact changed field was unretained; this fixture intentionally exercises legitimate receipt-shape normalization, not a reconstructed runtime diff.",
