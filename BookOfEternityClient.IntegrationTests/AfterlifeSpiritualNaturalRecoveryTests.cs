@@ -141,6 +141,25 @@ public sealed class AfterlifeSpiritualNaturalRecoveryTests
                         ? Task.FromResult<byte[]?>(System.Text.Encoding.UTF8.GetBytes(changedHistory.ToJsonString()))
                         : reopened.ReadFileBytesAsync(lease, path));
             Assert.NotNull(await Read()); // Fresh services, same PID; no second tick.
+            foreach (var path in new[] { ResourceMaterializationContract.CommandPath, EffectAcceptedTurnPlan.CommandPath })
+            {
+                // Lawful initial neighboring work is covered separately. Once the
+                // cycle has published, even a valid new empty draft cannot become
+                // permission to reuse its completed natural result and skip work.
+                var command = path == ResourceMaterializationContract.CommandPath
+                    ? new JsonObject { ["resourceChanges"] = new JsonArray() }
+                    : EffectMaterializationTestFixture.CreateCommandRoot();
+                await reopened.WriteFileAtomicAsync(lease, path, command.ToJsonString());
+                var replaced = fixture.CaptureMutationRoots(new[] { path });
+                var failure = await Assert.ThrowsAsync<InvalidDataException>(() => Read());
+                Assert.Contains("replaced consumed input", failure.Message);
+                var issues = await new ValidationService(reopened, NullLogger<ValidationService>.Instance)
+                    .PrepareSpiritualSelfTreatmentPublicationAsync(lease);
+                Assert.Contains(issues, i => i.Code == "spiritual_natural_recovery_admission_invalid" &&
+                    i.Actual!.Contains("replaced consumed input", StringComparison.Ordinal));
+                fixture.AssertMutationRootsUnchanged(replaced);
+                reopened.DeleteFile(lease, path);
+            }
             foreach (var omitted in new[] { active.WoundId, healed.WoundId })
             {
                 var truncated = accepted.ToCanonicalJson();

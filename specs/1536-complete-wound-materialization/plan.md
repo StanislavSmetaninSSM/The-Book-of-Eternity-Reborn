@@ -14,70 +14,50 @@ Raw natural-caller-red-build-1/natural-caller-red-1 external. Independent Sol fi
 OUTCOME accepted. Proceed with the accepted shared ordinary-cycle implementation;
 no new approval/diagnostic chain or old passed-runtime repetition.
 
-Natural source/cohort WIP, UNCOMPILED/UNRUN: reuse the strict existing art reader,
-one signed-start per-owner cohort and the same scalar program/projection. Ordinary
-projection has explicit natural mode/cohort/graph refs and no attempt/draw. Empty
-candidate profiles skip other fifteen source roots; selected roots/catalog/tier
-DATA are shared within the operation, and effect-source authority is built once
-for cohort validation. Self's optional-active program now uses each cohort owner's
-tier. Private natural owner, strict result/replay, actual dispatcher/staging/common
-publication and GM/docs/typed controls are NOT connected yet; no capability or
-regression PASS follows from this WIP. Full physical/live authority remains due at
-the publication boundary. Generic wound work must compose or explicitly refuse,
-never be overwritten. No resource/lease/currentness rule has been relaxed.
+Natural coherent implementation is written, UNCOMPILED/UNRUN. One optional-active
+per-owner program now serves self and ordinary natural mode, using explicit signed
+start tiers and shared parsed source DATA. Actual A routes without full admission
+or executable allocation; B owns one full ordinary inner ResourceCore/effect/sink/
+common-input preparation and the same atomic scheduler/wound/effects/History batch.
+No ordinary wound command, treatment attempt or healing roll is fabricated. Actual
+ordinary resource/art/source/target companions remain in that composition; concurrent
+wound commands/opportunity stages explicitly refuse before overwrite/publication.
+The final source catalog replaces only completed admitted wound groups within the
+actual ordinary accepted source universe, retaining unrelated exports/replacements.
 
-Next private-owner WIP, still UNCOMPILED/UNRUN: the same Continuation now has
-explicit self/natural source modes and nullable request only for natural mode.
-Natural admission authenticates actual signed source/absence and one scheduler
-mutation under its own lease, captures current B before-images and refuses
-concurrent wound work. Ordinary effect binding protects original wound/effect
-subgraphs while retaining real ordinary composed input. Shared signed-root/input/
-scheduler preparation was factored, not duplicated. Strict natural result codec,
-dispatcher/sink/publication/replay/I, actual staging and GM/control tests are still
-to connect; self codec is temporarily incompatible with new WIP source fields.
-No build/test or capability acceptance is claimed for this intermediate code.
+One current closed History schema2 supports explicit self/natural modes. Natural
+stores one result on first recover, no request/attempt/roll. Original-bound replay/I
+requires actual token plus full recomputed cohort/tier projection; current settlement
+also independently witnesses active and THIS-turn healed cohort plus stage/History
+bijection. Same-turn newborn exclusion requires actual creation provenance; missing
+owner/realm or future/reset chronology refuses. This witness does not reconstruct
+historical start-tier/token. Consumed report/wound/resource/effect commands must stay
+absent on completed replay, while lawful initial neighboring commands remain allowed.
+Player notifications do not grant NPC disclosure authority. Generic ordinary policy,
+lease ownership, exact source, effect and closing checks remain strict.
 
-Strict-result WIP, UNCOMPILED/UNRUN: same spiritual History family now writes
-closed v2 self/natural modes and per-owner tier DATA. Natural uses the first
-recover row, no attempt/request/roll; complete ordered stages/projection are
-recomputed. One current closed schema2 is supported; pre-release development
-receipt fallbacks are not retained, and external raw/evidence/saves are untouched. Scheduler
-original-bound replay now requires exactly one self request or natural cohort/
-projection together with the token; ordinary settlement retains its separate
-strict durable-DATA check. Actual natural dispatcher/common input/staging/I and
-interaction controls remain unconnected. No natural GREEN or self regression
-qualification is inferred from this intermediate codec change.
+Finite architecture SOURCE through4aa found the source-universe replacement defect;
+e88 addressed it, and independent bounded closure accepted the production correction
+and33d87 signed-art causal fixture. Coherent Sol review found completed-natural replay
+could skip replaced companion commands; current grouped correction adds exact absent-
+consumed checks and within-existing-Fact wrapper/no-write negatives. An ordinal
+hypothesis was withdrawn: CurrentChaosSeaTurnOrdinal is the existing SHARED afterlife
+clock, and admitted safe Shining controls make its next ordinal equal the active
+Shining contour. No counter fork or relaxed predicate was introduced.
 
-Ordinary wiring WIP, UNCOMPILED/UNRUN: actual staging exports natural projection
-without wound command/draw and captures prepared schedule with original rollback
-bytes. The shared private phase dispatcher routes A without executable preparation;
-B fresh-admits and calls existing inner ResourceCore once. Both effect branches
-join the natural prepared plan through the ordinary handoff sink; actual resource/
-effect commands, registered outcomes and owner after-images remain in that common
-context. Same coordinated publisher owns scheduler/report/wound/effects/History;
-no second writer. Mode-specific stale-owner hints are refusal-only. Concurrent
-wound work explicitly refuses before overwrite/publication. Pure code now has one
-closed current schema2, with no pre-release receipt fallback.
-Natural I binding, independent complete-cohort settlement witness/negative controls,
-privacy checks, remaining GM docs/guards and coherent SOURCE/build/GREEN are still
-pending. The current all-null natural settlement check is not yet accepted as a
-completeness proof; it will use independent canonical identity/catalog/History,
-while original-bound callers retain mandatory actual source/token/projection.
-
-Natural I/completeness WIP, UNCOMPILED/UNRUN: bound I now authenticates actual
-self or natural source and retains complete current read images under its lease.
-Published natural calls supply actual token plus recomputed original projection;
-unpublished natural I requires unchanged client baselines. Independent settlement
-cohort comes from current canonical identity/catalog/History, including preexisting
-wounds healed THIS turn and strict persistent terminal-owner presence. It checks
-stage/actual-row bijection selected by independent cohort/event/turn before testing
-SourceFingerprint. Same-turn newborn exclusion requires actual creation History
-with this accepted event; future/reset chronology refuses. Original-bound tier/
-token proof remains separate; no new receipt/manifest/source witness file.
-Player notifications stay on the already authorized player-soul surface; adding
-NPC recovery mechanics does not introduce NPC notification/disclosure authority.
-Trim-active/terminal/row and owner-loss controls, cost/art/entity/graph interactions,
-GM/source guards, coherent SOURCE and fresh builds/actual GREEN still remain.
+Current controls/GM-sync are written, UNRUN: cheap natural cohort/required-tier and
+GM worked-example contracts plus existing manifest inventory3; typed publication4
+covers active/healed omission with rehash/primary relocation and service reopen,
+ordinary cost/art afterimage with signedH0, actual accepted source replacement,
+concurrent draft/protected drift refusal. Cost/art does not qualify the full training
+producer. The unchanged causal actual ordinary caller1 must reach GREEN. Shared self
+lifecycle5 and existing consumed-I authored-graphs1 are the affected regressions;
+no blanket browser/console/heavygraph/Mortal repeats. Static14cases/6descriptors,
+original60/120/180/120/120 bounds; official PlanOnly is authoritative. Source release,
+fresh owning Integration+Unit and actual GREEN remain pending. Actual persistent
+actor publication, IV/ordinary graph caller and chronology edge controls remain
+follow-through before any full T105/T106 acceptance. No new general diagnostics,
+cache, receipt, manifest or permission framework was added.
 
 Actual graph-bearing console caller on clean/compiled 926f70af: exact1/1 PASS,
 58.1503082s total/category50.2515017<180, complete/no skips/duplicates/timeout,
@@ -119,7 +99,7 @@ actors, on the existing source/stage/effect/common scheduler/History machinery.
 The bounded [ordinary natural recovery design](natural-recovery-design.md) is
 accepted by independent Astra/high at8c4e. The [implementation plan](natural-recovery-plan.md)
 and initial ordinary caller scaffold now have the qualified causal RED above.
-Natural production implementation is next; finite design and SOURCE/PREP accepted.
+Natural production is now written but uncompiled/unrun; current coherent SOURCE/PREP is pending.
 Natural recovery itself spends no resource; it must coexist with valid resource
 contributions from an ordinary action rather than inherit self-only cost bans.
 Full US4, helper/entities/combat, real provider/fresh process and retained Mortal/

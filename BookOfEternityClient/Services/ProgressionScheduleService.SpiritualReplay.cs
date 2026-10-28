@@ -79,7 +79,9 @@ public partial class ProgressionScheduleService
         var suppliedControl = WoundAcceptedTurnFingerprintWriter.CanonicalJson(JsonSerializer.SerializeToNode(control)!);
         if (suppliedControl != WoundAcceptedTurnFingerprintWriter.CanonicalJson(accepted.Root["control"]!) ||
             await read(ReportPath) is not null ||
-            await read(AcceptedMechanicsPlan.WoundCommandPath) is not null)
+            await read(AcceptedMechanicsPlan.WoundCommandPath) is not null ||
+            await read(ResourceMaterializationContract.CommandPath) is not null ||
+            await read(EffectAcceptedTurnPlan.CommandPath) is not null)
             throw new InvalidDataException("A published spiritual cycle has changed control or a replaced consumed input.");
         var schedule = await read(SchedulePath);
         if (schedule is null || new CanonicalBeforeImage(true, schedule).Fingerprint != accepted.Root["scheduleAfterFingerprint"]!.GetValue<string>())
