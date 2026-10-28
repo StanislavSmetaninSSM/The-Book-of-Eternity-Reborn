@@ -694,3 +694,29 @@ guard и исторический Оплот. Parent прочитал Block15.A,
 Новые test-файлы/diagnostics не создавались, runtime/build/gameplay/balance/clean
 restore UNRUN. Перед предъявлением нужен отдельный review цельного diff; план/
 задачи исполнения не пересобирались и остаются под T001 до принятия всей spec.
+
+### Итог независимого review защитных слоёв
+
+WIPf02c45362a80dbd29c03ffb3699a22eb7f1f8826 опубликован; remote SHA совпадает,
+приложение прочитано через GitHub по точному ref, blob равен локальному hash.
+Diff --check и Spec Kit prerequisites успешны; это не анализ готового executable plan.
+
+Независимый /root/review_resistance_design1573, явно выбранный gpt-6-astra/high,
+проверил diff a54e5e942..f02c45362 по первичным rules/resources/lifecycle. Один P2:
+effectId не различал два барьера одного эффекта при равной ширине покрытия, что
+могло изменить сохранённый остаток и следующий урон. Parent подтвердил несколько
+componentId у effect в EffectMechanicsSnapshot:149–168. Добавлены stable
+barrierInstanceId (может использовать effectId/componentId/получателя), полный
+lexicographic tie-break и AC для fire10→cold10 после перестановки/reload.
+Reviewer проверил точную поправку и зависимости; P2 закрыт, новых замечаний нет.
+
+Дополнительно арифметически перечислены допустимые распределения10 единиц между
+двумя запасами из контрпримера; перестановка и JSON-roundtrip дают те же остатки
+и следующий cold-урон. Это bounded проверка примера, не production max-flow,
+numeric schema или атомарность. Runtime/build/gameplay/balance/clean restore UNRUN.
+
+Маршрутизация дала конкретную пользу: отдельный Astra/high review выявил пропуск
+identity внутри effect, не замеченный исходным описанием. Одного прицельного
+исправления и перепроверки достаточно, полного повторного audit не проводилось.
+Следующий шаг — предъявить пользователю точный документ, включая выбор постоянного
+порога без износа; реализация и старые tasks по-прежнему не разрешены.
