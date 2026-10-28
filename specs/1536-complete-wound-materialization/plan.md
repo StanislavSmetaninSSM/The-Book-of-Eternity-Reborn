@@ -1,6 +1,18 @@
 # US4 safe self-treatment — active functional work, 2026-10-28
 
 
+T108 technical DESIGN WIP is now in spiritual-aid-design.md. Finite user result:
+ordinary player request → accepted GM participation for the current visible
+Guardian → existing guided /лечить selection/quote/confirmation → real Engine aid
+turn. Exact locality uses existing service; consent requires content-bound witness
+in the existing natural accepted result, atomic with canonical profile grant.
+Healer active tier and target natural tier remain separate in one existing program.
+No registry/receipt file/cache or implicit consent. Staging-order and exact current
+version split are explicitly bounded DESIGN questions, not implementation/PASS.
+All prior code/evidence is unchanged; no new runtime until the design is closed.
+
+
+
 Historical owner carry and conflict reset are now independently OUTCOME accepted.
 Qualified union:6add owner/history controls6 + ordinary publication4, retained with
 unchanged bodies/dependencies, then test-only BOM closure b3c655c8 reset1:11 unique
@@ -23,7 +35,7 @@ Production fix reuses already fresh-validated retired historical keys through
 existing Combine/single final Build, without importing persisted current owners,
 capacity or spend/TerminalOwners permission. Real upstream new-snapshot item
 admission is retained in the consumer. Typed tests prove absent ledger history
-accepted, live/spend denied, current item not imported and precise overlap/duplicate/
+accepted, live ledger/resource resolution denied, current item not imported and precise overlap/duplicate/
 confusable/reuse behavior. No new cache, source reread, GM format or speedup claim;
 full canonical persisted equality/source/lease/closing checks remain.
 
@@ -38,7 +50,9 @@ b2f53083e8777524b61a61746eaaa6e21b87d5f595aad03a31f8bbc4221e1e75,
 b6708dd20dddfc2136a98747976c097301a8bd1cd60e737ea25b801fd700af2a.
 Earlier genuine owner-loss refusal, fixture proposal/preflight failures and BOM
 observer failure remain preserved; none is relabeled PASS. Sol final OUTCOME
-accepted; bounded architecture follow-through is requested. Prior19 retain their
+accepted; bounded architecture OUTCOME also accepted (new typed proof and reset).
+Resolution denial is the spending-permission gate; no separate spend transaction
+was executed by that control. Prior19 retain their
 original scoped evidence; broad T105–T108 and standing HOLDs remain open. Next:
 written bounded player→current consenting Guardian aid design using existing local
 scope, explicit accepted profile participation and separate healer/natural tiers.

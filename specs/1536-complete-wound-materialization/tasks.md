@@ -14473,6 +14473,12 @@ close full source-action/terminal/pending contracts or any top-level story task.
   lawful fixture DATA, not prior-natural producer qualification.
 - [ ] T107 [US4] Compose healing/recovery wound/effect/resource/profile/scheduler/history/output after-images and exact replay results in `BookOfEternityClient/Services/WoundAcceptedTurnPlanner.cs` and `BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs`
 - [ ] T108 [US4] Add player-to-entity and entity-to-player treatment authority using exact profile, visibility, reachability, consent/conflict, and current wound bindings in `BookOfEternityClient/Services/AfterlifeWoundTreatmentAuthority.cs`
+  Bounded player→current Guardian technical design is now written in
+  spiritual-aid-design.md: actual ordinary GM grant, existing guided caller,
+  content-bound accepted natural-result witness and separate active/natural tiers.
+  Staging-order/version decisions require independent DESIGN; no implementation
+  or helper completion is claimed. Reverse entity→player needs real guided player
+  consent, and other/helpless/conflict/Shining helper routes remain open.
 
 ### GM contract synchronization
 
