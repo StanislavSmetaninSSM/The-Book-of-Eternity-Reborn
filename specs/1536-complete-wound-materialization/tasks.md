@@ -14385,8 +14385,11 @@ close full source-action/terminal/pending contracts or any top-level story task.
   including final wound, one cycle, terminal History, cleanup and no self cost;
   owner/output controls pass2/2. Actual console cancel/confirm/same Engine
   publication and settled repeat now pass1/1 on7b (43.1600290s; controlled native
-  completion, not provider/fresh-process). Full T101 remains open for actual graph-bearing caller/repair
-  and shared NPC/command/roleplay integration;
+  completion, not provider/fresh-process). Actual graph-bearing console caller on
+  `926f70af` now passes1/1 with the original d20=7, healed final state, two legitimate
+  repair phases (graphs then N/I only), one cycle and exact retained mechanics.
+  Independent Sol and architectural OUTCOME accepted; affected final33 also pass
+  with independent OUTCOME pending. Full T101 remains open for shared NPC/command/roleplay integration;
   same-PID service reopen is not fresh-process replay.
   See current plan for exact source, builds, evidence and limitations.
   The accepted T094-linked prerequisite (`4711d6a8`) adds unused
@@ -14413,8 +14416,9 @@ close full source-action/terminal/pending contracts or any top-level story task.
   diagnostic chain now. Preparation6 remains unqualified after its category timeout.
   Actual browser GameEngine/guided self2/2 and owner/output2/2 now pass on316ee621
   with controlled native-shaped GM completion. Actual console cancel/confirm and
-  same-Engine publication also pass1/1 on7b. Graph-bearing GM caller/repair,
-  fresh-process cleanup and helper/entity follow-through remain open;
+  same-Engine publication also pass1/1 on7b. Graph-bearing GM caller/repair passes
+  1/1 on926 with independently accepted same-attempt/two-phase/one-cycle result.
+  Ordinary natural cycles, fresh-process cleanup and helper/entity follow-through remain open;
   this does not complete T104 or T105–T108.
   Current self-request prerequisite (2026-10-27), source
   `33d8aeac818caafe4d695d36ff06e01e16aa5999`: actual canonical-lease-owned staging,
@@ -14426,8 +14430,9 @@ close full source-action/terminal/pending contracts or any top-level story task.
   remains open beyond the qualified self backend: signed accepted admission,
   wound/effect/natural recovery, one world cycle and History/common publication now
   work in the finite5+24+2 contracts above; actual browser handler also completes
-  the real browser and console callers. GM graph-bearing caller/repair and wider
-  materialization remain in progress. Exact evidence and independent OUTCOME status are in plan.md.
+  the real browser and console callers, including the qualified graph-bearing
+  repair journey above. Wider materialization remains in progress. Exact evidence
+  and independent OUTCOME status are in plan.md.
   T108 helper/entity authority is not claimed by this self-only prerequisite.
   Raw stays outside checkout; exact sources/artifacts/times are in current plan.
 
@@ -14437,13 +14442,16 @@ close full source-action/terminal/pending contracts or any top-level story task.
   application. T105/T107 must not infer survivors from slot/effect-ID order or
   introduce automatic replacements. Missing/invalid graph retains the same
   sealed attempt/draw through repair and publishes no partial cycle or wound.
-  The accepted T097-linked prerequisite (`45beccd1`, `8aff3325`) adds unused
-  `BookOfEternityClient/Services/SpiritualWoundRecoveryMath.cs`, not an accepted
-  cycle or transition producer. T105/T107 must preserve all carried progress and
-  represent multi-step/follow-up healing with exact tick authority; the existing
-  generic recovery predicate allows original I/II only. Do not cap/discard a valid
-  III/IV result or reuse the unrelated Mortal-only treatment staging exception.
+  The T097-linked arithmetic (`45beccd1`, `8aff3325`) is now used by the qualified
+  self-program's ordered natural recovery, including authored III→II→I graphs and
+  terminal healing. Ordinary safe cycles without treatment and persistent-actor
+  eligibility still lack their independent caller. T105/T107 must reuse carried
+  progress, multi-step/follow-up stages and exact private tick authority; do not
+  cap/discard valid III/IV progress or borrow Mortal-only authority.
 - [ ] T106 [US4] Integrate accepted recovery and art progression with `ProgressionScheduleService` for player soul and persistent actors without wall-clock or effect-scheduler fallback in `BookOfEternityClient/Services/ProgressionScheduleService.cs` and `BookOfEternityClient/Services/AfterlifeEntityProfileState.cs`
+  Self-treatment now publishes its single scheduler mutation atomically with
+  wound/effects/History and exact replay. The next bounded block is the ordinary
+  safe-cycle route, no new treatment attempt/die and no duplicated self tick.
 - [ ] T107 [US4] Compose healing/recovery wound/effect/resource/profile/scheduler/history/output after-images and exact replay results in `BookOfEternityClient/Services/WoundAcceptedTurnPlanner.cs` and `BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs`
 - [ ] T108 [US4] Add player-to-entity and entity-to-player treatment authority using exact profile, visibility, reachability, consent/conflict, and current wound bindings in `BookOfEternityClient/Services/AfterlifeWoundTreatmentAuthority.cs`
 
@@ -14481,7 +14489,8 @@ close full source-action/terminal/pending contracts or any top-level story task.
   Self-only browser selection/confirmation/cancellation and actual GameEngine
   completion pass2/2 on316ee621; actual console cancel/confirm/same-Engine
   publication also pass1/1 on7b. This does not close the wider target/diagnosis/
-  route/helper/quote workflow, full console parity or graph-bearing caller repair.
+  route/helper/quote workflow or full console parity. The separate graph-bearing
+  caller/repair journey now passes1/1 on926 with the scope recorded above.
 - [ ] T122 [US5] Implement one-shot exact wound command staging/consumption and stale/replay rejection in `BookOfEternityClient/Services/WoundCommandState.cs`
 - [ ] T123 [US5] Add escaped Russian console list/detail/History/prompts/results using shared blocks in `BookOfEternityClient/UI/ExplorerWoundCommandResultBuilder.cs` and `BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Wounds.cs`
 - [ ] T124 [US5] Register all command aliases and route both Mortal/afterlife console actions to the shared handler in `BookOfEternityClient/CommandProtocol/ExplorerCommandCatalog.cs` and `BookOfEternityClient/UI/ExplorerMode.cs`

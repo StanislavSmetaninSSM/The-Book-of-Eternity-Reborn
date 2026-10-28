@@ -18,13 +18,27 @@ combined official PlanOnly2/2descriptors8.9296232s/zero executions. Fresh owning
 Integration-only build exit0/105warnings/0errors2:40.21, Integrationb70dfd0d;
 all Main/Support316 masters/copies unchanged. Raw/pins remain external under
 graph-repair-two-phase-build-1 and graph-repair-two-phase-functional-1. Independent
-SOURCE/PREP accepted926; finite OUTCOME review requested, no result invented.
+Sol and bounded architectural OUTCOME accepted926 without additional findings.
 
-Next already-reviewed affected gate: one fresh Unit-only refsfalse build, official
-PlanOnly33/4descriptors, then separate request24→pending2→help2→lifecycle5 with
-existing60/120/120/120s bounds. No accepted browser/console/backend repeat merely
-for assembly hashes. Then continue T105/T106 ordinary safe-cycle natural recovery
-without treatment command/new attempt/die, including eligible persistent actors.
+Affected final gate on clean docs-only1e0dc: officialPlanOnly33/4descriptors,
+19.0515640s/zero executions; separate request24,pending2,help2,lifecycle5 all PASS,
+33 unique test/execution IDs, complete exit0/no skips/duplicates/timeout and both
+cleanup flags true. Category times16.6796595/7.3054185/9.3387500/29.9150214s stay
+within existing60/120/120/120s bounds. Fresh Unit-only refsfalse build0errors/
+26warnings1:16.32, Unit16a75091; all9 master/dependency pins unchanged. An earlier
+invocation failed immediately with MSB1009 from an incorrect project path; it
+compiled nothing. Raw self-caller-final-unit-build-1/-2 and
+self-caller-final-functional-1 stay external. TRX SHA256 by ordered group:
+1db7cc151021f357ab545b852c56cd2174d613ba4b78fe1da75d60f7e8e78ed6,
+58209737cea1769da36022c40e8269e3734c0c3146505c1f596767a6f3a65bf5,
+bfca5ce00fa2394dfd5836b3e178dbbd26c44e90e20bf238d006fb543542da95,
+ca840e4087fdd28d989ad80ff0f572d5fdcfb0a9ce6f8650dd93041406bfadd1.
+Finite independent final33 OUTCOME requested. No accepted browser/console/backend
+repeat merely for assembly hashes. Continue T105/T106 ordinary safe-cycle natural
+recovery without treatment command/new attempt/die, including eligible persistent
+actors, on the existing source/stage/effect/common scheduler/History machinery.
+Natural recovery itself spends no resource; it must coexist with valid resource
+contributions from an ordinary action rather than inherit self-only cost bans.
 Full US4, helper/entities/combat, real provider/fresh process and retained Mortal/
 preparation timeout blockers remain open; T609/fullDFR/Windows stay parked.
 
