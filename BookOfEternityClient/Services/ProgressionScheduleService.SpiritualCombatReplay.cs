@@ -177,7 +177,9 @@ public partial class ProgressionScheduleService
                 var artJson = harm["specialArtJsonBase64"] is null ? null :
                     Encoding.UTF8.GetString(Convert.FromBase64String(harm["specialArtJsonBase64"]!.GetValue<string>()));
                 var art = artJson is null ? null : JsonNode.Parse(artJson);
-                var actor = harm["actingActor"]!.GetValue<string>(); var operation = harm["operation"]!.GetValue<string>();
+                var actorCoordinate = harm["actingActor"]!.AsObject();
+                var actor = actorCoordinate["actorKind"]!.GetValue<string>() + ":" + actorCoordinate["actorId"]!.GetValue<string>();
+                var operation = harm["operation"]!.GetValue<string>();
                 var composed = SpiritualWoundSourceWitness.ComposeOpportunityData(binding, original.Owner,
                     art is null ? "spiritual_standard_art" : "spiritual_art", art?["artId"]?.GetValue<string>() ?? actor + ":" + operation,
                     evidence, maximum, new(original, "retrauma"));
@@ -187,12 +189,14 @@ public partial class ProgressionScheduleService
                 var authorityFingerprint = opportunity.AuthorityFingerprint;
                 if (harm["guaranteedSeverityRank"] is { } guaranteed)
                 {
+                    // The receipt parser already joins these exact strings to the
+                    // canonical source; never reserialize them for the old hash.
+                    var preimage = SpiritualWoundSourceWitness.ReadGuaranteePreimage(harm.AsObject());
                     var claims = opportunity with { MinimumSeverityRank = guaranteed.GetValue<int>() };
                     var claimsFingerprint = WoundOpportunityAuthority.RecomputeAuthorityFingerprint(claims);
                     var guarantee = SpiritualWoundSourceWitness.GuaranteeAuthorityFingerprint(claimsFingerprint,
-                        SpiritualWoundSourceWitness.GuaranteeSourceFingerprint(actor, operation, artJson),
-                        harm["coordinate"]!.GetValue<string>(), Encoding.UTF8.GetString(Convert.FromBase64String(
-                            harm["exchangeJsonBase64"]!.GetValue<string>())), turn, claims.OpportunityId + "_original_guarantee");
+                        SpiritualWoundSourceWitness.GuaranteeSourceFingerprint(actor, operation, preimage.SpecialArtJson),
+                        harm["coordinate"]!.GetValue<string>(), preimage.ExchangeJson, turn, claims.OpportunityId + "_original_guarantee");
                     authorityFingerprint = WoundOpportunityAuthority.OriginalGuaranteeFingerprint(claimsFingerprint, guarantee);
                 }
                 if (change.Kind != "worsen" || change.Turn != turn || change.EventRef != eventRef ||

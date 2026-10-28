@@ -14365,8 +14365,16 @@ rows retain their own lineages; no combat gameplay PASS or full task closure.
   counterharm is not excluded. Bounded Astra DESIGN accepts mandatory exact
   guaranteePreimage evidence in the existing guaranteed witness, unchanged ordinary
   form/hash/owner checks, and refusal before publication if proof is missing.
-  The new one-case typed Unit scaffold is UNRUN; implement only after its causal
-  proof and keep downstream14 unrun until the real paired result permits them.
+  The new one-case typed Unit scaffold completed genuine codec RED on f478:
+  1/1 FAIL at the expected unknown guaranteed-child guard, no timeout and both
+  cleanup flags true; Sol independently accepted it. The current implementation
+  captures exact prepared preimages in the existing guaranteed witness, keeps the
+  ordinary closed form/hash and fresh owner checks, and reconstructs the strict
+  counterharm opportunity domain. New11 + affected intrinsic21 Unit controls and
+  the original4 + guaranteed-counterharm1 real pair are written, not yet compiled
+  or qualified. Proposed finite remaining51/11 includes unchanged downstream14;
+  its actual execution stays conditional on the real paired result. T095/T102/T103
+  remain open; no full combat/US4 completion follows from the draft.
   Next bounded player-result is tracked jointly with T102/T103 in
   spiritual-combat-healing-design.md (DESIGN ACCEPT c3caf534c): player self treatment in actual active
   direct Chaos duel, counterable typed operation, exact original die/art/target,

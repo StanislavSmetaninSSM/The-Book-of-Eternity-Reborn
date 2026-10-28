@@ -344,6 +344,10 @@ public partial class ValidationService
                 ["conflictAfterFingerprint"] = entry.ConflictAfterFingerprint,
                 ["sourceFingerprint"] = ""
             };
+            if (source.GuaranteedSeverityRank is not null)
+                witness["guaranteePreimage"] = SpiritualWoundSourceWitness.CaptureGuaranteePreimage(
+                    source.ExchangeJson, source.OriginalSpecialArtJson ??
+                        throw new FormatException("An original guaranteed source requires its prepared special art."));
             var fingerprint = SpiritualWoundStateJson.Hash(witness, "source", "sourceId", "sourceFingerprint");
             witness["sourceFingerprint"] = fingerprint;
             witness["sourceId"] = "spiritual_source_" + fingerprint[7..];

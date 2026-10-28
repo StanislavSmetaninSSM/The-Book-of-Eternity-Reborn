@@ -1,3 +1,63 @@
+# Exact guarantee evidence implementation — WIP / SOURCE pending
+
+2026-10-28: genuine codec RED on frozenf478b3db6 is independently accepted by Sol.
+The original singleton completed during an executor disconnect and was inspected,
+not restarted, on the same machine after access returned at19:27 UTC. Main/Support
+build0errors/35 baseline warnings/2:42.81; Unit refsfalse0errors/26w/1:32.32.
+Official PlanOnly1/1 zeroexec11.4758049s. Actual1 complete FAIL95.6799189s total,
+category9.621345<60, no timeout/duplicates/both cleanuptrue; six pre/post pins agree.
+TRX6a91741b014b73c134114ff9a16b81b7677c78e955307ab166a59fde9ee5d43e:
+Closed object required at SourceWitness61/newFact19, after all four preconditions.
+This proves the missing guaranteed witness form, not live producer capture.
+
+Implementation now copies exact PreparedSpiritualSource strings before existing
+CanonicalBase64 into one closed guaranteed-only child. Intrinsic parsing requires
+strict Base64/UTF-8/duplicate-free JSON and exact canonical semantic agreement;
+ordinary source shape remains unchanged. Actual C1 packet parsing precedes initial
+pair publication and cold parsing precedes draft execution. The settled comparison
+uses the retained strings verbatim with unchanged hash inputs/formulas. It does
+not create a seal/capability. The existing actor coordinate is read as its actual
+closed object, not a string. Recovered local allocation scope stays within the
+automatic decision and commits only after its validated selected outcome.
+
+Finite steps in this existing plan (no replacement ledger):
+- [x] Preserve recovered six-file WIP remotely before corrections (98cd30faf).
+- [x] Obtain bounded guarantee design and genuine one-case codec RED (f478).
+- [ ] Finish/review SourceWitness CaptureGuaranteePreimage/ReadGuaranteePreimage,
+  C1 witness construction, exact settled join and current fixtures.
+- [ ] Fresh owning Main/Support/Integration plus Unit refsfalse, current nine
+  selected pins and literal official PlanOnly of proposed51cases/11descriptors.
+- [ ] Run cheap guarantee11 + existing affected source/receipt21 first, then the
+  original paired4 plus guaranteed-counterharm1 under unchanged120seconds.
+- [ ] Only after actual pair PASS, run the unchanged downstream14 under original
+  budgets; independently review outcomes and publish a checked checkpoint.
+
+The new actual guaranteed case seeds its existing opposition special art BEFORE
+the first authority/snapshot, reuses the same art/cost/dice/pressure contracts,
+and asserts exact noncanonical prepared preimages in its real initial packet.
+After real common publication, a detached receipt with equivalent semantic JSON
+but changed raw property order and fully recomputed witness/decision digests must
+still refuse against actual History. No physical afterimage is rewritten for
+that control. Existing wrong-fingerprint-domain History control remains.
+
+The21 existing Unit cases preserve art aliases, cost/envelope joins, ordinary
+closed fields, above-calculated guarantees, guarantee-satisfied and exact-rank
+receipt semantics. Their valid fixtures now carry required evidence; touched
+validation helpers use direct typed APIs instead of reflection. No new reflection.
+Unrelated old receipt helpers/tests are not added to this selection.
+Golden hash constants are independently derived from the unchanged length-framed
+SHA256 formula, so factoring cannot silently canonicalize old guarantee inputs.
+
+Optimization: existing prepared immutable strings are reused; their original
+owner/lease/source checks stay fresh. Only guaranteed sources add two encodings
+and bounded strict DATA comparisons. No file rereads, cache, registry, allocator,
+publisher or diagnostics stack is added; no speedup claimed. GM authoring remains
+the existing art envelope/audits; only the client-private evidence contract changes,
+documented in Wound_Materialization_Contract. Existing GM worked forms stay valid.
+Current production/tests are UNCOMPILED/UNRUN; prior17 remain at their recorded
+lineages, functional7 remains four FAIL/post-publication CSPU and downstream14
+remain UNRUN. No combat gameplay or full T095/T102/T103/US4 completion is claimed.
+
 # Guarantee preimage causal scaffold — implementation UNRUN
 
 2026-10-28: recovered six-file WIP was first preserved remotely as98cd30faf,

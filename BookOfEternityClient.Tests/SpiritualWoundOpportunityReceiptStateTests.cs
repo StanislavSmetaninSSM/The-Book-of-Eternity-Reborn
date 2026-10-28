@@ -671,6 +671,7 @@ public sealed class SpiritualWoundOpportunityReceiptStateTests
         witness["appliedArtKind"] = "special";
         witness["specialArtJsonBase64"] = Encode(art);
         witness["exchangeJsonBase64"] = Encode(exchange);
+        witness["guaranteePreimage"] = SpiritualWoundSourceWitness.CaptureGuaranteePreimage(exchange.ToJsonString(), art.ToJsonString());
         ResealWitness(root, 0);
         var decision = root["decisions"]![0]!.AsObject();
         Materialize(decision, "wound-a", 1);
@@ -717,6 +718,7 @@ public sealed class SpiritualWoundOpportunityReceiptStateTests
         witness["retraumaWoundId"] = "wound-older";
         witness["retraumaWoundJsonBase64"] = Encode(wound);
         witness["exchangeJsonBase64"] = Encode(exchange);
+        witness["guaranteePreimage"] = SpiritualWoundSourceWitness.CaptureGuaranteePreimage(exchange.ToJsonString(), art.ToJsonString());
         ResealWitness(root, 0);
         var decision = root["decisions"]![0]!.AsObject();
         Materialize(decision, "wound-older", originalRank + 1);
@@ -1091,6 +1093,7 @@ public sealed class SpiritualWoundOpportunityReceiptStateTests
         witness["appliedArtKind"] = "special";
         witness["specialArtJsonBase64"] = Encode(art);
         witness["exchangeJsonBase64"] = Encode(exchange);
+        witness["guaranteePreimage"] = SpiritualWoundSourceWitness.CaptureGuaranteePreimage(exchange.ToJsonString(), art.ToJsonString());
         ResealWitness(root, index);
     }
 
@@ -1150,11 +1153,11 @@ public sealed class SpiritualWoundOpportunityReceiptStateTests
     /// <returns>
     /// Parsed pure state.
     /// </returns>
-    private static object Valid(JsonObject root)
+    private static SpiritualWoundOpportunityReceiptState Valid(JsonObject root)
     {
-        var result = Call("Parse", root.ToJsonString(), Path);
-        Assert.True(Property<bool>(result, "IsValid"));
-        return Property<object>(result, "State");
+        var result = SpiritualWoundOpportunityReceiptState.Parse(root.ToJsonString(), Path);
+        Assert.True(result.IsValid, string.Join(";", result.Issues));
+        return Assert.IsType<SpiritualWoundOpportunityReceiptState>(result.State);
     }
 
     /// <summary>
@@ -1165,10 +1168,10 @@ public sealed class SpiritualWoundOpportunityReceiptStateTests
     /// </param>
     private static void Invalid(string? json)
     {
-        var result = Call("Parse", json, Path);
-        Assert.False(Property<bool>(result, "IsValid"));
-        Assert.Null(Property<object?>(result, "State"));
-        Assert.NotEmpty(Property<IReadOnlyList<ValidationIssue>>(result, "Issues"));
+        var result = SpiritualWoundOpportunityReceiptState.Parse(json, Path);
+        Assert.False(result.IsValid);
+        Assert.Null(result.State);
+        Assert.NotEmpty(result.Issues);
     }
 
     /// <summary>

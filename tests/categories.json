@@ -2,15 +2,34 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "spiritual-combat-guarantee-witness-consumers",
+  "responsibility": "Twenty-one exact affected intrinsic consumers: existing guaranteed art/audit/alias and above-calculated-ceiling witness controls, unchanged ordinary closed form, and receipt guarantee-satisfied/exact-rank guards after requiring retained guarantee preimages.",
+  "excludes": "No whole witness/receipt owner or source suite, live admission permission, new guarantee rule, world/session fixture or held workload.",
+  "changeHints": ["BookOfEternityClient/Services/SpiritualWoundSourceWitness.cs", "BookOfEternityClient.Tests/SpiritualWoundSourceWitnessTests.cs", "BookOfEternityClient.Tests/SpiritualWoundOpportunityReceiptStateTests.cs"],
+  "related": [{"id":"spiritual-combat-guarantee-preimage","when":"The new child must preserve these existing source/receipt invariants."}],
+  "requirements": {"frontendBuild":false,"exclusive":true,"ciRunner":"ubuntu-24.04"},
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [{"project":"unit","tests":[
+    "BookOfEternityClient.Tests.SpiritualWoundSourceWitnessTests.Validate_JoinsOriginalSpecialArtAndGuarantee",
+    "BookOfEternityClient.Tests.SpiritualWoundSourceWitnessTests.Validate_RetainsGuaranteeAboveCalculatedMaximumWithoutGrantingMaterialization",
+    "BookOfEternityClient.Tests.SpiritualWoundSourceWitnessTests.Validate_AcceptsStandardSourceWithoutMutation",
+    "BookOfEternityClient.Tests.SpiritualWoundSourceWitnessTests.Validate_RejectsMissingAndUnknownFields",
+    "BookOfEternityClient.Tests.SpiritualWoundOpportunityReceiptStateTests.Parse_AcceptsGuaranteeSatisfiedWithoutTransition",
+    "BookOfEternityClient.Tests.SpiritualWoundOpportunityReceiptStateTests.Parse_RejectsMalformedGuaranteeSatisfied",
+    "BookOfEternityClient.Tests.SpiritualWoundOpportunityReceiptStateTests.Parse_RequiresExactGuaranteedSeverity"
+  ]}]
+},
+{
   "id": "spiritual-combat-guarantee-preimage",
-  "responsibility": "Cheap typed DATA proof that guaranteed source witnesses retain exact prepared exchange/art strings with noncanonical property order while canonical semantic payloads and intrinsic source checks remain strict.",
+  "responsibility": "Eleven cheap typed DATA cases: exact noncanonical prepared exchange/art retention, eight resealed missing/foreign/encoding/closed-field refusals, unchanged ordinary closed form and independent old-domain golden hashes.",
   "excludes": "No original membership, capability, seal minting, C2/C4 publication, world fixture or performance/DFR workload. Actual guaranteed counterharm requires its separate paired Integration case.",
   "changeHints": ["BookOfEternityClient/Services/SpiritualWoundSourceWitness.cs", "BookOfEternityClient/Services/Validation/ValidationService.SpiritualOriginalC1FirstOffer.cs", "BookOfEternityClient.Tests/SpiritualCombatGuaranteePreimageTests.cs"],
   "related": [{"id":"spiritual-combat-healing-pair","when":"Actual admitted sources must copy and rederive this evidence through the original owner and common publisher."}],
   "requirements": {"frontendBuild":false,"exclusive":true,"ciRunner":"ubuntu-24.04"},
   "timeoutMinutes": 1,
   "expectedSeconds": null,
-  "selectors": [{"project":"unit","tests":["BookOfEternityClient.Tests.SpiritualCombatGuaranteePreimageTests.GuaranteedWitnessRetainsBothNoncanonicalPreparedPreimages"]}]
+  "selectors": [{"project":"unit","tests":["BookOfEternityClient.Tests.SpiritualCombatGuaranteePreimageTests.GuaranteedWitnessRetainsBothNoncanonicalPreparedPreimages", "BookOfEternityClient.Tests.SpiritualCombatGuaranteePreimageTests.GuaranteedWitnessRejectsResealedMissingOrForeignPreimage", "BookOfEternityClient.Tests.SpiritualCombatGuaranteePreimageTests.NonGuaranteedWitnessKeepsItsClosedForm", "BookOfEternityClient.Tests.SpiritualCombatGuaranteePreimageTests.ExistingGuaranteeHashRetainsItsOriginalPreparedStringDomain"]}]
 },
 {
   "id": "spiritual-combat-original-observation",
@@ -99,7 +118,7 @@
 },
 {
   "id": "spiritual-combat-healing-pair",
-  "responsibility": "Four actual initial-pair/cold C2/C3/C4 cases: full heal, resolved no-improvement, blocked+same-wound worsening, and selected healing followed by dependent ordinary cost correction. Includes graph repair/I, selected-die and omission controls, typed uncertainty and a detached later-family wave parser control.",
+  "responsibility": "Five actual initial-pair/cold C2/C3/C4 cases: full heal, resolved no-improvement, ordinary and guaranteed blocked+same-wound worsening, and selected healing followed by dependent ordinary cost correction. Includes graph repair/I, selected-die and omission controls, typed uncertainty and a detached later-family wave parser control.",
   "excludes": "Bounded current #1536 combat contour only. No full owner/suite, Mortal compatibility, T609/full DFR/Windows or external-provider/fresh-process qualification. DATA controls do not grant publication permission.",
   "changeHints": ["BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualCombatHealing.cs", "BookOfEternityClient/Services/SpiritualWoundDecisionPendingState.CombatHealing.cs"],
   "related": [],
@@ -114,7 +133,8 @@
     {
       "project": "integration",
       "tests": [
-        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.CombatHealingUsesAnActualPairAndDurableOutcomeWithoutASafeCycle"
+        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.CombatHealingUsesAnActualPairAndDurableOutcomeWithoutASafeCycle",
+        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.CombatHealingBlockedGuaranteedCounterharmUsesItsOriginalPreimage"
       ]
     }
   ]

@@ -378,6 +378,21 @@ full profile update, wound admission, receipt, or accepted turn.
 
 ## spiritual_wound_explicit_decline_receipt_v1
 
+Internal guaranteed source evidence: the client-owned source witness retains its
+canonical exchange/art payloads and, only when `guaranteedSeverityRank` is present,
+a mandatory closed `guaranteePreimage` object with `exchangeJsonBase64` and
+`specialArtJsonBase64`. These are the exact prepared strings used by the existing
+original guarantee producer, including their property order. Strict Base64,
+UTF-8, duplicate-free JSON and canonical semantic agreement are required; the
+complete witness digest covers this child. Missing or foreign proof refuses
+before publication. A non-guaranteed source forbids the child. This is the current
+producer contract, not a migration or fallback for missing historical evidence.
+The actual original/source owner still reconstructs and binds the witness;
+self-consistent hashes alone grant no source or publication authority. The GM
+does not author these private fields and must not copy them into narrative/UI.
+Existing special-art envelopes, counterharm, costs and guarantee hash rules are
+unchanged; no new GM command field is introduced.
+
 When the same-turn client continuation offers a positive spiritual wound source
 without a guaranteed severity, the GM may answer with an explicit decline:
 `{"opportunityRef":"spiritual_wound_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","decision":"none"}`.

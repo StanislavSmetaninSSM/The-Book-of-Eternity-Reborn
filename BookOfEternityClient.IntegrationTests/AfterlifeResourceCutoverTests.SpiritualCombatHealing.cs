@@ -22,6 +22,12 @@ public sealed partial class AfterlifeResourceCutoverTests
         RunCombatHealingPairAsync(mode, failPublication: false);
 
     [Fact]
+    public Task CombatHealingBlockedGuaranteedCounterharmUsesItsOriginalPreimage() =>
+        RunCombatHealingPairAsync("blocked_guaranteed", failPublication: false);
+
+    private static bool IsBlockedCombat(string mode) => mode is "blocked_worsen" or "blocked_guaranteed";
+
+    [Fact]
     public Task CombatHealingPublicationFailureRestoresItsActualSignedOriginal() =>
         RunCombatHealingPairAsync("healed", failPublication: true);
 
@@ -58,7 +64,7 @@ public sealed partial class AfterlifeResourceCutoverTests
         };
         var tier = mode == "no_improvement" ? 1 : 3;
         var playerDie = mode is "healed" or "next_boundary" ? 19 : mode == "no_improvement" ? 2 : 5;
-        var oppositionDie = mode == "blocked_worsen" ? 15 : mode == "no_improvement" ? 2 : 5;
+        var oppositionDie = IsBlockedCombat(mode) ? 15 : mode == "no_improvement" ? 2 : 5;
         ProgressionControl? control = null;
         JsonObject? intent = null;
         string? snapshotToken = null;
@@ -66,7 +72,7 @@ public sealed partial class AfterlifeResourceCutoverTests
             seedOriginalInputs: async original =>
             {
                 await SeedOriginalIntakeBaselinesAsync(original);
-                await SeedCombatHealingOriginalAsync(original, tier, rank: mode == "next_boundary" ? 2 : 1);
+                await SeedCombatHealingOriginalAsync(original, tier, rank: mode == "next_boundary" ? 2 : 1, guaranteedOpponent: mode == "blocked_guaranteed");
                 // The old direct C2 fixture needs no world clock. Combat's
                 // authenticated no-cycle basis does: use the same canonical
                 // initial clock as the working full Engine counterpart, before
@@ -181,7 +187,7 @@ public sealed partial class AfterlifeResourceCutoverTests
             response["spiritualHealingGraphs"] = graphs;
             repairedInterface = response.AsObject();
         }
-        var scene = mode == "blocked_worsen" ? "Встречный натиск углубил трещину духовной целостности души."
+        var scene = IsBlockedCombat(mode) ? "Встречный натиск углубил трещину духовной целостности души."
             : "Душа направила искусство исцеления на собственную трещину и завершила духовное противостояние.";
         await context.WriteExactJsonAsync(ProjectionNarrativePath, new JsonObject
         { ["response"] = scene, ["timestamp"] = DateTime.UtcNow.ToString("O") }.ToJsonString());
@@ -273,6 +279,20 @@ public sealed partial class AfterlifeResourceCutoverTests
             var candidateImages = await capture.ReadC1CandidateOwnerImagesAsync(lease, interval);
             Assert.True(JsonNode.DeepEquals(JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(seedHistory)),
                 JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(candidateImages[WoundHistoryState.HistoryPath].Bytes!))));
+            string? expectedGuaranteeExchange = null;
+            string? expectedGuaranteeArt = null;
+            if (mode == "blocked_guaranteed")
+            {
+                var rawConflict = JsonNode.Parse((await context.FileSystem.ReadFileAsync(lease, AfterlifeSpiritualConflictState.StatePath))!)!;
+                expectedGuaranteeExchange = rawConflict["recentConflicts"]![0]!["terminalExchange"]!.ToJsonString();
+                var originalProfiles = JsonNode.Parse((await context.FileSystem.ReadFileAsync(lease, AfterlifeEntityProfileState.StatePath))!)!;
+                var oppositionProfile = Assert.Single(originalProfiles["profiles"]!.AsArray(), p =>
+                    p!["actorId"]!.GetValue<string>() == "guardian_frame")!;
+                expectedGuaranteeArt = Assert.Single(oppositionProfile["specialArts"]!.AsArray(), art =>
+                    art!["artId"]!.GetValue<string>() == "art_source_owner")!.ToJsonString();
+                Assert.NotEqual(SpiritualWoundStateJson.Canonical(SpiritualWoundStateJson.Parse(expectedGuaranteeExchange)), expectedGuaranteeExchange);
+                Assert.NotEqual(SpiritualWoundStateJson.Canonical(SpiritualWoundStateJson.Parse(expectedGuaranteeArt)), expectedGuaranteeArt);
+            }
             var first = await capture.CommitC2FirstTransportAsync(lease, interval);
             AssertNoConflictFrameErrors(first.Issues); Assert.Equal("committed", first.Disposition);
             var packet = JsonNode.Parse(SpiritualWoundDecisionPendingState.SerializeCanonical(first.Pending!))!;
@@ -283,7 +303,15 @@ public sealed partial class AfterlifeResourceCutoverTests
             // The real first-pair producer requires WoundReadVersion0 and only
             // publishes the pair; its physical History is still the exact seed.
             Assert.Equal(seedHistory, await context.FileSystem.ReadFileBytesAsync(lease, WoundHistoryState.HistoryPath));
-            if (mode != "blocked_worsen") Assert.Empty(packet["pending"]!["sources"]!.AsArray());
+            if (mode == "blocked_guaranteed")
+            {
+                var harm = Assert.Single(packet["pending"]!["sources"]!.AsArray())!;
+                Assert.Equal(2, harm["guaranteedSeverityRank"]!.GetValue<int>());
+                var retained = SpiritualWoundSourceWitness.ReadGuaranteePreimage(harm.AsObject());
+                Assert.Equal(expectedGuaranteeExchange, retained.ExchangeJson);
+                Assert.Equal(expectedGuaranteeArt, retained.SpecialArtJson);
+            }
+            if (!IsBlockedCombat(mode)) Assert.Empty(packet["pending"]!["sources"]!.AsArray());
             capture.Dispose();
             var adapter = new ValidationService(context.FileSystem, NullLogger<ValidationService>.Instance);
             if (mode == "healed" && !failPublication)
@@ -329,7 +357,7 @@ public sealed partial class AfterlifeResourceCutoverTests
                 Assert.Equal(retainedDecision["decisionFingerprint"]!.GetValue<string>(),
                     JsonNode.Parse((await context.FileSystem.ReadFileAsync(lease, SpiritualWoundDecisionPendingState.StatePath))!)!["pending"]!["healingDecisions"]![0]!["decisionFingerprint"]!.GetValue<string>());
             }
-            else if (mode == "blocked_worsen")
+            else if (IsBlockedCombat(mode))
             {
                 Assert.Equal("offer", opened.Disposition);
                 using var offered = opened.Session!;
@@ -403,7 +431,7 @@ public sealed partial class AfterlifeResourceCutoverTests
         else Assert.Null((await context.ReadJsonAsync(AfterlifeSpiritualConflictState.StatePath))!["activeConflict"]);
         Assert.Single(receipts["healingSources"]!.AsArray()); Assert.Single(receipts["healingDecisions"]!.AsArray());
         Assert.Equal(0, receipts["healingDecisions"]![0]!["outcome"]!["waveOrdinal"]!.GetValue<int>());
-        if (mode == "blocked_worsen")
+        if (IsBlockedCombat(mode))
         {
             var wound = await ReadCombatHealingWoundAsync(context);
             Assert.Equal(2, wound.Severity.Rank); Assert.Equal(0, wound.Recovery.CurrentStepProgress); Assert.Equal(originalTick, wound.Recovery.LastTickKey);
@@ -424,9 +452,9 @@ public sealed partial class AfterlifeResourceCutoverTests
         {
             Assert.True(await ProgressionScheduleService.IsPublishedSpiritualCombatCoreAsync(control, "session_resource_materialization", "request_resource_materialization", 42,
                 path => context.FileSystem.ReadFileBytesAsync(lease, path), snapshotToken, intent));
-            if (mode == "blocked_worsen")
+            if (IsBlockedCombat(mode))
             {
-                var materialized = Assert.Single(history.Transitions.Where(row => row.Kind == "worsen"));
+                var materialized = Assert.Single(history.Transitions, row => row.Kind == "worsen");
                 var digest = receipts["decisions"]![0]!["sourceFingerprint"]!.GetValue<string>();
                 Assert.NotEqual(materialized.SourceFingerprint, digest);
                 var detached = WoundHistoryState.CreateValidated(history.NextOrdinal, history.Transitions.Select(row =>
@@ -455,6 +483,38 @@ public sealed partial class AfterlifeResourceCutoverTests
                 Assert.Contains("exact independently receipted counterharm", refused.Message);
                 Assert.Equal(physicalHistory, await context.FileSystem.ReadFileBytesAsync(lease, WoundHistoryState.HistoryPath));
             }
+            if (mode == "blocked_guaranteed")
+            {
+                // A rehashed witness with equivalent canonical JSON is still
+                // foreign to the original guarantee preimage used by History.
+                var foreign = receipts.DeepClone().AsObject();
+                var harm = foreign["sources"]![0]!["witness"]!.AsObject();
+                var preimage = SpiritualWoundSourceWitness.ReadGuaranteePreimage(harm);
+                var exchange = SpiritualWoundStateJson.Parse(preimage.ExchangeJson);
+                var reordered = new JsonObject();
+                foreach (var field in exchange.Reverse()) reordered.Add(field.Key, field.Value?.DeepClone());
+                Assert.NotEqual(preimage.ExchangeJson, reordered.ToJsonString());
+                Assert.Equal(SpiritualWoundStateJson.Canonical(exchange), SpiritualWoundStateJson.Canonical(reordered));
+                harm["guaranteePreimage"]!["exchangeJsonBase64"] = Convert.ToBase64String(Encoding.UTF8.GetBytes(reordered.ToJsonString()));
+                var fingerprint = SpiritualWoundStateJson.Hash(harm, "source", "sourceId", "sourceFingerprint");
+                harm["sourceId"] = "spiritual_source_" + fingerprint[7..];
+                harm["sourceFingerprint"] = fingerprint;
+                var decision = foreign["decisions"]![0]!.AsObject();
+                decision["sourceId"] = harm["sourceId"]!.DeepClone();
+                decision["sourceFingerprint"] = fingerprint;
+                decision["sourceWitness"] = harm.DeepClone();
+                decision["decisionFingerprint"] = SpiritualWoundStateJson.Hash(decision, "decision", "decisionFingerprint");
+                var foreignJson = foreign.ToJsonString();
+                var parsed = SpiritualWoundOpportunityReceiptState.Parse(foreignJson, SpiritualWoundOpportunityReceiptState.StatePath);
+                Assert.True(parsed.IsValid, string.Join(";", parsed.Issues));
+                var physicalReceipt = await context.FileSystem.ReadFileBytesAsync(lease, SpiritualWoundOpportunityReceiptState.StatePath);
+                var refused = await Assert.ThrowsAsync<InvalidDataException>(() => ProgressionScheduleService.IsPublishedSpiritualCombatCoreAsync(control,
+                    "session_resource_materialization", "request_resource_materialization", 42,
+                    path => path == SpiritualWoundOpportunityReceiptState.StatePath ? Task.FromResult<byte[]?>(Encoding.UTF8.GetBytes(foreignJson))
+                        : context.FileSystem.ReadFileBytesAsync(lease, path), snapshotToken, intent));
+                Assert.Contains("exact independently receipted counterharm", refused.Message);
+                Assert.Equal(physicalReceipt, await context.FileSystem.ReadFileBytesAsync(lease, SpiritualWoundOpportunityReceiptState.StatePath));
+            }
         }
         var schedulerAfter = new ProgressionScheduleService(context.FileSystem, NullLogger<ProgressionScheduleService>.Instance);
         AssertNoConflictFrameErrors(await schedulerAfter.ValidateAcceptedTurnOutcomeAsync(control));
@@ -463,7 +523,7 @@ public sealed partial class AfterlifeResourceCutoverTests
         Assert.Equal(world, await context.FileSystem.ReadFileBytesAsync(EffectAcceptedTurnInputComposer.WorldTimePath));
         var complete = SpiritualWoundOpportunityReceiptState.Parse(receipts.ToJsonString(), SpiritualWoundOpportunityReceiptState.StatePath);
         Assert.True(complete.IsValid);
-        if (mode == "blocked_worsen") AssertLaterInjuryCannotReuseHealingWave(receipts.AsObject());
+        if (IsBlockedCombat(mode)) AssertLaterInjuryCannotReuseHealingWave(receipts.AsObject());
         var omitted = receipts.DeepClone(); omitted["healingDecisions"]!.AsArray().Clear(); omitted["nextHealingDecisionOrdinal"] = 1;
         Assert.False(SpiritualWoundOpportunityReceiptState.Parse(omitted.ToJsonString(), SpiritualWoundOpportunityReceiptState.StatePath).IsValid);
         var definitions = ResourceDefinitionCatalog.ParseCanonical((await context.ReadJsonAsync(ResourceMaterializationContract.DefinitionsPath))!.ToJsonString(), allowMissingPristine: false).Catalog!;
@@ -474,7 +534,7 @@ public sealed partial class AfterlifeResourceCutoverTests
         familyOmitted["schemaVersion"] = 1;
         var noFamily = SpiritualWoundOpportunityReceiptState.Parse(familyOmitted.ToJsonString(), SpiritualWoundOpportunityReceiptState.StatePath);
         Assert.True(noFamily.IsValid); // Both are current closed forms; this is a cross-root omission.
-        if (mode != "blocked_worsen")
+        if (!IsBlockedCombat(mode))
         {
             var error = Assert.Throws<FormatException>(() => noFamily.State!.RequireCombatHistoryResourceAgreement(history, resourceHistory));
             Assert.Contains("mandatory durable healing family", error.Message);
@@ -493,7 +553,7 @@ public sealed partial class AfterlifeResourceCutoverTests
                 path => path == SpiritualWoundOpportunityReceiptState.StatePath
                     ? Task.FromResult<byte[]?>(Encoding.UTF8.GetBytes(familyOmitted.ToJsonString()))
                     : context.FileSystem.ReadFileBytesAsync(lease, path), snapshotToken, intent));
-            Assert.Contains(mode == "blocked_worsen" ? "mandatory accepted healing outcome" : "mandatory durable healing family", refused.Message);
+            Assert.Contains(IsBlockedCombat(mode) ? "mandatory accepted healing outcome" : "mandatory durable healing family", refused.Message);
         }
         var witness = receipts["healingSources"]![0]!["witness"]!.DeepClone().AsObject();
         _ = SpiritualCombatHealingPersistedResult.ReadSource(witness); // Valid standalone baseline first.
@@ -614,21 +674,34 @@ public sealed partial class AfterlifeResourceCutoverTests
         var active = candidate["activeConflict"]!;
         var exchange = active["exchangeLog"]![0]!;
         exchange["operationType"] = AfterlifeActionCostRules.SpiritualHealingOperation;
-        exchange["outcome"] = mode == "blocked_worsen" ? "countered" : mode == "no_improvement" ? "partial_success" : "success";
+        exchange["outcome"] = IsBlockedCombat(mode) ? "countered" : mode == "no_improvement" ? "partial_success" : "success";
         exchange["after"] = exchange["before"]!.DeepClone();
         active["oppositionSideStrain"] = "clear";
         exchange["matchupAudit"]!["playerOperation"] = AfterlifeActionCostRules.SpiritualHealingOperation;
         exchange["matchupAudit"]!["primaryResolutionLane"] = AfterlifeActionCostRules.SpiritualHealingOperation;
         exchange["matchupAudit"]!["riskProfile"] = "healing_timing";
-        exchange["matchupAudit"]!["oppositionOperation"] = mode == "blocked_worsen" ? "pressure" : "guard";
+        exchange["matchupAudit"]!["oppositionOperation"] = IsBlockedCombat(mode) ? "pressure" : "guard";
         var cost = Math.Max(2, 5 - tier);
         exchange["actionCostAudit"]!["player"] = new JsonObject
         { ["operationType"] = AfterlifeActionCostRules.SpiritualHealingOperation, ["baseCost"] = 5, ["minCost"] = 2,
             ["artTier"] = tier, ["effectiveCost"] = cost, ["before"] = 6, ["after"] = 6 - cost };
         exchange["actionCostAudit"]!["opposition"] = new JsonObject
-        { ["operationType"] = mode == "blocked_worsen" ? "pressure" : "guard", ["baseCost"] = mode == "blocked_worsen" ? 3 : 2,
-            ["minCost"] = 1, ["artTier"] = mode == "blocked_worsen" ? 2 : 0,
-            ["effectiveCost"] = mode == "blocked_worsen" ? 1 : 2, ["before"] = 6, ["after"] = mode == "blocked_worsen" ? 5 : 4 };
+        { ["operationType"] = IsBlockedCombat(mode) ? "pressure" : "guard", ["baseCost"] = IsBlockedCombat(mode) ? 3 : 2,
+            ["minCost"] = 1, ["artTier"] = IsBlockedCombat(mode) ? 2 : 0,
+            ["effectiveCost"] = IsBlockedCombat(mode) ? 1 : 2, ["before"] = 6, ["after"] = IsBlockedCombat(mode) ? 5 : 4 };
+        if (mode == "blocked_guaranteed")
+        {
+            exchange["specialArtAudit"] = new JsonObject
+            {
+                ["artId"] = "art_source_owner", ["ownerActorType"] = "guardian", ["ownerActorId"] = "guardian_frame",
+                ["baseOperation"] = "pressure", ["costMultiplierPercent"] = 100,
+                ["effectNote"] = "Встречное искусство гарантирует углубление духовной трещины."
+            };
+            var costAudit = exchange["actionCostAudit"]!["opposition"]!;
+            costAudit["specialArtId"] = "art_source_owner";
+            costAudit["specialCostMultiplierPercent"] = 100;
+            costAudit["standardEffectiveCost"] = 1;
+        }
         exchange["diceAudit"]!["diceUsed"]![0]!["side"] = "PLAYERSIDE";
         exchange["diceAudit"]!["diceUsed"]![0]!["value"] = playerDie;
         exchange["diceAudit"]!["diceUsed"]![0]!["selection"] = "selected";
@@ -636,9 +709,9 @@ public sealed partial class AfterlifeResourceCutoverTests
         exchange["diceAudit"]!["playerTotal"] = playerDie;
         exchange["diceAudit"]!["oppositionTotal"] = oppositionDie;
         exchange["diceAudit"]!["margin"] = playerDie - oppositionDie;
-        exchange["diceAudit"]!["outcomeBand"] = mode == "blocked_worsen" ? "decisive_opposition_success"
+        exchange["diceAudit"]!["outcomeBand"] = IsBlockedCombat(mode) ? "decisive_opposition_success"
             : mode == "no_improvement" ? "mixed_or_no_effect" : "decisive_player_success";
-        if (mode == "blocked_worsen")
+        if (IsBlockedCombat(mode))
         {
             exchange["after"]!["playerSideStrain"] = "fractured"; active["playerSideStrain"] = "fractured";
             exchange["incomingAction"] = new JsonObject
@@ -678,7 +751,7 @@ public sealed partial class AfterlifeResourceCutoverTests
         Assert.True(parsed.IsValid, string.Join(";", parsed.Issues)); return parsed.Wound!;
     }
 
-    internal static async Task SeedCombatHealingOriginalAsync(ResourceMaterializationTestContext context, int tier, int rank = 1)
+    internal static async Task SeedCombatHealingOriginalAsync(ResourceMaterializationTestContext context, int tier, int rank = 1, bool guaranteedOpponent = false)
     {
         await SeedSpiritualWorseningTierAuthorityAsync(context);
         var raw = WoundContractTestData.CreateSpiritualActiveWound(CombatHealingWoundId, "chaos_sea", "player_soul", "player_soul", AfterlifeEntityProfileState.StatePath);
@@ -705,6 +778,16 @@ public sealed partial class AfterlifeResourceCutoverTests
         var seed = WoundPlayerProjectionTestData.InputInRealm("chaos_sea", raw);
         var profiles = (await context.ReadJsonAsync(AfterlifeEntityProfileState.StatePath))!;
         var player = profiles["profiles"]!.AsArray().Single(p => p!["actorId"]!.GetValue<string>() == "player_soul")!;
+        if (guaranteedOpponent)
+        {
+            var opposition = profiles["profiles"]!.AsArray().Single(p => p!["actorId"]!.GetValue<string>() == "guardian_frame")!;
+            var art = SourceOwnerSpecialArt("guardian", "guardian_frame");
+            art["tier"] = 2;
+            art["costMultiplierPercent"] = 100;
+            art["spiritualWoundEnvelope"] = new JsonObject
+            { ["schemaVersion"] = 1, ["maximumSeverityRank"] = 2, ["guaranteedSeverityRank"] = 2 };
+            opposition["specialArts"]!.AsArray().Add(art);
+        }
         player["standardArts"]![AfterlifeSpiritualConflictState.SpiritualHealingArtId] = tier;
         player["activeWounds"] = seed.Carriers.AfterlifeProfiles!["profiles"]![0]!["activeWounds"]!.DeepClone();
         var wound = Assert.Single(WoundCarrierCatalog.Build(seed.Carriers).Occurrences).Wound;

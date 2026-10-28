@@ -2,6 +2,11 @@
   "schemaVersion": 1,
   "selections": [
 {
+  "category": "spiritual-combat-guarantee-witness-consumers",
+  "reason": "The mandatory guaranteed witness child affects existing special-art/audit/alias/ceiling parsing and guarantee receipt decisions. Select only these twenty-one existing intrinsic cases and keep ordinary closed-form checks; no complete owner.",
+  "contracts": ["#1536 T095/T102/T103 complete current guaranteed witness evidence and unchanged canonical source/receipt invariants"]
+},
+{
   "category": "spiritual-combat-guarantee-preimage",
   "reason": "A guaranteed counterharm opportunity hashes the exact prepared JSON strings; canonical-only witness payloads lose property order. First execute one cheap typed causal scaffold, then preserve exact evidence through the same actual C1/C2/receipt owners without changing the guarantee producer or excluding the path.",
   "contracts": ["#1536 T095/T102/T103 mandatory guaranteed counterharm evidence, strict current source witness and no authority from DATA hashes"]
@@ -27,7 +32,7 @@
 },
 {
   "category": "spiritual-combat-healing-pair",
-  "reason": "Four actual initial-pair/cold C2/C3/C4 cases: full heal, resolved no-improvement, blocked+same-wound worsening, and selected healing followed by dependent ordinary cost correction. Includes graph repair/I, selected-die and omission controls, typed uncertainty and a detached later-family wave parser control.",
+  "reason": "Original four actual initial-pair/cold C2/C3/C4 cases plus guaranteed opponent counterharm. Retain the actual prepared noncanonical hash preimages, common paid worsening/no-cycle result and refusal of a semantically equivalent but foreign rehashed preimage. Existing graph repair/I, dice, omission, typed uncertainty and later-wave controls remain.",
   "contracts": [
     "#1536 T095/T102/T103 FR046 actual guided combat healing, same C2/C4 and no safe cycle"
   ]

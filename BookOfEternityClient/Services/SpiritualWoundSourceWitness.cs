@@ -38,6 +38,37 @@ internal static class SpiritualWoundSourceWitness
         { "book_of_eternity.spiritual_original_guarantee", "1", claimsFingerprint, sourceFingerprint, coordinate,
             exchangeJson, turn.ToString(System.Globalization.CultureInfo.InvariantCulture), triggerId });
 
+    /// <summary>Retains actual prepared strings; parsing must not replace the hash preimage.</summary>
+    internal static JsonObject CaptureGuaranteePreimage(string exchangeJson, string specialArtJson)
+    {
+        Parse(exchangeJson);
+        Parse(specialArtJson);
+        var utf8 = new UTF8Encoding(false, true);
+        return new JsonObject
+        {
+            ["exchangeJsonBase64"] = Convert.ToBase64String(utf8.GetBytes(exchangeJson)),
+            ["specialArtJsonBase64"] = Convert.ToBase64String(utf8.GetBytes(specialArtJson))
+        };
+    }
+
+    /// <summary>Returns retained comparison DATA, never an original-guarantee capability.</summary>
+    internal static (string ExchangeJson, string SpecialArtJson) ReadGuaranteePreimage(JsonObject source)
+    {
+        Integer(source["guaranteedSeverityRank"], 1, 4);
+        var preimage = Object(source["guaranteePreimage"]);
+        Closed(preimage, "exchangeJsonBase64 specialArtJsonBase64");
+        try
+        {
+            var utf8 = new UTF8Encoding(false, true);
+            return (utf8.GetString(DecodeBase64(preimage["exchangeJsonBase64"])),
+                utf8.GetString(DecodeBase64(preimage["specialArtJsonBase64"])));
+        }
+        catch (DecoderFallbackException error)
+        {
+            throw new FormatException("Strict UTF-8 guarantee preimage required.", error);
+        }
+    }
+
     private const string Fields = "sourceId coordinate conflictId exchangeId turnEvidence sourceOrdinal exchangeOrdinal " +
         "affectedSide actingActor affectedActor operation appliedArtId appliedArtKind appliedArtTier targetResilienceTier " +
         "priorStrainRank destinationStrainRank extraStrainJumps harmfulMargin maximumSeverityRank guaranteedSeverityRank " +
@@ -58,7 +89,7 @@ internal static class SpiritualWoundSourceWitness
     internal static SpiritualWoundCalculation Validate(JsonObject source)
     {
         ArgumentNullException.ThrowIfNull(source);
-        Closed(source, Fields);
+        Closed(source, source["guaranteedSeverityRank"] is null ? Fields : Fields + " guaranteePreimage");
         var digest = Hash(source, "source", "sourceId", "sourceFingerprint");
         Require(Fingerprint(source["sourceFingerprint"]) == digest &&
             Text(source["sourceId"]) == "spiritual_source_" + digest[7..], "Source digest or identity differs.");
@@ -165,6 +196,14 @@ internal static class SpiritualWoundSourceWitness
         var guarantee = source["guaranteedSeverityRank"] is null ? (int?)null :
             (int)Integer(source["guaranteedSeverityRank"], 1, envelope.MaximumSeverityRank);
         Require(guarantee == envelope.GuaranteedSeverityRank, "Source guarantee differs from original art.");
+        if (guarantee is not null)
+        {
+            var preimage = ReadGuaranteePreimage(source);
+            Require(Canonical(Parse(preimage.ExchangeJson)) == Canonical(exchange),
+                "Guarantee exchange preimage differs from its retained semantic payload.");
+            Require(Canonical(Parse(preimage.SpecialArtJson)) == Canonical(art),
+                "Guarantee art preimage differs from its retained semantic payload.");
+        }
         ValidateTarget(source, exchange, affected, Text(evidence["realm"]), side);
         return calculated!;
     }

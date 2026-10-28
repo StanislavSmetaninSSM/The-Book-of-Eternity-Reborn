@@ -19,6 +19,82 @@ public sealed class SpiritualCombatGuaranteePreimageTests
         Assert.Equal(1, SpiritualWoundSourceWitness.Validate(source).MaximumSeverityRank);
     }
 
+    [Theory]
+    [InlineData("missing")]
+    [InlineData("null")]
+    [InlineData("foreign_exchange")]
+    [InlineData("foreign_art")]
+    [InlineData("duplicate_property")]
+    [InlineData("invalid_utf8")]
+    [InlineData("base64_whitespace")]
+    [InlineData("unknown_field")]
+    public void GuaranteedWitnessRejectsResealedMissingOrForeignPreimage(string change)
+    {
+        var source = GuaranteedSource(out var exchangeJson, out var artJson);
+        Assert.Equal(1, SpiritualWoundSourceWitness.Validate(source).MaximumSeverityRank);
+        var preimage = source["guaranteePreimage"]!.AsObject();
+        switch (change)
+        {
+            case "missing": source.Remove("guaranteePreimage"); break;
+            case "null": source["guaranteePreimage"] = null; break;
+            case "foreign_exchange":
+                var exchange = SpiritualWoundStateJson.Parse(exchangeJson);
+                exchange["exchangeId"] = "foreign-exchange";
+                preimage["exchangeJsonBase64"] = Encode(exchange.ToJsonString());
+                break;
+            case "foreign_art":
+                var art = SpiritualWoundStateJson.Parse(artJson);
+                art["artId"] = "foreign-art";
+                preimage["specialArtJsonBase64"] = Encode(art.ToJsonString());
+                break;
+            case "duplicate_property":
+                preimage["specialArtJsonBase64"] = Encode("{\"artId\":\"art-source\",\"artId\":\"art-source\"}");
+                break;
+            case "invalid_utf8":
+                preimage["exchangeJsonBase64"] = Convert.ToBase64String(new byte[] { 0xc3, 0x28 });
+                break;
+            case "base64_whitespace":
+                preimage["exchangeJsonBase64"] = preimage["exchangeJsonBase64"]!.GetValue<string>() + "\n";
+                break;
+            case "unknown_field": preimage["permission"] = true; break;
+        }
+        Seal(source); // Intrinsic proof must reject even with a matching outer digest.
+        Assert.Throws<FormatException>(() => SpiritualWoundSourceWitness.Validate(source));
+    }
+
+    [Fact]
+    public void NonGuaranteedWitnessKeepsItsClosedForm()
+    {
+        var source = SpiritualWoundSourceWitnessTests.Source();
+        Assert.Equal(1, SpiritualWoundSourceWitness.Validate(source).MaximumSeverityRank);
+        source["guaranteePreimage"] = GuaranteedSource(out _, out _)["guaranteePreimage"]!.DeepClone();
+        Seal(source);
+        Assert.Throws<FormatException>(() => SpiritualWoundSourceWitness.Validate(source));
+    }
+
+    [Fact]
+    public void ExistingGuaranteeHashRetainsItsOriginalPreparedStringDomain()
+    {
+        const string art = "{\"z\":1,\"a\":2}";
+        const string exchange = "{\"operation\":\"pressure\",\"exchangeId\":\"exchange-a\"}";
+        var claims = "sha256:" + new string('a', 64);
+        var source = SpiritualWoundSourceWitness.GuaranteeSourceFingerprint("guardian:guardian_frame", "pressure", art);
+        Assert.Equal("sha256:430e41cb3bfd9f2483a608adc6a43d11cb73200f76ae6b770142cf9bc14027e1", source);
+        var guarantee = SpiritualWoundSourceWitness.GuaranteeAuthorityFingerprint(claims, source,
+            "coordinate-a", exchange, 42, "opportunity-a_original_guarantee");
+        Assert.Equal("sha256:019b7411fa9b7f90102172f9a2a09216b6f361f768a9d0ea5483e5e7e4f627b8", guarantee);
+        Assert.Equal("sha256:6ede3f1d3a0d4a77ba33551e0c0b38b56177db09316a58894c47e312676c3632",
+            WoundOpportunityAuthority.OriginalGuaranteeFingerprint(claims, guarantee));
+        Assert.NotEqual(source, SpiritualWoundSourceWitness.GuaranteeSourceFingerprint("guardian:guardian_frame", "pressure",
+            SpiritualWoundStateJson.Canonical(SpiritualWoundStateJson.Parse(art))));
+        Assert.NotEqual(guarantee, SpiritualWoundSourceWitness.GuaranteeAuthorityFingerprint(claims, source,
+            "coordinate-a", SpiritualWoundStateJson.Canonical(SpiritualWoundStateJson.Parse(exchange)), 42,
+            "opportunity-a_original_guarantee"));
+        var captured = SpiritualWoundSourceWitness.CaptureGuaranteePreimage(exchange, art);
+        Assert.Equal(exchange, Decode(captured["exchangeJsonBase64"]!));
+        Assert.Equal(art, Decode(captured["specialArtJsonBase64"]!));
+    }
+
     private static JsonObject GuaranteedSource(out string exchangeJson, out string artJson)
     {
         var source = SpiritualWoundSourceWitnessTests.Source();

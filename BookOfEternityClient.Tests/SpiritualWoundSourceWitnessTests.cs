@@ -1,4 +1,3 @@
-using System.Reflection;
 using System.Text;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Services;
@@ -182,6 +181,7 @@ public sealed class SpiritualWoundSourceWitnessTests
         source["guaranteedSeverityRank"] = 1;
         source["specialArtJsonBase64"] = Encode(art);
         source["exchangeJsonBase64"] = Encode(exchange);
+        source["guaranteePreimage"] = SpiritualWoundSourceWitness.CaptureGuaranteePreimage(exchange.ToJsonString(), art.ToJsonString());
         Seal(source);
         Assert.True(IsValid(source));
         if (change is "owner-alias" or "original-owner-alias" or "audit-owner-alias")
@@ -190,6 +190,7 @@ public sealed class SpiritualWoundSourceWitnessTests
             if (change != "original-owner-alias") exchange["specialArtAudit"]!["ownerActorType"] = "PLAYER_SOUL";
             source["specialArtJsonBase64"] = Encode(art);
             source["exchangeJsonBase64"] = Encode(exchange);
+            source["guaranteePreimage"] = SpiritualWoundSourceWitness.CaptureGuaranteePreimage(exchange.ToJsonString(), art.ToJsonString());
             Seal(source);
             Assert.True(IsValid(source));
             return;
@@ -198,6 +199,7 @@ public sealed class SpiritualWoundSourceWitnessTests
         {
             exchange["specialArtAudit"]!["ownerActorId"] = "foreign-owner";
             source["exchangeJsonBase64"] = Encode(exchange);
+            source["guaranteePreimage"] = SpiritualWoundSourceWitness.CaptureGuaranteePreimage(exchange.ToJsonString(), art.ToJsonString());
             Seal(source);
             Assert.True(IsValid(source));
             return;
@@ -214,6 +216,7 @@ public sealed class SpiritualWoundSourceWitnessTests
                 """);
         else exchange["actionCostAudit"]!["player"]!.AsObject().Remove(change);
         source["exchangeJsonBase64"] = Encode(exchange);
+        source["guaranteePreimage"] = SpiritualWoundSourceWitness.CaptureGuaranteePreimage(exchange.ToJsonString(), art.ToJsonString());
         Seal(source);
         Assert.False(IsValid(source));
     }
@@ -246,6 +249,7 @@ public sealed class SpiritualWoundSourceWitnessTests
         source["guaranteedSeverityRank"] = 2;
         source["specialArtJsonBase64"] = Encode(art);
         source["exchangeJsonBase64"] = Encode(exchange);
+        source["guaranteePreimage"] = SpiritualWoundSourceWitness.CaptureGuaranteePreimage(exchange.ToJsonString(), art.ToJsonString());
         Seal(source);
         Assert.Equal(1, SpiritualWoundSourceWitness.Validate(source).MaximumSeverityRank);
     }
@@ -619,16 +623,12 @@ public sealed class SpiritualWoundSourceWitnessTests
     /// </returns>
     private static bool IsValid(JsonObject source)
     {
-        var type = typeof(ValidationService).Assembly.GetType("BookOfEternityClient.Services.SpiritualWoundSourceWitness");
-        Assert.NotNull(type);
-        var method = type.GetMethod("Validate", BindingFlags.Static | BindingFlags.NonPublic);
-        Assert.NotNull(method);
         try
         {
-            method.Invoke(null, new object[] { source });
+            SpiritualWoundSourceWitness.Validate(source);
             return true;
         }
-        catch (TargetInvocationException error) when (error.InnerException is FormatException or OverflowException)
+        catch (Exception error) when (error is FormatException or OverflowException)
         {
             return false;
         }
