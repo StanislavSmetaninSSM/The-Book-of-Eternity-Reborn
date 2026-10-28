@@ -6,6 +6,8 @@ same-ref body/reference refusal; full common C4 write-failure rollback; and type
 original-read publication uncertainty through actual cold C2 with exact pair and
 mechanical preservation. Hooks are removed in finally before the independent
 normal positive. These are test assertions, not executed evidence yet.
+Static catalog-reader inspection caught empty changeHints in the nine new
+categories; exact source hints are supplied before any preflight/build/runtime.
 
 The next-boundary correction preserves intentional action-cost diagnostics and
 reopens the persisted selected checkpoint with a fresh classified owner. Later

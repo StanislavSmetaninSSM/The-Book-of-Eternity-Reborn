@@ -1679,8 +1679,8 @@ and a durable outcome; no_offer/source-only cannot skip the action.
 
 There is NO safe cycle: do not write progression_report.json. Scheduler-owned
 zero-cycle control is backed by the actual signed combat basis; pending/catchup
-backlog refuses rather than being cleared. LastTickKey, schedule/world bytes and
-natural progress remain unchanged, including a resolved failure or full heal.
+backlog refuses rather than being cleared. LastTickKey and schedule/world bytes remain unchanged; no natural progress is
+added, including a resolved failure or full heal.
 Existing actual C4, output binding and I still validate authored graph semantics;
 repair cannot change source, dice, selected decision or already accepted effects.
 Retained source/outcome DATA does not grant publication or replay permission.

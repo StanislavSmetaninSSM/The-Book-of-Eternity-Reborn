@@ -5,7 +5,7 @@
   "id": "spiritual-combat-healing-guidance",
   "responsibility": "Closed combat selection/GM example and complete existing worked-family manifest inventory. Actual authority belongs to the paired backend and Engine consumers.",
   "excludes": "Bounded current #1536 combat contour only. No full owner/suite, Mortal compatibility, T609/full DFR/Windows or external-provider/fresh-process qualification. DATA controls do not grant publication permission.",
-  "changeHints": [],
+  "changeHints": ["BookOfEternityClient.Tests/SpiritualHealingGuidedContractTests.cs", "Examples/example_validation_manifest.json"],
   "related": [],
   "requirements": {
     "frontendBuild": false,
@@ -33,7 +33,7 @@
   "id": "spiritual-combat-healing-pair",
   "responsibility": "Four actual initial-pair/cold C2/C3/C4 cases: full heal, resolved no-improvement, blocked+same-wound worsening, and selected healing followed by dependent ordinary cost correction. Includes graph repair/I, selected-die and omission controls, typed uncertainty and a detached later-family wave parser control.",
   "excludes": "Bounded current #1536 combat contour only. No full owner/suite, Mortal compatibility, T609/full DFR/Windows or external-provider/fresh-process qualification. DATA controls do not grant publication permission.",
-  "changeHints": [],
+  "changeHints": ["BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualCombatHealing.cs", "BookOfEternityClient/Services/SpiritualWoundDecisionPendingState.CombatHealing.cs"],
   "related": [],
   "requirements": {
     "frontendBuild": false,
@@ -55,7 +55,7 @@
   "id": "spiritual-combat-healing-rollback",
   "responsibility": "One actual common C4 writer fault restores exact signed originals and revokes publication authority; normal flow is independent of the removed injected fault.",
   "excludes": "Bounded current #1536 combat contour only. No full owner/suite, Mortal compatibility, T609/full DFR/Windows or external-provider/fresh-process qualification. DATA controls do not grant publication permission.",
-  "changeHints": [],
+  "changeHints": ["BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualCombatHealing.cs", "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.SpiritualPublication.cs"],
   "related": [],
   "requirements": {
     "frontendBuild": false,
@@ -77,7 +77,7 @@
   "id": "spiritual-combat-healing-console",
   "responsibility": "Real console cancellation/confirmation, original pool, native-shaped controlled C2/C4, weaker graph, paid wound/effect/History and exact no-cycle cleanup.",
   "excludes": "Bounded current #1536 combat contour only. No full owner/suite, Mortal compatibility, T609/full DFR/Windows or external-provider/fresh-process qualification. DATA controls do not grant publication permission.",
-  "changeHints": [],
+  "changeHints": ["BookOfEternityClient.IntegrationTests/ExplorerWoundSelfTreatmentTests.Combat.cs", "BookOfEternityClient/Core/GameEngine.TurnLifecycle.cs"],
   "related": [],
   "requirements": {
     "frontendBuild": false,
@@ -99,7 +99,7 @@
   "id": "spiritual-combat-healing-browser",
   "responsibility": "Real shared browser cancellation/confirmation/queued original, retained combat intent, controlled C2/C4, weaker graph, paid wound/effect/History and exact no-cycle cleanup.",
   "excludes": "Bounded current #1536 combat contour only. No full owner/suite, Mortal compatibility, T609/full DFR/Windows or external-provider/fresh-process qualification. DATA controls do not grant publication permission.",
-  "changeHints": [],
+  "changeHints": ["BookOfEternityClient.IntegrationTests/ExplorerWoundSelfTreatmentTests.Combat.cs", "BookOfEternityClient/Services/PendingPlayerActionService.cs"],
   "related": [],
   "requirements": {
     "frontendBuild": false,
@@ -121,7 +121,7 @@
   "id": "spiritual-combat-safe-scalar-preview",
   "responsibility": "Two exact existing consumers: unequal active/natural tiers through the shared scalar prefix, and current ordinary pressure preview after operation-to-art lookup.",
   "excludes": "Bounded current #1536 combat contour only. No full owner/suite, Mortal compatibility, T609/full DFR/Windows or external-provider/fresh-process qualification. DATA controls do not grant publication permission.",
-  "changeHints": [],
+  "changeHints": ["BookOfEternityClient/Services/SpiritualWoundRecoveryPlanner.cs", "BookOfEternityClient/Services/LiveTurnPreparationService.cs"],
   "related": [],
   "requirements": {
     "frontendBuild": false,
@@ -144,7 +144,7 @@
   "id": "spiritual-combat-safe-publication",
   "responsibility": "Five exact affected existing consumers: failed/terminal safe active executor, actual ordinary natural-only Engine, current opposition cost authority and forged player cost-tier refusal.",
   "excludes": "Bounded current #1536 combat contour only. No full owner/suite, Mortal compatibility, T609/full DFR/Windows or external-provider/fresh-process qualification. DATA controls do not grant publication permission.",
-  "changeHints": [],
+  "changeHints": ["BookOfEternityClient/Services/Validation/ValidationService.AfterlifeSpiritualConflict.cs", "BookOfEternityClient/Services/EffectAcceptedTurnPlanner.SpiritualStageExecution.cs"],
   "related": [],
   "requirements": {
     "frontendBuild": false,
@@ -170,7 +170,7 @@
   "id": "spiritual-combat-injury-v1-output",
   "responsibility": "Smallest existing real injury-only initial pair, materialize Submit, C4 output/source and foreign-delivery control for unchanged current schema1 alongside new combat schema2.",
   "excludes": "Bounded current #1536 combat contour only. No full owner/suite, Mortal compatibility, T609/full DFR/Windows or external-provider/fresh-process qualification. DATA controls do not grant publication permission.",
-  "changeHints": [],
+  "changeHints": ["BookOfEternityClient/Services/SpiritualWoundDecisionPendingState.cs", "BookOfEternityClient/UI/WoundPlayerNotification.cs"],
   "related": [],
   "requirements": {
     "frontendBuild": false,
@@ -192,7 +192,7 @@
   "id": "spiritual-combat-safe-browser",
   "responsibility": "One exact existing safe confirmed browser Engine route protects default staging/retained source after combat fork, without the unrelated whole owner.",
   "excludes": "Bounded current #1536 combat contour only. No full owner/suite, Mortal compatibility, T609/full DFR/Windows or external-provider/fresh-process qualification. DATA controls do not grant publication permission.",
-  "changeHints": [],
+  "changeHints": ["BookOfEternityClient/Services/WoundApplicationService.cs", "BookOfEternityClient/Core/GameEngine.TurnLifecycle.cs"],
   "related": [],
   "requirements": {
     "frontendBuild": false,
