@@ -1717,3 +1717,13 @@ locality file is NOT qualified by this slice and may refuse. Current revocation,
 move, missing/incapable consent or changed selected source blocks aid publication;
 settled replay checks its accepted result, not renewed live consent. No changes to
 Mortal treatment permission or other unsupported afterlife helper routes.
+
+
+Client-owned locality normalization: owned locality normalization may canonicalize
+Guardian/resident representation inside the SAME validated spiritual owner and
+lease. It proves unchanged exact current Guardian/Abode/local presence before the
+ordinary write, exact readback afterwards, then advances only live closing bytes.
+The signed original, full witness, source fingerprint and attempt remain frozen.
+This is not GM permission to alter locality, use implicit consent or suppress a
+foreign-byte refusal. The same boundary covers grant and aid; current manual
+musings/locality edits remain outside this first qualified route.

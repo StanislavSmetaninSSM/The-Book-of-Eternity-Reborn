@@ -1,4 +1,3 @@
-using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
@@ -17,7 +16,7 @@ internal static partial class AfterlifeWoundHealingPlanner
         // write. Original/evidence/source fingerprint remain frozen; only the
         // exact live closing image advances to this verified client-owned output.
         internal async Task PublishOwnedLocalityNormalizationAsync(FileSystemManager files,
-            FileSystemManager.CanonicalWriteLease lease, string path, string content, Func<Task> publish)
+            FileSystemManager.CanonicalWriteLease lease, string path, string content, Func<CanonicalBeforeImage, Task> publish)
         {
             if (!OwnsLocalityPath(path)) throw new InvalidDataException("A spiritual owner cannot advance an unrelated normalizer source.");
             using var fresh = FileSystemManager.SuppressValidationReuse();
@@ -43,9 +42,8 @@ internal static partial class AfterlifeWoundHealingPlanner
                 !before.LocalActorIds.ToHashSet(StringComparer.Ordinal).SetEquals(after.LocalActorIds) ||
                 !before.LocalFactionIds.ToHashSet(StringComparer.Ordinal).SetEquals(after.LocalFactionIds))
                 throw new InvalidDataException("Client locality normalization cannot change admitted Guardian/Abode/presence authority.");
-            var expected = new CanonicalBeforeImage(true,
-                Encoding.UTF8.GetPreamble().Concat(Encoding.UTF8.GetBytes(content)).ToArray());
-            await publish();
+            var expected = new CanonicalBeforeImage(true, FileSystemManager.EncodeUtf8WithPreamble(content));
+            await publish(images[path]);
             var actual = await files.ReadFileBytesAsync(lease, path);
             if (new CanonicalBeforeImage(actual is not null, actual).Fingerprint != expected.Fingerprint)
                 throw new InvalidDataException("Owned locality normalization did not publish its exact computed afterimage.");

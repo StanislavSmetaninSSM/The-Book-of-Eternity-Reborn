@@ -2,6 +2,37 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "spiritual-aid-locality-normalization",
+  "responsibility": "One bounded current-owner control: actual full accumulated normalization must commit a real natural participation grant over a changed canonical Guardian afterimage while signed locality/source fingerprint stay frozen; independent issuer rejects foreign-before, changed scope, mismatched write readback and foreign-after closing. Active aid main18 advancement is also covered in its stage-publication category.",
+  "excludes": "No semantic-ignore, source/original rebinding, transferred owner, general normalizer/cache framework or live consent requirement on settled replay. Current caller2 exact changed field was unretained; this fixture intentionally exercises legitimate receipt-shape normalization, not a reconstructed runtime diff.",
+  "changeHints": [
+    "BookOfEternityClient/Services/AfterlifeWoundHealingPlanner.LocalityNormalization.cs",
+    "BookOfEternityClient/Services/CanonicalStateNormalizer.cs",
+    "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.PrivateImplementation.cs"
+  ],
+  "related": [
+    {
+      "id": "spiritual-aid-stage-publication",
+      "when": "After cheap grant/full-normalization and foreign-write guards pass, verify the same closing transition on the active-aid main source map."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.AfterlifeSpiritualNaturalRecoveryTests.FullNormalizationPublishesParticipationWhileForeignLocalityWritesStayRefused"
+      ]
+    }
+  ]
+},
+{
   "id": "spiritual-aid-stage-publication",
   "responsibility": "One actual natural grant followed by next-cycle player aid with different healer/target tiers: committed content/locality before control/draw, wrong context/content/missing/incapable refusal, unrelated Guardian record menu, duplicate-stage exact pending preservation, actual original B drift/graph repair, strict v3 result/I/replay.",
   "excludes": "Direct shared publisher and scalar source controls; simulated request cleanup here is not actual Engine acceptance. No paid/reverse/conflict/helpless/Shining/musings/provider or held DFR/Mortal qualification.",

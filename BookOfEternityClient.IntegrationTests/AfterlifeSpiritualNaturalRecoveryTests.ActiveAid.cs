@@ -145,6 +145,20 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
             await files.WriteFileAtomicBytesAsync(lease, WoundCarrierCatalog.AfterlifeProfilesPath, consentBefore);
             var issues = await validator.PrepareSpiritualSelfTreatmentPublicationAsync(lease);
             Assert.True(!issues.Any(i => i.Severity == IssueSeverity.Error), string.Join("\n", issues.Select(i => i.Code + ":" + i.Actual)));
+            Assert.True(AcceptedMechanicsPlanAuthority.TryPeekValidated(files, lease, out _, out var ready));
+            var aidOwner = Assert.IsType<AfterlifeWoundHealingPlanner.Continuation>(ready.Plan!.SpiritualHealingContinuation);
+            var originalSourceFingerprint = aidOwner.SourceFingerprint;
+            var signedLocality = (await files.ReadFileBytesAsync(lease, manifest.Files[localPath]))!;
+            var ownedLocality = JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(locality))!.AsObject();
+            foreach (var guardian in ownedLocality["guardians"]!.AsArray().OfType<JsonObject>())
+                GuardianTradeRequestState.NormalizeGuardianTradeReceiptsShape(guardian);
+            ownedLocality["activeGuardian"] = ownedLocality["guardians"]![0]!.DeepClone();
+            var ownedContent = ownedLocality.ToJsonString();
+            await aidOwner.PublishOwnedLocalityNormalizationAsync(files, lease, localPath, ownedContent,
+                _ => files.WriteFileAtomicAsync(lease, localPath, ownedContent));
+            aidOwner.RequireCurrent(files, lease); // Aid main18 closing map, not issuer extra2.
+            Assert.Equal(originalSourceFingerprint, aidOwner.SourceFingerprint);
+            Assert.Equal(signedLocality, await files.ReadFileBytesAsync(lease, manifest.Files[localPath]));
             Assert.NotNull(await new CanonicalStateNormalizer(files, NullLogger<CanonicalStateNormalizer>.Instance)
                 .BindTo(lease).NormalizeAcceptedMechanicsAsync(backups: null));
             Assert.NotNull(await ProgressionScheduleService.ReadPublishedSpiritualCycleCoreAsync(control,

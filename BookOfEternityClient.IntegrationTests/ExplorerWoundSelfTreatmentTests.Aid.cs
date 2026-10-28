@@ -294,7 +294,7 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
         }
     }
 
-    private static async Task SeedEngineAidGuardianAsync(FileSystemManager files, JsonObject profiles)
+    internal static async Task SeedEngineAidGuardianAsync(FileSystemManager files, JsonObject profiles)
     {
         await AfterlifeSpiritualNaturalRecoveryTests.SeedAidGuardianAsync(files, profiles);
         // Reuse the existing complete canonical Guardian factory BEFORE the one

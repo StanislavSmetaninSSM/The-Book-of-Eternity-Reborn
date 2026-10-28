@@ -1,5 +1,38 @@
 # US4 safe self-treatment — active functional work, 2026-10-28
 
+Final owned-write source detail (UNCOMPILED/UNRUN): the normalizer uses existing
+CoordinatedStateWriteHelper with ExactPrevious equal to the owner's captured live
+closing image for the two selected paths, then verifies exact encoded readback
+before advancing it. This closes late before-write replacement without an
+unconditional overwrite. It is the existing one-root writer/CAS under the same
+lease, not a new coordinator or receipt. All other normalizer writes retain the
+old path. Narrow SOURCE must verify this exact precondition/exception behavior.
+
+Owned-locality normalization coherent WIP is prepared (UNCOMPILED/UNRUN). The
+existing writer uses FileSystemManager.EncodeUtf8WithPreamble for exact predicted
+bytes; it covers initial Guardians/Residents and late GuardianProjects writes.
+The cheap control uses one real full-normalization grant publisher and a separate
+actual issuer for foreign-before/after, authority change and exact-readback guards.
+A deliberate missing trade-receipt shape makes a real normalization write necessary;
+this is NOT a claim that the unretained caller2 diff was that field. Active-aid
+backend now also advances its main18 closing image through the same exact owned
+write and verifies frozen signed locality/source fingerprint before publication.
+
+Tentative affected qualification is10cases/7descriptors across6categories: guidance2/
+60s → locality-normalization1/120s → issuer2/120s → active backend1/120s → console2/
+180s → browser2/180s. Fresh owning Integration/Main/Support then Unitrefsfalse keeps
+owning copies current; Unit runtime only new/changed guidance and inventory. Scalar1,
+request24, pending2 and consumedSELFgraph1 remain their ba source-bound facts; the
+new private two-path writer is skipped for self/no-participation/default/no-plan,
+so no blanket31-current-SHA or unrelated rerun is claimed. Finite SOURCE/PREP must
+assess this dependency reasoning before build. GM example/contract/matrix/manifest
+now explain client-only normalization; no new authored shape or Mortal permission
+is introduced, so unchanged Mortal/daemon input grammar requires no update.
+Optimization: existing scalar plan owner getter avoids bundle/catalog/History
+copies, no-guard/default branch adds no child/read work, only real owned locality
+writes re-prove owner and exact physical output. Operation-local closing DATA
+never grants permission; no measured speedup or successful caller is claimed.
+
 Caller2 actual on a67: PlanOnly4/2zeroexec7.9395337; console2 completeFAIL
 42.8860149s/category33.42383<180, no skip/dup/timeout, bothcleanuptrue. TRX SHA256
 37112cf54a82d96dfab22796a5f7283968e6bcc569831a647d824c7c51242d1b.
