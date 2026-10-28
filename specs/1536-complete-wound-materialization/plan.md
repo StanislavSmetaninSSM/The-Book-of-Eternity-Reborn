@@ -1,5 +1,29 @@
 # US4 safe self-treatment — active functional work, 2026-10-28
 
+Full-profile composition WIP is written, UNCOMPILED/UNRUN. Both independent source
+traces establish a semantic gap: natural ResourceCore omitted report-driven actor
+progression and player-soul client mirrors; active self/aid also composed signed
+profiles without those outputs. Generic normalization could write them, then the
+older common root would overwrite them. The existing full projection is now one
+shared pure function. The actual owner reuses its already validated scheduler
+mutation ReportBefore, checks the same admitted case-insensitive tuple, and supplies
+it to natural common composition or active effect input. Frozen signed roots,
+source fingerprint, original evidence and exact physical profile closing remain
+unchanged. Generic profile writing is skipped only for this actual owner with its
+complete projection and an actual whole-root contribution in the validated plan.
+Narrow scalar root-ownership queries avoid cloning carrier maps to inspect keys.
+No profile live-image advance, whitelist, extra permission or cache is added.
+
+FullCore/source overlap check: wound/effect files and identity/History, scheduler,
+report and world-time are not generic precommit writers; item-carrier projection
+has its mandatory upstream item snapshot. Soul is checked before profiles in the
+current actual failure and already agrees; generic conflict requires an update,
+which this safe mode excludes. Guardians/residents use the two-path exact owned
+transition. Shining retains its strict current-image boundary and is an affected
+existing consumer to include in finite qualification. Causal progression/mirror/
+signed-old-tier controls, GM synchronization and a revised finite consumer selection
+are next; no old/current-SHA blanket PASS or new runtime release is claimed.
+
 Full-normalizer retry on clean efd6af044 remains unaccepted. Integration-only
 refsfalse build passed (0 errors, 102 warnings, 1:51.43); all 9 pins match retained
 Main/Support/Unit, with fresh Integration 7f7127ba…. Official remaining PlanOnly

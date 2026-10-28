@@ -112,8 +112,7 @@ public partial class CanonicalStateNormalizer
     /// <see langword="true"/> for a whole-root writer; otherwise, <see langword="false"/>.
     /// </returns>
     private static bool SpiritualPlanOwnsRoot(AcceptedMechanicsPlan plan, string path) =>
-        plan.OwnerCompanionAfterImages.ContainsKey(path) || plan.EffectCarrierAfterImages.ContainsKey(path) ||
-        plan.WoundCarrierAfterImages.ContainsKey(path);
+        plan.HasWholeCarrierAfterImage(path);
 
     /// <summary>
     /// Rechecks private inputs, commands and immutable witnesses after unrelated normalizers have run.

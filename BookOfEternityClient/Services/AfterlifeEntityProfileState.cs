@@ -348,6 +348,14 @@ internal static class AfterlifeEntityProfileState
         return result;
     }
 
+    internal static JsonObject ProjectAcceptedRoot(JsonObject? currentRoot, JsonObject? previousRoot,
+        JsonObject? progressionReportRoot, JsonObject? soulRoot, JsonObject? shiningRoot)
+    {
+        var result = ProjectCanonicalRoot(currentRoot, previousRoot, progressionReportRoot);
+        ApplyPlayerSoulProfileClientAuthority(result, soulRoot, shiningRoot);
+        return result;
+    }
+
     public static void ApplyPlayerSoulProfileClientAuthority(
         JsonObject root,
         JsonObject? soulRoot,

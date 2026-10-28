@@ -44,6 +44,8 @@ internal static partial class AfterlifeWoundHealingPlanner
         private readonly CanonicalBeforeImage _responseImage;
         private readonly IReadOnlyDictionary<string, JsonNode?> _parsedSourceRoots;
         private string? _composedEffectInputFingerprint;
+        private readonly JsonObject _acceptedProgressionReport;
+        internal bool HasCompleteProfileProjection { get; private set; }
         private readonly Dictionary<string, WoundWorkingOwnedGraph> _graphs = new(StringComparer.Ordinal);
         private readonly List<WoundExecutedBoundary> _executed = new();
 
@@ -70,6 +72,15 @@ internal static partial class AfterlifeWoundHealingPlanner
             _data = data?.AidWitness is { } aidWitness ? data with { AidWitness = aidWitness.DeepClone().AsObject() } : data;
             _natural = natural; _controlJson = JsonSerializer.Serialize(control);
             Scheduler = scheduler; SchedulerMutation = schedulerMutation;
+            var report = StrictJsonAuthority.Deserialize<JsonObject>(CanonicalJsonUtf8.DecodeOneOptionalBom(
+                schedulerMutation.ReportBefore.Bytes ?? throw new InvalidDataException("Spiritual recovery has no admitted progression report.")),
+                new JsonSerializerOptions(), "admitted spiritual progression report");
+            var reportBody = report["progressionProcessingReport"] as JsonObject ?? report;
+            if (!string.Equals(reportBody["sessionId"]?.GetValue<string>(), input.Binding.SessionId, StringComparison.OrdinalIgnoreCase) ||
+                !string.Equals(reportBody["requestId"]?.GetValue<string>(), input.Binding.RequestId, StringComparison.OrdinalIgnoreCase) ||
+                reportBody["turnNumber"]?.GetValue<int>() != input.Binding.Turn)
+                throw new InvalidDataException("Spiritual profile progression requires its actual admitted report tuple.");
+            _acceptedProgressionReport = report;
             _responseImage = new(responseImage.Existed, responseImage.Bytes);
             _parsedSourceRoots = parsedSourceRoots.ToDictionary(p => p.Key, p => p.Value?.DeepClone(), StringComparer.Ordinal);
             Fingerprint = WoundAcceptedTurnFingerprintWriter.Compute(new[]
@@ -221,9 +232,14 @@ internal static partial class AfterlifeWoundHealingPlanner
         {
             if (!PreparedAgrees(prepared)) throw new InvalidDataException("Foreign spiritual preparation.");
             var input = Input;
-            var roots = SourceRoots;
+            var roots = SourceRoots.ToDictionary(p => p.Key, p => p.Value, StringComparer.Ordinal);
+            var projectedProfiles = ProjectAcceptedProfiles(input.PreTurnEffectCarriers!.AfterlifeProfiles,
+                input.PreTurnEffectCarriers.AfterlifeProfiles, roots["game_state/meta/soul_state.json"] as JsonObject,
+                roots[ShiningAbodeState.StatePath] as JsonObject);
+            var currentCarriers = input.PreTurnEffectCarriers with { AfterlifeProfiles = projectedProfiles };
+            roots[AfterlifeEntityProfileState.StatePath] = projectedProfiles;
             var composed = EffectAcceptedTurnInputComposer.Compose(input.Binding.SessionId, input.Binding.SnapshotToken,
-                input.Binding.Turn, new JsonObject(), input.PreTurnEffectCarriers!, input.PreTurnEffectCarriers!,
+                input.Binding.Turn, new JsonObject(), input.PreTurnEffectCarriers!, currentCarriers,
                 input.PreTurnEffectIdentityIndex, roots,
                 currentWorldTime: EffectAcceptedTurnInputComposer.ReadCanonicalWorldTime(
                     roots[EffectAcceptedTurnInputComposer.WorldTimePath]?.ToJsonString()),
@@ -234,6 +250,16 @@ internal static partial class AfterlifeWoundHealingPlanner
                 throw new InvalidDataException("Spiritual effect DATA changed within its owning operation.");
             _composedEffectInputFingerprint = fingerprint;
             return composed;
+        }
+
+        internal JsonObject ProjectAcceptedProfiles(JsonObject? current, JsonObject? previous,
+            JsonObject? soul, JsonObject? shining)
+        {
+            RequireExecutionCurrent();
+            var result = AfterlifeEntityProfileState.ProjectAcceptedRoot(current, previous,
+                _acceptedProgressionReport, soul, shining);
+            HasCompleteProfileProjection = true;
+            return result;
         }
 
         internal bool EffectInputAgrees(WoundPreparedAcceptedTurnPlan prepared, EffectAcceptedTurnInput input) =>

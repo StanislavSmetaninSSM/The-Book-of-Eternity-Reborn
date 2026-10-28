@@ -1336,9 +1336,10 @@ public partial class ValidationService
         var current = await ReadAfterlifeResourceOwnerRootsAsync(
             manifest: null,
             issues, currentInputs: currentInputs);
-        var profiles = AfterlifeEntityProfileState.ProjectCanonicalRoot(
-            current.Profiles,
-            preTurn.Profiles);
+        var profiles = naturalOwner is null
+            ? AfterlifeEntityProfileState.ProjectCanonicalRoot(current.Profiles, preTurn.Profiles)
+            : naturalOwner.ProjectAcceptedProfiles(current.Profiles, preTurn.Profiles,
+                current.SoulState, current.ShiningAbode);
         try
         {
             var changes = SpiritualTreatmentParticipation.ReadChanges(current.Profiles, preTurn.Profiles);

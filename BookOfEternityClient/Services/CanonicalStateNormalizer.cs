@@ -450,8 +450,11 @@ public partial class CanonicalStateNormalizer
         if (spiritualPublicationReceipt is null ||
             !SpiritualPlanOwnsRoot(spiritualPublicationReceipt.Plan, AfterlifeSpiritualConflictState.StatePath))
             await NormalizeAfterlifeSpiritualConflictStateAsync(backups);
-        if (spiritualPublicationReceipt is null ||
-            !SpiritualPlanOwnsRoot(spiritualPublicationReceipt.Plan, AfterlifeEntityProfileState.StatePath))
+        var healingOwnsProfiles = spiritualOwner?.HasCompleteProfileProjection == true &&
+            acceptedMechanicsPreflight is AcceptedMechanicsNormalizationPreflight.Validated profilePlan &&
+            SpiritualPlanOwnsRoot(profilePlan.Plan, AfterlifeEntityProfileState.StatePath);
+        if (!healingOwnsProfiles && (spiritualPublicationReceipt is null ||
+            !SpiritualPlanOwnsRoot(spiritualPublicationReceipt.Plan, AfterlifeEntityProfileState.StatePath)))
             await NormalizeAfterlifeEntityProfilesAsync(backups);
         await NormalizeAfterlifeActiveThreatsAsync(backups);
         await NormalizeChaosSeaGuardianPoliticsAsync(backups);

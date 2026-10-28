@@ -1301,6 +1301,8 @@ internal sealed class AcceptedMechanicsWoundPublication
             null, finalEffectPlanFingerprint, null, liveWoundProofFingerprint);
     }
 
+    internal bool HasCarrierAfterImage(string path) => _carrierAfterImages.ContainsKey(path);
+
     internal IReadOnlyDictionary<string, JsonObject> CarrierAfterImages =>
         new ReadOnlyDictionary<string, JsonObject>(
             _carrierAfterImages.ToDictionary(
@@ -1716,6 +1718,10 @@ internal sealed class AcceptedMechanicsPlan
     /// Gets the ordered owner-sealed live wound proof fingerprint, when present.
     /// </summary>
     internal string? LiveWoundProofFingerprint { get; }
+
+    internal bool HasWholeCarrierAfterImage(string path) =>
+        _ownerCompanionAfterImages.ContainsKey(path) || _effectCarrierAfterImages.ContainsKey(path) ||
+        _woundPublication?.HasCarrierAfterImage(path) == true;
 
     internal IReadOnlyDictionary<string, JsonObject> WoundCarrierAfterImages =>
         _woundPublication?.CarrierAfterImages ??
