@@ -797,3 +797,10 @@ Spec v1.24, приложение развития v1.1 и модель v2.15 ф�
 Только статус и границы согласия: diff/consistency, WIP remote и routine review.
 Runtime/build/gameplay/clean restore UNRUN; повтор прежней арифметики не нужен.
 Оптимизация исполнения неприменима: исходники/потребители и cache-контракт не менялись.
+
+Routine independent review /root/review_life_reward_acceptance1573, явно
+выбран gpt-6.1-sol/xhigh: точный diff bf553827..358ab23d четырёх документов,
+замечаний нет. Принят только принцип, числа/D/цены остаются кандидатами;
+альтернативы и T001 сохранены. Parent проверил actual diff и diff --check.
+WIP358ab23d2846ea7e670904a1d439a7fbe8ad71c7 опубликован, remote SHA подтверждён.
+Повторного исходного/арифметического аудита не требовалось; runtime UNRUN.
