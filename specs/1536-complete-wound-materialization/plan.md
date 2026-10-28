@@ -60,6 +60,14 @@ a class-only selector and a negative that bypassed treatment rendering; both are
 corrected, including coherent Mortal projection. Fresh Unit refsfalse is required
 for that test-only correction. Handler fixture reuses the complete existing wound
 resource setup but never creates an Engine turn. SOURCE review pending.
+Corrected Unit refsfalse357a95b9 passed0errors in56.73s; 26 baseline warnings
+plus one expected RED analyzer warning that the current nonnullable tier cannot be
+null. Four handler rows now use the SAME hooked StateManager for both interfaces;
+Sol identified that the browser currently refreshes it before wound dispatch.
+The real no-mutation/no-repair assertions will preserve that causal boundary.
+GM matrix/contract/no-turn example and existing guided manifest guard are updated;
+the initially misplaced requiredText strings were corrected and JSON parsed.
+All runtime remains UNRUN; exact catalog/PlanOnly follow fresh Integration.
 Optimization: reuse the already parsed catalog/profile/soul/effect snapshot owned by
 one read operation; renderer receives detached choice DATA and performs no reads or
 parsing. Every wound has a distinct identity/severity/complication input, so source

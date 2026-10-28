@@ -6,6 +6,7 @@ using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
 using BookOfEternityClient.UI;
+using BookOfEternityClient.WebUi;
 using Microsoft.Extensions.Logging.Abstractions;
 using Spectre.Console;
 using Xunit;
@@ -43,7 +44,9 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
         Assert.Equal(before, Snapshot());
         Assert.Empty(console.SelectionTitles);
         Assert.Empty(console.ConfirmPrompts);
-        var browser = await CreateCommands(fixture.Files).ExecuteAsync(new("/treat", Owner));
+        var commands = new ExplorerWebCommandService(fixture.Files, state, new LocalizationManager(),
+            new ValidationService(fixture.Files, NullLogger<ValidationService>.Instance));
+        var browser = await commands.ExecuteAsync(new("/treat", Owner));
         Assert.Equal(CommandExecutionState.Completed, browser.State);
         Assert.Empty(browser.Prompts);
         Assert.Empty(browser.Actions);

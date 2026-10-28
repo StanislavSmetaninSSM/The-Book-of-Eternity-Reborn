@@ -1570,6 +1570,15 @@ helper/entity/combat routes and Ink Feather quotes remain outside this slice. Se
 
 ## spiritual_self_treatment_v2 — guided self treatment outside conflict
 
+Known-wound assessment: opening `/лечить` compares a currently known visible
+spiritual wound with the validated current `spiritual_healing` tier. H0 and positive
+insufficient H explain the required wound rank even when no treatment is available.
+This is assessment only; no GM turn, healing attempt/die, spending, wound/History
+change or world cycle. A missing/mismatching source is unavailable, not H0. The
+client keeps valid help options selectable and revalidates every confirmation.
+No hidden diagnosis facts or new diagnosis roll/time rule are introduced.
+
+
 In Chaos Sea / Shining Abode, `/раны` (`/wounds`) shows visible current-self active
 wounds and separate healed History. `/лечить`, `/treat`, `/исцелить`, `/heal` opens
 self wound selection plus confirmation. Tier0 may inspect known facts; treatment

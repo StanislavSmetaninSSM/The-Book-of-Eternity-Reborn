@@ -13263,6 +13263,19 @@ This example proves the display contract only. Full guided /раны /wounds /л
 outside this slice. Native consumers are covered by WoundPlayerStatusTests; focused
 source/documentation guards bind this example marker and its limitations.
 
+Known-wound assessment — assessment only; no GM turn
+
+Player in Chaos Sea knows an active spiritual wound II and has validated H0.
+Opening /лечить displays: «Исцеление: 0. Для снижения раны II степени требуется
+ступень 2 или выше. Сейчас доступна только оценка: лечение этой раны недоступно.»
+The client completes the command without selection/confirmation. With the same
+known II wound and H1 in Shining Abode, it shows Исцеление: 1 and the same required
+ступень 2; the result is still assessment only. Neither opening heals or advances
+the world. GM writes no response, command, healing roll, attempt or History row.
+This is an already-known wound, not discovery of hidden facts. A broken source is
+unavailable rather than assumed H0. A valid separately offered helper can remain
+selectable; only its explicit confirmation begins an actual treatment turn.
+
 spiritual_self_treatment_v2 — confirmed self treatment, failure still heals naturally
 
 Worked GM example, actor-free Chaos Sea safe turn. Client-issued reference DATA:

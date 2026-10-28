@@ -967,6 +967,12 @@ spiritual_self_treatment_v2: `/раны`/`/wounds` reads current-self visible wo
 healed History; `/лечить`/`/treat`/`/исцелить`/`/heal` confirms self-only spiritual
 treatment outside conflict in Chaos Sea / Shining Abode. No draw or world mutation
 on inspection/cancel; no self OD cost, one ordinary safe cycle even on failure.
+Opening treatment also assesses an already-known visible wound against the actual
+validated spiritual_healing tier. At H0 or positive H below the wound rank, show
+readable insufficiency even if every option is disabled; this is assessment only;
+no GM turn, draw, attempt, resource charge, History change or world cycle. Invalid
+or mismatching source is unavailable, never inferred H0. Available helper choices
+remain separately confirmable. This is not sealed hidden-fact diagnosis discovery.
 Client stages retained `game_state/wounds/wound_commands.json` schemaVersion2
 kind=spiritual_self_treatment_request before signed snapshot; GM never authors it.
 Read `input/turn_request.json.spiritualHealing.destinationGraphs`, author exactly

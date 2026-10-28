@@ -2,6 +2,33 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "documentation-afterlife-treatment-assessment",
+  "responsibility": "Existing exact guided self-treatment GM synchronization guard checks current marker surfaces, private request registry and manifest-required worked known-wound no-turn assessment example.",
+  "excludes": "No unrelated afterlife documentation matrix, new response fields, real GM response or broad example/runtime suite.",
+  "changeHints": [
+    "OtherGuides/Afterlife_Contract_Matrix.md",
+    "OtherGuides/Wound_Materialization_Contract.md",
+    "Examples/E_CLI_Afterlife_Turns.txt",
+    "Examples/example_validation_manifest.json"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.SpiritualHealingGuidedContractTests.GuidedSelfContractIsSynchronizedWithGmWorkedExampleAndPrivateRequestRegistry"
+      ]
+    }
+  ]
+},
+{
   "id": "spiritual-treatment-assessment-handlers",
   "responsibility": "Four real console and shared browser known-wound assessment rows, H0/H1 against II in Chaos Sea/Shining Abode; no prompts/action, canonical mutation, repair, attempt, dice, pending work or world time.",
   "excludes": "No GM completion, external provider/DOM, sealed hidden discovery, real treatment or repeat of accepted combat cases.",
