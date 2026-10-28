@@ -172,3 +172,13 @@ singleton PlanOnly and actual120; exact runtime outcome decides acceptance.
   original wound and blockers from existing DeriveWorseningBlockers; no source/
   guard/assertion/production/budget change. Narrow review, fresh Integrationrefsfalse
   and same singleton once after PlanOnly; previous19 retained.
+
+- Second actual on4d is complete1FAIL/no timeout/bothcleanuptrue, total18.3127647:
+  Submit refuses only proposal.classification.domain. The prior correction copied
+  a canonical-only member into the GM grammar (which closes classification to
+  woundType/locationProfile); C4/safe remain unreached. TRXa7c432111fc966b15d3a81e080048b3fb7152159b38cc735ae02070799e288b8
+  retained. Explicitly project ONLY those two existing authored fields from the
+  original classification; nested location fields match the existing closed grammar.
+  Blockers correction and all source/reducer/assertion/budget guards retained.
+  This is the same fixture projection boundary, not a production failure or new
+  diagnostic requirement. Narrow delta review precedes fresh Integration retry.

@@ -78,8 +78,12 @@ public sealed partial class AfterlifeResourceCutoverTests
             Assert.Equal(2, offered.Offer!.MinimumSeverityRank);
             var decision = JsonNode.Parse(CreateSpiritualWorseningLifecycleDecision(
                 offered.Offer.OpportunityRef, worsening: true).GetRawText())!;
-            decision["proposal"]!["classification"] = JsonNode.Parse(
-                WoundMaterializationContract.SerializeCanonical(originalWound))!["classification"]!.DeepClone();
+            var classification = JsonNode.Parse(WoundMaterializationContract.SerializeCanonical(originalWound))!["classification"]!;
+            decision["proposal"]!["classification"] = new JsonObject
+            {
+                ["woundType"] = classification["woundType"]!.DeepClone(),
+                ["locationProfile"] = classification["locationProfile"]!.DeepClone()
+            };
             decision["proposal"]!["recovery"]!["blockers"] = JsonSerializer.SerializeToNode(
                 WoundTransitionReducer.DeriveWorseningBlockers(originalWound));
             var submitted = await offered.SubmitDecisionAsync(lease,
