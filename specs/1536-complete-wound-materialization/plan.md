@@ -1,4 +1,33 @@
-# US4 safe self-treatment — active functional work, 2026-10-27
+# US4 safe self-treatment — active functional work, 2026-10-28
+
+Actual graph-bearing console caller on clean/compiled 926f70af: exact1/1 PASS,
+58.1503082s total/category50.2515017<180, complete/no skips/duplicates/timeout,
+both cleanup flags true. Real retained d20=7; final healed/rankI/progress0;
+exactly two in-flight repair phases and one world cycle. Missing graphs were
+authored for the original attempt; the second existing output-artifact packet
+refreshed only narrative/interface. Final assertions prove original signed
+request/die, strict History and published cycle, authored graph content, unchanged
+debug and complete mechanical after-images during/after output repair, request/
+report consumption and canonical resource no-cost. This is one controlled native-
+shaped console draw, not external-provider/fresh-process/all-die qualification.
+TRXc29fd60f4c49204a2d0b04278ed1b42a9404df7383dce9fe25f9480d03844fa7.
+
+The same source's cheap observer is exact1/1 PASS,18.3670322s/category9.3722641<60,
+TRXc590dd0688f132984fb33c5c189899230f7594eef9f0d8a64a02e01c5dd8a3ac;
+combined official PlanOnly2/2descriptors8.9296232s/zero executions. Fresh owning
+Integration-only build exit0/105warnings/0errors2:40.21, Integrationb70dfd0d;
+all Main/Support316 masters/copies unchanged. Raw/pins remain external under
+graph-repair-two-phase-build-1 and graph-repair-two-phase-functional-1. Independent
+SOURCE/PREP accepted926; finite OUTCOME review requested, no result invented.
+
+Next already-reviewed affected gate: one fresh Unit-only refsfalse build, official
+PlanOnly33/4descriptors, then separate request24→pending2→help2→lifecycle5 with
+existing60/120/120/120s bounds. No accepted browser/console/backend repeat merely
+for assembly hashes. Then continue T105/T106 ordinary safe-cycle natural recovery
+without treatment command/new attempt/die, including eligible persistent actors.
+Full US4, helper/entities/combat, real provider/fresh process and retained Mortal/
+preparation timeout blockers remain open; T609/fullDFR/Windows stay parked.
+
 
 Observer GREEN accepted independently: clean c481 cheap1/1 PASS, complete exit0,
 12.5819966s/category5.4793531<60 (case0.2944675), no timeout/skips/duplicates,
