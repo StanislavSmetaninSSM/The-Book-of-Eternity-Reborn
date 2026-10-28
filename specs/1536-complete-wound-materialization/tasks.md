@@ -14357,6 +14357,16 @@ draft cause remains UNKNOWN, not fixed. Proven targetKind and sync-read-hook fix
 corrections are grouped UNCOMPILED/UNRUN. Remaining18/9 are Integration-only: fresh
 Main/Support/Integration and six pins, no unnecessary Unit rebuild. Prior17 Passed
 rows retain their own lineages; no combat gameplay PASS or full task closure.
+  Actual functional7 on49d6 completed four FAIL with no timeout: automatic resolved
+  draft lacks an allocation scope; blocked publication ends in CSPU because the
+  witness digest and History opportunity fingerprint domains were conflated.
+  Recovered six-file unfinished WIP is preserved remotely at98cd30faf. Guarantee
+  JSON canonicalization loses an existing producer hash input; guaranteed opponent
+  counterharm is not excluded. Bounded Astra DESIGN accepts mandatory exact
+  guaranteePreimage evidence in the existing guaranteed witness, unchanged ordinary
+  form/hash/owner checks, and refusal before publication if proof is missing.
+  The new one-case typed Unit scaffold is UNRUN; implement only after its causal
+  proof and keep downstream14 unrun until the real paired result permits them.
   Next bounded player-result is tracked jointly with T102/T103 in
   spiritual-combat-healing-design.md (DESIGN ACCEPT c3caf534c): player self treatment in actual active
   direct Chaos duel, counterable typed operation, exact original die/art/target,

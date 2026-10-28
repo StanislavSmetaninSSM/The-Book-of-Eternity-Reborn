@@ -2,6 +2,17 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "spiritual-combat-guarantee-preimage",
+  "responsibility": "Cheap typed DATA proof that guaranteed source witnesses retain exact prepared exchange/art strings with noncanonical property order while canonical semantic payloads and intrinsic source checks remain strict.",
+  "excludes": "No original membership, capability, seal minting, C2/C4 publication, world fixture or performance/DFR workload. Actual guaranteed counterharm requires its separate paired Integration case.",
+  "changeHints": ["BookOfEternityClient/Services/SpiritualWoundSourceWitness.cs", "BookOfEternityClient/Services/Validation/ValidationService.SpiritualOriginalC1FirstOffer.cs", "BookOfEternityClient.Tests/SpiritualCombatGuaranteePreimageTests.cs"],
+  "related": [{"id":"spiritual-combat-healing-pair","when":"Actual admitted sources must copy and rederive this evidence through the original owner and common publisher."}],
+  "requirements": {"frontendBuild":false,"exclusive":true,"ciRunner":"ubuntu-24.04"},
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [{"project":"unit","tests":["BookOfEternityClient.Tests.SpiritualCombatGuaranteePreimageTests.GuaranteedWitnessRetainsBothNoncanonicalPreparedPreimages"]}]
+},
+{
   "id": "spiritual-combat-original-observation",
   "responsibility": "Eight exact default presence/coverage guards after adding the second currently produced combat observation set; actual combat byte/absence production is qualified by the paired and Engine cases.",
   "excludes": "No broad pending-turn owner, migration, new permission or combat execution claim from presence DATA. Ordinary snapshot I/O remains unchanged.",

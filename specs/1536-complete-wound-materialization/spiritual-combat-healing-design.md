@@ -1,5 +1,32 @@
 # T095/T102/T103: counterable spiritual combat healing (DESIGN ACCEPTED)
 
+2026-10-28 bounded guarantee-evidence correction (Astra DESIGN accepted against
+recovered98cd30f): a guaranteed opponent counterharm remains within the current
+contract. The old guarantee producer hashes the exact prepared art/exchange JSON
+strings. Canonical receipt payloads discard their property order; changing the
+producer hash or using a canonical substitute cannot recover that evidence.
+Preserve the existing canonical payloads and add one mandatory CLOSED
+`guaranteePreimage` child only to the currently produced guaranteed source form.
+Its two Base64 fields retain the actual PreparedSpiritualSource strings before
+canonicalization. The non-guaranteed closed form remains unchanged and forbids
+this child; a guaranteed form without proof refuses, with no legacy fallback.
+Strict Base64/UTF-8/duplicate-free JSON and semantic agreement bind each preimage
+to its canonical payload; the complete source hash includes the child. The same
+actual original/source owner must still reconstruct/compare that witness before
+initial C2 publication. Cold parsing precedes draft execution and C3/C4. Durable
+comparison uses the retained strings verbatim with the unchanged guarantee hash;
+this creates no guarantee capability or new publication permission. Missing,
+foreign or malformed proof refuses before publication. A self-rehashed DTO is
+not original membership. Existing actor/art/dice/envelope/retrauma/History and
+fresh current/owner checks remain mandatory.
+
+The other considered choices are insufficient: canonical-only reconstruction
+loses a real input; changing the live hash or excluding guaranteed counterharm
+changes the accepted contract. Reuse the existing witness/receipt/checkpoint,
+not a new file or diagnostic stack. Start with one cheap typed noncanonical-order
+fixture, then exact negative controls and actual guaranteed counterharm through
+the same paired publication. This adds evidence coverage, not a new game rule.
+
 Issue: https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536
 
 Current baseline: bounded free safe-cycle self and both current-Guardian aid

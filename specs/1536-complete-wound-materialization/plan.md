@@ -1,3 +1,28 @@
+# Guarantee preimage causal scaffold — implementation UNRUN
+
+2026-10-28: recovered six-file WIP was first preserved remotely as98cd30faf,
+without corrections, with HEAD/remote agreement and a clean tree. Root has stable
+access to the original machine; the former writer's executor remains unavailable.
+Astra bounded DESIGN accepts a required closed guaranteePreimage child in the
+existing guaranteed witness, with exact prepared strings plus strict semantic and
+actual owner binding. Non-guaranteed form and live guarantee hash stay unchanged.
+The canonical combat design records the evidence contract and rejected alternatives.
+
+Current addition is ONE typed Unit scaffold in spiritual-combat-guarantee-preimage,
+60 seconds, no world/session/native owner. It constructs valid art/exchange DATA
+with deliberately noncanonical property order, retains both raw preimages and
+expects intrinsic source validation. Existing production98cd still rejects that
+new guaranteed form; RED has NOT yet run. No additional production fix has been
+applied after preservation. Before executing: bounded independent scaffold/PREP,
+fresh affected Main/Support plus Unit refsfalse, selected artifact pins, official
+singleton PlanOnly and one actual category attempt. The unfinished98cd production
+is not called fixed/qualified. After genuine RED, implement the evidence contract,
+add its negatives and actual guaranteed pair, then coherent SOURCE/PREP and the
+small affected qualification. Existing four failed cases and downstream14 remain
+unchanged; broader holds and historical17 lineages remain explicit above/below.
+Optimization: small independently owned JSON DATA, no expensive world setup or
+new cache; raw strings reuse the existing prepared source instead of file rereads.
+
 # Combat interrupted-work preservation — WIP / UNCOMPILED / UNREVIEWED
 
 2026-10-28, #1536 / T095-T102-T103, branch
