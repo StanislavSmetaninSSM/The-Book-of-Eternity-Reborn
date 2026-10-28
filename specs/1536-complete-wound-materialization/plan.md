@@ -1,78 +1,52 @@
 # US4 safe self-treatment — active functional work, 2026-10-28
 
-Grouped producer source closure retains detached proposal copies in its owner,
-uses explicit typed nonnull proposal scalars, and records the actual raw-validation
-order and proposal-only fresh locality decode rationale. The ordinary outer path
-already refused malformed null DATA; no unhandled-exception defect is claimed.
-Same13/5 selection/old budgets; no new matrix or production capability beyond the
-issuer/witness candidate. Independent final narrow closure precedes its build.
+T108 bounded participation issuer/witness now passes its exact13-case selection
+on clean compiled ef406058a4a03f497a580609e9ff45448f8461c6. Accepted DESIGN8e279e8c;
+Astra bounded issuer SOURCE and Sol final coherent SOURCE/PREP accepted. Independent
+OUTCOME requested; this is a direct natural/common-publisher backend, not completed
+active aid, full Engine grant or guided console/browser qualification.
 
-T108 coherent producer candidate now includes closed proposal/record/full v3
-natural witness, all-three raw representation and real ProjectCanonicalRoot
-record-omission/actorRef/mirror controls, raw stamp/current content/cross-version
-refusals, actual profile-member rollback and synchronized GM nested proposal
-example/manifest/source guard. UNCOMPILED/UNRUN; v3 aid, staging and real guided
-Engine journey remain next. Proposed finite source-reviewed release: owning
-Integration + Unitrefsfalse → exact13/5 PlanOnly → contract6/60 → producer2/120 →
-existing naturalpublication4/120 → existing authoredselfgraph1/120. No prior suite
-repeat. Optimization/fresh-read and no-Mortal/Shining-update rationale are in the
-existing spiritual-aid-design.md; independent coherent SOURCE required.
+Actual producer derives the full closed Guardian participation record + digest from
+its real binding/cycle/primary transition and publishes it in the SAME v3 natural
+History/wound/effect/profile/scheduler batch. Raw stamps/foreign content/cross-version
+payloads refuse; actual profile-member publication fault rolls the record and
+mechanics back together. Three raw representations, actual ProjectCanonicalRoot
+actorRef/omission/mirror behavior, typed null refusals, GM guide/example/manifest
+and default v2 SELF/natural consumed-I regressions execute. Current v2 writers remain
+active; v3 aid is intentionally still refused until the next block. No receipt file,
+registry/cache/second publisher or implicit consent. Proposal-only additional signed/
+current locality proof is freshly closed; earlier owner DTO lacks its exact read image.
+No speedup is claimed.
 
-T108 producer functional WIP is now wired but UNCOMPILED/UNRUN. The actual natural
-owner validates all three raw profile representations, derives a full closed
-participation record from its real binding/cycle/primary transition, and carries
-that record + digest into a mandatory nonempty v3 natural result. Existing common
-carrier assembly applies only the owned record/proposal consumption alongside the
-real wound contribution; no separate publisher/receipt. Additional signed/current
-locality images and original evidence close under the same lease. The existing
-local scope calculation now has a pure DATA entry point to reuse parsed roots.
-Current v2 self/no-participation natural writers remain active without fallback.
-Strict published reader compares the canonical profile record to its outcome.
-Remaining before coherent SOURCE/build: producer forgery/three-representation/
-rollback/cross-version controls, GM docs/example/guards, and selected affected
-regressions. Aid staging/draw/result/UI and full Engine journey remain later
-implementation within the same accepted design; no helper completion claimed.
+Fresh owning Integration/Main/Support:0errors/137warnings3:41.06; Unitrefsfalse:
+0errors/26warnings0:54.50. All9 current master/dependency pins match (Main0d4585d0,
+Supportc15cde79, Integrationfa7cd277, Unitb8e2cf62). Official PlanOnly13/5 zeroexecuted
+16.5706367s; actual separate contract6, producer2, naturalpublication4, authoredSELFgraph1:
+ALL13PASS,13unique test IDs/executions, complete selections/no skip/error/dup/timeout
+and bothcleanuptrue. Category/total seconds:8.8934947/21.5223662 (60s),
+23.6537067/30.6167055 (120s),24.177221/37.8195633 (120s),16.7290337/24.3210432 (120s).
+External spiritual-aid-producer-build-1 and spiritual-aid-producer-1 retain full raw,
+pins and exact membership verification. Ordered TRX SHA256 (contractIntegration,
+contractUnit, producer, naturalpublication, authoredSELFgraph):
+85237845c2de49fd5368ff26ec903c03b06d457a3ef2bea99b35b386eca88b9a,
+ce8e9a2e869f87715f75a68cb7b9eaf71dace97c5a9ba0713c15b24c221f4bd4,
+785d70a742de9f048a1fa91bc52bc45fe2bece9a4ccee112bfb98705218654af,
+963d659472a2075ea066eaaf0f8b517fd096444aa733ac0257f9b495658d65a2,
+ea099ce1ec8a8dd7ccdea2b994441df07e893c359703c5366ff4309abf9e5a0b.
 
-T108 producer causal RED now executed on clean a3fee4bd6: exact singleton completes
-FAIL at Aid.cs70 Assert.NotNull(canonical participation). Initial canonical wound/
-identity/History, actual locality, accepted common publication III1/H0, one cycle,
-no treatment attempt and no cost all pass before that assertion. This is missing
-issuer/witness behavior, not setup or rollback. Integrationrefsfalse build0errors/
-102warnings1:49.91; six current pins match (Main7c24b6d6/Supportc8472972 unchanged,
-Integrationeb61ba01). Official PlanOnly1/1, zero executed6.4752626s; actual complete
-1/1FAIL, category15.5545542s<120, total22.6474096s, no skip/dup/timeout and both
-cleanup flags true. External spiritual-aid-producer-red-build-1 and
-spiritual-aid-producer-red-1 preserve full evidence; TRX SHA256
+Genuine causal RED a3fee4bd remains separately accepted: initial locality/agreement
+and real accepted III1/onecycle/nocost preceded missing canonical participation at
+Aid.cs70. Exact1completeFAIL22.6474096s/no timeout/bothcleanup, TRX
 b20ce2b741df35af2274bf2fb30b666831ae27b1173d4bfedf31c9dd1d7d0e6c.
-Independent OUTCOME requested in parallel with the accepted-design implementation.
-Later witness/aid/UI assertions remain unreached; no helper completion claim.
+It was not setup or rollback. Original RED and new GREEN are distinct runs.
 
-T108 first backend causal scaffold is test-only and UNCOMPILED/UNRUN. One new
-literal participation-producer singleton/120s uses existing natural ResourceCore
-and common publisher. Initial exact Guardian locality/wound agreement and actual
-III1/one-cycle/no-cost publication precede the intended missing canonical grant
-and full accepted witness RED. It does not claim Engine grant or guided aid yet.
-No production/default fixture/old body changes; independent SOURCE/PREP precedes
-Integration-only refsfalse and exact PlanOnly/actual. The implementation sequence
-and cost/retention rationale are in spiritual-aid-design.md.
-
-
-T108 technical DESIGN WIP is now in spiritual-aid-design.md. Finite user result:
-ordinary player request → accepted GM participation for the current visible
-Guardian → existing guided /лечить selection/quote/confirmation → real Engine aid
-turn. Exact locality uses existing service; consent requires content-bound witness
-in the existing natural accepted result, atomic with canonical profile grant.
-Healer active tier and target natural tier remain separate in one existing program.
-No registry/receipt file/cache or implicit consent. The finite decisions now place
-aid grant-read before control writes inside the existing rollback scope, with one
-actual lease and a lease-aware single BuildControl implementation. Current v2
-self/no-participation natural writers remain active; closed v3 natural outcomes
-and aid require their full mandatory payload. Witness stores the full canonical
-participation record plus digest. Foreign-content, rollback and cross-version
-causal controls are required. Independent DESIGN closure binds this document;
-all prior code/evidence is unchanged and implementation/runtime remain UNRUN.
-
-
+Next authorized block: strict committed grant read BEFORE control writes under one
+aid staging lease, lease-aware single BuildControl core, request/result aid v3,
+separate active healerH3/target naturalH0 in the existing one-pass program, then
+actual ordinary GM grant → existing guided /лечить → real console/browser Engine
+aid with current consent/locality/requirements and exact replay. The player OFFERS
+to treat the Guardian, never receives a GM substitute for player consent. Full
+T108/reverse/helper/provider/helpless/conflict/Shining aid and standing HOLDs stay open.
 
 Historical owner carry and conflict reset are now independently OUTCOME accepted.
 Qualified union:6add owner/history controls6 + ordinary publication4, retained with

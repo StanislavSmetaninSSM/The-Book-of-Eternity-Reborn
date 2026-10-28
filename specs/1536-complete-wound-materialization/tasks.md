@@ -14476,10 +14476,13 @@ close full source-action/terminal/pending contracts or any top-level story task.
   Bounded player→current Guardian technical design is now written in
   spiritual-aid-design.md: actual ordinary GM grant, existing guided caller,
   content-bound accepted natural-result witness and separate active/natural tiers.
-  Exact pre-control aid lease/BuildControl plumbing and exhaustive current v2/v3
-  forms are now recorded, with full participation record + digest and finite
-  foreign-content/rollback/cross-version controls. Independent DESIGN closure is
-  pending; no implementation or helper completion is claimed. Reverse entity→player needs real guided player
+  DESIGN8e is accepted. Producer/witness ef406058 now passes exact13 cases:
+  full record+digest derives from real natural owner and shares atomic common
+  publication; three-representation/projection/forgery/version/rollback controls,
+  docs/manifest and affected natural/SELF graph regressions pass. Independent
+  OUTCOME is pending. Pre-control aid staging, separate healer/target tiers and
+  actual guided Engine journey remain next, so no full helper completion claim.
+  Reverse entity→player needs real guided player
   consent, and other/helpless/conflict/Shining helper routes remain open.
 
 ### GM contract synchronization

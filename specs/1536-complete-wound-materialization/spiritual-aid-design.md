@@ -2,12 +2,11 @@
 
 Issue: https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536
 
-Status: finite technical decisions recorded; independent DESIGN closure pending,
-no implementation or runtime qualification. The
-approved FR-054/FR-074 already require consent and fresh access; this document
-chooses their representation and existing consumers. Routine technical decisions
-do not require a new user approval pause. Independent bounded DESIGN remains
-required. Full T108, combat/helper services and #1536 remain open.
+Status: bounded DESIGN accepted8e279e8c. Participation issuer/witness SOURCE
+acceptedef406058 and exact13 runtime cases PASS; independent OUTCOME pending.
+Active aid staging/draw/result/UI and full Engine grant remain implementation work.
+FR-054/FR-074 already require consent and fresh access. Technical decisions need
+no new user approval pause. Full T108, combat/helper services and #1536 remain open.
 
 ## User result and exclusions
 
@@ -223,7 +222,7 @@ separate healer/target program binding; guided console/browser plus actual Engin
 grant/aid journey and GM synchronization. Preserve staged attempts through repair
 and all fresh ownership/original/closing guards at each boundary.
 
-### Producer SOURCE/PREP candidate (UNCOMPILED/UNRUN)
+### Producer SOURCE/PREP accepted ef406058; exact13 runtime PASS
 
 The first code block extends only accepted participation issuance: real natural
 owner/control/primary transition, immutable full record+digest in v3 result, pure
@@ -252,10 +251,12 @@ check share that parse. The older owner DTO is not substituted for this proof.
 Default non-participation paths only inspect property presence; no extra locality
 read or outcome clone. No runtime cost or speedup is claimed before verification.
 
-Proposed exact release after independent coherent SOURCE: fresh owning Integration
-(Main/Support) then Unit refsfalse; official four-category PlanOnly expected13 cases
-in5 descriptors; cheap participation-contract6/60 → producer2/120 → existing
-natural-publication4/120 → existing authored-self-graphs1/120, separate actual calls.
+Executed after independent coherent SOURCE: fresh owning Integration/Main/Support
+and Unit refsfalse; official four-category PlanOnly13 cases/in5 descriptors.
+Participation-contract6/60 → producer2/120 → natural-publication4/120 → existing
+authored-self-graphs1/120 all PASS in separate actual calls; no timeout/duplicates,
+both cleanup flags true, all9 pins/exact13uniqueIDs verified. Timings/hashes and
+limits are in plan.md; independent OUTCOME is pending.
 The last two protect changed common assembly/result/replay and real SELF consumed-I
 semantics; no browser/console/whole19/held matrix repeat. GM CLI/daemon/Wound guide/
 Matrix/rules, worked nested proposal and manifest/source guards are synchronized.
