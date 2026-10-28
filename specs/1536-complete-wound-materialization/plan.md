@@ -24,7 +24,8 @@ Actual console observes d20=14 → active II/progress2; queued browser observes
 d20=18 → healed I/0. Both perform real accepted grant43 → original cleanup →
 shared cancel/confirm → aid44, actual NPC Brain/journal, retained request3, separate
 healerH3/targetH0, exact weaker graphs/effects/History, one attempt/one aid cycle and
-no treatment charge. Normal happy paths have no injected hook/Engine diagnostic.
+no treatment charge. Normal happy paths have no injected fault hook and print
+empty Engine diagnostics; their controlled native-shaped GM completion hook remains.
 Other actual refusal fixtures establish prepared-control rollback before draw and
 preparing original retention after one staged draw. These are controlled native-
 shaped GM journeys, not external-provider or fresh-process recovery qualification.
