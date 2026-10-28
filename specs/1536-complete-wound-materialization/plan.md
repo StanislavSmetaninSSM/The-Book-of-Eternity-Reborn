@@ -1,88 +1,82 @@
-# Next T108 slice — private current Guardian → player, 2026-10-28
+# T108 private current Guardian → player — bounded GREEN, 2026-10-28
 
-First 04c qualification is partial: 11 cases PASS (cheap8, old issuer2,
-old aid-backend1); reverse backend1 fails during initial seed before bootstrap/
-offer/staging. TRX cd7ea8f8b4f64cea227efd70fc326ade84f19d6b709ab03c08c9291a983fa166,
-wall17.3193585 s/category8.2168824<120, complete/no timeout/dup/both cleanup.
-Seed rewrote canonical player effect kind/allowedTargetKinds to player_soul;
-actual WoundEffectCarrierAdapter maps that owner to effect kind player. The
-same initial-contract read found the two new CreateAsync calls swapped rank/tier
-(rank0 left the default II wound, tier3). This is fixture authoring, not a product
-RED. Correction uses explicit rank:3/tier:receive?0:3 and preserves original player
-definitions/effect targets; Guardian target branch is unchanged. No between-turn
-seed, second bootstrap, production or guard change. All later six cases are UNRUN.
+Both real guided directions now have working scoped journeys. Reverse aid's
+reviewed original selection is complete: 15 methods / 17 unique passing test IDs
+and 17 unique execution IDs, exact Counter equality with official17/11 PlanOnly.
+Evidence is an explicit union: 11 PASS on compiled04c95e94 +6 PASS on compiled
+c6aa88d2 (fixture-only correction). This is not one all17 rerun or blanket current-
+SHA qualification of prior suites. Production remains accepted20d5cd42/04c.
+All selected actual runs have complete selections, no skip/duplicate/timeout,
+exit0 and both owned-tree/runtime cleanup flags true, under original budgets.
 
-Retain the 11 PASS and owning Main/Support/Unit at 04c; only Integration source
-changes. After finite correction SOURCE: fresh Integration refsfalse, remaining
-6 cases/5 descriptors PlanOnly, then reverse backend1→SELF graphs1→old console2→
-reverse console1→reverse browser1 with original120/180 budgets. No all17 repeat.
-Raw external spiritual-guardian-help-build-1/unit-build-1/1; owning build0e137w
-4:13.89, Unit0e26w1:00.94, nine owning pins match. Official original Plan17/11,
-zeroexec15.1684998; cheap8PASS35.1872806, issuer2PASS35.8378874,
-oldbackend1PASS49.0618488. New codec fullrecord/conditions/noGMconsent checks now
-execute GREEN; active reverse/Engine assertions still unqualified.
+| Actual run | Cases | Wall seconds | Category seconds / bound |
+| --- | ---: | ---: | --- |
+| cheap offer/guidance/old participation+inventory | 8 | 35.1872806 | 4.8295048 /60; 5.436891 /60; 10.3172436 /60 |
+| old issuer, including profile-member rollback | 2 | 35.8378874 | 27.5698153 /120 |
+| old player→Guardian backend | 1 | 49.0618488 | 38.6190535 /120 |
+| reverse confirmed offer backend | 1 | 49.3051955 | 39.1497066 /120 |
+| consumed SELF authored graphs | 1 | 33.3306079 | 19.8831141 /120 |
+| old console positive + pre-draw refusal | 2 | 75.2994271 | 64.5292535 /180 |
+| reverse console | 1 | 61.6171801 | 51.9221097 /180 |
+| reverse queued browser | 1 | 107.7673794 | 95.9515915 /180 |
 
-Coherent reverse source/tests/GM sync are written, all UNCOMPILED/UNRUN beyond the
-accepted codec RED. Proposed finite first-GREEN selection is 17 cases / 11
-descriptors / 10 categories: cheap offer-contract1 + new guidance1 + existing
-participation-contract6 (including full example inventory), then existing issuer2,
-existing player→Guardian backend1, reverse backend1, affected consumed SELF
-graphs1, existing player→Guardian console2, reverse console1 and reverse browser1.
-Budgets remain 60 s for cheap categories, 120 s for issuer/backend/SELF, 180 s for
-actual caller categories. Existing four helper controls/FS are unchanged and
-retain their earlier8a receipt. Prior17 is not automatically relabelled current.
+Actual reverse console: accepted offer43/natural III0→III1 → normal cleanup →
+cancel/real player confirmation → aid44, d20=12, active III1→II1 then player-H0
+natural→II2. Actual reverse browser: same true player decision/queued original,
+d20=5 gives no active reduction and normal recovery finishes III2. Both use
+healthy Guardian-healer H3 / player-target H0, request/result4 and exact graphs/
+effects/History, one retained attempt and one aid cycle, no private-treatment
+charge; both final Engine diagnostics are empty. The controlled native-shaped GM
+completion hook and actual Guardian Brain/journal remain; this is not external
+provider or fresh-process recovery qualification. No GM field issues player consent.
 
-Selection reasoning: the new parser branch and enclosing record owner affect
-both participation forms/all raw surfaces, requiring cheap old+new controls and
-actual old issuer atomic rollback. The generalized actor/source/result/history
-branch needs both active directions plus smallest consumed SELF parser/I consumer.
-Shared choice/one-shot flow and callback fixture default need existing console2;
-new queued browser receives actual confirmed selection/request4. Unchanged browser
-phase-refusal/CSWH/full ordinary/Shining machinery has no independent new route or
-source predicate and is not automatically repeated. Independent SOURCE/PREP must
-assess this exact selection before one owning Integration/MainSupport build and
-Unit refsfalse, official combined PlanOnly and the ordered actual categories.
+The reverse typed backend now executes all no-confirmation/no-queue/no-draw,
+current source/condition/content/move refusals, post-draw raw provider withdrawal,
+same-attempt graph repair, full normalization/publication, frozen original/source,
+strict v4 historical offer omission and I/replay assertions. Cheap codec RED
+becomes GREEN including full record/condition/no-GM-consent assertions. The new
+version/role branch, old issuer atomicity, old aid, smallest consumed SELF and real
+shared console defaults are covered; unchanged helper4/phasefault/ordinary/
+Shining machinery retains its earlier scoped evidence, not a new execution claim.
 
-Optimization: provider/player/catalog/history/effect/locality DATA reuse the same
-existing operation and source18; no new roots/cache/permission owner or second
-natural pass. Record schema/cross-version checks add bounded scalar work. Current
-locality/original/readback closures remain fresh. Test helpers share existing
-canonical initial/Engine/lore setup with defaults preserved; expensive runtimes
-are reserved for actual console/browser journeys. No measured speedup claimed.
+Owning04c build:0errors/137baseline warnings/4:13.89; Unit refsfalse:0errors/
+26warnings/1:00.94, no warnings in changed C# files. Integration-only c6 retry:
+0errors/102baseline warnings/2:02.35. All9postrun owning/dependency pins match:
+Main8b8df4e4…, Support9b5141e6…, Integration5a5b3aaf…, Unit88567be3….
+Official original PlanOnly17cases/11desc zeroexec15.1684998; remaining6/5 zeroexec
+14.2094786. Raw external us4-self-healing/spiritual-guardian-help-{build-1,
+unit-build-1,integration-build-2,1,2}; final9pins and all11TRX pins in help-2.
+Key TRX SHA256:
+- reverse backend eda49e69f9cb09a5242b2f25a28fa85bf667d72729e7ffd1a2557dd8490c49a1
+- reverse console a706633ef4d82f04ecd981b00af9353fe5229b5062a2603618298b3f4d33b998
+- reverse browser 26ba9b99f40ca5c1f0c3091e222c73681da258d76825ac74dc6a366a15c4ffa3
 
-Shared reverse production WIP is now connected but UNCOMPILED/UNRUN: closed
-schema2 offer and enclosing Guardian record ownership; v4 natural/request/result;
-confirmed receive_aid selection/queue/staging gate; actual Guardian healer + player
-target source roles; v4 historical offer linkage and strict committed cleanup
-reader; same shared UI choices/ConfirmAsync and old one-shot/queued Engine entry.
-Original/input/source18/closing machinery remains shared. No new permission
-registry, receipt, source path or executor. The existing actual caller helper now has explicit reverse console/browser
-journeys plus typed reverse backend refusal/replay controls, all UNRUN. GM
-contract/example and category ownership are synchronized in the coherent freeze;
-independent SOURCE/PREP is required before any owning build. Prior accepted results retain their recorded lineages.
+Preserved first actual reverse FAIL: compiled04c test failed during initial seed,
+before bootstrap/offer/staging,17.3193585 s/category8.2168824<120/no timeout/
+duplicate/both cleanup. TRXcd7ea8f8b4f64cea227efd70fc326ade84f19d6b709ab03c08c9291a983fa166.
+Fixture incorrectly replaced player effect kind/allowedTargetKinds with owner kind
+player_soul; actual adapter maps to effect kind player. Full initial-contract read
+also found swapped rank/tier arguments. C6 uses explicit rank3/player tier0 and
+preserves original player effect/definition/identity/History semantics before the
+ONE bootstrap, healthy GuardianH3, full local Guardian/lore and normal cleanup.
+No after-turn reseed, rebootstrap, production change or guard relaxation. Prior11
+PASS are retained through unchanged bodies/default values and actual unchanged
+dependencies. First codec causal RED ee738 remains distinct (hash452c2e3f…);
+its later fullrecord/false-condition assertions now execute GREEN.
 
-Accepted player→Guardian17 is recorded below; no unchanged runtime repeats.
-The next bounded design is in spiritual-aid-design.md: real accepted provider
-willingness on the existing Guardian profile, explicit guided player confirmation,
-closed v4 request/result, current Guardian art vs player natural tier, and the SAME
-Stage/B/History/common publication and console/browser workflows. Provider-offer
-facts are not player consent. First scope is free private safe Chaos cooperation,
-not US6 public/paid service. Bounded independent design recommendation is applied;
-freeze/readback precedes causal contract TDD and coherent implementation.
-The first causal existing-codec singleton was scaffolded and released against
-unchanged production at ee738; the accepted RED below refused the lawful schema2
-offer at the old closed parser. Its later record/no-player-consent/condition
-assertions remain unqualified until the current owning GREEN qualification.
-Genuine codec RED on clean compiled ee73856fc: exact1 complete FAIL only at
-ReadChanges closed-v1 admission (test96/parser47), after the valid prior-record
-precondition. Wall11.9444816 s/category5.0800546<60/case0.0357104; exit1,
-no skip/duplicate/timeout, both cleanup flags true. TRX SHA256
-452c2e3fb399c5d426b78ef0b379f155f1e6441056ac9866318044cfab50b3f2.
-PlanOnly exact1/1 zeroexec6.3926583; Unit build0e26w58.70 s, six current owning
-pins match. Raw external spiritual-guardian-offer-red-build-1 and
-spiritual-guardian-offer-red-1. Later fullrecord/no-consent/condition assertions
-are unreached. Proceed shared implementation; no unchanged RED/old17 rerun.
-All reverse implementation/runtime remains open. Existing limits remain open.
+Optimization: the same operation reuses player/provider/catalog/History/effect/
+source18 DATA and one active+natural program. No new registry, cache, receipt,
+source paths or executor. Fresh current lease/original/locality/readback closures
+remain. Shared initial/Engine helpers avoid a second bootstrap or copied workflow;
+no measured speedup claimed. GM CLI/API/Matrix/Wound/daemon and actual worked
+provider-offer example/manifest are synchronized.
+
+Final independent Sol all17 OUTCOME is requested; Astra is assigned only bounded
+reverse backend+console outcome, not all17. Full T104–T108/US4/#1536, other actors,
+paid/public US6, conflict/helpless/Shining helper, longer offer lifetime and standing
+Mortal/preparation/T609/DFR/Windows/provider/recovery limits remain open. Remote
+persistence is verified after publication; a new clean-directory restore has not
+been qualified. No completed tests are repeated solely for this factual checkpoint.
 
 # US4 safe self-treatment — active functional work, 2026-10-28
 

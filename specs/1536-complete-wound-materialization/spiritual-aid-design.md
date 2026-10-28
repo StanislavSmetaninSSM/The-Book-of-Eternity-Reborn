@@ -10,8 +10,9 @@ equivalent (d20=18, healed), strict backend/profile/ordinary/SELF/Shining consum
 and protected-failure controls. Independent Sol OUTCOME ACCEPT covers all 17;
 Astra OUTCOME covers locality/profile and aid-backend, with optional happy-caller
 crosschecks, not the last browser-fault singleton. Source/provenance/limits are
-recorded in plan.md. Entity→player remains the next
-separate design/implementation slice with actual player confirmation.
+recorded in plan.md. The bounded current Guardian→player reverse slice below now has17 PASS across
+explicit04c/c6 lineages, including actual player confirmation in both interfaces;
+final independent OUTCOME is pending. Wider helpers remain open.
 FR-054/FR-074 already require consent and fresh access. Technical decisions need
 no new user approval pause. Full T108, combat/helper services and #1536 remain open.
 
@@ -408,8 +409,10 @@ process recovery and existing Mortal/T609/DFR/Windows limits remain open.
 
 ### Reverse implementation checklist (inline, existing tracked plan)
 
-Source/test/GM steps below are now written, not accepted GREEN. Compilation and
-all later assertions remain UNRUN; the first codec RED is independently accepted.
+Source/test/GM steps below are compiled and exact17 PASS are recorded in plan.md.
+The original codec RED is independently accepted; final coherent OUTCOME is
+pending. Initial fixture-only seed failure and explicit retained11+fresh6 lineage
+are preserved, not called a production RED or all17 rerun.
 
 - [x] Add `GuardianProviderOfferNamesThePlayerWoundWithoutIssuingPlayerConsent`
   to SpiritualTreatmentParticipationTests. It calls the existing ReadChanges and
@@ -417,18 +420,18 @@ all later assertions remain UNRUN; the first codec RED is independently accepted
   exact player target and full offer record must be admitted, player-consent
   fields and incapable offer refused. The current closed v1 parser must reject
   the positive offer first. Literal unit singleton/60, no Main dependency rebuild.
-- [ ] In SpiritualTreatmentParticipation and planner Participation partial,
+- [x] In SpiritualTreatmentParticipation and planner Participation partial,
   implement exact schema2 typed fields, enclosing Guardian record ownership and
   player-cohort validation; natural result v4 is selected only for that payload.
   Existing v1/v3 producer remains closed. Reuse the same atomic assembler.
-- [ ] Extend SpiritualSelfTreatmentSelection, request codec Aid partial,
+- [x] Extend SpiritualSelfTreatmentSelection, request codec Aid partial,
   AfterlifeWoundTreatmentAuthority.Aid, persisted result, History and replay
   reader for explicit confirmed receive_aid/v4. Healer coordinate/profile/locality
   is Guardian, target is player; original and current source18 remain exact.
   The scalar/executor/common publisher stay shared. Add typed full-publication
   offer→confirmed aid, unconfirmed no-draw, changed offer/provider and historical
   omission controls in the existing natural-recovery integration fixture.
-- [ ] Extend WoundApplicationService choices/ActionFor/ConfirmAsync and existing
+- [x] Extend WoundApplicationService choices/ActionFor/ConfirmAsync and existing
   console/browser selection consumers. Menu candidate is unconfirmed; only the
   actual Confirm path emits confirmed DATA. PrepareQueued and Stage reject an
   unconfirmed receive-aid selection. Actual console and queued browser tests use
@@ -436,7 +439,7 @@ all later assertions remain UNRUN; the first codec RED is independently accepted
   native completion, real cleanup and NPC Brain/journal. Assert cancel/no intent,
   exact request4, healerH3/playerH0, one cycle/attempt, graphs/effects/History,
   no cost and strict replay. No fabricated accepted result or between-turn seed.
-- [ ] Synchronize CLI_Step_Main, Afterlife_Contract_Matrix,
+- [x] Synchronize CLI_Step_Main, Afterlife_Contract_Matrix,
   Wound_Materialization_Contract, E_CLI_Afterlife_Turns and manifest/guided guards
   with one two-turn provider-offer/real confirmation example. Existing Mortal
   and public-service contracts have no permission change.

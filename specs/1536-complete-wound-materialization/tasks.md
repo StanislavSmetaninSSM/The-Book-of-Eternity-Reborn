@@ -14504,10 +14504,14 @@ close full source-action/terminal/pending contracts or any top-level story task.
   provider-offer on Guardian profile + full v4 natural witness, explicit receive_aid
   selection confirmed by actual console/browser guided flow, v4 request/result,
   same Stage/B/History/common publication and separate Guardian H/player natural H.
-  Design dd41 is accepted; codec RED ee738 is independently accepted. Shared
-  producer/stage/result/History/UI and finite tests/GM sync are now written but
-  UNCOMPILED/UNRUN; SOURCE/PREP and addressed qualification follow. GM facts
-  cannot issue player consent. Other/helpless/conflict/Shining helper routes remain open.
+  Design dd41 and codec RED ee738 are accepted. Reverse private free helper
+  now passes exact17 cases across04c11 +c6fixture6, with real offer43→cleanup→
+  guided player confirmation→aid44 in BOTH interfaces. Console d20=12 gives II2;
+  browser d20=5 gives III2 via ordinary natural recovery. GuardianH3/playerH0,
+  one attempt/cycle/no charge, exact v4 original/result/History and no-GM-consent
+  assertions execute. Initial seed-only refusal is preserved; no production guard
+  was relaxed. Final independent OUTCOME is requested. Other actors/services,
+  helpless/conflict/Shining helper and longer lifetime routes remain open.
 
 ### GM contract synchronization
 
