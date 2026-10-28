@@ -288,7 +288,7 @@ independent tiers. This pure DATA control grants no healer/consent/turn authorit
 One Unit singleton/60s, fresh Unit refsfalse against current Main/Support; no
 artificial API, new scalar stack or repeat of the qualified producer13.
 
-## Next bounded slice: current Guardian helps the player (bounded DESIGN)
+## Next bounded slice: current Guardian helps the player (DESIGN accepted dd41fb931)
 
 Tracked by T108/T121, continuing the accepted first direction. The player asks
 its current visible Guardian for free private help with a known active spiritual
@@ -408,7 +408,7 @@ process recovery and existing Mortal/T609/DFR/Windows limits remain open.
 
 ### Reverse implementation checklist (inline, existing tracked plan)
 
-- [ ] Add `GuardianProviderOfferNamesThePlayerWoundWithoutIssuingPlayerConsent`
+- [x] Add `GuardianProviderOfferNamesThePlayerWoundWithoutIssuingPlayerConsent`
   to SpiritualTreatmentParticipationTests. It calls the existing ReadChanges and
   CreateOutcome APIs with a schema2 offer on a preexisting Guardian profile;
   exact player target and full offer record must be admitted, player-consent

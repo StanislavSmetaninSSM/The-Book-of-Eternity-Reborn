@@ -13,6 +13,15 @@ expected RED is the current closed v1 parser refusing the lawful schema2 offer.
 Its later record/no-player-consent/condition assertions remain unqualified.
 Production is unchanged; SOURCE/PREP must release Unit refsfalse then exact1/1
 PlanOnly and one RED-only category spiritual-guardian-offer-contract/60.
+Genuine codec RED on clean compiled ee73856fc: exact1 complete FAIL only at
+ReadChanges closed-v1 admission (test96/parser47), after the valid prior-record
+precondition. Wall11.9444816 s/category5.0800546<60/case0.0357104; exit1,
+no skip/duplicate/timeout, both cleanup flags true. TRX SHA256
+452c2e3fb399c5d426b78ef0b379f155f1e6441056ac9866318044cfab50b3f2.
+PlanOnly exact1/1 zeroexec6.3926583; Unit build0e26w58.70 s, six current owning
+pins match. Raw external spiritual-guardian-offer-red-build-1 and
+spiritual-guardian-offer-red-1. Later fullrecord/no-consent/condition assertions
+are unreached. Proceed shared implementation; no unchanged RED/old17 rerun.
 All reverse implementation/runtime remains open. Existing limits remain open.
 
 # US4 safe self-treatment — active functional work, 2026-10-28
