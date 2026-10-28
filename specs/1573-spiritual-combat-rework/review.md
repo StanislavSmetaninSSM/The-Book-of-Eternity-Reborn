@@ -906,3 +906,38 @@ Diff/consistency и routine independent review; runtime/build/gameplay/clean res
 цены/QD/technical contract и T001 открыты; правила/числа не изменены.
 Parent проверил actual diff/consistency и diff --check. WIP6b3c22225a357e87bd02f4f2f13e63b8bc123ea5
 опубликован, remote SHA подтверждён. Повтор source/maths/runtime не требовался.
+
+## 2026-10-28 — WIP сравнение численной основы статов/E/D и проверка источников R
+
+База4e151262916dec9d29d8bb29c1bad00a58dddc5d. Автор просит обдумать оставшиеся
+стартовые статы/цены/культивацию/D. Spec v1.28, приложение v1.5 раздел5.2,
+модель v2.19 рекомендуют сохранить основного кандидата; ни новые числа, ни
+полная реализация не объявляются принятыми. R-ставка остаётся условной до
+узкого решения по проектным наградам/Искрам/actual ascension. T001 сохранён.
+
+Bounded consultation /root/consult_numeric_growth1573 (gpt-6-astra/high):
+универсальноеD сильнорано, но не доказанно доминируетвсюигру; стартовые варианты
+имеют стоимость400/325, не циклический арбитраж; поздние базывышеC не даютM
+сразу. Не менятьmortalmin или запрещатьпокупку, показать фактическуюотдачу.
+HP/уронещёнеопределены, нельзяоправдатьцену ихнесуществующимчисленнымэффектом.
+Консультант не независимый reviewer этого блока.
+
+Follow-up sourceaudit /root/audit_ascension_pacing1573 (gpt-6.1-sol/high):
+player complete_project immediately draft→accepted completed, без start/progress/N.
+Два firstarchetype tier1 при operational faction дают20R за40F20S/twoacceptedturns.
+Defaultfactions empty, subversionrequiresanother;8archetypes ≠guaranteed8awards.
+Repeatpaid/noR,retiredoesnotreset,reentrypreserves,actualascensionresets100S/tracker.
+ParentпрочиталTryCompleteProject,UIclosure,Activate/Reenter. Нетclaimбесплатного
+бесконечногофармaилиобязательногодолгогостроительства. СтавкаR140покаусловная:
+нельзяприравнятьограниченнуюprojectнаградукбесконечнойкультивациибезценностиS.
+
+ParentFractionchecks:3стратегииодногокошелька551(540/540/520),стоимостьстартов,
+7интерваловкультивации,70→78=2980и×4=11920,нулеваяMотдача85→90/90→100,
+R560→840=65800,E0…8дискретность. Дополнительноуточнён первыйпример:
+к+4EдобавленаЧуткость7→8за40,итого540,M19/20/19/19/19;R574→D141.
+Всеарифметическиеутвержденияподтверждены,неproduction/gameplay/balanceproof.
+
+Оптимизация:функциональныеконтракты/кэшнеизменены,арифметиканетребуеткэша;
+будущиеpreview/stableprofilesиспользуютexistingoperationcache/freshfencesизspec.
+Diff/consistencyпередWIP;затемотдельноеindependentreviewточногосреза.
+Runtime/build/gameplay/clean restore UNRUN; диагностикане создавалась.
