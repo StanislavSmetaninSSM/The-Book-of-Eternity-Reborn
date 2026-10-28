@@ -1,3 +1,51 @@
+# Actual Engine combat entry causal RED and owned marker routing — WIP
+
+2026-10-28 d81fb05 fresh Integrationrefsfalse0errors/102baseline warnings/2:17.69,
+18pins agree; unchanged public tests/catalog1033/12715 retained. Literal14/8/14
+PlanOnly zeroexec8.2674182s and independent Sol PREP accepted. Actual browser now
+passes coherent wound context, cancellation/confirmation, queue, actual signed
+intent/pool14/5 and native-shaped completion. It then FAILS real Engine acceptance:
+turn remains41 instead of42; original log says A spiritual command has no private
+checkpoint authority at GameEngine.SpiritualContinuation157. TRX
+40d07dae81332929787d1845c4d1c479f2b73971fb5924485eefe013a5fb7dc1;
+45.9842180s total/category35.6841034<180, no timeout/duplicates/both cleanuptrue.
+Console and untouched12 remain UNRUN. Full raw functional11 stays outside checkout.
+This is a genuine missing Engine route, not a fixture or policy refusal.
+
+Astra bounded DESIGN rejects using HasCombatHealingOrigin before Begin: the full
+origin is prepared only INSIDE BeginResourceExecution. Accepted narrow alternative
+retains the EXISTING observed sink.CombatCommand classification on its capture.
+A lease-aware predicate freshly checks current owner/original evidence and exact
+physical marker bytes. Engine moves its existing presence guard to after actual
+capture, before failure fallback and Begin; absent/false classification still
+throws the old terminal exception, including null capture. Actual full source,
+intent/control/request projection validation remains inside Begin, before any
+resource executor. No live kind/DTO can bypass the guard. Intake does create and
+revoke preliminary in-memory authorities; it is not described as side-effect-free.
+Capture disposal, faulted journal and CSPU propagation remain unchanged.
+
+Implementation and two actual Engine negatives are written UNCOMPILED/UNRUN:
+well-formed ordinary empty GM command and sameJSON/different marker bytes must
+leave turn41, the old refusal and byte-identical accepted wound/profile/resource/
+scheduler/receipt roots with no C2. The negative world is justified by the actual
+Engine admission boundary; a static predicate mock would not test that routing.
+Existing browser+console positive2 then conditional unchanged12 remain required.
+New narrow category owns those2 cases; proposed finite remaining16cases/9categories
+includes them, no whole Engine suite. Prior pair5/data4/cheap32/ordinary1/historical17
+retain their explicit lineages: their execution paths do not call the Engine
+entry or new predicate, and capture only retains the already validated object.
+
+Before runtime: bounded independent SOURCE, fresh owning Main/Support/Integration,
+current selected pins, official catalog discovery/new method ownership and exact
+literal16 PlanOnly. Unit is unselected and need not be rebuilt. Optimization reuses
+existing immutable classification/evidence instead of parsing a second marker or
+new registry/cache; one fresh command-byte read is the required entry fence.
+Full source admission is not cached or omitted. No speedup claim. This enforces
+already documented client-marker versus GM-command semantics; no new GM field or
+authored capability/example is introduced. Full gameplay/US4 acceptance remains
+pending. T093 diagnosis-discovery also has unresolved separate check/time rules;
+known inspection is not silently labelled FR071 complete and does not block this fix.
+
 # Combat pair fully qualified; UI fixture initial carrier preparation — WIP
 
 2026-10-28: narrow4d587 singleton1/1PASS32.6912305s/category22.8437921<120,

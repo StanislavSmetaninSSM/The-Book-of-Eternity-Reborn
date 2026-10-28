@@ -19,7 +19,13 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
     [Fact]
     public Task BrowserCombatHealingUsesItsConfirmedQueueAndActualC2C4() => RunCombatHealingJourneyAsync(browser: true);
 
-    private async Task RunCombatHealingJourneyAsync(bool browser)
+    [Theory]
+    [InlineData("ordinary_command")]
+    [InlineData("changed_bytes")]
+    public Task CombatHealingEngineRejectsUnownedWoundCommands(string mutation) =>
+        RunCombatHealingJourneyAsync(browser: true, invalidCommand: mutation);
+
+    private async Task RunCombatHealingJourneyAsync(bool browser, string? invalidCommand = null)
     {
         const string session = "session_guided_combat_healing";
         // Same full unsigned initial/lore/profile/resource scaffold as the
@@ -96,6 +102,31 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                     await AfterlifeResourceCutoverTests.WriteCombatHealingExchangeAsync(context, "healed", 14, 5, 3);
                     await using var responseLease = await files.AcquireCanonicalWriteLeaseAsync();
                     await WriteCombatCompletionAsync(files, responseLease, turn!, originalWound);
+                    if (invalidCommand is not null)
+                    {
+                        byte[] replaced;
+                        if (invalidCommand == "ordinary_command")
+                        {
+                            var manifest = JsonNode.Parse((await files.ReadFileAsync(responseLease,
+                                LiveTurnPreparationService.PendingTurnSnapshotManifestPath))!)!;
+                            var ordinary = new JsonObject
+                            {
+                                ["schemaVersion"] = 1, ["sessionId"] = turn!.SessionId, ["requestId"] = turn.RequestId,
+                                ["snapshotToken"] = manifest["manifestPayloadHash"]!.DeepClone(), ["commands"] = new JsonArray()
+                            };
+                            Assert.True(WoundResponseInputComposer.ParseCommandRoot(JsonSerializer.SerializeToElement(ordinary)).Success);
+                            replaced = System.Text.Encoding.UTF8.GetBytes(ordinary.ToJsonString());
+                        }
+                        else
+                        {
+                            Assert.Equal("changed_bytes", invalidCommand);
+                            var originalBytes = (await files.ReadFileBytesAsync(responseLease, AcceptedMechanicsPlan.WoundCommandPath))!;
+                            replaced = originalBytes.Concat(new byte[] { (byte)'\n' }).ToArray();
+                            Assert.True(JsonNode.DeepEquals(JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(originalBytes)),
+                                JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(replaced))));
+                        }
+                        await files.WriteFileAtomicBytesAsync(responseLease, AcceptedMechanicsPlan.WoundCommandPath, replaced);
+                    }
                     wrote = true;
                 }
             });
@@ -106,6 +137,14 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
             var before = new Dictionary<string, byte[]?>();
             foreach (var path in AfterlifeWoundTreatmentAuthority.CombatSourcePaths.Append(AcceptedMechanicsPlan.WoundCommandPath))
                 before[path] = await files.ReadFileBytesAsync(path);
+            var unaccepted = new Dictionary<string, byte[]?>();
+            if (invalidCommand is not null)
+                foreach (var path in new[] { AfterlifeEntityProfileState.StatePath, WoundIdentityState.StatePath,
+                    WoundHistoryState.HistoryPath, ResourceMaterializationContract.DefinitionsPath, ResourceMaterializationContract.StatePath,
+                    ResourceMaterializationContract.HistoryPath, CanonicalResourceOwnerAuthorityComposer.AuthorityPath,
+                    SpiritualWoundOpportunityReceiptState.StatePath, ProgressionScheduleService.SchedulePath,
+                    EffectAcceptedTurnInputComposer.WorldTimePath })
+                    unaccepted.Add(path, await files.ReadFileBytesAsync(path));
             if (browser)
             {
                 var service = CreateCommands(files);
@@ -143,7 +182,17 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                 foreach (var pair in before) Assert.Equal(pair.Value, await files.ReadFileBytesAsync(pair.Key));
                 await runtime.Engine.ProcessPlayerTurn(action!);
             }
-            Assert.True(wrote); Assert.Equal(42, runtime.GameLoop.TurnNumber); // Real acceptance before healing-specific assertions.
+            Assert.True(wrote);
+            if (invalidCommand is not null)
+            {
+                Assert.Equal(41, runtime.GameLoop.TurnNumber);
+                Assert.Contains("A spiritual command has no private checkpoint authority.", diagnostics.Describe());
+                foreach (var pair in unaccepted) Assert.Equal(pair.Value, await files.ReadFileBytesAsync(pair.Key));
+                Assert.Null(await files.ReadFileBytesAsync(SpiritualWoundCaptureCheckpointState.StatePath));
+                Assert.Null(await files.ReadFileBytesAsync(SpiritualWoundDecisionPendingState.StatePath));
+                return;
+            }
+            Assert.Equal(42, runtime.GameLoop.TurnNumber); // Real acceptance before healing-specific assertions.
             var history = WoundHistoryState.Parse((await context.ReadJsonAsync(WoundHistoryState.HistoryPath))!.ToJsonString(), WoundHistoryState.HistoryPath).State!;
             var result = Assert.Single(history.Transitions.Select(t => t.TransitionResult).OfType<SpiritualCombatHealingPersistedResult>());
             Assert.Equal(14, SpiritualCombatHealingPersistedResult.ReadSource(result.Source).Calculation.Input.NaturalRoll);

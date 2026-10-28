@@ -2,6 +2,41 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "spiritual-combat-healing-engine-command-guards",
+  "responsibility": "Two actual browser-to-Engine refusal cases after genuine confirmation, signed combat marker and native-shaped output: a well-formed ordinary GM command and semantically identical changed marker bytes cannot enter C2 or mutate accepted wound/resource/scheduler state.",
+  "excludes": "No full Engine owner, repeated accepted backend pair, actual external provider, T609/DFR/Mortal/Windows or invented diagnosis rule.",
+  "changeHints": [
+    "BookOfEternityClient/Core/GameEngine/GameEngine.SpiritualContinuation.cs",
+    "BookOfEternityClient/Services/Validation/ValidationService.SpiritualCombatHealingOrigin.cs",
+    "BookOfEternityClient.IntegrationTests/ExplorerWoundSelfTreatmentTests.Combat.cs"
+  ],
+  "related": [
+    {
+      "id": "spiritual-combat-healing-browser",
+      "when": "The exact classified marker must still reach accepted C2/C4 through its real browser queue."
+    },
+    {
+      "id": "spiritual-combat-healing-console",
+      "when": "Both current interfaces share the same Engine entry."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 3,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.CombatHealingEngineRejectsUnownedWoundCommands"
+      ]
+    }
+  ]
+},
+{
   "id": "spiritual-combat-healing-dependent-pair",
   "responsibility": "One actual saved automatic healing choice followed by an authorized later cost correction, strict cold replay, common C4 wound/effect/resource/History and no-cycle settlement. Separate from the four already qualified unchanged pair rows after correcting required interface timestamp preparation.",
   "excludes": "No repeat of unchanged healed/no-improvement/regular or guaranteed counterharm cases, broad owner, T609/DFR/Mortal/Windows or external-provider qualification.",

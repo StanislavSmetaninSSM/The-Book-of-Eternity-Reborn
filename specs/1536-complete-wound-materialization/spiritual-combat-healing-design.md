@@ -145,6 +145,13 @@ increment/story and Mortal-only progression call, not an independent Chaos cycle
 counter; existing postaccept validation/cleanup must still complete. No additional
 "entropy" mechanic is inferred from RNG draws or wording.
 
+The Engine's no-checkpoint command guard must distinguish its own signed client
+marker from an ordinary GM wound command through the actual intake's retained
+classification and fresh exact physical bytes. This classification precedes Begin
+and grants no healing authority. Full origin admission inside Begin remains
+mandatory before resource execution; unknown, replaced and ordinary commands keep
+the terminal refusal even when intake fails to create a capture.
+
 ### Active-only draft, blocked overlap and durable outcome
 
 Use the already admitted player roll(s), not a new safe healing roll. Operation

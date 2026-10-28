@@ -69,6 +69,8 @@ public partial class ValidationService
 
         internal void RequireCurrent(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease) =>
             _evidence.RequireCurrent(files, lease, _snapshot);
+
+        internal bool MatchesExactImage(CanonicalBeforeImage current) => current.Fingerprint == _image.Fingerprint;
     }
 
     internal sealed partial class SpiritualWoundSourceSession
@@ -82,6 +84,29 @@ public partial class ValidationService
     internal sealed partial class SpiritualOriginalTurnCapture
     {
         private CombatHealingOrigin? _combatHealingOrigin;
+        private SpiritualOriginalCombatCommandClassification? _originalCombatCommand;
+
+        /// <summary>
+        /// Identifies only this current capture's unchanged signed client marker before resource execution.
+        /// Full healing origin admission remains mandatory inside BeginResourceExecutionAsync.
+        /// </summary>
+        /// <param name="lease">Current canonical lease borrowed from the initial continuation entry.</param>
+        /// <returns>Whether fresh original evidence and physical command bytes retain the classified marker.</returns>
+        internal async Task<bool> HasCurrentOriginalCombatCommandAsync(FileSystemManager.CanonicalWriteLease lease)
+        {
+            await _gate.WaitAsync();
+            try
+            {
+                EnsureCurrent(lease);
+                if (_originalCombatCommand is not { } classified) return false;
+                classified.RequireCurrent(_validator._fs, lease);
+                var bytes = await _validator._fs.ReadFileBytesAsync(lease, AcceptedMechanicsPlan.WoundCommandPath);
+                classified.RequireCurrent(_validator._fs, lease);
+                EnsureCurrent(lease);
+                return classified.MatchesExactImage(new CanonicalBeforeImage(bytes is not null, bytes));
+            }
+            finally { _gate.Release(); }
+        }
 
         // Immutable parsed DATA survives the C2 capture. Original read evidence is
         // always reissued for the actual current lease; a prior lease is not reused.

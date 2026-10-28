@@ -153,8 +153,6 @@ public partial class GameEngine
                                 return SpiritualContinuationAdmission.Admitted;
                             EnsureSpiritualOriginalContext(context, originalContext, expectedTurn);
                             await RequireSpiritualOriginalRequestAsync(lease, context);
-                            if (_fs.FileExists(lease, AcceptedMechanicsPlan.WoundCommandPath))
-                                throw new InvalidDataException("A spiritual command has no private checkpoint authority.");
                             if (!await BeginAcceptedSpiritualCaptureAsync(lease))
                             {
                                 // Begin has disposed its capture. Only genuinely absent private state may return
@@ -472,6 +470,12 @@ public partial class GameEngine
     {
         var recorded = await _validator.CaptureSpiritualOriginalTurnWithIntakeAsync(lease);
         using var capture = recorded.Capture;
+        // The client marker is an original input, not a GM wound decision.
+        // Only the actual intake's retained classification may exempt its exact
+        // current bytes; full origin validation still runs before the executor.
+        if (_fs.FileExists(lease, AcceptedMechanicsPlan.WoundCommandPath) &&
+            (capture is null || !await capture.HasCurrentOriginalCombatCommandAsync(lease)))
+            throw new InvalidDataException("A spiritual command has no private checkpoint authority.");
         if (capture is null || recorded.Issues.Count != 0)
             return LogSpiritualContinuationIssues(recorded.Issues, "Original spiritual capture is unavailable.");
         if (!LogSpiritualContinuationIssues(await capture.BeginResourceExecutionAsync(lease)))

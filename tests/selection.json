@@ -2,6 +2,13 @@
   "schemaVersion": 1,
   "selections": [
 {
+  "category": "spiritual-combat-healing-engine-command-guards",
+  "reason": "The real Engine blanket command guard rejects a valid signed combat marker. Preserve terminal refusal for ordinary commands and changed marker bytes through the actual queue/snapshot/Engine path before accepting its narrow exemption.",
+  "contracts": [
+    "#1536 T095/T102/T103 current original marker classification is not full healing authority; no C2 or accepted mutation from unowned commands"
+  ]
+},
+{
   "category": "spiritual-combat-healing-dependent-pair",
   "reason": "Only the next-boundary row remains failed after its production replay path and C4 passed: seed the mandatory interface timestamp before capture and run this split singleton, retaining four unchanged actual138 pair PASS.",
   "contracts": [

@@ -552,7 +552,8 @@ public partial class ValidationService
                     outputProjection, includeUpstreamIntake ? originalSnapshot : null)
                 {
                     _usesOriginalPrefix = awaitOriginalPrefix,
-                    _usesColdOriginalInputs = coldOriginalInputs != null
+                    _usesColdOriginalInputs = coldOriginalInputs != null,
+                    _originalCombatCommand = sink.CombatCommand
                 };
                 if (coldOriginalInputs != null)
                     source.BindColdOriginalInputs(lease, capture);
