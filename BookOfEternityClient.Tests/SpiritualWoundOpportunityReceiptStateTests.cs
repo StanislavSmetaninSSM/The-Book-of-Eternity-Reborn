@@ -718,7 +718,6 @@ public sealed class SpiritualWoundOpportunityReceiptStateTests
         witness["retraumaWoundId"] = "wound-older";
         witness["retraumaWoundJsonBase64"] = Encode(wound);
         witness["exchangeJsonBase64"] = Encode(exchange);
-        witness["guaranteePreimage"] = SpiritualWoundSourceWitness.CaptureGuaranteePreimage(exchange.ToJsonString(), art.ToJsonString());
         ResealWitness(root, 0);
         var decision = root["decisions"]![0]!.AsObject();
         Materialize(decision, "wound-older", originalRank + 1);

@@ -1,3 +1,23 @@
+# Grouped guarantee fixture review corrections — UNCOMPILED/UNRUN
+
+2026-10-28: Astra bounded SOURCE accepts36cac9a for scope, strict counterharm join,
+guaranteed-only exact evidence and unchanged old guarantee domains/inputs.
+Sol found exactly two fixture defects before any build/runtime of that source:
+the existing special-art validators require multiplier>100, so the new opponent
+fixture now retains its lawful default200 in original art and exchange/cost audits.
+Tier2 pressure standard1 becomes special2, before6/after4; player heal spend stays2.
+No production price rule is changed. An overbroad preparation edit also inserted
+guaranteePreimage into an ordinary retrauma Fact with no art variable; that ONE
+line is removed, while both real guaranteed fixture constructors retain proof.
+This would have been a compile defect, not semantic RED, and no failed build was
+run. Full assigned fixture/catalog inspection found no third confirmed blocker.
+
+After this grouped test-only delta receives narrow closure, proceed to the already
+agreed fresh owning/Unit builds, nine pins, literal51/11/11 PlanOnly and ordered
+cheap32 -> pair5 -> remaining14 with original budgets. The production SOURCE
+closure is retained; no repeated architecture audit or additional gate is needed.
+Current source is still UNCOMPILED/UNRUN, and no functional result is claimed.
+
 # Exact guarantee evidence implementation — WIP / SOURCE pending
 
 2026-10-28: genuine codec RED on frozenf478b3db6 is independently accepted by Sol.

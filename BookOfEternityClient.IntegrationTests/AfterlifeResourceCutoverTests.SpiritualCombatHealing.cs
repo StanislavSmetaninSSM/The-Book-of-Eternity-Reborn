@@ -694,13 +694,15 @@ public sealed partial class AfterlifeResourceCutoverTests
             exchange["specialArtAudit"] = new JsonObject
             {
                 ["artId"] = "art_source_owner", ["ownerActorType"] = "guardian", ["ownerActorId"] = "guardian_frame",
-                ["baseOperation"] = "pressure", ["costMultiplierPercent"] = 100,
+                ["baseOperation"] = "pressure", ["costMultiplierPercent"] = 200,
                 ["effectNote"] = "Встречное искусство гарантирует углубление духовной трещины."
             };
             var costAudit = exchange["actionCostAudit"]!["opposition"]!;
             costAudit["specialArtId"] = "art_source_owner";
-            costAudit["specialCostMultiplierPercent"] = 100;
+            costAudit["specialCostMultiplierPercent"] = 200;
             costAudit["standardEffectiveCost"] = 1;
+            costAudit["effectiveCost"] = 2;
+            costAudit["after"] = 4;
         }
         exchange["diceAudit"]!["diceUsed"]![0]!["side"] = "PLAYERSIDE";
         exchange["diceAudit"]!["diceUsed"]![0]!["value"] = playerDie;
@@ -783,7 +785,6 @@ public sealed partial class AfterlifeResourceCutoverTests
             var opposition = profiles["profiles"]!.AsArray().Single(p => p!["actorId"]!.GetValue<string>() == "guardian_frame")!;
             var art = SourceOwnerSpecialArt("guardian", "guardian_frame");
             art["tier"] = 2;
-            art["costMultiplierPercent"] = 100;
             art["spiritualWoundEnvelope"] = new JsonObject
             { ["schemaVersion"] = 1, ["maximumSeverityRank"] = 2, ["guaranteedSeverityRank"] = 2 };
             opposition["specialArts"]!.AsArray().Add(art);
