@@ -79,6 +79,22 @@ source assessment considers running the four read-only handler RED rows before a
 single combined correction: the existing browser dispatch refreshes profile state
 before Wounds. Fresh Integration/PlanOnly/PREP remains mandatory before those rows.
 Raw: /workspace/tboe-linux-evidence-20261025/us4-self-healing/assessment-red-1/.
+Handler preparation3952f1dd: fresh Integration0errors/102baselinewarnings,
+2:54.04; catalog1041/12724 valid; PlanOnly4cases/1method/1descriptor0executed,
+11.7741218s. Sol accepted SOURCE/PREP and revised ordering before one combined fix.
+First actual4FAIL/0PASS/4executed is a FIXTURE boundary failure, not browser RED:
+all fail after console at line44 because normal UI ownership creates exactly its
+lock file/control directory before the browser is reached. Wall20.8197560s,
+category10.5326412s<120, complete/no timeout/duplicates, cleanuptrue. TRX SHA256
+70860201447e2461b97c2392f8fdb3216025708cf5e4ed7435fcad21c86fcc0a.
+The corrected fixture excludes only the exact UI lock and its parent directory
+entry from GAMEPLAY snapshots, preserving every other child. It separately verifies
+readable/nonstale/current-generation/supplied console owner/token, counts lock writes,
+and requires the browser not change that lock. All other canonical mutations,
+repairs, wound/effect/history/resource/world/pending/dice checks remain mandatory.
+Sol approved that exact boundary; no production lock bypass/preseed/manual cleanup.
+Fresh Integration and corrected SOURCE/PREP precede another handler run. Unit RED
+remains unchanged; no product implementation or gameplay PASS is claimed yet.
 Optimization: reuse the already parsed catalog/profile/soul/effect snapshot owned by
 one read operation; renderer receives detached choice DATA and performs no reads or
 parsing. Every wound has a distinct identity/severity/complication input, so source

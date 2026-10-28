@@ -30,7 +30,7 @@
 },
 {
   "id": "spiritual-treatment-assessment-handlers",
-  "responsibility": "Four real console and shared browser known-wound assessment rows, H0/H1 against II in Chaos Sea/Shining Abode; no prompts/action, canonical mutation, repair, attempt, dice, pending work or world time.",
+  "responsibility": "Four real console and shared browser known-wound assessment rows, H0/H1 against II in Chaos Sea/Shining Abode; no prompts/action, gameplay mutation, repair, attempt, dice, pending work or world time; verify the normal console UI transport lock separately.",
   "excludes": "No GM completion, external provider/DOM, sealed hidden discovery, real treatment or repeat of accepted combat cases.",
   "changeHints": [
     "BookOfEternityClient.IntegrationTests/ExplorerWoundSelfTreatmentTests.Assessment.cs"
