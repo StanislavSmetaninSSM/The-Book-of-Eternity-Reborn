@@ -2,6 +2,63 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "excludes": "Only exact current combat terminal/replay contracts; no full owner, suite, T609/DFR/Mortal/Windows or provider qualification.",
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "id": "spiritual-combat-terminal-replay-data",
+  "responsibility": "Four existing typed DATA methods: terminal identity/no active carrier/exact History evidence and rejection of missing/extra/wrong lifecycle authority, plus dependent cost policy refusing non-derived base-cost edits.",
+  "changeHints": [
+    "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.SpiritualPublication.cs",
+    "BookOfEternityClient/Services/Validation/ValidationService.SpiritualC2DependentContext.cs"
+  ],
+  "related": [],
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.WoundHistoryStateTests.ValidateAgreement_HealedIdentityHasNoCarrierAndExactlyOneMatchingTerminalRow",
+        "BookOfEternityClient.Tests.WoundHistoryStateTests.ValidateAgreement_PostHealLegacyAndArchivePreserveTheOriginalTerminalEvidence",
+        "BookOfEternityClient.Tests.WoundHistoryStateTests.ValidateAgreement_RejectsMissingExtraAndWrongLifecycleAuthority",
+        "BookOfEternityClient.Tests.SpiritualWoundDependentDraftPolicyTests.CostMismatch_IncludesOnlyProvenArithmeticClosure"
+      ]
+    }
+  ]
+},
+{
+  "excludes": "Only exact current combat terminal/replay contracts; no full owner, suite, T609/DFR/Mortal/Windows or provider qualification.",
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "id": "spiritual-combat-dependent-context",
+  "responsibility": "One unchanged genuine ordinary harmful-decision dependent context: original baseline diagnostics survive valid cost correction and cold reopen, protecting the shared policy derivation extracted for combat automatic replay.",
+  "changeHints": [
+    "BookOfEternityClient/Services/Validation/ValidationService.SpiritualC2DependentContext.cs"
+  ],
+  "related": [
+    {
+      "id": "spiritual-combat-healing-pair",
+      "when": "The same baseline-policy helper is used by saved combat advance replay."
+    }
+  ],
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualC2DependentContext_PreservesBaselineAfterCorrection"
+      ]
+    }
+  ]
+},
+{
   "id": "spiritual-combat-guarantee-witness-consumers",
   "responsibility": "Twenty-one exact affected intrinsic consumers: existing guaranteed art/audit/alias and above-calculated-ceiling witness controls, unchanged ordinary closed form, and receipt guarantee-satisfied/exact-rank guards after requiring retained guarantee preimages.",
   "excludes": "No whole witness/receipt owner or source suite, live admission permission, new guarantee rule, world/session fixture or held workload.",

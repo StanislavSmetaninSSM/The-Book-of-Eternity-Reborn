@@ -200,19 +200,33 @@ public partial class CanonicalStateNormalizer
             !JsonNode.DeepEquals(receipt.Plan.WoundIdentityAfterImage, final.Identity) ||
             !JsonNode.DeepEquals(receipt.Plan.WoundHistoryAfterImage, final.History))
             throw StaleEffectPlan("spiritual completed wound state");
-        foreach (var woundId in completion.Insertions.Select(insertion => insertion.Wound.WoundId).Distinct(StringComparer.Ordinal))
+        var identity = WoundIdentityState.Parse(final.Identity.ToJsonString(), WoundIdentityState.StatePath);
+        var history = WoundHistoryState.Parse(final.History.ToJsonString(), WoundHistoryState.HistoryPath);
+        if (identity.State is null || identity.Issues.Count != 0 || history.State is null || history.Issues.Count != 0 ||
+            history.State.ValidateAgreement(identity.State, actual).Count != 0 ||
+            history.State.ValidateAgreement(identity.State, expected).Count != 0)
+            throw StaleEffectPlan("spiritual completed wound history agreement");
+        foreach (var chain in completion.Insertions.GroupBy(insertion => insertion.Wound.WoundId, StringComparer.Ordinal))
         {
+            var woundId = chain.Key;
+            if (!identity.State.TryGetEntry(woundId, out var entry))
+                throw StaleEffectPlan("spiritual completed wound identity");
+            if (entry.Status == "healed")
+            {
+                var last = chain.Last().Wound;
+                if (actual.CountExactOccurrences(woundId) != 0 || expected.CountExactOccurrences(woundId) != 0 ||
+                    last.Lifecycle != "healed" || entry.TerminalTransitionId != last.LastTransition.TransitionId ||
+                    entry.SemanticFingerprint != WoundIdentityState.ComputeSemanticFingerprint(last) ||
+                    !history.State.TryResolveExactTransition(entry.TerminalTransitionId!, out var terminal) ||
+                    terminal!.WoundId != woundId || terminal.Kind != "heal" || !terminal.Terminal)
+                    throw StaleEffectPlan("spiritual completed terminal wound");
+                continue;
+            }
             if (!actual.TryResolveOne(woundId, out var published) || !expected.TryResolveOne(woundId, out var retained) ||
                 WoundMaterializationContract.SerializeCanonical(published.Wound) !=
                 WoundMaterializationContract.SerializeCanonical(retained.Wound))
                 throw StaleEffectPlan("spiritual completed wound envelope");
         }
-        var identity = WoundIdentityState.Parse(final.Identity.ToJsonString(), WoundIdentityState.StatePath);
-        var history = WoundHistoryState.Parse(final.History.ToJsonString(), WoundHistoryState.HistoryPath);
-        if (identity.State is null || identity.Issues.Count != 0 || history.State is null || history.Issues.Count != 0 ||
-            history.State.ValidateAgreement(identity.State, actual).Count != 0)
-            throw StaleEffectPlan("spiritual completed wound history agreement");
-
         JsonObject? Read(string path) => roots.TryGetValue(path, out var root) ? root as JsonObject : null;
     }
 

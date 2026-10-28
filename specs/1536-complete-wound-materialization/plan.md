@@ -1,3 +1,40 @@
+# Confirmed combat terminal / saved-correction fixes — WIP, UNCOMPILED/UNRUN
+
+2026-10-28: independent Astra causal review confirms both production boundaries;
+Sol independently confirms pair1PASS/4FAIL and both fixture causes. Terminal heal
+now requires final sealed identity/History agreement with BOTH carrier catalogs,
+zero occurrences and exact last sealed terminal insertion; active envelopes still
+require exact canonical agreement. Strict saved advance has a private typed mode:
+reconstruct unchanged automatic selection first, reject changed command, derive
+and enforce the SAME original dependent policy before late conflict correction.
+Initial/selection-only still rejects all changes. Live and saved policy derivation
+share one helper; allocation replay stays strict, with no append enable in cold mode.
+
+Fixture corrections preserve stronger intrinsic attempted-treat result refusal;
+real valid pre-combat History plus actual receipt/spend provides the separate
+cross-root missing-result control. Guaranteed later-wave DATA updates its own raw
+exchange preimage consistently before resealing; actual accepted receipt/art bytes
+stay untouched. Added assertions reuse actual initial pair and derived policy to
+refuse initial input drift, healing-exchange/die edits and out-of-policy cost edits.
+
+Finite proposed selection: four existing cheap typed terminal/policy cases, pair5,
+one unchanged ordinary dependent-context case, then already planned downstream14
+(including rollback). New narrow catalog owners avoid broad state/selection suites.
+Cheap32 retained at858: witness codec, guaranteed validation and receipt parser
+implementations + their dependencies are unchanged by this terminal/replay block;
+those intrinsic consumers do not call changed normalizer/capture continuation.
+Historical17 retain their separate lineages, not a repeated run. Fresh owning
+Main/Support/Integration and Unit refsfalse are pending, followed by current pins,
+exact discovery/PlanOnly and independent SOURCE/PREP before runtime.
+
+Optimization: parse final identity/History once per existing publication validation,
+reuse sealed insertion and committed input DATA; one bounded fresh baseline probe
+is required for saved correction permission and rolls back its speculative work.
+No file cache or new publisher/ledger, no speedup claim. GM authoring remains the
+existing combat/graph contract; these fixes enforce its already documented terminal
+and replay rules and add no GM field/action/example requirement. Full runtime and
+SOURCE/PREP remain pending; no broader combat/US4 acceptance is claimed.
+
 # Combat pair checkpoint — one actual gameplay PASS, four bounded failures
 
 2026-10-28 20:15 UTC: same Linux machine1d64a0ce397b is reachable after the

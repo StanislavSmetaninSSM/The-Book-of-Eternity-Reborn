@@ -59,6 +59,8 @@ public partial class ValidationService
         private bool _c2SelectionVerified;
         private bool _c2PendingSubmission;
 
+        private enum C2DecisionLayerMode { LiveSelection, SavedCommittedAdvance }
+
         /// <summary>
         /// Validates one physical GM command at the verified next-source frontier and drafts its successor.
         /// This write-free stage keeps the initial pair unchanged until a separate transport commits it.
@@ -222,7 +224,8 @@ public partial class ValidationService
                     return new(null, null, inputIssues);
                 attempted = true;
                 var result = await ComposeC2DecisionLayerCoreAsync(lease,
-                    priorPending, priorCheckpoint, proposed, changes, append: false);
+                    priorPending, priorCheckpoint, proposed, changes, append: false,
+                    mode: C2DecisionLayerMode.SavedCommittedAdvance);
                 succeeded = result.Checkpoint is not null && result.Pending is not null &&
                     result.Issues.Count == 0;
                 return result;
@@ -319,6 +322,9 @@ public partial class ValidationService
         /// <param name="selectionOnly">
         /// Retains the real selected decision before any later exchange when <see langword="true"/>.
         /// </param>
+        /// <param name="mode">
+        /// Distinguishes original selection from strict replay of an already committed dependent advance.
+        /// </param>
         /// <returns>
         /// Owner-derived successor packet and checkpoint or validation issues.
         /// </returns>
@@ -328,7 +334,7 @@ public partial class ValidationService
             SpiritualWoundCaptureCheckpointState priorCheckpoint,
             IReadOnlyDictionary<string, CanonicalBeforeImage> proposed,
             IReadOnlyList<(string Path, CanonicalBeforeImage Image)> changes,
-            bool append, bool selectionOnly = false)
+            bool append, bool selectionOnly = false, C2DecisionLayerMode mode = C2DecisionLayerMode.LiveSelection)
         {
             if (changes.Any(change => change.Path != AcceptedMechanicsPlan.WoundCommandPath &&
                                       change.Path != FixedOriginalOutputPaths[0] &&
@@ -337,12 +343,25 @@ public partial class ValidationService
             var priorPacket = SpiritualWoundStateJson.Parse(SpiritualWoundDecisionPendingState.SerializeCanonical(priorPending))["pending"]!.AsObject();
             if (SpiritualWoundDecisionPendingState.HasPendingHealing(priorPacket))
             {
-                if (changes.Count != 0)
+                if (changes.Count != 0 && (mode != C2DecisionLayerMode.SavedCommittedAdvance || selectionOnly ||
+                    changes.Any(change => change.Path == AcceptedMechanicsPlan.WoundCommandPath)))
                     return DecisionDraftFailure("spiritual_c2_healing_automatic_input_changed");
                 if (append) _allocations.Journal.EnableAppendAfterReplay();
+                // Reconstruct the original automatic choice before considering a later raw correction.
                 var selected = ApplyC2CombatHealingDecision(priorPending);
                 _c2SelectedDecision = selected;
                 if (selectionOnly) return new(null, null, []);
+                var correction = changes.FirstOrDefault(change => change.Path == AfterlifeSpiritualConflictState.StatePath);
+                if (correction.Path is not null)
+                {
+                    var committed = ReadC2CommittedInputLayer(priorCheckpoint);
+                    var derived = await ReadC2SelectedDependentPolicyCoreAsync(lease,
+                        committed[AfterlifeSpiritualConflictState.StatePath]);
+                    if (derived.Policy is null || correction.Image.Bytes is null ||
+                        !derived.Policy.Allows(SpiritualWoundDependentDraftPolicy.ReadStrictRoot(
+                            SpiritualWoundStateJson.DecodeUtf8JsonText(correction.Image.Bytes))))
+                        return DecisionDraftFailure("spiritual_c2_dependent_correction_invalid");
+                }
                 return await ContinueC2SelectedDecisionCoreAsync(lease, priorPending, priorCheckpoint, changes, selected);
             }
             var next = ResolveC2NextSourceFromPending(priorPending);

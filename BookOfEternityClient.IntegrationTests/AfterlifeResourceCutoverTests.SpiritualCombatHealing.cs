@@ -138,6 +138,7 @@ public sealed partial class AfterlifeResourceCutoverTests
         var originalTick = before.Recovery.LastTickKey;
         var schedule = await context.FileSystem.ReadFileBytesAsync(ProgressionScheduleService.SchedulePath);
         var world = await context.FileSystem.ReadFileBytesAsync(EffectAcceptedTurnInputComposer.WorldTimePath);
+        WoundHistoryState? preCombatHistory = null;
         Assert.Equal(control!.CurrentChaosSeaTurnOrdinal, control.NextChaosSeaTurnOrdinal);
         Assert.Equal(0, control.ChaosSeaCyclesExpectedThisTurn);
 
@@ -276,6 +277,9 @@ public sealed partial class AfterlifeResourceCutoverTests
             // Read the current C1 candidate before the first pair writes its
             // private successors; the original capture is not a postcommit reader.
             var seedHistory = (await context.FileSystem.ReadFileBytesAsync(lease, WoundHistoryState.HistoryPath))!;
+            var seedHistoryState = WoundHistoryState.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(seedHistory), WoundHistoryState.HistoryPath);
+            Assert.True(seedHistoryState.IsValid, string.Join(";", seedHistoryState.Issues));
+            preCombatHistory = seedHistoryState.State;
             var candidateImages = await capture.ReadC1CandidateOwnerImagesAsync(lease, interval);
             Assert.True(JsonNode.DeepEquals(JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(seedHistory)),
                 JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(candidateImages[WoundHistoryState.HistoryPath].Bytes!))));
@@ -329,6 +333,21 @@ public sealed partial class AfterlifeResourceCutoverTests
                 }
                 finally { injectOriginalRead = false; }
                 foreach (var pair in pairBefore) Assert.Equal(pair.Value, await context.FileSystem.ReadFileBytesAsync(lease, pair.Key));
+                // Automatic first selection accepts no changed input, even a
+                // semantically identical narrative encoding. Late corrections
+                // belong only to a separately saved dependent continuation.
+                var narrativeBefore = (await context.FileSystem.ReadFileBytesAsync(lease, ProjectionNarrativePath))!;
+                await context.FileSystem.WriteFileAtomicBytesAsync(lease, ProjectionNarrativePath,
+                    narrativeBefore.Concat(new byte[] { (byte)'\n' }).ToArray());
+                try
+                {
+                    var changed = await new ValidationService(context.FileSystem, NullLogger<ValidationService>.Instance)
+                        .OpenC2PrivateSessionAsync(lease);
+                    using var refused = changed.Session;
+                    Assert.Contains(changed.Issues, issue => issue.Code == "spiritual_c2_healing_automatic_input_changed");
+                    foreach (var pair in pairBefore) Assert.Equal(pair.Value, await context.FileSystem.ReadFileBytesAsync(lease, pair.Key));
+                }
+                finally { await context.FileSystem.WriteFileAtomicBytesAsync(lease, ProjectionNarrativePath, narrativeBefore); }
                 // The normal positive uses a fresh adapter after removing the injected fault.
                 adapter = new ValidationService(context.FileSystem, NullLogger<ValidationService>.Instance);
             }
@@ -350,6 +369,19 @@ public sealed partial class AfterlifeResourceCutoverTests
                 var current = JsonNode.Parse((await context.FileSystem.ReadFileAsync(lease, AfterlifeSpiritualConflictState.StatePath))!)!;
                 current["activeConflict"]!["exchangeLog"]![1]!["actionCostAudit"]!["player"]!["effectiveCost"] = 2;
                 current["activeConflict"]!["exchangeLog"]![1]!["actionCostAudit"]!["player"]!["after"] = 2;
+                var policy = Assert.IsType<SpiritualWoundDependentDraftPolicy>(dependent.DraftPolicy);
+                Assert.True(policy.Allows(current.AsObject()));
+                foreach (var mutation in new Action<JsonObject>[]
+                {
+                    root => root["activeConflict"]!["exchangeLog"]![0]!["operationType"] = "guard",
+                    root => root["activeConflict"]!["exchangeLog"]![0]!["diceAudit"]!["diceUsed"]![0]!["value"] = 1,
+                    root => root["activeConflict"]!["exchangeLog"]![1]!["actionCostAudit"]!["player"]!["baseCost"] = 1,
+                    root => root["activeConflict"]!["unexpectedCorrection"] = true
+                })
+                {
+                    var forbidden = current.DeepClone().AsObject(); mutation(forbidden);
+                    Assert.False(policy.Allows(forbidden));
+                }
                 // The exact allowed correction is raw input, not an accepted afterimage.
                 await context.FileSystem.WriteFileAtomicAsync(lease, AfterlifeSpiritualConflictState.StatePath, current.ToJsonString());
                 var resumed = await selected.ResumeDependentContinuationAsync(lease);
@@ -542,8 +574,12 @@ public sealed partial class AfterlifeResourceCutoverTests
             Assert.Single(removedResult["transitions"]!.AsArray().OfType<JsonObject>(), row =>
                 row["transitionResult"]?["kind"]?.GetValue<string>() == "spiritual_combat_healing").Remove("transitionResult");
             var withoutResult = WoundHistoryState.Parse(removedResult.ToJsonString(), WoundHistoryState.HistoryPath);
-            Assert.True(withoutResult.IsValid); // No row/FP/identity is rewritten.
-            var missing = Assert.Throws<FormatException>(() => complete.State.RequireCombatHistoryResourceAgreement(withoutResult.State!, resourceHistory));
+            Assert.False(withoutResult.IsValid); // Attempted treat requires its sealed result intrinsically.
+            Assert.Contains(withoutResult.Issues, issue => issue.Code == "wound_history_treatment_result_missing");
+            // The real valid History prefix is an independent cross-root
+            // omission control; no attempt, row, fingerprint or identity is forged.
+            Assert.NotNull(preCombatHistory);
+            var missing = Assert.Throws<FormatException>(() => complete.State.RequireCombatHistoryResourceAgreement(preCombatHistory!, resourceHistory));
             Assert.Contains("actual wound History result", missing.Message);
         }
         await using (var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync())
@@ -612,6 +648,13 @@ public sealed partial class AfterlifeResourceCutoverTests
         exchange["exchangeId"] = source["exchangeId"]!.DeepClone();
         foreach (var row in exchange["diceAudit"]!["diceUsed"]!.AsArray()) row!["sourceIndex"] = row["sourceIndex"]!.GetValue<int>() + 2;
         source["exchangeJsonBase64"] = Convert.ToBase64String(Encoding.UTF8.GetBytes(exchange.ToJsonString()));
+        if (source["guaranteePreimage"] is JsonObject preimage)
+        {
+            var rawExchange = SpiritualWoundStateJson.Parse(SpiritualWoundSourceWitness.ReadGuaranteePreimage(source).ExchangeJson);
+            rawExchange["exchangeId"] = source["exchangeId"]!.DeepClone();
+            foreach (var row in rawExchange["diceAudit"]!["diceUsed"]!.AsArray()) row!["sourceIndex"] = row["sourceIndex"]!.GetValue<int>() + 2;
+            preimage["exchangeJsonBase64"] = Convert.ToBase64String(Encoding.UTF8.GetBytes(rawExchange.ToJsonString()));
+        }
         foreach (var row in source["selectedDiceIndices"]!.AsArray().Select((value, index) => (value, index)).ToArray())
             source["selectedDiceIndices"]![row.index] = row.value!.GetValue<int>() + 2;
         foreach (var claim in evidence["diceClaims"]!.AsArray())

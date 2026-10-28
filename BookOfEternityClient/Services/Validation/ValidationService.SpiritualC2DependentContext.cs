@@ -79,35 +79,15 @@ public partial class ValidationService
             {
                 var checkpoint = await RequireC2PendingSubmissionCoreAsync(lease);
                 var committed = ReadC2CommittedInputLayer(checkpoint);
-                if (_coldCurrentInputs is null || _coldProposedInputs is not null ||
-                    !SameExactImage(committed[AfterlifeSpiritualConflictState.StatePath],
-                        _coldCurrentInputs.ReadImage(AfterlifeSpiritualConflictState.StatePath)))
-                    return null;
                 if (!_allocations.Journal.IsAppendMode) _allocations.Journal.EnableAppendAfterReplay();
-                var baseline = await ProbeC2SelectedContinuationCoreAsync(lease, []);
-                if (baseline.Count != 0 && !IsCorrectableDependentConflictFailure(baseline))
-                    return null;
-                var changes = await ReadC2SubmissionChangesCoreAsync(lease, checkpoint);
-                var original = _source.ReadMechanicsConflict(this);
-                AfterlifeConflictActionPointProjection? frontier = null;
-                AcceptedMechanicsPlanner.ResourceExecutionSession.SpiritualMechanicsContext? mechanics = null;
-                if (baseline.Count != 0)
-                {
-                    var mechanicsIssues = new List<ValidationIssue>();
-                    mechanics = PrepareSourceMechanics(_source, mechanicsIssues);
-                    if (mechanics is null || mechanicsIssues.Count != 0) return null;
-                    var conflictId = original["activeConflict"]?["conflictId"]?.GetValue<string>();
-                    if (conflictId is null) return null;
-                    frontier = mechanics.ReadActionPointBefore(conflictId, mechanics.Ordinal);
-                }
                 var committedImage = committed[AfterlifeSpiritualConflictState.StatePath];
+                var derived = await ReadC2SelectedDependentPolicyCoreAsync(lease, committedImage);
+                if (derived.Policy is not { } policy) return null;
+                var baseline = derived.Issues;
+                var changes = await ReadC2SubmissionChangesCoreAsync(lease, checkpoint);
                 var currentImage = changes.FirstOrDefault(change =>
                     change.Path == AfterlifeSpiritualConflictState.StatePath).Image ?? committedImage;
-                if (committedImage.Bytes is null || currentImage.Bytes is null) return null;
-                var policy = CreateC2DependentPolicy(original,
-                    SpiritualWoundDependentDraftPolicy.ReadStrictRoot(SpiritualWoundStateJson.DecodeUtf8JsonText(committedImage.Bytes)),
-                    baseline, frontier, mechanics);
-                if (policy is null || !policy.Allows(SpiritualWoundDependentDraftPolicy.ReadStrictRoot(
+                if (currentImage.Bytes is null || !policy.Allows(SpiritualWoundDependentDraftPolicy.ReadStrictRoot(
                         SpiritualWoundStateJson.DecodeUtf8JsonText(currentImage.Bytes)))) return null;
                 var current = await ProbeC2SelectedContinuationCoreAsync(lease, changes);
                 if (current.Count != 0 && !IsCorrectableDependentConflictFailure(current))
@@ -135,6 +115,40 @@ public partial class ValidationService
                 if (!succeeded && IsCurrentOwner) RevokeUnderLease(lease);
                 _gate.Release();
             }
+        }
+
+        /// <summary>
+        /// Derives the same bounded later-exchange comparison from the unchanged selected owner's baseline.
+        /// Live continuation and strict committed replay both retain their own current-owner checks.
+        /// </summary>
+        /// <param name="lease">Current canonical lease held with the capture gate.</param>
+        /// <param name="committedImage">Exact prior raw conflict input, before the proposed correction.</param>
+        /// <returns>The comparison policy and original diagnostics, or no policy on any refusal.</returns>
+        private async Task<(SpiritualWoundDependentDraftPolicy? Policy, IReadOnlyList<ValidationIssue> Issues)>
+            ReadC2SelectedDependentPolicyCoreAsync(FileSystemManager.CanonicalWriteLease lease,
+                CanonicalBeforeImage committedImage)
+        {
+            if (_coldCurrentInputs is null || _coldProposedInputs is not null || committedImage.Bytes is null ||
+                !SameExactImage(committedImage, _coldCurrentInputs.ReadImage(AfterlifeSpiritualConflictState.StatePath)))
+                return (null, []);
+            var baseline = await ProbeC2SelectedContinuationCoreAsync(lease, []);
+            if (baseline.Count != 0 && !IsCorrectableDependentConflictFailure(baseline))
+                return (null, baseline);
+            var original = _source.ReadMechanicsConflict(this);
+            AfterlifeConflictActionPointProjection? frontier = null;
+            AcceptedMechanicsPlanner.ResourceExecutionSession.SpiritualMechanicsContext? mechanics = null;
+            if (baseline.Count != 0)
+            {
+                var mechanicsIssues = new List<ValidationIssue>();
+                mechanics = PrepareSourceMechanics(_source, mechanicsIssues);
+                if (mechanics is null || mechanicsIssues.Count != 0) return (null, baseline);
+                var conflictId = original["activeConflict"]?["conflictId"]?.GetValue<string>();
+                if (conflictId is null) return (null, baseline);
+                frontier = mechanics.ReadActionPointBefore(conflictId, mechanics.Ordinal);
+            }
+            return (CreateC2DependentPolicy(original,
+                SpiritualWoundDependentDraftPolicy.ReadStrictRoot(SpiritualWoundStateJson.DecodeUtf8JsonText(committedImage.Bytes)),
+                baseline, frontier, mechanics), baseline);
         }
     }
 }

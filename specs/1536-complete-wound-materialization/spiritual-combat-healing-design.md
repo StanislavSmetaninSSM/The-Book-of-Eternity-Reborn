@@ -35,6 +35,13 @@ it is not an acceptance of implementation or a new prerequisite for those flows.
 Bounded independent DESIGN ACCEPT: c3caf534c (Astra, 2026-10-28).
 Implementation and runtime acceptance remain open.
 
+Publication must accept a terminally healed wound only through its sealed final
+identity and exact terminal History, absent from both actual and retained active
+carriers. Saved committed replay reconstructs the original automatic choice before
+any late input correction and rederives the same bounded dependent policy used by
+the live continuation. Initial automatic selection still accepts no input edits.
+These are enforcement details of the existing contract, not new GM-authored fields.
+
 ## Player result and first scope
 
 During an active direct spiritual duel in Chaos, the player chooses its own known
