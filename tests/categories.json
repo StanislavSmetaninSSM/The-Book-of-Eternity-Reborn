@@ -2,6 +2,36 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "spiritual-combat-healing-browser-help",
+  "responsibility": "One exact failed browser help consumer after console help passed: shared browser builder must describe confirmed direct-duel player-self healing rather than stale unavailable text.",
+  "excludes": "No art purchase/detail owner, unchanged console help repeat, mechanics permission or wider UI workflow.",
+  "changeHints": [
+    "BookOfEternityClient/UI/ExplorerAfterlifeCombatCommandResultBuilder.cs",
+    "BookOfEternityClient.IntegrationTests/ExplorerWebCommandServiceTestsSpiritualConflictArtDrilldowns.StandardWoundArtHelp.cs"
+  ],
+  "related": [
+    {
+      "id": "spiritual-healing-guided-help",
+      "when": "Retain its console Passed row at2904; this singleton repairs only the failed browser row."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.ExplorerWebCommandServiceTestsSpiritualConflictArtDrilldowns.StandardWoundArt_SpiritualConflictHelpRendersPassiveAndDirectDuelHealingTruthfully"
+      ]
+    }
+  ]
+},
+{
   "id": "spiritual-combat-healing-guidance",
   "responsibility": "Closed combat selection/GM example and complete existing worked-family manifest inventory. Actual authority belongs to the paired backend and Engine consumers.",
   "excludes": "Bounded current #1536 combat contour only. No full owner/suite, Mortal compatibility, T609/full DFR/Windows or external-provider/fresh-process qualification. DATA controls do not grant publication permission.",

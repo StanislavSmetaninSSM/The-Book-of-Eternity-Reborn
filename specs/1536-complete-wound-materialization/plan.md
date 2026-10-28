@@ -1,3 +1,31 @@
+# Combat first actual follow-through — browser help parity, 2026-10-28
+
+Fresh Integration2904 refsfalse0e/102w/2:37.85 and Unit refsfalse0e/26w/1:19.49
+completed against owning35f Main/Support; all9 master/copy pins match. Official
+PlanOnly exactly25 cases/15 descriptors/22 methods/14 categories, zero executed,
+16.8530508 seconds. Actual cost1/program2/guidance2/scalar-preview2 all PASS with
+complete selection, original budgets, unique IDs and both cleanup flags. Cost
+reaches its genuine RED→GREEN arithmetic/passive assertions, not gameplay acceptance.
+
+Actual help2 completed1 PASS/1 FAIL (23.9521588 seconds, category8.9153496<120,
+no timeout/duplicate, both cleanuptrue; TRX6d0bb49b…282f3). Console help passed;
+browser help reached the new unchanged assertion but its separate result builder
+still emitted the old safe-only/unavailable copy. This is a concrete visible
+product parity omission, not combat gameplay RED or fixture preparation. Only its
+two existing healing strings are synchronized with the console; no action,
+validation, selection, dice, effect, resource, publisher or renderer changes.
+Paired4 and all subsequent categories were not launched after this failure.
+
+Retain the exact seven Passed component rows and console help row at2904 lineage,
+not the mixed help category as PASS and not a blanket new-SHA claim. Narrow review
+must confirm text-only dependency retention. Proposed fresh owning Integration/
+Main/Support then Unit refsfalse and pins; official remaining17/10 PlanOnly:
+browser-help1/120 → pair4/120 → rollback1/120 → safe-publication5/120 →
+injury-v1-output1/120 → authored-graphs1/120 → safe-console1/180 → safe-browser1/180
+→ combat-console1/180 → combat-browser1/180. This preserves all original25-case
+membership and bounds while avoiding unchanged successful repeats. Raw attempts,
+hashes, source bindings and9 pins remain external in spiritual-combat-functional-1.
+
 # Combat Integration compile-only follow-through — runtime UNRUN, 2026-10-28
 
 Owning retry35f completed Main/Support, then failed only Integration compile:

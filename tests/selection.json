@@ -2,6 +2,13 @@
   "schemaVersion": 1,
   "selections": [
 {
+  "category": "spiritual-combat-healing-browser-help",
+  "reason": "Actual help category produced consolePASS/browserFAIL at the unchanged availability assertion; fix the separate browser builder text, retain exact prior component7+console1 at2904 lineage, then continue untouched remaining16.",
+  "contracts": [
+    "#1536 T095/T102/T103 actual console/browser scope parity"
+  ]
+},
+{
   "category": "spiritual-combat-healing-guidance",
   "reason": "Closed combat selection/GM example and complete existing worked-family manifest inventory. Actual authority belongs to the paired backend and Engine consumers.",
   "contracts": [
