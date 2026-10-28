@@ -14332,6 +14332,16 @@ close full source-action/terminal/pending contracts or any top-level story task.
   accepted treatment authority is claimed; T094 remains open for integration.
 - [ ] T095 [P] [US4] Add RED combat base-5/reduction/floor-2 spend, explicit operation-to-art mapping, counter/matchup legality, and rollback tests in `BookOfEternityClient.Tests/SpiritualHealingCombatActionTests.cs`
 
+Current combat follow-through (2026-10-28): actual138 now fully passes4/5
+paired cases: full heal, no-improvement and ordinary/guaranteed counterharm,
+with exact OD/wound/effects/History/no-cycle assertions. The fifth passes its
+saved-selection/correction/cold replay and C4, then fails full output validation
+on a missing fixture interface timestamp; later assertions remain unreached.
+Independent production SOURCE/OUTCOME and fixture review distinguish this from
+a product guard defect. Narrow fixture correction and singleton qualification
+are pending; other4 and cheap32+terminal4 retain separate accepted lineages.
+Full T095/T102/T103/US4 remain open; detailed artifacts and remaining15 are in plan.
+
 Initial prebuild combat authoring checkpoint (2026-10-28): accepted genuine cost-admission
 RED is retained. The bounded direct-Chaos-duel standard player-self implementation,
 paired full-heal/no-improvement/blocked-worsen/next-boundary controls, actual guided

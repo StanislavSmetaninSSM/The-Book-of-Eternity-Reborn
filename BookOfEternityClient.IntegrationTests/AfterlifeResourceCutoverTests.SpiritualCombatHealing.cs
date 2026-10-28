@@ -17,9 +17,12 @@ public sealed partial class AfterlifeResourceCutoverTests
     [InlineData("healed")]
     [InlineData("no_improvement")]
     [InlineData("blocked_worsen")]
-    [InlineData("next_boundary")]
     public Task CombatHealingUsesAnActualPairAndDurableOutcomeWithoutASafeCycle(string mode) =>
         RunCombatHealingPairAsync(mode, failPublication: false);
+
+    [Fact]
+    public Task CombatHealingSavedChoiceCompletesAfterDependentCostCorrection() =>
+        RunCombatHealingPairAsync("next_boundary", failPublication: false);
 
     [Fact]
     public Task CombatHealingBlockedGuaranteedCounterharmUsesItsOriginalPreimage() =>
@@ -185,6 +188,7 @@ public sealed partial class AfterlifeResourceCutoverTests
                 ["severityRank"] = 1, ["complications"] = SpiritualHealingRequestProjection.Complications(intent["intentFingerprint"]!.GetValue<string>(), before)
             }));
             var response = (await context.ReadJsonAsync("output/interface_updates.json")) ?? new JsonObject();
+            response["timestamp"] = DateTime.UtcNow.ToString("O");
             response["spiritualHealingGraphs"] = graphs;
             repairedInterface = response.AsObject();
         }

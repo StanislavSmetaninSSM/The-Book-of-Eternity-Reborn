@@ -2,6 +2,30 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "spiritual-combat-healing-dependent-pair",
+  "responsibility": "One actual saved automatic healing choice followed by an authorized later cost correction, strict cold replay, common C4 wound/effect/resource/History and no-cycle settlement. Separate from the four already qualified unchanged pair rows after correcting required interface timestamp preparation.",
+  "excludes": "No repeat of unchanged healed/no-improvement/regular or guaranteed counterharm cases, broad owner, T609/DFR/Mortal/Windows or external-provider qualification.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualCombatHealing.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.CombatHealingSavedChoiceCompletesAfterDependentCostCorrection"
+      ]
+    }
+  ]
+},
+{
   "excludes": "Only exact current combat terminal/replay contracts; no full owner, suite, T609/DFR/Mortal/Windows or provider qualification.",
   "requirements": {
     "frontendBuild": false,
@@ -191,7 +215,8 @@
       "project": "integration",
       "tests": [
         "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.CombatHealingUsesAnActualPairAndDurableOutcomeWithoutASafeCycle",
-        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.CombatHealingBlockedGuaranteedCounterharmUsesItsOriginalPreimage"
+        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.CombatHealingBlockedGuaranteedCounterharmUsesItsOriginalPreimage",
+        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.CombatHealingSavedChoiceCompletesAfterDependentCostCorrection"
       ]
     }
   ]

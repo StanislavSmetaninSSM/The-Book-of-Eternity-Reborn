@@ -1,3 +1,38 @@
+# Combat four complete PASS; final dependent case output fixture correction — WIP
+
+2026-10-28 source13883142f fresh owning Main/Support/Integration completed0errors,
+137baseline warnings/4:19.82; Unit refsfalse0errors/26w/1:17.80, no changed-file
+warnings. Eighteen DLL/PDB pins agree. Official catalog1032/12714 valid/zeroexec;
+literal24cases/11descriptors/21methods PlanOnly zeroexec13.5110699s. Independent
+Sol PREP accepted. New cheap terminal/policy4/4PASS14.4324437s, category5.8119723<60,
+TRX6dfa120c0501cda21b9033da00e8019f071f5e5d2116c9d007b7a3f2d5aaf2a4.
+
+Pair138 completed5 once:4PASS/1FAIL, wall66.8000629s/category60.1846174<120,
+no timeout/duplicates, both cleanuptrue; TRX
+95119c648d19cdf6c3e84c38606081c00e669808712b42275ca7568aef002dca.
+Full heal, no-improvement, ordinary and guaranteed counterharm all fully PASS.
+The next-boundary case passes selected replay, policy negatives, authorized cost
+correction, cold reopen, same decision fingerprint and C4; it fails only subsequent
+full validation because its authored interface response omits mandatory timestamp.
+Later assertions are unreached, so that whole case remains FAIL. Independent
+Astra bounded production OUTCOME and Sol pair/fixture causality agree.
+
+Correct ONLY that next-boundary response preparation, before its first capture:
+add the existing required ISO8601 timestamp alongside authored graphs. No validator
+or production change. Move that one Theory row to a same-helper named Fact and
+narrow category; original pair category still owns all5. Keep the other4 actual
+PASS at138 rather than rerunning them. Fresh Integration refsfalse only is needed;
+Main/Support/Unit source and completed artifact lineage138 remain unchanged.
+Discovery/PlanOnly must prove exactly this singleton plus ordinary1/downstream14;
+then run singleton -> ordinary1 -> conditional14 under their original limits.
+Root remains sole writer/runner; no live prior process or uncertain outcome.
+
+Raw functional9 and build11 remain completely outside checkout. This is required
+fixture authoring, not a new GM contract; existing timestamp validation stays strict.
+Reuse the existing independent per-case world and retained DATA; no cache/framework
+or speedup claim. No full combat/US4 completion, Windows/DFR/Mortal release or raw
+cleanup follows. Earlier failures and the new singleton failure remain preserved.
+
 # Confirmed combat terminal / saved-correction fixes — WIP, UNCOMPILED/UNRUN
 
 2026-10-28: independent Astra causal review confirms both production boundaries;
