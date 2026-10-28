@@ -15,11 +15,13 @@
 Для дешёвых формул отдельный кэш не нужен; fresh wallet/profile/revision/phase
 проверки сохраняются, stable DATA через существующий whole-operation service.
 
-WIP-результат T038/T039: [spec v1.38](spec.md), приложение5.10/v1.15 и модельv2.28.
+Проверенный результат T038–T040: [spec v1.38](spec.md), приложение5.10/v1.15 и модельv2.28.
 Принятие культивации записано; ручные ceil(n/5) рекомендуются на согласование.
 Same-budget M/partial/Favor/order/saturation проверены parent и отдельным Sol6.1/high
-консультантом. Independent review всего среза T040 ожидается. Следующий шаг —
-review/corrections/remote checkpoint и предъявление автору, не production.
+консультантом. Independent Astra/high review завершён: одно P2 — старые E-цены
+в действующей приёмке — исправлено на5.9, targeted review закрыл замечание.
+WIP0a68ba0ff опубликован, remote SHA/шесть blob readbacks совпали. Следующий шаг —
+предъявить новый ручной тариф автору для согласования, не production. Clean restore UNRUN.
 
 ## Завершённый исследовательский срез: источники Перьев и новый темп E/R
 
