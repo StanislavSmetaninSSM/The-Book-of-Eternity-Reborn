@@ -1,3 +1,35 @@
+# T112 reviewed World source closure; T093 known-wound assessment — WIP
+
+2026-10-28. Same machine and clean remote18795be638682f0196dd871f7b69c8f36dae3195
+were verified; no build/test remained active. Astra/high substantively reviewed
+all six stale source deltas. Five exact old LF pins match b377c9d1; the interface
+validation file matches9c5c7910886b6dfad2db28858a39cee939305cdf. Browser admission
+adds retained tuple comparisons; interface binding keeps its exact byte/current
+closing checks; raw effect/resource composition preserves live owners and separate
+historical DATA; protected wound-command repair remains owner-specific; combat
+source admission keeps original dice/current capture checks. No new reserved-World
+source dependency, cache or writer was found. Root inspected the actual deltas.
+
+Only the six reviewed hashes are refreshed. All66 now match by read-only LF
+assessment; the existing guard and its source assertions are unchanged. Its actual
+C# execution is UNRUN pending fresh Integrationrefsfalse, catalog1038/12718,
+exact1case PlanOnly and bounded PREP. New narrow category selects that existing
+Fact only. No production, native package, semantic limit or GM contract changes;
+optimization is review of existing stable DATA/fresh fences, with no speedup claim.
+The accepted combat39 keep their distinct source lineages and are not replayed.
+
+Canonical T093 reassessment corrects the earlier overly broad rule blocker:
+US4 scenario1 and data-model12 rule2 already permit readable insufficiency when
+treatment is considered. Existing code computes current H versus known severity
+and rejects insufficient staging before any draw. The concrete gap is the shared
+result builder hiding choice reasons when all choices are unavailable. Next
+functional slice shows that known-wound assessment in both interfaces, including
+H0/positive insufficient H, without heal/attempt/draw/cost/time/hidden-fact changes.
+Invalid source must remain unavailable, not masquerade as H0. This does not claim
+FR071 sealed hidden-fact discovery. No new dice/time author rule is needed for
+this bounded read-only assessment; broader discovery remains separate.
+Raw remains outside checkout; DFR/Mortal/Windows/performance routes stay HOLD.
+
 # Combat self-treatment: bounded functional gate accepted — #1536
 
 2026-10-28. The bounded player result is standard-art self-treatment during an

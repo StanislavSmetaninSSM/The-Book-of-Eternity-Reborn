@@ -2,6 +2,17 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "spiritual-world-source-closure",
+  "responsibility": "The exact existing World source-closure Fact after substantive independent review of six wound-related source deltas; checks all 66 LF-normalized pins and existing proof/cleanup source assertions.",
+  "excludes": "No World runtime suite, cache/performance qualification, mechanical rebaseline, DFR/Mortal/Windows or repeat of accepted combat cases.",
+  "changeHints": ["BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.WorldReadPhase.cs"],
+  "related": [],
+  "requirements": {"frontendBuild": false, "exclusive": true, "ciRunner": "ubuntu-24.04"},
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [{"project": "integration", "tests": ["BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.WorldReadPhase_SourceClosurePinsRequireExplicitReview"]}]
+},
+{
   "id": "spiritual-combat-console-source-guards",
   "responsibility": "Fourteen existing cheap pending-source controls: twelve exact dependency changes refuse final proof, and two same-lease override/lifecycle mutations remain forbidden. The actual console combat causal case follows separately.",
   "excludes": "No new reflection, source-scope implementation, broad validation suite or full source-closure acceptance. Six pre-existing World source pins remain pending separate review; this selection does not waive that debt.",
