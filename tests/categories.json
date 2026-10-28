@@ -2,6 +2,30 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "spiritual-natural-recovery-chronology",
+  "responsibility": "One strict current-DATA witness contract after real natural publication: canonical newborn creation provenance matching actual event is excluded, coherent foreign-event newborn refuses, and a valid postterminal archive with another source FP reaches exact independent row-bijection refusal. Parse/identity/catalog/history/effect agreement preconditions precede witness calls.",
+  "excludes": "Does not qualify joint natural+new-wound publication (explicitly unsupported), manufacture mutation authority, external provider/fresh-process or every chronology vector.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/AfterlifeSpiritualNaturalRecoveryTests.Chronology.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.AfterlifeSpiritualNaturalRecoveryTests.CurrentDataWitnessRequiresActualNewbornProvenanceAndEveryCycleAuditRow"
+      ]
+    }
+  ]
+},
+{
   "id": "spiritual-natural-recovery-actors",
   "responsibility": "One owned persistent cohort journey: player/hidden offscreen Guardian/resident/custom actor use own H0/V/II, terminal owner/realm loss refuses replay, real next cycle excludes old healed wounds, stale cohort/control refuses, replay is inert and empty third cycle creates no fake History.",
   "excludes": "Full NPC scene/training producer, conflict/catchup/realm-transfer execution, newborn exemption edge and external provider/fresh-process; existing first14 is retained unless default branches change.",

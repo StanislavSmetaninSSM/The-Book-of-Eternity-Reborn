@@ -18,7 +18,6 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
         var (control, projection) = await StageAsync(fixture);
         Assert.Equal(new[] { 2, 0, 0, 5 }, projection["cohort"]!.AsArray()
             .Select(m => m!["healingTier"]!.GetValue<int>()));
-        var before = fixture.CaptureMutationRoots();
         await using (var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync())
         {
             await fixture.WriteReportAsync(lease);
@@ -38,9 +37,7 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
         var result = Assert.IsType<SpiritualHealingPersistedResult>(Assert.Single(history.Transitions,
             t => t.TransitionResult is SpiritualHealingPersistedResult).TransitionResult);
         Assert.Equal(4, result.Stages.Select(s => s.Before.WoundId).Distinct().Count());
-        foreach (var path in new[] { ResourceMaterializationContract.DefinitionsPath, ResourceMaterializationContract.StatePath,
-                     ResourceMaterializationContract.HistoryPath, CanonicalResourceOwnerAuthorityComposer.AuthorityPath })
-            Assert.Equal(before[path], await fixture.Files.ReadFileBytesAsync(path));
+        fixture.AssertResourcesUnchanged(); // Canonical values/history, not harmless publisher formatting.
         var accepted = fixture.CaptureMutationRoots();
         await using (var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync())
         {
