@@ -1,5 +1,41 @@
 # Проверка проекта #1573
 
+## Текущий checkpoint 2026-10-29: реальные Перья и доступная культивация
+
+Task1573/T035–T037, branch `story/golden-mask-backstory-20261025`, baseline
+`006c9104451bde6dd43c10f134f8d902e72a0f20`. WIP, independent review ожидается.
+Прямой запрос автора после отклонения37 жизней разрешает пересчитать E и R;
+не утверждает ни новые суммы, ни новый источник дохода. Результат — приложение5.9,
+spec v1.37; старые рекомендуемые R800+300r сняты, принятые E20+5r явно отделены
+от нового кандидата5+2r. Production и старый inventory T001–T028 не разрешены.
+
+Применены brainstorming + spec-kit-superpowers-bridge в существующей feature,
+scoped plan/tasks и bridge-equivalent consistency до расчётов: scope→источники→
+арифметика→review; новые номера T035–T037, production gate сохранён. Полный
+setup-plan/tasks не перезапускался. Использованы requesting-code-review и
+verification-before-completion; это документы/исследование, не feature implementation.
+
+Read-only Sol6.1/high проверил духовные источники; parent исследовал mortal
+settlement, проверил ключевые source references и формулы treasury/sale/combat,
+NPC exclusion и Saref reward declaration. Serena: активны csharp/typescript/python;
+реальный C# symbol ValidateLifeEvaluationRewardCycleAsync прочитан успешно.
+Кода JS/Python проекта не меняли и соответствующие LSP здесь не проверяли.
+
+Parent exact integer arithmetic через functions.exec (JS V8): кандидаты E5/6/8+2r
+и прежний20+5r; R100+25r/120+30r/150+50r и прежний800+300r; профили205/533/1152,
+варианты p25/40/50/75/100, natural E0/1/2/3, отсутствие старого rank multiplier,
+R840/R80 и духовные выплаты20/40. Алгоритм/входы/итоги в5.9 позволяют повторить
+вывод без raw log. Проверены236 разбиений цены,5000 положительных единичных цен
+(наблюдаемый минимум2),1000 ростов относительной цены с Favor; частичные10/9/5/47,
+итоги572/1800/2475. Это арифметические проверки, не игровые тесты или телеметрия.
+
+Оптимизация: дешёвым вычислениям новый кэш не нужен; stable definitions/profile
+получать через существующий operation service, fresh wallet/revision/admission
+не заменять кэшем. Частота дохода неизвестна; производительность не измерялась.
+Game/build/runtime categories/600s test/clean restore UNRUN — документы без кода.
+Raw diagnostics не создавались и в Git не добавлялись; чужой untracked obj не тронут.
+Следующий шаг: independent review всего diff, исправления и предъявление автору.
+
 2026-10-27. Область: только проект документов v1. Production-код не менялся.
 Исследование по `7b73b8c538436083e05def58da4970171f4614b5`; полный source map в research.
 
