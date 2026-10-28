@@ -36,9 +36,8 @@ reader; same shared UI choices/ConfirmAsync and old one-shot/queued Engine entry
 Original/input/source18/closing machinery remains shared. No new permission
 registry, receipt, source path or executor. The existing actual caller helper now has explicit reverse console/browser
 journeys plus typed reverse backend refusal/replay controls, all UNRUN. GM
-contract/example and final category ownership still need synchronization before
-independent coherent SOURCE/PREP
-before any owning build. Prior accepted results retain their recorded lineages.
+contract/example and category ownership are synchronized in the coherent freeze;
+independent SOURCE/PREP is required before any owning build. Prior accepted results retain their recorded lineages.
 
 Accepted player→Guardian17 is recorded below; no unchanged runtime repeats.
 The next bounded design is in spiritual-aid-design.md: real accepted provider
@@ -48,11 +47,10 @@ Stage/B/History/common publication and console/browser workflows. Provider-offer
 facts are not player consent. First scope is free private safe Chaos cooperation,
 not US6 public/paid service. Bounded independent design recommendation is applied;
 freeze/readback precedes causal contract TDD and coherent implementation.
-The first causal existing-codec singleton is scaffolded and UNCOMPILED/UNRUN;
-expected RED is the current closed v1 parser refusing the lawful schema2 offer.
-Its later record/no-player-consent/condition assertions remain unqualified.
-Production is unchanged; SOURCE/PREP must release Unit refsfalse then exact1/1
-PlanOnly and one RED-only category spiritual-guardian-offer-contract/60.
+The first causal existing-codec singleton was scaffolded and released against
+unchanged production at ee738; the accepted RED below refused the lawful schema2
+offer at the old closed parser. Its later record/no-player-consent/condition
+assertions remain unqualified until the current owning GREEN qualification.
 Genuine codec RED on clean compiled ee73856fc: exact1 complete FAIL only at
 ReadChanges closed-v1 admission (test96/parser47), after the valid prior-record
 precondition. Wall11.9444816 s/category5.0800546<60/case0.0357104; exit1,

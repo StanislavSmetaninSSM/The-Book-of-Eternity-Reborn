@@ -168,8 +168,14 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
             await files.WriteFileAtomicBytesAsync(lease, localPath, locality);
             var consentBefore = (await files.ReadFileBytesAsync(lease, WoundCarrierCatalog.AfterlifeProfilesPath))!;
             var revoked = JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(consentBefore))!.AsObject();
-            revoked["profiles"]!.AsArray().OfType<JsonObject>().Single(p => SpiritualTreatmentParticipation.ProfileId(p) == AidGuardianId)
-                [SpiritualTreatmentParticipation.RecordProperty]!["status"] = "revoked";
+            var withdrawingGuardian = revoked["profiles"]!.AsArray().OfType<JsonObject>()
+                .Single(p => SpiritualTreatmentParticipation.ProfileId(p) == AidGuardianId);
+            if (receiveAid)
+            {
+                var withdrawal = GuardianOfferProposal(); withdrawal["operation"] = "revoke";
+                withdrawingGuardian[SpiritualTreatmentParticipation.ChangeProperty] = withdrawal;
+            }
+            else withdrawingGuardian[SpiritualTreatmentParticipation.RecordProperty]!["status"] = "revoked";
             await files.WriteFileAtomicAsync(lease, WoundCarrierCatalog.AfterlifeProfilesPath, revoked.ToJsonString());
             before = fixture.CaptureMutationRoots();
             Assert.Contains(await validator.PrepareSpiritualSelfTreatmentPublicationAsync(lease), i => i.Severity == IssueSeverity.Error);
@@ -205,7 +211,7 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
         var history = await fixture.ReadHistoryAsync();
         var result = Assert.IsType<SpiritualHealingPersistedResult>(Assert.Single(history.Transitions, t => t.AttemptId is not null).TransitionResult);
         Assert.Equal("aid", result.Mode);
-        Assert.Equal(3, result.SchemaVersion);
+        Assert.Equal(receiveAid ? 4 : 3, result.SchemaVersion);
         Assert.True(JsonNode.DeepEquals(request, result.ToCanonicalJson()["request"]));
         var missingGrant = JsonNode.Parse(WoundHistoryState.SerializeCanonical(history))!.AsObject();
         var grantRow = missingGrant["transitions"]!.AsArray().OfType<JsonObject>()
