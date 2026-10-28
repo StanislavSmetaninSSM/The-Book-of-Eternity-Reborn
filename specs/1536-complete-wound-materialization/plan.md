@@ -1,5 +1,29 @@
 # US4 safe self-treatment — active functional work, 2026-10-28
 
+First normalization qualification on clean compiled8a17cf978: owning Integration/
+Main/Support0errors137warnings4:13.41, Unitrefsfalse0errors26warnings1:02.77,
+all9pins match. First combined PlanOnly comma argument was refused as one unknown
+category BEFORE discovery/workload; corrected literal PowerShell-array PlanOnly
+exact14/8zeroexec13.6588814s. Actual beforeimage4 GREEN14.9197718s/category
+7.2370438<60s, TRXc84c17d45e1cc3f55221156da1742a9677adff201f8e94ba26e7bc89223da32c;
+guidance2PASS23.4780952s/category10.108591<60s, TRXs264ca10e3ba1d0061b8bbc8ca44869eb0012b593539077b661361f834e46b25b
+and8b9b97ec3d6f09c9c941c50b22b49f1ec723b64ad5227fba4c380ef3feea6d3d.
+Exact selections/unique IDs/no skip/duplicate/timeout/bothcleanuptrue.
+
+Locality1 completedFAIL25.8127643s without timeout/duplicate, bothcleanuptrue,
+TRXdd6ac236e14d13fd5329af43d3798432b0047906aef6016318436fb020095e6b.
+It stops BEFORE the owned-normalizer writer: CaptureMortalItemAcceptedTurnNormalizationMode45
+cannot find the standard exact-session/snapshot item authority. Direct fixture
+omitted actual Engine upstream raw-location/raw-item admission (Engine1799–1802),
+already used by the real reset fixture. Two asserted existing typed calls now run
+on the same validator/lease before preparing the plan. Test-only correction is
+UNCOMPILED/UNRUN; production guards/authority are unchanged, no rebootstrap/spoof.
+Issuer/backend/console/browser actuals have NOT run after this failure. Narrow
+SOURCE must release Integration-only refsfalse, remaining8cases/5desc PlanOnly,
+then locality1→issuer2→backend1→console2→browser2 at unchanged budgets. Keep the
+six current passing cases and Main/Support/Unit by exact unchanged dependencies;
+do not repeat all14. New owned-normalization/caller functionality remains unqualified.
+
 CSWH genuine causal RED is now retained on clean 1e8995a4: Unit refsfalse build
 0 errors/26 warnings/1:05.84 against actual BA Main341a0f01…/Support0266d639…;
 official PlanOnly4/1 zero executions7.0903299s; actual exact4 complete

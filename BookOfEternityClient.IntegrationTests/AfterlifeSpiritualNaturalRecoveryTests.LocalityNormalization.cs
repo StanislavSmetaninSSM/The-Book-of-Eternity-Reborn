@@ -19,6 +19,8 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
             await PrepareGrantForFullNormalizationAsync(fixture);
             await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
             var validator = new ValidationService(files, NullLogger<ValidationService>.Instance);
+            Assert.DoesNotContain(await validator.ValidateAcceptedTurnRawMortalLocationMaterializationAsync(), i => i.Severity == IssueSeverity.Error);
+            Assert.DoesNotContain(await validator.ValidateAcceptedTurnRawMortalItemMaterializationAsync(lease), i => i.Severity == IssueSeverity.Error);
             Assert.DoesNotContain(await validator.PrepareSpiritualSelfTreatmentPublicationAsync(lease), i => i.Severity == IssueSeverity.Error);
             Assert.True(AcceptedMechanicsPlanAuthority.TryPeekValidated(files, lease, out _, out var ready));
             var owner = Assert.IsType<AfterlifeWoundHealingPlanner.Continuation>(ready.Plan!.SpiritualHealingContinuation);
