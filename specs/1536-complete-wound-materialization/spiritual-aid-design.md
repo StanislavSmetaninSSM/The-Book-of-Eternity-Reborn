@@ -2,9 +2,14 @@
 
 Issue: https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536
 
-Status: bounded DESIGN accepted8e279e8c. Participation issuer/witness SOURCE
-acceptedef406058 and exact13 runtime cases PASS; independent OUTCOME ACCEPT.
-Active aid staging/draw/result/UI and full Engine grant remain implementation work.
+Status: bounded DESIGN accepted 8e279e8c. Participation issuer/witness exact13
+runtime cases have independent OUTCOME ACCEPT. The full selected player→current
+Guardian slice now has 17 distinct PASS across explicit fb/8f/3d/34b lineages:
+actual console grant43→cleanup→guided aid44 (d20=14, II/progress2), queued browser
+equivalent (d20=18, healed), strict backend/profile/ordinary/SELF/Shining consumers
+and protected-failure controls. Final coherent OUTCOME review is requested;
+source/provenance/limits are recorded in plan.md. Entity→player remains the next
+separate design/implementation slice with actual player confirmation.
 FR-054/FR-074 already require consent and fresh access. Technical decisions need
 no new user approval pause. Full T108, combat/helper services and #1536 remain open.
 

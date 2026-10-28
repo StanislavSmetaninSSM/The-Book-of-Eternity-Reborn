@@ -14423,7 +14423,7 @@ close full source-action/terminal/pending contracts or any top-level story task.
   Real C4 reset now passes through II0 and a fresh safe II1, including historical
   owner carry and exact scheduler replay (qualified11 controls, retained lineages).
   Fresh-process cleanup, full
-  source producers and helper/entity ACTIVE follow-through remain open; this does
+  source producers and other helper/entity ACTIVE follow-through remain open; this does
   not complete T104 or T105–T108.
   Current self-request prerequisite (2026-10-27), source
   `33d8aeac818caafe4d695d36ff06e01e16aa5999`: actual canonical-lease-owned staging,
@@ -14475,6 +14475,10 @@ close full source-action/terminal/pending contracts or any top-level story task.
   ordinary caller parity passes6da. Other limits remain explicit without a new attempt/die or duplicated self tick. The real
   C2/C4 reset→fresh safe-cycle journey now passesb3; initial nonzero progress is
   lawful fixture DATA, not prior-natural producer qualification.
+  Current full-normalization producer also proves actual report-driven actor
+  spiritual-healing H0→H1 (income12/cost10), while this cycle's natural tick stays
+  signed H0/progress1 and player client mirrors remain authoritative. This closes
+  that automatic-strategy producer boundary, not all training/progression sources.
 - [ ] T107 [US4] Compose healing/recovery wound/effect/resource/profile/scheduler/history/output after-images and exact replay results in `BookOfEternityClient/Services/WoundAcceptedTurnPlanner.cs` and `BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs`
 - [ ] T108 [US4] Add player-to-entity and entity-to-player treatment authority using exact profile, visibility, reachability, consent/conflict, and current wound bindings in `BookOfEternityClient/Services/AfterlifeWoundTreatmentAuthority.cs`
   Bounded player→current Guardian technical design is now written in
@@ -14488,8 +14492,9 @@ close full source-action/terminal/pending contracts or any top-level story task.
   and scalar/request/retained SELF controls now pass31 cases on ba1b551d. Actual
   guided Engine grant43 → cleanup → confirmed aid44 now succeeds in console
   (d20=14, II/progress2) and queued browser (d20=18, healed). Actual pre-draw
-  console rollback also passes. One browser protected-failure observer remains
-  under test-only correction; the whole finite17 OUTCOME is still pending.
+  console rollback also passes. The corrected browser protected-failure singleton
+  now passes both same-FS admission refusals and unchanged preparing DATA guards.
+  The finite17 distinct PASS union is complete; final coherent OUTCOME is requested.
   Existing backend/affected consumers retain13 fb/8f cases; caller-only canonical
   EMPTY lore is seeded before the sole bootstrap. Full helper completion
   remains open.
@@ -14532,6 +14537,10 @@ close full source-action/terminal/pending contracts or any top-level story task.
   publication also pass1/1 on7b. This does not close the wider target/diagnosis/
   route/helper/quote workflow or full console parity. The separate graph-bearing
   caller/repair journey now passes1/1 on926 with the scope recorded above.
+  Current Guardian aid now also completes grant43→cleanup→shared confirmation→
+  actual aid44 through console and queued browser with no JSON/ID input. The
+  finite17 consumers/guards pass across explicit lineages; wider helpers/quotes/
+  target/method flows and final acceptance limits remain recorded under T108.
 - [ ] T122 [US5] Implement one-shot exact wound command staging/consumption and stale/replay rejection in `BookOfEternityClient/Services/WoundCommandState.cs`
 - [ ] T123 [US5] Add escaped Russian console list/detail/History/prompts/results using shared blocks in `BookOfEternityClient/UI/ExplorerWoundCommandResultBuilder.cs` and `BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Wounds.cs`
 - [ ] T124 [US5] Register all command aliases and route both Mortal/afterlife console actions to the shared handler in `BookOfEternityClient/CommandProtocol/ExplorerCommandCatalog.cs` and `BookOfEternityClient/UI/ExplorerMode.cs`

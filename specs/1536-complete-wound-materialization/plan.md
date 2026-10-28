@@ -1,5 +1,45 @@
 # US4 safe self-treatment — active functional work, 2026-10-28
 
+Player→current consenting Guardian bounded end-to-end slice is now GREEN.
+Exact original 17-method PlanOnly membership equals 17 unique passing test IDs
+and 17 unique execution IDs across explicit lineages: fb8157618 nine +8f851337f
+four +3d918f453 console2/happybrowser1 +34b47f497 refusal1. This is retained
+evidence, not one all17 rerun or blanket current-SHA qualification. Source/FS
+unchanged helper4 GREEN remains its separate 8a receipt. All selected runs have
+complete selections, no skip/duplicate/timeout, both cleanup flags true and their
+original 60/120/180-second category bounds. The mixed browser2 job at3d stays
+1PASS/1FAIL; only its happy Fact is retained, with the corrected refusal separately.
+
+Final refusal singleton: official1/1 PlanOnly0executed6.9731676 s; actual1/1PASS
+40.9082625 s/category32.0041847<180, case23.4252156. TRX SHA256
+585f86558c0fddebec9b5d76175d82fb8a3883e08f98275f5137c9208dfb481f.
+Both exact issuing-FS phase refusals and every raw retained body/slot/source/control/
+no-new-proof/no-healing assertion now execute. Integration-only build0errors,
+102baseline warnings2:00.78; all9post-run master/dependency pins match. Main/Support/
+Unit remain warning-clean fb production, current Integration fdffe9c4….
+Raw: external spiritual-aid-profile-1, spiritual-aid-profile-2,
+spiritual-aid-caller-4 and spiritual-aid-browser-refusal-1, each with source/pins.
+
+Actual console observes d20=14 → active II/progress2; queued browser observes
+d20=18 → healed I/0. Both perform real accepted grant43 → original cleanup →
+shared cancel/confirm → aid44, actual NPC Brain/journal, retained request3, separate
+healerH3/targetH0, exact weaker graphs/effects/History, one attempt/one aid cycle and
+no treatment charge. Normal happy paths have no injected hook/Engine diagnostic.
+Other actual refusal fixtures establish prepared-control rollback before draw and
+preparing original retention after one staged draw. These are controlled native-
+shaped GM journeys, not external-provider or fresh-process recovery qualification.
+
+Optimization verified in scope: one complete report-driven profile projection in
+the actual common owner replaces the duplicate generic writer; the real H0→H1
+strategy producer and player mirror preserve the signed-old-tier tick. Existing
+report DATA is reused without new I/O/cache/permission, scalar root-membership
+queries avoid full catalog clones, exact two-path owned writes retain immutable
+Before through the trusted publisher. No measured speedup is claimed. Final finite
+Sol/Astra OUTCOME is requested after this checkpoint. Full T105–T108/US4/#1536,
+reverse player-confirmed entity aid, wider actors/services/combat and standing
+Mortal/T609/DFR/Windows/provider/recovery limits remain open. Remote persistence
+is verified; a new complete clean-directory restore has not been qualified.
+
 Real player→current Guardian aid now completes through BOTH interfaces on compiled
 3d918f453: console positive d20=14 finishes active II/progress2; browser positive
 d20=18 heals the target (I/0 terminal). Each accepts grant43/naturalIII1, performs
