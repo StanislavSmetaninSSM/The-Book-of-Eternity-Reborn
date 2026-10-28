@@ -251,3 +251,15 @@ cheap history-carry6/60 → existing natural-publication4/120 → reset1/120 sep
 Independent SOURCE/PREP chooses final selection. Prior19 retain their original
 lineages; changed shared Core requires these affected controls, not an automatic
 all19/current-SHA claim or complete selection.json run.
+
+- Carry6add current actuals: official11/3 PlanOnly12.7828374s, cheap6/6PASS
+  12.2580477s and ordinary publication4/4PASS31.1109975s. Reset1 completes FAIL
+  32.4857172s only at observer JsonNode.Parse(schedule bytes): BOM0xEF. All C4
+  reset and following safe II1/strict natural result/no attempt/canonical quartet/
+  receipt/source-binding assertions have executed; repeated scheduler Apply and
+  final byte equality remain unreached. All11 unique IDs/executions, complete/no
+  timeout/dup/skip and bothcleanuptrue; nine postrun pins match. Raw/hash in
+  natural-history-carry-1, reset TRX1dc645933cf0fe17b66837a05c8b7f130a51ff855c6679117b9e36996818297f.
+  Correct ONLY test schedule observer with existing DecodeOneOptionalBom; retain
+  original exact bytes and comparisons. Production unchanged; retain current6+4,
+  fresh Integrationrefsfalse then exact reset1 after narrow SOURCE. No all11 rerun.

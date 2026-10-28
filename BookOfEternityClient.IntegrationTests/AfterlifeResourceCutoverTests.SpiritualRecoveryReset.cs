@@ -204,7 +204,7 @@ public sealed partial class AfterlifeResourceCutoverTests
         var profilesAfter = await context.FileSystem.ReadFileBytesAsync(AfterlifeEntityProfileState.StatePath);
         var historyAfter = await context.FileSystem.ReadFileBytesAsync(WoundHistoryState.HistoryPath);
         var scheduleAfter = await context.FileSystem.ReadFileBytesAsync(ProgressionScheduleService.SchedulePath);
-        Assert.Equal(control.NextChaosSeaTurnOrdinal, JsonNode.Parse(scheduleAfter!)!["currentChaosSeaTurnOrdinal"]!.GetValue<long>());
+        Assert.Equal(control.NextChaosSeaTurnOrdinal, JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(scheduleAfter!))!["currentChaosSeaTurnOrdinal"]!.GetValue<long>());
         AssertNoConflictFrameErrors(await scheduler.ValidateAcceptedTurnOutcomeAsync(control));
         await scheduler.ApplyAcceptedTurnOutcomeAsync(control);
         await scheduler.ApplyAcceptedTurnOutcomeAsync(control);
