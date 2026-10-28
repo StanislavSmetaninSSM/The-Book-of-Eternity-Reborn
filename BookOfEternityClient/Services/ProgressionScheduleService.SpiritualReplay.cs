@@ -73,10 +73,8 @@ public partial class ProgressionScheduleService
         if (!history.IsValid)
             throw new InvalidDataException("Published spiritual cycle history is not canonical.");
         var matching = history.State!.Transitions.Select(t => t.TransitionResult).OfType<SpiritualHealingPersistedResult>()
-            .Select(r => (Result: r, Root: r.ToCanonicalJson())).Where(p =>
-                p.Root["binding"]!["sessionId"]!.GetValue<string>() == sessionId &&
-                p.Root["binding"]!["requestId"]!.GetValue<string>() == requestId &&
-                p.Root["binding"]!["turn"]!.GetValue<int>() == turn).ToArray();
+            .Where(r => r.MatchesBinding(sessionId, requestId, turn))
+            .Select(r => (Result: r, Root: r.ToCanonicalJson())).ToArray();
         if (matching.Length == 0) return null;
         if (matching.Length != 1) throw new InvalidDataException("Published spiritual cycle identity is ambiguous.");
         var accepted = matching[0];

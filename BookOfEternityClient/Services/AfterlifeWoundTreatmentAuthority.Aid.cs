@@ -20,6 +20,137 @@ internal static partial class AfterlifeWoundTreatmentAuthority
         WoundIdentityState Identities, WoundHistoryState History, WoundCarrierCatalog Catalog,
         IReadOnlyList<SpiritualWoundRecoveryMember> NaturalMembers);
 
+    internal sealed record AidTurnStageResult(ProgressionControl? Control, SpiritualSelfTreatmentStageResult Stage);
+
+    // Called inside GameEngine's existing pre-turn backup/rollback scope. One
+    // actual lease spans the committed read BEFORE control/request writes and the
+    // fresh closing checks BEFORE the first treatment draw.
+    internal static async Task<AidTurnStageResult> StagePlayerAidTurnAsync(FileSystemManager files,
+        FileSystemManager.CanonicalWriteLease lease, ProgressionScheduleService scheduler,
+        string sessionId, string requestId, int turn, SpiritualSelfTreatmentSelection selection,
+        Func<int, int[]>? drawDice = null)
+    {
+        files.EnsureCanonicalWriteLeaseActive(lease);
+        files.VerifyCurrentSessionOperation(lease);
+        selection = SpiritualSelfTreatmentSelection.Parse(selection.ToJson());
+        if (selection.Aid is null || !ResourceMaterializationContract.IsExactIdentifier(sessionId) ||
+            !ResourceMaterializationContract.IsExactIdentifier(requestId) || turn < 1)
+            return new(null, new(false, false, "spiritual_aid_context_invalid", null));
+        ProgressionControl? control = null;
+        try
+        {
+            var grant = await ReadCommittedAidGrantAsync(files, lease, sessionId, turn, selection);
+            control = await scheduler.BuildControlForNextTurnAsync(lease, activeTurnRealm: null);
+            var preparedSchedule = await ReadSourceAsync(files, lease, ProgressionScheduleService.SchedulePath);
+            await RequireAidReadImagesCurrentAsync(files, lease, grant.Reads, ProgressionScheduleService.SchedulePath);
+            JsonObject? Root(string path)
+            {
+                var source = grant.Reads.Single(s => s.Path == path);
+                if (source.Root is not null || !source.Image.Existed) return source.Root;
+                return StrictJsonAuthority.Deserialize<JsonObject>(CanonicalJsonUtf8.DecodeOneOptionalBom(source.Image.Bytes!),
+                    new JsonSerializerOptions(), path);
+            }
+            if (control.AfterlifeCatchupRequired || !AfterlifeEntityProfileState.TryNormalizeEffectRealm(control.CurrentRealm, out var realm) || realm != "chaos_sea" ||
+                !ProgressionScheduleService.TryBindPreparedSpiritualCycle(preparedSchedule.Root,
+                    grant.Reads.Single(s => s.Path == EffectAcceptedTurnInputComposer.WorldTimePath).Image.Bytes,
+                    Root(ShiningAbodeState.StatePath), control, realm, out var ordinal) ||
+                grant.Witness["record"]!["eligibleCycleOrdinal"]!.GetValue<int>() != ordinal)
+                throw new InvalidDataException("Aid lost its exact next prepared safe cycle.");
+            var cycle = CycleKey(realm, ordinal);
+            if (grant.NaturalMembers.Any(m => m.Wound.Recovery.LastTickKey == cycle ||
+                    !grant.Identities.TryGetEntry(m.Wound.WoundId, out var identity) || identity.CreatedAtTurn >= turn) ||
+                grant.History.Transitions.Any(t => t.WoundId == selection.WoundId && t.AttemptId is not null && t.CycleKey == cycle))
+                throw new InvalidDataException("Aid would repeat a wound session or natural tick.");
+            grant.Reads[grant.Reads.FindIndex(s => s.Path == ProgressionScheduleService.SchedulePath)] = preparedSchedule;
+            var stageSources = SourcePaths.Concat(AidLocalityPaths).Select(p => grant.Reads.Single(s => s.Path == p)).ToArray();
+            var context = new SpiritualSelfTreatmentStageContext(sessionId, requestId, turn, control);
+            var data = new SourceData(grant.Wound, grant.Source, realm, ordinal, AidSourceFingerprint(context, stageSources, grant.Witness),
+                grant.Carriers, grant.Effects, grant.Identities, grant.History, grant.Catalog, grant.NaturalMembers, grant.Witness.DeepClone().AsObject());
+            var pending = grant.Reads.Single(s => s.Path == AcceptedMechanicsPlan.WoundCommandPath);
+            // Include the preceding input/protocol read images as operation guards;
+            // only the canonical 18 source paths enter the new signed source hash.
+            var guards = grant.Reads.Where(s => s.Path != pending.Path).ToArray();
+            var staged = await StageAdmittedActiveTreatmentAsync(files, lease, context, selection, guards, pending, data, drawDice);
+            return new(control, staged);
+        }
+        catch (Exception failure) when (failure is not CoordinatedStatePublicationUncertainException &&
+            failure is (JsonException or InvalidDataException or InvalidOperationException or ArgumentException or OverflowException))
+        {
+            return new(control, new(false, false, "spiritual_aid_admission_invalid", null));
+        }
+    }
+
+    private static string AidSourceFingerprint(SpiritualSelfTreatmentStageContext context,
+        IReadOnlyList<SourceFile> sources, JsonObject witness) => WoundAcceptedTurnFingerprintWriter.Compute(new[]
+        {
+            "spiritual_aid_treatment_source", "3", context.SessionId, context.RequestId,
+            context.Turn.ToString(System.Globalization.CultureInfo.InvariantCulture),
+            WoundAcceptedTurnFingerprintWriter.CanonicalJson(JsonSerializer.SerializeToNode(context.Progression)!),
+            WoundAcceptedTurnFingerprintWriter.CanonicalJson(witness)
+        }.Concat(SourcePaths.Concat(AidLocalityPaths).SelectMany(path =>
+        {
+            var source = sources.Single(s => s.Path == path);
+            return new[] { path, source.Image.Fingerprint };
+        })));
+
+    internal static SourceResult PrepareAidSourceData(SpiritualSelfTreatmentStageContext context,
+        SpiritualSelfTreatmentSelection selection, IReadOnlyList<SourceFile> sources, JsonObject witness)
+    {
+        if (selection.Aid is not { } aid) return SourceRefuse("target_invalid");
+        var natural = PrepareNaturalSourceData(context, sources);
+        if (natural is null || natural.Realm != "chaos_sea") return SourceRefuse("cycle_invalid");
+        JsonObject? Root(string path) => sources.Single(s => s.Path == path).Root;
+        var matches = natural.Catalog.Occurrences.Where(o => o.WoundId == selection.WoundId).ToArray();
+        if (matches is not { Length: 1 } || matches[0].Wound is not { Lifecycle: "active" } wound ||
+            wound.Owner != new WoundOwnerCoordinate(natural.Realm, "guardian", aid.TargetId, WoundCarrierCatalog.AfterlifeProfilesPath) ||
+            wound.Display.Visibility is not ("public" or "known_to_player") ||
+            WoundIdentityState.ComputeSemanticFingerprint(wound) != selection.ExpectedWoundFingerprint)
+            return SourceRefuse("target_invalid");
+        var target = natural.Carriers.AfterlifeProfiles!["profiles"]!.AsArray().OfType<JsonObject>()
+            .Single(p => WoundCarrierCollectionAuthority.AfterlifeProfileMatches(p, wound.Owner));
+        var healerCoordinate = new WoundOwnerCoordinate(natural.Realm, "player_soul", "player_soul", WoundCarrierCatalog.AfterlifeProfilesPath);
+        var healers = natural.Carriers.AfterlifeProfiles["profiles"]!.AsArray().OfType<JsonObject>()
+            .Where(p => WoundCarrierCollectionAuthority.AfterlifeProfileMatches(p, healerCoordinate)).ToArray();
+        var scope = SpiritualTreatmentParticipation.RequireCurrentGuardianScope(Root(AidGuardiansPath)
+            ?? throw new InvalidDataException("Aid original locality is absent."), Root(GuardianAbodeResidentState.StatePath), aid.TargetId);
+        if (healers is not { Length: 1 } || !AfterlifeProfileVisibility.IsVisibleToPlayer(target) ||
+            !AfterlifeProfileVisibility.IsVisibleToPlayer(healers[0]) || target["locationId"]?.GetValue<string>() != scope.LocationId)
+            return SourceRefuse("target_invalid");
+        RequireOriginalAidWitness(witness, context, selection, target, natural.History, wound);
+        var source = SpiritualHealingResolver.PrepareSource(new(wound, healerCoordinate, healers[0], Root(SoulPath), natural.Mechanics)).Source;
+        if (source is null || source.HealingTier < wound.Severity.Rank) return SourceRefuse("tier_insufficient");
+        if (natural.History.Transitions.Any(t => t.WoundId == wound.WoundId && t.AttemptId is not null &&
+                t.CycleKey == CycleKey(natural.Realm, natural.CycleOrdinal))) return SourceRefuse("attempt_already_accepted");
+        return new(new(wound, source, natural.Realm, natural.CycleOrdinal, AidSourceFingerprint(context, sources, witness),
+            natural.Carriers, natural.Effects, natural.Identities, natural.History, natural.Catalog, natural.Members,
+            witness.DeepClone().AsObject()), null);
+    }
+
+    private static void RequireOriginalAidWitness(JsonObject witness, SpiritualSelfTreatmentStageContext context,
+        SpiritualSelfTreatmentSelection selection, JsonObject target, WoundHistoryState history, WoundMaterializationEnvelope wound)
+    {
+        if (witness.Count != 3 || witness["record"] is not JsonObject record ||
+            String(witness["contentFingerprint"]) != SpiritualTreatmentParticipation.Fingerprint(record) ||
+            String(witness["contentFingerprint"]) != selection.Aid!.ParticipationFingerprint ||
+            !JsonNode.DeepEquals(target[SpiritualTreatmentParticipation.RecordProperty], record) ||
+            target.ContainsKey(SpiritualTreatmentParticipation.ChangeProperty))
+            throw new InvalidDataException("Aid original participation content differs from its accepted witness.");
+        SpiritualTreatmentParticipation.ValidateRecord(record);
+        var previous = history.Transitions.Select(t => t.TransitionResult).OfType<SpiritualHealingPersistedResult>()
+            .Where(r => r.ResultFingerprint == String(witness["grantResultFingerprint"])).ToArray();
+        if (previous is not { Length: 1 } || !previous[0].IsNatural)
+            throw new InvalidDataException("Aid original lacks its actual committed natural grant result.");
+        var final = previous[0].ReadFinalWound(wound.WoundId);
+        if (previous[0].SchemaVersion != 3 || previous[0].ParticipationOutcomes is not JsonArray outcomes || outcomes.Count != 1 ||
+            !JsonNode.DeepEquals(outcomes[0]?["record"], record) || String(record["status"]) != "granted" ||
+            String(record["healerId"]) != selection.Aid.HealerId || String(record["targetId"]) != selection.Aid.TargetId ||
+            String(record["woundId"]) != wound.WoundId || Integer(record["eligibleCycleOrdinal"]) != context.Progression.NextChaosSeaTurnOrdinal ||
+            String(record["locationId"]) != String(target["locationId"]) ||
+            String(record["binding"]?["sessionId"]) != context.SessionId || Integer(record["binding"]?["turn"]) != context.Turn - 1 ||
+            final is null || WoundIdentityState.ComputeSemanticFingerprint(final) != WoundIdentityState.ComputeSemanticFingerprint(wound))
+            throw new InvalidDataException("Aid original grant identity/cycle/current wound does not match its full accepted result.");
+    }
+
     private static async Task<AidGrantData> ReadCommittedAidGrantAsync(FileSystemManager files,
         FileSystemManager.CanonicalWriteLease lease, string sessionId, int turn,
         SpiritualSelfTreatmentSelection selection)

@@ -1693,11 +1693,12 @@ public partial class GameEngine
             };
             if (browserAction != null) request.RequestId = browserAction.ActionId;
             reminderTiming?.Dispose();
-            using (_fs.MeasureOperation("PlayerTurn.Stage.BuildProgressionControl"))
-                request.ProgressionControl = await _progressionSchedule.BuildControlForNextTurnAsync();
             var healingSelection = browserAction is null
                 ? _explorer.ConsumePendingSpiritualSelfTreatment(action, sessionGeneration)
                 : browserAction.SpiritualSelfTreatment;
+            if (healingSelection?.Aid is null)
+                using (_fs.MeasureOperation("PlayerTurn.Stage.BuildProgressionControl"))
+                    request.ProgressionControl = await _progressionSchedule.BuildControlForNextTurnAsync();
             if (healingSelection is not null)
             {
                 using var healingTiming = _fs.MeasureOperation("PlayerTurn.Stage.SpiritualSelfTreatment");
@@ -1710,10 +1711,22 @@ public partial class GameEngine
                     healingLease, request, backedUpFiles, conflictExisted);
                 if (!_fs.FileExists(healingLease, AfterlifeSpiritualConflictState.StatePath))
                     throw new InvalidDataException("Healing preparation requires initialized spiritual conflict state before its draw.");
-                var stagedHealing = await AfterlifeWoundTreatmentAuthority.StageSelfTreatmentAsync(_fs, healingLease,
-                    new(request.SessionId, request.RequestId, request.TurnNumber, request.ProgressionControl!), healingSelection);
+                SpiritualSelfTreatmentStageResult stagedHealing;
+                if (healingSelection.Aid is not null)
+                {
+                    // The preceding accepted grant's request and closed schedule
+                    // must still exist here. This call owns proof→control→draw
+                    // under THIS lease; the enclosing backup owns any refusal rollback.
+                    var aid = await AfterlifeWoundTreatmentAuthority.StagePlayerAidTurnAsync(_fs, healingLease, _progressionSchedule,
+                        request.SessionId, request.RequestId, request.TurnNumber, healingSelection);
+                    request.ProgressionControl = aid.Control;
+                    stagedHealing = aid.Stage;
+                }
+                else
+                    stagedHealing = await AfterlifeWoundTreatmentAuthority.StageSelfTreatmentAsync(_fs, healingLease,
+                        new(request.SessionId, request.RequestId, request.TurnNumber, request.ProgressionControl!), healingSelection);
                 if (!stagedHealing.IsStaged || stagedHealing.GmContext is null)
-                    throw new InvalidDataException("Self-treatment selection can no longer be staged: " + stagedHealing.IssueCode);
+                    throw new InvalidDataException("Spiritual treatment selection can no longer be staged: " + stagedHealing.IssueCode);
                 // Signed preparation evidence is distinct from the unchanged pre-turn rollback absence.
                 backedUpFiles.ValidationSnapshotFiles.Add(AcceptedMechanicsPlan.WoundCommandPath);
                 // Capture the prepared cycle while retaining its original schedule rollback bytes/hash.

@@ -102,56 +102,61 @@ internal static partial class AfterlifeWoundTreatmentAuthority
             var admitted = PrepareSourceData(context with { Progression = control }, selection, sources);
             if (admitted.Data is not { } data)
                 return Refuse(admitted.IssueCode!);
-            var source = data.Source;
-            var realm = data.Realm;
-            var ordinal = data.CycleOrdinal;
-            var sourceFingerprint = data.SourceFingerprint;
-
-            var existingRoot = pending.Root;
-            if (pending.Image.Existed)
-            {
-                if (existingRoot is null || !SpiritualSelfTreatmentRequestCodec.IsExact(existingRoot, context,
-                        selection, realm, ordinal, sourceFingerprint, source))
-                    return Refuse("pending_conflict");
-                using var freshRetry = FileSystemManager.SuppressValidationReuse();
-                if (!await CoordinatedStateWriteHelper.TryCommitAsync(files, lease,
-                        sources.Append(pending).Select(s => CoordinatedStateWriteHelper.CreateExactGuardWrite(s.Path, s.Image)).ToArray()))
-                    return Refuse("source_changed");
-                return new(true, true, null, String(existingRoot["requestFingerprint"]))
-                    { GmContext = SpiritualHealingRequestProjection.Create(data, existingRoot) };
-            }
-
-            var draws = (drawDice ?? GameLoop.GenerateSecureRandomDice)(source.RollMode == "normal" ? 1 : 2);
-            var resolution = SpiritualHealingResolver.ResolvePrepared(source, source.RollMode, draws);
-            if (!resolution.IsValid)
-                return Refuse("draw_invalid");
-            var request = SpiritualSelfTreatmentRequestCodec.Create(context, selection, realm, ordinal,
-                sourceFingerprint, source.RollMode, resolution.Resolution!.SourceRolls);
-            var gmContext = SpiritualHealingRequestProjection.Create(data, request, resolution.Resolution);
-            var json = request.ToJsonString();
-            using var fresh = FileSystemManager.SuppressValidationReuse();
-            var writes = sources.Select(s => CoordinatedStateWriteHelper.CreateExactGuardWrite(s.Path, s.Image))
-                .Append(new CoordinatedStateWriteHelper.PlannedWrite(pending.Path, null, json,
-                    RequireCurrentBaseline: true, ExactPrevious: pending.Image)).ToArray();
-            if (!await CoordinatedStateWriteHelper.TryCommitAsync(files, lease, writes))
-                return Refuse("source_changed");
-            try
-            {
-                var stored = await files.ReadFileBytesAsync(lease, pending.Path);
-                if (stored is null || CanonicalJsonUtf8.DecodeOneOptionalBom(stored) != json)
-                    throw new InvalidDataException("Treatment request readback differs after publication.");
-            }
-            catch (Exception failure) when (failure is IOException or InvalidDataException or UnauthorizedAccessException)
-            {
-                throw new CoordinatedStatePublicationUncertainException(failure);
-            }
-            return new(true, false, null, String(request["requestFingerprint"]))
-                { GmContext = gmContext };
+            return await StageAdmittedActiveTreatmentAsync(files, lease, context, selection, sources, pending, data, drawDice);
         }
         catch (Exception failure) when (failure is JsonException or InvalidDataException)
         {
             return Refuse("source_invalid");
         }
+    }
+
+    // One retained-draw/write implementation for both currently closed active
+    // families. Caller admission owns the actual lease and fresh source images.
+    private static async Task<SpiritualSelfTreatmentStageResult> StageAdmittedActiveTreatmentAsync(
+        FileSystemManager files, FileSystemManager.CanonicalWriteLease lease, SpiritualSelfTreatmentStageContext context,
+        SpiritualSelfTreatmentSelection selection, IReadOnlyList<SourceFile> sources, SourceFile pending,
+        SourceData data, Func<int, int[]>? drawDice)
+    {
+        var source = data.Source;
+
+        var existingRoot = pending.Root;
+        if (pending.Image.Existed)
+        {
+            if (existingRoot is null || !SpiritualSelfTreatmentRequestCodec.IsExactActive(existingRoot, context, selection, data))
+                return Refuse("pending_conflict");
+            using var freshRetry = FileSystemManager.SuppressValidationReuse();
+            if (!await CoordinatedStateWriteHelper.TryCommitAsync(files, lease,
+                    sources.Append(pending).Select(s => CoordinatedStateWriteHelper.CreateExactGuardWrite(s.Path, s.Image)).ToArray()))
+                return Refuse("source_changed");
+            return new(true, true, null, String(existingRoot["requestFingerprint"]))
+                { GmContext = SpiritualHealingRequestProjection.Create(data, existingRoot) };
+        }
+
+        var draws = (drawDice ?? GameLoop.GenerateSecureRandomDice)(source.RollMode == "normal" ? 1 : 2);
+        var resolution = SpiritualHealingResolver.ResolvePrepared(source, source.RollMode, draws);
+        if (!resolution.IsValid)
+            return Refuse("draw_invalid");
+        var request = SpiritualSelfTreatmentRequestCodec.CreateActive(context, selection, data, resolution.Resolution!.SourceRolls);
+        var gmContext = SpiritualHealingRequestProjection.Create(data, request, resolution.Resolution);
+        var json = request.ToJsonString();
+        using var fresh = FileSystemManager.SuppressValidationReuse();
+        var writes = sources.Select(s => CoordinatedStateWriteHelper.CreateExactGuardWrite(s.Path, s.Image))
+            .Append(new CoordinatedStateWriteHelper.PlannedWrite(pending.Path, null, json,
+                RequireCurrentBaseline: true, ExactPrevious: pending.Image)).ToArray();
+        if (!await CoordinatedStateWriteHelper.TryCommitAsync(files, lease, writes))
+            return Refuse("source_changed");
+        try
+        {
+            var stored = await files.ReadFileBytesAsync(lease, pending.Path);
+            if (stored is null || CanonicalJsonUtf8.DecodeOneOptionalBom(stored) != json)
+                throw new InvalidDataException("Treatment request readback differs after publication.");
+        }
+        catch (Exception failure) when (failure is IOException or InvalidDataException or UnauthorizedAccessException)
+        {
+            throw new CoordinatedStatePublicationUncertainException(failure);
+        }
+        return new(true, false, null, String(request["requestFingerprint"]))
+            { GmContext = gmContext };
     }
 
     internal sealed record SourceData(WoundMaterializationEnvelope Wound,

@@ -9,7 +9,8 @@ internal static partial class AfterlifeWoundTreatmentAuthority
     // Whole-operation parsed DATA, not a request, mutation authority or independent cache.
     internal sealed record NaturalSourceData(string Realm, int CycleOrdinal, string SourceFingerprint,
         WoundCarrierCatalogInput Carriers, EffectCarrierCatalog Effects, WoundIdentityState Identities,
-        WoundHistoryState History, WoundCarrierCatalog Catalog, IReadOnlyList<SpiritualWoundRecoveryMember> Members);
+        WoundHistoryState History, WoundCarrierCatalog Catalog, IReadOnlyList<SpiritualWoundRecoveryMember> Members,
+        EffectMechanicsSnapshot Mechanics);
 
     internal static async Task<JsonObject?> ProjectNaturalRecoveryAsync(FileSystemManager files,
         FileSystemManager.CanonicalWriteLease lease, SpiritualSelfTreatmentStageContext context,
@@ -87,6 +88,6 @@ internal static partial class AfterlifeWoundTreatmentAuthority
             context.Turn.ToString(System.Globalization.CultureInfo.InvariantCulture),
             WoundAcceptedTurnFingerprintWriter.CanonicalJson(JsonSerializer.SerializeToNode(control)!)
         }.Concat(sources.SelectMany(s => new[] { s.Path, s.Image.Fingerprint })));
-        return new(realm, ordinal, fingerprint, carriers, effectCatalog, identities.State!, history.State!, catalog, members);
+        return new(realm, ordinal, fingerprint, carriers, effectCatalog, identities.State!, history.State!, catalog, members, effects);
     }
 }

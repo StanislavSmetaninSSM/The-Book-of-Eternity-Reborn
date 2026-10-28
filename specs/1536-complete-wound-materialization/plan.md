@@ -1,5 +1,24 @@
 # US4 safe self-treatment — active functional work, 2026-10-28
 
+Shared aid stage WIP is connected (UNCOMPILED/UNRUN): Engine resolves explicit aid
+selection before control or preceding input overwrite; under its actual healing
+lease and existing backup scope it reads the committed grant, uses the one leased
+control core, verifies every other read image before entropy, then calls the SAME
+retained draw/write implementation as self. The request hashes canonical18 sources
+plus full witness, while all preceding input/protocol images remain operation
+guards. Refusal stays inside existing Engine rollback; no staging-only rollback
+framework. Pending aid input refuses another new draw; actual-original repair/
+replay will retain its body through B. No guided aid choice is exposed yet.
+
+Aid B source DATA reuses the existing full natural admission and its already-built
+effect mechanics, then binds actual player healer separately to the Guardian's
+own natural tier and exact committed witness. Strict result readers now select by
+scalar binding/fingerprint before copying only matching result DATA, and expose
+one detached final wound instead of cloning every historical cohort for lookup.
+No new cache or permission export. Still required before SOURCE/build: actual
+signed aid family dispatch/closing + v3 aid result/replay/I and existing guided
+console/browser, causal staging/source negatives and GM synchronization.
+
 Aid request codec WIP (UNCOMPILED/UNRUN) extends the existing active codec with
 explicit v3 neutral spiritual_treatment_request/mode=aid. Actual healer/target,
 full accepted record/content/grant-result fingerprints and source/cycle enter the

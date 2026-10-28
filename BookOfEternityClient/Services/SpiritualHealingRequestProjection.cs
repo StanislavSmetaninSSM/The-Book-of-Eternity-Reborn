@@ -116,7 +116,7 @@ internal static class SpiritualHealingRequestProjection
             ?? throw new InvalidDataException("The retained healing request lost its scalar program.");
         var program = BuildProgram(data, request, resolution);
         var fingerprint = request["requestFingerprint"]!.GetValue<string>();
-        return new JsonObject
+        var projection = new JsonObject
         {
             ["schemaVersion"] = 1, ["requestFingerprint"] = fingerprint,
             ["attemptId"] = attempt["attemptId"]!.DeepClone(), ["woundName"] = data.Wound.Display.Name,
@@ -129,5 +129,15 @@ internal static class SpiritualHealingRequestProjection
                 ["complications"] = Complications(fingerprint, program.Wounds.Single(w => w.WoundId == g.WoundId))
             }).ToArray())
         };
+        if (data.AidWitness is not null)
+        {
+            projection["schemaVersion"] = 3;
+            projection["mode"] = "aid";
+            projection["healer"] = OwnerJson(data.Source.Healer);
+            projection["target"] = OwnerJson(data.Source.Target);
+            projection["targetNaturalHealingTier"] = data.NaturalMembers.First(m => m.Wound.Owner == data.Wound.Owner).HealingTier;
+            projection["participationVerified"] = true; // GM comparison DATA, never permission to author a grant or request.
+        }
+        return projection;
     }
 }
