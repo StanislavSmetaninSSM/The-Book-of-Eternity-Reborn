@@ -14494,7 +14494,9 @@ close full source-action/terminal/pending contracts or any top-level story task.
   (d20=14, II/progress2) and queued browser (d20=18, healed). Actual pre-draw
   console rollback also passes. The corrected browser protected-failure singleton
   now passes both same-FS admission refusals and unchanged preparing DATA guards.
-  The finite17 distinct PASS union is complete; final coherent OUTCOME is requested.
+  The finite17 distinct PASS union has independent Sol OUTCOME ACCEPT. Astra
+  separately accepted locality/profile and aid-backend (not the final fault
+  singleton); no additional runtime repeat follows from that scope difference.
   Existing backend/affected consumers retain13 fb/8f cases; caller-only canonical
   EMPTY lore is seeded before the sole bootstrap. Full helper completion
   remains open.

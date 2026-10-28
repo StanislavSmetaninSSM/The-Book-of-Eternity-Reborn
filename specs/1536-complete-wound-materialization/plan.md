@@ -35,8 +35,10 @@ the actual common owner replaces the duplicate generic writer; the real H0→H1
 strategy producer and player mirror preserve the signed-old-tier tick. Existing
 report DATA is reused without new I/O/cache/permission, scalar root-membership
 queries avoid full catalog clones, exact two-path owned writes retain immutable
-Before through the trusted publisher. No measured speedup is claimed. Final finite
-Sol/Astra OUTCOME is requested after this checkpoint. Full T105–T108/US4/#1536,
+Before through the trusted publisher. No measured speedup is claimed. Independent Sol OUTCOME ACCEPT covers the exact
+17-case union. Astra independently accepted the bounded locality/profile and
+aid-backend cases, with optional happy-caller crosschecks; it did not review the
+last browser-fault singleton. No further receipt or runtime repeat is required. Full T105–T108/US4/#1536,
 reverse player-confirmed entity aid, wider actors/services/combat and standing
 Mortal/T609/DFR/Windows/provider/recovery limits remain open. Remote persistence
 is verified; a new complete clean-directory restore has not been qualified.
