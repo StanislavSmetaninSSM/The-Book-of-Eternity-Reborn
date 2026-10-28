@@ -104,6 +104,30 @@ public sealed class SpiritualHealingGuidedContractTests : IDisposable
     }
 
     [Fact]
+    public void CombatHealingHasAClosedWorkedExampleAndNoSafeAttemptOrCycle()
+    {
+        const string marker = "spiritual_combat_healing_v1";
+        foreach (var file in new[] { "OtherGuides/Wound_Materialization_Contract.md", "OtherGuides/Afterlife_Contract_Matrix.md",
+            "CLI_API_Specification.md", "Rules/Block_CLI_Operations.txt", "TaskGuides/CLI_Step_Main.txt", "BookOfEternityClient/game_master_daemon.ps1" })
+            Assert.Contains(marker, File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, file)));
+        var entry = Assert.Single(ExampleValidationManifest.Load().EffectMaterializationCoverage, c => c.ContractId == marker);
+        var example = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "Examples", entry.File));
+        Assert.All(entry.RequiredText, token => Assert.Contains(token, example));
+        var start = example.IndexOf(marker + " — worked", StringComparison.Ordinal);
+        Assert.True(start >= 0);
+        var fence = example.IndexOf("```json", start, StringComparison.Ordinal) + "```json".Length;
+        var end = example.IndexOf("```", fence, StringComparison.Ordinal);
+        var root = JsonNode.Parse(example[fence..end])!.AsObject();
+        var selection = SpiritualSelfTreatmentSelection.Parse(root);
+        Assert.NotNull(selection.Combat); Assert.Null(selection.Aid);
+        Assert.Equal(WoundApplicationService.CombatActionText, WoundApplicationService.ActionFor(selection));
+        Assert.Equal(selection, SpiritualSelfTreatmentSelection.Parse(selection.ToJson()));
+        root["roll"] = 20;
+        Assert.Throws<InvalidDataException>(() => SpiritualSelfTreatmentSelection.Parse(root));
+        Assert.True(AfterlifeContractRegistry.Find(AcceptedMechanicsPlan.WoundCommandPath)!.IsPrivateMechanicsSurface);
+    }
+
+    [Fact]
     public void GuidedSelfContractIsSynchronizedWithGmWorkedExampleAndPrivateRequestRegistry()
     {
         const string marker = "spiritual_self_treatment_v2";

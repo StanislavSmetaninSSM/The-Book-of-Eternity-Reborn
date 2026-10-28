@@ -1,3 +1,50 @@
+# Combat coherent SOURCE candidate — UNCOMPILED/UNRUN, 2026-10-28
+
+The final authoring slice now includes missing-graph/no-pair repair on the SAME
+intent/pool, consumed public I with legal dialogue normalization and foreign
+same-ref body/reference refusal; full common C4 write-failure rollback; and typed
+original-read publication uncertainty through actual cold C2 with exact pair and
+mechanical preservation. Hooks are removed in finally before the independent
+normal positive. These are test assertions, not executed evidence yet.
+
+The next-boundary correction preserves intentional action-cost diagnostics and
+reopens the persisted selected checkpoint with a fresh classified owner. Later
+injury must use wave>0/generation>1 after healing0/1. The cheap P2 control derives
+detached valid later-exchange DATA from the actual blocked two-family ledger,
+then collapses only its decision binding and rehashes it. It is a parser contract
+control, not accepted later-injury publication. Actual next_boundary remains one
+healing followed by an ordinary guard with corrected cost and no second healing.
+
+GM sync replaces all three prior “handler absent” claims and updates the Wound
+contract, CLI/operations/daemon, matrix, worked direct-duel example and manifest
+inventory/source guards. Existing actual console/browser art help also now names
+only the admitted direct-duel player-self contour; its two changed Facts are
+selected. Mortal prompts/paid US6 need no new format: neither route is admitted.
+
+Proposed exact qualification: 25 cases / 15 descriptors / 14 categories. Ordered
+official literal categories: spiritual-combat-healing-cost1/60;
+spiritual-combat-healing-program2/60; spiritual-combat-healing-guidance2/60
+(Unit+Integration manifest); spiritual-combat-safe-scalar-preview2/60;
+spiritual-healing-guided-help2/120; spiritual-combat-healing-pair4/120;
+spiritual-combat-healing-rollback1/120; spiritual-combat-safe-publication5/120;
+spiritual-combat-injury-v1-output1/120; spiritual-healing-authored-graphs1/120;
+spiritual-healing-console-self1/180; spiritual-combat-safe-browser1/180;
+spiritual-combat-healing-console1/180; spiritual-combat-healing-browser1/180.
+The exact old consumers cover changed active/safe executor, pressure preview/art
+authority, ordinary natural Engine, current injury-v1 pair/output and default safe
+console/browser routing. No broad legacy owner, prior aid17, helper4 or HOLD run.
+Owning Integration/Main/Support then Unit refsfalse, pins and exact official
+PlanOnly require finite independent SOURCE/PREP first. No combat build/runtime
+has occurred. Claims remain UNCOMPILED/UNRUN beyond the accepted initial cost RED.
+
+Optimization: checked exchange/calculation/outcome remain retained operation DATA;
+the same prefix, draft, saved transport and common publisher are reused. Graph
+repair changes response DATA only and requires fresh capture; selected submission
+reconstruction reexecutes actual source/effect/resource ownership. Mutable/faulted
+reads never become authority hits. New fixtures are independent, built once per
+case from existing complete templates, with all inputs before the actual snapshot
+and normal cleanup. No new cache, repeated universal pass or measured speedup.
+
 # Combat next-boundary / actual caller WIP — UNCOMPILED/UNRUN
 
 Current source adds the closed combat selected-submission child to the same

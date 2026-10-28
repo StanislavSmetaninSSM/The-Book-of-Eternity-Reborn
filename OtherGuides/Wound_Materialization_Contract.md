@@ -1786,3 +1786,46 @@ confirmation and mixed active+new offers refuse. Use actual Guardian Brain with
 canonical name and guardianThoughtJournalUpdates, keeping locality roots unchanged.
 No Mortal authority, unwilling/conflict, helpless, Shining helper or public/paid
 permission is added. See the two-turn worked example and manifest.
+
+
+spiritual_combat_healing_v1 — confirmed player-self healing in a direct Chaos duel
+
+The existing /лечить choice/confirmation creates a client-owned combat_self intent
+BEFORE the actual original snapshot. This is only standard spiritual_healing by
+player_soul on its own current visible wound I–IV, conscious/capable, in the active
+direct_duel Chaos conflict. The wound, conflict prefix, next exchange ordinal,
+art H, exact sources and scheduler control must still agree. Other targets,
+champions/assisted sides, special healing arts, other realms and public/paid US6
+are unsupported. Passive spiritual_resilience is never an action. Healing-scoped
+wound cost modifiers are not registered by this slice.
+
+GM reads input/turn_request.json.spiritualHealing mode=combat_self with operation
+heal_spiritual_wound, possibleDestinationGraphs and prepared healing source. Keep
+the client intent untouched. Use ONLY the actual original preGeneratedDices1d20
+pool in the ordinary C2 diceAudit; no safe attempt, no independent healing die.
+Every selected/discarded marker and sourceIndex must match the existing roll
+mode. Opposed margin resolves interruption; healing DC/margin is separately
+client-derived from the SAME selected player die, art and wound complications.
+The operation is counterable, baseCost5/minCost2, standard art reduction H:
+I→4, II→3, III→2, V→2. It remains one typed afterlife_cost Spend even when legally
+blocked/countered. A blocked outcome has ZERO healing stages; counterharm may
+worsen the SAME original wound through its separate injury source/decision.
+
+Author the declared conflict exchange via its existing state/update contract.
+For each actually required weaker nonterminal stage, write ONLY the exact
+requested stageRef and closed consequenceDefinitions under
+output/interface_updates.json.spiritualHealingGraphs. Never mint wound IDs,
+History results, resource transitions, healingSources/healingDecisions or receipts.
+The existing paired C2/C3/C4 publishes those client-owned members atomically.
+Missing graphs are repaired before the initial pair on SAME intent/original dice.
+A later ordinary exchange uses the same saved dependent correction flow; it does
+not permit a second healing action. Healing-only still requires pending schema2
+and a durable outcome; no_offer/source-only cannot skip the action.
+
+There is NO safe cycle: do not write progression_report.json. Scheduler-owned
+zero-cycle control is backed by the actual signed combat basis; pending/catchup
+backlog refuses rather than being cleared. LastTickKey, schedule/world bytes and
+natural progress remain unchanged, including a resolved failure or full heal.
+Existing actual C4, output binding and I still validate authored graph semantics;
+repair cannot change source, dice, selected decision or already accepted effects.
+Retained source/outcome DATA does not grant publication or replay permission.

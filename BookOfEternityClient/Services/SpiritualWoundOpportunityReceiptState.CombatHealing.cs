@@ -90,6 +90,9 @@ internal sealed partial class SpiritualWoundOpportunityReceiptState
                     var healingClaims = evidence["diceClaims"]!.AsArray().Select(c => Integer(c!["sourceIndex"])).ToHashSet();
                     Require(!context["diceClaims"]!.AsArray().Any(c => healingClaims.Contains(Integer(c!["sourceIndex"]))),
                         "A later ordinary exchange cannot reclaim healing dice.");
+                    foreach (var bound in injuryDecisions.Where(d => Text(d["sourceId"]) == Text(other["sourceId"])))
+                        Require(Integer(bound["binding"]!["continuationGeneration"]) > 1 && Integer(bound["binding"]!["waveOrdinal"]) > 0,
+                            "Later injury must follow the healing wave and generation.");
                 }
             }
         }

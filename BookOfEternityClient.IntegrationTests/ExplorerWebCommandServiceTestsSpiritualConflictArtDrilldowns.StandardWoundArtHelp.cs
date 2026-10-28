@@ -8,7 +8,7 @@ namespace BookOfEternityClient.Tests;
 public sealed partial class ExplorerWebCommandServiceTestsSpiritualConflictArtDrilldowns
 {
     [Fact]
-    public async Task StandardWoundArt_SpiritualConflictHelpRendersPassiveAndFutureHealingRulesTruthfully()
+    public async Task StandardWoundArt_SpiritualConflictHelpRendersPassiveAndDirectDuelHealingTruthfully()
     {
         await SeedRichSpiritualConflictArtDrilldownFilesAsync();
 
@@ -26,6 +26,7 @@ public sealed partial class ExplorerWebCommandServiceTestsSpiritualConflictArtDr
         Assert.Equal("Целительное духовное искусство", healing.Subtitle);
         Assert.Contains("Самолечение духовной раны вне конфликта доступно через /лечить", healing.Summary, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Правила искусства", healing.Summary, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("подтверждённое боевое самолечение", healing.Summary, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain(
             "Искусство диагностики и лечения духовных ран; на нулевой ступени доступна только диагностика.",
             healing.Summary,

@@ -332,6 +332,14 @@ public partial class ValidationService
                     return new("automatic_continuation", new SpiritualC2PrivateSession(this, capture, null, null, null, null), []);
                 }
                 var transported = await capture.CommitC2SavedTransportAsync(lease);
+                if (transported.RequiresDependentContinuation)
+                {
+                    // The selected checkpoint is durable but this speculative
+                    // capture was revoked. Reclassify under a fresh actual owner;
+                    // its dependent issues remain visible to the existing repair flow.
+                    capture.Dispose();
+                    return await OpenC2PrivateSessionAsync(lease);
+                }
                 if (transported.Disposition != "committed")
                     return new(transported.Disposition == "repair_required" ? "repair_required" : "blocked", null, transported.Issues);
                 capture.Dispose();

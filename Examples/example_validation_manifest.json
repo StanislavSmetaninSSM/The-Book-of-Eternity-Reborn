@@ -2,6 +2,31 @@
   "version": 1,
   "effectMaterializationCoverage": [
 {
+  "contractId": "spiritual_combat_healing_v1",
+  "file": "E_CLI_Afterlife_Turns.txt",
+  "statePath": "client combat_self original intent -> same C2/C3/C4 -> existing receipt ledger schema2 and combat History",
+  "responseSurface": "ordinary admitted conflict exchange/actionCostAudit/diceAudit plus exact requested spiritualHealingGraphs",
+  "realms": [
+    "Chaos Sea"
+  ],
+  "description": "Confirmed standard-art player-self direct-duel combat healing with original C2 die, paid counterable action and no safe cycle.",
+  "validationKind": "focused-fragment",
+  "focusedFragmentReason": "SpiritualHealingGuidedContractTests parses the selection and synchronizes GM surfaces; actual paired backend and console/browser consumers separately qualify authority and publication.",
+  "coverageLimit": "No standalone JSON authority, other actors/targets/realms/special arts, paid US6, full Engine conflict/DFR/Windows or fresh-process recovery proof.",
+  "requiredText": [
+    "spiritual_combat_healing_v1",
+    "heal_spiritual_wound",
+    "healing_timing",
+    "baseCost5/minCost2",
+    "SAME intent/original dice",
+    "ZERO stages",
+    "LastTickKey",
+    "healingSources/healingDecisions",
+    "continuationGeneration>1",
+    "no progression_report"
+  ]
+},
+{
   "contractId": "spiritual_guardian_help_v4",
   "file": "E_CLI_Afterlife_Turns.txt",
   "statePath": "current healer Guardian provider offer2 -> natural result4 -> actual confirmed player-target aid4",

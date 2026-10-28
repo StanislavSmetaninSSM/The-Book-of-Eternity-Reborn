@@ -9215,7 +9215,7 @@ Validation derives actor newness only from the client-owned validated pre-turn b
 
 A new afterlife actor explicitly carries `appearanceDescription`, `profileSummary`, `personalityProfile.archetype`, `motivation`, `personalityProfile.worldview`, canonical `realm` and `locationId`, goals with a non-empty plan, and exact actor-owned memory. An existing materialized afterlife profile must never be resent through the full afterlifeEntityProfileUpdates carrier; use the exact dedicated delta for every later change. A legacy first-envelope migration may use a full carrier only when usable validated pre-turn authority proves all historical fields unchanged.
 
-STANDARD WOUND ARTS: `spiritual_resilience` — Духовная стойкость; `spiritual_healing` — Духовное исцеление. Every complete current `standardArts` and player `afterlifeCombatProfile.artTiers` object contains both as scalar integer 0..5 entries, including zero. Это не объекты `{tier, experience}`; ordinary progression works with no independent art experience through training, `/spiritual_arts`, entity `progressionStrategy`, or `standardArtTierDeltas`. `player_soul.standardArts` only mirrors `soul_state.afterlifeCombatProfile.artTiers` and is not GM-owned upgrade authority. Entity `progressionStrategy` and `standardArtTierDeltas` do not supply or repair missing or invalid required tiers; the complete current map must already be valid. Player training and `/spiritual_arts` reject a present malformed or incomplete player `afterlifeCombatProfile` or `artTiers` before quote, currency spend, receipt, or state write; only a genuinely absent whole optional combat profile may use the existing bootstrap. Духовная стойкость is passive and is not an `operationType`; registering Духовное исцеление does not authorize a healing operation before the separate handler exists. Zero entries make the materialization `standardArts` section `populated`, but do not by themselves grant `canFight` or `canTeach`.
+STANDARD WOUND ARTS: `spiritual_resilience` — Духовная стойкость; `spiritual_healing` — Духовное исцеление. Every complete current `standardArts` and player `afterlifeCombatProfile.artTiers` object contains both as scalar integer 0..5 entries, including zero. Это не объекты `{tier, experience}`; ordinary progression works with no independent art experience through training, `/spiritual_arts`, entity `progressionStrategy`, or `standardArtTierDeltas`. `player_soul.standardArts` only mirrors `soul_state.afterlifeCombatProfile.artTiers` and is not GM-owned upgrade authority. Entity `progressionStrategy` and `standardArtTierDeltas` do not supply or repair missing or invalid required tiers; the complete current map must already be valid. Player training and `/spiritual_arts` reject a present malformed or incomplete player `afterlifeCombatProfile` or `artTiers` before quote, currency spend, receipt, or state write; only a genuinely absent whole optional combat profile may use the existing bootstrap. Духовная стойкость is passive and is not an `operationType`; spiritual_combat_healing_v1 admits heal_spiritual_wound only for confirmed standard-art player-self treatment in an active direct Chaos duel; other combat healers/targets are unsupported. Zero entries make the materialization `standardArts` section `populated`, but do not by themselves grant `canFight` or `canTeach`.
 
 If the first non-player profile initializes a pre-sealed setting-defined resource allowed for `afterlife_actor`, include one closed `resourceMaterialization.resources[]` envelope on that same full profile. The client preserves the exact actorId, creates no second actor ID, uses the Actor Materialization `materializationId` as the same-turn ownerRef for common resource authority, removes `resourceMaterialization`, and publishes `resourceOwnerBindings` plus the complete resource quartet atomically. Actor/effect selectors still use the exact canonical actorId; never write actorRef. An existing materialized profile must not resend resourceMaterialization. Do not invent a resource from prose: the definition, owner kind, capacity policy, exact key, and maximum must already be valid and sealed.
 
@@ -13556,3 +13556,58 @@ V4 missing confirmation and cross-version payloads fail; active self v2, plain
 natural v2, v3 target consent/player→Guardian aid remain actively produced closed
 contracts. No public/paid US6, other healers, unwilling/conflict/helpless/Shining,
 Mortal, provider transport or fresh-process recovery qualification is claimed.
+
+
+spiritual_combat_healing_v1 — worked direct-duel exchange (not a GM permission envelope)
+
+The player confirms /лечить for its visible spiritual wound II, progress1/4,
+LastTickKey=prior_safe_cycle, art H3 and OD6. The client retains this selection
+under actual session/request/generation; identifiers below illustrate DATA only:
+```json
+{
+  "schemaVersion": 1,
+  "mode": "combat_self",
+  "woundId": "wound_combat_example",
+  "expectedWoundFingerprint": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+  "conflictId": "conflict_combat_example",
+  "expectedConflictFingerprint": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+  "nextExchangeOrdinal": 1
+}
+```
+Missing required graphs are repaired on SAME intent/original dice before the initial pair.
+The actual signed request gives preGeneratedDices1d20=[14,5,...], player index0,
+opposition index1. The GM authors the normal heal_spiritual_wound exchange,
+matchup playerOperation=heal_spiritual_wound/oppositionOperation=guard,
+primaryResolutionLane=heal_spiritual_wound/riskProfile=healing_timing and a real
+opposed success. actionCostAudit.player uses operationType=heal_spiritual_wound,
+baseCost5/minCost2/artTier3/effectiveCost2/before6/after4; opposition guard is2.
+diceAudit uses those same sourceIndex/value rows (selected markers when explicit),
+playerTotal14/oppositionTotal5/margin9 and decisive_player_success. Healing is a
+SEPARATE client formula: 14+2*3=20 against DC14 gives II→I1, preserving the existing progress1 with NO natural tick.
+The GM copies the actual requested I stageRef and authors its one lawful spiritual
+slot through spiritualHealingGraphs/consequenceDefinitions. It does not write a
+client result, receipt or wound command. Narrative/debug use actual relevant NPC
+Brain reasoning as in ordinary C2; unrelated memory/locality changes grant nothing.
+Client C4 publishes I1, one Spend6→4 and treat History; LastTickKey/schedule/world
+stay exact, no progression_report. UI/History display uses normal escaping and
+never reveals internal references or hidden wounds. Cancel before stage changes
+no mechanics, and stale wound/conflict refuses before consuming a new action.
+
+Alternative blocked overlap: the same standard H3 action is countered by incoming
+pressure, player selected d5/opposition d15 from the actual original. Spend2 is
+still paid; healing has ZERO stages and leaves the exact original wound before
+image for the separately admitted counterharm. If that harm worsens it, ordinary
+injury decision/reducer resets recovery0 while retaining LastTickKey. Healing and
+counterharm share one eligible wave but distinct durable family identities. The
+existing ledger schema2 retains healingSources/healingDecisions after conflict
+closure. Removing ONLY its outcome refuses strict settlement; an injury-only
+schema1 ledger cannot hide a surviving combat History result. No synthetic harm,
+safe attempt, independent die, fake Care marker or renewed live consent is used.
+
+A following ordinary exchange must see the new wound/effect source universe. Its
+stale cost is corrected through the SAME saved combat_healing selected checkpoint
+and fresh private-session reconstruction; later injury waves must be >0 with
+continuationGeneration>1, and cannot reclaim healing dice. Repeated healing,
+backlog/catchup, other actors/targets/realms and public/paid treatment are not part
+of this contour. This focused example is not a complete signed original or an
+executable GM receipt; runtime owners independently prove every physical input.

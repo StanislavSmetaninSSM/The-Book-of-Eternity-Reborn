@@ -2,6 +2,69 @@
   "schemaVersion": 1,
   "selections": [
 {
+  "category": "spiritual-combat-healing-guidance",
+  "reason": "Closed combat selection/GM example and complete existing worked-family manifest inventory. Actual authority belongs to the paired backend and Engine consumers.",
+  "contracts": [
+    "#1536 T095/T102/T103 FR046 actual guided combat healing, same C2/C4 and no safe cycle"
+  ]
+},
+{
+  "category": "spiritual-combat-healing-pair",
+  "reason": "Four actual initial-pair/cold C2/C3/C4 cases: full heal, resolved no-improvement, blocked+same-wound worsening, and selected healing followed by dependent ordinary cost correction. Includes graph repair/I, selected-die and omission controls, typed uncertainty and a detached later-family wave parser control.",
+  "contracts": [
+    "#1536 T095/T102/T103 FR046 actual guided combat healing, same C2/C4 and no safe cycle"
+  ]
+},
+{
+  "category": "spiritual-combat-healing-rollback",
+  "reason": "One actual common C4 writer fault restores exact signed originals and revokes publication authority; normal flow is independent of the removed injected fault.",
+  "contracts": [
+    "#1536 T095/T102/T103 FR046 actual guided combat healing, same C2/C4 and no safe cycle"
+  ]
+},
+{
+  "category": "spiritual-combat-healing-console",
+  "reason": "Real console cancellation/confirmation, original pool, native-shaped controlled C2/C4, weaker graph, paid wound/effect/History and exact no-cycle cleanup.",
+  "contracts": [
+    "#1536 T095/T102/T103 FR046 actual guided combat healing, same C2/C4 and no safe cycle"
+  ]
+},
+{
+  "category": "spiritual-combat-healing-browser",
+  "reason": "Real shared browser cancellation/confirmation/queued original, retained combat intent, controlled C2/C4, weaker graph, paid wound/effect/History and exact no-cycle cleanup.",
+  "contracts": [
+    "#1536 T095/T102/T103 FR046 actual guided combat healing, same C2/C4 and no safe cycle"
+  ]
+},
+{
+  "category": "spiritual-combat-safe-scalar-preview",
+  "reason": "Two exact existing consumers: unequal active/natural tiers through the shared scalar prefix, and current ordinary pressure preview after operation-to-art lookup.",
+  "contracts": [
+    "#1536 T095/T102/T103 FR046 actual guided combat healing, same C2/C4 and no safe cycle"
+  ]
+},
+{
+  "category": "spiritual-combat-safe-publication",
+  "reason": "Five exact affected existing consumers: failed/terminal safe active executor, actual ordinary natural-only Engine, current opposition cost authority and forged player cost-tier refusal.",
+  "contracts": [
+    "#1536 T095/T102/T103 FR046 actual guided combat healing, same C2/C4 and no safe cycle"
+  ]
+},
+{
+  "category": "spiritual-combat-injury-v1-output",
+  "reason": "Smallest existing real injury-only initial pair, materialize Submit, C4 output/source and foreign-delivery control for unchanged current schema1 alongside new combat schema2.",
+  "contracts": [
+    "#1536 T095/T102/T103 FR046 actual guided combat healing, same C2/C4 and no safe cycle"
+  ]
+},
+{
+  "category": "spiritual-combat-safe-browser",
+  "reason": "One exact existing safe confirmed browser Engine route protects default staging/retained source after combat fork, without the unrelated whole owner.",
+  "contracts": [
+    "#1536 T095/T102/T103 FR046 actual guided combat healing, same C2/C4 and no safe cycle"
+  ]
+},
+{
   "category": "spiritual-combat-healing-program",
   "reason": "Changed shared active prefix must exclude combat natural ticks while retaining safe coordinates; new closed selection/intent must reject mixed aid, raw roll and changed content. Pure DATA controls do not replace actual original/C2/C4 authority. WIP, no runtime released.",
   "contracts": [

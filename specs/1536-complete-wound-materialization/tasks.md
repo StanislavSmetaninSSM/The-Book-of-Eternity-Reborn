@@ -14331,6 +14331,14 @@ close full source-action/terminal/pending contracts or any top-level story task.
   insufficient tier from malformed data. No actual sealed-die/modifier/actor or
   accepted treatment authority is claimed; T094 remains open for integration.
 - [ ] T095 [P] [US4] Add RED combat base-5/reduction/floor-2 spend, explicit operation-to-art mapping, counter/matchup legality, and rollback tests in `BookOfEternityClient.Tests/SpiritualHealingCombatActionTests.cs`
+
+Current combat authoring checkpoint (2026-10-28): accepted genuine cost-admission
+RED is retained. The bounded direct-Chaos-duel standard player-self implementation,
+paired full-heal/no-improvement/blocked-worsen/next-boundary controls, actual guided
+console/browser, rollback/uncertainty/graph guards and GM/example/manifest sync are
+written but UNCOMPILED/UNRUN. Coherent SOURCE/PREP and exact proposed25/15/14
+qualification remain pending; T095/T102/T103 and full US4 stay open. The late-injury
+wave control is detached current DATA, not an accepted late-injury producer claim.
   Next bounded player-result is tracked jointly with T102/T103 in
   spiritual-combat-healing-design.md (DESIGN ACCEPT c3caf534c): player self treatment in actual active
   direct Chaos duel, counterable typed operation, exact original die/art/target,

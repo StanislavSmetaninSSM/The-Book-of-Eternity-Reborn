@@ -2,6 +2,215 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "spiritual-combat-healing-guidance",
+  "responsibility": "Closed combat selection/GM example and complete existing worked-family manifest inventory. Actual authority belongs to the paired backend and Engine consumers.",
+  "excludes": "Bounded current #1536 combat contour only. No full owner/suite, Mortal compatibility, T609/full DFR/Windows or external-provider/fresh-process qualification. DATA controls do not grant publication permission.",
+  "changeHints": [],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.SpiritualHealingGuidedContractTests.CombatHealingHasAClosedWorkedExampleAndNoSafeAttemptOrCycle"
+      ]
+    },
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.ExampleDocumentationValidationTests.CompleteEffectMaterializationManifest_CoversEveryRequiredWorkedFamily"
+      ]
+    }
+  ]
+},
+{
+  "id": "spiritual-combat-healing-pair",
+  "responsibility": "Four actual initial-pair/cold C2/C3/C4 cases: full heal, resolved no-improvement, blocked+same-wound worsening, and selected healing followed by dependent ordinary cost correction. Includes graph repair/I, selected-die and omission controls, typed uncertainty and a detached later-family wave parser control.",
+  "excludes": "Bounded current #1536 combat contour only. No full owner/suite, Mortal compatibility, T609/full DFR/Windows or external-provider/fresh-process qualification. DATA controls do not grant publication permission.",
+  "changeHints": [],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.CombatHealingUsesAnActualPairAndDurableOutcomeWithoutASafeCycle"
+      ]
+    }
+  ]
+},
+{
+  "id": "spiritual-combat-healing-rollback",
+  "responsibility": "One actual common C4 writer fault restores exact signed originals and revokes publication authority; normal flow is independent of the removed injected fault.",
+  "excludes": "Bounded current #1536 combat contour only. No full owner/suite, Mortal compatibility, T609/full DFR/Windows or external-provider/fresh-process qualification. DATA controls do not grant publication permission.",
+  "changeHints": [],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.CombatHealingPublicationFailureRestoresItsActualSignedOriginal"
+      ]
+    }
+  ]
+},
+{
+  "id": "spiritual-combat-healing-console",
+  "responsibility": "Real console cancellation/confirmation, original pool, native-shaped controlled C2/C4, weaker graph, paid wound/effect/History and exact no-cycle cleanup.",
+  "excludes": "Bounded current #1536 combat contour only. No full owner/suite, Mortal compatibility, T609/full DFR/Windows or external-provider/fresh-process qualification. DATA controls do not grant publication permission.",
+  "changeHints": [],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 3,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.ConsoleCombatHealingUsesTheGuidedChoiceAndActualC2C4"
+      ]
+    }
+  ]
+},
+{
+  "id": "spiritual-combat-healing-browser",
+  "responsibility": "Real shared browser cancellation/confirmation/queued original, retained combat intent, controlled C2/C4, weaker graph, paid wound/effect/History and exact no-cycle cleanup.",
+  "excludes": "Bounded current #1536 combat contour only. No full owner/suite, Mortal compatibility, T609/full DFR/Windows or external-provider/fresh-process qualification. DATA controls do not grant publication permission.",
+  "changeHints": [],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 3,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.BrowserCombatHealingUsesItsConfirmedQueueAndActualC2C4"
+      ]
+    }
+  ]
+},
+{
+  "id": "spiritual-combat-safe-scalar-preview",
+  "responsibility": "Two exact existing consumers: unequal active/natural tiers through the shared scalar prefix, and current ordinary pressure preview after operation-to-art lookup.",
+  "excludes": "Bounded current #1536 combat contour only. No full owner/suite, Mortal compatibility, T609/full DFR/Windows or external-provider/fresh-process qualification. DATA controls do not grant publication permission.",
+  "changeHints": [],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.SpiritualAidProgramTests.ActiveHealerTierDoesNotReplaceTheTargetNaturalTierInTheSameProgram",
+        "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_AfterlifeActiveConflict_AddsCombatPreviewWithAuthorityAndDiceOutcome"
+      ]
+    }
+  ]
+},
+{
+  "id": "spiritual-combat-safe-publication",
+  "responsibility": "Five exact affected existing consumers: failed/terminal safe active executor, actual ordinary natural-only Engine, current opposition cost authority and forged player cost-tier refusal.",
+  "excludes": "Bounded current #1536 combat contour only. No full owner/suite, Mortal compatibility, T609/full DFR/Windows or external-provider/fresh-process qualification. DATA controls do not grant publication permission.",
+  "changeHints": [],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.AfterlifeWoundHealingLifecycleTests.FailedActiveCheckStillAdvancesOneCycleAndRetainsNaturalProgress",
+        "BookOfEternityClient.Tests.AfterlifeWoundHealingLifecycleTests.SuccessfulActiveCheckHealsWithoutASecondNaturalHeal",
+        "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.OrdinarySafeTurnRecoversWithoutTreatmentAttemptOrDraw",
+        "BookOfEternityClient.Tests.AfterlifeSpiritualConflictValidationTests.ValidateGameStateAsync_AcceptsOppositionActionCostAuditFromEntityProfile",
+        "BookOfEternityClient.Tests.AfterlifeSpiritualConflictValidationTests.ValidateGameStateAsync_RejectsActionCostArtTierAboveAuthorityProfile"
+      ]
+    }
+  ]
+},
+{
+  "id": "spiritual-combat-injury-v1-output",
+  "responsibility": "Smallest existing real injury-only initial pair, materialize Submit, C4 output/source and foreign-delivery control for unchanged current schema1 alongside new combat schema2.",
+  "excludes": "Bounded current #1536 combat contour only. No full owner/suite, Mortal compatibility, T609/full DFR/Windows or external-provider/fresh-process qualification. DATA controls do not grant publication permission.",
+  "changeHints": [],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualC4_PublishedOutputRejectsDriftAndForeignDelivery"
+      ]
+    }
+  ]
+},
+{
+  "id": "spiritual-combat-safe-browser",
+  "responsibility": "One exact existing safe confirmed browser Engine route protects default staging/retained source after combat fork, without the unrelated whole owner.",
+  "excludes": "Bounded current #1536 combat contour only. No full owner/suite, Mortal compatibility, T609/full DFR/Windows or external-provider/fresh-process qualification. DATA controls do not grant publication permission.",
+  "changeHints": [],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 3,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.ConfirmedBrowserSelfTreatmentStagesAndCompletesThroughActualGameEngine"
+      ]
+    }
+  ]
+},
+{
   "id": "spiritual-combat-healing-program",
   "responsibility": "#1536 T095 shared active-only scalar prefix versus the unchanged safe natural suffix, exact operation-to-art mapping and closed detached combat selection/intent with no safe aid or independent die. WIP tests are uncompiled/unrun until coherent SOURCE/PREP.",
   "excludes": "No actual lease, original, dice claim, resource Spend or combat publication authority follows from these DATA controls. Real C2/C4 and console/browser remain separate mandatory consumers.",
@@ -30,7 +239,7 @@
 },
 {
   "id": "spiritual-combat-healing-cost",
-  "responsibility": "#1536 T095 existing-API causal cost admission: unchanged pressure precondition then missing healing operation; independent art-tier I/II/III/V costs4/3/2/2 and passive resilience. First release is RED-only.",
+  "responsibility": "#1536 T095 existing-API causal cost admission: unchanged pressure precondition then missing healing operation; independent art-tier I/II/III/V costs4/3/2/2 and passive resilience. The accepted genuine RED is followed by current implementation GREEN qualification.",
   "excludes": "No operation-to-art mapping, counter legality, typed Spend, C2/C4 wound/effect/History, UI, combat scheduler or authority qualification. No old accepted-suite repeat.",
   "changeHints": [
     "BookOfEternityClient.Tests/SpiritualHealingCombatActionTests.cs",
@@ -872,7 +1081,7 @@
     },
     {
       "id": "spiritual-healing-guided-help",
-      "responsibility": "Existing actual console/browser help consumers now describe available self-only /лечить and keep combat treatment explicitly unavailable.",
+      "responsibility": "Existing actual console/browser art-help consumers distinguish confirmed direct-duel Chaos player-self healing and safe self treatment, passive resilience and unsupported wider combat targets.",
       "excludes": "Art purchases, treatment mechanics, full UI explorer and held Mortal runtime.",
       "changeHints": [
         "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Afterlife.SpiritualConflict.cs",
@@ -889,8 +1098,8 @@
         {
           "project": "integration",
           "tests": [
-            "BookOfEternityClient.Tests.ExplorerModeCommandTests.StandardWoundArt_ConsoleHelpFramesHealingAsUnavailableFutureRules",
-            "BookOfEternityClient.Tests.ExplorerWebCommandServiceTestsSpiritualConflictArtDrilldowns.StandardWoundArt_SpiritualConflictHelpRendersPassiveAndFutureHealingRulesTruthfully"
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.StandardWoundArt_ConsoleHelpDescribesConfirmedDirectDuelHealing",
+            "BookOfEternityClient.Tests.ExplorerWebCommandServiceTestsSpiritualConflictArtDrilldowns.StandardWoundArt_SpiritualConflictHelpRendersPassiveAndDirectDuelHealingTruthfully"
           ]
         }
       ]
@@ -19774,7 +19983,7 @@
                         "BookOfEternityClient.Tests.ExplorerModeCommandTests.ConsolePlayerInteractionsSource_UsesSharedMortalInteractionsResultBuilder",
                         "BookOfEternityClient.Tests.ExplorerModeCommandTests.ConsoleWorldNewsSource_UsesSharedMortalWorldNewsResultBuilder",
                         "BookOfEternityClient.Tests.ExplorerModeCommandTests.ShowNpcDetailPanel_NormalMode_HidesTechnicalNpcFieldsAndLocalizesStableValues",
-                        "BookOfEternityClient.Tests.ExplorerModeCommandTests.StandardWoundArt_ConsoleHelpFramesHealingAsUnavailableFutureRules",
+                        "BookOfEternityClient.Tests.ExplorerModeCommandTests.StandardWoundArt_ConsoleHelpDescribesConfirmedDirectDuelHealing",
                         "BookOfEternityClient.Tests.ExplorerModeCommandTests.StandardWoundArt_InvalidPlayerAuthority_ConsoleRejectsBeforeQuoteAndPreservesState",
                         "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_AutoDiscardFailedTransitionDoesNotClaimDeletionOrRetry",
                         "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_BracketBearingMortalText_RendersStatusQuestsSkillsAndBooksSafely",

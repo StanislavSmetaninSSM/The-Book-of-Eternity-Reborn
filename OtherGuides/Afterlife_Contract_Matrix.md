@@ -110,7 +110,7 @@ matches the fiction in the current packet.
 - Player-driven Shining faction campaigns live in `game_state/meta/shining_abode_state.json.factionConflictCampaigns[]`. The player creates them through `/фракции`; the GM may advance them during ordinary active Shining turns by appending `breakthroughLog[]` entries, not by using Mortal faction files. Campaign goals are `weaken`, `expose`, `depose_leader`, `break`, and `dissolve`; statuses are `active`, `breakthrough_ready`, `completed`, `failed`, and `abandoned`. Supported breakthrough types are `exposure`, `duel_victory`, `defection`, `sabotage`, `resource_disruption`, `oath_break`, `trial`, and `saref_directive`. Spiritual combat is a strong breakthrough path through `duel_victory`, but not mandatory: infiltration, public proof, defections, sabotage, resource disruption, oath-breaking, a formal trial, or a Saref directive can also progress the campaign. A completed campaign must match target lifecycle: `weaken` needs weakened-or-worse state, `depose_leader` needs leaderless/vacant or worse, `break` needs `broken|dissolved`, and `dissolve` needs `dissolved`; `expose` records public proof and may leave lifecycle unchanged.
 - Shining faction political memory lives inside `game_state/meta/shining_abode_state.json.factions[]`, not Mortal faction files. Use targeted command surfaces `shiningFactionChronicleUpdates[]`, `shiningFactionInfluenceUpdates[]`, `shiningFactionStrategicMemoryUpdates[]`, and `shiningFactionResourceLedgerUpdates[]`; the normalizer projects them into canonical faction `chronicle[]`, `territorialInfluence[]`, `strategicMemory`, and `resourceLedger[]`. Each command must target an existing or same-turn-created Shining `factionId`; unknown targets are repair-blocking. `chronicle[]` stores political events with `entryId`, `turnNumber`, `eventType`, `summary`, `visibility`, and `consequences[]`. `territorialInfluence[]` stores map/political control zones with `zoneId`, `scopeType`, `scopeId`, `displayName`, `controlLevel`, `influenceValue`, `publicStatus`, `updatedAtTurn`, and optional `sourceEntryId`; control/influence values are 0..100 and may be used by the local map to show faction borders. `strategicMemory` stores the mutable current plan and may be initialized with a new faction, but every later faction decision also appends `chronicle[]`; rewriting `strategicMemory` alone is not durable actor memory. `resourceLedger[]` stores resource deltas with `entryId`, `turnNumber`, `resourceType`, `delta`, `balanceAfter`, and `reason`. Do not use Mortal `factionDataChanges`, `factionProjectUpdates`, `completeFactionProjects`, `factionChronicleUpdates`, or `worldMapUpdates` to represent Shining faction memory, resources, or territory.
 - Chaos Sea profiles must keep `currencies.lightSparks = 0`. Do not add Light Sparks to Chaos Sea profiles through `afterlifeEntityProfileUpdates[]`, full canonical `profiles[]`, or `afterlifeEntityProgressionOverrides[].currencyDeltas`; only ordinary active Shining Abode profiles may hold/use Light Sparks.
-- Every complete current profile explicitly carries `spiritual_resilience` — Духовная стойкость — and `spiritual_healing` — Духовное исцеление — in `standardArts` as scalar integer 0..5 values, including zero. Это не объекты `{tier, experience}`: развитие идёт без отдельного опыта искусства (no independent art experience). The current player authority is `soul_state.afterlifeCombatProfile.artTiers`; `player_soul.standardArts` only mirrors it. Non-player entities use the ordinary `progressionStrategy` or `standardArtTierDeltas` paths. Those paths do not supply or repair missing or invalid required tiers; the complete current map must already be valid. Player training and `/spiritual_arts` reject a present malformed or incomplete player `afterlifeCombatProfile` or `artTiers` before quote, currency spend, receipt, or state write; only a genuinely absent whole optional combat profile may use the existing bootstrap. `spiritual_resilience` is passive and is not an `operationType` (Духовная стойкость пассивна и не является operationType); registering Духовное исцеление also does not create an operation until its separate healing handler exists. Mandatory zero entries make `materialization.sections.standardArts.state=populated`, but alone do not grant `canFight` or `canTeach`.
+- Every complete current profile explicitly carries `spiritual_resilience` — Духовная стойкость — and `spiritual_healing` — Духовное исцеление — in `standardArts` as scalar integer 0..5 values, including zero. Это не объекты `{tier, experience}`: развитие идёт без отдельного опыта искусства (no independent art experience). The current player authority is `soul_state.afterlifeCombatProfile.artTiers`; `player_soul.standardArts` only mirrors it. Non-player entities use the ordinary `progressionStrategy` or `standardArtTierDeltas` paths. Those paths do not supply or repair missing or invalid required tiers; the complete current map must already be valid. Player training and `/spiritual_arts` reject a present malformed or incomplete player `afterlifeCombatProfile` or `artTiers` before quote, currency spend, receipt, or state write; only a genuinely absent whole optional combat profile may use the existing bootstrap. `spiritual_resilience` is passive and is not an `operationType` (Духовная стойкость пассивна и не является operationType); spiritual_combat_healing_v1 admits heal_spiritual_wound only for confirmed standard-art player-self treatment in an active direct Chaos duel; other combat healers/targets are unsupported. Mandatory zero entries make `materialization.sections.standardArts.state=populated`, but alone do not grant `canFight` or `canTeach`.
 - In every afterlife entity profile, `specialArts[].ownerActorType/ownerActorId` must match that same profile's `actorType/actorId`; do not place player-owned learned arts or another entity's arts inside a Guardian/resident/faction profile.
 - During validation repair, `harnessRepairPackets[].kind = "afterlife_entity_profile_scaffold_repair"` is the executable scaffold checklist for `game_state/meta/afterlife_entity_profiles.json`. Repair profiles in place: keep `goals` as an object with `goalId`, `shortTermGoal`, `longTermGoal`, `plan`, `gmThoughtsSummary`, and `updatedAtTurn`; add/repair `progressionStrategy`, keep `ledger` as an array, and complete `afterlifeSpecialArtLearningReceipts[]` / `profileCommands.specialArtLearningReceipts[]` with teacher/player/art proof and `initialTier` omitted or `0`.
 - For an output-only repair after a valid original `UpdateGuardians.addMusings` turn, preserve the materialized musings and mirror, repair only the listed outputs, and close the matching repair request. Do not replay the consumed command or duplicate the same thought in the journal. The client rechecks its sealed original request/turn/generation and unchanged Guardian state for one validation iteration; changed state or original evidence cannot borrow that completion. See `guardian_musings_original_bound_v1` in Examples/E_CLI_Afterlife_Turns.txt.
@@ -1158,3 +1158,46 @@ confirmation and mixed active+new offers refuse. Use actual Guardian Brain with
 canonical name and guardianThoughtJournalUpdates, keeping locality roots unchanged.
 No Mortal authority, unwilling/conflict, helpless, Shining helper or public/paid
 permission is added. See the two-turn worked example and manifest.
+
+
+spiritual_combat_healing_v1 — confirmed player-self healing in a direct Chaos duel
+
+The existing /лечить choice/confirmation creates a client-owned combat_self intent
+BEFORE the actual original snapshot. This is only standard spiritual_healing by
+player_soul on its own current visible wound I–IV, conscious/capable, in the active
+direct_duel Chaos conflict. The wound, conflict prefix, next exchange ordinal,
+art H, exact sources and scheduler control must still agree. Other targets,
+champions/assisted sides, special healing arts, other realms and public/paid US6
+are unsupported. Passive spiritual_resilience is never an action. Healing-scoped
+wound cost modifiers are not registered by this slice.
+
+GM reads input/turn_request.json.spiritualHealing mode=combat_self with operation
+heal_spiritual_wound, possibleDestinationGraphs and prepared healing source. Keep
+the client intent untouched. Use ONLY the actual original preGeneratedDices1d20
+pool in the ordinary C2 diceAudit; no safe attempt, no independent healing die.
+Every selected/discarded marker and sourceIndex must match the existing roll
+mode. Opposed margin resolves interruption; healing DC/margin is separately
+client-derived from the SAME selected player die, art and wound complications.
+The operation is counterable, baseCost5/minCost2, standard art reduction H:
+I→4, II→3, III→2, V→2. It remains one typed afterlife_cost Spend even when legally
+blocked/countered. A blocked outcome has ZERO healing stages; counterharm may
+worsen the SAME original wound through its separate injury source/decision.
+
+Author the declared conflict exchange via its existing state/update contract.
+For each actually required weaker nonterminal stage, write ONLY the exact
+requested stageRef and closed consequenceDefinitions under
+output/interface_updates.json.spiritualHealingGraphs. Never mint wound IDs,
+History results, resource transitions, healingSources/healingDecisions or receipts.
+The existing paired C2/C3/C4 publishes those client-owned members atomically.
+Missing graphs are repaired before the initial pair on SAME intent/original dice.
+A later ordinary exchange uses the same saved dependent correction flow; it does
+not permit a second healing action. Healing-only still requires pending schema2
+and a durable outcome; no_offer/source-only cannot skip the action.
+
+There is NO safe cycle: do not write progression_report.json. Scheduler-owned
+zero-cycle control is backed by the actual signed combat basis; pending/catchup
+backlog refuses rather than being cleared. LastTickKey, schedule/world bytes and
+natural progress remain unchanged, including a resolved failure or full heal.
+Existing actual C4, output binding and I still validate authored graph semantics;
+repair cannot change source, dice, selected decision or already accepted effects.
+Retained source/outcome DATA does not grant publication or replay permission.
