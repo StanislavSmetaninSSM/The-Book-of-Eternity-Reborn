@@ -38,7 +38,9 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
         var publicationArmed = false;
         var publicationCuts = 0;
         var compensationObserved = false;
-        var publicationFailure = new IOException("Combat prepared-input precommit publication failure.");
+        // A recovered IOException is retried by the ordinary publication wrapper.
+        // This terminal precommit cut must reach outer compensation exactly once.
+        var publicationFailure = new InvalidOperationException("Combat prepared-input precommit publication failure.");
         var publicationHooks = !failPublication ? null : new FileSystemManagerHooks
         {
             LocalPublicationObserver = (phase, _) =>
@@ -225,8 +227,9 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
             Assert.True(wrote);
             if (failPublication)
             {
-                Assert.Equal(41, runtime.GameLoop.TurnNumber);
+                output.WriteLine($"Prepared-input rollback: cuts={publicationCuts}; observed={compensationObserved}; preparedBytes={preparedCommandBytes?.Length}; compensatedBytes={atomicCompensationCommand?.Length}; turn={runtime.GameLoop.TurnNumber}.");
                 Assert.Equal(1, publicationCuts);
+                Assert.Equal(41, runtime.GameLoop.TurnNumber);
                 Assert.True(compensationObserved);
                 Assert.NotNull(preparedCommandBytes);
                 Assert.Equal(preparedCommandBytes, atomicCompensationCommand);

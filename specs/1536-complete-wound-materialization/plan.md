@@ -1,3 +1,29 @@
+# Prepared-input fault fixture: terminal cut correction — WIP/UNCOMPILED
+
+2026-10-28 actual2f0c owning Integration137/Unit26 baseline warnings,0errors,
+no added warnings and18current DLL/PDB pins. Independent Astra/high production
+SOURCE and Sol/xhigh fixture SOURCE/PREP accepted; catalog1036/12718 and literal
+25cases/10descriptors/16methods PlanOnly zeroexec. Typed role10/10PASS11.1511718s
+(category4.6713401<60), TRX72437eb3cf6790d36ec56941251c0373b4ad14738c76b953a42ca4a42e62da02.
+Actual Engine fault1 FAIL105.2115489s/category89.8089846<180: expectedturn41,
+actual42; complete/no timeout/duplicates/both cleanuptrue. UI2/remaining12UNRUN.
+No positive UI qualification is inferred from its accepted turn.
+
+Root/Sol source trace found a fixture mismatch: the live publisher recovers the
+one-shot IOException, and its existing ordinary wrapper retries recovered IO.
+The disarmed hook then permits a lawful commit. The old receipt has no cut count,
+so injection is source-explained rather than directly established by that output.
+Change only the fixture exception to the existing nontransient InvalidOperation
+pattern; preserve the same precommit location, single cut, first-read latch and
+every rollback assertion. Print existing finite fields and assert the cut before
+turn41. Production and all guards remain unchanged; no new cache, hook or stack.
+
+Next: bounded delta SOURCE, fresh Integrationrefsfalse/current selected pins,
+exact remaining15/9descriptors/15methods PlanOnly/PREP, then fault1 -> UI2 ->12.
+Retain role10 and catalog with unchanged source/selectors/public ownership; other
+accepted lineages stay explicit. FullDFR/T609/Mortal/Windows remain separate HOLD.
+Raw build15/functional13 stays outside checkout; no raw or saves are deleted.
+
 # Prepared input versus canonical rollback: bounded implementation — WIP/UNCOMPILED
 
 2026-10-28: independent Astra source analysis accepts separate original/current
