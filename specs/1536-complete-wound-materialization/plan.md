@@ -1,3 +1,20 @@
+# Unit import correction after fresh owning build — runtime UNRUN
+
+2026-10-28 source06fad8577 owning Main/Support/Integration build completed:
+exit0, 137 baseline warnings, 0 errors, 4:22.22. Unit refsfalse stopped with
+26 baseline warnings and two CS0103 occurrences at SourceWitnessTests306 for
+BindingFlags, 0:56.18. The direct typed IsValid conversion had removed the
+namespace import still used by one unchanged, unselected legacy condition Fact.
+Restore only that original import; no new reflective test/API is introduced.
+This is a compile failure, not semantic RED; no51-case runtime/PlanOnly ran.
+
+Main/Support/Integration production/source files are unchanged by this import
+and checkpoint-only delta. Keep their completed06fad artifacts; after narrow
+closure rebuild ONLY Unit refsfalse, verify the current nine selected pins and
+run the agreed official51/11 PlanOnly, cheap32, pair5 and conditional remaining14.
+No repeated owning build or historical17 run is justified by this correction.
+All current functional results remain unqualified until those actuals complete.
+
 # Grouped guarantee fixture review corrections — UNCOMPILED/UNRUN
 
 2026-10-28: Astra bounded SOURCE accepts36cac9a for scope, strict counterharm join,
