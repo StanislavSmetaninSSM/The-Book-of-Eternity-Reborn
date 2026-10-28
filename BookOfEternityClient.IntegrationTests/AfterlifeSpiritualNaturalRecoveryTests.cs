@@ -15,7 +15,21 @@ public sealed class AfterlifeSpiritualNaturalRecoveryTests
     public async Task NaturalEffectExecutionKeepsTheOrdinaryAcceptedSourceReplacement()
     {
         await using var fixture = await HealingFixture.CreateAsync(1, 0, 20, stageRequest: false);
+        var oldDefinition = EffectMaterializationTestFixture.CreateDefinition();
+        oldDefinition["definitionKey"] = "definition_old_ordinary_source";
+        oldDefinition["allowedRealms"] = new JsonArray("chaos_sea");
+        var profiles = JsonNode.Parse((await fixture.Files.ReadFileAsync(WoundCarrierCatalog.AfterlifeProfilesPath))!)!.AsObject();
+        profiles["profiles"]![0]!["specialArts"] = new JsonArray(new JsonObject
+        {
+            ["artId"] = "art_ordinary_companion", ["activeEffectDefinitions"] = new JsonArray(oldDefinition)
+        });
+        await fixture.Files.WriteFileAtomicAsync(WoundCarrierCatalog.AfterlifeProfilesPath, profiles.ToJsonString());
         await StageAsync(fixture);
+        var acceptedDefinition = oldDefinition.DeepClone().AsObject();
+        acceptedDefinition["definitionKey"] = "definition_new_ordinary_source";
+        acceptedDefinition["display"]!["name"] = "Принятый новый источник обычного действия";
+        profiles["profiles"]![0]!["specialArts"]![0]!["activeEffectDefinitions"] = new JsonArray(acceptedDefinition);
+        await fixture.Files.WriteFileAtomicAsync(WoundCarrierCatalog.AfterlifeProfilesPath, profiles.ToJsonString());
         await using var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync();
         await fixture.WriteReportAsync(lease);
         var admission = await AfterlifeWoundHealingPlanner.Continuation.AdmitNaturalAsync(fixture.Files, lease,
@@ -26,36 +40,26 @@ public sealed class AfterlifeSpiritualNaturalRecoveryTests
             var prepared = owner.Prepare();
             var original = owner.Input;
             var roots = owner.SourceRoots.ToDictionary(p => p.Key, p => p.Value, StringComparer.Ordinal);
-            var oldDefinition = EffectMaterializationTestFixture.CreateDefinition();
-            oldDefinition["definitionKey"] = "definition_old_ordinary_source";
-            oldDefinition["allowedRealms"] = new JsonArray("chaos_sea");
-            roots["game_state/player/skills_active.json"] = new JsonObject
-            {
-                ["skills"] = new JsonArray(new JsonObject { ["skillId"] = "skill_ordinary_companion",
-                    ["realm"] = "chaos_sea", ["activeEffectDefinitions"] = new JsonArray(oldDefinition) })
-            };
-            var acceptedDefinition = oldDefinition.DeepClone().AsObject();
-            acceptedDefinition["definitionKey"] = "definition_new_ordinary_source";
-            acceptedDefinition["display"]!["name"] = "Принятый новый источник обычного действия";
-            var acceptedExport = new EffectSourceExport("chaos_sea", "skill", "skill_ordinary_companion",
-                new JsonArray(acceptedDefinition), true, true, true, "ordinary_skill_ref");
+            var acceptedExport = new EffectSourceExport("chaos_sea", "spiritual_art", "art_ordinary_companion",
+                new JsonArray(acceptedDefinition.DeepClone()), true, true, true, "ordinary_art_ref");
+            var acceptedCarriers = original.PreTurnEffectCarriers! with { AfterlifeProfiles = profiles };
             var input = EffectAcceptedTurnInputComposer.Compose(original.Binding.SessionId, original.Binding.SnapshotToken,
-                original.Binding.Turn, new JsonObject(), original.PreTurnEffectCarriers!, original.PreTurnEffectCarriers!,
+                original.Binding.Turn, new JsonObject(), original.PreTurnEffectCarriers!, acceptedCarriers,
                 original.PreTurnEffectIdentityIndex, roots, acceptedPlanSourceExports: new[] { acceptedExport },
-                replacedSourceOwners: new HashSet<EffectSourceOwnerKey> { new("chaos_sea", "skill", "skill_ordinary_companion") },
-                publicationCarrierBaselines: original.PreTurnEffectCarriers, realm: "chaos_sea", preparedWoundPlan: prepared);
+                replacedSourceOwners: new HashSet<EffectSourceOwnerKey> { new("chaos_sea", "spiritual_art", "art_ordinary_companion") },
+                publicationCarrierBaselines: acceptedCarriers, realm: "chaos_sea", preparedWoundPlan: prepared);
             Assert.Empty(input.SourceAuthority.Issues);
             Assert.True(input.SourceAuthority.ResolveCanonicalBinding(
-                new("chaos_sea", "skill", "skill_ordinary_companion", "definition_new_ordinary_source"), "player").Success);
+                new("chaos_sea", "spiritual_art", "art_ordinary_companion", "definition_new_ordinary_source"), "player").Success);
             owner.BindOrdinaryEffectInput(prepared, input);
             var executed = WoundEffectBatchPlanner.Build(prepared, input, new EffectIdentityFactory());
             Assert.True(executed.Success, string.Join(";", executed.Issues.Select(i => i.Actual)));
             var authority = executed.Plan!.SourceAuthority;
-            var current = authority.ResolveCanonicalBinding(new("chaos_sea", "skill", "skill_ordinary_companion",
+            var current = authority.ResolveCanonicalBinding(new("chaos_sea", "spiritual_art", "art_ordinary_companion",
                 "definition_new_ordinary_source"), "player");
             Assert.True(current.Success);
             Assert.Equal("Принятый новый источник обычного действия", current.Source!.Definition["display"]!["name"]!.GetValue<string>());
-            Assert.False(authority.ResolveCanonicalBinding(new("chaos_sea", "skill", "skill_ordinary_companion",
+            Assert.False(authority.ResolveCanonicalBinding(new("chaos_sea", "spiritual_art", "art_ordinary_companion",
                 "definition_old_ordinary_source"), "player").Success);
             Assert.True(authority.ResolveCanonicalBinding(new("chaos_sea", "wound", "wound_spiritual_session",
                 owner.Wounds[0].Consequences.OwnedEffectSources.RootBindings[0].DefinitionKey), "player").Success);
