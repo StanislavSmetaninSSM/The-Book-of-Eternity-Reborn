@@ -12,7 +12,8 @@ internal static class WoundApplicationService
     internal const string ActionText = "Самостоятельно лечить выбранную духовную рану вне конфликта. Продолжить обычный безопасный цикл мира.";
     internal const string AidActionText = "Помочь текущему согласившемуся Хранителю вылечить выбранную духовную рану вне конфликта. Продолжить обычный безопасный цикл мира.";
     internal const string ReceiveAidActionText = "Принять добровольную безвозмездную помощь текущего Хранителя в лечении моей выбранной духовной раны вне конфликта. Продолжить обычный безопасный цикл мира.";
-    internal static string ActionFor(SpiritualSelfTreatmentSelection selection) => selection.Aid is null ? ActionText
+    internal const string CombatActionText = "Лечить выбранную собственную духовную рану стандартным Исцелением в текущей духовной дуэли. Это прерываемое противником действие за ОД, без безопасного цикла мира.";
+    internal static string ActionFor(SpiritualSelfTreatmentSelection selection) => selection.Combat is not null ? CombatActionText : selection.Aid is null ? ActionText
         : selection.Aid.ReceiveAid ? ReceiveAidActionText : AidActionText;
 
     internal static async Task<ExplorerCommandResult> OpenAsync(FileSystemManager fs, string command, bool treatment)
@@ -44,8 +45,18 @@ internal static class WoundApplicationService
     private static WoundCommandState CreateState(string generation, WoundPlayerReadContext context)
     {
         var input = context.Input;
-        if (!input.SelfVisible || input.Realm == "mortal_world" || context.SpiritualConflict?["activeConflict"] is not null)
+        if (!input.SelfVisible || input.Realm == "mortal_world")
             return new(generation, []);
+        SpiritualCombatTreatmentSelection? combat = null;
+        if (context.SpiritualConflict?["activeConflict"] is JsonObject active)
+        {
+            if (input.Realm != "chaos_sea" || active["exchangeLog"] is not JsonArray log ||
+                active["conflictId"] is not JsonValue id || !id.TryGetValue<string>(out var conflictId) ||
+                !ResourceMaterializationContract.IsExactIdentifier(conflictId) || log.Count == int.MaxValue)
+                return new(generation, []);
+            combat = new(conflictId!, SpiritualCombatHealingIntent.ConflictFingerprint(active), log.Count + 1);
+            if (!AfterlifeWoundTreatmentAuthority.IsSelectedCombatConflict(active, combat)) return new(generation, []);
+        }
         var profiles = (input.Carriers.AfterlifeProfiles?["profiles"] as JsonArray)?.OfType<JsonObject>()
             .Where(p => p["actorType"]?.GetValue<string>() == "player_soul" && p["actorId"]?.GetValue<string>() == "player_soul").ToArray();
         if (profiles is not { Length: 1 }) return new(generation, []);
@@ -58,9 +69,18 @@ internal static class WoundApplicationService
         {
             var source = SpiritualHealingResolver.PrepareSource(new(wound, wound.Owner, profiles[0], context.Soul, input.Effects)).Source;
             var available = source is not null && source.HealingTier >= wound.Severity.Rank;
-            choices.Add(new("wound_" + choices.Count, new(wound.WoundId, WoundIdentityState.ComputeSemanticFingerprint(wound)),
+            var selection = new SpiritualSelfTreatmentSelection(wound.WoundId, WoundIdentityState.ComputeSemanticFingerprint(wound)) { Combat = combat };
+            var reason = available ? "Без затрат ОД; один обычный цикл мира даже при неудаче."
+                : "Требуется освоенная ступень Исцеления не ниже степени раны; V степень этим способом не лечится.";
+            if (combat is not null && available)
+            {
+                AfterlifeActionCostRules.TryGetDefinition(AfterlifeActionCostRules.SpiritualHealingOperation, out var cost);
+                reason = "Прерываемое действие: " + AfterlifeActionCostRules.ResolveStandardEffectiveCost(cost, source!.HealingTier) +
+                    " ОД. При прерывании цена сохраняется; безопасный цикл и естественное восстановление не проходят.";
+            }
+            choices.Add(new("wound_" + choices.Count, selection,
                 WoundPlayerProjection.Text(wound.Display.Name), wound.Severity.Value, source?.HealingTier ?? 0, available,
-                available ? "Без затрат ОД; один обычный цикл мира даже при неудаче." : "Требуется освоенная ступень Исцеления не ниже степени раны; V степень этим способом не лечится."));
+                reason));
         }
         return new(generation, choices);
     }

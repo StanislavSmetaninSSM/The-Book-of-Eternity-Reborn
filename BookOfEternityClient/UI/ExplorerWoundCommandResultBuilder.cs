@@ -24,9 +24,11 @@ internal static class ExplorerWoundCommandResultBuilder
             blocks.Add(new UiPanelBlock { Title = "История заживших ран", Blocks = projection.History.Select(h =>
                 (UiBlock)new UiTextBlock { Text = h.Name + " — " + h.Summary }).ToList() });
         var canTreat = treatment && state?.Choices.Any(c => c.Available) == true;
+        var combat = state?.Choices.Any(c => c.Selection.Combat is not null) == true;
         if (treatment)
             blocks.Add(new UiTextBlock { Text = canTreat
-                ? "Выберите рану и способ лечения: сначала свои раны, затем доступные раны текущего Хранителя. Принятие частной помощи Хранителя требует вашего подтверждения. ОД не тратятся; мир совершит один обычный цикл и при неудаче. Бросок сохраняется после отправки."
+                ? combat ? "Выберите собственную рану для лечения в духовной дуэли. Противник может прервать действие; ОД списываются один раз и при прерывании. Безопасный цикл и естественное восстановление не проходят. Используется бросок этого обмена."
+                    : "Выберите рану и способ лечения: сначала свои раны, затем доступные раны текущего Хранителя. Принятие частной помощи Хранителя требует вашего подтверждения. ОД не тратятся; мир совершит один обычный цикл и при неудаче. Бросок сохраняется после отправки."
                 : "Сейчас лечение духовной раны вне конфликта недоступно. Нужны видимая активная рана I–IV степени и достаточное собственное Исцеление либо принятое предложение частной помощи текущего Хранителя." });
         return new()
         {
@@ -37,7 +39,7 @@ internal static class ExplorerWoundCommandResultBuilder
                 new UiSelectionPrompt { Id = "wound_selection", Prompt = "Какую рану лечить?", Required = true,
                     Options = state!.Choices.Select(c => new UiSelectionOption { Value = c.Value, Label = c.Name + " — " + c.Severity,
                         Description = c.Reason, Disabled = !c.Available }).ToList() },
-                new UiConfirmationPrompt { Id = "confirm_wound_treatment", Prompt = "Подтвердить лечение и один цикл мира?", Required = true }
+                new UiConfirmationPrompt { Id = "confirm_wound_treatment", Prompt = combat ? "Подтвердить прерываемое лечение за ОД в этом обмене?" : "Подтвердить лечение и один цикл мира?", Required = true }
             ]
         };
     }

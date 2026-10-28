@@ -1696,7 +1696,7 @@ public partial class GameEngine
             var healingSelection = browserAction is null
                 ? _explorer.ConsumePendingSpiritualSelfTreatment(action, sessionGeneration)
                 : browserAction.SpiritualSelfTreatment;
-            if (healingSelection?.Aid is null)
+            if (healingSelection?.Aid is null && healingSelection?.Combat is null)
                 using (_fs.MeasureOperation("PlayerTurn.Stage.BuildProgressionControl"))
                     request.ProgressionControl = await _progressionSchedule.BuildControlForNextTurnAsync();
             if (healingSelection is not null)
@@ -1712,7 +1712,14 @@ public partial class GameEngine
                 if (!_fs.FileExists(healingLease, AfterlifeSpiritualConflictState.StatePath))
                     throw new InvalidDataException("Healing preparation requires initialized spiritual conflict state before its draw.");
                 SpiritualSelfTreatmentStageResult stagedHealing;
-                if (healingSelection.Aid is not null)
+                if (healingSelection.Combat is not null)
+                {
+                    var combat = await AfterlifeWoundTreatmentAuthority.StagePlayerCombatTurnAsync(_fs, healingLease, _progressionSchedule,
+                        request.SessionId, request.RequestId, request.TurnNumber, healingSelection);
+                    request.ProgressionControl = combat.Control;
+                    stagedHealing = combat.Stage;
+                }
+                else if (healingSelection.Aid is not null)
                 {
                     // The preceding accepted grant's request and closed schedule
                     // must still exist here. This call owns proof→control→draw

@@ -2,6 +2,13 @@
   "schemaVersion": 1,
   "selections": [
 {
+  "category": "spiritual-combat-healing-program",
+  "reason": "Changed shared active prefix must exclude combat natural ticks while retaining safe coordinates; new closed selection/intent must reject mixed aid, raw roll and changed content. Pure DATA controls do not replace actual original/C2/C4 authority. WIP, no runtime released.",
+  "contracts": [
+    "#1536 T095/T102/T103 shared active program and real combat selection"
+  ]
+},
+{
   "category": "spiritual-combat-healing-cost",
   "reason": "Accepted combat design begins with a real existing-API RED for missing healing cost admission, after valid unchanged pressure arithmetic. Unit-only singleton; no production/dependency rebuild and no cost-only completion claim.",
   "contracts": [

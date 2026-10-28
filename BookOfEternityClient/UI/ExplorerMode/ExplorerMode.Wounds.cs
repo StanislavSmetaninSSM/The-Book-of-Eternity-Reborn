@@ -36,7 +36,11 @@ public partial class ExplorerMode
         var label = _console.Prompt(new SelectionPrompt<string>().Title("Какую рану лечить?")
             .UseConverter(GameInterface.EscapeMarkup).AddChoices(labels));
         var index = Array.IndexOf(labels, label);
-        if (index < 0 || index >= choices.Length || !_console.Confirm("Подтвердить лечение без затрат ОД и один цикл мира?")) return;
+        if (index < 0 || index >= choices.Length) return;
+        var confirmation = choices[index].Selection.Combat is not null
+            ? "Подтвердить прерываемое лечение за ОД в этом обмене?"
+            : "Подтвердить лечение без затрат ОД и один цикл мира?";
+        if (!_console.Confirm(confirmation)) return;
         await using var lease = await _fs.AcquireCanonicalWriteLeaseAsync();
         var selection = await WoundApplicationService.ConfirmAsync(_fs, lease, state, choices[index].Value);
         _pendingGmAction = WoundApplicationService.ActionFor(selection);

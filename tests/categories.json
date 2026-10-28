@@ -2,6 +2,33 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "spiritual-combat-healing-program",
+  "responsibility": "#1536 T095 shared active-only scalar prefix versus the unchanged safe natural suffix, exact operation-to-art mapping and closed detached combat selection/intent with no safe aid or independent die. WIP tests are uncompiled/unrun until coherent SOURCE/PREP.",
+  "excludes": "No actual lease, original, dice claim, resource Spend or combat publication authority follows from these DATA controls. Real C2/C4 and console/browser remain separate mandatory consumers.",
+  "changeHints": [
+    "BookOfEternityClient.Tests/SpiritualHealingCombatActionTests.cs",
+    "BookOfEternityClient/Services/SpiritualWoundRecoveryPlanner.cs",
+    "BookOfEternityClient/Services/SpiritualCombatHealingIntent.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.SpiritualHealingCombatActionTests.CombatUsesOnlyTheSharedActivePrefixWhileSafeTreatmentKeepsItsNaturalSuffix",
+        "BookOfEternityClient.Tests.SpiritualHealingCombatActionTests.CombatSelectionAndIntentCannotCarrySafeAidOrAnIndependentDie"
+      ]
+    }
+  ]
+},
+{
   "id": "spiritual-combat-healing-cost",
   "responsibility": "#1536 T095 existing-API causal cost admission: unchanged pressure precondition then missing healing operation; independent art-tier I/II/III/V costs4/3/2/2 and passive resilience. First release is RED-only.",
   "excludes": "No operation-to-art mapping, counter legality, typed Spend, C2/C4 wound/effect/History, UI, combat scheduler or authority qualification. No old accepted-suite repeat.",

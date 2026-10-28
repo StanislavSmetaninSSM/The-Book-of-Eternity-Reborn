@@ -1,3 +1,23 @@
+# Combat implementation WIP — source only, 2026-10-28
+
+Cost RED has independent OUTCOME ACCEPT (Sol, compiled3babe633d). Current source
+adds explicit operation/art/cost/counter routing, shared active-only prefix with
+unchanged safe coordinates, a closed combat selection/intent, scheduler-owned
+read-only zero-pending control preparation and actual pre-snapshot Engine staging.
+The shared guided menu/console confirmation now distinguishes OD combat from the
+safe-cycle flow. Intent staging closes exact read images and does not draw dice.
+All new production/tests are UNCOMPILED/UNRUN. Original/browser authentication,
+C2 healing source/draft/resource/completion, durable receipt/History result,
+authenticated no-op settlement/replay, full causal integration and GM sync are
+STILL MISSING. This WIP does not claim a usable combat feature or build release.
+
+Reuse: existing selected-wound catalog/identity/History/effect preparation is
+shared once per staging branch. Scheduler exports its five actual read images
+for that same staging operation; the remaining roots are read once and reused by
+the existing canonical owner composer. Closing guards remain fresh; no cache or
+permission owner is created from serialized intent DATA. Later real combat boundary
+execution must preserve exact LastTickKey even for no-improvement and full heal.
+
 # Next mandatory player-result: combat healing T095/T102/T103
 
 Reverse current-Guardian help17 is independently accepted below. Next bounded

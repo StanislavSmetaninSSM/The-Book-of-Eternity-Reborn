@@ -33,7 +33,7 @@ internal static partial class AfterlifeWoundTreatmentAuthority
         files.EnsureCanonicalWriteLeaseActive(lease);
         files.VerifyCurrentSessionOperation(lease);
         selection = SpiritualSelfTreatmentSelection.Parse(selection.ToJson());
-        if (selection.Aid is null || selection.Aid is { ReceiveAid: true, PlayerConfirmed: false } ||
+        if (selection.Aid is null || selection.Combat is not null || selection.Aid is { ReceiveAid: true, PlayerConfirmed: false } ||
             !ResourceMaterializationContract.IsExactIdentifier(sessionId) ||
             !ResourceMaterializationContract.IsExactIdentifier(requestId) || turn < 1)
             return new(null, new(false, false, "spiritual_aid_context_invalid", null));

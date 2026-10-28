@@ -2956,14 +2956,14 @@ public partial class ValidationService
     {
         if (specialArtAudit == null)
         {
-            return actionCostAuthority.StandardArtTiers.TryGetValue(operationType, out var tier)
+            return actionCostAuthority.StandardArtTiers.TryGetValue(AfterlifeActionCostRules.ResolveStandardArtId(operationType), out var tier)
                 ? Math.Clamp(tier, 0, 5)
                 : 0;
         }
 
         if (!SpecialArtAuditOwnerIsPlayer(specialArtAudit))
         {
-            return actionCostAuthority.StandardArtTiers.TryGetValue(operationType, out var tier)
+            return actionCostAuthority.StandardArtTiers.TryGetValue(AfterlifeActionCostRules.ResolveStandardArtId(operationType), out var tier)
                 ? Math.Clamp(tier, 0, 5)
                 : 0;
         }
@@ -3079,13 +3079,13 @@ public partial class ValidationService
             return 0;
 
         if (actionCostAuthority.EntityStandardArtTiers.TryGetValue(actorKey, out var profileTiers) &&
-            profileTiers.TryGetValue(operationType, out var profileTier))
+            profileTiers.TryGetValue(AfterlifeActionCostRules.ResolveStandardArtId(operationType), out var profileTier))
         {
             return Math.Clamp(profileTier, 0, AfterlifeEntityProfileState.MaxProfileTier);
         }
 
         if (actionCostAuthority.PreTurnConflictActorArtTierSnapshots.TryGetValue(actorKey, out var snapshotTiers) &&
-            snapshotTiers.TryGetValue(operationType, out var snapshotTier))
+            snapshotTiers.TryGetValue(AfterlifeActionCostRules.ResolveStandardArtId(operationType), out var snapshotTier))
         {
             return Math.Clamp(snapshotTier, 0, AfterlifeEntityProfileState.MaxProfileTier);
         }
@@ -5160,6 +5160,8 @@ public partial class ValidationService
             "maneuver" => ConflictTokenEquals(opposition, "pressure", "maneuver", "binding", "force_binding"),
             "binding" or "force_binding" => ConflictTokenEquals(opposition, "break_binding"),
             "recover_spiritual_power" => ConflictTokenEquals(opposition, "pressure", "maneuver", "binding", "force_binding", "force_incarnation"),
+            AfterlifeActionCostRules.SpiritualHealingOperation => ConflictTokenEquals(opposition,
+                "pressure", "maneuver", "binding", "force_binding", "force_incarnation", "counter"),
             _ => false
         };
     }
@@ -5175,6 +5177,7 @@ public partial class ValidationService
             "break_binding" or "incarnation_resistance" => "anti_control",
             "champion_coordination" => "champion_support",
             "recover_spiritual_power" => "recovery_timing",
+            AfterlifeActionCostRules.SpiritualHealingOperation => "healing_timing",
             _ => "terminal_choice"
         };
 

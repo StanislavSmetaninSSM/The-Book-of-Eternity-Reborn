@@ -2,6 +2,7 @@ namespace BookOfEternityClient.Services;
 
 internal static class AfterlifeActionCostRules
 {
+    internal const string SpiritualHealingOperation = "heal_spiritual_wound";
     internal static readonly IReadOnlyDictionary<string, Definition> Definitions =
         new Dictionary<string, Definition>(StringComparer.OrdinalIgnoreCase)
         {
@@ -14,10 +15,17 @@ internal static class AfterlifeActionCostRules
             ["break_binding"] = new(3, 1),
             ["incarnation_resistance"] = new(3, 1),
             ["champion_coordination"] = new(2, 1),
-            ["recover_spiritual_power"] = new(0, 0)
+            ["recover_spiritual_power"] = new(0, 0),
+            [SpiritualHealingOperation] = new(5, 2)
         };
 
     internal sealed record Definition(int BaseCost, int MinCost);
+
+    // Operation names and art names are separate coordinates. All established
+    // operation mappings retain their identity; healing uses its registered art.
+    internal static string ResolveStandardArtId(string operationType) =>
+        string.Equals(operationType, SpiritualHealingOperation, StringComparison.OrdinalIgnoreCase)
+            ? AfterlifeSpiritualConflictState.SpiritualHealingArtId : operationType;
 
     internal static bool HasCost(string? operationType) =>
         !string.IsNullOrWhiteSpace(operationType) &&

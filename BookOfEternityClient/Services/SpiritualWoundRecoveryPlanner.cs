@@ -18,32 +18,16 @@ internal static class SpiritualWoundRecoveryPlanner
     {
         if (tier is < 0 or > 5)
             throw new InvalidDataException("Natural recovery requires the target's bounded admitted art tier.");
-        var rows = new List<SpiritualWoundStage>();
-        var rank = before.Severity.Rank;
-        var progress = before.Recovery.CurrentStepProgress;
+        var rows = active is null ? new List<SpiritualWoundStage>()
+            : BuildActiveOnly(before, attemptId!, cycleKey, active).ToList();
+        var rank = rows.Count == 0 ? before.Severity.Rank : rows[^1].SeverityRank;
+        var progress = rows.Count == 0 ? before.Recovery.CurrentStepProgress : rows[^1].Progress;
+        if (rows.LastOrDefault()?.Kind == "heal") return rows;
         void Add(string kind, int nextRank, long nextProgress, bool preparesHeal, string? attempt)
         {
-            var index = rows.Count;
-            var key = Coordinate("spiritual_wound_operation", cycleKey, before.WoundId, index);
-            rows.Add(new(before.WoundId, kind, nextRank, nextProgress, preparesHeal,
-                key, Coordinate("spiritual_wound_transition", cycleKey, before.WoundId, index),
-                Coordinate("spiritual_wound_tick", cycleKey, before.WoundId, index), attempt));
+            rows.Add(Stage(before.WoundId, cycleKey, rows.Count, kind, nextRank, nextProgress, preparesHeal, attempt));
             rank = nextRank;
             progress = nextProgress;
-        }
-
-        if (active is not null)
-        {
-            if (string.IsNullOrWhiteSpace(attemptId) || !active.HasSufficientTier ||
-                active.Input.WoundSeverityRank != rank || SpiritualHealingOutcomeMath.Calculate(active.Input) != active)
-                throw new InvalidDataException("Active healing differs from its admitted wound and art.");
-            Add("treat", active.ResultingSeverityRank, checked(progress + active.RecoveryPointsAdded),
-                active.HealsWound, attemptId);
-            if (active.HealsWound)
-            {
-                Add("heal", 1, progress, false, null);
-                return rows;
-            }
         }
 
         var calculation = SpiritualWoundRecoveryMath.Calculate(new(tier, rank, progress))
@@ -69,6 +53,34 @@ internal static class SpiritualWoundRecoveryPlanner
             throw new InvalidDataException("The ordered spiritual recovery program lost carried progress.");
         return rows;
     }
+
+    // Shared active prefix. Combat consumes this program only; the safe caller
+    // above explicitly appends its target-tier natural recovery afterwards.
+    internal static IReadOnlyList<SpiritualWoundStage> BuildActiveOnly(
+        WoundMaterializationEnvelope before, string attemptId, string operationContext,
+        SpiritualHealingCalculation active)
+    {
+        if (string.IsNullOrWhiteSpace(attemptId) || string.IsNullOrWhiteSpace(operationContext) ||
+            !active.HasSufficientTier || active.Input.WoundSeverityRank != before.Severity.Rank ||
+            SpiritualHealingOutcomeMath.Calculate(active.Input) != active)
+            throw new InvalidDataException("Active healing differs from its admitted wound and art.");
+        var progress = checked(before.Recovery.CurrentStepProgress + active.RecoveryPointsAdded);
+        var rows = new List<SpiritualWoundStage>
+        {
+            Stage(before.WoundId, operationContext, 0, "treat", active.ResultingSeverityRank,
+                progress, active.HealsWound, attemptId)
+        };
+        if (active.HealsWound)
+            rows.Add(Stage(before.WoundId, operationContext, 1, "heal", 1, progress, false, null));
+        return rows;
+    }
+
+    private static SpiritualWoundStage Stage(string woundId, string context, int index,
+        string kind, int rank, long progress, bool preparesHeal, string? attemptId) =>
+        new(woundId, kind, rank, progress, preparesHeal,
+            Coordinate("spiritual_wound_operation", context, woundId, index),
+            Coordinate("spiritual_wound_transition", context, woundId, index),
+            Coordinate("spiritual_wound_tick", context, woundId, index), attemptId);
 
     internal static string Coordinate(string kind, string cycle, string wound, int index) =>
         kind + "_" + WoundAcceptedTurnFingerprintWriter.Compute(new[]
