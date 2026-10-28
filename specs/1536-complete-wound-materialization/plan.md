@@ -1,5 +1,28 @@
 # US4 safe self-treatment — active functional work, 2026-10-28
 
+CSWH genuine causal RED is now retained on clean 1e8995a4: Unit refsfalse build
+0 errors/26 warnings/1:05.84 against actual BA Main341a0f01…/Support0266d639…;
+official PlanOnly4/1 zero executions7.0903299s; actual exact4 complete
+(2 existing PASS +2 expected FAIL),14.4543381s/category6.3079111<60s,
+no skips/duplicates/timeout, both cleanup flags true. Both present/absent target
+rows reached cutReached=1 then failed only Assert.False(committed), actual true,
+line148. TRX SHA25640e99cf6fb93dd897708a0c3eee177470800e6be278639f2c95d2a29fc8fcc6e;
+raw external spiritual-owned-write-red-build-1 + spiritual-owned-write-red-1.
+Later uncertain/foreign-preservation assertions remain unreached in RED.
+
+Minimal correction is written, UNCOMPILED/UNRUN: ordinary CSWH passes detached
+ExactPrevious.Bytes (null for verified absence) to the same existing publisher
+when RequireCurrentBaseline is enabled. Non-exact/disabled-baseline writes keep
+their existing fresh read; original browser LOCAL-write recorder stays unchanged.
+That recorder is a separate lease/consumer route, not an automatic consequence of
+browserAction/Engine finalization; no global atomic-CAS/recorder migration claim.
+This removes the unsafe redundant exact-target read rather than adding a cache.
+Publisher still checks physical Before and returns its existing uncertain outcome
+for a foreign precondition conflict. Narrow grouped SOURCE must close the HOLD
+before owning Integration/Main/Support + Unit refsfalse and exact14/8/7 selection:
+beforeimage4/60 → guidance2/60 → locality1/120 → issuer2/120 → backend1/120 →
+console2/180 → browser2/180. Current real aid/grant callers are still unqualified.
+
 Owned-normalization build release is HELD for one concrete downstream finding.
 Astra independently found that existing CSWH checks ExactPrevious at core167,
 then ordinary249 rereads current and feeds those newer bytes to the trusted
