@@ -92,50 +92,12 @@ internal static partial class EffectAcceptedTurnPlanner
             var stage = stages[index];
             var before = current[stage.WoundId];
             var graph = owner.ResolveGraph(before, stage);
-            var changed = stage.SeverityRank != before.Severity.Rank;
-            var facts = ExecuteWoundBoundaryEffects(input, before, graph, stage.SeverityRank,
-                new(stage.TickKey, index, owner.EventRef, stage.OperationKey, owner.Fingerprint, stage.Kind,
-                    owner.IsNatural ? "Естественное восстановление" : "Духовное исцеление", prepared.Binding.AcceptedEvents, false), changed, stage.Kind == "heal",
+            var actual = ExecuteSpiritualWoundStage(input, before, graph, stage, index,
+                new(owner.EventRef, owner.Fingerprint, owner.IsNatural ? "Естественное восстановление" : "Духовное исцеление",
+                    "spiritual_healing", prepared.Binding.AcceptedEvents, owner.CreateRecoveryConsumptionProof),
                 workspace, identityRoot, identityFactory, turn, effectIds, transitionIds, activeEffects,
                 processedEvents, usedSources, usedTargets, rootBindings, issues);
-            if (facts is null || issues.Count != 0) return null;
-            var after = before with
-            {
-                Severity = changed ? before.Severity with { Rank = stage.SeverityRank,
-                    Value = new[] { "", "I", "II", "III", "IV" }[stage.SeverityRank], LastChangeEventRef = owner.EventRef } : before.Severity,
-                Care = stage.Kind == "treat" ? before.Care with { LastAttemptId = stage.AttemptId } : before.Care,
-                Recovery = stage.Kind == "heal" ? before.Recovery : before.Recovery with
-                {
-                    CurrentStepProgress = stage.Progress, CurrentStepThreshold = 2 * stage.SeverityRank,
-                    LastTickKey = stage.Kind == "recover" ? stage.TickKey : before.Recovery.LastTickKey
-                },
-                Complications = facts.Complications, Consequences = facts.Consequences,
-                LastTransition = new(stage.TransitionId, checked(before.LastTransition.Ordinal + 1), turn, stage.Kind)
-            };
-            if (stage.Kind == "heal") after = after with
-            { Lifecycle = "healed", Care = before.Care with { State = "healed", ActiveCourseId = null } };
-            var beforeSeal = WoundIdentityState.ComputeSemanticFingerprint(before);
-            var afterSeal = WoundIdentityState.ComputeSemanticFingerprint(after);
-            var outcome = new WoundDeclaredTransitionOutcome(after.Severity.Rank, after.Care.State,
-                after.Recovery.CurrentStepProgress, stage.PreparesHeal, stage.Kind == "treat", false,
-                after.Complications.Select(c => c.ComplicationId).ToArray(),
-                after.Consequences.OwnedEffectSources.RootBindings.Select(r => r.EffectId).Order(StringComparer.Ordinal).ToArray(),
-                after.Recovery.Blockers, after.Treatment.CompletedRouteIds);
-            WoundTransitionEvidence evidence = stage.Kind switch
-            {
-                "treat" => new WoundTreatmentEvidence(owner.Fingerprint, beforeSeal, afterSeal, "spiritual_healing", stage.AttemptId!, outcome),
-                "recover" => new WoundRecoveryEvidence(owner.Fingerprint, beforeSeal, afterSeal, stage.TickKey,
-                    "safe_afterlife_cycle", outcome, SpiritualContinuationAuthority: owner.CreateRecoveryConsumptionProof(index, before, after)),
-                "heal" => new WoundHealingEvidence(owner.Fingerprint, beforeSeal, afterSeal, stage.OperationKey, null, Array.Empty<WoundLegacyDeclaration>()),
-                _ => throw new InvalidDataException("Unknown spiritual stage.")
-            };
-            var reduction = WoundTransitionReducer.Reduce(new(stage.Kind, stage.TransitionId, stage.OperationKey,
-                owner.EventRef, turn, before, after, evidence));
-            issues.AddRange(reduction.Issues);
-            if (!reduction.IsValid) return null;
-            var actual = new WoundExecutedBoundary(before, reduction.ProposedAfter!, stage.OperationKey,
-                owner.EventRef, stage.Kind == "treat" ? before.Recovery.LastTickKey ?? stage.TickKey : stage.TickKey,
-                facts.Applications, facts.Terminations, reduction.Intents);
+            if (actual is null || issues.Count != 0) return null;
             owner.AcceptExecuted(actual); executed.Add(actual); current[stage.WoundId] = actual.After;
         }
         var roots = owner.SourceRoots.ToDictionary(p => p.Key, p => p.Value?.DeepClone(), StringComparer.Ordinal);

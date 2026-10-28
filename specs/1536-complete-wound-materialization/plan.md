@@ -6,7 +6,11 @@ unchanged safe coordinates, a closed combat selection/intent, scheduler-owned
 read-only zero-pending control preparation and actual pre-snapshot Engine staging.
 The shared guided menu/console confirmation now distinguishes OD combat from the
 safe-cycle flow. Intent staging closes exact read images and does not draw dice.
-All new production/tests are UNCOMPILED/UNRUN. Original/browser authentication,
+The next WIP adds explicit original/browser combat authentication, actual capture
+origin rederivation from signed source images/control/TurnRequest and fresh
+lease-specific original checks. Safe and combat now share the private spiritual
+stage executor and wound reducer; combat cannot request a natural proof or change
+LastTickKey. All new production/tests are UNCOMPILED/UNRUN.
 C2 healing source/draft/resource/completion, durable receipt/History result,
 authenticated no-op settlement/replay, full causal integration and GM sync are
 STILL MISSING. This WIP does not claim a usable combat feature or build release.
@@ -45,8 +49,8 @@ bf167101a35ac32fb0062ebc93eb7ea452d3cc88057d20a2538b6fc5656700e1.
 Raw: external us4-self-healing/spiritual-combat-cost-1/{plan,actual}; build and
 pins external alongside it. Later healing cost/floor/passive assertions are
 unreached; this proves no art mapping, Spend, combat wound or UI authority.
-Independent bounded OUTCOME is pending; implementation proceeds under accepted
-DESIGN without repeating this unchanged RED or accepted reverse17.
+Independent bounded OUTCOME ACCEPT (Sol) confirms this genuine RED; implementation
+proceeds under accepted DESIGN without repeating this unchanged RED or accepted reverse17.
 
 # T108 private current Guardian → player — bounded GREEN, 2026-10-28
 

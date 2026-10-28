@@ -81,7 +81,7 @@ internal static partial class AfterlifeWoundTreatmentAuthority
                 .Append(new(AcceptedMechanicsPlan.WoundCommandPath, null, intent.Root.ToJsonString(),
                     RequireCurrentBaseline: true, ExactPrevious: pending.Image)).ToArray();
             if (!await CoordinatedStateWriteHelper.TryCommitAsync(files, lease, writes)) return Failure("source_changed");
-            return new(schedulerData.Control, new(true, false, null, intent.Fingerprint) { GmContext = intent.Root });
+            return new(schedulerData.Control, new(true, false, null, intent.Fingerprint) { GmContext = intent.CreateGmProjection(data) });
         }
         catch (Exception failure) when (failure is not CoordinatedStatePublicationUncertainException &&
             failure is (InvalidDataException or InvalidOperationException or ArgumentException or JsonException or OverflowException))
@@ -90,4 +90,39 @@ internal static partial class AfterlifeWoundTreatmentAuthority
 
     private static CombatTurnStageResult Failure(string suffix) =>
         new(null, new(false, false, "spiritual_combat_treatment_" + suffix, null));
+
+    // Detached original DATA only. The calling capture owns the real signed
+    // reader/currentness proof and must keep its actual resource/effect authority.
+    internal static SelectedWoundSourceData ReadCombatOriginalSource(PendingTurnSnapshotReadAuthority snapshot,
+        SpiritualCombatHealingIntent intent, out ProgressionControl control)
+    {
+        if (!intent.Matches(snapshot.SessionId, snapshot.RequestId, snapshot.TurnNumber) || snapshot.Realm != "chaos_sea")
+            throw new InvalidDataException("Combat intent belongs to another actual original.");
+        var sources = new List<SourceFile>();
+        foreach (var path in CombatSourcePaths)
+        {
+            byte[]? bytes = snapshot.CoveredLogicalPaths.Contains(path, StringComparer.Ordinal) ? snapshot.ReadRequiredBytes(path)
+                : snapshot.AbsentLogicalPaths.Contains(path, StringComparer.Ordinal) ? null
+                : throw new InvalidDataException("Combat original has no byte or absence proof for " + path);
+            var root = SourcePaths.Contains(path, StringComparer.Ordinal) && bytes is not null
+                ? StrictJsonAuthority.Deserialize<JsonObject>(CanonicalJsonUtf8.DecodeOneOptionalBom(bytes), new JsonSerializerOptions(), path) : null;
+            sources.Add(new(path, new(bytes is not null, bytes), root));
+        }
+        var rootIntent = intent.Root;
+        var expected = rootIntent["sourceImages"]!.AsArray();
+        if (sources.Where((s, i) => expected[i]!["fingerprint"]!.GetValue<string>() != s.Image.Fingerprint).Any())
+            throw new InvalidDataException("Combat intent differs from its exact signed source images.");
+        JsonObject? Root(string path) => sources.Single(s => s.Path == path).Root;
+        if (Root(AfterlifeSpiritualConflictState.StatePath)?["activeConflict"] is not JsonObject active ||
+            !IsSelectedCombatConflict(active, intent.Selection.Combat!) ||
+            !ProgressionScheduleService.TryBuildSpiritualCombatControl(Root(ProgressionScheduleService.SchedulePath),
+                sources.Single(s => s.Path == EffectAcceptedTurnInputComposer.WorldTimePath).Image.Bytes, out var expectedControl) ||
+            !intent.IsBound(new(snapshot.SessionId, snapshot.RequestId, snapshot.TurnNumber, expectedControl!), intent.Selection))
+            throw new InvalidDataException("Combat original does not bind its selected direct duel and exact no-cycle control.");
+        var selected = PrepareSelectedWoundSource(intent.Selection, sources, "chaos_sea");
+        if (selected.Data is not { } data || data.Source.HealingTier != intent.HealingTier)
+            throw new InvalidDataException("Combat original wound/art/effect source differs from staging.");
+        control = expectedControl!;
+        return data;
+    }
 }

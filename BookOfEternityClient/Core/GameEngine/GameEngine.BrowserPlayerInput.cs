@@ -200,6 +200,13 @@ public partial class GameEngine
             throw new InvalidDataException(BrowserRecoveryMessage);
         var source = StrictJsonAuthority.Deserialize<JsonObject>(CanonicalJsonUtf8.DecodeOneOptionalBom(bytes),
             JsonOpts, "original spiritual wound source") ?? throw new InvalidDataException(BrowserRecoveryMessage);
+        if (selection.Combat is not null)
+        {
+            var intent = SpiritualCombatHealingIntent.Parse(source);
+            if (!intent.IsBound(new(manifest.SessionId, manifest.RequestId, manifest.TurnNumber, request.ProgressionControl), selection))
+                throw new InvalidDataException(BrowserRecoveryMessage);
+            return source;
+        }
         if (!AfterlifeEntityProfileState.TryNormalizeEffectRealm(request.ProgressionControl.CurrentRealm, out var realm) ||
             !SpiritualSelfTreatmentRequestCodec.IsBoundActive(source,
                 new(manifest.SessionId, manifest.RequestId, manifest.TurnNumber, request.ProgressionControl), selection,

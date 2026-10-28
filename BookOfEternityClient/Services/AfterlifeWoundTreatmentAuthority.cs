@@ -252,7 +252,7 @@ internal static partial class AfterlifeWoundTreatmentAuthority
         return new(new(wound, source, realm, ordinal, sourceFingerprint, carriers, effectCatalog, identities, history, catalog, members), null);
     }
 
-    private sealed record SelectedWoundSourceData(WoundMaterializationEnvelope Wound,
+    internal sealed record SelectedWoundSourceData(WoundMaterializationEnvelope Wound,
         SpiritualHealingPreparedSource Source, WoundCarrierCatalogInput Carriers, EffectCarrierCatalog Effects,
         WoundIdentityState Identities, WoundHistoryState History, WoundCarrierCatalog Catalog);
     private sealed record SelectedWoundSourceResult(SelectedWoundSourceData? Data, string? IssueCode);

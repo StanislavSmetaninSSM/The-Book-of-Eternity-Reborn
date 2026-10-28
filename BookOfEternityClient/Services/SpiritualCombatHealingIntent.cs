@@ -72,6 +72,32 @@ internal sealed class SpiritualCombatHealingIntent
     internal bool Matches(string session, string request, int turn) =>
         Text(_root, "sessionId") == session && Text(_root, "requestId") == request && _root["turn"]!.GetValue<int>() == turn;
 
+    internal SpiritualSelfTreatmentSelection Selection => new(WoundId, WoundFingerprint)
+    {
+        Combat = new(ConflictId, Text(_root, "conflictPrefixFingerprint"), NextExchangeOrdinal)
+    };
+
+    internal bool IsBound(SpiritualSelfTreatmentStageContext context, SpiritualSelfTreatmentSelection selection) =>
+        Matches(context.SessionId, context.RequestId, context.Turn) && selection.Combat is not null &&
+        selection.Aid is null && Selection == selection && JsonNode.DeepEquals(_root["progressionControl"],
+            JsonSerializer.SerializeToNode(context.Progression));
+
+    internal static bool IsKind(JsonObject root) => Text(root, "kind") == Kind;
+
+    internal JsonObject CreateGmProjection(AfterlifeWoundTreatmentAuthority.SelectedWoundSourceData data) => new()
+    {
+        ["schemaVersion"] = 1, ["mode"] = "combat_self", ["intentFingerprint"] = Fingerprint,
+        ["operationType"] = AfterlifeActionCostRules.SpiritualHealingOperation, ["conflictId"] = ConflictId,
+        ["nextExchangeOrdinal"] = NextExchangeOrdinal, ["woundId"] = WoundId, ["woundName"] = data.Wound.Display.Name,
+        ["severityRank"] = data.Wound.Severity.Rank, ["healingSource"] = JsonSerializer.SerializeToNode(data.Source),
+        ["possibleDestinationGraphs"] = new JsonArray(Enumerable.Range(1, data.Wound.Severity.Rank - 1)
+            .Select(rank => (JsonNode)new JsonObject
+            {
+                ["stageRef"] = SpiritualHealingRequestProjection.GraphRef(Fingerprint, WoundId, rank),
+                ["severityRank"] = rank, ["complications"] = SpiritualHealingRequestProjection.Complications(Fingerprint, data.Wound)
+            }).ToArray())
+    };
+
     internal static string ConflictFingerprint(JsonObject activeConflict) => WoundAcceptedTurnFingerprintWriter.Compute(new[]
         { "book_of_eternity.spiritual_combat_healing.conflict_prefix", "1", WoundAcceptedTurnFingerprintWriter.CanonicalJson(activeConflict) });
 

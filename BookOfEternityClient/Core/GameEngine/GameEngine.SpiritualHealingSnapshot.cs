@@ -32,6 +32,14 @@ public partial class GameEngine
         {
             var request = StrictJsonAuthority.Deserialize<JsonObject>(CanonicalJsonUtf8.DecodeOneOptionalBom(bytes),
                 new JsonSerializerOptions(), "signed spiritual preparation input")!;
+            if (SpiritualCombatHealingIntent.IsKind(request))
+            {
+                var intent = SpiritualCombatHealingIntent.Parse(request);
+                var combatBound = intent.IsBound(new(context.SessionId, context.RequestId, context.TurnNumber,
+                    context.ProgressionControl), intent.Selection);
+                evidence.RequireCurrent(_fs, lease, snapshot);
+                return combatBound;
+            }
             if (!SpiritualSelfTreatmentRequestCodec.IsActiveKind(request) || request["attempt"] is not JsonObject ||
                 !AfterlifeEntityProfileState.TryNormalizeEffectRealm(context.ProgressionControl.CurrentRealm, out var realm))
                 return false;

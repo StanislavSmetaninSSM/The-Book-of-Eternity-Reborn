@@ -838,6 +838,16 @@ public partial class ValidationService
                 return new[] { SourceIssue(pair.Key, "spiritual_original_input_changed",
                     "the original observed accepted-turn input; live edits need their actual owned producer") };
             }
+            if (_combatHealingOrigin is { } combatOrigin)
+            {
+                try { combatOrigin.RequireCurrent(_validator._fs, lease); }
+                catch (Exception error) when (error is InvalidDataException or InvalidOperationException or ArgumentException)
+                {
+                    RevokeUnderLease(lease);
+                    return new[] { SourceIssue(AcceptedMechanicsPlan.WoundCommandPath,
+                        "spiritual_combat_healing_original_changed", error.Message) };
+                }
+            }
             return Array.Empty<ValidationIssue>();
         }
 
@@ -865,6 +875,8 @@ public partial class ValidationService
                 var issues = await CheckRetainedInputsAsync(lease);
                 if (issues.Count != 0)
                     return issues;
+                var combatIssues = await PrepareCombatHealingOriginAsync(lease);
+                if (combatIssues.Count != 0) return combatIssues;
                 using var allocationScope = _allocations.Clock.BeginSpeculation();
                 var source = _usesOriginalPrefix ? null : await _source.PrepareContinuationAsync(lease);
                 if (source != null && source.Ticket == null)
