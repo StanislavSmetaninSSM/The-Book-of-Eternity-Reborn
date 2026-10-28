@@ -14317,6 +14317,7 @@ close full source-action/terminal/pending contracts or any top-level story task.
 ### RED tests
 
 - [ ] T093 [P] [US4] Add RED `spiritual_healing` tier 0-V bootstrap/profile/progression/training, visible name, diagnosis-at-zero, and insufficient-tier tests in `BookOfEternityClient.Tests/SpiritualHealingArtTests.cs`
+- [ ] T093-ASSESSMENT [US4] Show actual H0/insufficient-tier assessment for already-known visible spiritual wounds through console/browser without staging, dice, cost or time; distinguish invalid source, preserve mixed available choices, and synchronize GM guidance/example. This bounded inspection does not complete FR071 discovery or all T093.
 - [ ] T094 [P] [US4] Add RED `d20 + 2H` vs `10 + 2W + complications`, all margin bands, bounded two-step result, tier-before-natural-20, and natural-1 override tests in `BookOfEternityClient.Tests/SpiritualHealingResolverTests.cs`
   Accepted numerical prerequisite (2026-09-07), shared with T101, commit `4711d6a8`:
   `docs/superpowers/plans/2026-09-07-spiritual-healing-outcome-math.md` defines
@@ -14586,7 +14587,7 @@ rows retain their own lineages; no combat gameplay PASS or full task closure.
 - [ ] T110 [US4] Update arts, healing check, action cost, safe-cycle self/helper treatment, and natural entity recovery guidance in `Rules/Block_21.txt`, `OtherGuides/Afterlife_Contract_Matrix.md`, and `TaskGuides/CLI_Step_Main.txt`
 - [ ] T111 [US4] Add combat healing, failed self-healing world advance, tier-0/V natural recovery, wounded Guardian recovery, and player-heals-Guardian examples in `Examples/E_CLI_Afterlife_Turns.txt` and `Examples/example_validation_manifest.json`
 - [ ] T112 [US4] Run focused art/resolver/combat/safe-cycle/recovery/entity/lifecycle/docs filters through `scripts/test-csharp.ps1` and record GREEN evidence in `specs/1536-complete-wound-materialization/tasks.md`
-- [ ] T112-SOURCE-PINS [US4] Separately review the six pre-existing World source-closure changes listed in the current plan, refresh only approved hashes in `GameEngineTurnLifecycleTests.WorldReadPhase.cs`, and verify the existing source guard. Do not silently rebaseline, waive the guard or infer full US4 completion from bounded combat results.
+- [x] T112-SOURCE-PINS [US4] Separately review the six pre-existing World source-closure changes listed in the current plan, refresh only approved hashes in `GameEngineTurnLifecycleTests.WorldReadPhase.cs`, and verify the existing source guard. Do not silently rebaseline, waive the guard or infer full US4 completion from bounded combat results.
 
 **Checkpoint**: Every player and persistent afterlife entity has a bounded treatment and natural recovery path; healing advances combat resources or world life exactly once.
 

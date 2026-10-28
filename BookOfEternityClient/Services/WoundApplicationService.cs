@@ -42,7 +42,8 @@ internal static class WoundApplicationService
             ? selected.Selection with { Aid = aid with { PlayerConfirmed = true } } : selected.Selection;
     }
 
-    private static WoundCommandState CreateState(string generation, WoundPlayerReadContext context)
+    // Detached menu DATA only; confirmation and staging revalidate the current source.
+    internal static WoundCommandState CreateState(string generation, WoundPlayerReadContext context)
     {
         var input = context.Input;
         if (!input.SelfVisible || input.Realm == "mortal_world")

@@ -2,6 +2,13 @@
   "schemaVersion": 1,
   "selections": [
 {
+  "category": "spiritual-treatment-assessment",
+  "reason": "T093-ASSESSMENT: unavailable choices currently hide their known H/severity reason. Prove readable actual insufficiency without inventing H0 for invalid source or changing availability, authority, privacy and safe-cycle terms.",
+  "contracts": [
+    "#1536 US4 scenario1; FR042/044; data-model12 rule2; client-only known-wound assessment"
+  ]
+},
+{
   "category": "spiritual-world-source-closure",
   "reason": "T112-SOURCE-PINS: Astra independently reviewed the exact six source deltas and original LF pin bases, including retained DATA, physical/current owner checks and absence of new reserved-World sources. Refresh only the six approved hashes and run the existing complete source-closure Fact; no passing functional runtime repeats.",
   "contracts": ["#1536 T112-SOURCE-PINS current reviewed World source dependency closure and unchanged opening/final proof/cleanup assertions"]

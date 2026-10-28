@@ -1,4 +1,4 @@
-# T112 reviewed World source closure; T093 known-wound assessment — WIP
+# T112 World source closure accepted; T093 known-wound assessment — WIP
 
 2026-10-28. Same machine and clean remote18795be638682f0196dd871f7b69c8f36dae3195
 were verified; no build/test remained active. Astra/high substantively reviewed
@@ -11,10 +11,14 @@ source admission keeps original dice/current capture checks. No new reserved-Wor
 source dependency, cache or writer was found. Root inspected the actual deltas.
 
 Only the six reviewed hashes are refreshed. All66 now match by read-only LF
-assessment; the existing guard and its source assertions are unchanged. Its actual
-C# execution is UNRUN pending fresh Integrationrefsfalse, catalog1038/12718,
-exact1case PlanOnly and bounded PREP. New narrow category selects that existing
-Fact only. No production, native package, semantic limit or GM contract changes;
+assessment; the existing guard and its source assertions are unchanged. Fresh
+Integration refsfalse at eb938c98dd2b7f835a1889fe340d5f812480b5a0 passed with
+0 errors/102 baseline warnings. Catalog1038/12718 and exact1case PlanOnly executed
+zero tests. Independent Sol PREP/OUTCOME accepted actual 1/1 PASS: wall12.9541603s,
+category5.476822s <60s, complete/no skips/timeouts/duplicates, both cleanup flags
+true, all18 artifact pins unchanged. TRX SHA256
+e764bd24841128bd9231562a974c689842e204a2807c4a3877a65701ae2103e8.
+New narrow category selects that existing Fact only. No production, native package, semantic limit or GM contract changes;
 optimization is review of existing stable DATA/fresh fences, with no speedup claim.
 The accepted combat39 keep their distinct source lineages and are not replayed.
 
@@ -29,6 +33,36 @@ Invalid source must remain unavailable, not masquerade as H0. This does not clai
 FR071 sealed hidden-fact discovery. No new dice/time author rule is needed for
 this bounded read-only assessment; broader discovery remains separate.
 Raw remains outside checkout; DFR/Mortal/Windows/performance routes stay HOLD.
+
+T093-ASSESSMENT finite implementation plan (#1536, US4 scenario1, FR042/044,
+data-model12 rule2; not FR071 hidden-fact discovery):
+1. Add cheap typed RED controls for current H0/positive insufficient H in both
+   afterlife realms, invalid/mismatching source distinguished from H0, available
+   treatment retained, mixed disabled/available choices, privacy and unchanged DATA.
+   Make the existing detached self-choice preparation internally callable; no new
+   authority, source loader or alternate implementation.
+2. Keep one existing PrepareSource result per visible wound under the coherent
+   read context. Derive readable insufficiency from its actual H and known severity;
+   retain null for invalid source. Render disabled assessment outside the selection
+   prompt, so an entirely unavailable menu still explains the outcome. Keep fresh
+   Open/Confirm source/generation checks and all Available/Resolve guards unchanged.
+3. Exercise actual console and shared browser read-only handlers with unavailable
+   H0/insufficient H. Verify no action/attempt/draw/history/wound/resource/world or
+   pending mutation; no GM completion is sent for assessment. Keep separate small
+   categories and original bounds, exact discovery/PlanOnly, fresh affected builds,
+   independent SOURCE/selection and OUTCOME review. Do not replay accepted combat39.
+4. Synchronize GM matrix, a worked no-turn example and bounded documentation guard.
+   Mark only this subtask done; broader T093 diagnosis discovery and US4 stay open.
+RED scaffold WIP: eleven typed cases and one bounded unit owner are authored but
+uncompiled/UNRUN. Only existing CreateState visibility changes, with no behavior
+change. Independent source/fixture/selection review is pending.
+Optimization: reuse the already parsed catalog/profile/soul/effect snapshot owned by
+one read operation; renderer receives detached choice DATA and performs no reads or
+parsing. Every wound has a distinct identity/severity/complication input, so source
+validation remains per-wound. Trivial text formatting needs no cache. No new cache,
+longer lifetime, source-count reduction or speedup is claimed. Fresh integrity,
+visibility, current session and selection revalidation stay mandatory.
+
 The temporary ENOSPC incident preserved this WIP remotely at4b864f348. Eight
 exact obj/bin duplicate intermediate files and two independently reviewed orphan
 Git download tmp files were retired; bin18, all251 indexed pack entries, raw,

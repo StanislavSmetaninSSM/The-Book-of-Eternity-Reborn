@@ -2,6 +2,32 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "spiritual-treatment-assessment",
+  "responsibility": "Eleven cheap typed known-wound assessment cases: actual H0/insufficient H in both realms, invalid source distinct from zero, sufficient and mixed choices, hidden/non-afterlife refusal and no DATA mutation.",
+  "excludes": "No sealed diagnosis discovery, dice, staging, publication, full Engine or repeat of accepted combat cases.",
+  "changeHints": [
+    "BookOfEternityClient/Services/WoundApplicationService.cs",
+    "BookOfEternityClient/UI/ExplorerWoundCommandResultBuilder.cs",
+    "BookOfEternityClient.Tests/WoundTreatmentAssessmentTests.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.WoundTreatmentAssessmentTests"
+      ]
+    }
+  ]
+},
+{
   "id": "spiritual-world-source-closure",
   "responsibility": "The exact existing World source-closure Fact after substantive independent review of six wound-related source deltas; checks all 66 LF-normalized pins and existing proof/cleanup source assertions.",
   "excludes": "No World runtime suite, cache/performance qualification, mechanical rebaseline, DFR/Mortal/Windows or repeat of accepted combat cases.",
