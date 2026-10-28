@@ -1,5 +1,16 @@
 # US4 safe self-treatment — active functional work, 2026-10-28
 
+Scalar causal RED executed on clean c7bf527c: exact1 complete FAIL at real Build37
+tier-equality guard/test23 after valid GuardianII0 and H3/d8 total14/difficulty14
+ReduceOne preconditions. Unitrefsfalse build0errors/26warnings58.03s, six pins match;
+PlanOnly1/1 zeroexec8.9781051s; actual11.9699070s/category4.9010309<60, no skip/dup/
+timeout, both cleanup true. TRX SHA256
+5b7a1a8bcdb2a65f10dbafa0f220c71126797793b21820da6cba0ae71c08fed2,
+external spiritual-aid-program-red-build-1 and spiritual-aid-program-red-1.
+Independent OUTCOME requested; later program assertions remain unreached. Proceed
+separate target natural tier from recomputed active calculation, then accepted
+aid source/staging/program/result/UI under the existing ownership boundaries.
+
 Issuer ef406058 exact13 is now independently Sol OUTCOME ACCEPT; its source/hashes,
 clean docs checkpoint2919d1ad and user-facing limits were confirmed. Next causal
 active-program singleton is test-only UNCOMPILED/UNRUN: actual existing Build with
