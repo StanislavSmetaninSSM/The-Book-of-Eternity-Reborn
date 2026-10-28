@@ -667,3 +667,30 @@ Git diff --check и Spec Kit prerequisites успешны. Наличие plan/t
 отдельный Astra/high review контрактов достаточны для этого среза; повторного
 аудита после review не потребовалось. Следующий шаг — авторское рассмотрение
 формул и дальнейшие решения о защитных слоях; implementation задачи не закрыты.
+
+## 2026-10-28 — пороги/барьеры: checkpoint перед review
+
+База a54e5e9425ad584a7c406e219fb21b34f59efe82; feature1573, та же ветка документов.
+Автор принял −100…90 и единственное конечное roundHalfUp; spec v1.21 и resistance
+v1.1 фиксируют это без утверждения всего D/критов/combat plan. Brainstorming/bridge
+продолжены в активной feature. Combat v2.13 и threshold-and-barrier-proposal.md
+описывают предложение, не production-код: бинарные типовые пороги, расходуемые
+личные барьеры, mixed-hit нормализация/распределение, lifecycle и атомарность.
+
+Материальные выборы явны: без автоматического mortal-износа порог постоянно
+отсекает слабые удары; общий preparedDefenseFactor снят во избежание второго
+процентного слоя; max absorption при пересечении типов, стабильные tie-breaks,
+не earliest-expiry для несопоставимых clocks. Повтор того же источника не даёт
+автоматическое сложение/refill; дробная numeric schema ещё блокирует код.
+
+Sol6.1/high /root/audit_barrier_sources1573 проверил текущие C# resources/effects/
+guard и исторический Оплот. Parent прочитал Block15.A, ключевые resource contracts
+и Serena ResolveRefresh. Отсутствие готового executor и effect-instance coordinate
+не объявлено решённым наличием decimal или lifecycle. Стабильные definitions могут
+кэшироваться, изменяемые B/owner/lifetime/publication требуют свежего события.
+
+12 арифметических примеров проверены точно через целые числители, включая0.35;
+5 integer max-flow примеров проверяют сумму поглощения, не production tie-break.
+Новые test-файлы/diagnostics не создавались, runtime/build/gameplay/balance/clean
+restore UNRUN. Перед предъявлением нужен отдельный review цельного diff; план/
+задачи исполнения не пересобирались и остаются под T001 до принятия всей spec.
