@@ -680,3 +680,34 @@ direct gacha baseRarity; GuardianProjectsAndGacha.cs:281 задаёт собст
 проверены границы natural success/failure и сумма вероятностей. При F100/обычном
 броске30% natural critical, при преимуществе51%, помехе9%. Это не общая вероятность
 всех критов: margin≥10 даёт дополнительные. Игрового теста/балансировки не было.
+
+## 2026-10-28 — динамические типы приняты, формулы сопротивлений исследованы
+
+Автор утвердил динамические типы урона/сопротивлений вместо трёх фиксированных
+каналов. [Кандидат сопротивлений](resistance-and-vulnerability-proposal.md)
+переносит Block14:289–317: все источники со знаком, один clamp−100…90, затем
+damage×(1−R/100). LevelResistance=2×floor(Level/10), Constitution=floor(C/10)
+предлагается адаптировать через собственные D/Цельность цели. D этим не утверждён.
+
+Block5:408–419 допускает custom types с постоянными ID/display names. Общий
+cap90 противоречит Block6:726, где generic-профилям разрешены>100/immunity и
+specific override. Не превращать второе в скрытое исключение нового боя.
+Block15.A повторяет экипировку (#1574) и округляет до бинарного порога;
+кандидат явно выбирает один учёт и roundHalfUp после всех слоёв вместо прежнего
+floor. Midpoint и перенесённая граница — новые предложения, не буквальный mortal.
+
+Read-only /root/audit_resistance_runtime1573 (gpt-6.1-sol/high), parent Serena
+TryParsePercentageString и первичные правила: профильный validator PlayerAndInventory:
+7659–7677 + QuestsRivalsFactionsAndWorld:3114 фактически допускают лишь целые0…90.
+Отрицательное значение отвергается даже requirePositive:false. EffectComponentProfiles:
+286–295 отдельно ограничивает типы resistance_modifier/periodic damage, без all/custom;
+его signed value/flat/percent :621–630 не являются готовой общей R-формулой.
+Snapshot :148–199 сохраняет компоненты, не исполняет reducer. UI WorldAndStatus:2111
+вычисляет лишь innate по level/Constitution. Новая динамическая модель требует
+согласовать эти границы, не просто дописать GM-промпт или расслабить общий parser.
+
+Проверены15 числовых примеров/границ и таблица R→урон; all/exact, переполнение
+до дебаффа, отрицательная I, смешанный урон, новая граница округления согласованы.
+Общего исполнительного penetration/immunity-resolver в ограниченном аудите
+не найдено; универсальное пробивание больше не рекомендуется автоматически.
+Runtime/build/gameplay/balance не запускались, исходный код не менялся.
