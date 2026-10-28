@@ -14340,9 +14340,10 @@ healing II->I1 and OD6->4 once, History and no safe cycle. The prepared-input
 Engine fault1 PASSes local compensation and whole-turn rollback. Fourteen source
 refusal controls at56c3 and all remaining12 functional regressions at6825 PASS;
 the scalar-wrapper fixture mismatch was corrected with exact exception/path
-identity and unchanged rollback/revocation checks. Independent final OUTCOME is
-pending. Source lineages and six pre-existing World-pin gaps remain explicit in
-plan. Full T095/T102/T103/US4 remain open.
+identity and unchanged rollback/revocation checks. Independent final OUTCOME
+accepted the bounded 39-case union and checkpoint without findings. Source
+lineages and six pre-existing World-pin gaps remain explicit in plan.
+Full T095/T102/T103/US4 remain open.
 
 Initial prebuild combat authoring checkpoint (2026-10-28): accepted genuine cost-admission
 RED is retained. The bounded direct-Chaos-duel standard player-self implementation,

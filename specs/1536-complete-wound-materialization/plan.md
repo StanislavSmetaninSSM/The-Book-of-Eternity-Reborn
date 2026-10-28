@@ -1,4 +1,4 @@
-# Combat self-treatment checks complete; independent OUTCOME pending — #1536
+# Combat self-treatment: bounded functional gate accepted — #1536
 
 2026-10-28. The bounded player result is standard-art self-treatment during an
 active direct Chaos duel through the real shared browser command handler or
@@ -48,8 +48,9 @@ Catalog1037/12718 at56c3 is retained with unchanged public ownership. Exact Plan
 
 Astra/high independently accepted production SOURCE and console lifetime DESIGN/
 SOURCE; Sol/xhigh accepted fixture SOURCE, finite selection and artifact PREP.
-Final coherent OUTCOME is pending. Optimization reuses the existing immutable
-origin, completed plan and invocation evidence; fresh authority and physical
+Final coherent Sol/xhigh OUTCOME at `ecb114138e5d6d4931ae5ca93c75192a613d6fd3`
+accepted all 39 distinct cases and the checkpoint without findings. Optimization
+reuses the existing immutable origin, completed plan and invocation evidence; fresh authority and physical
 source checks remain. No new cache/publisher/ledger or measured speedup is claimed.
 This is client-owned enforcement of the existing GM contract, with no new authored
 field, replacement policy or game mechanic; no extra GM example is required.
