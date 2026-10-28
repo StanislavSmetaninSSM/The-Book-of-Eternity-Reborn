@@ -15,21 +15,45 @@ The written correction now carries private observed-original wire classification
 through the existing capture/effect sink. Only exact current/retained bytes equal
 to the actual signed closed combat intent can omit ordinary GM response parsing;
 the resource owner's validated manifest supplies the independent tuple/control.
-Changed/unbound current input continues through the strict ordinary parser. The
+Changed current bytes continue through the strict ordinary parser; an original
+intent unbound to the independently validated manifest/control is refused. The
 command remains in draft/observed/physical/current-before-image guards and later
 C3/C4 consumption; original evidence closes again before retaining a capture.
 Full combat source/art/effect/scheduler admission remains in Begin, after actual
 owners exist. This is routing DATA, no new owner, executor, cache or observer
-callback; noncombat/no-original-command paths acquire no added original read.
+callback; paths without a declared original command acquire no added original read.
 
 A combat-local controlled GM helper now authors the actual required I graph with
 one lawful guard-cost slot from the original closed definition. It serves both
 backend and real console/browser tests without broadening/falling back in the
 existing natural graph fixture or changing its defaults. All these new corrections
-are UNCOMPILED/UNRUN. Before coherent SOURCE: finish exact-byte/unbound routing
-negative controls and impact-selection rationale, then one grouped source closure,
-fresh owning dependencies and bounded qualification. No runtime retry is released
-by this WIP; retained9 and all raw failures remain scoped to their real lineages.
+are UNCOMPILED/UNRUN. The existing healed theory row now first proves the exact
+signed intent is bound, foreign tuple/control DATA are not, and the unchanged
+ordinary GM parser rejects that intent. Its actual intake negative appends only
+one newline to the live marker: semantic JSON stays identical, but generic grammar
+must refuse with no capture/pair and exact retained wound/effect/resource/scheduler
+images. A finally restores the exact owned fixture input before the independent
+positive; no original snapshot is rebuilt. These binding assertions are DATA
+checks, not a claim that altered signed evidence was published or admitted.
+
+The remaining Engine parser consumers were traced: finalized Mortal-treatment
+quarantine returns null for this non-GM marker; ordinary repair parsing is reached
+only for real repair packets; StateDistributor parses its typed GM composition,
+not the retained client marker. No general command-language exemption was added.
+The GM wire/documented combat shape is unchanged, so this correction needs no new
+GM authoring contract. Its controlled destination graph uses the already closed
+guard-cost language and leaves the natural fixture and its defaults unchanged.
+
+Finite impact selection remains the exact remaining16/9: paired4 first, rollback1,
+safe-publication5, old injury-v1 actual pair/output1, authored self1, safe console1,
+safe browser1 and combat console/browser1 each, under their original bounds. This
+covers the private capture/effect routing and its default injury/safe consumers;
+no new callback, normalizer, cost/program/help or GM field behavior changed. Retain
+the nine Passed component/help rows only at their explicit2904/1da lineages. One
+grouped Sol/Astra SOURCE closure must confirm this rationale before fresh owning
+Integration/MainSupport plus Unit refsfalse, current pins, official remaining16/9
+PlanOnly and ordered actuals. No runtime retry is released by this WIP; all raw
+failures remain scoped to their real lineages.
 
 # Combat paired initial-clock correction — runtime downstream UNRUN, 2026-10-28
 

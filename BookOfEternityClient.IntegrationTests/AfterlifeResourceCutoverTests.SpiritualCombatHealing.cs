@@ -162,6 +162,55 @@ public sealed partial class AfterlifeResourceCutoverTests
         }
         await using (var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync())
         {
+            if (mode == "healed" && !failPublication)
+            {
+                var signedIntent = SpiritualCombatHealingIntent.Parse(intent!);
+                Assert.True(signedIntent.IsBound(new("session_resource_materialization",
+                    "request_resource_materialization", 42, control!), signedIntent.Selection));
+                Assert.False(signedIntent.IsBound(new("foreign_session",
+                    "request_resource_materialization", 42, control!), signedIntent.Selection));
+                var foreignControl = JsonSerializer.Deserialize<ProgressionControl>(JsonSerializer.Serialize(control))!;
+                foreignControl.NextChaosSeaTurnOrdinal++;
+                Assert.False(signedIntent.IsBound(new("session_resource_materialization",
+                    "request_resource_materialization", 42, foreignControl), signedIntent.Selection));
+                // Wire classification is private to this actual original intake.
+                // The ordinary GM command language still refuses the same object.
+                var ordinary = WoundResponseInputComposer.ParseCommandRoot(JsonSerializer.SerializeToElement(intent));
+                Assert.False(ordinary.Success);
+                Assert.Contains(ordinary.Issues, issue => issue.Code == "wound_command_unknown_field");
+
+                var exactCommand = (await context.FileSystem.ReadFileBytesAsync(lease, AcceptedMechanicsPlan.WoundCommandPath))!;
+                var changedCommand = exactCommand.Concat(new byte[] { (byte)'\n' }).ToArray();
+                var unchanged = new Dictionary<string, byte[]?>(StringComparer.Ordinal);
+                foreach (var path in new[] { WoundHistoryState.HistoryPath, WoundIdentityState.StatePath,
+                             AfterlifeEntityProfileState.StatePath, ValidationService.SpiritualWoundSourceSession.SoulPath,
+                             EffectAcceptedTurnPlan.IdentityIndexPath, ResourceMaterializationContract.DefinitionsPath,
+                             ResourceMaterializationContract.StatePath, ResourceMaterializationContract.HistoryPath,
+                             CanonicalResourceOwnerAuthorityComposer.AuthorityPath, ProgressionScheduleService.SchedulePath,
+                             EffectAcceptedTurnInputComposer.WorldTimePath, SpiritualWoundCaptureCheckpointState.StatePath,
+                             SpiritualWoundDecisionPendingState.StatePath }.Distinct(StringComparer.Ordinal))
+                    unchanged.Add(path, await context.FileSystem.ReadFileBytesAsync(lease, path));
+                await context.FileSystem.WriteFileAtomicBytesAsync(lease, AcceptedMechanicsPlan.WoundCommandPath, changedCommand);
+                try
+                {
+                    // Semantically identical live JSON is insufficient: its bytes
+                    // differ from the actual signed client marker. No capture or
+                    // first pair can be issued, and the generic parser must run.
+                    var refused = await context.Validator.CaptureSpiritualOriginalTurnWithIntakeAsync(lease);
+                    using var refusedCapture = refused.Capture;
+                    Assert.Null(refusedCapture);
+                    Assert.Contains(refused.Issues, issue => issue.Code == "wound_command_unknown_field");
+                    Assert.Equal(changedCommand, await context.FileSystem.ReadFileBytesAsync(lease, AcceptedMechanicsPlan.WoundCommandPath));
+                    foreach (var pair in unchanged)
+                        Assert.Equal(pair.Value, await context.FileSystem.ReadFileBytesAsync(lease, pair.Key));
+                }
+                finally
+                {
+                    // Restore the exact owned fixture input, before the independent
+                    // normal capture below; no signed snapshot is rebuilt.
+                    await context.FileSystem.WriteFileAtomicBytesAsync(lease, AcceptedMechanicsPlan.WoundCommandPath, exactCommand);
+                }
+            }
             var recorded = await context.Validator.CaptureSpiritualOriginalTurnWithIntakeAsync(lease);
             AssertNoConflictFrameErrors(recorded.Issues);
             using var capture = Assert.IsType<ValidationService.SpiritualOriginalTurnCapture>(recorded.Capture);
