@@ -14444,14 +14444,20 @@ close full source-action/terminal/pending contracts or any top-level story task.
   sealed attempt/draw through repair and publishes no partial cycle or wound.
   The T097-linked arithmetic (`45beccd1`, `8aff3325`) is now used by the qualified
   self-program's ordered natural recovery, including authored III→II→I graphs and
-  terminal healing. Ordinary safe cycles without treatment and persistent-actor
-  eligibility still lack their independent caller. T105/T107 must reuse carried
+  terminal healing. First ordinary safe-cycle slice now has actual Engine proof
+  without treatment: accepted43 gives rank-I/H0 progress0→1, natural History/no
+  attempt/draw and one cycle. New typed publication/omission/cost/art/source guards
+  and shared self regressions passed14cases on dad6206. Actual persistent-actor
+  publication, IV/ordinary graph caller and chronology/replay edges remain open. T105/T107 must reuse carried
   progress, multi-step/follow-up stages and exact private tick authority; do not
   cap/discard valid III/IV progress or borrow Mortal-only authority.
 - [ ] T106 [US4] Integrate accepted recovery and art progression with `ProgressionScheduleService` for player soul and persistent actors without wall-clock or effect-scheduler fallback in `BookOfEternityClient/Services/ProgressionScheduleService.cs` and `BookOfEternityClient/Services/AfterlifeEntityProfileState.cs`
   Self-treatment now publishes its single scheduler mutation atomically with
-  wound/effects/History and exact replay. The next bounded block is the ordinary
-  safe-cycle route, no new treatment attempt/die and no duplicated self tick.
+  wound/effects/History and exact replay. Ordinary natural mode now joins that
+  publisher and real caller, with signed old-tier recovery while lawful art/cost
+  afterimages survive; all14 bounded checks passed. This is not full training
+  producer or actor/IV/catchup/conflict qualification. Continue remaining ordinary
+  actor/graph/replay edges without a new attempt/die or duplicated self tick.
 - [ ] T107 [US4] Compose healing/recovery wound/effect/resource/profile/scheduler/history/output after-images and exact replay results in `BookOfEternityClient/Services/WoundAcceptedTurnPlanner.cs` and `BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs`
 - [ ] T108 [US4] Add player-to-entity and entity-to-player treatment authority using exact profile, visibility, reachability, consent/conflict, and current wound bindings in `BookOfEternityClient/Services/AfterlifeWoundTreatmentAuthority.cs`
 

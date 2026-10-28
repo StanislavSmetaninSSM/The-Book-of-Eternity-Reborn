@@ -1,5 +1,50 @@
 # US4 safe self-treatment — active functional work, 2026-10-28
 
+First ordinary natural GREEN slice on clean dad6206de (production compiled d691):
+official PlanOnly14cases/6descriptors22.1644138s/zero executions. Separate released
+contracts3, publication4, actual ordinary caller1, self lifecycle5 and consumed-self
+authored-graphs1 all PASS;14 distinct test/execution IDs, exact complete selection,
+no skips/duplicates/timeouts and both cleanup flags true throughout. Actual ordinary
+turn42→43 now gives the same rank-I/H0 wound progress0→1, one recover result with
+mode=natural/request=null, no treatment attempt/draw, one scheduler cycle, consumption
+and no recovery charge. Controlled native-shaped completion, not external provider
+or fresh-process qualification. Default current-cohort and actual-original replay
+controls reject rehashed omitted active/healed members and replaced resource/effect
+commands without mutation. Ordinary accepted artH1 and one action cost survive while
+this cycle uses signedH0; actual accepted source replacement survives effect execution.
+That proves afterimage preservation, not full training/source-producer admission.
+
+Category/total seconds in order:16.7926448/37.0428389 (60s budget),
+36.5797091/50.4172541 (120s),33.5792727/50.0802629 (180s),
+35.0094086/45.0609485 (120s),25.1854973/58.5131342 (120s).
+External raw natural-functional-1 holds all summaries/TRX/full logs/pins;
+verified-outcomes.json independently joins14 IDs locally and is not repository data.
+TRX SHA256 contracts Integration/Unit, publication, caller, self5, authored graph:
+deb0345aaafc03acfad204083b5a273c8cdd51e152e15587597a5b88c65aad40,
+0122d57ed5c12de4c33b4db155453e3647dad2df4d9cfc11829b99cc92f9e2ca,
+ce942d2b47797719b9e930c9daf8131f4678b8484dacf5853405048f01758453,
+1a3292eb17c27acaebc2bf2240da2f483559ca95a3c5dc0f4d8ed807428ae3d6,
+4e60187cd350931317f62b95f56e07344112c72f95d931f81effd29de4f318be,
+9e6fefb6c490742e7f9069e87ae3339525cce6cb61724e2a915bf14bbf2722c0.
+Owning build1 completed Main/Support but failed one test CS1061,137warnings6:14.60;
+this is compilation failure, not semantic RED. Correct nested typed access yielded
+Integration-only refsfalse0errors/102warnings2:56.89, then Unitrefsfalse0errors/
+26warnings1:55.11. All9 current master/dependency pins match: Main38babb8a,
+Support421d3660, Integration8a1ef41d, Unit644bb370. No speedup claim.
+
+Optimization: source DATA/catalog/program belong to the single operation/private
+owner; A does not build the full owner or allocate effect IDs. B fresh-admits once,
+retains parsed original/current DATA and uses actual ordinary composition. Required
+source/lease/generation/response and closing checks remain fresh; no cached permission
+or new cache/coordinator. One detached handoff Input feeds bundle/sink with defensive
+copies. Final source reconstruction updates only executed wound groups and retains
+ordinary exports/replacements. Independent SOURCE/PREP accepted d691+dad compile
+closure; independent final OUTCOME is pending. Continue actual persistent actors,
+IV/ordinary natural graph caller and chronology/replay-edge controls. Broad T105/T106,
+helper/entity ACTIVE treatment, conflict/catchup/unresolved owner ordering, provider/
+fresh-process and all prior Mortal/preparation/T609/DFR/Windows HOLDs remain open.
+
+
 Ordinary natural recovery causal RED on clean/compiled f47b6985e: exact1 planned/
 executed/completed FAIL,29.8093275s/category21.0768807<180, no timeout/skips/
 duplicates, both cleanup flags true. Actual ordinary Engine turn passes native
