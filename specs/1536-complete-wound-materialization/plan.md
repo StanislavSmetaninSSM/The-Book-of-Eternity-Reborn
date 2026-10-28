@@ -42,8 +42,12 @@ order/bounds. The remaining consumers cover real injury-v1/defaults, safe
 self/natural/graphs, and actual combat console/browser. Fresh owning
 Integration/MainSupport then Unit refsfalse is required for the changed shared
 reader; all 9 pins and official 24 / 11 PlanOnly precede actuals. Retain prior nine
-component/help Passed rows only at their own 2904 / 1da lineages, whose changed
-capture/snapshot paths are not executed. Existing HOLDs remain. Current correction
+component/help Passed rows only at their own 2904 / 1da lineages. The retained
+LiveTurnPreparationService preview Fact DOES execute its producer, with null
+SpiritualHealing: GetLogicalPaths(false) and CreateForCombatObservation(false)
+preserve exactly the old default semantics, additionally checked by the new actual
+LiveProducer guard. The other retained components do not exercise the changed
+capture routing. Existing HOLDs remain. Current correction
 has no build/runtime qualification; one grouped finite SOURCE/PREP is pending.
 GM authoring/intent/decision shapes are unchanged; only client original observation
 is extended, so no further GM authoring schema is introduced.
