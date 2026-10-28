@@ -68,6 +68,17 @@ The real no-mutation/no-repair assertions will preserve that causal boundary.
 GM matrix/contract/no-turn example and existing guided manifest guard are updated;
 the initially misplaced requiredText strings were corrected and JSON parsed.
 All runtime remains UNRUN; exact catalog/PlanOnly follow fresh Integration.
+Unit causal RED24922cbdd is complete:11executed/4PASS/7expectedFAIL, no timeout,
+underfill, skip or duplicate; cleanuptrue. Five failures are lost visible H0/H1
+assessment (including mixed menu); two are invalid source falsely reported0.
+Wall11.7131201s/category4.8755077s<60. Root checked all11 XML cases, exact roster,
+IDs, failure reasons and stable selected binary pins; TRX SHA256
+00ac8db6eea2fad4a74eb70016dc7313fb1175f59299d8ef2df703fdda46a0d2.
+No implementation/GREEN or handler result follows from this RED. Separate bounded
+source assessment considers running the four read-only handler RED rows before a
+single combined correction: the existing browser dispatch refreshes profile state
+before Wounds. Fresh Integration/PlanOnly/PREP remains mandatory before those rows.
+Raw: /workspace/tboe-linux-evidence-20261025/us4-self-healing/assessment-red-1/.
 Optimization: reuse the already parsed catalog/profile/soul/effect snapshot owned by
 one read operation; renderer receives detached choice DATA and performs no reads or
 parsing. Every wound has a distinct identity/severity/complication input, so source
