@@ -14345,11 +14345,14 @@ rows but exposed retained combat intent entering ordinary GM wound grammar; the
 fourth row exposed a separate controlled destination-graph fixture mismatch.
 Private observed-original/exact-byte routing and the local lawful cost graph
 compiled at df161914; actual paired quartet passed capture (including byte-drift negative)
-then failed only at Begin's unsupported signed observed-optional path set. A second
-currently produced closed combat presence form is written UNCOMPILED/UNRUN;
-ordinary set/I/O, signer and full source admission stay exact. Eight cheap default
-presence/coverage guards plus remaining 16 give proposed 24 / 11 qualification after
-coherent SOURCE/PREP/fresh builds. No combat gameplay PASS or full task closure.
+then failed only at Begin's unsupported signed observed-optional path set. The
+second currently produced combat presence form compiled at ddcb; observation
+8 / 8 PASS is independently accepted. Paired quartet then reached full Begin but
+three lawful healing responses hit the old unchanged-strain guard; one test read
+its original C1 owner after transport commit. Narrow declared paid-treatment shape
+and precommit candidate observation are written UNCOMPILED/UNRUN. Original/dice/
+cost/source authority remains exact; proposed remaining 18 / 9 adds only two old
+no_effect/pressure-success guards. No combat gameplay PASS or full task closure.
   Next bounded player-result is tracked jointly with T102/T103 in
   spiritual-combat-healing-design.md (DESIGN ACCEPT c3caf534c): player self treatment in actual active
   direct Chaos duel, counterable typed operation, exact original die/art/target,

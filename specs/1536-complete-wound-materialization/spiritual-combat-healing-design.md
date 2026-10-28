@@ -277,3 +277,13 @@ dictionary. Ordinary producers retain their current default form. The same actua
 staged combat projection selects capture paths and presence before signing;
 reader allowlist knowledge never substitutes for a signed false observation.
 Full Begin admission and both original byte/absence evidence remain mandatory.
+
+
+2026-10-28 response-shape clarification: a paid standard healing attempt may keep
+strain/control snapshots unchanged; the independent client-owned wound result is
+not a GM strain edit. The ordinary response shape recognizes only matching
+standard player cost, affordable exact spend and required dice/matchup DATA.
+This is not execution permission: original/source/roll/cost and same C2/C4 owners
+remain mandatory. No fake strain change or success-to-no_effect relabel is used.
+C1 candidate observation belongs before the first transport pair; postcommit
+checks must not reuse the old capture as an original-input reader.

@@ -137,6 +137,38 @@ public sealed partial class AfterlifeResourceCutoverTests
 
         await WriteCombatHealingExchangeAsync(context, mode, playerDie, oppositionDie, tier);
         await WriteOriginalIntakeDraftAsync(context);
+        if (mode == "healed" && !failPublication)
+        {
+            // Pure response DATA is not execution permission. Establish the real
+            // declaration shape, then alter one required audit at a time while
+            // keeping the identical strain/control snapshots.
+            var response = await ReadProjectedSourceContinuationCandidateAsync(context);
+            var declared = response["recentConflicts"]![0]!["terminalExchange"]!.AsObject();
+            var shapeIssues = new List<ValidationIssue>();
+            ValidationService.ValidateRetainedSpiritualExchangeShape(declared, "declared healing", shapeIssues);
+            AssertNoConflictFrameErrors(shapeIssues);
+            for (var malformed = 0; malformed < 8; malformed++)
+            {
+                var changed = declared.DeepClone().AsObject();
+                switch (malformed)
+                {
+                    case 0: changed["operationType"] = "pressure"; break;
+                    case 1: changed["actionCostAudit"]!.AsObject().Remove("player"); break;
+                    case 2:
+                        changed["actionCostAudit"]!["player"]!["effectiveCost"] = 0;
+                        changed["actionCostAudit"]!["player"]!["after"] = 6;
+                        break;
+                    case 3: changed["actionCostAudit"]!["player"]!["before"] = 1; break;
+                    case 4: changed.Remove("diceAudit"); break;
+                    case 5: changed["matchupAudit"]!["playerOperation"] = "pressure"; break;
+                    case 6: changed["actionCostAudit"]!["player"]!["baseCost"] = 4; break;
+                    case 7: changed["actionCostAudit"]!["player"]!["artTier"] = 6; break;
+                }
+                var refused = new List<ValidationIssue>();
+                ValidationService.ValidateRetainedSpiritualExchangeShape(changed, "malformed healing", refused);
+                Assert.Contains(refused, issue => issue.Code == "afterlife_conflict_exchange_no_state_delta");
+            }
+        }
         JsonObject? repairedInterface = null;
         if (mode == "next_boundary")
         {
@@ -235,6 +267,12 @@ public sealed partial class AfterlifeResourceCutoverTests
             var step = await capture.AdvanceNextResourceExchangeAsync(lease);
             AssertNoConflictFrameErrors(step.Issues);
             var interval = Assert.IsType<AcceptedMechanicsPlanner.SpiritualExchangeInterval>(step.Step?.Interval);
+            // Read the current C1 candidate before the first pair writes its
+            // private successors; the original capture is not a postcommit reader.
+            var seedHistory = (await context.FileSystem.ReadFileBytesAsync(lease, WoundHistoryState.HistoryPath))!;
+            var candidateImages = await capture.ReadC1CandidateOwnerImagesAsync(lease, interval);
+            Assert.True(JsonNode.DeepEquals(JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(seedHistory)),
+                JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(candidateImages[WoundHistoryState.HistoryPath].Bytes!))));
             var first = await capture.CommitC2FirstTransportAsync(lease, interval);
             AssertNoConflictFrameErrors(first.Issues); Assert.Equal("committed", first.Disposition);
             var packet = JsonNode.Parse(SpiritualWoundDecisionPendingState.SerializeCanonical(first.Pending!))!;
@@ -242,11 +280,9 @@ public sealed partial class AfterlifeResourceCutoverTests
             Assert.Single(packet["pending"]!["healingSources"]!.AsArray());
             Assert.Empty(packet["pending"]!["healingDecisions"]!.AsArray());
             Assert.Equal(0, packet["pending"]!["cursor"]!["nextHealingSourceOrdinal"]!.GetValue<int>());
-            // The real first-pair producer itself requires WoundReadVersion0;
-            // its candidate History must still be the unmodified seed.
-            var candidateImages = await capture.ReadC1CandidateOwnerImagesAsync(lease, interval);
-            Assert.True(JsonNode.DeepEquals(await context.ReadJsonAsync(WoundHistoryState.HistoryPath),
-                JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(candidateImages[WoundHistoryState.HistoryPath].Bytes!))));
+            // The real first-pair producer requires WoundReadVersion0 and only
+            // publishes the pair; its physical History is still the exact seed.
+            Assert.Equal(seedHistory, await context.FileSystem.ReadFileBytesAsync(lease, WoundHistoryState.HistoryPath));
             if (mode != "blocked_worsen") Assert.Empty(packet["pending"]!["sources"]!.AsArray());
             capture.Dispose();
             var adapter = new ValidationService(context.FileSystem, NullLogger<ValidationService>.Instance);

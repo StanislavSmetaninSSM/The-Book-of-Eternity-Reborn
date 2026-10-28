@@ -199,7 +199,7 @@
 },
 {
   "id": "spiritual-combat-safe-publication",
-  "responsibility": "Five exact affected existing consumers: failed/terminal safe active executor, actual ordinary natural-only Engine, current opposition cost authority and forged player cost-tier refusal.",
+  "responsibility": "Seven exact affected existing consumers: failed/terminal safe active executor, ordinary natural-only Engine, unchanged no_effect/pressure-success shape guards, current opposition cost authority and forged player cost-tier refusal.",
   "excludes": "Bounded current #1536 combat contour only. No full owner/suite, Mortal compatibility, T609/full DFR/Windows or external-provider/fresh-process qualification. DATA controls do not grant publication permission.",
   "changeHints": ["BookOfEternityClient/Services/Validation/ValidationService.AfterlifeSpiritualConflict.cs", "BookOfEternityClient/Services/EffectAcceptedTurnPlanner.SpiritualStageExecution.cs"],
   "related": [],
@@ -217,6 +217,8 @@
         "BookOfEternityClient.Tests.AfterlifeWoundHealingLifecycleTests.FailedActiveCheckStillAdvancesOneCycleAndRetainsNaturalProgress",
         "BookOfEternityClient.Tests.AfterlifeWoundHealingLifecycleTests.SuccessfulActiveCheckHealsWithoutASecondNaturalHeal",
         "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.OrdinarySafeTurnRecoversWithoutTreatmentAttemptOrDraw",
+        "BookOfEternityClient.Tests.AfterlifeSpiritualConflictValidationTests.ValidateGameStateAsync_NoEffectExchange_AllowsIdenticalBeforeAfter",
+        "BookOfEternityClient.Tests.AfterlifeSpiritualConflictValidationTests.ValidateGameStateAsync_SuccessExchange_RejectsIdenticalBeforeAfter",
         "BookOfEternityClient.Tests.AfterlifeSpiritualConflictValidationTests.ValidateGameStateAsync_AcceptsOppositionActionCostAuditFromEntityProfile",
         "BookOfEternityClient.Tests.AfterlifeSpiritualConflictValidationTests.ValidateGameStateAsync_RejectsActionCostArtTierAboveAuthorityProfile"
       ]

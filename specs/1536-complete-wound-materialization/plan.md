@@ -1,3 +1,62 @@
+# Combat declared response shape + first-pair observer — UNCOMPILED/UNRUN
+
+2026-10-28: owning ddcb build completed with 0 errors, 137 baseline warnings,
+5:55.62; Unit refsfalse 0 errors, 26 warnings, 1:19.41. All 9 current DLL pins
+match. Official PlanOnly 24 cases / 11 descriptors / 10 categories, zero executed,
+14.0150519 seconds. Observation 8 / 8 PASS, 34.0234770 seconds, category
+15.8006731 < 120; complete selection, unique IDs, no timeout/duplicates, both
+cleanup flags true. TRX hashes: Unit 69f9ce63…e9d, Integration 231a5a58…9918.
+Sol independently accepted those eight and the build/pin evidence.
+
+Paired quartet still completed 0 PASS / 4 FAIL, 30.8097596 seconds, category
+22.0401023 < 120, complete/no timeout/duplicates/both cleanup flags true;
+TRX aa55ef6d…f188a. The new signed combat coverage/absence preconditions and full
+Begin now pass. Three rows fail in Advance source admission: unchanged strain /
+control snapshots are rejected by the old no_state_delta guard before actual
+ValidateCombatHealingDeclaration. Healing stages are client-owned later, and a
+resolved paid attempt may also fail its independent healing DC. The SAME helper
+serves actual console/browser, so this is a production response-shape contradiction,
+not a request to fabricate strain or relabel success as no_effect. Separately,
+blocked_worsen commits its real initial pair then the TEST asks the old original
+capture for C1 candidate images. The pair changed original private absence, so
+that observer correctly fails freshness. No downstream cases ran.
+
+Written correction: a narrow declared paid-treatment DATA predicate, analogous
+to the existing resource-recovery audit exception, recognizes only standard
+heal_spiritual_wound with player/opposition cost audit objects, matching standard
+player base/min/tier/effective cost, affordable exact before-cost=after, matching
+healing matchup/lane and an actual-shaped player dice row. The ordinary generic
+guard remains for missing/malformed audits and other operations. This issues no
+permission and computes no wound outcome: original intent/selection, source,
+actual claimed roll, art/cost, C2/C3/C4 resource/effect and durable result validation
+are unchanged and still mandatory. The healed theory row establishes actual
+response shape then independently rejects eight malformed DATA variants. C1
+candidate History is now read/asserted after interval closure BEFORE Commit; after
+commit only physical History bytes are compared, with no stale owner read.
+
+GM source comparison: current TaskGuides/CLI_Step_Main, Rules/Block_CLI_Operations,
+OtherGuides/Afterlife_Contract_Matrix combat sections and E_CLI_Afterlife_Turns
+worked example already separate client healing math from opposed timing and
+show typed player cost before6/after4. They impose no unconditional strain/control
+change for healing. No new GM field/schema or authoring format is needed; the
+existing declared cost/dice/matchup audit is the response DATA being recognized.
+The existing worked example/handler wording remains synchronized.
+
+Finite qualification proposal: fresh owning Integration/MainSupport then Unit
+refsfalse, all 9 pins and official remaining 18 cases / 9 descriptors. Pair4 first,
+then rollback1, safe-publication7, injury-v1-output1, authored-self1, safe-console1,
+safe-browser1 and actual combat-console/browser1 each under original budgets.
+The shared rule adds ONLY these two existing one-case controls to safe-publication:
+ValidateGameStateAsync_NoEffectExchange_AllowsIdenticalBeforeAfter and
+ValidateGameStateAsync_SuccessExchange_RejectsIdenticalBeforeAfter, both on
+AfterlifeSpiritualConflictValidationTests. No broad owner or extra preliminary
+stage. Retain observation8 at ddcb: presence reader/producers/default helper tests
+are unchanged and do not invoke the modified exchange-shape rule. Retain prior9
+component/help at their own 2904/1da lineages. The aggregate would be 35 distinct
+cases across explicit lineages, never one current-SHA all35 claim. New correction
+is UNCOMPILED/UNRUN until grouped bounded Astra/Sol SOURCE/PREP and actual evidence.
+T095/T102/T103, broader US4 and standing HOLDs remain open.
+
 # Combat signed-source observation correction — UNCOMPILED/UNRUN, 2026-10-28
 
 Frozen df161914 owning build: 0 errors, 137 baseline warnings, 4:45.45. Unit

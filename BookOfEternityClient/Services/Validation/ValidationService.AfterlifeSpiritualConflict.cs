@@ -2345,7 +2345,8 @@ public partial class ValidationService
             before != null &&
             after != null &&
             !ExchangeSnapshotsChangedSemantically(before, after) &&
-            !HasDeclaredPlayerRecoveryGain(exchange, operationType))
+            !HasDeclaredPlayerRecoveryGain(exchange, operationType) &&
+            !HasDeclaredPlayerWoundTreatmentSpend(exchange, operationType))
         {
             issues.Add(new ValidationIssue(
                 $"{context}.after",
@@ -2353,7 +2354,7 @@ public partial class ValidationService
                 "Non-blocked exchange должен иметь измеримое изменение или явно быть outcome=no_effect.",
                 code: "afterlife_conflict_exchange_no_state_delta",
                 section: "AfterlifeSpiritualConflict",
-                expected: "changed before/after or outcome=blocked/no_effect",
+                expected: "changed before/after, declared resource gain/paid wound treatment, or outcome=blocked/no_effect",
                 actual: "before == after"));
         }
 
@@ -5313,6 +5314,33 @@ public partial class ValidationService
         TryGetJsonNodeInt(audit["effectiveCost"], out var cost) && cost >= 0 &&
         TryGetJsonNodeInt(audit["before"], out var before) && before >= cost &&
         TryGetJsonNodeInt(audit["after"], out var after) && after > before - cost;
+
+    // Response shape only: a paid wound attempt need not alter strain/control.
+    // Its wound stages are client-owned and healing may fail independently of
+    // the opposed timing roll. This declares a measurable resource spend, not
+    // permission: actual original/selected wound/dice/art/cost validation and
+    // the paired C2/C4 outcome remain mandatory in the existing owners.
+    private static bool HasDeclaredPlayerWoundTreatmentSpend(JsonObject exchange, string? operation) =>
+        ConflictTokenEquals(operation, AfterlifeActionCostRules.SpiritualHealingOperation) &&
+        AfterlifeActionCostRules.TryGetDefinition(operation, out var definition) &&
+        exchange["matchupAudit"] is JsonObject matchup &&
+        ConflictTokenEquals(AfterlifeSpiritualConflictState.GetNodeString(matchup["playerOperation"]), operation!) &&
+        ConflictTokenEquals(AfterlifeSpiritualConflictState.GetNodeString(matchup["primaryResolutionLane"]), operation!) &&
+        exchange["diceAudit"] is JsonObject dice && dice["diceUsed"] is JsonArray used &&
+        used.OfType<JsonObject>().Any(row =>
+            ConflictTokenEquals(AfterlifeSpiritualConflictState.GetNodeString(row["side"]), "player", "playerSide", "soul") &&
+            TryGetJsonNodeInt(row["sourceIndex"], out var index) && index >= 0 &&
+            TryGetJsonNodeInt(row["value"], out var roll) && roll is >= 1 and <= 20) &&
+        exchange["actionCostAudit"] is JsonObject costs && costs["opposition"] is JsonObject &&
+        costs["player"] is JsonObject audit &&
+        ConflictTokenEquals(AfterlifeSpiritualConflictState.GetNodeString(audit["operationType"]), operation!) &&
+        TryGetJsonNodeInt(audit["baseCost"], out var baseCost) && baseCost == definition.BaseCost &&
+        TryGetJsonNodeInt(audit["minCost"], out var minCost) && minCost == definition.MinCost &&
+        TryGetJsonNodeInt(audit["artTier"], out var tier) && tier is >= 1 and <= 5 &&
+        TryGetJsonNodeInt(audit["effectiveCost"], out var cost) && cost > 0 &&
+        cost == AfterlifeActionCostRules.ResolveStandardEffectiveCost(definition, tier) &&
+        TryGetJsonNodeInt(audit["before"], out var before) && before >= cost &&
+        TryGetJsonNodeInt(audit["after"], out var after) && after == before - cost;
 
     private static bool ExchangeSnapshotsChangedSemantically(JsonObject before, JsonObject after)
     {
