@@ -1,5 +1,20 @@
 # US4 safe self-treatment — active functional work, 2026-10-28
 
+T108 producer functional WIP is now wired but UNCOMPILED/UNRUN. The actual natural
+owner validates all three raw profile representations, derives a full closed
+participation record from its real binding/cycle/primary transition, and carries
+that record + digest into a mandatory nonempty v3 natural result. Existing common
+carrier assembly applies only the owned record/proposal consumption alongside the
+real wound contribution; no separate publisher/receipt. Additional signed/current
+locality images and original evidence close under the same lease. The existing
+local scope calculation now has a pure DATA entry point to reuse parsed roots.
+Current v2 self/no-participation natural writers remain active without fallback.
+Strict published reader compares the canonical profile record to its outcome.
+Remaining before coherent SOURCE/build: producer forgery/three-representation/
+rollback/cross-version controls, GM docs/example/guards, and selected affected
+regressions. Aid staging/draw/result/UI and full Engine journey remain later
+implementation within the same accepted design; no helper completion claimed.
+
 T108 producer causal RED now executed on clean a3fee4bd6: exact singleton completes
 FAIL at Aid.cs70 Assert.NotNull(canonical participation). Initial canonical wound/
 identity/History, actual locality, accepted common publication III1/H0, one cycle,

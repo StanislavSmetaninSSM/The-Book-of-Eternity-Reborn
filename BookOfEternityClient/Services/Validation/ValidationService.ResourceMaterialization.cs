@@ -432,7 +432,7 @@ public partial class ValidationService
         var acceptedAfterlifeOwners = await ReadAcceptedAfterlifeResourceOwnerRootsAsync(
             manifest,
             preTurnAfterlifeOwners,
-            issues, spiritualCapture?.Allocations.Clock, currentInputs);
+            issues, spiritualCapture?.Allocations.Clock, currentInputs, naturalOwner);
         var afterlifeOwnerComposition = AfterlifeResourceOwnerComposer.Compose(
             new AfterlifeResourceOwnerCompositionInput(
                 definitions,
@@ -1330,7 +1330,8 @@ public partial class ValidationService
             ValidationPendingTurnSnapshotManifest manifest,
             AfterlifeResourceOwnerRoots preTurn,
             List<ValidationIssue> issues, AcceptedTurnProjectionClock? projectionClock = null,
-            SpiritualOriginalDraftInputs? currentInputs = null)
+            SpiritualOriginalDraftInputs? currentInputs = null,
+            AfterlifeWoundHealingPlanner.Continuation? naturalOwner = null)
     {
         var current = await ReadAfterlifeResourceOwnerRootsAsync(
             manifest: null,
@@ -1338,6 +1339,22 @@ public partial class ValidationService
         var profiles = AfterlifeEntityProfileState.ProjectCanonicalRoot(
             current.Profiles,
             preTurn.Profiles);
+        try
+        {
+            var changes = SpiritualTreatmentParticipation.ReadChanges(current.Profiles, preTurn.Profiles);
+            if (changes.Count != 0)
+            {
+                if (naturalOwner is null) throw new InvalidDataException("Participation changes require an actual ordinary natural publication owner.");
+                await naturalOwner.PrepareParticipationAsync(changes, profiles);
+            }
+        }
+        catch (Exception failure) when (failure is not CoordinatedStatePublicationUncertainException &&
+            failure is (InvalidDataException or InvalidOperationException or JsonException or ArgumentException or OverflowException))
+        {
+            issues.Add(new(AfterlifeEntityProfileState.StatePath, IssueSeverity.Error,
+                "Spiritual participation cannot be issued by this profile response.", code: "spiritual_participation_invalid",
+                actual: failure.Message, repairHint: "Keep the same turn; author only the closed participation change on the current Guardian during an ordinary safe cycle."));
+        }
         var conflict = current.SpiritualConflict;
         if (conflict[AfterlifeSpiritualConflictState.ResponseField] is JsonObject update)
         {

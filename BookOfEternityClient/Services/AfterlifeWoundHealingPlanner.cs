@@ -115,6 +115,7 @@ internal static partial class AfterlifeWoundHealingPlanner
             files.EnsureCanonicalWriteLeaseActive(lease);
             files.VerifyCurrentSessionOperation(lease);
             _original.RequireCurrent(files, lease, _snapshot);
+            RequireParticipationCurrent();
             foreach (var pair in _sources)
             {
                 // The GM authors the request-bound progression outcome after the original snapshot.

@@ -36,9 +36,10 @@ internal sealed class SpiritualHealingPersistedResult : WoundTransitionResult
     {
         var binding = owner.Input.Binding;
         var cycle = owner.CycleKey;
+        var participation = owner.ParticipationOutcomes;
         var root = new JsonObject
         {
-            ["kind"] = "spiritual_healing", ["schemaVersion"] = 2, ["mode"] = owner.Mode,
+            ["kind"] = "spiritual_healing", ["schemaVersion"] = participation is null ? 2 : 3, ["mode"] = owner.Mode,
             ["binding"] = new JsonObject { ["sessionId"] = binding.SessionId, ["requestId"] = binding.RequestId,
                 ["snapshotToken"] = binding.SnapshotToken, ["realm"] = binding.Realm, ["turn"] = binding.Turn },
             ["request"] = owner.Request, ["source"] = owner.PersistenceSource,
@@ -56,6 +57,7 @@ internal sealed class SpiritualHealingPersistedResult : WoundTransitionResult
                 ["attemptId"] = s.Kind == "treat" ? s.After.Care.LastAttemptId : null
             }).ToArray())
         };
+        if (participation is not null) root["participationOutcomes"] = participation;
         root["resultFingerprint"] = WoundHistoryState.ComputeTransitionResultFingerprint(root);
         var issues = new List<ValidationIssue>();
         return Parse(JsonSerializer.SerializeToElement(root), "spiritualHealing.result", issues)
@@ -71,9 +73,12 @@ internal sealed class SpiritualHealingPersistedResult : WoundTransitionResult
                 ?? throw new InvalidDataException("Result must be an object.");
             AfterlifeWoundTreatmentAuthority.MaterializeProperties(root);
             var rootFields = new[] { "kind", "schemaVersion", "binding", "request", "source", "control", "scheduleBeforeJson", "progressionReportJson", "scheduleAfterJson", "scheduleAfterFingerprint", "stages", "resultFingerprint" };
-            Closed(root, rootFields.Append("mode").ToArray());
+            var version = root["schemaVersion"]!.GetValue<int>();
+            Closed(root, version == 3 ? rootFields.Append("mode").Append("participationOutcomes").ToArray()
+                : rootFields.Append("mode").ToArray());
             var mode = Text(root, "mode");
-            if (Text(root, "kind") != "spiritual_healing" || root["schemaVersion"]!.GetValue<int>() != 2 || mode is not ("self" or "natural") ||
+            if (Text(root, "kind") != "spiritual_healing" || version is not (2 or 3) || mode is not ("self" or "natural") ||
+                version == 3 && mode != "natural" ||
                 Text(root, "resultFingerprint") != WoundHistoryState.ComputeTransitionResultFingerprint(root))
                 throw new InvalidDataException("Spiritual result kind/schema/fingerprint differs.");
             var binding = root["binding"]!.AsObject();
@@ -182,6 +187,9 @@ internal sealed class SpiritualHealingPersistedResult : WoundTransitionResult
                 ValidateStageScope(stage, e);
                 current[before.WoundId] = after;
             }
+            if (version == 3)
+                SpiritualTreatmentParticipation.ValidateOutcomes(root["participationOutcomes"]!.AsArray(), binding,
+                    control.NextChaosSeaTurnOrdinal, stages);
             return new(root, stages);
         }
         catch (Exception failure) when (failure is JsonException or InvalidDataException or InvalidOperationException or ArgumentException or OverflowException or KeyNotFoundException or NullReferenceException)

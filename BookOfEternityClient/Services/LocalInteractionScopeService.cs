@@ -321,10 +321,16 @@ internal sealed class LocalInteractionScopeService : ILocalInteractionScopeResol
     {
         var guardiansRead = await ReadAuthorityObjectAsync(writeLease, GuardiansPath);
         var residentsRead = await ReadAuthorityObjectAsync(writeLease, GuardianAbodeResidentState.StatePath);
-        var root = guardiansRead.Root;
         var resolvedSnapshots = AppendSnapshot(
             AppendSnapshot(authoritySnapshots, guardiansRead.Snapshot),
             residentsRead.Snapshot);
+        return ResolveChaosSeaScope(guardiansRead.Root, residentsRead.Root, resolvedSnapshots);
+    }
+
+    // Reuse already-read operation DATA; callers still own current source/lease checks.
+    internal static LocalInteractionScope ResolveChaosSeaScope(JsonObject? root, JsonObject? residentsRoot,
+        IReadOnlyList<LocalInteractionAuthoritySnapshot> resolvedSnapshots)
+    {
         var navigation = root?["chaosSeaNavigation"] as JsonObject;
         var currentAbodeId = GetFirstString(navigation, "currentAbodeId", "abodeId");
         var activeGuardian = root?["activeGuardian"] as JsonObject;
@@ -364,7 +370,6 @@ internal sealed class LocalInteractionScopeService : ILocalInteractionScopeResol
         }
 
         var localActors = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { activeGuardianId };
-        var residentsRoot = residentsRead.Root;
         foreach (var resident in EnumerateObjects(residentsRoot?[GuardianAbodeResidentState.EntriesProperty] as JsonArray))
         {
             if (!GetBoolean(resident["isPresent"], defaultValue: true) ||

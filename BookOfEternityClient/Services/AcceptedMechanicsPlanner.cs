@@ -934,6 +934,9 @@ internal static partial class AcceptedMechanicsCarrierAssembler
                     }
                 }
 
+                if (path == WoundCarrierCatalog.AfterlifeProfilesPath &&
+                    woundStages.SpiritualHealingContinuation is { } spiritual)
+                    spiritual.ApplyParticipationAfterImage(selected);
                 woundRoots.Add(path, selected);
                 effectRoots.Remove(path);
                 ownerRoots.Remove(path);

@@ -99,6 +99,8 @@ public partial class ProgressionScheduleService
             throw new InvalidDataException("Published spiritual cycle lost current wound/identity/history agreement.");
         RequireCompleteSpiritualSettlementCohort(accepted.Result, history.State, identities.State!,
             catalog, roots[WoundCarrierCatalog.AfterlifeProfilesPath], accepted.Root["binding"]!["realm"]!.GetValue<string>(), turn);
+        if (accepted.Root["participationOutcomes"] is JsonArray participation)
+            SpiritualTreatmentParticipation.RequirePublishedRecords(participation, roots[WoundCarrierCatalog.AfterlifeProfilesPath]);
         foreach (var group in accepted.Result.Stages.GroupBy(s => s.After.WoundId))
             if (history.State.Transitions.Last(t => t.WoundId == group.Key).TransitionId != group.Last().TransitionId)
                 throw new InvalidDataException("A published spiritual result no longer describes the current wound cohort.");
