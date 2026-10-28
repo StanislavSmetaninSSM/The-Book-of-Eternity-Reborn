@@ -1,6 +1,26 @@
 # US4 safe self-treatment — active functional work, 2026-10-28
 
 
+Current reset follow-through on clean/compiled f9b5f4e33: exact1/1 PlanOnly
+6.6853345s/zero executed; actual1 completeFAIL26.1879931s, no timeout/skip/dup and
+both cleanup flags true. Real C2 decision and common C4 publication now succeed:
+II/progress0, old tick/origin/History preserved, no natural conflict row, terminal
+closure and real receipt. A new signed safe43 captures those exact profile bytes
+and projects H0 recovery. Its publication preparation then refuses two unresolved
+resource owners: current item durability created by real C4 intake and historical
+retired conflict-side action points. Safe natural result/replay assertions are
+unreached; no full reset case PASS or product-vs-fixture cause is claimed. Heavy
+retry paused for bounded actual-Engine prerequisite/ordinary owner-universe review,
+without rebootstrap, deleting History or broad permission exceptions. Raw
+natural-conflict-reset-build-3/natural-conflict-reset-3 and full TRX
+SHA256eee3693a520dc7a6a5a14b8294e2925ab24b0560cbc01d810c6d390271bd4fa3
+remain external; six postrun pins match. Build0errors/102warnings2:26.83.
+Earlier two complete fixture-proposal failures and catalogue preflight are retained
+in natural-recovery-plan.md/raw; none is mislabeled product semantic RED. Existing
+19 accepted cases retained with unchanged production d691/default bodies.
+
+
+
 Real C4 reset follow-through WIP (UNCOMPILED/UNRUN): one owned Integration
 singleton/120s uses existing complete conflict fixture, actual C2 decision and
 common C4 publisher, then actual fresh signed natural request on the same files.

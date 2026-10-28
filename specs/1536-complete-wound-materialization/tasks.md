@@ -14418,8 +14418,12 @@ close full source-action/terminal/pending contracts or any top-level story task.
   with controlled native-shaped GM completion. Actual console cancel/confirm and
   same-Engine publication also pass1/1 on7b. Graph-bearing GM caller/repair passes
   1/1 on926 with independently accepted same-attempt/two-phase/one-cycle result.
-  Ordinary natural cycles, fresh-process cleanup and helper/entity follow-through remain open;
-  this does not complete T104 or T105–T108.
+  Bounded ordinary natural recovery now has19 accepted distinct cases across
+  retained lineages: core14, actor/IV/ordinary graph/chronology4 and actual Shining1.
+  Real C4 reset reaches published II0, but the next safe resource-owner handoff
+  currently refuses and its singleton is not PASS. Fresh-process cleanup, full
+  source producers and helper/entity ACTIVE follow-through remain open; this does
+  not complete T104 or T105–T108.
   Current self-request prerequisite (2026-10-27), source
   `33d8aeac818caafe4d695d36ff06e01e16aa5999`: actual canonical-lease-owned staging,
   separate retained draw, byte-identical pending retry, exact source/cycle refusal

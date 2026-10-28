@@ -192,3 +192,14 @@ singleton PlanOnly and actual120; exact runtime outcome decides acceptance.
   fields and recovery policy; set only current progress0/II threshold4/derived
   blockers. No new projector/framework, generic parser or game-rule change; original
   ownership/currentness remains independently checked by actual C2 admission.
+
+- Actual3 f9 now passes real C2/C4 publication and every reset0/tick/origin/old
+  History/no conflict natural/closure/receipt assertion, plus actual safe43
+  projection and exact signed C4-profile snapshot. At safe publication preparation
+  it refuses current item durability and historical retired conflict-side resource
+  owners. Actual complete1FAIL26.1879931/no timeout/bothcleanup; raw/hash/pins in
+  topplan, build0e102w2:26.83. This new owner-universe handoff is not assumed
+  fixture-only or production-only. Heavy retry paused for finite Sol/Astra source
+  comparison against actual Engine ordinary-owner preparation; no rebootstrap,
+  historical-entry removal or authority exemption. C4 reset is reached, but this
+  singleton is not accepted PASS and safe tick/replay assertions remain unreached.
