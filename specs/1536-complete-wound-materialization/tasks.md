@@ -14343,10 +14343,13 @@ Current follow-through: nine distinct component/help rows are accepted at their
 explicit2904/1da lineages. Paired ae154 retry reached actual signed intake in three
 rows but exposed retained combat intent entering ordinary GM wound grammar; the
 fourth row exposed a separate controlled destination-graph fixture mismatch.
-Private observed-original/exact-byte routing and the local lawful cost graph are
-written UNCOMPILED/UNRUN, including byte-drift refusal and tuple/control DATA
-negatives. Coherent correction SOURCE/PREP, fresh affected builds and remaining
-16/9 qualification are pending; no combat gameplay PASS or full task closure.
+Private observed-original/exact-byte routing and the local lawful cost graph
+compiled at df161914; actual paired quartet passed capture (including byte-drift negative)
+then failed only at Begin's unsupported signed observed-optional path set. A second
+currently produced closed combat presence form is written UNCOMPILED/UNRUN;
+ordinary set/I/O, signer and full source admission stay exact. Eight cheap default
+presence/coverage guards plus remaining 16 give proposed 24 / 11 qualification after
+coherent SOURCE/PREP/fresh builds. No combat gameplay PASS or full task closure.
   Next bounded player-result is tracked jointly with T102/T103 in
   spiritual-combat-healing-design.md (DESIGN ACCEPT c3caf534c): player self treatment in actual active
   direct Chaos duel, counterable typed operation, exact original die/art/target,

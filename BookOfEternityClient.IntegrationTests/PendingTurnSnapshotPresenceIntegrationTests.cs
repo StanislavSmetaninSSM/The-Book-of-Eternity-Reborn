@@ -276,6 +276,16 @@ public sealed class PendingTurnSnapshotPresenceIntegrationTests
                 .Order(StringComparer.Ordinal));
         Assert.Throws<KeyNotFoundException>(
             () => result.Snapshot.ReadRequiredBytes(SettingsPath));
+
+        // Knowing the combat observation allowlist is not signed absence. This
+        // actual ordinary producer still emits only the default closed form.
+        Assert.Null(captured["files"]![ProgressionScheduleService.ReportPath]);
+        Assert.False(captured["originalPathPresenceV1"]!.AsObject().ContainsKey(ProgressionScheduleService.ReportPath));
+        var unobservedCombatSource = PendingTurnSnapshotReader.ReadCurrent(context.FileSystem, lease,
+            PendingTurnSnapshotPathSelection.CreateWithObservedOptionalPaths(RequiredPaths, [ProgressionScheduleService.ReportPath]));
+        Assert.False(unobservedCombatSource.Success);
+        Assert.Null(unobservedCombatSource.Snapshot);
+        Assert.Contains(unobservedCombatSource.Issues, issue => issue.Code == "pending_turn_snapshot_reader_absence_unproven");
     }
 
     [Fact]

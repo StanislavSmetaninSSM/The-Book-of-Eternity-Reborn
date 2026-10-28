@@ -100,6 +100,23 @@ public sealed partial class AfterlifeResourceCutoverTests
                 await original.CaptureValidatedPendingSnapshotAsync(turn: 42, currentRealm: "Chaos Sea",
                     preGeneratedDices1d20: [playerDie, oppositionDie, 12, 8], progressionControl: control, spiritualHealing: projection);
                 var manifest = (await original.ReadJsonAsync(LiveTurnPreparationService.PendingTurnSnapshotManifestPath))!;
+                Assert.Equal(PendingTurnSnapshotPathPresenceV1.CombatLogicalPaths.Order(StringComparer.Ordinal),
+                    manifest["originalPathPresenceV1"]!.AsObject().Select(p => p.Key).Order(StringComparer.Ordinal));
+                Assert.False(manifest["originalPathPresenceV1"]![ProgressionScheduleService.ReportPath]!.GetValue<bool>());
+                Assert.True(manifest["originalPathPresenceV1"]![EffectAcceptedTurnInputComposer.WorldTimePath]!.GetValue<bool>());
+                await using (var originalLease = await original.FileSystem.AcquireCanonicalWriteLeaseAsync())
+                {
+                    var read = PendingTurnSnapshotReader.ReadObservedCurrent(original.FileSystem, originalLease,
+                        PendingTurnSnapshotPathSelection.CreateWithObservedOptionalPaths(
+                            new[] { AcceptedMechanicsPlan.WoundCommandPath }, AfterlifeWoundTreatmentAuthority.CombatSourcePaths));
+                    Assert.True(read.Success, string.Join(";", read.Issues.Select(i => i.Code + ":" + i.Actual)));
+                    var signedSources = Assert.IsType<PendingTurnSnapshotReadAuthority>(read.Snapshot);
+                    Assert.Equal(AfterlifeWoundTreatmentAuthority.CombatSourcePaths.Order(StringComparer.Ordinal),
+                        signedSources.CoveredLogicalPaths.Concat(signedSources.AbsentLogicalPaths)
+                            .Where(p => p != AcceptedMechanicsPlan.WoundCommandPath).Order(StringComparer.Ordinal));
+                    Assert.Contains(ProgressionScheduleService.ReportPath, signedSources.AbsentLogicalPaths);
+                    read.Evidence!.RequireCurrent(original.FileSystem, originalLease, signedSources);
+                }
                 snapshotToken = manifest["manifestPayloadHash"]!.GetValue<string>();
                 originalCommandPath = manifest["files"]![AcceptedMechanicsPlan.WoundCommandPath]!.GetValue<string>();
             });

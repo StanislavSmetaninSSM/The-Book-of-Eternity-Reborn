@@ -2,6 +2,11 @@
   "schemaVersion": 1,
   "selections": [
 {
+  "category": "spiritual-combat-original-observation",
+  "reason": "Actual combat Begin exposed an unsupported observed-optional read set. Preserve the ordinary closed form and coverage guards while adding only the actual combat producer's signed source union; default missing report absence must still refuse.",
+  "contracts": ["#1536 T095/T102/T103 exact original source bytes/absence, existing signer, no new healing permission"]
+},
+{
   "category": "spiritual-combat-healing-browser-help",
   "reason": "Actual help category produced consolePASS/browserFAIL at the unchanged availability assertion; fix the separate browser builder text, retain exact prior component7+console1 at2904 lineage, then continue untouched remaining16.",
   "contracts": [

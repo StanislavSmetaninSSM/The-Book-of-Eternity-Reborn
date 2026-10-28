@@ -152,12 +152,13 @@ internal sealed class LiveTurnPreparationService
         var snapshotFiles = new HashSet<string>(
             rollbackBaselineFiles,
             StringComparer.OrdinalIgnoreCase);
-        snapshotFiles.UnionWith(PendingTurnSnapshotPathPresenceV1.LogicalPaths);
+        var observeCombatSources = PendingTurnSnapshotPathPresenceV1.HasCombatProjection(request.SpiritualHealing);
+        snapshotFiles.UnionWith(PendingTurnSnapshotPathPresenceV1.GetLogicalPaths(observeCombatSources));
 
         foreach (var file in snapshotFiles.OrderBy(path => path, StringComparer.OrdinalIgnoreCase))
             await SnapshotFileIfPresentAsync(writeLease, file, files, snapshotHashes);
         var originalPathPresenceV1 =
-            PendingTurnSnapshotPathPresenceV1.Create(files, snapshotHashes);
+            PendingTurnSnapshotPathPresenceV1.CreateForCombatObservation(files, snapshotHashes, observeCombatSources);
 
         var manifest = new LiveTurnPendingSnapshotManifest
         {

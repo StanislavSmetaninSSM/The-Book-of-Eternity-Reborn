@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.ObjectModel;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
 
 namespace BookOfEternityClient.Services;
@@ -47,7 +48,18 @@ internal static class PendingTurnSnapshotPathPresenceV1
     private static readonly ReadOnlyCollection<string> ClosedLogicalPaths =
         Array.AsReadOnly(BeforeCompletionClosedLogicalPaths.Concat([MortalQteDecisionPublication.StatePath]).ToArray());
 
+    // Two currently produced observation forms. A combat projection selects the
+    // extra closed read set before capture; this grants no combat permission.
+    private static readonly ReadOnlyCollection<string> CombatClosedLogicalPaths =
+        Array.AsReadOnly(ClosedLogicalPaths.Concat(AfterlifeWoundTreatmentAuthority.CombatSourcePaths)
+            .Distinct(StringComparer.Ordinal).ToArray());
+
     internal static IReadOnlyList<string> LogicalPaths => ClosedLogicalPaths;
+    internal static IReadOnlyList<string> CombatLogicalPaths => CombatClosedLogicalPaths;
+    internal static bool HasCombatProjection(JsonObject? projection) =>
+        projection?["mode"] is JsonValue value && value.TryGetValue<string>(out var mode) && mode == "combat_self";
+    internal static IReadOnlyList<string> GetLogicalPaths(bool includeCombatSources) =>
+        includeCombatSources ? CombatClosedLogicalPaths : ClosedLogicalPaths;
     /// <summary>
     /// Gets the closed presence set emitted before private spiritual service roots were observed.
     /// Existing signed turns can still be read for unrelated work.
@@ -65,7 +77,13 @@ internal static class PendingTurnSnapshotPathPresenceV1
 
     internal static Dictionary<string, bool> Create(
         IReadOnlyDictionary<string, string> files,
-        IReadOnlyDictionary<string, string> snapshotFileHashes)
+        IReadOnlyDictionary<string, string> snapshotFileHashes) =>
+        CreateForCombatObservation(files, snapshotFileHashes, includeCombatSources: false);
+
+    internal static Dictionary<string, bool> CreateForCombatObservation(
+        IReadOnlyDictionary<string, string> files,
+        IReadOnlyDictionary<string, string> snapshotFileHashes,
+        bool includeCombatSources)
     {
         ArgumentNullException.ThrowIfNull(files);
         ArgumentNullException.ThrowIfNull(snapshotFileHashes);
@@ -81,7 +99,7 @@ internal static class PendingTurnSnapshotPathPresenceV1
         }
 
         var result = new Dictionary<string, bool>(StringComparer.Ordinal);
-        foreach (var logicalPath in ClosedLogicalPaths)
+        foreach (var logicalPath in GetLogicalPaths(includeCombatSources))
         {
             var fileRows = files
                 .Where(pair => string.Equals(pair.Key, logicalPath, StringComparison.Ordinal))
@@ -451,7 +469,7 @@ internal static partial class PendingTurnSnapshotReader
         }
         if (requireSignedAbsenceForMissingOptionalPaths)
         {
-            var observed = PendingTurnSnapshotPathPresenceV1.LogicalPaths
+            var observed = PendingTurnSnapshotPathPresenceV1.CombatLogicalPaths
                 .ToHashSet(StringComparer.Ordinal);
             foreach (var path in result.Where(optional.Contains))
             {
@@ -527,6 +545,8 @@ internal static partial class PendingTurnSnapshotReader
 
         var expected = PendingTurnSnapshotPathPresenceV1.LogicalPaths
             .ToHashSet(StringComparer.Ordinal);
+        var combat = PendingTurnSnapshotPathPresenceV1.CombatLogicalPaths
+            .ToHashSet(StringComparer.Ordinal);
         var legacy = PendingTurnSnapshotPathPresenceV1.LegacyLogicalPaths
             .ToHashSet(StringComparer.Ordinal);
         var previous = PendingTurnSnapshotPathPresenceV1.PreviousLogicalPaths
@@ -538,6 +558,7 @@ internal static partial class PendingTurnSnapshotReader
         var actual = manifest.OriginalPathPresenceV1.Keys
             .ToHashSet(StringComparer.Ordinal);
         if (!((manifest.OriginalPathPresenceV1.Count == expected.Count && actual.SetEquals(expected)) ||
+              (manifest.OriginalPathPresenceV1.Count == combat.Count && actual.SetEquals(combat)) ||
               (manifest.OriginalPathPresenceV1.Count == beforeCompletion.Count && actual.SetEquals(beforeCompletion)) ||
               (manifest.OriginalPathPresenceV1.Count == beforeMortal.Count && actual.SetEquals(beforeMortal)) ||
               (manifest.OriginalPathPresenceV1.Count == previous.Count && actual.SetEquals(previous)) ||

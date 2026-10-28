@@ -179,8 +179,9 @@ internal sealed partial class ResourceMaterializationTestContext : IAsyncDisposa
             .Append(FullPartyInteractionsPath)
             .Concat(additionalTrackedPaths ?? Array.Empty<string>())
             .ToHashSet(StringComparer.OrdinalIgnoreCase);
+        var observeCombatSources = PendingTurnSnapshotPathPresenceV1.HasCombatProjection(spiritualHealing);
         var snapshotPaths = trackedPaths
-            .Concat(PendingTurnSnapshotPathPresenceV1.LogicalPaths)
+            .Concat(PendingTurnSnapshotPathPresenceV1.GetLogicalPaths(observeCombatSources))
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .OrderBy(static path => path, StringComparer.Ordinal);
 
@@ -201,9 +202,9 @@ internal sealed partial class ResourceMaterializationTestContext : IAsyncDisposa
                 rollbackBaselineFiles.Add(path);
         }
         var originalPathPresenceV1 = JsonSerializer.SerializeToNode(
-            PendingTurnSnapshotPathPresenceV1.Create(
+            PendingTurnSnapshotPathPresenceV1.CreateForCombatObservation(
                 typedFiles,
-                typedSnapshotFileHashes))!.AsObject();
+                typedSnapshotFileHashes, observeCombatSources))!.AsObject();
 
         var manifest = new JsonObject
         {

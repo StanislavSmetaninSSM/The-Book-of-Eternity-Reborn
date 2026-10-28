@@ -269,3 +269,11 @@ correction/resume. Repeated healing remains unsupported. Cross-family same-wave
 equality applies only to the actual healing exchange; later injury sources retain
 their ordered wave, full original evidence and unique dice claims. This extends the
 same saved transport rather than using no_offer/source-only to skip a decision.
+
+
+2026-10-28 actual-consumer clarification (no new healing authority): the signed
+original observes the exact closed combat source union in the existing presence
+dictionary. Ordinary producers retain their current default form. The same actual
+staged combat projection selects capture paths and presence before signing;
+reader allowlist knowledge never substitutes for a signed false observation.
+Full Begin admission and both original byte/absence evidence remain mandatory.

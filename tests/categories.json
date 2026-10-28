@@ -2,6 +2,33 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "spiritual-combat-original-observation",
+  "responsibility": "Eight exact default presence/coverage guards after adding the second currently produced combat observation set; actual combat byte/absence production is qualified by the paired and Engine cases.",
+  "excludes": "No broad pending-turn owner, migration, new permission or combat execution claim from presence DATA. Ordinary snapshot I/O remains unchanged.",
+  "changeHints": [
+    "BookOfEternityClient/Services/PendingTurnSnapshotReader.cs",
+    "BookOfEternityClient/Services/LiveTurnPreparationService.cs",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+    "BookOfEternityClient.IntegrationTests/ResourceMaterializationTestContext.cs",
+    "BookOfEternityClient.IntegrationTests/PendingTurnSnapshotPresenceIntegrationTests.cs",
+    "BookOfEternityClient.Tests/PendingTurnSnapshotPresenceContractTests.cs"
+  ],
+  "related": [{ "id": "spiritual-combat-healing-pair", "when": "Combat snapshot must prove every exact source byte or signed absence before Begin; this selection alone grants no healing authority." }],
+  "requirements": { "frontendBuild": false, "exclusive": true, "ciRunner": "ubuntu-24.04" },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    { "project": "unit", "tests": [
+      "BookOfEternityClient.Tests.PendingTurnSnapshotPresenceContractTests.ClosedObservationContract_PreservesLegacySetsAndEmitsCurrentTwentyOnePaths",
+      "BookOfEternityClient.Tests.PendingTurnSnapshotPresenceContractTests.Create_DerivesExactPresenceAndRejectsUntrustworthyCoverage"
+    ] },
+    { "project": "integration", "tests": [
+      "BookOfEternityClient.Tests.PendingTurnSnapshotPresenceIntegrationTests.LiveProducer_SignedAbsenceSurvivesLaterCurrentFileAndReaderUsesRealLease",
+      "BookOfEternityClient.Tests.PendingTurnSnapshotPresenceIntegrationTests.ResignedPresenceShapeOrCoverageContradictionFailsClosed"
+    ] }
+  ]
+},
+{
   "id": "spiritual-combat-healing-browser-help",
   "responsibility": "One exact failed browser help consumer after console help passed: shared browser builder must describe confirmed direct-duel player-self healing rather than stale unavailable text.",
   "excludes": "No art purchase/detail owner, unchanged console help repeat, mechanics permission or wider UI workflow.",

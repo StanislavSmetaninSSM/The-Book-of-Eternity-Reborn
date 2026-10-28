@@ -1,3 +1,53 @@
+# Combat signed-source observation correction — UNCOMPILED/UNRUN, 2026-10-28
+
+Frozen df161914 owning build: 0 errors, 137 baseline warnings, 4:45.45. Unit
+refsfalse: 0 errors, 26 baseline warnings, 1:11.73; all 9 DLL pins agree. Official
+remaining PlanOnly: 16 cases / 9 descriptors, zero executions, 9.4194810 seconds.
+Paired quartet: 0 PASS / 4 FAIL, 35.3649735 seconds; category 23.2464389 < 120,
+no timeout or duplicates, both cleanup flags true; TRX 820aefa5…44a63. All captures now
+succeed: the authenticated wire correction and healed-row byte-drift/generic
+refusal/restore assertions execute. All four then fail in BeginResourceExecution,
+CombatHealingOrigin.Read: CombatSourcePaths was passed as observed optional, but
+many paths lie outside the existing closed originalPathPresenceV1 dictionary.
+This is a production reader/producer contract gap, not a reason to infer absence
+from live files, intent DATA or an unobserved optional skip. No downstream cases ran.
+
+The written bounded correction adds a second CURRENT closed observation form to
+that same dictionary: default remains its exact existing set; combat is the exact
+ordinal union of default and CombatSourcePaths. An already staged request's
+combat_self projection selects the set BEFORE enumeration/capture, and the same
+selection builds presence. Engine console/browser and the direct Resource fixture
+use it. LiveTurnPreparationService uses the same selector but currently supplies
+no SpiritualHealing projection, so it remains default; this does not qualify a
+new live-helper combat entry. Standalone browser-afterlife queue also retains its
+unchanged default form. Existing signer/hash, coverage/case/duplicate checks,
+rollback membership and full combat source/control/art admission remain intact.
+The reader knows both sets but still requires each requested absence to be false
+in the ACTUAL signed dictionary; set shape grants no healing permission. No new
+manifest property/file, migration, arbitrary source callback, cache or publisher.
+Default snapshot paths/I/O stay unchanged; extra observation is combat-only.
+
+The actual paired precondition now checks exact combat presence, real captured
+world bytes and signed report absence, then reads every combat source byte or
+absence with actual evidence before normal capture/Begin. One existing default
+Live-producer Fact now also proves the new allowlist cannot authorize its
+unobserved report absence. Existing two pure closed-set/coverage Facts plus five
+resigned shape/coverage rows make eight cheap guards in one exact new category,
+not the full pending-turn owner. Existing Create(files,hashes) signature/default
+is preserved; the projection form shares its one calculation implementation.
+
+Proposed finite qualification is 24 cases / 11 descriptors / 10 categories: new
+observation 8 / 120 first, then original pair 4 / 120 and remaining 12 in their original
+order/bounds. The remaining consumers cover real injury-v1/defaults, safe
+self/natural/graphs, and actual combat console/browser. Fresh owning
+Integration/MainSupport then Unit refsfalse is required for the changed shared
+reader; all 9 pins and official 24 / 11 PlanOnly precede actuals. Retain prior nine
+component/help Passed rows only at their own 2904 / 1da lineages, whose changed
+capture/snapshot paths are not executed. Existing HOLDs remain. Current correction
+has no build/runtime qualification; one grouped finite SOURCE/PREP is pending.
+GM authoring/intent/decision shapes are unchanged; only client original observation
+is extended, so no further GM authoring schema is introduced.
+
 # Combat authenticated wire routing WIP — UNCOMPILED/UNRUN, 2026-10-28
 
 Initial-clock correction ae154 compiled Integration refsfalse0e/102 baseline
