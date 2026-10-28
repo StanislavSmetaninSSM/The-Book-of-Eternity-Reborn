@@ -64,31 +64,45 @@ internal static class SpiritualHealingRequestProjection
         { ["complicationRef"] = ComplicationRef(requestFingerprint, c.ComplicationId), ["displayName"] = c.DisplayName }).ToArray());
 
     internal static (WoundMaterializationEnvelope[] Wounds, SpiritualWoundStage[] Stages) BuildNaturalProgram(
-        AfterlifeWoundTreatmentAuthority.NaturalSourceData data)
+        AfterlifeWoundTreatmentAuthority.NaturalSourceData data) =>
+        BuildNaturalProgram(data.Realm, data.CycleOrdinal, data.Members);
+
+    internal static (WoundMaterializationEnvelope[] Wounds, SpiritualWoundStage[] Stages) BuildNaturalProgram(
+        string realm, int ordinal, IReadOnlyList<SpiritualWoundRecoveryMember> members)
     {
-        var cycle = AfterlifeWoundTreatmentAuthority.CycleKey(data.Realm, data.CycleOrdinal);
-        return (data.Members.Select(m => m.Wound).ToArray(), data.Members.SelectMany(m =>
+        var cycle = AfterlifeWoundTreatmentAuthority.CycleKey(realm, ordinal);
+        return (members.Select(m => m.Wound).ToArray(), members.SelectMany(m =>
             SpiritualWoundRecoveryPlanner.Build(m.Wound, m.HealingTier, null, cycle, null)).ToArray());
     }
 
-    internal static JsonObject CreateNatural(AfterlifeWoundTreatmentAuthority.NaturalSourceData data)
+    internal static JsonObject OwnerJson(WoundOwnerCoordinate owner) => new()
     {
-        var program = BuildNaturalProgram(data);
+        ["realm"] = owner.Realm, ["ownerKind"] = owner.OwnerKind,
+        ["ownerId"] = owner.OwnerId, ["carrierPath"] = owner.CarrierPath
+    };
+
+    internal static JsonObject CreateNatural(AfterlifeWoundTreatmentAuthority.NaturalSourceData data) =>
+        CreateNatural(data.Realm, data.CycleOrdinal, data.SourceFingerprint, data.Members);
+
+    internal static JsonObject CreateNatural(string realm, int ordinal, string fingerprint,
+        IReadOnlyList<SpiritualWoundRecoveryMember> members)
+    {
+        var program = BuildNaturalProgram(realm, ordinal, members);
         return new JsonObject
         {
-            ["schemaVersion"] = 2, ["mode"] = "natural", ["sourceFingerprint"] = data.SourceFingerprint,
-            ["cycleOrdinal"] = data.CycleOrdinal, ["cycleKey"] = AfterlifeWoundTreatmentAuthority.CycleKey(data.Realm, data.CycleOrdinal),
-            ["cohort"] = new JsonArray(data.Members.Select(m => (JsonNode)new JsonObject
+            ["schemaVersion"] = 2, ["mode"] = "natural", ["sourceFingerprint"] = fingerprint,
+            ["cycleOrdinal"] = ordinal, ["cycleKey"] = AfterlifeWoundTreatmentAuthority.CycleKey(realm, ordinal),
+            ["cohort"] = new JsonArray(members.Select(m => (JsonNode)new JsonObject
             {
-                ["woundId"] = m.Wound.WoundId, ["owner"] = JsonSerializer.SerializeToNode(m.Wound.Owner),
+                ["woundId"] = m.Wound.WoundId, ["owner"] = OwnerJson(m.Wound.Owner),
                 ["woundName"] = m.Wound.Display.Name, ["healingTier"] = m.HealingTier,
                 ["woundFingerprint"] = WoundIdentityState.ComputeSemanticFingerprint(m.Wound)
             }).ToArray()),
             ["destinationGraphs"] = new JsonArray(RequiredGraphs(program.Wounds, program.Stages).Select(g => (JsonNode)new JsonObject
             {
-                ["stageRef"] = GraphRef(data.SourceFingerprint, g.WoundId, g.Rank), ["severityRank"] = g.Rank,
+                ["stageRef"] = GraphRef(fingerprint, g.WoundId, g.Rank), ["severityRank"] = g.Rank,
                 ["woundName"] = program.Wounds.Single(w => w.WoundId == g.WoundId).Display.Name,
-                ["complications"] = Complications(data.SourceFingerprint, program.Wounds.Single(w => w.WoundId == g.WoundId))
+                ["complications"] = Complications(fingerprint, program.Wounds.Single(w => w.WoundId == g.WoundId))
             }).ToArray())
         };
     }

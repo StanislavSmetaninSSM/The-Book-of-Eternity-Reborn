@@ -22,6 +22,8 @@ internal sealed class SpiritualHealingPersistedResult : WoundTransitionResult
     private SpiritualHealingPersistedResult(JsonObject root, IEnumerable<SpiritualHealingPublishedStage> stages)
     { _root = root.DeepClone().AsObject(); _stages = stages.ToImmutableArray(); }
     public override string Kind => "spiritual_healing";
+    internal string Mode => _root["mode"]?.GetValue<string>() ?? "self";
+    internal bool IsNatural => Mode == "natural";
     internal string GraphResponseFingerprint => _root["source"]!["graphResponseFingerprint"]!.GetValue<string>();
     internal IReadOnlyList<SpiritualHealingPublishedStage> Stages => _stages.Select(s => s with
     { Before = WoundAcceptedTurnData.CloneWound(s.Before)!, After = WoundAcceptedTurnData.CloneWound(s.After)! }).ToArray();
@@ -31,10 +33,10 @@ internal sealed class SpiritualHealingPersistedResult : WoundTransitionResult
         IReadOnlyList<WoundExecutedBoundary> executed)
     {
         var binding = owner.Input.Binding;
-        var cycle = owner.Request["attempt"]!["cycleKey"]!.GetValue<string>();
+        var cycle = owner.CycleKey;
         var root = new JsonObject
         {
-            ["kind"] = "spiritual_healing", ["schemaVersion"] = 1,
+            ["kind"] = "spiritual_healing", ["schemaVersion"] = 2, ["mode"] = owner.Mode,
             ["binding"] = new JsonObject { ["sessionId"] = binding.SessionId, ["requestId"] = binding.RequestId,
                 ["snapshotToken"] = binding.SnapshotToken, ["realm"] = binding.Realm, ["turn"] = binding.Turn },
             ["request"] = owner.Request, ["source"] = owner.PersistenceSource,
@@ -66,8 +68,11 @@ internal sealed class SpiritualHealingPersistedResult : WoundTransitionResult
             var root = StrictJsonAuthority.Deserialize<JsonObject>(element.GetRawText(), new JsonSerializerOptions(), "spiritual healing result")
                 ?? throw new InvalidDataException("Result must be an object.");
             AfterlifeWoundTreatmentAuthority.MaterializeProperties(root);
-            Closed(root, "kind", "schemaVersion", "binding", "request", "source", "control", "scheduleBeforeJson", "progressionReportJson", "scheduleAfterJson", "scheduleAfterFingerprint", "stages", "resultFingerprint");
-            if (Text(root, "kind") != "spiritual_healing" || root["schemaVersion"]!.GetValue<int>() != 1 ||
+            var version = root["schemaVersion"]!.GetValue<int>();
+            var rootFields = new[] { "kind", "schemaVersion", "binding", "request", "source", "control", "scheduleBeforeJson", "progressionReportJson", "scheduleAfterJson", "scheduleAfterFingerprint", "stages", "resultFingerprint" };
+            Closed(root, version == 1 ? rootFields : rootFields.Append("mode").ToArray());
+            var mode = version == 1 ? "self" : Text(root, "mode");
+            if (Text(root, "kind") != "spiritual_healing" || version is not (1 or 2) || mode is not ("self" or "natural") ||
                 Text(root, "resultFingerprint") != WoundHistoryState.ComputeTransitionResultFingerprint(root))
                 throw new InvalidDataException("Spiritual result kind/schema/fingerprint differs.");
             var binding = root["binding"]!.AsObject();
@@ -90,32 +95,9 @@ internal sealed class SpiritualHealingPersistedResult : WoundTransitionResult
                     binding["turn"]!.GetValue<int>(), Text(binding, "realm")))
                 throw new InvalidDataException("The complete accepted schedule image differs.");
             var source = root["source"]!.AsObject();
-            Closed(source, "healingTier", "complicationModifier", "rollMode", "sourceFingerprint", "rollContributions", "graphResponseFingerprint");
-            if (source["rollContributions"] is not JsonArray contributions || contributions.Count > EffectRollContributionResolver.MaximumCapturedRows ||
+            if (!ResourceMaterializationContract.IsAuthorityFingerprint(Text(source, "sourceFingerprint")) ||
                 !ResourceMaterializationContract.IsAuthorityFingerprint(Text(source, "graphResponseFingerprint")))
-                throw new InvalidDataException("Missing retained effect/graph-response source diagnostics.");
-            var componentKeys = new HashSet<(string, string)>();
-            var advantage = false; var disadvantage = false;
-            foreach (var item in contributions)
-            {
-                if (item is not JsonObject row) throw new InvalidDataException("Invalid retained roll contribution.");
-                Closed(row, "EffectId", "ComponentId", "Contribution");
-                if (!ResourceMaterializationContract.IsExactIdentifier(Text(row, "EffectId")) ||
-                    !ResourceMaterializationContract.IsExactIdentifier(Text(row, "ComponentId")) ||
-                    !componentKeys.Add((Text(row, "EffectId"), Text(row, "ComponentId"))) ||
-                    Text(row, "Contribution") is not ("advantage" or "disadvantage"))
-                    throw new InvalidDataException("Invalid/duplicate retained roll contribution coordinate.");
-                advantage |= Text(row, "Contribution") == "advantage";
-                disadvantage |= Text(row, "Contribution") == "disadvantage";
-            }
-            if (Text(source, "rollMode") != (advantage == disadvantage ? "normal" : advantage ? "advantage" : "disadvantage"))
-                throw new InvalidDataException("Retained effect contributions do not derive the sealed roll mode.");
-            var tier = source["healingTier"]!.GetValue<int>();
-            var complicationModifier = source["complicationModifier"]!.GetValue<long>();
-            if (tier is < 1 or > 5 || complicationModifier < 0 || !ResourceMaterializationContract.IsAuthorityFingerprint(Text(source, "sourceFingerprint")))
-                throw new InvalidDataException("Invalid spiritual source diagnostics.");
-            var request = root["request"]!.AsObject();
-            var attempt = request["attempt"]!.AsObject();
+                throw new InvalidDataException("Invalid spiritual source/graph-response fingerprint.");
             var rows = root["stages"]!.AsArray();
             if (rows.Count is < 1 or > 2048) throw new InvalidDataException("Unbounded spiritual stage cohort.");
             var stages = new List<SpiritualHealingPublishedStage>();
@@ -129,31 +111,63 @@ internal sealed class SpiritualHealingPersistedResult : WoundTransitionResult
                     row["cycleKey"]?.GetValue<string>(), row["attemptId"]?.GetValue<string>()));
             }
             var original = stages.GroupBy(s => s.Before.WoundId).Select(g => g.First().Before).ToArray();
-            var selected = original.Single(w => w.WoundId == Text(attempt, "woundId"));
-            if (selected.Owner.Realm != Text(binding, "realm") || selected.Owner.OwnerKind != "player_soul" || selected.Owner.OwnerId != "player_soul" ||
-                original.Any(w => w.Owner != selected.Owner) || stages[0].Before.WoundId != selected.WoundId || stages[0].Kind != "treat")
-                throw new InvalidDataException("Foreign spiritual self target or stage ordering.");
-            var preparedSource = new SpiritualHealingPreparedSource(selected.WoundId, selected.Owner, selected.Owner,
-                selected.Severity.Rank, tier, complicationModifier, Text(source, "rollMode"), Array.Empty<EffectRollContributionEvidence>());
-            if (!SpiritualSelfTreatmentRequestCodec.IsExact(request,
-                    new(Text(binding, "sessionId"), Text(binding, "requestId"), binding["turn"]!.GetValue<int>(), control),
-                    new(selected.WoundId, WoundIdentityState.ComputeSemanticFingerprint(selected)), Text(binding, "realm"),
-                    attempt["cycleOrdinal"]!.GetValue<int>(), Text(source, "sourceFingerprint"), preparedSource) ||
-                schedule["currentChaosSeaTurnOrdinal"]!.GetValue<int>() != attempt["cycleOrdinal"]!.GetValue<int>())
-                throw new InvalidDataException("Spiritual request/draw/cycle does not rederive.");
-            var modifier = selected.Complications.Where(c => c.State == "active").Aggregate(0L,
-                (total, c) => checked(total + c.TreatmentDifficultyModifier));
-            if (modifier != complicationModifier) throw new InvalidDataException("Changed spiritual complication modifier.");
-            var resolution = SpiritualHealingResolver.ResolvePrepared(preparedSource, Text(source, "rollMode"),
-                attempt["roll"]!["values"]!.AsArray().Select(v => v!.GetValue<int>()).ToArray()).Resolution!;
+            if (original.Any(w => w.Lifecycle != "active" || w.Classification.Domain != "spiritual" || w.Severity.Rank is < 1 or > 4 ||
+                    w.Owner.Realm != Text(binding, "realm") || w.Owner.CarrierPath != WoundCarrierCatalog.AfterlifeProfilesPath))
+                throw new InvalidDataException("Foreign original spiritual recovery cohort.");
+            var cycle = AfterlifeWoundTreatmentAuthority.CycleKey(Text(binding, "realm"), control.NextChaosSeaTurnOrdinal);
+            string? attemptId = null;
+            WoundMaterializationEnvelope? selected = null;
+            SpiritualHealingResolution? resolution = null;
+            IReadOnlyDictionary<WoundOwnerCoordinate, int> tiers;
+            if (mode == "natural")
+            {
+                Closed(source, "sourceFingerprint", "graphResponseFingerprint", "ownerTiers", "projection");
+                if (root["request"] is not null || stages[0].Kind != "recover")
+                    throw new InvalidDataException("Natural recovery cannot contain an active request or attempt.");
+                tiers = ReadOwnerTiers(source, original);
+                var members = OrderOriginal(original, null).Select(w => new SpiritualWoundRecoveryMember(w, tiers[w.Owner])).ToArray();
+                if (!JsonNode.DeepEquals(source["projection"], SpiritualHealingRequestProjection.CreateNatural(
+                        Text(binding, "realm"), control.NextChaosSeaTurnOrdinal, Text(source, "sourceFingerprint"), members)))
+                    throw new InvalidDataException("Natural recovery projection omits or changes its original cohort/tiers/graphs.");
+            }
+            else
+            {
+                var selfFields = new[] { "healingTier", "complicationModifier", "rollMode", "sourceFingerprint", "rollContributions", "graphResponseFingerprint" };
+                Closed(source, version == 1 ? selfFields : selfFields.Append("ownerTiers").ToArray());
+                var tier = ValidateActiveSource(source);
+                var request = root["request"]!.AsObject();
+                var attempt = request["attempt"]!.AsObject();
+                selected = original.Single(w => w.WoundId == Text(attempt, "woundId"));
+                if (selected.Owner.OwnerKind != "player_soul" || selected.Owner.OwnerId != "player_soul" ||
+                    version == 1 && original.Any(w => w.Owner != selected.Owner) ||
+                    stages[0].Before.WoundId != selected.WoundId || stages[0].Kind != "treat")
+                    throw new InvalidDataException("Foreign spiritual self target or stage ordering.");
+                tiers = version == 1 ? new Dictionary<WoundOwnerCoordinate, int> { [selected.Owner] = tier } : ReadOwnerTiers(source, original);
+                if (tiers[selected.Owner] != tier) throw new InvalidDataException("Active tier differs from its natural owner tier.");
+                var complicationModifier = source["complicationModifier"]!.GetValue<long>();
+                var preparedSource = new SpiritualHealingPreparedSource(selected.WoundId, selected.Owner, selected.Owner,
+                    selected.Severity.Rank, tier, complicationModifier, Text(source, "rollMode"), Array.Empty<EffectRollContributionEvidence>());
+                if (!SpiritualSelfTreatmentRequestCodec.IsExact(request,
+                        new(Text(binding, "sessionId"), Text(binding, "requestId"), binding["turn"]!.GetValue<int>(), control),
+                        new(selected.WoundId, WoundIdentityState.ComputeSemanticFingerprint(selected)), Text(binding, "realm"),
+                        control.NextChaosSeaTurnOrdinal, Text(source, "sourceFingerprint"), preparedSource) ||
+                    Text(attempt, "cycleKey") != cycle)
+                    throw new InvalidDataException("Spiritual request/draw/cycle does not rederive.");
+                var modifier = selected.Complications.Where(c => c.State == "active").Aggregate(0L,
+                    (total, c) => checked(total + c.TreatmentDifficultyModifier));
+                if (modifier != complicationModifier) throw new InvalidDataException("Changed spiritual complication modifier.");
+                resolution = SpiritualHealingResolver.ResolvePrepared(preparedSource, Text(source, "rollMode"),
+                    attempt["roll"]!["values"]!.AsArray().Select(v => v!.GetValue<int>()).ToArray()).Resolution!;
+                attemptId = Text(attempt, "attemptId");
+            }
             var eventAuthority = WoundAcceptedEventAuthorityComposer.ComposeDefaultAcceptedTurn(Text(binding, "sessionId"),
                 Text(binding, "requestId"), Text(binding, "snapshotToken"), binding["turn"]!.GetValue<int>());
             if (!eventAuthority.Success || eventAuthority.Events.Count != 1 || control.AfterlifeCatchupRequired ||
-                control.NextChaosSeaTurnOrdinal != attempt["cycleOrdinal"]!.GetValue<int>() ||
+                schedule["currentChaosSeaTurnOrdinal"]!.GetValue<int>() != control.NextChaosSeaTurnOrdinal ||
                 control.NextChaosSeaTurnOrdinal != checked(control.CurrentChaosSeaTurnOrdinal + 1))
                 throw new InvalidDataException("Spiritual accepted event or single cycle differs.");
-            var expected = original.SelectMany(w => SpiritualWoundRecoveryPlanner.Build(w, tier, Text(attempt, "attemptId"),
-                Text(attempt, "cycleKey"), w.WoundId == selected.WoundId ? resolution.Calculation : null)).ToArray();
+            var expected = OrderOriginal(original, selected?.WoundId).SelectMany(w => SpiritualWoundRecoveryPlanner.Build(w,
+                tiers[w.Owner], attemptId, cycle, w.WoundId == selected?.WoundId ? resolution!.Calculation : null)).ToArray();
             if (expected.Length != stages.Count) throw new InvalidDataException("Missing/extra spiritual execution stage.");
             var current = original.ToDictionary(w => w.WoundId, StringComparer.Ordinal);
             for (var i = 0; i < stages.Count; i++)
@@ -163,7 +177,7 @@ internal sealed class SpiritualHealingPersistedResult : WoundTransitionResult
                     before.WoundId != e.WoundId || stage.EventRef != eventAuthority.Events[0].EventRef || stage.Kind != e.Kind || stage.OperationKey != e.OperationKey || stage.TransitionId != e.TransitionId ||
                     after.LastTransition.Ordinal != before.LastTransition.Ordinal + 1 || after.LastTransition.Turn != binding["turn"]!.GetValue<int>() ||
                     after.Severity.Rank != e.SeverityRank || after.Recovery.CurrentStepProgress != e.Progress ||
-                    stage.AttemptId != e.AttemptId || stage.CycleKey != (e.Kind == "treat" ? Text(attempt, "cycleKey") : e.Kind == "recover" ? e.TickKey : null))
+                    stage.AttemptId != e.AttemptId || stage.CycleKey != (e.Kind == "treat" ? cycle : e.Kind == "recover" ? e.TickKey : null))
                     throw new InvalidDataException("Spiritual stage does not match the complete recomputed program.");
                 ValidateStageScope(stage, e);
                 current[before.WoundId] = after;
@@ -176,6 +190,59 @@ internal sealed class SpiritualHealingPersistedResult : WoundTransitionResult
                 code: "spiritual_healing_history_invalid", actual: failure.Message));
             return null;
         }
+    }
+
+    private static IEnumerable<WoundMaterializationEnvelope> OrderOriginal(
+        IEnumerable<WoundMaterializationEnvelope> wounds, string? selectedId) => wounds
+        .OrderBy(w => w.WoundId == selectedId ? 0 : 1).ThenBy(w => w.Owner.OwnerKind, StringComparer.Ordinal)
+        .ThenBy(w => w.Owner.OwnerId, StringComparer.Ordinal).ThenBy(w => w.WoundId, StringComparer.Ordinal);
+
+    private static IReadOnlyDictionary<WoundOwnerCoordinate, int> ReadOwnerTiers(JsonObject source,
+        IReadOnlyList<WoundMaterializationEnvelope> original)
+    {
+        var owners = original.Select(w => w.Owner).Distinct().ToHashSet();
+        var rows = source["ownerTiers"] as JsonArray ?? throw new InvalidDataException("Missing natural owner tiers.");
+        if (rows.Count != owners.Count) throw new InvalidDataException("Missing or extra natural owner tier.");
+        var tiers = new Dictionary<WoundOwnerCoordinate, int>();
+        foreach (var item in rows)
+        {
+            var row = item!.AsObject(); Closed(row, "owner", "healingTier");
+            var value = row["owner"]!.AsObject(); Closed(value, "realm", "ownerKind", "ownerId", "carrierPath");
+            var owner = new WoundOwnerCoordinate(Text(value, "realm"), Text(value, "ownerKind"), Text(value, "ownerId"), Text(value, "carrierPath"));
+            var tier = row["healingTier"]!.GetValue<int>();
+            if (tier is < 0 or > 5 || !owners.Contains(owner) || !tiers.TryAdd(owner, tier))
+                throw new InvalidDataException("Invalid, foreign or duplicate natural owner tier.");
+        }
+        var canonical = new JsonArray(tiers.OrderBy(p => p.Key.OwnerKind, StringComparer.Ordinal)
+            .ThenBy(p => p.Key.OwnerId, StringComparer.Ordinal).Select(p => (JsonNode)new JsonObject
+            { ["owner"] = SpiritualHealingRequestProjection.OwnerJson(p.Key), ["healingTier"] = p.Value }).ToArray());
+        if (!JsonNode.DeepEquals(rows, canonical)) throw new InvalidDataException("Natural owner tiers are not in canonical cohort order.");
+        return tiers;
+    }
+
+    private static int ValidateActiveSource(JsonObject source)
+    {
+        if (source["rollContributions"] is not JsonArray contributions || contributions.Count > EffectRollContributionResolver.MaximumCapturedRows)
+            throw new InvalidDataException("Missing retained effect roll diagnostics.");
+        var keys = new HashSet<(string, string)>();
+        var advantage = false; var disadvantage = false;
+        foreach (var item in contributions)
+        {
+            var row = item!.AsObject(); Closed(row, "EffectId", "ComponentId", "Contribution");
+            if (!ResourceMaterializationContract.IsExactIdentifier(Text(row, "EffectId")) ||
+                !ResourceMaterializationContract.IsExactIdentifier(Text(row, "ComponentId")) ||
+                !keys.Add((Text(row, "EffectId"), Text(row, "ComponentId"))) ||
+                Text(row, "Contribution") is not ("advantage" or "disadvantage"))
+                throw new InvalidDataException("Invalid/duplicate retained roll contribution coordinate.");
+            advantage |= Text(row, "Contribution") == "advantage";
+            disadvantage |= Text(row, "Contribution") == "disadvantage";
+        }
+        if (Text(source, "rollMode") != (advantage == disadvantage ? "normal" : advantage ? "advantage" : "disadvantage"))
+            throw new InvalidDataException("Retained effect contributions do not derive the sealed roll mode.");
+        var tier = source["healingTier"]!.GetValue<int>();
+        if (tier is < 1 or > 5 || source["complicationModifier"]!.GetValue<long>() < 0)
+            throw new InvalidDataException("Invalid active spiritual tier or modifier.");
+        return tier;
     }
 
     private static void ValidateStageScope(SpiritualHealingPublishedStage stage, SpiritualWoundStage expected)

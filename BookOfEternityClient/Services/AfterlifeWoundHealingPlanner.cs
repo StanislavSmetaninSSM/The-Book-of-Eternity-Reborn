@@ -92,7 +92,7 @@ internal static partial class AfterlifeWoundHealingPlanner
         internal JsonArray RecoveryTiers => new((_natural?.Members ?? _data!.NaturalMembers)
             .GroupBy(m => m.Wound.Owner).Select(g => (JsonNode)new JsonObject
             {
-                ["owner"] = JsonSerializer.SerializeToNode(g.Key), ["healingTier"] = g.First().HealingTier
+                ["owner"] = SpiritualHealingRequestProjection.OwnerJson(g.Key), ["healingTier"] = g.First().HealingTier
             }).ToArray());
         internal JsonObject PersistenceSource => IsNatural ? new JsonObject
         {

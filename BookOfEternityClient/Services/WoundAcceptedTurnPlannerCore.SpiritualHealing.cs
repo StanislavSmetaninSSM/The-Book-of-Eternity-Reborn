@@ -32,11 +32,12 @@ internal static partial class WoundAcceptedTurnPlannerCore
                     raw.BeforeFingerprint != WoundIdentityState.ComputeSemanticFingerprint(stage.Before) ||
                     raw.AfterFingerprint != WoundIdentityState.ComputeSemanticFingerprint(stage.After))
                     throw new InvalidDataException("Spiritual stage history differs from its actual reducer.");
-                var primary = stage.Kind == "treat";
+                var primary = index == 0;
                 var historyIntent = raw with { TickKey = stage.CycleKey, TransitionResult = primary ? persisted : null };
                 intents.AddRange(executed[index].TransitionIntents.Select(i => i is WoundTransitionHistoryIntent ? historyIntent :
                     WoundAcceptedTurnData.CloneTransitionIntent(i)));
-                const string summary = "Духовная рана: лечение и естественное восстановление за один безопасный цикл.";
+                var summary = owner.IsNatural ? "Духовная рана: естественное восстановление за один безопасный цикл."
+                    : "Духовная рана: лечение и естественное восстановление за один безопасный цикл.";
                 rows.Add(new(stage.TransitionId, stage.After.WoundId, checked(history.State.NextOrdinal + index),
                     stage.After.LastTransition.Ordinal, stage.Kind, prepared.Binding.Turn, stage.EventRef, stage.OperationKey,
                     raw.BeforeFingerprint, raw.AfterFingerprint, owner.Fingerprint, stage.AttemptId, null, null, stage.CycleKey,

@@ -37,6 +37,16 @@ dispatcher/sink/publication/replay/I, actual staging and GM/control tests are st
 to connect; self codec is temporarily incompatible with new WIP source fields.
 No build/test or capability acceptance is claimed for this intermediate code.
 
+Strict-result WIP, UNCOMPILED/UNRUN: same spiritual History family now writes
+closed v2 self/natural modes and per-owner tier DATA. Natural uses the first
+recover row, no attempt/request/roll; complete ordered stages/projection are
+recomputed. Existing immutable v1 self result parsing remains strict. Scheduler
+original-bound replay now requires exactly one self request or natural cohort/
+projection together with the token; ordinary settlement retains its separate
+strict durable-DATA check. Actual natural dispatcher/common input/staging/I and
+interaction controls remain unconnected. No natural GREEN or self regression
+qualification is inferred from this intermediate codec change.
+
 Actual graph-bearing console caller on clean/compiled 926f70af: exact1/1 PASS,
 58.1503082s total/category50.2515017<180, complete/no skips/duplicates/timeout,
 both cleanup flags true. Real retained d20=7; final healed/rankI/progress0;

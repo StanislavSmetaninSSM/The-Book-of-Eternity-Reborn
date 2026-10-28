@@ -10,8 +10,10 @@ internal sealed partial class WoundHistoryState
         {
             var result = (SpiritualHealingPersistedResult)primary.TransitionResult!;
             var stages = result.Stages;
-            if (stages.Count == 0 || primary.TransitionId != stages[0].TransitionId || primary.Kind != "treat" || primary.AttemptId is null)
-            { AddIssue(issues, path, "spiritual_healing_history_invalid", "one exact primary spiritual attempt row", primary.TransitionId); continue; }
+            if (stages.Count == 0 || primary.TransitionId != stages[0].TransitionId ||
+                (result.IsNatural ? primary.Kind != "recover" || primary.AttemptId is not null
+                    : primary.Kind != "treat" || primary.AttemptId is null))
+            { AddIssue(issues, path, "spiritual_healing_history_invalid", "one exact primary spiritual cycle row", primary.TransitionId); continue; }
             foreach (var stage in stages)
             {
                 var matching = rows.Where(r => r.TransitionId == stage.TransitionId).ToArray();

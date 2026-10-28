@@ -83,9 +83,10 @@ internal sealed partial class WoundHistoryState
         if (element.ValueKind == JsonValueKind.Object && element.TryGetProperty("kind", out var spiritualKind) &&
             spiritualKind.ValueKind == JsonValueKind.String && spiritualKind.GetString() == "spiritual_healing")
         {
-            if (kind != "treat")
-            { AddIssue(issues, path, "spiritual_healing_history_invalid", "spiritual result only on its primary treat row", kind); return null; }
-            return SpiritualHealingPersistedResult.Parse(element, path, issues);
+            var spiritual = SpiritualHealingPersistedResult.Parse(element, path, issues);
+            if (spiritual is not null && kind != (spiritual.IsNatural ? "recover" : "treat"))
+            { AddIssue(issues, path, "spiritual_healing_history_invalid", "spiritual result only on its primary cycle row", kind); return null; }
+            return spiritual;
         }
         var required = kind is "diagnose" or "author_alternative_treatment";
         // An explicitly supplied treatment result, including null, must still pass

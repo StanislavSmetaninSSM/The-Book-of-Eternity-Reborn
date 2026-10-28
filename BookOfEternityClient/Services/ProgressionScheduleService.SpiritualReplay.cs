@@ -10,37 +10,44 @@ public partial class ProgressionScheduleService
     // A verified durable result makes the later ordinary scheduler call inert. DATA is re-read under this operation's lease.
     internal async Task<bool> IsPublishedSpiritualCycleAsync(ProgressionControl control,
         FileSystemManager.CanonicalWriteLease? existingLease = null,
-        string? expectedSnapshotToken = null, JsonObject? expectedRequest = null)
+        string? expectedSnapshotToken = null, JsonObject? expectedRequest = null,
+        JsonObject? expectedNaturalProjection = null)
     {
         if (!HasResolvedRealm(control.CurrentRealm) || !IsAfterlifeRealm(control.CurrentRealm)) return false;
         if (existingLease is null)
         {
             await using var owned = await _fs.AcquireCanonicalWriteLeaseAsync();
-            return await IsPublishedSpiritualCycleAsync(control, owned, expectedSnapshotToken, expectedRequest);
+            return await IsPublishedSpiritualCycleAsync(control, owned, expectedSnapshotToken, expectedRequest, expectedNaturalProjection);
         }
         var lease = existingLease;
         _fs.VerifyCurrentSessionOperation(lease);
         var context = await ReadCurrentTurnRequestContextAsync(lease);
         if (context is null) return false;
         return await IsPublishedSpiritualCycleCoreAsync(control, context.Value.SessionId, context.Value.RequestId,
-            context.Value.TurnNumber, path => _fs.ReadFileBytesAsync(lease, path), expectedSnapshotToken, expectedRequest);
+            context.Value.TurnNumber, path => _fs.ReadFileBytesAsync(lease, path), expectedSnapshotToken, expectedRequest, expectedNaturalProjection);
     }
 
     // Same strict durable agreement for an authenticated original whose physical artifacts were already cleaned.
     // The caller still owns its current lease/receipt/generation and cleanup admission.
     internal static async Task<bool> IsPublishedSpiritualCycleCoreAsync(ProgressionControl control,
         string sessionId, string requestId, int turn, Func<string, Task<byte[]?>> read,
-        string? expectedSnapshotToken = null, JsonObject? expectedRequest = null) =>
+        string? expectedSnapshotToken = null, JsonObject? expectedRequest = null,
+        JsonObject? expectedNaturalProjection = null) =>
         await ReadPublishedSpiritualCycleCoreAsync(control, sessionId, requestId, turn, read,
-            expectedSnapshotToken, expectedRequest) is not null;
+            expectedSnapshotToken, expectedRequest, expectedNaturalProjection) is not null;
 
     // Verified immutable DATA, not a new mutation or publication capability. The caller owns fresh closing guards.
     internal static async Task<SpiritualHealingPersistedResult?> ReadPublishedSpiritualCycleCoreAsync(ProgressionControl control,
         string sessionId, string requestId, int turn, Func<string, Task<byte[]?>> read,
-        string? expectedSnapshotToken = null, JsonObject? expectedRequest = null)
+        string? expectedSnapshotToken = null, JsonObject? expectedRequest = null,
+        JsonObject? expectedNaturalProjection = null)
     {
         if (!HasResolvedRealm(control.CurrentRealm) || !IsAfterlifeRealm(control.CurrentRealm)) return null;
-        if ((expectedSnapshotToken is null) != (expectedRequest is null))
+        // The scheduler's ordinary settlement call supplies no purported original.
+        // Any caller claiming an actual original must bind exactly one complete
+        // self request or natural cohort/tier/projection, in addition to its token.
+        if (expectedSnapshotToken is null ? expectedRequest is not null || expectedNaturalProjection is not null
+            : (expectedRequest is null) == (expectedNaturalProjection is null))
             throw new InvalidDataException("Published spiritual original binding is incomplete.");
         async Task<string?> Text(string path)
         {
@@ -60,10 +67,15 @@ public partial class ProgressionScheduleService
         if (matching.Length == 0) return null;
         if (matching.Length != 1) throw new InvalidDataException("Published spiritual cycle identity is ambiguous.");
         var accepted = matching[0];
-        if (expectedSnapshotToken is not null &&
-            (accepted.Root["binding"]!["snapshotToken"]!.GetValue<string>() != expectedSnapshotToken || expectedRequest is null ||
-             WoundAcceptedTurnFingerprintWriter.CanonicalJson(accepted.Root["request"]!) != WoundAcceptedTurnFingerprintWriter.CanonicalJson(expectedRequest)))
-            throw new InvalidDataException("Published spiritual replay differs from the exact signed original request and snapshot.");
+        if (expectedSnapshotToken is not null)
+        {
+            if (accepted.Root["binding"]!["snapshotToken"]!.GetValue<string>() != expectedSnapshotToken ||
+                (accepted.Result.IsNatural ? expectedNaturalProjection is null || expectedRequest is not null ||
+                    !JsonNode.DeepEquals(accepted.Root["source"]!["projection"], expectedNaturalProjection)
+                    : expectedRequest is null || expectedNaturalProjection is not null ||
+                    !JsonNode.DeepEquals(accepted.Root["request"], expectedRequest)))
+                throw new InvalidDataException("Published spiritual replay differs from the exact signed original family, cohort and snapshot.");
+        }
         var suppliedControl = WoundAcceptedTurnFingerprintWriter.CanonicalJson(JsonSerializer.SerializeToNode(control)!);
         if (suppliedControl != WoundAcceptedTurnFingerprintWriter.CanonicalJson(accepted.Root["control"]!) ||
             await read(ReportPath) is not null ||
