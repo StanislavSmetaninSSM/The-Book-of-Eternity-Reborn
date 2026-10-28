@@ -13319,6 +13319,59 @@ then I roll-hindrance graph; use links:[] and only supplied complicationRefs.
 These are authored weaker graphs, not surviving effect IDs or an automatic choice.
 The client validates rank/budget/profiles, binds predecessors and retires the
 intermediate generation. Missing/invalid graphs preserve SAME attempt/dice and
-publish nothing. Ordinary/Mortal/unbound graphs are refused. This fragment plus
+publish nothing. Unbound ordinary/Mortal graphs are refused; authenticated natural mode below is the explicit exception. This fragment plus
 AfterlifeWoundHealingReplayGraphTests qualifies explicit authored definitions;
 it does not claim helper/entity/combat or fresh-process/provider qualification.
+
+
+spiritual_natural_recovery_v2 — accepted ordinary observation, no treatment session
+
+Worked actor-free Chaos Sea turn. The player simply watches the safe shore. The
+client-provided input/turn_request.json excerpt is DATA, not GM-authored authority:
+```json
+{
+  "spiritualHealing": {
+    "schemaVersion": 2,
+    "mode": "natural",
+    "sourceFingerprint": "COPY_ACTUAL_CLIENT_SOURCE_FINGERPRINT",
+    "cycleOrdinal": 1,
+    "cycleKey": "COPY_ACTUAL_CLIENT_CYCLE_KEY",
+    "cohort": [{
+      "woundId": "COPY_ACTUAL_WOUND_ID",
+      "owner": {"realm":"chaos_sea","ownerKind":"player_soul","ownerId":"player_soul","carrierPath":"game_state/meta/afterlife_entity_profiles.json"},
+      "woundName": "Трещина духовной целостности",
+      "healingTier": 0,
+      "woundFingerprint": "COPY_ACTUAL_CLIENT_WOUND_FINGERPRINT"
+    }],
+    "destinationGraphs": []
+  }
+}
+```
+The existing I wound has progress0/2 and no prior tick this cycle. With signed tier0,
+this accepted ordinary cycle adds1, leaving I progress1/2. There is no active check,
+attemptId, roll or wound_commands.json. The GM writes this ordinary response using
+the ACTUAL request's progressionControl counts/next ordinals (never hardcode1):
+```json
+{
+  "response": "Ты наблюдаешь за тихим течением Моря. Напряжение понемногу отпускает, хотя трещина ещё ощущается.",
+  "dialogueOptions": [],
+  "gm_thoughts_markdown": "## NPC Scope\n- Mode: Scene-local\n- Relevant actors: нет\n- Why relevant: Душа спокойно наблюдает; NPC не участвуют.\n- Actors outside scope: нет\n- Why outside scope: Состояние других акторов не меняется.\n\n## Reasoning\nКлиент применяет один естественный тик1+0. Активного лечения и лечебного броска нет."
+}
+```
+Also write the exact required progressionProcessingReport from progressionControl,
+fresh per-turn narrative/interface/debug timestamps and the native completion with
+actual IDs/filesModified. Empty destinationGraphs means omit spiritualHealingGraphs.
+The client alone writes recover History with schemaVersion2/mode=natural/request=null,
+advances one cycle and consumes the report. Reopening/revalidating does not tick again.
+
+For an ordinary II wound at progress0 and signed H3, the supplied destinationGraphs
+instead requests I: exactly4 points consume II threshold4, leaving I progress0/2.
+Author that ACTUAL stageRef using one legal I roll-hindrance definition wrapper, the
+same closed consequenceDefinitions grammar and client complicationRefs; do not pick
+surviving IDs or author a rank. At H5 the same II wound reaches terminal healing and
+needs no nonterminal graph. Persistent Guardian/resident/other eligible profiles use
+their own signed tiers even offscreen; their hidden wounds are not narrated merely
+because the mechanical cohort includes them. A lawful ordinary cost still applies;
+natural recovery itself charges nothing. Same-cycle art progress does not replace
+the signed tier used for this tick. Mortal/catchup/conflict/helper treatment is outside
+this fragment. Unbound ordinary/Mortal graphs remain refused.

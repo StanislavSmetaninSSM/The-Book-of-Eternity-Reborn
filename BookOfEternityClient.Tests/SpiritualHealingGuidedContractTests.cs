@@ -116,6 +116,18 @@ public sealed class SpiritualHealingGuidedContractTests : IDisposable
         Assert.True(AfterlifeContractRegistry.Find(AcceptedMechanicsPlan.WoundCommandPath)!.IsPrivateMechanicsSurface);
     }
 
+    [Fact]
+    public void NaturalModeHasOneClosedResultAndSynchronizedOrdinaryGmExample()
+    {
+        const string marker = "spiritual_natural_recovery_v2";
+        foreach (var file in new[] { "OtherGuides/Wound_Materialization_Contract.md", "OtherGuides/Afterlife_Contract_Matrix.md",
+            "CLI_API_Specification.md", "Rules/Block_CLI_Operations.txt", "TaskGuides/CLI_Step_Main.txt", "BookOfEternityClient/game_master_daemon.ps1" })
+            Assert.Contains(marker, File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, file)));
+        var entry = Assert.Single(ExampleValidationManifest.Load().EffectMaterializationCoverage, c => c.ContractId == marker);
+        var example = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "Examples", entry.File));
+        Assert.All(entry.RequiredText, token => Assert.Contains(token, example));
+    }
+
     public void Dispose()
     {
         if (Directory.Exists(_root)) Directory.Delete(_root, recursive: true);

@@ -252,6 +252,14 @@ internal static partial class AfterlifeWoundHealingPlanner
             _executed.Add(stage.DetachedCopy());
         }
 
+        internal IReadOnlyList<WoundMaterializationEnvelope> ReadCompletedSourceWounds()
+        {
+            RequireExecutionCurrent();
+            if (_executed.Count != _stages.Count)
+                throw new InvalidDataException("Spiritual source projection requires every actual executed stage.");
+            return _executed.GroupBy(s => s.After.WoundId).Select(g => WoundAcceptedTurnData.CloneWound(g.Last().After)!).ToArray();
+        }
+
         internal static bool ProvesRecoveryConsumption(object? authority, WoundTransitionRequest request,
             WoundMaterializationEnvelope before, WoundMaterializationEnvelope after)
         {

@@ -1,6 +1,31 @@
 {
   "version": 1,
   "effectMaterializationCoverage": [
+{
+  "contractId": "spiritual_natural_recovery_v2",
+  "file": "E_CLI_Afterlife_Turns.txt",
+  "statePath": "authenticated ordinary safe-cycle source16 and schema2 natural History/scheduler after-image",
+  "responseSurface": "client spiritualHealing.mode=natural/cohort/destinationGraphs -> exact interface spiritualHealingGraphs",
+  "realms": [
+    "Chaos Sea",
+    "Shining Abode"
+  ],
+  "description": "Ordinary1+signed-start-H recovery, no treatment request/attempt/roll; preserve lawful ordinary resource/art outcomes and strict full-cohort replay.",
+  "validationKind": "focused-fragment",
+  "focusedFragmentReason": "SpiritualHealingGuidedContractTests binds GM/docs/manifest; SpiritualNaturalCohortTests covers strict owner tiers and hidden persistent eligibility; actual ordinary caller and typed natural publication controls are separately categorized.",
+  "coverageLimit": "Ordinary safe-cycle slice; no external provider/fresh-process/combat/catchup/helper active healing qualification. Runtime acceptance remains pending until actual selected tests pass.",
+  "requiredText": [
+    "spiritual_natural_recovery_v2",
+    "\"mode\": \"natural\"",
+    "\"healingTier\": 0",
+    "progress1/2",
+    "no active check",
+    "destinationGraphs",
+    "schemaVersion2/mode=natural/request=null",
+    "signed tiers even offscreen",
+    "Unbound ordinary/Mortal"
+  ]
+},
     {
       "contractId": "spiritual_self_treatment_v2",
       "file": "E_CLI_Afterlife_Turns.txt",
@@ -23,7 +48,7 @@
         "NPC Scope",
         "no self OD cost",
         "one terminal History",
-        "Ordinary/Mortal/unbound"
+        "Unbound ordinary/Mortal"
       ]
     },
     {

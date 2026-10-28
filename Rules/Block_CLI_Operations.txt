@@ -1476,6 +1476,44 @@ Read `input/turn_request.json.spiritualHealing.destinationGraphs`, author exactl
 requested `output/interface_updates.json.spiritualHealingGraphs` stageRefs and
 closed consequenceDefinitions; client computes ranks/validates/applies. Preserve the
 SAME attempt/dice through repair/replay. No automatic survivor selection, helper,
-entity, combat healing or service quote is implied. Ordinary/Mortal interface
-payload does not gain this field. See OtherGuides/Wound_Materialization_Contract.md
+entity active healing, combat healing or service quote is implied. Unbound ordinary/Mortal interface
+payload does not gain this field; authenticated natural mode is the exception below. See OtherGuides/Wound_Materialization_Contract.md
 and worked spiritual_self_treatment_v2 example in Examples/E_CLI_Afterlife_Turns.txt.
+
+
+spiritual_natural_recovery_v2 — ordinary safe-cycle recovery (explicit natural mode)
+
+An ordinary accepted safe Chaos Sea / Shining Abode cycle may carry
+`input/turn_request.json.spiritualHealing.mode="natural"`, schemaVersion2.
+This projection is client DATA derived from the authenticated signed start:
+sourceFingerprint, cycleOrdinal/cycleKey, ordered cohort (woundId, owner,
+woundName, explicit healingTier0..5, woundFingerprint) and destinationGraphs.
+It creates no wound_commands.json, treatment request, attemptId or healing roll.
+General turn dice are unrelated; never draw or fabricate a treatment die.
+Each persistent current-realm spiritual I–IV wound gains exactly `1 + H`, using
+its own signed start-of-cycle tier. Hidden/offscreen eligibility is mechanical,
+not permission to reveal NPC wounds. Thresholds I/II/III/IV are2/4/6/8; points carry
+across weakening steps and terminal healing. A same-turn lawful art upgrade stays
+accepted for the next cycle; ordinary resource costs and other allowed outcomes
+remain part of their existing commands, while natural recovery itself charges nothing.
+
+Copy EVERY supplied destinationGraphs.stageRef and complicationRef into the same
+closed `output/interface_updates.json.spiritualHealingGraphs` grammar used above.
+The client computes ranks, binds the graph to the full original cohort, retires
+old/intermediate effects, writes exactly one complete schema2 natural History result
+on the first recover row and advances the cycle atomically. The natural result has
+request=null and no attempt/roll. Do not author that result or edit wound/effect
+carriers/identities/history/scheduler. An empty cohort creates no fake result.
+Missing graphs/report can be repaired on the SAME ordinary request/cycle; never
+create a treatment request, repeat a natural tick or recreate a consumed report.
+If an exact subsequent accepted_turn_output_artifact_repair requests fresh narrative
+and interface artifacts, follow that packet only, preserve the graph bodies/refs and
+debug, and keep all mechanics unchanged. Unbound/Mortal graph fields remain refused.
+
+This ordinary-safe-cycle slice excludes active conflict, catchup, prepared
+incarnation and unresolved terminal-owner/realm transfer ordering. Concurrent wound
+commands/opportunity stages are explicitly refused before publication rather than
+silently overwritten. It does not expose NPC/private wound details or implement
+helper/entity active healing. Mortal mechanics are unchanged; no new Mortal output
+or command is introduced. Read the worked spiritual_natural_recovery_v2 example in
+Examples/E_CLI_Afterlife_Turns.txt and use the actual progressionControl report.

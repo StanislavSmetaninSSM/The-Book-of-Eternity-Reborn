@@ -574,6 +574,38 @@ internal sealed class EffectSourceAuthority
             Issues.Concat(completedWounds.Issues).ToArray()), canonicalOnly: true);
     }
 
+    // Comparison DATA only: the actual executor may update its completed wound
+    // groups while keeping the ordinary input's accepted exports, replacements,
+    // selectors and grants. Rebuilding the whole universe from the signed start
+    // would resurrect replaced siblings or lose same-turn sources.
+    internal EffectSourceAuthority WithCompletedSpiritualWounds(
+        AfterlifeWoundHealingPlanner.Continuation owner, EffectSourceAuthority woundSources)
+    {
+        var completed = owner.ReadCompletedSourceWounds();
+        var original = owner.Wounds.ToDictionary(w => new EffectIdentitySourceGroup(w.Owner.Realm, "wound", w.WoundId));
+        var replaced = original.Keys.ToHashSet();
+        if (woundSources.Issues.Count != 0 || completed.Count != original.Count)
+            throw new InvalidDataException("Spiritual source replacement lost its complete executed cohort.");
+        foreach (var wound in completed)
+        {
+            var key = new EffectIdentitySourceGroup(wound.Owner.Realm, "wound", wound.WoundId);
+            if (!original.TryGetValue(key, out var before) || before.Owner != wound.Owner ||
+                !_woundGroups.TryGetValue(key, out var existing) || existing.Owner != wound.Owner ||
+                existing.Target != new EffectTargetKey(wound.Owner.Realm,
+                    WoundMaterializationContract.ResolveEffectTargetKind(wound.Owner.OwnerKind), wound.Owner.OwnerId) ||
+                (wound.Lifecycle == "active" ? !woundSources._woundGroups.ContainsKey(key) : woundSources._woundGroups.ContainsKey(key)))
+                throw new InvalidDataException("Spiritual source replacement differs from its actual original owner or terminal result.");
+        }
+        var exports = _ownerExports.Where(e => !replaced.Contains(new(e.Realm, e.Kind, e.SourceId)))
+            .Concat(woundSources._ownerExports.Where(e => replaced.Contains(new(e.Realm, e.Kind, e.SourceId)))).ToArray();
+        return BuildCore(new EffectSourceAuthorityInput(
+            exports.Where(e => !e.SameTurn).ToArray(), exports.Where(e => e.SameTurn).ToArray(),
+            _historicalAliases, _grantedApplicationAuthorities,
+            _woundGroups.Values.Where(g => !replaced.Contains(g.Key))
+                .Concat(woundSources._woundGroups.Values.Where(g => replaced.Contains(g.Key))).ToArray(),
+            Issues.Concat(woundSources.Issues).ToArray()), canonicalOnly: true);
+    }
+
     /// <summary>
     /// Builds a source catalog with strict canonical and local-reference selector validation.
     /// </summary>

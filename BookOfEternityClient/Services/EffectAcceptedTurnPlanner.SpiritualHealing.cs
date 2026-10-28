@@ -148,7 +148,13 @@ internal static partial class EffectAcceptedTurnPlanner
             if (wound.Lifecycle == "active") collection[match.i] = JsonNode.Parse(WoundMaterializationContract.SerializeCanonical(wound));
             else collection.RemoveAt(match.i);
         }
-        finalSources = EffectAcceptedTurnInputComposer.BuildCanonicalSourceAuthority(roots);
+        var finalWounds = WoundCarrierCatalog.Build(new(
+            roots[WoundCarrierCatalog.PlayerPath] as JsonObject, roots[WoundCarrierCatalog.NpcPath] as JsonObject,
+            roots[WoundCarrierCatalog.EnemiesPath] as JsonObject, roots[WoundCarrierCatalog.AlliesPath] as JsonObject,
+            roots[WoundCarrierCatalog.AfterlifeProfilesPath] as JsonObject));
+        issues.AddRange(finalWounds.Issues);
+        finalSources = input.SourceAuthority.WithCompletedSpiritualWounds(owner,
+            EffectAcceptedTurnInputComposer.BuildCanonicalWoundSourceAuthority(finalWounds));
         issues.AddRange(finalSources.Issues);
         if (issues.Count != 0) return null;
         var changedGroups = current.Values.Select(w => new EffectIdentitySourceGroup(w.Owner.Realm, "wound", w.WoundId)).ToHashSet();

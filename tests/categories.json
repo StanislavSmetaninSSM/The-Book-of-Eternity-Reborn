@@ -2,6 +2,62 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "spiritual-natural-recovery-contract",
+  "responsibility": "Two cheap typed contracts: full persistent current-realm cohort uses explicit own start tiers independently of player visibility; missing tier refuses. Natural GM prompt/example/manifest synchronization.",
+  "excludes": "Actual GameEngine publication, source drift and durable omission/replay controls run in separate natural categories; no general doc matrix or held Mortal/DFR.",
+  "changeHints": [
+    "BookOfEternityClient.Tests/SpiritualNaturalCohortTests.cs",
+    "BookOfEternityClient.Tests/SpiritualHealingGuidedContractTests.cs",
+    "Examples/E_CLI_Afterlife_Turns.txt"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.SpiritualNaturalCohortTests.PersistentCurrentRealmOwnersUseTheirOwnTierRegardlessOfVisibility",
+        "BookOfEternityClient.Tests.SpiritualHealingGuidedContractTests.NaturalModeHasOneClosedResultAndSynchronizedOrdinaryGmExample"
+      ]
+    }
+  ]
+},
+{
+  "id": "spiritual-natural-recovery-publication",
+  "responsibility": "Four owned typed natural controls: full two-wound publication and active/healed omission+rehash refusal with service reopen; valid concurrent wound draft/source-drift prewrite refusal; lawful ordinary cost/art upgrade with signed old-tier recovery; accepted source replacement survives the real effect executor.",
+  "excludes": "Actual Engine caller is separate. No provider/fresh-process/combat/catchup/helper qualification or broad cache/resource matrix.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/AfterlifeSpiritualNaturalRecoveryTests.cs",
+    "BookOfEternityClient/Services/AfterlifeWoundHealingPlanner.NaturalRecovery.cs",
+    "BookOfEternityClient/Services/EffectAcceptedTurnPlanner.SpiritualHealing.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.AfterlifeSpiritualNaturalRecoveryTests.PublishedNaturalCohortCannotOmitAnActiveOrThisCycleHealedWound",
+        "BookOfEternityClient.Tests.AfterlifeSpiritualNaturalRecoveryTests.NaturalPublicationRefusesConcurrentValidWoundCommandsAndSourceDriftBeforeWrites",
+        "BookOfEternityClient.Tests.AfterlifeSpiritualNaturalRecoveryTests.OrdinaryCostAndArtUpgradeSurviveWhileRecoveryUsesSignedStartTier",
+        "BookOfEternityClient.Tests.AfterlifeSpiritualNaturalRecoveryTests.NaturalEffectExecutionKeepsTheOrdinaryAcceptedSourceReplacement"
+      ]
+    }
+  ]
+},
+{
   "id": "spiritual-natural-recovery-caller",
   "responsibility": "One actual ordinary safe afterlife GameEngine turn without /лечить or wound command: tier0 rankI gains one natural point, a strict recover History result and one scheduler cycle without treatment attempt/draw or resource cost.",
   "excludes": "This first causal caller does not qualify persistent-actor eligibility, lower-rank graphs, neighboring resource/art changes, fresh-process/provider/combat/catchup modes or held Mortal/T609/DFR work.",
