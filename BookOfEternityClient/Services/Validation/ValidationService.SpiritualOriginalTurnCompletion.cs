@@ -263,10 +263,10 @@ public partial class ValidationService
                     }
                     var selected = _registeredWoundInsertions
                         .OrderBy(pair => pair.Value.VersionAfter)
-                        .Select(pair => (EffectAcceptedTurnPlanner.EffectAcceptedDraft.EffectDraftWoundSelection.From(pair.Key), pair.Value))
+                        .Select(pair => (EffectAcceptedTurnPlanner.EffectDraftWoundSelection.From(pair.Key), pair.Value))
                         .ToList();
                     if (_registeredCombatHealingInsertion is { } combatInsertion && _combatHealingSelection is { } combatSelection)
-                        selected.Add((EffectAcceptedTurnPlanner.EffectAcceptedDraft.EffectDraftWoundSelection.From(combatSelection), combatInsertion));
+                        selected.Add((EffectAcceptedTurnPlanner.EffectDraftWoundSelection.From(combatSelection), combatInsertion));
                     var ordered = selected.OrderBy(pair => pair.Item2.VersionAfter).ToArray();
                     var proof = SpiritualLiveWoundCompletion.Seal(effectOwner,
                         effects.Plan, resources.Routing, transcript, resources, ordered);

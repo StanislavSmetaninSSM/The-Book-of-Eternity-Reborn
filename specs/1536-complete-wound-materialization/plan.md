@@ -1,3 +1,15 @@
+# Combat first owning compile correction — runtime UNRUN, 2026-10-28
+
+Coherent SOURCE/PREP accepted da0302fa5 and its exact25/15/14 selection. The first
+owning Integration build stopped in Main (exit1, 12 warnings/2 errors, 2:30.28):
+both CS0117 errors referenced EffectDraftWoundSelection under EffectAcceptedDraft.
+The actual current selection wrapper belongs directly to EffectAcceptedTurnPlanner;
+only those two qualified references are corrected. No runtime/semantic RED occurred,
+and no fresh Main/Support/Integration/Unit qualification follows from this failed
+build. Raw source/log/exit remain external in spiritual-combat-functional-build-1.
+After narrow independent delta closure, repeat the owning build then Unit refsfalse
+and the same exact official PlanOnly/ordered qualification. No scope/budget change.
+
 # Combat coherent SOURCE candidate — UNCOMPILED/UNRUN, 2026-10-28
 
 The final authoring slice now includes missing-graph/no-pair repair on the SAME
