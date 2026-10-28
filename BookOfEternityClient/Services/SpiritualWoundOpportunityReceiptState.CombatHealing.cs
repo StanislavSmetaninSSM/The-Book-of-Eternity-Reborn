@@ -106,10 +106,14 @@ internal sealed partial class SpiritualWoundOpportunityReceiptState
 
     internal void RequireCombatHistoryResourceAgreement(WoundHistoryState history, ResourceHistoryState resources)
     {
-        if (_root["healingSources"] is not JsonArray sourceRows) return;
+        var results = history.Transitions.Select(t => t.TransitionResult).OfType<SpiritualCombatHealingPersistedResult>().ToArray();
+        if (_root["healingSources"] is not JsonArray sourceRows)
+        {
+            Require(results.Length == 0, "Combat History result lost its mandatory durable healing family.");
+            return;
+        }
         var sources = sourceRows.OfType<JsonObject>().ToDictionary(s => Text(s["witness"]!["sourceFingerprint"]), StringComparer.Ordinal);
         var byId = sourceRows.OfType<JsonObject>().ToDictionary(s => Text(s["witness"]!["sourceId"]), StringComparer.Ordinal);
-        var results = history.Transitions.Select(t => t.TransitionResult).OfType<SpiritualCombatHealingPersistedResult>().ToArray();
         foreach (var result in results) Require(sources.ContainsKey(result.SourceFingerprint), "Combat History result lost its mandatory durable source/outcome.");
         foreach (var row in _root["healingDecisions"]!.AsArray().OfType<JsonObject>())
         {

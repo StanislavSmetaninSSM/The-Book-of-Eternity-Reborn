@@ -149,7 +149,9 @@ internal sealed partial class ResourceMaterializationTestContext : IAsyncDisposa
         IEnumerable<string>? additionalTrackedPaths = null,
         int[]? preGeneratedDices1d20 = null,
         string sessionId = "session_resource_materialization",
-        string requestId = "request_resource_materialization")
+        string requestId = "request_resource_materialization",
+        ProgressionControl? progressionControl = null,
+        JsonObject? spiritualHealing = null)
     {
         const string playerAction = "Validate unified resource materialization.";
 
@@ -163,6 +165,8 @@ internal sealed partial class ResourceMaterializationTestContext : IAsyncDisposa
         };
         if (preGeneratedDices1d20 != null)
             request["preGeneratedDices1d20"] = JsonSerializer.SerializeToNode(preGeneratedDices1d20);
+        if (progressionControl is not null) request["progressionControl"] = JsonSerializer.SerializeToNode(progressionControl);
+        if (spiritualHealing is not null) request["spiritualHealing"] = spiritualHealing.DeepClone();
         await WriteExactJsonAsync("input/turn_request.json", request.ToJsonString());
 
         var files = new JsonObject();
@@ -212,7 +216,7 @@ internal sealed partial class ResourceMaterializationTestContext : IAsyncDisposa
         if (preGeneratedDices1d20 != null)
             manifest["preGeneratedDices1d20"] = JsonSerializer.SerializeToNode(preGeneratedDices1d20);
         manifest["progressionControl"] = JsonSerializer.SerializeToNode(
-            new ProgressionControl { CurrentRealm = currentRealm });
+            progressionControl ?? new ProgressionControl { CurrentRealm = currentRealm });
         manifest["files"] = files;
         manifest["snapshotFileHashes"] = snapshotFileHashes;
         manifest["originalPathPresenceV1"] = originalPathPresenceV1;

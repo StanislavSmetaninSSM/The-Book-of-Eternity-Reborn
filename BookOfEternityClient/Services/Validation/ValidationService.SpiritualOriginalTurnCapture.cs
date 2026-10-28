@@ -841,7 +841,8 @@ public partial class ValidationService
             if (_combatHealingOrigin is { } combatOrigin)
             {
                 try { combatOrigin.RequireCurrent(_validator._fs, lease); }
-                catch (Exception error) when (error is InvalidDataException or InvalidOperationException or ArgumentException)
+                catch (Exception error) when (error is not CoordinatedStatePublicationUncertainException &&
+                    (error is InvalidDataException or InvalidOperationException or ArgumentException))
                 {
                     RevokeUnderLease(lease);
                     return new[] { SourceIssue(AcceptedMechanicsPlan.WoundCommandPath,

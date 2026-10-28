@@ -243,6 +243,29 @@ internal sealed record WoundPlayerNotification(
             var input = insertion.Input;
             var prepared = insertion.Prepared;
             var wound = insertion.Wound;
+            if (insertion.IsCombatHealing)
+            {
+                var stages = insertion.CombatStages;
+                var history = WoundHistoryState.Parse(insertion.ReducedState.History.ToJsonString(), WoundHistoryState.HistoryPath);
+                var result = history.State?.Transitions.Select(row => row.TransitionResult).OfType<SpiritualCombatHealingPersistedResult>()
+                    .SingleOrDefault(value => value.Stages.Count != 0 && value.Stages[0].TransitionId == stages.FirstOrDefault()?.After.LastTransition.TransitionId);
+                if (input.Transitions.Count != 0 || prepared.EffectOperationBatches.Count != 0 || stages.Count == 0 ||
+                    !history.IsValid || result is null || result.Stages.Count != stages.Count ||
+                    wound.Owner != new WoundOwnerCoordinate("chaos_sea", "player_soul", "player_soul", WoundCarrierCatalog.AfterlifeProfilesPath) ||
+                    WoundMaterializationContract.SerializeCanonical(stages[^1].After) != WoundMaterializationContract.SerializeCanonical(wound) ||
+                    !stages.Select(stage => (stage.OperationKey, stage.EventRef, Before: WoundMaterializationContract.SerializeCanonical(stage.Before), After: WoundMaterializationContract.SerializeCanonical(stage.After)))
+                        .SequenceEqual(result.Stages.Select(stage => (stage.OperationKey, stage.EventRef, Before: WoundMaterializationContract.SerializeCanonical(stage.Before), After: WoundMaterializationContract.SerializeCanonical(stage.After)))))
+                {
+                    AddAcceptedTurnBindingIssue(issues, "complete sealed combat treatment stages", insertion.SourceCoordinate);
+                    continue;
+                }
+                if (!WoundPlayerProjection.Visible(wound.Display.Visibility)) continue;
+                var text = wound.Lifecycle == "healed"
+                    ? $"В бою исцелена духовная рана: {wound.Display.Name}. Подробнее: {Command}"
+                    : $"Исцеление в бою: {wound.Display.Name} ({wound.Severity.Value}); восстановление {wound.Recovery.CurrentStepProgress}/{wound.Recovery.CurrentStepThreshold}. Подробнее: {Command}";
+                notifications.Add(new(Project(text), Command));
+                continue;
+            }
             if (input.Transitions.Count != 1 || prepared.EffectOperationBatches.Count != 1)
             {
                 AddAcceptedTurnBindingIssue(issues, "one transition and batch per live insertion", insertion.SourceCoordinate);

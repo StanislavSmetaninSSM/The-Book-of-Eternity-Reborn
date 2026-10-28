@@ -1,3 +1,39 @@
+# Combat grouped consumer corrections / backend scaffold — UNCOMPILED/UNRUN
+
+The ongoing independent source reading of frozen b642 found concrete remaining
+consumers, now corrected in this WIP: counterharm uses its injury receipt/event
+family (not the healing default EventRef); a missing whole healing family cannot
+hide combat History; actual-source-bound settlement refuses an omitted blocked
+outcome too. Typed publication uncertainty propagates from combat original and
+retained reads through the affected initial/saved C2/C3/C4 wrappers. Two missing
+Core imports are included. None of these source corrections has compiled or run.
+
+The real interface owner now selects combat from an authenticated original read,
+then reads/revalidates the complete combat source inventory and exact control.
+Consumed I uses the strict published outcome and shared graph semantics; unrelated
+interface normalization may preserve accepted graph DATA but cannot change it.
+The existing output binder now handles only the actual sealed combat insertion
+stages/result for visible player-self treatment, retaining injury create/worsen
+1-transition/1-batch guards. It does not fabricate an injury or bypass binding.
+
+A new backend Theory scaffold targets three actual C2 pair→C3→C4 cases: full heal,
+resolved no-improvement and blocked+same-wound worsening. Initial source/effect/
+identity/History seed is canonical fixture DATA before authority/snapshot, not a
+claim about an earlier natural producer. Existing original-signer options retain
+the real staged control/GM projection; defaults stay unchanged. Assertions target
+initial undecided pair, both cursors, one wave, paid OD, exact LastTickKey and
+schedule/world, same-source replay, missing outcome, omitted whole family,
+omission-only History result and closed selected-die audit. All remain UNRUN.
+
+Before final SOURCE/PREP: finish real guided console/browser Engine cases and
+nonterminal destination-graph admission/repair, rollback/typed uncertainty cases,
+whole mandatory initial/cleanup comparison with the working spiritual Engine/C2
+counterpart, GM CLI/Matrix/Wound/worked example/manifest guards and exact finite
+category/selection ownership including one old injury-v1 actual-pair regression.
+No cost-only build or old accepted blanket rerun is authorised by this checkpoint.
+Healing-scoped wound action-cost modifiers are not in the current closed effect
+profile language; no such modifier support is claimed or added here.
+
 # Combat settled / no-op source WIP — UNCOMPILED/UNRUN, 2026-10-28
 
 The written C4 bridge now carries detached scheduler original images only from the

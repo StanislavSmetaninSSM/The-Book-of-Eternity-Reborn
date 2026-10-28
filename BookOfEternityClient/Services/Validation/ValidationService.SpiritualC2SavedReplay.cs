@@ -170,9 +170,10 @@ public partial class ValidationService
             retained = true;
             return new(capture, priorPending, []);
         }
-        catch (Exception error) when (error is IOException or UnauthorizedAccessException or
+        catch (Exception error) when (error is not CoordinatedStatePublicationUncertainException &&
+                (error is IOException or UnauthorizedAccessException or
             InvalidOperationException or InvalidDataException or FormatException or JsonException or OverflowException or
-            DecoderFallbackException)
+            DecoderFallbackException))
         {
             return SavedReplayFailure("spiritual_c2_saved_replay_failed");
         }

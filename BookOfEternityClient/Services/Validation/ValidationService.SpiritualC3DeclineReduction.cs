@@ -262,8 +262,9 @@ public partial class ValidationService
                 if (_completedOrdinaryReduction?.Reduction is null)
                     return DeclineFailure("spiritual_c3_completed_reduction_missing");
             }
-            catch (Exception error) when (error is IOException or UnauthorizedAccessException or
-                InvalidOperationException or FormatException or System.Text.Json.JsonException)
+            catch (Exception error) when (error is not CoordinatedStatePublicationUncertainException &&
+                (error is IOException or UnauthorizedAccessException or
+                InvalidOperationException or FormatException or System.Text.Json.JsonException))
             {
                 return DeclineFailure("spiritual_c3_decline_origin_unavailable");
             }

@@ -123,8 +123,9 @@ public partial class ValidationService
             {
                 recorded = await CaptureFromCheckpointOriginAsync(validator, lease, checkpoint);
             }
-            catch (Exception error) when (error is InvalidOperationException or FormatException or
-                OverflowException or System.Text.Json.JsonException)
+            catch (Exception error) when (error is not CoordinatedStatePublicationUncertainException &&
+                (error is InvalidOperationException or FormatException or
+                OverflowException or System.Text.Json.JsonException))
             {
                 validator._spiritualOriginalTurnCapture?.Dispose();
                 return InitialReplayFailure("spiritual_checkpoint_owner_replay_mismatch");
@@ -180,8 +181,9 @@ public partial class ValidationService
                 }
                 return InitialReplayFailure("spiritual_checkpoint_first_offer_missing");
             }
-            catch (Exception error) when (error is InvalidOperationException or FormatException or
-                OverflowException or System.Text.Json.JsonException)
+            catch (Exception error) when (error is not CoordinatedStatePublicationUncertainException &&
+                (error is InvalidOperationException or FormatException or
+                OverflowException or System.Text.Json.JsonException))
             {
                 return InitialReplayFailure("spiritual_checkpoint_owner_replay_mismatch");
             }

@@ -1,3 +1,4 @@
+using BookOfEternityClient.Core;
 using System.Collections.Immutable;
 using System.Text.Json;
 using System.Text.Json.Nodes;

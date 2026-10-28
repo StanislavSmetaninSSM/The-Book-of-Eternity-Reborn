@@ -159,9 +159,10 @@ public partial class ValidationService
                 _c2DecisionDrafted = !selectionOnly;
                 return stagedResult;
             }
-            catch (Exception error) when (error is IOException or UnauthorizedAccessException or
+            catch (Exception error) when (error is not CoordinatedStatePublicationUncertainException &&
+                (error is IOException or UnauthorizedAccessException or
                 InvalidOperationException or InvalidDataException or FormatException or JsonException or OverflowException or
-                DecoderFallbackException)
+                DecoderFallbackException))
             {
                 return DecisionDraftFailure("spiritual_c2_decision_draft_failed");
             }
@@ -222,9 +223,10 @@ public partial class ValidationService
                     result.Issues.Count == 0;
                 return result;
             }
-            catch (Exception error) when (error is IOException or UnauthorizedAccessException or
+            catch (Exception error) when (error is not CoordinatedStatePublicationUncertainException &&
+                (error is IOException or UnauthorizedAccessException or
                 InvalidOperationException or InvalidDataException or FormatException or JsonException or OverflowException or
-                DecoderFallbackException)
+                DecoderFallbackException))
             {
                 return DecisionDraftFailure("spiritual_c2_saved_layer_replay_failed");
             }

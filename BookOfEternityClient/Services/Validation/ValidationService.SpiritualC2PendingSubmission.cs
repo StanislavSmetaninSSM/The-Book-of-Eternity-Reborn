@@ -207,7 +207,7 @@ public partial class ValidationService
             catch (Exception error) when (error is not CoordinatedStatePublicationUncertainException &&
                 (error is IOException or UnauthorizedAccessException or
                     InvalidOperationException or FormatException or JsonException or OverflowException))
-            {
+                {
                 return SavedTransportFailure("blocked", "spiritual_c2_submission_failed");
             }
             finally
@@ -268,8 +268,9 @@ public partial class ValidationService
                 succeeded = true;
                 return [];
             }
-            catch (Exception error) when (error is IOException or UnauthorizedAccessException or
-                InvalidOperationException or FormatException or JsonException or OverflowException)
+            catch (Exception error) when (error is not CoordinatedStatePublicationUncertainException &&
+                (error is IOException or UnauthorizedAccessException or
+                InvalidOperationException or FormatException or JsonException or OverflowException))
             {
                 return DecisionDraftFailure("spiritual_c2_submission_replay_failed").Issues;
             }
@@ -300,8 +301,9 @@ public partial class ValidationService
                 if (!_allocations.Journal.IsAppendMode) _allocations.Journal.EnableAppendAfterReplay();
                 return await ProbeC2SelectedContinuationCoreAsync(lease, changes);
             }
-            catch (Exception error) when (error is IOException or UnauthorizedAccessException or
-                InvalidOperationException or FormatException or JsonException or OverflowException)
+            catch (Exception error) when (error is not CoordinatedStatePublicationUncertainException &&
+                (error is IOException or UnauthorizedAccessException or
+                InvalidOperationException or FormatException or JsonException or OverflowException))
             {
                 if (IsCurrentOwner) RevokeUnderLease(lease);
                 return DecisionDraftFailure("spiritual_c2_submission_context_changed").Issues;
@@ -380,8 +382,9 @@ public partial class ValidationService
                 _c2DecisionDrafted = true;
                 return result;
             }
-            catch (Exception error) when (error is IOException or UnauthorizedAccessException or
-                InvalidOperationException or FormatException or JsonException or OverflowException)
+            catch (Exception error) when (error is not CoordinatedStatePublicationUncertainException &&
+                (error is IOException or UnauthorizedAccessException or
+                InvalidOperationException or FormatException or JsonException or OverflowException))
             {
                 return DecisionDraftFailure("spiritual_c2_submission_resume_failed");
             }

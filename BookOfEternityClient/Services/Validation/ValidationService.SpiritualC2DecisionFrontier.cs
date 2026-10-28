@@ -113,8 +113,9 @@ public partial class ValidationService
                 }
                 return ResolveC2NextSourceFromPending(pair.Pending);
             }
-            catch (Exception error) when (error is System.IO.IOException or UnauthorizedAccessException or
-                InvalidOperationException or FormatException or System.Text.Json.JsonException)
+            catch (Exception error) when (error is not CoordinatedStatePublicationUncertainException &&
+                (error is System.IO.IOException or UnauthorizedAccessException or
+                InvalidOperationException or FormatException or System.Text.Json.JsonException))
             {
                 return NextSourceFailure("spiritual_c2_next_source_read_failed");
             }
@@ -165,8 +166,9 @@ public partial class ValidationService
                     return NextSourceFailure("spiritual_c2_next_source_mismatch");
                 return new(entry.Interval, source, []);
             }
-            catch (Exception error) when (error is InvalidOperationException or FormatException or
-                System.Text.Json.JsonException)
+            catch (Exception error) when (error is not CoordinatedStatePublicationUncertainException &&
+                (error is InvalidOperationException or FormatException or
+                System.Text.Json.JsonException))
             {
                 return NextSourceFailure("spiritual_c2_next_source_invalid");
             }

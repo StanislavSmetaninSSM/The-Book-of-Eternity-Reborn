@@ -96,7 +96,8 @@ public partial class ValidationService
                 _combatHealingOrigin = new(intent, source, control, snapshot);
                 return Task.FromResult<IReadOnlyList<ValidationIssue>>(Array.Empty<ValidationIssue>());
             }
-            catch (Exception error) when (error is JsonException or InvalidDataException or InvalidOperationException or ArgumentException or OverflowException)
+            catch (Exception error) when (error is not CoordinatedStatePublicationUncertainException &&
+                (error is JsonException or InvalidDataException or InvalidOperationException or ArgumentException or OverflowException))
             {
                 return Task.FromResult<IReadOnlyList<ValidationIssue>>(new[] { SourceIssue(AcceptedMechanicsPlan.WoundCommandPath,
                     "spiritual_combat_healing_original_invalid", error.Message) });

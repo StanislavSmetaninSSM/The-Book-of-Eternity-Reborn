@@ -198,7 +198,8 @@ public partial class ValidationService
                     await _validator._fs.WriteFileAtomicBytesAsync(lease,
                         AcceptedMechanicsPlan.WoundCommandPath, commandBytes);
                 }
-                catch (Exception error) when (error is IOException or UnauthorizedAccessException)
+                catch (Exception error) when (error is not CoordinatedStatePublicationUncertainException &&
+                (error is IOException or UnauthorizedAccessException))
                 {
                     Dispose();
                     return AdapterFailure("spiritual_c2_private_command_write_failed");
@@ -432,8 +433,9 @@ public partial class ValidationService
                     throw new InvalidOperationException("The physical command has no retained selection.");
                 return [];
             }
-            catch (Exception error) when (error is IOException or UnauthorizedAccessException or
-                InvalidOperationException or InvalidDataException or FormatException or JsonException or OverflowException)
+            catch (Exception error) when (error is not CoordinatedStatePublicationUncertainException &&
+                (error is IOException or UnauthorizedAccessException or
+                InvalidOperationException or InvalidDataException or FormatException or JsonException or OverflowException))
             {
                 if (IsCurrentOwner)
                     RevokeUnderLease(lease);

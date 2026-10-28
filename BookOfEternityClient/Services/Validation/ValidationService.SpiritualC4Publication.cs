@@ -161,8 +161,9 @@ public partial class ValidationService
                 // execution owner and its allocation journal; publication cannot execute them.
                 return (authority, Array.Empty<ValidationIssue>());
             }
-            catch (Exception error) when (error is IOException or UnauthorizedAccessException or
-                InvalidOperationException or FormatException or JsonException)
+            catch (Exception error) when (error is not CoordinatedStatePublicationUncertainException &&
+                (error is IOException or UnauthorizedAccessException or
+                InvalidOperationException or FormatException or JsonException))
             {
                 return (null, [C4Issue("spiritual_c4_publication_unavailable")]);
             }

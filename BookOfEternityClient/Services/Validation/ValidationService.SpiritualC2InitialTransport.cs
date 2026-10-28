@@ -89,7 +89,7 @@ public partial class ValidationService
 
                 byte[]? confirmedCheckpoint;
                 try { confirmedCheckpoint = await _validator._fs.ReadFileBytesAsync(lease, checkpointPath); }
-                catch (Exception)
+                catch (Exception failure) when (failure is not CoordinatedStatePublicationUncertainException)
                 {
                     RevokeUnderLease(lease);
                     return TransportFailure("blocked", "spiritual_first_transport_checkpoint_read_failed");
@@ -113,7 +113,7 @@ public partial class ValidationService
 
                 byte[]? confirmedPending;
                 try { confirmedPending = await _validator._fs.ReadFileBytesAsync(lease, pendingPath); }
-                catch (Exception)
+                catch (Exception failure) when (failure is not CoordinatedStatePublicationUncertainException)
                 {
                     RevokeUnderLease(lease);
                     return TransportFailure("repair_required", "spiritual_first_transport_pending_read_failed",

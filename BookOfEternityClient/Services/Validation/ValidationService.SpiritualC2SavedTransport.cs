@@ -99,7 +99,7 @@ public partial class ValidationService
 
                 byte[]? confirmedCheckpoint;
                 try { confirmedCheckpoint = await _validator._fs.ReadFileBytesAsync(lease, checkpointPath); }
-                catch (Exception)
+                catch (Exception failure) when (failure is not CoordinatedStatePublicationUncertainException)
                 {
                     RevokeUnderLease(lease);
                     return SavedTransportFailure("blocked", "spiritual_saved_transport_checkpoint_read_failed");
@@ -117,7 +117,7 @@ public partial class ValidationService
 
                 byte[]? pendingBeforeProjection;
                 try { pendingBeforeProjection = await _validator._fs.ReadFileBytesAsync(lease, pendingPath); }
-                catch (Exception)
+                catch (Exception failure) when (failure is not CoordinatedStatePublicationUncertainException)
                 {
                     RevokeUnderLease(lease);
                     return SavedTransportFailure("repair_required", "spiritual_saved_transport_pending_read_failed",
@@ -144,7 +144,7 @@ public partial class ValidationService
                     confirmedPending = await _validator._fs.ReadFileBytesAsync(lease, pendingPath);
                     checkpointAfterPending = await _validator._fs.ReadFileBytesAsync(lease, checkpointPath);
                 }
-                catch (Exception)
+                catch (Exception failure) when (failure is not CoordinatedStatePublicationUncertainException)
                 {
                     RevokeUnderLease(lease);
                     return SavedTransportFailure("repair_required", "spiritual_saved_transport_pending_read_failed",
@@ -197,8 +197,9 @@ public partial class ValidationService
                         return SavedTransportFailure("blocked", "spiritual_saved_transport_postflight_changed");
                     }
                 }
-                catch (Exception error) when (error is IOException or UnauthorizedAccessException or
-                    InvalidOperationException or FormatException or System.Text.Json.JsonException)
+                catch (Exception error) when (error is not CoordinatedStatePublicationUncertainException &&
+                (error is IOException or UnauthorizedAccessException or
+                    InvalidOperationException or FormatException or System.Text.Json.JsonException))
                 {
                     if (IsCurrentOwner)
                         RevokeUnderLease(lease);
