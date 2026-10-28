@@ -100,10 +100,14 @@ public sealed class WoundTreatmentAssessmentTests
     public void InspectionDoesNotAssessHiddenWoundsOrOtherRealm(bool otherRealm)
     {
         var context = Context("chaos_sea", 0, hidden: !otherRealm);
-        if (otherRealm) context = context with { Input = context.Input with { Realm = "mortal_world" } };
+        if (otherRealm)
+        {
+            var input = context.Input with { Realm = "mortal_world" };
+            context = context with { Input = input, Projection = WoundPlayerProjection.Build(input) };
+        }
         var state = WoundApplicationService.CreateState("generation", context);
         Assert.Empty(state.Choices);
-        var result = ExplorerWoundCommandResultBuilder.Build("/лечить", context.Projection, state, false);
+        var result = ExplorerWoundCommandResultBuilder.Build("/лечить", context.Projection, state, true);
         Assert.DoesNotContain("Исцеление: 0", Text(result.Blocks));
         Assert.Empty(result.Prompts);
     }

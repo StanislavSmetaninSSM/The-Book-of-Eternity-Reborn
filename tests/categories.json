@@ -2,6 +2,30 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "spiritual-treatment-assessment-handlers",
+  "responsibility": "Four real console and shared browser known-wound assessment rows, H0/H1 against II in Chaos Sea/Shining Abode; no prompts/action, canonical mutation, repair, attempt, dice, pending work or world time.",
+  "excludes": "No GM completion, external provider/DOM, sealed hidden discovery, real treatment or repeat of accepted combat cases.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/ExplorerWoundSelfTreatmentTests.Assessment.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.InsufficientHealingAssessmentIsReadonlyThroughActualConsoleAndBrowser"
+      ]
+    }
+  ]
+},
+{
   "id": "spiritual-treatment-assessment",
   "responsibility": "Eleven cheap typed known-wound assessment cases: actual H0/insufficient H in both realms, invalid source distinct from zero, sufficient and mixed choices, hidden/non-afterlife refusal and no DATA mutation.",
   "excludes": "No sealed diagnosis discovery, dice, staging, publication, full Engine or repeat of accepted combat cases.",
@@ -22,7 +46,7 @@
     {
       "project": "unit",
       "tests": [
-        "BookOfEternityClient.Tests.WoundTreatmentAssessmentTests"
+        "BookOfEternityClient.Tests.WoundTreatmentAssessmentTests.*"
       ]
     }
   ]

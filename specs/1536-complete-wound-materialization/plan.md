@@ -53,9 +53,13 @@ data-model12 rule2; not FR071 hidden-fact discovery):
    independent SOURCE/selection and OUTCOME review. Do not replay accepted combat39.
 4. Synchronize GM matrix, a worked no-turn example and bounded documentation guard.
    Mark only this subtask done; broader T093 diagnosis discovery and US4 stay open.
-RED scaffold WIP: eleven typed cases and one bounded unit owner are authored but
-uncompiled/UNRUN. Only existing CreateState visibility changes, with no behavior
-change. Independent source/fixture/selection review is pending.
+RED scaffold WIP: eleven typed cases and four actual console/browser rows are
+authored, runtime UNRUN. First owning Unit build0b313 passed0errors/76 existing
+warnings in3:21.03; only CreateState visibility changes in production. Sol found
+a class-only selector and a negative that bypassed treatment rendering; both are
+corrected, including coherent Mortal projection. Fresh Unit refsfalse is required
+for that test-only correction. Handler fixture reuses the complete existing wound
+resource setup but never creates an Engine turn. SOURCE review pending.
 Optimization: reuse the already parsed catalog/profile/soul/effect snapshot owned by
 one read operation; renderer receives detached choice DATA and performs no reads or
 parsing. Every wound has a distinct identity/severity/complication input, so source

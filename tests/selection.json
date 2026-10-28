@@ -2,6 +2,13 @@
   "schemaVersion": 1,
   "selections": [
 {
+  "category": "spiritual-treatment-assessment-handlers",
+  "reason": "T093-ASSESSMENT: both actual handlers must show the same known H0/insufficient assessment while leaving the complete canonical tree and mutation count unchanged. Existing complete wound/resource fixture is reused without a GameEngine turn or GM response.",
+  "contracts": [
+    "#1536 T093-ASSESSMENT console/browser parity and no-turn assessment"
+  ]
+},
+{
   "category": "spiritual-treatment-assessment",
   "reason": "T093-ASSESSMENT: unavailable choices currently hide their known H/severity reason. Prove readable actual insufficiency without inventing H0 for invalid source or changing availability, authority, privacy and safe-cycle terms.",
   "contracts": [
