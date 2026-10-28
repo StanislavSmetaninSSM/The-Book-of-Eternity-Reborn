@@ -146,7 +146,7 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
         TurnRequest turn, WoundMaterializationEnvelope wound)
     {
         var timestamp = DateTime.UtcNow.ToString("O");
-        var graphs = AfterlifeSpiritualNaturalRecoveryTests.AuthorNaturalGraphs(wound, turn.SpiritualHealing!["possibleDestinationGraphs"]!.AsArray());
+        var graphs = AfterlifeResourceCutoverTests.AuthorCombatHealingGraphs(wound, turn.SpiritualHealing!["possibleDestinationGraphs"]!.AsArray());
         await files.WriteFileAtomicAsync(lease, "output/narrative_response.json", new JsonObject
         { ["response"] = "Душа удерживает сосредоточение в духовной дуэли и ослабляет трещину духовной целостности; Хранитель сохраняет защиту. Безопасный цикл не проходит.", ["timestamp"] = timestamp }.ToJsonString());
         await files.WriteFileAtomicAsync(lease, "output/interface_updates.json", new JsonObject

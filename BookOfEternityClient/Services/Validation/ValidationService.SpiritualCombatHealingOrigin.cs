@@ -7,6 +7,70 @@ namespace BookOfEternityClient.Services;
 
 public partial class ValidationService
 {
+    // Wire classification for this one original intake operation only. It is
+    // issued from observed signed bytes, not from the live command kind, and
+    // cannot create an effect plan or authorize healing. Full admission remains
+    // PrepareCombatHealingOriginAsync after the real owners are constructed.
+    private sealed class SpiritualOriginalCombatCommandClassification
+    {
+        private readonly PendingTurnSnapshotReadAuthority _snapshot;
+        private readonly PendingTurnSnapshotReader.OriginalReadEvidence _evidence;
+        private readonly SpiritualCombatHealingIntent _intent;
+        private readonly CanonicalBeforeImage _image;
+
+        private SpiritualOriginalCombatCommandClassification(PendingTurnSnapshotReadAuthority snapshot,
+            PendingTurnSnapshotReader.OriginalReadEvidence evidence, SpiritualCombatHealingIntent intent, byte[] bytes)
+        { _snapshot = snapshot; _evidence = evidence; _intent = intent; _image = new(true, bytes); }
+
+        internal static SpiritualOriginalCombatCommandClassification? Read(FileSystemManager files,
+            FileSystemManager.CanonicalWriteLease lease, PendingTurnSnapshotReadAuthority expectedOriginal,
+            SpiritualOriginalDraftInputs current)
+        {
+            if (!expectedOriginal.DeclaredOriginalLogicalPaths.Contains(AcceptedMechanicsPlan.WoundCommandPath, StringComparer.Ordinal))
+                return null;
+            var read = PendingTurnSnapshotReader.ReadObservedCurrent(files, lease, new[] { AcceptedMechanicsPlan.WoundCommandPath });
+            if (!read.Success || read.Snapshot is not { } actual || read.Evidence is not { } evidence ||
+                actual.SessionId != expectedOriginal.SessionId || actual.RequestId != expectedOriginal.RequestId ||
+                actual.SnapshotToken != expectedOriginal.SnapshotToken || actual.TurnNumber != expectedOriginal.TurnNumber ||
+                actual.Realm != expectedOriginal.Realm)
+                throw new InvalidDataException("Original command classification lost its actual signed input.");
+            var bytes = actual.ReadRequiredBytes(AcceptedMechanicsPlan.WoundCommandPath);
+            JsonObject? root;
+            try
+            {
+                root = StrictJsonAuthority.Deserialize<JsonObject>(CanonicalJsonUtf8.DecodeOneOptionalBom(bytes),
+                    new JsonSerializerOptions(), "original command classification");
+            }
+            catch (Exception error) when (error is JsonException or InvalidDataException or ArgumentException)
+            { return null; } // The unchanged ordinary parser owns malformed noncombat input.
+            if (root is null || !SpiritualCombatHealingIntent.IsKind(root)) return null;
+            var intent = SpiritualCombatHealingIntent.Parse(root);
+            if (!intent.Matches(actual.SessionId, actual.RequestId, actual.TurnNumber))
+                throw new InvalidDataException("Original combat command has a foreign tuple.");
+            evidence.RequireCurrent(files, lease, actual);
+            // A different effective GM command still goes through ordinary
+            // parsing; only the exact retained client marker is omitted there.
+            if (current.ReadImage(AcceptedMechanicsPlan.WoundCommandPath).Fingerprint != new CanonicalBeforeImage(true, bytes).Fingerprint)
+                return null;
+            return new(actual, evidence, intent, bytes);
+        }
+
+        internal bool Matches(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease,
+            ValidationPendingTurnSnapshotManifest manifest, CanonicalBeforeImage effective)
+        {
+            if (_snapshot.SessionId != manifest.SessionId || _snapshot.RequestId != manifest.RequestId ||
+                _snapshot.SnapshotToken != manifest.ManifestPayloadHash || _snapshot.TurnNumber != manifest.TurnNumber ||
+                manifest.ProgressionControl is null || !_intent.IsBound(new(manifest.SessionId, manifest.RequestId,
+                    manifest.TurnNumber, manifest.ProgressionControl), _intent.Selection))
+                throw new InvalidDataException("Original combat wire differs from the actual validated control.");
+            RequireCurrent(files, lease);
+            return effective.Fingerprint == _image.Fingerprint;
+        }
+
+        internal void RequireCurrent(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease) =>
+            _evidence.RequireCurrent(files, lease, _snapshot);
+    }
+
     internal sealed partial class SpiritualWoundSourceSession
     {
         // Inventory metadata selects an actual read; it grants no byte authority.

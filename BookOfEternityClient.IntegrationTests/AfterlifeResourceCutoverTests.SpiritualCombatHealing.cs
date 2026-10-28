@@ -123,7 +123,7 @@ public sealed partial class AfterlifeResourceCutoverTests
         JsonObject? repairedInterface = null;
         if (mode == "next_boundary")
         {
-            var graphs = AfterlifeSpiritualNaturalRecoveryTests.AuthorNaturalGraphs(before, new JsonArray(new JsonObject
+            var graphs = AuthorCombatHealingGraphs(before, new JsonArray(new JsonObject
             {
                 ["stageRef"] = SpiritualHealingRequestProjection.GraphRef(intent!["intentFingerprint"]!.GetValue<string>(), before.WoundId, 1),
                 ["severityRank"] = 1, ["complications"] = SpiritualHealingRequestProjection.Complications(intent["intentFingerprint"]!.GetValue<string>(), before)
@@ -436,6 +436,38 @@ public sealed partial class AfterlifeResourceCutoverTests
         var refused = SpiritualWoundOpportunityReceiptState.Parse(later.ToJsonString(), SpiritualWoundOpportunityReceiptState.StatePath);
         Assert.False(refused.IsValid);
         Assert.Contains(refused.Issues, issue => issue.Code == "spiritual_wound_receipt_invalid_state");
+    }
+
+    // This controlled GM authors only the I destination needed by these II
+    // combat cases. It intentionally retains one legal guard-cost slot, rather
+    // than assuming the natural fixture's original roll-hindrance profile exists.
+    internal static JsonArray AuthorCombatHealingGraphs(WoundMaterializationEnvelope original, JsonArray requested)
+    {
+        var graphs = new JsonArray();
+        foreach (var request in requested.OfType<JsonObject>())
+        {
+            Assert.Equal(1, request["severityRank"]!.GetValue<int>());
+            var definition = original.Consequences.OwnedEffectSources.Definitions.Select(d => JsonNode.Parse(d.GetRawText())!.AsObject())
+                .Single(d => d["components"]![0]!["profile"]?.GetValue<string>() == "spiritual_action_cost_burden" &&
+                    d["components"]![0]!["payload"]!["operation"]?.GetValue<string>() == "guard");
+            definition["links"] = new JsonArray();
+            definition["components"]![0]!["payload"]!["magnitude"] = 1;
+            graphs.Add(new JsonObject
+            {
+                ["stageRef"] = request["stageRef"]!.DeepClone(),
+                ["consequenceDefinitions"] = new JsonArray(new JsonObject
+                {
+                    ["definitionRef"] = definition["definitionKey"]!.DeepClone(), ["definition"] = definition,
+                    ["root"] = new JsonObject
+                    {
+                        ["ownership"] = new JsonObject { ["kind"] = "base_wound", ["complicationRef"] = null },
+                        ["slots"] = new JsonArray(new JsonObject { ["profileKey"] = "spiritual_action_cost_burden",
+                            ["readableSummary"] = "Ослабленная трещина ещё затрудняет духовную защиту." })
+                    }
+                })
+            });
+        }
+        return graphs;
     }
 
     internal static async Task WriteCombatHealingExchangeAsync(ResourceMaterializationTestContext context, string mode,

@@ -1,3 +1,36 @@
+# Combat authenticated wire routing WIP — UNCOMPILED/UNRUN, 2026-10-28
+
+Initial-clock correction ae154 compiled Integration refsfalse0e/102 baseline
+warnings/2:27.88; eight Main/Support/Unit pins stayed exact. Official remaining
+PlanOnly16/9 zeroexec10.1482523s. Actual paired retry still completed4 FAIL,
+26.5850190s/category14.9959639<120, no timeout/duplicates/both cleanuptrue,
+TRXbe1ac959…de5f. The clock and all typed source preconditions now execute.
+Three modes reach actual signed capture and hit ordinary GM wound command grammar
+on the client combat intent before BeginResourceExecution/PrepareCombatOrigin:
+this is a confirmed production consumer gap. Independently Sol/Astra traced the
+same actual Engine order. next_boundary separately fails in its GM graph fixture:
+the natural helper expects original roll_hindrance, while combat seed is cost-only.
+
+The written correction now carries private observed-original wire classification
+through the existing capture/effect sink. Only exact current/retained bytes equal
+to the actual signed closed combat intent can omit ordinary GM response parsing;
+the resource owner's validated manifest supplies the independent tuple/control.
+Changed/unbound current input continues through the strict ordinary parser. The
+command remains in draft/observed/physical/current-before-image guards and later
+C3/C4 consumption; original evidence closes again before retaining a capture.
+Full combat source/art/effect/scheduler admission remains in Begin, after actual
+owners exist. This is routing DATA, no new owner, executor, cache or observer
+callback; noncombat/no-original-command paths acquire no added original read.
+
+A combat-local controlled GM helper now authors the actual required I graph with
+one lawful guard-cost slot from the original closed definition. It serves both
+backend and real console/browser tests without broadening/falling back in the
+existing natural graph fixture or changing its defaults. All these new corrections
+are UNCOMPILED/UNRUN. Before coherent SOURCE: finish exact-byte/unbound routing
+negative controls and impact-selection rationale, then one grouped source closure,
+fresh owning dependencies and bounded qualification. No runtime retry is released
+by this WIP; retained9 and all raw failures remain scoped to their real lineages.
+
 # Combat paired initial-clock correction — runtime downstream UNRUN, 2026-10-28
 
 Fresh owning1da succeeded0e/137 baseline warnings/6:27.99; Unit refsfalse0e/26w/

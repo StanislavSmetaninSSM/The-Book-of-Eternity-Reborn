@@ -138,6 +138,7 @@ public partial class ValidationService
     /// for physical current-file reads.
     /// </param>
     /// <param name="naturalOwner">Private current ordinary recovery owner, or null for unchanged ordinary/C4/Mortal paths.</param>
+    /// <param name="combatCommand">Private exact signed-original wire classification; no effect or combat execution authority.</param>
     private async Task ValidateAcceptedTurnRawEffectMaterializationAsync(
         List<ValidationIssue> issues,
         ResourceOwnerCompositionResult? resourceOwners,
@@ -151,7 +152,8 @@ public partial class ValidationService
         MortalOriginalInputSink? mortalCapture = null,
         SpiritualOriginalAllocationOwner? spiritualAllocations = null,
         SpiritualOriginalDraftInputs? currentInputs = null,
-        AfterlifeWoundHealingPlanner.Continuation? naturalOwner = null)
+        AfterlifeWoundHealingPlanner.Continuation? naturalOwner = null,
+        SpiritualOriginalCombatCommandClassification? combatCommand = null)
     {
         ArgumentNullException.ThrowIfNull(writeLease);
         _fs.EnsureCanonicalWriteLeaseActive(writeLease);
@@ -265,6 +267,19 @@ public partial class ValidationService
             .ResolveAcceptedTurnApplicationAuthorities(
                 manifest.PlayerAction,
                 acceptedRealm);
+        if (hasWoundCommand && combatCommand is not null)
+        {
+            var effective = currentInputs?.ReadImage(AcceptedMechanicsPlan.WoundCommandPath);
+            if (effective is null)
+            {
+                // The non-retained original path needs exact bytes, not decoded
+                // text equality. The named intake path reuses its existing image.
+                var bytes = await _fs.ReadFileBytesAsync(writeLease, AcceptedMechanicsPlan.WoundCommandPath);
+                effective = new CanonicalBeforeImage(bytes is not null, bytes);
+            }
+            if (combatCommand.Matches(_fs, writeLease, manifest, effective))
+                hasWoundCommand = false;
+        }
         var rawWoundDraft = hasWoundCommand
             ? await LoadAcceptedTurnRawWoundDraftAsync(
                 manifest,

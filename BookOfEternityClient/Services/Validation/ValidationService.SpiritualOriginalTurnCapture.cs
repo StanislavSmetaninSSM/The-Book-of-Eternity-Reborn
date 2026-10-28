@@ -23,6 +23,7 @@ public partial class ValidationService
         /// for the existing physical source path.
         /// </summary>
         internal SpiritualOriginalDraftInputs? CurrentInputs;
+        internal SpiritualOriginalCombatCommandClassification? CombatCommand;
     }
 
     internal Task<SpiritualOriginalTurnCaptureResult> CaptureSpiritualOriginalTurnAsync(
@@ -441,6 +442,8 @@ public partial class ValidationService
             using var allocationScope = allocations.Clock.BeginSpeculation();
             try
             {
+                sink.CombatCommand = SpiritualOriginalCombatCommandClassification.Read(
+                    validator._fs, lease, originalSnapshot, draftInputs);
                 var issues = new List<ValidationIssue>();
                 if (includeUpstreamIntake)
                 {
@@ -543,6 +546,7 @@ public partial class ValidationService
                     else if (originalSnapshot.AbsentLogicalPaths.Contains(path, StringComparer.Ordinal))
                         signedServiceRollbackImages.Add(path, new CanonicalBeforeImage(false, null));
                 }
+                sink.CombatCommand?.RequireCurrent(validator._fs, lease);
                 var capture = new SpiritualOriginalTurnCapture(validator, input, source, observed,
                     physicalWitnesses, signedServiceRollbackImages, draftInputs, allocations,
                     outputProjection, includeUpstreamIntake ? originalSnapshot : null)

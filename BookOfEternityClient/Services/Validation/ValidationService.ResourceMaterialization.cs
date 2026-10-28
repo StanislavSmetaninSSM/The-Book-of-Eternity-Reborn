@@ -662,7 +662,8 @@ public partial class ValidationService
             woundHandoffSink,
             requireSpiritualBase: spiritualCapture != null || mortalCapture != null || naturalOwner is not null,
             mortalCapture: mortalCapture, spiritualAllocations: spiritualCapture?.Allocations,
-            currentInputs: spiritualCapture?.CurrentInputs, naturalOwner: naturalOwner);
+            currentInputs: spiritualCapture?.CurrentInputs, naturalOwner: naturalOwner,
+            combatCommand: spiritualCapture?.CombatCommand);
         issues.AddRange(effectIssues);
         if (issues.Any(static issue => issue.Severity == IssueSeverity.Error))
             return issues;
@@ -913,6 +914,8 @@ public partial class ValidationService
             beforePaths.UnionWith(AfterlifeWoundTreatmentAuthority.SourcePaths);
             beforePaths.Add("output/interface_updates.json");
         }
+        if (spiritualCapture?.CombatCommand is not null)
+            beforePaths.Add(AcceptedMechanicsPlan.WoundCommandPath);
         if (mortalReceipt is not null)
         {
             beforePaths.Add(MortalQteDecisionPublication.StatePath);
