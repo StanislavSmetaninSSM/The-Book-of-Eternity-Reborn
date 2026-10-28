@@ -21,8 +21,21 @@ Parent:15 распределений дуэлей (400 парыd20, сумма S
 не симулировались. Кэш простой арифметике не нужен; authority/current свежие.
 Bridge consistency: принятые формулы сохранены, scope→plan→tasks→probe,
 индивидуальные ресурсы/отсутствие refill и новое согласование явно отмечены.
-Независимый Astra/high review и remote checkpoint ожидаются. Game/build/600s
-и clean restore UNRUN. Не заявлять готовность полного баланса или реализации.
+Независимый review_health_pacing1573, GPT-6 Astra/high, проверил девять документов
+56f8e414..681462cf и последующие working-tree corrections. Все15 распределений,
+ёмкости/нулевой старт/burden2,1944 перехода/сертификат и хвост подтверждены независимо.
+Найдено оставшееся рассогласование статуса принятых формул в трёх текущих местах;
+parent исправил, targeted read закрыл замечание. Блокирующих замечаний нет.
+Ревью не подтверждает бюджеты Fast/control/heal/discounts или полный runtime.
+
+Parent:182 relative links PASS, git diff --check PASS. WIP полный remote SHA
+681462cf141a255ef1ea6382460c243cae299d30 и девять exact-ref GitHub blobs совпали.
+Финальный checkpoint и issue1573 публикуются после review, exact commit — Git-история
+и актуальный header issue. Game/build/600s и clean restore UNRUN.
+Маршрутизация оправдана конкретными interacting clock/resource/burden/lifecycle
+контрактами: Sol/high — ограниченный source audit, Astra/high — независимое review;
+parent сохранил выбор/интеграцию. Выигрыш времени/качества не измерялся.
+Не заявлять готовность полного баланса или реализации; новый пакет предъявляется автору.
 
 ## Предыдущий checkpoint: принятый HP, предложение урона/innate/критов
 

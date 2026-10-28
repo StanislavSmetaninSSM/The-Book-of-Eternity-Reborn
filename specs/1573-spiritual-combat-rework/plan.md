@@ -20,6 +20,13 @@ Bridge consistency до исполнения численной модели: с
 stable definitions через existing operation service, current OD/ownership/revision
 и разрешение действия свежие. Нет новых обязательных cooldown/таймеров без обоснования.
 
+Результат T048–T050: spiritual-action-economy-proposal.md v1, specv1.42/modelv2.32;
+12 ОД, Main/малый Fast, цены2/4/6,passive2/MainGain4 на рассмотрение. Parent и
+независимый Astra/high подтвердили15 распределений,1944 перехода и сертификат
+чистого урона. Review устранил старые пометки принятия, blocking findings нет.
+182 ссылки/diff PASS; WIP remote SHA и9 blobs совпали. Полная реализация T001
+закрыта до согласования; текущий результат — написанный дизайн и честные пределы.
+
 ## Текущий срез: принятие HP и совместная настройка урона/врождённой защиты
 
 T045→T046→T047, baselinefdbfb83f85da15753ca5b8c298982225136b74bb. Только
