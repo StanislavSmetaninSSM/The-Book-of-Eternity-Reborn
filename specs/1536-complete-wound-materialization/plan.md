@@ -29,6 +29,11 @@ Invalid source must remain unavailable, not masquerade as H0. This does not clai
 FR071 sealed hidden-fact discovery. No new dice/time author rule is needed for
 this bounded read-only assessment; broader discovery remains separate.
 Raw remains outside checkout; DFR/Mortal/Windows/performance routes stay HOLD.
+The temporary ENOSPC incident preserved this WIP remotely at4b864f348. Eight
+exact obj/bin duplicate intermediate files and two independently reviewed orphan
+Git download tmp files were retired; bin18, all251 indexed pack entries, raw,
+recovery copies and saves remain. No GC/history operation occurred;826MiB is
+available. The full retirement receipts stay outside checkout.
 
 # Combat self-treatment: bounded functional gate accepted — #1536
 
