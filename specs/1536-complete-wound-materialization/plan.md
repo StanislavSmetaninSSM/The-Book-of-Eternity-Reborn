@@ -1,5 +1,55 @@
 # US4 safe self-treatment — active functional work, 2026-10-28
 
+Natural follow-through on clean/compiled db2326c6: officialPlanOnly4cases/
+4Integrationdescriptors12.2403106s/zero executions; chronology1, actors1, overflow1
+and actual ordinary graph caller1 all PASS. Four unique test/execution IDs, exact
+complete membership, no skips/duplicates/timeouts and both cleanup flags true.
+Category/total seconds:50.2479774/62.8276724,42.6302031/51.0621172,
+33.5530443/41.7292300,32.7788234/42.3841689; original120/120/120/180s bounds.
+Fresh Integration-only refsfalse build0errors/102warnings3:06.68; all6 master/
+dependency pins match, unchanged Main38babb8a/Support421d3660. Prior accepted14
+retained by unchanged production/default branches; no Unit/browser/console/HOLD rerun.
+
+Actual assertions now execute: four persistent profiles (playerH0, hidden offscreen
+GuardianH0, residentH5, otherH2) publish own-tier wound/effect/History outcomes with
+canonical no-cost; terminal owner deletion/realm change refuses strict replay.
+Real cycle44 recovers only remaining H0 wounds, excludes43-healed members, refuses
+old cohort/control and repeats Apply inertly. Empty cycle45 advances ordinary
+schedule without fake natural History. IV7/H5 retains III5 through an authored III
+graph; IV14/H5 traverses III/II/I to one terminal with intermediate generations.
+Missing graph is prewrite refusal and clipped intermediate+rehash is strict-program
+parser refusal (not mislabeled as deeper cohort witness). The actual Engine ordinary
+III/H5 response authors requested II graph before native-ready; accepted43/II0,
+strict natural result/no command/attempt/healing draw/one cycle/no cost/cleanup pass.
+Its final stdout reports III→II, progress0, tierV, healingDraw=none, attempt=none,
+cycle=1. This is controlled native-shaped completion, not external-provider proof.
+
+The chronology case is explicitly current-DATA coverage: valid matching creation
+origin/identity/History/effect DATA excludes same-turn newborn; a coherently foreign
+event reaches exact provenance refusal. A valid postterminal archive with another
+SourceFP reaches exact independently selected row-bijection refusal after canonical
+agreement. It is not joint natural+new-wound publication qualification, and the later
+latest-row guard may also refuse the archive. Concurrent wound work remains an
+explicit unsupported prewrite conflict, not silently dropped. Actual Shining realm
+caller, full training/source producer, joint worsening/reset/creation composition,
+combat/catchup/helper/entity ACTIVE treatment, provider/fresh process and standing
+Mortal/preparation/T609/DFR/Windows limits remain open; T105/T106 boxes stay open.
+
+Raw natural-followthrough-build-1/natural-followthrough-1 contains complete logs,
+summary/TRX and postrun pins outside Git. Ordered chronology/actors/overflow/caller
+TRX SHA256:
+8ac6a8792878039a34cac344f8bded57ab002ca5f93d4b54d7a12f3ec83aed8d,
+de176c137ceb6ede679923f81fbce078a05a3904a63da2de0b5647f18b8d99c9,
+99e0a4ccac8d86e75419d456e7cdbfba4d287d8c237017875e031b152929c950,
+a2edeb7a4c91be40112f072915d96b2871acf73989d25aeb1352a0378c5347d4.
+No production/authority/cache change in this follow-through. Each Fact owns mutable
+state; shared seeding code defaults remain unchanged. Actor data is supplied before
+the single real fresh resource bootstrap; resource bindings are producer-owned and
+no existing quartet is reset. Canonical no-cost comparison permits equivalent
+publisher formatting while exact postpublication replay images remain mandatory.
+SOURCE/PREP accepted db2326; final independent OUTCOME is pending. No speedup claim.
+
+
 First ordinary natural GREEN slice on clean dad6206de (production compiled d691):
 official PlanOnly14cases/6descriptors22.1644138s/zero executions. Separate released
 contracts3, publication4, actual ordinary caller1, self lifecycle5 and consumed-self

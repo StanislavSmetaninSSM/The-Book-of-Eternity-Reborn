@@ -14447,17 +14447,22 @@ close full source-action/terminal/pending contracts or any top-level story task.
   terminal healing. First ordinary safe-cycle slice now has actual Engine proof
   without treatment: accepted43 gives rank-I/H0 progress0→1, natural History/no
   attempt/draw and one cycle. New typed publication/omission/cost/art/source guards
-  and shared self regressions passed14cases on dad6206. Actual persistent-actor
-  publication, IV/ordinary graph caller and chronology/replay edges remain open. T105/T107 must reuse carried
+  and shared self regressions passed14cases on dad6206. New follow-through4 on db2326 now proves actual persistent-profile publication,
+  IV carry/fullterminal, actual ordinary III/H5 graph caller and current-DATA
+  newborn/archive witness edges. These are separate owned typed/native-shaped
+  scopes; actual Shining caller, joint worsening/reset/creation, conflict/catchup
+  and wider source/producer qualification remain open. T105/T107 must reuse carried
   progress, multi-step/follow-up stages and exact private tick authority; do not
   cap/discard valid III/IV progress or borrow Mortal-only authority.
 - [ ] T106 [US4] Integrate accepted recovery and art progression with `ProgressionScheduleService` for player soul and persistent actors without wall-clock or effect-scheduler fallback in `BookOfEternityClient/Services/ProgressionScheduleService.cs` and `BookOfEternityClient/Services/AfterlifeEntityProfileState.cs`
   Self-treatment now publishes its single scheduler mutation atomically with
   wound/effects/History and exact replay. Ordinary natural mode now joins that
   publisher and real caller, with signed old-tier recovery while lawful art/cost
-  afterimages survive; all14 bounded checks passed. This is not full training
-  producer or actor/IV/catchup/conflict qualification. Continue remaining ordinary
-  actor/graph/replay edges without a new attempt/die or duplicated self tick.
+  afterimages survive; all14 bounded checks passed. Follow-through4 now adds per-owner actual
+  profile publication, later/empty cycles, IV overflow/terminal and actual ordinary
+  graph caller plus current-DATA witness guards. This is not full training producer,
+  actual Shining, joint wound/reset, catchup/conflict or fresh-process qualification;
+  those limits remain explicit without a new attempt/die or duplicated self tick.
 - [ ] T107 [US4] Compose healing/recovery wound/effect/resource/profile/scheduler/history/output after-images and exact replay results in `BookOfEternityClient/Services/WoundAcceptedTurnPlanner.cs` and `BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs`
 - [ ] T108 [US4] Add player-to-entity and entity-to-player treatment authority using exact profile, visibility, reachability, consent/conflict, and current wound bindings in `BookOfEternityClient/Services/AfterlifeWoundTreatmentAuthority.cs`
 
