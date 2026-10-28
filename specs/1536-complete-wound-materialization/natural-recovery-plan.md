@@ -105,3 +105,19 @@ Remaining chronology work includes positive/negative same-turn newborn provenanc
 ## Shining parity follow-through (UNCOMPILED/UNRUN)
 
 One new actual ordinary Shining II/H3 Engine caller on existing program/scheduler/I. Fixture optional realm is propagated through wound/profile/soul/effect definitions and identity; default Chaos bytes/branches remain unchanged. Existing fixture seeds a valid shared-clock9 with activeShining/Guardian/resident9 and inactiveChaos2 before the actual preturn backup; the native-shaped response copies actual control and authors requested I graph. Require accepted43/I0, modeNatural/bindingShining/cycle10, shared9→10, activecontours10/inactiveChaos2, no attempt/healing draw/resource charge and cleanup. Existing native helper optional narrative leaves old default text unchanged. One literal Integration case/180s; no new production clock/receipt/cache/API. Shining package/bootstrap/catchup and realm transfer remain excluded. Coherent SOURCE/PREP→Integrationrefsfalse→exact1 PlanOnly/actual; old18 retained by unchanged source/default branches. Then bounded joint wound/worsening/reset composition design remains T107 work.
+
+
+- Shining6da actual1/1PASS: accepted43, II/H3→I0, shared9→10/activeShining10,
+  inactiveChaos2 unchanged, no attempt/healing draw/charge; one cycle and cleanup.
+  Official1/1desc PlanOnly and actual are complete with original180s budget,
+  both cleanup flags true; raw/hash/pins/timing in top plan. Predicted realm
+  segregation refusal did not occur. Production unchanged; previous18 retained.
+  Finite independent OUTCOME accepted by Sol; predicted refusal withdrawn for
+  this actual path. Optimization remains existing per-operation
+  source/program/lease checks; this test-only realm option adds no runtime work.
+- Reachability consultation: spiritual creation/worsening is currently issued only
+  by formal conflict/C4. Keep explicit ordinary competing-draft refusal rather
+  than add speculative safe-joint authority. Next meaningful scope is actual C4
+  retrauma with accumulated natural progress→reset0/no conflict tick→fresh safe
+  cycle recovery. Existing source/decision/effect/common publisher only; broad
+  T105–T108 and held full DFR/Mortal/Windows remain open.

@@ -1,5 +1,33 @@
 # US4 safe self-treatment — active functional work, 2026-10-28
 
+
+Shining parity on clean/compiled6da7a948: exact official1case/1descriptor PlanOnly
+7.7481252s/zero executions; actual1/1PASS, complete exit0/no skip/dup/timeout and
+both cleanup flags true. Category24.1585650s<180, total33.1560602s; full final stdout
+reports II→I0, shared9→10, inactiveChaos2→2, no healing draw, one cycle. Real Engine
+accepted43, strict natural result/binding Shining, requested I graph, unchanged
+resources and artifact consumption assertions all execute; diagnostics are empty.
+The predicted realm-segregation refusal did not occur; no production change or
+validation exemption was made. Controlled native-shaped completion, not provider,
+Shining package/catchup/transfer or fresh-process qualification. Integration refsfalse
+build0errors/102warnings1:50.72, all6 master/dependency pins match unchanged
+Main38babb8a/Support421d3660. Raw natural-shining-build-1/natural-shining-1 stays
+external; TRX SHA256dcc5bc59aae3f094361e0792b95fcd6b2167f8ce0c994b4076adfd061fc1d7b7.
+Prior18 different accepted cases retained by unchanged production/default branches;
+no repeat. Independent Shining OUTCOME accepted by Sol; source-predicted refusal withdrawn
+as a blocker for this actual qualified path.
+
+Next finite T105/T107 work follows actual reachability: current spiritual create/
+worsen issuers are formal conflict/C4, not ordinary-safe opportunity producers.
+Natural B's explicit competing-draft refusal therefore remains; do not invent a
+joint codec/owner for an arbitrary draft. Prove real C4 retrauma on accumulated
+recovery progress resets the current step to0, suppresses natural tick during the
+conflict, then resumes on a fresh safe cycle. Use existing source/opportunity/
+continuation/common publication machinery and one ordered History, without a new
+request, receipt, cache, diagnostics stack or full DFR retry. Helpers/entity ACTIVE,
+full training/source producer and standing HOLDs remain open.
+
+
 Natural follow-through on clean/compiled db2326c6: officialPlanOnly4cases/
 4Integrationdescriptors12.2403106s/zero executions; chronology1, actors1, overflow1
 and actual ordinary graph caller1 all PASS. Four unique test/execution IDs, exact
@@ -47,7 +75,7 @@ state; shared seeding code defaults remain unchanged. Actor data is supplied bef
 the single real fresh resource bootstrap; resource bindings are producer-owned and
 no existing quartet is reset. Canonical no-cost comparison permits equivalent
 publisher formatting while exact postpublication replay images remain mandatory.
-SOURCE/PREP accepted db2326; final independent OUTCOME is pending. No speedup claim.
+SOURCE/PREP and independent final OUTCOME accepted db2326 (Sol all4; Astra chronology). No speedup claim.
 
 
 First ordinary natural GREEN slice on clean dad6206de (production compiled d691):
@@ -89,7 +117,7 @@ source/lease/generation/response and closing checks remain fresh; no cached perm
 or new cache/coordinator. One detached handoff Input feeds bundle/sink with defensive
 copies. Final source reconstruction updates only executed wound groups and retains
 ordinary exports/replacements. Independent SOURCE/PREP accepted d691+dad compile
-closure; independent final OUTCOME is pending. Continue actual persistent actors,
+closure; independent final OUTCOME accepted dad6206 (all14). Continue actual persistent actors,
 IV/ordinary natural graph caller and chronology/replay-edge controls. Broad T105/T106,
 helper/entity ACTIVE treatment, conflict/catchup/unresolved owner ordering, provider/
 fresh-process and all prior Mortal/preparation/T609/DFR/Windows HOLDs remain open.
