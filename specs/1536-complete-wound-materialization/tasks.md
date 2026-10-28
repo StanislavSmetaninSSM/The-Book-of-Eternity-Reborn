@@ -14335,12 +14335,14 @@ close full source-action/terminal/pending contracts or any top-level story task.
 Current combat follow-through (2026-10-28): paired5 is accepted as four complete
 138 cases plus the corrected4d587 dependent-cost singleton, including ordinary
 and guaranteed counterharm with exact OD/wound/effects/History/no-cycle results.
-At897c the actual browser command/Engine route also PASSes healing II->I1 and
-OD6->4 once; actual prepared-input C4 fault1 PASSes both local compensation and
-whole-turn rollback. Console FAILs its pending-source override lifetime guard,
-without timeout; remaining12 are UNRUN. Bounded source-scope correction/design
-is pending, not a guard exemption. Cheap32/terminal4/role10 and other accepted
-lineages remain explicit in plan. Full T095/T102/T103/US4 remain open.
+The actual browser route at897c and corrected console route at56c3 both PASS
+healing II->I1 and OD6->4 once, History and no safe cycle. The prepared-input
+Engine fault1 PASSes local compensation and whole-turn rollback. Fourteen source
+refusal controls at56c3 and all remaining12 functional regressions at6825 PASS;
+the scalar-wrapper fixture mismatch was corrected with exact exception/path
+identity and unchanged rollback/revocation checks. Independent final OUTCOME is
+pending. Source lineages and six pre-existing World-pin gaps remain explicit in
+plan. Full T095/T102/T103/US4 remain open.
 
 Initial prebuild combat authoring checkpoint (2026-10-28): accepted genuine cost-admission
 RED is retained. The bounded direct-Chaos-duel standard player-self implementation,
@@ -14583,6 +14585,7 @@ rows retain their own lineages; no combat gameplay PASS or full task closure.
 - [ ] T110 [US4] Update arts, healing check, action cost, safe-cycle self/helper treatment, and natural entity recovery guidance in `Rules/Block_21.txt`, `OtherGuides/Afterlife_Contract_Matrix.md`, and `TaskGuides/CLI_Step_Main.txt`
 - [ ] T111 [US4] Add combat healing, failed self-healing world advance, tier-0/V natural recovery, wounded Guardian recovery, and player-heals-Guardian examples in `Examples/E_CLI_Afterlife_Turns.txt` and `Examples/example_validation_manifest.json`
 - [ ] T112 [US4] Run focused art/resolver/combat/safe-cycle/recovery/entity/lifecycle/docs filters through `scripts/test-csharp.ps1` and record GREEN evidence in `specs/1536-complete-wound-materialization/tasks.md`
+- [ ] T112-SOURCE-PINS [US4] Separately review the six pre-existing World source-closure changes listed in the current plan, refresh only approved hashes in `GameEngineTurnLifecycleTests.WorldReadPhase.cs`, and verify the existing source guard. Do not silently rebaseline, waive the guard or infer full US4 completion from bounded combat results.
 
 **Checkpoint**: Every player and persistent afterlife entity has a bounded treatment and natural recovery path; healing advances combat resources or world life exactly once.
 

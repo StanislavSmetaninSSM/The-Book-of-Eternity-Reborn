@@ -1,124 +1,79 @@
-# Console combat healing GREEN; backend fault contract correction — WIP/UNCOMPILED
+# Combat self-treatment checks complete; independent OUTCOME pending — #1536
 
-2026-10-28 actual56c3 fresh owning Integration137/Unit26 unchanged warnings,
-0errors3:39.28/59.50;18current artifact pins, independent Astra SOURCE and Sol
-SOURCE/PREP accepted. Catalog1037/12718 and exact27/8descriptors/15methods
-PlanOnly zeroexec13.2940867s verified. Cheap source refusals14/14PASS12.4544872s
-(category5.8863675<120), TRX
-9ad995a1ff974061eb4f67c6f450bf8cdf7b18da3c5d2b89a6e7bd13ec27e4e4.
-Actual console combat1/1PASS48.1797546s/category41.4395176<180, TRX
-74dcab9ae5a852d9bc183d568df6157e8129976eee2254f970d45cfe619b305c:
-real cancellation/confirmation/Engine acceptance, d20=14/H3/II -> I1, OD6->4
-once, History, unchanged world/schedule/LastTick and original cleanup. Browser1
-and prepared-input fault1 retain reviewed897c lineage; no redundant UI repeat.
+2026-10-28. The bounded player result is standard-art self-treatment during an
+active direct Chaos duel through the real shared browser command handler or
+console Explorer and GameEngine. Cancellation is inert; confirmation preserves
+the original d20=14 and H3 against wound II, applies I1, spends OD6 -> 4 exactly
+once and records History. World time, scheduler and LastTick remain unchanged;
+there is no safe-cycle or second natural recovery. Controlled native-shaped GM
+completion is used; this is not an external-provider, actual DOM or fresh-process
+qualification. Full T095/T102/T103/US4 and #1536 remain open.
 
-First remaining12 case FAIL25.1859301s/category17.9825905<120, TRX
-94e708ae52ddb99c8c12a99813c78efea79ee562c96f2f4549693ae10d51fef7:
-fixture expected scalar CanonicalStateWriteException, actual IOException.
-Complete1FAIL/11UNRUN, no timeout/duplicates/both cleanuptrue; overall27 is not
-GREEN. Live bulk publication invokes the exact before-mutation hook before its
-publisher, and the coordinator rethrows that same original failure after restore.
-The scalar normalizer wrapper is a different route. Current test-only correction
-captures/asserts the actual resource cut path and exact original exception identity;
-cut1, every signed rollback byte and authority revocation assertions remain.
-No arbitrary exception alternative or production change is added. SOURCE review
-also checks already-visible assumptions in the remaining11 before one fresh
-Integrationrefsfalse build, exactremaining12 PlanOnly/PREP and conditional runtime.
-Retain14guards/console at56c3 and older explicit lineages; public ownership/catalog
-are unchanged. Source-closure six-pin debt, fullDFR/T609/Mortal/Windows stay open.
-Raw build17/functional15 remains outside checkout; no raw or saves are deleted.
+The C4 correction binds the original prepared client marker separately from the
+current committed command in the existing authority. The actual Engine fault
+proves one precommit cut, exact 6619-byte prepared-image compensation, then whole-
+turn marker absence, turn41, ten original roots and no C2. Console comparison now
+avoids only a redundant null-to-null override scope inside its already-reserved
+physical source invocation. Real override mutation guards, entry/final physical
+proof, current tuple/owner, one-shot publication and uncertainty semantics remain.
 
-# Console completed comparison: avoid absent override mutation — WIP/UNCOMPILED
+Verified results retain their source lineages; they are not one fresh 39-case run:
 
-2026-10-28 independent Astra/high DESIGN accepts skipping only the redundant
-null-to-null snapshot scope at the existing completed-conflict comparison. The
-console invocation reserves a null override before physical source opening;
-sync/async lookups already select its current evidence first. Existing entry,
-independent final physical proof, exact completed tuple/token, teardown and
-foreign/stale/mutation refusal stay. A nonnull override still clears/restores
-through the original guarded scope. No guard, owner, cache or game rule changes.
-GM-facing fields/examples need no update for this client-owned lifetime fix.
+| Source | Exact category selection | Result and category seconds |
+| --- | --- | --- |
+| `2f0c6685a63c2de1df4959c3135847c717dda4cc` | `spiritual-combat-prepared-rollback-role` | 10/10 PASS; 4.6713401 |
+| `897c0bc4fa8f6f0d46e0fbee93064751cf6dab6f` | `spiritual-combat-engine-prepared-rollback` | 1/1 PASS; 54.9867616 |
+| same `897c0bc4f` | `spiritual-combat-healing-browser` | 1/1 PASS; 94.7322602 |
+| `56c3e67ca0d9a2843b6ae289ee46f9aa6f029184` | `spiritual-combat-console-source-guards` | 14/14 PASS; 5.8863675 |
+| same `56c3e67ca` | `spiritual-combat-healing-console` | 1/1 PASS; 41.4395176 |
+| `6825959880b066b7fc22d71b3ce26863e5c13b0f` | `spiritual-combat-healing-rollback`, `spiritual-combat-injury-v1-output`, `spiritual-combat-safe-browser`, `spiritual-combat-safe-publication`, `spiritual-healing-authored-graphs`, `spiritual-healing-console-self` | 12/12 PASS; 18.3243468 / 13.8612332 / 45.0070313 / 22.5274431 / 15.5009894 / 21.7732401 |
 
-Current uncompiled implementation is that one callsite condition/comment, its
-reviewed LF source pin and a narrow category for14 existing semantic controls
-(12changed-dependency final-proof refusals +2same-lease override/lifecycle refusals).
-No new reflection is added. Proposed finite runtime: cheap14 -> console1 ->
-remaining12 =27cases/8categories/8descriptors/15methods. Fresh owning Integration/
-Main/Support and Unitrefsfalse, pins, catalog/new ownership, exact PlanOnly and
-independent SOURCE/PREP are required. Retain browser1/fault1 at897c, role10 at2f0c
-and earlier accepted lineages through the reviewed source-equivalent branches.
-No speedup is claimed; existing immutable invocation DATA is reused, while source
-authentication at both boundaries remains fresh.
+The last six categories contain 1+1+1+7+1+1 cases; complete wall time is
+143.4999888s. Every passing phase has exact planned/completed counts, unique test
+and execution IDs, no skips/timeouts/duplicates, unchanged binary pins and both
+owned/runtime cleanup flags true. Original 1/2/3-minute category bounds remain.
+Backend pair5, cheap32, terminal4, Engine guards2, ordinary context1 and historical
+17 retain their previously reviewed explicit lineages below; they were not replayed.
+The prepared Engine fault uses healed mode: differing-current counterharm Engine
+compensation is not separately qualified; the guaranteed backend case is retained.
 
-Read-only prechange World-source assessment found7 stale entries among66. Refresh
-ONLY the reviewed AfterlifeSpiritualConflict pin. Six pre-existing pins remain
-unchanged/open: BrowserOriginalAdmission, AcceptedTurnAndInkFeathers,
-EffectMaterialization, NpcWorldAndMeta, ResourceMaterialization and
-SpiritualWoundSourceAdmission. The full World source-closure guard is NOT PASS;
-separate review/rebaseline remains required for overall acceptance. Astra accepts
-the bounded functional route without repeating this already-explained static
-failure or auditing six unrelated histories. This does not waive the guard.
-Complete baseline assessment/raw remains outside checkout in functional15.
-FullDFR/T609/Mortal/Windows remain HOLD; no raw or saves are deleted.
+Fresh builds: build15 at2f0c owning Main/Support/Integration 0 errors/137 baseline
+warnings (4:12.69), Unit refsfalse 0/26 (58.68); build16 at897c Integration refsfalse
+0/102 (1:47.36); build17 at56c3 owning 0/137 (3:39.28), Unit refsfalse 0/26 (59.50);
+build18 at6825 Integration refsfalse 0/102 (1:56.85). All have zero added warnings.
+Eighteen current DLL/PDB pins and copies agree; build18 retains the other sixteen
+build17 artifacts. Production source is56c3;6825 changes only a test body and plan.
+Catalog1037/12718 at56c3 is retained with unchanged public ownership. Exact PlanOnly
+27 cases/8 descriptors/15 methods at56c3, then12/6/12 at6825, executed zero tests.
 
-# Actual browser combat healing GREEN; console pending-source scope defect — WIP
+Astra/high independently accepted production SOURCE and console lifetime DESIGN/
+SOURCE; Sol/xhigh accepted fixture SOURCE, finite selection and artifact PREP.
+Final coherent OUTCOME is pending. Optimization reuses the existing immutable
+origin, completed plan and invocation evidence; fresh authority and physical
+source checks remain. No new cache/publisher/ledger or measured speedup is claimed.
+This is client-owned enforcement of the existing GM contract, with no new authored
+field, replacement policy or game mechanic; no extra GM example is required.
 
-2026-10-28 actual897c owning Integrationrefsfalse0errors/102baseline warnings,
-no additions1:47.36;18current artifact pins,16retained unchanged. Independent Sol
-delta SOURCE/PREP accepted; exactremaining15/9descriptors/15methods PlanOnly
-zeroexec8.0423398s. Catalog1036/12718 and role10 retain2f0c provenance.
+Preserved unsuccessful receipts: d0f actual browser C4 coverage refusal;2f0c
+one-shot retriable-IO fixture (turn42, injection count unrecorded);897c console
+reserved-override refusal;56c3 backend fixture scalar-wrapper expectation. The
+last two fixture corrections assert exact cut/exception identity, not arbitrary
+exceptions, and preserve all rollback/revocation checks. Full raw is unchanged in
+`/workspace/tboe-linux-evidence-20261025/us4-self-healing/`, specifically build15–18
+and functional13–16; every command, log, TRX, pin and verification report stays
+outside checkout and GitHub. No raw or user saves were deleted.
 
-Corrected prepared-input fault1/1PASS62.2519876s/category54.9867616<180,
-TRXffae35a5a9b2f2c9e1c1c50d8b41841735abe0105e38e23e42c0e6d6efb4a149:
-cuts1, observedtrue, original/compensated6619bytes exact, turn41, ten roots and
-whole-turn marker absence/noC2 verified. The earlier retriable-IO fixture FAIL
-remains preserved: TRXe333eeb63d2601e4b8bd23bc67735f48c3326f7e93530874e74b61fcb38ad3ab.
-
-Actual browser1PASS94.7322602s<180, TRX
-5d2531316b24ff3cb3b0b760c4fe99d6474c33e01f72444b0fcaeb42968bdde7:
-real cancellation/confirmation/queue, d20=14/H3/II -> I1, paid OD6->4 once,
-History and original cleanup, unchanged schedule/world/LastTick, no natural cycle.
-Actual console1FAIL39.6999465s<180, TRX
-b20a3350ec8078a014def4fc70f86eb331d5877a4d663b3786cda0f8465eba7e:
-Snapshot override cannot change during reserved World validation. Paircomplete
-1PASS/1FAIL141.8144749s wall, no timeout/duplicates/both cleanuptrue;
-remaining12UNRUN. Browser shared handler is not an actual DOM/external GM proof.
-
-The console post-materialization entry reserves pending source and requires an
-already-null override. Completed-conflict validation then unconditionally calls
-UsePrevalidatedPendingTurnSnapshotScope(null), correctly rejected as mutation
-inside that reservation. Proposed bounded correction avoids only this redundant
-null-to-null scope when no override exists; all real replacement/withdrawal guards,
-current pending-source lookup, opening/final authentication and physical original
-reads stay. Independent DESIGN is pending; production is not changed yet. The
-actual console is causal RED. No fullDFR/T609/Mortal/Windows retry is released.
-Raw build16/functional14 stays outside checkout; no raw or saves are deleted.
-
-# Prepared-input fault fixture: terminal cut correction — WIP/UNCOMPILED
-
-2026-10-28 actual2f0c owning Integration137/Unit26 baseline warnings,0errors,
-no added warnings and18current DLL/PDB pins. Independent Astra/high production
-SOURCE and Sol/xhigh fixture SOURCE/PREP accepted; catalog1036/12718 and literal
-25cases/10descriptors/16methods PlanOnly zeroexec. Typed role10/10PASS11.1511718s
-(category4.6713401<60), TRX72437eb3cf6790d36ec56941251c0373b4ad14738c76b953a42ca4a42e62da02.
-Actual Engine fault1 FAIL105.2115489s/category89.8089846<180: expectedturn41,
-actual42; complete/no timeout/duplicates/both cleanuptrue. UI2/remaining12UNRUN.
-No positive UI qualification is inferred from its accepted turn.
-
-Root/Sol source trace found a fixture mismatch: the live publisher recovers the
-one-shot IOException, and its existing ordinary wrapper retries recovered IO.
-The disarmed hook then permits a lawful commit. The old receipt has no cut count,
-so injection is source-explained rather than directly established by that output.
-Change only the fixture exception to the existing nontransient InvalidOperation
-pattern; preserve the same precommit location, single cut, first-read latch and
-every rollback assertion. Print existing finite fields and assert the cut before
-turn41. Production and all guards remain unchanged; no new cache, hook or stack.
-
-Next: bounded delta SOURCE, fresh Integrationrefsfalse/current selected pins,
-exact remaining15/9descriptors/15methods PlanOnly/PREP, then fault1 -> UI2 ->12.
-Retain role10 and catalog with unchanged source/selectors/public ownership; other
-accepted lineages stay explicit. FullDFR/T609/Mortal/Windows remain separate HOLD.
-Raw build15/functional13 stays outside checkout; no raw or saves are deleted.
+World source-closure remains NOT PASS: six pre-existing stale pins are unchanged
+(BrowserOriginalAdmission, AcceptedTurnAndInkFeathers, EffectMaterialization,
+NpcWorldAndMeta, ResourceMaterialization, SpiritualWoundSourceAdmission). Only the
+independently reviewed AfterlifeSpiritualConflict pin was refreshed. The 66-entry
+baseline assessment is functional15/source-pin-baseline.json; no whole guard PASS
+or silent rebaseline is claimed. Track its separate review under T112-SOURCE-PINS.
+FullDFR/T609 and Mortal compatibility remain HOLD; Windows is deferred. The earlier
+DFR300.1806894s timeout, first guardian intermittent timeout and cross-OS DATA limit
+remain open. No new clean-restore qualification of this checkpoint is claimed.
+T093 guided spiritual diagnosis still needs the missing check/time rule clarified;
+known inspection/insufficient-tier feedback is not FR071 discovery completion.
 
 # Prepared input versus canonical rollback: bounded implementation — WIP/UNCOMPILED
 
