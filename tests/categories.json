@@ -2,6 +2,22 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "spiritual-natural-recovery-caller",
+  "responsibility": "One actual ordinary safe afterlife GameEngine turn without /лечить or wound command: tier0 rankI gains one natural point, a strict recover History result and one scheduler cycle without treatment attempt/draw or resource cost.",
+  "excludes": "This first causal caller does not qualify persistent-actor eligibility, lower-rank graphs, neighboring resource/art changes, fresh-process/provider/combat/catchup modes or held Mortal/T609/DFR work.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/ExplorerWoundSelfTreatmentTests.cs",
+    "BookOfEternityClient/Services/AfterlifeWoundHealingPlanner.cs"
+  ],
+  "related": [],
+  "requirements": { "frontendBuild": false, "exclusive": true, "ciRunner": "ubuntu-24.04" },
+  "timeoutMinutes": 3,
+  "expectedSeconds": null,
+  "selectors": [{ "project": "integration", "tests": [
+    "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.OrdinarySafeTurnRecoversWithoutTreatmentAttemptOrDraw"
+  ] }]
+},
+{
   "id": "spiritual-healing-graph-repair-observer",
   "responsibility": "One cheap real-main/physical-lease control: the graph fixture must process its first packet under a legitimate fresh lease, skip an unchanged handled packet while Main holds that lease without another lock-open, and refuse a changed second packet with full body before mutation permission.",
   "excludes": "No GameEngine/world bootstrap, healing publication, broad filesystem matrices, held Mortal runs or diagnostic framework.",

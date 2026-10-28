@@ -2,8 +2,8 @@
 
 Issue: #1536. Canonical requirements: FR-043A and FR-049–053; tasks T105–T107.
 This design follows the qualified self-treatment/browser/console/graph-repair
-slice. It grants no new runtime capability. The finite architectural decisions
-below are source-reviewed; final frozen-document acceptance precedes implementation.
+slice. It grants no new runtime capability. Independent Astra/high DESIGN accepted
+frozen8c4e955d3, and root accepted proceeding with the finite implementation plan.
 
 ## Behavior and existing machinery
 
@@ -95,12 +95,12 @@ resource/effect/registered outcomes of the ordinary action; self-only no-cost
 quartet/command exclusions are not a universal resource-change prohibition.
 Likewise, legitimate actor/profile art progression must compose with recovery
 through existing typed owner transitions, never be erased or admitted from an
-  unchecked caller root. Capture/pin complete actual B input bytes and retain
-  existing validated accepted owner/skill projections. Compare the protected
-  original wound/effect-owned semantics rather than requiring whole ordinary
-  profile/quartet bytes equal the signed baseline. Actor removal/termination/realm
-  transfer or changed wound/effect subgraphs require existing explicit owner/effect
-  ordering or refuse; they are not treated as harmless sibling progression.
+unchecked caller root. Capture/pin complete actual B input bytes and retain
+existing validated accepted owner/skill projections. Compare the protected
+original wound/effect-owned semantics rather than requiring whole ordinary
+profile/quartet bytes equal the signed baseline. Actor removal/termination/realm
+transfer or changed wound/effect subgraphs require existing explicit owner/effect
+ordering or refuse; they are not treated as harmless sibling progression.
 
 ## Alternatives and operation ownership
 

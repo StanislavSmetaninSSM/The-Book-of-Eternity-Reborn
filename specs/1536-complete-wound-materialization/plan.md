@@ -37,9 +37,10 @@ Finite independent Sol final33 OUTCOME accepted without findings. No accepted br
 repeat merely for assembly hashes. Continue T105/T106 ordinary safe-cycle natural
 recovery without treatment command/new attempt/die, including eligible persistent
 actors, on the existing source/stage/effect/common scheduler/History machinery.
-The bounded [ordinary natural recovery design](natural-recovery-design.md) is a
-WIP document under independent architectural review; no natural production/test
-implementation or new runtime has started at this checkpoint.
+The bounded [ordinary natural recovery design](natural-recovery-design.md) is
+accepted by independent Astra/high at8c4e. The [implementation plan](natural-recovery-plan.md)
+and initial ordinary caller scaffold are test-only UNCOMPILED/UNRUN. No natural
+production change or new runtime has started; singleton SOURCE/PREP is next.
 Natural recovery itself spends no resource; it must coexist with valid resource
 contributions from an ordinary action rather than inherit self-only cost bans.
 Full US4, helper/entities/combat, real provider/fresh process and retained Mortal/

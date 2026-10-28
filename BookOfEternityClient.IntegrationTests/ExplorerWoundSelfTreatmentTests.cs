@@ -20,6 +20,70 @@ public sealed class ExplorerWoundSelfTreatmentTests(ITestOutputHelper output)
     private const string Owner = "wound-guided-client";
 
     [Fact]
+    public async Task OrdinarySafeTurnRecoversWithoutTreatmentAttemptOrDraw()
+    {
+        await using var fixture = await HealingFixture.CreateAsync(1, 0, 20, stageRequest: false);
+        var original = Assert.Single((await fixture.ReadWoundsAsync()).Occurrences).Wound;
+        Assert.Equal(0, original.Recovery.CurrentStepProgress);
+        var diagnostics = new GameEngineTurnLifecycleTests.SpiritualLifecycleTestLogger();
+        TurnRequest? turn = null;
+        var responseWritten = false;
+        var runtime = GameEngineTurnLifecycleTests.CreateGameEngineRuntime(fixture.Files,
+            inputSource: new NoPlayerInput(diagnostics), logger: diagnostics,
+            finalizationHooks: new GameEngineSessionFinalizationHooks
+            {
+                AtCheckpointAsync = async checkpoint =>
+                {
+                    if (checkpoint != SessionFinalizationCheckpoint.TerminalWaitStarted || responseWritten) return;
+                    await using var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync();
+                    turn = JsonSerializer.Deserialize<TurnRequest>((await fixture.Files.ReadFileAsync(lease, "input/turn_request.json"))!,
+                        SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)!;
+                    Assert.Null(await fixture.Files.ReadFileBytesAsync(lease, AcceptedMechanicsPlan.WoundCommandPath));
+                    Assert.Null(await PendingPlayerActionService.ReadAsync(fixture.Files, lease));
+                    // Ordinary turn dice are unrelated to recovery; this fixture never
+                    // creates a separate healing request, attempt or retained draw.
+                    await WriteNativeCompletionAsync(fixture.Files, lease, turn);
+                    responseWritten = true;
+                }
+            });
+        try
+        {
+            runtime.GameLoop.SetSession("session_ordinary_spiritual_recovery", 42);
+            await runtime.StateManager.RefreshGameStateAsync();
+            await runtime.Engine.ProcessPlayerTurn("Остаться в безопасном месте и спокойно наблюдать за Морем Хаоса.");
+            Assert.True(responseWritten, "The ordinary action did not reach its native-shaped GM response.");
+            var wound = Assert.Single((await fixture.ReadWoundsAsync()).Occurrences).Wound;
+            Assert.Equal(original.WoundId, wound.WoundId);
+            Assert.Equal(1, wound.Severity.Rank);
+            Assert.Equal(1, wound.Recovery.CurrentStepProgress);
+            Assert.Equal(original.Care.LastAttemptId, wound.Care.LastAttemptId);
+            var history = await fixture.ReadHistoryAsync();
+            Assert.DoesNotContain(history.Transitions, t => t.AttemptId is not null || t.Kind == "treat");
+            var recovered = Assert.Single(history.Transitions, t => t.Kind == "recover");
+            var result = Assert.IsType<SpiritualHealingPersistedResult>(recovered.TransitionResult).ToCanonicalJson();
+            Assert.Equal("natural", result["mode"]!.GetValue<string>());
+            Assert.Null(result["request"]);
+            Assert.NotNull(turn);
+            var projection = Assert.IsType<JsonObject>(turn!.SpiritualHealing);
+            Assert.Equal("natural", projection["mode"]!.GetValue<string>());
+            Assert.Null(projection["attemptId"]);
+            Assert.Null(projection["roll"]);
+            var schedule = JsonNode.Parse((await fixture.Files.ReadFileAsync(ProgressionScheduleService.SchedulePath))!)!;
+            Assert.Equal(1, turn.ProgressionControl!.ChaosSeaCyclesExpectedThisTurn);
+            Assert.Equal(turn.ProgressionControl.NextChaosSeaTurnOrdinal, schedule["currentChaosSeaTurnOrdinal"]!.GetValue<int>());
+            foreach (var path in new[] { AcceptedMechanicsPlan.WoundCommandPath, ProgressionScheduleService.ReportPath,
+                         PendingPlayerActionService.PendingPath, LiveTurnPreparationService.PendingTurnSnapshotManifestPath })
+                Assert.Null(await fixture.Files.ReadFileBytesAsync(path));
+            fixture.AssertResourcesUnchanged();
+        }
+        finally
+        {
+            output.WriteLine(diagnostics.Describe());
+            await runtime.AudioService.DisposeAsync();
+        }
+    }
+
+    [Fact]
     public async Task HandledGraphRepairPacketNeedsNoPhysicalLeaseWhileMainHoldsIt()
     {
         const string path = "game_state/control/validation_repair_request.json";
