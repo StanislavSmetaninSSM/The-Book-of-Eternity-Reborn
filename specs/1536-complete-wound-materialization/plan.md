@@ -1,3 +1,50 @@
+# Prepared input versus canonical rollback: bounded implementation — WIP/UNCOMPILED
+
+2026-10-28: independent Astra source analysis accepts separate original/current
+command roles. Original marker equals source input/plan before-image and signed
+snapshot image; current command fingerprint belongs to the authenticated committed
+C2 layer and may differ after lawful counterharm. A global equality between them
+would break the accepted guaranteed/ordinary blocked path and is not implemented.
+The real Engine causal RED and guards2 GREEN remain preserved atd0f/c3c3.
+
+Current C4 correction partitions only the actual nonbaseline prepared command out
+of the unchanged generic canonical coverage check. Completed combat origin and
+fresh observed original read plus current authenticated authority payload prove
+exact tuple/token, bytes/hash mode, original path and absence of canonical backup
+role. One optional typed DATA member in the SAME C4 authority binds original image
+and physical signed snapshot witness, completed combat intent, original input/plan
+before-images, exact current publication command fingerprint and consumed path.
+All complete publication inputs/readback/current-owner fences stay. The existing
+compensation map still includes the original marker image in the same key order;
+ordinary canonical-marker and absent-command routes keep prior coverage. The full
+Engine pre-turn backup and general coverage helper are unchanged. Returning the
+already freshly validated snapshot from origin.RequireCurrent avoids a second
+source read solely to recover the checked bytes; existing callers still execute
+the same fresh checks. No cache, publisher, ledger or replay framework is added.
+
+Ten cheap typed role DATA controls reject baseline/backup/hash/alias/missing/legacy
+metadata; their valid DTO remains incapable of generic canonical coverage or live
+publication. One new actual Engine fault reuses current UI setup and portable
+LocalPublicationObserver: throw known IO at MemberPublished ONLY once marker is
+physically deleted, BEFORE commit. Trusted publisher recovers exact before-images.
+The FIRST postcut canonical read of the final reverse-restore member captures the
+marker's state after OUTER C4 compensation, before Engine full-turn rollback. Its
+result is latched even when absent. Final marker absence, turn41, unchanged10roots
+and noC2 prove the separate whole-turn outcome. No Windows-only physical hook or
+new hook is used. Postcommit read faults retain CSPU/unknown semantics and are not
+reclassified to obtain a green rollback result.
+
+Finite proposed selection: role10 -> Engine prepared rollback1 -> real UI2 ->
+untouched12 =25cases/10categories/10descriptors/16methods. Fresh owning Main/Support/
+Integration + Unitrefsfalse, selected pins, official catalog discovery/new ownership
+and exact PlanOnly precede runtime after bounded SOURCE/PREP. Guard2, backendpair5,
+data4, cheap32, ordinary1 and historical17 remain at their accepted lineages where
+source-equivalence holds; their branches do not execute the new prepared-role path.
+Current new C#/tests are UNCOMPILED/UNRUN; no actualUI/wholefeaturePASS is claimed.
+GM authoring is the already documented command/input separation, so no new GM
+field/example or player mechanic is introduced. Raw stays outside checkout; no
+old raw/user saves are deleted. FullDFR/T609/Mortal/Windows remain separate HOLD.
+
 # Engine entry guards GREEN; actual C4 prepared-input rollback role remains RED
 
 2026-10-28 d0f79aa fresh owning Main/Support/Integration0errors/137baselinewarnings

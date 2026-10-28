@@ -7,6 +7,30 @@ public partial class ValidationService
     internal sealed partial class SpiritualOriginalTurnCapture
     {
         /// <summary>
+        /// Detached compensation DATA for one signed preparation input, distinct from its current C2 command.
+        /// Only the completed original capture can include it in a publication authority.
+        /// </summary>
+        internal sealed record PreparedCombatCommandRollback(string SessionId, string RequestId,
+            string SnapshotToken, int Turn, string IntentFingerprint, string SnapshotPath,
+            CanonicalBeforeImage OriginalImage, string CurrentImageFingerprint)
+        {
+            /// <summary>Checks only declared DATA roles; it does not authenticate a payload or grant publication.</summary>
+            internal static bool HasExactPreparedRole(PendingTurnSnapshotAuthority.PendingTurnSnapshotAuthorityPayload payload)
+            {
+                const string path = AcceptedMechanicsPlan.WoundCommandPath;
+                return payload.SnapshotHashMode == PendingTurnSnapshotAuthority.ExactSnapshotHashMode &&
+                    payload.Files is not null && payload.SnapshotFileHashes is not null &&
+                    payload.RollbackBaselineFiles is not null && payload.RollbackBackups is not null && payload.RollbackBackupHashes is not null &&
+                    payload.Files.Keys.Contains(path, StringComparer.Ordinal) &&
+                    payload.SnapshotFileHashes.Keys.Contains(path, StringComparer.Ordinal) &&
+                    payload.Files.TryGetValue(path, out var snapshotPath) && PendingTurnSnapshotAuthority.IsSafeRelativePath(snapshotPath) &&
+                    payload.SnapshotFileHashes.TryGetValue(path, out var hash) && !string.IsNullOrWhiteSpace(hash) &&
+                    !payload.RollbackBaselineFiles.Contains(path, StringComparer.OrdinalIgnoreCase) &&
+                    !payload.RollbackBackups.ContainsKey(path) && !payload.RollbackBackupHashes.ContainsKey(path);
+            }
+        }
+
+        /// <summary>
         /// Transfers an exact completed C3 plan to one common cache without retaining executable owners.
         /// Current publication inputs remain separate from original planning and signed rollback images.
         /// </summary>
@@ -23,6 +47,7 @@ public partial class ValidationService
             private object? _cacheOwner;
             private bool _revoked;
             private readonly ProgressionScheduleService.CombatSchedulerOriginal? _combatSchedulerOriginal;
+            private readonly PreparedCombatCommandRollback? _preparedCommandRollback;
             internal bool HasCombatHealing => _combatSchedulerOriginal is not null;
 
             internal ProgressionScheduleService.CombatSchedulerOriginal ReadCombatSchedulerOriginal(
@@ -78,13 +103,16 @@ public partial class ValidationService
                 MortalLocationAcceptedTurnPlan? mortalLocationPlan,
                 SpiritualLiveWoundCompletion? liveWoundCompletion,
                 SpiritualCompletedConflictValidation completedConflictValidation,
-                ProgressionScheduleService.CombatSchedulerOriginal? combatSchedulerOriginal = null)
+                ProgressionScheduleService.CombatSchedulerOriginal? combatSchedulerOriginal = null,
+                PreparedCombatCommandRollback? preparedCommandRollback = null)
             {
                 if (!ReferenceEquals(issuanceKey, C4IssuanceKey))
                     throw new InvalidOperationException("Only the completed original capture can transfer publication.");
                 _fileSystem = fileSystem;
                 _input = input;
                 _combatSchedulerOriginal = combatSchedulerOriginal;
+                _preparedCommandRollback = preparedCommandRollback is null ? null : preparedCommandRollback with
+                { OriginalImage = new(preparedCommandRollback.OriginalImage.Existed, preparedCommandRollback.OriginalImage.Bytes) };
                 Plan = plan;
                 _mortalItemSnapshot = mortalItemSnapshot.Clone();
                 _mortalLocationPlan = CloneLocationPlan(mortalLocationPlan);
@@ -272,7 +300,7 @@ public partial class ValidationService
             internal bool HasValidSeal()
             {
                 lock (_gate)
-                    return !_revoked &&
+                    return !_revoked && HasPreparedCommandRollbackSeal() &&
                         (LiveWoundCompletion is null ? Plan.LiveWoundProofFingerprint is null :
                             LiveWoundCompletion.MatchesEffects(Plan.EffectPlan) &&
                             LiveWoundCompletion.ProofFingerprint == Plan.LiveWoundProofFingerprint) &&
@@ -293,6 +321,23 @@ public partial class ValidationService
                         .All(path => Plan.ConsumedPaths.Contains(path, StringComparer.Ordinal) &&
                             Plan.BeforeImages.ContainsKey(path) && _publicationInputs.ContainsKey(path) &&
                             _signedRollbackImages.ContainsKey(path));
+            }
+
+            private bool HasPreparedCommandRollbackSeal()
+            {
+                if (_preparedCommandRollback is not { } prepared) return true;
+                const string path = AcceptedMechanicsPlan.WoundCommandPath;
+                return _combatSchedulerOriginal is { } combat &&
+                    prepared.SessionId == _input.SessionId && prepared.RequestId == _input.RequestId &&
+                    prepared.SnapshotToken == _input.SnapshotToken && prepared.Turn == _input.Turn &&
+                    prepared.IntentFingerprint == combat.Intent.Fingerprint && combat.Intent.Matches(prepared.SessionId, prepared.RequestId, prepared.Turn) &&
+                    prepared.OriginalImage.Existed && prepared.OriginalImage.Bytes is not null &&
+                    _signedRollbackImages.TryGetValue(path, out var rollback) && SameExactImage(prepared.OriginalImage, rollback) &&
+                    _input.BeforeImages.TryGetValue(path, out var input) && SameExactImage(prepared.OriginalImage, input) &&
+                    Plan.BeforeImages.TryGetValue(path, out var original) && SameExactImage(prepared.OriginalImage, original) &&
+                    _publicationInputs.TryGetValue(prepared.SnapshotPath, out var signed) && SameExactImage(prepared.OriginalImage, signed) &&
+                    _publicationInputs.TryGetValue(path, out var current) && current.Fingerprint == prepared.CurrentImageFingerprint &&
+                    Plan.ConsumedPaths.Contains(path, StringComparer.Ordinal);
             }
 
             /// <summary>

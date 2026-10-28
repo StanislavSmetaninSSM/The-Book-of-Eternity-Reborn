@@ -113,9 +113,33 @@ public partial class ValidationService
                 var footprint = CanonicalStateNormalizer.NormalizerRollbackTrackedFiles
                     .Concat(planned.Plan.TouchedPaths).Concat(planned.Plan.ConsumedPaths)
                     .Concat(FixedOriginalOutputPaths).Distinct(StringComparer.Ordinal).ToArray();
+                PreparedCombatCommandRollback? preparedCommand = null;
+                const string commandPath = AcceptedMechanicsPlan.WoundCommandPath;
+                if (!manifest.RollbackBaselineFiles.Contains(commandPath, StringComparer.OrdinalIgnoreCase) &&
+                    manifest.Files.ContainsKey(commandPath))
+                {
+                    var payload = await _validator.LoadCurrentDetachedPendingTurnSnapshotAuthorityPayloadAsync(lease);
+                    if (_combatHealingOrigin is not { } origin || payload is null ||
+                        !PreparedCombatCommandRollback.HasExactPreparedRole(payload) ||
+                        payload.SessionId != SessionId || payload.RequestId != RequestId || payload.TurnNumber != _input.Turn ||
+                        payload.ManifestPayloadHash != _input.SnapshotToken ||
+                        payload.Files[commandPath] != manifest.Files[commandPath] ||
+                        payload.SnapshotFileHashes[commandPath] != manifest.SnapshotFileHashes[commandPath] ||
+                        !publication.TryGetValue(commandPath, out var currentCommand))
+                        return (null, [C4Issue("spiritual_c4_prepared_command_role_invalid", commandPath)]);
+                    var signed = origin.RequireCurrent(_validator._fs, lease);
+                    var image = new CanonicalBeforeImage(true, signed.ReadRequiredBytes(commandPath));
+                    if (!reduced.Reduction.Input.BeforeImages.TryGetValue(commandPath, out var inputImage) ||
+                        !SameExactImage(image, inputImage) || !planned.Plan.BeforeImages.TryGetValue(commandPath, out var planImage) ||
+                        !SameExactImage(image, planImage))
+                        return (null, [C4Issue("spiritual_c4_prepared_command_original_changed", commandPath)]);
+                    preparedCommand = new(SessionId, RequestId, _input.SnapshotToken, _input.Turn,
+                        origin.Intent.Fingerprint, payload.Files[commandPath], image, currentCommand.Fingerprint);
+                }
+                var canonicalFootprint = preparedCommand is null ? footprint : footprint.Where(path => path != commandPath);
                 if (!PendingTurnSnapshotAuthority.HasValidatedRollbackSnapshotCoverage(manifest,
                         static value => value.Files, static value => value.SnapshotFileHashes,
-                        static value => value.RollbackBaselineFiles, footprint, out var missing))
+                        static value => value.RollbackBaselineFiles, canonicalFootprint, out var missing))
                     return (null, [C4Issue("spiritual_c4_rollback_coverage_missing", missing)]);
                 var rollback = footprint.ToDictionary(path => path,
                     _ => new CanonicalBeforeImage(false, null), StringComparer.Ordinal);
@@ -152,7 +176,7 @@ public partial class ValidationService
                     return (null, [C4Issue("spiritual_c4_location_plan_unavailable")]);
                 var authority = new SpiritualC4PublicationAuthority(C4IssuanceKey, _validator._fs,
                     reduced.Reduction.Input, planned.Plan, publication, rollback, itemSnapshot, locationPlan, reduced.Reduction.LiveWoundCompletion,
-                    new SpiritualCompletedConflictValidation(C4IssuanceKey, this, planned.Plan), _combatHealingOrigin?.ExportSchedulerOriginal());
+                    new SpiritualCompletedConflictValidation(C4IssuanceKey, this, planned.Plan), _combatHealingOrigin?.ExportSchedulerOriginal(), preparedCommand);
                 var currentIssues = await authority.ValidateCurrentInputsAsync(_validator._fs, lease);
                 if (currentIssues.Count != 0)
                     return (null, currentIssues);

@@ -2,6 +2,20 @@
   "schemaVersion": 1,
   "selections": [
 {
+  "category": "spiritual-combat-prepared-rollback-role",
+  "reason": "Ten cheap typed cases distinguish exactly one prepared command input from canonical rollback metadata; valid role DATA still fails generic canonical coverage and never grants a completed owner.",
+  "contracts": [
+    "#1536 T095/T102/T103 distinct signed preparation input versus canonical before-turn state; atomic C4 and whole-turn compensation"
+  ]
+},
+{
+  "category": "spiritual-combat-engine-prepared-rollback",
+  "reason": "One actual browser-confirmed Engine turn faults the existing atomic batch after marker deletion but before commit, observes outer C4 compensation at its final reverse-restore read, then proves whole-turn rollback restores marker absence and exact canonical roots.",
+  "contracts": [
+    "#1536 T095/T102/T103 distinct signed preparation input versus canonical before-turn state; atomic C4 and whole-turn compensation"
+  ]
+},
+{
   "category": "spiritual-combat-healing-engine-command-guards",
   "reason": "The real Engine blanket command guard rejects a valid signed combat marker. Preserve terminal refusal for ordinary commands and changed marker bytes through the actual queue/snapshot/Engine path before accepting its narrow exemption.",
   "contracts": [

@@ -25,9 +25,45 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
     public Task CombatHealingEngineRejectsUnownedWoundCommands(string mutation) =>
         RunCombatHealingJourneyAsync(browser: true, invalidCommand: mutation);
 
-    private async Task RunCombatHealingJourneyAsync(bool browser, string? invalidCommand = null)
+    [Fact]
+    public Task CombatHealingEngineRestoresPreparedInputBeforeWholeTurnRollback() =>
+        RunCombatHealingJourneyAsync(browser: true, failPublication: true);
+
+    private async Task RunCombatHealingJourneyAsync(bool browser, string? invalidCommand = null, bool failPublication = false)
     {
         const string session = "session_guided_combat_healing";
+        FileSystemManager? observedFiles = null;
+        byte[]? preparedCommandBytes = null;
+        byte[]? atomicCompensationCommand = null;
+        var publicationArmed = false;
+        var publicationCuts = 0;
+        var compensationObserved = false;
+        var publicationFailure = new IOException("Combat prepared-input precommit publication failure.");
+        var publicationHooks = !failPublication ? null : new FileSystemManagerHooks
+        {
+            LocalPublicationObserver = (phase, _) =>
+            {
+                if (publicationArmed && phase == TrustedLocalPublicationPhase.MemberPublished &&
+                    !File.Exists(observedFiles!.ResolvePath(AcceptedMechanicsPlan.WoundCommandPath)))
+                {
+                    publicationArmed = false; publicationCuts++;
+                    throw publicationFailure; // Before commit: the existing publisher proves its rollback.
+                }
+            },
+            BeforeCanonicalReadOpenAsync = path =>
+            {
+                // C4 keeps the footprint order. This is the LAST reverse-restore
+                // member, after outer compensation handled the prepared input.
+                // Internal batch recovery performs physical reads, not this hook.
+                if (publicationCuts == 1 && !compensationObserved && path == CanonicalStateNormalizer.NormalizerRollbackTrackedFiles[0])
+                {
+                    compensationObserved = true;
+                    var full = observedFiles!.ResolvePath(AcceptedMechanicsPlan.WoundCommandPath);
+                    atomicCompensationCommand = File.Exists(full) ? File.ReadAllBytes(full) : null;
+                }
+                return Task.CompletedTask;
+            }
+        };
         // Same full unsigned initial/lore/profile/resource scaffold as the
         // existing accepted SpiritualContinuation Engine caller. Seed only before
         // the actual Engine's first snapshot; no second bootstrap or postaccept seed.
@@ -55,8 +91,9 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
             var pending = await new PendingTurnStateService(original.FileSystem, NullLogger<PendingTurnStateService>.Instance).GetOrCreateAsync();
             pending.PreGeneratedDices1d20 = new[] { 14, 5 }.Concat(Enumerable.Repeat(7, 18)).ToArray();
             await original.WriteExactJsonAsync(PendingTurnStateService.PendingDiceStatePath, JsonSerializer.Serialize(pending, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
-        });
+        }, hooks: publicationHooks);
         var files = context.FileSystem;
+        observedFiles = files;
         WoundPlayerReadContext initial;
         await using (var lease = await files.AcquireCanonicalWriteLeaseAsync())
             initial = Assert.IsType<WoundPlayerReadContext>(await WoundPlayerReadService.LoadContextAsync(files, lease));
@@ -87,6 +124,8 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                         Assert.Equal(turn.ProgressionControl!.CurrentChaosSeaTurnOrdinal, turn.ProgressionControl.NextChaosSeaTurnOrdinal);
                         Assert.Equal(0, turn.ProgressionControl.ChaosSeaCyclesExpectedThisTurn);
                         originalIntent = JsonNode.Parse((await files.ReadFileAsync(lease, AcceptedMechanicsPlan.WoundCommandPath))!)!.AsObject();
+                        if (failPublication)
+                            preparedCommandBytes = (await files.ReadFileBytesAsync(lease, AcceptedMechanicsPlan.WoundCommandPath))!;
                         Assert.Equal(SpiritualCombatHealingIntent.Kind, originalIntent["kind"]!.GetValue<string>());
                         if (browser)
                         {
@@ -127,6 +166,7 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                         }
                         await files.WriteFileAtomicBytesAsync(responseLease, AcceptedMechanicsPlan.WoundCommandPath, replaced);
                     }
+                    if (failPublication) publicationArmed = true;
                     wrote = true;
                 }
             });
@@ -138,7 +178,7 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
             foreach (var path in AfterlifeWoundTreatmentAuthority.CombatSourcePaths.Append(AcceptedMechanicsPlan.WoundCommandPath))
                 before[path] = await files.ReadFileBytesAsync(path);
             var unaccepted = new Dictionary<string, byte[]?>();
-            if (invalidCommand is not null)
+            if (invalidCommand is not null || failPublication)
                 foreach (var path in new[] { AfterlifeEntityProfileState.StatePath, WoundIdentityState.StatePath,
                     WoundHistoryState.HistoryPath, ResourceMaterializationContract.DefinitionsPath, ResourceMaterializationContract.StatePath,
                     ResourceMaterializationContract.HistoryPath, CanonicalResourceOwnerAuthorityComposer.AuthorityPath,
@@ -183,6 +223,19 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                 await runtime.Engine.ProcessPlayerTurn(action!);
             }
             Assert.True(wrote);
+            if (failPublication)
+            {
+                Assert.Equal(41, runtime.GameLoop.TurnNumber);
+                Assert.Equal(1, publicationCuts);
+                Assert.True(compensationObserved);
+                Assert.NotNull(preparedCommandBytes);
+                Assert.Equal(preparedCommandBytes, atomicCompensationCommand);
+                foreach (var pair in unaccepted) Assert.Equal(pair.Value, await files.ReadFileBytesAsync(pair.Key));
+                Assert.Null(await files.ReadFileBytesAsync(AcceptedMechanicsPlan.WoundCommandPath));
+                Assert.Null(await files.ReadFileBytesAsync(SpiritualWoundCaptureCheckpointState.StatePath));
+                Assert.Null(await files.ReadFileBytesAsync(SpiritualWoundDecisionPendingState.StatePath));
+                return;
+            }
             if (invalidCommand is not null)
             {
                 Assert.Equal(41, runtime.GameLoop.TurnNumber);

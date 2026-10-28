@@ -152,6 +152,14 @@ and grants no healing authority. Full origin admission inside Begin remains
 mandatory before resource execution; unknown, replaced and ordinary commands keep
 the terminal refusal even when intake fails to create a capture.
 
+C4 compensation distinguishes the signed preparation input from the canonical
+pre-turn baseline. The same authority retains its exact original marker image and
+a separate current committed command fingerprint; a lawful counterharm GM decision
+may replace the latter. Atomic publication failure restores the signed prepared
+input, while full Engine turn rollback restores its earlier absence. The general
+canonical coverage helper, ordinary marker role and postcommit uncertainty rules
+remain unchanged; prepared-role metadata alone never grants publication.
+
 ### Active-only draft, blocked overlap and durable outcome
 
 Use the already admitted player roll(s), not a new safe healing roll. Operation

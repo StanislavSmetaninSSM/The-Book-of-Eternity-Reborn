@@ -126,7 +126,7 @@ public partial class ValidationService
                     _snapshot.CoveredLogicalPaths.Contains(EffectAcceptedTurnInputComposer.WorldTimePath, StringComparer.Ordinal)
                         ? _snapshot.ReadRequiredBytes(EffectAcceptedTurnInputComposer.WorldTimePath) : null));
 
-            internal void RequireCurrent(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease)
+            internal PendingTurnSnapshotReadAuthority RequireCurrent(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease)
             {
                 var read = Read(files, lease);
                 if (!read.Success || read.Snapshot is not { } current || read.Evidence is not { } evidence ||
@@ -138,6 +138,7 @@ public partial class ValidationService
                     current.CoveredLogicalPaths.Any(path => !current.ReadRequiredBytes(path).AsSpan().SequenceEqual(_snapshot.ReadRequiredBytes(path))))
                     throw new InvalidDataException("Combat healing lost its actual signed original source.");
                 evidence.RequireCurrent(files, lease, current);
+                return current;
             }
 
             internal static PendingTurnSnapshotObservedReadResult Read(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease) =>

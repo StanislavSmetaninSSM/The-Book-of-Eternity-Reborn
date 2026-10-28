@@ -2,6 +2,55 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "expectedSeconds": null,
+  "id": "spiritual-combat-prepared-rollback-role",
+  "responsibility": "Ten cheap typed cases distinguish exactly one prepared command input from canonical rollback metadata; valid role DATA still fails generic canonical coverage and never grants a completed owner.",
+  "excludes": "No signature/owner authority from DTOs, actual publication, broad state suite or held workloads.",
+  "changeHints": [
+    "BookOfEternityClient/Services/Validation/ValidationService.SpiritualC4PublicationAuthority.cs"
+  ],
+  "timeoutMinutes": 1,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.SpiritualCombatPreparedRollbackRoleTests.PreparedRoleRequiresExactSignedInputMetadataWithoutCanonicalRole"
+      ]
+    }
+  ]
+},
+{
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "expectedSeconds": null,
+  "id": "spiritual-combat-engine-prepared-rollback",
+  "responsibility": "One actual browser-confirmed Engine turn faults the existing atomic batch after marker deletion but before commit, observes outer C4 compensation at its final reverse-restore read, then proves whole-turn rollback restores marker absence and exact canonical roots.",
+  "excludes": "No conversion of committed readback uncertainty into ordinary failure, new hooks/publisher, backend replay, full Engine suite or held workloads.",
+  "changeHints": [
+    "BookOfEternityClient/Services/Validation/ValidationService.SpiritualC4Publication.cs",
+    "BookOfEternityClient.IntegrationTests/ExplorerWoundSelfTreatmentTests.Combat.cs"
+  ],
+  "timeoutMinutes": 3,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.CombatHealingEngineRestoresPreparedInputBeforeWholeTurnRollback"
+      ]
+    }
+  ]
+},
+{
   "id": "spiritual-combat-healing-engine-command-guards",
   "responsibility": "Two actual browser-to-Engine refusal cases after genuine confirmation, signed combat marker and native-shaped output: a well-formed ordinary GM command and semantically identical changed marker bytes cannot enter C2 or mutate accepted wound/resource/scheduler state.",
   "excludes": "No full Engine owner, repeated accepted backend pair, actual external provider, T609/DFR/Mortal/Windows or invented diagnosis rule.",
