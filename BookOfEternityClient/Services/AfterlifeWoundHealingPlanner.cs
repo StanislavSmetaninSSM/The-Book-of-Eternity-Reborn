@@ -74,7 +74,7 @@ internal static partial class AfterlifeWoundHealingPlanner
             Scheduler = scheduler; SchedulerMutation = schedulerMutation;
             var report = StrictJsonAuthority.Deserialize<JsonObject>(CanonicalJsonUtf8.DecodeOneOptionalBom(
                 schedulerMutation.ReportBefore.Bytes ?? throw new InvalidDataException("Spiritual recovery has no admitted progression report.")),
-                new JsonSerializerOptions(), "admitted spiritual progression report");
+                new JsonSerializerOptions(), "admitted spiritual progression report")!;
             var reportBody = report["progressionProcessingReport"] as JsonObject ?? report;
             if (!string.Equals(reportBody["sessionId"]?.GetValue<string>(), input.Binding.SessionId, StringComparison.OrdinalIgnoreCase) ||
                 !string.Equals(reportBody["requestId"]?.GetValue<string>(), input.Binding.RequestId, StringComparison.OrdinalIgnoreCase) ||

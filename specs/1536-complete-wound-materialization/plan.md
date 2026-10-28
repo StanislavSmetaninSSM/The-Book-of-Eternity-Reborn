@@ -1,5 +1,18 @@
 # US4 safe self-treatment — active functional work, 2026-10-28
 
+First full-profile build on de192bd75 passed: owning Integration/Main/Support
+0 errors, 138 warnings, 4:08.64; Unit refsfalse 0 errors, 26 warnings, 1:09.28.
+One introduced CS8602 at Planner78 is recorded separately from baseline warnings:
+StrictJsonAuthority.Deserialize has a nullable annotation, while this constructor
+receives the already admitted scheduler mutation's required ReportBefore object.
+A null-forgiving annotation now expresses that proved invariant; no predicate,
+read, exception branch or emitted runtime operation is added/removed. The same
+actual report bytes and tuple checks remain. No 17-case PlanOnly/runtime started,
+so no new runtime retention or blanket uncompiled PASS is claimed. Narrow delta
+SOURCE must precede a warning-clean owning rebuild and Unit refsfalse, then the
+already accepted exact 17-case sequence. Earlier logs remain external under
+spiritual-aid-profile-build-1 and spiritual-aid-profile-unit-build-1.
+
 Coherent full-profile correction is ready for finite SOURCE/PREP, all new code
 UNCOMPILED/UNRUN. The same locality Fact now exercises real automatic Guardian
 healing-art H0→H1 from admitted report income12/cost10, preserves signed H0 recovery
