@@ -329,6 +329,39 @@ public partial class CanonicalStateNormalizer
                 if (!ExactBytes(await _fs.ReadFileBytesAsync(_writeLease, change.RelativePath), change.After))
                     throw new InvalidDataException("Spiritual common publication readback differs: " + change.RelativePath);
         }
+        else if (spiritualPublicationReceipt?.Authority.HasCombatHealing == true)
+        {
+            var scheduler = new ProgressionScheduleService(_fs,
+                Microsoft.Extensions.Logging.Abstractions.NullLogger<ProgressionScheduleService>.Instance);
+            var mutation = await scheduler.PrepareCombatOutcomeMutationAsync(_writeLease, spiritualPublicationReceipt.Authority);
+            scheduler.ClaimSpiritualTreatmentMutation(_writeLease, mutation);
+            var changes = new List<CanonicalLocalFileChange>();
+            foreach (var pair in writes.OrderBy(p => p.Key, StringComparer.Ordinal))
+            {
+                if (pair.Key is ProgressionScheduleService.SchedulePath or ProgressionScheduleService.ReportPath or EffectAcceptedTurnInputComposer.WorldTimePath)
+                    throw new InvalidDataException("Combat cannot compose a separate world-cycle writer.");
+                var root = exactItemPublicationAfterImages.TryGetValue(pair.Key, out var exactRoot) ? exactRoot : pair.Value;
+                changes.Add(new(pair.Key, await _fs.ReadFileBytesAsync(_writeLease, pair.Key),
+                    MortalQteDecisionPublication.SerializePublicationRoot(root)));
+            }
+            foreach (var path in deletePaths)
+            {
+                if (writes.ContainsKey(path) || path is ProgressionScheduleService.SchedulePath or ProgressionScheduleService.ReportPath or EffectAcceptedTurnInputComposer.WorldTimePath)
+                    throw new InvalidDataException("Combat has a conflicting consumed member.");
+                changes.Add(new(path, await _fs.ReadFileBytesAsync(_writeLease, path), null));
+            }
+            var original = spiritualPublicationReceipt.Authority.ReadCombatSchedulerOriginal(_fs, _writeLease);
+            changes.Add(new(ProgressionScheduleService.SchedulePath, mutation.ScheduleBefore.Bytes, mutation.ScheduleAfter.Bytes));
+            changes.Add(new(ProgressionScheduleService.ReportPath, mutation.ReportBefore.Bytes, mutation.ReportAfter.Bytes));
+            changes.Add(new(EffectAcceptedTurnInputComposer.WorldTimePath, original.WorldTime.Bytes, original.WorldTime.Bytes));
+            retainedPublicationBeforeImages = await CaptureRetainedPublicationAgreementBeforeImagesAsync(plan, writes.Keys, deletePaths);
+            await _fs.VerifySourceDataAsync(_writeLease);
+            _fs.RequireCommittedLocalPublication(await _fs.PublishLocalFilesAsync(_writeLease, changes));
+            spiritualBatchCommitted = true;
+            foreach (var change in changes)
+                if (!ExactBytes(await _fs.ReadFileBytesAsync(_writeLease, change.RelativePath), change.After))
+                    throw new InvalidDataException("Combat common publication differs: " + change.RelativePath);
+        }
         else if (mortalQtePublication)
         {
             using var innerTiming6 = _fs.MeasureOperation("MechanicsPublish.PrepareBeforeImages");
@@ -420,7 +453,7 @@ public partial class CanonicalStateNormalizer
         if (spiritualPublicationReceipt is not null)
         {
             RequireCurrentSpiritualPublication(spiritualPublicationReceipt, plan);
-            await ValidatePublishedSpiritualReceiptAsync(plan);
+            await ValidatePublishedSpiritualReceiptAsync(plan, spiritualPublicationReceipt);
         }
         spiritualHealing?.MarkPublished();
         return plan;

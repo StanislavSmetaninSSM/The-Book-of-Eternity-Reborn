@@ -82,19 +82,21 @@ internal sealed class SpiritualCombatHealingIntent
         selection.Aid is null && Selection == selection && JsonNode.DeepEquals(_root["progressionControl"],
             JsonSerializer.SerializeToNode(context.Progression));
 
-    internal static bool IsKind(JsonObject root) => Text(root, "kind") == Kind;
+    internal static bool IsKind(JsonObject root) => root["kind"] is JsonValue value && value.TryGetValue<string>(out var kind) && kind == Kind;
 
-    internal JsonObject CreateGmProjection(AfterlifeWoundTreatmentAuthority.SelectedWoundSourceData data) => new()
+    internal JsonObject CreateGmProjection(AfterlifeWoundTreatmentAuthority.SelectedWoundSourceData data) => CreateGmProjection(data.Wound, data.Source);
+
+    internal JsonObject CreateGmProjection(WoundMaterializationEnvelope wound, SpiritualHealingPreparedSource source) => new()
     {
         ["schemaVersion"] = 1, ["mode"] = "combat_self", ["intentFingerprint"] = Fingerprint,
         ["operationType"] = AfterlifeActionCostRules.SpiritualHealingOperation, ["conflictId"] = ConflictId,
-        ["nextExchangeOrdinal"] = NextExchangeOrdinal, ["woundId"] = WoundId, ["woundName"] = data.Wound.Display.Name,
-        ["severityRank"] = data.Wound.Severity.Rank, ["healingSource"] = JsonSerializer.SerializeToNode(data.Source),
-        ["possibleDestinationGraphs"] = new JsonArray(Enumerable.Range(1, data.Wound.Severity.Rank - 1)
+        ["nextExchangeOrdinal"] = NextExchangeOrdinal, ["woundId"] = WoundId, ["woundName"] = wound.Display.Name,
+        ["severityRank"] = wound.Severity.Rank, ["healingSource"] = JsonSerializer.SerializeToNode(source),
+        ["possibleDestinationGraphs"] = new JsonArray(Enumerable.Range(1, wound.Severity.Rank - 1)
             .Select(rank => (JsonNode)new JsonObject
             {
                 ["stageRef"] = SpiritualHealingRequestProjection.GraphRef(Fingerprint, WoundId, rank),
-                ["severityRank"] = rank, ["complications"] = SpiritualHealingRequestProjection.Complications(Fingerprint, data.Wound)
+                ["severityRank"] = rank, ["complications"] = SpiritualHealingRequestProjection.Complications(Fingerprint, wound)
             }).ToArray())
     };
 

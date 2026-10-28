@@ -48,6 +48,8 @@ internal static partial class AfterlifeWoundTreatmentAuthority
                     sources.Add(new(path, new(bytes is not null, bytes), null));
                 }
             }
+            if (sources.Single(s => s.Path == ProgressionScheduleService.ReportPath).Image.Existed)
+                return Failure("progression_report_conflict");
             if (SpiritualTreatmentParticipation.HasUnsettledChange(sources.Single(s => s.Path == WoundCarrierCatalog.AfterlifeProfilesPath).Root))
                 return Failure("participation_change_unsupported");
             var selected = PrepareSelectedWoundSource(selection, sources, "chaos_sea");
@@ -108,6 +110,8 @@ internal static partial class AfterlifeWoundTreatmentAuthority
                 ? StrictJsonAuthority.Deserialize<JsonObject>(CanonicalJsonUtf8.DecodeOneOptionalBom(bytes), new JsonSerializerOptions(), path) : null;
             sources.Add(new(path, new(bytes is not null, bytes), root));
         }
+        if (sources.Single(s => s.Path == ProgressionScheduleService.ReportPath).Image.Existed)
+            throw new InvalidDataException("Combat original cannot retain a safe-cycle report.");
         var rootIntent = intent.Root;
         var expected = rootIntent["sourceImages"]!.AsArray();
         if (sources.Where((s, i) => expected[i]!["fingerprint"]!.GetValue<string>() != s.Image.Fingerprint).Any())

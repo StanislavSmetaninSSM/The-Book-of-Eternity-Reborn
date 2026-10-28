@@ -31,6 +31,12 @@ public partial class ValidationService
             internal IReadOnlyList<int> AcceptedDice => _snapshot.AcceptedD20EventValues;
             private readonly PendingTurnSnapshotReadAuthority _snapshot = snapshot;
 
+            internal ProgressionScheduleService.CombatSchedulerOriginal ExportSchedulerOriginal() => new(Intent,
+                new(true, _snapshot.ReadRequiredBytes(ProgressionScheduleService.SchedulePath)),
+                new(false, null), new(_snapshot.CoveredLogicalPaths.Contains(EffectAcceptedTurnInputComposer.WorldTimePath, StringComparer.Ordinal),
+                    _snapshot.CoveredLogicalPaths.Contains(EffectAcceptedTurnInputComposer.WorldTimePath, StringComparer.Ordinal)
+                        ? _snapshot.ReadRequiredBytes(EffectAcceptedTurnInputComposer.WorldTimePath) : null));
+
             internal void RequireCurrent(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease)
             {
                 var read = Read(files, lease);

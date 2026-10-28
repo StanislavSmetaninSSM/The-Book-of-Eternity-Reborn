@@ -1,3 +1,4 @@
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using static BookOfEternityClient.Services.SpiritualWoundStateJson;
 
@@ -78,6 +79,50 @@ internal sealed partial class SpiritualWoundOpportunityReceiptState
                     Require(Integer(bound["binding"]!["continuationGeneration"]) == 1 && Integer(bound["binding"]!["waveOrdinal"]) == 0,
                         "Counterharm and healing are one eligible wave.");
             }
+        }
+    }
+}
+
+internal sealed partial class SpiritualWoundOpportunityReceiptState
+{
+    internal bool HasCombatHealing => _root["healingSources"] is JsonArray;
+
+    // The enclosing parser already checked source/outcome bijection and every
+    // closed calculation. These queries return only detached comparison DATA.
+    internal JsonObject? ReadCombatOutcome(string sessionId, string requestId, int turn)
+    {
+        if (_root["healingSources"] is not JsonArray sources) return null;
+        var matching = sources.OfType<JsonObject>().Where(row =>
+            Text(row["witness"]!["sessionId"]) == sessionId && Text(row["witness"]!["requestId"]) == requestId &&
+            Integer(row["witness"]!["turn"]) == turn).ToArray();
+        if (matching.Length == 0) return null;
+        Require(matching.Length == 1, "Ambiguous accepted combat healing request.");
+        var source = matching[0];
+        var outcome = _root["healingDecisions"]!.AsArray().OfType<JsonObject>().Single(d =>
+            Text(d["outcome"]!["sourceId"]) == Text(source["witness"]!["sourceId"]));
+        return new JsonObject { ["instanceId"] = source["instanceId"]!.DeepClone(), ["witness"] = source["witness"]!.DeepClone(),
+            ["turnEvidence"] = source["turnEvidence"]!.DeepClone(), ["outcome"] = outcome["outcome"]!.DeepClone() };
+    }
+
+    internal void RequireCombatHistoryResourceAgreement(WoundHistoryState history, ResourceHistoryState resources)
+    {
+        if (_root["healingSources"] is not JsonArray sourceRows) return;
+        var sources = sourceRows.OfType<JsonObject>().ToDictionary(s => Text(s["witness"]!["sourceFingerprint"]), StringComparer.Ordinal);
+        var byId = sourceRows.OfType<JsonObject>().ToDictionary(s => Text(s["witness"]!["sourceId"]), StringComparer.Ordinal);
+        var results = history.Transitions.Select(t => t.TransitionResult).OfType<SpiritualCombatHealingPersistedResult>().ToArray();
+        foreach (var result in results) Require(sources.ContainsKey(result.SourceFingerprint), "Combat History result lost its mandatory durable source/outcome.");
+        foreach (var row in _root["healingDecisions"]!.AsArray().OfType<JsonObject>())
+        {
+            var outcome = Object(row["outcome"]); var source = Object(byId[Text(outcome["sourceId"])]["witness"]);
+            var spend = Object(outcome["resourceTransition"]).Deserialize<ResourceTransition>()!;
+            var paid = resources.Transitions.Where(t => t.OriginKind == "afterlife_cost" && t.OriginId == Text(source["exchangeId"]) &&
+                t.Coordinate == spend.Coordinate && t.Operation == ResourceTransitionOperation.Spend && t.Turn == Integer(source["turn"])).ToArray();
+            Require(paid.Length == 1 && JsonNode.DeepEquals(System.Text.Json.JsonSerializer.SerializeToNode(paid[0]), outcome["resourceTransition"]),
+                "Combat outcome lost its exact once-paid resource History transition.");
+            var actual = results.Where(r => r.SourceFingerprint == Text(source["sourceFingerprint"])).ToArray();
+            if (Text(outcome["disposition"]) == "blocked") Require(actual.Length == 0, "Blocked combat outcome fabricated wound stages.");
+            else Require(actual.Length == 1 && JsonNode.DeepEquals(actual[0].ToCanonicalJson(), outcome["result"]),
+                "Combat outcome lost its actual wound History result.");
         }
     }
 }

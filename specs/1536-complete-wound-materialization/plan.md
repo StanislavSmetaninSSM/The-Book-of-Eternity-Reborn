@@ -1,3 +1,29 @@
+# Combat settled / no-op source WIP — UNCOMPILED/UNRUN, 2026-10-28
+
+The written C4 bridge now carries detached scheduler original images only from the
+actual completed combat capture. The existing scheduler mints its exact no-op on
+the current publication lease; the common writer publishes the same mechanics
+batch plus unchanged schedule/world and absent-report members with exact before
+images/readback. It neither calls ordinary BuildControl nor serializes a new
+LastUpdatedUtc. No-op mutation is unavailable from a caller's zero-count DTO.
+
+A strict durable reader now checks the existing healing ledger against wound
+History and the once-paid typed resource History, original control/full projection
+(and actual intent/token for source-bound/browser calls), consumed-input absence,
+current wound/identity/history/resource agreement and exact signed schedule/world
+bytes. Resolved results require actual History; blocked permits only separately
+receipted counterharm and preserves LastTickKey. Ordinary post-accept validation/
+Apply and retained browser settlement use that same proof. Safe controls avoid
+the new combat request read before it could add unused work. Required report
+absence is checked at staging and actual-original admission. Standalone selected-
+die checking now also refuses explicit discarded/unknown normal-roll markers.
+
+Still missing: meaningful causal paired/healed/no-improvement/counterharm/omission/
+rollback controls, old injury-v1 actual-pair regression, actual console/browser
+journeys and GM contracts/examples/manifest guards. No combat production has been
+compiled or run, and this WIP is not SOURCE/PREP or runtime acceptance. The final
+coherent selection will follow actual changed consumers, not blanket prior runs.
+
 # Combat paired decision / ledger WIP — UNCOMPILED/UNRUN, 2026-10-28
 
 Closed pending schema2 and its first source composition are now written. The same

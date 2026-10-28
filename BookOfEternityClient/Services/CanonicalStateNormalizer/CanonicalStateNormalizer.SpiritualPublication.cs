@@ -1,3 +1,4 @@
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using SpiritualPublicationAuthority = BookOfEternityClient.Services.ValidationService.SpiritualOriginalTurnCapture.SpiritualC4PublicationAuthority;
 using SpiritualPublicationReceipt = BookOfEternityClient.Services.ValidationService.SpiritualOriginalTurnCapture.SpiritualC4PublicationReceipt;
@@ -221,7 +222,7 @@ public partial class CanonicalStateNormalizer
     /// <param name="plan">
     /// Completed plan whose receipt and canonical images have already been written and read back.
     /// </param>
-    private async Task ValidatePublishedSpiritualReceiptAsync(AcceptedMechanicsPlan plan)
+    private async Task ValidatePublishedSpiritualReceiptAsync(AcceptedMechanicsPlan plan, SpiritualPublicationReceipt receipt)
     {
         const string path = SpiritualWoundOpportunityReceiptState.StatePath;
         if (!plan.OwnerCompanionAfterImages.TryGetValue(path, out var expected))
@@ -245,6 +246,15 @@ public partial class CanonicalStateNormalizer
                     transition.Turn != row["binding"]!["turn"]!.GetValue<int>())
                     throw new InvalidDataException("Spiritual receipt does not match its published wound transition.");
             }
+        }
+        if (receipt.Authority.HasCombatHealing)
+        {
+            var original = receipt.Authority.ReadCombatSchedulerOriginal(_fs, _writeLease!);
+            var binding = receipt.Authority.Binding;
+            var control = original.Intent.Root["progressionControl"]!.Deserialize<BookOfEternityClient.Models.ProgressionControl>()!;
+            if (!await ProgressionScheduleService.IsPublishedSpiritualCombatCoreAsync(control, binding.SessionId, binding.RequestId,
+                binding.Turn, path => _fs.ReadFileBytesAsync(_writeLease!, path), binding.SnapshotToken, original.Intent.Root))
+                throw new InvalidDataException("Combat common publication lost its exact original/ledger/History/scheduler agreement.");
         }
         foreach (var consumed in new[]
         {

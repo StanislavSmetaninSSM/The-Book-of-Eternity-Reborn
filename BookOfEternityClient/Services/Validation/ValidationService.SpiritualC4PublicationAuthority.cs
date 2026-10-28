@@ -22,6 +22,20 @@ public partial class ValidationService
             private readonly object _gate = new();
             private object? _cacheOwner;
             private bool _revoked;
+            private readonly ProgressionScheduleService.CombatSchedulerOriginal? _combatSchedulerOriginal;
+            internal bool HasCombatHealing => _combatSchedulerOriginal is not null;
+
+            internal ProgressionScheduleService.CombatSchedulerOriginal ReadCombatSchedulerOriginal(
+                FileSystemManager files, FileSystemManager.CanonicalWriteLease lease)
+            {
+                files.EnsureCanonicalWriteLeaseActive(lease);
+                if (!ReferenceEquals(files, _fileSystem) || !HasValidSeal() || _combatSchedulerOriginal is not { } original ||
+                    !original.Intent.Matches(_input.SessionId, _input.RequestId, _input.Turn))
+                    throw new InvalidDataException("A scheduler no-op requires its exact actual completed combat owner.");
+                return new(original.Intent, new(original.Schedule.Existed, original.Schedule.Bytes),
+                    new(original.Report.Existed, original.Report.Bytes), new(original.WorldTime.Existed, original.WorldTime.Bytes));
+            }
+
 
             /// <summary>
             /// Retains the exact immutable completion after its original capture proves every input.
@@ -63,12 +77,14 @@ public partial class ValidationService
                 MortalItemAcceptedTurnNormalizationSnapshot mortalItemSnapshot,
                 MortalLocationAcceptedTurnPlan? mortalLocationPlan,
                 SpiritualLiveWoundCompletion? liveWoundCompletion,
-                SpiritualCompletedConflictValidation completedConflictValidation)
+                SpiritualCompletedConflictValidation completedConflictValidation,
+                ProgressionScheduleService.CombatSchedulerOriginal? combatSchedulerOriginal = null)
             {
                 if (!ReferenceEquals(issuanceKey, C4IssuanceKey))
                     throw new InvalidOperationException("Only the completed original capture can transfer publication.");
                 _fileSystem = fileSystem;
                 _input = input;
+                _combatSchedulerOriginal = combatSchedulerOriginal;
                 Plan = plan;
                 _mortalItemSnapshot = mortalItemSnapshot.Clone();
                 _mortalLocationPlan = CloneLocationPlan(mortalLocationPlan);

@@ -142,8 +142,14 @@ internal sealed class SpiritualCombatHealingPersistedResult : WoundTransitionRes
             resolution.Resolution is not { } resolved || !resolved.Calculation.HasSufficientTier ||
             !JsonNode.DeepEquals(root["calculation"], JsonSerializer.SerializeToNode(resolved.Calculation)))
             throw new InvalidDataException("Combat calculation differs from admitted player dice/source.");
-        var chosen = claim.Count == 1 ? claim[0]!.AsObject() : claim.OfType<JsonObject>().Single(row =>
-            string.Equals(row["selection"]?.GetValue<string>(), "selected", StringComparison.OrdinalIgnoreCase));
+        var explicitSelection = claim.OfType<JsonObject>().Any(row => !string.IsNullOrWhiteSpace(row["selection"]?.GetValue<string>()));
+        var selected = claim.OfType<JsonObject>().Where(row =>
+            string.Equals(row["selection"]?.GetValue<string>(), "selected", StringComparison.OrdinalIgnoreCase)).ToArray();
+        if (explicitSelection && claim.OfType<JsonObject>().Any(row =>
+                !new[] { "selected", "discarded" }.Contains(row["selection"]?.GetValue<string>(), StringComparer.OrdinalIgnoreCase)) ||
+            !explicitSelection && claim.Count != 1 || explicitSelection && selected.Length != 1)
+            throw new InvalidDataException("Combat audit must select exactly one die with the admitted closed marker vocabulary.");
+        var chosen = explicitSelection ? selected[0] : claim[0]!.AsObject();
         if (Number(chosen, "value") != resolved.Calculation.Input.NaturalRoll || claim.Count > 1 &&
             claim.OfType<JsonObject>().Where(row => !ReferenceEquals(row, chosen)).Any(row =>
                 !string.Equals(row["selection"]?.GetValue<string>(), "discarded", StringComparison.OrdinalIgnoreCase)))

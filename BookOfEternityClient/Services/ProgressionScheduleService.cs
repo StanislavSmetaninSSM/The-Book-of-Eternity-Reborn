@@ -597,7 +597,7 @@ public partial class ProgressionScheduleService
             return issues;
         try
         {
-            if (await IsPublishedSpiritualCycleAsync(control)) return issues;
+            if (await IsPublishedSpiritualCycleAsync(control) || await IsPublishedSpiritualCombatAsync(control)) return issues;
         }
         catch (Exception failure) when (failure is InvalidDataException or JsonException or InvalidOperationException)
         {
@@ -643,7 +643,7 @@ public partial class ProgressionScheduleService
             return;
         }
 
-        if (await IsPublishedSpiritualCycleAsync(control)) return;
+        if (await IsPublishedSpiritualCycleAsync(control) || await IsPublishedSpiritualCombatAsync(control, requirePublished: true)) return;
 
         _ = await EnsureInitializedAsync();
         var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();

@@ -70,3 +70,38 @@ public partial class ProgressionScheduleService
         return true;
     }
 }
+
+public partial class ProgressionScheduleService
+{
+    // Comparison images can be copied, but only the actual private C4 authority
+    // is accepted by the scheduler's mutation factory.
+    internal sealed record CombatSchedulerOriginal(SpiritualCombatHealingIntent Intent,
+        CanonicalBeforeImage Schedule, CanonicalBeforeImage Report, CanonicalBeforeImage WorldTime);
+
+    internal async Task<AcceptedTurnOutcomeMutation> PrepareCombatOutcomeMutationAsync(
+        FileSystemManager.CanonicalWriteLease lease,
+        ValidationService.SpiritualOriginalTurnCapture.SpiritualC4PublicationAuthority authority)
+    {
+        var original = authority.ReadCombatSchedulerOriginal(_fs, lease);
+        var before = new Dictionary<string, CanonicalBeforeImage>(StringComparer.Ordinal)
+        {
+            [SchedulePath] = original.Schedule, [ReportPath] = original.Report,
+            [EffectAcceptedTurnInputComposer.WorldTimePath] = original.WorldTime
+        };
+        foreach (var (path, image) in before)
+        {
+            var actual = await _fs.ReadFileBytesAsync(lease, path);
+            if (new CanonicalBeforeImage(actual is not null, actual).Fingerprint != image.Fingerprint)
+                throw new InvalidDataException("Combat scheduler source changed: " + path);
+        }
+        var schedule = StrictJsonAuthority.Deserialize<JsonObject>(CanonicalJsonUtf8.DecodeOneOptionalBom(original.Schedule.Bytes!),
+            new JsonSerializerOptions(), "combat original schedule");
+        if (original.Report.Existed || !TryBuildSpiritualCombatControl(schedule, original.WorldTime.Bytes, out var control) ||
+            !original.Intent.IsBound(new(original.Intent.Root["sessionId"]!.GetValue<string>(),
+                original.Intent.Root["requestId"]!.GetValue<string>(), original.Intent.Root["turn"]!.GetValue<int>(), control!), original.Intent.Selection))
+            throw new InvalidDataException("The signed combat scheduler basis is not an exact no-cycle control.");
+        return new(_fs, lease, _acceptedTurnMutationCapability, original.Schedule, original.Report,
+            original.Schedule, original.Report, CanonicalJsonUtf8.DecodeOneOptionalBom(original.Schedule.Bytes!), null,
+            JsonSerializer.Serialize(control, JsonOpts));
+    }
+}

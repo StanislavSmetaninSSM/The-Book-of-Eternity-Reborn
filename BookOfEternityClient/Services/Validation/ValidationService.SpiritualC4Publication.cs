@@ -152,7 +152,7 @@ public partial class ValidationService
                     return (null, [C4Issue("spiritual_c4_location_plan_unavailable")]);
                 var authority = new SpiritualC4PublicationAuthority(C4IssuanceKey, _validator._fs,
                     reduced.Reduction.Input, planned.Plan, publication, rollback, itemSnapshot, locationPlan, reduced.Reduction.LiveWoundCompletion,
-                    new SpiritualCompletedConflictValidation(C4IssuanceKey, this, planned.Plan));
+                    new SpiritualCompletedConflictValidation(C4IssuanceKey, this, planned.Plan), _combatHealingOrigin?.ExportSchedulerOriginal());
                 var currentIssues = await authority.ValidateCurrentInputsAsync(_validator._fs, lease);
                 if (currentIssues.Count != 0)
                     return (null, currentIssues);

@@ -462,6 +462,14 @@ public partial class GameEngine
         var request = StrictJsonAuthority.Deserialize<TurnRequest>(staged.RequestJson, JsonOpts, "accepted browser healing request")!;
         var source = StrictJsonAuthority.Deserialize<JsonObject>(CanonicalJsonUtf8.DecodeOneOptionalBom(
             Convert.FromBase64String(staged.SpiritualWoundRequestBytesBase64!)), JsonOpts, "accepted original healing source")!;
+        if (SpiritualCombatHealingIntent.IsKind(source))
+        {
+            if (request.ProgressionControl is null || !await ProgressionScheduleService.IsPublishedSpiritualCombatCoreAsync(
+                request.ProgressionControl, manifest.SessionId, manifest.RequestId, manifest.TurnNumber, read,
+                manifest.ManifestPayloadHash, source, request.SpiritualHealing))
+                throw new InvalidDataException(BrowserRecoveryMessage);
+            return;
+        }
         if (request.ProgressionControl is null || !await ProgressionScheduleService.IsPublishedSpiritualCycleCoreAsync(
                 request.ProgressionControl, manifest.SessionId, manifest.RequestId, manifest.TurnNumber, read,
                 manifest.ManifestPayloadHash, source))
