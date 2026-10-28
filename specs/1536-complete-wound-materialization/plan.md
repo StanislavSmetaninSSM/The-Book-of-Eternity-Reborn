@@ -8,7 +8,12 @@ Stage/B/History/common publication and console/browser workflows. Provider-offer
 facts are not player consent. First scope is free private safe Chaos cooperation,
 not US6 public/paid service. Bounded independent design recommendation is applied;
 freeze/readback precedes causal contract TDD and coherent implementation.
-All new reverse code/runtime remains UNWRITTEN/UNRUN. Existing limits remain open.
+The first causal existing-codec singleton is scaffolded and UNCOMPILED/UNRUN;
+expected RED is the current closed v1 parser refusing the lawful schema2 offer.
+Its later record/no-player-consent/condition assertions remain unqualified.
+Production is unchanged; SOURCE/PREP must release Unit refsfalse then exact1/1
+PlanOnly and one RED-only category spiritual-guardian-offer-contract/60.
+All reverse implementation/runtime remains open. Existing limits remain open.
 
 # US4 safe self-treatment — active functional work, 2026-10-28
 

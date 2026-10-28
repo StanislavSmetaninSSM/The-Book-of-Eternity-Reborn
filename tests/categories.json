@@ -224,6 +224,17 @@
   ] }]
 },
 {
+  "id": "spiritual-guardian-offer-contract",
+  "responsibility": "Causal cheap existing ReadChanges/CreateOutcome control for the new closed provider offer on the exact Guardian profile, player wound target, no GM player consent and conscious/capable flags. Initial RED is old target-consent parser refusal, later assertions are GREEN-only.",
+  "excludes": "Typed DATA does not issue an accepted offer or actual player confirmation. No active draw, Engine/UI/public-service/provider authority or old accepted-suite repeat.",
+  "changeHints": ["BookOfEternityClient/Services/SpiritualTreatmentParticipation.cs", "BookOfEternityClient.Tests/SpiritualTreatmentParticipationTests.cs"],
+  "related": [],
+  "requirements": { "frontendBuild": false, "exclusive": true, "ciRunner": "ubuntu-24.04" },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [{ "project": "unit", "tests": ["BookOfEternityClient.Tests.SpiritualTreatmentParticipationTests.GuardianProviderOfferNamesThePlayerWoundWithoutIssuingPlayerConsent"] }]
+},
+{
   "id": "spiritual-aid-participation-contract",
   "responsibility": "Cheap closed participation proposal DATA/projection controls for all three actual profile representations, actorRef and mirrored intent, preservation of owned records, stamp/null/conflicting/ incapable refusals; synchronized GM nested-fragment example and complete worked-family manifest inventory.",
   "excludes": "Codec/projection DATA grants no live permission. Actual natural producer and rollback are separate; no active aid/UI/provider/reverse/conflict/helpless/Shining or held DFR/Mortal qualification.",

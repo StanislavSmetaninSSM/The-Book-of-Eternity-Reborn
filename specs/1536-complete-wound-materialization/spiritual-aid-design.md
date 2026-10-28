@@ -405,3 +405,46 @@ Scope remains safe Chaos/current persistent Guardian, free private conscious and
 capable cooperation. Paid/public services, combat, unwilling/helpless exceptions,
 other entities, Shining helper locality, longer offer lifetime, provider/fresh-
 process recovery and existing Mortal/T609/DFR/Windows limits remain open.
+
+### Reverse implementation checklist (inline, existing tracked plan)
+
+- [ ] Add `GuardianProviderOfferNamesThePlayerWoundWithoutIssuingPlayerConsent`
+  to SpiritualTreatmentParticipationTests. It calls the existing ReadChanges and
+  CreateOutcome APIs with a schema2 offer on a preexisting Guardian profile;
+  exact player target and full offer record must be admitted, player-consent
+  fields and incapable offer refused. The current closed v1 parser must reject
+  the positive offer first. Literal unit singleton/60, no Main dependency rebuild.
+- [ ] In SpiritualTreatmentParticipation and planner Participation partial,
+  implement exact schema2 typed fields, enclosing Guardian record ownership and
+  player-cohort validation; natural result v4 is selected only for that payload.
+  Existing v1/v3 producer remains closed. Reuse the same atomic assembler.
+- [ ] Extend SpiritualSelfTreatmentSelection, request codec Aid partial,
+  AfterlifeWoundTreatmentAuthority.Aid, persisted result, History and replay
+  reader for explicit confirmed receive_aid/v4. Healer coordinate/profile/locality
+  is Guardian, target is player; original and current source18 remain exact.
+  The scalar/executor/common publisher stay shared. Add typed full-publication
+  offer→confirmed aid, unconfirmed no-draw, changed offer/provider and historical
+  omission controls in the existing natural-recovery integration fixture.
+- [ ] Extend WoundApplicationService choices/ActionFor/ConfirmAsync and existing
+  console/browser selection consumers. Menu candidate is unconfirmed; only the
+  actual Confirm path emits confirmed DATA. PrepareQueued and Stage reject an
+  unconfirmed receive-aid selection. Actual console and queued browser tests use
+  the existing two-turn Engine fixture, sole bootstrap/complete Guardian/lore,
+  native completion, real cleanup and NPC Brain/journal. Assert cancel/no intent,
+  exact request4, healerH3/playerH0, one cycle/attempt, graphs/effects/History,
+  no cost and strict replay. No fabricated accepted result or between-turn seed.
+- [ ] Synchronize CLI_Step_Main, Afterlife_Contract_Matrix,
+  Wound_Materialization_Contract, E_CLI_Afterlife_Turns and manifest/guided guards
+  with one two-turn provider-offer/real confirmation example. Existing Mortal
+  and public-service contracts have no permission change.
+- [ ] Freeze coherent source/tests/docs, independent SOURCE/PREP and exact
+  dependency-based category selection, owning Integration/Main/Support plus Unit
+  refsfalse, all owning pins, official PlanOnly then separate actual categories
+  under existing 60/120/180-second budgets. First failure gets exact causal
+  classification before another dependent run. OUTCOME/readback closes only
+  this private free current-Guardian reverse slice; full T108/US4 remains open.
+
+Ruling: canonical #1536 design/plan/tasks are the progress ledger and existing
+qualification checkout is the isolated task branch. Do not add a duplicate skill
+plan/worktree or run an unrestricted suite; repository/user workflow explicitly
+requires these existing artifacts and bounded official category verification.

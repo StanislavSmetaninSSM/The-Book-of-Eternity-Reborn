@@ -2,6 +2,11 @@
   "schemaVersion": 1,
   "selections": [
 {
+  "category": "spiritual-guardian-offer-contract",
+  "reason": "Next T108 reverse slice needs a provider offer distinct from target consent. Existing ReadChanges must admit the closed schema2 Guardian offer for player wound, without GM-issued player consent. RED-only singleton before shared implementation; no Main/Support rebuild.",
+  "contracts": ["#1536 T108 current private free Guardian-to-player aid, real guided player confirmation"]
+},
+{
   "category": "spiritual-owned-locality-beforeimage",
   "reason": "New owned-normalizer writer relies on ExactPrevious. Existing ordinary helper checks it, then rereads/adopts foreign bytes as publisher.Before. Real existing-API GuardOnly/readhook cut proves present/absent late overwrite and existing lease/rollback semantics; no separate framework or held suite.",
   "contracts": [

@@ -68,6 +68,61 @@ public sealed class SpiritualTreatmentParticipationTests
         }
     }
 
+    [Fact]
+    public void GuardianProviderOfferNamesThePlayerWoundWithoutIssuingPlayerConsent()
+    {
+        // These are canonical comparison DATA, not an accepted provider or a
+        // player confirmation. The existing v1 record remains valid input.
+        var previous = Previous();
+        Assert.Empty(SpiritualTreatmentParticipation.ReadChanges(previous, previous));
+        var proposal = new JsonObject
+        {
+            ["schemaVersion"] = 2, ["kind"] = "provider_offer", ["operation"] = "offer",
+            ["targetId"] = "player_soul", ["woundId"] = "wound_player_offer",
+            ["providerConscious"] = true, ["providerCapable"] = true,
+            ["targetConscious"] = true, ["targetCapable"] = true,
+            ["readableEvidence"] = "Хранитель готов помочь сознательной душе; решение принять помощь остаётся за игроком."
+        };
+        var current = new JsonObject
+        {
+            ["afterlifeEntityProfileUpdates"] = new JsonArray(new JsonObject
+            {
+                ["actorType"] = "guardian", ["actorRef"] = "guardian_aid",
+                [SpiritualTreatmentParticipation.ChangeProperty] = proposal
+            })
+        };
+        // Causal RED: the current closed target-consent parser rejects this
+        // lawful, distinct provider offer before any player-consent assertion.
+        var change = Assert.Single(SpiritualTreatmentParticipation.ReadChanges(current, previous));
+        Assert.Equal("guardian_aid", change.TargetId); // Enclosing record owner, not wound target.
+        var outcome = SpiritualTreatmentParticipation.CreateOutcome(change, "abode_aid", new JsonObject
+        {
+            ["sessionId"] = "session_offer", ["requestId"] = "request_offer",
+            ["snapshotToken"] = "snapshot_offer", ["realm"] = "chaos_sea", ["turn"] = 43
+        }, 10, "transition_offer");
+        var record = outcome["record"]!.AsObject();
+        Assert.Equal(2, record["schemaVersion"]!.GetValue<int>());
+        Assert.Equal("provider_offer", record["kind"]!.GetValue<string>());
+        Assert.Equal("offered", record["status"]!.GetValue<string>());
+        Assert.Equal("guardian", record["healerKind"]!.GetValue<string>());
+        Assert.Equal("guardian_aid", record["healerId"]!.GetValue<string>());
+        Assert.Equal("player_soul", record["targetId"]!.GetValue<string>());
+        Assert.Equal("wound_player_offer", record["woundId"]!.GetValue<string>());
+        Assert.Equal(11, record["eligibleCycleOrdinal"]!.GetValue<int>());
+        Assert.False(record.ContainsKey("playerConsent"));
+        Assert.False(record.ContainsKey("playerConfirmation"));
+        SpiritualTreatmentParticipation.ValidateRecord(record);
+        proposal["playerConsent"] = true;
+        Assert.Throws<InvalidDataException>(() => SpiritualTreatmentParticipation.ReadChanges(current, previous));
+        proposal.Remove("playerConsent");
+        foreach (var field in new[] { "providerConscious", "providerCapable", "targetConscious", "targetCapable" })
+        {
+            proposal[field] = false;
+            Assert.Throws<InvalidDataException>(() => SpiritualTreatmentParticipation.ReadChanges(current, previous));
+            proposal[field] = true;
+        }
+    }
+
     private static JsonObject Proposal() => new()
     {
         ["schemaVersion"] = 1, ["operation"] = "grant", ["healerId"] = "player_soul", ["woundId"] = "wound_aid",
