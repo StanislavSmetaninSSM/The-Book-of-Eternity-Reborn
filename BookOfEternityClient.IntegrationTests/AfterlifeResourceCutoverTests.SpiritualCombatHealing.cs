@@ -67,11 +67,22 @@ public sealed partial class AfterlifeResourceCutoverTests
             {
                 await SeedOriginalIntakeBaselinesAsync(original);
                 await SeedCombatHealingOriginalAsync(original, tier, rank: mode == "next_boundary" ? 2 : 1);
+                // The old direct C2 fixture needs no world clock. Combat's
+                // authenticated no-cycle basis does: use the same canonical
+                // initial clock as the working full Engine counterpart, before
+                // authority composition and this fixture's only snapshot.
+                await original.WriteExactBytesAsync(EffectAcceptedTurnInputComposer.WorldTimePath,
+                    await File.ReadAllBytesAsync(Path.Combine(TestRepoPaths.BaseSessionRoot,
+                        EffectAcceptedTurnInputComposer.WorldTimePath)));
             },
             captureOriginalSnapshot: async original =>
             {
                 var scheduler = new ProgressionScheduleService(original.FileSystem, NullLogger<ProgressionScheduleService>.Instance);
                 await scheduler.EnsureInitializedAsync();
+                Assert.True(ProgressionScheduleService.TryBuildSpiritualCombatControl(
+                    (await original.ReadJsonAsync(ProgressionScheduleService.SchedulePath))!.AsObject(),
+                    await original.FileSystem.ReadFileBytesAsync(EffectAcceptedTurnInputComposer.WorldTimePath), out _),
+                    "Actual canonical world clock and settled zero-pending scheduler basis are required before staging.");
                 var wound = await ReadCombatHealingWoundAsync(original);
                 var conflict = (await original.ReadJsonAsync(AfterlifeSpiritualConflictState.StatePath))!["activeConflict"]!.AsObject();
                 var selection = new SpiritualSelfTreatmentSelection(wound.WoundId, WoundIdentityState.ComputeSemanticFingerprint(wound))
@@ -555,7 +566,34 @@ public sealed partial class AfterlifeResourceCutoverTests
         var soul = (await context.ReadJsonAsync("game_state/meta/soul_state.json"))!;
         soul[AfterlifeSpiritualConflictState.SoulStateProfileProperty]!["artTiers"]![AfterlifeSpiritualConflictState.SpiritualHealingArtId] = tier;
         AfterlifeEntityProfileState.ApplyPlayerSoulProfileClientAuthority(profiles.AsObject(), soul.AsObject(), null);
-        Assert.Empty(seed.History.ValidateAgreement(seed.Identities, WoundCarrierCatalog.Build(seed.Carriers with { AfterlifeProfiles = profiles.AsObject() })));
+        var wounds = WoundCarrierCatalog.Build(seed.Carriers with { AfterlifeProfiles = profiles.AsObject() });
+        Assert.Empty(wounds.Issues);
+        Assert.Empty(seed.History.ValidateAgreement(seed.Identities, wounds));
+        // These are detached preparation preconditions, not publication rights.
+        // The real staging owner repeats its fresh source/lease fences later.
+        var effectCatalog = EffectCarrierCatalog.Build(new(
+            (await context.ReadJsonAsync(EffectCarrierCatalog.PlayerPath))?.AsObject(),
+            (await context.ReadJsonAsync(EffectCarrierCatalog.NpcPath))?.AsObject(),
+            (await context.ReadJsonAsync(EffectCarrierCatalog.EnemiesPath))?.AsObject(),
+            (await context.ReadJsonAsync(EffectCarrierCatalog.AlliesPath))?.AsObject(), profiles.AsObject(),
+            (await context.ReadJsonAsync(EffectCarrierCatalog.SpiritualConflictPath))?.AsObject()));
+        var mechanics = EffectMechanicsSnapshot.Build(effectCatalog, index, null, out _);
+        Assert.True(mechanics.IsAccepted, string.Join(";", mechanics.Issues.Select(i => i.Code + ":" + i.Actual)));
+        var canonicalSources = EffectAcceptedTurnInputComposer.BuildCanonicalWoundSourceAuthority(wounds);
+        Assert.Empty(canonicalSources.Issues);
+        foreach (var binding in wound.Consequences.OwnedEffectSources.RootBindings)
+        {
+            Assert.True(effectCatalog.TryResolveOne(binding.EffectId, out var occurrence));
+            var bound = canonicalSources.ResolveCanonicalBinding(new(wound.Owner.Realm, "wound", wound.WoundId, binding.DefinitionKey),
+                occurrence!.Effect["target"]!["kind"]!.GetValue<string>());
+            Assert.True(bound.Success);
+            var issues = new List<ValidationIssue>();
+            ValidationService.ValidateCanonicalSourceDefinitionAgreement(occurrence!, bound.Source!, canonicalSources, issues);
+            AssertNoConflictFrameErrors(issues);
+        }
+        var prepared = SpiritualHealingResolver.PrepareSource(new(wound, wound.Owner, player.AsObject(), soul.AsObject(), mechanics));
+        AssertNoConflictFrameErrors(prepared.Issues);
+        Assert.Equal(tier, Assert.IsType<SpiritualHealingPreparedSource>(prepared.Source).HealingTier);
         await context.WriteExactJsonAsync("game_state/meta/soul_state.json", soul.ToJsonString());
         await context.WriteExactJsonAsync(AfterlifeEntityProfileState.StatePath, profiles.ToJsonString());
         await context.WriteExactJsonAsync(WoundIdentityState.StatePath, WoundIdentityState.SerializeCanonical(seed.Identities));

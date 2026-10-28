@@ -1,3 +1,35 @@
+# Combat paired initial-clock correction — runtime downstream UNRUN, 2026-10-28
+
+Fresh owning1da succeeded0e/137 baseline warnings/6:27.99; Unit refsfalse0e/26w/
+1:44.87. Current9 pins agree. Official remaining PlanOnly17/10 zeroexec9.5318825s;
+corrected browser-help1 PASS18.6762679s/category8.3129715<120, hash644d0041…2aac,
+complete/no timeout/duplicates/both cleanuptrue. Together with prior8 there are
+nine distinct Passed rows, not a new all25 run.
+
+Actual paired4 completed0 PASS/4 FAIL34.8732844s/category15.0310148<120, complete
+selection/no timeout/duplicates/both cleanuptrue; TRXc2e48212…da16. All fail at
+staging source_invalid BEFORE signed combat snapshot or initial C2. Root cause is
+an absent world_time.json in the old direct C2 fixture. EnsureInitialized allows
+fallback0, but combat's immutable no-cycle proof correctly refuses unresolved
+absolute time before selected-wound preparation. Independent Sol source confirms
+that exact chain. This is initial setup refusal, not combat gameplay RED.
+
+The backend now copies the same canonical initial world-time root (minute480)
+used by the working full Engine template BEFORE its first EnsureInitialized,
+authority composition and only snapshot. No late clock reset, pending clear,
+rebootstrap or production/guard change. The existing helper additionally asserts
+the full typed wound/History, effect/index/definition and healing source inputs;
+the backend asserts the actual settled scheduler basis before calling real Stage.
+These preconditions are detached preparation DATA, not publication capabilities.
+The full Engine initial clock/default and shared fixture defaults are unchanged.
+
+After narrow test-only SOURCE closure: fresh Integration refsfalse against unchanged
+Main/Support/Unit1da and current pins; exact remaining16/9 PlanOnly, paired4 first
+under original120, then previously accepted remaining12 categories/bounds only if
+pair succeeds. Retain the nine Passed rows at their explicit2904/1da lineages;
+no helper/cost/docs/help repeat. Raw initial-clock failures remain external under
+spiritual-combat-functional-2/pair; no downstream qualification is inferred.
+
 # Combat first actual follow-through — browser help parity, 2026-10-28
 
 Fresh Integration2904 refsfalse0e/102w/2:37.85 and Unit refsfalse0e/26w/1:19.49
