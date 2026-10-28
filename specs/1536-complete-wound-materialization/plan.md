@@ -10,9 +10,21 @@ projection/final-cycle assertions remain unexecuted, not qualified. Official
 PlanOnly1/1descriptor9.8601320s/zero executions. Fresh Integration-only refsfalse
 build0errors/105warnings2:39.94, Integrationb69af5f6; other8 master/dependency pins
 unchanged. TRXd6c7316effcbdc167684fe9d45d6a5c369d1fc7282bdb4dacbc110d4f9f66d64.
-Raw natural-caller-red-build-1/natural-caller-red-1 external. Independent finite
-OUTCOME requested. Proceed with the accepted shared ordinary-cycle implementation;
+Raw natural-caller-red-build-1/natural-caller-red-1 external. Independent Sol finite
+OUTCOME accepted. Proceed with the accepted shared ordinary-cycle implementation;
 no new approval/diagnostic chain or old passed-runtime repetition.
+
+Natural source/cohort WIP, UNCOMPILED/UNRUN: reuse the strict existing art reader,
+one signed-start per-owner cohort and the same scalar program/projection. Ordinary
+projection has explicit natural mode/cohort/graph refs and no attempt/draw. Empty
+candidate profiles skip other fifteen source roots; selected roots/catalog/tier
+DATA are shared within the operation, and effect-source authority is built once
+for cohort validation. Self's optional-active program now uses each cohort owner's
+tier. Private natural owner, strict result/replay, actual dispatcher/staging/common
+publication and GM/docs/typed controls are NOT connected yet; no capability or
+regression PASS follows from this WIP. Full physical/live authority remains due at
+the publication boundary. Generic wound work must compose or explicitly refuse,
+never be overwritten. No resource/lease/currentness rule has been relaxed.
 
 Actual graph-bearing console caller on clean/compiled 926f70af: exact1/1 PASS,
 58.1503082s total/category50.2515017<180, complete/no skips/duplicates/timeout,

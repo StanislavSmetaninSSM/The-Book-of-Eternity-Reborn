@@ -2858,7 +2858,8 @@ internal static class AfterlifeEntityProfileState
         AfterlifeSpiritualConflictState.RequiredWoundArtIds.FirstOrDefault(requiredArtId =>
             string.Equals(requiredArtId, artId, StringComparison.OrdinalIgnoreCase));
 
-    private static bool TryReadRequiredWoundArtTier(
+    /// <summary>Reads an explicitly materialized wound art tier without defaulting missing or invalid data to zero.</summary>
+    internal static bool TryReadRequiredWoundArtTier(
         JsonObject profile,
         string artId,
         out JsonObject arts,

@@ -137,7 +137,8 @@ internal static partial class AfterlifeWoundTreatmentAuthority
     internal sealed record SourceData(WoundMaterializationEnvelope Wound,
         SpiritualHealingPreparedSource Source, string Realm, int CycleOrdinal,
         string SourceFingerprint, WoundCarrierCatalogInput Carriers, EffectCarrierCatalog Effects,
-        WoundIdentityState Identities, WoundHistoryState History, WoundCarrierCatalog Catalog);
+        WoundIdentityState Identities, WoundHistoryState History, WoundCarrierCatalog Catalog,
+        IReadOnlyList<SpiritualWoundRecoveryMember> NaturalMembers);
     internal sealed record SourceResult(SourceData? Data, string? IssueCode);
     private static SourceResult SourceRefuse(string suffix) => new(null, suffix);
 
@@ -200,17 +201,19 @@ internal static partial class AfterlifeWoundTreatmentAuthority
                 JsonSerializer.SerializeToNode(control)!)
         }.Concat(sources.SelectMany(s => new[] { s.Path, s.Image.Fingerprint })));
 
-        return new(new(wound, source, realm, ordinal, sourceFingerprint, carriers, effectCatalog, identities.State!, history.State!, catalog), null);
+        var members = SpiritualHealingRequestProjection.ReadNaturalMembers(catalog, carriers.AfterlifeProfiles, soul, realm);
+        return new(new(wound, source, realm, ordinal, sourceFingerprint, carriers, effectCatalog, identities.State!, history.State!, catalog, members), null);
     }
 
     private static bool ValidateCurrentWoundEffects(WoundMaterializationEnvelope wound,
-        WoundCarrierCatalog wounds, EffectCarrierCatalog effects, EffectIdentityState identities)
+        WoundCarrierCatalog wounds, EffectCarrierCatalog effects, EffectIdentityState identities,
+        EffectSourceAuthority? sourceAuthority = null)
     {
         // Reuse the strict lineage classifier: terminal roots remain in identity
         // history and need no live carrier; missing roots are not terminal roots.
         var lineage = WoundEffectLineagePlanner.Plan(wound, identities);
         if (!lineage.Success) return false;
-        var sources = EffectAcceptedTurnInputComposer.BuildCanonicalWoundSourceAuthority(wounds);
+        var sources = sourceAuthority ?? EffectAcceptedTurnInputComposer.BuildCanonicalWoundSourceAuthority(wounds);
         if (sources.Issues.Count != 0) return false;
         var issues = new List<ValidationIssue>();
         foreach (var effectId in lineage.ActiveOrSuspendedEffectIds)

@@ -7,17 +7,46 @@ namespace BookOfEternityClient.Services;
 /// <summary>One shared scalar program and GM graph references; never publication authority.</summary>
 internal static class SpiritualHealingRequestProjection
 {
+    internal static IReadOnlyList<SpiritualWoundRecoveryMember> ReadNaturalMembers(
+        WoundCarrierCatalog catalog, JsonObject? profiles, JsonObject? soul, string realm)
+    {
+        var wounds = catalog.Occurrences.Select(o => o.Wound).Where(w => w.Lifecycle == "active" &&
+            w.Classification.Domain == "spiritual" && w.Severity.Rank is >= 1 and <= 4 &&
+            w.Owner.Realm == realm && w.Owner.CarrierPath == WoundCarrierCatalog.AfterlifeProfilesPath)
+            .OrderBy(w => w.Owner.OwnerKind, StringComparer.Ordinal).ThenBy(w => w.Owner.OwnerId, StringComparer.Ordinal)
+            .ThenBy(w => w.WoundId, StringComparer.Ordinal).ToArray();
+        var members = new List<SpiritualWoundRecoveryMember>();
+        foreach (var owner in wounds.GroupBy(w => w.Owner))
+        {
+            var matching = (profiles?["profiles"] as JsonArray)?.OfType<JsonObject>()
+                .Where(p => WoundCarrierCollectionAuthority.AfterlifeProfileMatches(p, owner.Key)).ToArray();
+            if (matching is not { Length: 1 } || !AfterlifeEntityProfileState.TryReadRequiredWoundArtTier(
+                    matching[0], AfterlifeSpiritualConflictState.SpiritualHealingArtId, out _, out var tier))
+                throw new InvalidDataException("Natural recovery requires one persistent owner and explicit healing tier.");
+            if (owner.Key.OwnerKind == "player_soul")
+            {
+                if (owner.Key.OwnerId != "player_soul" || soul is null ||
+                    !AfterlifeEntityProfileState.TryNormalizeEffectRealm(soul["currentRealm"]?.GetValue<string>(), out var soulRealm) ||
+                    soulRealm != realm || !AfterlifeSpiritualConflictState.TryValidateCurrentRequiredWoundArtAuthority(soul, out _) ||
+                    soul["afterlifeCombatProfile"]!["artTiers"]![AfterlifeSpiritualConflictState.SpiritualHealingArtId]!.GetValue<int>() != tier)
+                    throw new InvalidDataException("Natural player recovery requires its exact signed soul/profile art mirror.");
+            }
+            members.AddRange(owner.Select(w => new SpiritualWoundRecoveryMember(w, tier)));
+        }
+        return members.ToArray();
+    }
+
     internal static (WoundMaterializationEnvelope[] Wounds, SpiritualWoundStage[] Stages) BuildProgram(
         AfterlifeWoundTreatmentAuthority.SourceData data, JsonObject request, SpiritualHealingResolution resolution)
     {
         var attempt = request["attempt"]!.AsObject();
-        var wounds = data.Catalog.Occurrences.Where(o => o.Wound.Owner == data.Wound.Owner &&
-                o.Wound.Classification.Domain == "spiritual" && o.Wound.Lifecycle == "active" && o.Wound.Severity.Rank is >= 1 and <= 4)
-            .Select(o => o.Wound).OrderBy(w => w.WoundId == data.Wound.WoundId ? 0 : 1)
-            .ThenBy(w => w.WoundId, StringComparer.Ordinal).ToArray();
-        var stages = wounds.SelectMany(w => SpiritualWoundRecoveryPlanner.Build(w, data.Source.HealingTier,
+        var members = data.NaturalMembers.OrderBy(m => m.Wound.WoundId == data.Wound.WoundId ? 0 : 1)
+            .ThenBy(m => m.Wound.Owner.OwnerKind, StringComparer.Ordinal).ThenBy(m => m.Wound.Owner.OwnerId, StringComparer.Ordinal)
+            .ThenBy(m => m.Wound.WoundId, StringComparer.Ordinal).ToArray();
+        var wounds = members.Select(m => m.Wound).ToArray();
+        var stages = members.SelectMany(m => SpiritualWoundRecoveryPlanner.Build(m.Wound, m.HealingTier,
             attempt["attemptId"]!.GetValue<string>(), attempt["cycleKey"]!.GetValue<string>(),
-            w.WoundId == data.Wound.WoundId ? resolution.Calculation : null)).ToArray();
+            m.Wound.WoundId == data.Wound.WoundId ? resolution.Calculation : null)).ToArray();
         return (wounds, stages);
     }
 
@@ -33,6 +62,36 @@ internal static class SpiritualHealingRequestProjection
     internal static JsonArray Complications(string requestFingerprint, WoundMaterializationEnvelope wound) => new(
         wound.Complications.Select(c => (JsonNode)new JsonObject
         { ["complicationRef"] = ComplicationRef(requestFingerprint, c.ComplicationId), ["displayName"] = c.DisplayName }).ToArray());
+
+    internal static (WoundMaterializationEnvelope[] Wounds, SpiritualWoundStage[] Stages) BuildNaturalProgram(
+        AfterlifeWoundTreatmentAuthority.NaturalSourceData data)
+    {
+        var cycle = AfterlifeWoundTreatmentAuthority.CycleKey(data.Realm, data.CycleOrdinal);
+        return (data.Members.Select(m => m.Wound).ToArray(), data.Members.SelectMany(m =>
+            SpiritualWoundRecoveryPlanner.Build(m.Wound, m.HealingTier, null, cycle, null)).ToArray());
+    }
+
+    internal static JsonObject CreateNatural(AfterlifeWoundTreatmentAuthority.NaturalSourceData data)
+    {
+        var program = BuildNaturalProgram(data);
+        return new JsonObject
+        {
+            ["schemaVersion"] = 2, ["mode"] = "natural", ["sourceFingerprint"] = data.SourceFingerprint,
+            ["cycleOrdinal"] = data.CycleOrdinal, ["cycleKey"] = AfterlifeWoundTreatmentAuthority.CycleKey(data.Realm, data.CycleOrdinal),
+            ["cohort"] = new JsonArray(data.Members.Select(m => (JsonNode)new JsonObject
+            {
+                ["woundId"] = m.Wound.WoundId, ["owner"] = JsonSerializer.SerializeToNode(m.Wound.Owner),
+                ["woundName"] = m.Wound.Display.Name, ["healingTier"] = m.HealingTier,
+                ["woundFingerprint"] = WoundIdentityState.ComputeSemanticFingerprint(m.Wound)
+            }).ToArray()),
+            ["destinationGraphs"] = new JsonArray(RequiredGraphs(program.Wounds, program.Stages).Select(g => (JsonNode)new JsonObject
+            {
+                ["stageRef"] = GraphRef(data.SourceFingerprint, g.WoundId, g.Rank), ["severityRank"] = g.Rank,
+                ["woundName"] = program.Wounds.Single(w => w.WoundId == g.WoundId).Display.Name,
+                ["complications"] = Complications(data.SourceFingerprint, program.Wounds.Single(w => w.WoundId == g.WoundId))
+            }).ToArray())
+        };
+    }
 
     internal static JsonObject Create(AfterlifeWoundTreatmentAuthority.SourceData data, JsonObject request,
         SpiritualHealingResolution? resolved = null)

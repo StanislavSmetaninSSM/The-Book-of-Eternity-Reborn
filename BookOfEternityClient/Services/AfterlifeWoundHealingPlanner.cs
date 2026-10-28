@@ -251,7 +251,7 @@ internal static class AfterlifeWoundHealingPlanner
                 stage.Progress == 0 && after.Recovery.CurrentStepProgress == 0 && evidence.Outcome.Heals && !evidence.Outcome.AllowsWorsening &&
                 request.Kind == stage.Kind && request.OperationKey == stage.OperationKey && request.TransitionId == stage.TransitionId &&
                 request.EventRef == owner.EventRef && request.Turn == owner._input.Binding.Turn &&
-                before.WoundId == stage.WoundId && before.Owner == owner._data.Wound.Owner && after.Owner == before.Owner &&
+                before.WoundId == stage.WoundId && before.Owner == owner._wounds.Single(w => w.WoundId == stage.WoundId).Owner && after.Owner == before.Owner &&
                 after.Recovery.LastTickKey == stage.TickKey &&
                 proof.BeforeFingerprint == WoundIdentityState.ComputeSemanticFingerprint(before) &&
                 proof.AfterFingerprint == WoundIdentityState.ComputeSemanticFingerprint(after) &&
@@ -263,9 +263,7 @@ internal static class AfterlifeWoundHealingPlanner
             var attempt = _request["attempt"]!;
             var resolution = SpiritualHealingResolver.ResolvePrepared(_data.Source, _data.Source.RollMode,
                 attempt["roll"]!["values"]!.AsArray().Select(v => v!.GetValue<int>()).ToArray()).Resolution;
-            return resolution is not null && _wounds.SelectMany(w => SpiritualWoundRecoveryPlanner.Build(w,
-                _data.Source.HealingTier, attempt["attemptId"]!.GetValue<string>(), attempt["cycleKey"]!.GetValue<string>(),
-                w.WoundId == _data.Wound.WoundId ? resolution.Calculation : null)).SequenceEqual(_stages);
+            return resolution is not null && SpiritualHealingRequestProjection.BuildProgram(_data, _request, resolution).Stages.SequenceEqual(_stages);
         }
 
         internal static async Task<Continuation> AdmitAsync(FileSystemManager files,

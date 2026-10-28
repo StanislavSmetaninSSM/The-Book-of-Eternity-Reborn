@@ -2,6 +2,9 @@ using System.Globalization;
 
 namespace BookOfEternityClient.Services;
 
+// Signed start-of-cycle DATA shared by projection, preparation and strict replay.
+internal sealed record SpiritualWoundRecoveryMember(WoundMaterializationEnvelope Wound, int HealingTier);
+
 // A bounded scalar program, never a grant to mutate a wound or advance a cycle.
 internal sealed record SpiritualWoundStage(
     string WoundId, string Kind, int SeverityRank, long Progress, bool PreparesHeal,
@@ -10,7 +13,7 @@ internal sealed record SpiritualWoundStage(
 internal static class SpiritualWoundRecoveryPlanner
 {
     internal static IReadOnlyList<SpiritualWoundStage> Build(
-        WoundMaterializationEnvelope before, int tier, string attemptId, string cycleKey,
+        WoundMaterializationEnvelope before, int tier, string? attemptId, string cycleKey,
         SpiritualHealingCalculation? active)
     {
         var rows = new List<SpiritualWoundStage>();
@@ -29,7 +32,8 @@ internal static class SpiritualWoundRecoveryPlanner
 
         if (active is not null)
         {
-            if (!active.HasSufficientTier || active.Input.WoundSeverityRank != rank || active.Input.HealingTier != tier)
+            if (string.IsNullOrWhiteSpace(attemptId) || !active.HasSufficientTier ||
+                active.Input.WoundSeverityRank != rank || active.Input.HealingTier != tier)
                 throw new InvalidDataException("Active healing differs from its admitted wound and art.");
             Add("treat", active.ResultingSeverityRank, checked(progress + active.RecoveryPointsAdded),
                 active.HealsWound, attemptId);

@@ -67,5 +67,6 @@
 
 - Design8c4e955d3 accepted by independent Astra/high; root accepted execution direction.
 - Initial caller SOURCE/PREP acceptedf47; fresh build and exact causal RED completed.
-- Actual1FAIL is missing natural progress after accepted43; no production changes at RED checkpoint. Finite independent OUTCOME pending.
+- Actual1FAIL is missing natural progress after accepted43; no production changes at RED checkpoint. Finite independent Sol OUTCOME accepted.
 - All previous qualified self gates remain retained; Task2 implementation is next.
+- Task2 WIP: strict per-owner source/cohort and natural projection/scalar program are written, UNCOMPILED/UNRUN. Owner/result/publication/transport/docs and interaction controls remain to connect; no accepted natural runtime yet.
