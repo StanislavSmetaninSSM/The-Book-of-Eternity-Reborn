@@ -2,6 +2,19 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "spiritual-aid-active-program",
+  "responsibility": "One causal cheap typed call of the existing scalar recovery program: validated active H3/II/d20=8 reduces one step, while target natural H0 adds exactly1 and does not inherit healerH3. Equal-tier control terminates; forged active calculation refuses after GREEN.",
+  "excludes": "Scalar DATA only, no healer/consent/publication permission, staged entropy, request codec, real actor producer or guided aid completion. No stub/unused argument/API solely for RED.",
+  "changeHints": ["BookOfEternityClient/Services/SpiritualWoundRecoveryPlanner.cs", "BookOfEternityClient.Tests/SpiritualAidProgramTests.cs"],
+  "related": [],
+  "requirements": { "frontendBuild": false, "exclusive": true, "ciRunner": "ubuntu-24.04" },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [{ "project": "unit", "tests": [
+    "BookOfEternityClient.Tests.SpiritualAidProgramTests.ActiveHealerTierDoesNotReplaceTheTargetNaturalTierInTheSameProgram"
+  ] }]
+},
+{
   "id": "spiritual-aid-participation-contract",
   "responsibility": "Cheap closed participation proposal DATA/projection controls for all three actual profile representations, actorRef and mirrored intent, preservation of owned records, stamp/null/conflicting/ incapable refusals; synchronized GM nested-fragment example and complete worked-family manifest inventory.",
   "excludes": "Codec/projection DATA grants no live permission. Actual natural producer and rollback are separate; no active aid/UI/provider/reverse/conflict/helpless/Shining or held DFR/Mortal qualification.",

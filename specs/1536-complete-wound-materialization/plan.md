@@ -1,5 +1,15 @@
 # US4 safe self-treatment — active functional work, 2026-10-28
 
+Issuer ef406058 exact13 is now independently Sol OUTCOME ACCEPT; its source/hashes,
+clean docs checkpoint2919d1ad and user-facing limits were confirmed. Next causal
+active-program singleton is test-only UNCOMPILED/UNRUN: actual existing Build with
+real H3/II/d20=8 active calculation and Guardian naturalH0 must yield I1 in one
+program. Current scalar guard equates the tiers and should fail at that exact call;
+initial valid target/formula preconditions must pass first. Equal-tier terminal and
+forged-calculation checks follow GREEN. Literal Unit1/60, fresh Unitrefsfalse on
+unchanged qualified Main/Support, exact PlanOnly/actual RED only after SOURCE/PREP.
+No stub/new API/authority or old13 rerun; staging/actual aid/UI still follow.
+
 T108 bounded participation issuer/witness now passes its exact13-case selection
 on clean compiled ef406058a4a03f497a580609e9ff45448f8461c6. Accepted DESIGN8e279e8c;
 Astra bounded issuer SOURCE and Sol final coherent SOURCE/PREP accepted. Independent

@@ -261,3 +261,15 @@ The last two protect changed common assembly/result/replay and real SELF consume
 semantics; no browser/console/whole19/held matrix repeat. GM CLI/daemon/Wound guide/
 Matrix/rules, worked nested proposal and manifest/source guards are synchronized.
 No Mortal or Shining aid contract is introduced. Full user journey remains open.
+
+### Active program causal control (test-only, UNCOMPILED/UNRUN)
+
+Call the real existing SpiritualWoundRecoveryPlanner.Build on a valid Guardian II0
+with real active H3/d20=8 one-step calculation and independent target naturalH0.
+Expected single program: treat→I0, then recover→I1. Current equality guard rejects
+the unequal tiers; this is the intended RED after canonical/formula preconditions.
+Equal naturalH3 terminates, demonstrating why healer tier cannot leak into target
+recovery. A forged calculation must still refuse after the shared program supports
+independent tiers. This pure DATA control grants no healer/consent/turn authority.
+One Unit singleton/60s, fresh Unit refsfalse against current Main/Support; no
+artificial API, new scalar stack or repeat of the qualified producer13.

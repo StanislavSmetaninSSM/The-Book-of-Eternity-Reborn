@@ -2,6 +2,11 @@
   "schemaVersion": 1,
   "selections": [
 {
+  "category": "spiritual-aid-active-program",
+  "reason": "Existing actual Build rejects unequal healerH3/targetH0 before producing one shared active+natural program. Test-first causal RED uses the real scalar APIs and valid canonical target, not a new stub or unused parameter. Actual source/consent/healer authority remains separate accepted-design work.",
+  "contracts": ["#1536 T108 separate active healer tier and target natural tier, exactly one existing recovery pass"]
+},
+{
   "category": "spiritual-aid-participation-contract",
   "reason": "New closed producer contract and owned profile record need real ProjectCanonicalRoot representation/omission/mirror controls and synchronized GM fragment/inventory before actual grant publication. Typed DATA only; accepted issuer is tested separately.",
   "contracts": ["#1536 T108 actual affirmative participation proposal vs client record; all profile surfaces and content binding; GM synchronization"]
