@@ -14332,15 +14332,15 @@ close full source-action/terminal/pending contracts or any top-level story task.
   accepted treatment authority is claimed; T094 remains open for integration.
 - [ ] T095 [P] [US4] Add RED combat base-5/reduction/floor-2 spend, explicit operation-to-art mapping, counter/matchup legality, and rollback tests in `BookOfEternityClient.Tests/SpiritualHealingCombatActionTests.cs`
 
-Current combat follow-through (2026-10-28): actual138 now fully passes4/5
-paired cases: full heal, no-improvement and ordinary/guaranteed counterharm,
-with exact OD/wound/effects/History/no-cycle assertions. The fifth passes its
-saved-selection/correction/cold replay and C4, then fails full output validation
-on a missing fixture interface timestamp; later assertions remain unreached.
-Independent production SOURCE/OUTCOME and fixture review distinguish this from
-a product guard defect. Narrow fixture correction and singleton qualification
-are pending; other4 and cheap32+terminal4 retain separate accepted lineages.
-Full T095/T102/T103/US4 remain open; detailed artifacts and remaining15 are in plan.
+Current combat follow-through (2026-10-28): paired5 is accepted as four complete
+138 cases plus the corrected4d587 dependent-cost singleton, including ordinary
+and guaranteed counterharm with exact OD/wound/effects/History/no-cycle results.
+At897c the actual browser command/Engine route also PASSes healing II->I1 and
+OD6->4 once; actual prepared-input C4 fault1 PASSes both local compensation and
+whole-turn rollback. Console FAILs its pending-source override lifetime guard,
+without timeout; remaining12 are UNRUN. Bounded source-scope correction/design
+is pending, not a guard exemption. Cheap32/terminal4/role10 and other accepted
+lineages remain explicit in plan. Full T095/T102/T103/US4 remain open.
 
 Initial prebuild combat authoring checkpoint (2026-10-28): accepted genuine cost-admission
 RED is retained. The bounded direct-Chaos-duel standard player-self implementation,

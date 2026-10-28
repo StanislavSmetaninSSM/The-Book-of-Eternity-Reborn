@@ -1,3 +1,36 @@
+# Actual browser combat healing GREEN; console pending-source scope defect — WIP
+
+2026-10-28 actual897c owning Integrationrefsfalse0errors/102baseline warnings,
+no additions1:47.36;18current artifact pins,16retained unchanged. Independent Sol
+delta SOURCE/PREP accepted; exactremaining15/9descriptors/15methods PlanOnly
+zeroexec8.0423398s. Catalog1036/12718 and role10 retain2f0c provenance.
+
+Corrected prepared-input fault1/1PASS62.2519876s/category54.9867616<180,
+TRXffae35a5a9b2f2c9e1c1c50d8b41841735abe0105e38e23e42c0e6d6efb4a149:
+cuts1, observedtrue, original/compensated6619bytes exact, turn41, ten roots and
+whole-turn marker absence/noC2 verified. The earlier retriable-IO fixture FAIL
+remains preserved: TRXe333eeb63d2601e4b8bd23bc67735f48c3326f7e93530874e74b61fcb38ad3ab.
+
+Actual browser1PASS94.7322602s<180, TRX
+5d2531316b24ff3cb3b0b760c4fe99d6474c33e01f72444b0fcaeb42968bdde7:
+real cancellation/confirmation/queue, d20=14/H3/II -> I1, paid OD6->4 once,
+History and original cleanup, unchanged schedule/world/LastTick, no natural cycle.
+Actual console1FAIL39.6999465s<180, TRX
+b20a3350ec8078a014def4fc70f86eb331d5877a4d663b3786cda0f8465eba7e:
+Snapshot override cannot change during reserved World validation. Paircomplete
+1PASS/1FAIL141.8144749s wall, no timeout/duplicates/both cleanuptrue;
+remaining12UNRUN. Browser shared handler is not an actual DOM/external GM proof.
+
+The console post-materialization entry reserves pending source and requires an
+already-null override. Completed-conflict validation then unconditionally calls
+UsePrevalidatedPendingTurnSnapshotScope(null), correctly rejected as mutation
+inside that reservation. Proposed bounded correction avoids only this redundant
+null-to-null scope when no override exists; all real replacement/withdrawal guards,
+current pending-source lookup, opening/final authentication and physical original
+reads stay. Independent DESIGN is pending; production is not changed yet. The
+actual console is causal RED. No fullDFR/T609/Mortal/Windows retry is released.
+Raw build16/functional14 stays outside checkout; no raw or saves are deleted.
+
 # Prepared-input fault fixture: terminal cut correction — WIP/UNCOMPILED
 
 2026-10-28 actual2f0c owning Integration137/Unit26 baseline warnings,0errors,
