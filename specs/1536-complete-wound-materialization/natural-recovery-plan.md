@@ -263,3 +263,13 @@ all19/current-SHA claim or complete selection.json run.
   Correct ONLY test schedule observer with existing DecodeOneOptionalBom; retain
   original exact bytes and comparisons. Production unchanged; retain current6+4,
   fresh Integrationrefsfalse then exact reset1 after narrow SOURCE. No all11 rerun.
+
+- Final b3 reset singleton PASS: all remaining Validate/Apply twice and exact
+  schedule/profile/History byte assertions execute. Sol independently accepted
+  combined retained6add cheap6+publication4 and finalb3 reset1 as11 unique PASS,
+  explicit source/run lineages, not an all11 new-SHA run. FinalPlan1/1 zeroexec,
+  original120s budget/no timeout/dup/skip/bothcleanup; hash/timing/pins in topplan.
+  The original retired-owner consumer loss is fixed without current spend/terminal
+  permission; baseline provenance and typed-vs-fullEngine limits retained. Current
+  functional next step is T108 safe player→current consenting Guardian, using
+  existing locality service and one program with distinct healer/target tiers.

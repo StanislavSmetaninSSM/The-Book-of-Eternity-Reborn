@@ -14420,8 +14420,9 @@ close full source-action/terminal/pending contracts or any top-level story task.
   1/1 on926 with independently accepted same-attempt/two-phase/one-cycle result.
   Bounded ordinary natural recovery now has19 accepted distinct cases across
   retained lineages: core14, actor/IV/ordinary graph/chronology4 and actual Shining1.
-  Real C4 reset reaches published II0, but the next safe resource-owner handoff
-  currently refuses and its singleton is not PASS. Fresh-process cleanup, full
+  Real C4 reset now passes through II0 and a fresh safe II1, including historical
+  owner carry and exact scheduler replay (qualified11 controls, retained lineages).
+  Fresh-process cleanup, full
   source producers and helper/entity ACTIVE follow-through remain open; this does
   not complete T104 or T105–T108.
   Current self-request prerequisite (2026-10-27), source
@@ -14467,7 +14468,9 @@ close full source-action/terminal/pending contracts or any top-level story task.
   profile publication, later/empty cycles, IV overflow/terminal and actual ordinary
   graph caller plus current-DATA witness guards. This is not full training producer,
   joint wound/reset, catchup/conflict or fresh-process qualification; Shining
-  ordinary caller parity passes6da. Other limits remain explicit without a new attempt/die or duplicated self tick.
+  ordinary caller parity passes6da. Other limits remain explicit without a new attempt/die or duplicated self tick. The real
+  C2/C4 reset→fresh safe-cycle journey now passesb3; initial nonzero progress is
+  lawful fixture DATA, not prior-natural producer qualification.
 - [ ] T107 [US4] Compose healing/recovery wound/effect/resource/profile/scheduler/history/output after-images and exact replay results in `BookOfEternityClient/Services/WoundAcceptedTurnPlanner.cs` and `BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs`
 - [ ] T108 [US4] Add player-to-entity and entity-to-player treatment authority using exact profile, visibility, reachability, consent/conflict, and current wound bindings in `BookOfEternityClient/Services/AfterlifeWoundTreatmentAuthority.cs`
 

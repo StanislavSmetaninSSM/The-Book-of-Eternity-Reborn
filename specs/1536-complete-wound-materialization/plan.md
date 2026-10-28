@@ -1,6 +1,50 @@
 # US4 safe self-treatment — active functional work, 2026-10-28
 
 
+Historical owner carry and conflict reset are now independently OUTCOME accepted.
+Qualified union:6add owner/history controls6 + ordinary publication4, retained with
+unchanged bodies/dependencies, then test-only BOM closure b3c655c8 reset1:11 unique
+test IDs/executions, all PASS, complete selections/no skip/dup/timeout and both
+cleanup flags true. This is explicit retained lineage, not one all11 run on b3.
+Official combined11/3 PlanOnly12.7828374s; final singleton PlanOnly1/1
+6.5443153s/zero executed. Category/total seconds:5.0673753/12.2580477 (60s),
+22.9577143/31.1109975 (120s),24.7526691/33.5190198 (120s).
+
+Actual direct C2/C4/common publication worsens the lawful initial nonformal I1
+fixture wound to II0, retains prior tick/origin/old History and publishes no natural
+conflict row. Existing terminal lifecycle closes the conflict. New actual signed
+safe43 captures those published bytes, recovers to II1 with targetH0, preserves
+real conflict costs/receipts and proves strict original-bound natural result.
+Validate and Apply twice leave exact schedule/profile/History bytes unchanged.
+Initial progress1 remains fixture DATA, not a claim about a prior natural producer;
+this is not full GameEngine conflict/DFR/provider/fresh-process qualification.
+
+Production fix reuses already fresh-validated retired historical keys through
+existing Combine/single final Build, without importing persisted current owners,
+capacity or spend/TerminalOwners permission. Real upstream new-snapshot item
+admission is retained in the consumer. Typed tests prove absent ledger history
+accepted, live/spend denied, current item not imported and precise overlap/duplicate/
+confusable/reuse behavior. No new cache, source reread, GM format or speedup claim;
+full canonical persisted equality/source/lease/closing checks remain.
+
+Owning Integration/Main/Support build0errors/137warnings4:09.88; Unitrefsfalse
+0errors/26warnings0:53.62. Final Integration-only BOM build0errors/102warnings
+2:00.93; all9 postrun master/copy pins match (Main7c24b6d6, Supportc8472972,
+Unit8889b1b0, finalIntegrationbdc86aaa). External raw natural-history-carry-build-1,
+natural-history-carry-1, natural-history-carry-bom-build-1 and
+natural-history-carry-reset-2 retains full logs/TRX/pins. Ordered qualified TRX SHA256:
+b2f53083e8777524b61a61746eaaa6e21b87d5f595aad03a31f8bbc4221e1e75,
+45f3479250caf7bee73dbe0a807a1f726f6e80d87a1644f88f360100e4f59196,
+b6708dd20dddfc2136a98747976c097301a8bd1cd60e737ea25b801fd700af2a.
+Earlier genuine owner-loss refusal, fixture proposal/preflight failures and BOM
+observer failure remain preserved; none is relabeled PASS. Sol final OUTCOME
+accepted; bounded architecture follow-through is requested. Prior19 retain their
+original scoped evidence; broad T105–T108 and standing HOLDs remain open. Next:
+written bounded player→current consenting Guardian aid design using existing local
+scope, explicit accepted profile participation and separate healer/natural tiers.
+
+
+
 Historical-carry correction WIP (UNCOMPILED/UNRUN): independent source review
 separates missing new-snapshot fixture item preflight from actual ResourceCore
 loss of already verified retired owner keys. Carry historical-only detached DATA
