@@ -111,7 +111,8 @@ public sealed class ExplorerWebCommandService
         ExplorerCommandDescriptor descriptor,
         ExplorerWebCommandRequest request)
     {
-        if (descriptor.Id != "status")
+        // Wound inspection owns coherent fresh reads; opening its menu must not normalize profile state.
+        if (descriptor.Id != "status" && descriptor.BrowserHandlerKind != ExplorerCommandBrowserHandlerKind.Wounds)
             await _stateManager.RefreshGameStateAsync();
         var command = parsed.BuilderCommand;
         var commandToken = ExplorerCommandCatalog.ExtractCommandToken(command);

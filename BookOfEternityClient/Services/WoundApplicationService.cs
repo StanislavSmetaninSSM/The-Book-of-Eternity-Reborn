@@ -71,8 +71,9 @@ internal static class WoundApplicationService
             var source = SpiritualHealingResolver.PrepareSource(new(wound, wound.Owner, profiles[0], context.Soul, input.Effects)).Source;
             var available = source is not null && source.HealingTier >= wound.Severity.Rank;
             var selection = new SpiritualSelfTreatmentSelection(wound.WoundId, WoundIdentityState.ComputeSemanticFingerprint(wound)) { Combat = combat };
-            var reason = available ? "Без затрат ОД; один обычный цикл мира даже при неудаче."
-                : "Требуется освоенная ступень Исцеления не ниже степени раны; V степень этим способом не лечится.";
+            var reason = source is null ? "Сейчас невозможно надёжно оценить самостоятельное лечение этой раны."
+                : available ? "Без затрат ОД; один обычный цикл мира даже при неудаче."
+                : $"Исцеление: {source.HealingTier}. Для снижения раны {wound.Severity.Value} степени требуется ступень {wound.Severity.Rank} или выше. Сейчас доступна только оценка: самостоятельное лечение этой раны недоступно.";
             if (combat is not null && available)
             {
                 AfterlifeActionCostRules.TryGetDefinition(AfterlifeActionCostRules.SpiritualHealingOperation, out var cost);
@@ -80,7 +81,7 @@ internal static class WoundApplicationService
                     " ОД. При прерывании цена сохраняется; безопасный цикл и естественное восстановление не проходят.";
             }
             choices.Add(new("wound_" + choices.Count, selection,
-                WoundPlayerProjection.Text(wound.Display.Name), wound.Severity.Value, source?.HealingTier ?? 0, available,
+                WoundPlayerProjection.Text(wound.Display.Name), wound.Severity.Value, source?.HealingTier, available,
                 reason));
         }
         return new(generation, choices);

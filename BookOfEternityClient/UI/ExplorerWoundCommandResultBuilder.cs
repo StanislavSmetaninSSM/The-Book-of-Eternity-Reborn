@@ -23,6 +23,10 @@ internal static class ExplorerWoundCommandResultBuilder
         if (projection.History.Count > 0)
             blocks.Add(new UiPanelBlock { Title = "История заживших ран", Blocks = projection.History.Select(h =>
                 (UiBlock)new UiTextBlock { Text = h.Name + " — " + h.Summary }).ToList() });
+        if (treatment && state is not null)
+            foreach (var choice in state.Choices.Where(c => !c.Available))
+                blocks.Add(new UiPanelBlock { Title = "Самостоятельное лечение — " + choice.Name + " — " + choice.Severity,
+                    Blocks = [new UiTextBlock { Text = choice.Reason }] });
         var canTreat = treatment && state?.Choices.Any(c => c.Available) == true;
         var combat = state?.Choices.Any(c => c.Selection.Combat is not null) == true;
         if (treatment)

@@ -33,9 +33,9 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
         string generation;
         await using (var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync())
             generation = fixture.Files.GetOrCreateSessionGeneration(lease);
-        var repairs = 0;
+        var profileRefreshReads = 0;
         var state = new StateManager(fixture.Files, new GameSettings(), NullLogger<StateManager>.Instance,
-            new StateManagerHooks { AfterPlayerSoulProfileInputsReadAsync = () => { repairs++; return Task.CompletedTask; } });
+            new StateManagerHooks { AfterPlayerSoulProfileInputsReadAsync = () => { profileRefreshReads++; return Task.CompletedTask; } });
         var console = new TestExplorerConsole();
         var locks = new LocalUiSessionLockService(fixture.Files);
         var owner = new LocalUiSessionLockOwner("wound-assessment-console", "console_explorer", "Оценка раны", TimeSpan.FromMinutes(2));
@@ -65,7 +65,7 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
         var consoleLock = await OwnedLock();
         Assert.True(uiLockMutations > 0);
         var consoleLockWrites = uiLockMutations;
-        output.WriteLine(JsonSerializer.Serialize(new { realm, tier, phase = "console", mutations, uiLockMutations, repairs }));
+        output.WriteLine(JsonSerializer.Serialize(new { realm, tier, phase = "console", mutations, uiLockMutations, profileRefreshReads }));
         Assert.Equal(before, Snapshot());
         Assert.Empty(mutations);
         Assert.Empty(console.SelectionTitles);
@@ -77,12 +77,12 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
         Assert.Empty(browser.Prompts);
         Assert.Empty(browser.Actions);
         Assert.Null(browser.InteractiveSession);
-        output.WriteLine(JsonSerializer.Serialize(new { realm, tier, phase = "browser", mutations, uiLockMutations, repairs }));
+        output.WriteLine(JsonSerializer.Serialize(new { realm, tier, phase = "browser", mutations, uiLockMutations, profileRefreshReads }));
         Assert.Equal(consoleLock, await OwnedLock());
         Assert.Equal(consoleLockWrites, uiLockMutations);
         Assert.Equal(before, Snapshot());
         Assert.Empty(mutations);
-        Assert.Equal(0, repairs);
+        Assert.Equal(0, profileRefreshReads);
         await using (var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync())
             Assert.Null(explorer.ConsumePendingSpiritualSelfTreatment(WoundApplicationService.ActionText,
                 fixture.Files.GetOrCreateSessionGeneration(lease)));
@@ -103,6 +103,6 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
         foreach (var path in new[] { AcceptedMechanicsPlan.WoundCommandPath, PendingPlayerActionService.PendingPath,
                      LiveTurnPreparationService.PendingTurnSnapshotManifestPath, "input/turn_request.json" })
             Assert.Null(await fixture.Files.ReadFileBytesAsync(path));
-        output.WriteLine($"Known II / H{tier} / {realm}: both real handlers; verified console transport lock only; no prompt/action/gameplay write/repair or gameplay tree change.");
+        output.WriteLine($"Known II / H{tier} / {realm}: both real handlers; verified console transport lock only; no prompt/action/gameplay write/profile refresh or gameplay tree change.");
     }
 }

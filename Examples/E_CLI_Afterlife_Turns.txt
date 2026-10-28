@@ -13267,7 +13267,7 @@ Known-wound assessment — assessment only; no GM turn
 
 Player in Chaos Sea knows an active spiritual wound II and has validated H0.
 Opening /лечить displays: «Исцеление: 0. Для снижения раны II степени требуется
-ступень 2 или выше. Сейчас доступна только оценка: лечение этой раны недоступно.»
+ступень 2 или выше. Сейчас доступна только оценка: самостоятельное лечение этой раны недоступно.»
 The client completes the command without selection/confirmation. With the same
 known II wound and H1 in Shining Abode, it shows Исцеление: 1 and the same required
 ступень 2; the result is still assessment only. Neither opening heals or advances

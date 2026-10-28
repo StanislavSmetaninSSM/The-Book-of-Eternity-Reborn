@@ -54,8 +54,8 @@ data-model12 rule2; not FR071 hidden-fact discovery):
 4. Synchronize GM matrix, a worked no-turn example and bounded documentation guard.
    Mark only this subtask done; broader T093 diagnosis discovery and US4 stay open.
 RED scaffold WIP: eleven typed cases and four actual console/browser rows are
-authored, runtime UNRUN. First owning Unit build0b313 passed0errors/76 existing
-warnings in3:21.03; only CreateState visibility changes in production. Sol found
+authored, runtime UNRUN. First owning Unit build0b313 passed0errors/76 warnings including expected RED xUnit2002
+in3:21.03; only CreateState visibility changes in production. Sol found
 a class-only selector and a negative that bypassed treatment rendering; both are
 corrected, including coherent Mortal projection. Fresh Unit refsfalse is required
 for that test-only correction. Handler fixture reuses the complete existing wound
@@ -95,6 +95,26 @@ repairs, wound/effect/history/resource/world/pending/dice checks remain mandator
 Sol approved that exact boundary; no production lock bypass/preseed/manual cleanup.
 Fresh Integration and corrected SOURCE/PREP precede another handler run. Unit RED
 remains unchanged; no product implementation or gameplay PASS is claimed yet.
+Corrected handler219791090 is causal RED:4executed/4expectedFAIL, complete/no
+skip/timeout/duplicate, both cleanuptrue; wall17.5521617s/category9.3108139s<120.
+Every row proves unchanged gameplay tree, zero gameplay mutations, one exact console
+UI-lock write and unchanged owned lock after browser. Console profile-input refresh
+count0 becomes browser1; sole failure is expected0/actual1 at line85. This counts
+the observed profile-input refresh path, not a proven repair write; bytes stayed
+unchanged. Full output retains both counts. TRX SHA256
+0aee9df8504777d7f186a8433bd6ae094e25d1e9fd3c1391e1bfd05fb7bcb438.
+GREEN implementation WIP/UNCOMPILED: retain null for invalid source, derive actual
+known H/rank insufficiency once, display disabled self assessment outside prompts,
+and bypass only general StateManager normalization for the Wounds handler, whose
+existing service still owns fresh coherent source reads. Confirmation, staging,
+current generation, tier gates and UI locking are unchanged. Helper availability
+is not negated by self insufficiency. Fixture count is renamed profileRefreshReads
+for accuracy. Unit projection reuses its already built catalog. Final selection:
+11 typed +4 handler +1 existing affected available-browser cancel +1 GM guard,
+17cases/3descriptors/8methods; unchanged1/2/1minute budgets. Existing39 combat,
+DFR/Mortal/Windows and other accepted cases are not replayed. Independent coherent
+SOURCE/selection, fresh affected builds, exact discovery/PlanOnly/PREP then GREEN
+remain required. No speedup or completed T093-ASSESSMENT yet.
 Optimization: reuse the already parsed catalog/profile/soul/effect snapshot owned by
 one read operation; renderer receives detached choice DATA and performs no reads or
 parsing. Every wound has a distinct identity/severity/complication input, so source
@@ -103,7 +123,7 @@ longer lifetime, source-count reduction or speedup is claimed. Fresh integrity,
 visibility, current session and selection revalidation stay mandatory.
 
 The temporary ENOSPC incident preserved this WIP remotely at4b864f348. Eight
-exact obj/bin duplicate intermediate files and two independently reviewed orphan
+exact obj/bin duplicate intermediate files and three independently reviewed orphan
 Git download tmp files were retired; bin18, all251 indexed pack entries, raw,
 recovery copies and saves remain. No GC/history operation occurred;826MiB is
 available. The full retirement receipts stay outside checkout.
@@ -174,7 +194,7 @@ exceptions, and preserve all rollback/revocation checks. Full raw is unchanged i
 and functional13–16; every command, log, TRX, pin and verification report stays
 outside checkout and GitHub. No raw or user saves were deleted.
 
-World source-closure remains NOT PASS: six pre-existing stale pins are unchanged
+At that combat checkpoint World source-closure remained NOT PASS: six pre-existing stale pins were unchanged
 (BrowserOriginalAdmission, AcceptedTurnAndInkFeathers, EffectMaterialization,
 NpcWorldAndMeta, ResourceMaterialization, SpiritualWoundSourceAdmission). Only the
 independently reviewed AfterlifeSpiritualConflict pin was refreshed. The 66-entry
@@ -183,7 +203,7 @@ or silent rebaseline is claimed. Track its separate review under T112-SOURCE-PIN
 FullDFR/T609 and Mortal compatibility remain HOLD; Windows is deferred. The earlier
 DFR300.1806894s timeout, first guardian intermittent timeout and cross-OS DATA limit
 remain open. No new clean-restore qualification of this checkpoint is claimed.
-T093 guided spiritual diagnosis still needs the missing check/time rule clarified;
+At that checkpoint broader T093 diagnosis-discovery had an unresolved check/time rule;
 known inspection/insufficient-tier feedback is not FR071 discovery completion.
 
 # Prepared input versus canonical rollback: bounded implementation — WIP/UNCOMPILED

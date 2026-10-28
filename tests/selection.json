@@ -10,7 +10,7 @@
 },
 {
   "category": "spiritual-treatment-assessment-handlers",
-  "reason": "T093-ASSESSMENT: both actual handlers must show the same known H0/insufficient assessment while leaving the complete gameplay tree and non-UI mutation count unchanged, with exact normal console lock identity checked separately. Existing complete wound/resource fixture is reused without a GameEngine turn or GM response.",
+  "reason": "T093-ASSESSMENT: both actual handlers must show the same known H0/insufficient assessment while leaving the complete gameplay tree and non-UI mutation count unchanged, with exact normal console lock identity checked separately. Existing complete wound/resource fixture is reused without a GameEngine turn or GM response. The directly affected existing available-browser cancellation case verifies valid choices and cleanup after bypassing the normalizing refresh.",
   "contracts": [
     "#1536 T093-ASSESSMENT console/browser parity and no-turn assessment"
   ]

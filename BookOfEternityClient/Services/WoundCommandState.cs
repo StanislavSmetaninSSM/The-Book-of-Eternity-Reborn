@@ -1,7 +1,7 @@
 namespace BookOfEternityClient.Services;
 
 internal sealed record WoundTreatmentChoice(string Value, SpiritualSelfTreatmentSelection Selection,
-    string Name, string Severity, int HealingTier, bool Available, string Reason);
+    string Name, string Severity, int? HealingTier, bool Available, string Reason);
 
 /// <summary>Detached selection DATA retained by the existing prompt session or console action.</summary>
 internal sealed class WoundCommandState(string generation, IEnumerable<WoundTreatmentChoice> choices)

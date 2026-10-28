@@ -121,7 +121,8 @@ public sealed class WoundTreatmentAssessmentTests
         input.Carriers.AfterlifeProfiles!["profiles"]![0]!["standardArts"] = new JsonObject { ["spiritual_healing"] = tier };
         var soul = new JsonObject { ["currentRealm"] = realm == "chaos_sea" ? "Chaos Sea" : "Shining Abode",
             ["afterlifeCombatProfile"] = new JsonObject { ["artTiers"] = new JsonObject { ["spiritual_healing"] = tier } } };
-        return new(input, WoundCarrierCatalog.Build(input.Carriers), soul, null, WoundPlayerProjection.Build(input));
+        var catalog = WoundCarrierCatalog.Build(input.Carriers);
+        return new(input, catalog, soul, null, WoundPlayerProjection.Build(input, catalog));
     }
 
     private static string Snapshot(WoundPlayerReadContext context) =>
