@@ -14456,8 +14456,12 @@ close full source-action/terminal/pending contracts or any top-level story task.
   IV carry/fullterminal, actual ordinary III/H5 graph caller and current-DATA
   newborn/archive witness edges. These are separate owned typed/native-shaped
   scopes; actual Shining II/H3 caller also passes on6da with shared9→10 and
-  inactiveChaos2 retained. Joint worsening/reset/creation, conflict/catchup and
-  wider source/producer qualification remain open. T105/T107 must reuse carried
+  inactiveChaos2 retained. Real C2/C4 worsening/reset → fresh safe-cycle recovery
+  is now qualified by the accepted 11 controls across explicit 6add/b3 lineages:
+  lawful initial I1 becomes actual II0, then fresh signed safe H0 gives II1 with
+  historical-owner agreement, costs/receipt retention and exact scheduler replay.
+  Initial I1 is fixture DATA, not an earlier natural producer. Joint wound/creation,
+  catchup and wider conflict/source/producer qualification remain open. T105/T107 must reuse carried
   progress, multi-step/follow-up stages and exact private tick authority; do not
   cap/discard valid III/IV progress or borrow Mortal-only authority.
 - [ ] T106 [US4] Integrate accepted recovery and art progression with `ProgressionScheduleService` for player soul and persistent actors without wall-clock or effect-scheduler fallback in `BookOfEternityClient/Services/ProgressionScheduleService.cs` and `BookOfEternityClient/Services/AfterlifeEntityProfileState.cs`
@@ -14467,7 +14471,7 @@ close full source-action/terminal/pending contracts or any top-level story task.
   afterimages survive; all14 bounded checks passed. Follow-through4 now adds per-owner actual
   profile publication, later/empty cycles, IV overflow/terminal and actual ordinary
   graph caller plus current-DATA witness guards. This is not full training producer,
-  joint wound/reset, catchup/conflict or fresh-process qualification; Shining
+  joint wound/creation, wider catchup/conflict or fresh-process qualification; Shining
   ordinary caller parity passes6da. Other limits remain explicit without a new attempt/die or duplicated self tick. The real
   C2/C4 reset→fresh safe-cycle journey now passesb3; initial nonzero progress is
   lawful fixture DATA, not prior-natural producer qualification.

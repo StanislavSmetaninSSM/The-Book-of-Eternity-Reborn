@@ -1,5 +1,26 @@
 # US4 safe self-treatment — active functional work, 2026-10-28
 
+Full-normalizer retry on clean efd6af044 remains unaccepted. Integration-only
+refsfalse build passed (0 errors, 102 warnings, 1:51.43); all 9 pins match retained
+Main/Support/Unit, with fresh Integration 7f7127ba…. Official remaining PlanOnly
+is exactly 8 cases / 5 descriptors, 0 executed, 7.9268251 s. Locality singleton
+completed FAIL in 29.1403078 s, no timeout/duplicate, both cleanup flags true;
+TRX SHA256 57f318f954693f2680dc641b3f74ce5246c388ce2a5c2a2c93073547e2eac830.
+The prior item-capture failure is closed: standard raw admissions and preparation
+pass, full normalization reaches PublishAcceptedMechanics120, then exact closing
+rejects changed game_state/meta/afterlife_entity_profiles.json at Planner135.
+The precise changed profile field was not retained. No full-normalization or
+negative-owner PASS is claimed; issuer/backend/console/browser remain UNRUN in
+this attempt. Existing 6 passing cases retain their exact 8a lineages.
+
+One bounded source comparison is in progress: generic profile projection/client
+authority versus the actual prepared common-plan profile afterimage and existing
+C4 owned-root skip. Determine whether duplicate generic publication can be avoided
+under the real plan, or an exact owned transition is needed. No profile whitelist,
+semantic-ignore, source/original/FP rebinding, seed-only workaround or next runtime
+is authorized merely by this hypothesis. Raw is external under
+spiritual-aid-normalization-integration-build-2 and spiritual-aid-normalization-2.
+
 First normalization qualification on clean compiled8a17cf978: owning Integration/
 Main/Support0errors137warnings4:13.41, Unitrefsfalse0errors26warnings1:02.77,
 all9pins match. First combined PlanOnly comma argument was refused as one unknown
