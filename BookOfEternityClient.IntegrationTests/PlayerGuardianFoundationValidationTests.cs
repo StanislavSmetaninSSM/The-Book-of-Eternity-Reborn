@@ -385,7 +385,7 @@ public sealed class PlayerGuardianFoundationValidationTests : IDisposable
         };
     }
 
-    private static JsonObject CreateGuardian(
+    internal static JsonObject CreateGuardian(
         string guardianId,
         string canonicalName,
         string abodeId,

@@ -35,7 +35,7 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
         var injectBeforeDraw = false;
         var foreignMutationReached = 0;
         await using var fixture = await HealingFixture.CreateAsync(3, 3, 14, stageRequest: false,
-            beforeResourceBootstrap: AfterlifeSpiritualNaturalRecoveryTests.SeedAidGuardianAsync,
+            beforeResourceBootstrap: SeedEngineAidGuardianAsync,
             hooks: !refuseBeforeDraw ? null : new FileSystemManagerHooks
             {
                 BeforeCanonicalReadOpenAsync = path =>
@@ -292,6 +292,29 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
             output.WriteLine(diagnostics.Describe());
             await runtime.AudioService.DisposeAsync();
         }
+    }
+
+    private static async Task SeedEngineAidGuardianAsync(FileSystemManager files, JsonObject profiles)
+    {
+        await AfterlifeSpiritualNaturalRecoveryTests.SeedAidGuardianAsync(files, profiles);
+        // Reuse the existing complete canonical Guardian factory BEFORE the one
+        // resource bootstrap. Empty bootstrap return marker is the current valid
+        // no-return contract, not an invented resource cycle/capacity or rebootstrap.
+        var guardian = PlayerGuardianFoundationValidationTests.CreateGuardian(
+            AfterlifeSpiritualNaturalRecoveryTests.AidGuardianId, "Хранитель целостности",
+            AfterlifeSpiritualNaturalRecoveryTests.AidAbodeId);
+        Assert.Equal(string.Empty, guardian["gachaSystem"]!["currentReturnCycleId"]!.GetValue<string>());
+        await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+        await files.WriteFileAtomicAsync(lease, AfterlifeWoundTreatmentAuthority.AidLocalityPaths[0], new JsonObject
+        {
+            ["guardians"] = new JsonArray(guardian), ["activeGuardian"] = guardian.DeepClone(),
+            ["chaosSeaNavigation"] = new JsonObject
+            {
+                ["currentGuardianId"] = AfterlifeSpiritualNaturalRecoveryTests.AidGuardianId,
+                ["currentAbodeId"] = AfterlifeSpiritualNaturalRecoveryTests.AidAbodeId,
+                ["discoveredAbodes"] = new JsonArray(AfterlifeSpiritualNaturalRecoveryTests.AidAbodeId)
+            }
+        }.ToJsonString());
     }
 
     private static async Task WriteAidGuardianReasoningAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease, TurnRequest turn, bool grant)

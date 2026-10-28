@@ -1,5 +1,33 @@
 # US4 safe self-treatment — active functional work, 2026-10-28
 
+Actual active-aid first build ba1b551d passed: owning Integration/Main/Support
+0errors/137warnings4:22.12, Unitrefsfalse0errors/26warnings1:02.86, all9pins match.
+OfficialPlanOnly35/9zeroexec13.7910323. Scalar1/guidance2/request24/pending2/
+backend1/consumedSELFgraph1 all PASS (31 unique executions), exact complete
+selections/no timeout/duplicate/bothcleanup. Genuine scalar RED is now GREEN;
+backend full grant/stage/refusals/result/history omission/I/replay assertions run.
+Raw external spiritual-aid-active-build-1 + spiritual-aid-active-1.
+
+First actual console category completed2FAIL/0PASS20.1703754s, no timeout/dup and
+bothcleanup; TRX SHA256 b462047e13e387913cf14853ee26d02b684a3d36c0d5536acf8eeb3c462f21ee.
+Both fail BEFORE the first grant/native hook at preturn validation: the minimal
+locality-only Guardian lacks26 required canonical fields/navigation entries.
+This is a fixture setup refusal, not aid product RED or accepted grant evidence.
+Browser actual was not launched after the failed category. Logger/TRX are complete.
+
+Narrow fixture correction WIP (UNCOMPILED/UNRUN): actual Engine cases call a new
+pre-bootstrap wrapper which reuses the existing complete Guardian factory from
+PlayerGuardianFoundationValidationTests (visibility only made internal). It
+includes personality/manifestation/names/relationships/quests/lore/mood/power and
+discovered navigation. Current gacha bootstrap uses its legal EMPTY return marker;
+GuardianProjectsAndGacha5291+ accepts it and AfterlifeResourceOwnerComposer895+
+explicitly emits NO return capacity for that marker. No fake cycle/capacity,
+resource quartet deletion/reset or second bootstrap is introduced. The existing
+minimal producer/backend callback and all31 passing bodies/defaults are unchanged.
+Fresh Integration-only refsfalse against current Main/Support is sufficient after
+finite SOURCE closure; no Main/Unit or31 rerun. Exact next PlanOnly4/2 and separate
+console2/180 then browser2/180 only. Aid product/caller functionality remains UNRUN.
+
 Browser refusal oracle closure (UNCOMPILED/UNRUN): compare preparing Generation,
 Action, Source and the full queued body after removing only legitimate phase/proof
 fields (including submittedAtUtc unchanged). Capture exact preparing-slot bytes
