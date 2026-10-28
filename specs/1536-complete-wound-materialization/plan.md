@@ -1,6 +1,20 @@
 # US4 safe self-treatment — active functional work, 2026-10-28
 
 
+Real C4 reset follow-through WIP (UNCOMPILED/UNRUN): one owned Integration
+singleton/120s uses existing complete conflict fixture, actual C2 decision and
+common C4 publisher, then actual fresh signed natural request on the same files.
+A lawful nonformal original guardian I/progress1/tick baseline is fixture DATA,
+not evidence of an earlier accepted natural producer. Require published worsen
+II0 with original/tick/old History retained, no conflict natural tick, terminal
+closure, new safe II1/H0 with no leaked old point or repeated conflict cost, strict
+original-bound result and exact inert schedule/profile/History replay. No new
+producer/codec/authority/cache and no post-C4 copied afterimages or rebootstrap.
+One worked example/catalog owner added; prior19 remain retained, finite SOURCE/
+PREP required before one Integrationrefsfalse build and official singleton run.
+
+
+
 Shining parity on clean/compiled6da7a948: exact official1case/1descriptor PlanOnly
 7.7481252s/zero executions; actual1/1PASS, complete exit0/no skip/dup/timeout and
 both cleanup flags true. Category24.1585650s<180, total33.1560602s; full final stdout

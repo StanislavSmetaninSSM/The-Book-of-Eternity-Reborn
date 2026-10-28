@@ -2,6 +2,32 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "spiritual-recovery-conflict-reset",
+  "responsibility": "One real C2 re-trauma decision and C4 common publication over a lawful initial spiritual I/progress1 guardian baseline: worsening II resets only current progress, retains prior tick/origin/history, no conflict natural row; fresh signed next safe cycle gives II1/H0, preserves actual conflict costs and receipts, exact scheduler replay is inert.",
+  "excludes": "Initial baseline is not evidence of an earlier natural producer; no speculative ordinary joint wound codec, new conflict entry producer, full Engine/DFR interruption matrix, helper/provider/fresh-process/Mortal/Windows qualification. Previous19 retained by unchanged production and fixture defaults.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualRecoveryReset.cs"
+  ],
+  "related": [
+    "spiritual-natural-recovery-publication"
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualRetraumaResetsRecoveryBeforeTheNextFreshSafeCycle"
+      ]
+    }
+  ]
+},
+{
   "id": "spiritual-natural-recovery-shining",
   "responsibility": "One actual Shining Abode ordinary II/H3 caller authors requested I graph with no treatment entropy, advances shared afterlife clock9→10 and only active Shining/Guardian/resident contours, retains inactive Chaos2 and strict natural History/no charge/cleanup.",
   "excludes": "Incarnation package/bootstrap/catchup/realm-transfer execution, conflict/helper treatment, provider/fresh-process; existing18 preserved by unchanged production and default fixtures.",

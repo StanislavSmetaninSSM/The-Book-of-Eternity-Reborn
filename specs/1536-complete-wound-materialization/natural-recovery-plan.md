@@ -121,3 +121,32 @@ One new actual ordinary Shining II/H3 Engine caller on existing program/schedule
   retrauma with accumulated natural progress→reset0/no conflict tick→fresh safe
   cycle recovery. Existing source/decision/effect/common publisher only; broad
   T105–T108 and held full DFR/Mortal/Windows remain open.
+
+
+## Real conflict reset to fresh safe-cycle follow-through (UNCOMPILED/UNRUN)
+
+One new literal Integration Fact/120s uses existing
+`CreateCompleteConflictFrameContextAsync(seedOriginalInputs)` →
+`CommitInitialC2PairAsync(adjustConflict)` → typed OpenC2/SubmitDecision → actual
+common C4 publisher. A strict canonical nonformal guardian I/progress1 baseline,
+untreated/no active course and CreatedAtTurn41, is seeded before original turn42.
+This baseline is not a claim that an earlier accepted natural producer ran.
+Initial wound/identity/History/catalog agreement is required. Existing tierII
+pressure mirrors, an explicit re-trauma target, lawful costs and bounded strain
+produce the real II decision. Existing resolve lifecycle closes the conflict.
+
+Require actual published II0 with unchanged prior tick/origin and old History,
+only one real worsen/receipt and no natural row in the conflict. A new actual
+LiveTurnPreparation request43/control captures the exact C4 profile bytes. Its H0
+natural program must give II1, strict source-bound result/no attempt, no repeated
+conflict cost or changed receipts; repeated scheduler Apply retains exact profile,
+History AND schedule images. No rebootstrap/reset/copying completed afterimages.
+The new worked example states the same existing contract; Mortal has no changed
+behavior, while existing afterlife Matrix/guide already specify reset/safe cycles,
+so no new prompt/manifest surface or broader docs matrix is needed.
+
+Optimization: one test-owned context and its existing source/decision/C4/natural
+machinery; no second expensive fixture or general cache/framework. No production
+change, previous19 default/body dependencies retained. Need finite SOURCE/PREP,
+one fresh Integration refsfalse build against unchanged Main/Support, official
+singleton PlanOnly and actual120; exact runtime outcome decides acceptance.
