@@ -1,3 +1,43 @@
+# Engine entry guards GREEN; actual C4 prepared-input rollback role remains RED
+
+2026-10-28 d0f79aa fresh owning Main/Support/Integration0errors/137baselinewarnings
+4:38.75, no new warnings;12 selected DLL/PDB pins agree. New catalog1034/12716
+valid/zeroexec; literal16cases/9descriptors/15methods PlanOnly zeroexec9.0101233s.
+Independent Sol/Astra SOURCE and Sol PREP accepted. Actual unowned-command Engine
+controls2/2PASS73.5519403s/category66.5073202<180, both cleanuptrue; TRX
+4e01965ce3c04a47cfda6e49a0fb68df676d96725e4c0fcc51b3b7f07ad789b4,
+independent Sol OUTCOME accepted. The client-marker entry fix is not a permission
+for ordinary GM commands or changed marker bytes.
+
+The actual positive browser now passes that entry, full C2 and completed reduction;
+C4 issuance refuses exactly wound_commands.json under code
+spiritual_c4_rollback_coverage_missing. TRX
+12d00e46f4d79eee098d7463c155a411adbe4082b5f37cb1872ee16b7cd14bfe;
+67.5476827s wall/category58.9328992<180, no timeout/duplicates/both cleanuptrue.
+It is still1FAIL, console1 and remaining12UNRUN. No retry is released merely by
+this checkpoint. Raw functional12/build14 stay outside checkout; no source changes
+were made after that actual. The current tree is clean and remote d0f is preserved.
+
+Root/Astra confirm the role contradiction: actual signed client preparation input
+is in Files/Hashes but deliberately outside canonical RollbackBaselineFiles and
+backups. The generic C4 rollback-footprint check rejects this exact member; absent
+unmapped canonical paths are already correctly covered as signed absence. Do not
+change Engine baseline/marker role or remove the C4 coverage fence. A bounded C4
+partition/design is being checked: ordinary canonical footprint keeps its existing
+proof, actual completed combat origin separately authenticates exactly one prepared
+command input and its exact atomic compensation image in the existing authority.
+Local C4 failure must restore that prepared input; whole-turn rollback keeps its
+pre-turn absence. Current committed GM decision bytes may legitimately differ
+from the original client marker after counterharm, so those two roles must retain
+their separate existing source/pending/plan proofs. Guaranteed counterharm is not
+excluded. No new publisher/cache/ledger/diagnostic stack is authorized or needed.
+
+All previously accepted backend pair5/data4/cheap32/ordinary1/historical17 retain
+explicit source-equivalent lineages. Full combatUI/US4/#1536 remain open. Next
+functional T093 discovery has a separate unresolved spiritual check/time rule;
+known inspection and insufficiency are not silently treated as FR071 success.
+This product question is not a prerequisite for closing the current combat route.
+
 # Actual Engine combat entry causal RED and owned marker routing — WIP
 
 2026-10-28 d81fb05 fresh Integrationrefsfalse0errors/102baseline warnings/2:17.69,
