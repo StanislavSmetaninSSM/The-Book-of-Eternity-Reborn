@@ -454,35 +454,46 @@ internal sealed class SpiritualWoundCaptureCheckpointState
         Require(Fingerprint(submission["priorPendingPacketFingerprint"]) == pendingFingerprint,
             "Submission prior packet differs.");
         var decision = Object(submission["stagedDecision"]);
-        var kind = Text(decision["decision"]);
-        Require(kind is "none" or "materialize" or "guarantee_satisfied", "Unknown selected decision.");
-        Closed(decision, "opportunityRef sourceId decisionFingerprint sourceOrdinal waveOrdinal decision selectedSeverityRank woundDraftBase64 woundDraftFingerprint" +
-            (kind == "guarantee_satisfied" ? " satisfiedWoundId satisfiedSeverityRank" : ""));
-        Text(decision["opportunityRef"]);
-        Text(decision["sourceId"]);
-        Integer(decision["sourceOrdinal"], 0);
-        Integer(decision["waveOrdinal"], 0);
-        Require(Fingerprint(decision["decisionFingerprint"]) ==
-            Hash(decision, "staged_decision", "decisionFingerprint"), "Selected decision digest differs.");
-        if (kind == "materialize")
+        if (decision.ContainsKey("family"))
         {
-            Integer(decision["selectedSeverityRank"], 1, 4);
-            ValidateSubmissionBytes(decision["woundDraftBase64"], decision["woundDraftFingerprint"]);
-        }
-        else
-            Require(decision["selectedSeverityRank"] is null && decision["woundDraftBase64"] is null &&
-                decision["woundDraftFingerprint"] is null, "A no-transition choice contains a wound draft.");
-        if (kind == "guarantee_satisfied")
-        {
-            Require(submission["command"] is null, "Satisfied guarantee cannot carry a command.");
-            Text(decision["satisfiedWoundId"]);
-            Integer(decision["satisfiedSeverityRank"], 1, 4);
+            Closed(decision, "family decisionFingerprint outcome");
+            Require(Text(decision["family"]) == "combat_healing", "Unknown selected outcome family.");
+            SpiritualWoundDecisionPendingState.ValidateHealingSubmissionOutcome(Object(decision["outcome"]));
+            Require(JsonNode.DeepEquals(decision["decisionFingerprint"], decision["outcome"]!["decisionFingerprint"]) && submission["command"] is null,
+                "Automatic healing selection must retain its exact outcome without a GM command.");
         }
         else
         {
-            var command = Object(submission["command"]);
-            Closed(command, "contentBase64 contentFingerprint");
-            ValidateSubmissionBytes(command["contentBase64"], command["contentFingerprint"]);
+            var kind = Text(decision["decision"]);
+            Require(kind is "none" or "materialize" or "guarantee_satisfied", "Unknown selected decision.");
+            Closed(decision, "opportunityRef sourceId decisionFingerprint sourceOrdinal waveOrdinal decision selectedSeverityRank woundDraftBase64 woundDraftFingerprint" +
+                (kind == "guarantee_satisfied" ? " satisfiedWoundId satisfiedSeverityRank" : ""));
+            Text(decision["opportunityRef"]);
+            Text(decision["sourceId"]);
+            Integer(decision["sourceOrdinal"], 0);
+            Integer(decision["waveOrdinal"], 0);
+            Require(Fingerprint(decision["decisionFingerprint"]) ==
+                Hash(decision, "staged_decision", "decisionFingerprint"), "Selected decision digest differs.");
+            if (kind == "materialize")
+            {
+                Integer(decision["selectedSeverityRank"], 1, 4);
+                ValidateSubmissionBytes(decision["woundDraftBase64"], decision["woundDraftFingerprint"]);
+            }
+            else
+                Require(decision["selectedSeverityRank"] is null && decision["woundDraftBase64"] is null &&
+                    decision["woundDraftFingerprint"] is null, "A no-transition choice contains a wound draft.");
+            if (kind == "guarantee_satisfied")
+            {
+                Require(submission["command"] is null, "Satisfied guarantee cannot carry a command.");
+                Text(decision["satisfiedWoundId"]);
+                Integer(decision["satisfiedSeverityRank"], 1, 4);
+            }
+            else
+            {
+                var command = Object(submission["command"]);
+                Closed(command, "contentBase64 contentFingerprint");
+                ValidateSubmissionBytes(command["contentBase64"], command["contentFingerprint"]);
+            }
         }
         var combined = committedAllocations.DeepClone().AsArray();
         foreach (var row in Rows(submission["allocations"]))

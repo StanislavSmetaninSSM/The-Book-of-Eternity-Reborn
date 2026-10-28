@@ -124,8 +124,9 @@ public partial class ValidationService
                 return new(id, baseline.ToArray(), current.ToArray())
                 { DependentDraftFields = policy.Fields, DraftPolicy = policy };
             }
-            catch (Exception error) when (error is IOException or UnauthorizedAccessException or
-                InvalidOperationException or FormatException or JsonException or OverflowException or DecoderFallbackException)
+            catch (Exception error) when (error is not CoordinatedStatePublicationUncertainException &&
+                error is (IOException or UnauthorizedAccessException or InvalidOperationException or
+                    FormatException or JsonException or OverflowException or DecoderFallbackException))
             {
                 return null;
             }

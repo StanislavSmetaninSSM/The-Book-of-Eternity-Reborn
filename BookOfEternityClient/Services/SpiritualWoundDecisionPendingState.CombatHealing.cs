@@ -68,6 +68,29 @@ internal sealed partial class SpiritualWoundDecisionPendingState
         }
     }
 
+    // Checkpoint child validation is structural DATA. Its owning cold replay
+    // must execute the real source and compare the entire closed wrapper.
+    internal static void ValidateHealingSubmissionOutcome(JsonObject outcome)
+    {
+        Closed(outcome, "sourceId sourceOrdinal waveOrdinal disposition resourceTransition result decisionFingerprint");
+        Text(outcome["sourceId"]); Integer(outcome["sourceOrdinal"], 0, 0); Integer(outcome["waveOrdinal"], 0);
+        Require(Fingerprint(outcome["decisionFingerprint"]) == Hash(outcome, "staged_combat_healing", "decisionFingerprint"), "Healing submission digest differs.");
+        if (Text(outcome["disposition"]) == "resolved")
+        {
+            var result = Object(outcome["result"]);
+            ValidateHealingDecision(outcome, new JsonObject { ["sourceOrdinal"] = 0, ["witness"] = result["source"]!.DeepClone() });
+        }
+        else
+        {
+            Require(Text(outcome["disposition"]) == "blocked" && outcome["result"] is null, "Unknown combat outcome or blocked stages.");
+            var spend = Object(outcome["resourceTransition"]).Deserialize<ResourceTransition>() ?? throw new FormatException("Missing paid transition.");
+            Require(JsonNode.DeepEquals(outcome["resourceTransition"], JsonSerializer.SerializeToNode(spend)) &&
+                spend.Operation == ResourceTransitionOperation.Spend && spend.OriginKind == "afterlife_cost" && spend.Turn > 0 &&
+                spend.Coordinate == new ResourceCoordinate("chaos_sea", ResourceOwnerKind.AfterlifeActor, "player_soul", "spiritual_action_points") &&
+                spend.AppliedAmount >= 2 && spend.RequestedAmount == spend.AppliedAmount, "Invalid blocked paid DATA.");
+        }
+    }
+
     internal static void ValidateHealingDecision(JsonObject decision, JsonObject sourceRow)
     {
         Closed(decision, "sourceId sourceOrdinal waveOrdinal disposition resourceTransition result decisionFingerprint");

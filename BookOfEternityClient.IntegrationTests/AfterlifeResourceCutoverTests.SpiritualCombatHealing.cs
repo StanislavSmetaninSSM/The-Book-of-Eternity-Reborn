@@ -17,10 +17,11 @@ public sealed partial class AfterlifeResourceCutoverTests
     [InlineData("healed")]
     [InlineData("no_improvement")]
     [InlineData("blocked_worsen")]
+    [InlineData("next_boundary")]
     public async Task CombatHealingUsesAnActualPairAndDurableOutcomeWithoutASafeCycle(string mode)
     {
         var tier = mode == "no_improvement" ? 1 : 3;
-        var playerDie = mode == "healed" ? 19 : mode == "no_improvement" ? 2 : 5;
+        var playerDie = mode is "healed" or "next_boundary" ? 19 : mode == "no_improvement" ? 2 : 5;
         var oppositionDie = mode == "blocked_worsen" ? 15 : mode == "no_improvement" ? 2 : 5;
         ProgressionControl? control = null;
         JsonObject? intent = null;
@@ -29,7 +30,7 @@ public sealed partial class AfterlifeResourceCutoverTests
             seedOriginalInputs: async original =>
             {
                 await SeedOriginalIntakeBaselinesAsync(original);
-                await SeedCombatHealingOriginalAsync(original, tier);
+                await SeedCombatHealingOriginalAsync(original, tier, rank: mode == "next_boundary" ? 2 : 1);
             },
             captureOriginalSnapshot: async original =>
             {
@@ -54,7 +55,7 @@ public sealed partial class AfterlifeResourceCutoverTests
                 snapshotToken = (await original.ReadJsonAsync(LiveTurnPreparationService.PendingTurnSnapshotManifestPath))!["manifestPayloadHash"]!.GetValue<string>();
             });
         var before = await ReadCombatHealingWoundAsync(context);
-        Assert.Equal(1, before.Severity.Rank);
+        Assert.Equal(mode == "next_boundary" ? 2 : 1, before.Severity.Rank);
         Assert.Equal(1, before.Recovery.CurrentStepProgress);
         var originalTick = before.Recovery.LastTickKey;
         var schedule = await context.FileSystem.ReadFileBytesAsync(ProgressionScheduleService.SchedulePath);
@@ -62,49 +63,21 @@ public sealed partial class AfterlifeResourceCutoverTests
         Assert.Equal(control!.CurrentChaosSeaTurnOrdinal, control.NextChaosSeaTurnOrdinal);
         Assert.Equal(0, control.ChaosSeaCyclesExpectedThisTurn);
 
-        await WriteCompleteConflictFrameExchangeAsync(context);
-        var candidate = await ReadProjectedSourceContinuationCandidateAsync(context);
-        var active = candidate["activeConflict"]!;
-        var exchange = active["exchangeLog"]![0]!;
-        exchange["operationType"] = AfterlifeActionCostRules.SpiritualHealingOperation;
-        exchange["outcome"] = mode == "blocked_worsen" ? "countered" : mode == "no_improvement" ? "partial_success" : "success";
-        exchange["after"] = exchange["before"]!.DeepClone();
-        active["oppositionSideStrain"] = "clear";
-        exchange["matchupAudit"]!["playerOperation"] = AfterlifeActionCostRules.SpiritualHealingOperation;
-        exchange["matchupAudit"]!["primaryResolutionLane"] = AfterlifeActionCostRules.SpiritualHealingOperation;
-        exchange["matchupAudit"]!["riskProfile"] = "healing_timing";
-        exchange["matchupAudit"]!["oppositionOperation"] = mode == "blocked_worsen" ? "pressure" : "guard";
-        var cost = Math.Max(2, 5 - tier);
-        exchange["actionCostAudit"]!["player"] = new JsonObject
-        { ["operationType"] = AfterlifeActionCostRules.SpiritualHealingOperation, ["baseCost"] = 5, ["minCost"] = 2,
-            ["artTier"] = tier, ["effectiveCost"] = cost, ["before"] = 6, ["after"] = 6 - cost };
-        exchange["actionCostAudit"]!["opposition"] = new JsonObject
-        { ["operationType"] = mode == "blocked_worsen" ? "pressure" : "guard", ["baseCost"] = mode == "blocked_worsen" ? 3 : 2,
-            ["minCost"] = 1, ["artTier"] = mode == "blocked_worsen" ? 2 : 0,
-            ["effectiveCost"] = mode == "blocked_worsen" ? 1 : 2, ["before"] = 6, ["after"] = mode == "blocked_worsen" ? 5 : 4 };
-        exchange["diceAudit"]!["diceUsed"]![0]!["side"] = "PLAYERSIDE";
-        exchange["diceAudit"]!["diceUsed"]![0]!["value"] = playerDie;
-        exchange["diceAudit"]!["diceUsed"]![0]!["selection"] = "selected";
-        exchange["diceAudit"]!["diceUsed"]![1]!["value"] = oppositionDie;
-        exchange["diceAudit"]!["playerTotal"] = playerDie;
-        exchange["diceAudit"]!["oppositionTotal"] = oppositionDie;
-        exchange["diceAudit"]!["margin"] = playerDie - oppositionDie;
-        exchange["diceAudit"]!["outcomeBand"] = mode == "blocked_worsen" ? "decisive_opposition_success"
-            : mode == "no_improvement" ? "mixed_or_no_effect" : "decisive_player_success";
-        if (mode == "blocked_worsen")
-        {
-            exchange["after"]!["playerSideStrain"] = "fractured"; active["playerSideStrain"] = "fractured";
-            exchange["incomingAction"] = new JsonObject
-            {
-                ["operationType"] = "pressure", ["spiritualWoundTarget"] = new JsonObject
-                { ["actorType"] = "player", ["actorId"] = "player_soul", ["retraumaWoundRef"] = CombatHealingWoundId }
-            };
-        }
-        ResolveTerminalFixture(candidate);
-        candidate["recentConflicts"]![0]!["operationType"] = AfterlifeActionCostRules.SpiritualHealingOperation;
-        await context.WriteExactJsonAsync(AfterlifeSpiritualConflictState.StatePath, candidate.ToJsonString());
+        await WriteCombatHealingExchangeAsync(context, mode, playerDie, oppositionDie, tier);
         await WriteOriginalIntakeDraftAsync(context);
-        const string scene = "Душа направила искусство исцеления на собственную трещину; встречный натиск мог углубить её.";
+        if (mode == "next_boundary")
+        {
+            var graphs = AfterlifeSpiritualNaturalRecoveryTests.AuthorNaturalGraphs(before, new JsonArray(new JsonObject
+            {
+                ["stageRef"] = SpiritualHealingRequestProjection.GraphRef(intent!["intentFingerprint"]!.GetValue<string>(), before.WoundId, 1),
+                ["severityRank"] = 1, ["complications"] = SpiritualHealingRequestProjection.Complications(intent["intentFingerprint"]!.GetValue<string>(), before)
+            }));
+            var response = (await context.ReadJsonAsync("output/interface_updates.json")) ?? new JsonObject();
+            response["spiritualHealingGraphs"] = graphs;
+            await context.WriteExactJsonAsync("output/interface_updates.json", response.ToJsonString());
+        }
+        var scene = mode == "blocked_worsen" ? "Встречный натиск углубил трещину духовной целостности души."
+            : "Душа направила искусство исцеления на собственную трещину и завершила духовное противостояние.";
         await context.WriteExactJsonAsync(ProjectionNarrativePath, new JsonObject
         { ["response"] = scene, ["timestamp"] = DateTime.UtcNow.ToString("O") }.ToJsonString());
         AssertNoConflictFrameErrors(await context.Validator.ValidateAcceptedTurnRawMortalLocationMaterializationAsync());
@@ -135,7 +108,28 @@ public sealed partial class AfterlifeResourceCutoverTests
             var adapter = new ValidationService(context.FileSystem, NullLogger<ValidationService>.Instance);
             var opened = await adapter.OpenC2PrivateSessionAsync(lease);
             AssertNoConflictFrameErrors(opened.Issues);
-            if (mode == "blocked_worsen")
+            if (mode == "next_boundary")
+            {
+                Assert.Equal("dependent_continuation", opened.Disposition);
+                using var selected = opened.Session!;
+                var checkpoint = JsonNode.Parse((await context.FileSystem.ReadFileAsync(lease, SpiritualWoundCaptureCheckpointState.StatePath))!)!;
+                Assert.Equal("combat_healing", checkpoint["checkpoint"]!["pendingSubmission"]!["stagedDecision"]!["family"]!.GetValue<string>());
+                Assert.Null(checkpoint["checkpoint"]!["pendingSubmission"]!["command"]);
+                var retainedDecision = checkpoint["checkpoint"]!["pendingSubmission"]!["stagedDecision"]!.DeepClone();
+                var dependent = await selected.ReadDependentContextAsync(lease);
+                Assert.NotNull(dependent);
+                Assert.Contains(dependent!.DependentDraftFields, field => field.JsonPointer.EndsWith("/actionCostAudit/player/effectiveCost", StringComparison.Ordinal));
+                var current = JsonNode.Parse((await context.FileSystem.ReadFileAsync(lease, AfterlifeSpiritualConflictState.StatePath))!)!;
+                current["activeConflict"]!["exchangeLog"]![1]!["actionCostAudit"]!["player"]!["effectiveCost"] = 2;
+                current["activeConflict"]!["exchangeLog"]![1]!["actionCostAudit"]!["player"]!["after"] = 2;
+                // The exact allowed correction is raw input, not an accepted afterimage.
+                await context.FileSystem.WriteFileAtomicAsync(lease, AfterlifeSpiritualConflictState.StatePath, current.ToJsonString());
+                var resumed = await selected.ResumeDependentContinuationAsync(lease);
+                AssertNoConflictFrameErrors(resumed.Issues); Assert.Equal("completed_unpublished", resumed.Disposition); resumed.Session?.Dispose();
+                Assert.Equal(retainedDecision["decisionFingerprint"]!.GetValue<string>(),
+                    JsonNode.Parse((await context.FileSystem.ReadFileAsync(lease, SpiritualWoundDecisionPendingState.StatePath))!)!["pending"]!["healingDecisions"]![0]!["decisionFingerprint"]!.GetValue<string>());
+            }
+            else if (mode == "blocked_worsen")
             {
                 Assert.Equal("offer", opened.Disposition);
                 using var offered = opened.Session!;
@@ -146,6 +140,7 @@ public sealed partial class AfterlifeResourceCutoverTests
                 var recovery = retained["recovery"]!.DeepClone(); recovery["currentStepProgress"] = 0; recovery["currentStepThreshold"] = 4;
                 recovery["blockers"] = JsonSerializer.SerializeToNode(WoundTransitionReducer.DeriveWorseningBlockers(before));
                 proposal["proposal"]!["recovery"] = recovery;
+                proposal["proposal"]!["display"]!["acquisitionNarration"] = scene;
                 var decided = await offered.SubmitDecisionAsync(lease, JsonSerializer.SerializeToElement(proposal), scene);
                 AssertNoConflictFrameErrors(decided.Issues); Assert.Equal("completed_unpublished", decided.Disposition); decided.Session?.Dispose();
             }
@@ -158,7 +153,8 @@ public sealed partial class AfterlifeResourceCutoverTests
         AssertNoConflictFrameErrors(published.Issues); Assert.NotNull(published.MechanicsPlan);
         var history = WoundHistoryState.Parse((await context.ReadJsonAsync(WoundHistoryState.HistoryPath))!.ToJsonString(), WoundHistoryState.HistoryPath).State!;
         var receipts = (await context.ReadJsonAsync(SpiritualWoundOpportunityReceiptState.StatePath))!;
-        Assert.Null((await context.ReadJsonAsync(AfterlifeSpiritualConflictState.StatePath))!["activeConflict"]);
+        if (mode == "next_boundary") Assert.NotNull((await context.ReadJsonAsync(AfterlifeSpiritualConflictState.StatePath))!["activeConflict"]);
+        else Assert.Null((await context.ReadJsonAsync(AfterlifeSpiritualConflictState.StatePath))!["activeConflict"]);
         Assert.Single(receipts["healingSources"]!.AsArray()); Assert.Single(receipts["healingDecisions"]!.AsArray());
         Assert.Equal(0, receipts["healingDecisions"]![0]!["outcome"]!["waveOrdinal"]!.GetValue<int>());
         if (mode == "blocked_worsen")
@@ -175,7 +171,7 @@ public sealed partial class AfterlifeResourceCutoverTests
         {
             var result = Assert.Single(history.Transitions.Select(t => t.TransitionResult).OfType<SpiritualCombatHealingPersistedResult>());
             Assert.All(result.Stages, stage => Assert.Equal(originalTick, stage.After.Recovery.LastTickKey));
-            if (mode == "healed") { Assert.Equal(new[] { "create", "treat", "heal" }, history.Transitions.Select(t => t.Kind)); Assert.Equal("healed", result.Stages[^1].After.Lifecycle); }
+            if (mode is "healed" or "next_boundary") { Assert.Equal(new[] { "create", "treat", "heal" }, history.Transitions.Select(t => t.Kind)); Assert.Equal("healed", result.Stages[^1].After.Lifecycle); }
             else { Assert.Equal(new[] { "create", "treat" }, history.Transitions.Select(t => t.Kind)); Assert.Equal(1, (await ReadCombatHealingWoundAsync(context)).Recovery.CurrentStepProgress); }
         }
         await using (var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync())
@@ -232,6 +228,68 @@ public sealed partial class AfterlifeResourceCutoverTests
         }
     }
 
+    internal static async Task WriteCombatHealingExchangeAsync(ResourceMaterializationTestContext context, string mode,
+        int playerDie, int oppositionDie, int tier)
+    {
+        await WriteCompleteConflictFrameExchangeAsync(context);
+        var candidate = await ReadProjectedSourceContinuationCandidateAsync(context);
+        var active = candidate["activeConflict"]!;
+        var exchange = active["exchangeLog"]![0]!;
+        exchange["operationType"] = AfterlifeActionCostRules.SpiritualHealingOperation;
+        exchange["outcome"] = mode == "blocked_worsen" ? "countered" : mode == "no_improvement" ? "partial_success" : "success";
+        exchange["after"] = exchange["before"]!.DeepClone();
+        active["oppositionSideStrain"] = "clear";
+        exchange["matchupAudit"]!["playerOperation"] = AfterlifeActionCostRules.SpiritualHealingOperation;
+        exchange["matchupAudit"]!["primaryResolutionLane"] = AfterlifeActionCostRules.SpiritualHealingOperation;
+        exchange["matchupAudit"]!["riskProfile"] = "healing_timing";
+        exchange["matchupAudit"]!["oppositionOperation"] = mode == "blocked_worsen" ? "pressure" : "guard";
+        var cost = Math.Max(2, 5 - tier);
+        exchange["actionCostAudit"]!["player"] = new JsonObject
+        { ["operationType"] = AfterlifeActionCostRules.SpiritualHealingOperation, ["baseCost"] = 5, ["minCost"] = 2,
+            ["artTier"] = tier, ["effectiveCost"] = cost, ["before"] = 6, ["after"] = 6 - cost };
+        exchange["actionCostAudit"]!["opposition"] = new JsonObject
+        { ["operationType"] = mode == "blocked_worsen" ? "pressure" : "guard", ["baseCost"] = mode == "blocked_worsen" ? 3 : 2,
+            ["minCost"] = 1, ["artTier"] = mode == "blocked_worsen" ? 2 : 0,
+            ["effectiveCost"] = mode == "blocked_worsen" ? 1 : 2, ["before"] = 6, ["after"] = mode == "blocked_worsen" ? 5 : 4 };
+        exchange["diceAudit"]!["diceUsed"]![0]!["side"] = "PLAYERSIDE";
+        exchange["diceAudit"]!["diceUsed"]![0]!["value"] = playerDie;
+        exchange["diceAudit"]!["diceUsed"]![0]!["selection"] = "selected";
+        exchange["diceAudit"]!["diceUsed"]![1]!["value"] = oppositionDie;
+        exchange["diceAudit"]!["playerTotal"] = playerDie;
+        exchange["diceAudit"]!["oppositionTotal"] = oppositionDie;
+        exchange["diceAudit"]!["margin"] = playerDie - oppositionDie;
+        exchange["diceAudit"]!["outcomeBand"] = mode == "blocked_worsen" ? "decisive_opposition_success"
+            : mode == "no_improvement" ? "mixed_or_no_effect" : "decisive_player_success";
+        if (mode == "blocked_worsen")
+        {
+            exchange["after"]!["playerSideStrain"] = "fractured"; active["playerSideStrain"] = "fractured";
+            exchange["incomingAction"] = new JsonObject
+            {
+                ["operationType"] = "pressure", ["spiritualWoundTarget"] = new JsonObject
+                { ["actorType"] = "player", ["actorId"] = "player_soul", ["retraumaWoundRef"] = CombatHealingWoundId }
+            };
+        }
+        if (mode == "next_boundary")
+        {
+            var next = exchange.DeepClone().AsObject(); next["exchangeId"] = "exchange_after_combat_heal";
+            next["operationType"] = "guard"; next["outcome"] = "no_effect"; next.Remove("diceAudit");
+            next["before"] = exchange["after"]!.DeepClone(); next["after"] = next["before"]!.DeepClone();
+            next["matchupAudit"]!["playerOperation"] = "guard"; next["matchupAudit"]!["primaryResolutionLane"] = "guard";
+            next["matchupAudit"]!["riskProfile"] = "safe_defense";
+            next["actionCostAudit"]!["player"] = new JsonObject { ["operationType"] = "guard", ["baseCost"] = 2,
+                ["minCost"] = 1, ["artTier"] = 0, ["effectiveCost"] = 3, ["before"] = 4, ["after"] = 1 };
+            next["actionCostAudit"]!["opposition"] = new JsonObject { ["operationType"] = "guard", ["baseCost"] = 2,
+                ["minCost"] = 1, ["artTier"] = 0, ["effectiveCost"] = 2, ["before"] = 4, ["after"] = 2 };
+            active["exchangeLog"]!.AsArray().Add(next);
+        }
+        else
+        {
+            ResolveTerminalFixture(candidate);
+            candidate["recentConflicts"]![0]!["operationType"] = AfterlifeActionCostRules.SpiritualHealingOperation;
+        }
+        await context.WriteExactJsonAsync(AfterlifeSpiritualConflictState.StatePath, candidate.ToJsonString());
+    }
+
     private static async Task<WoundMaterializationEnvelope> ReadCombatHealingWoundAsync(ResourceMaterializationTestContext context,
         FileSystemManager.CanonicalWriteLease? lease = null)
     {
@@ -242,39 +300,59 @@ public sealed partial class AfterlifeResourceCutoverTests
         Assert.True(parsed.IsValid, string.Join(";", parsed.Issues)); return parsed.Wound!;
     }
 
-    private static async Task SeedCombatHealingOriginalAsync(ResourceMaterializationTestContext context, int tier)
+    internal static async Task SeedCombatHealingOriginalAsync(ResourceMaterializationTestContext context, int tier, int rank = 1)
     {
         await SeedSpiritualWorseningTierAuthorityAsync(context);
         var raw = WoundContractTestData.CreateSpiritualActiveWound(CombatHealingWoundId, "chaos_sea", "player_soul", "player_soul", AfterlifeEntityProfileState.StatePath);
-        raw["severity"]!["rank"] = 1; raw["severity"]!["value"] = "I"; raw["severity"]!["maximumAtCreation"] = "I";
-        raw["recovery"]!["currentStepThreshold"] = 2; raw["recovery"]!["currentStepProgress"] = 1;
+        Assert.Contains(rank, new[] { 1, 2 });
+        raw["severity"]!["rank"] = rank; raw["severity"]!["value"] = rank == 1 ? "I" : "II"; raw["severity"]!["maximumAtCreation"] = rank == 1 ? "I" : "II";
+        raw["recovery"]!["currentStepThreshold"] = 2 * rank; raw["recovery"]!["currentStepProgress"] = 1;
         raw["recovery"]!["lastTickKey"] = "fixture_prior_safe_cycle";
-        var consequences = raw["consequences"]!; consequences["slotBudget"] = 1; consequences["slotsUsed"] = 1;
-        consequences["entries"]!.AsArray().RemoveAt(0); consequences["entries"]![0]!["slot"] = 1;
-        consequences["ownedEffectSources"]!["definitions"]!.AsArray().RemoveAt(0);
-        consequences["ownedEffectSources"]!["rootBindings"]!.AsArray().RemoveAt(0);
-        var definition = consequences["ownedEffectSources"]!["definitions"]![0]!.AsObject();
-        definition["components"]![0]!["payload"]!["operation"] = "guard";
+        var consequences = raw["consequences"]!; consequences["slotBudget"] = rank; consequences["slotsUsed"] = rank;
+        var definitions = consequences["ownedEffectSources"]!["definitions"]!.AsArray();
+        if (rank == 1)
+        {
+            consequences["entries"]!.AsArray().RemoveAt(0); consequences["entries"]![0]!["slot"] = 1;
+            definitions.RemoveAt(0); consequences["ownedEffectSources"]!["rootBindings"]!.AsArray().RemoveAt(0);
+        }
+        else
+        {
+            var old = definitions[0]!.AsObject(); var replacement = definitions[1]!.DeepClone().AsObject();
+            replacement["definitionKey"] = old["definitionKey"]!.DeepClone(); replacement["stacking"] = old["stacking"]!.DeepClone();
+            replacement["components"]![0]!["payload"]!["operation"] = "maneuver";
+            definitions[0] = replacement;
+            consequences["entries"]![0]!["profileKey"] = "spiritual_action_cost_burden";
+        }
+        definitions[^1]!["components"]![0]!["payload"]!["operation"] = "guard";
         var seed = WoundPlayerProjectionTestData.InputInRealm("chaos_sea", raw);
         var profiles = (await context.ReadJsonAsync(AfterlifeEntityProfileState.StatePath))!;
         var player = profiles["profiles"]!.AsArray().Single(p => p!["actorId"]!.GetValue<string>() == "player_soul")!;
         player["standardArts"]![AfterlifeSpiritualConflictState.SpiritualHealingArtId] = tier;
         player["activeWounds"] = seed.Carriers.AfterlifeProfiles!["profiles"]![0]!["activeWounds"]!.DeepClone();
         var wound = Assert.Single(WoundCarrierCatalog.Build(seed.Carriers).Occurrences).Wound;
-        var binding = Assert.Single(wound.Consequences.OwnedEffectSources.RootBindings);
-        var effect = EffectMaterializationTestFixture.CreateSpiritualWoundCanonicalEffect("spiritual_action_cost_burden", "player", "chaos_sea", CombatHealingWoundId);
-        effect["effectId"] = binding.EffectId; effect["target"]!["targetId"] = "player_soul";
-        effect["source"]!["definitionKey"] = binding.DefinitionKey;
-        foreach (var part in new[] { "display", "components", "triggers", "removal", "links" }) effect[part] = definition[part]!.DeepClone();
-        effect["display"]!["sourceLabel"] = wound.Display.Name;
-        effect["stacking"]!["stackKey"] = definition["stacking"]!["stackKey"]!.DeepClone();
-        effect["chronology"]!["lastTransitionId"] = "seed_transition_" + binding.EffectId;
-        effect["chronology"]!["createdEventRef"] = "seed_event_" + binding.EffectId;
-        player["activeEffects"] = new JsonArray(effect);
-        var index = EffectMaterializationTestFixture.CreateIdentityIndex(effect);
-        index["entries"]![0]!["owner"]!["carrierPath"] = AfterlifeEntityProfileState.StatePath;
-        index["entries"]![0]!["transitions"]![0]!["transitionId"] = effect["chronology"]!["lastTransitionId"]!.DeepClone();
-        index["entries"]![0]!["transitions"]![0]!["eventRef"] = effect["chronology"]!["createdEventRef"]!.DeepClone();
+        var effects = new List<JsonObject>();
+        foreach (var binding in wound.Consequences.OwnedEffectSources.RootBindings)
+        {
+            var definition = definitions.OfType<JsonObject>().Single(d => d["definitionKey"]!.GetValue<string>() == binding.DefinitionKey);
+            var effect = EffectMaterializationTestFixture.CreateSpiritualWoundCanonicalEffect("spiritual_action_cost_burden", "player", "chaos_sea", CombatHealingWoundId);
+            effect["effectId"] = binding.EffectId; effect["target"]!["targetId"] = "player_soul";
+            effect["source"]!["definitionKey"] = binding.DefinitionKey;
+            foreach (var part in new[] { "display", "components", "triggers", "removal", "links" }) effect[part] = definition[part]!.DeepClone();
+            effect["display"]!["sourceLabel"] = wound.Display.Name;
+            effect["stacking"]!["stackKey"] = definition["stacking"]!["stackKey"]!.DeepClone();
+            effect["chronology"]!["lastTransitionId"] = "seed_transition_" + binding.EffectId;
+            effect["chronology"]!["createdEventRef"] = "seed_event_" + binding.EffectId;
+            effects.Add(effect);
+        }
+        player["activeEffects"] = new JsonArray(effects.Select(e => (JsonNode)e.DeepClone()).ToArray());
+        var index = EffectMaterializationTestFixture.CreateIdentityIndex(effects.ToArray());
+        foreach (var entry in index["entries"]!.AsArray().OfType<JsonObject>())
+        {
+            var effect = effects.Single(e => e["effectId"]!.GetValue<string>() == entry["effectId"]!.GetValue<string>());
+            entry["owner"]!["carrierPath"] = AfterlifeEntityProfileState.StatePath;
+            entry["transitions"]![0]!["transitionId"] = effect["chronology"]!["lastTransitionId"]!.DeepClone();
+            entry["transitions"]![0]!["eventRef"] = effect["chronology"]!["createdEventRef"]!.DeepClone();
+        }
         var soul = (await context.ReadJsonAsync("game_state/meta/soul_state.json"))!;
         soul[AfterlifeSpiritualConflictState.SoulStateProfileProperty]!["artTiers"]![AfterlifeSpiritualConflictState.SpiritualHealingArtId] = tier;
         AfterlifeEntityProfileState.ApplyPlayerSoulProfileClientAuthority(profiles.AsObject(), soul.AsObject(), null);

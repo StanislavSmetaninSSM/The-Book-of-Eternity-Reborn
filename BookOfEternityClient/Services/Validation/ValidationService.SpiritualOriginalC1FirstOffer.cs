@@ -219,7 +219,7 @@ public partial class ValidationService
             var healingSources = new JsonArray();
             if (_combatHealingOrigin is not null)
             {
-                var entry = _closedExchangeEvidence.Single();
+                var entry = _closedExchangeEvidence.Single(e => e.Healing is not null);
                 var healing = entry.Healing ?? throw new InvalidOperationException("Actual retained healing exchange required.");
                 var evidence = new JsonObject
                 {

@@ -60,7 +60,8 @@ public partial class ValidationService
             packet["healingDecisions"]!.AsArray().Add(decision.DeepClone());
             packet["cursor"]!["nextHealingSourceOrdinal"] = 1;
             _combatHealingOutcome = decision.DeepClone().AsObject();
-            return new(root, decision, interval, null, null);
+            var staged = new JsonObject { ["family"] = "combat_healing", ["decisionFingerprint"] = decision["decisionFingerprint"]!.DeepClone(), ["outcome"] = decision.DeepClone() };
+            return new(root, staged, interval, null, null);
         }
     }
 }

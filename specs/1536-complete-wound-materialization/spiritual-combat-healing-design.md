@@ -259,3 +259,13 @@ Causal controls cover healing-only empty injury arrays through pair→C3→C4,
 omission-only healing outcome refusal with dice/spend intact, and one-wave
 healing plus counterharm. This clarifies an existing consumer gap without changing
 the accepted player scope or creating another executor, file or design gate.
+
+The required next-resource-boundary control uses one healing exchange at original
+ordinal0 followed by an existing ordinary exchange. The same checkpoint1 selected
+submission carries a closed combat_healing child containing the exact owner-issued
+outcome and its decision fingerprint; it does not pretend to be an injury command.
+Cold replay reexecutes that selected decision before the existing bounded dependent
+correction/resume. Repeated healing remains unsupported. Cross-family same-wave
+equality applies only to the actual healing exchange; later injury sources retain
+their ordered wave, full original evidence and unique dice claims. This extends the
+same saved transport rather than using no_offer/source-only to skip a decision.

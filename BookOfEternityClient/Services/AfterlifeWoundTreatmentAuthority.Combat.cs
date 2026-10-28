@@ -10,9 +10,9 @@ internal static partial class AfterlifeWoundTreatmentAuthority
     internal static bool IsSelectedCombatConflict(JsonObject active, SpiritualCombatTreatmentSelection selected) =>
         String(active["conflictId"]) == selected.ConflictId &&
         AfterlifeEntityProfileState.TryNormalizeEffectRealm(String(active["realm"]), out var realm) && realm == "chaos_sea" &&
-        String(active["resolutionState"]) == "active" &&
-        String(active["sideModel"]) == "direct_duel" &&
-        String(active["playerSide"]?["leadContestant"]?["actorType"]) == "player_soul" &&
+        string.Equals(String(active["resolutionState"]), "active", StringComparison.OrdinalIgnoreCase) &&
+        string.Equals(String(active["sideModel"]), "direct_duel", StringComparison.OrdinalIgnoreCase) &&
+        new[] { "player_soul", "player", "soul" }.Contains(String(active["playerSide"]?["leadContestant"]?["actorType"]), StringComparer.OrdinalIgnoreCase) &&
         String(active["playerSide"]?["leadContestant"]?["actorId"]) == "player_soul" &&
         active["exchangeLog"] is JsonArray log && log.Count < int.MaxValue && selected.NextExchangeOrdinal == log.Count + 1 &&
         SpiritualCombatHealingIntent.ConflictFingerprint(active) == selected.ExpectedConflictFingerprint;

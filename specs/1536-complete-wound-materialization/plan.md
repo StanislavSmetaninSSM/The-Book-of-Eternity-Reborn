@@ -1,3 +1,30 @@
+# Combat next-boundary / actual caller WIP — UNCOMPILED/UNRUN
+
+Current source adds the closed combat selected-submission child to the same
+checkpoint/saved transport, including cold replay and dependent continuation.
+Only original ordinal0 is healing; the following ordinary exchange retains its
+existing resource/cost correction path. Ledger equality is scoped to the actual
+shared exchange while later injury evidence keeps its own ordered waves/claims.
+The backend Theory now also targets this real next-resource boundary. The accepted
+current player lead aliases player/player_soul/soul classify the same exact
+player_soul identity; raw conflict bytes and exact conflict fingerprints stay frozen.
+
+Actual console and browser test scaffolds now use the working spiritual Engine
+original fixture (CreateSpiritualGameEngineOriginalAsync), its full initial roots,
+one initial bootstrap and normal accepted cleanup. Wound/effect/identity/History,
+schedule and the one original D20 pool are prepared before the Engine snapshot.
+They exercise cancel/confirm, actual one-shot/queued binding, C2/C4, graph-bearing
+II→I, one paid OD spend and exact LastTick/schedule/world. Nothing is reseeded after
+acceptance. These assertions remain UNRUN; their authoring is not Engine acceptance.
+
+Remaining before coherent SOURCE/PREP: finish graph/foreign-response, rollback and
+typed-uncertainty controls; synchronise CLI/Matrix/Wound/worked GM example/manifest
+and guards; freeze exact finite catalog/selection including old injury-v1 actual
+pair/output and affected safe consumers. No build or runtime was added by this
+checkpoint. Existing operation-local retained source/outcome and shared saved
+transport are reused; current owner, signed original, lease, exact source closing,
+effect/resource frontiers and C4 remain fresh. No new cache or performance claim.
+
 # Combat grouped consumer corrections / backend scaffold — UNCOMPILED/UNRUN
 
 The ongoing independent source reading of frozen b642 found concrete remaining

@@ -333,11 +333,12 @@ public partial class ValidationService
             var priorPacket = SpiritualWoundStateJson.Parse(SpiritualWoundDecisionPendingState.SerializeCanonical(priorPending))["pending"]!.AsObject();
             if (SpiritualWoundDecisionPendingState.HasPendingHealing(priorPacket))
             {
-                if (selectionOnly || changes.Count != 0)
+                if (changes.Count != 0)
                     return DecisionDraftFailure("spiritual_c2_healing_automatic_input_changed");
                 if (append) _allocations.Journal.EnableAppendAfterReplay();
                 var selected = ApplyC2CombatHealingDecision(priorPending);
                 _c2SelectedDecision = selected;
+                if (selectionOnly) return new(null, null, []);
                 return await ContinueC2SelectedDecisionCoreAsync(lease, priorPending, priorCheckpoint, changes, selected);
             }
             var next = ResolveC2NextSourceFromPending(priorPending);

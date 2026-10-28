@@ -72,12 +72,25 @@ internal sealed partial class SpiritualWoundOpportunityReceiptState
             foreach (var injury in injurySources.Where(s => OriginalRequest(Object(s["witness"])) == request))
             {
                 var other = Object(injury["witness"]); var context = Object(other["turnEvidence"]);
-                Require(Text(injury["instanceId"]) == instanceId && Text(other["exchangeId"]) == source.ExchangeId &&
-                    Integer(other["exchangeOrdinal"]) == ordinal && JsonNode.DeepEquals(context, evidence),
-                    "Injury/healing must retain the same actual exchange and full original evidence.");
-                foreach (var bound in injuryDecisions.Where(d => Text(d["sourceId"]) == Text(other["sourceId"])))
-                    Require(Integer(bound["binding"]!["continuationGeneration"]) == 1 && Integer(bound["binding"]!["waveOrdinal"]) == 0,
-                        "Counterharm and healing are one eligible wave.");
+                var baseContext = context.DeepClone().AsObject(); baseContext.Remove("diceClaims");
+                var healingContext = evidence.DeepClone().AsObject(); healingContext.Remove("diceClaims");
+                Require(Text(injury["instanceId"]) == instanceId && Text(other["conflictId"]) == source.Intent.ConflictId &&
+                    JsonNode.DeepEquals(baseContext, healingContext), "Injury/healing original contexts differ.");
+                if (Text(other["exchangeId"]) == source.ExchangeId)
+                {
+                    Require(Integer(other["exchangeOrdinal"]) == ordinal && JsonNode.DeepEquals(context["diceClaims"], evidence["diceClaims"]),
+                        "One exchange must retain the same original claims.");
+                    foreach (var bound in injuryDecisions.Where(d => Text(d["sourceId"]) == Text(other["sourceId"])))
+                        Require(Integer(bound["binding"]!["continuationGeneration"]) == 1 && Integer(bound["binding"]!["waveOrdinal"]) == 0,
+                            "Counterharm and healing are one eligible wave.");
+                }
+                else
+                {
+                    Require(Integer(other["exchangeOrdinal"]) > ordinal, "Ordinary injury must follow the selected healing exchange.");
+                    var healingClaims = evidence["diceClaims"]!.AsArray().Select(c => Integer(c!["sourceIndex"])).ToHashSet();
+                    Require(!context["diceClaims"]!.AsArray().Any(c => healingClaims.Contains(Integer(c!["sourceIndex"]))),
+                        "A later ordinary exchange cannot reclaim healing dice.");
+                }
             }
         }
     }

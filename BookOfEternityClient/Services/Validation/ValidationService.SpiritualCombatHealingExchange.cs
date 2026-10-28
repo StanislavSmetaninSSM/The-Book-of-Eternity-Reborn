@@ -93,7 +93,7 @@ public partial class ValidationService
             var playerHealing = ConflictTokenEquals(ExactString(exchange["operationType"]), AfterlifeActionCostRules.SpiritualHealingOperation);
             var oppositionHealing = ResolveIncomingActionOperations(exchange).Any(operation =>
                 ConflictTokenEquals(operation, AfterlifeActionCostRules.SpiritualHealingOperation));
-            if (_prefixCapture?.HasCombatHealingOrigin != true && !playerHealing && !oppositionHealing) return;
+            if (!playerHealing && !oppositionHealing && (_prefixCapture?.HasCombatHealingOrigin != true || _checkedExchanges.Count != 0)) return;
             if (_prefixCapture is null) throw new InvalidOperationException("Combat healing needs its actual original capture and intent.");
             _prefixCapture.ValidateCombatHealingDeclaration(conflict, exchange, _checkedExchanges.Count);
         }
