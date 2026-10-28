@@ -18,7 +18,9 @@ public partial class ValidationService
     {
         // Published comparisons must reauthenticate the physical original after any repair wait.
         // Ordinary validation retains its existing cached snapshot path.
-        using var physicalSnapshotScope = _completedSpiritualConflictValidation.Value is not null
+        // Console pending-source validation already owns fresh physical evidence with no override.
+        using var physicalSnapshotScope = _completedSpiritualConflictValidation.Value is not null &&
+            _prevalidatedPendingTurnSnapshotOverride is not null
             ? UsePrevalidatedPendingTurnSnapshotScope(null) : null;
         var conflict = await ReadSpiritualConflictFileImageAsync(
             AfterlifeSpiritualConflictState.StatePath);

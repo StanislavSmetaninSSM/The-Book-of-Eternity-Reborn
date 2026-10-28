@@ -2,6 +2,20 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "spiritual-combat-console-source-guards",
+  "responsibility": "Fourteen existing cheap pending-source controls: twelve exact dependency changes refuse final proof, and two same-lease override/lifecycle mutations remain forbidden. The actual console combat causal case follows separately.",
+  "excludes": "No new reflection, source-scope implementation, broad validation suite or full source-closure acceptance. Six pre-existing World source pins remain pending separate review; this selection does not waive that debt.",
+  "changeHints": ["BookOfEternityClient/Services/Validation/ValidationService.AfterlifeSpiritualConflict.cs"],
+  "related": [],
+  "requirements": {"frontendBuild": false, "exclusive": true, "ciRunner": "ubuntu-24.04"},
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [{"project": "unit", "tests": [
+    "BookOfEternityClient.Tests.PendingSnapshotValidationScopeTests.Scope_DependencyChangeBeforeFinalProofRefuses",
+    "BookOfEternityClient.Tests.PendingSnapshotValidationScopeTests.Scope_SameLeaseOverrideAndLifecycleMutationRefuse"
+  ]}]
+},
+{
   "related": [],
   "requirements": {
     "frontendBuild": false,

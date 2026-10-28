@@ -1,3 +1,36 @@
+# Console completed comparison: avoid absent override mutation — WIP/UNCOMPILED
+
+2026-10-28 independent Astra/high DESIGN accepts skipping only the redundant
+null-to-null snapshot scope at the existing completed-conflict comparison. The
+console invocation reserves a null override before physical source opening;
+sync/async lookups already select its current evidence first. Existing entry,
+independent final physical proof, exact completed tuple/token, teardown and
+foreign/stale/mutation refusal stay. A nonnull override still clears/restores
+through the original guarded scope. No guard, owner, cache or game rule changes.
+GM-facing fields/examples need no update for this client-owned lifetime fix.
+
+Current uncompiled implementation is that one callsite condition/comment, its
+reviewed LF source pin and a narrow category for14 existing semantic controls
+(12changed-dependency final-proof refusals +2same-lease override/lifecycle refusals).
+No new reflection is added. Proposed finite runtime: cheap14 -> console1 ->
+remaining12 =27cases/8categories/8descriptors/15methods. Fresh owning Integration/
+Main/Support and Unitrefsfalse, pins, catalog/new ownership, exact PlanOnly and
+independent SOURCE/PREP are required. Retain browser1/fault1 at897c, role10 at2f0c
+and earlier accepted lineages through the reviewed source-equivalent branches.
+No speedup is claimed; existing immutable invocation DATA is reused, while source
+authentication at both boundaries remains fresh.
+
+Read-only prechange World-source assessment found7 stale entries among66. Refresh
+ONLY the reviewed AfterlifeSpiritualConflict pin. Six pre-existing pins remain
+unchanged/open: BrowserOriginalAdmission, AcceptedTurnAndInkFeathers,
+EffectMaterialization, NpcWorldAndMeta, ResourceMaterialization and
+SpiritualWoundSourceAdmission. The full World source-closure guard is NOT PASS;
+separate review/rebaseline remains required for overall acceptance. Astra accepts
+the bounded functional route without repeating this already-explained static
+failure or auditing six unrelated histories. This does not waive the guard.
+Complete baseline assessment/raw remains outside checkout in functional15.
+FullDFR/T609/Mortal/Windows remain HOLD; no raw or saves are deleted.
+
 # Actual browser combat healing GREEN; console pending-source scope defect — WIP
 
 2026-10-28 actual897c owning Integrationrefsfalse0errors/102baseline warnings,

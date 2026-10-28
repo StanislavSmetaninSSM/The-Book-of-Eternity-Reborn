@@ -1,5 +1,11 @@
 # T095/T102/T103: counterable spiritual combat healing (DESIGN ACCEPTED)
 
+Console completed comparison reuses its existing fresh pending-source invocation.
+When no prevalidated override exists, it must not request a null-to-null override
+mutation inside that reservation. A nonnull override still uses the original
+clear/restore scope; entry/final physical proof and all mutation guards remain.
+This client-owned lifetime correction adds no GM field, authoring rule or mechanic.
+
 2026-10-28 bounded guarantee-evidence correction (Astra DESIGN accepted against
 recovered98cd30f): a guaranteed opponent counterharm remains within the current
 contract. The old guarantee producer hashes the exact prepared art/exchange JSON

@@ -2,6 +2,11 @@
   "schemaVersion": 1,
   "selections": [
 {
+  "category": "spiritual-combat-console-source-guards",
+  "reason": "Actual console postmaterialization reaches a redundant null-to-null override scope inside its reserved pending-source validation. Avoid only that no-op; retain direct override refusal and physical final dependency proof. The actual console causal RED/GREEN and remaining functional consumers follow. World source-closure has six pre-existing stale pins and remains open; do not rebaseline them or claim whole-guard PASS.",
+  "contracts": ["#1536 T095/T102/T103 completed combat comparison under fresh console pending-source ownership; unchanged entry/final authority and mutation exclusion"]
+},
+{
   "category": "spiritual-combat-prepared-rollback-role",
   "reason": "Ten cheap typed cases distinguish exactly one prepared command input from canonical rollback metadata; valid role DATA still fails generic canonical coverage and never grants a completed owner.",
   "contracts": [
