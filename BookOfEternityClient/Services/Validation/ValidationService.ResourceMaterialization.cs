@@ -38,7 +38,7 @@ public partial class ValidationService
 
         AcceptedMechanicsPlanAuthority.InvalidateValidated(_fs, writeLease);
         EffectAcceptedTurnPlanAuthority.InvalidateValidated(_fs, writeLease);
-        var spiritualTreatment = await TryPrepareSpiritualSelfTreatmentAsync(writeLease,
+        var spiritualTreatment = await TryPrepareSpiritualCycleAsync(writeLease,
             deferSpiritualSelfTreatmentPublication ? SpiritualSelfTreatmentPhase.DeferredRouting
                 : SpiritualSelfTreatmentPhase.DirectHeldLease);
         if (spiritualTreatment is not null)
@@ -189,6 +189,7 @@ public partial class ValidationService
     /// <param name="mortalCapture">
     /// Private Mortal input sink deferring wound preparation and common execution; null preserves ordinary behavior.
     /// </param>
+    /// <param name="naturalOwner">Private ordinary recovery owner held through this complete common composition, or null for other families.</param>
     /// <returns>
     /// Validation diagnostics from the selected original-input pipeline.
     /// </returns>
@@ -201,7 +202,8 @@ public partial class ValidationService
             Func<FileSystemManager.CanonicalWriteLease, IReadOnlyDictionary<string, CanonicalBeforeImage>, Task<IReadOnlyList<ValidationIssue>>>? sealMortalQteDecision = null,
             Func<MortalWoundOpportunityReceiptConsumePlanResult?>? readMortalQteReplay = null,
             Func<FileSystemManager.CanonicalWriteLease, Task<IReadOnlyList<ValidationIssue>?>>? prepareMortalGuaranteedTreatment = null,
-            Func<FileSystemManager.CanonicalWriteLease, Task<GameEngine.MortalJointRepairRawAdmission>>? inspectMortalJointRepair = null)
+            Func<FileSystemManager.CanonicalWriteLease, Task<GameEngine.MortalJointRepairRawAdmission>>? inspectMortalJointRepair = null,
+            AfterlifeWoundHealingPlanner.Continuation? naturalOwner = null)
     {
         ArgumentNullException.ThrowIfNull(writeLease);
         _fs.EnsureCanonicalWriteLeaseActive(writeLease);
@@ -657,9 +659,9 @@ public partial class ValidationService
             manifest,
             writeLease,
             woundHandoffSink,
-            requireSpiritualBase: spiritualCapture != null || mortalCapture != null,
+            requireSpiritualBase: spiritualCapture != null || mortalCapture != null || naturalOwner is not null,
             mortalCapture: mortalCapture, spiritualAllocations: spiritualCapture?.Allocations,
-            currentInputs: spiritualCapture?.CurrentInputs);
+            currentInputs: spiritualCapture?.CurrentInputs, naturalOwner: naturalOwner);
         issues.AddRange(effectIssues);
         if (issues.Any(static issue => issue.Severity == IssueSeverity.Error))
             return issues;
@@ -674,9 +676,12 @@ public partial class ValidationService
             ownerCompanionAfterImages.Add(MortalWoundOpportunityReceiptState.StatePath,
                 JsonNode.Parse(MortalWoundOpportunityReceiptState.SerializeCanonical(mortalReceipt.ReceiptState!))!.AsObject());
         }
+        if (naturalOwner is not null)
+            ownerCompanionAfterImages.Add(ProgressionScheduleService.SchedulePath,
+                JsonNode.Parse(naturalOwner.SchedulerMutation.ScheduleAfterJson)!.AsObject());
 
-        EffectAcceptedTurnPlan? effectPlan = null;
-        if (EffectAcceptedTurnPlanAuthority.TryPeekValidated(
+        EffectAcceptedTurnPlan? effectPlan = naturalOwner is null ? null : woundHandoff?.StageBundle.EffectBatchPlan.EffectPlan;
+        if (effectPlan is null && EffectAcceptedTurnPlanAuthority.TryPeekValidated(
                 _fs,
                 writeLease,
                 out var effectBinding,
@@ -902,6 +907,11 @@ public partial class ValidationService
             beforePaths.UnionWith(
                 WoundAcceptedTurnSnapshotContract.RequiredPaths);
         }
+        if (naturalOwner is not null)
+        {
+            beforePaths.UnionWith(AfterlifeWoundTreatmentAuthority.SourcePaths);
+            beforePaths.Add("output/interface_updates.json");
+        }
         if (mortalReceipt is not null)
         {
             beforePaths.Add(MortalQteDecisionPublication.StatePath);
@@ -1059,7 +1069,7 @@ public partial class ValidationService
             return issues;
         }
         var result = woundHandoff?.StageBundle is { } woundStageBundle &&
-                     (MortalWoundCanonicalAnchorPlan.RequiresInitialCreateAnchors(
+                     (naturalOwner is not null || MortalWoundCanonicalAnchorPlan.RequiresInitialCreateAnchors(
                           woundStageBundle) ||
                       MortalWoundCanonicalAnchorPlan.RequiresConditionReentryAnchors(
                           woundStageBundle))

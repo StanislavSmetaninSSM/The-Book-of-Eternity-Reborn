@@ -137,6 +137,7 @@ public partial class ValidationService
     /// Retained current effect images for named spiritual intake, or <see langword="null"/>
     /// for physical current-file reads.
     /// </param>
+    /// <param name="naturalOwner">Private current ordinary recovery owner, or null for unchanged ordinary/C4/Mortal paths.</param>
     private async Task ValidateAcceptedTurnRawEffectMaterializationAsync(
         List<ValidationIssue> issues,
         ResourceOwnerCompositionResult? resourceOwners,
@@ -149,7 +150,8 @@ public partial class ValidationService
         bool requireSpiritualBase = false,
         MortalOriginalInputSink? mortalCapture = null,
         SpiritualOriginalAllocationOwner? spiritualAllocations = null,
-        SpiritualOriginalDraftInputs? currentInputs = null)
+        SpiritualOriginalDraftInputs? currentInputs = null,
+        AfterlifeWoundHealingPlanner.Continuation? naturalOwner = null)
     {
         ArgumentNullException.ThrowIfNull(writeLease);
         _fs.EnsureCanonicalWriteLeaseActive(writeLease);
@@ -400,6 +402,15 @@ public partial class ValidationService
                     issues.AddRange(EffectAcceptedTurnPlanAuthority.GetOrBuildValidated(_fs, writeLease, identityInput).Issues);
                 return;
             }
+            if (naturalOwner is not null)
+            {
+                if (rawWoundDraft is not null)
+                    throw new InvalidDataException("Natural recovery cannot overwrite ordinary wound opportunity stages.");
+                var naturalPrepared = naturalOwner.Prepare();
+                CompleteNaturalWoundHandoff(naturalOwner, naturalPrepared, ComposeIdentityInput(naturalPrepared),
+                    writeLease, woundHandoffSink, issues);
+                return;
+            }
             var preparedWound = PrepareAcceptedTurnWoundHandoff(
                 rawWoundDraft,
                 manifest,
@@ -533,6 +544,15 @@ public partial class ValidationService
                 acceptedRealm, input, resourceOwners, resourceDefinitions, resourceState, writeLease, issues);
             if (mortalCapture.Selection != null && issues.All(issue => issue.Severity != IssueSeverity.Error))
                 issues.AddRange(EffectAcceptedTurnPlanAuthority.GetOrBuildValidated(_fs, writeLease, input).Issues);
+            return;
+        }
+        if (naturalOwner is not null)
+        {
+            if (rawWoundDraft is not null)
+                throw new InvalidDataException("Natural recovery cannot overwrite ordinary wound opportunity stages.");
+            var naturalPrepared = naturalOwner.Prepare();
+            CompleteNaturalWoundHandoff(naturalOwner, naturalPrepared, ComposeInput(naturalPrepared),
+                writeLease, woundHandoffSink, issues);
             return;
         }
         var prepared = PrepareAcceptedTurnWoundHandoff(

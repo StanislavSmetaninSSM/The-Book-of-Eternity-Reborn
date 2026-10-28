@@ -1720,6 +1720,25 @@ public partial class GameEngine
                 backedUpFiles.ValidationSnapshotFiles.Add(ProgressionScheduleService.SchedulePath);
                 request.SpiritualHealing = stagedHealing.GmContext.DeepClone().AsObject();
             }
+            else if (AfterlifeEntityProfileState.TryNormalizeEffectRealm(request.ProgressionControl!.CurrentRealm, out var naturalRealm) &&
+                (naturalRealm is "chaos_sea" or "shining_abode") && !request.ProgressionControl.AfterlifeCatchupRequired)
+            {
+                using var naturalTiming = _fs.MeasureOperation("PlayerTurn.Stage.SpiritualNaturalRecovery");
+                await using var naturalLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+                if (!_fs.IsCurrentSessionGeneration(naturalLease, sessionGeneration))
+                    throw new SessionReplacedException("Natural recovery belongs to a replaced session.", sessionGeneration, actualGeneration: null);
+                request.SpiritualHealing = await AfterlifeWoundTreatmentAuthority.ProjectNaturalRecoveryAsync(_fs, naturalLease,
+                    new(request.SessionId, request.RequestId, request.TurnNumber, request.ProgressionControl), async () =>
+                    {
+                        var existed = _fs.FileExists(naturalLease, AfterlifeSpiritualConflictState.StatePath);
+                        await EnsureAfterlifeSpiritualConflictStateInitializedForSnapshotAsync(naturalLease);
+                        await RegisterAfterlifeSpiritualConflictRollbackBackupIfInitializedAsync(naturalLease, request, backedUpFiles, existed);
+                        if (!_fs.FileExists(naturalLease, AfterlifeSpiritualConflictState.StatePath))
+                            throw new InvalidDataException("Natural recovery requires its initialized conflict baseline before projection.");
+                    });
+                if (request.SpiritualHealing is not null)
+                    backedUpFiles.ValidationSnapshotFiles.Add(ProgressionScheduleService.SchedulePath);
+            }
             using (_fs.MeasureOperation("PlayerTurn.Stage.AttachDiceAndGacha"))
                 await AttachPendingDiceAndGachaAsync(request);
             using (_fs.MeasureOperation("PlayerTurn.Stage.BuildSpiritualPreview"))

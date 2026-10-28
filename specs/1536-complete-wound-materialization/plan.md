@@ -40,12 +40,29 @@ No build/test or capability acceptance is claimed for this intermediate code.
 Strict-result WIP, UNCOMPILED/UNRUN: same spiritual History family now writes
 closed v2 self/natural modes and per-owner tier DATA. Natural uses the first
 recover row, no attempt/request/roll; complete ordered stages/projection are
-recomputed. Existing immutable v1 self result parsing remains strict. Scheduler
+recomputed. One current closed schema2 is supported; pre-release development
+receipt fallbacks are not retained, and external raw/evidence/saves are untouched. Scheduler
 original-bound replay now requires exactly one self request or natural cohort/
 projection together with the token; ordinary settlement retains its separate
 strict durable-DATA check. Actual natural dispatcher/common input/staging/I and
 interaction controls remain unconnected. No natural GREEN or self regression
 qualification is inferred from this intermediate codec change.
+
+Ordinary wiring WIP, UNCOMPILED/UNRUN: actual staging exports natural projection
+without wound command/draw and captures prepared schedule with original rollback
+bytes. The shared private phase dispatcher routes A without executable preparation;
+B fresh-admits and calls existing inner ResourceCore once. Both effect branches
+join the natural prepared plan through the ordinary handoff sink; actual resource/
+effect commands, registered outcomes and owner after-images remain in that common
+context. Same coordinated publisher owns scheduler/report/wound/effects/History;
+no second writer. Mode-specific stale-owner hints are refusal-only. Concurrent
+wound work explicitly refuses before overwrite/publication. Pure code now has one
+closed current schema2, with no pre-release receipt fallback.
+Natural I binding, independent complete-cohort settlement witness/negative controls,
+privacy checks, remaining GM docs/guards and coherent SOURCE/build/GREEN are still
+pending. The current all-null natural settlement check is not yet accepted as a
+completeness proof; it will use independent canonical identity/catalog/History,
+while original-bound callers retain mandatory actual source/token/projection.
 
 Actual graph-bearing console caller on clean/compiled 926f70af: exact1/1 PASS,
 58.1503082s total/category50.2515017<180, complete/no skips/duplicates/timeout,

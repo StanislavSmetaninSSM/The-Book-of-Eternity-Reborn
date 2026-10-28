@@ -22,7 +22,7 @@ internal sealed class SpiritualHealingPersistedResult : WoundTransitionResult
     private SpiritualHealingPersistedResult(JsonObject root, IEnumerable<SpiritualHealingPublishedStage> stages)
     { _root = root.DeepClone().AsObject(); _stages = stages.ToImmutableArray(); }
     public override string Kind => "spiritual_healing";
-    internal string Mode => _root["mode"]?.GetValue<string>() ?? "self";
+    internal string Mode => _root["mode"]!.GetValue<string>();
     internal bool IsNatural => Mode == "natural";
     internal string GraphResponseFingerprint => _root["source"]!["graphResponseFingerprint"]!.GetValue<string>();
     internal IReadOnlyList<SpiritualHealingPublishedStage> Stages => _stages.Select(s => s with
@@ -68,11 +68,10 @@ internal sealed class SpiritualHealingPersistedResult : WoundTransitionResult
             var root = StrictJsonAuthority.Deserialize<JsonObject>(element.GetRawText(), new JsonSerializerOptions(), "spiritual healing result")
                 ?? throw new InvalidDataException("Result must be an object.");
             AfterlifeWoundTreatmentAuthority.MaterializeProperties(root);
-            var version = root["schemaVersion"]!.GetValue<int>();
             var rootFields = new[] { "kind", "schemaVersion", "binding", "request", "source", "control", "scheduleBeforeJson", "progressionReportJson", "scheduleAfterJson", "scheduleAfterFingerprint", "stages", "resultFingerprint" };
-            Closed(root, version == 1 ? rootFields : rootFields.Append("mode").ToArray());
-            var mode = version == 1 ? "self" : Text(root, "mode");
-            if (Text(root, "kind") != "spiritual_healing" || version is not (1 or 2) || mode is not ("self" or "natural") ||
+            Closed(root, rootFields.Append("mode").ToArray());
+            var mode = Text(root, "mode");
+            if (Text(root, "kind") != "spiritual_healing" || root["schemaVersion"]!.GetValue<int>() != 2 || mode is not ("self" or "natural") ||
                 Text(root, "resultFingerprint") != WoundHistoryState.ComputeTransitionResultFingerprint(root))
                 throw new InvalidDataException("Spiritual result kind/schema/fingerprint differs.");
             var binding = root["binding"]!.AsObject();
@@ -133,16 +132,15 @@ internal sealed class SpiritualHealingPersistedResult : WoundTransitionResult
             else
             {
                 var selfFields = new[] { "healingTier", "complicationModifier", "rollMode", "sourceFingerprint", "rollContributions", "graphResponseFingerprint" };
-                Closed(source, version == 1 ? selfFields : selfFields.Append("ownerTiers").ToArray());
+                Closed(source, selfFields.Append("ownerTiers").ToArray());
                 var tier = ValidateActiveSource(source);
                 var request = root["request"]!.AsObject();
                 var attempt = request["attempt"]!.AsObject();
                 selected = original.Single(w => w.WoundId == Text(attempt, "woundId"));
                 if (selected.Owner.OwnerKind != "player_soul" || selected.Owner.OwnerId != "player_soul" ||
-                    version == 1 && original.Any(w => w.Owner != selected.Owner) ||
                     stages[0].Before.WoundId != selected.WoundId || stages[0].Kind != "treat")
                     throw new InvalidDataException("Foreign spiritual self target or stage ordering.");
-                tiers = version == 1 ? new Dictionary<WoundOwnerCoordinate, int> { [selected.Owner] = tier } : ReadOwnerTiers(source, original);
+                tiers = ReadOwnerTiers(source, original);
                 if (tiers[selected.Owner] != tier) throw new InvalidDataException("Active tier differs from its natural owner tier.");
                 var complicationModifier = source["complicationModifier"]!.GetValue<long>();
                 var preparedSource = new SpiritualHealingPreparedSource(selected.WoundId, selected.Owner, selected.Owner,

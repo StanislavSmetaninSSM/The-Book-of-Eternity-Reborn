@@ -705,8 +705,8 @@ internal static partial class AcceptedTurnAuthorityRegistry
         GetState(fileSystem, writeLease).InvalidateSpiritualSelfTreatment();
 
     internal static bool HasOpenSpiritualSelfTreatment(
-        FileSystemManager fileSystem, FileSystemManager.CanonicalWriteLease writeLease) =>
-        GetState(fileSystem, writeLease).HasOpenSpiritualSelfTreatment();
+        FileSystemManager fileSystem, FileSystemManager.CanonicalWriteLease writeLease, bool natural = false) =>
+        GetState(fileSystem, writeLease).HasOpenSpiritualSelfTreatment(natural);
 
     /// <summary>
     /// Forwards validated item input and its optional scoped allocator to the root-owned cache.
@@ -3599,10 +3599,10 @@ internal static partial class AcceptedTurnAuthorityRegistry
                 _commonPlan.InvalidateSpiritualSelfTreatment();
         }
 
-        internal bool HasOpenSpiritualSelfTreatment()
+        internal bool HasOpenSpiritualSelfTreatment(bool natural)
         {
             lock (_gate)
-                return _commonPlan.HasOpenSpiritualSelfTreatment;
+                return _commonPlan.HasOpenSpiritualCycle(natural);
         }
 
         internal bool HasCommonValidated()

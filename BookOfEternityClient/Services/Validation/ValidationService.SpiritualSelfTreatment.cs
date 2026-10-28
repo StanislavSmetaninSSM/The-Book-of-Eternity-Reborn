@@ -8,6 +8,35 @@ public partial class ValidationService
 {
     private enum SpiritualSelfTreatmentPhase { DirectHeldLease, DeferredRouting, Publication }
 
+    // Manifest DATA shared only within this invocation/lease; it grants no source authority.
+    private sealed class SpiritualCycleInvocationData
+    {
+        internal bool Read;
+        internal string? Json;
+        internal LiveTurnPendingSnapshotManifest? Manifest;
+    }
+
+    private async Task<LiveTurnPendingSnapshotManifest?> ReadSpiritualCycleManifestAsync(
+        FileSystemManager.CanonicalWriteLease lease, SpiritualCycleInvocationData data)
+    {
+        if (!data.Read)
+        {
+            data.Json = await _fs.ReadFileAsync(lease, LiveTurnPreparationService.PendingTurnSnapshotManifestPath);
+            data.Read = true;
+        }
+        return data.Json is null ? null : data.Manifest ??= StrictJsonAuthority.Deserialize<LiveTurnPendingSnapshotManifest>(data.Json,
+            new JsonSerializerOptions { PropertyNameCaseInsensitive = true }, "spiritual cycle manifest");
+    }
+
+    private async Task<IReadOnlyList<ValidationIssue>?> TryPrepareSpiritualCycleAsync(
+        FileSystemManager.CanonicalWriteLease lease, SpiritualSelfTreatmentPhase phase)
+    {
+        var data = new SpiritualCycleInvocationData();
+        var naturalExpected = AcceptedMechanicsPlanAuthority.HasOpenSpiritualSelfTreatment(_fs, lease, natural: true);
+        var self = await TryPrepareSpiritualSelfTreatmentAsync(lease, phase, data);
+        return self ?? await TryPrepareSpiritualNaturalRecoveryAsync(lease, phase, data, naturalExpected);
+    }
+
     /// <summary>Prepares the self contribution only under the coordinator's actual publication lease.</summary>
     /// <param name="lease">The active lease held through preparation and common publication.</param>
     /// <returns>Fresh preparation issues, without writes or an executable fallback on failure.</returns>
@@ -17,13 +46,14 @@ public partial class ValidationService
         _fs.EnsureCanonicalWriteLeaseActive(lease);
         // A missing live request still requires its signed family's strict replay
         // proof. Mutable absence cannot select the ordinary no-plan route.
-        return await TryPrepareSpiritualSelfTreatmentAsync(lease, SpiritualSelfTreatmentPhase.Publication)
+        return await TryPrepareSpiritualCycleAsync(lease, SpiritualSelfTreatmentPhase.Publication)
             ?? Array.Empty<ValidationIssue>();
     }
 
     private async Task<IReadOnlyList<ValidationIssue>?> TryPrepareSpiritualSelfTreatmentAsync(
         FileSystemManager.CanonicalWriteLease lease,
-        SpiritualSelfTreatmentPhase phase = SpiritualSelfTreatmentPhase.DirectHeldLease)
+        SpiritualSelfTreatmentPhase phase,
+        SpiritualCycleInvocationData invocation)
     {
         var deferPublication = phase == SpiritualSelfTreatmentPhase.DeferredRouting;
         var currentBytes = await _fs.ReadFileBytesAsync(lease, AcceptedMechanicsPlan.WoundCommandPath);
@@ -53,14 +83,12 @@ public partial class ValidationService
             AcceptedMechanicsPlanAuthority.InvalidateSpiritualSelfTreatment(_fs, lease);
         try
         {
-            var manifestText = await _fs.ReadFileAsync(lease, LiveTurnPreparationService.PendingTurnSnapshotManifestPath);
-            if (manifestText is null)
+            var frame = await ReadSpiritualCycleManifestAsync(lease, invocation);
+            if (frame is null)
             {
                 if (sourceExpected) throw new InvalidDataException("Spiritual treatment requires its signed original manifest.");
                 return null;
             }
-            var frame = StrictJsonAuthority.Deserialize<LiveTurnPendingSnapshotManifest>(manifestText,
-                new JsonSerializerOptions { PropertyNameCaseInsensitive = true }, "spiritual treatment manifest");
             if (frame?.Files.ContainsKey(AcceptedMechanicsPlan.WoundCommandPath) != true)
             {
                 if (sourceExpected) throw new InvalidDataException("Spiritual treatment requires its signed original request member.");

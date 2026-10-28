@@ -556,14 +556,11 @@ internal sealed partial class AcceptedMechanicsPlanCache
         }
     }
 
-    internal bool HasOpenSpiritualSelfTreatment
+    internal bool HasOpenSpiritualCycle(bool natural)
     {
-        get
-        {
-            lock (_gate)
-                return _planningResult?.Plan?.SpiritualHealingContinuation is { IsClosed: false } ||
-                    _validatedResult?.Plan?.SpiritualHealingContinuation is { IsClosed: false };
-        }
+        lock (_gate)
+            return _planningResult?.Plan?.SpiritualHealingContinuation is { IsClosed: false } planned && planned.IsNatural == natural ||
+                _validatedResult?.Plan?.SpiritualHealingContinuation is { IsClosed: false } validated && validated.IsNatural == natural;
     }
 
     internal void InvalidateAll()
@@ -991,6 +988,14 @@ internal static class AcceptedMechanicsPlanAuthority
                 return WoundAnchorContextFailure("changed or competing recovery authority");
             return AcceptedTurnAuthorityRegistry.GetOrBuildCommonWoundValidated(
                 fileSystem, writeLease, input, bundle);
+        }
+        if (bundle.PreparedPlan.SpiritualHealingContinuationAuthority is AfterlifeWoundHealingPlanner.Continuation spiritual)
+        {
+            spiritual.RequireCurrent(fileSystem, writeLease);
+            if (!spiritual.PreparedAgrees(bundle.PreparedPlan) || planningContext.WoundAnchorPlan is not null ||
+                planningContext.DirectWoundPublicationAuthority is not null || planningContext.TreatmentResourcePublicationAuthority is not null)
+                return WoundAnchorContextFailure("changed or competing spiritual cycle authority");
+            return AcceptedTurnAuthorityRegistry.GetOrBuildCommonWoundValidated(fileSystem, writeLease, input, bundle);
         }
         var anchors = MortalWoundCanonicalAnchorPlan.Create(
             fileSystem,
@@ -1493,10 +1498,10 @@ internal static class AcceptedMechanicsPlanAuthority
     }
 
     internal static bool HasOpenSpiritualSelfTreatment(
-        FileSystemManager fileSystem, FileSystemManager.CanonicalWriteLease writeLease)
+        FileSystemManager fileSystem, FileSystemManager.CanonicalWriteLease writeLease, bool natural = false)
     {
         fileSystem.EnsureCanonicalWriteLeaseActive(writeLease);
-        return AcceptedTurnAuthorityRegistry.HasOpenSpiritualSelfTreatment(fileSystem, writeLease);
+        return AcceptedTurnAuthorityRegistry.HasOpenSpiritualSelfTreatment(fileSystem, writeLease, natural);
     }
 
     internal static bool HasValidated(

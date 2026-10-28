@@ -67,7 +67,8 @@ internal static partial class EffectAcceptedTurnPlanner
             return BuildCore(input, WoundAcceptedTurnFingerprints.ComputeEffectInput(prepared, input), identityFactory,
                 Array.Empty<WoundApplicationRequest>(), Array.Empty<WoundTerminalRequest>(), spiritualHealingPrepared: prepared);
         }
-        catch (Exception failure) when (failure is InvalidDataException or InvalidOperationException or ArgumentException or JsonException or OverflowException)
+        catch (Exception failure) when (failure is not CoordinatedStatePublicationUncertainException &&
+            failure is (InvalidDataException or InvalidOperationException or ArgumentException or JsonException or OverflowException))
         {
             return Failed(new List<ValidationIssue> { SpiritualHealingIssue(failure.Message) });
         }
@@ -94,7 +95,7 @@ internal static partial class EffectAcceptedTurnPlanner
             var changed = stage.SeverityRank != before.Severity.Rank;
             var facts = ExecuteWoundBoundaryEffects(input, before, graph, stage.SeverityRank,
                 new(stage.TickKey, index, owner.EventRef, stage.OperationKey, owner.Fingerprint, stage.Kind,
-                    "Духовное исцеление", prepared.Binding.AcceptedEvents, false), changed, stage.Kind == "heal",
+                    owner.IsNatural ? "Естественное восстановление" : "Духовное исцеление", prepared.Binding.AcceptedEvents, false), changed, stage.Kind == "heal",
                 workspace, identityRoot, identityFactory, turn, effectIds, transitionIds, activeEffects,
                 processedEvents, usedSources, usedTargets, rootBindings, issues);
             if (facts is null || issues.Count != 0) return null;

@@ -10,8 +10,7 @@ internal static partial class AfterlifeWoundHealingPlanner
     private static readonly string[] NaturalRequiredPaths =
     [
         "game_state/meta/soul_state.json", WoundCarrierCatalog.AfterlifeProfilesPath,
-        WoundIdentityState.StatePath, WoundHistoryState.HistoryPath,
-        EffectIdentityState.StatePath, ProgressionScheduleService.SchedulePath
+        ProgressionScheduleService.SchedulePath
     ];
 
     internal static PendingTurnSnapshotObservedReadResult ReadOriginalNaturalSource(FileSystemManager files,
@@ -23,7 +22,7 @@ internal static partial class AfterlifeWoundHealingPlanner
     {
         internal JsonObject? NaturalProjection => _natural is null ? null : SpiritualHealingRequestProjection.CreateNatural(_natural);
 
-        internal static async Task<Continuation?> AdmitNaturalAsync(FileSystemManager files,
+        internal static async Task<(Continuation? Owner, bool Published)> AdmitNaturalAsync(FileSystemManager files,
             FileSystemManager.CanonicalWriteLease lease, LiveTurnPendingSnapshotManifest manifest,
             PendingTurnSnapshotObservedReadResult? observedSource = null)
         {
@@ -45,7 +44,12 @@ internal static partial class AfterlifeWoundHealingPlanner
             var context = new SpiritualSelfTreatmentStageContext(snapshot.SessionId, snapshot.RequestId, snapshot.TurnNumber,
                 JsonSerializer.Deserialize<ProgressionControl>(JsonSerializer.Serialize(manifest.ProgressionControl))!);
             var data = AfterlifeWoundTreatmentAuthority.PrepareNaturalSourceData(context, sources);
-            if (data is null) return null;
+            if (data is null) return (null, false);
+            if (await files.ReadFileBytesAsync(lease, ProgressionScheduleService.ReportPath) is null &&
+                await new ProgressionScheduleService(files, Microsoft.Extensions.Logging.Abstractions.NullLogger<ProgressionScheduleService>.Instance)
+                    .IsPublishedSpiritualCycleAsync(context.Progression, lease, snapshot.SnapshotToken,
+                        expectedNaturalProjection: SpiritualHealingRequestProjection.CreateNatural(data)))
+                return (null, true);
             if (await files.ReadFileBytesAsync(lease, AcceptedMechanicsPlan.WoundCommandPath) is not null)
                 throw new InvalidDataException("Natural recovery cannot overwrite concurrent wound commands or opportunity stages.");
             var currentImages = new Dictionary<string, CanonicalBeforeImage>(StringComparer.Ordinal);
@@ -74,7 +78,7 @@ internal static partial class AfterlifeWoundHealingPlanner
                 sources.ToDictionary(s => s.Path, s => (JsonNode?)s.Root, StringComparer.Ordinal), data);
             owner.AdmitGraphs(updates);
             owner.RequireCurrent(files, lease);
-            return owner;
+            return (owner, false);
         }
 
         // The ordinary composer already owns actual accepted source/target exports

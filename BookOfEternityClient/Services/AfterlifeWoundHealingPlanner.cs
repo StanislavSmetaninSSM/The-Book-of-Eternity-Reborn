@@ -340,7 +340,7 @@ internal static partial class AfterlifeWoundHealingPlanner
             return owner;
         }
 
-        private static List<AfterlifeWoundTreatmentAuthority.SourceFile> ReadSignedSources(PendingTurnSnapshotReadAuthority snapshot)
+        internal static List<AfterlifeWoundTreatmentAuthority.SourceFile> ReadSignedSources(PendingTurnSnapshotReadAuthority snapshot)
         {
             var sources = new List<AfterlifeWoundTreatmentAuthority.SourceFile>();
             foreach (var path in AfterlifeWoundTreatmentAuthority.SourcePaths)

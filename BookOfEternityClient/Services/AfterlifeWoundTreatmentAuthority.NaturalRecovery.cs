@@ -12,7 +12,8 @@ internal static partial class AfterlifeWoundTreatmentAuthority
         WoundHistoryState History, WoundCarrierCatalog Catalog, IReadOnlyList<SpiritualWoundRecoveryMember> Members);
 
     internal static async Task<JsonObject?> ProjectNaturalRecoveryAsync(FileSystemManager files,
-        FileSystemManager.CanonicalWriteLease lease, SpiritualSelfTreatmentStageContext context)
+        FileSystemManager.CanonicalWriteLease lease, SpiritualSelfTreatmentStageContext context,
+        Func<Task>? prepareSelectedBaseline = null)
     {
         files.EnsureCanonicalWriteLeaseActive(lease);
         files.VerifyCurrentSessionOperation(lease);
@@ -29,6 +30,7 @@ internal static partial class AfterlifeWoundTreatmentAuthority
             AfterlifeEntityProfileState.TryNormalizeEffectRealm(String(p["realm"]), out var profileRealm) && profileRealm == realm &&
             p["activeWounds"] is not null && (p["activeWounds"] is not JsonArray wounds || wounds.Count != 0));
         if (!candidate) return null; // No selected family: avoid reading/parsing the other fifteen roots.
+        if (prepareSelectedBaseline is not null) await prepareSelectedBaseline();
         var sources = new List<SourceFile>();
         foreach (var path in SourcePaths) sources.Add(path == profiles.Path ? profiles : await ReadSourceAsync(files, lease, path));
         var data = PrepareNaturalSourceData(context, sources);
