@@ -35,7 +35,7 @@
 **Produces:** one `OrdinarySafeTurnRecoversWithoutTreatmentAttemptOrDraw` Fact owned by a separate natural-caller category.
 
 - [x] Add a rank-I/tier0 real ordinary Engine turn, no command/selection, using the existing native completion hook. Assert exact same wound gains progress0→1, one recover History row/no attempt, one cycle, no wound-command creation and unchanged resources. Preserve full existing diagnostics and await actual Engine/cleanup.
-- [ ] Freeze test-only SOURCE/PREP, fresh Integration refsfalse build, exact1 PlanOnly/actual. Expected semantic RED is absent natural wound progress after actual ordinary turn, not setup/validator failure.
+- [ ] Freeze test-only SOURCE/PREP, fresh Integration refsfalse build, exact1 PlanOnly/actual. Require actual TurnNumber42→43 before the natural-specific progress assertion; rejected/rolled-back turns cannot count as semantic RED. Expected semantic RED is absent natural wound progress after an accepted ordinary turn, not setup/validator failure.
 - [ ] Preserve exact cause and checkpoint before production edits.
 
 ### Task 2: Shared owned program and atomic ordinary publication

@@ -52,6 +52,7 @@ public sealed class ExplorerWoundSelfTreatmentTests(ITestOutputHelper output)
             await runtime.StateManager.RefreshGameStateAsync();
             await runtime.Engine.ProcessPlayerTurn("Остаться в безопасном месте и спокойно наблюдать за Морем Хаоса.");
             Assert.True(responseWritten, "The ordinary action did not reach its native-shaped GM response.");
+            Assert.Equal(43, runtime.GameLoop.TurnNumber); // A rejected/rolled-back turn is not natural-recovery RED.
             var wound = Assert.Single((await fixture.ReadWoundsAsync()).Occurrences).Wound;
             Assert.Equal(original.WoundId, wound.WoundId);
             Assert.Equal(1, wound.Severity.Rank);
