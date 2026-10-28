@@ -12,7 +12,8 @@ Astra OUTCOME covers locality/profile and aid-backend, with optional happy-calle
 crosschecks, not the last browser-fault singleton. Source/provenance/limits are
 recorded in plan.md. The bounded current Guardian→player reverse slice below now has17 PASS across
 explicit04c/c6 lineages, including actual player confirmation in both interfaces;
-final independent OUTCOME is pending. Wider helpers remain open.
+Sol OUTCOME17 and bounded Astra backend/console OUTCOME are accepted. Wider
+helpers remain open.
 FR-054/FR-074 already require consent and fresh access. Technical decisions need
 no new user approval pause. Full T108, combat/helper services and #1536 remain open.
 
@@ -410,8 +411,8 @@ process recovery and existing Mortal/T609/DFR/Windows limits remain open.
 ### Reverse implementation checklist (inline, existing tracked plan)
 
 Source/test/GM steps below are compiled and exact17 PASS are recorded in plan.md.
-The original codec RED is independently accepted; final coherent OUTCOME is
-pending. Initial fixture-only seed failure and explicit retained11+fresh6 lineage
+The original codec RED and final Sol OUTCOME17 are independently accepted;
+Astra separately accepted reverse backend/console only. Initial fixture-only seed failure and explicit retained11+fresh6 lineage
 are preserved, not called a production RED or all17 rerun.
 
 - [x] Add `GuardianProviderOfferNamesThePlayerWoundWithoutIssuingPlayerConsent`
@@ -443,7 +444,7 @@ are preserved, not called a production RED or all17 rerun.
   Wound_Materialization_Contract, E_CLI_Afterlife_Turns and manifest/guided guards
   with one two-turn provider-offer/real confirmation example. Existing Mortal
   and public-service contracts have no permission change.
-- [ ] Freeze coherent source/tests/docs, independent SOURCE/PREP and exact
+- [x] Freeze coherent source/tests/docs, independent SOURCE/PREP and exact
   dependency-based category selection, owning Integration/Main/Support plus Unit
   refsfalse, all owning pins, official PlanOnly then separate actual categories
   under existing 60/120/180-second budgets. First failure gets exact causal

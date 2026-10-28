@@ -14510,7 +14510,8 @@ close full source-action/terminal/pending contracts or any top-level story task.
   browser d20=5 gives III2 via ordinary natural recovery. GuardianH3/playerH0,
   one attempt/cycle/no charge, exact v4 original/result/History and no-GM-consent
   assertions execute. Initial seed-only refusal is preserved; no production guard
-  was relaxed. Final independent OUTCOME is requested. Other actors/services,
+  was relaxed. Independent Sol OUTCOME17 ACCEPT and bounded Astra backend/console
+  ACCEPT are recorded; no all17 Astra claim. Other actors/services,
   helpless/conflict/Shining helper and longer lifetime routes remain open.
 
 ### GM contract synchronization

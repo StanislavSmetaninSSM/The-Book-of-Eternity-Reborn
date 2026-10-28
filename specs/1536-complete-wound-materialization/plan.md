@@ -71,8 +71,9 @@ remain. Shared initial/Engine helpers avoid a second bootstrap or copied workflo
 no measured speedup claimed. GM CLI/API/Matrix/Wound/daemon and actual worked
 provider-offer example/manifest are synchronized.
 
-Final independent Sol all17 OUTCOME is requested; Astra is assigned only bounded
-reverse backend+console outcome, not all17. Full T104–T108/US4/#1536, other actors,
+Independent Sol OUTCOME ACCEPT covers the exact17 union. Astra separately
+accepted reverse backend1 +console1, not browser or all17. No further runtime or
+receipt loop follows from those deliberately distinct scopes. Full T104–T108/US4/#1536, other actors,
 paid/public US6, conflict/helpless/Shining helper, longer offer lifetime and standing
 Mortal/preparation/T609/DFR/Windows/provider/recovery limits remain open. Remote
 persistence is verified after publication; a new clean-directory restore has not
