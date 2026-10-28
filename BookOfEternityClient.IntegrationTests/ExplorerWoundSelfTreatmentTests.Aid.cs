@@ -133,10 +133,15 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
             Assert.Equal(1, grantWound.Recovery.CurrentStepProgress);
             Assert.Null(await files.ReadFileBytesAsync(LiveTurnPreparationService.TurnRequestPath));
             Assert.Null(await files.ReadFileBytesAsync(LiveTurnPreparationService.PendingTurnSnapshotManifestPath));
+            foreach (var path in new[] { PendingTurnSnapshotAuthority.AuthorityPath, "ready/turn_complete.json", "ready/turn_error.json",
+                         ProgressionScheduleService.ReportPath, AcceptedMechanicsPlan.WoundCommandPath, PendingPlayerActionService.PendingPath })
+                Assert.Null(await files.ReadFileBytesAsync(path));
             var grant = Assert.IsType<SpiritualHealingPersistedResult>(Assert.Single((await fixture.ReadHistoryAsync()).Transitions,
                 t => t.TransitionResult is SpiritualHealingPersistedResult).TransitionResult);
             Assert.Equal(3, grant.SchemaVersion);
             Assert.Single(grant.ParticipationOutcomes!);
+            Assert.True(files.FileExists("game_state/meta/achievements.json"));
+            Assert.True(files.FileExists("lore/codex_entries.json"));
             Assert.Empty(JsonNode.Parse((await files.ReadFileAsync("game_state/meta/achievements.json"))!)!["unlockedAchievements"]!.AsArray());
             Assert.Empty(JsonNode.Parse((await files.ReadFileAsync("lore/codex_entries.json"))!)!["entries"]!.AsArray());
             var before = fixture.CaptureMutationRoots();

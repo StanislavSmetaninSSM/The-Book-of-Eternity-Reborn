@@ -1,5 +1,28 @@
 # US4 safe self-treatment — active functional work, 2026-10-28
 
+Finite whole two-turn source comparison is complete before another caller run.
+Existing counterpart: QtePhysicalInjuryConsumer_ActualNextOrdinaryNoneConsumesOnceWithoutWound
+(GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerNone.cs) accepts the actual
+RunActualQteStorySourceAsync first turn, checks original/ready cleanup, then enters
+the next actual Engine ordinary turn with the real retained session/turn. Its
+source setup (QteStoryAppend301–309) copies BaseSessionRoot, which already contains
+canonical achievements/codex; aid's narrow initial fixture did not. Counterpart
+is Mortal/QTE with a fresh runtime, while aid is Chaos0/no-QTE with the same live
+Explorer/Engine and real Guardian reasoning. Only the shared initial/cleanup
+contract is reused; no Mortal setup, private/reflection helper or new framework
+is copied and no held counterpart runtime is rerun.
+
+Shared lifecycle check: accepted cleanup1785 deletes ready signals, request and
+signed snapshot protocol, then resolves pending contracts; it does not remove
+canonical achievements/codex. Aid now explicitly asserts those original/control/
+pending paths absent after grant while EMPTY canonical lore roots remain present.
+Profile/wound/effects/History/resource/schedule/participation witness remain the
+real published grant afterimage and supply the next fresh signed snapshot. No
+state, resource or snapshot rebootstrap occurs between turns. Incarnation0/lives0
+Chaos requires only the two seeded meta/lore files once accepted history exists;
+no missing Mortal world-lore or artificial discovery is hidden. This source check
+joins the same narrow caller-only SOURCE review; actual caller4 remains UNRUN.
+
 Actual aid console retry on clean 8f851337f completed 2 FAIL in 60.4238382 s,
 no timeout/duplicate, both cleanup flags true; TRX SHA256
 b4222f66a52ec6a29f72a0ad2724b0dad60e021a51870b37703dc251833be9da.
