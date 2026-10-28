@@ -160,6 +160,9 @@ public sealed class SpiritualHealingGuidedContractTests : IDisposable
             Assert.Contains(marker, File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, file)));
         var entry = Assert.Single(ExampleValidationManifest.Load().EffectMaterializationCoverage, c => c.ContractId == marker);
         var example = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "Examples", entry.File));
+        foreach (var file in new[] { "OtherGuides/Wound_Materialization_Contract.md", "OtherGuides/Afterlife_Contract_Matrix.md" })
+            Assert.Contains("complete profile projection", File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, file)));
+        Assert.Contains("complete profile projection", example);
         Assert.All(entry.RequiredText, token => Assert.Contains(token, example));
         var start = example.IndexOf(marker, StringComparison.Ordinal);
         var fence = example.IndexOf("```json", start, StringComparison.Ordinal) + "```json".Length;

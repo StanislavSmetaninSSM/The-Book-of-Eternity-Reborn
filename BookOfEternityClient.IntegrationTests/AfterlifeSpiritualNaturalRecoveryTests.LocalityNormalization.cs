@@ -13,10 +13,19 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
     public async Task FullNormalizationPublishesParticipationWhileForeignLocalityWritesStayRefused()
     {
         await using (var fixture = await HealingFixture.CreateAsync(3, 3, 14, stageRequest: false,
-            beforeResourceBootstrap: ExplorerWoundSelfTreatmentTests.SeedEngineAidGuardianAsync))
+            beforeResourceBootstrap: async (files, profiles) =>
+            {
+                await ExplorerWoundSelfTreatmentTests.SeedEngineAidGuardianAsync(files, profiles);
+                var guardian = profiles["profiles"]!.AsArray().OfType<JsonObject>()
+                    .Single(p => SpiritualTreatmentParticipation.ProfileId(p) == AidGuardianId);
+                guardian["progressionStrategy"]!["priorityOrder"] = new JsonArray("spiritual_healing");
+                // Real report income12 pays the existing H0→H1 cost10. No
+                // invented progression outcome or second resource bootstrap.
+                await files.WriteFileAtomicAsync(AfterlifeEntityProfileState.StatePath, profiles.ToJsonString());
+            }))
         {
             var files = fixture.Files;
-            await PrepareGrantForFullNormalizationAsync(fixture);
+            await PrepareGrantForFullNormalizationAsync(fixture, stalePlayerMirror: true);
             await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
             var validator = new ValidationService(files, NullLogger<ValidationService>.Instance);
             Assert.DoesNotContain(await validator.ValidateAcceptedTurnRawMortalLocationMaterializationAsync(), i => i.Severity == IssueSeverity.Error);
@@ -25,6 +34,7 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
             Assert.True(AcceptedMechanicsPlanAuthority.TryPeekValidated(files, lease, out _, out var ready));
             var owner = Assert.IsType<AfterlifeWoundHealingPlanner.Continuation>(ready.Plan!.SpiritualHealingContinuation);
             var originalFingerprint = owner.SourceFingerprint;
+            Assert.True(owner.HasCompleteProfileProjection);
             var path = AfterlifeWoundTreatmentAuthority.AidLocalityPaths[0];
             var before = (await files.ReadFileBytesAsync(lease, path))!;
             var beforeRoot = JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(before))!;
@@ -48,6 +58,19 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
             Assert.Equal(3, result.SchemaVersion);
             Assert.Single(result.ParticipationOutcomes!);
             Assert.Equal(1, Assert.Single((await fixture.ReadWoundsAsync()).Occurrences).Wound.Recovery.CurrentStepProgress);
+            var profiles = JsonNode.Parse((await files.ReadFileAsync(lease, AfterlifeEntityProfileState.StatePath))!)!;
+            var guardian = profiles["profiles"]!.AsArray().OfType<JsonObject>()
+                .Single(p => SpiritualTreatmentParticipation.ProfileId(p) == AidGuardianId);
+            Assert.Equal(1, guardian["standardArts"]!["spiritual_healing"]!.GetValue<int>());
+            Assert.Equal(2, guardian["currencies"]!["inkFeathers"]!.GetValue<int>());
+            var progression = Assert.Single(guardian["progressionLedger"]!.AsArray().OfType<JsonObject>());
+            Assert.Equal("client_auto_strategy", progression["source"]!.GetValue<string>());
+            Assert.Equal(new[] { "spiritual_healing:0->1" }, progression["upgrades"]!.AsArray().Select(n => n!.GetValue<string>()));
+            Assert.Equal(0, Assert.Single(result.ToCanonicalJson()["source"]!["ownerTiers"]!.AsArray())!["healingTier"]!.GetValue<int>());
+            var player = profiles["profiles"]!.AsArray().OfType<JsonObject>()
+                .Single(p => SpiritualTreatmentParticipation.ProfileId(p) == "player_soul");
+            Assert.Equal(0, player["currencies"]!["inkFeathers"]!.GetValue<int>()); // Soul has no feathers; raw999 cannot mint mirror currency.
+            Assert.Equal(3, player["standardArts"]!["spiritual_healing"]!.GetValue<int>());
             fixture.AssertResourcesUnchanged();
         }
 
@@ -106,13 +129,16 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
         }
     }
 
-    private static async Task PrepareGrantForFullNormalizationAsync(HealingFixture fixture)
+    private static async Task PrepareGrantForFullNormalizationAsync(HealingFixture fixture, bool stalePlayerMirror = false)
     {
         await StageAsync(fixture);
         await using var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync();
         var profiles = JsonNode.Parse((await fixture.Files.ReadFileAsync(lease, WoundCarrierCatalog.AfterlifeProfilesPath))!)!.AsObject();
         profiles["profiles"]!.AsArray().OfType<JsonObject>().Single(p => SpiritualTreatmentParticipation.ProfileId(p) == AidGuardianId)
             [SpiritualTreatmentParticipation.ChangeProperty] = AidGrantProposal();
+        if (stalePlayerMirror)
+            profiles["profiles"]!.AsArray().OfType<JsonObject>().Single(p => SpiritualTreatmentParticipation.ProfileId(p) == "player_soul")
+                ["currencies"]!["inkFeathers"] = 999;
         await fixture.Files.WriteFileAtomicAsync(lease, WoundCarrierCatalog.AfterlifeProfilesPath, profiles.ToJsonString());
         await fixture.WriteReportAsync(lease);
     }

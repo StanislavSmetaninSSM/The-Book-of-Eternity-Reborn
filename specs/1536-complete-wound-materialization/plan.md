@@ -1,5 +1,30 @@
 # US4 safe self-treatment — active functional work, 2026-10-28
 
+Coherent full-profile correction is ready for finite SOURCE/PREP, all new code
+UNCOMPILED/UNRUN. The same locality Fact now exercises real automatic Guardian
+healing-art H0→H1 from admitted report income12/cost10, preserves signed H0 recovery
+tick1, and replaces a raw player currency mirror999 with authoritative Soul0.
+All original effect/wound/cohort/History/one-cycle/resource assertions remain.
+It is a real existing strategy producer, not a hand-written progression receipt.
+Active self/aid gets the same full projection in its actual effect input; natural
+gets it before actual owner/effect/resource composition. The already captured,
+validated scheduler report is parsed once per owner; no live request reread or
+new cache/permission is used. Existing report tuple comparison stays IgnoreCase.
+
+Proposed affected selection is 17 cases / 11 descriptors / 10 categories:
+guidance2/60 → locality1/120 → natural-publication4/120 → issuer2/120 → backend1/120
+→ consumedSELFgraphs1/120 → actualSELFconsole1/180 → ordinaryShining1/180 →
+aidConsole2/180 → aidBrowser2/180. This adds the smallest existing full-normalizer
+SELF consumer and the ordinary/Shining/full-profile consumers to the former aid8;
+it does not repeat the old31/19 or held suites. Existing beforeimage4 GREEN retains
+its exact 8a receipt: no helper/FS change. Guidance2 repeats because its docs guard
+now requires the synchronized complete-profile explanation. Fresh owning
+Integration/Main/Support then Unitrefsfalse is required; official exact PlanOnly
+must precede separate actual categories, stop dependent categories on first FAIL.
+Mortal/daemon no-update rationale: no new authored DTO, receipt, service/cost or
+cross-realm permission; only existing client-owned profile projection placement
+changes. GM Wound contract/matrix/worked example and narrow guard are synchronized.
+
 Full-profile composition WIP is written, UNCOMPILED/UNRUN. Both independent source
 traces establish a semantic gap: natural ResourceCore omitted report-driven actor
 progression and player-soul client mirrors; active self/aid also composed signed
