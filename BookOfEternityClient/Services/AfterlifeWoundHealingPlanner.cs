@@ -32,7 +32,7 @@ internal static partial class AfterlifeWoundHealingPlanner
         private readonly FileSystemManager.CanonicalWriteLease _lease;
         private readonly PendingTurnSnapshotReadAuthority _snapshot;
         private readonly PendingTurnSnapshotReader.OriginalReadEvidence _original;
-        private readonly IReadOnlyDictionary<string, CanonicalBeforeImage> _sources;
+        private IReadOnlyDictionary<string, CanonicalBeforeImage> _sources;
         private readonly JsonObject? _request;
         private readonly WoundAcceptedTurnInput _input;
         private readonly IReadOnlyList<SpiritualWoundStage> _stages;

@@ -1,5 +1,32 @@
 # US4 safe self-treatment — active functional work, 2026-10-28
 
+Caller2 actual on a67: PlanOnly4/2zeroexec7.9395337; console2 completeFAIL
+42.8860149s/category33.42383<180, no skip/dup/timeout, bothcleanuptrue. TRX SHA256
+37112cf54a82d96dfab22796a5f7283968e6bcc569831a647d824c7c51242d1b.
+Full canonical Guardian seed passes preturn/native grant. Both turn43 acceptances
+roll back in canonical refresh at Participation.RequireCurrent→Publish120 with
+'Participation locality changed within its publication owner'; aid/draw was not
+reached, browserUNRUN. Prior31 PASS retain their exact ba lineage; subsequent
+production changes require finite affected selection, not blanket current-SHA PASS.
+
+Bounded source confirms owned-normalization ordering: Guardians, Residents and
+later GuardianProjects may write locality BEFORE common publication. WriteIfChanged
+compares reserialized nodes, so pure input whitespace/BOM alone does not explain
+this actual failure. The precise changed root/field was NOT retained; do not claim
+one. Existing issuer has no owned-write closing transition for those legal writes.
+Astra/root accepted one narrow actual-writer seam, no guard weakening or seed-only
+workaround. Implementation WIP is now written, UNCOMPILED/UNRUN: an operation-scoped
+child normalizer gets the SAME live owner from actual validated plan via existing
+scalar owner getter. Its existing writer intercepts only two guarded locality paths,
+proves fresh owner/current exact beforeimage and computed-afterimage unchanged exact
+Guardian/Abode/local presence, writes normally, verifies exact physical readback,
+then advances ONLY live closing image. Grant extra2 and aid main18 both use this
+transition. Frozen SourceRoots/Input/source fingerprint/signed original/evidence
+are unchanged. Foreign bytes before/after still refuse; no semantic-ignore, cache,
+rebind, permission DTO or general coordinator. Default no-guard paths create no
+child/read work. Cheap full-normalization producer/foreign guards and finite
+SOURCE/owning builds/callers remain next; no runtime success is claimed.
+
 Actual active-aid first build ba1b551d passed: owning Integration/Main/Support
 0errors/137warnings4:22.12, Unitrefsfalse0errors/26warnings1:02.86, all9pins match.
 OfficialPlanOnly35/9zeroexec13.7910323. Scalar1/guidance2/request24/pending2/

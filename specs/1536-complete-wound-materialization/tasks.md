@@ -14480,8 +14480,12 @@ close full source-action/terminal/pending contracts or any top-level story task.
   full record+digest derives from real natural owner and shares atomic common
   publication; three-representation/projection/forgery/version/rollback controls,
   docs/manifest and affected natural/SELF graph regressions pass. Independent
-  OUTCOME is pending. Pre-control aid staging, separate healer/target tiers and
-  actual guided Engine journey remain next, so no full helper completion claim.
+  OUTCOME ACCEPT is recorded for the exact13 producer cases. Active aid backend
+  and scalar/request/retained SELF controls now pass31 cases on ba1b551d. Actual
+  guided Engine grant is not accepted yet: a67 reaches native grant but rolls back
+  at locality closing after generic normalization; the bounded owned-normalization
+  writer fix and caller qualification are in progress. Full helper completion
+  remains open.
   Reverse entity→player needs real guided player
   consent, and other/helpless/conflict/Shining helper routes remain open.
 

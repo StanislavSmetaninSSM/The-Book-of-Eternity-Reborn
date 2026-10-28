@@ -132,6 +132,7 @@ public partial class CanonicalStateNormalizer
     private readonly FileSystemManager.CanonicalWriteLease? _writeLease;
     private readonly CanonicalNormalizationWriteAuthority _normalizationWriteAuthority;
     private readonly GuardianPowerJournalNormalizationMode _guardianPowerJournalMode;
+    private readonly AfterlifeWoundHealingPlanner.Continuation? _spiritualLocalityNormalizationOwner;
 
     private enum GuardianPowerJournalNormalizationMode
     {
@@ -206,13 +207,15 @@ public partial class CanonicalStateNormalizer
         ILogger<CanonicalStateNormalizer> logger,
         FileSystemManager.CanonicalWriteLease? writeLease,
         CanonicalNormalizationWriteAuthority normalizationWriteAuthority,
-        GuardianPowerJournalNormalizationMode guardianPowerJournalMode)
+        GuardianPowerJournalNormalizationMode guardianPowerJournalMode,
+        AfterlifeWoundHealingPlanner.Continuation? spiritualLocalityNormalizationOwner = null)
     {
         _fs = fs;
         _logger = logger;
         _writeLease = writeLease;
         _normalizationWriteAuthority = normalizationWriteAuthority;
         _guardianPowerJournalMode = guardianPowerJournalMode;
+        _spiritualLocalityNormalizationOwner = spiritualLocalityNormalizationOwner;
     }
 
     internal CanonicalStateNormalizer BindTo(
@@ -411,6 +414,17 @@ public partial class CanonicalStateNormalizer
         SpiritualPublicationReceipt? spiritualPublicationReceipt = null)
     {
         ArgumentNullException.ThrowIfNull(mortalItemMode);
+        var spiritualOwner = (acceptedMechanicsPreflight as AcceptedMechanicsNormalizationPreflight.Validated)?.Plan.SpiritualHealingContinuation;
+        if (_spiritualLocalityNormalizationOwner is null && spiritualOwner?.HasLocalityGuards == true)
+        {
+            // One operation-scoped child, with the SAME actual lease and validated
+            // owner. No mutation authority is reconstructed from serialized DATA.
+            return await new CanonicalStateNormalizer(_fs, _logger, _writeLease, _normalizationWriteAuthority,
+                _guardianPowerJournalMode, spiritualOwner).NormalizeAccumulatedStateCoreAsync(backups, mortalItemMode,
+                    acceptedMechanicsPreflight, treatmentPublicationReceipt, spiritualPublicationReceipt);
+        }
+        if (_spiritualLocalityNormalizationOwner is not null && !ReferenceEquals(spiritualOwner, _spiritualLocalityNormalizationOwner))
+            throw new InvalidDataException("Locality normalization lost its actual validated spiritual plan owner.");
         var guardianProjectInputs = await ReadGuardianProjectNormalizationInputsAsync(backups);
 
         var mortalLocationPlan = await NormalizeMortalLocationsAsync(backups, spiritualPublicationReceipt);

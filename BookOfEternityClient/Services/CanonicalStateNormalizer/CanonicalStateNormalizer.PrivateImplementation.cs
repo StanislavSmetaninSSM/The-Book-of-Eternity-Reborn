@@ -179,7 +179,11 @@ public partial class CanonicalStateNormalizer
 
         try
         {
-            await _fs.WriteFileAtomicAsync(_writeLease, path, content);
+            if (_spiritualLocalityNormalizationOwner?.OwnsLocalityPath(path) == true)
+                await _spiritualLocalityNormalizationOwner.PublishOwnedLocalityNormalizationAsync(_fs, _writeLease,
+                    path, content, () => _fs.WriteFileAtomicAsync(_writeLease, path, content));
+            else
+                await _fs.WriteFileAtomicAsync(_writeLease, path, content);
         }
         catch (SessionReplacedException)
         {
