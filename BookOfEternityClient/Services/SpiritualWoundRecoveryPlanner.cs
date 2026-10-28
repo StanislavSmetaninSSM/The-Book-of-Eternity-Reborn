@@ -16,6 +16,8 @@ internal static class SpiritualWoundRecoveryPlanner
         WoundMaterializationEnvelope before, int tier, string? attemptId, string cycleKey,
         SpiritualHealingCalculation? active)
     {
+        if (tier is < 0 or > 5)
+            throw new InvalidDataException("Natural recovery requires the target's bounded admitted art tier.");
         var rows = new List<SpiritualWoundStage>();
         var rank = before.Severity.Rank;
         var progress = before.Recovery.CurrentStepProgress;
@@ -33,7 +35,7 @@ internal static class SpiritualWoundRecoveryPlanner
         if (active is not null)
         {
             if (string.IsNullOrWhiteSpace(attemptId) || !active.HasSufficientTier ||
-                active.Input.WoundSeverityRank != rank || active.Input.HealingTier != tier)
+                active.Input.WoundSeverityRank != rank || SpiritualHealingOutcomeMath.Calculate(active.Input) != active)
                 throw new InvalidDataException("Active healing differs from its admitted wound and art.");
             Add("treat", active.ResultingSeverityRank, checked(progress + active.RecoveryPointsAdded),
                 active.HealsWound, attemptId);

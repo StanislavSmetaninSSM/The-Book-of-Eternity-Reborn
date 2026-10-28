@@ -129,9 +129,11 @@ public partial class ProgressionScheduleService
         _logger = logger;
     }
 
-    public async Task<ProgressionScheduleState> EnsureInitializedAsync()
+    public Task<ProgressionScheduleState> EnsureInitializedAsync() => EnsureInitializedCoreAsync(null);
+
+    private async Task<ProgressionScheduleState> EnsureInitializedCoreAsync(FileSystemManager.CanonicalWriteLease? writeLease)
     {
-        var scheduleSnapshot = await ReadScheduleSnapshotAsync();
+        var scheduleSnapshot = await ReadScheduleSnapshotAsync(writeLease);
         if (scheduleSnapshot.State == ProgressionFileReadState.Malformed)
         {
             throw new InvalidOperationException(
@@ -142,16 +144,16 @@ public partial class ProgressionScheduleService
         var existing = scheduleSnapshot.Schedule;
         if (existing != null)
         {
-            var sanitized = await SanitizeScheduleAsync(existing, existing.CurrentRealm);
+            var sanitized = await SanitizeScheduleAsync(existing, existing.CurrentRealm, writeLease);
             if (!SchedulesEqual(existing, sanitized))
-                await WriteScheduleAsync(sanitized);
+                await WriteScheduleAsync(sanitized, writeLease);
             return sanitized;
         }
 
-        var realm = await ResolveCurrentRealmAsync(string.Empty);
+        var realm = await ResolveCurrentRealmAsync(string.Empty, writeLease);
         if (!HasResolvedRealm(realm))
         {
-            if (!scheduleSnapshot.FilePresent && !_fs.FileExists("game_state/meta/soul_state.json"))
+            if (!scheduleSnapshot.FilePresent && !(writeLease is null ? _fs.FileExists("game_state/meta/soul_state.json") : _fs.FileExists(writeLease, "game_state/meta/soul_state.json")))
                 return CreateUninitializedSchedule();
 
             throw new InvalidOperationException(
@@ -159,7 +161,7 @@ public partial class ProgressionScheduleService
                 "Progression ledger сохраняется fail-closed и не может быть создан с пустым realm contract.");
         }
 
-        var worldTimeResolution = await ResolveWorldTimeFromFileAsync(0);
+        var worldTimeResolution = await ResolveWorldTimeFromFileAsync(0, writeLease: writeLease);
         var currentWorldTime = worldTimeResolution.Minutes;
         var schedule = new ProgressionScheduleState
         {
@@ -192,7 +194,7 @@ public partial class ProgressionScheduleService
             LastUpdatedUtc = DateTime.UtcNow.ToString("o")
         };
 
-        await WriteScheduleAsync(schedule);
+        await WriteScheduleAsync(schedule, writeLease);
         return schedule;
     }
 
@@ -204,20 +206,34 @@ public partial class ProgressionScheduleService
         AfterlifeCatchupCycleEquivalentMinutes = DefaultAfterlifeCatchupCycleEquivalentMinutes
     };
 
-    public async Task<ProgressionControl> BuildControlForNextTurnAsync(string? activeTurnRealm = null)
+    public Task<ProgressionControl> BuildControlForNextTurnAsync(string? activeTurnRealm = null) =>
+        BuildControlCoreAsync(activeTurnRealm, null);
+
+    // The aid stage owns one actual lease across committed-grant proof, this
+    // same calculation/write, fresh closing and request staging.
+    internal Task<ProgressionControl> BuildControlForNextTurnAsync(
+        FileSystemManager.CanonicalWriteLease writeLease, string? activeTurnRealm)
     {
-        var schedule = await EnsureInitializedAsync();
-        schedule = await SanitizeScheduleAsync(schedule, activeTurnRealm);
+        _fs.EnsureCanonicalWriteLeaseActive(writeLease);
+        _fs.VerifyCurrentSessionOperation(writeLease);
+        return BuildControlCoreAsync(activeTurnRealm, writeLease);
+    }
+
+    private async Task<ProgressionControl> BuildControlCoreAsync(string? activeTurnRealm,
+        FileSystemManager.CanonicalWriteLease? writeLease)
+    {
+        var schedule = await EnsureInitializedCoreAsync(writeLease);
+        schedule = await SanitizeScheduleAsync(schedule, activeTurnRealm, writeLease);
 
         if (!HasResolvedRealm(schedule.CurrentRealm))
             throw BuildUnresolvedRealmException();
 
-        var afterlifeRealmKind = await ResolveAfterlifeRealmKindAsync(schedule.CurrentRealm);
+        var afterlifeRealmKind = await ResolveAfterlifeRealmKindAsync(schedule.CurrentRealm, writeLease);
         if (afterlifeRealmKind != AfterlifeRealmKind.None)
         {
             var afterlifeWorldTimeResolution = await ResolveWorldTimeFromFileAsync(
                 schedule.CurrentWorldTimeInMinutes,
-                allowIncrementalTimeChange: false);
+                allowIncrementalTimeChange: false, writeLease: writeLease);
             if (!afterlifeWorldTimeResolution.HasUnresolvedAbsoluteOverride)
                 schedule.CurrentWorldTimeInMinutes = afterlifeWorldTimeResolution.Minutes;
 
@@ -246,18 +262,18 @@ public partial class ProgressionScheduleService
                 schedule.PendingShiningTradeCycles = Math.Max(1, schedule.PendingShiningTradeCycles);
             }
 
-            var includeShiningContoursInMortalCatchup = await HasActiveShiningAbodeWithoutPreparedPackageAsync();
+            var includeShiningContoursInMortalCatchup = await HasActiveShiningAbodeWithoutPreparedPackageAsync(writeLease);
             var catchup = BuildAfterlifeCatchupContext(
                 schedule,
                 afterlifeRealmKind,
                 includeShiningContoursInMortalCatchup);
             schedule.LastUpdatedUtc = DateTime.UtcNow.ToString("o");
-            await WriteScheduleAsync(schedule);
+            await WriteScheduleAsync(schedule, writeLease);
 
             return BuildProgressionControl(schedule, worldCycles: 0, factionCycles: 0, catchup);
         }
 
-        var worldTimeResolution = await ResolveWorldTimeFromFileAsync(schedule.CurrentWorldTimeInMinutes);
+        var worldTimeResolution = await ResolveWorldTimeFromFileAsync(schedule.CurrentWorldTimeInMinutes, writeLease: writeLease);
         schedule.CurrentWorldTimeInMinutes = worldTimeResolution.Minutes;
         if (worldTimeResolution.HasUnresolvedAbsoluteOverride)
         {
@@ -292,7 +308,7 @@ public partial class ProgressionScheduleService
         schedule.PendingShiningFactionCycles = 0;
         schedule.PendingShiningTradeCycles = 0;
         schedule.LastUpdatedUtc = DateTime.UtcNow.ToString("o");
-        await WriteScheduleAsync(schedule);
+        await WriteScheduleAsync(schedule, writeLease);
 
         return BuildProgressionControl(
             schedule,
@@ -1411,9 +1427,12 @@ public partial class ProgressionScheduleService
         }
     }
 
-    private async Task WriteScheduleAsync(ProgressionScheduleState schedule)
+    private async Task WriteScheduleAsync(ProgressionScheduleState schedule,
+        FileSystemManager.CanonicalWriteLease? writeLease = null)
     {
-        await _fs.WriteFileAtomicAsync(SchedulePath, JsonSerializer.Serialize(schedule, JsonOpts));
+        var json = JsonSerializer.Serialize(schedule, JsonOpts);
+        if (writeLease is null) await _fs.WriteFileAtomicAsync(SchedulePath, json);
+        else await _fs.WriteFileAtomicAsync(writeLease, SchedulePath, json);
     }
 
     private async Task<ProgressionReportSnapshot> ReadProcessingReportSnapshotAsync(
@@ -1677,7 +1696,8 @@ public partial class ProgressionScheduleService
         string.Equals(realm, "Shining Abode", StringComparison.OrdinalIgnoreCase) ||
         string.Equals(realm, "Сияющая Обитель", StringComparison.OrdinalIgnoreCase);
 
-    private async Task<AfterlifeRealmKind> ResolveAfterlifeRealmKindAsync(string? realm)
+    private async Task<AfterlifeRealmKind> ResolveAfterlifeRealmKindAsync(string? realm,
+        FileSystemManager.CanonicalWriteLease? writeLease = null)
     {
         if (IsChaosSeaRealm(realm))
             return AfterlifeRealmKind.ChaosSea;
@@ -1685,7 +1705,7 @@ public partial class ProgressionScheduleService
         if (!IsShiningAbodeRealm(realm))
             return AfterlifeRealmKind.None;
 
-        return await ResolvePreparedShiningBootstrapPackageModeAsync() switch
+        return await ResolvePreparedShiningBootstrapPackageModeAsync(writeLease) switch
         {
             ShiningAbodeState.PreparedIncarnationPackageMode.ValidHandoff => AfterlifeRealmKind.ShiningBootstrapHandoff,
             ShiningAbodeState.PreparedIncarnationPackageMode.InvalidFault => AfterlifeRealmKind.ShiningBootstrapPackageFault,
@@ -1693,9 +1713,11 @@ public partial class ProgressionScheduleService
         };
     }
 
-    private async Task<ShiningAbodeState.PreparedIncarnationPackageMode> ResolvePreparedShiningBootstrapPackageModeAsync()
+    private async Task<ShiningAbodeState.PreparedIncarnationPackageMode> ResolvePreparedShiningBootstrapPackageModeAsync(
+        FileSystemManager.CanonicalWriteLease? writeLease = null)
     {
-        var json = await _fs.ReadFileAsync(ShiningAbodeState.StatePath);
+        var json = writeLease is null ? await _fs.ReadFileAsync(ShiningAbodeState.StatePath)
+            : await _fs.ReadFileAsync(writeLease, ShiningAbodeState.StatePath);
         if (string.IsNullOrWhiteSpace(json))
             return ShiningAbodeState.PreparedIncarnationPackageMode.Absent;
 
@@ -1711,9 +1733,10 @@ public partial class ProgressionScheduleService
         }
     }
 
-    private async Task<bool> HasActiveShiningAbodeWithoutPreparedPackageAsync()
+    private async Task<bool> HasActiveShiningAbodeWithoutPreparedPackageAsync(FileSystemManager.CanonicalWriteLease? writeLease = null)
     {
-        var json = await _fs.ReadFileAsync(ShiningAbodeState.StatePath);
+        var json = writeLease is null ? await _fs.ReadFileAsync(ShiningAbodeState.StatePath)
+            : await _fs.ReadFileAsync(writeLease, ShiningAbodeState.StatePath);
         if (string.IsNullOrWhiteSpace(json))
             return false;
 

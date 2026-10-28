@@ -6,18 +6,38 @@ using System.Text.Json.Nodes;
 
 namespace BookOfEternityClient.Services;
 
-/// <summary>Exact self selection; display names and visible indexes never identify a wound.</summary>
+/// <summary>Exact active selection DATA; display names and indexes never identify a wound.</summary>
+internal sealed record SpiritualAidSelection(string HealerId, string TargetId, string ParticipationFingerprint);
+
 internal sealed record SpiritualSelfTreatmentSelection(string WoundId, string ExpectedWoundFingerprint)
 {
-    internal JsonObject ToJson() => new() { ["woundId"] = WoundId, ["expectedWoundFingerprint"] = ExpectedWoundFingerprint };
+    internal SpiritualAidSelection? Aid { get; init; }
+    internal JsonObject ToJson() => Aid is null
+        ? new() { ["woundId"] = WoundId, ["expectedWoundFingerprint"] = ExpectedWoundFingerprint }
+        : new()
+        {
+            ["schemaVersion"] = 3, ["mode"] = "aid", ["woundId"] = WoundId,
+            ["expectedWoundFingerprint"] = ExpectedWoundFingerprint, ["healerId"] = Aid.HealerId,
+            ["targetId"] = Aid.TargetId, ["participationFingerprint"] = Aid.ParticipationFingerprint
+        };
     internal static SpiritualSelfTreatmentSelection Parse(JsonNode? node)
     {
-        if (node is not JsonObject root || root.Count != 2 ||
+        if (node is not JsonObject root ||
             root["woundId"] is not JsonValue id || !id.TryGetValue<string>(out var woundId) ||
             root["expectedWoundFingerprint"] is not JsonValue fp || !fp.TryGetValue<string>(out var fingerprint) ||
             !ResourceMaterializationContract.IsExactIdentifier(woundId) || !ResourceMaterializationContract.IsAuthorityFingerprint(fingerprint))
             throw new InvalidDataException("Invalid exact spiritual wound selection.");
-        return new(woundId!, fingerprint!);
+        var selection = new SpiritualSelfTreatmentSelection(woundId!, fingerprint!);
+        if (root.Count == 2) return selection; // Still-produced exact self form.
+        if (root.Count != 7 || root["schemaVersion"] is not JsonValue version || !version.TryGetValue<int>(out var schema) || schema != 3 ||
+            root["mode"] is not JsonValue mode || !mode.TryGetValue<string>(out var treatmentMode) || treatmentMode != "aid" ||
+            root["healerId"] is not JsonValue healer || !healer.TryGetValue<string>(out var healerId) || healerId != "player_soul" ||
+            root["targetId"] is not JsonValue target || !target.TryGetValue<string>(out var targetId) ||
+            !ResourceMaterializationContract.IsExactIdentifier(targetId) || root["participationFingerprint"] is not JsonValue participation ||
+            !participation.TryGetValue<string>(out var participationFingerprint) ||
+            !ResourceMaterializationContract.IsAuthorityFingerprint(participationFingerprint))
+            throw new InvalidDataException("Invalid exact spiritual aid selection.");
+        return selection with { Aid = new("player_soul", targetId!, participationFingerprint!) };
     }
 }
 
@@ -58,7 +78,7 @@ internal static partial class AfterlifeWoundTreatmentAuthority
         files.VerifyCurrentSessionOperation(lease);
         if (!ResourceMaterializationContract.IsExactIdentifier(context.SessionId) ||
             !ResourceMaterializationContract.IsExactIdentifier(context.RequestId) || context.Turn < 1 ||
-            context.Progression is null || !ResourceMaterializationContract.IsExactIdentifier(selection.WoundId))
+            context.Progression is null || selection.Aid is not null || !ResourceMaterializationContract.IsExactIdentifier(selection.WoundId))
             return Refuse("context_invalid");
 
         // Detach mutable caller DATA before the first await. Neither this object nor
@@ -145,6 +165,7 @@ internal static partial class AfterlifeWoundTreatmentAuthority
     internal static SourceResult PrepareSourceData(SpiritualSelfTreatmentStageContext context,
         SpiritualSelfTreatmentSelection selection, IReadOnlyList<SourceFile> sources)
     {
+        if (selection.Aid is not null) return SourceRefuse("target_invalid");
         var control = context.Progression;
         JsonObject? Root(string path) => sources.Single(s => s.Path == path).Root;
         var soul = Root(SoulPath);

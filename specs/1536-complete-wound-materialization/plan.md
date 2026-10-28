@@ -1,5 +1,19 @@
 # US4 safe self-treatment — active functional work, 2026-10-28
 
+Active aid WIP is now written but UNCOMPILED/UNRUN: the same scalar program uses
+the target's natural tier and rederives the full active calculation instead of
+equating the two tiers. Actual owned source still binds healer identity/art; pure
+calculation DATA grants nothing. Exact aid selection has an explicit closed v3
+variant while old self selection bytes stay unchanged and self-only staging
+rejects aid. Existing BuildControl now has one calculation/core and a narrow
+lease-aware overload plumbing every source read and schedule write; default calls
+retain the original no-lease path. No Engine aid branch or draw is activated yet.
+Next: strict committed grant read before control, shared request/source/result
+admission and existing guided caller, with current source/consent closing and
+staging rollback controls before coherent SOURCE/build. No separate math-only
+owning rebuild is planned. Issuer13 and scalar genuine RED both independently
+OUTCOME accepted; prior qualified cases keep their stated lineages.
+
 Scalar causal RED executed on clean c7bf527c: exact1 complete FAIL at real Build37
 tier-equality guard/test23 after valid GuardianII0 and H3/d8 total14/difficulty14
 ReduceOne preconditions. Unitrefsfalse build0errors/26warnings58.03s, six pins match;
