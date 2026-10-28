@@ -742,3 +742,59 @@ owner. Старый Оплот из feature532 — одноразовый strain
 повторного использования общего запаса. Это не тест runtime tie-break, публикации
 или игровой баланс. [Полный кандидат](threshold-and-barrier-proposal.md) отдельно
 задаёт перетиповую нормализацию попадания, синергию, жизненный цикл и критерии.
+
+## 2026-10-28 — исходная экономика статов, E/R и культивации
+
+Read-only /root/audit_stat_economy1573 (gpt-6.1-sol/high), base f1599477.
+Serena manual/activation и реальные C# symbols прочитаны; конфигурация
+csharp/typescript/python сохранена. Parent сверил ключевые исходники.
+Связанный новый кандидат: [развитие](stat-growth-and-development-proposal.md).
+
+Fresh soul имеет0 Перьев/E (Core/GameEngine/GameEngine.MainMenu.cs:1083–1100);
+tutorial1/2/4/6 единожды (DarenQteRewardProfileService:246–282). ShiningState:388
+создаёт R0/Sparks100; ActivateForAscension:440–453 вновь выдаёт100, normalization:531
+ограничивает кошелёк100 — это существующий код, а не одобренная новая экономика.
+
+Культивация UI/ExplorerMode/ExplorerMode.Afterlife.InkFeathersAndOfferings.cs:783
+берёт max20/floor25% кошелька; AfterlifeProgressionTuning:5–10 даёт4E/Перо при
+пороге60. ValidationService.AcceptedTurnAndInkFeathers:2040–2099 сверяет receipt.
+Минимум20→80 и зависимость большого первого прироста от кошелька подтверждены.
+
+Rules/Block_31_The_Soul_System.txt:524–714 задаёт доход жизни:
+max10 базовых level×10+quests×15+soulQuests×30, GM0.5…4, множитель E1+0.1tier,
+floor и границы10…100000; затем связь с E. Там же тысячные пороги E расходятся
+с боевыми. LifeEvaluationRewardAnalyzer:40–99 лишь наблюдает дельту/реликвии,
+SharedAndSoulHelpers:52–82 принимает authored absolute XP. Нельзя объявлять
+доход клиента вычисленным по этому правилу или типичную награду известной.
+
+Player R: проект+10 за первый archetype per faction per ascension
+(ShiningAbodeState.Gameplay:245–256); новый native faction+20 по validator
+LifecycleControlAndStateFiles:9811–9822, цена25F+20S, civic tier≥1 (Gameplay:118).
+Повторно учитывать проекты позволяет существующий reset списка при ascension:
+новая постоянная модель должна отдельно согласовать законный цикл, не вызывать
+reset одним перемещением. Непрерывно доступный путь R данным аудитом не доказан.
+
+Различать combat R thresholds0/20/45/75/110/160/220/300/420/560
+(AfterlifeSpiritualConflictState:242), civic0/100/220/380/580 (ShiningState:610)
+и NPC profile tiers0…5. NPC покупает20E за10(tier+1)F либо20R за(tier+1)S
+(AfterlifeEntityProfileState:2663–2692, MaxProfileTier5:44); player_soul исключён
+из auto progression (:2373–2381). Дешёвый NPC тариф не является player command.
+CLI_Step_Main:575 запрещает текущим conflict rewards выдачу E/R.
+
+AfterlifeTrainingCostPolicy:7–67: стандарт next n/min u —50+50n+25u F либо
+4+3n+u S; self×4. Mentor100/80/60%; spirit focus self×3, special self×5.
+В UI SpiritualConflict:683–769 валюты альтернативны, не обе сразу.
+Treasury:303–351 обменивает25F→1S, до3S/цикл и текущего накопленного100.
+Gacha:8–10 стоит30F; Forge:8–12 —10/10,20/15,30/20,25/15,45/30 F/S.
+Общий добровольный respec не найден в ограниченном поиске; rollback не respec.
+Новая цена не выводится автоматически из этих разнородных обменов.
+
+Bounded консультация /root/consult_stat_growth1573 (gpt-6-astra/high):
+оставить точный D/превышение, менять источник до выдачи; E+1 за100+25rank.
+После дополнительного вопроса поддержан явный новый player R путь; вариант
+50+10floor(QR) признан скачком выгодности2.8× относительно конца E. Parent выбрал
+140+10floor(QR), первый R интервал2800 как последний E. Это калибровка проекта,
+не балансное доказательство. Новая lifeE0/1/2/4 требует примеров критериев.
+
+Арифметика нового приложения проверяется отдельно от игрового исполнения.
+Никаких code/tests/GM-rule изменений здесь нет; production и баланс UNRUN.
