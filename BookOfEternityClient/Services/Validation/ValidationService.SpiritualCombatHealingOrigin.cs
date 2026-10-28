@@ -28,6 +28,7 @@ public partial class ValidationService
             internal SpiritualCombatHealingIntent Intent { get; } = intent;
             internal AfterlifeWoundTreatmentAuthority.SelectedWoundSourceData Source { get; } = source;
             internal ProgressionControl Control { get; } = control;
+            internal IReadOnlyList<int> AcceptedDice => _snapshot.AcceptedD20EventValues;
             private readonly PendingTurnSnapshotReadAuthority _snapshot = snapshot;
 
             internal void RequireCurrent(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease)

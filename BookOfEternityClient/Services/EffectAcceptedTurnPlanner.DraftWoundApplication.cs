@@ -73,7 +73,9 @@ internal static partial class EffectAcceptedTurnPlanner
         private sealed record PendingWoundInsertion(EffectDraftWoundBeforeAuthority Before,
             WoundPreparedAcceptedTurnPlan Prepared, WoundStateReduction State, WoundMaterializationEnvelope Wound,
             IReadOnlyList<EffectAcceptedApplicationResult> Applications,
-            int ApplicationStart, int WriteStart, int AllocationStart, int CarrierStart);
+            int ApplicationStart, int WriteStart, int AllocationStart, int CarrierStart,
+            IReadOnlyList<WoundExecutedBoundary>? CombatStages = null,
+            IReadOnlyList<WoundEffectOperationBatch>? CombatSourceBatches = null);
 
         /// <summary>
         /// Applies one prepared creation or worsening to the retained draft and records its real mutation ranges.
@@ -104,6 +106,8 @@ internal static partial class EffectAcceptedTurnPlanner
                     throw new InvalidOperationException("The effect draft is no longer writable.");
                 if (_woundInsertions.TryGetValue(before, out var previous))
                     return previous.Matches(prepared) ? previous : Reject("changed applied preparation");
+                if (prepared.CombatHealingAuthority is not null)
+                    return ApplyPreparedCombatHealing(before, prepared, failures);
                 if (!before.IsCurrent || !before.Selection.IsCurrentFor(this) ||
                     !before.MatchesPrepared(prepared) || prepared.EffectOperationBatches.Count != 1 ||
                     prepared.EffectOperationBatches.Any(batch =>
@@ -275,6 +279,8 @@ internal static partial class EffectAcceptedTurnPlanner
             private readonly WoundOperationBeforeData _routingState;
             private readonly WoundApplicationRootEffectBinding[] _rootBindings;
             private readonly Dictionary<string, (EffectIdentitySourceGroup Group, string Fingerprint)> _retiredIdentities;
+            private readonly WoundExecutedBoundary[]? _combatStages;
+            private readonly WoundEffectOperationBatch[]? _combatSourceBatches;
 
             /// <summary>
             /// Copies the actual pending insertion and reads its owner-recorded mutation ranges.
@@ -288,6 +294,8 @@ internal static partial class EffectAcceptedTurnPlanner
             private EffectDraftWoundInsertion(EffectAcceptedDraft owner, PendingWoundInsertion pending)
             {
                 _owner = owner;
+                _combatStages = pending.CombatStages?.Select(s => s.DetachedCopy()).ToArray();
+                _combatSourceBatches = pending.CombatSourceBatches?.Select(WoundAcceptedTurnData.CloneOperationBatch).ToArray();
                 _before = pending.Before;
                 _prepared = pending.Prepared.ClonePreservingCacheAuthority();
                 _reducedState = pending.State;
@@ -317,10 +325,25 @@ internal static partial class EffectAcceptedTurnPlanner
                             operation.ExpectedSourceKey.Kind, operation.ExpectedSourceKey.SourceId),
                         WoundAcceptedTurnFingerprintWriter.Compute(new[] { WoundAcceptedTurnFingerprintWriter.CanonicalJson(retired.Raw) })));
                 }
+                if (_combatStages is not null)
+                {
+                    if (pending.Prepared.CombatHealingAuthority is not { } selection || _combatStages.Length != selection.Stages.Count)
+                        throw new InvalidOperationException("Actual combat stages and source authority required.");
+                    foreach (var terminal in _combatStages.SelectMany(s => s.Terminations))
+                    {
+                        if (terminal.SourceKey.Realm != _wound.Owner.Realm || terminal.SourceKey.Kind != "wound" || terminal.SourceKey.SourceId != _wound.WoundId ||
+                            !owner.identityState.State!.TryGetEntry(terminal.EffectId, out var retired) || retired.State != "expired" ||
+                            !IdentityWrites.Any(w => w.EffectId == terminal.EffectId && w.Kind == EffectIdentityWriteKind.AppendTransition &&
+                                retired.Transitions.Any(t => JsonNode.DeepEquals(t.Raw, JsonNode.Parse(w.PayloadJson)))))
+                            throw new InvalidOperationException("Combat retirement needs its actual terminal writer image.");
+                        _retiredIdentities[retired.EffectId] = (new EffectIdentitySourceGroup(_wound.Owner.Realm, "wound", _wound.WoundId),
+                            WoundAcceptedTurnFingerprintWriter.Compute(new[] { WoundAcceptedTurnFingerprintWriter.CanonicalJson(retired.Raw) }));
+                    }
+                }
                 // A last-use cut can remove a current root before wound terminal
                 // planning. Import only real writer receipts of this wound's
                 // superseded generation; other wounds keep their current roots.
-                if (pending.Prepared.EffectOperationBatches.Any(batch => batch.TransitionAuthority.TransitionKind == "worsen"))
+                if (_combatStages is not null || pending.Prepared.EffectOperationBatches.Any(batch => batch.TransitionAuthority.TransitionKind == "worsen"))
                 {
                     var group = new EffectIdentitySourceGroup(_wound.Owner.Realm, "wound", _wound.WoundId);
                     foreach (var receipt in owner._woundTriggerJournal.Values)
@@ -546,7 +569,12 @@ internal static partial class EffectAcceptedTurnPlanner
             /// <summary>
             /// Gets whether this actual insertion created a wound rather than replacing an earlier generation.
             /// </summary>
-            internal bool IsCreation => _before.Selection.Input.Transitions[0].Kind == "create";
+            internal bool IsCreation => !IsCombatHealing && _before.Selection.Input.Transitions[0].Kind == "create";
+            internal bool IsCombatHealing => _combatStages is not null && _prepared.CombatHealingAuthority is not null;
+            internal IReadOnlyList<WoundExecutedBoundary> CombatStages => _combatStages?.Select(s => s.DetachedCopy()).ToArray()
+                ?? Array.Empty<WoundExecutedBoundary>();
+            internal IReadOnlyList<WoundEffectOperationBatch> CombatSourceBatches => _combatSourceBatches?.Select(WoundAcceptedTurnData.CloneOperationBatch).ToArray()
+                ?? Array.Empty<WoundEffectOperationBatch>();
             /// <summary>
             /// Gets the exact closed spiritual interval that admitted this insertion, or null for a Mortal insertion.
             /// </summary>

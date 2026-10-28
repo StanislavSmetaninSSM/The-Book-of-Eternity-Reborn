@@ -624,6 +624,7 @@ public partial class ValidationService
                 }
             }
 
+            ValidateCombatHealingDeclaration(conflict, exchange);
             foreach (var side in new[] { "player", "opposition" })
             {
                 var key = side + "SideStrain";

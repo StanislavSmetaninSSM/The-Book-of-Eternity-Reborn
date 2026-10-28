@@ -27,6 +27,10 @@ internal static partial class EffectAcceptedTurnPlanner
             ValidationService.SpiritualOriginalTurnCapture.WoundSelection selection, List<ValidationIssue> failures) =>
             AdvanceForWoundInsertionCore(EffectDraftWoundSelection.From(selection), failures);
 
+        internal EffectDraftWoundBeforeAuthority? AdvanceForWoundInsertion(
+            ValidationService.SpiritualOriginalTurnCapture.CombatHealingSelection selection, List<ValidationIssue> failures) =>
+            AdvanceForWoundInsertionCore(EffectDraftWoundSelection.From(selection), failures);
+
         /// <summary>
         /// Admits a concrete Mortal selection to the shared wound draft.
         /// </summary>
@@ -73,7 +77,8 @@ internal static partial class EffectAcceptedTurnPlanner
                 if (!selection.IsCurrentFor(this))
                     return Reject("spiritual_wound_selection_stale", "the exact current source-bound wound selection");
                 var selectedInput = selection.Input;
-                if (selectedInput.Transitions.Count != 1 || selectedInput.Transitions[0].Kind is not ("create" or "worsen"))
+                if (selection.Combat is null &&
+                    (selectedInput.Transitions.Count != 1 || selectedInput.Transitions[0].Kind is not ("create" or "worsen")))
                     return Reject("spiritual_wound_generation_required", "one source-bound create or worsen transition");
                 if (_woundBeforeStates.TryGetValue(selection, out var retained))
                     return retained.IsCurrent ? retained : Reject("spiritual_wound_before_stale", "the unchanged draft version");
@@ -82,7 +87,7 @@ internal static partial class EffectAcceptedTurnPlanner
                     return null;
                 IReadOnlyList<AcceptedEffectBoundaryActivation> pending = Array.Empty<AcceptedEffectBoundaryActivation>();
                 var reactions = WoundReactionCutPreparation.Empty;
-                if (selectedInput.Transitions[0].Kind == "worsen" &&
+                if ((selection.Combat is not null || selectedInput.Transitions[0].Kind == "worsen") &&
                     !TryPrepareWoundDependencyCut(selection, selectedInput, beforeState, failures, out pending, out reactions))
                     return Reject("spiritual_wound_generation_required",
                         "materialize the selected wound's actual pending effect dependency closure before worsening");

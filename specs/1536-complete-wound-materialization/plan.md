@@ -1,3 +1,35 @@
+# Combat C2/draft/result WIP — source only, 2026-10-28
+
+The next source block validates the actual next standard player-self declaration,
+reuses C2-selected original dice (including its existing case-insensitive side
+aliases), separates opposed interruption from healing arithmetic and requires the
+real closed-interval typed OD Spend. A capture-issued third selection variant now
+prepares through the existing draft-before versions. The same busy/workspace/
+identity writer runs the shared active boundary/reducer, preserving LastTickKey;
+full heal uses the executed terminal After plus carrier absence/identity/History.
+Actual source batches/writer ranges and retirement receipts are retained, and
+zero-new-root registration is limited to this concrete combat insertion. Routing
+replacement preserves unrelated sources while changing only the selected group.
+The new closed combat result and History agreement/rendering are written, with no
+safe result schema widening. All of this is UNCOMPILED/UNRUN, NOT SOURCE accepted.
+
+Still missing before one coherent SOURCE/build: invoke/retain this selection from
+the actual C2 closed-interval driver, include resolved combat in the common ordered
+completion and terminal changed-group transfer; publish mandatory resolved/blocked
+families in the EXISTING receipt ledger through C3/C4; authenticate exact no-op
+scheduler settlement/settled browser replay; complete causal integration/console/
+browser tests and GM/docs/examples/guards. Blocked has no insertion and must still
+receive an actual persistent outcome. No usable combat feature or runtime release
+is claimed by this checkpoint; no accepted aid or cost RED run has been repeated.
+
+Reuse: the live operation retains parsed original source/calc and exact stage
+program; actual graph decoding uses the retained interface input once. Source
+batch retention is the private executor's own DATA, not a new cache or owner.
+Across C2 leases, original evidence is freshly issued and compared to the retained
+signed byte image; old lease evidence is never reused as permission. Shared safe
+stage/reducer paths retain their existing ordering/coordinates and default null
+combat branches; finite affected-consumer selection remains for final SOURCE.
+
 # Combat implementation WIP — source only, 2026-10-28
 
 Cost RED has independent OUTCOME ACCEPT (Sol, compiled3babe633d). Current source

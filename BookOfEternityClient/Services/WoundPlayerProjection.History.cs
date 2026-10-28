@@ -26,6 +26,9 @@ internal static partial class WoundPlayerProjection
                     SpiritualHealingPersistedResult spiritual => spiritual.Stages.Select(s => new HistoricalHealStage(
                         s.TransitionId, s.Kind, s.Terminal, s.Before, s.After, WoundIdentityState.ComputeSemanticFingerprint(s.Before),
                         WoundIdentityState.ComputeSemanticFingerprint(s.After))),
+                    SpiritualCombatHealingPersistedResult combat => combat.Stages.Select(s => new HistoricalHealStage(
+                        s.TransitionId, s.Kind, s.Terminal, s.Before, s.After, WoundIdentityState.ComputeSemanticFingerprint(s.Before),
+                        WoundIdentityState.ComputeSemanticFingerprint(s.After))),
                     _ => Enumerable.Empty<HistoricalHealStage>()
                 }).Where(s => s.TransitionId == terminal.TransitionId).ToArray();
             if (stages.Length != 1) continue;

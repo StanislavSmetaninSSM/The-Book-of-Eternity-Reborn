@@ -8,14 +8,16 @@ internal static partial class EffectAcceptedTurnPlanner
     // private shared boundary executor with their own authenticated source.
     private sealed record SpiritualStageExecutionContext(string EventRef, string Fingerprint,
         string Summary, string TreatmentKind, IReadOnlyList<WoundAcceptedEventAuthority> AcceptedEvents,
-        Func<int, WoundMaterializationEnvelope, WoundMaterializationEnvelope, object>? RecoveryProof);
+        Func<int, WoundMaterializationEnvelope, WoundMaterializationEnvelope, object>? RecoveryProof,
+        Action<WoundEffectOperationBatch>? RetainSourceBatch = null);
 
     private static WoundExecutedBoundary? ExecuteSpiritualWoundStage(EffectAcceptedTurnInput input,
         WoundMaterializationEnvelope before, WoundWorkingOwnedGraph graph, SpiritualWoundStage stage, int index,
         SpiritualStageExecutionContext domain, CarrierWorkspace workspace, EffectIdentityHistoryOwner identityRoot,
         EffectIdentityFactory identityFactory, int turn, List<string> effectIds, List<string> transitionIds,
         List<JsonObject> activeEffects, HashSet<string> processedEvents, List<EffectSourceAuthorityEntry> usedSources,
-        List<EffectTargetKey> usedTargets, List<WoundApplicationRootEffectBinding> rootBindings, List<ValidationIssue> issues)
+        List<EffectTargetKey> usedTargets, List<WoundApplicationRootEffectBinding> rootBindings, List<ValidationIssue> issues,
+        EffectAcceptedDraft.EffectDraftWoundInsertion? retirementHistory = null)
     {
         if (domain.RecoveryProof is null && stage.Kind is not ("treat" or "heal"))
             throw new InvalidDataException("Combat healing cannot execute a natural stage.");
@@ -24,7 +26,7 @@ internal static partial class EffectAcceptedTurnPlanner
             new(stage.TickKey, index, domain.EventRef, stage.OperationKey, domain.Fingerprint, stage.Kind,
                 domain.Summary, domain.AcceptedEvents, false), changed, stage.Kind == "heal",
             workspace, identityRoot, identityFactory, turn, effectIds, transitionIds, activeEffects,
-            processedEvents, usedSources, usedTargets, rootBindings, issues);
+            processedEvents, usedSources, usedTargets, rootBindings, issues, retirementHistory);
         if (facts is null || issues.Count != 0) return null;
         var after = before with
         {
@@ -65,6 +67,7 @@ internal static partial class EffectAcceptedTurnPlanner
             facts.Applications, facts.Terminations, reduction.Intents);
         if (domain.RecoveryProof is null && actual.After.Recovery.LastTickKey != before.Recovery.LastTickKey)
             throw new InvalidDataException("Combat healing cannot change the last natural tick.");
+        domain.RetainSourceBatch?.Invoke(facts.SourceBatch);
         return actual;
     }
 }

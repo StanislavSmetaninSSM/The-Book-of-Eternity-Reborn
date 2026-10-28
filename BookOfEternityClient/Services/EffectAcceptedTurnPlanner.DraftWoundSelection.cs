@@ -13,8 +13,15 @@ internal static partial class EffectAcceptedTurnPlanner
             EffectDraftWoundSelection> SpiritualSelections = new();
         private static readonly ConditionalWeakTable<ValidationService.MortalOriginalTurnCapture.WoundSelection,
             EffectDraftWoundSelection> MortalSelections = new();
+        private static readonly ConditionalWeakTable<ValidationService.SpiritualOriginalTurnCapture.CombatHealingSelection,
+            EffectDraftWoundSelection> CombatSelections = new();
         private readonly ValidationService.SpiritualOriginalTurnCapture.WoundSelection? _spiritual;
         private readonly ValidationService.MortalOriginalTurnCapture.WoundSelection? _mortal;
+        internal ValidationService.SpiritualOriginalTurnCapture.CombatHealingSelection? Combat { get; }
+
+        private EffectDraftWoundSelection(ValidationService.SpiritualOriginalTurnCapture.CombatHealingSelection selection) => Combat = selection;
+        internal static EffectDraftWoundSelection From(ValidationService.SpiritualOriginalTurnCapture.CombatHealingSelection selection) =>
+            CombatSelections.GetValue(selection, static value => new(value));
 
         /// <summary>
         /// Retains an actual spiritual selection without copying its ownership.
@@ -61,15 +68,15 @@ internal static partial class EffectAcceptedTurnPlanner
         /// <summary>
         /// Gets detached validated wound input; the input itself grants no insertion authority.
         /// </summary>
-        internal WoundAcceptedTurnInput Input => _spiritual?.Input ?? _mortal!.Input;
+        internal WoundAcceptedTurnInput Input => Combat?.Input ?? _spiritual?.Input ?? _mortal!.Input;
         /// <summary>
         /// Gets the validated proposal's optional diagnostic coordinates.
         /// </summary>
-        internal EffectApplicationDiagnosticLocations? Locations => _spiritual != null ? _spiritual.Locations : _mortal!.Locations;
+        internal EffectApplicationDiagnosticLocations? Locations => _spiritual != null ? _spiritual.Locations : _mortal?.Locations;
         /// <summary>
         /// Gets the actual closed spiritual interval, or null for an ordinary resource checkpoint.
         /// </summary>
-        internal AcceptedMechanicsPlanner.SpiritualExchangeInterval? Interval => _spiritual?.Admission.Interval;
+        internal AcceptedMechanicsPlanner.SpiritualExchangeInterval? Interval => _spiritual?.Admission.Interval ?? Combat?.Interval;
         /// <summary>
         /// Gets the actual ordinary checkpoint, or null for a spiritual interval.
         /// </summary>
@@ -77,7 +84,7 @@ internal static partial class EffectAcceptedTurnPlanner
         /// <summary>
         /// Gets the actual resource routing owner associated with this current selection.
         /// </summary>
-        internal BaseResourceRouting? Routing => _spiritual?.Routing ?? _mortal?.Routing;
+        internal BaseResourceRouting? Routing => _spiritual?.Routing ?? _mortal?.Routing ?? Combat?.Routing;
         /// <summary>
         /// Gets the accepted effect prefix from the actual owned boundary.
         /// </summary>
@@ -93,7 +100,7 @@ internal static partial class EffectAcceptedTurnPlanner
         /// True only for the current registered selection of this draft; otherwise false.
         /// </returns>
         internal bool IsCurrentFor(EffectAcceptedDraft draft) =>
-            _spiritual?.IsCurrentFor(draft) ?? _mortal!.IsCurrentFor(draft);
+            Combat?.IsCurrentFor(draft) ?? _spiritual?.IsCurrentFor(draft) ?? _mortal!.IsCurrentFor(draft);
 
         /// <summary>
         /// Reads the authenticated original wound state through its actual selection owner.
@@ -108,6 +115,7 @@ internal static partial class EffectAcceptedTurnPlanner
         /// Detached original state, or null on rejection.
         /// </returns>
         internal WoundOperationBeforeData? ReadInitialState(EffectAcceptedDraft draft, List<ValidationIssue> issues) =>
-            _spiritual != null ? _spiritual.ReadInitialState(draft, issues) : _mortal!.ReadInitialState(draft, issues);
+            Combat is not null ? Combat.ReadInitialState(draft, issues) :
+                _spiritual != null ? _spiritual.ReadInitialState(draft, issues) : _mortal!.ReadInitialState(draft, issues);
     }
 }

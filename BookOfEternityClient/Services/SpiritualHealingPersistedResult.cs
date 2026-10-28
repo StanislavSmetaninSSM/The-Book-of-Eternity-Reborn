@@ -312,7 +312,7 @@ internal sealed class SpiritualHealingPersistedResult : WoundTransitionResult
         return tier;
     }
 
-    private static void ValidateStageScope(SpiritualHealingPublishedStage stage, SpiritualWoundStage expected)
+    internal static void ValidateStageScope(SpiritualHealingPublishedStage stage, SpiritualWoundStage expected)
     {
         var before = stage.Before; var after = stage.After;
         var expectedCare = expected.Kind == "treat" ? before.Care with { LastAttemptId = expected.AttemptId } : expected.Kind == "heal"

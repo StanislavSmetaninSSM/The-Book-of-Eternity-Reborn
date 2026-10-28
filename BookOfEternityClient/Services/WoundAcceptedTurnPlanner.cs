@@ -314,6 +314,7 @@ internal static partial class WoundAcceptedTurnPlanner
     {
         if (!before.IsPreparing)
             throw new InvalidOperationException("Only the active draft-before owner may execute live preparation.");
+        if (before.Selection.Combat is { } combat) return combat.Prepare(before);
         return PrepareCore(before.Selection.Input, new WoundAcceptedTurnIdentityAllocator(), before.Data, before);
     }
 
@@ -3040,6 +3041,7 @@ internal static partial class WoundAcceptedTurnPlannerCore
             var isRecoveryContinuation =
                 prepared.RecoveryContinuationAuthority is not null;
             var isSpiritualHealing = prepared.SpiritualHealingContinuationAuthority is not null;
+            var isCombatHealing = prepared.CombatHealingAuthority is not null;
             var isJointRepair = prepared.JointRepairContinuationAuthority is not null;
             if (prepared.Binding is null ||
                 prepared.AllocatedWoundIds is null ||
@@ -3049,7 +3051,7 @@ internal static partial class WoundAcceptedTurnPlannerCore
                 prepared.BaselineAuthority is null ||
                 (isTreatmentContinuation && isRecoveryContinuation) ||
                 (isJointRepair && (isTreatmentContinuation || isRecoveryContinuation || prepared.DraftBefore is not null)) ||
-                (!isTreatmentContinuation && !isRecoveryContinuation && !isJointRepair && !isSpiritualHealing &&
+                (!isTreatmentContinuation && !isRecoveryContinuation && !isJointRepair && !isSpiritualHealing && !isCombatHealing &&
                  (prepared.AllocatedWoundIds.Count != prepared.PreparedWounds.Count ||
                   prepared.AllocatedTransitionIds.Count != prepared.PreparedWounds.Count ||
                   prepared.EffectOperationBatches.Count != prepared.PreparedWounds.Count)) ||
@@ -3062,6 +3064,9 @@ internal static partial class WoundAcceptedTurnPlannerCore
                 (isRecoveryContinuation &&
                  !WoundAcceptedTurnPlanner.RecoveryContinuationPreparedAgrees(prepared)) ||
                 (isJointRepair && !WoundAcceptedTurnPlanner.JointRepairPreparedAgrees(prepared)) ||
+                (isCombatHealing && (isTreatmentContinuation || isRecoveryContinuation || isJointRepair || isSpiritualHealing ||
+                    prepared.DraftBefore is null || !ReferenceEquals(prepared.DraftBefore.Selection.Combat, prepared.CombatHealingAuthority) ||
+                    !prepared.CombatHealingAuthority!.PreparedAgrees(prepared))) ||
                 !string.Equals(
                     WoundAcceptedTurnFingerprints.ComputeBinding(prepared.Binding),
                     prepared.BindingFingerprint,
@@ -3091,7 +3096,7 @@ internal static partial class WoundAcceptedTurnPlannerCore
                 return PreparedSealFailure("changed prepared baseline authority");
             }
 
-            if (isTreatmentContinuation || isRecoveryContinuation || isJointRepair || isSpiritualHealing)
+            if (isTreatmentContinuation || isRecoveryContinuation || isJointRepair || isSpiritualHealing || isCombatHealing)
                 return Array.Empty<ValidationIssue>();
 
             for (var index = 0; index < prepared.EffectOperationBatches.Count; index++)

@@ -814,6 +814,7 @@ internal sealed class WoundPreparedAcceptedTurnPlan
     private readonly object? _recoveryContinuationAuthority;
     private readonly object? _jointRepairContinuationAuthority;
     private readonly object? _spiritualHealingContinuationAuthority;
+    private readonly ValidationService.SpiritualOriginalTurnCapture.CombatHealingSelection? _combatHealingAuthority;
     private readonly object? _cacheAuthorityStateToken;
     private readonly object? _cachePreparedStageToken;
 
@@ -879,8 +880,14 @@ internal sealed class WoundPreparedAcceptedTurnPlan
         EffectAcceptedTurnPlanner.EffectAcceptedDraft.EffectDraftWoundBeforeAuthority? draftBefore = null,
         object? recoveryContinuationAuthority = null,
         object? jointRepairContinuationAuthority = null,
-        object? spiritualHealingContinuationAuthority = null)
+        object? spiritualHealingContinuationAuthority = null,
+        ValidationService.SpiritualOriginalTurnCapture.CombatHealingSelection? combatHealingAuthority = null)
     {
+        if (combatHealingAuthority is not null &&
+            (draftBefore is null || !ReferenceEquals(draftBefore.Selection.Combat, combatHealingAuthority) ||
+             treatmentContinuationAuthority is not null || recoveryContinuationAuthority is not null ||
+             jointRepairContinuationAuthority is not null || spiritualHealingContinuationAuthority is not null))
+            throw new ArgumentException("Combat healing requires its exact draft-before and exclusive actual selection.");
         if (spiritualHealingContinuationAuthority is not null &&
             (treatmentContinuationAuthority is not null || recoveryContinuationAuthority is not null ||
              jointRepairContinuationAuthority is not null || draftBefore is not null))
@@ -907,6 +914,7 @@ internal sealed class WoundPreparedAcceptedTurnPlan
         _recoveryContinuationAuthority = recoveryContinuationAuthority;
         _jointRepairContinuationAuthority = jointRepairContinuationAuthority;
         _spiritualHealingContinuationAuthority = spiritualHealingContinuationAuthority;
+        _combatHealingAuthority = combatHealingAuthority;
         _cacheAuthorityStateToken = cacheAuthorityStateToken;
         _cachePreparedStageToken = cachePreparedStageToken;
         DraftBefore = draftBefore;
@@ -942,6 +950,7 @@ internal sealed class WoundPreparedAcceptedTurnPlan
         _recoveryContinuationAuthority;
     internal object? JointRepairContinuationAuthority => _jointRepairContinuationAuthority;
     internal object? SpiritualHealingContinuationAuthority => _spiritualHealingContinuationAuthority;
+    internal ValidationService.SpiritualOriginalTurnCapture.CombatHealingSelection? CombatHealingAuthority => _combatHealingAuthority;
 
     internal WoundPreparedAcceptedTurnPlan BindToCacheAuthority(
         object authorityStateToken,
@@ -965,7 +974,8 @@ internal sealed class WoundPreparedAcceptedTurnPlan
             DraftBefore,
             _recoveryContinuationAuthority,
             _jointRepairContinuationAuthority,
-            _spiritualHealingContinuationAuthority);
+            _spiritualHealingContinuationAuthority,
+            _combatHealingAuthority);
     }
 
     internal WoundPreparedAcceptedTurnPlan ClonePreservingCacheAuthority() =>
@@ -985,7 +995,8 @@ internal sealed class WoundPreparedAcceptedTurnPlan
             DraftBefore,
             _recoveryContinuationAuthority,
             _jointRepairContinuationAuthority,
-            _spiritualHealingContinuationAuthority);
+            _spiritualHealingContinuationAuthority,
+            _combatHealingAuthority);
 
     internal bool HasCacheAuthorityState => _cacheAuthorityStateToken is not null;
 
@@ -2410,6 +2421,11 @@ internal static partial class WoundAcceptedTurnFingerprints
         {
             fields.Add("spiritual_healing_continuation");
             fields.Add(spiritual.Fingerprint);
+        }
+        if (plan.CombatHealingAuthority is { } combat)
+        {
+            fields.Add("spiritual_combat_healing_selection");
+            fields.Add(combat.Fingerprint);
         }
         if (plan.TreatmentContinuationAuthority is not null)
         {

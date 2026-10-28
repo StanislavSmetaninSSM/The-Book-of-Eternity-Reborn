@@ -504,6 +504,47 @@ internal sealed class EffectSourceAuthority
             Issues.Concat(addition.Issues).ToArray()), canonicalOnly: true);
     }
 
+    internal EffectSourceAuthority WithCombatWoundInsertion(EffectAcceptedTurnPlanner.EffectAcceptedDraft.EffectDraftWoundInsertion insertion)
+    {
+        if (!insertion.IsCombatHealing || !insertion.Matches(insertion.Prepared))
+            throw new InvalidDataException("Only an actual registered combat wound insertion supplies source replacement DATA.");
+        return WithExecutedCombatWound(insertion.CombatStages, insertion.CombatSourceBatches);
+    }
+
+    private EffectSourceAuthority WithExecutedCombatWound(IReadOnlyList<WoundExecutedBoundary> stages,
+        IReadOnlyList<WoundEffectOperationBatch> batches)
+    {
+        if (stages.Count == 0 || stages.Count != batches.Count) throw new InvalidDataException("Incomplete combat source execution.");
+        var before = stages[0].Before; var after = stages[^1].After;
+        var key = new EffectIdentitySourceGroup(before.Owner.Realm, "wound", before.WoundId);
+        if (before.Owner != after.Owner || before.WoundId != after.WoundId || !_woundGroups.TryGetValue(key, out var previous) ||
+            previous.Owner != before.Owner || previous.Definitions.Count != before.Consequences.OwnedEffectSources.DefinitionFacts.Count ||
+            previous.Definitions.Any(d => !before.Consequences.OwnedEffectSources.DefinitionFacts.Any(f =>
+                f.DefinitionKey == d.DefinitionKey && JsonNode.DeepEquals(JsonNode.Parse(f.CanonicalJson), d.Definition))))
+            throw new InvalidDataException("Combat source replacement lost its exact previous wound group.");
+        var batch = batches[^1]; var export = batch.SourceExport;
+        if (export.Owner != after.Owner || export.SourceId != after.WoundId || export.Kind != "wound" || export.Materializable ||
+            batch.SourceExportFingerprint != WoundAcceptedTurnFingerprints.ComputeSourceExport(batch))
+            throw new InvalidDataException("Combat source replacement differs from actual boundary export.");
+        var addition = after.Lifecycle == "healed"
+            ? Build(new EffectSourceAuthorityInput([], [], new HashSet<string>(StringComparer.Ordinal)))
+            : Build(new EffectSourceAuthorityInput([], [new EffectSourceExport(export.Realm, "wound", export.SourceId,
+                new JsonArray(export.Definitions.Select(d => (JsonNode)d.Definition).ToArray()), Materializable: false, Active: true,
+                SameTurn: true, SourceRef: export.SourceRef, SatisfiedPredicates: new HashSet<string>(StringComparer.Ordinal) { "active" })],
+                new HashSet<string>(StringComparer.Ordinal), WoundGroups: [new WoundSourceGroupAuthority(key, export.Owner,
+                    new(export.Owner.Realm, WoundMaterializationContract.ResolveEffectTargetKind(export.Owner.OwnerKind), export.Owner.OwnerId),
+                    true, export.SourceRef, batch.SourceExportFingerprint, export.Definitions,
+                    batch.RootLineageAuthority.Where(r => r.ApplicationRef is not null).ToArray(),
+                    batch.RootLineageAuthority.Where(r => r.EffectId is not null).ToArray())]));
+        if (addition.Issues.Count != 0) throw new InvalidDataException("Combat source export is not canonical.");
+        var exports = _ownerExports.Where(e => new EffectIdentitySourceGroup(e.Realm, e.Kind, e.SourceId) != key)
+            .Concat(addition._ownerExports).ToArray();
+        return BuildCore(new EffectSourceAuthorityInput(exports.Where(e => !e.SameTurn).ToArray(), exports.Where(e => e.SameTurn).ToArray(),
+            _historicalAliases, _grantedApplicationAuthorities,
+            _woundGroups.Values.Where(g => g.Key != key).Concat(addition._woundGroups.Values).ToArray(),
+            Issues.Concat(addition.Issues).ToArray()), canonicalOnly: true);
+    }
+
     /// <summary>
     /// Captures a wound-only comparison catalog while the completed original execution owner remains alive.
     /// The detached catalog grants no insertion or publication authority.

@@ -42,7 +42,7 @@ internal static partial class EffectAcceptedTurnPlanner
             if (_woundTriggerJournal.Count == 0 && prefix.AcceptedActivations.Count == 0 && prefix.AppliedComponentEvidence.Count == 0 &&
                 prefix.TerminalAvailabilityReservations.Count == 0 && prefix.ReleasedReactions.Count == 0)
                 return true;
-            var target = input.Opportunities.SingleOrDefault(value =>
+            var target = selection.Combat?.Target ?? input.Opportunities.SingleOrDefault(value =>
                 value.OpportunityId == input.Transitions[0].OpportunityId)?.WorseningTarget?.Wound;
             if (target == null || target.Classification.Domain is not ("spiritual" or "physical") || before.WoundCarriers == null ||
                 before.EffectCarriers == null || before.EffectIdentity == null ||

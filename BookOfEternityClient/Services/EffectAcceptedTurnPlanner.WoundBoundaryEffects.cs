@@ -18,7 +18,7 @@ internal static partial class EffectAcceptedTurnPlanner
     }
     private sealed record WoundBoundaryEffectFacts(IReadOnlyList<WoundComplication> Complications,
         WoundConsequences Consequences, IReadOnlyList<EffectAcceptedApplicationResult> Applications,
-        IReadOnlyList<EffectAcceptedTerminationResult> Terminations);
+        IReadOnlyList<EffectAcceptedTerminationResult> Terminations, WoundEffectOperationBatch SourceBatch);
 
     private static WoundBoundaryEffectFacts? ExecuteWoundBoundaryEffects(EffectAcceptedTurnInput input,
         WoundMaterializationEnvelope before, WoundWorkingOwnedGraph graph, int slotBudget,
@@ -27,7 +27,7 @@ internal static partial class EffectAcceptedTurnPlanner
         int turn, List<string> effectIds, List<string> transitionIds, List<JsonObject> activeEffects,
         HashSet<string> processedEvents, List<EffectSourceAuthorityEntry> usedSources,
         List<EffectTargetKey> usedTargets, List<WoundApplicationRootEffectBinding> rootBindings,
-        List<ValidationIssue> issues)
+        List<ValidationIssue> issues, EffectAcceptedDraft.EffectDraftWoundInsertion? retirementHistory = null)
     {
         var complicationIds = graph.Complications.ToDictionary(row => row.Reference, row =>
             row.Reference.Origin == WoundWorkingReferenceOrigin.Existing ? row.Reference.Value :
@@ -83,7 +83,7 @@ internal static partial class EffectAcceptedTurnPlanner
             ? before.Consequences.OwnedEffectSources.RootBindings.Select(row => row.EffectId).ToArray()
             : Array.Empty<string>();
         var terminal = WoundEffectTerminalOperationPlanner.Plan(before, workspace.ToInput(), currentIdentity.State,
-            terminalRoots, coordinates.EventRef, coordinates.StageOrdinal + 1, applications.Count, coordinates.OperationKey);
+            terminalRoots, coordinates.EventRef, coordinates.StageOrdinal + 1, applications.Count, coordinates.OperationKey, retirementHistory);
         issues.AddRange(terminal.Issues);
         if (issues.Count != 0) return null;
         var lineage = graph.Roots.Select(root => applicationReferences.TryGetValue(root.Reference, out var app)
@@ -119,7 +119,7 @@ internal static partial class EffectAcceptedTurnPlanner
         var terminalRequests = terminal.Operations.Select(operation =>
             new WoundTerminalRequest(batch, before, operation, terminalRoots.ToImmutableArray())).ToArray();
         ValidateWoundTerminalRequests(terminalRequests, EffectCarrierCatalog.Build(workspace.ToInput()),
-            currentIdentity.State, issues);
+            currentIdentity.State, issues, retirementHistory);
         if (issues.Count != 0) return null;
         var terminations = new List<EffectAcceptedTerminationResult>();
         foreach (var request in terminalRequests.OrderBy(row => row.Operation.OperationOrdinal))
@@ -191,6 +191,6 @@ internal static partial class EffectAcceptedTurnPlanner
                 graph.Roots.Select(row => new WoundRootEffectBinding(RootId(row.Reference), row.DefinitionKey)).ToArray())
             { DefinitionFacts = WoundMaterializationContract.BuildOwnedEffectDefinitionFacts(definitionBodies) }
         };
-        return new(complications, consequences, applicationResults, terminations);
+        return new(complications, consequences, applicationResults, terminations, batch);
     }
 }

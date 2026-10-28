@@ -80,6 +80,14 @@ internal sealed partial class WoundHistoryState
     private static WoundTransitionResult? ParseTransitionResult(JsonElement element,
         string kind, string path, ICollection<ValidationIssue> issues)
     {
+        if (element.ValueKind == JsonValueKind.Object && element.TryGetProperty("kind", out var combatKind) &&
+            combatKind.ValueKind == JsonValueKind.String && combatKind.GetString() == "spiritual_combat_healing")
+        {
+            var combat = SpiritualCombatHealingPersistedResult.Parse(element, path, issues);
+            if (combat is not null && kind != "treat")
+            { AddIssue(issues, path, "spiritual_combat_healing_history_invalid", "combat result only on its primary treat row", kind); return null; }
+            return combat;
+        }
         if (element.ValueKind == JsonValueKind.Object && element.TryGetProperty("kind", out var spiritualKind) &&
             spiritualKind.ValueKind == JsonValueKind.String && spiritualKind.GetString() == "spiritual_healing")
         {
@@ -209,6 +217,12 @@ internal sealed partial class WoundHistoryState
     private static void ValidateTransitionResult(WoundHistoryTransition transition,
         string path, ICollection<ValidationIssue> issues)
     {
+        if (transition.TransitionResult is SpiritualCombatHealingPersistedResult)
+        {
+            ParseTransitionResult(JsonSerializer.SerializeToElement(transition.TransitionResult.ToCanonicalJson()),
+                transition.Kind, path + ".transitionResult", issues);
+            return;
+        }
         if (transition.TransitionResult is SpiritualHealingPersistedResult)
         {
             ParseTransitionResult(JsonSerializer.SerializeToElement(transition.TransitionResult.ToCanonicalJson()),
