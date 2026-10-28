@@ -192,35 +192,42 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                     Assert.Equal(1, reached);
                     Assert.NotNull(captured);
                     fixture.AssertMutationRootsUnchanged(captured!);
-                    Assert.Equal(pendingBytes, await files.ReadFileBytesAsync(AcceptedMechanicsPlan.WoundCommandPath));
+                    Assert.Equal(pendingBytes, File.ReadAllBytes(files.ResolvePath(AcceptedMechanicsPlan.WoundCommandPath)));
                     Assert.False(aidWritten);
                     Assert.Equal(43, runtime.GameLoop.TurnNumber);
-                    byte[]? preparingBytes;
-                    await using (var lease = await files.AcquireCanonicalWriteLeaseAsync())
+                    var leaseRefusal = await Assert.ThrowsAnyAsync<InvalidOperationException>(async () =>
                     {
-                        var pending = Assert.IsType<PendingPlayerActionService.State>(await PendingPlayerActionService.ReadAsync(files, lease));
-                        Assert.Equal("preparing", pending.Phase); // Legitimate queued→preparing, not identical queue JSON.
-                        Assert.Equal(browserBinding.ActionId, pending.Binding.ActionId);
-                        Assert.Equal(browserBinding.Generation, pending.Binding.Generation);
-                        Assert.Equal(browserBinding.Action, pending.Binding.Action);
-                        Assert.Equal(browserBinding.Source, pending.Binding.Source);
-                        Assert.Equal(browserBinding.SpiritualSelfTreatment, pending.Binding.SpiritualSelfTreatment);
-                        var queuedBody = JsonNode.Parse(browserBinding.Json)!.AsObject();
-                        var preparingBody = JsonNode.Parse(pending.Json)!.AsObject();
-                        foreach (var field in new[] { "status", "phaseProof", "phaseProofHash" })
-                        { queuedBody.Remove(field); preparingBody.Remove(field); }
-                        Assert.True(JsonNode.DeepEquals(queuedBody, preparingBody)); // Includes submittedAtUtc and all immutable input.
-                        Assert.False(JsonNode.Parse(pending.ProofJson!)!.AsObject().ContainsKey("spiritualWoundRequestBytesBase64"));
-                        preparingBytes = await files.ReadFileBytesAsync(lease, PendingPlayerActionService.PendingPath);
-                    }
+                        await using var unexpected = await files.AcquireCanonicalWriteLeaseAsync();
+                    });
+                    Assert.True(files.IsOriginalBrowserPhaseRefusal(leaseRefusal));
+                    // Protected failure permits observation of owned fixture DATA,
+                    // not a stronger owner or fresh canonical write admission.
+                    var preparingBytes = File.ReadAllBytes(files.ResolvePath(PendingPlayerActionService.PendingPath));
+                    var pending = PendingPlayerActionService.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(preparingBytes), browserBinding.Generation);
+                    Assert.Equal("preparing", pending.Phase); // Legitimate queued→preparing, not identical queue JSON.
+                    Assert.Equal(browserBinding.ActionId, pending.Binding.ActionId);
+                    Assert.Equal(browserBinding.Generation, pending.Binding.Generation);
+                    Assert.Equal(browserBinding.Action, pending.Binding.Action);
+                    Assert.Equal(browserBinding.Source, pending.Binding.Source);
+                    Assert.Equal(browserBinding.SpiritualSelfTreatment, pending.Binding.SpiritualSelfTreatment);
+                    var queuedBody = JsonNode.Parse(browserBinding.Json)!.AsObject();
+                    var preparingBody = JsonNode.Parse(pending.Json)!.AsObject();
+                    foreach (var field in new[] { "status", "phaseProof", "phaseProofHash" })
+                    { queuedBody.Remove(field); preparingBody.Remove(field); }
+                    Assert.True(JsonNode.DeepEquals(queuedBody, preparingBody)); // Includes submittedAtUtc and all immutable input.
+                    Assert.False(JsonNode.Parse(pending.ProofJson!)!.AsObject().ContainsKey("spiritualWoundRequestBytesBase64"));
                     // Actual second queue admission refuses BEFORE another Stage;
                     // no reentrant console call or synthetic older Main owner.
-                    await Assert.ThrowsAsync<InvalidOperationException>(() => runtime.Engine.ProcessPlayerTurn(browserBinding.Action, browserAction: browserBinding));
+                    var secondRefusal = await Assert.ThrowsAnyAsync<InvalidOperationException>(() => runtime.Engine.ProcessPlayerTurn(browserBinding.Action, browserAction: browserBinding));
+                    Assert.True(files.IsOriginalBrowserPhaseRefusal(secondRefusal));
                     Assert.Equal(1, reached);
                     fixture.AssertMutationRootsUnchanged(captured!);
-                    Assert.Equal(pendingBytes, await files.ReadFileBytesAsync(AcceptedMechanicsPlan.WoundCommandPath));
-                    Assert.Equal(preparingBytes, await files.ReadFileBytesAsync(PendingPlayerActionService.PendingPath));
-                    Assert.DoesNotContain((await fixture.ReadHistoryAsync()).Transitions, t => t.AttemptId is not null);
+                    Assert.Equal(pendingBytes, File.ReadAllBytes(files.ResolvePath(AcceptedMechanicsPlan.WoundCommandPath)));
+                    Assert.Equal(preparingBytes, File.ReadAllBytes(files.ResolvePath(PendingPlayerActionService.PendingPath)));
+                    var observedHistory = WoundHistoryState.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(
+                        File.ReadAllBytes(files.ResolvePath(WoundHistoryState.HistoryPath))), WoundHistoryState.HistoryPath);
+                    Assert.True(observedHistory.IsValid);
+                    Assert.DoesNotContain(observedHistory.State!.Transitions, t => t.AttemptId is not null);
                     fixture.AssertResourcesUnchanged();
                     output.WriteLine("Browser aid refused after its one staged draw: preparing original/selection/body and prepared control retained; second queue admission refused, no healing/cycle accepted.");
                     return;

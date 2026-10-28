@@ -119,14 +119,19 @@
 },
 {
   "id": "spiritual-aid-browser",
-  "responsibility": "Two real queued browser controls after accepted grant43: full guided aid44 and a snapshot fault after its real draw, preparing original/body/control retention and second-admission refusal; shared cancel/confirm, computed graphs/request3 binding, NPC Brain/journal, independent tiers/cycle/History/no-cost/cleanup.",
+  "responsibility": "One real accepted grant43 then shared browser cancellation/confirmation, queued aid44 and actual Engine publication: true entropy/computed graphs/request3 binding, NPC Brain/journal, independent tiers/cycle/History/no-cost/cleanup.",
   "excludes": "First current Guardian scope only. Controlled native-shaped GM, no provider/fresh process/reverse/paid/conflict/helpless/Shining/musings or full T108.",
   "changeHints": [
     "BookOfEternityClient/Services/AfterlifeWoundTreatmentAuthority.Aid.cs",
     "BookOfEternityClient/Services/WoundApplicationService.cs",
     "BookOfEternityClient/Services/SpiritualHealingPersistedResult.cs"
   ],
-  "related": [],
+  "related": [
+    {
+      "id": "spiritual-aid-browser-refusal",
+      "when": "Only when queued original staging/failure admission or retained body guards change."
+    }
+  ],
   "requirements": {
     "frontendBuild": false,
     "exclusive": true,
@@ -138,7 +143,37 @@
     {
       "project": "integration",
       "tests": [
-        "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.BrowserAidUsesAnActualAcceptedGrantThenTheOriginalQueuedEngineAction",
+        "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.BrowserAidUsesAnActualAcceptedGrantThenTheOriginalQueuedEngineAction"
+      ]
+    }
+  ]
+},
+{
+  "id": "spiritual-aid-browser-refusal",
+  "responsibility": "One actual browser queue snapshot fault after its real aid draw. Ordinary write admission and real second Engine entry must issue the same-FS phase refusal; pure owned-fixture DATA observations preserve preparing generation/selection/body/slot/source/control bytes and no new wound proof or accepted healing/cycle.",
+  "excludes": "No raw DATA authority, stronger owner, protocol reset, fresh-process recovery or external provider. Positive console/browser journeys retain their accepted receipts when this refusal-only oracle changes.",
+  "changeHints": [
+    "BookOfEternityClient/Services/AfterlifeWoundTreatmentAuthority.Aid.cs",
+    "BookOfEternityClient/Services/WoundApplicationService.cs",
+    "BookOfEternityClient/Services/SpiritualHealingPersistedResult.cs"
+  ],
+  "related": [
+    {
+      "id": "spiritual-aid-browser",
+      "when": "When normal queued completion changes; no automatic happy-path repeat for failure-observer-only edits."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 3,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
         "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.BrowserAidStagingFaultRetainsItsPreparingQueueAndDrawWithoutASecondStage"
       ]
     }

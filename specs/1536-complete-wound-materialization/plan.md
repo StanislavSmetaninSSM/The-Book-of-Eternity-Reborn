@@ -1,5 +1,38 @@
 # US4 safe self-treatment — active functional work, 2026-10-28
 
+Real player→current Guardian aid now completes through BOTH interfaces on compiled
+3d918f453: console positive d20=14 finishes active II/progress2; browser positive
+d20=18 heals the target (I/0 terminal). Each accepts grant43/naturalIII1, performs
+real cleanup, shared cancel/confirm and aid44 with activeH3/targetH0, one retained
+attempt/one aid cycle, exact request/result/History/effects and no treatment cost.
+Both print empty Engine diagnostics after final assertions. Console pre-draw
+foreign-source/backup refusal also passes. Console category2/2 PASS71.7681796 s;
+TRX8e22ef65b951bbfe7325f537b0b55a058e3b7333fadc83047c9c4e5c2af5803c.
+Browser category is complete 1 PASS /1 FAIL119.9660280 s, no timeout/duplicate,
+both cleanup flags true; TRX9f9bddf305cd349aad8256d108b929d7ee9b2f989fa407a49a6cede6e8439f09.
+Do not call that whole category PASS. Current accepted-lineage candidate is16
+unique PASS (13 earlier +console2+happybrowser1), pending final OUTCOME.
+
+The remaining browser refusal Fact fails only in its observer: after the expected
+snapshot fault, line199 requests a fresh ordinary canonical lease, correctly denied
+by same-FS BrowserOriginalPhaseRefusal (incomplete preparing original retained).
+This is runtime domain refusal, not a tool/policy denial or gameplay RED. Existing
+BrowserInputRecovery104–124/341/411 observes raw retained DATA and classifies that
+private subtype through existing IsOriginalBrowserPhaseRefusal. The corrected
+oracle asserts BOTH ordinary lease refusal and actual second Engine refusal with
+that exact issuing-FS predicate, uses owned PendingPath raw bytes + existing pure
+Parse(capturedGeneration), and retains every immutable body/slot/source/control/
+no-new-proof/reached1/no-healing assertion. History/resource observations are pure
+DATA, with no stronger owner, reset or publication. Production remains unchanged.
+
+Browser categories split into happy1 and refusal1 with the same original180s bound;
+no default suite broadening. Correction is UNCOMPILED/UNRUN: narrow SOURCE must
+release only fresh Integration refsfalse→official refusal1/1 PlanOnly→one actual
+spiritual-aid-browser-refusal. Retain16/Main/Support/Unit, do not repeat console2,
+happybrowser1 or previous17. Full T108/reverse/paid/conflict/helpless/Shining aid,
+provider/fresh-process/DFR/Mortal/Windows limits remain open. Raw external
+spiritual-aid-caller-build-4 + spiritual-aid-caller-4, pins all9 match.
+
 Finite whole two-turn source comparison is complete before another caller run.
 Existing counterpart: QtePhysicalInjuryConsumer_ActualNextOrdinaryNoneConsumesOnceWithoutWound
 (GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerNone.cs) accepts the actual
