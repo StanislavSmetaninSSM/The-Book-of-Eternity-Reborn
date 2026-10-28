@@ -1,5 +1,20 @@
 # Проверка проекта #1573
 
+## Текущий checkpoint: принятый допуск ручной покупки
+
+2026-10-29, T041, baselineb0ec03a9d38e2d1baead22d5ad77614482a1fcd6,
+branch `story/golden-mask-backstory-20261025`. WIP: отдельное Sol6.1/xhigh review ожидается.
+Автор явно принял base<C для четырёх статов, последний частичный пункт,
+исключение Favor и полные auto. Section5.11 и актуальные spec/модель/приёмка
+синхронизированы; ceil(n/5) не объявлено принятым. T001 сохранён.
+Bridge consistency scope→plan→T041 до проверки примеров; продолжается ранее
+применённый brainstorming/Spec Kit workflow, без повторного setup или нового проекта.
+Parent проверяет простой2B<40+D и граничные ΔM; это арифметика документа,
+не новый игровой probe. Дешёвый предикат не требует кэша; DATA/authority границы
+сохранены. Game/build/runtime/600s tests/clean restore UNRUN, source не менялся.
+Raw diagnostics не созданы, чужой untracked obj не тронут. Следующий шаг —
+review/remote checkpoint и предъявление зафиксированного правила автору.
+
 ## Текущий checkpoint: принятая культивация и ручная специализация
 
 2026-10-29, T038–T040, baseline36fcfadb1ec57878c6a95705b020df27324d60ed,
