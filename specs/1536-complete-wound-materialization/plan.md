@@ -1,5 +1,27 @@
 # Next T108 slice — private current Guardian → player, 2026-10-28
 
+First 04c qualification is partial: 11 cases PASS (cheap8, old issuer2,
+old aid-backend1); reverse backend1 fails during initial seed before bootstrap/
+offer/staging. TRX cd7ea8f8b4f64cea227efd70fc326ade84f19d6b709ab03c08c9291a983fa166,
+wall17.3193585 s/category8.2168824<120, complete/no timeout/dup/both cleanup.
+Seed rewrote canonical player effect kind/allowedTargetKinds to player_soul;
+actual WoundEffectCarrierAdapter maps that owner to effect kind player. The
+same initial-contract read found the two new CreateAsync calls swapped rank/tier
+(rank0 left the default II wound, tier3). This is fixture authoring, not a product
+RED. Correction uses explicit rank:3/tier:receive?0:3 and preserves original player
+definitions/effect targets; Guardian target branch is unchanged. No between-turn
+seed, second bootstrap, production or guard change. All later six cases are UNRUN.
+
+Retain the 11 PASS and owning Main/Support/Unit at 04c; only Integration source
+changes. After finite correction SOURCE: fresh Integration refsfalse, remaining
+6 cases/5 descriptors PlanOnly, then reverse backend1→SELF graphs1→old console2→
+reverse console1→reverse browser1 with original120/180 budgets. No all17 repeat.
+Raw external spiritual-guardian-help-build-1/unit-build-1/1; owning build0e137w
+4:13.89, Unit0e26w1:00.94, nine owning pins match. Official original Plan17/11,
+zeroexec15.1684998; cheap8PASS35.1872806, issuer2PASS35.8378874,
+oldbackend1PASS49.0618488. New codec fullrecord/conditions/noGMconsent checks now
+execute GREEN; active reverse/Engine assertions still unqualified.
+
 Coherent reverse source/tests/GM sync are written, all UNCOMPILED/UNRUN beyond the
 accepted codec RED. Proposed finite first-GREEN selection is 17 cases / 11
 descriptors / 10 categories: cheap offer-contract1 + new guidance1 + existing

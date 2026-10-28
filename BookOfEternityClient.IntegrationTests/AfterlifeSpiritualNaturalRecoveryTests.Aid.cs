@@ -208,14 +208,18 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
             wound["owner"]!["ownerId"] = AidGuardianId;
         }
         wound["display"]!["visibility"] = "public";
-        foreach (var definition in wound["consequences"]!["ownedEffectSources"]!["definitions"]!.AsArray().OfType<JsonObject>())
-            definition["allowedTargetKinds"] = new JsonArray(guardianIsHealer ? "player_soul" : "guardian");
+        if (!guardianIsHealer)
+            foreach (var definition in wound["consequences"]!["ownedEffectSources"]!["definitions"]!.AsArray().OfType<JsonObject>())
+                definition["allowedTargetKinds"] = new JsonArray("guardian");
         var effects = player["activeEffects"]!.AsArray().OfType<JsonObject>().Select(e => e.DeepClone().AsObject()).ToArray();
-        foreach (var effect in effects)
-        {
-            effect["target"]!["kind"] = guardianIsHealer ? "player_soul" : "guardian";
-            effect["target"]!["targetId"] = guardianIsHealer ? "player_soul" : AidGuardianId;
-        }
+        if (!guardianIsHealer)
+            foreach (var effect in effects)
+            {
+                effect["target"]!["kind"] = "guardian";
+                effect["target"]!["targetId"] = AidGuardianId;
+            }
+        // The reverse route keeps the original canonical player effect targets:
+        // ownerKind player_soul maps to effect kind player, not player_soul.
         var guardian = AfterlifeActorMaterializationTestFixture.CreateCompleteProfile("guardian", AidGuardianId, "Chaos Sea", 42);
         guardian["displayName"] = "Хранитель целостности";
         guardian["locationId"] = AidAbodeId;

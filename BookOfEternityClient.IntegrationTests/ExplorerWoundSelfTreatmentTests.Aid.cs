@@ -40,7 +40,7 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
         FileSystemManager? ownedFiles = null;
         var injectBeforeDraw = false;
         var foreignMutationReached = 0;
-        await using var fixture = await HealingFixture.CreateAsync(receiveAid ? 0 : 3, 3, 14, stageRequest: false,
+        await using var fixture = await HealingFixture.CreateAsync(rank: 3, tier: receiveAid ? 0 : 3, die: 14, stageRequest: false,
             beforeResourceBootstrap: receiveAid ? SeedEngineReceivingAidJourneyAsync : SeedEngineAidJourneyAsync,
             hooks: !refuseBeforeDraw ? null : new FileSystemManagerHooks
             {

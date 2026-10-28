@@ -18,7 +18,7 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
 
     private async Task RunActiveAidAsync(bool receiveAid)
     {
-        await using var fixture = await HealingFixture.CreateAsync(receiveAid ? 0 : 3, 3, 14, stageRequest: false,
+        await using var fixture = await HealingFixture.CreateAsync(rank: 3, tier: receiveAid ? 0 : 3, die: 14, stageRequest: false,
             beforeResourceBootstrap: receiveAid ? ExplorerWoundSelfTreatmentTests.SeedEngineReceivingGuardianAsync
                 : ExplorerWoundSelfTreatmentTests.SeedEngineAidGuardianAsync);
         var selection = await CommitAidGrantAsync(fixture, receiveAid);
