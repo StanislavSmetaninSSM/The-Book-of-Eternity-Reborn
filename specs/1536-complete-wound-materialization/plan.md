@@ -1,3 +1,69 @@
+# Combat interrupted-work preservation — WIP / UNCOMPILED / UNREVIEWED
+
+2026-10-28, #1536 / T095-T102-T103, branch
+`1536-linux-qualification-20261025`, source baseline
+`49d6b0ce65dd2ec676f34f8d059d1aadf2141676`. This checkpoint preserves the SIX
+unfinished source files exactly as recovered, before further corrections. It is
+not SOURCE acceptance, a successful build, or combat gameplay qualification.
+
+The same Linux machine `1d64a0ce397b` became inaccessible at 18:48 UTC. Root's
+read-only check at 18:58:48 UTC restored access to that same checkout: HEAD and
+remote still49d6, the six dirty files remained, and no live dotnet/pwsh owner was
+present. The former writer reported that no commit/push had started. Its task
+context still lacked executor access; root now owns the sole writer/runner role.
+No replacement environment, new runtime, raw deletion or partial API overwrite
+of this plan was used. The GitHub connector could not retrieve this large plan
+in full; its empty content was never treated as the journal.
+
+Last completed source49d6 owning build: Main/Support/Integration, exit0,
+137 baseline warnings, 0 errors, 5:03.42; six selected master/copy pins agreed.
+Official PlanOnly18 cases / 9 descriptors / 9 categories executed zero tests in
+8.2696624 seconds. Actual `spiritual-combat-healing-pair`: 4 complete FAIL,
+39.7911086 seconds, category30.8323419 <120, no timeout/duplicates, both cleanup
+flags true. TRX SHA256
+`feeda41bf36daabc7c0882315321e79eabc06883c0c2909fe10ba1e974db5b36`.
+Raw remains outside checkout under
+`/workspace/tboe-linux-evidence-20261025/us4-self-healing/spiritual-combat-functional-7/pair`.
+Downstream14 are UNRUN. Historical observation8 plus earlier component/help9
+remain accepted only at their own previously recorded source/binary lineages.
+
+Confirmed failures: automatic saved combat decisions use the shared wound draft
+without its allocation speculation scope; the runtime phase says an active scope
+is required. Blocked counterharm reaches common C4, but the settled guard compares
+the receipt source-witness digest with History's opportunity-authority fingerprint.
+Those are different domains. That publication ended in post-publication CSPU and
+is NOT an accepted outcome. The corrected synchronous CSPU fixture cut did execute;
+no new swallowing defect was established.
+
+Preserved unfinished files: SpiritualC2CombatHealing (local scope),
+SpiritualWoundSourceWitness and SpiritualOriginalTurnOpportunities (shared
+composition plus unfinished guarantee factoring), WoundOpportunityAuthority
+(unfinished guarantee fingerprint factoring), SpiritualCombatReplay (strict
+domain-specific join), and the existing SpiritualCombatHealing Integration test
+(detached wrong-domain History negative). The actingActor object read and
+Assert.Single form remain static cleanup concerns, not observed compiler results.
+
+Guarantee boundary is OPEN: PreparedSpiritualSource retains source/exchange JSON
+strings whose representation enters the existing guarantee hash. CanonicalBase64
+in the receipt sorts JSON, so it does not preserve that exact raw preimage.
+Non-guaranteed reconstruction does not prove guaranteed reconstruction. Do not
+change the live guarantee producer/hash, substitute canonical text, drop a seal,
+skip counterharm, or silently exclude guaranteed opposition from the contract.
+Determine the exact current eligibility and preserve the missing evidence through
+the existing owner/receipt/checkpoint route, or prove exact reproduction by the
+same producer. An unsupported proof must refuse before publication; it cannot
+be deferred to a post-publication CSPU. Current WIP does not yet establish this.
+
+Optimization assessment is provisional: reuse the existing allocation journal,
+opportunity composer and receipt/History pipeline. No new cache, publisher or
+diagnostic stack; no speedup claimed. DATA fingerprints never replace fresh
+owner/source/effect/history fences. Next: resolve that exact guarantee boundary,
+finish the two proven corrections and negatives, publish coherent source, obtain
+bounded independent Sol SOURCE/PREP and the needed Astra contract closure, then
+fresh selected owning build/six pins/PlanOnly and the original paired attempt.
+Unit and historical passes are not repeated without an affected dependency.
+Standing DFR/performance/Mortal/Windows and recovery limitations remain open.
+
 # Combat draft phase visibility + proven fixture corrections — UNCOMPILED/UNRUN
 
 2026-10-28: owning 275 build8 completed with 0 errors, 137 baseline warnings,

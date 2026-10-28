@@ -400,12 +400,14 @@ internal sealed partial record WoundOpportunityAuthority
             value.WorseningTarget,
             value.SafeContext,
             value.InputEvidenceFingerprint);
-        return value.OriginalSourceGuarantee == null ? fingerprint : WoundAcceptedTurnFingerprintWriter.Compute(new string?[]
-        {
-            "book_of_eternity.wound.original_source_opportunity", "1", fingerprint,
-            value.OriginalSourceGuarantee.AuthorityFingerprint
-        });
+        return value.OriginalSourceGuarantee == null ? fingerprint : OriginalGuaranteeFingerprint(
+            fingerprint, value.OriginalSourceGuarantee.AuthorityFingerprint);
     }
+
+    // Fingerprint comparison only; no OriginalSourceGuarantee can be minted here.
+    internal static string OriginalGuaranteeFingerprint(string claims, string guarantee) =>
+        WoundAcceptedTurnFingerprintWriter.Compute(new string?[]
+        { "book_of_eternity.wound.original_source_opportunity", "1", claims, guarantee });
 
     internal static bool HasCompleteShape(WoundOpportunityAuthority? value)
     {

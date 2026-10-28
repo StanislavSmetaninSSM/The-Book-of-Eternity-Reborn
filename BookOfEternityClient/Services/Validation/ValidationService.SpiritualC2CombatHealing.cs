@@ -30,6 +30,7 @@ public partial class ValidationService
             if (!JsonNode.DeepEquals(row["witness"], SpiritualWoundStateJson.Parse(source.WitnessJson)))
                 throw new InvalidDataException("Healing packet differs from the real retained original source.");
             var spend = CombatHealingSelection.ReadCombatSpend(interval, exchange);
+            using var allocationScope = _allocations.Clock.BeginSpeculation();
             var issues = new List<ValidationIssue>();
             var selection = CombatHealingSelection.CaptureAtClosedInterval(this, interval, issues);
             if (issues.Count != 0 || source.Disposition == "resolved" && selection is null)
@@ -61,7 +62,9 @@ public partial class ValidationService
             packet["cursor"]!["nextHealingSourceOrdinal"] = 1;
             _combatHealingOutcome = decision.DeepClone().AsObject();
             var staged = new JsonObject { ["family"] = "combat_healing", ["decisionFingerprint"] = decision["decisionFingerprint"]!.DeepClone(), ["outcome"] = decision.DeepClone() };
-            return new(root, staged, interval, null, null);
+            var selected = new C2SelectedDecision(root, staged, interval, null, null);
+            allocationScope.Commit();
+            return selected;
         }
 
         private static InvalidDataException CombatDecisionFailure(string phase, IReadOnlyList<ValidationIssue> issues) =>

@@ -10,6 +10,34 @@ namespace BookOfEternityClient.Services;
 /// </summary>
 internal static class SpiritualWoundSourceWitness
 {
+    // Pure composition shared by the admitted producer and durable comparison.
+    // These helpers issue no capture/selection or original-guarantee capability.
+    internal static string HarmEventKey(string session, string request, string token,
+        string conflict, string exchange, string side) => WoundAcceptedTurnFingerprintWriter.Compute(new string?[]
+        { "book_of_eternity.spiritual_wound_source_event", "1", session, request, token, conflict, exchange, side })[7..];
+
+    internal static WoundOpportunityEventEvidence HarmEventEvidence(string key, int maximumRank) =>
+        new("formal", "spiritual_exchange_side", key, "harmful", maximumRank, "Духовное воздействие в обмене конфликта.");
+
+    internal static WoundOpportunityCompositionResult ComposeOpportunityData(WoundAcceptedTurnBinding binding,
+        WoundOwnerCoordinate owner, string sourceKind, string sourceId, WoundOpportunityEventEvidence evidence,
+        int maximumRank, WoundOpportunityWorseningTargetEvidence? target) =>
+        WoundOpportunityAuthority.Compose(new(binding, "spiritual_wound_" + evidence.AuthorityId,
+            "spiritual_wound_" + evidence.AuthorityId, "spiritual_wound_event_" + evidence.AuthorityId,
+            owner, "spiritual", "afterlife_strain_transition_v1", sourceKind, sourceId, "active", evidence,
+            maximumRank, null, new WoundOpportunitySafeContext("Участник духовного конфликта", evidence.ReadableCause,
+                new[] { "anatomical", "systemic", "mental", "spiritual_axis", "other" }), target));
+
+    internal static string GuaranteeSourceFingerprint(string actor, string operation, string? artJson) =>
+        WoundAcceptedTurnFingerprintWriter.Compute(new string?[]
+        { "book_of_eternity.spiritual_original_guarantee_source", "1", actor, operation, artJson });
+
+    internal static string GuaranteeAuthorityFingerprint(string claimsFingerprint, string sourceFingerprint,
+        string coordinate, string exchangeJson, int turn, string triggerId) =>
+        WoundAcceptedTurnFingerprintWriter.Compute(new string?[]
+        { "book_of_eternity.spiritual_original_guarantee", "1", claimsFingerprint, sourceFingerprint, coordinate,
+            exchangeJson, turn.ToString(System.Globalization.CultureInfo.InvariantCulture), triggerId });
+
     private const string Fields = "sourceId coordinate conflictId exchangeId turnEvidence sourceOrdinal exchangeOrdinal " +
         "affectedSide actingActor affectedActor operation appliedArtId appliedArtKind appliedArtTier targetResilienceTier " +
         "priorStrainRank destinationStrainRank extraStrainJumps harmfulMargin maximumSeverityRank guaranteedSeverityRank " +

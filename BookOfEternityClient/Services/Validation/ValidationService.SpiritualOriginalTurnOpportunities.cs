@@ -173,14 +173,10 @@ public partial class ValidationService
             if (actor.Length != 2 || kind == null)
                 return OpportunityFailure("spiritual_wound_owner_invalid", "one persistent affected afterlife actor");
             var owner = new WoundOwnerCoordinate(_source.Realm, kind, actor[1], WoundCarrierCatalog.AfterlifeProfilesPath);
-            var key = WoundAcceptedTurnFingerprintWriter.Compute(new string?[]
-            {
-                "book_of_eternity.spiritual_wound_source_event", "1", _source.SessionId,
-                _source.RequestId, _source.SnapshotToken, source.ConflictId, source.ExchangeId, source.AffectedSide
-            }).Replace("sha256:", string.Empty, StringComparison.Ordinal);
+            var key = SpiritualWoundSourceWitness.HarmEventKey(_source.SessionId, _source.RequestId,
+                _source.SnapshotToken, source.ConflictId, source.ExchangeId, source.AffectedSide);
             var eventRef = "spiritual_wound_event_" + key;
-            var evidence = new WoundOpportunityEventEvidence("formal", "spiritual_exchange_side", key,
-                "harmful", source.Calculation.MaximumSeverityRank, "Духовное воздействие в обмене конфликта.");
+            var evidence = SpiritualWoundSourceWitness.HarmEventEvidence(key, source.Calculation.MaximumSeverityRank);
             var events = WoundAcceptedEventAuthorityComposer.Compose(new(
                 _source.SessionId, _source.RequestId, _source.SnapshotToken, _source.TurnNumber,
                 new[] { new WoundAcceptedResponseEventCoordinate(eventRef, evidence.AuthorityKind, evidence.AuthorityId) }),
@@ -194,13 +190,9 @@ public partial class ValidationService
             // Scalar standard arts have no acquired artId. This coordinate names the
             // original actor's operation, without inventing an acquired object identity.
             var sourceId = art?["artId"]?.GetValue<string>() ?? source.ActingActor + ":" + source.Operation;
-            var composed = WoundOpportunityAuthority.Compose(new(binding, "spiritual_wound_" + key,
-                "spiritual_wound_" + key, eventRef, owner, "spiritual", "afterlife_strain_transition_v1",
-                sourceKind, sourceId, "active", evidence, source.Calculation.MaximumSeverityRank, null,
-                new WoundOpportunitySafeContext("Участник духовного конфликта", evidence.ReadableCause,
-                    new[] { "anatomical", "systemic", "mental", "spiritual_axis", "other" }),
-                WorseningTarget: retraumaWound != null ? new(retraumaWound, "retrauma") :
-                    sameConflictWound != null ? new(sameConflictWound, "same_conflict") : null));
+            var composed = SpiritualWoundSourceWitness.ComposeOpportunityData(binding, owner, sourceKind, sourceId,
+                evidence, source.Calculation.MaximumSeverityRank, retraumaWound != null ? new(retraumaWound, "retrauma") :
+                    sameConflictWound != null ? new(sameConflictWound, "same_conflict") : null);
             if (!composed.Success)
                 return new(null, null, composed.Issues);
             var result = new SpiritualWoundOpportunityResult(binding, composed.Opportunity, Array.Empty<ValidationIssue>());
@@ -496,17 +488,10 @@ public partial class ValidationService
                 RequestTurn = owner._source.TurnNumber;
                 TriggerId = opportunity.OpportunityId + "_original_guarantee";
                 _claimsFingerprint = WoundOpportunityAuthority.RecomputeAuthorityFingerprint(opportunity);
-                SourceContractFingerprint = WoundAcceptedTurnFingerprintWriter.Compute(new string?[]
-                {
-                    "book_of_eternity.spiritual_original_guarantee_source", "1", source.ActingActor,
-                    source.Operation, source.OriginalSpecialArtJson
-                });
-                AuthorityFingerprint = WoundAcceptedTurnFingerprintWriter.Compute(new string?[]
-                {
-                    "book_of_eternity.spiritual_original_guarantee", "1", _claimsFingerprint,
-                    SourceContractFingerprint, source.Coordinate, source.ExchangeJson,
-                    RequestTurn.ToString(System.Globalization.CultureInfo.InvariantCulture), TriggerId
-                });
+                SourceContractFingerprint = SpiritualWoundSourceWitness.GuaranteeSourceFingerprint(
+                    source.ActingActor, source.Operation, source.OriginalSpecialArtJson);
+                AuthorityFingerprint = SpiritualWoundSourceWitness.GuaranteeAuthorityFingerprint(_claimsFingerprint,
+                    SourceContractFingerprint, source.Coordinate, source.ExchangeJson, RequestTurn, TriggerId);
             }
 
             /// <summary>

@@ -421,8 +421,41 @@ public sealed partial class AfterlifeResourceCutoverTests
             else { Assert.Equal(new[] { "create", "treat" }, history.Transitions.Select(t => t.Kind)); Assert.Equal(1, (await ReadCombatHealingWoundAsync(context)).Recovery.CurrentStepProgress); }
         }
         await using (var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync())
+        {
             Assert.True(await ProgressionScheduleService.IsPublishedSpiritualCombatCoreAsync(control, "session_resource_materialization", "request_resource_materialization", 42,
                 path => context.FileSystem.ReadFileBytesAsync(lease, path), snapshotToken, intent));
+            if (mode == "blocked_worsen")
+            {
+                var materialized = Assert.Single(history.Transitions.Where(row => row.Kind == "worsen"));
+                var digest = receipts["decisions"]![0]!["sourceFingerprint"]!.GetValue<string>();
+                Assert.NotEqual(materialized.SourceFingerprint, digest);
+                var detached = WoundHistoryState.CreateValidated(history.NextOrdinal, history.Transitions.Select(row =>
+                    row.TransitionId == materialized.TransitionId ? row with { SourceFingerprint = digest } : row));
+                Assert.True(detached.IsValid);
+                var detachedBytes = Encoding.UTF8.GetBytes(WoundHistoryState.SerializeCanonical(detached.State!));
+                var parsed = WoundHistoryState.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(detachedBytes), WoundHistoryState.HistoryPath);
+                Assert.True(parsed.IsValid); // A valid root; no chronology, ID or wound fingerprint changed.
+                var identity = WoundIdentityState.Parse((await context.FileSystem.ReadFileAsync(lease, WoundIdentityState.StatePath))!, WoundIdentityState.StatePath);
+                Assert.True(identity.IsValid);
+                var roots = new Dictionary<string, JsonObject?>(StringComparer.Ordinal);
+                foreach (var path in WoundAcceptedTurnSnapshotContract.CarrierPaths)
+                {
+                    var bytes = await context.FileSystem.ReadFileBytesAsync(lease, path);
+                    roots.Add(path, bytes is null ? null : JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(bytes))!.AsObject());
+                }
+                var catalog = WoundCarrierCatalog.Build(new(roots[WoundCarrierCatalog.PlayerPath], roots[WoundCarrierCatalog.NpcPath],
+                    roots[WoundCarrierCatalog.EnemiesPath], roots[WoundCarrierCatalog.AlliesPath], roots[WoundCarrierCatalog.AfterlifeProfilesPath]));
+                Assert.Empty(catalog.Issues);
+                Assert.Empty(parsed.State!.ValidateAgreement(identity.State!, catalog));
+                var physicalHistory = await context.FileSystem.ReadFileBytesAsync(lease, WoundHistoryState.HistoryPath);
+                var refused = await Assert.ThrowsAsync<InvalidDataException>(() => ProgressionScheduleService.IsPublishedSpiritualCombatCoreAsync(control,
+                    "session_resource_materialization", "request_resource_materialization", 42,
+                    path => path == WoundHistoryState.HistoryPath ? Task.FromResult<byte[]?>(detachedBytes)
+                        : context.FileSystem.ReadFileBytesAsync(lease, path), snapshotToken, intent));
+                Assert.Contains("exact independently receipted counterharm", refused.Message);
+                Assert.Equal(physicalHistory, await context.FileSystem.ReadFileBytesAsync(lease, WoundHistoryState.HistoryPath));
+            }
+        }
         var schedulerAfter = new ProgressionScheduleService(context.FileSystem, NullLogger<ProgressionScheduleService>.Instance);
         AssertNoConflictFrameErrors(await schedulerAfter.ValidateAcceptedTurnOutcomeAsync(control));
         await schedulerAfter.ApplyAcceptedTurnOutcomeAsync(control); await schedulerAfter.ApplyAcceptedTurnOutcomeAsync(control);
