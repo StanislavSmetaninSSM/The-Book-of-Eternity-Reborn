@@ -159,20 +159,20 @@ cross-family shapes refuse; no raw/evidence/save migration.
 Each healing source binds actual conflict instance, exchangeId/ordinal, actual
 session/request/turn/token, exact original intent/fingerprint and target-before,
 healer/art/effect source, signed selected dice indices/check and exact registered
-resource source/operation. The outcome binds that source once, explicit applied
-(or executed-no-improvement) vs blocked disposition, full actual wound/effect/
-History stages for applied and an EMPTY healing-stage list for blocked, plus the
+resource source/operation. The outcome binds that source once, closed disposition resolved|blocked, full actual wound/effect/History stages for
+resolved (including executed checks with no health improvement) and an EMPTY
+healing-stage list for blocked, plus the
 actual typed OD transition/result. Serialization is comparison DATA; only the
 actual capture and current resource/effect owners issue completion/publication.
 
-For applied wound History, add a distinct closed `spiritual_combat_healing`
+For resolved wound History, add a distinct closed `spiritual_combat_healing`
 transition-result kind using the same active math/stage DATA and actual ledger
 outcome linkage. Do not widen safe spiritual_healing result2/3/4 with optional
 cycle/control fields or fabricate a schedule. Blocked has no wound History row;
 its persistent ledger source/outcome and resource/conflict history are mandatory.
 C3/C4 common reduction contributes the ledger afterimage with conflict/resource/
 wounds, and completion Consume/SealOriginalSpiritualReduction validates exact
-source/resource/effect owner tuple, full applied chain or blocked-empty disposition
+source/resource/effect owner tuple, full resolved chain or blocked-empty disposition
 BEFORE C4 authority issuance. Settled reader crosschecks ledger, resource transition,
 actual wound History/identity stages and original binding without repeating spend.
 
