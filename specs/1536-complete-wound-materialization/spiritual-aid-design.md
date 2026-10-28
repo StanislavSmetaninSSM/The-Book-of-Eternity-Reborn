@@ -194,7 +194,13 @@ Backend, producer and UI may be separate bounded checkpoints but must converge o
 that actual user result. Full T108/provider symmetry, helpless/conflict routes,
 Shining aid and broader producer qualification remain explicit follow-through.
 
-### First backend causal checkpoint (test-only, UNCOMPILED/UNRUN)
+### First backend causal checkpoint (test-only, genuine RED a3fee4bd6)
+
+The exact singleton compiled and completed its intended semantic RED at missing
+canonical participation after every natural-publication precondition below.
+PlanOnly1/1 zero executed; actual1 complete FAIL, no timeout, both cleanup true.
+The canonical grant/full v3 witness and helper paths are still unimplemented.
+Full evidence and hash are recorded in plan.md; no unchanged RED repeat is needed.
 
 Existing HealingFixture seeds a single current Guardian III/H0 wound and playerH3
 before its sole resource bootstrap. This is lawful initial canonical create DATA,

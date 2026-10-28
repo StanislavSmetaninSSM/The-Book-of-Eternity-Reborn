@@ -1,5 +1,19 @@
 # US4 safe self-treatment — active functional work, 2026-10-28
 
+T108 producer causal RED now executed on clean a3fee4bd6: exact singleton completes
+FAIL at Aid.cs70 Assert.NotNull(canonical participation). Initial canonical wound/
+identity/History, actual locality, accepted common publication III1/H0, one cycle,
+no treatment attempt and no cost all pass before that assertion. This is missing
+issuer/witness behavior, not setup or rollback. Integrationrefsfalse build0errors/
+102warnings1:49.91; six current pins match (Main7c24b6d6/Supportc8472972 unchanged,
+Integrationeb61ba01). Official PlanOnly1/1, zero executed6.4752626s; actual complete
+1/1FAIL, category15.5545542s<120, total22.6474096s, no skip/dup/timeout and both
+cleanup flags true. External spiritual-aid-producer-red-build-1 and
+spiritual-aid-producer-red-1 preserve full evidence; TRX SHA256
+b20ce2b741df35af2274bf2fb30b666831ae27b1173d4bfedf31c9dd1d7d0e6c.
+Independent OUTCOME requested in parallel with the accepted-design implementation.
+Later witness/aid/UI assertions remain unreached; no helper completion claim.
+
 T108 first backend causal scaffold is test-only and UNCOMPILED/UNRUN. One new
 literal participation-producer singleton/120s uses existing natural ResourceCore
 and common publisher. Initial exact Guardian locality/wound agreement and actual
