@@ -1,5 +1,19 @@
 # US4 safe self-treatment — active functional work, 2026-10-28
 
+Ordinary natural recovery causal RED on clean/compiled f47b6985e: exact1 planned/
+executed/completed FAIL,29.8093275s/category21.0768807<180, no timeout/skips/
+duplicates, both cleanup flags true. Actual ordinary Engine turn passes native
+response and accepted TurnNumber42→43 before the exact progress assertion fails
+expected1/actual0 at ExplorerWoundSelfTreatmentTests59. Existing diagnostics are
+empty: no setup/validation refusal is being relabeled. Later natural History/
+projection/final-cycle assertions remain unexecuted, not qualified. Official
+PlanOnly1/1descriptor9.8601320s/zero executions. Fresh Integration-only refsfalse
+build0errors/105warnings2:39.94, Integrationb69af5f6; other8 master/dependency pins
+unchanged. TRXd6c7316effcbdc167684fe9d45d6a5c369d1fc7282bdb4dacbc110d4f9f66d64.
+Raw natural-caller-red-build-1/natural-caller-red-1 external. Independent finite
+OUTCOME requested. Proceed with the accepted shared ordinary-cycle implementation;
+no new approval/diagnostic chain or old passed-runtime repetition.
+
 Actual graph-bearing console caller on clean/compiled 926f70af: exact1/1 PASS,
 58.1503082s total/category50.2515017<180, complete/no skips/duplicates/timeout,
 both cleanup flags true. Real retained d20=7; final healed/rankI/progress0;
@@ -39,8 +53,8 @@ recovery without treatment command/new attempt/die, including eligible persisten
 actors, on the existing source/stage/effect/common scheduler/History machinery.
 The bounded [ordinary natural recovery design](natural-recovery-design.md) is
 accepted by independent Astra/high at8c4e. The [implementation plan](natural-recovery-plan.md)
-and initial ordinary caller scaffold are test-only UNCOMPILED/UNRUN. No natural
-production change or new runtime has started; singleton SOURCE/PREP is next.
+and initial ordinary caller scaffold now have the qualified causal RED above.
+Natural production implementation is next; finite design and SOURCE/PREP accepted.
 Natural recovery itself spends no resource; it must coexist with valid resource
 contributions from an ordinary action rather than inherit self-only cost bans.
 Full US4, helper/entities/combat, real provider/fresh process and retained Mortal/

@@ -35,8 +35,8 @@
 **Produces:** one `OrdinarySafeTurnRecoversWithoutTreatmentAttemptOrDraw` Fact owned by a separate natural-caller category.
 
 - [x] Add a rank-I/tier0 real ordinary Engine turn, no command/selection, using the existing native completion hook. Assert exact same wound gains progress0→1, one recover History row/no attempt, one cycle, no wound-command creation and unchanged resources. Preserve full existing diagnostics and await actual Engine/cleanup.
-- [ ] Freeze test-only SOURCE/PREP, fresh Integration refsfalse build, exact1 PlanOnly/actual. Require actual TurnNumber42→43 before the natural-specific progress assertion; rejected/rolled-back turns cannot count as semantic RED. Expected semantic RED is absent natural wound progress after an accepted ordinary turn, not setup/validator failure.
-- [ ] Preserve exact cause and checkpoint before production edits.
+- [x] Freeze test-only SOURCE/PREP, fresh Integration refsfalse build, exact1 PlanOnly/actual. Require actual TurnNumber42→43 before the natural-specific progress assertion; rejected/rolled-back turns cannot count as semantic RED. Actual f47: accepted43 then expectedprogress1/actual0, one complete FAIL/no timeout, exact cause retained externally.
+- [x] Preserve exact cause and checkpoint before production edits.
 
 ### Task 2: Shared owned program and atomic ordinary publication
 
@@ -49,6 +49,7 @@
 - [ ] Persist one explicit self/natural result on primary treat/first recover respectively; natural request/attempt/roll absent, full cohort/tier/control/schedule independently rederivable.
 - [ ] Extend strict scheduler and interface replay with mandatory natural original binding/current cohort, exact graph semantics and complete closing images.
 - [ ] Preserve ordinary carrier siblings and safe player output/privacy; source/effect mutation or unsupported terminal ordering never silently changes cohort.
+- [ ] Preserve ordinary generic wound drafts/opportunity stages rather than overwrite their handoff. If the exact existing owner/order cannot compose, return an explicit unsupported coexistence issue before publication; add one meaningful valid-draft conflict/no-write control. Do not silently skip worsening/reset or claim that private case supported.
 - [ ] Freeze coherent SOURCE (Sol plus required bounded architecture follow-through), fresh affected builds and exact causal GREEN once.
 
 ### Task 3: Eligibility, interactions and GM contract completion
@@ -65,5 +66,6 @@
 ## Progress
 
 - Design8c4e955d3 accepted by independent Astra/high; root accepted execution direction.
-- Initial caller scaffold is test-only UNCOMPILED/UNRUN; no production changes.
-- All previous qualified self gates remain retained; singleton SOURCE/PREP pending.
+- Initial caller SOURCE/PREP acceptedf47; fresh build and exact causal RED completed.
+- Actual1FAIL is missing natural progress after accepted43; no production changes at RED checkpoint. Finite independent OUTCOME pending.
+- All previous qualified self gates remain retained; Task2 implementation is next.
