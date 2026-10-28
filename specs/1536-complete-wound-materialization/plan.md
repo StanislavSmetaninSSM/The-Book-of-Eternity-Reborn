@@ -1,4 +1,4 @@
-# T093 known-wound assessment — 17 PASS, independent OUTCOME pending
+# T093 known-wound assessment accepted — 17 PASS
 
 2026-10-28. Compiled/tested source24826353427bb3d2c1d671fbfa23f19eb8635911.
 Both actual console and shared browser handlers now explain current H0/H1 versus
@@ -24,7 +24,10 @@ Fresh owning Unit/Main/Support/dependencies build0errors/75warnings/3:34.08;
 only expected RED xUnit2002 disappeared from76, no new warning. Fresh Integration
 refsfalse0errors/102identicalwarnings/1:57.91. Catalog1041/12724 valid; PlanOnly
 17/3/8 in15.4836633s executed0. Independent Sol SOURCE/selection/PREP accepted;
-final OUTCOME is pending. T093-ASSESSMENT checkbox stays open until acceptance.
+final OUTCOME independently accepted63460ac2aa606dc4e41317db285379eecfd252ce
+without findings. Root inspected full actual evidence and verified that remote SHA;
+T093-ASSESSMENT alone is now complete. This follow-up changes only derived plan/task
+completion metadata, with no new code or rerun.
 GM matrix, Wound contract, worked no-turn example and manifest are synchronized.
 Optimization reuses one prepared source per wound and parsed catalog; renderer
 reads nothing. Wounds retain their fresh current-session/source/confirmation checks

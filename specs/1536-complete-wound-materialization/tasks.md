@@ -14317,7 +14317,7 @@ close full source-action/terminal/pending contracts or any top-level story task.
 ### RED tests
 
 - [ ] T093 [P] [US4] Add RED `spiritual_healing` tier 0-V bootstrap/profile/progression/training, visible name, diagnosis-at-zero, and insufficient-tier tests in `BookOfEternityClient.Tests/SpiritualHealingArtTests.cs`
-- [ ] T093-ASSESSMENT [US4] Show actual H0/insufficient-tier assessment for already-known visible spiritual wounds through console/browser without staging, dice, cost or time; distinguish invalid source, preserve mixed available choices, and synchronize GM guidance/example. This bounded inspection does not complete FR071 discovery or all T093.
+- [x] T093-ASSESSMENT [US4] Show actual H0/insufficient-tier assessment for already-known visible spiritual wounds through console/browser without staging, dice, cost or time; distinguish invalid source, preserve mixed available choices, and synchronize GM guidance/example. This bounded inspection does not complete FR071 discovery or all T093. Accepted 2026-10-28: source `24826353427bb3d2c1d671fbfa23f19eb8635911`, exact17/17 PASS (11 typed,5 actual handler/cancel,1 GM guard), independent Sol SOURCE/PREP/OUTCOME accepted; no skip/timeout/duplicate and cleanup verified. Broader US4 stays open.
 - [ ] T094 [P] [US4] Add RED `d20 + 2H` vs `10 + 2W + complications`, all margin bands, bounded two-step result, tier-before-natural-20, and natural-1 override tests in `BookOfEternityClient.Tests/SpiritualHealingResolverTests.cs`
   Accepted numerical prerequisite (2026-09-07), shared with T101, commit `4711d6a8`:
   `docs/superpowers/plans/2026-09-07-spiritual-healing-outcome-math.md` defines
