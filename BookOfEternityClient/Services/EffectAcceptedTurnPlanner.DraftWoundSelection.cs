@@ -16,6 +16,7 @@ internal static partial class EffectAcceptedTurnPlanner
         private static readonly ConditionalWeakTable<ValidationService.SpiritualOriginalTurnCapture.CombatHealingSelection,
             EffectDraftWoundSelection> CombatSelections = new();
         private readonly ValidationService.SpiritualOriginalTurnCapture.WoundSelection? _spiritual;
+        internal ValidationService.SpiritualOriginalTurnCapture.WoundSelection? Spiritual => _spiritual;
         private readonly ValidationService.MortalOriginalTurnCapture.WoundSelection? _mortal;
         internal ValidationService.SpiritualOriginalTurnCapture.CombatHealingSelection? Combat { get; }
 

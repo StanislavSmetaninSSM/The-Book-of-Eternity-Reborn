@@ -336,8 +336,11 @@ internal static partial class EffectAcceptedTurnPlanner
                             !IdentityWrites.Any(w => w.EffectId == terminal.EffectId && w.Kind == EffectIdentityWriteKind.AppendTransition &&
                                 retired.Transitions.Any(t => JsonNode.DeepEquals(t.Raw, JsonNode.Parse(w.PayloadJson)))))
                             throw new InvalidOperationException("Combat retirement needs its actual terminal writer image.");
-                        _retiredIdentities[retired.EffectId] = (new EffectIdentitySourceGroup(_wound.Owner.Realm, "wound", _wound.WoundId),
-                            WoundAcceptedTurnFingerprintWriter.Compute(new[] { WoundAcceptedTurnFingerprintWriter.CanonicalJson(retired.Raw) }));
+                        var fact = (Group: new EffectIdentitySourceGroup(_wound.Owner.Realm, "wound", _wound.WoundId),
+                            Fingerprint: WoundAcceptedTurnFingerprintWriter.Compute(new[] { WoundAcceptedTurnFingerprintWriter.CanonicalJson(retired.Raw) }));
+                        if (_retiredIdentities.TryGetValue(retired.EffectId, out var previousFact) && previousFact != fact)
+                            throw new InvalidOperationException("Combat cannot replace an existing retirement image.");
+                        _retiredIdentities.TryAdd(retired.EffectId, fact);
                     }
                 }
                 // A last-use cut can remove a current root before wound terminal

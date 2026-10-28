@@ -55,14 +55,15 @@ internal static partial class SpiritualWoundDeclineReceiptReducer
                 return Fail("spiritual_c3_decline_packet_incomplete");
             var materializedCount = staged.Count(row => (string?)row?["decision"] == "materialize");
             var satisfiedCount = staged.Count(row => (string?)row?["decision"] == "guarantee_satisfied");
-            if (materializedCount != (liveWounds?.Insertions.Count ?? 0))
+            if (materializedCount != (liveWounds?.Insertions.Count(i => !i.IsCombatHealing) ?? 0))
                 return Fail("spiritual_c3_decline_materialization_deferred");
             if ((materializedCount != 0 || satisfiedCount != 0) &&
                 authenticatedPair?.Matches(signed, packet) != true)
                 return Fail("spiritual_c3_materialization_owner_pair_missing");
             if (authenticatedPair is not null && satisfiedCount != authenticatedPair.SatisfactionCount)
                 return Fail("spiritual_c3_satisfaction_owner_count_mismatch");
-            var insertions = liveWounds?.Insertions;
+            IReadOnlyList<SpiritualLiveWoundCompletion.Insertion>? insertions =
+                liveWounds?.Insertions.Where(i => !i.IsCombatHealing).ToArray();
             if (SpiritualWoundStateJson.Fingerprint(packet["originalSnapshotFingerprint"]) !=
                 signed.SnapshotFingerprint)
                 return Fail("spiritual_c3_decline_signed_snapshot_changed");

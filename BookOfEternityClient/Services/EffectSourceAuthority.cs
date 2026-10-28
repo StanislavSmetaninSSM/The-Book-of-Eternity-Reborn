@@ -558,23 +558,59 @@ internal sealed class EffectSourceAuthority
     /// <returns>
     /// Validated immutable wound sources, including groups with no effect slots.
     /// </returns>
-    internal static EffectSourceAuthority CaptureCompletedWoundPublication(
+    internal sealed record CompletedWoundSourceProjection(EffectSourceAuthority Sources,
+        IReadOnlySet<EffectIdentitySourceGroup> TerminalGroups);
+
+    internal static CompletedWoundSourceProjection CaptureCompletedWoundPublication(
         SpiritualLiveWoundCompletion completion, EffectAcceptedTurnPlan effects)
     {
         if (!completion.MatchesEffects(effects))
             throw new InvalidDataException("Wound source transfer requires its exact completed effect owner.");
         var result = Build(new EffectSourceAuthorityInput([], [], new HashSet<string>(StringComparer.Ordinal)));
         var selected = new HashSet<EffectIdentitySourceGroup>();
+        var terminal = new HashSet<EffectIdentitySourceGroup>();
         foreach (var insertion in completion.Insertions)
         {
-            selected.Add(new EffectIdentitySourceGroup(insertion.Wound.Owner.Realm, "wound", insertion.Wound.WoundId));
-            result = result.WithNewPreparedWound(insertion.Prepared);
+            var key = new EffectIdentitySourceGroup(insertion.Wound.Owner.Realm, "wound", insertion.Wound.WoundId);
+            selected.Add(key);
+            if (insertion.IsCombatHealing)
+            {
+                if (!result._woundGroups.ContainsKey(key))
+                {
+                    var beforeSources = EffectAcceptedTurnInputComposer.BuildCanonicalWoundSourceAuthority(
+                        WoundCarrierCatalog.Build(insertion.OperationBefore.WoundCarriers!));
+                    if (beforeSources.Issues.Count != 0 || !beforeSources._woundGroups.TryGetValue(key, out var beforeGroup))
+                        throw new InvalidDataException("Completed combat source lost its actual before group.");
+                    var beforeExport = beforeSources._ownerExports.Single(e => new EffectIdentitySourceGroup(e.Realm, e.Kind, e.SourceId) == key);
+                    var exports = result._ownerExports.Append(beforeExport).ToArray();
+                    result = BuildCore(new EffectSourceAuthorityInput(exports.Where(e => !e.SameTurn).ToArray(),
+                        exports.Where(e => e.SameTurn).ToArray(), result._historicalAliases, result._grantedApplicationAuthorities,
+                        result._woundGroups.Values.Append(beforeGroup).ToArray(), result.Issues), canonicalOnly: true);
+                }
+                result = result.WithExecutedCombatWound(insertion.CombatStages, insertion.CombatSourceBatches);
+                if (insertion.Wound.Lifecycle == "healed") terminal.Add(key); else terminal.Remove(key);
+            }
+            else
+            {
+                result = result.WithNewPreparedWound(insertion.Prepared);
+                terminal.Remove(key);
+            }
         }
-        if (result.Issues.Count != 0 || !selected.SetEquals(result._woundGroups.Keys) ||
-            !selected.SetEquals(result._ownerExports.Select(export =>
+        var active = selected.Except(terminal).ToHashSet();
+        if (result.Issues.Count != 0 || !active.SetEquals(result._woundGroups.Keys) ||
+            !active.SetEquals(result._ownerExports.Select(export =>
                 new EffectIdentitySourceGroup(export.Realm, export.Kind, export.SourceId))))
             throw new InvalidDataException("Completed wound source transfer does not match its exact insertion chain.");
-        return result;
+        return new(result, terminal.ToFrozenSet());
+    }
+
+    internal EffectSourceAuthority WithCompletedWoundPublication(CompletedWoundSourceProjection completed)
+    {
+        foreach (var key in completed.TerminalGroups)
+            if (completed.Sources._woundGroups.ContainsKey(key) || _woundGroups.ContainsKey(key) ||
+                _ownerExports.Any(e => new EffectIdentitySourceGroup(e.Realm, e.Kind, e.SourceId) == key))
+                throw new InvalidDataException("A completed terminal wound source was resurrected.");
+        return WithCompletedWoundPublication(completed.Sources);
     }
 
     /// <summary>

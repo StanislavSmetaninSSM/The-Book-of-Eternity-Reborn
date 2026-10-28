@@ -237,3 +237,25 @@ sufficient because this scaffold changes no production source. Category
 spiritual-combat-healing-cost owns exactly that one Fact/60 seconds. Later owning
 build/selection is chosen from the complete implementation's actual dependencies;
 the current singleton is not an end-to-end completion claim.
+
+## Healing-only C2 packet consumer clarification
+
+The injury-only pending schema1 continues to require nonempty sources. Combat
+uses closed pending schema2 with mandatory healingSources (exactly one in this
+slice), healingDecisions and a separate cursor; injury arrays may be empty. The
+actual initial checkpoint/pending pair is committed before wound mutation, at
+WoundReadVersion0. Its opaque pending fingerprint is reconstructed as that same
+schema2. Source validation derives original conflict/dice context from the
+mandatory healing witness and uses one unique claim set. Generation and wave
+count the union of eligible exchange ordinals, not the number of source families.
+
+Healing participates in prefix fingerprints, append-only comparison, rebuilding,
+transport and replay. completed_unpublished requires both cursors exhausted and
+the actual owner-issued resolved/blocked outcome. C3 accepts schema2 only with the
+same authenticated pair and current resource/effect/frontier proof, then appends
+the existing companion ledger through C4. Blocked is also a paired outcome;
+no_offer and the unchanged truly no-decision source-only route cannot hide it.
+Causal controls cover healing-only empty injury arrays through pair→C3→C4,
+omission-only healing outcome refusal with dice/spend intact, and one-wave
+healing plus counterharm. This clarifies an existing consumer gap without changing
+the accepted player scope or creating another executor, file or design gate.

@@ -1,3 +1,29 @@
+# Combat completion / pending consumer checkpoint — UNCOMPILED/UNRUN, 2026-10-28
+
+The common live completion now carries the concrete combat selection alongside
+injury insertions in the same chronological chain. Source completion retains an
+explicit terminal changed-group set, so full heal cannot silently lose its
+selected retirement while active sibling source groups remain intact. Injury
+receipt reduction counts only its own insertion family. No build/runtime or
+SOURCE acceptance is claimed for this WIP.
+
+The existing unfinished packet is injury-only: schema1 requires nonempty sources.
+Healing-only MUST use closed pending schema2 on the SAME initial C2 pair/C3/C4;
+mandatory healingSources and healingDecisions/cursor are separate from possibly
+empty injury arrays. Initial pair precedes every wound mutation (read version0).
+Eligible waves/generations count the UNION of injury/healing exchange ordinals,
+so blocked healing plus counterharm is one wave, two families. Both cursors and
+owner-issued outcomes are required for completed_unpublished. Prefix fingerprints,
+append-only, reconstruction and replay include healing. no_offer/source-only may
+never hide this mandatory source/outcome. The existing no-decision source-only
+route and injury-only schema1 stay unchanged. This is a bounded discovered
+consumer contract under the accepted combat design, not another design gate.
+
+Remaining: actual matched-pair automatic healing driver, pending-v2 reconstruction
+and transport, mandatory existing-ledger healing outcome/bijection through C3/C4,
+authenticated exact scheduler no-op and settled browser replay, causal integration
+and real console/browser/GM synchronization. Raw Astra guidance stays external.
+
 # Combat C2/draft/result WIP — source only, 2026-10-28
 
 The next source block validates the actual next standard player-self declaration,

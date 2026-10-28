@@ -16,7 +16,7 @@ public partial class ValidationService
             private readonly AcceptedMechanicsInput _input;
             private readonly MortalItemAcceptedTurnNormalizationSnapshot _mortalItemSnapshot;
             private readonly MortalLocationAcceptedTurnPlan? _mortalLocationPlan;
-            private readonly EffectSourceAuthority? _liveWoundSources;
+            private readonly EffectSourceAuthority.CompletedWoundSourceProjection? _liveWoundSources;
             private readonly IReadOnlyDictionary<string, CanonicalBeforeImage> _publicationInputs;
             private readonly IReadOnlyDictionary<string, CanonicalBeforeImage> _signedRollbackImages;
             private readonly object _gate = new();

@@ -51,6 +51,7 @@ public partial class ValidationService
             internal string SourceFingerprint => _sourceFingerprint;
             internal string GraphResponseFingerprint { get; }
             internal string EventRef => _source.EventRef;
+            internal string SourceId => _source.SourceId;
             internal string ProgramReference => _owner._combatHealingOrigin!.Intent.Fingerprint;
             internal JsonObject Witness => JsonNode.Parse(_source.WitnessJson)!.AsObject();
             internal WoundMaterializationEnvelope Target => WoundAcceptedTurnData.CloneWound(_owner._combatHealingOrigin!.Source.Wound)!;

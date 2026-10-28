@@ -116,6 +116,15 @@ internal sealed class SpiritualLiveWoundCompletion
         AcceptedMechanicsPlanner.ResourceExecutionSession resources,
         IReadOnlyList<(ValidationService.SpiritualOriginalTurnCapture.WoundSelection Selection,
             EffectAcceptedTurnPlanner.EffectAcceptedDraft.EffectDraftWoundInsertion Insertion)> selected)
+        => Seal(owner, completedPlan, routing, transcript, resources, selected.Select(p =>
+            (EffectAcceptedTurnPlanner.EffectDraftWoundSelection.From(p.Selection), p.Insertion)).ToArray());
+
+    internal static SpiritualLiveWoundCompletion? Seal(
+        EffectAcceptedTurnPlanner.EffectAcceptedDraft owner, EffectAcceptedTurnPlan completedPlan,
+        EffectAcceptedTurnPlanner.BaseResourceRouting routing, AcceptedEffectBoundaryTranscript transcript,
+        AcceptedMechanicsPlanner.ResourceExecutionSession resources,
+        IReadOnlyList<(EffectAcceptedTurnPlanner.EffectDraftWoundSelection Selection,
+            EffectAcceptedTurnPlanner.EffectAcceptedDraft.EffectDraftWoundInsertion Insertion)> selected)
     {
         ArgumentNullException.ThrowIfNull(owner);
         ArgumentNullException.ThrowIfNull(selected);
@@ -194,6 +203,8 @@ internal sealed class SpiritualLiveWoundCompletion
         private readonly WoundStateReduction _reduced;
         private readonly WoundMaterializationEnvelope _wound;
         private readonly EffectAcceptedApplicationResult[] _applications;
+        private readonly WoundExecutedBoundary[] _combatStages;
+        private readonly WoundEffectOperationBatch[] _combatSourceBatches;
 
         /// <summary>
         /// Detaches one insertion registered at its exact spiritual source frontier.
@@ -206,10 +217,17 @@ internal sealed class SpiritualLiveWoundCompletion
         /// </param>
         internal Insertion(ValidationService.SpiritualOriginalTurnCapture.WoundSelection selection,
             EffectAcceptedTurnPlanner.EffectAcceptedDraft.EffectDraftWoundInsertion insertion)
+            : this(EffectAcceptedTurnPlanner.EffectDraftWoundSelection.From(selection), insertion) { }
+
+        internal Insertion(EffectAcceptedTurnPlanner.EffectDraftWoundSelection selection,
+            EffectAcceptedTurnPlanner.EffectAcceptedDraft.EffectDraftWoundInsertion insertion)
         {
-            SourceCoordinate = selection.Admission.Source.Coordinate;
-            ProposalRawFingerprint = selection.ProposalRawFingerprint;
-            ExchangeOrdinal = selection.Admission.Interval.Ordinal;
+            SourceCoordinate = selection.Combat is { } combat ? "combat_healing/" + combat.SourceId : selection.Spiritual!.Admission.Source.Coordinate;
+            ProposalRawFingerprint = selection.Combat?.Fingerprint ?? selection.Spiritual!.ProposalRawFingerprint;
+            ExchangeOrdinal = selection.Interval!.Ordinal;
+            IsCombatHealing = selection.Combat is not null;
+            _combatStages = insertion.CombatStages.Select(s => s.DetachedCopy()).ToArray();
+            _combatSourceBatches = insertion.CombatSourceBatches.Select(WoundAcceptedTurnData.CloneOperationBatch).ToArray();
             VersionAfter = insertion.VersionAfter;
             _input = selection.Input;
             _before = insertion.OperationBefore;
@@ -228,6 +246,9 @@ internal sealed class SpiritualLiveWoundCompletion
         /// Gets the original source coordinate associated with this insertion.
         /// </summary>
         internal string SourceCoordinate { get; }
+        internal bool IsCombatHealing { get; }
+        internal IReadOnlyList<WoundExecutedBoundary> CombatStages => _combatStages.Select(s => s.DetachedCopy()).ToArray();
+        internal IReadOnlyList<WoundEffectOperationBatch> CombatSourceBatches => _combatSourceBatches.Select(WoundAcceptedTurnData.CloneOperationBatch).ToArray();
         /// <summary>
         /// Gets the exact raw proposal fingerprint accepted by the source owner.
         /// </summary>
