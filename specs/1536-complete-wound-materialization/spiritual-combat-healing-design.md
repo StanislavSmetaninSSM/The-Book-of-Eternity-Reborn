@@ -49,7 +49,7 @@ or T095/T102/T103 complete from that subset. Resilience stays passive.
   except full heal. Factor/reuse its active-only stage construction; passing H0
   would still add1 and is forbidden for combat.
 
-## Chosen direction and bounded open questions
+## Chosen shared route
 
 Extend existing C2/C4 admission/draft/publication with an actual selected healing
 source. A parallel combat publisher would lose resource/effect ordering and replay
@@ -102,18 +102,85 @@ Settlement authenticates the actual signed combat intent/control/original schedu
 and creates an exact no-op contribution under the SAME accepted publisher, rather
 than running generic timestamp serialization. Actual Engine assertions cover the
 safe schedule/world counters, LastTickKey and absence of natural rows/results.
+The zero-cycle contract applies only to authenticated current combat, never to a
+caller-supplied all-zero control.
 Accepted player turn/story and normal pending-dice rotation still occur; they are
 not world-life cycles. Source read of FinalizePlayerTurn confirms ordinary turn
 increment/story and Mortal-only progression call, not an independent Chaos cycle
 counter; existing postaccept validation/cleanup must still complete. No additional
 "entropy" mechanic is inferred from RNG draws or wording.
 
-The only remaining bounded draft/result question is the durable blocked disposition
-and its causal ordering if a legal counter also worsens the selected wound in the
-same exchange. Current retrauma source requires exact retained wound JSON. Do not
-silently rebase that source after a healing marker. The existing capture/current
-owned-prefix APIs must define the ordering and result carrier before implementation;
-no new receipt file, second executor or blanket no-op satisfaction is acceptable.
+### Active-only draft, blocked overlap and durable outcome
+
+Use the already admitted player roll(s), not a new safe healing roll. Operation
+mapping is explicit heal_spiritual_wound→spiritual_healing; all old operation/art
+mappings keep their current values, resilience is never an active operation.
+The healing lane uses a declared healing-timing risk profile and ordinary counter
+validation. Direct interruption includes the existing recovery-timing counter
+operations and counter itself; successful healing cannot ignore such an admitted
+counter. Opposed outcome and the independent healing calculation remain separate.
+Special-art/NPC healing declarations are explicitly unsupported in this first
+standard player-self slice, rather than silently becoming cost-only actions.
+
+Extend the same capture/effect draft/resource routing/C4 completion with a typed
+healing source/selection. For an unblocked admitted action derive the bounded
+active-only shared program from SpiritualHealingResolver. The active prefix is
+shared with safe Build; combat never calls the natural suffix, creates recover
+rows or changes LastTickKey. The normal wound reducer/boundary-effect executor
+handles each required stage and exact weaker graph; no second BuildCore/owner.
+A check with no improvement still has an executed disposition; don't confuse it
+with a missing source or unresolved decision.
+
+For blocked/countered healing, execute ZERO wound stages and do not add a treat/
+Care marker. The original selected wound/FP and roll remain the attempted source;
+ordinary counter-pressure may independently worsen that same wound through the
+existing harmful source/opportunity path. Its RetraumaWoundJson before-image is
+unchanged by healing. Do not rebase it onto a healing marker or require the
+blocked target to equal the later wounded afterimage. C4 requires both typed
+outcomes and one ordinary declared OD spend in the same batch.
+
+Exchange metadata alone is not durable: activeConflict/exchangeLog is removed on
+resolve and recentConflicts is capped20. Extend the EXISTING private
+`game_state/wounds/spiritual_wound_opportunity_receipts.json` ledger with a closed
+combat-healing source/outcome family. It is not a positive/guaranteed harm source.
+Keep injury source/decision bijection and its (instance,exchange,affectedSide) key
+unchanged; healing has a distinct family-tagged identity so both may name the same
+player/exchange without collision.
+
+Proposed current closed ledger forms: existing schema1 continues to be produced
+for injury-only ledgers; schema2 is emitted only with a mandatory nonempty combat
+source family, adding `nextHealingSourceOrdinal`, `nextHealingDecisionOrdinal`,
+`healingSources`, `healingDecisions`. A schema2 source must have exactly one outcome,
+including blocked, and existing outcomes may never be dropped on later injury
+append/closure. Both are current producer forms, not an old-save fallback. The
+unchanged lifecycle subprojection stays its own current schema1. Unknown/empty/
+cross-family shapes refuse; no raw/evidence/save migration.
+
+Each healing source binds actual conflict instance, exchangeId/ordinal, actual
+session/request/turn/token, exact original intent/fingerprint and target-before,
+healer/art/effect source, signed selected dice indices/check and exact registered
+resource source/operation. The outcome binds that source once, explicit applied
+(or executed-no-improvement) vs blocked disposition, full actual wound/effect/
+History stages for applied and an EMPTY healing-stage list for blocked, plus the
+actual typed OD transition/result. Serialization is comparison DATA; only the
+actual capture and current resource/effect owners issue completion/publication.
+
+For applied wound History, add a distinct closed `spiritual_combat_healing`
+transition-result kind using the same active math/stage DATA and actual ledger
+outcome linkage. Do not widen safe spiritual_healing result2/3/4 with optional
+cycle/control fields or fabricate a schedule. Blocked has no wound History row;
+its persistent ledger source/outcome and resource/conflict history are mandatory.
+C3/C4 common reduction contributes the ledger afterimage with conflict/resource/
+wounds, and completion Consume/SealOriginalSpiritualReduction validates exact
+source/resource/effect owner tuple, full applied chain or blocked-empty disposition
+BEFORE C4 authority issuance. Settled reader crosschecks ledger, resource transition,
+actual wound History/identity stages and original binding without repeating spend.
+
+Causal requirement: blocked healing plus real worsening of the SAME selected wound
+must complete with one OD spend, normal worsening/reset, zero healing stages and
+unchanged intent/dice. Closing the conflict cannot lose the outcome. Removing only
+its healing decision while preserving source/harm/OD rows must fail the required
+bijection/completion/replay; absence is never successful implicit no-op.
 
 ## Finite acceptance and implementation boundary
 

@@ -4,9 +4,10 @@ Reverse current-Guardian help17 is independently accepted below. Next bounded
 work is counterable standard-art player self healing during an active direct
 Chaos duel: actual C2/C4 wound/effect/History + registered OD spend, no safe cycle
 or natural tick. Source gap and finite acceptance are written in
-spiritual-combat-healing-design.md (DESIGN WIP); the exact admitted-die and typed
-C2/C4 healing variant/completion seam is under bounded independent read-only
-review. No combat production/test change or runtime has started. Prior accepted
+spiritual-combat-healing-design.md (DESIGN WIP). Exact admitted-die, real UI
+intent/original, scheduler no-cycle/no-op, active-only draft and persistent existing
+ledger blocked-overlap boundaries are now written from the bounded source map;
+final independent DESIGN review follows. No combat production/test change or runtime has started. Prior accepted
 controls are not repeated for this design checkpoint; wider actors/targets stay
 explicitly separate and all standing limits remain.
 
