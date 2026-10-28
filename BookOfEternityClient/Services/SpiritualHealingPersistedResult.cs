@@ -27,6 +27,8 @@ internal sealed class SpiritualHealingPersistedResult : WoundTransitionResult
     internal int SchemaVersion => _root["schemaVersion"]!.GetValue<int>();
     internal string ResultFingerprint => _root["resultFingerprint"]!.GetValue<string>();
     internal JsonArray? ParticipationOutcomes => _root["participationOutcomes"]?.DeepClone().AsArray();
+    internal string? AidGrantFingerprint => Mode == "aid"
+        ? _root["request"]!["participation"]!["grantResultFingerprint"]!.GetValue<string>() : null;
     internal bool MatchesTurn(string sessionId, int turn) =>
         _root["binding"]!["sessionId"]!.GetValue<string>() == sessionId &&
         _root["binding"]!["turn"]!.GetValue<int>() == turn;
@@ -34,6 +36,22 @@ internal sealed class SpiritualHealingPersistedResult : WoundTransitionResult
         _root["binding"]!["requestId"]!.GetValue<string>() == requestId;
     internal WoundMaterializationEnvelope? ReadFinalWound(string woundId) =>
         WoundAcceptedTurnData.CloneWound(_stages.LastOrDefault(s => s.After.WoundId == woundId)?.After);
+    internal bool AidGrantAgrees(SpiritualHealingPersistedResult grant)
+    {
+        if (Mode != "aid" || !grant.IsNatural || grant.SchemaVersion != 3) return false;
+        var witness = _root["request"]!["participation"]!;
+        var record = witness["record"]!;
+        var selected = _stages[0].Before;
+        var final = grant._stages.LastOrDefault(s => s.After.WoundId == selected.WoundId)?.After;
+        return grant.ResultFingerprint == witness["grantResultFingerprint"]!.GetValue<string>() &&
+            grant._root["participationOutcomes"] is JsonArray { Count: 1 } outcomes &&
+            JsonNode.DeepEquals(outcomes[0]!["record"], record) &&
+            JsonNode.DeepEquals(record["binding"], grant._root["binding"]) &&
+            grant._root["binding"]!["sessionId"]!.GetValue<string>() == _root["binding"]!["sessionId"]!.GetValue<string>() &&
+            grant._root["binding"]!["turn"]!.GetValue<int>() == _root["binding"]!["turn"]!.GetValue<int>() - 1 &&
+            final is not null && final.Owner == selected.Owner &&
+            WoundIdentityState.ComputeSemanticFingerprint(final) == WoundIdentityState.ComputeSemanticFingerprint(selected);
+    }
     internal string ProgramReference => IsNatural ? _root["source"]!["sourceFingerprint"]!.GetValue<string>()
         : _root["request"]!["requestFingerprint"]!.GetValue<string>();
     internal string GraphResponseFingerprint => _root["source"]!["graphResponseFingerprint"]!.GetValue<string>();

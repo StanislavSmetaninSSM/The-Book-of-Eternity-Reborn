@@ -132,6 +132,17 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
             Assert.Contains(await validator.PrepareSpiritualSelfTreatmentPublicationAsync(lease), i => i.Severity == IssueSeverity.Error);
             fixture.AssertMutationRootsUnchanged(before);
             await files.WriteFileAtomicBytesAsync(lease, localPath, locality);
+            var consentBefore = (await files.ReadFileBytesAsync(lease, WoundCarrierCatalog.AfterlifeProfilesPath))!;
+            var revoked = JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(consentBefore))!.AsObject();
+            revoked["profiles"]!.AsArray().OfType<JsonObject>().Single(p => SpiritualTreatmentParticipation.ProfileId(p) == AidGuardianId)
+                [SpiritualTreatmentParticipation.RecordProperty]!["status"] = "revoked";
+            await files.WriteFileAtomicAsync(lease, WoundCarrierCatalog.AfterlifeProfilesPath, revoked.ToJsonString());
+            before = fixture.CaptureMutationRoots();
+            Assert.Contains(await validator.PrepareSpiritualSelfTreatmentPublicationAsync(lease), i => i.Severity == IssueSeverity.Error);
+            fixture.AssertMutationRootsUnchanged(before);
+            Assert.True(JsonNode.DeepEquals(request, JsonNode.Parse((await files.ReadFileAsync(lease, AcceptedMechanicsPlan.WoundCommandPath))!)));
+            Assert.Equal(1, draws); // Post-draw revocation refuses without reroll or stale prepared fallback.
+            await files.WriteFileAtomicBytesAsync(lease, WoundCarrierCatalog.AfterlifeProfilesPath, consentBefore);
             var issues = await validator.PrepareSpiritualSelfTreatmentPublicationAsync(lease);
             Assert.True(!issues.Any(i => i.Severity == IssueSeverity.Error), string.Join("\n", issues.Select(i => i.Code + ":" + i.Actual)));
             Assert.NotNull(await new CanonicalStateNormalizer(files, NullLogger<CanonicalStateNormalizer>.Instance)
@@ -147,6 +158,17 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
         Assert.Equal("aid", result.Mode);
         Assert.Equal(3, result.SchemaVersion);
         Assert.True(JsonNode.DeepEquals(request, result.ToCanonicalJson()["request"]));
+        var missingGrant = JsonNode.Parse(WoundHistoryState.SerializeCanonical(history))!.AsObject();
+        var grantRow = missingGrant["transitions"]!.AsArray().OfType<JsonObject>()
+            .Single(r => r["transitionResult"]?["mode"]?.GetValue<string>() == "natural");
+        grantRow.Remove("transitionResult"); // Retain every row, chronology/FP and the complete accepted aid result.
+        var standaloneIssues = new List<ValidationIssue>();
+        Assert.NotNull(SpiritualHealingPersistedResult.Parse(JsonSerializer.SerializeToElement(result.ToCanonicalJson()),
+            "standalone.aid", standaloneIssues));
+        Assert.Empty(standaloneIssues);
+        var missing = WoundHistoryState.Parse(missingGrant.ToJsonString(), "missing.grant.history");
+        Assert.False(missing.IsValid);
+        Assert.Contains(missing.Issues, i => i.Code == "spiritual_aid_grant_history_invalid");
         var forged = result.ToCanonicalJson();
         forged["source"]!["healingTier"] = 4;
         forged["resultFingerprint"] = WoundHistoryState.ComputeTransitionResultFingerprint(forged);

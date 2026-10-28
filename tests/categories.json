@@ -29,7 +29,7 @@
 },
 {
   "id": "spiritual-aid-console",
-  "responsibility": "One real console Engine grant43 then cleanup, cancel/confirm through the SAME Explorer, aid44 with real entropy and computed weaker graphs, full actual NPC Brain/journal, targetH0 vs healerH3, exact request/result/cycle/History/no-cost/cleanup.",
+  "responsibility": "Two actual console controls after accepted grant43: normal same-Explorer aid44 with default hooks=null; separately foreign locality mutation after prepared control and before draw must refuse and restore exact backup. Shared cancel/confirm, true entropy/computed graphs, NPC Brain/journal, independent tiers, request/result/cycle/History/no-cost/cleanup.",
   "excludes": "First current Guardian scope only. Controlled native-shaped GM, no external provider/fresh process/reverse/paid/conflict/helpless/Shining/musings or full T108.",
   "changeHints": [
     "BookOfEternityClient/Services/AfterlifeWoundTreatmentAuthority.Aid.cs",
@@ -48,14 +48,15 @@
     {
       "project": "integration",
       "tests": [
-        "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.ConsoleAidUsesAnActualAcceptedGrantThenTheSameExplorerAndEngine"
+        "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.ConsoleAidUsesAnActualAcceptedGrantThenTheSameExplorerAndEngine",
+        "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.ConsoleAidSourceChangeBeforeDrawRestoresThePreparedControlAndOriginalAbsence"
       ]
     }
   ]
 },
 {
   "id": "spiritual-aid-browser",
-  "responsibility": "One real Engine grant43 then cleanup, shared browser cancellation/confirmation and exact queued original aid44, real entropy/computed graphs/retained request3 binding, NPC Brain/journal, independent tiers/cycle/History/no-cost/cleanup.",
+  "responsibility": "Two real queued browser controls after accepted grant43: full guided aid44 and a snapshot fault after its real draw, preparing original/body/control retention and second-admission refusal; shared cancel/confirm, computed graphs/request3 binding, NPC Brain/journal, independent tiers/cycle/History/no-cost/cleanup.",
   "excludes": "First current Guardian scope only. Controlled native-shaped GM, no provider/fresh process/reverse/paid/conflict/helpless/Shining/musings or full T108.",
   "changeHints": [
     "BookOfEternityClient/Services/AfterlifeWoundTreatmentAuthority.Aid.cs",
@@ -74,7 +75,8 @@
     {
       "project": "integration",
       "tests": [
-        "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.BrowserAidUsesAnActualAcceptedGrantThenTheOriginalQueuedEngineAction"
+        "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.BrowserAidUsesAnActualAcceptedGrantThenTheOriginalQueuedEngineAction",
+        "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.BrowserAidStagingFaultRetainsItsPreparingQueueAndDrawWithoutASecondStage"
       ]
     }
   ]

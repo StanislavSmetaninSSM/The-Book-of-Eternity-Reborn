@@ -19,7 +19,7 @@ internal static class WoundApplicationService
         fs.VerifyCurrentSessionOperation(lease);
         var context = await WoundPlayerReadService.LoadContextAsync(fs, lease);
         if (context is null) return ExplorerWoundCommandResultBuilder.Build(command, WoundPlayerProjection.Unavailable(), null, treatment);
-        var state = await CreateStateAsync(fs, lease, fs.GetOrCreateSessionGeneration(lease), context);
+        var state = treatment ? await CreateStateAsync(fs, lease, fs.GetOrCreateSessionGeneration(lease), context) : null;
         return ExplorerWoundCommandResultBuilder.Build(command, context.Projection, state, treatment);
     }
 

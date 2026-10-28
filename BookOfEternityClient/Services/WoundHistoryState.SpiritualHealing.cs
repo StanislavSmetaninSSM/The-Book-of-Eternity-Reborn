@@ -6,10 +6,18 @@ internal sealed partial class WoundHistoryState
         string path, ICollection<ValidationIssue> issues)
     {
         var rows = transitions.ToArray();
+        // Operation-local DATA index only when this current family exists. Other
+        // history reads retain their prior allocation/work; duplicates stay visible.
+        var grants = rows.Any(r => r.TransitionResult is SpiritualHealingPersistedResult { Mode: "aid" })
+            ? rows.Select(r => r.TransitionResult).OfType<SpiritualHealingPersistedResult>()
+                .Where(r => r.IsNatural && r.SchemaVersion == 3).ToLookup(r => r.ResultFingerprint, StringComparer.Ordinal)
+            : null;
         foreach (var primary in rows.Where(r => r.TransitionResult is SpiritualHealingPersistedResult))
         {
             var result = (SpiritualHealingPersistedResult)primary.TransitionResult!;
             var stages = result.Stages;
+            if (result.Mode == "aid" && grants![result.AidGrantFingerprint!].Count(result.AidGrantAgrees) != 1)
+                AddIssue(issues, path, "spiritual_aid_grant_history_invalid", "one exact previous accepted participation result", primary.TransitionId);
             if (stages.Count == 0 || primary.TransitionId != stages[0].TransitionId ||
                 (result.IsNatural ? primary.Kind != "recover" || primary.AttemptId is not null
                     : primary.Kind != "treat" || primary.AttemptId is null))

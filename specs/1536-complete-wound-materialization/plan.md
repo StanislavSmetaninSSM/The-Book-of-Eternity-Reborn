@@ -1,5 +1,44 @@
 # US4 safe self-treatment — active functional work, 2026-10-28
 
+Final grouped source freeze (UNCOMPILED/UNRUN) separates injected failures from
+normal qualification. Positive console/browser fixtures have hooks=null. A separate
+console Fact owns the immutable filesystem hook, disarms in finally and ends after
+foreign pre-draw source refusal/exact backup restoration; it does not claim a
+subsequent normal/cache path. Browser snapshot fault uses the existing typed Engine
+hook after a real draw, removes it in finally, then verifies actual preparing-phase
+original/body/control preservation and second queue admission refusal. These are
+four actual caller Facts, not two. Tentative exact selection35cases/9descriptors/
+8categories; console2/browser2 each retains180s, no budget rise. Backend omission-
+only historical witness and post-draw revocation remain in the same existing Fact.
+Independent finite closure, owning builds and official discovery/runtime are next.
+
+Grouped active-aid closure WIP (UNCOMPILED/UNRUN): settled aid now resolves its
+exact retained grant fingerprint against one actual historical v3 natural result,
+full outcome/binding/session/turn-1 and grant final target == aid first Before.
+This uses existing History agreement and an operation-local lookup only if aid
+exists; no current consent, old schedule, new receipt or duplicate historical
+result cloning is introduced. An omission-only negative removes just the earlier
+recover result while keeping its rows/FP and standalone aid intact. Read-only
+/раны no longer constructs unused treatment choices or reads aid locality.
+
+Caller coverage now includes console prepared-control pending1 foreign mutation
+before entropy, actual no-draw refusal and exact schedule/request/locality backup
+restoration before a fresh confirmation; backend post-draw revocation retains the
+same request/dice. A second browser Fact injects the existing typed snapshot hook
+AFTER a real aid draw, requires queued→preparing metadata/selection and staged
+body/control/sources retained, then requires second real queue admission refusal.
+No fabricated console reentrancy is used: a normal console owner spans staging,
+wait and finalization, so a supported concurrent duplicate console original has
+not been established. Backend duplicate Stage proves only its own byte-preserving
+refusal, not universal preservation of every console protocol artifact.
+
+Tentative combined selection is now34 cases/9descriptors across the same8categories;
+new browser category has2 Facts under its unchanged180s protective budget. Other
+budgets/order remain scalar1/guidance2/request24/pending2 before backend1/selfgraph1/
+console1/browser2. Official PlanOnly controls actual counts after one accepted
+owning build. This source checkpoint closes findings only pending independent
+SOURCE/PREP; no GREEN/runtime claim or unsupported helper expansion.
+
 Shared guided aid + cleaned grant reader WIP is connected (UNCOMPILED/UNRUN).
 The real Engine removes the preceding transient request after acceptance. A narrow
 participation selector now parses actual History once, selects one v3 natural

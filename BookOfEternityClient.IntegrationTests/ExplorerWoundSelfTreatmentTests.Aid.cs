@@ -17,13 +17,45 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
     public Task ConsoleAidUsesAnActualAcceptedGrantThenTheSameExplorerAndEngine() => RunAidJourneyAsync(browser: false);
 
     [Fact]
+    public Task ConsoleAidSourceChangeBeforeDrawRestoresThePreparedControlAndOriginalAbsence() =>
+        RunAidJourneyAsync(browser: false, refuseBeforeDraw: true);
+
+    [Fact]
     public Task BrowserAidUsesAnActualAcceptedGrantThenTheOriginalQueuedEngineAction() => RunAidJourneyAsync(browser: true);
 
-    private async Task RunAidJourneyAsync(bool browser)
+    [Fact]
+    public Task BrowserAidStagingFaultRetainsItsPreparingQueueAndDrawWithoutASecondStage() =>
+        RunAidJourneyAsync(browser: true, refuseAfterDraw: true);
+
+    private sealed class AidSnapshotFault : InvalidOperationException { }
+
+    private async Task RunAidJourneyAsync(bool browser, bool refuseAfterDraw = false, bool refuseBeforeDraw = false)
     {
+        FileSystemManager? ownedFiles = null;
+        var injectBeforeDraw = false;
+        var foreignMutationReached = 0;
         await using var fixture = await HealingFixture.CreateAsync(3, 3, 14, stageRequest: false,
-            beforeResourceBootstrap: AfterlifeSpiritualNaturalRecoveryTests.SeedAidGuardianAsync);
+            beforeResourceBootstrap: AfterlifeSpiritualNaturalRecoveryTests.SeedAidGuardianAsync,
+            hooks: !refuseBeforeDraw ? null : new FileSystemManagerHooks
+            {
+                BeforeCanonicalReadOpenAsync = path =>
+                {
+                    if (!injectBeforeDraw || path != ProgressionScheduleService.SchedulePath) return Task.CompletedTask;
+                    var schedule = JsonNode.Parse(File.ReadAllText(ownedFiles!.ResolvePath(path)))!;
+                    if (schedule["pendingChaosSeaCycles"]!.GetValue<int>() != 1) return Task.CompletedTask;
+                    injectBeforeDraw = false; foreignMutationReached++;
+                    // Actual BuildControl has written pending1 AFTER the committed
+                    // grant read. A foreign write before its fresh pre-draw close
+                    // must be refused and restored by the real console backup.
+                    var localityPath = AfterlifeWoundTreatmentAuthority.AidLocalityPaths[0];
+                    var locality = JsonNode.Parse(File.ReadAllText(ownedFiles.ResolvePath(localityPath)))!;
+                    locality["chaosSeaNavigation"]!["currentAbodeId"] = "foreign_abode_before_draw";
+                    File.WriteAllText(ownedFiles.ResolvePath(localityPath), locality.ToJsonString());
+                    return Task.CompletedTask;
+                }
+            });
         var files = fixture.Files;
+        ownedFiles = files;
         var console = new TestExplorerConsole();
         var diagnostics = new GameEngineTurnLifecycleTests.SpiritualLifecycleTestLogger();
         var grantWritten = false;
@@ -127,7 +159,55 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                     browserBinding = Assert.IsType<PendingPlayerActionService.State>(await PendingPlayerActionService.ReadAsync(files, lease)).Binding;
                 Assert.NotNull(browserBinding.SpiritualSelfTreatment!.Aid);
                 fixture.AssertMutationRootsUnchanged(before);
-                await runtime.Engine.ProcessPlayerTurn(browserBinding.Action);
+                if (refuseAfterDraw)
+                {
+                    var fault = new AidSnapshotFault();
+                    var reached = 0;
+                    byte[]? pendingBytes = null;
+                    Dictionary<string, byte[]?>? captured = null;
+                    runtime.Engine.ConfigureSnapshotPublicationHooksForTesting(new GameEngineSnapshotPublicationHooks
+                    {
+                        AfterSnapshotFileCapturedAsync = path =>
+                        {
+                            if (path != AcceptedMechanicsPlan.WoundCommandPath) return Task.CompletedTask;
+                            reached++;
+                            pendingBytes = File.ReadAllBytes(files.ResolvePath(path));
+                            captured = fixture.CaptureMutationRoots(AfterlifeWoundTreatmentAuthority.SourcePaths
+                                .Concat(AfterlifeWoundTreatmentAuthority.AidLocalityPaths));
+                            throw fault;
+                        }
+                    });
+                    try
+                    {
+                        Assert.Same(fault, await Record.ExceptionAsync(() => runtime.Engine.ProcessPlayerTurn(browserBinding.Action, browserAction: browserBinding)));
+                    }
+                    finally { runtime.Engine.ConfigureSnapshotPublicationHooksForTesting(null); }
+                    Assert.Equal(1, reached);
+                    Assert.NotNull(captured);
+                    fixture.AssertMutationRootsUnchanged(captured!);
+                    Assert.Equal(pendingBytes, await files.ReadFileBytesAsync(AcceptedMechanicsPlan.WoundCommandPath));
+                    Assert.False(aidWritten);
+                    Assert.Equal(43, runtime.GameLoop.TurnNumber);
+                    await using (var lease = await files.AcquireCanonicalWriteLeaseAsync())
+                    {
+                        var pending = Assert.IsType<PendingPlayerActionService.State>(await PendingPlayerActionService.ReadAsync(files, lease));
+                        Assert.Equal("preparing", pending.Phase); // Legitimate queued→preparing, not identical queue JSON.
+                        Assert.Equal(browserBinding.ActionId, pending.Binding.ActionId);
+                        Assert.Equal(browserBinding.SpiritualSelfTreatment, pending.Binding.SpiritualSelfTreatment);
+                        Assert.False(JsonNode.Parse(pending.ProofJson!)!.AsObject().ContainsKey("spiritualWoundRequestBytesBase64"));
+                    }
+                    // Actual second queue admission refuses BEFORE another Stage;
+                    // no reentrant console call or synthetic older Main owner.
+                    await Assert.ThrowsAsync<InvalidOperationException>(() => runtime.Engine.ProcessPlayerTurn(browserBinding.Action, browserAction: browserBinding));
+                    Assert.Equal(1, reached);
+                    fixture.AssertMutationRootsUnchanged(captured!);
+                    Assert.Equal(pendingBytes, await files.ReadFileBytesAsync(AcceptedMechanicsPlan.WoundCommandPath));
+                    Assert.DoesNotContain((await fixture.ReadHistoryAsync()).Transitions, t => t.AttemptId is not null);
+                    fixture.AssertResourcesUnchanged();
+                    output.WriteLine("Browser aid refused after its one staged draw: preparing original/selection/body and prepared control retained; second queue admission refused, no healing/cycle accepted.");
+                    return;
+                }
+                await runtime.Engine.ProcessPlayerTurn(browserBinding.Action, browserAction: browserBinding);
             }
             else
             {
@@ -145,6 +225,26 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                 Assert.Single(console.ConfirmPrompts);
                 fixture.AssertMutationRootsUnchanged(before);
                 Assert.Null(await files.ReadFileBytesAsync(AcceptedMechanicsPlan.WoundCommandPath));
+                if (refuseBeforeDraw)
+                {
+                    var rollbackBaseline = fixture.CaptureMutationRoots(AfterlifeWoundTreatmentAuthority.AidLocalityPaths);
+                    injectBeforeDraw = true;
+                    try
+                    {
+                        var refused = await Assert.ThrowsAsync<InvalidDataException>(() => runtime.Engine.ProcessPlayerTurn(action!));
+                        Assert.Contains("spiritual_aid_admission_invalid", refused.Message);
+                    }
+                    finally { injectBeforeDraw = false; }
+                    Assert.Equal(1, foreignMutationReached);
+                    Assert.False(aidWritten);
+                    Assert.Equal(43, runtime.GameLoop.TurnNumber);
+                    fixture.AssertMutationRootsUnchanged(rollbackBaseline); // Exact schedule/request absence/locality restoration.
+                    Assert.Null(await files.ReadFileBytesAsync(LiveTurnPreparationService.PendingTurnSnapshotManifestPath));
+                    Assert.DoesNotContain((await fixture.ReadHistoryAsync()).Transitions, t => t.AttemptId is not null);
+                    fixture.AssertResourcesUnchanged();
+                    output.WriteLine("Console aid refused a foreign source after prepared-control write and before draw; actual backup restored exact schedule/source/request absence, no aid attempt or cycle accepted.");
+                    return; // This hook-owned fixture makes no normal-cache qualification claim.
+                }
                 await runtime.Engine.ProcessPlayerTurn(action!);
                 await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
                 Assert.Null(runtime.Explorer.ConsumePendingSpiritualSelfTreatment(action!, files.GetOrCreateSessionGeneration(lease)));
@@ -174,7 +274,13 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
             fixture.AssertResourcesUnchanged();
             output.WriteLine($"Guardian aid ({(browser ? "browser" : "console")}): actual grant43/naturalIII1; d20={draw}; final={after.Lifecycle}/{after.Severity.Rank}/{after.Recovery.CurrentStepProgress}; activeH3/targetH0, one aid cycle, one retained attempt.");
         }
-        finally { output.WriteLine(diagnostics.Describe()); await runtime.AudioService.DisposeAsync(); }
+        finally
+        {
+            injectBeforeDraw = false;
+            runtime.Engine.ConfigureSnapshotPublicationHooksForTesting(null);
+            output.WriteLine(diagnostics.Describe());
+            await runtime.AudioService.DisposeAsync();
+        }
     }
 
     private static async Task WriteAidGuardianReasoningAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease, TurnRequest turn, bool grant)
