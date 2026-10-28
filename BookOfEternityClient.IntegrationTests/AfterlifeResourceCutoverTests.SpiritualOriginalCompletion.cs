@@ -249,7 +249,9 @@ public sealed partial class AfterlifeResourceCutoverTests
         Assert.True(JsonNode.DeepEquals(liveInsertion.ReducedState.History,
             liveWounds.FinalState.History));
         Assert.Null(SpiritualLiveWoundCompletion.Seal(draft,
-            completed.Plan!, resources.Routing!, transcript, resources, []));
+            completed.Plan!, resources.Routing!, transcript, resources,
+            Array.Empty<(ValidationService.SpiritualOriginalTurnCapture.WoundSelection,
+                EffectAcceptedTurnPlanner.EffectAcceptedDraft.EffectDraftWoundInsertion)>()));
         Assert.Throws<InvalidOperationException>(() =>
             new AcceptedMechanicsPlanner.CompletedOrdinaryMechanicsReduction(
                 reduction.Input, reduction.InputFingerprint, reduction.Input.PlanningContext!,

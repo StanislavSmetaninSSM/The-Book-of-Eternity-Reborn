@@ -119,7 +119,7 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                 var action = await runtime.Explorer.TryProcessCommand("/лечить");
                 Assert.Equal(WoundApplicationService.CombatActionText, action);
                 foreach (var pair in before) Assert.Equal(pair.Value, await files.ReadFileBytesAsync(pair.Key));
-                await runtime.Engine.ProcessPlayerTurn(action);
+                await runtime.Engine.ProcessPlayerTurn(action!);
             }
             Assert.True(wrote); Assert.Equal(42, runtime.GameLoop.TurnNumber); // Real acceptance before healing-specific assertions.
             var history = WoundHistoryState.Parse((await context.ReadJsonAsync(WoundHistoryState.HistoryPath))!.ToJsonString(), WoundHistoryState.HistoryPath).State!;

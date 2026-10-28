@@ -1,3 +1,18 @@
+# Combat Integration compile-only follow-through — runtime UNRUN, 2026-10-28
+
+Owning retry35f completed Main/Support, then failed only Integration compile:
+exit1/139 warnings/1 error/4:57.83. CS0121 was an existing empty-list Seal call made
+ambiguous by the new concrete-selection overload; the test now explicitly passes
+the same empty ordinary-WoundSelection tuple array. Two introduced test warnings
+are corrected together: action! follows its existing exact nonnull action assertion,
+and DoesNotContain replaces the equivalent Empty(Where) check. No production or
+asserted behavior changes. This remains compile failure, not semantic RED; no tests
+or Unit build ran. Main c5d3dbce…/Support a254e43d… and the Support Main copy were
+pinned after their completed outputs. Their source is unchanged by this test-only
+delta. After narrow closure: Integration refsfalse retry then Unit refsfalse, all
+nine pins, same official25/15 PlanOnly and ordered bounded actuals. No owning
+Main/Support rebuild or wider selection is justified by these compile-only fixes.
+
 # Combat first owning compile correction — runtime UNRUN, 2026-10-28
 
 Coherent SOURCE/PREP accepted da0302fa5 and its exact25/15/14 selection. The first

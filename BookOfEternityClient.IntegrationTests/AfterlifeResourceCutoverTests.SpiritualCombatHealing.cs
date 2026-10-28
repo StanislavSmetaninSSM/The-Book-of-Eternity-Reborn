@@ -293,7 +293,7 @@ public sealed partial class AfterlifeResourceCutoverTests
         {
             var wound = await ReadCombatHealingWoundAsync(context);
             Assert.Equal(2, wound.Severity.Rank); Assert.Equal(0, wound.Recovery.CurrentStepProgress); Assert.Equal(originalTick, wound.Recovery.LastTickKey);
-            Assert.Empty(history.Transitions.Where(t => t.TransitionResult is SpiritualCombatHealingPersistedResult));
+            Assert.DoesNotContain(history.Transitions, t => t.TransitionResult is SpiritualCombatHealingPersistedResult);
             Assert.Equal(new[] { "create", "worsen" }, history.Transitions.Select(t => t.Kind));
             Assert.Equal(1, receipts["decisions"]![0]!["binding"]!["continuationGeneration"]!.GetValue<int>());
             Assert.Equal(0, receipts["decisions"]![0]!["binding"]!["waveOrdinal"]!.GetValue<int>());
