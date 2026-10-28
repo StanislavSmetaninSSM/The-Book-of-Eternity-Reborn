@@ -1,5 +1,25 @@
 # US4 safe self-treatment — active functional work, 2026-10-28
 
+Actual aid console retry on clean 8f851337f completed 2 FAIL in 60.4238382 s,
+no timeout/duplicate, both cleanup flags true; TRX SHA256
+b4222f66a52ec6a29f72a0ad2724b0dad60e021a51870b37703dc251833be9da.
+Both now accept the real grant43 and execute cleanup/shared cancel-confirm;
+the SECOND turn stops at preturn validation1664 before aid staging/fault:
+missing_lore_bootstrap_file for achievements.json and codex_entries.json.
+Source establishes initial absence, not deletion: the fixture/runtime never seeds
+these files; their normalizers return when absent. BootstrapAndProtocol165–166
+skips required lore before any chat turns with incarnation0; accepted grant creates
+chat history, activating the two required paths at180–181 for turn44.
+
+Test-only correction is UNCOMPILED/UNRUN: a caller-only wrapper seeds the existing
+canonical EMPTY achievements/codex roots, with full stats/category buckets, before
+the single bootstrap. No between-turn seed, fake lore/reward or guard weakening.
+After grant, explicit empty-array assertions prove these valid roots persist.
+Shared SeedEngineAidGuardian defaults used by the passing typed controls stay
+unchanged. Current 13 PASS are retained across fb/8f source lineages; browser2 is
+UNRUN. Narrow SOURCE must release Integration-only refsfalse→exact caller4/2
+PlanOnly→console2/180 then browser2/180. Do not repeat current13/Main/Support/Unit.
+
 Warning-clean fb8157618 qualification: owning build 0 errors / 137 baseline
 warnings / 4:22.52; Unit refsfalse 0 errors / 26 warnings / 59.49 s. All 9 pins
 match (Main9bb64d85…, Support130a2d82…, Integration5957de6d…, Unitf38c5fbd…).

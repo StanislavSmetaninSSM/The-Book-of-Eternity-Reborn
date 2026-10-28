@@ -35,7 +35,7 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
         var injectBeforeDraw = false;
         var foreignMutationReached = 0;
         await using var fixture = await HealingFixture.CreateAsync(3, 3, 14, stageRequest: false,
-            beforeResourceBootstrap: SeedEngineAidGuardianAsync,
+            beforeResourceBootstrap: SeedEngineAidJourneyAsync,
             hooks: !refuseBeforeDraw ? null : new FileSystemManagerHooks
             {
                 BeforeCanonicalReadOpenAsync = path =>
@@ -137,6 +137,8 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                 t => t.TransitionResult is SpiritualHealingPersistedResult).TransitionResult);
             Assert.Equal(3, grant.SchemaVersion);
             Assert.Single(grant.ParticipationOutcomes!);
+            Assert.Empty(JsonNode.Parse((await files.ReadFileAsync("game_state/meta/achievements.json"))!)!["unlockedAchievements"]!.AsArray());
+            Assert.Empty(JsonNode.Parse((await files.ReadFileAsync("lore/codex_entries.json"))!)!["entries"]!.AsArray());
             var before = fixture.CaptureMutationRoots();
             if (browser)
             {
@@ -292,6 +294,31 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
             output.WriteLine(diagnostics.Describe());
             await runtime.AudioService.DisposeAsync();
         }
+    }
+
+    private static async Task SeedEngineAidJourneyAsync(FileSystemManager files, JsonObject profiles)
+    {
+        await SeedEngineAidGuardianAsync(files, profiles);
+        // A second actual turn has accepted chat history and therefore requires
+        // the standard EMPTY meta/codex baseline. Seed it before the sole resource
+        // bootstrap, never between grant and aid or as invented lore/rewards.
+        await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+        await files.WriteFileAtomicAsync(lease, "game_state/meta/achievements.json", JsonSerializer.Serialize(new
+        {
+            unlockedAchievements = Array.Empty<object>(), trackedProgress = Array.Empty<object>(),
+            stats = new
+            {
+                totalUnlocked = 0,
+                byCategory = new { combat = 0, exploration = 0, story = 0, social = 0, crafting = 0, meta = 0, death = 0, secret = 0 },
+                byRarity = new { common = 0, uncommon = 0, rare = 0, epic = 0, legendary = 0 }
+            }
+        }));
+        await files.WriteFileAtomicAsync(lease, "lore/codex_entries.json", JsonSerializer.Serialize(new
+        {
+            entries = Array.Empty<object>(), totalEntries = 0,
+            categories = new { cosmology = 0, geography = 0, history = 0, cultures = 0, creatures = 0, characters = 0,
+                artifacts = 0, factions = 0, magic = 0, other = 0 }
+        }));
     }
 
     internal static async Task SeedEngineAidGuardianAsync(FileSystemManager files, JsonObject profiles)

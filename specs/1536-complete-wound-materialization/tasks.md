@@ -14486,9 +14486,12 @@ close full source-action/terminal/pending contracts or any top-level story task.
   docs/manifest and affected natural/SELF graph regressions pass. Independent
   OUTCOME ACCEPT is recorded for the exact13 producer cases. Active aid backend
   and scalar/request/retained SELF controls now pass31 cases on ba1b551d. Actual
-  guided Engine grant is not accepted yet: a67 reaches native grant but rolls back
-  at locality closing after generic normalization; the bounded owned-normalization
-  writer fix and caller qualification are in progress. Full helper completion
+  guided Engine grant43 now accepts and cleans up after the owned-locality and
+  full-profile composition corrections. Current actual aid44 remains unqualified:
+  the two-turn fixture lacked canonical empty lore/meta baseline required once
+  accepted chat history exists; caller-only pre-bootstrap correction is in review.
+  The bounded typed backend and affected consumers now pass13 cases on fb/8f
+  lineages; this is not a complete guided aid journey. Full helper completion
   remains open.
   Reverse entity→player needs real guided player
   consent, and other/helpless/conflict/Shining helper routes remain open.
