@@ -182,3 +182,13 @@ singleton PlanOnly and actual120; exact runtime outcome decides acceptance.
   Blockers correction and all source/reducer/assertion/budget guards retained.
   This is the same fixture projection boundary, not a production failure or new
   diagnostic requirement. Narrow delta review precedes fresh Integration retry.
+
+- Full composer→reducer inspection before the next build also finds that the same
+  reusable proposal carries requires_stabilization/threshold3/lastTick=null, whereas
+  this original is progressive with a retained tick. Composer keeps proposed
+  recovery and reducer SameRecoveryPolicyExceptStep requires the original mode,
+  clock/cadence/lastTick/carry/deterioration policy. Group the finite authoring fix:
+  one detached canonical original supplies authored classification's TWO allowed
+  fields and recovery policy; set only current progress0/II threshold4/derived
+  blockers. No new projector/framework, generic parser or game-rule change; original
+  ownership/currentness remains independently checked by actual C2 admission.

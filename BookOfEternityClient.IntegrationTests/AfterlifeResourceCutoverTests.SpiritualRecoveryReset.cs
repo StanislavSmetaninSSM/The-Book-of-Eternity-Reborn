@@ -78,14 +78,19 @@ public sealed partial class AfterlifeResourceCutoverTests
             Assert.Equal(2, offered.Offer!.MinimumSeverityRank);
             var decision = JsonNode.Parse(CreateSpiritualWorseningLifecycleDecision(
                 offered.Offer.OpportunityRef, worsening: true).GetRawText())!;
-            var classification = JsonNode.Parse(WoundMaterializationContract.SerializeCanonical(originalWound))!["classification"]!;
+            var retained = JsonNode.Parse(WoundMaterializationContract.SerializeCanonical(originalWound))!;
+            var classification = retained["classification"]!;
             decision["proposal"]!["classification"] = new JsonObject
             {
                 ["woundType"] = classification["woundType"]!.DeepClone(),
                 ["locationProfile"] = classification["locationProfile"]!.DeepClone()
             };
-            decision["proposal"]!["recovery"]!["blockers"] = JsonSerializer.SerializeToNode(
+            var recovery = retained["recovery"]!.DeepClone().AsObject();
+            recovery["currentStepProgress"] = 0;
+            recovery["currentStepThreshold"] = 4; // The authored rank II has threshold 2 * II.
+            recovery["blockers"] = JsonSerializer.SerializeToNode(
                 WoundTransitionReducer.DeriveWorseningBlockers(originalWound));
+            decision["proposal"]!["recovery"] = recovery;
             var submitted = await offered.SubmitDecisionAsync(lease,
                 JsonSerializer.SerializeToElement(decision), scene);
             AssertNoConflictFrameErrors(submitted.Issues);
