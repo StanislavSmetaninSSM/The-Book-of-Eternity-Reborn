@@ -1,5 +1,42 @@
 # US4 safe self-treatment — active functional work, 2026-10-27
 
+Observer GREEN accepted independently: clean c481 cheap1/1 PASS, complete exit0,
+12.5819966s/category5.4793531<60 (case0.2944675), no timeout/skips/duplicates,
+bothcleanuptrue; TRXc2523c6c677d83da5e012a13e66be7d7a4104d569b8de8800cd5137edee2ac25.
+Build0errors/105warnings/2:26.33; Main/Support316 unchanged, Integration82952d24.
+CombinedPlanOnly exact2cases/2descriptors10.0482242s/0executed.
+
+Actual caller readout on c481 then completed1/1 FAIL46.5257936s/category36.8247669,
+no timeout/duplicates,bothcleanuptrue; TRXc01029dcefdd2e2ed2bac482d07a3cf8e312fa36ffac5b2abc0536cf07e78899.
+Full first and second packets retained before any second lease: first graph repair
+succeeds; second is exactly the existing accepted-turn output-artifact repair for
+stale narrative/interface after canonical repair, with explicit no-debug/no-new-
+turn/no-reroll instructions. No lock IOException. Root/Sol/architectural review
+agree this in-flight second phase is legitimate; the fixture's one-packet cap was
+a conservative readout rule, not gameplay. Imprecise initial command attribution
+is nonblocking; no classifier/freshness/validator change is needed for this slice.
+Raw graph-repair-observer-green-build-1/green-1 and actual-graph-repair-readout-1
+remain external. Full healing/final33 still unqualified at this readout point.
+
+Two-phase fixture WIP, UNCOMPILED/UNRUN: retain raw unchanged skip/default unexpected
+second refusal before lease. Only this actual journey may nominate the EXACT
+second stale-N/I packet with matching session/request/turn, exactly two expected
+codes/paths and exact output-artifact targetset; any third/unrelated packet refuses.
+Nomination grants no write: it still requires fresh own lease and exact reread.
+Phase2 authenticates actual signed original bytes/evidence and strict published
+result/token/request/control, snapshots all existing wound publication mechanical
+paths plus stage source16/resources, preserves graph refs/content and debug bytes,
+rewrites only existing N/I with current timestamps/meaning, and requires exact
+mechanical equality before/after and final acceptance (no repeated healing/cycle).
+Both phases use matching current repair-ready; no assumed attempt-counter increment.
+Existing native main/task lifetime and all original source/attempt/die/no-cost
+fences remain. Cheap default assertions unchanged. Existing CLI/Matrix/actual
+packet already define this output repair; no new GM field/capability/example or
+prompt change. Emit one existing ITestOutput line with actual draw/final state/two
+phases/one cycle after successful final assertions. Finite SOURCE then fresh
+Integration-only build→cheap1 before actual1; same budgets, final33 conditional.
+
+
 Cheap observer causal RED on clean6b5704 verified: exact1/1complete FAIL,
 15.6852908s total/category8.0374118<60, case0.4174644s, no timeout/duplicates,
 bothcleanuptrue. TRXb1dcc16f1bbdcd4f551583e161685f7d776b93caf07c58917c596c7790d03fba.

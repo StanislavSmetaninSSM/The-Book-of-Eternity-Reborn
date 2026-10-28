@@ -117,7 +117,10 @@ public sealed class ExplorerWoundSelfTreatmentTests(ITestOutputHelper output)
         Dictionary<string, byte[]?>? unpublished = null;
         JsonArray? authoredGraphs = null;
         var responseWritten = false;
-        var repaired = false;
+        var graphsRepaired = false;
+        var outputRepaired = false;
+        Dictionary<string, byte[]?>? publishedMechanical = null;
+        byte[]? preservedDebug = null;
         using var stop = new CancellationTokenSource();
         Task? gmRepair = null;
         var runtime = GameEngineTurnLifecycleTests.CreateGameEngineRuntime(fixture.Files,
@@ -167,32 +170,71 @@ public sealed class ExplorerWoundSelfTreatmentTests(ITestOutputHelper output)
                 {
                     handled = await ObserveGraphRepairPacketAsync(fixture.Files, repairPath, handled, async (lease, raw) =>
                     {
-                        Assert.Equal(1, Interlocked.Increment(ref repairCount));
+                        var phase = Interlocked.Increment(ref repairCount);
+                        Assert.InRange(phase, 1, 2);
                         var repair = JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(raw))!.AsObject();
                         Assert.NotNull(turn);
                         Assert.Equal(turn!.SessionId, repair["sessionId"]!.GetValue<string>());
                         Assert.Equal(turn.RequestId, repair["requestId"]!.GetValue<string>());
                         Assert.Equal(turn.TurnNumber, repair["turnNumber"]!.GetValue<int>());
-                        var issue = Assert.Single(repair["errors"]!.AsArray());
-                        Assert.Equal("spiritual_self_treatment_admission_invalid", issue!["code"]!.GetValue<string>());
-                        Assert.Contains("GM-authored spiritual destination graphs are required", issue["actual"]!.GetValue<string>());
-                        Assert.False(repair["fullTurnResubmissionRequired"]!.GetValue<bool>());
-                        foreach (var pair in retainedSources!)
-                            Assert.Equal(pair.Value, await fixture.Files.ReadFileBytesAsync(lease, pair.Key));
-                        fixture.AssertMutationRootsUnchanged(unpublished!);
-                        authoredGraphs = AuthorRequestedGraphs(original, turn.SpiritualHealing!["destinationGraphs"]!.AsArray());
-                        await fixture.Files.WriteFileAtomicAsync(lease, "output/interface_updates.json", new JsonObject
+                        if (phase == 1)
                         {
-                            ["dialogueOptions"] = new JsonArray(), ["spiritualHealingGraphs"] = authoredGraphs.DeepClone(),
-                            ["timestamp"] = DateTime.UtcNow.ToString("o")
-                        }.ToJsonString());
+                            var issue = Assert.Single(repair["errors"]!.AsArray());
+                            Assert.Equal("spiritual_self_treatment_admission_invalid", issue!["code"]!.GetValue<string>());
+                            Assert.Contains("GM-authored spiritual destination graphs are required", issue["actual"]!.GetValue<string>());
+                            Assert.False(repair["fullTurnResubmissionRequired"]!.GetValue<bool>());
+                            foreach (var pair in retainedSources!)
+                                Assert.Equal(pair.Value, await fixture.Files.ReadFileBytesAsync(lease, pair.Key));
+                            fixture.AssertMutationRootsUnchanged(unpublished!);
+                            authoredGraphs = AuthorRequestedGraphs(original, turn.SpiritualHealing!["destinationGraphs"]!.AsArray());
+                            await fixture.Files.WriteFileAtomicAsync(lease, "output/interface_updates.json", new JsonObject
+                            {
+                                ["dialogueOptions"] = new JsonArray(), ["spiritualHealingGraphs"] = authoredGraphs.DeepClone(),
+                                ["timestamp"] = DateTime.UtcNow.ToString("o")
+                            }.ToJsonString());
+                            graphsRepaired = true;
+                        }
+                        else
+                        {
+                            Assert.True(IsExpectedOutputRepairPacket(raw, turn));
+                            foreach (var pair in retainedSources!.Where(p => p.Key != AcceptedMechanicsPlan.WoundCommandPath))
+                                Assert.Equal(pair.Value, await fixture.Files.ReadFileBytesAsync(lease, pair.Key));
+                            Assert.Null(await fixture.Files.ReadFileBytesAsync(lease, AcceptedMechanicsPlan.WoundCommandPath));
+                            var observed = PendingTurnSnapshotReader.ReadObservedCurrent(fixture.Files, lease,
+                                new[] { AcceptedMechanicsPlan.WoundCommandPath });
+                            Assert.True(observed.Success, string.Join("\n", observed.Issues));
+                            Assert.NotNull(observed.Snapshot);
+                            Assert.NotNull(observed.Evidence);
+                            var signed = observed.Snapshot!;
+                            observed.Evidence!.RequireCurrent(fixture.Files, lease, signed);
+                            Assert.Equal(retainedSources[AcceptedMechanicsPlan.WoundCommandPath],
+                                signed.ReadRequiredBytes(AcceptedMechanicsPlan.WoundCommandPath));
+                            var scheduler = new ProgressionScheduleService(fixture.Files, NullLogger<ProgressionScheduleService>.Instance);
+                            Assert.NotNull(retainedRequest);
+                            Assert.True(await scheduler.IsPublishedSpiritualCycleAsync(turn.ProgressionControl!, lease,
+                                signed.SnapshotToken, retainedRequest));
+                            publishedMechanical = fixture.CaptureMutationRoots(
+                                WoundAcceptedTurnSnapshotContract.PublicationAgreementPaths.Where(p => !p.StartsWith("output/", StringComparison.Ordinal))
+                                    .Concat(AfterlifeWoundTreatmentAuthority.SourcePaths));
+                            preservedDebug = await fixture.Files.ReadFileBytesAsync(lease, "output/debug_logs.json");
+                            var narrative = JsonNode.Parse((await fixture.Files.ReadFileAsync(lease, "output/narrative_response.json"))!)!.AsObject();
+                            var currentInterface = JsonNode.Parse((await fixture.Files.ReadFileAsync(lease, "output/interface_updates.json"))!)!.AsObject();
+                            Assert.True(JsonNode.DeepEquals(authoredGraphs, currentInterface["spiritualHealingGraphs"]));
+                            narrative["timestamp"] = DateTime.UtcNow.ToString("o");
+                            currentInterface["timestamp"] = DateTime.UtcNow.ToString("o");
+                            await fixture.Files.WriteFileAtomicAsync(lease, "output/narrative_response.json", narrative.ToJsonString());
+                            await fixture.Files.WriteFileAtomicAsync(lease, "output/interface_updates.json", currentInterface.ToJsonString());
+                            Assert.Equal(preservedDebug, await fixture.Files.ReadFileBytesAsync(lease, "output/debug_logs.json"));
+                            fixture.AssertMutationRootsUnchanged(publishedMechanical);
+                            observed.Evidence.RequireCurrent(fixture.Files, lease, signed);
+                            outputRepaired = true;
+                        }
                         await fixture.Files.WriteFileAtomicAsync(lease, readyPath, JsonSerializer.Serialize(new
                         {
                             sessionId = turn.SessionId, requestId = turn.RequestId, turnNumber = turn.TurnNumber,
-                            updatedAtUtc = DateTime.UtcNow.ToString("o"), note = "Добавлены только запрошенные ослабленные последствия."
+                            updatedAtUtc = DateTime.UtcNow.ToString("o"), note = "Исправлены только перечисленные в текущем запросе файлы."
                         }, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
-                        repaired = true;
-                    }, stop.Token);
+                    }, stop.Token, candidate => repairCount == 1 && IsExpectedOutputRepairPacket(candidate, turn));
                     await Task.Delay(500, stop.Token);
                 }
             }
@@ -214,13 +256,19 @@ public sealed class ExplorerWoundSelfTreatmentTests(ITestOutputHelper output)
             Assert.NotNull(gmRepair);
             stop.Cancel();
             await gmRepair;
-            Assert.True(repaired);
-            Assert.Equal(1, repairCount);
+            Assert.True(graphsRepaired && outputRepaired);
+            Assert.Equal(2, repairCount);
+            Assert.NotNull(publishedMechanical);
+            fixture.AssertMutationRootsUnchanged(publishedMechanical!);
+            Assert.Equal(preservedDebug, await fixture.Files.ReadFileBytesAsync("output/debug_logs.json"));
+            var finalInterface = JsonNode.Parse((await fixture.Files.ReadFileAsync("output/interface_updates.json"))!)!;
+            Assert.True(JsonNode.DeepEquals(authoredGraphs, finalInterface["spiritualHealingGraphs"]));
             var history = await fixture.ReadHistoryAsync();
             var attempt = Assert.Single(history.Transitions, t => t.AttemptId is not null);
             var result = Assert.IsType<SpiritualHealingPersistedResult>(attempt.TransitionResult);
             Assert.True(JsonNode.DeepEquals(retainedRequest, result.ToCanonicalJson()["request"]));
-            var last = result.Stages[^1].After;
+            var stages = result.Stages;
+            var last = stages[^1].After;
             var wounds = (await fixture.ReadWoundsAsync()).Occurrences;
             if (last.Lifecycle == "healed")
             {
@@ -237,7 +285,7 @@ public sealed class ExplorerWoundSelfTreatmentTests(ITestOutputHelper output)
             {
                 var rank = turn!.SpiritualHealing!["destinationGraphs"]!.AsArray().Single(g =>
                     g!["stageRef"]!.GetValue<string>() == graph!["stageRef"]!.GetValue<string>())!["severityRank"]!.GetValue<int>();
-                var stage = result.Stages.First(s => s.After.Severity.Rank == rank);
+                var stage = stages.First(s => s.After.Severity.Rank == rank);
                 Assert.All(stage.After.Consequences.Entries, e => Assert.Equal("Последствие ослаблено Мастером для этой попытки.", e.ReadableSummary));
                 if (rank == 2)
                 {
@@ -255,6 +303,8 @@ public sealed class ExplorerWoundSelfTreatmentTests(ITestOutputHelper output)
                 Assert.Null(await fixture.Files.ReadFileBytesAsync(path));
             Assert.Null(await fixture.Files.ReadFileBytesAsync(PendingPlayerActionService.PendingPath));
             fixture.AssertResourcesUnchanged();
+            output.WriteLine("Actual graph self-treatment: d20=" + string.Join(",", retainedRequest!["attempt"]!["roll"]!["values"]!.AsArray().Select(v => v!.GetValue<int>())) +
+                "; final=" + last.Lifecycle + "/" + last.Severity.Rank + "/" + last.Recovery.CurrentStepProgress + "; repair phases=2; world cycles=1.");
         }
         finally
         {
@@ -268,11 +318,34 @@ public sealed class ExplorerWoundSelfTreatmentTests(ITestOutputHelper output)
         }
     }
 
+    private static bool IsExpectedOutputRepairPacket(byte[] raw, TurnRequest? turn)
+    {
+        if (turn is null) return false;
+        try
+        {
+            var packet = JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(raw))!.AsObject();
+            if (packet["sessionId"]!.GetValue<string>() != turn.SessionId || packet["requestId"]!.GetValue<string>() != turn.RequestId ||
+                packet["turnNumber"]!.GetValue<int>() != turn.TurnNumber || packet["fullTurnResubmissionRequired"]!.GetValue<bool>() ||
+                packet["metadataDiagnosticOnly"]!.GetValue<bool>()) return false;
+            var errors = packet["errors"]!.AsArray();
+            var targets = new[] { "output/interface_updates.json", "output/narrative_response.json" };
+            if (errors.Count != 2 || errors.Any(e => e?["code"]?.GetValue<string>() != "accepted_turn_stale_player_facing_output_after_canonical_repair") ||
+                !new HashSet<string>(errors.Select(e => e!["filePath"]!.GetValue<string>()), StringComparer.Ordinal).SetEquals(targets)) return false;
+            var packets = packet["harnessRepairPackets"]!.AsArray();
+            return packets.Count == 1 && packets[0]!["kind"]!.GetValue<string>() == "accepted_turn_output_artifact_repair" &&
+                packets[0]!["targetFiles"]!.AsArray().Count == 2 &&
+                new HashSet<string>(packets[0]!["targetFiles"]!.AsArray().Select(p => p!.GetValue<string>()), StringComparer.Ordinal).SetEquals(targets);
+        }
+        catch (Exception failure) when (failure is JsonException or InvalidOperationException or ArgumentException or FormatException or NullReferenceException)
+        { return false; } // Diagnostic observation can only nominate a fresh read, never authorize a write.
+    }
+
     private async Task<byte[]?> ObserveGraphRepairPacketAsync(FileSystemManager files, string path, byte[]? handled,
-        Func<FileSystemManager.CanonicalWriteLease, byte[], Task> processFirst, CancellationToken stop)
+        Func<FileSystemManager.CanonicalWriteLease, byte[], Task> processPacket, CancellationToken stop,
+        Func<byte[], bool>? isExpectedFurtherSignal = null)
     {
         // Observation-only file-GM signal: these bytes can skip work or refuse,
-        // but only the fresh leased reread below permits first-response authoring.
+        // but only a fresh leased reread can reach the response handler.
         byte[] observed;
         try
         {
@@ -285,13 +358,13 @@ public sealed class ExplorerWoundSelfTreatmentTests(ITestOutputHelper output)
         catch (FileNotFoundException) { return handled; }
         if (handled is not null && observed.AsSpan().SequenceEqual(handled)) return handled;
         output.WriteLine("Observed graph repair packet:\n" + CanonicalJsonUtf8.DecodeOneOptionalBom(observed));
-        if (handled is not null)
+        if (handled is not null && isExpectedFurtherSignal?.Invoke(observed) != true)
             throw new InvalidDataException("Unexpected further graph repair packet:\n" + CanonicalJsonUtf8.DecodeOneOptionalBom(observed));
         await using var lease = await files.AcquireCanonicalWriteLeaseAsync(cancellationToken: stop);
         var raw = await files.ReadFileBytesAsync(lease, path);
         if (raw is null || !raw.AsSpan().SequenceEqual(observed))
-            throw new InvalidDataException("The first graph repair packet changed before its actual leased admission.");
-        await processFirst(lease, raw);
+            throw new InvalidDataException("The graph repair packet changed before its actual leased admission.");
+        await processPacket(lease, raw);
         return raw;
     }
 
