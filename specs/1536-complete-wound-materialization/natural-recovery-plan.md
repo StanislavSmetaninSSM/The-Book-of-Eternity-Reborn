@@ -155,3 +155,10 @@ singleton PlanOnly and actual120; exact runtime outcome decides acceptance.
   seed/authority composition: BuildControl and active-conflict projection refusal
   precede ONE original capture. This removes the otherwise discarded initial
   snapshot/recapture, without changing context defaults or freshness checks.
+
+- Fresh Integration refsfalse5f build succeeded (0errors/102warnings1:56.06,
+  unchanged Main/Support pins). First PlanOnly stopped in catalog loading before
+  discovery: new related entry was a string, but loader requires id/when object.
+  Correct only that catalog link; no runtime was started and no C# rebuild is
+  needed for the exact same compiled singleton. Preserve failed preflight raw,
+  narrow SOURCE delta then official PlanOnly retry and one actual120.

@@ -9,7 +9,7 @@
     "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualRecoveryReset.cs"
   ],
   "related": [
-    "spiritual-natural-recovery-publication"
+    { "id": "spiritual-natural-recovery-publication", "when": "Only if the shared natural publisher changes; retain its previous qualification for this test-only conflict reset case." }
   ],
   "requirements": {
     "frontendBuild": false,
