@@ -20,6 +20,81 @@ public sealed class ExplorerWoundSelfTreatmentTests(ITestOutputHelper output)
     private const string Owner = "wound-guided-client";
 
     [Fact]
+    public async Task OrdinaryShiningTurnUsesSharedClockWithoutAdvancingInactiveChaosContour()
+    {
+        await using var fixture = await HealingFixture.CreateAsync(2, 3, 20, stageRequest: false, realm: "Shining Abode");
+        var original = Assert.Single((await fixture.ReadWoundsAsync()).Occurrences).Wound;
+        var scheduler = new ProgressionScheduleService(fixture.Files, NullLogger<ProgressionScheduleService>.Instance);
+        await scheduler.EnsureInitializedAsync();
+        var seeded = JsonNode.Parse((await fixture.Files.ReadFileAsync(ProgressionScheduleService.SchedulePath))!)!.AsObject();
+        seeded["currentChaosSeaTurnOrdinal"] = 9; // Existing shared afterlife clock, not a new realm-specific counter.
+        foreach (var key in new[] { "lastGuardianProjectCycleOrdinal", "lastResidentAgencyCycleOrdinal",
+                     "lastShiningAbodeCycleOrdinal", "lastShiningFactionCycleOrdinal", "lastShiningTradeCycleOrdinal" }) seeded[key] = 9;
+        seeded["lastChaosSeaSimulationOrdinal"] = 2;
+        await fixture.Files.WriteFileAtomicAsync(ProgressionScheduleService.SchedulePath, seeded.ToJsonString());
+        var diagnostics = new GameEngineTurnLifecycleTests.SpiritualLifecycleTestLogger();
+        TurnRequest? turn = null;
+        var responseWritten = false;
+        var runtime = GameEngineTurnLifecycleTests.CreateGameEngineRuntime(fixture.Files,
+            inputSource: new NoPlayerInput(diagnostics), logger: diagnostics,
+            finalizationHooks: new GameEngineSessionFinalizationHooks
+            {
+                AtCheckpointAsync = async checkpoint =>
+                {
+                    if (checkpoint != SessionFinalizationCheckpoint.TerminalWaitStarted || responseWritten) return;
+                    await using var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync();
+                    turn = JsonSerializer.Deserialize<TurnRequest>((await fixture.Files.ReadFileAsync(lease, "input/turn_request.json"))!,
+                        SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)!;
+                    Assert.Equal("Shining Abode", turn.ProgressionControl!.CurrentRealm);
+                    Assert.Equal(9, turn.ProgressionControl.CurrentChaosSeaTurnOrdinal);
+                    Assert.Equal(10, turn.ProgressionControl.NextChaosSeaTurnOrdinal);
+                    Assert.Equal(10, turn.ProgressionControl.NextShiningAbodeCycleOrdinal);
+                    Assert.Equal(0, turn.ProgressionControl.ChaosSeaCyclesExpectedThisTurn);
+                    Assert.Equal(1, turn.ProgressionControl.ShiningAbodeCyclesExpectedThisTurn);
+                    Assert.Equal("natural", turn.SpiritualHealing!["mode"]!.GetValue<string>());
+                    Assert.Null(turn.SpiritualHealing["attemptId"]);
+                    Assert.Null(turn.SpiritualHealing["roll"]);
+                    Assert.Null(await fixture.Files.ReadFileBytesAsync(lease, AcceptedMechanicsPlan.WoundCommandPath));
+                    Assert.Equal(1, Assert.Single(turn.SpiritualHealing["destinationGraphs"]!.AsArray())!["severityRank"]!.GetValue<int>());
+                    await WriteNativeCompletionAsync(fixture.Files, lease, turn,
+                        AfterlifeSpiritualNaturalRecoveryTests.AuthorNaturalGraphs(original, turn.SpiritualHealing["destinationGraphs"]!.AsArray()),
+                        "Тихий свет Сияющей Обители помогает душе постепенно обрести целостность.");
+                    responseWritten = true;
+                }
+            });
+        try
+        {
+            runtime.GameLoop.SetSession("session_ordinary_shining_recovery", 42);
+            await runtime.StateManager.RefreshGameStateAsync();
+            await runtime.Engine.ProcessPlayerTurn("Спокойно наблюдать за безопасной жизнью Сияющей Обители.");
+            Assert.True(responseWritten);
+            Assert.Equal(43, runtime.GameLoop.TurnNumber);
+            var after = Assert.Single((await fixture.ReadWoundsAsync()).Occurrences).Wound;
+            Assert.Equal("shining_abode", after.Owner.Realm);
+            Assert.Equal(1, after.Severity.Rank);
+            Assert.Equal(0, after.Recovery.CurrentStepProgress); //SignedH3 adds4, completing II exactly.
+            var history = await fixture.ReadHistoryAsync();
+            Assert.DoesNotContain(history.Transitions, t => t.AttemptId is not null || t.Kind == "treat");
+            var result = Assert.IsType<SpiritualHealingPersistedResult>(Assert.Single(history.Transitions,
+                t => t.TransitionResult is SpiritualHealingPersistedResult).TransitionResult);
+            Assert.True(result.IsNatural);
+            Assert.Equal("shining_abode", result.ToCanonicalJson()["binding"]!["realm"]!.GetValue<string>());
+            Assert.Equal(10, result.ToCanonicalJson()["source"]!["projection"]!["cycleOrdinal"]!.GetValue<int>());
+            var schedule = JsonNode.Parse((await fixture.Files.ReadFileAsync(ProgressionScheduleService.SchedulePath))!)!;
+            Assert.Equal(10, schedule["currentChaosSeaTurnOrdinal"]!.GetValue<int>());
+            Assert.Equal(2, schedule["lastChaosSeaSimulationOrdinal"]!.GetValue<int>());
+            foreach (var key in new[] { "lastGuardianProjectCycleOrdinal", "lastResidentAgencyCycleOrdinal",
+                         "lastShiningAbodeCycleOrdinal", "lastShiningFactionCycleOrdinal", "lastShiningTradeCycleOrdinal" })
+                Assert.Equal(10, schedule[key]!.GetValue<int>());
+            Assert.Null(await fixture.Files.ReadFileBytesAsync(ProgressionScheduleService.ReportPath));
+            Assert.Null(await fixture.Files.ReadFileBytesAsync(LiveTurnPreparationService.PendingTurnSnapshotManifestPath));
+            fixture.AssertResourcesUnchanged();
+            output.WriteLine("Shining natural: II→I0, shared9→10, inactiveChaos2→2, healingDraw=none, cycle=1.");
+        }
+        finally { output.WriteLine(diagnostics.Describe()); await runtime.AudioService.DisposeAsync(); }
+    }
+
+    [Fact]
     public async Task OrdinaryRankThreeTurnUsesRequestedGraphWithoutTreatmentEntropy()
     {
         await using var fixture = await HealingFixture.CreateAsync(3, 5, 20, stageRequest: false);
@@ -738,12 +813,12 @@ public sealed class ExplorerWoundSelfTreatmentTests(ITestOutputHelper output)
     }
 
     private static async Task WriteNativeCompletionAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease,
-        TurnRequest request, JsonArray? healingGraphs = null)
+        TurnRequest request, JsonArray? healingGraphs = null, string? narrative = null)
     {
         var timestamp = DateTime.UtcNow.ToString("o");
         async Task Write(string path, object value) => await files.WriteFileAtomicAsync(lease, path,
             JsonSerializer.Serialize(value, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
-        await Write("output/narrative_response.json", new { response = "Душа собирает свою целостность, пока жизнь Моря Хаоса продолжается.", timestamp });
+        await Write("output/narrative_response.json", new { response = narrative ?? "Душа собирает свою целостность, пока жизнь Моря Хаоса продолжается.", timestamp });
         if (healingGraphs is null)
             await Write("output/interface_updates.json", new { dialogueOptions = Array.Empty<object>(), timestamp });
         else

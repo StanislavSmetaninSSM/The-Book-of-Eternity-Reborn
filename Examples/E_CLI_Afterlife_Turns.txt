@@ -13384,3 +13384,11 @@ not an automatic subset of the old four roots. With original IV progress14, the
 same6 points traverse IV→III→II→I→healed; author all requested intermediate III,
 II and I graphs even though their generations retire before terminal healing.
 No treatment roll, extra cycle, extra charge or second terminal History is created.
+
+Shining parity uses the same spiritual_natural_recovery_v2 contract and the existing
+SHARED afterlife clock (its historical field name is currentChaosSeaTurnOrdinal).
+For current shared9, active Shining/Guardian/resident contours9 and inactive Chaos2,
+a safe accepted Shining cycle requests shared10 and Shining10 while Chaos remains2.
+An ordinary II/H3 wound gets4 points and requests its authored I graph, leaving I0.
+Use actual progressionControl counts: Chaos processed0, Shining processed1; do not
+advance the inactive Chaos contour or fabricate a separate healing clock/attempt.

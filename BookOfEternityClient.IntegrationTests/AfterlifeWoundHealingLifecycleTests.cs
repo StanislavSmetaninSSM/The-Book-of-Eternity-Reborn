@@ -82,8 +82,10 @@ public sealed class AfterlifeWoundHealingLifecycleTests
 
         internal static async Task<Fixture> CreateAsync(int rank, int tier, int die, bool stageRequest = true,
             FileSystemManagerHooks? hooks = null, long initialProgress = 0,
-            Func<FileSystemManager, JsonObject, Task>? beforeResourceBootstrap = null)
+            Func<FileSystemManager, JsonObject, Task>? beforeResourceBootstrap = null, string realm = "Chaos Sea")
         {
+            Assert.True(AfterlifeEntityProfileState.TryNormalizeEffectRealm(realm, out var realmSlug));
+            Assert.Contains(realmSlug, new[] { "chaos_sea", "shining_abode" });
             var root = Path.Combine(Path.GetTempPath(), "boe-spiritual-healing-lifecycle-" + Guid.NewGuid().ToString("N"));
             Directory.CreateDirectory(root);
             try
@@ -92,7 +94,7 @@ public sealed class AfterlifeWoundHealingLifecycleTests
                     ? new FileSystemManager(root, NullLogger<FileSystemManager>.Instance)
                     : new FileSystemManager(root, NullLogger<FileSystemManager>.Instance,
                         PhysicalLoadTransactionOperations.Instance, hooks);
-                var rawWound = WoundContractTestData.CreateSpiritualActiveWound(woundId: WoundId,
+                var rawWound = WoundContractTestData.CreateSpiritualActiveWound(woundId: WoundId, realm: realmSlug,
                     ownerId: "player_soul", carrierPath: WoundCarrierCatalog.AfterlifeProfilesPath);
                 if (rank == 1)
                 {
@@ -115,7 +117,7 @@ public sealed class AfterlifeWoundHealingLifecycleTests
                     rawWound["consequences"]!["slotBudget"] = rank;
                     rawWound["consequences"]!["slotsUsed"] = rank;
                     rawWound["consequences"]!["ownedEffectSources"]!["definitions"]![1]!["components"]![0]!["payload"]!["magnitude"] = rank - 1;
-                    var strain = WoundContractTestData.CreateOwnedEffectDefinition(WoundId, "chaos_sea",
+                    var strain = WoundContractTestData.CreateOwnedEffectDefinition(WoundId, realmSlug,
                         "definition_spiritual_strain", "spiritual_strain_burden");
                     strain["components"]![0]!["componentId"] = "component_spiritual_strain";
                     strain["components"]![0]!["payload"]!["magnitude"] = 1;
@@ -128,7 +130,7 @@ public sealed class AfterlifeWoundHealingLifecycleTests
                         ["readableSummary"] = "Духовное напряжение усиливает неудачи." });
                     if (rank == 4)
                     {
-                        var position = WoundContractTestData.CreateOwnedEffectDefinition(WoundId, "chaos_sea",
+                        var position = WoundContractTestData.CreateOwnedEffectDefinition(WoundId, realmSlug,
                             "definition_spiritual_position", "spiritual_position_burden");
                         position["components"]![0]!["componentId"] = "component_spiritual_position";
                         position["components"]![0]!["payload"]!["magnitude"] = 2;
@@ -142,8 +144,8 @@ public sealed class AfterlifeWoundHealingLifecycleTests
                     }
                 }
                 rawWound["recovery"]!["currentStepProgress"] = initialProgress;
-                var seed = WoundPlayerProjectionTestData.InputInRealm("chaos_sea", rawWound);
-                var profile = AfterlifeActorMaterializationTestFixture.CreateCompleteProfile("player_soul", "player_soul", "Chaos Sea", 42);
+                var seed = WoundPlayerProjectionTestData.InputInRealm(realmSlug, rawWound);
+                var profile = AfterlifeActorMaterializationTestFixture.CreateCompleteProfile("player_soul", "player_soul", realm, 42);
                 profile.Remove(ActorMaterializationContract.PropertyName);
                 profile["activeWounds"] = seed.Carriers.AfterlifeProfiles!["profiles"]![0]!["activeWounds"]!.DeepClone();
                 var arts = AfterlifeSpiritualConflictState.CreateDefaultArtTiers();
@@ -162,7 +164,7 @@ public sealed class AfterlifeWoundHealingLifecycleTests
                         d.GetProperty("definitionKey").GetString() == binding.DefinitionKey).GetRawText())!.AsObject();
                     var key = wound.Consequences.Entries.Single(e => e.EffectId == binding.EffectId).ProfileKey;
                     var effect = EffectMaterializationTestFixture.CreateSpiritualWoundCanonicalEffect(key,
-                        targetKind: "player", woundId: WoundId);
+                        targetKind: "player", realm: realmSlug, woundId: WoundId);
                     effect["effectId"] = binding.EffectId;
                     effect["target"]!["targetId"] = "player_soul";
                     effect["source"]!["definitionKey"] = binding.DefinitionKey;
@@ -185,7 +187,7 @@ public sealed class AfterlifeWoundHealingLifecycleTests
                 }
                 var soulCombat = AfterlifeSpiritualConflictState.CreateDefaultCombatProfile();
                 soulCombat["artTiers"] = arts.DeepClone();
-                var soul = new JsonObject { ["soulName"] = "Лечащаяся душа", ["currentRealm"] = "Chaos Sea",
+                var soul = new JsonObject { ["soulName"] = "Лечащаяся душа", ["currentRealm"] = realm,
                     ["afterlifeCombatProfile"] = soulCombat };
                 AfterlifeEntityProfileState.ApplyPlayerSoulProfileClientAuthority(profiles, soul, null);
                 var roots = new Dictionary<string, JsonObject>(StringComparer.Ordinal)
@@ -224,7 +226,7 @@ public sealed class AfterlifeWoundHealingLifecycleTests
                     }
                     await new LiveTurnPreparationService(files).PrepareAsync(new LiveTurnPreparationOptions
                     {
-                        SessionId = SessionId, RequestId = RequestId, TurnNumber = Turn, CurrentRealm = "Chaos Sea",
+                        SessionId = SessionId, RequestId = RequestId, TurnNumber = Turn, CurrentRealm = realm,
                         PlayerAction = "Лечить собственную духовную рану", ProgressionControl = control,
                         PreGeneratedDices1d20 = new[] { 7, 11, 16 }
                     });
