@@ -76,9 +76,14 @@ public sealed partial class AfterlifeResourceCutoverTests
             Assert.Equal("offer", opened.Disposition);
             using var offered = Assert.IsType<ValidationService.SpiritualC2PrivateSession>(opened.Session);
             Assert.Equal(2, offered.Offer!.MinimumSeverityRank);
+            var decision = JsonNode.Parse(CreateSpiritualWorseningLifecycleDecision(
+                offered.Offer.OpportunityRef, worsening: true).GetRawText())!;
+            decision["proposal"]!["classification"] = JsonNode.Parse(
+                WoundMaterializationContract.SerializeCanonical(originalWound))!["classification"]!.DeepClone();
+            decision["proposal"]!["recovery"]!["blockers"] = JsonSerializer.SerializeToNode(
+                WoundTransitionReducer.DeriveWorseningBlockers(originalWound));
             var submitted = await offered.SubmitDecisionAsync(lease,
-                CreateSpiritualWorseningLifecycleDecision(offered.Offer.OpportunityRef, worsening: true),
-                scene);
+                JsonSerializer.SerializeToElement(decision), scene);
             AssertNoConflictFrameErrors(submitted.Issues);
             Assert.Equal("completed_unpublished", submitted.Disposition);
             using var completed = submitted.Session;

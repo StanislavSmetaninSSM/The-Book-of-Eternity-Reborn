@@ -162,3 +162,13 @@ singleton PlanOnly and actual120; exact runtime outcome decides acceptance.
   Correct only that catalog link; no runtime was started and no C# rebuild is
   needed for the exact same compiled singleton. Preserve failed preflight raw,
   narrow SOURCE delta then official PlanOnly retry and one actual120.
+
+- First actual reset singleton on b0/compiled5f: one complete FAIL, no timeout,
+  category21.2829833s/total28.1562990, both cleanup flags true. Real baseline/source
+  and min-II C2 offer succeed, then strict Submit refuses the reused GM proposal's
+  different classification and blockers. C4 and safe cycle are unreached; this is
+  fixture authoring error, not product RED. TRX27aad9dc7653da8de31b3097007c959c1995bccfbba6333c2821f2499cc3fbcb
+  retained externally. Correct only proposal classification from already parsed
+  original wound and blockers from existing DeriveWorseningBlockers; no source/
+  guard/assertion/production/budget change. Narrow review, fresh Integrationrefsfalse
+  and same singleton once after PlanOnly; previous19 retained.
