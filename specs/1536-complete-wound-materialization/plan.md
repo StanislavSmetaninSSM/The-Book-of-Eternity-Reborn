@@ -33,10 +33,13 @@ self-caller-final-functional-1 stay external. TRX SHA256 by ordered group:
 58209737cea1769da36022c40e8269e3734c0c3146505c1f596767a6f3a65bf5,
 bfca5ce00fa2394dfd5836b3e178dbbd26c44e90e20bf238d006fb543542da95,
 ca840e4087fdd28d989ad80ff0f572d5fdcfb0a9ce6f8650dd93041406bfadd1.
-Finite independent final33 OUTCOME requested. No accepted browser/console/backend
+Finite independent Sol final33 OUTCOME accepted without findings. No accepted browser/console/backend
 repeat merely for assembly hashes. Continue T105/T106 ordinary safe-cycle natural
 recovery without treatment command/new attempt/die, including eligible persistent
 actors, on the existing source/stage/effect/common scheduler/History machinery.
+The bounded [ordinary natural recovery design](natural-recovery-design.md) is a
+WIP document under independent architectural review; no natural production/test
+implementation or new runtime has started at this checkpoint.
 Natural recovery itself spends no resource; it must coexist with valid resource
 contributions from an ordinary action rather than inherit self-only cost bans.
 Full US4, helper/entities/combat, real provider/fresh process and retained Mortal/

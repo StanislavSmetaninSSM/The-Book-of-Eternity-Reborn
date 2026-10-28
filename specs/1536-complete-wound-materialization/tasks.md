@@ -14389,7 +14389,7 @@ close full source-action/terminal/pending contracts or any top-level story task.
   `926f70af` now passes1/1 with the original d20=7, healed final state, two legitimate
   repair phases (graphs then N/I only), one cycle and exact retained mechanics.
   Independent Sol and architectural OUTCOME accepted; affected final33 also pass
-  with independent OUTCOME pending. Full T101 remains open for shared NPC/command/roleplay integration;
+  with independent Sol OUTCOME accepted. Full T101 remains open for shared NPC/command/roleplay integration;
   same-PID service reopen is not fresh-process replay.
   See current plan for exact source, builds, evidence and limitations.
   The accepted T094-linked prerequisite (`4711d6a8`) adds unused
