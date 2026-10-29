@@ -44,6 +44,19 @@ public partial class ValidationService
             ShiningAbodeState.ResolveRadianceTierFromAuthoredState(
                 currentRoot);
 
+        // Private indexes of this invocation's already-read DATA, not retained
+        // caches or authority. Preserve exact pair/slot and duplicate semantics;
+        // unrelated malformed identities still cannot replace a required pair.
+        var residentIndex = (residentRoot?["entries"] as JsonArray ?? new JsonArray())
+            .OfType<JsonObject>().ToLookup(resident =>
+                ReadShiningMaterializationString(resident, "residentId") ?? string.Empty, StringComparer.Ordinal);
+        var profileIndex = (afterlifeProfilesRoot?[AfterlifeEntityProfileState.ProfilesProperty] as JsonArray ?? new JsonArray())
+            .Select((node, index) => (Profile: node as JsonObject, Index: index))
+            .Where(candidate => candidate.Profile is not null)
+            .ToLookup(candidate => (
+                ReadShiningMaterializationString(candidate.Profile, "actorType") ?? string.Empty,
+                ReadShiningMaterializationString(candidate.Profile, "actorId") ?? string.Empty));
+
         foreach (var target in currentFactions)
         {
             preTurnFactions.TryGetValue(
@@ -91,7 +104,8 @@ public partial class ValidationService
                 currentRoot,
                 residentRoot,
                 guardiansRoot,
-                afterlifeProfilesRoot,
+                residentIndex,
+                profileIndex,
                 sarefStoryRoot,
                 isCreation,
                 affiliatedResidentIds,
@@ -860,7 +874,8 @@ public partial class ValidationService
         JsonObject currentRoot,
         JsonObject? residentRoot,
         JsonObject? guardiansRoot,
-        JsonObject? afterlifeProfilesRoot,
+        ILookup<string, JsonObject> residentIndex,
+        ILookup<(string ActorType, string ActorId), (JsonObject? Profile, int Index)> profileIndex,
         JsonObject? sarefStoryRoot,
         bool isCreation,
         IReadOnlySet<string> affiliatedResidentIds,
@@ -945,14 +960,55 @@ public partial class ValidationService
                 issues);
         }
 
+        var requiresHealer = ShiningFactionHealingSupport.RequiresLivingHealer(target.Faction);
+        var healerResidents = new HashSet<string>(StringComparer.Ordinal);
+        if (requiresHealer)
+        {
+            foreach (var residentId in affiliatedResidentIds)
+            {
+                var matches = residentIndex[residentId].ToArray();
+                if (matches.Length != 1 || !ShiningFactionHealingSupport.IsCurrentHealerResident(matches[0], target.FactionId))
+                    continue;
+                healerResidents.Add(residentId);
+                AddRequiredShiningActor(requiredActors, ShiningAbodeState.HeadActorTypeResident, residentId,
+                    $"{GuardianAbodeResidentState.StatePath}.entries[{residentId}]");
+            }
+        }
+        var hasLivingHealer = false;
+        var hasVisibleLivingHealer = false;
         foreach (var actor in requiredActors.Values)
         {
-            ValidateRequiredShiningActorMaterializationProfile(
-                afterlifeProfilesRoot,
+            var profile = ValidateRequiredShiningActorMaterializationProfile(
+                profileIndex,
                 actor,
                 target,
                 currentTradeAuthorities,
                 issues);
+            if (profile is not null && actor.ActorType == ShiningAbodeState.HeadActorTypeResident &&
+                healerResidents.Contains(actor.ActorId) &&
+                ShiningFactionHealingSupport.TryReadCanonicalHealerTierFromValidatedProfile(
+                    residentIndex[actor.ActorId].Single(), profile, out _))
+            {
+                hasLivingHealer = true;
+                hasVisibleLivingHealer |= AfterlifeProfileVisibility.IsVisibleToPlayer(profile);
+            }
+        }
+        if (requiresHealer && !hasLivingHealer)
+        {
+            issues.Add(ShiningFactionMaterializationIssue(target.Context,
+                "faction_materialization_shining_healer_missing", target.FactionId,
+                "Every current Shining faction requires a living primary healer with one exact materialized resident profile and Healing tier I-V.",
+                expected: "one exact ascended healing_support resident with a living Shining profile and integer Healing I-V",
+                actual: "no valid living healer", repairTargetFiles: [GuardianAbodeResidentState.StatePath, AfterlifeEntityProfileState.StatePath]));
+        }
+        else if (requiresHealer && !hasVisibleLivingHealer && string.Equals(
+            ReadShiningMaterializationString(target.Faction, "visibility"), "revealed", StringComparison.OrdinalIgnoreCase))
+        {
+            issues.Add(ShiningFactionMaterializationIssue(target.Context,
+                "faction_materialization_shining_healer_not_visible", target.FactionId,
+                "A revealed current faction must expose a confirmed living healer's role and tier in its roster.",
+                expected: "at least one player-visible living healer profile", actual: "no visible confirmed living healer",
+                repairTargetFiles: [AfterlifeEntityProfileState.StatePath]));
         }
     }
 
@@ -1302,35 +1358,14 @@ public partial class ValidationService
         requiredActors.TryAdd(binding.IdentityKey, binding);
     }
 
-    private static void ValidateRequiredShiningActorMaterializationProfile(
-        JsonObject? profilesRoot,
+    private static JsonObject? ValidateRequiredShiningActorMaterializationProfile(
+        ILookup<(string ActorType, string ActorId), (JsonObject? Profile, int Index)> profileIndex,
         AfterlifeActorBinding actor,
         ShiningFactionMaterializationTarget target,
         IReadOnlySet<string> currentTradeAuthorities,
         List<ValidationIssue> issues)
     {
-        var profiles =
-            profilesRoot?[AfterlifeEntityProfileState.ProfilesProperty]
-                is JsonArray profileArray
-                ? profileArray
-                    .Select((node, index) =>
-                        (Profile: node as JsonObject, Index: index))
-                    .Where(candidate =>
-                        candidate.Profile != null &&
-                        string.Equals(
-                            ReadShiningMaterializationString(
-                                candidate.Profile,
-                                "actorId"),
-                            actor.ActorId,
-                            StringComparison.Ordinal) &&
-                        string.Equals(
-                            ReadShiningMaterializationString(
-                                candidate.Profile,
-                                "actorType"),
-                            actor.ActorType,
-                            StringComparison.Ordinal))
-                    .ToArray()
-                : Array.Empty<(JsonObject? Profile, int Index)>();
+        var profiles = profileIndex[(actor.ActorType, actor.ActorId)].ToArray();
         if (profiles.Length != 1)
         {
             issues.Add(
@@ -1347,7 +1382,7 @@ public partial class ValidationService
                     [
                         AfterlifeEntityProfileState.StatePath
                     ]));
-            return;
+            return null;
         }
 
         var profile = profiles[0];
@@ -1355,15 +1390,16 @@ public partial class ValidationService
             JsonSerializer.SerializeToElement(profile.Profile);
         var profileContext =
             $"{AfterlifeEntityProfileState.StatePath}.{AfterlifeEntityProfileState.ProfilesProperty}[{profile.Index}]";
-        issues.AddRange(
-            ActorMaterializationContract.ValidateAfterlifeProfile(
+        var materializationIssues = ActorMaterializationContract.ValidateAfterlifeProfile(
                 profileElement,
                 profileContext,
                 requireEnvelope: true,
                 canTradeEvidence:
                     HasCurrentAfterlifeActorTradeAuthority(
                         profileElement,
-                        currentTradeAuthorities)));
+                        currentTradeAuthorities));
+        issues.AddRange(materializationIssues);
+        return materializationIssues.Count == 0 ? profile.Profile : null;
     }
 
     private static void ValidateShiningStoryAuthorityReference(

@@ -1,3 +1,42 @@
+# T142 implementation WIP — canonical living healer and visible roster
+
+Causal RED on003fff54b4b8539b159dcabead6701ee63bcfed0 independently accepted:
+1 expectedFAIL7.3179049s<60,wall14.9978517s, final missing-healer assertion receives
+Collection[], after all unrelated faction-error and byte/absence-inertness assertions.
+TRXSHA2566772f760dc682fc2b746d71742eb095047fcfa34e4af8045cb308075fd562b07;
+full TRX/raw, clean owned/runtime cleanup and unchanged pins preserved outside checkout.
+Fresh Integration scaffold build0errors/102baselinewarnings2:14.92;27artifacts,
+4PE/PDBpairs/97bindings; catalog1131/12904 valid; exact1-case PlanOnly0executions.
+
+Independent Sol DESIGN accepted: existing raw/post Shining faction/reference owner,
+only broken/dissolved exemption, safe malformed lifecycle, exact unique ascended primary
+resident+materialized profile+HealingI–V, supported absent lifeState; presentdead/null/
+invalid cannot qualify. Hidden/rumored canonical faction may retain hidden profile;
+revealed faction requires a visible valid living healer too. Do not stop validating
+other required actors after finding a healer. No inferred actor/tier/service/history edit.
+
+Current production WIP (UNCOMPILED/UNQUALIFIED): one invocation-private resident/profile
+index over existing parsed roots, exact tuple/slot/duplicate semantics retained, including
+unrelated malformed identities. Reuse requiredActors to dedup head+healer, validate each
+binding once with existing current trade evidence, then consume the returned valid parsed
+profile for canonical/visible existential checks. No retained cache, repeated full-profile
+serialization for healer, new read, permission reuse or lifetime extension. Per-actor
+profile scans become one local index; no speedup claimed. All existing raw/post authority,
+continuity, classification and closing checks remain. Fresh invocation rebuilds indexes;
+no DATA crosses mutation, retry, normalization phase or owner boundary.
+
+Next finite work: complete independent existing fixture builders (including native's old
+faction and exact declared new-resident/supporter sets), canonical/capability/lifecycle/
+visibility negatives, actual source counts1/20 and head+healer singlevalidation proof;
+GMguide/matrix/daemon/workedexample/manifest guards; whole SOURCE/selection; fresh affected
+builds, exact discovery/PlanOnly/resource/PREP and cheap→narrow complete-route acceptance.
+Malformed lifecycle also reaches old ComputeFactionStrength before the new predicate;
+a safe existing lifecycle-reader correction is under bounded review, not assumed fixed.
+T143173accepted and HOLD DFR/Mortal/Windows are not rerun. All raw outside checkout at
+/workspace/tboe-linux-evidence-20261025/us6-faction-living-healer; no deletions or Git raw.
+
+---
+
 # T142 — living healer invariant, causal scaffold WIP
 
 Issue: https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536

@@ -12,6 +12,9 @@ internal sealed record ShiningFactionRosterEntry(string ResidentId, string Name,
 /// </summary>
 internal static class ShiningFactionHealingSupport
 {
+    internal static bool RequiresLivingHealer(JsonObject faction) =>
+        faction["factionLifecycle"] is not JsonObject || !ShiningAbodeState.IsFactionDefeated(faction);
+
     internal static bool IsCurrentHealerResident(JsonObject resident, string factionId) =>
         IsCurrentMember(resident, factionId) && string.Equals(Text(resident["residentRole"]),
             ShiningAbodeState.ResidentRoleHealingSupport, StringComparison.OrdinalIgnoreCase);
@@ -30,8 +33,18 @@ internal static class ShiningFactionHealingSupport
         JsonObject resident, JsonObject profile, out int tier)
     {
         tier = 0;
+        return AfterlifeProfileVisibility.IsVisibleToPlayer(profile) &&
+            TryReadCanonicalHealerTierFromValidatedProfile(resident, profile, out tier);
+    }
+
+    // Canonical capability is independent of player knowledge. Only callers
+    // that already validated the exact materialization may use this DATA path.
+    internal static bool TryReadCanonicalHealerTierFromValidatedProfile(
+        JsonObject resident, JsonObject profile, out int tier)
+    {
+        tier = 0;
         var factionId = Text(resident["shiningFactionId"]);
-        if (!IsCurrentHealerResident(resident, factionId) || !MatchesVisibleShiningProfile(resident, profile))
+        if (!IsCurrentHealerResident(resident, factionId) || !MatchesShiningProfile(resident, profile))
             return false;
         if (profile.TryGetPropertyValue("lifeState", out var life) && Text(life) != "alive")
             return false;
@@ -129,9 +142,11 @@ internal static class ShiningFactionHealingSupport
         string.Equals(Text(resident["shiningFactionId"]), factionId, StringComparison.Ordinal);
 
     private static bool MatchesVisibleShiningProfile(JsonObject resident, JsonObject profile) =>
+        MatchesShiningProfile(resident, profile) && AfterlifeProfileVisibility.IsVisibleToPlayer(profile);
+
+    private static bool MatchesShiningProfile(JsonObject resident, JsonObject profile) =>
         Text(profile["actorType"]) == "resident" && Text(profile["actorId"]) == Text(resident["residentId"]) &&
-        AfterlifeEntityProfileState.TryNormalizeEffectRealm(Text(profile["realm"]), out var realm) && realm == "shining_abode" &&
-        AfterlifeProfileVisibility.IsVisibleToPlayer(profile);
+        AfterlifeEntityProfileState.TryNormalizeEffectRealm(Text(profile["realm"]), out var realm) && realm == "shining_abode";
 
     private static bool HasReadableMaterialization(JsonObject profile) =>
         ActorMaterializationContract.ValidateAfterlifeProfile(JsonSerializer.SerializeToElement(profile),
