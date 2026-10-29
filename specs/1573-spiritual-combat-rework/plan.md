@@ -1,5 +1,24 @@
 # План перехода к личной модели духовного боя — #1573
 
+## Текущий срез: восстановление ОД/духовного HP вне боя
+
+T054→T055→T056, baseline5d7d8b867d6fbcd7b6bb0063e92c972fe04837a6.
+Продолжение brainstorming/Spec Kit bridge, дизайн без реализации.
+1. Зафиксировать принятие формул/+3/+5/rawS/H, проверить existing source contracts
+   для духовного времени/отдыха/ОД/лечения ран. Sol6.1/high read-only audit;
+   parent проверяет основные ссылки/символы. Scope/spec/plan/tasks до численных probe.
+2. Сравнить2–3 игровых подхода к отдыху, выбрать описанный кандидат с явным временем,
+   условиями/прерыванием/HP0 и границами постоянных ран. Дешёвые примеры ранних,
+   поздних,разныхS/H,частичногоотдыха; no refill/double tick через reentry/retry.
+3. Сохранить кандидат/ограничения, независимый Astra/high review interacting
+   time/resource/wound договоров, corrections/verification/remote checkpoint/issue,
+   предъявить автору точную spec. Production gate T001 остаётся.
+
+Bridge consistency до probe: только формулы/ограниченная арифметика, старые источники
+ран сохраняются, новую шкалу времени не выдавать за runtime. Stable definitions
+через existing operation service; current/owner/clock/authority/revision свежие,
+для простых формул отдельный кэш не требуется.
+
 ## Текущий срез: формулы Средоточия и Гармонии
 
 T051→T052→T053, baseline42bd2b82efcb760024fc96795b1e06d75fcaa984.

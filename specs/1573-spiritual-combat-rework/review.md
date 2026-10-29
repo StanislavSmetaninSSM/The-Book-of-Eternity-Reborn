@@ -1,5 +1,26 @@
 # Проверка проекта #1573
 
+## Текущий checkpoint: принятый ОД и предложение отдыха вне боя
+
+2026-10-29, baseline5d7d8b867d6fbcd7b6bb0063e92c972fe04837a6,
+specv1.44/modelv2.34, T054–T056. Приняты формулы/+3/+5/rawS/H; внебой/HP0/
+связанный lifecycle остаются новым предложением. Scope/spec/plan/tasks и bridge
+consistency до probe; brainstorming/Spec Kit продолжаются в feature1573.
+
+Sol6.1/high audit_outside_combat_recovery1573 проверил actual progression/OD/
+рановые source contracts. Parent прочёл ключевые части1536, scheduler/resume и
+через Serena Calculate естественного восстановления ран. Serena ready, три языка
+сохранены. Важно: safe recovery1536 ещё не интегрирован,24equivalent hours не
+реальное время отдыха. Работу Астры/код1536 не меняли.
+
+Кандидат использует accepted safe-cycle identity, две взаимоисключающие скорости
+ОД, четвертной HP carry, отдельные раны, явный безопасный HP0 случай. Parent:
+5 профилей/2 специализации,10770 HP и5376 OD arithmetic cases; повторения/реальный
+clock/источники/realm carry — будущие тесты, не проверенный runtime. Простая
+арифметика не требует кэша; stable definitions через existing operation service,
+current/clock/authority/рана/revision свежие. Independent Astra/high review и
+публикация ожидаются; build/game/600s/clean restore UNRUN, T001 сохранён.
+
 ## Текущий checkpoint: принятые Средоточие/Гармония и формулы ОД
 
 2026-10-29, baseline42bd2b82efcb760024fc96795b1e06d75fcaa984, specv1.43/modelv2.33.
