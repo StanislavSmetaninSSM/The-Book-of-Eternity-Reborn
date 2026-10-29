@@ -65,6 +65,21 @@ entry only; no compiler-check weakening or application/build input change. All3
 runtime descriptors were unexecuted; failed4.2076395s/cleanupcomplete capture retained
 under wound-browser-selected-3944. Re-plan and repeat only this unexecuted selection.
 
+Selected corrected c40b exit0 in6.2979159s: nativeVitest20/20, one existing
+standalone guard entry and one compile-only contract; official22records/3complete
+descriptors, no timeout/duplicate/skip, cleanupcomplete,149sourcepinsunchanged.
+These are not22gameplaycases. Independent selected OUTCOME accepted.
+Actual Chromium first attempt held its own /src/api/client.ts because external
+API mock glob was too broad;30s navigation timeout beforechecks, retained trace.
+Anchored /api/ route correction then passed three actual DOM blocks: desktop and
+mobile active/literal/History/back/no-overflow; held action duplicate/Back gate.
+It stopped on Playwright option isDisabled retargeting the label's select despite
+trace showing option disabled. Installed injected retarget implementation confirms
+that mismatch. Replace only external assertion with native option.disabled AND
+:disabled plus actual keyboard skip; resume remaining treatment checks without
+repeating accepted3. No production or fixture source changes;20SSR/guard/types
+and freshbuild remain accepted. Raw wound-browser-dom-c40b{,-api-route} preserved.
+
 Implementation WIP: WoundCommandView/scoped CSS, existing CommandResultView
 cancel-first header and current-command operation admission, optional existing
 PromptForm condition descriptions, actual-component public-packet tests and controlled
