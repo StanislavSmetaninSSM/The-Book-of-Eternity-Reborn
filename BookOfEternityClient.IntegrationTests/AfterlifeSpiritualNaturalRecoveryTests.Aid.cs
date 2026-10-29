@@ -192,36 +192,41 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
 
     internal static Task SeedAidGuardianAsync(FileSystemManager files, JsonObject profiles) =>
         SeedAidGuardianCoreAsync(files, profiles, guardianIsHealer: false);
+    internal const string AidResidentId = "resident_spiritual_aid";
+    internal static Task SeedAidResidentAsync(FileSystemManager files, JsonObject profiles) =>
+        SeedAidGuardianCoreAsync(files, profiles, guardianIsHealer: false, resident: true);
     internal static Task SeedReceivingGuardianAsync(FileSystemManager files, JsonObject profiles) =>
         SeedAidGuardianCoreAsync(files, profiles, guardianIsHealer: true);
 
-    private static async Task SeedAidGuardianCoreAsync(FileSystemManager files, JsonObject profiles, bool guardianIsHealer)
+    private static async Task SeedAidGuardianCoreAsync(FileSystemManager files, JsonObject profiles, bool guardianIsHealer, bool resident = false)
     {
         // This is canonical initial create DATA, not an invented accepted grant.
         // It runs before the fixture's one real resource bootstrap.
         await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+        var participantKind = resident ? "resident" : "guardian";
+        var participantId = resident ? AidResidentId : AidGuardianId;
         var player = profiles["profiles"]![0]!.AsObject();
         var wound = player["activeWounds"]![0]!.DeepClone().AsObject();
         if (!guardianIsHealer)
         {
-            wound["owner"]!["ownerKind"] = "guardian";
-            wound["owner"]!["ownerId"] = AidGuardianId;
+            wound["owner"]!["ownerKind"] = participantKind;
+            wound["owner"]!["ownerId"] = participantId;
         }
         wound["display"]!["visibility"] = "public";
         if (!guardianIsHealer)
             foreach (var definition in wound["consequences"]!["ownedEffectSources"]!["definitions"]!.AsArray().OfType<JsonObject>())
-                definition["allowedTargetKinds"] = new JsonArray("guardian");
+                definition["allowedTargetKinds"] = new JsonArray(participantKind);
         var effects = player["activeEffects"]!.AsArray().OfType<JsonObject>().Select(e => e.DeepClone().AsObject()).ToArray();
         if (!guardianIsHealer)
             foreach (var effect in effects)
             {
-                effect["target"]!["kind"] = "guardian";
-                effect["target"]!["targetId"] = AidGuardianId;
+                effect["target"]!["kind"] = participantKind;
+                effect["target"]!["targetId"] = participantId;
             }
         // The reverse route keeps the original canonical player effect targets:
         // ownerKind player_soul maps to effect kind player, not player_soul.
-        var guardian = AfterlifeActorMaterializationTestFixture.CreateCompleteProfile("guardian", AidGuardianId, "Chaos Sea", 42);
-        guardian["displayName"] = "Хранитель целостности";
+        var guardian = AfterlifeActorMaterializationTestFixture.CreateCompleteProfile(participantKind, participantId, "Chaos Sea", 42);
+        guardian["displayName"] = resident ? "Житель целостности" : "Хранитель целостности";
         guardian["locationId"] = AidAbodeId;
         guardian["standardArts"]!["spiritual_healing"] = guardianIsHealer ? 3 : 0;
         guardian["activeWounds"] = guardianIsHealer ? new JsonArray() : new JsonArray(wound.DeepClone());
@@ -229,6 +234,31 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
         player["activeWounds"] = guardianIsHealer ? new JsonArray(wound.DeepClone()) : new JsonArray();
         player["activeEffects"] = guardianIsHealer ? new JsonArray(effects.Select(e => (JsonNode)e.DeepClone()).ToArray()) : new JsonArray();
         profiles["profiles"]!.AsArray().Add(guardian);
+        if (resident)
+        {
+            var currentGuardian = AfterlifeActorMaterializationTestFixture.CreateCompleteProfile("guardian", AidGuardianId, "Chaos Sea", 42);
+            currentGuardian["displayName"] = "Хранитель целостности"; currentGuardian["locationId"] = AidAbodeId;
+            currentGuardian["activeWounds"] = new JsonArray(); currentGuardian["activeEffects"] = new JsonArray();
+            profiles["profiles"]!.AsArray().Add(currentGuardian);
+            var roster = new JsonObject
+            {
+                ["residentId"] = AidResidentId, ["guardianId"] = AidGuardianId, ["abodeId"] = AidAbodeId,
+                ["displayName"] = "Житель целостности", ["residentKind"] = "attendant_spirit", ["originType"] = "native_spirit",
+                ["roleLabel"] = "Смотритель", ["summary"] = "Осознанный житель текущей Обители.", ["isPresent"] = true,
+                ["mortalWorldImprint"] = new JsonObject { ["originWorldSummary"] = "Дух Обители.", ["futureCompanionPrompt"] = "A conscious abode spirit" }
+            };
+            GuardianAbodeResidentState.NormalizeResidentObject(roster);
+            await files.WriteFileAtomicAsync(lease, GuardianAbodeResidentState.StatePath, new JsonObject
+            {
+                [GuardianAbodeResidentState.EntriesProperty] = new JsonArray(roster),
+                [GuardianAbodeResidentState.RosterReceiptsProperty] = new JsonArray(),
+                [GuardianAbodeResidentState.InteractionReceiptsProperty] = new JsonArray(),
+                [GuardianAbodeResidentState.TransferReceiptsProperty] = new JsonArray(),
+                [GuardianAbodeResidentState.HistoryLogProperty] = new JsonArray(),
+                [GuardianAbodeResidentState.ThoughtJournalProperty] = new JsonArray(),
+                [GuardianAbodeResidentState.InteractionLogProperty] = new JsonArray()
+            }.ToJsonString());
+        }
         var parsed = WoundMaterializationContract.Parse(wound.ToJsonString(), "aid.seed");
         Assert.True(parsed.IsValid, string.Join(";", parsed.Issues.Select(i => i.Actual)));
         var w = parsed.Wound!;

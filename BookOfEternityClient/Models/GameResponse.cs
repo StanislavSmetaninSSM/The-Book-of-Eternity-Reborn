@@ -486,6 +486,11 @@ public class GameResponse
     [JsonPropertyName("UpdateGuardianAbodeResidentHistoryLog")]
     public JsonElement[]? UpdateGuardianAbodeResidentHistoryLog { get; set; }
 
+    // Protected treatment response DATA; the existing owner, not the distributor,
+    // appends these entries to its frozen resident roster during normalization.
+    [JsonPropertyName("spiritualResidentThoughtJournalUpdates")]
+    public JsonElement[]? SpiritualResidentThoughtJournalUpdates { get; set; }
+
     [JsonPropertyName("residentThoughtJournalUpdates")]
     public JsonElement[]? ResidentThoughtJournalUpdates { get; set; }
 

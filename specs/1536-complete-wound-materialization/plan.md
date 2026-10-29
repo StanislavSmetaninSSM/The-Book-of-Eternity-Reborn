@@ -1,3 +1,22 @@
+# T108 resident consent, UI and protected memory — uncompiled WIP
+
+2026-10-29. Actual causal RED and its independent OUTCOME are accepted below.
+Current code adds typed resident identity/locality, family5 staging/History, cheap
+contract controls and reuse of the existing backend and two actual guided journeys.
+Nothing in this implementation block has been built or run yet. New resident
+user-flow PASS is not claimed; known remaining work includes GM synchronization,
+finite failure/expiry/mixed-History acceptance and coherent independent SOURCE.
+
+Source inspection plus bounded Astra consultation found mandatory resident memory
+shares the signed locality file. Preserve full roster source equality: protected
+memory instead uses one output-only spiritualResidentThoughtJournalUpdates field,
+then the existing continuation/normalizer/owned-locality writer validates an exact
+append. Ordinary resident journal mapping stays unchanged. The existing typed
+GameResponse, Engine output readers and refresh merger retain this DATA. No parallel
+memory store/cache/registry/publisher; no source guard is relaxed. The exact design
+and append/collision/transport tests are part of this same tracked functional slice.
+Raw remains external; last free space~676MiB, no active build/runtime and no deletion.
+
 # T108 resident typed owner connection — implementation WIP
 
 2026-10-29. Accepted design94a95321b; first causal scaffold source

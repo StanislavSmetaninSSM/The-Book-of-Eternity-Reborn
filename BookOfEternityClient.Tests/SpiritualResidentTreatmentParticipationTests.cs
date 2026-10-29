@@ -5,7 +5,7 @@ using Xunit;
 namespace BookOfEternityClient.Tests;
 
 /// <summary>Resident participation DATA uses the existing profile admission path.</summary>
-public sealed class SpiritualResidentTreatmentParticipationTests
+public sealed partial class SpiritualResidentTreatmentParticipationTests
 {
     /// <summary>A resident may grant exact player treatment without becoming a Guardian.</summary>
     [Fact]

@@ -16,12 +16,17 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
     [Fact]
     public Task ConfirmedGuardianOfferUsesGuardianArtAndPlayerNaturalTierThroughPublicationAndReplay() => RunActiveAidAsync(receiveAid: true);
 
-    private async Task RunActiveAidAsync(bool receiveAid)
+    [Fact]
+    public Task ResidentAidUsesTypedCommittedConsentOriginalNormalizationAndHistoricalReplay() => RunActiveAidAsync(receiveAid: false, resident: true);
+
+    private async Task RunActiveAidAsync(bool receiveAid, bool resident = false)
     {
+        var participantId = resident ? AidResidentId : AidGuardianId;
+        var family = resident ? 5 : receiveAid ? 4 : 3;
         await using var fixture = await HealingFixture.CreateAsync(rank: 3, tier: receiveAid ? 0 : 3, die: 14, stageRequest: false,
-            beforeResourceBootstrap: receiveAid ? ExplorerWoundSelfTreatmentTests.SeedEngineReceivingGuardianAsync
+            beforeResourceBootstrap: resident ? ExplorerWoundSelfTreatmentTests.SeedEngineAidResidentAsync : receiveAid ? ExplorerWoundSelfTreatmentTests.SeedEngineReceivingGuardianAsync
                 : ExplorerWoundSelfTreatmentTests.SeedEngineAidGuardianAsync);
-        var selection = await CommitAidGrantAsync(fixture, receiveAid);
+        var selection = await CommitAidGrantAsync(fixture, receiveAid, resident);
         var original = Assert.Single((await fixture.ReadWoundsAsync()).Occurrences).Wound;
         Assert.Equal(1, original.Recovery.CurrentStepProgress); // Actual grant-turn natural tick changed the selected FP.
         var files = fixture.Files;
@@ -31,10 +36,11 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
         // claimed second accepted grant producer.
         var menuProfiles = (await files.ReadFileBytesAsync(WoundCarrierCatalog.AfterlifeProfilesPath))!;
         var menuRoot = JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(menuProfiles))!.AsObject();
-        var foreign = AfterlifeActorMaterializationTestFixture.CreateCompleteProfile("guardian", "guardian_previous_aid", "Chaos Sea", 42);
+        var foreign = AfterlifeActorMaterializationTestFixture.CreateCompleteProfile(resident ? "resident" : "guardian", "guardian_previous_aid", "Chaos Sea", 42);
         foreign[SpiritualTreatmentParticipation.RecordProperty] = menuRoot["profiles"]!.AsArray().OfType<JsonObject>()
-            .Single(p => SpiritualTreatmentParticipation.ProfileId(p) == AidGuardianId)[SpiritualTreatmentParticipation.RecordProperty]!.DeepClone();
-        foreign[SpiritualTreatmentParticipation.RecordProperty]![receiveAid ? "healerId" : "targetId"] = "guardian_previous_aid";
+            .Single(p => SpiritualTreatmentParticipation.ProfileId(p) == participantId)[SpiritualTreatmentParticipation.RecordProperty]!.DeepClone();
+        if (resident) foreign[SpiritualTreatmentParticipation.RecordProperty]!["target"]!["ownerId"] = "guardian_previous_aid";
+        else foreign[SpiritualTreatmentParticipation.RecordProperty]![receiveAid ? "healerId" : "targetId"] = "guardian_previous_aid";
         SpiritualTreatmentParticipation.ValidateRecord(foreign[SpiritualTreatmentParticipation.RecordProperty]!.AsObject());
         menuRoot["profiles"]!.AsArray().Insert(0, foreign);
         await files.WriteFileAtomicAsync(WoundCarrierCatalog.AfterlifeProfilesPath, menuRoot.ToJsonString());
@@ -88,7 +94,7 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
             foreach (var refusal in new[] { "missing", "revoked", "incapable", "copied_content" })
             {
                 var root = JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(profileBytes))!.AsObject();
-                var target = root["profiles"]!.AsArray().OfType<JsonObject>().Single(p => SpiritualTreatmentParticipation.ProfileId(p) == AidGuardianId);
+                var target = root["profiles"]!.AsArray().OfType<JsonObject>().Single(p => SpiritualTreatmentParticipation.ProfileId(p) == participantId);
                 switch (refusal)
                 {
                     case "missing": target.Remove(SpiritualTreatmentParticipation.RecordProperty); break;
@@ -118,7 +124,8 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
             projection = Assert.IsType<JsonObject>(staged.Stage.GmContext);
             request = JsonNode.Parse((await files.ReadFileAsync(lease, AcceptedMechanicsPlan.WoundCommandPath))!)!.AsObject();
             Assert.Equal("aid", request["mode"]!.GetValue<string>());
-            Assert.Equal(receiveAid ? 4 : 3, request["schemaVersion"]!.GetValue<int>());
+            Assert.Equal(family, request["schemaVersion"]!.GetValue<int>());
+            if (resident) Assert.Equal("player_to_resident", request["direction"]!.GetValue<string>());
             if (receiveAid)
             {
                 Assert.Equal("guardian_to_player", request["direction"]!.GetValue<string>());
@@ -157,6 +164,7 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
                 ["dialogueOptions"] = new JsonArray(), ["timestamp"] = DateTime.UtcNow.ToString("o"),
                 ["spiritualHealingGraphs"] = AuthorNaturalGraphs(original, projection["destinationGraphs"]!.AsArray())
             }.ToJsonString());
+            if (resident) await WriteResidentAidMemoryAsync(files, lease, "request_aid", 44);
             var localPath = AfterlifeWoundTreatmentAuthority.AidLocalityPaths[0];
             var locality = (await files.ReadFileBytesAsync(lease, localPath))!;
             var moved = JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(locality))!.AsObject();
@@ -169,7 +177,7 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
             var consentBefore = (await files.ReadFileBytesAsync(lease, WoundCarrierCatalog.AfterlifeProfilesPath))!;
             var revoked = JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(consentBefore))!.AsObject();
             var withdrawingGuardian = revoked["profiles"]!.AsArray().OfType<JsonObject>()
-                .Single(p => SpiritualTreatmentParticipation.ProfileId(p) == AidGuardianId);
+                .Single(p => SpiritualTreatmentParticipation.ProfileId(p) == participantId);
             if (receiveAid)
             {
                 var withdrawal = GuardianOfferProposal(); withdrawal["operation"] = "revoke";
@@ -189,6 +197,24 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
             var aidOwner = Assert.IsType<AfterlifeWoundHealingPlanner.Continuation>(ready.Plan!.SpiritualHealingContinuation);
             var originalSourceFingerprint = aidOwner.SourceFingerprint;
             var signedLocality = (await files.ReadFileBytesAsync(lease, manifest.Files[localPath]))!;
+            if (resident)
+            {
+                // Generic case-insensitive locality sets are unchanged, but the
+                // exact typed join must stop the actual owner before its writer.
+                var residentPath = GuardianAbodeResidentState.StatePath;
+                var residentRoot = JsonNode.Parse((await files.ReadFileAsync(lease, residentPath))!)!.AsObject();
+                var changed = residentRoot.DeepClone().AsObject();
+                changed["entries"]![0]!["guardianId"] = AidGuardianId.ToUpperInvariant();
+                var genericBefore = LocalInteractionScopeService.ResolveChaosSeaScope(
+                    JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(locality))!.AsObject(), residentRoot, Array.Empty<LocalInteractionAuthoritySnapshot>());
+                var genericAfter = LocalInteractionScopeService.ResolveChaosSeaScope(
+                    JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(locality))!.AsObject(), changed, Array.Empty<LocalInteractionAuthoritySnapshot>());
+                Assert.Equal(genericBefore.LocalActorIds.OrderBy(x => x), genericAfter.LocalActorIds.OrderBy(x => x));
+                var published = false;
+                await Assert.ThrowsAsync<InvalidDataException>(() => aidOwner.PublishOwnedLocalityNormalizationAsync(files, lease,
+                    residentPath, changed.ToJsonString(), _ => { published = true; return Task.CompletedTask; }));
+                Assert.False(published); Assert.Equal(1, draws);
+            }
             Assert.True(aidOwner.HasCompleteProfileProjection);
             // Real preflight must precede owned normalization. A manual write
             // followed by a second preflight correctly fails the sealed plan's
@@ -211,7 +237,7 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
         var history = await fixture.ReadHistoryAsync();
         var result = Assert.IsType<SpiritualHealingPersistedResult>(Assert.Single(history.Transitions, t => t.AttemptId is not null).TransitionResult);
         Assert.Equal("aid", result.Mode);
-        Assert.Equal(receiveAid ? 4 : 3, result.SchemaVersion);
+        Assert.Equal(family, result.SchemaVersion);
         Assert.True(JsonNode.DeepEquals(request, result.ToCanonicalJson()["request"]));
         var missingGrant = JsonNode.Parse(WoundHistoryState.SerializeCanonical(history))!.AsObject();
         var grantRow = missingGrant["transitions"]!.AsArray().OfType<JsonObject>()
@@ -230,6 +256,25 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
         var parserIssues = new List<ValidationIssue>();
         Assert.Null(SpiritualHealingPersistedResult.Parse(JsonSerializer.SerializeToElement(forged), "changed.activeH", parserIssues));
         Assert.Contains(parserIssues, i => i.Actual?.Contains("exact retained request", StringComparison.Ordinal) == true);
+        if (resident)
+        {
+            await using var localityLease = await files.AcquireCanonicalWriteLeaseAsync();
+            var rosterBytes = (await files.ReadFileBytesAsync(localityLease, GuardianAbodeResidentState.StatePath))!;
+            var departed = JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(rosterBytes))!.AsObject();
+            departed["entries"]![0]!["isPresent"] = false;
+            await files.WriteFileAtomicAsync(localityLease, GuardianAbodeResidentState.StatePath, departed.ToJsonString());
+            // History is historical DATA and contains no current roster. A new
+            // live attempt still requires presence; no after-image guard is waived.
+            var historical = WoundHistoryState.Parse((await files.ReadFileAsync(localityLease, WoundHistoryState.HistoryPath))!, "resident.departed.history");
+            Assert.True(historical.IsValid, string.Join(";", historical.Issues.Select(i => i.Actual)));
+            var profiles = JsonNode.Parse((await files.ReadFileAsync(localityLease, WoundCarrierCatalog.AfterlifeProfilesPath))!)!.AsObject();
+            var guardians = JsonNode.Parse((await files.ReadFileAsync(localityLease, AfterlifeWoundTreatmentAuthority.AidLocalityPaths[0]))!)!.AsObject();
+            Assert.Throws<InvalidDataException>(() => SpiritualTreatmentParticipation.RequireResidentScope(
+                guardians, departed, profiles, result.Stages[0].Before.Owner, result.Stages[0].Before));
+            Assert.NotNull(await ProgressionScheduleService.ReadPublishedSpiritualCycleCoreAsync(control,
+                "session_spiritual_healing", "request_aid", 44, p => files.ReadFileBytesAsync(localityLease, p)));
+            await files.WriteFileAtomicBytesAsync(localityLease, GuardianAbodeResidentState.StatePath, rosterBytes);
+        }
         var settled = fixture.CaptureMutationRoots();
         Assert.DoesNotContain(await new ValidationService(files, NullLogger<ValidationService>.Instance)
             .ValidateAcceptedTurnInterfacePayloadAsync(), i => i.Severity == IssueSeverity.Error);
@@ -238,28 +283,61 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
         Assert.Equal(1, draws);
     }
 
-    private static async Task<SpiritualSelfTreatmentSelection> CommitAidGrantAsync(HealingFixture fixture, bool receiveAid = false)
+    private static async Task<SpiritualSelfTreatmentSelection> CommitAidGrantAsync(HealingFixture fixture, bool receiveAid = false, bool resident = false)
     {
+        var participantId = resident ? AidResidentId : AidGuardianId;
         await StageAsync(fixture);
         await using (var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync())
         {
             var profiles = JsonNode.Parse((await fixture.Files.ReadFileAsync(lease, WoundCarrierCatalog.AfterlifeProfilesPath))!)!.AsObject();
-            profiles["profiles"]!.AsArray().OfType<JsonObject>().Single(p => SpiritualTreatmentParticipation.ProfileId(p) == AidGuardianId)
-                [SpiritualTreatmentParticipation.ChangeProperty] = receiveAid ? GuardianOfferProposal() : AidGrantProposal();
+            profiles["profiles"]!.AsArray().OfType<JsonObject>().Single(p => SpiritualTreatmentParticipation.ProfileId(p) == participantId)
+                [SpiritualTreatmentParticipation.ChangeProperty] = resident ? ResidentGrantProposal() : receiveAid ? GuardianOfferProposal() : AidGrantProposal();
             await fixture.Files.WriteFileAtomicAsync(lease, WoundCarrierCatalog.AfterlifeProfilesPath, profiles.ToJsonString());
         }
-        await PublishAsync(fixture);
+        if (resident)
+        {
+            await using var publication = await fixture.Files.AcquireCanonicalWriteLeaseAsync();
+            await fixture.WriteReportAsync(publication);
+            await WriteResidentAidMemoryAsync(fixture.Files, publication, "request_spiritual_healing", 43);
+            var validator = new ValidationService(fixture.Files, NullLogger<ValidationService>.Instance);
+            var issues = await validator.PrepareSpiritualSelfTreatmentPublicationAsync(publication);
+            Assert.True(!issues.Any(i => i.Severity == IssueSeverity.Error), string.Join(";", issues.Select(i => i.Code + ":" + i.Actual)));
+            var manifest = await fixture.ReadManifestAsync(publication);
+            Assert.NotNull(await new CanonicalStateNormalizer(fixture.Files, NullLogger<CanonicalStateNormalizer>.Instance)
+                .BindTo(publication).NormalizeAccumulatedStateWithPlanAsync(manifest.Files));
+        }
+        else await PublishAsync(fixture);
         var after = Assert.Single((await fixture.ReadWoundsAsync()).Occurrences).Wound;
         await using var cleanup = await fixture.Files.AcquireCanonicalWriteLeaseAsync();
         // Direct publisher fixture models the cleaned protocol absence; actual
         // Engine cleanup is separately required by the real guided caller tests.
         fixture.Files.DeleteFile(cleanup, LiveTurnPreparationService.TurnRequestPath);
         var root = JsonNode.Parse((await fixture.Files.ReadFileAsync(cleanup, WoundCarrierCatalog.AfterlifeProfilesPath))!)!;
-        var record = root["profiles"]!.AsArray().OfType<JsonObject>().Single(p => SpiritualTreatmentParticipation.ProfileId(p) == AidGuardianId)
+        var record = root["profiles"]!.AsArray().OfType<JsonObject>().Single(p => SpiritualTreatmentParticipation.ProfileId(p) == participantId)
             [SpiritualTreatmentParticipation.RecordProperty]!.AsObject();
         return new(after.WoundId, WoundIdentityState.ComputeSemanticFingerprint(after))
-            { Aid = new(receiveAid ? AidGuardianId : "player_soul", receiveAid ? "player_soul" : AidGuardianId,
-                SpiritualTreatmentParticipation.Fingerprint(record)) { ReceiveAid = receiveAid } };
+            { Aid = SpiritualTreatmentParticipation.Selection(record) };
+    }
+
+    internal static async Task WriteResidentAidMemoryAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease, string requestId, int turn)
+    {
+        var response = JsonNode.Parse((await files.ReadFileAsync(lease, "output/interface_updates.json")) ?? "{}")!.AsObject();
+        response[SpiritualTreatmentParticipation.ResidentThoughtResponseProperty] = new JsonArray(new JsonObject
+        {
+            ["entryId"] = "resident_aid_thought_" + requestId, ["residentId"] = AidResidentId, ["turn"] = turn,
+            ["timestamp"] = DateTime.UtcNow.ToString("o"), ["title"] = "Осознанная помощь",
+            ["summary"] = "Я понимаю предложение души, добровольно принимаю помощь и сохраняю право отказаться.",
+            ["eventType"] = "conversation", ["consequence"] = "Помощь без нового долга.",
+            ["attitude"] = "trusting", ["intent"] = "Восстановить целостность добровольно.", ["tags"] = new JsonArray()
+        });
+        await files.WriteFileAtomicAsync(lease, "output/interface_updates.json", response.ToJsonString());
+    }
+
+    internal static JsonObject ResidentGrantProposal()
+    {
+        var proposal = AidGrantProposal(); proposal["schemaVersion"] = 3; proposal["kind"] = "resident_target_consent";
+        proposal["readableEvidence"] = "Житель целостности осознанно разрешает душе лечить эту рану в следующий безопасный цикл.";
+        return proposal;
     }
 
     internal static JsonObject GuardianOfferProposal() => new()

@@ -227,7 +227,8 @@ public static class FileMapping
         "gm_thoughts_markdown",
         "dialogueOptions",
         "image_prompt",
-        "spiritualHealingGraphs"
+        "spiritualHealingGraphs",
+        "spiritualResidentThoughtJournalUpdates"
     };
 
     /// <summary>

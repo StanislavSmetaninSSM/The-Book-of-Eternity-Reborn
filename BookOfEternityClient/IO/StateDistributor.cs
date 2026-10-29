@@ -606,7 +606,7 @@ public class StateDistributor
         }
 
         // Interface updates
-        if (response.DialogueOptions != null || response.ImagePrompt != null || response.SpiritualHealingGraphs != null)
+        if (response.DialogueOptions != null || response.ImagePrompt != null || response.SpiritualHealingGraphs != null || response.SpiritualResidentThoughtJournalUpdates != null)
         {
             var ui = new
             {
@@ -620,6 +620,12 @@ public class StateDistributor
             {
                 var root = JsonNode.Parse(interfaceJson)!.AsObject();
                 root["spiritualHealingGraphs"] = JsonSerializer.SerializeToNode(response.SpiritualHealingGraphs, JsonOpts);
+                interfaceJson = root.ToJsonString(JsonOpts);
+            }
+            if (response.SpiritualResidentThoughtJournalUpdates is not null)
+            {
+                var root = JsonNode.Parse(interfaceJson)!.AsObject();
+                root[SpiritualTreatmentParticipation.ResidentThoughtResponseProperty] = JsonSerializer.SerializeToNode(response.SpiritualResidentThoughtJournalUpdates, JsonOpts);
                 interfaceJson = root.ToJsonString(JsonOpts);
             }
             await _fs.WriteFileAtomicAsync(writeLease, path, interfaceJson);
@@ -645,7 +651,7 @@ public class StateDistributor
     {
         if (response.Response != null)
             yield return "output/narrative_response.json";
-        if (response.DialogueOptions != null || response.ImagePrompt != null || response.SpiritualHealingGraphs != null)
+        if (response.DialogueOptions != null || response.ImagePrompt != null || response.SpiritualHealingGraphs != null || response.SpiritualResidentThoughtJournalUpdates != null)
             yield return "output/interface_updates.json";
         if (response.GmThoughtsMarkdown != null)
             yield return "output/debug_logs.json";

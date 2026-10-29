@@ -8,6 +8,7 @@ internal sealed record SpiritualResidentAidParticipant(
 
 internal static partial class SpiritualTreatmentParticipation
 {
+    internal const string ResidentThoughtResponseProperty = "spiritualResidentThoughtJournalUpdates";
     internal static bool IsResidentConsent(JsonObject record) => Scalar<int>(record, "schemaVersion") == 3;
     internal static WoundOwnerCoordinate RecordHealer(JsonObject record) => IsResidentConsent(record)
         ? ReadOwner(record["healer"])
@@ -107,7 +108,9 @@ internal static partial class SpiritualTreatmentParticipation
         if (target is not { Realm: "chaos_sea", OwnerKind: "resident", CarrierPath: WoundCarrierCatalog.AfterlifeProfilesPath } ||
             wound.Owner != target || wound.Classification.Domain != "spiritual" || wound.Lifecycle != "active" || wound.Display.Visibility is not ("public" or "known_to_player"))
             throw new InvalidDataException("Resident participation requires the exact known active wound owner.");
-        var guardianId = Text(guardians["chaosSeaNavigation"]!.AsObject(), "currentGuardianId");
+        var navigation = guardians["chaosSeaNavigation"] as JsonObject
+            ?? throw new InvalidDataException("Resident treatment requires current Guardian navigation.");
+        var guardianId = Text(navigation, "currentGuardianId");
         var scope = RequireCurrentGuardianScope(guardians, residents, guardianId);
         var roster = (residents?[GuardianAbodeResidentState.EntriesProperty] as JsonArray)?.OfType<JsonObject>()
             .Where(r => string.Equals(r["residentId"]?.GetValue<string>(), target.OwnerId, StringComparison.OrdinalIgnoreCase)).ToArray();

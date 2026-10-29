@@ -105,6 +105,8 @@ public partial class GameEngine
                 }
                 if (doc.RootElement.TryGetProperty("spiritualHealingGraphs", out var healingGraphs) && healingGraphs.ValueKind == JsonValueKind.Array)
                     response.SpiritualHealingGraphs = healingGraphs.EnumerateArray().Select(g => g.Clone()).ToArray();
+                if (doc.RootElement.TryGetProperty(SpiritualTreatmentParticipation.ResidentThoughtResponseProperty, out var residentThoughts) && residentThoughts.ValueKind == JsonValueKind.Array)
+                    response.SpiritualResidentThoughtJournalUpdates = residentThoughts.EnumerateArray().Select(g => g.Clone()).ToArray();
                 if (doc.RootElement.TryGetProperty("image_prompt", out var img))
                     response.ImagePrompt = img.GetString();
             }

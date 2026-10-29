@@ -94,6 +94,7 @@ internal static partial class AfterlifeWoundHealingPlanner
 
         internal void ApplyParticipationAfterImage(JsonObject profiles)
         {
+            RequireResidentThoughtFamily();
             if (_participationOutcomes is null) return;
             // Pure detached composition; current authority is checked by the
             // actual owner at preparation and immediately before common publish.
@@ -103,7 +104,7 @@ internal static partial class AfterlifeWoundHealingPlanner
                 var record = outcome["record"]!.AsObject();
                 var id = SpiritualTreatmentParticipation.RecordOwnerId(record);
                 var target = profiles[AfterlifeEntityProfileState.ProfilesProperty]!.AsArray().OfType<JsonObject>()
-                    .Single(p => p["actorType"]?.GetValue<string>() == SpiritualTreatmentParticipation.RecordOwner(record).OwnerKind && SpiritualTreatmentParticipation.ProfileId(p) == id);
+                    .Single(p => WoundCarrierCollectionAuthority.AfterlifeProfileMatches(p, SpiritualTreatmentParticipation.RecordOwner(record)) && SpiritualTreatmentParticipation.ProfileId(p) == id);
                 var expected = _participationChanges!.Single(c => c.Owner == SpiritualTreatmentParticipation.RecordOwner(record)).Proposal;
                 if (!JsonNode.DeepEquals(target[SpiritualTreatmentParticipation.ChangeProperty], expected))
                     throw new InvalidDataException("Participation afterimage lost the actual accepted proposal.");

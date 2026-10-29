@@ -46,6 +46,7 @@ internal static partial class AfterlifeWoundHealingPlanner
                 !before.LocalActorIds.ToHashSet(StringComparer.Ordinal).SetEquals(after.LocalActorIds) ||
                 !before.LocalFactionIds.ToHashSet(StringComparer.Ordinal).SetEquals(after.LocalFactionIds))
                 throw new InvalidDataException("Client locality normalization cannot change admitted Guardian/Abode/presence authority.");
+            if (path == residentPath) RequireResidentThoughtAfterImage(residents!, Root(path, content)!);
             var expected = new CanonicalBeforeImage(true, FileSystemManager.EncodeUtf8WithPreamble(content));
             await publish(images[path]);
             var actual = await files.ReadFileBytesAsync(lease, path);

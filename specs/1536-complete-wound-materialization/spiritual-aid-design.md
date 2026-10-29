@@ -580,6 +580,43 @@ still GM-authored and client-validated against the computed destination; no new
 survivor selection or replacement rule. Late failure retains attempt/dice and the
 existing rollback/uncertainty semantics, with no partial common publication.
 
+### Resident memory on the same protected operation
+
+Source consultation found a real boundary: meaningful resident Actor Brain reactions
+must append first-person memory, but the existing resident journal shares the frozen
+locality roster path. Writing ordinary residentThoughtJournalUpdates to that path
+before preflight conflicts with full signed-original/current equality. Normalization
+runs after preflight, so it cannot repair such an early source mutation.
+
+Carry protected-turn commands in output/interface_updates.json under the narrow
+spiritualResidentThoughtJournalUpdates array, using the existing resident journal
+entry format. This distinct response field avoids reinterpreting the ordinary
+GameResponse.residentThoughtJournalUpdates mapping or guessing a route from graph
+presence. Add typed GameResponse/output-only transport and retain it in the existing
+Engine response readers/refresh merger. Ordinary resident interactions keep their
+current mapping. No new canonical path, memory schema, owner or journal writer.
+
+The existing continuation retains detached response commands from the already parsed
+and fully byte-guarded interface image. Only its actual resident record3/family5 can
+bind the commands. Require exact intended resident and current turn, typed complete
+entryId/residentId/turn/timestamp/title/summary plus existing optional journal text/
+tags, unique nonconfusable new entry IDs, and no replacement of any old entry. Reuse
+ActorJournalState normalization and GuardianAbodeResidentState.ApplyThoughtJournalUpdates
+only after this append proof. Reject malformed/null/orphan commands, never ignore
+or silently upsert an old entry.
+
+Under the same live continuation/lease, feed detached commands into the normalizer's
+existing current-turn resident projection and drift calculation. Publish with the
+existing owned-locality hook, preserving the full typed join and exact expected
+journal append. Retain that small computed after-image only for this operation's
+idempotent normalization; response/record/source identity and fresh lease/physical
+checks remain required on every use. Original snapshots/request/dice/source FP stay
+frozen; exact physical readback advances only the owned live closing image. Existing
+post-normalization Actor Brain/memory validation remains mandatory. Fault acceptance
+must include memory restoration under the real owning rollback route, not a fixture
+writeback. Add cheap append/replacement/transport checks and actual grant+aid memory
+assertions before claiming the user capability.
+
 ### Touchpoints, optimization and finite acceptance
 
 Extend existing selection/family dispatch; SpiritualTreatmentParticipation;
