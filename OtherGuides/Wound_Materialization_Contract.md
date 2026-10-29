@@ -2003,3 +2003,16 @@ repair or gameplay mutation. Existing UI ownership checks remain. This is client
 navigation, not a new GM response field or a new authored terminal-state format:
 GM authors ordinary supported outcomes, and the client owns immutable healed History.
 See the worked `wound_history_view_v1` navigation example in E_CLI_Afterlife_Turns.txt.
+
+
+### Browser cards — wound_browser_cards_v1
+
+Клиент группирует уже разрешённые общие блоки в экран активных ран, отдельную
+историю и шаги лечения. Это только представление: ГМ не пишет новый UI/schema,
+идентификаторы, цену, доступность или результат ради карточки. Метка «Ответ клиента»
+не является результатом лечения; принятое изменение раны задаёт обычный контракт.
+Неизвестные сведения, происхождение, хронология и услуги не восстанавливаются
+из технических данных. Рекомендация остаётся рекомендацией без исполняемой кнопки.
+Выход из живой формы сначала вызывает штатную отмену её сессии. Отказ или потеря
+ответа сохраняют форму и явно не подтверждают отмену/применение. Console использует
+те же действия, условия и подтверждение; правила броска, затрат и мира не меняются.

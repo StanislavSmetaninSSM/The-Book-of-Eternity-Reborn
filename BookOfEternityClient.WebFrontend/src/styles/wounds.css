@@ -1,0 +1,31 @@
+/* Client-owned presentation over the shared, already visibility-safe blocks. */
+.wound-command-view { min-width: 0; overflow-wrap: anywhere; }
+.wound-command-view__header { display: grid; gap: var(--space-3); margin-bottom: var(--space-5); }
+.wound-command-view__header > .btn-back { justify-self: start; }
+.wound-command-view__eyebrow { color: var(--color-gold-bright); margin: 0; font-size: .8rem; letter-spacing: .08em; }
+.wound-command-view h1 { margin: 0; color: var(--color-parchment); font-size: clamp(1.5rem, 4vw, 2.2rem); }
+.wound-command-view h1:focus-visible,
+.wound-command-view :is(button, select, input, textarea, summary):focus-visible {
+  outline: 2px solid var(--color-gold-bright); outline-offset: 4px;
+}
+.wound-command-view__intro { margin: 0; color: var(--color-parchment-muted); max-width: 75ch; }
+.wound-command-view__header .status-pill { justify-self: start; margin: 0; }
+.wound-command-view__steps { display: flex; flex-wrap: wrap; list-style: none; padding: 0; gap: var(--space-3); margin: 0 0 var(--space-5); }
+.wound-command-view__steps li { display: flex; align-items: center; gap: var(--space-2); color: var(--color-parchment-muted); }
+.wound-command-view__steps li[aria-current] { color: var(--color-gold-bright); font-weight: 700; }
+.wound-command-view__steps li > span { display: grid; place-items: center; min-width: 1.7rem; min-height: 1.7rem; border: 1px solid currentColor; border-radius: 50%; }
+.wound-command-view .command-result-view__content > .block-list-container { display: grid; gap: var(--space-4); }
+.wound-command-view :is(.block-panel, .entity-dossier) { min-width: 0; border-color: var(--color-gold-dim); }
+.wound-command-view :is(.entity-dossier__identity, .entity-dossier__header, .block-panel__body, .block-kv__row) { min-width: 0; }
+.wound-command-view .command-result-view__actions { flex-wrap: wrap; }
+.wound-command-view :is(button, select, input:not([type="checkbox"]), textarea) { max-width: 100%; min-height: 44px; }
+.wound-command-view .prompt-control { min-width: 0; }
+.wound-command-view .prompt-options-description { margin: var(--space-2) 0 var(--space-4); padding-left: var(--space-5); color: var(--color-parchment-muted); }
+.wound-command-view .prompt-options-description li { margin-bottom: var(--space-2); }
+.wound-command-view .prompt-options-description strong { color: var(--color-parchment); }
+@media (max-width: 600px) {
+  .wound-command-view .prompt-form__actions { display: grid; grid-template-columns: 1fr; }
+  .wound-command-view .command-result-view__actions > button { width: 100%; white-space: normal; }
+  .wound-command-view .block-kv__row { grid-template-columns: 1fr; }
+  .wound-command-view .entity-dossier__header { display: block; }
+}

@@ -41,6 +41,15 @@ is recorded; recheck400MiB before each build and128MiB before runtime. Full raw 
 under /workspace/tboe-linux-evidence-20261025/us4-self-healing/wound-browser-*.
 DFR/Mortal/Windows/performance remain HOLD; full US5/US6/#1536 remain open.
 
+Implementation WIP: WoundCommandView/scoped CSS, existing CommandResultView
+cancel-first header and current-command operation admission, optional existing
+PromptForm condition descriptions, actual-component public-packet tests and controlled
+DOM host are authored, not yet compiled/qualified. Expected RED accepted independently
+at3fe139edf: native Vitest1executed1missing-headingFAIL after positive controls,
+2.0609836s wall/no timeout/cleanupcomplete/144sourcepins unchanged. Official adapter
+stops before TRX on failure and reports0; native JSON retains the actual failure.
+Raw wound-browser-causal-{plan,red}; no diagnostic output is tracked.
+
 ---
 
 # T119-HISTORY-VIEW — accepted explicit known healed History navigation

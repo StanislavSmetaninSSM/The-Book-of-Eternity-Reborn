@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent } from 'react';
+import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { browserApi } from '../api/client';
 import type { ExplorerCommandResult, JsonValue, UiAction, UiPrompt } from '../api/contracts';
 import { useShell } from '../context/ShellContext';
@@ -6,31 +6,42 @@ import { commandStateLabel } from '../utils/formatters';
 import { sanitizeExplorerCommandResultForPlayer, sanitizePlayerMessage, toPlayerFacingText } from '../utils/playerCopy';
 import { BlockList } from './BlockRenderer';
 import { PromptForm, type PromptAnswers } from './PromptForm';
+import { WoundCommandView, woundViewMode } from './WoundCommandView';
 
 type LocalPromptResult = { commandResult: ExplorerCommandResult | null; result: ExplorerCommandResult };
+type PromptOperation = { commandResult: ExplorerCommandResult | null; kind: 'submit' | 'cancel' };
 
 export function CommandResultView() {
   const { advancedEnabled, commandResult, clearCommandResult, executeCommand, loadBrowserState } = useShell();
   const [promptAnswers, setPromptAnswers] = useState<PromptAnswers>({});
   const [promptOperation, setPromptOperation] = useState<'submit' | 'cancel' | null>(null);
   const [localResult, setLocalResult] = useState<LocalPromptResult | null>(null);
+  const [promptError, setPromptError] = useState<string | null>(null);
+  const activeCommand = useRef(commandResult);
+  activeCommand.current = commandResult;
+  const activeOperation = useRef<PromptOperation | null>(null);
 
   const currentLocalResult = localResult?.commandResult === commandResult ? localResult.result : null;
   const result = currentLocalResult ?? commandResult;
-  const isSubmitting = promptOperation === 'submit';
-  const isCancelling = promptOperation === 'cancel';
+  const ownsOperation = activeOperation.current?.commandResult === commandResult;
+  const isSubmitting = ownsOperation && promptOperation === 'submit';
+  const isCancelling = ownsOperation && promptOperation === 'cancel';
+  const mode = result ? woundViewMode(result.command) : null;
 
   useEffect(() => {
     setLocalResult(null);
     setPromptAnswers({});
+    setPromptError(null);
   }, [commandResult]);
 
   if (!result) return null;
 
   function handleActionClick(action: UiAction) {
+    if (activeOperation.current?.commandResult === commandResult) return;
     if (action.requiresConfirmation && !confirm(`Выполнить: ${action.label}?`)) return;
     setLocalResult(null);
     setPromptAnswers({});
+    setPromptError(null);
     void executeCommand(action.command);
   }
 
@@ -40,7 +51,11 @@ export function CommandResultView() {
 
   async function handlePromptSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!result?.interactiveSession) return;
+    if (!result?.interactiveSession || activeCommand.current !== commandResult ||
+      activeOperation.current?.commandResult === commandResult) return;
+    const operation: PromptOperation = { commandResult, kind: 'submit' };
+    activeOperation.current = operation;
+    setPromptError(null);
     setPromptOperation('submit');
     try {
       const response = await browserApi.submitPromptSession({
@@ -48,42 +63,57 @@ export function CommandResultView() {
         ownerId: result.interactiveSession.ownerId,
         answers: promptAnswers
       });
+      if (activeCommand.current !== commandResult || activeOperation.current !== operation) return;
       if (response.ok) {
         setLocalResult({ commandResult, result: advancedEnabled ? response.data : sanitizeExplorerCommandResultForPlayer(response.data) });
         setPromptAnswers({});
-      }
+      } else setPromptError('Ответ не подтверждён. Форма остаётся открытой; проверьте состояние игры.');
       void loadBrowserState();
-    } catch { /* handled by notice */ }
-    setPromptOperation(null);
+    } catch {
+      if (activeCommand.current === commandResult && activeOperation.current === operation)
+        setPromptError('Не удалось получить ответ. Проверьте состояние игры перед повторным действием.');
+    }
+    finally {
+      if (activeOperation.current === operation) {
+        activeOperation.current = null;
+        setPromptOperation(null);
+      }
+    }
   }
 
   async function handlePromptCancel() {
-    if (!result?.interactiveSession) return;
+    if (!result?.interactiveSession || activeCommand.current !== commandResult ||
+      activeOperation.current?.commandResult === commandResult) return;
+    const operation: PromptOperation = { commandResult, kind: 'cancel' };
+    activeOperation.current = operation;
+    setPromptError(null);
     setPromptOperation('cancel');
     try {
       const response = await browserApi.cancelPromptSession({
         sessionId: result.interactiveSession.sessionId,
         ownerId: result.interactiveSession.ownerId
       });
+      if (activeCommand.current !== commandResult || activeOperation.current !== operation) return;
       if (response.ok) {
         setLocalResult({ commandResult, result: advancedEnabled ? response.data : sanitizeExplorerCommandResultForPlayer(response.data) });
         setPromptAnswers({});
-      }
+      } else setPromptError('Отмена не подтверждена. Форма остаётся открытой; проверьте состояние игры.');
       void loadBrowserState();
-    } catch { /* handled by notice */ }
-    setPromptOperation(null);
+    } catch {
+      if (activeCommand.current === commandResult && activeOperation.current === operation)
+        setPromptError('Не удалось подтвердить отмену. Форма остаётся открытой; проверьте состояние игры.');
+    }
+    finally {
+      if (activeOperation.current === operation) {
+        activeOperation.current = null;
+        setPromptOperation(null);
+      }
+    }
   }
 
-  return (
-    <div className="command-result-view">
-      <div className="command-result-view__header">
-        <button type="button" className="btn-back" onClick={clearCommandResult}>
-          ← Назад к сцене
-        </button>
-        <span className="command-result-view__title">Сведения действия</span>
-        <span className="status-pill">{commandStateLabel(result.state)}</span>
-      </div>
-
+  const content = (
+    <>
+      {promptError && <p className="block-message block-message--error" role="alert">{promptError}</p>}
       {result.notifications.length > 0 && (
         <div className="command-result-view__notifications">
           {result.notifications.map((n, i) => (
@@ -112,6 +142,7 @@ export function CommandResultView() {
               key={action.id}
               type="button"
               className={`btn-action btn-action--${action.style.toLowerCase()}`}
+              disabled={isSubmitting || isCancelling}
               onClick={() => handleActionClick(action)}
             >
               {action.label}
@@ -131,12 +162,29 @@ export function CommandResultView() {
               onCancel={handlePromptCancel}
               isSubmitting={isSubmitting}
               isCancelling={isCancelling}
+              showOptionDescriptions={mode !== null}
             />
           ) : (
             <ReadOnlyPromptList prompts={result.prompts} />
           )}
         </div>
       )}
+    </>
+  );
+  if (mode) return (
+    <WoundCommandView result={result} mode={mode} busy={isSubmitting || isCancelling}
+      onBack={() => { if (result.interactiveSession) void handlePromptCancel(); else clearCommandResult(); }}>
+      {content}
+    </WoundCommandView>
+  );
+  return (
+    <div className="command-result-view">
+      <div className="command-result-view__header">
+        <button type="button" className="btn-back" onClick={clearCommandResult}>← Назад к сцене</button>
+        <span className="command-result-view__title">Сведения действия</span>
+        <span className="status-pill">{commandStateLabel(result.state)}</span>
+      </div>
+      {content}
     </div>
   );
 }
