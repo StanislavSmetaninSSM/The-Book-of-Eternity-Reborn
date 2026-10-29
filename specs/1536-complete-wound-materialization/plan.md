@@ -174,6 +174,11 @@ new time/History/repair/pending files as well as byte changes. The reused fixtur
 now verifies its generated temp-root parent/prefix/non-symlink identity and propagates
 recursive cleanup failure instead of silently swallowing it; absence is asserted.
 No existing measurement, save, recovery or shared root is eligible for this cleanup.
+Final SOURCE boundary check corrected the old target example end to its IMMEDIATE
+next wound_foreign_detail_v1 section: the later Shining boundary still included
+two previously appended Foreign-detail/History JSON examples. The exact target span
+now has2closed packets, preserving the strict old assertion rather than changing
+its expected count or JSON syntax. The new Shining example has its own explicit end.
 The owner has the historical broken/dissolved-faction question; no answer or policy
 change is inferred. Continue only independent role/profile/display work.
 

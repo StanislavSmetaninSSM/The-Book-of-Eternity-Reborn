@@ -22,7 +22,7 @@ public sealed class WoundTargetSelectionDocumentationTests
         Assert.Contains(marker, entry.RequiredText);
         var example = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "Examples", entry.File));
         var start = example.IndexOf(marker + " — worked", StringComparison.Ordinal); Assert.True(start >= 0);
-        var end = example.IndexOf("shining_healer_role_v1 — worked", start, StringComparison.Ordinal); Assert.True(end > start);
+        var end = example.IndexOf("wound_foreign_detail_v1 — worked", start, StringComparison.Ordinal); Assert.True(end > start);
         var section = example[start..end];
         var packets = Regex.Matches(section, "```json\\s*([\\s\\S]*?)```", RegexOptions.CultureInvariant)
             .Cast<Match>().Select(m => JsonNode.Parse(m.Groups[1].Value)!.AsObject()).ToArray();
