@@ -154,6 +154,20 @@ unchanged. Rebuild Integration only; successful owning builds retained, source
 67pins and full logs outsidecheckout target-choice-green-build-1. Catalog/Plan/
 PREP/GREEN/actual callers still UNRUN; no capability acceptance inferred.
 
+Cheap attempt1 atf3e7eba7a stopped after first browser descriptor:9executed,
+8PASS/1FAIL,24UNRUN, no timeout/skip/duplicate, full owned/runtime cleanup. The
+failure was fixture setup for generation: RotateSessionGeneration was incorrectly
+called with ordinary canonical lease, rejected at EnsureValidSessionReplacementLease
+before exercising stale-form behavior. Reuse existing SessionReplacementTestHarness
+(lifecycle + replacement lease); no production change or guard relaxation. Five
+unchanged browser flow/final cases remain accepted from this trial; the changed
+four-case freshness method gets its own coherent60s category so its three prior
+passes are superseded by fresh four-case qualification, not double-counted. Other
+24cases remain UNRUN. Next: narrow fixture/selection review, Integration-only rebuild,
+exact residual Plan/PREP and28cases. Full cheap union remains33distinct cases on
+explicit lineages; no single fresh33claim if completed this way. Actual callersUNRUN.
+Full partialraw target-choice-green-actual-1 remains outsidecheckout, no deletion.
+
 # T108-RESIDENT-HELP accepted — resident offers free treatment to the player
 
 2026-10-29, #1536. Visible conscious/capable resident of the CURRENT Chaos Guardian

@@ -2,6 +2,35 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "wound-target-choice-freshness",
+  "responsibility": "Current real browser owner/generation/moved/hidden target refusals before phase advance; generation uses the existing lifecycle+replacement harness.",
+  "excludes": "No Engine, DOM/provider/fresh-process or broad regression.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/WoundTargetSelectionTests.Browser.cs"
+  ],
+  "related": [
+    {
+      "id": "wound-target-choice-browser",
+      "when": "Select both for full two-phase browser navigation; keep accepted unchanged flow results when only this fixture changes."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.WoundTargetSelectionTests.BrowserChangedTargetOrSessionCannotAdvance"
+      ]
+    }
+  ]
+},
+{
   "id": "wound-target-choice-lifecycle",
   "responsibility": "Actual shared browser exact-snapshot cancellation/final/expiry and foreign UI-token races, under existing Main/canonical authority.",
   "excludes": "No Engine/DOM/provider/fresh-process.",
@@ -115,7 +144,6 @@
         "BookOfEternityClient.Tests.WoundTargetSelectionTests.BrowserTargetAndWoundPhasesCancelWithoutTreatmentSideEffects",
         "BookOfEternityClient.Tests.WoundTargetSelectionTests.BrowserVisibleActorWithoutGrantIsReadOnlyAndReplayedTargetAnswersCannotConfirmSelf",
         "BookOfEternityClient.Tests.WoundTargetSelectionTests.BrowserConfirmedSelfQueuesOnceAndCompletedReplayCannotQueueAgain",
-        "BookOfEternityClient.Tests.WoundTargetSelectionTests.BrowserChangedTargetOrSessionCannotAdvance",
         "BookOfEternityClient.Tests.WoundTargetSelectionTests.BrowserFinalRechecksSelectedWoundAndLocality"
       ]
     }

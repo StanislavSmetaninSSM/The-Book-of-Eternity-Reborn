@@ -184,9 +184,9 @@ public sealed partial class WoundTargetSelectionTests
         await using var fixture = await CreateTargetFixtureAsync(); var commands = Commands(fixture.Files);
         var first = await commands.ExecuteAsync(new("/лечить", "target_browser"));
         var other = Assert.Single(Assert.IsType<UiSelectionPrompt>(Assert.Single(first.Prompts)).Options, o => o.Label.Contains("Хранитель выбора", StringComparison.Ordinal));
-        await using (var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync())
+        if (change == "generation") await SessionReplacementTestHarness.RotateGenerationAsync(fixture.Files);
+        else await using (var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync())
         {
-            if (change == "generation") fixture.Files.RotateSessionGeneration(lease);
             if (change is "moved" or "hidden")
             {
                 var profiles = JsonNode.Parse((await fixture.Files.ReadFileAsync(lease, WoundCarrierCatalog.AfterlifeProfilesPath))!)!;

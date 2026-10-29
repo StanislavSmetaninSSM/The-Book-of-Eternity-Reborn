@@ -63,6 +63,13 @@
       "contracts": [
         "#1536 T120-CHAOS-TARGETS existing aid5/receive6 consumers"
       ]
+    },
+    {
+      "category": "wound-target-choice-freshness",
+      "reason": "Current real browser owner/generation/moved/hidden target refusals before phase advance; generation uses the existing lifecycle+replacement harness.",
+      "contracts": [
+        "#1536 T120-CHAOS-TARGETS actual session authority"
+      ]
     }
   ]
 }
