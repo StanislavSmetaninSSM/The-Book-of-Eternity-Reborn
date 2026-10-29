@@ -20,7 +20,11 @@ Player result / boundaries
   family7 resolver/payment/accepted publication/History/replay/C4 and one Shining cycle.
   Remote Shining or cross-realm travel has no accepted ordinary opcode and is shown as
   unavailable; no teleport, respawn, reset or arbitrary faction-provider execution.
-- T142 historical-faction invariant answer is pending. Negotiated compensation,
+- T142 owner decision accepted2026-10-29: only historical broken/dissolved factions
+  are exempt from the living-healer requirement; retain their history. Active,
+  weakened, leaderless and unrevealed current factions still require a healer.
+  Canonical spec/contract/tasks now record the decision; implementation is NEXT
+  after this T143 qualification, not included in its current runtime. Negotiated compensation,
   arbitrary faction services and whole US6/#1536 remain open. DOM/live-provider/fresh
   process are not proved by controlled native GM/shared browser queue.
 - Full DFR timeout300.1806894s, Mortal compatibility timeout and Windows stay HOLD;
@@ -72,6 +76,38 @@ Actual pass3 cheap runtime findings (all fail-fast, no timeout/skip/duplicate)
   environment/PID/attempt were checked; its known exit1/results recovered, no duplicate.
 
 Current grouped correction / finite next steps
+
+Correction SOURCE/selection independently accepted on
+2cad38b83332e81d62224e5afea1b923bdefffd9. Fresh pass4 all4exit0/0errors, baseline
+warnings12/23/26/102;2:20.50/0:19.13/1:42.18/2:23.25.4PE/PDB/87sourcebindings/
+27artifacts verified. Catalog1126/12895 valid,19.5783524s/0tests; exact22/141
+PlanOnly15.3061174s/0tests, clean revision/cleanup. Independent PREP accepted
+13cheap categories125cases; functional6/11 kept HOLD. Resource7.15GB/free, no quotas.
+
+Actual pass4 cheap:52PASS/1FAIL,53/125 executed in68.1077075s;72UNRUN, no timeout/
+skip/duplicate, both cleanups true. Browser7, DATA38, docs2, originals3 and both actual
+new-path source counters PASS: population1/20 each opens5roots exactly once. Single
+failure is a test expectation: unchanged baseline/current old async resolver reads
+Soul→Shining→residents and owns3snapshots, but new fixture expected2. Independent
+cause/fix review accepted the test-only expected3-path/3snapshot correction; no fresh
+checks or production reads are removed. Remaining admitted8categories72cases then
+completed72/72PASS on unchanged2cad; strict full-TRX/pins/cleanup verifier passed.
+No repeats of the52unaffected PASS or earlier accepted80 are required. Only corrected
+source-count category3cases and functional11 remain; fresh Integration-only build
+is justified by the sole changed C# test file, with other owning sources unchanged.
+Full prior27 current artifacts will be archived/hash-read back before replacement.
+This test correction is UNCOMPILED/UNRUN at the checkpoint. T143 is not yet accepted.
+
+Bounded T142 read-only design reviewed by independent Sol: use existing raw/post
+ShiningFactionMaterialization completeness/reference owner and its current trade
+evidence/requiredActors/profile DATA. Iterate all current factions, not UI-visible
+ones, with only broken/dissolved exemption. Preserve supported optional-life schema:
+absent lifeState is allowed by generic healing/profile contracts; present dead/null/
+wrong type cannot prove a living healer. No invented explicit-life migration, automatic
+healer/default tier/resurrection or public clinic. Revealed roster visibility is a
+separate check. Existing empty default factions need no invented bootstrap actor.
+Implement and address-test this invariant after T143; full fixture impact is not yet
+implemented/qualified. This supersedes older pending-author notes in later history.
 
 1. Register visit in the existing browser metadata dictionary/ordinary afterlife gate.
    Typed metadata assertion and one existing public menu realm consumer guard it.

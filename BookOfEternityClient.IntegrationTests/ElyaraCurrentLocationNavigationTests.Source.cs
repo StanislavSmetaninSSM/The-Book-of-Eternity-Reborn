@@ -190,8 +190,8 @@ public sealed partial class ElyaraCurrentLocationNavigationTests
         var scope = await new LocalInteractionScopeService(files).ResolveAsync("Shining Abode");
         armed = false;
         Assert.True(scope.IsResolved); Assert.Equal("hall_elyara_companion", scope.LocationId);
-        Assert.Equal(new[] { ShiningAbodeState.StatePath, GuardianAbodeResidentState.StatePath }, opened);
-        Assert.Equal(2, scope.AuthoritySnapshots.Count);
+        Assert.Equal(new[] { "game_state/meta/soul_state.json", ShiningAbodeState.StatePath, GuardianAbodeResidentState.StatePath }, opened);
+        Assert.Equal(3, scope.AuthoritySnapshots.Count);
         Assert.Contains("resident_here", scope.LocalActorIds);
     }
 

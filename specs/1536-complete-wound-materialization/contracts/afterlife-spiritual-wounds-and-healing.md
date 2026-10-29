@@ -277,9 +277,15 @@ resurrect or duplicate her to restore service availability.
 
 ## Shining faction healer role
 
-Every materialized Shining faction must have at least one visible resident in
+Every current materialized Shining faction must have at least one living resident in
 `game_state/meta/guardian_abode_residents.json` whose primary role is
 `healing_support`. Its exact actor profile must prove Spiritual Healing tier I-V.
+Active, weakened, leaderless and unrevealed current factions all remain subject to
+this invariant. Only historical `factionLifecycle.state=broken/dissolved` factions
+are exempt; preserve their records. This owner decision was accepted 2026-10-29.
+The canonical healer may remain undisclosed with an unrevealed faction; once its
+roster is revealed, the primary role and tier must be visible. Hiddenness is never
+an exemption from having the canonical healer.
 
 - The role is visible with the ordinary faction roster.
 - Multiple healers are legal.
@@ -367,5 +373,6 @@ NO GM inkFeatherChanges/payment receipt, new quote/control or private permission
 Read/back/cancel is inert. Death/stale/unknown/discovery/access loss refuses. Remote
 Shining halls and cross-realm access require an already-supported ordinary route;
 no implicit hall travel, return/reentry, teleport or Enlightenment reset is added.
-Negotiated services and the historical-faction healer decision remain OPEN. See the
+Negotiated services remain OPEN. The historical-faction rule above is decided;
+its T142 validation implementation/qualification remains pending. See the
 elyara_current_location_v1 worked example; faction-healer display itself grants no treatment.
