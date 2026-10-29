@@ -295,6 +295,20 @@ preserve the four unchanged negative PASS instead of rerunning them. Selection i
 now16categories/80cases/30methods, pending fresh Integration/catalog/PlanOnly.
 No production source changed; correction review/build/counter GREEN remain pending.
 
+2026-10-29 15:26UTC: correction SOURCE/selection accepted by Sol. Fresh Integration
+on2eb3b80d6 exit0/102baselinewarnings (4:25.74), all other25artifact paths unchanged;
+four owning PE/PDB and42source bindings match. Catalog1102/12840 valid, exactPlan
+16descriptors/80cases/30methods, no tests executed. Independent PREP admitted only
+the repaired counter:1/1PASS,21.6574755s wall, complete/clean, unchanged binaries.
+Both actual fresh unavailable/available menus use16opens on12paths, including
+profiles2/Soul1/Guardians1/residents1, Schedule0; no mutation/additional service IO
+or cross-action cache/speedup claim. Unit65 and four negative PASS remain preserved
+on their earlier explicit versions; no unaffected repeat. Final counter OUTCOME and
+remaining ten Integration cases are pending. Installer cleanup retained all installed
+payloads/metadata: approved lower-layer PowerShell archive reclaimed0;55verified
+NuGet archives reclaimed14.765625MiB, enabling the unchanged400MiB build-start floor.
+No raw/saves/recovery/bin evidence was removed; full local proofs remain external.
+
 ---
 
 # T126 — accepted browser wound cards and guided treatment presentation
