@@ -4,14 +4,14 @@
 
 - [x] T072 Обновить пользовательскую терминологию текущих документов1573: «Духовная энергия»/ДЭ; технические AP/OD идентификаторы, смертные ресурсы и числовые договоры сохранены. Исторические предложения явно отличены от текущих правил. Sol6.1/high и parent проверили scoped diff.
 - [x] T073 Оценить постепенное восстановление ДЭ вне боя против принятого мгновенного combat-end refill: рекомендация сохранить мгновенное заполнение и отдельность безопасного отдыха для HP; последствия для ГМ/темпа/истощения записаны в out-of-combat-recovery-proposal.md. Прежнее правило не отменено.
-- [ ] T074 Независимый review цельного блока терминологии/T071-пробы/результатов/T073, исправления, verification и публикация/issue. Никакой production реализации.
+- [x] T074 Независимый GPT-6 Astra/high проверил цельный блок без существенных замечаний; 4000 исходов, альтернативные часы44×100 и две полные ячейки подтверждены. Parent прочёл скрипт/вывод, проверил209links/31 прежний code block/diff. WIPc2cc88b1c опубликован и подтверждён remoteSHA/blob; issue обновлён с сохранением истории. Итоговый checkpoint — по Git-истории. Никакой production реализации.
 
 ## Временное подавление лечения: дизайн до пробы
 
 - [x] T068 Сверить общий effect/attack/clock/removal контракт; определить новый профиль силы/срока/ДЭ/наложения/снятия и примеры, сохранив принятые системы. Sol6.1/high source audit и parent чтение; healing-suppression-proposal.md v1 описывает50%/2 личных хода, partial25%/1, B24/12P и scoped cleanse8P. Это предложение; новая проба не запускалась.
 - [x] T069 Независимый review цельного дизайна и подготовка к предъявлению. GPT-6 Astra/high проверилa7da2e33..14081a83 без существенных замечаний; P3-описание50% до cap уточнено, примеры подтверждены.62links/diff PASS, WIP remoteSHA совпал; итоговая публикация/issue по Git-истории. Новая симуляция не запускалась, T070/T071 ожидают решения автора.
 - [x] T070 Автор принял термин «Духовная энергия» и прямо поручил проверить согласованный профиль suppression v1; разрешён T071 с неизменными50%/2,partial25%/1,B24/12P,очищением8P. Это утверждение профиля для численной проверки, не доказательство окончательного баланса/production.
-- [ ] T071 После T070 уточнить план/consistency и проверить согласованный профиль существующей дешёвой численной моделью, включая высокуюH/обе очередности/очищение/барьеры/refresh; раскрыть неуспех/цензурирование/ограничения и пройти независимый review. Не утверждать игровые цены автоматически.
+- [x] T071 После T070 уточнены план/consistency; выполнены16guards, прежний baseline15×10000, 280 дуэльных и48 групповых ячеек по10000. ВысокаяH/обе очередности/очищение/барьеры/refresh проверены в пределах модели; неуспех/цензурирование/ограничения раскрыты в разделе7 healing-suppression-proposal.md. Независимый review пройден T074. Игровые цены не утверждены автоматически.
 
 ## Противодействие постоянному самоисцелению
 
@@ -137,7 +137,7 @@ US4=единая работающая модель/интерфейсы.
 
 - [ ] T004 [US1] RED tests в BookOfEternityClient.Tests/SpiritualCombatRulesTests.cs и BookOfEternityClient.IntegrationTests/AfterlifeSpiritualConflictValidationTests.cs: HP/ДЭ exact actor, hit/miss/barrier/max changes, invalid actor/target, расходы/recover surcharge, ranks. Negative builders не чинят malformed input.
 - [ ] T005 [US1] Ввести typed contracts/profile resolver в BookOfEternityClient/Services/SpiritualCombat/; обновить AfterlifeSpiritualConflictState.cs и Validation/ValidationService.AfterlifeEntityProfiles.cs. Definitions/ранги, actor authority/dependency fingerprint, без file I/O в kernel.
-- [ ] T006 [US1] ResourceDefinitionCatalog.cs, AfterlifeResourceOwnerComposer.cs, ResourceMutationSourceCatalog.cs, AfterlifeConflictActionPointProjection.cs: personal spiritual_health/ДЭ, capabilities/max/init, no refill между encounters, no side fallback. Не расширять Mortal health.
+- [ ] T006 [US1] ResourceDefinitionCatalog.cs, AfterlifeResourceOwnerComposer.cs, ResourceMutationSourceCatalog.cs, AfterlifeConflictActionPointProjection.cs: personal spiritual_health/ДЭ, capabilities/max/init, принятое полное заполнение ДЭ после подтверждённого окончания боя; без refill от reload/re-entry внутри незавершённого боя, no side fallback. Не расширять Mortal health; технические границы по out-of-combat-recovery-proposal.md.
 - [ ] T007 [US1] SpiritualCombatRules.cs и AfterlifeActionCostRules.cs: accepted math/target/cost/damage/guard/recover из согласованного tuning; ValidationService.AfterlifeSpiritualConflict.cs делегирует расчёт. Preview и accepted используют одно ядро.
 - [ ] T008 [US1] AcceptedMechanicsPlanner.SpiritualMechanics.cs и общий CanonicalStateNormalizer: включить state/resources/action receipts в одну существующую публикацию. GREEN T004 и actual accepted/replay/rollback integration. Новый отдельный publisher запрещён.
 
