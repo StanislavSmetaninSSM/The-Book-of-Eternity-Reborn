@@ -62,7 +62,7 @@ Finite implementation / acceptance
 
 - [x] Inspect canonical scope and existing callers; independent Astra DESIGN accepted with
   explicit compensation and tier/price constraints. T142 author question stays pending.
-- [ ] Add one cheap causal typed actual no-argument console test:
+- [x] Add and independently accept one cheap causal typed actual no-argument console RED:
   HealingAccessInteractiveInspectionShowsPublicRestrictedTermsWithoutMutation. Existing
   role/name is the control; missing public condition is semantic RED. New exact category
   shining-healer-access-causal, 60 s. Fresh Unit only (production unchanged), source/PDB
@@ -77,7 +77,7 @@ Finite implementation / acceptance
   exact canonical snapshots and guarded cleanup; no whole-world/GameEngine preparation.
 - [x] Author (guards UNRUN) synchronized GM rule/guide/matrix/main task/daemon directives, worked
   Shining access example/manifest and source guards. No new pending/control schema.
-- [ ] Coherent SOURCE/impact-selection review, fresh affected Main/Support/Unit builds,
+- [ ] Coherent SOURCE/impact-selection review, fresh affected Main/Support/Unit/Integration builds,
   exact catalog/PlanOnly/PREP, approved cheap causal/data/docs and UI checks, full captures
   and independent OUTCOME. Re-run old checks only when actually affected by changed
   projection/rendering; accepted paid 80 and HOLD DFR/Mortal/Windows are not substituted.
@@ -126,6 +126,18 @@ required too. Exact case/method/descriptor counts remain discovery/PlanOnly UNVE
 Independent whole SOURCE/selection, fresh Main/Support/Unit/Integration, catalog/PDB/
 artifact checks, exact PlanOnly/PREP and runtime/OUTCOME remain pending. No feature PASS
 is claimed. No Shining treatment execution or historical-faction invariant is added.
+
+Independent Sol6.1/xhigh whole SOURCE/selection ACCEPT on 9868135..7ef85d2,
+including the two local plan bookkeeping corrections: no blocking findings. Confirmed
+fresh joins/privacy, unchanged paid admission/resource suffix, detached DATA reuse,
+upfront Integration fixture migration and synchronized GM/example/catalog scope.
+Static count 80 cases/26 methods (51 new +29 affected existing), still pending discovery.
+Approved runtime order is two nonoverlapping official batches: cheap54 (data29,causal1,
+docs2,source-cost1,capability21), then UI/context26 (access-ui8,races8,context2,roster8).
+Do not report them as one 80-case run. Four fresh builds, PDB/artifact/catalog/PlanOnly,
+independent PREP and actual runtime/OUTCOME remain UNRUN. Current scaffold27 artifacts
+are also fully decoded/hash-verified in an external 70010076-byte gzip before rebuild;
+previous accepted-role archive/raw remain intact. No artifact deletion.
 
 Resource / current boundary
 
