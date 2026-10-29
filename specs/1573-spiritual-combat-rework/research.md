@@ -1,5 +1,33 @@
 # Исследование текущего кода для #1573
 
+## T082–T083: убежища и предметные границы, 2026-10-30
+
+Baseline7281cbcca. Parent выполнил ограниченный поиск новых камней/износа и
+символический просмотр AbodePowerRules; Sol6.1/high audit_shelter_foundations1573
+проверил смежные поверхности. Готовых чисел/исполняемого договора для убежищ и
+spiritual stones в проверенных Services/Models/Rules не найдено. Это граница
+аудита, не утверждение об отсутствии любого слова shelter во всём репозитории.
+
+- [AbodePowerRules](../../BookOfEternityClient/Core/AbodePowerRules.cs#L8) — отдельная
+  растущая сила Обители0–100, tiers/торговля/награды. [Power events](../../BookOfEternityClient/Services/GuardianPowerEventState.cs#L68)
+  не предоставляют готовый reason для износа убежища. Не применять их рост к D.
+- [Chaos politics](../../BookOfEternityClient/Services/ChaosSeaGuardianPoliticsState.cs#L51)
+  нормализует отношения/проекты/зоны/хроники/конфликты; новый запас/прочность нельзя
+  считать поддержанными просто добавлением произвольных JSON-полей.
+- [Contract Matrix](../../OtherGuides/Afterlife_Contract_Matrix.md#L43) ограничивает
+  common-resource quartet существующими ресурсами; [Shining ledger](../../OtherGuides/Afterlife_Contract_Matrix.md#L111)
+  принадлежит фракции. Ни один не является готовым складом камней убежища.
+- [Общий предметный договор #1572](../532-golden-mask-backstory/spec.md#L1868)
+  расширяет Soul Relics/materialization/accepted publication, но NPC ownership
+  ещё не готов. [InventoryManagementService](../../BookOfEternityClient/Services/InventoryManagementService.cs#L224)
+  использует mortal transitions. Нужен согласованный владелец нового запаса,
+  однократные acquisition/transfer/spend; не отдельные копии камней для ДЭ/ремонта.
+
+Кандидат2%M/сутки и10D/камень — новые числа для обсуждения. Арифметика50суток
+без ухода, расходов2/4/8 за10суток и16/32/64 за80суток, ремонта6/12/24 от40%
+проверяется отдельно. Реальная добыча/цена/работа не измерены и не утверждены;
+игровой тест/симуляция не выполняются. Raw-диагностики и нового кэша нет.
+
 ## T080–T081: источники времени, 2026-10-30
 
 Baseline d352a3867. Parent проверил BuildControlForNextTurnAsync, символы
