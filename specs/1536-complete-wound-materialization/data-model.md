@@ -3861,6 +3861,73 @@ The choice carries hidden exact binding but displays Self first and then reachab
 visible entities. Duplicate names receive location/role/appearance context. Confirming
 the choice revalidates target, wound, consent, provider, resources, and reachability.
 
+### Known foreign wound detail — T119/T121-FOREIGN-DETAIL
+
+Issue #1536; FR-069/070/072–076, existing section18 Detail and accepted current-Abode
+navigation. The user requested this bounded next slice and autonomous execution.
+The implementation choice is to reuse the existing WoundPlayerProjection field/
+knowledge/effect formatters for the freshly selected exact Guardian/resident, rather
+than duplicate a second projection or serialize canonical/opaque JSON. Scope remains
+the current safe Chaos Guardian Abode. No new healing, diagnosis, price, service or
+turn rule is introduced; full T119/T121/US5 and other realms/helpers remain open.
+
+Read contract:
+- SelectTargetAsync already owns the real lease, loads one coherent context and
+  constructs/revalidates the fresh target model. After that check, project only the
+  selected exact PATIENT's known active wounds from that SAME context/catalog; use
+  existing TryResolveOne for the fresh target summary IDs. Do not retain full private
+  canonical graphs in prompt state or create a new cache/model/service.
+- Add WoundPlayerProjection.ProjectKnownTarget(context,target), internal DATA-only
+  projection used by the shared application after fresh target validation. It checks
+  available typed current Chaos Guardian/resident/visible exact unique profile and
+  locality; each resolved wound remains exact owner/current realm/active/public or
+  known_to_player. No bare ID lookup from a player payload, no unknown/other owner
+  wound, no unrelated Self or foreign healed History. Empty known set stays empty
+  without revealing hidden counts. Invalid DATA fails closed without repair.
+- Reuse Project's readable locus/cause/symptoms/prognosis, care/recovery progress,
+  visible complications and exact linked accepted effect summaries. Generalize only
+  its effect target kind: exact existing AfterlifeEntityProfileState target mapping
+  (Guardian/resident), while existing Self uses player unchanged. Require exact
+  realm/target kind+ID/carrier owner/source wound/root definition binding; hidden
+  complications/effects and unrelated curse/imprint/journal/IDs remain private.
+- Reuse current ProjectMethods/ProjectDiagnosis knowledge rules: knownRouteIds,
+  non-GM-only routes, already satisfied diagnosis prerequisites, no future reveals.
+  Spiritual opaque requirement/check/outcome objects remain opaque; show safe known
+  names and truthful generic requirements/uncertainty, never claim provider/resource/
+  price availability or invent a readable risk. No physical NPC expansion is added.
+- Shared builder consumes that projection instead of replacing it with the former
+  three-field summary. Render known routes and diagnosis as explicit recommendations.
+  Unsupported route/diagnosis recommendations have no executable prompt/button.
+  Only existing WoundCommandState lawful choices create wound_selection+confirmation;
+  final source/consent/target/expiry/queue checks are unchanged. A recommendation is
+  never a treatment permit. Console escaping/browser literal rendering remain required.
+- Read/selection/cancel may manage the existing owned UI form lock only; no gameplay
+  mutation, repair/normalization, draw/attempt, charge, world time, treatment queue,
+  receipt/history or new discovery. Self projection/History and accepted actual aid
+  lineages remain their existing scopes; no broad accepted-PASS replay.
+
+Optimization and verification:
+- Reuse current read context/catalog/effects and fresh target summary IDs; formatting
+  only the selected target, existing catalog index, no second catalog/effect build or
+  source read and no across-prompt reuse. Fresh publication authority is never cached.
+- First compile/run one existing-API causal singleton on minimal real read fixture:
+  fresh reachable known Guardian wound selection currently lacks its visible symptom.
+  Verify valid target, known name, inert baseline and source counters before semantic
+  RED; no native game/bootstrap. A helper-only independent fixture is shared by Unit/
+  Integration through the existing linked helper mechanism, with coherent separate
+  per-wound/global History ordinals. No common accepted fixture is weakened.
+- GREEN cheap typed Guardian/resident cards; no-grant/missing/hidden/unknown/foreign/
+  same-ID wrong kind/source/definition/complication effect controls; known hidden vs
+  undiscovered route and future diagnosis; safe escaping; output copies; no Self/History
+  leak. Actual browser public API and minimal real console Explorer handler parity,
+  cancellation/read-only tree/mutation/no repair/source counters. No full Engine is
+  required for a pure detail formatter if these actual read handlers pass and final
+  review confirms unchanged mechanical admission; re-evaluate only a concrete impact.
+- Sync GM/CLI/Matrix/both daemon/worked example/manifest/typed guards. Astra/high
+  design/source review for recursive privacy/owner joins; Sol6.1/xhigh fixture/selection/
+  PREP/OUTCOME. Fresh affected builds/discovery/exactPlan and resource preflight before
+  execution; raw outsidecheckout, no limits changed, preserve earlier accepted36.
+
 ### Current Chaos target navigation — T120-CHAOS-TARGETS DESIGN accepted
 
 #1536/US5, FR-070/072–076 and existing section18 target choice. This is a display/navigation

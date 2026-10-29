@@ -1,3 +1,50 @@
+# Known foreign wound detail Implementation Plan — T119/T121-FOREIGN-DETAIL
+
+> Agentic implementer: superpowers:executing-plans inline; root sole writer/runner.
+> Use existing Spec Kit artifacts, mandatory independent reviews and selected tests.
+
+**Goal:** selected current-Abode Guardian/resident wound has a complete known card
+and truthful route/diagnosis recommendations in both existing interfaces.
+**Architecture:** existing WoundPlayerProjection formatter over the same fresh
+context/catalog/effects, existing target binding/application/builder; no new store.
+**Tech stack:** C#/.NET8, shared semantic UI, official PowerShell7 category runner.
+**Spec:** #1536 spec.md FR-069/070/072–076, data-model.md section18 foreign detail.
+
+2026-10-29 start verified aaa2201a9144279c7b519578fb3e10fde5f48b29 HEAD==remote,
+clean same environment, no owned active process;466030592 bytes free. Existing36
+remain accepted on their explicit lineages below. Scope is known foreign detail,
+not new diagnosis execution/timing, helper/service, quote or treatment authority.
+
+Global constraints: no hidden/unknown facts, raw canonical IDs/JSON, gameplay repair,
+draw, charge or time on read/cancel; fresh actual treatment guards retained. Full
+raw outsidecheckout; no external raw/save/recovery deletion. Existing400MiB build/
+128MiB runtime reserve, current60s cheap categories unchanged unless selected new
+coherent ownership requires its own justified group. No broad/held DFR/Mortal/
+Windows/performance or unchanged accepted-PASS rerun. No new clone/restore.
+
+Review focus: wrong typed actor with equal ID; hidden-complication effects; unknown
+route/future diagnosis; provider/owner-private requirements; read-only actual UI
+and safe text; recommendation versus executable action. Each gets a cheap control.
+
+- [ ] Independent bounded DESIGN review and fixture feasibility; no author decision
+  expected because field visibility/known route rules already exist.
+- [ ] Add one existing SelectTargetAsync causal test plus helper/category/selection;
+  fresh Integration owning build, discovery/exactPlan/resource/PREP, semantic RED
+  on missing visible symptom after valid public target/name/inert/source controls.
+- [ ] Reuse projection for exact fresh target; typed effect scope and shared builder
+  recommendations. Add finite pure privacy and actual read-only console/browser
+  parity/escape/cancel/count tests; synchronize GM/example/manifest/guard.
+- [ ] Coherent SOURCE/selection review, fresh affected builds/exact discovery/Plan/
+  resource/PREP, selected cheap GREEN and independent OUTCOME. Mechanical native
+  Engine unchanged; prove actual read handlers rather than replay accepted aid36.
+- [ ] Verify exact raw/count/hash/cleanup, scope and remote checkpoint; close only
+  bounded T119/T121-FOREIGN-DETAIL, keep parent tasks/#1536 open.
+
+Optimization assessment: project only selected known wound IDs with existing catalog
+index; reuse context effects/knowledge services and parsed locality. No new cache or
+filesystem work in card projection. Record actual source-count proof/UNRUN; do not
+claim speedup. All new implementation/tests still UNRUN; DESIGN pending.
+
 # T120-CHAOS-TARGETS — accepted current-Abode target navigation
 
 2026-10-29. Issue: https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536
