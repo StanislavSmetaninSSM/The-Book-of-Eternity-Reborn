@@ -88,6 +88,19 @@ causal GREEN, GM consumer and affected existing wounds-player-projection categor
 No full Engine/native replay is needed per DESIGN for unchanged mechanical admission.
 All new C# remains UNCOMPILED/UNRUN; coherent SOURCE/selection review is next.
 
+SOURCE delta candidate: Astra found no production/GM blocker, but requested a
+same-ID Guardian/resident effect proof reaching the actual effect filter. Added one
+schema/identity-accepted two-kind/same-ID fixture: Guardian effect claims a matching
+resident wound root/source/definition, while resident's second root is correct;
+assert resident facts visible and Guardian facts absent. This adversarial read
+link grants no mechanical source authority. Sol requested mutation-path proof in
+actual UI cases so restored gameplay writes cannot hide behind final snapshots;
+existing callback is armed only after preparation and every mutation must be the
+owned UI-lock path. No new hook/operation/case for that assertion. These finite
+review deltas leave production unchanged; now16 pure cases plus original causal,
+2 interface cases and GM case. All GREEN code remains UNCOMPILED/UNRUN pending
+narrow review closure and fresh affected builds.
+
 # T120-CHAOS-TARGETS — accepted current-Abode target navigation
 
 2026-10-29. Issue: https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536

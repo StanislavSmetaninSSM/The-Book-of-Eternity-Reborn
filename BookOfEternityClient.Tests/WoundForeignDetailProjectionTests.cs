@@ -122,6 +122,36 @@ public sealed class WoundForeignDetailProjectionTests
         Assert.Contains(Assert.Single(result.Active).Facts, f => f.Value == WoundForeignDetailTestData.VisibleSymptom);
     }
 
+    /// <summary>A resident shares an ID with a Guardian, but only its own typed effects may enter its card.</summary>
+    [Fact]
+    public void SameIdGuardianEffectCannotBorrowTheResidentsWoundBinding()
+    {
+        var data = WoundForeignDetailTestData.Create("resident", sameId: true);
+        var profiles = data.Input.Carriers.AfterlifeProfiles!;
+        JsonObject Effect(string kind, string effectId, string definition, string name, string profile)
+        {
+            var effect = EffectMaterializationTestFixture.CreateSpiritualWoundCanonicalEffect(profile, kind, woundId: "wound_foreign_detail");
+            effect["effectId"] = effectId; effect["target"]!["targetId"] = WoundForeignDetailTestData.GuardianId;
+            effect["source"]!["definitionKey"] = definition; effect["display"]!["name"] = name; return effect;
+        }
+        // All read-schema/identity coordinates are valid. The Guardian row deliberately
+        // claims the resident wound's first root: matching IDs/source alone are insufficient.
+        var guardianEffect = Effect("guardian", "foreign_effect_spiritual_roll", "definition_spiritual_roll", "ЧУЖОЕ_ВЛИЯНИЕ_ХРАНИТЕЛЯ", "spiritual_roll_hindrance");
+        var residentEffect = Effect("resident", "foreign_effect_spiritual_cost", "definition_spiritual_cost", "Видимое влияние жителя", "spiritual_action_cost_burden");
+        profiles["profiles"]![1]!["activeEffects"] = new JsonArray(guardianEffect.DeepClone());
+        profiles["profiles"]![2]!["activeEffects"] = new JsonArray(residentEffect.DeepClone());
+        var snapshot = EffectMechanicsSnapshot.Build(new(new EffectCarrierCatalogInput(null, null, null, null, profiles, null),
+            EffectMaterializationTestFixture.CreateIdentityIndex(guardianEffect, residentEffect)));
+        Assert.True(snapshot.IsAccepted, string.Join(";", snapshot.Issues));
+        var context = Context(data.Input with { Effects = snapshot });
+        var target = Target(context, data.Guardians, data.Residents, "resident");
+        Assert.Equal(WoundForeignDetailTestData.GuardianId, target.Owner.OwnerId);
+        var card = WoundPlayerProjection.ProjectKnownTarget(context, target);
+        Assert.True(card.IsAvailable); Assert.Single(card.Active);
+        Assert.Contains("Видимое влияние жителя", Text(card));
+        Assert.DoesNotContain("ЧУЖОЕ_ВЛИЯНИЕ_ХРАНИТЕЛЯ", Text(card));
+    }
+
     private static WoundPlayerReadContext Context(WoundPlayerProjectionInput input)
     {
         var catalog = WoundCarrierCatalog.Build(input.Carriers); Assert.Empty(catalog.Issues);

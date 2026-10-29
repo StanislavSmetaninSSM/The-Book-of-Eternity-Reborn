@@ -13,12 +13,12 @@ internal static class WoundForeignDetailTestData
     internal const string VisibleSymptom = "Заметное дрожание духовной ткани";
 
     internal static (WoundPlayerProjectionInput Input, JsonObject Guardians, JsonObject Residents) Create(
-        string kind = "guardian", Action<JsonObject>? adjust = null)
+        string kind = "guardian", Action<JsonObject>? adjust = null, bool sameId = false)
     {
         var self = WoundContractTestData.CreateSpiritualActiveWound("wound_self_detail", "chaos_sea", "player_soul", "player_soul", WoundCarrierCatalog.AfterlifeProfilesPath);
         self["display"]!["name"] = "ЛИЧНАЯ_РАНА_ИГРОКА";
         var input = WoundPlayerProjectionTestData.InputInRealm("chaos_sea", self);
-        var id = kind == "guardian" ? GuardianId : ResidentId;
+        var id = kind == "guardian" || sameId ? GuardianId : ResidentId;
         var node = WoundContractTestData.CreateSpiritualActiveWound("wound_foreign_detail", "chaos_sea", kind, id, WoundCarrierCatalog.AfterlifeProfilesPath);
         // Keep each wound's consequence roots independently named even in the symptom-only fixture.
         foreach (var field in new[] { node["consequences"]!["entries"]!.AsArray(), node["consequences"]!["ownedEffectSources"]!["rootBindings"]!.AsArray() })
@@ -41,7 +41,7 @@ internal static class WoundForeignDetailTestData
         var wound = parsed.Wound!; var fingerprint = WoundIdentityState.ComputeSemanticFingerprint(wound);
         var profiles = input.Carriers.AfterlifeProfiles!["profiles"]!.AsArray();
         profiles.Add(Profile("guardian", GuardianId, "Хранитель подробностей", kind == "guardian" ? node : null));
-        if (kind == "resident") profiles.Add(Profile("resident", ResidentId, "Житель подробностей", node));
+        if (kind == "resident") profiles.Add(Profile("resident", id, "Житель подробностей", node));
         var identities = JsonNode.Parse(WoundIdentityState.SerializeCanonical(input.Identities))!.AsObject();
         identities["entries"]!.AsArray().Add(WoundContractTestData.CreateIdentityEntry(wound.WoundId, wound.Owner.Realm,
             wound.Owner.OwnerKind, wound.Owner.OwnerId, wound.Owner.CarrierPath, wound.Classification.Domain, semanticFingerprint: fingerprint));
@@ -63,7 +63,7 @@ internal static class WoundForeignDetailTestData
         var guardians = new JsonObject { ["guardians"] = new JsonArray(guardian), ["activeGuardian"] = guardian.DeepClone(),
             ["chaosSeaNavigation"] = new JsonObject { ["currentGuardianId"] = GuardianId, ["currentAbodeId"] = AbodeId } };
         var residents = new JsonObject { ["entries"] = kind == "resident" ? new JsonArray(new JsonObject
-        { ["residentId"] = ResidentId, ["guardianId"] = GuardianId, ["abodeId"] = AbodeId, ["isPresent"] = true,
+        { ["residentId"] = id, ["guardianId"] = GuardianId, ["abodeId"] = AbodeId, ["isPresent"] = true,
             ["residentKind"] = "wayfaring_soul", ["roleLabel"] = "Смотритель", ["summary"] = "Известный обитатель." }) : new JsonArray() };
         return (input, guardians, residents);
     }

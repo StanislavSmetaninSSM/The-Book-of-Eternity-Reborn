@@ -38,8 +38,9 @@ public sealed partial class WoundForeignDetailTests
         var results = new List<string>();
         foreach (var browser in new[] { false, true })
         {
-            var reads = new CanonicalReadActivityAccumulator();
-            await using var fixture = await WoundPlayerReadFixture.CreateAsync(output, realm: "chaos_sea", suppliedInput: effects.Input, reads: reads);
+            var reads = new CanonicalReadActivityAccumulator(); var mutationPaths = new List<string>(); var armed = false;
+            await using var fixture = await WoundPlayerReadFixture.CreateAsync(output, realm: "chaos_sea", suppliedInput: effects.Input, reads: reads,
+                beforeMutation: path => { if (armed) mutationPaths.Add(path); });
             await using (var prep = await fixture.Files.AcquireCanonicalWriteLeaseAsync())
             {
                 await fixture.Files.WriteFileAtomicAsync(prep, AfterlifeWoundTreatmentAuthority.AidLocalityPaths[0], data.Guardians.ToJsonString());
@@ -50,7 +51,7 @@ public sealed partial class WoundForeignDetailTests
             var repairs = 0;
             var state = new StateManager(fixture.Files, new GameSettings(), NullLogger<StateManager>.Instance,
                 new StateManagerHooks { AfterPlayerSoulProfileInputsReadAsync = () => { repairs++; return Task.CompletedTask; } });
-            var before = fixture.Snapshot();
+            var before = fixture.Snapshot(); armed = true;
             var paths = new[] { AfterlifeWoundTreatmentAuthority.AidLocalityPaths[0], GuardianAbodeResidentState.StatePath };
             var countBefore = paths.Select(reads.ReadCount).ToArray();
             string text;
@@ -87,6 +88,7 @@ public sealed partial class WoundForeignDetailTests
                 Assert.True(await locks.ReleaseAsync(new(owned.SessionGeneration, owned.OwnerId, owned.LeaseToken)));
             }
             Assert.Equal(0, repairs); Assert.Equal(before, fixture.Snapshot());
+            Assert.NotEmpty(mutationPaths); Assert.All(mutationPaths, path => Assert.Equal(LocalUiSessionLockService.LockPath, path));
             for (var i = 0; i < paths.Length; i++) Assert.Equal(2L, reads.ReadCount(paths[i]) - countBefore[i]);
             foreach (var token in new[] { "Известная рана обитателя", symptom, "Видимая помеха обитателю", "Укрепить духовную ткань", "Осмотр духовной ткани", "рекомендация", "пока недоступно" })
                 Assert.Contains(token, text);
