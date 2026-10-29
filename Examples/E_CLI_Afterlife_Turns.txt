@@ -13933,3 +13933,43 @@ other-realm History reveals no hidden count or name. /лечить does not list
 Read/history/back/close: ZERO roll/attempt/payment/world cycle/repair/gameplay write.
 Each action reads fresh current state. A stale action cannot resurrect previously
 visible data after knowledge/state changes. No GM turn or extra response is requested.
+
+
+shining_healer_role_v1 — worked roster and profile capability excerpts
+
+This focused example is not a standalone faction or actor materialization. Merge each
+excerpt into its existing complete canonical object, retaining every other field,
+materialization receipt and capability disposition. The existing faction is revealed
+and has factionId=faction_dawn. These are excerpts from resident roster and actor
+profile DATA, not a new response or top-level protocol.
+
+```json
+{
+  "residentId": "resident_iva",
+  "displayName": "Светлая Ива",
+  "ascensionState": "ascended",
+  "shiningFactionId": "faction_dawn",
+  "residentRole": "healing_support",
+  "isPresent": false
+}
+```
+
+```json
+{
+  "actorType": "resident",
+  "actorId": "resident_iva",
+  "realm": "Shining Abode",
+  "lifeState": "alive",
+  "standardArts": { "spiritual_healing": 3 }
+}
+```
+
+The profile excerpt updates only the named art, preserving all other standardArts,
+not replacing the whole art object. The role survives ordinary normalization; the
+player reads «Светлая Ива — целитель; Исцеление III». isPresent=false describes Chaos
+abode presence and does not negate current Shining affiliation. No healingServiceProfile
+is authored here: there is no public clinic, price, treatment action or permission.
+If assistance depends on faction agreement, author that separate service/access
+contract rather than pretending the role itself authorizes treatment. Multiple exact
+healers and tiers I-V are legal. Hidden/unconfirmed profiles reveal no capability.
+Read/close is not a turn: no draw, payment or world cycle.

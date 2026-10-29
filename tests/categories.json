@@ -22239,7 +22239,21 @@
                         "BookOfEternityClient.Tests.ExplorerWebCommandServiceTestsShiningAdvancedDiagnostics.*",
                         "BookOfEternityClient.Tests.WebUi.BrowserAfterlifeWriteServiceTests.*",
                         "BookOfEternityClient.Tests.WebUi.BrowserShiningActionsParityTests.*",
-                        "BookOfEternityClient.Tests.WebUi.BrowserShiningPoliticsParityTests.*"
+                        "BookOfEternityClient.Tests.WebUi.BrowserShiningPoliticsParityTests.ExecuteAsync_ShiningFactionFounding_ReturnsPromptWithCostsAndEligibleSupporters",
+                        "BookOfEternityClient.Tests.WebUi.BrowserShiningPoliticsParityTests.SubmitAsync_ShiningFactionFounding_WritesPendingRequestAndReservesCosts",
+                        "BookOfEternityClient.Tests.WebUi.BrowserShiningPoliticsParityTests.ExecuteAsync_ShiningFactionRealignment_ReturnsPromptWithReadyResidentsAndTargets",
+                        "BookOfEternityClient.Tests.WebUi.BrowserShiningPoliticsParityTests.ExecuteAsync_ShiningFactionRealignment_IgnoresResidentsFromHiddenSourceFactions",
+                        "BookOfEternityClient.Tests.WebUi.BrowserShiningPoliticsParityTests.SubmitAsync_ShiningFactionRealignmentAfterTargetHidden_ReturnsBlockerWithoutPendingWrite",
+                        "BookOfEternityClient.Tests.WebUi.BrowserShiningPoliticsParityTests.SubmitAsync_ShiningFactionLeadership_RejectsHiddenRadiantActorWithoutPendingWrite",
+                        "BookOfEternityClient.Tests.WebUi.BrowserShiningPoliticsParityTests.SubmitAsync_ShiningFactionRealignment_WritesAcceptedTransferRequestWithTurn",
+                        "BookOfEternityClient.Tests.WebUi.BrowserShiningPoliticsParityTests.SubmitAsync_ShiningFactionRealignment_WritesDepartureRequestWithoutTarget",
+                        "BookOfEternityClient.Tests.WebUi.BrowserShiningPoliticsParityTests.ExecuteAsync_ShiningFactionLeadership_ReturnsPromptWithFactionCandidatesAndSupporters",
+                        "BookOfEternityClient.Tests.WebUi.BrowserShiningPoliticsParityTests.SubmitAsync_ShiningFactionLeadership_WritesPendingTransition",
+                        "BookOfEternityClient.Tests.WebUi.BrowserShiningPoliticsParityTests.ExecuteAsync_ShiningPoliticsCommandOutsideShiningAbode_ReturnsRealmBlockerWithoutPrompt",
+                        "BookOfEternityClient.Tests.WebUi.BrowserShiningPoliticsParityTests.SubmitAsync_ShiningPoliticsPromptAfterRealmSwitchToMortalWorld_ReturnsRealmBlockerWithoutPendingWrite",
+                        "BookOfEternityClient.Tests.WebUi.BrowserShiningPoliticsParityTests.BrowserCommandCoverage_Issue810ShiningPoliticsCommandsAreCovered",
+                        "BookOfEternityClient.Tests.WebUi.BrowserShiningPoliticsParityTests.Help_ShiningPoliticsCommandsAreListedInAfterlifeHelp",
+                        "BookOfEternityClient.Tests.WebUi.BrowserShiningPoliticsParityTests.BrowserAfterlifeWriteService_MustReuseExistingShiningPoliticsWriters"
                     ]
                 }
             ]
@@ -36165,6 +36179,94 @@
           "project": "unit",
           "tests": [
             "BookOfEternityClient.Tests.ShiningFactionHealingSupportContractTests.AuthoredHealingRoleSurvivesExistingNormalization"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "shining-healer-capability-data",
+      "responsibility": "Exact current ascended membership and visible typed materialized profiles prove integer HealingI-V; missing/restricted services grant nothing. Detached operation DATA and malformed/ambiguous identity controls.",
+      "excludes": "All-factions accepted-turn lifecycle invariant pending owner clarification; UI IO, paid route and HOLD DFR/Mortal/Windows.",
+      "changeHints": [
+        "BookOfEternityClient/Services/ShiningFactionHealingSupport.cs",
+        "BookOfEternityClient/UI/ExplorerShiningAbodeCommandResultBuilder.cs"
+      ],
+      "related": [
+        "shining-healer-role-causal"
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.ShiningFactionHealingSupportContractTests.ExactHealerCapabilityDoesNotCreateAService",
+            "BookOfEternityClient.Tests.ShiningFactionHealingSupportContractTests.InvalidCurrentProfileCannotProveHealingSupport",
+            "BookOfEternityClient.Tests.ShiningFactionHealingSupportContractTests.OnlyTheExactCurrentHealerAffiliationQualifies",
+            "BookOfEternityClient.Tests.ShiningFactionHealingSupportContractTests.VisibleRosterUsesDetachedExactProfilesWithoutInventingAuthority",
+            "BookOfEternityClient.Tests.ShiningFactionHealingSupportContractTests.AmbiguousOrWrongKindProfilesNeverSupplyRosterDetails"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "shining-healer-roster-ui",
+      "responsibility": "Actual browser detail, actual direct console command and literal shared renderer; current visibility, no action/mutation, fresh tier and equal real source-read counts for1vs20 members.",
+      "excludes": "Legacy interactive political inspection, DOM/provider/fresh process, global faction validation and all treatment/payment authority.",
+      "changeHints": [
+        "BookOfEternityClient/Services/ShiningFactionHealingSupport.cs",
+        "BookOfEternityClient/UI/ExplorerShiningAbodeCommandResultBuilder.cs"
+      ],
+      "related": [
+        "shining-healer-role-causal"
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.WebUi.BrowserShiningPoliticsParityTests.HealingRosterBrowserAndConsoleRendererShowLiteralRolesWithoutActionsOrMutation",
+            "BookOfEternityClient.Tests.WebUi.BrowserShiningPoliticsParityTests.HealingRosterNeverRevealsUnconfirmedHealerDetails",
+            "BookOfEternityClient.Tests.WebUi.BrowserShiningPoliticsParityTests.HealingRosterSourceReadsDoNotScaleWithMembersAndNextActionReadsFreshTier",
+            "BookOfEternityClient.Tests.WebUi.BrowserShiningPoliticsParityTests.HealingRosterActualConsoleDetailCommandIsReadOnlyAndShowsTheSameRole"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "shining-healer-role-documentation",
+      "responsibility": "Effective GM guide/rule/main task/both daemon assignments, exact manifest and worked authored role/art excerpts through production projection.",
+      "excludes": "Standalone full materialization, every-faction lifecycle policy and service payment/access execution.",
+      "changeHints": [
+        "BookOfEternityClient/Services/ShiningFactionHealingSupport.cs",
+        "BookOfEternityClient/UI/ExplorerShiningAbodeCommandResultBuilder.cs"
+      ],
+      "related": [
+        "shining-healer-role-causal"
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.ShiningFactionHealingSupportDocumentationTests.*"
           ]
         }
       ]

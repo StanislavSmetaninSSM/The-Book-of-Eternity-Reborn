@@ -297,6 +297,16 @@ public partial class ExplorerMode
 
     private async Task ShowShiningPoliticsOverview()
     {
+        if (!string.IsNullOrWhiteSpace(_currentCommandRemainder))
+        {
+            var detail = await ExplorerShiningAbodeCommandResultBuilder.TryBuildAsync(
+                _currentCommandInput, _stateManager, _fs);
+            if (detail is not null)
+                ExplorerCommandResultConsoleRenderer.Render(_console, detail);
+            WaitForKey();
+            return;
+        }
+
         while (true)
         {
             var context = await LoadShiningContextAsync();

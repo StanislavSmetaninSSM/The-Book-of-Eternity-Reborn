@@ -144,6 +144,22 @@ projection read follows refresh. Measure total actual reads without pretending t
 existing refresh reads disappear. No all-factions validation change is wired while
 the terminal lifecycle policy is awaiting the owner.
 
+Coherent independent-role WIP additionally authors actual browser/direct-console
+faction-detail tests, literal console rendering,1vs20 actual physical-source-open
+comparison and new-action changed-tier freshness. The existing political fixture
+provides independent per-test roots; original members have explicit catalog ownership,
+new UI members a separate bounded owner. GM rule/guide/matrix/API/main task and both
+effective daemon assignments now link shining_healer_role_v1; a focused worked
+roster/art example retains the complete existing actor and never grants a service.
+No build, GREEN or UI PASS is claimed yet. Whole SOURCE/selection review precedes
+fresh Main/Support/Unit builds (Integration source unchanged and unselected), catalog
+and exact PlanOnly/PREP. No accepted paid80 or other unchanged PASS is selected.
+The legacy interactive political inspection is not this new direct-detail route;
+its wider strict roster projection and every-faction enforcement remain unqualified.
+The owner has the historical broken/dissolved-faction question; no answer or policy
+change is inferred. Continue only independent role/profile/display work.
+
+
 ---
 
 # US6 public Elyara treatment — design and implementation plan

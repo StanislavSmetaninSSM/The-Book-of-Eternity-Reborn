@@ -2,6 +2,29 @@
   "version": 1,
   "effectMaterializationCoverage": [
 {
+  "contractId": "shining_healer_role_v1",
+  "file": "E_CLI_Afterlife_Turns.txt",
+  "statePath": "guardian_abode_residents.entries[].residentRole and exact afterlife_entity_profiles resident capability",
+  "responseSurface": "ordinary revealed faction roster; no new response protocol or service grant",
+  "realms": [
+    "Shining Abode"
+  ],
+  "description": "Visible authored healing_support role and exact integer HealingIII with separate service authority.",
+  "validationKind": "focused-fragment",
+  "focusedFragmentReason": "ShiningFactionHealingSupportDocumentationTests overlays the authored excerpts onto an independent complete actor fixture and checks the production role/profile projection.",
+  "coverageLimit": "Not a standalone materialization, every-faction lifecycle acceptance, service access/payment, DOM/provider or fresh-process qualification.",
+  "requiredText": [
+    "shining_healer_role_v1",
+    "residentRole",
+    "healing_support",
+    "standardArts",
+    "spiritual_healing",
+    "целитель; Исцеление III",
+    "no public clinic",
+    "no draw, payment or world cycle"
+  ]
+},
+{
   "contractId": "spiritual_public_service_v7",
   "file": "E_CLI_Afterlife_Turns.txt",
   "statePath": "client family7 quote/payment/control/draw -> common Soul/wound/effects/History/schedule C4",

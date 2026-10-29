@@ -2075,3 +2075,21 @@ graphs/report; it does not convert rejection into a paid success.
 See the paid success, failed-attempt and rollback worked fragment in
 Examples/E_CLI_Afterlife_Turns.txt. Existing self2/aid3–6/combat semantics remain their
 own contracts. This section does not close all US6 or the deferred broader gates.
+
+
+## shining_healer_role_v1 — visible faction healer roster
+
+shining_healer_role_v1: author the existing residentRole="healing_support" in the exact
+ascended resident roster, linked by case-sensitive shiningFactionId to its faction.
+The matching resident-kind/ID profile in Shining Abode must retain its complete
+Actor Materialization envelope and explicit integer standardArts.spiritual_healing I-V.
+Do not invent primaryRole.key, a default tier, a replacement healer, resurrection,
+or relocation. Chaos isPresent and the player's current hall are not Shining membership.
+The ordinary revealed-faction detail reads current visible profiles and displays the
+Russian role «целитель» and the verified tier. Hidden, ambiguous or invalid profile
+DATA supplies no displayed capability. Multiple healers are legal. Role alone creates
+no public clinic, quote, treatment button, fee, consent or access permission. Services
+remain separately authored and freshly authorized; a faction may restrict assistance.
+Reading/closing the detail consumes no treatment attempt, draw, payment or world cycle.
+See the focused worked roster/profile excerpts in Examples/E_CLI_Afterlife_Turns.txt;
+retain all other complete actor/faction fields and current integrity/authority checks.

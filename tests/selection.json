@@ -3,9 +3,30 @@
   "selections": [
     {
       "category": "shining-healer-role-causal",
-      "reason": "Observe the actual unsupported/coerced authored healer role before implementing T135/T141/T142. Accepted public Elyara80 remains pinned at fde82644a and is not repeated.",
+      "reason": "GREEN the already observed role-coercion RED against the fresh role implementation.",
       "contracts": [
-        "#1536 US6 FR083–085 T135/T141/T142 primary residentRole normalization"
+        "#1536 US6 T135/T141/T144-T147 independent role/profile/roster; T142 global acceptance remains pending author lifecycle rule"
+      ]
+    },
+    {
+      "category": "shining-healer-capability-data",
+      "reason": "Strict exact current DATA, tier/life/visibility/materialization and detached result negatives before real UI IO.",
+      "contracts": [
+        "#1536 US6 T135/T141/T144-T147 independent role/profile/roster; T142 global acceptance remains pending author lifecycle rule"
+      ]
+    },
+    {
+      "category": "shining-healer-roster-ui",
+      "reason": "Affected browser and direct console consumer, source count and new-action freshness without action authority.",
+      "contracts": [
+        "#1536 US6 T135/T141/T144-T147 independent role/profile/roster; T142 global acceptance remains pending author lifecycle rule"
+      ]
+    },
+    {
+      "category": "shining-healer-role-documentation",
+      "reason": "Changed GM authoring contract, worked example and effective entrypoints.",
+      "contracts": [
+        "#1536 US6 T135/T141/T144-T147 independent role/profile/roster; T142 global acceptance remains pending author lifecycle rule"
       ]
     }
   ]

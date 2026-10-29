@@ -11,7 +11,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests.WebUi;
 
-public sealed class BrowserShiningPoliticsParityTests : IDisposable
+public sealed partial class BrowserShiningPoliticsParityTests : IDisposable
 {
     private readonly string _rootPath;
     private readonly FileSystemManager _fs;
@@ -19,12 +19,20 @@ public sealed class BrowserShiningPoliticsParityTests : IDisposable
     private readonly ExplorerWebCommandService _commandService;
     private readonly ExplorerWebPromptSessionService _promptSessions;
 
-    public BrowserShiningPoliticsParityTests()
+    private readonly Xunit.Abstractions.ITestOutputHelper? _healingRosterOutput;
+
+    public BrowserShiningPoliticsParityTests(Xunit.Abstractions.ITestOutputHelper output) : this((FileSystemManagerHooks?)null)
+    {
+        _healingRosterOutput = output;
+    }
+
+    private BrowserShiningPoliticsParityTests(FileSystemManagerHooks? hooks)
     {
         _rootPath = Path.Combine(Path.GetTempPath(), "boe-browser-shining-politics-" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(_rootPath);
 
-        _fs = new FileSystemManager(_rootPath, NullLogger<FileSystemManager>.Instance);
+        _fs = new FileSystemManager(_rootPath, NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance, hooks);
         _fs.EnsureDirectoryStructure();
         _stateManager = new StateManager(_fs, new GameSettings(), NullLogger<StateManager>.Instance);
         var validation = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
