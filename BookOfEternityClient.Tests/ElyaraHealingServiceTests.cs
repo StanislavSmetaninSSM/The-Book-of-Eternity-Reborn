@@ -41,7 +41,7 @@ public sealed class ElyaraHealingServiceTests
             await library.SeedElyaraForFreshNewGameAsync(guardians, profiles, "Душа", 1, now, elyara);
             Assert.Equal(accepted, profiles.ToJsonString()); // Never reseed a present accepted identity.
             Assert.Equal(active, guardians["activeGuardian"]!.ToJsonString());
-            Assert.Single(profiles["profiles"]!.AsArray().OfType<JsonObject>().Where(AfterlifeHealingServiceContract.IsElyaraProfile));
+            Assert.Single(profiles["profiles"]!.AsArray().OfType<JsonObject>(), AfterlifeHealingServiceContract.IsElyaraProfile);
         }
         finally { if (Directory.Exists(root)) Directory.Delete(root, true); }
     }

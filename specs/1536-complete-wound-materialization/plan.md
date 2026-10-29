@@ -258,6 +258,13 @@ callback to awaited StartAsync/async within the SAME existing RunBoundAsync scop
 other bootstrap actions/order/guards unchanged. This compile failure is not a
 causal test RED or gameplay result. Fresh corrected build/PREP/runtime remain pending.
 
+Managed1877292aa: corrected Main exit0/12baselinewarnings (2:58.13), Support exit0/
+23baselinewarnings (20.40s), Unit exit0/27warnings (2:10.12). One new xUnit2031 is
+the equivalent Assert.Single(Where(predicate)) spelling in fresh-seed test; changed
+to Assert.Single(source,predicate), no assertion removed. Rebuild only affected Unit;
+Main/Support C# sources stay187 and need no redundant build. Preserve187Unit artifacts
+before replacement. Integration/catalog/exactPlan/PREP/runtime still UNRUN.
+
 ---
 
 # T126 — accepted browser wound cards and guided treatment presentation
