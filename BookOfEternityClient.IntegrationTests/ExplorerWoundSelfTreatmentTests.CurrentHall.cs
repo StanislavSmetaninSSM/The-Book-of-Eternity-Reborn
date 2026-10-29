@@ -1,10 +1,10 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using BookOfEternityClient.CommandProtocol;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Models;
 using BookOfEternityClient.Services;
-using BookOfEternityClient.UI;
 using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
 
@@ -26,11 +26,11 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
             root["unrelatedUnknownKey"] = true;
             await files.WriteFileAtomicAsync(ShiningAbodeState.StatePath, root.ToJsonString());
         }
-        var before = fixture.CaptureMutationRoots([ShiningAbodeState.StatePath,
+        var before = fixture.CaptureMutationRoots(new[] { ShiningAbodeState.StatePath,
             AfterlifeWoundHealingPlanner.Continuation.ServiceSoulPath,
-            AfterlifeWoundTreatmentAuthority.AidGuardiansPath, GuardianThoughtJournalState.StatePath,
+            GuardianThoughtJournalState.StatePath,
             PendingPlayerActionService.PendingPath, EffectAcceptedTurnInputComposer.WorldTimePath,
-            PendingTurnStateService.PendingDiceStatePath]);
+            PendingTurnStateService.PendingDiceStatePath }.Concat(AfterlifeWoundTreatmentAuthority.ServiceLocalityPaths));
         var errors = (await new ValidationService(files, NullLogger<ValidationService>.Instance).ValidateGameStateAsync())
             .Where(i => i.Severity == IssueSeverity.Error).ToArray();
         if (kind == "shining_unknown_key")

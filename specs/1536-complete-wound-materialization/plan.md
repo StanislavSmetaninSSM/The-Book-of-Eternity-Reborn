@@ -20,6 +20,11 @@ links strengthened afterward. Current patch UNCOMPILED/UNQUALIFIED. Next: preser
 artifacts, Integration-only build (Main/Support/Unit exact b46 source unchanged), source/PDB
 proof, discovery/exact PlanOnly readiness3 + browser1, resource/PREP; cheap readiness3,
 then one browser journey in original180s. No other unchanged PASS or HOLD gate repeat.
+First Integration-only compile on805daf46 ended4errors/102baseline warnings: missing
+CommandProtocol import and inaccessible private AidGuardiansPath in the new test. Fixed
+with the documented import and existing ServiceLocalityPaths; no production change or
+runtime. This is a compile failure, not causal RED or qualification. Preserve failed
+build log and retry only the corrected Integration build.
 Raw stays outside checkout at us6-elyara-current-location. T142 approved decision remains
 next after T143 acceptance; no historical record deletion or hidden-current exemption.
 
