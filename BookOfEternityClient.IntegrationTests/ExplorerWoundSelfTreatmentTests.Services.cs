@@ -88,10 +88,11 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                 await service.CancelPromptSessionAsync(new(cancelled.InteractiveSession!.SessionId, Owner));
                 fixture.AssertMutationRootsUnchanged(before);
                 var opened = await service.ExecuteAsync(new(realm == "Shining Abode" ? "/элиара" : "/лечить", Owner));
-                Assert.Equal(realm == "Chaos Sea", opened.WoundCommandState!.IsTargetSelection);
-                if (opened.WoundCommandState.IsTargetSelection)
+                Assert.Equal(CommandExecutionState.RequiresInput, opened.State);
+                var targets = opened.Prompts.OfType<UiSelectionPrompt>().SingleOrDefault(p => p.Id == "wound_target");
+                Assert.Equal(realm == "Chaos Sea", targets is not null);
+                if (targets is not null)
                 {
-                    var targets = Assert.IsType<UiSelectionPrompt>(Assert.Single(opened.Prompts));
                     var self = Assert.Single(targets.Options, o => !o.Disabled && o.Label == "Себя");
                     opened = await service.SubmitPromptSessionAsync(new(opened.InteractiveSession!.SessionId,
                         new() { ["wound_target"] = JsonValue.Create(self.Value) }, Owner));

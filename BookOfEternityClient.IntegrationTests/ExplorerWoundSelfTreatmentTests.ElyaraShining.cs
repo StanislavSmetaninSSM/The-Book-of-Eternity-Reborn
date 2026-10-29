@@ -4,10 +4,13 @@ namespace BookOfEternityClient.Tests;
 
 public sealed partial class ExplorerWoundSelfTreatmentTests
 {
-    [Theory]
-    [InlineData(false)] [InlineData(true)]
-    public Task CoLocatedShiningElyaraOpensFreshTreatmentAndPublishesOnePaidCycle(bool browser) =>
-        RunServiceJourneyAsync(browser, realm: "Shining Abode");
+    [Fact]
+    public Task ConsoleCoLocatedShiningElyaraOpensFreshTreatmentAndPublishesOnePaidCycle() =>
+        RunServiceJourneyAsync(browser: false, realm: "Shining Abode");
+
+    [Fact]
+    public Task BrowserCoLocatedShiningElyaraOpensFreshTreatmentAndPublishesOnePaidCycle() =>
+        RunServiceJourneyAsync(browser: true, realm: "Shining Abode");
 
     [Fact]
     public Task ShiningElyaraPublicationFailureRestoresWholeUnpaidTurn() =>

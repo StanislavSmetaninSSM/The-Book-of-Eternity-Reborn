@@ -122,7 +122,14 @@
     },
     {
       "category": "elyara-current-location-shining-ui",
-      "reason": "Console and shared browser /элиара co-location opens fresh /лечить, cancel inert, real confirmed price25/payment/wound/History/one Shining cycle through actual GameEngine.",
+      "reason": "Retain accepted console co-location lineage; split public browser case so the failed browser fixture can be qualified without repeating unchanged console PASS.",
+      "contracts": [
+        "#1536 T143 / FR081-FR082 same canonical current Elyara, ordinary access, local service7; T142 remains pending"
+      ]
+    },
+    {
+      "category": "elyara-current-location-shining-browser",
+      "reason": "Test-only public-prompt correction after observed private-state NRE: public open/cancel/confirmation/queue and actual paid Shining cycle; no production exposure.",
       "contracts": [
         "#1536 T143 / FR081-FR082 same canonical current Elyara, ordinary access, local service7; T142 remains pending"
       ]

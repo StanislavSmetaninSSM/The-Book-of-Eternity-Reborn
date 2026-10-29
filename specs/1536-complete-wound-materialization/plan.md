@@ -1,3 +1,28 @@
+# T143 browser fixture correction — WIP, 2026-10-29 22:50 UTC
+
+Remote/source b46d12cccae1840b13f6fe47adc1143a0da0403b: fresh cheap91/91 PASS.
+Functional first sequence7PASS/1FAIL/8of11,131.5076141s, no timeout; browser Shining
+fixture dereferenced private WoundCommandState omitted intentionally by public projection.
+Remaining UNRUN subset completed3/3PASS,122.6679914s: ordinary travel console/browser
+and affected Chaos paid console. Both runs have complete TRX, clean owned/runtime
+cleanup and unchanged binary pins. Ten distinct functional cases PASS at b46; failed
+browser is not accepted. Old health timeout/unknown-key failures remain historical.
+
+Independent Sol confirmed public UI contract and bounded selection: use RequiresInput,
+wound_target/wound_selection prompts, not private coordinator DATA. Add same-hall public
+open/cancel/price25/no-private-state/no-mutation proof to existing readiness fixture.
+Split Shining UI Theory into descriptive console/browser Facts with separate owners;
+retain accepted unchanged console lineage, rerun only browser. No production changes,
+new cache or extra Engine setup; cheap proof reuses its existing independent fixture.
+Current patch UNCOMPILED/UNQUALIFIED. Next: delta SOURCE/selection; preserve current27
+artifacts, Integration-only build (Main/Support/Unit exact b46 source unchanged), source/PDB
+proof, discovery/exact PlanOnly readiness3 + browser1, resource/PREP; cheap readiness3,
+then one browser journey in original180s. No other unchanged PASS or HOLD gate repeat.
+Raw stays outside checkout at us6-elyara-current-location. T142 approved decision remains
+next after T143 acceptance; no historical record deletion or hidden-current exemption.
+
+---
+
 # T143 — current canonical Elyara route: qualification in progress
 
 Issue: https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536

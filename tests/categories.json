@@ -36708,7 +36708,7 @@
     },
     {
       "id": "elyara-current-location-shining-ui",
-      "responsibility": "Console and shared browser /элиара co-location opens fresh /лечить, cancel inert, real confirmed price25/payment/wound/History/one Shining cycle through actual GameEngine.",
+      "responsibility": "Console /элиара co-location opens fresh /лечить, cancel inert, real confirmed price25/payment/wound/History/one Shining cycle through actual GameEngine.",
       "excludes": "No arbitrary Shining hall/cross-realm travel, negotiated services or T142 policy; no DOM/live provider/fresh-process qualification, HOLD DFR/Mortal/Windows/performance or unrelated accepted80 replay.",
       "changeHints": [
         "#1536 T143 current canonical Elyara; exact changed contracts and consumers"
@@ -36725,7 +36725,36 @@
         {
           "project": "integration",
           "tests": [
-            "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.CoLocatedShiningElyaraOpensFreshTreatmentAndPublishesOnePaidCycle"
+            "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.ConsoleCoLocatedShiningElyaraOpensFreshTreatmentAndPublishesOnePaidCycle"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "elyara-current-location-shining-browser",
+      "responsibility": "Public shared browser /элиара prompts, inert cancellation and confirmed queue publish exact paid treatment, History and one Shining cycle; private coordinator state is not a public result.",
+      "excludes": "No arbitrary Shining hall/cross-realm travel, negotiated services or T142 policy; no DOM/live provider/fresh-process qualification, HOLD DFR/Mortal/Windows/performance or unrelated accepted80 replay.",
+      "changeHints": [
+        "#1536 T143 current canonical Elyara; exact changed contracts and consumers"
+      ],
+      "related": [
+        {
+          "id": "elyara-current-location-fixture-readiness",
+          "when": "Public prompt fixture preparation changes before this actual Engine journey."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.BrowserCoLocatedShiningElyaraOpensFreshTreatmentAndPublishesOnePaidCycle"
           ]
         }
       ]

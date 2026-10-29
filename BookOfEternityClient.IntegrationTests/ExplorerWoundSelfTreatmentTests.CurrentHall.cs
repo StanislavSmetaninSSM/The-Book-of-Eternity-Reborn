@@ -4,6 +4,7 @@ using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Models;
 using BookOfEternityClient.Services;
+using BookOfEternityClient.UI;
 using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
 
@@ -25,7 +26,9 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
             root["unrelatedUnknownKey"] = true;
             await files.WriteFileAtomicAsync(ShiningAbodeState.StatePath, root.ToJsonString());
         }
-        var before = fixture.CaptureMutationRoots([ShiningAbodeState.StatePath]);
+        var before = fixture.CaptureMutationRoots([ShiningAbodeState.StatePath,
+            PendingPlayerActionService.PendingPath, EffectAcceptedTurnInputComposer.WorldTimePath,
+            PendingTurnStateService.PendingDiceStatePath]);
         var errors = (await new ValidationService(files, NullLogger<ValidationService>.Instance).ValidateGameStateAsync())
             .Where(i => i.Severity == IssueSeverity.Error).ToArray();
         if (kind == "shining_unknown_key")
@@ -35,6 +38,19 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                 i.Code is "flexible_state_unknown_top_level_key" or "strict_state_unknown_top_level_key", i.Code + ":" + i.Message));
         }
         else Assert.True(errors.Length == 0, string.Join("\n", errors.Select(i => i.Code + ":" + i.FilePath + ":" + i.Message)));
+        if (kind == "shining")
+        {
+            var commands = CreateCommands(files);
+            var opened = await commands.ExecuteAsync(new("/элиара", Owner));
+            Assert.Equal(CommandExecutionState.RequiresInput, opened.State);
+            Assert.Null(opened.WoundCommandState); // Private coordinator state is not a public UI contract.
+            Assert.DoesNotContain(opened.Prompts, p => p.Id == "wound_target");
+            var selection = Assert.IsType<UiSelectionPrompt>(Assert.Single(opened.Prompts, p => p.Id == "wound_selection"));
+            var paid = Assert.Single(selection.Options, o => !o.Disabled && o.Label.Contains("Элиара", StringComparison.Ordinal));
+            Assert.Contains("25", paid.Label);
+            Assert.True(opened.InteractiveSession!.RequiresLocalUiLock);
+            await commands.CancelPromptSessionAsync(new(opened.InteractiveSession.SessionId, Owner));
+        }
         fixture.AssertMutationRootsUnchanged(before); fixture.AssertResourcesUnchanged();
     }
 
