@@ -200,6 +200,12 @@ no ownership expansion was added. Duplicate target-host IDs are already rejected
 Engine's pre-stage canonical validation, so optional unrelated projection hardening is
 not added. Remaining SOURCE verdict/build/runtime still pending; no new PASS claimed.
 
+Final source-contract wording follow-up: existing private wound_commands registry now
+accurately calls family7 safe co-located Chaos/Shining Elyara service, retaining its
+same path, realms and private ownership. Existing service documentation registry guard
+remains selected. Independent whole SOURCE final verdict is being closed; GREEN build,
+exact discovery/PlanOnly/PREP and runtime remain UNRUN at this saved boundary.
+
 All this GREEN code is UNCOMPILED/UNREVIEWED/UNQUALIFIED. Remaining finite work: complete
 new admission/accepted/race/source-count and Shining actual result/replay/rollback tests,
 GM effective guidance/examples/guards, whole impact selection/SOURCE, then one fresh
