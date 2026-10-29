@@ -86,7 +86,7 @@ public sealed class WoundHistoryCommandTests(ITestOutputHelper output)
         Assert.Equal(3L, reads.ReadCount(WoundHistoryState.HistoryPath) - count);
         await ReleaseOwnLock(locks);
         Assert.Equal(before, fixture.Snapshot()); Assert.Equal(0, repairs);
-        Assert.NotEmpty(mutations); Assert.All(mutations, path => Assert.Equal(LocalUiSessionLockService.LockPath, path));
+        Assert.All(mutations, path => Assert.Equal(LocalUiSessionLockService.LockPath, path));
         Assert.Null(await fixture.Files.ReadFileBytesAsync(PendingPlayerActionService.PendingPath));
     }
 

@@ -102,7 +102,7 @@ initializes generation before snapshots, records all attempted mutations only in
 user-operation windows, rechecks History source counts per fresh action, and uses
 full canonical History+identity replacement for the hidden-state stale-action control.
 Console action loop is Close-first; explicit History/back/close and literal text
-are tested, with exact owned token release. Unknown/trailing arguments cannot become
+are tested, with exact owned token release if a token exists. Unknown/trailing arguments cannot become
 GM input; browser rejects trailing arguments before session/source work using its
 existing structured error pattern. Read-only browser calls need not mutate UI locks;
 all observed mutations, if any, must still be owned UI-lock traffic.
@@ -116,6 +116,15 @@ protocol blocks are unchanged, so no npm aggregate/DOM claim; dedicated cards re
 T126 work. Selection owns causal1, pure20, actualinterfaces8, GM1 and the small affected
 existing parser group (actual count from discovery pending). Original budgets60s;
 no unrelated console aggregate or unchanged55/36/HOLD rerun. Coherent SOURCE next.
+
+Coherent Sol SOURCE/selection found one fixture-only assumption: read-only console
+/wounds bypasses the mutating-command UI-lock acquisition just like completed browser
+reads, so the mutation list can legitimately be empty. Removed only NotEmpty; every
+attempted mutation still must be the allowed UI-lock path, and snapshots/source/repair/
+optional exact token release remain. No production lock traffic was added. No other
+SOURCE blocker found; expected38 cases/19 methods awaits discovery. All66 existing
+World source pins match with changed-file intersection0; no World pin update/repeat.
+Narrow delta SOURCE closure and fresh affected builds are next; GREEN still UNRUN.
 
 # T119-FOREIGN-DETAIL — accepted known foreign spiritual wound card
 
