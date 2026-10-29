@@ -112,6 +112,50 @@ public sealed class ElyaraCurrentLocationContractTests
         Assert.ThrowsAny<Exception>(() => ElyaraVisitService.ParseAction(action));
     }
 
+    [Theory]
+    [InlineData("valid")] [InlineData("forged_original")] [InlineData("dead")]
+    [InlineData("moved")] [InlineData("duplicate")] [InlineData("wrong_arrival")]
+    [InlineData("realm")]
+    public void AcceptanceRequiresOriginalReachabilityAndSameCurrentAliveProvider(string change)
+    {
+        var original = Inputs();
+        var fingerprint = ElyaraVisitService.DataFingerprint(original, Generation);
+        var intent = ElyaraVisitService.Project(original, Generation, fingerprint).State!.Intent;
+        var current = Inputs();
+        var destination = current.Guardians!["guardians"]![0]!.AsObject();
+        current.Guardians["activeGuardian"] = destination.DeepClone();
+        current.Guardians["chaosSeaNavigation"]!["currentAbodeId"] = intent.TargetAbodeId;
+        current.Guardians["chaosSeaNavigation"]!["currentGuardianId"] = intent.TargetGuardianId;
+        if (change == "forged_original") original.Guardians!["chaosSeaNavigation"]!["discoveredAbodes"] = new JsonArray("abode_host");
+        if (change == "dead") Actor(current)["lifeState"] = "dead";
+        if (change == "moved") { Actor(current)["locationId"] = "other_place"; Actor(current)["healingServiceProfile"]!["locationRef"] = "other_place"; }
+        if (change == "duplicate") current.Profiles!["profiles"]!.AsArray().Add(Actor(current).DeepClone());
+        if (change == "wrong_arrival") current.Guardians["chaosSeaNavigation"]!["currentAbodeId"] = "abode_host";
+        if (change == "realm") current.Soul!["currentRealm"] = "Shining Abode";
+        var before = Serialize(original) + Serialize(current);
+        if (change == "valid") ElyaraVisitService.RequireAccepted(intent, original, current);
+        else Assert.Throws<InvalidDataException>(() => ElyaraVisitService.RequireAccepted(intent, original, current));
+        Assert.Equal(before, Serialize(original) + Serialize(current));
+    }
+
+    [Fact]
+    public void ComparisonDataIsEncodingIndependentButEveryRootAndGenerationParticipates()
+    {
+        var input = Inputs();
+        var fingerprint = ElyaraVisitService.DataFingerprint(input, Generation);
+        var state = ElyaraVisitService.Project(input, Generation, fingerprint).State!;
+        var exported = ElyaraVisitService.ActionFor(state.Intent);
+        input.Soul!["unrelatedVisibleData"] = 1;
+        Assert.NotEqual(fingerprint, ElyaraVisitService.DataFingerprint(input, Generation));
+        Assert.Equal(exported, ElyaraVisitService.ActionFor(state.Intent)); // No mutable root escapes in intent.
+        input.Soul.Remove("unrelatedVisibleData");
+        var reordered = new JsonObject(input.Guardians!.Reverse().Select(p =>
+            new KeyValuePair<string, JsonNode?>(p.Key, p.Value?.DeepClone())));
+        Assert.Equal(fingerprint, ElyaraVisitService.DataFingerprint(input with { Guardians = reordered }, Generation));
+        Assert.NotEqual(fingerprint, ElyaraVisitService.DataFingerprint(input, Generation + "_replaced"));
+        Assert.NotEqual(fingerprint, ElyaraVisitService.DataFingerprint(input with { Conflict = new JsonObject() }, Generation));
+    }
+
     private static JsonObject Actor(ElyaraVisitInput input) => input.Profiles!["profiles"]![0]!.AsObject();
     private static string Serialize(ElyaraVisitInput input) => JsonSerializer.Serialize(input);
     private static JsonObject Guardian(string id, string abode, string name) => new()

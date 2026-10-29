@@ -150,6 +150,16 @@ Actual current source images still close freshly around confirmation/staging; th
 never replaces original authentication, generation/lease or physical source fences.
 The stage SourcePaths remain Soul/profiles/guardians/Shining/conflict, one parse each.
 
+Current T143 WIP now includes original-versus-current acceptance controls, encoding-
+independent comparison DATA with byte-exact closing fences, actual five-source counters
+for1/20 extra actors, seven fresh confirmation/stage refusal cases, specific sealed
+queue/marker controls, two actual ordinary travel UI journeys, browser stale/foreign
+answer refusals, three Shining retained-result/replay cases and console/browser/rollback
+Shining service journeys. Existing paid stage/C4/History assertions are reused with
+explicit current realm; fixtures seed current hall/provider before resource bootstrap.
+All NEW GREEN C# is still UNCOMPILED/UNREVIEWED/UNRUN. GM synchronization and final
+whole-block impact selection/SOURCE remain next; do not treat authored assertions as PASS.
+
 All this GREEN code is UNCOMPILED/UNREVIEWED/UNQUALIFIED. Remaining finite work: complete
 new admission/accepted/race/source-count and Shining actual result/replay/rollback tests,
 GM effective guidance/examples/guards, whole impact selection/SOURCE, then one fresh

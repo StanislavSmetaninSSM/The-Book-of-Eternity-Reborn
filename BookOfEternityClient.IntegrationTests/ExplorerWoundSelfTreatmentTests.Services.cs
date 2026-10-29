@@ -21,7 +21,7 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
     [Fact]
     public Task ElyaraServicePublicationFailureRestoresUnpaidWholeConsoleTurn() => RunServiceJourneyAsync(browser: false, failPublication: true);
 
-    private async Task RunServiceJourneyAsync(bool browser, bool failPublication = false)
+    private async Task RunServiceJourneyAsync(bool browser, bool failPublication = false, string realm = "Chaos Sea")
     {
         FileSystemManager? ownedFiles = null; var armed = false; var cuts = 0;
         await using var fixture = await AfterlifeHealingPaymentLifecycleTests.CreateServiceFixtureAsync(1, 20,
@@ -34,7 +34,7 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                     if (JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(File.ReadAllBytes(path)))!["inkFeathers"]!["current"]!.GetValue<int>() != 475) return;
                     armed = false; cuts++; throw new InvalidOperationException("Paid service Engine C4 cut after wallet publication.");
                 }
-            }, engine: true);
+            }, engine: true, realm: realm);
         var files = fixture.Files; ownedFiles = files;
         var beforeWound = Assert.Single((await fixture.ReadWoundsAsync()).Occurrences).Wound;
         var console = new TestExplorerConsole();
@@ -86,7 +86,7 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                 var cancelled = await service.ExecuteAsync(new("/лечить", Owner));
                 await service.CancelPromptSessionAsync(new(cancelled.InteractiveSession!.SessionId, Owner));
                 fixture.AssertMutationRootsUnchanged(before);
-                var opened = await service.ExecuteAsync(new("/лечить", Owner));
+                var opened = await service.ExecuteAsync(new(realm == "Shining Abode" ? "/элиара" : "/лечить", Owner));
                 var targets = Assert.IsType<UiSelectionPrompt>(Assert.Single(opened.Prompts));
                 var self = Assert.Single(targets.Options, o => !o.Disabled && o.Label == "Себя");
                 opened = await service.SubmitPromptSessionAsync(new(opened.InteractiveSession!.SessionId,
@@ -120,7 +120,7 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                 console.QueueAnySelection((Array.IndexOf(targets, self) + 1) + ". " + self.Label,
                     "1. " + choice.Name + " — " + choice.Severity);
                 console.QueueAnyConfirmResponse(true);
-                var action = await runtime.Explorer.TryProcessCommand("/лечить");
+                var action = await runtime.Explorer.TryProcessCommand(realm == "Shining Abode" ? "/элиара" : "/лечить");
                 Assert.Equal(WoundApplicationService.ServiceActionText, action);
                 Assert.Contains("25", Assert.Single(console.ConfirmPrompts));
                 fixture.AssertMutationRootsUnchanged(before);
@@ -137,6 +137,9 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                 output.WriteLine("Console paid service C4 cut: wallet and complete pre-turn wound/effects/History/cycle restored; no accepted payment.");
                 return;
             }
+            Assert.Equal(realm, turn!.ProgressionControl!.CurrentRealm);
+            Assert.Equal(realm == "Shining Abode" ? 1 : 0, turn.ProgressionControl.ShiningAbodeCyclesExpectedThisTurn);
+            Assert.Equal(realm == "Chaos Sea" ? 1 : 0, turn.ProgressionControl.ChaosSeaCyclesExpectedThisTurn);
             Assert.Equal(43, runtime.GameLoop.TurnNumber);
             var wallet = JsonNode.Parse((await files.ReadFileAsync(AfterlifeWoundHealingPlanner.Continuation.ServiceSoulPath))!)!["inkFeathers"]!;
             Assert.Equal(475, wallet["current"]!.GetValue<int>()); Assert.Equal(900, wallet["total"]!.GetValue<int>());

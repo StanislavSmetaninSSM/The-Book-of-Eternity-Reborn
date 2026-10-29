@@ -11,7 +11,7 @@ using HealingFixture = BookOfEternityClient.Tests.AfterlifeWoundHealingLifecycle
 namespace BookOfEternityClient.Tests;
 
 /// <summary>Actual stage/original/common C4/History, with deterministic retained draws; not a live GM or fresh process.</summary>
-public sealed class AfterlifeHealingPaymentLifecycleTests(ITestOutputHelper output)
+public sealed partial class AfterlifeHealingPaymentLifecycleTests(ITestOutputHelper output)
 {
     [Theory]
     [InlineData("funds")][InlineData("dead")][InlineData("price")]
@@ -130,11 +130,14 @@ public sealed class AfterlifeHealingPaymentLifecycleTests(ITestOutputHelper outp
     [InlineData(1, "NoImprovement")]
     [InlineData(2, "RecoveryPoint")]
     [InlineData(20, "ReduceTwo")]
-    public async Task AcceptedSuccessPartialAndFailedAttemptChargeOnceAndReplayWithoutWrites(int die, string band)
+    public Task AcceptedSuccessPartialAndFailedAttemptChargeOnceAndReplayWithoutWrites(int die, string band) =>
+        RunAcceptedServiceAsync(die, band, "Chaos Sea");
+
+    private async Task RunAcceptedServiceAsync(int die, string band, string realm)
     {
-        await using var fixture = await CreateServiceFixtureAsync(3, die);
+        await using var fixture = await CreateServiceFixtureAsync(3, die, realm: realm);
         var original = Assert.Single((await fixture.ReadWoundsAsync()).Occurrences).Wound;
-        var (stage, request) = await StageAsync(fixture, die, proveRetry: true);
+        var (stage, request) = await StageAsync(fixture, die, proveRetry: true, realm: realm);
         var graphs = AfterlifeSpiritualNaturalRecoveryTests.AuthorNaturalGraphs(original, stage.Stage.GmContext!["destinationGraphs"]!.AsArray());
         await fixture.Files.WriteFileAtomicAsync("output/interface_updates.json", new JsonObject
             { ["spiritualHealingGraphs"] = graphs, ["dialogueOptions"] = new JsonArray(), ["timestamp"] = DateTime.UtcNow.ToString("o") }.ToJsonString());
@@ -232,12 +235,16 @@ public sealed class AfterlifeHealingPaymentLifecycleTests(ITestOutputHelper outp
         fixture.AssertMutationRootsUnchanged(before);
     }
 
-    internal static Task<HealingFixture> CreateServiceFixtureAsync(int rank, int die, FileSystemManagerHooks? hooks = null, bool engine = false) =>
+    internal static Task<HealingFixture> CreateServiceFixtureAsync(int rank, int die, FileSystemManagerHooks? hooks = null, bool engine = false, string realm = "Chaos Sea", bool remoteElyara = false) =>
         HealingFixture.CreateAsync(rank, 0, die, stageRequest: false, hooks: hooks, beforeResourceBootstrap: async (files, profiles) =>
-            { await SeedServiceAsync(files, profiles); if (engine) await ExplorerWoundSelfTreatmentTests.SeedAidJourneyLoreAsync(files); },
-            configureSoul: soul => soul["inkFeathers"] = new JsonObject { ["current"] = 500, ["total"] = 900 });
+            {
+                await SeedServiceAsync(files, profiles, realm);
+                if (remoteElyara) await ElyaraCurrentLocationNavigationTests.SeedRemoteSourceAsync(files, profiles);
+                if (engine) await ExplorerWoundSelfTreatmentTests.SeedAidJourneyLoreAsync(files);
+            },
+            realm: realm, configureSoul: soul => soul["inkFeathers"] = new JsonObject { ["current"] = 500, ["total"] = 900 });
 
-    internal static async Task SeedServiceAsync(FileSystemManager files, JsonObject profiles)
+    internal static async Task SeedServiceAsync(FileSystemManager files, JsonObject profiles, string realm = "Chaos Sea")
     {
         var library = new SystemGuardianLibraryService(files, NullLogger<SystemGuardianLibraryService>.Instance);
         var preset = new SystemGuardianLibraryService.SystemGuardianPresetDescriptor
@@ -248,10 +255,23 @@ public sealed class AfterlifeHealingPaymentLifecycleTests(ITestOutputHelper outp
         var actor = library.BuildAfterlifeEntityProfileRootForFreshNewGame(preset, "Душа", 42,
             DateTimeOffset.Parse("2026-10-29T00:00:00Z"))["profiles"]![0]!.DeepClone().AsObject();
         actor["activeWounds"] = new JsonArray(); actor["activeEffects"] = new JsonArray();
+        if (realm == "Shining Abode")
+        {
+            actor["realm"] = realm; actor["locationId"] = "hall_elyara_companion";
+            actor["healingServiceProfile"]!["realm"] = "shining_abode";
+            actor["healingServiceProfile"]!["locationRef"] = "hall_elyara_companion";
+        }
         profiles["profiles"]!.AsArray().Add(actor);
         var guardian = PlayerGuardianFoundationValidationTests.CreateGuardian(AfterlifeWoundTreatmentAuthority.ElyaraId,
             "Элиара Последней Раны", AfterlifeWoundTreatmentAuthority.ElyaraAbodeId);
         await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+        if (realm == "Shining Abode")
+        {
+            var shining = ShiningAbodeState.CreateDefaultState();
+            shining["currentHallId"] = "hall_elyara_companion";
+            shining["halls"] = new JsonArray(new JsonObject { ["hallId"] = "hall_elyara_companion", ["hallName"] = "Зал сопровождения" });
+            await files.WriteFileAtomicAsync(lease, ShiningAbodeState.StatePath, shining.ToJsonString());
+        }
         await files.WriteFileAtomicAsync(lease, WoundCarrierCatalog.AfterlifeProfilesPath, profiles.ToJsonString());
         await files.WriteFileAtomicAsync(lease, AfterlifeWoundTreatmentAuthority.ServiceLocalityPaths[0], new JsonObject
         {
@@ -262,8 +282,8 @@ public sealed class AfterlifeHealingPaymentLifecycleTests(ITestOutputHelper outp
         }.ToJsonString());
     }
 
-    private static async Task<(AfterlifeWoundTreatmentAuthority.ServiceTurnStageResult Stage, JsonObject Request)> StageAsync(
-        HealingFixture fixture, int die, bool proveRetry = false)
+    internal static async Task<(AfterlifeWoundTreatmentAuthority.ServiceTurnStageResult Stage, JsonObject Request)> StageAsync(
+        HealingFixture fixture, int die, bool proveRetry = false, string realm = "Chaos Sea")
     {
         var files = fixture.Files;
         var offered = (await WoundApplicationService.OpenAsync(files, "/лечить", treatment: true)).WoundCommandState!;
@@ -294,7 +314,7 @@ public sealed class AfterlifeHealingPaymentLifecycleTests(ITestOutputHelper outp
         await new LiveTurnPreparationService(files).PrepareAsync(new LiveTurnPreparationOptions
         {
             SessionId = "session_spiritual_healing", RequestId = "request_spiritual_healing", TurnNumber = 43,
-            CurrentRealm = "Chaos Sea", PlayerAction = WoundApplicationService.ServiceActionText,
+            CurrentRealm = realm, PlayerAction = WoundApplicationService.ServiceActionText,
             ProgressionControl = stage.Control, PreGeneratedDices1d20 = [7, 11, 16]
         });
         return (stage, request);

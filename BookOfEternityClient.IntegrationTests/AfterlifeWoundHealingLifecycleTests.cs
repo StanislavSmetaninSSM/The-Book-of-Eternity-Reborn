@@ -289,13 +289,19 @@ public sealed class AfterlifeWoundHealingLifecycleTests
 
         internal async Task WriteReportAsync(FileSystemManager.CanonicalWriteLease lease)
         {
+            var soul = await ReadRootAsync("game_state/meta/soul_state.json");
+            var shining = soul["currentRealm"]?.GetValue<string>() == "Shining Abode";
             await Files.WriteFileAtomicAsync(lease, ProgressionScheduleService.ReportPath, new JsonObject
             {
                 ["progressionProcessingReport"] = new JsonObject
                 {
                     ["sessionId"] = SessionId, ["requestId"] = RequestId, ["turnNumber"] = Turn,
                     ["worldCyclesProcessed"] = 0, ["factionCyclesProcessed"] = 0,
-                    ["chaosSeaCyclesProcessed"] = 1, ["guardianProjectCyclesProcessed"] = 1, ["residentAgencyCyclesProcessed"] = 1,
+                    ["chaosSeaCyclesProcessed"] = shining ? 0 : 1, ["guardianProjectCyclesProcessed"] = 1, ["residentAgencyCyclesProcessed"] = 1,
+                    ["shiningAbodeCyclesProcessed"] = shining ? 1 : 0,
+                    ["shiningFactionCyclesProcessed"] = shining ? 1 : 0, ["shiningTradeCyclesProcessed"] = shining ? 1 : 0,
+                    ["newLastShiningAbodeCycleOrdinal"] = shining ? 1 : 0,
+                    ["newLastShiningFactionCycleOrdinal"] = shining ? 1 : 0, ["newLastShiningTradeCycleOrdinal"] = shining ? 1 : 0,
                     ["newLastChaosSeaSimulationOrdinal"] = 1, ["newLastGuardianProjectCycleOrdinal"] = 1,
                     ["newLastResidentAgencyCycleOrdinal"] = 1
                 }
@@ -398,7 +404,11 @@ public sealed class AfterlifeWoundHealingLifecycleTests
         {
             var schedule = await ReadRootAsync(ProgressionScheduleService.SchedulePath);
             Assert.Equal(1, schedule["currentChaosSeaTurnOrdinal"]!.GetValue<int>());
-            Assert.Equal(1, schedule["lastChaosSeaSimulationOrdinal"]!.GetValue<int>());
+            var shining = (await ReadRootAsync("game_state/meta/soul_state.json"))["currentRealm"]?.GetValue<string>() == "Shining Abode";
+            Assert.Equal(shining ? 0 : 1, schedule["lastChaosSeaSimulationOrdinal"]!.GetValue<int>());
+            if (shining)
+                foreach (var key in new[] { "lastShiningAbodeCycleOrdinal", "lastShiningFactionCycleOrdinal", "lastShiningTradeCycleOrdinal" })
+                    Assert.Equal(1, schedule[key]!.GetValue<int>());
             Assert.Null(await Files.ReadFileBytesAsync(AcceptedMechanicsPlan.WoundCommandPath));
             Assert.Null(await Files.ReadFileBytesAsync(ProgressionScheduleService.ReportPath));
             var history = await ReadRootAsync(WoundHistoryState.HistoryPath);
