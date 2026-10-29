@@ -7,6 +7,49 @@ Use superpowers:executing-plans inline; independent Astra/high DESIGN and Sol
 SOURCE/selection/OUTCOME. Existing T135/T141/T142 own this coherent player result;
 T144–T147 own its GM/docs/example/verification portions. No new microtask or spec.
 
+Current verified boundary — 2026-10-29 Linux
+
+Compiled/tested source:30f949c4d895c2dd0a0e728ebb772c3905d31edd. Sol independent
+SOURCE/selection and PREP accepted. One approved fresh NoBuild run completed
+34/34PASS,14methods/fourdescriptors,36.7054377s wall, no skip/timeout/duplicate,
+complete owned/runtime cleanup and unchanged27artifact/51source pins. OUTCOME review
+is pending; this checkpoint changes only plan/tasks after that tested source.
+
+- shining-healer-capability-data:21PASS,5.0952387s<60.
+- shining-healer-role-causal:2PASS,4.6393690s<60, including the retained semantic RED
+  now GREEN and the exact existing archive/membership normalizer consumer.
+- shining-healer-role-documentation:3PASS,6.0459825s<60, including the corrected old
+  target-example section guard; no closed-packet assertion was relaxed.
+- shining-healer-roster-ui:8PASS,12.1866913s<120: actual browser command, actual direct
+  console command, literal rendering, five visibility/identity/refusal cases,
+  complete canonical read-only snapshots and next-action tier freshness.
+
+Actual1vs20-member source-open counters are identical:16opens across5paths per
+fresh browser action (profiles3, Shining5, guardians3, soul4, residents1). The3profile
+reads include the existing refresh; the new projection reads once after refresh
+and reuses the parsed root for all members. No cross-action cache or speedup claim.
+Old detached output stays unchanged when a later action reads HealingIII.
+
+Fresh Main/Support/Unit builds all exit0, baselinewarnings12/23/26, durations
+3:01.84/20.35s/1:14.53. Four owning PE/PDBpairs and51changed-source bindings checked;
+selected Main/Support copies agree. Integration is unchanged, retained, unselected,
+and is not claimed freshly built. Catalog1106categories/12852methods-files valid,
+0executions and clean revision/cleanup. PlanOnlyexact34/14/4,0execution,verified.
+SDK10.0.402, PowerShell7.6.8; same Linux environment and net8.0 targets.
+Full raw is external:/workspace/tboe-linux-evidence-20261025/us6-shining-healers.
+role-green-complete-capture.json verifies73files/50174161bytes, including complete
+logs/TRX/catalog/plan/provenance and the decoded/hash-verified retained old27owning
+artifacts. No raw is staged/uploaded; no previous measurement/save is deleted.
+
+This completes no parent US6 task yet: the new direct detail is qualified, while
+legacy interactive political-inspection parity, readable restricted-service access
+(T143/FR084), and global every-faction T142 enforcement remain open. The owner
+question about living healers in historical broken/dissolved factions is still
+pending; no terminal exception or new immortality rule is assumed. Accepted paid80
+remains separately pinned at fde82644a and is not repeated or combined into a new run.
+DFR300.1806894s timeout, Mortal compatibility timeout and Windows remain HOLD; no
+DOM/liveprovider/fresh-process or full restore is claimed for this block.
+
 Goal: the ordinary revealed Shining faction detail shows its visible current
 resident roster with the Russian healer role, while accepted state proves at least
 one exact healer profile with Spiritual HealingI–V for every materialized faction.
@@ -83,7 +126,7 @@ Finite execution and acceptance
 - [x] Resolve concrete DESIGN review against this plan and current sources, including
   exact visibility/current-member and full lifecycle semantics. Source rules stay
   authoritative; no silent exemption for hidden or dissolved factions.
-- [ ] Add one cheap causal Unit Fact AuthoredHealingRoleSurvivesExistingNormalization
+- [x] Add one cheap causal Unit Fact AuthoredHealingRoleSurvivesExistingNormalization
   in ShiningFactionHealingSupportContractTests.cs using literal healing_support and
   existing APIs. Existing behavior rejects/coerces the role. New coherent category
   shining-healer-role-causal,60s, exact one method; fresh affected Unit build, catalog/

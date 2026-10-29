@@ -14674,8 +14674,28 @@ Fresh life/location/price/funds guards and Elyara's
 protected fresh profile are covered. Public-currency portions of the tasks below
 are implemented; broader checkboxes remain open for negotiated compensation,
 universal travel/Shining destination, faction healers/access and their acceptance.
-Next concrete result is T135/T141/T142 visible faction healer capability, not another
-run of this unchanged80. Full raw/provenance remain outside checkout.
+2026-10-29 independent T135/T141/T144–T147 role/profile/direct-detail boundary:
+source30f949c4d895c2dd0a0e728ebb772c3905d31edd, SOURCE/selection and PREP accepted;
+fresh Main/Support/Unit exit0 (baseline12/23/26warnings), fourPE/PDBpairs/51source
+bindings. Exact catalog1106/12852 and PlanOnly34cases/14methods/fourdescriptors.
+One actual NoBuild run34/34PASS in36.7054377s, all budgets/cleanup/pins intact;
+OUTCOME pending. Categories:shining-healer-role-causal2,capability-data21,
+role-documentation3,roster-ui8. Role survives normalization; confirmed I–V appears
+in actual browser and direct-console faction details, hidden/invalid/ambiguous DATA
+reveals no capability, read/close changes no canonical state and grants no service.
+Actual1vs20-member actions both open16sources across5paths, including profiles3
+with existing refresh; parsed projection DATA is reused only within the action.
+GM rule/guide/matrix/API/main task/both daemon directives and worked example match.
+Full raw/provenance:/workspace/tboe-linux-evidence-20261025/us6-shining-healers,
+73files/50174161bytes verified outside Git. Current checkpoint differs only in
+plan/tasks from the compiled/tested source. No unchanged paid80 is repeated.
+Parent checkboxes stay open: T142 global enforcement awaits the owner decision
+on historical broken/dissolved factions; legacy interactive inspection and T143
+readable restricted-service access remain unqualified. Universal Elyara travel,
+Shining destination and negotiated routes also remain; US6/#1536 are not closed.
+No DOM/provider/fresh-process/Windows or full restore is inferred. Next implement
+only an independently authorized functional remainder or the clarified T142 rule;
+never silently exempt historical rows while the owner answer is pending.
 
 ### RED tests
 
