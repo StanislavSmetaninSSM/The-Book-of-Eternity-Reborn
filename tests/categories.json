@@ -37107,7 +37107,9 @@
             "BookOfEternityClient.Tests.FactionMaterializationValidationTests.ShiningRequiredActor_CompleteEnvelope_Passes",
             "BookOfEternityClient.Tests.FactionMaterializationValidationTests.ShiningRequiredActor_ExactProfilePairControls",
             "BookOfEternityClient.Tests.FactionMaterializationValidationTests.ShiningRequiredActor_RawSourceIdentityMustBeUsableAndUnique",
-            "BookOfEternityClient.Tests.FactionMaterializationValidationTests.ShiningHeadActor_ExactDocumentedException_Passes"
+            "BookOfEternityClient.Tests.FactionMaterializationValidationTests.ShiningHeadActor_ExactDocumentedException_Passes",
+            "BookOfEternityClient.Tests.FactionMaterializationValidationTests.ShiningRequiredActor_ForgedStrengthCannotGrantTradeAuthority",
+            "BookOfEternityClient.Tests.FactionMaterializationValidationTests.ShiningRequiredActor_ForgedProjectRewardCannotGrantTradeAuthority"
           ]
         }
       ]
