@@ -86,7 +86,12 @@ public sealed partial class FactionMaterializationValidationTests
                 faction["factionLifecycle"]!["state"] = "leaderless";
                 faction["leadership"] = new JsonObject { ["leadershipState"] = "vacant", ["headActorType"] = null, ["headActorId"] = null };
                 break;
-            case "broken": case "dissolved": faction["factionLifecycle"]!["state"] = change; RemoveHealer(); break;
+            case "broken": case "dissolved":
+                faction["factionLifecycle"] = new JsonObject { ["state"] = change, ["defeatedAtTurn"] = 11,
+                    ["defeatReason"] = "The historical faction lost its last active defenders.",
+                    ["remnantsSummary"] = "Its complete chronicle and old materialization are retained." };
+                faction["leadership"] = new JsonObject { ["leadershipState"] = "vacant", ["headActorType"] = null, ["headActorId"] = null };
+                RemoveHealer(); break;
             case "lifecycle_scalar": faction["factionLifecycle"] = "broken"; RemoveHealer(); break;
             case "lifecycle_array": faction["factionLifecycle"] = new JsonArray("broken"); RemoveHealer(); break;
             case "lifecycle_null": faction["factionLifecycle"] = null; RemoveHealer(); break;
@@ -137,11 +142,11 @@ public sealed partial class FactionMaterializationValidationTests
         if (expected is null)
         {
             Assert.Empty(healerErrors);
-            Assert.DoesNotContain(issues, i => i.Severity == IssueSeverity.Error && i.Actor == "shining_faction:shine_faction_dawn_archive");
+            Assert.DoesNotContain(issues, i => i.Severity == IssueSeverity.Error);
         }
         else Assert.Contains(healerErrors, i => i.Code == "faction_materialization_shining_healer_" + expected);
         if (change.StartsWith("lifecycle_", StringComparison.Ordinal))
-            Assert.Contains(issues, i => i.Code == "faction_materialization_shining_lifecycle_missing");
+            Assert.Contains(issues, i => i.Code == "faction_materialization_shining_lifecycle_invalid");
 
         void RemoveHealer()
         {

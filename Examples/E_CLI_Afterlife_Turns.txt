@@ -13990,7 +13990,12 @@ leaderless faction, including a hidden one, cannot use this historical exemption
 {
   "factionId": "faction_dawn",
   "visibility": "revealed",
-  "factionLifecycle": { "state": "broken" },
+  "factionLifecycle": { "state": "broken", "defeatedAtTurn": 45,
+    "defeatReason": "The faction lost its last active defenders.",
+    "remnantsSummary": "The faction and its complete prior chronicle remain in history." },
+  "leadership": { "leadershipState": "vacant", "headActorType": null, "headActorId": null },
+  "factionStrength": 0,
+  "tradeInventory": null,
   "chronicle": [
     { "entryId": "chronicle_dawn_history", "turnNumber": 45,
       "eventType": "faction_broken", "summary": "The faction survives in history.",

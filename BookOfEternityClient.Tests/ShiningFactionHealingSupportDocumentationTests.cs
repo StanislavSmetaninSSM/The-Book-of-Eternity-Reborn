@@ -62,6 +62,12 @@ public sealed class ShiningFactionHealingSupportDocumentationTests
         Assert.Equal("Светлая Ива", visible.Name); Assert.Equal("целитель", visible.Role); Assert.Equal(3, visible.HealingTier);
         var historical = fragments[2];
         var history = historical["chronicle"]!.ToJsonString();
+        Assert.Equal(45, historical["factionLifecycle"]!["defeatedAtTurn"]!.GetValue<int>());
+        Assert.False(string.IsNullOrWhiteSpace(historical["factionLifecycle"]!["defeatReason"]!.GetValue<string>()));
+        Assert.False(string.IsNullOrWhiteSpace(historical["factionLifecycle"]!["remnantsSummary"]!.GetValue<string>()));
+        Assert.Equal("vacant", historical["leadership"]!["leadershipState"]!.GetValue<string>());
+        Assert.Null(historical["leadership"]!["headActorType"]); Assert.Null(historical["leadership"]!["headActorId"]);
+        Assert.Equal(0, historical["factionStrength"]!.GetValue<int>()); Assert.Null(historical["tradeInventory"]);
         Assert.False(ShiningFactionHealingSupport.RequiresLivingHealer(historical));
         historical["factionLifecycle"]!["state"] = "dissolved";
         Assert.False(ShiningFactionHealingSupport.RequiresLivingHealer(historical));

@@ -1,5 +1,13 @@
 # T142 — whole source ready for independent review, WIP/UNCOMPILED
 
+Whole Sol SOURCE found only coupled fixture expectations before any GREEN build:
+non-object/null lifecycle is existing lifecycle_invalid (not missing); historical
+broken/dissolved must supply defeatedAtTurn/defeatReason/remnantsSummary and vacant
+leadership with null head, strength0/no trade. Corrected actual raw/post cases and the
+worked historical excerpt; positive matrix cases now reject ALL owner errors, including
+unscoped lifecycle diagnostics. Production design/fixtures/selection otherwise accepted,
+subject narrow correction closure. No assertions or product validation weakened.
+
 Current task: #1536 T142 / FR083, following accepted current-Elyara checkpoint
  ebc99499b8a0e69adbcff616dcc8176322d903ad. Accepted actual causal RED and design below.
 No author question remains: only historical broken/dissolved factions are exempt.
