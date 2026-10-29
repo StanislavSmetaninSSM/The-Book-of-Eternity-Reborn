@@ -7,48 +7,62 @@ Use superpowers:executing-plans inline; independent Astra/high DESIGN and Sol
 SOURCE/selection/OUTCOME. Existing T135/T141/T142 own this coherent player result;
 T144–T147 own its GM/docs/example/verification portions. No new microtask or spec.
 
-Current verified boundary — 2026-10-29 Linux
+Accepted independent boundary — 2026-10-29 Linux
 
-Compiled/tested source:30f949c4d895c2dd0a0e728ebb772c3905d31edd. Sol independent
-SOURCE/selection and PREP accepted. One approved fresh NoBuild run completed
-34/34PASS,14methods/fourdescriptors,36.7054377s wall, no skip/timeout/duplicate,
-complete owned/runtime cleanup and unchanged27artifact/51source pins. OUTCOME review
-is pending; this checkpoint changes only plan/tasks after that tested source.
+Compiled and tested source: 30f949c4d895c2dd0a0e728ebb772c3905d31edd.
+Sol independent SOURCE/selection, PREP, OUTCOME and checkpoint reviews accepted.
+The preceding checkpoint b45f219c9313add43b7b1a8086dfa8cb1bf0b9b2 was pushed and
+its remote SHA verified; this final acceptance note changes only plan/tasks.
+No rebuild or repeat run is required for these documentation-only checkpoints.
 
-- shining-healer-capability-data:21PASS,5.0952387s<60.
-- shining-healer-role-causal:2PASS,4.6393690s<60, including the retained semantic RED
-  now GREEN and the exact existing archive/membership normalizer consumer.
-- shining-healer-role-documentation:3PASS,6.0459825s<60, including the corrected old
-  target-example section guard; no closed-packet assertion was relaxed.
-- shining-healer-roster-ui:8PASS,12.1866913s<120: actual browser command, actual direct
-  console command, literal rendering, five visibility/identity/refusal cases,
-  complete canonical read-only snapshots and next-action tier freshness.
+One approved fresh NoBuild run: 34/34 PASS, 14 methods, four descriptors,
+36.7054377 s wall. No skip, timeout, duplicate or lost case. Complete owned/runtime
+cleanup and unchanged 27 artifact / 51 source pins were independently verified.
 
-Actual1vs20-member source-open counters are identical:16opens across5paths per
-fresh browser action (profiles3, Shining5, guardians3, soul4, residents1). The3profile
-reads include the existing refresh; the new projection reads once after refresh
-and reuses the parsed root for all members. No cross-action cache or speedup claim.
-Old detached output stays unchanged when a later action reads HealingIII.
+| Category | PASS cases | Seconds | Budget |
+| --- | ---: | ---: | ---: |
+| shining-healer-capability-data | 21 | 5.0952387 | 60 s |
+| shining-healer-role-causal | 2 | 4.6393690 | 60 s |
+| shining-healer-role-documentation | 3 | 6.0459825 | 60 s |
+| shining-healer-roster-ui | 8 | 12.1866913 | 120 s |
 
-Fresh Main/Support/Unit builds all exit0, baselinewarnings12/23/26, durations
-3:01.84/20.35s/1:14.53. Four owning PE/PDBpairs and51changed-source bindings checked;
-selected Main/Support copies agree. Integration is unchanged, retained, unselected,
-and is not claimed freshly built. Catalog1106categories/12852methods-files valid,
-0executions and clean revision/cleanup. PlanOnlyexact34/14/4,0execution,verified.
-SDK10.0.402, PowerShell7.6.8; same Linux environment and net8.0 targets.
-Full raw is external:/workspace/tboe-linux-evidence-20261025/us6-shining-healers.
-role-green-complete-capture.json verifies73files/50174161bytes, including complete
-logs/TRX/catalog/plan/provenance and the decoded/hash-verified retained old27owning
-artifacts. No raw is staged/uploaded; no previous measurement/save is deleted.
+The observed unsupported-role RED is now GREEN. The exact existing archive/default/
+membership normalizer consumer and old target-example guard also pass. Real browser
+and direct console commands show confirmed healer roles and tiers I–V, render authored
+markup literally, hide unconfirmed profiles, grant no service action and change no
+canonical state. Five negative UI cases and next-action changed-tier freshness pass.
 
-This completes no parent US6 task yet: the new direct detail is qualified, while
-legacy interactive political-inspection parity, readable restricted-service access
-(T143/FR084), and global every-faction T142 enforcement remain open. The owner
-question about living healers in historical broken/dissolved factions is still
-pending; no terminal exception or new immortality rule is assumed. Accepted paid80
-remains separately pinned at fde82644a and is not repeated or combined into a new run.
-DFR300.1806894s timeout, Mortal compatibility timeout and Windows remain HOLD; no
-DOM/liveprovider/fresh-process or full restore is claimed for this block.
+Actual source-open counters for one and twenty members are identical: 16 opens across
+five paths per browser action (profiles 3, Shining 5, guardians 3, soul 4, residents 1).
+The three profile reads include existing refresh; one fresh projection read follows
+refresh and its parsed root serves every member. No cross-action cache or speedup
+is claimed. Previously exported detached DATA stays unchanged after a fresh tier read.
+
+Fresh Main/Support/Unit builds all exit 0, baseline warnings 12/23/26, durations
+3:01.84 / 20.35 s / 1:14.53. Four owning PE/PDB pairs and 51 changed-source bindings
+match; selected Main/Support copies agree. Integration is unchanged, retained and
+unselected; it is not claimed freshly built. Catalog: 1106 categories / 12852 methods-
+files, valid with zero executions and clean revision/cleanup. Exact PlanOnly: 34 cases,
+14 methods, four descriptors, zero execution, verified. SDK 10.0.402, PowerShell 7.6.8,
+same Linux environment, net8.0 targets.
+
+Full raw: /workspace/tboe-linux-evidence-20261025/us6-shining-healers.
+role-green-complete-capture.json verifies 73 files / 50174161 bytes, including full
+logs, four TRX files, catalog, plan, provenance and the decoded/hash-verified retained
+old 27 owning artifacts. All 73 hashes were independently rechecked. No raw or binary
+is staged/uploaded: the 22 changed tracked paths since accepted paid fde contain only
+source/docs and three authored JSON files (catalog, selection, example manifest).
+No previous measurement or user save was deleted. Over 7 GiB remains free.
+
+This qualifies role/capability and revealed-faction DIRECT detail only; no parent US6
+task is closed yet. Legacy interactive political-inspection parity, readable restricted-
+service access (T143/FR084), and every-faction T142 enforcement remain open. The owner
+question about living healers in historical broken/dissolved factions is still pending;
+no terminal exception or immortality rule is assumed. Paid 80 remains separately pinned
+at fde82644a and was not repeated or combined into a new run. DFR 300.1806894 s timeout,
+Mortal compatibility timeout and Windows remain HOLD. No DOM/live-provider/fresh-process
+or new full restore is claimed. Earlier first-guardian intermittence and cross-OS DATA
+limitations remain open; this roster gate does not resolve them.
 
 Goal: the ordinary revealed Shining faction detail shows its visible current
 resident roster with the Russian healer role, while accepted state proves at least

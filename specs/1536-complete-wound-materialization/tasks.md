@@ -14674,28 +14674,32 @@ Fresh life/location/price/funds guards and Elyara's
 protected fresh profile are covered. Public-currency portions of the tasks below
 are implemented; broader checkboxes remain open for negotiated compensation,
 universal travel/Shining destination, faction healers/access and their acceptance.
-2026-10-29 independent T135/T141/T144–T147 role/profile/direct-detail boundary:
-source30f949c4d895c2dd0a0e728ebb772c3905d31edd, SOURCE/selection and PREP accepted;
-fresh Main/Support/Unit exit0 (baseline12/23/26warnings), fourPE/PDBpairs/51source
-bindings. Exact catalog1106/12852 and PlanOnly34cases/14methods/fourdescriptors.
-One actual NoBuild run34/34PASS in36.7054377s, all budgets/cleanup/pins intact;
-OUTCOME pending. Categories:shining-healer-role-causal2,capability-data21,
-role-documentation3,roster-ui8. Role survives normalization; confirmed I–V appears
-in actual browser and direct-console faction details, hidden/invalid/ambiguous DATA
-reveals no capability, read/close changes no canonical state and grants no service.
-Actual1vs20-member actions both open16sources across5paths, including profiles3
-with existing refresh; parsed projection DATA is reused only within the action.
+2026-10-29 accepted independent T135/T141/T144–T147 role/profile/direct-detail boundary:
+compiled/tested source 30f949c4d895c2dd0a0e728ebb772c3905d31edd. Independent Sol
+SOURCE/selection, PREP, OUTCOME and checkpoint accepted. Fresh Main/Support/Unit exit 0
+with baseline 12/23/26 warnings; four PE/PDB pairs and 51 source bindings verified.
+Catalog 1106/12852; exact PlanOnly 34 cases / 14 methods / four descriptors.
+One actual NoBuild run: 34/34 PASS in 36.7054377 s, unchanged budgets/pins and complete
+cleanup. Category case counts: shining-healer-role-causal 2, capability-data 21,
+role-documentation 3, roster-ui 8. Full category IDs and timings are in plan.md.
+The role survives normalization; confirmed I–V appears in real browser and direct
+console faction details. Hidden/invalid/ambiguous DATA reveals no capability, read/close
+changes no canonical state and grants no service. One/twenty-member actions both open
+16 sources across five paths, including three profile reads with existing refresh;
+parsed projection DATA is reused only within the action. No speedup is claimed.
 GM rule/guide/matrix/API/main task/both daemon directives and worked example match.
-Full raw/provenance:/workspace/tboe-linux-evidence-20261025/us6-shining-healers,
-73files/50174161bytes verified outside Git. Current checkpoint differs only in
-plan/tasks from the compiled/tested source. No unchanged paid80 is repeated.
-Parent checkboxes stay open: T142 global enforcement awaits the owner decision
-on historical broken/dissolved factions; legacy interactive inspection and T143
-readable restricted-service access remain unqualified. Universal Elyara travel,
-Shining destination and negotiated routes also remain; US6/#1536 are not closed.
-No DOM/provider/fresh-process/Windows or full restore is inferred. Next implement
-only an independently authorized functional remainder or the clarified T142 rule;
-never silently exempt historical rows while the owner answer is pending.
+Full raw: /workspace/tboe-linux-evidence-20261025/us6-shining-healers; 73 files /
+50174161 bytes independently hash-verified outside Git. Only plan/tasks changed after
+the tested source. Previous remote checkpoint b45f219c9313add43b7b1a8086dfa8cb1bf0b9b2
+was verified; no unchanged paid 80 was repeated. No raw/binary enters the 22 changed
+tracked paths; only source/docs and the three authored catalog/selection/manifest JSON.
+Parent checkboxes stay open: T142 awaits the owner decision on historical broken/
+dissolved factions; legacy interactive inspection and T143 readable restricted-service
+access remain unqualified. Universal Elyara travel, Shining destination and negotiated
+routes also remain; US6/#1536 are open. No DOM/provider/fresh-process/Windows or new full
+restore is inferred. Earlier guardian intermittence/cross-OS DATA, DFR/Mortal timeouts
+remain open. Continue the independently authorized functional remainder or clarified
+T142 rule; never silently exempt historical rows while the owner answer is pending.
 
 ### RED tests
 
