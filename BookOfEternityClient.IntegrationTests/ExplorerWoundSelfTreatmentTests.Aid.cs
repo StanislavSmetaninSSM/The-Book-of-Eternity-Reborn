@@ -39,21 +39,44 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
     [Fact]
     public Task BrowserResidentAidUsesActualConsentCleanupAndOriginalQueuedEngineTreatment() => RunAidJourneyAsync(browser: true, resident: true);
 
+    [Fact]
+    public Task ResidentAidCommonPublicationFailureRestoresAcceptedGrantMemoryAndWholeTurnState() =>
+        RunAidJourneyAsync(browser: false, resident: true, failPublication: true);
+
     private sealed class AidSnapshotFault : InvalidOperationException { }
 
-    private async Task RunAidJourneyAsync(bool browser, bool refuseAfterDraw = false, bool refuseBeforeDraw = false, bool receiveAid = false, bool resident = false)
+    private async Task RunAidJourneyAsync(bool browser, bool refuseAfterDraw = false, bool refuseBeforeDraw = false, bool receiveAid = false, bool resident = false, bool failPublication = false)
     {
         var participantId = resident ? AfterlifeSpiritualNaturalRecoveryTests.AidResidentId : AfterlifeSpiritualNaturalRecoveryTests.AidGuardianId;
         var family = resident ? 5 : receiveAid ? 4 : 3;
         FileSystemManager? ownedFiles = null;
         var injectBeforeDraw = false;
         var foreignMutationReached = 0;
+        var publicationArmed = false; var publicationCuts = 0; var compensationObserved = false;
+        Dictionary<string, byte[]?>? compensationExpected = null; Dictionary<string, byte[]?>? compensationActual = null;
+        byte[]? memoryAtCut = null;
+        var publicationFailure = new InvalidOperationException("Resident aid precommit publication failure.");
         await using var fixture = await HealingFixture.CreateAsync(rank: 3, tier: receiveAid ? 0 : 3, die: 14, stageRequest: false,
             beforeResourceBootstrap: resident ? SeedEngineResidentAidJourneyAsync : receiveAid ? SeedEngineReceivingAidJourneyAsync : SeedEngineAidJourneyAsync,
-            hooks: !refuseBeforeDraw ? null : new FileSystemManagerHooks
+            hooks: !refuseBeforeDraw && !failPublication ? null : new FileSystemManagerHooks
             {
+                LocalPublicationObserver = (phase, _) =>
+                {
+                    if (!publicationArmed || phase != TrustedLocalPublicationPhase.MemberPublished ||
+                        File.Exists(ownedFiles!.ResolvePath(AcceptedMechanicsPlan.WoundCommandPath))) return;
+                    publicationArmed = false; publicationCuts++;
+                    memoryAtCut = File.ReadAllBytes(ownedFiles.ResolvePath(GuardianAbodeResidentState.StatePath));
+                    throw publicationFailure;
+                },
                 BeforeCanonicalReadOpenAsync = path =>
                 {
+                    if (publicationCuts == 1 && !compensationObserved && path == CanonicalStateNormalizer.NormalizerRollbackTrackedFiles[0])
+                    {
+                        compensationObserved = true;
+                        compensationActual = compensationExpected!.Keys.ToDictionary(p => p,
+                            p => File.Exists(ownedFiles!.ResolvePath(p)) ? File.ReadAllBytes(ownedFiles.ResolvePath(p)) : null,
+                            StringComparer.Ordinal);
+                    }
                     if (!injectBeforeDraw || path != ProgressionScheduleService.SchedulePath) return Task.CompletedTask;
                     var schedule = JsonNode.Parse(File.ReadAllText(ownedFiles!.ResolvePath(path)))!;
                     if (schedule["pendingChaosSeaCycles"]!.GetValue<int>() != 1) return Task.CompletedTask;
@@ -151,6 +174,12 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                                 : "Душа помогает Хранителю целостности восстановить духовную рану; безопасная жизнь Обители продолжается.");
                         if (resident) await WriteResidentAidReasoningAsync(files, lease, turn, grant: false);
                         else await WriteAidGuardianReasoningAsync(files, lease, turn, grant: false, receiveAid);
+                        if (failPublication)
+                        {
+                            compensationExpected = fixture.CaptureMutationRoots(AfterlifeWoundTreatmentAuthority.AidLocalityPaths
+                                .Concat(new[] { EffectAcceptedTurnInputComposer.WorldTimePath }));
+                            publicationArmed = true;
+                        }
                         aidWritten = true;
                     }
                 }
@@ -180,7 +209,8 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
             Assert.True(files.FileExists("lore/codex_entries.json"));
             Assert.Empty(JsonNode.Parse((await files.ReadFileAsync("game_state/meta/achievements.json"))!)!["unlockedAchievements"]!.AsArray());
             Assert.Empty(JsonNode.Parse((await files.ReadFileAsync("lore/codex_entries.json"))!)!["entries"]!.AsArray());
-            var before = fixture.CaptureMutationRoots();
+            var before = fixture.CaptureMutationRoots(AfterlifeWoundTreatmentAuthority.AidLocalityPaths
+                .Concat(new[] { EffectAcceptedTurnInputComposer.WorldTimePath, PendingTurnStateService.PendingDiceStatePath }));
             if (browser)
             {
                 var service = CreateCommands(files);
@@ -313,6 +343,25 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                 Assert.Null(runtime.Explorer.ConsumePendingSpiritualSelfTreatment(action!, files.GetOrCreateSessionGeneration(lease)));
             }
             Assert.True(aidWritten);
+            if (failPublication)
+            {
+                Assert.Equal(1, publicationCuts); Assert.True(compensationObserved);
+                Assert.NotNull(compensationExpected); Assert.NotNull(compensationActual); Assert.NotNull(memoryAtCut);
+                var cutMemory = JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(memoryAtCut!))![GuardianAbodeResidentState.ThoughtJournalProperty]!.AsArray();
+                Assert.Equal(2, cutMemory.Count);
+                Assert.Contains(cutMemory.OfType<JsonObject>(), e => e["turn"]!.GetValue<int>() == 44);
+                foreach (var pair in compensationExpected!) Assert.Equal(pair.Value, compensationActual![pair.Key]);
+                var retained = JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(compensationActual![AcceptedMechanicsPlan.WoundCommandPath]!));
+                Assert.True(JsonNode.DeepEquals(aidRequest, retained)); // Full raw bytes also equal exact pre-cut capture above.
+                Assert.Equal(43, runtime.GameLoop.TurnNumber);
+                fixture.AssertMutationRootsUnchanged(before);
+                Assert.DoesNotContain((await fixture.ReadHistoryAsync()).Transitions, t => t.AttemptId is not null);
+                Assert.Null(await files.ReadFileBytesAsync(AcceptedMechanicsPlan.WoundCommandPath));
+                Assert.Null(await files.ReadFileBytesAsync(LiveTurnPreparationService.PendingTurnSnapshotManifestPath));
+                fixture.AssertResourcesUnchanged();
+                output.WriteLine("Resident aid cut after real memory normalization/common request consumption: C4 restored exact staged request/die, pending schedule/report and all canonical roots; outer rollback restored grant43 including its sole memory and removed unaccepted aid44.");
+                return;
+            }
             Assert.Equal(44, runtime.GameLoop.TurnNumber);
             var history = await fixture.ReadHistoryAsync();
             var aid = Assert.IsType<SpiritualHealingPersistedResult>(Assert.Single(history.Transitions, t => t.AttemptId is not null).TransitionResult);
@@ -341,6 +390,8 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                 Assert.DoesNotContain(await new ValidationService(files, Microsoft.Extensions.Logging.Abstractions.NullLogger<ValidationService>.Instance)
                     .ValidateAcceptedTurnInterfacePayloadAsync(), i => i.Severity == IssueSeverity.Error);
                 fixture.AssertMutationRootsUnchanged(settled);
+                var memories = JsonNode.Parse((await files.ReadFileAsync(GuardianAbodeResidentState.StatePath))!)![GuardianAbodeResidentState.ThoughtJournalProperty]!.AsArray();
+                Assert.Equal(new[] { 43, 44 }, memories.Select(e => e!["turn"]!.GetValue<int>()));
                 Assert.Equal("resident", aid.Stages[0].Before.Owner.OwnerKind);
                 Assert.Equal(participantId, aid.Stages[0].Before.Owner.OwnerId);
                 Assert.Equal(44, runtime.GameLoop.TurnNumber);

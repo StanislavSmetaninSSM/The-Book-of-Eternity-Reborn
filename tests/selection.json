@@ -1,472 +1,74 @@
 {
   "schemaVersion": 1,
   "selections": [
-{
-  "category": "spiritual-resident-aid-contract",
-  "reason": "T108-RESIDENT first causal RED: valid preexisting typed resident proposal is rejected by the existing Guardian-only parser. Direct typed API and minimal detached DATA isolate this missing capability before live grant/aid integration. No production or other consumer changed at this scaffold.",
-  "contracts": [
-    "#1536 T108-RESIDENT; US4 scenario8; closed resident participation admission, no authority from DATA"
-  ]
-},
-{
-  "category": "documentation-afterlife-treatment-assessment",
-  "reason": "T093-ASSESSMENT changes client-only known-wound output, with no GM response. The existing guided synchronization guard checks the actual changed worked-example manifest and client-owned request registry, avoiding unrelated afterlife matrices.",
-  "contracts": [
-    "#1536 T093-ASSESSMENT GM guidance/example synchronization; no new authored field or diagnosis rule"
-  ]
-},
-{
-  "category": "spiritual-treatment-assessment-handlers",
-  "reason": "T093-ASSESSMENT: both actual handlers must show the same known H0/insufficient assessment while leaving the complete gameplay tree and non-UI mutation count unchanged, with exact normal console lock identity checked separately. Existing complete wound/resource fixture is reused without a GameEngine turn or GM response. The directly affected existing available-browser cancellation case verifies valid choices and cleanup after bypassing the normalizing refresh.",
-  "contracts": [
-    "#1536 T093-ASSESSMENT console/browser parity and no-turn assessment"
-  ]
-},
-{
-  "category": "spiritual-treatment-assessment",
-  "reason": "T093-ASSESSMENT: unavailable choices currently hide their known H/severity reason. Prove readable actual insufficiency without inventing H0 for invalid source or changing availability, authority, privacy and safe-cycle terms.",
-  "contracts": [
-    "#1536 US4 scenario1; FR042/044; data-model12 rule2; client-only known-wound assessment"
-  ]
-},
-{
-  "category": "spiritual-world-source-closure",
-  "reason": "T112-SOURCE-PINS: Astra independently reviewed the exact six source deltas and original LF pin bases, including retained DATA, physical/current owner checks and absence of new reserved-World sources. Refresh only the six approved hashes and run the existing complete source-closure Fact; no passing functional runtime repeats.",
-  "contracts": ["#1536 T112-SOURCE-PINS current reviewed World source dependency closure and unchanged opening/final proof/cleanup assertions"]
-},
-{
-  "category": "spiritual-combat-console-source-guards",
-  "reason": "Actual console postmaterialization reaches a redundant null-to-null override scope inside its reserved pending-source validation. Avoid only that no-op; retain direct override refusal and physical final dependency proof. The actual console causal RED/GREEN and remaining functional consumers follow. At introduction, World source-closure had six stale pins; that historical gap is tracked separately by T112-SOURCE-PINS and its exact source-closure selection. Semantic refusal checks alone never establish whole-guard PASS.",
-  "contracts": ["#1536 T095/T102/T103 completed combat comparison under fresh console pending-source ownership; unchanged entry/final authority and mutation exclusion"]
-},
-{
-  "category": "spiritual-combat-prepared-rollback-role",
-  "reason": "Ten cheap typed cases distinguish exactly one prepared command input from canonical rollback metadata; valid role DATA still fails generic canonical coverage and never grants a completed owner.",
-  "contracts": [
-    "#1536 T095/T102/T103 distinct signed preparation input versus canonical before-turn state; atomic C4 and whole-turn compensation"
-  ]
-},
-{
-  "category": "spiritual-combat-engine-prepared-rollback",
-  "reason": "One actual browser-confirmed Engine turn faults the existing atomic batch after marker deletion but before commit, observes outer C4 compensation at its final reverse-restore read, then proves whole-turn rollback restores marker absence and exact canonical roots.",
-  "contracts": [
-    "#1536 T095/T102/T103 distinct signed preparation input versus canonical before-turn state; atomic C4 and whole-turn compensation"
-  ]
-},
-{
-  "category": "spiritual-combat-healing-engine-command-guards",
-  "reason": "The real Engine blanket command guard rejects a valid signed combat marker. Preserve terminal refusal for ordinary commands and changed marker bytes through the actual queue/snapshot/Engine path before accepting its narrow exemption.",
-  "contracts": [
-    "#1536 T095/T102/T103 current original marker classification is not full healing authority; no C2 or accepted mutation from unowned commands"
-  ]
-},
-{
-  "category": "spiritual-combat-healing-dependent-pair",
-  "reason": "Only the next-boundary row remains failed after its production replay path and C4 passed: seed the mandatory interface timestamp before capture and run this split singleton, retaining four unchanged actual138 pair PASS.",
-  "contracts": [
-    "#1536 T095/T102/T103 original saved healing selection, strict cold dependent correction and complete accepted output"
-  ]
-},
-{
-  "category": "spiritual-combat-terminal-replay-data",
-  "reason": "Four existing cheap typed methods protect terminal absence/identity/History and exact bounded correction arithmetic before actual pair publication.",
-  "contracts": [
-    "#1536 T095/T102/T103 strict terminal combat publication and unchanged original selection under saved dependent replay"
-  ]
-},
-{
-  "category": "spiritual-combat-dependent-context",
-  "reason": "One unchanged ordinary dependent-context case protects the shared extracted baseline policy; no broad owner run.",
-  "contracts": [
-    "#1536 T095/T102/T103 strict terminal combat publication and unchanged original selection under saved dependent replay"
-  ]
-},
-{
-  "category": "spiritual-combat-guarantee-witness-consumers",
-  "reason": "The mandatory guaranteed witness child affects existing special-art/audit/alias/ceiling parsing and guarantee receipt decisions. Select only these twenty-one existing intrinsic cases and keep ordinary closed-form checks; no complete owner.",
-  "contracts": ["#1536 T095/T102/T103 complete current guaranteed witness evidence and unchanged canonical source/receipt invariants"]
-},
-{
-  "category": "spiritual-combat-guarantee-preimage",
-  "reason": "A guaranteed counterharm opportunity hashes the exact prepared JSON strings; canonical-only witness payloads lose property order. First execute one cheap typed causal scaffold, then preserve exact evidence through the same actual C1/C2/receipt owners without changing the guarantee producer or excluding the path.",
-  "contracts": ["#1536 T095/T102/T103 mandatory guaranteed counterharm evidence, strict current source witness and no authority from DATA hashes"]
-},
-{
-  "category": "spiritual-combat-original-observation",
-  "reason": "Actual combat Begin exposed an unsupported observed-optional read set. Preserve the ordinary closed form and coverage guards while adding only the actual combat producer's signed source union; default missing report absence must still refuse.",
-  "contracts": ["#1536 T095/T102/T103 exact original source bytes/absence, existing signer, no new healing permission"]
-},
-{
-  "category": "spiritual-combat-healing-browser-help",
-  "reason": "Actual help category produced consolePASS/browserFAIL at the unchanged availability assertion; fix the separate browser builder text, retain exact prior component7+console1 at2904 lineage, then continue untouched remaining16.",
-  "contracts": [
-    "#1536 T095/T102/T103 actual console/browser scope parity"
-  ]
-},
-{
-  "category": "spiritual-combat-healing-guidance",
-  "reason": "Closed combat selection/GM example and complete existing worked-family manifest inventory. Actual authority belongs to the paired backend and Engine consumers.",
-  "contracts": [
-    "#1536 T095/T102/T103 FR046 actual guided combat healing, same C2/C4 and no safe cycle"
-  ]
-},
-{
-  "category": "spiritual-combat-healing-pair",
-  "reason": "Original four actual initial-pair/cold C2/C3/C4 cases plus guaranteed opponent counterharm. Retain the actual prepared noncanonical hash preimages, common paid worsening/no-cycle result and refusal of a semantically equivalent but foreign rehashed preimage. Existing graph repair/I, dice, omission, typed uncertainty and later-wave controls remain.",
-  "contracts": [
-    "#1536 T095/T102/T103 FR046 actual guided combat healing, same C2/C4 and no safe cycle"
-  ]
-},
-{
-  "category": "spiritual-combat-healing-rollback",
-  "reason": "One actual common C4 writer fault restores exact signed originals and revokes publication authority; normal flow is independent of the removed injected fault.",
-  "contracts": [
-    "#1536 T095/T102/T103 FR046 actual guided combat healing, same C2/C4 and no safe cycle"
-  ]
-},
-{
-  "category": "spiritual-combat-healing-console",
-  "reason": "Real console cancellation/confirmation, original pool, native-shaped controlled C2/C4, weaker graph, paid wound/effect/History and exact no-cycle cleanup.",
-  "contracts": [
-    "#1536 T095/T102/T103 FR046 actual guided combat healing, same C2/C4 and no safe cycle"
-  ]
-},
-{
-  "category": "spiritual-combat-healing-browser",
-  "reason": "Real shared browser cancellation/confirmation/queued original, retained combat intent, controlled C2/C4, weaker graph, paid wound/effect/History and exact no-cycle cleanup.",
-  "contracts": [
-    "#1536 T095/T102/T103 FR046 actual guided combat healing, same C2/C4 and no safe cycle"
-  ]
-},
-{
-  "category": "spiritual-combat-safe-scalar-preview",
-  "reason": "Two exact existing consumers: unequal active/natural tiers through the shared scalar prefix, and current ordinary pressure preview after operation-to-art lookup.",
-  "contracts": [
-    "#1536 T095/T102/T103 FR046 actual guided combat healing, same C2/C4 and no safe cycle"
-  ]
-},
-{
-  "category": "spiritual-combat-safe-publication",
-  "reason": "Seven exact affected existing consumers: failed/terminal safe active executor, ordinary natural-only Engine, unchanged no_effect/pressure-success shape guards, current opposition cost authority and forged player cost-tier refusal.",
-  "contracts": [
-    "#1536 T095/T102/T103 FR046 actual guided combat healing, same C2/C4 and no safe cycle"
-  ]
-},
-{
-  "category": "spiritual-combat-injury-v1-output",
-  "reason": "Smallest existing real injury-only initial pair, materialize Submit, C4 output/source and foreign-delivery control for unchanged current schema1 alongside new combat schema2.",
-  "contracts": [
-    "#1536 T095/T102/T103 FR046 actual guided combat healing, same C2/C4 and no safe cycle"
-  ]
-},
-{
-  "category": "spiritual-combat-safe-browser",
-  "reason": "One exact existing safe confirmed browser Engine route protects default staging/retained source after combat fork, without the unrelated whole owner.",
-  "contracts": [
-    "#1536 T095/T102/T103 FR046 actual guided combat healing, same C2/C4 and no safe cycle"
-  ]
-},
-{
-  "category": "spiritual-combat-healing-program",
-  "reason": "Changed shared active prefix must exclude combat natural ticks while retaining safe coordinates; new closed selection/intent must reject mixed aid, raw roll and changed content. Pure DATA controls do not replace actual original/C2/C4 authority. WIP, no runtime released.",
-  "contracts": [
-    "#1536 T095/T102/T103 shared active program and real combat selection"
-  ]
-},
-{
-  "category": "spiritual-combat-healing-cost",
-  "reason": "Accepted combat design begins with a real existing-API RED for missing healing cost admission, after valid unchanged pressure arithmetic. Unit-only singleton; no production/dependency rebuild and no cost-only completion claim.",
-  "contracts": [
-    "#1536 T095/T102/T103 FR046 counterable combat healing, base5/art reduction/floor2"
-  ]
-},
-{
-  "category": "spiritual-guardian-help-guidance",
-  "reason": "Closed current provider-offer worked example and explicit receive_aid candidate/confirmed selection, no GM consent, cross-version rejection; actual confirmation/source authority is in backend and Engine categories.",
-  "contracts": [
-    "#1536 T108 free private Guardian-to-player aid, real player confirmation and shared original/publication"
-  ]
-},
-{
-  "category": "spiritual-guardian-help-publication",
-  "reason": "Actual natural provider-offer result4 on healer Guardian for player wound, unconfirmed queue/stage no-draw, real shared confirmation, GuardianH3/playerH0, fresh source/condition refusals, same request4 through repair/common publication/historical omission/I/replay.",
-  "contracts": [
-    "#1536 T108 free private Guardian-to-player aid, real player confirmation and shared original/publication"
-  ]
-},
-{
-  "category": "spiritual-guardian-help-console",
-  "reason": "Actual two-turn same-Explorer Engine offer43/cleanup/player cancellation/confirmation/aid44; real Guardian Brain/journal, retained request4, GuardianH3/playerH0, computed graphs/effects/History/onecycle/no private charge.",
-  "contracts": [
-    "#1536 T108 free private Guardian-to-player aid, real player confirmation and shared original/publication"
-  ]
-},
-{
-  "category": "spiritual-guardian-help-browser",
-  "reason": "Actual Engine offer43 then cleanup and real shared browser cancel/confirm/queued original aid44; no GM player consent, exact request4/binding, GuardianH3/playerH0 and wound/effects/History/onecycle/no private charge.",
-  "contracts": [
-    "#1536 T108 free private Guardian-to-player aid, real player confirmation and shared original/publication"
-  ]
-},
-{
-  "category": "spiritual-guardian-offer-contract",
-  "reason": "Next T108 reverse slice needs a provider offer distinct from target consent. Existing ReadChanges must admit the closed schema2 Guardian offer for player wound, without GM-issued player consent. RED-only singleton before shared implementation; no Main/Support rebuild.",
-  "contracts": ["#1536 T108 current private free Guardian-to-player aid, real guided player confirmation"]
-},
-{
-  "category": "spiritual-owned-locality-beforeimage",
-  "reason": "New owned-normalizer writer relies on ExactPrevious. Existing ordinary helper checks it, then rereads/adopts foreign bytes as publisher.Before. Real existing-API GuardOnly/readhook cut proves present/absent late overwrite and existing lease/rollback semantics; no separate framework or held suite.",
-  "contracts": [
-    "#1536 exact owned-normalizer source beforeimage through actual trusted-local publisher"
-  ]
-},
-{
-  "category": "spiritual-aid-locality-normalization",
-  "reason": "Authentic grant closing failed first at locality then profile source after full generic normalization. Qualify the exact two-path owned-write transition and one complete common profile projection with real automatic progression, player mirrors and signed-old-tier tick; keep foreign-before/after refusals. Existing ordinary publication, active SELF and Shining consumers are additionally selected for the newly shared profile path.",
-  "contracts": [
-    "#1536 T108 real grant issuer/canonical normalization ownership; original/input/FP immutable, live closing images advance only on exact owned output"
-  ]
-},
-{
-  "category": "spiritual-aid-stage-publication",
-  "reason": "One actual natural grant followed by next-cycle player aid with different healer/target tiers: committed content/locality before control/draw, wrong context/content/missing/incapable refusal, unrelated Guardian record menu, duplicate-stage exact pending preservation, actual original B drift/graph repair, strict v3 result/I/replay.",
-  "contracts": [
-    "#1536 T108 actual committed participation, fresh pre-control aid, single active/natural program and shared guided console/browser"
-  ]
-},
-{
-  "category": "spiritual-aid-console",
-  "reason": "One real console Engine grant43 then cleanup, cancel/confirm through the SAME Explorer, aid44 with real entropy and computed weaker graphs, full actual NPC Brain/journal, targetH0 vs healerH3, exact request/result/cycle/History/no-cost/cleanup.",
-  "contracts": [
-    "#1536 T108 actual committed participation, fresh pre-control aid, single active/natural program and shared guided console/browser"
-  ]
-},
-{
-  "category": "spiritual-aid-browser",
-  "reason": "One real Engine grant43 then cleanup, shared browser cancellation/confirmation and exact queued original aid44, real entropy/computed graphs/retained request3 binding, NPC Brain/journal, independent tiers/cycle/History/no-cost/cleanup.",
-  "contracts": [
-    "#1536 T108 actual committed participation, fresh pre-control aid, single active/natural program and shared guided console/browser"
-  ]
-},
-{
-  "category": "spiritual-aid-browser-refusal",
-  "reason": "Correct only the protected-failure observer after real snapshot fault: preserve exact same-FS ordinary/second-entry phase refusals and raw preparing/body/source/control bytes without acquiring forbidden authority. Retain already accepted console2 and happy browser1; no production change or full caller repeat.",
-  "contracts": [
-    "#1536 T108 actual committed participation, fresh pre-control aid, single active/natural program and shared guided console/browser"
-  ]
-},
-{
-  "category": "spiritual-aid-guidance",
-  "reason": "Current v3 aid two-turn GM example, closed detached selection/source guards, current v2/v3 family guidance and full worked-family inventory.",
-  "contracts": [
-    "#1536 T108 actual committed participation, fresh pre-control aid, single active/natural program and shared guided console/browser"
-  ]
-},
-{
-  "category": "spiritual-aid-active-program",
-  "reason": "Existing actual Build rejects unequal healerH3/targetH0 before producing one shared active+natural program. Test-first causal RED uses the real scalar APIs and valid canonical target, not a new stub or unused parameter. Actual source/consent/healer authority remains separate accepted-design work.",
-  "contracts": ["#1536 T108 separate active healer tier and target natural tier, exactly one existing recovery pass"]
-},
-{
-  "category": "spiritual-aid-participation-contract",
-  "reason": "New closed producer contract and owned profile record need real ProjectCanonicalRoot representation/omission/mirror controls and synchronized GM fragment/inventory before actual grant publication. Typed DATA only; accepted issuer is tested separately.",
-  "contracts": ["#1536 T108 actual affirmative participation proposal vs client record; all profile surfaces and content binding; GM synchronization"]
-},
-{
-  "category": "spiritual-aid-participation-producer",
-  "reason": "Qualify producer after genuine a3 missing-grant RED: real common publication must atomically derive full record+v3 witness, refuse raw stamp/content/cross-version mutations, and roll back after actual profile member was physically published. Existing fixture seeds only initial create DATA before sole bootstrap; no prior grant witness is invented. Backend only, full Engine/guided aid remains next.",
-  "contracts": ["#1536 FR054/T108 accepted content-bound participation before any helper draw, existing natural atomic publication"]
-},
-{
-  "category": "spiritual-resource-history-carry",
-  "reason": "Cheap typed CanonicalResourceOwnerAuthorityComposer retire-history to accepted composition carry: historical ledger accepted, live state/spend denied, persisted current item never imported, TerminalOwners unchanged; exact overlap accepted while duplicate/confusable/reused identities remain refused. Existing owner historical/Resolve/lifecycle negatives protect the shared boundary. Actual3 supplies authentic ResourceCore historical-owner RED after successful fresh canonical validation; no artificial unused-argument API or extra RED build. New proof uses actual CanonComposer history derivation and unchanged production Build/Resolve/ValidateAgreement.",
-  "contracts": [
-    "#1536 T105/T107 accepted ordinary owner universe, preserved retired ledger without current spend/terminal capability; source/lease/persisted authority equality remains fresh"
-  ]
-},
-{
-  "category": "spiritual-recovery-conflict-reset",
-  "reason": "One real C2 re-trauma decision and C4 common publication over a lawful initial spiritual I/progress1 guardian baseline: worsening II resets only current progress, retains prior tick/origin/history, no conflict natural row; fresh signed next safe cycle gives II1/H0, preserves actual conflict costs and receipts, exact scheduler replay is inert. Typed canonical seed precedes the one existing resource authority composition/signed original. Real issuers own worsening/receipt/history, then LiveTurnPreparation captures their published afterimage; no resource/history/schedule rebootstrap or copied completed plan.",
-  "contracts": [
-    "#1536 FR052/T105/T107 current-step reset under actual conflict re-trauma, exclusion of natural tick in conflict, next fresh safe-cycle 1+H and exact replay"
-  ]
-},
-{
-  "category": "spiritual-natural-recovery-shining",
-  "reason": "Affected existing Shining ordinary consumer of the newly complete B profile projection: actual II/H3 graph caller, shared9→10 clock and inactive Chaos2, strict natural History/no charge/cleanup. Preserve the existing matched report, Shining mirrors and signed-old-tier recovery; no new counter or receipt.",
-  "contracts": [
-    "#1536 FR050–053 Chaos Sea/Shining Abode ordinary safe-cycle natural recovery on shared scheduler; exact authenticated natural graph and no healing attempt/draw"
-  ]
-},
-{
-  "category": "spiritual-natural-recovery-chronology",
-  "reason": "One strict current-DATA witness contract after real natural publication: canonical newborn creation provenance matching actual event is excluded, coherent foreign-event newborn refuses, and a valid postterminal archive with another source FP reaches exact independent row-bijection refusal. Parse/identity/catalog/history/effect agreement preconditions precede witness calls. Bounded Astra recommended this representable DATA probe; no concurrent wound-owner support is claimed.",
-  "contracts": [
-    "#1536 independent current cohort completeness, actual newborn provenance and reverse-history bijection; actual original remains mandatory on source-bound replay/I"
-  ]
-},
-{
-  "category": "spiritual-natural-recovery-actors",
-  "reason": "One owned persistent cohort journey: player/hidden offscreen Guardian/resident/custom actor use own H0/V/II, terminal owner/realm loss refuses replay, real next cycle excludes old healed wounds, stale cohort/control refuses, replay is inert and empty third cycle creates no fake History. Test-only follow-through after accepted first14. New explicit members/budgets; Source review checks default old fixture/native-completion branches unchanged, no blanket repeat.",
-  "contracts": [
-    "#1536 T105/T106/T107 ordinary safe-cycle persistent eligibility/overflow/graph/replay without treatment attempt/draw"
-  ]
-},
-{
-  "category": "spiritual-natural-recovery-overflow",
-  "reason": "One IV carry/terminal domain control with independently owned canonical seeds:14 boundary state permits IV7+H5→III5 with explicit III graph; IV14+H5 crosses III/II/I to one terminal. Requires missing-graph no-write refusal, actual effect retirement, strict stage completeness and inert scheduler replay. Test-only follow-through after accepted first14. New explicit members/budgets; Source review checks default old fixture/native-completion branches unchanged, no blanket repeat.",
-  "contracts": [
-    "#1536 T105/T106/T107 ordinary safe-cycle persistent eligibility/overflow/graph/replay without treatment attempt/draw"
-  ]
-},
-{
-  "category": "spiritual-natural-recovery-graph-caller",
-  "reason": "One actual ordinary rankIII/H5 GameEngine safe turn receives authentic natural projection, authors the requested II graph before native completion and accepts II0 with strict natural History/no treatment entropy/one cycle/no cost/cleanup. Test-only follow-through after accepted first14. New explicit members/budgets; Source review checks default old fixture/native-completion branches unchanged, no blanket repeat.",
-  "contracts": [
-    "#1536 T105/T106/T107 ordinary safe-cycle persistent eligibility/overflow/graph/replay without treatment attempt/draw"
-  ]
-},
-{
-  "category": "spiritual-natural-recovery-contract",
-  "reason": "Changed ordinary mode/cohort and mandatory GM-facing response exception need direct cheap tier/eligibility and synchronized-example controls before publication/caller. No new parallel documentation framework.",
-  "contracts": [
-    "#1536 FR050–053 signed per-owner1+H; explicit authenticated natural graph mode; no treatment request/attempt/draw"
-  ]
-},
-{
-  "category": "spiritual-natural-recovery-publication",
-  "reason": "Exercise the new B-owned ordinary common contribution, preserve legitimate cost/art/source siblings, refuse concurrent wound-stage owner and changed protected wound, and independently reject self-consistent trimmed active or healed result cohorts after real publication. Each Fact owns separate mutable state; same-PID service reopen is explicit.",
-  "contracts": [
-    "#1536 T105/T106/T107 ordinary safe-cycle contribution, strict full-cohort replay and accepted ordinary companions"
-  ]
-},
-{
-  "category": "spiritual-natural-recovery-caller",
-  "reason": "Causal f47 accepted-turn RED was progress0 instead of1. Now qualify the same exact real ordinary Engine caller after natural contribution implementation; no wound command/attempt/healing die, strict natural History, one cycle/no charge. Run after cheap natural contracts/publication controls and fresh owning builds.",
-  "contracts": ["#1536 FR050–053 ordinary natural1+H, strict recover History/one cycle without treatment session; accepted shared design8c4e"]
-},
-{
-  "category": "spiritual-healing-graph-repair-observer",
-  "reason": "Causal cheap proof after actual fixture contention: exact same real main participation, unchanged handled packet and held Main physical lease must produce zero extra lock-open attempts; changed second packet is refusal-only and fully retained. A deliberate test hook refuses unexpected lock-open immediately, avoiding the10-second contention wait. RED/GREEN before another heavy actual caller; no production guard changes.",
-  "contracts": [
-    "#1536 actual graph repair fixture observation DATA versus physical mutation authority and owned task lifetime"
-  ]
-},
-{
-  "category": "spiritual-healing-actual-graph-repair",
-  "reason": "Qualify actual post-snapshot GameEngine graph admission/ordinary repair and post-publication interface consumption in one own rankIII/H5 fixture with the real client draw. Initial graphs omitted; the joined controlled GM follows exact graph repair then the existing bounded N/I freshness repair, with fresh original proof/strict published result and unchanged mechanical bytes. No production edits, freshness exemption or general repair redesign.",
-  "contracts": [
-    "#1536 T101/T104/T107 GM authors weaker graphs; client derives stages, preserves attempt/dice, publishes once under actual owner and validates consumed-source output"
-  ]
-},
-{
-  "category": "spiritual-healing-console-self",
-  "reason": "Qualify the existing console one-shot typed action on the exact Explorer injected into the same actual Engine. One independent fixture combines inert cancellation, confirmation without pre-stage draw, actual ordinary publication and settled repeat. Full-profile projection now changes the actual self common-plan and root-normalization path; this is its smallest existing full Engine consumer. No unrelated browser2 repeat.",
-  "contracts": [
-    "#1536 T101/T104/T121 console/browser parity for spiritual SELF outside conflict; one cycle, retained attempt/History, no cost"
-  ]
-},
-{
-  "category": "spiritual-healing-publication-owner",
-  "reason": "Actual caller lease failure requires one executable preparation under the publication lease, deferred routing without a cached executable plan, and missing/replaced source refusal before writes instead of stale fallback. Run these two typed controls before the unchanged guided pair; no general cache/coordinator or held Mortal workload.",
-  "contracts": ["#1536 T104/T107 actual signed-source ownership, immutable attempt/dice and ordinary repair before common atomic publication"]
-},
-{
-  "category": "spiritual-healing-snapshot-beforeimage-controls",
-  "reason": "Engine-only signed preparation capture must preserve generic canonical beforeimage refusal and signed preturn absence. Select three existing cheap methods including their existing discovered MemberData; no new Facts/matrix or broad suite. Existing browser snapshot-roundtrip2 follows, then guided2; c6 consumed-I graph/replay/contracts remain qualified with unchanged source dependencies.",
-  "contracts": [
-    "#1536 T104/T108 actual signed v2 preparation input versus canonical rollback beforeimages; generic authority and v1/ordinary routes stay strict"
-  ]
-} ,
     {
-      "category": "spiritual-healing-lifecycle",
-      "reason": "Original5 baseline qualified on d5cd. Shared program derivation/staging now supplies the real caller and GM refs; retain original budget/membership and repeat only as an affected publication regression after the new guided path executes.",
+      "category": "spiritual-resident-aid-gm",
+      "reason": "New capability and protected response field require exact worked example/manifest, both effective daemon assignments, shared entrypoints and actual codecs to agree.",
       "contracts": [
-        "#1536 US4 FR042–049,T096/T099/T104–T108: wound/effects, one cycle, History, immutable retained source and no self cost"
+        "#1536 T108-RESIDENT; US4 scenario8; typed consent/lifetime, ordinary cycle, strict current checks and immutable History; bounded functional acceptance"
       ]
     },
     {
-      "category": "spiritual-healing-mortal-boundary-controls",
-      "reason": "The shared actual effect executor and ordered membership changed; retain the three existing genuine Mortal generation/carry/cold/rollback controls without running the unrelated broad course wildcard. Current attempted180-second run is incomplete with noTRX; compatibility acceptance remains open and explicit root HOLD forbids instrumentation/retry now.",
+      "category": "spiritual-resident-aid-affected",
+      "reason": "Only existing cheap consumers directly affected by shared participation/selection/output methods; unrelated accepted tests are not repeated.",
       "contracts": [
-        "Existing Mortal recovery capability and actual source/identity/carrier/effect membership semantics remain unchanged"
+        "#1536 T108-RESIDENT; US4 scenario8; typed consent/lifetime, ordinary cycle, strict current checks and immutable History; bounded functional acceptance"
       ]
     },
     {
-      "category": "spiritual-self-treatment-request",
-      "reason": "Stage now exports GM refs from the same retained source/draw; existing exact24 draw/currentness/retry controls are directly affected. Full136 is not repeated.",
+      "category": "spiritual-resident-aid-backend",
+      "reason": "Fresh original/current/history/source/permission/closing guards require actual new-family producer controls, true revocation, immutable mixed current-family History and unsupported owner refusal.",
       "contracts": [
-        "T104/T108 staging draw, exact source fingerprint, fresh closing guards and retained pending retry"
+        "#1536 T108-RESIDENT; US4 scenario8; typed consent/lifetime, ordinary cycle, strict current checks and immutable History; bounded functional acceptance"
       ]
     },
     {
-      "category": "spiritual-healing-completed-replay",
-      "reason": "Completed signed self-healing reopens durable DATA through fresh services in the same process, revalidates absent consumed input, returns NoPlan normalization and makes repeated ordinary scheduler calls inert for the complete actual publication member set.",
+      "category": "spiritual-resident-aid-console",
+      "reason": "User capability requires actual console handler and Engine across genuine grant, cleanup and confirmed aid, beyond DTO/codec checks.",
       "contracts": [
-        "#1536 T104/T107 retained completed replay and explicit GM-authored weaker graphs; original five-case boundary unchanged"
+        "#1536 T108-RESIDENT; US4 scenario8; typed consent/lifetime, ordinary cycle, strict current checks and immutable History; bounded functional acceptance"
       ]
     },
     {
-      "category": "spiritual-healing-authored-graphs",
-      "reason": "Repeat this existing singleton as the smallest affected shared schema2 and consumed-SELF I regression: it proves postpublication exact-image/normalized-dialogue binding and precise same-ref body/foreign-ref refusal, alongside authored II/I generations. Do not repeat the heavier actual self graph repair or browser pair merely for assembly hashes.",
+      "category": "spiritual-resident-aid-browser",
+      "reason": "User capability also requires actual shared browser queue/original and Engine across the same two-turn flow; no frontend/provider qualification claim.",
       "contracts": [
-        "#1536 T104/T107 retained completed replay and explicit GM-authored weaker graphs; original five-case boundary unchanged"
+        "#1536 T108-RESIDENT; US4 scenario8; typed consent/lifetime, ordinary cycle, strict current checks and immutable History; bounded functional acceptance"
       ]
     },
     {
-      "category": "spiritual-healing-guided-self",
-      "reason": "The next functional slice connects the public confirmed self-treatment route to actual GameEngine staging/publication. Two isolated fixtures share only immutable setup code; existing backend five/replay/graph categories are not broadened or blindly repeated. Initial source-scaffold run is expected semantic RED before implementation.",
+      "category": "spiritual-resident-aid-rollback",
+      "reason": "New canonical memory append must restore with wounds/resources/scheduler/History through existing actual C4 plus whole-turn failure route. Prepared and pre-stage baselines differ.",
       "contracts": [
-        "#1536 T104/T108/T121–T125: typed exact selection, prompt cancellation, signed source staging and real caller completion"
+        "#1536 T108-RESIDENT; US4 scenario8; typed consent/lifetime, ordinary cycle, strict current checks and immutable History; bounded functional acceptance"
       ]
     },
     {
-      "category": "spiritual-healing-guided-contract",
-      "reason": "New typed fields and GM response transport need focused phase/source/ordinary-absence controls, worked example and actual affected afterlife inventory/docs. This is the narrowed documentation-afterlife responsibility for this slice; no unrelated full documentation matrix.",
+      "category": "spiritual-resident-aid-contract",
+      "reason": "Causal resident admission RED accepted. Qualify full typed identity, raw forms, closed families and append-only protected memory/typed transport through cheap independent DATA and real distributor rollback before expensive journeys.",
       "contracts": [
-        "#1536 connected guided-self/GM/signed original boundary; explicit Mortal timeout HOLD unchanged"
+        "#1536 T108-RESIDENT; US4 scenario8; typed consent/lifetime, ordinary cycle, strict current checks and immutable History; bounded functional acceptance"
       ]
     },
     {
-      "category": "spiritual-healing-guided-help",
-      "reason": "Both existing console/browser help entrypoints changed availability wording and keep combat closed.",
+      "category": "spiritual-aid-stage-publication",
+      "reason": "Changed shared participation/family/History directly affects current player-to-Guardian v3. Re-run only this existing backend with embedded negative original/current/publication controls.",
       "contracts": [
-        "#1536 connected guided-self/GM/signed original boundary; explicit Mortal timeout HOLD unchanged"
+        "#1536 T108-RESIDENT; US4 scenario8; typed consent/lifetime, ordinary cycle, strict current checks and immutable History; bounded functional acceptance"
       ]
     },
     {
-      "category": "browser-pending-action-admission",
-      "reason": "Legacy prose queue shares the extended optional selection parser; verify current exact generation and no-overwrite controls without a new matrix.",
+      "category": "spiritual-guardian-help-publication",
+      "reason": "Changed shared participation/family/History directly affects current Guardian-to-player v4. Re-run only this existing backend source/confirmation/publication case.",
       "contracts": [
-        "#1536 connected guided-self/GM/signed original boundary; explicit Mortal timeout HOLD unchanged"
+        "#1536 T108-RESIDENT; US4 scenario8; typed consent/lifetime, ordinary cycle, strict current checks and immutable History; bounded functional acceptance"
       ]
     },
     {
-      "category": "browser-pending-snapshot-roundtrip",
-      "reason": "Existing genuine original-condition/manifest consumers share the new optional staged tuple; unchanged absent selection/blob route must retain actual signed condition.",
+      "category": "spiritual-world-source-closure",
+      "reason": "ResourceMaterialization has one resident-aware repair-hint delta. Independent substantive review precedes changing its sole LF pin; run the unchanged full source guard once.",
       "contracts": [
-        "#1536 connected guided-self/GM/signed original boundary; explicit Mortal timeout HOLD unchanged"
-      ]
-    },
-    {
-      "category": "fr063-ordinary-output-policy-source",
-      "reason": "Exact adapter reversal must reproduce the same original ordinary source hash and byte-identical pure policy.",
-      "contracts": [
-        "#1536 connected guided-self/GM/signed original boundary; explicit Mortal timeout HOLD unchanged"
-      ]
-    },
-    {
-      "category": "fr063-ordinary-output-policy-boundary",
-      "reason": "Existing public ordinary prefix/timestamp/tail order remains executable.",
-      "contracts": [
-        "#1536 connected guided-self/GM/signed original boundary; explicit Mortal timeout HOLD unchanged"
-      ]
-    },
-    {
-      "category": "fr063-ordinary-output-policy-regression",
-      "reason": "No ordinary/unbound/Mortal permission may arise from the new graph-only adapter.",
-      "contracts": [
-        "#1536 connected guided-self/GM/signed original boundary; explicit Mortal timeout HOLD unchanged"
+        "#1536 T108-RESIDENT; US4 scenario8; typed consent/lifetime, ordinary cycle, strict current checks and immutable History; bounded functional acceptance"
       ]
     }
   ]

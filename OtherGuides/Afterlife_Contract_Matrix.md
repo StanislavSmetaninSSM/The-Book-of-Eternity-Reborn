@@ -979,7 +979,7 @@ Read `input/turn_request.json.spiritualHealing.destinationGraphs`, author exactl
 requested `output/interface_updates.json.spiritualHealingGraphs` stageRefs and
 closed consequenceDefinitions; client computes ranks/validates/applies. Preserve the
 SAME attempt/dice through repair/replay. No automatic survivor selection, combat healing or service quote is implied.
-Only explicit spiritual_guardian_aid_v3 / spiritual_guardian_help_v4 below add the bounded current-Guardian helper directions. Unbound ordinary/Mortal interface
+Explicit spiritual_guardian_aid_v3 / spiritual_guardian_help_v4 add the current-Guardian directions; spiritual_resident_aid_v5 adds the bounded current-Abode resident target. Unbound ordinary/Mortal interface
 payload does not gain this field; authenticated natural mode is the exception below. See OtherGuides/Wound_Materialization_Contract.md
 and worked spiritual_self_treatment_v2 example in Examples/E_CLI_Afterlife_Turns.txt.
 
@@ -1207,3 +1207,51 @@ added, including a resolved failure or full heal.
 Existing actual C4, output binding and I still validate authored graph semantics;
 repair cannot change source, dice, selected decision or already accepted effects.
 Retained source/outcome DATA does not grant publication or replay permission.
+
+
+spiritual_resident_aid_v5 — player treats a consenting current-Abode resident
+
+This bounded private free direction extends /лечить only in the current safe Chaos
+Guardian Abode. The known active spiritual wound belongs to an exact visible,
+conscious, capable, present resident. A resident and Guardian may share a textual
+ID; full realm/kind/id/carrier coordinates and exact roster/profile/Guardian/Abode
+agreement distinguish them. Presence, friendliness or a readable name is not consent.
+No paid/public service, resident healer, Shining, combat or helpless exception.
+
+During an ordinary turn, author only spiritualTreatmentParticipationChange schema3
+on that existing resident profile: kind=resident_target_consent, operation=grant|revoke,
+healerId=player_soul, woundId, conscious, capable, readableEvidence. Grant requires
+both facts true; revoke may set them false. All three existing profile representations
+use the same closed proposal. Never write the canonical record, accepted binding,
+cycle stamps, client selection/request/die or History. The genuine natural owner
+publishes record3/full witness in result5/History alongside that cycle's natural
+recovery. It permits only the immediately following accepted turn/next safe cycle.
+
+After normal cleanup, guided /лечить keeps Self first and offers the known exact
+resident. Cancellation is inert; confirmation/staging rechecks current source,
+consent and locality before one draw. The client owns selection/request/result
+family5, mode=aid, direction=player_to_resident and complete typed healer/target.
+Author only the requested spiritualHealingGraphs using existing weaker-graph grammar
+and actual stageRefs/client complicationRefs; do not choose a new numerical result.
+Player H resolves active healing, resident H resolves its single natural pass.
+H3/d20=14 against III1 gives active II1 then targetH0 natural II2, ONE cycle/no fee/OD.
+V3/v4 currently produced forms and immutable historical fingerprints stay unchanged.
+
+Meaningful resident Actor Brain still needs first-person memory. For this protected
+turn put spiritualResidentThoughtJournalUpdates in output/interface_updates.json
+(or the identically named output-only GameResponse property), NOT raw journal
+commands in the frozen roster file. Entries reuse the existing resident journal
+format: required entryId,residentId,turn,timestamp,title,summary; optional existing
+eventType,consequence,attitude,intent,tags. Use exact current participant/turn,
+unique new entry IDs and UTC timestamp; preserve every prior entry. The SAME live
+continuation guards the complete response, proves append-only DATA and feeds the
+existing residentThoughtJournalUpdates normalizer. Its owned writer preserves typed
+locality and proves exact physical before/after bytes. Ordinary resident interactions
+keep their old journal mapping. No new journal path/cache/permission exists.
+
+Late consent/locality/response drift refuses without reroll or partial acceptance.
+Current settlement retains source/control/scheduler/cohort/identity/History guards.
+Historical receipt parsing uses its recorded witness/grant/request/stages, never
+asks a departed resident to consent again. A later changed scheduler after-image
+is not permission to replay an old current settlement. See the two-turn worked
+spiritual_resident_aid_v5 example; use the actual client packet, not copied IDs.

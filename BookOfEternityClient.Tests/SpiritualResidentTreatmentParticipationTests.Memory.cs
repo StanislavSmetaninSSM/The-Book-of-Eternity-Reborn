@@ -94,6 +94,35 @@ public sealed partial class SpiritualResidentTreatmentParticipationTests
         finally { if (Directory.Exists(root)) Directory.Delete(root, recursive: true); }
     }
 
+    [Fact]
+    public async Task FailedProtectedResponseDistributionRestoresExactOutputAndLeavesRosterUntouched()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "boe-resident-memory-fault-" + Guid.NewGuid().ToString("N"));
+        try
+        {
+            var files = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance); files.EnsureDirectoryStructure();
+            await files.WriteFileAtomicAsync(GuardianAbodeResidentState.StatePath, ResidentRoster().ToJsonString());
+            await files.WriteFileAtomicAsync("output/interface_updates.json", "{\"dialogueOptions\":[]}");
+            var roster = await files.ReadFileBytesAsync(GuardianAbodeResidentState.StatePath);
+            var output = await files.ReadFileBytesAsync("output/interface_updates.json");
+            var cuts = 0;
+            var distributor = new StateDistributor(files, NullLogger<StateDistributor>.Instance, new StateDistributorHooks
+            {
+                AfterFileMutationAppliedAsync = path =>
+                {
+                    if (path == "output/interface_updates.json") { cuts++; throw new InvalidOperationException("Protected memory response cut."); }
+                    return Task.CompletedTask;
+                }
+            });
+            var failure = await Record.ExceptionAsync(() => distributor.DistributeAsync(new GameResponse
+                { SpiritualResidentThoughtJournalUpdates = [JsonSerializer.SerializeToElement(ResidentMemoryEntry("memory_fault"))] }));
+            Assert.NotNull(failure); Assert.Equal(1, cuts);
+            Assert.Equal(roster, await files.ReadFileBytesAsync(GuardianAbodeResidentState.StatePath));
+            Assert.Equal(output, await files.ReadFileBytesAsync("output/interface_updates.json"));
+        }
+        finally { if (Directory.Exists(root)) Directory.Delete(root, recursive: true); }
+    }
+
     private static JsonObject ResidentMemoryEntry(string entryId) => new()
     {
         ["entryId"] = entryId, ["residentId"] = "resident_aid", ["turn"] = 44,

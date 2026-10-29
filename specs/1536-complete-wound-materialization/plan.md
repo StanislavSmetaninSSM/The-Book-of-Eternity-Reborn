@@ -1,3 +1,57 @@
+# T108 resident functional source cut — review pending, runtime UNRUN
+
+2026-10-29. The complete known implementation/test/GM block is now authored: exact
+resident consent/selection/family5, shared current/signed/history admission, typed
+locality normalization, protected first-person memory on the same owner, console/
+browser journeys and actual C4/whole-turn rollback. New code remains UNCOMPILED and
+UNRUN; causal RED at d2306fae5 is the only runtime for the resident slice so far.
+No resident capability/PASS or full US4 closure is claimed.
+
+The finite source matrix includes cheap all-form/forgery/kinded-ID/revoke/locality/
+closed-family/append/typed-transport tests; actual grant+aid original/closing drift,
+normalization and departed historical agreement; four accepted natural turns retain
+v3/v4/v5 History while publishing genuine revoke; both actual guided interfaces;
+one actual common precommit fault proving staged request/die at C4 and grant memory
+at outer rollback. An unsupported natural owner must reject protected memory.
+The common coordinator captures current before-images BEFORE all normalization;
+its C4 and later whole-turn baselines deliberately differ. Native completion data
+and full diagnostics are external; no fixture files are inserted after acceptance.
+
+GM matrix/guide, CLI/rules/main guide, BOTH daemon directive assignments, worked
+consent→memory→cleanup→selection→aid example, manifest and canonical data-model
+technical forms are synchronized. Existing v3/v4 JSON/fingerprints and ordinary
+resident journal routing remain their exact current forms. Typed output field
+spiritualResidentThoughtJournalUpdates is separate from ordinary canonical updates
+so routing never guesses from graphs or silently changes an existing consumer.
+
+Current tests/selection.json is the bounded ten-category resident change selection;
+historical selections/acceptance remain in Git/checkpoints/raw, not CI prerequisites.
+Old v3 and v4 backend cases are selected because this block changes their shared
+code; no unchanged combat39, assessment17, DFR/Mortal/Windows/performance replay.
+Exact discovered counts and PlanOnly remain pending. Original-style budgets are
+60s cheap categories,120s existing old backend singletons,180s resident backend and
+each actual guided/failure category. Limits are not changed after a failure.
+One reviewed World source pin is now stale only for a resident-aware repair hint
+in ValidationService.ResourceMaterialization.cs; independent SOURCE must approve
+that exact delta before its one pin is refreshed. No World runtime rerun is implied.
+
+Optimization: bind normalized memory append once from already parsed original
+roster/response on the existing continuation. Full participant/record/source/response/
+session/lease identity and whole-operation lifetime own detached before/after DATA.
+Pure projection performs no source reads and grants no permission. The existing
+actual writer retains full fresh opening/closing scans, typed join, exact physical
+before-image/readback and immutable signed original. No new cache, registry, path,
+journal writer or speedup claim; old entries cannot be upserted/replaced. New typed
+fixtures prove input detachment and actual output transport without a roster write.
+
+Next: independent coherent SOURCE and fixture/selection review, resolve findings
+as one block, refresh only the explicitly approved pin, then fresh affected owning
+builds, catalog/exact PlanOnly and PREP before cheap GREEN. Actual resident backend,
+old current-family controls, console/browser and rollback follow only after their
+prerequisites. Disk is checked before each full-output operation; no raw/save/
+recovery deletion, clone or restore. Latest complete assessment17/combat39 retain
+old accepted lineages. DFR/Mortal/Windows/performance stay HOLD.
+
 # T108 resident consent, UI and protected memory — uncompiled WIP
 
 2026-10-29. Actual causal RED and its independent OUTCOME are accepted below.

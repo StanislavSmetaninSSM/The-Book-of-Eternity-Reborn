@@ -13624,3 +13624,53 @@ continuationGeneration>1, and cannot reclaim healing dice. Repeated healing,
 backlog/catchup, other actors/targets/realms and public/paid treatment are not part
 of this contour. This focused example is not a complete signed original or an
 executable GM receipt; runtime owners independently prove every physical input.
+
+
+spiritual_resident_aid_v5 — worked consent, real cleanup, confirmed treatment
+
+Before turn43: Житель целостности is a preexisting visible conscious capable
+resident_example in the exact current guardian_example/abode_example roster and
+resident profile. Its known active III wound is wound_resident_example, resident H0;
+player H3. A Guardian may have the same textual ID without being this wound owner.
+
+Turn43: player asks permission to help. On that existing resident profile, author
+spiritualTreatmentParticipationChange (all three profile representations agree):
+```json
+{"schemaVersion":3,"kind":"resident_target_consent","operation":"grant","healerId":"player_soul","woundId":"wound_resident_example","conscious":true,"capable":true,"readableEvidence":"Я понимаю предложение души и разрешаю ей лечить эту рану в следующий безопасный цикл."}
+```
+This ordinary accepted natural cycle gives III0→III1 and client record3/full witness
+in natural result5. Do not author stamps or claim same-turn permission. Actor Brain
+names Житель целостности, uses first person, and declares the actual memory surface.
+Keep the physical resident roster unchanged before preflight. In this turn's actual
+output/interface_updates.json, alongside existing dialogue/timestamp/graphs fields:
+```json
+{"spiritualResidentThoughtJournalUpdates":[{"entryId":"resident_thought_grant_example","residentId":"resident_example","turn":43,"timestamp":"2026-10-29T00:00:00Z","title":"Разрешение помочь","summary":"Я понимаю предложение души, принимаю помощь добровольно и сохраняю право отказаться.","eventType":"conversation","consequence":"Помощь без нового долга.","attitude":"trusting","intent":"Восстановить целостность.","tags":[]}]}
+```
+The existing continuation proves the new ID/current target/turn and old prefix,
+then its normalizer appends first-person memory through the SAME owned locality
+writer. The real Engine accepts43 and cleans its transient request/snapshot. Do not
+insert files or bootstrap again between grant and treatment.
+
+Turn44: /лечить lists Self first, then Житель Обители. Cancel is inert; select and
+confirm the exact known wound. The client rechecks source, grant, current typed
+roster/profile/locality and sufficient H before one draw. Its selection DATA is:
+```json
+{"schemaVersion":5,"mode":"aid","direction":"player_to_resident","woundId":"wound_resident_example","expectedWoundFingerprint":"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","healer":{"realm":"chaos_sea","ownerKind":"player_soul","ownerId":"player_soul","carrierPath":"game_state/meta/afterlife_entity_profiles.json"},"target":{"realm":"chaos_sea","ownerKind":"resident","ownerId":"resident_example","carrierPath":"game_state/meta/afterlife_entity_profiles.json"},"locality":{"guardianId":"guardian_example","abodeId":"abode_example"},"participationFingerprint":"sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"}
+```
+This is NOT GM-authored permission. Keep client request5 direction=player_to_resident,
+participation/activeSource/attempt/dice intact. For actual d20=14, H3 against III1
+computes active II1 then residentH0 natural II2, ONE cycle/no fee/OD. Author the exact
+requested II spiritualHealingGraphs using the existing spiritual_self_treatment_v2
+weaker-II grammar: target kind resident, actual client stageRef, legal original
+source definitions, empty links and only supplied complicationRefs. Do not copy a
+Guardian/player target or invent IDs/results. Supply every requested intermediate
+graph even if the wound becomes healed. Append this turn's first-person memory via
+spiritualResidentThoughtJournalUpdates with a NEW entryId and turn44. Ordinary
+resident journal mapping is unchanged outside protected treatment.
+
+Client publishes the exact resident wound/effects, one cycle and result5/History;
+existing v3/v4 receipts remain immutable. Revocation may use operation=revoke with
+false conscious/capable; it never grants permission. Current drift refuses without
+reroll. Historical receipt parsing still works after departure using recorded grant
+and stages; current-settlement source/schedule/cohort checks remain strict. No
+paid/public/resident-healer/combat/helpless/Shining completion is implied.

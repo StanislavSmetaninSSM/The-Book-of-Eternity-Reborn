@@ -8,6 +8,7 @@ internal static partial class AfterlifeWoundHealingPlanner
     internal sealed partial class Continuation
     {
         private JsonArray? _residentThoughtCommands;
+        private JsonArray? _residentThoughtBeforeImage;
         private JsonArray? _residentThoughtAfterImage;
 
         private void AdmitResidentThoughtResponse(JsonObject? response)
@@ -27,32 +28,41 @@ internal static partial class AfterlifeWoundHealingPlanner
                 throw new InvalidDataException("Protected resident thoughts require this actual resident grant or aid owner.");
         }
 
+        private void BindResidentThoughts(JsonObject? roster)
+        {
+            if (_residentThoughtCommands is null) return;
+            RequireResidentThoughtFamily();
+            if (roster is null) throw new InvalidDataException("Resident memory requires its original roster.");
+            var commands = SpiritualTreatmentParticipation.ValidateResidentThoughtAppend(_residentThoughtCommands,
+                SpiritualTreatmentParticipation.RecordOwnerId(ResidentThoughtRecord!), _input.Binding.Turn, roster);
+            var expected = roster.DeepClone().AsObject();
+            GuardianAbodeResidentState.ApplyThoughtJournalUpdates(expected, commands);
+            _residentThoughtBeforeImage = (roster[GuardianAbodeResidentState.ThoughtJournalProperty] as JsonArray)?.DeepClone().AsArray() ?? new JsonArray();
+            _residentThoughtAfterImage = expected[GuardianAbodeResidentState.ThoughtJournalProperty]!.DeepClone().AsArray();
+            _residentThoughtCommands = commands; // One detached normalized DATA program, not a new permission.
+        }
+
         internal JsonObject ProjectResidentThoughts(JsonObject current)
         {
             if (_residentThoughtCommands is null) return current;
-            RequireExecutionCurrent();
+            // Pure composition, like the owned profile projector. The actual
+            // writer retains its full fresh opening/closing source scans.
+            if (_published) throw new InvalidDataException("A closed resident owner cannot compose memory.");
             RequireResidentThoughtFamily();
-            if (current.ContainsKey(GuardianAbodeResidentState.UpdateThoughtJournalProperty))
-                throw new InvalidDataException("Protected resident thoughts cannot compete with raw roster journal commands.");
-            if (_residentThoughtAfterImage is not null && JsonNode.DeepEquals(
-                    current[GuardianAbodeResidentState.ThoughtJournalProperty], _residentThoughtAfterImage)) return current;
-            var commands = SpiritualTreatmentParticipation.ValidateResidentThoughtAppend(_residentThoughtCommands,
-                SpiritualTreatmentParticipation.RecordOwnerId(ResidentThoughtRecord!), _input.Binding.Turn, current);
-            var expected = current.DeepClone().AsObject();
-            GuardianAbodeResidentState.ApplyThoughtJournalUpdates(expected, commands);
-            var afterImage = expected[GuardianAbodeResidentState.ThoughtJournalProperty]!.AsArray();
-            if (_residentThoughtAfterImage is not null && !JsonNode.DeepEquals(_residentThoughtAfterImage, afterImage))
-                throw new InvalidDataException("Resident memory projection changed within its actual owner.");
-            _residentThoughtAfterImage = afterImage.DeepClone().AsArray();
+            if (_residentThoughtAfterImage is null || current.ContainsKey(GuardianAbodeResidentState.UpdateThoughtJournalProperty))
+                throw new InvalidDataException("Protected resident thoughts lack their bound program or compete with raw commands.");
+            var journal = current[GuardianAbodeResidentState.ThoughtJournalProperty] ?? new JsonArray();
+            if (JsonNode.DeepEquals(journal, _residentThoughtAfterImage)) return current;
+            if (!JsonNode.DeepEquals(journal, _residentThoughtBeforeImage))
+                throw new InvalidDataException("Resident memory baseline differs from its owned DATA.");
             var projected = current.DeepClone().AsObject();
-            projected[GuardianAbodeResidentState.UpdateThoughtJournalProperty] = commands;
+            projected[GuardianAbodeResidentState.UpdateThoughtJournalProperty] = _residentThoughtCommands.DeepClone();
             return projected;
         }
 
         private void RequireResidentThoughtAfterImage(JsonObject before, JsonObject after)
         {
             if (_residentThoughtCommands is null) return;
-            RequireResidentThoughtFamily();
             _ = ProjectResidentThoughts(before);
             if (!JsonNode.DeepEquals(_residentThoughtAfterImage, after[GuardianAbodeResidentState.ThoughtJournalProperty]))
                 throw new InvalidDataException("Owned resident normalization lost or replaced its exact admitted memory append.");

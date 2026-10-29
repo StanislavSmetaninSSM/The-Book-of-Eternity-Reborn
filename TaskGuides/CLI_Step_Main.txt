@@ -1006,3 +1006,19 @@ added, including a resolved failure or full heal.
 Existing actual C4, output binding and I still validate authored graph semantics;
 repair cannot change source, dice, selected decision or already accepted effects.
 Retained source/outcome DATA does not grant publication or replay permission.
+
+
+spiritual_resident_aid_v5: /лечить also permits player→known visible consenting
+resident of the CURRENT safe Chaos Guardian Abode. Read Wound_Materialization_Contract
+and the worked example. GM authors closed resident_target_consent proposal3 on the
+existing resident profile in an ordinary accepted natural turn; client owns record3,
+next-turn/next-cycle witness and selection/request/result5 player_to_resident.
+After real cleanup, player selects/confirms; retain the original die, author actual
+requested spiritualHealingGraphs, player H active/resident H natural, one cycle/no
+fee/OD. Full typed identity/locality is required; no implicit consent, paid/combat/
+Shining/resident-healer permission. First-person resident memory uses output-only
+spiritualResidentThoughtJournalUpdates in output/interface_updates.json through the
+same protected owner and existing normalizer. Do not edit the frozen roster or old
+journal entries. Ordinary resident journal mapping stays unchanged. Preserve current
+source/closing guards and v3/v4 immutable receipts; historical parsing needs no new
+live consent. No player should type IDs or author client mechanics.

@@ -608,9 +608,10 @@ or silently upsert an old entry.
 Under the same live continuation/lease, feed detached commands into the normalizer's
 existing current-turn resident projection and drift calculation. Publish with the
 existing owned-locality hook, preserving the full typed join and exact expected
-journal append. Retain that small computed after-image only for this operation's
-idempotent normalization; response/record/source identity and fresh lease/physical
-checks remain required on every use. Original snapshots/request/dice/source FP stay
+journal append. Bind detached before/after journal DATA once from the already parsed original
+roster/response, only for this operation's idempotent normalization. Pure projection
+adds no source reads or permission; the actual writer retains full fresh opening/
+closing source/lease/physical checks. Original snapshots/request/dice/source FP stay
 frozen; exact physical readback advances only the owned live closing image. Existing
 post-normalization Actor Brain/memory validation remains mandatory. Fault acceptance
 must include memory restoration under the real owning rollback route, not a fixture
@@ -642,7 +643,8 @@ Tests use isolated mutable roots and detached template copies. No speedup claim.
 Finite acceptance maps each changed branch below. Exact discovered row counts are
 recorded after test authoring; fifteen cases were an incomplete draft, not a cap.
 Use cheap parameterized DATA controls and the existing backend fixtures for the
-additional branches; retain just two expensive guided journeys.
+additional branches; retain two positive guided journeys plus one actual Engine
+failure route needed to prove the new memory append is restored with the whole turn.
 
 | Branch | Minimal proof / existing owner |
 | --- | --- |

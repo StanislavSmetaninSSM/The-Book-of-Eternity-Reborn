@@ -198,6 +198,8 @@ internal static partial class AfterlifeWoundHealingPlanner
         private void AdmitGraphs(JsonObject? interfaceUpdates)
         {
             AdmitResidentThoughtResponse(interfaceUpdates);
+            if (_data?.AidWitness is not null)
+                BindResidentThoughts(_parsedSourceRoots.GetValueOrDefault(GuardianAbodeResidentState.StatePath) as JsonObject);
             var required = SpiritualHealingRequestProjection.RequiredGraphs(_wounds, _stages).ToArray();
             var rows = interfaceUpdates?["spiritualHealingGraphs"] as JsonArray;
             if (required.Length == 0 && rows is null) return;

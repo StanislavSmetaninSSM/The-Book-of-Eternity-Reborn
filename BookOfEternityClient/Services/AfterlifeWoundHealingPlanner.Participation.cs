@@ -76,6 +76,7 @@ internal static partial class AfterlifeWoundHealingPlanner
             _participationSnapshot = snapshot; _participationOriginal = evidence; _participationSources = sources;
             _participationChanges = detachedChanges;
             _participationOutcomes = outcomes;
+            BindResidentThoughts(currentRoots[GuardianAbodeResidentState.StatePath]);
             RequireCurrent(_files, _lease);
         }
 

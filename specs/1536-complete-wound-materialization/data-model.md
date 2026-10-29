@@ -3325,6 +3325,38 @@ invalid after cutover; current bootstrap/profile fixtures receive tier 0 explici
 An insufficient-tier healer cannot use natural 20 to bypass the gate. Natural 1 means
 no active improvement even when numeric total would otherwise pass.
 
+### Current-Abode resident helper technical family (T108-RESIDENT)
+
+Resident consent is closed proposal schema3 on the exact preexisting resident
+profile: schemaVersion,kind=resident_target_consent,operation=grant|revoke,
+healerId=player_soul,woundId,conscious,capable,readableEvidence. Client-owned record3
+has exactly schemaVersion,kind,status=granted|revoked,healer,target,woundId,locality,
+conscious,capable,readableEvidence,binding,acceptedCycleOrdinal,eligibleCycleOrdinal,
+primaryTransitionId. Healer/target are closed realm/ownerKind/ownerId/carrierPath;
+locality is closed guardianId/abodeId. Record3 is embedded in the single full
+participation outcome of natural result5. It is not standalone authority.
+
+Client selection5 is closed schemaVersion,mode=aid,direction=player_to_resident,
+woundId,expectedWoundFingerprint,healer,target,locality,participationFingerprint.
+Request5 reuses active aid fields with direction=player_to_resident and the full
+record3 witness. Active result5 carries that exact request/direction, existing
+ordered active-before-natural stages and common publication. Preserve existing
+currently produced self2, player→Guardian3 and Guardian→player4 shapes/receipts.
+Exact live source, current consent and typed locality checks remain mandatory.
+Historical History agreement instead links recorded witness, prior full grant,
+request, stages and accepted binding; it cannot reconstruct a past live roster.
+
+Protected resident memory uses output/interface_updates.json property
+spiritualResidentThoughtJournalUpdates, also output-only on GameResponse. Existing
+resident journal entry grammar is retained, with exact participant/current turn,
+UTC timestamp, unique nonconfusable new IDs and preservation of every old entry.
+The same continuation retains the full guarded response and immutable detached
+append DATA, then the existing normalizer/owned locality writer publishes it.
+No raw roster change precedes admission; no new canonical memory path/cache/owner.
+Ordinary residentThoughtJournalUpdates mapping is unchanged. Full typed join and
+fresh physical before/after/source checks remain. See spiritual-aid-design.md for
+finite branch coverage and the spiritual_resident_aid_v5 worked GM example.
+
 ## 13. Natural spiritual recovery
 
 For one accepted safe cycle:

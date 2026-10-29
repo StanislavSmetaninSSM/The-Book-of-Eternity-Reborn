@@ -2,6 +2,29 @@
   "version": 1,
   "effectMaterializationCoverage": [
 {
+  "contractId": "spiritual_resident_aid_v5",
+  "file": "E_CLI_Afterlife_Turns.txt",
+  "statePath": "typed current-Abode resident proposal3 -> actual natural result5 -> guided aid5",
+  "responseSurface": "closed resident_target_consent, actual spiritualHealingGraphs and output-only spiritualResidentThoughtJournalUpdates",
+  "realms": [
+    "Chaos Sea"
+  ],
+  "description": "Player treats a consenting exact current-Abode resident with separate player/resident tiers and protected append-only first-person memory.",
+  "validationKind": "focused-fragment",
+  "focusedFragmentReason": "SpiritualResidentTreatmentParticipationTests parses the exact worked proposal and protected memory entry with production typed APIs; real publication and interfaces are separate.",
+  "coverageLimit": "No standalone DATA authority, paid/public service, resident healer, combat, helpless/Shining, external provider or fresh-process qualification.",
+  "requiredText": [
+    "spiritual_resident_aid_v5",
+    "resident_target_consent",
+    "player_to_resident",
+    "spiritualResidentThoughtJournalUpdates",
+    "III0→III1",
+    "II2",
+    "ONE cycle/no fee/OD",
+    "existing v3/v4 receipts remain immutable"
+  ]
+},
+{
   "contractId": "spiritual_combat_healing_v1",
   "file": "E_CLI_Afterlife_Turns.txt",
   "statePath": "client combat_self original intent -> same C2/C3/C4 -> existing receipt ledger schema2 and combat History",

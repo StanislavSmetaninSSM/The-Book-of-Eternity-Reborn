@@ -2,12 +2,168 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "spiritual-resident-aid-gm",
+  "responsibility": "Worked proposal/memory/selection parsed by production typed APIs, exact manifest, both effective daemon directives, GM entrypoints and output-only routing.",
+  "excludes": "No full example/runtime suite, gameplay acceptance or external provider.",
+  "changeHints": [
+    "BookOfEternityClient.Tests/SpiritualResidentAidDocumentationTests.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.SpiritualResidentAidDocumentationTests.WorkedResidentConsentMemoryAndSelectionMatchTheClosedRuntimeAndGmEntryPoints"
+      ]
+    }
+  ]
+},
+{
+  "id": "spiritual-resident-aid-affected",
+  "responsibility": "Existing direct consumers: Guardian proposal1/provider2 raw mirrors/forgery, independent active versus natural tiers, exact v3/v4 GM closed forms and graph transport/refresh.",
+  "excludes": "No unchanged combat journey, DFR/Mortal/Windows or broad old owner suite.",
+  "changeHints": [
+    "BookOfEternityClient/Services/SpiritualTreatmentParticipation.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.SpiritualTreatmentParticipationTests.*",
+        "BookOfEternityClient.Tests.SpiritualAidProgramTests.ActiveHealerTierDoesNotReplaceTheTargetNaturalTierInTheSameProgram",
+        "BookOfEternityClient.Tests.SpiritualHealingGuidedContractTests.GuardianParticipationProposalHasAClosedWorkedExampleAndSynchronizedGmGuidance",
+        "BookOfEternityClient.Tests.SpiritualHealingGuidedContractTests.GuardianAidUsesClosedSelectionAndTheDocumentedTwoTurnGmContract",
+        "BookOfEternityClient.Tests.SpiritualHealingGuidedContractTests.GuardianHelpHasAClosedOfferExampleAndAnExplicitPlayerConfirmedSelection",
+        "BookOfEternityClient.Tests.SpiritualHealingGuidedContractTests.TypedTransportPreservesGraphsAndOrdinaryOutputKeepsFieldAbsent"
+      ]
+    }
+  ]
+},
+{
+  "id": "spiritual-resident-aid-backend",
+  "responsibility": "Actual resident grant/retained-die aid, exact expiry/source/B/publication/normalization and departed historical link; mixed genuine v3/v4/v5 History plus actual revoke/refusal, and orphan memory denial.",
+  "excludes": "Direct backend models cleaned input absence; actual Engine cleanup/interfaces/outer rollback are separate. No broad natural cohort/performance suite.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/AfterlifeSpiritualNaturalRecoveryTests.ResidentAuthority.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 3,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.AfterlifeSpiritualNaturalRecoveryTests.ResidentAidUsesTypedCommittedConsentOriginalNormalizationAndHistoricalReplay",
+        "BookOfEternityClient.Tests.AfterlifeSpiritualNaturalRecoveryTests.ResidentRevocationPublishesInMixedHistoryAndRefusesItsOtherwiseEligibleAidWithoutDraw",
+        "BookOfEternityClient.Tests.AfterlifeSpiritualNaturalRecoveryTests.OrdinaryNaturalOwnerCannotPublishUnboundProtectedResidentMemory"
+      ]
+    }
+  ]
+},
+{
+  "id": "spiritual-resident-aid-console",
+  "responsibility": "One actual console grant43 -> normal cleanup -> guided confirmation -> resident aid44 with complete pre-first-turn fixture, distinct H, two genuine memories and one cycle/attempt/no charge.",
+  "excludes": "No external provider, browser DOM, full cold process or other targets/realms/services.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/ExplorerWoundSelfTreatmentTests.Aid.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 3,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.ConsoleResidentAidUsesActualConsentCleanupAndConfirmedEngineTreatment"
+      ]
+    }
+  ]
+},
+{
+  "id": "spiritual-resident-aid-browser",
+  "responsibility": "One actual shared browser command/queue grant43 -> real cleanup -> confirmed resident aid44, same original selection/die, distinct H, two genuine memories and one cycle/no charge.",
+  "excludes": "No browser DOM or external provider, cold process, other actors/realms/services.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/ExplorerWoundSelfTreatmentTests.Aid.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 3,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.BrowserResidentAidUsesActualConsentCleanupAndOriginalQueuedEngineTreatment"
+      ]
+    }
+  ]
+},
+{
+  "id": "spiritual-resident-aid-rollback",
+  "responsibility": "One actual console resident aid common precommit fault after owned memory normalization; exact prepared request/die/schedule at C4 compensation and pre-aid grant journal/canonical roots after whole-turn rollback.",
+  "excludes": "No successful-journey repeat, fixture writeback, new C4 framework, DFR/Mortal/Windows.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/ExplorerWoundSelfTreatmentTests.Aid.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 3,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.ResidentAidCommonPublicationFailureRestoresAcceptedGrantMemoryAndWholeTurnState"
+      ]
+    }
+  ]
+},
+{
   "id": "spiritual-resident-aid-contract",
-  "responsibility": "T108-RESIDENT typed participant/proposal contract. Initial causal singleton proves a valid resident proposal through the actual existing ReadChanges API; later closed-family and exact identity controls belong here.",
-  "excludes": "No accepted grant authority, live roster admission, actual Engine journey, diagnostic/performance or broad unchanged suite.",
+  "responsibility": "T108-RESIDENT cheap typed consent/full owner/locality, all raw forms/forgery, kinded equal IDs, revoke flags, closed v5 and exact existing v3/v4 selection, append-only protected memory and actual typed output transport/rollback.",
+  "excludes": "No accepted grant authority or full Engine journey; real source/normalization/History settlement belongs to backend and guided categories. No diagnostic/performance or broad unchanged suite.",
   "changeHints": [
     "BookOfEternityClient.Tests/SpiritualResidentTreatmentParticipationTests.cs",
-    "BookOfEternityClient/Services/SpiritualTreatmentParticipation.cs"
+    "BookOfEternityClient/Services/SpiritualTreatmentParticipation.cs",
+    "BookOfEternityClient.Tests/SpiritualResidentTreatmentParticipationTests.Contracts.cs",
+    "BookOfEternityClient.Tests/SpiritualResidentTreatmentParticipationTests.Memory.cs",
+    "BookOfEternityClient/Services/SpiritualTreatmentParticipation.Residents.cs",
+    "BookOfEternityClient/Services/AfterlifeWoundHealingPlanner.ResidentMemory.cs",
+    "BookOfEternityClient/IO/StateDistributor.cs"
   ],
   "related": [],
   "requirements": {

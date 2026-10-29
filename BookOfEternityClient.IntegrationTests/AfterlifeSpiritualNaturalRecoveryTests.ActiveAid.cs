@@ -81,6 +81,19 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
                 Assert.Equal(0, draws);
                 fixture.AssertMutationRootsUnchanged(before);
             }
+            if (resident)
+            {
+                var path = ProgressionScheduleService.SchedulePath;
+                var scheduleBytes = (await files.ReadFileBytesAsync(lease, path))!;
+                var foreignCycle = JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(scheduleBytes))!.AsObject();
+                foreignCycle["currentChaosSeaTurnOrdinal"] = foreignCycle["currentChaosSeaTurnOrdinal"]!.GetValue<int>() + 1;
+                await files.WriteFileAtomicAsync(lease, path, foreignCycle.ToJsonString());
+                var changedCycle = fixture.CaptureMutationRoots();
+                Assert.False((await AfterlifeWoundTreatmentAuthority.StagePlayerAidTurnAsync(files, lease, scheduler,
+                    "session_spiritual_healing", "request_aid", 44, selection, Draw)).Stage.IsStaged);
+                Assert.Equal(0, draws); fixture.AssertMutationRootsUnchanged(changedCycle);
+                await files.WriteFileAtomicBytesAsync(lease, path, scheduleBytes);
+            }
             // A present competing request is not treated as the normal cleaned absence.
             await files.WriteFileAtomicAsync(lease, LiveTurnPreparationService.TurnRequestPath,
                 new JsonObject { ["sessionId"] = "foreign_session", ["turnNumber"] = 43 }.ToJsonString());
@@ -136,6 +149,27 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
             nullRecord["participation"]!["record"]![receiveAid ? "targetCapable" : "capable"] = null;
             Assert.False(SpiritualSelfTreatmentRequestCodec.IsBoundAid(nullRecord,
                 new("session_spiritual_healing", "request_aid", 44, control), selection, "chaos_sea", control.NextChaosSeaTurnOrdinal));
+            if (resident)
+            {
+                var context = new SpiritualSelfTreatmentStageContext("session_spiritual_healing", "request_aid", 44, control);
+                Assert.True(SpiritualSelfTreatmentRequestCodec.IsBoundAid(request, context, selection, "chaos_sea", control.NextChaosSeaTurnOrdinal));
+                Assert.False(SpiritualSelfTreatmentRequestCodec.IsBoundAid(request, context, selection, "chaos_sea", control.NextChaosSeaTurnOrdinal + 1));
+                foreach (var mutation in new[] { "schema", "direction", "healer", "target", "locality", "extra" })
+                {
+                    var forged = request.DeepClone().AsObject();
+                    switch (mutation)
+                    {
+                        case "schema": forged["schemaVersion"] = 4; break;
+                        case "direction": forged["direction"] = "guardian_to_player"; break;
+                        case "healer": forged["healer"]!["ownerKind"] = "guardian"; break;
+                        case "target": forged["target"]!["ownerKind"] = "guardian"; break;
+                        case "locality": forged["participation"]!["record"]!["locality"]!["abodeId"] = "foreign_abode"; break;
+                        default: forged["playerConfirmation"] = "player_target_confirmed"; break;
+                    }
+                    Assert.False(SpiritualSelfTreatmentRequestCodec.IsBoundAid(forged, context, selection, "chaos_sea", control.NextChaosSeaTurnOrdinal));
+                }
+                Assert.Equal(1, draws);
+            }
             var retained = fixture.CaptureMutationRoots();
             var repeated = await AfterlifeWoundTreatmentAuthority.StagePlayerAidTurnAsync(files, lease, scheduler,
                 "session_spiritual_healing", "request_aid", 44, selection, Draw);
@@ -147,7 +181,7 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
         await new LiveTurnPreparationService(files).PrepareAsync(new()
         {
             SessionId = "session_spiritual_healing", RequestId = "request_aid", TurnNumber = 44,
-            CurrentRealm = "Chaos Sea", PlayerAction = receiveAid ? WoundApplicationService.ReceiveAidActionText : WoundApplicationService.AidActionText, ProgressionControl = control
+            CurrentRealm = "Chaos Sea", PlayerAction = resident ? WoundApplicationService.ResidentAidActionText : receiveAid ? WoundApplicationService.ReceiveAidActionText : WoundApplicationService.AidActionText, ProgressionControl = control
         });
         await using (var lease = await files.AcquireCanonicalWriteLeaseAsync())
         {
@@ -199,10 +233,27 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
             var signedLocality = (await files.ReadFileBytesAsync(lease, manifest.Files[localPath]))!;
             if (resident)
             {
+                var responseBytes = (await files.ReadFileBytesAsync(lease, "output/interface_updates.json"))!;
+                var changedResponse = JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(responseBytes))!.AsObject();
+                changedResponse[SpiritualTreatmentParticipation.ResidentThoughtResponseProperty]![0]!["summary"] = "Я изменил память после допуска.";
+                await files.WriteFileAtomicAsync(lease, "output/interface_updates.json", changedResponse.ToJsonString());
+                var retainedSources = fixture.CaptureMutationRoots();
+                Assert.Throws<InvalidDataException>(() => aidOwner.RequireCurrent(files, lease));
+                fixture.AssertMutationRootsUnchanged(retainedSources);
+                Assert.True(JsonNode.DeepEquals(request, JsonNode.Parse((await files.ReadFileAsync(lease, AcceptedMechanicsPlan.WoundCommandPath))!)));
+                await files.WriteFileAtomicBytesAsync(lease, "output/interface_updates.json", responseBytes);
                 // Generic case-insensitive locality sets are unchanged, but the
                 // exact typed join must stop the actual owner before its writer.
                 var residentPath = GuardianAbodeResidentState.StatePath;
                 var residentRoot = JsonNode.Parse((await files.ReadFileAsync(lease, residentPath))!)!.AsObject();
+                var rosterBytes = (await files.ReadFileBytesAsync(lease, residentPath))!;
+                var rewrittenMemory = residentRoot.DeepClone().AsObject();
+                rewrittenMemory[GuardianAbodeResidentState.ThoughtJournalProperty]![0]!["summary"] = "Я переписал уже принятую память.";
+                await files.WriteFileAtomicAsync(lease, residentPath, rewrittenMemory.ToJsonString());
+                var refusedSources = fixture.CaptureMutationRoots(new[] { residentPath });
+                Assert.Throws<InvalidDataException>(() => aidOwner.RequireCurrent(files, lease));
+                fixture.AssertMutationRootsUnchanged(refusedSources);
+                await files.WriteFileAtomicBytesAsync(lease, residentPath, rosterBytes);
                 var changed = residentRoot.DeepClone().AsObject();
                 changed["entries"]![0]!["guardianId"] = AidGuardianId.ToUpperInvariant();
                 var genericBefore = LocalInteractionScopeService.ResolveChaosSeaScope(
@@ -260,6 +311,8 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
         {
             await using var localityLease = await files.AcquireCanonicalWriteLeaseAsync();
             var rosterBytes = (await files.ReadFileBytesAsync(localityLease, GuardianAbodeResidentState.StatePath))!;
+            var settledMemory = JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(rosterBytes))![GuardianAbodeResidentState.ThoughtJournalProperty]!.AsArray();
+            Assert.Equal(new[] { 43, 44 }, settledMemory.Select(e => e!["turn"]!.GetValue<int>()));
             var departed = JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(rosterBytes))!.AsObject();
             departed["entries"]![0]!["isPresent"] = false;
             await files.WriteFileAtomicAsync(localityLease, GuardianAbodeResidentState.StatePath, departed.ToJsonString());
@@ -356,10 +409,10 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
     };
 
     private static Task WriteAidReportAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease,
-        BookOfEternityClient.Models.ProgressionControl c) => files.WriteFileAtomicAsync(lease, ProgressionScheduleService.ReportPath,
+        BookOfEternityClient.Models.ProgressionControl c, string requestId = "request_aid", int turn = 44) => files.WriteFileAtomicAsync(lease, ProgressionScheduleService.ReportPath,
         new JsonObject { ["progressionProcessingReport"] = new JsonObject
         {
-            ["sessionId"] = "session_spiritual_healing", ["requestId"] = "request_aid", ["turnNumber"] = 44,
+            ["sessionId"] = "session_spiritual_healing", ["requestId"] = requestId, ["turnNumber"] = turn,
             ["worldCyclesProcessed"] = 0, ["factionCyclesProcessed"] = 0,
             ["chaosSeaCyclesProcessed"] = 1, ["guardianProjectCyclesProcessed"] = 1, ["residentAgencyCyclesProcessed"] = 1,
             ["newLastChaosSeaSimulationOrdinal"] = c.NextChaosSeaTurnOrdinal,
