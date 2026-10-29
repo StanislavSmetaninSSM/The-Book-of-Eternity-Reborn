@@ -613,7 +613,14 @@ roster/response, only for this operation's idempotent normalization. Pure projec
 adds no source reads or permission; the actual writer retains full fresh opening/
 closing source/lease/physical checks. Original snapshots/request/dice/source FP stay
 frozen; exact physical readback advances only the owned live closing image. Existing
-post-normalization Actor Brain/memory validation remains mandatory. Fault acceptance
+post-normalization Actor Brain/memory validation remains mandatory. Accepted I
+projects the protected field only for an exact published family5 response, same
+actual original/control/cohort and complete original-roster→current-journal append.
+The existing observed locality reader authenticates that original and its closing
+evidence; current roster joins the bound physical closing set. Memory-only responses
+are supported, but ordinary/orphan/unpublished/wrong-family fields stay rejected.
+Original-dependent I is not rerun after cleanup; historical/current-settlement
+readers keep their own strict documented proof. Fault acceptance
 must include memory restoration under the real owning rollback route, not a fixture
 writeback. Add cheap append/replacement/transport checks and actual grant+aid memory
 assertions before claiming the user capability.

@@ -1,3 +1,41 @@
+# T108 SOURCE corrections — uncompiled, delta review pending
+
+2026-10-29. Independent Astra SOURCE at b00645f6d found one P1 before any build:
+protected memory stayed in ordinary interface JSON policy and was always rejected.
+Independent Sol found one P2 coverage gap for unknown versions/v5-self result.
+Neither finding is treated as a runtime failure or a passed capability.
+
+Correction enters the existing I binder for graphs OR memory. Only exact published
+family5/same original/control/cohort/response image can strip protected memory;
+a same-snapshot authenticated locality read supplies original roster, exact append
+comparison guards current canonical journal and both original evidence/current
+roster remain in closing checks. No global whitelist. Graph-only behavior retains
+its earlier route; unowned/unpublished/wrong-family memory remains refused. Source
+trace confirms actual Engine I follows completed canonical publication. Pure DTO
+ResidentParticipationRecord exports one detached recorded witness, not new authority.
+New cheap unowned policy cases and actual grant-memory-only/aid graph+memory checks,
+postpublication response/old-prefix/new-memory drift cover this correction. Artificial
+I revalidation AFTER actual Engine cleanup is replaced by the existing strict current
+settlement reader; original-dependent I still requires its original manifest.
+
+P2 adds unknown selection/request versions, rehashed request variants, unknown
+resident result, and rehashed5/99 mutations of a REAL valid self2 result in one
+existing rankI/H1/d20=20 backend case. Only that exact existing method joins the
+resident backend category, no extra Engine journey. Original budgets unchanged.
+Astra substantively approved the sole ResourceMaterialization repair-hint delta;
+only its one LF pin is refreshed. Complete66-pin guard/assertions remain unchanged.
+
+All implementation/corrections remain UNCOMPILED/UNRUN. No new long process has
+started. Delta review of these findings precedes the one coherent fresh build. The actual
+resident grant fixture explicitly omits spiritualHealingGraphs to cover memory-only
+I; aid covers combined graph+memory. One actual self2 result supplies the wrong-family
+published I negative and real self5/99 header mutations. Three cheap unowned/null/
+graph-present cases keep ordinary unknown-field rejection. The existing shared
+bound-read dictionary prevents repeated current reads; the same authenticated
+locality reader/evidence and fresh physical roster closing protect the new append
+proof. No new cache or publication owner is introduced.
+Raw remains external; latest accepted assessment17/combat39 lineages unchanged.
+
 # T108 resident functional source cut — review pending, runtime UNRUN
 
 2026-10-29. The complete known implementation/test/GM block is now authored: exact

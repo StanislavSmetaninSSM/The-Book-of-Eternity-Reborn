@@ -1894,6 +1894,10 @@ continuation guards the complete response, proves append-only DATA and feeds the
 existing residentThoughtJournalUpdates normalizer. Its owned writer preserves typed
 locality and proves exact physical before/after bytes. Ordinary resident interactions
 keep their old journal mapping. No new journal path/cache/permission exists.
+The accepted interface validator permits this comparison field only after exact
+family5 publication, with the same authenticated original/response and complete
+canonical journal append. Memory-only output is valid; unowned/unpublished or
+wrong-family memory fields remain errors, never ordinary UI properties.
 
 Late consent/locality/response drift refuses without reroll or partial acceptance.
 Current settlement retains source/control/scheduler/cohort/identity/History guards.

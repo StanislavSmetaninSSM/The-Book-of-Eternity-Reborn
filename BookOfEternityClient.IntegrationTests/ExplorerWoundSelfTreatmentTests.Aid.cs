@@ -387,8 +387,10 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
             if (resident)
             {
                 var settled = fixture.CaptureMutationRoots();
-                Assert.DoesNotContain(await new ValidationService(files, Microsoft.Extensions.Logging.Abstractions.NullLogger<ValidationService>.Instance)
-                    .ValidateAcceptedTurnInterfacePayloadAsync(), i => i.Severity == IssueSeverity.Error);
+                var settledTurn = Assert.IsType<TurnRequest>(aidTurn);
+                await using (var settledLease = await files.AcquireCanonicalWriteLeaseAsync())
+                    Assert.NotNull(await ProgressionScheduleService.ReadPublishedSpiritualCycleCoreAsync(settledTurn.ProgressionControl!,
+                        settledTurn.SessionId, settledTurn.RequestId, settledTurn.TurnNumber, p => files.ReadFileBytesAsync(settledLease, p)));
                 fixture.AssertMutationRootsUnchanged(settled);
                 var memories = JsonNode.Parse((await files.ReadFileAsync(GuardianAbodeResidentState.StatePath))!)![GuardianAbodeResidentState.ThoughtJournalProperty]!.AsArray();
                 Assert.Equal(new[] { 43, 44 }, memories.Select(e => e!["turn"]!.GetValue<int>()));
@@ -491,7 +493,7 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
 
     private static async Task WriteResidentAidReasoningAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease, TurnRequest turn, bool grant)
     {
-        await AfterlifeSpiritualNaturalRecoveryTests.WriteResidentAidMemoryAsync(files, lease, turn.RequestId, turn.TurnNumber);
+        await AfterlifeSpiritualNaturalRecoveryTests.WriteResidentAidMemoryAsync(files, lease, turn.RequestId, turn.TurnNumber, memoryOnly: grant);
         const string name = "Житель целостности";
         await files.WriteFileAtomicAsync(lease, "output/debug_logs.json", new JsonObject
         {

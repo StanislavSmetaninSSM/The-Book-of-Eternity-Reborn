@@ -84,7 +84,7 @@ internal static partial class SpiritualTreatmentParticipation
             throw new InvalidDataException("Resident journal baseline must be an array.");
         var ids = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         foreach (var old in prior as JsonArray ?? new JsonArray())
-            if (old is not JsonObject row || !ResourceMaterializationContract.IsExactIdentifier(Text(row, "entryId")) || !ids.Add(Text(row, "entryId")))
+            if (old is not JsonObject priorRow || !ResourceMaterializationContract.IsExactIdentifier(Text(priorRow, "entryId")) || !ids.Add(Text(priorRow, "entryId")))
                 throw new InvalidDataException("Resident journal baseline has ambiguous entries.");
         var result = new JsonArray();
         foreach (var item in commands)

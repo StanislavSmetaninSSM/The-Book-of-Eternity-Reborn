@@ -11,11 +11,16 @@ public partial class ValidationService
     private async Task<BoundSpiritualInterface?> BindSpiritualHealingInterfaceAsync(JsonElement root,
         string currentJson, List<ValidationIssue> issues)
     {
-        if (root.ValueKind != JsonValueKind.Object || !root.TryGetProperty("spiritualHealingGraphs", out var graphs)) return null;
+        if (root.ValueKind != JsonValueKind.Object) return null;
+        var hasGraphs = root.TryGetProperty("spiritualHealingGraphs", out var graphs);
+        var hasResidentMemory = root.TryGetProperty(SpiritualTreatmentParticipation.ResidentThoughtResponseProperty, out var residentMemory);
+        if (!hasGraphs && !hasResidentMemory) return null;
+        if (!hasGraphs) graphs = JsonSerializer.SerializeToElement(Array.Empty<object>());
         FileSystemManager.CanonicalWriteLease? lease = null;
         var ownsLease = false;
         var transferred = false;
         Exception? operationFailure = null;
+        PendingTurnSnapshotObservedReadResult? memoryLocality = null;
         try
         {
             var invocation = _pendingSnapshotInvocation.Value;
@@ -109,15 +114,16 @@ public partial class ValidationService
             if (responseBytes is null || CanonicalJsonUtf8.DecodeOneOptionalBom(responseBytes) != currentJson)
                 throw new InvalidDataException("The interface response changed before bound validation.");
             var publishedImages = new Dictionary<string, CanonicalBeforeImage>(StringComparer.Ordinal);
+            async Task<byte[]?> ReadPublished(string path)
+            {
+                if (publishedImages.TryGetValue(path, out var captured)) return captured.Bytes;
+                var bytes = await _fs.ReadFileBytesAsync(lease, path);
+                publishedImages.Add(path, new(bytes is not null, bytes));
+                return bytes;
+            }
+            SpiritualHealingPersistedResult? publishedSafe = null;
             if (live is null)
             {
-                async Task<byte[]?> ReadPublished(string path)
-                {
-                    if (publishedImages.TryGetValue(path, out var captured)) return captured.Bytes;
-                    var bytes = await _fs.ReadFileBytesAsync(lease, path);
-                    publishedImages.Add(path, new(bytes is not null, bytes));
-                    return bytes;
-                }
                 if (combatIntent is not null)
                 {
                     var publishedCombat = await ProgressionScheduleService.ReadPublishedSpiritualCombatCoreAsync(
@@ -137,6 +143,7 @@ public partial class ValidationService
                 var published = await ProgressionScheduleService.ReadPublishedSpiritualCycleCoreAsync(
                     frame.ProgressionControl, snapshot.SessionId, snapshot.RequestId, snapshot.TurnNumber,
                     ReadPublished, snapshot.SnapshotToken, request, naturalProjection);
+                publishedSafe = published;
                 if (published is null)
                 {
                     if (naturalProjection is null)
@@ -173,14 +180,42 @@ public partial class ValidationService
                         combatOriginal.Wound, rank, row.GetProperty("stageRef").GetString()!, complications);
                 }
             }
+            if (hasResidentMemory)
+            {
+                // I runs after common publication in the Engine. A request or
+                // proposed grant alone cannot exempt memory from ordinary policy.
+                if (residentMemory.ValueKind != JsonValueKind.Array || publishedSafe is not { SchemaVersion: 5 } ||
+                    new CanonicalBeforeImage(true, responseBytes).Fingerprint != publishedSafe.GraphResponseFingerprint ||
+                    publishedSafe.ResidentParticipationRecord is not { } record)
+                    throw new InvalidDataException("Protected resident memory requires its exact published family5 response.");
+                memoryLocality = AfterlifeWoundHealingPlanner.ReadOriginalAidLocalitySource(_fs, lease);
+                if (!memoryLocality.Success || memoryLocality.Snapshot is not { } local || memoryLocality.Evidence is not { } localEvidence ||
+                    local.SessionId != snapshot.SessionId || local.RequestId != snapshot.RequestId || local.TurnNumber != snapshot.TurnNumber ||
+                    local.SnapshotToken != snapshot.SnapshotToken || !local.CoveredLogicalPaths.Contains(GuardianAbodeResidentState.StatePath, StringComparer.Ordinal))
+                    throw new InvalidDataException("Protected resident memory lost its same actual original roster.");
+                localEvidence.RequireCurrent(_fs, lease, local);
+                var before = StrictJsonAuthority.Deserialize<JsonObject>(CanonicalJsonUtf8.DecodeOneOptionalBom(
+                    local.ReadRequiredBytes(GuardianAbodeResidentState.StatePath)), new JsonSerializerOptions(), "original resident memory roster")!;
+                var commands = SpiritualTreatmentParticipation.ValidateResidentThoughtAppend(JsonNode.Parse(residentMemory.GetRawText())!.AsArray(),
+                    SpiritualTreatmentParticipation.RecordOwnerId(record), snapshot.TurnNumber, before);
+                var expected = before.DeepClone().AsObject();
+                GuardianAbodeResidentState.ApplyThoughtJournalUpdates(expected, commands);
+                var currentBytes = await ReadPublished(GuardianAbodeResidentState.StatePath)
+                    ?? throw new InvalidDataException("Published resident memory roster is absent.");
+                var current = StrictJsonAuthority.Deserialize<JsonObject>(CanonicalJsonUtf8.DecodeOneOptionalBom(currentBytes),
+                    new JsonSerializerOptions(), "published resident memory roster")!;
+                if (!JsonNode.DeepEquals(expected[GuardianAbodeResidentState.ThoughtJournalProperty], current[GuardianAbodeResidentState.ThoughtJournalProperty]))
+                    throw new InvalidDataException("Protected resident memory differs from its complete exact accepted append.");
+            }
             var projected = JsonNode.Parse(root.GetRawText())!.AsObject();
             projected.Remove("spiritualHealingGraphs");
+            if (hasResidentMemory) projected.Remove(SpiritualTreatmentParticipation.ResidentThoughtResponseProperty);
             // Graphs-only is a payload only on this authenticated route; ordinary policy stays unchanged.
             if (!projected.ContainsKey("dialogueOptions") && !projected.ContainsKey("image_prompt")) projected["dialogueOptions"] = new JsonArray();
             evidence.RequireCurrent(_fs, lease, snapshot);
             var bound = new BoundSpiritualInterface(_fs, lease, ownsLease, snapshot, evidence,
                 new(live is not null, live), new(true, responseBytes), publishedImages,
-                JsonDocument.Parse(projected.ToJsonString()));
+                JsonDocument.Parse(projected.ToJsonString()), memoryLocality?.Snapshot, memoryLocality?.Evidence);
             transferred = true;
             return bound;
         }
@@ -189,8 +224,8 @@ public partial class ValidationService
                 ArgumentException or KeyNotFoundException or NullReferenceException or IOException or UnauthorizedAccessException))
         {
             operationFailure = failure;
-            issues.Add(new("output/interface_updates.json.spiritualHealingGraphs", IssueSeverity.Error,
-                "Spiritual healing graphs require the actual signed safe or combat source.",
+            issues.Add(new("output/interface_updates.json." + (hasResidentMemory ? SpiritualTreatmentParticipation.ResidentThoughtResponseProperty : "spiritualHealingGraphs"), IssueSeverity.Error,
+                hasResidentMemory ? "Resident memory requires its exact published family5 and append proof." : "Spiritual healing graphs require the actual signed safe or combat source.",
                 code: "spiritual_healing_interface_unbound", actual: failure.Message,
                 repairHint: "Keep the original turn/cycle and any existing treatment attempt/dice. Supply only requested stageRefs; never replace the source."));
             return null;
@@ -266,7 +301,8 @@ public partial class ValidationService
     private sealed class BoundSpiritualInterface(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease,
         bool ownsLease, PendingTurnSnapshotReadAuthority snapshot, PendingTurnSnapshotReader.OriginalReadEvidence evidence,
         CanonicalBeforeImage request, CanonicalBeforeImage response,
-        IReadOnlyDictionary<string, CanonicalBeforeImage> publishedImages, JsonDocument policy) : IAsyncDisposable
+        IReadOnlyDictionary<string, CanonicalBeforeImage> publishedImages, JsonDocument policy,
+        PendingTurnSnapshotReadAuthority? memorySnapshot, PendingTurnSnapshotReader.OriginalReadEvidence? memoryEvidence) : IAsyncDisposable
     {
         internal JsonElement Root => policy.RootElement;
         public async ValueTask DisposeAsync()
@@ -276,6 +312,7 @@ public partial class ValidationService
             {
                 files.VerifyCurrentSessionOperation(lease);
                 evidence.RequireCurrent(files, lease, snapshot);
+                memoryEvidence?.RequireCurrent(files, lease, memorySnapshot!);
                 foreach (var pair in publishedImages)
                 {
                     var bytes = await files.ReadFileBytesAsync(lease, pair.Key);

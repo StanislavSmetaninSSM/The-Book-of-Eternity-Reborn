@@ -598,7 +598,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             ("BookOfEternityClient/Services/Validation/ValidationService.PrivateImplementation.cs", "54222A4E3EDE3574E4A489C88F8C085A015408DDEE4C6F9531ECF87D0D5AF907"),
             ("BookOfEternityClient/Services/Validation/ValidationService.QuestsAndSoulState.cs", "D7AE9436B054878818C36759A60D1FFB44C9375EC6A58C88FAA73101BA67BB60"),
             ("BookOfEternityClient/Services/Validation/ValidationService.QuestsRivalsFactionsAndWorld.cs", "96042BF2E790C80932810689D5DC0EE2F13ED567C2BE47487EFFA05C6730C0A0"),
-            ("BookOfEternityClient/Services/Validation/ValidationService.ResourceMaterialization.cs", "8F5D58666BAB8096BDDE7AFF46E234FC8B627AE17108EBD95E7F174CD7B3FA8A"),
+            ("BookOfEternityClient/Services/Validation/ValidationService.ResourceMaterialization.cs", "FABA5E28ACBA38D07870C027FBAE3451710E65B2D5DE02B484B8A3B96CCAA39D"),
             ("BookOfEternityClient/Services/Validation/ValidationService.RivalThreads.cs", "87DD3F1326CB0EBC5D4935DE145F15266FB30E0177064B8E36960C0A6A0A7576"),
             ("BookOfEternityClient/Services/Validation/ValidationService.SameTurnOwnerReadView.cs", "A8E0669C2BB1C692C2E9FA7481D78F2102267503BC31061974874DA9A4551971"),
             ("BookOfEternityClient/Services/Validation/ValidationService.ShiningAbode.cs", "081B4FD60653F4AC130B4598C232AB7CBA233EBEC17722D766DDC92461269B35"),

@@ -45,6 +45,39 @@ public sealed class AfterlifeWoundHealingLifecycleTests
     {
         await using var f = await Fixture.CreateAsync(rank: 1, tier: 1, die: 20);
         await f.PublishAsync();
+        var history = await f.ReadHistoryAsync();
+        var self = Assert.IsType<SpiritualHealingPersistedResult>(Assert.Single(history.Transitions,
+            row => row.TransitionResult is SpiritualHealingPersistedResult).TransitionResult);
+        Assert.Equal(2, self.SchemaVersion); Assert.Equal("self", self.Mode);
+        foreach (var version in new[] { 5, 99 })
+        {
+            var unsupported = self.ToCanonicalJson(); unsupported["schemaVersion"] = version;
+            unsupported["resultFingerprint"] = WoundHistoryState.ComputeTransitionResultFingerprint(unsupported);
+            var versionIssues = new List<ValidationIssue>();
+            Assert.Null(SpiritualHealingPersistedResult.Parse(JsonSerializer.SerializeToElement(unsupported), "unsupported.self.family", versionIssues));
+            Assert.Contains(versionIssues, issue => issue.Code == "spiritual_healing_history_invalid" && issue.Actual == "Spiritual result kind/schema/fingerprint differs.");
+        }
+        var originalInterface = await f.Files.ReadFileBytesAsync("output/interface_updates.json");
+        var unboundMemory = new JsonObject
+        {
+            ["dialogueOptions"] = new JsonArray(), ["timestamp"] = DateTime.UtcNow.ToString("o"),
+            [SpiritualTreatmentParticipation.ResidentThoughtResponseProperty] = new JsonArray(new JsonObject
+            {
+                ["entryId"] = "memory_wrong_family", ["residentId"] = "resident_unbound", ["turn"] = 43,
+                ["timestamp"] = DateTime.UtcNow.ToString("o"), ["title"] = "Посторонняя память", ["summary"] = "Я не являюсь участником этого самолечения."
+            })
+        };
+        await f.Files.WriteFileAtomicAsync("output/interface_updates.json", unboundMemory.ToJsonString());
+        var beforeInterface = f.CaptureMutationRoots();
+        var wrongFamily = await new ValidationService(f.Files, NullLogger<ValidationService>.Instance).ValidateAcceptedTurnInterfacePayloadAsync();
+        Assert.Contains(wrongFamily, issue => issue.Code == "spiritual_healing_interface_unbound" &&
+            issue.Actual!.Contains("exact published family5 response", StringComparison.Ordinal));
+        f.AssertMutationRootsUnchanged(beforeInterface);
+        await using (var restore = await f.Files.AcquireCanonicalWriteLeaseAsync())
+        {
+            if (originalInterface is null) f.Files.DeleteFile(restore, "output/interface_updates.json");
+            else await f.Files.WriteFileAtomicBytesAsync(restore, "output/interface_updates.json", originalInterface);
+        }
         Assert.Empty((await f.ReadWoundsAsync()).Occurrences);
         Assert.Single((await f.ReadHistoryAsync()).Transitions.Where(t => t.Terminal));
         await f.AssertOneCycleAndRetainedAttemptAsync();

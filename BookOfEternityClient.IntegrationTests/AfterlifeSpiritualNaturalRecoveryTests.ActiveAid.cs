@@ -154,18 +154,28 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
                 var context = new SpiritualSelfTreatmentStageContext("session_spiritual_healing", "request_aid", 44, control);
                 Assert.True(SpiritualSelfTreatmentRequestCodec.IsBoundAid(request, context, selection, "chaos_sea", control.NextChaosSeaTurnOrdinal));
                 Assert.False(SpiritualSelfTreatmentRequestCodec.IsBoundAid(request, context, selection, "chaos_sea", control.NextChaosSeaTurnOrdinal + 1));
-                foreach (var mutation in new[] { "schema", "direction", "healer", "target", "locality", "extra" })
+                foreach (var mutation in new[] { "schema", "direction", "healer", "target", "locality", "extra", "unknown_schema", "self_mode" })
                 {
                     var forged = request.DeepClone().AsObject();
                     switch (mutation)
                     {
                         case "schema": forged["schemaVersion"] = 4; break;
+                        case "unknown_schema": forged["schemaVersion"] = 99; break;
+                        case "self_mode": forged["mode"] = "self"; break;
                         case "direction": forged["direction"] = "guardian_to_player"; break;
                         case "healer": forged["healer"]!["ownerKind"] = "guardian"; break;
                         case "target": forged["target"]!["ownerKind"] = "guardian"; break;
                         case "locality": forged["participation"]!["record"]!["locality"]!["abodeId"] = "foreign_abode"; break;
                         default: forged["playerConfirmation"] = "player_target_confirmed"; break;
                     }
+                    // Rehash the mutated public DATA so stale integrity alone
+                    // cannot explain the family/header refusal.
+                    var unsigned = forged.DeepClone().AsObject(); unsigned.Remove("requestFingerprint");
+                    forged["requestFingerprint"] = WoundAcceptedTurnFingerprintWriter.Compute(new[]
+                    {
+                        "spiritual_treatment_request", forged["schemaVersion"]!.GetValue<int>().ToString(System.Globalization.CultureInfo.InvariantCulture),
+                        WoundAcceptedTurnFingerprintWriter.CanonicalJson(unsigned)
+                    });
                     Assert.False(SpiritualSelfTreatmentRequestCodec.IsBoundAid(forged, context, selection, "chaos_sea", control.NextChaosSeaTurnOrdinal));
                 }
                 Assert.Equal(1, draws);
@@ -290,6 +300,15 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
         Assert.Equal("aid", result.Mode);
         Assert.Equal(family, result.SchemaVersion);
         Assert.True(JsonNode.DeepEquals(request, result.ToCanonicalJson()["request"]));
+        if (resident)
+        {
+            var unknownResult = result.ToCanonicalJson(); unknownResult["schemaVersion"] = 99;
+            unknownResult.Remove("direction"); // Exact generic root shape; header must reject before inner DATA.
+            unknownResult["resultFingerprint"] = WoundHistoryState.ComputeTransitionResultFingerprint(unknownResult);
+            var unknownIssues = new List<ValidationIssue>();
+            Assert.Null(SpiritualHealingPersistedResult.Parse(JsonSerializer.SerializeToElement(unknownResult), "resident.unknown.result", unknownIssues));
+            Assert.Contains(unknownIssues, i => i.Actual == "Spiritual result kind/schema/fingerprint differs.");
+        }
         var missingGrant = JsonNode.Parse(WoundHistoryState.SerializeCanonical(history))!.AsObject();
         var grantRow = missingGrant["transitions"]!.AsArray().OfType<JsonObject>()
             .Single(r => r["transitionResult"]?["mode"]?.GetValue<string>() == "natural");
@@ -328,6 +347,35 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
                 "session_spiritual_healing", "request_aid", 44, p => files.ReadFileBytesAsync(localityLease, p)));
             await files.WriteFileAtomicBytesAsync(localityLease, GuardianAbodeResidentState.StatePath, rosterBytes);
         }
+        if (resident)
+        {
+            var outputBytes = (await files.ReadFileBytesAsync("output/interface_updates.json"))!;
+            var rosterBytes = (await files.ReadFileBytesAsync(GuardianAbodeResidentState.StatePath))!;
+            foreach (var drift in new[] { "response", "old_memory", "new_memory" })
+            {
+                await using (var mutation = await files.AcquireCanonicalWriteLeaseAsync())
+                {
+                    if (drift == "response")
+                    {
+                        var changed = JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(outputBytes))!.AsObject();
+                        changed[SpiritualTreatmentParticipation.ResidentThoughtResponseProperty]![0]!["summary"] = "Я заменил ответ после публикации.";
+                        await files.WriteFileAtomicAsync(mutation, "output/interface_updates.json", changed.ToJsonString());
+                    }
+                    else
+                    {
+                        var changed = JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(rosterBytes))!.AsObject();
+                        changed[GuardianAbodeResidentState.ThoughtJournalProperty]![drift == "old_memory" ? 0 : 1]!["summary"] = "Я переписал принятую память.";
+                        await files.WriteFileAtomicAsync(mutation, GuardianAbodeResidentState.StatePath, changed.ToJsonString());
+                    }
+                }
+                var refused = await new ValidationService(files, NullLogger<ValidationService>.Instance).ValidateAcceptedTurnInterfacePayloadAsync();
+                Assert.Contains(refused, issue => issue.Code == "spiritual_healing_interface_unbound" &&
+                    issue.Actual!.Contains(drift == "response" ? "exact published family5 response" : "complete exact accepted append", StringComparison.Ordinal));
+                await using var restore = await files.AcquireCanonicalWriteLeaseAsync();
+                await files.WriteFileAtomicBytesAsync(restore, "output/interface_updates.json", outputBytes);
+                await files.WriteFileAtomicBytesAsync(restore, GuardianAbodeResidentState.StatePath, rosterBytes);
+            }
+        }
         var settled = fixture.CaptureMutationRoots();
         Assert.DoesNotContain(await new ValidationService(files, NullLogger<ValidationService>.Instance)
             .ValidateAcceptedTurnInterfacePayloadAsync(), i => i.Severity == IssueSeverity.Error);
@@ -351,7 +399,7 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
         {
             await using var publication = await fixture.Files.AcquireCanonicalWriteLeaseAsync();
             await fixture.WriteReportAsync(publication);
-            await WriteResidentAidMemoryAsync(fixture.Files, publication, "request_spiritual_healing", 43);
+            await WriteResidentAidMemoryAsync(fixture.Files, publication, "request_spiritual_healing", 43, memoryOnly: true);
             var validator = new ValidationService(fixture.Files, NullLogger<ValidationService>.Instance);
             var issues = await validator.PrepareSpiritualSelfTreatmentPublicationAsync(publication);
             Assert.True(!issues.Any(i => i.Severity == IssueSeverity.Error), string.Join(";", issues.Select(i => i.Code + ":" + i.Actual)));
@@ -360,6 +408,9 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
                 .BindTo(publication).NormalizeAccumulatedStateWithPlanAsync(manifest.Files));
         }
         else await PublishAsync(fixture);
+        if (resident)
+            Assert.DoesNotContain(await new ValidationService(fixture.Files, NullLogger<ValidationService>.Instance)
+                .ValidateAcceptedTurnInterfacePayloadAsync(), i => i.Severity == IssueSeverity.Error);
         var after = Assert.Single((await fixture.ReadWoundsAsync()).Occurrences).Wound;
         await using var cleanup = await fixture.Files.AcquireCanonicalWriteLeaseAsync();
         // Direct publisher fixture models the cleaned protocol absence; actual
@@ -372,9 +423,14 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
             { Aid = SpiritualTreatmentParticipation.Selection(record) };
     }
 
-    internal static async Task WriteResidentAidMemoryAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease, string requestId, int turn)
+    internal static async Task WriteResidentAidMemoryAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease, string requestId, int turn, bool memoryOnly = false)
     {
         var response = JsonNode.Parse((await files.ReadFileAsync(lease, "output/interface_updates.json")) ?? "{}")!.AsObject();
+        if (memoryOnly)
+        {
+            Assert.True(response["spiritualHealingGraphs"] is null or JsonArray { Count: 0 });
+            response.Remove("spiritualHealingGraphs");
+        }
         response[SpiritualTreatmentParticipation.ResidentThoughtResponseProperty] = new JsonArray(new JsonObject
         {
             ["entryId"] = "resident_aid_thought_" + requestId, ["residentId"] = AidResidentId, ["turn"] = turn,

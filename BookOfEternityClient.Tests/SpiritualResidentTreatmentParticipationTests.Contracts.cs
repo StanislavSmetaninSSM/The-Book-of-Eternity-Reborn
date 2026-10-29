@@ -100,7 +100,7 @@ public sealed partial class SpiritualResidentTreatmentParticipationTests
         Assert.Equal(WoundApplicationService.ResidentAidActionText, WoundApplicationService.ActionFor(selection));
         Assert.Throws<InvalidDataException>(() => (selection with { Aid = selection.Aid with { ReceiveAid = true } }).ToJson());
         Assert.Throws<InvalidDataException>(() => (selection with { Aid = selection.Aid with { PlayerConfirmed = true } }).ToJson());
-        foreach (var mutation in new[] { "kind", "realm", "carrier", "direction", "unknown", "missing" })
+        foreach (var mutation in new[] { "kind", "realm", "carrier", "direction", "unknown", "missing", "unknown_version", "self_mode" })
         {
             var forged = root.DeepClone().AsObject();
             switch (mutation)
@@ -110,6 +110,8 @@ public sealed partial class SpiritualResidentTreatmentParticipationTests
                 case "carrier": forged["target"]!["carrierPath"] = "game_state/characters/npc.json"; break;
                 case "direction": forged["direction"] = "guardian_to_player"; break;
                 case "unknown": forged["confirmation"] = "player_target_confirmed"; break;
+                case "unknown_version": forged["schemaVersion"] = 99; break;
+                case "self_mode": forged["mode"] = "self"; break;
                 default: forged.Remove("locality"); break;
             }
             Assert.Throws<InvalidDataException>(() => SpiritualSelfTreatmentSelection.Parse(forged));

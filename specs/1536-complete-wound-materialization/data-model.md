@@ -3354,7 +3354,11 @@ The same continuation retains the full guarded response and immutable detached
 append DATA, then the existing normalizer/owned locality writer publishes it.
 No raw roster change precedes admission; no new canonical memory path/cache/owner.
 Ordinary residentThoughtJournalUpdates mapping is unchanged. Full typed join and
-fresh physical before/after/source checks remain. See spiritual-aid-design.md for
+fresh physical before/after/source checks remain. Accepted I requires the exact
+published family5/response, same authenticated original roster and complete current
+journal append; this is no global interface whitelist. Memory-only output is
+supported, while orphan/unpublished/wrong-family memory stays rejected.
+See spiritual-aid-design.md for
 finite branch coverage and the spiritual_resident_aid_v5 worked GM example.
 
 ## 13. Natural spiritual recovery
