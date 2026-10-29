@@ -49,6 +49,15 @@ Review also required unmount invalidation; local mounted/operation cleanup now b
 late prompt follow-up after SceneView disposes the component. Controlled host truly
 unmounts it and holds actions independently; no backend/parent epoch replacement.
 
+Fresh frontend build at e2835160e: exit0, typecheck0errors,16.533886s,
+113freshoutputfiles; sourcepinsunchanged. Existing500kBchunk warning retained,
+no limit/code-splitting change. Raw wound-browser-build-e283. Catalog discovery
+valid1083categories/12805methods-files,0unmapped/stale,31.050554s,0execution.
+First full PlanOnly refused before discovery/execution: same SSRfile assigned
+both Vitest and typecheck. Remove only that duplicate typecheck membership;
+separate typed host entry still compiles host+production components. Application,
+fixture and build inputs unchanged; no rebuild for catalog-only correction.
+
 Implementation WIP: WoundCommandView/scoped CSS, existing CommandResultView
 cancel-first header and current-command operation admission, optional existing
 PromptForm condition descriptions, actual-component public-packet tests and controlled
