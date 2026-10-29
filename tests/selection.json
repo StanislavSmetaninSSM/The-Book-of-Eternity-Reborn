@@ -2,31 +2,10 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "wound-browser-cards",
-      "reason": "All previously raw-packet SSR cases now cross actual default sanitizer; full aliases/states/facts/privacy plus typed corrected DOM host.",
+      "category": "healing-service-price-causal",
+      "reason": "Singleton cheap pricing RED after invalid-domain controls, before implementing public-service price math; no old accepted selection replay.",
       "contracts": [
-        "#1536 T118/T126 / FR067/068/075/076 / safe client-owned presentation hint"
-      ]
-    },
-    {
-      "category": "wound-browser-command-consumer",
-      "reason": "Existing parent action/prompt/sanitizer/local-result guard after default view classification correction.",
-      "contracts": [
-        "#1536 T118/T126 / FR067/068/075/076 / safe client-owned presentation hint"
-      ]
-    },
-    {
-      "category": "wound-browser-default-boundary",
-      "reason": "Real sanitizer causal, closed enum, idempotence, conflicting/invalid hints, default/advanced separation and fresh generic isolation.",
-      "contracts": [
-        "#1536 T118/T126 / FR067/068/075/076 / safe client-owned presentation hint"
-      ]
-    },
-    {
-      "category": "wound-browser-sanitizer-consumers",
-      "reason": "Nearest existing direct sanitizer+nested rawJson runtime, player-copy/source guards and protocol default privacy boundary; no broad aggregate.",
-      "contracts": [
-        "#1536 T118/T126 / FR067/068/075/076 / safe client-owned presentation hint"
+        "#1536 US6 T131/FR078 / ceil(25*50/100)=13"
       ]
     }
   ]

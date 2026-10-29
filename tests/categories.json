@@ -35726,6 +35726,31 @@
           ]
         }
       ]
+    },
+    {
+      "id": "healing-service-price-causal",
+      "responsibility": "US6/T131 canonical public healing I-IV prices, bounded integer percentage and upward whole-Feather rounding; singleton initial semantic RED.",
+      "excludes": "Provider admission, payment mutation, effects, scheduler, GameEngine and previous wound/browser qualifiers.",
+      "changeHints": [
+        "BookOfEternityClient/Services/AfterlifeHealingServiceContract.cs",
+        "BookOfEternityClient.Tests/AfterlifeHealingServiceQuoteTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.AfterlifeHealingServiceQuoteTests.QuoteUsesCanonicalPriceWithUpwardRounding"
+          ]
+        }
+      ]
     }
   ]
 }

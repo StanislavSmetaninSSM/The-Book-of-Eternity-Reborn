@@ -6,7 +6,7 @@ Same Linux checkout/branch, sole writer Sol. Existing T131–T140/T143–T147 ow
 route; no new microtask/epic. Use executing-plans for inline implementation with
 independent Sol SOURCE/selection/outcomes and Astra/high complex DESIGN review.
 
-Goal: a player currently co-located with the alive canonical Elyara can see the
+Goal: a player currently co-located in the Chaos Sea with the alive canonical Elyara can see the
 exact public Ink Feather quote, confirm it, receive the real healing result and
 one safe world cycle/History, with exactly one charge for an accepted attempt
 (including valid partial/failure), zero charge after cancellation/rejection/rollback,
@@ -16,6 +16,8 @@ universal remote travel. Offers perform no travel; remote/inaccessible providers
 not become an executable treatment. Existing travel remains separate, one ordinary
 cycle per accepted travel action. Universal destination binding remains open T143;
 relocation/death must already invalidate this treatment route rather than be reset.
+Relocated Shining state is preserved; Shining execution remains unavailable in this
+Chaos Sea slice until its own route is supported.
 
 Spec: FR077–082/FR086–088, data-model.md §14, contracts/afterlife-spiritual-wounds-
 and-healing.md §§Elyara/service, existing retry payment identity. Prices are fixed:
@@ -96,7 +98,8 @@ Execution steps (one functional route, not independent helper completion)
 Review focus and causal acceptance
 
 1. Price/service/provider or patient changes after display: no hidden replacement,
-   fresh matching confirmation and prepublication checks; no draw/payment on refusal.
+   fresh matching confirmation and prepublication checks. Pre-admission refusal draws
+   nothing; post-draw rejection retains the sealed draw without reroll and no charge.
 2. Duplicate/repair/cold replay: same attempt/draw and authenticated payment result,
    exactly one charge/heal/cycle; never reuse historical presence as current permission.
 3. Valid failed healing versus invalid publication: charge once for accepted failure;
@@ -122,7 +125,19 @@ Prepare a concrete disk budget and reclaim only verified reproducible intermedia
 retain raw/saves/recovery/acting binaries. Do not start a build/run without its floor
 and full output space. No new clone/restore, merge/force, GC/history/branch deletion.
 T126/old accepted cases and HOLD DFR/Mortal/Windows/performance remain untouched.
-Design/preparation only so far; no US6 build/test or production implementation claimed.
+Astra/high DESIGN accepted at43e3ed626 with the Chaos-only and post-draw wording
+clarifications above; no author decision is missing. Pure unavailable stub plus one
+price causal Fact are authored, not compiled/run: invalid rank/percent controls then
+expected13 for I at50%. This is not the completed service feature. Owning category
+healing-service-price-causal selects exactly that method with60s, no prior PASS.
+Resource proof: all64 cache tarballs SHA512-verified,5501 installed payload files
+match them exactly, lock metadata retained. Independent Sol approved removal of only
+those5501 generated files from both hardlinked node_modules trees; unknown/cache/
+symlink entries, locks,113dist outputs,18bin artifacts and all raw remain. Offline
+reinstall itself is UNRUN; use npm ci --offline with the verified onboarding cache
+before future frontend work. Reserve rose to551MiB before old-bin preservation.
+All18 acting managed artifact paths are being losslessly retained outside checkout
+before fresh affected managed preparation. No US6 build/test or semantic GREEN yet.
 
 ---
 
