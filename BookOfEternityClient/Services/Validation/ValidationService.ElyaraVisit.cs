@@ -6,7 +6,7 @@ namespace BookOfEternityClient.Services;
 
 public partial class ValidationService
 {
-    private async Task ValidateElyaraVisitOutcomeAsync(string action, List<ValidationIssue> issues)
+    internal async Task ValidateElyaraVisitOutcomeAsync(string action, List<ValidationIssue> issues)
     {
         if (!ElyaraVisitService.HasMarker(action)) return;
         FileSystemManager.CanonicalWriteLease? owned = null;

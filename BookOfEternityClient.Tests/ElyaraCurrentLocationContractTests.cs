@@ -156,6 +156,34 @@ public sealed class ElyaraCurrentLocationContractTests
         Assert.NotEqual(fingerprint, ElyaraVisitService.DataFingerprint(input with { Conflict = new JsonObject() }, Generation));
     }
 
+    [Theory]
+    [InlineData("valid")] [InlineData("foreign_provider")] [InlineData("mixed_realm")]
+    public void ShiningQuoteUsesExistingResolverAndOnlyExactSameRealmElyara(string change)
+    {
+        var input = Inputs(); var actor = Actor(input);
+        actor["realm"] = "Shining Abode"; actor["locationId"] = "hall_current";
+        actor["healingServiceProfile"]!["realm"] = "shining_abode";
+        actor["healingServiceProfile"]!["locationRef"] = "hall_current";
+        var id = change == "foreign_provider" ? "guardian_foreign" : AfterlifeWoundTreatmentAuthority.ElyaraId;
+        actor["actorId"] = id; actor["healingServiceProfile"]!["providerId"] = id;
+        var provider = new WoundOwnerCoordinate("shining_abode", "guardian", id, WoundCarrierCatalog.AfterlifeProfilesPath);
+        var profile = Assert.IsType<AfterlifeHealingServiceProfile>(AfterlifeHealingServiceContract.ReadPublicCurrencyProfile(provider, actor));
+        var node = WoundContractTestData.CreateSpiritualActiveWound(realm: change == "mixed_realm" ? "chaos_sea" : "shining_abode",
+            ownerId: "player_soul", carrierPath: WoundCarrierCatalog.AfterlifeProfilesPath);
+        var parsed = WoundMaterializationContract.Parse(node.ToJsonString(), "shining.quote.fixture");
+        Assert.True(parsed.IsValid);
+        var prepared = SpiritualHealingResolver.PrepareSource(new(parsed.Wound!, provider, actor, null,
+            new EffectMechanicsSnapshot(true, [], [], [])));
+        if (!prepared.IsValid) { Assert.Equal("mixed_realm", change); return; }
+        var quote = AfterlifeHealingServiceContract.CreateQuote(profile, parsed.Wound!, prepared.Source!, "hall_current");
+        if (change == "valid")
+        {
+            Assert.NotNull(quote); Assert.Equal(50, quote.Amount);
+            Assert.Equal(quote, AfterlifeHealingServiceContract.ParseQuote(quote.ToJson()));
+        }
+        else Assert.Null(quote);
+    }
+
     private static JsonObject Actor(ElyaraVisitInput input) => input.Profiles!["profiles"]![0]!.AsObject();
     private static string Serialize(ElyaraVisitInput input) => JsonSerializer.Serialize(input);
     private static JsonObject Guardian(string id, string abode, string name) => new()

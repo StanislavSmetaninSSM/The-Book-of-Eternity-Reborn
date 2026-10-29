@@ -14719,6 +14719,10 @@ See plan prefix for exact categories/timings/limits. T142 owner question remains
 no historical-faction exception, Shining execution or broader parent-task closure.
 
 T143 next bounded route (2026-10-29): same canonical Elyara current life/location;
+Current-location implementation/tests/GM sync now authored, UNCOMPILED/UNQUALIFIED.
+Finite whole impact-selection is in tests/selection.json; next whole SOURCE, builds,
+exact discovery/PREP and changed functional journeys. Parent T143 remains open.
+
 ordinary discovered Chaos travel, co-located fresh treatment including Shining, stale
 refusal before effects. Independent Astra/high DESIGN findings/finite plan are in the
 current plan prefix. No arbitrary Shining hall/cross-realm teleport, no T142 exception.

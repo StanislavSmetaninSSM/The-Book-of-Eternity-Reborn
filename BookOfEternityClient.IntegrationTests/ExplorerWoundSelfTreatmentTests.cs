@@ -806,10 +806,10 @@ public sealed partial class ExplorerWoundSelfTreatmentTests(ITestOutputHelper ou
         fixture.AssertMutationRootsUnchanged(before);
     }
 
-    private static ExplorerWebCommandService CreateCommands(FileSystemManager files)
+    private static ExplorerWebCommandService CreateCommands(FileSystemManager files, ExplorerWebPromptSessionService? prompts = null)
     {
         var state = new StateManager(files, new GameSettings(), NullLogger<StateManager>.Instance);
-        return new(files, state, new LocalizationManager(), new ValidationService(files, NullLogger<ValidationService>.Instance));
+        return new(files, state, new LocalizationManager(), new ValidationService(files, NullLogger<ValidationService>.Instance), prompts);
     }
 
     private static async Task WriteNativeCompletionAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease,

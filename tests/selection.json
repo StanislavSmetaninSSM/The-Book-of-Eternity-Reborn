@@ -3,16 +3,142 @@
   "selections": [
     {
       "category": "elyara-current-location-causal",
-      "reason": "Single semantic RED for the new T143 navigation entry; existing valid local paid quote and whole canonical inertness are controls. Production unchanged, no accepted80 replay.",
+      "reason": "Revisit the single accepted semantic RED after the new entry implementation; current local quote and complete byte inertness are controls.",
       "contracts": [
-        "#1536 T143 / FR081-FR082 current canonical Elyara route; T142 and arbitrary Shining travel remain open"
+        "#1536 T143 / FR081-FR082 same canonical current Elyara, ordinary access, local service7; T142 remains pending"
       ]
     },
     {
       "category": "elyara-current-location-data",
-      "reason": "Authored GREEN current-location DATA and payload contracts; UNCOMPILED/UNRUN. Final whole-block impact selection still pending.",
+      "reason": "Complete new detached current-life/location/identity/reachability/payload/original-versus-current and Shining exact quote DATA contracts; no runtime authority from fixtures.",
       "contracts": [
-        "#1536 T143 / FR081-FR082 exact canonical provider current place, ordinary access and stale refusal"
+        "#1536 T143 / FR081-FR082 same canonical current Elyara, ordinary access, local service7; T142 remains pending"
+      ]
+    },
+    {
+      "category": "healing-service-contract-data",
+      "reason": "Create/ParseQuote now allow exact same-realm Shining Elyara; retain existing wrong-owner/quote tamper/current public profile contracts, not unchanged price math.",
+      "contracts": [
+        "#1536 T143 / FR081-FR082 same canonical current Elyara, ordinary access, local service7; T142 remains pending"
+      ]
+    },
+    {
+      "category": "healing-service-selection-causal",
+      "reason": "Closed paid selection family remains unchanged while same-realm quote admission is extended.",
+      "contracts": [
+        "#1536 T143 / FR081-FR082 same canonical current Elyara, ordinary access, local service7; T142 remains pending"
+      ]
+    },
+    {
+      "category": "healing-service-request-data",
+      "reason": "Changed family7 IsBoundService realm gate must preserve complete request/payment/draw/confirmation/error rejection.",
+      "contracts": [
+        "#1536 T143 / FR081-FR082 same canonical current Elyara, ordinary access, local service7; T142 remains pending"
+      ]
+    },
+    {
+      "category": "healing-service-menu-data",
+      "reason": "Shared menu now resolves Elyara globally and supports exact Shining co-location; existing hidden/dead/relocated/no-funds/Chaos visit checks are affected.",
+      "contracts": [
+        "#1536 T143 / FR081-FR082 same canonical current Elyara, ordinary access, local service7; T142 remains pending"
+      ]
+    },
+    {
+      "category": "healing-service-source-controls",
+      "reason": "Changed service source binding/scope/generalized realm must preserve fresh death/funds/price and post-control refusal before entropy.",
+      "contracts": [
+        "#1536 T143 / FR081-FR082 same canonical current Elyara, ordinary access, local service7; T142 remains pending"
+      ]
+    },
+    {
+      "category": "healing-service-menu-source-counts",
+      "reason": "Changed menu still reuses already parsed DATA with zero extra source reads over the actual existing read/menu consumer.",
+      "contracts": [
+        "#1536 T143 / FR081-FR082 same canonical current Elyara, ordinary access, local service7; T142 remains pending"
+      ]
+    },
+    {
+      "category": "healing-service-console",
+      "reason": "One changed Chaos compatibility consumer through reused realm-aware service fixture and actual GameEngine; not the previous paid80.",
+      "contracts": [
+        "#1536 T143 / FR081-FR082 same canonical current Elyara, ordinary access, local service7; T142 remains pending"
+      ]
+    },
+    {
+      "category": "healing-service-documentation",
+      "reason": "Existing service7 worked profile/response and effective daemon/manifest guards remain required alongside current-location extension.",
+      "contracts": [
+        "#1536 T143 / FR081-FR082 same canonical current Elyara, ordinary access, local service7; T142 remains pending"
+      ]
+    },
+    {
+      "category": "documentation-afterlife-entrypoints-coverage",
+      "reason": "Changed effective afterlife prompts and new worked manifest fragment require current entrypoint and explicit example coverage ownership.",
+      "contracts": [
+        "#1536 T143 / FR081-FR082 same canonical current Elyara, ordinary access, local service7; T142 remains pending"
+      ]
+    },
+    {
+      "category": "elyara-current-location-source-counts",
+      "reason": "Three cheap actual-source controls: five-root visit read with1/20 actors and unchanged async Shining scope source order/membership.",
+      "contracts": [
+        "#1536 T143 / FR081-FR082 same canonical current Elyara, ordinary access, local service7; T142 remains pending"
+      ]
+    },
+    {
+      "category": "elyara-current-location-source-refusals",
+      "reason": "Fresh life/location/discovery/player realm, exact physical closure and specific queue marker; same-hall Shining life/hall/package refusal before draw/payment.",
+      "contracts": [
+        "#1536 T143 / FR081-FR082 same canonical current Elyara, ordinary access, local service7; T142 remains pending"
+      ]
+    },
+    {
+      "category": "elyara-current-location-originals",
+      "reason": "Actual LiveTurnPreparation authenticated original read versus current arrival, original-discovery forgery and current provider death; validator is read-only.",
+      "contracts": [
+        "#1536 T143 / FR081-FR082 same canonical current Elyara, ordinary access, local service7; T142 remains pending"
+      ]
+    },
+    {
+      "category": "elyara-current-location-browser-admission",
+      "reason": "Current visit prompt cancellation/stale/foreign answers, expiry/lost UI owner and old-final replacement ordering through existing shared browser prompt transaction.",
+      "contracts": [
+        "#1536 T143 / FR081-FR082 same canonical current Elyara, ordinary access, local service7; T142 remains pending"
+      ]
+    },
+    {
+      "category": "elyara-current-location-travel",
+      "reason": "Console and shared browser confirmation/queue reach actual GameEngine ordinary Chaos travel and authenticated arrival; one normal natural cycle, no active treatment/fee, fresh destination quote.",
+      "contracts": [
+        "#1536 T143 / FR081-FR082 same canonical current Elyara, ordinary access, local service7; T142 remains pending"
+      ]
+    },
+    {
+      "category": "elyara-current-location-shining-results",
+      "reason": "Same exact co-located Shining Elyara uses actual retained paid stage, deterministic failed/partial/success outcome, wallet/History/common C4 and complete read-only replay; inactive Chaos unchanged.",
+      "contracts": [
+        "#1536 T143 / FR081-FR082 same canonical current Elyara, ordinary access, local service7; T142 remains pending"
+      ]
+    },
+    {
+      "category": "elyara-current-location-shining-ui",
+      "reason": "Console and shared browser /элиара co-location opens fresh /лечить, cancel inert, real confirmed price25/payment/wound/History/one Shining cycle through actual GameEngine.",
+      "contracts": [
+        "#1536 T143 / FR081-FR082 same canonical current Elyara, ordinary access, local service7; T142 remains pending"
+      ]
+    },
+    {
+      "category": "elyara-current-location-shining-cut",
+      "reason": "Actual Engine common-publication wallet cut restores the whole unpaid Shining turn, wound/effects/History/schedule and cleanup.",
+      "contracts": [
+        "#1536 T143 / FR081-FR082 same canonical current Elyara, ordinary access, local service7; T142 remains pending"
+      ]
+    },
+    {
+      "category": "elyara-current-location-documentation",
+      "reason": "Effective GM guidance/daemon/XML/manifest and worked relocated-host / co-located-Shining excerpts exercise production projection and actual response model.",
+      "contracts": [
+        "#1536 T143 / FR081-FR082 same canonical current Elyara, ordinary access, local service7; T142 remains pending"
       ]
     }
   ]

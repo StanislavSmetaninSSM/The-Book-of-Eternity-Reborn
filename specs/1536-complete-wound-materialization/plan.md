@@ -160,6 +160,17 @@ explicit current realm; fixtures seed current hall/provider before resource boot
 All NEW GREEN C# is still UNCOMPILED/UNREVIEWED/UNRUN. GM synchronization and final
 whole-block impact selection/SOURCE remain next; do not treat authored assertions as PASS.
 
+Whole GREEN block is now authored: current-route DATA/source/closed Action, existing
+console/shared-browser lease/queue and GameEngine/validated-original admission, exact
+co-located Shining service7, finite causal/source-count/freshness/ownership/original/
+actual UI/result/replay/rollback tests. GM contract/matrix, operation/rule/API/daemon
+entrypoints, dossier, worked relocated-host/Shining excerpts and manifest/typed guards
+are synchronized. tests/selection.json records exact new owners and changed old service
+quote/request/menu/source consumers plus ONE Chaos console compatibility; unchanged
+price/payment arithmetic, prior accepted80 and HOLD chains are excluded. All GREEN
+remains UNCOMPILED/UNRUN pending whole independent SOURCE/selection, then fresh affected
+builds and exact discovery/PlanOnly/PREP. No observed new PASS is claimed.
+
 All this GREEN code is UNCOMPILED/UNREVIEWED/UNQUALIFIED. Remaining finite work: complete
 new admission/accepted/race/source-count and Shining actual result/replay/rollback tests,
 GM effective guidance/examples/guards, whole impact selection/SOURCE, then one fresh

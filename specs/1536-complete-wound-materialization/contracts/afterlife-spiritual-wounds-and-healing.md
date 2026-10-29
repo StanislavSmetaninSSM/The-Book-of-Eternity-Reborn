@@ -346,3 +346,25 @@ No GM inkFeatherChanges or manual fee/receipt/roll. Read the current full servic
 section and worked example; author only requested weaker graphs, progression report
 and actual first-person healer reasoning. Remote/Shining/negotiated routes remain
 unavailable in this first slice; stale life/location/access/price/funds refuses.
+
+
+elyara_current_location_v1: /элиара (/elyara), or «Пойти к Элиаре за лечением»,
+resolves ONE exact alive canonical Elyara across all profile realms, using current
+realm/locationId and matching service locationRef. guardians[].abode is HOME metadata,
+not current presence. Never respawn, duplicate, resurrect or move her to satisfy a route.
+A confirmed [ELYARA_VISIT_V1] retains the client's complete sealed Action, including
+its ordinary [CHAOS_SEA_TRAVEL] target. The already-discovered target's actual host
+owns activeGuardian, even when that host is not Elyara. Preserve her original current
+life/place/service; current GM edits cannot mint pre-turn discovery or permission.
+ONE ordinary travel cycle includes normal natural recovery, but ZERO active treatment,
+healing die or fee. On arrival open a NEW /лечить quote and confirm it separately.
+Co-located same-Elyara treatment also works in safe Shining Abode: currentHallId must
+resolve one current hall and her explicit current location must match; the existing
+family7 paid owner publishes one Shining cycle, leaving the inactive Chaos contour alone.
+Author only requested spiritualHealingGraphs, ordinary report and real healer memory;
+NO GM inkFeatherChanges/payment receipt, new quote/control or private permission.
+Read/back/cancel is inert. Death/stale/unknown/discovery/access loss refuses. Remote
+Shining halls and cross-realm access require an already-supported ordinary route;
+no implicit hall travel, return/reentry, teleport or Enlightenment reset is added.
+Negotiated services and the historical-faction healer decision remain OPEN. See the
+elyara_current_location_v1 worked example; faction-healer display itself grants no treatment.

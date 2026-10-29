@@ -14030,3 +14030,61 @@ Cancel/back/read is ZERO draw/attempt/payment/world cycle/write. Shining command
 treatment is not implemented by this view; do not issue a quote or private command.
 
 end_shining_healer_access_view_v1
+
+
+elyara_current_location_v1 — worked current-location visit and companion service
+
+These are focused DATA excerpts over a complete already accepted living Elyara,
+not standalone original authority. ONE canonical guard_system_elyara_001 retains
+HealingV/public100%. Its registry home remains abode_system_elyara_001, but the
+current profile/service now point to abode_hosted. The client is at abode_source;
+both source and hosted destination were already discovered BEFORE this turn.
+```json
+{
+  "realm": "Chaos Sea", "locationId": "abode_hosted",
+  "serviceRealm": "chaos_sea", "serviceLocationRef": "abode_hosted",
+  "soul": {"currentRealm": "Chaos Sea"},
+  "guardians": {
+    "guardians": [
+      {"guardianId":"guard_system_elyara_001","abode":{"abodeId":"abode_system_elyara_001","name":"Дом Элиары","isDiscovered":true}},
+      {"guardianId":"guardian_source","abode":{"abodeId":"abode_source","name":"Тихая Обитель","isDiscovered":true}},
+      {"guardianId":"guardian_hosted","abode":{"abodeId":"abode_hosted","name":"Обитель Гостеприимства","isDiscovered":true}}
+    ],
+    "activeGuardian":{"guardianId":"guardian_source","abode":{"abodeId":"abode_source"}},
+    "chaosSeaNavigation":{"currentGuardianId":"guardian_source","currentAbodeId":"abode_source","discoveredAbodes":["abode_source","abode_hosted"]}
+  }
+}
+```
+Read/cancel: ZERO draw/attempt/payment/world cycle/write. On confirmation the CLIENT
+supplies the complete sealed [ELYARA_VISIT_V1] + [CHAOS_SEA_TRAVEL] Action; the GM
+copies it unchanged, never invents its payload/generation/fingerprint. Author ordinary
+arrival at abode_hosted, activeGuardian=guardian_hosted, currentGuardianId=guardian_hosted.
+Keep the actual same Elyara alive at abode_hosted; her home is NOT the target.
+ONE ordinary travel cycle retains requested natural graphs and normal progression;
+ZERO active healing/fee. Narrative: «Ты достиг Обители Гостеприимства, где сейчас
+находится Элиара. Приём и его цену ещё предстоит подтвердить отдельно.»
+After arrival a NEW /лечить quote is read; never use the navigation offer as payment.
+
+Alternative CURRENT canonical state: that same guardian accompanies the soul in
+Shining. There is still ONE profile, not a second cross-realm copy.
+```json
+{
+  "realm":"Shining Abode", "locationId":"hall_companion",
+  "serviceRealm":"shining_abode", "serviceLocationRef":"hall_companion",
+  "soul":{"currentRealm":"Shining Abode"},
+  "shining":{"currentHallId":"hall_companion","halls":[{"hallId":"hall_companion","hallName":"Зал сопровождения"}],"preparedIncarnationPackage":null}
+}
+```
+/элиара now opens fresh local /лечить, with no extra travel cycle. Player separately
+confirms the existing I-rank25 quote. Real retained d20 and requested empty destination
+graphs mean no weaker graph is needed (this is the client's request, not a GM choice):
+```json
+{"spiritualHealingGraphs":[],"dialogueOptions":[]}
+```
+GM writes actual healer reasoning/ordinary Shining report; the client owns the real
+result, wallet500→475,total900, wound/effects/History and ONE Shining cycle. NO GM
+inkFeatherChanges/payment receipt. Failed or partial accepted service still pays once;
+SAME attempt/draw on retry, C4 rollback restores payment and all participants together.
+Inactive Chaos simulation ordinal stays unchanged. A remote hall, another realm,
+unknown location or dead Elyara has NO invented route/teleport or automatic revival.
+end_elyara_current_location_v1

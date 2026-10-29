@@ -2024,11 +2024,10 @@ See the worked `wound_history_view_v1` navigation example in E_CLI_Afterlife_Tur
 ## spiritual_public_service_v7 — public Elyara treatment
 
 The current shared /лечить route can treat the player's own known spiritual wound
-while already co-located with alive canonical Elyara in safe Chaos Sea. This is a
+while already co-located with alive canonical Elyara in safe Chaos Sea or Shining Abode. This is a
 public service, not a private participation grant. Merely knowing Healing does not
-create a service. Read/cancel does ZERO queue/draw/payment/cycle or repair. Remote
-travel, Shining execution and negotiated compensation remain unavailable in this
-first currency route; recommendations do not create executable buttons.
+create a service. Read/cancel does ZERO queue/draw/payment/cycle or repair. Current-location access follows elyara_current_location_v1 below. Negotiated compensation
+remains unavailable; recommendations do not create executable buttons.
 
 Canonical actor guard_system_elyara_001 uses lifeState alive|dead, HealingV and public
 100% service; initial locationId/locationRef is abode_system_elyara_001. The fresh
@@ -2121,3 +2120,25 @@ is no active treatment button. Never author a quote, payment receipt or private 
 from these views, and never manufacture life, tier, location or public access. See the
 focused worked access example in Examples/E_CLI_Afterlife_Turns.txt. The historical
 broken/dissolved-faction living-healer decision remains open; this view changes no invariant.
+
+
+elyara_current_location_v1: /элиара (/elyara), or «Пойти к Элиаре за лечением»,
+resolves ONE exact alive canonical Elyara across all profile realms, using current
+realm/locationId and matching service locationRef. guardians[].abode is HOME metadata,
+not current presence. Never respawn, duplicate, resurrect or move her to satisfy a route.
+A confirmed [ELYARA_VISIT_V1] retains the client's complete sealed Action, including
+its ordinary [CHAOS_SEA_TRAVEL] target. The already-discovered target's actual host
+owns activeGuardian, even when that host is not Elyara. Preserve her original current
+life/place/service; current GM edits cannot mint pre-turn discovery or permission.
+ONE ordinary travel cycle includes normal natural recovery, but ZERO active treatment,
+healing die or fee. On arrival open a NEW /лечить quote and confirm it separately.
+Co-located same-Elyara treatment also works in safe Shining Abode: currentHallId must
+resolve one current hall and her explicit current location must match; the existing
+family7 paid owner publishes one Shining cycle, leaving the inactive Chaos contour alone.
+Author only requested spiritualHealingGraphs, ordinary report and real healer memory;
+NO GM inkFeatherChanges/payment receipt, new quote/control or private permission.
+Read/back/cancel is inert. Death/stale/unknown/discovery/access loss refuses. Remote
+Shining halls and cross-realm access require an already-supported ordinary route;
+no implicit hall travel, return/reentry, teleport or Enlightenment reset is added.
+Negotiated services and the historical-faction healer decision remain OPEN. See the
+elyara_current_location_v1 worked example; faction-healer display itself grants no treatment.

@@ -2,6 +2,31 @@
   "version": 1,
   "effectMaterializationCoverage": [
 {
+  "contractId": "elyara_current_location_v1",
+  "file": "E_CLI_Afterlife_Turns.txt",
+  "statePath": "existing current canonical profiles/guardians/Shining and sealed ordinary Action; no new queue file",
+  "responseSurface": "ordinary travel target or existing family7 requested graphs/report/memory",
+  "realms": [
+    "Chaos Sea",
+    "Shining Abode"
+  ],
+  "description": "Relocated canonical Elyara uses current actual host, not home; same-hall Shining opens a separately confirmed existing paid attempt.",
+  "validationKind": "focused-fragment",
+  "focusedFragmentReason": "ElyaraCurrentLocationDocumentationTests overlays excerpts onto a complete independent actor and exercises production route projection and actual GameResponse; dedicated UI/Engine cases own current authority.",
+  "coverageLimit": "No standalone authority, arbitrary Shining/cross-realm travel, negotiated services, T142 invariant, DOM/provider or fresh process qualification.",
+  "requiredText": [
+    "elyara_current_location_v1",
+    "ONE canonical",
+    "ZERO draw/attempt/payment/world cycle/write",
+    "guardian_hosted",
+    "ONE ordinary travel cycle",
+    "NEW /лечить quote",
+    "ONE Shining cycle",
+    "Inactive Chaos",
+    "NO GM\ninkFeatherChanges/payment receipt"
+  ]
+},
+{
   "contractId": "shining_healer_access_view_v1",
   "file": "E_CLI_Afterlife_Turns.txt",
   "statePath": "current Shining resident/profile healingServiceProfile public DATA; no new control path",

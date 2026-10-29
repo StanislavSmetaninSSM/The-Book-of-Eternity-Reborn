@@ -266,14 +266,14 @@ public sealed partial class WoundTargetSelectionTests
         Assert.Equal(before, fixture.Snapshot());
     }
 
-    private sealed class TargetClock(DateTimeOffset now) : TimeProvider
+    internal sealed class TargetClock(DateTimeOffset now) : TimeProvider
     {
         private DateTimeOffset _now = now;
         public override DateTimeOffset GetUtcNow() => _now;
         internal void Advance(TimeSpan delta) => _now += delta;
     }
 
-    private sealed class TargetRaceGate
+    internal sealed class TargetRaceGate
     {
         private readonly AsyncLocal<bool> _selected = new();
         private int _remaining = 1;

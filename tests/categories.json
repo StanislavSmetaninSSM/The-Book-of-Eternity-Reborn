@@ -36553,6 +36553,228 @@
           ]
         }
       ]
+    },
+    {
+      "id": "elyara-current-location-source-counts",
+      "responsibility": "Three cheap actual-source controls: five-root visit read with1/20 actors and unchanged async Shining scope source order/membership.",
+      "excludes": "No arbitrary Shining hall/cross-realm travel, negotiated services or T142 policy; no DOM/live provider/fresh-process qualification, HOLD DFR/Mortal/Windows/performance or unrelated accepted80 replay.",
+      "changeHints": [
+        "#1536 T143 current canonical Elyara; exact changed contracts and consumers"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.ElyaraCurrentLocationNavigationTests.VisitReadsEachActualSourceOnceWithoutPerActorReadsOrMutation",
+            "BookOfEternityClient.Tests.ElyaraCurrentLocationNavigationTests.ExistingShiningScopeResolverRetainsItsSourceOrderAndCurrentMembership"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "elyara-current-location-source-refusals",
+      "responsibility": "Fresh life/location/discovery/player realm, exact physical closure and specific queue marker; same-hall Shining life/hall/package refusal before draw/payment.",
+      "excludes": "No arbitrary Shining hall/cross-realm travel, negotiated services or T142 policy; no DOM/live provider/fresh-process qualification, HOLD DFR/Mortal/Windows/performance or unrelated accepted80 replay.",
+      "changeHints": [
+        "#1536 T143 current canonical Elyara; exact changed contracts and consumers"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.ElyaraCurrentLocationNavigationTests.ConfirmAndStageRejectFreshChangesWithoutPublishingOrDrawing",
+            "BookOfEternityClient.Tests.ElyaraCurrentLocationNavigationTests.PhysicalClosingFenceRejectsReencodingAndSpecificQueueCannotLoseItsMarker",
+            "BookOfEternityClient.Tests.ElyaraCurrentLocationNavigationTests.ShiningLocalServiceConfirmationKeepsFreshHallLifeAndPackageGuards"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "elyara-current-location-originals",
+      "responsibility": "Actual LiveTurnPreparation authenticated original read versus current arrival, original-discovery forgery and current provider death; validator is read-only.",
+      "excludes": "No arbitrary Shining hall/cross-realm travel, negotiated services or T142 policy; no DOM/live provider/fresh-process qualification, HOLD DFR/Mortal/Windows/performance or unrelated accepted80 replay.",
+      "changeHints": [
+        "#1536 T143 current canonical Elyara; exact changed contracts and consumers"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.ElyaraCurrentLocationNavigationTests.ActualAuthenticatedOriginalValidatorCannotAcceptCurrentImageAsPermission"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "elyara-current-location-browser-admission",
+      "responsibility": "Current visit prompt cancellation/stale/foreign answers, expiry/lost UI owner and old-final replacement ordering through existing shared browser prompt transaction.",
+      "excludes": "No arbitrary Shining hall/cross-realm travel, negotiated services or T142 policy; no DOM/live provider/fresh-process qualification, HOLD DFR/Mortal/Windows/performance or unrelated accepted80 replay.",
+      "changeHints": [
+        "#1536 T143 current canonical Elyara; exact changed contracts and consumers"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.BrowserVisitRefusesStaleOrForeignConfirmationWithoutQueue",
+            "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.BrowserElyaraExpiredOrLostLeasePreservesForeignOwner",
+            "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.BrowserElyaraOldFinalCannotPublishOrReleaseReplacementForm",
+            "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.BrowserElyaraPromptExpiryDuringFreshSourceReadCannotQueue"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "elyara-current-location-travel",
+      "responsibility": "Console and shared browser confirmation/queue reach actual GameEngine ordinary Chaos travel and authenticated arrival; one normal natural cycle, no active treatment/fee, fresh destination quote.",
+      "excludes": "No arbitrary Shining hall/cross-realm travel, negotiated services or T142 policy; no DOM/live provider/fresh-process qualification, HOLD DFR/Mortal/Windows/performance or unrelated accepted80 replay.",
+      "changeHints": [
+        "#1536 T143 current canonical Elyara; exact changed contracts and consumers"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.CurrentElyaraVisitUsesOrdinaryTravelThenFreshUnpaidQuote"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "elyara-current-location-shining-results",
+      "responsibility": "Same exact co-located Shining Elyara uses actual retained paid stage, deterministic failed/partial/success outcome, wallet/History/common C4 and complete read-only replay; inactive Chaos unchanged.",
+      "excludes": "No arbitrary Shining hall/cross-realm travel, negotiated services or T142 policy; no DOM/live provider/fresh-process qualification, HOLD DFR/Mortal/Windows/performance or unrelated accepted80 replay.",
+      "changeHints": [
+        "#1536 T143 current canonical Elyara; exact changed contracts and consumers"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.AfterlifeHealingPaymentLifecycleTests.ShiningSameElyaraChargesActualOutcomeOnceAndReplays"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "elyara-current-location-shining-ui",
+      "responsibility": "Console and shared browser /элиара co-location opens fresh /лечить, cancel inert, real confirmed price25/payment/wound/History/one Shining cycle through actual GameEngine.",
+      "excludes": "No arbitrary Shining hall/cross-realm travel, negotiated services or T142 policy; no DOM/live provider/fresh-process qualification, HOLD DFR/Mortal/Windows/performance or unrelated accepted80 replay.",
+      "changeHints": [
+        "#1536 T143 current canonical Elyara; exact changed contracts and consumers"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.CoLocatedShiningElyaraOpensFreshTreatmentAndPublishesOnePaidCycle"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "elyara-current-location-shining-cut",
+      "responsibility": "Actual Engine common-publication wallet cut restores the whole unpaid Shining turn, wound/effects/History/schedule and cleanup.",
+      "excludes": "No arbitrary Shining hall/cross-realm travel, negotiated services or T142 policy; no DOM/live provider/fresh-process qualification, HOLD DFR/Mortal/Windows/performance or unrelated accepted80 replay.",
+      "changeHints": [
+        "#1536 T143 current canonical Elyara; exact changed contracts and consumers"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.ShiningElyaraPublicationFailureRestoresWholeUnpaidTurn"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "elyara-current-location-documentation",
+      "responsibility": "Effective GM guidance/daemon/XML/manifest and worked relocated-host / co-located-Shining excerpts exercise production projection and actual response model.",
+      "excludes": "No arbitrary Shining hall/cross-realm travel, negotiated services or T142 policy; no DOM/live provider/fresh-process qualification, HOLD DFR/Mortal/Windows/performance or unrelated accepted80 replay.",
+      "changeHints": [
+        "#1536 T143 current canonical Elyara; exact changed contracts and consumers"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.ElyaraCurrentLocationDocumentationTests.*"
+          ]
+        }
+      ]
     }
   ]
 }

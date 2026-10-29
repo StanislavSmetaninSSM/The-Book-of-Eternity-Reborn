@@ -97,6 +97,98 @@ public sealed partial class ElyaraCurrentLocationNavigationTests
         await Assert.ThrowsAsync<InvalidDataException>(() => ElyaraVisitService.RequireImagesCurrentAsync(files, lease, source));
     }
 
+    [Theory]
+    [InlineData("valid")] [InlineData("dead")] [InlineData("forged_original")]
+    public async Task ActualAuthenticatedOriginalValidatorCannotAcceptCurrentImageAsPermission(string change)
+    {
+        await using var fixture = await AfterlifeHealingPaymentLifecycleTests.CreateServiceFixtureAsync(1, 20, remoteElyara: true);
+        var files = fixture.Files; string action; BookOfEternityClient.Models.ProgressionControl control;
+        await using (var lease = await files.AcquireCanonicalWriteLeaseAsync())
+        {
+            var state = (await ElyaraVisitService.ReadAsync(files, lease)).Plan.State!;
+            action = await ElyaraVisitService.ConfirmAsync(files, lease, state);
+            if (change == "forged_original")
+            {
+                // Current afterimages will look reachable, but the actual authenticated
+                // pre-turn source lacks the original discovery offered by this Action.
+                var root = JsonNode.Parse((await files.ReadFileAsync(lease, ElyaraVisitService.SourcePaths[2]))!)!;
+                root["chaosSeaNavigation"]!["discoveredAbodes"] = new JsonArray("abode_visit_source");
+                await files.WriteFileAtomicAsync(lease, ElyaraVisitService.SourcePaths[2], root.ToJsonString());
+            }
+            control = await new ProgressionScheduleService(files, Microsoft.Extensions.Logging.Abstractions.NullLogger<ProgressionScheduleService>.Instance)
+                .BuildControlForNextTurnAsync(lease, activeTurnRealm: null);
+        }
+        await new LiveTurnPreparationService(files).PrepareAsync(new LiveTurnPreparationOptions
+        {
+            SessionId = "session_elyara_original", RequestId = "request_elyara_original", TurnNumber = 43,
+            CurrentRealm = "Chaos Sea", PlayerAction = action, ProgressionControl = control, PreGeneratedDices1d20 = [7, 11, 16]
+        });
+        await using (var lease = await files.AcquireCanonicalWriteLeaseAsync())
+        {
+            var root = JsonNode.Parse((await files.ReadFileAsync(lease, ElyaraVisitService.SourcePaths[2]))!)!;
+            root["activeGuardian"] = root["guardians"]![0]!.DeepClone();
+            root["chaosSeaNavigation"]!["currentAbodeId"] = AfterlifeWoundTreatmentAuthority.ElyaraAbodeId;
+            root["chaosSeaNavigation"]!["currentGuardianId"] = AfterlifeWoundTreatmentAuthority.ElyaraId;
+            root["chaosSeaNavigation"]!["discoveredAbodes"] = new JsonArray("abode_visit_source", AfterlifeWoundTreatmentAuthority.ElyaraAbodeId);
+            await files.WriteFileAtomicAsync(lease, ElyaraVisitService.SourcePaths[2], root.ToJsonString());
+            if (change == "dead")
+            {
+                var profiles = JsonNode.Parse((await files.ReadFileAsync(lease, WoundCarrierCatalog.AfterlifeProfilesPath))!)!;
+                profiles["profiles"]!.AsArray().OfType<JsonObject>().Single(AfterlifeHealingServiceContract.IsElyaraProfile)["lifeState"] = "dead";
+                await files.WriteFileAtomicAsync(lease, WoundCarrierCatalog.AfterlifeProfilesPath, profiles.ToJsonString());
+            }
+        }
+        var before = SnapshotCanonical(files); var issues = new List<ValidationIssue>();
+        await new ValidationService(files, Microsoft.Extensions.Logging.Abstractions.NullLogger<ValidationService>.Instance)
+            .ValidateElyaraVisitOutcomeAsync(action, issues);
+        if (change == "valid") Assert.Empty(issues);
+        else Assert.Contains(issues, i => i.Code == "elyara_visit_original_or_arrival_invalid");
+        AssertCanonicalUnchanged(files, before);
+        Assert.Null(await files.ReadFileBytesAsync(AcceptedMechanicsPlan.WoundCommandPath));
+    }
+
+    [Theory]
+    [InlineData("hall")] [InlineData("package")] [InlineData("dead")]
+    public async Task ShiningLocalServiceConfirmationKeepsFreshHallLifeAndPackageGuards(string change)
+    {
+        await using var fixture = await AfterlifeHealingPaymentLifecycleTests.CreateServiceFixtureAsync(1, 20, realm: "Shining Abode");
+        var files = fixture.Files;
+        var state = (await ElyaraVisitService.OpenAsync(files)).WoundCommandState!;
+        state = state.ForTarget(state.Targets.Single(t => t.Owner.OwnerKind == "player_soul"));
+        var choice = Assert.Single(state.Choices, c => c.Available && c.Selection.Service is not null);
+        await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+        var path = change == "dead" ? WoundCarrierCatalog.AfterlifeProfilesPath : ShiningAbodeState.StatePath;
+        var root = JsonNode.Parse((await files.ReadFileAsync(lease, path))!)!;
+        if (change == "hall") root["currentHallId"] = "hall_elsewhere";
+        if (change == "package") root["preparedIncarnationPackage"] = new JsonObject();
+        if (change == "dead") root["profiles"]!.AsArray().OfType<JsonObject>().Single(AfterlifeHealingServiceContract.IsElyaraProfile)["lifeState"] = "dead";
+        await files.WriteFileAtomicAsync(lease, path, root.ToJsonString());
+        var before = SnapshotCanonical(files);
+        await Assert.ThrowsAsync<InvalidDataException>(() => WoundApplicationService.ConfirmAsync(files, lease, state, choice.Value));
+        AssertCanonicalUnchanged(files, before);
+        Assert.Null(await files.ReadFileBytesAsync(lease, AcceptedMechanicsPlan.WoundCommandPath));
+    }
+
+    [Fact]
+    public async Task ExistingShiningScopeResolverRetainsItsSourceOrderAndCurrentMembership()
+    {
+        var armed = false; var opened = new List<string>();
+        await using var fixture = await AfterlifeHealingPaymentLifecycleTests.CreateServiceFixtureAsync(1, 20,
+            new FileSystemManagerHooks { BeforeCanonicalReadOpenAsync = path =>
+            { if (armed) opened.Add(path); return Task.CompletedTask; } }, realm: "Shining Abode");
+        var files = fixture.Files;
+        var residents = new JsonObject { ["entries"] = new JsonArray(new JsonObject
+            { ["residentId"] = "resident_here", ["hallId"] = "hall_elyara_companion", ["isPresent"] = true }) };
+        await files.WriteFileAtomicAsync(GuardianAbodeResidentState.StatePath, residents.ToJsonString());
+        armed = true;
+        var scope = await new LocalInteractionScopeService(files).ResolveAsync("Shining Abode");
+        armed = false;
+        Assert.True(scope.IsResolved); Assert.Equal("hall_elyara_companion", scope.LocationId);
+        Assert.Equal(new[] { ShiningAbodeState.StatePath, GuardianAbodeResidentState.StatePath }, opened);
+        Assert.Equal(2, scope.AuthoritySnapshots.Count);
+        Assert.Contains("resident_here", scope.LocalActorIds);
+    }
+
     internal static async Task SeedRemoteSourceAsync(FileSystemManager files, JsonObject profiles)
     {
         var source = PlayerGuardianFoundationValidationTests.CreateGuardian("guardian_visit_source", "Тихий Хранитель", "abode_visit_source");
