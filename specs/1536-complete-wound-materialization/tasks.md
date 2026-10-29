@@ -14718,6 +14718,13 @@ outside Git in /workspace/tboe-linux-evidence-20261025/us6-shining-healers/acces
 See plan prefix for exact categories/timings/limits. T142 owner question remains pending;
 no historical-faction exception, Shining execution or broader parent-task closure.
 
+T143 next bounded route (2026-10-29): same canonical Elyara current life/location;
+ordinary discovered Chaos travel, co-located fresh treatment including Shining, stale
+refusal before effects. Independent Astra/high DESIGN findings/finite plan are in the
+current plan prefix. No arbitrary Shining hall/cross-realm teleport, no T142 exception.
+Implementation, causal RED/GREEN and runtime are UNRUN; local paid/access-view accepted
+lineages stay distinct. User authorized autonomous continuation in the same checkout.
+
 ### RED tests
 
 - [ ] T131 [P] [US6] Add RED 25/50/100/200 base price, 50%-200% multiplier, upward whole-Feather rounding, sealed quote, and exact attempt charge tests in `BookOfEternityClient.Tests/AfterlifeHealingServiceQuoteTests.cs`

@@ -1,3 +1,116 @@
+# T143 — current canonical Elyara route implementation plan
+
+Issue: https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536
+Base: 47958dfb28e44b52fe9ee7d6d31d431a70e37709, remote verified, clean same Linux
+checkout/branch1536-linux-qualification-20261025. Sole writer/runner Sol; execute inline
+with superpowers:executing-plans. Existing task T143 with T140/FR081–082 and affected
+T137–138/T144–147 owns this coherent route. Spec: current spec.md and
+contracts/afterlife-spiritual-wounds-and-healing.md. T142 owner answer still pending.
+User authorized autonomous implementation; no routine design repermission is needed.
+
+Goal: «Пойти к Элиаре за лечением» resolves the same exact canonical alive Elyara at
+her current accepted place, in both UIs. A discovered reachable Chaos destination uses
+ordinary travel; co-location opens fresh /лечить without an extra cycle. Co-located
+Shining accompaniment uses the existing paid attempt with the current Shining cycle.
+Death removes the action; stale/unknown/inaccessible DATA never travels, pays or heals.
+Travel and subsequent treatment are separate confirmed operations, one cycle each.
+
+Bounded independent Astra/high DESIGN is complete. No code/tests were changed or run
+by the reviewer. Its source findings are incorporated below; this is not qualification.
+
+Architecture / alternatives
+
+Use the existing ordinary sealed Action/queue, current travel validation, scheduler,
+and paid resolver/publication. A second queue/transport, fake wound selection, a new
+payment path or implicit cross-realm teleport would duplicate authority or violate
+ordinary access. Registry guardians[].abode is home metadata, never current Elyara
+location. Resolve one exact canonical actor across all profile realms first, reject
+duplicates/identity aliases, then use current realm/life/location and matching service.
+
+- Add Services/ElyaraVisitService.cs and focused source/action partials for detached
+  ElyaraVisitCommandState, pure route projection, closed visit payload in the existing
+  Action string, current-source fingerprint and fresh source-image admission. Fingerprint
+  is comparison DATA, not authority. Read source roots once per operation and share DATA.
+- Source owners: current Soul, afterlife profiles, guardians/navigation, Shining state
+  and spiritual conflict. Current session/generation/lease and pending lifecycle remain
+  existing authority. Current Shining package mode must be absent for a safe route.
+- Chaos destination must be already discovered and have exactly one current abode owner;
+  targetGuardianId is the host of profile.locationId, not necessarily Elyara. Reuse
+  [CHAOS_SEA_TRAVEL]. Keep its existing outcome validation and one ordinary world cycle.
+- Shining locality is currentHallId -> one exact halls[] row. Reuse the existing resolver
+  by extracting pure ResolveShiningAbodeScope beside ResolveChaosSeaScope; old async
+  resolver retains reads/order/behavior. Exact direct Elyara location must equal current
+  hall. Reject contradictory aliases and unknown/ambiguous locality.
+- Existing Shining map links express influence, not traversable edges; no hall-travel
+  opcode/access authority is present. Cross-realm reentry/return have separate gates and
+  costs. Show an honest ordinary-route/access blocker for remote Shining/cross-realm
+  destinations. Do not silently seal Shining, reset Enlightenment or teleport. Arbitrary
+  remote Shining travel is not implemented or claimed complete by this slice.
+- UI entry is a common «Пойти к Элиаре за лечением» action and /элиара (/elyara) command,
+  not a retained quote. Add shared result builder/state to existing console/browser
+  command catalog, handlers and prompt-session ownership. Read/back/cancel are inert.
+  Co-location redirects to newly read /лечить; travel requires explicit confirmation.
+- Reuse PendingPlayerActionService sealed Action; introduce only the specific recognized
+  browser visit source. It requires the closed visit marker. No new queue file or fields.
+  Console keeps a one-shot expected action/generation companion, analogous to current
+  wound input, so stripped/mutated payload cannot downgrade its specific visit admission.
+- Engine staging revalidates visit before scheduler/travel side effects, using the actual
+  session/lease and fresh sources. Keep closing source checks around prepared control.
+  Focused accepted validation binds the marker to validated pre-turn Elyara/destination
+  and ordinary travel target; GM current-image edits cannot authorize an old offer.
+- Generalize only exact Elyara local service in WoundApplicationService.Service,
+  AfterlifeHealingServiceContract Create/ParseQuote, AfterlifeWoundTreatmentAuthority.Service
+  and SpiritualSelfTreatmentRequestCodec.Service. Current source read-set already owns
+  Shining state; reuse it. Payment, entropy, wound/effects/History, replay and C4 remain
+  existing owners. This does not enable arbitrary faction healer treatment.
+
+Optimization / integrity
+
+No new cache. Each read/confirmation/stage owns current parsed roots and detached
+exports until that operation ends. Dependencies are complete relevant source images,
+exact canonical actor identity/life/realm/location/service, player locality/discovery,
+conflict/package state and generation. User interaction or next stage invalidates old
+permission; fresh work is required. New /элиара reads only the required roots, not a
+whole wound/effect catalog. Wound view entry reuses its already loaded profile DATA.
+No repeated per-member IO/materialization or extra source resolver IO. Actual source
+counters and failure/freshness fixtures must prove reuse; no speedup claimed beforehand.
+
+Finite execution / acceptance
+
+- [x] Verify same environment/processes/tree/remote and canonical requirements. Read-only
+  current-location/reachability DESIGN accepted with the explicit limits above.
+- [ ] Add one actual existing /лечить entry causal test using the accepted minimal service
+  fixture. Existing local public quote is the setup control; missing navigation action
+  is expected semantic RED. Fresh Integration only while production stays unchanged;
+  exact category/discovery/PlanOnly/PREP and one run, no accepted80 replay.
+- [ ] Implement shared visit projection/action/source owner and cheap independent typed
+  identity across realms, relocated host, discovery, malformed/hidden/unavailable/dead,
+  current-hall/package/conflict, no home fallback, immutable payload and parser controls.
+- [ ] Connect console/browser confirmation and current queue/Engine staging/accepted
+  validation. Exercise cancellation and death/relocation/discovery/player movement/realm
+  races at confirmation, stage and pre-turn acceptance; no downgrade by stripped marker.
+- [ ] Add Shining co-located exact-Elyara quote/request/safe-cycle support with the existing
+  reader/payment/publication. Targeted deterministic success/partial/failure, retry/replay,
+  stale-source refusal and rollback; retain one affected Chaos compatibility consumer,
+  not the complete old paid80. Audit all actually affected consumer guards before builds.
+- [ ] Synchronize effective GM entrypoints, contracts, worked relocated-Chaos visit and
+  co-located-Shining treatment examples/manifest/guards. Record unavailable remote routes.
+- [ ] Whole independent Sol SOURCE/selection; fresh affected Main/Support/Unit/Integration,
+  PDB/artifact proof, catalog/exact PlanOnly/resource/PREP. Cheap causal/data/docs before
+  the two real UI journeys and changed Engine/payment consumers. Unchanged budgets,
+  complete diagnostics, owned cleanup and independent OUTCOME/checkpoint review.
+- [ ] Publish code/checkpoint and verify remote SHA, clean tree and no raw in Git. No new
+  clone/restore, history rewrite, merge/force, branch deletion or old raw/save/recovery
+  deletion. DFR/Mortal/Windows and previous qualification limits remain HOLD/open.
+
+Current boundary: DESIGN/read-only only; new code, RED/GREEN and current route runtime
+are UNRUN. Current accepted access-view80 and local-paid80 keep their separate accepted
+sources/results and must not be repeated without a changed dependency. Over7GiB free;
+keep400MiB build-start plus full output and128MiB runtime floor. New full raw belongs
+outside checkout at /workspace/tboe-linux-evidence-20261025/us6-elyara-current-location.
+
+---
+
 # US6 — interactive faction healer access display implementation plan
 
 Issue: https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536
