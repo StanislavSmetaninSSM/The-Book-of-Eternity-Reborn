@@ -1,3 +1,17 @@
+# T108 Integration compile correction — Unit fresh, runtime UNRUN
+
+2026-10-29. Unit refsfalse at6cac83027 completed0errors/26 exact baseline warnings
+in56.37s; all10 dependency DLL/PDB and48 source hashes unchanged. Unit-only exact
+PlanOnly selected59cases/3descriptors with0execution and complete cleanup. Integration
+refsfalse exited1 after1:35.95,102baseline warnings/one CS0136: nested request-negative
+local forged collides with a later enclosing result-negative local. Rename only the
+nested copy to forgedRequest; assertions/data/production unchanged. All other code
+hashes remain stable. Sol delta review then fresh Integration refsfalse only; do not
+rebuild unchanged Main/Support/Bridge/Unit or repeat unknown runtime (none launched).
+Raw resident-green-build-3/{unit-refsfalse,integration-refsfalse} and
+resident-green-plan-cheap-1 remain external. Full catalog/all-ten PlanOnly/PREP and
+actual GREEN gates remain pending. No raw/save/recovery deletion or limit change.
+
 # T108 owning build completed — addressed new test analyzer warning
 
 2026-10-29. Constructor delta SOURCE accepted by Sol atd05ebe029. Fresh owning

@@ -156,27 +156,27 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
                 Assert.False(SpiritualSelfTreatmentRequestCodec.IsBoundAid(request, context, selection, "chaos_sea", control.NextChaosSeaTurnOrdinal + 1));
                 foreach (var mutation in new[] { "schema", "direction", "healer", "target", "locality", "extra", "unknown_schema", "self_mode" })
                 {
-                    var forged = request.DeepClone().AsObject();
+                    var forgedRequest = request.DeepClone().AsObject();
                     switch (mutation)
                     {
-                        case "schema": forged["schemaVersion"] = 4; break;
-                        case "unknown_schema": forged["schemaVersion"] = 99; break;
-                        case "self_mode": forged["mode"] = "self"; break;
-                        case "direction": forged["direction"] = "guardian_to_player"; break;
-                        case "healer": forged["healer"]!["ownerKind"] = "guardian"; break;
-                        case "target": forged["target"]!["ownerKind"] = "guardian"; break;
-                        case "locality": forged["participation"]!["record"]!["locality"]!["abodeId"] = "foreign_abode"; break;
-                        default: forged["playerConfirmation"] = "player_target_confirmed"; break;
+                        case "schema": forgedRequest["schemaVersion"] = 4; break;
+                        case "unknown_schema": forgedRequest["schemaVersion"] = 99; break;
+                        case "self_mode": forgedRequest["mode"] = "self"; break;
+                        case "direction": forgedRequest["direction"] = "guardian_to_player"; break;
+                        case "healer": forgedRequest["healer"]!["ownerKind"] = "guardian"; break;
+                        case "target": forgedRequest["target"]!["ownerKind"] = "guardian"; break;
+                        case "locality": forgedRequest["participation"]!["record"]!["locality"]!["abodeId"] = "foreign_abode"; break;
+                        default: forgedRequest["playerConfirmation"] = "player_target_confirmed"; break;
                     }
                     // Rehash the mutated public DATA so stale integrity alone
                     // cannot explain the family/header refusal.
-                    var unsigned = forged.DeepClone().AsObject(); unsigned.Remove("requestFingerprint");
-                    forged["requestFingerprint"] = WoundAcceptedTurnFingerprintWriter.Compute(new[]
+                    var unsigned = forgedRequest.DeepClone().AsObject(); unsigned.Remove("requestFingerprint");
+                    forgedRequest["requestFingerprint"] = WoundAcceptedTurnFingerprintWriter.Compute(new[]
                     {
-                        "spiritual_treatment_request", forged["schemaVersion"]!.GetValue<int>().ToString(System.Globalization.CultureInfo.InvariantCulture),
+                        "spiritual_treatment_request", forgedRequest["schemaVersion"]!.GetValue<int>().ToString(System.Globalization.CultureInfo.InvariantCulture),
                         WoundAcceptedTurnFingerprintWriter.CanonicalJson(unsigned)
                     });
-                    Assert.False(SpiritualSelfTreatmentRequestCodec.IsBoundAid(forged, context, selection, "chaos_sea", control.NextChaosSeaTurnOrdinal));
+                    Assert.False(SpiritualSelfTreatmentRequestCodec.IsBoundAid(forgedRequest, context, selection, "chaos_sea", control.NextChaosSeaTurnOrdinal));
                 }
                 Assert.Equal(1, draws);
             }
