@@ -187,7 +187,7 @@ public partial class ValidationService
                 if (residentMemory.ValueKind != JsonValueKind.Array || publishedSafe is not { SchemaVersion: 5 or 6 } ||
                     new CanonicalBeforeImage(true, responseBytes).Fingerprint != publishedSafe.GraphResponseFingerprint ||
                     publishedSafe.ResidentParticipationRecord is not { } record)
-                    throw new InvalidDataException("Protected resident memory requires its exact published family5 response.");
+                    throw new InvalidDataException($"Protected resident memory requires its exact published family{(publishedSafe?.SchemaVersion == 6 ? 6 : 5)} response.");
                 memoryLocality = AfterlifeWoundHealingPlanner.ReadOriginalAidLocalitySource(_fs, lease);
                 if (!memoryLocality.Success || memoryLocality.Snapshot is not { } local || memoryLocality.Evidence is not { } localEvidence ||
                     local.SessionId != snapshot.SessionId || local.RequestId != snapshot.RequestId || local.TurnNumber != snapshot.TurnNumber ||
@@ -225,7 +225,7 @@ public partial class ValidationService
         {
             operationFailure = failure;
             issues.Add(new("output/interface_updates.json." + (hasResidentMemory ? SpiritualTreatmentParticipation.ResidentThoughtResponseProperty : "spiritualHealingGraphs"), IssueSeverity.Error,
-                hasResidentMemory ? "Resident memory requires its exact published family5 and append proof." : "Spiritual healing graphs require the actual signed safe or combat source.",
+                hasResidentMemory ? "Resident memory requires its exact published family5 or family6 and append proof." : "Spiritual healing graphs require the actual signed safe or combat source.",
                 code: "spiritual_healing_interface_unbound", actual: failure.Message,
                 repairHint: "Keep the original turn/cycle and any existing treatment attempt/dice. Supply only requested stageRefs; never replace the source."));
             return null;

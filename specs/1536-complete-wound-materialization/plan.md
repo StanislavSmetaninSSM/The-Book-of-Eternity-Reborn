@@ -46,8 +46,11 @@ resident-healer scope are connected through natural participation, protected
 memory, History dispatch, GM projection and distinct receive-aid action/menu.
 New detached contracts cover proposal mirrors/forgery, exact selection/confirmation,
 kinded healer/current locality versus player wound, healer memory, codec/header/
-eligibility and H3 versus patient-naturalH0. All new GREEN C# is UNCOMPILED/UNRUN;
-actual producer/UI fixtures and complete GM synchronization remain pending. This
+eligibility and H3 versus patient-naturalH0. All new GREEN C# is UNCOMPILED/UNRUN. Actual backend/revoke and console/browser/
+common-fault fixtures now reuse the complete accepted preparation and typed roles;
+data-model, GM guide/Matrix, CLI/API/Rules, both effective daemon directives,
+worked example/manifest and typed guard are synchronized in source. Coherent
+SOURCE/selection, builds and runtime qualification remain pending. This
 checkpoint is preservation, not SOURCE acceptance or functional qualification.
 Optimization: reuse existing operation parsed DATA/source/service windows; the
 factored join adds no reads/cache. Fresh locality/source/History/closing checks

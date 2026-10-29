@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Services;
+using BookOfEternityClient.Models;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;

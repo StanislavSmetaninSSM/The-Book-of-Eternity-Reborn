@@ -2,6 +2,30 @@
   "version": 1,
   "effectMaterializationCoverage": [
 {
+  "contractId": "spiritual_resident_help_v6",
+  "file": "E_CLI_Afterlife_Turns.txt",
+  "statePath": "typed resident healer offer4 -> actual natural record4/result6 -> confirmed player receive_aid6",
+  "responseSurface": "closed resident_provider_offer and output-only spiritualResidentThoughtJournalUpdates; requested PLAYER spiritualHealingGraphs",
+  "realms": [
+    "Chaos Sea"
+  ],
+  "description": "Current visible resident offers free private help; player confirms, helper active H and patient natural H remain separate.",
+  "validationKind": "focused-fragment",
+  "focusedFragmentReason": "SpiritualResidentProviderDocumentationTests parses the worked proposal, healer memory and selection6 using the production typed APIs; actual publication/UI have separate categories.",
+  "coverageLimit": "No standalone DATA authority, paid/public service, conflict/helpless/Shining, DOM/external provider or fresh-process qualification.",
+  "requiredText": [
+    "spiritual_resident_help_v6",
+    "resident_provider_offer",
+    "resident_to_player",
+    "player_target_confirmed",
+    "spiritualResidentThoughtJournalUpdates",
+    "III0→III1",
+    "II2",
+    "ONE cycle/no fee/OD",
+    "v3/v4/v5 receipts remain immutable"
+  ]
+},
+{
   "contractId": "spiritual_resident_aid_v5",
   "file": "E_CLI_Afterlife_Turns.txt",
   "statePath": "typed current-Abode resident proposal3 -> actual natural result5 -> guided aid5",

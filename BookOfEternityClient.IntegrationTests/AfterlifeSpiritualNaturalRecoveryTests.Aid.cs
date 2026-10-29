@@ -195,6 +195,8 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
     internal const string AidResidentId = "resident_spiritual_aid";
     internal static Task SeedAidResidentAsync(FileSystemManager files, JsonObject profiles) =>
         SeedAidGuardianCoreAsync(files, profiles, guardianIsHealer: false, resident: true);
+    internal static Task SeedReceivingResidentAsync(FileSystemManager files, JsonObject profiles) =>
+        SeedAidGuardianCoreAsync(files, profiles, guardianIsHealer: true, resident: true);
     internal static Task SeedReceivingGuardianAsync(FileSystemManager files, JsonObject profiles) =>
         SeedAidGuardianCoreAsync(files, profiles, guardianIsHealer: true);
 

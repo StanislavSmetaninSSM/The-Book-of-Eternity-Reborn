@@ -49,7 +49,7 @@ public sealed class AfterlifeWoundHealingLifecycleTests
         var self = Assert.IsType<SpiritualHealingPersistedResult>(Assert.Single(history.Transitions,
             row => row.TransitionResult is SpiritualHealingPersistedResult).TransitionResult);
         Assert.Equal(2, self.SchemaVersion); Assert.Equal("self", self.Mode);
-        foreach (var version in new[] { 5, 99 })
+        foreach (var version in new[] { 5, 6, 99 })
         {
             var unsupported = self.ToCanonicalJson(); unsupported["schemaVersion"] = version;
             unsupported["resultFingerprint"] = WoundHistoryState.ComputeTransitionResultFingerprint(unsupported);

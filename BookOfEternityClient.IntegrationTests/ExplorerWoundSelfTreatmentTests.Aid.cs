@@ -43,12 +43,25 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
     public Task ResidentAidCommonPublicationFailureRestoresAcceptedGrantMemoryAndWholeTurnState() =>
         RunAidJourneyAsync(browser: false, resident: true, failPublication: true);
 
+    /// <summary>The console accepts a genuine resident offer only after cancel/confirm and normal offer-turn cleanup.</summary>
+    [Fact]
+    public Task ConsoleResidentHelpRequiresActualPlayerConfirmationThenHealsThePlayer() => RunAidJourneyAsync(browser: false, receiveAid: true, resident: true);
+
+    /// <summary>The shared browser queue retains the confirmed resident healer and original Engine action.</summary>
+    [Fact]
+    public Task BrowserResidentHelpRequiresActualPlayerConfirmationThenHealsThePlayer() => RunAidJourneyAsync(browser: true, receiveAid: true, resident: true);
+
+    /// <summary>Resident-provider memory and the complete submitted and accepted states follow common and outer rollback.</summary>
+    [Fact]
+    public Task ResidentHelpCommonPublicationFailureRestoresAcceptedOfferMemoryAndWholeTurnState() =>
+        RunAidJourneyAsync(browser: false, receiveAid: true, resident: true, failPublication: true);
+
     private sealed class AidSnapshotFault : InvalidOperationException { }
 
     private async Task RunAidJourneyAsync(bool browser, bool refuseAfterDraw = false, bool refuseBeforeDraw = false, bool receiveAid = false, bool resident = false, bool failPublication = false)
     {
         var participantId = resident ? AfterlifeSpiritualNaturalRecoveryTests.AidResidentId : AfterlifeSpiritualNaturalRecoveryTests.AidGuardianId;
-        var family = resident ? 5 : receiveAid ? 4 : 3;
+        var family = resident ? receiveAid ? 6 : 5 : receiveAid ? 4 : 3;
         FileSystemManager? ownedFiles = null;
         var injectBeforeDraw = false;
         var foreignMutationReached = 0;
@@ -58,7 +71,7 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
         byte[]? guardianMemoryAtCut = null;
         var publicationFailure = new InvalidOperationException("Resident aid precommit publication failure.");
         await using var fixture = await HealingFixture.CreateAsync(rank: 3, tier: receiveAid ? 0 : 3, die: 14, stageRequest: false,
-            beforeResourceBootstrap: resident ? SeedEngineResidentAidJourneyAsync : receiveAid ? SeedEngineReceivingAidJourneyAsync : SeedEngineAidJourneyAsync,
+            beforeResourceBootstrap: resident ? receiveAid ? SeedEngineReceivingResidentJourneyAsync : SeedEngineResidentAidJourneyAsync : receiveAid ? SeedEngineReceivingAidJourneyAsync : SeedEngineAidJourneyAsync,
             hooks: !refuseBeforeDraw && !failPublication ? null : new FileSystemManagerHooks
             {
                 LocalPublicationObserver = (phase, _) =>
@@ -122,15 +135,15 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                         var profiles = JsonNode.Parse((await files.ReadFileAsync(lease, WoundCarrierCatalog.AfterlifeProfilesPath))!)!.AsObject();
                         profiles["profiles"]!.AsArray().OfType<JsonObject>()
                             .Single(p => SpiritualTreatmentParticipation.ProfileId(p) == participantId)
-                            [SpiritualTreatmentParticipation.ChangeProperty] = resident ? AfterlifeSpiritualNaturalRecoveryTests.ResidentGrantProposal()
+                            [SpiritualTreatmentParticipation.ChangeProperty] = resident ? receiveAid ? AfterlifeSpiritualNaturalRecoveryTests.ResidentOfferProposal() : AfterlifeSpiritualNaturalRecoveryTests.ResidentGrantProposal()
                                 : receiveAid ? AfterlifeSpiritualNaturalRecoveryTests.GuardianOfferProposal()
                                 : AfterlifeSpiritualNaturalRecoveryTests.AidGrantProposal();
                         await files.WriteFileAtomicAsync(lease, WoundCarrierCatalog.AfterlifeProfilesPath, profiles.ToJsonString());
                         await WriteNativeCompletionAsync(files, lease, turn, narrative:
-                            resident ? "Житель целостности осознанно разрешает душе вылечить его духовную рану в следующий безопасный цикл."
+                            resident ? receiveAid ? "Житель целостности добровольно предлагает бесплатную помощь душе; принять её может только игрок." : "Житель целостности осознанно разрешает душе вылечить его духовную рану в следующий безопасный цикл."
                                 : receiveAid ? "Хранитель целостности добровольно предлагает бесплатную помощь сознательной душе; принять помощь может только игрок."
                                 : "Хранитель целостности понимает предложение души и разрешает ей вылечить его духовную рану в следующий безопасный цикл.");
-                        if (resident) await WriteResidentAidReasoningAsync(files, lease, turn, grant: true);
+                        if (resident) await WriteResidentAidReasoningAsync(files, lease, turn, grant: true, residentProvides: receiveAid);
                         else await WriteAidGuardianReasoningAsync(files, lease, turn, grant: true, receiveAid);
                         grantWritten = true;
                     }
@@ -143,16 +156,16 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                         aidRequest = JsonNode.Parse((await files.ReadFileAsync(lease, AcceptedMechanicsPlan.WoundCommandPath))!)!.AsObject();
                         Assert.Equal("aid", aidRequest["mode"]!.GetValue<string>());
                         Assert.Equal(family, aidRequest["schemaVersion"]!.GetValue<int>());
-                        Assert.Equal(receiveAid ? "guardian" : "player_soul", aidRequest["healer"]!["ownerKind"]!.GetValue<string>());
-                        Assert.Equal(resident ? "resident" : receiveAid ? "player_soul" : "guardian", aidRequest["target"]!["ownerKind"]!.GetValue<string>());
+                        Assert.Equal(receiveAid ? resident ? "resident" : "guardian" : "player_soul", aidRequest["healer"]!["ownerKind"]!.GetValue<string>());
+                        Assert.Equal(receiveAid ? "player_soul" : resident ? "resident" : "guardian", aidRequest["target"]!["ownerKind"]!.GetValue<string>());
                         if (resident)
                         {
-                            Assert.Equal("player_to_resident", aidRequest["direction"]!.GetValue<string>());
-                            Assert.Equal(participantId, aidRequest["target"]!["ownerId"]!.GetValue<string>());
+                            Assert.Equal(receiveAid ? "resident_to_player" : "player_to_resident", aidRequest["direction"]!.GetValue<string>());
+                            Assert.Equal(participantId, aidRequest[receiveAid ? "healer" : "target"]!["ownerId"]!.GetValue<string>());
                         }
                         if (receiveAid)
                         {
-                            Assert.Equal("guardian_to_player", aidRequest["direction"]!.GetValue<string>());
+                            Assert.Equal(resident ? "resident_to_player" : "guardian_to_player", aidRequest["direction"]!.GetValue<string>());
                             Assert.Equal("player_target_confirmed", aidRequest["playerConfirmation"]!.GetValue<string>());
                         }
                         Assert.Equal(3, aidRequest["activeSource"]!["healingTier"]!.GetValue<int>());
@@ -172,10 +185,10 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                         aidTurn = turn;
                         await WriteNativeCompletionAsync(files, lease, turn,
                             AfterlifeSpiritualNaturalRecoveryTests.AuthorNaturalGraphs(grantWound!, turn.SpiritualHealing["destinationGraphs"]!.AsArray()),
-                            resident ? "Душа помогает Жителю целостности восстановить духовную рану; жизнь Обители продолжается."
+                            resident ? receiveAid ? "Житель целостности помогает душе после её подтверждения; жизнь Обители продолжается без оплаты." : "Душа помогает Жителю целостности восстановить духовную рану; жизнь Обители продолжается."
                                 : receiveAid ? "Хранитель целостности помогает душе восстановить выбранную духовную рану после её подтверждения; безопасная жизнь Обители продолжается."
                                 : "Душа помогает Хранителю целостности восстановить духовную рану; безопасная жизнь Обители продолжается.");
-                        if (resident) await WriteResidentAidReasoningAsync(files, lease, turn, grant: false);
+                        if (resident) await WriteResidentAidReasoningAsync(files, lease, turn, grant: false, residentProvides: receiveAid);
                         else await WriteAidGuardianReasoningAsync(files, lease, turn, grant: false, receiveAid);
                         if (failPublication)
                         {
@@ -192,7 +205,7 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
         {
             runtime.GameLoop.SetSession(browser ? "session_browser_guardian_aid" : "session_console_guardian_aid", 42);
             await runtime.StateManager.RefreshGameStateAsync();
-            await runtime.Engine.ProcessPlayerTurn(resident ? "Предложить Жителю целостности вылечить его духовную рану и спросить разрешение."
+            await runtime.Engine.ProcessPlayerTurn(resident ? receiveAid ? "Спросить Жителя целостности, готов ли он бесплатно помочь мне с раной; я ещё не принимаю помощь." : "Предложить Жителю целостности вылечить его духовную рану и спросить разрешение."
                 : receiveAid ? "Спросить текущего Хранителя, готов ли он бесплатно помочь мне с духовной раной; я ещё не принимаю лечение."
                 : "Предложить Хранителю целостности вылечить его духовную рану и спросить разрешение.");
             Assert.True(grantWritten);
@@ -235,7 +248,7 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                 var opened = await service.ExecuteAsync(new("/лечить", Owner));
                 var prompt = Assert.IsType<UiSelectionPrompt>(Assert.Single(opened.Prompts, p => p.Id == "wound_selection"));
                 var option = Assert.Single(prompt.Options, p => !p.Disabled);
-                Assert.Contains(resident ? "Житель" : "Хранител", option.Label);
+                Assert.Contains(resident ? receiveAid ? "жителя" : "Житель" : "Хранител", option.Label);
                 Assert.DoesNotContain(grantWound.WoundId, JsonSerializer.Serialize(opened));
                 Assert.DoesNotContain(participantId, JsonSerializer.Serialize(opened));
                 var submitted = await service.SubmitPromptSessionAsync(new(opened.InteractiveSession!.SessionId,
@@ -327,7 +340,7 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                 console.QueueAnySelection("1. " + choice.Name + " — " + choice.Severity);
                 console.QueueAnyConfirmResponse(true);
                 var action = await runtime.Explorer.TryProcessCommand("/лечить");
-                Assert.Equal(resident ? WoundApplicationService.ResidentAidActionText : receiveAid ? WoundApplicationService.ReceiveAidActionText : WoundApplicationService.AidActionText, action);
+                Assert.Equal(WoundApplicationService.ActionFor(choice.Selection), action);
                 Assert.Single(console.ConfirmPrompts);
                 fixture.AssertMutationRootsUnchanged(before);
                 Assert.Null(await files.ReadFileBytesAsync(AcceptedMechanicsPlan.WoundCommandPath));
@@ -423,8 +436,9 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                 Assert.True(JsonNode.DeepEquals(grantGuardianMemory, guardianMemories[0]));
                 Assert.Equal("guardian_resident_world_thought_" + settledTurn.RequestId, guardianMemories[1]!["entryId"]!.GetValue<string>());
                 Assert.Equal(AfterlifeSpiritualNaturalRecoveryTests.AidGuardianId, guardianMemories[1]!["guardianId"]!.GetValue<string>());
-                Assert.Equal("resident", aid.Stages[0].Before.Owner.OwnerKind);
-                Assert.Equal(participantId, aid.Stages[0].Before.Owner.OwnerId);
+                Assert.Equal(receiveAid ? "player_soul" : "resident", aid.Stages[0].Before.Owner.OwnerKind);
+                Assert.Equal(receiveAid ? "player_soul" : participantId, aid.Stages[0].Before.Owner.OwnerId);
+                Assert.All(memories, e => Assert.Equal(participantId, e!["residentId"]!.GetValue<string>()));
                 Assert.Equal(44, runtime.GameLoop.TurnNumber);
             }
             output.WriteLine($"{(resident ? "Resident" : "Guardian")} {(receiveAid ? "helps player" : "aid")} ({(browser ? "browser" : "console")}): actual grant43/naturalIII1; d20={draw}; final={after.Lifecycle}/{after.Severity.Rank}/{after.Recovery.CurrentStepProgress}; activeH3/targetH0, one aid cycle, one retained attempt.");
@@ -442,6 +456,12 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
     {
         await SeedEngineAidGuardianAsync(files, profiles);
         await SeedAidJourneyLoreAsync(files);
+    }
+
+    private static async Task SeedEngineReceivingResidentJourneyAsync(FileSystemManager files, JsonObject profiles)
+    {
+        await SeedEngineReceivingResidentAsync(files, profiles);
+        await SeedAidSecondTurnBaselineAsync(files);
     }
 
     private static async Task SeedEngineResidentAidJourneyAsync(FileSystemManager files, JsonObject profiles)
@@ -492,6 +512,12 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
         await SeedCompleteAidGuardianLocalityAsync(files);
     }
 
+    internal static async Task SeedEngineReceivingResidentAsync(FileSystemManager files, JsonObject profiles)
+    {
+        await AfterlifeSpiritualNaturalRecoveryTests.SeedReceivingResidentAsync(files, profiles);
+        await SeedCompleteAidGuardianLocalityAsync(files);
+    }
+
     internal static async Task SeedEngineReceivingGuardianAsync(FileSystemManager files, JsonObject profiles)
     {
         await AfterlifeSpiritualNaturalRecoveryTests.SeedReceivingGuardianAsync(files, profiles);
@@ -520,9 +546,9 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
         }.ToJsonString());
     }
 
-    private static async Task WriteResidentAidReasoningAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease, TurnRequest turn, bool grant)
+    private static async Task WriteResidentAidReasoningAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease, TurnRequest turn, bool grant, bool residentProvides = false)
     {
-        await AfterlifeSpiritualNaturalRecoveryTests.WriteResidentAidMemoryAsync(files, lease, turn.RequestId, turn.TurnNumber, memoryOnly: grant);
+        await AfterlifeSpiritualNaturalRecoveryTests.WriteResidentAidMemoryAsync(files, lease, turn.RequestId, turn.TurnNumber, memoryOnly: grant, residentProvides: residentProvides);
         const string name = "Житель целостности";
         const string guardianName = "Хранитель целостности";
         var timestamp = DateTime.UtcNow.ToString("o");
@@ -541,25 +567,25 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
         {
             ["timestamp"] = timestamp, ["gm_thoughts_markdown"] = string.Join("\n",
                 "## NPC Scope", "- Mode: Mixed", "- Relevant actors: " + name + ", " + guardianName,
-                "- Why relevant: Житель принимает частную помощь, а обычный цикл Хранителя продолжает его текущую стратегию развития.",
+                residentProvides ? "- Why relevant: Житель предлагает частную помощь душе, а обычный цикл Хранителя продолжает его текущую стратегию развития." : "- Why relevant: Житель принимает частную помощь, а обычный цикл Хранителя продолжает его текущую стратегию развития.",
                 "- Actors outside scope: нет", "- Why outside scope: Другие акторы не получают структурированных изменений.",
                 "", "## Reasoning", "### " + name, "- Current location: Обитель целостности; перемещения нет.",
-                "- Situation: Душа предлагает бесплатное лечение известной духовной раны.",
-                "- Profile inputs: Сознательный способный житель с Исцелением0; душа владеет Исцелением3.",
-                "- Thoughts: Я понимаю предложение и хочу восстановить целостность без нового долга.",
-                "- Motivation: Восстановиться, сохранив право отказаться.",
+                residentProvides ? "- Situation: Душа просит бесплатную помощь с известной раной; принять предложение может только игрок." : "- Situation: Душа предлагает бесплатное лечение известной духовной раны.",
+                residentProvides ? "- Profile inputs: Сознательный способный житель с Исцелением3; душа владеет Исцелением0." : "- Profile inputs: Сознательный способный житель с Исцелением0; душа владеет Исцелением3.",
+                residentProvides ? "- Thoughts: Я готов помочь душе, но решение принять помощь принадлежит ей." : "- Thoughts: Я понимаю предложение и хочу восстановить целостность без нового долга.",
+                residentProvides ? "- Motivation: Помочь душе добровольно и без нового долга." : "- Motivation: Восстановиться, сохранив право отказаться.",
                 "- Constraints: Нет конфликта или оплаты; исход и цикл считает клиент.",
-                "- Strategy options:", "1. Принять помощь. Benefit: восстановление. Risk: неудачный бросок.",
-                "2. Отказаться. Benefit: дистанция. Risk: рана останется.", "- Chosen strategy: Добровольно принять помощь.",
+                "- Strategy options:", residentProvides ? "1. Предложить помощь. Benefit: помочь душе. Risk: неудачный бросок." : "1. Принять помощь. Benefit: восстановление. Risk: неудачный бросок.",
+                "2. Отказаться. Benefit: дистанция. Risk: рана останется.", residentProvides ? "- Chosen strategy: Предложить бесплатную помощь и ждать решения игрока." : "- Chosen strategy: Добровольно принять помощь.",
                 "- Rejected alternatives: Нет причины отвергать безопасную помощь.",
-                grant ? "- Actions: Я явно разрешаю помощь в следующий безопасный цикл." : "- Actions: Я сохраняю согласие и принимаю помощь.",
+                residentProvides ? grant ? "- Actions: Я предлагаю помощь на следующий безопасный цикл; принятие игроком не публикую." : "- Actions: Игрок подтвердил помощь; я лечу его рану без оплаты." : grant ? "- Actions: Я явно разрешаю помощь в следующий безопасный цикл." : "- Actions: Я сохраняю согласие и принимаю помощь.",
                 "- State changes: spiritualResidentThoughtJournalUpdates в output/interface_updates.json переносит first-person память через существующий residentThoughtJournalUpdates нормализатор; физический roster до допуска не меняется. Рану, эффекты, History и время публикует клиент.",
                 "", "### " + guardianName, "- Current location: Обитель целостности; перемещения нет.",
                 "- Situation: Обычный безопасный цикл продолжается, пока душа и житель решают вопрос добровольной частной помощи.",
                 "- Profile inputs: Текущий Хранитель и его действующая стратегия развития; он не лечит и не принимает лечение.",
                 "- Thoughts: Я сохраняю порядок и продолжаю свою обычную стратегию, не решая за жителя.",
                 "- Motivation: Поддерживать безопасную жизнь Обители.",
-                "- Constraints: Согласие принадлежит жителю; доход и развитие рассчитывает клиент, новой платы нет.",
+                residentProvides ? "- Constraints: Согласие пациента принадлежит игроку; доход и развитие рассчитывает клиент, новой платы нет." : "- Constraints: Согласие принадлежит жителю; доход и развитие рассчитывает клиент, новой платы нет.",
                 "- Strategy options:",
                 "1. Продолжить обычную стратегию. Benefit: устойчивый порядок. Risk: не участвовать в частной беседе.",
                 "2. Вмешаться в частную помощь. Benefit: больше наблюдения. Risk: неоправданное вмешательство.",

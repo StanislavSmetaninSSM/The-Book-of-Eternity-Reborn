@@ -2694,3 +2694,20 @@ same protected owner and existing normalizer. Do not edit the frozen roster or o
 journal entries. Ordinary resident journal mapping stays unchanged. Preserve current
 source/closing guards and v3/v4 immutable receipts; historical parsing needs no new
 live consent. No player should type IDs or author client mechanics.
+
+
+spiritual_resident_help_v6: /лечить also permits the opposite resident→player private
+free direction in the CURRENT Chaos Guardian Abode. A preexisting visible conscious
+capable resident HEALER authors only resident_provider_offer proposal4 (offer|revoke,
+player_soul patient, exact wound and four conscious/capable facts). The real natural
+owner publishes record4/result6; after normal cleanup, only the player's actual
+confirmation permits request6 direction=resident_to_player/player_target_confirmed.
+Preserve the original witness/source/attempt/dice. Helper H drives the active check;
+patient H drives natural recovery; ONE cycle/no fee/OD. Author only requested weaker
+spiritualHealingGraphs for the PLAYER wound and protected resident-HEALER memory via
+output-only spiritualResidentThoughtJournalUpdates. Include the ordinary Guardian's
+Actor Brain/journal when its usual progression changes it. No raw roster rewrite,
+same-turn offer, automatic player consent, new cache, paid/public/helpless/combat or
+Shining permission. Read the resident-provider worked example in
+Examples/E_CLI_Afterlife_Turns.txt and Wound_Materialization_Contract.md. Existing
+self2/Guardian3/4/resident-patient5 contracts and immutable receipts remain exact.

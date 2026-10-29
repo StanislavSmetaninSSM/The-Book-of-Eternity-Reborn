@@ -1265,3 +1265,48 @@ Historical receipt parsing uses its recorded witness/grant/request/stages, never
 asks a departed resident to consent again. A later changed scheduler after-image
 is not permission to replay an old current settlement. See the two-turn worked
 spiritual_resident_aid_v5 example; use the actual client packet, not copied IDs.
+
+
+spiritual_resident_help_v6: /лечить also permits the opposite resident→player private
+free direction in the CURRENT Chaos Guardian Abode. A preexisting visible conscious
+capable resident HEALER authors only resident_provider_offer proposal4 (offer|revoke,
+player_soul patient, exact wound and four conscious/capable facts). The real natural
+owner publishes record4/result6; after normal cleanup, only the player's actual
+confirmation permits request6 direction=resident_to_player/player_target_confirmed.
+Preserve the original witness/source/attempt/dice. Helper H drives the active check;
+patient H drives natural recovery; ONE cycle/no fee/OD. Author only requested weaker
+spiritualHealingGraphs for the PLAYER wound and protected resident-HEALER memory via
+output-only spiritualResidentThoughtJournalUpdates. Include the ordinary Guardian's
+Actor Brain/journal when its usual progression changes it. No raw roster rewrite,
+same-turn offer, automatic player consent, new cache, paid/public/helpless/combat or
+Shining permission. Read the resident-provider worked example in
+Examples/E_CLI_Afterlife_Turns.txt and Wound_Materialization_Contract.md. Existing
+self2/Guardian3/4/resident-patient5 contracts and immutable receipts remain exact.
+
+Offer4 is closed: schemaVersion,kind=resident_provider_offer,operation=offer|revoke,
+targetId=player_soul,woundId,providerConscious,providerCapable,targetConscious,
+targetCapable,readableEvidence. Offer requires all facts true; revoke may clear
+facts but never authorizes treatment. Owner derives from the enclosing exact
+resident profile, not a scalar Guardian ID. Record4 stores closed typed healer and
+target, exact current guardianId/abodeId locality, the offer facts, accepted binding,
+acceptedCycleOrdinal/eligibleCycleOrdinal and primaryTransitionId. Only the client
+publishes it; natural result6 embeds the full outcome with the actual natural tick.
+Its eligibility is only the immediately following accepted turn/next safe cycle.
+
+Selection6 adds mode=receive_aid,direction=resident_to_player, exact healer/target/
+locality, woundId/expectedWoundFingerprint,participationFingerprint and
+confirmation=required|player_target_confirmed. It is client DATA, never a GM request
+or permission. The real confirmed active request6 and result6 retain that direction,
+full witness, source, sealed one attempt and die. The player remains wound/effect
+owner; the resident is healer and protected-memory owner. Do not reuse resident-
+patient5 target/effects or a Guardian4 header. The full memory append is checked
+against the original roster/retained response and same owned publication; family6
+has no general interface exemption. Cancellation/unconfirmed/unavailable offers
+refuse before side effects. Current drift refuses without reroll. New offers and
+admission/Stage/B/normalization/closing require fresh live typed locality; historical
+and current-settlement reads retain existing record/control/source/schedule/cohort/
+History checks without renewed presence. Departure preserves historical evidence,
+never new permission. Both journals preserve the old prefix and append one exact
+current entry. C4 restores submitted prepared request/die/raw memory command; outer
+rollback restores accepted offer state. No changes to paid economics or Mortal
+contracts; provider, DOM and fresh-process qualification are separate.

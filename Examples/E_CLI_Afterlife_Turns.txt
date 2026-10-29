@@ -13681,3 +13681,59 @@ false conscious/capable; it never grants permission. Current drift refuses witho
 reroll. Historical receipt parsing still works after departure using recorded grant
 and stages; current-settlement source/schedule/cohort checks remain strict. No
 paid/public/resident-healer/combat/helpless/Shining completion is implied.
+
+
+spiritual_resident_help_v6 — worked resident offer, player confirmation and treatment
+
+Before43: Житель целостности is an existing visible conscious/capable resident_example
+of exact guardian_example/abode_example, H3. PLAYER has known active III spiritual
+wound wound_player_example and H0. A Guardian with the same text ID is not this
+resident healer. Complete roster/profiles, original authorities, ordinary Guardian
+strategy and empty second-turn meta/codex inputs exist before sole bootstrap.
+
+Turn43: player asks whether the resident will help, without accepting treatment.
+On that exact existing resident profile author only this proposal:
+```json
+{"schemaVersion":4,"kind":"resident_provider_offer","operation":"offer","targetId":"player_soul","woundId":"wound_player_example","providerConscious":true,"providerCapable":true,"targetConscious":true,"targetCapable":true,"readableEvidence":"Я готов бесплатно помочь душе; она сама решит, принять ли мою помощь."}
+```
+
+The actual natural owner publishes record4/full natural result6 and III0→III1.
+Do not author accepted stamps, canonical records, result or player consent. Actor
+Brain describes the resident as HEALER, not patient; if ordinary Guardian development
+also changes its profile, include BOTH actors and the ordinary Guardian journal.
+Do not disable development or author client income/cycle/ledger values. Preserve
+the physical roster; author protected first-person resident memory in the actual
+output/interface_updates.json alongside timestamp/dialogue and requested graphs:
+```json
+{"spiritualResidentThoughtJournalUpdates":[{"entryId":"resident_provider_thought_example","residentId":"resident_example","turn":43,"timestamp":"2026-10-29T04:00:00Z","title":"Предложение помощи","summary":"Я добровольно предлагаю бесплатное лечение душе; её собственное подтверждение обязательно.","eventType":"conversation","consequence":"Помощь без нового долга.","attitude":"trusting","intent":"Помочь душе без давления.","tags":[]}]}
+```
+
+The same owned normalizer appends memory. Actual Engine accepts43 and performs
+normal request/snapshot cleanup. No file insertion/rebootstrap between turns.
+
+Turn44: /лечить offers “помощь жителя Обители” for the player's wound. Cancel is inert.
+This menu selection is client DATA with confirmation=required, not GM permission:
+```json
+{"schemaVersion":6,"mode":"receive_aid","direction":"resident_to_player","woundId":"wound_player_example","expectedWoundFingerprint":"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","healer":{"realm":"chaos_sea","ownerKind":"resident","ownerId":"resident_example","carrierPath":"game_state/meta/afterlife_entity_profiles.json"},"target":{"realm":"chaos_sea","ownerKind":"player_soul","ownerId":"player_soul","carrierPath":"game_state/meta/afterlife_entity_profiles.json"},"locality":{"guardianId":"guardian_example","abodeId":"abode_example"},"participationFingerprint":"sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","confirmation":"required"}
+```
+
+Only actual console/shared-browser player confirmation changes confirmation to
+player_target_confirmed. Client revalidates locality, offer/history/source and H,
+then retains request6 mode=aid,direction=resident_to_player,playerConfirmation=
+player_target_confirmed with the original record4 witness/attempt/die. Preserve all
+of it. For d20=14, residentH3 against playerIII1 gives activeII1 then PLAYERH0 natural
+II2, ONE cycle/no fee/OD. Author precisely requested spiritualHealingGraphs with
+PLAYER effect target (kind=player,targetId=player_soul), current stageRefs, legal
+original source definitions, empty links and supplied complicationRefs only. The
+resident gets a NEW protected memory entry for44 describing giving help; Guardian
+gets its own ordinary journal for its continuing strategy. No patient memory as
+resident, direct wound/effect mutation, fabricated receipt or second roll.
+
+Client publishes player wound/effects, one cycle and result6/History. Existing
+v3/v4/v5 receipts remain immutable. On an ordinary withdrawal use proposal4
+operation=revoke; false factual flags are allowed. The accepted revoked record4
+cannot treat even in its otherwise eligible next cycle. Historical/settled reads
+preserve existing checks after departure; live new admission still requires the
+resident present in the same current Abode. Common fault restores exact prepared44
+request/die/report and submitted memory command; outer rollback restores accepted43
+and both old journal prefixes. No paid/public/combat/helpless/Shining completion.
