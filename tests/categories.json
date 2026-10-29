@@ -35953,7 +35953,7 @@
     },
     {
       "id": "healing-service-source-controls",
-      "responsibility": "Actual fresh confirmation funds/life/price losses, post-control source close before entropy and measured absence of extra service source reads over current read/menu path.",
+      "responsibility": "Actual fresh confirmation funds/life/price losses and post-control source close before entropy; four independent negative cases.",
       "excludes": "Unchanged accepted prices/wallet cases and wider US6/Shining/travel/noncurrency, live external provider/DOM/fresh-process and HOLD DFR/Mortal/Windows/performance.",
       "changeHints": [
         "#1536 US6 public Elyara route; actual contracts/consumers, not a full suite"
@@ -35971,7 +35971,30 @@
           "project": "integration",
           "tests": [
             "BookOfEternityClient.Tests.AfterlifeHealingPaymentLifecycleTests.ConfirmationRejectsFreshLossWithoutRequestDrawOrPayment",
-            "BookOfEternityClient.Tests.AfterlifeHealingPaymentLifecycleTests.SourceChangeAfterControlRefusesBeforeAnyTreatmentDrawOrPayment",
+            "BookOfEternityClient.Tests.AfterlifeHealingPaymentLifecycleTests.SourceChangeAfterControlRefusesBeforeAnyTreatmentDrawOrPayment"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "healing-service-menu-source-counts",
+      "responsibility": "Actual existing menu paths with unavailable/available service use the same fresh source-open counts; present empty roster fixture, no added reads, mutation or cross-action cache.",
+      "excludes": "Unchanged accepted prices/wallet cases and wider US6/Shining/travel/noncurrency, live external provider/DOM/fresh-process and HOLD DFR/Mortal/Windows/performance.",
+      "changeHints": [
+        "#1536 US6 public Elyara route; actual contracts/consumers, not a full suite"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
             "BookOfEternityClient.Tests.AfterlifeHealingPaymentLifecycleTests.OpeningServiceReusesParsedReadSetWithoutAdditionalSourceReads"
           ]
         }

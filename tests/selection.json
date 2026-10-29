@@ -38,7 +38,14 @@
     },
     {
       "category": "healing-service-source-controls",
-      "reason": "Actual fresh confirmation funds/life/price losses, post-control source close before entropy and measured absence of extra service source reads over current read/menu path.",
+      "reason": "Actual fresh confirmation funds/life/price losses and post-control source close before entropy; preserve four accepted negative cases.",
+      "contracts": [
+        "#1536 US6 T131–T140/T143–T147 bounded public Elyara route"
+      ]
+    },
+    {
+      "category": "healing-service-menu-source-counts",
+      "reason": "Actual source-open counts for both fresh menu actions; empty resident roster exists before measurement, all-source equality and no mutation retained.",
       "contracts": [
         "#1536 US6 T131–T140/T143–T147 bounded public Elyara route"
       ]

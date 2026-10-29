@@ -284,6 +284,17 @@ owner-exit and equality proofs, with every bin retained. Free space416MiB before
 Unit; runtime floor128MiB and full capture remain unchanged. No speedup claimed;
 actual menu-source counters are next. This paragraph changes no runtime source.
 
+Source-controls on c88a472e5 completed5/5cases:4PASS,1FAIL, no timeout and complete
+cleanup (25.1581974s). Only the source-open counter failed: its Guardian-only fixture
+had no resident file; ordinary fresh absence returns before BeforeCanonicalReadOpen,
+so expecting a positive open count was invalid preparation, not a production defect.
+The counter now creates the ordinary empty normalized roster before either measured
+action and also checks its unchanged bytes. All source-count/freshness/no-schedule
+assertions remain. Split that one independent cost fact into menu-source-counts;
+preserve the four unchanged negative PASS instead of rerunning them. Selection is
+now16categories/80cases/30methods, pending fresh Integration/catalog/PlanOnly.
+No production source changed; correction review/build/counter GREEN remain pending.
+
 ---
 
 # T126 — accepted browser wound cards and guided treatment presentation

@@ -92,6 +92,12 @@ public sealed class AfterlifeHealingPaymentLifecycleTests(ITestOutputHelper outp
                 return Task.CompletedTask;
             }
         });
+        // This counter observes actual opens, not the fresh absence path. Supply
+        // the ordinary empty roster before either compared action so every
+        // asserted locality input exists and no setup write enters the sample.
+        var residents = new JsonObject();
+        GuardianAbodeResidentState.NormalizeShape(residents);
+        await fixture.Files.WriteFileAtomicAsync(GuardianAbodeResidentState.StatePath, residents.ToJsonString());
         Dictionary<string, int>? baseline = null;
         for (var action = 0; action < 2; action++)
         {
@@ -102,7 +108,8 @@ public sealed class AfterlifeHealingPaymentLifecycleTests(ITestOutputHelper outp
             profiles["profiles"]!.AsArray().OfType<JsonObject>().Single(AfterlifeHealingServiceContract.IsElyaraProfile)
                 ["healingServiceProfile"]!["availability"] = action == 0 ? "unavailable" : "available";
             await fixture.Files.WriteFileAtomicAsync(WoundCarrierCatalog.AfterlifeProfilesPath, profiles.ToJsonString());
-            var before = fixture.CaptureMutationRoots([AfterlifeWoundHealingPlanner.Continuation.ServiceSoulPath]);
+            var before = fixture.CaptureMutationRoots([AfterlifeWoundHealingPlanner.Continuation.ServiceSoulPath,
+                GuardianAbodeResidentState.StatePath]);
             reads.Clear(); armed = true;
             var opened = await WoundApplicationService.OpenAsync(fixture.Files, "/лечить", treatment: true);
             armed = false;
