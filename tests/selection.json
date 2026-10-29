@@ -3,9 +3,30 @@
   "selections": [
     {
       "category": "wound-foreign-detail-causal",
-      "reason": "T119-FOREIGN-DETAIL existing SelectTargetAsync must show the visible symptom of an exact reachable known Guardian wound without grant. Valid name/severity/description, terminal inert state and existing source-count controls precede semantic RED.",
+      "reason": "Causal GREEN of the accepted semantic RED: complete known foreign card must show declared visible symptom after valid target/inert/source controls.",
       "contracts": [
         "#1536 T119/T121 / FR069/070/072–076 known foreign detail, read-only recommendation not authority"
+      ]
+    },
+    {
+      "category": "wound-foreign-detail-contract",
+      "reason": "Known foreign spiritual card exact typed owner/effect/source/definition/privacy/knowledge/domain and detached DATA controls; no new treatment authority.",
+      "contracts": [
+        "#1536 T119-FOREIGN-DETAIL / FR069/070/072–076"
+      ]
+    },
+    {
+      "category": "wound-foreign-detail-interfaces",
+      "reason": "Actual minimal console and public browser known Guardian/resident cards, safe literal rendering, no-grant recommendations, no repair/gameplay mutation, exact owned UI token release and source counts.",
+      "contracts": [
+        "#1536 T119-FOREIGN-DETAIL / FR069/070/072–076"
+      ]
+    },
+    {
+      "category": "wounds-player-projection",
+      "reason": "Affected existing shared formatter Self controls: replacing literal player effect scope with typed targetKind and adding truthful spiritual recommendation text must preserve existing Self/realm/History/knowledge/effect privacy. This is the selected read-only Unit projection group, not the held Mortal compatibility route.",
+      "contracts": [
+        "WoundPlayerProjection existing Self projection and recursive privacy"
       ]
     }
   ]

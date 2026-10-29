@@ -59,7 +59,7 @@ internal static partial class WoundPlayerProjection
         ? string.Empty
         : new string(value.Where(c => !char.IsControl(c) || c is '\n' or '\t').ToArray()).Trim();
 
-    private static WoundPlayerEntry Project(WoundMaterializationEnvelope wound, WoundPlayerProjectionInput input)
+    private static WoundPlayerEntry Project(WoundMaterializationEnvelope wound, WoundPlayerProjectionInput input, string targetKind = "player")
     {
         var facts = new List<WoundPlayerFact>();
         Add("Место", wound.Classification.LocationProfile.ReadableLocus);
@@ -95,7 +95,7 @@ internal static partial class WoundPlayerProjection
         var effects = input.Effects with
         {
             Effects = input.Effects.Effects.Where(e => ownedRoots.Contains(e.EffectId) &&
-                e.Realm == wound.Owner.Realm && e.TargetKind == "player" && e.TargetId == wound.Owner.OwnerId &&
+                e.Realm == wound.Owner.Realm && e.TargetKind == targetKind && e.TargetId == wound.Owner.OwnerId &&
                 e.OwnerId == wound.Owner.OwnerId && e.OwnerKind == (wound.Owner.Realm == "mortal_world" ? "player" : "afterlife_profile") &&
                 e.CanonicalEffect.TryGetProperty("source", out var source) && source.ValueKind == System.Text.Json.JsonValueKind.Object &&
                 source.TryGetProperty("kind", out var kind) && kind.ValueKind == System.Text.Json.JsonValueKind.String && kind.GetString() == "wound" &&
@@ -103,7 +103,7 @@ internal static partial class WoundPlayerProjection
                 source.TryGetProperty("definitionKey", out var key) && key.ValueKind == System.Text.Json.JsonValueKind.String &&
                 rootBindings.TryGetValue(e.EffectId, out var expectedDefinition) && key.GetString() == expectedDefinition).ToArray()
         };
-        foreach (var effect in EffectPlayerProjection.Build(new(effects, wound.Owner.Realm, "player", wound.Owner.OwnerId)).Entries)
+        foreach (var effect in EffectPlayerProjection.Build(new(effects, wound.Owner.Realm, targetKind, wound.Owner.OwnerId)).Entries)
         {
             Add("Последствие", effect.Name);
             if (!string.IsNullOrWhiteSpace(effect.Summary)) Add("Влияние", effect.Summary);

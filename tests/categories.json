@@ -2,6 +2,65 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "wound-foreign-detail-contract",
+  "responsibility": "Known foreign spiritual card exact typed owner/effect/source/definition/privacy/knowledge/domain and detached DATA controls; no new treatment authority.",
+  "excludes": "No new diagnosis/treatment/quote execution, full native Engine, DOM/external provider/fresh-process or broad US5 claim.",
+  "changeHints": [
+    "BookOfEternityClient.Tests/WoundForeignDetailProjectionTests.cs",
+    "BookOfEternityClient/Services/WoundPlayerProjection.Target.cs"
+  ],
+  "related": [
+    {
+      "id": "wound-foreign-detail-causal",
+      "when": "Select with shared foreign card field/knowledge changes."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.WoundForeignDetailProjectionTests.*"
+      ]
+    }
+  ]
+},
+{
+  "id": "wound-foreign-detail-interfaces",
+  "responsibility": "Actual minimal console and public browser known Guardian/resident cards, safe literal rendering, no-grant recommendations, no repair/gameplay mutation, exact owned UI token release and source counts.",
+  "excludes": "No new diagnosis/treatment/quote execution, full native Engine, DOM/external provider/fresh-process or broad US5 claim.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/WoundForeignDetailTests.Interfaces.cs"
+  ],
+  "related": [
+    {
+      "id": "wound-foreign-detail-causal",
+      "when": "Select with shared foreign card field/knowledge changes."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.WoundForeignDetailTests.KnownForeignCardHasReadOnlyConsoleBrowserParityAndLiteralText"
+      ]
+    }
+  ]
+},
+{
   "id": "wound-foreign-detail-causal",
   "responsibility": "T119-FOREIGN-DETAIL existing SelectTargetAsync must show the visible symptom of an exact reachable known Guardian wound without grant. Valid name/severity/description, terminal inert state and existing source-count controls precede semantic RED.",
   "excludes": "No new treatment/diagnosis authority, native game/bootstrap, full Engine, private facts, broad US5/DOM/provider/fresh-process acceptance or repeat of accepted36.",

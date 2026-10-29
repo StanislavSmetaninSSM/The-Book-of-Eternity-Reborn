@@ -15,8 +15,6 @@ internal static class ExplorerWoundCommandResultBuilder
             blocks.Add(new UiTextBlock { Text = "Цель: " + target.Name + " — " + target.Context });
             if (target.Owner.OwnerKind is not ("player" or "player_soul"))
             {
-                projection = new(true, "У этой цели сейчас нет известных активных ран.", target.Wounds.Select(w =>
-                    new WoundPlayerEntry(w.Name, w.Severity, w.Description, [], [], [])).ToArray(), []);
                 if (!state.Choices.Any(c => c.Available))
                     blocks.Add(new UiTextBlock { Text = "Лечение пока недоступно: нужны достаточное Исцеление и действующее согласие обитателя. Выбор цели не начинает лечение." });
             }
@@ -27,8 +25,8 @@ internal static class ExplorerWoundCommandResultBuilder
         {
             var lines = new List<string> { wound.Description };
             lines.AddRange(wound.Facts.Select(f => f.Label + ": " + f.Value));
-            lines.AddRange(wound.Diagnosis);
-            lines.AddRange(wound.Methods.Select(m => m.Name + ": " + string.Join("; ", m.Requirements) + ". " + m.Policy));
+            lines.AddRange(wound.Diagnosis.Select(name => "Диагностика (рекомендация): " + name + ". Выполнение этого осмотра через команду пока недоступно."));
+            lines.AddRange(wound.Methods.Select(m => "Известный способ (рекомендация): " + m.Name + ": " + string.Join("; ", m.Requirements) + ". " + m.Policy));
             blocks.Add(new UiPanelBlock { Title = wound.Name + " — " + wound.Severity,
                 Blocks = lines.Where(l => !string.IsNullOrWhiteSpace(l)).Select(l => (UiBlock)new UiTextBlock { Text = l }).ToList() });
         }

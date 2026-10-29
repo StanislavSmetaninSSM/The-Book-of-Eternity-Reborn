@@ -44,7 +44,7 @@ internal static class WoundForeignDetailTestData
         if (kind == "resident") profiles.Add(Profile("resident", ResidentId, "Житель подробностей", node));
         var identities = JsonNode.Parse(WoundIdentityState.SerializeCanonical(input.Identities))!.AsObject();
         identities["entries"]!.AsArray().Add(WoundContractTestData.CreateIdentityEntry(wound.WoundId, wound.Owner.Realm,
-            wound.Owner.OwnerKind, wound.Owner.OwnerId, wound.Owner.CarrierPath, "spiritual", semanticFingerprint: fingerprint));
+            wound.Owner.OwnerKind, wound.Owner.OwnerId, wound.Owner.CarrierPath, wound.Classification.Domain, semanticFingerprint: fingerprint));
         var history = JsonNode.Parse(WoundHistoryState.SerializeCanonical(input.History))!.AsObject();
         var row = WoundContractTestData.CreateTransition(ordinal: 2); row["woundId"] = wound.WoundId;
         row["transitionId"] = wound.LastTransition.TransitionId; row["operationKey"] = "create_wound_foreign_detail";
@@ -66,6 +66,29 @@ internal static class WoundForeignDetailTestData
         { ["residentId"] = ResidentId, ["guardianId"] = GuardianId, ["abodeId"] = AbodeId, ["isPresent"] = true,
             ["residentKind"] = "wayfaring_soul", ["roleLabel"] = "Смотритель", ["summary"] = "Известный обитатель." }) : new JsonArray() };
         return (input, guardians, residents);
+    }
+
+    internal static (WoundPlayerProjectionInput Input, JsonObject Identity) WithEffect(WoundPlayerProjectionInput input, string kind, string scenario = "visible")
+    {
+        var id = kind == "guardian" ? GuardianId : ResidentId;
+        var effect = EffectMaterializationTestFixture.CreateSpiritualWoundCanonicalEffect("spiritual_roll_hindrance", kind, woundId: "wound_foreign_detail");
+        effect["effectId"] = "foreign_effect_spiritual_roll"; effect["target"]!["targetId"] = scenario == "other_owner" ? "other_actor" : id;
+        effect["source"]!["definitionKey"] = scenario == "other_definition" ? "definition_private" : "definition_spiritual_roll";
+        if (scenario == "other_source") effect["source"]!["sourceId"] = "wound_other";
+        if (scenario == "hidden_effect") effect["display"]!["visibility"] = "hidden";
+        effect["display"]!["name"] = "Видимая помеха обитателю";
+        var profiles = input.Carriers.AfterlifeProfiles!.DeepClone().AsObject();
+        var owner = profiles["profiles"]!.AsArray().OfType<JsonObject>().Single(p => p["actorId"]!.GetValue<string>() == id);
+        if (scenario == "other_owner")
+        {
+            owner = owner.DeepClone().AsObject(); owner["actorId"] = "other_actor"; owner["activeWounds"] = new JsonArray();
+            profiles["profiles"]!.AsArray().Add(owner);
+        }
+        owner["activeEffects"] = new JsonArray(effect.DeepClone());
+        var identity = EffectMaterializationTestFixture.CreateIdentityIndex(effect);
+        var effects = EffectMechanicsSnapshot.Build(new(new EffectCarrierCatalogInput(null, null, null, null, profiles, null), identity));
+        Assert.True(effects.IsAccepted, string.Join(";", effects.Issues));
+        return (input with { Effects = effects, Carriers = input.Carriers with { AfterlifeProfiles = profiles } }, identity);
     }
 
     private static JsonObject Profile(string kind, string id, string name, JsonObject? wound) => new()

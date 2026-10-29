@@ -57,7 +57,10 @@ internal static class WoundApplicationService
             ?? throw new InvalidDataException(WoundPlayerProjection.UnavailableMessage);
         var fresh = await CreateStateAsync(fs, lease, state.Generation, context);
         var target = WoundTargetSelectionService.RequireCurrent(previous, fresh.Targets);
-        return ExplorerWoundCommandResultBuilder.Build(command, context.Projection, fresh.ForTarget(target), treatment: true);
+        var projection = target.Owner.OwnerKind is "player" or "player_soul" ? context.Projection
+            : WoundPlayerProjection.ProjectKnownTarget(context, target);
+        if (!projection.IsAvailable) throw new InvalidDataException(WoundPlayerProjection.UnavailableMessage);
+        return ExplorerWoundCommandResultBuilder.Build(command, projection, fresh.ForTarget(target), treatment: true);
     }
 
     // Detached menu DATA only; confirmation and staging revalidate the current source.

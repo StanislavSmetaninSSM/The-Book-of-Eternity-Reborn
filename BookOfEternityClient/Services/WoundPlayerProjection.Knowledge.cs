@@ -17,7 +17,8 @@ internal static partial class WoundPlayerProjection
             // The known name is safe; opaque route JSON is not a readable requirement.
             return wound.Treatment.Routes.Where(r => r.Visibility != "gm_only" && known.Contains(r.RouteId))
                 .Select(r => new WoundPlayerMethod(Text(r.DisplayName),
-                    ["Условия известного способа следует уточнить у специалиста."], RequirementNotice)).ToArray();
+                    ["Условия известного способа следует уточнить у специалиста."],
+                    RequirementNotice + " Этот пункт — рекомендация; отдельное действие для него пока недоступно.")).ToArray();
         }
         var parsed = MortalWoundTreatmentContract.ParseProjection(wound.Treatment, "projection.treatment",
             wound.Owner.Realm, wound.Owner.OwnerKind, wound.Severity.Rank, wound.Complications,

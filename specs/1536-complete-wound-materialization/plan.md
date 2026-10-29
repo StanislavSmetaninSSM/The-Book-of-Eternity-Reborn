@@ -53,6 +53,30 @@ render/no error (SafeExecute can catch errors). Current scaffold uses independen
 mixed carrier/identity/History helper and unique foreign consequence roots. Existing
 API causal singleton written; no new production C#, scaffold build/RED pending.
 
+Causal RED OUTCOME accepted (Sol6.1/xhigh): source228f6cfa92ed90332951e369508873e529ccb586,
+fresh Integration0errors102baselinewarnings1:59.38, validcatalog1069/12781,
+exactPlan1descriptor/case/method0exec and independent PREP. Actual1executed1FAIL/
+0PASS at final line46 missing unique visible symptom; valid card/II/description,
+noactions, inert whole tree/mutations and separate Open/Select source-count1 passed.
+Wall16.7633525s/category6.700s<60, no timeout/skip/duplicate, cleanuptrue, rootremoved/
+leaseinactive;18artifact76sourcepins unchanged. TRXsha256
+46b2ac1ce856d48db05ef35ebcf74d6150db309032256ca67466fbe0bd0e2487.
+Fullraw outsidecheckout foreign-detail-causal-{build,catalog,plan,preflight,red}-1.
+The brief transport disconnect did not restart or invalidate the original build;
+read-only recovery established same process, then its saved exit0.
+
+GREEN source WIP (uncompiled/unreviewed): ProjectKnownTarget uses the SAME fresh
+context, existing catalog.TryResolveOne and immutable identity.TryGetEntry semantic
+FPs (already verified against current catalog/History), avoiding graph rehash or a
+second catalog/effect build. Exact spiritual owner/profile/effect target and no
+foreign History; selected app consumes that projection; shared builder renders
+read-only route/diagnosis recommendations and existing lawful actions separately.
+Unit tests were written first; finite actual minimal console/browser read cases use
+separate roots and release only verified owned UI tokens. The mixed helper's identity
+domain now follows its parsed wound for the physical-refusal control; ordinary causal
+spiritual fixture values are unchanged. New production/tests remain UNCOMPILED/UNRUN;
+GM sync and coherent SOURCE pending. Existing accepted36 are not repeated.
+
 # T120-CHAOS-TARGETS — accepted current-Abode target navigation
 
 2026-10-29. Issue: https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536
