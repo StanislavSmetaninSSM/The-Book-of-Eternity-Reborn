@@ -1,3 +1,131 @@
+# US6 public Elyara treatment — design and implementation plan
+
+2026-10-29. Issue: https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536
+Baseline/remote: b43e1bca68d6efd9248c4d0182fa224c562634d0.
+Same Linux checkout/branch, sole writer Sol. Existing T131–T140/T143–T147 own this
+route; no new microtask/epic. Use executing-plans for inline implementation with
+independent Sol SOURCE/selection/outcomes and Astra/high complex DESIGN review.
+
+Goal: a player currently co-located with the alive canonical Elyara can see the
+exact public Ink Feather quote, confirm it, receive the real healing result and
+one safe world cycle/History, with exactly one charge for an accepted attempt
+(including valid partial/failure), zero charge after cancellation/rejection/rollback,
+and no repeated treatment/payment on replay. Shared console/browser paths are required.
+This first complete paid route does not claim all Shining/negotiated services or
+universal remote travel. Offers perform no travel; remote/inaccessible providers do
+not become an executable treatment. Existing travel remains separate, one ordinary
+cycle per accepted travel action. Universal destination binding remains open T143;
+relocation/death must already invalidate this treatment route rather than be reset.
+
+Spec: FR077–082/FR086–088, data-model.md §14, contracts/afterlife-spiritual-wounds-
+and-healing.md §§Elyara/service, existing retry payment identity. Prices are fixed:
+base I/II/III/IV=25/50/100/200, integer multiplier50..200%, quote=ceil(base*percent/100).
+Elyara uses100% and HealingV. No economic decision is missing; do not invent one.
+
+Architecture and alternatives
+
+- Chosen: new closed public-service family7 in the existing spiritual selection,
+  request, resolver/continuation, accepted result and History path. It differs from
+  private aid3–6 and never fabricates a prior free-aid participation grant. Existing
+  arithmetic, GM weakened-graph rules, source guards and natural cycle apply unchanged.
+- Payment uses canonical soul_state.inkFeathers via GuardianPolicyContracts policy
+  and the existing common owner-companion after-image, sealed and published through
+  existing C4 with wounds/effects/History/schedule. No UI subtraction, second write,
+  reservation store, parallel payment registry or unified-resource Feather entry.
+- A post-healing payment or repurposed private-aid receipt is rejected as an approach:
+  it cannot prove atomic acceptance or the actual service gate/replay identity.
+
+Concrete closed DATA and interfaces (not publication authority)
+
+- Create Services/AfterlifeHealingServiceContract.cs: typed provider/service profile,
+  quote input/quote and payment receipt. Strict profile keys follow §14; provider and
+  patient use WoundOwnerCoordinate, locationRef is the canonical locationId (initial
+  abode_system_elyara_001, not a second elyara_lazaret). Public currency route accepts
+  explicit public/available profile, null minimumRelationship and empty accessConditions;
+  nonempty/restricted conditions remain unavailable, never silently passed. Declared
+  compensation kinds use the canonical set, while this route executes ink_feathers only.
+- CalculatePrice(int severityRank,int multiplierPercent) rejects rank outside1..4 or
+  percent outside50..200 and returns the exact upward integer price. Quote seals exact
+  owners, wound fingerprint/rank, service/profile and life/location/access identity,
+  Healing tier, compensation kind and amount. A quote is immutable DATA; it owns no
+  permission or reserved funds. Wallet is checked freshly, not used as lasting authority.
+- Add SpiritualServiceTreatmentSelection to existing SpiritualSelfTreatmentSelection
+  as a mutually exclusive service branch (no aid/combat mix). Family7 request binds
+  session/request/turn, exact quote, source fingerprint, attemptId and retained draw;
+  repair/retry does not reroll. Use existing pending wound-command path, no new root.
+- Create Services/AfterlifeHealingServicePlanner.cs to compose a typed payment from
+  the original strict wallet into its complete common owner-companion Soul after-image
+  BEFORE the plan seal. Reject insufficient funds before subtraction/clamping. Preserve
+  total, including optional absence. Reject overlapping GM Feather changes explicitly;
+  do not silently prune them. Result7 binds attempt+quote+exact wallet before/after.
+  Assembly and physical C4 read-back must agree; a History amount alone proves nothing.
+- Historical accepted result7 is authenticated replay DATA, never new permission:
+  return its result without another debit or old-wallet restoration. New attempts
+  reacquire all current service/wound/access/funds authority. C4 compensation and outer
+  pre-turn rollback restore exact wallet+wound/effects/History/schedule together.
+- Provider lifeState=alive|dead lives on the canonical afterlife actor profile, required
+  for service eligibility; missing/invalid never means alive. Fresh seed may create
+  alive; accepted dead→alive must reject, not be revived by upsert/normalization.
+  Elyara ID guard_system_elyara_001, initial abode_system_elyara_001; fresh bootstrap
+  includes her without replacing the player's selected active Guardian. Preserve
+  accepted current realm/location/death. TierV/public100% invariants remain protected.
+
+Execution steps (one functional route, not independent helper completion)
+
+- [ ] Finalize independent DESIGN of closed contracts, physical payment proof and
+  life-state transition protection; resolve only real author-rule contradictions.
+- [ ] Add cheap independent quote/profile/payment RED fixtures (T131/T132/T133) and
+  exact owning categories/selection: all price boundaries and ceil examples, malformed
+  profiles/identities, insufficient funds, changed source/quote, no-mutation/replay,
+  optional total preservation and immutable exports. Observe semantic RED before code.
+- [ ] Implement pure contract and minimal existing currency-policy composition;
+  verify cheap GREEN and actual source read/computation counters before native Engine.
+- [ ] Wire family7 through existing admission→retained draw→continuation→common plan→
+  C4 physical read-back→strict persisted History/replay, with real validated failed
+  attempt charge and rollback controls. No blanket exemptions or source-guard removal.
+- [ ] Materialize protected Elyara service/life/profile fresh state and strict updates;
+  add shared opaque provider/price choices and explicit confirmation to /лечить.
+  Stale price/life/location/access/wound/capability/funds refuses before side effects.
+- [ ] Synchronize GM guide/registry/matrix/rules/main task, Elyara manifest/dossier,
+  worked paid success/failure/rejection/rollback examples and exact source guards.
+- [ ] Complete coherent SOURCE/selection review, fresh affected builds, exact discovery/
+  catalog/PlanOnly and addressable console/browser Engine scenarios. Preserve full
+  raw/cleanup, distinguish control fixtures from live provider/fresh-process. Publish
+  accepted checkpoint/remote SHA; keep remaining US6/travel/noncurrency/faction work open.
+
+Review focus and causal acceptance
+
+1. Price/service/provider or patient changes after display: no hidden replacement,
+   fresh matching confirmation and prepublication checks; no draw/payment on refusal.
+2. Duplicate/repair/cold replay: same attempt/draw and authenticated payment result,
+   exactly one charge/heal/cycle; never reuse historical presence as current permission.
+3. Valid failed healing versus invalid publication: charge once for accepted failure;
+   validation/C4 cut/outer rollback restores exact wallet and all common participants.
+4. Bootstrap and later profile update: preserve selected Guardian, fixed tierV, accepted
+   relocation/death; stale alive update cannot resurrect Elyara for service availability.
+5. UI/privacy: actual console/browser return the same exact quoted amount/conditions,
+   explicit confirmation and safe result; reading/cancellation does no payment or cycle.
+
+Optimization and resources
+
+Reuse WoundPlayerReadService context, parsed profiles/Soul and existing guarded source
+readers once per operation; extend the existing service context rather than add static
+cache/dictionary. Complete quote key is above; context lifetime is one coherent leased
+operation. Every new user action loads fresh authority; mutable wallet and publication
+checks are always fresh. Simple pricing is not cached. Tests measure actual reads and
+refusal/invalidation, no fabricated speedup. Existing unrelated PASS are not repeated.
+
+Raw destination: /workspace/tboe-linux-evidence-20261025/us6-healing-services (outside
+checkout; no raw/TRX/JSON/archive uploads). At start402.96MiB is insufficient headroom
+for multiple fresh managed outputs plus full capture, despite exceeding the400MiB floor.
+Prepare a concrete disk budget and reclaim only verified reproducible intermediates;
+retain raw/saves/recovery/acting binaries. Do not start a build/run without its floor
+and full output space. No new clone/restore, merge/force, GC/history/branch deletion.
+T126/old accepted cases and HOLD DFR/Mortal/Windows/performance remain untouched.
+Design/preparation only so far; no US6 build/test or production implementation claimed.
+
+---
+
 # T126 — accepted browser wound cards and guided treatment presentation
 
 2026-10-29. Issue: https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536
