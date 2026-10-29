@@ -2,6 +2,30 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "wound-target-choice-causal",
+  "responsibility": "T120-CHAOS-TARGETS existing OpenAsync must show Self and a visible reachable current Guardian before wound choice even without an aid grant. Minimal real read fixture proves valid Self art and whole-tree inertness before missing navigation assertion.",
+  "excludes": "No new treatment authority, accepted grant/Engine journey, crossrealm nearby scope, paid services, DOM/provider/freshprocess or replay of accepted105.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/WoundTargetSelectionTests.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.WoundTargetSelectionTests.OpenTreatmentOffersSelfAndCurrentVisibleActorBeforeWoundSelectionWithoutGrant"
+      ]
+    }
+  ]
+},
+{
   "id": "spiritual-resident-provider-gm",
   "responsibility": "Worked proposal4, healer memory, selection6, exact manifest, both effective daemon directives and GM entrypoints.",
   "excludes": "No actual provider/DOM/Engine qualification.",

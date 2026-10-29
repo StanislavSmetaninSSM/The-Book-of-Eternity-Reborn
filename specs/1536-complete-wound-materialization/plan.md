@@ -30,8 +30,10 @@ Review focus: display versus permission; same-name public ambiguity; stale old i
 retarget after reordered list; concurrent old browser phase/cancel/session change;
 private/hidden wound or actor facts leaking through context/empty counts.
 
-- [ ] Independent bounded DESIGN review of section18 typed scopes/privacy and
-  browser snapshot transition/lifetime; resolve real author question only if needed.
+- [x] Independent Astra/high DESIGN ACCEPT at358b17333 after sole P2 browser
+  lifecycle closure; no remaining design blocker or author decision. Sol causal
+  fixture feasibility accepted. Existing-API singleton now written; production
+  unchanged, scaffold SOURCE/selection/build/catalog/Plan/PREP/runtime UNRUN.
 - [ ] Existing-API semantic causal RED using minimal WoundPlayerReadFixture/OpenAsync;
   no full game/native package for this display/navigation absence. Catalogue owner,
   fresh owning build/discovery/exactPlan/resource/PREP, one compiling singleton.

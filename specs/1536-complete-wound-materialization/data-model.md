@@ -3861,7 +3861,7 @@ The choice carries hidden exact binding but displays Self first and then reachab
 visible entities. Duplicate names receive location/role/appearance context. Confirming
 the choice revalidates target, wound, consent, provider, resources, and reachability.
 
-### Current Chaos target navigation — T120-CHAOS-TARGETS DESIGN WIP
+### Current Chaos target navigation — T120-CHAOS-TARGETS DESIGN accepted
 
 #1536/US5, FR-070/072–076 and existing section18 target choice. This is a display/navigation
 extension using accepted self/aid3/4/5/6 actions, not a new treatment permission.
@@ -3985,7 +3985,8 @@ Performance/integrity and finite proof:
   compilation-only RED. Snapshot after initial generation setup, no world/bootstrap.
 - Independent Astra DESIGN found one P2: old ID-only session cancellation/expiry/
   completion could erase a replacement. The exact-reference/lease/phase protocol
-  above resolves the design risk; delta acceptance is pending, no code yet.
+  above resolves the design risk; independent Astra/high delta DESIGN accepted
+  at358b17333. No production implementation yet.
 - Pure cheap tests cover Self-first/detached copies, same-name distinct and identical
   public contexts, typed same-ID kinds, null/duplicate/confusable/hidden/moved/wrong-
   realm/carrier/locality, hidden-only/empty wounds, IDs/private recursive facts,
