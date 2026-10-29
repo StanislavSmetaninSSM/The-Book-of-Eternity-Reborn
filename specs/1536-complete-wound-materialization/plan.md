@@ -1,132 +1,96 @@
-# T108-RESIDENT-HELP — backend accepted, actual guided callers pending
+# T108-RESIDENT-HELP accepted — resident offers free treatment to the player
 
-2026-10-29. Resident HEALER→PLAYER private free treatment is implemented in the
-existing services. All C# compiled at e7564ac927e9ec347ddebb0aa362dda2a773e2de;
-subsequent delta is only reviewed catalog metadata and human plan/tasks findings.
-Astra coherent SOURCE and Sol fixture/selection/correction reviews ACCEPT.
+2026-10-29, #1536. Visible conscious/capable resident of the CURRENT Chaos Guardian
+Abode may offer private free treatment for the exact known PLAYER spiritual wound.
+The ordinary offer turn is genuinely accepted and cleaned up; console/sharedbrowser
+/лечить offers that helper, supports inert cancellation, and stages treatment only
+after the actual player's confirmation. Resident H determines the active result;
+PLAYER H determines the subsequent natural recovery. One retained draw/session,
+one safe cycle, no fee/item/OD, exact wound/effects/History and retry/rollback.
 
-- Cheap98/98 at470d149c9: exact27methods/4descriptors, wall26.426s, eachcategory<60;
-  independent OUTCOME ACCEPT. Causal unknown-proposal4 RED at35c5 became GREEN.
-- Backend4/4 atc1ac1c8d4: exact4methods/4descriptors, wall122.3013198s,
-  independent OUTCOME ACCEPT. Test/category seconds: newprovider32.2257150/40.7488945,
-  priorresident5 26.9781567/33.57892, actualrevoke21.3830965/25.9381052,
-  self2header10.4108398/14.7975643, all<180. Real offer/witness and single confirmed
-  d20=14 produce PLAYER III1→active residentH3 II1→patientH0 naturalII2; exact
-  original/source/die/memory append, normalization, History/current/historical/
-  departure/drift guards execute. Real withdrawal44 refuses45 in its otherwise
-  eligible nextcycle, no draw or mutation; prior5 and rehashed6-self refusal hold.
-- Root/independent review verified full TRX hashes, exact counts/unique executions,
-  no skip/timeout/abort/duplicate and bothcleanuptrue; all18artifact/54sourcepins
-  unchanged after each runtime. Free556122112B afterbackend, no externaldata deleted.
-- Actual console/browser cancel+confirm→Engine and common/outerrollback3 remain
-  UNRUN/unadmitted, to follow exactPlan/resource/PREP. No wholeUS4/#1536 completion.
+Implementation reuses existing typed Resident coordinates + ReceiveAid, current
+services/source DATA, protected-memory transport and common publisher. Closed
+proposal/record4 and selection/request/result6 preserve self2/Guardian3/4/resident-
+patient5 forms. Fresh live/locality/source/authority/history/closing checks remain;
+settlement/History retain existing structural checks without renewed presence.
+Memory belongs to the resident HEALER. Same-ID Guardian/resident kinds remain
+separate, no generic actor-ID join grants authority. No cache, callback, duplicate
+read framework or speedup claim: extracted join consumes already parsed operation
+DATA inside the existing owner/lease/generation/path/witness/source lifetime.
+
+Source and review:
+- Design accepted by independent Astra/high after settlement/live-join clarification.
+- Astra coherent SOURCE ACCEPT atb422c804c; Sol fixture/selection ACCEPT and naming/
+  catalog corrections accepted. Initial Main build found two CS0136 local-name
+  collisions, fixed by a naming-only change; the new receiving fixture's helper
+  call was corrected to existing SeedAidJourneyLoreAsync BEFORE Integration build.
+  Catalog metadata needed nonempty hints and typed id/when links; official schema
+  list passed before successful discovery. These were preparation defects, not
+  gameplay test failures or a reason to weaken guards/budgets.
+- All affected C# compiled at e7564ac927e9ec347ddebb0aa362dda2a773e2de. Main12warnings/
+  1:44.59, Support23/0:15.23, Unit26/0:55.86, Integration102/1:49.85, all0errors.
+  Later changes are approved catalog metadata and human plan/tasks findings only;
+  compiled C# and all18artifact copies remained unchanged. Source closure covers
+  54 relevant files. All66 World pins match and no changed producer intersects
+  them, so no T112 refresh/World rerun was needed.
+- Data-model, Wound guide/Matrix, CLI/API/Rules/CLI task guide, BOTH effective daemon
+  directives, worked spiritual_resident_help_v6 example/manifest and typed GM guard
+  synchronized. Mortal rules/economics unchanged; no GM-authored player confirmation.
+
+Exact accepted Linux verification, THREE separately admitted runtimes with unchanged
+compiled C#, not one fresh105 run; all have independent Sol PREP and OUTCOME ACCEPT:
+- Cheap98/98, 27methods/4descriptors at470d149c9daac6e02520f88b23db7401febfbe76,
+  wall26.4260451s. Categories affected40/5.0698332s, causal1/4.2617723s,
+  contract56/4.6267007s, GM1/5.8028497s, each<60. Original35c5 causal unknown-
+  proposal4 RED became GREEN. Includes typed role/locality/alias joins, forge/null/
+  mirror controls, confirmation/eligible cycle/headers, separate H and healer memory.
+- Backend4/4 atc1ac1c8d4d3244f0c5512d4cdd176926e248d27d, wall122.3013198s.
+  Test/category seconds: newprovider32.2257150/40.7488945, priorresident5
+  26.9781567/33.57892, actualrevoke21.3830965/25.9381052, self2header
+  10.4108398/14.7975643, each<180. Actual offer/witness and confirmed d20=14 produce
+  PLAYER III1→residentH3 activeII1→PLAYERH0 naturalII2. Real withdrawal44 refuses45
+  in its otherwise eligible next cycle without draw/mutation. Original5 and
+  rehashed6-self refusals, signed/current/History/normalizer/departure/interface
+  drift checks execute, including exact frozen roster and oldprefix+newentry.
+- UI3/3 at4c70f7b898844aa583c4370dbf66bd24613dacb2, wall185.9449471s over THREE
+  categories (not a timeout). Browser85.5882793/90.1489617s d20=1→activeIII2;
+  console39.5128763/44.7792295s d20=15→activeII2; common rollback
+  38.4845157/43.3519279s, each<180. Actual offer43→normalcleanup→cancel/confirm→
+  aid44 retains original/queue/one draw and both actors' journals. Common C4 restores
+  exact submitted44 request/die/report/raw memory command; outer rollback restores
+  accepted43/both old journal prefixes and removes unaccepted44.
+
+Root and independent review verified all11TRX hashes, exact105unique test and
+execution IDs, 34methods/11descriptors against fullPlan105, no timeout/skip/abort/
+duplicate, complete selection and bothcleanuptrue. All18artifact/54sourcepins
+unchanged after each run. Catalog valid1061categories/12760methods/no stale/unmapped;
+exact plans executed0. Code and compact findings are on the same working branch;
+final publication SHA/clean-tree/no-raw preservation is checked after this note.
+No clone/restore or externalraw/save/recovery deletion occurred.
 
 Full raw outsidecheckout:
 `/workspace/tboe-linux-evidence-20261025/us4-self-healing/`, prefix
-`resident-provider-`: green-build-2 (four0error builds), green-catalog-3 (valid1061/
-12760), cheap-{plan,preflight,actual}-1, backend-{plan,preflight,actual}-1.
-Both actual dirs retain verified-outcome.json/allTRXsha256 and post-source-integrity.
-Source/auth/history/closing remain fresh; reuse existing parsed operation/source
-DATA and services, pure join adds no reads/cache; no speedup claimed. Preserve
-accepted older resident69/combat39 lineage boundaries, DFR/Mortal/Windows HOLD,
-provider/DOM/freshprocess limits and firstguardian/crossOSDATA open findings.
+`resident-provider-`: green-build-2; green-catalog-3; cheap/backend/ui
+`{plan,preflight,actual}-1`. Every actual directory retains verified-outcome.json
+with TRXsha256 and post-source-integrity.json; union and all explicit source
+lineages are indexed in `resident-provider-qualified-distinct-105/evidence.json`.
+Free550035456B after complete UI capture; latest full measurements are retained.
 
-# Original chosen slice — resident offers treatment to player
-
-2026-10-29. Same environment/branch verified a4a03f540d547d5a917e11155ba686f532e012c1
-HEAD==remote, clean/no active ownedprocesses, free602337280bytes. Existing current
-self, Guardian↔player and player→resident finite scopes are accepted; US4 still
-lacks other private entity healers/Shining and broader conflict/helpless/producer
-coverage. US5 full nearby/privacy parity and US6 Elyara/public quote/payment/access
-remain open. Choose the missing P1 resident→player direction under existing T108 /
-FR-042–054 before new P2 service economy. No new author rule is needed: free private
-offer, actual target confirmation, sufficient helper H, one safe cycle and shared
-result/History already apply. Paid-service rules/prices are unchanged and deferred.
-
-Implementation choice reuses existing Resident typed coordinates+ReceiveAid rather
-than duplicate participant state. New closed record4/family6 distinguishes resident
-provider from Guardian4 and resident patient5. Extract only pure participant join;
-keep exact wound-owner check on old v5, separate live/current guards from historical
-recorded witness, bind protected memory to resident healer. Existing services,
-source-read DATA/cache lifetimes and C4/outer rollback stay; no new diagnosticstack.
-See spiritual-aid-design.md final section for precise closed shapes, interfaces,
-files/work units, causal tests, all authority transitions, two-actor fixture
-preparation and bounded verification. See the current qualification above.
-
-- [x] Independent Astra/high DESIGN accepted after sole P2 settlement wording
-  correction; live admission and settled/historical replay keep their separate
-  existing checks. Eligible-cycle revoke, kinded same-ID healer and wrong patient
-  memory owner cases are explicit; no new author decision needed.
-- [x] Existing-API causal RED1 at35c5bc8bad56b842493307bab3d61eb721b64720:
-  exact1FAIL/0PASS (expected Unknown participation proposal schema atValidateProposal97),
-  actual API reached viaReadChanges/newFact, not compile/setup failure. Wall11.8264281s,
-  category4.8786319s<60, no timeout/skip/duplicate, complete1descriptor/method and both
-  cleanuptrue. FreshUnit0errors26exactbaselinewarnings1:26.27; catalog1051/12743 valid,
-  exactPlan1 executed0/PREPaccepted. All18artifact/49sourcehashes unchanged afterrun.
-  Fullraw resident-provider-causal-{build,catalog,plan,red,preflight}-1 external;
-  verified-semantic-red.json preserves exactTRX hash. Independent Sol causal OUTCOME ACCEPT.
-  GREEN and live provider capability remain UNRUN; no newgame/runtime PASS inferred.
-- [x] Guided/native author fixtures and complete GM synchronization; coherent
-  SOURCE/selection, fresh affected builds, catalog/exactPlan/PREP, cheapGREEN98.
-- [ ] Genuine offer/aid/revoke backend then both actualUI and common rollback;
-  verify fullraw/cleanup/integrity, independent OUTCOME, remotecheckpoint.
-No unrelated acceptedPASS repeats; source/consumer changes determine regressions.
-All raw external, preserve prior complete accepted69 provenance and old incomplete
-attempts, no raw/save/recovery deletion, newclone/restore, merge/force/history rewrite.
-
-Coherent Astra/high SOURCE ACCEPT at b422c804c (no blocking findings), ordinary
-fixture/selection review found one invalid helper name: corrected receiving-
-resident journey to the EXISTING SeedAidJourneyLoreAsync before Integration build.
-First fresh Main build at b422c804c exit1, two CS0136 local-name collisions in the
-new selection6 branch; corrected only names to residentConfirmation/residentConfirmed,
-identical predicates. No test ran, no semantic GREEN inferred. Complete failed build
-raw is resident-provider-green-build-1/main, 1:39.92, outsidecheckout. Both tiny
-corrections await delta review and fresh builds; all functional gates remain UNRUN.
-
-Fresh managed builds at e7564ac927e9ec347ddebb0aa362dda2a773e2de all exit0:
-Main12 warnings/1:44.59, Support23/0:15.23, Unit26/0:55.86,
-Integration102/1:49.85, all0errors. Root checked54source/18artifact hashes and all
-Main/Support copies agree. No runtime test yet. First catalog validation stopped
-before discovery/tests because nine new category changeHints arrays were empty;
-filled only actual source/test paths, selectors/budgets unchanged. This is catalog
-metadata repair, not test PASS. Preserve fresh compiled e756 lineage; no C# changed
-for this correction, so fresh builds need not repeat. Catalog/Plan/PREP pending.
-
-Second catalog attempt also stopped before discovery/tests: related links require
-id/when OBJECTS, not category-id strings. Read the complete existing catalog
-reader before further attempt; converted all ten provider related links to objects
-with explicit reasons, no selectors/budgets/C# changes. This metadata mistake is
-not gameplay failure. Delta review and cheap official catalog-list schema check
-completed before the next discovery: independent Sol metadata SOURCE ACCEPT,
-official -ListCategories exit0/1061validcategories, no discovery/tests. Retain e756
-compiled binaries; only catalog metadata/plan differ.
-
-CHEAP GREEN at 470d149c9daac6e02520f88b23db7401febfbe76: exact98/98 PASS,
-27methods/4descriptors complete, wall26.4260451s. Category seconds: affected5.0698332,
-causal4.2617723,contract4.6267007,GM5.8028497, all<60. No skip/timeout/duplicate,
-bothcleanuptrue; root strict TRX/plan verification and all54source/18artifact pins
-unchanged. Catalog3 valid1061categories/12760methods/no stale/unmapped; exact cheap
-Plan4/98 executed0 and independent PREPaccepted. Fullraw outsidecheckout under
-resident-provider-cheap-actual-1 (verified-outcome.json with all4TRXsha256), external
-preflight/build2/catalog3/plan receipts retained. Independent cheap OUTCOME pending;
-actual backend/eligible-cycle revoke, affected prior5/self2 headers and both UI/
-common rollback still UNRUN/unadmitted. This does not close US4 or gameplay scope.
-No newcache/reads; parsed source DATA and all fresh fences retained, no speedup claim.
-
-Core GREEN WIP after causal RED: record4/selection6/request/result6 and pure typed
-resident-healer scope are connected through natural participation, protected
-memory, History dispatch, GM projection and distinct receive-aid action/menu.
-New detached contracts cover proposal mirrors/forgery, exact selection/confirmation,
-kinded healer/current locality versus player wound, healer memory, codec/header/
-eligibility and H3 versus patient-naturalH0. All new GREEN C# is UNCOMPILED/UNRUN. Actual backend/revoke and console/browser/
-common-fault fixtures now reuse the complete accepted preparation and typed roles;
-data-model, GM guide/Matrix, CLI/API/Rules, both effective daemon directives,
-worked example/manifest and typed guard are synchronized in source. Coherent
-SOURCE/selection, builds and runtime qualification remain pending. This
-checkpoint is preservation, not SOURCE acceptance or functional qualification.
-Optimization: reuse existing operation parsed DATA/source/service windows; the
-factored join adds no reads/cache. Fresh locality/source/History/closing checks
-remain, no measured speedup claimed. No raw/save/recovery deletion or new restore.
+Boundaries: this closes ONLY T108-RESIDENT-HELP current-Chaos private resident→player
+function. Prior accepted resident69 and combat39 keep their own stated lineages;
+no new whole US4/#1536 completion. Other helper actors, helpless/unwilling/conflict
+and Shining helper routes remain under T108; broader progression/composition and
+US4 acceptance remain T104–T107/T109–T112. US5 still needs complete nearby target/
+privacy/guided parity T114–T130 (existing readonly/self/helper slices retained).
+US6 provider/quote/Elyara/Shining services T131–T147 remain open. Their specified
+25/50/100/200 base prices, 50–200% multiplier/upward whole-Feather rounding and
+existing Ink Feather authority must be reused; no new economic rule is inferred.
+DFR timeout300.1806894s, Mortal compatibility timeout and Windows remain HOLD;
+firstguardian intermittent/crossOSDATA findings stay open. External provider,
+rendered DOM and fresh-process recovery are NOT qualified by these native-controlled
+shared-interface tests. No deferred gate was rerun or waived for this independent
+functional slice. Continue functional work from canonical spec/tasks; do not replace
+it with the deferred diagnostic/performance chain.
 
 # T108-RESIDENT accepted — current Chaos Abode treatment complete
 
