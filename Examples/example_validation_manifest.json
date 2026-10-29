@@ -16,6 +16,7 @@
   "requiredText": [
     "spiritual_resident_help_v6",
     "wound_foreign_detail_v1",
+        "wound_history_view_v1",
     "wound_target_navigation_v1",
     "resident_provider_offer",
     "resident_to_player",

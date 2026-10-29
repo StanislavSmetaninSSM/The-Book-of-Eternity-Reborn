@@ -42,6 +42,9 @@ public sealed class ExplorerWebCommandService
         var effectiveRequest = request ?? new ExplorerWebCommandRequest(command);
 
         var descriptor = parsed.Descriptor!;
+        if (descriptor.Id == "wounds" && parsed.Arguments.Length != 0)
+            return MessageResult(command, CommandExecutionState.Failed, UiNotificationSeverity.Error,
+                "Некорректные аргументы", WoundApplicationService.ReadSyntaxMessage);
         if (string.Equals(descriptor.Id, "gacha", StringComparison.OrdinalIgnoreCase) &&
             !string.IsNullOrWhiteSpace(parsed.Arguments))
         {

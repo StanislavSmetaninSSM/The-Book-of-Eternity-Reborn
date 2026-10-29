@@ -1075,3 +1075,20 @@ wound_foreign_detail_v1: после выбора известной духовн
 ГМ не отвечает на открытие карточки и не правит файлы ради просмотра. Новых response,
 цены, диагностики, попытки или лечебного правила не добавлено. См. worked fragment
 wound_foreign_detail_v1 в Examples/E_CLI_Afterlife_Turns.txt.
+
+
+### Explicit healed wound History — wound_history_view_v1
+
+`/раны` / `/wounds` shows only active own wounds in the current realm. Open
+«История заживших ран» separately (`/раны история` / `/wounds history`); its
+«Активные раны» action returns to the default view. An empty History has an explicit
+empty message and exposes no hidden count/name. `/лечить` does not append History.
+The same known terminal snapshot projection protects Mortal and afterlife records;
+foreign or hidden records and raw transition/identity data are never UI content.
+Each action reloads current coherent DATA; an old button is not retained knowledge
+or treatment permission. Unknown/trailing read arguments are local errors, never
+freeform GM actions. Read/back/close causes no die, attempt, cost, world cycle,
+repair or gameplay mutation. Existing UI ownership checks remain. This is client
+navigation, not a new GM response field or a new authored terminal-state format:
+GM authors ordinary supported outcomes, and the client owns immutable healed History.
+See the worked `wound_history_view_v1` navigation example in E_CLI_Afterlife_Turns.txt.

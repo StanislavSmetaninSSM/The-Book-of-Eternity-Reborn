@@ -2,6 +2,109 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "wound-history-contract",
+  "responsibility": "Explicit active/History read modes, treatment exclusion, empty versus unavailable, hidden/current-realm privacy and exact registered read command aliases/argument rejection.",
+  "excludes": "No treatment/diagnosis/service authority, full Engine, whole US5/DOM/provider/fresh-process or replay of accepted foreign detail/navigation.",
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "related": [],
+  "changeHints": [
+    "BookOfEternityClient.Tests/WoundHistoryViewTests.cs",
+    "BookOfEternityClient/UI/ExplorerWoundCommandResultBuilder.cs"
+  ],
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.WoundHistoryViewTests.ReadViewsSeparateKnownHistoryAndOfferOnlyReadNavigation",
+        "BookOfEternityClient.Tests.WoundHistoryViewTests.TreatmentAlwaysExcludesHistoryAndReadActions",
+        "BookOfEternityClient.Tests.WoundHistoryViewTests.EmptyHiddenAndOtherRealmHistoryStayEmpty",
+        "BookOfEternityClient.Tests.WoundHistoryViewTests.UnavailableReadDoesNotBecomeAnEmptyOrNavigableHistory",
+        "BookOfEternityClient.Tests.WoundHistoryViewTests.ReadAliasesStayReadOnlyAndCanonical",
+        "BookOfEternityClient.Tests.WoundHistoryViewTests.UnsupportedReadArgumentsAndTreatmentAreRejected"
+      ]
+    }
+  ]
+},
+{
+  "id": "wound-history-command-routing",
+  "responsibility": "Affected existing command parser base/alias/subcommand/error controls after registered wound History subcommands; no broad console suite.",
+  "excludes": "No treatment/diagnosis/service authority, full Engine, whole US5/DOM/provider/fresh-process or replay of accepted foreign detail/navigation.",
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "related": [],
+  "changeHints": [
+    "BookOfEternityClient/CommandProtocol/ExplorerCommandCatalog.cs"
+  ],
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.ExplorerCommandParserTests.*"
+      ]
+    }
+  ]
+},
+{
+  "id": "wound-history-read-interfaces",
+  "responsibility": "Minimal real console/public browser History/back/close/alias/invalid syntax, fresh source after hidden-state replacement, literal text and no repair/gameplay mutation.",
+  "excludes": "No treatment/diagnosis/service authority, full Engine, whole US5/DOM/provider/fresh-process or replay of accepted foreign detail/navigation.",
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "related": [],
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/WoundHistoryCommandTests.cs"
+  ],
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.WoundHistoryCommandTests.*"
+      ]
+    }
+  ]
+},
+{
+  "id": "wound-history-gm",
+  "responsibility": "Worked History navigation matches existing safe terminal projection/registered read commands and synchronized GM docs, both directives and manifest; no new authored schema.",
+  "excludes": "No treatment/diagnosis/service authority, full Engine, whole US5/DOM/provider/fresh-process or replay of accepted foreign detail/navigation.",
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "related": [],
+  "changeHints": [
+    "BookOfEternityClient.Tests/WoundHistoryDocumentationTests.cs",
+    "Examples/E_CLI_Afterlife_Turns.txt"
+  ],
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.WoundHistoryDocumentationTests.*"
+      ]
+    }
+  ]
+},
+{
   "id": "wound-history-causal",
   "responsibility": "FR067/068 existing shared builder must keep known healed terminal History out of the default active /раны view, after valid canonical terminal projection and inert result controls.",
   "excludes": "No new diagnosis/treatment/service authority, whole US5, full Engine, DOM/provider/fresh-process or repeat of accepted foreign detail/navigation.",

@@ -13846,3 +13846,25 @@ absent from both public views. No other actor's wounds, Self History, IDs, selec
 or private complication/effect payloads appear. Read/cancel: ZERO attempt/draw/cycle/
 charge/repair. Existing lawful treatment, if actually available, still requires the
 separate exact consent/source/target checks and confirmation; no new service price.
+
+
+wound_history_view_v1 — worked accepted-heal then read navigation
+The GM authors an ordinary supported healing result; the client records the exact
+immutable terminal snapshot. The following is a navigation fixture, NOT a GM
+response or permission to manufacture wound History. The same read rule applies
+in the Mortal World and afterlife to currently known own records only.
+```json
+{
+  "activeCommand": "/раны",
+  "historyCommands": ["/раны история", "/wounds history"],
+  "backCommand": "/раны",
+  "knownHealedName": "Известная зажившая рана"
+}
+```
+Default /раны: active list or explicit active-empty state; knownHealedName is absent.
+History action: knownHealedName and its readable healed summary, never raw IDs or
+terminal payload. Back: active list again, without the healed name. Empty/hidden/
+other-realm History reveals no hidden count or name. /лечить does not list History.
+Read/history/back/close: ZERO roll/attempt/payment/world cycle/repair/gameplay write.
+Each action reads fresh current state. A stale action cannot resurrect previously
+visible data after knowledge/state changes. No GM turn or extra response is requested.

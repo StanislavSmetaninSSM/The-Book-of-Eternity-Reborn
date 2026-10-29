@@ -9,6 +9,7 @@ namespace BookOfEternityClient.Services;
 /// <summary>Shared guided treatment workflow. Selection is DATA; actual staging owns the draw and authority.</summary>
 internal static class WoundApplicationService
 {
+    internal const string ReadSyntaxMessage = "Выберите /раны или действие «История заживших ран» без дополнительных аргументов.";
     internal const string ActionText = "Самостоятельно лечить выбранную духовную рану вне конфликта. Продолжить обычный безопасный цикл мира.";
     internal const string AidActionText = "Помочь текущему согласившемуся Хранителю вылечить выбранную духовную рану вне конфликта. Продолжить обычный безопасный цикл мира.";
     internal const string ResidentAidActionText = "Помочь согласившемуся жителю текущей Обители Хранителя вылечить выбранную духовную рану вне конфликта. Продолжить обычный безопасный цикл мира.";
@@ -39,7 +40,7 @@ internal static class WoundApplicationService
         var parsed = ExplorerCommandParser.Parse(command);
         if (!parsed.Success || parsed.Descriptor?.Id != "wounds" || parsed.Arguments.Length != 0 ||
             parsed.Subcommand is not null && parsed.Subcommand.Id != "history")
-            throw new InvalidDataException("Выберите /раны или действие «История заживших ран» без дополнительных аргументов.");
+            throw new InvalidDataException(ReadSyntaxMessage);
         return parsed;
     }
 

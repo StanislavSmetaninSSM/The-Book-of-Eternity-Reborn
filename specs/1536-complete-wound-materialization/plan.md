@@ -96,6 +96,27 @@ existing terminal helper accepts optional display name BEFORE strict reconstruct
 with default unchanged, for literal-text fixture evidence. Actual UI/GM tests/sync and
 coherent SOURCE/selection remain pending. No new pass inferred; accepted55 unchanged.
 
+GREEN source WIP2, UNCOMPILED/UNRUN: finite real console/browser fixture now uses the
+existing strictly reconstructed terminal helper and read filesystem fixture. It
+initializes generation before snapshots, records all attempted mutations only in
+user-operation windows, rechecks History source counts per fresh action, and uses
+full canonical History+identity replacement for the hidden-state stale-action control.
+Console action loop is Close-first; explicit History/back/close and literal text
+are tested, with exact owned token release. Unknown/trailing arguments cannot become
+GM input; browser rejects trailing arguments before session/source work using its
+existing structured error pattern. Read-only browser calls need not mutate UI locks;
+all observed mutations, if any, must still be owned UI-lock traffic.
+
+GM guide/CLI/Matrix/Rules/task guide, both effective daemon directives, worked
+accepted-heal→read navigation fixture, manifest and typed consumer guard now share
+wound_history_view_v1. No new GM DTO/terminal-authoring authority or healing/economy
+rule. The shared CLI guidance covers both Mortal and afterlife reads; Rules/Block_21
+healing arithmetic and afterlife registry paths need no change. Frontend source and
+protocol blocks are unchanged, so no npm aggregate/DOM claim; dedicated cards remain
+T126 work. Selection owns causal1, pure20, actualinterfaces8, GM1 and the small affected
+existing parser group (actual count from discovery pending). Original budgets60s;
+no unrelated console aggregate or unchanged55/36/HOLD rerun. Coherent SOURCE next.
+
 # T119-FOREIGN-DETAIL — accepted known foreign spiritual wound card
 
 2026-10-29. Issue: https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536

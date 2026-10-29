@@ -3,9 +3,37 @@
   "selections": [
     {
       "category": "wound-history-causal",
-      "reason": "Cheap semantic RED for existing shared active read: a canonical known healed snapshot must not appear before explicit History selection; validate available projection and inert result first.",
+      "reason": "Causal GREEN of the accepted missing History separation RED; default active read must omit the valid known healed name.",
       "contracts": [
-        "#1536 T119-HISTORY-VIEW / FR067/068/075/076 active default versus explicit healed History"
+        "#1536 T119-HISTORY-VIEW / FR067/068"
+      ]
+    },
+    {
+      "category": "wound-history-contract",
+      "reason": "Explicit active/History read modes, treatment exclusion, empty versus unavailable, hidden/current-realm privacy and exact registered read command aliases/argument rejection.",
+      "contracts": [
+        "#1536 T119-HISTORY-VIEW / FR067/068/075/076 shared explicit known healed History"
+      ]
+    },
+    {
+      "category": "wound-history-command-routing",
+      "reason": "Affected existing command parser base/alias/subcommand/error controls after registered wound History subcommands; no broad console suite.",
+      "contracts": [
+        "#1536 T119-HISTORY-VIEW / FR067/068/075/076 shared explicit known healed History"
+      ]
+    },
+    {
+      "category": "wound-history-read-interfaces",
+      "reason": "Minimal real console/public browser History/back/close/alias/invalid syntax, fresh source after hidden-state replacement, literal text and no repair/gameplay mutation.",
+      "contracts": [
+        "#1536 T119-HISTORY-VIEW / FR067/068/075/076 shared explicit known healed History"
+      ]
+    },
+    {
+      "category": "wound-history-gm",
+      "reason": "Worked History navigation matches existing safe terminal projection/registered read commands and synchronized GM docs, both directives and manifest; no new authored schema.",
+      "contracts": [
+        "#1536 T119-HISTORY-VIEW / FR067/068/075/076 shared explicit known healed History"
       ]
     }
   ]
