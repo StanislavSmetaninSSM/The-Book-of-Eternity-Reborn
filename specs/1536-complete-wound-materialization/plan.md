@@ -1,3 +1,36 @@
+# T108 browser actual timeout — concrete GM fixture scope refusal preserved
+
+2026-10-29. Actual UI attempt atmetadataa22e8e72d40e059de2be677f0f18971e5b1cb462
+completed exit124/TIMEOUT, browsercategory180.085482s, wall186.8392784s. No TRX or
+completed testcase:0PASS; console/rollback2UNRUN by fail-fast. Runner-owned/runtime
+cleanup flags bothtrue, no live ownedprocesses. Surviving task-owned fixture still
+exists in/tmp and is preserved, not declared deleted. Full82files347127bytes copied
+and allhashes verified outsidecheckout under resident-ui-actual-1/settled-fixture-
+after-timeout; settled-fixture-inventory.json plus full runnerraw retained. No raw,
+save or recovery deletion. This incomplete attempt is not a replacement or PASS.
+
+Actual existing validation_repair_request atgrant43 identifies exactly three
+rejections: Guardian meaningful memory missing, Guardian ActorBrain block missing,
+structured Guardian profile update outside declared scope. Correct snapshot/profile
+key diff(actorType,actorId) shows Guardian changed only ordinary clientauto strategy:
+0→12inkincome, lastAutoProgressionCycleKey=chaos:1 and matching client_auto_strategy
+ledger. Fixture WriteResidentAidReasoning declares only resident relevant and
+Guardian outside scope, while full normalizer advances both. Controlled native
+fixture writes no repair reply, so genuine Engine waits until protective timeout.
+This is observed GM fixture authoring refusal, not unexplained runtime cost or
+permission to increase budget. Resident grant/common publication already exists in
+unaccepted turn43 state; do not call the overall turn/user capability accepted.
+
+Hold new UI runtimes. Bounded Astra/high consultation and Sol OUTCOME/selection
+review pending: correct current-turn NPCScope/fullActorBrain and real Guardian
+thought memory alongside resident, preserving ordinary Guardian auto progression
+and all existing guards. Do not silently disable unrelated progression or broaden
+production policy to fit the fixture. Audit complete initialsetup/turncleanup/
+currentresponses for both43/44 before next build/actual. No addeddiagnosticstack,
+cache, newgame rule or unrelated perf/DFR/Mortal/Windows work. Backend66 distinct
+PASS on prior explicit lineages remain accepted; no repeat required for UI-only
+fixture source. Latest verified durablecheckpoint before thismetadata is a22e8e72d.
+
 # T108 resident backend PASS — actual guided interfaces next
 
 2026-10-29. Runtime sourceb3fe0243e0c8c2942d09ef7d7864ee744796ca07.
