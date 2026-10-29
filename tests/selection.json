@@ -154,6 +154,27 @@
       "contracts": [
         "#1536 T143 abandoned confirmed visit lifetime before health refusal; actual ordinary freeform consumer"
       ]
+    },
+    {
+      "category": "shining-current-hall-data",
+      "reason": "Optional exact coordinate shape, scalar presence/value preservation, no normalizer inference and both existing progression-protection paths.",
+      "contracts": [
+        "#1536 T143 exact optional currentHallId and fresh immutable accepted-turn coordinate; complete fixture readiness before agreed functional repeat"
+      ]
+    },
+    {
+      "category": "shining-current-hall-authority",
+      "reason": "Actual authenticated original/current owner, ordinary ready-turn hook and valid progression report cannot authorize coordinate add/remove/move or untrusted baseline.",
+      "contracts": [
+        "#1536 T143 exact optional currentHallId and fresh immutable accepted-turn coordinate; complete fixture readiness before agreed functional repeat"
+      ]
+    },
+    {
+      "category": "elyara-current-location-fixture-readiness",
+      "reason": "Complete independent two-Guardian Chaos and same-hall Shining initial Engine fixture validity before any expensive turn; unrelated unknown Shining key still rejected.",
+      "contracts": [
+        "#1536 T143 exact optional currentHallId and fresh immutable accepted-turn coordinate; complete fixture readiness before agreed functional repeat"
+      ]
     }
   ]
 }

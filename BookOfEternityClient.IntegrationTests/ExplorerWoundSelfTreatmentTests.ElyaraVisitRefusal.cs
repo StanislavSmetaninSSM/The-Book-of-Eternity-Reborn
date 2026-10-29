@@ -34,6 +34,7 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                     Assert.Equal("natural", turn.SpiritualHealing!["mode"]!.GetValue<string>());
                     await WriteNativeCompletionAsync(files, lease, turn,
                         AfterlifeSpiritualNaturalRecoveryTests.AuthorNaturalGraphs(wound, turn.SpiritualHealing["destinationGraphs"]!.AsArray()));
+                    await WriteElyaraServiceReasoningAsync(files, lease, turn, ElyaraFixtureReasoning.OrdinaryWait);
                     responded = true;
                 }
             });
@@ -64,6 +65,7 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
             await runtime.Engine.ProcessPlayerTurn(ordinary);
             Assert.True(responded, "Abandoned visit prevented the unrelated ordinary turn.\n" + diagnostics.Describe());
             Assert.Equal(43, runtime.GameLoop.TurnNumber);
+            await AssertRemoteGuardianProgressionAsync(files);
             Assert.DoesNotContain((await fixture.ReadHistoryAsync()).Transitions, t => t.AttemptId is not null);
             Assert.Equal(500, JsonNode.Parse((await files.ReadFileAsync(ElyaraVisitService.SourcePaths[0]))!)!["inkFeathers"]!["current"]!.GetValue<int>());
             foreach (var transient in new[] { PendingPlayerActionService.PendingPath, AcceptedMechanicsPlan.WoundCommandPath,

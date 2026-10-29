@@ -2847,3 +2847,6 @@ Shining halls and cross-realm access require an already-supported ordinary route
 no implicit hall travel, return/reentry, teleport or Enlightenment reset is added.
 Negotiated services and the historical-faction healer decision remain OPEN. See the
 elyara_current_location_v1 worked example; faction-healer display itself grants no treatment.
+
+
+shining_current_hall_v1: currentHallId is optional canonical locality DATA. When present it is one exact nonempty identifier matching exactly ONE halls[].hallId; no aliases or alternate key casing. Missing means unresolved locality. Preserve its presence and value from authenticated PRE-TURN state in every ordinary GM turn; progressionProcessingReport, treatment, political/trade closure and Source of Light do NOT grant hall movement or coordinate addition/removal. Never infer, select, trim or reset it. No new hall-travel route is introduced.

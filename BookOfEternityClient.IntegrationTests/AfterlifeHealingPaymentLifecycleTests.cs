@@ -264,6 +264,7 @@ public sealed partial class AfterlifeHealingPaymentLifecycleTests(ITestOutputHel
         profiles["profiles"]!.AsArray().Add(actor);
         var guardian = PlayerGuardianFoundationValidationTests.CreateGuardian(AfterlifeWoundTreatmentAuthority.ElyaraId,
             "Элиара Последней Раны", AfterlifeWoundTreatmentAuthority.ElyaraAbodeId);
+        guardian["abode"]!["name"] = "Лазарет Незаживающего Света";
         await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
         if (realm == "Shining Abode")
         {

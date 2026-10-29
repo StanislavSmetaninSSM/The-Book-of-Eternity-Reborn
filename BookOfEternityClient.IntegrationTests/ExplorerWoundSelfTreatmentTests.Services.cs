@@ -79,7 +79,8 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
             }
             var before = fixture.CaptureMutationRoots(new[] { AfterlifeWoundHealingPlanner.Continuation.ServiceSoulPath,
                 GuardianThoughtJournalState.StatePath, EffectAcceptedTurnInputComposer.WorldTimePath,
-                PendingTurnStateService.PendingDiceStatePath }.Concat(AfterlifeWoundTreatmentAuthority.ServiceLocalityPaths));
+                PendingTurnStateService.PendingDiceStatePath }.Concat(AfterlifeWoundTreatmentAuthority.ServiceLocalityPaths)
+                .Concat(realm == "Shining Abode" ? new[] { ShiningAbodeState.StatePath } : Array.Empty<string>()));
             if (browser)
             {
                 var service = CreateCommands(files);
@@ -163,6 +164,11 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
             Assert.Equal(expected.Select(s => (s.Kind, s.SeverityRank, s.Progress)), paidResult.Stages.Select(s => (s.Kind, s.After.Severity.Rank, s.After.Recovery.CurrentStepProgress)));
             var schedule = JsonNode.Parse((await files.ReadFileAsync(ProgressionScheduleService.SchedulePath))!)!;
             Assert.Equal(turn!.ProgressionControl!.NextChaosSeaTurnOrdinal, schedule["currentChaosSeaTurnOrdinal"]!.GetValue<int>());
+            if (realm == "Shining Abode")
+            {
+                Assert.Equal(1, schedule["lastShiningAbodeCycleOrdinal"]!.GetValue<int>());
+                Assert.Equal(0, schedule["lastChaosSeaSimulationOrdinal"]!.GetValue<int>());
+            }
             foreach (var path in new[] { AcceptedMechanicsPlan.WoundCommandPath, ProgressionScheduleService.ReportPath,
                 LiveTurnPreparationService.PendingTurnSnapshotManifestPath, PendingPlayerActionService.PendingPath })
                 Assert.Null(await files.ReadFileBytesAsync(path));
@@ -172,38 +178,65 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
         finally { armed = false; output.WriteLine(diagnostics.Describe()); await runtime.AudioService.DisposeAsync(); }
     }
 
+    private enum ElyaraFixtureReasoning { Paid, Arrival, OrdinaryWait }
+
     private static async Task WriteElyaraServiceReasoningAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease, TurnRequest turn,
-        bool visitOnly = false)
+        ElyaraFixtureReasoning kind = ElyaraFixtureReasoning.Paid)
     {
-        const string name = "Элиара Последней Раны"; var timestamp = DateTime.UtcNow.ToString("o");
+        const string name = "Элиара Последней Раны"; const string sourceName = "Тихий Хранитель";
+        var timestamp = DateTime.UtcNow.ToString("o"); var remote = kind != ElyaraFixtureReasoning.Paid;
         var place = turn.ProgressionControl!.CurrentRealm == "Shining Abode" ? "Зал сопровождения" : "Лазарет Незаживающего Света";
-        var summary = visitOnly ? "Я встречаю прибывшую душу; лечение ещё не подтверждено." : "Душа подтвердила цену принятой попытки; я применяю своё ИсцелениеV к выбранной ране.";
-        var consequence = visitOnly ? "Я жду отдельного подтверждения актуальной котировки; оплаты и активного лечения нет." : "Клиент публикует одну оплату и реальный исход; нового долга нет.";
-        var intent = visitOnly ? "Предложить осмотреть актуальные условия лечения." : "Лечить в рамках подтверждённой услуги.";
-        await files.WriteFileAtomicAsync(lease, GuardianThoughtJournalState.StatePath, new JsonObject
+        var summary = kind switch
         {
-            ["entries"] = new JsonArray(), [GuardianThoughtJournalState.UpdateProperty] = new JsonArray(new JsonObject
-            {
-                ["entryId"] = "elyara_service_thought_" + turn.RequestId, ["guardianId"] = AfterlifeWoundTreatmentAuthority.ElyaraId,
-                ["turn"] = turn.TurnNumber, ["timestamp"] = timestamp, ["title"] = visitOnly ? "Прибытие души" : "Подтверждённая публичная услуга",
-                ["summary"] = summary,
-                ["eventType"] = "soul_assessment", ["consequence"] = consequence,
-                ["attitude"] = "watchful", ["intent"] = intent
-            })
-        }.ToJsonString());
+            ElyaraFixtureReasoning.Arrival => "Я встречаю прибывшую душу; лечение ещё не подтверждено.",
+            ElyaraFixtureReasoning.OrdinaryWait => "Я продолжаю обычную стратегию в своей Обители, пока мир совершает безопасный цикл.",
+            _ => "Душа подтвердила цену принятой попытки; я применяю своё ИсцелениеV к выбранной ране."
+        };
+        var consequence = remote ? "Я сохраняю своё место; клиент рассчитывает обычное развитие, активного лечения и оплаты нет." : "Клиент публикует одну оплату и реальный исход; нового долга нет.";
+        var intent = kind == ElyaraFixtureReasoning.Paid ? "Лечить в рамках подтверждённой услуги." : "Продолжить обычную стратегию без навязанного лечения.";
+        JsonObject Memory(string id, string thought, string goal) => new()
+        {
+            ["entryId"] = "elyara_route_" + id + "_" + turn.RequestId, ["guardianId"] = id,
+            ["turn"] = turn.TurnNumber, ["timestamp"] = timestamp, ["title"] = remote ? "Обычный безопасный цикл" : "Подтверждённая публичная услуга",
+            ["summary"] = thought, ["eventType"] = "soul_assessment", ["consequence"] = consequence,
+            ["attitude"] = "watchful", ["intent"] = goal
+        };
+        var journal = JsonNode.Parse((await files.ReadFileAsync(lease, GuardianThoughtJournalState.StatePath)) ?? "{\"entries\":[]}")!.AsObject();
+        var updates = new JsonArray(Memory(AfterlifeWoundTreatmentAuthority.ElyaraId, summary, intent));
+        if (remote) updates.Add(Memory("guardian_visit_source", "Я остаюсь в своей Обители и поддерживаю обычный безопасный цикл, не решая за душу.", "Сохранять обычный порядок без вмешательства в лечение."));
+        journal[GuardianThoughtJournalState.UpdateProperty] = updates;
+        await files.WriteFileAtomicAsync(lease, GuardianThoughtJournalState.StatePath, journal.ToJsonString());
+        const string clientChanges = "guardianThoughtJournalUpdates в game_state/meta/guardian_thought_journal.json добавляет мою first-person память. Клиент сам формирует currencies, progressionStrategy и client_auto_strategy progressionLedger; ГМ не задаёт доход, ключ цикла или развитие. Рану, оплату, эффекты, History и время публикует клиент.";
+        string Brain(string actor, string location, string thought, string goal, bool provider) => string.Join("\n",
+            "", "### " + actor, "- Current location: " + location + "; Хранитель остаётся здесь.",
+            "- Situation: " + (kind == ElyaraFixtureReasoning.Paid ? "Душа подтвердила цену25 за попытку." : kind == ElyaraFixtureReasoning.Arrival ? "Душа совершает обычный переход к Элиаре; платное лечение ещё не выбрано." : "Душа спокойно ждёт; мир продолжает обычный безопасный цикл."),
+            "- Profile inputs: " + (provider ? "Живая текущая Элиара, ИсцелениеV, публичный множитель100%." : "Текущий Хранитель исходной Обители с действующей стратегией развития; не лечит и не принимает лечение."),
+            "- Thoughts: " + thought, "- Motivation: " + goal,
+            "- Constraints: Клиент считает развитие и цикл; лечение и оплата требуют отдельного подтверждения, чужой выбор не подменяется.",
+            "- Strategy options:", kind == ElyaraFixtureReasoning.Paid ? "1. Провести услугу. Benefit: помочь душе. Risk: неудачный бросок." : "1. Продолжить обычную стратегию. Benefit: устойчивый порядок. Risk: лечение отложено.",
+            "2. Навязать другое решение. Benefit: больше контроля. Risk: необоснованное вмешательство в выбор души.",
+            "- Chosen strategy: " + goal, "- Rejected alternatives: Нет основания навязывать душе другую услугу или перемещение.",
+            "- Actions: " + consequence, "- State changes: " + clientChanges);
+        var reasoning = string.Join("\n", "## NPC Scope", "- Mode: " + (remote ? "Mixed" : "Scene-local"),
+            "- Relevant actors: " + name + (remote ? ", " + sourceName : ""),
+            "- Why relevant: Обычный цикл затрагивает развитие объявленных Хранителей; Элиара участвует в доступном маршруте помощи.",
+            "- Actors outside scope: нет", "- Why outside scope: Другие акторы не меняются.", "", "## Reasoning",
+            Brain(name, place, summary, intent, provider: true));
+        if (remote) reasoning += "\n" + Brain(sourceName, sourceName + " — Обитель",
+            "Я поддерживаю обычную жизнь своей Обители и не навязываю душе лечение.", "Продолжить обычную стратегию без вмешательства в лечение.", provider: false);
         await files.WriteFileAtomicAsync(lease, "output/debug_logs.json", new JsonObject
+        { ["timestamp"] = timestamp, ["gm_thoughts_markdown"] = reasoning }.ToJsonString());
+    }
+
+    private static async Task AssertRemoteGuardianProgressionAsync(FileSystemManager files)
+    {
+        var profiles = JsonNode.Parse((await files.ReadFileAsync(WoundCarrierCatalog.AfterlifeProfilesPath))!)!["profiles"]!.AsArray();
+        foreach (var id in new[] { AfterlifeWoundTreatmentAuthority.ElyaraId, "guardian_visit_source" })
         {
-            ["timestamp"] = timestamp, ["gm_thoughts_markdown"] = string.Join("\n", "## NPC Scope", "- Mode: Scene-local", "- Relevant actors: " + name,
-                visitOnly ? "- Why relevant: Душа пришла к Элиаре за будущим лечением." : "- Why relevant: Элиара оказывает подтверждённую публичную услугу лечения.",
-                "- Actors outside scope: нет", "- Why outside scope: Другие акторы не участвуют.",
-                "", "## Reasoning", "### " + name, "- Current location: " + place + "; Элиара не перемещается.",
-                visitOnly ? "- Situation: Душа завершает обычный переход; лечение пока не выбрано." : "- Situation: Душа подтвердила цену25 за попытку.",
-                "- Profile inputs: Живая текущая Элиара, ИсцелениеV, публичный множитель100%.", "- Thoughts: " + summary,
-                "- Motivation: Помочь душе без выдуманного исцеления.", "- Constraints: Клиент владеет броском, оплатой, раной и циклом; я их не переписываю.",
-                "- Strategy options:", visitOnly ? "1. Встретить душу и предложить условия. Benefit: осознанный выбор. Risk: лечение отложено." : "1. Провести услугу. Benefit: помочь душе. Risk: неудача лечения.",
-                "2. Отказаться до начала. Benefit: сохранить границы. Risk: рана останется.",
-                "- Chosen strategy: " + intent, "- Rejected alternatives: Нет причины отказывать в доступном приёме.",
-                "- Actions: " + consequence, "- State changes: guardianThoughtJournalUpdates; кошелёк/рана/History/цикл только через клиентскую транзакцию.")
-        }.ToJsonString());
+            var actor = Assert.Single(profiles.OfType<JsonObject>(), p => p["actorId"]!.GetValue<string>() == id);
+            Assert.Equal(12, actor["currencies"]!["inkFeathers"]!.GetValue<int>());
+            Assert.Equal("chaos:1", actor["progressionStrategy"]!["lastAutoProgressionCycleKey"]!.GetValue<string>());
+            Assert.Single(actor["progressionLedger"]!.AsArray(), e => e!["source"]!.GetValue<string>() == "client_auto_strategy");
+        }
     }
 }

@@ -6,6 +6,65 @@ access-display baseline47958dfb28e44b52fe9ee7d6d31d431a70e37709 remains80distinc
 Sole writer/runner Sol; independent Astra/high DESIGN and Sol whole SOURCE accepted.
 Current bounded source corrections are WIP; this route is NOT qualified yet.
 
+Current continuation — grouped field/fixture correction, WIP/UNCOMPILED/UNQUALIFIED
+
+Independent corrected source-count OUTCOME accepted28ddc32f52da45a61c697f5be441c16dbbba9b67:
+3/3PASS,7.9631717s<60,wall18.8418465s,cleanuptrue,unchangedpins. Exact cheap union130distinct
+is verified across5e07+1222cad+3current cases (not one fresh run).
+Functional first attempt timed out in health-refusal case180.0970852s,wall187.4490990s;
+0TRX/0completed,other10UNRUN,both cleanups true,pinsunchanged. Existing repair request
+at21:41:08 identifies ordinary43/session_elyara_refused_visit: both Guardians gained
+normal client_auto_strategy income12/cyclechaos:1/ledger, but controlled GM declared
+no actors/reasoning/memory. This is a fixture response omission, not unexplained game
+performance. Complete surviving task-owned79file/354800byte fixture was copied/hash
+verified outside checkout; original retained. Capture is incomplete (no TRX); no PASS.
+
+Independent unaffected8subset stopped on Shining C4:1FAIL,7UNRUN, no timeout. Full
+pre-stage validator rejects currentHallId as unknown in strict AND flexible top-key
+allowlists. Do not delete the intended coordinate or relax health. One separate Chaos
+compatibility case then passed1/1,28.8576639s<180,wall38.3026811s on28dd; ordinary public
+price25/payment/result/cycle correct. Current T143 overall is still UNQUALIFIED.
+
+Independent Sol holistic fixture audit and Astra/high currentHall DESIGN are complete.
+Known corrections are grouped before ONE agreed affected functional repeat:
+
+- Existing helper now has paid/arrival/ordinary-wait semantics. Health/travel supply
+  full reasoning plus first-person memory for both actual Guardians; paid remains
+  Elyara-only. Existing journal entries preserved. Client still owns all automatic
+  income/strategy/ledger, natural graphs, wound/effects/payment/History/cycle. Network
+  remains complete before the sole bootstrap. Both actual locality names match their
+  seeded coordinates. Assert one actual income/cycle per Guardian from one profile read.
+- Shining C4 capture explicitly includes full Shining state/currentHallId; Shining UI
+  asserts Shining cycle1 and Chaos last-simulation0. Keep existing requested graphs,
+  exact control/report metadata, no active request/fee in travel and NEW destination quote.
+- Admit optional exact currentHallId in both canonical allowlists; semantic/raw-owner
+  validation requires one exact known hall, no aliases/case ambiguity/malformed value.
+  Missing stays unresolved; normalizer preserves/makes no coordinate. Reuse predicate
+  in Elyara scope. No new hall travel or owner grant.
+- Existing closure/capstone progression forbidden lists now protect currentHallId too.
+  They alone are insufficient: both pending owners early-return on ordinary turns.
+  Add unconditional ready-turn continuity through existing authenticated original and
+  current owner read views; preserve exact field presence/value, fail closed on bad
+  original evidence, never treat a valid progression report as movement authority.
+  No new cache; these views already own DATA. New scalar checks/one hall scan are cheap;
+  no repeated world reconstruction or removed integrity/authority checks. Direct guarded
+  current-root reads for small/20hall cases are counted; cost/speedup still UNMEASURED.
+- New cheap typed shape/presence/normalization/both-progression controls, actual signed
+  original/ordinary ready hook/report/source-read controls, and complete initial Engine
+  fixture validity (including unrelated unknown-key refusal) precede expensive journeys.
+  Existing GM guidance, runtime scheduler prompt, both daemon directives, worked example,
+  manifest and documentation guards now state optional exact immutable locality.
+
+Source-derived expected selection:25categories/173cases (new32 cases; discovery/PREP
+pending). Proposed fresh cheap9categories91cases covers new hall DATA/authority/fixture
+readiness, changed pure Elyara DATA/current source/freshness and effective docs. Retain
+71 unaffected prior PASS; six functional categories11cases need current acceptance,
+including one changed shared Chaos helper consumer. No full125/accepted80/HOLD replay.
+All new code/tests are UNCOMPILED; independent whole-delta SOURCE/selection, grouped
+fresh affected builds/PDB/catalog/PlanOnly/resource/PREP and actual outcome are NEXT.
+T142 is decided but unimplemented; implement it after accepted T143, without expanding
+this field correction into negotiated services or a general diagnostic framework.
+
 Player result / boundaries
 
 - `/элиара` (`/elyara`) and the common «Пойти к Элиаре за лечением» entry resolve

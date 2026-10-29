@@ -64,6 +64,7 @@ internal static partial class ElyaraVisitService
         if (realm == "chaos_sea") return AfterlifeWoundTreatmentAuthority.RequireServicePlayerScope(guardians);
         RequireRegistryElyara(guardians);
         if (realm != "shining_abode" || shining is null || T(shining["availability"]) != ShiningAbodeState.AvailabilityActive ||
+            ShiningCurrentHallContract.Validate(shining) is not null ||
             T(shining["currentHallId"]) is not { } hallId || !ResourceMaterializationContract.IsExactIdentifier(hallId) ||
             new[] { "activeHallId", "selectedHallId" }.Any(key => shining.ContainsKey(key) && T(shining[key]) != hallId) ||
             (shining["halls"] as JsonArray)?.OfType<JsonObject>().Count(h => T(h["hallId"]) == hallId) != 1)

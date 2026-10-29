@@ -14087,4 +14087,6 @@ inkFeatherChanges/payment receipt. Failed or partial accepted service still pays
 SAME attempt/draw on retry, C4 rollback restores payment and all participants together.
 Inactive Chaos simulation ordinal stays unchanged. A remote hall, another realm,
 unknown location or dead Elyara has NO invented route/teleport or automatic revival.
+shining_current_hall_v1: currentHallId is optional canonical locality DATA. When present it is one exact nonempty identifier matching exactly ONE halls[].hallId; no aliases or alternate key casing. Missing means unresolved locality. Preserve its presence and value from authenticated PRE-TURN state in every ordinary GM turn; progressionProcessingReport, treatment, political/trade closure and Source of Light do NOT grant hall movement or coordinate addition/removal. Never infer, select, trim or reset it. No new hall-travel route is introduced.
+
 end_elyara_current_location_v1

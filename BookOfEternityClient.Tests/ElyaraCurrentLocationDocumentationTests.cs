@@ -21,6 +21,9 @@ public sealed class ElyaraCurrentLocationDocumentationTests
         {
             var text = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, path));
             var start = text.IndexOf(Marker + ":", StringComparison.Ordinal); Assert.True(start >= 0);
+            var hallStart = text.IndexOf("shining_current_hall_v1:", StringComparison.Ordinal); Assert.True(hallStart >= 0);
+            foreach (var token in new[] { "optional canonical", "ONE halls[].hallId", "Missing means unresolved", "authenticated PRE-TURN", "addition/removal" })
+                Assert.Contains(token, text[hallStart..]);
             foreach (var token in new[] { "HOME", "ONE ordinary travel cycle", "NEW /лечить quote", "ONE exact alive",
                 "availability=active", "currentHallId", "Shining cycle", "ZERO active treatment", "Remote", "historical-faction" })
                 Assert.Contains(token, text[start..]);
@@ -30,6 +33,7 @@ public sealed class ElyaraCurrentLocationDocumentationTests
         var directives = Regex.Matches(daemon, "\\$script:WoundMaterializationDirective = \\\"[^\\\"]*\\\"");
         Assert.Equal(2, directives.Count);
         Assert.All(directives.Cast<Match>(), match => Assert.Contains(Marker, match.Value));
+        Assert.All(directives.Cast<Match>(), match => Assert.Contains("shining_current_hall_v1", match.Value));
         var entry = Assert.Single(ExampleValidationManifest.Load().EffectMaterializationCoverage, e => e.ContractId == Marker);
         var example = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "Examples", entry.File));
         Assert.All(entry.RequiredText, token => Assert.Contains(token, example));

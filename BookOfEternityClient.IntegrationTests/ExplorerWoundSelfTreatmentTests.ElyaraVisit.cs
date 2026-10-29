@@ -49,7 +49,7 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                     await WriteNativeCompletionAsync(files, lease, turn,
                         AfterlifeSpiritualNaturalRecoveryTests.AuthorNaturalGraphs(wound, turn.SpiritualHealing["destinationGraphs"]!.AsArray()),
                         "Душа прибывает в открытую текущую Обитель Элиары. Активное лечение ещё не начиналось.");
-                    await WriteElyaraServiceReasoningAsync(files, lease, turn, visitOnly: true);
+                    await WriteElyaraServiceReasoningAsync(files, lease, turn, ElyaraFixtureReasoning.Arrival);
                     completed = true;
                 }
             });
@@ -95,6 +95,7 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                 await runtime.Engine.ProcessPlayerTurn(action!);
             }
             Assert.True(completed); Assert.Equal(43, runtime.GameLoop.TurnNumber);
+            await AssertRemoteGuardianProgressionAsync(files);
             Assert.Equal(1, turn!.ProgressionControl!.ChaosSeaCyclesExpectedThisTurn);
             Assert.Equal(0, turn.ProgressionControl.ShiningAbodeCyclesExpectedThisTurn);
             var soul = JsonNode.Parse((await files.ReadFileAsync(ElyaraVisitService.SourcePaths[0]))!)!;

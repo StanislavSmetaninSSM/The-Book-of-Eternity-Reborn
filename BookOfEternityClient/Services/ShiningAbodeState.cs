@@ -346,6 +346,7 @@ internal static partial class ShiningAbodeState
 
     public static string? ValidateRawOwnerStateForActionableMode(JsonObject root)
     {
+        if (ShiningCurrentHallContract.Validate(root) is { } hallIssue) return hallIssue;
         var availability = GetNodeString(root["availability"]);
         if (!IsSupportedAvailability(availability))
             return "shining_abode_state.json использует неподдерживаемое availability и не может authorise actionable Shining mode.";

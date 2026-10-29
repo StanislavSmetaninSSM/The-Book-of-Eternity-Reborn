@@ -23,6 +23,9 @@ public partial class ValidationService
 
     private void ValidateShiningAbodeStateFile(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
     {
+        if (ShiningCurrentHallContract.Validate(root) is { } hallIssue)
+            issues.Add(new ValidationIssue(contextPrefix + ".currentHallId", IssueSeverity.Error, hallIssue,
+                code: "shining_current_hall_invalid", section: "ShiningAbode"));
         RequireString(root, contextPrefix, issues, "availability");
         ValidateIntegerField(root, contextPrefix, issues, "lightSparks");
 

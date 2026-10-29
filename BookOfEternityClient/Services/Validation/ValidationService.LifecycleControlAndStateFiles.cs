@@ -565,7 +565,7 @@ public partial class ValidationService
         await ValidateFlexibleStateFile(ShiningAbodeState.StatePath,
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
-                "availability", "radiance", "lightSparks", "halls", "factions", "shiningPoliticalActors", ShiningAbodeState.FactionConflictCampaignsProperty,
+                "availability", "currentHallId", "radiance", "lightSparks", "halls", "factions", "shiningPoliticalActors", ShiningAbodeState.FactionConflictCampaignsProperty,
                 "pendingNativeFactionDiscovery", "gates", "preparedIncarnationPackage", "gachaSystem", "treasury",
                 SourceOfLightCapstoneState.ShiningStateProperty, AfterlifeEntityProfileState.ResourceOwnerBindingsProperty, "coreActionReceipts",
                 "factionFoundingReceipts", "factionRealignmentReceipts",
@@ -579,7 +579,7 @@ public partial class ValidationService
         await ValidateStrictTopLevelObjectFileAsync(ShiningAbodeState.StatePath,
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
-                "availability", "radiance", "lightSparks", "halls", "factions", "shiningPoliticalActors", ShiningAbodeState.FactionConflictCampaignsProperty,
+                "availability", "currentHallId", "radiance", "lightSparks", "halls", "factions", "shiningPoliticalActors", ShiningAbodeState.FactionConflictCampaignsProperty,
                 "pendingNativeFactionDiscovery", "gates", "preparedIncarnationPackage", "gachaSystem", "treasury",
                 SourceOfLightCapstoneState.ShiningStateProperty, AfterlifeEntityProfileState.ResourceOwnerBindingsProperty, "coreActionReceipts",
                 "factionFoundingReceipts", "factionRealignmentReceipts",
@@ -2472,7 +2472,7 @@ public partial class ValidationService
         }
     }
 
-    private static void ValidateShiningClosureForbiddenProgressionDeltas(
+    internal static void ValidateShiningClosureForbiddenProgressionDeltas(
         JsonObject expectedShiningRoot,
         JsonObject currentShiningRoot,
         List<ValidationIssue> issues)
@@ -2499,6 +2499,7 @@ public partial class ValidationService
 
     private static readonly string[][] ShiningClosureForbiddenProgressionDeltaPaths =
     {
+        new[] { ShiningCurrentHallContract.Property },
         new[] { "availability" },
         new[] { "coreActionReceipts" },
         new[] { "gates" },
@@ -2518,7 +2519,7 @@ public partial class ValidationService
             : null;
     }
 
-    private async Task<bool> HasVerifiedAfterlifeProgressionReportForCompositeAsync(ProgressionControl? control)
+    internal async Task<bool> HasVerifiedAfterlifeProgressionReportForCompositeAsync(ProgressionControl? control)
     {
         if (control == null || !RealmSemantics.IsAfterlifeRealm(control.CurrentRealm))
             return false;

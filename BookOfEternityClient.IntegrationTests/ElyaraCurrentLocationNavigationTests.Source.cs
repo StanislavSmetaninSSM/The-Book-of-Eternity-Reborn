@@ -209,6 +209,7 @@ public sealed partial class ElyaraCurrentLocationNavigationTests
             ["currentAbodeId"] = "abode_visit_source", ["discoveredAbodes"] = new JsonArray("abode_visit_source", AfterlifeWoundTreatmentAuthority.ElyaraAbodeId) };
         var actor = AfterlifeActorMaterializationTestFixture.CreateCompleteProfile("guardian", "guardian_visit_source", "Chaos Sea", 42);
         actor["displayName"] = "Тихий Хранитель"; actor["locationId"] = "abode_visit_source";
+        actor["locationName"] = source["abode"]!["name"]!.DeepClone();
         actor["activeWounds"] = new JsonArray(); actor["activeEffects"] = new JsonArray();
         profiles["profiles"]!.AsArray().Add(actor);
         await files.WriteFileAtomicAsync(path, guardians.ToJsonString());
