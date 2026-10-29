@@ -41,6 +41,15 @@ No unrelated acceptedPASS repeats; source/consumer changes determine regressions
 All raw external, preserve prior complete accepted69 provenance and old incomplete
 attempts, no raw/save/recovery deletion, newclone/restore, merge/force/history rewrite.
 
+Coherent Astra/high SOURCE ACCEPT at b422c804c (no blocking findings), ordinary
+fixture/selection review found one invalid helper name: corrected receiving-
+resident journey to the EXISTING SeedAidJourneyLoreAsync before Integration build.
+First fresh Main build at b422c804c exit1, two CS0136 local-name collisions in the
+new selection6 branch; corrected only names to residentConfirmation/residentConfirmed,
+identical predicates. No test ran, no semantic GREEN inferred. Complete failed build
+raw is resident-provider-green-build-1/main, 1:39.92, outsidecheckout. Both tiny
+corrections await delta review and fresh builds; all functional gates remain UNRUN.
+
 Core GREEN WIP after causal RED: record4/selection6/request/result6 and pure typed
 resident-healer scope are connected through natural participation, protected
 memory, History dispatch, GM projection and distinct receive-aid action/menu.

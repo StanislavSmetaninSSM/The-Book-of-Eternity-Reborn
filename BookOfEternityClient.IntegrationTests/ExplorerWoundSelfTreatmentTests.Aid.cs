@@ -461,7 +461,7 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
     private static async Task SeedEngineReceivingResidentJourneyAsync(FileSystemManager files, JsonObject profiles)
     {
         await SeedEngineReceivingResidentAsync(files, profiles);
-        await SeedAidSecondTurnBaselineAsync(files);
+        await SeedAidJourneyLoreAsync(files);
     }
 
     private static async Task SeedEngineResidentAidJourneyAsync(FileSystemManager files, JsonObject profiles)

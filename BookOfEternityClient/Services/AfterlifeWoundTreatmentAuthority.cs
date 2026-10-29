@@ -104,8 +104,8 @@ internal sealed record SpiritualSelfTreatmentSelection(string WoundId, string Ex
                 root["direction"]?.GetValue<string>() != SpiritualSelfTreatmentRequestCodec.AidDirection(residentSchema) ||
                 !ResourceMaterializationContract.IsAuthorityFingerprint(root["participationFingerprint"]?.GetValue<string>()))
                 throw new InvalidDataException("Invalid closed resident aid selection.");
-            if (residentSchema == 6 && (root["confirmation"] is not JsonValue confirmation ||
-                !confirmation.TryGetValue<string>(out var confirmed) || confirmed is not ("required" or "player_target_confirmed")))
+            if (residentSchema == 6 && (root["confirmation"] is not JsonValue residentConfirmation ||
+                !residentConfirmation.TryGetValue<string>(out var residentConfirmed) || residentConfirmed is not ("required" or "player_target_confirmed")))
                 throw new InvalidDataException("Resident provider selection requires explicit player confirmation state.");
             var residentHealer = SpiritualTreatmentParticipation.ReadOwner(root["healer"]);
             var residentTarget = SpiritualTreatmentParticipation.ReadOwner(root["target"]);
