@@ -109,8 +109,13 @@ uses the existing small service fixture, first proves its available25-Feather lo
 quote and whole game_state/input/output byte immutability, then expects the missing
 «Пойти к Элиаре за лечением» action. No Engine/draw/stage or mock-only assertion.
 Its exact category is elyara-current-location-causal (one Integration case,60s).
-Production is unchanged; scaffold SOURCE/PREP and semantic RED are pending. GREEN
-implementation and all current-route runtime remain UNRUN. Current accepted access-view80 and local-paid80 keep their separate accepted
+Independent Sol6.1/xhigh scaffold SOURCE/selection ACCEPT on
+96db3a6998df03118e51574d1b95eb0e2d3cd6b4, no material findings. Expected missing-action
+assertion is line27, after actual25 quote and whole-tree immutability controls. Production
+and existing helpers are unchanged; fresh Integration only is sufficient. PREP and
+actual semantic RED remain pending; GREEN implementation and route runtime are UNRUN.
+Accepted access27 owning artifacts were fully decoded/hash-verified into an external
+archive before replacing the Integration pair. No raw/save/recovery was deleted. Current accepted access-view80 and local-paid80 keep their separate accepted
 sources/results and must not be repeated without a changed dependency. Over7GiB free;
 keep400MiB build-start plus full output and128MiB runtime floor. New full raw belongs
 outside checkout at /workspace/tboe-linux-evidence-20261025/us6-elyara-current-location.
