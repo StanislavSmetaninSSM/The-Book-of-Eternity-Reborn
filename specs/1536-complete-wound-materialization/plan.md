@@ -78,7 +78,7 @@ The reviewed manual driver SOURCE is retained at
 controlled typed Host/HTML fixtures. It derives repo root from its own path and rejects
 output inside checkout before mkdir. Its actual test-function ASTs match the executed
 external driver; syntax, --help and output-boundary rejection are checked. Final
-packaging/checkpoint review is pending; no test logic or application input changed.
+packaging/checkpoint review accepted at d3623dc38; no test logic or application input changed.
 
 With installed Playwright/Chromium and locked frontend dependencies, start the existing
 Vite server from the frontend directory (`node node_modules/vite/bin/vite.js --host
