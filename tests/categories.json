@@ -36143,6 +36143,31 @@
           ]
         }
       ]
+    },
+    {
+      "id": "shining-healer-role-causal",
+      "responsibility": "Authored healing_support primary role survives the existing Shining resident normalizer; existing archive role and non-present ascended membership are controls. Semantic unsupported-role witness.",
+      "excludes": "Profile tier/materialization authority, source reads, actual faction acceptance/UI/services and all accepted Elyara80/HOLD DFR/Mortal/Windows/performance.",
+      "changeHints": [
+        "BookOfEternityClient/Services/ShiningAbodeState.cs",
+        "BookOfEternityClient.Tests/ShiningFactionHealingSupportContractTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.ShiningFactionHealingSupportContractTests.AuthoredHealingRoleSurvivesExistingNormalization"
+          ]
+        }
+      ]
     }
   ]
 }

@@ -40,6 +40,13 @@ Architecture and interfaces
   returns IReadOnlyList<ShiningFactionRosterEntry> from the already-read roots;
   unique exact IDs/kinds/realm, visibility and malformed-data refusals are explicit.
   Reuse the existing typed art reader. No display-string parsing or new tier parser.
+  Current membership is ascensionState=ascended plus exact shiningFactionId; Chaos
+  isPresent and the player's current hall are not prerequisites for roster capability.
+  Profiles exact-match resident kind/ID and Shining realm, pass materialization and
+  AfterlifeProfileVisibility. Present lifeState must be alive, matching the existing
+  healing resolver; absent lifeState does not add a new blanket profile requirement.
+  The existing reference validator returns profile DATA only after its materialization
+  validation succeeds, otherwise null; a valid art cannot mask an invalid envelope.
 - Existing materialization enumeration includes ALL current factions[], including
   hidden/broken/dissolved rows. Apply FR083 there, not only operational/new factions;
   historical receipts are not current factions. Existing normalization retains known
@@ -69,7 +76,7 @@ plus changed tier/visibility/affiliation and no-mutation negatives; no speedup c
 
 Finite execution and acceptance
 
-- [ ] Resolve concrete DESIGN review against this plan and current sources, including
+- [x] Resolve concrete DESIGN review against this plan and current sources, including
   exact visibility/current-member and full lifecycle semantics. Source rules stay
   authoritative; no silent exemption for hidden or dissolved factions.
 - [ ] Add one cheap causal Unit Fact AuthoredHealingRoleSurvivesExistingNormalization
@@ -107,8 +114,9 @@ repository, no alternates/dependency or known active owner. Target absence verif
 measured free space rose7.098648GiB to7.456280GiB. This removes no primary history,
 actual external measurement, current bin evidence or user saves; no new clone/restore,
 GC, force-push or merge. Full retirement proofs remain external. Original400MiB
-build-start and128MiB runtime floors/full capture apply. Current status DESIGN only:
-no role source/test change, build or runtime has yet been performed.
+build-start and128MiB runtime floors/full capture apply. Astra/high DESIGN accepted with the eligibility details above. The one causal
+Unit Fact/catalog/selection scaffold is now authored, not compiled or run. No role
+production change has been made. Current changed-test build/Plan/PREP/RED is next.
 
 ---
 
