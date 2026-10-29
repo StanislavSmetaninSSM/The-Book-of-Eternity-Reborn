@@ -7,6 +7,13 @@
       "contracts": [
         "#1536 T120-CHAOS-TARGETS / FR070,072–076; display/navigation never grants consent or stages a treatment"
       ]
+    },
+    {
+      "category": "wound-target-choice-contract",
+      "reason": "T120-CHAOS-TARGETS detached Self-first typed nearby target read model, exact hidden owner/locality/wound bindings, public duplicate-name context, hidden/empty wounds, malformed membership and old-token ordering without treatment permission.",
+      "contracts": [
+        "#1536 T120-CHAOS-TARGETS typed display/navigation DATA, no new treatment authority"
+      ]
     }
   ]
 }

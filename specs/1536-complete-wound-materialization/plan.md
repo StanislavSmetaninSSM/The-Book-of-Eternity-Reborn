@@ -70,6 +70,16 @@ outsidecheckout prefix target-choice-causal-{build,catalog,plan,preflight,red}-1
 verified-semantic-red.json retains exact failure/source/TRX. GREEN/actualtarget
 capability still UNIMPLEMENTED/UNRUN, no capability PASS inferred.
 
+GREEN WIP1 (uncompiled/unreviewed): new pure WoundTargetSelectionService and
+immutable public summaries/hidden typed bindings, WoundCommandState target phase,
+independent minimal Unit contract fixtures written first. Covers Self-first/current
+Guardian+residents/no-grant known/hidden/empty wounds, public context ambiguity,
+exact join refusals and frozen old-token/reordered-list/changed-wound binding.
+No filesystem/retained cache in the pure service; prepared catalog indexed once.
+Application integration, actual UI/lifecycle/race/source-count tests and GM sync
+remain pending; existing-API causal behavior is not GREEN yet. No project execution
+with new production code, no capability/qualification claim.
+
 Optimization decision: reuse one existing context/catalog/effects and one parsed
 Guardian/roster read per invocation for BOTH target and aid consumers. One lookup
 over already prepared wound DATA; no across-prompt cache. Each navigation/final

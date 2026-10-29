@@ -2,6 +2,37 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "wound-target-choice-contract",
+  "responsibility": "T120-CHAOS-TARGETS detached Self-first typed nearby target read model, exact hidden owner/locality/wound bindings, public duplicate-name context, hidden/empty wounds, malformed membership and old-token ordering without treatment permission.",
+  "excludes": "No real consent, staged treatment, browser lifecycle or Engine/DOM/provider/freshprocess qualification.",
+  "changeHints": [
+    "BookOfEternityClient.Tests/WoundTargetSelectionContractTests.cs",
+    "BookOfEternityClient/Services/WoundTargetSelectionService.cs",
+    "BookOfEternityClient/Services/WoundCommandState.cs"
+  ],
+  "related": [
+    {
+      "id": "wound-target-choice-causal",
+      "when": "Select together when the actual initial navigation or target binding contract changes."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.WoundTargetSelectionContractTests.*"
+      ]
+    }
+  ]
+},
+{
   "id": "wound-target-choice-causal",
   "responsibility": "T120-CHAOS-TARGETS existing OpenAsync must show Self and a visible reachable current Guardian before wound choice even without an aid grant. Minimal real read fixture proves valid Self art and whole-tree inertness before missing navigation assertion.",
   "excludes": "No new treatment authority, accepted grant/Engine journey, crossrealm nearby scope, paid services, DOM/provider/freshprocess or replay of accepted105.",
