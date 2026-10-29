@@ -34,6 +34,9 @@ public sealed partial class ExplorerWebPromptSessionService
     private readonly BrowserAfterlifeWriteService _afterlifeWriteService;
     private readonly BrowserSarefStoryWriteService _sarefStoryWriteService;
 
+    // A bounded typed fixture seam before Main admission; normal operation has no callback.
+    internal Func<Task>? WoundSnapshotObservedForTesting { get; init; }
+
     public ExplorerWebPromptSessionService(
         FileSystemManager fs,
         StateManager? stateManager = null,
@@ -263,6 +266,9 @@ public sealed partial class ExplorerWebPromptSessionService
         if (snapshot is null)
             return MissingSessionResult(request.SessionId);
 
+        if (snapshot.Result.WoundCommandState is not null && WoundSnapshotObservedForTesting is { } observed)
+            await observed();
+
         try
         {
             return await SessionOperationContext.RunBoundAsync(
@@ -460,6 +466,9 @@ public sealed partial class ExplorerWebPromptSessionService
         var snapshot = await GetLiveSnapshotAsync(request.SessionId);
         if (snapshot is null)
             return MissingSessionResult(request.SessionId);
+
+        if (snapshot.Result.WoundCommandState is not null && WoundSnapshotObservedForTesting is { } observed)
+            await observed();
 
         try
         {

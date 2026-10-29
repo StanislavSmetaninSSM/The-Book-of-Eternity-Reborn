@@ -1310,3 +1310,21 @@ never new permission. Both journals preserve the old prefix and append one exact
 current entry. C4 restores submitted prepared request/die/raw memory command; outer
 rollback restores accepted offer state. No changes to paid economics or Mortal
 contracts; provider, DOM and fresh-process qualification are separate.
+
+
+wound_target_navigation_v1: /лечить в текущей безопасной Обители Хранителя Моря Хаоса
+сначала предлагает «Себя», затем видимых присутствующих Хранителя и жителей — даже
+без согласия на лечение. Одноимённых обитателей различают только уже известные
+роль, описание и Обитель; неразличимые варианты недоступны. Идентификаторы, скрытые
+раны, мысли и отпечатки не раскрываются. После выбора показываются известные раны
+и доступные прежние способы; цель без допустимого способа получает только оценку.
+Выбор цели и отмена не дают согласия, не бросают кость и не расходуют цикл/ресурсы.
+Получая частную помощь, игрок выбирает «Себя» как пациента, а затем предложение
+помощи. Только отдельное подтверждение ставит прежнее действие в очередь; клиент
+заново проверяет цель, рану, местность, поколение, согласие и актуальную UI-lease.
+В shared browser API первый пакет содержит ТОЛЬКО wound_target, второй — ТОЛЬКО
+wound_selection и confirm_wound_treatment. Ответы другого шага отвергаются.
+Это навигация клиента, не новый GM response/pending/receipt и не новое право лечить.
+Прежние self/aid3/4/5/6 и духовное боевое лечение сохраняют свои правила; для одиночной
+Self-цели/боя остаётся прямой выбор раны. US5 целиком, DOM/provider и fresh-process
+этим не квалифицируются. Пример: Examples/E_CLI_Afterlife_Turns.txt, wound_target_navigation_v1.

@@ -56,10 +56,12 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
         if (receiveAid)
         {
             Assert.False(selection.Aid!.PlayerConfirmed); // Menu/record alone never confirms for the player.
-            var choices = (await WoundApplicationService.OpenAsync(files, "/лечить", treatment: true)).WoundCommandState!;
+            var targets = (await WoundApplicationService.OpenAsync(files, "/лечить", treatment: true)).WoundCommandState!;
+            var self = Assert.Single(targets.Targets, t => t.Owner.OwnerKind == "player_soul");
+            await using var confirmationLease = await files.AcquireCanonicalWriteLeaseAsync();
+            var choices = (await WoundApplicationService.SelectTargetAsync(files, confirmationLease, targets, self.Value, "/лечить")).WoundCommandState!;
             var choice = Assert.Single(choices.Choices, c => c.Available);
             Assert.True(choice.Selection.Aid!.ReceiveAid);
-            await using var confirmationLease = await files.AcquireCanonicalWriteLeaseAsync();
             var before = fixture.CaptureMutationRoots([PendingPlayerActionService.PendingPath]);
             var unconfirmed = await AfterlifeWoundTreatmentAuthority.StagePlayerAidTurnAsync(files, confirmationLease, scheduler,
                 "session_spiritual_healing", "request_aid", 44, selection, Draw);

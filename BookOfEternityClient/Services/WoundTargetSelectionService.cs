@@ -61,13 +61,14 @@ internal static class WoundTargetSelectionService
                     "Хранитель · " + abodeName, locality));
         }
         catch (Exception failure) when (Malformed(failure)) { }
-        foreach (var profile in profiles.Where(p => p["actorType"]?.GetValue<string>() == "resident"))
+        foreach (var profile in profiles.Where(p => Read(p["actorType"]) == "resident"))
         {
             try
             {
                 var owner = new WoundOwnerCoordinate("chaos_sea", "resident", SpiritualTreatmentParticipation.ProfileId(profile), WoundCarrierCatalog.AfterlifeProfilesPath);
                 _ = SpiritualTreatmentParticipation.RequireResidentParticipantScope(guardians!, residents,
                     context.Input.Carriers.AfterlifeProfiles!, owner);
+                if (profile["locationId"]?.GetValue<string>() != scope.LocationId) continue;
                 var row = residents!["entries"]!.AsArray().OfType<JsonObject>().Single(r => r["residentId"]?.GetValue<string>() == owner.OwnerId);
                 var publicContext = string.Join(" · ", new[] { "Житель Обители", abodeName, Read(row["roleLabel"]), Read(row["summary"]) }.Where(v => v.Length > 0));
                 nearby.Add(Create(owner, Name(profile, Read(row["displayName"]), "Житель Обители"), publicContext, locality));

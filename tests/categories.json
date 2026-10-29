@@ -2,6 +2,96 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "wound-target-choice-lifecycle",
+  "responsibility": "Actual shared browser exact-snapshot cancellation/final/expiry and foreign UI-token races, under existing Main/canonical authority.",
+  "excludes": "No Engine/DOM/provider/fresh-process.",
+  "changeHints": [
+    "BookOfEternityClient/WebUi/ExplorerWebPromptSessionService.Wounds.cs"
+  ],
+  "related": [
+    {
+      "id": "wound-target-choice-causal",
+      "when": "Navigation contract changes require causal initial prompt coverage."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.WoundTargetSelectionTests.BrowserOldCancelCannotRemoveAdvancedSameSessionPhase",
+        "BookOfEternityClient.Tests.WoundTargetSelectionTests.BrowserOldFinalCannotPublishAfterCancellationAndReplacementForm",
+        "BookOfEternityClient.Tests.WoundTargetSelectionTests.BrowserLostOrExpiredUiAuthorityPreservesForeignLease"
+      ]
+    }
+  ]
+},
+{
+  "id": "wound-target-choice-reads",
+  "responsibility": "Actual sealed passive source counts: one parsed locality input per navigation invocation, fresh changed profile refusal and inert output.",
+  "excludes": "No speedup or all-filesystem claim; no arbitrary read callback or Engine.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/WoundTargetSelectionTests.Reads.cs"
+  ],
+  "related": [
+    {
+      "id": "wound-target-choice-causal",
+      "when": "Navigation contract changes require causal initial prompt coverage."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.WoundTargetSelectionTests.TargetNavigationSharesPreparedSourcesAndRechecksChangedProfile"
+      ]
+    }
+  ]
+},
+{
+  "id": "wound-target-choice-gm",
+  "responsibility": "Closed two-phase worked client packets, both daemon directives and synchronized GM/CLI/Matrix/source documentation.",
+  "excludes": "No new mechanical output schema or standalone grant; actual UI/Engine separately.",
+  "changeHints": [
+    "BookOfEternityClient.Tests/WoundTargetSelectionDocumentationTests.cs",
+    "Examples/E_CLI_Afterlife_Turns.txt"
+  ],
+  "related": [
+    {
+      "id": "wound-target-choice-causal",
+      "when": "Navigation contract changes require causal initial prompt coverage."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.WoundTargetSelectionDocumentationTests.*"
+      ]
+    }
+  ]
+},
+{
   "id": "wound-target-choice-browser",
   "responsibility": "T120-CHAOS-TARGETS actual shared browser API target/wound phases, closed answers, inert cancellation and no-grant views, fresh authority and exact-snapshot lifecycle races.",
   "excludes": "No Engine/DOM/provider/fresh-process or broader US5 acceptance.",
@@ -21,7 +111,11 @@
     {
       "project": "integration",
       "tests": [
-        "BookOfEternityClient.Tests.WoundTargetSelectionTests.Browser*"
+        "BookOfEternityClient.Tests.WoundTargetSelectionTests.BrowserTargetAndWoundPhasesCancelWithoutTreatmentSideEffects",
+        "BookOfEternityClient.Tests.WoundTargetSelectionTests.BrowserVisibleActorWithoutGrantIsReadOnlyAndReplayedTargetAnswersCannotConfirmSelf",
+        "BookOfEternityClient.Tests.WoundTargetSelectionTests.BrowserConfirmedSelfQueuesOnceAndCompletedReplayCannotQueueAgain",
+        "BookOfEternityClient.Tests.WoundTargetSelectionTests.BrowserChangedTargetOrSessionCannotAdvance",
+        "BookOfEternityClient.Tests.WoundTargetSelectionTests.BrowserFinalRechecksSelectedWoundAndLocality"
       ]
     }
   ]

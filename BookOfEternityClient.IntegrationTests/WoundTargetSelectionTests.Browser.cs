@@ -67,20 +67,199 @@ public sealed partial class WoundTargetSelectionTests
         Assert.Equal(before, fixture.Snapshot());
     }
 
+    /// <summary>The second phase queues exactly one unchanged self action; navigation itself draws nothing.</summary>
+    [Fact]
+    public async Task BrowserConfirmedSelfQueuesOnceAndCompletedReplayCannotQueueAgain()
+    {
+        await using var fixture = await CreateTargetFixtureAsync(); var commands = Commands(fixture.Files);
+        var before = await fixture.Files.ReadFileBytesAsync(WoundHistoryState.HistoryPath);
+        var first = await commands.ExecuteAsync(new("/лечить", "target_browser"));
+        var second = await commands.SubmitPromptSessionAsync(new(first.InteractiveSession!.SessionId,
+            new() { ["wound_target"] = JsonValue.Create("target_0") }, "target_browser"));
+        var selection = Assert.IsType<UiSelectionPrompt>(Assert.Single(second.Prompts, p => p.Id == "wound_selection"));
+        var answers = new Dictionary<string, JsonNode?> { ["wound_selection"] = JsonValue.Create(Assert.Single(selection.Options, o => !o.Disabled).Value), ["confirm_wound_treatment"] = JsonValue.Create(true) };
+        var final = await commands.SubmitPromptSessionAsync(new(second.InteractiveSession!.SessionId, answers, "target_browser"));
+        Assert.Equal(CommandExecutionState.Completed, final.State);
+        var queued = Assert.IsType<byte[]>(await fixture.Files.ReadFileBytesAsync(PendingPlayerActionService.PendingPath));
+        await commands.SubmitPromptSessionAsync(new(second.InteractiveSession.SessionId, answers, "target_browser"));
+        Assert.Equal(queued, await fixture.Files.ReadFileBytesAsync(PendingPlayerActionService.PendingPath));
+        Assert.Equal(before, await fixture.Files.ReadFileBytesAsync(WoundHistoryState.HistoryPath));
+        Assert.Null(await fixture.Files.ReadFileBytesAsync(AcceptedMechanicsPlan.WoundCommandPath));
+    }
+
+    /// <summary>Cancellation captured before phase advance cannot erase the new exact snapshot.</summary>
+    [Fact]
+    public async Task BrowserOldCancelCannotRemoveAdvancedSameSessionPhase()
+    {
+        var gate = new TargetRaceGate();
+        await using var fixture = await CreateTargetFixtureAsync();
+        var prompts = new ExplorerWebPromptSessionService(fixture.Files) { WoundSnapshotObservedForTesting = gate.AfterSnapshotAsync };
+        var commands = Commands(fixture.Files, prompts); var before = fixture.Snapshot();
+        var first = await commands.ExecuteAsync(new("/лечить", "target_browser"));
+        var oldCancel = gate.RunAsync(() => commands.CancelPromptSessionAsync(new(first.InteractiveSession!.SessionId, "target_browser")));
+        try
+        {
+            await gate.Reached.Task.WaitAsync(TimeSpan.FromSeconds(10));
+            var second = await commands.SubmitPromptSessionAsync(new(first.InteractiveSession!.SessionId,
+                new() { ["wound_target"] = JsonValue.Create("target_0") }, "target_browser"));
+            Assert.Equal(CommandExecutionState.RequiresInput, second.State);
+            gate.Release(); await oldCancel;
+            var live = await commands.GetPromptSessionAsync(second.InteractiveSession!.SessionId);
+            Assert.Contains(live.Prompts, p => p.Id == "wound_selection");
+            await commands.CancelPromptSessionAsync(new(second.InteractiveSession.SessionId, "target_browser"));
+            Assert.Equal(before, fixture.Snapshot());
+        }
+        finally { gate.Release(); await oldCancel; }
+    }
+
+    /// <summary>A cancelled old final cannot publish or release a newly opened form's lock.</summary>
+    [Fact]
+    public async Task BrowserOldFinalCannotPublishAfterCancellationAndReplacementForm()
+    {
+        var gate = new TargetRaceGate();
+        await using var fixture = await CreateTargetFixtureAsync();
+        var prompts = new ExplorerWebPromptSessionService(fixture.Files) { WoundSnapshotObservedForTesting = gate.AfterSnapshotAsync };
+        var commands = Commands(fixture.Files, prompts); var before = fixture.Snapshot();
+        var first = await commands.ExecuteAsync(new("/лечить", "target_browser"));
+        var second = await commands.SubmitPromptSessionAsync(new(first.InteractiveSession!.SessionId,
+            new() { ["wound_target"] = JsonValue.Create("target_0") }, "target_browser"));
+        var choice = Assert.Single(Assert.IsType<UiSelectionPrompt>(Assert.Single(second.Prompts, p => p.Id == "wound_selection")).Options, o => !o.Disabled);
+        var oldFinal = gate.RunAsync(() => commands.SubmitPromptSessionAsync(new(second.InteractiveSession!.SessionId,
+            new() { ["wound_selection"] = JsonValue.Create(choice.Value), ["confirm_wound_treatment"] = JsonValue.Create(true) }, "target_browser")));
+        try
+        {
+            await gate.Reached.Task.WaitAsync(TimeSpan.FromSeconds(10));
+            await commands.CancelPromptSessionAsync(new(second.InteractiveSession!.SessionId, "target_browser"));
+            var replacement = await commands.ExecuteAsync(new("/лечить", "target_browser"));
+            var lockBefore = await fixture.Files.ReadFileBytesAsync(LocalUiSessionLockService.LockPath);
+            Assert.NotEqual(first.InteractiveSession.SessionId, replacement.InteractiveSession!.SessionId);
+            gate.Release(); await oldFinal;
+            Assert.Null(await fixture.Files.ReadFileBytesAsync(PendingPlayerActionService.PendingPath));
+            Assert.Equal(lockBefore, await fixture.Files.ReadFileBytesAsync(LocalUiSessionLockService.LockPath));
+            Assert.Contains((await commands.GetPromptSessionAsync(replacement.InteractiveSession.SessionId)).Prompts, p => p.Id == "wound_target");
+            await commands.CancelPromptSessionAsync(new(replacement.InteractiveSession.SessionId, "target_browser"));
+            Assert.Equal(before, fixture.Snapshot());
+        }
+        finally { gate.Release(); await oldFinal; }
+    }
+
+    /// <summary>Expired/lost authority never reacquires the UI lease or removes a foreign token.</summary>
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task BrowserLostOrExpiredUiAuthorityPreservesForeignLease(bool expireSession)
+    {
+        await using var fixture = await CreateTargetFixtureAsync();
+        var clock = new TargetClock(DateTimeOffset.UtcNow);
+        var locks = new LocalUiSessionLockService(fixture.Files, clock);
+        var prompts = new ExplorerWebPromptSessionService(fixture.Files, lockService: locks, timeProvider: clock);
+        var commands = Commands(fixture.Files, prompts); var before = fixture.Snapshot();
+        var first = await commands.ExecuteAsync(new("/лечить", "target_browser"));
+        clock.Advance(expireSession ? TimeSpan.FromMinutes(21) : TimeSpan.FromMinutes(3));
+        var foreign = await locks.AcquireOrRefreshAsync(new("foreign", "browser", "Other", TimeSpan.FromSeconds(120)), "foreign");
+        Assert.True(foreign.Acquired);
+        var token = await fixture.Files.ReadFileBytesAsync(LocalUiSessionLockService.LockPath);
+        await commands.SubmitPromptSessionAsync(new(first.InteractiveSession!.SessionId,
+            new() { ["wound_target"] = JsonValue.Create("target_0") }, "target_browser"));
+        await commands.CancelPromptSessionAsync(new(first.InteractiveSession.SessionId, "target_browser"));
+        Assert.Equal(token, await fixture.Files.ReadFileBytesAsync(LocalUiSessionLockService.LockPath));
+        Assert.Null(await fixture.Files.ReadFileBytesAsync(PendingPlayerActionService.PendingPath));
+        Assert.True(await locks.ReleaseAsync(foreign.Lease!)); Assert.Equal(before, fixture.Snapshot());
+    }
+
+    /// <summary>Fresh target membership and actual owner/generation remain mandatory before phase advance.</summary>
+    [Theory]
+    [InlineData("moved")]
+    [InlineData("hidden")]
+    [InlineData("generation")]
+    [InlineData("owner")]
+    public async Task BrowserChangedTargetOrSessionCannotAdvance(string change)
+    {
+        await using var fixture = await CreateTargetFixtureAsync(); var commands = Commands(fixture.Files);
+        var first = await commands.ExecuteAsync(new("/лечить", "target_browser"));
+        var other = Assert.Single(Assert.IsType<UiSelectionPrompt>(Assert.Single(first.Prompts)).Options, o => o.Label.Contains("Хранитель выбора", StringComparison.Ordinal));
+        await using (var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync())
+        {
+            if (change == "generation") fixture.Files.RotateSessionGeneration(lease);
+            if (change is "moved" or "hidden")
+            {
+                var profiles = JsonNode.Parse((await fixture.Files.ReadFileAsync(lease, WoundCarrierCatalog.AfterlifeProfilesPath))!)!;
+                profiles["profiles"]![1]![change == "hidden" ? "visibility" : "locationId"] = change == "hidden" ? "gm_only" : "elsewhere";
+                await fixture.Files.WriteFileAtomicAsync(lease, WoundCarrierCatalog.AfterlifeProfilesPath, profiles.ToJsonString());
+            }
+        }
+        var result = await commands.SubmitPromptSessionAsync(new(first.InteractiveSession!.SessionId,
+            new() { ["wound_target"] = JsonValue.Create(other.Value) }, change == "owner" ? "foreign" : "target_browser"));
+        Assert.DoesNotContain(result.Prompts, p => p.Id == "wound_selection");
+        Assert.Null(await fixture.Files.ReadFileBytesAsync(PendingPlayerActionService.PendingPath));
+        await commands.CancelPromptSessionAsync(new(first.InteractiveSession.SessionId, "target_browser"));
+    }
+
+    /// <summary>Final confirmation rechecks the actual Self wound and current locality after navigation.</summary>
+    [Theory]
+    [InlineData("history")]
+    [InlineData("locality")]
+    public async Task BrowserFinalRechecksSelectedWoundAndLocality(string changed)
+    {
+        await using var fixture = await CreateTargetFixtureAsync(); var commands = Commands(fixture.Files);
+        var first = await commands.ExecuteAsync(new("/лечить", "target_browser"));
+        var second = await commands.SubmitPromptSessionAsync(new(first.InteractiveSession!.SessionId,
+            new() { ["wound_target"] = JsonValue.Create("target_0") }, "target_browser"));
+        var choice = Assert.Single(Assert.IsType<UiSelectionPrompt>(Assert.Single(second.Prompts, p => p.Id == "wound_selection")).Options, o => !o.Disabled);
+        if (changed == "history") await fixture.DamageAsync("stale_history");
+        else
+        {
+            await using var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync();
+            var path = AfterlifeWoundTreatmentAuthority.AidLocalityPaths[0];
+            var root = JsonNode.Parse((await fixture.Files.ReadFileAsync(lease, path))!)!;
+            root["chaosSeaNavigation"]!["currentAbodeId"] = "another_abode";
+            await fixture.Files.WriteFileAtomicAsync(lease, path, root.ToJsonString());
+        }
+        var result = await commands.SubmitPromptSessionAsync(new(second.InteractiveSession!.SessionId,
+            new() { ["wound_selection"] = JsonValue.Create(choice.Value), ["confirm_wound_treatment"] = JsonValue.Create(true) }, "target_browser"));
+        Assert.Equal(CommandExecutionState.RequiresInput, result.State);
+        Assert.Contains(result.Notifications, n => n.Severity == UiNotificationSeverity.Error);
+        Assert.Null(await fixture.Files.ReadFileBytesAsync(PendingPlayerActionService.PendingPath));
+        await commands.CancelPromptSessionAsync(new(second.InteractiveSession.SessionId, "target_browser"));
+    }
+
+    private sealed class TargetClock(DateTimeOffset now) : TimeProvider
+    {
+        private DateTimeOffset _now = now;
+        public override DateTimeOffset GetUtcNow() => _now;
+        internal void Advance(TimeSpan delta) => _now += delta;
+    }
+
+    private sealed class TargetRaceGate
+    {
+        private readonly AsyncLocal<bool> _selected = new();
+        private int _remaining = 1;
+        internal TaskCompletionSource Reached { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        private readonly TaskCompletionSource _released = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        internal async Task AfterSnapshotAsync()
+        {
+            if (!_selected.Value || Interlocked.Exchange(ref _remaining, 0) != 1) return;
+            Reached.TrySetResult(); await _released.Task;
+        }
+        internal async Task<ExplorerCommandResult> RunAsync(Func<Task<ExplorerCommandResult>> operation)
+        { _selected.Value = true; try { return await operation(); } finally { _selected.Value = false; } }
+        internal void Release() => _released.TrySetResult();
+    }
+
     private static ExplorerWebCommandService Commands(FileSystemManager files, ExplorerWebPromptSessionService? prompts = null)
     {
         var state = new StateManager(files, new GameSettings(), NullLogger<StateManager>.Instance);
         return new(files, state, new LocalizationManager(), new ValidationService(files, NullLogger<ValidationService>.Instance), prompts);
     }
 
-    private async Task<WoundPlayerReadFixture> CreateTargetFixtureAsync()
+    private async Task<WoundPlayerReadFixture> CreateTargetFixtureAsync(CanonicalReadActivityAccumulator? reads = null)
     {
         var wound = WoundContractTestData.CreateSpiritualActiveWound("wound_target_flow", "chaos_sea", "player_soul", "player_soul", WoundCarrierCatalog.AfterlifeProfilesPath);
         var input = WoundPlayerProjectionTestData.InputInRealm("chaos_sea", wound);
         input.Carriers.AfterlifeProfiles!["profiles"]![0]!["standardArts"] = new JsonObject { ["spiritual_healing"] = 3 };
         input.Carriers.AfterlifeProfiles["profiles"]!.AsArray().Add(new JsonObject
         { ["actorType"] = "guardian", ["actorId"] = "guardian_target_flow", ["displayName"] = "Хранитель выбора", ["realm"] = "Chaos Sea", ["locationId"] = "abode_target_flow", ["activeWounds"] = new JsonArray(), ["activeEffects"] = new JsonArray() });
-        var fixture = await WoundPlayerReadFixture.CreateAsync(output, realm: "chaos_sea", suppliedInput: input);
+        var fixture = await WoundPlayerReadFixture.CreateAsync(output, realm: "chaos_sea", suppliedInput: input, reads: reads);
         try
         {
             await using var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync();

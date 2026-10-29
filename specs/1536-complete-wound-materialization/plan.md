@@ -107,6 +107,28 @@ and cross-phase replay. Remaining race/source-count/caller tests and GM sync are
 pending; no GREEN runtime yet. 2026-10-29 06:02UTC same environment connected,
 no live build/test/reviewer, remote b8d1fe17 verified; RED result not repeated.
 
+GREEN WIP4, source candidate (all new C# still UNCOMPILED/UNRUN): finite real
+browser tests now cover target/wound cancellation, no-grant view, cross-phase keys,
+once-only queue, owner/generation/moved/hidden targets, final stale History/locality,
+foreign/expired lock and old-cancel/new-phase plus old-final/replacement races. The
+race pauses after real snapshot lookup BEFORE Main admission through one internal
+init-only wound-only test seam; the physical-lock seam would already own Main and
+was rejected by independent preparation audit before runtime. No normal callback,
+mutable store exposure, new authority or changed DATA cache path. Existing passive
+canonical counters cover one shared Guardian/roster read per invocation and fresh
+changed-profile refusal; this is not an all-filesystem/speedup claim.
+
+Proven aid fixture adapters now select PATIENT, Self when receiving help, before
+existing wound/confirmation. Selected actual regressions: console resident patient5,
+sharedbrowser resident helper6, and backend confirmed helper6. They changed at this
+boundary and are not repetitions of unchanged accepted105. Other old PASSES retained
+on original lineages. GM/CLI/Matrix/both effective daemon/worked example/manifest
+and typed documentation guard synced as wound_target_navigation_v1. It adds no GM
+schema, so extends the existing resident-help example coverage rather than inventing
+a new effect-materialization family. Cheap selection is causal+contract+browser+
+lifecycle+reads+GM, coherent singleton groups within unchanged60s; actual consumers
+retain180s each. SOURCE/selection/discovery/exactPlan/PREP/builds/GREEN pending.
+
 # T108-RESIDENT-HELP accepted — resident offers free treatment to the player
 
 2026-10-29, #1536. Visible conscious/capable resident of the CURRENT Chaos Guardian

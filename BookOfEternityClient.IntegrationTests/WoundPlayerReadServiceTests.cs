@@ -244,7 +244,7 @@ internal sealed class WoundPlayerReadFixture(ITestOutputHelper output) : IAsyncD
     internal int LockOpens { get; private set; }
     internal int MutationCalls { get; private set; }
 
-    internal static async Task<WoundPlayerReadFixture> CreateAsync(ITestOutputHelper output, bool empty = false, string realm = "mortal_world", bool hiddenSelf = false, bool includeOldSoul = false, bool targetMaterials = false, WoundPlayerProjectionInput? suppliedInput = null)
+    internal static async Task<WoundPlayerReadFixture> CreateAsync(ITestOutputHelper output, bool empty = false, string realm = "mortal_world", bool hiddenSelf = false, bool includeOldSoul = false, bool targetMaterials = false, WoundPlayerProjectionInput? suppliedInput = null, CanonicalReadActivityAccumulator? reads = null)
     {
         var fixture = new WoundPlayerReadFixture(output);
         try
@@ -254,6 +254,7 @@ internal sealed class WoundPlayerReadFixture(ITestOutputHelper output) : IAsyncD
                 new FileSystemManagerHooks
                 {
                     BeforeCanonicalWriteLockOpenAsync = () => { fixture.LockOpens++; return Task.CompletedTask; },
+                    PassiveCanonicalReads = reads,
                     BeforeCanonicalMutationBoundaryAsync = _ => { fixture.MutationCalls++; return Task.CompletedTask; }
                 });
             fixture.Files.EnsureDirectoryStructure();

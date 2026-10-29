@@ -13737,3 +13737,24 @@ preserve existing checks after departure; live new admission still requires the
 resident present in the same current Abode. Common fault restores exact prepared44
 request/die/report and submitted memory command; outer rollback restores accepted43
 and both old journal prefixes. No paid/public/combat/helpless/Shining completion.
+
+
+wound_target_navigation_v1 — worked client navigation, not a GM response
+A current visible resident offers private free help using the preceding accepted
+spiritual_resident_help_v6 contract. The player PATIENT chooses «Себя» (Self first).
+Public role/location distinguishes equal names; hidden facts and IDs stay private.
+The first sharedbrowser prompt accepts only this answer object:
+```json
+{"wound_target":"target_0"}
+```
+The SAME session advances to wound/method and clears earlier answers. This second
+answer object confirms the chosen existing lawful method:
+```json
+{"wound_selection":"wound_0","confirm_wound_treatment":true}
+```
+Client-issued values are opaque and bind the original exact target/wound; a stale
+index never retargets. Navigation/cancel: ZERO queue/draw/cycle/resources. Missing
+grant/unknown or hidden-only wound: read-only empty/requirements view, no consent
+inferred. Final confirmation rechecks actual target/locality/wound/source/consent,
+generation and UI lease; cross-phase answers refuse. No new GM output schema;
+existing self/aid3/4/5/6 requests and authored healing graphs remain unchanged.

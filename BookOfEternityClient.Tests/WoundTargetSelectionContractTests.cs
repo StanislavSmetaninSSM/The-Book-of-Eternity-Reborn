@@ -69,6 +69,7 @@ public sealed class WoundTargetSelectionContractTests
     [InlineData("duplicate_roster")]
     [InlineData("confusable_profile")]
     [InlineData("alias_conflict")]
+    [InlineData("raw_location")]
     public void InvalidNearbyIdentityCannotBeSelected(string scenario)
     {
         var (context, guardians, residents) = Inputs();
@@ -82,6 +83,7 @@ public sealed class WoundTargetSelectionContractTests
             case "foreign_abode": row["abodeId"] = "abode_elsewhere"; break;
             case "duplicate_roster": residents["entries"]!.AsArray().Add(row.DeepClone()); break;
             case "confusable_profile": var alias = profile.DeepClone(); alias["actorId"] = "RESIDENT_A"; context.Input.Carriers.AfterlifeProfiles["profiles"]!.AsArray().Add(alias); break;
+            case "raw_location": profile["locationId"] = " abode_choice "; break;
             default: profile["actorRef"] = "resident_other"; break;
         }
         Assert.DoesNotContain(WoundTargetSelectionService.Build(context, guardians, residents), t => t.Owner.OwnerId == "resident_a");
@@ -109,6 +111,25 @@ public sealed class WoundTargetSelectionContractTests
             WoundTargetSelectionService.Build(changed, sameGuardians, sameResidents)));
     }
 
+    /// <summary>Received help is grouped under the patient Self, not under the provider's target card.</summary>
+    [Fact]
+    public void ReceivedHelpBelongsToSelfAndExportedCollectionsAreDetached()
+    {
+        var (context, guardians, residents) = Inputs();
+        var source = WoundTargetSelectionService.Build(context, guardians, residents).ToArray();
+        var self = source[0]; var guardian = source.Single(t => t.Owner.OwnerKind == "guardian");
+        var aid = new SpiritualAidSelection("guardian_choice", "player_soul", "sha256:" + new string('a', 64)) { ReceiveAid = true };
+        var choice = new WoundTreatmentChoice("aid_0", new("wound_self_choice", "sha256:" + new string('b', 64)) { Aid = aid }, "Рана", "III", 3, true, "");
+        var state = new WoundCommandState("test", [choice]).WithTargets(source);
+        source[0] = guardian;
+        Assert.Equal(self, state.Targets[0]);
+        Assert.Single(state.ForTarget(self).Choices); Assert.Empty(state.ForTarget(guardian).Choices);
+        Assert.Throws<InvalidDataException>(() => state.Resolve(choice.Value));
+        var oldDescription = Assert.Single(self.Wounds).Description;
+        context.Input.Carriers.AfterlifeProfiles!["profiles"]![0]!["activeWounds"]![0]!["display"]!["description"] = "Changed mutable input";
+        Assert.Equal(oldDescription, Assert.Single(state.Targets[0].Wounds).Description);
+    }
+
     private static (WoundPlayerReadContext Context, JsonObject Guardians, JsonObject Residents) Inputs(bool hiddenResidentWound = false, bool changedWound = false)
     {
         var input = WoundPlayerProjectionTestData.InputInRealm("chaos_sea", WoundContractTestData.CreateSpiritualActiveWound(
@@ -128,7 +149,7 @@ public sealed class WoundTargetSelectionContractTests
         var wound = parsed.Wound!; var fp = WoundIdentityState.ComputeSemanticFingerprint(wound);
         var identities = JsonNode.Parse(WoundIdentityState.SerializeCanonical(input.Identities))!.AsObject();
         identities["entries"]!.AsArray().Add(WoundContractTestData.CreateIdentityEntry(wound.WoundId, wound.Owner.Realm, wound.Owner.OwnerKind,
-            wound.Owner.OwnerId, wound.Owner.CarrierPath, "spiritual", semanticFingerprint: fp));
+            wound.Owner.OwnerId, wound.Owner.CarrierPath, "spiritual", lastTransitionOrdinal: 2, semanticFingerprint: fp));
         var history = JsonNode.Parse(WoundHistoryState.SerializeCanonical(input.History))!.AsObject();
         var transition = WoundContractTestData.CreateTransition(); transition["ordinal"] = 2; transition["woundId"] = wound.WoundId;
         transition["transitionId"] = wound.LastTransition.TransitionId; transition["operationKey"] = "create_wound_resident_choice";

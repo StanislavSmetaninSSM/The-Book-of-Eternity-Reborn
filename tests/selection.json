@@ -21,6 +21,48 @@
       "contracts": [
         "#1536 T120-CHAOS-TARGETS; target navigation is not treatment authority"
       ]
+    },
+    {
+      "category": "wound-target-choice-lifecycle",
+      "reason": "Actual shared browser exact-snapshot cancellation/final/expiry and foreign UI-token races, under existing Main/canonical authority.",
+      "contracts": [
+        "#1536 T120-CHAOS-TARGETS"
+      ]
+    },
+    {
+      "category": "wound-target-choice-reads",
+      "reason": "Actual sealed passive source counts: one parsed locality input per navigation invocation, fresh changed profile refusal and inert output.",
+      "contracts": [
+        "#1536 T120-CHAOS-TARGETS"
+      ]
+    },
+    {
+      "category": "wound-target-choice-gm",
+      "reason": "Closed two-phase worked client packets, both daemon directives and synchronized GM/CLI/Matrix/source documentation.",
+      "contracts": [
+        "#1536 T120-CHAOS-TARGETS"
+      ]
+    },
+    {
+      "category": "spiritual-resident-aid-console",
+      "reason": "Changed consumer: actual target→wound navigation must retain exact patient/helper, confirmation and original treatment/History/cycle. Existing proven preparation reused; relevant altered caller only.",
+      "contracts": [
+        "#1536 T120-CHAOS-TARGETS existing aid5/receive6 consumers"
+      ]
+    },
+    {
+      "category": "spiritual-resident-provider-browser",
+      "reason": "Changed consumer: actual target→wound navigation must retain exact patient/helper, confirmation and original treatment/History/cycle. Existing proven preparation reused; relevant altered caller only.",
+      "contracts": [
+        "#1536 T120-CHAOS-TARGETS existing aid5/receive6 consumers"
+      ]
+    },
+    {
+      "category": "spiritual-resident-provider-backend",
+      "reason": "Changed consumer: actual target→wound navigation must retain exact patient/helper, confirmation and original treatment/History/cycle. Existing proven preparation reused; relevant altered caller only.",
+      "contracts": [
+        "#1536 T120-CHAOS-TARGETS existing aid5/receive6 consumers"
+      ]
     }
   ]
 }

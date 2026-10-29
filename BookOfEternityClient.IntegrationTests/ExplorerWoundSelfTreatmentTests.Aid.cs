@@ -246,6 +246,16 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                 fixture.AssertMutationRootsUnchanged(before);
                 Assert.Null(await files.ReadFileBytesAsync(PendingPlayerActionService.PendingPath));
                 var opened = await service.ExecuteAsync(new("/лечить", Owner));
+                var targets = Assert.IsType<UiSelectionPrompt>(Assert.Single(opened.Prompts));
+                Assert.Equal("wound_target", targets.Id); Assert.Equal("Себя", targets.Options[0].Label);
+                var patient = Assert.Single(opened.WoundCommandState!.Targets, t => receiveAid
+                    ? t.Owner.OwnerKind == "player_soul" : t.Owner.OwnerId == participantId);
+                var patientOption = Assert.Single(targets.Options, o => o.Value == patient.Value && !o.Disabled);
+                if (receiveAid) Assert.Equal("Себя", patientOption.Label);
+                opened = await service.SubmitPromptSessionAsync(new(opened.InteractiveSession!.SessionId,
+                    new() { ["wound_target"] = JsonValue.Create(patientOption.Value) }, Owner));
+                fixture.AssertMutationRootsUnchanged(before);
+                Assert.Null(await files.ReadFileBytesAsync(PendingPlayerActionService.PendingPath));
                 var prompt = Assert.IsType<UiSelectionPrompt>(Assert.Single(opened.Prompts, p => p.Id == "wound_selection"));
                 var option = Assert.Single(prompt.Options, p => !p.Disabled);
                 Assert.Contains(resident ? receiveAid ? "жителя" : "Житель" : "Хранител", option.Label);
@@ -337,6 +347,11 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                 var choice = Assert.Single(offered.Choices, c => c.Available);
                 Assert.NotNull(choice.Selection.Aid);
                 if (receiveAid) Assert.False(choice.Selection.Aid!.PlayerConfirmed);
+                Assert.True(offered.IsTargetSelection);
+                var targets = offered.Targets.Where(t => t.Available).ToArray();
+                var patient = Assert.Single(targets, t => receiveAid
+                    ? t.Owner.OwnerKind == "player_soul" : t.Owner.OwnerId == participantId);
+                console.QueueAnySelection((Array.IndexOf(targets, patient) + 1) + ". " + patient.Label);
                 console.QueueAnySelection("1. " + choice.Name + " — " + choice.Severity);
                 console.QueueAnyConfirmResponse(true);
                 var action = await runtime.Explorer.TryProcessCommand("/лечить");
