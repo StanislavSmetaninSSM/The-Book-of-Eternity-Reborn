@@ -738,7 +738,8 @@ internal static partial class ShiningAbodeState
 
     public static string GetFactionLifecycleState(JsonObject? faction)
     {
-        var state = GetNodeString(faction?["factionLifecycle"]?["state"]);
+        var lifecycle = faction?["factionLifecycle"] as JsonObject;
+        var state = GetNodeString(lifecycle?["state"]);
         return IsSupportedFactionLifecycleState(state) ? state! : string.Empty;
     }
 

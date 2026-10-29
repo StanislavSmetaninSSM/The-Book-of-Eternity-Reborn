@@ -3,9 +3,65 @@
   "selections": [
     {
       "category": "shining-faction-healer-causal",
-      "reason": "One causal missing-healer RED before production change; existing complete generic story faction and real raw reference owner, exact unchanged authored bytes.",
+      "reason": "Previously accepted missing-invariant RED must become GREEN through the same supported input; no default healer or mutation.",
       "contracts": [
-        "#1536 T142 / FR083 living faction healer; author-approved broken/dissolved exemption, hidden current factions included"
+        "#1536 T142 / FR083"
+      ]
+    },
+    {
+      "category": "shining-faction-healer-invariant-data",
+      "reason": "Canonical lifecycle shape and private capability versus existing public visibility; no default tier, hidden leak, cache or mutation.",
+      "contracts": [
+        "#1536 T142 / FR083 living healer; historical-only exemption; canonical capability versus public visibility"
+      ]
+    },
+    {
+      "category": "shining-faction-healer-lifecycle",
+      "reason": "Actual raw and post-normalization owners require a living healer in current/hidden/leaderless factions; preserve historical broken/dissolved records and reject malformed lifecycle without throwing.",
+      "contracts": [
+        "#1536 T142 / FR083 living healer; historical-only exemption; canonical capability versus public visibility"
+      ]
+    },
+    {
+      "category": "shining-faction-healer-identity",
+      "reason": "Actual raw/post exact unique resident/profile/materialization/life/art/realm/affiliation and existential multiple-healer controls, including unrelated malformed profile identity.",
+      "contracts": [
+        "#1536 T142 / FR083 living healer; historical-only exemption; canonical capability versus public visibility"
+      ]
+    },
+    {
+      "category": "shining-faction-healer-source-controls",
+      "reason": "Existing owner reads profiles once for1/20independent factions; head+healer reuses one actual materialization validation; authored byte/absence invariance.",
+      "contracts": [
+        "#1536 T142 / FR083 living healer; historical-only exemption; canonical capability versus public visibility"
+      ]
+    },
+    {
+      "category": "shining-faction-healer-route-consumers",
+      "reason": "Affected complete native discovery, player founding, story/Guardian authority and exact required-actor/head/source controls retain original inverse-authority, classification, trade and identity semantics with an authored healer baseline.",
+      "contracts": [
+        "#1536 T142 / FR083 living healer; historical-only exemption; canonical capability versus public visibility"
+      ]
+    },
+    {
+      "category": "shining-faction-healer-documentation",
+      "reason": "Effective GM entrypoints, both daemons, existing role worked example/manifest and lifecycle excerpt state the accepted current-faction invariant and historical-only exception.",
+      "contracts": [
+        "#1536 T142 / FR083 living healer; historical-only exemption; canonical capability versus public visibility"
+      ]
+    },
+    {
+      "category": "shining-healer-capability-data",
+      "reason": "Shared visible capability wrapper is factored through canonical predicate; retain existing hidden/dead/ambiguous/foreign/tier and detached roster guards.",
+      "contracts": [
+        "#1536 T142 / existing Shining healer role/public roster contract"
+      ]
+    },
+    {
+      "category": "documentation-afterlife-entrypoints-coverage",
+      "reason": "Updated effective GM guide/daemon/worked manifest requires exact entrypoint and explicit worked coverage checks.",
+      "contracts": [
+        "#1536 T142 / mandatory afterlife documentation synchronization"
       ]
     }
   ]

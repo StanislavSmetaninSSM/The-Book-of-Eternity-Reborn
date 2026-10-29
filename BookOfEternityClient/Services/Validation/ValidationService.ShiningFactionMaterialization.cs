@@ -5,7 +5,8 @@ namespace BookOfEternityClient.Services;
 
 public partial class ValidationService
 {
-    private async Task
+    /// <summary>Validates current Shining faction references and materialization within one fresh raw or post-normalization invocation.</summary>
+    internal async Task
         ValidateAcceptedTurnShiningFactionMaterializationCompletenessAsync(
             bool rawBeforeNormalization,
             List<ValidationIssue> issues)

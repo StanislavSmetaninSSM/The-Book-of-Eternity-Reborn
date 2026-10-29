@@ -1,6 +1,5 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
-using System.Reflection;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -103,7 +102,9 @@ public sealed partial class FactionMaterializationValidationTests : IDisposable
     private readonly FileSystemManager _fs;
     private readonly ValidationService _validator;
 
-    public FactionMaterializationValidationTests()
+    public FactionMaterializationValidationTests() : this(null) { }
+
+    private FactionMaterializationValidationTests(FileSystemManagerHooks? hooks)
     {
         _rootPath = Path.Combine(
             Path.GetTempPath(),
@@ -112,7 +113,7 @@ public sealed partial class FactionMaterializationValidationTests : IDisposable
 
         _fs = new FileSystemManager(
             _rootPath,
-            NullLogger<FileSystemManager>.Instance);
+            NullLogger<FileSystemManager>.Instance, hooks: hooks);
         _fs.EnsureDirectoryStructure();
         _validator = new ValidationService(
             _fs,
@@ -434,7 +435,7 @@ public sealed partial class FactionMaterializationValidationTests : IDisposable
     }
 
     [Fact]
-    public async Task NewShiningStoryFaction_RequiredStorySurfaceAndSixExactEmptySurfaces_PassRaw()
+    public async Task NewShiningStoryFaction_RequiredHealerAndFiveExactEmptySurfaces_PassRaw()
     {
         await WriteGenericStoryFactionOutcomeAsync(
             BuildCompleteGenericStoryShiningFaction());
@@ -2019,9 +2020,7 @@ public sealed partial class FactionMaterializationValidationTests : IDisposable
         var issues = (await _validator
                 .ValidateAcceptedTurnRawFactionMaterializationAsync())
             .ToList();
-        await InvokeRouteValidationAsync(
-            "ValidatePendingShiningCoreActionResolutionAsync",
-            issues);
+        await _validator.ValidatePendingShiningCoreActionResolutionAsync(issues);
         return issues;
     }
 
@@ -2030,23 +2029,8 @@ public sealed partial class FactionMaterializationValidationTests : IDisposable
         var issues = (await _validator
                 .ValidateAcceptedTurnRawFactionMaterializationAsync())
             .ToList();
-        await InvokeRouteValidationAsync(
-            "ValidatePendingShiningFoundingResolutionAsync",
-            issues);
+        await _validator.ValidatePendingShiningFoundingResolutionAsync(issues);
         return issues;
-    }
-
-    private async Task InvokeRouteValidationAsync(
-        string methodName,
-        List<ValidationIssue> issues)
-    {
-        var method = typeof(ValidationService).GetMethod(
-            methodName,
-            BindingFlags.Instance | BindingFlags.NonPublic);
-        Assert.NotNull(method);
-        var task = method!.Invoke(_validator, new object[] { issues }) as Task;
-        Assert.NotNull(task);
-        await task!;
     }
 
     private async Task WriteCompleteNativeDiscoveryAsync(
@@ -2202,10 +2186,10 @@ public sealed partial class FactionMaterializationValidationTests : IDisposable
             receipt["actionType"] = ShiningCoreActionRequestState.ActionTypeInvestInFaction;
         currentShining["coreActionReceipts"] = new JsonArray(receipt);
 
-        var profiles = new JsonArray(
+        var profiles =
             residentIds
                 .Distinct(StringComparer.Ordinal)
-                .Select(residentId => (JsonNode?)BuildRouteAfterlifeProfile(
+                .Select(residentId => BuildRouteAfterlifeProfile(
                     residentId,
                     includeEnvelope:
                         !string.Equals(mutation, "missing_actor_envelope", StringComparison.Ordinal) ||
@@ -2215,12 +2199,16 @@ public sealed partial class FactionMaterializationValidationTests : IDisposable
                             residentId,
                             residentIds[0],
                             StringComparison.Ordinal)))
-                .ToArray());
-        var profileRoot = new JsonObject
-        {
-            ["schemaVersion"] = 1,
-            [AfterlifeEntityProfileState.ProfilesProperty] = profiles
-        };
+                .ToList();
+        AuthorFixtureFactionHealer(faction, currentResidents, profiles, residentIds[0]);
+        if (!profiles.Any(p => p["actorType"]!.GetValue<string>() == "resident" && p["actorId"]!.GetValue<string>() == existingResidentId))
+            profiles.Add(BuildRouteAfterlifeProfile(existingResidentId, includeEnvelope: true));
+        var existingResident = currentResidentEntries.OfType<JsonObject>().Single(r => r["residentId"]!.GetValue<string>() == existingResidentId);
+        var existingFaction = ((JsonArray)currentShining["factions"]!).OfType<JsonObject>().SingleOrDefault(f => f["factionId"]!.GetValue<string>() == existingFactionId);
+        if (existingFaction is not null && existingResident["shiningFactionId"]!.GetValue<string>() == existingFactionId)
+            AuthorFixtureFactionHealer(existingFaction, currentResidents, profiles, existingResidentId);
+        preTurnResidents["entries"]![0]!["residentRole"] = ShiningAbodeState.ResidentRoleHealingSupport;
+        var profileRoot = BuildAfterlifeProfileRoot(profiles);
         var requestEntries = new JsonArray();
         if (!string.Equals(
                 mutation,
@@ -2345,11 +2333,13 @@ public sealed partial class FactionMaterializationValidationTests : IDisposable
         {
             [ShiningFactionRequestState.RequestsProperty] = requestEntries
         };
-        var supporterProfiles = BuildAfterlifeProfileRoot(
-            supporterIds.Select(residentId =>
-                BuildRouteAfterlifeProfile(
-                    residentId,
-                    includeEnvelope: true)));
+        var profiles = supporterIds.Select(residentId =>
+            BuildRouteAfterlifeProfile(residentId, includeEnvelope: true)).ToList();
+        var healerId = currentEntries.OfType<JsonObject>().First(r =>
+            supporterIds.Contains(r["residentId"]!.GetValue<string>(), StringComparer.Ordinal) &&
+            r["shiningFactionId"]!.GetValue<string>() == materializedFactionId)["residentId"]!.GetValue<string>();
+        AuthorFixtureFactionHealer(faction, currentResidents, profiles, healerId);
+        var supporterProfiles = BuildAfterlifeProfileRoot(profiles);
 
         await WriteCurrentAndSnapshotAsync(
             (ShiningPath, currentShining.ToJsonString()),
@@ -2364,21 +2354,28 @@ public sealed partial class FactionMaterializationValidationTests : IDisposable
     }
 
     private async Task WriteGenericStoryFactionOutcomeAsync(
-        JsonObject faction)
+        JsonObject faction, bool includeHealer = true)
     {
+        var residents = BuildRouteResidentRoot();
+        var profiles = new List<JsonObject>();
+        if (includeHealer) AuthorFixtureFactionHealer(faction, residents, profiles);
         var current = ShiningRoot(faction);
         current["halls"] = new JsonArray(
             BuildShiningHall(
                 "hall_dawn_archive",
                 "Dawn Archive"));
-        await WriteCurrentAndSnapshotAsync(
+        var authored = new List<(string Path, string Json)>
+        {
             (ShiningPath, current.ToJsonString()),
-            (ResidentPath, BuildRouteResidentRoot().ToJsonString()),
+            (ResidentPath, residents.ToJsonString()),
             (SarefStoryPath,
                 BuildSarefStoryRoot(
                     "revealed",
                     "shine_faction_dawn_archive").ToJsonString()),
-            (ShiningPath, ShiningRoot().ToJsonString()));
+            (ShiningPath, ShiningRoot().ToJsonString())
+        };
+        if (includeHealer) authored.Add((AfterlifeProfilesPath, BuildAfterlifeProfileRoot(profiles).ToJsonString()));
+        await WriteCurrentAndSnapshotAsync(authored.ToArray());
     }
 
     private async Task WriteStoryFactionOutcomeAsync(
@@ -2387,6 +2384,9 @@ public sealed partial class FactionMaterializationValidationTests : IDisposable
         JsonObject? guardiansRoot = null,
         IEnumerable<JsonObject>? profiles = null)
     {
+        var residents = BuildRouteResidentRoot();
+        var authoredProfiles = (profiles ?? Array.Empty<JsonObject>()).ToList();
+        AuthorFixtureFactionHealer(faction, residents, authoredProfiles);
         var current = ShiningRoot(faction);
         current["halls"] = new JsonArray(
             BuildShiningHall(
@@ -2395,10 +2395,10 @@ public sealed partial class FactionMaterializationValidationTests : IDisposable
         current["shiningPoliticalActors"] = new JsonArray();
         await WriteCurrentAndSnapshotAsync(
             (ShiningPath, current.ToJsonString()),
-            (ResidentPath, BuildRouteResidentRoot().ToJsonString()),
+            (ResidentPath, residents.ToJsonString()),
             (AfterlifeProfilesPath,
                 BuildAfterlifeProfileRoot(
-                    profiles ?? Array.Empty<JsonObject>())
+                    authoredProfiles)
                     .ToJsonString()),
             (SarefStoryPath,
                 (sarefRoot ?? new JsonObject()).ToJsonString()),
@@ -2534,6 +2534,7 @@ public sealed partial class FactionMaterializationValidationTests : IDisposable
             }
         }
 
+        AuthorFixtureFactionHealer(faction, residentRoot, profiles);
         await WriteCurrentAndSnapshotAsync(
             (ShiningPath, current.ToJsonString()),
             (ResidentPath, residentRoot.ToJsonString()),
@@ -2639,6 +2640,15 @@ public sealed partial class FactionMaterializationValidationTests : IDisposable
                     "Unsupported required actor source mutation.");
         }
 
+        var profiles = new List<JsonObject>
+        {
+            BuildRouteAfterlifeProfile(
+                actorId,
+                includeEnvelope: true,
+                actorType: actorType,
+                canTrade: false)
+        };
+
         if (mutation is
             "duplicate_resident_id_across_factions" or
             "duplicate_political_identity_across_factions")
@@ -2653,6 +2663,8 @@ public sealed partial class FactionMaterializationValidationTests : IDisposable
                 "fmat_shine_faction_other";
             otherFaction["materialization"]!["factionId"] =
                 otherFactionId;
+            AuthorFixtureFactionHealer(otherFaction, residentRoot, profiles);
+            MarkResidentAffiliationsPopulated(otherFaction);
             ((JsonArray)current["factions"]!).Add(
                 otherFaction);
             ((JsonArray)preTurnShining["factions"]!).Add(
@@ -2663,14 +2675,7 @@ public sealed partial class FactionMaterializationValidationTests : IDisposable
                     "Other Archive"));
         }
 
-        var profiles = new[]
-        {
-            BuildRouteAfterlifeProfile(
-                actorId,
-                includeEnvelope: true,
-                actorType: actorType,
-                canTrade: false)
-        };
+        AuthorFixtureFactionHealer(faction, residentRoot, profiles);
         await WriteCurrentAndSnapshotAsync(
             (ShiningPath, current.ToJsonString()),
             (ResidentPath, residentRoot.ToJsonString()),
@@ -2992,7 +2997,7 @@ public sealed partial class FactionMaterializationValidationTests : IDisposable
         faction["factionId"] = factionId;
         faction["hallId"] = hallId;
         faction["baseStrength"] = 50;
-        faction["factionStrength"] = 60;
+        faction["factionStrength"] = 63;
         faction["projects"] = new JsonArray(
             BuildRouteProject(
                 projectId,
@@ -3001,7 +3006,7 @@ public sealed partial class FactionMaterializationValidationTests : IDisposable
             factionId,
             $"fmat_{factionId}_existing",
             hasProjects: true,
-            hasResidents: false,
+            hasResidents: true,
             hasLeadershipHistory: false);
         return faction;
     }
@@ -3421,10 +3426,11 @@ public sealed partial class FactionMaterializationValidationTests : IDisposable
             "fmat_shine_faction_wings_12",
             canTrade: true);
         MarkStoryStatePopulated(faction);
+        MarkResidentAffiliationsPopulated(faction);
         return faction;
     }
 
-    private static JsonObject BuildCompleteGenericStoryShiningFaction()
+    private static JsonObject BuildCompleteGenericStoryShiningFaction(bool includeHealer = true)
     {
         const string factionId = "shine_faction_dawn_archive";
         var faction = BuildCompleteNativeShiningFaction();
@@ -3444,6 +3450,7 @@ public sealed partial class FactionMaterializationValidationTests : IDisposable
         faction["sarefFactionRole"] = "wings_of_angels";
         faction["sarefVisibility"] = "revealed";
         MarkStoryStatePopulated(faction);
+        if (includeHealer) MarkResidentAffiliationsPopulated(faction);
         return faction;
     }
 
@@ -3539,6 +3546,7 @@ public sealed partial class FactionMaterializationValidationTests : IDisposable
             "fmat_shine_faction_guardian_dawn_12",
             canTrade: true);
         MarkStoryStatePopulated(faction);
+        MarkResidentAffiliationsPopulated(faction);
         return faction;
     }
 

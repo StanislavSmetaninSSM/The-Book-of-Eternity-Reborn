@@ -1109,7 +1109,8 @@ public partial class ValidationService
             repairHint: repairHint));
     }
 
-    private async Task ValidatePendingShiningFoundingResolutionAsync(List<ValidationIssue> issues)
+    /// <summary>Checks the existing pending faction-founding resolution and its inverse authority.</summary>
+    internal async Task ValidatePendingShiningFoundingResolutionAsync(List<ValidationIssue> issues)
     {
         var preTurnJson = await ReadRequiredValidatedCurrentPreTurnTrackedFileAsync(
             ShiningFactionRequestState.PendingFoundingsRequestPath,
@@ -1331,7 +1332,8 @@ public partial class ValidationService
         }
     }
 
-    private async Task ValidatePendingShiningCoreActionResolutionAsync(List<ValidationIssue> issues)
+    /// <summary>Checks the existing pending Shining core-action resolution and its inverse authority.</summary>
+    internal async Task ValidatePendingShiningCoreActionResolutionAsync(List<ValidationIssue> issues)
     {
         var preTurnJson = await ReadRequiredValidatedCurrentPreTurnTrackedFileAsync(
             ShiningCoreActionRequestState.PendingActionsRequestPath,

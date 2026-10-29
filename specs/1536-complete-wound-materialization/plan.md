@@ -1,3 +1,29 @@
+# T142 grouped source/test WIP — UNCOMPILED, qualification pending
+
+Canonical/reference implementation is saved through84303621542b9f55ca890578f5f12c8c970b93b4.
+Current delta completes the safe existing lifecycle getter (separate bounded Sol review
+accepted), preserves malformed semantic rejection, and replaces selected native/founding
+fixture private reflection with direct internal existing owner calls; bodies unchanged.
+New actual raw/post lifecycle/knowledge/identity/life/tier/materialization matrices, one/
+twenty source-open counters and deterministic single-error head+healer validation proof
+are written, not run. Unit predicate/hidden-public separation controls are written too.
+Finite selection currently9categories; exact discovered counts remain UNRUN.
+
+Active fixture migration reuses declared native new residents and player supporters;
+native's already-materialized faction also gets its existing resident/profile capability
+and truthful resident bonus. Generic/story/required-actor baselines author a separate
+healer. Receipt population is established in baseline constructors BEFORE deliberate
+negative mutations, not overwritten by writer helpers. The causal fixture explicitly
+retains its original no-healer/no-affiliation input. Existing negative source/profile
+identities remain malformed; no production repair is added for a fixture.
+
+GMguide/matrix/daemon/worked example/manifest synchronization, independent whole SOURCE
+and final exact selection are still NEXT before builds and GREEN qualification. No new
+production test execution has occurred. T143 accepted checkpoint is unchanged; all prior
+limits/raw/retention/HOLD boundaries continue. No cache framework or diagnostic expansion.
+
+---
+
 # T142 implementation WIP — canonical living healer and visible roster
 
 Causal RED on003fff54b4b8539b159dcabead6701ee63bcfed0 independently accepted:
