@@ -1,3 +1,36 @@
+# T108 resident backend PASS — actual guided interfaces next
+
+2026-10-29. Runtime sourceb3fe0243e0c8c2942d09ef7d7864ee744796ca07.
+Final resident backend1PASS27.3505951s; category32.7040374s<180, wall42.8921794s,
+exactcomplete1descriptor/method, no skip/timeout/duplicate, cleanupbothtrue.
+Real retained d20=14 yields III1→II2, activeH3/targetnaturalH0, one aid cycle,
+exactrequest/result/History, nocharge, actual roster append43→43,44 with full old
+prefix/newrow and signedoriginalbyteproof, current/historical distinction and all
+source/expiry/response/old/newmemory refusal controls. Final I is inert including
+roster/interface bytes. Root inspected TRX/summary and all18artifact/48sourcepins
+unchanged. TRX4835d8ec1cfb9c46eeef16570876d91b8fc57719e9f60767c82488dac54e71ac;
+raw resident-final-backend-actual-1 external. Astra finalfixtureSOURCE accepted;
+independent Sol OUTCOME ACCEPT. Earlier fixture failures remain preserved, no
+product permission relaxation or timeout change.
+
+Fresh final Integration refsfalse0errors102exactbaselinewarnings2:29.80 atb3fe;
+Main/Support/Bridge/Unit sources and16artifacts retained unchanged. Catalog3valid
+1050categories/12742methods retained with unchanged ownership/selectors; final exact
+backend Plan1 and UIPlan3 both executed0/bothcleanuptrue. UIPlan3 is exactly actual
+console, sharedbrowser and commonprecommit rollback,180s each/exclusive. Existing
+seeded Engine, native controlled completion, grant43→normalcleanup→guidedcancel/
+confirm→aid44, actual retained productionrandomdie and expectedstages/canonical
+wound (not guaranteed14/II2), two memories, onecycle/nocharge and rollback baselines.
+No externalprovider/browserDOM/freshprocess claim. UI3 remains UNRUN pending PREP.
+
+Distinct backend/cheap/source evidence now66PASS across explicit344f/f201/7d3/dddb/
+c1f/b3fe lineages, NOT a fresh66 run; actual UI3 needed before bounded resident
+capability acceptance. Only this plan/tasks/remainingselection metadata changes
+for next checkpoint; no C# rebuild or passing-case repeat. Before actual UI verify
+metadata-only delta, all artifacts/nonmetadata sourcepins, no liveowners and full
+capture space (last628592640bytes>128MiBreserve). No raw/save/recovery deletion,
+newclone/restore, DFR/Mortal/Windows/performance detour. FullUS4/#1536 still open.
+
 # T108 actual aid publication reached — correct physical normalization proof
 
 2026-10-29. Recoveryactual4 atc1f74a7e8ba4811eac3a1019c01f0e0300a95cd6
