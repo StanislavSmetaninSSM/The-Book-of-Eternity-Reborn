@@ -464,7 +464,8 @@ no new game rule is needed. A read-only Astra/high architecture consultation at
 248263534 identified the exact kind/locality and historical-family boundaries.
 Independent Astra/high DESIGN review found two P2 corrections: separate live joins
 from historical agreement and explicitly cover every changed authority branch. The
-corrections below remain pending delta review; no implementation is admitted yet.
+corrections were independently accepted at94a95321b. Implementation/runtime remain
+UNRUN; first existing-API causal scaffold does not claim live grant authority.
 
 ### Player result and finite boundary
 

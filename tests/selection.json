@@ -2,6 +2,13 @@
   "schemaVersion": 1,
   "selections": [
 {
+  "category": "spiritual-resident-aid-contract",
+  "reason": "T108-RESIDENT first causal RED: valid preexisting typed resident proposal is rejected by the existing Guardian-only parser. Direct typed API and minimal detached DATA isolate this missing capability before live grant/aid integration. No production or other consumer changed at this scaffold.",
+  "contracts": [
+    "#1536 T108-RESIDENT; US4 scenario8; closed resident participation admission, no authority from DATA"
+  ]
+},
+{
   "category": "documentation-afterlife-treatment-assessment",
   "reason": "T093-ASSESSMENT changes client-only known-wound output, with no GM response. The existing guided synchronization guard checks the actual changed worked-example manifest and client-owned request registry, avoiding unrelated afterlife matrices.",
   "contracts": [

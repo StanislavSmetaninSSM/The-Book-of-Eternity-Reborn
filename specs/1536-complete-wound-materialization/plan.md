@@ -8,12 +8,12 @@ question or new consent lifetime is required. No resident implementation/PASS ye
 Astra/high read-only architecture consultation identified complete typed identity,
 exact roster/profile/locality joins and preservation of current v3/v4 History as
 the main risks. Root wrote the concrete closed-family5 design in spiritual-aid-design.md.
-Independent Astra/high DESIGN found two P2 issues, now corrected pending delta
-review: historical agreement uses recorded typed evidence rather than a live roster
+Independent Astra/high DESIGN accepted94a95321b after two P2 corrections: historical agreement uses recorded typed evidence rather than a live roster
 join; the finite acceptance map now includes revoke/forgery/kinded-ID/normalization/
 post-draw drift/lifetime branches. Only two full guided journeys are proposed;
-additional branches use cheap DATA and existing backend fixtures. DESIGN acceptance
-precedes code. Then existing-API resident admission causal RED,
+additional branches use cheap DATA and existing backend fixtures. No design blocker remains. First scaffold adds one direct existing-API resident
+admission Fact and one exact60s Unit category; fresh Unit refsfalse, discovery/PlanOnly
+and independent SOURCE/PREP precede expected semantic RED. Then
 shared owner/family implementation, GM docs/example synchronization, cheap gates
 and actual two-turn journeys. No new registry/cache/publisher or service quote.
 Current accepted checkpoint bbf4779bb44b031faf1d8377eec3b72aea7d0f3d remains the

@@ -2,6 +2,31 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "spiritual-resident-aid-contract",
+  "responsibility": "T108-RESIDENT typed participant/proposal contract. Initial causal singleton proves a valid resident proposal through the actual existing ReadChanges API; later closed-family and exact identity controls belong here.",
+  "excludes": "No accepted grant authority, live roster admission, actual Engine journey, diagnostic/performance or broad unchanged suite.",
+  "changeHints": [
+    "BookOfEternityClient.Tests/SpiritualResidentTreatmentParticipationTests.cs",
+    "BookOfEternityClient/Services/SpiritualTreatmentParticipation.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.SpiritualResidentTreatmentParticipationTests.*"
+      ]
+    }
+  ]
+},
+{
   "id": "documentation-afterlife-treatment-assessment",
   "responsibility": "Existing exact guided self-treatment GM synchronization guard checks current marker surfaces, private request registry and manifest-required worked known-wound no-turn assessment example.",
   "excludes": "No unrelated afterlife documentation matrix, new response fields, real GM response or broad example/runtime suite.",
