@@ -4,7 +4,7 @@
 
 - [x] T054 Зафиксировать согласие и scope→plan→tasks; проверить реальные source contracts времени/ОД/отдыха/духовных ран, различить runtime/prompt/design. Sol6.1/high audit и parent source/Serena подтверждение: afterlife ordinal существует,safe/healing1536 T104–107 не интегрированы;24equivalent hours не длительность отдыха.
 - [x] T055 Сравнить подходы, описать время/условия/скорости ОД и HP/опасность/HP0/раны; проверить дешёвые ранние/поздние/частичные примеры и отсутствие двойного начисления, сохранить кандидат. out-of-combat-recovery-proposal.md: три подхода,5 профилей/2 специализации,10770 HP/5376 OD расчётов; один source на cycle,отдельные раны/HP0 явно предложены. Реальные duplicate/clock/realm маршруты не тестировались.
-- [ ] T056 Независимый review цельного блока/источников/арифметики, corrections/verification/remote checkpoint/issue1573; предъявить новый пакет. T001 сохраняется.
+- [x] T056 Независимый review цельного блока/источников/арифметики, corrections/verification/remote checkpoint/issue1573; подготовить точный пакет к предъявлению. GPT-6 Astra/high независимо подтвердил10770 HP/5376 OD случаев и source contracts; P2 текущих статусов исправлен и закрыт targeted review, открытых замечаний нет.192 links/diff PASS, WIP remoteSHA/8blobs совпали; финальная публикация по Git-истории/header issue. Внебой/HP0 ещё на согласование, runtime UNRUN, T001 сохраняется.
 
 ## Средоточие и Гармония — формулы после принятия двух характеристик
 

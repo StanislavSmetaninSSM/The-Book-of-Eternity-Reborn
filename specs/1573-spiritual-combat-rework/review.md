@@ -18,8 +18,24 @@ Sol6.1/high audit_outside_combat_recovery1573 проверил actual progressio
 5 профилей/2 специализации,10770 HP и5376 OD arithmetic cases; повторения/реальный
 clock/источники/realm carry — будущие тесты, не проверенный runtime. Простая
 арифметика не требует кэша; stable definitions через existing operation service,
-current/clock/authority/рана/revision свежие. Independent Astra/high review и
-публикация ожидаются; build/game/600s/clean restore UNRUN, T001 сохранён.
+current/clock/authority/рана/revision свежие.
+
+Независимый review_health_pacing1573, GPT-6 Astra/high, проверил весь блок
+5d7d8b867..0df7f46ac и working-tree уточнение безопасности всего периода. Отдельно
+воспроизведены10770 HP/5376 OD случаев, пять профилей, две специализации и сроки
+естественного лечения ран2/6/12/20 циклов при HealingTier0. Контракты1536 и открытые
+T104–T107 проверены; лечение ран не выдано за готовый runtime. Найдено P2: текущие
+D7/повестка/роли ещё называли принятые S/H формулы/+3/+5/noC предложением. Parent
+исправил четыре записи; targeted review подтвердил закрытие P2. Открытых замечаний
+нет. Проверка арифметики не подтверждает будущие clock/ledger/realm маршруты.
+
+Parent:192 relative links/diff PASS; WIP0df7f46acc77b5367a3f09e8e96defb0a6fae0e2
+remote fullSHA и8 exact-ref GitHub blobs совпали. Финальная публикация и актуальный
+issue header следуют по Git-истории. Источниковый Sol/high audit дал конкретные
+границы existing runtime, Astra/high проверил взаимодействующие time/resource/wound
+контракты и поймал status drift. Такой состав этого блока сохраняется; сравнимых
+данных экономии времени/стоимости нет. Build/game/600s/clean restore UNRUN,
+T001 сохранён. Новое предложение отдыха/HP0 не объявлено принятым.
 
 ## Текущий checkpoint: принятые Средоточие/Гармония и формулы ОД
 

@@ -19,6 +19,16 @@ Bridge consistency до probe: только формулы/ограниченн�
 через existing operation service; current/owner/clock/authority/revision свежие,
 для простых формул отдельный кэш не требуется.
 
+Результат T054–T056: out-of-combat-recovery-proposal.md v1, specv1.44/modelv2.34.
+Принятый OD-пакет отделён от нового предложения отдыха/HP0/current-max. Parent и
+независимый GPT-6 Astra/high подтвердили10770 HP/5376 OD расчётов, пять профилей,
+две специализации и отдельное естественное лечение ран. Уточнена безопасность
+всего периода; P2 устаревших текущих статусов исправлен и закрыт targeted review.
+Открытых замечаний нет. WIP0df7f46acc77b5367a3f09e8e96defb0a6fae0e2 сохранён:
+remoteSHA/8 exact-ref blobs совпали,192 relative links/diff PASS. Финальный checkpoint
+и issue header следуют по Git-истории. Новая spec предъявляется для согласования;
+runtime/clock/realm и safe recovery1536 не объявлены реализованными, T001 сохранён.
+
 ## Текущий срез: формулы Средоточия и Гармонии
 
 T051→T052→T053, baseline42bd2b82efcb760024fc96795b1e06d75fcaa984.
