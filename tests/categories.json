@@ -80,6 +80,32 @@
   ]
 },
 {
+  "id": "spiritual-resident-aid-publication-preflight",
+  "responsibility": "The two resident publisher fixtures blocked by missing ordinary raw location/item preflight: actual resident grant/aid and genuine mixed-family revoke/refusal. Uses the same live-lease production admission before full normalization.",
+  "excludes": "Does not replay unchanged v3/v4, orphan-memory or self-family PASS from7d3dbeac. No production authority bypass, Engine journey or broader suite.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/AfterlifeSpiritualNaturalRecoveryTests.ActiveAid.cs",
+    "BookOfEternityClient.IntegrationTests/AfterlifeSpiritualNaturalRecoveryTests.ResidentAuthority.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 3,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.AfterlifeSpiritualNaturalRecoveryTests.ResidentAidUsesTypedCommittedConsentOriginalNormalizationAndHistoricalReplay",
+        "BookOfEternityClient.Tests.AfterlifeSpiritualNaturalRecoveryTests.ResidentRevocationPublishesInMixedHistoryAndRefusesItsOtherwiseEligibleAidWithoutDraw"
+      ]
+    }
+  ]
+},
+{
   "id": "spiritual-resident-aid-backend",
   "responsibility": "Actual resident grant/retained-die aid, exact expiry/source/B/publication/normalization and departed historical link; mixed genuine v3/v4/v5 History plus actual revoke/refusal, and orphan memory denial. One existing valid self2 publication supplies causal re-fingerprinted v5-self/unknown-result negatives, without another Engine journey.",
   "excludes": "Direct backend models cleaned input absence; actual Engine cleanup/interfaces/outer rollback are separate. No broad natural cohort/performance suite.",

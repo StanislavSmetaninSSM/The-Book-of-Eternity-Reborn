@@ -52,7 +52,10 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
                 { ["timestamp"] = DateTime.UtcNow.ToString("o"), ["dialogueOptions"] = new JsonArray(), ["spiritualHealingGraphs"] = graphs }.ToJsonString());
                 if (turn >= 45) await WriteResidentAidMemoryAsync(files, lease, requestId, turn);
                 await WriteAidReportAsync(files, lease, control, requestId, turn);
-                var issues = await new ValidationService(files, NullLogger<ValidationService>.Instance).PrepareSpiritualSelfTreatmentPublicationAsync(lease);
+                var validator = new ValidationService(files, NullLogger<ValidationService>.Instance);
+                Assert.DoesNotContain(await validator.ValidateAcceptedTurnRawMortalLocationMaterializationAsync(), i => i.Severity == IssueSeverity.Error);
+                Assert.DoesNotContain(await validator.ValidateAcceptedTurnRawMortalItemMaterializationAsync(lease), i => i.Severity == IssueSeverity.Error);
+                var issues = await validator.PrepareSpiritualSelfTreatmentPublicationAsync(lease);
                 Assert.True(!issues.Any(i => i.Severity == IssueSeverity.Error), string.Join(";", issues.Select(i => i.Code + ":" + i.Actual)));
                 var manifest = await fixture.ReadManifestAsync(lease);
                 Assert.NotNull(await new CanonicalStateNormalizer(files, NullLogger<CanonicalStateNormalizer>.Instance)

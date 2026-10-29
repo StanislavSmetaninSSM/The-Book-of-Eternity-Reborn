@@ -401,6 +401,8 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
             await fixture.WriteReportAsync(publication);
             await WriteResidentAidMemoryAsync(fixture.Files, publication, "request_spiritual_healing", 43, memoryOnly: true);
             var validator = new ValidationService(fixture.Files, NullLogger<ValidationService>.Instance);
+            Assert.DoesNotContain(await validator.ValidateAcceptedTurnRawMortalLocationMaterializationAsync(), i => i.Severity == IssueSeverity.Error);
+            Assert.DoesNotContain(await validator.ValidateAcceptedTurnRawMortalItemMaterializationAsync(publication), i => i.Severity == IssueSeverity.Error);
             var issues = await validator.PrepareSpiritualSelfTreatmentPublicationAsync(publication);
             Assert.True(!issues.Any(i => i.Severity == IssueSeverity.Error), string.Join(";", issues.Select(i => i.Code + ":" + i.Actual)));
             var manifest = await fixture.ReadManifestAsync(publication);

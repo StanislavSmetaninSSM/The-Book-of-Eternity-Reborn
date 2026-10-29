@@ -1,3 +1,30 @@
+# T108 resident publisher preparation correction — 4 PASS, 2 fixture FAIL
+
+2026-10-29 02:28 UTC. HEAD/remote7d3dbeacb0d19cc095211d748b765f3ef1372996
+verified clean before edits; same environment available, no live owned build/test.
+Phase7 actual completed exit1, wall98.8791269s,6executed/4PASS/2FAIL, no timeout,
+skip or duplicates; both owned cleanup flags true. Old v3 grant/aid PASS25.7152483s,
+v4 provider PASS24.1524386s, orphan memory and self-family controls PASS. Source
+closure1 UNRUN by fail-fast. Full raw resident-phase7-actual-1 remains external.
+
+Both failures are fixture preparation before full normalization, not a product
+permission bypass: new CommitAidGrantAsync resident branch and mixed-history
+publisher omitted existing raw location/item admission. The strict normalizer
+correctly refused absent exact Mortal item authority snapshot atMortalItems.cs45.
+Working full-normalizer fixture and actual Engine perform those calls before
+spiritual publication preparation. Add their unchanged error assertions on the same
+live lease at these two sites only. No production guards, schema, bounds or game
+rules change. Reuse the same validator and existing accepted-plan/item services;
+authority must be fresh per actual turn, so no newcache or speedup claim applies.
+Actual2 failures are causal RED; independent Sol OUTCOME/delta SOURCE pending.
+
+Next fresh Integration refsfalse only (production/Unit unchanged), discovery and
+exactPlan3 (failed resident2+missing sourceguard1), then independent PREP. Existing
+cheap59 and phase7 unchanged4PASS are retained on stated source lineages, not rerun.
+Both actual guided interfaces and rollback remain UNRUN pending backend acceptance.
+Disk665362432bytes before correction is above400MiB build reserve; recheck before
+launch. No raw/save/recovery deletion, clone/restore, DFR/Mortal/Windows/perf work.
+
 # T108 cheap59 accepted — actual publisher next, user journeys pending
 
 2026-10-29. Independent Sol OUTCOME8 ACCEPT and phase7 PREP ACCEPT at

@@ -2,24 +2,10 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "spiritual-resident-aid-record-detachment",
-      "reason": "First exact59 attempt completed52PASS/6fixtureFAIL with GM1UNRUN. Fix only resident record fixture detachment; rerun failed6 plus directly affected selection1, then missing GM1. Other41 contract and10 affected PASS remain on344fcf4d2 and are not replayed.",
+      "category": "spiritual-resident-aid-publication-preflight",
+      "reason": "Phase7 at7d3dbeac executed6:4PASS/2FAIL before normalization because two new direct fixtures omitted ordinary raw location/item admission. Add those real assertions and rerun only failed2; sourceguard1 was UNRUN. Existing accepted cheap59 and phase7 unchanged4PASS retain their explicit lineages.",
       "contracts": [
-        "#1536 T108-RESIDENT detached fixture DATA, unchanged raw-record forgery/closed-selection assertions"
-      ]
-    },
-    {
-      "category": "spiritual-resident-aid-gm",
-      "reason": "New capability and protected response field require exact worked example/manifest, both effective daemon assignments, shared entrypoints and actual codecs to agree.",
-      "contracts": [
-        "#1536 T108-RESIDENT; US4 scenario8; typed consent/lifetime, ordinary cycle, strict current checks and immutable History; bounded functional acceptance"
-      ]
-    },
-    {
-      "category": "spiritual-resident-aid-backend",
-      "reason": "Fresh original/current/history/source/permission/closing guards require actual new-family producer controls, true revocation, immutable mixed current-family History and unsupported owner refusal.",
-      "contracts": [
-        "#1536 T108-RESIDENT; US4 scenario8; typed consent/lifetime, ordinary cycle, strict current checks and immutable History; bounded functional acceptance"
+        "#1536 T108-RESIDENT; exact ordinary preflight on owning lease before genuine common publication; unchanged negative/current/history assertions"
       ]
     },
     {
@@ -39,20 +25,6 @@
     {
       "category": "spiritual-resident-aid-rollback",
       "reason": "New canonical memory append must restore with wounds/resources/scheduler/History through existing actual C4 plus whole-turn failure route. Prepared and pre-stage baselines differ.",
-      "contracts": [
-        "#1536 T108-RESIDENT; US4 scenario8; typed consent/lifetime, ordinary cycle, strict current checks and immutable History; bounded functional acceptance"
-      ]
-    },
-    {
-      "category": "spiritual-aid-stage-publication",
-      "reason": "Changed shared participation/family/History directly affects current player-to-Guardian v3. Re-run only this existing backend with embedded negative original/current/publication controls.",
-      "contracts": [
-        "#1536 T108-RESIDENT; US4 scenario8; typed consent/lifetime, ordinary cycle, strict current checks and immutable History; bounded functional acceptance"
-      ]
-    },
-    {
-      "category": "spiritual-guardian-help-publication",
-      "reason": "Changed shared participation/family/History directly affects current Guardian-to-player v4. Re-run only this existing backend source/confirmation/publication case.",
       "contracts": [
         "#1536 T108-RESIDENT; US4 scenario8; typed consent/lifetime, ordinary cycle, strict current checks and immutable History; bounded functional acceptance"
       ]
