@@ -67,15 +67,15 @@ Finite implementation / acceptance
   role/name is the control; missing public condition is semantic RED. New exact category
   shining-healer-access-causal, 60 s. Fresh Unit only (production unchanged), source/PDB
   proof, discovery, exact PlanOnly/PREP, one RED. No accepted 34/paid 80 repeat for scaffold.
-- [ ] Implement the service display sibling, shared detached projection/formatter and
+- [x] Author (UNCOMPILED) the service display sibling, shared detached projection/formatter and
   fresh interactive join. Add independent typed negatives for private/malformed/foreign
   terms, declared availability/threshold, currencies versus noncurrency, rounding/tier
   limit, duplicates/same-name identity, immutable results and no admission broadening.
-- [ ] Add real console/browser tests for public terms, inert return/cancel and selection
+- [x] Author (UNCOMPILED) real console/browser tests for public terms, inert return/cancel and selection
   races (hidden/removed faction, changed affiliation, hidden profile), literal rendering,
   one/many source counts and new-action changed terms. Reuse approved per-test fixtures,
   exact canonical snapshots and guarded cleanup; no whole-world/GameEngine preparation.
-- [ ] Synchronize the existing GM rule/guide/matrix/main task/daemon directives, worked
+- [x] Author (guards UNRUN) synchronized GM rule/guide/matrix/main task/daemon directives, worked
   Shining access example/manifest and source guards. No new pending/control schema.
 - [ ] Coherent SOURCE/impact-selection review, fresh affected Main/Support/Unit builds,
   exact catalog/PlanOnly/PREP, approved cheap causal/data/docs and UI checks, full captures
@@ -108,18 +108,34 @@ resource values, cross-selection cache or second loader framework.
 Production WIP now adds the read-only public-terms sibling, detached internal exact-ID
 join and shared role/access strings, browser rendering, and asynchronous legacy
 inspection with fresh unique revealed-faction/realm checks. Existing paid reader is
-unchanged. This code is not yet compiled or GREEN. Remaining: typed/actual UI and race/
-cost controls, existing full-context consumer proof, GM/docs/example/catalog sync,
-coherent SOURCE review, fresh affected builds, exact discovery/PREP, runtime/OUTCOME.
-No Shining treatment execution or historical-faction invariant is added.
+unchanged. This code is not yet compiled or GREEN. The complete authoring block now
+includes pure public-term/identity/immutability negatives, real no-argument console and
+shared-browser parity, eight fresh-selection races, changed literal terms/prices,
+cancel, one/twenty-member actual source counters and the existing full-context resource
+refusal consumer. GM rule/guide/matrix/API/task/both daemon directives, a bounded worked
+favor-only example/manifest and two executable guards are synchronized. Existing
+political Integration consumer lacked the now-required actor profiles; only that test
+now authors three complete profiles before execution, preserving its political asserts.
+No production fallback or shared-fixture broadening. It also uses public rendering.
+
+Finite intended selection: shining-healer-access-{causal,data,ui,selection-races,
+source-cost,context-consumers,docs} plus actually affected existing
+shining-healer-capability-data and shining-healer-roster-ui. Context-consumers owns one
+Unit refusal and one existing Integration political case, so fresh Integration is now
+required too. Exact case/method/descriptor counts remain discovery/PlanOnly UNVERIFIED.
+Independent whole SOURCE/selection, fresh Main/Support/Unit/Integration, catalog/PDB/
+artifact checks, exact PlanOnly/PREP and runtime/OUTCOME remain pending. No feature PASS
+is claimed. No Shining treatment execution or historical-faction invariant is added.
 
 Resource / current boundary
 
 Same environment available, no owned builds/tests at start, over 7 GiB free. Preserve
 400 MiB build-start reserve plus full output, 128 MiB runtime floor and unbounded capture.
 Raw stays outside checkout under /workspace/tboe-linux-evidence-20261025/us6-shining-healers.
-Previous role gate 34/34 PASS and its complete capture are retained. The single causal Unit scaffold is now authored with its exact category/selection.
-Production is unchanged; the new C# is UNCOMPILED, SOURCE/PREP and semantic RED pending. Global faction enforcement,
+Previous role gate 34/34 PASS and its complete capture are retained. The scaffold's
+single semantic RED is accepted above; full GREEN implementation/tests are authored
+but UNCOMPILED and await coherent SOURCE/selection, build and runtime admission.
+Global faction enforcement,
 Shining service execution, universal Elyara travel, negotiated routes, DOM/provider/
 fresh-process, DFR/Mortal/Windows and earlier guardian/cross-OS limitations remain open.
 

@@ -2,6 +2,29 @@
   "version": 1,
   "effectMaterializationCoverage": [
 {
+  "contractId": "shining_healer_access_view_v1",
+  "file": "E_CLI_Afterlife_Turns.txt",
+  "statePath": "current Shining resident/profile healingServiceProfile public DATA; no new control path",
+  "responseSurface": "existing console political inspection and browser faction detail, read-only declared terms",
+  "realms": [
+    "Shining Abode"
+  ],
+  "description": "Visible inaccessible tierIII healer with public favor-only conditions, no implied paid offer or access grant.",
+  "validationKind": "focused-fragment",
+  "focusedFragmentReason": "ShiningHealingAccessDocumentationTests overlays the exact excerpts onto an independent complete actor fixture and uses the real projection and unchanged currency admission.",
+  "coverageLimit": "Not standalone materialization, service execution/negotiation, historical-faction invariant, DOM/provider or fresh-process qualification.",
+  "requiredText": [
+    "shining_healer_access_view_v1",
+    "healing_support",
+    "minimumRelationship",
+    "Согласие Совета",
+    "NO Feather tariff",
+    "NO treatment action",
+    "H>=W",
+    "ZERO draw/attempt/payment/world cycle/write"
+  ]
+},
+{
   "contractId": "shining_healer_role_v1",
   "file": "E_CLI_Afterlife_Turns.txt",
   "statePath": "guardian_abode_residents.entries[].residentRole and exact afterlife_entity_profiles resident capability",

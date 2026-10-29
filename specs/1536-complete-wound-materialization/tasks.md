@@ -14701,6 +14701,14 @@ restore is inferred. Earlier guardian intermittence/cross-OS DATA, DFR/Mortal ti
 remain open. Continue the independently authorized functional remainder or clarified
 T142 rule; never silently exempt historical rows while the owner answer is pending.
 
+2026-10-29 T135/T141/T143–T147 interactive access WIP (not qualification):
+accepted one-case semantic RED on 9bddffc2, missing public «Согласие Совета»;
+full read-only implementation, finite privacy/fresh-selection/identity/source-count
+fixtures and GM guidance/example guards authored. Fresh current GREEN builds and
+runtime are UNRUN. See current plan prefix for exact scope/selection and external raw.
+The old accepted role34 and paid80 retain their own lineages. T142 remains pending the
+owner decision; no historical-faction exception or Shining execution is introduced.
+
 ### RED tests
 
 - [ ] T131 [P] [US6] Add RED 25/50/100/200 base price, 50%-200% multiplier, upward whole-Feather rounding, sealed quote, and exact attempt charge tests in `BookOfEternityClient.Tests/AfterlifeHealingServiceQuoteTests.cs`

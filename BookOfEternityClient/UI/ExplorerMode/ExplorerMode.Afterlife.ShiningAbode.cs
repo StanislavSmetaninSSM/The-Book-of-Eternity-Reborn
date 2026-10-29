@@ -482,7 +482,7 @@ public partial class ExplorerMode
             }
 
             if (visibleFactions.Count > 0 && context != null)
-                choices.Add("👥 Осмотреть политическое состояние фракции");
+                choices.Add("👥 Осмотреть политическое состояние фракции — целители и условия помощи");
             if (visibleFactions.Any(HasShiningFactionPoliticalMemory))
                 choices.Add("📖 Осмотреть хроники, влияние и ресурсы фракций");
             if (_stateManager.Settings.ShowGmThoughts && visibleFactions.Any(HasShiningFactionPoliticalMemory))

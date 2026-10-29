@@ -13975,3 +13975,58 @@ healers and tiers I-V are legal. Hidden/unconfirmed profiles reveal no capabilit
 Read/close is not a turn: no draw, payment or world cycle.
 
 end_shining_healer_role_v1
+
+
+shining_healer_access_view_v1 — worked public restricted assistance display
+
+Focused excerpts, not a standalone faction/actor materialization or new response. The
+existing revealed faction_dawn and its current alive resident_iva are already fully
+materialized. Preserve every other field and receipt. Merge the roster fields and
+profile excerpt into those exact existing objects; merge only the named standard art,
+retaining other arts. locationRef must match the actor's accepted current location;
+this example does not move or resurrect the healer.
+
+```json
+{
+  "residentId": "resident_iva",
+  "displayName": "Светлая Ива",
+  "ascensionState": "ascended",
+  "shiningFactionId": "faction_dawn",
+  "residentRole": "healing_support",
+  "isPresent": false
+}
+```
+
+```json
+{
+  "actorType": "resident",
+  "actorId": "resident_iva",
+  "realm": "Shining Abode",
+  "lifeState": "alive",
+  "locationId": "location_exact_afterlife_gate",
+  "standardArts": { "spiritual_healing": 3 },
+  "healingServiceProfile": {
+    "providerId": "resident_iva",
+    "realm": "shining_abode",
+    "locationRef": "location_exact_afterlife_gate",
+    "visibility": "public",
+    "availability": "unavailable",
+    "minimumRelationship": 25,
+    "priceMultiplierPercent": 125,
+    "compensationKinds": ["favor"],
+    "accessConditions": ["Согласие Совета"]
+  }
+}
+```
+
+Both interfaces show «Светлая Ива — целитель; Исцеление III», the declared unavailable
+reception, relationship threshold25, public «Согласие Совета» and «ответная услуга».
+Favor-only terms show NO Feather tariff and grant NO treatment action. Changing the
+declaration to available still does not prove this player's access or consent. Private,
+absent or malformed terms leave the known healer visible but reveal no private condition.
+For a separate current tier-I healer explicitly accepting ink_feathers at125%, the
+only tariff row is I:32 (rounded UP), never II–IV; H>=W still governs capability.
+Cancel/back/read is ZERO draw/attempt/payment/world cycle/write. Shining command
+treatment is not implemented by this view; do not issue a quote or private command.
+
+end_shining_healer_access_view_v1

@@ -3585,6 +3585,14 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     public async Task TryProcessCommand_ShiningPolitics_FactionInspectionShowsResidentPoliticalState()
     {
         await SeedShiningInspectionStateAsync();
+        // Current roster inspection resolves full exact actor profiles; this old
+        // UI fixture previously supplied names/roles alone. Prepare all inputs
+        // before refresh/command, without a production compatibility fallback.
+        var actorProfiles = AfterlifeEntityProfileState.CreateDefaultRoot();
+        foreach (var id in new[] { "resident_mirael", "resident_sel", "resident_orin" })
+            actorProfiles["profiles"]!.AsArray().Add(
+                AfterlifeActorMaterializationTestFixture.CreateCompleteProfile("resident", id, "Shining Abode", 1));
+        await _fs.WriteFileAtomicAsync(AfterlifeEntityProfileState.StatePath, actorProfiles.ToJsonString());
         var shiningStatePath = _fs.ResolvePath(ShiningAbodeState.StatePath);
         var shiningRoot = JsonNode.Parse(await File.ReadAllTextAsync(shiningStatePath))?.AsObject()
             ?? throw new InvalidOperationException("Expected seeded shining abode state.");
@@ -3606,7 +3614,15 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
 
         Assert.Null(ex);
         AssertNoHiddenExplorerErrors("shining_political_resident_inspection");
-        var renderedText = ExtractRenderedText();
+        using var renderedOutput = new StringWriter();
+        var renderer = Spectre.Console.AnsiConsole.Create(new Spectre.Console.AnsiConsoleSettings
+        {
+            Ansi = Spectre.Console.AnsiSupport.No, ColorSystem = Spectre.Console.ColorSystemSupport.NoColors,
+            Out = new Spectre.Console.AnsiConsoleOutput(renderedOutput)
+        });
+        renderer.Profile.Width = 240;
+        foreach (var renderable in _console.Rendered) renderer.Write(renderable);
+        var renderedText = renderedOutput.ToString();
         Assert.Contains("Политическое состояние фракции", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Базовая сила", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Любимый архетип проектов", renderedText, StringComparison.OrdinalIgnoreCase);

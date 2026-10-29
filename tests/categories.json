@@ -36297,6 +36297,201 @@
           ]
         }
       ]
+    },
+    {
+      "id": "shining-healer-access-data",
+      "responsibility": "Exact public read-only terms, malformed/private/foreign refusals, available/unavailable declarations, currency/tier/rounding limits, immutable exports and same-name private identity; current paid admission unchanged.",
+      "excludes": "No Shining treatment execution, paid80 replay, T142 historical-faction invariant, DOM/provider/fresh-process or HOLD DFR/Mortal/Windows.",
+      "changeHints": [
+        "BookOfEternityClient/Services/AfterlifeHealingServiceContract.cs",
+        "BookOfEternityClient/Services/ShiningFactionHealingSupport.cs",
+        "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Afterlife.ShiningAbode.cs"
+      ],
+      "related": [
+        {
+          "id": "shining-healer-access-causal",
+          "when": "Shared healer access display changes require the real interactive causal journey."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.ShiningHealingAccessDisplayTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "shining-healer-access-ui",
+      "responsibility": "Actual console menu/browser public terms parity, unknown/private conditions, fresh changed conditions and literal text, inert cancellation and no treatment action; political labels preserved.",
+      "excludes": "No Shining treatment execution, paid80 replay, T142 historical-faction invariant, DOM/provider/fresh-process or HOLD DFR/Mortal/Windows.",
+      "changeHints": [
+        "BookOfEternityClient/Services/AfterlifeHealingServiceContract.cs",
+        "BookOfEternityClient/Services/ShiningFactionHealingSupport.cs",
+        "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Afterlife.ShiningAbode.cs"
+      ],
+      "related": [
+        {
+          "id": "shining-healer-access-causal",
+          "when": "Shared healer access display changes require the real interactive causal journey."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.WebUi.BrowserShiningPoliticsParityTests.HealingAccessPublicTermsHaveConsoleBrowserParityWithoutGrant",
+            "BookOfEternityClient.Tests.WebUi.BrowserShiningPoliticsParityTests.HealingAccessUnknownTermsKeepHealerVisibleWithoutPrivateText",
+            "BookOfEternityClient.Tests.WebUi.BrowserShiningPoliticsParityTests.HealingAccessNextActionReadsNewLiteralConditionsAndPrice",
+            "BookOfEternityClient.Tests.WebUi.BrowserShiningPoliticsParityTests.HealingAccessCancelDoesNotReadProfilesOrChangeState"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "shining-healer-access-selection-races",
+      "responsibility": "After actual faction selection re-read hidden/removed/duplicate faction, changed affiliation/realm/visibility and malformed source inputs; no stale terms, raw errors or reader mutations.",
+      "excludes": "No Shining treatment execution, paid80 replay, T142 historical-faction invariant, DOM/provider/fresh-process or HOLD DFR/Mortal/Windows.",
+      "changeHints": [
+        "BookOfEternityClient/Services/AfterlifeHealingServiceContract.cs",
+        "BookOfEternityClient/Services/ShiningFactionHealingSupport.cs",
+        "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Afterlife.ShiningAbode.cs"
+      ],
+      "related": [
+        {
+          "id": "shining-healer-access-causal",
+          "when": "Shared healer access display changes require the real interactive causal journey."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.WebUi.BrowserShiningPoliticsParityTests.HealingAccessSelectionRechecksFreshSourcesBeforeDisplay"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "shining-healer-access-source-cost",
+      "responsibility": "Actual post-selection source opens are exactly four current roots plus one profiles root for1vs20 members; no unused resource-projector reads, complete current snapshots and cleanup.",
+      "excludes": "No Shining treatment execution, paid80 replay, T142 historical-faction invariant, DOM/provider/fresh-process or HOLD DFR/Mortal/Windows.",
+      "changeHints": [
+        "BookOfEternityClient/Services/AfterlifeHealingServiceContract.cs",
+        "BookOfEternityClient/Services/ShiningFactionHealingSupport.cs",
+        "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Afterlife.ShiningAbode.cs"
+      ],
+      "related": [
+        {
+          "id": "shining-healer-access-causal",
+          "when": "Shared healer access display changes require the real interactive causal journey."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.WebUi.BrowserShiningPoliticsParityTests.HealingAccessPostSelectionReadsFiveSourcesForOneOrTwentyMembers"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "shining-healer-access-context-consumers",
+      "responsibility": "Existing full overview still calls both real resource projections and fails closed without quartet bindings; original political inspection retains current materialized resident/political/project content.",
+      "excludes": "No Shining treatment execution, paid80 replay, T142 historical-faction invariant, DOM/provider/fresh-process or HOLD DFR/Mortal/Windows.",
+      "changeHints": [
+        "BookOfEternityClient/Services/AfterlifeHealingServiceContract.cs",
+        "BookOfEternityClient/Services/ShiningFactionHealingSupport.cs",
+        "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Afterlife.ShiningAbode.cs"
+      ],
+      "related": [
+        {
+          "id": "shining-healer-access-causal",
+          "when": "Shared healer access display changes require the real interactive causal journey."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.WebUi.BrowserShiningPoliticsParityTests.HealingAccessSourceExtractionPreservesFullOverviewResourceRefusals"
+          ]
+        },
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_ShiningPolitics_FactionInspectionShowsResidentPoliticalState"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "shining-healer-access-docs",
+      "responsibility": "Effective GM guide/matrix/rule/API/main task/both daemon assignments and actual public favor-only worked declaration/manifest through production projection.",
+      "excludes": "No Shining treatment execution, paid80 replay, T142 historical-faction invariant, DOM/provider/fresh-process or HOLD DFR/Mortal/Windows.",
+      "changeHints": [
+        "BookOfEternityClient/Services/AfterlifeHealingServiceContract.cs",
+        "BookOfEternityClient/Services/ShiningFactionHealingSupport.cs",
+        "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Afterlife.ShiningAbode.cs"
+      ],
+      "related": [
+        {
+          "id": "shining-healer-access-causal",
+          "when": "Shared healer access display changes require the real interactive causal journey."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.ShiningHealingAccessDocumentationTests.*"
+          ]
+        }
+      ]
     }
   ]
 }

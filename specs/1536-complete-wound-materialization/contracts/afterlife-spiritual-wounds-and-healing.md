@@ -291,6 +291,18 @@ Every materialized Shining faction must have at least one visible resident in
 - A visible but inaccessible healer remains visible and returns a readable access
   requirement rather than disappearing.
 
+### Current interactive access display
+
+The existing console political inspection and browser faction detail may display only
+publicly declared current service terms for an exact visible materialized healer.
+Absent/private/malformed service terms do not erase a confirmed healer role and do not
+expose private conditions. Declared availability is not proof of player-specific access.
+Feather tariff display requires explicit ink_feathers and respects the existing H>=W
+capability limit; other compensation alone implies no currency offer. Read/back/cancel
+is inert. Shining command treatment/negotiated execution remains unimplemented by this
+read-only surface; role or displayed terms never authorize a quote, charge or healing.
+No historical broken/dissolved-faction invariant decision is made by this view.
+
 ## Service price and compensation
 
 ```text

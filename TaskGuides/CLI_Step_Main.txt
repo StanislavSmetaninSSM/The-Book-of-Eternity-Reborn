@@ -1124,3 +1124,31 @@ remain separately authored and freshly authorized; a faction may restrict assist
 Reading/closing the detail consumes no treatment attempt, draw, payment or world cycle.
 See the focused worked roster/profile excerpts in Examples/E_CLI_Afterlife_Turns.txt;
 retain all other complete actor/faction fields and current integrity/authority checks.
+
+
+## shining_healer_access_view_v1 — interactive declared access
+
+shining_healer_access_view_v1: /shining_politics → «Осмотреть политическое состояние
+фракции — целители и условия помощи» uses the existing political inspection. Browser
+faction navigation uses the same detached healer/access display. After selection the
+client reloads current faction/member/profile DATA; hidden, removed or ambiguous targets
+cannot keep stale healer details. Existing political/project information remains.
+
+A visible valid healing_support resident remains visible when service terms are absent,
+private or malformed, with a readable unknown-terms message. Only an explicit public
+healingServiceProfile may display declared availability, minimumRelationship (null or
+integer), human-readable accessConditions, and the existing compensationKinds. The
+profile must exactly match the alive visible actor's kind/ID, realm and current location.
+Public conditions are literal text, never markup, commands, consent or a contract grant.
+Availability describes the provider's declaration, not proven access for this player.
+
+Show Feather tariffs only if ink_feathers is explicitly included; use existing base
+25/50/100/200 and multiplier50–200 with upward whole-Feather rounding. Preserve H>=W:
+only show tariff rows within the healer's current tier, up to IV. Favor/debt/quest/
+allegiance/free_aid-only declarations create no implied Feather price or free treatment.
+Reading, back or closing creates no draw, attempt, payment, world cycle, repair or write.
+Shining command treatment/negotiated execution is not connected by this display; there
+is no active treatment button. Never author a quote, payment receipt or private command
+from these views, and never manufacture life, tier, location or public access. See the
+focused worked access example in Examples/E_CLI_Afterlife_Turns.txt. The historical
+broken/dissolved-faction living-healer decision remains open; this view changes no invariant.
