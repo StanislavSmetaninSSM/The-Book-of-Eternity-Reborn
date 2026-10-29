@@ -1,3 +1,15 @@
+# T108 first compile correction — no runtime yet
+
+2026-10-29. First owning Unit build at33f81a9ea exited1 after1:44.50 with
+12warnings/one CS0121 at SpiritualTreatmentParticipation.cs:14. The target-typed
+new in the retained Guardian convenience constructor was ambiguous between string
+and WoundOwnerCoordinate overloads. Use explicit new WoundOwnerCoordinate; no JSON,
+validation, ownership or test semantics change. SOURCE delta review precedes the
+fresh retry; original failed build/log/artifacts are retained externally under
+resident-green-build-1/unit-owning. No test, native package rebuild or Integration
+build was run; no fresh-build/PASS claim. There is no active old build to duplicate.
+All remaining source hashes are preserved. Disk/resource gate repeats before retry.
+
 # T108 SOURCE accepted — fresh builds and runtime pending
 
 2026-10-29. Independent Astra SOURCE at b00645f6d found one P1 before any build:

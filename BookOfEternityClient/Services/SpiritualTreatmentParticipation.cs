@@ -12,7 +12,7 @@ internal static partial class SpiritualTreatmentParticipation
     internal sealed record Change(WoundOwnerCoordinate Owner, JsonObject Proposal)
     {
         internal Change(string targetId, JsonObject proposal) : this(
-            new("chaos_sea", "guardian", targetId, WoundCarrierCatalog.AfterlifeProfilesPath), proposal) { }
+            new WoundOwnerCoordinate("chaos_sea", "guardian", targetId, WoundCarrierCatalog.AfterlifeProfilesPath), proposal) { }
         internal string TargetId => Owner.OwnerId;
     }
 
