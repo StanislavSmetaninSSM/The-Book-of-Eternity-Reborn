@@ -1,4 +1,4 @@
-# Known foreign wound detail Implementation Plan — T119/T121-FOREIGN-DETAIL
+# Known foreign wound detail Implementation Plan — T119-FOREIGN-DETAIL
 
 > Agentic implementer: superpowers:executing-plans inline; root sole writer/runner.
 > Use existing Spec Kit artifacts, mandatory independent reviews and selected tests.
@@ -38,12 +38,20 @@ and safe text; recommendation versus executable action. Each gets a cheap contro
   resource/PREP, selected cheap GREEN and independent OUTCOME. Mechanical native
   Engine unchanged; prove actual read handlers rather than replay accepted aid36.
 - [ ] Verify exact raw/count/hash/cleanup, scope and remote checkpoint; close only
-  bounded T119/T121-FOREIGN-DETAIL, keep parent tasks/#1536 open.
+  bounded T119-FOREIGN-DETAIL, keep parent tasks/#1536 open.
 
 Optimization assessment: project only selected known wound IDs with existing catalog
 index; reuse context effects/knowledge services and parsed locality. No new cache or
 filesystem work in card projection. Record actual source-count proof/UNRUN; do not
-claim speedup. All new implementation/tests still UNRUN; DESIGN pending.
+claim speedup. All new implementation/tests still UNRUN. Astra/high DESIGN ACCEPT at72e4a7d85:
+retain explicit spiritual-domain gate, exact typed profile before normalized effect
+mapping, fresh roster proof in application, safe effect Name/Summary/Facts only and
+no foreign History. Add physical refusal/hidden knowledge/unchanged-Self controls.
+Sol fixture feasibility accepted; use separate console/browser roots because console
+read/cancel owns a UI token, public browser options only, and assert actual console
+render/no error (SafeExecute can catch errors). Current scaffold uses independent
+mixed carrier/identity/History helper and unique foreign consequence roots. Existing
+API causal singleton written; no new production C#, scaffold build/RED pending.
 
 # T120-CHAOS-TARGETS — accepted current-Abode target navigation
 

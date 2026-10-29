@@ -3861,7 +3861,7 @@ The choice carries hidden exact binding but displays Self first and then reachab
 visible entities. Duplicate names receive location/role/appearance context. Confirming
 the choice revalidates target, wound, consent, provider, resources, and reachability.
 
-### Known foreign wound detail — T119/T121-FOREIGN-DETAIL
+### Known foreign wound detail — T119-FOREIGN-DETAIL
 
 Issue #1536; FR-069/070/072–076, existing section18 Detail and accepted current-Abode
 navigation. The user requested this bounded next slice and autonomous execution.
@@ -3884,6 +3884,12 @@ Read contract:
   known_to_player. No bare ID lookup from a player payload, no unknown/other owner
   wound, no unrelated Self or foreign healed History. Empty known set stays empty
   without revealing hidden counts. Invalid DATA fails closed without repair.
+- Gate this foreign formatter to SPIRITUAL wound domain before shared knowledge
+  formatting: existing physical target resource/item helpers assume the player.
+  Exact typed profile matching precedes existing effect-target mapping; the mapping
+  alone normalizes actorType and is not an identity proof. The formatter does not
+  independently re-prove Guardian/roster roots it does not receive: that fresh
+  navigation proof stays in SelectTargetAsync; no new reads are added.
 - Reuse Project's readable locus/cause/symptoms/prognosis, care/recovery progress,
   visible complications and exact linked accepted effect summaries. Generalize only
   its effect target kind: exact existing AfterlifeEntityProfileState target mapping

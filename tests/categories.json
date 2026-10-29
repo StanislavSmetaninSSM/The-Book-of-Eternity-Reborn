@@ -2,6 +2,31 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "wound-foreign-detail-causal",
+  "responsibility": "T119-FOREIGN-DETAIL existing SelectTargetAsync must show the visible symptom of an exact reachable known Guardian wound without grant. Valid name/severity/description, terminal inert state and existing source-count controls precede semantic RED.",
+  "excludes": "No new treatment/diagnosis authority, native game/bootstrap, full Engine, private facts, broad US5/DOM/provider/fresh-process acceptance or repeat of accepted36.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/WoundForeignDetailTests.cs",
+    "BookOfEternityClient.Tests/WoundForeignDetailTestData.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.WoundForeignDetailTests.SelectedKnownGuardianWoundShowsVisibleSymptomWithoutGrantOrMutation"
+      ]
+    }
+  ]
+},
+{
   "id": "wound-target-choice-freshness",
   "responsibility": "Current real browser owner/generation/moved/hidden target refusals before phase advance; generation uses the existing lifecycle+replacement harness.",
   "excludes": "No Engine, DOM/provider/fresh-process or broad regression.",

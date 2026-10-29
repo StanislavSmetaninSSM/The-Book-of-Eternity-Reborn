@@ -2,73 +2,10 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "wound-target-choice-causal",
-      "reason": "Causal GREEN of the accepted compiling semantic RED: actual OpenAsync must now offer target navigation, preserving valid Self and inertness.",
+      "category": "wound-foreign-detail-causal",
+      "reason": "T119-FOREIGN-DETAIL existing SelectTargetAsync must show the visible symptom of an exact reachable known Guardian wound without grant. Valid name/severity/description, terminal inert state and existing source-count controls precede semantic RED.",
       "contracts": [
-        "#1536 T120-CHAOS-TARGETS / FR070,072–076; display/navigation never grants consent or stages a treatment"
-      ]
-    },
-    {
-      "category": "wound-target-choice-contract",
-      "reason": "T120-CHAOS-TARGETS detached Self-first typed nearby target read model, exact hidden owner/locality/wound bindings, public duplicate-name context, hidden/empty wounds, malformed membership and old-token ordering without treatment permission.",
-      "contracts": [
-        "#1536 T120-CHAOS-TARGETS typed display/navigation DATA, no new treatment authority"
-      ]
-    },
-    {
-      "category": "wound-target-choice-browser",
-      "reason": "T120-CHAOS-TARGETS actual shared browser API target/wound phases, closed answers, inert cancellation and no-grant views, fresh authority and exact-snapshot lifecycle races.",
-      "contracts": [
-        "#1536 T120-CHAOS-TARGETS; target navigation is not treatment authority"
-      ]
-    },
-    {
-      "category": "wound-target-choice-lifecycle",
-      "reason": "Actual shared browser exact-snapshot cancellation/final/expiry and foreign UI-token races, under existing Main/canonical authority.",
-      "contracts": [
-        "#1536 T120-CHAOS-TARGETS"
-      ]
-    },
-    {
-      "category": "wound-target-choice-reads",
-      "reason": "Actual sealed passive source counts: one parsed locality input per navigation invocation, fresh changed profile refusal and inert output.",
-      "contracts": [
-        "#1536 T120-CHAOS-TARGETS"
-      ]
-    },
-    {
-      "category": "wound-target-choice-gm",
-      "reason": "Closed two-phase worked client packets, both daemon directives and synchronized GM/CLI/Matrix/source documentation.",
-      "contracts": [
-        "#1536 T120-CHAOS-TARGETS"
-      ]
-    },
-    {
-      "category": "spiritual-resident-aid-console",
-      "reason": "Changed consumer: actual target→wound navigation must retain exact patient/helper, confirmation and original treatment/History/cycle. Existing proven preparation reused; relevant altered caller only.",
-      "contracts": [
-        "#1536 T120-CHAOS-TARGETS existing aid5/receive6 consumers"
-      ]
-    },
-    {
-      "category": "spiritual-resident-provider-browser",
-      "reason": "Changed consumer: actual target→wound navigation must retain exact patient/helper, confirmation and original treatment/History/cycle. Existing proven preparation reused; relevant altered caller only.",
-      "contracts": [
-        "#1536 T120-CHAOS-TARGETS existing aid5/receive6 consumers"
-      ]
-    },
-    {
-      "category": "spiritual-resident-provider-backend",
-      "reason": "Changed consumer: actual target→wound navigation must retain exact patient/helper, confirmation and original treatment/History/cycle. Existing proven preparation reused; relevant altered caller only.",
-      "contracts": [
-        "#1536 T120-CHAOS-TARGETS existing aid5/receive6 consumers"
-      ]
-    },
-    {
-      "category": "wound-target-choice-freshness",
-      "reason": "Current real browser owner/generation/moved/hidden target refusals before phase advance; generation uses the existing lifecycle+replacement harness.",
-      "contracts": [
-        "#1536 T120-CHAOS-TARGETS actual session authority"
+        "#1536 T119/T121 / FR069/070/072–076 known foreign detail, read-only recommendation not authority"
       ]
     }
   ]
