@@ -83,7 +83,7 @@ public partial class ProgressionScheduleService
         var parsed = WoundHistoryState.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(bytes), WoundHistoryState.HistoryPath);
         if (!parsed.IsValid) throw new InvalidDataException("Published participation History is not canonical.");
         var candidates = parsed.State!.Transitions.Where(t => t.TransitionResult is SpiritualHealingPersistedResult
-            { IsNatural: true } result && result.SchemaVersion == (aid.ReceiveAid ? 4 : 3) && result.MatchesTurn(sessionId, grantTurn)).Select(t =>
+            { IsNatural: true } result && result.SchemaVersion == aid.FamilyVersion && result.MatchesTurn(sessionId, grantTurn)).Select(t =>
             (Row: t, Root: t.TransitionResult!.ToCanonicalJson())).ToArray();
         if (candidates.Length == 0) return null;
         if (candidates.Length != 1) throw new InvalidDataException("Published participation identity is ambiguous.");
@@ -91,7 +91,7 @@ public partial class ProgressionScheduleService
         var outcomes = candidate.Root["participationOutcomes"]!.AsArray();
         var record = outcomes[0]!["record"]!.AsObject();
         if (outcomes.Count != 1 || record["primaryTransitionId"]!.GetValue<string>() != candidate.Row.TransitionId ||
-            record["healerId"]!.GetValue<string>() != aid.HealerId || record["targetId"]!.GetValue<string>() != aid.TargetId ||
+            !SpiritualTreatmentParticipation.MatchesSelection(record, aid) ||
             record["woundId"]!.GetValue<string>() != selection.WoundId ||
             SpiritualTreatmentParticipation.Fingerprint(record) != aid.ParticipationFingerprint)
             throw new InvalidDataException("Published participation does not match its actual primary row and selected content.");

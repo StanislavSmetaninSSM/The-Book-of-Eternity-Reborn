@@ -5,11 +5,16 @@ namespace BookOfEternityClient.Services;
 
 // One closed domain record on the existing persistent profile. Serialized DATA
 // alone is never admission: staging must prove its actual accepted result.
-internal static class SpiritualTreatmentParticipation
+internal static partial class SpiritualTreatmentParticipation
 {
     internal const string ChangeProperty = "spiritualTreatmentParticipationChange";
     internal const string RecordProperty = "spiritualTreatmentParticipation";
-    internal sealed record Change(string TargetId, JsonObject Proposal);
+    internal sealed record Change(WoundOwnerCoordinate Owner, JsonObject Proposal)
+    {
+        internal Change(string targetId, JsonObject proposal) : this(
+            new("chaos_sea", "guardian", targetId, WoundCarrierCatalog.AfterlifeProfilesPath), proposal) { }
+        internal string TargetId => Owner.OwnerId;
+    }
 
     internal static bool HasUnsettledChange(JsonObject? root) => root is not null &&
         new[] { AfterlifeEntityProfileState.ProfilesProperty, AfterlifeEntityProfileState.ResponseProfilesProperty,
@@ -40,31 +45,37 @@ internal static class SpiritualTreatmentParticipation
                 if (!hasChange) continue;
                 if (original[0].ContainsKey(ChangeProperty))
                     throw new InvalidDataException("Participation proposal must be a new response, not retained original input.");
-                if (kind != "guardian" || !AfterlifeEntityProfileState.TryNormalizeEffectRealm(
+                if (kind is not ("guardian" or "resident") || !AfterlifeEntityProfileState.TryNormalizeEffectRealm(
                         row["realm"]?.GetValue<string>() ?? Text(original[0], "realm"), out var realm) || realm != "chaos_sea")
-                    throw new InvalidDataException("Participation changes support only the current Chaos Sea Guardian.");
+                    throw new InvalidDataException("Participation changes require an exact current Chaos Guardian or resident.");
                 var proposal = row[ChangeProperty] as JsonObject ?? throw new InvalidDataException("Participation change must be a closed object.");
                 ValidateProposal(proposal);
-                var mirrored = changes.SingleOrDefault(c => c.TargetId == id);
+                if ((Scalar<int>(proposal, "schemaVersion") == 3) != (kind == "resident"))
+                    throw new InvalidDataException("Participation proposal family differs from its enclosing typed owner.");
+                var owner = new WoundOwnerCoordinate(realm, kind, id, WoundCarrierCatalog.AfterlifeProfilesPath);
+                var mirrored = changes.SingleOrDefault(c => c.Owner == owner);
                 if (mirrored is not null)
                 {
                     if (!JsonNode.DeepEquals(mirrored.Proposal, proposal))
                         throw new InvalidDataException("Mirrored profile representations contain conflicting participation changes.");
                     continue; // Same exact intent, not a second grant or a new capability.
                 }
-                changes.Add(new(id, proposal.DeepClone().AsObject()));
+                changes.Add(new(owner, proposal.DeepClone().AsObject()));
             }
         }
-        if (changes.Count > 1) throw new InvalidDataException("This aid slice accepts one current Guardian participation change per turn.");
+        if (changes.Count > 1) throw new InvalidDataException("This aid slice accepts one distinct typed participation change per turn.");
         return changes;
     }
 
     private static void ValidateProposal(JsonObject proposal)
     {
         var version = Scalar<int>(proposal, "schemaVersion");
-        if (version == 1)
+        if (version is 1 or 3)
         {
-            Closed(proposal, "schemaVersion", "operation", "healerId", "woundId", "conscious", "capable", "readableEvidence");
+            var fields = new[] { "schemaVersion", "operation", "healerId", "woundId", "conscious", "capable", "readableEvidence" };
+            Closed(proposal, version == 3 ? fields.Append("kind").ToArray() : fields);
+            if (version == 3 && Text(proposal, "kind") != "resident_target_consent")
+                throw new InvalidDataException("Invalid resident target-consent proposal.");
             if (Text(proposal, "operation") is not ("grant" or "revoke") || Text(proposal, "healerId") != "player_soul")
                 throw new InvalidDataException("Invalid Guardian target-consent proposal.");
             var conscious = Scalar<bool>(proposal, "conscious");
@@ -92,16 +103,20 @@ internal static class SpiritualTreatmentParticipation
     private static readonly string[] OfferConditionFields =
         ["providerConscious", "providerCapable", "targetConscious", "targetCapable"];
     internal static bool IsProviderOffer(JsonObject record) => Scalar<int>(record, "schemaVersion") == 2;
-    internal static string RecordOwnerId(JsonObject record) => Text(record, IsProviderOffer(record) ? "healerId" : "targetId");
-    internal static string TargetKind(JsonObject record) => IsProviderOffer(record) ? "player_soul" : "guardian";
-    internal static int ResultVersion(JsonObject record) => IsProviderOffer(record) ? 4 : 3;
+    internal static string RecordOwnerId(JsonObject record) => RecordOwner(record).OwnerId;
+    internal static string TargetKind(JsonObject record) => RecordTarget(record).OwnerKind;
+    internal static int ResultVersion(JsonObject record) => IsResidentConsent(record) ? 5 : IsProviderOffer(record) ? 4 : 3;
     internal static bool IsAvailable(JsonObject record) => Text(record, "status") == (IsProviderOffer(record) ? "offered" : "granted");
 
     internal static JsonObject CreateOutcome(Change change, string locationId, JsonObject binding,
         int cycleOrdinal, string primaryTransitionId)
     {
+        if (change.Owner.OwnerKind != "guardian")
+            throw new InvalidDataException("Resident outcomes require their exact typed current locality.");
         var proposal = change.Proposal;
         ValidateProposal(proposal);
+        if (Scalar<int>(proposal, "schemaVersion") == 3)
+            throw new InvalidDataException("Guardian outcomes cannot contain resident proposals.");
         var offer = Scalar<int>(proposal, "schemaVersion") == 2;
         var record = new JsonObject
         {
@@ -154,10 +169,11 @@ internal static class SpiritualTreatmentParticipation
                 if (!Scalar<bool>(record, field) && Text(record, "status") == "offered")
                     throw new InvalidDataException("A canonical offer requires conscious and capable healer and target.");
         }
+        else if (version == 3) ValidateResidentRecord(record);
         else throw new InvalidDataException("Unknown participation record schema.");
-        if (Text(record, "realm") != "chaos_sea" || string.IsNullOrWhiteSpace(Text(record, "readableEvidence")))
+        if ((version == 3 ? RecordTarget(record).Realm : Text(record, "realm")) != "chaos_sea" || string.IsNullOrWhiteSpace(Text(record, "readableEvidence")))
             throw new InvalidDataException("Participation requires the current Chaos realm and readable evidence.");
-        foreach (var field in new[] { "healerId", "targetId", "woundId", "locationId", "primaryTransitionId" })
+        foreach (var field in version == 3 ? new[] { "woundId", "primaryTransitionId" } : new[] { "healerId", "targetId", "woundId", "locationId", "primaryTransitionId" })
             if (!ResourceMaterializationContract.IsExactIdentifier(Text(record, field)))
                 throw new InvalidDataException("Participation identities must be exact identifiers.");
         var cycle = Scalar<int>(record, "acceptedCycleOrdinal");
@@ -183,8 +199,7 @@ internal static class SpiritualTreatmentParticipation
             if (ResultVersion(record) != resultVersion || Text(outcome, "contentFingerprint") != Fingerprint(record) || !JsonNode.DeepEquals(record["binding"], binding) ||
                 record["acceptedCycleOrdinal"]!.GetValue<int>() != ordinal ||
                 Text(record, "primaryTransitionId") != stages[0].TransitionId || !stages.Any(s =>
-                    s.Before.WoundId == Text(record, "woundId") && s.Before.Owner.OwnerKind == TargetKind(record) &&
-                    s.Before.Owner.OwnerId == Text(record, "targetId") && s.Before.Owner.Realm == "chaos_sea"))
+                    s.Before.WoundId == Text(record, "woundId") && s.Before.Owner == RecordTarget(record)))
                 throw new InvalidDataException("Participation outcome differs from its complete accepted natural result.");
         }
     }
@@ -195,7 +210,8 @@ internal static class SpiritualTreatmentParticipation
         {
             var record = outcome["record"]!.AsObject();
             var current = (profiles?[AfterlifeEntityProfileState.ProfilesProperty] as JsonArray)?.OfType<JsonObject>()
-                .Where(p => p["actorType"]?.GetValue<string>() == "guardian" && ProfileId(p) == RecordOwnerId(record)).ToArray();
+                .Where(p => p["actorType"]?.GetValue<string>() == RecordOwner(record).OwnerKind && ProfileId(p) == RecordOwnerId(record) &&
+                    AfterlifeEntityProfileState.TryNormalizeEffectRealm(p["realm"]?.GetValue<string>(), out var realm) && realm == RecordOwner(record).Realm).ToArray();
             if (current is not { Length: 1 } || !JsonNode.DeepEquals(current[0][RecordProperty], record) || current[0].ContainsKey(ChangeProperty))
                 throw new InvalidDataException("Published participation no longer matches its exact accepted profile content.");
         }

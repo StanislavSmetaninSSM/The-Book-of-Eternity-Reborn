@@ -22,7 +22,7 @@ internal static partial class AfterlifeWoundHealingPlanner
             if (changes.Count == 0) return;
             if (!IsNatural || _participationChanges is not null)
                 throw new InvalidDataException("Only one actual natural owner may issue participation outcomes.");
-            var detachedChanges = changes.Select(c => new SpiritualTreatmentParticipation.Change(c.TargetId,
+            var detachedChanges = changes.Select(c => new SpiritualTreatmentParticipation.Change(c.Owner,
                 c.Proposal.DeepClone().AsObject())).ToArray();
             RequireCurrent(_files, _lease);
             var observed = PendingTurnSnapshotReader.ReadObservedCurrent(_files, _lease,
@@ -56,17 +56,21 @@ internal static partial class AfterlifeWoundHealingPlanner
             var outcomes = new JsonArray();
             foreach (var change in detachedChanges)
             {
-                var scope = SpiritualTreatmentParticipation.RequireCurrentGuardianScope(currentRoots[ParticipationGuardiansPath]!,
-                    currentRoots[GuardianAbodeResidentState.StatePath], change.TargetId);
+                var resident = change.Owner.OwnerKind == "resident";
+                var woundOwner = change.Proposal["schemaVersion"]!.GetValue<int>() == 2
+                    ? new WoundOwnerCoordinate("chaos_sea", "player_soul", "player_soul", WoundCarrierCatalog.AfterlifeProfilesPath) : change.Owner;
+                var wound = _wounds.SingleOrDefault(w => w.Owner == woundOwner && w.WoundId == change.Proposal["woundId"]!.GetValue<string>())
+                    ?? throw new InvalidDataException("Participation lost the exact admitted typed wound binding.");
+                var scope = resident ? SpiritualTreatmentParticipation.RequireResidentScope(currentRoots[ParticipationGuardiansPath]!,
+                    currentRoots[GuardianAbodeResidentState.StatePath], acceptedProfiles, change.Owner, wound)
+                    : SpiritualTreatmentParticipation.RequireCurrentGuardianScope(currentRoots[ParticipationGuardiansPath]!,
+                        currentRoots[GuardianAbodeResidentState.StatePath], change.TargetId);
                 var target = (acceptedProfiles[AfterlifeEntityProfileState.ProfilesProperty] as JsonArray)?.OfType<JsonObject>()
-                    .Where(p => p["actorType"]?.GetValue<string>() == "guardian" && SpiritualTreatmentParticipation.ProfileId(p) == change.TargetId &&
-                        AfterlifeEntityProfileState.TryNormalizeEffectRealm(p["realm"]?.GetValue<string>(), out var realm) && realm == "chaos_sea").ToArray();
-                if (target is not { Length: 1 } || target[0]["locationId"]?.GetValue<string>() != scope.LocationId ||
-                    !_wounds.Any(w => w.Owner.OwnerKind == (change.Proposal["schemaVersion"]!.GetValue<int>() == 2 ? "player_soul" : "guardian") &&
-                        w.Owner.OwnerId == (change.Proposal["schemaVersion"]!.GetValue<int>() == 2 ? "player_soul" : change.TargetId) &&
-                        w.WoundId == change.Proposal["woundId"]!.GetValue<string>()))
-                    throw new InvalidDataException("Participation lost the exact admitted Guardian/wound binding.");
-                outcomes.Add(SpiritualTreatmentParticipation.CreateOutcome(change, scope.LocationId, binding,
+                    .Where(p => p["actorType"]?.GetValue<string>() == change.Owner.OwnerKind && SpiritualTreatmentParticipation.ProfileId(p) == change.TargetId &&
+                        AfterlifeEntityProfileState.TryNormalizeEffectRealm(p["realm"]?.GetValue<string>(), out var realm) && realm == change.Owner.Realm).ToArray();
+                if (target is not { Length: 1 } || target[0]["locationId"]?.GetValue<string>() != scope.LocationId)
+                    throw new InvalidDataException("Participation lost the exact admitted profile/locality binding.");
+                outcomes.Add(SpiritualTreatmentParticipation.CreateOutcome(change, new SpiritualAidLocality(scope.CurrentGuardianId!, scope.LocationId!), binding,
                     _natural!.CycleOrdinal, _stages[0].TransitionId));
             }
             _participationSnapshot = snapshot; _participationOriginal = evidence; _participationSources = sources;
@@ -99,8 +103,8 @@ internal static partial class AfterlifeWoundHealingPlanner
                 var record = outcome["record"]!.AsObject();
                 var id = SpiritualTreatmentParticipation.RecordOwnerId(record);
                 var target = profiles[AfterlifeEntityProfileState.ProfilesProperty]!.AsArray().OfType<JsonObject>()
-                    .Single(p => p["actorType"]?.GetValue<string>() == "guardian" && SpiritualTreatmentParticipation.ProfileId(p) == id);
-                var expected = _participationChanges!.Single(c => c.TargetId == id).Proposal;
+                    .Single(p => p["actorType"]?.GetValue<string>() == SpiritualTreatmentParticipation.RecordOwner(record).OwnerKind && SpiritualTreatmentParticipation.ProfileId(p) == id);
+                var expected = _participationChanges!.Single(c => c.Owner == SpiritualTreatmentParticipation.RecordOwner(record)).Proposal;
                 if (!JsonNode.DeepEquals(target[SpiritualTreatmentParticipation.ChangeProperty], expected))
                     throw new InvalidDataException("Participation afterimage lost the actual accepted proposal.");
                 target.Remove(SpiritualTreatmentParticipation.ChangeProperty);

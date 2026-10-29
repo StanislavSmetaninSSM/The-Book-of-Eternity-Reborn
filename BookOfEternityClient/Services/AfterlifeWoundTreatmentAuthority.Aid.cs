@@ -84,7 +84,7 @@ internal static partial class AfterlifeWoundTreatmentAuthority
     private static string AidSourceFingerprint(SpiritualSelfTreatmentStageContext context,
         IReadOnlyList<SourceFile> sources, JsonObject witness) => WoundAcceptedTurnFingerprintWriter.Compute(new[]
         {
-            "spiritual_aid_treatment_source", SpiritualTreatmentParticipation.IsProviderOffer(witness["record"]!.AsObject()) ? "4" : "3", context.SessionId, context.RequestId,
+            "spiritual_aid_treatment_source", SpiritualTreatmentParticipation.ResultVersion(witness["record"]!.AsObject()).ToString(System.Globalization.CultureInfo.InvariantCulture), context.SessionId, context.RequestId,
             context.Turn.ToString(System.Globalization.CultureInfo.InvariantCulture),
             WoundAcceptedTurnFingerprintWriter.CanonicalJson(JsonSerializer.SerializeToNode(context.Progression)!),
             WoundAcceptedTurnFingerprintWriter.CanonicalJson(witness)
@@ -114,8 +114,9 @@ internal static partial class AfterlifeWoundTreatmentAuthority
         var healerCoordinate = aid.Healer(natural.Realm);
         var healers = natural.Carriers.AfterlifeProfiles["profiles"]!.AsArray().OfType<JsonObject>()
             .Where(p => WoundCarrierCollectionAuthority.AfterlifeProfileMatches(p, healerCoordinate)).ToArray();
-        var scope = SpiritualTreatmentParticipation.RequireCurrentGuardianScope(Root(AidGuardiansPath)
-            ?? throw new InvalidDataException("Aid original locality is absent."), Root(GuardianAbodeResidentState.StatePath), aid.GuardianId);
+        var scope = SpiritualTreatmentParticipation.RequireAidScope(Root(AidGuardiansPath)
+            ?? throw new InvalidDataException("Aid original locality is absent."), Root(GuardianAbodeResidentState.StatePath),
+            natural.Carriers.AfterlifeProfiles, aid, wound);
         if (healers is not { Length: 1 } || !AfterlifeProfileVisibility.IsVisibleToPlayer(target) ||
             !AfterlifeProfileVisibility.IsVisibleToPlayer(healers[0]))
             return SourceRefuse("target_invalid");
@@ -147,11 +148,10 @@ internal static partial class AfterlifeWoundTreatmentAuthority
             throw new InvalidDataException("Aid original lacks its actual committed natural grant result.");
         var final = previous[0].ReadFinalWound(wound.WoundId);
         if (previous[0].SchemaVersion != SpiritualTreatmentParticipation.ResultVersion(record) ||
-            SpiritualTreatmentParticipation.IsProviderOffer(record) != selection.Aid.ReceiveAid || previous[0].ParticipationOutcomes is not JsonArray outcomes || outcomes.Count != 1 ||
+            !SpiritualTreatmentParticipation.MatchesSelection(record, selection.Aid) || previous[0].ParticipationOutcomes is not JsonArray outcomes || outcomes.Count != 1 ||
             !JsonNode.DeepEquals(outcomes[0]?["record"], record) || !SpiritualTreatmentParticipation.IsAvailable(record) ||
-            String(record["healerId"]) != selection.Aid.HealerId || String(record["targetId"]) != selection.Aid.TargetId ||
             String(record["woundId"]) != wound.WoundId || Integer(record["eligibleCycleOrdinal"]) != context.Progression.NextChaosSeaTurnOrdinal ||
-            String(record["locationId"]) != String(target["locationId"]) ||
+            SpiritualTreatmentParticipation.RecordLocality(record).AbodeId != String(target["locationId"]) ||
             String(record["binding"]?["sessionId"]) != context.SessionId || Integer(record["binding"]?["turn"]) != context.Turn - 1 ||
             final is null || WoundIdentityState.ComputeSemanticFingerprint(final) != WoundIdentityState.ComputeSemanticFingerprint(wound))
             throw new InvalidDataException("Aid original grant identity/cycle/current wound does not match its full accepted result.");
@@ -213,9 +213,8 @@ internal static partial class AfterlifeWoundTreatmentAuthority
             if (index >= 0) reads[index] = reads[index] with { Root = carrier.Value };
         }
         var record = outcomes[0]!["record"]!.AsObject();
-        if (!SpiritualTreatmentParticipation.IsAvailable(record) || SpiritualTreatmentParticipation.IsProviderOffer(record) != aid.ReceiveAid ||
-            record["healerId"]?.GetValue<string>() != aid.HealerId ||
-            record["targetId"]?.GetValue<string>() != aid.TargetId || record["woundId"]?.GetValue<string>() != selection.WoundId ||
+        if (!SpiritualTreatmentParticipation.IsAvailable(record) || !SpiritualTreatmentParticipation.MatchesSelection(record, aid) ||
+            record["woundId"]?.GetValue<string>() != selection.WoundId ||
             SpiritualTreatmentParticipation.Fingerprint(record) != aid.ParticipationFingerprint ||
             record["acceptedCycleOrdinal"]!.GetValue<int>() != control.NextChaosSeaTurnOrdinal ||
             record["eligibleCycleOrdinal"]!.GetValue<int>() != checked(control.NextChaosSeaTurnOrdinal + 1))
@@ -225,15 +224,18 @@ internal static partial class AfterlifeWoundTreatmentAuthority
             (await Root(AfterlifeSpiritualConflictState.StatePath))?["activeConflict"] is not null)
             throw new InvalidDataException("Aid requires the same current safe Chaos realm without an active conflict.");
         var guardians = await Root(AidGuardiansPath) ?? throw new InvalidDataException("Aid requires current Guardian locality.");
-        var scope = SpiritualTreatmentParticipation.RequireCurrentGuardianScope(guardians,
-            await Root(GuardianAbodeResidentState.StatePath), aid.GuardianId);
-        if (record["locationId"]?.GetValue<string>() != scope.LocationId)
-            throw new InvalidDataException("Aid participation belongs to a different Abode.");
         var profiles = published.CarrierRoots[WoundCarrierCatalog.AfterlifeProfilesPath]!;
+        var selectedWound = published.Catalog.Occurrences.SingleOrDefault(o => o.WoundId == selection.WoundId)?.Wound
+            ?? throw new InvalidDataException("Aid requires its exact current wound.");
+        var scope = SpiritualTreatmentParticipation.RequireAidScope(guardians,
+            await Root(GuardianAbodeResidentState.StatePath), profiles, aid, selectedWound);
+        if (SpiritualTreatmentParticipation.RecordLocality(record).AbodeId != scope.LocationId)
+            throw new InvalidDataException("Aid participation belongs to a different Abode.");
         if (SpiritualTreatmentParticipation.HasUnsettledChange(profiles))
             throw new InvalidDataException("Active aid cannot issue a new participation change in the same turn.");
         var target = profiles["profiles"]!.AsArray().OfType<JsonObject>().Where(p =>
-            p["actorType"]?.GetValue<string>() == "guardian" && SpiritualTreatmentParticipation.ProfileId(p) == aid.GuardianId).ToArray();
+            WoundCarrierCollectionAuthority.AfterlifeProfileMatches(p, SpiritualTreatmentParticipation.RecordOwner(record)) &&
+            SpiritualTreatmentParticipation.ProfileId(p) == SpiritualTreatmentParticipation.RecordOwnerId(record)).ToArray();
         var player = profiles["profiles"]!.AsArray().OfType<JsonObject>().Where(p =>
             p["actorType"]?.GetValue<string>() == "player_soul" && p["actorId"]?.GetValue<string>() == "player_soul").ToArray();
         var matches = published.Catalog.Occurrences.Where(o => o.WoundId == selection.WoundId).ToArray();

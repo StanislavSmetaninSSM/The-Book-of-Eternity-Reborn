@@ -89,7 +89,7 @@ internal sealed class SpiritualHealingPersistedResult : WoundTransitionResult
             }).ToArray())
         };
         if (participation is not null) root["participationOutcomes"] = participation;
-        if (version == 4 && owner.Mode == "aid") root["direction"] = "guardian_to_player";
+        if (version is 4 or 5 && owner.Mode == "aid") root["direction"] = version == 5 ? "player_to_resident" : "guardian_to_player";
         root["resultFingerprint"] = WoundHistoryState.ComputeTransitionResultFingerprint(root);
         var issues = new List<ValidationIssue>();
         return Parse(JsonSerializer.SerializeToElement(root), "spiritualHealing.result", issues)
@@ -107,12 +107,12 @@ internal sealed class SpiritualHealingPersistedResult : WoundTransitionResult
             var rootFields = new[] { "kind", "schemaVersion", "binding", "request", "source", "control", "scheduleBeforeJson", "progressionReportJson", "scheduleAfterJson", "scheduleAfterFingerprint", "stages", "resultFingerprint" };
             var version = root["schemaVersion"]!.GetValue<int>();
             var mode = Text(root, "mode");
-            Closed(root, version is 3 or 4 && mode == "natural" ? rootFields.Append("mode").Append("participationOutcomes").ToArray()
-                : version == 4 && mode == "aid" ? rootFields.Append("mode").Append("direction").ToArray()
+            Closed(root, version is 3 or 4 or 5 && mode == "natural" ? rootFields.Append("mode").Append("participationOutcomes").ToArray()
+                : version is 4 or 5 && mode == "aid" ? rootFields.Append("mode").Append("direction").ToArray()
                 : rootFields.Append("mode").ToArray());
-            if (Text(root, "kind") != "spiritual_healing" || version is not (2 or 3 or 4) || mode is not ("self" or "natural" or "aid") ||
-                version == 2 && mode == "aid" || version is 3 or 4 && mode == "self" ||
-                version == 4 && mode == "aid" && Text(root, "direction") != "guardian_to_player" ||
+            if (Text(root, "kind") != "spiritual_healing" || version is not (2 or 3 or 4 or 5) || mode is not ("self" or "natural" or "aid") ||
+                version == 2 && mode == "aid" || version is 3 or 4 or 5 && mode == "self" ||
+                version is 4 or 5 && mode == "aid" && Text(root, "direction") != (version == 5 ? "player_to_resident" : "guardian_to_player") ||
                 Text(root, "resultFingerprint") != WoundHistoryState.ComputeTransitionResultFingerprint(root))
                 throw new InvalidDataException("Spiritual result kind/schema/fingerprint differs.");
             var binding = root["binding"]!.AsObject();
@@ -246,7 +246,7 @@ internal sealed class SpiritualHealingPersistedResult : WoundTransitionResult
                 ValidateStageScope(stage, e);
                 current[before.WoundId] = after;
             }
-            if (version is 3 or 4 && mode == "natural")
+            if (version is 3 or 4 or 5 && mode == "natural")
                 SpiritualTreatmentParticipation.ValidateOutcomes(root["participationOutcomes"]!.AsArray(), binding,
                     control.NextChaosSeaTurnOrdinal, stages, version);
             return new(root, stages);

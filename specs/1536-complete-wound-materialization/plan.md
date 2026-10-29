@@ -1,3 +1,26 @@
+# T108 resident typed owner connection — implementation WIP
+
+2026-10-29. Accepted design94a95321b; first causal scaffold source
+d2306fae504ee9c7a0a17ace5404246e6a5ac78b ran exactly1/1 expected FAIL at
+SpiritualTreatmentParticipation.cs:45 Guardian-only guard. No timeout/skip/duplicate,
+complete1case, both cleanup flags true; wall15.1351709s/category4.9095405s <60s.
+TRX5498740883154bd991aba4981dd796cca8b04ee070fc317af10618e91622e0e5.
+Fresh Unit refsfalse0errors26warnings1:07.58;18artifact/4source pins unchanged;
+Catalog1042/12725 and PlanOnly1descriptor/1case/1method executed0.
+Independent Sol SOURCE/selection/PREP/expected-RED OUTCOME accepted without findings.
+Raw resident-causal-{build,catalog,plan,red}-1 under the existing external root.
+
+Current uncompiled implementation connects full Change.Owner, closed resident
+record3/selection-request-result5, shared signed/current aid readers, typed locality
+normalization and common History family dispatch. Existing v3/v4 JSON forms remain
+unchanged by design; this has NOT yet been compiled, reviewed or run. No resident
+user-flow PASS is claimed. Next finish the finite cheap authority controls and real
+producer/journey fixture wiring, synchronize GM docs/examples/manifest, then coherent
+SOURCE review and fresh owning builds/admission. Existing parsed operation DATA and
+actual lease are reused; no new cache/publisher/path registry. Fresh physical/source/
+permission/effect/history checks remain. Disk~677MiB at last check; no raw/save/
+recovery deletion. No new clone/restore. DFR/Mortal/Windows/performance stay HOLD.
+
 # T108 current-Abode resident treatment — DESIGN WIP
 
 2026-10-29, #1536/T108-RESIDENT. The next user result is player treatment of a

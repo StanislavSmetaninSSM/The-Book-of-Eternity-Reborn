@@ -1357,7 +1357,7 @@ public partial class ValidationService
         {
             issues.Add(new(AfterlifeEntityProfileState.StatePath, IssueSeverity.Error,
                 "Spiritual participation cannot be issued by this profile response.", code: "spiritual_participation_invalid",
-                actual: failure.Message, repairHint: "Keep the same turn; author only the closed participation change on the current Guardian during an ordinary safe cycle."));
+                actual: failure.Message, repairHint: "Keep the same turn; author only the closed typed participation change on the current Guardian or present local resident during an ordinary safe cycle."));
         }
         var conflict = current.SpiritualConflict;
         if (conflict[AfterlifeSpiritualConflictState.ResponseField] is JsonObject update)

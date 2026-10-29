@@ -141,6 +141,7 @@ internal static class SpiritualHealingRequestProjection
                 projection["direction"] = "guardian_to_player";
                 projection["playerConfirmationVerified"] = true; // Exact client original, not GM consent.
             }
+            if (request["schemaVersion"]!.GetValue<int>() == 5) projection["direction"] = "player_to_resident";
             projection["participationVerified"] = true; // GM comparison DATA, never permission to author a grant or request.
         }
         return projection;

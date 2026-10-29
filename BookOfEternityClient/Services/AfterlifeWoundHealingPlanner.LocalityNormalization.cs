@@ -22,8 +22,11 @@ internal static partial class AfterlifeWoundHealingPlanner
             using var fresh = FileSystemManager.SuppressValidationReuse();
             RequireCurrent(files, lease);
             var images = _participationSources ?? _sources;
-            var targetId = _data?.AidWitness is { } witness ? SpiritualTreatmentParticipation.RecordOwnerId(witness["record"]!.AsObject())
-                : _participationChanges!.Single().TargetId;
+            var record = (_data?.AidWitness ?? _participationOutcomes?.Single()?.AsObject())?["record"]?.AsObject()
+                ?? throw new InvalidDataException("Locality normalization requires its retained participation record.");
+            var aid = SpiritualTreatmentParticipation.Selection(record);
+            var profiles = _data?.Carriers.AfterlifeProfiles ?? _natural!.Carriers.AfterlifeProfiles!;
+            var wound = _wounds.Single(w => w.WoundId == record["woundId"]!.GetValue<string>());
             JsonObject? Root(string selectedPath, string? replacement = null)
             {
                 var image = images[selectedPath];
@@ -35,10 +38,10 @@ internal static partial class AfterlifeWoundHealingPlanner
             var residentPath = AfterlifeWoundTreatmentAuthority.AidLocalityPaths[1];
             var guardians = Root(guardianPath)!;
             var residents = Root(residentPath);
-            var before = SpiritualTreatmentParticipation.RequireCurrentGuardianScope(guardians, residents, targetId);
-            var after = SpiritualTreatmentParticipation.RequireCurrentGuardianScope(
+            var before = SpiritualTreatmentParticipation.RequireAidScope(guardians, residents, profiles, aid, wound);
+            var after = SpiritualTreatmentParticipation.RequireAidScope(
                 path == guardianPath ? Root(path, content)! : guardians,
-                path == residentPath ? Root(path, content) : residents, targetId);
+                path == residentPath ? Root(path, content) : residents, profiles, aid, wound);
             if (before.RealmKind != after.RealmKind || before.LocationId != after.LocationId || before.CurrentGuardianId != after.CurrentGuardianId ||
                 !before.LocalActorIds.ToHashSet(StringComparer.Ordinal).SetEquals(after.LocalActorIds) ||
                 !before.LocalFactionIds.ToHashSet(StringComparer.Ordinal).SetEquals(after.LocalFactionIds))

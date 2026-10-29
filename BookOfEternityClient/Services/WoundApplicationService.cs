@@ -11,10 +11,11 @@ internal static class WoundApplicationService
 {
     internal const string ActionText = "Самостоятельно лечить выбранную духовную рану вне конфликта. Продолжить обычный безопасный цикл мира.";
     internal const string AidActionText = "Помочь текущему согласившемуся Хранителю вылечить выбранную духовную рану вне конфликта. Продолжить обычный безопасный цикл мира.";
+    internal const string ResidentAidActionText = "Помочь согласившемуся жителю текущей Обители Хранителя вылечить выбранную духовную рану вне конфликта. Продолжить обычный безопасный цикл мира.";
     internal const string ReceiveAidActionText = "Принять добровольную безвозмездную помощь текущего Хранителя в лечении моей выбранной духовной раны вне конфликта. Продолжить обычный безопасный цикл мира.";
     internal const string CombatActionText = "Лечить выбранную собственную духовную рану стандартным Исцелением в текущей духовной дуэли. Это прерываемое противником действие за ОД, без безопасного цикла мира.";
     internal static string ActionFor(SpiritualSelfTreatmentSelection selection) => selection.Combat is not null ? CombatActionText : selection.Aid is null ? ActionText
-        : selection.Aid.ReceiveAid ? ReceiveAidActionText : AidActionText;
+        : selection.Aid.Resident is not null ? ResidentAidActionText : selection.Aid.ReceiveAid ? ReceiveAidActionText : AidActionText;
 
     internal static async Task<ExplorerCommandResult> OpenAsync(FileSystemManager fs, string command, bool treatment)
     {
@@ -94,7 +95,7 @@ internal static class WoundApplicationService
         if (!context.Input.SelfVisible || context.Input.Realm != "chaos_sea" || context.SpiritualConflict?["activeConflict"] is not null)
             return self;
         var profiles = (context.Input.Carriers.AfterlifeProfiles?["profiles"] as JsonArray)?.OfType<JsonObject>().ToArray() ?? [];
-        var candidates = profiles.Where(p => p["actorType"]?.GetValue<string>() == "guardian" &&
+        var candidates = profiles.Where(p => p["actorType"]?.GetValue<string>() is "guardian" or "resident" &&
             p[SpiritualTreatmentParticipation.RecordProperty] is JsonObject && AfterlifeProfileVisibility.IsVisibleToPlayer(p)).ToArray();
         if (candidates.Length == 0) return self; // Ordinary/self menus acquire no additional locality inputs.
         try
@@ -113,8 +114,9 @@ internal static class WoundApplicationService
             var currentGuardianId = guardians["chaosSeaNavigation"]?["currentGuardianId"]?.GetValue<string>();
             if (string.IsNullOrWhiteSpace(currentGuardianId)) return self;
             var scope = SpiritualTreatmentParticipation.RequireCurrentGuardianScope(guardians, residents, currentGuardianId);
-            candidates = candidates.Where(p => SpiritualTreatmentParticipation.ProfileId(p) == currentGuardianId).ToArray();
-            if (candidates.Length != 1) return self;
+            candidates = candidates.Where(p => p["actorType"]?.GetValue<string>() == "resident" ||
+                SpiritualTreatmentParticipation.ProfileId(p) == currentGuardianId).ToArray();
+            if (candidates.Count(p => p["actorType"]?.GetValue<string>() == "guardian") > 1) return self;
             var healer = profiles.SingleOrDefault(p => p["actorType"]?.GetValue<string>() == "player_soul" &&
                 SpiritualTreatmentParticipation.ProfileId(p) == "player_soul");
             if (healer is null) return self;
@@ -126,8 +128,9 @@ internal static class WoundApplicationService
                 if (!SpiritualTreatmentParticipation.IsAvailable(record) || SpiritualTreatmentParticipation.HasUnsettledChange(context.Input.Carriers.AfterlifeProfiles)) continue;
                 var targetId = SpiritualTreatmentParticipation.ProfileId(target);
                 var receiveAid = SpiritualTreatmentParticipation.IsProviderOffer(record);
-                if (SpiritualTreatmentParticipation.RecordOwnerId(record) != targetId) continue;
-                if (target["locationId"]?.GetValue<string>() != scope.LocationId || record["locationId"]!.GetValue<string>() != scope.LocationId) continue;
+                if (SpiritualTreatmentParticipation.RecordOwnerId(record) != targetId ||
+                    target["actorType"]?.GetValue<string>() != SpiritualTreatmentParticipation.RecordOwner(record).OwnerKind) continue;
+                if (target["locationId"]?.GetValue<string>() != scope.LocationId || SpiritualTreatmentParticipation.RecordLocality(record).AbodeId != scope.LocationId) continue;
                 var primary = context.Input.History.Transitions.SingleOrDefault(t => t.TransitionId == record["primaryTransitionId"]!.GetValue<string>());
                 if (primary?.TransitionResult is not SpiritualHealingPersistedResult { IsNatural: true } grant ||
                     grant.SchemaVersion != SpiritualTreatmentParticipation.ResultVersion(record) || grant.ParticipationOutcomes is not JsonArray outcomes || outcomes.Count != 1 || !JsonNode.DeepEquals(outcomes[0]?["record"], record)) continue;
@@ -135,20 +138,20 @@ internal static class WoundApplicationService
                 if (result["scheduleAfterFingerprint"]!.GetValue<string>() != new CanonicalBeforeImage(true, scheduleBytes).Fingerprint) continue;
                 var wound = context.Catalog.Occurrences.Select(o => o.Wound).SingleOrDefault(w => w.WoundId == record["woundId"]!.GetValue<string>());
                 if (wound is not { Lifecycle: "active", Classification.Domain: "spiritual" } ||
-                    wound.Owner != new WoundOwnerCoordinate("chaos_sea", SpiritualTreatmentParticipation.TargetKind(record),
-                        record["targetId"]!.GetValue<string>(), WoundCarrierCatalog.AfterlifeProfilesPath) ||
+                    wound.Owner != SpiritualTreatmentParticipation.RecordTarget(record) ||
                     wound.Display.Visibility is not ("public" or "known_to_player")) continue;
+                var aid = SpiritualTreatmentParticipation.Selection(record);
+                _ = SpiritualTreatmentParticipation.RequireAidScope(guardians, residents, context.Input.Carriers.AfterlifeProfiles!, aid, wound);
                 var source = SpiritualHealingResolver.PrepareSource(new(wound,
-                    new("chaos_sea", receiveAid ? "guardian" : "player_soul", record["healerId"]!.GetValue<string>(), WoundCarrierCatalog.AfterlifeProfilesPath),
+                    SpiritualTreatmentParticipation.RecordHealer(record),
                     receiveAid ? target : healer, context.Soul, context.Input.Effects)).Source;
                 if (source is null || source.HealingTier < wound.Severity.Rank) continue;
                 var name = WoundPlayerProjection.Text(target["name"]?.GetValue<string>() ?? target["displayName"]?.GetValue<string>());
                 choices.Add(new("wound_" + choices.Count,
                     new SpiritualSelfTreatmentSelection(wound.WoundId, WoundIdentityState.ComputeSemanticFingerprint(wound))
-                        { Aid = new(record["healerId"]!.GetValue<string>(), record["targetId"]!.GetValue<string>(), SpiritualTreatmentParticipation.Fingerprint(record))
-                            { ReceiveAid = receiveAid } },
+                        { Aid = aid },
                     receiveAid ? "Себя: " + WoundPlayerProjection.Text(wound.Display.Name) + " — помощь Хранителя" + (name.Length == 0 ? "" : " «" + name + "»")
-                        : "Хранитель" + (name.Length == 0 ? "" : " «" + name + "»") + ": " + WoundPlayerProjection.Text(wound.Display.Name),
+                        : (aid.Resident is not null ? "Житель Обители" : "Хранитель") + (name.Length == 0 ? "" : " «" + name + "»") + ": " + WoundPlayerProjection.Text(wound.Display.Name),
                     wound.Severity.Value, source.HealingTier, true,
                     receiveAid ? "Хранитель готов помочь бесплатно. Примите помощь подтверждением; один безопасный цикл мира, без затрат ОД."
                         : "Согласие получено на следующий безопасный цикл. Без затрат ОД; перед броском согласие и близость проверяются заново."));

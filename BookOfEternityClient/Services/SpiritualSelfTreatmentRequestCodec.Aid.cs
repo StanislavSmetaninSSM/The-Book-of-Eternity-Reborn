@@ -7,7 +7,7 @@ namespace BookOfEternityClient.Services;
 internal static partial class SpiritualSelfTreatmentRequestCodec
 {
     private const string AidKind = "spiritual_treatment_request";
-    internal static bool IsAidHeader(JsonObject root) => Int(root["schemaVersion"]) is 3 or 4 &&
+    internal static bool IsAidHeader(JsonObject root) => Int(root["schemaVersion"]) is 3 or 4 or 5 &&
         Text(root["kind"]) == AidKind && Text(root["mode"]) == "aid";
     internal static bool IsReceiveAidHeader(JsonObject root) => IsAidHeader(root) && Int(root["schemaVersion"]) == 4;
     internal static bool IsActiveKind(JsonObject root) => Text(root["kind"]) is Kind or AidKind;
@@ -28,7 +28,13 @@ internal static partial class SpiritualSelfTreatmentRequestCodec
         if (IsAidHeader(root))
         {
             var witness = root["participation"] as JsonObject ?? throw new InvalidDataException("Aid witness is absent.");
-            selection = selection with { Aid = new(Text(root["healer"]?["ownerId"]) ?? "", Text(root["target"]?["ownerId"]) ?? "",
+            if (Int(root["schemaVersion"]) == 5)
+            {
+                var record = witness["record"] as JsonObject ?? throw new InvalidDataException("Resident aid witness is absent.");
+                SpiritualTreatmentParticipation.ValidateRecord(record);
+                selection = selection with { Aid = SpiritualTreatmentParticipation.Selection(record) };
+            }
+            else selection = selection with { Aid = new(Text(root["healer"]?["ownerId"]) ?? "", Text(root["target"]?["ownerId"]) ?? "",
                 Text(witness["contentFingerprint"]) ?? "") { ReceiveAid = IsReceiveAidHeader(root),
                     PlayerConfirmed = IsReceiveAidHeader(root) && Text(root["playerConfirmation"]) == "player_target_confirmed" } };
         }
@@ -61,7 +67,7 @@ internal static partial class SpiritualSelfTreatmentRequestCodec
             throw new InvalidDataException("Aid creation requires its exact family and actual player confirmation.");
         var root = new JsonObject
         {
-            ["schemaVersion"] = selection.Aid.ReceiveAid ? 4 : 3, ["kind"] = AidKind, ["mode"] = "aid",
+            ["schemaVersion"] = selection.Aid.FamilyVersion, ["kind"] = AidKind, ["mode"] = "aid",
             ["sessionId"] = context.SessionId, ["requestId"] = context.RequestId, ["turn"] = context.Turn,
             ["healer"] = healer, ["target"] = target, ["participation"] = witness.DeepClone(), ["activeSource"] = activeSource,
             ["attempt"] = new JsonObject
@@ -80,6 +86,7 @@ internal static partial class SpiritualSelfTreatmentRequestCodec
             root["direction"] = "guardian_to_player";
             root["playerConfirmation"] = "player_target_confirmed";
         }
+        if (selection.Aid.Resident is not null) root["direction"] = "player_to_resident";
         root["requestFingerprint"] = AidFingerprint(root);
         if (!IsBoundAid(root, context, selection, data.Realm, data.CycleOrdinal))
             throw new InvalidDataException("Aid factory cannot emit an unbound request.");
@@ -93,10 +100,12 @@ internal static partial class SpiritualSelfTreatmentRequestCodec
         {
             if (selection.Aid is not { } aid) return false;
             var fields = new[] { "schemaVersion", "kind", "mode", "sessionId", "requestId", "turn", "healer", "target", "participation", "activeSource", "attempt", "requestFingerprint" };
-            if (!IsAidHeader(root) || Int(root["schemaVersion"]) != (aid.ReceiveAid ? 4 : 3) ||
+            if (!IsAidHeader(root) || Int(root["schemaVersion"]) != aid.FamilyVersion ||
                 aid.ReceiveAid && (!aid.PlayerConfirmed || Text(root["direction"]) != "guardian_to_player" || Text(root["playerConfirmation"]) != "player_target_confirmed") ||
+                aid.Resident is not null && Text(root["direction"]) != "player_to_resident" ||
                 realm != "chaos_sea" || ordinal < 1 ||
-                !Closed(root, aid.ReceiveAid ? fields.Concat(new[] { "direction", "playerConfirmation" }).ToArray() : fields) ||
+                !Closed(root, aid.ReceiveAid ? fields.Concat(new[] { "direction", "playerConfirmation" }).ToArray()
+                    : aid.Resident is not null ? fields.Append("direction").ToArray() : fields) ||
                 Text(root["sessionId"]) != context.SessionId || Text(root["requestId"]) != context.RequestId || Int(root["turn"]) != context.Turn ||
                 root["healer"] is not JsonObject healer || root["target"] is not JsonObject target ||
                 !JsonNode.DeepEquals(healer, SpiritualHealingRequestProjection.OwnerJson(aid.Healer(realm))) ||
@@ -112,13 +121,13 @@ internal static partial class SpiritualSelfTreatmentRequestCodec
                 activeSource["rollContributions"] is not JsonArray)
                 return false;
             SpiritualTreatmentParticipation.ValidateRecord(record);
-            if (!SpiritualTreatmentParticipation.IsAvailable(record) || SpiritualTreatmentParticipation.IsProviderOffer(record) != aid.ReceiveAid ||
-                Text(record["healerId"]) != aid.HealerId || Text(record["targetId"]) != aid.TargetId ||
+            if (!SpiritualTreatmentParticipation.IsAvailable(record) || !SpiritualTreatmentParticipation.MatchesSelection(record, aid) ||
                 Text(record["woundId"]) != selection.WoundId || Text(witness["contentFingerprint"]) != aid.ParticipationFingerprint ||
                 Text(witness["contentFingerprint"]) != SpiritualTreatmentParticipation.Fingerprint(record) ||
                 !ResourceMaterializationContract.IsAuthorityFingerprint(Text(witness["grantResultFingerprint"])) ||
                 Int(record["eligibleCycleOrdinal"]) != ordinal || Text(record["binding"]?["sessionId"]) != context.SessionId ||
                 Int(record["binding"]?["turn"]) is not { } grantTurn || grantTurn >= context.Turn ||
+                aid.Resident is not null && grantTurn != context.Turn - 1 ||
                 root["attempt"] is not JsonObject attempt ||
                 !Closed(attempt, "attemptId", "woundId", "woundFingerprint", "realm", "cycleOrdinal", "cycleKey", "sourceFingerprint", "roll") ||
                 Text(attempt["woundId"]) != selection.WoundId || Text(attempt["woundFingerprint"]) != selection.ExpectedWoundFingerprint ||
@@ -151,7 +160,7 @@ internal static partial class SpiritualSelfTreatmentRequestCodec
         string realm, int ordinal, string sourceFingerprint, JsonObject healer, JsonObject target, JsonObject witness, JsonObject activeSource) =>
         "spiritual_aid_attempt_" + WoundAcceptedTurnFingerprintWriter.Compute(new[]
         {
-            AidKind, selection.Aid?.ReceiveAid == true ? "4" : "3", context.SessionId, context.RequestId, context.Turn.ToString(CultureInfo.InvariantCulture),
+            AidKind, (selection.Aid?.FamilyVersion ?? 3).ToString(CultureInfo.InvariantCulture), context.SessionId, context.RequestId, context.Turn.ToString(CultureInfo.InvariantCulture),
             selection.WoundId, selection.ExpectedWoundFingerprint, realm, ordinal.ToString(CultureInfo.InvariantCulture), sourceFingerprint,
             WoundAcceptedTurnFingerprintWriter.CanonicalJson(healer), WoundAcceptedTurnFingerprintWriter.CanonicalJson(target),
             WoundAcceptedTurnFingerprintWriter.CanonicalJson(witness), WoundAcceptedTurnFingerprintWriter.CanonicalJson(activeSource)
