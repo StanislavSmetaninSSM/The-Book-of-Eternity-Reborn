@@ -22,6 +22,11 @@ barrier/rounding границы и результаты обеих сторон.
 Bridge consistency: требования spec, дизайн T068→review T069→approval T070→
 probe T071; T001 остаётся закрытым для production.
 
+Результат T068/T069: healing-suppression-proposal.md v1, отдельный Astra/high
+review без существенных замечаний. Уточнена половина healing strength до cap
+дефицитаHP, арифметические примеры подтверждены.62links/diff PASS, WIP опубликован;
+профиль предъявляется на T070. Проба T071 и production не выполнялись.
+
 ## Текущий срез T065–T067: проверка противодействия
 
 Прямое разрешение автора на probe продолжает показанную spec v1.48. Сначала
