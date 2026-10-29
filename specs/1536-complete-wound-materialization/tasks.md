@@ -14662,6 +14662,21 @@ rows retain their own lineages; no combat gameplay PASS or full task closure.
 
 **Independent Test**: Treat through Elyara command payment and roleplay compensation, verify retry/rollback charge rules, and inspect factions with visible healers of different tiers/access without assuming public service.
 
+2026-10-29 public-currency slice: code and all80distinct targeted cases verified on
+the explicit versions in the current plan (final source53c7dc2f4), independent final
+OUTCOME accepted; verify remote SHA after final checkpoint publication. Shared
+console/browser queue→Engine now confirms a
+sealed price, charges once for actual success/partial/failure, publishes wound,
+effects/History/one cycle atomically, replays without payment, and fully rolls back
+after a physical wallet cut. Both UI runs observed d1/NoImprovement with fee25 and
+the H0 natural tick; backend deterministic d1/d2/d20 proves all three outcome bands.
+Fresh life/location/price/funds guards and Elyara's
+protected fresh profile are covered. Public-currency portions of the tasks below
+are implemented; broader checkboxes remain open for negotiated compensation,
+universal travel/Shining destination, faction healers/access and their acceptance.
+Next concrete result is T135/T141/T142 visible faction healer capability, not another
+run of this unchanged80. Full raw/provenance remain outside checkout.
+
 ### RED tests
 
 - [ ] T131 [P] [US6] Add RED 25/50/100/200 base price, 50%-200% multiplier, upward whole-Feather rounding, sealed quote, and exact attempt charge tests in `BookOfEternityClient.Tests/AfterlifeHealingServiceQuoteTests.cs`

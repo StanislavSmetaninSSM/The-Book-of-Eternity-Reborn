@@ -1,10 +1,16 @@
 # US6 public Elyara treatment — design and implementation plan
 
 2026-10-29. Issue: https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536
-Baseline/remote: b43e1bca68d6efd9248c4d0182fa224c562634d0.
+Baseline: b43e1bca68d6efd9248c4d0182fa224c562634d0.
+Branch:1536-linux-qualification-20261025.
 Same Linux checkout/branch, sole writer Sol. Existing T131–T140/T143–T147 own this
 route; no new microtask/epic. Use executing-plans for inline implementation with
 independent Sol SOURCE/selection/outcomes and Astra/high complex DESIGN review.
+
+Functional qualification source:53c7dc2f4c14f78941f3cf3760d77902287225a1.
+All80distinct targeted cases PASS; independent final OUTCOME accepted. Verify remote
+SHA after publishing this final checkpoint; no new clone/restore is performed.
+This is the first public, co-located Chaos Sea currency route, not all US6 or #1536.
 
 Goal: a player currently co-located in the Chaos Sea with the alive canonical Elyara can see the
 exact public Ink Feather quote, confirm it, receive the real healing result and
@@ -74,23 +80,23 @@ Concrete closed DATA and interfaces (not publication authority)
 
 Execution steps (one functional route, not independent helper completion)
 
-- [ ] Finalize independent DESIGN of closed contracts, physical payment proof and
+- [x] Finalize independent DESIGN of closed contracts, physical payment proof and
   life-state transition protection; resolve only real author-rule contradictions.
-- [ ] Add cheap independent quote/profile/payment RED fixtures (T131/T132/T133) and
+- [x] Add cheap independent quote/profile/payment RED fixtures (T131/T132/T133) and
   exact owning categories/selection: all price boundaries and ceil examples, malformed
   profiles/identities, insufficient funds, changed source/quote, no-mutation/replay,
   optional total preservation and immutable exports. Observe semantic RED before code.
-- [ ] Implement pure contract and minimal existing currency-policy composition;
+- [x] Implement pure contract and minimal existing currency-policy composition;
   verify cheap GREEN and actual source read/computation counters before native Engine.
-- [ ] Wire family7 through existing admission→retained draw→continuation→common plan→
+- [x] Wire family7 through existing admission→retained draw→continuation→common plan→
   C4 physical read-back→strict persisted History/replay, with real validated failed
   attempt charge and rollback controls. No blanket exemptions or source-guard removal.
-- [ ] Materialize protected Elyara service/life/profile fresh state and strict updates;
+- [x] Materialize protected Elyara service/life/profile fresh state and strict updates;
   add shared opaque provider/price choices and explicit confirmation to /лечить.
   Stale price/life/location/access/wound/capability/funds refuses before side effects.
-- [ ] Synchronize GM guide/registry/matrix/rules/main task, Elyara manifest/dossier,
+- [x] Synchronize GM guide/registry/matrix/rules/main task, Elyara manifest/dossier,
   worked paid success/failure/rejection/rollback examples and exact source guards.
-- [ ] Complete coherent SOURCE/selection review, fresh affected builds, exact discovery/
+- [x] Complete coherent SOURCE/selection review, fresh affected builds, exact discovery/
   catalog/PlanOnly and addressable console/browser Engine scenarios. Preserve full
   raw/cleanup, distinguish control fixtures from live provider/fresh-process. Publish
   accepted checkpoint/remote SHA; keep remaining US6/travel/noncurrency/faction work open.
@@ -324,6 +330,36 @@ audited with no additional health seeding needed. No production change. Correcti
 SOURCE accepted; fresh Integration/Plan/PREP and that singleton remain pending.
 Accepted console/browser and other75 PASS are retained without repetition; no DOM,
 external GM/provider or fresh-process qualification claimed.
+
+Final runtime evidence: corrected whole Engine rollbackPASS (39.8466s/180), self2
+compatibilityPASS (23.9447s/180), resident6 offer/publication/replayPASS (58.3773s/180).
+All exact wallet/wound/effect/History/schedule/memory/pending assertions hold after
+the genuine wallet cut. The fresh53 Integration build exit0/102baselinewarnings;
+27current artifact paths,4PE/PDBpairs and42source bindings match. Main/Support remain
+source-equivalent1877292aa; Unit6f494c09. Exact final16categories/80cases/30methods
+union verified against PlanOnly: Unit65 on6f, four negative controls on c88, counter1
+on2eb, seven paid-result/cut/conflict/UI cases on59ee (compiled2eb), final3 on53.
+This is not a single fresh invocation.82executions include two retained failed
+fixture attempts, replaced only by their exact corrected singleton GREEN; no unchanged
+successful case rerun for those two fixture corrections. The affected public-profile24
+was legitimately rerun after its predicate changed. All required counts/unique IDs,
+original budgets, binary pins and
+owned cleanup verified;192full local capture files (21.151MiB) hashed in external
+route-complete-union.json. Earlier raw/bin archives, saves and recovery remain.
+Source reviews: Astra/high accepted the complex design/source after closing current
+wallet-proof and visiting-provider findings; Sol accepted fixtures, selection and
+both preparation corrections. Final Sol OUTCOME accepted. Console and browser both
+observed actual d1/NoImprovement, fee25 plus the player's H0 natural tick; deterministic
+backend d1/d2/d20 separately proves failed/partial/successful bands. No UI band is
+inferred from the backend cases. No broader HOLD is closed.
+
+Next functional result after this route's acceptance: T135/T141/T142, visible Shining
+faction healers with exact current profile HealingI–V proof and Russian role display.
+The role must not fabricate public-service availability, access, a fixed tier or a
+new healer. T133/T134/T136/T138/T143/T146/T147 retain negotiated compensation, universal
+Elyara travel/current Shining destination, faction services/access and their wider
+acceptance; DOM/live-provider/fresh-process and DFR/Mortal/Windows/performance remain
+outside this completed currency slice.
 
 ---
 
