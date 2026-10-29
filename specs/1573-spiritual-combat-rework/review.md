@@ -15,8 +15,18 @@ Parent exact BigInt model:91830 transitions,18366 courses,10770 quarter/cents
 для воспроизведения в разделе8. Двойной HP-rest/сеанс запрещён договором, не
 проверен реальным runtime. Новому арифметическому кэшу нет причины; stable definitions
 через existing service, current/quote/кошелёк/provider/clock/authority свежие.
-Independent Astra/high review взаимодействующих carry/billing/time/wound договоров
-ожидается. Build/game/600s/clean restore UNRUN; productionT001 не разрешён.
+Независимый review_hp_healing_services1573, GPT-6 Astra/high, прочёл точный diff
+0090ea355..7594f6809 и источник1536:147–271. Самостоятельно воспроизведены91830
+переходов,18366 курсов,10770 сравнений carry, все PASS. Проверены cap/цена/части/
+взаимоисключение rest+HP-сеанса, собственный HealingTier пациента, граница нового
+HP-режима с ранами, экономические утверждения и статусы. Замечаний нет. Parent
+прочёл фактический diff,67 relative links/diff --check PASS. WIP7594f6809bbc00274e4e63a41121d826bec395f8
+remoteSHA и6 exact-ref blobs совпали. Финальная публикация/issue по Git-истории.
+Sol/high source audit удержал реальные экономические ограничения; Astra/high
+независимо проверил взаимодействующие carry/billing/time/wound договоры. Нужда
+в новой модели или повторном полном аудите не обнаружена; экономию не измеряли.
+Build/game/600s/clean restore UNRUN; productionT001 не разрешён. Новый пакет ещё
+не принят, реальные handler/payment/interruption маршруты не проверялись.
 
 ## Текущий checkpoint: принято восстановление ОД, кандидат явного отдыха HP
 
