@@ -184,6 +184,16 @@ must round-trip without a fabricated private participation grant. One new pure F
 healing-service-selection-causal,60s; no unchanged61 rerun. Runtime is UNRUN. Reuse
 fresh2c Main/Support only after source-hash equivalence; rebuild affected Unit.
 
+2026-10-29 13:27UTC functional wiring WIP: selection causal onf91d041090775e98146b5a394e4e1aa5988b8d09
+completed1expectedFAIL/1complete (Invalid exact spiritual aid selection),20.2025766s
+wall, category7.69s<60s, no timeout/skip/duplicate and cleanuptrue. Sol accepted its
+SOURCE/PREP/OUTCOME; TRX fda6bd5ab76ff1b56228ad18f06f5485df4d0ec61666bdc0a3a2a7a340147409.
+New uncompiled code adds mutually-exclusive service selection, exact family7 retained
+request/quote/payment/check/draw, and pre-control current Elyara/funds/source admission.
+One parsed source set is reused across control preparation; fresh closing reads remain.
+Engine stages service through that owner. Common payment/History/replay, UI/bootstrap
+and GM synchronization are still pending; no actual fee/heal publication is qualified.
+
 ---
 
 # T126 — accepted browser wound cards and guided treatment presentation

@@ -21,12 +21,14 @@ internal sealed record SpiritualAidSelection(string HealerId, string TargetId, s
 internal sealed record SpiritualCombatTreatmentSelection(
     string ConflictId, string ExpectedConflictFingerprint, int NextExchangeOrdinal);
 
-internal sealed record SpiritualSelfTreatmentSelection(string WoundId, string ExpectedWoundFingerprint)
+internal sealed partial record SpiritualSelfTreatmentSelection(string WoundId, string ExpectedWoundFingerprint)
 {
     internal SpiritualAidSelection? Aid { get; init; }
     internal SpiritualCombatTreatmentSelection? Combat { get; init; }
+    internal SpiritualServiceTreatmentSelection? Service { get; init; }
     internal JsonObject ToJson()
     {
+        if (Service is not null) return ServiceJson();
         if (Combat is { } combat)
         {
             if (Aid is not null) throw new InvalidDataException("Combat and safe aid selections cannot be combined.");
@@ -82,6 +84,8 @@ internal sealed record SpiritualSelfTreatmentSelection(string WoundId, string Ex
             throw new InvalidDataException("Invalid exact spiritual wound selection.");
         var selection = new SpiritualSelfTreatmentSelection(woundId!, fingerprint!);
         if (root.Count == 2) return selection; // Still-produced exact self form.
+        if (root["schemaVersion"] is JsonValue serviceVersion && serviceVersion.TryGetValue<int>(out var serviceSchema) && serviceSchema == 7)
+            return ParseService(selection, root);
         if (root["mode"]?.GetValueKind() == JsonValueKind.String && root["mode"]!.GetValue<string>() == "combat_self")
         {
             var fields = new[] { "schemaVersion", "mode", "woundId", "expectedWoundFingerprint", "conflictId",
@@ -173,7 +177,7 @@ internal static partial class AfterlifeWoundTreatmentAuthority
         files.VerifyCurrentSessionOperation(lease);
         if (!ResourceMaterializationContract.IsExactIdentifier(context.SessionId) ||
             !ResourceMaterializationContract.IsExactIdentifier(context.RequestId) || context.Turn < 1 ||
-            context.Progression is null || selection.Aid is not null || selection.Combat is not null || !ResourceMaterializationContract.IsExactIdentifier(selection.WoundId))
+            context.Progression is null || selection.Aid is not null || selection.Combat is not null || selection.Service is not null || !ResourceMaterializationContract.IsExactIdentifier(selection.WoundId))
             return Refuse("context_invalid");
 
         // Detach mutable caller DATA before the first await. Neither this object nor
@@ -258,14 +262,15 @@ internal static partial class AfterlifeWoundTreatmentAuthority
         SpiritualHealingPreparedSource Source, string Realm, int CycleOrdinal,
         string SourceFingerprint, WoundCarrierCatalogInput Carriers, EffectCarrierCatalog Effects,
         WoundIdentityState Identities, WoundHistoryState History, WoundCarrierCatalog Catalog,
-        IReadOnlyList<SpiritualWoundRecoveryMember> NaturalMembers, JsonObject? AidWitness = null);
+        IReadOnlyList<SpiritualWoundRecoveryMember> NaturalMembers, JsonObject? AidWitness = null,
+        AfterlifeHealingServiceQuote? ServiceQuote = null, AfterlifeHealingServicePayment? ServicePayment = null);
     internal sealed record SourceResult(SourceData? Data, string? IssueCode);
     private static SourceResult SourceRefuse(string suffix) => new(null, suffix);
 
     internal static SourceResult PrepareSourceData(SpiritualSelfTreatmentStageContext context,
         SpiritualSelfTreatmentSelection selection, IReadOnlyList<SourceFile> sources)
     {
-        if (selection.Aid is not null || selection.Combat is not null) return SourceRefuse("target_invalid");
+        if (selection.Aid is not null || selection.Combat is not null || selection.Service is not null) return SourceRefuse("target_invalid");
         var control = context.Progression;
         JsonObject? Root(string path) => sources.Single(s => s.Path == path).Root;
         if (SpiritualTreatmentParticipation.HasUnsettledChange(Root(WoundCarrierCatalog.AfterlifeProfilesPath)))
@@ -309,7 +314,8 @@ internal static partial class AfterlifeWoundTreatmentAuthority
     // Source preparation shared by safe staging and combat intent staging. One
     // branch calls this once; it neither chooses a cycle nor consumes entropy.
     private static SelectedWoundSourceResult PrepareSelectedWoundSource(SpiritualSelfTreatmentSelection selection,
-        IReadOnlyList<SourceFile> sources, string realm)
+        IReadOnlyList<SourceFile> sources, string realm, WoundOwnerCoordinate? serviceHealer = null,
+        bool requireWholeCohortLineage = false)
     {
         JsonObject? Root(string path) => sources.Single(s => s.Path == path).Root;
         var soul = Root(SoulPath);
@@ -338,10 +344,19 @@ internal static partial class AfterlifeWoundTreatmentAuthority
             carriers.AfterlifeProfiles, Root(EffectCarrierCatalog.SpiritualConflictPath)));
         var effects = EffectMechanicsSnapshot.Build(effectCatalog, Root(EffectIdentityState.StatePath),
             skillScopeAuthority: null, out var effectIdentities);
-        if (!effects.IsAccepted || effectIdentities is null ||
-            !ValidateCurrentWoundEffects(wound, catalog, effectCatalog, effectIdentities))
+        var cohort = requireWholeCohortLineage ? catalog.Occurrences.Select(o => o.Wound).Where(w =>
+            w.Lifecycle == "active" && w.Classification.Domain == "spiritual" && w.Owner.Realm == realm).ToArray() : new[] { wound };
+        var sourceAuthority = EffectAcceptedTurnInputComposer.BuildCanonicalWoundSourceAuthority(catalog);
+        if (!effects.IsAccepted || effectIdentities is null || sourceAuthority.Issues.Count != 0 ||
+            cohort.Any(w => !ValidateCurrentWoundEffects(w, catalog, effectCatalog, effectIdentities, sourceAuthority)))
             return SelectedSourceRefuse("source_invalid");
-        var prepared = SpiritualHealingResolver.PrepareSource(new(wound, wound.Owner, profiles[0], soul, effects));
+        var healer = serviceHealer ?? wound.Owner;
+        var healerProfiles = serviceHealer is null ? profiles :
+            (carriers.AfterlifeProfiles?["profiles"] as JsonArray)?.OfType<JsonObject>()
+                .Where(p => WoundCarrierCollectionAuthority.AfterlifeProfileMatches(p, healer)).ToArray();
+        if (healerProfiles is not { Length: 1 } || !AfterlifeProfileVisibility.IsVisibleToPlayer(healerProfiles[0]))
+            return SelectedSourceRefuse("target_invalid");
+        var prepared = SpiritualHealingResolver.PrepareSource(new(wound, healer, healerProfiles[0], soul, effects));
         if (prepared.Source is not { } source)
             return SelectedSourceRefuse("source_invalid");
         if (source.HealingTier < source.WoundSeverityRank)

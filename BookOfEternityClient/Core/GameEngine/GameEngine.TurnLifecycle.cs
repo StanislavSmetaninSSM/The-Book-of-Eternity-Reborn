@@ -1696,7 +1696,7 @@ public partial class GameEngine
             var healingSelection = browserAction is null
                 ? _explorer.ConsumePendingSpiritualSelfTreatment(action, sessionGeneration)
                 : browserAction.SpiritualSelfTreatment;
-            if (healingSelection?.Aid is null && healingSelection?.Combat is null)
+            if (healingSelection?.Aid is null && healingSelection?.Combat is null && healingSelection?.Service is null)
                 using (_fs.MeasureOperation("PlayerTurn.Stage.BuildProgressionControl"))
                     request.ProgressionControl = await _progressionSchedule.BuildControlForNextTurnAsync();
             if (healingSelection is not null)
@@ -1718,6 +1718,13 @@ public partial class GameEngine
                         request.SessionId, request.RequestId, request.TurnNumber, healingSelection);
                     request.ProgressionControl = combat.Control;
                     stagedHealing = combat.Stage;
+                }
+                else if (healingSelection.Service is not null)
+                {
+                    var service = await AfterlifeWoundTreatmentAuthority.StagePlayerServiceTurnAsync(_fs, healingLease, _progressionSchedule,
+                        request.SessionId, request.RequestId, request.TurnNumber, healingSelection);
+                    request.ProgressionControl = service.Control;
+                    stagedHealing = service.Stage;
                 }
                 else if (healingSelection.Aid is not null)
                 {
