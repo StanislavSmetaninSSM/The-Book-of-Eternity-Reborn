@@ -68,6 +68,18 @@ completed before the next discovery: independent Sol metadata SOURCE ACCEPT,
 official -ListCategories exit0/1061validcategories, no discovery/tests. Retain e756
 compiled binaries; only catalog metadata/plan differ.
 
+CHEAP GREEN at 470d149c9daac6e02520f88b23db7401febfbe76: exact98/98 PASS,
+27methods/4descriptors complete, wall26.4260451s. Category seconds: affected5.0698332,
+causal4.2617723,contract4.6267007,GM5.8028497, all<60. No skip/timeout/duplicate,
+bothcleanuptrue; root strict TRX/plan verification and all54source/18artifact pins
+unchanged. Catalog3 valid1061categories/12760methods/no stale/unmapped; exact cheap
+Plan4/98 executed0 and independent PREPaccepted. Fullraw outsidecheckout under
+resident-provider-cheap-actual-1 (verified-outcome.json with all4TRXsha256), external
+preflight/build2/catalog3/plan receipts retained. Independent cheap OUTCOME pending;
+actual backend/eligible-cycle revoke, affected prior5/self2 headers and both UI/
+common rollback still UNRUN/unadmitted. This does not close US4 or gameplay scope.
+No newcache/reads; parsed source DATA and all fresh fences retained, no speedup claim.
+
 Core GREEN WIP after causal RED: record4/selection6/request/result6 and pure typed
 resident-healer scope are connected through natural participation, protected
 memory, History dispatch, GM projection and distinct receive-aid action/menu.
