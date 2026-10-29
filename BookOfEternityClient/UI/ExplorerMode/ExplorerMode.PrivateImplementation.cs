@@ -679,6 +679,7 @@ public partial class ExplorerMode
     internal void ForgetSessionTransientState()
     {
         _pendingGmAction = null;
+        _pendingElyaraVisit = null;
         _pendingInPlaceGmRequest = null;
         _currentCommandInput = string.Empty;
         _currentCommandRemainder = string.Empty;

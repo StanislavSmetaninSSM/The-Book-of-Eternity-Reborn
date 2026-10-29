@@ -154,6 +154,12 @@ public sealed class ElyaraCurrentLocationContractTests
         Assert.Equal(fingerprint, ElyaraVisitService.DataFingerprint(input with { Guardians = reordered }, Generation));
         Assert.NotEqual(fingerprint, ElyaraVisitService.DataFingerprint(input, Generation + "_replaced"));
         Assert.NotEqual(fingerprint, ElyaraVisitService.DataFingerprint(input with { Conflict = new JsonObject() }, Generation));
+        var initialized = AfterlifeSpiritualConflictState.CreateDefaultRoot();
+        Assert.Equal(fingerprint, ElyaraVisitService.DataFingerprint(input with { Conflict = initialized }, Generation));
+        initialized["recentConflicts"]!.AsArray().Add(new JsonObject { ["conflictId"] = "previous_conflict" });
+        Assert.NotEqual(fingerprint, ElyaraVisitService.DataFingerprint(input with { Conflict = initialized }, Generation));
+        initialized = AfterlifeSpiritualConflictState.CreateDefaultRoot(); initialized["foreignUnknownField"] = true;
+        Assert.NotEqual(fingerprint, ElyaraVisitService.DataFingerprint(input with { Conflict = initialized }, Generation));
     }
 
     [Theory]

@@ -1,6 +1,8 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.CommandProtocol;
+using BookOfEternityClient.Configuration;
+using Microsoft.Extensions.Logging.Abstractions;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Models;
 using BookOfEternityClient.Services;
@@ -131,5 +133,25 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
         Assert.Null(await files.ReadFileBytesAsync(PendingPlayerActionService.PendingPath));
         fixture.AssertMutationRootsUnchanged(before);
         await service.CancelPromptSessionAsync(new(opened.InteractiveSession.SessionId, Owner));
+    }
+
+    [Theory]
+    [InlineData(false)] [InlineData(true)]
+    public async Task AbandonedConsoleVisitCannotPoisonNewCommandOrSession(bool forgetSession)
+    {
+        await using var fixture = await AfterlifeHealingPaymentLifecycleTests.CreateServiceFixtureAsync(1, 20, remoteElyara: true);
+        var files = fixture.Files; var console = new TestExplorerConsole();
+        var state = new StateManager(files, new GameSettings(), NullLogger<StateManager>.Instance);
+        await state.RefreshGameStateAsync();
+        var explorer = new ExplorerMode(state, files, new LocalizationManager(), console: console);
+        console.QueueAnyConfirmResponse(true);
+        var action = await explorer.TryProcessCommand("/элиара");
+        Assert.True(ElyaraVisitService.HasMarker(action!));
+        if (forgetSession) explorer.ForgetSessionTransientState();
+        else { console.QueueAnySelection("Закрыть"); await explorer.TryProcessCommand("/раны"); }
+        await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+        Assert.Null(explorer.ConsumePendingElyaraVisit("Другое действие", files.GetOrCreateSessionGeneration(lease)));
+        Assert.Null(await files.ReadFileBytesAsync(lease, PendingPlayerActionService.PendingPath));
+        Assert.Null(await files.ReadFileBytesAsync(lease, AcceptedMechanicsPlan.WoundCommandPath));
     }
 }

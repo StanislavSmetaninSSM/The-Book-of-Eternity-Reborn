@@ -247,6 +247,7 @@ public partial class ExplorerMode
         var isMortal = RealmSemantics.IsMortalRealm(currentRealm);
         _pendingGmAction = null;
         _pendingSpiritualSelfTreatment = null;
+        _pendingElyaraVisit = null;
 
         if (_universalCommands.TryGetValue(cmd, out var handler))
         {

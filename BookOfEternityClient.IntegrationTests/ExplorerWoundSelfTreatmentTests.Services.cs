@@ -87,10 +87,14 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                 await service.CancelPromptSessionAsync(new(cancelled.InteractiveSession!.SessionId, Owner));
                 fixture.AssertMutationRootsUnchanged(before);
                 var opened = await service.ExecuteAsync(new(realm == "Shining Abode" ? "/элиара" : "/лечить", Owner));
-                var targets = Assert.IsType<UiSelectionPrompt>(Assert.Single(opened.Prompts));
-                var self = Assert.Single(targets.Options, o => !o.Disabled && o.Label == "Себя");
-                opened = await service.SubmitPromptSessionAsync(new(opened.InteractiveSession!.SessionId,
-                    new() { ["wound_target"] = JsonValue.Create(self.Value) }, Owner));
+                Assert.Equal(realm == "Chaos Sea", opened.WoundCommandState!.IsTargetSelection);
+                if (opened.WoundCommandState.IsTargetSelection)
+                {
+                    var targets = Assert.IsType<UiSelectionPrompt>(Assert.Single(opened.Prompts));
+                    var self = Assert.Single(targets.Options, o => !o.Disabled && o.Label == "Себя");
+                    opened = await service.SubmitPromptSessionAsync(new(opened.InteractiveSession!.SessionId,
+                        new() { ["wound_target"] = JsonValue.Create(self.Value) }, Owner));
+                }
                 var prompt = Assert.IsType<UiSelectionPrompt>(Assert.Single(opened.Prompts, p => p.Id == "wound_selection"));
                 var paid = Assert.Single(prompt.Options, o => !o.Disabled && o.Label.Contains("Элиара", StringComparison.Ordinal));
                 Assert.Contains("25", paid.Label);
@@ -115,10 +119,16 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                 fixture.AssertMutationRootsUnchanged(before); Assert.Empty(console.ConfirmPrompts);
                 var offered = (await WoundApplicationService.OpenAsync(files, "/лечить", treatment: true)).WoundCommandState!;
                 var choice = Assert.Single(offered.Choices, c => c.Available && c.Selection.Service is not null);
-                var targets = offered.Targets.Where(t => t.Available).ToArray();
-                var self = Assert.Single(targets, t => t.Owner.OwnerKind == "player_soul");
-                console.QueueAnySelection((Array.IndexOf(targets, self) + 1) + ". " + self.Label,
-                    "1. " + choice.Name + " — " + choice.Severity);
+                Assert.Equal(realm == "Chaos Sea", offered.IsTargetSelection);
+                var selections = new List<string>();
+                if (offered.IsTargetSelection)
+                {
+                    var targets = offered.Targets.Where(t => t.Available).ToArray();
+                    var self = Assert.Single(targets, t => t.Owner.OwnerKind == "player_soul");
+                    selections.Add((Array.IndexOf(targets, self) + 1) + ". " + self.Label);
+                }
+                selections.Add("1. " + choice.Name + " — " + choice.Severity);
+                console.QueueAnySelection(selections.ToArray());
                 console.QueueAnyConfirmResponse(true);
                 var action = await runtime.Explorer.TryProcessCommand(realm == "Shining Abode" ? "/элиара" : "/лечить");
                 Assert.Equal(WoundApplicationService.ServiceActionText, action);

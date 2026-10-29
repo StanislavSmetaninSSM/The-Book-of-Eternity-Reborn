@@ -61,7 +61,11 @@ internal static partial class ElyaraVisitService
     // below around staging; this digest never substitutes for that authority.
     internal static string DataFingerprint(ElyaraVisitInput input, string generation) =>
         WoundAcceptedTurnFingerprintWriter.Compute(new[] { "elyara_visit_data", "1", generation }.Concat(
-            new JsonNode?[] { input.Soul, input.Profiles, input.Guardians, input.Shining, input.Conflict }
+            new JsonNode?[] { input.Soul, input.Profiles, input.Guardians, input.Shining,
+                // Ordinary staging intentionally initializes only an absent conflict
+                // root to this exact deterministic empty state. Compare that same
+                // effective DATA; every non-null field and physical image stays exact.
+                input.Conflict ?? AfterlifeSpiritualConflictState.CreateDefaultRoot() }
                 .SelectMany((root, index) => new[] { SourcePaths[index], WoundAcceptedTurnFingerprintWriter.CanonicalJson(root) })));
 
     internal static async Task<string> ConfirmAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease,

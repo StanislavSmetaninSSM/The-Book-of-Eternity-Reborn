@@ -95,6 +95,11 @@ public sealed partial class ElyaraCurrentLocationNavigationTests
         // Comparison DATA survives formatting, but physical closure still refuses changed bytes.
         Assert.Equal(state.Intent, (await ElyaraVisitService.ReadAsync(files, lease)).Plan.State!.Intent);
         await Assert.ThrowsAsync<InvalidDataException>(() => ElyaraVisitService.RequireImagesCurrentAsync(files, lease, source));
+        var afterEncoding = await ElyaraVisitService.ReadAsync(files, lease);
+        await files.WriteFileAtomicAsync(lease, AfterlifeSpiritualConflictState.StatePath,
+            AfterlifeSpiritualConflictState.CreateDefaultRoot().ToJsonString());
+        Assert.Equal(state.Intent, (await ElyaraVisitService.ReadAsync(files, lease)).Plan.State!.Intent);
+        await Assert.ThrowsAsync<InvalidDataException>(() => ElyaraVisitService.RequireImagesCurrentAsync(files, lease, afterEncoding));
     }
 
     [Theory]
@@ -154,7 +159,7 @@ public sealed partial class ElyaraCurrentLocationNavigationTests
         await using var fixture = await AfterlifeHealingPaymentLifecycleTests.CreateServiceFixtureAsync(1, 20, realm: "Shining Abode");
         var files = fixture.Files;
         var state = (await ElyaraVisitService.OpenAsync(files)).WoundCommandState!;
-        state = state.ForTarget(state.Targets.Single(t => t.Owner.OwnerKind == "player_soul"));
+        Assert.False(state.IsTargetSelection); // Current Shining route is direct self choice, no foreign target phase.
         var choice = Assert.Single(state.Choices, c => c.Available && c.Selection.Service is not null);
         await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
         var path = change == "dead" ? WoundCarrierCatalog.AfterlifeProfilesPath : ShiningAbodeState.StatePath;

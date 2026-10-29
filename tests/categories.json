@@ -36699,7 +36699,8 @@
         {
           "project": "integration",
           "tests": [
-            "BookOfEternityClient.Tests.AfterlifeHealingPaymentLifecycleTests.ShiningSameElyaraChargesActualOutcomeOnceAndReplays"
+            "BookOfEternityClient.Tests.AfterlifeHealingPaymentLifecycleTests.ShiningSameElyaraChargesActualOutcomeOnceAndReplays",
+            "BookOfEternityClient.Tests.AfterlifeHealingPaymentLifecycleTests.ShiningPaidOwnerNormalizesGuardiansUsingItsAlreadyParsedCurrentHall"
           ]
         }
       ]
@@ -36772,6 +36773,31 @@
           "project": "unit",
           "tests": [
             "BookOfEternityClient.Tests.ElyaraCurrentLocationDocumentationTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "elyara-current-location-console-admission",
+      "responsibility": "Abandoned confirmed visit companion is cleared at the existing new-command and session-forget boundaries; unrelated next actions cannot be poisoned.",
+      "excludes": "No Engine or travel runtime, GUI/provider/fresh-process, T142 or HOLD gates.",
+      "changeHints": [
+        "BookOfEternityClient/UI/ExplorerMode.cs",
+        "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.PrivateImplementation.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.AbandonedConsoleVisitCannotPoisonNewCommandOrSession"
           ]
         }
       ]

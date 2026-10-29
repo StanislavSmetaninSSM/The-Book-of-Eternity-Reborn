@@ -146,7 +146,11 @@ canonical identity at C4 are authored; existing fee/math/publication owners rema
 Ruling: menu equality uses canonical JSON of all five complete roots plus generation,
 not their text encoding. This lets the existing validated original text reader reproduce
 comparison DATA, including BOM/format independence, without a second raw-byte reader.
-Actual current source images still close freshly around confirmation/staging; the digest
+Only absent conflict DATA compares as the deterministic exact empty conflict root:
+ordinary Engine staging initializes it before the authenticated original snapshot.
+Non-null malformed/nondefault roots (including history/unknown fields) stay distinct;
+no other absence maps. This is comparison equivalence, never permission to change a
+physical image during the operation. Actual current source images still close freshly around confirmation/staging; the digest
 never replaces original authentication, generation/lease or physical source fences.
 The stage SourcePaths remain Soul/profiles/guardians/Shining/conflict, one parse each.
 
@@ -170,6 +174,20 @@ quote/request/menu/source consumers plus ONE Chaos console compatibility; unchan
 price/payment arithmetic, prior accepted80 and HOLD chains are excluded. All GREEN
 remains UNCOMPILED/UNRUN pending whole independent SOURCE/selection, then fresh affected
 builds and exact discovery/PlanOnly/PREP. No observed new PASS is claimed.
+
+Whole independent SOURCE review found and the author verified three production gaps
+before any GREEN build: service locality normalizer omitted already-read Shining DATA;
+ordinary conflict-file initialization changed whole-root comparison after navigation;
+abandoned console visit companion survived new-command/session reset. These are now
+corrected with private DATA reuse, only null-to-exact-empty comparison equivalence plus
+byte-exact physical fences, and existing lifecycle resets. New regressions exercise
+prepared real paid-owner normalization/current-hall refusal, absent/default/nondefault
+comparison/physical differences and abandoned console companions. Review also found
+Shining tests assuming a non-existent foreign-target phase; they now assert the existing
+direct-self phase and retain exact service/price/actual outcome assertions. No production
+target phase was added. StageAsync already selected Choices directly, no such change.
+Temporary environment disconnect recovered via the same environment; HEAD/tree and
+7GiB free verified, no duplicate runtime/build. All fixes are still UNCOMPILED/UNRUN.
 
 All this GREEN code is UNCOMPILED/UNREVIEWED/UNQUALIFIED. Remaining finite work: complete
 new admission/accepted/race/source-count and Shining actual result/replay/rollback tests,

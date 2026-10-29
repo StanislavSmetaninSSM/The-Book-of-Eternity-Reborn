@@ -27,8 +27,11 @@ internal static partial class AfterlifeWoundHealingPlanner
             {
                 var beforeRoot = StrictJsonAuthority.Deserialize<JsonObject>(CanonicalJsonUtf8.DecodeOneOptionalBom(images[path].Bytes!), new JsonSerializerOptions(), path)!;
                 var afterRoot = StrictJsonAuthority.Deserialize<JsonObject>(content, new JsonSerializerOptions(), path)!;
-                var beforeScope = AfterlifeWoundTreatmentAuthority.RequireServiceScope(beforeRoot, _data!.Carriers.AfterlifeProfiles!, _data.ServiceQuote!);
-                var afterScope = AfterlifeWoundTreatmentAuthority.RequireServiceScope(afterRoot, _data.Carriers.AfterlifeProfiles!, _data.ServiceQuote!);
+                // Existing operation-private parsed DATA; RequireCurrent above/below
+                // still closes every physical source, including the current hall.
+                var shining = _parsedSourceRoots.GetValueOrDefault(ShiningAbodeState.StatePath) as JsonObject;
+                var beforeScope = AfterlifeWoundTreatmentAuthority.RequireServiceScope(beforeRoot, _data!.Carriers.AfterlifeProfiles!, _data.ServiceQuote!, shining);
+                var afterScope = AfterlifeWoundTreatmentAuthority.RequireServiceScope(afterRoot, _data.Carriers.AfterlifeProfiles!, _data.ServiceQuote!, shining);
                 if (beforeScope.LocationId != afterScope.LocationId || beforeScope.CurrentGuardianId != afterScope.CurrentGuardianId ||
                     !beforeScope.LocalActorIds.ToHashSet(StringComparer.Ordinal).SetEquals(afterScope.LocalActorIds) ||
                     !beforeScope.LocalFactionIds.ToHashSet(StringComparer.Ordinal).SetEquals(afterScope.LocalFactionIds))
