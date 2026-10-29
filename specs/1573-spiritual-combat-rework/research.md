@@ -113,3 +113,33 @@ T075–T077, baseline df38466287dfe28ae8d41b1e7567957da3b8f1f7.
 Оптимизация: адресное чтение вместо генерации миров; новый runtime/кэш сейчас
 не создаётся. Будущие постоянные данные и состояния используют существующие
 сервисы, одноразовые источники/публикацию и точную инвалидизацию, по правилам проекта.
+
+## T078–T079: автономность, известия и удаление «Нового цикла»
+
+Baseline db64e5a84a625f2f8929a81aeabaf9baeecc67bb. Parent прочёл BuildAfterlifeCatchupContext/
+Contours через Serena, фактический reset/reentry и foundation check; отдельные
+Sol6.1/high read-only audit_world_news1573 и audit_realm_return1573 проверили
+контуры сведений и зависимости переходов. Это ограниченный source-аудит, не
+проверка исполнения; no tests/build. История до этого среза сохраняется выше.
+
+| Источник | Вывод для кандидата |
+|---|---|
+| [ProgressionScheduleService:502](../../BookOfEternityClient/Services/ProgressionScheduleService.cs#L502), [контуры:557](../../BookOfEternityClient/Services/ProgressionScheduleService.cs#L557) | Catchup использует прошедшее mortal world time и realm ordinals; для смертной жизни может включать все активные afterlife-контуры. Обычный набор зависит от realm. Новые самостоятельные поселения и постоянная жизнь другого пространства требуют явного покрытия, не возникают автоматически. |
+| [Константы расписания:20](../../BookOfEternityClient/Services/ProgressionScheduleService.cs#L20), [контроль сводки:1291](../../BookOfEternityClient/Services/ProgressionScheduleService.cs#L1291) | Есть эквивалент24h/1440мин и bounded summary count до5 по tier. Это нынешний отчётный контракт, не согласованный баланс частоты событий/износа, не лимит полной истории и не квота диагностики. |
+| [AfterlifeChronicleState:15](../../BookOfEternityClient/Services/AfterlifeChronicleState.cs#L15), [архив:237](../../BookOfEternityClient/Services/AfterlifeChronicleState.cs#L237) | Хроники поддерживают области Моря/Сияющей Обители и сохраняют persistentConsequences/openThreads; eventDescriptions — дедуплицированные строки, не полноценные события с occurrence/acquisition и источником знания. |
+| [Видимость хроник](../../BookOfEternityClient/UI/ExplorerAfterlifeCombatCommandResultBuilder.cs#L3791) | Есть фильтрация скрытых хроник, но видимый объект сам по себе не означает допустимость каждого нового скрытого факта внутри. |
+| [AfterlifeNotificationState:209](../../BookOfEternityClient/Services/AfterlifeNotificationState.cs#L209), [upsert:1980](../../BookOfEternityClient/Services/AfterlifeNotificationState.cs#L1980), [журнал actor](../../BookOfEternityClient/Services/ActorJournalState.cs#L116) | Есть typed inbox, устойчивые notification/request IDs/read state и записи разговоров. Произвольное событие убежища ещё не имеет автоматического канала доставки, знания рассказчика или задержки. |
+| [Первое вознесение](../../BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs#L4294) | Сейчас требуется максимумE и явный Ascension. Не переиспользовать это начисление/инициализацию для каждого посещения после вознесения. |
+| [Выход/New Cycle](../../BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs#L2754) | Нынешний return_to_chaos_sea/new_game_plus запечатывает Обитель и заменяет enlightenment/soulProgression на начальные. Противоречит новому принятому договору; изменить при реализации, а не только переименовать кнопку. |
+| [Reentry](../../BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs#L2283), [preview](../../BookOfEternityClient/Models/GameState/AggregatedGameState.cs#L77) | Reentry уже не требуетE, но требует active/отсутствия package/return-guard/активного боя. Preview не включает весь conflict blocker исполнения. Согласовать оба клиента и новые условия постоянного доступа. |
+| [Browser dispatch](../../BookOfEternityClient/WebUi/ExplorerWebCommandService.cs#L37) | Browser идёт через command catalog; наличие canReenterShiningAbode в DTO не означает исполняемые browser-команды перехода. Аудит не нашёл их в каталоге — это отдельный пункт паритета. |
+| [Ритуал основания](../../BookOfEternityClient/Services/PlayerGuardianFoundationState.cs#L385), [его validator](../../BookOfEternityClient/Services/Validation/ValidationService.LifecycleControlAndStateFiles.cs#L5037) | Оба требуют sealed_until_next_ascension. При удалении New Cycle нужен заменяющий допуск, с сохранением прочих требований и однократности; нельзя оставить ритуал навсегда недоступным. |
+| [Help](../../BookOfEternityClient/CommandProtocol/ExplorerHelpCommandResultBuilder.cs#L254), [GM guidance](../../BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs#L4713) | Подсказки/алиас и GM явно обучены сбросу и запечатыванию. Будущая реализация обязана удалить именно этот продуктовый договор во всех входах. |
+| [Return cycle](../../BookOfEternityClient/Services/ShiningAbodeState.Gacha.cs#L164), [incarnation package](../../BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs#L4673) | currentIncarnation/currentReturnCycleId и frozen bootstrap относятся к смертным воплощениям/одноразовой экономике. Они не равны отменённому New Cycle; посещение не создаёт нового return-cycle и не удаляет подготовленный пакет. |
+
+Устаревший sealed mode встречается также в нормализации, Shining validation,
+боевом frame и статусе UI. Удалять режим согласованно, сохраняя другие проверки
+активного режима/pending пакета. Старые development saves не требуют отдельной
+совместимости; обновить актуальные fixtures/bootstrap/schema по новой модели.
+Оптимизация обсуждения: адресное чтение и повторное использование прежних аудитов;
+полный мир/боевая симуляция ради записи этих решений не создавались.
