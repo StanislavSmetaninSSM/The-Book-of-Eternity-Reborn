@@ -18,6 +18,7 @@ internal static partial class WoundAcceptedTurnPlannerCore
                 baseline.PreTurnHistory, null, null), prepared.Binding.Turn, owner.Fingerprint, executed,
                 () => { var result = SpiritualHealingPersistedResult.Create(owner, executed); return (result, result.Stages); },
                 owner.IsNatural ? "Духовная рана: естественное восстановление за один безопасный цикл."
+                    : owner.HasServicePayment ? $"Духовная рана: оплаченная попытка лечения ({owner.ServiceAmount} Чернильных Перьев) и один безопасный цикл."
                     : "Духовная рана: лечение и естественное восстановление за один безопасный цикл.");
             if (reduced.State is not { } state) return new(null, reduced.Issues);
             var identityJson = state.Identity; var historyJson = state.History;

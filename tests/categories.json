@@ -35852,6 +35852,274 @@
           ]
         }
       ]
+    },
+    {
+      "id": "healing-service-request-data",
+      "responsibility": "Exact family7 quote/payment/control/check/draw/confirmation DATA and cross-family refusal; no actual admission authority.",
+      "excludes": "Unchanged accepted prices/wallet cases and wider US6/Shining/travel/noncurrency, live external provider/DOM/fresh-process and HOLD DFR/Mortal/Windows/performance.",
+      "changeHints": [
+        "#1536 US6 public Elyara route; actual contracts/consumers, not a full suite"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.AfterlifeHealingServiceRequestTests.RetainedServiceRequestBindsRealCheckExactWalletAndDrawWithoutPaying",
+            "BookOfEternityClient.Tests.AfterlifeHealingServiceRequestTests.AlteredClosedServiceRequestNeverBinds",
+            "BookOfEternityClient.Tests.AfterlifeHealingServiceRequestTests.ServiceCreationCannotMixFamiliesOrSkipConfirmation"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "healing-service-menu-data",
+      "responsibility": "Shared service menu over existing parsed read context, exact readable price, private binding redaction and current eligibility/funds refusals.",
+      "excludes": "Unchanged accepted prices/wallet cases and wider US6/Shining/travel/noncurrency, live external provider/DOM/fresh-process and HOLD DFR/Mortal/Windows/performance.",
+      "changeHints": [
+        "#1536 US6 public Elyara route; actual contracts/consumers, not a full suite"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.AfterlifeHealingServiceMenuTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "elyara-healing-state",
+      "responsibility": "Fresh non-selected Guardian discoverability, fixed capability/service identity and strict relocation/death/upsert protection; dead private-aid bypass refusal.",
+      "excludes": "Unchanged accepted prices/wallet cases and wider US6/Shining/travel/noncurrency, live external provider/DOM/fresh-process and HOLD DFR/Mortal/Windows/performance.",
+      "changeHints": [
+        "#1536 US6 public Elyara route; actual contracts/consumers, not a full suite"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.ElyaraHealingServiceTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "healing-service-documentation",
+      "responsibility": "Current service guides/both effective daemon assignments/registry/manifest and production-parsed worked GM profile/interface fragments.",
+      "excludes": "Unchanged accepted prices/wallet cases and wider US6/Shining/travel/noncurrency, live external provider/DOM/fresh-process and HOLD DFR/Mortal/Windows/performance.",
+      "changeHints": [
+        "#1536 US6 public Elyara route; actual contracts/consumers, not a full suite"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.AfterlifeHealingServiceDocumentationTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "healing-service-source-controls",
+      "responsibility": "Actual fresh confirmation funds/life/price losses, post-control source close before entropy and measured absence of extra service source reads over current read/menu path.",
+      "excludes": "Unchanged accepted prices/wallet cases and wider US6/Shining/travel/noncurrency, live external provider/DOM/fresh-process and HOLD DFR/Mortal/Windows/performance.",
+      "changeHints": [
+        "#1536 US6 public Elyara route; actual contracts/consumers, not a full suite"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.AfterlifeHealingPaymentLifecycleTests.ConfirmationRejectsFreshLossWithoutRequestDrawOrPayment",
+            "BookOfEternityClient.Tests.AfterlifeHealingPaymentLifecycleTests.SourceChangeAfterControlRefusesBeforeAnyTreatmentDrawOrPayment",
+            "BookOfEternityClient.Tests.AfterlifeHealingPaymentLifecycleTests.OpeningServiceReusesParsedReadSetWithoutAdditionalSourceReads"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "healing-service-payment-results",
+      "responsibility": "Actual deterministic successful/partial/failed service stage/original/common C4/result7 and two replay reads, fee once, retained draw/control/cycle and unchanged unified resources.",
+      "excludes": "Unchanged accepted prices/wallet cases and wider US6/Shining/travel/noncurrency, live external provider/DOM/fresh-process and HOLD DFR/Mortal/Windows/performance.",
+      "changeHints": [
+        "#1536 US6 public Elyara route; actual contracts/consumers, not a full suite"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.AfterlifeHealingPaymentLifecycleTests.AcceptedSuccessPartialAndFailedAttemptChargeOnceAndReplayWithoutWrites"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "healing-service-payment-cut",
+      "responsibility": "Actual C4 fault after physical wallet publication compensates all staged participants and retains exact request/die.",
+      "excludes": "Unchanged accepted prices/wallet cases and wider US6/Shining/travel/noncurrency, live external provider/DOM/fresh-process and HOLD DFR/Mortal/Windows/performance.",
+      "changeHints": [
+        "#1536 US6 public Elyara route; actual contracts/consumers, not a full suite"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.AfterlifeHealingPaymentLifecycleTests.ActualCommonPublicationCutRestoresWalletAndEveryStagedParticipant"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "healing-service-payment-conflict",
+      "responsibility": "Actual service owner rejects competing GM Feather delta instead of pruning or double charging.",
+      "excludes": "Unchanged accepted prices/wallet cases and wider US6/Shining/travel/noncurrency, live external provider/DOM/fresh-process and HOLD DFR/Mortal/Windows/performance.",
+      "changeHints": [
+        "#1536 US6 public Elyara route; actual contracts/consumers, not a full suite"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.AfterlifeHealingPaymentLifecycleTests.CompetingGmFeatherChangeRejectsWithoutPaymentOrHistory"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "healing-service-console",
+      "responsibility": "Actual console cancel/explicit price confirmation -> Engine -> common fee/wound/History/cycle.",
+      "excludes": "Unchanged accepted prices/wallet cases and wider US6/Shining/travel/noncurrency, live external provider/DOM/fresh-process and HOLD DFR/Mortal/Windows/performance.",
+      "changeHints": [
+        "#1536 US6 public Elyara route; actual contracts/consumers, not a full suite"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.ConsoleElyaraServiceConfirmsExactPriceAndPublishesOnePaidTreatment"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "healing-service-browser",
+      "responsibility": "Actual shared browser target/quote/confirm/queue -> Engine common paid result; not DOM/provider.",
+      "excludes": "Unchanged accepted prices/wallet cases and wider US6/Shining/travel/noncurrency, live external provider/DOM/fresh-process and HOLD DFR/Mortal/Windows/performance.",
+      "changeHints": [
+        "#1536 US6 public Elyara route; actual contracts/consumers, not a full suite"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.BrowserElyaraServiceQueuesExactQuoteAndPublishesOnePaidTreatment"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "healing-service-engine-rollback",
+      "responsibility": "Actual confirmed console route physical wallet cut -> common compensation plus whole Engine pre-turn rollback.",
+      "excludes": "Unchanged accepted prices/wallet cases and wider US6/Shining/travel/noncurrency, live external provider/DOM/fresh-process and HOLD DFR/Mortal/Windows/performance.",
+      "changeHints": [
+        "#1536 US6 public Elyara route; actual contracts/consumers, not a full suite"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.ElyaraServicePublicationFailureRestoresUnpaidWholeConsoleTurn"
+          ]
+        }
+      ]
     }
   ]
 }

@@ -491,7 +491,7 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
         await SeedAidJourneyLoreAsync(files);
     }
 
-    private static async Task SeedAidJourneyLoreAsync(FileSystemManager files)
+    internal static async Task SeedAidJourneyLoreAsync(FileSystemManager files)
     {
         // A second actual turn has accepted chat history and therefore requires
         // the standard EMPTY meta/codex baseline. Seed it before the sole resource

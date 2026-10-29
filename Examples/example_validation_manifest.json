@@ -2,6 +2,29 @@
   "version": 1,
   "effectMaterializationCoverage": [
 {
+  "contractId": "spiritual_public_service_v7",
+  "file": "E_CLI_Afterlife_Turns.txt",
+  "statePath": "client family7 quote/payment/control/draw -> common Soul/wound/effects/History/schedule C4",
+  "responseSurface": "requested spiritualHealingGraphs and ordinary report/healer reasoning; no GM currency or result receipt",
+  "realms": [
+    "Chaos Sea"
+  ],
+  "description": "Confirmed co-located public Elyara own-wound paid treatment; accepted failed/partial attempt charges once, cancel/invalid/rollback zero.",
+  "validationKind": "focused-fragment",
+  "focusedFragmentReason": "AfterlifeHealingServiceDocumentationTests parses the reference profile through production service policy and the actual GM interface through GameResponse; native common/UI gates own authority.",
+  "coverageLimit": "No standalone JSON authority, universal travel, Shining/negotiated services, live provider/DOM/fresh-process or wider US6 closure.",
+  "requiredText": [
+    "spiritual_public_service_v7",
+    "lifeState",
+    "wallet500→475",
+    "III0→III2",
+    "I0→I1",
+    "SAME attempt/draw",
+    "ONE accepted cycle",
+    "NO inkFeatherChanges/payment receipt"
+  ]
+},
+{
   "contractId": "spiritual_resident_help_v6",
   "file": "E_CLI_Afterlife_Turns.txt",
   "statePath": "typed resident healer offer4 -> actual natural record4/result6 -> confirmed player receive_aid6",

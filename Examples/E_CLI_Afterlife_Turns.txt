@@ -13739,6 +13739,71 @@ request/die/report and submitted memory command; outer rollback restores accepte
 and both old journal prefixes. No paid/public/combat/helpless/Shining completion.
 
 
+spiritual_public_service_v7 — worked public quote, accepted payment and rollback
+
+Reference excerpt of the ALREADY canonical Elyara actor (not a complete profile
+upsert, accepted result, source permission or a GM-authored client request):
+
+```json
+{
+  "actorType": "guardian",
+  "actorId": "guard_system_elyara_001",
+  "realm": "Chaos Sea",
+  "lifeState": "alive",
+  "locationId": "abode_system_elyara_001",
+  "standardArts": { "spiritual_healing": 5 },
+  "healingServiceProfile": {
+    "providerId": "guard_system_elyara_001",
+    "realm": "chaos_sea",
+    "locationRef": "abode_system_elyara_001",
+    "visibility": "public",
+    "availability": "available",
+    "minimumRelationship": null,
+    "priceMultiplierPercent": 100,
+    "compensationKinds": ["ink_feathers", "favor", "quest", "free_aid"],
+    "accessConditions": []
+  }
+}
+```
+
+The player is already at the current Lazaret with a known own woundI/H0. /лечить
+shows Elyara price25 and asks confirmation including the fee for an accepted failed
+attempt. Read/cancel has ZERO queue/draw/payment/cycle. The actual client confirms
+fresh terms and retains schema7 service request, exact quote/payment/check/draw and
+control in private wound_commands.json. No private participation grant is invented.
+
+SUCCESS: client-retained d20/H5 lowers woundI to healed. The projected requested
+destinationGraphs is empty, so the GM can author this actual output fragment plus
+ordinary narrative, progression report and Elyara first-person journal/reasoning:
+
+```json
+{
+  "timestamp": "2026-10-29T00:00:00Z",
+  "dialogueOptions": [],
+  "spiritualHealingGraphs": []
+}
+```
+
+Narrative: «Я, Элиара, принимаю твоё подтверждённое решение и помогаю душе сомкнуть
+последнюю трещину. Исход и оплата остаются за клиентским расчётом». The client
+publishes wallet500→475,total900, healed wound/effects, one safe cycle and strict
+History result7 atomically with full C4 physical read-back. It then displays the real
+outcome and one paid attempt. The GM writes NO inkFeatherChanges/payment receipt,
+manual wound result, replacement die or separate fee. For higher wounds, author
+every requested weaker graph using the existing consequenceDefinitions grammar.
+
+PARTIAL: woundIII/H5/d2 yields RecoveryPoint then H0 natural recovery: III0→III2,
+price100, wallet500→400, ONE accepted cycle. Do not invent a reduced degree.
+FAILED ATTEMPT: woundI/H5/d1 yields NoImprovement, then H0 natural recovery I0→I1;
+the accepted attempt still costs25 and ONE cycle. Failed check is not cancelled.
+REJECTED/ROLLED BACK: invalid requested graph/report, stale provider/price/life/access/
+funds or actual C4 failure accepts no fee. Whole-turn rollback restores wallet500,
+wound/effects/History/cycle; retained repair keeps the SAME attempt/draw. Do not
+increase budgets or reroll. Replaying accepted result7 reads its exact old DATA,
+never recharges or restores an old wallet. Fresh seed never resurrects dead Elyara
+or restores her accepted Shining location. Remote/Shining/negotiated execution is
+not enabled by this current public currency route.
+
 wound_target_navigation_v1 — worked client navigation, not a GM response
 A current visible resident offers private free help using the preceding accepted
 spiritual_resident_help_v6 contract. The player PATIENT chooses «Себя» (Self first).

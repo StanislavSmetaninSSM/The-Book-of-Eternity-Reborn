@@ -8,6 +8,8 @@ internal static partial class AfterlifeWoundHealingPlanner
     {
         internal const string ServiceSoulPath = "game_state/meta/soul_state.json";
         internal bool HasServicePayment => _data?.ServiceQuote is not null;
+        internal int? ServiceAmount => _data?.ServicePayment?.Amount;
+        internal string? ServiceWoundId => _data?.ServiceQuote?.WoundId;
 
         // Compose before the existing common seal. A projected Soul may contain
         // other accepted domains, but its wallet must still be the exact original.
@@ -27,8 +29,9 @@ internal static partial class AfterlifeWoundHealingPlanner
         internal void RequireServiceComposedImages(JsonObject soul, JsonObject profiles, JsonObject history)
         {
             if (!HasServicePayment) return;
-            var quote = _data!.ServiceQuote!;
-            var payment = _data.ServicePayment ?? throw new InvalidDataException("Service payment DATA is absent.");
+            var data = _data ?? throw new InvalidDataException("Service source DATA is absent.");
+            var quote = data.ServiceQuote!;
+            var payment = data.ServicePayment ?? throw new InvalidDataException("Service payment DATA is absent.");
             if (_published || WoundAcceptedTurnFingerprintWriter.CanonicalJson(soul["inkFeathers"]) != payment.WalletAfterJson)
                 throw new InvalidDataException("Common Soul after-image does not contain the exact service charge.");
             var actor = (profiles["profiles"] as JsonArray)?.OfType<JsonObject>()

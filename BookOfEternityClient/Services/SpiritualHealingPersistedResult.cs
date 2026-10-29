@@ -309,7 +309,8 @@ internal sealed class SpiritualHealingPersistedResult : WoundTransitionResult
         return tiers;
     }
 
-    private static int ValidateActiveSource(JsonObject source)
+    // Shared closed check DATA validation; no source or publication authority.
+    internal static int ValidateActiveSource(JsonObject source)
     {
         if (source["rollContributions"] is not JsonArray contributions || contributions.Count > EffectRollContributionResolver.MaximumCapturedRows)
             throw new InvalidDataException("Missing retained effect roll diagnostics.");

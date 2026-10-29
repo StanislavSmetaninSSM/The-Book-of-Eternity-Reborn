@@ -359,6 +359,8 @@ internal sealed record WoundPlayerNotification(
             var text = terminal
                 ? $"Исцелена духовная рана{target}: {after.Display.Name}. Подробнее: {Command}"
                 : $"Духовная рана{target}: {after.Display.Name} ({after.Severity.Value}); восстановление {after.Recovery.CurrentStepProgress}/{after.Recovery.CurrentStepThreshold}. Подробнее: {Command}";
+            if (owner.ServiceWoundId == before.WoundId && owner.ServiceAmount is { } fee)
+                text += $" Оплачена одна попытка лечения: {fee} Чернильных Перьев.";
             notifications.Add(new(Project(text), Command));
         }
         return new(notifications, Array.Empty<ValidationIssue>());

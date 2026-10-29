@@ -211,6 +211,26 @@ console/browser fixtures, GM/spec/example/registry synchronization, coherent ind
 SOURCE/selection review, fresh affected builds and exact targeted gates. No blocker or
 live runner at this boundary; all earlier raw/bin evidence retained outside Git.
 
+2026-10-29 coherent US6 SOURCE candidate (not compiled): deterministic native payment
+results d1/d2/d20, physical wallet C4 cut, competing GM delta refusal, actual fresh
+confirmation/source-close controls and console/browser/whole-turn rollback fixtures
+are authored. The existing healing fixture now accepts initial Soul DATA before its
+first write and sole resource bootstrap; default behavior is unchanged. Existing
+complete Guardian factory/initial profile builder/empty lore setup are reused.
+Service projection is pure over the existing read context; its counter fixture
+compares actual unavailable/available menu paths and requires zero additional source
+reads, while each action remains fresh. It does not pretend that the existing reader's
+other mechanics reads vanish or claim a speedup. No new cache/framework or perf gate.
+The current service guides, both daemon directives, registry, Elyara manifest/dossier,
+spec/data model and worked success/partial/failure/rollback fragments are synchronized.
+Worked fragments are production-parsed comparison DATA, not standalone authority;
+they precede existing target-navigation packets without changing that parser's suffix.
+Provisional exact impact selection13categories/77cases (64Unit+13Integration), pending
+discovery and independent review. Only the affected public-profile24 from accepted61
+are selected again; unchanged arithmetic/wallet37 remain preserved. Whole-route
+SOURCE/fixture/selection reviews, fresh affected builds, catalog/Plan/PREP/runtime
+are pending. US6 tasks and broader travel/Shining/negotiated/faction scope remain open.
+
 ---
 
 # T126 — accepted browser wound cards and guided treatment presentation

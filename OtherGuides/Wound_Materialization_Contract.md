@@ -2019,3 +2019,59 @@ See the worked `wound_history_view_v1` navigation example in E_CLI_Afterlife_Tur
 Выход из живой формы сначала вызывает штатную отмену её сессии. Отказ или потеря
 ответа сохраняют форму и явно не подтверждают отмену/применение. Console использует
 те же действия, условия и подтверждение; правила броска, затрат и мира не меняются.
+
+
+## spiritual_public_service_v7 — public Elyara treatment
+
+The current shared /лечить route can treat the player's own known spiritual wound
+while already co-located with alive canonical Elyara in safe Chaos Sea. This is a
+public service, not a private participation grant. Merely knowing Healing does not
+create a service. Read/cancel does ZERO queue/draw/payment/cycle or repair. Remote
+travel, Shining execution and negotiated compensation remain unavailable in this
+first currency route; recommendations do not create executable buttons.
+
+Canonical actor guard_system_elyara_001 uses lifeState alive|dead, HealingV and public
+100% service; initial locationId/locationRef is abode_system_elyara_001. The fresh
+client adds her without changing the selected Guardian. Later complete profile
+updates preserve her current realm/location, synchronize service realm/locationRef,
+and cannot resurrect an accepted dead Elyara or downgrade HealingV/public100%.
+Actor visibility and current access still gate offers. Never re-bootstrap or
+duplicate her to keep a clinic available. Death makes treatment unavailable.
+
+Prices I/II/III/IV=25/50/100/200; integer multiplier50..200%, whole price rounded
+UP. The common client form shows the exact quote and asks for explicit payment
+confirmation. Fresh display/confirmation/staging/publication checks current wound,
+provider life/location/access/capability/price and funds. Stale terms refuse before
+new side effects; they never silently substitute a new price or provider.
+
+The existing private wound_commands.json holds closed service schema7, kind
+spiritual_treatment_request, mode service: complete quote/payment DATA, exact
+session/request/turn/attempt/check/contributions/draw and prepared control. GM MUST
+NOT write/delete/replace it, invent a private aid grant or author a payment receipt.
+Physical lease/generation stays live; the durable control/quote is comparison DATA,
+not permission. Retry revalidates the retained control against actual prepared
+cycle/source images and keeps the SAME attempt/draw, rather than rewriting scheduler
+timestamps or rolling again.
+
+Read input/turn_request.json.spiritualHealing (schema7/mode service): real healer,
+patient, quote, retained roll, calculated activeResult and destinationGraphs. Author
+EVERY requested weaker graph using the same existing GM consequenceDefinitions
+grammar; the client checks actual calculated degree and permitted slots. Author
+ordinary progression report and the healer's first-person reasoning/memory. Do NOT
+write soul_state.inkFeathers or metaStateUpdates.inkFeatherChanges, even if the
+proposed delta appears correct: competing currency changes reject, never silently
+prune. No GM roll/outcome/fee/result authority is introduced.
+
+One accepted attempt charges once, including valid partial/failure. Cancellation,
+invalid publication and rollback charge zero. Existing common C4 publishes the exact
+Soul wallet after-image with wound/effects/identity/History/scheduler; full physical
+byte read-back is required. Optional wallet.total absence is preserved; insufficient
+funds never clamp. History result7 binds exact paid attempt/quote/wallet before-after
+and rederives actual stages. Replay reads return accepted DATA without recharging or
+restoring an old wallet; today's presence is not inferred from historical service
+evidence. Repair keeps the retained attempt/draw and requires corrected authored
+graphs/report; it does not convert rejection into a paid success.
+
+See the paid success, failed-attempt and rollback worked fragment in
+Examples/E_CLI_Afterlife_Turns.txt. Existing self2/aid3–6/combat semantics remain their
+own contracts. This section does not close all US6 or the deferred broader gates.

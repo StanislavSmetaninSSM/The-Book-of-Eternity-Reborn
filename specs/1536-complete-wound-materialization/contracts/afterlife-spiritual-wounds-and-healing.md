@@ -320,3 +320,17 @@ the same implementation must update:
 - `AfterlifeContractRegistry` if a pending/control root is introduced;
 - Guardian/Shining prompts and Elyara manifest/dossier;
 - afterlife documentation coverage and example validation tests.
+
+
+spiritual_public_service_v7: shared /лечить offers a confirmed exact public Ink Feather
+quote for the player's own spiritual wound while co-located with alive Elyara in safe
+Chaos Sea. Canonical guard_system_elyara_001 has lifeState alive|dead, HealingV, public
+100%; initial abode_system_elyara_001 is preserved only at fresh seed, never restored
+after accepted relocation/death. Prices25/50/100/200, multiplier50..200%, round UP.
+The client owns quote/payment/control/attempt/draw in private wound_commands family7,
+one actual common C4 wallet+wound/effects/History/cycle publication and strict result7
+replay. Accepted failure/partial charges once; cancel/invalid/rollback charges zero.
+No GM inkFeatherChanges or manual fee/receipt/roll. Read the current full service
+section and worked example; author only requested weaker graphs, progression report
+and actual first-person healer reasoning. Remote/Shining/negotiated routes remain
+unavailable in this first slice; stale life/location/access/price/funds refuses.

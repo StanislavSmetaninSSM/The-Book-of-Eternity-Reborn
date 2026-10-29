@@ -3,9 +3,93 @@
   "selections": [
     {
       "category": "healing-service-selection-causal",
-      "reason": "Observe actual missing closed public service branch before wiring family7; accepted61 remain untouched.",
+      "reason": "Original missing service branch RED becomes GREEN in the real codec.",
       "contracts": [
-        "#1536 US6 T137/T143 family7 route"
+        "#1536 T137/T143 family7"
+      ]
+    },
+    {
+      "category": "healing-service-request-data",
+      "reason": "Exact family7 quote/payment/control/check/draw/confirmation DATA and cross-family refusal; no actual admission authority.",
+      "contracts": [
+        "#1536 US6 T131–T140/T143–T147 bounded public Elyara route"
+      ]
+    },
+    {
+      "category": "healing-service-menu-data",
+      "reason": "Shared service menu over existing parsed read context, exact readable price, private binding redaction and current eligibility/funds refusals.",
+      "contracts": [
+        "#1536 US6 T131–T140/T143–T147 bounded public Elyara route"
+      ]
+    },
+    {
+      "category": "elyara-healing-state",
+      "reason": "Fresh non-selected Guardian discoverability, fixed capability/service identity and strict relocation/death/upsert protection; dead private-aid bypass refusal.",
+      "contracts": [
+        "#1536 US6 T131–T140/T143–T147 bounded public Elyara route"
+      ]
+    },
+    {
+      "category": "healing-service-documentation",
+      "reason": "Current service guides/both effective daemon assignments/registry/manifest and production-parsed worked GM profile/interface fragments.",
+      "contracts": [
+        "#1536 US6 T131–T140/T143–T147 bounded public Elyara route"
+      ]
+    },
+    {
+      "category": "healing-service-source-controls",
+      "reason": "Actual fresh confirmation funds/life/price losses, post-control source close before entropy and measured absence of extra service source reads over current read/menu path.",
+      "contracts": [
+        "#1536 US6 T131–T140/T143–T147 bounded public Elyara route"
+      ]
+    },
+    {
+      "category": "healing-service-payment-results",
+      "reason": "Actual deterministic successful/partial/failed service stage/original/common C4/result7 and two replay reads, fee once, retained draw/control/cycle and unchanged unified resources.",
+      "contracts": [
+        "#1536 US6 T131–T140/T143–T147 bounded public Elyara route"
+      ]
+    },
+    {
+      "category": "healing-service-payment-cut",
+      "reason": "Actual C4 fault after physical wallet publication compensates all staged participants and retains exact request/die.",
+      "contracts": [
+        "#1536 US6 T131–T140/T143–T147 bounded public Elyara route"
+      ]
+    },
+    {
+      "category": "healing-service-payment-conflict",
+      "reason": "Actual service owner rejects competing GM Feather delta instead of pruning or double charging.",
+      "contracts": [
+        "#1536 US6 T131–T140/T143–T147 bounded public Elyara route"
+      ]
+    },
+    {
+      "category": "healing-service-console",
+      "reason": "Actual console cancel/explicit price confirmation -> Engine -> common fee/wound/History/cycle.",
+      "contracts": [
+        "#1536 US6 T131–T140/T143–T147 bounded public Elyara route"
+      ]
+    },
+    {
+      "category": "healing-service-browser",
+      "reason": "Actual shared browser target/quote/confirm/queue -> Engine common paid result; not DOM/provider.",
+      "contracts": [
+        "#1536 US6 T131–T140/T143–T147 bounded public Elyara route"
+      ]
+    },
+    {
+      "category": "healing-service-engine-rollback",
+      "reason": "Actual confirmed console route physical wallet cut -> common compensation plus whole Engine pre-turn rollback.",
+      "contracts": [
+        "#1536 US6 T131–T140/T143–T147 bounded public Elyara route"
+      ]
+    },
+    {
+      "category": "healing-service-contract-data",
+      "reason": "Public profile predicate was extended for protected dead/unavailable canonical Elyara while active admission must stay alive/available; rerun affected24, not unchanged arithmetic/payment37.",
+      "contracts": [
+        "#1536 T132/T140 profile boundary"
       ]
     }
   ]

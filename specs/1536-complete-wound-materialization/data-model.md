@@ -3437,7 +3437,7 @@ Examples:
 {
   "providerId": "exact-afterlife-actor-id",
   "realm": "chaos_sea",
-  "locationRef": "elyara_lazaret",
+  "locationRef": "abode_system_elyara_001",
   "visibility": "public",
   "availability": "available",
   "minimumRelationship": null,
@@ -3455,6 +3455,29 @@ non-currency agreement is an accepted exact contract/quest/debt/favor reference 
 feeds the same attempt resolver.
 
 ### Elyara invariant
+
+The canonical afterlife actor uses explicit `lifeState: "alive" | "dead"` for this
+service. Identity is `guard_system_elyara_001`; the initial Lazaret locationId is
+`abode_system_elyara_001`. These are the existing system preset coordinates, not
+a second location alias. Fresh seed adds her alongside the selected Guardian and
+discovered Abodes without switching the selected active Guardian. Later upserts
+cannot replace accepted `dead` with `alive`; normalization does not create her again.
+
+The current public currency route is `spiritual_public_service_v7`: the existing
+private wound-command request stores the complete confirmed quote, exact wallet
+before/after payment DATA, session/request/turn/attempt, real check/contributions,
+retained draw and complete prepared control. The control is comparison DATA: retry
+checks it against current prepared source images instead of rewriting scheduler
+timestamps or drawing again. Physical lease/generation remains live and is not
+durable quote authority. Result7 in History rederives these data and the real stages.
+Only the existing common C4 publishes payment with Soul/wound/effects/History/cycle;
+its full byte read-back is required. Replay reads never recharge or restore a wallet.
+Service payment preserves optional wallet.total absence and rejects insufficient
+funds before subtraction; simultaneous GM inkFeatherChanges are invalid, not pruned.
+
+This first executable route treats the player's own spiritual wound while already
+co-located with alive public Elyara in safe Chaos Sea. Universal travel, Shining
+execution and negotiated compensation remain open; a recommendation is not a button.
 
 The built-in `elyara` profile is normalized/validated to:
 

@@ -96,6 +96,7 @@ internal static partial class SpiritualSelfTreatmentRequestCodec
             Text(root["rollMode"]) is not ("normal" or "advantage" or "disadvantage") ||
             root["rollContributions"] is not JsonArray contributions || contributions.Count > EffectRollContributionResolver.MaximumCapturedRows)
             throw new InvalidDataException("Invalid closed service check source.");
+        _ = SpiritualHealingPersistedResult.ValidateActiveSource(root);
         var source = new SpiritualHealingPreparedSource(quote.WoundId, quote.Patient, quote.Provider, quote.SeverityRank,
             quote.HealingTier, complicationModifier, Text(root["rollMode"])!,
             contributions.Deserialize<EffectRollContributionEvidence[]>() ?? throw new InvalidDataException("Service roll evidence is absent."));
