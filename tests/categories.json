@@ -36957,6 +36957,31 @@
           ]
         }
       ]
+    },
+    {
+      "id": "shining-faction-healer-causal",
+      "responsibility": "#1536 T142 actual accepted-turn raw owner rejects an otherwise fully authored current faction without a living primary HealingI-V resident; rejection is read-only.",
+      "excludes": "No healer defaults, public clinic or payment, historical deletion, full faction/afterlife suite, T143 replay, DFR/Mortal/Windows/performance HOLD.",
+      "changeHints": [
+        "BookOfEternityClient/Services/Validation/ValidationService.ShiningFactionMaterialization.cs",
+        "BookOfEternityClient/Services/ShiningFactionHealingSupport.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.FactionMaterializationValidationTests.CurrentMaterializedFactionWithoutHealerIsRejectedWithoutChangingAuthoredState"
+          ]
+        }
+      ]
     }
   ]
 }

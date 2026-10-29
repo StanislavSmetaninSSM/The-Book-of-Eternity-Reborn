@@ -1,3 +1,23 @@
+# T142 — living healer invariant, causal scaffold WIP
+
+Issue: https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536
+Accepted T143 checkpoint ebc99499b8a0e69adbcff616dcc8176322d903ad remains preserved;
+no accepted T143 runtime is repeated. Owner decision: historical factionLifecycle.state
+broken/dissolved are exempt; records retained, hidden current faction is NOT exempt.
+
+First finite step: one independent existing complete story-faction fixture through real
+ValidateAcceptedTurnRawFactionMaterializationAsync, with no healer. Assert all other
+faction errors absent and byte-for-byte authored Shining/resident/profile/story stability,
+then require faction_materialization_shining_healer_missing. Production unchanged;
+scaffold UNCOMPILED, causal runtime UNRUN. Existing test class only becomes partial.
+Independent Sol DESIGN/selection pending for minimal existing requiredActors/profile
+flow; no new cache or inferred actor/tier/service. Current selection only causal1/60s.
+Preserve current27 artifacts; Integration-only fresh build, exact discovery/PlanOnly/
+resource/PREP before causal RED. All raw remains outside checkout at
+/workspace/tboe-linux-evidence-20261025/us6-faction-living-healer.
+
+---
+
 # T143 — current canonical Elyara route ACCEPTED, 2026-10-29
 
 Issue: https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536

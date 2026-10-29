@@ -8,7 +8,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
-public sealed class FactionMaterializationValidationTests : IDisposable
+public sealed partial class FactionMaterializationValidationTests : IDisposable
 {
     private const string MortalPath = "game_state/factions/faction_core.json";
     private const string MortalStructurePath =
