@@ -399,6 +399,10 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
         {
             await using var publication = await fixture.Files.AcquireCanonicalWriteLeaseAsync();
             await fixture.WriteReportAsync(publication);
+            await fixture.Files.WriteFileAtomicAsync(publication, "output/interface_updates.json", new JsonObject
+            {
+                ["timestamp"] = DateTime.UtcNow.ToString("o"), ["dialogueOptions"] = new JsonArray()
+            }.ToJsonString());
             await WriteResidentAidMemoryAsync(fixture.Files, publication, "request_spiritual_healing", 43, memoryOnly: true);
             var validator = new ValidationService(fixture.Files, NullLogger<ValidationService>.Instance);
             Assert.DoesNotContain(await validator.ValidateAcceptedTurnRawMortalLocationMaterializationAsync(), i => i.Severity == IssueSeverity.Error);

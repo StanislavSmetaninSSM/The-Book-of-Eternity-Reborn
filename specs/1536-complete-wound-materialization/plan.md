@@ -1,3 +1,31 @@
+# T108 real revocation accepted — remaining grant response fixture correction
+
+2026-10-29 02:37 UTC. Recovery runtime atdddbb475a96605a713d7d7f57e29402242ddfa78
+completed2:1PASS/1FAIL, exit1, wall127.8253069s; category119.1237074s<180s,
+no timeout/skips/duplicates, both cleanup flags true. Real mixed v3/v4/v5/v5
+accepted History/revoke test PASS97.6540524s across four actual turns and otherwise
+eligible next-turn refusal without draw. Resident grant/aid test FAIL13.0391552s
+AFTER successful grant normalization: actual interface validator correctly rejects
+missing mandatory top-level timestamp in its initial memory-only response. Source
+guard1 remains UNRUN by fail-fast. Raw resident-recovery-actual-2 retained external.
+
+Cause: WriteResidentAidMemoryAsync appends memory to an absent interface as{}, while
+this direct grant caller did not first author normal timestamp/dialogueOptions.
+Mixed fixture and genuine Engine callers already author both before that helper.
+Correct only this resident grant caller to author fresh UTCtimestamp and empty
+ordinary dialogueOptions BEFORE memory admission/response fingerprint capture.
+Do not change shared helper, production binder, timestamp policy or any assertion.
+Full interface validator inspected: this supplies its standard required response;
+protected memory still enters exact published binding, no graphs are supplied.
+Same existing services/DATA, no cache change or speedup claim; actual source and
+current checks remain fresh. Independent Sol outcome/delta review pending.
+
+Fresh Integration refsfalse only, unchanged production/Unit retained. Narrow
+existing recoverycategory to remaining failed1 plus missing sourceguard1, with
+original180/60s budgets; do not repeat mixed97.65s PASS or prior59/4PASS. Then actual
+console/browser/rollback pending independent PREP. No qualification from build or
+fixture failure; US4 remains open. No raw/save/recovery deletion or newclone/restore.
+
 # T108 resident publisher preparation correction — 4 PASS, 2 fixture FAIL
 
 2026-10-29 02:28 UTC. HEAD/remote7d3dbeacb0d19cc095211d748b765f3ef1372996
@@ -16,7 +44,7 @@ spiritual publication preparation. Add their unchanged error assertions on the s
 live lease at these two sites only. No production guards, schema, bounds or game
 rules change. Reuse the same validator and existing accepted-plan/item services;
 authority must be fresh per actual turn, so no newcache or speedup claim applies.
-Actual2 failures are causal RED; independent Sol OUTCOME/delta SOURCE pending.
+Two fixture preparation failures independently verified; Sol OUTCOME/delta SOURCE accepted.
 
 Next fresh Integration refsfalse only (production/Unit unchanged), discovery and
 exactPlan3 (failed resident2+missing sourceguard1), then independent PREP. Existing

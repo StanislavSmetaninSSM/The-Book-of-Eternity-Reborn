@@ -81,8 +81,8 @@
 },
 {
   "id": "spiritual-resident-aid-publication-preflight",
-  "responsibility": "The two resident publisher fixtures blocked by missing ordinary raw location/item preflight: actual resident grant/aid and genuine mixed-family revoke/refusal. Uses the same live-lease production admission before full normalization.",
-  "excludes": "Does not replay unchanged v3/v4, orphan-memory or self-family PASS from7d3dbeac. No production authority bypass, Engine journey or broader suite.",
+  "responsibility": "The remaining resident grant/aid publisher fixture after ordinary raw preflight correction. Requires complete freshly authored timestamp/dialogue response before protected memory admission and real normalization/current/History checks.",
+  "excludes": "Mixed-history/revoke PASS atdddbb475 and prior cheap/v3/v4/orphan/self PASS are retained without replay. No production bypass, Engine journey or broad suite.",
   "changeHints": [
     "BookOfEternityClient.IntegrationTests/AfterlifeSpiritualNaturalRecoveryTests.ActiveAid.cs",
     "BookOfEternityClient.IntegrationTests/AfterlifeSpiritualNaturalRecoveryTests.ResidentAuthority.cs"
@@ -99,8 +99,7 @@
     {
       "project": "integration",
       "tests": [
-        "BookOfEternityClient.Tests.AfterlifeSpiritualNaturalRecoveryTests.ResidentAidUsesTypedCommittedConsentOriginalNormalizationAndHistoricalReplay",
-        "BookOfEternityClient.Tests.AfterlifeSpiritualNaturalRecoveryTests.ResidentRevocationPublishesInMixedHistoryAndRefusesItsOtherwiseEligibleAidWithoutDraw"
+        "BookOfEternityClient.Tests.AfterlifeSpiritualNaturalRecoveryTests.ResidentAidUsesTypedCommittedConsentOriginalNormalizationAndHistoricalReplay"
       ]
     }
   ]
