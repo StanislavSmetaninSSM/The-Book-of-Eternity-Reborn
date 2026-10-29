@@ -1,5 +1,11 @@
 # Задачи #1573 — полный духовный бой
 
+## Духовная энергия и жизнь двух пространств — обсуждение 2026-10-30
+
+- [x] T075 Зафиксирован отказ от мгновенного combat-end refill и принятое бесплатное восстановление отдыхом, ускоряемое духовными камнями; скорость/условия/цены открыты. Требования к Море Хаоса и Сияющей Обители, границы и предложения записаны в spec; текущие входы восстановления согласованы.
+- [ ] T076 Сверить узкие опоры исходников: личности/резиденты/приём, циклы, предметы/награды, учреждения Сияющей Обители. Сохранить выводы и границы исследования; independent review документов и публикация. Только обсуждение, без runtime/симуляции/новых GitHub issues.
+- [ ] T077 Обсудить и согласовать подробную спецификацию восстановления и активностей. Отдельно определить задачи расширения духовного мира и связь с #1572; не считать их автоматически разрешённой реализацией всего мира внутри #1573.
+
 ## Духовная энергия и проверка подавления лечения
 
 - [x] T072 Обновить пользовательскую терминологию текущих документов1573: «Духовная энергия»/ДЭ; технические AP/OD идентификаторы, смертные ресурсы и числовые договоры сохранены. Исторические предложения явно отличены от текущих правил. Sol6.1/high и parent проверили scoped diff.
@@ -137,7 +143,7 @@ US4=единая работающая модель/интерфейсы.
 
 - [ ] T004 [US1] RED tests в BookOfEternityClient.Tests/SpiritualCombatRulesTests.cs и BookOfEternityClient.IntegrationTests/AfterlifeSpiritualConflictValidationTests.cs: HP/ДЭ exact actor, hit/miss/barrier/max changes, invalid actor/target, расходы/recover surcharge, ranks. Negative builders не чинят malformed input.
 - [ ] T005 [US1] Ввести typed contracts/profile resolver в BookOfEternityClient/Services/SpiritualCombat/; обновить AfterlifeSpiritualConflictState.cs и Validation/ValidationService.AfterlifeEntityProfiles.cs. Definitions/ранги, actor authority/dependency fingerprint, без file I/O в kernel.
-- [ ] T006 [US1] ResourceDefinitionCatalog.cs, AfterlifeResourceOwnerComposer.cs, ResourceMutationSourceCatalog.cs, AfterlifeConflictActionPointProjection.cs: personal spiritual_health/ДЭ, capabilities/max/init, принятое полное заполнение ДЭ после подтверждённого окончания боя; без refill от reload/re-entry внутри незавершённого боя, no side fallback. Не расширять Mortal health; технические границы по out-of-combat-recovery-proposal.md.
+- [ ] T006 [US1] ResourceDefinitionCatalog.cs, AfterlifeResourceOwnerComposer.cs, ResourceMutationSourceCatalog.cs, AfterlifeConflictActionPointProjection.cs: personal spiritual_health/ДЭ, capabilities/max/init; после T077 — бесплатное восстановление ДЭ полноценным отдыхом и ускорение камнями, без автоматического combat-end/reload/re-entry refill и side fallback. Не расширять Mortal health; скорость/цены/условия ещё не утверждены, см. out-of-combat-recovery-proposal.md.
 - [ ] T007 [US1] SpiritualCombatRules.cs и AfterlifeActionCostRules.cs: accepted math/target/cost/damage/guard/recover из согласованного tuning; ValidationService.AfterlifeSpiritualConflict.cs делегирует расчёт. Preview и accepted используют одно ядро.
 - [ ] T008 [US1] AcceptedMechanicsPlanner.SpiritualMechanics.cs и общий CanonicalStateNormalizer: включить state/resources/action receipts в одну существующую публикацию. GREEN T004 и actual accepted/replay/rollback integration. Новый отдельный publisher запрещён.
 
