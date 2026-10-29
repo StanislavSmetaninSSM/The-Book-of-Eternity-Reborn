@@ -194,6 +194,21 @@ prepared catalog and parsed roots reused; no across-prompt cache/new framework.
 Final current prompt/generation/UI authority and actual aid source/history fences
 remain fresh. No newclone/restore/deletion; accepted prior recovery unchanged.
 
+Actual backend OUTCOME ACCEPT at9563f5566: ConfirmedResidentOfferUsesResidentArtAnd
+PlayerNaturalTierThroughPublicationAndReplay1/1PASS,TRX25.5469149s/category31.4222541
+<180/wall40.1621064; genuine combined navigation+aid shared-read assertions passed.
+Actual UIpair finished9563: console resident-patient5 PASS43.4117185s; browser6
+FAIL22.7907584s at testhelperline251 BEFORE target submit/confirmation. Root cause:
+existing ApplyDefaultPlayerSurface deliberately projects only public browser fields,
+so adapting the fixture to dereference internal WoundCommandState was incorrect.
+Select via actual public Self label / public Guardian-or-resident context instead;
+assert the returned hidden state is absent, preserve server snapshot/authority and
+all original queue/patient/History/world/resource assertions. No production change
+or API leakage. UIpair2/2executed1PASS1FAIL,wall83.2833619s,no timeout/skip/duplicate,
+runnercleanuptrue. Retain console result; browser singleton alone remains pending
+review/Integration-only rebuild/exactPlan/PREP/rerun. Cheap33 and backend do not
+repeat. Fullraw target-choice-actual-{backend,ui}-1 retained outsidecheckout.
+
 # T108-RESIDENT-HELP accepted — resident offers free treatment to the player
 
 2026-10-29, #1536. Visible conscious/capable resident of the CURRENT Chaos Guardian

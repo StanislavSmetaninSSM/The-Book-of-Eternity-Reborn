@@ -248,9 +248,9 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                 var opened = await service.ExecuteAsync(new("/лечить", Owner));
                 var targets = Assert.IsType<UiSelectionPrompt>(Assert.Single(opened.Prompts));
                 Assert.Equal("wound_target", targets.Id); Assert.Equal("Себя", targets.Options[0].Label);
-                var patient = Assert.Single(opened.WoundCommandState!.Targets, t => receiveAid
-                    ? t.Owner.OwnerKind == "player_soul" : t.Owner.OwnerId == participantId);
-                var patientOption = Assert.Single(targets.Options, o => o.Value == patient.Value && !o.Disabled);
+                Assert.Null(opened.WoundCommandState); // Player-default browser result exposes public options only.
+                var patientOption = Assert.Single(targets.Options, o => !o.Disabled && (receiveAid
+                    ? o.Label == "Себя" : o.Description.StartsWith(resident ? "Житель Обители · " : "Хранитель · ", StringComparison.Ordinal)));
                 if (receiveAid) Assert.Equal("Себя", patientOption.Label);
                 opened = await service.SubmitPromptSessionAsync(new(opened.InteractiveSession!.SessionId,
                     new() { ["wound_target"] = JsonValue.Create(patientOption.Value) }, Owner));
