@@ -25,7 +25,9 @@ public sealed partial class WoundForeignDetailTests
         var data = WoundForeignDetailTestData.Create(kind, wound =>
         {
             wound["display"]!["visibleSymptoms"] = new JsonArray(symptom);
-            wound["treatment"]!["routes"]![0]!["requirements"] = new JsonArray(new JsonObject { ["privateOpaque"] = "ПРИВАТНЫЕ_УСЛОВИЯ" });
+            wound["treatment"]!["routes"]![0]!["requirements"] = new JsonArray(new JsonObject
+            { ["kind"] = "source_capability", ["capabilityRef"] = "private_spiritual_support", ["actorRole"] = "provider",
+                ["privateOpaque"] = "ПРИВАТНЫЕ_УСЛОВИЯ" });
             var hidden = wound["treatment"]!["routes"]![0]!.DeepClone().AsObject();
             hidden["routeId"] = "route_unknown"; hidden["displayName"] = "НЕИЗВЕСТНЫЙ_СПОСОБ"; hidden["visibility"] = "hidden";
             wound["treatment"]!["routes"]!.AsArray().Add(hidden);

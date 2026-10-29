@@ -13800,6 +13800,9 @@ the card does not apply this fragment or ask the GM to mutate anything.
         "mode": "procedure",
         "requirements": [
           {
+            "kind": "source_capability",
+            "capabilityRef": "private_spiritual_support",
+            "actorRole": "provider",
             "opaqueCondition": "ЧАСТНОЕ_УСЛОВИЕ"
           }
         ],
@@ -13815,6 +13818,9 @@ the card does not apply this fragment or ask the GM to mutate anything.
         "mode": "procedure",
         "requirements": [
           {
+            "kind": "source_capability",
+            "capabilityRef": "private_spiritual_support",
+            "actorRole": "provider",
             "opaqueCondition": "ЧАСТНОЕ_УСЛОВИЕ"
           }
         ],

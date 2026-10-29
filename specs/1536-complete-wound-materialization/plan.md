@@ -114,6 +114,23 @@ only remaining39 after fresh Unit build, discovery/Plan/PREP; final55 is a union
 not one fresh55 run. Full failed attempt/cleanup outsidecheckout actual-1; no timeout.
 Correction is WIP UNCOMPILED/UNRUN pending narrow SOURCE. No hold route repeated.
 
+Residual attempt2: corrected same-ID singleton PASS at6ddbccef0 (13.1733264s wall,
+4.8650321s category<60, exact1/1, no duplicates, cleanuptrue). Next GM guard failed
+before projection because the worked fragment omitted required requirement.kind;
+interface/Self37 remain UNRUN. ReadRequirementArray requires an exact discriminator.
+The same missing field was found in unrun UI preparation, so both fixtures now
+carry existing source_capability/provider coordinates plus the intentionally opaque
+private sentinel. No new codec, mechanics, production guard or assertion change.
+Existing Unit test/production binaries stay unchanged; fresh Integration only is
+required for the UI fixture delta. GM guard still consumes current repo example.
+Narrow SOURCE then remaining38 (GM1 first, then interfaces2+Self35) pending.
+
+Space preflight reclaimed ONLY completed-task untracked Unit obj DLL/PDB duplicates:
+13,475,660 bytes, each SHA256 equal to retained owning bin DLL/PDB; all runners/builds
+ended and all18 retained evidence artifact paths stay intact. No raw, saves, recovery
+copy or tracked source removed. External reclaim proof preserved;429117440 bytes free
+before current WIP. Original400MiB build/128MiB runtime reserves unchanged.
+
 # T120-CHAOS-TARGETS — accepted current-Abode target navigation
 
 2026-10-29. Issue: https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536
