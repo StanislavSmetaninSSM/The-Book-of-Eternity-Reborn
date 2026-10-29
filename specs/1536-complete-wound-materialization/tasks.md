@@ -14635,7 +14635,15 @@ rows retain their own lineages; no combat gameplay PASS or full task closure.
 - [ ] T123 [US5] Add escaped Russian console list/detail/History/prompts/results using shared blocks in `BookOfEternityClient/UI/ExplorerWoundCommandResultBuilder.cs` and `BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Wounds.cs`
 - [ ] T124 [US5] Register all command aliases and route both Mortal/afterlife console actions to the shared handler in `BookOfEternityClient/CommandProtocol/ExplorerCommandCatalog.cs` and `BookOfEternityClient/UI/ExplorerMode.cs`
 - [ ] T125 [US5] Route browser reads/writes, prompt sessions, command coverage, and menu entries through the shared handler in `BookOfEternityClient/WebUi/ExplorerWebCommandService.cs`, `BookOfEternityClient/WebUi/BrowserAfterlifeWriteService.cs`, `BookOfEternityClient/WebUi/BrowserPlayerCommandMenuBuilder.cs`, and `BookOfEternityClient/WebUi/BrowserCommandCoverageService.cs`
-- [ ] T126 [US5] Implement dedicated wound list/detail/History and guided treatment browser cards/steps over the shared semantic blocks, preserving the project design system and accessibility in `BookOfEternityClient.WebFrontend/src/components/WoundCommandView.tsx` and `BookOfEternityClient.WebFrontend/src/styles/wounds.css`
+- [x] T126 [US5] Implement dedicated wound list/detail/History and guided treatment browser cards/steps over the shared semantic blocks, preserving the project design system and accessibility in `BookOfEternityClient.WebFrontend/src/components/WoundCommandView.tsx` and `BookOfEternityClient.WebFrontend/src/styles/wounds.css`
+  Accepted presentation over supported public blocks at d4ec5008377a4aef50930cf810d8585fb51e0f28:
+  actual default privacy boundary, closed client-owned view hint, active/History/detail,
+  guided target/confirmation/result, cancel-first Back and operation/disposal guards.
+  Fresh typecheck/Vite0errors;74nativeVitest+2standalone+1compile contract, full corrected
+  controlled ChromiumDOM13/13desktop/mobile/keyboard. Sol independent SOURCE/PREP/OUTCOME
+  and Astra sanitizer DESIGN/conformance accepted. Complete raw/exact selection/build
+  and preserved failures in current plan; no live provider/fullAppShell/fresh-process
+  or whole US5/US6 completion inferred. Wider T118/T130 and parent T119/T121 remain open.
 - [ ] T127 [US5] Remove raw legacy wound parsing/previews and activeConditions duplication from `BookOfEternityClient/UI/ExplorerUniversalMetaCommandResultBuilder.cs`, `BookOfEternityClient/UI/ExplorerMode/ExplorerMode.PrivateImplementation.cs`, and `BookOfEternityClient/UI/ExplorerMode/ExplorerMode.WorldAndStatus.cs`
 
 ### Player/GM documentation and verification

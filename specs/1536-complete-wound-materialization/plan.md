@@ -1,124 +1,131 @@
-# T126 browser wound cards — implementation plan, not yet qualified
+# T126 — accepted browser wound cards and guided treatment presentation
 
-2026-10-29, #1536, branch1536-linux-qualification-20261025, baseline44c4cd5d4.
-Existing T118/T126 and applicable T130 own this complete presentation slice.
-Actual remaining game gaps: executable diagnosis and wider Mortal/realm/helper routes
-(T121), public service discovery/quotes/payment (US6 T131–T146). Existing target choice,
-foreign detail and explicit History are accepted and will not be reimplemented.
-Browser cards depend on their public packets, not on new service/economy rules.
+2026-10-29. Issue: https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536
+Branch: `1536-linux-qualification-20261025`, same Linux machine/checkout.
+Qualification source: `d4ec5008377a4aef50930cf810d8585fb51e0f28`.
+T126 closes its presentation over supported public blocks. T118/T130 and parent
+T119/T121/US5/US6/#1536 remain open for their wider contracts and acceptance.
 
-Acceptance: dedicated active/detail/History and guided target→wound+confirmation→
-client response screens; Russian hierarchy, empty/unavailable/error distinction,
-literal-safe known facts, clear recommendations, disabled reasons, responsive layout
-and keyboard focus. Use actual normalized dossier and ordinary panel packets.
-Do not infer healing success from Completed, fabricate chronology/cost/provider facts,
-or expose private payload/session/option values. Generic commands retain their view.
-Live-session Back uses existing cancel API; failed cancel retains form. Synchronous
-single-operation admission and stale-response ownership protect existing handlers.
+## Player result
 
-Steps: causal SSR through real CommandResultView → independent SOURCE/fixture review
-and expected RED; existing renderer/PromptForm integration plus scoped design-system
-styles; focused safe-render/alias/state/negative tests; fresh frontend typecheck/build,
-exact official PlanOnly/category run; actual Chromium controlled component host on
-desktop/mobile including keyboard, History/back, disabled choices, confirm/cancel and
-late/error API outcomes; independent OUTCOME and compact checkpoint/remote SHA.
-No complete suite/retired npm verify, C# rebuild or unchanged accepted44/55/36 reruns.
+The normal browser now has dedicated Russian active-wound, known healed History
+and treatment views. Existing public dossier/panel facts, recommendations, empty,
+unavailable, foreign-consent, stale, pending and accepted-result messages are retained.
+History is separate; read/back adds no treatment. No missing chronology, hidden wound,
+provider, price or executable method is invented. Completed never implies healing
+success. Existing action/form controls retain server authority and exact request fields.
+Scoped design-system styles provide responsive cards, visible focus, 44px controls,
+readable disabled-option reasons and target → wound/confirmation → client-response steps.
 
-Optimization: no DATA reads or new cache; reuse current public blocks and existing
-renderers/handlers. Presentation command recognition is trivial per-result work.
-Do not retain projection/authority across server actions. Test fixtures are detached
-minimal public packets, not whole game copies. Controlled DOM is presentation/API
-handler evidence, not live GM/provider/backend or fresh-process save qualification.
-GM contract/schema is unchanged: client-owned visual grouping needs no new daemon
-rule, authored example or manifest input. Add concise existing wound-guide explanation
-and source-owned guard of this boundary; no different console mechanics.
+Back from a live form calls the existing cancel API and waits for its result. Failed
+or lost replies preserve the form/answers with an explicit notice. Component-owned
+operation identity prevents duplicate action/submit/cancel and overlapping activation;
+new commands and component disposal invalidate old prompt follow-up/refresh. This is
+local UI ownership, not a replacement for ShellContext epochs or gameplay freshness.
 
-Resource preparation is external: preserve all raw/saves/recovery/acting bin. Only
-verified reproducible installer/HTTP caches and exact duplicate obj/refint files were
-reclaimed. Dependency lock matches existing installed packages; fresh directory entries
-reuse immutable package files, never old dist or game binaries. Overlay copy-up cost
-is recorded; recheck400MiB before each build and128MiB before runtime. Full raw stays
-under /workspace/tboe-linux-evidence-20261025/us4-self-healing/wound-browser-*.
-DFR/Mortal/Windows/performance remain HOLD; full US5/US6/#1536 remain open.
+The actual default sanitizer strips raw command text. A discovered integration bug
+made the first view classifier lose its type after sanitization; the fixture initially
+missed this same boundary. The corrected existing sanitizer retains only a validated
+client-owned active/history/treatment hint. Nonempty raw commands decide/clear it;
+blank already-sanitized results retain only exact enum values for idempotence. Fresh
+responses inherit nothing. Default rendering consumes the safe hint; raw fallback is
+advanced-only. The hint supplies no action, endpoint, identity, provenance or permission.
 
-SOURCE review found action clicks did not claim the synchronous gate. Corrected
-with an action operation awaiting the existing executor, exact-identity release and
-busy exit. Controlled DOM will hold one action and prove duplicate suppression.
-This does not claim replacing parent ShellContext epoch/navigation ownership.
-Review also required unmount invalidation; local mounted/operation cleanup now blocks
-late prompt follow-up after SceneView disposes the component. Controlled host truly
-unmounts it and holds actions independently; no backend/parent epoch replacement.
+## Verification and independent review
 
-Fresh frontend build at e2835160e: exit0, typecheck0errors,16.533886s,
-113freshoutputfiles; sourcepinsunchanged. Existing500kBchunk warning retained,
-no limit/code-splitting change. Raw wound-browser-build-e283. Catalog discovery
-valid1083categories/12805methods-files,0unmapped/stale,31.050554s,0execution.
-First full PlanOnly refused before discovery/execution: same SSRfile assigned
-both Vitest and typecheck. Remove only that duplicate typecheck membership;
-separate typed host entry still compiles host+production components. Application,
-fixture and build inputs unchanged; no rebuild for catalog-only correction.
+- Sol6.1/xhigh independently accepted design, fixtures/source/selection, all PREPs,
+  causal results and final selected/default-DOM OUTCOMEs. Review found action gate,
+  disposal and deferred-host gaps; these were corrected before final qualification.
+  Astra/high accepted the concrete sanitizer-boundary design and implementation.
+- Two causal REDs are preserved: original missing presentation at3fe139edf, then real
+  default-boundary missing heading at9aa425421 after command redaction/known literal
+  controls (native1 expectedFAIL,1.9690945s,150pins unchanged). No timeout/skip was PASS.
+- Fresh affected frontend build at d4ec: typecheck and Vite exit0,10.7712597s,
+  102 build-input pins/113 output pins. Existing >500kB chunk warning remains;
+  no warning/timeout limit changed. Earlier complete bundle is retained externally.
+  No C# build/runtime was required: all C# sources and18 acting DLL/PDB pins remain
+  unchanged from accepted44c4cd5d4; earlier History44 raw/TRX hashes also remain intact.
+- Catalog: valid1085 categories/12806 methods-files,0unmapped/stale,15.0522194s,
+  zero tests executed. Exact final PlanOnly: six descriptors/seven files, each60s.
+  Selected categories: wound-browser-cards, wound-browser-command-consumer,
+  wound-browser-default-boundary, wound-browser-sanitizer-consumers.
+- Selected runtime at d4ec: **74 native Vitest PASS** (20 cards+8 boundary+46 nearest
+  consumers), two standalone contract entries and one compile-only host contract:
+  **77 successful adapter records**, not77 gameplay cases. Six descriptors complete,
+  12.1857292s wall, no timeout/skip/duplicate,151 source pins unchanged and cleanup true.
+  Exact files: woundCommands.test.tsx, woundDefaultBoundary.test.tsx,
+  woundBrowserHost.types.test.ts, commandResultViewSections.test.ts,
+  playerFacingCommandResult.test.ts, blockRenderer.render.test.tsx,
+  playerCopyRobustness.test.ts. Retired npm verify/full aggregates were not used.
+- **Full corrected default Chromium DOM13/13 PASS**,10.041368s within60s:
+  desktop/mobile active/literal/History/back/no overflow; held action duplication;
+  keyboard target→confirmation and native disabled-option skip; explicit answers and
+  duplicate submit; pending versus actual result; cancel-first Back and submit/cancel
+  overlap; HTTP/lost cancel retains form; old reply versus a newer busy form; disposal
+  ignores late follow-up; empty/unavailable/foreign/stale; private-value omission;
+  mobile and desktop confirmation layout. Nine controlled POSTs (four submit/five
+  cancel), five navigation commands/one clear/seven refreshes;0page errors,148 DOM
+  pins unchanged. Full trace ZIP CRC/decode and screenshots were inspected.
+- Earlier PlanOnly runner conflict, missing test CSS declarations, overbroad API mock,
+  Playwright option retarget mismatch, raw-packet20/DOM3 and genuine default integration
+  FAIL are retained. They are superseded by final default qualification, not pooled as
+  extra passes. Raw-host prefix alone was never default-Shell qualification.
 
-Selected attempt at3944 stopped in host typecheck before assertions: two TS2882
-CSS side-effect declarations missing because the selected test config does not include
-the app's vite-env.d.ts. Add the normal vite/client type reference to the host type
-entry only; no compiler-check weakening or application/build input change. All3
-runtime descriptors were unexecuted; failed4.2076395s/cleanupcomplete capture retained
-under wound-browser-selected-3944. Re-plan and repeat only this unexecuted selection.
+## Reproduction, resources and scope
 
-Selected corrected c40b exit0 in6.2979159s: nativeVitest20/20, one existing
-standalone guard entry and one compile-only contract; official22records/3complete
-descriptors, no timeout/duplicate/skip, cleanupcomplete,149sourcepinsunchanged.
-These are not22gameplaycases. Independent selected OUTCOME accepted.
-Actual Chromium first attempt held its own /src/api/client.ts because external
-API mock glob was too broad;30s navigation timeout beforechecks, retained trace.
-Anchored /api/ route correction then passed three actual DOM blocks: desktop and
-mobile active/literal/History/back/no-overflow; held action duplicate/Back gate.
-It stopped on Playwright option isDisabled retargeting the label's select despite
-trace showing option disabled. Installed injected retarget implementation confirms
-that mismatch. Replace only external assertion with native option.disabled AND
-:disabled plus actual keyboard skip; resume remaining treatment checks without
-repeating accepted3. No production or fixture source changes;20SSR/guard/types
-and freshbuild remain accepted. Raw wound-browser-dom-c40b{,-api-route} preserved.
+The reviewed manual driver SOURCE is retained at
+`BookOfEternityClient.WebFrontend/test/fixtures/woundBrowserAcceptance.py` with the
+controlled typed Host/HTML fixtures. It derives repo root from its own path and rejects
+output inside checkout before mkdir. Its actual test-function ASTs match the executed
+external driver; syntax, --help and output-boundary rejection are checked. Final
+packaging/checkpoint review is pending; no test logic or application input changed.
 
-Default-boundary integration defect OPEN: residual DOM8724 reached target POST200
-and a held confirmation POST, then lost dedicated view. Actual privacy sanitizer
-sets command:''; the new presentation classifier incorrectly depended on that field.
-The raw initial fixture missed the same real ShellContext boundary. Preserve prior
-20SSR/3DOM as raw-packet component evidence ONLY, not default player qualification.
-No more browser retries before correction. Host now sanitizes initial/action packets
-exactly once like ShellContext; new singleton default-boundary test checks stripped
-command and positive literal facts before missing heading. Production UNCHANGED;
-causal RED next. Bounded Astra DESIGN assesses a client-owned safe enum hint across
-sanitization, no raw-command retention/cache/backend authority or GM schema change.
+With installed Playwright/Chromium and locked frontend dependencies, start the existing
+Vite server from the frontend directory (`node node_modules/vite/bin/vite.js --host
+127.0.0.1 --port 5177 --strictPort`), then from a clean tree run
+`python3 BookOfEternityClient.WebFrontend/test/fixtures/woundBrowserAcceptance.py
+<new-directory-outside-checkout>`. Stop that owned server after acceptance. The default
+run covers all13 checks; --remaining is only a documented interrupted-attempt aid.
+This manual rendered check supplements the official selected-category runner.
 
-Astra/high bounded DESIGN accepted all three actual sanitizer consumers: nonempty
-raw command decides/clears any hint, already blank results retain only exact validated
-active/history/treatment for idempotence; no previous-response inheritance. Default
-rendering uses only the validated hint; raw fallback is advanced-only. This metadata
-is no action/provenance/permission and introduces no backend or GM-authored schema.
-Cheap actual-boundary RED at9aa425421 executed1 expectedheadingFAIL after command
-redaction and retained escaped-fact controls; raw wound-browser-default-causal-red.
-Now implemented one pure shared classifier and optional frontend-only enum, existing
-sanitizer strips raw command and unknown/conflicting hints, existing component uses
-validated mode. Corrected Host/default SSR traverse actual boundary; new exact tests
-cover repeat sanitization/invalid-conflicting hints/generic isolation/advanced fallback.
-Final selection adds nearest existing playerCopyRobustness, blockRenderer.render and
-playerFacingCommandResult only, not frontend aggregate. Previous raw20+3 evidence is
-superseded for default behavior by fresh affected tests and a full default DOM journey.
-Optimization: one trivial pure classification per result, no IO/cache, existing result
-lifetime and component operation refs; all gameplay freshness/authority remains server.
-Source review/fresh affected build and qualification still pending. Reserve restored
-using two verified NuGet installer ZIPs; installed payload and ZIP-only metadata are
-retained externally, raw/saves/recovery/acting bins untouched.
+Full raw is outside checkout under
+`/workspace/tboe-linux-evidence-20261025/us4-self-healing/wound-browser-*`, notably
+`wound-browser-build-d4ec`, `wound-browser-selected-d4ec`,
+`wound-browser-dom-d4ec-default`, `wound-browser-qualified-d4ec/evidence.json`.
+Browser/driver exited; owned Vite stopped with expected143 after exact PID/command/
+original-parent verification. No live owned build/test/browser/server remains. An OS
+restriction prevented /proc/206989/cwd read; it was not retried and did not prevent
+independent recorded-process identity verification or ordinary owned shutdown.
 
-Implementation WIP: WoundCommandView/scoped CSS, existing CommandResultView
-cancel-first header and current-command operation admission, optional existing
-PromptForm condition descriptions, actual-component public-packet tests and controlled
-DOM host are authored, not yet compiled/qualified. Expected RED accepted independently
-at3fe139edf: native Vitest1executed1missing-headingFAIL after positive controls,
-2.0609836s wall/no timeout/cleanupcomplete/144sourcepins unchanged. Official adapter
-stops before TRX on failure and reports0; native JSON retains the actual failure.
-Raw wound-browser-causal-{plan,red}; no diagnostic output is tracked.
+Only verified reproducible installer/HTTP caches and generated obj/refint intermediates
+were reclaimed to maintain the original400MiB build/128MiB runtime reserves. Installed
+tool/package payload and ZIP-only metadata, lossless reference copies and acting bins
+are retained. No raw, saves or recovery were deleted. Dependencies reuse the exact
+locked immutable packages in separate directory entries; no old dist/game binary was
+used for qualification. Overlay copy-up costs and all removals are externally recorded.
+No new clone/restore, history rewrite, GC, merge, force-push or branch deletion occurred.
+No raw/log/TRX/generated JSON/archive is repository content.
+
+Optimization: one trivial pure presentation classification per received result,
+existing result lifetime and renderers/handlers, no additional IO or DATA cache. Fresh
+server integrity/reachability/consent/authority and normal effects/time/History remain
+unchanged. Minimal detached fixtures replace whole-game setup. Actual controlled API
+counts are recorded; no gameplay speedup is claimed. GM guide explains client-only
+presentation and unchanged authoring; no new GM schema, worked payload, daemon rule or
+manifest change is required for these visual semantics.
+
+This qualifies production components with controlled ShellContext/API and real default
+sanitizer, not live provider, complete AppShell or fresh-process/save recovery. Existing
+first-guardian intermittent timeout, cross-OS DATA limit and HOLD DFR/Mortal/Windows/
+performance routes remain open. Whole wound materialization is not declared complete.
+
+Next real game gaps: executable diagnosis/wider realm/helper routes under T121, then
+US6 T131–T147 service profiles, sealed quotes, exact accepted-attempt payment and public
+provider access. The next complete result should connect provider/quote/confirmation/
+attempt/charge through the existing healing handler using canonical25/50/100/200 base,
+50–200% multiplier and upward whole-Feather rounding, preserving cancel/rollback and
+Elyara life/current-location rules. Do not reimplement accepted target/detail/History
+or substitute a new diagnostic/performance loop for those functions.
 
 ---
 
