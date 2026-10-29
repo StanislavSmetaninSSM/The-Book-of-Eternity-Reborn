@@ -1,3 +1,117 @@
+# US6 — visible Shining faction healers implementation plan
+
+Issue: https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536
+Baseline/accepted paid route: fde82644a55d619a4a604a293c1ab0108fc1619e.
+Branch:1536-linux-qualification-20261025, same Linux checkout, sole writer Sol.
+Use superpowers:executing-plans inline; independent Astra/high DESIGN and Sol
+SOURCE/selection/OUTCOME. Existing T135/T141/T142 own this coherent player result;
+T144–T147 own its GM/docs/example/verification portions. No new microtask or spec.
+
+Goal: the ordinary revealed Shining faction detail shows its visible current
+resident roster with the Russian healer role, while accepted state proves at least
+one exact healer profile with Spiritual HealingI–V for every materialized faction.
+Roles never grant a public service, quote, treatment action, access or fixed tier.
+Canonical source: spec FR083–088, data-model §14, contracts/afterlife-spiritual-
+wounds-and-healing.md. Missing production role support is confirmed; no new game
+rule or author decision is currently required. This is not all US6 or #1536.
+
+Architecture and interfaces
+
+- Map the conceptual primary-role requirement to the EXISTING single roster field
+  residentRole=healing_support. Correct data-model's obsolete primaryRole.key text;
+  do not create another field. ShiningAbodeState owns supported roles and
+  NormalizeResidentShiningFields. Preserve an authored healer role, never derive
+  a healer or art tier. GuardianAbodeResidentState remains the roster authority.
+- Extend the existing ValidateAcceptedTurnShiningFactionMaterializationCompletenessAsync
+  reference-validation path. It already loads current Shining/resident/profile roots
+  once and owns creation/current classification and repair targets. Include healer
+  identities in its existing requiredActors set outside isCreation, resolve each
+  exact typed profile once, retain ActorMaterialization validation, then inspect
+  current realm/visibility and the existing strict TryReadRequiredWoundArtTier,
+  requiring1..5. Do not replace current authority with a role label or receipt alone.
+- Minimal shared pure DATA helper Services/ShiningFactionHealingSupport.cs may own
+  current ascended affiliation/role eligibility and detached visible roster projection.
+  Internal record ShiningFactionRosterEntry(string Name,string Role,int? HealingTier)
+  exports no actor IDs. IsCurrentHealerResident(JsonObject resident,string factionId)
+  returns bool. TryReadHealerTier(JsonObject resident,JsonObject profile,out int tier)
+  returns bool and consumes
+  the exact current resident/profile pair; no IO, normalization or permission.
+  ProjectVisibleRoster(JsonObject faction,JsonObject? residentsRoot,JsonObject? profilesRoot)
+  returns IReadOnlyList<ShiningFactionRosterEntry> from the already-read roots;
+  unique exact IDs/kinds/realm, visibility and malformed-data refusals are explicit.
+  Reuse the existing typed art reader. No display-string parsing or new tier parser.
+- Existing materialization enumeration includes ALL current factions[], including
+  hidden/broken/dissolved rows. Apply FR083 there, not only operational/new factions;
+  historical receipts are not current factions. Existing normalization retains known
+  faction affiliations even for dissolved factions, so no new lifecycle exception
+  or operational restoration is introduced. UI keeps its exact revealed-faction gate.
+- ExplorerShiningAbodeCommandResultBuilder.BuildPolitics already reads the roster.
+  Pass it to BuildShiningFactionDetail; add one profile read for exact visibility/
+  capability joins, never one read per member. Use one detached Russian roster
+  projection for the shared console/browser result; reuse its formatter in the
+  legacy console role description. No IDs, hidden profiles, private service details,
+  new treatment buttons or mutations. Reading/cancellation consumes no turn/resources.
+
+Optimization and alternatives
+
+Chosen: existing materialization owner, parsed source set, requiredActors de-dup and
+shared faction-detail builder. A separate healer registry/loader or auto-created
+fallback healer is rejected: it duplicates authority or invents fiction. One
+operation owns Shining/roster/profile DATA; complete identity includes faction ID,
+ascension/affiliation/role, exact actor kind/ID/realm, visibility and current arts.
+Projection exports detached strings/integers; caller-owned JSON is not retained or
+mutated. Lifetime is one read/validation invocation; every new action reloads its
+sources. All accepted-turn source/receipt/ownership/classification checks remain
+fresh. Reuse the existing once-resolved profile inside reference validation; no
+second parse or lookup for its healer tier. Trivial role/tier formatting is not
+cached. Measure actual profile-read counts for many members (one source read),
+plus changed tier/visibility/affiliation and no-mutation negatives; no speedup claim.
+
+Finite execution and acceptance
+
+- [ ] Resolve concrete DESIGN review against this plan and current sources, including
+  exact visibility/current-member and full lifecycle semantics. Source rules stay
+  authoritative; no silent exemption for hidden or dissolved factions.
+- [ ] Add one cheap causal Unit Fact AuthoredHealingRoleSurvivesExistingNormalization
+  in ShiningFactionHealingSupportContractTests.cs using literal healing_support and
+  existing APIs. Existing behavior rejects/coerces the role. New coherent category
+  shining-healer-role-causal,60s, exact one method; fresh affected Unit build, catalog/
+  PlanOnly/PREP, observe semantic RED before production code. No broad C# suite.
+- [ ] Implement role/formatter and shared pure eligibility/projection plus current
+  materialization reference proof. Add minimal typed tests for tiersI/V/multiple,
+  missing/zero/VI/string, wrong kind/realm/faction, duplicate identities, hidden or
+  non-current candidates, absent/restricted service, all lifecycle boundaries and
+  role/tier preservation without manufactured defaults. Prove independent cheap GREEN.
+- [ ] Wire actual shared faction detail and ordinary role display; preserve the
+  revealed-faction gate, literal rendering and cancellation/read immutability. A
+  malformed/unavailable profile must not become a known tier or executable service.
+- [ ] Synchronize Rules/Block_32_Guardians.txt, current GM wound guide/matrix/main
+  task/daemon entrypoints as affected, and worked Shining examples+manifest. Author
+  explicit residentRole and exact profile art; no universally public clinic. Review
+  active fixture builders/defaults and migrate affected ones without legacy fallbacks.
+- [ ] Complete whole SOURCE/impact-selection review; fresh affected builds, exact
+  discovery/catalog/PlanOnly, cheap counters/negatives before bounded current/new
+  materialization and actual console/browser read journeys. Preserve unchanged paid
+  PASS; no HOLD DFR/Mortal/Windows/performance substituted for functionality. Accept
+  actual outcomes/cleanup, publish checkpoint and verify remote SHA.
+
+Resource/persistence boundary
+
+Paid route remains accepted:80distinct cases/30methods/16descriptors across explicit
+lineages, both UI paths observed d1; backend proves d1/d2/d20. Do not rerun it without
+relevant changes. All raw remains outside checkout under tboe-linux-evidence-20261025.
+The exact old source-only final recovery copy04caad was retired after independent
+Sol review, fresh root identity/clean-tree checks and all57806blob/mode comparison
+against its retained frozen receipt. All39711unique blobs/refs remain in the primary
+repository, no alternates/dependency or known active owner. Target absence verified;
+measured free space rose7.098648GiB to7.456280GiB. This removes no primary history,
+actual external measurement, current bin evidence or user saves; no new clone/restore,
+GC, force-push or merge. Full retirement proofs remain external. Original400MiB
+build-start and128MiB runtime floors/full capture apply. Current status DESIGN only:
+no role source/test change, build or runtime has yet been performed.
+
+---
+
 # US6 public Elyara treatment — design and implementation plan
 
 2026-10-29. Issue: https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536

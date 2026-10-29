@@ -3495,7 +3495,8 @@ not restore the initial location, resurrect or duplicate her to maintain availab
 
 Each accepted Shining faction has at least one visible roster resident in
 `game_state/meta/guardian_abode_residents.json` whose
-`primaryRole.key = healing_support` and whose `standardArts.spiritual_healing` is 1-5. The
+`residentRole = healing_support` (the existing single primary-role field) and whose
+`standardArts.spiritual_healing` is 1-5. The
 resident's exact actor identity resolves to its afterlife profile. That profile may
 omit `healingServiceProfile` or declare restricted access. The role is ordinary
 visible roster information.
