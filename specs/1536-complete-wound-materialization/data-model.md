@@ -3861,6 +3861,21 @@ The choice carries hidden exact binding but displays Self first and then reachab
 visible entities. Duplicate names receive location/role/appearance context. Confirming
 the choice revalidates target, wound, consent, provider, resources, and reachability.
 
+### Separate known healed History — T119-HISTORY-VIEW
+
+FR-067/068 requires active wounds as the default and healed records only after an
+explicit History action. Reuse existing safe Self/current-realm terminal projection;
+never render raw terminal snapshots. Both `/раны` and treatment default omit healed
+entries. Active read has a client-owned History action even when history is empty
+(no hidden count signal); History shows only known healed entries or an explicit
+empty state and a return-to-active action. Treatment offers neither History nor a
+new read/navigation state. Exact catalog subcommand aliases route the read through
+existing handlers, rejecting unknown/trailing arguments. Console and browser follow
+the same client-owned UiAction commands. Every read action obtains a new coherent
+context under the existing lease/session checks; no previous projection/permission
+is retained. UI-lock traffic is separate from gameplay mutation. No die, attempt,
+charge, time advancement, repair, new GM DTO or treatment authority is introduced.
+
 ### Known foreign wound detail — T119-FOREIGN-DETAIL
 
 Issue #1536; FR-069/070/072–076, existing section18 Detail and accepted current-Abode

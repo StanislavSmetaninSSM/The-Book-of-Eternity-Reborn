@@ -1,3 +1,76 @@
+# Separate healed wound History Implementation Plan — T119-HISTORY-VIEW
+
+> Agentic implementer: superpowers:executing-plans inline; root sole writer/runner.
+> Existing Spec Kit artifacts and explicit autonomy apply; no duplicate plan/worktree.
+
+**Goal:** `/раны` shows active wounds only; a separate explicit History action opens
+known healed records and can return to active wounds through both existing UIs.
+**Architecture:** existing projection/context, UiAction command navigation, shared
+result builder/catalog/parser and console/browser handlers. No retained History DATA,
+new store/cache/protocol block, treatment authority or economic rule.
+**Tech stack:** C#/.NET8, current semantic UI and official PowerShell7 category runner.
+**Spec:** #1536 FR-067/068/075/076, data-model.md section18; T119-HISTORY-VIEW.
+
+Start: HEAD==remote38669b6dc801b668400bed34bcfd6cb2041c177d, clean same Linux machine,
+no active owned process. Actual gap: shared builder unconditionally appended healed
+History to default `/раны` and treatment output; explicit History navigation absent.
+Existing aliases, Self/known foreign projection and current private-aid treatment
+already exist, despite their parent tasks being unchecked. Do not reimplement them.
+Other real US5 gaps: diagnosis execution, broader Mortal/realm/helper/route flow,
+US6-dependent provider/quote access and dedicated responsive browser cards/rendered
+acceptance. They stay open; the chosen History read does not depend on US6 services.
+
+Safe storage preflight: no unfinished Git pack or Git lock found. Only completed-task
+untracked Main/Integration obj DLL/PDB duplicates were removed (71,200,296 bytes),
+SHA256 equal to retained owning bin outputs. No raw/save/recovery/source deletion;
+external reclaim proof retained. Free480976896 bytes;400MiB build/128MiB runtime
+reserves unchanged and rechecked before each owning build/run. No clone/restore/GC.
+
+Chosen technical route: reuse existing UiAction command links and command catalog
+subcommands (`/раны история`, `/wounds history`, same canonical read); the command is
+client navigation, no new GM-authored schema. A new retained prompt/selection state
+is unnecessary because each click opens a fresh read. Merely hiding History in one
+renderer would leave console/browser meaning inconsistent and was rejected.
+
+Global constraints: current-realm Self knowledge only, no hidden terminal names/
+counts/foreign History/technical identities, no old snapshot lending authority.
+Reads/cancel/back do not repair or mutate gameplay, allocate a die, charge or advance
+time; ordinary owned UI lock traffic remains. Existing treatment flow and publication
+freshness stay unchanged. Diagnostic output remains full and outside checkout;
+no unchanged PASS/full suite/HOLD DFR/Mortal/Windows/performance replay.
+
+Review focus: treatment accidentally entering History; hidden/unknown terminal
+snapshots or realm switch; unknown subcommand/trailing arguments silently accepted;
+stale read action retaining old DATA; console auto-choice/markup and browser action
+parity. Add one finite cheap control for each applicable boundary.
+
+- [ ] Bounded independent design/fixture feasibility review; no author rule required.
+- [ ] Add one pure existing-builder causal test: valid active card present, known
+  healed sentinel absent from default output. Fresh Unit owning build, discovery,
+  exact PlanOnly/resource/PREP and expected semantic RED; no production C# yet.
+- [ ] Shared builder: default active/treatment omit History; explicit History view
+  renders only safe existing projected healed entries or an explicit empty state.
+  Active read offers History without revealing counts; History offers active view.
+- [ ] Catalog/parser and application read routing: exact registered History aliases,
+  reject unknown/trailing arguments, fresh same existing context per action. Browser
+  forwards full parsed input; console uses existing action labels/commands with
+  explicit close and fresh reads. No new retained state or across-prompt cache.
+- [ ] Finite pure negatives plus minimal real console/browser active→History→back/
+  cancel/alias/source/mutation controls, using existing coherent terminal/lease
+  fixture patterns, all setup complete before first owned interaction. GM/CLI/docs/
+  both daemon/example/manifest/typed guard synchronized with no new authored DTO.
+- [ ] Coherent independent SOURCE/selection, fresh affected builds/catalog/exact
+  plan/resource/PREP, selected GREEN and OUTCOME, compact verified remote checkpoint.
+  Close only bounded task; no whole US5 or rendered DOM/provider claim.
+
+Optimization: use the existing invocation context and terminal snapshot projection;
+no new filesystem path or duplicate catalog/History reconstruction in rendering.
+Current History verification is still needed for canonical agreement even when
+History is not displayed. Each navigation action reads fresh current DATA; no prior
+permission or returned graph is retained. The small command parse/format is trivial,
+so no cache applies. Assert real source events and no gameplay mutations, preserve
+all integrity/lease/History checks, do not infer a speedup. All new checks UNRUN.
+
 # T119-FOREIGN-DETAIL — accepted known foreign spiritual wound card
 
 2026-10-29. Issue: https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536
