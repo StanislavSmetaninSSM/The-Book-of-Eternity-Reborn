@@ -144,6 +144,16 @@ first/second UI-heartbeat mutation; no waits/budget/cache/authority relaxation.
 All corrections remain uncompiled/unrun pending delta SOURCE. No broad held gate
 is required for this independent functional slice by both scoped reviewers.
 
+Both scoped SOURCE/selection reviews ACCEPT bd94ebbe1 (Astra/high production,
+Sol6.1/xhigh fixtures/selection); no broad held regression required. Fresh Linux
+Main0errors12baselinewarnings2:09.98, Support0errors23baselinewarnings11.08s,
+Unit0errors26baselinewarnings50.35s atbd94ebbe1. Integration attempt1 compileFAIL
+only missing BookOfEternityClient.UI import for LocalizationManager in new browser
+fixture (CS0246 line294); no test ran. One import corrected, assertions/production
+unchanged. Rebuild Integration only; successful owning builds retained, source
+67pins and full logs outsidecheckout target-choice-green-build-1. Catalog/Plan/
+PREP/GREEN/actual callers still UNRUN; no capability acceptance inferred.
+
 # T108-RESIDENT-HELP accepted — resident offers free treatment to the player
 
 2026-10-29, #1536. Visible conscious/capable resident of the CURRENT Chaos Guardian
