@@ -1164,7 +1164,8 @@ owns activeGuardian, even when that host is not Elyara. Preserve her original cu
 life/place/service; current GM edits cannot mint pre-turn discovery or permission.
 ONE ordinary travel cycle includes normal natural recovery, but ZERO active treatment,
 healing die or fee. On arrival open a NEW /лечить quote and confirm it separately.
-Co-located same-Elyara treatment also works in safe Shining Abode: currentHallId must
+Co-located same-Elyara treatment also works in safe Shining Abode: availability=active,
+currentHallId must
 resolve one current hall and her explicit current location must match; the existing
 family7 paid owner publishes one Shining cycle, leaving the inactive Chaos contour alone.
 Author only requested spiritualHealingGraphs, ordinary report and real healer memory;

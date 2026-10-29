@@ -73,6 +73,7 @@ public sealed class ElyaraCurrentLocationContractTests
     [Theory]
     [InlineData("local")] [InlineData("remote")] [InlineData("missing_hall")]
     [InlineData("alias")] [InlineData("duplicate_hall")] [InlineData("package")]
+    [InlineData("sealed")] [InlineData("unknown_availability")]
     public void ShiningCompanionUsesCurrentHallAndNeverInventsHallTravel(string change)
     {
         var input = Inputs(); var actor = Actor(input);
@@ -81,12 +82,14 @@ public sealed class ElyaraCurrentLocationContractTests
         actor["healingServiceProfile"]!["realm"] = "shining_abode";
         actor["healingServiceProfile"]!["locationRef"] = "hall_current";
         var hall = new JsonObject { ["hallId"] = "hall_current", ["hallName"] = "Текущий зал" };
-        input = input with { Shining = new JsonObject { ["currentHallId"] = "hall_current", ["halls"] = new JsonArray(hall) } };
+        input = input with { Shining = new JsonObject { ["availability"] = ShiningAbodeState.AvailabilityActive, ["currentHallId"] = "hall_current", ["halls"] = new JsonArray(hall) } };
         if (change == "remote") { actor["locationId"] = "hall_remote"; actor["healingServiceProfile"]!["locationRef"] = "hall_remote"; }
         if (change == "missing_hall") input.Shining!["halls"] = new JsonArray();
         if (change == "alias") input.Shining!["selectedHallId"] = "hall_foreign";
         if (change == "duplicate_hall") input.Shining!["halls"]!.AsArray().Add(hall.DeepClone());
         if (change == "package") input.Shining!["preparedIncarnationPackage"] = new JsonObject();
+        if (change == "sealed") input.Shining!["availability"] = ShiningAbodeState.AvailabilitySealedUntilNextAscension;
+        if (change == "unknown_availability") input.Shining!.Remove("availability");
         var before = Serialize(input);
         var plan = ElyaraVisitService.Project(input, Generation, Fingerprint);
         Assert.Equal(change == "local" ? ElyaraVisitKind.CoLocated : change == "remote" || change == "package"

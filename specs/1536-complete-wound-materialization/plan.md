@@ -189,6 +189,17 @@ target phase was added. StageAsync already selected Choices directly, no such ch
 Temporary environment disconnect recovered via the same environment; HEAD/tree and
 7GiB free verified, no duplicate runtime/build. All fixes are still UNCOMPILED/UNRUN.
 
+Additional whole-review findings corrected before the first GREEN build: the Shining
+fixture now supplies required hall description/serviceTags and normalizes the entire
+current state before the sole resource bootstrap (not a production guard exemption).
+The shared exact service/visit scope now requires ordinary availability=active, matching
+existing Shining action access; sealed/unknown availability negative controls and fresh
+sealed confirmation refusal are included. All effective guidance/worked excerpt agrees.
+No valid unchanged Shining state requiring extra owner normalization was demonstrated;
+no ownership expansion was added. Duplicate target-host IDs are already rejected by
+Engine's pre-stage canonical validation, so optional unrelated projection hardening is
+not added. Remaining SOURCE verdict/build/runtime still pending; no new PASS claimed.
+
 All this GREEN code is UNCOMPILED/UNREVIEWED/UNQUALIFIED. Remaining finite work: complete
 new admission/accepted/race/source-count and Shining actual result/replay/rollback tests,
 GM effective guidance/examples/guards, whole impact selection/SOURCE, then one fresh

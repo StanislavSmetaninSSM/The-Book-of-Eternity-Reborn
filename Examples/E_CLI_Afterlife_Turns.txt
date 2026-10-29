@@ -14072,7 +14072,7 @@ Shining. There is still ONE profile, not a second cross-realm copy.
   "realm":"Shining Abode", "locationId":"hall_companion",
   "serviceRealm":"shining_abode", "serviceLocationRef":"hall_companion",
   "soul":{"currentRealm":"Shining Abode"},
-  "shining":{"currentHallId":"hall_companion","halls":[{"hallId":"hall_companion","hallName":"Зал сопровождения"}],"preparedIncarnationPackage":null}
+  "shining":{"availability":"active","currentHallId":"hall_companion","halls":[{"hallId":"hall_companion","hallName":"Зал сопровождения","description":"Тихий зал сопровождения","serviceTags":[]}],"preparedIncarnationPackage":null}
 }
 ```
 /элиара now opens fresh local /лечить, with no extra travel cycle. Player separately

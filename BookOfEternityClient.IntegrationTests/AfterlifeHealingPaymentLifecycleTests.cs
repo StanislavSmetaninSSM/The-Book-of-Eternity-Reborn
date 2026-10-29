@@ -269,7 +269,9 @@ public sealed partial class AfterlifeHealingPaymentLifecycleTests(ITestOutputHel
         {
             var shining = ShiningAbodeState.CreateDefaultState();
             shining["currentHallId"] = "hall_elyara_companion";
-            shining["halls"] = new JsonArray(new JsonObject { ["hallId"] = "hall_elyara_companion", ["hallName"] = "Зал сопровождения" });
+            shining["halls"] = new JsonArray(new JsonObject { ["hallId"] = "hall_elyara_companion", ["hallName"] = "Зал сопровождения",
+                ["description"] = "Тихий зал для сопровождения души.", ["serviceTags"] = new JsonArray() });
+            ShiningAbodeState.NormalizeStateRoot(shining, residentRoot: null); // Complete current DATA before the sole bootstrap.
             await files.WriteFileAtomicAsync(lease, ShiningAbodeState.StatePath, shining.ToJsonString());
         }
         await files.WriteFileAtomicAsync(lease, WoundCarrierCatalog.AfterlifeProfilesPath, profiles.ToJsonString());

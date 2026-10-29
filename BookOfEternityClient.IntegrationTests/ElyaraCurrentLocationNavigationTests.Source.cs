@@ -153,7 +153,7 @@ public sealed partial class ElyaraCurrentLocationNavigationTests
     }
 
     [Theory]
-    [InlineData("hall")] [InlineData("package")] [InlineData("dead")]
+    [InlineData("hall")] [InlineData("package")] [InlineData("dead")] [InlineData("sealed")]
     public async Task ShiningLocalServiceConfirmationKeepsFreshHallLifeAndPackageGuards(string change)
     {
         await using var fixture = await AfterlifeHealingPaymentLifecycleTests.CreateServiceFixtureAsync(1, 20, realm: "Shining Abode");
@@ -166,6 +166,7 @@ public sealed partial class ElyaraCurrentLocationNavigationTests
         var root = JsonNode.Parse((await files.ReadFileAsync(lease, path))!)!;
         if (change == "hall") root["currentHallId"] = "hall_elsewhere";
         if (change == "package") root["preparedIncarnationPackage"] = new JsonObject();
+        if (change == "sealed") root["availability"] = ShiningAbodeState.AvailabilitySealedUntilNextAscension;
         if (change == "dead") root["profiles"]!.AsArray().OfType<JsonObject>().Single(AfterlifeHealingServiceContract.IsElyaraProfile)["lifeState"] = "dead";
         await files.WriteFileAtomicAsync(lease, path, root.ToJsonString());
         var before = SnapshotCanonical(files);

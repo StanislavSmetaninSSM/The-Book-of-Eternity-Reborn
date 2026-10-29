@@ -22,7 +22,7 @@ public sealed class ElyaraCurrentLocationDocumentationTests
             var text = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, path));
             var start = text.IndexOf(Marker + ":", StringComparison.Ordinal); Assert.True(start >= 0);
             foreach (var token in new[] { "HOME", "ONE ordinary travel cycle", "NEW /лечить quote", "ONE exact alive",
-                "currentHallId", "Shining cycle", "ZERO active treatment", "Remote", "historical-faction" })
+                "availability=active", "currentHallId", "Shining cycle", "ZERO active treatment", "Remote", "historical-faction" })
                 Assert.Contains(token, text[start..]);
         }
         XDocument.Parse(File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "Rules/Block_32_Guardians.txt")));
