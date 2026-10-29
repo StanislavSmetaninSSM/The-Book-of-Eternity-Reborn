@@ -690,3 +690,146 @@ consumers with implementation. Mortal and public/paid service contracts do not
 change. Fresh affected builds, category discovery/PlanOnly, independent SOURCE/
 PREP and OUTCOME use bounded existing-style limits, with no broad successful-suite,
 DFR/Mortal/Windows/performance replay as a prerequisite for this functional slice.
+
+
+## Next bounded slice: resident offers private help to player — DESIGN pending
+
+2026-10-29, #1536/T108-RESIDENT-HELP. US4/FR-042–054 and T108 already require
+entity-to-player treatment using the common art, consent and world-cycle rules.
+The player→resident slice is accepted ata4a03f54; the opposite direction is absent:
+current provider_offer2 and receive_aid4 hard-code a Guardian healer. US5 full
+nearby/privacy parity and US6 Elyara/public quotes/services remain open. Prioritize
+this remaining P1 free private helper direction; no price, clinic, service-access,
+compensation, Shining, combat, unwilling or helpless rule is invented.
+
+### Functional result and implementation choice
+
+A visible conscious/capable resident of the CURRENT Chaos Guardian Abode may offer
+free private help for one exact known active PLAYER spiritual wound. The real
+ordinary accepted offer turn produces its immutable witness and normal recovery;
+normal Engine cleanup follows. Immediately next accepted turn /лечить offers that
+helper; only the player's actual confirmation permits one treatment draw. Reuse
+existing next-safe-cycle expiry, one recipient/change, one attempt, active helper H
+then patient H natural recovery, no currency/item/OD, one world cycle, immutable
+History, exact retry and common rollback. Cancellation/unconfirmed or withdrawn,
+expired, insufficient, moved/hidden/wrong-kind provider refuses before side effects.
+
+Reuse SpiritualAidSelection.Resident's existing complete Healer/Target/Locality
+DATA with ReceiveAid=true and existing PlayerConfirmed. Its name does not force
+the resident to be the patient. FamilyVersion is6 for Resident+ReceiveAid,5 for
+Resident withoutReceiveAid; old Guardian3/4 and self2 serialized forms stay exact.
+This avoids a second participant type/property/cache. New closed family6 is safer
+than reinterpreting Guardian4 scalar IDs, which lose kind/locality. A general
+public/healer registry would unnecessarily include US6 and is not selected.
+These are implementation decisions within the already authorized game contract.
+
+### Closed shapes and orientation
+
+- Proposal4 on the exact preexisting resident profile: schemaVersion4,
+  kind=resident_provider_offer, operation=offer|revoke, targetId=player_soul,
+  woundId, providerConscious,providerCapable,targetConscious,targetCapable,
+  readableEvidence. No client stamps or caller healer coordinate. Offer requires
+  all four true; revoke may clear factual flags. Owner derives from enclosing
+  ordinal typed profile, never an ID-only Guardian fallback.
+- Record4: schemaVersion,kind,status=offered|revoked,healer,target,woundId,locality,
+  four offer facts,readableEvidence,binding,acceptedCycleOrdinal,
+  eligibleCycleOrdinal,primaryTransitionId. Complete closed healer coordinate is
+  (chaos_sea,resident,exactId,AfterlifeProfilesPath), target is exact player_soul.
+  locality is exact current Guardian/Abode. Only actual natural owner issues it;
+  natural result6 embeds its one full outcome. Existing contribution anchor and
+  separate exact wound binding remain unchanged.
+- Selection6: schemaVersion6,mode=receive_aid,direction=resident_to_player,woundId,
+  expectedWoundFingerprint,healer,target,locality,participationFingerprint,
+  confirmation=required|player_target_confirmed. Confirmation field is absent
+  from v5; no schema accepts contradictory coordinate/role/confirmation flags.
+- Active request6: existing aid request fields, direction=resident_to_player,
+  playerConfirmation=player_target_confirmed, full record4 witness and sealed
+  original attempt/source/die. Active result6 contains that same request/direction
+  and ordered stages. A self request/result cannot become family6. No detached
+  record/selection/receipt becomes permission.
+
+### Exact participant joins, all owner transitions and History
+
+Factor only the pure typed resident roster/profile/Guardian/Abode join from
+RequireResidentScope into RequireResidentParticipantScope(guardians,residents,
+profiles,participant). Existing v5 wrapper RETAINS its exact known active resident
+wound-owner check. New receiving branch joins resident HEALER while the actual
+selected active wound remains owned by PLAYER. Validate patient independently via
+existing profile/wound/current-soul/conflict/visibility checks. Preserve aliases,
+ordinal identity, duplicate/null/ambiguous/wrong-kind refusals and legitimate same
+textual ID across different kinds. No generic LocalActorIds can grant authority.
+
+Natural participation, current committed offer reader, StageSource, before-draw
+close, signed B, original capture, planning/publication, owned normalization,
+closing and current-settlement reads all select the SAME typed roles. RecordOwner
+is resident healer for record4, resident target for record3; ResultVersion maps4→6
+and3→5 without changing1→3/2→4. IsResidentParticipation covers3/4 while
+IsResidentConsent remains target-only; IsProviderOffer covers2/4. Do not silently
+replace existing error/iteration semantics or allow multiple distinct proposals.
+
+History validates full recorded natural offer, binding, witness, original request,
+source/tiers/stages and immutable result; it must not demand a later live roster.
+Fresh settlement and new attempts still prove current roster/profile/location,
+source/history/cohort/schedule/closing state. Preserve existing v3/v4/v5 forms and
+past fingerprints; cover unsupported schemas and re-fingerprinted6-self/header
+mutations rather than relying only on a stale digest to reject them.
+
+### Existing memory and common publication
+
+Use the existing spiritualResidentThoughtJournalUpdates output-only transport,
+retained response fingerprint, append validation, normalizer projection and owned
+roster writer. For record4, memory actor is the RESIDENT HEALER (RecordOwner), not
+patient. Published interface binding accepts only actual closed family5 OR6 with
+its exact same authenticated original/response and complete append. Unowned,
+unpublished, wrong-family, response/old/new memory drift stays rejected; no global
+extra-field exemption, new store, publisher or diagnostic transport.
+
+Both real offer43/aid44 GM responses must include accurate Mixed resident healer
+and ordinary auto-progressing Guardian ActorBrain/memory. Reuse the proven initial
+fixtures once before sole bootstrap, genuine cleanup, Guardian ordinary journal,
+protected resident output and full original/scheduler/History. No file insertion
+between accepted turns. Rollback captures both journals: common C4 restores exact
+submitted prepared44 command/die/report/normalizer inputs, outer restores canonical
+accepted43 including memory. Assert the real physical roster append, frozen signed
+roster, exact old prefix+one current entry and inert settled-read byte sets.
+
+### Work units and finite verification
+
+1. Register this task/design/plan; independent Astra/high DESIGN must resolve role
+   orientation across natural/current/original/History/memory before implementation.
+2. Add existing-API causal Fact ResidentProviderOfferUsesTypedActorAndPlayerPatient
+   in SpiritualResidentProviderParticipationTests.cs. Complete typed fixture calls
+   ReadChanges on proposal4; current implementation should compile then reject
+   unknown family. Run only exact new RED singleton via official runner after
+   fresh owning Unit build/catalog/Plan/PREP. Compile failure is not semantic RED.
+3. Implement record4/selection6/request/result6 and typed participant scope in
+   existing participation/aid/resolver/current-reader/History/published-I services;
+   reuse pure source DATA. Add causal cheap coverage for all three raw forms,
+   forgery/null/mirror conflicts, role+kind/alias joins, revoke/expiry/confirmation,
+   separate resident H/player natural H/effects, closed headers, old3/4/5 exactforms
+   and protected-memory6 owner/wrong-family/drifts. No full Engine for pure codec.
+4. Update actual WoundApplicationService offers/ActionFor and shared console/
+   browser confirmation/queue/Engine action consumers; new distinct Russian
+   resident receive-aid label, same player-confirmation authority. Add one genuine
+   offer→aid backend and actual revoke/refusal producer, source/old-family impacted
+   controls only, then BOTH guided callers and common-fault rollback. Build complete
+   first-turn setup and two-actor responses before runtime. Preserve original
+   per-category bounds; small coherent cheap60s/backend180s/UI180s groups.
+5. Synchronize data-model, GM guide/Matrix, CLI/API, both effective daemon prompts,
+   worked offer4/selection6/memory example, manifest and typed documentation guard.
+   Independently review full source+fixture+selection before fresh affected builds,
+   discovery/exact Plan/PREP, cheapGREEN then backend then native-controlled actual
+   UI/rollback. Derive exact case counts from discovery, not this plan. Substantive
+   pin review and existing World guard only if a pinned producer actually changes.
+   New unknown6-self negative reuses the one existing actual self2 producer when
+   needed; do not rerun unrelated accepted69/DFR/Mortal/Windows/performance gates.
+
+Read/validation reuse stays with existing operation source list/parsed roots and
+services, keyed by actual manager/lease/generation/binding/path/witness/source DATA,
+limited to its existing immutable read window; all current permission/source/
+history/closing fences remain fresh. The factored participant function is pure
+already-parsed DATA, not cached authority. No new cache, callback or duplicate
+read framework; no speedup claim. If actual new repeated expensive reads arise,
+prove cause and use the existing service with cheap source-count/invalidation
+controls before a heavy run. Full raw remains outside checkout; no deletion or
+newclone/restore. WIP/checkpoints publish on current branch with remote SHA checks.

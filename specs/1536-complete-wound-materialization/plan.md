@@ -1,3 +1,35 @@
+# T108-RESIDENT-HELP next — resident offers treatment to player
+
+2026-10-29. Same environment/branch verified a4a03f540d547d5a917e11155ba686f532e012c1
+HEAD==remote, clean/no active ownedprocesses, free602337280bytes. Existing current
+self, Guardian↔player and player→resident finite scopes are accepted; US4 still
+lacks other private entity healers/Shining and broader conflict/helpless/producer
+coverage. US5 full nearby/privacy parity and US6 Elyara/public quote/payment/access
+remain open. Choose the missing P1 resident→player direction under existing T108 /
+FR-042–054 before new P2 service economy. No new author rule is needed: free private
+offer, actual target confirmation, sufficient helper H, one safe cycle and shared
+result/History already apply. Paid-service rules/prices are unchanged and deferred.
+
+Implementation choice reuses existing Resident typed coordinates+ReceiveAid rather
+than duplicate participant state. New closed record4/family6 distinguishes resident
+provider from Guardian4 and resident patient5. Extract only pure participant join;
+keep exact wound-owner check on old v5, separate live/current guards from historical
+recorded witness, bind protected memory to resident healer. Existing services,
+source-read DATA/cache lifetimes and C4/outer rollback stay; no new diagnosticstack.
+See spiritual-aid-design.md final section for precise closed shapes, interfaces,
+files/work units, causal tests, all authority transitions, two-actor fixture
+preparation and bounded verification. No implementation/build/runtime yet.
+
+- [ ] Independent Astra/high bounded DESIGN review, close concrete findings.
+- [ ] Existing-API typed causal semantic RED1, then common family/scope GREEN.
+- [ ] Guided/native author fixtures and complete GM synchronization; coherent
+  SOURCE/selection, fresh affected builds, catalog/exactPlan/PREP, cheapGREEN.
+- [ ] Genuine offer/aid/revoke backend then both actualUI and common rollback;
+  verify fullraw/cleanup/integrity, independent OUTCOME, remotecheckpoint.
+No unrelated acceptedPASS repeats; source/consumer changes determine regressions.
+All raw external, preserve prior complete accepted69 provenance and old incomplete
+attempts, no raw/save/recovery deletion, newclone/restore, merge/force/history rewrite.
+
 # T108-RESIDENT accepted — current Chaos Abode treatment complete
 
 2026-10-29. Independent Sol finalOUTCOME3/69 ACCEPT and finalGM1 ACCEPT; Astra
