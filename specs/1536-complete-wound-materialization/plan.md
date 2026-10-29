@@ -13,7 +13,11 @@ one exact healer profile with Spiritual HealingI–V for every materialized fact
 Roles never grant a public service, quote, treatment action, access or fixed tier.
 Canonical source: spec FR083–088, data-model §14, contracts/afterlife-spiritual-
 wounds-and-healing.md. Missing production role support is confirmed; no new game
-rule or author decision is currently required. This is not all US6 or #1536.
+rule is added. One owner clarification is now pending: whether historical broken/
+dissolved faction rows retain the living-healer invariant after the last healer dies
+or leaves. The literal all-current-rows rule is not silently exempted; only that
+terminal lifecycle decision is held. Independent role/profile/UI work continues.
+This is not all US6 or #1536.
 
 Architecture and interfaces
 
@@ -115,8 +119,14 @@ measured free space rose7.098648GiB to7.456280GiB. This removes no primary histo
 actual external measurement, current bin evidence or user saves; no new clone/restore,
 GC, force-push or merge. Full retirement proofs remain external. Original400MiB
 build-start and128MiB runtime floors/full capture apply. Astra/high DESIGN accepted with the eligibility details above. The one causal
-Unit Fact/catalog/selection scaffold is now authored, not compiled or run. No role
-production change has been made. Current changed-test build/Plan/PREP/RED is next.
+Unit Fact/catalog/selection scaffold is authored and Sol SOURCE accepted. Fresh
+Unit onaae60a6be exit0/26baselinewarnings (1:27.34), four owning PE/PDBpairs and
+43sourcebindings match; only Unit DLL/PDB and the new Fact differ from paid evidence.
+Qualified Unit6f bytes are fully retained in a verified external archive. Catalog
+1103/12841 valid,0executions/complete cleanup; its revision honestly records one
+plan-only clarification edit, with no C#/catalog change during discovery. No role
+production change or causal runtime has occurred; clean published metadata, exact
+PlanOnly/PREP and the singleton RED are next.
 
 ---
 
