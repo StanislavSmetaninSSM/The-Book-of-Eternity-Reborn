@@ -89,8 +89,8 @@ Resource / current boundary
 Same environment available, no owned builds/tests at start, over 7 GiB free. Preserve
 400 MiB build-start reserve plus full output, 128 MiB runtime floor and unbounded capture.
 Raw stays outside checkout under /workspace/tboe-linux-evidence-20261025/us6-shining-healers.
-Previous role gate 34/34 PASS and its complete capture are retained. Current plan only is
-new; no new C# or functional test is yet authored/executed. Global faction enforcement,
+Previous role gate 34/34 PASS and its complete capture are retained. The single causal Unit scaffold is now authored with its exact category/selection.
+Production is unchanged; the new C# is UNCOMPILED, SOURCE/PREP and semantic RED pending. Global faction enforcement,
 Shining service execution, universal Elyara travel, negotiated routes, DOM/provider/
 fresh-process, DFR/Mortal/Windows and earlier guardian/cross-OS limitations remain open.
 

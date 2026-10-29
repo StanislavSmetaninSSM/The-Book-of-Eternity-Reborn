@@ -36272,6 +36272,31 @@
           ]
         }
       ]
+    },
+    {
+      "id": "shining-healer-access-causal",
+      "responsibility": "Semantic witness that the actual no-argument console political inspection preserves a known authored healer but must display its public restricted service condition without state mutation or treatment action.",
+      "excludes": "Global T142 historical-faction invariant, Shining treatment execution, paid Elyara acceptance and HOLD DFR/Mortal/Windows.",
+      "changeHints": [
+        "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Afterlife.ShiningAbode.cs",
+        "BookOfEternityClient.Tests/WebUi/BrowserShiningPoliticsParityTests.HealingAccess.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.WebUi.BrowserShiningPoliticsParityTests.HealingAccessInteractiveInspectionShowsPublicRestrictedTermsWithoutMutation"
+          ]
+        }
+      ]
     }
   ]
 }
