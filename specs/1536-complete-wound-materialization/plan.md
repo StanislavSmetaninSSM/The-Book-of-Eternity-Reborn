@@ -149,6 +149,23 @@ Storage: completed actual1 owners ended; reclaimed only fresh Main/Int untracked
 DLL/PDB duplicates matching pinned retained bin (71,228,540 bytes). All source/raw/
 saves/recovery and18 owning evidence artifacts retained;400MiB/128MiB unchanged.
 
+Typed browser probe atdd2cba166b79f9b43aa29cb5722f7e7a8c9e57ac confirmed the cause:
+fresh Unit0errors26samewarnings1:16.67; validcatalog1081/12803 and exact5case/2method
+PREP. Actual5executed3expectedliteralFAIL/2ordinaryhintPASS, wall11.4558893s, no timeout/
+skip/duplicate, cleanuptrue,18artifact97sourcepins unchanged. Exact actual strings lost
+/b or /em and became <>; input remained unchanged. Fullraw browser-probe-*-1 retained.
+
+Minimal production correction now excludes an immediately preceding < from the same
+existing English slash-command regex. No sanitizer bypass/new stack, no removal of
+privacy/technical filters, no renderer/GM DTO or cache change. Constant-width lookbehind
+adds no expensive data/source work and no speedup is claimed. Existing FR076/GM literal
+text guidance already governs this defect; no new authoring format/rule is required.
+Category responsibility now describes the remaining readinterface5 accurately. Full
+selection expected44cases22methods across8 categories (discovery authoritative): retain
+35source308; requalify newtyped5 and failedbrowser3 plus nearest existing realNPChint1.
+Source delta review, fresh affected builds/plan/resource/PREP remain pending. Admit cheap
+5 first; only after verified PASS run browser3+NPChint1. Do not rerun unaffected35.
+
 # T119-FOREIGN-DETAIL — accepted known foreign spiritual wound card
 
 2026-10-29. Issue: https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536

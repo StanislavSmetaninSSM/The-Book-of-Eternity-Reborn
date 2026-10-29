@@ -130,7 +130,7 @@
 },
 {
   "id": "wound-history-read-interfaces",
-  "responsibility": "Minimal real console/public browser History/back/close/alias/invalid syntax, fresh source after hidden-state replacement, literal text and no repair/gameplay mutation.",
+  "responsibility": "Minimal real console History/back/close plus console/browser invalid-syntax rejection; no repair/gameplay mutation, fresh source counts and literal console text. Positive browser History/alias/fresh hidden-state cases belong to wound-history-browser-read.",
   "excludes": "No treatment/diagnosis/service authority, full Engine, whole US5/DOM/provider/fresh-process or replay of accepted foreign detail/navigation.",
   "requirements": {
     "frontendBuild": false,
