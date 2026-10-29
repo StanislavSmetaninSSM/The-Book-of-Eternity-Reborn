@@ -60,7 +60,15 @@ pending). Proposed fresh cheap9categories91cases covers new hall DATA/authority/
 readiness, changed pure Elyara DATA/current source/freshness and effective docs. Retain
 71 unaffected prior PASS; six functional categories11cases need current acceptance,
 including one changed shared Chaos helper consumer. No full125/accepted80/HOLD replay.
-All new code/tests are UNCOMPILED; independent whole-delta SOURCE/selection, grouped
+Whole31-file independent Sol SOURCE on730c8666085692f39de74a57e9a5eda428fb7c7c found
+one blocking error: InvalidDataException derives from SystemException, not IOException;
+new hall guard must catch it explicitly so denials become validation issues. Fixed,
+retaining CSPU rethrow. Readiness mutation capture now explicitly includes the entire
+Shining state. No other blocking fixture/source/GM/selection finding. Astra/high bounded
+production DESIGN-compliance review confirmed ordinary guard/read-view/absence/trusted
+bootstrap semantics, subject to the same exception correction. Only this narrow delta
+needs re-review. No new runtime or build was executed during review.
+All new code/tests are UNCOMPILED; independent delta SOURCE closure, grouped
 fresh affected builds/PDB/catalog/PlanOnly/resource/PREP and actual outcome are NEXT.
 T142 is decided but unimplemented; implement it after accepted T143, without expanding
 this field correction into negotiated services or a general diagnostic framework.

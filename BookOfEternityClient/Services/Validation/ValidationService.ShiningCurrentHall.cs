@@ -34,7 +34,7 @@ public partial class ValidationService
             invocation?.RequireCurrent();
         }
         catch (Exception error) when (error is not CoordinatedStatePublicationUncertainException &&
-            error is (IOException or UnauthorizedAccessException or JsonException or InvalidOperationException or ArgumentException))
+            error is (IOException or InvalidDataException or UnauthorizedAccessException or JsonException or InvalidOperationException or ArgumentException))
         {
             issues.Add(new ValidationIssue(ShiningAbodeState.StatePath + ".currentHallId", IssueSeverity.Error,
                 "Текущий зал не совпадает с подтверждённым исходным состоянием.",

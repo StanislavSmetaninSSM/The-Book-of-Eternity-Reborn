@@ -25,7 +25,7 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
             root["unrelatedUnknownKey"] = true;
             await files.WriteFileAtomicAsync(ShiningAbodeState.StatePath, root.ToJsonString());
         }
-        var before = fixture.CaptureMutationRoots();
+        var before = fixture.CaptureMutationRoots([ShiningAbodeState.StatePath]);
         var errors = (await new ValidationService(files, NullLogger<ValidationService>.Instance).ValidateGameStateAsync())
             .Where(i => i.Severity == IssueSeverity.Error).ToArray();
         if (kind == "shining_unknown_key")
