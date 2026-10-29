@@ -12,7 +12,7 @@ Draft v1, зависит от [spec](spec.md) и [gameplay](gameplay.md). Име
 | Сущность | Хранит | Не хранит/не заменяет |
 |---|---|---|
 | CombatInstance | client instanceId, displayId, scope, ruleRevision, revision, dangerMode, objective | Ресурсы общей стороны |
-| Participant | participantId, exact actor binding, sideId, controlMode, membership/status, resource/effect/wound owner refs | Вторую изменяемую копию HP/ОД |
+| Participant | participantId, exact actor binding, sideId, controlMode, membership/status, resource/effect/wound owner refs | Вторую изменяемую копию HP/ДЭ |
 | Actor profile projection | development, learned arts, focus, equipped relics, derived stats, authority fingerprints | Глобальный player profile для любого NPC |
 | Resource ledger | spiritual_health и spiritual_action_points по exact coordinate | Состояние инициативы/порядка ходов |
 | Effect ledger | конкретный source/target, barrier/control/modifiers, stacking/lifetime | Дубликат mutable combatConditions/controlState |
@@ -122,7 +122,7 @@ AoE фиксирует упорядоченный набор targets по ста
 Уточнение кандидата D5: обычное прикрытие перенаправляет один sub-hit ровно один
 раз; сохраняются originalTarget/effectiveTarget и источник изменения. Цепочка
 «прикрыть прикрывающего» запрещена. Защитник должен быть в допустимом положении,
-иметь реакцию/ОД и не присутствовать среди initial либо уже effective targets
+иметь реакцию/ДЭ и не присутствовать среди initial либо уже effective targets
 этой AoE. Уже попавший в её область союзник может защищать себя; его отдельное
 искусство союзного барьера не считается перенаправлением. Так один actor не
 получает два прямых попадания одной обычной AoE через прикрытие.

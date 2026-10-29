@@ -7,7 +7,7 @@
 
 | Сценарий | Доказательство |
 |---|---|
-| 1v1 hit/miss/barrier | Assigned roll, exact HP/ОД/event order; preview и accepted совпали |
+| 1v1 hit/miss/barrier | Assigned roll, exact HP/ДЭ/event order; preview и accepted совпали |
 | 1v2 control A | Запрет A; B атакует/помогает за собственные ресурсы; попадание в B не ранит A |
 | 2v2 несколько Оков | Source/target effects не перетираются, exact remove не снимает соседний |
 | Чужой actor/unknown target | Отказ без частичной оплаты/публикации/тика; helper не подставляет lead |
@@ -15,7 +15,7 @@
 | Heal A в том же раунде | HP вырос, spent/skipped слот не вернулся, wound не стёрта |
 | Сдача/отход | Вышел только конкретный участник; маршрут/условия доказаны |
 | Failed attempt | Законный промах оплачен один раз, недопустимый ничего не тратит |
-| ОД0/recover | Будущий Gain не оплачивает текущую wound surcharge; без surcharge допустим за слот |
+| ДЭ0/recover | Будущий Gain не оплачивает текущую wound surcharge; без surcharge допустим за слот |
 | Barrier/max HP | Изменение max не лечит; барьер не permanent health |
 | AoE | Base cost один раз, targets до костей, личные defense/reaction/results |
 | Mid-round join/revive | Нет лишнего main/reaction, стабильный порядок/clocks |

@@ -1,21 +1,27 @@
 # Задачи #1573 — полный духовный бой
 
+## Духовная энергия и проверка подавления лечения
+
+- [x] T072 Обновить пользовательскую терминологию текущих документов1573: «Духовная энергия»/ДЭ; технические AP/OD идентификаторы, смертные ресурсы и числовые договоры сохранены. Исторические предложения явно отличены от текущих правил. Sol6.1/high и parent проверили scoped diff.
+- [x] T073 Оценить постепенное восстановление ДЭ вне боя против принятого мгновенного combat-end refill: рекомендация сохранить мгновенное заполнение и отдельность безопасного отдыха для HP; последствия для ГМ/темпа/истощения записаны в out-of-combat-recovery-proposal.md. Прежнее правило не отменено.
+- [ ] T074 Независимый review цельного блока терминологии/T071-пробы/результатов/T073, исправления, verification и публикация/issue. Никакой production реализации.
+
 ## Временное подавление лечения: дизайн до пробы
 
-- [x] T068 Сверить общий effect/attack/clock/removal контракт; определить новый профиль силы/срока/ОД/наложения/снятия и примеры, сохранив принятые системы. Sol6.1/high source audit и parent чтение; healing-suppression-proposal.md v1 описывает50%/2 личных хода, partial25%/1, B24/12P и scoped cleanse8P. Это предложение; новая проба не запускалась.
+- [x] T068 Сверить общий effect/attack/clock/removal контракт; определить новый профиль силы/срока/ДЭ/наложения/снятия и примеры, сохранив принятые системы. Sol6.1/high source audit и parent чтение; healing-suppression-proposal.md v1 описывает50%/2 личных хода, partial25%/1, B24/12P и scoped cleanse8P. Это предложение; новая проба не запускалась.
 - [x] T069 Независимый review цельного дизайна и подготовка к предъявлению. GPT-6 Astra/high проверилa7da2e33..14081a83 без существенных замечаний; P3-описание50% до cap уточнено, примеры подтверждены.62links/diff PASS, WIP remoteSHA совпал; итоговая публикация/issue по Git-истории. Новая симуляция не запускалась, T070/T071 ожидают решения автора.
-- [ ] T070 Получить решение автора по точной версии healing-suppression-proposal.md; новые параметры пока не приняты.
+- [x] T070 Автор принял термин «Духовная энергия» и прямо поручил проверить согласованный профиль suppression v1; разрешён T071 с неизменными50%/2,partial25%/1,B24/12P,очищением8P. Это утверждение профиля для численной проверки, не доказательство окончательного баланса/production.
 - [ ] T071 После T070 уточнить план/consistency и проверить согласованный профиль существующей дешёвой численной моделью, включая высокуюH/обе очередности/очищение/барьеры/refresh; раскрыть неуспех/цензурирование/ограничения и пройти независимый review. Не утверждать игровые цены автоматически.
 
 ## Противодействие постоянному самоисцелению
 
-- [x] T065 Сверить сильные атаки/ОД/прерывание, записать scope/план/условные допущения и consistency перед разрешённой автором пробой. Sol6.1/high source audit и parent проверка: готового прерывания мгновенного heal нет, оплаченная подготовка/условная реакция различены; spec/plan/tasks до исполнения.
+- [x] T065 Сверить сильные атаки/ДЭ/прерывание, записать scope/план/условные допущения и consistency перед разрешённой автором пробой. Sol6.1/high source audit и parent проверка: готового прерывания мгновенного heal нет, оплаченная подготовка/условная реакция различены; spec/plan/tasks до исполнения.
 - [x] T066 Воспроизвести baseline и сравнить сильные/смешанные атаки, attack/heal дуэли, платные условные прерывания и повышенную Гармонию; записать длительность/хвост/победы/незавершённые случаи, не изменяя предлагаемые цены. probes/healing-counters.mjs:150000 baseline,4220000 новых траекторий,100000 контролей;199760 цензурированных случаев явно учтены. Раздел6: сильные атаки не решают удержание, реакция помогает условно, rawH сохраняет риск. Production не запускался.
 - [x] T067 Независимый review источника пробы/документов/арифметики и scoped verification. Отдельный GPT-6 Astra/high проверил1059dd1b3..d8ef447eb/working correction, воспроизвёл Node JSON; независимые6000 outcomes/15 cycles/DP highH подтвердили модель. Существенных замечаний нет; pooled rates исправлены/уточнены.56links/diff PASS, WIP remoteSHA/6blobs совпали; итоговая публикация/issue по Git-истории. Вывод раздела6 честно ограничен; production T001 сохраняется.
 
 ## Принято внебоевое лечение; боевое восстановление HP
 
-- [x] T062 Зафиксировать принятие outside-таблицы I–V и базового тарифа20, сверить текущие damage/ОД/check/рановые границы и альтернативы combat-healing. Scope/spec/plan/tasks до расчёта, bounded Sol6.1/high консультация и parent source verification.
+- [x] T062 Зафиксировать принятие outside-таблицы I–V и базового тарифа20, сверить текущие damage/ДЭ/check/рановые границы и альтернативы combat-healing. Scope/spec/plan/tasks до расчёта, bounded Sol6.1/high консультация и parent source verification.
 - [x] T063 Выбрать source-scaled формулу, уровни/цену/слот/качество/цели; проверить дешёвые профили/связки с регенерацией/остатками/союзниками/опасностью затягивания. combat-healing-proposal.md:535 профилей/уровней,252000 boundaries,3210 OD cases,150000 seeded стресс-траекторий. Выявлены31–47 средних ходов heal-onlyV, риск явно раскрыт; не runtime/полный баланс.
 - [x] T064 Независимый review цельного пакета и арифметики, исправления/проверки и подготовка к предъявлению. GPT-6 Astra/high проверил0ae7f46a..24ce3c67, независимо воспроизвёл все сетки и150000 траекторий; существенных замечаний нет, source-ссылка исправлена.74links/diff PASS, WIP remote SHA совпал; финальная публикация/issue по Git-истории. Только дизайн/дешёвая модель; новые числа не приняты, production/build/game/600s запрещены T001.
 
@@ -25,27 +31,27 @@
 - [x] T060 Предложить объёмы I–V, длительность/самолечение/помощь/публичные цены HP-сеанса; проверить дешёвой точной арифметикой дроби/полный и частичный дефицит/тарифы, описать запрет двойного отдыха. Раздел8 приложенияv4:91830 переходов,18366 курсов,10770 сравнений quarter/cents, примеры/cap/цены PASS. Реальные дубликаты/оплата/clock не тестировались; новые правила пока кандидат.
 - [x] T061 Независимый review нового пакета/математики, corrections/verification/remote/issue; подготовить написанное предложение к предъявлению. GPT-6 Astra/high проверил0090ea35..7594f680, независимо воспроизвёл91830/18366/10770, замечаний нет. Parent67links/diff PASS, WIP remoteSHA/6blobs совпали; финальная публикация по Git-истории/issue. Новые правила ещё на согласование; production/build/game/600s UNRUN, T001 сохраняется.
 
-## Принято заполнение ОД; обсуждается восстановление духовного здоровья
+## Принято заполнение ДЭ; обсуждается восстановление духовного здоровья
 
-- [x] T058 Зафиксировать принятие мгновенного полного восстановления ОД после боя; конкретизировать отдельный кандидат HP через явный отдых, без фонового учёта спокойных диалогов. Четвертной расчёт/раны/HP0 сохранены, ускоренное HP-лечение открыто; spec/модель/приложение синхронизированы. Независимый GPT-6.1 Sol/xhigh проверил6045b5f8..a3a3ed91 без замечаний; parent diff/69links PASS, WIP remoteSHA совпал. Финальная публикация по Git-истории/issue. HP предъявляется для согласования; нового runtime/build/game/арифметических probes нет, T001 сохраняется.
+- [x] T058 Зафиксировать принятие мгновенного полного восстановления ДЭ после боя; конкретизировать отдельный кандидат HP через явный отдых, без фонового учёта спокойных диалогов. Четвертной расчёт/раны/HP0 сохранены, ускоренное HP-лечение открыто; spec/модель/приложение синхронизированы. Независимый GPT-6.1 Sol/xhigh проверил6045b5f8..a3a3ed91 без замечаний; parent diff/69links PASS, WIP remoteSHA совпал. Финальная публикация по Git-истории/issue. HP предъявляется для согласования; нового runtime/build/game/арифметических probes нет, T001 сохраняется.
 
-## Уточнение: автоматическое восстановление ОД после боя
+## Уточнение: автоматическое восстановление ДЭ после боя
 
-- [x] T057 Учесть замечание автора о ненадёжном учёте спокойных диалогов: убрать периодическую внебоевую регенерацию ОД из текущего предложения, описать автоматическое заполнение при подтверждённом окончании боя, сохранить боевую Гармонию и отдельные HP/раны. Spec/приложение/модель синхронизированы; независимый Sol6.1/xhigh проверил f401f6fd..a6a89908, замечаний нет.65 relative links/diff PASS,WIP remoteSHA/6blobs совпали; финальная публикация по Git-истории/issue. Только дизайн, без runtime/новых численных probes; условия применения предложены явно, T001 сохраняется.
+- [x] T057 Учесть замечание автора о ненадёжном учёте спокойных диалогов: убрать периодическую внебоевую регенерацию ДЭ из текущего предложения, описать автоматическое заполнение при подтверждённом окончании боя, сохранить боевую Гармонию и отдельные HP/раны. Spec/приложение/модель синхронизированы; независимый Sol6.1/xhigh проверил f401f6fd..a6a89908, замечаний нет.65 relative links/diff PASS,WIP remoteSHA/6blobs совпали; финальная публикация по Git-истории/issue. Только дизайн, без runtime/новых численных probes; условия применения предложены явно, T001 сохраняется.
 
-## Внебоевое восстановление — после принятия формул ОД
+## Внебоевое восстановление — после принятия формул ДЭ
 
-- [x] T054 Зафиксировать согласие и scope→plan→tasks; проверить реальные source contracts времени/ОД/отдыха/духовных ран, различить runtime/prompt/design. Sol6.1/high audit и parent source/Serena подтверждение: afterlife ordinal существует,safe/healing1536 T104–107 не интегрированы;24equivalent hours не длительность отдыха.
-- [x] T055 Сравнить подходы, описать время/условия/скорости ОД и HP/опасность/HP0/раны; проверить дешёвые ранние/поздние/частичные примеры и отсутствие двойного начисления, сохранить кандидат. out-of-combat-recovery-proposal.md: три подхода,5 профилей/2 специализации,10770 HP/5376 OD расчётов; один source на cycle,отдельные раны/HP0 явно предложены. Реальные duplicate/clock/realm маршруты не тестировались.
+- [x] T054 Зафиксировать согласие и scope→plan→tasks; проверить реальные source contracts времени/ДЭ/отдыха/духовных ран, различить runtime/prompt/design. Sol6.1/high audit и parent source/Serena подтверждение: afterlife ordinal существует,safe/healing1536 T104–107 не интегрированы;24equivalent hours не длительность отдыха.
+- [x] T055 Сравнить подходы, описать время/условия/скорости ДЭ и HP/опасность/HP0/раны; проверить дешёвые ранние/поздние/частичные примеры и отсутствие двойного начисления, сохранить кандидат. out-of-combat-recovery-proposal.md: три подхода,5 профилей/2 специализации,10770 HP/5376 OD расчётов; один source на cycle,отдельные раны/HP0 явно предложены. Реальные duplicate/clock/realm маршруты не тестировались.
 - [x] T056 Независимый review цельного блока/источников/арифметики, corrections/verification/remote checkpoint/issue1573; подготовить точный пакет к предъявлению. GPT-6 Astra/high независимо подтвердил10770 HP/5376 OD случаев и source contracts; P2 текущих статусов исправлен и закрыт targeted review, открытых замечаний нет.192 links/diff PASS, WIP remoteSHA/8blobs совпали; финальная публикация по Git-истории/header issue. Внебой/HP0 ещё на согласование, runtime UNRUN, T001 сохраняется.
 
 ## Средоточие и Гармония — формулы после принятия двух характеристик
 
-- [x] T051 Зафиксировать согласие/границы, сверить источники развития/ОД, scope→plan→tasks; отделить предложенные старт/+3/+5/ручные правила новых статов от принятых пяти. Сохранён source audit T048, приняты имена/роли; новая арифметика начата после bridge consistency.
+- [x] T051 Зафиксировать согласие/границы, сверить источники развития/ДЭ, scope→plan→tasks; отделить предложенные старт/+3/+5/ручные правила новых статов от принятых пяти. Сохранён source audit T048, приняты имена/роли; новая арифметика начата после bridge consistency.
 - [x] T052 Сравнить2–3 варианта, проверить ранние/поздние/предельные профили и равный бюджет специализации, стоимость/дроби/истощение; сохранить воспроизводимый кандидат без production. reserve-and-harmony-proposal.md: три подхода, сравнение C/raw,107 профилей/321 дуэль,12006 ядер/4500 попыток, одинаковые покупки. Поздняя стоимость специализации раскрыта; новый пакет не принят.
 - [x] T053 Независимый review цельного блока/чисел/сохранённых контрактов, corrections/verification/remote checkpoint/issue1573; подготовить точный пакет к предъявлению. Astra/high проверил42bd2b82..9b7a897b и сетку workingtree:321 дуэль/12006core/4500границ/цены подтверждены,blocking findings нет.187 links/diff PASS,WIP remoteSHA/8blobs совпали,финальная публикация по Git-истории/header issue. Новый пакет не принят; T001 сохраняется.
 
-## Запас ОД и экономика действий — после принятия damage/innate/crit
+## Запас ДЭ и экономика действий — после принятия damage/innate/crit
 
 - [x] T048 Зафиксировать принятые формулы, сверить scope/plan/tasks и actual OD/max/cost/recovery/action-economy источники с точными ссылками, отличить runtime от GM/design. Sol6.1/high source audit и parent semantic/source verification; existing owner_turn_end не является личным combat clock. Scope/plan/tasks до расчёта.
 - [x] T049 Сравнить2–3 подхода, описать запас/рост/стоимость/оплату/восстановление и необходимую границу действий; проверить5–8-раундовые сценарии, поздние профили и отсутствие gain/refill циклов; сохранить написанный кандидат. spiritual-action-economy-proposal.md: три подхода,15 дуэлей,ёмкости/истощение/burden,1944 перехода и сертификат чистого урона. Runtime не запускался; полные бюджеты эффектов открыты.
@@ -129,9 +135,9 @@ US4=единая работающая модель/интерфейсы.
 
 ## US1 — личное здоровье и настоящая дуэль
 
-- [ ] T004 [US1] RED tests в BookOfEternityClient.Tests/SpiritualCombatRulesTests.cs и BookOfEternityClient.IntegrationTests/AfterlifeSpiritualConflictValidationTests.cs: HP/ОД exact actor, hit/miss/barrier/max changes, invalid actor/target, расходы/recover surcharge, ranks. Negative builders не чинят malformed input.
+- [ ] T004 [US1] RED tests в BookOfEternityClient.Tests/SpiritualCombatRulesTests.cs и BookOfEternityClient.IntegrationTests/AfterlifeSpiritualConflictValidationTests.cs: HP/ДЭ exact actor, hit/miss/barrier/max changes, invalid actor/target, расходы/recover surcharge, ranks. Negative builders не чинят malformed input.
 - [ ] T005 [US1] Ввести typed contracts/profile resolver в BookOfEternityClient/Services/SpiritualCombat/; обновить AfterlifeSpiritualConflictState.cs и Validation/ValidationService.AfterlifeEntityProfiles.cs. Definitions/ранги, actor authority/dependency fingerprint, без file I/O в kernel.
-- [ ] T006 [US1] ResourceDefinitionCatalog.cs, AfterlifeResourceOwnerComposer.cs, ResourceMutationSourceCatalog.cs, AfterlifeConflictActionPointProjection.cs: personal spiritual_health/ОД, capabilities/max/init, no refill между encounters, no side fallback. Не расширять Mortal health.
+- [ ] T006 [US1] ResourceDefinitionCatalog.cs, AfterlifeResourceOwnerComposer.cs, ResourceMutationSourceCatalog.cs, AfterlifeConflictActionPointProjection.cs: personal spiritual_health/ДЭ, capabilities/max/init, no refill между encounters, no side fallback. Не расширять Mortal health.
 - [ ] T007 [US1] SpiritualCombatRules.cs и AfterlifeActionCostRules.cs: accepted math/target/cost/damage/guard/recover из согласованного tuning; ValidationService.AfterlifeSpiritualConflict.cs делегирует расчёт. Preview и accepted используют одно ядро.
 - [ ] T008 [US1] AcceptedMechanicsPlanner.SpiritualMechanics.cs и общий CanonicalStateNormalizer: включить state/resources/action receipts в одну существующую публикацию. GREEN T004 и actual accepted/replay/rollback integration. Новый отдельный publisher запрещён.
 
@@ -152,7 +158,7 @@ US4=единая работающая модель/интерфейсы.
 
 - [ ] T016 [US2] Поимённо завершить/утвердить матрицу arts-migration.md для всех базовых направлений и Хранителей; RED по accepted tables/costs/conditions MaskI–V, no accidental maintenance/HP-step rewrite; добавить BookOfEternityClient.Tests/SpiritualCombatArtContractTests.cs к узкой категории.
 - [ ] T017 [US2] Definitions/adapters базовых/особых arts и SoulRelicEquipmentService/exporters: equipment exact owner/slot/applicability, effect/source clocks, control/guard/heal/incarnation/dissipation. GREEN T016; синхронизировать общий контракт #1572 без реализации его торговли/полного loot внутри этой feature.
-- [ ] T018 [US4] RED historical actor isolation в BookOfEternityClient.IntegrationTests/SpiritualCombatHistoricalScopeTests.cs: independent profiles/HP/ОД/effects/wounds/equipment, reward-only export, no tombstone/live player fallback.
+- [ ] T018 [US4] RED historical actor isolation в BookOfEternityClient.IntegrationTests/SpiritualCombatHistoricalScopeTests.cs: independent profiles/HP/ДЭ/effects/wounds/equipment, reward-only export, no tombstone/live player fallback.
 - [ ] T019 [US4] Role adapters/registry в AfterlifeResourceOwnerComposer/WoundCarrierCatalog и profile resolver совместно с #1563–#1565; GREEN T018; определить исторический МаскаV, Люциан/Сареф только после согласованного баланса. Настоящий герой не получает historical kit.
 
 ## Preview, оба интерфейса и GM
@@ -164,7 +170,7 @@ US4=единая работающая модель/интерфейсы.
 
 ## Производительность, баланс и приёмка
 
-- [ ] T024 [US4] RED→GREEN cache tests: ProfileResolver/AcceptedMechanicsPlanCache/EffectAcceptedTurnPlanCache whole-operation stable DATA reuse и invalidation owner/HP/ОД/effects/wounds/equipment/clocks. Считать actual source reads, сохранять fresh admission; не static cache/TTL-only.
+- [ ] T024 [US4] RED→GREEN cache tests: ProfileResolver/AcceptedMechanicsPlanCache/EffectAcceptedTurnPlanCache whole-operation stable DATA reuse и invalidation owner/HP/ДЭ/effects/wounds/equipment/clocks. Считать actual source reads, сохранять fresh admission; не static cache/TTL-only.
 - [ ] T025 [US4] Измерить production kernel/accepted путь cheap scenarios и реальные выбранные интеграции: named sections, distributions of balance/rounds/outcomes; оценить multi-actor scaling/численность, healing loops, historical fight. Raw output на D: вне Git, без квот. Не использовать старый harness с дублированной арифметикой как доказательство баланса.
 - [ ] T026 [US4] Проверить весь diff vs AC1–AC9/сохранённые arts; actual selected category results/build/visual/manual evidence; актуализировать selection/catalog. Пять entrypoints GM, cross-domain negatives общих систем; никакой full suite и произвольного 600s recovery.
 - [ ] T027 Independent complex review отдельным Astra/high контекстом: original requirements/exact diff/spec/plan/tasks/evidence, authority/clocks/costs/roles, performance/selection. Исправить подтверждённое, проверить затронутое; не считать отчёт агента приёмкой.

@@ -2,20 +2,28 @@
 // No game imports, filesystem writes, future-roll lookahead, or diagnostic quotas.
 // Run with Node; redirect stdout outside the checkout. Scenario horizon is explicit.
 import assert from 'node:assert/strict';
+import { pathToFileURL } from 'node:url';
+import { resolve } from 'node:path';
 
 const samples = 10000;
 const horizon = 2000;
-const round = (n, d) => Number((2n * n + d) / (2n * d));
-function rng(seed) {
+export const round = (n, d) => Number((2n * n + d) / (2n * d));
+export function rng(seed) {
   let state = seed | 0;
   return () => { state ^= state << 13; state ^= state >>> 17; state ^= state << 5; return state >>> 0; };
 }
-function seedFor(name) {
+export function seedFor(name) {
   let hash = 0x1573065;
   for (const char of name) hash = Math.imul(hash ^ char.charCodeAt(0), 16777619);
   return (hash >>> 0) || 1;
 }
-function profile(D) {
+export function quality(a,b,X) {
+  const threshold=20-Number(5n*BigInt(X)/(100n+BigInt(X)));
+  if(a>=threshold || (a!==1 && a-b>=10)) return 3;
+  if(a===1 || a-b<0) return 0;
+  return a-b<5 ? 1 : 2;
+}
+export function profile(D, bases=[28,36,44]) {
   const X = D <= 50 ? 7 + 3 * D / 10 : 22 + 5 * (D - 50) / 10;
   const S = D <= 50 ? 5 + 3 * D / 10 : 20 + 5 * (D - 50) / 10;
   const a2 = BigInt(Math.min(40 + D, 2 * X));
@@ -24,17 +32,17 @@ function profile(D) {
   const hp = round((200n + 3n * a2) * scale, 100n);
   const heal = round(22n * (200n + 3n * a2) * scale, 10000n);
   const costs = [8, 16, 24, 28].map(k => 2 * k * (50 + D));
-  const attacks = [28, 36, 44].map(B => {
+  const attacks = bases.map(B => {
     const fullN = BigInt(B) * (200n + 3n * a2) * scale * (200n + 2n * a2);
     const fullD = 10000n * (200n + 3n * a2);
-    const threshold = 20 - Number(5n * f / (100n + f));
     const values = [];
     for (let a = 1; a <= 20; a++) for (let b = 1; b <= 20; b++) {
       let value;
-      if (a >= threshold || (a !== 1 && a - b >= 10)) {
+      const outcome=quality(a,b,X);
+      if (outcome===3) {
         value = round(fullN * (150n + 2n * f), fullD * (100n + f));
-      } else if (a === 1 || a - b < 0) value = 0;
-      else value = round(fullN, fullD * (a - b < 5 ? 2n : 1n));
+      } else if (outcome===0) value = 0;
+      else value = round(fullN, fullD * (outcome===1 ? 2n : 1n));
       values.push(value);
     }
     return { values, full: round(fullN, fullD), mean: values.reduce((a,b)=>a+b,0)/400 };
@@ -43,10 +51,10 @@ function profile(D) {
     max: 80 * (50 + D) + 100 * S,
     regen: 8 * (50 + D) + 20 * S, gain: 32 * (50 + D) };
 }
-const profiles = [0, 50, 130, 210, 1000].map(profile);
+const profiles = [0, 50, 130, 210, 1000].map(D=>profile(D));
 
 // Reproduce the preceding v1 experiment, including its continuous seed stream.
-function baseline() {
+export function baseline() {
   const random = rng(0x1573064), result = [];
   for (const p of profiles) for (const B of [0,20,22]) {
     const healing = round(BigInt(B) * BigInt(200+3*Math.min(40+p.D,2*p.X)) * BigInt(50+p.D),10000n);
@@ -84,7 +92,7 @@ function attackGrade(policy, me, other, p) {
   if(policy==='finish') return other.hp<=p.attacks[2].full && me.ap>=p.costs[2] ? 2 : 0;
   return 0;
 }
-function run(p, aPolicy, bPolicy, {first=0, interrupt=null, highHarmony=false}={}) {
+export function run(p, aPolicy, bPolicy, {first=0, interrupt=null, highHarmony=false}={}) {
   const key=`${p.D}|${aPolicy}|${bPolicy}|${first}|${JSON.stringify(interrupt)}|${highHarmony}`;
   const random=rng(seedFor(key)), durations=[], wins=[0,0], totals={attack:[0,0],heal:[0,0],recover:[0,0],prepare:0,interrupt:0,cancel:0};
   let censored=0;
@@ -157,6 +165,7 @@ function throughput(p,grade) {
     damagePerTurn:p.attacks[grade].mean*(count-casts)/(step-start)};
 }
 
+if(process.argv[1] && pathToFileURL(resolve(process.argv[1])).href===import.meta.url) {
 const started=performance.now();
 // Additional no-healing duel control can be run without repeating the main matrix.
 if(process.argv.includes('--controls')) {
@@ -183,3 +192,4 @@ for(const first of [0,1]) for(const attack of ['ordinary','strong','large']) {
 const cycle=profiles.flatMap(p=>[0,1,2].map(g=>throughput(p,g)));
 console.log(JSON.stringify({version:1,samples,horizon,seed:'xorshift32; FNV-like per-scenario seedFor',
   elapsedMs:performance.now()-started,baseline:old,profiles:profiles.map(({attacks,...p})=>p),cycle,rows},null,2));
+}
