@@ -16,7 +16,7 @@
 .wound-command-view__steps li > span { display: grid; place-items: center; min-width: 1.7rem; min-height: 1.7rem; border: 1px solid currentColor; border-radius: 50%; }
 .wound-command-view .command-result-view__content > .block-list-container { display: grid; gap: var(--space-4); }
 .wound-command-view :is(.block-panel, .entity-dossier) { min-width: 0; border-color: var(--color-gold-dim); }
-.wound-command-view :is(.entity-dossier__identity, .entity-dossier__header, .block-panel__body, .block-kv__row) { min-width: 0; }
+.wound-command-view :is(.dossier-layout, .dossier-main, .dossier-header, .dossier-title-row, .dossier-body, .block-panel__body, .block-kv__row) { min-width: 0; }
 .wound-command-view .command-result-view__actions { flex-wrap: wrap; }
 .wound-command-view :is(button, select, input:not([type="checkbox"]), textarea) { max-width: 100%; min-height: 44px; }
 .wound-command-view .prompt-control { min-width: 0; }
@@ -27,5 +27,5 @@
   .wound-command-view .prompt-form__actions { display: grid; grid-template-columns: 1fr; }
   .wound-command-view .command-result-view__actions > button { width: 100%; white-space: normal; }
   .wound-command-view .block-kv__row { grid-template-columns: 1fr; }
-  .wound-command-view .entity-dossier__header { display: block; }
+  .wound-command-view .dossier-header { grid-template-columns: 1fr; }
 }

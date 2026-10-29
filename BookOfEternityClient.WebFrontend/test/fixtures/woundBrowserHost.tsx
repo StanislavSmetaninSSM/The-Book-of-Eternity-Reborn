@@ -15,12 +15,14 @@ export interface WoundBrowserFixture {
   refreshes: number;
   holdActions: boolean;
   releaseAction: (() => void) | null;
+  unmountView: () => void;
 }
 declare global { interface Window { woundFixture: WoundBrowserFixture } }
 
 function Host() {
   const [result, setResult] = useState<ExplorerCommandResult | null>(woundCase('active'));
   window.woundFixture.setCase = name => setResult(woundCase(name));
+  window.woundFixture.unmountView = () => setResult(null);
   const shell = woundShell(result, {
     async executeCommand(command) {
       window.woundFixture.commands.push(command);
@@ -31,8 +33,8 @@ function Host() {
     clearCommandResult() { window.woundFixture.clears++; setResult(null); },
     async loadBrowserState() { window.woundFixture.refreshes++; }
   });
-  return <ShellContext.Provider value={shell}><CommandResultView /></ShellContext.Provider>;
+  return <ShellContext.Provider value={shell}>{result && <CommandResultView />}</ShellContext.Provider>;
 }
 window.woundFixture = { setCase() {}, result: woundCase, commands: [], clears: 0, refreshes: 0,
-  holdActions: false, releaseAction: null };
+  holdActions: false, releaseAction: null, unmountView() {} };
 createRoot(document.getElementById('root')!).render(<Host />);

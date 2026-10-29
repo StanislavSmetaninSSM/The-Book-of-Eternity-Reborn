@@ -20,6 +20,12 @@ export function CommandResultView() {
   const activeCommand = useRef(commandResult);
   activeCommand.current = commandResult;
   const activeOperation = useRef<PromptOperation | null>(null);
+  const mounted = useRef(true);
+
+  useEffect(() => {
+    mounted.current = true;
+    return () => { mounted.current = false; activeOperation.current = null; };
+  }, []);
 
   const currentLocalResult = localResult?.commandResult === commandResult ? localResult.result : null;
   const result = currentLocalResult ?? commandResult;
@@ -38,7 +44,7 @@ export function CommandResultView() {
   if (!result) return null;
 
   async function handleActionClick(action: UiAction) {
-    if (activeCommand.current !== commandResult || activeOperation.current?.commandResult === commandResult) return;
+    if (!mounted.current || activeCommand.current !== commandResult || activeOperation.current?.commandResult === commandResult) return;
     if (action.requiresConfirmation && !confirm(`Выполнить: ${action.label}?`)) return;
     const operation: PromptOperation = { commandResult, kind: 'action' };
     activeOperation.current = operation;
@@ -61,7 +67,7 @@ export function CommandResultView() {
 
   async function handlePromptSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!result?.interactiveSession || activeCommand.current !== commandResult ||
+    if (!mounted.current || !result?.interactiveSession || activeCommand.current !== commandResult ||
       activeOperation.current?.commandResult === commandResult) return;
     const operation: PromptOperation = { commandResult, kind: 'submit' };
     activeOperation.current = operation;
@@ -73,14 +79,14 @@ export function CommandResultView() {
         ownerId: result.interactiveSession.ownerId,
         answers: promptAnswers
       });
-      if (activeCommand.current !== commandResult || activeOperation.current !== operation) return;
+      if (!mounted.current || activeCommand.current !== commandResult || activeOperation.current !== operation) return;
       if (response.ok) {
         setLocalResult({ commandResult, result: advancedEnabled ? response.data : sanitizeExplorerCommandResultForPlayer(response.data) });
         setPromptAnswers({});
       } else setPromptError('Ответ не подтверждён. Форма остаётся открытой; проверьте состояние игры.');
       void loadBrowserState();
     } catch {
-      if (activeCommand.current === commandResult && activeOperation.current === operation)
+      if (mounted.current && activeCommand.current === commandResult && activeOperation.current === operation)
         setPromptError('Не удалось получить ответ. Проверьте состояние игры перед повторным действием.');
     }
     finally {
@@ -92,7 +98,7 @@ export function CommandResultView() {
   }
 
   async function handlePromptCancel() {
-    if (!result?.interactiveSession || activeCommand.current !== commandResult ||
+    if (!mounted.current || !result?.interactiveSession || activeCommand.current !== commandResult ||
       activeOperation.current?.commandResult === commandResult) return;
     const operation: PromptOperation = { commandResult, kind: 'cancel' };
     activeOperation.current = operation;
@@ -103,14 +109,14 @@ export function CommandResultView() {
         sessionId: result.interactiveSession.sessionId,
         ownerId: result.interactiveSession.ownerId
       });
-      if (activeCommand.current !== commandResult || activeOperation.current !== operation) return;
+      if (!mounted.current || activeCommand.current !== commandResult || activeOperation.current !== operation) return;
       if (response.ok) {
         setLocalResult({ commandResult, result: advancedEnabled ? response.data : sanitizeExplorerCommandResultForPlayer(response.data) });
         setPromptAnswers({});
       } else setPromptError('Отмена не подтверждена. Форма остаётся открытой; проверьте состояние игры.');
       void loadBrowserState();
     } catch {
-      if (activeCommand.current === commandResult && activeOperation.current === operation)
+      if (mounted.current && activeCommand.current === commandResult && activeOperation.current === operation)
         setPromptError('Не удалось подтвердить отмену. Форма остаётся открытой; проверьте состояние игры.');
     }
     finally {

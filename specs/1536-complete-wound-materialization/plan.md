@@ -45,6 +45,9 @@ SOURCE review found action clicks did not claim the synchronous gate. Corrected
 with an action operation awaiting the existing executor, exact-identity release and
 busy exit. Controlled DOM will hold one action and prove duplicate suppression.
 This does not claim replacing parent ShellContext epoch/navigation ownership.
+Review also required unmount invalidation; local mounted/operation cleanup now blocks
+late prompt follow-up after SceneView disposes the component. Controlled host truly
+unmounts it and holds actions independently; no backend/parent epoch replacement.
 
 Implementation WIP: WoundCommandView/scoped CSS, existing CommandResultView
 cancel-first header and current-command operation admission, optional existing
