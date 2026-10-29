@@ -169,6 +169,16 @@ without a branch or runtime change. Both independent Sol SOURCE and Astra/high
 conformance accepted5fb (canonical carrier-path finding closed). This correction
 and pure61-case gate remain unqualified until fresh affected builds and runtime.
 
+2026-10-29 13:14UTC: pure DATA gate accepted on2c614db0d7f66c13d34c3a3a18b6699993503423.
+Fresh Main/Support/Unit exit0 with baseline12/23/26warnings. Exact official PlanOnly
+4descriptors/11methods/61cases, each60s; matching runtime61/61PASS,0fail/skip/duplicate,
+38.4713965s wall, complete selection and owned cleanup. Sol independently accepted
+SOURCE,PREP,OUTCOME; Astra/high closed carrier-path conformance finding. Full raw and
+12consistentDLL/PDB+10source pins retained externally under us6-healing-services/data-*.
+Original causal13-vs-null RED is GREEN. No service fee has yet been published; next
+is family7 admission/retained draw/common payment/History/replay, then shared UI and
+protected fresh Elyara state. No US6 parent task is closed by this pure foundation.
+
 ---
 
 # T126 — accepted browser wound cards and guided treatment presentation
