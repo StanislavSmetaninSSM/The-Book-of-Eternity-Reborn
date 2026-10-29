@@ -57,11 +57,14 @@ internal static partial class AfterlifeWoundHealingPlanner
             foreach (var change in detachedChanges)
             {
                 var resident = change.Owner.OwnerKind == "resident";
-                var woundOwner = change.Proposal["schemaVersion"]!.GetValue<int>() == 2
+                var woundOwner = change.Proposal["schemaVersion"]!.GetValue<int>() is 2 or 4
                     ? new WoundOwnerCoordinate("chaos_sea", "player_soul", "player_soul", WoundCarrierCatalog.AfterlifeProfilesPath) : change.Owner;
                 var wound = _wounds.SingleOrDefault(w => w.Owner == woundOwner && w.WoundId == change.Proposal["woundId"]!.GetValue<string>())
                     ?? throw new InvalidDataException("Participation lost the exact admitted typed wound binding.");
-                var scope = resident ? SpiritualTreatmentParticipation.RequireResidentScope(currentRoots[ParticipationGuardiansPath]!,
+                var scope = resident && SpiritualTreatmentParticipation.IsResidentProviderOffer(change.Proposal)
+                    ? SpiritualTreatmentParticipation.RequireResidentProviderScope(currentRoots[ParticipationGuardiansPath]!,
+                        currentRoots[GuardianAbodeResidentState.StatePath], acceptedProfiles, change.Owner, wound)
+                    : resident ? SpiritualTreatmentParticipation.RequireResidentScope(currentRoots[ParticipationGuardiansPath]!,
                     currentRoots[GuardianAbodeResidentState.StatePath], acceptedProfiles, change.Owner, wound)
                     : SpiritualTreatmentParticipation.RequireCurrentGuardianScope(currentRoots[ParticipationGuardiansPath]!,
                         currentRoots[GuardianAbodeResidentState.StatePath], change.TargetId);

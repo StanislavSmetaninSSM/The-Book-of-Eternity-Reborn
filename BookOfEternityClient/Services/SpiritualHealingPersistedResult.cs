@@ -27,7 +27,7 @@ internal sealed class SpiritualHealingPersistedResult : WoundTransitionResult
     internal int SchemaVersion => _root["schemaVersion"]!.GetValue<int>();
     internal string ResultFingerprint => _root["resultFingerprint"]!.GetValue<string>();
     internal JsonArray? ParticipationOutcomes => _root["participationOutcomes"]?.DeepClone().AsArray();
-    internal JsonObject? ResidentParticipationRecord => SchemaVersion != 5 ? null :
+    internal JsonObject? ResidentParticipationRecord => SchemaVersion is not (5 or 6) ? null :
         (IsNatural ? _root["participationOutcomes"]?[0]?["record"] : _root["request"]?["participation"]?["record"])?.DeepClone().AsObject();
     internal string? AidGrantFingerprint => Mode == "aid"
         ? _root["request"]!["participation"]!["grantResultFingerprint"]!.GetValue<string>() : null;
@@ -91,7 +91,7 @@ internal sealed class SpiritualHealingPersistedResult : WoundTransitionResult
             }).ToArray())
         };
         if (participation is not null) root["participationOutcomes"] = participation;
-        if (version is 4 or 5 && owner.Mode == "aid") root["direction"] = version == 5 ? "player_to_resident" : "guardian_to_player";
+        if (version is 4 or 5 or 6 && owner.Mode == "aid") root["direction"] = SpiritualSelfTreatmentRequestCodec.AidDirection(version);
         root["resultFingerprint"] = WoundHistoryState.ComputeTransitionResultFingerprint(root);
         var issues = new List<ValidationIssue>();
         return Parse(JsonSerializer.SerializeToElement(root), "spiritualHealing.result", issues)
@@ -109,12 +109,12 @@ internal sealed class SpiritualHealingPersistedResult : WoundTransitionResult
             var rootFields = new[] { "kind", "schemaVersion", "binding", "request", "source", "control", "scheduleBeforeJson", "progressionReportJson", "scheduleAfterJson", "scheduleAfterFingerprint", "stages", "resultFingerprint" };
             var version = root["schemaVersion"]!.GetValue<int>();
             var mode = Text(root, "mode");
-            Closed(root, version is 3 or 4 or 5 && mode == "natural" ? rootFields.Append("mode").Append("participationOutcomes").ToArray()
-                : version is 4 or 5 && mode == "aid" ? rootFields.Append("mode").Append("direction").ToArray()
+            Closed(root, version is 3 or 4 or 5 or 6 && mode == "natural" ? rootFields.Append("mode").Append("participationOutcomes").ToArray()
+                : version is 4 or 5 or 6 && mode == "aid" ? rootFields.Append("mode").Append("direction").ToArray()
                 : rootFields.Append("mode").ToArray());
-            if (Text(root, "kind") != "spiritual_healing" || version is not (2 or 3 or 4 or 5) || mode is not ("self" or "natural" or "aid") ||
-                version == 2 && mode == "aid" || version is 3 or 4 or 5 && mode == "self" ||
-                version is 4 or 5 && mode == "aid" && Text(root, "direction") != (version == 5 ? "player_to_resident" : "guardian_to_player") ||
+            if (Text(root, "kind") != "spiritual_healing" || version is not (2 or 3 or 4 or 5 or 6) || mode is not ("self" or "natural" or "aid") ||
+                version == 2 && mode == "aid" || version is 3 or 4 or 5 or 6 && mode == "self" ||
+                version is 4 or 5 or 6 && mode == "aid" && Text(root, "direction") != SpiritualSelfTreatmentRequestCodec.AidDirection(version) ||
                 Text(root, "resultFingerprint") != WoundHistoryState.ComputeTransitionResultFingerprint(root))
                 throw new InvalidDataException("Spiritual result kind/schema/fingerprint differs.");
             var binding = root["binding"]!.AsObject();
@@ -248,7 +248,7 @@ internal sealed class SpiritualHealingPersistedResult : WoundTransitionResult
                 ValidateStageScope(stage, e);
                 current[before.WoundId] = after;
             }
-            if (version is 3 or 4 or 5 && mode == "natural")
+            if (version is 3 or 4 or 5 or 6 && mode == "natural")
                 SpiritualTreatmentParticipation.ValidateOutcomes(root["participationOutcomes"]!.AsArray(), binding,
                     control.NextChaosSeaTurnOrdinal, stages, version);
             return new(root, stages);

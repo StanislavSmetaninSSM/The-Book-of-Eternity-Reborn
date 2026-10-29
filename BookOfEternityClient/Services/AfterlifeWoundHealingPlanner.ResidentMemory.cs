@@ -24,7 +24,7 @@ internal static partial class AfterlifeWoundHealingPlanner
         private void RequireResidentThoughtFamily()
         {
             if (_residentThoughtCommands is not null && (ResidentThoughtRecord is not { } record ||
-                !SpiritualTreatmentParticipation.IsResidentConsent(record)))
+                !SpiritualTreatmentParticipation.IsResidentParticipation(record)))
                 throw new InvalidDataException("Protected resident thoughts require this actual resident grant or aid owner.");
         }
 

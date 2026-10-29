@@ -12,7 +12,7 @@ internal sealed record SpiritualAidSelection(string HealerId, string TargetId, s
     internal bool ReceiveAid { get; init; }
     internal bool PlayerConfirmed { get; init; }
     internal SpiritualResidentAidParticipant? Resident { get; init; }
-    internal int FamilyVersion => Resident is not null ? 5 : ReceiveAid ? 4 : 3;
+    internal int FamilyVersion => Resident is not null ? ReceiveAid ? 6 : 5 : ReceiveAid ? 4 : 3;
     internal string GuardianId => Resident?.Locality.GuardianId ?? (ReceiveAid ? HealerId : TargetId);
     internal WoundOwnerCoordinate Healer(string realm) => Resident?.Healer ?? new(realm, ReceiveAid ? "guardian" : "player_soul", HealerId, WoundCarrierCatalog.AfterlifeProfilesPath);
     internal WoundOwnerCoordinate Target(string realm) => Resident?.Target ?? new(realm, ReceiveAid ? "player_soul" : "guardian", TargetId, WoundCarrierCatalog.AfterlifeProfilesPath);
@@ -41,21 +41,28 @@ internal sealed record SpiritualSelfTreatmentSelection(string WoundId, string Ex
         if (Aid is null) return new() { ["woundId"] = WoundId, ["expectedWoundFingerprint"] = ExpectedWoundFingerprint };
         if (Aid.Resident is { } resident)
         {
-            if (Aid.ReceiveAid || Aid.PlayerConfirmed || Aid.HealerId != "player_soul" || resident.Healer != new WoundOwnerCoordinate(
+            if (!Aid.ReceiveAid && (Aid.PlayerConfirmed || Aid.HealerId != "player_soul" || resident.Healer != new WoundOwnerCoordinate(
                     "chaos_sea", "player_soul", "player_soul", WoundCarrierCatalog.AfterlifeProfilesPath) ||
-                resident.Target.OwnerKind != "resident" || resident.Target.OwnerId != Aid.TargetId)
+                resident.Target.OwnerKind != "resident" || resident.Target.OwnerId != Aid.TargetId))
                 throw new InvalidDataException("Resident aid cannot mix Guardian direction or confirmation.");
+            if (Aid.ReceiveAid && (resident.Healer.OwnerKind != "resident" || resident.Healer.OwnerId != Aid.HealerId ||
+                Aid.TargetId != "player_soul" || resident.Target != new WoundOwnerCoordinate("chaos_sea", "player_soul", "player_soul", WoundCarrierCatalog.AfterlifeProfilesPath)))
+                throw new InvalidDataException("Resident provider aid requires its exact healer and player patient.");
+            _ = SpiritualTreatmentParticipation.ReadOwner(SpiritualHealingRequestProjection.OwnerJson(resident.Healer));
             _ = SpiritualTreatmentParticipation.ReadOwner(SpiritualHealingRequestProjection.OwnerJson(resident.Target));
             _ = SpiritualTreatmentParticipation.ReadLocality(SpiritualTreatmentParticipation.LocalityJson(resident.Locality));
-            return new()
+            var residentRoot = new JsonObject
             {
-                ["schemaVersion"] = 5, ["mode"] = "aid", ["direction"] = "player_to_resident", ["woundId"] = WoundId,
+                ["schemaVersion"] = Aid.FamilyVersion, ["mode"] = Aid.ReceiveAid ? "receive_aid" : "aid",
+                ["direction"] = SpiritualSelfTreatmentRequestCodec.AidDirection(Aid.FamilyVersion), ["woundId"] = WoundId,
                 ["expectedWoundFingerprint"] = ExpectedWoundFingerprint,
                 ["healer"] = SpiritualHealingRequestProjection.OwnerJson(resident.Healer),
                 ["target"] = SpiritualHealingRequestProjection.OwnerJson(resident.Target),
                 ["locality"] = SpiritualTreatmentParticipation.LocalityJson(resident.Locality),
                 ["participationFingerprint"] = Aid.ParticipationFingerprint
             };
+            if (Aid.ReceiveAid) residentRoot["confirmation"] = Aid.PlayerConfirmed ? "player_target_confirmed" : "required";
+            return residentRoot;
         }
         var root = new JsonObject
         {
@@ -89,18 +96,23 @@ internal sealed record SpiritualSelfTreatmentSelection(string WoundId, string Ex
                 throw new InvalidDataException("Invalid exact combat treatment selection.");
             return selection with { Combat = new(conflictId!, conflictFingerprint!, ordinal) };
         }
-        if (root["schemaVersion"] is JsonValue residentVersion && residentVersion.TryGetValue<int>(out var residentSchema) && residentSchema == 5)
+        if (root["schemaVersion"] is JsonValue residentVersion && residentVersion.TryGetValue<int>(out var residentSchema) && residentSchema is 5 or 6)
         {
             var fields = new[] { "schemaVersion", "mode", "direction", "woundId", "expectedWoundFingerprint", "healer", "target", "locality", "participationFingerprint" };
-            if (root.Count != fields.Length || fields.Any(f => !root.ContainsKey(f)) || root["mode"]?.GetValue<string>() != "aid" ||
-                root["direction"]?.GetValue<string>() != "player_to_resident" ||
+            if (residentSchema == 6) fields = fields.Append("confirmation").ToArray();
+            if (root.Count != fields.Length || fields.Any(f => !root.ContainsKey(f)) || root["mode"]?.GetValue<string>() != (residentSchema == 6 ? "receive_aid" : "aid") ||
+                root["direction"]?.GetValue<string>() != SpiritualSelfTreatmentRequestCodec.AidDirection(residentSchema) ||
                 !ResourceMaterializationContract.IsAuthorityFingerprint(root["participationFingerprint"]?.GetValue<string>()))
                 throw new InvalidDataException("Invalid closed resident aid selection.");
+            if (residentSchema == 6 && (root["confirmation"] is not JsonValue confirmation ||
+                !confirmation.TryGetValue<string>(out var confirmed) || confirmed is not ("required" or "player_target_confirmed")))
+                throw new InvalidDataException("Resident provider selection requires explicit player confirmation state.");
             var residentHealer = SpiritualTreatmentParticipation.ReadOwner(root["healer"]);
             var residentTarget = SpiritualTreatmentParticipation.ReadOwner(root["target"]);
             var locality = SpiritualTreatmentParticipation.ReadLocality(root["locality"]);
             var resident = new SpiritualAidSelection(residentHealer.OwnerId, residentTarget.OwnerId, root["participationFingerprint"]!.GetValue<string>())
-                { Resident = new(residentHealer, residentTarget, locality) };
+                { Resident = new(residentHealer, residentTarget, locality), ReceiveAid = residentSchema == 6,
+                    PlayerConfirmed = residentSchema == 6 && root["confirmation"]!.GetValue<string>() == "player_target_confirmed" };
             var selected = selection with { Aid = resident };
             if (!JsonNode.DeepEquals(selected.ToJson(), root)) throw new InvalidDataException("Resident aid coordinate differs.");
             return selected;

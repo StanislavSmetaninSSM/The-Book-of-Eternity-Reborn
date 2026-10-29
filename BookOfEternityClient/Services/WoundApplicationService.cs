@@ -13,9 +13,11 @@ internal static class WoundApplicationService
     internal const string AidActionText = "Помочь текущему согласившемуся Хранителю вылечить выбранную духовную рану вне конфликта. Продолжить обычный безопасный цикл мира.";
     internal const string ResidentAidActionText = "Помочь согласившемуся жителю текущей Обители Хранителя вылечить выбранную духовную рану вне конфликта. Продолжить обычный безопасный цикл мира.";
     internal const string ReceiveAidActionText = "Принять добровольную безвозмездную помощь текущего Хранителя в лечении моей выбранной духовной раны вне конфликта. Продолжить обычный безопасный цикл мира.";
+    internal const string ResidentReceiveAidActionText = "Принять добровольную безвозмездную помощь жителя текущей Обители Хранителя в лечении моей выбранной духовной раны вне конфликта. Продолжить обычный безопасный цикл мира.";
     internal const string CombatActionText = "Лечить выбранную собственную духовную рану стандартным Исцелением в текущей духовной дуэли. Это прерываемое противником действие за ОД, без безопасного цикла мира.";
     internal static string ActionFor(SpiritualSelfTreatmentSelection selection) => selection.Combat is not null ? CombatActionText : selection.Aid is null ? ActionText
-        : selection.Aid.Resident is not null ? ResidentAidActionText : selection.Aid.ReceiveAid ? ReceiveAidActionText : AidActionText;
+        : selection.Aid.Resident is not null ? selection.Aid.ReceiveAid ? ResidentReceiveAidActionText : ResidentAidActionText
+        : selection.Aid.ReceiveAid ? ReceiveAidActionText : AidActionText;
 
     internal static async Task<ExplorerCommandResult> OpenAsync(FileSystemManager fs, string command, bool treatment)
     {
@@ -150,10 +152,10 @@ internal static class WoundApplicationService
                 choices.Add(new("wound_" + choices.Count,
                     new SpiritualSelfTreatmentSelection(wound.WoundId, WoundIdentityState.ComputeSemanticFingerprint(wound))
                         { Aid = aid },
-                    receiveAid ? "Себя: " + WoundPlayerProjection.Text(wound.Display.Name) + " — помощь Хранителя" + (name.Length == 0 ? "" : " «" + name + "»")
+                    receiveAid ? "Себя: " + WoundPlayerProjection.Text(wound.Display.Name) + (aid.Resident is null ? " — помощь Хранителя" : " — помощь жителя Обители") + (name.Length == 0 ? "" : " «" + name + "»")
                         : (aid.Resident is not null ? "Житель Обители" : "Хранитель") + (name.Length == 0 ? "" : " «" + name + "»") + ": " + WoundPlayerProjection.Text(wound.Display.Name),
                     wound.Severity.Value, source.HealingTier, true,
-                    receiveAid ? "Хранитель готов помочь бесплатно. Примите помощь подтверждением; один безопасный цикл мира, без затрат ОД."
+                    receiveAid ? (aid.Resident is null ? "Хранитель" : "Житель Обители") + " готов помочь бесплатно. Примите помощь подтверждением; один безопасный цикл мира, без затрат ОД."
                         : "Согласие получено на следующий безопасный цикл. Без затрат ОД; перед броском согласие и близость проверяются заново."));
             }
             return new(generation, choices);

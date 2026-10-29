@@ -7,9 +7,11 @@ namespace BookOfEternityClient.Services;
 internal static partial class SpiritualSelfTreatmentRequestCodec
 {
     private const string AidKind = "spiritual_treatment_request";
-    internal static bool IsAidHeader(JsonObject root) => Int(root["schemaVersion"]) is 3 or 4 or 5 &&
+    internal static string? AidDirection(int version) => version switch
+    { 4 => "guardian_to_player", 5 => "player_to_resident", 6 => "resident_to_player", _ => null };
+    internal static bool IsAidHeader(JsonObject root) => Int(root["schemaVersion"]) is 3 or 4 or 5 or 6 &&
         Text(root["kind"]) == AidKind && Text(root["mode"]) == "aid";
-    internal static bool IsReceiveAidHeader(JsonObject root) => IsAidHeader(root) && Int(root["schemaVersion"]) == 4;
+    internal static bool IsReceiveAidHeader(JsonObject root) => IsAidHeader(root) && Int(root["schemaVersion"]) is 4 or 6;
     internal static bool IsActiveKind(JsonObject root) => Text(root["kind"]) is Kind or AidKind;
     internal static bool IsBoundActive(JsonObject root, SpiritualSelfTreatmentStageContext context,
         SpiritualSelfTreatmentSelection selection, string realm, int ordinal) => selection.Aid is null
@@ -28,11 +30,12 @@ internal static partial class SpiritualSelfTreatmentRequestCodec
         if (IsAidHeader(root))
         {
             var witness = root["participation"] as JsonObject ?? throw new InvalidDataException("Aid witness is absent.");
-            if (Int(root["schemaVersion"]) == 5)
+            if (Int(root["schemaVersion"]) is 5 or 6)
             {
                 var record = witness["record"] as JsonObject ?? throw new InvalidDataException("Resident aid witness is absent.");
                 SpiritualTreatmentParticipation.ValidateRecord(record);
-                selection = selection with { Aid = SpiritualTreatmentParticipation.Selection(record) };
+                selection = selection with { Aid = SpiritualTreatmentParticipation.Selection(record) with
+                { PlayerConfirmed = IsReceiveAidHeader(root) && Text(root["playerConfirmation"]) == "player_target_confirmed" } };
             }
             else selection = selection with { Aid = new(Text(root["healer"]?["ownerId"]) ?? "", Text(root["target"]?["ownerId"]) ?? "",
                 Text(witness["contentFingerprint"]) ?? "") { ReceiveAid = IsReceiveAidHeader(root),
@@ -81,12 +84,8 @@ internal static partial class SpiritualSelfTreatmentRequestCodec
                     ["values"] = new JsonArray(draws.Select(d => (JsonNode)JsonValue.Create(d)!).ToArray()) }
             }
         };
-        if (selection.Aid.ReceiveAid)
-        {
-            root["direction"] = "guardian_to_player";
-            root["playerConfirmation"] = "player_target_confirmed";
-        }
-        if (selection.Aid.Resident is not null) root["direction"] = "player_to_resident";
+        if (AidDirection(selection.Aid.FamilyVersion) is { } direction) root["direction"] = direction;
+        if (selection.Aid.ReceiveAid) root["playerConfirmation"] = "player_target_confirmed";
         root["requestFingerprint"] = AidFingerprint(root);
         if (!IsBoundAid(root, context, selection, data.Realm, data.CycleOrdinal))
             throw new InvalidDataException("Aid factory cannot emit an unbound request.");
@@ -101,8 +100,8 @@ internal static partial class SpiritualSelfTreatmentRequestCodec
             if (selection.Aid is not { } aid) return false;
             var fields = new[] { "schemaVersion", "kind", "mode", "sessionId", "requestId", "turn", "healer", "target", "participation", "activeSource", "attempt", "requestFingerprint" };
             if (!IsAidHeader(root) || Int(root["schemaVersion"]) != aid.FamilyVersion ||
-                aid.ReceiveAid && (!aid.PlayerConfirmed || Text(root["direction"]) != "guardian_to_player" || Text(root["playerConfirmation"]) != "player_target_confirmed") ||
-                aid.Resident is not null && Text(root["direction"]) != "player_to_resident" ||
+                aid.ReceiveAid && (!aid.PlayerConfirmed || Text(root["direction"]) != AidDirection(aid.FamilyVersion) || Text(root["playerConfirmation"]) != "player_target_confirmed") ||
+                aid.Resident is not null && !aid.ReceiveAid && Text(root["direction"]) != "player_to_resident" ||
                 realm != "chaos_sea" || ordinal < 1 ||
                 !Closed(root, aid.ReceiveAid ? fields.Concat(new[] { "direction", "playerConfirmation" }).ToArray()
                     : aid.Resident is not null ? fields.Append("direction").ToArray() : fields) ||

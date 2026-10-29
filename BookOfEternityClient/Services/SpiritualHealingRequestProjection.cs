@@ -138,7 +138,7 @@ internal static class SpiritualHealingRequestProjection
             projection["targetNaturalHealingTier"] = data.NaturalMembers.First(m => m.Wound.Owner == data.Wound.Owner).HealingTier;
             if (SpiritualSelfTreatmentRequestCodec.IsReceiveAidHeader(request))
             {
-                projection["direction"] = "guardian_to_player";
+                projection["direction"] = SpiritualSelfTreatmentRequestCodec.AidDirection(request["schemaVersion"]!.GetValue<int>());
                 projection["playerConfirmationVerified"] = true; // Exact client original, not GM consent.
             }
             if (request["schemaVersion"]!.GetValue<int>() == 5) projection["direction"] = "player_to_resident";

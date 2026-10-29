@@ -5,7 +5,7 @@ using Xunit;
 namespace BookOfEternityClient.Tests;
 
 /// <summary>Private resident offers retain the actual typed healer and player patient.</summary>
-public sealed class SpiritualResidentProviderParticipationTests
+public sealed partial class SpiritualResidentProviderParticipationTests
 {
     /// <summary>The existing proposal reader admits the new closed resident provider intent.</summary>
     [Fact]

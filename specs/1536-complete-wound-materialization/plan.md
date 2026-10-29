@@ -41,6 +41,18 @@ No unrelated acceptedPASS repeats; source/consumer changes determine regressions
 All raw external, preserve prior complete accepted69 provenance and old incomplete
 attempts, no raw/save/recovery deletion, newclone/restore, merge/force/history rewrite.
 
+Core GREEN WIP after causal RED: record4/selection6/request/result6 and pure typed
+resident-healer scope are connected through natural participation, protected
+memory, History dispatch, GM projection and distinct receive-aid action/menu.
+New detached contracts cover proposal mirrors/forgery, exact selection/confirmation,
+kinded healer/current locality versus player wound, healer memory, codec/header/
+eligibility and H3 versus patient-naturalH0. All new GREEN C# is UNCOMPILED/UNRUN;
+actual producer/UI fixtures and complete GM synchronization remain pending. This
+checkpoint is preservation, not SOURCE acceptance or functional qualification.
+Optimization: reuse existing operation parsed DATA/source/service windows; the
+factored join adds no reads/cache. Fresh locality/source/History/closing checks
+remain, no measured speedup claimed. No raw/save/recovery deletion or new restore.
+
 # T108-RESIDENT accepted — current Chaos Abode treatment complete
 
 2026-10-29. Independent Sol finalOUTCOME3/69 ACCEPT and finalGM1 ACCEPT; Astra

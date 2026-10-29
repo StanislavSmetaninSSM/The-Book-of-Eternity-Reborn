@@ -184,7 +184,7 @@ public partial class ValidationService
             {
                 // I runs after common publication in the Engine. A request or
                 // proposed grant alone cannot exempt memory from ordinary policy.
-                if (residentMemory.ValueKind != JsonValueKind.Array || publishedSafe is not { SchemaVersion: 5 } ||
+                if (residentMemory.ValueKind != JsonValueKind.Array || publishedSafe is not { SchemaVersion: 5 or 6 } ||
                     new CanonicalBeforeImage(true, responseBytes).Fingerprint != publishedSafe.GraphResponseFingerprint ||
                     publishedSafe.ResidentParticipationRecord is not { } record)
                     throw new InvalidDataException("Protected resident memory requires its exact published family5 response.");

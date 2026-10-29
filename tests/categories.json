@@ -2,6 +2,44 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "spiritual-resident-provider-contract",
+  "responsibility": "T108-RESIDENT-HELP closed resident-provider proposal4/record4/selection6/request6, typed healer locality versus player patient, explicit confirmation, unavailable offers, detached DATA and protected healer memory. Pure codec DATA does not mint live authority.",
+  "excludes": "No accepted offer/History/live Engine/provider/DOM qualification, no paid services or unrelated accepted69 replay.",
+  "changeHints": [
+    "BookOfEternityClient.Tests/SpiritualResidentProviderParticipationTests.Contracts.cs",
+    "BookOfEternityClient.Tests/SpiritualResidentProviderParticipationTests.Scope.cs",
+    "BookOfEternityClient.Tests/SpiritualResidentProviderParticipationTests.Request.cs"
+  ],
+  "related": [
+    "spiritual-resident-provider-causal"
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.SpiritualResidentProviderParticipationTests.ProviderRepresentationsCoalesceOnlyTheSameTypedOffer",
+        "BookOfEternityClient.Tests.SpiritualResidentProviderParticipationTests.ProviderOutcomeUsesExactRolesAndDetachedCanonicalRecord",
+        "BookOfEternityClient.Tests.SpiritualResidentProviderParticipationTests.RawProviderRecordCannotBeForged",
+        "BookOfEternityClient.Tests.SpiritualResidentProviderParticipationTests.ProviderFactsAreTypedAndRevocationIsUnavailable",
+        "BookOfEternityClient.Tests.SpiritualResidentProviderParticipationTests.ProviderSelectionPreservesDirectionAndExplicitPlayerConfirmation",
+        "BookOfEternityClient.Tests.SpiritualResidentProviderParticipationTests.ProviderSelectionRefusesMixedFamilies",
+        "BookOfEternityClient.Tests.SpiritualResidentProviderParticipationTests.ProviderAuthorityJoinsTheResidentHealerAndSeparatePlayerWound",
+        "BookOfEternityClient.Tests.SpiritualResidentProviderParticipationTests.ProviderMemoryUsesTheHealerOwnerInsteadOfThePatient",
+        "BookOfEternityClient.Tests.SpiritualResidentProviderParticipationTests.ProviderRequestRetainsConfirmedRolesDrawAndIndependentNaturalTier",
+        "BookOfEternityClient.Tests.SpiritualResidentProviderParticipationTests.ProviderRequestRefusesRehashedMixedOrUnavailableAuthority",
+        "BookOfEternityClient.Tests.SpiritualResidentProviderParticipationTests.ProviderRequestFactoryRefusesUnavailableOfferBeforeRetainingADraw"
+      ]
+    }
+  ]
+},
+{
   "id": "spiritual-resident-provider-causal",
   "responsibility": "T108-RESIDENT-HELP existing-API causal admission of closed proposal4 on a preexisting typed resident healer for the player patient. Detached source/result copies remain independent.",
   "excludes": "Does not establish accepted offer, current locality, confirmation, live healing authority, paid service or Engine qualification. No repeat of accepted resident69.",
