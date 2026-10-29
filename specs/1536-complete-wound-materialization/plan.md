@@ -125,8 +125,24 @@ Unit onaae60a6be exit0/26baselinewarnings (1:27.34), four owning PE/PDBpairs and
 Qualified Unit6f bytes are fully retained in a verified external archive. Catalog
 1103/12841 valid,0executions/complete cleanup; its revision honestly records one
 plan-only clarification edit, with no C#/catalog change during discovery. No role
-production change or causal runtime has occurred; clean published metadata, exact
-PlanOnly/PREP and the singleton RED are next.
+production change had occurred at that scaffold boundary. Exact PlanOnly/PREP and
+one causal runtime on84cb1cfef then completed1expectedFAIL/1complete,15.9537801s
+wall/category8.62s<60, cleanup/pins intact; expectedhealing_support versusactual
+social_support atline24 after the archive control. Sol OUTCOME accepted, TRX
+23ab2fc3bd6791646042cf08b4a0a92428bdac8c62d46d05796a3219e0557e3b.
+
+Independent implementation WIP now adds the supported role/Russian formatter, strict
+profile capability and detached roster helper, and one shared faction-detail profile
+read across all members. Read-only projection uses existing materialization validation
+with unknown trade evidence; it grants no trade/service permission. Actual accepted
+turn validation will retain strict current-trade evidence and reuse its validated
+profile DATA. The initial helper/normalizer Unit tests and shared UI code are authored
+but UNCOMPILED/UNQUALIFIED; catalog ownership, GM examples/docs, actual read counters
+and console/browser checks remain pending. Existing StateManager refresh can read/
+update player-profile authority, so its pre-refresh DATA is not reused: one fresh
+projection read follows refresh. Measure total actual reads without pretending the
+existing refresh reads disappear. No all-factions validation change is wired while
+the terminal lifecycle policy is awaiting the owner.
 
 ---
 

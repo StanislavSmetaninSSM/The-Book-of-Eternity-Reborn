@@ -3065,15 +3065,7 @@ public partial class ExplorerMode
         };
 
     private static string DescribeShiningResidentRole(string? role) =>
-        (role ?? string.Empty).Trim().ToLowerInvariant() switch
-        {
-            "archive_support" => "архивная поддержка",
-            "forge_support" => "кузнечная поддержка",
-            "social_support" => "социальная поддержка",
-            "resource_support" => "ресурсная поддержка",
-            "descent_support" => "поддержка нисхождения",
-            _ => string.IsNullOrWhiteSpace(role) ? "не определена" : role
-        };
+        ShiningAbodeState.DescribeResidentRole(role);
 
     private static string DescribeShiningFactionLoyaltyTier(string? tier) =>
         (tier ?? string.Empty).Trim().ToLowerInvariant() switch

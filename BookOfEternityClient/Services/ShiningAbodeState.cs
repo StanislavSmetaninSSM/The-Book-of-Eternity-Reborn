@@ -94,6 +94,7 @@ internal static partial class ShiningAbodeState
     public const string ResidentRoleSocialSupport = "social_support";
     public const string ResidentRoleResourceSupport = "resource_support";
     public const string ResidentRoleDescentSupport = "descent_support";
+    public const string ResidentRoleHealingSupport = "healing_support";
 
     public const string HallServiceTagSocial = "social";
     public const string HallServiceTagLore = "lore";
@@ -217,7 +218,8 @@ internal static partial class ShiningAbodeState
         ResidentRoleForgeSupport,
         ResidentRoleSocialSupport,
         ResidentRoleResourceSupport,
-        ResidentRoleDescentSupport
+        ResidentRoleDescentSupport,
+        ResidentRoleHealingSupport
     };
 
     private static readonly HashSet<string> AllowedHallServiceTags = new(StringComparer.OrdinalIgnoreCase)
@@ -306,6 +308,16 @@ internal static partial class ShiningAbodeState
     public static bool IsSupportedOriginType(string? value) => !string.IsNullOrWhiteSpace(value) && AllowedOriginTypes.Contains(value);
     public static bool IsSupportedPoliticalStatus(string? value) => !string.IsNullOrWhiteSpace(value) && AllowedPoliticalStatuses.Contains(value);
     public static bool IsSupportedResidentRole(string? value) => !string.IsNullOrWhiteSpace(value) && AllowedResidentRoles.Contains(value);
+    public static string DescribeResidentRole(string? role) => (role ?? string.Empty).Trim().ToLowerInvariant() switch
+    {
+        ResidentRoleArchiveSupport => "архивная поддержка",
+        ResidentRoleForgeSupport => "кузнечная поддержка",
+        ResidentRoleSocialSupport => "социальная поддержка",
+        ResidentRoleResourceSupport => "ресурсная поддержка",
+        ResidentRoleDescentSupport => "поддержка нисхождения",
+        ResidentRoleHealingSupport => "целитель",
+        _ => "роль не подтверждена"
+    };
     public static bool IsSupportedHallServiceTag(string? value) => !string.IsNullOrWhiteSpace(value) && AllowedHallServiceTags.Contains(value);
     public static bool IsSupportedProjectStatus(string? value) => !string.IsNullOrWhiteSpace(value) && AllowedProjectStatuses.Contains(value);
     public static bool IsSupportedProjectArchetype(string? value) => !string.IsNullOrWhiteSpace(value) && AllowedProjectArchetypes.Contains(value);
