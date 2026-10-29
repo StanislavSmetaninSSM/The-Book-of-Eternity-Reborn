@@ -58,7 +58,7 @@ No cache or retained JsonNodes; exports are detached, new action reads fresh ter
 Actual source-open counters compare one/many members and changed terms. Keep all current
 materialization and authority boundaries; display never authorizes a charge or heal.
 
-Finite implementation / acceptance — Linux verified, final OUTCOME pending
+Finite implementation / acceptance — bounded Linux result ACCEPTED
 
 - [x] Canonical scope and existing callers inspected; bounded Astra/high DESIGN accepted,
   including unchanged source-prefix extraction before resource projectors.
@@ -79,7 +79,8 @@ Finite implementation / acceptance — Linux verified, final OUTCOME pending
   manifest and executable source/documentation guards synchronized. No pending schema.
 - [x] Four fresh owning builds, PDB/artifact proof, exact discovery/PlanOnly, approved
   two-batch actual runtime and strict complete-union/capture verification below.
-- [ ] Independent final OUTCOME/checkpoint review and remote acceptance publication.
+- [x] Independent final Sol6.1/xhigh OUTCOME/checkpoint review accepted; publish this
+  documentation-only acceptance and verify its remote SHA. No build/test repeat needed.
 
 Verified current source: 5841f627fcf7a6f093b9e196176c52896f146df4 (implementation at
 7ef85d222; 5841 only recorded reviewed plan/SOURCE status). Same Linux environment,
@@ -146,13 +147,28 @@ At completion 7654645760 bytes free; preserve400MiB build-start and128MiB runtim
 plus full uncapped output. No live owned build/test remains. Previous complete role
 raw and both artifact archives are retained; external raw/saves/recovery were not deleted.
 
-Current bounded user result is implemented and runtime-verified; independent final
-OUTCOME acceptance remains pending. Historical-faction T142 awaits the owner's answer
+Current bounded user result is implemented, runtime-verified and independently accepted.
+Sol independently parsed all ten TRX, checked the exact method/case union and IDs,
+all 27 artifact / 56 source pins, all 102 full-capture files and no live owners.
+The preceding checkpoint a4dbc13e4207bcf38a3f705eba53cf5f57efe762 was pushed and its
+remote SHA verified. This acceptance changes only plan/tasks; compiled source remains
+5841f627fcf7a6f093b9e196176c52896f146df4. Capture-manifest SHA256:
+86aa4f7ba333a0c73636700b9908dd17c435ea818a3b1fbf3da5ac998baa443f.
+ Historical-faction T142 awaits the owner's answer
 and is unchanged. Real Shining service execution/confirmation, universal Elyara travel,
 negotiated routes and wholeUS6/#1536 remain open. DOM/provider/fresh-process and Windows
 are not inferred; DFR/Mortal timeouts, first-guardian intermittence and cross-OS DATA
 remain open/HOLD. No new clone/restore; remote persistence is not claimed full fresh
 recovery. Only compact human findings, code/tests/docs and authored catalogs enter Git.
+
+Next functional step by the current US6 dependencies: T143 universal
+«Пойти к Элиаре за лечением», using the same canonical Elyara's current location/life
+and ordinary reachability/access rules (T140/FR081–082). Fresh stale-offer refusal
+must precede travel/payment/treatment; death removes the action, accepted relocation
+is preserved and the allowed travel/safe-cycle operation advances the scheduler once.
+Inspect existing travel/service ownership before implementation; do not duplicate the
+already accepted local paid treatment or invent access/economic rules. This independent
+route can proceed while T142's historical-faction author answer remains pending.
 
 ---
 
