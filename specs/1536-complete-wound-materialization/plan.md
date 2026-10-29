@@ -1,170 +1,117 @@
-# Separate healed wound History Implementation Plan — T119-HISTORY-VIEW
+# T119-HISTORY-VIEW — accepted explicit known healed History navigation
 
-> Agentic implementer: superpowers:executing-plans inline; root sole writer/runner.
-> Existing Spec Kit artifacts and explicit autonomy apply; no duplicate plan/worktree.
+2026-10-29. Issue: https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536
+Branch: `1536-linux-qualification-20261025`; same Linux machine and checkout.
+Spec FR-067/068/075/076, data-model.md section18. Qualification source
+`a8af9e1e3f8767d78c529ca82f6f0dec26d2b986`. Only this bounded task closes;
+parent T119/T121/US5/US6 and #1536 remain open.
 
-**Goal:** `/раны` shows active wounds only; a separate explicit History action opens
-known healed records and can return to active wounds through both existing UIs.
-**Architecture:** existing projection/context, UiAction command navigation, shared
-result builder/catalog/parser and console/browser handlers. No retained History DATA,
-new store/cache/protocol block, treatment authority or economic rule.
-**Tech stack:** C#/.NET8, current semantic UI and official PowerShell7 category runner.
-**Spec:** #1536 FR-067/068/075/076, data-model.md section18; T119-HISTORY-VIEW.
+## Player result
 
-Start: HEAD==remote38669b6dc801b668400bed34bcfd6cb2041c177d, clean same Linux machine,
-no active owned process. Actual gap: shared builder unconditionally appended healed
-History to default `/раны` and treatment output; explicit History navigation absent.
-Existing aliases, Self/known foreign projection and current private-aid treatment
-already exist, despite their parent tasks being unchecked. Do not reimplement them.
-Other real US5 gaps: diagnosis execution, broader Mortal/realm/helper/route flow,
-US6-dependent provider/quote access and dedicated responsive browser cards/rendered
-acceptance. They stay open; the chosen History read does not depend on US6 services.
+Default `/раны` / `/wounds` now shows only active own current-realm wounds.
+A separate «История заживших ран» action (`/раны история` / `/wounds history`)
+opens known healed records or an explicit empty state; «Активные раны» returns to
+the default view. The History action is present without revealing hidden counts.
+Treatment output does not append History or offer read-navigation actions.
+Hidden/foreign/other-realm terminal records and canonical identities are excluded
+by the existing strict safe projection. Unavailable DATA is not called empty History.
 
-Safe storage preflight: no unfinished Git pack or Git lock found. Only completed-task
-untracked Main/Integration obj DLL/PDB duplicates were removed (71,200,296 bytes),
-SHA256 equal to retained owning bin outputs. No raw/save/recovery/source deletion;
-external reclaim proof retained. Free480976896 bytes;400MiB build/128MiB runtime
-reserves unchanged and rechecked before each owning build/run. No clone/restore/GC.
+Shared console/browser handlers use existing UiAction/catalog/parser/result blocks.
+Every action obtains a fresh coherent context; static navigation commands retain no
+DATA or permission. Unknown/trailing read arguments are local errors before History
+reads and never become freeform GM input. Console forwards original input and uses
+Close-first navigation; browser preserves full read input while its treatment token
+path remains unchanged. No roll, attempt, resource charge, world cycle or gameplay
+repair/mutation is caused by read/back/close. Existing session/lease checks remain.
 
-Chosen technical route: reuse existing UiAction command links and command catalog
-subcommands (`/раны история`, `/wounds history`, same canonical read); the command is
-client navigation, no new GM-authored schema. A new retained prompt/selection state
-is unnecessary because each click opens a fresh read. Merely hiding History in one
-renderer would leave console/browser meaning inconsistent and was rejected.
-
-Global constraints: current-realm Self knowledge only, no hidden terminal names/
-counts/foreign History/technical identities, no old snapshot lending authority.
-Reads/cancel/back do not repair or mutate gameplay, allocate a die, charge or advance
-time; ordinary owned UI lock traffic remains. Existing treatment flow and publication
-freshness stay unchanged. Diagnostic output remains full and outside checkout;
-no unchanged PASS/full suite/HOLD DFR/Mortal/Windows/performance replay.
-
-Review focus: treatment accidentally entering History; hidden/unknown terminal
-snapshots or realm switch; unknown subcommand/trailing arguments silently accepted;
-stale read action retaining old DATA; console auto-choice/markup and browser action
-parity. Add one finite cheap control for each applicable boundary.
-
-- [ ] Bounded independent design/fixture feasibility review; no author rule required.
-- [ ] Add one pure existing-builder causal test: valid terminal projection and
-  empty-active status present, known healed sentinel absent from default output. Fresh Unit owning build, discovery,
-  exact PlanOnly/resource/PREP and expected semantic RED; no production C# yet.
-- [ ] Shared builder: default active/treatment omit History; explicit History view
-  renders only safe existing projected healed entries or an explicit empty state.
-  Active read offers History without revealing counts; History offers active view.
-- [ ] Catalog/parser and application read routing: exact registered History aliases,
-  reject unknown/trailing arguments, fresh same existing context per action. Browser
-  forwards full parsed input; console uses existing action labels/commands with
-  explicit close and fresh reads. No new retained state or across-prompt cache.
-- [ ] Finite pure negatives plus minimal real console/browser active→History→back/
-  cancel/alias/source/mutation controls, using existing coherent terminal/lease
-  fixture patterns, all setup complete before first owned interaction. GM/CLI/docs/
-  both daemon/example/manifest/typed guard synchronized with no new authored DTO.
-- [ ] Coherent independent SOURCE/selection, fresh affected builds/catalog/exact
-  plan/resource/PREP, selected GREEN and OUTCOME, compact verified remote checkpoint.
-  Close only bounded task; no whole US5 or rendered DOM/provider claim.
-
-Optimization: use the existing invocation context and terminal snapshot projection;
-no new filesystem path or duplicate catalog/History reconstruction in rendering.
-Current History verification is still needed for canonical agreement even when
-History is not displayed. Each navigation action reads fresh current DATA; no prior
-permission or returned graph is retained. The small command parse/format is trivial,
-so no cache applies. Assert real source events and no gameplay mutations, preserve
-all integrity/lease/History checks, do not infer a speedup. All new checks UNRUN.
-
-Causal scaffold written: existing WoundPlayerHistoryTestData.TerminalInput proves
-coherent known terminal History; actual shared builder returns inert default active
-result/status before the final absent-healed-name assertion. Existing production C#
-is unchanged. Category wound-history-causal owns exactly one pure Unit fact/60s;
-current selection is causal only. New test is UNCOMPILED/UNRUN pending source/PREP.
-
-Causal RED accepted independently atbc464de5ecaab6835aa06225e90b232e7665efb4:
-fresh Unit0errors26baselinewarnings1:05.53; catalog1074/12790 valid; exact1 case/method
-PlanOnly0exec/PREP. Actual1executed1expectedFAIL at final line25 healed-name absence,
-valid terminal projection/inert/status controls passed;18.0271572s wall, no timeout/
-skip/duplicate, cleanuptrue,18artifact90sourcepins unchanged. TRXsha256
-`e04871ad7d6e720c9b9bbb2d95281b5ab374332be0059cd8bc24f47de0521458`.
-Fullraw outsidecheckout wound-history-causal-{build,catalog,plan,preflight,red}-1.
-
-GREEN source WIP1, UNCOMPILED/UNRUN: shared builder separates active/treatment from
-explicit History and returns only static read actions; existing parser/catalog gains
-History subcommand aliases. ParseReadCommand rejects wrong/trailing args before DATA;
-browser forwards full raw input ONLY for wounds read, preserving treatment token path.
-Console forwards original raw read input, uses Close-first existing action labels,
-reloads per action, and locally rejects unknown wounds subcommands instead of GM
-fallback. No retained History state/cache. Pure read-mode/privacy/alias tests written;
-existing terminal helper accepts optional display name BEFORE strict reconstruction,
-with default unchanged, for literal-text fixture evidence. Actual UI/GM tests/sync and
-coherent SOURCE/selection remain pending. No new pass inferred; accepted55 unchanged.
-
-GREEN source WIP2, UNCOMPILED/UNRUN: finite real console/browser fixture now uses the
-existing strictly reconstructed terminal helper and read filesystem fixture. It
-initializes generation before snapshots, records all attempted mutations only in
-user-operation windows, rechecks History source counts per fresh action, and uses
-full canonical History+identity replacement for the hidden-state stale-action control.
-Console action loop is Close-first; explicit History/back/close and literal text
-are tested, with exact owned token release if a token exists. Unknown/trailing arguments cannot become
-GM input; browser rejects trailing arguments before session/source work using its
-existing structured error pattern. Read-only browser calls need not mutate UI locks;
-all observed mutations, if any, must still be owned UI-lock traffic.
-
+A real browser defect exposed by qualification was fixed in the existing normalizer:
+English command-hint matching removed `/b` or `/em` from literal closing HTML tags,
+turning them into `<>`. One constant-width negative lookbehind preserves that text;
+ordinary hints remain filtered. No sanitizer bypass, weaker private-data filter,
+new diagnostic stack, renderer, protocol block, store/cache or GM DTO was introduced.
 GM guide/CLI/Matrix/Rules/task guide, both effective daemon directives, worked
-accepted-heal→read navigation fixture, manifest and typed consumer guard now share
-wound_history_view_v1. No new GM DTO/terminal-authoring authority or healing/economy
-rule. The shared CLI guidance covers both Mortal and afterlife reads; Rules/Block_21
-healing arithmetic and afterlife registry paths need no change. Frontend source and
-protocol blocks are unchanged, so no npm aggregate/DOM claim; dedicated cards remain
-T126 work. Selection owns causal1, pure20, actualinterfaces8, GM1 and the small affected
-existing parser group (actual count from discovery pending). Original budgets60s;
-no unrelated console aggregate or unchanged55/36/HOLD rerun. Coherent SOURCE next.
+accepted-heal→read navigation fixture, manifest and typed consumer are synchronized
+under `wound_history_view_v1`. Existing literal-safe FR076 guidance covers the fix.
 
-Coherent Sol SOURCE/selection found one fixture-only assumption: read-only console
-/wounds bypasses the mutating-command UI-lock acquisition just like completed browser
-reads, so the mutation list can legitimately be empty. Removed only NotEmpty; every
-attempted mutation still must be the allowed UI-lock path, and snapshots/source/repair/
-optional exact token release remain. No production lock traffic was added. No other
-SOURCE blocker found; expected38 cases/19 methods awaits discovery. All66 existing
-World source pins match with changed-file intersection0; no World pin update/repeat.
-Narrow delta SOURCE closure and fresh affected builds are next; GREEN still UNRUN.
+## Verification, review and exact source lineage
 
-GREEN actual1 at30865939e: fresh4 builds exit0, warning identities unchanged12/23/26/102;
-catalog1078/12801 valid; exact38cases19methods/PREP. Actual38executed35PASS/3browserFAIL,
-wall39.8808159s, no timeout/skip/duplicate, completecounts/cleanuptrue, all8fixture roots
-removed/leasesinactive,18artifact95sourcepins unchanged. Independent partial OUTCOME
-accepted. Retain causal1+routing8+contract20+GM1+console1+invalidsyntax4=35. Three failed
-browser literal-name checks occur before its hidden-state freshness assertions.
+- Sol6.1/xhigh independently accepted bounded DESIGN, causal scaffold/SOURCE,
+  coherent GREEN SOURCE/selection, correction deltas, every PREP/OUTCOME and final
+  distinct union. No architecture escalation or World-source change was required.
+  One SOURCE finding removed the fixture's incorrect expectation that read-only
+  `/wounds` creates a UI token; all mutation-path/snapshot/source/repair checks and
+  exact token release if one exists were retained. No production lock was added.
+- Original causal RED atbc464de5ecaab6835aa06225e90b232e7665efb4: valid strictly
+  reconstructed terminal History and inert empty-active result precede final line25
+  healed-name absence failure. Exact1executed1expectedFAIL,18.0271572s wall, no timeout/
+  skip/duplicate, cleanuptrue,18artifact90sourcepins unchanged. TRXsha256
+  `e04871ad7d6e720c9b9bbb2d95281b5ab374332be0059cd8bc24f47de0521458`.
+- Initial source30865939e252825f54c22a404c23c42732b1b0e5 fresh Main/Support/Unit/Int
+  builds all exit0; baseline warnings12/23/26/102, elapsed2:02.36/17.75s/1:18.62/3:21.54.
+  Actual38 executed35PASS/3browser literal-textFAIL,39.8808159s wall, complete counts,
+  no timeout/skip/duplicate, cleanuptrue. The three failed checks stopped before the
+  browser hidden-state freshness step; no success was inferred for that step.
+- Cheap typed browser probe atdd2cba166b79f9b43aa29cb5722f7e7a8c9e57ac confirmed the
+  exact corruption before the regex change:5executed3expectedliteralFAIL/2hintPASS,
+  11.4558893s wall, input immutability checked first, full counts/cleanup. TRXsha256
+  `c14972944ee31c95ec54756ea0b46e754bebaebec8c775f3bfd1fd4cedde6a47`.
+  The two pre-fix control passes are superseded by the complete fixed five.
+- Final fresh Main/Support/Unit/Integration at a8af9e1e3f8767d78c529ca82f6f0dec26d2b986:
+  all exit0, identical warning identities12/23/26/102, elapsed1:46.61/16.03s/1:13.74/
+  2:17.04. All18 DLL/PDB artifact paths, copied Main/Support dependencies and107
+  source/input paths verified. Existing NPC hint fixture uses an immutable empty
+  skeleton plus a931-byte repository journal, not a full session or GameEngine.
+- Catalog valid1081categories/12803methods, zero stale/unmapped selectors. Exact current
+  PlanOnly8descriptors/44cases/22methods, zero execution. Selection owns
+  wound-history-{causal,command-routing,contract,gm,read-interfaces,browser-text,
+  browser-read,browser-hints}; each category retains60s. No complete suite is used.
+- **44 DISTINCT PASS /22methods across three accepted runner source lineages, not
+  one fresh44 run:**35 at308 (causal1+routing8+contract20+GM1+console1+invalidsyntax4),
+  fixed typed5 at a8, then fixed browser3+nearest existing NPC hint1 at a8. Unique
+  accepted test/execution IDs44 exactly match the current full plan. Unaffected35
+  were not repeated; old failed rows and expected RED captures remain preserved.
+- Fixed text5 wall12.1077058s/category5.2866382s. Final browser4 wall28.3996127s;
+  all categories under60s, complete counts, no timeout/skip/abort/duplicate. Browser
+  literal-name, fresh hidden History+identity replacement and back navigation now
+  pass; ordinary hint and raw-path filtering remain tested. All8 accepted History
+  fixture roots were removed with inactive quiescence leases; the NPC guard uses
+  its existing guarded immutable-template disposal and runner cleanup.
 
-Bounded cause trace: existing default-browser Normalize→Sanitize→English slash-command
-hint regex treats /b in literal </b> as a command; console preserves the same name.
-No advanced-mode/normalizer bypass, weakening assertion or new diagnostic stack.
-Add existing typed Normalize(UiTextBlock) probe with closing-tag, mixed /help hint,
-ordinary /npc_talk hint and immutable-input controls; production unchanged until its
-cheap RED confirms the cause. Then minimal immediate-< exclusion in that regex,
-retaining all technical/privacy filters, followed by failedbrowser3 and nearest real
-NPC hint guard only. New category split avoids replay of accepted35; final full
-selection will include new typed controls and existing actual hint guard. Probe
-UNCOMPILED/UNRUN; no new GREEN claim. GM literal-safe text is already the FR076
-contract; this correction introduces no new authored format/permission.
+## Reuse, storage and remaining work
 
-Storage: completed actual1 owners ended; reclaimed only fresh Main/Int untracked obj
-DLL/PDB duplicates matching pinned retained bin (71,228,540 bytes). All source/raw/
-saves/recovery and18 owning evidence artifacts retained;400MiB/128MiB unchanged.
+Existing context/catalog/History projection is reused once per invocation. Rendering
+adds no filesystem work, graph reconstruction or cache. A fresh read is required
+across user actions; no old projection or authority is retained. Tiny command parsing
+and a constant-width regex guard do not justify new caching. Actual History source
+counts pass: one per browser read, three across console active→History→active and
+zero for invalid reads. StateManager repair hooks stay zero; mutation observers
+remain armed during user operations and every attempted mutation must be allowed
+UI-lock traffic (none is required for a read). Whole gameplay snapshots agree.
+These are source-event counts and functional timings, not a speedup/syscall claim.
 
-Typed browser probe atdd2cba166b79f9b43aa29cb5722f7e7a8c9e57ac confirmed the cause:
-fresh Unit0errors26samewarnings1:16.67; validcatalog1081/12803 and exact5case/2method
-PREP. Actual5executed3expectedliteralFAIL/2ordinaryhintPASS, wall11.4558893s, no timeout/
-skip/duplicate, cleanuptrue,18artifact97sourcepins unchanged. Exact actual strings lost
-/b or /em and became <>; input remained unchanged. Fullraw browser-probe-*-1 retained.
+Full raw remains outside checkout under
+`/workspace/tboe-linux-evidence-20261025/us4-self-healing/`: `wound-history-*` and
+`wound-history-qualified-distinct-44/evidence.json`. Both expected REDs and the
+failed browser attempt are preserved. No raw, saves or recovery copies were deleted.
+Disk preflight found no unfinished Git pack/lock; only completed-build untracked obj
+DLL/PDB duplicates, each SHA256 equal to retained owning bin output, were reclaimed
+as necessary. No unique binary evidence was lost. Original400MiB build/128MiB runtime
+reserves were never lowered; recheck free space before another build.
 
-Minimal production correction now excludes an immediately preceding < from the same
-existing English slash-command regex. No sanitizer bypass/new stack, no removal of
-privacy/technical filters, no renderer/GM DTO or cache change. Constant-width lookbehind
-adds no expensive data/source work and no speedup is claimed. Existing FR076/GM literal
-text guidance already governs this defect; no new authoring format/rule is required.
-Category responsibility now describes the remaining readinterface5 accurately. Full
-selection expected44cases22methods across8 categories (discovery authoritative): retain
-35source308; requalify newtyped5 and failedbrowser3 plus nearest existing realNPChint1.
-Source delta review, fresh affected builds/plan/resource/PREP remain pending. Admit cheap
-5 first; only after verified PASS run browser3+NPChint1. Do not rerun unaffected35.
+Checkpoint contains code, source fixture inputs, catalog/selection, GM docs and compact
+findings only; no raw/TRX/diagnostic JSON/archive/binary. Read remote SHA after push.
+No new clone/restore was performed under the user's restriction; do not claim a new
+clean-restore qualification. Prior accepted foreign-detail55/target-navigation36
+remain on their explicit lineages below, without repeat or cumulative-suite claim.
+
+Real remaining US5 work includes broader diagnosis execution/timing, other-realm/
+Mortal target/route/helper execution, US6-dependent provider/quote access and dedicated
+responsive browser cards/rendered acceptance (T126/T130). Existing aliases and current
+self/private-aid treatment are not missing merely because parent checkboxes remain
+open. This slice uses existing terminal projection and qualifies the read flow; it
+does not requalify every historical producer. DOM/provider/fresh-process, DFR/Mortal/
+Windows/performance HOLD, first-guardian intermittent timeout and cross-OS DATA
+limitations remain open. No economy/service rule was invented.
 
 # T119-FOREIGN-DETAIL — accepted known foreign spiritual wound card
 
