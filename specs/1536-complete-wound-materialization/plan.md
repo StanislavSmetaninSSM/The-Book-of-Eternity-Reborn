@@ -1,3 +1,22 @@
+# T142 owning build continuation — Integration-only fixture compile correction
+
+Main/Support5b6b completed0errors,12/23baselinewarnings,2:37.08/13.00s.
+Unitd1a6f786d7838ff2aae8272bbd75f3e4b65df3d0 completed0errors/26baselinewarnings,
+1:17.37. Owning MSBuild _CopySourceItemsToOutputDirectory refreshed current registered
+content for Main/Support; all27 binary hashes unchanged,6changed resource copies exact.
+Tail SOURCE/selection independently accepted d1a6; no Main/Support C# delta.
+
+Integration first compile on d1a6 ended1error/102baselinewarnings1:44.00, before any
+GREEN runtime. New fixture hook constructor omitted mandatory loadTransactionOperations;
+use existing PhysicalLoadTransactionOperations.Instance, identical to the normal public
+constructor and existing lifecycle helper. No production change. Failed build preserved;
+this is not causal RED/qualification. Next fresh Integration-only retry; retain completed
+other3builds with explicit C# source equivalence/PDB/resource proof. No unrelated reruns,
+new build flags or diagnostic framework. Exact9-category discovery/PREP/runtime remains
+pending; all source/runtime capture/limits/HOLD conditions unchanged.
+
+---
+
 # T142 required worked-example closure — WIP, no GREEN runtime
 
 Whole production SOURCE/selection accepted5b6b52049e623a8c13a4f8affe8ce4c63b3983ca.

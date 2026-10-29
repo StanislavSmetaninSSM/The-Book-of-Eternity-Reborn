@@ -113,7 +113,7 @@ public sealed partial class FactionMaterializationValidationTests : IDisposable
 
         _fs = new FileSystemManager(
             _rootPath,
-            NullLogger<FileSystemManager>.Instance, hooks: hooks);
+            NullLogger<FileSystemManager>.Instance, PhysicalLoadTransactionOperations.Instance, hooks);
         _fs.EnsureDirectoryStructure();
         _validator = new ValidationService(
             _fs,
