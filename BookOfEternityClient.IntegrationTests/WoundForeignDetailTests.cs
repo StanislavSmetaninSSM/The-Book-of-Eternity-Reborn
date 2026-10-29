@@ -28,6 +28,8 @@ public sealed partial class WoundForeignDetailTests(ITestOutputHelper output)
         var paths = new[] { AfterlifeWoundTreatmentAuthority.AidLocalityPaths[0], GuardianAbodeResidentState.StatePath };
         var beforeReads = paths.Select(reads.ReadCount).ToArray();
         var opened = await WoundApplicationService.OpenAsync(fixture.Files, "/лечить", treatment: true);
+        for (var i = 0; i < paths.Length; i++) Assert.Equal(1L, reads.ReadCount(paths[i]) - beforeReads[i]);
+        beforeReads = paths.Select(reads.ReadCount).ToArray();
         var prompt = Assert.IsType<UiSelectionPrompt>(Assert.Single(opened.Prompts)); Assert.Equal("wound_target", prompt.Id);
         var target = Assert.Single(prompt.Options, o => o.Label == "Хранитель подробностей" && !o.Disabled);
         ExplorerCommandResult card;
@@ -39,7 +41,7 @@ public sealed partial class WoundForeignDetailTests(ITestOutputHelper output)
         Assert.Contains("Известное повреждение духовной ткани.", text);
         Assert.Equal(before, fixture.Snapshot()); Assert.Equal(mutations, fixture.MutationCalls);
         for (var i = 0; i < paths.Length; i++)
-            Assert.Equal(2L, reads.ReadCount(paths[i]) - beforeReads[i]); // One source event for each existing Open/Select invocation.
+            Assert.Equal(1L, reads.ReadCount(paths[i]) - beforeReads[i]); // Select consumes each locality root once too.
         // Valid target/name/inertness/source assertions precede the expected semantic RED.
         Assert.Contains(WoundForeignDetailTestData.VisibleSymptom, text);
     }
