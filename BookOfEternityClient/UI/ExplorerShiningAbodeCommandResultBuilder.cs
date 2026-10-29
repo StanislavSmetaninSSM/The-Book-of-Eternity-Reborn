@@ -1626,12 +1626,10 @@ public static class ExplorerShiningAbodeCommandResultBuilder
             blocks.Add(Panel("Жители фракции", new UiTextBlock { Text = "Сведения о составе фракции пока не подтверждены." }));
         else
         {
-            var members = roster.Select(member => (UiBlock)new UiTextBlock
-            {
-                Text = member.Name + " — " + member.Role + (member.HealingTier is int tier
-                    ? "; Исцеление " + (tier switch { 1 => "I", 2 => "II", 3 => "III", 4 => "IV", 5 => "V", _ => "—" })
-                    : string.Empty)
-            }).ToArray();
+            var members = roster.SelectMany(member =>
+                new[] { ShiningFactionHealingSupport.DescribeMember(member) }
+                    .Concat(ShiningFactionHealingSupport.DescribeAccess(member))
+                    .Select(text => (UiBlock)new UiTextBlock { Text = text })).ToArray();
             blocks.Add(Panel("Жители фракции", members));
             if (roster.Any(member => member.HealingTier is not null))
                 blocks.Add(new UiTextBlock { Text = "Условия помощи целителя определяются отдельно; роль не означает открытого приёма." });

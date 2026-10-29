@@ -38,7 +38,7 @@ handles restricted PUBLIC declarations that the currency admission deliberately 
   Feather tariff rows use existing CalculatePrice only if explicitly declared, and only
   severity <= min(current Healing tier, IV), preserving the existing H>=W gate.
 - Make ShowShiningFactionPoliticalInspectionPanel asynchronous. After PromptForFaction,
-  reload the existing current context and uniquely resolve the same exact revealed faction.
+  reload the existing source-only context and uniquely resolve the same exact revealed faction.
   Pre-choice DATA is only a selection snapshot. Then read profiles once, project once,
   and join political fields against the fresh resident root by private exact ID, not name
   or array index. Preserve loyalty, restlessness, project and other political display.
@@ -83,6 +83,35 @@ Finite implementation / acceptance
   projection/rendering; accepted paid 80 and HOLD DFR/Mortal/Windows are not substituted.
 - [ ] Commit/push verified checkpoint, read remote SHA; no merge/force/history rewrite,
   branch deletion, new clone/restore or old raw/save/recovery deletion.
+
+Current implementation checkpoint — WIP, UNCOMPILED
+
+The single causal no-argument console case ran on 9bddffc2ae0f63a6fca09a06132ce6c5c5c43e36:
+expected semantic FAIL at line 22, missing «Согласие Совета» after panel/literal-name/
+healer-role controls. Independent Sol RED OUTCOME accepted. Wall 18.7821453 s,
+category 8.895938 s < 60, complete one-case selection, no timeout/duplicates and both
+cleanup flags true. Category Completed=false is retained honestly for the FAIL.
+TRX SHA256 c531a54b96647cf9b4c79ce8699cd760718c44f6467498e1f60d411c6dad51d9.
+Fresh Unit build exit 0 / baseline 26 warnings / 1:21.52; Main/Support production was
+unchanged. Four PE/PDB pairs, 52 source bindings and 27 artifact paths verified.
+Catalog 1107/12853 valid; exact PlanOnly one case/one method/60 s, zero execution.
+Prior accepted 27 owning artifacts are retained in a fully decoded/hash-verified
+external gzip archive; role34/paid80 were not rerun or deleted.
+
+Astra DESIGN delta accepted extracting the unchanged read/parse/private-normalization
+prefix into ReadShiningContextSourcesAsync before the two resource projectors. Existing
+LoadShiningContextAsync retains both audience-aware projections and reroll derivation.
+The selected inspection needs four fresh roots plus one profile read, not unused
+resource reconstruction. Parsed roots remain one-operation private DATA; no dummy
+resource values, cross-selection cache or second loader framework.
+
+Production WIP now adds the read-only public-terms sibling, detached internal exact-ID
+join and shared role/access strings, browser rendering, and asynchronous legacy
+inspection with fresh unique revealed-faction/realm checks. Existing paid reader is
+unchanged. This code is not yet compiled or GREEN. Remaining: typed/actual UI and race/
+cost controls, existing full-context consumer proof, GM/docs/example/catalog sync,
+coherent SOURCE review, fresh affected builds, exact discovery/PREP, runtime/OUTCOME.
+No Shining treatment execution or historical-faction invariant is added.
 
 Resource / current boundary
 

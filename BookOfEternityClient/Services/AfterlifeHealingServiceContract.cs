@@ -8,6 +8,11 @@ namespace BookOfEternityClient.Services;
 internal sealed record AfterlifeHealingServiceProfile(WoundOwnerCoordinate Provider,
     string LocationRef, int HealingTier, int MultiplierPercent, string Fingerprint);
 
+/// <summary>Publicly declared display DATA, never proven player access or a quote.</summary>
+internal sealed record AfterlifeHealingServiceDisplayTerms(bool DeclaredAvailable,
+    int? MinimumRelationship, int MultiplierPercent, IReadOnlyList<string> CompensationKinds,
+    IReadOnlyList<string> AccessConditions);
+
 /// <summary>Immutable treatment terms. Physical generation belongs to the enclosing live owner.</summary>
 internal sealed record AfterlifeHealingServiceQuote(WoundOwnerCoordinate Provider,
     WoundOwnerCoordinate Patient, string WoundId, string WoundFingerprint, int SeverityRank,
@@ -30,6 +35,40 @@ internal static class AfterlifeHealingServiceContract
 
     internal static AfterlifeHealingServiceProfile? ReadPublicCurrencyProfile(
         WoundOwnerCoordinate provider, JsonObject actor) => ReadCurrencyProfile(provider, actor, requireAvailable: true);
+
+    // The caller already validated this roster profile's materialization. Keep
+    // restricted declarations separate from the unchanged currency-admission path.
+    internal static AfterlifeHealingServiceDisplayTerms? ReadPublicDisplayTerms(
+        WoundOwnerCoordinate provider, JsonObject actor)
+    {
+        if (provider is null || actor is null || provider.OwnerKind is not ("guardian" or "resident") ||
+            provider.CarrierPath != WoundCarrierCatalog.AfterlifeProfilesPath ||
+            !WoundEffectCarrierAdapter.TryCreateTargetKey(provider, out _) ||
+            !WoundCarrierCollectionAuthority.AfterlifeProfileMatches(actor, provider) ||
+            !AfterlifeEntityProfileState.TryNormalizeEffectRealm(Text(actor["realm"]), out var realm) || realm != provider.Realm ||
+            !AfterlifeProfileVisibility.IsVisibleToPlayer(actor) || Text(actor["lifeState"]) != "alive" ||
+            Text(actor["locationId"]) is not { } location || !ResourceMaterializationContract.IsExactIdentifier(location) ||
+            !AfterlifeEntityProfileState.TryReadRequiredWoundArtTier(actor,
+                AfterlifeSpiritualConflictState.SpiritualHealingArtId, out _, out var tier) || tier < 1 ||
+            actor["healingServiceProfile"] is not JsonObject service ||
+            !Closed(service, "providerId", "realm", "locationRef", "visibility", "availability", "minimumRelationship",
+                "priceMultiplierPercent", "compensationKinds", "accessConditions") ||
+            Text(service["providerId"]) != provider.OwnerId || Text(service["realm"]) != provider.Realm ||
+            Text(service["locationRef"]) != location || Text(service["visibility"]) != "public" ||
+            Text(service["availability"]) is not ("available" or "unavailable") ||
+            service["minimumRelationship"] is not null && Number(service["minimumRelationship"]) is null ||
+            Number(service["priceMultiplierPercent"]) is not int percent || percent is < 50 or > 200 ||
+            service["compensationKinds"] is not JsonArray kinds || kinds.Count is < 1 or > 6 ||
+            kinds.Any(k => Text(k) is not ("ink_feathers" or "favor" or "debt" or "quest" or "allegiance" or "free_aid")) ||
+            kinds.Select(Text).Distinct(StringComparer.Ordinal).Count() != kinds.Count ||
+            service["accessConditions"] is not JsonArray conditions ||
+            conditions.Any(c => string.IsNullOrWhiteSpace(Text(c))))
+            return null;
+
+        return new(Text(service["availability"]) == "available", Number(service["minimumRelationship"]), percent,
+            Array.AsReadOnly(kinds.Select(k => Text(k)!).ToArray()),
+            Array.AsReadOnly(conditions.Select(c => Text(c)!).ToArray()));
+    }
 
     private static AfterlifeHealingServiceProfile? ReadCurrencyProfile(
         WoundOwnerCoordinate provider, JsonObject actor, bool requireAvailable)

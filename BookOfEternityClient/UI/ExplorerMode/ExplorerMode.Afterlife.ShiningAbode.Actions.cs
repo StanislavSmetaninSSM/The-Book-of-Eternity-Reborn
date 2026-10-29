@@ -19,8 +19,11 @@ public partial class ExplorerMode
         IReadOnlyList<ShiningContextReadIssue>? ReadIssues = null,
         int RelicRerolls = 0);
 
-    private async Task<ShiningContext?> LoadShiningContextAsync(
-        ResourceProjectionAudience projectionAudience = ResourceProjectionAudience.Player)
+    private sealed record ShiningSourceContext(
+        JsonObject Root, JsonObject? ResidentRoot, JsonObject? GuardiansRoot, JsonObject? SoulRoot,
+        IReadOnlyList<ShiningContextReadIssue> ReadIssues);
+
+    private async Task<ShiningSourceContext?> ReadShiningContextSourcesAsync()
     {
         var shiningJson = await _fs.ReadFileAsync(ShiningAbodeState.StatePath);
         if (string.IsNullOrWhiteSpace(shiningJson))
@@ -92,6 +95,14 @@ public partial class ExplorerMode
 
         if (!hasMalformedLegacyPendingDiscovery && !hasMalformedTreasury)
             ShiningAbodeState.NormalizeStateRoot(shiningRoot, residentRoot, guardiansRoot);
+        return new ShiningSourceContext(shiningRoot, residentRoot, guardiansRoot, soulRoot, readIssues);
+    }
+
+    private async Task<ShiningContext?> LoadShiningContextAsync(
+        ResourceProjectionAudience projectionAudience = ResourceProjectionAudience.Player)
+    {
+        var source = await ReadShiningContextSourcesAsync();
+        if (source is null) return null;
         var gachaResources = await ResourceProjectionService.ProjectShiningGachaAsync(
             _fs,
             projectionAudience);
@@ -105,13 +116,13 @@ public partial class ExplorerMode
                 .Current ?? 0m
             : 0m;
         return new ShiningContext(
-            shiningRoot,
-            residentRoot,
-            guardiansRoot,
-            soulRoot,
+            source.Root,
+            source.ResidentRoot,
+            source.GuardiansRoot,
+            source.SoulRoot,
             gachaResources,
             relicRerollResources,
-            readIssues,
+            source.ReadIssues,
             decimal.Truncate(relicRerolls) == relicRerolls && relicRerolls <= int.MaxValue
                 ? (int)relicRerolls
                 : 0);

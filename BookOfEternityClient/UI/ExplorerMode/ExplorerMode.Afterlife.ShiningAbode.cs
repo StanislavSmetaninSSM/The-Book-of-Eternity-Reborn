@@ -513,7 +513,7 @@ public partial class ExplorerMode
 
             if (choice.Contains("политическое состояние", StringComparison.OrdinalIgnoreCase))
             {
-                ShowShiningFactionPoliticalInspectionPanel(context);
+                await ShowShiningFactionPoliticalInspectionPanel(context);
                 WaitForKey();
                 continue;
             }
@@ -1297,13 +1297,36 @@ public partial class ExplorerMode
             WriteJsonAuditPanel("Полный JSON shiningPoliticalActors[]", CloneShiningJsonForPlayerFacingAuditWithAuthority(actorsAudit, context.Root), Color.Orange1);
     }
 
-    private void ShowShiningFactionPoliticalInspectionPanel(ShiningContext context)
+    private async Task ShowShiningFactionPoliticalInspectionPanel(ShiningContext selectionContext)
     {
-        var faction = PromptForFaction(context.Root, "Выберите фракцию для политического осмотра");
-        if (faction == null)
-            return;
+        var selected = PromptForFaction(selectionContext.Root, "Выберите фракцию для политического осмотра");
+        if (selected is null) return;
 
-        var factionId = GetNodeString(faction["factionId"]) ?? string.Empty;
+        // User selection is a freshness boundary. Reuse the existing source
+        // reader, without computing unrelated gacha/reroll resource projections.
+        var factionId = GetNodeString(selected["factionId"]) ?? string.Empty;
+        var context = await ReadShiningContextSourcesAsync();
+        var matches = context is null ? Array.Empty<JsonObject>() :
+            SarefMainStoryState.GetPlayerVisibleShiningFactions(context.Root)
+                .Where(item => string.Equals(GetNodeString(item["factionId"]), factionId, StringComparison.Ordinal)).ToArray();
+        if (context is null || !RealmSemantics.IsAfterlifeRealm(GetNodeString(context.SoulRoot?["currentRealm"])) || matches.Length != 1)
+        {
+            ShowEmptyPanel("Фракция недоступна", "Текущие сведения о выбранной фракции не подтверждены.");
+            return;
+        }
+        var faction = matches[0];
+        JsonObject? profiles = null;
+        try
+        {
+            var payload = await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath);
+            if (!string.IsNullOrWhiteSpace(payload)) profiles = JsonNode.Parse(payload) as JsonObject;
+        }
+        catch (Exception ex) when (ex is JsonException or IOException or UnauthorizedAccessException)
+        {
+            // Unknown profile DATA supplies no roster capability or raw error text.
+        }
+        var visibleRoster = ShiningFactionHealingSupport.ProjectVisibleRoster(faction, context.ResidentRoot, profiles)
+            .ToDictionary(member => member.ResidentId, StringComparer.Ordinal);
         var factionName = GetNodeString(faction["charter"]?["factionName"]) ?? factionId;
         var hallName = ResolveShiningHallLabel(context.Root, GetNodeString(faction["hallId"]));
         var leadershipState = DescribeShiningLeadershipState(GetNodeString(faction["leadership"]?["leadershipState"]));
@@ -1386,7 +1409,8 @@ public partial class ExplorerMode
         var residents = (context.ResidentRoot?["entries"] as JsonArray)?.OfType<JsonObject>()
             .Where(entry =>
                 string.Equals(GetNodeString(entry["ascensionState"]), ShiningAbodeState.AscensionStateAscended, StringComparison.OrdinalIgnoreCase) &&
-                string.Equals(GetNodeString(entry["shiningFactionId"]), factionId, StringComparison.Ordinal))
+                string.Equals(GetNodeString(entry["shiningFactionId"]), factionId, StringComparison.Ordinal) &&
+                visibleRoster.ContainsKey(GetNodeString(entry["residentId"]) ?? string.Empty))
             .OrderByDescending(entry => GetNodeInt(entry["factionLoyaltyLevel"]))
             .ThenBy(entry => GetNodeInt(entry["factionRestlessness"]))
             .ToList() ?? new List<JsonObject>();
@@ -1402,8 +1426,9 @@ public partial class ExplorerMode
             foreach (var resident in residents)
             {
                 var residentId = GetNodeString(resident["residentId"]) ?? string.Empty;
-                var residentName = GetNodeString(resident["displayName"]) ?? GetNodeString(resident["residentName"]) ?? residentId;
-                var residentRole = DescribeShiningResidentRole(GetNodeString(resident["residentRole"]));
+                var member = visibleRoster[residentId];
+                var residentName = member.Name;
+                var residentRole = ShiningFactionHealingSupport.DescribeRoleAndTier(member);
                 var loyaltyLevel = GetNodeInt(resident["factionLoyaltyLevel"]);
                 var loyaltyTier = DescribeShiningFactionLoyaltyTier(GetNodeString(resident["factionLoyaltyTier"]));
                 var restlessness = GetNodeInt(resident["factionRestlessness"]);
@@ -1414,7 +1439,8 @@ public partial class ExplorerMode
                 lines.Add($"    Тир лояльности: {Markup.Escape(loyaltyTier)}");
                 lines.Add($"    Внутреннее брожение: [white]{restlessness}[/]/100");
                 lines.Add($"    Состояние перестройки: {Markup.Escape(realignmentState)}");
-                lines.Add($"    Идентификатор резидента: [dim]{Markup.Escape(residentId)}[/]");
+                foreach (var access in ShiningFactionHealingSupport.DescribeAccess(member))
+                    lines.Add("    " + Markup.Escape(access));
             }
         }
 

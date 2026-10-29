@@ -3,7 +3,8 @@ using System.Text.Json.Nodes;
 
 namespace BookOfEternityClient.Services;
 
-internal sealed record ShiningFactionRosterEntry(string Name, string Role, int? HealingTier);
+internal sealed record ShiningFactionRosterEntry(string ResidentId, string Name, string Role, int? HealingTier,
+    AfterlifeHealingServiceDisplayTerms? DisplayTerms);
 
 /// <summary>
 /// Detached roster/capability DATA over the caller's current parsed roots.
@@ -74,10 +75,53 @@ internal static class ShiningFactionHealingSupport
             var name = Text(resident["displayName"]);
             if (string.IsNullOrWhiteSpace(name)) name = Text(profile["displayName"]);
             if (string.IsNullOrWhiteSpace(name)) name = "Житель фракции";
-            result.Add(new(name, ShiningAbodeState.DescribeResidentRole(Text(resident["residentRole"])), tier));
+            var terms = tier is null ? null : AfterlifeHealingServiceContract.ReadPublicDisplayTerms(
+                new("shining_abode", "resident", id, WoundCarrierCatalog.AfterlifeProfilesPath), profile);
+            result.Add(new(id, name, ShiningAbodeState.DescribeResidentRole(Text(resident["residentRole"])), tier, terms));
         }
         return result.AsReadOnly();
     }
+
+    internal static string DescribeMember(ShiningFactionRosterEntry member) =>
+        member.Name + " — " + DescribeRoleAndTier(member);
+
+    internal static string DescribeRoleAndTier(ShiningFactionRosterEntry member) =>
+        member.Role + (member.HealingTier is int tier ? "; Исцеление " + RomanTier(tier) : string.Empty);
+
+    internal static IReadOnlyList<string> DescribeAccess(ShiningFactionRosterEntry member)
+    {
+        if (member.HealingTier is not int tier) return Array.Empty<string>();
+        var lines = new List<string>();
+        if (member.DisplayTerms is not { } terms)
+            lines.Add("Подтверждённые публичные условия помощи пока не объявлены.");
+        else
+        {
+            lines.Add(terms.DeclaredAvailable
+                ? "Целитель объявил приём открытым; ваш доступ нужно подтвердить отдельно."
+                : "Объявленный приём временно недоступен.");
+            if (terms.MinimumRelationship is int relationship)
+                lines.Add("Требуемый уровень отношений: не ниже " + relationship.ToString(System.Globalization.CultureInfo.InvariantCulture) + ".");
+            foreach (var condition in terms.AccessConditions) lines.Add("Условие: " + condition);
+            lines.Add("Виды вознаграждения: " + string.Join(", ", terms.CompensationKinds.Select(kind => kind switch
+            {
+                "ink_feathers" => "Чернильные Перья", "favor" => "ответная услуга", "debt" => "долг",
+                "quest" => "выполнение задания", "allegiance" => "обязательство верности", "free_aid" => "безвозмездная помощь",
+                _ => "не подтверждено"
+            })) + ".");
+            if (terms.CompensationKinds.Contains("ink_feathers", StringComparer.Ordinal))
+                for (var severity = 1; severity <= Math.Min(tier, 4); severity++)
+                    if (AfterlifeHealingServiceContract.CalculatePrice(severity, terms.MultiplierPercent) is int price)
+                        lines.Add("Объявленный тариф для раны " + RomanTier(severity) + ": " +
+                            price.ToString(System.Globalization.CultureInfo.InvariantCulture) + " Чернильных Перьев.");
+        }
+        lines.Add("Лечение через команду этого целителя пока недоступно.");
+        return lines.AsReadOnly();
+    }
+
+    private static string RomanTier(int tier) => tier switch
+    {
+        1 => "I", 2 => "II", 3 => "III", 4 => "IV", 5 => "V", _ => "—"
+    };
 
     private static bool IsCurrentMember(JsonObject resident, string factionId) =>
         !string.IsNullOrWhiteSpace(factionId) && !string.IsNullOrWhiteSpace(Text(resident["residentId"])) &&
