@@ -13742,7 +13742,7 @@ and both old journal prefixes. No paid/public/combat/helpless/Shining completion
 wound_target_navigation_v1 — worked client navigation, not a GM response
 A current visible resident offers private free help using the preceding accepted
 spiritual_resident_help_v6 contract. The player PATIENT chooses «Себя» (Self first).
-Public role/location distinguishes equal names; hidden facts and IDs stay private.
+Public kind/role/location distinguishes equal names; hidden facts and IDs stay private.
 The first sharedbrowser prompt accepts only this answer object:
 ```json
 {"wound_target":"target_0"}

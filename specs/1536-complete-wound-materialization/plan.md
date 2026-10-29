@@ -1,213 +1,97 @@
-# Current Chaos wound target choice Implementation Plan — T120-CHAOS-TARGETS
+# T120-CHAOS-TARGETS — accepted current-Abode target navigation
 
-> Agentic implementer: use superpowers:executing-plans inline; ROOT sole writer/
-> runner. Independent reviews per current project governance.
+2026-10-29. Issue: https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536
+Branch: `1536-linux-qualification-20261025`. Same Linux environment and checkout.
+Canonical scope: spec.md US5 / FR-070, FR-072–076; data-model.md section18;
+tasks.md T120-CHAOS-TARGETS. Broader T108/T120/T121/US5/US6 and #1536 stay open.
 
-**Goal:** /лечить lets the player select Self or a visible current-Abode actor,
-then inspect known wounds/requirements and confirm only an existing lawful action.
-**Architecture:** pure typed target read model over existing coherent read context/
-locality DATA; existing WoundCommandState and console/browser prompt lifecycle;
-no new mechanical authority, service registry, cache or canonical files.
-**Tech stack:** existing C#/.NET8 services, generic UI blocks/prompt sessions, official
-PowerShell7 category runner. **Spec:** #1536 spec.md US5/FR-070/072–076, data-model.md
-section18 Current Chaos target navigation; taskT120-CHAOS-TARGETS.
+## Player result and implementation
 
-188c4ea5570c6fbf941cbddf7c31d2a58b05d1b6 HEAD==remote verified, clean/same Linux
-machine, no active owned process, free546299904B. Prior105 and older accepted
-self/Guardian/resident scopes stay accepted on their stated lineages; open parent
-checkboxes do not mean those paths need reimplementation. Missing T108 routes are
-other helpers/helpless/unwilling/conflict/Shining; later US5 target/detail/privacy/
-guided parity and US6 quote/Elyara/Shining services remain genuinely absent/partial.
-Select this missing user-facing target step using the accepted helper dependencies.
+`/лечить` in the current safe Chaos Guardian Abode now offers Self first, then
+visible present exact Guardian/residents even without a treatment grant. Public
+localized kind, role, description and Abode distinguish equal names; indistinguishable
+public targets are unavailable. Known wound summaries and requirements follow the
+target choice. Hidden wounds/private NPC facts/IDs are not exposed; an empty or
+unavailable target is a read-only view. Selection and either cancellation stage
+do not start treatment. Receiving private help selects Self as PATIENT, then the
+existing lawful method and a separate confirmation. Existing single-Self/conflict
+flow remains direct. This is bounded navigation, not full NPC detail/diagnosis,
+new treatment authority, paid services or a dedicated browser-card implementation.
 
-Global constraints: no new game/economic rule; self/aid3/4/5/6 authorities unchanged;
-fresh consent/source/history/closing at confirmation/staging; hidden exact binding
-and current public facts only; no user saves/raw deletion/newclone/restore/history
-rewrite. Fullraw outsidecheckout. DFR/Mortal/Windows/performance HOLD. No provider/
-DOM/freshprocess claim. Git no-lazy-fetch and remote checkpoints remain mandatory.
+Existing WoundCommandState/application/builder/console and shared browser prompt
+sessions are reused. Frozen exact owner/locality/known-wound-set bindings reject
+stale indices; each phase/final confirmation reloads current coherent DATA. Browser
+phase replacement/removal uses immutable exact snapshot identity, cancellation/
+expiry/final publication share the actual existing lease, phase answer keys are
+closed, and prompt identity/expiry are checked after confirmation and immediately
+before the existing atomic queue write. Fresh generation/UI token/source/history/
+aid authority guards remain intact; no acquire fallback or new publisher.
 
-Review focus: display versus permission; same-name public ambiguity; stale old index
-retarget after reordered list; concurrent old browser phase/cancel/session change;
-private/hidden wound or actor facts leaking through context/empty counts.
+GM guide, CLI/Matrix/operations/task guide, both effective daemon directives,
+worked example, manifest and typed documentation guard are synchronized under
+`wound_target_navigation_v1`. No new GM output schema or economic rule is added.
 
-- [x] Independent Astra/high DESIGN ACCEPT at358b17333 after sole P2 browser
-  lifecycle closure; no remaining design blocker or author decision. Sol causal
-  fixture feasibility accepted. Existing-API singleton now written; production
-  unchanged, scaffold SOURCE/selection/build/catalog/Plan/PREP/runtime UNRUN.
-- [x] Existing-API semantic causal RED using minimal WoundPlayerReadFixture/OpenAsync;
-  no full game/native package for this display/navigation absence. Catalogue owner,
-  fresh owning build/discovery/exactPlan/resource/PREP, one compiling singleton.
-- [x] GREEN WoundTargetSelectionService, WoundCommandState, shared application/
-  builder/console/browser navigation branch; cheap pure scopes/privacy/old-token
-  controls, real source-read counters and minimal actual prompt/session tests.
-- [ ] Coherent GM/CLI/Matrix/both daemon/example/manifest/source-guard synchronization;
-  independent SOURCE/fixture/selection, fresh affected builds/catalog/Plan/PREP,
-  exact cheap GREEN/OUTCOME then proven selected native-controlled actual callers.
-- [ ] Verify complete raw/hash/cleanup/outcomes, concise canonical checkpoint and
-  remote SHA. Close only this task, not parent T120/US5/#1536.
+## Verification and review
 
-DESIGN review found one P2: existing ID-only prompt cleanup could erase a newly
-advanced same-session phase. Section18 now closes reference identity, exact conditional
-mutation, same-coordinator-lease cancellation/expiry/final admission and closed per-
-phase answer keys. No generic wizard/store or new publisher; delta DESIGN pending.
-Use existing passive source-read accumulator rather than arbitrary callbacks so
-measurement does not disable normal DATA reuse. Causal fixture feasibility accepted
-by independent Sol: existing minimal read fixture/known Self+visible exact Guardian,
-matching art mirror/no grant/no game bootstrap, valid Self choice and inert snapshot
-assertions precede the missing-target semantic assertion. All code/tests stillUNRUN.
+- Astra/high accepted DESIGN at `358b17333b19501758f9812dec4d5ee1da51c322` and SOURCE
+  at `bd94ebbe11f4c6885dc023472908d5912ff2fb51`. Three SOURCE P2s were corrected:
+  exact typed resident alias filtering, public kind disambiguation and fresh final
+  prompt expiry. Sol6.1/xhigh accepted fixtures/selection, correction deltas,
+  PREP and each reported OUTCOME. No unresolved review finding in this slice.
+- Original semantic RED at `99defd4da972d847f21281fbb8839ce10e8c0213` failed exactly
+  missing target navigation after valid Self/inertness assertions; now GREEN.
+- Fresh Main/Support/Unit at `bd94ebbe11f4c6885dc023472908d5912ff2fb51`: all exit0,
+  baseline warnings12/23/26, elapsed2:09.98/11.08s/50.35s. Fresh Integration final
+  at `df7bef8aac023358395c50263eeb8e86919ebb4f`: exit0,102 baseline warnings,1:57.35.
+  The12 retained dependency DLL/PDB paths are unchanged;18 total artifact paths and
+  70 current source pins verified. No new C# warning was accepted.
+- Final catalog valid:1068 categories/12780 methods, zero stale/unmapped selectors.
+  Exact final PlanOnly:10 descriptors/36 cases/23 methods, zero execution. It matches
+  the accepted union exactly. No complete suite or held gate was run.
+- **36 DISTINCT PASS across four explicit runner source lineages, not one fresh36:**
+  five unchanged browser flow/final cases at `f3e7eba7aa783651564f1aa803f6f8f710d8cba9`;
+  28 cheap cases at `736d7c2e256e218e5a16218c949b907f7cdeb4c8` (54.3851818s wall);
+  genuine backend6 and console patient5 at `9563f556611b839921995fec668980625d69b407`;
+  corrected shared-browser provider6 at `df7bef8aac023358395c50263eeb8e86919ebb4f`.
+  All accepted cases have unique test/execution IDs; no skip/abort/timeout/duplicate.
+- Actual backend1:TRX25.5469149s/category31.4222541s. Console1:TRX43.4117185s,
+  d20=14, final active II/progress2. Browser1:TRX78.7433580s/category83.8760903s,
+  wall91.5694785s, d20=10, final active II/progress2. Existing true grant43→cleanup→
+  confirmation→aid44 paths retain H3 helper/H0 patient, one cycle/attempt, unchanged
+  resources, exact History and both genuine journals. Every caller remains<180s;
+  every cheap category<60s. DOM/external provider/fresh-process are unqualified.
+- Attempts are preserved honestly: initial Integration missing UI import was a
+  compile failure; cheap attempt1 had8 PASS/1 generation-fixture FAIL and24 UNRUN;
+  only five unchanged cases were retained, prior freshness3 superseded. UIpair had
+  console PASS/browser fixture NRE before target submit because default browser
+  correctly omits hidden state. Existing replacement harness and public-option
+  selection corrected preparation; production/assertions were not weakened.
+- Root verified exact TRX/method/count/hash/capture and runner cleanup. Minimal
+  read fixtures emitted successful owned-root/lease cleanup; existing Engine
+  fixtures retain guarded Dispose and runner cleanup. All66 World pins match,
+  changed-producer intersection0, so unchanged World results were not repeated.
 
-Causal RED accepted: freshIntegration99defd4da0errors102unchangedwarnings2:08.81;
-16nonIntegrationartifactpaths retained unchanged,18artifact/55sourcepins verified.
-Catalog1062/12761valid/no stale/unmapped, exactPlan1case/1method/1descriptor0exec,
-independent PREP ACCEPT. Actual target-choice-causal-red-1 at99defd4da executed1,
-expected1FAIL/0PASS at testline52 missing wound_target (actual old wound_selection+
-confirmation). Valid availableSelf and inert whole-tree/mutation assertions passed
-first. Wall16.6920917s/category5.6984018<60, no skip/timeout/duplicate, selection
-complete, runner+fixturecleanuptrue; allpinsunchanged. TRXsha256
-982209e11c3263678a7496d4623ee10d2aa8ab87788f003121b19153209f36dc.
-Root strictsemanticREDverification and independent Sol OUTCOME ACCEPT. Fullraw
-outsidecheckout prefix target-choice-causal-{build,catalog,plan,preflight,red}-1;
-verified-semantic-red.json retains exact failure/source/TRX. GREEN/actualtarget
-capability still UNIMPLEMENTED/UNRUN, no capability PASS inferred.
+Optimization: one existing context/catalog/effects and one parsed locality pair
+per invocation serve target and aid consumers; one index over prepared wound DATA,
+no across-prompt cache or new framework. Minimal sealed passive source counts and
+actual genuine-aid Open/Select each verify one Guardian/roster source event per
+invocation, with fresh changed-profile refusal. This is not a speedup or an
+all-filesystem-read claim. Authority/expiry/source checks remain fresh.
 
-GREEN WIP1 (uncompiled/unreviewed): new pure WoundTargetSelectionService and
-immutable public summaries/hidden typed bindings, WoundCommandState target phase,
-independent minimal Unit contract fixtures written first. Covers Self-first/current
-Guardian+residents/no-grant known/hidden/empty wounds, public context ambiguity,
-exact join refusals and frozen old-token/reordered-list/changed-wound binding.
-No filesystem/retained cache in the pure service; prepared catalog indexed once.
-Application integration, actual UI/lifecycle/race/source-count tests and GM sync
-remain pending; existing-API causal behavior is not GREEN yet. No project execution
-with new production code, no capability/qualification claim.
+Full local raw: `/workspace/tboe-linux-evidence-20261025/us4-self-healing/target-choice-*`.
+Accepted union: `target-choice-qualified-distinct-36/evidence.json`; final exact
+plan: `target-choice-final-plan-1`. Current and partial raw are retained, no external
+raw/save/recovery deletion, no diagnostic artifacts committed or uploaded. No new
+clone/restore was performed under the current scope/disk restriction; prior accepted
+recovery is retained, not relabeled as a new clean restore. Remote SHA is checked
+after each checkpoint publication; final checkpoint SHA is reported separately.
 
-GREEN WIP2 (uncompiled/unreviewed): existing application now shares one parsed
-locality read for target and aid consumers, builds a no-grant target step and fresh
-SelectTargetAsync returning the shared ExplorerCommandResult (builder ruling: both
-callers consume one fresh result/state rather than reloading for rendering). Final
-confirmation retains selected-target/current-wound binding plus existing aid checks.
-Shared builder exposes public target labels/requirements only; NPC view omits Self
-History/private detail. Console two-step navigation is connected. Browser lifecycle,
-actual API/race/source-count tests, GM synchronization and complete SOURCE are still
-pending. No GREEN runtime or capability acceptance yet.
-
-Optimization decision: reuse one existing context/catalog/effects and one parsed
-Guardian/roster read per invocation for BOTH target and aid consumers. One lookup
-over already prepared wound DATA; no across-prompt cache. Each navigation/final
-confirmation is a fresh invocation, dependencies/owners as section18; fresh guards
-stay intact. Actual source-count assertions and negative mutations precede heavy
-callers; no speedup claim. GREEN implementation/build/tests remain UNRUN after the accepted causal RED.
-
-GREEN WIP3 (uncompiled/unreviewed): browser uses the existing coordinator/actual
-lease for target advance, final publication, cancellation and expired wound session
-cleanup. Same-session phase replacement and removal use exact immutable snapshot
-identity; closed answer keys reject cross-phase packets. Existing atomic publisher
-and UI token refresh remain fresh, without acquire fallback or nested leases.
-Two real minimal browser API tests cover both cancellation phases, no-grant view
-and cross-phase replay. Remaining race/source-count/caller tests and GM sync are
-pending; no GREEN runtime yet. 2026-10-29 06:02UTC same environment connected,
-no live build/test/reviewer, remote b8d1fe17 verified; RED result not repeated.
-
-GREEN WIP4, source candidate (all new C# still UNCOMPILED/UNRUN): finite real
-browser tests now cover target/wound cancellation, no-grant view, cross-phase keys,
-once-only queue, owner/generation/moved/hidden targets, final stale History/locality,
-foreign/expired lock and old-cancel/new-phase plus old-final/replacement races. The
-race pauses after real snapshot lookup BEFORE Main admission through one internal
-init-only wound-only test seam; the physical-lock seam would already own Main and
-was rejected by independent preparation audit before runtime. No normal callback,
-mutable store exposure, new authority or changed DATA cache path. Existing passive
-canonical counters cover one shared Guardian/roster read per invocation and fresh
-changed-profile refusal; this is not an all-filesystem/speedup claim.
-
-Proven aid fixture adapters now select PATIENT, Self when receiving help, before
-existing wound/confirmation. Selected actual regressions: console resident patient5,
-sharedbrowser resident helper6, and backend confirmed helper6. They changed at this
-boundary and are not repetitions of unchanged accepted105. Other old PASSES retained
-on original lineages. GM/CLI/Matrix/both effective daemon/worked example/manifest
-and typed documentation guard synced as wound_target_navigation_v1. It adds no GM
-schema, so extends the existing resident-help example coverage rather than inventing
-a new effect-materialization family. Cheap selection is causal+contract+browser+
-lifecycle+reads+GM, coherent singleton groups within unchanged60s; actual consumers
-retain180s each. SOURCE/selection/discovery/exactPlan/PREP/builds/GREEN pending.
-
-SOURCE correction candidate: Sol found and root verified a fixture distinction
-between global History ordinal2 and per-wound ordinal1; identity stays1. Added
-actual empty-NPC renderer absence of distinctive Self name/description, and actual
-shared locality source counts to the already-selected genuine provider6 backend
-Open/Select path (not just target-only fixture). Astra found three P2s: trimmed
-resident-kind enumeration could project a malformed alias; final prompt expiry
-was checked before but not after fresh validation; localized public resident kind
-was omitted. Exact typed enumeration/private-alias control, existing localized kind
-labels/distinct-kind control, and fresh host predicate after Confirm AND inside the
-same existing atomic publication callback close these paths. Two manual-clock
-boundaries keep the real UI token alive to19:59 then cross prompt20:00 at actual
-first/second UI-heartbeat mutation; no waits/budget/cache/authority relaxation.
-All corrections remain uncompiled/unrun pending delta SOURCE. No broad held gate
-is required for this independent functional slice by both scoped reviewers.
-
-Both scoped SOURCE/selection reviews ACCEPT bd94ebbe1 (Astra/high production,
-Sol6.1/xhigh fixtures/selection); no broad held regression required. Fresh Linux
-Main0errors12baselinewarnings2:09.98, Support0errors23baselinewarnings11.08s,
-Unit0errors26baselinewarnings50.35s atbd94ebbe1. Integration attempt1 compileFAIL
-only missing BookOfEternityClient.UI import for LocalizationManager in new browser
-fixture (CS0246 line294); no test ran. One import corrected, assertions/production
-unchanged. Rebuild Integration only; successful owning builds retained, source
-67pins and full logs outsidecheckout target-choice-green-build-1. Catalog/Plan/
-PREP/GREEN/actual callers still UNRUN; no capability acceptance inferred.
-
-Cheap attempt1 atf3e7eba7a stopped after first browser descriptor:9executed,
-8PASS/1FAIL,24UNRUN, no timeout/skip/duplicate, full owned/runtime cleanup. The
-failure was fixture setup for generation: RotateSessionGeneration was incorrectly
-called with ordinary canonical lease, rejected at EnsureValidSessionReplacementLease
-before exercising stale-form behavior. Reuse existing SessionReplacementTestHarness
-(lifecycle + replacement lease); no production change or guard relaxation. Five
-unchanged browser flow/final cases remain accepted from this trial; the changed
-four-case freshness method gets its own coherent60s category so its three prior
-passes are superseded by fresh four-case qualification, not double-counted. Other
-24cases remain UNRUN. Next: narrow fixture/selection review, Integration-only rebuild,
-exact residual Plan/PREP and28cases. Full cheap union remains33distinct cases on
-explicit lineages; no single fresh33claim if completed this way. Actual callersUNRUN.
-Full partialraw target-choice-green-actual-1 remains outsidecheckout, no deletion.
-
-Cheap functional OUTCOME ACCEPT (Sol6.1/xhigh): 33 DISTINCT PASS /20methods on
-explicit lineages, not one fresh33 run. Retain5 unchanged actual browser flow/final
-cases atf3e7eba7aa783651564f1aa803f6f8f710d8cba9; residual28/28 at
-736d7c2e256e218e5a16218c949b907f7cdeb4c8,54.3851818s,6/6descriptorscomplete.
-Per-categoryseconds causal4.6557019,contract4.2175756,freshness6.6091528,
-gm13.9171403,lifecycle8.5588272,reads5.0281713, all<60. Original missing-target RED
-is GREEN; sharedbrowser two phases/cancel/no-grant privacy/once-onlyqueue/fresh
-identity/generation/expiry/races and source-read control passed. No skip/abort/
-timeout/duplicate;12fresh+5retained ownedfixture roots/leases verified cleaned.
-18DLL/PDB and68source hashes preserved. Catalog1068categories12780methods,
-zero stale/unmapped; all66Worldpinsmatch/intersection0, no unchanged World rerun.
-Fullraw target-choice-green-{build,catalog,plan,preflight,actual}-* and union
- target-choice-qualified-distinct-33/evidence.json outsidecheckout; partialfirst
-attempt and older evidence retained, no external deletion. SOURCE Astra+Sol accepted;
-import/generation fixture corrections independently accepted. Actual console5,
-sharedbrowser6 and backend6 remain UNRUN pending exactPlan/resource/PREP; this
-checkpoint does not close T120-CHAOS-TARGETS or broader T120/US5/#1536.
-
-Optimization assessment: actual minimal sealed-counter path confirms each parsed
-locality root once per fresh invocation and changed-profile refusal with inert
-canonical files; no all-filesystem or speedup claim. Actual combined aid/navigation
-source counts are assertions in pending genuine backend6. Same operation context,
-prepared catalog and parsed roots reused; no across-prompt cache/new framework.
-Final current prompt/generation/UI authority and actual aid source/history fences
-remain fresh. No newclone/restore/deletion; accepted prior recovery unchanged.
-
-Actual backend OUTCOME ACCEPT at9563f5566: ConfirmedResidentOfferUsesResidentArtAnd
-PlayerNaturalTierThroughPublicationAndReplay1/1PASS,TRX25.5469149s/category31.4222541
-<180/wall40.1621064; genuine combined navigation+aid shared-read assertions passed.
-Actual UIpair finished9563: console resident-patient5 PASS43.4117185s; browser6
-FAIL22.7907584s at testhelperline251 BEFORE target submit/confirmation. Root cause:
-existing ApplyDefaultPlayerSurface deliberately projects only public browser fields,
-so adapting the fixture to dereference internal WoundCommandState was incorrect.
-Select via actual public Self label / public Guardian-or-resident context instead;
-assert the returned hidden state is absent, preserve server snapshot/authority and
-all original queue/patient/History/world/resource assertions. No production change
-or API leakage. UIpair2/2executed1PASS1FAIL,wall83.2833619s,no timeout/skip/duplicate,
-runnercleanuptrue. Retain console result; browser singleton alone remains pending
-review/Integration-only rebuild/exactPlan/PREP/rerun. Cheap33 and backend do not
-repeat. Fullraw target-choice-actual-{backend,ui}-1 retained outsidecheckout.
+Remaining boundaries: DFR300.1806894s timeout, Mortal compatibility timeout, first
+Guardian intermittent timeout and cross-OS DATA limitation remain open on their
+own routes. DFR/Mortal/Windows/performance are HOLD, not blockers for this independent
+functional result. Do not repeat accepted36 without a relevant change. Next work
+must target the remaining gameplay/US5 detail/route/helper/parity gaps under the
+canonical tasks; open parent checkboxes alone do not imply code is missing.
 
 # T108-RESIDENT-HELP accepted — resident offers free treatment to the player
 
