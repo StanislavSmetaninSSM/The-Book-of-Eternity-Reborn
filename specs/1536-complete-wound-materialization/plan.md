@@ -112,8 +112,20 @@ Its exact category is elyara-current-location-causal (one Integration case,60s).
 Independent Sol6.1/xhigh scaffold SOURCE/selection ACCEPT on
 96db3a6998df03118e51574d1b95eb0e2d3cd6b4, no material findings. Expected missing-action
 assertion is line27, after actual25 quote and whole-tree immutability controls. Production
-and existing helpers are unchanged; fresh Integration only is sufficient. PREP and
-actual semantic RED remain pending; GREEN implementation and route runtime are UNRUN.
+and existing helpers are unchanged; fresh Integration only is sufficient. Independent
+PREP accepted source2f3840fa3fcad94d05fbd4a6d91afbfcf547349f: Integration exit0,
+0errors/102baseline warnings/2:29.91;4 PE/PDB pairs,57sourcebindings,27artifacts, unchanged
+production/Unit. Catalog1114/12869 valid; exact PlanOnly1case/1method/1descriptor/60s,
+0 executions,7.8906944s, revision0/cleanuptrue. One actual singleton completed1/1 with
+expected semantic FAIL: empty Actions at line27 after actual quote25/inertness controls.
+Category10.7495736s<60; wall19.0463257s, no timeout/duplicate, both cleanups true;
+Category Completed=false retained for the FAIL. All27 artifact/57source pins unchanged.
+TRX SHA256 fedf40c7dcbe0e3594e23bd6693036d96f5bf5e7c19a4220c311aaf20a679835.
+External visit-causal-red/verified-expected-red.json records the complete assertion,
+stack and controls. Independent RED OUTCOME pending. GREEN implementation and route
+runtime remain UNRUN. Existing canonical plan is the durable inline ledger; repository
+rules override skill defaults for duplicate scratch ledgers, in-checkout raw and full
+suite repeats. No new worktree or generic diagnostic stack is needed.
 Accepted access27 owning artifacts were fully decoded/hash-verified into an external
 archive before replacing the Integration pair. No raw/save/recovery was deleted. Current accepted access-view80 and local-paid80 keep their separate accepted
 sources/results and must not be repeated without a changed dependency. Over7GiB free;
