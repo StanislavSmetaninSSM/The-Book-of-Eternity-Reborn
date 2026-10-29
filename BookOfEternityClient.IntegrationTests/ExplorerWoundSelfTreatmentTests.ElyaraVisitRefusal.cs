@@ -55,6 +55,11 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
             Assert.Null(await files.ReadFileBytesAsync(LiveTurnPreparationService.TurnRequestPath));
             Assert.Null(await files.ReadFileBytesAsync(AcceptedMechanicsPlan.WoundCommandPath));
             await files.WriteFileAtomicBytesAsync(path, valid); // Restore this test's deliberate invalid input, not an accepted game turn.
+            var restoredErrors = (await new ValidationService(files,
+                Microsoft.Extensions.Logging.Abstractions.NullLogger<ValidationService>.Instance).ValidateGameStateAsync())
+                .Where(issue => issue.Severity == IssueSeverity.Error).ToArray();
+            Assert.True(restoredErrors.Length == 0, "Restored fixture must be valid before the freeform subject: " +
+                string.Join("\n", restoredErrors.Select(issue => issue.Code + ":" + issue.Message + ":" + issue.Actual)));
             Assert.Null(await runtime.Explorer.TryProcessCommand(ordinary)); // Freeform does not run recognized-command reset.
             await runtime.Engine.ProcessPlayerTurn(ordinary);
             Assert.True(responded, "Abandoned visit prevented the unrelated ordinary turn.\n" + diagnostics.Describe());

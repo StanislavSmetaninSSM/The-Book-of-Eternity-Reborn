@@ -203,6 +203,7 @@ public sealed partial class ElyaraCurrentLocationNavigationTests
         var guardians = JsonNode.Parse((await files.ReadFileAsync(path))!)!.AsObject();
         guardians["guardians"]![0]!["abode"]!["isDiscovered"] = true;
         guardians["guardians"]!.AsArray().Add(source);
+        GuardianRelationshipRules.EnsureCanonicalNetwork(guardians["guardians"]!.AsArray());
         guardians["activeGuardian"] = source.DeepClone();
         guardians["chaosSeaNavigation"] = new JsonObject { ["currentGuardianId"] = "guardian_visit_source",
             ["currentAbodeId"] = "abode_visit_source", ["discoveredAbodes"] = new JsonArray("abode_visit_source", AfterlifeWoundTreatmentAuthority.ElyaraAbodeId) };

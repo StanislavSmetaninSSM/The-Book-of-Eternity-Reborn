@@ -242,6 +242,18 @@ elyara-current-location-health-refusal, one case/180s. New test is UNCOMPILED/UN
 production correction NOT APPLIED. No claim that the old successful compile qualifies
 this unresolved case. Existing selected runtime still UNRUN; no repeated accepted80.
 
+One actual health-refusal scaffold attempt on d123 completed1/1FAIL, no skip/timeout/
+duplicate/lost case, both cleanups true; category12.9770463s<180, wall21.8125349s.
+It is NOT causal RED: no stale-visit exception; restored two-Guardian baseline lacks
+both directed guardianRelationships entries and fails health again before the subject.
+Raw/TRX and explicit verified-fixture-failure.json are retained outside checkout.
+Fixture correction uses existing GuardianRelationshipRules.EnsureCanonicalNetwork
+before activeGuardian clone/sole resource bootstrap, plus explicit restored full-state
+validity before freeform. No production change/guard relaxation or blind retry.
+Integration-only fresh build and narrow review/PREP follow. Existing catalog ownership/
+method signatures and selected budgets are unchanged; do not replay complete discovery
+or accepted80 solely for these fixture body changes.
+
 All this GREEN code is UNCOMPILED/UNREVIEWED/UNQUALIFIED. Remaining finite work: complete
 new admission/accepted/race/source-count and Shining actual result/replay/rollback tests,
 GM effective guidance/examples/guards, whole impact selection/SOURCE, then one fresh
