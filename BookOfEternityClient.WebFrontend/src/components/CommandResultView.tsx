@@ -9,12 +9,12 @@ import { PromptForm, type PromptAnswers } from './PromptForm';
 import { WoundCommandView, woundViewMode } from './WoundCommandView';
 
 type LocalPromptResult = { commandResult: ExplorerCommandResult | null; result: ExplorerCommandResult };
-type PromptOperation = { commandResult: ExplorerCommandResult | null; kind: 'submit' | 'cancel' };
+type PromptOperation = { commandResult: ExplorerCommandResult | null; kind: 'submit' | 'cancel' | 'action' };
 
 export function CommandResultView() {
   const { advancedEnabled, commandResult, clearCommandResult, executeCommand, loadBrowserState } = useShell();
   const [promptAnswers, setPromptAnswers] = useState<PromptAnswers>({});
-  const [promptOperation, setPromptOperation] = useState<'submit' | 'cancel' | null>(null);
+  const [promptOperation, setPromptOperation] = useState<'submit' | 'cancel' | 'action' | null>(null);
   const [localResult, setLocalResult] = useState<LocalPromptResult | null>(null);
   const [promptError, setPromptError] = useState<string | null>(null);
   const activeCommand = useRef(commandResult);
@@ -26,6 +26,7 @@ export function CommandResultView() {
   const ownsOperation = activeOperation.current?.commandResult === commandResult;
   const isSubmitting = ownsOperation && promptOperation === 'submit';
   const isCancelling = ownsOperation && promptOperation === 'cancel';
+  const isBusy = ownsOperation && promptOperation !== null;
   const mode = result ? woundViewMode(result.command) : null;
 
   useEffect(() => {
@@ -36,13 +37,22 @@ export function CommandResultView() {
 
   if (!result) return null;
 
-  function handleActionClick(action: UiAction) {
-    if (activeOperation.current?.commandResult === commandResult) return;
+  async function handleActionClick(action: UiAction) {
+    if (activeCommand.current !== commandResult || activeOperation.current?.commandResult === commandResult) return;
     if (action.requiresConfirmation && !confirm(`Выполнить: ${action.label}?`)) return;
+    const operation: PromptOperation = { commandResult, kind: 'action' };
+    activeOperation.current = operation;
+    setPromptOperation('action');
     setLocalResult(null);
     setPromptAnswers({});
     setPromptError(null);
-    void executeCommand(action.command);
+    try { await executeCommand(action.command); }
+    finally {
+      if (activeOperation.current === operation) {
+        activeOperation.current = null;
+        setPromptOperation(null);
+      }
+    }
   }
 
   function handlePromptAnswerChange(promptId: string, value: JsonValue | undefined) {
@@ -142,7 +152,7 @@ export function CommandResultView() {
               key={action.id}
               type="button"
               className={`btn-action btn-action--${action.style.toLowerCase()}`}
-              disabled={isSubmitting || isCancelling}
+              disabled={isBusy}
               onClick={() => handleActionClick(action)}
             >
               {action.label}
@@ -172,7 +182,7 @@ export function CommandResultView() {
     </>
   );
   if (mode) return (
-    <WoundCommandView result={result} mode={mode} busy={isSubmitting || isCancelling}
+    <WoundCommandView result={result} mode={mode} busy={isBusy}
       onBack={() => { if (result.interactiveSession) void handlePromptCancel(); else clearCommandResult(); }}>
       {content}
     </WoundCommandView>
@@ -180,7 +190,7 @@ export function CommandResultView() {
   return (
     <div className="command-result-view">
       <div className="command-result-view__header">
-        <button type="button" className="btn-back" onClick={clearCommandResult}>← Назад к сцене</button>
+        <button type="button" className="btn-back" disabled={isBusy} onClick={clearCommandResult}>← Назад к сцене</button>
         <span className="command-result-view__title">Сведения действия</span>
         <span className="status-pill">{commandStateLabel(result.state)}</span>
       </div>

@@ -51,7 +51,7 @@ assertIncludes(
 );
 assertIncludes(
   commandResultView,
-  'void executeCommand(action.command);',
+  'await executeCommand(action.command);',
   'CommandResultView actions must execute through the existing shell command flow.'
 );
 assertIncludes(
@@ -176,6 +176,6 @@ assertIncludes(
 );
 assertIncludes(
   actionHandler,
-  'void executeCommand(action.command);',
+  'await executeCommand(action.command);',
   'Follow-up actions must still use the shell command executor.'
 );

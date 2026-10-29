@@ -13,6 +13,8 @@ export interface WoundBrowserFixture {
   commands: string[];
   clears: number;
   refreshes: number;
+  holdActions: boolean;
+  releaseAction: (() => void) | null;
 }
 declare global { interface Window { woundFixture: WoundBrowserFixture } }
 
@@ -22,6 +24,8 @@ function Host() {
   const shell = woundShell(result, {
     async executeCommand(command) {
       window.woundFixture.commands.push(command);
+      if (window.woundFixture.holdActions)
+        await new Promise<void>(resolve => { window.woundFixture.releaseAction = resolve; });
       setResult(woundCase(command === '/раны история' ? 'history' : 'active'));
     },
     clearCommandResult() { window.woundFixture.clears++; setResult(null); },
@@ -29,5 +33,6 @@ function Host() {
   });
   return <ShellContext.Provider value={shell}><CommandResultView /></ShellContext.Provider>;
 }
-window.woundFixture = { setCase() {}, result: woundCase, commands: [], clears: 0, refreshes: 0 };
+window.woundFixture = { setCase() {}, result: woundCase, commands: [], clears: 0, refreshes: 0,
+  holdActions: false, releaseAction: null };
 createRoot(document.getElementById('root')!).render(<Host />);

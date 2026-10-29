@@ -41,6 +41,11 @@ is recorded; recheck400MiB before each build and128MiB before runtime. Full raw 
 under /workspace/tboe-linux-evidence-20261025/us4-self-healing/wound-browser-*.
 DFR/Mortal/Windows/performance remain HOLD; full US5/US6/#1536 remain open.
 
+SOURCE review found action clicks did not claim the synchronous gate. Corrected
+with an action operation awaiting the existing executor, exact-identity release and
+busy exit. Controlled DOM will hold one action and prove duplicate suppression.
+This does not claim replacing parent ShellContext epoch/navigation ownership.
+
 Implementation WIP: WoundCommandView/scoped CSS, existing CommandResultView
 cancel-first header and current-command operation admission, optional existing
 PromptForm condition descriptions, actual-component public-packet tests and controlled
