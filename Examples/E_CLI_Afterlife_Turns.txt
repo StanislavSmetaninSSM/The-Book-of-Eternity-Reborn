@@ -13758,3 +13758,85 @@ grant/unknown or hidden-only wound: read-only empty/requirements view, no consen
 inferred. Final confirmation rechecks actual target/locality/wound/source/consent,
 generation and UI lease; cross-phase answers refuse. No new GM output schema;
 existing self/aid3/4/5/6 requests and authored healing graphs remain unchanged.
+
+
+wound_foreign_detail_v1 — worked known-card fragment, not a standalone response
+These authorable fields belong to a coherent already accepted current Guardian or
+resident wound. Existing owner/identity/History/consequence graphs are retained;
+this readable fragment alone grants no publication or diagnosis authority. Opening
+the card does not apply this fragment or ask the GM to mutate anything.
+```json
+{
+  "display": {
+    "name": "Известная рана обитателя",
+    "description": "Духовная ткань повреждена.",
+    "visibleSymptoms": [
+      "Заметная потеря устойчивости"
+    ],
+    "prognosis": "Известная рана поддаётся восстановлению.",
+    "visibility": "known_to_player",
+    "acquisitionNarration": "Пережитое давление оставило повреждение."
+  },
+  "treatment": {
+    "diagnosisPaths": [
+      {
+        "diagnosisPathId": "known_examination",
+        "displayName": "Уточнить состояние духовной ткани",
+        "visibility": "public",
+        "requiresKnownFacts": [],
+        "requirements": [],
+        "check": {},
+        "reveals": [
+          "route:undiscovered_rite"
+        ],
+        "failurePolicy": "no_reveal"
+      }
+    ],
+    "routes": [
+      {
+        "routeId": "known_support",
+        "displayName": "Поддержать духовную ткань",
+        "visibility": "known_to_player",
+        "mode": "procedure",
+        "requirements": [
+          {
+            "opaqueCondition": "ЧАСТНОЕ_УСЛОВИЕ"
+          }
+        ],
+        "resourcePolicy": {},
+        "resolution": {},
+        "outcomes": [],
+        "interruption": null
+      },
+      {
+        "routeId": "undiscovered_rite",
+        "displayName": "НЕРАСКРЫТЫЙ_РИТУАЛ",
+        "visibility": "hidden",
+        "mode": "procedure",
+        "requirements": [
+          {
+            "opaqueCondition": "ЧАСТНОЕ_УСЛОВИЕ"
+          }
+        ],
+        "resourcePolicy": {},
+        "resolution": {},
+        "outcomes": [],
+        "interruption": null
+      }
+    ],
+    "knownRouteIds": [
+      "known_support"
+    ],
+    "completedRouteIds": []
+  }
+}
+```
+Visible result: name/severity, declared visible symptom/prognosis, current readable
+care/recovery and exact visible owned effects if present. Поддержать духовную ткань
+is a recommendation with uncertain requirements, no executable route button.
+Уточнить состояние духовной ткани is a diagnosis recommendation, not an executed
+check or a grant of its future reveal. НЕРАСКРЫТЫЙ_РИТУАЛ and ЧАСТНОЕ_УСЛОВИЕ remain
+absent from both public views. No other actor's wounds, Self History, IDs, selectors
+or private complication/effect payloads appear. Read/cancel: ZERO attempt/draw/cycle/
+charge/repair. Existing lawful treatment, if actually available, still requires the
+separate exact consent/source/target checks and confirmation; no new service price.

@@ -3913,6 +3913,10 @@ Read contract:
   lineages remain their existing scopes; no broad accepted-PASS replay.
 
 Optimization and verification:
+- Compare summary fingerprints using the existing immutable identity.TryGetEntry
+  index already validated against the current catalog/History; do not recompute
+  each semantic graph fingerprint during formatting. This is DATA reuse within the
+  fresh invocation, never a replacement for the application's actual scope proof.
 - Reuse current read context/catalog/effects and fresh target summary IDs; formatting
   only the selected target, existing catalog index, no second catalog/effect build or
   source read and no across-prompt reuse. Fresh publication authority is never cached.

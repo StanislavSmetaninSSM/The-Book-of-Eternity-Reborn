@@ -90,7 +90,13 @@ public sealed class WoundForeignDetailProjectionTests
         var target = Target(context, data.Guardians, data.Residents, "guardian");
         if (scenario == "physical")
         {
-            data = WoundForeignDetailTestData.Create(adjust: wound => wound["classification"]!["domain"] = "physical");
+            data = WoundForeignDetailTestData.Create(adjust: wound =>
+            {
+                wound["classification"]!["domain"] = "physical";
+                wound["consequences"]!["slotsUsed"] = 0; wound["consequences"]!["entries"] = new JsonArray();
+                wound["consequences"]!["ownedEffectSources"]!["definitions"] = new JsonArray();
+                wound["consequences"]!["ownedEffectSources"]!["rootBindings"] = new JsonArray();
+            });
             context = Context(data.Input with { KnownItemNames = new Dictionary<string, string> { ["sterile_thread"] = "ЛИЧНЫЕ_МАТЕРИАЛЫ" } });
             target = Target(context, data.Guardians, data.Residents, "guardian");
         }

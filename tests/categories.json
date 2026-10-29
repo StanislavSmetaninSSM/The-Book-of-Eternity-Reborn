@@ -2,6 +2,36 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "wound-foreign-detail-gm",
+  "responsibility": "Worked authorable known-card fragment validated by existing wound parser/identity/catalog and production projection, unknown route/private condition excluded; synchronized GM guidance and both effective daemon directives.",
+  "excludes": "No standalone response/publication/diagnosis authority, paid quote, full Engine or DOM/provider/fresh-process.",
+  "changeHints": [
+    "BookOfEternityClient.Tests/WoundForeignDetailDocumentationTests.cs",
+    "Examples/E_CLI_Afterlife_Turns.txt"
+  ],
+  "related": [
+    {
+      "id": "wound-foreign-detail-contract",
+      "when": "Select together when foreign card knowledge/privacy or recommendation meaning changes."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.WoundForeignDetailDocumentationTests.*"
+      ]
+    }
+  ]
+},
+{
   "id": "wound-foreign-detail-contract",
   "responsibility": "Known foreign spiritual card exact typed owner/effect/source/definition/privacy/knowledge/domain and detached DATA controls; no new treatment authority.",
   "excludes": "No new diagnosis/treatment/quote execution, full native Engine, DOM/external provider/fresh-process or broad US5 claim.",

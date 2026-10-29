@@ -26,9 +26,9 @@ Review focus: wrong typed actor with equal ID; hidden-complication effects; unkn
 route/future diagnosis; provider/owner-private requirements; read-only actual UI
 and safe text; recommendation versus executable action. Each gets a cheap control.
 
-- [ ] Independent bounded DESIGN review and fixture feasibility; no author decision
+- [x] Independent bounded DESIGN review and fixture feasibility; no author decision
   expected because field visibility/known route rules already exist.
-- [ ] Add one existing SelectTargetAsync causal test plus helper/category/selection;
+- [x] Add one existing SelectTargetAsync causal test plus helper/category/selection;
   fresh Integration owning build, discovery/exactPlan/resource/PREP, semantic RED
   on missing visible symptom after valid public target/name/inert/source controls.
 - [ ] Reuse projection for exact fresh target; typed effect scope and shared builder
@@ -76,6 +76,17 @@ separate roots and release only verified owned UI tokens. The mixed helper's ide
 domain now follows its parsed wound for the physical-refusal control; ordinary causal
 spiritual fixture values are unchanged. New production/tests remain UNCOMPILED/UNRUN;
 GM sync and coherent SOURCE pending. Existing accepted36 are not repeated.
+
+GREEN source candidate WIP2: GM guide/CLI/Matrix/operations/task guide, BOTH effective
+daemon directives, focused worked authorable field fragment, manifest and typed
+consumer/documentation guard now synchronized as wound_foreign_detail_v1. No new
+GM response schema or guessed spiritual opaque conditions. Unit physical refusal
+uses a parser-valid zero-slot physical graph (spiritual consequence profiles are
+not legal physical fixtures); no production guard was weakened. Source candidate
+includes15 pure cases, actual Guardian/resident console+browser read parity, original
+causal GREEN, GM consumer and affected existing wounds-player-projection category.
+No full Engine/native replay is needed per DESIGN for unchanged mechanical admission.
+All new C# remains UNCOMPILED/UNRUN; coherent SOURCE/selection review is next.
 
 # T120-CHAOS-TARGETS — accepted current-Abode target navigation
 
