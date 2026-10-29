@@ -38,11 +38,26 @@ internal static class WoundApplicationService
         var selected = state.Resolve(value);
         var current = await WoundPlayerReadService.LoadContextAsync(fs, lease)
             ?? throw new InvalidDataException(WoundPlayerProjection.UnavailableMessage);
-        var choices = (await CreateStateAsync(fs, lease, state.Generation, current)).Choices;
-        if (!choices.Any(c => c.Available && c.Selection == selected.Selection))
+        var fresh = await CreateStateAsync(fs, lease, state.Generation, current);
+        if (state.SelectedTarget is { } target) _ = WoundTargetSelectionService.RequireCurrent(target, fresh.Targets);
+        if (!fresh.Choices.Any(c => c.Available && c.Selection == selected.Selection))
             throw new InvalidDataException("Состояние раны или доступность лечения изменились; откройте /лечить заново.");
         return selected.Selection.Aid is { ReceiveAid: true } aid
             ? selected.Selection with { Aid = aid with { PlayerConfirmed = true } } : selected.Selection;
+    }
+
+    internal static async Task<ExplorerCommandResult> SelectTargetAsync(FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease lease, WoundCommandState state, string value, string command)
+    {
+        fs.VerifyCurrentSessionOperation(lease);
+        if (!fs.IsCurrentSessionGeneration(lease, state.Generation))
+            throw new InvalidDataException("Игровая сессия изменилась; откройте /лечить заново.");
+        var previous = state.ResolveTarget(value); // The old value names its frozen owner, not a new index.
+        var context = await WoundPlayerReadService.LoadContextAsync(fs, lease)
+            ?? throw new InvalidDataException(WoundPlayerProjection.UnavailableMessage);
+        var fresh = await CreateStateAsync(fs, lease, state.Generation, context);
+        var target = WoundTargetSelectionService.RequireCurrent(previous, fresh.Targets);
+        return ExplorerWoundCommandResultBuilder.Build(command, context.Projection, fresh.ForTarget(target), treatment: true);
     }
 
     // Detached menu DATA only; confirmation and staging revalidate the current source.
@@ -97,9 +112,11 @@ internal static class WoundApplicationService
         if (!context.Input.SelfVisible || context.Input.Realm != "chaos_sea" || context.SpiritualConflict?["activeConflict"] is not null)
             return self;
         var profiles = (context.Input.Carriers.AfterlifeProfiles?["profiles"] as JsonArray)?.OfType<JsonObject>().ToArray() ?? [];
-        var candidates = profiles.Where(p => p["actorType"]?.GetValue<string>() is "guardian" or "resident" &&
-            p[SpiritualTreatmentParticipation.RecordProperty] is JsonObject && AfterlifeProfileVisibility.IsVisibleToPlayer(p)).ToArray();
-        if (candidates.Length == 0) return self; // Ordinary/self menus acquire no additional locality inputs.
+        var visibleActors = profiles.Where(p => p["actorType"]?.GetValue<string>() is "guardian" or "resident" &&
+            AfterlifeProfileVisibility.IsVisibleToPlayer(p)).ToArray();
+        if (visibleActors.Length == 0) return self;
+        var candidates = visibleActors.Where(p => p[SpiritualTreatmentParticipation.RecordProperty] is JsonObject).ToArray();
+        var navigation = self;
         try
         {
             async Task<JsonObject?> Root(string path)
@@ -110,18 +127,22 @@ internal static class WoundApplicationService
             }
             var guardians = await Root(AfterlifeWoundTreatmentAuthority.AidLocalityPaths[0]);
             var residents = await Root(GuardianAbodeResidentState.StatePath);
+            // Share these parsed locality roots and the caller's existing catalog.
+            // Target visibility needs no grant, schedule, attempt or treatment authority.
+            navigation = self.WithTargets(WoundTargetSelectionService.Build(context, guardians, residents));
+            if (candidates.Length == 0) return navigation;
             var scheduleBytes = await fs.ReadFileBytesAsync(lease, ProgressionScheduleService.SchedulePath);
             if (guardians is null || scheduleBytes is null || fs.FileExists(lease, AcceptedMechanicsPlan.WoundCommandPath) ||
-                fs.FileExists(lease, ProgressionScheduleService.ReportPath)) return self;
+                fs.FileExists(lease, ProgressionScheduleService.ReportPath)) return navigation;
             var currentGuardianId = guardians["chaosSeaNavigation"]?["currentGuardianId"]?.GetValue<string>();
-            if (string.IsNullOrWhiteSpace(currentGuardianId)) return self;
+            if (string.IsNullOrWhiteSpace(currentGuardianId)) return navigation;
             var scope = SpiritualTreatmentParticipation.RequireCurrentGuardianScope(guardians, residents, currentGuardianId);
             candidates = candidates.Where(p => p["actorType"]?.GetValue<string>() == "resident" ||
                 SpiritualTreatmentParticipation.ProfileId(p) == currentGuardianId).ToArray();
-            if (candidates.Count(p => p["actorType"]?.GetValue<string>() == "guardian") > 1) return self;
+            if (candidates.Count(p => p["actorType"]?.GetValue<string>() == "guardian") > 1) return navigation;
             var healer = profiles.SingleOrDefault(p => p["actorType"]?.GetValue<string>() == "player_soul" &&
                 SpiritualTreatmentParticipation.ProfileId(p) == "player_soul");
-            if (healer is null) return self;
+            if (healer is null) return navigation;
             var choices = self.Choices.ToList();
             foreach (var target in candidates)
             {
@@ -158,12 +179,12 @@ internal static class WoundApplicationService
                     receiveAid ? (aid.Resident is null ? "Хранитель" : "Житель Обители") + " готов помочь бесплатно. Примите помощь подтверждением; один безопасный цикл мира, без затрат ОД."
                         : "Согласие получено на следующий безопасный цикл. Без затрат ОД; перед броском согласие и близость проверяются заново."));
             }
-            return new(generation, choices);
+            return new WoundCommandState(generation, choices).WithTargets(navigation.Targets);
         }
         catch (Exception failure) when (failure is not CoordinatedStatePublicationUncertainException &&
             failure is (JsonException or InvalidDataException or InvalidOperationException or ArgumentException or OverflowException))
         {
-            return self; // No available aid choice is authority to skip admission or to infer consent.
+            return navigation; // A read-only target is never permission to skip aid admission.
         }
     }
 }

@@ -26,6 +26,19 @@ public partial class ExplorerMode
     {
         var result = await WoundApplicationService.OpenAsync(_fs, treatment ? "/лечить" : "/раны", treatment);
         ExplorerCommandResultConsoleRenderer.Render(_console, result);
+        if (result.WoundCommandState is { IsTargetSelection: true } targets)
+        {
+            var offered = targets.Targets.Where(t => t.Available).ToArray();
+            var targetLabels = offered.Select((t, i) => (i + 1) + ". " + t.Label).Append("Отмена").ToArray();
+            var targetLabel = _console.Prompt(new SelectionPrompt<string>().Title("Кому требуется помощь?")
+                .UseConverter(GameInterface.EscapeMarkup).AddChoices(targetLabels));
+            var targetIndex = Array.IndexOf(targetLabels, targetLabel);
+            if (targetIndex < 0 || targetIndex >= offered.Length) return;
+            await using (var targetLease = await _fs.AcquireCanonicalWriteLeaseAsync())
+                result = await WoundApplicationService.SelectTargetAsync(_fs, targetLease, targets,
+                    offered[targetIndex].Value, treatment ? "/лечить" : "/раны");
+            ExplorerCommandResultConsoleRenderer.Render(_console, result);
+        }
         if (result.State != CommandExecutionState.RequiresInput || result.WoundCommandState is not { } state)
         {
             WaitForKey();

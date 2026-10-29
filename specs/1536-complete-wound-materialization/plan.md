@@ -80,6 +80,16 @@ Application integration, actual UI/lifecycle/race/source-count tests and GM sync
 remain pending; existing-API causal behavior is not GREEN yet. No project execution
 with new production code, no capability/qualification claim.
 
+GREEN WIP2 (uncompiled/unreviewed): existing application now shares one parsed
+locality read for target and aid consumers, builds a no-grant target step and fresh
+SelectTargetAsync returning the shared ExplorerCommandResult (builder ruling: both
+callers consume one fresh result/state rather than reloading for rendering). Final
+confirmation retains selected-target/current-wound binding plus existing aid checks.
+Shared builder exposes public target labels/requirements only; NPC view omits Self
+History/private detail. Console two-step navigation is connected. Browser lifecycle,
+actual API/race/source-count tests, GM synchronization and complete SOURCE are still
+pending. No GREEN runtime or capability acceptance yet.
+
 Optimization decision: reuse one existing context/catalog/effects and one parsed
 Guardian/roster read per invocation for BOTH target and aid consumers. One lookup
 over already prepared wound DATA; no across-prompt cache. Each navigation/final

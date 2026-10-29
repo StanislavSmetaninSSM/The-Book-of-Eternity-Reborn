@@ -11,7 +11,10 @@ internal sealed record WoundTargetChoice(string Value, string Name, string Conte
     [property: JsonIgnore] WoundOwnerCoordinate Owner,
     [property: JsonIgnore] SpiritualAidLocality? Locality,
     [property: JsonIgnore] string BindingFingerprint,
-    bool Available = true, string Reason = "");
+    bool Available = true, string Reason = "")
+{
+    public string Label { get; init; } = Name;
+}
 
 /// <summary>Detached current-target navigation; visibility never grants treatment permission.</summary>
 internal static class WoundTargetSelectionService
@@ -53,7 +56,7 @@ internal static class WoundTargetSelectionService
                 string.Equals(SpiritualTreatmentParticipation.ProfileId(p), guardianOwner.OwnerId, StringComparison.OrdinalIgnoreCase)).ToArray();
             if (matching is { Length: 1 } && SpiritualTreatmentParticipation.ProfileId(matching[0]) == guardianOwner.OwnerId &&
                 WoundCarrierCollectionAuthority.AfterlifeProfileMatches(matching[0], guardianOwner) &&
-                Read(matching[0]["locationId"]) == scope.LocationId && AfterlifeProfileVisibility.IsVisibleToPlayer(matching[0]))
+                matching[0]["locationId"]?.GetValue<string>() == scope.LocationId && AfterlifeProfileVisibility.IsVisibleToPlayer(matching[0]))
                 nearby.Add(Create(guardianOwner, Name(matching[0], Read(guardians["activeGuardian"]?["canonicalName"]), "Хранитель"),
                     "Хранитель · " + abodeName, locality));
         }
@@ -75,8 +78,11 @@ internal static class WoundTargetSelectionService
             .ThenBy(t => t.Name, StringComparer.OrdinalIgnoreCase).ToList();
         var ambiguous = nearby.GroupBy(t => (t.Name + "\n" + t.Context).Normalize(System.Text.NormalizationForm.FormKC), StringComparer.OrdinalIgnoreCase)
             .Where(g => g.Count() > 1).SelectMany(g => g).Select(t => t.Owner).ToHashSet();
+        var repeatedNames = nearby.Append(targets[0]).GroupBy(t => t.Name.Normalize(System.Text.NormalizationForm.FormKC), StringComparer.OrdinalIgnoreCase)
+            .Where(g => g.Count() > 1).Select(g => g.Key).ToHashSet(StringComparer.OrdinalIgnoreCase);
         foreach (var target in nearby)
             targets.Add(target with { Value = "target_" + targets.Count,
+                Label = target.Name + (repeatedNames.Contains(target.Name.Normalize(System.Text.NormalizationForm.FormKC)) ? " — " + target.Context : ""),
                 Available = !ambiguous.Contains(target.Owner), Reason = ambiguous.Contains(target.Owner)
                     ? "Сейчас не удаётся различить одноимённых обитателей по известным сведениям." : "" });
         return targets.AsReadOnly();
