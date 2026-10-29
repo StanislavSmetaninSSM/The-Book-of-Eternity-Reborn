@@ -166,13 +166,19 @@ public sealed partial class BrowserShiningPoliticsParityTests
         await _stateManager.RefreshGameStateAsync();
     }
 
-    private Dictionary<string, byte[]?> SnapshotHealingRosterSources() => new[]
+    private Dictionary<string, byte[]?> SnapshotHealingRosterSources()
     {
-        ShiningAbodeState.StatePath, GuardianAbodeResidentState.StatePath, AfterlifeEntityProfileState.StatePath,
-        "game_state/meta/soul_state.json", "game_state/meta/schedule.json",
-        AcceptedMechanicsPlan.WoundCommandPath, ShiningFactionRequestState.PendingFoundingsRequestPath,
-        ShiningFactionRequestState.PendingRealignmentsRequestPath, ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath
-    }.ToDictionary(path => path, path => File.Exists(_fs.ResolvePath(path)) ? File.ReadAllBytes(_fs.ResolvePath(path)) : null);
+        // Snapshot this tiny private fixture's whole canonical tree, including
+        // world time, History and any newly created pending/repair surface.
+        // Also track real absent control roots explicitly; no guessed paths.
+        var root = _fs.ResolvePath("game_state");
+        return Directory.EnumerateFiles(root, "*", SearchOption.AllDirectories)
+            .Select(path => "game_state/" + Path.GetRelativePath(root, path).Replace('\\', '/'))
+            .Concat(new[] { ProgressionScheduleService.SchedulePath, PendingTurnStateService.PendingDiceStatePath,
+                AcceptedMechanicsPlan.WoundCommandPath })
+            .Distinct(StringComparer.Ordinal).OrderBy(path => path, StringComparer.Ordinal)
+            .ToDictionary(path => path, path => File.Exists(_fs.ResolvePath(path)) ? File.ReadAllBytes(_fs.ResolvePath(path)) : null);
+    }
 
     private void AssertHealingRosterSourcesUnchanged(Dictionary<string, byte[]?> before)
     {

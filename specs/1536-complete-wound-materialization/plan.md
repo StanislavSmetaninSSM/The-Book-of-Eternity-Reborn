@@ -167,6 +167,13 @@ New catalog related entries use the existing id/when object schema. The role-onl
 notice does not complete readable access requirements for a restricted service;
 T143/FR084 service/access presentation remains pending, with no private conditions
 exposed. No build/runtime result is claimed.
+Two additional SOURCE fixture findings are corrected before build: the no-cycle
+snapshot now tracks the real ProgressionScheduleService.SchedulePath and pending-dice/
+command constants plus every file in the tiny private game_state tree, detecting
+new time/History/repair/pending files as well as byte changes. The reused fixture
+now verifies its generated temp-root parent/prefix/non-symlink identity and propagates
+recursive cleanup failure instead of silently swallowing it; absence is asserted.
+No existing measurement, save, recovery or shared root is eligible for this cleanup.
 The owner has the historical broken/dissolved-faction question; no answer or policy
 change is inferred. Continue only independent role/profile/display work.
 

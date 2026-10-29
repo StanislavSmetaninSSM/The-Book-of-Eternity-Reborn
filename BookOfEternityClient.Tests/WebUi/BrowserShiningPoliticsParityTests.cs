@@ -832,14 +832,16 @@ public sealed partial class BrowserShiningPoliticsParityTests : IDisposable
 
     public void Dispose()
     {
-        try
+        // Only the per-test root created by this constructor is disposable.
+        // A failed deletion is a failed fixture cleanup, never a silent PASS.
+        Assert.Equal(Path.GetFullPath(Path.GetTempPath()).TrimEnd(Path.DirectorySeparatorChar),
+            Path.GetDirectoryName(_rootPath));
+        Assert.StartsWith("boe-browser-shining-politics-", Path.GetFileName(_rootPath), StringComparison.Ordinal);
+        if (Directory.Exists(_rootPath))
         {
-            if (Directory.Exists(_rootPath))
-                Directory.Delete(_rootPath, recursive: true);
+            Assert.Null(new DirectoryInfo(_rootPath).LinkTarget);
+            Directory.Delete(_rootPath, recursive: true);
         }
-        catch
-        {
-            // Ignore temp cleanup failures.
-        }
+        Assert.False(Directory.Exists(_rootPath));
     }
 }
