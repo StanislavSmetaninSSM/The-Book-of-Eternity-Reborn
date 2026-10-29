@@ -254,6 +254,22 @@ Integration-only fresh build and narrow review/PREP follow. Existing catalog own
 method signatures and selected budgets are unchanged; do not replay complete discovery
 or accepted80 solely for these fixture body changes.
 
+Independent semantic health-refusal RED OUTCOME ACCEPT on544a5626: corrected fixture
+build exit0/102warnings/2:30.12; exact1case/180s PlanOnly0execution8.5108242s,
+4PE/PDB85bindings27artifacts. Actual1/1FAIL complete, category14.1225865s<180,
+wall23.5976018s, no timeout/skip/duplicate/lost case, bothcleanups true. TRX exact
+stale-visit InvalidDataException at second ProcessPlayerTurn line64, after restored
+full-state errors0/freeform-no-reset controls. TRXSHA256
+daf3d30c44ddcef9dae630a95da6a2e4d17078e50dccb4d9dfcb991022770544.
+Category.Completed=false is retained; initial network-fixture failure is separate.
+
+Minimal GREEN correction now consumes console companion into a local before health
+validation; later exact marker/mixed-treatment/fresh-source stage reuses that local.
+Actual action/generation validation and browser queue are unchanged. Refusal/throw
+cannot retain this one-shot permission into another freeform action. This correction
+is UNCOMPILED/UNRUN pending delta SOURCE and corrected affected builds/qualification.
+All broader current-location GREEN checks remain UNRUN; do not call this feature PASS.
+
 All this GREEN code is UNCOMPILED/UNREVIEWED/UNQUALIFIED. Remaining finite work: complete
 new admission/accepted/race/source-count and Shining actual result/replay/rollback tests,
 GM effective guidance/examples/guards, whole impact selection/SOURCE, then one fresh

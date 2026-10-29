@@ -1660,6 +1660,9 @@ public partial class GameEngine
         using var browserOriginalScope = browserAction == null ? null : _fs.BeginBrowserOriginalOperation(browserAction);
         // Reserve/refuse before health validation can remove an unrelated request.
         if (browserAction != null) await ClaimBrowserPreparationAsync(browserAction);
+        // Consume the one-shot console companion even when health refuses or
+        // throws: an abandoned visit must not bind the next freeform action.
+        var consoleVisit = browserAction is null ? _explorer.ConsumePendingElyaraVisit(action, sessionGeneration) : null;
         using (_fs.MeasureOperation("PlayerTurn.Stage.ValidateBeforeTurn"))
             if (!await ValidateCurrentGameStateOrShowErrorsAsync("перед отправкой хода"))
                 return null;
@@ -1696,7 +1699,7 @@ public partial class GameEngine
             var healingSelection = browserAction is null
                 ? _explorer.ConsumePendingSpiritualSelfTreatment(action, sessionGeneration)
                 : browserAction.SpiritualSelfTreatment;
-            var visit = browserAction is null ? _explorer.ConsumePendingElyaraVisit(action, sessionGeneration)
+            var visit = browserAction is null ? consoleVisit
                 : browserAction.Source == ElyaraVisitService.BrowserSource ? ElyaraVisitService.ParseAction(action) : null;
             if (ElyaraVisitService.HasMarker(action) != (visit is not null) || visit is not null && healingSelection is not null)
                 throw new InvalidDataException("The specific Elyara visit cannot lose its source or mix with treatment.");
