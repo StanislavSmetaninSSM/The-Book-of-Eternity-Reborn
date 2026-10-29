@@ -7,7 +7,7 @@ using BookOfEternityClient.UI;
 namespace BookOfEternityClient.Services;
 
 /// <summary>Shared guided treatment workflow. Selection is DATA; actual staging owns the draw and authority.</summary>
-internal static class WoundApplicationService
+internal static partial class WoundApplicationService
 {
     internal const string ReadSyntaxMessage = "Выберите /раны или действие «История заживших ран» без дополнительных аргументов.";
     internal const string ActionText = "Самостоятельно лечить выбранную духовную рану вне конфликта. Продолжить обычный безопасный цикл мира.";
@@ -16,7 +16,8 @@ internal static class WoundApplicationService
     internal const string ReceiveAidActionText = "Принять добровольную безвозмездную помощь текущего Хранителя в лечении моей выбранной духовной раны вне конфликта. Продолжить обычный безопасный цикл мира.";
     internal const string ResidentReceiveAidActionText = "Принять добровольную безвозмездную помощь жителя текущей Обители Хранителя в лечении моей выбранной духовной раны вне конфликта. Продолжить обычный безопасный цикл мира.";
     internal const string CombatActionText = "Лечить выбранную собственную духовную рану стандартным Исцелением в текущей духовной дуэли. Это прерываемое противником действие за ОД, без безопасного цикла мира.";
-    internal static string ActionFor(SpiritualSelfTreatmentSelection selection) => selection.Combat is not null ? CombatActionText : selection.Aid is null ? ActionText
+    internal const string ServiceActionText = "Принять платное лечение моей выбранной духовной раны у Элиары по подтверждённой котировке. Оплатить одну принятую попытку и продолжить один обычный безопасный цикл мира.";
+    internal static string ActionFor(SpiritualSelfTreatmentSelection selection) => selection.Service is not null ? ServiceActionText : selection.Combat is not null ? CombatActionText : selection.Aid is null ? ActionText
         : selection.Aid.Resident is not null ? selection.Aid.ReceiveAid ? ResidentReceiveAidActionText : ResidentAidActionText
         : selection.Aid.ReceiveAid ? ReceiveAidActionText : AidActionText;
 
@@ -57,7 +58,9 @@ internal static class WoundApplicationService
         if (state.SelectedTarget is { } target) _ = WoundTargetSelectionService.RequireCurrent(target, fresh.Targets);
         if (!fresh.Choices.Any(c => c.Available && c.Selection == selected.Selection))
             throw new InvalidDataException("Состояние раны или доступность лечения изменились; откройте /лечить заново.");
-        return selected.Selection.Aid is { ReceiveAid: true } aid
+        return selected.Selection.Service is { } service
+            ? selected.Selection with { Service = service with { PlayerConfirmed = true } }
+            : selected.Selection.Aid is { ReceiveAid: true } aid
             ? selected.Selection with { Aid = aid with { PlayerConfirmed = true } } : selected.Selection;
     }
 
@@ -147,7 +150,8 @@ internal static class WoundApplicationService
             var residents = await Root(GuardianAbodeResidentState.StatePath);
             // Share these parsed locality roots and the caller's existing catalog.
             // Target visibility needs no grant, schedule, attempt or treatment authority.
-            navigation = self.WithTargets(WoundTargetSelectionService.Build(context, guardians, residents));
+            navigation = new WoundCommandState(generation, BuildPublicServiceChoices(context, guardians, self.Choices))
+                .WithTargets(WoundTargetSelectionService.Build(context, guardians, residents));
             if (candidates.Length == 0) return navigation;
             var scheduleBytes = await fs.ReadFileBytesAsync(lease, ProgressionScheduleService.SchedulePath);
             if (guardians is null || scheduleBytes is null || fs.FileExists(lease, AcceptedMechanicsPlan.WoundCommandPath) ||
@@ -161,7 +165,7 @@ internal static class WoundApplicationService
             var healer = profiles.SingleOrDefault(p => p["actorType"]?.GetValue<string>() == "player_soul" &&
                 SpiritualTreatmentParticipation.ProfileId(p) == "player_soul");
             if (healer is null) return navigation;
-            var choices = self.Choices.ToList();
+            var choices = navigation.Choices.ToList();
             foreach (var target in candidates)
             {
                 var record = target[SpiritualTreatmentParticipation.RecordProperty]!.AsObject();

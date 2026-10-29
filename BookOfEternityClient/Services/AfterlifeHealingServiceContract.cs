@@ -29,14 +29,18 @@ internal static class AfterlifeHealingServiceContract
     }
 
     internal static AfterlifeHealingServiceProfile? ReadPublicCurrencyProfile(
-        WoundOwnerCoordinate provider, JsonObject actor)
+        WoundOwnerCoordinate provider, JsonObject actor) => ReadCurrencyProfile(provider, actor, requireAvailable: true);
+
+    private static AfterlifeHealingServiceProfile? ReadCurrencyProfile(
+        WoundOwnerCoordinate provider, JsonObject actor, bool requireAvailable)
     {
         if (provider is null || actor is null || provider.OwnerKind is not ("guardian" or "resident") ||
             provider.CarrierPath != WoundCarrierCatalog.AfterlifeProfilesPath ||
             !WoundEffectCarrierAdapter.TryCreateTargetKey(provider, out _) ||
             !WoundCarrierCollectionAuthority.AfterlifeProfileMatches(actor, provider) ||
             !AfterlifeEntityProfileState.TryNormalizeEffectRealm(Text(actor["realm"]), out var actorRealm) || actorRealm != provider.Realm ||
-            !AfterlifeProfileVisibility.IsVisibleToPlayer(actor) || Text(actor["lifeState"]) != "alive" ||
+            requireAvailable && !AfterlifeProfileVisibility.IsVisibleToPlayer(actor) ||
+            (requireAvailable ? Text(actor["lifeState"]) != "alive" : Text(actor["lifeState"]) is not ("alive" or "dead")) ||
             Text(actor["locationId"]) is not { } location || !ResourceMaterializationContract.IsExactIdentifier(location) ||
             actor["standardArts"] is not JsonObject arts || Number(arts["spiritual_healing"]) is not int tier || tier is < 1 or > 5 ||
             actor["healingServiceProfile"] is not JsonObject service ||
@@ -44,7 +48,7 @@ internal static class AfterlifeHealingServiceContract
                 "priceMultiplierPercent", "compensationKinds", "accessConditions") ||
             Text(service["providerId"]) != provider.OwnerId || Text(service["realm"]) != provider.Realm ||
             Text(service["locationRef"]) != location || Text(service["visibility"]) != "public" ||
-            Text(service["availability"]) != "available" || service["minimumRelationship"] is not null ||
+            (requireAvailable ? Text(service["availability"]) != "available" : Text(service["availability"]) is not ("available" or "unavailable")) || service["minimumRelationship"] is not null ||
             service["accessConditions"] is not JsonArray { Count: 0 } ||
             Number(service["priceMultiplierPercent"]) is not int percent || percent is < 50 or > 200 ||
             service["compensationKinds"] is not JsonArray kinds || kinds.Count is < 1 or > 6 ||
@@ -55,10 +59,33 @@ internal static class AfterlifeHealingServiceContract
             return null;
         var permission = new JsonObject
         {
-            ["provider"] = SpiritualHealingRequestProjection.OwnerJson(provider), ["lifeState"] = "alive",
+            ["provider"] = SpiritualHealingRequestProjection.OwnerJson(provider), ["lifeState"] = Text(actor["lifeState"]),
             ["locationId"] = location, ["healingTier"] = tier, ["visible"] = true, ["service"] = service.DeepClone()
         };
         return new(provider, location, tier, percent, Fingerprint(permission, "public_profile"));
+    }
+
+    internal static bool IsElyaraProfile(JsonObject actor) =>
+        string.Equals(Text(actor["actorId"]), AfterlifeWoundTreatmentAuthority.ElyaraId, StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(Text(actor["actorRef"]), AfterlifeWoundTreatmentAuthority.ElyaraId, StringComparison.OrdinalIgnoreCase);
+
+    internal static void RequireElyaraInvariant(JsonObject actor)
+    {
+        if (!IsElyaraProfile(actor)) return;
+        if (Text(actor["actorId"]) is { } id && id != AfterlifeWoundTreatmentAuthority.ElyaraId ||
+            Text(actor["actorRef"]) is { } reference && reference != AfterlifeWoundTreatmentAuthority.ElyaraId ||
+            !AfterlifeEntityProfileState.TryNormalizeEffectRealm(Text(actor["realm"]), out var realm) ||
+            ReadCurrencyProfile(new(realm, "guardian", AfterlifeWoundTreatmentAuthority.ElyaraId,
+                WoundCarrierCatalog.AfterlifeProfilesPath), actor, requireAvailable: false) is null)
+            throw new InvalidDataException("Canonical Elyara requires exact identity, lifeState alive/dead, current service locality, HealingV and public100% terms.");
+    }
+
+    internal static void RequireElyaraTransition(JsonObject previous, JsonObject next)
+    {
+        if (!IsElyaraProfile(previous) && !IsElyaraProfile(next)) return;
+        RequireElyaraInvariant(next);
+        if (Text(previous["lifeState"]) == "dead" && Text(next["lifeState"]) != "dead")
+            throw new InvalidDataException("An accepted dead Elyara cannot be resurrected by profile upsert.");
     }
 
     internal static AfterlifeHealingServiceQuote? CreateQuote(AfterlifeHealingServiceProfile profile,

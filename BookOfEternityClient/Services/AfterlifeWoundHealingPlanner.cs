@@ -26,6 +26,10 @@ internal static partial class AfterlifeWoundHealingPlanner
             new PendingTurnSnapshotPathSelection(new[] { AfterlifeWoundTreatmentAuthority.AidLocalityPaths[0] },
                 new[] { AfterlifeWoundTreatmentAuthority.AidLocalityPaths[1] }));
 
+    internal static PendingTurnSnapshotObservedReadResult ReadOriginalServiceLocalitySource(FileSystemManager files,
+        FileSystemManager.CanonicalWriteLease lease) => PendingTurnSnapshotReader.ReadObservedCurrent(files, lease,
+            AfterlifeWoundTreatmentAuthority.ServiceLocalityPaths);
+
     internal sealed partial class Continuation
     {
         private readonly FileSystemManager _files;
@@ -93,7 +97,7 @@ internal static partial class AfterlifeWoundHealingPlanner
 
         internal string Fingerprint { get; }
         internal bool IsNatural => _natural is not null;
-        internal string Mode => IsNatural ? "natural" : _data?.AidWitness is not null ? "aid" : "self";
+        internal string Mode => IsNatural ? "natural" : _data?.ServiceQuote is not null ? "service" : _data?.AidWitness is not null ? "aid" : "self";
         internal bool IsVisibleAidTarget(WoundMaterializationEnvelope wound) => Mode == "aid" &&
             _data!.Wound.WoundId == wound.WoundId && _data.Wound.Owner == wound.Owner &&
             WoundPlayerProjection.Visible(_data.Wound.Display.Visibility);
@@ -197,6 +201,8 @@ internal static partial class AfterlifeWoundHealingPlanner
 
         private void AdmitGraphs(JsonObject? interfaceUpdates)
         {
+            if (_data?.ServiceQuote is not null && interfaceUpdates?["metaStateUpdates"] is JsonObject meta && meta.ContainsKey("inkFeatherChanges"))
+                throw new InvalidDataException("Public healing owns its exact Feather payment; competing GM currency changes must be removed.");
             AdmitResidentThoughtResponse(interfaceUpdates);
             if (_data?.AidWitness is not null)
                 BindResidentThoughts(_parsedSourceRoots.GetValueOrDefault(GuardianAbodeResidentState.StatePath) as JsonObject);
@@ -362,25 +368,29 @@ internal static partial class AfterlifeWoundHealingPlanner
             var attempt = request["attempt"] as JsonObject ?? throw new InvalidDataException("Spiritual attempt is missing.");
             var selection = SpiritualSelfTreatmentRequestCodec.ReadActiveSelection(request);
             PendingTurnSnapshotObservedReadResult? aidLocality = null;
-            if (selection.Aid is not null)
+            if (selection.Aid is not null || selection.Service is not null)
             {
+                var localityPaths = selection.Service is not null ? AfterlifeWoundTreatmentAuthority.ServiceLocalityPaths
+                    : AfterlifeWoundTreatmentAuthority.AidLocalityPaths;
                 if (!PendingTurnSnapshotAuthority.HasValidatedRollbackSnapshotCoverage(manifest, m => m.Files,
-                        m => m.SnapshotFileHashes, m => m.RollbackBaselineFiles, AfterlifeWoundTreatmentAuthority.AidLocalityPaths, out _))
+                        m => m.SnapshotFileHashes, m => m.RollbackBaselineFiles, localityPaths, out _))
                     throw new InvalidDataException("Aid lacks its signed locality baseline coverage.");
-                aidLocality = ReadOriginalAidLocalitySource(files, lease);
+                aidLocality = selection.Service is not null ? ReadOriginalServiceLocalitySource(files, lease) : ReadOriginalAidLocalitySource(files, lease);
                 if (!aidLocality.Success || aidLocality.Snapshot is not { } local || aidLocality.Evidence is not { } localEvidence ||
                     local.SessionId != snapshot.SessionId || local.RequestId != snapshot.RequestId ||
                     local.TurnNumber != snapshot.TurnNumber || local.SnapshotToken != snapshot.SnapshotToken)
                     throw new InvalidDataException("Aid locality is not the same actual signed original.");
                 localEvidence.RequireCurrent(files, lease, local);
-                sources.AddRange(ReadSignedSources(local, AfterlifeWoundTreatmentAuthority.AidLocalityPaths));
+                sources.AddRange(ReadSignedSources(local, localityPaths));
             }
             var context = new SpiritualSelfTreatmentStageContext(snapshot.SessionId, snapshot.RequestId, snapshot.TurnNumber,
                 JsonSerializer.Deserialize<ProgressionControl>(JsonSerializer.Serialize(manifest.ProgressionControl))!);
-            var admitted = selection.Aid is null
-                ? AfterlifeWoundTreatmentAuthority.PrepareSourceData(context, selection, sources)
-                : AfterlifeWoundTreatmentAuthority.PrepareAidSourceData(context, selection, sources,
-                    request["participation"]!.AsObject());
+            var admitted = selection.Service is not null
+                ? AfterlifeWoundTreatmentAuthority.PrepareServiceSourceData(context, selection, sources)
+                : selection.Aid is null
+                    ? AfterlifeWoundTreatmentAuthority.PrepareSourceData(context, selection, sources)
+                    : AfterlifeWoundTreatmentAuthority.PrepareAidSourceData(context, selection, sources,
+                        request["participation"]!.AsObject());
             if (admitted.Data is not { } data || !SpiritualSelfTreatmentRequestCodec.IsExactActive(request, context, selection, data))
                 throw new InvalidDataException("Signed spiritual treatment admission failed: " + admitted.IssueCode);
             var rolls = attempt["roll"]!["values"]!.AsArray().Select(v => v!.GetValue<int>()).ToArray();

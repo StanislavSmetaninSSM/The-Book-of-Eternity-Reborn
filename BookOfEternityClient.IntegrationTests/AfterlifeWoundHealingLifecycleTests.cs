@@ -115,7 +115,8 @@ public sealed class AfterlifeWoundHealingLifecycleTests
 
         internal static async Task<Fixture> CreateAsync(int rank, int tier, int die, bool stageRequest = true,
             FileSystemManagerHooks? hooks = null, long initialProgress = 0,
-            Func<FileSystemManager, JsonObject, Task>? beforeResourceBootstrap = null, string realm = "Chaos Sea")
+            Func<FileSystemManager, JsonObject, Task>? beforeResourceBootstrap = null, string realm = "Chaos Sea",
+            Action<JsonObject>? configureSoul = null)
         {
             Assert.True(AfterlifeEntityProfileState.TryNormalizeEffectRealm(realm, out var realmSlug));
             Assert.Contains(realmSlug, new[] { "chaos_sea", "shining_abode" });
@@ -222,6 +223,7 @@ public sealed class AfterlifeWoundHealingLifecycleTests
                 soulCombat["artTiers"] = arts.DeepClone();
                 var soul = new JsonObject { ["soulName"] = "Лечащаяся душа", ["currentRealm"] = realm,
                     ["afterlifeCombatProfile"] = soulCombat };
+                configureSoul?.Invoke(soul); // Initial DATA only, before both writes and the one actual resource bootstrap.
                 AfterlifeEntityProfileState.ApplyPlayerSoulProfileClientAuthority(profiles, soul, null);
                 var roots = new Dictionary<string, JsonObject>(StringComparer.Ordinal)
                 {

@@ -41,10 +41,22 @@ internal static partial class AfterlifeWoundTreatmentAuthority
                 sources.Add(await ReadSourceAsync(files, lease, path));
             var prepared = PrepareServiceSelectionSource(selection, sources, turn);
             await RequireAidReadImagesCurrentAsync(files, lease, sources.Append(pending));
-            control = await scheduler.BuildControlForNextTurnAsync(lease, activeTurnRealm: null);
-            var schedule = await ReadSourceAsync(files, lease, ProgressionScheduleService.SchedulePath);
-            await RequireAidReadImagesCurrentAsync(files, lease, sources.Append(pending), ProgressionScheduleService.SchedulePath);
-            sources[sources.FindIndex(s => s.Path == schedule.Path)] = schedule;
+            if (pending.Root is { } retained)
+            {
+                if (!SpiritualSelfTreatmentRequestCodec.IsServiceHeader(retained)) return new(null, Refuse("pending_conflict"));
+                control = retained["control"]?.Deserialize<ProgressionControl>() ?? throw new InvalidDataException("Service retry lacks its retained control DATA.");
+                // Building a new control would rewrite schedule.LastUpdatedUtc
+                // and change the original source fingerprint after the draw.
+                // BindPreparedServiceSource and IsExactActive re-prove the old
+                // complete control against the current prepared cycle/images.
+            }
+            else
+            {
+                control = await scheduler.BuildControlForNextTurnAsync(lease, activeTurnRealm: null);
+                var schedule = await ReadSourceAsync(files, lease, ProgressionScheduleService.SchedulePath);
+                await RequireAidReadImagesCurrentAsync(files, lease, sources.Append(pending), ProgressionScheduleService.SchedulePath);
+                sources[sources.FindIndex(s => s.Path == schedule.Path)] = schedule;
+            }
             var context = new SpiritualSelfTreatmentStageContext(sessionId, requestId, turn, control);
             var data = BindPreparedServiceSource(context, selection, sources, prepared);
             return new(control, await StageAdmittedActiveTreatmentAsync(files, lease, context,

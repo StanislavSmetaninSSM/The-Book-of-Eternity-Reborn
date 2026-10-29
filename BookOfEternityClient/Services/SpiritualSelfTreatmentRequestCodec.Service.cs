@@ -30,6 +30,7 @@ internal static partial class SpiritualSelfTreatmentRequestCodec
             ["healer"] = SpiritualHealingRequestProjection.OwnerJson(quote.Provider),
             ["target"] = SpiritualHealingRequestProjection.OwnerJson(quote.Patient),
             ["quote"] = quote.ToJson(), ["payment"] = payment.ToJson(),
+            ["control"] = JsonSerializer.SerializeToNode(context.Progression),
             ["activeSource"] = ActiveSourceJson(data.Source), ["playerConfirmation"] = "player_service_confirmed",
             ["attempt"] = new JsonObject
             {
@@ -55,9 +56,12 @@ internal static partial class SpiritualSelfTreatmentRequestCodec
         {
             if (!IsServiceHeader(root) || selection is not { Service.PlayerConfirmed: true, Aid: null, Combat: null } ||
                 !Closed(root, "schemaVersion", "kind", "mode", "sessionId", "requestId", "turn", "healer", "target",
-                    "quote", "payment", "activeSource", "playerConfirmation", "attempt", "requestFingerprint") ||
+                    "quote", "payment", "control", "activeSource", "playerConfirmation", "attempt", "requestFingerprint") ||
+                !ResourceMaterializationContract.IsExactIdentifier(context.SessionId) ||
+                !ResourceMaterializationContract.IsExactIdentifier(context.RequestId) || context.Turn < 1 ||
                 realm != "chaos_sea" || ordinal < 1 || Text(root["sessionId"]) != context.SessionId ||
                 Text(root["requestId"]) != context.RequestId || Int(root["turn"]) != context.Turn ||
+                !JsonNode.DeepEquals(root["control"], JsonSerializer.SerializeToNode(context.Progression)) ||
                 Text(root["playerConfirmation"]) != "player_service_confirmed") return false;
             var quote = AfterlifeHealingServiceContract.ParseQuote(root["quote"]);
             if (quote != selection.Service.Quote || quote.WoundId != selection.WoundId ||

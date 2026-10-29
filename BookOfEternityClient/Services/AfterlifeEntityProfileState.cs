@@ -327,6 +327,8 @@ internal static class AfterlifeEntityProfileState
         NormalizeRelationshipLocks(result);
         RefreshCommandAuthoredMentorShowcaseHashes(result, commandAuthoredMentorShowcaseKeys);
         TrainingService.NormalizeAfterlifeMentorShowcaseCosts(result);
+        foreach (var profile in result[ProfilesProperty]!.AsArray().OfType<JsonObject>())
+            AfterlifeHealingServiceContract.RequireElyaraInvariant(profile);
 
         result.Remove(UpdateProperty);
         result.Remove(ResponseProfilesProperty);
@@ -631,6 +633,7 @@ internal static class AfterlifeEntityProfileState
                 continue;
 
             var replacement = CloneObject(profile);
+            AfterlifeHealingServiceContract.RequireElyaraTransition(existing, replacement);
             PreserveProgressionSettlement(existing, replacement);
             PreserveHistoricalMaterialization(existing, replacement);
             PreserveResourceOwnerBindings(existing, replacement);
@@ -645,6 +648,7 @@ internal static class AfterlifeEntityProfileState
         }
 
         var addition = CloneObject(profile);
+        AfterlifeHealingServiceContract.RequireElyaraInvariant(addition);
         if (addition["activeEffects"] is not JsonArray)
             addition["activeEffects"] = new JsonArray();
         if (addition["activeWounds"] is not JsonArray)

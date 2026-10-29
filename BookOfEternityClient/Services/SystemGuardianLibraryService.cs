@@ -388,6 +388,49 @@ public sealed class SystemGuardianLibraryService
         };
     }
 
+    // Called only while constructing the initial in-memory roots. Later
+    // normalization never seeds an absent/dead/relocated Elyara or changes patronage.
+    internal async Task SeedElyaraForFreshNewGameAsync(JsonObject guardians, JsonObject profiles,
+        string soulName, int turn, DateTimeOffset createdAt, SystemGuardianPresetDescriptor? selected = null)
+    {
+        var guardianRows = guardians["guardians"]!.AsArray();
+        var profileRows = profiles[AfterlifeEntityProfileState.ProfilesProperty]!.AsArray();
+        var hasGuardian = guardianRows.OfType<JsonObject>().Any(g => g["guardianId"]?.GetValue<string>() == AfterlifeWoundTreatmentAuthority.ElyaraId);
+        var hasProfile = profileRows.OfType<JsonObject>().Any(AfterlifeHealingServiceContract.IsElyaraProfile);
+        if (hasGuardian && hasProfile) return;
+        var preset = selected?.PresetId == "elyara" ? selected : null;
+        if (preset is null)
+            foreach (var root in new[] { GetBuiltInDirectoryPath(), GetPackagedBuiltInDirectoryPath() }.Distinct(StringComparer.Ordinal))
+            {
+                var directory = Path.Combine(root, "elyara");
+                if (!Directory.Exists(directory)) continue;
+                var candidate = await TryBuildDescriptorAsync(directory, "built_in", includeDossier: false);
+                if (candidate?.PresetId == "elyara") { preset = candidate; break; }
+            }
+        if (preset is null) throw new InvalidDataException("Fresh afterlife requires the packaged canonical Elyara preset.");
+        if (!hasGuardian) guardianRows.Add(BuildCanonicalGuardianForFreshNewGame(preset, soulName, turn, createdAt));
+        if (!hasProfile) profileRows.Add(BuildAfterlifeEntityProfileForFreshNewGame(preset, soulName, turn, createdAt));
+        var discovered = guardians["chaosSeaNavigation"]!["discoveredAbodes"]!.AsArray();
+        if (!discovered.Any(n => n?.GetValue<string>() == AfterlifeWoundTreatmentAuthority.ElyaraAbodeId))
+            discovered.Add(AfterlifeWoundTreatmentAuthority.ElyaraAbodeId);
+    }
+
+    private static void ConfigureFreshElyaraProfile(JsonObject profile)
+    {
+        profile["lifeState"] = "alive";
+        profile["standardArts"]!["spiritual_healing"] = 5;
+        profile["healingServiceProfile"] = new JsonObject
+        {
+            ["providerId"] = AfterlifeWoundTreatmentAuthority.ElyaraId, ["realm"] = "chaos_sea",
+            ["locationRef"] = AfterlifeWoundTreatmentAuthority.ElyaraAbodeId,
+            ["visibility"] = "public", ["availability"] = "available", ["minimumRelationship"] = null,
+            ["priceMultiplierPercent"] = 100,
+            ["compensationKinds"] = new JsonArray("ink_feathers", "favor", "quest", "free_aid"),
+            ["accessConditions"] = new JsonArray()
+        };
+        AfterlifeHealingServiceContract.RequireElyaraInvariant(profile);
+    }
+
     private static JsonObject BuildCanonicalFreeformGuardianForFreshNewGame(
         string freeformDescription,
         string soulName,
@@ -620,7 +663,7 @@ public sealed class SystemGuardianLibraryService
         const string progressionStrategySummary =
             "Стартовый системный Хранитель держит запас духовных техник для обучения души через витрину наставника.";
 
-        return new JsonObject
+        var profile = new JsonObject
         {
             ["actorType"] = "guardian",
             ["actorId"] = guardianId,
@@ -714,6 +757,8 @@ public sealed class SystemGuardianLibraryService
                 guardianId,
                 materializationTurn)
         };
+        if (presetId == "elyara") ConfigureFreshElyaraProfile(profile);
+        return profile;
     }
 
     private static JsonObject BuildAfterlifeEntityProfileForFreshNewGame(

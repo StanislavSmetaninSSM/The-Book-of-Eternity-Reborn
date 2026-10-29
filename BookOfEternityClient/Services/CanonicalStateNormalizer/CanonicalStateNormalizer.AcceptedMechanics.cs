@@ -304,6 +304,7 @@ public partial class CanonicalStateNormalizer
         if (spiritualHealing is not null)
         {
             spiritualHealing.RequireCurrent(_fs, _writeLease);
+            spiritualHealing.RequireServicePublication(writes);
             spiritualHealing.Scheduler.ClaimSpiritualTreatmentMutation(_writeLease, spiritualHealing.SchedulerMutation);
             var changes = new List<CanonicalLocalFileChange>();
             foreach (var pair in writes.OrderBy(p => p.Key, StringComparer.Ordinal))

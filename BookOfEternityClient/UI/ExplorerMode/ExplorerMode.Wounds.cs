@@ -65,9 +65,7 @@ public partial class ExplorerMode
             .UseConverter(GameInterface.EscapeMarkup).AddChoices(labels));
         var index = Array.IndexOf(labels, label);
         if (index < 0 || index >= choices.Length) return;
-        var confirmation = choices[index].Selection.Combat is not null
-            ? "Подтвердить прерываемое лечение за ОД в этом обмене?"
-            : "Подтвердить лечение без затрат ОД и один цикл мира?";
+        var confirmation = WoundApplicationService.ConfirmationFor(choices[index].Selection);
         if (!_console.Confirm(confirmation)) return;
         await using var lease = await _fs.AcquireCanonicalWriteLeaseAsync();
         var selection = await WoundApplicationService.ConfirmAsync(_fs, lease, state, choices[index].Value);

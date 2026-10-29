@@ -129,7 +129,14 @@ internal static class SpiritualHealingRequestProjection
                 ["complications"] = Complications(fingerprint, program.Wounds.Single(w => w.WoundId == g.WoundId))
             }).ToArray())
         };
-        if (data.AidWitness is not null)
+        if (data.ServiceQuote is { } quote)
+        {
+            projection["schemaVersion"] = 7; projection["mode"] = "service";
+            projection["healer"] = OwnerJson(data.Source.Healer); projection["target"] = OwnerJson(data.Source.Target);
+            projection["quote"] = quote.ToJson(); projection["playerConfirmationVerified"] = true;
+            projection["targetNaturalHealingTier"] = data.NaturalMembers.First(m => m.Wound.Owner == data.Wound.Owner).HealingTier;
+        }
+        else if (data.AidWitness is not null)
         {
             projection["schemaVersion"] = request["schemaVersion"]!.DeepClone();
             projection["mode"] = "aid";

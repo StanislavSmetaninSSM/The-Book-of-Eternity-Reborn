@@ -65,7 +65,10 @@ internal static class ExplorerWoundCommandResultBuilder
                 new UiSelectionPrompt { Id = "wound_selection", Prompt = "Какую рану лечить?", Required = true,
                     Options = state!.Choices.Select(c => new UiSelectionOption { Value = c.Value, Label = c.Name + " — " + c.Severity,
                         Description = c.Reason, Disabled = !c.Available }).ToList() },
-                new UiConfirmationPrompt { Id = "confirm_wound_treatment", Prompt = combat ? "Подтвердить прерываемое лечение за ОД в этом обмене?" : "Подтвердить лечение и один цикл мира?", Required = true }
+                new UiConfirmationPrompt { Id = "confirm_wound_treatment", Prompt = combat ? "Подтвердить прерываемое лечение за ОД в этом обмене?"
+                    : state!.Choices.Any(c => c.Selection.Service is not null)
+                        ? "Подтвердить выбранный способ лечения, указанную в нём цену за принятую попытку (включая неудачу) и один цикл мира?"
+                        : "Подтвердить лечение и один цикл мира?", Required = true }
             ]
         };
     }

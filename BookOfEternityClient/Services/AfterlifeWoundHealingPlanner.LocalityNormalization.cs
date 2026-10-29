@@ -8,9 +8,10 @@ internal static partial class AfterlifeWoundHealingPlanner
 {
     internal sealed partial class Continuation
     {
-        internal bool HasLocalityGuards => _participationSources is not null || _data?.AidWitness is not null;
+        internal bool HasLocalityGuards => _participationSources is not null || _data?.AidWitness is not null || HasServicePayment;
         internal bool OwnsLocalityPath(string path) => HasLocalityGuards &&
-            AfterlifeWoundTreatmentAuthority.AidLocalityPaths.Contains(path, StringComparer.Ordinal);
+            (HasServicePayment ? AfterlifeWoundTreatmentAuthority.ServiceLocalityPaths : AfterlifeWoundTreatmentAuthority.AidLocalityPaths)
+                .Contains(path, StringComparer.Ordinal);
 
         // Only the actual validated normalizer calls this around its computed
         // write. Original/evidence/source fingerprint remain frozen; only the
@@ -22,6 +23,26 @@ internal static partial class AfterlifeWoundHealingPlanner
             using var fresh = FileSystemManager.SuppressValidationReuse();
             RequireCurrent(files, lease);
             var images = _participationSources ?? _sources;
+            if (HasServicePayment)
+            {
+                var beforeRoot = StrictJsonAuthority.Deserialize<JsonObject>(CanonicalJsonUtf8.DecodeOneOptionalBom(images[path].Bytes!), new JsonSerializerOptions(), path)!;
+                var afterRoot = StrictJsonAuthority.Deserialize<JsonObject>(content, new JsonSerializerOptions(), path)!;
+                var beforeScope = AfterlifeWoundTreatmentAuthority.RequireServiceScope(beforeRoot, _data!.Carriers.AfterlifeProfiles!, _data.ServiceQuote!);
+                var afterScope = AfterlifeWoundTreatmentAuthority.RequireServiceScope(afterRoot, _data.Carriers.AfterlifeProfiles!, _data.ServiceQuote!);
+                if (beforeScope.LocationId != afterScope.LocationId || beforeScope.CurrentGuardianId != afterScope.CurrentGuardianId ||
+                    !beforeScope.LocalActorIds.ToHashSet(StringComparer.Ordinal).SetEquals(afterScope.LocalActorIds) ||
+                    !beforeScope.LocalFactionIds.ToHashSet(StringComparer.Ordinal).SetEquals(afterScope.LocalFactionIds))
+                    throw new InvalidDataException("Locality normalization cannot move a confirmed public service.");
+                var expectedService = new CanonicalBeforeImage(true, FileSystemManager.EncodeUtf8WithPreamble(content));
+                await publish(images[path]);
+                var publishedService = await files.ReadFileBytesAsync(lease, path);
+                if (new CanonicalBeforeImage(publishedService is not null, publishedService).Fingerprint != expectedService.Fingerprint)
+                    throw new InvalidDataException("Service locality normalization differs from its exact owned image.");
+                var advancedService = images.ToDictionary(p => p.Key, p => p.Value, StringComparer.Ordinal);
+                advancedService[path] = expectedService; _sources = advancedService;
+                RequireCurrent(files, lease);
+                return;
+            }
             var record = (_data?.AidWitness ?? _participationOutcomes?.Single()?.AsObject())?["record"]?.AsObject()
                 ?? throw new InvalidDataException("Locality normalization requires its retained participation record.");
             var aid = SpiritualTreatmentParticipation.Selection(record);

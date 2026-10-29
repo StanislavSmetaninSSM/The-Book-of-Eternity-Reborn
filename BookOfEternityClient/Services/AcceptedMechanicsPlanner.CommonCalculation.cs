@@ -358,6 +358,18 @@ internal static partial class AcceptedMechanicsPlanner
             static pair => pair.Key, static pair => pair.Value.DeepClone().AsObject(), StringComparer.Ordinal);
         var ownerTransitions = transitions.Select(static value => value.Clone()).ToList();
         var issues = new List<ValidationIssue>();
+        var serviceOwner = woundStages?.SpiritualHealingContinuation;
+        if (serviceOwner?.HasServicePayment == true)
+        {
+            try
+            {
+                ownerCompanionAfterImages[AfterlifeWoundHealingPlanner.Continuation.ServiceSoulPath] =
+                    serviceOwner.ComposeServiceSoulAfterImage(ownerCompanionAfterImages.GetValueOrDefault(
+                        AfterlifeWoundHealingPlanner.Continuation.ServiceSoulPath));
+            }
+            catch (InvalidDataException failure)
+            { return new(null, Issue("spiritual_service_wallet_conflict", "exact original wallet and one service payment", failure.Message)); }
+        }
         var carrierComposition = liveWounds is null
             ? AcceptedMechanicsCarrierAssembler.Compose(
                 effectPlan, ownerCompanionAfterImages, woundStages,
@@ -380,6 +392,19 @@ internal static partial class AcceptedMechanicsPlanner
                 static pair => pair.Value.DeepClone().AsObject(),
                 StringComparer.Ordinal);
         var woundPublication = carrierComposition.WoundPublication;
+        if (serviceOwner?.HasServicePayment == true)
+        {
+            try
+            {
+                var profiles = carriers.GetValueOrDefault(WoundCarrierCatalog.AfterlifeProfilesPath) ??
+                    woundPublication?.CarrierAfterImages.GetValueOrDefault(WoundCarrierCatalog.AfterlifeProfilesPath);
+                serviceOwner.RequireServiceComposedImages(ownerCompanionAfterImages[AfterlifeWoundHealingPlanner.Continuation.ServiceSoulPath],
+                    profiles ?? throw new InvalidDataException("Service wound carrier is absent."),
+                    woundPublication?.HistoryAfterImage ?? throw new InvalidDataException("Service History is absent."));
+            }
+            catch (InvalidDataException failure)
+            { return new(null, Issue("spiritual_service_payment_composition_invalid", "one exact paid treatment common plan", failure.Message)); }
+        }
         foreach (var transitionPath in ownerTransitions
                      .Select(static value => value.Path)
                      .Distinct(StringComparer.Ordinal))

@@ -84,6 +84,9 @@ internal static class SpiritualHealingResolver
         if (input.HealerProfile is null ||
             !WoundCarrierCollectionAuthority.AfterlifeProfileMatches(input.HealerProfile, healer))
             return InvalidSource("spiritual_healing_actor_mismatch");
+        if (healer.OwnerKind is "guardian" or "resident" && input.HealerProfile.TryGetPropertyValue("lifeState", out var life) &&
+            (life is not JsonValue lifeValue || !lifeValue.TryGetValue<string>(out var lifeState) || lifeState != "alive"))
+            return InvalidSource("spiritual_healing_healer_not_alive");
         if (input.HealerProfile["standardArts"] is not JsonObject arts ||
             !TryTier(arts[AfterlifeSpiritualConflictState.SpiritualHealingArtId],
                 out var tier))

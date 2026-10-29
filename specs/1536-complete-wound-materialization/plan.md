@@ -194,6 +194,23 @@ One parsed source set is reused across control preparation; fresh closing reads 
 Engine stages service through that owner. Common payment/History/replay, UI/bootstrap
 and GM synchronization are still pending; no actual fee/heal publication is qualified.
 
+2026-10-29 13:46UTC WIP continuation: common owner-companion Soul payment now enters
+the same sealed wound/effect/History/scheduler plan. Both assembly and actual C4 write
+set require exact wallet after-image and paid request/result agreement; existing full
+byte read-back remains. Result7 rederives the closed quote/check/payment/retained draw,
+without treating historical provider presence as today's permission. Service retry
+retains the complete control DATA in its existing request: rebuilding scheduler control
+would rewrite LastUpdatedUtc and invalidate its source hash; the retained control is
+instead freshly bound to actual prepared cycle/source images before the old draw returns.
+Shared menu/console/browser route adds explicit cost/failed-attempt confirmation; new
+game adds canonical Elyara without replacing selected Guardian, later upserts reject
+death reversal/tier/price loss and preserve accepted relocation. Dead healers also
+refuse the existing private resolver. New pure request/menu/Elyara tests authored.
+All this is UNCOMPILED/UNQUALIFIED. Remaining finite work: actual paid lifecycle and
+console/browser fixtures, GM/spec/example/registry synchronization, coherent independent
+SOURCE/selection review, fresh affected builds and exact targeted gates. No blocker or
+live runner at this boundary; all earlier raw/bin evidence retained outside Git.
+
 ---
 
 # T126 — accepted browser wound cards and guided treatment presentation

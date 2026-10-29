@@ -1142,6 +1142,9 @@ public partial class GameEngine
                         turnNumber: 1,
                         createdAtUtc: DateTimeOffset.UtcNow);
 
+                await _systemGuardianLibraryService.SeedElyaraForFreshNewGameAsync(guardian, guardianProfileRoot,
+                    soulName, turn: 1, createdAt: DateTimeOffset.UtcNow, selected: selectedSystemGuardianPreset);
+
                 WriteInitialGuardianProjectTrackerStateAsync().Wait();
 
                 // Fresh generation has no accepted item/wound identities or history.
