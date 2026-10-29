@@ -42,7 +42,7 @@ public sealed class SpiritualResidentAidDocumentationTests
         Assert.Single(SpiritualTreatmentParticipation.ValidateResidentThoughtAppend(memory, "resident_example", 43, new JsonObject()));
         var typed = JsonSerializer.Deserialize<GameResponse>(fragments[1].ToJsonString())!;
         Assert.Single(typed.SpiritualResidentThoughtJournalUpdates!);
-        Assert.True(BookOfEternityClient.Configuration.FileMapping.OutputOnlyResponseFields.Contains(SpiritualTreatmentParticipation.ResidentThoughtResponseProperty));
+        Assert.Contains(SpiritualTreatmentParticipation.ResidentThoughtResponseProperty, BookOfEternityClient.Configuration.FileMapping.OutputOnlyResponseFields);
         Assert.False(BookOfEternityClient.Configuration.FileMapping.FieldToFile.ContainsKey(SpiritualTreatmentParticipation.ResidentThoughtResponseProperty));
         Assert.Equal(GuardianAbodeResidentState.StatePath, BookOfEternityClient.Configuration.FileMapping.FieldToFile[GuardianAbodeResidentState.UpdateThoughtJournalProperty]);
     }

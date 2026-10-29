@@ -1,3 +1,18 @@
+# T108 owning build completed — addressed new test analyzer warning
+
+2026-10-29. Constructor delta SOURCE accepted by Sol atd05ebe029. Fresh owning
+Unit/Main/TestSupport/Bridge/fixture-host build completed exit0/0errors/76warnings
+in4:01.53; source d05ebe029b32d4f0b6e19221ba1ebf28f870fcb7. Exact warning-signature
+comparison with accepted assessment build found one added xUnit2017 only, at the new
+GM documentation test's Assert.True(HashSet.Contains). Use direct Assert.Contains
+for that same required output-only field; no production or predicate/coverage change.
+All other baseline warning signatures are unchanged. Delta review precedes fresh
+Unit refsfalse plus independent Integration refsfalse builds; already successful
+production/dependency outputs need no rebuild for this test-only correction.
+Raw resident-green-build-2/unit-owning retained externally. No runtime yet; exact
+catalog/discovery/PlanOnly/PREP and functional gates remain pending. Free696033280
+bytes, no old build remains active; disk gate repeats before the fresh builds.
+
 # T108 first compile correction — no runtime yet
 
 2026-10-29. First owning Unit build at33f81a9ea exited1 after1:44.50 with
