@@ -2,6 +2,79 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "wound-history-browser-text",
+  "responsibility": "Existing typed browser Normalize boundary: literal closing HTML tags and mixed text are not English slash commands; ordinary hints remain filtered and input stays immutable.",
+  "excludes": "No new sanitizer stack/bypass, treatment/service authority, whole browser aggregate, full Engine, DOM/provider/fresh-process or replay of accepted35.",
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "related": [],
+  "changeHints": [
+    "BookOfEternityClient/WebUi/BrowserEntityDossierPrototypeNormalizer.cs"
+  ],
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.WoundHistoryBrowserTextTests.*"
+      ]
+    }
+  ]
+},
+{
+  "id": "wound-history-browser-read",
+  "responsibility": "Residual three browser History/literal/alias cases after normalization fix; fresh hidden-state recheck remains required.",
+  "excludes": "No new sanitizer stack/bypass, treatment/service authority, whole browser aggregate, full Engine, DOM/provider/fresh-process or replay of accepted35.",
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "related": [],
+  "changeHints": [
+    "BookOfEternityClient/WebUi/BrowserEntityDossierPrototypeNormalizer.cs"
+  ],
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.WoundHistoryCommandTests.BrowserHistoryAndBackUseFreshReadOnlyData",
+        "BookOfEternityClient.Tests.WoundHistoryCommandTests.DirectHistoryAliasShowsKnownRecordWithoutASecondSelection"
+      ]
+    }
+  ]
+},
+{
+  "id": "wound-history-browser-hints",
+  "responsibility": "Nearest existing real default-browser NPC journal hint guard after shared command-hint normalization correction; no /npc_talk,/npc_trade or raw repository paths.",
+  "excludes": "No new sanitizer stack/bypass, treatment/service authority, whole browser aggregate, full Engine, DOM/provider/fresh-process or replay of accepted35.",
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "related": [],
+  "changeHints": [
+    "BookOfEternityClient/WebUi/BrowserEntityDossierPrototypeNormalizer.cs"
+  ],
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.ExplorerWebCommandServiceTests.ExecuteAsync_NpcWithRepositoryJournalFixtureAndNoCore_ShowsKnownJournalNotes"
+      ]
+    }
+  ]
+},
+{
   "id": "wound-history-contract",
   "responsibility": "Explicit active/History read modes, treatment exclusion, empty versus unavailable, hidden/current-realm privacy and exact registered read command aliases/argument rejection.",
   "excludes": "No treatment/diagnosis/service authority, full Engine, whole US5/DOM/provider/fresh-process or replay of accepted foreign detail/navigation.",
@@ -74,7 +147,8 @@
     {
       "project": "integration",
       "tests": [
-        "BookOfEternityClient.Tests.WoundHistoryCommandTests.*"
+        "BookOfEternityClient.Tests.WoundHistoryCommandTests.ConsoleHistoryBackAndCloseAreLiteralAndInert",
+        "BookOfEternityClient.Tests.WoundHistoryCommandTests.InvalidHistorySyntaxNeverFallsThroughToGameplay"
       ]
     }
   ]

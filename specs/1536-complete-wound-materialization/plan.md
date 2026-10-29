@@ -126,6 +126,29 @@ SOURCE blocker found; expected38 cases/19 methods awaits discovery. All66 existi
 World source pins match with changed-file intersection0; no World pin update/repeat.
 Narrow delta SOURCE closure and fresh affected builds are next; GREEN still UNRUN.
 
+GREEN actual1 at30865939e: fresh4 builds exit0, warning identities unchanged12/23/26/102;
+catalog1078/12801 valid; exact38cases19methods/PREP. Actual38executed35PASS/3browserFAIL,
+wall39.8808159s, no timeout/skip/duplicate, completecounts/cleanuptrue, all8fixture roots
+removed/leasesinactive,18artifact95sourcepins unchanged. Independent partial OUTCOME
+accepted. Retain causal1+routing8+contract20+GM1+console1+invalidsyntax4=35. Three failed
+browser literal-name checks occur before its hidden-state freshness assertions.
+
+Bounded cause trace: existing default-browser Normalize→Sanitize→English slash-command
+hint regex treats /b in literal </b> as a command; console preserves the same name.
+No advanced-mode/normalizer bypass, weakening assertion or new diagnostic stack.
+Add existing typed Normalize(UiTextBlock) probe with closing-tag, mixed /help hint,
+ordinary /npc_talk hint and immutable-input controls; production unchanged until its
+cheap RED confirms the cause. Then minimal immediate-< exclusion in that regex,
+retaining all technical/privacy filters, followed by failedbrowser3 and nearest real
+NPC hint guard only. New category split avoids replay of accepted35; final full
+selection will include new typed controls and existing actual hint guard. Probe
+UNCOMPILED/UNRUN; no new GREEN claim. GM literal-safe text is already the FR076
+contract; this correction introduces no new authored format/permission.
+
+Storage: completed actual1 owners ended; reclaimed only fresh Main/Int untracked obj
+DLL/PDB duplicates matching pinned retained bin (71,228,540 bytes). All source/raw/
+saves/recovery and18 owning evidence artifacts retained;400MiB/128MiB unchanged.
+
 # T119-FOREIGN-DETAIL — accepted known foreign spiritual wound card
 
 2026-10-29. Issue: https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536
