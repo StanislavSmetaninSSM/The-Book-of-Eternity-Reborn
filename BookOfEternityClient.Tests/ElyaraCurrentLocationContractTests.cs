@@ -1,7 +1,9 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using BookOfEternityClient.CommandProtocol;
 using BookOfEternityClient.Services;
 using BookOfEternityClient.UI;
+using BookOfEternityClient.WebUi;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
@@ -15,6 +17,11 @@ public sealed class ElyaraCurrentLocationContractTests
     [InlineData(false)] [InlineData(true)]
     public void CurrentLocationSelectsItsActualHostNotElyarasHome(bool relocated)
     {
+        var command = ExplorerCommandCatalog.Require("elyara_visit");
+        var metadata = BrowserPlayerCommandMenuBuilder.GetCoverageMetadata(command);
+        Assert.Equal("afterlife", metadata.SectionId);
+        Assert.Equal(ElyaraVisitService.Label, metadata.Label);
+        Assert.Equal("guided-form", metadata.FormMode);
         var input = Inputs(); var actor = Actor(input);
         if (relocated)
         {
@@ -78,7 +85,7 @@ public sealed class ElyaraCurrentLocationContractTests
     {
         var input = Inputs(); var actor = Actor(input);
         input.Soul!["currentRealm"] = "Shining Abode";
-        actor["realm"] = "Shining Abode"; actor["locationId"] = "hall_current";
+        actor["realm"] = "Shining Abode"; actor["locationId"] = "hall_current"; actor["locationName"] = "Текущий зал";
         actor["healingServiceProfile"]!["realm"] = "shining_abode";
         actor["healingServiceProfile"]!["locationRef"] = "hall_current";
         var hall = new JsonObject { ["hallId"] = "hall_current", ["hallName"] = "Текущий зал" };
@@ -189,6 +196,20 @@ public sealed class ElyaraCurrentLocationContractTests
         {
             Assert.NotNull(quote); Assert.Equal(50, quote.Amount);
             Assert.Equal(quote, AfterlifeHealingServiceContract.ParseQuote(quote.ToJson()));
+            var soul = new JsonObject { ["inkFeathers"] = new JsonObject { ["current"] = 500, ["total"] = 900 } };
+            var payment = Assert.IsType<AfterlifeHealingServicePayment>(AfterlifeHealingServicePlanner.PreparePayment(quote, "attempt_shining_quote", soul));
+            Assert.Equal(payment, AfterlifeHealingServicePlanner.ParsePayment(payment.ToJson(), quote, "attempt_shining_quote"));
+            var corrupt = quote.ToJson(); corrupt["provider"]!["extra"] = true;
+            Assert.Throws<InvalidDataException>(() => AfterlifeHealingServiceContract.ParseQuote(corrupt));
+            corrupt = quote.ToJson(); corrupt["patient"]!["realm"] = "chaos_sea";
+            Assert.Throws<InvalidDataException>(() => AfterlifeHealingServiceContract.ParseQuote(corrupt));
+            corrupt = payment.ToJson(); corrupt["payer"]!["ownerId"] = "foreign_patient";
+            Assert.Throws<InvalidDataException>(() => AfterlifeHealingServicePlanner.ParsePayment(corrupt, quote, "attempt_shining_quote"));
+            foreach (var (field, value) in new[] { ("carrierPath", "game_state/foreign.json"), ("ownerKind", "resident"), ("realm", "Shining_Abode"), ("ownerId", "invalid owner") })
+            {
+                corrupt = quote.ToJson(); corrupt["provider"]![field] = value;
+                Assert.Throws<InvalidDataException>(() => AfterlifeHealingServiceContract.ParseQuote(corrupt));
+            }
         }
         else Assert.Null(quote);
     }

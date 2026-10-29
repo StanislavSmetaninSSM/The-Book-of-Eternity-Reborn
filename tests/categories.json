@@ -36549,7 +36549,8 @@
         {
           "project": "unit",
           "tests": [
-            "BookOfEternityClient.Tests.ElyaraCurrentLocationContractTests.*"
+        "BookOfEternityClient.Tests.ElyaraCurrentLocationContractTests.*",
+        "BookOfEternityClient.Tests.BrowserApiContractTests.PlayerCommandActionMenu_SeparatesAdvancedAndContextualRealmActions"
           ]
         }
       ]

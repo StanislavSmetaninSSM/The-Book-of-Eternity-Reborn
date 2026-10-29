@@ -47,7 +47,7 @@ internal static class AfterlifeHealingServicePlanner
         var soul = new JsonObject { ["inkFeathers"] = before.DeepClone() };
         var expected = PreparePayment(quote, attemptId, soul);
         var actual = new AfterlifeHealingServicePayment(AfterlifeHealingServiceContract.Text(root["attemptId"]) ?? "",
-            AfterlifeHealingServiceContract.Text(root["quoteFingerprint"]) ?? "", SpiritualTreatmentParticipation.ReadOwner(root["payer"]),
+            AfterlifeHealingServiceContract.Text(root["quoteFingerprint"]) ?? "", AfterlifeHealingServiceContract.ReadServiceOwner(root["payer"]),
             AfterlifeHealingServiceContract.Number(root["amount"]) ?? 0, WoundAcceptedTurnFingerprintWriter.CanonicalJson(before)!,
             WoundAcceptedTurnFingerprintWriter.CanonicalJson(after)!, AfterlifeHealingServiceContract.Text(root["paymentFingerprint"]) ?? "");
         if (expected is null || actual != expected)

@@ -172,30 +172,38 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
         finally { armed = false; output.WriteLine(diagnostics.Describe()); await runtime.AudioService.DisposeAsync(); }
     }
 
-    private static async Task WriteElyaraServiceReasoningAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease, TurnRequest turn)
+    private static async Task WriteElyaraServiceReasoningAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease, TurnRequest turn,
+        bool visitOnly = false)
     {
         const string name = "Элиара Последней Раны"; var timestamp = DateTime.UtcNow.ToString("o");
+        var place = turn.ProgressionControl!.CurrentRealm == "Shining Abode" ? "Зал сопровождения" : "Лазарет Незаживающего Света";
+        var summary = visitOnly ? "Я встречаю прибывшую душу; лечение ещё не подтверждено." : "Душа подтвердила цену принятой попытки; я применяю своё ИсцелениеV к выбранной ране.";
+        var consequence = visitOnly ? "Я жду отдельного подтверждения актуальной котировки; оплаты и активного лечения нет." : "Клиент публикует одну оплату и реальный исход; нового долга нет.";
+        var intent = visitOnly ? "Предложить осмотреть актуальные условия лечения." : "Лечить в рамках подтверждённой услуги.";
         await files.WriteFileAtomicAsync(lease, GuardianThoughtJournalState.StatePath, new JsonObject
         {
             ["entries"] = new JsonArray(), [GuardianThoughtJournalState.UpdateProperty] = new JsonArray(new JsonObject
             {
                 ["entryId"] = "elyara_service_thought_" + turn.RequestId, ["guardianId"] = AfterlifeWoundTreatmentAuthority.ElyaraId,
-                ["turn"] = turn.TurnNumber, ["timestamp"] = timestamp, ["title"] = "Подтверждённая публичная услуга",
-                ["summary"] = "Душа подтвердила цену принятой попытки; я применяю своё ИсцелениеV к выбранной ране.",
-                ["eventType"] = "soul_assessment", ["consequence"] = "Клиент публикует одну оплату и реальный исход; нового долга нет.",
-                ["attitude"] = "watchful", ["intent"] = "Лечить в рамках подтверждённой услуги."
+                ["turn"] = turn.TurnNumber, ["timestamp"] = timestamp, ["title"] = visitOnly ? "Прибытие души" : "Подтверждённая публичная услуга",
+                ["summary"] = summary,
+                ["eventType"] = "soul_assessment", ["consequence"] = consequence,
+                ["attitude"] = "watchful", ["intent"] = intent
             })
         }.ToJsonString());
         await files.WriteFileAtomicAsync(lease, "output/debug_logs.json", new JsonObject
         {
             ["timestamp"] = timestamp, ["gm_thoughts_markdown"] = string.Join("\n", "## NPC Scope", "- Mode: Scene-local", "- Relevant actors: " + name,
-                "- Why relevant: Элиара оказывает подтверждённую публичную услугу лечения.", "- Actors outside scope: нет", "- Why outside scope: Другие акторы не участвуют.",
-                "", "## Reasoning", "### " + name, "- Current location: Лазарет; перемещения нет.", "- Situation: Душа подтвердила цену25 за попытку.",
-                "- Profile inputs: Живая текущая Элиара, ИсцелениеV, публичный множитель100%; ранаI, душаH0.", "- Thoughts: Я соблюдаю подтверждённую цену и признаю реальный исход.",
-                "- Motivation: Лечить рану без выдуманного полного исцеления.", "- Constraints: Клиент владеет броском, оплатой, раной и циклом; я их не переписываю.",
-                "- Strategy options:", "1. Провести услугу. Benefit: помочь душе. Risk: неудача лечения.", "2. Отказаться до начала. Benefit: сохранить границы. Risk: рана останется.",
-                "- Chosen strategy: Провести подтверждённую попытку.", "- Rejected alternatives: Нет причины отклонять действующую публичную услугу.",
-                "- Actions: Поддержать лечение и сохранить first-person память.", "- State changes: guardianThoughtJournalUpdates; кошелёк/рана/History/цикл только через клиентскую транзакцию.")
+                visitOnly ? "- Why relevant: Душа пришла к Элиаре за будущим лечением." : "- Why relevant: Элиара оказывает подтверждённую публичную услугу лечения.",
+                "- Actors outside scope: нет", "- Why outside scope: Другие акторы не участвуют.",
+                "", "## Reasoning", "### " + name, "- Current location: " + place + "; Элиара не перемещается.",
+                visitOnly ? "- Situation: Душа завершает обычный переход; лечение пока не выбрано." : "- Situation: Душа подтвердила цену25 за попытку.",
+                "- Profile inputs: Живая текущая Элиара, ИсцелениеV, публичный множитель100%.", "- Thoughts: " + summary,
+                "- Motivation: Помочь душе без выдуманного исцеления.", "- Constraints: Клиент владеет броском, оплатой, раной и циклом; я их не переписываю.",
+                "- Strategy options:", visitOnly ? "1. Встретить душу и предложить условия. Benefit: осознанный выбор. Risk: лечение отложено." : "1. Провести услугу. Benefit: помочь душе. Risk: неудача лечения.",
+                "2. Отказаться до начала. Benefit: сохранить границы. Risk: рана останется.",
+                "- Chosen strategy: " + intent, "- Rejected alternatives: Нет причины отказывать в доступном приёме.",
+                "- Actions: " + consequence, "- State changes: guardianThoughtJournalUpdates; кошелёк/рана/History/цикл только через клиентскую транзакцию.")
         }.ToJsonString());
     }
 }

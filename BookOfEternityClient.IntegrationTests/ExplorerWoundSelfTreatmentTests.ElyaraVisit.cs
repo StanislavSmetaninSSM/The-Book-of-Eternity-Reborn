@@ -49,6 +49,7 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                     await WriteNativeCompletionAsync(files, lease, turn,
                         AfterlifeSpiritualNaturalRecoveryTests.AuthorNaturalGraphs(wound, turn.SpiritualHealing["destinationGraphs"]!.AsArray()),
                         "Душа прибывает в открытую текущую Обитель Элиары. Активное лечение ещё не начиналось.");
+                    await WriteElyaraServiceReasoningAsync(files, lease, turn, visitOnly: true);
                     completed = true;
                 }
             });

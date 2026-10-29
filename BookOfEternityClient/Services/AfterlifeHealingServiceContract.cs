@@ -174,8 +174,8 @@ internal static class AfterlifeHealingServiceContract
                 "compensationKind", "amount", "quoteFingerprint") || Number(root["schemaVersion"]) != 1 ||
             Text(root["compensationKind"]) != "ink_feathers")
             throw new InvalidDataException("Invalid closed public healing quote.");
-        var provider = SpiritualTreatmentParticipation.ReadOwner(root["provider"]);
-        var patient = SpiritualTreatmentParticipation.ReadOwner(root["patient"]);
+        var provider = ReadServiceOwner(root["provider"]);
+        var patient = ReadServiceOwner(root["patient"]);
         var quote = new AfterlifeHealingServiceQuote(provider, patient, Text(root["woundId"]) ?? "",
             Text(root["woundFingerprint"]) ?? "", Number(root["severityRank"]) ?? 0, Text(root["locationRef"]) ?? "",
             Number(root["healingTier"]) ?? 0, Text(root["serviceFingerprint"]) ?? "", Text(root["checkFingerprint"]) ?? "",
@@ -193,6 +193,25 @@ internal static class AfterlifeHealingServiceContract
             quote.Fingerprint != QuoteFingerprint(quote))
             throw new InvalidDataException("Public healing quote terms or fingerprint differ.");
         return quote;
+    }
+
+    // Service coordinates are not Chaos participation records. Keep that
+    // separate contract unchanged; the quote below still restricts Shining to
+    // the exact canonical Elyara and its own player patient.
+    internal static WoundOwnerCoordinate ReadServiceOwner(JsonNode? node)
+    {
+        if (node is not JsonObject root || !Closed(root, "realm", "ownerKind", "ownerId", "carrierPath"))
+            throw new InvalidDataException("Service requires a closed typed owner coordinate.");
+        var owner = new WoundOwnerCoordinate(Text(root["realm"]) ?? "", Text(root["ownerKind"]) ?? "",
+            Text(root["ownerId"]) ?? "", Text(root["carrierPath"]) ?? "");
+        if (owner.Realm is not ("chaos_sea" or "shining_abode") ||
+            owner.OwnerKind is not ("player_soul" or "guardian" or "resident") ||
+            owner.Realm == "shining_abode" && owner.OwnerKind == "resident" ||
+            !ResourceMaterializationContract.IsExactIdentifier(owner.OwnerId) ||
+            owner.CarrierPath != WoundCarrierCatalog.AfterlifeProfilesPath ||
+            !WoundEffectCarrierAdapter.TryCreateTargetKey(owner, out _))
+            throw new InvalidDataException("Service owner coordinate is outside its exact afterlife profile family.");
+        return owner;
     }
 
     // Existing Chaos quote DATA remains supported; Shining execution in this

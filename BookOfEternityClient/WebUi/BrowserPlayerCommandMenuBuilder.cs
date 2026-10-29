@@ -1,5 +1,6 @@
 using BookOfEternityClient.CommandProtocol;
 using BookOfEternityClient.Models.GameState;
+using BookOfEternityClient.Services;
 
 namespace BookOfEternityClient.WebUi;
 
@@ -86,6 +87,7 @@ public static class BrowserPlayerCommandMenuBuilder
             ["transport"] = M("world", "Транспорт", "Показывает маршруты и доступный транспорт.", "Проверьте доступные перемещения."),
             ["wounds"] = M("soul", "Раны и заживление", "Показывает активные собственные раны; история заживления открывается отдельным действием.", "Осмотрите состояние или откройте историю заживших ран."),
             ["wound_treatment"] = M("soul", "Лечить свою духовную рану", "Самостоятельное лечение вне конфликта без затрат ОД; один цикл мира даже при неудаче.", "Выберите рану и подтвердите лечение."),
+            ["elyara_visit"] = M("afterlife", ElyaraVisitService.Label, "Проверяет текущее место Элиары и обычный доступ к ней. Переход и лечение подтверждаются отдельно.", "Проверьте доступный путь; после прибытия отдельно подтвердите лечение."),
             ["effects"] = M("soul", "Эффекты", "Показывает активные эффекты, раны и временные состояния.", "Просмотрите действующие эффекты персонажа."),
             ["combat"] = M("combat", "Боевые сведения", "Показывает врагов, союзников и журнал боя смертного мира.", "Откройте боевую сводку текущей сцены."),
             ["weather"] = M("world", "Время и погода", "Показывает текущее время мира и погодное состояние.", "Проверьте время и погоду вокруг героя."),
@@ -251,7 +253,7 @@ public static class BrowserPlayerCommandMenuBuilder
                 : new Availability(false, "Подготовка следующего мира доступна только в Море Хаоса или Сияющей Обители.", "Доступно в посмертии для подготовки следующей смертной жизни.");
         }
 
-        if (descriptor.Id is "guardian_social" or "abode_residents" or "resident_interaction" or "resident_transfer" or "archive_consultation" or "archive_project_fuel")
+        if (descriptor.Id is "guardian_social" or "abode_residents" or "resident_interaction" or "resident_transfer" or "archive_consultation" or "archive_project_fuel" or "elyara_visit")
         {
             return state.IsInAfterlifeRealm
                 ? new Availability(true, string.Empty, "Доступно в посмертии.")

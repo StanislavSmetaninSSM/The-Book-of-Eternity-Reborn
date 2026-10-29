@@ -257,7 +257,7 @@ public sealed partial class AfterlifeHealingPaymentLifecycleTests(ITestOutputHel
         actor["activeWounds"] = new JsonArray(); actor["activeEffects"] = new JsonArray();
         if (realm == "Shining Abode")
         {
-            actor["realm"] = realm; actor["locationId"] = "hall_elyara_companion";
+            actor["realm"] = realm; actor["locationId"] = "hall_elyara_companion"; actor["locationName"] = "Зал сопровождения";
             actor["healingServiceProfile"]!["realm"] = "shining_abode";
             actor["healingServiceProfile"]!["locationRef"] = "hall_elyara_companion";
         }

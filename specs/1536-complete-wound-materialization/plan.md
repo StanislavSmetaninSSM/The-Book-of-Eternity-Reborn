@@ -1,286 +1,104 @@
-# T143 — current canonical Elyara route implementation plan
+# T143 — current canonical Elyara route: qualification in progress
 
 Issue: https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536
-Base: 47958dfb28e44b52fe9ee7d6d31d431a70e37709, remote verified, clean same Linux
-checkout/branch1536-linux-qualification-20261025. Sole writer/runner Sol; execute inline
-with superpowers:executing-plans. Existing task T143 with T140/FR081–082 and affected
-T137–138/T144–147 owns this coherent route. Spec: current spec.md and
-contracts/afterlife-spiritual-wounds-and-healing.md. T142 owner answer still pending.
-User authorized autonomous implementation; no routine design repermission is needed.
+Same Linux checkout / branch `1536-linux-qualification-20261025`. Accepted prior
+access-display baseline47958dfb28e44b52fe9ee7d6d31d431a70e37709 remains80distinct PASS.
+Sole writer/runner Sol; independent Astra/high DESIGN and Sol whole SOURCE accepted.
+Current bounded source corrections are WIP; this route is NOT qualified yet.
 
-Goal: «Пойти к Элиаре за лечением» resolves the same exact canonical alive Elyara at
-her current accepted place, in both UIs. A discovered reachable Chaos destination uses
-ordinary travel; co-location opens fresh /лечить without an extra cycle. Co-located
-Shining accompaniment uses the existing paid attempt with the current Shining cycle.
-Death removes the action; stale/unknown/inaccessible DATA never travels, pays or heals.
-Travel and subsequent treatment are separate confirmed operations, one cycle each.
+Player result / boundaries
 
-Bounded independent Astra/high DESIGN is complete. No code/tests were changed or run
-by the reviewer. Its source findings are incorporated below; this is not qualification.
+- `/элиара` (`/elyara`) and the common «Пойти к Элиаре за лечением» entry resolve
+  ONE exact alive canonical Elyara across realms, using current profile life/location
+  and matching service. Registry abode is HOME, never a current-location fallback.
+- An already discovered reachable Chaos abode uses ordinary travel to its actual host.
+  Confirmation, sealed Action/queue, current generation/lease, fresh source fences and
+  authenticated PRE-TURN acceptance remain existing owners. One ordinary travel cycle,
+  natural recovery retained, ZERO active-treatment attempt/fee; arrival requires NEW
+  `/лечить` quote and separate confirmation. Read/back/cancel remain inert.
+- Co-located Shining service uses current active unique hall, same exact Elyara, existing
+  family7 resolver/payment/accepted publication/History/replay/C4 and one Shining cycle.
+  Remote Shining or cross-realm travel has no accepted ordinary opcode and is shown as
+  unavailable; no teleport, respawn, reset or arbitrary faction-provider execution.
+- T142 historical-faction invariant answer is pending. Negotiated compensation,
+  arbitrary faction services and whole US6/#1536 remain open. DOM/live-provider/fresh
+  process are not proved by controlled native GM/shared browser queue.
+- Full DFR timeout300.1806894s, Mortal compatibility timeout and Windows stay HOLD;
+  first-guardian intermittence and cross-OS DATA limitations remain open separately.
 
-Architecture / alternatives
+Architecture / optimization
 
-Use the existing ordinary sealed Action/queue, current travel validation, scheduler,
-and paid resolver/publication. A second queue/transport, fake wound selection, a new
-payment path or implicit cross-realm teleport would duplicate authority or violate
-ordinary access. Registry guardians[].abode is home metadata, never current Elyara
-location. Resolve one exact canonical actor across all profile realms first, reject
-duplicates/identity aliases, then use current realm/life/location and matching service.
+Reuse existing services/queue/recorder. No new cache. Visit read owns five private
+parsed roots (Soul/profiles/guardians/Shining/conflict), each read once, until operation
+ends. Complete comparison identity includes all roots/generation. Interaction or stage
+invalidates permission; re-read current authority/life/location/discovery/service.
+Only absent conflict maps to the deterministic exact empty default for comparison
+because ordinary Engine initializes it. Nonempty/history/unknown fields remain distinct;
+physical absence/bytes remain exact closing fences. Locality normalizer reuses already
+parsed Shining root. Old async resolver source order is retained. No speedup claim;
+actual source-count/freshness cases are still required before expensive journeys.
 
-- Add Services/ElyaraVisitService.cs and focused source/action partials for detached
-  ElyaraVisitCommandState, pure route projection, closed visit payload in the existing
-  Action string, current-source fingerprint and fresh source-image admission. Fingerprint
-  is comparison DATA, not authority. Read source roots once per operation and share DATA.
-- Source owners: current Soul, afterlife profiles, guardians/navigation, Shining state
-  and spiritual conflict. Current session/generation/lease and pending lifecycle remain
-  existing authority. Current Shining package mode must be absent for a safe route.
-- Chaos destination must be already discovered and have exactly one current abode owner;
-  targetGuardianId is the host of profile.locationId, not necessarily Elyara. Reuse
-  [CHAOS_SEA_TRAVEL]. Keep its existing outcome validation and one ordinary world cycle.
-- Shining locality is currentHallId -> one exact halls[] row. Reuse the existing resolver
-  by extracting pure ResolveShiningAbodeScope beside ResolveChaosSeaScope; old async
-  resolver retains reads/order/behavior. Exact direct Elyara location must equal current
-  hall. Reject contradictory aliases and unknown/ambiguous locality.
-- Existing Shining map links express influence, not traversable edges; no hall-travel
-  opcode/access authority is present. Cross-realm reentry/return have separate gates and
-  costs. Show an honest ordinary-route/access blocker for remote Shining/cross-realm
-  destinations. Do not silently seal Shining, reset Enlightenment or teleport. Arbitrary
-  remote Shining travel is not implemented or claimed complete by this slice.
-- UI entry is a common «Пойти к Элиаре за лечением» action and /элиара (/elyara) command,
-  not a retained quote. Add shared result builder/state to existing console/browser
-  command catalog, handlers and prompt-session ownership. Read/back/cancel are inert.
-  Co-location redirects to newly read /лечить; travel requires explicit confirmation.
-- Reuse PendingPlayerActionService sealed Action; introduce only the specific recognized
-  browser visit source. It requires the closed visit marker. No new queue file or fields.
-  Console keeps a one-shot expected action/generation companion, analogous to current
-  wound input, so stripped/mutated payload cannot downgrade its specific visit admission.
-- Engine staging revalidates visit before scheduler/travel side effects, using the actual
-  session/lease and fresh sources. Keep closing source checks around prepared control.
-  Focused accepted validation binds the marker to validated pre-turn Elyara/destination
-  and ordinary travel target; GM current-image edits cannot authorize an old offer.
-- Generalize only exact Elyara local service in WoundApplicationService.Service,
-  AfterlifeHealingServiceContract Create/ParseQuote, AfterlifeWoundTreatmentAuthority.Service
-  and SpiritualSelfTreatmentRequestCodec.Service. Current source read-set already owns
-  Shining state; reuse it. Payment, entropy, wound/effects/History, replay and C4 remain
-  existing owners. This does not enable arbitrary faction healer treatment.
+Reviewed and compiled source lineage
 
-Optimization / integrity
+Whole SOURCE/selection accepted4b653ddadb5a51991ce8d2cef380135774601f2a. Source fixes
+already accepted: current Shining DATA for locality normalization; exact empty-conflict
+comparison; recognized/session-reset companion lifetime; active Shining availability;
+complete hall fixture before sole bootstrap; direct-self UI phase; family7 wording.
+Actual causal missing-entry RED on2f3840fa3fcad94d05fbd4a6d91afbfcf547349f:1FAIL after
+real quote25 and full-tree byte-inertness controls,10.7495736s<60,cleanuptrue; independently
+accepted. TRXSHA256 fedf40c7dcbe0e3594e23bd6693036d96f5bf5e7c19a4220c311aaf20a679835.
+Actual health-refusal→freeform RED on544a562621dfd904b7fc43792bcd071301039267:1FAIL,
+14.1225865s<180,cleanuptrue, restored full-state errors0 before stale-companion exception;
+independently accepted. TRXSHA256 daf3d30c44ddcef9dae630a95da6a2e4d17078e50dccb4d9dfcb991022770544.
+Initial scaffold network-fixture failure is explicitly separate, not causal RED.
 
-No new cache. Each read/confirmation/stage owns current parsed roots and detached
-exports until that operation ends. Dependencies are complete relevant source images,
-exact canonical actor identity/life/realm/location/service, player locality/discovery,
-conflict/package state and generation. User interaction or next stage invalidates old
-permission; fresh work is required. New /элиара reads only the required roots, not a
-whole wound/effect catalog. Wound view entry reuses its already loaded profile DATA.
-No repeated per-member IO/materialization or extra source resolver IO. Actual source
-counters and failure/freshness fixtures must prove reuse; no speedup claimed beforehand.
+Minimal companion correction consumes console visit before health into a local; exact
+action/generation/marker/mixed-treatment checks and browser queue remain unchanged.
+Fresh four-project pass3 sourcee07ddcff44f3a4049ac8a3aa3a4bae2f09b9d871:all exit0,
+0errors; baseline warnings12/23/26/102;2:12.00/0:17.39/0:58.05/2:16.97.4PE/PDB pairs,
+85sourcebindings,27artifacts verified. Catalog1126categories/12895methods; exact22category
+PlanOnly140cases/0executions,12.3228326s, clean revision/cleanup. Compilation is not PASS.
 
-Finite execution / acceptance
+Actual pass3 cheap runtime findings (all fail-fast, no timeout/skip/duplicate)
 
-- [x] Verify same environment/processes/tree/remote and canonical requirements. Read-only
-  current-location/reachability DESIGN accepted with the explicit limits above.
-- [ ] Add one actual existing /лечить entry causal test using the accepted minimal service
-  fixture. Existing local public quote is the setup control; missing navigation action
-  is expected semantic RED. Fresh Integration only while production stays unchanged;
-  exact category/discovery/PlanOnly/PREP and one run, no accepted80 replay.
-- [ ] Implement shared visit projection/action/source owner and cheap independent typed
-  identity across realms, relocated host, discovery, malformed/hidden/unavailable/dead,
-  current-hall/package/conflict, no home fallback, immutable payload and parser controls.
-- [ ] Connect console/browser confirmation and current queue/Engine staging/accepted
-  validation. Exercise cancellation and death/relocation/discovery/player movement/realm
-  races at confirmation, stage and pre-turn acceptance; no downgrade by stripped marker.
-- [ ] Add Shining co-located exact-Elyara quote/request/safe-cycle support with the existing
-  reader/payment/publication. Targeted deterministic success/partial/failure, retry/replay,
-  stale-source refusal and rollback; retain one affected Chaos compatibility consumer,
-  not the complete old paid80. Audit all actually affected consumer guards before builds.
-- [ ] Synchronize effective GM entrypoints, contracts, worked relocated-Chaos visit and
-  co-located-Shining treatment examples/manifest/guards. Record unavailable remote routes.
-- [ ] Whole independent Sol SOURCE/selection; fresh affected Main/Support/Unit/Integration,
-  PDB/artifact proof, catalog/exact PlanOnly/resource/PREP. Cheap causal/data/docs before
-  the two real UI journeys and changed Engine/payment consumers. Unchanged budgets,
-  complete diagnostics, owned cleanup and independent OUTCOME/checkpoint review.
-- [ ] Publish code/checkpoint and verify remote SHA, clean tree and no raw in Git. No new
-  clone/restore, history rewrite, merge/force, branch deletion or old raw/save/recovery
-  deletion. DFR/Mortal/Windows and previous qualification limits remain HOLD/open.
+- `visit-green-cheap-runtime`:2 documentation PASS +7 browser admission FAIL due to
+  missing `BrowserPlayerCommandMenuBuilder.Metadata[elyara_visit]`;120UNRUN, both cleanups.
+- `visit-green-cheap-remaining-runtime`:38PASS/2FAIL over40cases; causal entry1 and console
+  admission2 PASS, DATA35PASS/2FAIL.80UNRUN. Shining local fixture retained old locationName;
+  quote parser wrongly used intentionally Chaos-only participation-coordinate reader.
+- `visit-green-cheap-unrun-runtime`:1 documentation PASS/1FAIL,78UNRUN. Worked Shining
+  projection test had the same old-locationName fixture error. Full raw retained.
+- A transport disconnect returned an error after starting the first cheap process. Same
+  environment/PID/attempt were checked; its known exit1/results recovered, no duplicate.
 
-Current boundary: DESIGN accepted; the one test-only scaffold is compiled and its
-semantic RED is independently accepted. GREEN implementation below is WIP/UNCOMPILED.
-ElyaraCurrentLocationNavigationTests.TreatmentEntryOffersCanonicalElyaraNavigationWithoutMutatingState
-uses the existing small service fixture, first proves its available25-Feather local
-quote and whole game_state/input/output byte immutability, then expects the missing
-«Пойти к Элиаре за лечением» action. No Engine/draw/stage or mock-only assertion.
-Its exact category is elyara-current-location-causal (one Integration case,60s).
-Independent Sol6.1/xhigh scaffold SOURCE/selection ACCEPT on
-96db3a6998df03118e51574d1b95eb0e2d3cd6b4, no material findings. Expected missing-action
-assertion is line27, after actual25 quote and whole-tree immutability controls. Production
-and existing helpers are unchanged; fresh Integration only is sufficient. Independent
-PREP accepted source2f3840fa3fcad94d05fbd4a6d91afbfcf547349f: Integration exit0,
-0errors/102baseline warnings/2:29.91;4 PE/PDB pairs,57sourcebindings,27artifacts, unchanged
-production/Unit. Catalog1114/12869 valid; exact PlanOnly1case/1method/1descriptor/60s,
-0 executions,7.8906944s, revision0/cleanuptrue. One actual singleton completed1/1 with
-expected semantic FAIL: empty Actions at line27 after actual quote25/inertness controls.
-Category10.7495736s<60; wall19.0463257s, no timeout/duplicate, both cleanups true;
-Category Completed=false retained for the FAIL. All27 artifact/57source pins unchanged.
-TRX SHA256 fedf40c7dcbe0e3594e23bd6693036d96f5bf5e7c19a4220c311aaf20a679835.
-External visit-causal-red/verified-expected-red.json records the complete assertion,
-stack and controls. Independent Sol RED OUTCOME ACCEPT, no blocking findings. GREEN implementation and
-route runtime remain UNRUN. Existing canonical plan is the durable inline ledger; repository
-rules override skill defaults for duplicate scratch ledgers, in-checkout raw and full
-suite repeats. No new worktree or generic diagnostic stack is needed.
-First GREEN source block authored, NOT COMPILED/NOT QUALIFIED: ElyaraVisitService
-identity/current-locality projection, strict Action codec and five-source operation
-owner; pure Shining scope extraction preserving the old async read order; detached
-result/state with private fields JsonIgnore;24 intended typed DATA/payload cases.
-That first block was remotely preserved as065e603a84c042a2bc02a6c311e6c02a972790ec.
-The next coherent WIP now connects /элиара (/elyara), wound entry, console navigation
-and one-shot action/generation companion; browser uses the existing prompt ownership,
-expiry/cancel transaction and ordinary pending queue with a specific recognized source.
-Only the already-sealed Action carries the closed visit payload, no queue fields/file.
-Engine stages a fresh visit before control preparation and closes all five source
-images after it. Focused accepted validation uses the existing authenticated snapshot
-lookup/text reader and current WorldRead owner, compares pre-turn provider/destination,
-then actual arrival and the same current alive provider/service. No new original-reader
-or diagnostic stack. Exact-Elyara local Shining quote/codec/source/cycle gates and global
-canonical identity at C4 are authored; existing fee/math/publication owners remain.
+Current grouped correction / finite next steps
 
-Ruling: menu equality uses canonical JSON of all five complete roots plus generation,
-not their text encoding. This lets the existing validated original text reader reproduce
-comparison DATA, including BOM/format independence, without a second raw-byte reader.
-Only absent conflict DATA compares as the deterministic exact empty conflict root:
-ordinary Engine staging initializes it before the authenticated original snapshot.
-Non-null malformed/nondefault roots (including history/unknown fields) stay distinct;
-no other absence maps. This is comparison equivalence, never permission to change a
-physical image during the operation. Actual current source images still close freshly around confirmation/staging; the digest
-never replaces original authentication, generation/lease or physical source fences.
-The stage SourcePaths remain Soul/profiles/guardians/Shining/conflict, one parse each.
+1. Register visit in the existing browser metadata dictionary/ordinary afterlife gate.
+   Typed metadata assertion and one existing public menu realm consumer guard it.
+2. Parse closed service owner coordinates in the service contract, not Chaos aid parser.
+   Quote keeps exact same-realm Elyara/player restriction; payment equals exact expected
+   patient/wallet/attempt/quote. Participation guards unchanged. Add roundtrip/negative
+   owner/payment controls without new I/O/cache.
+3. Correct independent Shining fixture/example projection locationName to actual hall;
+   keep contradictory-name guards. Reuse existing full-actor GM helper with visit-only
+   arrival and actual realm/place, no treatment/payment; no generic harness added.
+4. Independent delta SOURCE/selection, preserve complete current27 artifacts before
+   replacement, fresh affected builds, PDB/artifact pins, catalog/PlanOnly/resource/PREP.
+   Existing DATA category adds one relevant menu consumer:141 total cases. Run failed
+   browser/DATA/documentation and78 previously UNRUN cheap cases before functional11.
+   Unchanged entry1/console2/entrypoint-docs2 PASS need no replay.
+5. Run six functional categories/11cases: ordinary UI travel2, same-hall actual failed/
+   partial/success/replay plus normalization4, Shining UI2, Shining C4 rollback1, health
+   lifetime1 and affected Chaos helper consumer1. Original budgets unchanged. Then
+   independent OUTCOME/full-capture check and exact checkpoint/remote SHA.
 
-Current T143 WIP now includes original-versus-current acceptance controls, encoding-
-independent comparison DATA with byte-exact closing fences, actual five-source counters
-for1/20 extra actors, seven fresh confirmation/stage refusal cases, specific sealed
-queue/marker controls, two actual ordinary travel UI journeys, browser stale/foreign
-answer refusals, three Shining retained-result/replay cases and console/browser/rollback
-Shining service journeys. Existing paid stage/C4/History assertions are reused with
-explicit current realm; fixtures seed current hall/provider before resource bootstrap.
-All NEW GREEN C# is still UNCOMPILED/UNREVIEWED/UNRUN. GM synchronization and final
-whole-block impact selection/SOURCE remain next; do not treat authored assertions as PASS.
-
-Whole GREEN block is now authored: current-route DATA/source/closed Action, existing
-console/shared-browser lease/queue and GameEngine/validated-original admission, exact
-co-located Shining service7, finite causal/source-count/freshness/ownership/original/
-actual UI/result/replay/rollback tests. GM contract/matrix, operation/rule/API/daemon
-entrypoints, dossier, worked relocated-host/Shining excerpts and manifest/typed guards
-are synchronized. tests/selection.json records exact new owners and changed old service
-quote/request/menu/source consumers plus ONE Chaos console compatibility; unchanged
-price/payment arithmetic, prior accepted80 and HOLD chains are excluded. All GREEN
-remains UNCOMPILED/UNRUN pending whole independent SOURCE/selection, then fresh affected
-builds and exact discovery/PlanOnly/PREP. No observed new PASS is claimed.
-
-Whole independent SOURCE review found and the author verified three production gaps
-before any GREEN build: service locality normalizer omitted already-read Shining DATA;
-ordinary conflict-file initialization changed whole-root comparison after navigation;
-abandoned console visit companion survived new-command/session reset. These are now
-corrected with private DATA reuse, only null-to-exact-empty comparison equivalence plus
-byte-exact physical fences, and existing lifecycle resets. New regressions exercise
-prepared real paid-owner normalization/current-hall refusal, absent/default/nondefault
-comparison/physical differences and abandoned console companions. Review also found
-Shining tests assuming a non-existent foreign-target phase; they now assert the existing
-direct-self phase and retain exact service/price/actual outcome assertions. No production
-target phase was added. StageAsync already selected Choices directly, no such change.
-Temporary environment disconnect recovered via the same environment; HEAD/tree and
-7GiB free verified, no duplicate runtime/build. All fixes are still UNCOMPILED/UNRUN.
-
-Additional whole-review findings corrected before the first GREEN build: the Shining
-fixture now supplies required hall description/serviceTags and normalizes the entire
-current state before the sole resource bootstrap (not a production guard exemption).
-The shared exact service/visit scope now requires ordinary availability=active, matching
-existing Shining action access; sealed/unknown availability negative controls and fresh
-sealed confirmation refusal are included. All effective guidance/worked excerpt agrees.
-No valid unchanged Shining state requiring extra owner normalization was demonstrated;
-no ownership expansion was added. Duplicate target-host IDs are already rejected by
-Engine's pre-stage canonical validation, so optional unrelated projection hardening is
-not added. Remaining SOURCE verdict/build/runtime still pending; no new PASS claimed.
-
-Final source-contract wording follow-up: existing private wound_commands registry now
-accurately calls family7 safe co-located Chaos/Shining Elyara service, retaining its
-same path, realms and private ownership. Existing service documentation registry guard
-remains selected. Independent whole SOURCE final verdict is being closed; GREEN build,
-exact discovery/PlanOnly/PREP and runtime remain UNRUN at this saved boundary.
-
-Independent Sol6.1/xhigh whole SOURCE/selection ACCEPT on
-4b653ddadb5a51991ce8d2cef380135774601f2a against accepted47958df. No remaining
-blocking source findings; all seven concrete code/fixture/contract omissions verified
-closed.21 selected categories judged sufficient at source, budgets unchanged. Reviewed
-optimization: private operation DATA/five roots/no new cache, exact physical source
-closures/authenticated originals, narrow deterministic empty-conflict comparison only.
-Reviewer wrote/built/executed nothing; read-only diff check passed, tree clean. Next
-fresh Main/Support/Unit/Integration, actual inventory/PlanOnly/resource/PREP and selected
-runtime. GREEN is still UNCOMPILED/UNRUN at this checkpoint; no functional PASS yet.
-The following earlier WIP notes describe their earlier boundary, superseded by this
-source verdict only (not by runtime qualification).
-
-First fresh GREEN Main compile on5d652c383ca6804bf01975c9f70c29d37c9dcad3 ended
-exit1,12baseline warnings,1error,1:49.09. Single CS0103: new Action codec omitted
-using BookOfEternityClient.Core for existing StrictJsonAuthority. Added that namespace
-import only; no predicates/serialization/assertions change. Sequential build stopped
-before Support/Unit/Integration; no runtime, no qualification. Exact raw pass1/main
-outside checkout retained. Delta SOURCE check and corrected fresh pass follow.
-
-Corrected fresh pass2 on897de0264cf0f2fe988741db6478cefdcb8b8aa6 completed all four
-managed projects exit0,12/23/26/102 baseline warnings,0errors; durations2:36.28,
-0:15.65,1:11.48,2:10.48.4 PE/PDB pairs,84 current changed source bindings and27
-owning artifacts/dependency copies verified. No runtime executed yet. Build evidence
-outside checkout, complete outputs archived/hash-read back before replacement.
-
-A bounded independent follow-up confirmed the same pending-companion lifetime bug
-also affects freeform next input after pre-stage health refuses: recognized-command
-reset is bypassed. Planned minimal production correction consumes console visit into
-a local before health validation, retaining exact action/generation/marker checks.
-First add one actual health-refusal→freeform ordinary-cycle regression on unchanged
-production: deliberate invalid duplicate guardian must refuse before request; restored
-fixture then ordinary input must not inherit the abandoned visit. Exact new category
-elyara-current-location-health-refusal, one case/180s. New test is UNCOMPILED/UNRUN;
-production correction NOT APPLIED. No claim that the old successful compile qualifies
-this unresolved case. Existing selected runtime still UNRUN; no repeated accepted80.
-
-One actual health-refusal scaffold attempt on d123 completed1/1FAIL, no skip/timeout/
-duplicate/lost case, both cleanups true; category12.9770463s<180, wall21.8125349s.
-It is NOT causal RED: no stale-visit exception; restored two-Guardian baseline lacks
-both directed guardianRelationships entries and fails health again before the subject.
-Raw/TRX and explicit verified-fixture-failure.json are retained outside checkout.
-Fixture correction uses existing GuardianRelationshipRules.EnsureCanonicalNetwork
-before activeGuardian clone/sole resource bootstrap, plus explicit restored full-state
-validity before freeform. No production change/guard relaxation or blind retry.
-Integration-only fresh build and narrow review/PREP follow. Existing catalog ownership/
-method signatures and selected budgets are unchanged; do not replay complete discovery
-or accepted80 solely for these fixture body changes.
-
-Independent semantic health-refusal RED OUTCOME ACCEPT on544a5626: corrected fixture
-build exit0/102warnings/2:30.12; exact1case/180s PlanOnly0execution8.5108242s,
-4PE/PDB85bindings27artifacts. Actual1/1FAIL complete, category14.1225865s<180,
-wall23.5976018s, no timeout/skip/duplicate/lost case, bothcleanups true. TRX exact
-stale-visit InvalidDataException at second ProcessPlayerTurn line64, after restored
-full-state errors0/freeform-no-reset controls. TRXSHA256
-daf3d30c44ddcef9dae630a95da6a2e4d17078e50dccb4d9dfcb991022770544.
-Category.Completed=false is retained; initial network-fixture failure is separate.
-
-Minimal GREEN correction now consumes console companion into a local before health
-validation; later exact marker/mixed-treatment/fresh-source stage reuses that local.
-Actual action/generation validation and browser queue are unchanged. Refusal/throw
-cannot retain this one-shot permission into another freeform action. This correction
-is UNCOMPILED/UNRUN pending delta SOURCE and corrected affected builds/qualification.
-All broader current-location GREEN checks remain UNRUN; do not call this feature PASS.
-
-All this GREEN code is UNCOMPILED/UNREVIEWED/UNQUALIFIED. Remaining finite work: complete
-new admission/accepted/race/source-count and Shining actual result/replay/rollback tests,
-GM effective guidance/examples/guards, whole impact selection/SOURCE, then one fresh
-four-project build, catalog/PlanOnly/PREP, cheap gate and real console/browser/Engine
-journeys. No runtime route or new PASS is claimed; no accepted80 rerun.
-
-Accepted access27 owning artifacts were fully decoded/hash-verified into an external
-archive before replacing the Integration pair. No raw/save/recovery was deleted. Current accepted access-view80 and local-paid80 keep their separate accepted
-sources/results and must not be repeated without a changed dependency. Over7GiB free;
-keep400MiB build-start plus full output and128MiB runtime floor. New full raw belongs
-outside checkout at /workspace/tboe-linux-evidence-20261025/us6-elyara-current-location.
+All raw/log/TRX/generated analysis JSON/archives stay outside checkout at
+`/workspace/tboe-linux-evidence-20261025/us6-elyara-current-location`. Prior complete
+owning artifacts were archived, fully decoded/member-hash verified before replacement;
+no raw/saves/recovery deleted. No new clone/restore, lazy-fetch, history rewrite,
+merge/force-push, branch deletion or new full qualification. WIP publication is not
+acceptance. Next gameplay after this route: negotiated compensation through existing
+final treatment handler (T138/T133/T136), without inventing economic rules.
 
 ---
 

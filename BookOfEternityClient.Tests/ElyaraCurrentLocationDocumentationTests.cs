@@ -51,6 +51,7 @@ public sealed class ElyaraCurrentLocationDocumentationTests
             var actor = AfterlifeActorMaterializationTestFixture.CreateCompleteProfile("guardian", AfterlifeWoundTreatmentAuthority.ElyaraId,
                 excerpt["realm"]!.GetValue<string>(), 42);
             actor["lifeState"] = "alive"; actor["locationId"] = excerpt["locationId"]!.DeepClone();
+            if (index == 1) actor["locationName"] = excerpt["shining"]!["halls"]![0]!["hallName"]!.DeepClone();
             actor["standardArts"]!["spiritual_healing"] = 5;
             actor["healingServiceProfile"] = AfterlifeHealingServiceTestData.Actor()["healingServiceProfile"]!.DeepClone();
             actor["healingServiceProfile"]!["realm"] = excerpt["serviceRealm"]!.DeepClone();
