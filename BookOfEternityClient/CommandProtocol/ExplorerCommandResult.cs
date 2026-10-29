@@ -14,6 +14,8 @@ public sealed class ExplorerCommandResult
     public string? PendingGmAction { get; init; }
     [JsonIgnore]
     internal Services.WoundCommandState? WoundCommandState { get; init; }
+    [JsonIgnore]
+    internal Services.ElyaraVisitCommandState? ElyaraVisitCommandState { get; init; }
 }
 
 [JsonConverter(typeof(JsonStringEnumConverter))]

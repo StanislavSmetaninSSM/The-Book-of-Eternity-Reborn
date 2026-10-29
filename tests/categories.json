@@ -36522,6 +36522,37 @@
           ]
         }
       ]
+    },
+    {
+      "id": "elyara-current-location-data",
+      "responsibility": "Detached exact Elyara identity across realms, actual relocated Chaos host/discovery, strict current Shining locality, safe-service blockers and closed ordinary visit payload integrity.",
+      "excludes": "No Engine or world-cycle/payment acceptance, UI journey, remote Shining travel, T142 policy or HOLD gates.",
+      "changeHints": [
+        "BookOfEternityClient/Services/ElyaraVisitService.cs",
+        "BookOfEternityClient/Services/ElyaraVisitService.Action.cs",
+        "BookOfEternityClient/Services/LocalInteractionScopeService.cs"
+      ],
+      "related": [
+        {
+          "id": "elyara-current-location-causal",
+          "when": "Navigation entry and current provider route change together."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.ElyaraCurrentLocationContractTests.*"
+          ]
+        }
+      ]
     }
   ]
 }

@@ -103,7 +103,8 @@ Finite execution / acceptance
   clone/restore, history rewrite, merge/force, branch deletion or old raw/save/recovery
   deletion. DFR/Mortal/Windows and previous qualification limits remain HOLD/open.
 
-Current boundary: DESIGN accepted; one test-only scaffold is authored and UNCOMPILED.
+Current boundary: DESIGN accepted; the one test-only scaffold is compiled and its
+semantic RED is independently accepted. GREEN implementation below is WIP/UNCOMPILED.
 ElyaraCurrentLocationNavigationTests.TreatmentEntryOffersCanonicalElyaraNavigationWithoutMutatingState
 uses the existing small service fixture, first proves its available25-Feather local
 quote and whole game_state/input/output byte immutability, then expects the missing
@@ -122,10 +123,19 @@ Category10.7495736s<60; wall19.0463257s, no timeout/duplicate, both cleanups tru
 Category Completed=false retained for the FAIL. All27 artifact/57source pins unchanged.
 TRX SHA256 fedf40c7dcbe0e3594e23bd6693036d96f5bf5e7c19a4220c311aaf20a679835.
 External visit-causal-red/verified-expected-red.json records the complete assertion,
-stack and controls. Independent RED OUTCOME pending. GREEN implementation and route
-runtime remain UNRUN. Existing canonical plan is the durable inline ledger; repository
+stack and controls. Independent Sol RED OUTCOME ACCEPT, no blocking findings. GREEN implementation and
+route runtime remain UNRUN. Existing canonical plan is the durable inline ledger; repository
 rules override skill defaults for duplicate scratch ledgers, in-checkout raw and full
 suite repeats. No new worktree or generic diagnostic stack is needed.
+First GREEN source block authored, NOT COMPILED/NOT QUALIFIED: ElyaraVisitService
+identity/current-locality projection, strict Action codec and five-source operation
+owner; pure Shining scope extraction preserving the old async read order; detached
+result/state with private fields JsonIgnore;24 intended typed DATA/payload cases.
+The entry/console/browser queue/Engine/accepted validation and paid Shining realm
+extension are not connected yet. No runnable route or PASS is claimed. No new cache,
+queue file or payment owner. Next concrete step is connect the shared UI/ordinary
+staging path and exact-Elyara local Shining service, then whole SOURCE/selection.
+
 Accepted access27 owning artifacts were fully decoded/hash-verified into an external
 archive before replacing the Integration pair. No raw/save/recovery was deleted. Current accepted access-view80 and local-paid80 keep their separate accepted
 sources/results and must not be repeated without a changed dependency. Over7GiB free;

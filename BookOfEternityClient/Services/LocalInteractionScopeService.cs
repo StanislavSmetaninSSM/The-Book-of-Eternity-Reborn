@@ -403,10 +403,17 @@ internal sealed class LocalInteractionScopeService : ILocalInteractionScopeResol
     {
         var shiningRead = await ReadAuthorityObjectAsync(writeLease, ShiningAbodePath);
         var residentsRead = await ReadAuthorityObjectAsync(writeLease, GuardianAbodeResidentState.StatePath);
-        var root = shiningRead.Root;
         var resolvedSnapshots = AppendSnapshot(
             AppendSnapshot(authoritySnapshots, shiningRead.Snapshot),
             residentsRead.Snapshot);
+        return ResolveShiningAbodeScope(shiningRead.Root, residentsRead.Root, resolvedSnapshots);
+    }
+
+    // The source owner can reuse its current parsed DATA without another IO
+    // round trip. The async resolver above retains its original read order.
+    internal static LocalInteractionScope ResolveShiningAbodeScope(JsonObject? root, JsonObject? residentsRoot,
+        IReadOnlyList<LocalInteractionAuthoritySnapshot> resolvedSnapshots)
+    {
         var currentHallId = GetFirstString(root, "currentHallId", "activeHallId", "selectedHallId");
         var halls = root?["halls"] as JsonArray;
         var currentHall = EnumerateObjects(halls)
@@ -446,7 +453,6 @@ internal sealed class LocalInteractionScopeService : ILocalInteractionScopeResol
                 AddNonEmpty(localActors, GetActorId(actor));
         }
 
-        var residentsRoot = residentsRead.Root;
         AddShiningResidents(localActors, localFactions, currentHallId, currentHallName, residentsRoot);
         AddShiningResidents(localActors, localFactions, currentHallId, currentHallName, root);
 
