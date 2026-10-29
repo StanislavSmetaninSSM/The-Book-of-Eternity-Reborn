@@ -10,7 +10,10 @@
   "Examples/E_CLI_Afterlife_Turns.txt"
 ],
   "related": [
-    "spiritual-resident-provider-contract"
+    {
+      "id": "spiritual-resident-provider-contract",
+      "when": "Select together when the resident-provider family changes its shared closed roles, actual authority or affected consumer contract."
+    }
   ],
   "requirements": {
     "frontendBuild": false,
@@ -38,7 +41,10 @@
   "BookOfEternityClient/Services/AfterlifeWoundTreatmentAuthority.cs"
 ],
   "related": [
-    "spiritual-resident-provider-contract"
+    {
+      "id": "spiritual-resident-provider-contract",
+      "when": "Select together when the resident-provider family changes its shared closed roles, actual authority or affected consumer contract."
+    }
   ],
   "requirements": {
     "frontendBuild": false,
@@ -75,7 +81,10 @@
   "BookOfEternityClient.IntegrationTests/AfterlifeSpiritualNaturalRecoveryTests.ActiveAid.cs"
 ],
   "related": [
-    "spiritual-resident-provider-contract"
+    {
+      "id": "spiritual-resident-provider-contract",
+      "when": "Select together when the resident-provider family changes its shared closed roles, actual authority or affected consumer contract."
+    }
   ],
   "requirements": {
     "frontendBuild": false,
@@ -101,7 +110,10 @@
   "BookOfEternityClient.IntegrationTests/AfterlifeSpiritualNaturalRecoveryTests.ResidentProvider.cs"
 ],
   "related": [
-    "spiritual-resident-provider-contract"
+    {
+      "id": "spiritual-resident-provider-contract",
+      "when": "Select together when the resident-provider family changes its shared closed roles, actual authority or affected consumer contract."
+    }
   ],
   "requirements": {
     "frontendBuild": false,
@@ -127,7 +139,10 @@
   "BookOfEternityClient.IntegrationTests/ExplorerWoundSelfTreatmentTests.Aid.cs"
 ],
   "related": [
-    "spiritual-resident-provider-contract"
+    {
+      "id": "spiritual-resident-provider-contract",
+      "when": "Select together when the resident-provider family changes its shared closed roles, actual authority or affected consumer contract."
+    }
   ],
   "requirements": {
     "frontendBuild": false,
@@ -153,7 +168,10 @@
   "BookOfEternityClient.IntegrationTests/ExplorerWoundSelfTreatmentTests.Aid.cs"
 ],
   "related": [
-    "spiritual-resident-provider-contract"
+    {
+      "id": "spiritual-resident-provider-contract",
+      "when": "Select together when the resident-provider family changes its shared closed roles, actual authority or affected consumer contract."
+    }
   ],
   "requirements": {
     "frontendBuild": false,
@@ -179,7 +197,10 @@
   "BookOfEternityClient.IntegrationTests/ExplorerWoundSelfTreatmentTests.Aid.cs"
 ],
   "related": [
-    "spiritual-resident-provider-contract"
+    {
+      "id": "spiritual-resident-provider-contract",
+      "when": "Select together when the resident-provider family changes its shared closed roles, actual authority or affected consumer contract."
+    }
   ],
   "requirements": {
     "frontendBuild": false,
@@ -205,7 +226,10 @@
   "BookOfEternityClient.IntegrationTests/AfterlifeWoundHealingLifecycleTests.cs"
 ],
   "related": [
-    "spiritual-resident-provider-contract"
+    {
+      "id": "spiritual-resident-provider-contract",
+      "when": "Select together when the resident-provider family changes its shared closed roles, actual authority or affected consumer contract."
+    }
   ],
   "requirements": {
     "frontendBuild": false,
@@ -231,7 +255,10 @@
   "BookOfEternityClient.IntegrationTests/AfterlifeSpiritualNaturalRecoveryTests.ActiveAid.cs"
 ],
   "related": [
-    "spiritual-resident-provider-contract"
+    {
+      "id": "spiritual-resident-provider-contract",
+      "when": "Select together when the resident-provider family changes its shared closed roles, actual authority or affected consumer contract."
+    }
   ],
   "requirements": {
     "frontendBuild": false,
@@ -259,7 +286,10 @@
     "BookOfEternityClient.Tests/SpiritualResidentProviderParticipationTests.Request.cs"
   ],
   "related": [
-    "spiritual-resident-provider-causal"
+    {
+      "id": "spiritual-resident-provider-causal",
+      "when": "Select together when the resident-provider family changes its shared closed roles, actual authority or affected consumer contract."
+    }
   ],
   "requirements": {
     "frontendBuild": false,

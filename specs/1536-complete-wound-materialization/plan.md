@@ -59,6 +59,15 @@ filled only actual source/test paths, selectors/budgets unchanged. This is catal
 metadata repair, not test PASS. Preserve fresh compiled e756 lineage; no C# changed
 for this correction, so fresh builds need not repeat. Catalog/Plan/PREP pending.
 
+Second catalog attempt also stopped before discovery/tests: related links require
+id/when OBJECTS, not category-id strings. Read the complete existing catalog
+reader before further attempt; converted all ten provider related links to objects
+with explicit reasons, no selectors/budgets/C# changes. This metadata mistake is
+not gameplay failure. Delta review and cheap official catalog-list schema check
+completed before the next discovery: independent Sol metadata SOURCE ACCEPT,
+official -ListCategories exit0/1061validcategories, no discovery/tests. Retain e756
+compiled binaries; only catalog metadata/plan differ.
+
 Core GREEN WIP after causal RED: record4/selection6/request/result6 and pure typed
 resident-healer scope are connected through natural participation, protected
 memory, History dispatch, GM projection and distinct receive-aid action/menu.
