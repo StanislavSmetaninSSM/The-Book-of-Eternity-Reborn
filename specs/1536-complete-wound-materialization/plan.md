@@ -1,3 +1,83 @@
+# T143 — current canonical Elyara route ACCEPTED, 2026-10-29
+
+Issue: https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536
+Runtime source5a41d68b5f2f01651b0c45ab2ff29ac0416286d1; Main/Support/Unit still
+exact b46d12cccae1840b13f6fe47adc1143a0da0403b (later delta only Integration tests,
+catalog/selection/plan). Independent Sol SOURCE/selection/PREP/OUTCOME accepted;
+previous bounded Astra/high DESIGN remains accepted. No new production change after b46.
+
+Player result: /элиара and shared console/browser entry resolve the SAME currently alive
+canonical Elyara, rather than her home registry location. A discovered reachable Chaos
+abode uses ordinary travel and one natural world cycle, with zero active treatment/fee;
+arrival needs a NEW price and separate treatment confirmation. Co-located active Shining
+hall uses the existing paid family7 flow: public form/cancel, confirmation, queue, actual
+roll, payment, wound/effects/History and one Shining cycle. Current hall is canonical,
+optional when unknown, exact when present, and ordinary GM/progression cannot move it.
+Remote Shining/cross-realm travel has no supported ordinary opcode; no teleport/reset.
+
+Accepted exact coverage:173 DISTINCT PASS across26 TRX/57 methods/four source versions,
+NOT a single fresh run. Lineages:3 e07ddcff44f3a4049ac8a3aa3a4bae2f09b9d871;
+68 2cad38b83332e81d62224e5afea1b923bdefffd9;
+98 b46d12cccae1840b13f6fe47adc1143a0da0403b;
+4 5a41d68b5f2f01651b0c45ab2ff29ac0416286d1. These are71 unchanged carried controls,
+88 fresh b46 cheap controls,10 b46 functional cases,3 current public-readiness cases
+and1 current browser Engine case. Explicit unchanged console Theory-to-Fact alias;
+failed browser row excluded. Exact identities/GUIDs/execution IDs/counts re-parsed and
+TRX hashes checked independently; no skip/timeout/duplicate in accepted captures.
+
+- b46 cheap91/91 PASS,102.5204409s wall; later readiness3 replaced by current3.
+- b46 first functional7PASS/1FAIL8of11,131.5076141s wall. Failure was a TEST NRE on
+  private WoundCommandState, intentionally absent from public Execute result.
+  Remaining3/3PASS,122.6679914s wall (travel console/browser + affected Chaos paid console).
+- Current readiness3/3PASS,16.5845949s<60,wall23.7631647s: full initial validity,
+  unknown-key refusal, public quote25/private DATA absent/cancel Completed, unchanged
+  wallet/guardians/profiles/journal/wounds/effects/History/schedule/time/dice/queue.
+- Current browser1/1PASS,79.7168163s<180,wall87.5852933s: wallet500→475,total900,
+  actual d11/ReduceTwo/result7 and one accepted Shining cycle. TRX SHA256
+  2fe421e8765435d822e83dfa91fe7371b977599c6fe71be637c84491c977abe7.
+All owning/runtime cleanup true and before/after binary pins unchanged.
+
+Builds: b46 fresh Main/Support/Unit/Integration all exit0,0errors, baseline warnings
+12/23/26/102. Test-only correction5a41 fresh Integration exit0,0errors/102warnings,
+1:58.41;27 artifacts,4 PE/PDB pairs and95 current source bindings verified. Catalog
+1130 categories/12903 methods valid,0 unmapped/stale; exact current PlanOnly readiness3
++browser1,8.3652269s/0executions. Failed initial correction build4compile errors is
+preserved separately; it is neither RED nor qualification. No unnecessary owning rebuild.
+
+Optimization: same five-root private operation DATA and current parsed Shining locality,
+actual one/many source counts, complete generation/physical/authority opening and closing
+checks retained; no new cache. Public-readiness proof reuses its existing independent
+fixture instead of another Engine setup. No speedup claimed. GM guidance, both daemons,
+runtime scheduler, worked example, manifest and documentation guards synchronized.
+
+Complete raw is outside checkout at
+/workspace/tboe-linux-evidence-20261025/us6-elyara-current-location.
+Frozen visit-final-raw-manifest.json:807 files/699776905bytes; SHA256
+64bf5965486ec76ab9e67a7fa10ff2b82b745db8ffef5ad8eef4cdd95d6fcc58.
+All frozen files checked for stable size/mtime while hashing. Previous complete27 build
+artifacts archived/full-decode/member-hash verified before replacement; nothing deleted.
+Old incomplete health-timeout fixture/raw, unknown-key failure, browser NRE and compile
+failure retained honestly. No raw/binaries/logs/TRX/generated dumps in Git. No new clone,
+restore, history rewrite, merge/force-push or removal of saves/recovery/raw.
+
+Boundaries: parent T143, arbitrary faction-provider execution/negotiation and whole US6/
+#1536 stay OPEN. DOM/live provider/fresh process not proved by controlled native GM/shared
+browser queue. Full DFR timeout300.1806894s, Mortal compatibility timeout, Windows HOLD,
+first-guardian intermittence and cross-OS DATA remain separate open results.
+
+Next functional block T142: enforce one living primary healing_support resident with
+exact materialized Shining profile and integer HealingI–V in EVERY current faction,
+including hidden/weakened/leaderless. ONLY broken/dissolved historical factions exempt;
+retain records. Reuse current faction/reference validator, its per-invocation resident/
+profile/trade DATA and requiredActors dedup; no inferred healer/tier/resurrection/service.
+Hidden canonical capability does not authorize public access. Revealed roster still
+exposes role/tier through existing projection. First add one causal missing-healer case,
+then independent bounded design/selection and implement same owner with lifecycle/
+identity/life/tier/visibility negatives, source-count proof and affected complete route
+consumers. No return to HOLD gates or replay of unchanged T143173.
+
+---
+
 # T143 browser fixture correction — WIP, 2026-10-29 22:50 UTC
 
 Remote/source b46d12cccae1840b13f6fe47adc1143a0da0403b: fresh cheap91/91 PASS.
