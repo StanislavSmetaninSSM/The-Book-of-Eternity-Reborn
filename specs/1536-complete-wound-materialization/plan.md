@@ -20,8 +20,14 @@ See spiritual-aid-design.md final section for precise closed shapes, interfaces,
 files/work units, causal tests, all authority transitions, two-actor fixture
 preparation and bounded verification. No implementation/build/runtime yet.
 
-- [ ] Independent Astra/high bounded DESIGN review, close concrete findings.
-- [ ] Existing-API typed causal semantic RED1, then common family/scope GREEN.
+- [x] Independent Astra/high DESIGN accepted after sole P2 settlement wording
+  correction; live admission and settled/historical replay keep their separate
+  existing checks. Eligible-cycle revoke, kinded same-ID healer and wrong patient
+  memory owner cases are explicit; no new author decision needed.
+- [ ] Existing-API typed causal semantic RED1: source scaffold and exact new1-case
+  category authored, production unchanged. Fresh Unit refsfalse only, catalog/exact
+  Plan/PREP and expected unknown-proposal4 failure pending. Then common family/scope
+  GREEN; no implementation claim from compilation or pure DATA admission.
 - [ ] Guided/native author fixtures and complete GM synchronization; coherent
   SOURCE/selection, fresh affected builds, catalog/exactPlan/PREP, cheapGREEN.
 - [ ] Genuine offer/aid/revoke backend then both actualUI and common rollback;

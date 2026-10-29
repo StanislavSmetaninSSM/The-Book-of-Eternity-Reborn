@@ -2,6 +2,30 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "spiritual-resident-provider-causal",
+  "responsibility": "T108-RESIDENT-HELP existing-API causal admission of closed proposal4 on a preexisting typed resident healer for the player patient. Detached source/result copies remain independent.",
+  "excludes": "Does not establish accepted offer, current locality, confirmation, live healing authority, paid service or Engine qualification. No repeat of accepted resident69.",
+  "changeHints": [
+    "BookOfEternityClient.Tests/SpiritualResidentProviderParticipationTests.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.SpiritualResidentProviderParticipationTests.ResidentProviderOfferUsesTypedActorAndPlayerPatient"
+      ]
+    }
+  ]
+},
+{
   "id": "spiritual-resident-aid-record-detachment",
   "responsibility": "Six previously blocked raw canonical-record forgery/null rows plus the directly affected resident selection roundtrip. The fixture must return detached identical record DATA before any raw admission assertion.",
   "excludes": "Does not repeat the other unchanged41 contract cases or10 affected consumer PASS; no production or Engine change.",

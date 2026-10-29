@@ -692,9 +692,12 @@ PREP and OUTCOME use bounded existing-style limits, with no broad successful-sui
 DFR/Mortal/Windows/performance replay as a prerequisite for this functional slice.
 
 
-## Next bounded slice: resident offers private help to player — DESIGN pending
+## Next bounded slice: resident offers private help to player — DESIGN accepted
 
-2026-10-29, #1536/T108-RESIDENT-HELP. US4/FR-042–054 and T108 already require
+2026-10-29, #1536/T108-RESIDENT-HELP. Independent Astra/high DESIGN accepted
+after the sole P2 settlement-versus-live-join clarification; no remaining design
+blockers. First existing-API causal scaffold is authored, not compiled or executed.
+ US4/FR-042–054 and T108 already require
 entity-to-player treatment using the common art, consent and world-cycle rules.
 The player→resident slice is accepted ata4a03f54; the opposite direction is absent:
 current provider_offer2 and receive_aid4 hard-code a Guardian healer. US5 full
@@ -769,8 +772,12 @@ replace existing error/iteration semantics or allow multiple distinct proposals.
 
 History validates full recorded natural offer, binding, witness, original request,
 source/tiers/stages and immutable result; it must not demand a later live roster.
-Fresh settlement and new attempts still prove current roster/profile/location,
-source/history/cohort/schedule/closing state. Preserve existing v3/v4/v5 forms and
+New offers, admission/staging, signed B, owned normalization and closing still prove
+the current resident roster/profile/locality join. Current-settlement replay instead
+retains the existing exact typed profile/record, control/source/schedule/cohort and
+History checks, without a blanket renewed live-presence requirement or treating a
+receipt as new permission. Departure preserves the historical/settled read while a
+new attempt must fail its live join. Preserve existing v3/v4/v5 forms and
 past fingerprints; cover unsupported schemas and re-fingerprinted6-self/header
 mutations rather than relying only on a stale digest to reject them.
 
@@ -806,8 +813,11 @@ roster, exact old prefix+one current entry and inert settled-read byte sets.
    existing participation/aid/resolver/current-reader/History/published-I services;
    reuse pure source DATA. Add causal cheap coverage for all three raw forms,
    forgery/null/mirror conflicts, role+kind/alias joins, revoke/expiry/confirmation,
-   separate resident H/player natural H/effects, closed headers, old3/4/5 exactforms
-   and protected-memory6 owner/wrong-family/drifts. No full Engine for pure codec.
+   separate resident H/player natural H/effects, closed headers, old3/4/5 exactforms,
+   same-ID Guardian/resident healer joins and protected-memory6 resident-healer owner
+   versus wrong player-patient owner/wrong-family/drifts. The real accepted revoke
+   must be attempted in its eligible next cycle so expiry cannot mask status refusal.
+   No full Engine for pure codec.
 4. Update actual WoundApplicationService offers/ActionFor and shared console/
    browser confirmation/queue/Engine action consumers; new distinct Russian
    resident receive-aid label, same player-confirmation authority. Add one genuine
