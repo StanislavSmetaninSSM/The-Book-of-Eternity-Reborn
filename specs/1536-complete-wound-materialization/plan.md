@@ -1,4 +1,37 @@
-# T108-RESIDENT-HELP next — resident offers treatment to player
+# T108-RESIDENT-HELP — backend accepted, actual guided callers pending
+
+2026-10-29. Resident HEALER→PLAYER private free treatment is implemented in the
+existing services. All C# compiled at e7564ac927e9ec347ddebb0aa362dda2a773e2de;
+subsequent delta is only reviewed catalog metadata and human plan/tasks findings.
+Astra coherent SOURCE and Sol fixture/selection/correction reviews ACCEPT.
+
+- Cheap98/98 at470d149c9: exact27methods/4descriptors, wall26.426s, eachcategory<60;
+  independent OUTCOME ACCEPT. Causal unknown-proposal4 RED at35c5 became GREEN.
+- Backend4/4 atc1ac1c8d4: exact4methods/4descriptors, wall122.3013198s,
+  independent OUTCOME ACCEPT. Test/category seconds: newprovider32.2257150/40.7488945,
+  priorresident5 26.9781567/33.57892, actualrevoke21.3830965/25.9381052,
+  self2header10.4108398/14.7975643, all<180. Real offer/witness and single confirmed
+  d20=14 produce PLAYER III1→active residentH3 II1→patientH0 naturalII2; exact
+  original/source/die/memory append, normalization, History/current/historical/
+  departure/drift guards execute. Real withdrawal44 refuses45 in its otherwise
+  eligible nextcycle, no draw or mutation; prior5 and rehashed6-self refusal hold.
+- Root/independent review verified full TRX hashes, exact counts/unique executions,
+  no skip/timeout/abort/duplicate and bothcleanuptrue; all18artifact/54sourcepins
+  unchanged after each runtime. Free556122112B afterbackend, no externaldata deleted.
+- Actual console/browser cancel+confirm→Engine and common/outerrollback3 remain
+  UNRUN/unadmitted, to follow exactPlan/resource/PREP. No wholeUS4/#1536 completion.
+
+Full raw outsidecheckout:
+`/workspace/tboe-linux-evidence-20261025/us4-self-healing/`, prefix
+`resident-provider-`: green-build-2 (four0error builds), green-catalog-3 (valid1061/
+12760), cheap-{plan,preflight,actual}-1, backend-{plan,preflight,actual}-1.
+Both actual dirs retain verified-outcome.json/allTRXsha256 and post-source-integrity.
+Source/auth/history/closing remain fresh; reuse existing parsed operation/source
+DATA and services, pure join adds no reads/cache; no speedup claimed. Preserve
+accepted older resident69/combat39 lineage boundaries, DFR/Mortal/Windows HOLD,
+provider/DOM/freshprocess limits and firstguardian/crossOSDATA open findings.
+
+# Original chosen slice — resident offers treatment to player
 
 2026-10-29. Same environment/branch verified a4a03f540d547d5a917e11155ba686f532e012c1
 HEAD==remote, clean/no active ownedprocesses, free602337280bytes. Existing current
@@ -18,7 +51,7 @@ recorded witness, bind protected memory to resident healer. Existing services,
 source-read DATA/cache lifetimes and C4/outer rollback stay; no new diagnosticstack.
 See spiritual-aid-design.md final section for precise closed shapes, interfaces,
 files/work units, causal tests, all authority transitions, two-actor fixture
-preparation and bounded verification. No implementation/build/runtime yet.
+preparation and bounded verification. See the current qualification above.
 
 - [x] Independent Astra/high DESIGN accepted after sole P2 settlement wording
   correction; live admission and settled/historical replay keep their separate
@@ -33,8 +66,8 @@ preparation and bounded verification. No implementation/build/runtime yet.
   Fullraw resident-provider-causal-{build,catalog,plan,red,preflight}-1 external;
   verified-semantic-red.json preserves exactTRX hash. Independent Sol causal OUTCOME ACCEPT.
   GREEN and live provider capability remain UNRUN; no newgame/runtime PASS inferred.
-- [ ] Guided/native author fixtures and complete GM synchronization; coherent
-  SOURCE/selection, fresh affected builds, catalog/exactPlan/PREP, cheapGREEN.
+- [x] Guided/native author fixtures and complete GM synchronization; coherent
+  SOURCE/selection, fresh affected builds, catalog/exactPlan/PREP, cheapGREEN98.
 - [ ] Genuine offer/aid/revoke backend then both actualUI and common rollback;
   verify fullraw/cleanup/integrity, independent OUTCOME, remotecheckpoint.
 No unrelated acceptedPASS repeats; source/consumer changes determine regressions.
