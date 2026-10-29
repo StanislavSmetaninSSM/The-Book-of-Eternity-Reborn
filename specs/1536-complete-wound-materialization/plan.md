@@ -156,7 +156,10 @@ small wallet data. No new cache; current quote and enclosing operation still req
 fresh service/source authority. Physical generation belongs to the live owner, never a
 durable quote field; session/request/turn/quote/attempt bind the durable request, while
 historical/cold repair authenticates original data and reacquires actual current ownership.
-Four exact pure categories planned60cases/10methods (provisional until discovery).
+Astra conformance SOURCE found helpers that ignore CarrierPath; explicit canonical
+AfterlifeProfilesPath guards were added at profile/provider/patient quote boundaries,
+with one negative proving mismatched checks cannot mask the carrier condition.
+Four exact pure categories planned61cases/11methods (provisional until discovery).
 This code is not yet compiled/qualified; complete paid user route is still unimplemented.
 
 ---

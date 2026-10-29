@@ -76,6 +76,21 @@ public sealed class AfterlifeHealingServiceContractTests
         Assert.NotNull(rollChanged); Assert.NotEqual(changed.CheckFingerprint, rollChanged.CheckFingerprint);
     }
 
+    [Fact]
+    public void ExactOwnerCarrierIsRequiredAtProfileAndBothQuoteBoundaries()
+    {
+        var actor = AfterlifeHealingServiceTestData.Actor(); var owner = AfterlifeHealingServiceTestData.Provider();
+        var foreign = owner with { CarrierPath = "game_state/player/wounds.json" };
+        Assert.Null(AfterlifeHealingServiceContract.ReadPublicCurrencyProfile(foreign, actor));
+        var profile = Assert.IsType<AfterlifeHealingServiceProfile>(AfterlifeHealingServiceContract.ReadPublicCurrencyProfile(owner, actor));
+        var (wound, check) = AfterlifeHealingServiceTestData.WoundAndCheck(actor, owner);
+        Assert.Null(AfterlifeHealingServiceContract.CreateQuote(profile with { Provider = foreign }, wound,
+            check with { Healer = foreign }, AfterlifeHealingServiceTestData.AbodeId));
+        var foreignPatient = wound.Owner with { CarrierPath = "game_state/player/wounds.json" };
+        Assert.Null(AfterlifeHealingServiceContract.CreateQuote(profile, wound with { Owner = foreignPatient },
+            check with { Target = foreignPatient }, AfterlifeHealingServiceTestData.AbodeId));
+    }
+
     [Theory]
     [InlineData("amount")] [InlineData("compensationKind")] [InlineData("quoteFingerprint")] [InlineData("extra")]
     public void AlteredOrOpenQuoteRejects(string field)

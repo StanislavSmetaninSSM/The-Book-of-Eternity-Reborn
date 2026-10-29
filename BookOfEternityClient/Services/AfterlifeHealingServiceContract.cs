@@ -32,6 +32,7 @@ internal static class AfterlifeHealingServiceContract
         WoundOwnerCoordinate provider, JsonObject actor)
     {
         if (provider is null || actor is null || provider.OwnerKind is not ("guardian" or "resident") ||
+            provider.CarrierPath != WoundCarrierCatalog.AfterlifeProfilesPath ||
             !WoundEffectCarrierAdapter.TryCreateTargetKey(provider, out _) ||
             !WoundCarrierCollectionAuthority.AfterlifeProfileMatches(actor, provider) ||
             !AfterlifeEntityProfileState.TryNormalizeEffectRealm(Text(actor["realm"]), out var actorRealm) || actorRealm != provider.Realm ||
@@ -63,13 +64,15 @@ internal static class AfterlifeHealingServiceContract
     internal static AfterlifeHealingServiceQuote? CreateQuote(AfterlifeHealingServiceProfile profile,
         WoundMaterializationEnvelope wound, SpiritualHealingPreparedSource check, string currentLocation)
     {
-        if (profile is null || wound is null || check is null || wound.Owner is null ||
+        if (profile is null || profile.Provider is null || wound is null || check is null || wound.Owner is null ||
             wound.Classification?.Domain != "spiritual" || wound.Lifecycle != "active" ||
             wound.Owner.Realm != "chaos_sea" || wound.Owner.OwnerKind != "player_soul" || wound.Owner.OwnerId != "player_soul" ||
+            wound.Owner.CarrierPath != WoundCarrierCatalog.AfterlifeProfilesPath ||
             wound.Display?.Visibility is not ("public" or "known_to_player") ||
             !WoundEffectCarrierAdapter.TryCreateTargetKey(wound.Owner, out _) ||
             !ResourceMaterializationContract.IsExactIdentifier(wound.WoundId) ||
             profile.Provider.OwnerKind is not ("guardian" or "resident") ||
+            profile.Provider.CarrierPath != WoundCarrierCatalog.AfterlifeProfilesPath ||
             !WoundEffectCarrierAdapter.TryCreateTargetKey(profile.Provider, out _) ||
             profile.Provider.Realm != wound.Owner.Realm || profile.LocationRef != currentLocation ||
             !ResourceMaterializationContract.IsExactIdentifier(currentLocation) || profile.HealingTier is < 1 or > 5 ||
