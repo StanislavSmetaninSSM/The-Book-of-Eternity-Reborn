@@ -35751,6 +35751,82 @@
           ]
         }
       ]
+    },
+    {
+      "id": "healing-service-prices",
+      "responsibility": "Canonical severity/percentage boundaries and upward integer prices for US6 public currency quotes; no cache or IO.",
+      "excludes": "Full service selection, actual source ownership, Engine/C4/History settlement, cold replay, GM authoring and older accepted qualifiers.",
+      "changeHints": [
+        "BookOfEternityClient/Services/AfterlifeHealingService*",
+        "BookOfEternityClient/Services/GuardianPolicyContracts.HealingPayments.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.AfterlifeHealingServiceQuoteTests.ExactCanonicalPrices",
+            "BookOfEternityClient.Tests.AfterlifeHealingServiceQuoteTests.InvalidPriceDomainDoesNotProduceAQuote"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "healing-service-contract-data",
+      "responsibility": "Closed visible/alive public currency profile and immutable quote DATA, exact owner/location/tier/terms/fingerprint/unsupported access refusal; no publication authority.",
+      "excludes": "Full service selection, actual source ownership, Engine/C4/History settlement, cold replay, GM authoring and older accepted qualifiers.",
+      "changeHints": [
+        "BookOfEternityClient/Services/AfterlifeHealingService*",
+        "BookOfEternityClient/Services/GuardianPolicyContracts.HealingPayments.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.AfterlifeHealingServiceContractTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "healing-service-payment-data",
+      "responsibility": "Existing specialized Feather policy prepares detached exact wallet/receipt DATA, preserving optional total/annotations and refusing altered/insufficient sources; no actual charge or replay authority.",
+      "excludes": "Full service selection, actual source ownership, Engine/C4/History settlement, cold replay, GM authoring and older accepted qualifiers.",
+      "changeHints": [
+        "BookOfEternityClient/Services/AfterlifeHealingService*",
+        "BookOfEternityClient/Services/GuardianPolicyContracts.HealingPayments.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.AfterlifeHealingPaymentDataTests.*"
+          ]
+        }
+      ]
     }
   ]
 }

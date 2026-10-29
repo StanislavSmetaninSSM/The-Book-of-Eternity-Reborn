@@ -136,8 +136,28 @@ those5501 generated files from both hardlinked node_modules trees; unknown/cache
 symlink entries, locks,113dist outputs,18bin artifacts and all raw remain. Offline
 reinstall itself is UNRUN; use npm ci --offline with the verified onboarding cache
 before future frontend work. Reserve rose to551MiB before old-bin preservation.
-All18 acting managed artifact paths are being losslessly retained outside checkout
-before fresh affected managed preparation. No US6 build/test or semantic GREEN yet.
+All18 earlier artifact paths were fully retained in the external verified archive.
+Initial c18 fresh Main/Support/Unit exit0 with baseline12/23/26warnings and exact
+12consistentDLL/PDB+8sourcepins. ExactPlanOnly1method/1case/60s then native1expected
+FAIL atprice13versusnull after4invalidcontrols,10.5906ms test/19.2822362s runner,
+no timeout/skip/duplicate,completecounts/cleanuptrue. Sol PREP/OUTCOME accepted.
+Those12currentartifactbytes are retained in price-c18-managed-artifacts before changes.
+
+Pure contract implementation WIP: exact price arithmetic; visible alive public currency
+profile validation and one small permission fingerprint (identity/life/location/tier/
+service+visibility), detached immutable quote with current-check fingerprint; existing
+GuardianPolicyContracts partial adds currency-only wallet DATA composition, no UI write.
+ServicePlanner receipt binds quote/attempt/payer/exact before-after wallet and recomputes
+agreement, with optional total/annotations preserved and no clamping. No actual fee is
+yet published; family7/commonC4/History/UI/bootstrap/life transition guards remain pending.
+Tests use real pure resolver+canonical wound fixtures, not whole game copies. FullRoot
+Soul is cloned once on after-image composition; price/payment preparation clones only
+small wallet data. No new cache; current quote and enclosing operation still require
+fresh service/source authority. Physical generation belongs to the live owner, never a
+durable quote field; session/request/turn/quote/attempt bind the durable request, while
+historical/cold repair authenticates original data and reacquires actual current ownership.
+Four exact pure categories planned60cases/10methods (provisional until discovery).
+This code is not yet compiled/qualified; complete paid user route is still unimplemented.
 
 ---
 
