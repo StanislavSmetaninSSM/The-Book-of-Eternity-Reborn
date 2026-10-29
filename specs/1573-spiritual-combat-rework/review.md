@@ -1,5 +1,23 @@
 # Проверка проекта #1573
 
+## Текущий checkpoint: принятый отдых HP и ускоренное лечение
+
+2026-10-29, T059–T061, baseline0090ea3552b3f5871a0f00990ee40f86a04abcf8,
+specv1.47/modelv2.37/приложениеv4. Продолжаются brainstorming/Spec Kit bridge:
+scope→plan→tasks/consistency до probe. Зафиксировано принятие25%HP за период и
+одной команды до полного. Новые искусства/цены/HP-service/cents carry предложены.
+Sol6.1/high audit_hp_healing_economy1573 сверил источник1536 и реальные экономические
+опоры; parent прочёл исходный договор, сохранил отдельность ран. Подчёркнуто:
+регистрация искусства не доказывает работающий handler, старые сценарии доходов
+не статистика регулярного заработка. Код/контракт1536 не менялся.
+Parent exact BigInt model:91830 transitions,18366 courses,10770 quarter/cents
+сравнений, частичные цены/округление/очень малый и большой max. Все PASS; сетка
+для воспроизведения в разделе8. Двойной HP-rest/сеанс запрещён договором, не
+проверен реальным runtime. Новому арифметическому кэшу нет причины; stable definitions
+через existing service, current/quote/кошелёк/provider/clock/authority свежие.
+Independent Astra/high review взаимодействующих carry/billing/time/wound договоров
+ожидается. Build/game/600s/clean restore UNRUN; productionT001 не разрешён.
+
 ## Текущий checkpoint: принято восстановление ОД, кандидат явного отдыха HP
 
 2026-10-29, T058, baseline6045b5f82ec220fbb2109e39152c5f15c04206aa.
