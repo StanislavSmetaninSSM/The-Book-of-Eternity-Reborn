@@ -50,6 +50,15 @@ identical predicates. No test ran, no semantic GREEN inferred. Complete failed b
 raw is resident-provider-green-build-1/main, 1:39.92, outsidecheckout. Both tiny
 corrections await delta review and fresh builds; all functional gates remain UNRUN.
 
+Fresh managed builds at e7564ac927e9ec347ddebb0aa362dda2a773e2de all exit0:
+Main12 warnings/1:44.59, Support23/0:15.23, Unit26/0:55.86,
+Integration102/1:49.85, all0errors. Root checked54source/18artifact hashes and all
+Main/Support copies agree. No runtime test yet. First catalog validation stopped
+before discovery/tests because nine new category changeHints arrays were empty;
+filled only actual source/test paths, selectors/budgets unchanged. This is catalog
+metadata repair, not test PASS. Preserve fresh compiled e756 lineage; no C# changed
+for this correction, so fresh builds need not repeat. Catalog/Plan/PREP pending.
+
 Core GREEN WIP after causal RED: record4/selection6/request/result6 and pure typed
 resident-healer scope are connected through natural participation, protected
 memory, History dispatch, GM projection and distinct receive-aid action/menu.

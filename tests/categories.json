@@ -5,7 +5,10 @@
   "id": "spiritual-resident-provider-gm",
   "responsibility": "Worked proposal4, healer memory, selection6, exact manifest, both effective daemon directives and GM entrypoints.",
   "excludes": "No actual provider/DOM/Engine qualification.",
-  "changeHints": [],
+  "changeHints": [
+  "BookOfEternityClient.Tests/SpiritualResidentProviderDocumentationTests.cs",
+  "Examples/E_CLI_Afterlife_Turns.txt"
+],
   "related": [
     "spiritual-resident-provider-contract"
   ],
@@ -29,7 +32,11 @@
   "id": "spiritual-resident-provider-affected",
   "responsibility": "Existing v1/v2/v3 raw participation and v5 selection/scope consumers changed by shared dispatch/extracted typed join; separate active/natural tiers. Existing v3/v4/v5 GM forms remain exact.",
   "excludes": "No unrelated memory transport/fault suite or accepted69 aggregate replay.",
-  "changeHints": [],
+  "changeHints": [
+  "BookOfEternityClient/Services/SpiritualTreatmentParticipation.cs",
+  "BookOfEternityClient/Services/SpiritualTreatmentParticipation.Residents.cs",
+  "BookOfEternityClient/Services/AfterlifeWoundTreatmentAuthority.cs"
+],
   "related": [
     "spiritual-resident-provider-contract"
   ],
@@ -64,7 +71,9 @@
   "id": "spiritual-resident-provider-backend",
   "responsibility": "Actual accepted resident offer6 and confirmed helperH3/playernaturalH0, one retained die, owned normalization, signed/current/History/memory/inert settlement/departure guards.",
   "excludes": "No broad DFR/Mortal/Windows/performance, external provider, DOM or fresh-process qualification.",
-  "changeHints": [],
+  "changeHints": [
+  "BookOfEternityClient.IntegrationTests/AfterlifeSpiritualNaturalRecoveryTests.ActiveAid.cs"
+],
   "related": [
     "spiritual-resident-provider-contract"
   ],
@@ -88,7 +97,9 @@
   "id": "spiritual-resident-provider-revoke",
   "responsibility": "Actual natural offer43 then accepted withdrawal44; attempt45 in otherwise eligible cycle refuses status before draw, resources and whole state unchanged.",
   "excludes": "No broad DFR/Mortal/Windows/performance, external provider, DOM or fresh-process qualification.",
-  "changeHints": [],
+  "changeHints": [
+  "BookOfEternityClient.IntegrationTests/AfterlifeSpiritualNaturalRecoveryTests.ResidentProvider.cs"
+],
   "related": [
     "spiritual-resident-provider-contract"
   ],
@@ -112,7 +123,9 @@
   "id": "spiritual-resident-provider-console",
   "responsibility": "Actual offer cleanup then console handler cancel+confirm and same Engine resident-to-player aid6; one draw/cycle/History and both actor journals.",
   "excludes": "No broad DFR/Mortal/Windows/performance, external provider, DOM or fresh-process qualification.",
-  "changeHints": [],
+  "changeHints": [
+  "BookOfEternityClient.IntegrationTests/ExplorerWoundSelfTreatmentTests.Aid.cs"
+],
   "related": [
     "spiritual-resident-provider-contract"
   ],
@@ -136,7 +149,9 @@
   "id": "spiritual-resident-provider-browser",
   "responsibility": "Actual offer cleanup then shared browser cancel+confirm, queue/original action and Engine aid6; one draw/cycle/History and both actor journals.",
   "excludes": "No broad DFR/Mortal/Windows/performance, external provider, DOM or fresh-process qualification.",
-  "changeHints": [],
+  "changeHints": [
+  "BookOfEternityClient.IntegrationTests/ExplorerWoundSelfTreatmentTests.Aid.cs"
+],
   "related": [
     "spiritual-resident-provider-contract"
   ],
@@ -160,7 +175,9 @@
   "id": "spiritual-resident-provider-rollback",
   "responsibility": "Actual resident offer/confirmed aid6: after both journals normalize, common C4 restores submitted44 request/die/report/rawmemory; outer rollback accepted43.",
   "excludes": "No broad DFR/Mortal/Windows/performance, external provider, DOM or fresh-process qualification.",
-  "changeHints": [],
+  "changeHints": [
+  "BookOfEternityClient.IntegrationTests/ExplorerWoundSelfTreatmentTests.Aid.cs"
+],
   "related": [
     "spiritual-resident-provider-contract"
   ],
@@ -184,7 +201,9 @@
   "id": "spiritual-resident-provider-self-header",
   "responsibility": "The one existing actual self2 producer now rejects rehashed6-self alongside5/unknown and orphan protected memory; no extra Engine fixture.",
   "excludes": "No broad DFR/Mortal/Windows/performance, external provider, DOM or fresh-process qualification.",
-  "changeHints": [],
+  "changeHints": [
+  "BookOfEternityClient.IntegrationTests/AfterlifeWoundHealingLifecycleTests.cs"
+],
   "related": [
     "spiritual-resident-provider-contract"
   ],
@@ -208,7 +227,9 @@
   "id": "spiritual-resident-provider-prior-resident",
   "responsibility": "Existing v5 direction whose shared actual fixture helpers and production dispatch now support6; verifies the original role/direction/memory/History still exact.",
   "excludes": "No broad DFR/Mortal/Windows/performance, external provider, DOM or fresh-process qualification.",
-  "changeHints": [],
+  "changeHints": [
+  "BookOfEternityClient.IntegrationTests/AfterlifeSpiritualNaturalRecoveryTests.ActiveAid.cs"
+],
   "related": [
     "spiritual-resident-provider-contract"
   ],
