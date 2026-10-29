@@ -1,3 +1,28 @@
+# T108-RESIDENT accepted — current Chaos Abode treatment complete
+
+2026-10-29. Independent Sol finalOUTCOME3/69 ACCEPT and finalGM1 ACCEPT; Astra
+production/design/coherent fixture SOURCE accepted. T108-RESIDENT is now complete:
+actual consent43→accepted ordinarycycle/cleanup→guidedconsole/sharedbrowser44,
+retained original/die, exact treatment/failure+natural recovery, wound/effects,
+onecycle/nocharge, both actors' memory/History, strict replay/drift guards and
+C4/whole-turn rollback. Corrected stale task tail; broader US4/#1536 remain open.
+Final doc1 at62362c2ee191a17e9f8752eecb9d9ce8f1bb00fc PASS, category5.9211822s<60,
+wall13.3717816s, complete1descriptor/method/no skip/timeout/duplicate, bothcleanuptrue.
+TRX6845da163ae767353bb980e0235a050ee575777afe65fff08a82f78440a47e8c, fullraw
+resident-final-gm-actual-1 external. This is a justified changed-doc repeat within
+69 distinct cases, not70distinct or one fresh69. Main/Support/Unit C# remain unchanged
+from their producing builds; all18artifacts verified, latestInt0errors102baseline.
+
+This closure changes only plan/tasks/design metadata after the accepted doc1/source;
+no build or passing-runtime repeat. Root checked every new task commit sincebbf4779:
+48unique source/doc/test paths, no raw/log/TRX/archive/binary; only3JSON paths are
+source manifest/catalog/selection. Fullraw stays /workspace/tboe-linux-evidence-
+20261025/us4-self-healing, including incomplete firstUI timeout/frozen82-file proof.
+No ownedrunner remains, no raw/saves/recovery deleted, no cleanrestore/newclone claim.
+Final branchHEAD andremoteSHA must match after this metadata commit. Preserve held
+DFR300.1806894s/Mortal/Windows/performance work, firstGuardian intermittent and
+crossOSDATA limitations; these do not erase accepted bounded resident functionality.
+
 # T108 resident69 distinct accepted — final existing GM note verification pending
 
 2026-10-29. Actual UI sourcefcfe7cd60d351c8a44710af3f0938e4d2e59df59 completes
