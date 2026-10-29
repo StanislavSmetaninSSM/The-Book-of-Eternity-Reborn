@@ -13973,3 +13973,5 @@ If assistance depends on faction agreement, author that separate service/access
 contract rather than pretending the role itself authorizes treatment. Multiple exact
 healers and tiers I-V are legal. Hidden/unconfirmed profiles reveal no capability.
 Read/close is not a turn: no draw, payment or world cycle.
+
+end_shining_healer_role_v1

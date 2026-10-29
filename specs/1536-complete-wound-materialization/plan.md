@@ -156,6 +156,17 @@ fresh Main/Support/Unit builds (Integration source unchanged and unselected), ca
 and exact PlanOnly/PREP. No accepted paid80 or other unchanged PASS is selected.
 The legacy interactive political inspection is not this new direct-detail route;
 its wider strict roster projection and every-faction enforcement remain unqualified.
+SOURCE review confirmed two finite defects before compilation: the new console
+argument shortcut also ran under nested parent commands, and the old target-example
+guard parsed the entire remaining file and swallowed the newly appended JSON. The
+shortcut now requires the exact shining_politics command identity; both documentation
+guards have explicit section boundaries, keeping their original closed assertions.
+Add the exact existing normalizer consumer and affected target-documentation singleton
+to the GREEN selection:2causal/21capability/8UI/3docs=34cases expected before discovery.
+New catalog related entries use the existing id/when object schema. The role-only
+notice does not complete readable access requirements for a restricted service;
+T143/FR084 service/access presentation remains pending, with no private conditions
+exposed. No build/runtime result is claimed.
 The owner has the historical broken/dissolved-faction question; no answer or policy
 change is inferred. Continue only independent role/profile/display work.
 

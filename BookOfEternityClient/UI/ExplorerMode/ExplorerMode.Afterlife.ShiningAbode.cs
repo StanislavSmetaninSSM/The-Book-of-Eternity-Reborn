@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using BookOfEternityClient.CommandProtocol;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Services;
 using Spectre.Console;
@@ -297,7 +298,8 @@ public partial class ExplorerMode
 
     private async Task ShowShiningPoliticsOverview()
     {
-        if (!string.IsNullOrWhiteSpace(_currentCommandRemainder))
+        if (!string.IsNullOrWhiteSpace(_currentCommandRemainder) &&
+            ExplorerCommandCatalog.FindByAlias(ExplorerCommandCatalog.ExtractCommandToken(_currentCommandInput))?.Id == "shining_politics")
         {
             var detail = await ExplorerShiningAbodeCommandResultBuilder.TryBuildAsync(
                 _currentCommandInput, _stateManager, _fs);

@@ -32,7 +32,8 @@ public sealed class ShiningFactionHealingSupportDocumentationTests
     {
         var text = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "Examples/E_CLI_Afterlife_Turns.txt"));
         var start = text.IndexOf(Marker + " — worked", StringComparison.Ordinal); Assert.True(start >= 0);
-        var fragments = Regex.Matches(text[start..], "```json\\s*([\\s\\S]*?)```", RegexOptions.CultureInvariant)
+        var end = text.IndexOf("end_shining_healer_role_v1", start, StringComparison.Ordinal); Assert.True(end > start);
+        var fragments = Regex.Matches(text[start..end], "```json\\s*([\\s\\S]*?)```", RegexOptions.CultureInvariant)
             .Cast<Match>().Select(m => JsonNode.Parse(m.Groups[1].Value)!.AsObject()).ToArray();
         Assert.Equal(2, fragments.Length);
         var resident = fragments[0]; var excerpt = fragments[1];

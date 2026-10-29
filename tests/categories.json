@@ -36160,7 +36160,7 @@
     },
     {
       "id": "shining-healer-role-causal",
-      "responsibility": "Authored healing_support primary role survives the existing Shining resident normalizer; existing archive role and non-present ascended membership are controls. Semantic unsupported-role witness.",
+      "responsibility": "Authored healing_support primary role survives the existing Shining resident normalizer; existing archive role and non-present ascended membership are controls. Semantic unsupported-role witness; existing archive default, exact faction membership cleanup and political values remain supported.",
       "excludes": "Profile tier/materialization authority, source reads, actual faction acceptance/UI/services and all accepted Elyara80/HOLD DFR/Mortal/Windows/performance.",
       "changeHints": [
         "BookOfEternityClient/Services/ShiningAbodeState.cs",
@@ -36178,7 +36178,8 @@
         {
           "project": "unit",
           "tests": [
-            "BookOfEternityClient.Tests.ShiningFactionHealingSupportContractTests.AuthoredHealingRoleSurvivesExistingNormalization"
+            "BookOfEternityClient.Tests.ShiningFactionHealingSupportContractTests.AuthoredHealingRoleSurvivesExistingNormalization",
+            "BookOfEternityClient.Tests.ShiningAbodeStateTests.NormalizeResidentShiningFields_DerivesFactionLoyaltyAndClearsMissingFactionMembership"
           ]
         }
       ]
@@ -36192,7 +36193,7 @@
         "BookOfEternityClient/UI/ExplorerShiningAbodeCommandResultBuilder.cs"
       ],
       "related": [
-        "shining-healer-role-causal"
+        { "id": "shining-healer-role-causal", "when": "Role/profile/display changes require the causal normalizer and existing membership consumer checks." }
       ],
       "requirements": {
         "frontendBuild": false,
@@ -36223,7 +36224,7 @@
         "BookOfEternityClient/UI/ExplorerShiningAbodeCommandResultBuilder.cs"
       ],
       "related": [
-        "shining-healer-role-causal"
+        { "id": "shining-healer-role-causal", "when": "Role/profile/display changes require the causal normalizer and existing membership consumer checks." }
       ],
       "requirements": {
         "frontendBuild": false,
@@ -36253,7 +36254,7 @@
         "BookOfEternityClient/UI/ExplorerShiningAbodeCommandResultBuilder.cs"
       ],
       "related": [
-        "shining-healer-role-causal"
+        { "id": "shining-healer-role-causal", "when": "Role/profile/display changes require the causal normalizer and existing membership consumer checks." }
       ],
       "requirements": {
         "frontendBuild": false,
@@ -36266,7 +36267,8 @@
         {
           "project": "unit",
           "tests": [
-            "BookOfEternityClient.Tests.ShiningFactionHealingSupportDocumentationTests.*"
+            "BookOfEternityClient.Tests.ShiningFactionHealingSupportDocumentationTests.*",
+            "BookOfEternityClient.Tests.WoundTargetSelectionDocumentationTests.WorkedTargetAndWoundPacketsMatchTheClosedClientPhasesAndGmGuidance"
           ]
         }
       ]

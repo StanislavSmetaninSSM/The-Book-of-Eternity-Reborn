@@ -22,13 +22,15 @@ public sealed class WoundTargetSelectionDocumentationTests
         Assert.Contains(marker, entry.RequiredText);
         var example = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "Examples", entry.File));
         var start = example.IndexOf(marker + " — worked", StringComparison.Ordinal); Assert.True(start >= 0);
-        var packets = Regex.Matches(example[start..], "```json\\s*([\\s\\S]*?)```", RegexOptions.CultureInvariant)
+        var end = example.IndexOf("shining_healer_role_v1 — worked", start, StringComparison.Ordinal); Assert.True(end > start);
+        var section = example[start..end];
+        var packets = Regex.Matches(section, "```json\\s*([\\s\\S]*?)```", RegexOptions.CultureInvariant)
             .Cast<Match>().Select(m => JsonNode.Parse(m.Groups[1].Value)!.AsObject()).ToArray();
         Assert.Equal(2, packets.Length);
         Assert.Equal("wound_target", Assert.Single(packets[0]).Key); Assert.Equal("target_0", packets[0]["wound_target"]!.GetValue<string>());
         Assert.Equal(new[] { "confirm_wound_treatment", "wound_selection" }, packets[1].Select(p => p.Key).OrderBy(p => p, StringComparer.Ordinal));
         Assert.True(packets[1]["confirm_wound_treatment"]!.GetValue<bool>());
-        Assert.Contains("ZERO queue/draw/cycle/resources", example[start..]);
-        Assert.Contains("No new GM output schema", example[start..]);
+        Assert.Contains("ZERO queue/draw/cycle/resources", section);
+        Assert.Contains("No new GM output schema", section);
     }
 }
