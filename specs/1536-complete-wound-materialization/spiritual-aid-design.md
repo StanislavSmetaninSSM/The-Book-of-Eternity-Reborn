@@ -456,17 +456,23 @@ qualification checkout is the isolated task branch. Do not add a duplicate skill
 plan/worktree or run an unrestricted suite; repository/user workflow explicitly
 requires these existing artifacts and bounded official category verification.
 
-## Current bounded slice: player helps a current Abode resident — SOURCE accepted
+## Current bounded slice: player helps a current Abode resident — Linux evidence complete
 
-2026-10-29; T108-RESIDENT, #1536. Implementation/test/GM source is authored and
-independently accepted at8547d5740; builds/runtime remain pending.
+2026-10-29; T108-RESIDENT, #1536. Production source accepted at8547d5740;
+final reviewed fixture runtimefcfe7cd60 completes actual console/sharedbrowser and
+common failure rollback. Backendb3fe0243e proves H3/d20=14 III1→II2. UI rolls5/3
+correctly retain III2 after active failure and ordinary H0 recovery. Both actors
+retain real memory across grant43, cleanup and aid44. Final69 distinct cases span
+the explicit source lineages in plan.md, not one fresh69 run. Final independent
+OUTCOME is accepted; the last existing-rule GM note verification remains pending.
 US4 scenario8 and data-model12 already authorize a reachable consenting entity;
 no new game rule is needed. A read-only Astra/high architecture consultation at
 248263534 identified the exact kind/locality and historical-family boundaries.
 Independent Astra/high DESIGN review found two P2 corrections: separate live joins
 from historical agreement and explicitly cover every changed authority branch. The
-corrections were independently accepted at94a95321b. Implementation/runtime remain
-UNRUN; first existing-API causal scaffold does not claim live grant authority.
+corrections were independently accepted at94a95321b. The earlier existing-API causal
+scaffold alone did not claim live grant authority; actual grant/common publication
+and guided callers are now covered by the lineages above.
 
 ### Player result and finite boundary
 

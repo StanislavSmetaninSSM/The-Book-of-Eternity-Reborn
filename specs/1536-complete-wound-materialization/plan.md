@@ -1,3 +1,49 @@
+# T108 resident69 distinct accepted — final existing GM note verification pending
+
+2026-10-29. Actual UI sourcefcfe7cd60d351c8a44710af3f0938e4d2e59df59 completes
+3/3PASS, exact3descriptors/methods, wall180.3238477s, no timeout/skip/aborted/duplicate,
+bothcleanuptrue and no live owned processes. Individual test/category times:
+- Browser77.2079040/83.0844046s<180; d20=5, active failure + H0natural→III2.
+- Console40.1660763/45.0635493s<180; d20=3, active failure + H0natural→III2.
+- Common fault rollback35.6657980/40.4057515s<180; actual cut sees both normalized
+  journals; C4 restores exact submitted request/die/pending schedule/report/raw44
+  journal command, then outer rollback restores canonical grant43 and removes aid44.
+Both real interfaces accept grant43→normalcleanup→guidedcancel/confirm→aid44, preserve
+actual original/queued binding/one draw, exact wound/effects/History, onecycle/nocharge,
+resident and Guardian43/44 journal prefixes and strict inert settled reads. They are
+native controlled completion/sharedbrowser queue, not externalprovider/DOM/freshprocess.
+Successful severity reduction separately proved by deterministic backend14→II2.
+
+Root verified fullraw summary/allTRX and all18artifact/48sourcehashes unchanged;
+raw resident-ui-actual-2/verified-outcome.json and post-full-integrity.json external.
+TRX console98f115f78fde43382ea4355c191c64bc3194bf8b779de6a89a5f1596c98e3fc0;
+browser9a86d27061aa6602d8b9da91ec5fe424cf09cc84138380479ee1e7690b58487b;
+rollback2a77d6a9d16d2c522ce6749a8d3c191e807950c5b3a624cafd5ea9a1117101da.
+Root reconstructed exact69 distinct PASS from seven raw source lineages under
+resident-qualified-distinct-69/evidence.json: cheap52 at344f +recovery8 atf201 minus
+one justified repeated selection =59; phase7 oldv3/v4/orphan/self4 at7d3; mixed
+History/revoke1 atdddb; Worldsourceguard1 atc1f; finalbackend1 atb3fe; UI3 atfcfe.
+This is not one fresh69 run. Initial fixture failures and first UI180s repair-wait
+TIMEOUT remain preserved with the full82-file state; no budget/source guard change.
+
+Astra coherent production/design/fixture SOURCE and Sol finalOUTCOME3/69 ACCEPT.
+Fresh owning builds were preserved across unchanged sources; latest Int0errors102
+exactbaselinewarnings1:51.21. Catalog1050/12742 valid; exactUIPlan3 executed0/PREP
+accepted. No production/cache/newrule change in final fixture fixes; current journal
+reads/writes remain fresh on the existing lease/services, no speedup claim.
+
+Add only a clarifying note to existing GM worked resident example and Matrix: ordinary
+Guardian clientauto progression can make it relevant, so include its actual scope/
+ActorBrain/ordinary Guardian journal alongside protected resident memory; do not
+disable progression to evade checks or author clientincome/ledger. Existing ActorBrain
+contract, not a new requirement. Verify only existingGMdoc1 on unchanged freshUnit
+C# outputs after current exactPlan/PREP; no69/UI/build repeat for these text edits.
+Then mark boundedT108-RESIDENT accepted and preserve finalremoteSHA. FullUS4/#1536
+remain open; no paid/Shining/resident-healer/helpless/combat generalization. DFR,
+Mortalcompatibility, Windows/performance remain HOLD. FirstGuardian intermittent
+and crossOSDATA remain open limitations. No clone/restore, raw/save/recovery deletion,
+merge or history rewrite; no raw diagnostic content in commits.
+
 # T108 two-actor native response correction — SOURCE pending
 
 2026-10-29. Bounded Astra/high DESIGN accepts honest existing-contract correction;

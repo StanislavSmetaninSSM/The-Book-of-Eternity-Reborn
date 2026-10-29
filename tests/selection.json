@@ -21,6 +21,13 @@
       "contracts": [
         "#1536 T108-RESIDENT; US4 scenario8; typed consent/lifetime, ordinary cycle, strict current checks and immutable History; bounded functional acceptance"
       ]
+    },
+    {
+      "category": "spiritual-resident-aid-gm",
+      "reason": "After actual resident journeys exposed a missing Guardian scope/memory native response, add a conditional worked-example/Matrix note for the existing ordinary auto-progression ActorBrain rule. Verify this exact existing doc guard only; acceptedUI3/69 cases need no repeat for text-only final notes.",
+      "contracts": [
+        "#1536 T108-RESIDENT; unchanged two-actor scope/memory rule, protected resident response, exact worked forms and GM entrypoints"
+      ]
     }
   ]
 }

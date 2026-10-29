@@ -13641,6 +13641,13 @@ spiritualTreatmentParticipationChange (all three profile representations agree):
 This ordinary accepted natural cycle gives III0→III1 and client record3/full witness
 in natural result5. Do not author stamps or claim same-turn permission. Actor Brain
 names Житель целостности, uses first person, and declares the actual memory surface.
+If the ordinary cycle also changes the current Guardian's profile through
+client_auto_strategy, include that Guardian in NPC Scope and its own full Actor
+Brain block on both turns. Append its first-person memory through the ordinary
+guardianThoughtJournalUpdates journal command. It continues its existing strategy;
+it does not grant consent for the resident or act as healer. Do not disable ordinary
+progression to bypass these checks; the client calculates income, cycle keys and
+progressionLedger.
 Keep the physical resident roster unchanged before preflight. In this turn's actual
 output/interface_updates.json, alongside existing dialogue/timestamp/graphs fields:
 ```json

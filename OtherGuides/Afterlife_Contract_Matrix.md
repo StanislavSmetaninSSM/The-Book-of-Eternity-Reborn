@@ -1238,6 +1238,12 @@ H3/d20=14 against III1 gives active II1 then targetH0 natural II2, ONE cycle/no 
 V3/v4 currently produced forms and immutable historical fingerprints stay unchanged.
 
 Meaningful resident Actor Brain still needs first-person memory. For this protected
+cycle, include any current Guardian whose profile also changes through ordinary
+client_auto_strategy in NPC Scope, with its own full Actor Brain and ordinary
+guardianThoughtJournalUpdates memory on each turn. This does not make that Guardian
+the healer or consent owner; do not disable ordinary progression to bypass these
+checks or author the client's income, cycle key or progressionLedger result.
+For the resident's protected
 turn put spiritualResidentThoughtJournalUpdates in output/interface_updates.json
 (or the identically named output-only GameResponse property), NOT raw journal
 commands in the frozen roster file. Entries reuse the existing resident journal
