@@ -147,6 +147,13 @@
       "contracts": [
         "#1536 T143 current visit one-shot console ownership and session cleanup"
       ]
+    },
+    {
+      "category": "elyara-current-location-health-refusal",
+      "reason": "Actual confirmed console visit rejected by pre-stage canonical health cannot retain its one-shot companion into a later freeform ordinary Engine turn; normal natural cycle/no active fee.",
+      "contracts": [
+        "#1536 T143 abandoned confirmed visit lifetime before health refusal; actual ordinary freeform consumer"
+      ]
     }
   ]
 }

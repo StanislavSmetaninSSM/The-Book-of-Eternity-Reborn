@@ -225,6 +225,23 @@ import only; no predicates/serialization/assertions change. Sequential build sto
 before Support/Unit/Integration; no runtime, no qualification. Exact raw pass1/main
 outside checkout retained. Delta SOURCE check and corrected fresh pass follow.
 
+Corrected fresh pass2 on897de0264cf0f2fe988741db6478cefdcb8b8aa6 completed all four
+managed projects exit0,12/23/26/102 baseline warnings,0errors; durations2:36.28,
+0:15.65,1:11.48,2:10.48.4 PE/PDB pairs,84 current changed source bindings and27
+owning artifacts/dependency copies verified. No runtime executed yet. Build evidence
+outside checkout, complete outputs archived/hash-read back before replacement.
+
+A bounded independent follow-up confirmed the same pending-companion lifetime bug
+also affects freeform next input after pre-stage health refuses: recognized-command
+reset is bypassed. Planned minimal production correction consumes console visit into
+a local before health validation, retaining exact action/generation/marker checks.
+First add one actual health-refusal→freeform ordinary-cycle regression on unchanged
+production: deliberate invalid duplicate guardian must refuse before request; restored
+fixture then ordinary input must not inherit the abandoned visit. Exact new category
+elyara-current-location-health-refusal, one case/180s. New test is UNCOMPILED/UNRUN;
+production correction NOT APPLIED. No claim that the old successful compile qualifies
+this unresolved case. Existing selected runtime still UNRUN; no repeated accepted80.
+
 All this GREEN code is UNCOMPILED/UNREVIEWED/UNQUALIFIED. Remaining finite work: complete
 new admission/accepted/race/source-count and Shining actual result/replay/rollback tests,
 GM effective guidance/examples/guards, whole impact selection/SOURCE, then one fresh

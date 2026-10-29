@@ -36801,6 +36801,30 @@
           ]
         }
       ]
+    },
+    {
+      "id": "elyara-current-location-health-refusal",
+      "responsibility": "Actual confirmed console visit rejected by pre-stage canonical health cannot retain its one-shot companion into a later freeform ordinary Engine turn; normal natural cycle/no active fee.",
+      "excludes": "No full validation matrix, live GM, DOM/provider/fresh-process, T142 or HOLD gates.",
+      "changeHints": [
+        "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.HealthRefusedVisitCannotPoisonTheNextFreeformOrdinaryTurn"
+          ]
+        }
+      ]
     }
   ]
 }
