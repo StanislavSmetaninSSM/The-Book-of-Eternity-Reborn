@@ -265,6 +265,25 @@ to Assert.Single(source,predicate), no assertion removed. Rebuild only affected 
 Main/Support C# sources stay187 and need no redundant build. Preserve187Unit artifacts
 before replacement. Integration/catalog/exactPlan/PREP/runtime still UNRUN.
 
+2026-10-29 15:05UTC: all four route builds completed, Main/Support on1877292aa
+and source-equivalent at6f494c09; Unit/Integration on6f494c09, all exit0 with
+baseline12/23/26/102warnings. Four owning PE/PDB identities and42changed-source
+bindings match;27selected DLL/PDB/deps artifact paths have consistent copies.
+Catalog1101categories/12840methods/files valid, zero executions. ExactPlanOnly
+15descriptors/80cases/30methods, original budgets and complete cleanup; independent
+Sol PREP accepted Unit65 first and conditional later stages. Unit gate completed
+65/65PASS,6descriptors/19methods,58.7887584s wall, no failure/skip/duplicate,
+complete counts/cleanup, unchanged binaries; independent Sol OUTCOME accepted and
+admitted only the next source-controls5 at its original120s budget.
+This proves the service DATA/menu/profile/docs and original selection causal GREEN,
+not actual paid publication. Source controls5, payment results/cuts/conflict,
+console/browser/whole-turn rollback and affected self/resident controls remain UNRUN.
+Raw retained outside checkout under us6-healing-services/route-*; old raw/saves/
+recovery retained. Only exact completed obj DLL/PDB duplicates were reclaimed after
+owner-exit and equality proofs, with every bin retained. Free space416MiB before
+Unit; runtime floor128MiB and full capture remain unchanged. No speedup claimed;
+actual menu-source counters are next. This paragraph changes no runtime source.
+
 ---
 
 # T126 — accepted browser wound cards and guided treatment presentation
