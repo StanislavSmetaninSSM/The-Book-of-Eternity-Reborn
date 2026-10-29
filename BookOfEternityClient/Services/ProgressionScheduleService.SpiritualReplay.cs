@@ -134,6 +134,19 @@ public partial class ProgressionScheduleService
         var schedule = await read(SchedulePath);
         if (schedule is null || new CanonicalBeforeImage(true, schedule).Fingerprint != accepted.Root["scheduleAfterFingerprint"]!.GetValue<string>())
             throw new InvalidDataException("A published spiritual cycle has changed its complete scheduler after-image.");
+        if (accepted.Result.SchemaVersion == 7)
+        {
+            // This reader proves CURRENT complete settlement, not historical
+            // authenticity forever. History parsing remains independent of the
+            // present wallet. Never charge or restore anything on this read path.
+            var soulJson = await Text(AfterlifeWoundHealingPlanner.Continuation.ServiceSoulPath);
+            var soul = soulJson is null ? null : StrictJsonAuthority.Deserialize<JsonObject>(soulJson,
+                new JsonSerializerOptions(), "published service Soul settlement");
+            if (soul is null || GuardianPolicyContracts.TryDescribeInvalidCanonicalInkFeathersRoot(soul, out _) ||
+                WoundAcceptedTurnFingerprintWriter.CanonicalJson(soul["inkFeathers"]) !=
+                    WoundAcceptedTurnFingerprintWriter.CanonicalJson(accepted.Root["request"]!["payment"]!["walletAfter"]))
+                throw new InvalidDataException("Published service current wallet differs from its exact accepted payment after-image.");
+        }
         var roots = new Dictionary<string, JsonObject?>(StringComparer.Ordinal);
         foreach (var path in WoundAcceptedTurnSnapshotContract.CarrierPaths)
         {

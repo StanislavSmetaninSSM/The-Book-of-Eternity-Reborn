@@ -91,6 +91,20 @@
       "contracts": [
         "#1536 T132/T140 profile boundary"
       ]
+    },
+    {
+      "category": "spiritual-resident-provider-self-header",
+      "reason": "Shared family dispatch/result parsing changed: preserve self2 and reject rehashed service7 downgrade; exact existing singleton, no aggregate.",
+      "contracts": [
+        "#1536 US6 affected self-family consumer"
+      ]
+    },
+    {
+      "category": "spiritual-resident-provider-backend",
+      "reason": "Shared active codec/continuation/result path changed: preserve existing actual resident6 offer/publication/replay singleton with original180s.",
+      "contracts": [
+        "#1536 US6 affected resident-aid6 consumer"
+      ]
     }
   ]
 }

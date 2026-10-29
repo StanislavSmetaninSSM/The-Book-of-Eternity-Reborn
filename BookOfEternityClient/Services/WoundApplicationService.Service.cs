@@ -20,7 +20,7 @@ internal static partial class WoundApplicationService
             var actors = profiles.OfType<JsonObject>().Where(p => WoundCarrierCollectionAuthority.AfterlifeProfileMatches(p, provider)).ToArray();
             if (actors is not { Length: 1 } || AfterlifeHealingServiceContract.ReadPublicCurrencyProfile(provider, actors[0]) is not { } profile)
                 return existing;
-            var scope = SpiritualTreatmentParticipation.RequireCurrentGuardianScope(guardians, null, provider.OwnerId);
+            var scope = AfterlifeWoundTreatmentAuthority.RequireServicePlayerScope(guardians);
             if (profile.LocationRef != scope.LocationId) return existing;
             var choices = existing.ToList();
             foreach (var wound in context.Catalog.Occurrences.Select(o => o.Wound).Where(w => w.Lifecycle == "active" &&

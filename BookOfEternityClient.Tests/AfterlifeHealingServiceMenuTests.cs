@@ -58,6 +58,27 @@ public sealed class AfterlifeHealingServiceMenuTests
         Assert.Equal(50, choice.Selection.Service!.Quote.Amount); Assert.Equal(before, context.Soul.ToJsonString());
     }
 
+    [Fact]
+    public void CoLocatedVisitingElyaraOffersServiceWithoutReplacingTheCurrentGuardian()
+    {
+        var (context, guardians) = Inputs();
+        var host = new JsonObject { ["guardianId"] = "guardian_host",
+            ["abode"] = new JsonObject { ["abodeId"] = "abode_host" } };
+        guardians["guardians"]!.AsArray().Add(host); guardians["activeGuardian"] = host.DeepClone();
+        guardians["chaosSeaNavigation"]!["currentGuardianId"] = "guardian_host";
+        guardians["chaosSeaNavigation"]!["currentAbodeId"] = "abode_host";
+        var actor = context.Input.Carriers.AfterlifeProfiles!["profiles"]!.AsArray().OfType<JsonObject>().Single(AfterlifeHealingServiceContract.IsElyaraProfile);
+        actor["locationId"] = "abode_host"; actor["healingServiceProfile"]!["locationRef"] = "abode_host";
+        var before = guardians.ToJsonString();
+        var choice = Assert.Single(WoundApplicationService.BuildPublicServiceChoices(context, guardians, []));
+        Assert.True(choice.Available); Assert.Equal("abode_host", choice.Selection.Service!.Quote.LocationRef);
+        Assert.Equal("guardian_host", AfterlifeWoundTreatmentAuthority.RequireServiceScope(guardians,
+            context.Input.Carriers.AfterlifeProfiles!, choice.Selection.Service.Quote).CurrentGuardianId);
+        Assert.Equal(before, guardians.ToJsonString());
+        guardians["guardians"]!.AsArray().Add(guardians["guardians"]![0]!.DeepClone());
+        Assert.Empty(WoundApplicationService.BuildPublicServiceChoices(context, guardians, []));
+    }
+
     private static (WoundPlayerReadContext Context, JsonObject Guardians) Inputs()
     {
         var input = WoundPlayerProjectionTestData.InputInRealm("chaos_sea", WoundContractTestData.CreateSpiritualActiveWound(

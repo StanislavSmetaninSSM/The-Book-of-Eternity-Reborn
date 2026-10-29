@@ -107,13 +107,27 @@ internal static partial class AfterlifeWoundTreatmentAuthority
     {
         if (quote.Provider != new WoundOwnerCoordinate("chaos_sea", "guardian", ElyaraId, WoundCarrierCatalog.AfterlifeProfilesPath))
             throw new InvalidDataException("This executable service route is the current public Elyara route.");
-        var scope = SpiritualTreatmentParticipation.RequireCurrentGuardianScope(guardians, null, ElyaraId);
+        var scope = RequireServicePlayerScope(guardians);
         var matching = (profiles["profiles"] as JsonArray)?.OfType<JsonObject>()
             .Where(p => WoundCarrierCollectionAuthority.AfterlifeProfileMatches(p, quote.Provider)).ToArray();
         if (matching is not { Length: 1 } ||
             AfterlifeHealingServiceContract.ReadPublicCurrencyProfile(quote.Provider, matching[0]) is not { } current ||
             current.Fingerprint != quote.ServiceFingerprint || current.LocationRef != scope.LocationId || quote.LocationRef != scope.LocationId)
             throw new InvalidDataException("Elyara is no longer alive, visible, available and co-located at the quoted public terms.");
+        return scope;
+    }
+
+    internal static LocalInteractionScope RequireServicePlayerScope(JsonObject guardians)
+    {
+        var currentGuardian = String(guardians["chaosSeaNavigation"]?["currentGuardianId"])
+            ?? throw new InvalidDataException("Public service requires the player's resolved current Chaos scope.");
+        var scope = SpiritualTreatmentParticipation.RequireCurrentGuardianScope(guardians, null, currentGuardian);
+        var elyara = (guardians["guardians"] as JsonArray)?.OfType<JsonObject>().Where(g =>
+            string.Equals(String(g["guardianId"]), ElyaraId, StringComparison.OrdinalIgnoreCase)).ToArray();
+        if (elyara is not { Length: 1 } || String(elyara[0]["guardianId"]) != ElyaraId)
+            throw new InvalidDataException("Public service requires the unique exact canonical Elyara Guardian.");
+        // Her registry abode is home metadata. An accepted visit is proved by
+        // the exact current profile/service location, independently of patronage.
         return scope;
     }
 

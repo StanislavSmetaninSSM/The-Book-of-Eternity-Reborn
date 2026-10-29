@@ -231,6 +231,22 @@ are selected again; unchanged arithmetic/wallet37 remain preserved. Whole-route
 SOURCE/fixture/selection reviews, fresh affected builds, catalog/Plan/PREP/runtime
 are pending. US6 tasks and broader travel/Shining/negotiated/faction scope remain open.
 
+SOURCE review2dbe19be: Astra/high found P1 missing wallet in the CURRENT settlement
+reader and P2 accidental Elyara-current-Guardian restriction. Corrected before the
+first candidate build. Current settlement now freshly checks the canonical wallet
+against result7.payment.walletAfter; historical History parsing remains independent
+of today's money/provider and no replay write is added. Visiting Elyara is joined by
+unique canonical identity/current profile location into the ACTUAL player's resolved
+Guardian/abode scope, without changing patronage or requiring her home registry abode.
+Added visiting/duplicate-registry positive-negative and genuine-published/restored-wallet
+negative with still-valid historical parsing. No runtime RED/PASS is claimed for these
+new controls yet; the original missing service branch remains the observed causal RED.
+Sol fixture/docs SOURCE accepted all77; selection gap closed by adding existing exact
+spiritual-resident-provider-self-header and spiritual-resident-provider-backend
+singletons at original180s. Self rehashed schema rejection now explicitly includes7.
+Provisional final selection15categories/80cases/30methods, pending discovery. Delta
+re-review and fresh builds are next; complete route remains UNCOMPILED/UNQUALIFIED.
+
 ---
 
 # T126 — accepted browser wound cards and guided treatment presentation

@@ -157,6 +157,22 @@ public sealed class AfterlifeHealingPaymentLifecycleTests(ITestOutputHelper outp
                     "session_spiritual_healing", "request_spiritual_healing", 43, p => fixture.Files.ReadFileBytesAsync(lease, p),
                     manifest.ManifestPayloadHash, request));
         fixture.AssertMutationRootsUnchanged(settled);
+        if (die == 1)
+        {
+            // Genuine result remains historical truth, but an externally
+            // restored pre-fee wallet cannot prove CURRENT complete settlement.
+            await using var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync();
+            var path = AfterlifeWoundHealingPlanner.Continuation.ServiceSoulPath;
+            var soul = JsonNode.Parse((await fixture.Files.ReadFileAsync(lease, path))!)!.AsObject();
+            soul["inkFeathers"] = request["payment"]!["walletBefore"]!.DeepClone();
+            await fixture.Files.WriteFileAtomicAsync(lease, path, soul.ToJsonString());
+            var changed = fixture.CaptureMutationRoots([path]);
+            var refusal = await Assert.ThrowsAsync<InvalidDataException>(() => ProgressionScheduleService.ReadPublishedSpiritualCycleCoreAsync(stage.Control!,
+                "session_spiritual_healing", "request_spiritual_healing", 43, p => fixture.Files.ReadFileBytesAsync(lease, p), manifest.ManifestPayloadHash, request));
+            Assert.Contains("current wallet", refusal.Message);
+            Assert.True(WoundHistoryState.Parse((await fixture.Files.ReadFileAsync(lease, WoundHistoryState.HistoryPath))!, WoundHistoryState.HistoryPath).IsValid);
+            fixture.AssertMutationRootsUnchanged(changed);
+        }
         output.WriteLine($"Service {band}: d{die}, fee100 once, wallet500→400,total900; one retained draw/cycle, strict result7; two complete replay reads write nothing.");
     }
 
