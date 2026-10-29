@@ -246,10 +246,15 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
             var aidOwner = Assert.IsType<AfterlifeWoundHealingPlanner.Continuation>(ready.Plan!.SpiritualHealingContinuation);
             var originalSourceFingerprint = aidOwner.SourceFingerprint;
             var signedLocality = (await files.ReadFileBytesAsync(lease, manifest.Files[localPath]))!;
+            var ownedNormalizationBefore = locality;
+            byte[]? signedResidentRoster = null;
+            JsonObject? expectedResidentMemory = null;
             if (resident)
             {
                 var responseBytes = (await files.ReadFileBytesAsync(lease, "output/interface_updates.json"))!;
                 var changedResponse = JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(responseBytes))!.AsObject();
+                expectedResidentMemory = changedResponse[SpiritualTreatmentParticipation.ResidentThoughtResponseProperty]![0]!.DeepClone().AsObject();
+                ActorJournalState.NormalizeEntryObject(expectedResidentMemory, "residentId");
                 changedResponse[SpiritualTreatmentParticipation.ResidentThoughtResponseProperty]![0]!["summary"] = "Я изменил память после допуска.";
                 await files.WriteFileAtomicAsync(lease, "output/interface_updates.json", changedResponse.ToJsonString());
                 var retainedSources = fixture.CaptureMutationRoots();
@@ -260,8 +265,11 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
                 // Generic case-insensitive locality sets are unchanged, but the
                 // exact typed join must stop the actual owner before its writer.
                 var residentPath = GuardianAbodeResidentState.StatePath;
-                var residentRoot = JsonNode.Parse((await files.ReadFileAsync(lease, residentPath))!)!.AsObject();
                 var rosterBytes = (await files.ReadFileBytesAsync(lease, residentPath))!;
+                var residentRoot = JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(rosterBytes))!.AsObject();
+                ownedNormalizationBefore = rosterBytes;
+                signedResidentRoster = (await files.ReadFileBytesAsync(lease, manifest.Files[residentPath]))!;
+                Assert.Equal(43, Assert.Single(residentRoot[GuardianAbodeResidentState.ThoughtJournalProperty]!.AsArray())!["turn"]!.GetValue<int>());
                 var rewrittenMemory = residentRoot.DeepClone().AsObject();
                 rewrittenMemory[GuardianAbodeResidentState.ThoughtJournalProperty]![0]!["summary"] = "Я переписал уже принятую память.";
                 await files.WriteFileAtomicAsync(lease, residentPath, rewrittenMemory.ToJsonString());
@@ -291,7 +299,21 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
             Assert.Equal(originalSourceFingerprint, aidOwner.SourceFingerprint);
             Assert.Equal(signedLocality, await files.ReadFileBytesAsync(lease, manifest.Files[localPath]));
             var normalizedLocality = (await files.ReadFileBytesAsync(lease, localPath))!;
-            Assert.False(locality.AsSpan().SequenceEqual(normalizedLocality));
+            var ownedNormalizationAfter = resident
+                ? (await files.ReadFileBytesAsync(lease, GuardianAbodeResidentState.StatePath))! : normalizedLocality;
+            Assert.False(ownedNormalizationBefore.AsSpan().SequenceEqual(ownedNormalizationAfter));
+            if (resident)
+            {
+                Assert.Equal(signedResidentRoster, await files.ReadFileBytesAsync(lease, manifest.Files[GuardianAbodeResidentState.StatePath]));
+                var beforeJournal = JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(ownedNormalizationBefore))![GuardianAbodeResidentState.ThoughtJournalProperty]!.AsArray();
+                var afterJournal = JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(ownedNormalizationAfter))![GuardianAbodeResidentState.ThoughtJournalProperty]!.AsArray();
+                Assert.Equal(beforeJournal.Count + 1, afterJournal.Count);
+                for (var i = 0; i < beforeJournal.Count; i++) Assert.True(JsonNode.DeepEquals(beforeJournal[i], afterJournal[i]));
+                Assert.Equal("resident_aid_thought_request_aid", afterJournal[^1]!["entryId"]!.GetValue<string>());
+                Assert.Equal(AidResidentId, afterJournal[^1]!["residentId"]!.GetValue<string>());
+                Assert.Equal(44, afterJournal[^1]!["turn"]!.GetValue<int>());
+                Assert.True(JsonNode.DeepEquals(expectedResidentMemory, afterJournal[^1]));
+            }
             Assert.Empty(JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(normalizedLocality))!
                 ["guardians"]![0]![GuardianTradeRequestState.ReceiptsProperty]!.AsArray());
             Assert.NotNull(await ProgressionScheduleService.ReadPublishedSpiritualCycleCoreAsync(control,
@@ -381,7 +403,8 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
                 await files.WriteFileAtomicBytesAsync(restore, GuardianAbodeResidentState.StatePath, rosterBytes);
             }
         }
-        var settled = fixture.CaptureMutationRoots();
+        var settled = fixture.CaptureMutationRoots(resident
+            ? new[] { GuardianAbodeResidentState.StatePath, "output/interface_updates.json" } : Array.Empty<string>());
         Assert.DoesNotContain(await new ValidationService(files, NullLogger<ValidationService>.Instance)
             .ValidateAcceptedTurnInterfacePayloadAsync(), i => i.Severity == IssueSeverity.Error);
         fixture.AssertMutationRootsUnchanged(settled);

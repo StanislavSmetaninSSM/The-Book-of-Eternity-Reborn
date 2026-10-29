@@ -1,3 +1,38 @@
+# T108 actual aid publication reached — correct physical normalization proof
+
+2026-10-29. Recoveryactual4 atc1f74a7e8ba4811eac3a1019c01f0e0300a95cd6
+completed1FAIL23.2728734s, wall34.9673586s, exit1/no timeout/skips/duplicates,
+bothcleanuptrue. Missing-graphs and subsequent source/drift controls now pass;
+real common aid normalizer returns and owner closes with original sourceFP and
+signed Guardian bytes intact. Failure is the test's physical registry-change
+assertion atActiveAid294, before final wound/History/I assertions. No complete
+resident-user capability is claimed. Full raw resident-recovery-actual-4 retained.
+
+Astra/high bounded repeated-fixture consultation confirms: resident grant43 already
+runs whole normalizer, so Guardian registry is legitimately unchanged on44; oldv3/v4
+grant uses mechanics-only publisher and still needs its original registry-change
+proof. Correct resident proof to its actual roster append, preserving old branches:
+reuse captured roster bytes, require physical roster change, unchanged signed roster
+original, exact genuine turn43 journal prefix plus exactly one full normalized
+current44 participant entry from retained response DATA. Keep closure/sourceFP,
+registry receipts, actualresult/wound/History/source/three I drift controls and one
+draw/nocharge assertions. Include roster+interface in final existing mutation-root
+capture so valid I must be inert across the new memory boundary. No production,
+rule, guard, callback, cache or helper change; reuses already captured roster bytes
+instead of a second text read. No performance improvement claim. Astra finite
+remaining-method audit found no further baseline/context issue; applied delta
+SOURCE review pending before next build/runtime. Prior failures remain preserved.
+
+Independent World sourceguard singleton atc1f74a7e8 PASS1, category5.2731687s<60,
+wall12.1674023s, exact1descriptor/method, no skip/timeout/duplicates, cleanupbothtrue;
+strict root verifier accepted. TRX SHA256
+ba4e38acf23a90a903824d1c0a686a0d379a1e6a4c9657c9e8adcfc0bd635ba3.
+Raw resident-world-actual-1 external. Retain without repeat: production/pins unchanged.
+Selection now only remaining resident backend1 and actual console/browser/rollback3;
+prior cheap59, v3/v4/orphan/self4 and mixed revoke1 retain their stated lineages.
+Next fresh Integration refsfalse and exactone Plan/PREP; actual UI3 stillUNRUN.
+No raw/save/recovery deletion, newclone/restore or DFR/Mortal/Windows/perf detour.
+
 # T108 resident source freshness correctly rejects stale response — fixture audit
 
 2026-10-29. Recoveryactual3 at3127de8a0c94f9dee055c6514c129a078a4bf47d
