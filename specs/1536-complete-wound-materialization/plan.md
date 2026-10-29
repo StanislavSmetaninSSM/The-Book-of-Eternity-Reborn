@@ -103,8 +103,14 @@ Finite execution / acceptance
   clone/restore, history rewrite, merge/force, branch deletion or old raw/save/recovery
   deletion. DFR/Mortal/Windows and previous qualification limits remain HOLD/open.
 
-Current boundary: DESIGN/read-only only; new code, RED/GREEN and current route runtime
-are UNRUN. Current accepted access-view80 and local-paid80 keep their separate accepted
+Current boundary: DESIGN accepted; one test-only scaffold is authored and UNCOMPILED.
+ElyaraCurrentLocationNavigationTests.TreatmentEntryOffersCanonicalElyaraNavigationWithoutMutatingState
+uses the existing small service fixture, first proves its available25-Feather local
+quote and whole game_state/input/output byte immutability, then expects the missing
+«Пойти к Элиаре за лечением» action. No Engine/draw/stage or mock-only assertion.
+Its exact category is elyara-current-location-causal (one Integration case,60s).
+Production is unchanged; scaffold SOURCE/PREP and semantic RED are pending. GREEN
+implementation and all current-route runtime remain UNRUN. Current accepted access-view80 and local-paid80 keep their separate accepted
 sources/results and must not be repeated without a changed dependency. Over7GiB free;
 keep400MiB build-start plus full output and128MiB runtime floor. New full raw belongs
 outside checkout at /workspace/tboe-linux-evidence-20261025/us6-elyara-current-location.
