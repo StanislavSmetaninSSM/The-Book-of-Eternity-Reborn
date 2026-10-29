@@ -129,6 +129,21 @@ a new effect-materialization family. Cheap selection is causal+contract+browser+
 lifecycle+reads+GM, coherent singleton groups within unchanged60s; actual consumers
 retain180s each. SOURCE/selection/discovery/exactPlan/PREP/builds/GREEN pending.
 
+SOURCE correction candidate: Sol found and root verified a fixture distinction
+between global History ordinal2 and per-wound ordinal1; identity stays1. Added
+actual empty-NPC renderer absence of distinctive Self name/description, and actual
+shared locality source counts to the already-selected genuine provider6 backend
+Open/Select path (not just target-only fixture). Astra found three P2s: trimmed
+resident-kind enumeration could project a malformed alias; final prompt expiry
+was checked before but not after fresh validation; localized public resident kind
+was omitted. Exact typed enumeration/private-alias control, existing localized kind
+labels/distinct-kind control, and fresh host predicate after Confirm AND inside the
+same existing atomic publication callback close these paths. Two manual-clock
+boundaries keep the real UI token alive to19:59 then cross prompt20:00 at actual
+first/second UI-heartbeat mutation; no waits/budget/cache/authority relaxation.
+All corrections remain uncompiled/unrun pending delta SOURCE. No broad held gate
+is required for this independent functional slice by both scoped reviewers.
+
 # T108-RESIDENT-HELP accepted — resident offers free treatment to the player
 
 2026-10-29, #1536. Visible conscious/capable resident of the CURRENT Chaos Guardian

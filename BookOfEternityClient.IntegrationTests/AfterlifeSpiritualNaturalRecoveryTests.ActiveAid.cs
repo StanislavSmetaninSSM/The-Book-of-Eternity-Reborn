@@ -27,7 +27,13 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
     {
         var participantId = resident ? AidResidentId : AidGuardianId;
         var family = resident ? receiveAid ? 6 : 5 : receiveAid ? 4 : 3;
+        var reads = resident && receiveAid ? new CanonicalReadActivityAccumulator() : null;
+        var localityPaths = new[] { AfterlifeWoundTreatmentAuthority.AidLocalityPaths[0], GuardianAbodeResidentState.StatePath };
+        long[] Counts() => localityPaths.Select(p => reads?.ReadCount(p) ?? 0).ToArray();
+        void AssertOneSharedRead(long[] before)
+        { if (reads is not null) for (var i = 0; i < localityPaths.Length; i++) Assert.Equal(1L, reads.ReadCount(localityPaths[i]) - before[i]); }
         await using var fixture = await HealingFixture.CreateAsync(rank: 3, tier: receiveAid ? 0 : 3, die: 14, stageRequest: false,
+            hooks: reads is null ? null : new FileSystemManagerHooks { PassiveCanonicalReads = reads },
             beforeResourceBootstrap: resident ? receiveAid ? ExplorerWoundSelfTreatmentTests.SeedEngineReceivingResidentAsync : ExplorerWoundSelfTreatmentTests.SeedEngineAidResidentAsync : receiveAid ? ExplorerWoundSelfTreatmentTests.SeedEngineReceivingGuardianAsync
                 : ExplorerWoundSelfTreatmentTests.SeedEngineAidGuardianAsync);
         var selection = await CommitAidGrantAsync(fixture, receiveAid, resident);
@@ -48,7 +54,9 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
         SpiritualTreatmentParticipation.ValidateRecord(foreign[SpiritualTreatmentParticipation.RecordProperty]!.AsObject());
         menuRoot["profiles"]!.AsArray().Insert(0, foreign);
         await files.WriteFileAtomicAsync(WoundCarrierCatalog.AfterlifeProfilesPath, menuRoot.ToJsonString());
+        var menuReads = Counts();
         var menu = await WoundApplicationService.OpenAsync(files, "/лечить", treatment: true);
+        AssertOneSharedRead(menuReads);
         Assert.Equal(selection, Assert.Single(menu.WoundCommandState!.Choices, c => c.Available).Selection);
         await files.WriteFileAtomicBytesAsync(WoundCarrierCatalog.AfterlifeProfilesPath, menuProfiles);
         var draws = 0;
@@ -56,10 +64,14 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
         if (receiveAid)
         {
             Assert.False(selection.Aid!.PlayerConfirmed); // Menu/record alone never confirms for the player.
+            var openReads = Counts();
             var targets = (await WoundApplicationService.OpenAsync(files, "/лечить", treatment: true)).WoundCommandState!;
+            AssertOneSharedRead(openReads);
             var self = Assert.Single(targets.Targets, t => t.Owner.OwnerKind == "player_soul");
             await using var confirmationLease = await files.AcquireCanonicalWriteLeaseAsync();
+            var selectReads = Counts();
             var choices = (await WoundApplicationService.SelectTargetAsync(files, confirmationLease, targets, self.Value, "/лечить")).WoundCommandState!;
+            AssertOneSharedRead(selectReads);
             var choice = Assert.Single(choices.Choices, c => c.Available);
             Assert.True(choice.Selection.Aid!.ReceiveAid);
             var before = fixture.CaptureMutationRoots([PendingPlayerActionService.PendingPath]);

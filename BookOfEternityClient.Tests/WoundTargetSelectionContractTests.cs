@@ -130,6 +130,33 @@ public sealed class WoundTargetSelectionContractTests
         Assert.Equal(oldDescription, Assert.Single(state.Targets[0].Wounds).Description);
     }
 
+    /// <summary>A malformed presentation alias cannot borrow a canonical resident's scope and expose its private name.</summary>
+    [Fact]
+    public void MalformedTypedAliasNeverBorrowsTheCanonicalResidentsIdentity()
+    {
+        var (context, guardians, residents) = Inputs();
+        context.Input.Carriers.AfterlifeProfiles!["profiles"]!.AsArray().Add(new JsonObject
+        { ["actorType"] = " resident ", ["actorId"] = "resident_a", ["realm"] = "Chaos Sea", ["locationId"] = "abode_choice", ["displayName"] = "PRIVATE_ALIAS_NAME", ["activeWounds"] = new JsonArray() });
+        var targets = WoundTargetSelectionService.Build(context, guardians, residents);
+        Assert.Single(targets, t => t.Owner.OwnerId == "resident_a");
+        Assert.DoesNotContain("PRIVATE_ALIAS_NAME", JsonSerializer.Serialize(targets));
+    }
+
+    /// <summary>Existing localized public kinds distinguish otherwise equal residents without revealing raw kind tokens.</summary>
+    [Fact]
+    public void PublicResidentKindDistinguishesOtherwiseEqualNamesAndContexts()
+    {
+        var (context, guardians, residents) = Inputs();
+        residents["entries"]![1]!["roleLabel"] = residents["entries"]![0]!["roleLabel"]!.DeepClone();
+        residents["entries"]![1]!["summary"] = residents["entries"]![0]!["summary"]!.DeepClone();
+        residents["entries"]![0]!["residentKind"] = "junior_spirit";
+        residents["entries"]![1]!["residentKind"] = "wayfaring_soul";
+        var named = WoundTargetSelectionService.Build(context, guardians, residents).Where(t => t.Name == "Одинаковое имя").ToArray();
+        Assert.Equal(2, named.Length); Assert.All(named, t => Assert.True(t.Available));
+        Assert.Contains("Младший дух", named[0].Label); Assert.Contains("Странствующая душа", named[1].Label);
+        Assert.DoesNotContain("junior_spirit", JsonSerializer.Serialize(named));
+    }
+
     private static (WoundPlayerReadContext Context, JsonObject Guardians, JsonObject Residents) Inputs(bool hiddenResidentWound = false, bool changedWound = false)
     {
         var input = WoundPlayerProjectionTestData.InputInRealm("chaos_sea", WoundContractTestData.CreateSpiritualActiveWound(
@@ -149,7 +176,7 @@ public sealed class WoundTargetSelectionContractTests
         var wound = parsed.Wound!; var fp = WoundIdentityState.ComputeSemanticFingerprint(wound);
         var identities = JsonNode.Parse(WoundIdentityState.SerializeCanonical(input.Identities))!.AsObject();
         identities["entries"]!.AsArray().Add(WoundContractTestData.CreateIdentityEntry(wound.WoundId, wound.Owner.Realm, wound.Owner.OwnerKind,
-            wound.Owner.OwnerId, wound.Owner.CarrierPath, "spiritual", lastTransitionOrdinal: 2, semanticFingerprint: fp));
+            wound.Owner.OwnerId, wound.Owner.CarrierPath, "spiritual", semanticFingerprint: fp));
         var history = JsonNode.Parse(WoundHistoryState.SerializeCanonical(input.History))!.AsObject();
         var transition = WoundContractTestData.CreateTransition(); transition["ordinal"] = 2; transition["woundId"] = wound.WoundId;
         transition["transitionId"] = wound.LastTransition.TransitionId; transition["operationKey"] = "create_wound_resident_choice";

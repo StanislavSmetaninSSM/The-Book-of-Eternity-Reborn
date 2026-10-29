@@ -61,7 +61,7 @@ internal static class WoundTargetSelectionService
                     "Хранитель · " + abodeName, locality));
         }
         catch (Exception failure) when (Malformed(failure)) { }
-        foreach (var profile in profiles.Where(p => Read(p["actorType"]) == "resident"))
+        foreach (var profile in profiles.Where(p => p["actorType"] is JsonValue type && type.TryGetValue<string>(out var kind) && kind == "resident"))
         {
             try
             {
@@ -70,7 +70,9 @@ internal static class WoundTargetSelectionService
                     context.Input.Carriers.AfterlifeProfiles!, owner);
                 if (profile["locationId"]?.GetValue<string>() != scope.LocationId) continue;
                 var row = residents!["entries"]!.AsArray().OfType<JsonObject>().Single(r => r["residentId"]?.GetValue<string>() == owner.OwnerId);
-                var publicContext = string.Join(" · ", new[] { "Житель Обители", abodeName, Read(row["roleLabel"]), Read(row["summary"]) }.Where(v => v.Length > 0));
+                var kind = Read(row["residentKind"]);
+                var kindLabel = GuardianAbodeResidentState.IsSupportedResidentKind(kind) ? GuardianAbodeResidentState.GetResidentKindLabel(kind) : "";
+                var publicContext = string.Join(" · ", new[] { "Житель Обители", abodeName, kindLabel, Read(row["roleLabel"]), Read(row["summary"]) }.Where(v => v.Length > 0));
                 nearby.Add(Create(owner, Name(profile, Read(row["displayName"]), "Житель Обители"), publicContext, locality));
             }
             catch (Exception failure) when (Malformed(failure)) { }

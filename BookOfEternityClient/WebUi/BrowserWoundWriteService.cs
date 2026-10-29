@@ -8,7 +8,7 @@ namespace BookOfEternityClient.WebUi;
 internal sealed class BrowserWoundWriteService(FileSystemManager files, BrowserLocalWriteCoordinator coordinator)
 {
     internal async Task<BrowserPromptWriteResult> ApplyWithinTransactionAsync(FileSystemManager.CanonicalWriteLease lease,
-        WoundCommandState state, IReadOnlyDictionary<string, JsonNode?> answers, LocalUiSessionLockOwner owner)
+        WoundCommandState state, IReadOnlyDictionary<string, JsonNode?> answers, LocalUiSessionLockOwner owner, Func<bool> isCurrentPrompt)
         {
             if (!answers.TryGetValue("confirm_wound_treatment", out var confirmation) ||
                 confirmation is not JsonValue flag || !flag.TryGetValue<bool>(out var confirmed) || !confirmed)
@@ -17,11 +17,16 @@ internal sealed class BrowserWoundWriteService(FileSystemManager files, BrowserL
             {
                 var value = answers["wound_selection"]?.GetValue<string>() ?? string.Empty;
                 var selection = await WoundApplicationService.ConfirmAsync(files, lease, state, value);
+                if (!isCurrentPrompt()) return BrowserPromptWriteResult.ValidationError("Срок действия формы истёк; откройте /лечить заново.");
                 var pending = PendingPlayerActionService.PrepareQueued(files, lease, WoundApplicationService.ActionFor(selection),
                     "browser-wound-action", DateTime.UtcNow.ToString("o"), selection);
                 var result = await coordinator.ExecuteAtomicWithinTransactionAsync(lease,
                     new(owner.OwnerId, owner.OwnerLabel, "Отправка лечения", owner.Lease), [PendingPlayerActionService.PendingPath],
-                    writeLease => files.WriteFileAtomicAsync(writeLease, PendingPlayerActionService.PendingPath, pending.ToJsonString()));
+                    writeLease =>
+                    {
+                        if (!isCurrentPrompt()) throw new InvalidDataException("Форма изменилась или истекла до публикации лечения.");
+                        return files.WriteFileAtomicAsync(writeLease, PendingPlayerActionService.PendingPath, pending.ToJsonString());
+                    });
                 return (result.Success
                     ? BrowserPromptWriteResult.Completed("Лечение отправлено", "Выбранная рана повторно проверена. Мир продолжит один обычный цикл; результат появится после хода Мастера.")
                     : BrowserPromptWriteResult.Failed(CommandExecutionState.Blocked, UiNotificationSeverity.Warning,

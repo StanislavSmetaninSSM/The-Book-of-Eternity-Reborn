@@ -27,7 +27,8 @@
       "tests": [
         "BookOfEternityClient.Tests.WoundTargetSelectionTests.BrowserOldCancelCannotRemoveAdvancedSameSessionPhase",
         "BookOfEternityClient.Tests.WoundTargetSelectionTests.BrowserOldFinalCannotPublishAfterCancellationAndReplacementForm",
-        "BookOfEternityClient.Tests.WoundTargetSelectionTests.BrowserLostOrExpiredUiAuthorityPreservesForeignLease"
+        "BookOfEternityClient.Tests.WoundTargetSelectionTests.BrowserLostOrExpiredUiAuthorityPreservesForeignLease",
+        "BookOfEternityClient.Tests.WoundTargetSelectionTests.BrowserFinalCannotPublishWhenPromptExpiresDuringFreshValidation"
       ]
     }
   ]

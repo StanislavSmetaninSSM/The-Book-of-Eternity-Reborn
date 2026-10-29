@@ -53,6 +53,11 @@ public sealed partial class WoundTargetSelectionTests
             new() { ["wound_target"] = JsonValue.Create(other.Value) }, "target_browser"));
         Assert.Equal(CommandExecutionState.Completed, view.State); Assert.Empty(view.Prompts);
         Assert.Null(view.InteractiveSession);
+        var texts = view.Blocks.OfType<UiTextBlock>().Select(b => b.Text).Concat(view.Blocks.OfType<UiPanelBlock>()
+            .SelectMany(p => p.Blocks.OfType<UiTextBlock>().Select(b => b.Text).Prepend(p.Title))).ToArray();
+        Assert.DoesNotContain(texts, t => t.Contains("Своя рана выбора", StringComparison.Ordinal) || t.Contains("Описание собственной раны", StringComparison.Ordinal));
+        Assert.Contains(texts, t => t.Contains("нет известных активных ран", StringComparison.Ordinal));
+        Assert.Contains(texts, t => t.Contains("Лечение пока недоступно", StringComparison.Ordinal));
         Assert.Null(await fixture.Files.ReadFileBytesAsync(PendingPlayerActionService.PendingPath));
         Assert.Equal(before, fixture.Snapshot());
         first = await commands.ExecuteAsync(new("/лечить", "target_browser"));
@@ -223,6 +228,43 @@ public sealed partial class WoundTargetSelectionTests
         await commands.CancelPromptSessionAsync(new(second.InteractiveSession.SessionId, "target_browser"));
     }
 
+    /// <summary>A prompt that expires during fresh confirmation cannot queue, even while its UI lease stays valid.</summary>
+    [Theory]
+    [InlineData(1)]
+    [InlineData(2)]
+    public async Task BrowserFinalCannotPublishWhenPromptExpiresDuringFreshValidation(int heartbeatBoundary)
+    {
+        var clock = new TargetClock(DateTimeOffset.UtcNow); var armed = false; var advanced = 0;
+        await using var fixture = await CreateTargetFixtureAsync(beforeMutation: path =>
+        {
+            if (armed && path == LocalUiSessionLockService.LockPath && Interlocked.Increment(ref advanced) == heartbeatBoundary)
+                clock.Advance(TimeSpan.FromSeconds(2));
+        });
+        var locks = new LocalUiSessionLockService(fixture.Files, clock);
+        var prompts = new ExplorerWebPromptSessionService(fixture.Files, lockService: locks, timeProvider: clock);
+        var commands = Commands(fixture.Files, prompts); var before = fixture.Snapshot();
+        var first = await commands.ExecuteAsync(new("/лечить", "target_browser"));
+        var second = await commands.SubmitPromptSessionAsync(new(first.InteractiveSession!.SessionId,
+            new() { ["wound_target"] = JsonValue.Create("target_0") }, "target_browser"));
+        var choice = Assert.Single(Assert.IsType<UiSelectionPrompt>(Assert.Single(second.Prompts, p => p.Id == "wound_selection")).Options, o => !o.Disabled);
+        var owned = Assert.IsType<LocalUiSessionLockSnapshot>(await locks.InspectAsync());
+        var token = new LocalUiSessionLockLease(owned.SessionGeneration, owned.OwnerId, owned.LeaseToken);
+        // Keep the real UI token alive; prompt expiry must be the independent refusal.
+        for (var i = 0; i < 12; i++)
+        { clock.Advance(TimeSpan.FromSeconds(90)); Assert.True((await locks.RefreshAsync(token, "actual heartbeat")).Acquired); }
+        clock.Advance(TimeSpan.FromSeconds(119)); // 19:59, original prompt and UI token both live.
+        armed = true;
+        var result = await commands.SubmitPromptSessionAsync(new(second.InteractiveSession!.SessionId,
+            new() { ["wound_selection"] = JsonValue.Create(choice.Value), ["confirm_wound_treatment"] = JsonValue.Create(true) }, "target_browser"));
+        Assert.True(advanced >= heartbeatBoundary);
+        Assert.Contains(result.Notifications, n => n.Severity is UiNotificationSeverity.Error or UiNotificationSeverity.Warning);
+        Assert.Null(await fixture.Files.ReadFileBytesAsync(PendingPlayerActionService.PendingPath));
+        if (heartbeatBoundary == 1)
+            Assert.False(Assert.IsType<LocalUiSessionLockSnapshot>(await locks.InspectAsync()).IsStale);
+        await commands.GetPromptSessionAsync(second.InteractiveSession.SessionId); // Normal exact expiry cleanup.
+        Assert.Equal(before, fixture.Snapshot());
+    }
+
     private sealed class TargetClock(DateTimeOffset now) : TimeProvider
     {
         private DateTimeOffset _now = now;
@@ -252,14 +294,16 @@ public sealed partial class WoundTargetSelectionTests
         return new(files, state, new LocalizationManager(), new ValidationService(files, NullLogger<ValidationService>.Instance), prompts);
     }
 
-    private async Task<WoundPlayerReadFixture> CreateTargetFixtureAsync(CanonicalReadActivityAccumulator? reads = null)
+    private async Task<WoundPlayerReadFixture> CreateTargetFixtureAsync(CanonicalReadActivityAccumulator? reads = null, Action<string>? beforeMutation = null)
     {
         var wound = WoundContractTestData.CreateSpiritualActiveWound("wound_target_flow", "chaos_sea", "player_soul", "player_soul", WoundCarrierCatalog.AfterlifeProfilesPath);
+        wound["display"]!["name"] = "Своя рана выбора";
+        wound["display"]!["description"] = "Описание собственной раны";
         var input = WoundPlayerProjectionTestData.InputInRealm("chaos_sea", wound);
         input.Carriers.AfterlifeProfiles!["profiles"]![0]!["standardArts"] = new JsonObject { ["spiritual_healing"] = 3 };
         input.Carriers.AfterlifeProfiles["profiles"]!.AsArray().Add(new JsonObject
         { ["actorType"] = "guardian", ["actorId"] = "guardian_target_flow", ["displayName"] = "Хранитель выбора", ["realm"] = "Chaos Sea", ["locationId"] = "abode_target_flow", ["activeWounds"] = new JsonArray(), ["activeEffects"] = new JsonArray() });
-        var fixture = await WoundPlayerReadFixture.CreateAsync(output, realm: "chaos_sea", suppliedInput: input, reads: reads);
+        var fixture = await WoundPlayerReadFixture.CreateAsync(output, realm: "chaos_sea", suppliedInput: input, reads: reads, beforeMutation: beforeMutation);
         try
         {
             await using var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync();

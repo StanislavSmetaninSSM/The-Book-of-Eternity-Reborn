@@ -244,7 +244,7 @@ internal sealed class WoundPlayerReadFixture(ITestOutputHelper output) : IAsyncD
     internal int LockOpens { get; private set; }
     internal int MutationCalls { get; private set; }
 
-    internal static async Task<WoundPlayerReadFixture> CreateAsync(ITestOutputHelper output, bool empty = false, string realm = "mortal_world", bool hiddenSelf = false, bool includeOldSoul = false, bool targetMaterials = false, WoundPlayerProjectionInput? suppliedInput = null, CanonicalReadActivityAccumulator? reads = null)
+    internal static async Task<WoundPlayerReadFixture> CreateAsync(ITestOutputHelper output, bool empty = false, string realm = "mortal_world", bool hiddenSelf = false, bool includeOldSoul = false, bool targetMaterials = false, WoundPlayerProjectionInput? suppliedInput = null, CanonicalReadActivityAccumulator? reads = null, Action<string>? beforeMutation = null)
     {
         var fixture = new WoundPlayerReadFixture(output);
         try
@@ -255,7 +255,7 @@ internal sealed class WoundPlayerReadFixture(ITestOutputHelper output) : IAsyncD
                 {
                     BeforeCanonicalWriteLockOpenAsync = () => { fixture.LockOpens++; return Task.CompletedTask; },
                     PassiveCanonicalReads = reads,
-                    BeforeCanonicalMutationBoundaryAsync = _ => { fixture.MutationCalls++; return Task.CompletedTask; }
+                    BeforeCanonicalMutationBoundaryAsync = path => { fixture.MutationCalls++; beforeMutation?.Invoke(path); return Task.CompletedTask; }
                 });
             fixture.Files.EnsureDirectoryStructure();
             var soulWound = WoundContractTestData.CreateSpiritualActiveWound("wound_soul", realm == "mortal_world" ? "chaos_sea" : realm,

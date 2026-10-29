@@ -66,7 +66,8 @@ public sealed partial class ExplorerWebPromptSessionService
                     return next;
                 }
                 // The same actual lease orders final queue publication against cancellation.
-                var result = await _woundWriteService.ApplyWithinTransactionAsync(lease, state, answers, snapshot.Owner);
+                var result = await _woundWriteService.ApplyWithinTransactionAsync(lease, state, answers, snapshot.Owner,
+                    () => WoundSnapshotCurrent(sessionId, snapshot, lease));
                 if (result.KeepSessionOpen)
                     return WithSession(snapshot.Result, snapshot.Session, CommandExecutionState.RequiresInput,
                         snapshot.Result.Prompts, [new UiNotification { Severity = result.Severity, Title = result.Title, Message = result.Message }]);
