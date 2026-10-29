@@ -44,6 +44,16 @@ private/hidden wound or actor facts leaking through context/empty counts.
 - [ ] Verify complete raw/hash/cleanup/outcomes, concise canonical checkpoint and
   remote SHA. Close only this task, not parent T120/US5/#1536.
 
+DESIGN review found one P2: existing ID-only prompt cleanup could erase a newly
+advanced same-session phase. Section18 now closes reference identity, exact conditional
+mutation, same-coordinator-lease cancellation/expiry/final admission and closed per-
+phase answer keys. No generic wizard/store or new publisher; delta DESIGN pending.
+Use existing passive source-read accumulator rather than arbitrary callbacks so
+measurement does not disable normal DATA reuse. Causal fixture feasibility accepted
+by independent Sol: existing minimal read fixture/known Self+visible exact Guardian,
+matching art mirror/no grant/no game bootstrap, valid Self choice and inert snapshot
+assertions precede the missing-target semantic assertion. All code/tests stillUNRUN.
+
 Optimization decision: reuse one existing context/catalog/effects and one parsed
 Guardian/roster read per invocation for BOTH target and aid consumers. One lookup
 over already prepared wound DATA; no across-prompt cache. Each navigation/final

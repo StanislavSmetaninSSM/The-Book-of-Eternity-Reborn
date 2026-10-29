@@ -3931,16 +3931,45 @@ Actual UI/lifetime:
 - Console shows target choices/cancel first, calls SelectTargetAsync under its owned
   lease, renders known wounds/requirements, then uses the existing wound/confirm/
   pending action. Cancel at either step is inert; unavailable view returns no action.
-- Browser uses the EXISTING prompt-session store and generation/owner/lock lifecycle.
-  Add only a wound-specific target-navigation branch before BrowserWoundWriteService;
-  no generic wizard/store. Revalidate under a current lease, replace the immutable
-  PromptSessionSnapshot.Result with compare-and-swap against the actual old snapshot,
-  and retain the same session only for the second prompt. Stale concurrent submission
-  or cancellation cannot recreate/retarget the session or queue treatment. A terminal
-  read-only view removes the exact snapshot and releases its existing UI lock;
-  a competing replacement is retained. Final submit still uses the existing bound
-  coordinator and queue. Preserve expiry, owner mismatch and session replacement
-  refusals; partial rendering does not authorize a write. Both phases use real APIs.
+- Browser uses the EXISTING prompt-session store/coordinator, not a new wizard/store.
+  Retain its BrowserLocalWriteCoordinator instance in the prompt host. A wound-only
+  route runs lookup/advance/final-submit/cancel/expired-cleanup under that existing
+  RunBoundTransactionAsync canonical lease/session operation. BrowserWoundWriteService
+  exposes its current body as ApplyWithinTransactionAsync(lease,state,answers,owner),
+  retaining the SAME ExecuteAtomicWithinTransactionAsync queue publication. No nested
+  lease, second coordinator, altered rollback membership or new publisher.
+- PromptSessionSnapshot becomes an immutable private CLASS (same fields/constructor,
+  default reference identity) so dictionary TryUpdate and conditional KeyValuePair
+  removal compare the actual snapshot, not record structural equality. New target
+  result replaces ONLY the actual old snapshot; every participating wound removal
+  (cancel, expiry, no-action read completion, final completion/session refusal) uses
+  conditional exact-snapshot mutation. Replace the existing check-then-ID RemoveSnapshot
+  helper with atomic exact removal. Never delete a newer phase or release its lock.
+- Get/submit/cancel first resolve wound snapshots through a narrow async helper;
+  expired wound cleanup is ordered under the SAME coordinator lease, rechecks actual
+  snapshot+time and removes/releases only that snapshot/token. Nonwound routing is
+  retained. Submission rechecks current reference/expiry/generation after acquiring
+  its transaction lease, not just before awaiting it. Cancellation uses the same
+  lease ordering and actual reference, so a captured old cancellation cannot race a
+  phase replacement/final queue admission. Queue admission wins or cancellation wins,
+  never queue-after-cancel or removal of a competing phase. Session-replaced cleanup
+  remains exact and cannot affect the new generation.
+- Before target advance, reject active GM turn or lost/expired/foreign UI ownership;
+  use existing RefreshAsync with the exact existing owner lease, never acquire a new
+  lease to rescue a lost form. After fresh target validation, recheck current snapshot/
+  expiry before CAS. A final submit checks current snapshot/expiry and exact readable
+  nonstale token in its host lease; existing coordinator still performs its fresh
+  token guard immediately before queue publication. No authority is cached between
+  these checks. A no-action view conditionally closes/releases within the lease.
+  Uncertainty follows existing coordinator outcome/close handling, never automatic
+  resubmit or deletion of canonical recovery data.
+- Each wound phase has CLOSED accepted answer keys: target phase exactly wound_target;
+  selected/direct wound phase exactly wound_selection + confirm_wound_treatment.
+  Reject extra/cross-phase payload before navigation or any queue operation, including
+  a replayed target request carrying valid later-step answers under the same SessionId.
+  Existing frontend CommandResultView clears answers after each successful response;
+  both stages use existing generic prompts. Same SessionId does not authorize replay.
+  Owner/expiry/generation/lock refusals and cancellation remain player-facing and inert.
 
 Performance/integrity and finite proof:
 - Read owner is one Open/Select/Confirm invocation and its existing canonical lease/
@@ -3954,15 +3983,26 @@ Performance/integrity and finite proof:
   one visible exact Guardian plus Self and no grant, expecting wound_target. Current
   code must compile then fail because it shows no target step. No new API can be a
   compilation-only RED. Snapshot after initial generation setup, no world/bootstrap.
+- Independent Astra DESIGN found one P2: old ID-only session cancellation/expiry/
+  completion could erase a replacement. The exact-reference/lease/phase protocol
+  above resolves the design risk; delta acceptance is pending, no code yet.
 - Pure cheap tests cover Self-first/detached copies, same-name distinct and identical
   public contexts, typed same-ID kinds, null/duplicate/confusable/hidden/moved/wrong-
   realm/carrier/locality, hidden-only/empty wounds, IDs/private recursive facts,
   received aid grouped with Self, changed ordering/old token and changed wound set.
-  Actual read-hook counters prove one Guardian and one roster source read within
-  each stable invocation and fresh reads after mutation/next phase; no fake cache hit.
+  Use EXISTING FileSystemManagerHooks.PassiveCanonicalReads/CanonicalReadActivityAccumulator,
+  not arbitrary read callbacks (which can disable DATA reuse). Capture real physical
+  source counts: each cold locality path read once in a stable invocation, changed
+  dependencies reread and change the next view. Unchanged existing service reuse may
+  have zero physical reads; no forced-fresh diagnostic or fabricated cache hit.
+  One logical root request per path is shared by both consumers; catalog is not rebuilt.
 - Small real filesystem/shared prompt tests cover current API navigation, both
   cancellation phases, no-consent/empty views, stale target/wound/session/owner,
   repeated/concurrent old target submission and no queue/die/cycle/resource mutation.
+  Force target-CAS versus cancel, old final submit versus cancel/replacement, expired
+  form/expired or foreign-reacquired UI lock and extra-answer cross-phase replay.
+  Existing typed race seams may pause at the actual boundary; no reflection or global
+  shared mutable fixture. Preserve a competing snapshot/token and exactly-once queue.
   Reuse the existing minimal read fixture, not full game for private helpers.
 - Finally adapt the proven two-turn Engine helper only for target navigation and
   exercise actual console resident-patient5 and browser Self/resident-healer6, plus
