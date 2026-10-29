@@ -455,3 +455,159 @@ Ruling: canonical #1536 design/plan/tasks are the progress ledger and existing
 qualification checkout is the isolated task branch. Do not add a duplicate skill
 plan/worktree or run an unrestricted suite; repository/user workflow explicitly
 requires these existing artifacts and bounded official category verification.
+
+## Next bounded slice: player helps a current Abode resident — DESIGN WIP
+
+2026-10-29; T108-RESIDENT, #1536. No implementation or runtime qualification yet.
+US4 scenario8 and data-model12 already authorize a reachable consenting entity;
+no new game rule is needed. A read-only Astra/high architecture consultation at
+248263534 identified the exact kind/locality and historical-family boundaries.
+This concrete design still requires a separate independent DESIGN review.
+
+### Player result and finite boundary
+
+After an ordinary accepted GM turn records a visible, conscious, capable resident's
+consent, the player chooses that resident's known active spiritual wound through
+`/лечить`, confirms and completes the actual console/browser Engine turn. Reuse
+real grant → natural/common acceptance → normal cleanup → guided aid → Stage/B →
+common publication. One selected recipient per grant turn, the immediately next
+accepted turn and existing next-safe-cycle expiry remain unchanged. Self stays
+first. No player-authored JSON, fees, new receipt/registry/publisher, longer consent,
+Shining locality, resident-as-healer, combat or helpless/unwilling exception.
+
+Healer coordinate is exactly (chaos_sea, player_soul, player_soul,
+AfterlifeProfilesPath). Target coordinate is exactly (chaos_sea, resident, exact
+residentId, AfterlifeProfilesPath). Identities are ordinal and kinded; a Guardian
+with the same ID cannot stand in for the resident. Do not impose a new global
+ID-uniqueness rule across different kinds; reject actual ambiguity/substitution.
+
+### Closed new family; currently produced old forms stay exact
+
+The following new shapes are technical DATA, never independent permission:
+
+- Proposal schema3 on an exact existing `resident` profile:
+  `schemaVersion`, `kind=resident_target_consent`, `operation=grant|revoke`,
+  `healerId=player_soul`, `woundId`, `conscious`, `capable`, `readableEvidence`.
+  Target full coordinate comes from the enclosing exact profile, healer coordinate
+  from the restricted current family. The client derives locality/provenance;
+  the GM cannot supply canonical stamps. Grant requires both factual flags true.
+- Canonical record schema3, closed fields: `schemaVersion`,
+  `kind=resident_target_consent`, `status=granted|revoked`, `healer`, `target`,
+  `woundId`, `locality`, `conscious`, `capable`, `readableEvidence`, `binding`,
+  `acceptedCycleOrdinal`, `eligibleCycleOrdinal`, `primaryTransitionId`.
+  Healer/target are existing OwnerJson four-field coordinates; locality is exactly
+  `{guardianId, abodeId}` from the authenticated current join. Binding/cycles/
+  primary transition use the existing accepted natural owner. Full record and
+  digest remain in the same participation outcome; no final-result hash cycle.
+- Selection schema5, closed fields: `schemaVersion`, `mode=aid`,
+  `direction=player_to_resident`, `woundId`, `expectedWoundFingerprint`, `healer`,
+  `target`, `locality`, `participationFingerprint`. Both coordinates/locality must
+  match record/source exactly. Add narrow typed resident participant DATA to the
+  existing aid selection; no optional missing-kind inference. Existing v3/v4
+  serialization and meanings remain byte-exact. Conflicting receive-aid/player-
+  confirmation flags cannot coexist with this direction.
+- Request/result family5: active mode=aid, direction=player_to_resident; natural
+  result mode=natural contains exactly one full schema3 participation outcome.
+  Reuse the existing closed active fields, with explicit direction. Full healer/
+  target coordinates and full witness record bind locality into request/attempt/
+  result fingerprints; selection locality must match witness/source. No separate
+  request-locality copy is necessary. V5 self, missing/mixed fields, cross-family
+  substitution and unknown versions refuse. Existing actively produced v2 self/
+  natural, v3 player→Guardian and v4 Guardian→player remain exact current contracts,
+  not legacy-save fallbacks. Their immutable History rows/fingerprints are never
+  rewritten while appending v5 results.
+
+Change DATA must retain its full enclosing WoundOwnerCoordinate. Coalesce mirrored
+profile proposals by the full coordinate and identical proposal, never TargetId
+alone; reject conflicting mirrors and more than one distinct bounded change.
+A TargetId convenience accessor may remain, but cannot be a permission/dedup key.
+All three raw profile representations and direct/null canonical-record forgery
+checks remain mandatory. Unchanged accepted records may be retained without a
+regrant. Revocation never grants permission and must match the same typed owner.
+
+### One exact resident join, used by every existing owner transition
+
+Add the narrow typed DATA join inside SpiritualTreatmentParticipation, using the
+existing exact current-Guardian/Abode check. Require exactly one case-unambiguous
+resident roster entry and exactly one typed resident profile. Require exact
+residentId/actorId/actorRef agreement, guardianId and abodeId agreement with current
+navigation/Guardian, typed isPresent=true, Chaos realm, profile locationId and exact
+wound owner/carrier. Reject wrong/missing/confusable identities, alias conflicts,
+foreign/departed targets, hidden profile/wound or active conflict before a grant/
+new aid can authorize treatment. Read current factual participation conditions;
+visibility/friendliness/teaching/presence alone never means consent.
+
+LocalActorIds, IsAfterlifeActorLocal, FindResident and CollectEntries are useful
+context only: their case-insensitive/alias/first-match normalization cannot prove
+this treatment join. Both locality roots already belong to AidLocalityPaths;
+there is no new source path or source registry. Perform the same exact join in:
+
+1. Real accepted natural participation producer and pure afterimage composition.
+2. Menu/confirmation, committed-grant reader after genuine cleanup, and pre-control
+   admission under the actual existing single staging lease.
+3. Signed-original B/RequireOriginalAidWitness and fresh pre-draw/publication checks.
+4. Published full-record/History agreement and historical settled replay.
+5. Owned locality normalization before and after the computed write: full typed
+   target/Guardian/Abode/presence/profile join must remain equal. Equal untyped
+   LocalActorIds sets alone are insufficient. Original snapshots/input/evidence
+   remain frozen; only the verified computed live closing image may advance.
+
+New admission rechecks live consent/locality. Already settled replay validates
+its exact historical witness/result/receipt, never requires a new live grant or
+current locality. Raw same-turn stamps, earlier unrelated natural results and
+prepublication grants remain insufficient. Expiry/turn/session/cycle rules are
+unchanged; neither a result's own token nor serialized selection authenticates it.
+
+Use player H and active roll effects for healing; resident H for its one ordinary
+natural pass. The same program applies active then the whole eligible natural
+cohort. For playerH3/residentH0, a one-step III→II active result followed by natural1
+must leave II/progress1, not use healerH3 to recover four points. Weaker graphs are
+still GM-authored and client-validated against the computed destination; no new
+survivor selection or replacement rule. Late failure retains attempt/dice and the
+existing rollback/uncertainty semantics, with no partial common publication.
+
+### Touchpoints, optimization and finite acceptance
+
+Extend existing selection/family dispatch; SpiritualTreatmentParticipation;
+planner Participation/LocalityNormalization; AfterlifeWoundTreatmentAuthority
+committed and signed Aid paths; SpiritualSelfTreatmentRequestCodec.Aid;
+SpiritualHealingPersistedResult; ProgressionScheduleService.SpiritualReplay;
+shared request projection, menu/action and pending console/browser consumers.
+RequireOriginalAidWitness, ReadPublishedParticipationCycleDataAsync and
+RequirePublishedRecords must all use the typed family/join. Preserve exact old
+family dispatch rather than infer versions from ReceiveAid booleans everywhere.
+
+Reuse already parsed catalog/profile/History/locality inputs owned by the existing
+operation and actual lease. Resident join DATA has full participant, wound/FP,
+record-content, Guardian/Abode and original/current source-image dependencies;
+mutation invalidates it. It grants no authority across leases or generations.
+Keep fresh original, physical closing, source/effect/history, permission and current
+session checks. No new cache/dictionary framework: small typed joins are trivial,
+and existing operation/service reuse remains the owner for expensive stable DATA.
+Tests use isolated mutable roots and detached template copies. No speedup claim.
+
+Proposed coherent 15-case acceptance (exact catalog/discovery may refine counts):
+- Three codec/History controls: resident proposal/selection/request roundtrip;
+  cross-family substitution refusal; actual new producer/result with mixed History
+  retaining exact v3/v4 receipts while adding v5.
+- Eight cheap identity/locality negatives: wrong-kind same ID, wrong realm,
+  wrong carrier, duplicate/confusable resident identity, foreign Guardian/Abode,
+  departed resident, hidden profile/wound, conflicting profile identity aliases.
+- Two actual console/browser journeys: genuine grant → cleanup → confirmed aid,
+  unequal player/resident tiers, exact target and weaker graphs, one cycle/attempt,
+  no charge, inert settled replay. Seed the complete existing two-turn Engine
+  fixture once, including resident roster/profile/wounds/effects/lore/Brain and
+  scheduler as required; no post-acceptance file insertion or second bootstrap.
+- Two failure controls: locality drift after selection before draw; atomic common
+  publication fault restoring grant/request/wound/effects/History/scheduler.
+
+First causal RED uses the existing ReadChanges API with a complete valid resident
+proposal; current Guardian-only admission must refuse the positive case. Then
+implement the full typed family/owner connection with cheap controls before actual
+journeys. Review the entire known fixture preparation before an expensive caller.
+Synchronize canonical data-model technical forms, CLI/daemon/Wound guide/Matrix,
+a worked two-turn resident grant/aid example and exact manifest/documentation
+consumers with implementation. Mortal and public/paid service contracts do not
+change. Fresh affected builds, category discovery/PlanOnly, independent SOURCE/
+PREP and OUTCOME use bounded existing-style limits, with no broad successful-suite,
+DFR/Mortal/Windows/performance replay as a prerequisite for this functional slice.

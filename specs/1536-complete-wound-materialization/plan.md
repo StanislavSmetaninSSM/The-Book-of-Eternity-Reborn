@@ -1,3 +1,22 @@
+# T108 current-Abode resident treatment — DESIGN WIP
+
+2026-10-29, #1536/T108-RESIDENT. The next user result is player treatment of a
+visible consenting resident of the current Chaos Guardian Abode, through the
+existing ordinary consent turn, genuine cleanup and confirmed console/browser
+Engine aid. US4 scenario8/data-model12 already supply the game rules; no author
+question or new consent lifetime is required. No resident implementation/PASS yet.
+Astra/high read-only architecture consultation identified complete typed identity,
+exact roster/profile/locality joins and preservation of current v3/v4 History as
+the main risks. Root wrote the concrete closed-family5 design and proposed finite
+15-case acceptance in the existing spiritual-aid-design.md. Separate independent
+DESIGN review precedes code. Then existing-API resident admission causal RED,
+shared owner/family implementation, GM docs/example synchronization, cheap gates
+and actual two-turn journeys. No new registry/cache/publisher or service quote.
+Current accepted checkpoint bbf4779bb44b031faf1d8377eec3b72aea7d0f3d remains the
+base; only design/plan/tasks change here. No C# build/runtime or accepted-case
+repeat is needed for this draft. Raw remains outside checkout. DFR/Mortal/Windows/
+performance and broader #1536 limitations stay open, separate from this feature.
+
 # T093 known-wound assessment accepted — 17 PASS
 
 2026-10-28. Compiled/tested source24826353427bb3d2c1d671fbfa23f19eb8635911.

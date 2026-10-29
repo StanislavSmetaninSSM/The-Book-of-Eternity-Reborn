@@ -14581,6 +14581,8 @@ rows retain their own lineages; no combat gameplay PASS or full task closure.
   ACCEPT are recorded; no all17 Astra claim. Other actors/services,
   helpless/conflict/Shining helper and longer lifetime routes remain open.
 
+- [ ] T108-RESIDENT [US4] Complete player→visible consenting resident treatment in the current Chaos Guardian Abode through genuine grant, normal cleanup and both guided Engine interfaces. Bind full typed participants/locality and new closed v5 family without changing existing v3/v4 receipts; exact design, cheap causal tests, actual journeys/failure controls, GM synchronization and independent acceptance are required. See spiritual-aid-design.md resident section.
+
 ### GM contract synchronization
 
 - [ ] T109 [P] [US4] Add RED spiritual arts/combat heal/safe-cycle/natural entity recovery documentation and manifest guards in `BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.SpiritualHealing.cs`
