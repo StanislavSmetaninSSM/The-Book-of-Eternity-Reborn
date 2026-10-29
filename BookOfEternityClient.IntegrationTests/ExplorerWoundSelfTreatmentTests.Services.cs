@@ -7,6 +7,7 @@ using BookOfEternityClient.Models;
 using BookOfEternityClient.Services;
 using BookOfEternityClient.UI;
 using BookOfEternityClient.WebUi;
+using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
@@ -65,6 +66,17 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
         {
             runtime.GameLoop.SetSession("session_elyara_service_" + (browser ? "browser" : "console"), 42);
             await runtime.StateManager.RefreshGameStateAsync();
+            if (failPublication)
+            {
+                // Ordinary runtime health initializes this ledger before the
+                // pre-turn backup. Match that committed zero-cycle baseline;
+                // do not mistake first initialization for a retained paid turn.
+                Assert.False(files.FileExists(ProgressionScheduleService.SchedulePath));
+                var initialized = await new ProgressionScheduleService(files,
+                    NullLogger<ProgressionScheduleService>.Instance).EnsureInitializedAsync();
+                Assert.Equal(0, initialized.CurrentChaosSeaTurnOrdinal);
+                Assert.Equal(0, initialized.PendingChaosSeaCycles);
+            }
             var before = fixture.CaptureMutationRoots(new[] { AfterlifeWoundHealingPlanner.Continuation.ServiceSoulPath,
                 GuardianThoughtJournalState.StatePath, EffectAcceptedTurnInputComposer.WorldTimePath,
                 PendingTurnStateService.PendingDiceStatePath }.Concat(AfterlifeWoundTreatmentAuthority.ServiceLocalityPaths));

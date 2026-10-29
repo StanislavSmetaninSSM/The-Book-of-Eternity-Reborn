@@ -309,6 +309,22 @@ payloads/metadata: approved lower-layer PowerShell archive reclaimed0;55verified
 NuGet archives reclaimed14.765625MiB, enabling the unchanged400MiB build-start floor.
 No raw/saves/recovery/bin evidence was removed; full local proofs remain external.
 
+15:36UTC: counter OUTCOME and conditional next-stage PREP accepted by Sol. Actual
+payment d1/d2/d20 allPASS (47.044s/180), physical-wallet C4 cutPASS (22.047s/180),
+competing GM currency refusalPASS (11.767s/60), consolePASS (38.846s/180), shared
+browser queue→EnginePASS (88.756s/180); all complete/clean, unchanged binaries.
+Total77distinct PASS across explicit versions, not one fresh invocation. Whole Engine
+rollback1 completedFAIL (43.212s wall, no timeout, cleanuptrue) at exact schedule bytes;
+two self/resident dependents remain UNRUN. Independently confirmed fixture mismatch:
+the pristine schedule was absent at test capture, but normal ValidateBeforeTurn
+initializes it before CreatePreTurnBackup. Only failPublication setup now invokes
+the existing initializer before baseline, asserting prior absence and zero current/
+pending cycles. All exact rollback assertions remain; other captured-root preparation
+audited with no additional health seeding needed. No production change. Correction
+SOURCE accepted; fresh Integration/Plan/PREP and that singleton remain pending.
+Accepted console/browser and other75 PASS are retained without repetition; no DOM,
+external GM/provider or fresh-process qualification claimed.
+
 ---
 
 # T126 — accepted browser wound cards and guided treatment presentation
