@@ -14701,13 +14701,20 @@ restore is inferred. Earlier guardian intermittence/cross-OS DATA, DFR/Mortal ti
 remain open. Continue the independently authorized functional remainder or clarified
 T142 rule; never silently exempt historical rows while the owner answer is pending.
 
-2026-10-29 T135/T141/T143–T147 interactive access WIP (not qualification):
-accepted one-case semantic RED on 9bddffc2, missing public «Согласие Совета»;
-full read-only implementation, finite privacy/fresh-selection/identity/source-count
-fixtures and GM guidance/example guards authored. Fresh current GREEN builds and
-runtime are UNRUN. See current plan prefix for exact scope/selection and external raw.
-The old accepted role34 and paid80 retain their own lineages. T142 remains pending the
-owner decision; no historical-faction exception or Shining execution is introduced.
+2026-10-29 T135/T141/T143–T147 interactive access runtime verified; final OUTCOME pending:
+compiled source5841f627fcf7a6f093b9e196176c52896f146df4, independent SOURCE/PREP accepted.
+Fresh Main/Support/Unit/Integration exit0 with baseline12/23/26/102 warnings;4 PE/PDB,
+56sourcebindings,27 artifacts verified. Catalog1113/12868; PlanOnly80cases/26methods/
+10descriptors. Two nonoverlapping runs54/54 and26/26 PASS (37.7532944/63.9086388 s),
+80 distinct on the same compiled source; no timeout/skip/lost/repeated case, revision0
+and both cleanups true. Five actual post-selection opens for1/20 members, no stale
+visibility/affiliation/profile/terms, no mutation/grant/action. Real no-arg console menu
+and shared browser show public declared access/threshold/conditions/compensation and
+bounded explicit-currency tariffs; unknown/private terms retain the valid healer role.
+GM effective guidance/worked example/guards agree. Full102file/13446751byte capture
+outside Git in /workspace/tboe-linux-evidence-20261025/us6-shining-healers/access-green-*.
+See plan prefix for exact categories/timings/limits. T142 owner question remains pending;
+no historical-faction exception, Shining execution or broader parent-task closure.
 
 ### RED tests
 

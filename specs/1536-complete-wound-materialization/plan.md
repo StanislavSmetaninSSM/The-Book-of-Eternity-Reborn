@@ -58,98 +58,101 @@ No cache or retained JsonNodes; exports are detached, new action reads fresh ter
 Actual source-open counters compare one/many members and changed terms. Keep all current
 materialization and authority boundaries; display never authorizes a charge or heal.
 
-Finite implementation / acceptance
+Finite implementation / acceptance — Linux verified, final OUTCOME pending
 
-- [x] Inspect canonical scope and existing callers; independent Astra DESIGN accepted with
-  explicit compensation and tier/price constraints. T142 author question stays pending.
-- [x] Add and independently accept one cheap causal typed actual no-argument console RED:
-  HealingAccessInteractiveInspectionShowsPublicRestrictedTermsWithoutMutation. Existing
-  role/name is the control; missing public condition is semantic RED. New exact category
-  shining-healer-access-causal, 60 s. Fresh Unit only (production unchanged), source/PDB
-  proof, discovery, exact PlanOnly/PREP, one RED. No accepted 34/paid 80 repeat for scaffold.
-- [x] Author (UNCOMPILED) the service display sibling, shared detached projection/formatter and
-  fresh interactive join. Add independent typed negatives for private/malformed/foreign
-  terms, declared availability/threshold, currencies versus noncurrency, rounding/tier
-  limit, duplicates/same-name identity, immutable results and no admission broadening.
-- [x] Author (UNCOMPILED) real console/browser tests for public terms, inert return/cancel and selection
-  races (hidden/removed faction, changed affiliation, hidden profile), literal rendering,
-  one/many source counts and new-action changed terms. Reuse approved per-test fixtures,
-  exact canonical snapshots and guarded cleanup; no whole-world/GameEngine preparation.
-- [x] Author (guards UNRUN) synchronized GM rule/guide/matrix/main task/daemon directives, worked
-  Shining access example/manifest and source guards. No new pending/control schema.
-- [ ] Coherent SOURCE/impact-selection review, fresh affected Main/Support/Unit/Integration builds,
-  exact catalog/PlanOnly/PREP, approved cheap causal/data/docs and UI checks, full captures
-  and independent OUTCOME. Re-run old checks only when actually affected by changed
-  projection/rendering; accepted paid 80 and HOLD DFR/Mortal/Windows are not substituted.
-- [ ] Commit/push verified checkpoint, read remote SHA; no merge/force/history rewrite,
-  branch deletion, new clone/restore or old raw/save/recovery deletion.
+- [x] Canonical scope and existing callers inspected; bounded Astra/high DESIGN accepted,
+  including unchanged source-prefix extraction before resource projectors.
+- [x] Independent Sol SOURCE/selection and PREP accepted. Sole writer/runner Sol.
+- [x] Causal actual no-argument RED on 9bddffc2ae0f63a6fca09a06132ce6c5c5c43e36:
+  missing «Согласие Совета» at line22 after panel/name/role controls; one complete FAIL,
+  8.895938 s <60, wall18.7821453 s, no timeout/duplicates, both cleanups true. Independent
+  RED OUTCOME accepted; Category Completed=false retained for the expected FAIL.
+  TRX SHA256 c531a54b96647cf9b4c79ce8699cd760718c44f6467498e1f60d411c6dad51d9.
+- [x] Shared public-terms sibling/projection/formatter and fresh console selection join;
+  browser renders the same detached terms. Authoritative currency admission unchanged.
+- [x] Independent typed DATA negatives, real console/shared-browser parity, eight fresh
+  selection races, cancellation/literal/fresh-action controls, immutable exports and
+  actual source counters. Only the selected existing political Integration consumer
+  now authors three complete profiles before refresh/command; its shared seed and
+  original political/project assertions remain unchanged. No production fixture fallback.
+- [x] GM rule/guide/matrix/API/main task/both daemon directives, bounded worked example,
+  manifest and executable source/documentation guards synchronized. No pending schema.
+- [x] Four fresh owning builds, PDB/artifact proof, exact discovery/PlanOnly, approved
+  two-batch actual runtime and strict complete-union/capture verification below.
+- [ ] Independent final OUTCOME/checkpoint review and remote acceptance publication.
 
-Current implementation checkpoint — WIP, UNCOMPILED
+Verified current source: 5841f627fcf7a6f093b9e196176c52896f146df4 (implementation at
+7ef85d222; 5841 only recorded reviewed plan/SOURCE status). Same Linux environment,
+SDK10.0.402 / runtime8.0.32 / PowerShell7.6.8, net8.0 targets. All commands run from
+/workspace/tboe-linux-qualification-20261025 after sourcing the existing toolchain env.
+All four dotnet build commands used --no-restore --nologo -m:1
+-p:UseSharedCompilation=false -nr:false -p:BuildProjectReferences=false.
 
-The single causal no-argument console case ran on 9bddffc2ae0f63a6fca09a06132ce6c5c5c43e36:
-expected semantic FAIL at line 22, missing «Согласие Совета» after panel/literal-name/
-healer-role controls. Independent Sol RED OUTCOME accepted. Wall 18.7821453 s,
-category 8.895938 s < 60, complete one-case selection, no timeout/duplicates and both
-cleanup flags true. Category Completed=false is retained honestly for the FAIL.
-TRX SHA256 c531a54b96647cf9b4c79ce8699cd760718c44f6467498e1f60d411c6dad51d9.
-Fresh Unit build exit 0 / baseline 26 warnings / 1:21.52; Main/Support production was
-unchanged. Four PE/PDB pairs, 52 source bindings and 27 artifact paths verified.
-Catalog 1107/12853 valid; exact PlanOnly one case/one method/60 s, zero execution.
-Prior accepted 27 owning artifacts are retained in a fully decoded/hash-verified
-external gzip archive; role34/paid80 were not rerun or deleted.
+| Owning project | Exit | Warnings (baseline) | Elapsed |
+| --- | ---: | ---: | ---: |
+| BookOfEternityClient | 0 | 12 | 2:42.48 |
+| BookOfEternityClient.TestSupport | 0 | 23 | 23.73 s |
+| BookOfEternityClient.Tests | 0 | 26 | 1:44.72 |
+| BookOfEternityClient.IntegrationTests | 0 | 102 | 2:42.97 |
 
-Astra DESIGN delta accepted extracting the unchanged read/parse/private-normalization
-prefix into ReadShiningContextSourcesAsync before the two resource projectors. Existing
-LoadShiningContextAsync retains both audience-aware projections and reroll derivation.
-The selected inspection needs four fresh roots plus one profile read, not unused
-resource reconstruction. Parsed roots remain one-operation private DATA; no dummy
-resource values, cross-selection cache or second loader framework.
+All have zero errors and no added warnings. Four PE/PDB pairs and 56 changed-source
+bindings match; all27 owning artifacts and dependency copies agree. Both pre-scaffold
+accepted27 and current scaffold27 artifacts are retained in fully decoded/hash-verified
+external archives. Nothing was deleted.
 
-Production WIP now adds the read-only public-terms sibling, detached internal exact-ID
-join and shared role/access strings, browser rendering, and asynchronous legacy
-inspection with fresh unique revealed-faction/realm checks. Existing paid reader is
-unchanged. This code is not yet compiled or GREEN. The complete authoring block now
-includes pure public-term/identity/immutability negatives, real no-argument console and
-shared-browser parity, eight fresh-selection races, changed literal terms/prices,
-cancel, one/twenty-member actual source counters and the existing full-context resource
-refusal consumer. GM rule/guide/matrix/API/task/both daemon directives, a bounded worked
-favor-only example/manifest and two executable guards are synchronized. Existing
-political Integration consumer lacked the now-required actor profiles; only that test
-now authors three complete profiles before execution, preserving its political asserts.
-No production fallback or shared-fixture broadening. It also uses public rendering.
+Official pwsh scripts/test-csharp.ps1 -ValidateCatalog -NoBuild: exit0,
+CATALOG-VALID1113 categories/12868 methods-files, zero executions, revision0, both
+cleanup flags true. Exact -Category @(<the nine IDs below>) -NoBuild -PlanOnly: exit0,
+80 planned cases/26 methods/10 descriptors, zero execution, 15.5600353 s, unchanged
+budgets/pins, revision0 and both cleanups true. Independent PREP accepted all proofs.
 
-Finite intended selection: shining-healer-access-{causal,data,ui,selection-races,
-source-cost,context-consumers,docs} plus actually affected existing
-shining-healer-capability-data and shining-healer-roster-ui. Context-consumers owns one
-Unit refusal and one existing Integration political case, so fresh Integration is now
-required too. Exact case/method/descriptor counts remain discovery/PlanOnly UNVERIFIED.
-Independent whole SOURCE/selection, fresh Main/Support/Unit/Integration, catalog/PDB/
-artifact checks, exact PlanOnly/PREP and runtime/OUTCOME remain pending. No feature PASS
-is claimed. No Shining treatment execution or historical-faction invariant is added.
+Two nonoverlapping official -Category @(<batch IDs>) -NoBuild runtime invocations on
+that same compiled source, not one 80-case run:
 
-Independent Sol6.1/xhigh whole SOURCE/selection ACCEPT on 9868135..7ef85d2,
-including the two local plan bookkeeping corrections: no blocking findings. Confirmed
-fresh joins/privacy, unchanged paid admission/resource suffix, detached DATA reuse,
-upfront Integration fixture migration and synchronized GM/example/catalog scope.
-Static count 80 cases/26 methods (51 new +29 affected existing), still pending discovery.
-Approved runtime order is two nonoverlapping official batches: cheap54 (data29,causal1,
-docs2,source-cost1,capability21), then UI/context26 (access-ui8,races8,context2,roster8).
-Do not report them as one 80-case run. Four fresh builds, PDB/artifact/catalog/PlanOnly,
-independent PREP and actual runtime/OUTCOME remain UNRUN. Current scaffold27 artifacts
-are also fully decoded/hash-verified in an external 70010076-byte gzip before rebuild;
-previous accepted-role archive/raw remain intact. No artifact deletion.
+| Batch/category | PASS cases | Seconds | Budget |
+| --- | ---: | ---: | ---: |
+| cheap: shining-healer-access-causal | 1 | 5.5170054 | 60 s |
+| cheap: shining-healer-access-data | 29 | 5.7108208 | 60 s |
+| cheap: shining-healer-access-docs | 2 | 5.6505914 | 60 s |
+| cheap: shining-healer-access-source-cost | 1 | 6.4588488 | 60 s |
+| cheap: shining-healer-capability-data | 21 | 5.0468805 | 60 s |
+| UI: shining-healer-access-context-consumers | 2 | 12.2325139 | 60 s |
+| UI: shining-healer-access-selection-races | 8 | 9.6767254 | 120 s |
+| UI: shining-healer-access-ui | 8 | 10.2653170 | 120 s |
+| UI: shining-healer-roster-ui | 8 | 11.8690491 | 120 s |
 
-Resource / current boundary
+First54/54 PASS, wall37.7532944 s; second26/26 PASS, wall63.9086388 s. The union is
+80 distinct PASS/26 methods/10 completed descriptors, exactly the full PlanOnly method-
+case multiset. All80 test and execution IDs are unique, no failed/skipped/timeout/lost
+or repeated case, both runs revision0 and owned/runtime cleanup true. All27 artifact
+and56 source pins unchanged afterwards. No accepted paid80 or HOLD gates were repeated.
 
-Same environment available, no owned builds/tests at start, over 7 GiB free. Preserve
-400 MiB build-start reserve plus full output, 128 MiB runtime floor and unbounded capture.
-Raw stays outside checkout under /workspace/tboe-linux-evidence-20261025/us6-shining-healers.
-Previous role gate 34/34 PASS and its complete capture are retained. The scaffold's
-single semantic RED is accepted above; full GREEN implementation/tests are authored
-but UNCOMPILED and await coherent SOURCE/selection, build and runtime admission.
-Global faction enforcement,
-Shining service execution, universal Elyara travel, negotiated routes, DOM/provider/
-fresh-process, DFR/Mortal/Windows and earlier guardian/cross-OS limitations remain open.
+Optimization/integrity proof: actual post-selection source opens are exactly5 for both
+one and twenty residents: Shining/residents/guardians/soul/profiles, one each. One fresh
+parsed profile root serves the whole operation; no cross-action cache, no dummy resource
+values or second materialization serialization. Existing full-overview resource refusals
+and original political consumer pass. Old direct-card counters remain within their own
+whole-action boundary. Five post-selection reads are not a whole-action speedup claim.
+Private/unknown terms retain the valid healer role, no private payload/IDs leak through
+healer strings, and fresh hidden/removed/duplicate/affiliation/profile/realm/malformed
+sources cannot yield stale access. Both interfaces preserve literal authored text.
+Whole tiny canonical fixture snapshots (including time/History/control absence) remain
+byte-identical for reads/cancel; no healing attempt, draw, payment, repair or grant.
+
+Full raw: /workspace/tboe-linux-evidence-20261025/us6-shining-healers/access-green-*
+102 files /13446751 bytes, complete capture readback/hash-verified. Its external manifest
+is access-green-complete-capture.json; union proof access-green-verified-union.json.
+At completion 7654645760 bytes free; preserve400MiB build-start and128MiB runtime floors
+plus full uncapped output. No live owned build/test remains. Previous complete role
+raw and both artifact archives are retained; external raw/saves/recovery were not deleted.
+
+Current bounded user result is implemented and runtime-verified; independent final
+OUTCOME acceptance remains pending. Historical-faction T142 awaits the owner's answer
+and is unchanged. Real Shining service execution/confirmation, universal Elyara travel,
+negotiated routes and wholeUS6/#1536 remain open. DOM/provider/fresh-process and Windows
+are not inferred; DFR/Mortal timeouts, first-guardian intermittence and cross-OS DATA
+remain open/HOLD. No new clone/restore; remote persistence is not claimed full fresh
+recovery. Only compact human findings, code/tests/docs and authored catalogs enter Git.
 
 ---
 
