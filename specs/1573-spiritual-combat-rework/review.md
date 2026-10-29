@@ -1,5 +1,22 @@
 # Проверка проекта #1573
 
+## Текущий checkpoint: принят outside-пакет, боевое HP-исцеление
+
+2026-10-29, T062–T064, baseline0ae7f46ab90474ae6397776aadad4627d40e0f23,
+specv1.48/modelv2.38/combat-healing v1. Brainstorming/Spec Kit продолжаются;
+scope/plan/tasks до probe. Приняты outside-таблица и тариф20, новый combat-пакет
+остаётся на согласование. Sol6.1/high consult_combat_healing1573 предложил варианты
+надёжного/рискованного/отложенного исцеления; parent выбрал первый и калибровку
+B10/13/16/19/22 за12/16/20/24/28P. Принятые формулы/раны не переписаны.
+Parent exact grid535/42800 outcomes,252000 boundaries,3210 OD cases и150000
+seeded траекторий stress-only выбывания без ответа защитника. Средние31–47 ходов
+приV, наблюдаемый max493: один расчёт среднего throughput не подтверждает короткий
+бой. Риск явно включён в spec/кандидат, контр-искусства не объявлены проверенными.
+Малые профили сV — математический эталон, не обход рангового допуска обучения.
+Кэш простой формулы не нужен; stable definitions existing service, актуальные
+HP/ОД/цель/authority свежие. Independent Astra/high review ещё ожидается.
+Build/game/600s/clean restore UNRUN; productionT001 не разрешён.
+
 ## Текущий checkpoint: принятый отдых HP и ускоренное лечение
 
 2026-10-29, T059–T061, baseline0090ea3552b3f5871a0f00990ee40f86a04abcf8,
