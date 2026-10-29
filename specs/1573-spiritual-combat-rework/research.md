@@ -1,5 +1,44 @@
 # Исследование текущего кода для #1573
 
+## T080–T081: источники времени, 2026-10-30
+
+Baseline d352a3867. Parent проверил BuildControlForNextTurnAsync, символы
+ApplyVerifiedAfterlifeProgression/ComputeElapsedCycles и правила минут;
+Sol6.1/high audit_mortal_clock1573 проверил mortal input, incarnation и frozen
+пути. Ограниченный source-аудит без прогона, не доказательство runtime-дефектов.
+
+- [Block17.3](../../Rules/Block_17.txt#L566): ГМ уже назначает логические минуты
+  по действию и публикует целый timeChange. [Block23A](../../Rules/Block_23.A.txt#L20)
+  допускает абсолютный календарный override; [resolver](../../BookOfEternityClient/Services/ProgressionScheduleService.cs#L1577)
+  принимает root/nested currentTimeInMinutes, иначе incremental fallback;
+  date-only override даёт unresolved. Готовой конвертации произвольного календаря
+  audit не нашёл; [validator времени суток](../../BookOfEternityClient/Services/Validation/ValidationService.PrivateImplementation.cs#L22)
+  использует24h. Нельзя выводить прожитую длительность только из надписи года.
+- [BuildControl](../../BookOfEternityClient/Services/ProgressionScheduleService.cs#L207)
+  выдаёт минимум1afterlife cycle на ход. [Guardian rule](../../Rules/Block_32_Guardians.txt#L248)
+  называет это24equivalent hours. Это старый договор, требующий пересмотра для
+  физических длительностей; нельзя запускать суточный износ за каждую реплику.
+- [Catchup](../../BookOfEternityClient/Services/ProgressionScheduleService.cs#L502)
+  берёт max прошедших mortal/realm циклов, не сумму. [Подтверждение](../../BookOfEternityClient/Services/ProgressionScheduleService.cs#L471)
+  переносит marker на current; [целочисленное деление](../../BookOfEternityClient/Services/ProgressionScheduleService.cs#L1632)
+  при таком переносе не сохраняет неделимый остаток. Новому1:365 нужен явный остаток.
+- [Incarnation bootstrap](../../BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs#L3325)
+  меняет incarnation и строит control до свежих mortal files; [ClearCurrentWorldLore](../../BookOfEternityClient/Core/FileSystemManager.cs#L7014)
+  сам не очищает world_time/schedule. Нельзя вычитать абсолютные часы разных миров;
+  новый источник длительности требует исходной точки своего воплощения.
+- Sanitize/control могут повторно читать incremental timeChange; [frozen basis](../../BookOfEternityClient/Services/ProgressionScheduleService.MortalJointBasis.cs#L49)
+  имеет собственный resolution. Это риск интеграции, а не проверенный прогонами
+  симптом: использовать подтверждённые интервалы однократно в общем принятом
+  результате, не присоединять накопление к чтению. Оба пути требуют согласования.
+- [MortalWoundGameTimeAuthority](../../BookOfEternityClient/Services/MortalWoundGameTimeAuthority.cs#L13)
+  использует локальные authoritative минуты. Сжатие добавляет духовный интервал,
+  не меняет смертные сроки ран/лечения. Существующие mutable markers/authority
+  должны проверяться свежими; отдельный кэш арифметики не нужен.
+
+Арифметические примеры1/30/365/3650/29200/365000суток разделены на365;
+таблица приложения соответствует результату. Это проверка арифметики, не игровой
+баланс выживания убежищ, отдыха или проектов. Новых raw-артефактов нет.
+
 Дата 2026-10-27. Production baseline `7b73b8c538436083e05def58da4970171f4614b5`;
 WIP874714c5 меняет только документы. Проверенный remote main `d0241e71e349fbe2020e4a41b6be7c627c81cbb4`
 датирован 2026-10-08 и существенно расходится с рабочей веткой (в ней есть
