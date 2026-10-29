@@ -138,10 +138,19 @@ public sealed class WoundForeignDetailProjectionTests
         // claims the resident wound's first root: matching IDs/source alone are insufficient.
         var guardianEffect = Effect("guardian", "foreign_effect_spiritual_roll", "definition_spiritual_roll", "ЧУЖОЕ_ВЛИЯНИЕ_ХРАНИТЕЛЯ", "spiritual_roll_hindrance");
         var residentEffect = Effect("resident", "foreign_effect_spiritual_cost", "definition_spiritual_cost", "Видимое влияние жителя", "spiritual_action_cost_burden");
+        const string residentTransition = "effect_transition_resident_detail";
+        const string residentEvent = "turn_42:resident_detail";
+        residentEffect["chronology"]!["lastTransitionId"] = residentTransition;
+        residentEffect["chronology"]!["createdEventRef"] = residentEvent;
         profiles["profiles"]![1]!["activeEffects"] = new JsonArray(guardianEffect.DeepClone());
         profiles["profiles"]![2]!["activeEffects"] = new JsonArray(residentEffect.DeepClone());
+        var identities = EffectMaterializationTestFixture.CreateIdentityIndex(guardianEffect, residentEffect);
+        // The minimal factory defaults to one event; two independent effects need
+        // distinct immutable transitions matching their canonical chronology.
+        identities["entries"]![1]!["transitions"]![0]!["transitionId"] = residentTransition;
+        identities["entries"]![1]!["transitions"]![0]!["eventRef"] = residentEvent;
         var snapshot = EffectMechanicsSnapshot.Build(new(new EffectCarrierCatalogInput(null, null, null, null, profiles, null),
-            EffectMaterializationTestFixture.CreateIdentityIndex(guardianEffect, residentEffect)));
+            identities));
         Assert.True(snapshot.IsAccepted, string.Join(";", snapshot.Issues));
         var context = Context(data.Input with { Effects = snapshot });
         var target = Target(context, data.Guardians, data.Residents, "resident");

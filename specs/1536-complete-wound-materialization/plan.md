@@ -101,6 +101,19 @@ review deltas leave production unchanged; now16 pure cases plus original causal,
 2 interface cases and GM case. All GREEN code remains UNCOMPILED/UNRUN pending
 narrow review closure and fresh affected builds.
 
+GREEN attempt1 at cf37: fresh Main/Support/Unit/Integration exit0, warnings12/23/26/102
+unchanged by exact warning comparison; elapsed1:59.93/16.55s/1:07.29/2:21.47.
+Catalog1072/12789 valid; exact5 descriptors/55 cases/35 methods, independent PREP.
+Actual17 executed: causal1 PASS (original missing symptom corrected), pure15 PASS,
+one same-ID fixture FAIL at accepted-snapshot precondition, remaining38 UNRUN.
+Root cause: multi-effect minimal identity factory repeats one transition/event;
+second canonical chronology and index transition now get distinct matching IDs.
+No production/helper/guard/assertion change. Separate typed-owner category owns
+that singleton; original contract owns unchanged15. Preserve accepted16 and run
+only remaining39 after fresh Unit build, discovery/Plan/PREP; final55 is a union,
+not one fresh55 run. Full failed attempt/cleanup outsidecheckout actual-1; no timeout.
+Correction is WIP UNCOMPILED/UNRUN pending narrow SOURCE. No hold route repeated.
+
 # T120-CHAOS-TARGETS — accepted current-Abode target navigation
 
 2026-10-29. Issue: https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536
