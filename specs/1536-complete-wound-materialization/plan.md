@@ -1,3 +1,32 @@
+# T142 required worked-example closure — WIP, no GREEN runtime
+
+Whole production SOURCE/selection accepted5b6b52049e623a8c13a4f8affe8ce4c63b3983ca.
+Main build at that source completed exit0/0errors/12baselinewarnings2:37.08;
+Support build also completed exit0 (receipt retained). Unit/Integration have NOT started.
+No failed/unknown process is repeated. No new production C# follows that accepted source.
+
+A required current GM-example dependency was then found read-only: the existing complete
+native/player/hidden-story materialization examples had no healer, and old canonical role
+tables omitted already-supported healing_support. Bounded independent Sol closure DESIGN
+accepted. Native/player now mark one already-declared resident and append an exact authored
+profile/art excerpt AFTER unchanged request[2]/receipt[3]. Hidden story adds a private
+canonical healer/profile, truthful affiliation evidence and strength33, with no extra
+request authority. Existing example-validator helper joins the excerpt to ONE existing
+identity, merges only authored art leaves into its complete independent actor fixture,
+retains other arts/materialization/trade proof and checks public/hidden projection. It
+never derives Healing from the role. Excerpts and canonical tables/manifest updated;
+only3production-example rows+2carrier+1surface guard join the current route category.
+No all-examples/full-suite or accepted T143 replay. Exact counts remain pending discovery.
+
+This tail changes only documentation/tests/catalog/plan; Main/Support C# hashes remain
+exact5b6b. Their fresh compiled outputs may stand after explicit current operational-content
+refresh through the owning MSBuild targets and hash proof; no manual binary/file transfer.
+Unit/Integration need their first fresh builds after bounded tail SOURCE. Current category
+budgets remain60s. All source is WIP/UNQUALIFIED until actual GREEN/review. Existing27causal
+artifacts were preserved before Main/Support replacement; no raw/saves/recovery deleted.
+
+---
+
 # T142 — whole source ready for independent review, WIP/UNCOMPILED
 
 Whole Sol SOURCE found only coupled fixture expectations before any GREEN build:

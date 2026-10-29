@@ -2265,7 +2265,8 @@ public sealed partial class ExampleDocumentationValidationTests
             faction,
             residentRoot,
             requiresRequestAuthority ? fences[2] : null,
-            requiresRequestAuthority ? fences[3] : null);
+            requiresRequestAuthority ? fences[3] : null,
+            Assert.Single(fences, fence => fence["profiles"] is JsonArray));
         var factionId = faction["factionId"]!.GetValue<string>();
         var errors = issues
             .Where(issue =>
@@ -3964,7 +3965,8 @@ public sealed partial class ExampleDocumentationValidationTests
             JsonObject faction,
             JsonObject residentRoot,
             JsonObject? pendingAuthorityRoot,
-            JsonObject? acceptedReceiptRoot)
+            JsonObject? acceptedReceiptRoot,
+            JsonObject healerProfileExcerpt)
     {
         var tempRoot = Path.Combine(
             Path.GetTempPath(),
@@ -4092,6 +4094,37 @@ public sealed partial class ExampleDocumentationValidationTests
             };
             var visibility =
                 faction["visibility"]?.GetValue<string>() ?? "revealed";
+            // This focused authored excerpt supplies capability, not an identity
+            // or an incomplete replacement for the complete actor fixture.
+            var authoredHealers = Assert.IsType<JsonArray>(healerProfileExcerpt["profiles"])
+                .Select(node => Assert.IsType<JsonObject>(node)).ToArray();
+            Assert.NotEmpty(authoredHealers);
+            foreach (var excerpt in authoredHealers)
+            {
+                Assert.All(excerpt, entry => Assert.Contains(entry.Key,
+                    new[] { "actorType", "actorId", "realm", "lifeState", "standardArts", "isPlayerVisible" }));
+                Assert.Equal("resident", excerpt["actorType"]!.GetValue<string>());
+                var id = excerpt["actorId"]!.GetValue<string>();
+                var resident = Assert.Single(residentRoot["entries"]!.AsArray().OfType<JsonObject>(), r =>
+                    r["residentId"]!.GetValue<string>() == id && r["shiningFactionId"]!.GetValue<string>() == factionId);
+                Assert.Equal("healing_support", resident["residentRole"]!.GetValue<string>());
+                var profile = Assert.Single(profilesRoot["profiles"]!.AsArray().OfType<JsonObject>(), p =>
+                    p["actorType"]!.GetValue<string>() == "resident" && p["actorId"]!.GetValue<string>() == id);
+                var guard = profile["standardArts"]!["guard"]!.GetValue<int>();
+                foreach (var (key, value) in excerpt)
+                {
+                    if (key == "standardArts")
+                        foreach (var (art, tier) in value!.AsObject()) profile["standardArts"]![art] = tier!.DeepClone();
+                    else profile[key] = value!.DeepClone();
+                }
+                Assert.Equal(guard, profile["standardArts"]!["guard"]!.GetValue<int>());
+                Assert.True(AfterlifeEntityProfileState.TryReadRequiredWoundArtTier(profile,
+                    AfterlifeSpiritualConflictState.SpiritualHealingArtId, out _, out var healing) && healing is >= 1 and <= 5);
+            }
+            var visibleHealers = ShiningFactionHealingSupport.ProjectVisibleRoster(faction, residentRoot, profilesRoot)
+                .Where(member => member.HealingTier is not null).ToArray();
+            if (visibility == "revealed") Assert.NotEmpty(visibleHealers);
+            else Assert.Empty(visibleHealers);
             var sarefRoot =
                 faction["storyAuthority"] is JsonObject authority &&
                 string.Equals(

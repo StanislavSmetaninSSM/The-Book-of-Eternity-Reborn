@@ -1053,36 +1053,66 @@
       "file": "E_CLI_Afterlife_Turns.txt",
       "statePath": "game_state/meta/shining_abode_state.json",
       "responseSurface": "native_discovery -> shining_core_action_request -> native_radiant",
-      "realms": ["Shining Abode"],
-      "description": "A native radiant faction is authored only from an exact validated discovery route.",
+      "realms": [
+        "Shining Abode"
+      ],
+      "description": "A native radiant faction is authored only from an exact validated discovery route. Declared resident healer and exact authored profile/art excerpt retain full actor materialization and separate visibility.",
       "validationKind": "focused-fragment",
       "focusedFragmentReason": "The portable raw faction object does not invent the client-owned pending discovery request and pre-turn Shining state.",
       "coverageLimit": "Syntax, exact route/origin vocabulary, complete envelope, and manifest linkage only.",
-      "requiredText": ["shining_faction_materialization_native_discovery_v1", "\"originType\": \"native_radiant\"", "mat_shining_faction_dawn_reed_turn_31"]
+      "requiredText": [
+        "shining_faction_materialization_native_discovery_v1",
+        "\"originType\": \"native_radiant\"",
+        "mat_shining_faction_dawn_reed_turn_31",
+        "shining_faction_healer_invariant_v1",
+        "healing_support",
+        "spiritual_healing",
+        "resident_dawn_reed_guide"
+      ]
     },
     {
       "contractId": "shining_faction_materialization_player_founding_v1",
       "file": "E_CLI_Afterlife_Turns.txt",
       "statePath": "game_state/meta/shining_abode_state.json",
       "responseSurface": "player_founding -> shining_founding_request -> player_founded",
-      "realms": ["Shining Abode"],
-      "description": "A player-founded faction is authored from an exact founding request with supporter authority.",
+      "realms": [
+        "Shining Abode"
+      ],
+      "description": "A player-founded faction is authored from an exact founding request with supporter authority. Declared resident healer and exact authored profile/art excerpt retain full actor materialization and separate visibility.",
       "validationKind": "focused-fragment",
       "focusedFragmentReason": "The documentation snippet omits the client-owned founding request, reservations, and supporter pre-turn fixtures.",
       "coverageLimit": "Syntax, exact route/origin vocabulary, complete envelope, and manifest linkage only.",
-      "requiredText": ["shining_faction_materialization_player_founding_v1", "\"originType\": \"player_founded\"", "mat_shining_faction_lantern_covenant_turn_44"]
+      "requiredText": [
+        "shining_faction_materialization_player_founding_v1",
+        "\"originType\": \"player_founded\"",
+        "mat_shining_faction_lantern_covenant_turn_44",
+        "shining_faction_healer_invariant_v1",
+        "healing_support",
+        "spiritual_healing",
+        "resident_lantern_supporter_1"
+      ]
     },
     {
       "contractId": "shining_faction_materialization_story_hidden_v1",
       "file": "E_CLI_Afterlife_Turns.txt",
       "statePath": "game_state/meta/shining_abode_state.json",
       "responseSurface": "story -> exact story authority -> supported visibility",
-      "realms": ["Shining Abode"],
-      "description": "Exact story authority authors a hidden Shining faction whose complete object remains outside ordinary reader projections.",
+      "realms": [
+        "Shining Abode"
+      ],
+      "description": "Exact story authority authors a hidden Shining faction whose complete object remains outside ordinary reader projections. Declared resident healer and exact authored profile/art excerpt retain full actor materialization and separate visibility.",
       "validationKind": "focused-fragment",
       "focusedFragmentReason": "The exact story-authority fixture is narrative-session state and is not fabricated in the portable example.",
       "coverageLimit": "Syntax, hidden visibility, complete envelope, privacy statement, and manifest linkage only.",
-      "requiredText": ["shining_faction_materialization_story_hidden_v1", "\"visibility\": \"hidden\"", "mat_shining_faction_veiled_prism_turn_52"]
+      "requiredText": [
+        "shining_faction_materialization_story_hidden_v1",
+        "\"visibility\": \"hidden\"",
+        "mat_shining_faction_veiled_prism_turn_52",
+        "shining_faction_healer_invariant_v1",
+        "healing_support",
+        "spiritual_healing",
+        "resident_veiled_healer"
+      ]
     },
     {
       "contractId": "mortal_faction_materialization_repair_v1",

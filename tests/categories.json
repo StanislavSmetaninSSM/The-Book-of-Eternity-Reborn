@@ -37082,7 +37082,7 @@
     },
     {
       "id": "shining-faction-healer-route-consumers",
-      "responsibility": "Affected complete native discovery, player founding, story/Guardian authority and exact required-actor/head/source controls retain original inverse-authority, classification, trade and identity semantics with an authored healer baseline.",
+      "responsibility": "Affected complete native discovery, player founding, story/Guardian authority and exact required-actor/head/source controls retain original inverse-authority, classification, trade and identity semantics with an authored healer baseline. Includes the three current production-validator worked creation examples and their exact carrier/shape guards, with explicit authored healer excerpts.",
       "excludes": "No new healer/default, service/access/payment authority, deletion of historical records, complete faction/afterlife suite, accepted T143 replay or HOLD DFR/Mortal/Windows/performance.",
       "changeHints": [
         "#1536 T142 / FR083 current faction living healer; existing materialization/reference owner"
@@ -37109,7 +37109,10 @@
             "BookOfEternityClient.Tests.FactionMaterializationValidationTests.ShiningRequiredActor_RawSourceIdentityMustBeUsableAndUnique",
             "BookOfEternityClient.Tests.FactionMaterializationValidationTests.ShiningHeadActor_ExactDocumentedException_Passes",
             "BookOfEternityClient.Tests.FactionMaterializationValidationTests.ShiningRequiredActor_ForgedStrengthCannotGrantTradeAuthority",
-            "BookOfEternityClient.Tests.FactionMaterializationValidationTests.ShiningRequiredActor_ForgedProjectRewardCannotGrantTradeAuthority"
+            "BookOfEternityClient.Tests.FactionMaterializationValidationTests.ShiningRequiredActor_ForgedProjectRewardCannotGrantTradeAuthority",
+            "BookOfEternityClient.Tests.ExampleDocumentationValidationTests.ShiningFactionMaterializationWorkedExamples_PassProductionMaterializationValidator",
+            "BookOfEternityClient.Tests.ExampleDocumentationValidationTests.ShiningFactionMaterializationWorkedExamples_PopulatedResidentDispositionHasExactCarrier",
+            "BookOfEternityClient.Tests.ExampleDocumentationValidationTests.ShiningFactionMaterializationWorkedExamples_UseCanonicalRuntimeSurfaces"
           ]
         }
       ]

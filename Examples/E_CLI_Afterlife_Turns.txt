@@ -4061,7 +4061,7 @@ Canonical Shining vocabulary tables:
 | `factionConflictCampaigns[].breakthroughLog[].type` | `exposure`, `duel_victory`, `defection`, `sabotage`, `resource_disruption`, `oath_break`, `trial`, `saref_directive` | Valid breakthrough routes. Spiritual combat can supply `duel_victory`, but non-combat proof is also valid. |
 | `leadershipState` | `secure`, `contested`, `vacant` | Faction leadership status; `vacant` only when no head remains. |
 | faction `originType` | `ascended_guardian`, `native_radiant`, `player_founded` | Where a Shining faction came from. |
-| `residentRole` | `archive_support`, `forge_support`, `social_support`, `resource_support`, `descent_support` | Ascended resident's faction role and blessing/trade contribution. |
+| `residentRole` | `archive_support`, `forge_support`, `social_support`, `resource_support`, `descent_support`, `healing_support` | Ascended resident's faction role and blessing/trade contribution. |
 | `factionLoyaltyTier` | `alienated`, `uncertain`, `attached`, `devoted`, `steadfast` | Derived from resident loyalty/restlessness; do not invent prose tiers. |
 | `factionRealignmentState` | `settled`, `wavering`, `restless`, `considering_realignment`, `ready_to_realign` | Whether the resident is stable or ready to change faction. |
 | `projectArchetype` | `revelation`, `accord`, `provision`, `remembrance`, `refinement`, `passage`, `warding`, `subversion` | Project cost/effect classification. |
@@ -11690,7 +11690,8 @@ Companion canonical carrier in `game_state/meta/guardian_abode_residents.json`:
       "factionLoyaltyLevel": 50,
       "factionLoyaltyTier": "attached",
       "factionRestlessness": 0,
-      "factionRealignmentState": "wavering"
+      "factionRealignmentState": "wavering",
+      "residentRole": "healing_support"
     },
     {
       "residentId": "resident_dawn_reed_singer",
@@ -11751,6 +11752,29 @@ Matching accepted receipt in current `shining_abode_state.json.coreActionReceipt
   ]
 }
 ```
+
+shining_faction_healer_invariant_v1: matching authored capability excerpt in
+`afterlife_entity_profiles.json`. Merge these exact fields and named art leaves into
+that already complete materialized profile; retain every other art, field, location,
+materialization receipt and current trade evidence. This excerpt creates no identity,
+public service, payment or access. Do not derive the Healing tier from residentRole.
+
+```json
+{
+  "profiles": [
+    {
+      "actorType": "resident",
+      "actorId": "resident_dawn_reed_guide",
+      "realm": "Shining Abode",
+      "lifeState": "alive",
+      "standardArts": {
+        "spiritual_healing": 1
+      }
+    }
+  ]
+}
+```
+
 
 ### shining_faction_materialization_player_founding_v1
 
@@ -11859,7 +11883,8 @@ Companion canonical carrier in `game_state/meta/guardian_abode_residents.json`:
       "factionLoyaltyLevel": 50,
       "factionLoyaltyTier": "attached",
       "factionRestlessness": 0,
-      "factionRealignmentState": "wavering"
+      "factionRealignmentState": "wavering",
+      "residentRole": "healing_support"
     },
     {
       "residentId": "resident_lantern_supporter_2",
@@ -11946,6 +11971,29 @@ Matching accepted receipt in current `shining_abode_state.json.factionFoundingRe
 }
 ```
 
+shining_faction_healer_invariant_v1: matching authored capability excerpt in
+`afterlife_entity_profiles.json`. Merge these exact fields and named art leaves into
+that already complete materialized profile; retain every other art, field, location,
+materialization receipt and current trade evidence. This excerpt creates no identity,
+public service, payment or access. Do not derive the Healing tier from residentRole.
+
+```json
+{
+  "profiles": [
+    {
+      "actorType": "resident",
+      "actorId": "resident_lantern_supporter_1",
+      "realm": "Shining Abode",
+      "lifeState": "alive",
+      "standardArts": {
+        "spiritual_healing": 1
+      }
+    }
+  ]
+}
+```
+
+
 ### shining_faction_materialization_story_hidden_v1
 
 Exact story authority may create a hidden faction. Ordinary reader projections omit this entire faction object and strip every materialization envelope from visible factions.
@@ -11975,7 +12023,9 @@ Exact story authority may create a hidden faction. Ordinary reader projections o
   },
   "sarefFactionRole": "wings_of_angels",
   "sarefVisibility": "hidden",
-  "factionLifecycle": {"state": "active"},
+  "factionLifecycle": {
+    "state": "active"
+  },
   "leadership": {
     "leadershipState": "secure",
     "headActorType": "radiant_actor",
@@ -12000,7 +12050,7 @@ Exact story authority may create a hidden faction. Ordinary reader projections o
     }
   ],
   "baseStrength": 30,
-  "factionStrength": 30,
+  "factionStrength": 33,
   "investCountThisAscension": 0,
   "projectArchetypesCountedThisAscension": [],
   "projects": [],
@@ -12021,23 +12071,87 @@ Exact story authority may create a hidden faction. Ordinary reader projections o
       "runsProjects": false,
       "holdsTerritorialInfluence": false,
       "usesResourceLedger": false,
-      "hasResidentAffiliations": false,
+      "hasResidentAffiliations": true,
       "canTrade": true,
       "hasLeadershipHistory": false,
       "usesStoryState": true
     },
     "sections": {
-      "projects": {"state": "empty_by_design", "reason": "Сюжетная власть пока не объявила проект."},
-      "territorialInfluence": {"state": "empty_by_design", "reason": "Скрытая фракция не заявляет видимого влияния."},
-      "resourceLedger": {"state": "empty_by_design", "reason": "Ресурсная история ещё не раскрыта автору."},
-      "residentAffiliations": {"state": "empty_by_design", "reason": "Участники пока не установлены точной властью."},
-      "trade": {"state": "empty_by_design", "reason": "Торговая власть отсутствует."},
-      "leadershipHistory": {"state": "empty_by_design", "reason": "До текущего подтверждения история главы не определена."},
-      "storyState": {"state": "populated"}
+      "projects": {
+        "state": "empty_by_design",
+        "reason": "Сюжетная власть пока не объявила проект."
+      },
+      "territorialInfluence": {
+        "state": "empty_by_design",
+        "reason": "Скрытая фракция не заявляет видимого влияния."
+      },
+      "resourceLedger": {
+        "state": "empty_by_design",
+        "reason": "Ресурсная история ещё не раскрыта автору."
+      },
+      "residentAffiliations": {
+        "state": "populated"
+      },
+      "trade": {
+        "state": "empty_by_design",
+        "reason": "Торговая власть отсутствует."
+      },
+      "leadershipHistory": {
+        "state": "empty_by_design",
+        "reason": "До текущего подтверждения история главы не определена."
+      },
+      "storyState": {
+        "state": "populated"
+      }
     }
   }
 }
 ```
+
+Companion canonical resident carrier (private until faction disclosure):
+
+```json
+{
+  "entries": [
+    {
+      "residentId": "resident_veiled_healer",
+      "displayName": "Целитель Скрытой Призмы",
+      "ascensionState": "ascended",
+      "shiningFactionId": "faction_veiled_prism",
+      "residentRole": "healing_support",
+      "factionLoyaltyLevel": 50,
+      "factionLoyaltyTier": "attached",
+      "factionRestlessness": 0,
+      "factionRealignmentState": "wavering"
+    }
+  ],
+  "historyLog": []
+}
+```
+
+shining_faction_healer_invariant_v1: matching authored capability excerpt in
+`afterlife_entity_profiles.json`. Merge these exact fields and named art leaves into
+that already complete materialized profile; retain every other art, field, location,
+materialization receipt and current trade evidence. This excerpt creates no identity,
+public service, payment or access. Do not derive the Healing tier from residentRole.
+
+```json
+{
+  "profiles": [
+    {
+      "actorType": "resident",
+      "actorId": "resident_veiled_healer",
+      "realm": "Shining Abode",
+      "lifeState": "alive",
+      "standardArts": {
+        "spiritual_healing": 1
+      },
+      "isPlayerVisible": false
+    }
+  ]
+}
+```
+
 
 ### shining_faction_materialization_repair_v1
 

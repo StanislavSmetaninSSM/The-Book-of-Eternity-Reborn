@@ -554,7 +554,7 @@ For freeform Chaos Sea Abode search, see example 23 before deciding whether the 
   - `leadership.headActorType`: `guardian`, `player_soul`, `resident`, `radiant_actor`; `player_soul` must use `headActorId = player_soul`, resident heads must reference an ascended resident, and radiant heads must reference `shiningPoliticalActors[].actorId`.
   - `shiningPoliticalActors[].politicalStatus`: `head`, `former_head`, `claimant`, `elder`, `retired`; exactly the current radiant head for a faction uses `currentFactionId=<factionId>` and `politicalStatus=head`.
   - Shining faction `originType`: `ascended_guardian`, `native_radiant`, `player_founded`.
-  - `residentRole`: `archive_support`, `forge_support`, `social_support`, `resource_support`, `descent_support`.
+  - `residentRole`: `archive_support`, `forge_support`, `social_support`, `resource_support`, `descent_support`, `healing_support`.
   - `factionLoyaltyTier`: `alienated`, `uncertain`, `attached`, `devoted`, `steadfast`.
   - `factionRealignmentState`: `settled`, `wavering`, `restless`, `considering_realignment`, `ready_to_realign`.
   - `pending_shining_faction_realignments.json.requests[].realignmentMode`: `accepted_transfer`, `refused_transfer`, `departure_to_neutral`.

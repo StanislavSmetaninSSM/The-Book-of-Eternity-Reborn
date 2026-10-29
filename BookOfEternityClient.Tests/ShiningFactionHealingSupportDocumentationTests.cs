@@ -21,6 +21,8 @@ public sealed class ShiningFactionHealingSupportDocumentationTests
             Assert.Contains(InvariantMarker, text); Assert.Contains("broken/dissolved", text);
         }
         Assert.Contains(InvariantMarker, File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "Rules/Block_CLI_Operations.txt")));
+        foreach (var file in new[] { "Examples/E_CLI_Afterlife_Turns.txt", "OtherGuides/Afterlife_Contract_Matrix.md" })
+            Assert.Contains("`descent_support`, `healing_support`", File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, file)));
         var daemon = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient/game_master_daemon.ps1"));
         var directives = Regex.Matches(daemon, "\\$script:WoundMaterializationDirective = \\\"[^\\\"]*\\\"");
         Assert.Equal(2, directives.Count);
