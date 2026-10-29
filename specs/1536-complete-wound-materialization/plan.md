@@ -5,7 +5,7 @@ Abode may offer private free treatment for the exact known PLAYER spiritual woun
 The ordinary offer turn is genuinely accepted and cleaned up; console/sharedbrowser
 /лечить offers that helper, supports inert cancellation, and stages treatment only
 after the actual player's confirmation. Resident H determines the active result;
-PLAYER H determines the subsequent natural recovery. One retained draw/session,
+PLAYER H determines the subsequent natural recovery. One retained draw per treatment attempt,
 one safe cycle, no fee/item/OD, exact wound/effects/History and retry/rollback.
 
 Implementation reuses existing typed Resident coordinates + ReceiveAid, current
@@ -81,7 +81,7 @@ function. Prior accepted resident69 and combat39 keep their own stated lineages;
 no new whole US4/#1536 completion. Other helper actors, helpless/unwilling/conflict
 and Shining helper routes remain under T108; broader progression/composition and
 US4 acceptance remain T104–T107/T109–T112. US5 still needs complete nearby target/
-privacy/guided parity T114–T130 (existing readonly/self/helper slices retained).
+privacy/guided parity T113–T130 (existing readonly/self/helper slices retained).
 US6 provider/quote/Elyara/Shining services T131–T147 remain open. Their specified
 25/50/100/200 base prices, 50–200% multiplier/upward whole-Feather rounding and
 existing Ink Feather authority must be reused; no new economic rule is inferred.
