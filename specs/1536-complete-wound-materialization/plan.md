@@ -58,6 +58,13 @@ both Vitest and typecheck. Remove only that duplicate typecheck membership;
 separate typed host entry still compiles host+production components. Application,
 fixture and build inputs unchanged; no rebuild for catalog-only correction.
 
+Selected attempt at3944 stopped in host typecheck before assertions: two TS2882
+CSS side-effect declarations missing because the selected test config does not include
+the app's vite-env.d.ts. Add the normal vite/client type reference to the host type
+entry only; no compiler-check weakening or application/build input change. All3
+runtime descriptors were unexecuted; failed4.2076395s/cleanupcomplete capture retained
+under wound-browser-selected-3944. Re-plan and repeat only this unexecuted selection.
+
 Implementation WIP: WoundCommandView/scoped CSS, existing CommandResultView
 cancel-first header and current-command operation admission, optional existing
 PromptForm condition descriptions, actual-component public-packet tests and controlled
