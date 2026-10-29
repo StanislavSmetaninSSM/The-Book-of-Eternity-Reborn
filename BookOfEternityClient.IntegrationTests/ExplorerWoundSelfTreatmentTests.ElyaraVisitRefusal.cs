@@ -1,6 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
+using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Models;
 using BookOfEternityClient.Services;
 using BookOfEternityClient.UI;
