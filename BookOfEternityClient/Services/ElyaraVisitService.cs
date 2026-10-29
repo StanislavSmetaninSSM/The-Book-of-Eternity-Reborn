@@ -56,7 +56,7 @@ internal static partial class ElyaraVisitService
         var entries = (guardians?["guardians"] as JsonArray)?.OfType<JsonObject>().Where(g =>
             string.Equals(T(g["guardianId"]), AfterlifeWoundTreatmentAuthority.ElyaraId, StringComparison.OrdinalIgnoreCase)).ToArray();
         if (entries is not { Length: 1 } || T(entries[0]["guardianId"]) != AfterlifeWoundTreatmentAuthority.ElyaraId)
-            throw new InvalidDataException("The registry must contain the same unique exact Elyara Guardian.");
+            throw new InvalidDataException("Public service requires the unique exact canonical Elyara Guardian.");
     }
 
     internal static LocalInteractionScope RequirePlayerScope(string realm, JsonObject guardians, JsonObject? shining)

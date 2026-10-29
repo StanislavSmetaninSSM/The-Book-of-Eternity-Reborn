@@ -31,7 +31,9 @@ internal static partial class WoundApplicationService
         var context = await WoundPlayerReadService.LoadContextAsync(fs, lease);
         if (context is null) return ExplorerWoundCommandResultBuilder.Build(command, WoundPlayerProjection.Unavailable(), null, treatment, history);
         var state = treatment ? await CreateStateAsync(fs, lease, fs.GetOrCreateSessionGeneration(lease), context) : null;
-        return ExplorerWoundCommandResultBuilder.Build(command, context.Projection, state, treatment, history);
+        return ExplorerWoundCommandResultBuilder.Build(command, context.Projection, state, treatment, history,
+            showElyaraVisit: context.Input.SelfVisible && (context.Input.Realm is "chaos_sea" or "shining_abode") &&
+                ElyaraVisitService.CanShowEntry(context.Input.Carriers.AfterlifeProfiles));
     }
 
     // Resolve only the existing read command. A link is navigation, never retained DATA
@@ -78,7 +80,9 @@ internal static partial class WoundApplicationService
         var projection = target.Owner.OwnerKind is "player" or "player_soul" ? context.Projection
             : WoundPlayerProjection.ProjectKnownTarget(context, target);
         if (!projection.IsAvailable) throw new InvalidDataException(WoundPlayerProjection.UnavailableMessage);
-        return ExplorerWoundCommandResultBuilder.Build(command, projection, fresh.ForTarget(target), treatment: true);
+        return ExplorerWoundCommandResultBuilder.Build(command, projection, fresh.ForTarget(target), treatment: true,
+            showElyaraVisit: context.Input.SelfVisible && (context.Input.Realm is "chaos_sea" or "shining_abode") &&
+                ElyaraVisitService.CanShowEntry(context.Input.Carriers.AfterlifeProfiles));
     }
 
     // Detached menu DATA only; confirmation and staging revalidate the current source.
@@ -130,8 +134,26 @@ internal static partial class WoundApplicationService
         FileSystemManager.CanonicalWriteLease lease, string generation, WoundPlayerReadContext context)
     {
         var self = CreateState(generation, context);
-        if (!context.Input.SelfVisible || context.Input.Realm != "chaos_sea" || context.SpiritualConflict?["activeConflict"] is not null)
+        if (!context.Input.SelfVisible || context.Input.Realm is not ("chaos_sea" or "shining_abode") || context.SpiritualConflict?["activeConflict"] is not null)
             return self;
+        async Task<JsonObject?> Root(string path)
+        {
+            var bytes = await fs.ReadFileBytesAsync(lease, path);
+            return bytes is null ? null : StrictJsonAuthority.Deserialize<JsonObject>(CanonicalJsonUtf8.DecodeOneOptionalBom(bytes),
+                new JsonSerializerOptions(), path);
+        }
+        if (context.Input.Realm == "shining_abode")
+        {
+            try
+            {
+                var registry = await Root(AfterlifeWoundTreatmentAuthority.AidLocalityPaths[0]);
+                var shining = await Root(ShiningAbodeState.StatePath);
+                return new(generation, BuildPublicServiceChoices(context, registry, self.Choices, shining));
+            }
+            catch (Exception failure) when (failure is not CoordinatedStatePublicationUncertainException &&
+                failure is (JsonException or InvalidDataException or InvalidOperationException or ArgumentException or OverflowException))
+            { return self; }
+        }
         var profiles = (context.Input.Carriers.AfterlifeProfiles?["profiles"] as JsonArray)?.OfType<JsonObject>().ToArray() ?? [];
         var visibleActors = profiles.Where(p => p["actorType"]?.GetValue<string>() is "guardian" or "resident" &&
             AfterlifeProfileVisibility.IsVisibleToPlayer(p)).ToArray();
@@ -140,12 +162,6 @@ internal static partial class WoundApplicationService
         var navigation = self;
         try
         {
-            async Task<JsonObject?> Root(string path)
-            {
-                var bytes = await fs.ReadFileBytesAsync(lease, path);
-                return bytes is null ? null : StrictJsonAuthority.Deserialize<JsonObject>(CanonicalJsonUtf8.DecodeOneOptionalBom(bytes),
-                    new JsonSerializerOptions(), path);
-            }
             var guardians = await Root(AfterlifeWoundTreatmentAuthority.AidLocalityPaths[0]);
             var residents = await Root(GuardianAbodeResidentState.StatePath);
             // Share these parsed locality roots and the caller's existing catalog.

@@ -22,8 +22,9 @@ internal static partial class ElyaraVisitService
         return Marker + " " + encoded + "\n[CHAOS_SEA_TRAVEL] targetAbodeId=" + intent.TargetAbodeId +
             ", targetGuardianId=" + intent.TargetGuardianId + ", previousAbodeId=" + intent.SourceAbodeId +
             ", previousActiveGuardianId=" + intent.SourceGuardianId + ", targetAlreadyDiscovered=true.\n" +
-            "Пойти к той же Элиаре Последней Раны в её текущую открытую Обитель. Это только путь: без лечения, броска и оплаты. " +
+            "Пойти к той же Элиаре Последней Раны в её текущую открытую Обитель. Это только путь: без активного лечения, лечебного броска и платы за лечение. " +
             "Продолжить один обычный безопасный посмертный цикл, используя обычный CHAOS_SEA_TRAVEL. " +
+            "Штатное естественное восстановление этого цикла не отключается; авторствуй только запрошенные клиентом графы. " +
             "Сохранить каноническое местонахождение и жизнь Элиары, установить текущую Обитель и activeGuardian на хозяина цели. " +
             "После прибытия игрок отдельно откроет /лечить и подтвердит новую котировку. Не использовать Mortal World travel, не менять realm.";
     }

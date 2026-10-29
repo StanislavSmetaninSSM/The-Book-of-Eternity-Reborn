@@ -7,27 +7,32 @@ internal static partial class WoundApplicationService
     // Pure menu projection over the enclosing read operation's already parsed
     // profiles, mechanics, Soul and locality. No independent IO or retained cache.
     internal static IReadOnlyList<WoundTreatmentChoice> BuildPublicServiceChoices(WoundPlayerReadContext context,
-        JsonObject? guardians, IReadOnlyList<WoundTreatmentChoice> existing)
+        JsonObject? guardians, IReadOnlyList<WoundTreatmentChoice> existing, JsonObject? shining = null)
     {
-        if (!context.Input.SelfVisible || context.Input.Realm != "chaos_sea" || guardians is null ||
+        var realm = context.Input.Realm;
+        if (!context.Input.SelfVisible || realm is not ("chaos_sea" or "shining_abode") || guardians is null ||
             context.SpiritualConflict?["activeConflict"] is not null ||
-            context.Input.Carriers.AfterlifeProfiles?["profiles"] is not JsonArray profiles ||
+            context.Input.Carriers.AfterlifeProfiles?["profiles"] is not JsonArray ||
+            realm == "shining_abode" && ShiningAbodeState.GetPreparedIncarnationPackageMode(shining) !=
+                ShiningAbodeState.PreparedIncarnationPackageMode.Absent ||
             SpiritualTreatmentParticipation.HasUnsettledChange(context.Input.Carriers.AfterlifeProfiles)) return existing;
         try
         {
-            var provider = new WoundOwnerCoordinate("chaos_sea", "guardian", AfterlifeWoundTreatmentAuthority.ElyaraId,
+            var provider = new WoundOwnerCoordinate(realm, "guardian", AfterlifeWoundTreatmentAuthority.ElyaraId,
                 WoundCarrierCatalog.AfterlifeProfilesPath);
-            var actors = profiles.OfType<JsonObject>().Where(p => WoundCarrierCollectionAuthority.AfterlifeProfileMatches(p, provider)).ToArray();
-            if (actors is not { Length: 1 } || AfterlifeHealingServiceContract.ReadPublicCurrencyProfile(provider, actors[0]) is not { } profile)
+            var actor = ElyaraVisitService.RequireCanonicalActor(context.Input.Carriers.AfterlifeProfiles);
+            if (!WoundCarrierCollectionAuthority.AfterlifeProfileMatches(actor, provider) ||
+                AfterlifeHealingServiceContract.ReadPublicCurrencyProfile(provider, actor) is not { } profile)
                 return existing;
-            var scope = AfterlifeWoundTreatmentAuthority.RequireServicePlayerScope(guardians);
-            if (profile.LocationRef != scope.LocationId) return existing;
+            var scope = ElyaraVisitService.RequirePlayerScope(realm, guardians, shining);
+            if (profile.LocationRef != scope.LocationId ||
+                realm == "shining_abode" && !LocalInteractionScopeService.IsAfterlifeActorLocal(scope, actor)) return existing;
             var choices = existing.ToList();
             foreach (var wound in context.Catalog.Occurrences.Select(o => o.Wound).Where(w => w.Lifecycle == "active" &&
-                w.Owner == new WoundOwnerCoordinate("chaos_sea", "player_soul", "player_soul", WoundCarrierCatalog.AfterlifeProfilesPath) && w.Classification.Domain == "spiritual" &&
+                w.Owner == new WoundOwnerCoordinate(realm, "player_soul", "player_soul", WoundCarrierCatalog.AfterlifeProfilesPath) && w.Classification.Domain == "spiritual" &&
                 WoundPlayerProjection.Visible(w.Display.Visibility)))
             {
-                var check = SpiritualHealingResolver.PrepareSource(new(wound, provider, actors[0], context.Soul, context.Input.Effects)).Source;
+                var check = SpiritualHealingResolver.PrepareSource(new(wound, provider, actor, context.Soul, context.Input.Effects)).Source;
                 if (check is null || AfterlifeHealingServiceContract.CreateQuote(profile, wound, check, scope.LocationId) is not { } quote) continue;
                 var available = GuardianPolicyContracts.TryPrepareHealingFeatherWallet(context.Soul!, quote.Amount, out _);
                 choices.Add(new("wound_" + choices.Count, new SpiritualSelfTreatmentSelection(wound.WoundId, quote.WoundFingerprint)

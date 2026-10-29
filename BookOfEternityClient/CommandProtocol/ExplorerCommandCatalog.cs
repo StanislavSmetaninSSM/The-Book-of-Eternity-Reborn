@@ -11,6 +11,7 @@ public static class ExplorerCommandCatalog
             new("history", ["история", "history"], "/раны история", BrowserStatus: ExplorerCommandMigrationStatus.ReadOnlyParity)
         ]),
         D("wound_treatment", ExplorerCommandGroup.UniversalMeta, ExplorerCommandMutationMode.LocalTurn, ExplorerCommandBrowserHandlerKind.Wounds, ["/лечить", "/treat", "/исцелить", "/heal"], browserStatus: ExplorerCommandMigrationStatus.MutatingParity),
+        D("elyara_visit", ExplorerCommandGroup.UniversalMeta, ExplorerCommandMutationMode.LocalTurn, ExplorerCommandBrowserHandlerKind.Wounds, ["/элиара", "/elyara"], browserStatus: ExplorerCommandMigrationStatus.MutatingParity),
         D("soul", ExplorerCommandGroup.UniversalMeta, ExplorerCommandMutationMode.ReadOnly, ExplorerCommandBrowserHandlerKind.UniversalMeta, ["/soul", "/душа"], browserStatus: ExplorerCommandMigrationStatus.ReadOnlyParity),
         D("soul_relics", ExplorerCommandGroup.UniversalMeta, ExplorerCommandMutationMode.ReadOnly, ExplorerCommandBrowserHandlerKind.UniversalMeta, ["/soul_relics", "/реликвии"], browserStatus: ExplorerCommandMigrationStatus.ReadOnlyParity, acceptsArguments: true),
         D("afterlife_archive", ExplorerCommandGroup.UniversalMeta, ExplorerCommandMutationMode.ReadOnly, ExplorerCommandBrowserHandlerKind.UniversalMeta, ["/afterlife_archive", "/архив_души"], browserStatus: ExplorerCommandMigrationStatus.ReadOnlyParity, acceptsArguments: true),

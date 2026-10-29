@@ -59,12 +59,12 @@ internal static partial class SpiritualSelfTreatmentRequestCodec
                     "quote", "payment", "control", "activeSource", "playerConfirmation", "attempt", "requestFingerprint") ||
                 !ResourceMaterializationContract.IsExactIdentifier(context.SessionId) ||
                 !ResourceMaterializationContract.IsExactIdentifier(context.RequestId) || context.Turn < 1 ||
-                realm != "chaos_sea" || ordinal < 1 || Text(root["sessionId"]) != context.SessionId ||
+                realm is not ("chaos_sea" or "shining_abode") || ordinal < 1 || Text(root["sessionId"]) != context.SessionId ||
                 Text(root["requestId"]) != context.RequestId || Int(root["turn"]) != context.Turn ||
                 !JsonNode.DeepEquals(root["control"], JsonSerializer.SerializeToNode(context.Progression)) ||
                 Text(root["playerConfirmation"]) != "player_service_confirmed") return false;
             var quote = AfterlifeHealingServiceContract.ParseQuote(root["quote"]);
-            if (quote != selection.Service.Quote || quote.WoundId != selection.WoundId ||
+            if (quote.Provider.Realm != realm || quote != selection.Service.Quote || quote.WoundId != selection.WoundId ||
                 quote.WoundFingerprint != selection.ExpectedWoundFingerprint ||
                 !JsonNode.DeepEquals(root["healer"], SpiritualHealingRequestProjection.OwnerJson(quote.Provider)) ||
                 !JsonNode.DeepEquals(root["target"], SpiritualHealingRequestProjection.OwnerJson(quote.Patient)) ||

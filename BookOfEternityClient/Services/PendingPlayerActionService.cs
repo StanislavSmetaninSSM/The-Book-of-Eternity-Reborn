@@ -36,10 +36,12 @@ internal static class PendingPlayerActionService
         if (root["schemaVersion"]?.GetValue<int>() != 1 ||
             !Guid.TryParseExact(id, "N", out _) || root["sessionGeneration"]?.GetValue<string>() != generation ||
             string.IsNullOrWhiteSpace(action) || action.TrimStart().StartsWith('/') ||
-            source is not ("browser-composer" or "browser-effect-action" or "browser-wound-action") ||
+            source is not ("browser-composer" or "browser-effect-action" or "browser-wound-action" or ElyaraVisitService.BrowserSource) ||
             phase is not ("queued" or "preparing" or "staged" or "terminalProcessing" or "accepted" or "settled") ||
             !DateTimeOffset.TryParse(root["submittedAtUtc"]?.GetValue<string>(), out _))
             throw new InvalidDataException("Ожидающее действие не связано с текущей сессией.");
+        if (source == ElyaraVisitService.BrowserSource && ElyaraVisitService.ParseAction(action!).Generation != generation)
+            throw new InvalidDataException("The specific Elyara visit requires its exact current closed action.");
         string? proofJson = null;
         var allowed = new HashSet<string>(["schemaVersion", "actionId", "sessionGeneration", "status", "playerAction", "submittedAtUtc", "source"]);
         if (selection is not null) allowed.Add("spiritualSelfTreatment");
@@ -146,18 +148,25 @@ internal static class PendingPlayerActionService
             throw new InvalidOperationException("Предыдущее действие ещё ожидает обработки.");
         if (string.IsNullOrWhiteSpace(playerAction) || playerAction.TrimStart().StartsWith('/'))
             throw new InvalidDataException("Pending ordinary action must contain prose.");
-        if (source is not ("browser-composer" or "browser-effect-action" or "browser-wound-action"))
+        if (source is not ("browser-composer" or "browser-effect-action" or "browser-wound-action" or ElyaraVisitService.BrowserSource))
             throw new InvalidDataException("Unknown pending player action source.");
         if ((spiritualSelfTreatment is not null) != (source == "browser-wound-action"))
             throw new InvalidDataException("Wound input requires its exact typed selection.");
         if (spiritualSelfTreatment is not null) _ = SpiritualSelfTreatmentSelection.Parse(spiritualSelfTreatment.ToJson());
         if (spiritualSelfTreatment?.Aid is { ReceiveAid: true, PlayerConfirmed: false })
             throw new InvalidDataException("Guardian help requires the player's actual guided confirmation before queueing.");
+        string? visitGeneration = null;
+        if (source == ElyaraVisitService.BrowserSource)
+        {
+            var intent = ElyaraVisitService.ParseAction(playerAction);
+            visitGeneration = fs.GetOrCreateSessionGeneration(lease);
+            if (intent.Generation != visitGeneration) throw new InvalidDataException("The Elyara visit belongs to another generation.");
+        }
         var queued = new JsonObject
         {
             ["schemaVersion"] = 1,
             ["actionId"] = Guid.NewGuid().ToString("N"),
-            ["sessionGeneration"] = fs.GetOrCreateSessionGeneration(lease),
+            ["sessionGeneration"] = visitGeneration ?? fs.GetOrCreateSessionGeneration(lease),
             ["status"] = "queued",
             ["playerAction"] = playerAction,
             ["submittedAtUtc"] = submittedAtUtc,

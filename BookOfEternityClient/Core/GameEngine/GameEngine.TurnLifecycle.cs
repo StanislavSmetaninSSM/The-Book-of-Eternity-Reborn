@@ -1696,7 +1696,21 @@ public partial class GameEngine
             var healingSelection = browserAction is null
                 ? _explorer.ConsumePendingSpiritualSelfTreatment(action, sessionGeneration)
                 : browserAction.SpiritualSelfTreatment;
-            if (healingSelection?.Aid is null && healingSelection?.Combat is null && healingSelection?.Service is null)
+            var visit = browserAction is null ? _explorer.ConsumePendingElyaraVisit(action, sessionGeneration)
+                : browserAction.Source == ElyaraVisitService.BrowserSource ? ElyaraVisitService.ParseAction(action) : null;
+            if (ElyaraVisitService.HasMarker(action) != (visit is not null) || visit is not null && healingSelection is not null)
+                throw new InvalidDataException("The specific Elyara visit cannot lose its source or mix with treatment.");
+            if (visit is not null)
+            {
+                using var visitTiming = _fs.MeasureOperation("PlayerTurn.Stage.ElyaraVisit");
+                await using var visitLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+                if (visit.Generation != sessionGeneration)
+                    throw new InvalidDataException("The visit belongs to another captured session.");
+                var currentVisit = await ElyaraVisitService.RequireCurrentAsync(_fs, visitLease, visit);
+                request.ProgressionControl = await _progressionSchedule.BuildControlForNextTurnAsync(visitLease, activeTurnRealm: null);
+                await ElyaraVisitService.RequireImagesCurrentAsync(_fs, visitLease, currentVisit);
+            }
+            else if (healingSelection?.Aid is null && healingSelection?.Combat is null && healingSelection?.Service is null)
                 using (_fs.MeasureOperation("PlayerTurn.Stage.BuildProgressionControl"))
                     request.ProgressionControl = await _progressionSchedule.BuildControlForNextTurnAsync();
             if (healingSelection is not null)

@@ -131,10 +131,30 @@ First GREEN source block authored, NOT COMPILED/NOT QUALIFIED: ElyaraVisitServic
 identity/current-locality projection, strict Action codec and five-source operation
 owner; pure Shining scope extraction preserving the old async read order; detached
 result/state with private fields JsonIgnore;24 intended typed DATA/payload cases.
-The entry/console/browser queue/Engine/accepted validation and paid Shining realm
-extension are not connected yet. No runnable route or PASS is claimed. No new cache,
-queue file or payment owner. Next concrete step is connect the shared UI/ordinary
-staging path and exact-Elyara local Shining service, then whole SOURCE/selection.
+That first block was remotely preserved as065e603a84c042a2bc02a6c311e6c02a972790ec.
+The next coherent WIP now connects /элиара (/elyara), wound entry, console navigation
+and one-shot action/generation companion; browser uses the existing prompt ownership,
+expiry/cancel transaction and ordinary pending queue with a specific recognized source.
+Only the already-sealed Action carries the closed visit payload, no queue fields/file.
+Engine stages a fresh visit before control preparation and closes all five source
+images after it. Focused accepted validation uses the existing authenticated snapshot
+lookup/text reader and current WorldRead owner, compares pre-turn provider/destination,
+then actual arrival and the same current alive provider/service. No new original-reader
+or diagnostic stack. Exact-Elyara local Shining quote/codec/source/cycle gates and global
+canonical identity at C4 are authored; existing fee/math/publication owners remain.
+
+Ruling: menu equality uses canonical JSON of all five complete roots plus generation,
+not their text encoding. This lets the existing validated original text reader reproduce
+comparison DATA, including BOM/format independence, without a second raw-byte reader.
+Actual current source images still close freshly around confirmation/staging; the digest
+never replaces original authentication, generation/lease or physical source fences.
+The stage SourcePaths remain Soul/profiles/guardians/Shining/conflict, one parse each.
+
+All this GREEN code is UNCOMPILED/UNREVIEWED/UNQUALIFIED. Remaining finite work: complete
+new admission/accepted/race/source-count and Shining actual result/replay/rollback tests,
+GM effective guidance/examples/guards, whole impact selection/SOURCE, then one fresh
+four-project build, catalog/PlanOnly/PREP, cheap gate and real console/browser/Engine
+journeys. No runtime route or new PASS is claimed; no accepted80 rerun.
 
 Accepted access27 owning artifacts were fully decoded/hash-verified into an external
 archive before replacing the Integration pair. No raw/save/recovery was deleted. Current accepted access-view80 and local-paid80 keep their separate accepted

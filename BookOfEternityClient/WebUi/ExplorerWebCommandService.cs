@@ -138,7 +138,7 @@ public sealed class ExplorerWebCommandService
         }
 
         if (descriptor.BrowserHandlerKind == ExplorerCommandBrowserHandlerKind.Wounds)
-            return await WoundApplicationService.OpenAsync(_fs,
+            return descriptor.Id == "elyara_visit" ? await ElyaraVisitService.OpenAsync(_fs) : await WoundApplicationService.OpenAsync(_fs,
                 descriptor.Id == "wounds" ? parsed.RawInput : commandToken, descriptor.Id == "wound_treatment");
 
         var result = descriptor.BrowserHandlerKind switch

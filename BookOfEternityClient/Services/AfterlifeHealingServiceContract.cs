@@ -132,7 +132,7 @@ internal static class AfterlifeHealingServiceContract
     {
         if (profile is null || profile.Provider is null || wound is null || check is null || wound.Owner is null ||
             wound.Classification?.Domain != "spiritual" || wound.Lifecycle != "active" ||
-            wound.Owner.Realm != "chaos_sea" || wound.Owner.OwnerKind != "player_soul" || wound.Owner.OwnerId != "player_soul" ||
+            !IsSupportedQuoteRealm(wound.Owner.Realm, profile.Provider) || wound.Owner.OwnerKind != "player_soul" || wound.Owner.OwnerId != "player_soul" ||
             wound.Owner.CarrierPath != WoundCarrierCatalog.AfterlifeProfilesPath ||
             wound.Display?.Visibility is not ("public" or "known_to_player") ||
             !WoundEffectCarrierAdapter.TryCreateTargetKey(wound.Owner, out _) ||
@@ -180,8 +180,8 @@ internal static class AfterlifeHealingServiceContract
             Text(root["woundFingerprint"]) ?? "", Number(root["severityRank"]) ?? 0, Text(root["locationRef"]) ?? "",
             Number(root["healingTier"]) ?? 0, Text(root["serviceFingerprint"]) ?? "", Text(root["checkFingerprint"]) ?? "",
             Number(root["multiplierPercent"]) ?? 0, Number(root["amount"]) ?? 0, Text(root["quoteFingerprint"]) ?? "");
-        if (provider.Realm != "chaos_sea" || provider.OwnerKind is not ("guardian" or "resident") ||
-            patient != new WoundOwnerCoordinate("chaos_sea", "player_soul", "player_soul", WoundCarrierCatalog.AfterlifeProfilesPath) ||
+        if (!IsSupportedQuoteRealm(patient.Realm, provider) || provider.OwnerKind is not ("guardian" or "resident") ||
+            patient != new WoundOwnerCoordinate(provider.Realm, "player_soul", "player_soul", WoundCarrierCatalog.AfterlifeProfilesPath) ||
             !ResourceMaterializationContract.IsExactIdentifier(quote.WoundId) ||
             !ResourceMaterializationContract.IsExactIdentifier(quote.LocationRef) ||
             !ResourceMaterializationContract.IsAuthorityFingerprint(quote.WoundFingerprint) ||
@@ -194,6 +194,12 @@ internal static class AfterlifeHealingServiceContract
             throw new InvalidDataException("Public healing quote terms or fingerprint differ.");
         return quote;
     }
+
+    // Existing Chaos quote DATA remains supported; Shining execution in this
+    // slice is restricted to the same canonical Elyara, never arbitrary clinics.
+    private static bool IsSupportedQuoteRealm(string realm, WoundOwnerCoordinate provider) =>
+        provider.Realm == realm && (realm == "chaos_sea" || realm == "shining_abode" &&
+            provider.OwnerKind == "guardian" && provider.OwnerId == AfterlifeWoundTreatmentAuthority.ElyaraId);
 
     internal static JsonObject QuoteJson(AfterlifeHealingServiceQuote quote) => new()
     {

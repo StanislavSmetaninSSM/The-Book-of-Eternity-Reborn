@@ -7929,6 +7929,7 @@ public partial class ValidationService
             var playerAction = actionEl.GetString() ?? string.Empty;
             await ValidateDirectChaosSeaGachaOutcomeAsync(playerAction, issues);
             await ValidateChaosSeaTravelOutcomeAsync(playerAction, issues);
+            await ValidateElyaraVisitOutcomeAsync(playerAction, issues);
             await ValidateAbodeResidentRelicGrantOutcomeAsync(playerAction, issues);
             await ValidateAbodeResidentQuestRequestOutcomeAsync(playerAction, issues);
 

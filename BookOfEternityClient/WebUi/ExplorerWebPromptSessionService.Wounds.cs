@@ -10,7 +10,7 @@ public sealed partial class ExplorerWebPromptSessionService
     private async Task<PromptSessionSnapshot?> GetLiveSnapshotAsync(string sessionId)
     {
         if (string.IsNullOrWhiteSpace(sessionId) || !_sessions.TryGetValue(sessionId, out var observed)) return null;
-        if (observed.Result.WoundCommandState is null)
+        if (observed.Result.WoundCommandState is null && observed.Result.ElyaraVisitCommandState is null)
             return TryGetLiveSnapshot(sessionId, out var ordinary) ? ordinary : null;
         if (observed.ExpiresAtUtc > _timeProvider.GetUtcNow().UtcDateTime) return observed;
         // Expiry cannot remove a phase while its final queue admission owns the lease.

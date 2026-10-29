@@ -34,10 +34,9 @@ internal static partial class AfterlifeWoundHealingPlanner
             var payment = data.ServicePayment ?? throw new InvalidDataException("Service payment DATA is absent.");
             if (_published || WoundAcceptedTurnFingerprintWriter.CanonicalJson(soul["inkFeathers"]) != payment.WalletAfterJson)
                 throw new InvalidDataException("Common Soul after-image does not contain the exact service charge.");
-            var actor = (profiles["profiles"] as JsonArray)?.OfType<JsonObject>()
-                .Where(p => WoundCarrierCollectionAuthority.AfterlifeProfileMatches(p, quote.Provider)).ToArray();
-            if (actor is not { Length: 1 } ||
-                AfterlifeHealingServiceContract.ReadPublicCurrencyProfile(quote.Provider, actor[0]) is not { } current ||
+            var actor = ElyaraVisitService.RequireCanonicalActor(profiles);
+            if (!WoundCarrierCollectionAuthority.AfterlifeProfileMatches(actor, quote.Provider) ||
+                AfterlifeHealingServiceContract.ReadPublicCurrencyProfile(quote.Provider, actor) is not { } current ||
                 current.Fingerprint != quote.ServiceFingerprint)
                 throw new InvalidDataException("Accepted profile changes invalidate the current service quote.");
             var rows = history["transitions"] as JsonArray ?? throw new InvalidDataException("Service History is absent.");

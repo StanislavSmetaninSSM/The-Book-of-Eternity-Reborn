@@ -77,6 +77,7 @@ public partial class ExplorerMode
             ("math", ShowMathAssistantAsync),
             ("wounds", ShowWoundsAsync),
             ("wound_treatment", ShowWoundTreatmentAsync),
+            ("elyara_visit", ShowElyaraVisitAsync),
             ("soul", ShowSoulInfo),
             ("soul_relics", ShowSoulRelics),
             ("afterlife_archive", ShowAfterlifeArchive),

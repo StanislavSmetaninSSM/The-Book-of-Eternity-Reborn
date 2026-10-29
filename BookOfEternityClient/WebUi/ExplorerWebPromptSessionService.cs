@@ -266,7 +266,8 @@ public sealed partial class ExplorerWebPromptSessionService
         if (snapshot is null)
             return MissingSessionResult(request.SessionId);
 
-        if (snapshot.Result.WoundCommandState is not null && WoundSnapshotObservedForTesting is { } observed)
+        if ((snapshot.Result.WoundCommandState is not null || snapshot.Result.ElyaraVisitCommandState is not null) &&
+            WoundSnapshotObservedForTesting is { } observed)
             await observed();
 
         try
@@ -301,6 +302,8 @@ public sealed partial class ExplorerWebPromptSessionService
             if (answers.Keys.Any(key => !expected.Contains(key, StringComparer.Ordinal)))
                 return Task.FromResult(WoundRefusal(snapshot, "Форма изменилась или содержит ответы другого шага. Используйте текущие поля."));
         }
+        if (snapshot.Result.ElyaraVisitCommandState is not null && answers.Keys.Any(key => key != "confirm_elyara_visit"))
+            return Task.FromResult(WoundRefusal(snapshot, "Используйте только подтверждение текущего пути к Элиаре."));
         var errors = ValidateAnswers(snapshot.Result.Prompts, answers);
         if (errors.Count > 0)
         {
@@ -326,6 +329,9 @@ public sealed partial class ExplorerWebPromptSessionService
         PromptSessionSnapshot snapshot,
         IReadOnlyDictionary<string, JsonNode?> answers)
     {
+        if (snapshot.Result.ElyaraVisitCommandState is not null &&
+            ExplorerCommandCatalog.FindByAlias(snapshot.Result.Command)?.Id == "elyara_visit")
+            return await SubmitElyaraVisitAsync(sessionId, snapshot, answers);
         if (snapshot.Result.WoundCommandState is not null &&
             ExplorerCommandCatalog.FindByAlias(snapshot.Result.Command)?.Id == "wound_treatment")
             return await SubmitWoundAsync(sessionId, snapshot, answers);
@@ -467,7 +473,8 @@ public sealed partial class ExplorerWebPromptSessionService
         if (snapshot is null)
             return MissingSessionResult(request.SessionId);
 
-        if (snapshot.Result.WoundCommandState is not null && WoundSnapshotObservedForTesting is { } observed)
+        if ((snapshot.Result.WoundCommandState is not null || snapshot.Result.ElyaraVisitCommandState is not null) &&
+            WoundSnapshotObservedForTesting is { } observed)
             await observed();
 
         try
@@ -480,7 +487,7 @@ public sealed partial class ExplorerWebPromptSessionService
                     if (!OwnerMatches(snapshot, request.OwnerId))
                         return OwnerMismatchResult(snapshot);
 
-                    if (snapshot.Result.WoundCommandState is not null)
+                    if (snapshot.Result.WoundCommandState is not null || snapshot.Result.ElyaraVisitCommandState is not null)
                         return await CancelWoundAsync(request.SessionId, snapshot);
 
                     if (!_sessions.TryRemove(request.SessionId, out _))
@@ -584,7 +591,7 @@ public sealed partial class ExplorerWebPromptSessionService
 
         var token = command.Trim().Split(' ', 2, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault() ?? string.Empty;
         return token is
-            "/лечить" or "/treat" or "/исцелить" or "/heal" or
+            "/лечить" or "/treat" or "/исцелить" or "/heal" or "/элиара" or "/elyara" or
             "/validate" or "/валидация" or
             "/world_setup" or "/настройка_мира" or
             "/distribute" or "/распределить" or
@@ -660,7 +667,8 @@ public sealed partial class ExplorerWebPromptSessionService
             Prompts = prompts.ToList(),
             Notifications = notifications,
             InteractiveSession = session,
-            WoundCommandState = result.WoundCommandState
+            WoundCommandState = result.WoundCommandState,
+            ElyaraVisitCommandState = result.ElyaraVisitCommandState
         };
     }
 

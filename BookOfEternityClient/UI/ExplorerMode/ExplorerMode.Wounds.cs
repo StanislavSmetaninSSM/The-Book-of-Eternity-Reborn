@@ -33,20 +33,28 @@ public partial class ExplorerMode
                 .UseConverter(GameInterface.EscapeMarkup).AddChoices(labels));
             var action = result.Actions.SingleOrDefault(a => a.Label == selected);
             if (action is null) return;
+            if (action.Command == ElyaraVisitService.Command) { await ShowElyaraVisitAsync(); return; }
             command = action.Command; // Every action reopens fresh current DATA; no retained projection.
         }
     }
     private Task ShowWoundTreatmentAsync() => ShowWoundCommandAsync(treatment: true);
-    private async Task ShowWoundCommandAsync(bool treatment)
+    private async Task ShowWoundCommandAsync(bool treatment, ExplorerCommandResult? initial = null)
     {
-        var result = await WoundApplicationService.OpenAsync(_fs, treatment ? "/лечить" : "/раны", treatment);
+        var result = initial ?? await WoundApplicationService.OpenAsync(_fs, treatment ? "/лечить" : "/раны", treatment);
+        IEnumerable<string> VisitLabels() => result.Actions.Where(a => a.Command == ElyaraVisitService.Command).Select(a => a.Label);
+        async Task<bool> VisitSelected(string label)
+        {
+            if (!VisitLabels().Contains(label, StringComparer.Ordinal)) return false;
+            await ShowElyaraVisitAsync(); return true;
+        }
         ExplorerCommandResultConsoleRenderer.Render(_console, result);
         if (result.WoundCommandState is { IsTargetSelection: true } targets)
         {
             var offered = targets.Targets.Where(t => t.Available).ToArray();
-            var targetLabels = offered.Select((t, i) => (i + 1) + ". " + t.Label).Append("Отмена").ToArray();
+            var targetLabels = offered.Select((t, i) => (i + 1) + ". " + t.Label).Concat(VisitLabels()).Append("Отмена").ToArray();
             var targetLabel = _console.Prompt(new SelectionPrompt<string>().Title("Кому требуется помощь?")
                 .UseConverter(GameInterface.EscapeMarkup).AddChoices(targetLabels));
+            if (await VisitSelected(targetLabel)) return;
             var targetIndex = Array.IndexOf(targetLabels, targetLabel);
             if (targetIndex < 0 || targetIndex >= offered.Length) return;
             await using (var targetLease = await _fs.AcquireCanonicalWriteLeaseAsync())
@@ -56,13 +64,21 @@ public partial class ExplorerMode
         }
         if (result.State != CommandExecutionState.RequiresInput || result.WoundCommandState is not { } state)
         {
+            if (VisitLabels().Any())
+            {
+                var navigation = _console.Prompt(new SelectionPrompt<string>().Title("Помощь Элиары")
+                    .UseConverter(GameInterface.EscapeMarkup).AddChoices(VisitLabels().Append("Отмена")));
+                _ = await VisitSelected(navigation);
+                return;
+            }
             WaitForKey();
             return;
         }
         var choices = state.Choices.Where(c => c.Available).ToArray();
-        var labels = choices.Select((c, i) => (i + 1) + ". " + c.Name + " — " + c.Severity).Append("Отмена").ToArray();
+        var labels = choices.Select((c, i) => (i + 1) + ". " + c.Name + " — " + c.Severity).Concat(VisitLabels()).Append("Отмена").ToArray();
         var label = _console.Prompt(new SelectionPrompt<string>().Title("Какую рану лечить?")
             .UseConverter(GameInterface.EscapeMarkup).AddChoices(labels));
+        if (await VisitSelected(label)) return;
         var index = Array.IndexOf(labels, label);
         if (index < 0 || index >= choices.Length) return;
         var confirmation = WoundApplicationService.ConfirmationFor(choices[index].Selection);

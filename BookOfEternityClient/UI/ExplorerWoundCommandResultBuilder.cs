@@ -6,7 +6,7 @@ namespace BookOfEternityClient.UI;
 internal static class ExplorerWoundCommandResultBuilder
 {
     internal static ExplorerCommandResult Build(string command, WoundPlayerProjectionResult projection,
-        WoundCommandState? state, bool treatment, bool history = false)
+        WoundCommandState? state, bool treatment, bool history = false, bool showElyaraVisit = false)
     {
         if (history && !treatment)
             return new()
@@ -18,10 +18,10 @@ internal static class ExplorerWoundCommandResultBuilder
                         ? [new UiTextBlock { Text = "История заживших ран пока пуста." }]
                         : [new UiPanelBlock { Title = "История заживших ран", Blocks = projection.History.Select(h =>
                             (UiBlock)new UiTextBlock { Text = h.Name + " — " + h.Severity + ". " + h.Summary }).ToList() }],
-                Actions = projection.IsAvailable
-                    ? [new UiAction { Id = "wound_active", Label = "Активные раны", Command = "/раны" }] : []
+                Actions = WithVisit(projection.IsAvailable
+                    ? [new UiAction { Id = "wound_active", Label = "Активные раны", Command = "/раны" }] : [], showElyaraVisit)
             };
-        if (treatment && state is { IsTargetSelection: true }) return TargetChoice(command, state);
+        if (treatment && state is { IsTargetSelection: true }) return TargetChoice(command, state, showElyaraVisit);
         var blocks = new List<UiBlock>();
         if (state?.SelectedTarget is { } target)
         {
@@ -58,8 +58,8 @@ internal static class ExplorerWoundCommandResultBuilder
         {
             Command = command, State = canTreat ? CommandExecutionState.RequiresInput : CommandExecutionState.Completed,
             Blocks = blocks, WoundCommandState = state,
-            Actions = !treatment && projection.IsAvailable
-                ? [new UiAction { Id = "wound_history", Label = "История заживших ран", Command = "/раны история" }] : [],
+            Actions = WithVisit(!treatment && projection.IsAvailable
+                ? [new UiAction { Id = "wound_history", Label = "История заживших ран", Command = "/раны история" }] : [], showElyaraVisit),
             Prompts = !canTreat ? [] :
             [
                 new UiSelectionPrompt { Id = "wound_selection", Prompt = "Какую рану лечить?", Required = true,
@@ -73,11 +73,12 @@ internal static class ExplorerWoundCommandResultBuilder
         };
     }
 
-    private static ExplorerCommandResult TargetChoice(string command, WoundCommandState state)
+    private static ExplorerCommandResult TargetChoice(string command, WoundCommandState state, bool showElyaraVisit)
     {
         return new()
         {
             Command = command, State = CommandExecutionState.RequiresInput, WoundCommandState = state,
+            Actions = WithVisit([], showElyaraVisit),
             Blocks = new List<UiBlock> { new UiTextBlock { Text = "Кому требуется помощь? Сначала вы, затем видимые обитатели рядом. Выбор покажет известные раны и требования; лечение начнётся только после отдельного подтверждения." } }
                 .Concat(state.Targets.Where(t => !t.Available).Select(t => (UiBlock)new UiPanelBlock
                 { Title = t.Label, Blocks = [new UiTextBlock { Text = t.Reason }] })).ToList(),
@@ -91,5 +92,11 @@ internal static class ExplorerWoundCommandResultBuilder
                 }).ToList()
             }]
         };
+    }
+
+    private static List<UiAction> WithVisit(List<UiAction> actions, bool show)
+    {
+        if (show) actions.Add(new UiAction { Id = "elyara_visit", Label = ElyaraVisitService.Label, Command = ElyaraVisitService.Command });
+        return actions;
     }
 }
