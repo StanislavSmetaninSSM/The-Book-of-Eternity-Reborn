@@ -1,3 +1,48 @@
+# T126 browser wound cards — implementation plan, not yet qualified
+
+2026-10-29, #1536, branch1536-linux-qualification-20261025, baseline44c4cd5d4.
+Existing T118/T126 and applicable T130 own this complete presentation slice.
+Actual remaining game gaps: executable diagnosis and wider Mortal/realm/helper routes
+(T121), public service discovery/quotes/payment (US6 T131–T146). Existing target choice,
+foreign detail and explicit History are accepted and will not be reimplemented.
+Browser cards depend on their public packets, not on new service/economy rules.
+
+Acceptance: dedicated active/detail/History and guided target→wound+confirmation→
+client response screens; Russian hierarchy, empty/unavailable/error distinction,
+literal-safe known facts, clear recommendations, disabled reasons, responsive layout
+and keyboard focus. Use actual normalized dossier and ordinary panel packets.
+Do not infer healing success from Completed, fabricate chronology/cost/provider facts,
+or expose private payload/session/option values. Generic commands retain their view.
+Live-session Back uses existing cancel API; failed cancel retains form. Synchronous
+single-operation admission and stale-response ownership protect existing handlers.
+
+Steps: causal SSR through real CommandResultView → independent SOURCE/fixture review
+and expected RED; existing renderer/PromptForm integration plus scoped design-system
+styles; focused safe-render/alias/state/negative tests; fresh frontend typecheck/build,
+exact official PlanOnly/category run; actual Chromium controlled component host on
+desktop/mobile including keyboard, History/back, disabled choices, confirm/cancel and
+late/error API outcomes; independent OUTCOME and compact checkpoint/remote SHA.
+No complete suite/retired npm verify, C# rebuild or unchanged accepted44/55/36 reruns.
+
+Optimization: no DATA reads or new cache; reuse current public blocks and existing
+renderers/handlers. Presentation command recognition is trivial per-result work.
+Do not retain projection/authority across server actions. Test fixtures are detached
+minimal public packets, not whole game copies. Controlled DOM is presentation/API
+handler evidence, not live GM/provider/backend or fresh-process save qualification.
+GM contract/schema is unchanged: client-owned visual grouping needs no new daemon
+rule, authored example or manifest input. Add concise existing wound-guide explanation
+and source-owned guard of this boundary; no different console mechanics.
+
+Resource preparation is external: preserve all raw/saves/recovery/acting bin. Only
+verified reproducible installer/HTTP caches and exact duplicate obj/refint files were
+reclaimed. Dependency lock matches existing installed packages; fresh directory entries
+reuse immutable package files, never old dist or game binaries. Overlay copy-up cost
+is recorded; recheck400MiB before each build and128MiB before runtime. Full raw stays
+under /workspace/tboe-linux-evidence-20261025/us4-self-healing/wound-browser-*.
+DFR/Mortal/Windows/performance remain HOLD; full US5/US6/#1536 remain open.
+
+---
+
 # T119-HISTORY-VIEW — accepted explicit known healed History navigation
 
 2026-10-29. Issue: https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536

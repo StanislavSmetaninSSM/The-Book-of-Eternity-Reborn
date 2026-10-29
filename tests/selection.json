@@ -2,59 +2,10 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "wound-history-causal",
-      "reason": "FR067/068 existing shared builder must keep known healed terminal History out of the default active /раны view, after valid canonical terminal projection and inert result controls.",
+      "category": "wound-browser-cards",
+      "reason": "Actual CommandResultView must present public wound packets with meaningful accessible cards/headings; initial causal RED before production edits.",
       "contracts": [
-        "#1536 T119-HISTORY-VIEW / FR067/068/075/076; full accepted-union selection, residual only during correction"
-      ]
-    },
-    {
-      "category": "wound-history-command-routing",
-      "reason": "Affected existing command parser base/alias/subcommand/error controls after registered wound History subcommands; no broad console suite.",
-      "contracts": [
-        "#1536 T119-HISTORY-VIEW / FR067/068/075/076; full accepted-union selection, residual only during correction"
-      ]
-    },
-    {
-      "category": "wound-history-contract",
-      "reason": "Explicit active/History read modes, treatment exclusion, empty versus unavailable, hidden/current-realm privacy and exact registered read command aliases/argument rejection.",
-      "contracts": [
-        "#1536 T119-HISTORY-VIEW / FR067/068/075/076; full accepted-union selection, residual only during correction"
-      ]
-    },
-    {
-      "category": "wound-history-gm",
-      "reason": "Worked History navigation matches existing safe terminal projection/registered read commands and synchronized GM docs, both directives and manifest; no new authored schema.",
-      "contracts": [
-        "#1536 T119-HISTORY-VIEW / FR067/068/075/076; full accepted-union selection, residual only during correction"
-      ]
-    },
-    {
-      "category": "wound-history-read-interfaces",
-      "reason": "Minimal real console History/back/close plus console/browser invalid-syntax rejection; no repair/gameplay mutation, fresh source counts and literal console text. Positive browser History/alias/fresh hidden-state cases belong to wound-history-browser-read.",
-      "contracts": [
-        "#1536 T119-HISTORY-VIEW / FR067/068/075/076; full accepted-union selection, residual only during correction"
-      ]
-    },
-    {
-      "category": "wound-history-browser-text",
-      "reason": "Existing typed browser Normalize boundary: literal closing HTML tags and mixed text are not English slash commands; ordinary hints remain filtered and input stays immutable.",
-      "contracts": [
-        "#1536 T119-HISTORY-VIEW / FR067/068/075/076; full accepted-union selection, residual only during correction"
-      ]
-    },
-    {
-      "category": "wound-history-browser-read",
-      "reason": "Residual three browser History/literal/alias cases after normalization fix; fresh hidden-state recheck remains required.",
-      "contracts": [
-        "#1536 T119-HISTORY-VIEW / FR067/068/075/076; full accepted-union selection, residual only during correction"
-      ]
-    },
-    {
-      "category": "wound-history-browser-hints",
-      "reason": "Nearest existing real default-browser NPC journal hint guard after shared command-hint normalization correction; no /npc_talk,/npc_trade or raw repository paths.",
-      "contracts": [
-        "#1536 T119-HISTORY-VIEW / FR067/068/075/076; full accepted-union selection, residual only during correction"
+        "#1536 T118/T126, FR067/068/075/076"
       ]
     }
   ]
