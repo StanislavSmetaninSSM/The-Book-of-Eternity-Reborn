@@ -1,3 +1,56 @@
+# Current Chaos wound target choice Implementation Plan — T120-CHAOS-TARGETS
+
+> Agentic implementer: use superpowers:executing-plans inline; ROOT sole writer/
+> runner. Independent reviews per current project governance.
+
+**Goal:** /лечить lets the player select Self or a visible current-Abode actor,
+then inspect known wounds/requirements and confirm only an existing lawful action.
+**Architecture:** pure typed target read model over existing coherent read context/
+locality DATA; existing WoundCommandState and console/browser prompt lifecycle;
+no new mechanical authority, service registry, cache or canonical files.
+**Tech stack:** existing C#/.NET8 services, generic UI blocks/prompt sessions, official
+PowerShell7 category runner. **Spec:** #1536 spec.md US5/FR-070/072–076, data-model.md
+section18 Current Chaos target navigation; taskT120-CHAOS-TARGETS.
+
+188c4ea5570c6fbf941cbddf7c31d2a58b05d1b6 HEAD==remote verified, clean/same Linux
+machine, no active owned process, free546299904B. Prior105 and older accepted
+self/Guardian/resident scopes stay accepted on their stated lineages; open parent
+checkboxes do not mean those paths need reimplementation. Missing T108 routes are
+other helpers/helpless/unwilling/conflict/Shining; later US5 target/detail/privacy/
+guided parity and US6 quote/Elyara/Shining services remain genuinely absent/partial.
+Select this missing user-facing target step using the accepted helper dependencies.
+
+Global constraints: no new game/economic rule; self/aid3/4/5/6 authorities unchanged;
+fresh consent/source/history/closing at confirmation/staging; hidden exact binding
+and current public facts only; no user saves/raw deletion/newclone/restore/history
+rewrite. Fullraw outsidecheckout. DFR/Mortal/Windows/performance HOLD. No provider/
+DOM/freshprocess claim. Git no-lazy-fetch and remote checkpoints remain mandatory.
+
+Review focus: display versus permission; same-name public ambiguity; stale old index
+retarget after reordered list; concurrent old browser phase/cancel/session change;
+private/hidden wound or actor facts leaking through context/empty counts.
+
+- [ ] Independent bounded DESIGN review of section18 typed scopes/privacy and
+  browser snapshot transition/lifetime; resolve real author question only if needed.
+- [ ] Existing-API semantic causal RED using minimal WoundPlayerReadFixture/OpenAsync;
+  no full game/native package for this display/navigation absence. Catalogue owner,
+  fresh owning build/discovery/exactPlan/resource/PREP, one compiling singleton.
+- [ ] GREEN WoundTargetSelectionService, WoundCommandState, shared application/
+  builder/console/browser navigation branch; cheap pure scopes/privacy/old-token
+  controls, real source-read counters and minimal actual prompt/session tests.
+- [ ] Coherent GM/CLI/Matrix/both daemon/example/manifest/source-guard synchronization;
+  independent SOURCE/fixture/selection, fresh affected builds/catalog/Plan/PREP,
+  exact cheap GREEN/OUTCOME then proven selected native-controlled actual callers.
+- [ ] Verify complete raw/hash/cleanup/outcomes, concise canonical checkpoint and
+  remote SHA. Close only this task, not parent T120/US5/#1536.
+
+Optimization decision: reuse one existing context/catalog/effects and one parsed
+Guardian/roster read per invocation for BOTH target and aid consumers. One lookup
+over already prepared wound DATA; no across-prompt cache. Each navigation/final
+confirmation is a fresh invocation, dependencies/owners as section18; fresh guards
+stay intact. Actual source-count assertions and negative mutations precede heavy
+callers; no speedup claim. All implementation/build/tests remain UNRUN at DESIGN WIP.
+
 # T108-RESIDENT-HELP accepted — resident offers free treatment to the player
 
 2026-10-29, #1536. Visible conscious/capable resident of the CURRENT Chaos Guardian

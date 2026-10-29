@@ -3861,6 +3861,121 @@ The choice carries hidden exact binding but displays Self first and then reachab
 visible entities. Duplicate names receive location/role/appearance context. Confirming
 the choice revalidates target, wound, consent, provider, resources, and reachability.
 
+### Current Chaos target navigation — T120-CHAOS-TARGETS DESIGN WIP
+
+#1536/US5, FR-070/072–076 and existing section18 target choice. This is a display/navigation
+extension using accepted self/aid3/4/5/6 actions, not a new treatment permission.
+Player→Guardian/resident and reverse private helpers are already accepted. Missing
+code is target discovery and an actual first target step, not those resolvers.
+Other T108 actors/helpless/conflict/Shining routes and full US5/US6 remain open.
+
+Approaches considered: infer targets from currently available grants alone (cannot
+show a visible target without consent and misses empty/duplicate cases); introduce
+a generic cross-realm actor/provider registry (unnecessarily includes unimplemented
+Shining/Mortal/service authority); selected approach is a pure typed current-Chaos
+read model over the existing canonical roots, feeding the existing guided callers.
+The user delegated routine design/implementation and asked to continue autonomously;
+this is the builder's implementation choice, no new author/economic decision.
+
+Interfaces and retained DATA:
+- New WoundTargetSelectionService.Build(WoundPlayerReadContext context,
+  JsonObject? guardians,JsonObject? residents) returns detached WoundTargetChoice[]
+  with opaque local Value, sanitized public Name/Context, known active wound
+  Name/Severity/Description summaries, availability of navigation, and INTERNAL exact
+  owner/locality/wound-set/public-context binding. Private coordinates, wound IDs,
+  fingerprints, hidden counts/routes/effects/History never enter public DTOs.
+- Self is first whenever visible. In safe Chaos, add exactly current Guardian and
+  present current-Abode residents whose unique exact typed profiles are visible.
+  Reuse RequireCurrentGuardianScope and RequireResidentParticipantScope over parsed
+  roots; no ID-only or generic actor-set fallback. Resolve aliases/confusables,
+  duplicate/null/ambiguous current facts fail closed for nearby targets. The wound
+  catalog and identity/History agreement are already established by read context.
+  Self-only/other-realm/conflict behavior is retained; no new helper realm is granted.
+- Only public/known_to_player active wounds in the same exact owner/realm/carrier
+  contribute known summaries. A visible actor with no known wounds is still visible,
+  but no hidden wound count/detail is disclosed. Readable context uses public actor
+  name/current abode name and roster role/kind/summary (already shown by the existing
+  resident UI); never actor brain, thought journals, private history, imprints or IDs.
+  Distinct public contexts disambiguate equal names. If both public name AND context
+  remain identical after sanitizing, do not invent an ID/ordinal/appearance: mark
+  those nearby choices unavailable with a readable ambiguity reason.
+- WoundCommandState retains its existing Choices/Generation and adds immutable
+  Targets, optional SelectedTarget and IsTargetSelection. It is internal JsonIgnore
+  state in ExplorerCommandResult. Exact hidden bindings live only in that prompt/
+  console state. No canonical file or persistent schema/cache is added.
+- OpenAsync loads the existing context once. Refactor CreateStateAsync only enough
+  to read Guardian/resident roots once and share their parsed DATA between nearby
+  target discovery and existing aid menu construction. Read schedule/receipts only
+  if actual aid candidates need them; a display target does not require a grant.
+  The initial target step is used only when at least one extra qualified actor
+  exists; otherwise retain direct existing wound selection (including conflict).
+- SelectTargetAsync(files,lease,state,value) requires actual current generation,
+  resolves the OLD opaque value to its frozen exact owner (never a newly ordered
+  index), reloads fresh context/locality/choices once and compares exact owner,
+  locality, sanitized public context and visible wound semantic-fingerprint set.
+  Changed/hidden/moved/removed/ambiguous target or changed wound set refuses before
+  any write/draw. Returned state filters choices to that exact PATIENT; received
+  aid remains under Self because its patient is player, not the healer. NPC view
+  shows only known summaries, no unrelated Self/other-NPC History/details. No
+  available legal action produces a read-only requirements/empty explanation.
+- ConfirmAsync refuses an unselected target-stage state, validates SelectedTarget
+  against the fresh target read model, then retains ALL existing exact wound/aid/
+  source/consent revalidation. Selection is navigation, not consent; request3–6
+  source, rolls, scheduler, History and common publication are unchanged.
+
+Actual UI/lifetime:
+- Shared builder renders first prompt wound_target (no confirmation or queue),
+  then wound_selection + existing final confirmation. Thus at most two selections
+  to the treatment flow. Current-actor names/context are escaped by each renderer;
+  public values are opaque. Correct old Guardian-only explanatory copy for residents.
+- Console shows target choices/cancel first, calls SelectTargetAsync under its owned
+  lease, renders known wounds/requirements, then uses the existing wound/confirm/
+  pending action. Cancel at either step is inert; unavailable view returns no action.
+- Browser uses the EXISTING prompt-session store and generation/owner/lock lifecycle.
+  Add only a wound-specific target-navigation branch before BrowserWoundWriteService;
+  no generic wizard/store. Revalidate under a current lease, replace the immutable
+  PromptSessionSnapshot.Result with compare-and-swap against the actual old snapshot,
+  and retain the same session only for the second prompt. Stale concurrent submission
+  or cancellation cannot recreate/retarget the session or queue treatment. A terminal
+  read-only view removes the exact snapshot and releases its existing UI lock;
+  a competing replacement is retained. Final submit still uses the existing bound
+  coordinator and queue. Preserve expiry, owner mismatch and session replacement
+  refusals; partial rendering does not authorize a write. Both phases use real APIs.
+
+Performance/integrity and finite proof:
+- Read owner is one Open/Select/Confirm invocation and its existing canonical lease/
+  session generation; complete dependencies are exact current roots, catalog,
+  actor/locality/public context, visible wound IDs+semantic FPs and existing aid
+  witness/control. Parsed DATA is reused only in that unchanged invocation; no cache
+  across prompts. Any write/next invocation obtains fresh DATA. No new cache/callback
+  framework or speedup claim. Group prepared wound occurrences once by typed owner;
+  do not rebuild catalog/effects or reread locality separately for targets and aid.
+- First causal RED calls EXISTING OpenAsync with minimal WoundPlayerReadFixture,
+  one visible exact Guardian plus Self and no grant, expecting wound_target. Current
+  code must compile then fail because it shows no target step. No new API can be a
+  compilation-only RED. Snapshot after initial generation setup, no world/bootstrap.
+- Pure cheap tests cover Self-first/detached copies, same-name distinct and identical
+  public contexts, typed same-ID kinds, null/duplicate/confusable/hidden/moved/wrong-
+  realm/carrier/locality, hidden-only/empty wounds, IDs/private recursive facts,
+  received aid grouped with Self, changed ordering/old token and changed wound set.
+  Actual read-hook counters prove one Guardian and one roster source read within
+  each stable invocation and fresh reads after mutation/next phase; no fake cache hit.
+- Small real filesystem/shared prompt tests cover current API navigation, both
+  cancellation phases, no-consent/empty views, stale target/wound/session/owner,
+  repeated/concurrent old target submission and no queue/die/cycle/resource mutation.
+  Reuse the existing minimal read fixture, not full game for private helpers.
+- Finally adapt the proven two-turn Engine helper only for target navigation and
+  exercise actual console resident-patient5 and browser Self/resident-healer6, plus
+  a directly impacted existing Guardian caller when selection review requires it.
+  Complete all original preparation/ordinary two-actor memory before sole bootstrap;
+  retain existing native-controlled boundaries and 180s per singleton. No whole
+  accepted105 replay. Fresh affected builds, discovery/exactPlan/resource/PREP and
+  independent SOURCE/OUTCOME before closing bounded task. Full raw stays external.
+- Synchronize GM/CLI/Matrix/both daemon directives, worked target navigation example,
+  manifest and typed docs guard. No GM-authored target permission or new economics.
+  Dedicated frontend cards, other target realms, full target detail/History/privacy
+  and DOM/provider/freshprocess remain under their existing US5/US6 tasks.
+
 ## 19. Cross-root invariants
 
 1. Every active index entry has exactly one active carrier occurrence and vice versa.
