@@ -2,31 +2,10 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "healing-service-price-causal",
-      "reason": "Original semantic RED witness becomes GREEN under actual canonical arithmetic.",
+      "category": "healing-service-selection-causal",
+      "reason": "Observe actual missing closed public service branch before wiring family7; accepted61 remain untouched.",
       "contracts": [
-        "#1536 US6 T131/T132/T133/T137/T138 data foundation; functional route still pending"
-      ]
-    },
-    {
-      "category": "healing-service-prices",
-      "reason": "All four canonical bases,50/100/200 and51percent ceiling, invalid rank/percent noquote.",
-      "contracts": [
-        "#1536 US6 T131/T132/T133/T137/T138 data foundation; functional route still pending"
-      ]
-    },
-    {
-      "category": "healing-service-contract-data",
-      "reason": "Pure real resolver/wound fixture, closed public profile/capability/life/location/current terms and detached exact quote; no whole-game setup.",
-      "contracts": [
-        "#1536 US6 T131/T132/T133/T137/T138 data foundation; functional route still pending"
-      ]
-    },
-    {
-      "category": "healing-service-payment-data",
-      "reason": "Specialized currency policy after-image and strict exact receipt DATA with insufficient/altered/optional-total/no-mutation checks; not payment acceptance.",
-      "contracts": [
-        "#1536 US6 T131/T132/T133/T137/T138 data foundation; functional route still pending"
+        "#1536 US6 T137/T143 family7 route"
       ]
     }
   ]

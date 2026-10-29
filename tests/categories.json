@@ -35827,6 +35827,31 @@
           ]
         }
       ]
+    },
+    {
+      "id": "healing-service-selection-causal",
+      "responsibility": "Family7 exact public service selection retains its quote without manufacturing private participation; semantic missing-route causal witness.",
+      "excludes": "Runtime admission, payment publication, Engine, replay and old accepted pure61.",
+      "changeHints": [
+        "BookOfEternityClient/Services/SpiritualSelfTreatmentSelection.Service.cs",
+        "BookOfEternityClient/Services/AfterlifeWoundTreatmentAuthority.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.AfterlifeHealingServiceRequestTests.PublicServiceSelectionRoundTripsExactQuoteWithoutPrivateAidGrant"
+          ]
+        }
+      ]
     }
   ]
 }

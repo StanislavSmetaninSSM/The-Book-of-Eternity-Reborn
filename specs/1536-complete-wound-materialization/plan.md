@@ -179,6 +179,11 @@ Original causal13-vs-null RED is GREEN. No service fee has yet been published; n
 is family7 admission/retained draw/common payment/History/replay, then shared UI and
 protected fresh Elyara state. No US6 parent task is closed by this pure foundation.
 
+Next causal witness uses the actual existing selection codec: family7 service quote
+must round-trip without a fabricated private participation grant. One new pure Fact,
+healing-service-selection-causal,60s; no unchanged61 rerun. Runtime is UNRUN. Reuse
+fresh2c Main/Support only after source-hash equivalence; rebuild affected Unit.
+
 ---
 
 # T126 — accepted browser wound cards and guided treatment presentation
