@@ -456,9 +456,10 @@ qualification checkout is the isolated task branch. Do not add a duplicate skill
 plan/worktree or run an unrestricted suite; repository/user workflow explicitly
 requires these existing artifacts and bounded official category verification.
 
-## Next bounded slice: player helps a current Abode resident — DESIGN WIP
+## Current bounded slice: player helps a current Abode resident — SOURCE accepted
 
-2026-10-29; T108-RESIDENT, #1536. No implementation or runtime qualification yet.
+2026-10-29; T108-RESIDENT, #1536. Implementation/test/GM source is authored and
+independently accepted at8547d5740; builds/runtime remain pending.
 US4 scenario8 and data-model12 already authorize a reachable consenting entity;
 no new game rule is needed. A read-only Astra/high architecture consultation at
 248263534 identified the exact kind/locality and historical-family boundaries.
