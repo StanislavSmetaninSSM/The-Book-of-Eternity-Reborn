@@ -4,6 +4,7 @@ import { createRoot } from 'react-dom/client';
 import { CommandResultView } from '../../src/components/CommandResultView';
 import { ShellContext } from '../../src/context/ShellContext';
 import type { ExplorerCommandResult } from '../../src/api/contracts';
+import { sanitizeExplorerCommandResultForPlayer } from '../../src/utils/playerCopy';
 import { woundCase, woundShell, type WoundCase } from '../helpers/woundCommandFixtures';
 import '../../src/styles.css';
 
@@ -20,15 +21,15 @@ export interface WoundBrowserFixture {
 declare global { interface Window { woundFixture: WoundBrowserFixture } }
 
 function Host() {
-  const [result, setResult] = useState<ExplorerCommandResult | null>(woundCase('active'));
-  window.woundFixture.setCase = name => setResult(woundCase(name));
+  const [result, setResult] = useState<ExplorerCommandResult | null>(() => sanitizeExplorerCommandResultForPlayer(woundCase('active')));
+  window.woundFixture.setCase = name => setResult(sanitizeExplorerCommandResultForPlayer(woundCase(name)));
   window.woundFixture.unmountView = () => setResult(null);
   const shell = woundShell(result, {
     async executeCommand(command) {
       window.woundFixture.commands.push(command);
       if (window.woundFixture.holdActions)
         await new Promise<void>(resolve => { window.woundFixture.releaseAction = resolve; });
-      setResult(woundCase(command === '/раны история' ? 'history' : 'active'));
+      setResult(sanitizeExplorerCommandResultForPlayer(woundCase(command === '/раны история' ? 'history' : 'active')));
     },
     clearCommandResult() { window.woundFixture.clears++; setResult(null); },
     async loadBrowserState() { window.woundFixture.refreshes++; }

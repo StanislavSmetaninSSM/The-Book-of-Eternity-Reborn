@@ -2,17 +2,10 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "wound-browser-cards",
-      "reason": "Dedicated real component active/History/treatment, safe public packets, states, aliases, disabled reasons and host type contracts.",
+      "category": "wound-browser-default-boundary",
+      "reason": "Singleton causal failure after actual privacy boundary, before production correction; previous raw-packet SSR passes do not qualify default Shell.",
       "contracts": [
-        "#1536 T118/T126, FR067/068/075/076"
-      ]
-    },
-    {
-      "category": "wound-browser-command-consumer",
-      "reason": "Actual shared parent handlers remain tied to current command, notifications/actions/prompts and existing sanitized result flow.",
-      "contracts": [
-        "#1536 T126 integration, existing CommandResultView contract"
+        "#1536 T126 / default privacy boundary / FR075/076"
       ]
     }
   ]

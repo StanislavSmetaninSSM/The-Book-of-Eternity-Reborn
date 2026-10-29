@@ -35668,6 +35668,31 @@
           ]
         }
       ]
+    },
+    {
+      "id": "wound-browser-default-boundary",
+      "responsibility": "Actual player-default sanitizer retains only safe wound presentation semantics while stripping commands/private diagnostics; integration causal test.",
+      "excludes": "Backend wound authority, full ShellContext navigation and provider execution.",
+      "changeHints": [
+        "BookOfEternityClient.WebFrontend/src/utils/playerCopy.ts",
+        "BookOfEternityClient.WebFrontend/src/components/WoundCommandView.tsx"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "frontend",
+          "runner": "vitest",
+          "tests": [
+            "BookOfEternityClient.WebFrontend/test/woundDefaultBoundary.test.tsx"
+          ]
+        }
+      ]
     }
   ]
 }

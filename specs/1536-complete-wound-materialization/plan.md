@@ -80,6 +80,17 @@ that mismatch. Replace only external assertion with native option.disabled AND
 repeating accepted3. No production or fixture source changes;20SSR/guard/types
 and freshbuild remain accepted. Raw wound-browser-dom-c40b{,-api-route} preserved.
 
+Default-boundary integration defect OPEN: residual DOM8724 reached target POST200
+and a held confirmation POST, then lost dedicated view. Actual privacy sanitizer
+sets command:''; the new presentation classifier incorrectly depended on that field.
+The raw initial fixture missed the same real ShellContext boundary. Preserve prior
+20SSR/3DOM as raw-packet component evidence ONLY, not default player qualification.
+No more browser retries before correction. Host now sanitizes initial/action packets
+exactly once like ShellContext; new singleton default-boundary test checks stripped
+command and positive literal facts before missing heading. Production UNCHANGED;
+causal RED next. Bounded Astra DESIGN assesses a client-owned safe enum hint across
+sanitization, no raw-command retention/cache/backend authority or GM schema change.
+
 Implementation WIP: WoundCommandView/scoped CSS, existing CommandResultView
 cancel-first header and current-command operation admission, optional existing
 PromptForm condition descriptions, actual-component public-packet tests and controlled
