@@ -1,16 +1,6 @@
 import { useEffect, useRef, type ReactNode } from 'react';
-import type { ExplorerCommandResult } from '../api/contracts';
+import type { ExplorerCommandResult, WoundViewMode } from '../api/contracts';
 import '../styles/wounds.css';
-
-export type WoundViewMode = 'active' | 'history' | 'treatment';
-
-// Presentation only. The server remains responsible for parsing and authorizing actions.
-export function woundViewMode(command: string): WoundViewMode | null {
-  const [name, argument] = command.trim().toLowerCase().split(/\s+/);
-  if (['/лечить', '/treat', '/исцелить', '/heal'].includes(name)) return 'treatment';
-  if (!['/раны', '/wounds'].includes(name)) return null;
-  return argument === 'история' || argument === 'history' ? 'history' : 'active';
-}
 
 export function WoundCommandView({ result, mode, busy, onBack, children }: {
   result: ExplorerCommandResult;

@@ -91,6 +91,26 @@ command and positive literal facts before missing heading. Production UNCHANGED;
 causal RED next. Bounded Astra DESIGN assesses a client-owned safe enum hint across
 sanitization, no raw-command retention/cache/backend authority or GM schema change.
 
+Astra/high bounded DESIGN accepted all three actual sanitizer consumers: nonempty
+raw command decides/clears any hint, already blank results retain only exact validated
+active/history/treatment for idempotence; no previous-response inheritance. Default
+rendering uses only the validated hint; raw fallback is advanced-only. This metadata
+is no action/provenance/permission and introduces no backend or GM-authored schema.
+Cheap actual-boundary RED at9aa425421 executed1 expectedheadingFAIL after command
+redaction and retained escaped-fact controls; raw wound-browser-default-causal-red.
+Now implemented one pure shared classifier and optional frontend-only enum, existing
+sanitizer strips raw command and unknown/conflicting hints, existing component uses
+validated mode. Corrected Host/default SSR traverse actual boundary; new exact tests
+cover repeat sanitization/invalid-conflicting hints/generic isolation/advanced fallback.
+Final selection adds nearest existing playerCopyRobustness, blockRenderer.render and
+playerFacingCommandResult only, not frontend aggregate. Previous raw20+3 evidence is
+superseded for default behavior by fresh affected tests and a full default DOM journey.
+Optimization: one trivial pure classification per result, no IO/cache, existing result
+lifetime and component operation refs; all gameplay freshness/authority remains server.
+Source review/fresh affected build and qualification still pending. Reserve restored
+using two verified NuGet installer ZIPs; installed payload and ZIP-only metadata are
+retained externally, raw/saves/recovery/acting bins untouched.
+
 Implementation WIP: WoundCommandView/scoped CSS, existing CommandResultView
 cancel-first header and current-command operation admission, optional existing
 PromptForm condition descriptions, actual-component public-packet tests and controlled

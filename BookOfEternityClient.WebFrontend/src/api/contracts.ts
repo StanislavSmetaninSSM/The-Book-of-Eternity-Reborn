@@ -676,8 +676,12 @@ export type UiNotificationSeverity = 'Info' | 'Success' | 'Warning' | 'Error';
 export type UiActionStyle = 'Default' | 'Primary' | 'Secondary' | 'Danger';
 export type UiTone = 'Default' | 'Muted' | 'Subtle' | 'Accent' | 'Success' | 'Warning' | 'Error';
 
+export type WoundViewMode = 'active' | 'history' | 'treatment';
+
 export interface ExplorerCommandResult {
   command: string;
+  /** Client-owned safe presentation hint; never action provenance or permission. */
+  woundView?: WoundViewMode;
   state: CommandExecutionState;
   blocks: UiBlock[];
   actions: UiAction[];

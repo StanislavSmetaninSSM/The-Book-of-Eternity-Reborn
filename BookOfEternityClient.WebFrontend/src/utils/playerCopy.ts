@@ -10,6 +10,7 @@ import type {
   UiPrompt,
   UiSelectionOption
 } from '../api/contracts';
+import { woundPresentation } from './woundPresentation';
 
 export const compoundReplacements: Array<[RegExp, string]> = [
   [/\bMortal World\b/gi, 'Мир смертных'],
@@ -194,8 +195,11 @@ function matchesAny(patterns: RegExp[], text: string): boolean {
 }
 
 export function sanitizeExplorerCommandResultForPlayer(result: ExplorerCommandResult): ExplorerCommandResult {
+  const view = woundPresentation(result);
+  const { woundView: _discardedHint, ...fields } = result;
   return {
-    ...result,
+    ...fields,
+    ...(view ? { woundView: view } : {}),
     command: '',
     blocks: result.blocks.flatMap((block) => {
       const sanitized = sanitizeUiBlockForPlayer(block);

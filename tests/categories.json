@@ -35693,6 +35693,39 @@
           ]
         }
       ]
+    },
+    {
+      "id": "wound-browser-sanitizer-consumers",
+      "responsibility": "Nearest existing actual player-copy, nested block/default privacy and protocol boundary consumers affected by the safe wound presentation hint.",
+      "excludes": "Unrelated frontend shell, JSON viewer, block-renderer source aggregates, backend state and provider execution.",
+      "changeHints": [
+        "BookOfEternityClient.WebFrontend/src/utils/playerCopy.ts",
+        "BookOfEternityClient.WebFrontend/src/utils/woundPresentation.ts"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "frontend",
+          "runner": "vitest",
+          "tests": [
+            "BookOfEternityClient.WebFrontend/test/playerCopyRobustness.test.ts",
+            "BookOfEternityClient.WebFrontend/test/blockRenderer.render.test.tsx"
+          ]
+        },
+        {
+          "project": "frontend",
+          "runner": "node",
+          "tests": [
+            "BookOfEternityClient.WebFrontend/test/playerFacingCommandResult.test.ts"
+          ]
+        }
+      ]
     }
   ]
 }

@@ -6,7 +6,8 @@ import { commandStateLabel } from '../utils/formatters';
 import { sanitizeExplorerCommandResultForPlayer, sanitizePlayerMessage, toPlayerFacingText } from '../utils/playerCopy';
 import { BlockList } from './BlockRenderer';
 import { PromptForm, type PromptAnswers } from './PromptForm';
-import { WoundCommandView, woundViewMode } from './WoundCommandView';
+import { WoundCommandView } from './WoundCommandView';
+import { validatedWoundView, woundPresentation } from '../utils/woundPresentation';
 
 type LocalPromptResult = { commandResult: ExplorerCommandResult | null; result: ExplorerCommandResult };
 type PromptOperation = { commandResult: ExplorerCommandResult | null; kind: 'submit' | 'cancel' | 'action' };
@@ -33,7 +34,7 @@ export function CommandResultView() {
   const isSubmitting = ownsOperation && promptOperation === 'submit';
   const isCancelling = ownsOperation && promptOperation === 'cancel';
   const isBusy = ownsOperation && promptOperation !== null;
-  const mode = result ? woundViewMode(result.command) : null;
+  const mode = result ? advancedEnabled ? woundPresentation(result) : validatedWoundView(result.woundView) : null;
 
   useEffect(() => {
     setLocalResult(null);

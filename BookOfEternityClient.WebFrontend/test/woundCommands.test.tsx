@@ -4,16 +4,15 @@ import { expect, it } from 'vitest';
 import type { ExplorerCommandResult } from '../src/api/contracts';
 import { CommandResultView } from '../src/components/CommandResultView';
 import { ShellContext } from '../src/context/ShellContext';
+import { sanitizeExplorerCommandResultForPlayer } from '../src/utils/playerCopy';
 import { woundCase, woundResult, woundShell, type WoundCase } from './helpers/woundCommandFixtures';
 
 function render(result: ExplorerCommandResult) {
-  return renderToStaticMarkup(<ShellContext.Provider value={woundShell(result)}><CommandResultView /></ShellContext.Provider>);
+  return renderToStaticMarkup(<ShellContext.Provider value={woundShell(sanitizeExplorerCommandResultForPlayer(result))}><CommandResultView /></ShellContext.Provider>);
 }
 
 it('presents real known wound facts as a dedicated accessible wound view', () => {
-  const html = renderToStaticMarkup(<ShellContext.Provider value={woundShell(woundResult())}>
-    <CommandResultView />
-  </ShellContext.Provider>);
+  const html = render(woundResult());
   expect(html).toContain('Ожог души');
   expect(html).toContain('Требуется лечение');
   expect(html).not.toContain('<b>не становится разметкой</b>');
