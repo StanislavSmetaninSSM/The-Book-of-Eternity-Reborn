@@ -14,7 +14,9 @@ open/cancel/price25/no-private-state/no-mutation proof to existing readiness fix
 Split Shining UI Theory into descriptive console/browser Facts with separate owners;
 retain accepted unchanged console lineage, rerun only browser. No production changes,
 new cache or extra Engine setup; cheap proof reuses its existing independent fixture.
-Current patch UNCOMPILED/UNQUALIFIED. Next: delta SOURCE/selection; preserve current27
+Independent Sol SOURCE/selection and b46 mixed OUTCOME accepted through d62db3dd3;
+wallet/actors/journal capture included. Optional cancel-result and catalog consumer
+links strengthened afterward. Current patch UNCOMPILED/UNQUALIFIED. Next: preserve current27
 artifacts, Integration-only build (Main/Support/Unit exact b46 source unchanged), source/PDB
 proof, discovery/exact PlanOnly readiness3 + browser1, resource/PREP; cheap readiness3,
 then one browser journey in original180s. No other unchanged PASS or HOLD gate repeat.

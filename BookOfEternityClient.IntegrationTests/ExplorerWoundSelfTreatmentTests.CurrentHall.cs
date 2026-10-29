@@ -51,7 +51,8 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
             var paid = Assert.Single(selection.Options, o => !o.Disabled && o.Label.Contains("Элиара", StringComparison.Ordinal));
             Assert.Contains("25", paid.Label);
             Assert.True(opened.InteractiveSession!.RequiresLocalUiLock);
-            await commands.CancelPromptSessionAsync(new(opened.InteractiveSession.SessionId, Owner));
+            var cancelled = await commands.CancelPromptSessionAsync(new(opened.InteractiveSession.SessionId, Owner));
+            Assert.Equal(CommandExecutionState.Completed, cancelled.State);
         }
         fixture.AssertMutationRootsUnchanged(before); fixture.AssertResourcesUnchanged();
     }

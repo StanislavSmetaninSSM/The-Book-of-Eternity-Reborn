@@ -36868,6 +36868,10 @@
         {
           "id": "elyara-current-location-shining-ui",
           "when": "Same-hall service executes through the protected coordinate."
+        },
+        {
+          "id": "elyara-current-location-shining-browser",
+          "when": "Public same-hall browser service executes through the protected coordinate."
         }
       ],
       "requirements": {
@@ -36898,6 +36902,10 @@
         {
           "id": "elyara-current-location-shining-ui",
           "when": "Same-hall service executes through the protected coordinate."
+        },
+        {
+          "id": "elyara-current-location-shining-browser",
+          "when": "Public same-hall browser service executes through the protected coordinate."
         }
       ],
       "requirements": {
@@ -36918,7 +36926,7 @@
     },
     {
       "id": "elyara-current-location-fixture-readiness",
-      "responsibility": "Complete independent two-Guardian Chaos and same-hall Shining initial Engine fixture validity before any expensive turn; unrelated unknown Shining key still rejected.",
+      "responsibility": "Complete independent two-Guardian Chaos and same-hall Shining initial Engine fixture validity before any expensive turn; unrelated unknown Shining key still rejected. Public Shining open/cancel proves price25, private coordinator data omitted and wallet/queue/time/roots inert.",
       "excludes": "No new hall travel, provider economics, T142 invariant, DOM/provider/fresh-process or HOLD gates.",
       "changeHints": [
         "BookOfEternityClient/Services/ShiningCurrentHallContract.cs",
@@ -36928,6 +36936,10 @@
         {
           "id": "elyara-current-location-shining-ui",
           "when": "Same-hall service executes through the protected coordinate."
+        },
+        {
+          "id": "elyara-current-location-shining-browser",
+          "when": "Public same-hall browser service executes through the protected coordinate."
         }
       ],
       "requirements": {
