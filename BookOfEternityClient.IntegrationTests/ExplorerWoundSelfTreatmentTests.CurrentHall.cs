@@ -27,6 +27,8 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
             await files.WriteFileAtomicAsync(ShiningAbodeState.StatePath, root.ToJsonString());
         }
         var before = fixture.CaptureMutationRoots([ShiningAbodeState.StatePath,
+            AfterlifeWoundHealingPlanner.Continuation.ServiceSoulPath,
+            AfterlifeWoundTreatmentAuthority.AidGuardiansPath, GuardianThoughtJournalState.StatePath,
             PendingPlayerActionService.PendingPath, EffectAcceptedTurnInputComposer.WorldTimePath,
             PendingTurnStateService.PendingDiceStatePath]);
         var errors = (await new ValidationService(files, NullLogger<ValidationService>.Instance).ValidateGameStateAsync())
