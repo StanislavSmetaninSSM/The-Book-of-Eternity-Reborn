@@ -218,6 +218,13 @@ runtime. GREEN is still UNCOMPILED/UNRUN at this checkpoint; no functional PASS 
 The following earlier WIP notes describe their earlier boundary, superseded by this
 source verdict only (not by runtime qualification).
 
+First fresh GREEN Main compile on5d652c383ca6804bf01975c9f70c29d37c9dcad3 ended
+exit1,12baseline warnings,1error,1:49.09. Single CS0103: new Action codec omitted
+using BookOfEternityClient.Core for existing StrictJsonAuthority. Added that namespace
+import only; no predicates/serialization/assertions change. Sequential build stopped
+before Support/Unit/Integration; no runtime, no qualification. Exact raw pass1/main
+outside checkout retained. Delta SOURCE check and corrected fresh pass follow.
+
 All this GREEN code is UNCOMPILED/UNREVIEWED/UNQUALIFIED. Remaining finite work: complete
 new admission/accepted/race/source-count and Shining actual result/replay/rollback tests,
 GM effective guidance/examples/guards, whole impact selection/SOURCE, then one fresh
