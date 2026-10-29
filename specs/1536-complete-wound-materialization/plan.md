@@ -45,8 +45,8 @@ stale read action retaining old DATA; console auto-choice/markup and browser act
 parity. Add one finite cheap control for each applicable boundary.
 
 - [ ] Bounded independent design/fixture feasibility review; no author rule required.
-- [ ] Add one pure existing-builder causal test: valid active card present, known
-  healed sentinel absent from default output. Fresh Unit owning build, discovery,
+- [ ] Add one pure existing-builder causal test: valid terminal projection and
+  empty-active status present, known healed sentinel absent from default output. Fresh Unit owning build, discovery,
   exact PlanOnly/resource/PREP and expected semantic RED; no production C# yet.
 - [ ] Shared builder: default active/treatment omit History; explicit History view
   renders only safe existing projected healed entries or an explicit empty state.
@@ -70,6 +70,12 @@ History is not displayed. Each navigation action reads fresh current DATA; no pr
 permission or returned graph is retained. The small command parse/format is trivial,
 so no cache applies. Assert real source events and no gameplay mutations, preserve
 all integrity/lease/History checks, do not infer a speedup. All new checks UNRUN.
+
+Causal scaffold written: existing WoundPlayerHistoryTestData.TerminalInput proves
+coherent known terminal History; actual shared builder returns inert default active
+result/status before the final absent-healed-name assertion. Existing production C#
+is unchanged. Category wound-history-causal owns exactly one pure Unit fact/60s;
+current selection is causal only. New test is UNCOMPILED/UNRUN pending source/PREP.
 
 # T119-FOREIGN-DETAIL — accepted known foreign spiritual wound card
 

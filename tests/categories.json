@@ -2,6 +2,31 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "wound-history-causal",
+  "responsibility": "FR067/068 existing shared builder must keep known healed terminal History out of the default active /раны view, after valid canonical terminal projection and inert result controls.",
+  "excludes": "No new diagnosis/treatment/service authority, whole US5, full Engine, DOM/provider/fresh-process or repeat of accepted foreign detail/navigation.",
+  "changeHints": [
+    "BookOfEternityClient.Tests/WoundHistoryViewTests.cs",
+    "BookOfEternityClient/UI/ExplorerWoundCommandResultBuilder.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.WoundHistoryViewTests.DefaultReadKeepsKnownHealedWoundOutOfActiveView"
+      ]
+    }
+  ]
+},
+{
   "id": "wound-foreign-detail-typed-owner",
   "responsibility": "Same-ID Guardian/resident card effect isolation with accepted real identity: include the selected resident consequence and exclude the Guardian consequence despite matching wound/source/definition.",
   "excludes": "No new diagnosis/treatment/quote execution, full native Engine, DOM/external provider/fresh-process or broad US5 claim.",
