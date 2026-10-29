@@ -19,8 +19,8 @@ internal static class AfterlifeHealingServicePlanner
         if (!ResourceMaterializationContract.IsExactIdentifier(attemptId) ||
             !GuardianPolicyContracts.TryPrepareHealingFeatherWallet(soul, quote.Amount, out var after)) return null;
         var payment = new AfterlifeHealingServicePayment(attemptId, quote.Fingerprint, quote.Patient, quote.Amount,
-            WoundAcceptedTurnFingerprintWriter.CanonicalJson(soul["inkFeathers"]!),
-            WoundAcceptedTurnFingerprintWriter.CanonicalJson(after!), "");
+            WoundAcceptedTurnFingerprintWriter.CanonicalJson(soul["inkFeathers"]!)!,
+            WoundAcceptedTurnFingerprintWriter.CanonicalJson(after!)!, "");
         return payment with { Fingerprint = PaymentFingerprint(payment) };
     }
 
@@ -48,8 +48,8 @@ internal static class AfterlifeHealingServicePlanner
         var expected = PreparePayment(quote, attemptId, soul);
         var actual = new AfterlifeHealingServicePayment(AfterlifeHealingServiceContract.Text(root["attemptId"]) ?? "",
             AfterlifeHealingServiceContract.Text(root["quoteFingerprint"]) ?? "", SpiritualTreatmentParticipation.ReadOwner(root["payer"]),
-            AfterlifeHealingServiceContract.Number(root["amount"]) ?? 0, WoundAcceptedTurnFingerprintWriter.CanonicalJson(before),
-            WoundAcceptedTurnFingerprintWriter.CanonicalJson(after), AfterlifeHealingServiceContract.Text(root["paymentFingerprint"]) ?? "");
+            AfterlifeHealingServiceContract.Number(root["amount"]) ?? 0, WoundAcceptedTurnFingerprintWriter.CanonicalJson(before)!,
+            WoundAcceptedTurnFingerprintWriter.CanonicalJson(after)!, AfterlifeHealingServiceContract.Text(root["paymentFingerprint"]) ?? "");
         if (expected is null || actual != expected)
             throw new InvalidDataException("Payment wallet, attempt, price or fingerprint differs.");
         return actual;

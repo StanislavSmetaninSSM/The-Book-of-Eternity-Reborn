@@ -162,6 +162,13 @@ with one negative proving mismatched checks cannot mask the carrier condition.
 Four exact pure categories planned61cases/11methods (provisional until discovery).
 This code is not yet compiled/qualified; complete paid user route is still unimplemented.
 
+2026-10-29 13:05UTC: 5fb1008b Main build completed exit0 (16 warnings,0 errors;
+2:35.17). Four new nullable warnings concern canonical serialization of already
+validated non-null wallet objects; return-value nullability annotations corrected,
+without a branch or runtime change. Both independent Sol SOURCE and Astra/high
+conformance accepted5fb (canonical carrier-path finding closed). This correction
+and pure61-case gate remain unqualified until fresh affected builds and runtime.
+
 ---
 
 # T126 — accepted browser wound cards and guided treatment presentation
