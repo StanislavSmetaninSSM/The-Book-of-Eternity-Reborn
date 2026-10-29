@@ -97,6 +97,16 @@ confirmation is a fresh invocation, dependencies/owners as section18; fresh guar
 stay intact. Actual source-count assertions and negative mutations precede heavy
 callers; no speedup claim. GREEN implementation/build/tests remain UNRUN after the accepted causal RED.
 
+GREEN WIP3 (uncompiled/unreviewed): browser uses the existing coordinator/actual
+lease for target advance, final publication, cancellation and expired wound session
+cleanup. Same-session phase replacement and removal use exact immutable snapshot
+identity; closed answer keys reject cross-phase packets. Existing atomic publisher
+and UI token refresh remain fresh, without acquire fallback or nested leases.
+Two real minimal browser API tests cover both cancellation phases, no-grant view
+and cross-phase replay. Remaining race/source-count/caller tests and GM sync are
+pending; no GREEN runtime yet. 2026-10-29 06:02UTC same environment connected,
+no live build/test/reviewer, remote b8d1fe17 verified; RED result not repeated.
+
 # T108-RESIDENT-HELP accepted — resident offers free treatment to the player
 
 2026-10-29, #1536. Visible conscious/capable resident of the CURRENT Chaos Guardian

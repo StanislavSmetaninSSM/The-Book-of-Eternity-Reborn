@@ -2,6 +2,31 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "wound-target-choice-browser",
+  "responsibility": "T120-CHAOS-TARGETS actual shared browser API target/wound phases, closed answers, inert cancellation and no-grant views, fresh authority and exact-snapshot lifecycle races.",
+  "excludes": "No Engine/DOM/provider/fresh-process or broader US5 acceptance.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/WoundTargetSelectionTests.Browser.cs",
+    "BookOfEternityClient/WebUi/ExplorerWebPromptSessionService.Wounds.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.WoundTargetSelectionTests.Browser*"
+      ]
+    }
+  ]
+},
+{
   "id": "wound-target-choice-contract",
   "responsibility": "T120-CHAOS-TARGETS detached Self-first typed nearby target read model, exact hidden owner/locality/wound bindings, public duplicate-name context, hidden/empty wounds, malformed membership and old-token ordering without treatment permission.",
   "excludes": "No real consent, staged treatment, browser lifecycle or Engine/DOM/provider/freshprocess qualification.",

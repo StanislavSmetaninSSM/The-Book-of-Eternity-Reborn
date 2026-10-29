@@ -16,7 +16,7 @@ public sealed record ExplorerPromptSessionCancelRequest(
     string SessionId,
     string? OwnerId = null);
 
-public sealed class ExplorerWebPromptSessionService
+public sealed partial class ExplorerWebPromptSessionService
 {
     public const string SubmitEndpoint = "/api/explorer/prompt-sessions/submit";
     public const string CancelEndpoint = "/api/explorer/prompt-sessions/cancel";
@@ -30,6 +30,7 @@ public sealed class ExplorerWebPromptSessionService
     private readonly TimeProvider _timeProvider;
     private readonly BrowserMortalWorldWriteService _mortalWorldWriteService;
     private readonly BrowserWoundWriteService _woundWriteService;
+    private readonly BrowserLocalWriteCoordinator _woundCoordinator;
     private readonly BrowserAfterlifeWriteService _afterlifeWriteService;
     private readonly BrowserSarefStoryWriteService _sarefStoryWriteService;
 
@@ -46,6 +47,7 @@ public sealed class ExplorerWebPromptSessionService
         _lockService = lockService ?? new LocalUiSessionLockService(fs, timeProvider);
         _timeProvider = timeProvider ?? TimeProvider.System;
         var coordinator = new BrowserLocalWriteCoordinator(fs, _lockService, _timeProvider);
+        _woundCoordinator = coordinator;
         _woundWriteService = new BrowserWoundWriteService(fs, coordinator);
         var effectiveStateManager = stateManager ?? new StateManager(fs, new Configuration.GameSettings(), NullLogger<StateManager>.Instance);
         _mortalWorldWriteService = mortalWorldWriteService ?? new BrowserMortalWorldWriteService(
@@ -232,7 +234,8 @@ public sealed class ExplorerWebPromptSessionService
 
     public async Task<ExplorerCommandResult> GetSessionAsync(string sessionId)
     {
-        if (!TryGetLiveSnapshot(sessionId, out var snapshot))
+        var snapshot = await GetLiveSnapshotAsync(sessionId);
+        if (snapshot is null)
             return MissingSessionResult(sessionId);
 
         try
@@ -256,7 +259,8 @@ public sealed class ExplorerWebPromptSessionService
 
     public async Task<ExplorerCommandResult> SubmitAsync(ExplorerPromptSessionSubmitRequest request)
     {
-        if (!TryGetLiveSnapshot(request.SessionId, out var snapshot))
+        var snapshot = await GetLiveSnapshotAsync(request.SessionId);
+        if (snapshot is null)
             return MissingSessionResult(request.SessionId);
 
         try
@@ -285,6 +289,12 @@ public sealed class ExplorerWebPromptSessionService
             return Task.FromResult(OwnerMismatchResult(snapshot));
 
         var answers = request.Answers ?? new Dictionary<string, JsonNode?>();
+        if (snapshot.Result.WoundCommandState is { } wound)
+        {
+            var expected = wound.IsTargetSelection ? new[] { "wound_target" } : new[] { "wound_selection", "confirm_wound_treatment" };
+            if (answers.Keys.Any(key => !expected.Contains(key, StringComparer.Ordinal)))
+                return Task.FromResult(WoundRefusal(snapshot, "Форма изменилась или содержит ответы другого шага. Используйте текущие поля."));
+        }
         var errors = ValidateAnswers(snapshot.Result.Prompts, answers);
         if (errors.Count > 0)
         {
@@ -310,10 +320,9 @@ public sealed class ExplorerWebPromptSessionService
         PromptSessionSnapshot snapshot,
         IReadOnlyDictionary<string, JsonNode?> answers)
     {
-        if (snapshot.Result.WoundCommandState is { } woundState &&
+        if (snapshot.Result.WoundCommandState is not null &&
             ExplorerCommandCatalog.FindByAlias(snapshot.Result.Command)?.Id == "wound_treatment")
-            return await BuildDomainWriteSubmitResultAsync(sessionId, snapshot,
-                await _woundWriteService.ApplyAsync(woundState, answers, snapshot.Owner));
+            return await SubmitWoundAsync(sessionId, snapshot, answers);
 
         var writeResult = await _mortalWorldWriteService.TryApplyAsync(
             snapshot.Result.Command,
@@ -407,6 +416,11 @@ public sealed class ExplorerWebPromptSessionService
         if (!writeResult.Success && !writeResult.ContinuationBlocked && snapshot.RequiresLocalUiLock)
             await ReleaseSnapshotLockAsync(snapshot);
 
+        return BuildDomainWriteResult(snapshot, writeResult);
+    }
+
+    private static ExplorerCommandResult BuildDomainWriteResult(PromptSessionSnapshot snapshot, BrowserPromptWriteResult writeResult)
+    {
         var blocks = snapshot.Result.Blocks.ToList();
         blocks.Add(new UiMessageBlock
         {
@@ -443,7 +457,8 @@ public sealed class ExplorerWebPromptSessionService
 
     public async Task<ExplorerCommandResult> CancelAsync(ExplorerPromptSessionCancelRequest request)
     {
-        if (!TryGetLiveSnapshot(request.SessionId, out var snapshot))
+        var snapshot = await GetLiveSnapshotAsync(request.SessionId);
+        if (snapshot is null)
             return MissingSessionResult(request.SessionId);
 
         try
@@ -455,6 +470,9 @@ public sealed class ExplorerWebPromptSessionService
                 {
                     if (!OwnerMatches(snapshot, request.OwnerId))
                         return OwnerMismatchResult(snapshot);
+
+                    if (snapshot.Result.WoundCommandState is not null)
+                        return await CancelWoundAsync(request.SessionId, snapshot);
 
                     if (!_sessions.TryRemove(request.SessionId, out _))
                         return MissingSessionResult(request.SessionId);
@@ -510,15 +528,11 @@ public sealed class ExplorerWebPromptSessionService
         return true;
     }
 
-    private void RemoveSnapshot(
+    private bool RemoveSnapshot(
         string sessionId,
         PromptSessionSnapshot snapshot)
     {
-        if (_sessions.TryGetValue(sessionId, out var current) &&
-            ReferenceEquals(current, snapshot))
-        {
-            _sessions.TryRemove(sessionId, out _);
-        }
+        return _sessions.TryRemove(new KeyValuePair<string, PromptSessionSnapshot>(sessionId, snapshot));
     }
 
     private async Task ReleaseSnapshotLockAsync(
@@ -759,11 +773,15 @@ public sealed class ExplorerWebPromptSessionService
             ]
         };
 
-    private sealed record PromptSessionSnapshot(
-        UiPromptSession Session,
-        ExplorerCommandResult Result,
-        LocalUiSessionLockOwner Owner,
-        bool RequiresLocalUiLock,
-        DateTime ExpiresAtUtc,
-        string ExpectedSessionGeneration);
+    // Reference identity is the CAS/removal fence between two wound prompt phases.
+    private sealed class PromptSessionSnapshot(UiPromptSession session, ExplorerCommandResult result,
+        LocalUiSessionLockOwner owner, bool requiresLocalUiLock, DateTime expiresAtUtc, string expectedSessionGeneration)
+    {
+        internal UiPromptSession Session { get; } = session;
+        internal ExplorerCommandResult Result { get; } = result;
+        internal LocalUiSessionLockOwner Owner { get; } = owner;
+        internal bool RequiresLocalUiLock { get; } = requiresLocalUiLock;
+        internal DateTime ExpiresAtUtc { get; } = expiresAtUtc;
+        internal string ExpectedSessionGeneration { get; } = expectedSessionGeneration;
+    }
 }

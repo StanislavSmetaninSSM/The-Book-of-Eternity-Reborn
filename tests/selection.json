@@ -3,7 +3,7 @@
   "selections": [
     {
       "category": "wound-target-choice-causal",
-      "reason": "First compiling semantic RED for missing current-Abode target navigation through the existing real application API. All production remains accepted188c4ea55; no full game/bootstrap or acceptedPASS repeat.",
+      "reason": "Causal GREEN of the accepted compiling semantic RED: actual OpenAsync must now offer target navigation, preserving valid Self and inertness.",
       "contracts": [
         "#1536 T120-CHAOS-TARGETS / FR070,072–076; display/navigation never grants consent or stages a treatment"
       ]
@@ -13,6 +13,13 @@
       "reason": "T120-CHAOS-TARGETS detached Self-first typed nearby target read model, exact hidden owner/locality/wound bindings, public duplicate-name context, hidden/empty wounds, malformed membership and old-token ordering without treatment permission.",
       "contracts": [
         "#1536 T120-CHAOS-TARGETS typed display/navigation DATA, no new treatment authority"
+      ]
+    },
+    {
+      "category": "wound-target-choice-browser",
+      "reason": "T120-CHAOS-TARGETS actual shared browser API target/wound phases, closed answers, inert cancellation and no-grant views, fresh authority and exact-snapshot lifecycle races.",
+      "contracts": [
+        "#1536 T120-CHAOS-TARGETS; target navigation is not treatment authority"
       ]
     }
   ]

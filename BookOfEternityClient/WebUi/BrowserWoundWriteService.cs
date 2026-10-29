@@ -7,9 +7,8 @@ namespace BookOfEternityClient.WebUi;
 
 internal sealed class BrowserWoundWriteService(FileSystemManager files, BrowserLocalWriteCoordinator coordinator)
 {
-    internal Task<BrowserPromptWriteResult> ApplyAsync(WoundCommandState state,
-        IReadOnlyDictionary<string, JsonNode?> answers, LocalUiSessionLockOwner owner) =>
-        coordinator.RunBoundTransactionAsync(async lease =>
+    internal async Task<BrowserPromptWriteResult> ApplyWithinTransactionAsync(FileSystemManager.CanonicalWriteLease lease,
+        WoundCommandState state, IReadOnlyDictionary<string, JsonNode?> answers, LocalUiSessionLockOwner owner)
         {
             if (!answers.TryGetValue("confirm_wound_treatment", out var confirmation) ||
                 confirmation is not JsonValue flag || !flag.TryGetValue<bool>(out var confirmed) || !confirmed)
@@ -33,5 +32,5 @@ internal sealed class BrowserWoundWriteService(FileSystemManager files, BrowserL
             {
                 return BrowserPromptWriteResult.ValidationError("Выбор или доступность лечения изменились. Закройте форму и откройте /лечить заново.");
             }
-        });
+        }
 }
