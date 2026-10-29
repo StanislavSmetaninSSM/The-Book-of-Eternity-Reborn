@@ -1,3 +1,31 @@
+# T108 two-actor native response correction — SOURCE pending
+
+2026-10-29. Bounded Astra/high DESIGN accepts honest existing-contract correction;
+Sol independently confirms timeout/82-file evidence and remaining UI3 selection.
+Keep ordinary Guardian progression enabled. Resident-only journey author now emits
+Mixed scope/fullActorBrain for resident AND currentGuardian and ordinary Guardian
+thought-journal command on both43/44; Guardian does not grant resident consent,
+heal, receive aid or create fees. No authored income/cyclekey/ledger; client computes
+normal progression. Resident protected-memory response and frozen roster unchanged.
+
+The same UI3 assert canonical Guardian memory43, exact preserved prefix+new44,
+new participant/request IDs, and no leftover command. Existing pre-turn/C4 captures
+include Guardian journal: C4 restores submitted44 command baseline; whole-turn
+rollback restores canonical grant43. Cut observes both normalized journals and
+final strictsettlement inert proof covers resident/Guardian memory+interface.
+Existing normalizer order confirms both journals normalized before common publisher.
+No files created between accepted43 and44 to patch setup. Oldv3/v4 writers and
+branches, backend/GMcontracts, production, schema, counters and budgets unchanged.
+Source is not yet compiled or runtime-qualified; coherent applied SOURCE review
+pending before onefresh Integration refsfalse/Plan/PREP UI3. Raw incomplete timeout
+and originalfixture remain preserved. Existing backend66PASS not repeated.
+
+Optimization: reuses existing journal shape/composer/normalizer and same current
+completion lease, one raw journal read/write per authored turn; no new service,
+cache or diagnosticstack. Actual current Guardian memory must be fresh; no stale
+permission/DATA reuse. Existing ActorBrain/GM docs already specify these unchanged
+rules; this controlled native fixture correction needs no new GM product contract.
+
 # T108 browser actual timeout — concrete GM fixture scope refusal preserved
 
 2026-10-29. Actual UI attempt atmetadataa22e8e72d40e059de2be677f0f18971e5b1cb462

@@ -55,6 +55,7 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
         var publicationArmed = false; var publicationCuts = 0; var compensationObserved = false;
         Dictionary<string, byte[]?>? compensationExpected = null; Dictionary<string, byte[]?>? compensationActual = null;
         byte[]? memoryAtCut = null;
+        byte[]? guardianMemoryAtCut = null;
         var publicationFailure = new InvalidOperationException("Resident aid precommit publication failure.");
         await using var fixture = await HealingFixture.CreateAsync(rank: 3, tier: receiveAid ? 0 : 3, die: 14, stageRequest: false,
             beforeResourceBootstrap: resident ? SeedEngineResidentAidJourneyAsync : receiveAid ? SeedEngineReceivingAidJourneyAsync : SeedEngineAidJourneyAsync,
@@ -66,6 +67,7 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                         File.Exists(ownedFiles!.ResolvePath(AcceptedMechanicsPlan.WoundCommandPath))) return;
                     publicationArmed = false; publicationCuts++;
                     memoryAtCut = File.ReadAllBytes(ownedFiles.ResolvePath(GuardianAbodeResidentState.StatePath));
+                    guardianMemoryAtCut = File.ReadAllBytes(ownedFiles.ResolvePath(GuardianThoughtJournalState.StatePath));
                     throw publicationFailure;
                 },
                 BeforeCanonicalReadOpenAsync = path =>
@@ -100,6 +102,7 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
         JsonObject? aidRequest = null;
         TurnRequest? aidTurn = null;
         WoundMaterializationEnvelope? grantWound = null;
+        JsonObject? grantGuardianMemory = null;
         PendingPlayerActionService.Binding? browserBinding = null;
         var runtime = GameEngineTurnLifecycleTests.CreateGameEngineRuntime(files,
             inputSource: new NoPlayerInput(diagnostics), logger: diagnostics, explorerConsole: console,
@@ -177,7 +180,8 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                         if (failPublication)
                         {
                             compensationExpected = fixture.CaptureMutationRoots(AfterlifeWoundTreatmentAuthority.AidLocalityPaths
-                                .Concat(new[] { EffectAcceptedTurnInputComposer.WorldTimePath }));
+                                .Concat(new[] { EffectAcceptedTurnInputComposer.WorldTimePath })
+                                .Concat(resident ? new[] { GuardianThoughtJournalState.StatePath } : Array.Empty<string>()));
                             publicationArmed = true;
                         }
                         aidWritten = true;
@@ -205,12 +209,21 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                 t => t.TransitionResult is SpiritualHealingPersistedResult).TransitionResult);
             Assert.Equal(family, grant.SchemaVersion);
             Assert.Single(grant.ParticipationOutcomes!);
+            if (resident)
+            {
+                var guardianJournal = JsonNode.Parse((await files.ReadFileAsync(GuardianThoughtJournalState.StatePath))!)!.AsObject();
+                Assert.False(guardianJournal.ContainsKey(GuardianThoughtJournalState.UpdateProperty));
+                grantGuardianMemory = Assert.Single(guardianJournal["entries"]!.AsArray())!.DeepClone().AsObject();
+                Assert.Equal(43, grantGuardianMemory["turn"]!.GetValue<int>());
+                Assert.Equal(AfterlifeSpiritualNaturalRecoveryTests.AidGuardianId, grantGuardianMemory["guardianId"]!.GetValue<string>());
+            }
             Assert.True(files.FileExists("game_state/meta/achievements.json"));
             Assert.True(files.FileExists("lore/codex_entries.json"));
             Assert.Empty(JsonNode.Parse((await files.ReadFileAsync("game_state/meta/achievements.json"))!)!["unlockedAchievements"]!.AsArray());
             Assert.Empty(JsonNode.Parse((await files.ReadFileAsync("lore/codex_entries.json"))!)!["entries"]!.AsArray());
             var before = fixture.CaptureMutationRoots(AfterlifeWoundTreatmentAuthority.AidLocalityPaths
-                .Concat(new[] { EffectAcceptedTurnInputComposer.WorldTimePath, PendingTurnStateService.PendingDiceStatePath }));
+                .Concat(new[] { EffectAcceptedTurnInputComposer.WorldTimePath, PendingTurnStateService.PendingDiceStatePath })
+                .Concat(resident ? new[] { GuardianThoughtJournalState.StatePath } : Array.Empty<string>()));
             if (browser)
             {
                 var service = CreateCommands(files);
@@ -347,9 +360,15 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
             {
                 Assert.Equal(1, publicationCuts); Assert.True(compensationObserved);
                 Assert.NotNull(compensationExpected); Assert.NotNull(compensationActual); Assert.NotNull(memoryAtCut);
+                Assert.NotNull(guardianMemoryAtCut);
                 var cutMemory = JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(memoryAtCut!))![GuardianAbodeResidentState.ThoughtJournalProperty]!.AsArray();
                 Assert.Equal(2, cutMemory.Count);
                 Assert.Contains(cutMemory.OfType<JsonObject>(), e => e["turn"]!.GetValue<int>() == 44);
+                var cutGuardianJournal = JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(guardianMemoryAtCut!))!.AsObject();
+                Assert.False(cutGuardianJournal.ContainsKey(GuardianThoughtJournalState.UpdateProperty));
+                var cutGuardianMemory = cutGuardianJournal["entries"]!.AsArray();
+                Assert.Equal(new[] { 43, 44 }, cutGuardianMemory.Select(e => e!["turn"]!.GetValue<int>()));
+                Assert.True(JsonNode.DeepEquals(grantGuardianMemory, cutGuardianMemory[0]));
                 foreach (var pair in compensationExpected!) Assert.Equal(pair.Value, compensationActual![pair.Key]);
                 var retained = JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(compensationActual![AcceptedMechanicsPlan.WoundCommandPath]!));
                 Assert.True(JsonNode.DeepEquals(aidRequest, retained)); // Full raw bytes also equal exact pre-cut capture above.
@@ -386,7 +405,10 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
             fixture.AssertResourcesUnchanged();
             if (resident)
             {
-                var settled = fixture.CaptureMutationRoots();
+                var settled = fixture.CaptureMutationRoots(new[]
+                {
+                    GuardianAbodeResidentState.StatePath, GuardianThoughtJournalState.StatePath, "output/interface_updates.json"
+                });
                 var settledTurn = Assert.IsType<TurnRequest>(aidTurn);
                 await using (var settledLease = await files.AcquireCanonicalWriteLeaseAsync())
                     Assert.NotNull(await ProgressionScheduleService.ReadPublishedSpiritualCycleCoreAsync(settledTurn.ProgressionControl!,
@@ -394,6 +416,13 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                 fixture.AssertMutationRootsUnchanged(settled);
                 var memories = JsonNode.Parse((await files.ReadFileAsync(GuardianAbodeResidentState.StatePath))!)![GuardianAbodeResidentState.ThoughtJournalProperty]!.AsArray();
                 Assert.Equal(new[] { 43, 44 }, memories.Select(e => e!["turn"]!.GetValue<int>()));
+                var guardianJournal = JsonNode.Parse((await files.ReadFileAsync(GuardianThoughtJournalState.StatePath))!)!.AsObject();
+                Assert.False(guardianJournal.ContainsKey(GuardianThoughtJournalState.UpdateProperty));
+                var guardianMemories = guardianJournal["entries"]!.AsArray();
+                Assert.Equal(new[] { 43, 44 }, guardianMemories.Select(e => e!["turn"]!.GetValue<int>()));
+                Assert.True(JsonNode.DeepEquals(grantGuardianMemory, guardianMemories[0]));
+                Assert.Equal("guardian_resident_world_thought_" + settledTurn.RequestId, guardianMemories[1]!["entryId"]!.GetValue<string>());
+                Assert.Equal(AfterlifeSpiritualNaturalRecoveryTests.AidGuardianId, guardianMemories[1]!["guardianId"]!.GetValue<string>());
                 Assert.Equal("resident", aid.Stages[0].Before.Owner.OwnerKind);
                 Assert.Equal(participantId, aid.Stages[0].Before.Owner.OwnerId);
                 Assert.Equal(44, runtime.GameLoop.TurnNumber);
@@ -495,12 +524,25 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
     {
         await AfterlifeSpiritualNaturalRecoveryTests.WriteResidentAidMemoryAsync(files, lease, turn.RequestId, turn.TurnNumber, memoryOnly: grant);
         const string name = "Житель целостности";
+        const string guardianName = "Хранитель целостности";
+        var timestamp = DateTime.UtcNow.ToString("o");
+        var journal = JsonNode.Parse((await files.ReadFileAsync(lease, GuardianThoughtJournalState.StatePath)) ?? "{\"entries\":[]}")!.AsObject();
+        journal[GuardianThoughtJournalState.UpdateProperty] = new JsonArray(new JsonObject
+        {
+            ["entryId"] = "guardian_resident_world_thought_" + turn.RequestId,
+            ["guardianId"] = AfterlifeSpiritualNaturalRecoveryTests.AidGuardianId,
+            ["turn"] = turn.TurnNumber, ["timestamp"] = timestamp, ["title"] = "Обычный цикл Обители",
+            ["summary"] = "Я продолжаю обычную стратегию Обители и не вмешиваюсь в добровольное решение души и жителя о частной помощи.",
+            ["eventType"] = "soul_assessment", ["consequence"] = "Обычный цикл продолжается без нового долга и платы.",
+            ["attitude"] = "watchful", ["intent"] = "Поддерживать безопасный порядок Обители."
+        });
+        await files.WriteFileAtomicAsync(lease, GuardianThoughtJournalState.StatePath, journal.ToJsonString());
         await files.WriteFileAtomicAsync(lease, "output/debug_logs.json", new JsonObject
         {
-            ["timestamp"] = DateTime.UtcNow.ToString("o"), ["gm_thoughts_markdown"] = string.Join("\n",
-                "## NPC Scope", "- Mode: Scene-local", "- Relevant actors: " + name,
-                "- Why relevant: Житель осознанно решает, разрешить ли душе помощь с его духовной раной.",
-                "- Actors outside scope: Хранитель целостности", "- Why outside scope: Он не принимает нового решения в этой частной сцене.",
+            ["timestamp"] = timestamp, ["gm_thoughts_markdown"] = string.Join("\n",
+                "## NPC Scope", "- Mode: Mixed", "- Relevant actors: " + name + ", " + guardianName,
+                "- Why relevant: Житель принимает частную помощь, а обычный цикл Хранителя продолжает его текущую стратегию развития.",
+                "- Actors outside scope: нет", "- Why outside scope: Другие акторы не получают структурированных изменений.",
                 "", "## Reasoning", "### " + name, "- Current location: Обитель целостности; перемещения нет.",
                 "- Situation: Душа предлагает бесплатное лечение известной духовной раны.",
                 "- Profile inputs: Сознательный способный житель с Исцелением0; душа владеет Исцелением3.",
@@ -511,7 +553,20 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                 "2. Отказаться. Benefit: дистанция. Risk: рана останется.", "- Chosen strategy: Добровольно принять помощь.",
                 "- Rejected alternatives: Нет причины отвергать безопасную помощь.",
                 grant ? "- Actions: Я явно разрешаю помощь в следующий безопасный цикл." : "- Actions: Я сохраняю согласие и принимаю помощь.",
-                "- State changes: spiritualResidentThoughtJournalUpdates в output/interface_updates.json переносит first-person память через существующий residentThoughtJournalUpdates нормализатор; физический roster до допуска не меняется. Рану, эффекты, History и время публикует клиент.")
+                "- State changes: spiritualResidentThoughtJournalUpdates в output/interface_updates.json переносит first-person память через существующий residentThoughtJournalUpdates нормализатор; физический roster до допуска не меняется. Рану, эффекты, History и время публикует клиент.",
+                "", "### " + guardianName, "- Current location: Обитель целостности; перемещения нет.",
+                "- Situation: Обычный безопасный цикл продолжается, пока душа и житель решают вопрос добровольной частной помощи.",
+                "- Profile inputs: Текущий Хранитель и его действующая стратегия развития; он не лечит и не принимает лечение.",
+                "- Thoughts: Я сохраняю порядок и продолжаю свою обычную стратегию, не решая за жителя.",
+                "- Motivation: Поддерживать безопасную жизнь Обители.",
+                "- Constraints: Согласие принадлежит жителю; доход и развитие рассчитывает клиент, новой платы нет.",
+                "- Strategy options:",
+                "1. Продолжить обычную стратегию. Benefit: устойчивый порядок. Risk: не участвовать в частной беседе.",
+                "2. Вмешаться в частную помощь. Benefit: больше наблюдения. Risk: неоправданное вмешательство.",
+                "- Chosen strategy: Продолжить обычную стратегию без вмешательства в лечение.",
+                "- Rejected alternatives: Нет основания менять добровольное решение души и жителя.",
+                "- Actions: Я остаюсь в Обители и поддерживаю её обычный безопасный цикл.",
+                "- State changes: guardianThoughtJournalUpdates в game_state/meta/guardian_thought_journal.json добавляет мою first-person память. Клиент сам формирует currencies, progressionStrategy и client_auto_strategy progressionLedger в afterlife_entity_profiles.json; ГМ не задаёт доход, ключ цикла или результат развития.")
         }.ToJsonString());
     }
 

@@ -133,7 +133,7 @@
 },
 {
   "id": "spiritual-resident-aid-console",
-  "responsibility": "One actual console grant43 -> normal cleanup -> guided confirmation -> resident aid44 with complete pre-first-turn fixture, distinct H, two genuine memories and one cycle/attempt/no charge.",
+  "responsibility": "One actual console grant43 -> normal cleanup -> guided confirmation -> resident aid44 with complete pre-first-turn fixture, distinct H, two genuine memories and one cycle/attempt/no charge. Ordinary Guardian auto progression remains enabled and covered by both-actor scope/ActorBrain and real Guardian memory; resident and Guardian journals preserve grant prefixes and the appropriate success/rollback baselines.",
   "excludes": "No external provider, browser DOM, full cold process or other targets/realms/services.",
   "changeHints": [
     "BookOfEternityClient.IntegrationTests/ExplorerWoundSelfTreatmentTests.Aid.cs"
@@ -157,7 +157,7 @@
 },
 {
   "id": "spiritual-resident-aid-browser",
-  "responsibility": "One actual shared browser command/queue grant43 -> real cleanup -> confirmed resident aid44, same original selection/die, distinct H, two genuine memories and one cycle/no charge.",
+  "responsibility": "One actual shared browser command/queue grant43 -> real cleanup -> confirmed resident aid44, same original selection/die, distinct H, two genuine memories and one cycle/no charge. Ordinary Guardian auto progression remains enabled and covered by both-actor scope/ActorBrain and real Guardian memory; resident and Guardian journals preserve grant prefixes and the appropriate success/rollback baselines.",
   "excludes": "No browser DOM or external provider, cold process, other actors/realms/services.",
   "changeHints": [
     "BookOfEternityClient.IntegrationTests/ExplorerWoundSelfTreatmentTests.Aid.cs"
@@ -181,7 +181,7 @@
 },
 {
   "id": "spiritual-resident-aid-rollback",
-  "responsibility": "One actual console resident aid common precommit fault after owned memory normalization; exact prepared request/die/schedule at C4 compensation and pre-aid grant journal/canonical roots after whole-turn rollback.",
+  "responsibility": "One actual console resident aid common precommit fault after owned memory normalization; exact prepared request/die/schedule at C4 compensation and pre-aid grant journal/canonical roots after whole-turn rollback. Ordinary Guardian auto progression remains enabled and covered by both-actor scope/ActorBrain and real Guardian memory; resident and Guardian journals preserve grant prefixes and the appropriate success/rollback baselines.",
   "excludes": "No successful-journey repeat, fixture writeback, new C4 framework, DFR/Mortal/Windows.",
   "changeHints": [
     "BookOfEternityClient.IntegrationTests/ExplorerWoundSelfTreatmentTests.Aid.cs"
