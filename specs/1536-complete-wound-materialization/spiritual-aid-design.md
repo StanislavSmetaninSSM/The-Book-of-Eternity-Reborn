@@ -462,7 +462,9 @@ requires these existing artifacts and bounded official category verification.
 US4 scenario8 and data-model12 already authorize a reachable consenting entity;
 no new game rule is needed. A read-only Astra/high architecture consultation at
 248263534 identified the exact kind/locality and historical-family boundaries.
-This concrete design still requires a separate independent DESIGN review.
+Independent Astra/high DESIGN review found two P2 corrections: separate live joins
+from historical agreement and explicitly cover every changed authority branch. The
+corrections below remain pending delta review; no implementation is admitted yet.
 
 ### Player result and finite boundary
 
@@ -540,23 +542,34 @@ visibility/friendliness/teaching/presence alone never means consent.
 LocalActorIds, IsAfterlifeActorLocal, FindResident and CollectEntries are useful
 context only: their case-insensitive/alias/first-match normalization cannot prove
 this treatment join. Both locality roots already belong to AidLocalityPaths;
-there is no new source path or source registry. Perform the same exact join in:
+there is no new source path or source registry. Perform the live exact join in:
 
 1. Real accepted natural participation producer and pure afterimage composition.
 2. Menu/confirmation, committed-grant reader after genuine cleanup, and pre-control
    admission under the actual existing single staging lease.
 3. Signed-original B/RequireOriginalAidWitness and fresh pre-draw/publication checks.
-4. Published full-record/History agreement and historical settled replay.
-5. Owned locality normalization before and after the computed write: full typed
+4. Owned locality normalization before and after the computed write: full typed
    target/Guardian/Abode/presence/profile join must remain equal. Equal untyped
    LocalActorIds sets alone are insufficient. Original snapshots/input/evidence
    remain frozen; only the verified computed live closing image may advance.
 
-New admission rechecks live consent/locality. Already settled replay validates
-its exact historical witness/result/receipt, never requires a new live grant or
-current locality. Raw same-turn stamps, earlier unrelated natural results and
-prepublication grants remain insufficient. Expiry/turn/session/cycle rules are
-unchanged; neither a result's own token nor serialized selection authenticates it.
+Historical agreement is a separate structural contract, not the live roster join.
+The persisted result and WoundHistoryState link full typed coordinates, recorded
+locality, witness/content fingerprint, exact previous accepted grant result,
+request, stages and accepted binding. They cannot reconstruct an old roster after
+ordinary cleanup and must not read current presence or require renewed consent.
+Use the existing AidGrantAgrees/History agreement path, not a live-check bypass flag.
+RequirePublishedRecords still proves the exact current typed profile and accepted
+record agree during current settlement; it must not add a blanket live-roster check
+to every replay caller. ReadPublishedSpiritualCycleDataCoreAsync retains all current
+source/control/schedule after-image, complete cohort and identity/History checks.
+A later turn that changes these after-images is not automatically replayable as
+that old current settlement. Historical receipt validity does not override them.
+
+New admission always rechecks live consent/locality. Raw same-turn stamps, earlier
+unrelated natural results and prepublication grants remain insufficient. Expiry/
+turn/session/cycle rules are unchanged; neither a result's own token nor serialized
+selection authenticates it.
 
 Use player H and active roll effects for healing; resident H for its one ordinary
 natural pass. The same program applies active then the whole eligible natural
@@ -573,9 +586,11 @@ planner Participation/LocalityNormalization; AfterlifeWoundTreatmentAuthority
 committed and signed Aid paths; SpiritualSelfTreatmentRequestCodec.Aid;
 SpiritualHealingPersistedResult; ProgressionScheduleService.SpiritualReplay;
 shared request projection, menu/action and pending console/browser consumers.
-RequireOriginalAidWitness, ReadPublishedParticipationCycleDataAsync and
-RequirePublishedRecords must all use the typed family/join. Preserve exact old
-family dispatch rather than infer versions from ReceiveAid booleans everywhere.
+RequireOriginalAidWitness and the committed-grant reader use the typed family and
+live join. RequirePublishedRecords uses full typed owner/profile agreement, while
+historical result/History parsing uses only the recorded structural link described
+above. Preserve exact old family dispatch rather than infer versions from ReceiveAid
+booleans everywhere.
 
 Reuse already parsed catalog/profile/History/locality inputs owned by the existing
 operation and actual lease. Resident join DATA has full participant, wound/FP,
@@ -586,20 +601,29 @@ session checks. No new cache/dictionary framework: small typed joins are trivial
 and existing operation/service reuse remains the owner for expensive stable DATA.
 Tests use isolated mutable roots and detached template copies. No speedup claim.
 
-Proposed coherent 15-case acceptance (exact catalog/discovery may refine counts):
-- Three codec/History controls: resident proposal/selection/request roundtrip;
-  cross-family substitution refusal; actual new producer/result with mixed History
-  retaining exact v3/v4 receipts while adding v5.
-- Eight cheap identity/locality negatives: wrong-kind same ID, wrong realm,
-  wrong carrier, duplicate/confusable resident identity, foreign Guardian/Abode,
-  departed resident, hidden profile/wound, conflicting profile identity aliases.
-- Two actual console/browser journeys: genuine grant → cleanup → confirmed aid,
-  unequal player/resident tiers, exact target and weaker graphs, one cycle/attempt,
-  no charge, inert settled replay. Seed the complete existing two-turn Engine
-  fixture once, including resident roster/profile/wounds/effects/lore/Brain and
-  scheduler as required; no post-acceptance file insertion or second bootstrap.
-- Two failure controls: locality drift after selection before draw; atomic common
-  publication fault restoring grant/request/wound/effects/History/scheduler.
+Finite acceptance maps each changed branch below. Exact discovered row counts are
+recorded after test authoring; fifteen cases were an incomplete draft, not a cap.
+Use cheap parameterized DATA controls and the existing backend fixtures for the
+additional branches; retain just two expensive guided journeys.
+
+| Branch | Minimal proof / existing owner |
+| --- | --- |
+| Closed family | Typed proposal/record/selection/request roundtrip; reject mixed/unknown/v5-self and cross-family substitution. Existing v3/v4 serialization/fingerprints stay exact. |
+| All raw profile representations | Parameterize profiles/afterlifeEntityProfiles/afterlifeEntityProfileUpdates; identical full-coordinate mirrors coalesce; conflicting mirrors, direct changed canonical record and explicit-null forgery refuse. |
+| Kinded identity | A legitimate Guardian and resident may share an ID. The resident alone is accepted; wrong-kind substitution refuses; one valid proposal for each is two distinct changes and must hit the bounded-one-change refusal, never ID-only coalescing. |
+| Resident authority join | Cheap exact identity/realm/carrier/duplicate/confusable/alias/foreign Guardian or Abode/departed/hidden controls; no generic presence/visibility consent. |
+| Revocation | Schema3 revoke accepts false factual flags while grant with either false flag refuses. Existing backend publishes a genuine revocation after a genuine grant; aid in the revocation's otherwise eligible next turn/cycle refuses without draw, so expiry cannot explain the refusal. |
+| Consent lifetime | Family5 aid rejects wrong session, same grant turn, skipped next turn and wrong next cycle before draw; test the family5 dispatcher explicitly rather than infer coverage from unchanged v3/v4 tests. |
+| Owned normalization | Actual normalizer retains an unchanged typed join while cosmetic bytes change. A changed exact resident/Guardian/Abode/presence binding refuses even when generic LocalActorIds are unchanged (for example case-only roster Guardian substitution). Original evidence stays frozen. |
+| Fresh signed B and publication | Existing backend stages once, then separately drifts consent and locality. Signed-original/publication admission refuses, keeps the original request/die and performs no additional draw or partial common publication; snapshots account explicitly for the injected mutation. |
+| Historical agreement and current settlement | Actual producer/result joins exact grant/request/stages, mixed v3/v4 receipts remain byte-exact. Parse its persisted History after current roster locality changes: recorded historical link stays valid, while new live admission refuses. Separately, immediate unchanged current-settlement replay remains inert; do not claim old scheduler after-images survive a later accepted turn. Missing/changed historical grant refuses. |
+| Atomic failure | Existing common publication fault restores grant/request/wound/effects/History/scheduler with retained attempt/die under the existing rollback contract. |
+| Actual user result | Console and shared browser each run genuine grant → normal Engine cleanup → confirmed aid, unequal player/resident H, exact target and GM-authored weaker graphs, one cycle/attempt, no charge and immediate settled replay. |
+
+Seed the complete existing two-turn Engine fixture once, including resident roster/
+profile/wounds/effects/lore/Brain and scheduler as required; no post-acceptance file
+insertion or second bootstrap. Backend boundary controls may share one accepted
+fixture's immutable parsed evidence but never mutable state between tests.
 
 First causal RED uses the existing ReadChanges API with a complete valid resident
 proposal; current Guardian-only admission must refuse the positive case. Then
