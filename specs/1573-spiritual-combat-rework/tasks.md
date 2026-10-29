@@ -3,7 +3,7 @@
 ## Источники, добыча и поставки — 2026-10-30
 
 - [x] T090 Зафиксировать принятие отдыха P+H/20 и таблицы четырёх камней: ёмкости20/40/160/640, покупка5/10/50/240, продажа3/6/30/144, ремонт5/10/40/160 и качественная доступность. Не объявлять принятыми частоты добычи/поставок или весь runtime-договор.
-- [ ] T091 Предложить источники и частоты образования/добычи всех камней, доступность у торговцев и реальные поставки. Сохранить общий запас, труд/время, экономику убежищ, отсутствие повторной выдачи и неутверждённость quality-перехода Благоволения. Проверить арифметику/согласованность/ссылки/diff, независимое ревью и публикацию; только документы, без новой симуляции/кода/тестов.
+- [x] T091 Предложить источники и частоты образования/добычи всех камней, доступность у торговцев и реальные поставки. Сохранить общий запас, труд/время, экономику убежищ, отсутствие повторной выдачи и неутверждённость quality-перехода Благоволения. Проверить арифметику/согласованность/ссылки/diff, независимое ревью и публикацию; только документы, без новой симуляции/кода/тестов. Новые частоты ожидают одобрения.
 
 ## Отдых ДЭ и разновидности камней — 2026-10-30
 
@@ -178,7 +178,7 @@ US4=единая работающая модель/интерфейсы.
 
 - [ ] T004 [US1] RED tests в BookOfEternityClient.Tests/SpiritualCombatRulesTests.cs и BookOfEternityClient.IntegrationTests/AfterlifeSpiritualConflictValidationTests.cs: HP/ДЭ exact actor, hit/miss/barrier/max changes, invalid actor/target, расходы/recover surcharge, ranks. Negative builders не чинят malformed input.
 - [ ] T005 [US1] Ввести typed contracts/profile resolver в BookOfEternityClient/Services/SpiritualCombat/; обновить AfterlifeSpiritualConflictState.cs и Validation/ValidationService.AfterlifeEntityProfiles.cs. Definitions/ранги, actor authority/dependency fingerprint, без file I/O в kernel.
-- [ ] T006 [US1] ResourceDefinitionCatalog.cs, AfterlifeResourceOwnerComposer.cs, ResourceMutationSourceCatalog.cs, AfterlifeConflictActionPointProjection.cs: personal spiritual_health/ДЭ, capabilities/max/init; после T077 — бесплатное восстановление ДЭ полноценным отдыхом и ускорение камнями, без автоматического combat-end/reload/re-entry refill и side fallback. Не расширять Mortal health; скорость/цены/условия ещё не утверждены, см. out-of-combat-recovery-proposal.md.
+- [ ] T006 [US1] ResourceDefinitionCatalog.cs, AfterlifeResourceOwnerComposer.cs, ResourceMutationSourceCatalog.cs, AfterlifeConflictActionPointProjection.cs: personal spiritual_health/ДЭ, capabilities/max/init; после T077 — бесплатное восстановление ДЭ полноценным отдыхом и ускорение камнями, без автоматического combat-end/reload/re-entry refill и side fallback. Не расширять Mortal health; T090 принимает скорость P+H/20 и таблицу камней/цен, условия и техническая интеграция ещё открыты, см. out-of-combat-recovery-proposal.md.
 - [ ] T007 [US1] SpiritualCombatRules.cs и AfterlifeActionCostRules.cs: accepted math/target/cost/damage/guard/recover из согласованного tuning; ValidationService.AfterlifeSpiritualConflict.cs делегирует расчёт. Preview и accepted используют одно ядро.
 - [ ] T008 [US1] AcceptedMechanicsPlanner.SpiritualMechanics.cs и общий CanonicalStateNormalizer: включить state/resources/action receipts в одну существующую публикацию. GREEN T004 и actual accepted/replay/rollback integration. Новый отдельный publisher запрещён.
 
