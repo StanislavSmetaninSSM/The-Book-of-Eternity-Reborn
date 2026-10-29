@@ -6,6 +6,8 @@ namespace BookOfEternityClient.Services;
 public partial class ValidationService
 {
     /// <summary>Validates current Shining faction references and materialization within one fresh raw or post-normalization invocation.</summary>
+    /// <param name="rawBeforeNormalization">Whether creation authority and raw evidence are required before normalization.</param>
+    /// <param name="issues">Receives findings without changing authored canonical DATA.</param>
     internal async Task
         ValidateAcceptedTurnShiningFactionMaterializationCompletenessAsync(
             bool rawBeforeNormalization,

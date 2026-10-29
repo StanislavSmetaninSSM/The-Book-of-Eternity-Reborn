@@ -13974,6 +13974,35 @@ contract rather than pretending the role itself authorizes treatment. Multiple e
 healers and tiers I-V are legal. Hidden/unconfirmed profiles reveal no capability.
 Read/close is not a turn: no draw, payment or world cycle.
 
+shining_faction_healer_invariant_v1 — retained historical faction excerpt
+
+The current revealed faction above has its visible exact living tier-III healer. If the
+same current faction is hidden/rumored, its canonical healer still exists, while the
+profile may remain hidden until disclosure. No new service, payment or treatment exists.
+
+The following excerpt is from an ALREADY accepted broken historical faction. Merge it
+only into that retained complete record, keeping every other field and all prior history;
+it does not authorize a new lifecycle transition, removal of actors or erased records.
+No living replacement is required for broken/dissolved history. An active/weakened/
+leaderless faction, including a hidden one, cannot use this historical exemption.
+
+```json
+{
+  "factionId": "faction_dawn",
+  "visibility": "revealed",
+  "factionLifecycle": { "state": "broken" },
+  "chronicle": [
+    { "entryId": "chronicle_dawn_history", "turnNumber": 45,
+      "eventType": "faction_broken", "summary": "The faction survives in history.",
+      "visibility": "known", "consequences": [] }
+  ]
+}
+```
+
+Never create a default healer/tier, resurrect the dead or silently change lifecycle.
+The client validates canonical presence separately from public role/tier visibility;
+all original materialization, trade, history and authority checks remain in force.
+
 end_shining_healer_role_v1
 
 

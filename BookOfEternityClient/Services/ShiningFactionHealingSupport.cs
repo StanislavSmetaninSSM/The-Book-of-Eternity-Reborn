@@ -12,6 +12,7 @@ internal sealed record ShiningFactionRosterEntry(string ResidentId, string Name,
 /// </summary>
 internal static class ShiningFactionHealingSupport
 {
+    /// <summary>Requires a living healer unless the authored lifecycle is valid broken/dissolved history.</summary>
     internal static bool RequiresLivingHealer(JsonObject faction) =>
         faction["factionLifecycle"] is not JsonObject || !ShiningAbodeState.IsFactionDefeated(faction);
 
@@ -37,8 +38,10 @@ internal static class ShiningFactionHealingSupport
             TryReadCanonicalHealerTierFromValidatedProfile(resident, profile, out tier);
     }
 
-    // Canonical capability is independent of player knowledge. Only callers
-    // that already validated the exact materialization may use this DATA path.
+    /// <summary>Reads canonical capability independently of player knowledge, after exact materialization validation.</summary>
+    /// <param name="resident">The unique current ascended resident and exact faction affiliation.</param>
+    /// <param name="profile">The caller's already validated exact materialized profile; no authority is exported.</param>
+    /// <param name="tier">The explicitly authored integer Healing tier, when qualified.</param>
     internal static bool TryReadCanonicalHealerTierFromValidatedProfile(
         JsonObject resident, JsonObject profile, out int tier)
     {

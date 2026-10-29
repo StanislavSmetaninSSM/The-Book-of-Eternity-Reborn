@@ -8,6 +8,7 @@ namespace BookOfEternityClient.Tests;
 public sealed class ShiningFactionHealingSupportDocumentationTests
 {
     private const string Marker = "shining_healer_role_v1";
+    private const string InvariantMarker = "shining_faction_healer_invariant_v1";
 
     [Fact]
     public void EffectiveGuidanceAndManifestDescribeTheExistingRoleWithoutAServiceGrant()
@@ -17,11 +18,14 @@ public sealed class ShiningFactionHealingSupportDocumentationTests
         {
             var text = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, file));
             Assert.Contains(Marker, text); Assert.Contains("residentRole=\"healing_support\"", text);
+            Assert.Contains(InvariantMarker, text); Assert.Contains("broken/dissolved", text);
         }
+        Assert.Contains(InvariantMarker, File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "Rules/Block_CLI_Operations.txt")));
         var daemon = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient/game_master_daemon.ps1"));
         var directives = Regex.Matches(daemon, "\\$script:WoundMaterializationDirective = \\\"[^\\\"]*\\\"");
         Assert.Equal(2, directives.Count);
         Assert.All(directives.Cast<Match>(), d => Assert.Contains(Marker, d.Value));
+        Assert.All(directives.Cast<Match>(), d => Assert.Contains(InvariantMarker, d.Value));
         var entry = Assert.Single(ExampleValidationManifest.Load().EffectMaterializationCoverage, e => e.ContractId == Marker);
         var example = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "Examples", entry.File));
         Assert.All(entry.RequiredText, token => Assert.Contains(token, example));
@@ -35,7 +39,7 @@ public sealed class ShiningFactionHealingSupportDocumentationTests
         var end = text.IndexOf("end_shining_healer_role_v1", start, StringComparison.Ordinal); Assert.True(end > start);
         var fragments = Regex.Matches(text[start..end], "```json\\s*([\\s\\S]*?)```", RegexOptions.CultureInvariant)
             .Cast<Match>().Select(m => JsonNode.Parse(m.Groups[1].Value)!.AsObject()).ToArray();
-        Assert.Equal(2, fragments.Length);
+        Assert.Equal(3, fragments.Length);
         var resident = fragments[0]; var excerpt = fragments[1];
         ShiningAbodeState.NormalizeResidentShiningFields(resident, shiningRoot: null);
         Assert.Equal("healing_support", resident["residentRole"]!.GetValue<string>());
@@ -56,5 +60,13 @@ public sealed class ShiningFactionHealingSupportDocumentationTests
             new JsonObject { ["profiles"] = new JsonArray(profile) });
         var visible = Assert.Single(roster);
         Assert.Equal("Светлая Ива", visible.Name); Assert.Equal("целитель", visible.Role); Assert.Equal(3, visible.HealingTier);
+        var historical = fragments[2];
+        var history = historical["chronicle"]!.ToJsonString();
+        Assert.False(ShiningFactionHealingSupport.RequiresLivingHealer(historical));
+        historical["factionLifecycle"]!["state"] = "dissolved";
+        Assert.False(ShiningFactionHealingSupport.RequiresLivingHealer(historical));
+        historical["factionLifecycle"]!["state"] = "active"; historical["visibility"] = "hidden";
+        Assert.True(ShiningFactionHealingSupport.RequiresLivingHealer(historical));
+        Assert.Equal(history, historical["chronicle"]!.ToJsonString());
     }
 }

@@ -2093,6 +2093,29 @@ Reading/closing the detail consumes no treatment attempt, draw, payment or world
 See the focused worked roster/profile excerpts in Examples/E_CLI_Afterlife_Turns.txt;
 retain all other complete actor/faction fields and current integrity/authority checks.
 
+shining_faction_healer_invariant_v1: Every current materialized Shining faction, including
+hidden, rumored, weakened and leaderless factions, must have at least one unique ascended
+primary healing_support resident linked to that exact faction, with one exact complete
+resident profile in Shining Abode and integer Spiritual Healing I-V. Generic lifeState
+omission remains supported; when present it must be alive to qualify. Dead/null/nonstring
+life or a wrong-kind/foreign/ambiguous/incomplete profile cannot prove a living healer.
+A hidden faction may keep its valid healer profile hidden. A revealed faction must also
+expose at least one confirmed living healer's role and tier in its roster. Keep all public
+visibility and separate service/access/consent/price checks; canonical presence is not a
+public service grant. Multiple healers are allowed; a valid dead historical healer does
+not invalidate another valid living healer.
+Only existing factionLifecycle.state=broken/dissolved historical factions are exempt
+from the living-healer requirement. Retain their faction, chronicle, actor and receipt
+history; hiddenness of a current faction is NOT an exemption. Do not invent a healer,
+default tier, resurrection or lifecycle transition to pass validation. Malformed lifecycle
+is invalid, never an exemption. The same raw/post accepted-turn owner rejects
+faction_materialization_shining_healer_missing or
+faction_materialization_shining_healer_not_visible without repairing authored DATA.
+Native discovery, player founding and story creation must include the healer within their
+existing authorized full materialization/declared resident sets. All other actor/profile,
+trade, continuity and history checks remain. Read the worked retained-history excerpt.
+
+
 
 ## shining_healer_access_view_v1 — interactive declared access
 

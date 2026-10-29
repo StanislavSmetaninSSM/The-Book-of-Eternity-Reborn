@@ -235,7 +235,7 @@ public sealed partial class FactionMaterializationValidationTests
         List<JsonObject> profiles, string? existingResidentId = null)
     {
         if (faction["factionId"] is not JsonValue value || !value.TryGetValue<string>(out var factionId) ||
-            !ResourceMaterializationContract.IsExactIdentifier(factionId)) return;
+            factionId is null || !ResourceMaterializationContract.IsExactIdentifier(factionId)) return;
         JsonObject resident;
         JsonObject profile;
         if (existingResidentId is null)

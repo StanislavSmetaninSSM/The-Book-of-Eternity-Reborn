@@ -58,9 +58,9 @@
   "realms": [
     "Shining Abode"
   ],
-  "description": "Visible authored healing_support role and exact integer HealingIII with separate service authority.",
+  "description": "Authored healer role/profile, canonical current-faction invariant and retained broken/dissolved history, with separate public visibility/service authority.",
   "validationKind": "focused-fragment",
-  "focusedFragmentReason": "ShiningFactionHealingSupportDocumentationTests overlays the authored excerpts onto an independent complete actor fixture and checks the production role/profile projection.",
+  "focusedFragmentReason": "ShiningFactionHealingSupportDocumentationTests overlays actor excerpts onto an independent complete fixture, checks production public capability and the canonical historical-only lifecycle predicate.",
   "coverageLimit": "Not a standalone materialization, every-faction lifecycle acceptance, service access/payment, DOM/provider or fresh-process qualification.",
   "requiredText": [
     "shining_healer_role_v1",
@@ -70,7 +70,11 @@
     "spiritual_healing",
     "целитель; Исцеление III",
     "no public clinic",
-    "no draw, payment or world cycle"
+    "no draw, payment or world cycle",
+    "shining_faction_healer_invariant_v1",
+    "broken/dissolved",
+    "ALREADY accepted broken historical faction",
+    "chronicle_dawn_history"
   ]
 },
 {

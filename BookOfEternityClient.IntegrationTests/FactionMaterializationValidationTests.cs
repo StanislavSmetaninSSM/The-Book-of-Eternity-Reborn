@@ -2208,6 +2208,9 @@ public sealed partial class FactionMaterializationValidationTests : IDisposable
         if (existingFaction is not null && existingResident["shiningFactionId"]!.GetValue<string>() == existingFactionId)
             AuthorFixtureFactionHealer(existingFaction, currentResidents, profiles, existingResidentId);
         preTurnResidents["entries"]![0]!["residentRole"] = ShiningAbodeState.ResidentRoleHealingSupport;
+        var existingPreProfile = BuildRouteAfterlifeProfile(existingResidentId, includeEnvelope: true);
+        existingPreProfile["standardArts"]!["spiritual_healing"] = 1;
+        var preTurnProfiles = BuildAfterlifeProfileRoot(new[] { existingPreProfile });
         var profileRoot = BuildAfterlifeProfileRoot(profiles);
         var requestEntries = new JsonArray();
         if (!string.Equals(
@@ -2238,6 +2241,7 @@ public sealed partial class FactionMaterializationValidationTests : IDisposable
             (ShiningPath, preTurnShining.ToJsonString()),
             (ResidentPath, preTurnResidents.ToJsonString()),
             (SoulPath, preTurnSoul.ToJsonString()),
+            (AfterlifeProfilesPath, preTurnProfiles.ToJsonString()),
             (ShiningCoreActionRequestState.PendingActionsRequestPath, requestRoot.ToJsonString()));
     }
 

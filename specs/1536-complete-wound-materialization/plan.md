@@ -1,3 +1,48 @@
+# T142 — whole source ready for independent review, WIP/UNCOMPILED
+
+Current task: #1536 T142 / FR083, following accepted current-Elyara checkpoint
+ ebc99499b8a0e69adbcff616dcc8176322d903ad. Accepted actual causal RED and design below.
+No author question remains: only historical broken/dissolved factions are exempt.
+
+Grouped implementation is written: current raw/post owner, exact local profile/resident
+indexes, existing requiredActors dedup/one full validation, canonical living capability
+and separate revealed-roster visibility. Safe lifecycle getter prevents old raw/trade
+scalar/array indexing exceptions without granting an exemption or default. Existing
+pending native/founding owner bodies unchanged; internal typed access replaces private
+reflection in affected tests. No new service/cache/transport/diagnostic stack.
+
+Fixtures retain their intended negative mutations: baseline constructors declare the
+required affiliation before callers mutate receipts; writers never repair those flags.
+Generic causal fixture explicitly opts out and retains its original no-healer input.
+Native existing faction has truthful63strength/one resident, healer profile before/after;
+new/native and founding healers reuse declared residents/supporters. Separate current
+healers keep required-head/profile/source negatives focused. Actual raw/post matrices,
+profile opens1vs20, head+healer deterministic error-count proof and hidden-public unit
+controls are written. Exact inventory and results remain UNRUN.
+
+GM synchronization complete: Wound guide, Afterlife matrix, Guardians rules, CLI operation
+rules/API/MainTask, both daemon directives, existing worked role/retained-history excerpt,
+authored manifest and source guards. No new GM response or Mortal contract; Mortal prompt
+changes are unnecessary for this Shining-only invariant. Current guide explicitly retains
+fresh materialization/trade/authority/history checks and forbids inferred/resurrected
+healers or forged lifecycle. Hidden canonical DATA never grants a public service.
+
+Finite source-derived selection9categories: causal; invariant DATA; actual lifecycle/
+disclosure; actual identity/capability; source/dedup controls; affected complete native/
+founding/story/required-actor consumers; shared visible-capability DATA; focused GM docs;
+mandatory afterlife entrypoint coverage. No full factions/afterlife or T143173 replay.
+Original/new bounded budgets remain60s for these cheap categories. Exact case counts
+must come from fresh discovery/PlanOnly; this checkpoint is NOT qualification.
+
+Next: one whole independent SOURCE/selection review; preserve current27 scaffold build
+artifacts, fresh Main/Support/Unit/Integration builds and source/PDB/artifact checks,
+discovery/PlanOnly/resource/PREP. Run cheap DATA/causal/lifecycle/identity/source/docs first;
+then only affected complete-route consumer group after admission. All raw outside checkout
+/workspace/tboe-linux-evidence-20261025/us6-faction-living-healer; no raw or binaries pushed,
+no saves/recovery/raw removed. Previously accepted T143 and HOLD gates are preserved.
+
+---
+
 # T142 grouped source/test WIP — UNCOMPILED, qualification pending
 
 Canonical/reference implementation is saved through84303621542b9f55ca890578f5f12c8c970b93b4.

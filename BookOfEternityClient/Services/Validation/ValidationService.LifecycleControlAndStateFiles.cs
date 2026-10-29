@@ -1110,6 +1110,7 @@ public partial class ValidationService
     }
 
     /// <summary>Checks the existing pending faction-founding resolution and its inverse authority.</summary>
+    /// <param name="issues">Receives findings from the existing request/receipt owner.</param>
     internal async Task ValidatePendingShiningFoundingResolutionAsync(List<ValidationIssue> issues)
     {
         var preTurnJson = await ReadRequiredValidatedCurrentPreTurnTrackedFileAsync(
@@ -1333,6 +1334,7 @@ public partial class ValidationService
     }
 
     /// <summary>Checks the existing pending Shining core-action resolution and its inverse authority.</summary>
+    /// <param name="issues">Receives findings from the existing request/receipt owner.</param>
     internal async Task ValidatePendingShiningCoreActionResolutionAsync(List<ValidationIssue> issues)
     {
         var preTurnJson = await ReadRequiredValidatedCurrentPreTurnTrackedFileAsync(
