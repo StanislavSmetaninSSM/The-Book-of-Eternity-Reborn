@@ -202,7 +202,7 @@ public sealed partial class SpiritualResidentTreatmentParticipationTests
     private static JsonObject CreateResidentOutcome(SpiritualTreatmentParticipation.Change change) =>
         SpiritualTreatmentParticipation.CreateOutcome(change, ResidentLocality, new JsonObject
         { ["sessionId"] = "session_aid", ["requestId"] = "request_grant", ["snapshotToken"] = "snapshot_aid", ["realm"] = "chaos_sea", ["turn"] = 42 }, 1, "transition_aid");
-    private static JsonObject ResidentRecord() => CreateResidentOutcome(new(ResidentOwner, ResidentProposal()))["record"]!.AsObject();
+    private static JsonObject ResidentRecord() => CreateResidentOutcome(new(ResidentOwner, ResidentProposal()))["record"]!.DeepClone().AsObject();
     private static JsonObject GuardianLocality()
     {
         var guardian = new JsonObject { ["guardianId"] = "guardian_aid", ["canonicalName"] = "Хранитель", ["abode"] = new JsonObject

@@ -2,6 +2,31 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "spiritual-resident-aid-record-detachment",
+  "responsibility": "Six previously blocked raw canonical-record forgery/null rows plus the directly affected resident selection roundtrip. The fixture must return detached identical record DATA before any raw admission assertion.",
+  "excludes": "Does not repeat the other unchanged41 contract cases or10 affected consumer PASS; no production or Engine change.",
+  "changeHints": [
+    "BookOfEternityClient.Tests/SpiritualResidentTreatmentParticipationTests.Contracts.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.SpiritualResidentTreatmentParticipationTests.RawCanonicalResidentRecordCannotBeRewrittenOrNulled",
+        "BookOfEternityClient.Tests.SpiritualResidentTreatmentParticipationTests.ResidentSelectionCarriesClosedParticipantsLocalityAndNoGuardianConfirmationFlags"
+      ]
+    }
+  ]
+},
+{
   "id": "spiritual-resident-aid-gm",
   "responsibility": "Worked proposal/memory/selection parsed by production typed APIs, exact manifest, both effective daemon directives, GM entrypoints and output-only routing.",
   "excludes": "No full example/runtime suite, gameplay acceptance or external provider.",

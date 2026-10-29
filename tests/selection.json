@@ -2,15 +2,15 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "spiritual-resident-aid-gm",
-      "reason": "New capability and protected response field require exact worked example/manifest, both effective daemon assignments, shared entrypoints and actual codecs to agree.",
+      "category": "spiritual-resident-aid-record-detachment",
+      "reason": "First exact59 attempt completed52PASS/6fixtureFAIL with GM1UNRUN. Fix only resident record fixture detachment; rerun failed6 plus directly affected selection1, then missing GM1. Other41 contract and10 affected PASS remain on344fcf4d2 and are not replayed.",
       "contracts": [
-        "#1536 T108-RESIDENT; US4 scenario8; typed consent/lifetime, ordinary cycle, strict current checks and immutable History; bounded functional acceptance"
+        "#1536 T108-RESIDENT detached fixture DATA, unchanged raw-record forgery/closed-selection assertions"
       ]
     },
     {
-      "category": "spiritual-resident-aid-affected",
-      "reason": "Only existing cheap consumers directly affected by shared participation/selection/output methods; unrelated accepted tests are not repeated.",
+      "category": "spiritual-resident-aid-gm",
+      "reason": "New capability and protected response field require exact worked example/manifest, both effective daemon assignments, shared entrypoints and actual codecs to agree.",
       "contracts": [
         "#1536 T108-RESIDENT; US4 scenario8; typed consent/lifetime, ordinary cycle, strict current checks and immutable History; bounded functional acceptance"
       ]
@@ -39,13 +39,6 @@
     {
       "category": "spiritual-resident-aid-rollback",
       "reason": "New canonical memory append must restore with wounds/resources/scheduler/History through existing actual C4 plus whole-turn failure route. Prepared and pre-stage baselines differ.",
-      "contracts": [
-        "#1536 T108-RESIDENT; US4 scenario8; typed consent/lifetime, ordinary cycle, strict current checks and immutable History; bounded functional acceptance"
-      ]
-    },
-    {
-      "category": "spiritual-resident-aid-contract",
-      "reason": "Causal resident admission RED accepted. Qualify full typed identity, raw forms, closed families and append-only protected memory/typed transport through cheap independent DATA and real distributor rollback before expensive journeys.",
       "contracts": [
         "#1536 T108-RESIDENT; US4 scenario8; typed consent/lifetime, ordinary cycle, strict current checks and immutable History; bounded functional acceptance"
       ]

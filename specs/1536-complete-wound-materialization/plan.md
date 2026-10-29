@@ -1,3 +1,32 @@
+# T108 first cheap outcome —52 PASS,6 fixture FAIL,1 UNRUN
+
+2026-10-29. CurrentSource344fcf4d2f1866cc9e825bab3164d44ee5863ea9.
+Fresh Integration0errors102unchangedwarnings1:56.46; final18 DLL/PDB and48source
+pins match. Catalog1048/12742 valid; full PlanOnly69cases/30methods/10descriptors
+executed0 with both cleanup flags true. Independent Sol CHEAP59 PREP accepted.
+Actual exact59 attempt executed58: affected10 PASS, contract42 PASS/6 FAIL;
+GM1 UNRUN due runner fail-fast. Wall16.0555402s; affected5.2739131s/contract4.7020624s
+both<60s, no timeout/skip/duplicate and both cleanup flags true. This is NOT59PASS.
+
+All six failures are one test-fixture error BEFORE production raw admission:
+ResidentRecord returned record child still parented to its outcome, and assigning
+it to previous profile throws JsonNode already-has-parent atContracts.cs:40. Correct
+only the fixture export to DeepClone().AsObject(), retaining identical record
+fields/fingerprint and every assertion. TRX contract SHA256
+4b0d580923a09e697ab4c906fa85093fbe2850964f83c7cd15ea3d0227a4e301;
+affected2d57f94be98e3762089780193867f1ff4d33c17602cf1d5d0017a0b64b8d2c4b.
+Full raw resident-green-cheap-1 remains outside checkout. No production defect or
+accepted resident-user capability is inferred from this fixture failure.
+
+Next independently review outcome/correction/selection, fresh Unit refsfalse only,
+updated catalog/exactPlan/PREP for six failed rows+the one selection consumer of the
+changed helper, plus missing GM1 (8cases). Other41 contract/10affected immutable PASS
+retain344f lineage; no unchanged runtime repeat. New category overlaps those two
+methods' original documented owner; selection now names only recovery8 plus the
+pending backend/current-family/sourceclosure/guided gates. Int/Main/Support/Bridge
+sources and compiled outputs are unchanged. Budgets remain60s; full capture/no
+raw deletion, clone or restore. Overall resident/US4 and later gates remain open.
+
 # T108 Integration compile correction — Unit fresh, runtime UNRUN
 
 2026-10-29. Unit refsfalse at6cac83027 completed0errors/26 exact baseline warnings
