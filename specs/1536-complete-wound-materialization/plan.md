@@ -1,3 +1,101 @@
+# US6 — interactive faction healer access display implementation plan
+
+Issue: https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536
+Baseline: 9868135d97a9dd8ea98c62d6a44ef9b14cfa7e52, remote verified, clean same
+Linux checkout/branch. Sole writer/runner Sol; independent Astra/high DESIGN accepted,
+Sol SOURCE/selection/PREP/OUTCOME required. Use superpowers:executing-plans inline.
+Tracked scope: T135/T141/T143/T144–T147, FR075–085 and current service/role contract.
+
+Goal: the existing no-argument console political inspection reaches a selected faction's
+confirmed healers and readable public assistance terms; browser faction navigation shows
+the same terms. Preserve the existing political/project information. A visible healer
+with unknown/private/invalid terms stays visible without private text or an executable
+service. This is access DISPLAY, not Shining treatment execution, negotiation, payment,
+travel or a T142 lifecycle decision. The user authorized autonomous implementation;
+the sole pending historical-faction rule is unchanged and does not block this view.
+
+Architecture / alternatives
+
+Extend the existing roster projection and political inspection, rather than add another
+menu/registry/read service. Replacing the whole old inspection with the smaller direct
+card would lose political/project information; a second healer browser would duplicate
+visibility and source ownership. Keep the existing authoritative ReadCurrencyProfile
+and paid admission unchanged; a narrow read-only sibling in AfterlifeHealingServiceContract
+handles restricted PUBLIC declarations that the currency admission deliberately rejects.
+
+- Add detached AfterlifeHealingServiceDisplayTerms(bool DeclaredAvailable,
+  int? MinimumRelationship, int MultiplierPercent, IReadOnlyList<string> CompensationKinds,
+  IReadOnlyList<string> AccessConditions) and ReadPublicDisplayTerms(WoundOwnerCoordinate,
+  JsonObject profile). It returns DATA/null, never a quote, permission or mutation.
+  Exact typed carrier/identity/realm/location, visible alive profile, integer HealingI–V,
+  explicit closed service fields, public visibility, available/unavailable, null/integer
+  relationship, integer 50–200 multiplier, existing six unique compensation kinds and
+  nonempty string conditions. Do not invent a relationship range or reveal non-public terms.
+- Extend internal ShiningFactionRosterEntry with private exact ResidentId and optional
+  display terms. IDs are joins, never visible healer output. Reuse the already validated
+  profile inside ProjectVisibleRoster: no second full materialization serialization.
+  Shared role/tier/terms display lines use detached strings and read-only collections.
+  Feather tariff rows use existing CalculatePrice only if explicitly declared, and only
+  severity <= min(current Healing tier, IV), preserving the existing H>=W gate.
+- Make ShowShiningFactionPoliticalInspectionPanel asynchronous. After PromptForFaction,
+  reload the existing current context and uniquely resolve the same exact revealed faction.
+  Pre-choice DATA is only a selection snapshot. Then read profiles once, project once,
+  and join political fields against the fresh resident root by private exact ID, not name
+  or array index. Preserve loyalty, restlessness, project and other political display.
+  Missing/hidden/removed/ambiguous targets refuse stale output. Normal back/cancel is inert.
+- Existing browser detail renders the same shared terms below each confirmed healer.
+  Availability is the provider's declaration, not proven player access. Explicitly state
+  that Shining command treatment is not yet connected; there is no active treatment button.
+
+Optimization / integrity
+
+Reuse existing parsed current roots and profile projection within one view operation.
+After user selection, external mutation/reentry is possible, so earlier DATA cannot own
+fresh visibility/affiliation/price. Reload once through the existing context, then share
+profile DATA across members. Full identity is faction ID + ascension/affiliation/role +
+exact typed actor ID/realm + profile visibility/life/materialization/arts/service values.
+No cache or retained JsonNodes; exports are detached, new action reads fresh terms.
+Actual source-open counters compare one/many members and changed terms. Keep all current
+materialization and authority boundaries; display never authorizes a charge or heal.
+
+Finite implementation / acceptance
+
+- [x] Inspect canonical scope and existing callers; independent Astra DESIGN accepted with
+  explicit compensation and tier/price constraints. T142 author question stays pending.
+- [ ] Add one cheap causal typed actual no-argument console test:
+  HealingAccessInteractiveInspectionShowsPublicRestrictedTermsWithoutMutation. Existing
+  role/name is the control; missing public condition is semantic RED. New exact category
+  shining-healer-access-causal, 60 s. Fresh Unit only (production unchanged), source/PDB
+  proof, discovery, exact PlanOnly/PREP, one RED. No accepted 34/paid 80 repeat for scaffold.
+- [ ] Implement the service display sibling, shared detached projection/formatter and
+  fresh interactive join. Add independent typed negatives for private/malformed/foreign
+  terms, declared availability/threshold, currencies versus noncurrency, rounding/tier
+  limit, duplicates/same-name identity, immutable results and no admission broadening.
+- [ ] Add real console/browser tests for public terms, inert return/cancel and selection
+  races (hidden/removed faction, changed affiliation, hidden profile), literal rendering,
+  one/many source counts and new-action changed terms. Reuse approved per-test fixtures,
+  exact canonical snapshots and guarded cleanup; no whole-world/GameEngine preparation.
+- [ ] Synchronize the existing GM rule/guide/matrix/main task/daemon directives, worked
+  Shining access example/manifest and source guards. No new pending/control schema.
+- [ ] Coherent SOURCE/impact-selection review, fresh affected Main/Support/Unit builds,
+  exact catalog/PlanOnly/PREP, approved cheap causal/data/docs and UI checks, full captures
+  and independent OUTCOME. Re-run old checks only when actually affected by changed
+  projection/rendering; accepted paid 80 and HOLD DFR/Mortal/Windows are not substituted.
+- [ ] Commit/push verified checkpoint, read remote SHA; no merge/force/history rewrite,
+  branch deletion, new clone/restore or old raw/save/recovery deletion.
+
+Resource / current boundary
+
+Same environment available, no owned builds/tests at start, over 7 GiB free. Preserve
+400 MiB build-start reserve plus full output, 128 MiB runtime floor and unbounded capture.
+Raw stays outside checkout under /workspace/tboe-linux-evidence-20261025/us6-shining-healers.
+Previous role gate 34/34 PASS and its complete capture are retained. Current plan only is
+new; no new C# or functional test is yet authored/executed. Global faction enforcement,
+Shining service execution, universal Elyara travel, negotiated routes, DOM/provider/
+fresh-process, DFR/Mortal/Windows and earlier guardian/cross-OS limitations remain open.
+
+---
+
 # US6 — visible Shining faction healers implementation plan
 
 Issue: https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536
