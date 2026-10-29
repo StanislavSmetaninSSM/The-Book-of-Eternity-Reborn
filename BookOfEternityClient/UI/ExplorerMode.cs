@@ -225,7 +225,8 @@ public partial class ExplorerMode
         var parsedCommand = ExplorerCommandParser.Parse(trimmedInput);
         if (!parsedCommand.Success)
         {
-            if (string.Equals(parsedCommand.ErrorTitle, "Некорректные аргументы", StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(parsedCommand.ErrorTitle, "Некорректные аргументы", StringComparison.OrdinalIgnoreCase) ||
+                ExplorerCommandCatalog.FindByAlias(ExplorerCommandCatalog.ExtractCommandToken(trimmedInput))?.Id == "wounds")
             {
                 MarkupLine($"[yellow]⚠️ {GameInterface.EscapeMarkup(parsedCommand.ErrorTitle)}: {GameInterface.EscapeMarkup(parsedCommand.ErrorMessage)}[/]");
                 WaitForKey();

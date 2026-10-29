@@ -7,10 +7,10 @@ namespace BookOfEternityClient.Tests;
 /// <summary>Strict detached codec evidence, not a live recovery/publication authority.</summary>
 internal static class WoundPlayerHistoryTestData
 {
-    internal static WoundPlayerProjectionInput TerminalInput(bool hidden = false)
+    internal static WoundPlayerProjectionInput TerminalInput(bool hidden = false, string name = "Известная зажившая рана")
     {
         var node = WoundContractTestData.CreateActiveWound("wound_healed_ui");
-        node["display"]!["name"] = "Известная зажившая рана";
+        node["display"]!["name"] = name;
         node["display"]!["visibility"] = hidden ? "hidden" : "known_to_player";
         node["treatment"]!["routes"]![0]!["outcomes"]![0]!["result"]![1] = new JsonObject
         { ["kind"] = "add_recovery", ["points"] = 1 };

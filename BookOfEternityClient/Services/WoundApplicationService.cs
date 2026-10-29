@@ -21,12 +21,26 @@ internal static class WoundApplicationService
 
     internal static async Task<ExplorerCommandResult> OpenAsync(FileSystemManager fs, string command, bool treatment)
     {
+        var read = treatment ? null : ParseReadCommand(command);
+        var history = read?.Subcommand?.Id == "history";
+        command = read?.CanonicalCommand ?? command;
         await using var lease = await fs.AcquireCanonicalWriteLeaseAsync();
         fs.VerifyCurrentSessionOperation(lease);
         var context = await WoundPlayerReadService.LoadContextAsync(fs, lease);
-        if (context is null) return ExplorerWoundCommandResultBuilder.Build(command, WoundPlayerProjection.Unavailable(), null, treatment);
+        if (context is null) return ExplorerWoundCommandResultBuilder.Build(command, WoundPlayerProjection.Unavailable(), null, treatment, history);
         var state = treatment ? await CreateStateAsync(fs, lease, fs.GetOrCreateSessionGeneration(lease), context) : null;
-        return ExplorerWoundCommandResultBuilder.Build(command, context.Projection, state, treatment);
+        return ExplorerWoundCommandResultBuilder.Build(command, context.Projection, state, treatment, history);
+    }
+
+    // Resolve only the existing read command. A link is navigation, never retained DATA
+    // or permission; OpenAsync obtains a new coherent context for every invocation.
+    internal static ExplorerParsedCommand ParseReadCommand(string command)
+    {
+        var parsed = ExplorerCommandParser.Parse(command);
+        if (!parsed.Success || parsed.Descriptor?.Id != "wounds" || parsed.Arguments.Length != 0 ||
+            parsed.Subcommand is not null && parsed.Subcommand.Id != "history")
+            throw new InvalidDataException("Выберите /раны или действие «История заживших ран» без дополнительных аргументов.");
+        return parsed;
     }
 
     internal static async Task<SpiritualSelfTreatmentSelection> ConfirmAsync(FileSystemManager fs,

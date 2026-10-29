@@ -6,7 +6,10 @@ public static class ExplorerCommandCatalog
     [
         D("help", ExplorerCommandGroup.UniversalMeta, ExplorerCommandMutationMode.ReadOnly, ExplorerCommandBrowserHandlerKind.Help, ["/help", "/помощь"], browserStatus: ExplorerCommandMigrationStatus.ReadOnlyParity),
         D("math", ExplorerCommandGroup.UniversalMeta, ExplorerCommandMutationMode.ReadOnly, ExplorerCommandBrowserHandlerKind.Math, ["/math", "/математик"], browserStatus: ExplorerCommandMigrationStatus.ReadOnlyParity, acceptsArguments: true),
-        D("wounds", ExplorerCommandGroup.UniversalMeta, ExplorerCommandMutationMode.ReadOnly, ExplorerCommandBrowserHandlerKind.Wounds, ["/раны", "/wounds"], browserStatus: ExplorerCommandMigrationStatus.ReadOnlyParity),
+        D("wounds", ExplorerCommandGroup.UniversalMeta, ExplorerCommandMutationMode.ReadOnly, ExplorerCommandBrowserHandlerKind.Wounds, ["/раны", "/wounds"], browserStatus: ExplorerCommandMigrationStatus.ReadOnlyParity, acceptsArguments: true, subcommands:
+        [
+            new("history", ["история", "history"], "/раны история", BrowserStatus: ExplorerCommandMigrationStatus.ReadOnlyParity)
+        ]),
         D("wound_treatment", ExplorerCommandGroup.UniversalMeta, ExplorerCommandMutationMode.LocalTurn, ExplorerCommandBrowserHandlerKind.Wounds, ["/лечить", "/treat", "/исцелить", "/heal"], browserStatus: ExplorerCommandMigrationStatus.MutatingParity),
         D("soul", ExplorerCommandGroup.UniversalMeta, ExplorerCommandMutationMode.ReadOnly, ExplorerCommandBrowserHandlerKind.UniversalMeta, ["/soul", "/душа"], browserStatus: ExplorerCommandMigrationStatus.ReadOnlyParity),
         D("soul_relics", ExplorerCommandGroup.UniversalMeta, ExplorerCommandMutationMode.ReadOnly, ExplorerCommandBrowserHandlerKind.UniversalMeta, ["/soul_relics", "/реликвии"], browserStatus: ExplorerCommandMigrationStatus.ReadOnlyParity, acceptsArguments: true),

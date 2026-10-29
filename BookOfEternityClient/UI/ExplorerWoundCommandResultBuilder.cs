@@ -6,8 +6,21 @@ namespace BookOfEternityClient.UI;
 internal static class ExplorerWoundCommandResultBuilder
 {
     internal static ExplorerCommandResult Build(string command, WoundPlayerProjectionResult projection,
-        WoundCommandState? state, bool treatment)
+        WoundCommandState? state, bool treatment, bool history = false)
     {
+        if (history && !treatment)
+            return new()
+            {
+                Command = command,
+                Blocks = !projection.IsAvailable
+                    ? [new UiTextBlock { Text = projection.StatusMessage }]
+                    : projection.History.Count == 0
+                        ? [new UiTextBlock { Text = "История заживших ран пока пуста." }]
+                        : [new UiPanelBlock { Title = "История заживших ран", Blocks = projection.History.Select(h =>
+                            (UiBlock)new UiTextBlock { Text = h.Name + " — " + h.Severity + ". " + h.Summary }).ToList() }],
+                Actions = projection.IsAvailable
+                    ? [new UiAction { Id = "wound_active", Label = "Активные раны", Command = "/раны" }] : []
+            };
         if (treatment && state is { IsTargetSelection: true }) return TargetChoice(command, state);
         var blocks = new List<UiBlock>();
         if (state?.SelectedTarget is { } target)
@@ -30,9 +43,6 @@ internal static class ExplorerWoundCommandResultBuilder
             blocks.Add(new UiPanelBlock { Title = wound.Name + " — " + wound.Severity,
                 Blocks = lines.Where(l => !string.IsNullOrWhiteSpace(l)).Select(l => (UiBlock)new UiTextBlock { Text = l }).ToList() });
         }
-        if (projection.History.Count > 0)
-            blocks.Add(new UiPanelBlock { Title = "История заживших ран", Blocks = projection.History.Select(h =>
-                (UiBlock)new UiTextBlock { Text = h.Name + " — " + h.Summary }).ToList() });
         if (treatment && state is not null)
             foreach (var choice in state.Choices.Where(c => !c.Available))
                 blocks.Add(new UiPanelBlock { Title = "Самостоятельное лечение — " + choice.Name + " — " + choice.Severity,
@@ -48,6 +58,8 @@ internal static class ExplorerWoundCommandResultBuilder
         {
             Command = command, State = canTreat ? CommandExecutionState.RequiresInput : CommandExecutionState.Completed,
             Blocks = blocks, WoundCommandState = state,
+            Actions = !treatment && projection.IsAvailable
+                ? [new UiAction { Id = "wound_history", Label = "История заживших ран", Command = "/раны история" }] : [],
             Prompts = !canTreat ? [] :
             [
                 new UiSelectionPrompt { Id = "wound_selection", Prompt = "Какую рану лечить?", Required = true,

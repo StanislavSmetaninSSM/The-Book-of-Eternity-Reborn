@@ -20,7 +20,22 @@ public partial class ExplorerMode
         return pending.Selection;
     }
 
-    private Task ShowWoundsAsync() => ShowWoundCommandAsync(treatment: false);
+    private async Task ShowWoundsAsync()
+    {
+        var command = string.IsNullOrWhiteSpace(_currentCommandInput) ? "/раны" : _currentCommandInput;
+        while (true)
+        {
+            var result = await WoundApplicationService.OpenAsync(_fs, command, treatment: false);
+            ExplorerCommandResultConsoleRenderer.Render(_console, result);
+            if (result.Actions.Count == 0) { WaitForKey(); return; }
+            var labels = new[] { "Закрыть" }.Concat(result.Actions.Select(a => a.Label)).ToArray();
+            var selected = _console.Prompt(new SelectionPrompt<string>().Title("Действие с ранами")
+                .UseConverter(GameInterface.EscapeMarkup).AddChoices(labels));
+            var action = result.Actions.SingleOrDefault(a => a.Label == selected);
+            if (action is null) return;
+            command = action.Command; // Every action reopens fresh current DATA; no retained projection.
+        }
+    }
     private Task ShowWoundTreatmentAsync() => ShowWoundCommandAsync(treatment: true);
     private async Task ShowWoundCommandAsync(bool treatment)
     {

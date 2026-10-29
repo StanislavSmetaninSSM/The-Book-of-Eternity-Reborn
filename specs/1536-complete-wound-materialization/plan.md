@@ -77,6 +77,25 @@ result/status before the final absent-healed-name assertion. Existing production
 is unchanged. Category wound-history-causal owns exactly one pure Unit fact/60s;
 current selection is causal only. New test is UNCOMPILED/UNRUN pending source/PREP.
 
+Causal RED accepted independently atbc464de5ecaab6835aa06225e90b232e7665efb4:
+fresh Unit0errors26baselinewarnings1:05.53; catalog1074/12790 valid; exact1 case/method
+PlanOnly0exec/PREP. Actual1executed1expectedFAIL at final line25 healed-name absence,
+valid terminal projection/inert/status controls passed;18.0271572s wall, no timeout/
+skip/duplicate, cleanuptrue,18artifact90sourcepins unchanged. TRXsha256
+`e04871ad7d6e720c9b9bbb2d95281b5ab374332be0059cd8bc24f47de0521458`.
+Fullraw outsidecheckout wound-history-causal-{build,catalog,plan,preflight,red}-1.
+
+GREEN source WIP1, UNCOMPILED/UNRUN: shared builder separates active/treatment from
+explicit History and returns only static read actions; existing parser/catalog gains
+History subcommand aliases. ParseReadCommand rejects wrong/trailing args before DATA;
+browser forwards full raw input ONLY for wounds read, preserving treatment token path.
+Console forwards original raw read input, uses Close-first existing action labels,
+reloads per action, and locally rejects unknown wounds subcommands instead of GM
+fallback. No retained History state/cache. Pure read-mode/privacy/alias tests written;
+existing terminal helper accepts optional display name BEFORE strict reconstruction,
+with default unchanged, for literal-text fixture evidence. Actual UI/GM tests/sync and
+coherent SOURCE/selection remain pending. No new pass inferred; accepted55 unchanged.
+
 # T119-FOREIGN-DETAIL — accepted known foreign spiritual wound card
 
 2026-10-29. Issue: https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536
