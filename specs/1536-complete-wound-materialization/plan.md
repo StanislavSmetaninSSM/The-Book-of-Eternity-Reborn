@@ -24,10 +24,15 @@ preparation and bounded verification. No implementation/build/runtime yet.
   correction; live admission and settled/historical replay keep their separate
   existing checks. Eligible-cycle revoke, kinded same-ID healer and wrong patient
   memory owner cases are explicit; no new author decision needed.
-- [ ] Existing-API typed causal semantic RED1: source scaffold and exact new1-case
-  category authored, production unchanged. Fresh Unit refsfalse only, catalog/exact
-  Plan/PREP and expected unknown-proposal4 failure pending. Then common family/scope
-  GREEN; no implementation claim from compilation or pure DATA admission.
+- [x] Existing-API causal RED1 at35c5bc8bad56b842493307bab3d61eb721b64720:
+  exact1FAIL/0PASS (expected Unknown participation proposal schema atValidateProposal97),
+  actual API reached viaReadChanges/newFact, not compile/setup failure. Wall11.8264281s,
+  category4.8786319s<60, no timeout/skip/duplicate, complete1descriptor/method and both
+  cleanuptrue. FreshUnit0errors26exactbaselinewarnings1:26.27; catalog1051/12743 valid,
+  exactPlan1 executed0/PREPaccepted. All18artifact/49sourcehashes unchanged afterrun.
+  Fullraw resident-provider-causal-{build,catalog,plan,red,preflight}-1 external;
+  verified-semantic-red.json preserves exactTRX hash. Independent Sol causal OUTCOME ACCEPT.
+  GREEN and live provider capability remain UNRUN; no newgame/runtime PASS inferred.
 - [ ] Guided/native author fixtures and complete GM synchronization; coherent
   SOURCE/selection, fresh affected builds, catalog/exactPlan/PREP, cheapGREEN.
 - [ ] Genuine offer/aid/revoke backend then both actualUI and common rollback;

@@ -696,7 +696,9 @@ DFR/Mortal/Windows/performance replay as a prerequisite for this functional slic
 
 2026-10-29, #1536/T108-RESIDENT-HELP. Independent Astra/high DESIGN accepted
 after the sole P2 settlement-versus-live-join clarification; no remaining design
-blockers. First existing-API causal scaffold is authored, not compiled or executed.
+blockers. First existing-API causal singleton compiled and executed at35c5bc8ba:
+expected unknown-proposal4 semantic failure, complete/cleanuptrue; GREEN and live
+provider authority remain unimplemented/unqualified.
  US4/FR-042–054 and T108 already require
 entity-to-player treatment using the common art, consent and world-cycle rules.
 The player→resident slice is accepted ata4a03f54; the opposite direction is absent:
