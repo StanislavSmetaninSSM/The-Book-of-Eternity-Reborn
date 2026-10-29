@@ -37,7 +37,7 @@ private/hidden wound or actor facts leaking through context/empty counts.
 - [x] Existing-API semantic causal RED using minimal WoundPlayerReadFixture/OpenAsync;
   no full game/native package for this display/navigation absence. Catalogue owner,
   fresh owning build/discovery/exactPlan/resource/PREP, one compiling singleton.
-- [ ] GREEN WoundTargetSelectionService, WoundCommandState, shared application/
+- [x] GREEN WoundTargetSelectionService, WoundCommandState, shared application/
   builder/console/browser navigation branch; cheap pure scopes/privacy/old-token
   controls, real source-read counters and minimal actual prompt/session tests.
 - [ ] Coherent GM/CLI/Matrix/both daemon/example/manifest/source-guard synchronization;
@@ -167,6 +167,32 @@ passes are superseded by fresh four-case qualification, not double-counted. Othe
 exact residual Plan/PREP and28cases. Full cheap union remains33distinct cases on
 explicit lineages; no single fresh33claim if completed this way. Actual callersUNRUN.
 Full partialraw target-choice-green-actual-1 remains outsidecheckout, no deletion.
+
+Cheap functional OUTCOME ACCEPT (Sol6.1/xhigh): 33 DISTINCT PASS /20methods on
+explicit lineages, not one fresh33 run. Retain5 unchanged actual browser flow/final
+cases atf3e7eba7aa783651564f1aa803f6f8f710d8cba9; residual28/28 at
+736d7c2e256e218e5a16218c949b907f7cdeb4c8,54.3851818s,6/6descriptorscomplete.
+Per-categoryseconds causal4.6557019,contract4.2175756,freshness6.6091528,
+gm13.9171403,lifecycle8.5588272,reads5.0281713, all<60. Original missing-target RED
+is GREEN; sharedbrowser two phases/cancel/no-grant privacy/once-onlyqueue/fresh
+identity/generation/expiry/races and source-read control passed. No skip/abort/
+timeout/duplicate;12fresh+5retained ownedfixture roots/leases verified cleaned.
+18DLL/PDB and68source hashes preserved. Catalog1068categories12780methods,
+zero stale/unmapped; all66Worldpinsmatch/intersection0, no unchanged World rerun.
+Fullraw target-choice-green-{build,catalog,plan,preflight,actual}-* and union
+ target-choice-qualified-distinct-33/evidence.json outsidecheckout; partialfirst
+attempt and older evidence retained, no external deletion. SOURCE Astra+Sol accepted;
+import/generation fixture corrections independently accepted. Actual console5,
+sharedbrowser6 and backend6 remain UNRUN pending exactPlan/resource/PREP; this
+checkpoint does not close T120-CHAOS-TARGETS or broader T120/US5/#1536.
+
+Optimization assessment: actual minimal sealed-counter path confirms each parsed
+locality root once per fresh invocation and changed-profile refusal with inert
+canonical files; no all-filesystem or speedup claim. Actual combined aid/navigation
+source counts are assertions in pending genuine backend6. Same operation context,
+prepared catalog and parsed roots reused; no across-prompt cache/new framework.
+Final current prompt/generation/UI authority and actual aid source/history fences
+remain fresh. No newclone/restore/deletion; accepted prior recovery unchanged.
 
 # T108-RESIDENT-HELP accepted — resident offers free treatment to the player
 
