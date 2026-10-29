@@ -1,135 +1,109 @@
-# Known foreign wound detail Implementation Plan — T119-FOREIGN-DETAIL
+# T119-FOREIGN-DETAIL — accepted known foreign spiritual wound card
 
-> Agentic implementer: superpowers:executing-plans inline; root sole writer/runner.
-> Use existing Spec Kit artifacts, mandatory independent reviews and selected tests.
+2026-10-29. Issue: https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536
+Branch: `1536-linux-qualification-20261025`; same Linux environment and checkout.
+Spec FR-069/070/072–076, data-model.md section18; bounded T119/T121 slice only.
+Qualification source: `551959835c3b2ab5c59c255505c19bf5a1f73820`.
+Parent T119/T121/US5/US6 and #1536 remain open.
 
-**Goal:** selected current-Abode Guardian/resident wound has a complete known card
-and truthful route/diagnosis recommendations in both existing interfaces.
-**Architecture:** existing WoundPlayerProjection formatter over the same fresh
-context/catalog/effects, existing target binding/application/builder; no new store.
-**Tech stack:** C#/.NET8, shared semantic UI, official PowerShell7 category runner.
-**Spec:** #1536 spec.md FR-069/070/072–076, data-model.md section18 foreign detail.
+## Player result
 
-2026-10-29 start verified aaa2201a9144279c7b519578fb3e10fde5f48b29 HEAD==remote,
-clean same environment, no owned active process;466030592 bytes free. Existing36
-remain accepted on their explicit lineages below. Scope is known foreign detail,
-not new diagnosis execution/timing, helper/service, quote or treatment authority.
+Selecting a known active spiritual wound of the visible current-Abode Guardian or
+resident now shows its readable origin/locus/symptoms/prognosis, care/recovery and
+progress, visible complications, exactly linked visible owned effects, and known
+route/diagnosis recommendations in shared console/browser handlers. Hidden wounds,
+unknown routes/future reveals, private requirements, other actors' effects and Self
+History do not become public detail. Equal Guardian/resident IDs remain typed.
+Recommendations explicitly distinguish methods/diagnosis without an executable
+command; existing lawful treatment options still require their separate fresh
+consent/requirements/confirmation. Viewing without a grant remains possible and
+inert: no attempt/draw/cost/cycle/gameplay repair or mutation. No new diagnosis,
+healing, price, service, canonical store or authority rule was introduced.
 
-Global constraints: no hidden/unknown facts, raw canonical IDs/JSON, gameplay repair,
-draw, charge or time on read/cancel; fresh actual treatment guards retained. Full
-raw outsidecheckout; no external raw/save/recovery deletion. Existing400MiB build/
-128MiB runtime reserve, current60s cheap categories unchanged unless selected new
-coherent ownership requires its own justified group. No broad/held DFR/Mortal/
-Windows/performance or unchanged accepted-PASS rerun. No new clone/restore.
+Implementation reuses WoundPlayerProjection, the current application context and
+existing shared result builder. ProjectKnownTarget gates exact spiritual owner,
+profile, locality and visible active known wound, then passes the exact effect
+kind into the existing formatter. Fresh Guardian/roster proof stays in the actual
+SelectTargetAsync invocation. GM guide/CLI/Matrix/operations/task guide, both effective
+daemon directives, worked authorable field fragment, manifest and typed consumer
+are synchronized under `wound_foreign_detail_v1`.
 
-Review focus: wrong typed actor with equal ID; hidden-complication effects; unknown
-route/future diagnosis; provider/owner-private requirements; read-only actual UI
-and safe text; recommendation versus executable action. Each gets a cheap control.
+## Verification and independent review
 
-- [x] Independent bounded DESIGN review and fixture feasibility; no author decision
-  expected because field visibility/known route rules already exist.
-- [x] Add one existing SelectTargetAsync causal test plus helper/category/selection;
-  fresh Integration owning build, discovery/exactPlan/resource/PREP, semantic RED
-  on missing visible symptom after valid public target/name/inert/source controls.
-- [ ] Reuse projection for exact fresh target; typed effect scope and shared builder
-  recommendations. Add finite pure privacy and actual read-only console/browser
-  parity/escape/cancel/count tests; synchronize GM/example/manifest/guard.
-- [ ] Coherent SOURCE/selection review, fresh affected builds/exact discovery/Plan/
-  resource/PREP, selected cheap GREEN and independent OUTCOME. Mechanical native
-  Engine unchanged; prove actual read handlers rather than replay accepted aid36.
-- [ ] Verify exact raw/count/hash/cleanup, scope and remote checkpoint; close only
-  bounded T119-FOREIGN-DETAIL, keep parent tasks/#1536 open.
+- Astra/high accepted bounded DESIGN at72e4a7d85 and production/GM SOURCE atcf37,
+  then same-ID fixture delta at6ddbccef0. Sol6.1/xhigh independently accepted
+  fixtures/selection, correction deltas, PREPs, partial OUTCOMEs and final union at551.
+  Two SOURCE proof gaps were closed: accepted real same-ID two-kind effect filtering,
+  and armed mutation-path observation allowing only the actual owned UI-lock path.
+- Original semantic RED at228f6cfa92ed90332951e369508873e529ccb586 failed exactly
+  missing the declared visible symptom after valid target/II/description/inert and
+  separate source-count controls; its GREEN passed atcf37. Scaffold Integration
+  build exit0/102baselinewarnings1:59.38; RED TRX sha256
+  `46b2ac1ce856d48db05ef35ebcf74d6150db309032256ca67466fbe0bd0e2487`.
+- Fresh Main/Support atcf37c2181d4a99ef9bad03f146836def504e622c: exit0,
+  baseline12/23warnings,1:59.93/16.55s. First Unit/Integration atcf37: exit0,
+  26/102warnings,1:07.29/2:21.47. Final Unit at6ddbccef0bceb8aa5b0ef77af7e1926754bbeecb:
+  exit0/26warnings58.17s; final Integration at551: exit0/102warnings2:17.62.
+  Exact warning identity comparisons show no additions/removals. Production/helper
+  inputs stayed unchanged through fixture corrections, so affected owning projects
+  alone were rebuilt;16 other artifact paths were retained each time. Final18 DLL/
+  PDB artifact paths and84 current source paths are pinned and verified.
+- Catalog valid1073categories/12789methods, no stale/unmapped selectors. Exact current
+  PlanOnly6descriptors/55cases/35methods, zero execution. Selection consists of
+  wound-foreign-detail-{causal,contract,typed-owner,gm,interfaces} and affected
+  wounds-player-projection. New groups retain60s, existing Self group180s.
+- **55 DISTINCT PASS /35 methods across three accepted runner source lineages,
+  not one fresh55 run:** causal1+unchanged pure15 atcf37; repaired typed-owner1 at6ddb;
+  GM1+actual console/browser2+affected Self35 at551. Accepted test/execution IDs55
+  are unique and the union matches the exact current plan. No accepted PASS was
+  repeated after unrelated fixture corrections. No full suite/held route was run.
+- Same-ID singleton wall13.1733264s/category4.8650321s. Final remaining38 wall37.3964332s;
+  category GM6.0807694s, interfaces9.403032s, Self6.459395s. No timeout/skip/abort/
+  duplicate in accepted results. All runtime cleanup succeeded; all5 minimal fixture
+  roots were removed and their quiescence leases inactive. Interface assertions
+  prove actual public option selection, literal markup text, known recommendations,
+  no repair, unchanged gameplay tree and mutations confined to the owned UI lock.
+- Attempts remain explicit: actual1 executed17 =16PASS/1 fixture-precondition FAIL,
+  leaving38UNRUN. Multi-effect minimal factory repeated transition/event identities;
+  local second canonical/index chronology received distinct matching IDs, with no
+  production/factory/guard/assertion change. Next GM1 failed before projection on
+  missing requirement.kind; UI/Self37 were UNRUN. The same omission was found in
+  unrun UI preparation and both fixtures were corrected together using the existing
+  source_capability/provider discriminator while preserving opaque private data.
+  The final38 then passed. Neither setup failure was called a product defect/PASS.
 
-Optimization assessment: project only selected known wound IDs with existing catalog
-index; reuse context effects/knowledge services and parsed locality. No new cache or
-filesystem work in card projection. Record actual source-count proof/UNRUN; do not
-claim speedup. All new implementation/tests still UNRUN. Astra/high DESIGN ACCEPT at72e4a7d85:
-retain explicit spiritual-domain gate, exact typed profile before normalized effect
-mapping, fresh roster proof in application, safe effect Name/Summary/Facts only and
-no foreign History. Add physical refusal/hidden knowledge/unchanged-Self controls.
-Sol fixture feasibility accepted; use separate console/browser roots because console
-read/cancel owns a UI token, public browser options only, and assert actual console
-render/no error (SafeExecute can catch errors). Current scaffold uses independent
-mixed carrier/identity/History helper and unique foreign consequence roots. Existing
-API causal singleton written; no new production C#, scaffold build/RED pending.
+## Optimization, storage and continuation
 
-Causal RED OUTCOME accepted (Sol6.1/xhigh): source228f6cfa92ed90332951e369508873e529ccb586,
-fresh Integration0errors102baselinewarnings1:59.38, validcatalog1069/12781,
-exactPlan1descriptor/case/method0exec and independent PREP. Actual1executed1FAIL/
-0PASS at final line46 missing unique visible symptom; valid card/II/description,
-noactions, inert whole tree/mutations and separate Open/Select source-count1 passed.
-Wall16.7633525s/category6.700s<60, no timeout/skip/duplicate, cleanuptrue, rootremoved/
-leaseinactive;18artifact76sourcepins unchanged. TRXsha256
-46b2ac1ce856d48db05ef35ebcf74d6150db309032256ca67466fbe0bd0e2487.
-Fullraw outsidecheckout foreign-detail-causal-{build,catalog,plan,preflight,red}-1.
-The brief transport disconnect did not restart or invalidate the original build;
-read-only recovery established same process, then its saved exit0.
+One existing coherent invocation context/catalog/effects/identity index serves the
+card. Existing TryResolveOne and verified immutable identity semantic fingerprints
+avoid a second catalog/effect reconstruction or graph hash. No filesystem work or
+new cache was added to formatting; no DATA or authority is retained across prompts.
+Actual causal Open and Select each assert one Guardian/roster source event; actual
+console/browser commands each assert two across those two fresh invocations.
+These are real source-event counts, not syscall or wall-speedup claims. Fresh
+ownership/generation/source/History/effect/consent checks remain in their prior
+application boundaries. Independent privacy/failure/mutable-output controls passed.
 
-GREEN source WIP (uncompiled/unreviewed): ProjectKnownTarget uses the SAME fresh
-context, existing catalog.TryResolveOne and immutable identity.TryGetEntry semantic
-FPs (already verified against current catalog/History), avoiding graph rehash or a
-second catalog/effect build. Exact spiritual owner/profile/effect target and no
-foreign History; selected app consumes that projection; shared builder renders
-read-only route/diagnosis recommendations and existing lawful actions separately.
-Unit tests were written first; finite actual minimal console/browser read cases use
-separate roots and release only verified owned UI tokens. The mixed helper's identity
-domain now follows its parsed wound for the physical-refusal control; ordinary causal
-spiritual fixture values are unchanged. New production/tests remain UNCOMPILED/UNRUN;
-GM sync and coherent SOURCE pending. Existing accepted36 are not repeated.
+Full raw is outside checkout under
+`/workspace/tboe-linux-evidence-20261025/us4-self-healing/`: foreign-detail-causal-*,
+foreign-detail-green-* and `foreign-detail-qualified-distinct-55/evidence.json`.
+Failed/partial/RED captures remain; no external raw/save/recovery deletion. Only
+completed-task untracked Unit obj DLL/PDB duplicates (13,475,660 bytes, each SHA256
+identical to retained owning bin output) were removed for disk reserve; all evidence
+artifacts stay intact. Original400MiB build/128MiB runtime reserves were unchanged.
+Before any next build recheck disk space; final runtime left approximately393MiB.
 
-GREEN source candidate WIP2: GM guide/CLI/Matrix/operations/task guide, BOTH effective
-daemon directives, focused worked authorable field fragment, manifest and typed
-consumer/documentation guard now synchronized as wound_foreign_detail_v1. No new
-GM response schema or guessed spiritual opaque conditions. Unit physical refusal
-uses a parser-valid zero-slot physical graph (spiritual consequence profiles are
-not legal physical fixtures); no production guard was weakened. Source candidate
-includes15 pure cases, actual Guardian/resident console+browser read parity, original
-causal GREEN, GM consumer and affected existing wounds-player-projection category.
-No full Engine/native replay is needed per DESIGN for unchanged mechanical admission.
-All new C# remains UNCOMPILED/UNRUN; coherent SOURCE/selection review is next.
+Source checkpoint will contain code, GM/source fixtures, catalog/selection and this
+compact finding only; no raw/TRX/generated diagnostic JSON/archive/binary. Remote
+SHA must be read after publication. No new full clone/restore is performed in this
+slice per user instruction; do not claim a new clean-restore qualification.
 
-SOURCE delta candidate: Astra found no production/GM blocker, but requested a
-same-ID Guardian/resident effect proof reaching the actual effect filter. Added one
-schema/identity-accepted two-kind/same-ID fixture: Guardian effect claims a matching
-resident wound root/source/definition, while resident's second root is correct;
-assert resident facts visible and Guardian facts absent. This adversarial read
-link grants no mechanical source authority. Sol requested mutation-path proof in
-actual UI cases so restored gameplay writes cannot hide behind final snapshots;
-existing callback is armed only after preparation and every mutation must be the
-owned UI-lock path. No new hook/operation/case for that assertion. These finite
-review deltas leave production unchanged; now16 pure cases plus original causal,
-2 interface cases and GM case. All GREEN code remains UNCOMPILED/UNRUN pending
-narrow review closure and fresh affected builds.
-
-GREEN attempt1 at cf37: fresh Main/Support/Unit/Integration exit0, warnings12/23/26/102
-unchanged by exact warning comparison; elapsed1:59.93/16.55s/1:07.29/2:21.47.
-Catalog1072/12789 valid; exact5 descriptors/55 cases/35 methods, independent PREP.
-Actual17 executed: causal1 PASS (original missing symptom corrected), pure15 PASS,
-one same-ID fixture FAIL at accepted-snapshot precondition, remaining38 UNRUN.
-Root cause: multi-effect minimal identity factory repeats one transition/event;
-second canonical chronology and index transition now get distinct matching IDs.
-No production/helper/guard/assertion change. Separate typed-owner category owns
-that singleton; original contract owns unchanged15. Preserve accepted16 and run
-only remaining39 after fresh Unit build, discovery/Plan/PREP; final55 is a union,
-not one fresh55 run. Full failed attempt/cleanup outsidecheckout actual-1; no timeout.
-Correction is WIP UNCOMPILED/UNRUN pending narrow SOURCE. No hold route repeated.
-
-Residual attempt2: corrected same-ID singleton PASS at6ddbccef0 (13.1733264s wall,
-4.8650321s category<60, exact1/1, no duplicates, cleanuptrue). Next GM guard failed
-before projection because the worked fragment omitted required requirement.kind;
-interface/Self37 remain UNRUN. ReadRequirementArray requires an exact discriminator.
-The same missing field was found in unrun UI preparation, so both fixtures now
-carry existing source_capability/provider coordinates plus the intentionally opaque
-private sentinel. No new codec, mechanics, production guard or assertion change.
-Existing Unit test/production binaries stay unchanged; fresh Integration only is
-required for the UI fixture delta. GM guard still consumes current repo example.
-Narrow SOURCE then remaining38 (GM1 first, then interfaces2+Self35) pending.
-
-Space preflight reclaimed ONLY completed-task untracked Unit obj DLL/PDB duplicates:
-13,475,660 bytes, each SHA256 equal to retained owning bin DLL/PDB; all runners/builds
-ended and all18 retained evidence artifact paths stay intact. No raw, saves, recovery
-copy or tracked source removed. External reclaim proof preserved;429117440 bytes free
-before current WIP. Original400MiB build/128MiB runtime reserves unchanged.
+Only T119-FOREIGN-DETAIL closes. Full T119/T121/US5, diagnosis execution/timing,
+other realms/helpers/routes/quotes/paid services remain outside this result. Accepted
+previous navigation36 stays on its explicit versions below. DOM, external provider
+and fresh-process behavior are unqualified. DFR/Mortal/Windows/performance HOLD,
+first-guardian intermittent timeout and cross-OS DATA limitations remain open;
+this read-only functional slice neither replays nor resolves those gates.
 
 # T120-CHAOS-TARGETS — accepted current-Abode target navigation
 
