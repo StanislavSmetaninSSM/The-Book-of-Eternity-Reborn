@@ -196,6 +196,11 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
         await using (var lease = await files.AcquireCanonicalWriteLeaseAsync())
         {
             await WriteAidReportAsync(files, lease, control);
+            if (resident)
+                await files.WriteFileAtomicAsync(lease, "output/interface_updates.json", new JsonObject
+                {
+                    ["timestamp"] = DateTime.UtcNow.ToString("o"), ["dialogueOptions"] = new JsonArray()
+                }.ToJsonString());
             var validator = new ValidationService(files, NullLogger<ValidationService>.Instance);
             Assert.DoesNotContain(await validator.ValidateAcceptedTurnRawMortalLocationMaterializationAsync(), i => i.Severity == IssueSeverity.Error);
             Assert.DoesNotContain(await validator.ValidateAcceptedTurnRawMortalItemMaterializationAsync(lease), i => i.Severity == IssueSeverity.Error);

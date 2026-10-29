@@ -1,3 +1,31 @@
+# T108 resident source freshness correctly rejects stale response — fixture audit
+
+2026-10-29. Recoveryactual3 at3127de8a0c94f9dee055c6514c129a078a4bf47d
+completed1FAIL14.3835563s, wall28.3549273s, exit1/no timeout/skips/duplicates,
+both cleanup flags true. Sourceguard1 UNRUN. Grant normalization and its strict
+published interface check now succeed. Next missing-graphs negative stops at a
+preceding error rather than its required graph diagnostic (ActiveAid203).
+
+Bounded source trace identifies the direct fixture's turn boundary: it retains
+turn43 protected-memory response when first preflighting aid44. AdmitGraphs binds
+memory first; current-turn/unique append checks reject turn43/previous entry before
+required-graph check. Actual Engine authors fresh44 output, as does accepted mixed
+history test. Do not remove that guard or weaken the graph-specific assertion.
+Author valid empty timestamp/dialogue response at aid44 BEFORE its first raw /
+missing-graphs check; later fullgraph+fresh44memory write remains unchanged. Only
+resident branch changes; oldv3/v4 passing paths remain byte-equivalent.
+
+Do not blindly repeat: independently audit complete remaining direct fixture,
+negative-control ordering, current published I and historical/current distinction
+before another actual. No production/cache/GM change or broader diagnosis needed;
+existing parsed DATA/services and all fresh fences remain intact. Correction and
+finite audit SOURCE pending; exactremaining1+World1 budgets180/60 unchanged.
+Independent UI preparation confirms actual production random die is retained and
+its exact stages/canonical result checked; deterministic14→II2 belongs to backend,
+not a guaranteed UI outcome. Actual guided console/browser/rollback remain UNRUN.
+All raw under resident-recovery-actual-3 externally. Earlier mixed97.65s PASS,
+phase7 unchanged4PASS and cheap59 lineages retained; no repeat/cleanrestore claim.
+
 # T108 real revocation accepted — remaining grant response fixture correction
 
 2026-10-29 02:37 UTC. Recovery runtime atdddbb475a96605a713d7d7f57e29402242ddfa78
