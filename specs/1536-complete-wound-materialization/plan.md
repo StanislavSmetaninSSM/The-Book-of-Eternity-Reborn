@@ -34,7 +34,7 @@ private/hidden wound or actor facts leaking through context/empty counts.
   lifecycle closure; no remaining design blocker or author decision. Sol causal
   fixture feasibility accepted. Existing-API singleton now written; production
   unchanged, scaffold SOURCE/selection/build/catalog/Plan/PREP/runtime UNRUN.
-- [ ] Existing-API semantic causal RED using minimal WoundPlayerReadFixture/OpenAsync;
+- [x] Existing-API semantic causal RED using minimal WoundPlayerReadFixture/OpenAsync;
   no full game/native package for this display/navigation absence. Catalogue owner,
   fresh owning build/discovery/exactPlan/resource/PREP, one compiling singleton.
 - [ ] GREEN WoundTargetSelectionService, WoundCommandState, shared application/
@@ -56,12 +56,26 @@ by independent Sol: existing minimal read fixture/known Self+visible exact Guard
 matching art mirror/no grant/no game bootstrap, valid Self choice and inert snapshot
 assertions precede the missing-target semantic assertion. All code/tests stillUNRUN.
 
+Causal RED accepted: freshIntegration99defd4da0errors102unchangedwarnings2:08.81;
+16nonIntegrationartifactpaths retained unchanged,18artifact/55sourcepins verified.
+Catalog1062/12761valid/no stale/unmapped, exactPlan1case/1method/1descriptor0exec,
+independent PREP ACCEPT. Actual target-choice-causal-red-1 at99defd4da executed1,
+expected1FAIL/0PASS at testline52 missing wound_target (actual old wound_selection+
+confirmation). Valid availableSelf and inert whole-tree/mutation assertions passed
+first. Wall16.6920917s/category5.6984018<60, no skip/timeout/duplicate, selection
+complete, runner+fixturecleanuptrue; allpinsunchanged. TRXsha256
+982209e11c3263678a7496d4623ee10d2aa8ab87788f003121b19153209f36dc.
+Root strictsemanticREDverification and independent Sol OUTCOME ACCEPT. Fullraw
+outsidecheckout prefix target-choice-causal-{build,catalog,plan,preflight,red}-1;
+verified-semantic-red.json retains exact failure/source/TRX. GREEN/actualtarget
+capability still UNIMPLEMENTED/UNRUN, no capability PASS inferred.
+
 Optimization decision: reuse one existing context/catalog/effects and one parsed
 Guardian/roster read per invocation for BOTH target and aid consumers. One lookup
 over already prepared wound DATA; no across-prompt cache. Each navigation/final
 confirmation is a fresh invocation, dependencies/owners as section18; fresh guards
 stay intact. Actual source-count assertions and negative mutations precede heavy
-callers; no speedup claim. All implementation/build/tests remain UNRUN at DESIGN WIP.
+callers; no speedup claim. GREEN implementation/build/tests remain UNRUN after the accepted causal RED.
 
 # T108-RESIDENT-HELP accepted — resident offers free treatment to the player
 
