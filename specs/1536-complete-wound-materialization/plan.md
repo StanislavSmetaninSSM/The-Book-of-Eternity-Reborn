@@ -247,6 +247,17 @@ singletons at original180s. Self rehashed schema rejection now explicitly includ
 Provisional final selection15categories/80cases/30methods, pending discovery. Delta
 re-review and fresh builds are next; complete route remains UNCOMPILED/UNQUALIFIED.
 
+bb893c90 delta SOURCE/selection accepted by Astra/high and Sol6.1/xhigh. Resource
+review accepted13exact reproducible files: two obj duplicates plus11public NuGet
+install archives whose833installedpayloads/33retainedmetadata members were fully
+verified; no bin/raw/saves/recovery removed. f91Unit binaries preserved and fully
+decoded externally. Free448.675MiB before first Main compile. Build ended exit1,
+12baselinewarnings and one CS4034 at InitializeChaosSea: the newly awaited service
+seed was inside existing synchronous Spectre Status.Start callback. Corrected that
+callback to awaited StartAsync/async within the SAME existing RunBoundAsync scope;
+other bootstrap actions/order/guards unchanged. This compile failure is not a
+causal test RED or gameplay result. Fresh corrected build/PREP/runtime remain pending.
+
 ---
 
 # T126 — accepted browser wound cards and guided treatment presentation

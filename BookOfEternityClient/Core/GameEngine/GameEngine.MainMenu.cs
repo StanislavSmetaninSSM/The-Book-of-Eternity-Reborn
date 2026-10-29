@@ -1072,10 +1072,10 @@ public partial class GameEngine
         await SessionOperationContext.RunBoundAsync(_fs, sessionGeneration, async () =>
         {
 
-        AnsiConsole.Status()
+        await AnsiConsole.Status()
             .Spinner(Spinner.Known.Dots12)
             .SpinnerStyle(Style.Parse("cyan"))
-            .Start(_loc.T("soul_awakens"), ctx =>
+            .StartAsync(_loc.T("soul_awakens"), async ctx =>
             {
                 _afterlifeArchiveCandidateService.Clear();
 
