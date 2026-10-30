@@ -401,6 +401,23 @@ fullmemberhash/EOFCRC beforeoverwrite. FreshIntegration-onlyS5D6a3a exit0/
 4daemonsverified. ExactsingletonPlanOnly0execution/TRX,stablepinscleanup;
 PREPpending. Otherowningcode/catalogmembershipunchanged, no redundantbuild/audit.
 
+ActualS5D observationalradiantactive@ef4a5f27:1FAIL/no timeout,fullissueActual
+"Provider owner and exact locality variant differ." Sourcecausalpath confirmed:
+ComposeEffectInput→BindProjectedServiceAdmission wronglyclassifiedANYShining
+AidWitness asprovider, passingplayer_soul tocorrectclosedprovider validator.
+Narrowproductioncorrectionc697454b independentlySOURCEacceptedbyAstra: explicit
+typedpatient/providerdispatch; trustedprojectedpatientbinding; exactpatientcheck
+atseparateNONWALLETcommonassemblyandprepublication; naturalbindingreusesparsed
+participationroots. Wallet/providerrequirements unchanged, no newfields/rules/
+GMcontract; existingGMguidancealreadycorrect, no updaterationale. New15purecontrols
++oldprovider15+sourceguards3+4actualnative=estimated37/13methods/7desc; actual
+discovery/PREP/runtimepending. Oldconditionalowner4 retainedONLYforunchangedsource-
+lifetimepredicates; new4nativequalifynewprojectionchecks, residentgrantrepeatrequired.
+S5D measured27archive62,066,227B SHA907f5af42d2ee8adbdbfc85e08b56e54a15ebe482bba3418c7abda5ff2497e91
+fullmemberhash/EOFCRC beforeoverwrite. SourceWIPwriterpaused; nextonefreshS6
+Main→Support→Unit→Integration epoch, no diagnostics/cache/publisher expansion.
+Noactivetreatment/UIacceptanceyet; earlierfailedraw retainedoutsideGit.
+
 Авторское решение диагностики принято2026-10-30 11:48UTC и отражено в FR071/tasks.
 После текущего Shining patient: Mortal method declares own procedure check/time/
 cost; spiritual Healing>=0 plus ALL path requirements, guaranteed declared reveals,
