@@ -1,3 +1,23 @@
+# T121 coherent spiritual execution — consumer/refusal WIP, UNCOMPILED/UNRUN
+
+The next saved cut adds representative console, shared-browser and physical common
+publication/outer rollback journeys, reusing existing fixture, prompt, native response,
+passive gzip and closing helpers. Signed native controls now include genuine Healing V
+with canonical severity II and terminal removal, both actual Shining target kinds,
+ordinary resident/witness memory, a no-op-normalizer locality drift refusal, exact
+composed permission changes and detached resealed historical metadata/refusal cases.
+The old Mortal guard and all three supported requirement semantics remain strict.
+
+Whole SOURCE findings are being closed in this same block: ordinary diagnosis memory
+keeps its canonical owner, patient-only channels refuse; current locality DATA is parsed
+once and retained separately from signed originals; actual path/requirement fingerprints
+are rederived; the program fixture supplies real standard arts; whole-stage and History
+binding lookups reuse detached DATA once. There is no new cache, publisher, limit or
+speedup claim. Source-estimated selection is 114 cases / 49 methods / 16 descriptors
+before final documentation/affected-consumer additions; discovery will establish facts.
+GM sync, final native/UI preparation audit and static API/selection review remain open.
+No build/test was launched by the writer; this WIP is not SOURCE or runtime acceptance.
+
 # T121 coherent spiritual execution — common-flow WIP, UNCOMPILED/UNRUN
 
 The saved flow now dispatches diagnosis explicitly through the existing Engine,

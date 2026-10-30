@@ -24,12 +24,13 @@ internal static class ShiningPatientMemoryTransport
         }
         var turn = StrictJsonAuthority.Deserialize<TurnRequest>(requestJson,
             new JsonSerializerOptions { PropertyNameCaseInsensitive = true }, "resident memory transport turn")!;
-        if (!AfterlifeEntityProfileState.TryNormalizeEffectRealm(turn.ProgressionControl?.CurrentRealm, out var realm) || realm != "shining_abode")
+        if (!AfterlifeEntityProfileState.TryNormalizeEffectRealm(turn.ProgressionControl?.CurrentRealm, out var realm) || realm is not ("chaos_sea" or "shining_abode"))
         {
             if (requiresPatientRoute)
                 throw new InvalidDataException("A private patient response cannot fall back outside its Shining turn.");
             return false;
         }
+        if (realm == "chaos_sea" && !requiresPatientRoute) return false;
         var observed = PendingTurnSnapshotReader.ReadObservedCurrent(files, lease,
             new PendingTurnSnapshotPathSelection(new[] { WoundCarrierCatalog.AfterlifeProfilesPath }, new[] { AcceptedMechanicsPlan.WoundCommandPath }));
         if (!observed.Success || observed.Snapshot is not { } snapshot || observed.Evidence is not { } evidence ||
@@ -44,10 +45,18 @@ internal static class ShiningPatientMemoryTransport
             if (SpiritualDiagnosisRequestCodec.IsKind(retained))
             {
                 if (turn.ProgressionControl is null || !SpiritualDiagnosisRequestCodec.IsBound(retained,
-                    new(snapshot.SessionId, snapshot.RequestId, snapshot.TurnNumber, turn.ProgressionControl)) || requiresPatientRoute)
-                    throw new InvalidDataException("Diagnosis cannot use private patient memory transport.");
+                    new(snapshot.SessionId, snapshot.RequestId, snapshot.TurnNumber, turn.ProgressionControl)) ||
+                    response.SpiritualShiningPatientMemory.ValueKind != JsonValueKind.Undefined || response.SpiritualResidentThoughtJournalUpdates is not null ||
+                    response.ResidentThoughtJournalUpdates is null)
+                    throw new InvalidDataException("Diagnosis cannot use private patient memory transport or null ordinary commands.");
                 evidence.RequireCurrent(files, lease, snapshot);
+                response.ResidentThoughtsFromPatientInterface = false;
                 return false; // Ordinary resident commands keep their existing canonical owner.
+            }
+            if (realm != "shining_abode")
+            {
+                if (requiresPatientRoute) throw new InvalidDataException("A patient interface response cannot fall back into a Chaos treatment.");
+                return false;
             }
             var selection = SpiritualSelfTreatmentRequestCodec.ReadActiveSelection(retained);
             if (turn.ProgressionControl is null || !SpiritualSelfTreatmentRequestCodec.IsBoundActive(retained,
@@ -58,6 +67,11 @@ internal static class ShiningPatientMemoryTransport
         }
         else
         {
+            if (realm != "shining_abode")
+            {
+                if (requiresPatientRoute) throw new InvalidDataException("A patient response requires its actual Shining treatment family.");
+                return false;
+            }
             var original = StrictJsonAuthority.Deserialize<JsonObject>(CanonicalJsonUtf8.DecodeOneOptionalBom(
                 snapshot.ReadRequiredBytes(WoundCarrierCatalog.AfterlifeProfilesPath)), new JsonSerializerOptions(), "original memory profiles")!;
             var current = StrictJsonAuthority.Deserialize<JsonObject>((await files.ReadFileAsync(lease, WoundCarrierCatalog.AfterlifeProfilesPath))!,

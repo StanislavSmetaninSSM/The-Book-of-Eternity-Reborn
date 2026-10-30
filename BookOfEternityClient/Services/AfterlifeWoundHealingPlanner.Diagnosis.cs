@@ -77,17 +77,27 @@ internal static partial class AfterlifeWoundHealingPlanner
             var owner = new Continuation(files, lease, snapshot, evidence, currentImages, request, null, input,
                 candidate.Members.Select(m => m.Wound).ToArray(), data.Program.Stages, context.Progression, scheduler, mutation,
                 new(response is not null, response), sources.ToDictionary(s => s.Path, s => (JsonNode?)s.Root, StringComparer.Ordinal), diagnosis: data);
+            owner._diagnosisLocalityRoots = new[] { AfterlifeWoundTreatmentAuthority.AidLocalityPaths[0], GuardianAbodeResidentState.StatePath, ShiningAbodeState.StatePath }
+                .Where(currentImages.ContainsKey).ToDictionary(path => path, path => currentImages[path].Bytes is not { } bytes ? null :
+                    StrictJsonAuthority.Deserialize<JsonObject>(CanonicalJsonUtf8.DecodeOneOptionalBom(bytes), new JsonSerializerOptions(), path), StringComparer.Ordinal);
+            _ = owner.RequireDiagnosisTarget(candidate.Carriers.AfterlifeProfiles!,
+                owner.DiagnosisLocalityRoot(AfterlifeWoundTreatmentAuthority.AidLocalityPaths[0]),
+                owner.DiagnosisLocalityRoot(GuardianAbodeResidentState.StatePath), owner.DiagnosisLocalityRoot(ShiningAbodeState.StatePath));
             owner.AdmitGraphs(updates);
             owner.RequireCurrent(files, lease);
             return owner;
         }
 
         private string? _expectedDiagnosisPermissionFingerprint;
+        private IReadOnlyDictionary<string, JsonObject?>? _diagnosisLocalityRoots;
+        private JsonObject? DiagnosisLocalityRoot(string path) => _diagnosisLocalityRoots?.GetValueOrDefault(path);
 
         private WoundTargetChoice RequireDiagnosisTarget(JsonObject profiles, JsonObject? guardians, JsonObject? residents, JsonObject? shining)
         {
             var data = _diagnosis ?? throw new InvalidDataException("No current diagnosis owner.");
             var candidate = data.Candidate;
+            if (candidate.Realm == "shining_abode" && ShiningAbodeState.GetPreparedIncarnationPackageMode(shining) != ShiningAbodeState.PreparedIncarnationPackageMode.Absent)
+                throw new InvalidDataException("Diagnosis requires the actual current safe Shining locality, without an incarnation package.");
             var patients = candidate.Realm == "shining_abode" ? SpiritualTreatmentParticipation.ReadShiningPatientAdmissions(shining,
                 profiles, residents) : Array.Empty<SpiritualShiningPatientAdmission>();
             var targets = WoundTargetSelectionService.Build(candidate.Catalog, profiles, candidate.Realm, true,
@@ -119,8 +129,8 @@ internal static partial class AfterlifeWoundHealingPlanner
             if (!IsDiagnosis) return;
             if (profiles is null || soul is null) throw new InvalidDataException("Diagnosis requires the actual ordinary profile and Soul projection.");
             var fingerprint = DiagnosisPermissionFingerprint(profiles, soul,
-                _parsedSourceRoots.GetValueOrDefault(AfterlifeWoundTreatmentAuthority.AidLocalityPaths[0]) as JsonObject,
-                _parsedSourceRoots.GetValueOrDefault(GuardianAbodeResidentState.StatePath) as JsonObject, shining);
+                DiagnosisLocalityRoot(AfterlifeWoundTreatmentAuthority.AidLocalityPaths[0]),
+                DiagnosisLocalityRoot(GuardianAbodeResidentState.StatePath), shining ?? DiagnosisLocalityRoot(ShiningAbodeState.StatePath));
             if (_expectedDiagnosisPermissionFingerprint is not null && _expectedDiagnosisPermissionFingerprint != fingerprint)
                 throw new InvalidDataException("Diagnosis trusted ordinary projection changed within its current owner.");
             _expectedDiagnosisPermissionFingerprint = fingerprint;
@@ -129,8 +139,8 @@ internal static partial class AfterlifeWoundHealingPlanner
         internal void RequireDiagnosisComposedImages(IReadOnlyDictionary<string, JsonObject> writes)
         {
             if (!IsDiagnosis) return;
-            JsonObject? Root(string path) => writes.GetValueOrDefault(path) ?? _parsedSourceRoots.GetValueOrDefault(path) as JsonObject;
-            if (_expectedDiagnosisPermissionFingerprint is null || !writes.TryGetValue(WoundCarrierCatalog.AfterlifeProfilesPath, out var profiles) ||
+            JsonObject? Root(string path) => writes.GetValueOrDefault(path) ?? DiagnosisLocalityRoot(path) ?? _parsedSourceRoots.GetValueOrDefault(path) as JsonObject;
+            if (_published || Root(AfterlifeSpiritualConflictState.StatePath)?["activeConflict"] is not null || _expectedDiagnosisPermissionFingerprint is null || !writes.TryGetValue(WoundCarrierCatalog.AfterlifeProfilesPath, out var profiles) ||
                 Root(ServiceSoulPath) is not { } soul ||
                 DiagnosisPermissionFingerprint(profiles, soul, Root(AfterlifeWoundTreatmentAuthority.AidLocalityPaths[0]),
                     Root(GuardianAbodeResidentState.StatePath), Root(ShiningAbodeState.StatePath)) != _expectedDiagnosisPermissionFingerprint)
@@ -156,6 +166,9 @@ internal static partial class AfterlifeWoundHealingPlanner
                 throw new InvalidDataException("Diagnosis locality normalizer did not publish its exact computed output.");
             var advanced = _sources.ToDictionary(p => p.Key, p => p.Value, StringComparer.Ordinal);
             advanced[path] = expected; _sources = advanced;
+            var advancedRoots = _diagnosisLocalityRoots!.ToDictionary(p => p.Key, p => p.Value, StringComparer.Ordinal);
+            advancedRoots[path] = StrictJsonAuthority.Deserialize<JsonObject>(content, new JsonSerializerOptions(), path);
+            _diagnosisLocalityRoots = advancedRoots;
             RequireCurrent(files, lease);
         }
 

@@ -82,7 +82,7 @@ public sealed class SpiritualDiagnosisProgramTests
         var catalog = WoundCarrierCatalog.Build(input.Carriers); Assert.Empty(catalog.Issues);
         Assert.Empty(input.History.ValidateAgreement(input.Identities, catalog));
         var context = new WoundPlayerReadContext(input, catalog, prototype.Soul.DeepClone().AsObject(), null, WoundPlayerProjection.Build(input, catalog));
-        context.Input.Carriers.AfterlifeProfiles!["profiles"]![0]!["standardArts"]!["spiritual_healing"] = tier;
+        context.Input.Carriers.AfterlifeProfiles!["profiles"]![0]!["standardArts"] = new JsonObject { ["spiritual_healing"] = tier, ["spiritual_stabilization"] = 0 };
         context.Soul["afterlifeCombatProfile"]!["artTiers"]!["spiritual_healing"] = tier;
         var selected = Assert.Single(context.Catalog.Occurrences).Wound;
         var admission = Assert.IsType<SpiritualDiagnosisAdmission>(new SpiritualDiagnosisSourceData(context).Admit(selected, "diagnose_tissue").Data);

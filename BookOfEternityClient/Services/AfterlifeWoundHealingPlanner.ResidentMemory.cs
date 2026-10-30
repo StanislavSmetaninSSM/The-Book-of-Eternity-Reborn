@@ -13,6 +13,13 @@ internal static partial class AfterlifeWoundHealingPlanner
 
         private void AdmitResidentThoughtResponse(JsonObject? response)
         {
+            if (IsDiagnosis)
+            {
+                if (response?.ContainsKey(SpiritualTreatmentParticipation.ResidentThoughtResponseProperty) == true ||
+                    response?.ContainsKey(SpiritualTreatmentParticipation.ShiningPatientMemoryResponseProperty) == true)
+                    throw new InvalidDataException("Diagnosis leaves ordinary memory with its existing owner and cannot use patient-only response fields.");
+                return;
+            }
             if (response?.ContainsKey(SpiritualTreatmentParticipation.ResidentThoughtResponseProperty) == true)
                 _residentThoughtCommands = response[SpiritualTreatmentParticipation.ResidentThoughtResponseProperty] is JsonArray rows
                     ? rows.DeepClone().AsArray() : throw new InvalidDataException("Protected resident thoughts require an explicit array.");

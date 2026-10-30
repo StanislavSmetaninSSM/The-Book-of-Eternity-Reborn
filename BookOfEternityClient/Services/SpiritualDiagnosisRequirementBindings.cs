@@ -17,6 +17,12 @@ internal static class SpiritualDiagnosisRequirementBindings
         try
         {
             var path = admission.Wound.Treatment.DiagnosisPaths.Single(p => p.DiagnosisPathId == admission.Selection.Diagnosis!.DiagnosisPathId);
+            var actualPath = WoundDiagnosisEvidence.ComputePathFingerprint(admission.Wound, path.DiagnosisPathId);
+            var actualRequirements = WoundAcceptedTurnFingerprintWriter.Compute(new[] { "spiritual_diagnosis.requirements", "1",
+                WoundAcceptedTurnFingerprintWriter.CanonicalJson(new JsonArray(path.Requirements.Select(r => JsonNode.Parse(r.GetRawText())).ToArray())) });
+            if (admission.PathFingerprint != actualPath || admission.Selection.Diagnosis!.ExpectedDiagnosisPathFingerprint != actualPath ||
+                admission.RequirementFingerprint != actualRequirements || path.Check.ValueKind != JsonValueKind.Object || path.Check.EnumerateObject().Any())
+                throw new InvalidDataException("Diagnosis admission metadata differs from its actual selected path/requirements/check.");
             var parsed = MortalWoundTreatmentContract.ParseRequirementProjection(path.Requirements, "diagnosis.requirementBindings");
             var rows = admission.RequirementBindings;
             if (!parsed.IsValid || rows.Count != path.Requirements.Count) throw new InvalidDataException("Diagnosis requirement proof is incomplete.");

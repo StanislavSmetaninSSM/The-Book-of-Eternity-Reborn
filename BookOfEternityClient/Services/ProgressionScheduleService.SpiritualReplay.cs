@@ -226,8 +226,9 @@ public partial class ProgressionScheduleService
         var primary = history.Transitions.Single(t => t.TransitionId == stages[0].TransitionId);
         // Select from independent cohort/event/turn first. Filtering by an already
         // matching SourceFingerprint would let altered omitted rows evade this check.
+        var diagnosisTransitionId = diagnosis?.DiagnosisStage.TransitionId;
         var actual = history.Transitions.Where(t => expected.Contains(t.WoundId) && t.Turn == turn && t.EventRef == eventRef &&
-            (diagnosis is null || t.TransitionId != diagnosis.DiagnosisStage.TransitionId)).ToArray();
+            (diagnosisTransitionId is null || t.TransitionId != diagnosisTransitionId)).ToArray();
         if (actual.Length != stages.Count || !actual.Select(t => t.TransitionId).ToHashSet(StringComparer.Ordinal)
                 .SetEquals(stages.Select(s => s.TransitionId)) || actual.Any(t => t.SourceFingerprint != primary.SourceFingerprint))
             throw new InvalidDataException("Spiritual settlement stages do not biject with the independently witnessed cycle rows.");

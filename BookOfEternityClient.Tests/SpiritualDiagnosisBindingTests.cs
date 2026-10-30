@@ -36,4 +36,34 @@ public sealed class SpiritualDiagnosisBindingTests
         Assert.True(SpiritualDiagnosisRequestCodec.IsExact(SpiritualDiagnosisRequestCodec.Create(turn, admitted.Selection, admitted),
             turn, admitted.Selection, admitted));
     }
+    [Theory]
+    [InlineData(false)][InlineData(true)]
+    public void SelfConsistentClaimCannotReplaceTheActualDeclaredPathOrRequirementFingerprint(bool requirements)
+    {
+        var context = SpiritualDiagnosisAdmissionTests.Context();
+        var admitted = Assert.IsType<SpiritualDiagnosisAdmission>(new SpiritualDiagnosisSourceData(context)
+            .Admit(Assert.Single(context.Catalog.Occurrences).Wound, "diagnose_tissue").Data);
+        var turn = new SpiritualSelfTreatmentStageContext("session_binding", "request_binding", 43,
+            new ProgressionControl { CurrentRealm = "Chaos Sea", NextChaosSeaTurnOrdinal = 1 });
+        var retained = SpiritualDiagnosisRequestCodec.Create(turn, admitted.Selection, admitted);
+        var falseFingerprint = "sha256:" + new string('c', 64);
+        var forged = requirements ? admitted with { RequirementFingerprint = falseFingerprint }
+            : admitted with { PathFingerprint = falseFingerprint, Selection = admitted.Selection with
+                { Diagnosis = admitted.Selection.Diagnosis! with { ExpectedDiagnosisPathFingerprint = falseFingerprint } } };
+        var changed = retained.DeepClone().AsObject();
+        changed["diagnosis"]![requirements ? "requirementFingerprint" : "pathFingerprint"] = falseFingerprint;
+        changed["diagnosis"]!["attemptId"] = "spiritual_diagnosis_attempt_" + WoundAcceptedTurnFingerprintWriter.Compute(new[]
+        { "spiritual_diagnosis_request", "1", turn.SessionId, turn.RequestId, "43", "1",
+            WoundAcceptedTurnFingerprintWriter.CanonicalJson(forged.Selection.ToJson()) })[7..];
+        changed.Remove("requestFingerprint");
+        changed["requestFingerprint"] = WoundAcceptedTurnFingerprintWriter.Compute(new[] { "spiritual_diagnosis_request", "1",
+            WoundAcceptedTurnFingerprintWriter.CanonicalJson(changed) });
+        // Closed request DATA can be self-consistent without possessing its original
+        // wound. The actual admission factory must check the independent declaration.
+        Assert.Equal(forged.Selection, SpiritualDiagnosisRequestCodec.ReadSelection(changed));
+        Assert.False(SpiritualDiagnosisRequestCodec.IsExact(changed, turn, forged.Selection, forged));
+        var failure = Assert.Throws<InvalidDataException>(() => SpiritualDiagnosisRequestCodec.Create(turn, forged.Selection, forged));
+        Assert.Contains("actual selected path/requirements/check", failure.Message, StringComparison.Ordinal);
+    }
+
 }

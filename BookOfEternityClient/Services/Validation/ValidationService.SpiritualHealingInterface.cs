@@ -97,7 +97,6 @@ public partial class ValidationService
                     diagnosisProgram = AfterlifeWoundTreatmentAuthority.BindPreparedDiagnosisSource(context, candidate, sources, request).Program;
                     if (hasResidentMemory || hasRadiantMemory)
                         throw new InvalidDataException("Diagnosis cannot use patient-participation protected memory responses.");
-                    if (!hasGraphs) return null; // Ordinary resident memory retains its existing response owner.
                 }
                 else
                 {
@@ -222,6 +221,24 @@ public partial class ValidationService
                         combatOriginal.Wound, rank, row.GetProperty("stageRef").GetString()!, complications);
                 }
             }
+            if (diagnosisProgram is not null && hasOrdinaryMemory)
+            {
+                if (publishedSafe is null || ordinaryMemory.ValueKind != JsonValueKind.Array)
+                    throw new InvalidDataException("Ordinary diagnosis memory requires its completed cycle and existing array command contract.");
+                var rosterPath = GuardianAbodeResidentState.StatePath;
+                var beforeRoster = StrictJsonAuthority.Deserialize<JsonObject>(CanonicalJsonUtf8.DecodeOneOptionalBom(
+                    snapshot.ReadRequiredBytes(rosterPath)), new JsonSerializerOptions(), "diagnosis original resident memory")!;
+                var expected = beforeRoster.DeepClone().AsObject();
+                GuardianAbodeResidentState.ApplyThoughtJournalUpdates(expected, JsonNode.Parse(ordinaryMemory.GetRawText())!.AsArray());
+                var beforeJournal = beforeRoster[GuardianAbodeResidentState.ThoughtJournalProperty] as JsonArray ?? new JsonArray();
+                var afterJournal = expected[GuardianAbodeResidentState.ThoughtJournalProperty]!.AsArray();
+                if (afterJournal.Count < beforeJournal.Count || beforeJournal.Where((row, index) => !JsonNode.DeepEquals(row, afterJournal[index])).Any())
+                    throw new InvalidDataException("Ordinary diagnosis memory cannot replace an existing canonical journal prefix.");
+                var actualBytes = await ReadPublished(rosterPath) ?? throw new InvalidDataException("Diagnosis ordinary resident journal is absent.");
+                var actual = StrictJsonAuthority.Deserialize<JsonObject>(CanonicalJsonUtf8.DecodeOneOptionalBom(actualBytes), new JsonSerializerOptions(), rosterPath)!;
+                if (!JsonNode.DeepEquals(afterJournal, actual[GuardianAbodeResidentState.ThoughtJournalProperty]))
+                    throw new InvalidDataException("Ordinary diagnosis memory differs from its actual canonical append.");
+            }
             var patientRecord = publishedSafe?.ShiningPatientParticipationRecord;
             if (diagnosisProgram is null && (hasOrdinaryMemory || hasRadiantMemory || hasResidentMemory && patientRecord is not null))
             {
@@ -301,7 +318,7 @@ public partial class ValidationService
             var projected = JsonNode.Parse(root.GetRawText())!.AsObject();
             projected.Remove("spiritualHealingGraphs");
             if (hasResidentMemory) projected.Remove(SpiritualTreatmentParticipation.ResidentThoughtResponseProperty);
-            if (hasOrdinaryMemory && diagnosisProgram is null) projected.Remove(GuardianAbodeResidentState.UpdateThoughtJournalProperty);
+            if (hasOrdinaryMemory) projected.Remove(GuardianAbodeResidentState.UpdateThoughtJournalProperty);
             if (hasRadiantMemory) projected.Remove(SpiritualTreatmentParticipation.ShiningPatientMemoryResponseProperty);
             // Graphs-only is a payload only on this authenticated route; ordinary policy stays unchanged.
             if (!projected.ContainsKey("dialogueOptions") && !projected.ContainsKey("image_prompt")) projected["dialogueOptions"] = new JsonArray();

@@ -154,21 +154,24 @@ internal sealed class SpiritualDiagnosisPersistedResult : WoundTransitionResult
     internal void RequireNatural(SpiritualHealingPersistedResult natural)
     {
         var root = natural.ToCanonicalJson();
+        var actualStages = natural.Stages;
+        var expectedStages = _program.NaturalStages;
+        var naturalMembers = _program.NaturalMembers;
         if (!natural.IsNatural || natural.SchemaVersion != 2 || natural.ResultFingerprint != NaturalResultFingerprint ||
             natural.ProgramReference != _program.NaturalProgramReference || !JsonNode.DeepEquals(root["binding"], _root["binding"]) ||
             !JsonNode.DeepEquals(root["control"], _root["control"]) ||
             new[] { "scheduleBeforeJson", "progressionReportJson", "scheduleAfterJson", "scheduleAfterFingerprint" }.Any(field => Text(root, field) != Text(_root, field)) ||
             root["source"]?["graphResponseFingerprint"]?.GetValue<string>() != Text(_root, "graphResponseFingerprint") ||
-            !natural.Stages.Select(s => s.TransitionId).SequenceEqual(_program.NaturalStages.Select(s => s.TransitionId), StringComparer.Ordinal))
+            !actualStages.Select(s => s.TransitionId).SequenceEqual(expectedStages.Select(s => s.TransitionId), StringComparer.Ordinal))
             throw new InvalidDataException("Diagnosis natural result differs from its exact linked cycle/program.");
-        var expectedTiers = new JsonArray(_program.NaturalMembers.GroupBy(m => m.Wound.Owner).Select(g => (JsonNode)new JsonObject
+        var expectedTiers = new JsonArray(naturalMembers.GroupBy(m => m.Wound.Owner).Select(g => (JsonNode)new JsonObject
         { ["owner"] = SpiritualHealingRequestProjection.OwnerJson(g.Key), ["healingTier"] = g.First().HealingTier }).ToArray());
         if (!JsonNode.DeepEquals(root["source"]!["ownerTiers"], expectedTiers))
             throw new InvalidDataException("Diagnosis suffix changed an original owner's admitted natural tier.");
-        for (var index = 0; index < natural.Stages.Count; index++)
-            SpiritualHealingPersistedResult.ValidateStageScope(natural.Stages[index], _program.NaturalStages[index]);
-        var starts = natural.Stages.GroupBy(s => s.Before.WoundId).ToDictionary(g => g.Key, g => g.First().Before, StringComparer.Ordinal);
-        if (starts.Count != _program.NaturalMembers.Count || _program.NaturalMembers.Any(m =>
+        for (var index = 0; index < actualStages.Count; index++)
+            SpiritualHealingPersistedResult.ValidateStageScope(actualStages[index], expectedStages[index]);
+        var starts = actualStages.GroupBy(s => s.Before.WoundId).ToDictionary(g => g.Key, g => g.First().Before, StringComparer.Ordinal);
+        if (starts.Count != naturalMembers.Count || naturalMembers.Any(m =>
             !starts.TryGetValue(m.Wound.WoundId, out var wound) || WoundMaterializationContract.SerializeCanonical(wound) != WoundMaterializationContract.SerializeCanonical(m.Wound)))
             throw new InvalidDataException("Diagnosis suffix omits or changes its diagnosed whole-cohort start images.");
     }

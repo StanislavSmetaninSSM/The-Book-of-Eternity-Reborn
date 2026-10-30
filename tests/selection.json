@@ -1,25 +1,117 @@
 {
   "schemaVersion": 1,
   "selections": [
-    { "category": "spiritual-diagnosis-binding-data", "reason": "New closed requirement evidence is now retained and fingerprint-bound in the exact request; malformed data must refuse before any live owner is involved.", "contracts": ["#1536 T121-DIAGNOSIS-SPIRITUAL-PUBLICATION; exact statement/actor/source proof DATA, not current authority"] },
-    { "category": "spiritual-diagnosis-native", "reason": "New signed native publication/strict-history/interface/replay proof is authored test-first. Runtime remains held until coherent whole SOURCE/fresh builds/PREP and cheap PASS; original 120s peer budget.", "contracts": ["#1536 T121 / FR071; knowledge-first plus one complete natural suffix, one owner/cycle/common publisher"] },
-    { "category": "spiritual-diagnosis-program-data", "reason": "New complete knowledge/natural program and meaningful original-cohort/order/tier guards; no fake severity V or empty positive suffix.", "contracts": ["#1536 T121-DIAGNOSIS-SPIRITUAL-PUBLICATION / FR071; required complete nonempty natural suffix"] },
-    { "category": "spiritual-diagnosis-staging-data", "reason": "New actual no-draw prepared-stage and retry/refusal boundary, using the existing file-light fixture.", "contracts": ["#1536 T121-DIAGNOSIS-EXECUTION / FR071; fresh exact source/target and retained no-cost request"] },
-    { "category": "spiritual-diagnosis-admission", "reason": "The source constructor now has a shared parsed-DATA overload for actual staging; requalify its directly affected closure/availability/immutability and old-stage refusal consumers.", "contracts": ["#1536 T121-DIAGNOSIS-EXECUTION; existing three supported requirements, other eight unavailable"] },
-    { "category": "spiritual-diagnosis-menu-causal", "reason": "Actual source/menu parsed-DATA sharing changed; preserve both original supported H0 realm choices.", "contracts": ["#1536 T121 / FR071; current menu capability"] },
-    { "category": "wound-target-choice-contract", "reason": "The existing target builder now shares its unchanged pure body with staged/signed diagnosis admission; verify exact locality/typed identity/privacy and Self-first behavior.", "contracts": ["#1536 T120/T121; actual current target admission without consent authority"] },
-    { "category": "wound-read-semantic-source-guards", "reason": "New production diagnosis source files and shared target/read code enter the existing semantic inventory scan; no exemptions or guard weakening.", "contracts": ["#1536 T121; strict canonical reader ownership and status/wound read boundary"] },
+    {
+      "category": "spiritual-diagnosis-binding-data",
+      "reason": "New closed requirement evidence is now retained and fingerprint-bound in the exact request; malformed data must refuse before any live owner is involved.",
+      "contracts": [
+        "#1536 T121-DIAGNOSIS-SPIRITUAL-PUBLICATION; exact statement/actor/source proof DATA, not current authority"
+      ]
+    },
+    {
+      "category": "spiritual-diagnosis-native",
+      "reason": "New signed native publication/strict-history/interface/replay proof is authored test-first. Runtime remains held until coherent whole SOURCE/fresh builds/PREP and cheap PASS; original 120s peer budget.",
+      "contracts": [
+        "#1536 T121 / FR071; knowledge-first plus one complete natural suffix, one owner/cycle/common publisher"
+      ]
+    },
+    {
+      "category": "spiritual-diagnosis-program-data",
+      "reason": "New complete knowledge/natural program and meaningful original-cohort/order/tier guards; no fake severity V or empty positive suffix.",
+      "contracts": [
+        "#1536 T121-DIAGNOSIS-SPIRITUAL-PUBLICATION / FR071; required complete nonempty natural suffix"
+      ]
+    },
+    {
+      "category": "spiritual-diagnosis-staging-data",
+      "reason": "New actual no-draw prepared-stage and retry/refusal boundary, using the existing file-light fixture.",
+      "contracts": [
+        "#1536 T121-DIAGNOSIS-EXECUTION / FR071; fresh exact source/target and retained no-cost request"
+      ]
+    },
+    {
+      "category": "spiritual-diagnosis-admission",
+      "reason": "The source constructor now has a shared parsed-DATA overload for actual staging; requalify its directly affected closure/availability/immutability and old-stage refusal consumers.",
+      "contracts": [
+        "#1536 T121-DIAGNOSIS-EXECUTION; existing three supported requirements, other eight unavailable"
+      ]
+    },
+    {
+      "category": "spiritual-diagnosis-menu-causal",
+      "reason": "Actual source/menu parsed-DATA sharing changed; preserve both original supported H0 realm choices.",
+      "contracts": [
+        "#1536 T121 / FR071; current menu capability"
+      ]
+    },
+    {
+      "category": "wound-target-choice-contract",
+      "reason": "The existing target builder now shares its unchanged pure body with staged/signed diagnosis admission; verify exact locality/typed identity/privacy and Self-first behavior.",
+      "contracts": [
+        "#1536 T120/T121; actual current target admission without consent authority"
+      ]
+    },
+    {
+      "category": "wound-read-semantic-source-guards",
+      "reason": "New production diagnosis source files and shared target/read code enter the existing semantic inventory scan; no exemptions or guard weakening.",
+      "contracts": [
+        "#1536 T121; strict canonical reader ownership and status/wound read boundary"
+      ]
+    },
     {
       "category": "spiritual-diagnosis-reduction-causal",
-      "reason": "Accepted EX3 semantic RED now awaits GREEN through explicit sealed spiritual proof. Preserve both functional realm rows, complete knowledge-only/no-mechanics assertions and original immutability prerequisites. This remains component DATA qualification, not live execution admission.",
+      "reason": "Accepted EX3 semantic RED now is the GREEN candidate through explicit sealed spiritual proof. Preserve both functional realm rows, complete knowledge-only/no-mechanics assertions and original immutability prerequisites. The original semantic RED receipt remains historical; this selects the functional GREEN candidate, not runtime permission.",
       "contracts": [
-        "#1536 T121-DIAGNOSIS-SPIRITUAL-PUBLICATION / FR071; all declared knowledge only, no mechanical mutation or fake Mortal authority; actual spiritual dispatch and durable optional-suffix publication follow observed RED"
+        "#1536 T121-DIAGNOSIS-SPIRITUAL-PUBLICATION / FR071; all declared knowledge only, no mechanical mutation or fake Mortal authority; actual spiritual dispatch and durable REQUIRED-suffix publication follow observed RED"
       ]
     },
     {
       "category": "spiritual-diagnosis-reduction-guards",
       "reason": "New meaningful sealed-proof/delta refusals plus the three directly affected existing Mortal factory rows prove the shared seal remains exact and cannot turn Mortal authority into a spiritual route. No unrelated accepted cases or compatibility suite replay. Whole execution selection is completed with the following coherent WIP.",
-      "contracts": ["#1536 T121-DIAGNOSIS-SPIRITUAL-PUBLICATION / FR071; explicit spiritual purpose, unchanged Mortal seal semantics, exact complete knowledge-only delta"]
+      "contracts": [
+        "#1536 T121-DIAGNOSIS-SPIRITUAL-PUBLICATION / FR071; explicit spiritual purpose, unchanged Mortal seal semantics, exact complete knowledge-only delta"
+      ]
+    },
+    {
+      "category": "spiritual-diagnosis-native-terminal",
+      "reason": "New focused actual consumer of the coherent diagnosis execution contract. Runtime remains UNRUN/held for whole SOURCE, fresh owners, discovery and staged PREP; unchanged accepted gameplay is not repeated.",
+      "contracts": [
+        "#1536 T121-DIAGNOSIS-SPIRITUAL-PUBLICATION / FR071; distinct spiritual purpose, REQUIRED complete natural suffix and existing common owner"
+      ]
+    },
+    {
+      "category": "spiritual-diagnosis-native-resident",
+      "reason": "New focused actual consumer of the coherent diagnosis execution contract. Runtime remains UNRUN/held for whole SOURCE, fresh owners, discovery and staged PREP; unchanged accepted gameplay is not repeated.",
+      "contracts": [
+        "#1536 T121-DIAGNOSIS-SPIRITUAL-PUBLICATION / FR071; distinct spiritual purpose, REQUIRED complete natural suffix and existing common owner"
+      ]
+    },
+    {
+      "category": "spiritual-diagnosis-native-radiant",
+      "reason": "New focused actual consumer of the coherent diagnosis execution contract. Runtime remains UNRUN/held for whole SOURCE, fresh owners, discovery and staged PREP; unchanged accepted gameplay is not repeated.",
+      "contracts": [
+        "#1536 T121-DIAGNOSIS-SPIRITUAL-PUBLICATION / FR071; distinct spiritual purpose, REQUIRED complete natural suffix and existing common owner"
+      ]
+    },
+    {
+      "category": "spiritual-diagnosis-console",
+      "reason": "New focused actual consumer of the coherent diagnosis execution contract. Runtime remains UNRUN/held for whole SOURCE, fresh owners, discovery and staged PREP; unchanged accepted gameplay is not repeated.",
+      "contracts": [
+        "#1536 T121-DIAGNOSIS-SPIRITUAL-PUBLICATION / FR071; distinct spiritual purpose, REQUIRED complete natural suffix and existing common owner"
+      ]
+    },
+    {
+      "category": "spiritual-diagnosis-browser",
+      "reason": "New focused actual consumer of the coherent diagnosis execution contract. Runtime remains UNRUN/held for whole SOURCE, fresh owners, discovery and staged PREP; unchanged accepted gameplay is not repeated.",
+      "contracts": [
+        "#1536 T121-DIAGNOSIS-SPIRITUAL-PUBLICATION / FR071; distinct spiritual purpose, REQUIRED complete natural suffix and existing common owner"
+      ]
+    },
+    {
+      "category": "spiritual-diagnosis-rollback",
+      "reason": "New focused actual consumer of the coherent diagnosis execution contract. Runtime remains UNRUN/held for whole SOURCE, fresh owners, discovery and staged PREP; unchanged accepted gameplay is not repeated.",
+      "contracts": [
+        "#1536 T121-DIAGNOSIS-SPIRITUAL-PUBLICATION / FR071; distinct spiritual purpose, REQUIRED complete natural suffix and existing common owner"
+      ]
     }
   ]
 }
