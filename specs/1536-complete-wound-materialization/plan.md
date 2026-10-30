@@ -1,3 +1,16 @@
+## S6 cheap result and Engine plan
+
+At runtime 33170bd506ef6b8f1cbd05eed536cf1396996861, S6-cheap completed 33/33
+PASS (nine methods, three descriptors), wall 44.6668646s; category times were
+8.0009869 / 7.4466167 / 7.4510896s within unchanged 60s bounds. Exact method/case
+counts, unique TRX IDs, owning pins and full runner cleanup were verified. This
+qualifies the cheap correction controls; independent OUTCOME is pending.
+
+S6-ui-plan separately confirmed exactly ten cases/methods/descriptors and zero
+executed. Native four and all ten UI cases remain unrun on S6. The next runtime
+needs independent PREP and a fresh no-owner/artifact fence. Raw and hashed receipts
+are under the external S6-cheap and S6-ui-plan directories; none is staged.
+
 # T108 Shining-patient qualification — S6 preparation receipt
 
 2026-10-30: causal correction c697454b is independently SOURCE accepted. Fresh
