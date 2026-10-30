@@ -1,4 +1,4 @@
-# T142 functional result verified — final independent OUTCOME pending
+# T142 ACCEPTED — living faction healers and historical-only exemption
 
 Issue #1536 / FR083. Current materialized Shining factions, including hidden,
 weakened and leaderless, require one exact living primary healing_support resident
@@ -16,7 +16,8 @@ precondition: mandatory second resident changed base20+6 to genuine trade26;
 base18+6=24 restores the original forged30 negative. Strict assertion/production
 threshold unchanged. Original mixed TRX and every failure retained, not hidden.
 All planned cases completed, no timeout/skip/duplicate/lost result; owned/runtime
-cleanup true and pins unchanged. Independent final OUTCOME is pending, T142 stays open.
+cleanup true and pins unchanged. Independent Sol SOURCE, PREP and final OUTCOME accepted;
+T142 is complete in this bounded validator/GM-contract scope. US6/#1536 stay open.
 
 Owning successful builds: Main/Support5b6b52049e623a8c13a4f8affe8ce4c63b3983ca,
 0errors/12,23baselinewarnings; Unitd1a6f786d7838ff2aae8272bbd75f3e4b65df3d0,
