@@ -1,3 +1,23 @@
+# T142 corrected singleton preparation — runtime UNRUN
+
+Source4936f6ee92ff124903ee77658f6686c2a1782de8 independently SOURCE/selection accepted.
+Fresh Integration-only build exit0/0errors/102baselinewarnings,2:33.95; unchanged
+Main/Support/Unit retained with explicit source equivalence. Current4PE/PDB/100bindings,
+27artifacts/resources verified; prior artifacts preserved/full archive decode checked.
+Catalog valid1138categories/12910methods,0executions. Exact singleton PlanOnly1case/
+1method/1descriptor/60s,6.4189526s wall,0executions, clean/cleanup/pins valid.
+Independent PREP and corrected runtime remain pending; no105/27PASS repetition.
+
+Read-only canonical cross-check found the current data-model paragraph still said
+all accepted factions have a visible healer. Align it with already-approved FR083/
+contract: current/hidden canonical healer, revealed visible tier, historical-only
+broken/dissolved exemption, preserved records, no inferred service. Documentation-only
+clarification changes no source, resource, schema, limit or prior acceptance.
+Optimization remains the existing invocation-local DATA reuse; no new framework.
+Full raw outside checkout,6.6GB available; no evidence/saves/recovery removal.
+
+---
+
 # T142 final-consumer fixture correction — WIP, singleton GREEN UNRUN
 
 Known runtime9cde4bbe13f426b9ce54e70aef087740dccc54a3 completed28/28 consumers:

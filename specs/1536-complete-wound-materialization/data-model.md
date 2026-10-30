@@ -3493,13 +3493,16 @@ not restore the initial location, resurrect or duplicate her to maintain availab
 
 ### Shining faction invariant
 
-Each accepted Shining faction has at least one visible roster resident in
-`game_state/meta/guardian_abode_residents.json` whose
-`residentRole = healing_support` (the existing single primary-role field) and whose
-`standardArts.spiritual_healing` is 1-5. The
-resident's exact actor identity resolves to its afterlife profile. That profile may
-omit `healingServiceProfile` or declare restricted access. The role is ordinary
-visible roster information.
+Every current materialized Shining faction has at least one living roster resident
+in `game_state/meta/guardian_abode_residents.json` whose primary
+`residentRole = healing_support` and whose exact unique materialized afterlife profile
+proves integer `standardArts.spiritual_healing` 1-5. Active, weakened, leaderless and
+unrevealed current factions remain subject to this invariant. Only historical
+`factionLifecycle.state = broken | dissolved` factions are exempt; preserve their
+records (owner decision 2026-10-29). A hidden current faction still needs a canonical
+healer; revealing its roster requires a player-visible qualifying role and tier.
+The profile may omit `healingServiceProfile` or declare restricted access. Capability
+and roster visibility do not grant service, access, payment or treatment authority.
 
 ### Accepted wound-effect handoff
 
