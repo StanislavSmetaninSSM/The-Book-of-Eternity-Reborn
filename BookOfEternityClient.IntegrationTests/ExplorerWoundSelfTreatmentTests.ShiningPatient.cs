@@ -29,10 +29,10 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
         var capture = new LifecyclePassiveTimingDiagnostics("ShiningPatient-" + kind + "-" +
             (failPublication ? "rollback" : browser ? "browser" : "console"), output, gzipRecords: true);
         var timings = new OperationTimingAccumulator(); var window = timings.StartWindow(captureEvents: true);
-        Exception? primary = null;
+        Exception? primary = null; IDisposable? journey = null; IDisposable? preparation = null;
         try { await CoreAsync(); }
         catch (Exception error) { primary = error; }
-        finally { await capture.CompleteAsync(primary); }
+        finally { preparation?.Dispose(); journey?.Dispose(); await capture.CompleteAsync(primary); }
         if (primary is not null) ExceptionDispatchInfo.Capture(primary).Throw();
 
         async Task CoreAsync()
@@ -59,10 +59,15 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                     return Task.CompletedTask;
                 }
             };
-            using var journey = timings.Measure("ShiningPatient.JourneyIncludingClosing");
+            void Allocated(string actualRoot)
+            {
+                capture.BindFixtureRoot(actualRoot); capture.Arm(window);
+                journey = timings.Measure("ShiningPatient.JourneyIncludingClosing");
+                preparation = timings.Measure("ShiningPatient.FixturePreparation");
+            }
             BookOfEternityClient.Tests.AfterlifeWoundHealingLifecycleTests.Fixture fixture;
-            using (timings.Measure("ShiningPatient.FixturePreparation"))
-                fixture = await CreateShiningPatientFixtureAsync(kind, hooks, actualRoot => { capture.BindFixtureRoot(actualRoot); capture.Arm(window); });
+            try { fixture = await CreateShiningPatientFixtureAsync(kind, hooks, Allocated); }
+            finally { preparation?.Dispose(); preparation = null; }
             Exception? fixtureFailure = null;
             try { await WithFixtureAsync(); }
             catch (Exception error) { fixtureFailure = error; }

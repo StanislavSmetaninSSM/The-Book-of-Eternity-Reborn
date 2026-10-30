@@ -110,6 +110,14 @@ exact PlanOnly and independent PREP before cheap68, then menu4 and genuine journ
 Sol fixture audit accepted initial seed and requested one-read counter also after
 SelectTarget; cumulative2 is now asserted. No runtime PASS claimed.
 
+Fresh Main7e4e16c18: exit0/12warnings/2:39.79; Support9c2ab3025 exit0.
+Production-source delta between these SHAs is empty (new Integration journeys,
+catalog and checkpoint only); no unjustified Main rebuild. Sol full fixture review
+found timer scopes starting before bound capture epoch; corrected to existing
+Allocated: bind root→Arm→start preparation/journey, exact closing preserved.
+Remaining full-fixture review and fresh Unit/Integration/catalog/PDB/PlanOnly/PREP
+are pending. No new test execution yet; all code/GM journeys remain unqualified.
+
 Авторское решение диагностики принято2026-10-30 11:48UTC и отражено в FR071/tasks.
 После текущего Shining patient: Mortal method declares own procedure check/time/
 cost; spiritual Healing>=0 plus ALL path requirements, guaranteed declared reveals,
