@@ -2,6 +2,34 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "shining-patient-response-memory-causal",
+  "responsibility": "Actual signed resident consent43 response, common publication and Full cross-owner actor memory validation; causal check for T108-SHINING-PATIENT-MEMORY.",
+  "excludes": "Engine/UI/repair loop, radiant or active44 memory and unrelated gameplay.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/ExplorerWoundSelfTreatmentTests.ShiningPatientResponse.cs"
+  ],
+  "related": [
+    {
+      "id": "shining-patient-resident-console",
+      "when": "After native response memory is valid, retain the actual consent/cleanup/confirm Engine journey."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.ShiningResidentConsentResponsePublishesAllRequiredActorMemory"
+      ]
+    }
+  ]
+},
+{
   "id": "shining-patient-retained-request",
   "responsibility": "T108-SHINING-PATIENT21 pure retained request8/direction/independent natural tier, separate exported DATA, closed cross-family selection and valid-cycle consent refusals. Split from current-contracts after its shared input helper parent-ownership defect.",
   "excludes": "No genuine accepted witness/draw/publication/Engine or authority grant; other45passed contracts are retained without rerun.",

@@ -1,3 +1,9 @@
+# T108-SHINING-PATIENT-MEMORY: native causal proof WIP
+
+Sole writer fixture-audit at base6416c1007fd141b296890f3c62332269d626f6ee; main owns all builds/runtime. Added one existing-API resident grant43 native proof through actual signed preparation/common publication and no-argument Full reasoning validation. Production and the authored response are unchanged. Expected RED is the retained support-resident missing journal plus Elyara Brain surface mismatch, after actual natural8 grant/patient-memory prerequisites. New category has the existing native2min bound. C# UNCOMPILED/UNRUN; no Engine retry or other category admitted. Prior68new DATA,239affected,menu4,docs2,native10 PASS remain on their recorded lineages; incomplete180s Engine repair-state retained externally.
+
+Optimization: reuse the actual complete cold fixture and existing signed preparation/normalizer/validator APIs; no new reads in production, cache or diagnostic transport. The independent four-phase response and detached DATA programs follow after this causal proof.
+
 # Следующий игровой результат: игрок лечит пациента в Сияющей Обители — #1536
 
 База `d601411b0c105ca3fdf409a668f1f0dc11098b4a` проверена локально/удалённо,
