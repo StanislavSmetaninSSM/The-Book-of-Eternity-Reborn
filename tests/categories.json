@@ -37627,6 +37627,126 @@
       },
       "timeoutMinutes": 1,
       "expectedSeconds": null
+    },
+    {
+      "id": "negotiated-healing-faction-console",
+      "responsibility": "One actual controlled-nativeGM Shining negotiated provider Engine offer43/natural History/normal cleanup then existing guided console cancel/read/separate-confirm/attempt44, unchanged wallet, exact terms/draw/wound/cycle/participant memory, inert current replay.",
+      "excludes": "No DOM/live external provider/fresh-process, new fulfillment ledger/economic rule or whole-US6 qualification; no modeled cleanup substituted for Engine.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/ExplorerWoundSelfTreatmentTests.Negotiated.cs"
+      ],
+      "related": [],
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.ConsoleNegotiatedFactionOfferUsesActualGrantCleanupAndConfirmedTreatment"
+          ]
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null
+    },
+    {
+      "id": "negotiated-healing-faction-browser",
+      "responsibility": "One actual controlled-nativeGM Shining negotiated provider Engine offer43/natural History/normal cleanup then existing guided shared browser queue cancel/read/separate-confirm/attempt44, unchanged wallet, exact terms/draw/wound/cycle/participant memory, inert current replay.",
+      "excludes": "No DOM/live external provider/fresh-process, new fulfillment ledger/economic rule or whole-US6 qualification; no modeled cleanup substituted for Engine.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/ExplorerWoundSelfTreatmentTests.Negotiated.cs"
+      ],
+      "related": [],
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.BrowserNegotiatedFactionOfferUsesActualGrantCleanupAndConfirmedTreatment"
+          ]
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null
+    },
+    {
+      "id": "negotiated-healing-elyara-console",
+      "responsibility": "One actual controlled-nativeGM Shining negotiated provider Engine offer43/natural History/normal cleanup then existing guided console cancel/read/separate-confirm/attempt44, unchanged wallet, exact terms/draw/wound/cycle/participant memory, inert current replay.",
+      "excludes": "No DOM/live external provider/fresh-process, new fulfillment ledger/economic rule or whole-US6 qualification; no modeled cleanup substituted for Engine.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/ExplorerWoundSelfTreatmentTests.Negotiated.cs"
+      ],
+      "related": [],
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.ConsoleNegotiatedElyaraOfferUsesActualGrantCleanupAndConfirmedTreatment"
+          ]
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null
+    },
+    {
+      "id": "negotiated-healing-elyara-browser",
+      "responsibility": "One actual controlled-nativeGM Shining negotiated provider Engine offer43/natural History/normal cleanup then existing guided shared browser queue cancel/read/separate-confirm/attempt44, unchanged wallet, exact terms/draw/wound/cycle/participant memory, inert current replay.",
+      "excludes": "No DOM/live external provider/fresh-process, new fulfillment ledger/economic rule or whole-US6 qualification; no modeled cleanup substituted for Engine.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/ExplorerWoundSelfTreatmentTests.Negotiated.cs"
+      ],
+      "related": [],
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.BrowserNegotiatedElyaraOfferUsesActualGrantCleanupAndConfirmedTreatment"
+          ]
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null
+    },
+    {
+      "id": "negotiated-healing-faction-rollback",
+      "responsibility": "One actual controlled-nativeGM Shining negotiated provider Engine offer43/natural History/normal cleanup then existing guided console cancel/read/separate-confirm/attempt44, unchanged wallet, exact terms/draw/wound/cycle/participant memory, inert current replay; physical common publication cut restores accepted43 whole state.",
+      "excludes": "No DOM/live external provider/fresh-process, new fulfillment ledger/economic rule or whole-US6 qualification; no modeled cleanup substituted for Engine.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/ExplorerWoundSelfTreatmentTests.Negotiated.cs"
+      ],
+      "related": [],
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.NegotiatedFactionPublicationFailureRestoresAcceptedGrantWalletAndMemory"
+          ]
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null
     }
   ]
 }

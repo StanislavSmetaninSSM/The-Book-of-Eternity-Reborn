@@ -1,3 +1,30 @@
+# Negotiated B: independent cheap OUTCOME accepted; real Engine journeys WIP
+
+Sol принял B2wallet10/10 с фактическимTRX2afeac95...eb6de56 и полной accounting;
+30B1distinctPASS сохранены без повторов. Всего40distinctDATAна2lineage, неfresh40.
+Новые5singleton Engine fixtures используют existing complete service/faction seeds,
+ordinary resource bootstrap и shared console/browser handlers: настоящие offer43,
+natural History и штатная очистка, чтение/отмена, отдельное подтверждение и aid44,
+retainedrequest/terms/draw, неизменный кошелёк, wound/effects/History/цикл/память,
+current inert replay и physical common-fault rollback к accepted43. Faction healer
+не имеет publiccurrencyprofile; Элиара сохраняет canonicalpublic100 при unavailable
+публичном приёме, private offer отдельно. Никаких файлов после принятого хода не
+добавляется ради подготовки. Пять категорий по одному случаю с исходной границей
+этого класса маршрутов3min; SOURCE/fresh Integration/discovery/PREP/runtimepending.
+
+Один optional before-bootstrap callback добавлен существующему faction fixture под
+его исходным lease; прежние default seeds неизменны. Full passive recorder/gzip и
+исходные Engine messages переиспользованы, без нового формата/cache/FSdiagnostic
+callback для positive. Raw внеcheckout, полное завершение и owned-root cleanup
+обязательны. Optimization: parsed roots общийменюread; passive counters проверяют
+фактическое одно чтение localitypaths. Это не 1vs20 source-cost qualification.
+Предстоят focused normalizer/memory/wallet-command causal controls, целостный
+fixtureSOURCE, fresh owning Integration и exact qualification. Ни5journeys, ни150
+regressions пока UNRUN. B/US6/#1536 иDOM/liveprovider/freshprocess не закрыты.
+Remote предыдущей доказанной границыc0253d1be; accepted publicA отдельноad0b0382b.
+
+---
+
 # Negotiated B: wallet/request10PASS; далее настоящий двухходовый маршрут
 
 После SOURCEdelta121160266 выполнены четыре fresh B2 owning builds0errors,
