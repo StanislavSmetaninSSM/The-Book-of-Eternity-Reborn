@@ -29,7 +29,7 @@ HP/ДЭ/метки/остатки всегда личные; не создава
   WIP/push/readback; полный прогон с raw D:/BoeDiagnostics/spiritual-reactions-t116/;
   отдельно10000на значимые выводы и support/Will sensitivity. Динамических лимитов
   диагностики нет; горизонт2000 — цензурирование, не доказанная бесконечность.
-- [ ] T116c/T117: прочитать полные результаты/свести краткий отчёт/объяснение,
+- [x] T116c/T117: прочитаны полные результаты, сведён краткий отчёт/объяснение,
   independent Astra/high review всего coherent diff, исправления/адресная проверка,
   финальный commit/push/blob/issue readback. Только численная модель; нет game build.
 
@@ -56,6 +56,15 @@ win+censor проверены. [Результаты](reaction-balance-investiga
 Parent не менял принятые числа. Sol6.1/high отдельно проверил actual UI/help/preview,
 SerenaC#/TS symbols, старыеoperation_type/position/AP обозначены как будущая замена.
 Далее checkpoint/push, сложный Astra/high review всего diff и финальная публикация.
+
+Checkpoint59d918af4401077c236c306d9bedff8def29cdb6 опубликован/readback и remoteSHA
+сверены перед review.191файловая ссылка/3DEfences/неизменность старых проб/diffcheck
+проверены. Независимый GPT-6 Astra/high review_reaction_balance_t116 проверил17files,
+модель/исходники/31tests/raw/отчёт/UX: существенных замечаний нет. По его замечанию
+для ясности order назван самостоятельным входом, не новым правилом инициативы.
+Модель/цены/результаты после проверки не менялись; повтор миллионов не требуется.
+Завершение: финальный commit/push, remoteHEAD/17blob и exact #1573 readback с
+сохранением истории. UX-профиль остаётся на рассмотрении, production gates открыты.
 
 ## Текущий срез T113–T114: принятие хода и активные реакции
 
