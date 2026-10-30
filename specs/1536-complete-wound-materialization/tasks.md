@@ -12,6 +12,12 @@
 - [ ] T108-SHINING-PATIENT-CAUSAL Freeze/review a compilable existing-API proposal
   refusal RED for both patient kinds; cheap typed/source-count/cross-family,
   locality/visibility/life/head/political/consent/rollback controls before real UI.
+- [ ] T108-SHINING-PATIENT-MEMORY Compose ordinary support-resident memory and
+  exact selected radiant ledger DATA through existing publication owners, without
+  broadening the selected resident protected channel or weakening signed/fresh
+  sources. Actual grant timeout exposes the cross-owner gap. Bounded DESIGN,
+  cheap causal append/refusal controls and four kind×phase Full reasoning proofs
+  precede a changed Engine retry; preserve all prior PASS and the original budget.
 - [ ] T108-SHINING-PATIENT-JOURNEYS After owning builds/exact discovery/PREP,
   qualify actual resident and radiant-head grant→normal cleanup→separate aid
   through both console/shared browser, retained replay and actual common rollback.

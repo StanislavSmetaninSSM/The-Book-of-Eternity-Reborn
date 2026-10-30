@@ -982,9 +982,11 @@ No fake Guardian dependency or GuardianId alias is added for either patient.
   the exact fresh patient scope instead of trusting a forged target DATA value.
 - Memory: resident uses existing protected
   `spiritualResidentThoughtJournalUpdates` for the exact schema5 resident only.
-  Radiant head uses existing nonempty profile `gmThoughtsSummary` and ordinary
-  actor-memory validation/owned profile composition. Faction chronicle and
-  progression ledger do not substitute; no new journal is introduced.
+  Radiant head requires a genuine append-only existing `ledger[]` entry plus
+  current `gmThoughtsSummary`; summary alone is not historical memory for an
+  existing actor. Faction chronicle and automatic progression ledger do not
+  substitute. The grant/active owner must compose this DATA without raw writes
+  to its guarded original profiles. See the correction requirements below.
 - Historical completed replay checks the immutable accepted proof/result and
   does not require renewed live consent or a second draw/world cycle. Pending
   execution still requires every fresh participant/source permission check.
@@ -1048,3 +1050,40 @@ to the same branch with verified remote SHA. No new clone/restore, history rewri
 raw upload, merge or issue closure. DFR/Mortalcompat/Windows and pending diagnosis
 execution remain separate. No unchanged accepted PASS is replayed without a
 new affected dependency.
+
+
+### Shining patient memory composition correction — T108 / 2026-10-30
+
+The first real resident consent turn reached validation repair and timed out.
+Two existing contracts must compose; neither may be skipped for this feature:
+
+- Client-auto strategy really changes the mandatory support healer's profile and
+  roster. Current structured-diff reasoning requires its decision audit and
+  append-only resident journal, even though it is not an aid participant. Moving
+  it outside declared scope does not remove the actual change.
+- The exact patient-only protected resident append must remain restricted to the
+  selected patient. Currently its whole-journal before/after image prevents an
+  ordinary support append from composing. Raw roster writes also violate the
+  signed-original/fresh-source contract; they are not a legal workaround.
+- A pre-existing radiant patient needs a genuine actor-owned ledger append.
+  Natural grant can compose ordinary current profile memory; active8 starts from
+  signed originals and forbids raw profile writes. Its memory must be explicit
+  detached response DATA composed through the existing profile publisher.
+
+Resolve both through the existing continuation, resident normalizer and common
+profile publisher: separate admission of ordinary nonpatient resident memory and
+exact selected-radiant memory; preserve all prior journal/ledger entries and all
+nonmemory fields; bind actual response/turn/typed actor and signed source roots.
+Keep immutable originals and physical current/closing/readback checks, one draw,
+cycle, accepted History, completed replay and atomic compensation/outer rollback.
+No full-carrier replacement, new publisher/cache/journal, fake economic update or
+progression-memory substitution. Precise command transport awaits bounded Astra
+DESIGN; no new journey retry is admitted by this requirements amendment.
+
+Finite proof before the next Engine case: cheap disjoint resident append
+composition and exact radiant memory with auto-progression disabled; refusal of
+foreign/selected-as-ordinary actors, stale turn, duplicate IDs or old-entry edits;
+then four real kind×phase43/44 response proofs using actual signed preparation,
+normalization/publication and no-argument Full reasoning validation. Phase44
+requires a real committed grant. Retain prior PASS; only affected source/owning
+builds and gates repeat. The same full gzip capture and 180s Engine budget stay.
