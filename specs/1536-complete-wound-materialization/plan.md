@@ -1,3 +1,28 @@
+# T108 Shining-patient qualification — S6 preparation receipt
+
+2026-10-30: causal correction c697454b is independently SOURCE accepted. Fresh
+Main, Support, Unit and Integration builds at 5e7350d5 all exited 0, with unchanged
+warning baselines 12/23/26/102 and durations 4:08.10 / 35.41s / 2:16.64 / 3:55.60.
+The disconnected outer build shell ended after Unit; saved exits and absent
+Integration directory/process proved that Integration had not started. Only that
+missing build was then run. No completed build was repeated.
+
+S6 confirms 27 owning artifacts, four PE/PDB pairs, 173 changed-source bindings,
+nine operational resources in 36 copies and four matching daemon copies. Official
+catalog discovery and exact PlanOnly succeeded: 37 cases, 13 methods, seven
+descriptors; zero executed. Next: independent PREP, cheap 33, then four actual
+native publication phases at their unchanged 120s bounds. All ten Engine/UI cases
+remain unrun after the original resident-console timeout. The complete two-turn
+resident preparation audit found no further fixture blocker; it is not runtime
+acceptance. Old owner-four retention covers only unchanged source-lifetime guards.
+
+Raw evidence remains outside checkout at
+`/workspace/tboe-linux-evidence-20261025/us4-shining-patient-aid` (S6-*). No speedup
+claim: parsed participation roots are reused inside the existing continuation;
+current patient identity, source, assembly and prepublication checks remain fresh.
+Author-approved diagnosis execution follows this coherent treatment slice; DFR,
+Mortal-compatibility and Windows holds remain separate.
+
 # T108 projected patient dispatch correction — coherent WIP, UNCOMPILED/UNRUN
 
 Actual S5D observation exposed ValidationIssue.Actual: `Provider owner and exact locality variant differ.` Active44 correctly reached real confirmation/staging/signed preparation; existing Service.cs dispatched every Shining AidWitness to receiving-provider admission and treated the player healer as a provider. Independent Astra/main confirmed the production cause. No budget/timer/logger change or guessed fixture workaround.
