@@ -308,6 +308,18 @@ fullmemberhash/EOFCRC verified before any overwrite. SourceWIPwriterpaused;
 main owns builds/runtime. Prior323historicalPASS, actualEngine180timeout and
 acceptednativeRED1fail remain separate, not current memory qualification.
 
+S5 fresh owned builds: Main/Support/Integration@24e1c4b0a all exit0, baseline
+warnings12/23/102, times4:07.09/30.44/3:50.59. FirstUnit24e exit0/28warnings;
+only two NEWxUnit2017 membership style findings fixed without predicate change
+(explicitOrdinalIgnoreCase) and independentlyaccepted atbde01462. FreshUnit-only
+bde exit0/26baselinewarnings/2:07.21; other owning code unchanged, no repeatedbuild.
+Current27artifacts,4PE/PDB/171sourcebindings,9resources36copies/4daemons verified.
+Catalog1188/12990valid/no stale/unmapped,zeroexecution. ActualPlanOnly confirms
+80cases/40methods/20descriptors: cheap62/5desc, native8/5desc, UI10/10desc; no
+execution/TRX/timeout/duplicate, stablepins/fullcleanup. PREP pendingONLYcheap62
+at60s/category first; native8/UI10 remainUNRUN/unreleased. Currentcode/source
+accepted but NOmemoryfunctionalPASSyet. Full rawexternal/S5-*; no rawinGit.
+
 Авторское решение диагностики принято2026-10-30 11:48UTC и отражено в FR071/tasks.
 После текущего Shining patient: Mortal method declares own procedure check/time/
 cost; spiritual Healing>=0 plus ALL path requirements, guaranteed declared reveals,
