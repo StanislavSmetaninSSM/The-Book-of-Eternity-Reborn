@@ -1,3 +1,46 @@
+# T108 family8 History correction — WIP, UNCOMPILED/UNRUN
+
+The retained S6 radiant-active failure is the causal RED: a genuine natural8 grant
+was published at turn43, but active44 preparation failed with
+`spiritual_aid_grant_history_invalid`. Independent Sol and Astra found one stale
+closed lookup: natural grant families 3–6 excluded 8. The production correction
+adds only 8; exact grant count, fingerprint, record, session, preceding turn and
+final-wound comparisons remain unchanged. The adjacent replay audit found no
+second stale whitelist. No new GM field, result shape, rule or instruction is
+introduced, so GM guides/examples/manifest need no change for this internal fix.
+
+Both already-required native active44 cases now reuse their actual typed grant
+and active results for detached serialized History round-trip and exact replay.
+Each also checks conflicting replay, missing grant, duplicate grant row, wrong
+primary result family and altered result fingerprint. Missing grant omits only
+its result while preserving the complete row/ordinal/wound chain. Duplicate and
+wrong-family controls explicitly test their earlier strict guards; they do not
+claim to reach the grant index. The full persisted-result factory requires the
+actual continuation and executed boundaries; no independent pure complete-pair
+builder exists. Reusing these two real owners avoids a hand-written authority
+mirror, extra fixture setup or fabricated accepted result. No test was run here.
+
+Restore full memory-feature CI coverage: 23 categories/descriptors, 46 methods,
+110 distinct cases, cross-checked as the union of the verified S5 full 80 and S6
+projected/provider additions 30. The parser split preserves membership. New helper
+assertions add no test cases or budget. Fresh owning builds/discovery/PREP remain
+pending. This CI record is not an aggregate runtime request: retain accepted
+unchanged cheap 33; next run only the four required native phases at 120s each,
+then separately admitted UI. Existing old-family 3–6 lookup behavior and adjacent
+missing-grant controls are unchanged, so their accepted coverage is retained.
+
+Optimization/integrity: the production operation-local lookup is unchanged apart
+from the additional supported family. Regression checks reuse the one History
+already loaded by each native case and operate on detached copies; zero added
+world/source reads, writes or setup. Current ownership/publication/closing checks
+remain fresh. No cache, timer, budget, repair or diagnosis change.
+
+S6 failed raw and the complete 27-artifact archive remain outside checkout:
+62,077,800B, SHA256
+89eee2267f0ba9519ade320d6c32161d5c78291ac450a08fe0e636ab1f94cfb3,
+all member hashes and gzip EOF/CRC verified before replacement. SOURCE review,
+compilation and all new GREEN outcomes remain pending; all ten UI cases are held.
+
 ## S6 actual history failure — narrow production cause confirmed
 
 Cheap33 OUTCOME and native-four PREP were independently accepted. The native

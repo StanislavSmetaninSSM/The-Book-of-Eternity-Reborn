@@ -246,10 +246,12 @@
 },
 {
   "id": "shining-patient-resident-active-memory",
-  "responsibility": "T108 patient memory actual signed resident active44 after real grant43 response, common normalization/publication and Full reasoning validation.",
+  "responsibility": "T108 patient memory actual signed resident active44 after real grant43 response, common normalization/publication and Full reasoning validation. Reuse its actual natural8/active8 pair for detached complete serialized History round-trip, exact/conflicting replay and missing/duplicate/wrong-primary-family/result-fingerprint refusals; no extra fixture or source reads.",
   "excludes": "No Engine/repair/provider/DOM, unrelated performance or HOLD qualification.",
   "changeHints": [
-    "BookOfEternityClient.IntegrationTests/ExplorerWoundSelfTreatmentTests.ShiningPatientResponse.cs"
+    "BookOfEternityClient.IntegrationTests/ExplorerWoundSelfTreatmentTests.ShiningPatientResponse.cs",
+    "BookOfEternityClient.IntegrationTests/ExplorerWoundSelfTreatmentTests.ShiningPatientHistory.cs",
+    "BookOfEternityClient/Services/WoundHistoryState.SpiritualHealing.cs"
   ],
   "related": [
     {
@@ -275,10 +277,12 @@
 },
 {
   "id": "shining-patient-radiant-active-memory",
-  "responsibility": "T108 patient memory actual signed radiant active44 after real grant43 response, common normalization/publication and Full reasoning validation.",
+  "responsibility": "T108 patient memory actual signed radiant active44 after real grant43 response, common normalization/publication and Full reasoning validation. Reuse its actual natural8/active8 pair for detached complete serialized History round-trip, exact/conflicting replay and missing/duplicate/wrong-primary-family/result-fingerprint refusals; no extra fixture or source reads.",
   "excludes": "No Engine/repair/provider/DOM, unrelated performance or HOLD qualification.",
   "changeHints": [
-    "BookOfEternityClient.IntegrationTests/ExplorerWoundSelfTreatmentTests.ShiningPatientResponse.cs"
+    "BookOfEternityClient.IntegrationTests/ExplorerWoundSelfTreatmentTests.ShiningPatientResponse.cs",
+    "BookOfEternityClient.IntegrationTests/ExplorerWoundSelfTreatmentTests.ShiningPatientHistory.cs",
+    "BookOfEternityClient/Services/WoundHistoryState.SpiritualHealing.cs"
   ],
   "related": [
     {

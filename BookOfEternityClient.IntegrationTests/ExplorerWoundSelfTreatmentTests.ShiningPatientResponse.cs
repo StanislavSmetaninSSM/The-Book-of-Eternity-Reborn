@@ -180,9 +180,11 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                     .BindTo(lease).NormalizeAccumulatedStateWithPlanAsync(manifest.Files));
                 foreach (var pair in originals) Assert.Equal(pair.Value, await files.ReadFileBytesAsync(lease, pair.Key));
             }
-            var result = Assert.Single((await fixture.ReadHistoryAsync()).Transitions.Select(t => t.TransitionResult)
+            var history = await fixture.ReadHistoryAsync();
+            var result = Assert.Single(history.Transitions.Select(t => t.TransitionResult)
                 .OfType<SpiritualHealingPersistedResult>(), r => r.MatchesTurn("session_patient_response", number));
             Assert.Equal(number == 43, result.IsNatural); Assert.Equal(8, result.SchemaVersion);
+            if (number == 44) AssertShiningPatientSerializedHistory(history, kind);
             var memory = await AssertShiningPatientResponseMemoryAsync(files, kind, number, previousLedger, previousResidents, previousGuardians);
             previousLedger = memory.Ledger; previousResidents = memory.Residents; previousGuardians = memory.Guardians;
             Assert.DoesNotContain(await validator.ValidateAcceptedTurnInterfacePayloadAsync(), i => i.Severity == IssueSeverity.Error);

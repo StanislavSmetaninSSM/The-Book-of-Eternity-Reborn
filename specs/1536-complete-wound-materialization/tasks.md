@@ -18,6 +18,13 @@
   sources. Actual grant timeout exposes the cross-owner gap. Bounded DESIGN,
   cheap causal append/refusal controls and four kind×phase Full reasoning proofs
   precede a changed Engine retry; preserve all prior PASS and the original budget.
+- [ ] T108-SHINING-PATIENT-HISTORY Close the actual S6 natural8→active8
+  History lookup gap by adding only family 8 to the closed grant set. Reuse the
+  two required native44 typed pairs for detached full serialized History and
+  exact/conflicting replay, missing/duplicate/wrong-primary-family/fingerprint
+  controls. Preserve existing family 3–6 and all exact grant/source checks.
+  WIP: source written, UNCOMPILED/UNRUN; independent SOURCE and fresh PREP/GREEN
+  remain required. Full memory CI membership 110 is not a request to repeat PASS.
 - [ ] T108-SHINING-PATIENT-JOURNEYS After owning builds/exact discovery/PREP,
   qualify actual resident and radiant-head grant→normal cleanup→separate aid
   through both console/shared browser, retained replay and actual common rollback.
