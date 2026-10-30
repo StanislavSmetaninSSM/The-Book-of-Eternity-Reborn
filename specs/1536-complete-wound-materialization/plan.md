@@ -236,6 +236,17 @@ review pending. Also audit radiant existing-profile append-only ledger contract
 before ANY repeat; summary-only is not sufficient per current validator. No
 production weakening, quota, budget increase or blind retry; old PASS retained.
 
+Independent Astra confirmed actual composition gaps: resident protected whole-
+journal image blocks required ordinary support memory, and active radiant signed-
+original projection blocks genuine patient ledger memory. Scope removal or automatic
+progression substitution is invalid. Canonical design amended: conditional transport
+of existing ordinary resident commands, separate exact-selected radiant memory DATA,
+same continuation/normalizer/profile publisher and all physical/signed guards.
+Await explicit DESIGN verdict, then cheap causal controls/four real phase proofs
+before Engine retry. S4 measured27artifact archive verified62,014,154bytes,
+SHAf3d93cb751cae92066873e98f0295c163789ba7a841a61bc87baa358678b51a4,
+full memberhash/EOFCRC proof; no measured output will be overwritten unpreserved.
+
 Авторское решение диагностики принято2026-10-30 11:48UTC и отражено в FR071/tasks.
 После текущего Shining patient: Mortal method declares own procedure check/time/
 cost; spiritual Healing>=0 plus ALL path requirements, guaranteed declared reveals,

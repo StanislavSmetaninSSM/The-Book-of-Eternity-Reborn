@@ -1077,8 +1077,53 @@ nonmemory fields; bind actual response/turn/typed actor and signed source roots.
 Keep immutable originals and physical current/closing/readback checks, one draw,
 cycle, accepted History, completed replay and atomic compensation/outer rollback.
 No full-carrier replacement, new publisher/cache/journal, fake economic update or
-progression-memory substitution. Precise command transport awaits bounded Astra
-DESIGN; no new journey retry is admitted by this requirements amendment.
+progression-memory substitution. Command transport is the bounded program below;
+independent DESIGN acceptance and causal proof still precede implementation/retry.
+
+#### Exact response programs and ownership
+
+Reuse existing `residentThoughtJournalUpdates` as ordinary nonpatient memory.
+Only an actual schema5 natural8/active8 response routes it to the private response
+file instead of the generic canonical roster mapping; other families retain
+ordinary routing. Transport is not authority: malformed/unsupported treatment
+memory refuses, never silently falls back to raw canonical writes. Keep
+`spiritualResidentThoughtJournalUpdates` exact-selected-resident only. Ordinary
+rows must be unambiguous signed-original local residents, exclude the patient,
+match the actual turn, preserve prior entries and have globally fresh IDs across
+the original journal and both append sets. Compose original + ordinary + protected
+in that deterministic order through the existing resident normalizer. Competing
+raw roster updates/journal edits continue to refuse.
+
+For radiant patients reuse the existing ordinary roster channel only when such
+memory is actually supplied. Read the roster from the same validated pending
+snapshot and compare exact current bytes as a conditional memory dependency;
+patient admission itself still has no roster dependency. Missing/stale snapshot
+coverage refuses. Bind current signed profiles/locality and the exact local
+resident; this confers no healing role, service or consent authority.
+
+Add output-only `spiritualShiningPatientMemory`, a closed object with exactly
+`entryId`, `summary`, `turnNumber`, `gmThoughtsSummary`. It targets only the retained
+schema5 radiant patient implicitly, never an actor selected by the payload. Require
+nonblank strings, exact actual turn, valid fresh ledger ID and no extra fields.
+Reject resident/foreign families or absent/ambiguous participation. Both natural8
+and active8 use this same response contract. Append the existing legal ordinary
+ledger row `{entryId,summary,turnNumber}` and set current `gmThoughtsSummary` in
+the existing common profile projection, preserving the whole old ledger prefix
+and every unrelated field, plus existing owned healing/progression. An exact
+already-composed afterimage is idempotent; partial/different application refuses.
+
+Freeze detached programs once per Continuation, bound to its real session/request/
+turn/snapshot/lease and response fingerprint. Reuse operation-private parsed
+sources and computed before/after DATA; no persistent cache. Extend the current
+normalizer guard only for this conditional memory path, retaining all original/
+opening/closing/readback checks and advancing live guards after exact publication.
+Common profile/roster rollback covers memory; completed-result reads never replay
+commands. Pending retry requires the same bound program and exact before/after.
+
+Synchronize GameResponse/StateDistributor/FileMapping/refresh merging, existing
+planner admission/profile and resident projection, conditional locality owner,
+interface validation and GM prompts/worked examples. Programs stay out of player
+DTOs. No global output-only reclassification of the ordinary resident field.
 
 Finite proof before the next Engine case: cheap disjoint resident append
 composition and exact radiant memory with auto-progression disabled; refusal of
