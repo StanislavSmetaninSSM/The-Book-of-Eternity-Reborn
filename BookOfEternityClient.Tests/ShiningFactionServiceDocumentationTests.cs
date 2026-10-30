@@ -21,13 +21,17 @@ public sealed class ShiningFactionServiceDocumentationTests
             var text = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, file));
             var start = text.IndexOf(Marker + ":", StringComparison.Ordinal); Assert.True(start >= 0);
             foreach (var token in new[] { "leaderless", "broken/dissolved", "H>=W", "ORIGINAL", "client_auto_strategy",
-                "spiritualResidentThoughtJournalUpdates", "signed", "rollback", "unfinished", "progressionHistory" })
+                "spiritualResidentThoughtJournalUpdates", "signed", "rollback", "unfinished", "progressionHistory", "historical materialization envelope remains immutable" })
                 Assert.Contains(token, text[start..]);
         }
         XDocument.Parse(File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "Rules/Block_32_Guardians.txt")));
         var daemon = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient/game_master_daemon.ps1"));
         var directives = Regex.Matches(daemon, "\\$script:WoundMaterializationDirective = \\\"[^\\\"]*\\\"");
-        Assert.Equal(2, directives.Count); Assert.All(directives.Cast<Match>(), d => Assert.Contains(Marker, d.Value));
+        Assert.Equal(2, directives.Count); Assert.All(directives.Cast<Match>(), d =>
+        {
+            Assert.Contains(Marker, d.Value);
+            Assert.Contains("historical materialization envelope remains immutable", d.Value);
+        });
         var registry = AfterlifeContractRegistry.Find(AcceptedMechanicsPlan.WoundCommandPath)!;
         Assert.True(registry.IsKnownClientOwnedSurface); Assert.True(registry.IsPrivateMechanicsSurface);
         Assert.Contains("Shining faction resident service-v7", registry.Authority);

@@ -1498,9 +1498,10 @@ client_auto_strategy may upgrade that healer in the same cycle; final provider D
 must equal the existing client's exact projection from signed original profiles and
 accepted report, never an arbitrary higher tier, new roll or replacement quote. GM
 must not author progression income/spending or silently change service conditions.
-For automatic actor progression in Chaos Sea and Shining Abode, the client advances only a valid
-empty progressionHistory declaration to populated on its first actual history append; it preserves the rest of the
-envelope and rejects malformed/inconsistent declarations instead of repairing them.
+For automatic actor progression in Chaos Sea and Shining Abode, the historical materialization envelope remains immutable
+while current progressionHistory grows through the actual client append. Current canonical profiles use historical structural
+validation; new actors and first envelopes retain strict creation evidence. Signed pre-turn continuity still rejects every
+historical envelope change. GM never rewrites the creation disposition or fabricates initial history to make a service pass.
 Author requested weaker graphs, ordinary report and actual participant reasoning;
 output-only spiritualResidentThoughtJournalUpdates carries that exact resident's
 first-person current-turn memory. Never write its canonical roster/journal directly,

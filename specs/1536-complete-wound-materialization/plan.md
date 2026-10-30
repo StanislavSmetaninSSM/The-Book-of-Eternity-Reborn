@@ -1,3 +1,42 @@
+# US6 historical/current boundary correction WIP; source review in progress
+
+Causal RED accepted independently by Sol:1expectedFAIL at finalHistoricalContinuity.cs41,
+4.887188scategory/11.9812376swall, TRXSHAa13ce9b44e4cc0b853f0aa1c242952d966721bbb1f6f59d672f5abd4e5c55b13.
+Production now removes the disproved envelope rewrite, preserves actual income/upgrade/
+ledger, uses existing historical structure for current canonical roster DATA and
+indexes one fresh signed profile source per faction-validation invocation. Exact
+pre-turn actor+envelope permits historical shape plus original equality; genuinely
+new/first-envelope remains strict. Missing ordinary canonical state is historical;
+Missing raw/Unusable fail closed. Declared source read failure and duplicate exact
+original actor also fail closed. No authored turn/faction-creation inference.
+
+Existing strict primitives/continuity/C4/current healing role/life/tier/access/source
+fingerprint remain unchanged. Optimization assessment: existing source reader and
+private per-invocation lookup, one current+one signed-original profile read for1or20
+factions; no new retained cache, authority reuse or per-actor I/O. Fresh opening/
+closing guards remain. New11 real-file cases cover phase/history/new/promotion/drift/
+duplicates/tampered originals, new6file-free negatives preserve strict new evidence
+and malformed envelope refusal. Old9 expectations corrected to whole immutability;
+original causal oracle unchanged. No speedup claim or passing runtime yet.
+
+GM6currentguides,workedexample/manifest,both effective daemon directives/sourceguard
+now explicitly preserve immutable historical envelope while current progressionHistory
+grows. No new gameplay rule, schema, price, permission or GM output field.
+
+Finite proposed qualification after whole SOURCE: fresh owning Main/Support/Unit/
+Integration, exact artifact/PDB/resource/catalog/Plan/PREP; Unit76 across causal1+
+guards6+projection9+access35+capability21+docs4; real-file historical21 plus affected
+T142life/identity64. Budgets existing1min categories; new real-file21 has2min bounded
+multi-source controls, not an increased old limit. Then affected public outcomes3/
+projection6/fullnormalizer1, one originalconsole3min after concrete fix qualification,
+browser and rollback subject to actual prior outcome. Private5 remains affected/open.
+No aggregate selection run, unchangedElyara UI/other unrelatedPASS replay or HOLD lanes.
+All new C# UNCOMPILED/UNRUN at this checkpoint; no route acceptance. External raw/
+failed console root retained, no raw inGit/deletions. Whole Astra SOURCE and Sol
+fixture/selection audits are active; next address findings then freeze one buildSHA.
+
+---
+
 # US6 immutable envelope causal RED reproduced; correction implementation next
 
 New sourcee2490ed300428ab2a575be94b597a43c53415ae0 Unit build exit0/0errors/

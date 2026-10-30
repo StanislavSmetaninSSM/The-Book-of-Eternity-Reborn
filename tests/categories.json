@@ -37409,7 +37409,7 @@
           "tests": [
             "BookOfEternityClient.Tests.ShiningFactionHealingServiceContractTests.FirstAutomaticIncomeKeepsAnInitiallyEmptyFactionHealerMaterializationComplete",
             "BookOfEternityClient.Tests.ShiningFactionHealingServiceContractTests.AutomaticIncomeNeverRepairsUnrelatedOrUnprovedHistory",
-              "BookOfEternityClient.Tests.ShiningFactionHealingServiceContractTests.FirstAutomaticChaosIncomeKeepsTheSameStrictMaterializationContract"
+              "BookOfEternityClient.Tests.ShiningFactionHealingServiceContractTests.FirstAutomaticChaosIncomeKeepsTheHistoricalMaterializationContract"
           ]
         }
       ]
@@ -37499,6 +37499,71 @@
         "ciRunner": "ubuntu-24.04"
       },
       "timeoutMinutes": 1,
+      "expectedSeconds": null
+    },
+    {
+      "id": "shining-faction-historical-envelope-guards",
+      "responsibility": "Six file-free controls retain strict new creation evidence and exact current provider envelope schema/binding/required reason/closed fields. Historical canonical shape cannot authorize first materialization.",
+      "excludes": "No signed snapshot/GameEngine/native or full route acceptance; no new current-field/history exemptions.",
+      "changeHints": [
+        "BookOfEternityClient.Tests/ShiningFactionHealingServiceContractTests.HistoricalContinuity.cs",
+        "BookOfEternityClient/Services/ShiningFactionHealingSupport.cs"
+      ],
+      "related": [],
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.ShiningFactionHealingServiceContractTests.NewlyAuthoredHistoryCannotClaimAnEmptyCreationDisposition",
+            "BookOfEternityClient.Tests.ShiningFactionHealingServiceContractTests.CurrentHistoricalProviderStillRequiresAnExactWellFormedEnvelope"
+          ]
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null
+    },
+    {
+      "id": "shining-faction-historical-envelope-validation",
+      "responsibility": "Twenty-one real-file typed controls:11 exact signed actor/phase/history cases, current and original source-open counts1vs20 factions, head/healer one validation, existing later-gameplay structural compatibility and immutable historical removal/change refusals. Each case owns fresh mutable files; no GameEngine.",
+      "excludes": "No aggregate mortal-actors suite, gameplay Mortal qualification, native/cold/DFR, new diagnostic stack, higher existing budgets or whole public-route acceptance. Snapshot/identity/envelope failures remain failures.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/FactionMaterializationValidationTests.HistoricalHealers.cs",
+        "BookOfEternityClient.IntegrationTests/FactionMaterializationValidationTests.Healers.cs",
+        "BookOfEternityClient/Services/Validation/ValidationService.ShiningFactionMaterialization.cs"
+      ],
+      "related": [
+        {
+          "id": "shining-faction-healer-lifecycle",
+          "when": "Changed shared current/history actor validation retains existing life/disclosure requirements."
+        },
+        {
+          "id": "shining-faction-healer-identity",
+          "when": "Retain exact current profile/membership/role/tier negatives."
+        }
+      ],
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.FactionMaterializationValidationTests.FactionHealerHistoryUsesExactPreTurnActorAndPhase",
+            "BookOfEternityClient.Tests.FactionMaterializationValidationTests.FactionHealerOwnerReadsProfilesOnceForOneOrTwentyFactions",
+            "BookOfEternityClient.Tests.FactionMaterializationValidationTests.HeadAndHealerReuseOneActualProfileMaterializationValidation",
+            "BookOfEternityClient.Tests.ActorMaterializationValidationTests.ValidateGameStateAsync_HistoricalEnvelopeWithLaterGameplayDelta_DoesNotReinterpretEnvelope",
+            "BookOfEternityClient.Tests.ActorMaterializationValidationTests.ValidateGameStateAsync_ExistingHistoricalEnvelopeRemovedOrChanged_ReportsFocusedIssue"
+          ]
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
       "expectedSeconds": null
     }
   ]

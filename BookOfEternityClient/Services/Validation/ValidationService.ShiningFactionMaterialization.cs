@@ -33,6 +33,50 @@ public partial class ValidationService
         var currentFactions =
             ReadShiningMaterializationTargets(currentRoot);
 
+        // Missing ordinary canonical state has no new-turn creation proposal.
+        // Raw acceptance still needs signed authority; unusable is never missing.
+        if (snapshotLookup.Status == ValidatedPendingTurnSnapshotStatus.Unusable ||
+            hasUsablePreTurnAuthority && snapshotLookup.Manifest is null ||
+            rawBeforeNormalization && snapshotLookup.Status == ValidatedPendingTurnSnapshotStatus.Missing)
+        {
+            AddUnusableAfterlifeActorMaterializationPreTurnAuthorityIssue(AfterlifeEntityProfileState.StatePath, issues);
+            return;
+        }
+        var canonicalHistoryWithoutSnapshot = snapshotLookup.Status == ValidatedPendingTurnSnapshotStatus.Missing;
+        var historicalActorEnvelopes = new List<(string Identity, string? Envelope)>();
+        if (hasUsablePreTurnAuthority && snapshotLookup.Manifest is not null)
+        {
+            // One fresh signed source read and private DATA index per invocation,
+            // never a per-actor read or a retained authority/cache result.
+            var preTurnProfilesJson = await ReadValidatedPendingTurnSnapshotFileAsync(
+                snapshotLookup.Manifest, AfterlifeEntityProfileState.StatePath);
+            if (preTurnProfilesJson is null &&
+                snapshotLookup.Manifest.Files?.ContainsKey(AfterlifeEntityProfileState.StatePath) == true)
+            {
+                AddUnusableAfterlifeActorMaterializationPreTurnAuthorityIssue(AfterlifeEntityProfileState.StatePath, issues);
+                return;
+            }
+            if (preTurnProfilesJson is not null)
+            {
+                using var preTurnProfiles = TryParseJsonDocument(preTurnProfilesJson);
+                if (preTurnProfiles is null || preTurnProfiles.RootElement.ValueKind != JsonValueKind.Object ||
+                    TryFindDuplicateJsonProperty(preTurnProfiles.RootElement, out _) ||
+                    !preTurnProfiles.RootElement.TryGetProperty(AfterlifeEntityProfileState.ProfilesProperty, out var profiles) ||
+                    profiles.ValueKind != JsonValueKind.Array)
+                {
+                    AddUnusableAfterlifeActorMaterializationPreTurnAuthorityIssue(AfterlifeEntityProfileState.StatePath, issues);
+                    return;
+                }
+                foreach (var profile in profiles.EnumerateArray())
+                {
+                    if (TryReadCanonicalAfterlifePreTurnActorIdentity(profile, out _, out _, out var identity))
+                        historicalActorEnvelopes.Add((identity, ReadHistoricalActorMaterializationEnvelopeJson(profile)));
+                }
+            }
+        }
+        var historicalEnvelopeIndex = historicalActorEnvelopes.ToLookup(
+            entry => entry.Identity, entry => entry.Envelope, StringComparer.Ordinal);
+
         var residentRoot = await ReadJsonObjectAsync(
             GuardianAbodeResidentState.StatePath);
         var guardiansRoot = await ReadJsonObjectAsync(
@@ -113,6 +157,8 @@ public partial class ValidationService
                 isCreation,
                 affiliatedResidentIds,
                 currentTradeAuthorities,
+                canonicalHistoryWithoutSnapshot,
+                historicalEnvelopeIndex,
                 issues);
 
             if (!rawBeforeNormalization || !isCreation)
@@ -883,6 +929,8 @@ public partial class ValidationService
         bool isCreation,
         IReadOnlySet<string> affiliatedResidentIds,
         IReadOnlySet<string> currentTradeAuthorities,
+        bool canonicalHistoryWithoutSnapshot,
+        ILookup<string, string?> historicalEnvelopeIndex,
         List<ValidationIssue> issues)
     {
         var hallId = ReadShiningMaterializationString(
@@ -986,6 +1034,8 @@ public partial class ValidationService
                 actor,
                 target,
                 currentTradeAuthorities,
+                canonicalHistoryWithoutSnapshot,
+                historicalEnvelopeIndex,
                 issues);
             if (profile is not null && actor.ActorType == ShiningAbodeState.HeadActorTypeResident &&
                 healerResidents.Contains(actor.ActorId) &&
@@ -1366,6 +1416,8 @@ public partial class ValidationService
         AfterlifeActorBinding actor,
         ShiningFactionMaterializationTarget target,
         IReadOnlySet<string> currentTradeAuthorities,
+        bool canonicalHistoryWithoutSnapshot,
+        ILookup<string, string?> historicalEnvelopeIndex,
         List<ValidationIssue> issues)
     {
         var profiles = profileIndex[(actor.ActorType, actor.ActorId)].ToArray();
@@ -1393,16 +1445,27 @@ public partial class ValidationService
             JsonSerializer.SerializeToElement(profile.Profile);
         var profileContext =
             $"{AfterlifeEntityProfileState.StatePath}.{AfterlifeEntityProfileState.ProfilesProperty}[{profile.Index}]";
-        var materializationIssues = ActorMaterializationContract.ValidateAfterlifeProfile(
-                profileElement,
-                profileContext,
-                requireEnvelope: true,
-                canTradeEvidence:
-                    HasCurrentAfterlifeActorTradeAuthority(
-                        profileElement,
-                        currentTradeAuthorities));
-        issues.AddRange(materializationIssues);
-        return materializationIssues.Count == 0 ? profile.Profile : null;
+        var historical = historicalEnvelopeIndex[actor.IdentityKey].ToArray();
+        if (historical.Length > 1)
+        {
+            AddUnusableAfterlifeActorMaterializationPreTurnAuthorityIssue(AfterlifeEntityProfileState.StatePath, issues);
+            return null;
+        }
+        var issueStart = issues.Count;
+        if (canonicalHistoryWithoutSnapshot || historical is [not null])
+        {
+            issues.AddRange(ActorMaterializationContract.ValidateHistoricalAfterlifeProfile(profileElement, profileContext));
+            if (historical is [string envelope])
+                ValidateHistoricalActorMaterializationEnvelope(profileElement, profileContext, actor.ActorType, actor.ActorId,
+                    envelope, issues);
+        }
+        else
+        {
+            // A new actor or first envelope remains strict, even in an old faction.
+            issues.AddRange(ActorMaterializationContract.ValidateAfterlifeProfile(profileElement, profileContext,
+                requireEnvelope: true, canTradeEvidence: HasCurrentAfterlifeActorTradeAuthority(profileElement, currentTradeAuthorities)));
+        }
+        return issues.Count == issueStart ? profile.Profile : null;
     }
 
     private static void ValidateShiningStoryAuthorityReference(

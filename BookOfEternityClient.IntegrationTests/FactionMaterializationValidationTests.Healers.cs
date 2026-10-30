@@ -160,12 +160,13 @@ public sealed partial class FactionMaterializationValidationTests
     [InlineData(1)] [InlineData(20)]
     public async Task FactionHealerOwnerReadsProfilesOnceForOneOrTwentyFactions(int population)
     {
-        var armed = false; var opens = 0;
+        var armed = false; var opens = 0; var originalOpens = 0;
         using var fixture = new FactionMaterializationValidationTests(new FileSystemManagerHooks
         {
             BeforeCanonicalReadOpenAsync = path =>
             {
                 if (armed && path == AfterlifeProfilesPath) opens++;
+                if (armed && path == "game_state/control/pending_turn_snapshot/" + AfterlifeProfilesPath) originalOpens++;
                 return Task.CompletedTask;
             }
         });
@@ -196,6 +197,7 @@ public sealed partial class FactionMaterializationValidationTests
         await fixture._validator.ValidateAcceptedTurnShiningFactionMaterializationCompletenessAsync(true, issues);
         armed = false;
         Assert.Equal(1, opens);
+        Assert.Equal(1, originalOpens);
         Assert.DoesNotContain(issues, i => i.Severity == IssueSeverity.Error);
         fixture.AssertHealerAuthoredStateUnchanged(before);
     }

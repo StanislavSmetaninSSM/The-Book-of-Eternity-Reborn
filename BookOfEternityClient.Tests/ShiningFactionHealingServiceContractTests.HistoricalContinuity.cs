@@ -41,4 +41,38 @@ public sealed partial class ShiningFactionHealingServiceContractTests
         Assert.True(JsonNode.DeepEquals(envelope, current["materialization"]),
             "Client automatic progression rewrote the validated historical materialization envelope.");
     }
+
+    /// <summary>Historical shape is never substituted for strict new-materialization evidence.</summary>
+    [Fact]
+    public void NewlyAuthoredHistoryCannotClaimAnEmptyCreationDisposition()
+    {
+        var input = ShiningFactionHealingServiceTestData.Create();
+        var actor = input.Profiles["profiles"]![0]!.AsObject();
+        actor["progressionLedger"]!.AsArray().Add(new JsonObject { ["entryId"] = "new_authored_history" });
+        var issues = ActorMaterializationContract.ValidateAfterlifeProfile(JsonSerializer.SerializeToElement(actor),
+            "new.creation.history", requireEnvelope: true, canTradeEvidence: false);
+        Assert.Contains(issues, i => i.Code == "actor_materialization_section_empty_surface_invalid");
+    }
+
+    /// <summary>Current roster projection still rejects malformed creation evidence before offering a service.</summary>
+    [Theory]
+    [InlineData("missing")] [InlineData("binding")] [InlineData("reason")]
+    [InlineData("foreign")] [InlineData("schema")]
+    public void CurrentHistoricalProviderStillRequiresAnExactWellFormedEnvelope(string change)
+    {
+        var input = ShiningFactionHealingServiceTestData.Create();
+        var actor = input.Profiles["profiles"]![0]!.AsObject();
+        switch (change)
+        {
+            case "missing": actor.Remove(ActorMaterializationContract.PropertyName); break;
+            case "binding": actor["materialization"]!["actorId"] = "another_actor"; break;
+            case "reason": actor["materialization"]!["sections"]!["progressionHistory"]!.AsObject().Remove("reason"); break;
+            case "foreign": actor["materialization"]!["sections"]!["progressionHistory"]!["foreignField"] = true; break;
+            case "schema": actor["materialization"]!["schemaVersion"] = 99; break;
+        }
+        var original = input.Profiles.ToJsonString();
+        Assert.Empty(ShiningFactionHealingSupport.ProjectCurrentCurrencyServices(input.Shining, input.Residents, input.Profiles));
+        Assert.Equal(original, input.Profiles.ToJsonString());
+    }
+
 }

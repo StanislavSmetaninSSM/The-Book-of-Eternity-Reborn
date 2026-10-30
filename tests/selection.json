@@ -147,6 +147,34 @@
       "contracts": [
         "#1536 T137-AUTO-HISTORY immutable historical envelope versus current healing/progression DATA"
       ]
+    },
+    {
+      "category": "shining-faction-historical-envelope-guards",
+      "reason": "Historical current-provider shape must preserve malformed/strict-new refusals.",
+      "contracts": [
+        "#1536 T137-AUTO-HISTORY/T142/T143 historical creation evidence versus current faction healer DATA"
+      ]
+    },
+    {
+      "category": "shining-faction-historical-envelope-validation",
+      "reason": "Actual immutable history conflict requires exact signed pre-turn/phase matrix, new actor in old faction, source counts and unchanged generic historical guard consumers.",
+      "contracts": [
+        "#1536 T137-AUTO-HISTORY/T142/T143 historical creation evidence versus current faction healer DATA"
+      ]
+    },
+    {
+      "category": "shining-faction-healer-lifecycle",
+      "reason": "Shared faction actor-materialization validation changed; retain exact raw/post life and disclosure branches.",
+      "contracts": [
+        "#1536 T137-AUTO-HISTORY/T142/T143 historical creation evidence versus current faction healer DATA"
+      ]
+    },
+    {
+      "category": "shining-faction-healer-identity",
+      "reason": "Shared faction actor-materialization validation changed; retain current exact role/membership/tier/visibility and malformed unrelated-profile semantics.",
+      "contracts": [
+        "#1536 T137-AUTO-HISTORY/T142/T143 historical creation evidence versus current faction healer DATA"
+      ]
     }
   ]
 }

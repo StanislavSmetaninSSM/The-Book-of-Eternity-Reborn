@@ -22,12 +22,11 @@ public sealed partial class ShiningFactionHealingServiceContractTests
         Assert.Equal("shining:1", row["cycleKey"]!.GetValue<string>());
         Assert.Equal(6, actor["currencies"]!["inkFeathers"]!.GetValue<int>());
         Assert.Equal(1, actor["currencies"]!["lightSparks"]!.GetValue<int>());
-        var issues = ActorMaterializationContract.ValidateAfterlifeProfile(JsonSerializer.SerializeToElement(actor),
-            "actual.client.projected.healer", requireEnvelope: true, canTradeEvidence: false);
+        var issues = ActorMaterializationContract.ValidateHistoricalAfterlifeProfile(JsonSerializer.SerializeToElement(actor),
+            "actual.client.projected.healer");
         Assert.True(issues.Count == 0, string.Join(";", issues.Select(i => i.Code + ":" + i.FilePath + ":" + i.Actual)));
-        Assert.Equal("populated", actor["materialization"]!["sections"]!["progressionHistory"]!["state"]!.GetValue<string>());
+        Assert.Equal("empty_by_design", actor["materialization"]!["sections"]!["progressionHistory"]!["state"]!.GetValue<string>());
         var expectedEnvelope = input.Profiles["profiles"]![0]!["materialization"]!.DeepClone();
-        expectedEnvelope["sections"]!["progressionHistory"] = new JsonObject { ["state"] = "populated" };
         Assert.True(JsonNode.DeepEquals(expectedEnvelope, actor["materialization"]));
         Assert.Single(ShiningFactionHealingSupport.ProjectCurrentCurrencyServices(input.Shining, input.Residents, projected));
         var repeated = AfterlifeEntityProfileState.ProjectAcceptedRoot(projected, projected, OneShiningCycle(), null, input.Shining);
@@ -67,7 +66,7 @@ public sealed partial class ShiningFactionHealingServiceContractTests
     }
 
     [Fact]
-    public void FirstAutomaticChaosIncomeKeepsTheSameStrictMaterializationContract()
+    public void FirstAutomaticChaosIncomeKeepsTheHistoricalMaterializationContract()
     {
         var actor = AfterlifeActorMaterializationTestFixture.CreateCompleteProfile("guardian", "guardian_auto_history", "Chaos Sea", 42);
         var before = actor["materialization"]!.DeepClone();
@@ -75,9 +74,8 @@ public sealed partial class ShiningFactionHealingServiceContractTests
         var report = new JsonObject { ["chaosSeaCyclesProcessed"] = 1, ["newLastChaosSeaSimulationOrdinal"] = 1 };
         var projected = AfterlifeEntityProfileState.ProjectAcceptedRoot(root, root, report, null, null);
         var after = projected["profiles"]![0]!.AsObject();
-        Assert.Empty(ActorMaterializationContract.ValidateAfterlifeProfile(JsonSerializer.SerializeToElement(after),
-            "actual.client.chaos.history", requireEnvelope: true, canTradeEvidence: false));
-        before["sections"]!["progressionHistory"] = new JsonObject { ["state"] = "populated" };
+        Assert.Empty(ActorMaterializationContract.ValidateHistoricalAfterlifeProfile(JsonSerializer.SerializeToElement(after),
+            "actual.client.chaos.history"));
         Assert.True(JsonNode.DeepEquals(before, after["materialization"]));
         Assert.Equal("chaos:1", Assert.Single(after["progressionLedger"]!.AsArray())!["cycleKey"]!.GetValue<string>());
         Assert.Equal(12, after["currencies"]!["inkFeathers"]!.GetValue<int>());

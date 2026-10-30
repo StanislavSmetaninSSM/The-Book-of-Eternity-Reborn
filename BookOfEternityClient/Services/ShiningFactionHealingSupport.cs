@@ -165,8 +165,8 @@ internal static partial class ShiningFactionHealingSupport
         AfterlifeEntityProfileState.TryNormalizeEffectRealm(Text(profile["realm"]), out var realm) && realm == "shining_abode";
 
     private static bool HasReadableMaterialization(JsonObject profile) =>
-        ActorMaterializationContract.ValidateAfterlifeProfile(JsonSerializer.SerializeToElement(profile),
-            AfterlifeEntityProfileState.StatePath, requireEnvelope: true, canTradeEvidence: null).Count == 0;
+        ActorMaterializationContract.ValidateHistoricalAfterlifeProfile(JsonSerializer.SerializeToElement(profile),
+            AfterlifeEntityProfileState.StatePath).Count == 0;
     // Read-only projection deliberately makes no claim about trade authority.
     // The accepted-turn owner retains its existing current-trade proof above.
 
