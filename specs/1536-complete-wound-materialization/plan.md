@@ -1,3 +1,39 @@
+# Договорная помощь: все пять UI приняты; закрытый realm guard исправлен WIP
+
+Sol OUTCOME принял B7 guidance2/wallet-native3 и Elyara2 на runtime
+`6c86a34995cddcf9ddeb3c4e68159c50f9df83e6`, compiled `41477147943c7a4586c007a6afe0f8db8418cc03`.
+Elyara console: 52.2195277/180 секунд, wall61.0021224, TRX
+`54786e477ed9e29f6c72634f9a65ea2864014258f1772970562875e36caad013`;
+browser: 96.5653983/180, wall104.0366427, TRX
+`0e6c6b015c26c46ae6277398c3497b7194fa3a7d8c37fa7f83df31990c12e6ca`.
+Оба полных capture проверены: 22 события/11 пар/1 сообщение, исходные clocks,
+CRC/footer/decode/hashes/sequence и отсутствие закрытой root. UI5 теперь PASS
+на разных записанных версиях, не единый свежий общий прогон.
+
+Остаток113 выполнил55:54 PASS/1 FAIL, без timeout, wall61.3669149; ещё58 UNRUN.
+Все55 уникальных строк/hashes/cleanup/pins проверены. Sole failed Fact сначала
+проходит valid Chaos round-trip, затем ошибочно принимает target realm Shining при
+Chaos healer/locality. Это реальный DATA-дефект расширенного ReadOwner и неполного
+потребителя ToJson; canonical record и execution RequireRealm уже Chaos-only.
+
+WIP добавляет ровно `resident.Target.Realm != "chaos_sea"` в `!Aid.ReceiveAid` guard.
+Sol подтвердил причину и принял точное исправление: provider ReceiveAid=true не
+меняется; существующий Fact достаточен для valid/invalid DATA и причинного RED.
+Он выделен в `spiritual-resident-consent-realm`/60s; 47 неизменённых случаев и7 других
+PASS сохраняются. После свежих owning-сборок/discovery/PREP нужен только GREEN1 и58
+ещё не запущенных provider cases. Новая native-фикстура или UI/performance повтор не нужны.
+Полномочия/физическая целостность/источники/кэш/экономика неизменны; одно дешёвое
+сравнение не требует cache и не даёт основания заявлять speedup.
+
+Все27 измеренных B7 артефактов сохранены/полностью декодированы/сверены:
+`B7-measured-owning-artifacts.tar.gz`, 61937538 байт, SHA256
+`243bc7d71872b3cbfd50f34616df7219e588dd79e101aade796dc8b31f875278`.
+Весь raw вне checkout: `/workspace/tboe-linux-evidence-20261025/us6-faction-service-agreement`.
+Удалений/загрузки raw нет. Весь B/US6/#1536 ещё не принят; публичный A,
+DOM/provider/fresh-process и HOLD DFR/Mortal/Windows сохраняют прежние границы.
+
+---
+
 # Договорная помощь B7: SOURCE и свежая подготовка завершены
 
 Независимый Sol XHigh принял целиком `b94ded5d2..41477147943c7a4586c007a6afe0f8db8418cc03`:

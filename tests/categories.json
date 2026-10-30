@@ -1098,7 +1098,7 @@
 },
 {
   "id": "spiritual-resident-aid-contract",
-  "responsibility": "T108-RESIDENT cheap typed consent/full owner/locality, all raw forms/forgery, kinded equal IDs, revoke flags, closed v5 and exact existing v3/v4 selection, append-only protected memory and actual typed output transport/rollback. Unowned memory with/without graphs or null remains rejected by ordinary interface policy.",
+  "responsibility": "Forty-seven accepted resident proposal/record/current authority/memory DATA cases; exact closed patient-consent selection realm belongs to spiritual-resident-consent-realm.",
   "excludes": "No accepted grant authority or full Engine journey; real source/normalization/History settlement belongs to backend and guided categories. No diagnostic/performance or broad unchanged suite.",
   "changeHints": [
     "BookOfEternityClient.Tests/SpiritualResidentTreatmentParticipationTests.cs",
@@ -1122,7 +1122,16 @@
     {
       "project": "unit",
       "tests": [
-        "BookOfEternityClient.Tests.SpiritualResidentTreatmentParticipationTests.*"
+        "BookOfEternityClient.Tests.SpiritualResidentTreatmentParticipationTests.EqualIdsAcrossGuardianAndResidentKindsAreLegalButAreTwoDistinctChanges",
+        "BookOfEternityClient.Tests.SpiritualResidentTreatmentParticipationTests.EveryResidentRepresentationRetainsTheFullTypedOwnerAndOneMirroredIntent",
+        "BookOfEternityClient.Tests.SpiritualResidentTreatmentParticipationTests.FailedProtectedResponseDistributionRestoresExactOutputAndLeavesRosterUntouched",
+        "BookOfEternityClient.Tests.SpiritualResidentTreatmentParticipationTests.ProtectedMemoryAppendsOnlyExactNewCurrentParticipantEntries",
+        "BookOfEternityClient.Tests.SpiritualResidentTreatmentParticipationTests.RawCanonicalResidentRecordCannotBeRewrittenOrNulled",
+        "BookOfEternityClient.Tests.SpiritualResidentTreatmentParticipationTests.ResidentAuthorityRequiresTheExactTypedRosterProfileWoundAndCurrentAbode",
+        "BookOfEternityClient.Tests.SpiritualResidentTreatmentParticipationTests.ResidentConsentUsesTheActualExistingProfileProposalReader",
+        "BookOfEternityClient.Tests.SpiritualResidentTreatmentParticipationTests.RevocationWithLostCapacityIsValidButNeverAnAvailableGrant",
+        "BookOfEternityClient.Tests.SpiritualResidentTreatmentParticipationTests.TypedProtectedMemoryUsesTheExistingResponseTransportWithoutWritingTheRoster",
+        "BookOfEternityClient.Tests.SpiritualResidentTreatmentParticipationTests.UnownedMemoryIsNotWhitelistedIntoOrdinaryInterfacePolicy"
       ]
     }
   ]
@@ -37817,6 +37826,30 @@
       "project": "integration",
       "tests": [
         "BookOfEternityClient.Tests.AfterlifeSpiritualNaturalRecoveryTests.NegotiatedWalletRefusesCompetingCommandsAndProposedChangeWithoutLosingTheFailedAttempt"
+      ]
+    }
+  ]
+},
+{
+  "id": "spiritual-resident-consent-realm",
+  "responsibility": "One closed resident patient-consent selection Fact: valid Chaos round-trip and exact realm/kind/carrier/direction/field refusals. B7 actual no-exception RED exposed the caller gap after broadening the primitive owner union.",
+  "excludes": "DATA only; no Shining provider behavior, live authority/publication, wider patient-consent realm or repeated accepted47.",
+  "changeHints": [
+    "BookOfEternityClient/Services/AfterlifeWoundTreatmentAuthority.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.SpiritualResidentTreatmentParticipationTests.ResidentSelectionCarriesClosedParticipantsLocalityAndNoGuardianConfirmationFlags"
       ]
     }
   ]

@@ -69,7 +69,7 @@ internal sealed partial record SpiritualSelfTreatmentSelection(string WoundId, s
         {
             if (!Aid.ReceiveAid && (Aid.PlayerConfirmed || Aid.HealerId != "player_soul" || resident.Healer != new WoundOwnerCoordinate(
                     "chaos_sea", "player_soul", "player_soul", WoundCarrierCatalog.AfterlifeProfilesPath) ||
-                resident.Target.OwnerKind != "resident" || resident.Target.OwnerId != Aid.TargetId))
+                resident.Target.Realm != "chaos_sea" || resident.Target.OwnerKind != "resident" || resident.Target.OwnerId != Aid.TargetId))
                 throw new InvalidDataException("Resident aid cannot mix Guardian direction or confirmation.");
             if (Aid.ReceiveAid && (resident.Healer.OwnerKind != "resident" || resident.Healer.OwnerId != Aid.HealerId ||
                 Aid.TargetId != "player_soul" || resident.Target != new WoundOwnerCoordinate(resident.Healer.Realm, "player_soul", "player_soul", WoundCarrierCatalog.AfterlifeProfilesPath)))
