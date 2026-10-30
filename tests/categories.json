@@ -37188,6 +37188,33 @@
           ]
         }
       ]
+    },
+    {
+      "id": "shining-faction-service-access-data",
+      "responsibility": "Exact current public faction healer/service join, active/weakened/leaderless, hidden/historical/identity/profile/role/access negatives, unchanged-set membership/role drift and owner-specific mandatory roster versus unchanged Elyara dependencies. Independent parsed DATA; no Engine or permission fixture.",
+      "excludes": "No payment/publication/journal/GUI/whole US6 claim. Real staging/source, owned normalization/memory and two UI journeys have separate bounded owners. No full T142/T143 replay or HOLD gates.",
+      "changeHints": [
+        "#1536 US6 faction provider common quote/access/source tuple"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.ShiningFactionHealingServiceContractTests.ExplicitCurrentFactionServiceIncludesSupportedLeaderlessWithoutTradePrivileges",
+            "BookOfEternityClient.Tests.ShiningFactionHealingServiceContractTests.RoleOrUnprovedCurrentServiceNeverBecomesAnExecutableProvider",
+            "BookOfEternityClient.Tests.ShiningFactionHealingServiceContractTests.ExactProviderTupleDetectsRoleOrMembershipDriftEvenWhenLocalitySetsStayTheSame",
+            "BookOfEternityClient.Tests.ShiningFactionHealingServiceContractTests.OwnerSpecificDependenciesKeepExistingElyaraOrderAndRequireTheFactionRoster"
+          ]
+        }
+      ]
     }
   ]
 }

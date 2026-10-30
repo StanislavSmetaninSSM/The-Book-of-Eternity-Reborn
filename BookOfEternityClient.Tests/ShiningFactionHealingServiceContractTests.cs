@@ -4,7 +4,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
-public sealed class ShiningFactionHealingServiceContractTests
+public sealed partial class ShiningFactionHealingServiceContractTests
 {
     [Fact]
     public void ExactShiningResidentCurrencyQuoteUsesTheExistingHealingCheckAndPrice()

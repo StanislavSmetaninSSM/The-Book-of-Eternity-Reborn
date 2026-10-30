@@ -1,3 +1,20 @@
+# US6 faction-service independent access controls — WIP, UNRUN
+
+Execution wiring is remotely preserved at6f30bd4d02ac1f52882d86be2744ca77f01ad9fb.
+Independent small per-test roster/profile fixtures and typed access controls now cover
+current active/weakened/leaderless, historical/invalid/hidden/foreign/duplicate/dead/
+missing capability/service/conditions/relationship negatives, mandatory owner-specific
+roster and changed role/membership with identical locality sets. They assert original
+DATA inertness and canonical actor envelopes. TestSupport factory explicitly represents
+only the pure service boundary, not a complete Engine/world or authority. All inputs
+are fresh per test; no mutable static fixtures/cache or copied production algorithm.
+New named Unit category owns the four added methods; exact discovery remains pending.
+Current selection is the source WIP causal/access boundary; final complete impact
+selection follows whole A consumer tests/GM sync and SOURCE review, before any GREEN.
+No new qualification or unchanged PASS rerun is claimed.
+
+---
+
 # US6 public faction execution wiring — WIP, not compiled or qualified
 
 Saved first source50322996e6d96a9eef5f61f740741162564bcc1d. Following accepted design and
