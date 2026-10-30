@@ -1,3 +1,33 @@
+# US6 public faction treatment console/browser/rollback3/3PASS; final review pending
+
+New real public route now completes through existing console and shared browser
+handler/queue, including cancel/read inertness, separate price51 confirmation, actual
+one paid attempt/wound/effects/History/world cycle/result7 and exact participant memory.
+Physical publication cut after wallet charge restores wallet,wound/world/History/
+resident memory and clears transient state. Controlled GM output, not DOM/liveprovider/
+fresh-process qualification; negotiated compensationB and wholeUS6 remain open.
+
+Runtime metadata d4923baca1de7f4c4d0c68f8a0f1deda94ca4069, compiledIntegrationc1e6b36a9,
+Main/Support/Unit06a6de91f retained: originalconsole1PASS43.8504638swall/34.5254706scategory,
+browser1PASS81.6943357swall,rollback1PASS37.3612184swall, each original3min budget.
+All exactTRX/casecounts/cleanup/currentpins verified. Each positive fullcapture has
+20original paired timing events+5complete messages, strict sequence/timestamp/duration,
+stored+decodedSHA/CRC/footer and actual-root absence verified. No record quota,
+clock rewrite or guard relaxation. Earlier console functional-body-onlyFAIL/captures
+and both timeouts remain preserved; no claim they were PASS or complete replacements.
+
+EPOCH-wiring3/3PASS17.2263196s:2completepositive+1correctlyincompleteclocknegative.
+Sol OUTCOME accepted wiring3+console1; browser/rollback finalOUTCOME pending.171other
+cases remain accepted on explicit prior06source/6e8metadata, not rerun or relabeled a
+singlefresh177case run. Raw/proofs external EPOCH-*runtime dirs under
+/workspace/tboe-linux-evidence-20261025/us6-faction-service-agreement; no rawinGit/deletions.
+Next finalindependentpublicroute review +separateadmission for affectedprivate5, whose
+oldtimeout is still open. Then continue negotiatedB through existing grant/result
+owners, not stop at this public-only slice. No HOLDlane or unrelatedPASS rerun.
+This is a metadata-only checkpoint; no owning build repeat is needed.
+
+---
+
 # US6 capture ordering source/build/discovery ready; cheap3 pending
 
 Sol SOURCE ACCEPTc1e6b36a95bbdb34f95dd801a87b484b5b0c5c45, cleanpublishedsource.
