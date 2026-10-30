@@ -61,7 +61,10 @@ public sealed class WoundDiagnosisReadInterfaceTests(ITestOutputHelper output)
         Assert.Equal(before, fixture.Snapshot());
         var consoleReads = paths.Select((path, i) => (path, count: reads.ReadCount(path) - counts[i]))
             .ToDictionary(row => row.path, row => row.count);
-        Assert.All(consoleReads.Values, count => Assert.Equal(1L, count));
+        // Existing Mortal status has two distinct resource consumers: header
+        // projection (definitions/state/History) and strict known-wound labels.
+        Assert.All(consoleReads, row => Assert.Equal(command == "/статус" &&
+            row.Key == ResourceMaterializationContract.DefinitionsPath ? 2L : 1L, row.Value));
         counts = paths.Select(reads.ReadCount).ToArray();
         var commands = new ExplorerWebCommandService(fixture.Files, state, new LocalizationManager(),
             new ValidationService(fixture.Files, NullLogger<ValidationService>.Instance));
@@ -71,7 +74,8 @@ public sealed class WoundDiagnosisReadInterfaceTests(ITestOutputHelper output)
         Assert.Equal(before, fixture.Snapshot()); Assert.Equal(0, repairs);
         var browserReads = paths.Select((path, i) => (path, count: reads.ReadCount(path) - counts[i]))
             .ToDictionary(row => row.path, row => row.count);
-        Assert.All(browserReads.Values, count => Assert.Equal(1L, count));
+        Assert.All(browserReads, row => Assert.Equal(command == "/статус" &&
+            row.Key == ResourceMaterializationContract.DefinitionsPath ? 2L : 1L, row.Value));
         Assert.All(mutations, path => Assert.Equal(LocalUiSessionLockService.LockPath, path));
         foreach (var text in new[] { Render(console), JsonSerializer.Serialize(browser,
                      new JsonSerializerOptions { Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping }) })

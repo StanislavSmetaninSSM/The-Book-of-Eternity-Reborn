@@ -54,6 +54,29 @@ Shared method/diagnosis shape остаётся
 внутренним display DATA; browser UiBlocks неизменны. Новых полей ГМ, ответов,
 цены или action нет, поэтому daemon/prompt/manifest schema не меняются; общий
 GM guide и существующий worked known-card fragment синхронизированы.
+D2 SOURCE принят Sol XHigh на `17b15ec5c1aa80ee8b5d50f5cb311806725deb89`.
+Все owning builds exit0: Main4cd (Main C#/resources равны17b), Support/Unit/
+Integration17b; warnings12/23/26/102, времена2:45.46/15.97s/2:39.30/3:16.59.
+27artifacts/141sourcebindings/4PE-PDB/32resourcescopies/4daemon подтверждены;
+catalog1166/12957 valid. Cheap8/8PASS на17b, wall13.2134428/category6.3538389<60,
+independent OUTCOME/PREP принят. Full remaining exactplan75cases/45methods в
+7descriptors/6categories: actual остановился после2cases (1PASS /раны,1FAIL
+/статус,73UNRUN), no timeout. Причина FAIL — неверное тестовое ожидание одного
+definitions read у статуса; полный raw/cleanup/TRX сохранены в D2-remaining-green.
+
+Source audit: существующий неизменённый status owner под одной publication lease
+сначала вызывает StateManager resource header projection (definitions/state/
+resourceHistory), затем отдельный strict wound reader (definitions для labels).
+Второй read существовал до карточки; новое отображение добавляет0IO и не дублирует
+physical parse. Header не экспортирует parsed catalog, может отказаться из-за
+state/History независимо от допустимой known-wound карточки; его result нельзя
+выдать за strict reader DATA. Новый cross-owner export/cache для одного небольшого
+existing source не вводится без доказанной пользы; speedup не заявляется.
+Исправлен только fixture oracle: wounds/identity/woundHistory1 всегда; definitions
+/раны1, Mortal/status2; прежние no write/repair/pending/privacy/text assertions
+не изменены. Требуются delta SOURCE, fresh Integration build/PDB/PlanOnly/PREP;
+Main/Support/Unit и принятые8 DATA не повторять без нового source delta.
+
 HOLD DFR/Mortal/Windows и общая незавершённость #1536 сохраняются.
 
 # Договорная помощь US6 B: ограниченный игровой маршрут принят
