@@ -2,6 +2,31 @@
   "version": 1,
   "effectMaterializationCoverage": [
 {
+  "contractId": "spiritual_shining_patient_memory_v8",
+  "file": "E_CLI_Afterlife_Turns.txt",
+  "statePath": "existing signed profiles and conditional original resident roster; no new journal or control path",
+  "responseSurface": "private conditional residentThoughtJournalUpdates plus exact protected patient memory or output-only spiritualShiningPatientMemory",
+  "realms": [
+    "Shining Abode"
+  ],
+  "description": "Natural8 and active8 compose independent ordinary resident memory with exact patient memory through existing publishers.",
+  "validationKind": "focused-fragment",
+  "focusedFragmentReason": "ShiningPatientTreatmentDocumentationTests validates both response programs against independent complete local typed fixtures through the actual detached composer; native tests own signed publication.",
+  "coverageLimit": "No live consent, Engine/provider repair, authority, standalone world or HOLD qualification.",
+  "requiredText": [
+    "spiritual_shining_patient_memory_v8",
+    "residentThoughtJournalUpdates",
+    "spiritualResidentThoughtJournalUpdates",
+    "spiritualShiningPatientMemory",
+    "entryId",
+    "summary",
+    "turnNumber",
+    "gmThoughtsSummary",
+    "original + ordinary + protected",
+    "atomic"
+  ]
+},
+{
   "contractId": "spiritual_shining_patient_v8",
   "file": "E_CLI_Afterlife_Turns.txt",
   "statePath": "existing exact typed Shining patient profile, faction/head/political or resident roster; no new control path",

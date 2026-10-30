@@ -140,3 +140,34 @@ If validation writes `harnessRepairPackets[].kind = actor_reasoning_subpoint_rep
 If validation writes `harnessRepairPackets[].kind = actor_memory_persistence_repair`, the decision audit already exists. Append one concise first-person thought or actor-owned memory entry to the exact canonical surface listed in `targetFiles`, preserve old entries, and update only that actor's `Изменения состояния:` line in the packet-listed `output/debug_logs.json` so it names the journal command/surface actually used. During direct Guardian journal repair, `game_state/meta/guardian_thought_journal.json` is canonical on-disk state and must contain top-level `entries[]`; `guardianThoughtJournalUpdates` is a first-pass response command, not a replacement for the canonical root, and `schemaVersion` is not supported there. Do not rewrite narrative, interface options, or unrelated state: an internal memory-only repair does not invalidate the already authored player-facing scene. An existing Shining faction is repaired only by appending `shiningFactionChronicleUpdates`; do not use a `shiningFactionStrategicMemoryUpdates` rewrite as historical persistence. Finish repair through `Complete-BoeValidationRepair`.
 
 If validation reports `afterlife_relevant_actor_missing_canonical_memory_owner`, follow the `afterlife_entity_profile_scaffold_repair` packet. Materialize a complete supported profile only when the named actor genuinely exists; otherwise remove the invented/non-actor label from relevant actors and its standalone Actor Brain block.
+
+
+spiritual_shining_patient_memory_v8 — exact response memory for both natural8 and active8
+For the ACTUAL schema5 patient turn only, place ordinary nonpatient
+residentThoughtJournalUpdates in output/interface_updates.json. Other families
+retain their ordinary canonical routing. Each ordinary row must resolve to one
+signed-original local resident/profile in this faction hall; the selected resident
+patient belongs only in spiritualResidentThoughtJournalUpdates. Entry IDs must be
+globally fresh across the original journal and both append sets, with the exact
+current turn. The client composes original + ordinary + protected through its
+existing resident normalizer. Keep the physical roster unchanged; never add the
+support actor to the protected patient channel or remove its real ordinary life.
+For the exact retained radiant_actor patient, author output-only
+spiritualShiningPatientMemory with EXACTLY entryId, summary, turnNumber,
+gmThoughtsSummary. Use a fresh valid ID, first-person nonblank text and the exact
+current turn. The payload contains no actor selector. The client appends ordinary
+ledger {entryId,summary,turnNumber} and sets current gmThoughtsSummary through the
+same profile publisher; preserve the complete old ledger prefix and all unrelated
+fields. A resident, foreign family, missing participant, null, wrong shape or extra
+field refuses. Do not write a raw profile/ledger or use a progression override as
+a memory substitute. Radiant patient admission remains independent of the roster;
+ordinary resident rows alone add the same signed conditional roster dependency.
+Both phases use the SAME memory programs. All affected actors still need truthful
+Actor Brain State changes naming their actual surface: guardianThoughtJournalUpdates
+for Elyara, residentThoughtJournalUpdates for ordinary support, the protected
+resident channel for the patient, or spiritualShiningPatientMemory/ledger for the
+radiant patient. Automatic progression does not replace these subjective thoughts.
+Preserve accepted response binding and exact before/after images during retry;
+completed replay does not reapply memory. Common atomic rollback includes journals
+and profiles. Controlled fixtures do not qualify provider-driven repair behavior.
+Read the focused spiritual_shining_patient_memory_v8 worked example.

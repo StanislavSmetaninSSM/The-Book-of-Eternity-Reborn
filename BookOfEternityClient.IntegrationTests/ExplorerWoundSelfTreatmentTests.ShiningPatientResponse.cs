@@ -23,7 +23,12 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
     [Fact]
     public Task RadiantPatientActiveResponsePublishesAllRequiredActorMemory() => RunShiningPatientResponseAsync("radiant_actor", 44);
 
-    private static async Task RunShiningPatientResponseAsync(string kind, int lastTurn)
+    [Theory]
+    [InlineData("none")][InlineData("changed")][InlineData("stale_snapshot")][InlineData("advance")]
+    public Task RadiantOrdinaryMemoryAddsOnlyItsActualConditionalRosterGuard(string control) =>
+        RunShiningPatientResponseAsync("radiant_actor", 43, control);
+
+    private static async Task RunShiningPatientResponseAsync(string kind, int lastTurn, string? ownerControl = null)
     {
         await using var fixture = await CreateShiningPatientFixtureAsync(kind, engine: false);
         var files = fixture.Files;
@@ -96,6 +101,12 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                 await WriteNativeCompletionAsync(files, lease, turn,
                     AfterlifeSpiritualNaturalRecoveryTests.AuthorNaturalGraphs(wound, projection["destinationGraphs"]!.AsArray()));
                 await WriteShiningPatientReasoningAsync(files, lease, turn, kind);
+                if (ownerControl == "none")
+                {
+                    var response = JsonNode.Parse((await files.ReadFileAsync(lease, "output/interface_updates.json"))!)!.AsObject();
+                    response.Remove(GuardianAbodeResidentState.UpdateThoughtJournalProperty);
+                    await files.WriteFileAtomicAsync(lease, "output/interface_updates.json", response.ToJsonString());
+                }
                 // Exercise the real conditional API transport as well as the
                 // file-response writer. Distribution may change only output,
                 // never the signed roster before its actual publisher owns it.
@@ -106,8 +117,60 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                 Assert.Equal(rosterBeforeTransport, await files.ReadFileBytesAsync(lease, GuardianAbodeResidentState.StatePath));
                 Assert.DoesNotContain(await validator.ValidateAcceptedTurnRawMortalLocationMaterializationAsync(), i => i.Severity == IssueSeverity.Error);
                 Assert.DoesNotContain(await validator.ValidateAcceptedTurnRawMortalItemMaterializationAsync(lease), i => i.Severity == IssueSeverity.Error);
-                Assert.DoesNotContain(await validator.PrepareSpiritualSelfTreatmentPublicationAsync(lease), i => i.Severity == IssueSeverity.Error);
                 var manifest = await fixture.ReadManifestAsync(lease);
+                var rosterOriginalPath = manifest.Files[GuardianAbodeResidentState.StatePath];
+                if (ownerControl == "stale_snapshot")
+                    await files.WriteFileAtomicAsync(lease, rosterOriginalPath, (await files.ReadFileAsync(lease, rosterOriginalPath))! + " ");
+                var preparation = await validator.PrepareSpiritualSelfTreatmentPublicationAsync(lease);
+                if (ownerControl == "stale_snapshot")
+                {
+                    Assert.Contains(preparation, i => i.Severity == IssueSeverity.Error && i.Code == "spiritual_participation_invalid" &&
+                        i.Actual?.Contains("signed roster", StringComparison.Ordinal) == true);
+                    Assert.DoesNotContain((await fixture.ReadHistoryAsync()).Transitions, t => t.TransitionResult is SpiritualHealingPersistedResult);
+                    return; // Deliberately stale original: no publication or Full-reasoning claim.
+                }
+                Assert.DoesNotContain(preparation, i => i.Severity == IssueSeverity.Error);
+                if (ownerControl is not null)
+                {
+                    Assert.True(AcceptedMechanicsPlanAuthority.TryPeekValidated(files, lease, out _, out var ready));
+                    var owner = Assert.IsType<AfterlifeWoundHealingPlanner.Continuation>(ready.Plan!.SpiritualHealingContinuation);
+                    try
+                    {
+                        var path = GuardianAbodeResidentState.StatePath;
+                        var fingerprint = owner.SourceFingerprint;
+                        var original = await files.ReadFileBytesAsync(lease, rosterOriginalPath);
+                        var current = (await files.ReadFileBytesAsync(lease, path))!;
+                        Assert.Equal(ownerControl != "none", owner.OwnsLocalityPath(path));
+                        if (ownerControl is "none" or "changed")
+                        {
+                            await files.WriteFileAtomicAsync(lease, path, CanonicalJsonUtf8.DecodeOneOptionalBom(current) + " ");
+                            if (ownerControl == "none") owner.RequireCurrent(files, lease);
+                            else Assert.Throws<InvalidDataException>(() => owner.RequireCurrent(files, lease));
+                        }
+                        else
+                        {
+                            Assert.Equal("advance", ownerControl);
+                            var before = JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(current))!.AsObject();
+                            var projected = owner.ProjectResidentThoughts(before);
+                            GuardianAbodeResidentState.ApplyThoughtJournalUpdates(projected,
+                                projected[GuardianAbodeResidentState.UpdateThoughtJournalProperty]!.AsArray());
+                            projected.Remove(GuardianAbodeResidentState.UpdateThoughtJournalProperty);
+                            var writes = 0;
+                            await owner.PublishOwnedLocalityNormalizationAsync(files, lease, path, projected.ToJsonString(), expected =>
+                            {
+                                Assert.Equal(new CanonicalBeforeImage(true, current).Fingerprint, expected.Fingerprint);
+                                writes++; return files.WriteFileAtomicAsync(lease, path, projected.ToJsonString());
+                            });
+                            Assert.Equal(1, writes); owner.RequireCurrent(files, lease);
+                            Assert.True(JsonNode.DeepEquals(projected, JsonNode.Parse((await files.ReadFileAsync(lease, path))!)));
+                        }
+                        Assert.Equal(fingerprint, owner.SourceFingerprint);
+                        Assert.Equal(original, await files.ReadFileBytesAsync(lease, rosterOriginalPath));
+                        Assert.DoesNotContain((await fixture.ReadHistoryAsync()).Transitions, t => t.TransitionResult is SpiritualHealingPersistedResult);
+                    }
+                    finally { owner.Close(); }
+                    return; // Actual owner guard only; no healing/Full-reasoning qualification.
+                }
                 var originals = manifest.Files.Values.ToDictionary(path => path, path => files.ReadFileBytesSync(lease, path));
                 Assert.NotNull(await new CanonicalStateNormalizer(files, NullLogger<CanonicalStateNormalizer>.Instance)
                     .BindTo(lease).NormalizeAccumulatedStateWithPlanAsync(manifest.Files));

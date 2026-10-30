@@ -2,6 +2,100 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "shining-patient-memory-roster-guard",
+  "responsibility": "Actual signed conditional radiant roster dependency: no ordinary rows/no guard, changed current or stale signed original refusal, exact owned guard advancement/readback; no publication claim.",
+  "excludes": "No broad suite, provider/DOM/fresh-process or DFR/Mortal/Windows/performance qualification.",
+  "changeHints": [
+    "BookOfEternityClient/Services/AfterlifeWoundHealingPlanner.ShiningPatientMemory.cs"
+  ],
+  "related": [
+    {
+      "id": "shining-patient-memory-data",
+      "when": "Detached memory programs/refusals precede owning publication and UI."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.RadiantOrdinaryMemoryAddsOnlyItsActualConditionalRosterGuard"
+      ]
+    }
+  ]
+},
+{
+  "id": "shining-patient-memory-guidance",
+  "responsibility": "Exact six-guide/daemon/repair guidance and worked resident/radiant response composition; output-only and ordinary routing boundaries.",
+  "excludes": "No broad suite, provider/DOM/fresh-process or DFR/Mortal/Windows/performance qualification.",
+  "changeHints": [
+    "BookOfEternityClient/Services/AfterlifeWoundHealingPlanner.ShiningPatientMemory.cs"
+  ],
+  "related": [
+    {
+      "id": "shining-patient-memory-data",
+      "when": "Detached memory programs/refusals precede owning publication and UI."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.ShiningPatientTreatmentDocumentationTests.EffectiveGuidanceAndDaemonKeepDistinctPatientAuthorityAndMemoryOwners",
+        "BookOfEternityClient.Tests.ShiningPatientTreatmentDocumentationTests.WorkedMemoryProgramsUseTheActualDetachedComposerForBothPatientKinds"
+      ]
+    }
+  ]
+},
+{
+  "id": "shining-patient-memory-transport-regressions",
+  "responsibility": "Affected existing protected memory validation/transport/rollback, unbound interface refusal, graphs transport and response refresh behavior; excludes unrelated already accepted resident/codec DATA.",
+  "excludes": "No broad suite, provider/DOM/fresh-process or DFR/Mortal/Windows/performance qualification.",
+  "changeHints": [
+    "BookOfEternityClient/Services/AfterlifeWoundHealingPlanner.ShiningPatientMemory.cs"
+  ],
+  "related": [
+    {
+      "id": "shining-patient-memory-data",
+      "when": "Detached memory programs/refusals precede owning publication and UI."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.SpiritualResidentTreatmentParticipationTests.ProtectedMemoryAppendsOnlyExactNewCurrentParticipantEntries",
+        "BookOfEternityClient.Tests.SpiritualResidentTreatmentParticipationTests.TypedProtectedMemoryUsesTheExistingResponseTransportWithoutWritingTheRoster",
+        "BookOfEternityClient.Tests.SpiritualResidentTreatmentParticipationTests.FailedProtectedResponseDistributionRestoresExactOutputAndLeavesRosterUntouched",
+        "BookOfEternityClient.Tests.SpiritualResidentTreatmentParticipationTests.UnownedMemoryIsNotWhitelistedIntoOrdinaryInterfacePolicy",
+        "BookOfEternityClient.Tests.SpiritualHealingGuidedContractTests.TypedTransportPreservesGraphsAndOrdinaryOutputKeepsFieldAbsent",
+        "BookOfEternityClient.Tests.SpiritualHealingGuidedContractTests.UnboundGraphFieldCannotGainInterfacePermissionOrMutateItsOutput",
+        "BookOfEternityClient.Tests.GameResponseRefreshMergerTests.*"
+      ]
+    }
+  ]
+},
+{
   "id": "shining-patient-memory-data",
   "responsibility": "Detached exact local ordinary/protected resident append composition, radiant ledger/summary complete afterimages, global IDs, wrong owner/location/turn/shape, explicit null and response refresh presence.",
   "excludes": "No live consent, snapshot/publication authority, Engine or provider claims.",

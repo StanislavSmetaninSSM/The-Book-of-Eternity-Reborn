@@ -10,8 +10,8 @@ internal static partial class SpiritualTreatmentParticipation
     {
         var command = value as JsonObject ?? throw new InvalidDataException("Radiant patient memory requires an explicit object.");
         Closed(command, "entryId", "summary", "turnNumber", "gmThoughtsSummary");
-        if (!ResourceMaterializationContract.IsExactIdentifier(Text(command, "entryId")) || Scalar<int>(command, "turnNumber") != turn ||
-            string.IsNullOrWhiteSpace(Text(command, "summary")) || string.IsNullOrWhiteSpace(Text(command, "gmThoughtsSummary")))
+        if (!ResourceMaterializationContract.IsExactIdentifier(Scalar<string>(command, "entryId")) || Scalar<int>(command, "turnNumber") != turn ||
+            string.IsNullOrWhiteSpace(Scalar<string>(command, "summary")) || string.IsNullOrWhiteSpace(Scalar<string>(command, "gmThoughtsSummary")))
             throw new InvalidDataException("Radiant memory requires exact current-turn text and a fresh ledger ID.");
         return command.DeepClone().AsObject();
     }
@@ -23,6 +23,8 @@ internal static partial class SpiritualTreatmentParticipation
         JsonArray? ordinary, JsonArray? protectedRows, JsonObject? radiant)
     {
         _ = RequireShiningPatientAdmission(shining, profiles, roster, owner, locality);
+        if (owner.OwnerKind == "radiant_actor" && radiant is null)
+            throw new InvalidDataException("Radiant patient memory cannot be replaced by automatic progression or ordinary resident thoughts.");
         if (protectedRows is not null && owner.OwnerKind != "resident")
             throw new InvalidDataException("Protected resident thoughts require the exact resident patient.");
         if (radiant is not null && owner.OwnerKind != "radiant_actor")
@@ -36,7 +38,7 @@ internal static partial class SpiritualTreatmentParticipation
             foreach (var item in ordinary)
             {
                 var row = item as JsonObject ?? throw new InvalidDataException("Resident memory requires object rows.");
-                var id = Text(row, "residentId");
+                var id = Scalar<string>(row, "residentId");
                 if (owner.OwnerKind == "resident" && id == owner.OwnerId)
                     throw new InvalidDataException("The selected patient cannot enter ordinary nonpatient memory.");
                 if (!localResidents.ContainsKey(id))

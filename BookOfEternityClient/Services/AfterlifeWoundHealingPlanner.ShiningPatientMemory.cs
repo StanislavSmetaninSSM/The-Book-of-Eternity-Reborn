@@ -24,6 +24,8 @@ internal static partial class AfterlifeWoundHealingPlanner
                 if (HasPatientMemoryResponse) throw new InvalidDataException("Patient memory requires one actual schema5 participation.");
                 return;
             }
+            if (SpiritualTreatmentParticipation.RecordOwner(record).OwnerKind == "radiant_actor" && _radiantThoughtCommand is null)
+                throw new InvalidDataException("The actual radiant patient must supply its explicit subjective memory program.");
             if (_residentThoughtCommands is null && !HasPatientMemoryResponse) return;
             if (_patientMemory is not null) throw new InvalidDataException("Patient memory is bound once per continuation.");
             // Radiant admission has no roster dependency. Only an actual ordinary

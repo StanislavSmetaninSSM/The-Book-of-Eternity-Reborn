@@ -3,7 +3,9 @@ using System.Text.Json.Nodes;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Models;
+using BookOfEternityClient.IO;
 using BookOfEternityClient.Services;
+using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
@@ -91,7 +93,7 @@ public sealed class ShiningPatientMemoryProgramTests
 
     [Theory]
     [InlineData("null")][InlineData("array")][InlineData("extra")][InlineData("stale")]
-    [InlineData("blank")][InlineData("bad_id")]
+    [InlineData("blank")][InlineData("bad_id")][InlineData("wrong_text_type")]
     public void RadiantMemoryClosedParserRefusesMalformedPresence(string shape)
     {
         JsonNode? value = shape == "null" ? null : shape == "array" ? new JsonArray() : RadiantMemory();
@@ -99,7 +101,20 @@ public sealed class ShiningPatientMemoryProgramTests
         if (shape == "stale") value!["turnNumber"] = 42;
         if (shape == "blank") value!["gmThoughtsSummary"] = " ";
         if (shape == "bad_id") value!["entryId"] = "bad id";
+        if (shape == "wrong_text_type") value!["summary"] = 7;
         Assert.Throws<InvalidDataException>(() => SpiritualTreatmentParticipation.ReadShiningPatientMemoryCommand(value, 43));
+    }
+
+    [Theory]
+    [InlineData(false)][InlineData(true)]
+    public void RadiantPatientRequiresExplicitMemoryEvenWhenOrdinaryOrAutomaticMemoryExists(bool ordinaryPresent)
+    {
+        var (input, owner, locality) = ShiningPatientTreatmentAdmissionTests.Inputs("radiant_actor"); AddMemorySupport(input, "support_memory");
+        input.Profiles["profiles"]![0]!["progressionLedger"] = new JsonArray(new JsonObject
+            { ["entryId"] = "client_auto_income", ["source"] = "client_auto_strategy", ["summary"] = "Automatic income" });
+        var ordinary = ordinaryPresent ? new JsonArray(MemoryRow("support_memory", "ordinary_memory")) : null;
+        Assert.Throws<InvalidDataException>(() => SpiritualTreatmentParticipation.PrepareShiningPatientMemory(owner,
+            locality, input.Profiles, input.Residents, input.Shining, 43, ordinary, null, null));
     }
 
     [Fact]
@@ -115,6 +130,30 @@ public sealed class ShiningPatientMemoryProgramTests
         Assert.Throws<InvalidDataException>(() => SpiritualTreatmentParticipation.ReadShiningPatientMemoryCommand(json[SpiritualTreatmentParticipation.ShiningPatientMemoryResponseProperty], 43));
         Assert.False(FileMapping.OutputOnlyResponseFields.Contains(GuardianAbodeResidentState.UpdateThoughtJournalProperty));
         Assert.True(FileMapping.OutputOnlyResponseFields.Contains(SpiritualTreatmentParticipation.ShiningPatientMemoryResponseProperty));
+    }
+
+    [Theory]
+    [InlineData("Chaos Sea", false)][InlineData("Mortal World", false)][InlineData("unknown", false)][InlineData(null, false)][InlineData("missing_turn", false)]
+    [InlineData("Chaos Sea", true)][InlineData("Mortal World", true)][InlineData("unknown", true)][InlineData(null, true)][InlineData("missing_turn", true)]
+    public async Task PrivateResidentTransportCannotFallBackOutsideItsActualShiningRealm(string? realm, bool directRadiantPresence)
+    {
+        var root = Path.Combine(Path.GetTempPath(), "boe-patient-memory-transport-" + Guid.NewGuid().ToString("N"));
+        try
+        {
+            var files = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance); files.EnsureDirectoryStructure();
+            if (realm != "missing_turn") await files.WriteFileAtomicAsync(LiveTurnPreparationService.TurnRequestPath, JsonSerializer.Serialize(new TurnRequest
+                { SessionId = "memory_transport", RequestId = "memory_turn", TurnNumber = 43, ProgressionControl = new() { CurrentRealm = realm! } }));
+            await files.WriteFileAtomicAsync(GuardianAbodeResidentState.StatePath, "{\"entries\":[],\"thoughtJournal\":[]}");
+            await files.WriteFileAtomicAsync("output/interface_updates.json", "{\"dialogueOptions\":[]}");
+            var before = await files.ReadFileBytesAsync(GuardianAbodeResidentState.StatePath);
+            var output = await files.ReadFileBytesAsync("output/interface_updates.json");
+            var response = new GameResponse { ResidentThoughtJournalUpdates = [JsonSerializer.SerializeToElement(MemoryRow("support_memory", "private_memory"))], ResidentThoughtsFromPatientInterface = !directRadiantPresence };
+            if (directRadiantPresence) response.SpiritualShiningPatientMemory = JsonSerializer.SerializeToElement<object?>(null);
+            await Assert.ThrowsAsync<InvalidDataException>(() => new StateDistributor(files, NullLogger<StateDistributor>.Instance).DistributeAsync(response));
+            Assert.Equal(before, await files.ReadFileBytesAsync(GuardianAbodeResidentState.StatePath));
+            Assert.Equal(output, await files.ReadFileBytesAsync("output/interface_updates.json"));
+        }
+        finally { if (Directory.Exists(root)) Directory.Delete(root, recursive: true); }
     }
 
     internal static void AddMemorySupport(ShiningFactionServiceInputs input, string id)

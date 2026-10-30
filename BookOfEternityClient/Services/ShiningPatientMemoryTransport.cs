@@ -13,17 +13,23 @@ internal static class ShiningPatientMemoryTransport
         FileSystemManager.CanonicalWriteLease lease, GameResponse response)
     {
         if (!response.ResidentThoughtJournalUpdatesSpecified) return false;
+        var requiresPatientRoute = response.ResidentThoughtsFromPatientInterface ||
+            response.SpiritualShiningPatientMemory.ValueKind != JsonValueKind.Undefined;
         var requestJson = await files.ReadFileAsync(lease, LiveTurnPreparationService.TurnRequestPath);
         if (requestJson is null)
         {
-            if (response.ResidentThoughtsFromPatientInterface)
+            if (requiresPatientRoute)
                 throw new InvalidDataException("Patient memory transport lost its turn.");
             return false;
         }
         var turn = StrictJsonAuthority.Deserialize<TurnRequest>(requestJson,
             new JsonSerializerOptions { PropertyNameCaseInsensitive = true }, "resident memory transport turn")!;
         if (!AfterlifeEntityProfileState.TryNormalizeEffectRealm(turn.ProgressionControl?.CurrentRealm, out var realm) || realm != "shining_abode")
+        {
+            if (requiresPatientRoute)
+                throw new InvalidDataException("A private patient response cannot fall back outside its Shining turn.");
             return false;
+        }
         var observed = PendingTurnSnapshotReader.ReadObservedCurrent(files, lease,
             new PendingTurnSnapshotPathSelection(new[] { WoundCarrierCatalog.AfterlifeProfilesPath }, new[] { AcceptedMechanicsPlan.WoundCommandPath }));
         if (!observed.Success || observed.Snapshot is not { } snapshot || observed.Evidence is not { } evidence ||
@@ -54,7 +60,7 @@ internal static class ShiningPatientMemoryTransport
                 throw new InvalidDataException("Resident memory transport requires one exact Shining patient.");
         }
         evidence.RequireCurrent(files, lease, snapshot);
-        if (response.ResidentThoughtsFromPatientInterface && !route)
+        if (requiresPatientRoute && !route)
             throw new InvalidDataException("A private patient response cannot fall back to canonical resident writes.");
         if (route && response.ResidentThoughtJournalUpdates is null)
             throw new InvalidDataException("Patient ordinary resident memory cannot be JSON null.");

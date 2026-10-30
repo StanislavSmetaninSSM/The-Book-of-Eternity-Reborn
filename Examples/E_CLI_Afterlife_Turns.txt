@@ -14358,9 +14358,38 @@ retains active8, direction=player_to_shining_entity, complete witness and origin
 d20=14: playerH3 lowers III1→II1, then patientH0 natural yields II2, ONE safe cycle.
 Author only supplied destinationGraphs/stageRefs and phase-specific ordinary
 report/Brain. Resident uses output-only spiritualResidentThoughtJournalUpdates;
-radiant uses nonempty profile gmThoughtsSummary. No GM canonical record, accepted
+radiant uses output-only spiritualShiningPatientMemory for a genuine ledger append
+and current gmThoughtsSummary. No GM canonical record, accepted
 binding, entropy, wallet, payment, cycle or physical resident-journal write. A stale
 head/membership/hall/consent refuses before entropy. Atomic fault restores
 wound/effects, History, world and memory; retained retry does not reroll. Natural8
 has request=null and NO active direction. No diagnosis rule is introduced.
 end_spiritual_shining_patient_v8
+
+
+spiritual_shining_patient_memory_v8 — worked response alternatives, not standalone state
+Assume the exact current schema5 resident/radiant patient shining_patient from the
+preceding worked family, plus a preexisting local ordinary support_memory resident
+in the same signed faction/hall. These are PRIVATE output/interface_updates.json
+fragments. In both natural43 and confirmed active44 the same closed programs apply;
+for44 change every current-turn field to44 and use fresh entry IDs. Preserve every
+old entry. The support remains an independent ordinary actor, never an aid participant.
+Resident patient alternative (original + ordinary + protected):
+```json
+{"residentThoughtJournalUpdates":[{"entryId":"support_thought_43","residentId":"support_memory","turn":43,"timestamp":"2026-10-30T12:00:00Z","title":"Обычная стратегия","summary":"Я сохраняю собственную стратегию, пока игрок помогает другому обитателю."}],"spiritualResidentThoughtJournalUpdates":[{"entryId":"patient_thought_43","residentId":"shining_patient","turn":43,"timestamp":"2026-10-30T12:00:00Z","title":"Осознанное решение","summary":"Я осознанно принимаю отдельную помощь игрока."}]}
+```
+Radiant head alternative (no actor selector in the radiant program):
+```json
+{"residentThoughtJournalUpdates":[{"entryId":"support_thought_43","residentId":"support_memory","turn":43,"timestamp":"2026-10-30T12:00:00Z","title":"Обычная стратегия","summary":"Я сохраняю собственную стратегию, пока игрок помогает главе фракции."}],"spiritualShiningPatientMemory":{"entryId":"radiant_thought_43","summary":"Я осознанно принимаю отдельную помощь игрока.","turnNumber":43,"gmThoughtsSummary":"Я сохраняю решение о добровольной помощи."}}
+```
+The client appends {entryId,summary,turnNumber} to the exact radiant ledger and sets
+gmThoughtsSummary, preserving the full old prefix and all nonmemory data. No raw
+profile/roster write or automatic progression override. Keep first-person Elyara
+memory on guardianThoughtJournalUpdates and name that actual surface in her Brain;
+support Brain names residentThoughtJournalUpdates. Each new ID is globally fresh
+across original + ordinary + protected journal entries; the current turn is exact.
+Foreign/locality-stale actors, selected-as-ordinary resident, null/extra fields,
+old/duplicate IDs, partial/different afterimages refuse. Repeated pending application
+accepts only its complete exact before/after; completed replay is inert; atomic
+rollback restores the journals/profile ledger together with wound/effects/History.
+end_spiritual_shining_patient_memory_v8
