@@ -92,9 +92,13 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
         Assert.True(natural.IsNatural);
         Assert.Equal("diagnose", diagnosis.Kind); Assert.NotNull(diagnosis.AttemptId); Assert.Null(diagnosis.CycleKey);
         Assert.Equal(WoundMaterializationContract.SerializeCanonical(before), WoundMaterializationContract.SerializeCanonical(result.Original));
-        Assert.Equal("known_to_player", Assert.Single(result.KnowledgeAfter.Complications).Visibility);
-        Assert.Equal(before.Recovery, result.KnowledgeAfter.Recovery);
-        Assert.Equal(WoundMaterializationContract.SerializeCanonical(result.KnowledgeAfter),
+        var knowledgeAfter = result.KnowledgeAfter;
+        Assert.Equal("known_to_player", Assert.Single(knowledgeAfter.Complications).Visibility);
+        // Compare complete canonical component values, not detached collection identities.
+        Assert.Equal(WoundMaterializationContract.SerializeCanonical(before),
+            WoundMaterializationContract.SerializeCanonical(before with
+            { Recovery = knowledgeAfter.Recovery, Care = knowledgeAfter.Care }));
+        Assert.Equal(WoundMaterializationContract.SerializeCanonical(knowledgeAfter),
             WoundMaterializationContract.SerializeCanonical(natural.Stages.First(s => s.Before.WoundId == before.WoundId).Before));
         if (tier == 0)
         {

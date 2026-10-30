@@ -63,8 +63,12 @@ public sealed class SpiritualDiagnosisDocumentationTests
             new ProgressionControl { CurrentRealm = context.Soul["currentRealm"]!.GetValue<string>(), NextChaosSeaTurnOrdinal = 1 });
         var request = SpiritualDiagnosisRequestCodec.Create(turn, admission.Selection, admission);
         var program = SpiritualDiagnosisProgram.Build(turn, request, admission, [new(original, 0)]);
-        Assert.Equal(original.Recovery, program.KnowledgeAfter.Recovery); Assert.Equal(original.Care, program.KnowledgeAfter.Care);
-        Assert.Equal("known_to_player", Assert.Single(program.KnowledgeAfter.Complications).Visibility);
+        var knowledgeAfter = program.KnowledgeAfter;
+        // Compare complete canonical component values, not detached collection identities.
+        Assert.Equal(WoundMaterializationContract.SerializeCanonical(original),
+            WoundMaterializationContract.SerializeCanonical(original with
+            { Recovery = knowledgeAfter.Recovery, Care = knowledgeAfter.Care }));
+        Assert.Equal("known_to_player", Assert.Single(knowledgeAfter.Complications).Visibility);
         Assert.Equal("recover", Assert.Single(program.NaturalStages).Kind);
         Assert.Equal(frozen, input.Carriers.AfterlifeProfiles!.ToJsonString() + context.Soul.ToJsonString() + path.ToJsonString());
         // Detached DATA proves the worked shape; native current-owner tests prove publication.

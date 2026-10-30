@@ -17,13 +17,18 @@ public sealed class SpiritualDiagnosisProgramTests
         var program = SpiritualDiagnosisProgram.Build(turn, request, admission, members);
         Assert.Equal("diagnose", program.Stages[0].Kind);
         Assert.Equal(admission.Wound.WoundId, program.Stages[0].WoundId);
-        Assert.Equal(2, program.KnowledgeBefore.Severity.Rank);
-        Assert.Equal("known_to_player", Assert.Single(program.KnowledgeAfter.Complications).Visibility);
-        Assert.Equal(program.KnowledgeBefore.Recovery, program.KnowledgeAfter.Recovery);
+        var knowledgeBefore = program.KnowledgeBefore;
+        var knowledgeAfter = program.KnowledgeAfter;
+        Assert.Equal(2, knowledgeBefore.Severity.Rank);
+        Assert.Equal("known_to_player", Assert.Single(knowledgeAfter.Complications).Visibility);
+        // Compare complete canonical component values, not detached collection identities.
+        Assert.Equal(WoundMaterializationContract.SerializeCanonical(knowledgeBefore),
+            WoundMaterializationContract.SerializeCanonical(knowledgeBefore with
+            { Recovery = knowledgeAfter.Recovery, Care = knowledgeAfter.Care }));
         Assert.NotEmpty(program.NaturalStages);
         Assert.Equal(otherFirst ? "aaa_other" : admission.Wound.WoundId, program.NaturalStages[0].WoundId);
         Assert.Equal(members.Select(m => m.Wound.WoundId), program.NaturalMembers.Select(m => m.Wound.WoundId));
-        Assert.Equal(WoundMaterializationContract.SerializeCanonical(program.KnowledgeAfter),
+        Assert.Equal(WoundMaterializationContract.SerializeCanonical(knowledgeAfter),
             WoundMaterializationContract.SerializeCanonical(program.NaturalMembers.Single(m => m.Wound.WoundId == admission.Wound.WoundId).Wound));
         var natural = SpiritualHealingRequestProjection.BuildNaturalProgram(admission.Wound.Owner.Realm, 1, program.NaturalMembers);
         Assert.Equal(natural.Stages, program.NaturalStages);

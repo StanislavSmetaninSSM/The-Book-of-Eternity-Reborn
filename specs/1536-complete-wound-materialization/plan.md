@@ -1,3 +1,37 @@
+# T121 EX4C cheap partial outcome — test value-oracle correction, UNCOMPILED/UNRUN
+
+The corrected Integration build at `c870ed36d` exited 0 with 102 baseline warnings
+and no errors in 2:45.17. Main/Support/Unit EX4B continuity was proved; the current
+four PE/PDB pairs, 213 source bindings, 27 artifacts and ten operational resources
+matched. Official catalog and exact cheap PlanOnly completed before the actual run.
+
+The official EX4C cheap run at `c870ed36d` exited 1 without timeout: 63 executed,
+61 PASS, two FAIL, and 68 of the planned 131 cases UNRUN. The 61 actual passes are
+two documentation-inventory cases, 48 admission cases, ten binding cases and one
+guidance case. Both failures are the two worked-example realm rows at documentation
+line 66. The full failed TRX/summary, verified-partial-failure receipt, binary pins
+and cleanup proof remain outside Git in `EX4C-cheap-actual`; owning-artifact archives
+stay preserved in the existing external diagnosis evidence root. This is not a
+131-case PASS.
+
+The failed oracle compared WoundRecovery records whose nested Blockers collections
+have different detached implementations (ImmutableArray versus ReadOnlyCollection).
+The actual printed values agree; record equality does not establish canonical value
+equality. A finite audit found the same oracle in the new program, native and UI
+diagnosis tests. All four now serialize the complete original envelope and compare
+it with that same envelope carrying the knowledge-after Recovery and Care components.
+The existing canonical writer covers every component property, ordered blockers,
+optional recovery/deterioration anchors and complete deterioration policy. Other
+knowledge, natural-recovery, input-immutability and publication assertions remain.
+
+Only those four test files and this receipt change. No production, game rule, GM
+contract, selector or budget changes. Each comparison reuses one detached knowledge
+image; no helper, cache, source read or diagnostic framework is added. Main/Support
+remain unchanged; fresh Unit and Integration builds and independent delta SOURCE
+review precede any further runtime. These test corrections are UNCOMPILED/UNRUN;
+the writer launched no builds/tests and makes no production-fix or speedup claim.
+All prior failed evidence, accepted lineages and existing holds remain preserved.
+
 # T121 EX4B builds and discovery — warning-only correction pending
 
 All four actual EX4B builds at `03a1793da` exited 0: Main 2:21.36 with 12 baseline

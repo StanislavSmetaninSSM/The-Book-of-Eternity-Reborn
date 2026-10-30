@@ -212,7 +212,11 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                         var result = Assert.IsType<SpiritualDiagnosisPersistedResult>(Assert.Single(history.Transitions, t => t.Kind == "diagnose").TransitionResult);
                         Assert.True(JsonNode.DeepEquals(retained, result.Request));
                         Assert.Equal(WoundMaterializationContract.SerializeCanonical(original), WoundMaterializationContract.SerializeCanonical(result.Original));
-                        Assert.Equal(original.Recovery, result.KnowledgeAfter.Recovery);
+                        var knowledgeAfter = result.KnowledgeAfter;
+                        // Compare complete canonical component values, not detached collection identities.
+                        Assert.Equal(WoundMaterializationContract.SerializeCanonical(original),
+                            WoundMaterializationContract.SerializeCanonical(original with
+                            { Recovery = knowledgeAfter.Recovery, Care = knowledgeAfter.Care }));
                         var after = Assert.Single((await fixture.ReadWoundsAsync()).Occurrences).Wound;
                         Assert.Equal(2, after.Severity.Rank); Assert.Equal(1, after.Recovery.CurrentStepProgress);
                         Assert.Equal("known_to_player", Assert.Single(after.Complications).Visibility);
