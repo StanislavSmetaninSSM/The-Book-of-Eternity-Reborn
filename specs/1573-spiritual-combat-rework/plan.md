@@ -1,5 +1,20 @@
 # План перехода к личной модели духовного боя — #1573
 
+## Текущий срез T102: бонусы Расколотой Маски
+
+2026-10-30 baseline eca81a823c36b2962abe5f56d0cc48c353914afc совпал с origin.
+Продолжены brainstorming/Spec Kit bridge; PathsOnly1573 выполнился, #1573/#1572
+прочитаны, workflow1.7 неизменён. Результат — [профиль](cracked-mask-bonuses-proposal.md),
+не production. Parent проверяет духовные формулы и межсистемный договор;
+Sol6.1/high audit_cracked_mask_mortal отдельно проверяет mortal-опоры.
+Последовательность: source-аудит → четыре числа/границы/примеры → consistency
+spec/plan/tasks/feature532 и арифметика/ссылки/diff → WIP commit/push → независимый
+GPT-6 Astra/high review взаимодействующих realm/equipment/formula contracts →
+исправления и адресная проверка → финальная публикация/remote SHA/blob и issue
+readback → предъявить точную спецификацию автору. Новых tests/build/проб нет;
+не переносить одобрение прежнего общего замысла на эти числа. Реализация после
+согласования точной версии и отдельных технических фаз; T001/T077 не закрывать.
+
 ## Текущий срез T101: поправка стартового инвентаря
 
 2026-10-30 baseline8df5be4550006d299bfa71a6a8be689ad8f7dd77 совпал с origin,
