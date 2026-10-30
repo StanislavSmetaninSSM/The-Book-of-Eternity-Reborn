@@ -1,4 +1,4 @@
-# Договорная помощь US6 B: runtime полностью проверен, финальный OUTCOME ожидается
+# Договорная помощь US6 B: ограниченный игровой маршрут принят
 
 Игрок реально получает помощь видимого живого фракционного целителя или той же
 канонической Элиары на явно оговорённых неденежных условиях. Предложение43 само
@@ -19,12 +19,12 @@ TRX test IDs, методам/параметрам и полным SHA всех T
 |---|---:|---|
 | Закрытые terms/locality/admission/request/wallet DATA | 40 | B1 unaffected30 + B2 corrected10; один guidance позже проверен заново |
 | Native Shining normalization/immutable original/memory | 2 | B5, 57.6832503/120s |
-| Faction console / shared browser / actual C4 rollback | 3 | B6, 61.4020214 / 101.8773624 / 49.1548465 из180s |
-| Elyara console / shared browser | 2 | B7, 52.2195277 / 96.5653983 из180s |
+| Faction console / shared browser / actual C4 rollback | 3 | B6, 61.4020214 / 101.8773624 / 49.1548465 из 180s |
+| Elyara console / shared browser | 2 | B7, 52.2195277 / 96.5653983 из 180s |
 | Native wallet zero/null refusal / proposed change / failed free_aid | 3 | B7, 70.4633011/120s |
 | Затронутые старые контракты, включая исправленные guards | 150 | B6 partial36 + B7 partial54 + B7 guidance исправленный1 + B8 remaining59 |
 
-Все пять UI-capture полны: по22 исходных timing events/11 пар, все сообщения,
+Все пять UI-capture полны: по 22 исходных timing events/11 пар, все сообщения,
 CRC/footer/decode, stored/decoded hashes, последовательность/clock arithmetic,
 writer completion и actual closed-root absence без follow. Console/browser здесь
 общие реальные обработчики + controlled native GM и Engine, не DOM/live provider
@@ -33,15 +33,16 @@ writer completion и actual closed-root absence без follow. Console/browser �
 Последний B8 runtime `e17946fe09d36c720384fade86f88c6671de7923`, compiled C#
 `7189718c570331b39ce8412aa9068f823cc3ce81`: 59/59 PASS, wall27.1918799s;
 категории consent-realm1 / provider-causal1 / provider-contract56 / provider-GM1
-заняли 5.2119682 / 5.2258957 / 4.8196406 / 4.4199711 секунды при исходных60s.
+заняли 5.2119682 / 5.2258957 / 4.8196406 / 4.4199711 секунды при исходных 60s.
 Все owning-сборки exit0, предупреждения прежние12/23/26/102; времена
-Main1:53.83 / Support0:15.21 / Unit1:01.20 / Integration1:56.55.
-Текущие27артефактов/132source bindings/4PE-PDB/8ресурсов32копий/4daemon сверены,
-catalog1164/12953 valid. Полный diff от принятого A проверен: только source/tests/
+Main 1:53.83 / Support 0:15.21 / Unit 1:01.20 / Integration 1:56.55.
+Текущие 27 артефактов / 132 source bindings / 4 PE-PDB / 8 ресурсов с 32 копиями / 4 daemon сверены,
+catalog 1164/12953 valid. Полный diff от принятого A проверен: только source/tests/
 GM docs/spec/catalog; raw/TRX/диагностических JSON/архивов в commits нет.
 
-Независимые Sol SOURCE/PREP/поэтапные OUTCOME приняты; финальный combined OUTCOME
-и точность этого checkpoint ещё ожидаются. Последний реальный defect — смешанный
+Независимый Sol XHigh принял SOURCE/PREP, поэтапные и финальный combined OUTCOME;
+самостоятельно сверены все 23 TRX hashes, 200 distinct случаев и этот checkpoint.
+T138-NEGOTIATED принят без оставшегося блокера; весь US6/#1536 не закрывается. Последний реальный defect — смешанный
 Chaos/Shining patient-consent selection — исправлен одним directional guard;
 его исходный RED сохранён и существующий valid/invalid Fact теперь GREEN.
 Это не расширяет пациентский контракт на Shining и не меняет принятый provider path.
@@ -54,6 +55,10 @@ bootstrap. Speedup не заявляется; вложенные интерва�
 
 Весь raw, полный generated union index и проверенные архивы вне checkout:
 `/workspace/tboe-linux-evidence-20261025/us6-faction-service-agreement`.
+Все 27 измеренных B8 артефактов полностью сохранены и проверены в
+`B8-measured-owning-artifacts.tar.gz`, 61937556 байт, SHA256
+`cc42cd185713ef35a703e6b0a89aca96e573a7927d13bca0f39670cfb66a2924`:
+каждый member/hash совпал, полный gzip EOF/CRC подтверждён потоковым чтением.
 Ничего не удалено/не загружено. Новый clone/restore не выполнялся, его приёмка не
 заявляется. Весь US6/#1536 остаётся открытым: нужна сверка остатка, включая T093/FR071
 настоящую guided diagnosis, T121 и общую приёмку. DFR300.1806894 timeout/Mortal
