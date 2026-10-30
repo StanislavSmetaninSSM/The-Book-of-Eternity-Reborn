@@ -45,15 +45,23 @@ internal static partial class SpiritualTreatmentParticipation
                 if (!hasChange) continue;
                 if (original[0].ContainsKey(ChangeProperty))
                     throw new InvalidDataException("Participation proposal must be a new response, not retained original input.");
-                if (kind is not ("guardian" or "resident") || !AfterlifeEntityProfileState.TryNormalizeEffectRealm(
+                var proposal = row[ChangeProperty] as JsonObject ?? throw new InvalidDataException("Participation change must be a closed object.");
+                var shiningPatient = IsShiningPatientParticipation(proposal);
+                if ((shiningPatient ? kind is not ("resident" or "radiant_actor") : kind is not ("guardian" or "resident")) || !AfterlifeEntityProfileState.TryNormalizeEffectRealm(
                         row["realm"]?.GetValue<string>() ?? Text(original[0], "realm"), out var realm) || realm is not ("chaos_sea" or "shining_abode"))
                     throw new InvalidDataException("Participation changes require an exact current afterlife Guardian or resident.");
-                var proposal = row[ChangeProperty] as JsonObject ?? throw new InvalidDataException("Participation change must be a closed object.");
                 ValidateProposal(proposal);
-                if ((Scalar<int>(proposal, "schemaVersion") is 3 or 4) != (kind == "resident"))
+                if (!shiningPatient && (Scalar<int>(proposal, "schemaVersion") is 3 or 4) != (kind == "resident"))
                     throw new InvalidDataException("Participation proposal family differs from its enclosing typed owner.");
                 var owner = new WoundOwnerCoordinate(realm, kind, id, WoundCarrierCatalog.AfterlifeProfilesPath);
-                if (realm == "shining_abode")
+                if (shiningPatient)
+                {
+                    if (!AfterlifeEntityProfileState.TryNormalizeEffectRealm(Text(original[0], "realm"), out var originalRealm) ||
+                        originalRealm != "shining_abode")
+                        throw new InvalidDataException("A Shining patient proposal cannot relocate its original owner between realms.");
+                    RequireShiningPatientChangeOwner(new(owner, proposal), ReadLocality(proposal["locality"]));
+                }
+                else if (realm == "shining_abode")
                 {
                     if (!IsProviderOffer(proposal))
                         throw new InvalidDataException("Target consent remains limited to the exact Chaos participant family.");
@@ -105,6 +113,7 @@ internal static partial class SpiritualTreatmentParticipation
                 if (!Scalar<bool>(proposal, field) && Text(proposal, "operation") == "offer")
                     throw new InvalidDataException("A provider offer requires a conscious and capable healer and target.");
         }
+        else if (version == 5) ValidateShiningPatientProposal(proposal);
         else throw new InvalidDataException("Unknown participation proposal schema.");
         if (!ResourceMaterializationContract.IsExactIdentifier(Text(proposal, "woundId")) ||
             string.IsNullOrWhiteSpace(Text(proposal, "readableEvidence")))
@@ -116,7 +125,7 @@ internal static partial class SpiritualTreatmentParticipation
     internal static bool IsProviderOffer(JsonObject record) => Scalar<int>(record, "schemaVersion") is 2 or 4;
     internal static string RecordOwnerId(JsonObject record) => RecordOwner(record).OwnerId;
     internal static string TargetKind(JsonObject record) => RecordTarget(record).OwnerKind;
-    internal static int ResultVersion(JsonObject record) => IsResidentProviderOffer(record) ? 6 : IsResidentConsent(record) ? 5 : IsProviderOffer(record) ? 4 : 3;
+    internal static int ResultVersion(JsonObject record) => IsShiningPatientParticipation(record) ? 8 : IsResidentProviderOffer(record) ? 6 : IsResidentConsent(record) ? 5 : IsProviderOffer(record) ? 4 : 3;
     internal static bool IsAvailable(JsonObject record) => Text(record, "status") == (IsProviderOffer(record) ? "offered" : "granted");
 
     internal static JsonObject CreateOutcome(Change change, string locationId, JsonObject binding,
@@ -196,12 +205,13 @@ internal static partial class SpiritualTreatmentParticipation
         }
         else if (version == 3) ValidateResidentRecord(record);
         else if (version == 4) ValidateResidentProviderRecord(record);
+        else if (version == 5) ValidateShiningPatientRecord(record);
         else throw new InvalidDataException("Unknown participation record schema.");
         var recordRealm = RecordRealm(record);
         if (recordRealm is not ("chaos_sea" or "shining_abode") ||
-            !IsProviderOffer(record) && recordRealm != "chaos_sea" || string.IsNullOrWhiteSpace(Text(record, "readableEvidence")))
+            !IsProviderOffer(record) && !IsShiningPatientParticipation(record) && recordRealm != "chaos_sea" || string.IsNullOrWhiteSpace(Text(record, "readableEvidence")))
             throw new InvalidDataException("Participation requires the exact supported realm and readable evidence.");
-        foreach (var field in version is 3 or 4 ? new[] { "woundId", "primaryTransitionId" } : new[] { "healerId", "targetId", "woundId", "locationId", "primaryTransitionId" })
+        foreach (var field in version is 3 or 4 or 5 ? new[] { "woundId", "primaryTransitionId" } : new[] { "healerId", "targetId", "woundId", "locationId", "primaryTransitionId" })
             if (!ResourceMaterializationContract.IsExactIdentifier(Text(record, field)))
                 throw new InvalidDataException("Participation identities must be exact identifiers.");
         var cycle = Scalar<int>(record, "acceptedCycleOrdinal");

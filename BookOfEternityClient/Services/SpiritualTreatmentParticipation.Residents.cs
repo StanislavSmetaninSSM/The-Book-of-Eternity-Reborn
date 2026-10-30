@@ -11,14 +11,14 @@ internal static partial class SpiritualTreatmentParticipation
     internal static bool IsResidentConsent(JsonObject record) => Scalar<int>(record, "schemaVersion") == 3;
     internal static bool IsResidentProviderOffer(JsonObject record) => Scalar<int>(record, "schemaVersion") == 4;
     internal static bool IsResidentParticipation(JsonObject record) => Scalar<int>(record, "schemaVersion") is 3 or 4;
-    internal static WoundOwnerCoordinate RecordHealer(JsonObject record) => IsResidentParticipation(record)
+    internal static WoundOwnerCoordinate RecordHealer(JsonObject record) => IsShiningPatientParticipation(record) ? ReadShiningPatientOwner(record["healer"]) : IsResidentParticipation(record)
         ? ReadOwner(record["healer"])
         : new(RecordRealm(record), IsProviderOffer(record) ? "guardian" : "player_soul", Text(record, "healerId"), WoundCarrierCatalog.AfterlifeProfilesPath);
-    internal static WoundOwnerCoordinate RecordTarget(JsonObject record) => IsResidentParticipation(record)
+    internal static WoundOwnerCoordinate RecordTarget(JsonObject record) => IsShiningPatientParticipation(record) ? ReadShiningPatientOwner(record["target"]) : IsResidentParticipation(record)
         ? ReadOwner(record["target"])
         : new(RecordRealm(record), IsProviderOffer(record) ? "player_soul" : "guardian", Text(record, "targetId"), WoundCarrierCatalog.AfterlifeProfilesPath);
     internal static WoundOwnerCoordinate RecordOwner(JsonObject record) => IsProviderOffer(record) ? RecordHealer(record) : RecordTarget(record);
-    internal static string RecordRealm(JsonObject record) => IsResidentParticipation(record)
+    internal static string RecordRealm(JsonObject record) => IsShiningPatientParticipation(record) ? ReadShiningPatientOwner(record["target"]).Realm : IsResidentParticipation(record)
         ? ReadOwner(record["target"]).Realm : Text(record, "realm");
     internal static SpiritualAidLocality RecordLocality(JsonObject record) => IsResidentParticipation(record) || record.ContainsKey("locality")
         ? ReadLocality(record["locality"]) : new(RecordOwnerId(record), Text(record, "locationId"));
@@ -78,6 +78,7 @@ internal static partial class SpiritualTreatmentParticipation
         return new(healer.OwnerId, target.OwnerId, Fingerprint(record))
         {
             ReceiveAid = IsProviderOffer(record),
+            ShiningPatient = IsShiningPatientParticipation(record) ? new(healer, target, RecordLocality(record)) : null,
             Resident = IsResidentParticipation(record) ? new(healer, target, RecordLocality(record)) : null,
             GuardianProviderLocality = !IsResidentParticipation(record) && IsProviderOffer(record) && healer.Realm == "shining_abode"
                 ? RecordLocality(record) : null,
@@ -89,7 +90,8 @@ internal static partial class SpiritualTreatmentParticipation
         ResultVersion(record) == aid.FamilyVersion && IsProviderOffer(record) == aid.ReceiveAid &&
         RecordHealer(record) == aid.Healer(RecordRealm(record)) && RecordTarget(record) == aid.Target(RecordRealm(record)) &&
         Equals(ReadCompensation(record), aid.Compensation) &&
-        (IsResidentParticipation(record) ? aid.Resident is not null && RecordLocality(record) == aid.Resident.Locality :
+        (IsShiningPatientParticipation(record) ? aid.ShiningPatient is not null && RecordLocality(record) == aid.ShiningPatient.Locality :
+            IsResidentParticipation(record) ? aid.Resident is not null && RecordLocality(record) == aid.Resident.Locality :
             RecordRealm(record) == "shining_abode" ? aid.GuardianProviderLocality == RecordLocality(record) : aid.GuardianProviderLocality is null);
 
     private static void ValidateResidentRecord(JsonObject record)
@@ -126,6 +128,8 @@ internal static partial class SpiritualTreatmentParticipation
     internal static JsonObject CreateOutcome(Change change, SpiritualAidLocality locality, JsonObject binding,
         int cycleOrdinal, string primaryTransitionId)
     {
+        if (IsShiningPatientParticipation(change.Proposal))
+            return CreateShiningPatientOutcome(change, locality, binding, cycleOrdinal, primaryTransitionId);
         if (change.Owner.OwnerKind != "resident")
             return CreateGuardianOutcome(change, locality, binding, cycleOrdinal, primaryTransitionId);
         ValidateProposal(change.Proposal);

@@ -12,25 +12,40 @@ internal sealed record SpiritualAidSelection(string HealerId, string TargetId, s
     internal bool ReceiveAid { get; init; }
     internal bool PlayerConfirmed { get; init; }
     internal SpiritualResidentAidParticipant? Resident { get; init; }
+    internal SpiritualShiningPatientParticipant? ShiningPatient { get; init; }
     internal SpiritualAidLocality? GuardianProviderLocality { get; init; }
     internal SpiritualTreatmentCompensation? Compensation { get; init; }
-    internal int FamilyVersion => Resident is not null ? ReceiveAid ? 6 : 5 : ReceiveAid ? 4 : 3;
-    internal SpiritualAidLocality? ExplicitLocality => Resident?.Locality ?? GuardianProviderLocality;
+    internal int FamilyVersion => ShiningPatient is not null ? 8 : Resident is not null ? ReceiveAid ? 6 : 5 : ReceiveAid ? 4 : 3;
+    internal SpiritualAidLocality? ExplicitLocality => ShiningPatient?.Locality ?? Resident?.Locality ?? GuardianProviderLocality;
     internal string GuardianId => ExplicitLocality?.Realm == "shining_abode"
         ? throw new InvalidDataException("A Shining provider has no host-Guardian alias.")
         : Resident?.Locality.GuardianId ?? (ReceiveAid ? HealerId : TargetId);
     internal WoundOwnerCoordinate Healer(string realm)
     {
         RequireRealm(realm);
-        return Resident?.Healer ?? new(realm, ReceiveAid ? "guardian" : "player_soul", HealerId, WoundCarrierCatalog.AfterlifeProfilesPath);
+        return ShiningPatient?.Healer ?? Resident?.Healer ?? new(realm, ReceiveAid ? "guardian" : "player_soul", HealerId, WoundCarrierCatalog.AfterlifeProfilesPath);
     }
     internal WoundOwnerCoordinate Target(string realm)
     {
         RequireRealm(realm);
-        return Resident?.Target ?? new(realm, ReceiveAid ? "player_soul" : "guardian", TargetId, WoundCarrierCatalog.AfterlifeProfilesPath);
+        return ShiningPatient?.Target ?? Resident?.Target ?? new(realm, ReceiveAid ? "player_soul" : "guardian", TargetId, WoundCarrierCatalog.AfterlifeProfilesPath);
     }
     private void RequireRealm(string realm)
     {
+        if (ShiningPatient is { } patient)
+        {
+            if (realm != "shining_abode" || ReceiveAid || PlayerConfirmed || Resident is not null ||
+                GuardianProviderLocality is not null || Compensation is not null ||
+                patient.Healer != new WoundOwnerCoordinate(realm, "player_soul", "player_soul", WoundCarrierCatalog.AfterlifeProfilesPath) ||
+                HealerId != patient.Healer.OwnerId || TargetId != patient.Target.OwnerId ||
+                patient.Target.OwnerKind is not ("resident" or "radiant_actor") ||
+                patient.Locality.Value is not SpiritualAidLocality.ShiningFactionHall)
+                throw new InvalidDataException("Shining patient selection cannot mix another owner, direction or aid family.");
+            _ = SpiritualTreatmentParticipation.ReadShiningPatientOwner(SpiritualHealingRequestProjection.OwnerJson(patient.Healer));
+            _ = SpiritualTreatmentParticipation.ReadShiningPatientOwner(SpiritualHealingRequestProjection.OwnerJson(patient.Target));
+            _ = SpiritualTreatmentParticipation.ReadLocality(SpiritualTreatmentParticipation.LocalityJson(patient.Locality));
+            return;
+        }
         if (realm is not ("chaos_sea" or "shining_abode") || !ReceiveAid && realm != "chaos_sea" ||
             ExplicitLocality is { } locality && locality.Realm != realm ||
             Resident is { } resident && (resident.Healer.Realm != realm || resident.Target.Realm != realm) ||
@@ -62,6 +77,7 @@ internal sealed partial record SpiritualSelfTreatmentSelection(string WoundId, s
             };
         }
         if (Aid is null) return new() { ["woundId"] = WoundId, ["expectedWoundFingerprint"] = ExpectedWoundFingerprint };
+        if (Aid.ShiningPatient is not null) return ShiningPatientJson();
         if (!Aid.ReceiveAid && (Aid.Compensation is not null || Aid.GuardianProviderLocality is not null) ||
             Aid.Resident is not null && Aid.GuardianProviderLocality is not null)
             throw new InvalidDataException("Only a provider selection may carry negotiated terms or a Guardian provider locality.");
@@ -121,6 +137,8 @@ internal sealed partial record SpiritualSelfTreatmentSelection(string WoundId, s
             throw new InvalidDataException("Invalid exact spiritual wound selection.");
         var selection = new SpiritualSelfTreatmentSelection(woundId!, fingerprint!);
         if (root.Count == 2) return selection; // Still-produced exact self form.
+        if (root["schemaVersion"] is JsonValue patientVersion && patientVersion.TryGetValue<int>(out var patientSchema) && patientSchema == 8)
+            return ParseShiningPatient(selection, root);
         if (root["schemaVersion"] is JsonValue serviceVersion && serviceVersion.TryGetValue<int>(out var serviceSchema) && serviceSchema == 7)
             return ParseService(selection, root);
         if (root["mode"]?.GetValueKind() == JsonValueKind.String && root["mode"]!.GetValue<string>() == "combat_self")

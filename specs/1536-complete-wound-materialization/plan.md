@@ -59,8 +59,21 @@ Category6.0672381/60s, wall14.9925122s. Full raw/TRX/verified cause вне check
 Sol XHigh принял intended RED2. Перед реализацией codec добавлены4 отдельные
 existing-API assertion rows для canonical outcome DATA factory и raw selection8
 parser; оба типа пациента, точный следующий cycle и immutable input. Новых C# API
-они не требуют; production по-прежнему не менялся. Source/compile/PREP/runtime
-этих4 пока pending, originalRED2 не повторяется. Это не live grant authority.
+они не требуют. S2 fresh Unit exit0/26baselinewarnings/1:57.25 (включая archive
+settling);27artifacts/145bindings/4PE-PDB/32resourcescopies/4daemon verified,
+catalog1170/12960, exactPlanOnly4/0execution. Actual4 intended Assert.Null FAIL
+на22/53,category7.3866244/60s,wall17.6165791s; Sol OUTCOME принял4RED. Initial
+S1 RED2 не повторялся. Полный S1 artifact archive завершён/проверен до замены
+Unit DLL; собственный csc кратко pause/resume тем же процессом, без повторной
+сборки или потери evidence. Raw остаётся снаружи. Это не live grant authority.
+
+Первый coherent production WIP: явный schema5 proposal/record outcome codec,
+family8 typed selection и отдельный ShiningPatient participant. Старые reader/
+Chaos patient branches не расслаблены, raw record всё ещё не даёт authority.
+Код UNCOMPILED/UNRUN; actual patient admission/accepted witness/staging/result8/
+UI/normalization/memory и полная функция пока не подключены. Следующий шаг —
+existing-source patient admission и shared live/replay pipeline; завершённый
+Source review/cheap GREEN предшествуют любому настоящему healing run.
 
 Оптимизация: caller-owned parsed profiles/Shining/actual resident roster и existing
 catalog/index/read-set передаются по одной операции; полный key/dependencies включают
