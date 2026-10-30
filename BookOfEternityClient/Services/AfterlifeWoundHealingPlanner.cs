@@ -52,6 +52,7 @@ internal static partial class AfterlifeWoundHealingPlanner
         private bool _published;
         private readonly AfterlifeWoundTreatmentAuthority.SourceData? _data;
         private readonly AfterlifeWoundTreatmentAuthority.NaturalSourceData? _natural;
+        private readonly AfterlifeWoundTreatmentAuthority.DiagnosisSourceData? _diagnosis;
         private readonly string _controlJson;
         private readonly CanonicalBeforeImage _responseImage;
         private readonly IReadOnlyDictionary<string, JsonNode?> _parsedSourceRoots;
@@ -72,17 +73,19 @@ internal static partial class AfterlifeWoundHealingPlanner
             ProgressionControl control, ProgressionScheduleService scheduler,
             ProgressionScheduleService.AcceptedTurnOutcomeMutation schedulerMutation, CanonicalBeforeImage responseImage,
             IReadOnlyDictionary<string, JsonNode?> parsedSourceRoots,
-            AfterlifeWoundTreatmentAuthority.NaturalSourceData? natural = null)
+            AfterlifeWoundTreatmentAuthority.NaturalSourceData? natural = null,
+            AfterlifeWoundTreatmentAuthority.DiagnosisSourceData? diagnosis = null)
         {
-            if ((data is null) == (natural is null) || (request is null) != (natural is not null))
-                throw new InvalidDataException("A spiritual cycle has exactly one active-self or ordinary-natural source.");
+            if ((data is null ? 0 : 1) + (natural is null ? 0 : 1) + (diagnosis is null ? 0 : 1) != 1 ||
+                (request is null) != (natural is not null))
+                throw new InvalidDataException("A spiritual cycle has exactly one active, ordinary-natural or diagnosis source.");
             _files = files; _lease = lease; _snapshot = snapshot; _original = original;
             _sources = AcceptedMechanicsPlanBinding.CloneReadOnlyBeforeImages(sources);
             _request = request?.DeepClone().AsObject(); _input = WoundAcceptedTurnData.CloneInput(input)!;
             _wounds = wounds.Select(w => WoundAcceptedTurnData.CloneWound(w)!).ToArray();
             _stages = stages.ToArray();
             _data = data?.AidWitness is { } aidWitness ? data with { AidWitness = aidWitness.DeepClone().AsObject() } : data;
-            _natural = natural; _controlJson = JsonSerializer.Serialize(control);
+            _natural = natural; _diagnosis = diagnosis; _controlJson = JsonSerializer.Serialize(control);
             Scheduler = scheduler; SchedulerMutation = schedulerMutation;
             var report = StrictJsonAuthority.Deserialize<JsonObject>(CanonicalJsonUtf8.DecodeOneOptionalBom(
                 schedulerMutation.ReportBefore.Bytes ?? throw new InvalidDataException("Spiritual recovery has no admitted progression report.")),
@@ -105,14 +108,16 @@ internal static partial class AfterlifeWoundHealingPlanner
 
         internal string Fingerprint { get; }
         internal bool IsNatural => _natural is not null;
-        internal string Mode => IsNatural ? "natural" : _data?.ServiceQuote is not null ? "service" : _data?.AidWitness is not null ? "aid" : "self";
+        internal bool IsDiagnosis => _diagnosis is not null;
+        internal bool UsesOrdinaryInput => IsNatural || IsDiagnosis;
+        internal string Mode => IsDiagnosis ? "diagnose" : IsNatural ? "natural" : _data?.ServiceQuote is not null ? "service" : _data?.AidWitness is not null ? "aid" : "self";
         internal bool IsVisibleAidTarget(WoundMaterializationEnvelope wound) => Mode == "aid" &&
             _data!.Wound.WoundId == wound.WoundId && _data.Wound.Owner == wound.Owner &&
             WoundPlayerProjection.Visible(_data.Wound.Display.Visibility);
-        internal string SourceFingerprint => _natural?.SourceFingerprint ?? _data!.SourceFingerprint;
-        internal string ProgramReference => _request?["requestFingerprint"]!.GetValue<string>() ?? SourceFingerprint;
+        internal string SourceFingerprint => _diagnosis?.SourceFingerprint ?? _natural?.SourceFingerprint ?? _data!.SourceFingerprint;
+        internal string ProgramReference => _diagnosis?.Program.NaturalProgramReference ?? _request?["requestFingerprint"]!.GetValue<string>() ?? SourceFingerprint;
         internal string CycleKey => AfterlifeWoundTreatmentAuthority.CycleKey(_input.Binding.Realm,
-            _natural?.CycleOrdinal ?? _request!["attempt"]!["cycleOrdinal"]!.GetValue<int>());
+            _diagnosis?.Natural.CycleOrdinal ?? _natural?.CycleOrdinal ?? _request!["attempt"]!["cycleOrdinal"]!.GetValue<int>());
         internal bool IsClosed => _published;
         internal ProgressionControl Control => JsonSerializer.Deserialize<ProgressionControl>(_controlJson)!;
         internal ProgressionScheduleService Scheduler { get; }
@@ -122,12 +127,12 @@ internal static partial class AfterlifeWoundHealingPlanner
         internal IReadOnlyList<SpiritualWoundStage> Stages => _stages.ToArray();
         internal IReadOnlyList<WoundMaterializationEnvelope> Wounds => _wounds.Select(w => WoundAcceptedTurnData.CloneWound(w)!).ToArray();
         internal string EventRef => _input.Binding.AcceptedEvents.Single().EventRef;
-        internal JsonArray RecoveryTiers => new((_natural?.Members ?? _data!.NaturalMembers)
+        internal JsonArray RecoveryTiers => new((_diagnosis?.Natural.Members ?? _natural?.Members ?? _data!.NaturalMembers)
             .GroupBy(m => m.Wound.Owner).Select(g => (JsonNode)new JsonObject
             {
                 ["owner"] = SpiritualHealingRequestProjection.OwnerJson(g.Key), ["healingTier"] = g.First().HealingTier
             }).ToArray());
-        internal JsonObject PersistenceSource => IsNatural ? new JsonObject
+        internal JsonObject PersistenceSource => IsDiagnosis ? throw new InvalidDataException("Diagnosis owns a separate knowledge result and natural suffix.") : IsNatural ? new JsonObject
         {
             ["sourceFingerprint"] = SourceFingerprint, ["graphResponseFingerprint"] = _responseImage.Fingerprint,
             ["ownerTiers"] = RecoveryTiers, ["projection"] = SpiritualHealingRequestProjection.CreateNatural(_natural!)
@@ -345,6 +350,10 @@ internal static partial class AfterlifeWoundHealingPlanner
 
         private bool ProgramAgrees()
         {
+            if (_diagnosis is not null)
+                return _diagnosis.Program.Stages.SequenceEqual(_stages) &&
+                    SpiritualDiagnosisRequestCodec.IsExact(_request!, _diagnosis.Context,
+                        _diagnosis.Candidate.Admission.Selection, _diagnosis.Candidate.Admission);
             if (_natural is not null)
                 return SpiritualHealingRequestProjection.BuildNaturalProgram(_natural).Stages.SequenceEqual(_stages);
             var attempt = _request!["attempt"]!;

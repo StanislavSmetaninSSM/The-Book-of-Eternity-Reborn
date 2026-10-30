@@ -16,8 +16,17 @@ internal static partial class WoundAcceptedTurnPlannerCore
             var baseline = prepared.BaselineAuthority;
             var reduced = ReduceExecutedSpiritualState(new(baseline.PreTurnCarriers, baseline.PreTurnIdentityIndex,
                 baseline.PreTurnHistory, null, null), prepared.Binding.Turn, owner.Fingerprint, executed,
-                () => { var result = SpiritualHealingPersistedResult.Create(owner, executed); return (result, result.Stages); },
-                owner.IsNatural ? "Духовная рана: естественное восстановление за один безопасный цикл."
+                () =>
+                {
+                    if (!owner.IsDiagnosis)
+                    { var result = SpiritualHealingPersistedResult.Create(owner, executed); return (result.Stages, (IReadOnlyDictionary<int, WoundTransitionResult>)new Dictionary<int, WoundTransitionResult> { [0] = result }); }
+                    var natural = SpiritualHealingPersistedResult.CreateDiagnosisNaturalSuffix(owner, executed.Skip(1).ToArray());
+                    var diagnosis = SpiritualDiagnosisPersistedResult.Create(owner, executed, natural);
+                    return ((IReadOnlyList<SpiritualHealingPublishedStage>)new[] { diagnosis.DiagnosisStage }.Concat(natural.Stages).ToArray(),
+                        (IReadOnlyDictionary<int, WoundTransitionResult>)new Dictionary<int, WoundTransitionResult> { [0] = diagnosis, [1] = natural });
+                },
+                owner.IsDiagnosis ? "Духовная рана: осмотр и естественное восстановление за один безопасный цикл."
+                    : owner.IsNatural ? "Духовная рана: естественное восстановление за один безопасный цикл."
                     : owner.HasServicePayment ? $"Духовная рана: оплаченная попытка лечения ({owner.ServiceAmount} Чернильных Перьев) и один безопасный цикл."
                     : "Духовная рана: лечение и естественное восстановление за один безопасный цикл.");
             if (reduced.State is not { } state) return new(null, reduced.Issues);
@@ -44,13 +53,13 @@ internal static partial class WoundAcceptedTurnPlannerCore
             !selection.PreparedAgrees(prepared) || !before.MatchesPrepared(prepared) || executed.Count != selection.Stages.Count)
             return FailedReduction("spiritual_combat_healing_execution_invalid", "Missing actual combat draft execution.", "exact current private combat stage chain", "foreign or changed");
         return ReduceExecutedSpiritualState(before.Data, prepared.Binding.Turn, selection.SourceFingerprint, executed,
-            () => { var result = SpiritualCombatHealingPersistedResult.Create(selection, executed); return (result, result.Stages); },
+            () => { var result = SpiritualCombatHealingPersistedResult.Create(selection, executed); return (result.Stages, (IReadOnlyDictionary<int, WoundTransitionResult>)new Dictionary<int, WoundTransitionResult> { [0] = result }); },
             "Духовная рана: лечение в духовном бою без безопасного цикла.");
     }
 
     private static WoundStateReductionResult ReduceExecutedSpiritualState(WoundOperationBeforeData operationBefore,
         int turn, string sourceFingerprint, IReadOnlyList<WoundExecutedBoundary> executed,
-        Func<(WoundTransitionResult Result, IReadOnlyList<SpiritualHealingPublishedStage> Stages)> createResult, string summary)
+        Func<(IReadOnlyList<SpiritualHealingPublishedStage> Stages, IReadOnlyDictionary<int, WoundTransitionResult> Results)> createResult, string summary)
     {
         try
         {
@@ -60,7 +69,9 @@ internal static partial class WoundAcceptedTurnPlannerCore
             if (catalog.Issues.Count != 0 || !identity.IsValid || !history.IsValid ||
                 history.State!.ValidateAgreement(identity.State!, catalog).Count != 0)
                 throw new InvalidDataException("Spiritual finalization lost its original canonical agreement.");
-            var (persisted, published) = createResult();
+            var (published, results) = createResult();
+            if (published.Count != executed.Count || !results.ContainsKey(0))
+                throw new InvalidDataException("Spiritual result boundaries differ from actual complete execution.");
             var rows = new List<WoundHistoryTransition>();
             var intents = new List<WoundTransitionIntent>();
             for (var index = 0; index < published.Count; index++)
@@ -71,15 +82,15 @@ internal static partial class WoundAcceptedTurnPlannerCore
                     raw.BeforeFingerprint != WoundIdentityState.ComputeSemanticFingerprint(stage.Before) ||
                     raw.AfterFingerprint != WoundIdentityState.ComputeSemanticFingerprint(stage.After))
                     throw new InvalidDataException("Spiritual stage history differs from its actual reducer.");
-                var primary = index == 0;
-                var historyIntent = raw with { TickKey = stage.CycleKey, TransitionResult = primary ? persisted : null };
+                var persisted = results.GetValueOrDefault(index);
+                var historyIntent = raw with { TickKey = stage.CycleKey, TransitionResult = persisted };
                 intents.AddRange(executed[index].TransitionIntents.Select(i => i is WoundTransitionHistoryIntent ? historyIntent :
                     WoundAcceptedTurnData.CloneTransitionIntent(i)));
                 rows.Add(new(stage.TransitionId, stage.After.WoundId, checked(history.State.NextOrdinal + index),
                     stage.After.LastTransition.Ordinal, stage.Kind, turn, stage.EventRef, stage.OperationKey,
                     raw.BeforeFingerprint, raw.AfterFingerprint, sourceFingerprint, stage.AttemptId, null, null, stage.CycleKey,
                     null, WoundHistoryState.ComputeOutputFingerprint(stage.OperationKey, stage.EventRef, summary), summary,
-                    stage.Terminal, primary ? persisted : null));
+                    stage.Terminal, persisted));
             }
             var afterHistory = WoundHistoryState.CreateValidated(checked(history.State.NextOrdinal + rows.Count), history.State.Transitions.Concat(rows));
             if (!afterHistory.IsValid) return new(null, afterHistory.Issues);

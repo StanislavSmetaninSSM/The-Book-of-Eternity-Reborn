@@ -91,6 +91,12 @@ internal static partial class EffectAcceptedTurnPlanner
         {
             var stage = stages[index];
             var before = current[stage.WoundId];
+            if (stage.Kind == "diagnose")
+            {
+                var diagnosis = owner.ExecuteDiagnosis(before, stage);
+                owner.AcceptExecuted(diagnosis); executed.Add(diagnosis); current[stage.WoundId] = diagnosis.After;
+                continue;
+            }
             var graph = owner.ResolveGraph(before, stage);
             var actual = ExecuteSpiritualWoundStage(input, before, graph, stage, index,
                 new(owner.EventRef, owner.Fingerprint, owner.IsNatural ? "Естественное восстановление" : "Духовное исцеление",

@@ -86,7 +86,7 @@ internal static partial class AfterlifeWoundHealingPlanner
         // with self-treatment's empty command root and source projections.
         internal void BindOrdinaryEffectInput(WoundPreparedAcceptedTurnPlan prepared, EffectAcceptedTurnInput input)
         {
-            if (!IsNatural || !PreparedAgrees(prepared) || !WoundAcceptedTurnPlannerCore.EffectInputAgreesWithPrepared(prepared, input))
+            if (!UsesOrdinaryInput || !PreparedAgrees(prepared) || !WoundAcceptedTurnPlannerCore.EffectInputAgreesWithPrepared(prepared, input))
                 throw new InvalidDataException("Natural recovery received a foreign ordinary effect input.");
             RequireExecutionCurrent();
             ValidateProtectedOrdinaryWounds(input);
@@ -105,7 +105,7 @@ internal static partial class AfterlifeWoundHealingPlanner
             foreach (var owner in _wounds.GroupBy(w => w.Owner))
             {
                 if (!WoundCarrierCollectionAuthority.TryResolve(current, owner.Key, out var rows, out _) ||
-                    rows.Count != _natural!.Catalog.Occurrences.Count(o => o.Wound.Owner == owner.Key))
+                    rows.Count != (_diagnosis?.Natural ?? _natural!).Catalog.Occurrences.Count(o => o.Wound.Owner == owner.Key))
                     throw new InvalidDataException("Natural recovery cannot silently drop or replace an original owner/wound cohort.");
                 foreach (var wound in owner)
                 {
@@ -120,7 +120,7 @@ internal static partial class AfterlifeWoundHealingPlanner
                 var woundIds = owner.Select(w => w.WoundId).ToHashSet(StringComparer.Ordinal);
                 bool IsProtectedEffect(JsonObject effect) => effect["source"]?["kind"]?.GetValue<string>() == "wound" &&
                     woundIds.Contains(effect["source"]?["sourceId"]?.GetValue<string>() ?? "");
-                var originalEffects = _natural.Effects.Occurrences.Where(o => IsProtectedEffect(o.Effect))
+                var originalEffects = (_diagnosis?.Natural ?? _natural!).Effects.Occurrences.Where(o => IsProtectedEffect(o.Effect))
                     .ToDictionary(o => o.EffectId, o => o.Effect, StringComparer.Ordinal);
                 var currentEffects = (profile["activeEffects"] as JsonArray)?.OfType<JsonObject>().Where(IsProtectedEffect)
                     .ToDictionary(e => e["effectId"]!.GetValue<string>(), StringComparer.Ordinal)

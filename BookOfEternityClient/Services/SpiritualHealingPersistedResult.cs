@@ -81,20 +81,29 @@ internal sealed class SpiritualHealingPersistedResult : WoundTransitionResult
     internal override JsonObject ToCanonicalJson() => _root.DeepClone().AsObject();
 
     internal static SpiritualHealingPersistedResult Create(AfterlifeWoundHealingPlanner.Continuation owner,
+        IReadOnlyList<WoundExecutedBoundary> executed) => CreateCore(owner, executed, owner.Mode, owner.Request,
+            owner.PersistenceSource, owner.ParticipationOutcomes);
+
+    internal static SpiritualHealingPersistedResult CreateDiagnosisNaturalSuffix(AfterlifeWoundHealingPlanner.Continuation owner,
         IReadOnlyList<WoundExecutedBoundary> executed)
+    {
+        if (!owner.IsDiagnosis || executed.Count == 0) throw new InvalidDataException("Diagnosis requires one actual nonempty natural suffix.");
+        return CreateCore(owner, executed, "natural", null, owner.DiagnosisNaturalPersistenceSource, null);
+    }
+
+    private static SpiritualHealingPersistedResult CreateCore(AfterlifeWoundHealingPlanner.Continuation owner,
+        IReadOnlyList<WoundExecutedBoundary> executed, string mode, JsonObject? request, JsonObject source, JsonArray? participation)
     {
         var binding = owner.Input.Binding;
         var cycle = owner.CycleKey;
-        var participation = owner.ParticipationOutcomes;
-        var request = owner.Request;
-        var version = owner.Mode == "service" ? 7 : owner.Mode == "aid" ? request!["schemaVersion"]!.GetValue<int>()
+        var version = mode == "service" ? 7 : mode == "aid" ? request!["schemaVersion"]!.GetValue<int>()
             : participation is null ? 2 : SpiritualTreatmentParticipation.ResultVersion(participation[0]!["record"]!.AsObject());
         var root = new JsonObject
         {
-            ["kind"] = "spiritual_healing", ["schemaVersion"] = version, ["mode"] = owner.Mode,
+            ["kind"] = "spiritual_healing", ["schemaVersion"] = version, ["mode"] = mode,
             ["binding"] = new JsonObject { ["sessionId"] = binding.SessionId, ["requestId"] = binding.RequestId,
                 ["snapshotToken"] = binding.SnapshotToken, ["realm"] = binding.Realm, ["turn"] = binding.Turn },
-            ["request"] = request, ["source"] = owner.PersistenceSource,
+            ["request"] = request, ["source"] = source,
             ["control"] = JsonSerializer.SerializeToNode(owner.Control),
             ["scheduleBeforeJson"] = CanonicalJsonUtf8.DecodeOneOptionalBom(owner.SchedulerMutation.ScheduleBefore.Bytes!),
             ["progressionReportJson"] = CanonicalJsonUtf8.DecodeOneOptionalBom(owner.SchedulerMutation.ReportBefore.Bytes!),
@@ -110,7 +119,7 @@ internal sealed class SpiritualHealingPersistedResult : WoundTransitionResult
             }).ToArray())
         };
         if (participation is not null) root["participationOutcomes"] = participation;
-        if (version is 4 or 5 or 6 or 8 && owner.Mode == "aid") root["direction"] = SpiritualSelfTreatmentRequestCodec.AidDirection(version);
+        if (version is 4 or 5 or 6 or 8 && mode == "aid") root["direction"] = SpiritualSelfTreatmentRequestCodec.AidDirection(version);
         root["resultFingerprint"] = WoundHistoryState.ComputeTransitionResultFingerprint(root);
         var issues = new List<ValidationIssue>();
         return Parse(JsonSerializer.SerializeToElement(root), "spiritualHealing.result", issues)

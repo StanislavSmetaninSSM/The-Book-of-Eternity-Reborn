@@ -13,7 +13,8 @@ internal static partial class AfterlifeWoundTreatmentAuthority
         EffectMechanicsSnapshot Mechanics);
     internal sealed record DiagnosisSourceData(DiagnosisCandidate Candidate, NaturalSourceData Natural,
         SpiritualSelfTreatmentStageContext Context, JsonObject Request, SpiritualDiagnosisProgram Program,
-        string SourceFingerprint);
+        string SourceFingerprint, IReadOnlyList<DiagnosisSourceStamp> OriginalSources);
+    internal sealed record DiagnosisSourceStamp(string Path, string Fingerprint);
     internal sealed record DiagnosisTurnStageResult(ProgressionControl? Control, SpiritualSelfTreatmentStageResult Stage);
 
     internal static IReadOnlyList<string> DiagnosisSourcePaths(string realm) => Array.AsReadOnly(SourcePaths.Concat(
@@ -84,17 +85,21 @@ internal static partial class AfterlifeWoundTreatmentAuthority
                 Root(ShiningAbodeState.StatePath), context.Progression, candidate.Realm, out var ordinal) ||
             candidate.Members.Any(m => m.Wound.Recovery.LastTickKey == CycleKey(candidate.Realm, ordinal)))
             throw new InvalidDataException("Diagnosis requires its exact unconsumed single safe cycle.");
-        var fingerprint = WoundAcceptedTurnFingerprintWriter.Compute(new[]
-        { "spiritual_diagnosis.original_source", "1", context.SessionId, context.RequestId,
-            context.Turn.ToString(System.Globalization.CultureInfo.InvariantCulture),
-            WoundAcceptedTurnFingerprintWriter.CanonicalJson(JsonSerializer.SerializeToNode(context.Progression)) }
-            .Concat(sources.SelectMany(s => new[] { s.Path, s.Image.Fingerprint })));
+        var stamps = sources.Select(s => new DiagnosisSourceStamp(s.Path, s.Image.Fingerprint)).ToArray();
+        var fingerprint = ComputeDiagnosisSourceFingerprint(context, stamps);
         var natural = new NaturalSourceData(candidate.Realm, ordinal, fingerprint, candidate.Carriers,
             candidate.Effects, candidate.Identities, candidate.History, candidate.Catalog, candidate.Members, candidate.Mechanics);
         var request = retained?.DeepClone().AsObject() ?? SpiritualDiagnosisRequestCodec.Create(context, candidate.Admission.Selection, candidate.Admission);
         var program = SpiritualDiagnosisProgram.Build(context, request, candidate.Admission, candidate.Members);
-        return new(candidate, natural, context, request, program, fingerprint);
+        return new(candidate, natural, context, request, program, fingerprint, stamps);
     }
+
+    internal static string ComputeDiagnosisSourceFingerprint(SpiritualSelfTreatmentStageContext context,
+        IReadOnlyList<DiagnosisSourceStamp> sources) => WoundAcceptedTurnFingerprintWriter.Compute(new[]
+        { "spiritual_diagnosis.original_source", "1", context.SessionId, context.RequestId,
+            context.Turn.ToString(System.Globalization.CultureInfo.InvariantCulture),
+            WoundAcceptedTurnFingerprintWriter.CanonicalJson(JsonSerializer.SerializeToNode(context.Progression)) }
+            .Concat(sources.SelectMany(s => new[] { s.Path, s.Fingerprint })));
 
     internal static async Task<SpiritualSelfTreatmentStageResult> StageDiagnosisAsync(FileSystemManager files,
         FileSystemManager.CanonicalWriteLease lease, SpiritualSelfTreatmentStageContext context, SpiritualSelfTreatmentSelection selection)

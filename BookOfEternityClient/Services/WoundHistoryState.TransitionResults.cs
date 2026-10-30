@@ -80,6 +80,14 @@ internal sealed partial class WoundHistoryState
     private static WoundTransitionResult? ParseTransitionResult(JsonElement element,
         string kind, string path, ICollection<ValidationIssue> issues)
     {
+        if (element.ValueKind == JsonValueKind.Object && element.TryGetProperty("kind", out var diagnosisKind) &&
+            diagnosisKind.ValueKind == JsonValueKind.String && diagnosisKind.GetString() == "spiritual_diagnosis")
+        {
+            var diagnosis = SpiritualDiagnosisPersistedResult.Parse(element, path, issues);
+            if (diagnosis is not null && kind != "diagnose")
+            { AddIssue(issues, path, "spiritual_diagnosis_history_invalid", "diagnosis result only on its knowledge row", kind); return null; }
+            return diagnosis;
+        }
         if (element.ValueKind == JsonValueKind.Object && element.TryGetProperty("kind", out var combatKind) &&
             combatKind.ValueKind == JsonValueKind.String && combatKind.GetString() == "spiritual_combat_healing")
         {

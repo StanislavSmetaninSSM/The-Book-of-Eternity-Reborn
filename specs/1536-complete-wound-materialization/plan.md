@@ -1,3 +1,22 @@
+# T121 coherent spiritual execution — durable-boundary WIP, UNCOMPILED/UNRUN
+
+The next saved source cut adds a closed diagnosis result retaining the exact request,
+original and knowledge-after images, complete ordered original cohort, requirement
+proof DATA, original dependency fingerprints, admitted control and settled scheduler
+images. Its exact link names the existing nonempty natural result and every suffix
+transition. Strict History reconstruction now separates the diagnosis row from the
+first natural recovery row; ordinary result codecs and legacy primary-row boundaries
+remain unchanged. This historical DATA does not grant current authority.
+
+An explicit diagnosis Continuation prepares the complete signed original read set and
+reuses the ordinary effect input and existing scheduler mutation. The actual sealed
+knowledge reducer precedes the existing natural stage executor. Publication/completion,
+fresh composed target/requirement checks, Engine dispatch and GM sync are still being
+joined; this is an intermediate source-preservation cut, not compile or game acceptance.
+The current component tests remain authored and UNRUN; no build/test was launched by
+the writer. Operation-local parsed source/program DATA is reused, with live physical
+and original-evidence fences retained. No new cache, publisher or limits are added.
+
 # T121 coherent spiritual execution — binding/native-test WIP, UNCOMPILED/UNRUN
 
 The staged boundary now detaches caller control before its first await and lets
