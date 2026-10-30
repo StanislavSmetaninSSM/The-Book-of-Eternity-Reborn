@@ -27,11 +27,14 @@ T118/T126 browser cards существуют, DOM/provider/fresh-process — о�
 квалификация, не основание переписывать готовые cards. Saref follow-up и текущие
 DFR/Mortal/Windows/guardian/cross-OS ограничения не объявляются закрытыми.
 
-Технический подход: отдельная closed participation schema5 / active family8
+Технический подход: отдельная closed participation schema5 / natural+active family8
 (family7 уже service), existing locality union и exact patient-source admission.
 Existing schemas1–4/families3–7 и Chaos patient guard сохраняются. Astra/high
 consultation дала конкретные identity/memory/versioning границы; actual written
-DESIGN review pending в spiritual-aid-design.md. Один writer, затем причинный RED,
+DESIGN review потребовал два точных уточнения: natural8 отдельно от старого
+Chaos natural5, и точный patient membership/headship/lifecycle tuple до/после
+owned normalization с readback перед продвижением всех live guards. Уточнения
+внесены в spiritual-aid-design.md; delta DESIGN review pending. Один writer, затем причинный RED,
 минимальная реализация с GM sync, fresh owning builds/exact categories/PREP,
 реальные обе UI цепочки и независимый OUTCOME. Пока кода/новых runtime нет.
 

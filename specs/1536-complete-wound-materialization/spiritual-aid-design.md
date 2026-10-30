@@ -919,9 +919,13 @@ The client-derived schema5 record has exactly schemaVersion, kind, status,
 healer, target, woundId, locality, conscious, capable, readableEvidence, binding,
 acceptedCycleOrdinal, eligibleCycleOrdinal and primaryTransitionId. It uses the
 existing next-cycle/previous-turn lifetime and full accepted witness matching.
-The natural result's existing closed participation-outcome container gains an
-explicit schema5 branch; old branch shapes and fingerprints remain unchanged.
-The active family8 retains that full accepted natural witness and complete
+Record schema5 maps through `ResultVersion(record)` to OUTER natural result
+family8 as well as active result family8. Natural8 remains mode=natural,
+request=null and has no active direction. Active8 remains mode=aid with exact
+direction=player_to_shining_entity; only the UI selection mode is
+shining_entity_aid. Outer natural family5 is existing Chaos resident consent
+and does not acquire Shining semantics. Old branch shapes/fingerprints stay strict.
+The active family8 retains that full accepted natural8 witness and complete
 source tuple for original reconstruction, continuation, terminal replay and
 rollback. It must not use a source-shaped public record as authority.
 
@@ -984,6 +988,15 @@ No fake Guardian dependency or GuardianId alias is added for either patient.
   does not require renewed live consent or a second draw/world cycle. Pending
   execution still requires every fresh participant/source permission check.
 
+Owned locality normalization must explicitly branch on the Shining patient
+family rather than call provider admission. Compare the exact admitted typed
+patient membership/headship, faction, hall, lifecycle and profile identity tuple
+before/after normalization; LocalActorIds or scope-set equality alone is not
+proof. A changed head/currentFaction/lifecycle refuses even when all actor IDs
+remain local. Legitimate owned after-images are verified by exact physical
+readback, then every existing live guard advances together. Signed originals
+and parsed authority DATA remain frozen; no optimistic guard advancement.
+
 Reuse stable parsed roots/indexes through the existing read-set/operation
 services. Key/dependencies include exact realm/owner/wound/generation, current
 hall/faction/lifecycle/visibility, roster or head/political relation, profile
@@ -1004,6 +1017,8 @@ is not claimed without measured production evidence.
    both kinds, same-ID/wrong-kind, cross-family/realm/locality, changed head,
    missing/duplicate political row, hidden/dead/nonmember, grant/revoke/expiry,
    same-turn forged witness, insufficient healer and independent exported DATA.
+   Revoke and consciousness/capability refusal controls must remain valid except
+   for the one tested field, so expiry cannot mask a broken status check.
    Add actual source-read/compute counters with full dependency invalidation.
 3. Connect existing producer/witness, original/request/result/replay/rollback,
    active+natural program and the two memory owners. Update canonical technical
