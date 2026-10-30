@@ -37409,7 +37409,8 @@
           "project": "unit",
           "tests": [
             "BookOfEternityClient.Tests.ShiningFactionHealingServiceContractTests.FirstAutomaticIncomeKeepsAnInitiallyEmptyFactionHealerMaterializationComplete",
-            "BookOfEternityClient.Tests.ShiningFactionHealingServiceContractTests.AutomaticIncomeNeverRepairsUnrelatedOrUnprovedHistory"
+            "BookOfEternityClient.Tests.ShiningFactionHealingServiceContractTests.AutomaticIncomeNeverRepairsUnrelatedOrUnprovedHistory",
+              "BookOfEternityClient.Tests.ShiningFactionHealingServiceContractTests.FirstAutomaticChaosIncomeKeepsTheSameStrictMaterializationContract"
           ]
         }
       ]

@@ -21,7 +21,7 @@ public sealed class ShiningFactionServiceDocumentationTests
             var text = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, file));
             var start = text.IndexOf(Marker + ":", StringComparison.Ordinal); Assert.True(start >= 0);
             foreach (var token in new[] { "leaderless", "broken/dissolved", "H>=W", "ORIGINAL", "client_auto_strategy",
-                "spiritualResidentThoughtJournalUpdates", "signed", "rollback", "unfinished" })
+                "spiritualResidentThoughtJournalUpdates", "signed", "rollback", "unfinished", "progressionHistory" })
                 Assert.Contains(token, text[start..]);
         }
         XDocument.Parse(File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "Rules/Block_32_Guardians.txt")));

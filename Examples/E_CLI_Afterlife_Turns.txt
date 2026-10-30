@@ -14281,6 +14281,9 @@ cycle atomically. Natural1 accepted failure still charges51 once; reject/cancel/
 rollback charges0 and restores all roots and old memory. Accepted replay does not pay
 or heal again. Ordinary client progression H3→H4 in the same cycle must match its
 exact original/report projection; THIS attempt retains H3/price51/original draw.
+Its first actual client_auto_strategy entry changes only a valid empty progressionHistory
+declaration to populated. GM never fabricates an initial ledger or repairs a malformed
+envelope to make a service pass.
 No GM inkFeatherChanges, replacement quote, foreign memory or private aid grant.
 Negotiated compensation is not implemented by this currency example.
 end_shining_faction_service_v7

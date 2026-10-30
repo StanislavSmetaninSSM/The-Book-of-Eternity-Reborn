@@ -139,7 +139,8 @@ public sealed partial class AfterlifeHealingPaymentLifecycleTests
             {
                 if (!armed || path != ProgressionScheduleService.SchedulePath || !File.Exists(files!.ResolvePath(path))) return Task.CompletedTask;
                 var schedule = JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(File.ReadAllBytes(files.ResolvePath(path))))!;
-                if (schedule["pendingChaosSeaCycles"]!.GetValue<int>() != 1) return Task.CompletedTask;
+                if (schedule["pendingShiningAbodeCycles"]!.GetValue<int>() != 1) return Task.CompletedTask;
+                Assert.Equal(0, schedule["pendingChaosSeaCycles"]!.GetValue<int>());
                 armed = false; changes++;
                 var rosterPath = files.ResolvePath(GuardianAbodeResidentState.StatePath);
                 var roster = JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(File.ReadAllBytes(rosterPath)))!;

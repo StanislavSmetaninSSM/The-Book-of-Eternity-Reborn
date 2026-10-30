@@ -2488,6 +2488,19 @@ internal static class AfterlifeEntityProfileState
         if (string.Equals(GetNodeString(strategy["lastAutoProgressionCycleKey"]), cycle.CycleKey, StringComparison.OrdinalIgnoreCase))
             return false;
 
+        // This projector owns the actual first automatic history append. Keep
+        // its already valid empty declaration coherent, without creating or
+        // repairing any missing, malformed or contradictory envelope surface.
+        var firstHistorySections =
+            profile["ledger"] is JsonArray { Count: 0 } &&
+            profile[ProgressionLedgerProperty] is JsonArray { Count: 0 } &&
+            profile[ActorMaterializationContract.PropertyName] is JsonObject envelope &&
+            envelope["sections"] is JsonObject sections &&
+            sections["progressionHistory"] is JsonObject { Count: 2 } disposition &&
+            disposition["state"] is JsonValue state && state.TryGetValue<string>(out var declared) && declared == "empty_by_design" &&
+            disposition["reason"] is JsonValue reason && reason.TryGetValue<string>(out var explanation) && !string.IsNullOrWhiteSpace(explanation)
+                ? sections : null;
+
         var currencies = EnsureObject(profile, "currencies");
         var income = ResolveIncome(cycle);
         AddCurrency(currencies, "inkFeathers", income.InkFeathers);
@@ -2518,6 +2531,8 @@ internal static class AfterlifeEntityProfileState
             },
             ["upgrades"] = upgrades
         });
+        if (firstHistorySections is not null)
+            firstHistorySections["progressionHistory"] = new JsonObject { ["state"] = "populated" };
 
         return true;
     }

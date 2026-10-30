@@ -1,3 +1,34 @@
+# US6 T137-AUTO-HISTORY exact causal RED; narrow correction WIP
+
+Actual sourceeaf345159:1expectedFAIL/7PASS,8complete/2methods,13.6842499s; positive
+Fact fails exactlyProjection.cs27 after original valid service, actual1auto ledger row
+and6/1balance assertions. Two exact progressionHistory errors: empty_surface_invalid
+and content_mismatch. No timeout/duplicate/missingcase, complete cleanup/pins; TRXSHA
+27476e457ca1bd2bb01e0d5e5b6bab2f767b41534dcc1b3e4477df1b64be7038.
+Full HRED-runtime proof is external; independent Sol/xhigh RED OUTCOME accepted. Fresh Unit
+exit0/26baselinewarnings1:11.50,27artifact/112sourcebindings/4PE-PDB/current resources
+verified; catalog1148/12929 and exact1/8/2PlanOnly8.2878532s, zero executions.
+
+Narrow source correction now written, UNCOMPILED/UNRUN: only ApplyAutomaticProgression
+captures its existing physically empty ledger+progressionLedger and strictly closed
+valid empty_by_design+reason disposition before income. Only after its actual client
+append does it replace that one disposition with populated. Every other envelope
+field stays identical. No missing envelope/array synthesis or malformed/foreign-field
+repair; disabled/no-report/repeated-cycle retain behavior. Shared generic append and
+validated override path are untouched. Constant-time private-clone DATA inspection,
+no I/O/cache/repeated validation, no changed source/lease/authority/history fence.
+
+Accepted fixture hook correction is grouped here: Shining pending1/inactiveChaos0,
+then actual roster mutation and the original zero-draw/request/payment assertions.
+GM guidance/worked example/source guard now explain the client-owned automatic
+history declaration transition; no new GM field or response authority. Whole coherent
+complex SOURCE delta precedes current affected builds/GREEN/remaining public outcome,
+projection, fresh-hook and UI qualification. Earlier117-case route is not accepted;
+Original8case causal proof plus one new Chaos regression makes full selected union126cases/42methods, not a fresh aggregate.
+Private-consumer timeout is unexplained/open, not silently fixed. B remains pending.
+
+---
+
 # US6 actual public outcome blocker — client progression materialization
 
 Source46f2fff:61/61remaining Unit PASS,29.0321342s, exactcounts/cleanup/pins; with
