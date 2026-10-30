@@ -3475,9 +3475,13 @@ its full byte read-back is required. Replay reads never recharge or restore a wa
 Service payment preserves optional wallet.total absence and rejects insufficient
 funds before subtraction; simultaneous GM inkFeatherChanges are invalid, not pruned.
 
-This first executable route treats the player's own spiritual wound while already
-co-located with alive public Elyara in safe Chaos Sea. Universal travel, Shining
-execution and negotiated compensation remain open; a recommendation is not a button.
+The executable currency route treats the player's own spiritual wound with the exact
+current alive public Elyara in safe Chaos/Shining, or an exact accessible current
+Shining faction resident (shining_faction_service_v7). Resident source ownership adds
+the mandatory signed roster; original quote tier/check/payment remains fixed while
+composed profile admission matches the exact existing client progression projection.
+No service DATA grants authority. Universal travel and negotiated compensation remain
+open; displayed restricted terms are not an executable offer.
 
 The built-in `elyara` profile is normalized/validated to:
 

@@ -31,15 +31,15 @@ internal static partial class AfterlifeWoundHealingPlanner
                 // still closes every physical source, including the current hall.
                 var shining = _parsedSourceRoots.GetValueOrDefault(ShiningAbodeState.StatePath) as JsonObject;
                 var rosterPath = GuardianAbodeResidentState.StatePath;
-                var guardianPath = AfterlifeWoundTreatmentAuthority.ServiceLocalityPaths[0];
-                var guardians = _parsedSourceRoots.GetValueOrDefault(guardianPath) as JsonObject;
-                var residents = _parsedSourceRoots.GetValueOrDefault(rosterPath) as JsonObject;
+                var serviceGuardianPath = AfterlifeWoundTreatmentAuthority.ServiceLocalityPaths[0];
+                var serviceGuardians = _parsedSourceRoots.GetValueOrDefault(serviceGuardianPath) as JsonObject;
+                var serviceResidents = _parsedSourceRoots.GetValueOrDefault(rosterPath) as JsonObject;
                 var beforeAdmission = AfterlifeWoundTreatmentAuthority.RequireServiceAdmission(
-                    path == guardianPath ? beforeRoot : guardians, _data!.Carriers.AfterlifeProfiles!, _data.ServiceQuote!,
-                    shining, path == rosterPath ? beforeRoot : residents);
+                    path == serviceGuardianPath ? beforeRoot : serviceGuardians, _data!.Carriers.AfterlifeProfiles!, _data.ServiceQuote!,
+                    shining, path == rosterPath ? beforeRoot : serviceResidents);
                 var afterAdmission = AfterlifeWoundTreatmentAuthority.RequireServiceAdmission(
-                    path == guardianPath ? afterRoot : guardians, _data.Carriers.AfterlifeProfiles!, _data.ServiceQuote!,
-                    shining, path == rosterPath ? afterRoot : residents);
+                    path == serviceGuardianPath ? afterRoot : serviceGuardians, _data.Carriers.AfterlifeProfiles!, _data.ServiceQuote!,
+                    shining, path == rosterPath ? afterRoot : serviceResidents);
                 if (beforeAdmission.ProviderFingerprint != _data.ServiceProviderAdmissionFingerprint ||
                     afterAdmission.ProviderFingerprint != beforeAdmission.ProviderFingerprint ||
                     beforeAdmission.Scope.LocationId != afterAdmission.Scope.LocationId ||

@@ -13915,8 +13915,9 @@ funds or actual C4 failure accepts no fee. Whole-turn rollback restores wallet50
 wound/effects/History/cycle; retained repair keeps the SAME attempt/draw. Do not
 increase budgets or reroll. Replaying accepted result7 reads its exact old DATA,
 never recharges or restores an old wallet. Fresh seed never resurrects dead Elyara
-or restores her accepted Shining location. Remote/Shining/negotiated execution is
-not enabled by this current public currency route.
+or restores her accepted Shining location. Current co-located Shining currency
+execution follows shining_faction_service_v7; remote routes/negotiation are not
+enabled by this excerpt.
 
 wound_target_navigation_v1 — worked client navigation, not a GM response
 A current visible resident offers private free help using the preceding accepted
@@ -14238,3 +14239,48 @@ unknown location or dead Elyara has NO invented route/teleport or automatic revi
 shining_current_hall_v1: currentHallId is optional canonical locality DATA. When present it is one exact nonempty identifier matching exactly ONE halls[].hallId; no aliases or alternate key casing. Missing means unresolved locality. Preserve its presence and value from authenticated PRE-TURN state in every ordinary GM turn; progressionProcessingReport, treatment, political/trade closure and Source of Light do NOT grant hall movement or coordinate addition/removal. Never infer, select, trim or reset it. No new hall-travel route is introduced.
 
 end_elyara_current_location_v1
+
+
+shining_faction_service_v7 — worked current faction treatment
+
+Reference DATA only: an ALREADY complete visible alive ascended resident with exact
+current faction/hall membership, primary healing_support role and HealingIII has:
+```json
+{
+  "providerId": "resident_public_healer_0", "realm": "shining_abode",
+  "locationRef": "hall_elyara_companion", "visibility": "public", "availability": "available",
+  "minimumRelationship": null, "priceMultiplierPercent": 101,
+  "compensationKinds": ["ink_feathers"], "accessConditions": []
+}
+```
+The current leaderless faction remains without trade privilege. A role, profile
+fragment or readable declaration alone is no membership/access/accepted-turn proof.
+/лечить selects this healer for the known own woundII, shows ceil(50*101/100)=51,
+and asks SEPARATE confirmation including the fee for accepted failure. Read/cancel
+cost ZERO; stale role/membership/location/conditions/life/funds refuses freshly.
+Client retains original H3, quote51, actual d20 and one safe Shining cycle. Actual
+natural20 yields ReduceTwo and heals II: no weaker graph is requested. Alongside
+ordinary narrative/report and complete reasoning for all actual participants, GM
+may author this output/interface_updates.json fragment:
+```json
+{
+  "timestamp": "2026-10-30T00:00:00Z", "dialogueOptions": [], "spiritualHealingGraphs": [],
+  "spiritualResidentThoughtJournalUpdates": [{
+    "entryId": "faction_healer_turn_43", "residentId": "resident_public_healer_0", "turn": 43,
+    "timestamp": "2026-10-30T00:00:00Z", "title": "Подтверждённая попытка",
+    "summary": "Я принимаю отдельное подтверждение души на попытку за51 Перо и применяю своё ИсцелениеIII.",
+    "eventType": "conversation", "consequence": "Клиент рассчитывает исход, одну оплату и обычный цикл; нового долга нет."
+  }]
+}
+```
+The actual participant name/turn/ID must match the client's current request; these
+literal reference values grant no permission. Never directly change canonical roster,
+thoughtJournal, wound, wallet, roll, History or control. Client common C4 publishes
+wallet500→449,total900, healed wound/effects, exact append, result7 and ONE Shining
+cycle atomically. Natural1 accepted failure still charges51 once; reject/cancel/C4
+rollback charges0 and restores all roots and old memory. Accepted replay does not pay
+or heal again. Ordinary client progression H3→H4 in the same cycle must match its
+exact original/report projection; THIS attempt retains H3/price51/original draw.
+No GM inkFeatherChanges, replacement quote, foreign memory or private aid grant.
+Negotiated compensation is not implemented by this currency example.
+end_shining_faction_service_v7

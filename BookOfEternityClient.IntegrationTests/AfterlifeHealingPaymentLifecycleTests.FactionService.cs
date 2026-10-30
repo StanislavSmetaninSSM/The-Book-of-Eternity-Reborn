@@ -19,9 +19,10 @@ public sealed partial class AfterlifeHealingPaymentLifecycleTests
     /// <param name="hooks">Optional physical source/publication observation dependencies.</param>
     /// <param name="engine">Includes the existing ordinary Engine lore prerequisites.</param>
     /// <param name="providers">Independent exact public providers for real source-count controls.</param>
+    /// <param name="progression">An explicit independent enabled, disabled or unfunded healer strategy control.</param>
     /// <returns>An owned per-test fixture, never a publication or source authority substitute.</returns>
     internal static Task<HealingFixture> CreateFactionServiceFixtureAsync(int rank, int die,
-        FileSystemManagerHooks? hooks = null, bool engine = false, int providers = 1) =>
+        FileSystemManagerHooks? hooks = null, bool engine = false, int providers = 1, string? progression = null) =>
         CreateServiceFixtureAsync(rank, die, hooks, engine, realm: "Shining Abode",
             additionalBeforeResourceBootstrap: async (files, profiles) =>
             {
@@ -45,12 +46,33 @@ public sealed partial class AfterlifeHealingPaymentLifecycleTests
                     var resident = FactionMaterializationValidationTests.BuildRouteResident(id, factionId);
                     resident["displayName"] = index == 0 ? FactionHealerName : "Целитель " + (index + 1);
                     resident["residentRole"] = "healing_support";
+                    resident["isPresent"] = false;
+                    resident["residentKind"] = "attendant_spirit";
+                    resident["originType"] = "native_spirit";
+                    resident["summary"] = "Осознанный вознесённый целитель текущей фракции.";
+                    resident["mortalWorldImprint"] = new JsonObject
+                    {
+                        ["originWorldSummary"] = "Дух, вознёсшийся из Обители в текущую фракцию.",
+                        ["futureCompanionPrompt"] = "A conscious ascended faction healer"
+                    };
                     resident["guardianId"] = AfterlifeWoundTreatmentAuthority.ElyaraId;
                     resident["abodeId"] = AfterlifeWoundTreatmentAuthority.ElyaraAbodeId;
                     residents["entries"]!.AsArray().Add(resident);
                     var actor = inputs.Profiles["profiles"]![index]!.DeepClone().AsObject();
                     actor["displayName"] = resident["displayName"]!.DeepClone(); actor["locationId"] = "hall_elyara_companion";
                     actor["healingServiceProfile"]!["locationRef"] = "hall_elyara_companion";
+                    if (progression is not null)
+                    {
+                        actor["currencies"] = new JsonObject { ["inkFeathers"] = progression == "unfunded" ? 0 : 34, ["lightSparks"] = 0 };
+                        actor["progressionStrategy"] = new JsonObject
+                        {
+                            ["strategyId"] = "strategy_" + id, ["summary"] = "Развивать духовное целительство.",
+                            ["autoProgressionEnabled"] = progression != "disabled",
+                            ["priorityOrder"] = new JsonArray("spiritual_healing"),
+                            ["allowedSpends"] = new JsonArray("standardArts"), ["forbiddenSpends"] = new JsonArray(),
+                            ["resourceReserve"] = new JsonObject { ["inkFeathers"] = 0, ["lightSparks"] = 0 }
+                        };
+                    }
                     profiles["profiles"]!.AsArray().Add(actor);
                 }
                 GuardianAbodeResidentState.NormalizeShape(residents);
@@ -67,6 +89,18 @@ public sealed partial class AfterlifeHealingPaymentLifecycleTests
     [InlineData(1, "NoImprovement")] [InlineData(5, "RecoveryPoint")] [InlineData(20, "ReduceTwo")]
     public Task FactionServiceChargesActualFailurePartialAndSuccessOnceAndReplays(int die, string band) =>
         RunAcceptedServiceAsync(die, band, "Shining Abode", faction: true);
+
+    [Theory]
+    [InlineData("enabled", 4, 0, 1)]
+    [InlineData("disabled", 3, 34, 0)]
+    [InlineData("unfunded", 3, 6, 1)]
+    public async Task FactionTreatmentRetainsQuotedTierWhilePublishingOnlyActualClientProgression(
+        string strategy, int expectedTier, int expectedFeathers, int expectedSparks)
+    {
+        await RunAcceptedServiceAsync(1, "NoImprovement", "Shining Abode", faction: true,
+            progression: strategy, expectedProjectedTier: expectedTier);
+        output.WriteLine($"Exact client projection control {strategy}: H{expectedTier}, NPC feathers={expectedFeathers}, sparks={expectedSparks}; original paid H3 attempt remains unchanged.");
+    }
 
     [Theory]
     [InlineData("role")] [InlineData("membership")] [InlineData("availability")] [InlineData("funds")]
@@ -153,5 +187,66 @@ public sealed partial class AfterlifeHealingPaymentLifecycleTests
             fixture.AssertMutationRootsUnchanged(before);
             output.WriteLine(JsonSerializer.Serialize(new { providers = count, actualSourceOpens = reads }));
         }
+    }
+
+    [Theory]
+    [InlineData("enabled", 3)] [InlineData("enabled", 5)] [InlineData("unfunded", 4)]
+    public async Task OwnedFactionServiceRejectsInventedProjectedTierAndLocalityOrMemoryMutation(string strategy, int forgedTier)
+    {
+        await using var fixture = await CreateFactionServiceFixtureAsync(2, 1, progression: strategy);
+        var files = fixture.Files;
+        await StageAsync(fixture, 1, realm: "Shining Abode", faction: true);
+        await files.WriteFileAtomicAsync("output/interface_updates.json", new JsonObject
+        {
+            ["spiritualHealingGraphs"] = new JsonArray(),
+            [SpiritualTreatmentParticipation.ResidentThoughtResponseProperty] = new JsonArray(new JsonObject
+            {
+                ["entryId"] = "faction_owned_memory", ["residentId"] = FactionHealerId, ["turn"] = 43,
+                ["timestamp"] = "2026-10-30T00:00:00Z", ["title"] = "Попытка лечения", ["summary"] = "Я принимаю подтверждённую попытку."
+            })
+        }.ToJsonString());
+        await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+        await fixture.WriteReportAsync(lease);
+        Assert.DoesNotContain(await new ValidationService(files, NullLogger<ValidationService>.Instance)
+            .PrepareSpiritualSelfTreatmentPublicationAsync(lease), i => i.Severity == IssueSeverity.Error);
+        Assert.True(AcceptedMechanicsPlanAuthority.TryPeekValidated(files, lease, out _, out var ready));
+        var plan = ready.Plan!;
+        var owner = Assert.IsType<AfterlifeWoundHealingPlanner.Continuation>(plan.SpiritualHealingContinuation);
+        try
+        {
+            var profiles = plan.EffectCarrierAfterImages.GetValueOrDefault(WoundCarrierCatalog.AfterlifeProfilesPath)
+                ?? plan.WoundCarrierAfterImages[WoundCarrierCatalog.AfterlifeProfilesPath];
+            var soul = plan.OwnerCompanionAfterImages[AfterlifeWoundHealingPlanner.Continuation.ServiceSoulPath];
+            var history = plan.WoundHistoryAfterImage!;
+            owner.RequireServiceComposedImages(soul, profiles, history);
+            var forged = profiles.DeepClone().AsObject();
+            forged["profiles"]!.AsArray().OfType<JsonObject>().Single(p => p["actorId"]!.GetValue<string>() == FactionHealerId)
+                ["standardArts"]!["spiritual_healing"] = forgedTier;
+            Assert.Throws<InvalidDataException>(() => owner.RequireServiceComposedImages(soul, forged, history));
+            var path = GuardianAbodeResidentState.StatePath;
+            var roster = JsonNode.Parse((await files.ReadFileAsync(lease, path))!)!.AsObject();
+            var projected = owner.ProjectResidentThoughts(roster);
+            GuardianAbodeResidentState.ApplyThoughtJournalUpdates(projected,
+                projected[GuardianAbodeResidentState.UpdateThoughtJournalProperty]!.AsArray());
+            projected.Remove(GuardianAbodeResidentState.UpdateThoughtJournalProperty);
+            GuardianAbodeResidentState.NormalizeShape(projected);
+            foreach (var mutation in new[] { "role", "membership", "memory" })
+            {
+                var changed = projected.DeepClone().AsObject();
+                if (mutation == "memory") changed[GuardianAbodeResidentState.ThoughtJournalProperty]![0]!["summary"] = "Я подменяю исходную память.";
+                else changed["entries"]![0]![mutation == "role" ? "residentRole" : "shiningFactionId"] = mutation == "role" ? "archive_support" : "faction_foreign";
+                var writes = 0;
+                await Assert.ThrowsAsync<InvalidDataException>(() => owner.PublishOwnedLocalityNormalizationAsync(files, lease,
+                    path, changed.ToJsonString(), _ => { writes++; return Task.CompletedTask; }));
+                Assert.Equal(0, writes);
+            }
+            var content = projected.ToJsonString(); var publications = 0;
+            await owner.PublishOwnedLocalityNormalizationAsync(files, lease, path, content,
+                _ => { publications++; return files.WriteFileAtomicAsync(lease, path, content); });
+            Assert.Equal(1, publications); owner.RequireCurrent(files, lease);
+            Assert.Equal(500, JsonNode.Parse((await files.ReadFileAsync(lease, AfterlifeWoundHealingPlanner.Continuation.ServiceSoulPath))!)!["inkFeathers"]!["current"]!.GetValue<int>());
+            Assert.DoesNotContain((await fixture.ReadHistoryAsync()).Transitions, t => t.AttemptId is not null);
+        }
+        finally { owner.Close(); }
     }
 }

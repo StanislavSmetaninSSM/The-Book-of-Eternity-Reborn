@@ -263,6 +263,7 @@ internal static partial class AfterlifeWoundHealingPlanner
             if (_composedEffectInputFingerprint is not null && _composedEffectInputFingerprint != fingerprint)
                 throw new InvalidDataException("Spiritual effect DATA changed within its owning operation.");
             _composedEffectInputFingerprint = fingerprint;
+            BindProjectedServiceAdmission(projectedProfiles);
             return composed;
         }
 

@@ -10,6 +10,25 @@ internal static partial class AfterlifeWoundHealingPlanner
         internal bool HasServicePayment => _data?.ServiceQuote is not null;
         internal int? ServiceAmount => _data?.ServicePayment?.Amount;
         internal string? ServiceWoundId => _data?.ServiceQuote?.WoundId;
+        private string? _expectedServiceAfterImageAdmissionFingerprint;
+
+        /// <summary>Binds existing client projector DATA to this live continuation before comparing any proposed image.</summary>
+        /// <param name="projectedProfiles">The existing projection from signed originals and this owner's retained accepted report.</param>
+        private void BindProjectedServiceAdmission(JsonObject projectedProfiles)
+        {
+            if (!HasServicePayment) return;
+            RequireExecutionCurrent();
+            var quote = _data!.ServiceQuote!;
+            var admission = AfterlifeWoundTreatmentAuthority.ReadCurrentServiceAdmission(
+                _parsedSourceRoots.GetValueOrDefault(AfterlifeWoundTreatmentAuthority.ServiceLocalityPaths[0]) as JsonObject,
+                projectedProfiles, quote.Provider, quote.LocationRef,
+                _parsedSourceRoots.GetValueOrDefault(ShiningAbodeState.StatePath) as JsonObject,
+                _parsedSourceRoots.GetValueOrDefault(GuardianAbodeResidentState.StatePath) as JsonObject);
+            if (_expectedServiceAfterImageAdmissionFingerprint is not null &&
+                _expectedServiceAfterImageAdmissionFingerprint != admission.ProviderFingerprint)
+                throw new InvalidDataException("The owned client-projected service admission changed within its operation.");
+            _expectedServiceAfterImageAdmissionFingerprint = admission.ProviderFingerprint;
+        }
 
         // Compose before the existing common seal. A projected Soul may contain
         // other accepted domains, but its wallet must still be the exact original.
@@ -41,11 +60,13 @@ internal static partial class AfterlifeWoundHealingPlanner
             var payment = data.ServicePayment ?? throw new InvalidDataException("Service payment DATA is absent.");
             if (_published || WoundAcceptedTurnFingerprintWriter.CanonicalJson(soul["inkFeathers"]) != payment.WalletAfterJson)
                 throw new InvalidDataException("Common Soul after-image does not contain the exact service charge.");
-            var admission = AfterlifeWoundTreatmentAuthority.RequireServiceAdmission(
+            if (_expectedServiceAfterImageAdmissionFingerprint is null)
+                throw new InvalidDataException("Service after-image has no owned client projection.");
+            var admission = AfterlifeWoundTreatmentAuthority.ReadCurrentServiceAdmission(
                 _parsedSourceRoots.GetValueOrDefault(AfterlifeWoundTreatmentAuthority.ServiceLocalityPaths[0]) as JsonObject,
-                profiles, quote, shining ?? _parsedSourceRoots.GetValueOrDefault(ShiningAbodeState.StatePath) as JsonObject,
+                profiles, quote.Provider, quote.LocationRef, shining ?? _parsedSourceRoots.GetValueOrDefault(ShiningAbodeState.StatePath) as JsonObject,
                 residents ?? _parsedSourceRoots.GetValueOrDefault(GuardianAbodeResidentState.StatePath) as JsonObject);
-            if (admission.ProviderFingerprint != data.ServiceProviderAdmissionFingerprint)
+            if (admission.ProviderFingerprint != _expectedServiceAfterImageAdmissionFingerprint)
                 throw new InvalidDataException("Accepted membership, locality or profile changes invalidate the exact service provider.");
             var rows = history["transitions"] as JsonArray ?? throw new InvalidDataException("Service History is absent.");
             var index = rows.Count - _stages.Count;

@@ -3,16 +3,107 @@
   "selections": [
     {
       "category": "shining-faction-service-causal",
-      "reason": "First causal boundary for the next executable faction-service slice: a current exact Shining resident quote is missing even after the real pure profile/check accepts it. Whole impact selection follows implementation/source review.",
+      "reason": "Previously observed exact missing quote must become GREEN.",
       "contracts": [
-        "#1536 US6 T132/T136/T137/T138/T143; FR077–080/084/085"
+        "#1536 US6 T132/T133/T136/T137/T138/T143–147; FR077–085"
       ]
     },
     {
       "category": "shining-faction-service-access-data",
-      "reason": "Current independent typed access/role/profile/dependency controls for implemented faction-service DATA; full finite consumer selection is still WIP until the whole A implementation/docs/test block is complete.",
+      "reason": "Exact current membership/profile/access/lifecycle/tuple and original dependency controls.",
       "contracts": [
-        "#1536 US6 T132/T136/T137/T138/T143; FR077–085"
+        "#1536 US6 T132/T133/T136/T137/T138/T143–147; FR077–085"
+      ]
+    },
+    {
+      "category": "healing-service-contract-data",
+      "reason": "Changed shared quote owner/serialization/current actor contracts preserve old supported quote/refusal behavior.",
+      "contracts": [
+        "#1536 US6 T132/T133/T136/T137/T138/T143–147; FR077–085"
+      ]
+    },
+    {
+      "category": "shining-healer-capability-data",
+      "reason": "Factored roster projector/DescribeAccess retain exact typed role/profile/visibility behavior.",
+      "contracts": [
+        "#1536 US6 T132/T133/T136/T137/T138/T143–147; FR077–085"
+      ]
+    },
+    {
+      "category": "shining-faction-service-documentation",
+      "reason": "Changed actual GM faction service path and unchanged restricted display, worked production parser/append.",
+      "contracts": [
+        "#1536 US6 T132/T133/T136/T137/T138/T143–147; FR077–085"
+      ]
+    },
+    {
+      "category": "healing-service-documentation",
+      "reason": "Shared service7/daemon/registry and existing worked Elyara semantics remain valid.",
+      "contracts": [
+        "#1536 US6 T132/T133/T136/T137/T138/T143–147; FR077–085"
+      ]
+    },
+    {
+      "category": "shining-faction-service-fresh-source",
+      "reason": "Real source-open invariance plus fresh confirm/stage roster refusals before entropy.",
+      "contracts": [
+        "#1536 US6 T132/T133/T136/T137/T138/T143–147; FR077–085"
+      ]
+    },
+    {
+      "category": "shining-faction-service-projection",
+      "reason": "Same-cycle exact client-projected admission versus original quoted check; owned normalizer/memory negatives.",
+      "contracts": [
+        "#1536 US6 T132/T133/T136/T137/T138/T143–147; FR077–085"
+      ]
+    },
+    {
+      "category": "shining-faction-service-outcomes",
+      "reason": "Actual failed/partial/success one-charge retained result7 and inert replay.",
+      "contracts": [
+        "#1536 US6 T132/T133/T136/T137/T138/T143–147; FR077–085"
+      ]
+    },
+    {
+      "category": "elyara-current-location-shining-results",
+      "reason": "Changed shared composition/normalizer/persisted quote must retain existing Elyara Shining source family and outcome/replay.",
+      "contracts": [
+        "#1536 US6 T132/T133/T136/T137/T138/T143–147; FR077–085"
+      ]
+    },
+    {
+      "category": "shining-faction-service-console",
+      "reason": "Changed console helper: actual faction selection/cancel/separate confirm -> paid turn/memory.",
+      "contracts": [
+        "#1536 US6 T132/T133/T136/T137/T138/T143–147; FR077–085"
+      ]
+    },
+    {
+      "category": "shining-faction-service-browser",
+      "reason": "Changed shared browser helper: same exact quote/confirm/queue -> paid turn/memory.",
+      "contracts": [
+        "#1536 US6 T132/T133/T136/T137/T138/T143–147; FR077–085"
+      ]
+    },
+    {
+      "category": "shining-faction-service-rollback",
+      "reason": "Physical wallet cut exercises actual full Engine compensation and restores all wound/world/journal roots.",
+      "contracts": [
+        "#1536 US6 T132/T133/T136/T137/T138/T143–147; FR077–085"
+      ]
+    },
+    {
+      "category": "healing-service-payment-results",
+      "reason": "Changed common service composition and generalized fixture preserve actual Chaos Elyara retained payment/outcome/replay, not only Shining.",
+      "contracts": [
+        "#1536 US6 existing service7 same owned composition"
+      ]
+    },
+    {
+      "category": "spiritual-resident-aid-backend",
+      "reason": "Changed existing resident-memory owner and signed-original validation retain accepted private resident aid/revocation and ordinary-owner protected-memory refusal.",
+      "contracts": [
+        "#1536 US4/US6 existing resident4/6 memory boundary"
       ]
     }
   ]

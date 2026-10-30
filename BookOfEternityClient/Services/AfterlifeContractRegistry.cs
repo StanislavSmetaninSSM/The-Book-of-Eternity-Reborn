@@ -34,7 +34,7 @@ public static class AfterlifeContractRegistry
 {
     private static readonly AfterlifeContractSurface[] Surfaces =
     {
-        new(AcceptedMechanicsPlan.WoundCommandPath, "spiritual_self_treatment_request_v2", "Chaos Sea|Shining Abode", "private client-owned retained self-v2, explicit Guardian-aid-v3..v6 or safe co-located Chaos/Shining Elyara public service-v7 quote/payment/control/draw request; no GM writes", true, true),
+        new(AcceptedMechanicsPlan.WoundCommandPath, "spiritual_self_treatment_request_v2", "Chaos Sea|Shining Abode", "private client-owned retained self-v2, explicit Guardian-aid-v3..v6 or safe co-located Chaos/Shining Elyara or exact public Shining faction resident service-v7 quote/payment/control/draw request; no GM writes", true, true),
         new(SpiritualWoundCaptureCheckpointState.StatePath, "spiritual_wound_capture_checkpoint", "Chaos Sea|Shining Abode", "private client-owned original capture checkpoint; no GM writes", true, true),
         new(SpiritualWoundDecisionPendingState.StatePath, "spiritual_wound_decisions", "Chaos Sea|Shining Abode", "private client-owned unfinished decision evidence; no GM writes", true, true),
         new(SpiritualWoundOpportunityReceiptState.StatePath, "spiritual_wound_receipts", "Chaos Sea|Shining Abode", "private client-owned accepted decision history; no GM writes", true, true),

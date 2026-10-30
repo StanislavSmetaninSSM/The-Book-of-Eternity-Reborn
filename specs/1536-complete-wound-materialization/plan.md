@@ -1,3 +1,38 @@
+# US6 public faction A whole SOURCE candidate — WIP, UNCOMPILED
+
+2026-10-30: execution, complete independent fixtures, owned composed-tier/normalizer/
+memory controls, common console/browser/C4 journeys and GM guidance/example/manifest
+are now written. Negotiated B remains separate unimplemented work. Exact finite
+selection in tests/selection.json covers quote/access/source/count/projection/payment,
+changed original Elyara/previous resident-memory consumers and actual UI/rollback.
+No new GREEN or whole-US6 qualification is claimed; actual causal RED106927 remains.
+
+Source projection correction: the current continuation retains only the exact
+admission fingerprint derived from the already-computed existing profile projection
+from private signed originals + retained accepted report. Full identity includes the
+quoted provider/location, original roots and report under the same owner/control;
+lifetime is that actual continuation, unusable after Close. Changing original images
+or authority invalidates through the existing fresh closing guards; changed expected
+DATA refuses, rather than recaching. The attempt's original quote/H/check/price/draw
+remain fixed. Proposed composed provider must match exact projected admission; original
+normalizer admission still uses original profiles and requires the unchanged tuple.
+No new cache or authority flag, repeated projector invocation or extra source read.
+Selected profile validation at assembly/final physical boundary remains fresh because
+these are different proposed images, not stable DATA. Real 1/20 source counters are
+written, not yet run; no speedup claim.
+
+Sol/xhigh bounded whole fixture audit found four finite preparation corrections:
+required resident kind/origin/nonempty imprint, direct-stage action label, accurate
+Elyara witness reasoning, and exact NPC progression cycle/income/spending evidence.
+All are applied before builds/runtime; existing full helpers and sole pre-bootstrap
+initialization retained. Whole independent complex SOURCE review is next, followed by
+fresh owning Main/Support/Unit/Integration builds, artifact/PDB/catalog/exact PlanOnly,
+resource/PREP, cheap gates then the three actual faction Engine journeys. Budgets stay
+unchanged; no dependent runtime before admission. Full raw remains at
+/workspace/tboe-linux-evidence-20261025/us6-faction-service-agreement.
+
+---
+
 # US6 faction service current fixture boundary — WIP, UNCOMPILED
 
 2026-10-30: remote bf960d33b4bcc443bfcf66edff62aea23124d134 and the six local

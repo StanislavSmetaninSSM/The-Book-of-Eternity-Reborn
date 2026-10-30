@@ -2138,11 +2138,12 @@ Show Feather tariffs only if ink_feathers is explicitly included; use existing b
 only show tariff rows within the healer's current tier, up to IV. Favor/debt/quest/
 allegiance/free_aid-only declarations create no implied Feather price or free treatment.
 Reading, back or closing creates no draw, attempt, payment, world cycle, repair or write.
-Shining command treatment/negotiated execution is not connected by this display; there
-is no active treatment button. Never author a quote, payment receipt or private command
-from these views, and never manufacture life, tier, location or public access. See the
-focused worked access example in Examples/E_CLI_Afterlife_Turns.txt. The historical
-broken/dissolved-faction living-healer decision remains open; this view changes no invariant.
+This read-only view has no active treatment button and grants no quote or payment.
+An explicit unrestricted public currency provider may point to the shared /лечить
+route, where fresh checks and separate confirmation still apply (shining_faction_service_v7).
+Restricted/negotiated declarations remain unavailable for execution. Never manufacture
+life, tier, location or access from a view. Historical broken/dissolved factions are
+exempt only from the living-healer invariant; retain their historical records.
 
 
 elyara_current_location_v1: /элиара (/elyara), or «Пойти к Элиаре за лечением»,
@@ -2169,3 +2170,35 @@ elyara_current_location_v1 worked example; faction-healer display itself grants 
 
 
 shining_current_hall_v1: currentHallId is optional canonical locality DATA. When present it is one exact nonempty identifier matching exactly ONE halls[].hallId; no aliases or alternate key casing. Missing means unresolved locality. Preserve its presence and value from authenticated PRE-TURN state in every ordinary GM turn; progressionProcessingReport, treatment, political/trade closure and Source of Light do NOT grant hall movement or coordinate addition/removal. Never infer, select, trim or reset it. No new hall-travel route is introduced.
+
+
+shining_faction_service_v7: shared /лечить also executes an explicitly public currency
+service from an exact living, visible ascended resident with residentRole=healing_support,
+current case-sensitive faction membership and current canonical hall. Active, weakened
+and leaderless factions may offer it; broken/dissolved historical factions cannot.
+The role alone creates no clinic. Require a complete actor, H>=W, available public
+healingServiceProfile, ink_feathers, no unresolved accessConditions/minimumRelationship,
+current locality and sufficient actual funds. A restricted declaration stays readable
+without an executable offer. Reading/cancel has no draw, fee, attempt or world cycle.
+
+Use the existing family7 quote/payment/retained draw and separate confirmation, common
+C4/Soul/wound/effects/History/scheduler and strict result7 replay. There is no new GM
+payment/control root. The resident route additionally requires the actual signed
+resident roster; an Elyara registry is not evidence of faction membership. Compare the
+exact provider/faction/hall/role/ascension/visibility/life/service tuple before mutation,
+normalization and publication. Fresh physical integrity and authority checks remain.
+One accepted failure/partial/success charges the sealed price once; rollback restores
+wallet, wound/effects, History, world and participant memory. No new trade privilege.
+
+The healer uses the ORIGINAL quoted tier/check/price throughout the attempt. Ordinary
+client_auto_strategy may upgrade that healer in the same cycle; final provider DATA
+must equal the existing client's exact projection from signed original profiles and
+accepted report, never an arbitrary higher tier, new roll or replacement quote. GM
+must not author progression income/spending or silently change service conditions.
+Author requested weaker graphs, ordinary report and actual participant reasoning;
+output-only spiritualResidentThoughtJournalUpdates carries that exact resident's
+first-person current-turn memory. Never write its canonical roster/journal directly,
+append a foreign actor, replace prior memory or manufacture a private grant. The
+client rechecks the complete append through the same signed original and result7.
+See the worked shining_faction_service_v7 fragment. Negotiated compensation remains
+separate unfinished work; displaying favor/debt/quest/allegiance/free_aid is no grant.

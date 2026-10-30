@@ -129,26 +129,43 @@ internal static partial class AfterlifeWoundTreatmentAuthority
     internal static ServiceAdmission RequireServiceAdmission(JsonObject? guardians, JsonObject profiles,
         AfterlifeHealingServiceQuote quote, JsonObject? shining = null, JsonObject? residents = null)
     {
-        var realm = quote.Provider.Realm;
-        if (quote.Provider is { Realm: "shining_abode", OwnerKind: "resident" })
+        var admission = ReadCurrentServiceAdmission(guardians, profiles, quote.Provider, quote.LocationRef, shining, residents);
+        if (admission.Profile.Fingerprint != quote.ServiceFingerprint)
+            throw new InvalidDataException("The current service differs from its sealed original quote.");
+        return admission;
+    }
+
+    /// <summary>Reads exact provider DATA from caller-owned roots, including the client-projected after-cycle profile.</summary>
+    /// <param name="guardians">Elyara's mandatory registry when that provider is selected.</param>
+    /// <param name="profiles">The complete current or privately projected actor carrier.</param>
+    /// <param name="provider">The original immutable selected provider coordinate.</param>
+    /// <param name="locationRef">The original immutable selected location.</param>
+    /// <param name="shining">The current or owned original Shining locality.</param>
+    /// <param name="residents">The current or owned original faction roster.</param>
+    /// <returns>Detached admission DATA; the caller must compare it to its own expected image and keep fresh fences.</returns>
+    internal static ServiceAdmission ReadCurrentServiceAdmission(JsonObject? guardians, JsonObject profiles,
+        WoundOwnerCoordinate provider, string locationRef, JsonObject? shining = null, JsonObject? residents = null)
+    {
+        var realm = provider.Realm;
+        if (provider is { Realm: "shining_abode", OwnerKind: "resident" })
         {
             if (shining is null || residents is null)
                 throw new InvalidDataException("Faction service requires its actual current state and resident roster.");
-            var service = ShiningFactionHealingSupport.ProjectCurrentCurrencyServices(shining, residents, profiles, quote.Provider).SingleOrDefault()
+            var service = ShiningFactionHealingSupport.ProjectCurrentCurrencyServices(shining, residents, profiles, provider).SingleOrDefault()
                 ?? throw new InvalidDataException("The exact current faction healer no longer offers this local public service.");
-            if (service.Profile.Fingerprint != quote.ServiceFingerprint || service.HallId != quote.LocationRef)
-                throw new InvalidDataException("The current faction service differs from its sealed quote.");
+            if (service.HallId != locationRef)
+                throw new InvalidDataException("The current faction service differs from its selected location.");
             return new(service.Scope, service.Profile, service.AdmissionFingerprint);
         }
         if (realm is not ("chaos_sea" or "shining_abode") || guardians is null ||
-            quote.Provider != new WoundOwnerCoordinate(realm, "guardian", ElyaraId, WoundCarrierCatalog.AfterlifeProfilesPath))
+            provider != new WoundOwnerCoordinate(realm, "guardian", ElyaraId, WoundCarrierCatalog.AfterlifeProfilesPath))
             throw new InvalidDataException("Unsupported public service provider or missing current locality.");
         var elyaraScope = ElyaraVisitService.RequirePlayerScope(realm, guardians, shining);
         var actor = ElyaraVisitService.RequireCanonicalActor(profiles);
-        if (!WoundCarrierCollectionAuthority.AfterlifeProfileMatches(actor, quote.Provider) ||
-            AfterlifeHealingServiceContract.ReadPublicCurrencyProfile(quote.Provider, actor) is not { } current ||
+        if (!WoundCarrierCollectionAuthority.AfterlifeProfileMatches(actor, provider) ||
+            AfterlifeHealingServiceContract.ReadPublicCurrencyProfile(provider, actor) is not { } current ||
             realm == "shining_abode" && !LocalInteractionScopeService.IsAfterlifeActorLocal(elyaraScope, actor) ||
-            current.Fingerprint != quote.ServiceFingerprint || current.LocationRef != elyaraScope.LocationId || quote.LocationRef != elyaraScope.LocationId)
+            current.LocationRef != elyaraScope.LocationId || locationRef != elyaraScope.LocationId)
             throw new InvalidDataException("Elyara is no longer alive, visible, available and co-located at the quoted public terms.");
         return new(elyaraScope, current, current.Fingerprint);
     }

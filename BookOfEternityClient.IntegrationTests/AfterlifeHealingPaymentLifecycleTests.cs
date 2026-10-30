@@ -133,10 +133,11 @@ public sealed partial class AfterlifeHealingPaymentLifecycleTests(ITestOutputHel
     public Task AcceptedSuccessPartialAndFailedAttemptChargeOnceAndReplayWithoutWrites(int die, string band) =>
         RunAcceptedServiceAsync(die, band, "Chaos Sea");
 
-    private async Task RunAcceptedServiceAsync(int die, string band, string realm, bool faction = false)
+    private async Task RunAcceptedServiceAsync(int die, string band, string realm, bool faction = false,
+        string? progression = null, int? expectedProjectedTier = null)
     {
         var rank = faction ? 2 : 3; var tier = faction ? 3 : 5; var price = faction ? 51 : 100;
-        await using var fixture = faction ? await CreateFactionServiceFixtureAsync(rank, die)
+        await using var fixture = faction ? await CreateFactionServiceFixtureAsync(rank, die, progression: progression)
             : await CreateServiceFixtureAsync(rank, die, realm: realm);
         var original = Assert.Single((await fixture.ReadWoundsAsync()).Occurrences).Wound;
         var (stage, request) = await StageAsync(fixture, die, proveRetry: true, realm: realm, faction: faction);
@@ -155,6 +156,30 @@ public sealed partial class AfterlifeHealingPaymentLifecycleTests(ITestOutputHel
         var paid = Assert.IsType<SpiritualHealingPersistedResult>(Assert.Single(history.Transitions, t => t.AttemptId is not null).TransitionResult);
         Assert.Equal("service", paid.Mode); Assert.Equal(7, paid.SchemaVersion);
         Assert.True(JsonNode.DeepEquals(request, paid.ToCanonicalJson()["request"]));
+        if (expectedProjectedTier is { } projectedTier)
+        {
+            var profiles = JsonNode.Parse((await fixture.Files.ReadFileAsync(WoundCarrierCatalog.AfterlifeProfilesPath))!)!;
+            var healer = profiles["profiles"]!.AsArray().OfType<JsonObject>().Single(p => p["actorId"]!.GetValue<string>() == FactionHealerId);
+            Assert.Equal(projectedTier, healer["standardArts"]!["spiritual_healing"]!.GetValue<int>());
+            Assert.Equal(progression == "disabled" ? 34 : progression == "enabled" ? 0 : 6, healer["currencies"]!["inkFeathers"]!.GetValue<int>());
+            Assert.Equal(progression == "disabled" ? 0 : 1, healer["currencies"]!["lightSparks"]!.GetValue<int>());
+            var entries = healer["progressionLedger"]!.AsArray().OfType<JsonObject>().ToArray();
+            Assert.Equal(progression == "disabled" ? 0 : 1, entries.Length);
+            if (entries.Length == 1)
+            {
+                Assert.Equal("client_auto_strategy", entries[0]["source"]!.GetValue<string>());
+                Assert.Equal("shining:1", entries[0]["cycleKey"]!.GetValue<string>());
+                Assert.Equal(6, entries[0]["income"]!["inkFeathers"]!.GetValue<int>());
+                Assert.Equal(1, entries[0]["income"]!["lightSparks"]!.GetValue<int>());
+                Assert.Equal(progression == "enabled" ? 40 : 0, entries[0]["spending"]!["inkFeathers"]!.GetValue<int>());
+                Assert.Equal(0, entries[0]["spending"]!["lightSparks"]!.GetValue<int>());
+                Assert.Equal("shining:1", healer["progressionStrategy"]!["lastAutoProgressionCycleKey"]!.GetValue<string>());
+                Assert.Equal(progression == "enabled" ? new[] { "spiritual_healing:3->4" } : Array.Empty<string>(),
+                    entries[0]["upgrades"]!.AsArray().Select(n => n!.GetValue<string>()));
+            }
+            Assert.Equal(3, paid.ServiceQuote!.HealingTier);
+            Assert.Equal(51, paid.ServiceQuote.Amount);
+        }
         var calculation = SpiritualHealingOutcomeMath.Calculate(new(tier, rank, die, 0, 0))!;
         Assert.Equal(band, calculation.ResultBand.ToString());
         var expected = SpiritualWoundRecoveryPlanner.Build(original, 0, request["attempt"]!["attemptId"]!.GetValue<string>(),
@@ -324,7 +349,7 @@ public sealed partial class AfterlifeHealingPaymentLifecycleTests(ITestOutputHel
         await new LiveTurnPreparationService(files).PrepareAsync(new LiveTurnPreparationOptions
         {
             SessionId = "session_spiritual_healing", RequestId = "request_spiritual_healing", TurnNumber = 43,
-            CurrentRealm = realm, PlayerAction = WoundApplicationService.ServiceActionText,
+            CurrentRealm = realm, PlayerAction = WoundApplicationService.ActionFor(selected),
             ProgressionControl = stage.Control, PreGeneratedDices1d20 = [7, 11, 16]
         });
         return (stage, request);

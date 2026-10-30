@@ -37216,6 +37216,178 @@
           ]
         }
       ]
+    },
+    {
+      "id": "shining-faction-service-fresh-source",
+      "responsibility": "Real current-source menu read-count invariance for1/20providers, fresh confirmation refusals and post-control roster drift before any draw/payment. Complete independent pre-bootstrap faction fixtures.",
+      "excludes": "No negotiated agreement B, DOM/live provider/fresh-process or whole US6 qualification. No HOLD DFR/Mortal/Windows/performance; no repeated unrelated accepted suite.",
+      "changeHints": [
+        "#1536 US6 T132/T133/T136/T137/T138/T143–147 public faction treatment"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.AfterlifeHealingPaymentLifecycleTests.FactionConfirmationRejectsCurrentLossWithoutRequestPaymentOrWorldCycle",
+            "BookOfEternityClient.Tests.AfterlifeHealingPaymentLifecycleTests.FactionStageRechecksActualRosterAfterControlBeforeAnyDraw",
+            "BookOfEternityClient.Tests.AfterlifeHealingPaymentLifecycleTests.FactionMenuOpensTheSameSourcesForOneOrTwentyActualProviders"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "shining-faction-service-outcomes",
+      "responsibility": "Real existing stage/signed original/common C4/History, failure/partial/success charge once, exact accepted replay without charge and retained source images.",
+      "excludes": "No negotiated agreement B, DOM/live provider/fresh-process or whole US6 qualification. No HOLD DFR/Mortal/Windows/performance; no repeated unrelated accepted suite.",
+      "changeHints": [
+        "#1536 US6 T132/T133/T136/T137/T138/T143–147 public faction treatment"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.AfterlifeHealingPaymentLifecycleTests.FactionServiceChargesActualFailurePartialAndSuccessOnceAndReplays"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "shining-faction-service-projection",
+      "responsibility": "Same-cycle originalH3 quote/check/payment versus exact client auto-projected H4 or unchangedH3; invented tier and owned roster/memory mutation refusal with real continuation/normalizer byte readback.",
+      "excludes": "No negotiated agreement B, DOM/live provider/fresh-process or whole US6 qualification. No HOLD DFR/Mortal/Windows/performance; no repeated unrelated accepted suite.",
+      "changeHints": [
+        "#1536 US6 T132/T133/T136/T137/T138/T143–147 public faction treatment"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.AfterlifeHealingPaymentLifecycleTests.FactionTreatmentRetainsQuotedTierWhilePublishingOnlyActualClientProgression",
+            "BookOfEternityClient.Tests.AfterlifeHealingPaymentLifecycleTests.OwnedFactionServiceRejectsInventedProjectedTierAndLocalityOrMemoryMutation"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "shining-faction-service-console",
+      "responsibility": "Actual console read/cancel/confirm to existing Engine with one exact fee/wound/History/cycle and protected resident memory.",
+      "excludes": "No negotiated agreement B, DOM/live provider/fresh-process or whole US6 qualification. No HOLD DFR/Mortal/Windows/performance; no repeated unrelated accepted suite.",
+      "changeHints": [
+        "#1536 US6 T132/T133/T136/T137/T138/T143–147 public faction treatment"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.ConsoleFactionServiceConfirmsPriceAndPublishesTreatmentAndResidentMemory"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "shining-faction-service-browser",
+      "responsibility": "Actual shared browser selection/separate confirmation/queue to Engine with paid outcome and protected resident memory.",
+      "excludes": "No negotiated agreement B, DOM/live provider/fresh-process or whole US6 qualification. No HOLD DFR/Mortal/Windows/performance; no repeated unrelated accepted suite.",
+      "changeHints": [
+        "#1536 US6 T132/T133/T136/T137/T138/T143–147 public faction treatment"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.BrowserFactionServiceConfirmsPriceAndPublishesTreatmentAndResidentMemory"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "shining-faction-service-rollback",
+      "responsibility": "Actual console wallet-publication cut and complete Engine rollback of wallet/wound/effects/History/world/roster memory.",
+      "excludes": "No negotiated agreement B, DOM/live provider/fresh-process or whole US6 qualification. No HOLD DFR/Mortal/Windows/performance; no repeated unrelated accepted suite.",
+      "changeHints": [
+        "#1536 US6 T132/T133/T136/T137/T138/T143–147 public faction treatment"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.FactionServicePublicationFailureRestoresWalletWoundWorldAndResidentMemory"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "shining-faction-service-documentation",
+      "responsibility": "Effective faction-service GM guides/both daemon directives/private registry, production-parsed worked service/GameResponse/protected append; old restricted access remains read-only.",
+      "excludes": "No standalone example authority, runtime, negotiated B or unrelated accepted suites/HOLD gates.",
+      "changeHints": [
+        "#1536 US6 T144–T147 exact public faction service"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.ShiningFactionServiceDocumentationTests.*",
+            "BookOfEternityClient.Tests.ShiningHealingAccessDocumentationTests.*"
+          ]
+        }
+      ]
     }
   ]
 }

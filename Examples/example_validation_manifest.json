@@ -855,6 +855,29 @@
       "focusedFragmentReason": "This is intentionally invalid input retained as a negative teaching example, not a production-valid response.",
       "coverageLimit": "Syntax and explicit rejection rationale; exact diagnostic codes are covered by effect planner/validation tests.",
       "requiredText": ["effect_legacy_rejection_v1", "INVALID", "no runtime migration"]
+    },
+    {
+      "contractId": "shining_faction_service_v7",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "statePath": "exact signed faction roster + service7 -> common wallet/wound/History/cycle and protected resident memory",
+      "responseSurface": "requested spiritualHealingGraphs, ordinary report/reasoning and output-only spiritualResidentThoughtJournalUpdates",
+      "realms": [
+        "Shining Abode"
+      ],
+      "description": "Confirmed explicitly public current faction resident currency treatment; original quote versus exact client same-cycle progression, once-only payment/full rollback.",
+      "validationKind": "focused-fragment",
+      "focusedFragmentReason": "ShiningFactionServiceDocumentationTests parses the actual service profile and GameResponse, validates exact resident append and real outcome math; actual Engine fixtures own publication authority.",
+      "coverageLimit": "Reference fragments are not full actor/faction or standalone authority; no negotiated/remote/DOM/live provider/fresh-process qualification.",
+      "requiredText": [
+        "shining_faction_service_v7",
+        "wallet500→449",
+        "SEPARATE confirmation",
+        "H3→H4",
+        "spiritualResidentThoughtJournalUpdates",
+        "leaderless",
+        "rollback charges0",
+        "THIS attempt retains H3/price51/original draw"
+      ]
     }
   ],
   "mortalItemMaterializationCoverage": [
