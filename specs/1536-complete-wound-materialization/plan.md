@@ -1,3 +1,41 @@
+# T121 EX5GREEN native partial — canonical fault-fixture correction, UNCOMPILED/UNRUN
+
+The actual native attempt at plan-only `62e31c4ad` / compiled `239884347` exited 1
+without timeout: four executed, three PASS, one FAIL. Both self realms passed
+(31.2932657s/120s) and the radiant target passed (30.1440729s/120s). Resident failed
+before publication at the supposed no-op-normalizer assertion (9.9116056s/120s);
+terminal one remains UNRUN and all three UI cases are held. The external
+`EX5GREEN-native-actual/verified-partial-failure.json`, full TRX and original raw
+remain preserved. Closing fence 22:54:04 UTC confirmed no owners, stable pins,
+complete cleanup and about 4.344GB free. No production defect is established here.
+
+The resident fixture retains the base leaderless faction; radiant explicitly uses
+active. Changing only leaderless -> weakened removes the existing 15-point strength
+penalty, so the real normalizer correctly changes factionStrength. The old test
+counterfactual was incomplete. Its shared test-only constructor now normalizes a
+detached state-drift copy using the actual roster and independently permits only
+the requested lifecycle plus that exact derived strength delta. The native keeps
+its second-clone no-op equality, real AdmitDiagnosis refusal, canonical byte inertness
+and exact original signed-byte restore. No actor/head or legitimate baseline changes.
+
+A new file-free Integration category has two rows / one method / one descriptor
+at 60s. Existing complete faction/affiliation builders and the SAME fault constructor
+prove independent strengths 21 -> 36 and 33 -> 33, unchanged input, second-normalizer
+no-op and exact equivalence to the old active/radiant fault image. Production and
+all old guards are unchanged. Full CI membership is source-estimated 151 cases /
+65 methods / 26 descriptors; official discovery remains the count authority.
+
+Next is bounded SOURCE, fresh Integration only and cheap two-case GREEN, then the
+affected resident and previously UNRUN terminal cases before serial UI under their
+original bounds. Self native two can retain by independent unchanged dependencies;
+radiant one retention depends on SOURCE/cheap exact-image equivalence, otherwise
+only that one consumer is repeated. No blanket cheap136/legacy native five replay.
+These test edits are UNCOMPILED/UNRUN; the writer ran no build/test. No new GM contract
+or update is needed for this test-only correction. One operation reuses its actual
+roster, with no cache/new IO framework/speedup claim. Accepted lineages, broader
+Mortal/adapter work and existing holds stay unchanged; raw failures and archives
+remain preserved outside Git.
+
 # T121 EX5GREEN cheap block accepted — remaining eight cases pending
 
 Independent Astra OUTCOME and the primary's strict union accept 136 distinct cheap

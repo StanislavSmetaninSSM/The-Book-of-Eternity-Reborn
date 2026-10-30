@@ -2,6 +2,16 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "spiritual-diagnosis-lifecycle-fixture-data",
+  "responsibility": "T121 file-free typed fixture proof for a canonical lifecycle-drift fault: existing leaderless strength 21 becomes 36 when its 15-point penalty is removed; active strength 33 stays 33. The shared native fault constructor may change only requested lifecycle and independently expected derived strength, preserves inputs, and a second real Shining normalizer is an exact no-op. Active/radiant output is identical to the previously accepted state-only fault image.",
+  "excludes": "No production change, accepted world/authority, files, Engine, new actor/head, runtime policy or gameplay outcome. The actual native source-drift refusal and publication remain separate owners.",
+  "changeHints": ["BookOfEternityClient.IntegrationTests/ExplorerWoundSelfTreatmentTests.DiagnosisLifecycle.cs", "BookOfEternityClient.IntegrationTests/ExplorerWoundSelfTreatmentTests.DiagnosisTargets.cs"],
+  "related": [{ "id": "spiritual-diagnosis-native-resident", "when": "The complete canonical fault must be proved cheaply before the actual resident signed owner is qualified." }],
+  "requirements": { "frontendBuild": false, "exclusive": false },
+  "timeoutMinutes": 1, "expectedSeconds": null,
+  "selectors": [{ "project": "integration", "tests": ["BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.DiagnosisLifecycleFaultRetainsOnlyItsExpectedDerivedStrengthAndIsAlreadyCanonical"] }]
+},
+{
   "id": "spiritual-diagnosis-shining-source-causal",
   "responsibility": "T121 actual file-light Shining diagnosis source admission: a valid initial canonical realm root proves the positive menu/confirmation baseline; missing or unreadable actual realm sources must disable fresh choices, refuse stale confirmation and refuse StagePlayerDiagnosisTurnAsync before scheduler/request/canonical writes. Two methods/four source-estimated rows; pure detached requirement DATA is not permission.",
   "excludes": "No accepted turn, signed publication, Engine, provider, DOM, full parent qualification or unchanged cheap/native PASS replay. The GREEN candidate preserves every final source-admission oracle from the accepted EX5RED2 semantic RED.",

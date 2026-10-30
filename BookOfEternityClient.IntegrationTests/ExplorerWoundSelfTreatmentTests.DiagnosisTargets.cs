@@ -104,12 +104,13 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
             { ResidentThoughtJournalUpdates = ordinary, ResidentThoughtsFromPatientInterface = true });
 
             var shiningBytes = (await fs.ReadFileBytesAsync(lease, ShiningAbodeState.StatePath))!;
-            var changed = JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(shiningBytes))!.AsObject();
-            var oldLifecycle = changed["factions"]![0]!["factionLifecycle"]!["state"]!.GetValue<string>();
-            changed["factions"]![0]!["factionLifecycle"]!["state"] = oldLifecycle == "weakened" ? "active" : "weakened";
+            var originalShining = JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(shiningBytes))!.AsObject();
+            var oldLifecycle = originalShining["factions"]![0]!["factionLifecycle"]!["state"]!.GetValue<string>();
+            var residents = JsonNode.Parse((await fs.ReadFileAsync(lease, GuardianAbodeResidentState.StatePath))!)!.AsObject();
+            var changed = BuildCanonicalDiagnosisLifecycleDrift(originalShining, residents);
             Assert.NotEqual(oldLifecycle, changed["factions"]![0]!["factionLifecycle"]!["state"]!.GetValue<string>());
             var normalized = changed.DeepClone().AsObject();
-            ShiningAbodeState.NormalizeStateRoot(normalized, JsonNode.Parse((await fs.ReadFileAsync(lease, GuardianAbodeResidentState.StatePath))!)!.AsObject());
+            ShiningAbodeState.NormalizeStateRoot(normalized, residents);
             Assert.True(JsonNode.DeepEquals(changed, normalized)); // A no-op normalizer cannot repair this real tuple drift.
             await fs.WriteFileAtomicAsync(lease, ShiningAbodeState.StatePath, changed.ToJsonString());
             var drifted = fixture.CaptureMutationRoots(new[] { ShiningAbodeState.StatePath, GuardianAbodeResidentState.StatePath });
