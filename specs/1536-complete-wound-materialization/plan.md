@@ -22,7 +22,7 @@ cards now name the separate /лечить route conditionally; cards themselves 
 Ordinary memory keeps its canonical owner; patient-only fields never enter diagnosis.
 No new schema is GM-authored, publisher/cache/economy/diagnostic framework or quota is added.
 
-Source-estimated CI selection: 142 cases / 61 methods / 23 descriptors across 23 IDs.
+Source-estimated CI selection: 144 cases / 61 methods / 23 descriptors across 23 IDs.
 It includes only direct new/changed contracts and finite ordinary-natural/self/combat,
 transport, read-card and manifest/guidance regressions. Official discovery remains the
 count authority. Whole SOURCE final delta is pending. The bounded static member/fixture scan and JSON/XML checks completed without running C#; all

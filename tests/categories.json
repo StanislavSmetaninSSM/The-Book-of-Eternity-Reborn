@@ -38949,7 +38949,7 @@
     },
     {
       "id": "spiritual-diagnosis-legacy-combat",
-      "responsibility": "One existing actual combat pair/durable result consumer of the shared spiritual History reducer preserves no-safe-cycle and existing combat ownership.",
+      "responsibility": "One existing three-row combat Theory (healed, no_improvement, blocked_worsen) covers the actual pair/durable result consumer of the shared spiritual History reducer, preserving no-safe-cycle and existing combat ownership.",
       "excludes": "Bounded directly affected contracts only; no whole Shining110/read83/provider suite, DOM/external provider, Mortal compatibility or HOLD qualification.",
       "changeHints": [
         "BookOfEternityClient/Services/SpiritualDiagnosisPersistedResult.cs",
