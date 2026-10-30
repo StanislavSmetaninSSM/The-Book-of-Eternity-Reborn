@@ -1,3 +1,39 @@
+# US6 T137-AUTO-HISTORY SOURCE accepted; GREEN pending
+
+Independent gpt-6-astra/high SOURCE ACCEPT for af4599cf683c83f99fea427cb43e31860ad682d5:
+no confirmed blocker. Strict existing two-field disposition and both physical empty
+ledger arrays are captured before actual automatic append; only that disposition
+changes afterwards. Missing/wrong/foreign fields and existing history cannot pass.
+No new I/O/validation/cache/economics/authority; current actor clone owns scalar DATA
+only for that call. General append/explicit override semantics remain unchanged.
+Original8causal cases retain exact RED1FAIL7PASS at eaf345159; one new Chaos control
+makes9GREEN candidates. Nothing is yet GREEN or accepted gameplay.
+
+Reviewer justified existing resident aid/provider as actually affected by the new
+first-append metadata transition. Their earlier190.1679s timeout is still unexplained;
+new source relevance permits targeted regression, not a claim that it is fixed.
+Add exactly the existing spiritual-aid-locality-normalization singleton (2min): genuine
+auto H0→H1, full normalization, frozen original healing tier and foreign-write refusal.
+Selection now18descriptors/127cases/43methods; no aggregate runtime is planned. Existing
+unaffected87Unit/12backend PASS have explicit old sources; source-based retention and
+new affected regression remain subject to final OUTCOME. All public outcomes3,
+projection6, correctedfreshHook1 and console/browser/rollback remain unqualified.
+
+GM section/source guard/example/manifest synchronized. Existing both daemon directives
+already force the unchanged marker/full guide; no new output/control field or daemon
+assignment change is needed. Current authored JSON/Rules XML parse. Optional catalog
+responsibility now explicitly says both Chaos and Shining. No new feature/economic rule.
+
+Before rebuilding, HRED's9unique Unit artifacts were losslessly decoded/hashed and
+retained externally, SHA a4fd43eb347969e5060eb84d0de12842028975c226ae9d63212074ca3985dac4,
+16,224,223bytes;18unchanged other artifacts match the verified A2 full archive
+1895f5f5101c9132c151573b6e19749da3823387516516230ba7981f20f92c8a.
+No raw/saves/recovery deleted. Next: fresh four affected owning builds, updated source/
+artifact/catalog/exact finite plans/resource/PREP, then9cheap causal pluschanged docs,
+remaining public backend and actual UI in sequence. B remains pending; HOLD lanes stay.
+
+---
+
 # US6 T137-AUTO-HISTORY exact causal RED; narrow correction WIP
 
 Actual sourceeaf345159:1expectedFAIL/7PASS,8complete/2methods,13.6842499s; positive
