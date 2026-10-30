@@ -20,7 +20,9 @@ public sealed class SpiritualDiagnosisShiningSourceTests
         var baseline = fixture.CanonicalBytes();
         var opened = await WoundApplicationService.OpenAsync(fixture.Files, "/лечить", treatment: true);
         var menu = Assert.IsType<WoundCommandState>(opened.WoundCommandState);
-        menu = menu.ForTarget(Assert.Single(menu.Targets, target => target.Owner.OwnerKind == "player_soul"));
+        if (menu.IsTargetSelection)
+            menu = menu.ForTarget(menu.ResolveTarget(Assert.Single(menu.Targets,
+                target => target.Owner.OwnerKind == "player_soul").Value));
         var choice = Assert.Single(menu.Choices, value => value.Available && value.Selection.Diagnosis is not null);
         await using (var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync())
             Assert.Equal(choice.Selection, await WoundApplicationService.ConfirmAsync(fixture.Files, lease, menu, choice.Value));

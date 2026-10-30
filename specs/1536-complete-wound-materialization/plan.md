@@ -1,3 +1,25 @@
+# T121 EX5RED scaffold setup correction — complete causal outcome not accepted
+
+The actual Unit-only `EX5RED-red` attempt at `05d9024c4` completed four rows:
+one PASS and three FAIL. The verifier correctly rejected the overall intended RED:
+both menu rows failed at line 23 before their valid confirmation/fault prerequisites,
+because the scaffold unconditionally expected a target chooser. A real single-Self
+menu has IsTargetSelection=false and may have no Targets. The missing-source player
+stage row separately reached its intended final oracle: staged/control/request=true
+and canonical bytes changed. The unreadable-source stage refusal passed; neither
+early menu failure counts as a causal refusal proof. Full failed raw remains external.
+
+The scaffold now follows the existing consumer branch: resolve/select Self only when
+IsTargetSelection is true, otherwise retain the actual unfiltered single-Self menu.
+All positive confirmation, inert-read, missing/unreadable source and no-write oracles
+remain unchanged. Production, category membership and 60s budget are unchanged.
+The closing fence at 22:24:16 UTC proved no owners, stable pins and about 4.561GB free.
+This correction is UNCOMPILED/UNRUN; fresh Unit and exact four-row SOURCE/PREP precede
+one complete corrected causal attempt. The earlier one PASS is superseded for this
+coherent category, not retained as a replacement for the four-row result. No writer
+build/test ran; Integration fixture WIP remains uncompiled/unselected. All accepted
+lineages, original failed evidence and existing holds remain preserved.
+
 # T121 EX4D native partial outcome — source-admission RED scaffold, UNCOMPILED/UNRUN
 
 At plan-only `97067a74f` / compiled `0c73c929c`, the actual native attempt exited 1
