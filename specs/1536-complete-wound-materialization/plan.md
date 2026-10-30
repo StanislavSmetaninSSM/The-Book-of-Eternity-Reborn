@@ -22,7 +22,7 @@ accepted authority is used. Expected RED is exactly the two final missing-choice
 assertions; compile/setup/privacy failure is not acceptable RED.
 
 Current production is unchanged. Scaffold is UNCOMPILED/UNRUN. Temporary selection
-contains only spiritual-diagnosis-menu-causal: source-estimated 1 descriptor / 1 method / 
+contains only spiritual-diagnosis-menu-causal: source-estimated 1 descriptor / 1 method /
 2 cases at 60s. New category count is 1192; official fresh Unit build, PDB/artifact
 fence, catalog/exact PlanOnly, independent DESIGN/SOURCE/PREP and one actual RED
 are pending. No build/test by writer; no production execution before that outcome.
