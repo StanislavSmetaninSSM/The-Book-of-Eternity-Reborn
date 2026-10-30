@@ -326,6 +326,19 @@ execution/TRX/timeout/duplicate, stablepins/fullcleanup. PREP pendingONLYcheap62
 at60s/category first; native8/UI10 remainUNRUN/unreleased. Currentcode/source
 accepted but NOmemoryfunctionalPASSyet. Full rawexternal/S5-*; no rawinGit.
 
+S5 partial32PASS/1fixtureFAIL/29UNRUN independently verified by Astra; bad_id
+fixture assumed internalspace invalid, unlike existing central exact-ID contract.
+Only testinput corrected to leadingwhitespace at9aed9fca; production unchanged,
+deltaSOURCE accepted. Retain26unaffectedPASS and supersede6earlierPASS rows of
+the changed7rowTheory; nextparser7+priorunrun29=36. S5 measured27archive62,066,337B,
+SHA596b15aa92e6fbaf46baf1bf2d729aeb8d1332f53a711e7771dd44ba72ab2777,
+fullmemberhash/EOFCRC verified before Unit overwrite; failedraw kept outsideGit.
+Fresh Unit-only S5F9aed exit0/26baselinewarnings/2:19.59; Main/Support/Integration
+remain valid@24e. Current27artifacts/171bindings/4PE-PDB/9resources36copies/
+4daemon verified. Catalog1189/12990valid/no unmappedstale,zeroexecution; exact
+remainingPlanOnly4Unitdescriptors/36cases/0execution, pins/cleanupstable. Independent
+PREPpending; native8/UI10 remainUNRUN/unreleased. No repeatedunchanged26PASS.
+
 Авторское решение диагностики принято2026-10-30 11:48UTC и отражено в FR071/tasks.
 После текущего Shining patient: Mortal method declares own procedure check/time/
 cost; spiritual Healing>=0 plus ALL path requirements, guaranteed declared reveals,
