@@ -268,6 +268,18 @@ Expected native RED only at final Full reasoning assertion with the two known
 support-journal/Elyara declaration errors; earlier setup failure/timeout is not it.
 All raw external under S5R; production remains unchanged before this causal proof.
 
+S5R PREP and actual intended RED accepted by independent Astra:1/1executedFAIL
+@8be399a621ddfb0f1368c23818f58b5f72377376, no timeout/skip/duplicate, complete
+selection, stable pins/owned cleanup. Only final Full reasoning Assert.True line70
+failed with the exact support-journal/Elyara-surface pair; natural8, record5 and
+published patient journal prerequisites passed. Test22.0931108s,category38.3642796/
+120s,wall1:18.4367467,TRXSHA b9a572f8a07d8ab7398b26f18cbba1a3274c3c62ce6e7b890465961feca28761.
+This is causal failure evidence, not functional PASS; prior Engine timeout stays.
+Sol sole writer may now implement accepted6416 memory correction with meaningful
+pure append/refusal tests, four actual phase proofs and GM sync. Main owns builds/
+runtime and independent Astra SOURCE/OUTCOME. S5R measured artifacts must be
+archived/full-verified before any fresh owning overwrite; archive in preparation.
+
 Авторское решение диагностики принято2026-10-30 11:48UTC и отражено в FR071/tasks.
 После текущего Shining patient: Mortal method declares own procedure check/time/
 cost; spiritual Healing>=0 plus ALL path requirements, guaranteed declared reveals,
