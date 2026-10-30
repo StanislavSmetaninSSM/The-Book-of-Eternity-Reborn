@@ -212,7 +212,7 @@ public sealed partial class FactionMaterializationValidationTests
         var id = profiles[0]["actorId"]!.GetValue<string>();
         faction["leadership"] = new JsonObject { ["leadershipState"] = "secure", ["headActorType"] = "resident", ["headActorId"] = id };
         profiles[0]["materialization"]!["capabilities"]!["canTrade"] = true;
-        profiles[0].Remove("motivation"); // One deterministic error per actual validation execution.
+        profiles[0]["materialization"]!["schemaVersion"] = 99; // One structural error in the historical branch.
         var root = ShiningRoot(faction);
         root["halls"] = new JsonArray(BuildShiningHall("hall_dawn_archive", "Dawn Archive"));
         var profileRoot = BuildAfterlifeProfileRoot(profiles);
@@ -222,7 +222,7 @@ public sealed partial class FactionMaterializationValidationTests
             (ShiningPath, root.ToJsonString()), (ResidentPath, residents.ToJsonString()), (AfterlifeProfilesPath, profileRoot.ToJsonString()));
         var before = CaptureHealerAuthoredState(); var issues = new List<ValidationIssue>();
         await _validator.ValidateAcceptedTurnShiningFactionMaterializationCompletenessAsync(raw, issues);
-        Assert.Single(issues, i => i.Code == "actor_materialization_afterlife_missing_motivation");
+        Assert.Single(issues, i => i.Code == "actor_materialization_invalid_envelope" && i.FilePath.EndsWith(".materialization.schemaVersion", StringComparison.Ordinal));
         Assert.Contains(issues, i => i.Code == "faction_materialization_shining_healer_missing");
         AssertHealerAuthoredStateUnchanged(before);
     }

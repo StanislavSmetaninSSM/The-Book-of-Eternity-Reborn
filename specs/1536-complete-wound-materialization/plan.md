@@ -1,3 +1,17 @@
+# US6 correction whole SOURCE accepted; one selected fixture oracle corrected
+
+Astra/high production SOURCE ACCEPT2759201a35e394ced000979c56fc0690af246f6b;
+Sol fixture/membership ACCEPT exact76Unit/85Integration, no new requirement. Final
+selection exposed one stale dedup oracle: it supplied an already-materialized signed
+actor but removed motivation, which is first-creation completeness. Historical DATA
+correctly defers that evidence. Keep both raw/post dedup cases historical, inject
+unsupported envelope schema99 instead, and require exactly one invalid_envelope issue
+at schemaVersion plus healer_missing. Production unchanged; source confirmation of
+this finite fixture correction pending. No build was started before finding/fix.
+All selected new code still UNCOMPILED/UNRUN; freeze corrected SHA for four fresh builds.
+
+---
+
 # US6 historical/current boundary correction WIP; source review in progress
 
 Causal RED accepted independently by Sol:1expectedFAIL at finalHistoricalContinuity.cs41,
