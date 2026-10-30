@@ -72,7 +72,11 @@ public sealed class WoundDiagnosisRecommendationTests
         {
             ["diagnosisPathId"] = "diagnosis_private", ["displayName"] = "Оценить духовную ткань", ["visibility"] = "public",
             ["requiresKnownFacts"] = new JsonArray(),
-            ["requirements"] = new JsonArray(new JsonObject { ["privateCondition"] = "СЕКРЕТНОЕ_УСЛОВИЕ" }),
+            ["requirements"] = new JsonArray(new JsonObject
+            {
+                ["kind"] = "source_capability", ["capabilityRef"] = "private_probe", ["actorRole"] = "provider",
+                ["privateCondition"] = "СЕКРЕТНОЕ_УСЛОВИЕ"
+            }),
             ["check"] = new JsonObject(), ["reveals"] = new JsonArray(), ["failurePolicy"] = "no_reveal"
         });
         var projection = WoundPlayerProjection.Build(WoundPlayerProjectionTestData.InputInRealm(realm, node));
