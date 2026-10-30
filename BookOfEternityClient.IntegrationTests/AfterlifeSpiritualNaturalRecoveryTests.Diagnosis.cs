@@ -54,8 +54,11 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
                 LiveTurnPreparationService.TurnRequestPath))!, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)!;
             await ExplorerWoundSelfTreatmentTests.WriteNativeCompletionAsync(files, lease, turn,
                 AuthorNaturalGraphs(before, projection["destinationGraphs"]!.AsArray()), narrative: "Я внимательно осматриваю духовную рану. Раскрылись предусмотренные способом сведения; мир продолжил безопасный цикл.");
+            Assert.DoesNotContain(await validator.ValidateAcceptedTurnRawMortalLocationMaterializationAsync(), i => i.Severity == IssueSeverity.Error);
+            Assert.DoesNotContain(await validator.ValidateAcceptedTurnRawMortalItemMaterializationAsync(lease), i => i.Severity == IssueSeverity.Error);
             var preparation = await validator.PrepareSpiritualSelfTreatmentPublicationAsync(lease);
-            Assert.DoesNotContain(preparation, i => i.Severity == IssueSeverity.Error);
+            Assert.True(!preparation.Any(i => i.Severity == IssueSeverity.Error),
+                string.Join("\n", preparation.Select(i => i.Code + "@" + i.FilePath + ": " + i.Message + ": " + i.Actual)));
             Assert.True(AcceptedMechanicsPlanAuthority.TryPeekValidated(files, lease, out _, out var validated));
             var plan = Assert.IsType<AcceptedMechanicsPlan>(validated.Plan);
             var owner = Assert.IsType<AfterlifeWoundHealingPlanner.Continuation>(plan.SpiritualHealingContinuation);
@@ -195,6 +198,24 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
         var seed = WoundPlayerProjectionTestData.InputInRealm(realm, node);
         profile["activeWounds"] = seed.Carriers.AfterlifeProfiles!["profiles"]![0]!["activeWounds"]!.DeepClone();
         await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+        if (realm == "shining_abode")
+        {
+            // Initial world DATA, before the one resource bootstrap or any signed turn.
+            // Reuse the complete profile's real location as the actual current hall.
+            Assert.Null(await files.ReadFileBytesAsync(lease, ShiningAbodeState.StatePath));
+            var hallId = profile["locationId"]!.GetValue<string>();
+            var hallName = profile["locationName"]!.GetValue<string>();
+            var shining = ShiningAbodeState.CreateDefaultState();
+            shining["currentHallId"] = hallId;
+            shining["halls"] = new JsonArray(new JsonObject { ["hallId"] = hallId, ["hallName"] = hallName,
+                ["description"] = "Тихий зал для осмотра духовной раны.", ["serviceTags"] = new JsonArray() });
+            ShiningAbodeState.NormalizeStateRoot(shining, residentRoot: null);
+            await files.WriteFileAtomicAsync(lease, ShiningAbodeState.StatePath, shining.ToJsonString());
+            var current = JsonNode.Parse((await files.ReadFileAsync(lease, ShiningAbodeState.StatePath))!)!.AsObject();
+            Assert.Equal(hallId, current["currentHallId"]!.GetValue<string>());
+            Assert.Equal(hallName, Assert.Single(current["halls"]!.AsArray())!["hallName"]!.GetValue<string>());
+            Assert.Equal(ShiningAbodeState.PreparedIncarnationPackageMode.Absent, ShiningAbodeState.GetPreparedIncarnationPackageMode(current));
+        }
         await files.WriteFileAtomicAsync(lease, WoundCarrierCatalog.AfterlifeProfilesPath, profiles.ToJsonString());
         await files.WriteFileAtomicAsync(lease, WoundIdentityState.StatePath, WoundIdentityState.SerializeCanonical(seed.Identities));
         await files.WriteFileAtomicAsync(lease, WoundHistoryState.HistoryPath, WoundHistoryState.SerializeCanonical(seed.History));

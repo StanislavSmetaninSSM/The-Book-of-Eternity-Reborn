@@ -117,9 +117,12 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
             await Assert.ThrowsAsync<InvalidDataException>(() => AfterlifeWoundHealingPlanner.Continuation.AdmitDiagnosisAsync(fs, lease, manifest));
             fixture.AssertMutationRootsUnchanged(drifted);
             await fs.WriteFileAtomicBytesAsync(lease, ShiningAbodeState.StatePath, shiningBytes);
+            Assert.DoesNotContain(await validator.ValidateAcceptedTurnRawMortalLocationMaterializationAsync(), i => i.Severity == IssueSeverity.Error);
+            Assert.DoesNotContain(await validator.ValidateAcceptedTurnRawMortalItemMaterializationAsync(lease), i => i.Severity == IssueSeverity.Error);
             var preparation = await validator.PrepareSpiritualSelfTreatmentPublicationAsync(lease);
             output.WriteLine(JsonSerializer.Serialize(preparation));
-            Assert.DoesNotContain(preparation, i => i.Severity == IssueSeverity.Error);
+            Assert.True(!preparation.Any(i => i.Severity == IssueSeverity.Error),
+                string.Join("\n", preparation.Select(i => i.Code + "@" + i.FilePath + ": " + i.Message + ": " + i.Actual)));
             await new CanonicalStateNormalizer(fs, NullLogger<CanonicalStateNormalizer>.Instance).BindTo(lease)
                 .NormalizeAccumulatedStateWithPlanAsync((await fixture.ReadManifestAsync(lease)).Files);
         }

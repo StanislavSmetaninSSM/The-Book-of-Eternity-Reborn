@@ -126,6 +126,21 @@ public sealed class SpiritualDiagnosisStagingTests
             ["reveals"] = new JsonArray("complication:diagnosis_hidden"), ["failurePolicy"] = "no_reveal"
         });
         Assert.True(AfterlifeEntityProfileState.TryNormalizeEffectRealm(profile["realm"]!.GetValue<string>(), out var realm));
+        if (realm == "shining_abode")
+        {
+            // Explicit initial realm DATA for diagnosis, not an accepted-turn receipt.
+            profile["locationId"] = "hall_diagnosis_source";
+            profile["locationName"] = "Зал осмотра";
+            var shining = ShiningAbodeState.CreateDefaultState();
+            shining["currentHallId"] = profile["locationId"]!.DeepClone();
+            shining["halls"] = new JsonArray(new JsonObject
+            {
+                ["hallId"] = profile["locationId"]!.DeepClone(), ["hallName"] = profile["locationName"]!.DeepClone(),
+                ["description"] = "Тихий зал для духовного осмотра.", ["serviceTags"] = new JsonArray()
+            });
+            ShiningAbodeState.NormalizeStateRoot(shining, residentRoot: null);
+            await files.WriteFileAtomicAsync(lease, ShiningAbodeState.StatePath, shining.ToJsonString());
+        }
         var input = WoundPlayerProjectionTestData.InputInRealm(realm, node);
         profile["activeWounds"] = input.Carriers.AfterlifeProfiles!["profiles"]![0]!["activeWounds"]!.DeepClone();
         if (fault == "missing_art") profile["standardArts"]!.AsObject().Remove("spiritual_healing");

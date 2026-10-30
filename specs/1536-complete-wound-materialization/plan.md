@@ -1,3 +1,48 @@
+# T121 EX4D native partial outcome — source-admission RED scaffold, UNCOMPILED/UNRUN
+
+At plan-only `97067a74f` / compiled `0c73c929c`, the actual native attempt exited 1
+without timeout in 1:44.2560808: seven executed, five PASS, two FAIL, three native
+and three UI cases UNRUN. The five actual passes are combat three (40.0462036s/120s),
+ordinary natural one (16.5131056s/120s) and self one (16.4975025s/180s). Both new H0
+realm rows failed (22.0893481s/120s); full TRX/raw and the completed EX4D archive
+remain outside Git in the existing diagnosis evidence root. Cleanup, pins and the
+closing fence passed. The accepted cheap131 and native five remain explicit lineages,
+not acceptance of the new diagnosis native/UI route.
+
+Read-first diagnosis distinguishes fixture preparation from early admission. The
+new direct native helpers skipped real raw location/item validation before invoking
+the full normalizer, which correctly requires its actual item authority. Both helpers
+now use the existing raw location -> raw item -> spiritual/common order; the Engine
+keeps its own upstream preparation. Their unchanged zero-error condition now prints
+existing issue Code/Actual values. The shared self/native/browser initial seed now
+writes a normalized real Shining state/hall before the sole resource bootstrap,
+matching the complete player profile. No source is inserted after an accepted turn.
+The missing Shining source is established from seed/bootstrap/reader code; the original
+TRX printed only the generic issue and did not retain the caught Actual text.
+
+Independent review also confirmed a real early-admission gap: actual menu construction
+can retain an available self-diagnosis fallback when Shining state is missing/unreadable,
+and staging admits absence before the live Continuation requires the actual root.
+Production remains unchanged in this RED scaffold. The new explicit Unit category
+`spiritual-diagnosis-shining-source-causal` has four source-estimated cases / two methods /
+one descriptor at the original 60s bound. It uses existing file-light source/menu/confirm/
+StagePlayer APIs and canonical initial read DATA, not a fabricated authority or receipt.
+The expected causal outcome is two menu/confirmation failures and one missing-source
+player-stage failure; the existing unreadable-source stage refusal is a passing control.
+Only failures after the valid baseline and inert-read prerequisites count as intended RED.
+
+The light diagnosis helper now supplies explicit initial Shining state for its existing
+positive stage. The full CI selection retains prior ownership and adds only the new
+causal category; the next actual run selects only that category after fresh Unit,
+selected-owner source/PDB/artifact continuity, discovery, exact PlanOnly and PREP.
+The two Integration fixture files are deliberately preserved UNCOMPILED and UNSELECTED
+for that Unit-only RED; their corrected native/terminal/foreign/UI consumers remain held.
+No writer build/test was run. After observed RED, the next source correction will reuse
+the actual nonnull/no-package predicate in menu/staging without relaxing the strict late
+Continuation or changing global null-package semantics. Actual current authority remains
+fresh; initial DATA and operation getters are reused, with no cache or speedup claim.
+Mortal procedural diagnosis, eight unavailable adapters and all existing holds stay open.
+
 # T121 EX4D cheap block accepted — native/UI qualification pending
 
 Independent Astra OUTCOME and the primary's exact TRX/hash/ID-counter union accept

@@ -2,6 +2,16 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "spiritual-diagnosis-shining-source-causal",
+  "responsibility": "T121 actual file-light Shining diagnosis source admission: a valid initial canonical realm root proves the positive menu/confirmation baseline; missing or unreadable actual realm sources must disable fresh choices, refuse stale confirmation and refuse StagePlayerDiagnosisTurnAsync before scheduler/request/canonical writes. Two methods/four source-estimated rows; pure detached requirement DATA is not permission.",
+  "excludes": "No accepted turn, signed publication, Engine, provider, DOM, full parent qualification or unchanged cheap/native PASS replay. This causal scaffold leaves production unchanged until the observed source-admission RED.",
+  "changeHints": ["BookOfEternityClient.Tests/SpiritualDiagnosisShiningSourceTests.cs", "BookOfEternityClient/Services/WoundApplicationService.cs", "BookOfEternityClient/Services/AfterlifeWoundTreatmentAuthority.Diagnosis.cs"],
+  "related": [{ "id": "spiritual-diagnosis-staging-data", "when": "Retain the existing valid Shining prepared-stage baseline with explicit initial realm DATA." }],
+  "requirements": { "frontendBuild": false, "exclusive": false },
+  "timeoutMinutes": 1, "expectedSeconds": null,
+  "selectors": [{ "project": "unit", "tests": ["BookOfEternityClient.Tests.SpiritualDiagnosisShiningSourceTests.*"] }]
+},
+{
   "id": "spiritual-diagnosis-binding-data",
   "responsibility": "T121 closed statement-indexed proof DATA for the three supported spiritual requirements; actual request factory refuses missing rows, wrong order/typed actor/tier/source paths and unknown proof fields, with detached export protection.",
   "excludes": "No live source authority, new requirement kinds, staging/publication, Engine or broad regression.",
