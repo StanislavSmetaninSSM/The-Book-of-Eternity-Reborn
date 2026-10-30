@@ -1,3 +1,20 @@
+## S7 build and exact-plan receipt
+
+Fresh owning builds at 5fe0bbe91ab10db3847af682a4107f254a04577b all exited 0.
+Warnings stayed at baseline Main12 / Support23 / Unit26 / Integration102;
+durations 3:42.89 / 24.83s / 1:43.62 / 3:41.65. The new History assertions are now
+compiled, not yet executed. Four PE/PDB pairs and 175 changed-source bindings,
+27 owning artifacts, nine operational resources in 36 copies and four daemon
+copies match current source. Exact official S7 PlanOnly confirms the complete
+bounded CI selection: 110 cases, 46 methods, 23 descriptors, zero executed.
+Owned/runtime cleanup and pins verified. Full inventory1191/12994 is retained
+per SOURCE review because no test methods or selectors changed.
+
+Next runtime is only the four native phases (120s each), after independent PREP
+and a fresh no-owner/artifact fence. Prior cheap33 remains accepted; none is
+repeated by this plan. All ten UI cases still require subsequent admission.
+Evidence is external under S7-*; no raw, archive or binary is staged.
+
 ## S7 SOURCE acceptance and fresh-build boundary
 
 Independent Astra SOURCE accepted 40d0d5587f6c2ad5b64970c7204ce4ca95383076:
