@@ -255,6 +255,19 @@ before Engine retry. S4 measured27artifact archive verified62,014,154bytes,
 SHAf3d93cb751cae92066873e98f0295c163789ba7a841a61bc87baa358678b51a4,
 full memberhash/EOFCRC proof; no measured output will be overwritten unpreserved.
 
+Astra DESIGN accepted6416c1007 for the bounded memory correction. Sol is sole
+code/test/GM writer, currently paused after existing-API causal scaffold10a4a36d.
+Astra scaffold SOURCE accepted; missing Configuration import caught by first
+Integration build is fixed at85b151dc (compile-only delta independently accepted).
+Fresh S5R2 Integration85b exit0/102baselinewarnings/5:51.46; Main/Support/Unit source
+unchanged, no unjustified rebuild. Current27artifacts,4PE/PDBpairs/159sourcebindings,
+8resources32copies/4daemons verified. Catalog1181/12978valid/no stale or unmapped,
+zero execution. Singleton PlanOnly1Integrationdescriptor/1method/1case120s exclusive,
+zero executions, pins/cleanup stable. Independent PREP pending, runtime UNRUN.
+Expected native RED only at final Full reasoning assertion with the two known
+support-journal/Elyara declaration errors; earlier setup failure/timeout is not it.
+All raw external under S5R; production remains unchanged before this causal proof.
+
 Авторское решение диагностики принято2026-10-30 11:48UTC и отражено в FR071/tasks.
 После текущего Shining patient: Mortal method declares own procedure check/time/
 cost; spiritual Healing>=0 plus ALL path requirements, guaranteed declared reveals,
