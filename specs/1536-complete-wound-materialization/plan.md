@@ -1,4 +1,4 @@
-# T121: условия известных диагностических путей проверены — #1536
+# T121: условия известных диагностических путей приняты — #1536
 
 Функциональный результат: `/раны`, статус и выбранная известная чужая рана
 показывают название осмотра и читаемые заявленные условия через общие console/
@@ -9,9 +9,10 @@ gm_only не показывается. Нет ID, сырого JSON, обеща�
 действия или GM-ответа. Просмотр/закрытие не меняют рану, ресурсы, время, History
 и состояние; исполнение осмотра честно помечено недоступным.
 
-Проверено владельцем: **83 distinct PASS / 48 methods на трёх runtime SHA**,
-не единый свежий прогон. Итоговый независимый OUTCOME/checkpoint review PENDING;
-T121-DIAGNOSIS-READ и его guard repair пока не помечены принятыми.
+Принято: **83 distinct PASS / 48 methods на трёх runtime SHA**,
+не единый свежий прогон. Независимый Sol XHigh принял D4 OUTCOME и весь retained
+union с первичным TRX readback, cleanup, source counters и fences.
+T121-DIAGNOSIS-READ и его guard repair закрыты только в этом read-only scope.
 
 | Принятая для объединения группа | Случаи | Runtime |
 |---|---:|---|
@@ -67,8 +68,8 @@ source guards не менялись, новых IO/cache/framework нет. Actua
 от допустимой known-wound карточки; его result не заменяет strict reader DATA.
 Cross-owner cache API без доказанной пользы не добавлялся, speedup не заявляется.
 
-Sol XHigh принял SOURCE, delta reviews и все PREP; исходный causal RED и cheap8
-OUTCOME приняты. Финальное OUTCOME ожидается. GM guide и existing worked known-card
+Sol XHigh принял SOURCE, delta reviews и все PREP; исходный causal RED, cheap8,
+D4 и финальный combined OUTCOME приняты. GM guide и existing worked known-card
 fragment синхронизированы; новых GM fields/schema/action нет, поэтому daemon,
 prompts и manifest schema не менялись. Старый H0 assessment17, принятые B200,
 Candidate69 и иные неизменённые gameplay qualification не повторялись.
@@ -76,7 +77,10 @@ Candidate69 и иные неизменённые gameplay qualification не п�
 Полный raw/failed attempts/TRX/JSON/PDB/binaries вне checkout:
 `/workspace/tboe-linux-evidence-20261025/us5-guided-diagnosis`.
 Индекс `D4-verified-accepted-union.json`; актуальный полный owning artifact archive
-D4 сохраняется с27member hashes и полным gzip EOF/CRC proof. D1/D2/D3 evidence
+`D4-measured-owning-artifacts.tar.gz`:61,939,560B, sha256
+`5886c5fb8da7e2645d4b4ac1429d3c7f2a9ec18652641e154926973bcb40398c`;
+все27member hashes и полный gzip EOF/CRC proof проверены, decoded194,365,440B.
+D1/D2/D3 evidence
 сохранены, внешние raw/saves/recovery не удалялись; в Git только source и краткий
 checkpoint, не журналы/TRX/диагностические JSON/бинарники/архивы.
 

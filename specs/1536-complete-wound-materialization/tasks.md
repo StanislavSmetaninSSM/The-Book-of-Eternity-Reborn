@@ -1,24 +1,31 @@
 # T121 diagnosis recommendations — #1536
 
-- [ ] T121-DIAGNOSIS-READ Show readable declared conditions of currently known
+- [x] T121-DIAGNOSIS-READ Show readable declared conditions of currently known
   diagnostic paths in the existing wound/status cards for console/browser. Reuse
   the existing typed requirement projection and one operation-owned physical
   treatment parse. Preserve current-knowledge/privacy filtering and whole-tree
   read-only behavior; no execution, availability claim, draw, cost or time.
   Causal RED, affected projection/consumer controls, fresh owning builds and
   independent SOURCE/PREP/OUTCOME are required before acceptance.
+  Accepted2026-10-30:83distinct/48methods across17b15/4e505/763a6 (8+57+18),
+  not one fresh83; all raw hashes/21cleanup roots/actual source1/2 verified,
+  Sol XHigh SOURCE/PREP/OUTCOME accepted. Actual diagnosis execution remains open.
 - [ ] T093-DIAGNOSIS-RULES / T121-DIAGNOSIS-EXECUTION Author clarification pending:
   current diagnosis `check` is exactly `{}` and no duration/resource policy is
   defined. Proposed rules were asked, not accepted. Do not silently inherit
   treatment roll/time rules or enable diagnosis publication. Existing accepted
   T093-ASSESSMENT remains read-only assessment, not FR071 discovery.
-- [ ] T121-DIAGNOSIS-READ-GUARDS Repair the two pre-existing source-guard drifts
+- [x] T121-DIAGNOSIS-READ-GUARDS Repair the two pre-existing source-guard drifts
   exposed by the affected status selection: independently audit seven descriptive
   `woundName` occurrences in five existing client-owned projection/error methods,
   add only exact per-method semantic inventory scopes, and preserve the real
   status/wounds read-only refresh exclusion. No production or legacy compatibility
   change. Fresh affected Unit build and exact guards plus15unrun status UI cases;
   retain unaffected PASS, recheck inventory consistency after its data changes.
+  Accepted2026-10-30: five exact1/1/2/2/1 method scopes, no production changes
+  or file-wide exemptions; fresh Unit build0errors and exact18/18PASS on763a6,
+  guards3then15actualstatus cases, prior InventoryPASS superseded. Independent
+  Sol XHigh confirmed source semantics, original budgets, fences and raw OUTCOME.
 
 # T609 retained effect-source DATA audit — #1536
 
