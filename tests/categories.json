@@ -2,6 +2,21 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "spiritual-diagnosis-reduction-causal",
+  "responsibility": "T121/FR071 spiritual knowledge-only reducer causal proof: one method/two current realms, exact retained schema1 request/context/admission, structurally valid complete before/knowledge-after, all declared route and complication discoveries, no mechanical or source/input mutation. Explicit typed spiritual-purpose seam retains the existing rejecting reducer behavior until observed semantic RED.",
+  "excludes": "No accepted turn, live source authority, scheduler claim, natural suffix implementation, durable spiritual result, replay/completion/rollback, Engine, GM execution, Mortal route or repeated accepted admission53/Shining110/read83.",
+  "changeHints": [
+    "BookOfEternityClient.Tests/SpiritualDiagnosisReductionTests.cs",
+    "BookOfEternityClient/Services/SpiritualDiagnosisTransitionPlanner.cs",
+    "BookOfEternityClient/Services/WoundTransitionReducer.Diagnosis.cs"
+  ],
+  "related": [{ "id": "spiritual-diagnosis-admission", "when": "Accepted detached request/source baseline; do not replay unchanged admission cases for this causal scaffold." }],
+  "requirements": { "frontendBuild": false, "exclusive": false },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [{ "project": "unit", "tests": ["BookOfEternityClient.Tests.SpiritualDiagnosisReductionTests.ExactAdmittedSpiritualRequestReducesOnlyItsCompleteDeclaredKnowledge"] }]
+},
+{
   "id": "spiritual-diagnosis-admission",
   "responsibility": "T121 spiritual diagnosis ADMISSION WIP: closed eleven-kind requirement DATA grammar, exact empty check, three supported coherent-context proofs (standard-art capability/tier and current-player provider), eight registered shapes fail unavailable without actual canonical source; schema9 selection/schema1 request, target filtering, detached export/invalidation and actual old self-stage purpose refusal. Not execution authority. Includes full-control binding with same-ordinal drift and two-wound labels/purpose-accurate unavailable presentation; source47 new class rows plus one actual old-stage guard, no execution.",
   "excludes": "No actual diagnosis staging/accepted turn, cycle/publication/completion/replay/rollback, new canonical proof for missing adapters, full Engine, Mortal procedural diagnosis or repeated accepted110/read83.",

@@ -1,3 +1,38 @@
+# T121 spiritual knowledge-only reducer scaffold — UNCOMPILED/UNRUN
+
+After accepted EX2B admission53, the next causal cut is one Unit method with two
+realm rows in spiritual-diagnosis-reduction-causal, original 60s budget. Both rows
+reuse valid current H0 admission and the exact retained schema1 request. A new
+small SpiritualDiagnosisTransitionPlanner seam clones that request, validates its
+complete context/admission binding through the existing codec, then calls the
+existing sealed WoundDiagnosisEvidence factory. No Mortal factory, digest domain,
+identifier, reducer integrity or physical-only semantic guard was changed. The
+request fingerprint remains detached binding DATA, not a check receipt or live
+permission. The source currently still rejects spiritual diagnosis.
+
+The test independently constructs complete declared route and complication
+knowledge, validates both canonical envelopes and exact request/source, and proves
+the whole original returns after removing only knowledge/lastTransition changes.
+It checks retained request, source, before and after immutability before the final
+reducer IsValid assertion. Intended RED is only that assertion at the existing
+physical/Mortal-only semantic boundary. Compile/setup/other errors are not accepted
+as causal evidence. The old Mortal-authority spiritual refusal remains untouched.
+
+This scaffold is UNCOMPILED/UNRUN, source-estimated 2 cases / 1 method / 1 Unit
+descriptor. Independent SOURCE, fresh owning builds/artifacts/discovery/exact
+PlanOnly/PREP and one actual RED precede production GREEN. Temporary selection
+contains only these two cases; accepted admission53 and prior lineages are not
+replayed. Optional complete natural suffix, own durable result, exact completion,
+actual staging/publication, native/UI and GM sync remain following functional work.
+The three proven requirements support that flow; other unknown/unproven sources
+remain unavailable without inventing realm stores or bypassing a declaration.
+
+Optimization reuses existing small detached source/request DATA and the existing
+sealed reducer factory, with no filesystem reads, new cache, executor or publisher.
+Full canonical images are retained for exact delta/immutability checks; no timing
+or speedup claim is made. GM guidance remains execution-unimplemented until the
+following actual execution block synchronizes its guides, examples and consumers.
+
 # T121 spiritual diagnosis — EX2B admission/menu 53 PASS accepted
 
 Independent Astra OUTCOME accepted the bounded admission/menu block at source
