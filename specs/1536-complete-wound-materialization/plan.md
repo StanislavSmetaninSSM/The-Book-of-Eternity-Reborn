@@ -1,3 +1,29 @@
+# Negotiated B: свежие сборки/discovery/точный PlanOnly готовы, runtime UNRUN
+
+Исправленная Main source26679866010230b67240554c81e24b7141fbf1e3 собрана exit0,
+0errors/12baselinewarnings1:57.82. Support0/23/0:16.09, Unit0/26/1:11.42,
+Integration0/102/1:56.98: все четыре fresh owning builds из того же sourceSHA.
+Compiler-only delta принят независимым Sol; Astra whole production/delta SOURCE
+и Sol bounded tests/docs/selection SOURCE приняты. Предыдущая B1 Mainexit1 сохранена.
+
+Внешний B1-artifact-preflight проверил27binaryartifacts/128sourcebindings/4PE-PDB,
+8operationalresources с32copies иdaemon consistency. Catalog1154categories/
+12946methods valid,0executed. PlanOnly текущего impact-selection:13descriptors,
+190cases,0executed,14.7842660s; cleanup/pins и отсутствие duplicates проверены.
+Первый runtime ограничен одной negotiated-healing-provider-data:40cases/10methods,
+1minute. Остальные150cases не запускаются до подтверждённого cheap GREEN; это не
+новый fullsuite. Independent PREP ещё pending, все B runtimes UNRUN.
+
+Raw/proofs: /workspace/tboe-linux-evidence-20261025/us6-faction-service-agreement/
+B1fix-build-*,B1-pdb-bindings.json,B1-artifact-preflight.json,B1-catalog,B1-plan.
+Свободно5.91GB, сохранён резерв400MiB+256MiB полного вывода. Никаких raw вGit,
+удалений, новых cache/publisher/economy или утверждения о B qualification.
+Следующий шаг PREP→один cheap40 runtime→независимый OUTCOME, затем реальные
+negotiated journeys/rollback с исходными budgets и существующими helpers.
+Отдельный принятый публичный A checkpointad0b0382b не меняется; HOLD отдельно.
+
+---
+
 # Negotiated B: первая fresh Main-сборка выявила три compile-only дефекта
 
 SOURCE production/delta приняты Astra, bounded tests/docs/selection — Sol на b959e823e.
