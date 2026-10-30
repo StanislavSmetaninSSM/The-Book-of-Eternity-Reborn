@@ -1,271 +1,271 @@
 {
     "schemaVersion": 1,
     "categories": [
-{
-  "id": "shining-patient-menu-current",
-  "responsibility": "T108-SHINING-PATIENT current menu and known detail over the complete initial independent Shining patient fixture: resident/radiant with absent or malformed unrelated Guardian registry, actual one-read locality counters and no treatment authority before accepted consent.",
-  "excludes": "No genuine grant/draw/accepted treatment/replay/rollback, full Engine, DOM/provider/fresh process or diagnosis execution.",
-  "changeHints": [
-    "BookOfEternityClient/Services/WoundApplicationService.cs",
-    "BookOfEternityClient/Services/WoundTargetSelectionService.cs"
-  ],
-  "related": [
-{
-  "id": "shining-patient-resident-console",
-  "responsibility": "T108-SHINING-PATIENT one genuine two-turn Engine patient journey: exact initial world, accepted schema5/natural8 consent, normal cleanup, separate shared UI confirmation, player Healing/independent natural tier, active8 retained request, wound/effects/History/world/memory and completed inert replay.",
-  "excludes": "No real DOM/provider/fresh-process, other head kinds, unwilling/helpless, diagnosis, full US4/US5/US6 or DFR/Mortal/Windows HOLD qualification.",
-  "changeHints": [
-    "BookOfEternityClient/Services/SpiritualTreatmentParticipation.ShiningPatientAdmission.cs",
-    "BookOfEternityClient/Services/WoundApplicationService.cs"
-  ],
-  "related": [
-{
-  "id": "shining-patient-documentation-inventory",
-  "responsibility": "Changed Shining patient GM worked example: exact complete manifest family set and actual JSON fragments parse or explicitly documented exemptions.",
-  "excludes": "No gameplay/authority, new service or diagnosis execution, broad documentation runtime suite or unchanged UI qualification.",
-  "changeHints": [
-    "Examples/E_CLI_Afterlife_Turns.txt",
-    "Examples/example_validation_manifest.json"
-  ],
-  "related": [
-    {
-      "id": "shining-patient-current-contracts",
-      "when": "Effective current GM instructions and worked proposal parser changed."
-    }
-  ],
-  "requirements": {
-    "frontendBuild": false,
-    "exclusive": false,
-    "ciRunner": "ubuntu-24.04"
-  },
-  "timeoutMinutes": 1,
-  "expectedSeconds": null,
-  "selectors": [
-    {
-      "project": "integration",
-      "tests": [
-        "BookOfEternityClient.Tests.ExampleDocumentationValidationTests.CompleteEffectMaterializationManifest_CoversEveryRequiredWorkedFamily",
-        "BookOfEternityClient.Tests.ExampleDocumentationValidationTests.JsonExamples_AreParseableOrExplicitlyExempted"
-      ]
-    }
-  ]
-},
-    {
-      "id": "shining-patient-current-contracts",
-      "when": "Cheap current source and codec admission must pass first."
-    },
     {
       "id": "shining-patient-menu-current",
-      "when": "Initial-world menu/detail source reuse must pass first."
-    }
-  ],
-  "requirements": {
-    "frontendBuild": false,
-    "exclusive": true,
-    "ciRunner": "ubuntu-24.04"
-  },
-  "timeoutMinutes": 3,
-  "expectedSeconds": null,
-  "selectors": [
-    {
-      "project": "integration",
-      "tests": [
-        "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.ConsoleShiningResidentPatientUsesConsentCleanupAndActualHealing"
+      "responsibility": "T108-SHINING-PATIENT current menu and known detail over the complete initial independent Shining patient fixture: resident/radiant with absent or malformed unrelated Guardian registry, actual one-read locality counters and no treatment authority before accepted consent.",
+      "excludes": "No genuine grant/draw/accepted treatment/replay/rollback, full Engine, DOM/provider/fresh process or diagnosis execution.",
+      "changeHints": [
+        "BookOfEternityClient/Services/WoundApplicationService.cs",
+        "BookOfEternityClient/Services/WoundTargetSelectionService.cs"
+      ],
+      "related": [
+        {
+          "id": "shining-patient-current-contracts",
+          "when": "Exact patient DATA/codec/GM requirements changed."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.PatientMenuDoesNotDependOnUnrelatedGuardianRegistryAndReadsSelectedRootsOnce"
+          ]
+        }
       ]
-    }
-  ]
-},
-{
-  "id": "shining-patient-resident-browser",
-  "responsibility": "T108-SHINING-PATIENT one genuine two-turn Engine patient journey: exact initial world, accepted schema5/natural8 consent, normal cleanup, separate shared UI confirmation, player Healing/independent natural tier, active8 retained request, wound/effects/History/world/memory and completed inert replay.",
-  "excludes": "No real DOM/provider/fresh-process, other head kinds, unwilling/helpless, diagnosis, full US4/US5/US6 or DFR/Mortal/Windows HOLD qualification.",
-  "changeHints": [
-    "BookOfEternityClient/Services/SpiritualTreatmentParticipation.ShiningPatientAdmission.cs",
-    "BookOfEternityClient/Services/WoundApplicationService.cs"
-  ],
-  "related": [
-    {
-      "id": "shining-patient-current-contracts",
-      "when": "Cheap current source and codec admission must pass first."
     },
     {
-      "id": "shining-patient-menu-current",
-      "when": "Initial-world menu/detail source reuse must pass first."
-    }
-  ],
-  "requirements": {
-    "frontendBuild": false,
-    "exclusive": true,
-    "ciRunner": "ubuntu-24.04"
-  },
-  "timeoutMinutes": 3,
-  "expectedSeconds": null,
-  "selectors": [
-    {
-      "project": "integration",
-      "tests": [
-        "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.BrowserShiningResidentPatientUsesConsentCleanupAndActualHealing"
+      "id": "shining-patient-resident-console",
+      "responsibility": "T108-SHINING-PATIENT one genuine two-turn Engine patient journey: exact initial world, accepted schema5/natural8 consent, normal cleanup, separate shared UI confirmation, player Healing/independent natural tier, active8 retained request, wound/effects/History/world/memory and completed inert replay.",
+      "excludes": "No real DOM/provider/fresh-process, other head kinds, unwilling/helpless, diagnosis, full US4/US5/US6 or DFR/Mortal/Windows HOLD qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/SpiritualTreatmentParticipation.ShiningPatientAdmission.cs",
+        "BookOfEternityClient/Services/WoundApplicationService.cs"
+      ],
+      "related": [
+        {
+          "id": "shining-patient-current-contracts",
+          "when": "Cheap current source and codec admission must pass first."
+        },
+        {
+          "id": "shining-patient-menu-current",
+          "when": "Initial-world menu/detail source reuse must pass first."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.ConsoleShiningResidentPatientUsesConsentCleanupAndActualHealing"
+          ]
+        }
       ]
-    }
-  ]
-},
-{
-  "id": "shining-patient-radiant-console",
-  "responsibility": "T108-SHINING-PATIENT one genuine two-turn Engine patient journey: exact initial world, accepted schema5/natural8 consent, normal cleanup, separate shared UI confirmation, player Healing/independent natural tier, active8 retained request, wound/effects/History/world/memory and completed inert replay.",
-  "excludes": "No real DOM/provider/fresh-process, other head kinds, unwilling/helpless, diagnosis, full US4/US5/US6 or DFR/Mortal/Windows HOLD qualification.",
-  "changeHints": [
-    "BookOfEternityClient/Services/SpiritualTreatmentParticipation.ShiningPatientAdmission.cs",
-    "BookOfEternityClient/Services/WoundApplicationService.cs"
-  ],
-  "related": [
-    {
-      "id": "shining-patient-current-contracts",
-      "when": "Cheap current source and codec admission must pass first."
     },
     {
-      "id": "shining-patient-menu-current",
-      "when": "Initial-world menu/detail source reuse must pass first."
-    }
-  ],
-  "requirements": {
-    "frontendBuild": false,
-    "exclusive": true,
-    "ciRunner": "ubuntu-24.04"
-  },
-  "timeoutMinutes": 3,
-  "expectedSeconds": null,
-  "selectors": [
-    {
-      "project": "integration",
-      "tests": [
-        "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.ConsoleRadiantHeadPatientUsesConsentCleanupAndActualHealing"
+      "id": "shining-patient-documentation-inventory",
+      "responsibility": "Changed Shining patient GM worked example: exact complete manifest family set and actual JSON fragments parse or explicitly documented exemptions.",
+      "excludes": "No gameplay/authority, new service or diagnosis execution, broad documentation runtime suite or unchanged UI qualification.",
+      "changeHints": [
+        "Examples/E_CLI_Afterlife_Turns.txt",
+        "Examples/example_validation_manifest.json"
+      ],
+      "related": [
+        {
+          "id": "shining-patient-current-contracts",
+          "when": "Effective current GM instructions and worked proposal parser changed."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.ExampleDocumentationValidationTests.CompleteEffectMaterializationManifest_CoversEveryRequiredWorkedFamily",
+            "BookOfEternityClient.Tests.ExampleDocumentationValidationTests.JsonExamples_AreParseableOrExplicitlyExempted"
+          ]
+        }
       ]
-    }
-  ]
-},
-{
-  "id": "shining-patient-radiant-browser",
-  "responsibility": "T108-SHINING-PATIENT one genuine two-turn Engine patient journey: exact initial world, accepted schema5/natural8 consent, normal cleanup, separate shared UI confirmation, player Healing/independent natural tier, active8 retained request, wound/effects/History/world/memory and completed inert replay.",
-  "excludes": "No real DOM/provider/fresh-process, other head kinds, unwilling/helpless, diagnosis, full US4/US5/US6 or DFR/Mortal/Windows HOLD qualification.",
-  "changeHints": [
-    "BookOfEternityClient/Services/SpiritualTreatmentParticipation.ShiningPatientAdmission.cs",
-    "BookOfEternityClient/Services/WoundApplicationService.cs"
-  ],
-  "related": [
-    {
-      "id": "shining-patient-current-contracts",
-      "when": "Cheap current source and codec admission must pass first."
     },
     {
-      "id": "shining-patient-menu-current",
-      "when": "Initial-world menu/detail source reuse must pass first."
-    }
-  ],
-  "requirements": {
-    "frontendBuild": false,
-    "exclusive": true,
-    "ciRunner": "ubuntu-24.04"
-  },
-  "timeoutMinutes": 3,
-  "expectedSeconds": null,
-  "selectors": [
-    {
-      "project": "integration",
-      "tests": [
-        "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.BrowserRadiantHeadPatientUsesConsentCleanupAndActualHealing"
+      "id": "shining-patient-resident-browser",
+      "responsibility": "T108-SHINING-PATIENT one genuine two-turn Engine patient journey: exact initial world, accepted schema5/natural8 consent, normal cleanup, separate shared UI confirmation, player Healing/independent natural tier, active8 retained request, wound/effects/History/world/memory and completed inert replay.",
+      "excludes": "No real DOM/provider/fresh-process, other head kinds, unwilling/helpless, diagnosis, full US4/US5/US6 or DFR/Mortal/Windows HOLD qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/SpiritualTreatmentParticipation.ShiningPatientAdmission.cs",
+        "BookOfEternityClient/Services/WoundApplicationService.cs"
+      ],
+      "related": [
+        {
+          "id": "shining-patient-current-contracts",
+          "when": "Cheap current source and codec admission must pass first."
+        },
+        {
+          "id": "shining-patient-menu-current",
+          "when": "Initial-world menu/detail source reuse must pass first."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.BrowserShiningResidentPatientUsesConsentCleanupAndActualHealing"
+          ]
+        }
       ]
-    }
-  ]
-},
-{
-  "id": "shining-patient-resident-rollback",
-  "responsibility": "T108-SHINING-PATIENT one genuine two-turn Engine patient journey: exact initial world, accepted schema5/natural8 consent, normal cleanup, separate shared UI confirmation, player Healing/independent natural tier, active8 retained request, wound/effects/History/world/memory actual C4 compensation plus outer rollback.",
-  "excludes": "No real DOM/provider/fresh-process, other head kinds, unwilling/helpless, diagnosis, full US4/US5/US6 or DFR/Mortal/Windows HOLD qualification.",
-  "changeHints": [
-    "BookOfEternityClient/Services/SpiritualTreatmentParticipation.ShiningPatientAdmission.cs",
-    "BookOfEternityClient/Services/WoundApplicationService.cs"
-  ],
-  "related": [
-    {
-      "id": "shining-patient-current-contracts",
-      "when": "Cheap current source and codec admission must pass first."
     },
     {
-      "id": "shining-patient-menu-current",
-      "when": "Initial-world menu/detail source reuse must pass first."
-    }
-  ],
-  "requirements": {
-    "frontendBuild": false,
-    "exclusive": true,
-    "ciRunner": "ubuntu-24.04"
-  },
-  "timeoutMinutes": 3,
-  "expectedSeconds": null,
-  "selectors": [
-    {
-      "project": "integration",
-      "tests": [
-        "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.ShiningResidentPatientPublicationFailureRestoresGrantWorldAndMemory"
+      "id": "shining-patient-radiant-console",
+      "responsibility": "T108-SHINING-PATIENT one genuine two-turn Engine patient journey: exact initial world, accepted schema5/natural8 consent, normal cleanup, separate shared UI confirmation, player Healing/independent natural tier, active8 retained request, wound/effects/History/world/memory and completed inert replay.",
+      "excludes": "No real DOM/provider/fresh-process, other head kinds, unwilling/helpless, diagnosis, full US4/US5/US6 or DFR/Mortal/Windows HOLD qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/SpiritualTreatmentParticipation.ShiningPatientAdmission.cs",
+        "BookOfEternityClient/Services/WoundApplicationService.cs"
+      ],
+      "related": [
+        {
+          "id": "shining-patient-current-contracts",
+          "when": "Cheap current source and codec admission must pass first."
+        },
+        {
+          "id": "shining-patient-menu-current",
+          "when": "Initial-world menu/detail source reuse must pass first."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.ConsoleRadiantHeadPatientUsesConsentCleanupAndActualHealing"
+          ]
+        }
       ]
-    }
-  ]
-},
-{
-  "id": "shining-patient-radiant-rollback",
-  "responsibility": "T108-SHINING-PATIENT one genuine two-turn Engine patient journey: exact initial world, accepted schema5/natural8 consent, normal cleanup, separate shared UI confirmation, player Healing/independent natural tier, active8 retained request, wound/effects/History/world/memory actual C4 compensation plus outer rollback.",
-  "excludes": "No real DOM/provider/fresh-process, other head kinds, unwilling/helpless, diagnosis, full US4/US5/US6 or DFR/Mortal/Windows HOLD qualification.",
-  "changeHints": [
-    "BookOfEternityClient/Services/SpiritualTreatmentParticipation.ShiningPatientAdmission.cs",
-    "BookOfEternityClient/Services/WoundApplicationService.cs"
-  ],
-  "related": [
-    {
-      "id": "shining-patient-current-contracts",
-      "when": "Cheap current source and codec admission must pass first."
     },
     {
-      "id": "shining-patient-menu-current",
-      "when": "Initial-world menu/detail source reuse must pass first."
-    }
-  ],
-  "requirements": {
-    "frontendBuild": false,
-    "exclusive": true,
-    "ciRunner": "ubuntu-24.04"
-  },
-  "timeoutMinutes": 3,
-  "expectedSeconds": null,
-  "selectors": [
-    {
-      "project": "integration",
-      "tests": [
-        "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.RadiantHeadPatientPublicationFailureRestoresGrantWorldAndMemory"
+      "id": "shining-patient-radiant-browser",
+      "responsibility": "T108-SHINING-PATIENT one genuine two-turn Engine patient journey: exact initial world, accepted schema5/natural8 consent, normal cleanup, separate shared UI confirmation, player Healing/independent natural tier, active8 retained request, wound/effects/History/world/memory and completed inert replay.",
+      "excludes": "No real DOM/provider/fresh-process, other head kinds, unwilling/helpless, diagnosis, full US4/US5/US6 or DFR/Mortal/Windows HOLD qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/SpiritualTreatmentParticipation.ShiningPatientAdmission.cs",
+        "BookOfEternityClient/Services/WoundApplicationService.cs"
+      ],
+      "related": [
+        {
+          "id": "shining-patient-current-contracts",
+          "when": "Cheap current source and codec admission must pass first."
+        },
+        {
+          "id": "shining-patient-menu-current",
+          "when": "Initial-world menu/detail source reuse must pass first."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.BrowserRadiantHeadPatientUsesConsentCleanupAndActualHealing"
+          ]
+        }
       ]
-    }
-  ]
-},
+    },
     {
-      "id": "shining-patient-current-contracts",
-      "when": "Exact patient DATA/codec/GM requirements changed."
-    }
-  ],
-  "requirements": {
-    "frontendBuild": false,
-    "exclusive": true,
-    "ciRunner": "ubuntu-24.04"
-  },
-  "timeoutMinutes": 2,
-  "expectedSeconds": null,
-  "selectors": [
-    {
-      "project": "integration",
-      "tests": [
-        "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.PatientMenuDoesNotDependOnUnrelatedGuardianRegistryAndReadsSelectedRootsOnce"
+      "id": "shining-patient-resident-rollback",
+      "responsibility": "T108-SHINING-PATIENT one genuine two-turn Engine patient journey: exact initial world, accepted schema5/natural8 consent, normal cleanup, separate shared UI confirmation, player Healing/independent natural tier, active8 retained request, wound/effects/History/world/memory actual C4 compensation plus outer rollback.",
+      "excludes": "No real DOM/provider/fresh-process, other head kinds, unwilling/helpless, diagnosis, full US4/US5/US6 or DFR/Mortal/Windows HOLD qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/SpiritualTreatmentParticipation.ShiningPatientAdmission.cs",
+        "BookOfEternityClient/Services/WoundApplicationService.cs"
+      ],
+      "related": [
+        {
+          "id": "shining-patient-current-contracts",
+          "when": "Cheap current source and codec admission must pass first."
+        },
+        {
+          "id": "shining-patient-menu-current",
+          "when": "Initial-world menu/detail source reuse must pass first."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.ShiningResidentPatientPublicationFailureRestoresGrantWorldAndMemory"
+          ]
+        }
       ]
-    }
-  ]
-},
+    },
+    {
+      "id": "shining-patient-radiant-rollback",
+      "responsibility": "T108-SHINING-PATIENT one genuine two-turn Engine patient journey: exact initial world, accepted schema5/natural8 consent, normal cleanup, separate shared UI confirmation, player Healing/independent natural tier, active8 retained request, wound/effects/History/world/memory actual C4 compensation plus outer rollback.",
+      "excludes": "No real DOM/provider/fresh-process, other head kinds, unwilling/helpless, diagnosis, full US4/US5/US6 or DFR/Mortal/Windows HOLD qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/SpiritualTreatmentParticipation.ShiningPatientAdmission.cs",
+        "BookOfEternityClient/Services/WoundApplicationService.cs"
+      ],
+      "related": [
+        {
+          "id": "shining-patient-current-contracts",
+          "when": "Cheap current source and codec admission must pass first."
+        },
+        {
+          "id": "shining-patient-menu-current",
+          "when": "Initial-world menu/detail source reuse must pass first."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.RadiantHeadPatientPublicationFailureRestoresGrantWorldAndMemory"
+          ]
+        }
+      ]
+    },
     {
       "id": "shining-patient-current-contracts",
       "responsibility": "T108-SHINING-PATIENT pure current resident/radiant admission, exact source dependencies and invalidation, no provider role/art/service prerequisite; family8 retained request, independent natural tier, closed selection and valid-cycle consent refusals.",
