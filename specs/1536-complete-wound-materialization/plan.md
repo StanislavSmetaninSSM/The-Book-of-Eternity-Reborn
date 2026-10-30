@@ -1,4 +1,30 @@
-# T121 spiritual knowledge-only reducer scaffold — UNCOMPILED/UNRUN
+# T121 spiritual diagnosis — EX3 semantic RED accepted
+
+Independent Astra OUTCOME accepted the actual causal result at source
+255d5146419d6d8291afb3b58596272349dabf3e: both realm rows failed only at the
+final reducer IsValid assertion, line98, with wound_transition_active_source_invalid.
+All preceding canonical envelope, exact retained request, complete declared
+knowledge-only delta and source/input immutability assertions passed. No timeout,
+skip, duplicate or other failure. Category6.3613905s/60s; wall17.1646317s. TRX SHA256
+6a587b8ccbe8cf88d61f8d36ed528ed4286af175a6f009edfac0e679f8da4c26.
+
+Four fresh EX3 builds had zero errors and baseline warnings12/23/26/102. Four
+PE/PDB pairs,188 source bindings and27 artifacts were verified; catalog1194/13011
+and exact PlanOnly2/1/1 preceded the two-row run. The post-RED fence retained
+stable pins and no live owners. External EX3-artifact-archive-proof.json records
+27 members,62,149,782B, decoded194,979,840B, all member hashes and full gzip EOF/CRC,
+SHA2566db0e72c69cea4b64604503c76e80d276a80f252b5f4cad3b362c365ff6b2156.
+Raw remains outside Git; no runtime was repeated or failed row relabelled PASS.
+
+The coherent GREEN implementation now follows the accepted design: explicit
+spiritual sealed proof, knowledge first, exact optional whole natural suffix,
+durable original/request/control/scheduler and two-result common publication,
+retained staging/completion/replay, shared UI and GM sync. Accepted EX2B53 and prior
+lineages remain preserved. GREEN/native/UI are not yet run; all parent boundaries
+and HOLDs remain open. Three supported requirement proofs can serve the usable
+flow; the other eight remain unavailable without an actual canonical source.
+
+# T121 spiritual knowledge-only reducer scaffold — historical pre-EX3 WIP
 
 After accepted EX2B admission53, the next causal cut is one Unit method with two
 realm rows in spiritual-diagnosis-reduction-causal, original 60s budget. Both rows
