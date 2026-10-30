@@ -149,6 +149,7 @@ internal static partial class AfterlifeWoundHealingPlanner
             files.VerifyCurrentSessionOperation(lease);
             _original.RequireCurrent(files, lease, _snapshot);
             RequireParticipationCurrent();
+            RequireConditionalMemoryCurrent();
             foreach (var pair in _sources)
             {
                 // The GM authors the request-bound progression outcome after the original snapshot.
@@ -276,6 +277,7 @@ internal static partial class AfterlifeWoundHealingPlanner
             RequireExecutionCurrent();
             var result = AfterlifeEntityProfileState.ProjectAcceptedRoot(current, previous,
                 _acceptedProgressionReport, soul, shining);
+            _patientMemory?.ApplyProfiles(result);
             HasCompleteProfileProjection = true;
             return result;
         }
@@ -426,6 +428,8 @@ internal static partial class AfterlifeWoundHealingPlanner
                 // closes only its additional actual-original evidence.
             }
             owner.AdmitGraphs(updates);
+            await owner.BindShiningPatientMemoryAsync(roots.GetValueOrDefault(GuardianAbodeResidentState.StatePath));
+            owner.RequireMemoryProgramsBound();
             owner.RequireCurrent(files, lease);
             return owner;
         }

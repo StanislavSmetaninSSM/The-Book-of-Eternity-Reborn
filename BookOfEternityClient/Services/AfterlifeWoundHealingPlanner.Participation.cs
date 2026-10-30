@@ -104,6 +104,8 @@ internal static partial class AfterlifeWoundHealingPlanner
             _participationChanges = detachedChanges;
             _participationOutcomes = outcomes;
             BindResidentThoughts(currentRoots.GetValueOrDefault(GuardianAbodeResidentState.StatePath));
+            await BindShiningPatientMemoryAsync(currentRoots.GetValueOrDefault(GuardianAbodeResidentState.StatePath));
+            _patientMemory?.ApplyProfiles(acceptedProfiles);
             RequireCurrent(_files, _lease);
         }
 
@@ -122,6 +124,7 @@ internal static partial class AfterlifeWoundHealingPlanner
 
         internal void ApplyParticipationAfterImage(JsonObject profiles)
         {
+            RequireMemoryProgramsBound();
             RequireResidentThoughtFamily();
             if (_participationOutcomes is null) return;
             // Pure detached composition; current authority is checked by the

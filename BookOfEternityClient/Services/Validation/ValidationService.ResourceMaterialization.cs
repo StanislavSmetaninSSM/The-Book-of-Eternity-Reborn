@@ -1351,6 +1351,7 @@ public partial class ValidationService
                 if (naturalOwner is null) throw new InvalidDataException("Participation changes require an actual ordinary natural publication owner.");
                 await naturalOwner.PrepareParticipationAsync(changes, profiles);
             }
+            naturalOwner?.RequireMemoryProgramsBound();
         }
         catch (Exception failure) when (failure is not CoordinatedStatePublicationUncertainException &&
             failure is (InvalidDataException or InvalidOperationException or JsonException or ArgumentException or OverflowException))

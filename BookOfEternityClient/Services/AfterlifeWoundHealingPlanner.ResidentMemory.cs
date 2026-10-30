@@ -13,9 +13,15 @@ internal static partial class AfterlifeWoundHealingPlanner
 
         private void AdmitResidentThoughtResponse(JsonObject? response)
         {
-            if (response?.ContainsKey(SpiritualTreatmentParticipation.ResidentThoughtResponseProperty) != true) return;
-            _residentThoughtCommands = response[SpiritualTreatmentParticipation.ResidentThoughtResponseProperty] is JsonArray rows
-                ? rows.DeepClone().AsArray() : throw new InvalidDataException("Protected resident thoughts require an explicit array.");
+            if (response?.ContainsKey(SpiritualTreatmentParticipation.ResidentThoughtResponseProperty) == true)
+                _residentThoughtCommands = response[SpiritualTreatmentParticipation.ResidentThoughtResponseProperty] is JsonArray rows
+                    ? rows.DeepClone().AsArray() : throw new InvalidDataException("Protected resident thoughts require an explicit array.");
+            if (response?.ContainsKey(GuardianAbodeResidentState.UpdateThoughtJournalProperty) == true)
+                _ordinaryResidentThoughtCommands = response[GuardianAbodeResidentState.UpdateThoughtJournalProperty] is JsonArray ordinary
+                    ? ordinary.DeepClone().AsArray() : throw new InvalidDataException("Ordinary patient memory requires an explicit array.");
+            if (response?.ContainsKey(SpiritualTreatmentParticipation.ShiningPatientMemoryResponseProperty) == true)
+                _radiantThoughtCommand = response[SpiritualTreatmentParticipation.ShiningPatientMemoryResponseProperty] is JsonObject radiant
+                    ? radiant.DeepClone().AsObject() : throw new InvalidDataException("Radiant patient memory requires an explicit object.");
         }
 
         private JsonObject? ResidentThoughtRecord => _data?.AidWitness?["record"]?.AsObject() ??
@@ -39,6 +45,7 @@ internal static partial class AfterlifeWoundHealingPlanner
 
         private void BindResidentThoughts(JsonObject? roster)
         {
+            if (ResidentThoughtRecord is { } patient && SpiritualTreatmentParticipation.IsShiningPatientParticipation(patient)) return;
             if (_residentThoughtCommands is null) return;
             RequireResidentThoughtFamily();
             if (roster is null) throw new InvalidDataException("Resident memory requires its original roster.");
@@ -53,6 +60,11 @@ internal static partial class AfterlifeWoundHealingPlanner
 
         internal JsonObject ProjectResidentThoughts(JsonObject current)
         {
+            if (_patientMemory is not null)
+            {
+                if (_published) throw new InvalidDataException("A closed patient owner cannot compose memory.");
+                return _patientMemory.ProjectResidents(current);
+            }
             if (_residentThoughtCommands is null) return current;
             // Pure composition, like the owned profile projector. The actual
             // writer retains its full fresh opening/closing source scans.
@@ -71,6 +83,7 @@ internal static partial class AfterlifeWoundHealingPlanner
 
         private void RequireResidentThoughtAfterImage(JsonObject before, JsonObject after)
         {
+            if (_patientMemory is not null) { _patientMemory.RequireResidentAfterImage(before, after); return; }
             if (_residentThoughtCommands is null) return;
             _ = ProjectResidentThoughts(before);
             if (!JsonNode.DeepEquals(_residentThoughtAfterImage, after[GuardianAbodeResidentState.ThoughtJournalProperty]))
@@ -84,6 +97,9 @@ internal static partial class SpiritualTreatmentParticipation
     // The existing journal composer upserts; this narrow admission must prove an
     // append first. No file reads, publication permission or separate cache.
     internal static JsonArray ValidateResidentThoughtAppend(JsonArray commands, string residentId, int turn, JsonObject before)
+        => ValidateResidentThoughtAppends(commands, id => id == residentId, turn, before);
+
+    private static JsonArray ValidateResidentThoughtAppends(JsonArray commands, Func<string, bool> acceptsOwner, int turn, JsonObject before)
     {
         if (commands.Count == 0) throw new InvalidDataException("Protected resident memory requires a nonempty append.");
         var mandatory = new[] { "entryId", "residentId", "turn", "timestamp", "title", "summary" };
@@ -100,7 +116,7 @@ internal static partial class SpiritualTreatmentParticipation
         {
             if (item is not JsonObject row || mandatory.Any(f => !row.ContainsKey(f)) ||
                 row.Any(p => !mandatory.Contains(p.Key, StringComparer.Ordinal) && !optional.Contains(p.Key, StringComparer.Ordinal)) ||
-                Text(row, "residentId") != residentId || Scalar<int>(row, "turn") != turn ||
+                !acceptsOwner(Text(row, "residentId")) || Scalar<int>(row, "turn") != turn ||
                 !ResourceMaterializationContract.IsExactIdentifier(Text(row, "entryId")) || !ids.Add(Text(row, "entryId")) ||
                 !DateTimeOffset.TryParse(Text(row, "timestamp"), CultureInfo.InvariantCulture, DateTimeStyles.None, out var timestamp) ||
                 timestamp.Offset != TimeSpan.Zero || string.IsNullOrWhiteSpace(Text(row, "title")) || string.IsNullOrWhiteSpace(Text(row, "summary")))

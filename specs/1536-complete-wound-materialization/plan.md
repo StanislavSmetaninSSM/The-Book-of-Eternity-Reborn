@@ -1,3 +1,9 @@
+# T108-SHINING-PATIENT-MEMORY implementation WIP
+
+Sole writer resumed after independent Astra accepted S5R native RED: actual resident43 publication prerequisites passed, final Full reasoning alone failed with the two observed cross-owner memory codes. Core detached composition and Continuation integration now written: globally fresh resident appends in original→ordinary→protected order; exact radiant ledger/summary program; conditional signed roster source with fresh readback/closing. UNCOMPILED/UNRUN and incomplete pending transport/interface validation, full response fixture/tests and GM sync. No build/runtime by writer; prior PASS and failed raw remain external. No Engine admission.
+
+Optimization: freeze detached programs once inside existing Continuation and reuse its parsed original profiles/Shining/roster DATA. Only radiant ordinary resident rows add an actual signed roster read/dependency; patient admission alone remains roster-free. All physical owner/lease/original/current/readback/closing checks remain fresh. No new cache or publisher.
+
 # T108-SHINING-PATIENT-MEMORY: native causal proof WIP
 
 S5R Integration build at10a4a36db exited1 with one compile-only CS0103: the new response proof omitted the existing Configuration namespace for SharedJsonOptions. Added only that import; production, fixture predicates and assertions unchanged. Baseline102warnings retained. No runtime/RED result exists. Fresh corrected Integration build, current artifact/PDB fence and exact discovery/PREP remain required; writer pauses for main to own these checks.

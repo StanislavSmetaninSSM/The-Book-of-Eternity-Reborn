@@ -13,11 +13,12 @@ internal static partial class AfterlifeWoundHealingPlanner
             (_data?.AidWitness ?? _participationOutcomes?.Single()?.AsObject())?["record"] is JsonObject record
                 ? SpiritualTreatmentParticipation.Selection(record) : null;
         internal bool OwnsLocalityPath(string path) => HasLocalityGuards &&
+            (path == GuardianAbodeResidentState.StatePath && _memoryRosterImage is not null ||
             (HasServicePayment ? AfterlifeWoundTreatmentAuthority.ServiceLocalityPathsFor(_data!.ServiceQuote!) :
                 RetainedAidSelection is { } retained
                     ? AfterlifeWoundTreatmentAuthority.AidLocalityPathsFor(retained, includeCoreState: true)
                     : Array.Empty<string>())
-                .Contains(path, StringComparer.Ordinal);
+                .Contains(path, StringComparer.Ordinal));
 
         // Only the actual validated normalizer calls this around its computed
         // write. Original/evidence/source fingerprint remain frozen; only the
@@ -28,7 +29,8 @@ internal static partial class AfterlifeWoundHealingPlanner
             if (!OwnsLocalityPath(path)) throw new InvalidDataException("A spiritual owner cannot advance an unrelated normalizer source.");
             using var fresh = FileSystemManager.SuppressValidationReuse();
             RequireCurrent(files, lease);
-            var images = _participationSources ?? _sources;
+            var images = (_participationSources ?? _sources).ToDictionary(p => p.Key, p => p.Value, StringComparer.Ordinal);
+            if (_memoryRosterImage is { } memoryRoster) images[GuardianAbodeResidentState.StatePath] = memoryRoster;
             if (HasServicePayment)
             {
                 var beforeRoot = StrictJsonAuthority.Deserialize<JsonObject>(CanonicalJsonUtf8.DecodeOneOptionalBom(images[path].Bytes!), new JsonSerializerOptions(), path)!;
@@ -122,6 +124,7 @@ internal static partial class AfterlifeWoundHealingPlanner
                 throw new InvalidDataException("Owned locality normalization did not publish its exact computed afterimage.");
             var advanced = images.ToDictionary(p => p.Key, p => p.Value, StringComparer.Ordinal);
             advanced[path] = expected;
+            if (path == residentPath && _memoryRosterImage is not null) _memoryRosterImage = expected;
             if (_participationSources is not null) _participationSources = advanced;
             if (_sources.ContainsKey(path))
             {
