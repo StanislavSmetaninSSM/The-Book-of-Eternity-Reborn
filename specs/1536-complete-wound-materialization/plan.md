@@ -1,3 +1,24 @@
+# US6 capture ordering source/build/discovery ready; cheap3 pending
+
+Sol SOURCE ACCEPTc1e6b36a95bbdb34f95dd801a87b484b5b0c5c45, cleanpublishedsource.
+Fresh Integration-only EPOCH build exit0/0errors/102baselinewarnings2:01.69; unchanged
+HISTGREEN Main/Support/Unit/source06 retained.27artifacts/116sourcebindings/4PE/PDB,
+8resources/32copies/daemon consistency verified. Previous qualified27outputs archived
+and full decoded/hash-verified (61837763bytes/SHAee38b16fd33001a67de1e048859105e498bafc8e7ee2fe949488aef99219ee79).
+Catalog1153/12936valid,0executed; exactPlanOnly4descriptors/6cases(cheap3+console/
+browser/rollback1each),0executions/duplicates,cleanup/pins unchanged. These are
+preparation facts, not UI/capture qualification.171acceptedcases unchanged/notreplayed.
+
+Next independent PREP ->cheap3 at1min. Its2positive captures must becomplete; deliberate
+pre-binding negative must remain incomplete with2attempted/0stored, intact full-message
+gzip/footer/decode and rootabsence. Then one originalconsole3min, browser/rollback only
+following freshconditionaladmission and priorverifiedcompletePASS. No budget/guard/
+timestamp/collection change. Raw EPOCH* external, currentreserve adequate/noquota.
+All oldgameplay/diagnostic failures retained; no cleanupdeletion or US6acceptance yet.
+This metadata-only checkpoint does not require another build.
+
+---
+
 # US6 console functional body completed; capture epoch wiring corrected WIP
 
 Actual HISTGREEN-console sourcea2fa8e932(compiled06):1completedFAIL,category33.7909115s,
