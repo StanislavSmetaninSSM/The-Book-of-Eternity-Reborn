@@ -112,6 +112,13 @@
       "contracts": [
         "#1536 existing resident provider4/result6 boundary"
       ]
+    },
+    {
+      "category": "shining-faction-progression-materialization-data",
+      "reason": "Actual public faction outcome failed because real automatic income appended progressionLedger without advancing its initially valid empty materialization disposition. Cheap actual projector proof isolates this before the narrow production fix.",
+      "contracts": [
+        "#1536 US6 T137-AUTO-HISTORY complete profile after actual client progression"
+      ]
     }
   ]
 }

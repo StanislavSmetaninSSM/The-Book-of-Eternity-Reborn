@@ -1,3 +1,40 @@
+# US6 actual public outcome blocker — client progression materialization
+
+Source46f2fff:61/61remaining Unit PASS,29.0321342s, exactcounts/cleanup/pins; with
+26retained older unchanged cases,87distinct Unit PASS (two lineages, not onefresh87).
+Backend actual13executed12PASS/1FAIL,14UNRUN: oldElyaraShining4/Chaos3 and new
+confirmation4/menu-source1 PASS. Actual1/20providers each openroster1/profiles2,
+whole actual source-open maps equal; no speedup claim. Fault hook mistakenly waited
+ChaosPending1 during Shining (realChaos0/Shining1); fixture-only correction independently
+confirmed, not yet applied. No accepted gameplay/Engine result inferred.
+
+Independent remaining outcome3 then all FAIL during publication: exact current
+faction healer no longer offers this local public service. Actual staging/draw/retry
+succeeded. Astra/high source trace confirms: the existing complete profile starts
+with valid empty ledgers/disposition; actual client_auto_strategy appends an income
+row but leaves materialization.sections.progressionHistory=empty_by_design. Strict
+ActorMaterializationContract rejects the contradictory projected actor; new owned
+service admission exposes it. Built-in Elyara starts populated and remains valid.
+Exact throw invocation is source attribution because captured issue omits its stack;
+no fabricated dynamic stack claim. No guard may be relaxed or fixture history invented.
+
+T137-AUTO-HISTORY tracked: one minimal independent typed real ProjectAcceptedRoot
+causal test/control category is now written (UNCOMPILED/UNRUN). Narrow proposed fix
+only automatic first actual append: when both governed ledger arrays are physically
+empty and existing disposition is valid empty_by_design with reason, advance ONLY
+that disposition to populated after the client append. No new envelope synthesis,
+cache, economics or permission. Repeated cycle/disabled/no-report/malformed/inconsistent
+history controls retain exact behavior. Actual RED before production correction,
+independent SOURCE, then affected fresh builds and source-selected regression required.
+
+Old resident aid5consumer selection separately timed out:190.1679515s,0 completed
+TRX cases, no PASS; owned cleanup true, processes settled. Preserve it as unexplained
+open regression; no blind retry, higher limit or new performance project. Projection6
+and all three Engine journeys still UNRUN. Full external A2 backend/remaining/private
+raw retained; no original raw/saves/recovery deleted. Negotiated B still unimplemented.
+
+---
+
 # US6 faction A first Unit failure — fixture locality corrected, runtime pending
 
 Actual runtimefc825a5a (compiled8883): Unit stopped after60cases/3descriptors,
