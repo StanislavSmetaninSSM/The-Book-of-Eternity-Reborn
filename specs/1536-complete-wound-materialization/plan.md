@@ -1,3 +1,40 @@
+# US6 console diagnostic isolated historical-envelope conflict; no UI PASS
+
+Independent Sol OUTCOME accepted cheap2 and released exactly one original console
+at3min. FCAP-console-runtime actualsource75ec18cff(compiledbacf0c0ec):TIMEOUT,
+category180.1627748s/3min,wall191.1917511s,0completedTRX. Runner-owned process cleanup
+and all27binarypins verified. Actual game fixture root remains after kill; no fixture
+closing receipt/footer, gzip prefix incomplete. Do not confuse process cleanup with
+fixture removal; no complete capture or replacement/retention deletion claim.
+
+Live original macro/message evidence showed fixture/runtime/refresh/confirmation
+complete, actual GM response authored, then ProcessPlayerTurn entered state repair.
+Exact saved repair: actor_materialization_historical_envelope_changed for
+resident:resident_public_healer_0, profiles[2].materialization. Real current and frozen
+pre-turn profile bytes prove client automatic append changed progressionHistory from
+empty_by_design(reason) to populated. This conflicts with the existing immutable
+historical-envelope contract. The earlier first-history correction passed direct
+checks but is insufficient and incorrect for full accepted-turn continuity; no claim
+that the source guards or timeout are fixed. Original failure evidence is preserved.
+
+Astra/high bounded design audit now checks minimal existing-contract correction:
+preserve immutable envelopes, apply historical structural validation only with exact
+validated pre-turn actor/envelope evidence, retain strict new materialization and all
+current tier/life/membership/service/authority checks. Shining read projection and
+full faction-reference validation both consume this boundary. No guard exemption,
+fabricated historical rows, diagnostic expansion, cache project or limit increase.
+Next cheap causal proof must cover actual first append plus unchanged envelope and
+correct current service admission, with forged/new/malformed/historical-drift refusals,
+before another real UI attempt. SOURCE implementation remains pending design.
+
+Full raw and exact repair/current+snapshot inputs outside checkout under
+/workspace/tboe-linux-evidence-20261025/us6-faction-service-agreement/FCAP-console-runtime;
+retained actual owned fixture /tmp/boe-spiritual-healing-lifecycle-07a345a7acb74eb3904b2800022f1682.
+No raw/saves/recovery deleted or uploaded. Browser/rollback/private5/HOLD unchanged;
+public backend119distinct old PASS remains exact separate evidence, not wholeUS6.
+
+---
+
 # US6 bounded original-capture controls2/2PASS; console still conditional
 
 Independent Sol6.1/xhigh PREP accepted exact cheap2 at1min after bacf0c0ec source/
