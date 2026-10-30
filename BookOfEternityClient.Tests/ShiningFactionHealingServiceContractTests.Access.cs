@@ -18,6 +18,8 @@ public sealed partial class ShiningFactionHealingServiceContractTests
         var actor = input.Profiles["profiles"]![0]!.AsObject();
         Assert.Empty(ActorMaterializationContract.ValidateAfterlifeProfile(JsonSerializer.SerializeToElement(actor),
             "independent.service.profile", requireEnvelope: true, canTradeEvidence: false));
+        Assert.True(LocalInteractionScopeService.IsAfterlifeActorLocal(
+            ShiningCurrentHallContract.RequireCurrentScope(input.Shining, input.Residents), actor));
         var before = Serialize(input);
         var service = Assert.Single(ShiningFactionHealingSupport.ProjectCurrentCurrencyServices(input.Shining, input.Residents, input.Profiles));
         var quote = Quote(service.Profile, actor);
@@ -39,7 +41,7 @@ public sealed partial class ShiningFactionHealingServiceContractTests
     [InlineData("duplicate_profile")] [InlineData("duplicate_realm")] [InlineData("foreign_actor")]
     [InlineData("hidden_actor")] [InlineData("dead_actor")] [InlineData("missing_life")] [InlineData("incomplete_actor")]
     [InlineData("missing_service")] [InlineData("unavailable")] [InlineData("conditions")] [InlineData("relationship")]
-    [InlineData("noncurrency")] [InlineData("foreign_actor_hall")] [InlineData("wrong_tier")]
+    [InlineData("noncurrency")] [InlineData("foreign_actor_hall")] [InlineData("foreign_actor_hall_name")] [InlineData("wrong_tier")]
     public void RoleOrUnprovedCurrentServiceNeverBecomesAnExecutableProvider(string change)
     {
         var input = ShiningFactionHealingServiceTestData.Create();
@@ -74,6 +76,7 @@ public sealed partial class ShiningFactionHealingServiceContractTests
             case "relationship": actor["healingServiceProfile"]!["minimumRelationship"] = 10; break;
             case "noncurrency": actor["healingServiceProfile"]!["compensationKinds"] = new JsonArray("favor"); break;
             case "foreign_actor_hall": actor["locationId"] = "hall_other"; actor["healingServiceProfile"]!["locationRef"] = "hall_other"; break;
+            case "foreign_actor_hall_name": actor["locationName"] = "Чужой зал"; break;
             case "wrong_tier": actor["standardArts"]!["spiritual_healing"] = 0; break;
         }
         var before = Serialize(input);

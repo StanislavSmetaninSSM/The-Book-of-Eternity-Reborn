@@ -1,3 +1,33 @@
+# US6 faction A first Unit failure — fixture locality corrected, runtime pending
+
+Actual runtimefc825a5a (compiled8883): Unit stopped after60cases/3descriptors,
+54PASS/6FAIL, no timeout/skip/duplicate; complete owned/runtime cleanup and unchanged
+pins verified.24old service-contract +2old service-documentation PASS are retained.
+All6failure messages are empty service list in new positive access/tuple/dependency
+controls. The other28access PASS are not qualified negative proof because their base
+fixture was invalid. Remaining26Unit plus27backend/3Engine were UNRUN (56whole-plan
+cases unrun); no gameplay acceptance inferred from the partial run.
+
+Cause confirmed independently by Sol/xhigh: the complete actor factory retains
+locationName=Врата точного договора. Both new fixture constructors replaced its ID,
+but not that name. Existing strict Shining locality rightly requires coherent ID AND
+name; no production defect or guard relaxation. Earlier preparation review missed
+this pair. The exact3file fixture correction sets both actual hall names and adds an
+explicit strict-locality positive plus same-correct-ID/wrong-name refusal. Direct
+actor/hall/faction/name aliases were audited together, no other confirmed defect.
+Causal SOURCE-delta accepted; no production/isPresent/economy/assertion weakening.
+
+New exact selection is117cases: retain26unchanged PASS; rerun affectedaccess35 and
+remainingcausal1/docs4/capability21 =61Unit, then27backend and3serialEngine (91pending).
+Fresh Support/Unit/Integration are required; owning Main8883 and its code remain
+unchanged. Preserve first failed TRX/raw and actual27owning artifacts before replacement;
+no deletion. Update source/PDB/artifact/catalog/PlanOnly/PREP before retry. All new
+GREEN/gameplay/source-count results remain UNRUN. Raw A-unit-runtime retains verified
+failed outcome; current source correction is test fixture only. B design below remains
+pending implementation; no HOLD route is resumed.
+
+---
+
 # US6 public faction A prepared source8883 — runtime UNRUN
 
 Fresh source8883a910d2133d236beb3fb42f69ca49962829d4: owning Main/TestSupport/

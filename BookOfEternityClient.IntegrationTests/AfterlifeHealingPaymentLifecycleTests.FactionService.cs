@@ -60,6 +60,7 @@ public sealed partial class AfterlifeHealingPaymentLifecycleTests
                     residents["entries"]!.AsArray().Add(resident);
                     var actor = inputs.Profiles["profiles"]![index]!.DeepClone().AsObject();
                     actor["displayName"] = resident["displayName"]!.DeepClone(); actor["locationId"] = "hall_elyara_companion";
+                    actor["locationName"] = "Зал сопровождения";
                     actor["healingServiceProfile"]!["locationRef"] = "hall_elyara_companion";
                     if (progression is not null)
                     {

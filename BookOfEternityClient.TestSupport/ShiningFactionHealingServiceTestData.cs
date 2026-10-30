@@ -55,6 +55,7 @@ internal static class ShiningFactionHealingServiceTestData
             });
             var profile = AfterlifeActorMaterializationTestFixture.CreateCompleteProfile("resident", id, "Shining Abode", 42);
             profile["lifeState"] = "alive"; profile["visibility"] = "public"; profile["locationId"] = HallId;
+            profile["locationName"] = "Зал исцеления";
             profile["standardArts"]!["spiritual_healing"] = 3;
             profile["healingServiceProfile"] = new JsonObject
             {
