@@ -1,3 +1,30 @@
+# T121 EX4D cheap block accepted — native/UI qualification pending
+
+Independent Astra OUTCOME and the primary's exact TRX/hash/ID-counter union accept
+131 distinct cheap PASS / 51 methods / 13 descriptors: 60 retained at `c870ed36d`
+plus 71 at `0c73c929c`, not one fresh 131-case run. The old guidance one PASS and
+two FAIL are excluded from the accepted union and remain preserved as failed-run
+evidence. EX4D completed 71/71 in 85.2732564s; category times were 5.6248–10.0889s
+within their unchanged 60s budgets, with no skip, timeout, duplicate or underfill.
+Owned cleanup completed and all binary pins remained stable. The compact receipt
+is `EX4D-verified-cheap-union.json` in the existing external diagnosis evidence root;
+full raw/TRX and earlier EX4 failure/captures remain outside Git.
+
+Fresh Unit and Integration builds at `0c73c929c` exited 0 with baseline warnings:
+Unit 1:13.87/26, Integration 2:29.41/102. Main/Support retain EX4B `03a1793da`
+through actual source/PDB continuity. Four PE/PDB pairs, 213 source bindings,
+27 artifacts, ten resources/40 copies and four daemon copies matched. The closing
+fence at 22:05:16 UTC found no live owners and about 4.639GB free. The primary's
+EX4D owning archive is still in progress; completion is not claimed here.
+
+All 13 native/UI cases remain UNRUN. Next is exact PlanOnly/PREP for seven native
+categories / ten cases / seven methods, followed by three serial UI cases at their
+existing bounds. This checkpoint changes only the plan and closes no feature task:
+broader T121, Mortal procedural diagnosis, eight unavailable source adapters and
+DFR/Mortal-compatibility/Windows holds remain open. Canonical test getters are reused
+once; existing operation DATA and fresh source/authority/publication checks remain.
+No new cache or speedup claim is made, and the writer ran no build/test/discovery.
+
 # T121 EX4C cheap partial outcome — test value-oracle correction, UNCOMPILED/UNRUN
 
 The corrected Integration build at `c870ed36d` exited 0 with 102 baseline warnings
