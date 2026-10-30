@@ -1,3 +1,103 @@
+# US6 executable faction service and negotiated aid — DESIGN WIP
+
+Source issue #1536; accepted base43f0b8f4c09629be5b9cf0933ea00737030ddebc.
+Tracked tasks T132/T133/T134/T136/T137/T138/T143–T147. Goal: actual confirmed
+local faction-provider treatment and an accepted non-currency agreement feeding the
+same healing/roll/target/cycle/History/C4 handlers. No new prices, automatic debt or
+quest completion, teleport, universal clinic, free treatment inferred from role, or
+closure of US6/#1536 from a view-only result. HOLD routes stay separate.
+
+Existing mechanisms read: currency service family7 owns sealed quote/wallet and one
+common publication; private provider offers use accepted participation records and
+History families4/6 with fresh next-cycle consent and separate player confirmation.
+These already feed the same resolver/program/effect/history/scheduler. Reuse both;
+do not introduce a parallel payment, agreement ledger, publisher or cache.
+
+Design A — existing public faction currency route (first implementation boundary):
+- Extend existing service quote owner support to an exact Shining resident, only
+  one visible current operational revealed faction, primary healing_support and
+  exact unique alive complete actor, same current canonical hall and explicit
+  available public currency profile. Missing/restricted/unknown access refuses;
+  minimumRelationship or authored conditions do not become implicitly satisfied.
+- Keep current prices25/50/100/200, percent50..200 and upward rounding, existing
+  wallet contribution, request/result7, failed-attempt charge and C4 rollback/replay.
+- Service locality dependencies become owner-specific: preserve Elyara's existing
+  guardians-only set; faction providers additionally own actual resident roster.
+  Sign/observe/hash/fresh-close the exact selected paths at staging and both actual
+  publication boundaries. One path-set function is shared by stage, original reader
+  and normalizer; never give all services a broader arbitrary source exception.
+- Existing common UI builds detached choices from its already loaded parsed roots,
+  with one actual additional roster read for Shining. Confirm rebuilds current
+  choices; show exact readable provider/price, no internal IDs. Action/confirmation
+  text must stop falsely naming Elyara for another provider. Read/cancel is inert.
+- Reuse the existing protected resident-memory append owner for the exact admitted
+  service resident. Normalization may advance only its actual checked image; it
+  cannot change admitted membership, capability, visibility or service locality.
+
+Design B — accepted negotiated provider offer (next implementation boundary):
+- Reuse existing spiritualTreatmentParticipationChange / natural accepted outcome /
+  private provider-offer witness, rather than letting a new UI field grant aid.
+- Add optional closed compensation DATA to provider offers only: canonical kind
+  favor/debt/quest/allegiance/free_aid, exact accepted agreement reference and readable
+  terms. Reject currency here (its exact quote/wallet route already owns currency).
+  Accepted offer/History binds the terms, parties, wound, actual original binding,
+  next eligible cycle and replay fingerprint; raw profile fields cannot mint it.
+- Existing Chaos Guardian/resident offer families4/6 provide the first genuine
+  negotiated journey, including canonical Elyara where her character contract
+  declares the kind. No new automatic reward/quest/debt/allegiance transition is
+  inferred: the accepted exact agreement remains the obligation evidence.
+- Display the exact accepted terms and ask separate player confirmation, retaining
+  current source/consent/condition checks before draw and publication. One accepted
+  attempt consumes its opportunity once even on failure, with no Feather mutation.
+  Revocation/changed agreement/locality/history/stale cycle refuses before draw.
+- Shining negotiated participation has no current typed locality family. Do not
+  silently treat a Shining resident as a Chaos resident. Review whether the same
+  participation family needs one minimal typed extension for full Shining coverage;
+  this remains explicit design work, not an implied implemented capability.
+
+Alternatives rejected: independent healing/obligation publisher duplicates existing
+atomic owners; inferred free service from healing_support changes game rules;
+parsing free prose or a boolean access flag substitutes for accepted exact evidence.
+No player/author decision appears necessary for technical schema/adapter choices;
+any real character/economic contradiction will be raised precisely, independently
+of the public faction implementation.
+
+Optimization assessment: reuse one operation's parsed wound/profiles/mechanics and
+locality roots, existing exact indexes and prepared quote/check. Owner is enclosing
+menu/stage/continuation; no DATA escapes beyond detached records. Each user call,
+phase, mutation/error/retry closes that lifetime and rechecks actual sources, lease,
+authority/history. No new retained cache. Real additional source reads1vs20providers
+and no duplicate complete materialization/check work must be proved cheaply before
+expensive UI runs; no game speedup claim from fixture-only counts.
+
+Finite implementation/verification sequence (no product code written yet):
+- [ ] Independent targeted DESIGN review of dynamic locality, resident memory and
+  accepted agreement/History boundary; resolve concrete findings, not a broad audit.
+- [ ] Minimal independent failing quote/menu contract for local public faction
+  provider, with exact category; fresh owning test build/discovery/Plan/PREP/RED.
+- [ ] Implement A through existing services/owners and all affected consumers.
+  Add negatives for hidden/historical/foreign/duplicate/dead/role/realm/hall/price/
+  conditions/funds/stale source, and typed C4/payment/History/replay controls.
+- [ ] Synchronize current GM guide/matrix/main task/daemon/example/manifest/guards;
+  one worked public faction service, no Mortal response change. Whole SOURCE and
+  finite impact selection before fresh Main/Support/Unit/Integration builds.
+- [ ] Exact cheap gate then changed console/browser public-provider journeys:
+  actual one payment/wound/effects/History/cycle, cancellation, stale refusal and C4
+  rollback. Fully prepare ordinary resources/reasoning/memory/natural cohort first.
+- [ ] Implement B with causal accepted-offer/source/terms/refusal tests and worked
+  negotiation example; cheap proof before actual grant→cleanup→confirm→treat flow.
+  Include favor/debt/quest/allegiance/free_aid, changed/forged/revoked/replayed terms,
+  payer wallet invariant, failed attempt and immutable accepted History.
+- [ ] Independent OUTCOME, exact distinct source lineages/raw completeness, compact
+  checkpoint commit/push/remote verification; continue remaining canonical tasks.
+
+All raw must be outside checkout in /workspace/tboe-linux-evidence-20261025, current
+free6.6GB with400MiB reserve plus full uncapped output. No new clone/restore, raw/saves/
+recovery deletion, accepted T142/T143 replay, broad suite or DFR/Mortal/Windows loop.
+Same Linux checkout/branch, Sol primary; one writer, independent risk-adjusted review.
+
+---
+
 # T142 ACCEPTED — living faction healers and historical-only exemption
 
 Issue #1536 / FR083. Current materialized Shining factions, including hidden,
