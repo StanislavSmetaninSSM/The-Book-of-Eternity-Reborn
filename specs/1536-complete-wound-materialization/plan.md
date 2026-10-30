@@ -211,13 +211,24 @@ no skip/timeout/duplicate, pins/cleanup stable. Independent menu/docs OUTCOME pe
 Sol conditional PREP admits existing native10 next only after these full PASS and
 fresh fences; providerUI4/newEngine6 not yet admitted. No production/source change.
 
+S4 menu4/docs2 independent Sol OUTCOME accepted. Existing native10/10PASS
+@9c023b2d912d9dc5d84cdf05ea86e4bdf812eadd: exact7methods/7descriptors/TRX,
+full unique IDs and all category budgets/cleanup/pins verified, no skip/timeout/
+duplicate. Independent native OUTCOME pending. This covers retained self2,
+Guardian3/4,resident5/6,Shiningprovider6/service7 dispatch, normalization, real
+publication, replay and charges; not the new patient8 Engine route. Next exact
+PlanOnly for six new patient journeys and four affected existing provider UI facts;
+first resident-console singleton180s requires independent PREP and fresh fences.
+No code/build-input change; completed old controls will not be repeated.
+
 Авторское решение диагностики принято2026-10-30 11:48UTC и отражено в FR071/tasks.
 После текущего Shining patient: Mortal method declares own procedure check/time/
 cost; spiritual Healing>=0 plus ALL path requirements, guaranteed declared reveals,
 one ordinary safe cycle/no OD/Feathers/items, no direct healing, natural recovery
 retained. Read/cancel inert. Execution UNIMPLEMENTED; DFR/Mortal compatibility/
 Windows HOLD не сняты. Patient code/fixtures compiled as recorded above; actual
-menu/native/providerUI/journeys remain UNRUN. S2/S3 measured artifacts retained
+menu4 and native10 PASS as recorded above; providerUI4/newjourneys6 remain
+UNRUN. S2/S3 measured artifacts retained
 with full member hashes and gzip EOF/CRC proof before owning Unit overwrites.
 
 # T121: условия известных диагностических путей приняты — #1536
