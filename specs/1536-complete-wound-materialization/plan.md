@@ -1,3 +1,19 @@
+# T121 admission/menu final review correction — UNCOMPILED/UNRUN
+
+Independent final SOURCE review identified a new display-only local named
+woundName in the existing legacy-token discovery scope. It is now woundLabel;
+no inventory allowance or production behavior changed. The existing bounded
+wound-read-semantic-source-guards category is selected for its three exact
+inventory/discovery/status guards. The extra-control-field request negative now
+recomputes its detached schema1 request fingerprint before asserting the exact
+closed-control refusal, so a stale outer hash cannot mask that predicate.
+
+Temporary source-estimated membership is now 53 cases / 19 methods / 3 Unit
+descriptors: admission/menu50 plus the three affected existing source guards.
+Catalog membership and all budgets are unchanged. No builds/tests were run by
+the writer; final independent SOURCE, fresh owning builds/discovery and PREP
+remain required. No additional feature or next-block implementation is included.
+
 # T121 admission/menu core — functional WIP, UNCOMPILED/UNRUN
 
 After accepted EX1 RED2, new admission tests were authored before production.

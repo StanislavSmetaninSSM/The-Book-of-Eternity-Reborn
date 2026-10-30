@@ -14,6 +14,13 @@
       "contracts": [
         "#1536 T121-DIAGNOSIS-EXECUTION / FR071; ADMISSION DATA only; no fake Mortal route, silent requirement/check ignore, reservation, draw or cost"
       ]
+    },
+    {
+      "category": "wound-read-semantic-source-guards",
+      "reason": "The new diagnosis menu production source is scanned by the existing bounded ownership inventory and legacy-token discovery guards. A display-only local was renamed to woundLabel rather than adding an inventory allowance; rerun these three exact guards to prove no new loose wound reader or status/wounds refresh bypass. No broad source suite or accepted gameplay replay.",
+      "contracts": [
+        "#1536 T121-DIAGNOSIS-EXECUTION / FR071 admission menu; existing semantic source inventory and strict read-only status/wounds boundary"
+      ]
     }
   ]
 }

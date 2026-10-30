@@ -227,7 +227,13 @@ public sealed class SpiritualDiagnosisAdmissionTests
         Assert.False(SpiritualDiagnosisRequestCodec.IsExact(original, otherTurn, data.Selection, data));
         Assert.False(SpiritualDiagnosisRequestCodec.IsExact(other, turn, data.Selection, data));
         var extra = original.DeepClone().AsObject(); extra["control"]!["unownedExtra"] = true;
-        Assert.Throws<InvalidDataException>(() => SpiritualDiagnosisRequestCodec.ReadSelection(extra));
+        var payload = extra.DeepClone().AsObject(); payload.Remove("requestFingerprint");
+        extra["requestFingerprint"] = WoundAcceptedTurnFingerprintWriter.Compute(new[]
+        {
+            "spiritual_diagnosis_request", "1", WoundAcceptedTurnFingerprintWriter.CanonicalJson(payload)
+        });
+        var refusal = Assert.Throws<InvalidDataException>(() => SpiritualDiagnosisRequestCodec.ReadSelection(extra));
+        Assert.Equal("Diagnosis request control must have its complete exact closed shape.", refusal.Message);
     }
 
     [Fact]

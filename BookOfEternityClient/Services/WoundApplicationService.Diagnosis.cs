@@ -26,9 +26,9 @@ internal static partial class WoundApplicationService
             if (selection is null || name.Length == 0) continue;
             var admission = source.Admit(wound, path.DiagnosisPathId, target);
             if (admission.IssueCode is "target_unavailable" or "path_unavailable" or "conflict_active") continue;
-            var woundName = WoundPlayerProjection.Text(wound.Display.Name);
+            var woundLabel = WoundPlayerProjection.Text(wound.Display.Name);
             var locus = WoundPlayerProjection.Text(wound.Classification.LocationProfile.ReadableLocus);
-            var label = name + " — " + woundName + (locus.Length == 0 ? "" : " (" + locus + ")");
+            var label = name + " — " + woundLabel + (locus.Length == 0 ? "" : " (" + locus + ")");
             choices.Add(new("diagnosis_" + choices.Count, selection, label, wound.Severity.Value,
                 admission.Data?.HealingTier, admission.Data is not null, admission.Data is not null
                     ? "Условия осмотра подтверждены. Он раскроет предусмотренные сведения за один обычный безопасный цикл; сам осмотр не лечит, бросок и плата не нужны."
