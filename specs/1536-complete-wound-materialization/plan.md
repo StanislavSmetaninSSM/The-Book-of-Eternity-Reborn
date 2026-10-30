@@ -1,3 +1,43 @@
+# US6 public faction A prepared source8883 — runtime UNRUN
+
+Fresh source8883a910d2133d236beb3fb42f69ca49962829d4: owning Main/TestSupport/
+Unit/Integration builds all exit0, 0errors, unchanged warnings12/23/26/102, elapsed
+2:44.42/0:16.21/2:40.09/2:38.34. Verified27artifact hashes/consistent dependency
+copies,4PE/PDB identities,111changed source bindings and8current operational-resource
+copies plus both daemon outputs. No new native or Windows qualification is claimed.
+Catalog discovery exit0:1147categories/12927methods-files,0executions/complete cleanup.
+Exact16-descriptor PlanOnly exit0:116cases/39methods,0executions,20.6968453s,
+no timeout/duplicate, owned cleanup and binary pins stable; this is not a runtime PASS.
+Full proof/raw in the existing external us6-faction-service-agreement/A-* paths.
+
+Before runtime: independently inspect these actual proofs and resource/ownership.
+First six Unit descriptors, then seven selected current-source/backend consumers;
+only after those pass, serial console/browser/rollback Engine descriptors. The exact
+116-case selection and existing1/3minute category limits are unchanged. This metadata
+checkpoint changes only plan.md after compilation/discovery; verify that delta instead
+of rebuilding unchanged source. Whole A SOURCE and fixture-preparation verdicts remain
+as recorded below. No live owned processes remain after build/Plan settlement.
+
+Next B DESIGN (read-only gpt-6-astra/high, implementation still UNRUN): accepted provider
+offers may carry closed optional compensation={kind,agreementRef,readableTerms}, only
+favor/debt/quest/allegiance/free_aid, never target consent/currency/null/unknown fields.
+Copy exact terms through accepted natural record/selection/witness/request/result;
+absence preserves existing private-free semantics. The offer is not a player debt;
+only separately confirmed accepted treatment binds consideration. Reuse History,
+resolver, scheduler and C4; no automatic debt/quest fulfillment or second ledger.
+Explicit noncurrency needs exact presence-aware signed-original wallet preservation,
+including absent wallet/total, plus refusal of even zero-valued GM Feather commands.
+Source hash alone does not prove a proposed wallet. A client-owned closed request
+currencyInvariant can persist original wallet DATA without historical wallet replay.
+Shining resident offers need a strict realm/locality{factionId,hallId} branch through
+the existing participation/result6 chain, mandatory signed roster/current-state joins,
+not Guardian/Abode aliases or a public-currency requirement. Accompanying Elyara needs
+her own exact canonical-Elyara hall variant, not fictitious membership/host authority.
+No product contradiction or author question found. Implement B after current A
+qualification; keep existing HOLD routes separate.
+
+---
+
 # US6 public faction A SOURCE accepted; builds/runtime pending
 
 Independent gpt-6-astra/high whole SOURCE accepted base106927124 to3e94083f plus
