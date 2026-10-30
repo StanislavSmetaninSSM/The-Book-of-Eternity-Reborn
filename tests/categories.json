@@ -37750,7 +37750,7 @@
     },
     {
       "id": "negotiated-healing-normalization",
-      "responsibility": "Two genuine prepared Shining faction offer variants, normal complete world and faction-only prebootstrap without unrelated Elyara/profile/registry. Changed owned Shining normalization advances both live guards; foreign hall refuses, signed original/fingerprint stay immutable, full native publication/I resident-memory validation and exact selected roster dependency are required.",
+      "responsibility": "Two genuine prepared Shining faction offer variants, normal complete world and faction-only prebootstrap without unrelated Elyara/profile/registry. Changed owned Shining normalization advances both live guards; foreign hall refuses, signed original/fingerprint stay immutable, full native publication/I resident-memory validation and exact selected roster dependency are required. Each variant uses independent mutable fixture windows for direct-writer guards and top-level publication, preserving the sealed raw-before preflight.",
       "excludes": "Direct native publisher fixtures, not Engine cleanup/UI or universal absent-Guardian-world qualification; no active treatment, fee or new authority.",
       "changeHints": [
         "BookOfEternityClient.IntegrationTests/AfterlifeSpiritualNaturalRecoveryTests.NegotiatedNormalization.cs"

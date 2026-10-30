@@ -12,6 +12,14 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
     [InlineData(false)] [InlineData(true)]
     public async Task NegotiatedFactionOwnerAdvancesBothShiningGuardsAndKeepsSignedOriginalAndMemory(bool omitUnrelatedGuardian)
     {
+        // The direct writer contract and top-level sealed-plan preflight start
+        // from independent mutable originals, as in the existing locality proof.
+        await RunNegotiatedNormalizationWindowAsync(omitUnrelatedGuardian, writerOnly: true);
+        await RunNegotiatedNormalizationWindowAsync(omitUnrelatedGuardian, writerOnly: false);
+    }
+
+    private async Task RunNegotiatedNormalizationWindowAsync(bool omitUnrelatedGuardian, bool writerOnly)
+    {
         await using var fixture = await AfterlifeHealingPaymentLifecycleTests.CreateFactionServiceFixtureAsync(3, 14,
             additionalBeforeResourceBootstrap: async (files, seedLease, profiles) =>
             {
@@ -78,28 +86,35 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
                     Assert.False(AfterlifeWoundHealingPlanner.ReadOriginalAidLocalitySource(files, lease).Success);
                 }
                 var before = (await files.ReadFileBytesAsync(lease, shiningPath))!;
-                // Only JSON formatting changes. The real owned writer must advance
-                // both live Shining guards while preserving the signed source bytes.
-                ShiningAbodeState.NormalizeStateRoot(shining, roster);
-                var content = shining.ToJsonString(new() { WriteIndented = true }) + "\n";
-                if (before.AsSpan().SequenceEqual(FileSystemManager.EncodeUtf8WithPreamble(content))) content += "\n";
-                Assert.False(before.AsSpan().SequenceEqual(FileSystemManager.EncodeUtf8WithPreamble(content)));
-                var writes = 0;
-                Task Publish(CanonicalBeforeImage expected)
+                if (writerOnly)
                 {
-                    Assert.Equal(new CanonicalBeforeImage(true, before).Fingerprint, expected.Fingerprint);
-                    writes++; return files.WriteFileAtomicAsync(lease, shiningPath, content);
+                    // Only JSON formatting changes. The real owned writer must advance
+                    // both live Shining guards while preserving the signed source bytes.
+                    ShiningAbodeState.NormalizeStateRoot(shining, roster);
+                    var content = shining.ToJsonString(new() { WriteIndented = true }) + "\n";
+                    if (before.AsSpan().SequenceEqual(FileSystemManager.EncodeUtf8WithPreamble(content))) content += "\n";
+                    Assert.False(before.AsSpan().SequenceEqual(FileSystemManager.EncodeUtf8WithPreamble(content)));
+                    var writes = 0;
+                    Task Publish(CanonicalBeforeImage expected)
+                    {
+                        Assert.Equal(new CanonicalBeforeImage(true, before).Fingerprint, expected.Fingerprint);
+                        writes++; return files.WriteFileAtomicAsync(lease, shiningPath, content);
+                    }
+                    var foreign = shining.DeepClone().AsObject(); foreign["currentHallId"] = "hall_foreign";
+                    await Assert.ThrowsAsync<InvalidDataException>(() => owner.PublishOwnedLocalityNormalizationAsync(files, lease, shiningPath, foreign.ToJsonString(), Publish));
+                    Assert.Equal(0, writes);
+                    await owner.PublishOwnedLocalityNormalizationAsync(files, lease, shiningPath, content, Publish);
+                    Assert.Equal(1, writes); owner.RequireCurrent(files, lease);
+                    Assert.Equal(sourceFingerprint, owner.SourceFingerprint);
+                    Assert.Equal(originalShining, await files.ReadFileBytesAsync(lease, manifest.Files[shiningPath]));
+                    Assert.DoesNotContain((await fixture.ReadHistoryAsync()).Transitions, t => t.TransitionResult is SpiritualHealingPersistedResult);
+                    fixture.AssertResourcesUnchanged();
+                    return; // No claim of publication after an already-applied local writer.
                 }
-                var foreign = shining.DeepClone().AsObject(); foreign["currentHallId"] = "hall_foreign";
-                await Assert.ThrowsAsync<InvalidDataException>(() => owner.PublishOwnedLocalityNormalizationAsync(files, lease, shiningPath, foreign.ToJsonString(), Publish));
-                Assert.Equal(0, writes);
-                await owner.PublishOwnedLocalityNormalizationAsync(files, lease, shiningPath, content, Publish);
-                Assert.Equal(1, writes); owner.RequireCurrent(files, lease);
-                Assert.Equal(sourceFingerprint, owner.SourceFingerprint);
-                Assert.Equal(originalShining, await files.ReadFileBytesAsync(lease, manifest.Files[shiningPath]));
                 var published = await new CanonicalStateNormalizer(files, NullLogger<CanonicalStateNormalizer>.Instance)
                     .BindTo(lease).NormalizeAccumulatedStateWithPlanAsync(manifest.Files);
                 Assert.Same(ready.Plan, published); Assert.True(owner.IsClosed);
+                Assert.False(before.AsSpan().SequenceEqual((await files.ReadFileBytesAsync(lease, shiningPath))!));
                 var result = Assert.IsType<SpiritualHealingPersistedResult>(Assert.Single((await fixture.ReadHistoryAsync()).Transitions,
                     t => t.TransitionResult is SpiritualHealingPersistedResult).TransitionResult);
                 Assert.True(result.IsNatural); Assert.Equal(6, result.SchemaVersion);
