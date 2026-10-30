@@ -1,3 +1,19 @@
+# T121 EX4 compile-only correction — fresh builds pending
+
+Astra accepted whole SOURCE at `51ff4e6d8`; metadata-only `63ac2451a` corrected
+selection to 144 source-estimated cases / 61 methods / 23 descriptors. The actual
+EX4 Main build at `63ac2451a` failed: exit 1, two CS0103 errors for unresolved
+`StrictJsonAuthority` in `SpiritualDiagnosisPersistedResult.cs` at lines 77/132,
+12 baseline warnings, elapsed 1:56.13. Full failed raw remains outside the checkout
+under the existing diagnosis evidence root (`EX4-build-main`). Support, Unit,
+Integration and execution runtime were UNRUN because the chain stopped.
+
+This source correction adds only the missing `BookOfEternityClient.Core` import,
+matching the existing strict natural-result codec. No behavior, API, guard, selector
+or budget changes. The correction remains UNCOMPILED/UNRUN pending narrow SOURCE
+readback and the primary's fresh EX4B four-owner build epoch; no writer build/test
+was launched. Earlier accepted receipts and failed EX4 evidence remain preserved.
+
 # T121 coherent spiritual execution — complete source candidate, UNCOMPILED/UNRUN
 
 The source candidate now includes the usable three-proof-kind spiritual route from
