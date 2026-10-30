@@ -161,6 +161,17 @@ newjourneys6 remain UNRUN. Full raw/existing archives external, free4.7GiB versu
 reserve400MiB+full output headroom. Next only first68, after PREP; metadata-only
 checkpoint may advance HEAD without rebuilding unchanged bound code/artifacts.
 
+Actual S3-newcheap onb04f98a6d:66/68executed,45PASS/21FAIL/2UNRUN, no timeout,
+skip/duplicate, owned cleanup and pins stable; wall39.4977242s. All21failures have
+one identical setup cause: RequestTests.Inputs extracts factory outcome.record,
+then reparents that still-owned JsonNode into witness atline102. No request/check
+subject was reached. Fix ONLY that fixture extraction to DeepClone; production
+unchanged. Preserve45PASS (codec4 + admission/reuse/docs41) and run only failed21
+plus priorunrun proposal2; split retained-request category for that finite23gate.
+S3 measured27binary artifacts are being archived/verified before any Unit overwrite;
+failed raw/TRX/causes remain external. Independent cause/delta review, fresh Unit,
+current source/PDB/catalog/PlanOnly/PREP still required; no heavy release.
+
 Авторское решение диагностики принято2026-10-30 11:48UTC и отражено в FR071/tasks.
 После текущего Shining patient: Mortal method declares own procedure check/time/
 cost; spiritual Healing>=0 plus ALL path requirements, guaranteed declared reveals,

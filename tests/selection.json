@@ -2,6 +2,13 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "shining-patient-retained-request",
+      "reason": "Only21failed request DATA cases after exact helper parent-ownership fix; preserve45PASS and separately execute2previouslyunrun proposal cases, then continue untouched consumers.",
+      "contracts": [
+        "#1536 T108-SHINING-PATIENT; retained family8 request/selection/consent contracts"
+      ]
+    },
+    {
       "category": "shining-patient-proposal-causal",
       "reason": "New exact closed patient5/8 correlation, current authority DATA, retained codec and source reuse/refusal controls; accepted prior causal RED before this GREEN candidate.",
       "contracts": [

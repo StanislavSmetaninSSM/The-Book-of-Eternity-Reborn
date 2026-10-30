@@ -1,6 +1,36 @@
 {
     "schemaVersion": 1,
     "categories": [
+{
+  "id": "shining-patient-retained-request",
+  "responsibility": "T108-SHINING-PATIENT21 pure retained request8/direction/independent natural tier, separate exported DATA, closed cross-family selection and valid-cycle consent refusals. Split from current-contracts after its shared input helper parent-ownership defect.",
+  "excludes": "No genuine accepted witness/draw/publication/Engine or authority grant; other45passed contracts are retained without rerun.",
+  "changeHints": [
+    "BookOfEternityClient.Tests/ShiningPatientTreatmentRequestTests.cs",
+    "BookOfEternityClient/Services/SpiritualSelfTreatmentRequestCodec.Aid.cs"
+  ],
+  "related": [
+    {
+      "id": "shining-patient-current-contracts",
+      "when": "Exact typed patient admission/known DATA contract changes."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.ShiningPatientTreatmentRequestTests.*"
+      ]
+    }
+  ]
+},
     {
       "id": "shining-patient-menu-current",
       "responsibility": "T108-SHINING-PATIENT current menu and known detail over the complete initial independent Shining patient fixture: resident/radiant with absent or malformed unrelated Guardian registry, actual one-read locality counters and no treatment authority before accepted consent.",
@@ -268,7 +298,7 @@
     },
     {
       "id": "shining-patient-current-contracts",
-      "responsibility": "T108-SHINING-PATIENT pure current resident/radiant admission, exact source dependencies and invalidation, no provider role/art/service prerequisite; family8 retained request, independent natural tier, closed selection and valid-cycle consent refusals.",
+      "responsibility": "T108-SHINING-PATIENT pure current resident/radiant admission, exact source dependencies and invalidation, no provider role/art/service prerequisite; operation-local DATA reuse and effective GM worked proposals. Retained request rows are owned by shining-patient-retained-request.",
       "excludes": "No accepted natural witness, genuine entropy, publish/replay/rollback, Engine, UI handler/DOM/provider, diagnosis execution or full US4 qualification.",
       "changeHints": [
         "BookOfEternityClient/Services/SpiritualTreatmentParticipation.ShiningPatientAdmission.cs",
@@ -292,7 +322,6 @@
           "project": "unit",
           "tests": [
             "BookOfEternityClient.Tests.ShiningPatientTreatmentAdmissionTests.*",
-            "BookOfEternityClient.Tests.ShiningPatientTreatmentRequestTests.*",
             "BookOfEternityClient.Tests.ShiningPatientTreatmentDocumentationTests.*"
           ]
         }

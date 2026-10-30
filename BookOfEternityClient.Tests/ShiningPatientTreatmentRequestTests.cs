@@ -94,7 +94,7 @@ public sealed class ShiningPatientTreatmentRequestTests
             ["conscious"] = true, ["capable"] = true, ["readableEvidence"] = "Я согласен на отдельную попытку лечения игроком." };
         var record = SpiritualTreatmentParticipation.CreateOutcome(new(owner, proposal), locality, new JsonObject
         { ["sessionId"] = "session_patient", ["requestId"] = "request_grant", ["snapshotToken"] = "snapshot_grant", ["realm"] = "shining_abode", ["turn"] = 43 },
-            42, "transition_patient")["record"]!.AsObject();
+            42, "transition_patient")["record"]!.DeepClone().AsObject();
         var selection = new SpiritualSelfTreatmentSelection(wound.WoundId, WoundIdentityState.ComputeSemanticFingerprint(wound))
             { Aid = SpiritualTreatmentParticipation.Selection(record) };
         var source = new SpiritualHealingPreparedSource(wound.WoundId, owner,
