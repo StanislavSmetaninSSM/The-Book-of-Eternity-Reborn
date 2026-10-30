@@ -1,3 +1,33 @@
+# US6 T136 bounded existing-capture wiring WIP
+
+Remote base03401e57c8933f620920e74153417741da721b81 verified on2026-10-30.
+The concrete unanswered question is setup/handler versus ProcessPlayerTurn/GM repair
+versus closing: the saved console timeout prefix has no Engine-phase messages, so
+neither its existing timestamps nor final-only logger can answer it. No cause claim.
+
+Test-only wiring now uses existing LifecyclePassiveTimingDiagnostics and standalone
+OperationTimingAccumulator caller macro scopes. The actual allocated root binds
+before file-manager creation/seeding; full enabled original Engine messages and
+exceptions retain the same threshold/format/queue and are also persisted. No FS
+observer/timing recorder is attached, so DATA reuse and fresh fences are unchanged.
+Audio/fixture unwind precede completion, strict root/footer/decode proof retained.
+No production/game/GM-authored contract changes; GM surfaces need no further update.
+Optimization assessment: constant-count macros reuse existing writer/event queue,
+no new cache or repeated source reads, no speedup claim. Source review pending.
+
+Finite next steps: preserve exact existing owning artifacts externally; fresh changed
+Integration build only with verified unchanged Main/Support/Unit dependencies; PDB/
+artifact/catalog and exact PlanOnly; independent PREP; two cheap existing/new blocked
+prefix/logger controls in shining-faction-service-capture-wiring(1min). If accepted,
+at most one original console3min diagnostic, reading its live full external gzip
+prefix. Body/assertions/budgets remain unchanged; incomplete kill is never PASS.
+No browser/rollback/private5 or HOLD lane released by this WIP. All six C# files
+are UNCOMPILED/UNRUN at publication;119distinct backend/prior PASS retain exact old
+lineages, console188.8398s/private190.1679s timeouts remain open. NegotiatedB is still
+unimplemented. Raw/saves/recovery retained outside Git and unchanged.
+
+---
+
 # US6 public backend accepted by actual checks; console timeout unresolved
 
 Current source98dd9955eb62314cc60c8f707f77ad07bde0dfdf (compileda48a7c249): actual

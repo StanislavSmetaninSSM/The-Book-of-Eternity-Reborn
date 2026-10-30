@@ -265,7 +265,8 @@ public sealed partial class AfterlifeHealingPaymentLifecycleTests(ITestOutputHel
     /// <summary>Uses the existing whole resource bootstrap; optional extra authored input runs before that boundary only.</summary>
     internal static Task<HealingFixture> CreateServiceFixtureAsync(int rank, int die, FileSystemManagerHooks? hooks = null,
         bool engine = false, string realm = "Chaos Sea", bool remoteElyara = false,
-        Func<FileSystemManager, JsonObject, Task>? additionalBeforeResourceBootstrap = null) =>
+        Func<FileSystemManager, JsonObject, Task>? additionalBeforeResourceBootstrap = null,
+        Action<string>? allocatedRootForDiagnostics = null) =>
         HealingFixture.CreateAsync(rank, 0, die, stageRequest: false, hooks: hooks, beforeResourceBootstrap: async (files, profiles) =>
             {
                 await SeedServiceAsync(files, profiles, realm);
@@ -273,7 +274,8 @@ public sealed partial class AfterlifeHealingPaymentLifecycleTests(ITestOutputHel
                 if (additionalBeforeResourceBootstrap is not null) await additionalBeforeResourceBootstrap(files, profiles);
                 if (engine) await ExplorerWoundSelfTreatmentTests.SeedAidJourneyLoreAsync(files);
             },
-            realm: realm, configureSoul: soul => soul["inkFeathers"] = new JsonObject { ["current"] = 500, ["total"] = 900 });
+            realm: realm, configureSoul: soul => soul["inkFeathers"] = new JsonObject { ["current"] = 500, ["total"] = 900 },
+            allocatedRootForDiagnostics: allocatedRootForDiagnostics);
 
     internal static async Task SeedServiceAsync(FileSystemManager files, JsonObject profiles, string realm = "Chaos Sea")
     {

@@ -133,6 +133,13 @@
       "contracts": [
         "#1536 US6 current source closing fence before treatment entropy"
       ]
+    },
+    {
+      "category": "shining-faction-service-capture-wiring",
+      "reason": "Existing timeout prefix lacks Engine phase messages. Prove bounded reuse of original message writer and passive macro recorder before one unchanged-budget diagnostic console attempt.",
+      "contracts": [
+        "#1536 US6 T136 full original diagnostic visibility/closing; no game-contract change"
+      ]
     }
   ]
 }

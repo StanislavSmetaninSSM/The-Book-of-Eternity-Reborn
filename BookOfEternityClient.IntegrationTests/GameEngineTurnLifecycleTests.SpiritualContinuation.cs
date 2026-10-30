@@ -477,7 +477,7 @@ public sealed partial class GameEngineTurnLifecycleTests
     /// <summary>
     /// Retains complete enabled engine diagnostics so fixture failures reveal their production phase.
     /// </summary>
-    internal sealed class SpiritualLifecycleTestLogger : ILogger<GameEngine>
+    internal sealed class SpiritualLifecycleTestLogger(LifecyclePassiveTimingDiagnostics? persistent = null) : ILogger<GameEngine>
     {
         private readonly ConcurrentQueue<string> _messages = new();
 
@@ -495,6 +495,11 @@ public sealed partial class GameEngineTurnLifecycleTests
                 return;
             var message = formatter(state, exception) + (exception is null ? string.Empty : "\n" + exception);
             _messages.Enqueue(message);
+            if (persistent is not null)
+            {
+                try { persistent.WriteLine(message); }
+                catch (Exception failure) { persistent.RecordClosingFailure(failure, "spiritual-lifecycle-log-forward"); }
+            }
         }
 
         /// <summary>

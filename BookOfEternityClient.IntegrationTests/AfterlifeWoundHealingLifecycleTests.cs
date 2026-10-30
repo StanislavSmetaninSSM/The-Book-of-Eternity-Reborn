@@ -116,7 +116,7 @@ public sealed class AfterlifeWoundHealingLifecycleTests
         internal static async Task<Fixture> CreateAsync(int rank, int tier, int die, bool stageRequest = true,
             FileSystemManagerHooks? hooks = null, long initialProgress = 0,
             Func<FileSystemManager, JsonObject, Task>? beforeResourceBootstrap = null, string realm = "Chaos Sea",
-            Action<JsonObject>? configureSoul = null)
+            Action<JsonObject>? configureSoul = null, Action<string>? allocatedRootForDiagnostics = null)
         {
             Assert.True(AfterlifeEntityProfileState.TryNormalizeEffectRealm(realm, out var realmSlug));
             Assert.Contains(realmSlug, new[] { "chaos_sea", "shining_abode" });
@@ -124,6 +124,9 @@ public sealed class AfterlifeWoundHealingLifecycleTests
             Directory.CreateDirectory(root);
             try
             {
+                // Notification DATA only: the actual root exists, but no game
+                // source reader, owner or permission is handed to the receiver.
+                allocatedRootForDiagnostics?.Invoke(root);
                 var files = hooks is null
                     ? new FileSystemManager(root, NullLogger<FileSystemManager>.Instance)
                     : new FileSystemManager(root, NullLogger<FileSystemManager>.Instance,

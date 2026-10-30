@@ -23,6 +23,44 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
 
     private async Task RunServiceJourneyAsync(bool browser, bool failPublication = false, string realm = "Chaos Sea", bool faction = false)
     {
+        if (!faction)
+        {
+            await RunServiceJourneyCoreAsync(browser, failPublication, realm, faction);
+            return;
+        }
+        var diagnosticRoot = Path.GetFullPath(TestDiagnosticPaths.Root);
+        var repositoryRoot = Path.GetFullPath(TestRepoPaths.RepoRoot).TrimEnd(Path.DirectorySeparatorChar);
+        var comparison = OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
+        if (diagnosticRoot.Equals(repositoryRoot, comparison) || diagnosticRoot.StartsWith(repositoryRoot + Path.DirectorySeparatorChar, comparison))
+            throw new InvalidDataException("Faction service capture requires BOE_TEST_DIAGNOSTIC_ROOT outside the checkout.");
+        var capture = new LifecyclePassiveTimingDiagnostics("FactionService-" + (browser ? "browser" : failPublication ? "rollback" : "console"),
+            output, gzipRecords: true);
+        // Caller macro sections only. No filesystem recorder/observer is attached,
+        // so its DATA reuse and fresh authority behavior remain unchanged.
+        var timings = new OperationTimingAccumulator();
+        var window = timings.StartWindow(captureEvents: true);
+        Exception? primary = null;
+        IDisposable? closing = null;
+        try
+        {
+            using var journey = timings.Measure("FactionService.JourneyIncludingClosing");
+            await RunServiceJourneyCoreAsync(browser, failPublication, realm, faction, capture, timings,
+                actualRoot => { capture.BindFixtureRoot(actualRoot); capture.Arm(window); },
+                () => closing = timings.Measure("FactionService.Closing"));
+        }
+        catch (Exception error) { primary = error; }
+        finally
+        {
+            // The inner await-using fixture and audio close have already unwound.
+            closing?.Dispose();
+            await capture.CompleteAsync(primary);
+        }
+    }
+
+    private async Task RunServiceJourneyCoreAsync(bool browser, bool failPublication, string realm, bool faction,
+        LifecyclePassiveTimingDiagnostics? persistent = null, OperationTimingAccumulator? timings = null,
+        Action<string>? allocatedRootForDiagnostics = null, Action? closingForDiagnostics = null)
+    {
         var price = faction ? 51 : 25; var rank = faction ? 2 : 1; var tier = faction ? 3 : 5;
         var providerName = faction ? AfterlifeHealingPaymentLifecycleTests.FactionHealerName : "Элиара";
         FileSystemManager? ownedFiles = null; var armed = false; var cuts = 0;
@@ -36,20 +74,29 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                     armed = false; cuts++; throw new InvalidOperationException("Paid service Engine C4 cut after wallet publication.");
                 }
             };
-        await using var fixture = faction
-            ? await AfterlifeHealingPaymentLifecycleTests.CreateFactionServiceFixtureAsync(rank, 20, hooks, engine: true)
-            : await AfterlifeHealingPaymentLifecycleTests.CreateServiceFixtureAsync(rank, 20, hooks, engine: true, realm: realm);
+        await using var fixture = await CreateFixtureAsync();
+        async Task<AfterlifeWoundHealingLifecycleTests.Fixture> CreateFixtureAsync()
+        {
+            using var preparation = timings?.Measure("FactionService.FixturePreparation");
+            return faction
+                ? await AfterlifeHealingPaymentLifecycleTests.CreateFactionServiceFixtureAsync(rank, 20, hooks, engine: true,
+                    allocatedRootForDiagnostics: allocatedRootForDiagnostics)
+                : await AfterlifeHealingPaymentLifecycleTests.CreateServiceFixtureAsync(rank, 20, hooks, engine: true, realm: realm);
+        }
         var files = fixture.Files; ownedFiles = files;
         var beforeWound = Assert.Single((await fixture.ReadWoundsAsync()).Occurrences).Wound;
         var console = new TestExplorerConsole();
-        var diagnostics = new GameEngineTurnLifecycleTests.SpiritualLifecycleTestLogger();
+        var diagnostics = new GameEngineTurnLifecycleTests.SpiritualLifecycleTestLogger(persistent);
         JsonObject? retained = null; TurnRequest? turn = null; var wroteResponse = false;
+        using var construction = timings?.Measure("FactionService.RuntimeConstruction");
         var runtime = GameEngineTurnLifecycleTests.CreateGameEngineRuntime(files, inputSource: new NoPlayerInput(diagnostics),
             logger: diagnostics, explorerConsole: console, finalizationHooks: new GameEngineSessionFinalizationHooks
             {
                 AtCheckpointAsync = async checkpoint =>
                 {
+                    persistent?.WriteLine("Faction service finalization checkpoint: " + checkpoint);
                     if (checkpoint != SessionFinalizationCheckpoint.TerminalWaitStarted || wroteResponse) return;
+                    using var response = timings?.Measure("FactionService.GmResponse");
                     await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
                     turn = JsonSerializer.Deserialize<TurnRequest>((await files.ReadFileAsync(lease, LiveTurnPreparationService.TurnRequestPath))!,
                         SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)!;
@@ -67,10 +114,12 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                     wroteResponse = true; armed = failPublication;
                 }
             });
+        construction?.Dispose();
         try
         {
             runtime.GameLoop.SetSession("session_elyara_service_" + (browser ? "browser" : "console"), 42);
-            await runtime.StateManager.RefreshGameStateAsync();
+            using (timings?.Measure("FactionService.RefreshGameState"))
+                await runtime.StateManager.RefreshGameStateAsync();
             if (failPublication)
             {
                 // Ordinary runtime health initializes this ledger before the
@@ -87,6 +136,7 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                 PendingTurnStateService.PendingDiceStatePath }.Concat(AfterlifeWoundTreatmentAuthority.ServiceLocalityPaths)
                 .Concat(realm == "Shining Abode" ? new[] { ShiningAbodeState.StatePath } : Array.Empty<string>())
                 .Concat(faction ? new[] { GuardianAbodeResidentState.StatePath } : Array.Empty<string>()));
+            using var handler = timings?.Measure("FactionService.HandlerAndTurn");
             if (browser)
             {
                 var service = CreateCommands(files);
@@ -118,7 +168,8 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                     Assert.Equal(price, binding.SpiritualSelfTreatment.Service.Quote.Amount);
                 }
                 fixture.AssertMutationRootsUnchanged(before);
-                await runtime.Engine.ProcessPlayerTurn(binding.Action, browserAction: binding);
+                using (timings?.Measure("FactionService.ProcessPlayerTurn"))
+                    await runtime.Engine.ProcessPlayerTurn(binding.Action, browserAction: binding);
             }
             else
             {
@@ -144,8 +195,10 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                 Assert.Equal(faction ? WoundApplicationService.FactionServiceActionText : WoundApplicationService.ServiceActionText, action);
                 Assert.Contains(price.ToString(), Assert.Single(console.ConfirmPrompts));
                 fixture.AssertMutationRootsUnchanged(before);
-                await runtime.Engine.ProcessPlayerTurn(action!);
+                using (timings?.Measure("FactionService.ProcessPlayerTurn"))
+                    await runtime.Engine.ProcessPlayerTurn(action!);
             }
+            using var assertions = timings?.Measure("FactionService.Assertions");
             Assert.True(wroteResponse);
             if (failPublication)
             {
@@ -193,7 +246,14 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
             fixture.AssertResourcesUnchanged();
             output.WriteLine($"{(browser ? "Browser" : "Console")} public {providerName}: cancel=0, confirmed price{price}, wallet500→{500-price},total900, actual d{die}/{calculation.ResultBand}; one accepted attempt/cycle/result7, complete transient cleanup.");
         }
-        finally { armed = false; output.WriteLine(diagnostics.Describe()); await runtime.AudioService.DisposeAsync(); }
+        finally
+        {
+            closingForDiagnostics?.Invoke();
+            persistent?.WriteLine("Faction service closing begin; actual audio and fixture disposal follow.");
+            armed = false; output.WriteLine(diagnostics.Describe());
+            using (timings?.Measure("FactionService.AudioDisposal"))
+                await runtime.AudioService.DisposeAsync();
+        }
     }
 
     private enum ElyaraFixtureReasoning { Paid, Arrival, OrdinaryWait, FactionWitness }

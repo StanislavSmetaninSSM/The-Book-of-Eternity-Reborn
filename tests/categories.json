@@ -37437,6 +37437,38 @@
           ]
         }
       ]
+    },
+    {
+      "id": "shining-faction-service-capture-wiring",
+      "responsibility": "Two cheap real-file controls for the existing faction journey capture: original gzip macro begin visible before body release and complete Information-level Engine message/exception forwarded once while retaining the existing disabled-level behavior. Verify final original events, actual-root cleanup and strict gzip/footer/decode completion through the existing transport.",
+      "excludes": "No GameEngine/world/native, FS recorder or observer, DATA reuse change, new transport, timeout increase, diagnostic quotas or public-route acceptance. Existing full transport suite is unchanged.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/ExplorerWoundSelfTreatmentTests.Services.cs",
+        "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.SpiritualContinuation.cs",
+        "BookOfEternityClient.IntegrationTests/LifecyclePassiveTimingDiagnosticsTests.SpiritualLogger.cs"
+      ],
+      "related": [
+        {
+          "id": "shining-faction-service-console",
+          "when": "Only after cheap wiring/source/PREP, one unchanged3min console diagnostic may expose its previously invisible timeout frontier."
+        }
+      ],
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.LifecyclePassiveTimingDiagnosticsTests.GzipOriginalBeginIsPersistentWhileActualBodyRemainsBlocked",
+            "BookOfEternityClient.Tests.LifecyclePassiveTimingDiagnosticsTests.SpiritualLoggerAndMacroBeginArePersistentBeforeTheBodyReturns"
+          ]
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null
     }
   ]
 }

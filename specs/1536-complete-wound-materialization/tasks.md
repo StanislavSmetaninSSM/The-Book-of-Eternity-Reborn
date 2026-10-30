@@ -14740,6 +14740,7 @@ lineages stay distinct. User authorized autonomous continuation in the same chec
   travel or treatment, and bootstrap/normalization preserving accepted life/location state.
 - [ ] T135 [P] [US6] Add RED every-faction visible primary `healing_support`, exact actor profile tier I-V, multiple healer, non-public visibility, and access requirement tests in `BookOfEternityClient.IntegrationTests/ShiningFactionHealingSupportTests.cs`
 - [ ] T136 [US6] Add RED paid/negotiated Elyara and accessible/inaccessible Shining provider end-to-end command/world-cycle/rollback journeys in `BookOfEternityClient.IntegrationTests/AfterlifeHealingProviderLifecycleTests.cs`
+  - Bounded timeout visibility preparation: existing standalone caller macro recorder plus full original Engine messages through the existing passive gzip capture; actual root binds before expensive fixture setup and closes after audio/fixture unwind. One cheap2case category, independent SOURCE/PREP and at most one unchanged3min console diagnostic. No FS observer/cache change or route acceptance; implementation/build/proof/runtime pending.
 
 ### GREEN implementation
 
