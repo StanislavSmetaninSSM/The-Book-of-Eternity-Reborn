@@ -1,3 +1,36 @@
+# US6 corrected source a48a built; exact remaining-route preparation
+
+Fresh Main/Support/Unit/Integration all exit0 with0errors; sourcea48a7c2496b45968d7ce506aee69195e64d0c852,
+actual summaries retained HGREEN-build-*. No GREEN/gameplay claim yet. Whole correction
+SOURCE accepted by independent Astra/high, original causal RED accepted by Sol/xhigh.
+
+Split only category metadata: the corrected actual staged Shining source fence has
+its own singleton, same3min budget; the other five existing read/confirmation cases
+keep their responsibility. Exact method membership/overall count stays unchanged;
+no accepted PASS is repeated merely to reach the corrected hook. Full CI impact
+selection now19descriptors/127cases/43methods, not an aggregate runtime request.
+This post-build checkpoint changes only plan/category/selection metadata; verify
+that delta rather than rebuild unchanged C#. Previous '87unaffected Unit' shorthand
+is corrected: four current GM-documentation cases must rerun after their guidance/
+source-guard changes, so83Unit +12backend are retained (95distinct with old lineages).
+Remaining fresh/new Unit=9causal+4docs=13; publicbackend=hook1/outcomes3/projection6=10;
+full owned-normalizer1/private consumers5/three UI=9; total32pending/127overall.
+
+Proposed finite order for new independent PREP: Unit13 -> publicbackend10 -> full
+owned-normalizer1 -> serial console/browser/rollback3 -> affected old private5.
+The private5timeout remains an overall regression gate, not a PASS or a cancelled
+requirement. Its old190s/zeroTRX does not establish a new-route defect; actual new
+mode7 UI may qualify independently after its cheap/direct and full-normalizer proofs.
+Reviewer must explicitly assess that order; old source46 PREP is not reused as new
+runtime permission. No UI before cheap new-route proof. No higher budget/blind retry.
+
+No new C# or economics beyond the reviewed automatic metadata correction. All raw,
+failed cases, unique binary artifacts and source pins are retained outside checkout;
+no raw/saves/recovery removed. Public-route acceptance remains pending full evidence;
+negotiated B and overall US6/#1536 are open. Separate HOLD lanes unchanged.
+
+---
+
 # US6 T137-AUTO-HISTORY SOURCE accepted; GREEN pending
 
 Independent gpt-6-astra/high SOURCE ACCEPT for af4599cf683c83f99fea427cb43e31860ad682d5:

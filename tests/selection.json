@@ -126,6 +126,13 @@
       "contracts": [
         "#1536 T137-AUTO-HISTORY current profile projection/normalizer boundary"
       ]
+    },
+    {
+      "category": "shining-faction-service-stage-fence",
+      "reason": "Split the corrected staged Shining roster fault injection from the five already accepted read/confirmation cases; preserve exact coverage/budget and avoid replaying unchanged PASS only to reach the corrected singleton.",
+      "contracts": [
+        "#1536 US6 current source closing fence before treatment entropy"
+      ]
     }
   ]
 }

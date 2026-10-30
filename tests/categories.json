@@ -37219,7 +37219,7 @@
     },
     {
       "id": "shining-faction-service-fresh-source",
-      "responsibility": "Real current-source menu read-count invariance for1/20providers, fresh confirmation refusals and post-control roster drift before any draw/payment. Complete independent pre-bootstrap faction fixtures.",
+      "responsibility": "Real current-source menu read-count invariance for1/20providers and fresh confirmation refusals before any draw/payment. Complete independent pre-bootstrap faction fixtures; staged roster closing fence has its own bounded category.",
       "excludes": "No negotiated agreement B, DOM/live provider/fresh-process or whole US6 qualification. No HOLD DFR/Mortal/Windows/performance; no repeated unrelated accepted suite.",
       "changeHints": [
         "#1536 US6 T132/T133/T136/T137/T138/T143–147 public faction treatment"
@@ -37237,7 +37237,6 @@
           "project": "integration",
           "tests": [
             "BookOfEternityClient.Tests.AfterlifeHealingPaymentLifecycleTests.FactionConfirmationRejectsCurrentLossWithoutRequestPaymentOrWorldCycle",
-            "BookOfEternityClient.Tests.AfterlifeHealingPaymentLifecycleTests.FactionStageRechecksActualRosterAfterControlBeforeAnyDraw",
             "BookOfEternityClient.Tests.AfterlifeHealingPaymentLifecycleTests.FactionMenuOpensTheSameSourcesForOneOrTwentyActualProviders"
           ]
         }
@@ -37411,6 +37410,30 @@
             "BookOfEternityClient.Tests.ShiningFactionHealingServiceContractTests.FirstAutomaticIncomeKeepsAnInitiallyEmptyFactionHealerMaterializationComplete",
             "BookOfEternityClient.Tests.ShiningFactionHealingServiceContractTests.AutomaticIncomeNeverRepairsUnrelatedOrUnprovedHistory",
               "BookOfEternityClient.Tests.ShiningFactionHealingServiceContractTests.FirstAutomaticChaosIncomeKeepsTheSameStrictMaterializationContract"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "shining-faction-service-stage-fence",
+      "responsibility": "Actual Shining prepared control1/inactiveChaos0 triggers physical current roster role drift before any draw/request/payment; same real source reader closing fence and no accepted cycle. Owns the corrected fault-injection singleton.",
+      "excludes": "No negotiated agreement B, DOM/live provider/fresh-process or whole US6 qualification. No HOLD DFR/Mortal/Windows/performance; no repeated unrelated accepted suite.",
+      "changeHints": [
+        "#1536 US6 T132/T133/T136/T137/T138/T143–147 public faction treatment"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.AfterlifeHealingPaymentLifecycleTests.FactionStageRechecksActualRosterAfterControlBeforeAnyDraw"
           ]
         }
       ]
