@@ -1,3 +1,51 @@
+## S7 bounded qualification — final OUTCOME pending
+
+All required current UI journeys completed with PASS and complete capture before
+advancing to the next singleton. The exact frontier is 110 distinct PASS,
+46 methods and 23 CI descriptors across seven runtime SHAs; it is not one fresh
+110-case run. Source counts are facb200c:26, 90d63eae:33, 33170bd5:33,
+2dab7929:4, 0b5fdab5:4, 117f4626:1, d11c68df:9. Three repeated source-guard IDs
+are replaced by their latest S6 results. Old owner4 covers only unchanged
+conditional-roster/source-lifetime predicates. FAIL/UNRUN and superseded parser
+results/earlier grant are excluded. Historical before-memory323 is separate.
+The external S7-qualified-union reconciles exact IDs and method counts with the
+110-case plan, hashes every TRX and proves all ten distinct fixture nonces closed.
+
+| UI singleton | PASS category seconds / 180s |
+| --- | ---: |
+| Resident console | 75.3748645 |
+| Resident shared browser | 132.9567749 |
+| Radiant head console | 97.2943010 |
+| Radiant head shared browser | 154.0875682 |
+| Resident C4 rollback | 70.0148587 |
+| Radiant head C4 rollback | 75.1343336 |
+| Public faction service console | 53.6740418 |
+| Public faction service shared browser | 99.3008098 |
+| Negotiated faction aid console | 111.8071948 |
+| Negotiated faction aid shared browser | 151.4390672 |
+
+The two rollback PASS results mean expected post-consumption failure and complete
+restoration, not successful treatment. All ten captures have full decode/hash,
+CRC/footer, original timing pairs/sequences, no failures and physical owned-root
+absence. All original budgets remain unchanged. Native-four and first-console
+OUTCOME plus five later patient OUTCOMEs are already independently accepted;
+final four service OUTCOMEs, union and bounded task closure still await review.
+
+Measured S7 owning archive: 62,080,415B, 27 members,
+SHA256 a1009e3a4007488cadb335152f7ac6a6c7a1b3ba9d363bb8f09644faf738c817; all member hashes and full gzip EOF/CRC verified.
+Build source is 5fe0bbe91ab10db3847af682a4107f254a04577b, accepted code40d0d558;
+subsequent changes are plan-only. All raw, TRX, capture JSON and archives remain
+outside checkout at /workspace/tboe-linux-evidence-20261025/us4-shining-patient-aid.
+Earlier failures/incomplete raw remain preserved. No speedup claim is made;
+parsed DATA reuse and fresh publication/source guards remain as reviewed.
+
+Accepted scope is controlled native-GM console/shared-browser treatment of the
+visible capable consenting local resident or canonical radiant faction head,
+plus affected service regressions. DOM, live provider, fresh-process, other head
+kinds and consent exceptions are not qualified here. US4/US6/#1536 remain open.
+Next functional work is the author-approved diagnosis execution; DFR, prior
+Mortal-compatibility, Windows, first-guardian and cross-OS DATA limits stay open.
+
 ## S7 remaining UI admission
 
 Independent Astra accepted the resident-console OUTCOME, including independent
