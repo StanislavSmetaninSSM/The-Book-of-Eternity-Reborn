@@ -38,13 +38,15 @@ public sealed class WoundDiagnosisRecommendationTests
 
     // Future closure must not make a private path's name or requirements current knowledge.
     [Theory]
-    [InlineData("hidden")]
-    [InlineData("gm_only")]
-    public void PrivateDiagnosisConditionsNeverLeakThroughRecommendations(string visibility)
+    [InlineData("hidden", false)]
+    [InlineData("hidden", true)]
+    [InlineData("gm_only", false)]
+    [InlineData("gm_only", true)]
+    public void DiagnosisConditionsUseCurrentKnowledgeWithoutGrantingGmOnlyAccess(string visibility, bool known)
     {
         var node = WoundContractTestData.CreateActiveWound();
         node["treatment"]!["routes"]![0]!["visibility"] = "hidden";
-        node["treatment"]!["knownRouteIds"] = new JsonArray();
+        node["treatment"]!["knownRouteIds"] = known ? new JsonArray("clean_and_suture") : new JsonArray();
         var first = Path("public", "Первичный осмотр");
         var later = Path(visibility, "СЕКРЕТНЫЙ_ОСМОТР", "later");
         later["requiresKnownFacts"] = new JsonArray("route:clean_and_suture");
@@ -55,8 +57,8 @@ public sealed class WoundDiagnosisRecommendationTests
         var text = Text(ExplorerWoundCommandResultBuilder.Build("/раны", projection, null, false).Blocks)
             + Text(WoundPlayerStatusBlocks.Build(projection));
         Assert.Contains("Первичный осмотр", text);
-        Assert.DoesNotContain("СЕКРЕТНЫЙ_ОСМОТР", text);
-        Assert.DoesNotContain("987", text);
+        Assert.Equal(known && visibility == "hidden", text.Contains("СЕКРЕТНЫЙ_ОСМОТР", StringComparison.Ordinal));
+        Assert.Equal(known && visibility == "hidden", text.Contains("987", StringComparison.Ordinal));
         Assert.DoesNotContain("clean_and_suture", text);
     }
 

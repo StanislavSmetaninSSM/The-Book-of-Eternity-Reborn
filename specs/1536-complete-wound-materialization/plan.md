@@ -41,6 +41,10 @@ exit0/26warnings/1:04.91,4PE-PDB/133bindings/27artifacts и exact PlanOnly6
 wall10.6344285/category4.6771892<60s; независимый OUTCOME принял causal RED.
 Полные raw/TRX SHA/cleanup/pins сохранены в D1-red вне checkout.
 
+В GREEN добавлены два противоположных current-known controls: hidden path с
+уже известной предпосылкой показывает свои условия; gm_only остаётся закрытым
+и при известной предпосылке. New DATA теперь8cases; original causalRED6
+сохраняется без изменения и не выдаётся за запуск расширенных8.
 Минимальное rich отображение и два реальных handler cases написаны, пока
 UNCOMPILED/UNRUN и SOURCE pending. Shared method/diagnosis shape остаётся
 внутренним display DATA; browser UiBlocks неизменны. Новых полей ГМ, ответов,
