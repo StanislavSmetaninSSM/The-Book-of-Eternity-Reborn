@@ -1,3 +1,18 @@
+# T121 diagnosis recommendations — #1536
+
+- [ ] T121-DIAGNOSIS-READ Show readable declared conditions of currently known
+  diagnostic paths in the existing wound/status cards for console/browser. Reuse
+  the existing typed requirement projection and one operation-owned physical
+  treatment parse. Preserve current-knowledge/privacy filtering and whole-tree
+  read-only behavior; no execution, availability claim, draw, cost or time.
+  Causal RED, affected projection/consumer controls, fresh owning builds and
+  independent SOURCE/PREP/OUTCOME are required before acceptance.
+- [ ] T093-DIAGNOSIS-RULES / T121-DIAGNOSIS-EXECUTION Author clarification pending:
+  current diagnosis `check` is exactly `{}` and no duration/resource policy is
+  defined. Proposed rules were asked, not accepted. Do not silently inherit
+  treatment roll/time rules or enable diagnosis publication. Existing accepted
+  T093-ASSESSMENT remains read-only assessment, not FR071 discovery.
+
 # T609 retained effect-source DATA audit — #1536
 
 - [x] T609-HELPER Implement/review the accepted conditional optional-operation

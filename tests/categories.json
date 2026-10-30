@@ -1,6 +1,17 @@
 {
     "schemaVersion": 1,
     "categories": [
+    {
+      "id": "wound-diagnosis-recommendations",
+      "responsibility": "T121-DIAGNOSIS-READ cheap real projection and command/status rendering: declared physical diagnostic requirements, no execution or source mutation, current-knowledge/private-path filtering and opaque spiritual privacy.",
+      "excludes": "No actual diagnostic draw/discovery, duration or resource consumption policy, treatment, DOM/provider or fresh-process qualification.",
+      "changeHints": ["BookOfEternityClient/Services/WoundPlayerProjection*.cs", "BookOfEternityClient/UI/ExplorerWoundCommandResultBuilder.cs", "BookOfEternityClient/UI/WoundPlayerStatusBlocks.cs"],
+      "related": [{ "id": "wounds-player-projection", "when": "Shared typed projection or requirement formatter changes." }],
+      "requirements": { "frontendBuild": false, "exclusive": false, "ciRunner": "ubuntu-24.04" },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [{ "project": "unit", "tests": ["BookOfEternityClient.Tests.WoundDiagnosisRecommendationTests.*"] }]
+    },
 {
   "id": "wound-history-browser-text",
   "responsibility": "Existing typed browser Normalize boundary: literal closing HTML tags and mixed text are not English slash commands; ordinary hints remain filtered and input stays immutable.",

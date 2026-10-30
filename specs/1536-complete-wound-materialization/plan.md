@@ -1,3 +1,30 @@
+# T093 / FR071 / T121: следующий диагностический маршрут — #1536
+
+База: принятый T138-NEGOTIATED `708d2f6b1e2c4664cc4c4ffbe6a0d7c181aafeb2`.
+Уже принятая T093-ASSESSMENT (17 PASS) оценивает известную духовную рану без
+действия и не повторяется без затронутой зависимости. Настоящая диагностика
+пока не подключена: physical codec допускает только `check: {}`, duration и
+resource policy отсутствуют, accepted adapter намеренно закрыт. Предложенные
+автору правила проверки/времени/расходов остаются PENDING, не требованием.
+
+Независимый законченный срез T121-DIAGNOSIS-READ: название и читаемые условия
+только текущего известного diagnostic path через существующую projection и
+общие console/browser cards/status; без скрытых фактов/IDs, проверки наличия,
+записи, броска, цены, времени или имитации работающей кнопки. Сначала causal
+RED на потерянных условиях, затем минимальная rich projection, затронутые
+privacy/foreign-card/status controls и реальные read handlers с unchanged tree.
+Обычный Sol XHigh проверяет SOURCE/selection/PREP/OUTCOME; консультация Astra
+уже отделила закрытый live adapter от пригодной read-only основы.
+
+Оптимизация: существующий operation-owned physical treatment parse используется
+одновременно для методов и diagnosis, typed requirement formatter общий.
+Ключ — точный переданный immutable envelope/input одного Project; lifetime —
+один вызов, за его пределами DATA не сохраняется. Нет нового кэша, чтений или
+reuse authority; текущие catalog/identity/history/source guards неизменны.
+Непрозрачные spiritual requirements не интерпретируются как новый игровой codec.
+Speedup не заявляется. Raw нового блока — вне checkout, builds/PlanOnly/runtime
+пока UNRUN. HOLD DFR/Mortal/Windows и общая незавершённость #1536 сохраняются.
+
 # Договорная помощь US6 B: ограниченный игровой маршрут принят
 
 Игрок реально получает помощь видимого живого фракционного целителя или той же
