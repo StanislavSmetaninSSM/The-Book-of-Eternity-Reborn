@@ -196,8 +196,8 @@ internal static class AfterlifeHealingServiceContract
     }
 
     // Service coordinates are not Chaos participation records. Keep that
-    // separate contract unchanged; the quote below still restricts Shining to
-    // the exact canonical Elyara and its own player patient.
+    // separate contract unchanged. A typed Shining resident quote is comparison
+    // DATA; the live service owner separately proves its exact current faction/roster.
     internal static WoundOwnerCoordinate ReadServiceOwner(JsonNode? node)
     {
         if (node is not JsonObject root || !Closed(root, "realm", "ownerKind", "ownerId", "carrierPath"))
@@ -206,7 +206,6 @@ internal static class AfterlifeHealingServiceContract
             Text(root["ownerId"]) ?? "", Text(root["carrierPath"]) ?? "");
         if (owner.Realm is not ("chaos_sea" or "shining_abode") ||
             owner.OwnerKind is not ("player_soul" or "guardian" or "resident") ||
-            owner.Realm == "shining_abode" && owner.OwnerKind == "resident" ||
             !ResourceMaterializationContract.IsExactIdentifier(owner.OwnerId) ||
             owner.CarrierPath != WoundCarrierCatalog.AfterlifeProfilesPath ||
             !WoundEffectCarrierAdapter.TryCreateTargetKey(owner, out _))
@@ -214,11 +213,12 @@ internal static class AfterlifeHealingServiceContract
         return owner;
     }
 
-    // Existing Chaos quote DATA remains supported; Shining execution in this
-    // slice is restricted to the same canonical Elyara, never arbitrary clinics.
+    // Existing Chaos and canonical Elyara quote DATA stays identical. Resident
+    // quotes need the service owner's fresh faction/roster access admission.
     private static bool IsSupportedQuoteRealm(string realm, WoundOwnerCoordinate provider) =>
         provider.Realm == realm && (realm == "chaos_sea" || realm == "shining_abode" &&
-            provider.OwnerKind == "guardian" && provider.OwnerId == AfterlifeWoundTreatmentAuthority.ElyaraId);
+            (provider.OwnerKind == "resident" || provider.OwnerKind == "guardian" &&
+                provider.OwnerId == AfterlifeWoundTreatmentAuthority.ElyaraId));
 
     internal static JsonObject QuoteJson(AfterlifeHealingServiceQuote quote) => new()
     {

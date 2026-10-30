@@ -1,3 +1,24 @@
+# US6 causal RED accepted; public faction implementation WIP
+
+Actual RED source106927124f8ff6f594aec9a4bbd092a67a242e64: exact1expectedFAIL at
+quote Assert.NotNull line40,5.5526755s<60/wall13.0325138; profile/check/inertness passed,
+no timeout/skip/duplicate/underfill, cleanup/pins true. TRXSHA256
+7136d61a993f2cbd4972232b701ab887ffb207069bbbcad4cec3c563900c9ebe.
+Independent Sol SOURCE/PREP/RED OUTCOME accepted. This is missing quote support,
+not accepted gameplay or a build failure. Raw causal-runtime retained externally.
+
+Astra/high additionally confirmed current active/weakened/leaderless may offer healing
+under explicit service terms; IsFactionOperational's narrower trade/action rule is
+not a healing restriction and remains unchanged. No new author decision required.
+First code portion now written: quote/closed owner admits a typed Shining resident;
+shared exact current-hall resolver preserves Elyara checks; existing roster projector
+reuses operation-private indexes across factions; current public service DATA joins
+exact role/profile/faction/hall and seals its full admission tuple. No extra file reads
+or retained cache. Actual staging/UI/payment/memory/publication wiring is still WIP;
+new source UNCOMPILED/UNQUALIFIED, no claim from merely allowing a quote.
+
+---
+
 # US6 DESIGN accepted with concrete owner boundaries
 
 Independent gpt-6-astra/high reviewed b27fed7f8ed67b0db90708846dcbd85619fd51d3.
@@ -74,7 +95,7 @@ do not introduce a parallel payment, agreement ledger, publisher or cache.
 
 Design A — existing public faction currency route (first implementation boundary):
 - Extend existing service quote owner support to an exact Shining resident, only
-  one visible current operational revealed faction, primary healing_support and
+  one visible current revealed faction with supported active/weakened/leaderless lifecycle, primary healing_support and
   exact unique alive complete actor, same current canonical hall and explicit
   available public currency profile. Missing/restricted/unknown access refuses;
   minimumRelationship or authored conditions do not become implicitly satisfied.

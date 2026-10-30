@@ -10,7 +10,7 @@ internal sealed record ShiningFactionRosterEntry(string ResidentId, string Name,
 /// Detached roster/capability DATA over the caller's current parsed roots.
 /// This creates no service, access, payment or publication authority.
 /// </summary>
-internal static class ShiningFactionHealingSupport
+internal static partial class ShiningFactionHealingSupport
 {
     /// <summary>Requires a living healer unless the authored lifecycle is valid broken/dissolved history.</summary>
     internal static bool RequiresLivingHealer(JsonObject faction) =>
@@ -72,6 +72,16 @@ internal static class ShiningFactionHealingSupport
         // unchanged; nothing survives or grants permission to the next action.
         var residentIndex = residents.OfType<JsonObject>().ToLookup(r => Text(r["residentId"]), StringComparer.Ordinal);
         var profileIndex = profiles.OfType<JsonObject>().ToLookup(p => (Text(p["actorType"]), Text(p["actorId"])));
+        return ProjectVisibleRoster(faction, residents, residentIndex, profileIndex);
+    }
+
+    // One caller operation may project several factions. Reuse its exact indexes;
+    // each distinct profile still receives its real materialization validation once.
+    private static IReadOnlyList<ShiningFactionRosterEntry> ProjectVisibleRoster(JsonObject faction,
+        JsonArray residents, ILookup<string, JsonObject> residentIndex,
+        ILookup<(string, string), JsonObject> profileIndex)
+    {
+        var factionId = Text(faction["factionId"]);
         var result = new List<ShiningFactionRosterEntry>();
         foreach (var resident in residents.OfType<JsonObject>())
         {

@@ -24,6 +24,22 @@ internal static class ShiningCurrentHallContract
         return ValidateCore(present, id, halls, root.EnumerateObject().Any(p => IsAlias(p.Name)) || root.EnumerateObject().Count(p => p.Name == Property) > 1);
     }
 
+    /// <summary>Resolves the exact active current hall without inferring a location or provider.</summary>
+    /// <param name="root">The caller's current parsed Shining state.</param>
+    /// <param name="residents">Optional current roster DATA, used only for local actor membership.</param>
+    /// <returns>Detached locality DATA; it is not service or publication authority.</returns>
+    internal static LocalInteractionScope RequireCurrentScope(JsonObject? root, JsonObject? residents = null)
+    {
+        if (root is null || AfterlifeHealingServiceContract.Text(root["availability"]) != ShiningAbodeState.AvailabilityActive ||
+            Validate(root) is not null || AfterlifeHealingServiceContract.Text(root[Property]) is not { } hallId ||
+            !ResourceMaterializationContract.IsExactIdentifier(hallId))
+            throw new InvalidDataException("The player's current Shining hall is not uniquely resolved.");
+        var scope = LocalInteractionScopeService.ResolveShiningAbodeScope(root, residents, []);
+        if (!scope.IsResolved || scope.LocationId != hallId)
+            throw new InvalidDataException("The current Shining locality is unavailable.");
+        return scope;
+    }
+
     private static bool IsAlias(string key) =>
         key.Equals(Property, StringComparison.OrdinalIgnoreCase) && key != Property ||
         key.Equals("activeHallId", StringComparison.OrdinalIgnoreCase) || key.Equals("selectedHallId", StringComparison.OrdinalIgnoreCase);
