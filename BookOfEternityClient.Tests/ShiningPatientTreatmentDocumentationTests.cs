@@ -17,8 +17,9 @@ public sealed class ShiningPatientTreatmentDocumentationTests
         {
             var text = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, file));
             var start = text.IndexOf(Marker, StringComparison.Ordinal); Assert.True(start >= 0);
-            foreach (var token in new[] { "shining_target_consent", "player_to_shining_entity", "spiritualResidentThoughtJournalUpdates", "gmThoughtsSummary", "diagnosis" })
+            foreach (var token in new[] { "shining_target_consent", "player_to_shining_entity", "spiritualResidentThoughtJournalUpdates", "gmThoughtsSummary" })
                 Assert.Contains(token, text[start..]);
+            Assert.Contains("diagnosis", text[start..], StringComparison.OrdinalIgnoreCase);
         }
         XDocument.Parse(File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "Rules/Block_32_Guardians.txt")));
         var daemon = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient/game_master_daemon.ps1"));

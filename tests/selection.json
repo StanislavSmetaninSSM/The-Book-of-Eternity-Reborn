@@ -2,27 +2,220 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "shining-patient-menu-current",
-      "reason": "New current resident/radiant menu/detail source-isolation and one-real-read control; complete initial world only, not genuine consent/treatment admission.",
-      "contracts": ["#1536 T108-SHINING-PATIENT; Astra SOURCE Guardian-isolation finding; operation-local reuse"]
-    },
-    {
-      "category": "shining-patient-current-contracts",
-      "reason": "New current patient admission/source dependency/invalidation, request8/direction/retained draw/natural tier, valid-cycle refusal and effective GM worked-proposal contracts before live authority or UI acceptance.",
-      "contracts": ["#1536 T108-SHINING-PATIENT; accepted design d4aa700df; FR043–054 FR072–074; closed record5/natural8/active8"]
-    },
-    {
       "category": "shining-patient-proposal-causal",
-      "reason": "Affected schema5 proposal reader GREEN after accepted RED2; exact resident/radiant profile correlation and immutability, no live authority claim.",
+      "reason": "New exact closed patient5/8 correlation, current authority DATA, retained codec and source reuse/refusal controls; accepted prior causal RED before this GREEN candidate.",
       "contracts": [
-        "#1536 T108-SHINING-PATIENT; US4scenario8 FR043–054 FR072–074; accepted technical design d4aa700df"
+        "#1536 T108-SHINING-PATIENT; US4 scenario8 FR043–054 FR072–074; accepted design d4aa700df and source7e4e16c18"
       ]
     },
     {
       "category": "shining-patient-codec-causal",
-      "reason": "Affected record5→result8 factory and selection8 GREEN after accepted RED4; exact typed owners/family closure and immutable exports.",
+      "reason": "New exact closed patient5/8 correlation, current authority DATA, retained codec and source reuse/refusal controls; accepted prior causal RED before this GREEN candidate.",
       "contracts": [
-        "#1536 T108-SHINING-PATIENT; accepted design d4aa700df"
+        "#1536 T108-SHINING-PATIENT; US4 scenario8 FR043–054 FR072–074; accepted design d4aa700df and source7e4e16c18"
+      ]
+    },
+    {
+      "category": "shining-patient-current-contracts",
+      "reason": "New exact closed patient5/8 correlation, current authority DATA, retained codec and source reuse/refusal controls; accepted prior causal RED before this GREEN candidate.",
+      "contracts": [
+        "#1536 T108-SHINING-PATIENT; US4 scenario8 FR043–054 FR072–074; accepted design d4aa700df and source7e4e16c18"
+      ]
+    },
+    {
+      "category": "spiritual-self-treatment-request",
+      "reason": "Changed shared aid selection/request/result dispatch and treatment navigation/detail; retain affected old self2/Guardian3/4/resident5/6/provider6/service7, privacy and source ownership contracts.",
+      "contracts": [
+        "#1536 T108-SHINING-PATIENT; US4 scenario8 FR043–054 FR072–074; accepted design d4aa700df and source7e4e16c18"
+      ]
+    },
+    {
+      "category": "spiritual-resident-aid-affected",
+      "reason": "Changed shared aid selection/request/result dispatch and treatment navigation/detail; retain affected old self2/Guardian3/4/resident5/6/provider6/service7, privacy and source ownership contracts.",
+      "contracts": [
+        "#1536 T108-SHINING-PATIENT; US4 scenario8 FR043–054 FR072–074; accepted design d4aa700df and source7e4e16c18"
+      ]
+    },
+    {
+      "category": "spiritual-resident-aid-contract",
+      "reason": "Changed shared aid selection/request/result dispatch and treatment navigation/detail; retain affected old self2/Guardian3/4/resident5/6/provider6/service7, privacy and source ownership contracts.",
+      "contracts": [
+        "#1536 T108-SHINING-PATIENT; US4 scenario8 FR043–054 FR072–074; accepted design d4aa700df and source7e4e16c18"
+      ]
+    },
+    {
+      "category": "spiritual-resident-consent-realm",
+      "reason": "Changed shared aid selection/request/result dispatch and treatment navigation/detail; retain affected old self2/Guardian3/4/resident5/6/provider6/service7, privacy and source ownership contracts.",
+      "contracts": [
+        "#1536 T108-SHINING-PATIENT; US4 scenario8 FR043–054 FR072–074; accepted design d4aa700df and source7e4e16c18"
+      ]
+    },
+    {
+      "category": "spiritual-resident-provider-contract",
+      "reason": "Changed shared aid selection/request/result dispatch and treatment navigation/detail; retain affected old self2/Guardian3/4/resident5/6/provider6/service7, privacy and source ownership contracts.",
+      "contracts": [
+        "#1536 T108-SHINING-PATIENT; US4 scenario8 FR043–054 FR072–074; accepted design d4aa700df and source7e4e16c18"
+      ]
+    },
+    {
+      "category": "negotiated-healing-provider-data",
+      "reason": "Changed shared aid selection/request/result dispatch and treatment navigation/detail; retain affected old self2/Guardian3/4/resident5/6/provider6/service7, privacy and source ownership contracts.",
+      "contracts": [
+        "#1536 T108-SHINING-PATIENT; US4 scenario8 FR043–054 FR072–074; accepted design d4aa700df and source7e4e16c18"
+      ]
+    },
+    {
+      "category": "negotiated-healing-wallet-request-data",
+      "reason": "Changed shared aid selection/request/result dispatch and treatment navigation/detail; retain affected old self2/Guardian3/4/resident5/6/provider6/service7, privacy and source ownership contracts.",
+      "contracts": [
+        "#1536 T108-SHINING-PATIENT; US4 scenario8 FR043–054 FR072–074; accepted design d4aa700df and source7e4e16c18"
+      ]
+    },
+    {
+      "category": "healing-service-request-data",
+      "reason": "Changed shared aid selection/request/result dispatch and treatment navigation/detail; retain affected old self2/Guardian3/4/resident5/6/provider6/service7, privacy and source ownership contracts.",
+      "contracts": [
+        "#1536 T108-SHINING-PATIENT; US4 scenario8 FR043–054 FR072–074; accepted design d4aa700df and source7e4e16c18"
+      ]
+    },
+    {
+      "category": "healing-service-menu-data",
+      "reason": "Changed shared aid selection/request/result dispatch and treatment navigation/detail; retain affected old self2/Guardian3/4/resident5/6/provider6/service7, privacy and source ownership contracts.",
+      "contracts": [
+        "#1536 T108-SHINING-PATIENT; US4 scenario8 FR043–054 FR072–074; accepted design d4aa700df and source7e4e16c18"
+      ]
+    },
+    {
+      "category": "wound-target-choice-contract",
+      "reason": "Changed shared aid selection/request/result dispatch and treatment navigation/detail; retain affected old self2/Guardian3/4/resident5/6/provider6/service7, privacy and source ownership contracts.",
+      "contracts": [
+        "#1536 T108-SHINING-PATIENT; US4 scenario8 FR043–054 FR072–074; accepted design d4aa700df and source7e4e16c18"
+      ]
+    },
+    {
+      "category": "wound-foreign-detail-typed-owner",
+      "reason": "Changed shared aid selection/request/result dispatch and treatment navigation/detail; retain affected old self2/Guardian3/4/resident5/6/provider6/service7, privacy and source ownership contracts.",
+      "contracts": [
+        "#1536 T108-SHINING-PATIENT; US4 scenario8 FR043–054 FR072–074; accepted design d4aa700df and source7e4e16c18"
+      ]
+    },
+    {
+      "category": "wound-foreign-detail-contract",
+      "reason": "Changed shared aid selection/request/result dispatch and treatment navigation/detail; retain affected old self2/Guardian3/4/resident5/6/provider6/service7, privacy and source ownership contracts.",
+      "contracts": [
+        "#1536 T108-SHINING-PATIENT; US4 scenario8 FR043–054 FR072–074; accepted design d4aa700df and source7e4e16c18"
+      ]
+    },
+    {
+      "category": "wound-read-semantic-source-guards",
+      "reason": "Changed shared aid selection/request/result dispatch and treatment navigation/detail; retain affected old self2/Guardian3/4/resident5/6/provider6/service7, privacy and source ownership contracts.",
+      "contracts": [
+        "#1536 T108-SHINING-PATIENT; US4 scenario8 FR043–054 FR072–074; accepted design d4aa700df and source7e4e16c18"
+      ]
+    },
+    {
+      "category": "shining-patient-documentation-inventory",
+      "reason": "New GM proposal fragments and exact manifest membership; no gameplay execution.",
+      "contracts": [
+        "#1536 T108-SHINING-PATIENT; US4 scenario8 FR043–054 FR072–074; accepted design d4aa700df and source7e4e16c18"
+      ]
+    },
+    {
+      "category": "shining-patient-menu-current",
+      "reason": "Actual complete initial Shining world, unrelated Guardian source isolation and exact one-read opening/detail counters; no live consent.",
+      "contracts": [
+        "#1536 T108-SHINING-PATIENT; US4 scenario8 FR043–054 FR072–074; accepted design d4aa700df and source7e4e16c18"
+      ]
+    },
+    {
+      "category": "spiritual-resident-provider-self-header",
+      "reason": "Shared natural/aid persistence, current sources, normalization and replay dispatch changed; finite existing old family native controls, not a full old UI rerun.",
+      "contracts": [
+        "#1536 T108-SHINING-PATIENT; US4 scenario8 FR043–054 FR072–074; accepted design d4aa700df and source7e4e16c18"
+      ]
+    },
+    {
+      "category": "spiritual-aid-stage-publication",
+      "reason": "Shared natural/aid persistence, current sources, normalization and replay dispatch changed; finite existing old family native controls, not a full old UI rerun.",
+      "contracts": [
+        "#1536 T108-SHINING-PATIENT; US4 scenario8 FR043–054 FR072–074; accepted design d4aa700df and source7e4e16c18"
+      ]
+    },
+    {
+      "category": "spiritual-guardian-help-publication",
+      "reason": "Shared natural/aid persistence, current sources, normalization and replay dispatch changed; finite existing old family native controls, not a full old UI rerun.",
+      "contracts": [
+        "#1536 T108-SHINING-PATIENT; US4 scenario8 FR043–054 FR072–074; accepted design d4aa700df and source7e4e16c18"
+      ]
+    },
+    {
+      "category": "spiritual-resident-provider-prior-resident",
+      "reason": "Shared natural/aid persistence, current sources, normalization and replay dispatch changed; finite existing old family native controls, not a full old UI rerun.",
+      "contracts": [
+        "#1536 T108-SHINING-PATIENT; US4 scenario8 FR043–054 FR072–074; accepted design d4aa700df and source7e4e16c18"
+      ]
+    },
+    {
+      "category": "spiritual-resident-provider-backend",
+      "reason": "Shared natural/aid persistence, current sources, normalization and replay dispatch changed; finite existing old family native controls, not a full old UI rerun.",
+      "contracts": [
+        "#1536 T108-SHINING-PATIENT; US4 scenario8 FR043–054 FR072–074; accepted design d4aa700df and source7e4e16c18"
+      ]
+    },
+    {
+      "category": "negotiated-healing-normalization",
+      "reason": "Shared natural/aid persistence, current sources, normalization and replay dispatch changed; finite existing old family native controls, not a full old UI rerun.",
+      "contracts": [
+        "#1536 T108-SHINING-PATIENT; US4 scenario8 FR043–054 FR072–074; accepted design d4aa700df and source7e4e16c18"
+      ]
+    },
+    {
+      "category": "shining-faction-service-outcomes",
+      "reason": "Shared natural/aid persistence, current sources, normalization and replay dispatch changed; finite existing old family native controls, not a full old UI rerun.",
+      "contracts": [
+        "#1536 T108-SHINING-PATIENT; US4 scenario8 FR043–054 FR072–074; accepted design d4aa700df and source7e4e16c18"
+      ]
+    },
+    {
+      "category": "shining-patient-resident-console",
+      "reason": "New genuine consent43→normal cleanup→separate console/shared-browser confirmation44; actual treatment/world/History/memory and per-kind common+outer rollback. Conditional on cheap/menu and independent PREP; currently UNRUN.",
+      "contracts": [
+        "#1536 T108-SHINING-PATIENT; US4 scenario8 FR043–054 FR072–074; accepted design d4aa700df and source7e4e16c18"
+      ]
+    },
+    {
+      "category": "shining-patient-resident-browser",
+      "reason": "New genuine consent43→normal cleanup→separate console/shared-browser confirmation44; actual treatment/world/History/memory and per-kind common+outer rollback. Conditional on cheap/menu and independent PREP; currently UNRUN.",
+      "contracts": [
+        "#1536 T108-SHINING-PATIENT; US4 scenario8 FR043–054 FR072–074; accepted design d4aa700df and source7e4e16c18"
+      ]
+    },
+    {
+      "category": "shining-patient-radiant-console",
+      "reason": "New genuine consent43→normal cleanup→separate console/shared-browser confirmation44; actual treatment/world/History/memory and per-kind common+outer rollback. Conditional on cheap/menu and independent PREP; currently UNRUN.",
+      "contracts": [
+        "#1536 T108-SHINING-PATIENT; US4 scenario8 FR043–054 FR072–074; accepted design d4aa700df and source7e4e16c18"
+      ]
+    },
+    {
+      "category": "shining-patient-radiant-browser",
+      "reason": "New genuine consent43→normal cleanup→separate console/shared-browser confirmation44; actual treatment/world/History/memory and per-kind common+outer rollback. Conditional on cheap/menu and independent PREP; currently UNRUN.",
+      "contracts": [
+        "#1536 T108-SHINING-PATIENT; US4 scenario8 FR043–054 FR072–074; accepted design d4aa700df and source7e4e16c18"
+      ]
+    },
+    {
+      "category": "shining-patient-resident-rollback",
+      "reason": "New genuine consent43→normal cleanup→separate console/shared-browser confirmation44; actual treatment/world/History/memory and per-kind common+outer rollback. Conditional on cheap/menu and independent PREP; currently UNRUN.",
+      "contracts": [
+        "#1536 T108-SHINING-PATIENT; US4 scenario8 FR043–054 FR072–074; accepted design d4aa700df and source7e4e16c18"
+      ]
+    },
+    {
+      "category": "shining-patient-radiant-rollback",
+      "reason": "New genuine consent43→normal cleanup→separate console/shared-browser confirmation44; actual treatment/world/History/memory and per-kind common+outer rollback. Conditional on cheap/menu and independent PREP; currently UNRUN.",
+      "contracts": [
+        "#1536 T108-SHINING-PATIENT; US4 scenario8 FR043–054 FR072–074; accepted design d4aa700df and source7e4e16c18"
       ]
     }
   ]

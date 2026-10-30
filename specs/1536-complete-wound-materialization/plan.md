@@ -118,6 +118,15 @@ Allocated: bind root→Arm→start preparation/journey, exact closing preserved.
 Remaining full-fixture review and fresh Unit/Integration/catalog/PDB/PlanOnly/PREP
 are pending. No new test execution yet; all code/GM journeys remain unqualified.
 
+First fresh Unit69d8ff508 exit0/26baselinewarnings/1:20.15. A subsequent tiny prose
+assertion correction (diagnosis/Diagnosis case only; exact field/JSON checks stay
+strict) needs its owning rebuild before NoBuild. Sol whole Engine fixture review
+also caught radiant memory incorrectly put in UI: corrected to ONLY the exact
+existing profiles[] actor's ordinary root gmThoughtsSummary, no full-carrier command,
+new UI whitelist or resident-journal privilege. Runtime remains UNRUN. Selected
+finite old cheap/native consumers are listed in tests/selection; they are affected
+by shared dispatch/menu changes, not reruns of unchanged qualified UI journeys.
+
 Авторское решение диагностики принято2026-10-30 11:48UTC и отражено в FR071/tasks.
 После текущего Shining patient: Mortal method declares own procedure check/time/
 cost; spiritual Healing>=0 plus ALL path requirements, guaranteed declared reveals,

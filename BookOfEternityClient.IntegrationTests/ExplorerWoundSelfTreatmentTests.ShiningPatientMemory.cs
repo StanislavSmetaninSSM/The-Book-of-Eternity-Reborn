@@ -32,8 +32,16 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
             var memory = Memory(ShiningPatientId, thought); memory["residentId"] = ShiningPatientId;
             response[SpiritualTreatmentParticipation.ResidentThoughtResponseProperty] = new JsonArray(memory);
         }
-        else response["afterlifeEntityProfileUpdates"] = new JsonArray(new JsonObject
-        { ["actorType"] = kind, ["actorRef"] = ShiningPatientId, ["gmThoughtsSummary"] = thought });
+        else
+        {
+            // Existing ordinary actor-owned memory surface. Historical profiles
+            // cannot be resent as UpdateProperty full carriers, nor placed in UI.
+            var profiles = JsonNode.Parse((await files.ReadFileAsync(lease, WoundCarrierCatalog.AfterlifeProfilesPath))!)!.AsObject();
+            var patient = profiles["profiles"]!.AsArray().OfType<JsonObject>().Single(p =>
+                p["actorType"]?.GetValue<string>() == kind && p["actorId"]?.GetValue<string>() == ShiningPatientId);
+            patient["gmThoughtsSummary"] = thought;
+            await files.WriteFileAtomicAsync(lease, WoundCarrierCatalog.AfterlifeProfilesPath, profiles.ToJsonString());
+        }
         await files.WriteFileAtomicAsync(lease, "output/interface_updates.json", response.ToJsonString());
         string Brain(string name, bool patient) => string.Join("\n", "", "### " + name,
             "- Current location: Зал сопровождения; остаюсь в текущем каноническом зале.",

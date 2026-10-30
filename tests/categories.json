@@ -19,6 +19,37 @@
     "BookOfEternityClient/Services/WoundApplicationService.cs"
   ],
   "related": [
+{
+  "id": "shining-patient-documentation-inventory",
+  "responsibility": "Changed Shining patient GM worked example: exact complete manifest family set and actual JSON fragments parse or explicitly documented exemptions.",
+  "excludes": "No gameplay/authority, new service or diagnosis execution, broad documentation runtime suite or unchanged UI qualification.",
+  "changeHints": [
+    "Examples/E_CLI_Afterlife_Turns.txt",
+    "Examples/example_validation_manifest.json"
+  ],
+  "related": [
+    {
+      "id": "shining-patient-current-contracts",
+      "when": "Effective current GM instructions and worked proposal parser changed."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.ExampleDocumentationValidationTests.CompleteEffectMaterializationManifest_CoversEveryRequiredWorkedFamily",
+        "BookOfEternityClient.Tests.ExampleDocumentationValidationTests.JsonExamples_AreParseableOrExplicitlyExempted"
+      ]
+    }
+  ]
+},
     {
       "id": "shining-patient-current-contracts",
       "when": "Cheap current source and codec admission must pass first."
