@@ -157,7 +157,11 @@ internal static partial class WoundApplicationService
         }
         try
         {
-            var guardians = await Root(AfterlifeWoundTreatmentAuthority.AidLocalityPaths[0]);
+            JsonObject? guardians = null;
+            try { guardians = await Root(AfterlifeWoundTreatmentAuthority.AidLocalityPaths[0]); }
+            catch (Exception failure) when (context.Input.Realm == "shining_abode" &&
+                failure is JsonException or InvalidDataException or InvalidOperationException or ArgumentException or OverflowException)
+            { /* An unrelated Guardian registry cannot disable a Shining faction patient or service. */ }
             JsonObject? residents = null;
             try { residents = await Root(GuardianAbodeResidentState.StatePath); }
             catch (Exception failure) when (context.Input.Realm == "shining_abode" &&
@@ -165,9 +169,12 @@ internal static partial class WoundApplicationService
             { /* A malformed roster cannot admit a resident; a radiant head has separate dependencies. */ }
             var shining = context.Input.Realm == "shining_abode" ? await Root(ShiningAbodeState.StatePath) : null;
             if (context.Input.Realm == "shining_abode")
+            {
+                using var computationContext = fs.EnterOperationTimingContext();
                 context = context with { ShiningPatients = SpiritualTreatmentParticipation.ReadShiningPatientAdmissions(
                     shining, context.Input.Carriers.AfterlifeProfiles!, residents) };
-            return new(await BuildStateFromLocalityAsync(fs, lease, generation, context, guardians, residents, shining), context);
+            }
+            return new(await BuildStateFromLocalityAsync(fs, lease, generation, context, self, guardians, residents, shining), context);
         }
         catch (Exception failure) when (failure is not CoordinatedStatePublicationUncertainException &&
             failure is JsonException or InvalidDataException or InvalidOperationException or ArgumentException or OverflowException)
@@ -175,10 +182,9 @@ internal static partial class WoundApplicationService
     }
 
     private static async Task<WoundCommandState> BuildStateFromLocalityAsync(FileSystemManager fs,
-        FileSystemManager.CanonicalWriteLease lease, string generation, WoundPlayerReadContext context,
+        FileSystemManager.CanonicalWriteLease lease, string generation, WoundPlayerReadContext context, WoundCommandState self,
         JsonObject? guardians, JsonObject? residents, JsonObject? shining)
     {
-        var self = CreateState(generation, context);
         var profiles = (context.Input.Carriers.AfterlifeProfiles?["profiles"] as JsonArray)?.OfType<JsonObject>().ToArray() ?? [];
         var visibleActors = profiles.Where(p => p["actorType"]?.GetValue<string>() is "guardian" or "resident" or "radiant_actor" &&
             AfterlifeProfileVisibility.IsVisibleToPlayer(p)).ToArray();

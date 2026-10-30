@@ -91,6 +91,19 @@ parallel cache, другой publisher или recorder; source counts доказ
 `/workspace/tboe-linux-evidence-20261025/us4-shining-patient-aid`, reserve400MiB+
 полный output headroom обязателен; текущий полный D4 artifact archive уже сохранён.
 
+Independent Astra SOURCE on6cbe44ec found three bounded issues: unrelated malformed
+Guardian registry blocked Shining menu, missing ordinary-incarnation-mode guard,
+and duplicate pure Self/materialization computations. Corrections now isolate
+Shining Guardian parsing, reuse two actual normalization admissions and prepared
+Self, and require existing package modeAbsent. Existing sealed passive timer counts
+real materialization computation; typed menu/detail consumers share one fresh
+private admission, no arbitrary callback/cache. Added valid/invalid-package and
+counter controls, plus four actual initial-world menu/known-detail isolation rows
+with one real read of each locality source. Full Engine journeys UNWRITTEN/UNRUN.
+Example grant-turn tick corrected to startIII0→grantIII1→activeII1→naturalII2.
+Manifest exact family dictionary updated for the new focused worked example.
+These corrections remain UNCOMPILED/UNRUN, delta SOURCE pending; no PASS claimed.
+
 Авторское решение диагностики принято2026-10-30 11:48UTC и отражено в FR071/tasks.
 После текущего Shining patient: Mortal method declares own procedure check/time/
 cost; spiritual Healing>=0 plus ALL path requirements, guaranteed declared reveals,

@@ -266,8 +266,8 @@ public sealed partial class AfterlifeHealingPaymentLifecycleTests(ITestOutputHel
     internal static Task<HealingFixture> CreateServiceFixtureAsync(int rank, int die, FileSystemManagerHooks? hooks = null,
         bool engine = false, string realm = "Chaos Sea", bool remoteElyara = false,
         Func<FileSystemManager, JsonObject, Task>? additionalBeforeResourceBootstrap = null,
-        Action<string>? allocatedRootForDiagnostics = null) =>
-        HealingFixture.CreateAsync(rank, 0, die, stageRequest: false, hooks: hooks, beforeResourceBootstrap: async (files, profiles) =>
+        Action<string>? allocatedRootForDiagnostics = null, int playerHealingTier = 0) =>
+        HealingFixture.CreateAsync(rank, playerHealingTier, die, stageRequest: false, hooks: hooks, beforeResourceBootstrap: async (files, profiles) =>
             {
                 await SeedServiceAsync(files, profiles, realm);
                 if (remoteElyara) await ElyaraCurrentLocationNavigationTests.SeedRemoteSourceAsync(files, profiles);

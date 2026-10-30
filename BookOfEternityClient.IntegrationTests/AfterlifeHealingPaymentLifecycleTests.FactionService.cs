@@ -22,13 +22,14 @@ public sealed partial class AfterlifeHealingPaymentLifecycleTests
     /// <param name="progression">An explicit independent enabled, disabled or unfunded healer strategy control.</param>
     /// <param name="allocatedRootForDiagnostics">Optional actual-root notification before expensive preparation; no source observer or authority.</param>
     /// <param name="additionalBeforeResourceBootstrap">Optional negotiated fixture input under the existing seed lease, before the sole bootstrap.</param>
+    /// <param name="playerHealingTier">Initial player profile and soul art tier, established before the sole resource bootstrap.</param>
     /// <returns>An owned per-test fixture, never a publication or source authority substitute.</returns>
     internal static Task<HealingFixture> CreateFactionServiceFixtureAsync(int rank, int die,
         FileSystemManagerHooks? hooks = null, bool engine = false, int providers = 1, string? progression = null,
         Action<string>? allocatedRootForDiagnostics = null,
-        Func<FileSystemManager, FileSystemManager.CanonicalWriteLease, JsonObject, Task>? additionalBeforeResourceBootstrap = null) =>
+        Func<FileSystemManager, FileSystemManager.CanonicalWriteLease, JsonObject, Task>? additionalBeforeResourceBootstrap = null, int playerHealingTier = 0) =>
         CreateServiceFixtureAsync(rank, die, hooks, engine, realm: "Shining Abode",
-            allocatedRootForDiagnostics: allocatedRootForDiagnostics,
+            allocatedRootForDiagnostics: allocatedRootForDiagnostics, playerHealingTier: playerHealingTier,
             additionalBeforeResourceBootstrap: async (files, profiles) =>
             {
                 var inputs = ShiningFactionHealingServiceTestData.Create(providers);

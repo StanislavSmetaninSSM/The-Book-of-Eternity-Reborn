@@ -2,6 +2,11 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "shining-patient-menu-current",
+      "reason": "New current resident/radiant menu/detail source-isolation and one-real-read control; complete initial world only, not genuine consent/treatment admission.",
+      "contracts": ["#1536 T108-SHINING-PATIENT; Astra SOURCE Guardian-isolation finding; operation-local reuse"]
+    },
+    {
       "category": "shining-patient-current-contracts",
       "reason": "New current patient admission/source dependency/invalidation, request8/direction/retained draw/natural tier, valid-cycle refusal and effective GM worked-proposal contracts before live authority or UI acceptance.",
       "contracts": ["#1536 T108-SHINING-PATIENT; accepted design d4aa700df; FR043–054 FR072–074; closed record5/natural8/active8"]

@@ -85,25 +85,30 @@ internal static partial class AfterlifeWoundHealingPlanner
             var afterGuardians = path == guardianPath ? Root(path, content) : guardians;
             var afterResidents = path == residentPath ? Root(path, content) : residents;
             var afterShining = path == shiningPath ? Root(path, content) : shining;
-            var before = SpiritualTreatmentParticipation.RequireAidScope(guardians, residents, profiles, aid, wound, shining);
-            var after = SpiritualTreatmentParticipation.RequireAidScope(afterGuardians, afterResidents, profiles, aid, wound, afterShining);
+            LocalInteractionScope before; LocalInteractionScope after;
             if (aid.ShiningPatient is { } patient)
             {
                 var originalAdmission = SpiritualTreatmentParticipation.RequireShiningPatientAdmission(
                     shining, profiles, residents, patient.Target, patient.Locality);
                 var normalizedAdmission = SpiritualTreatmentParticipation.RequireShiningPatientAdmission(
                     afterShining, profiles, afterResidents, patient.Target, patient.Locality);
+                before = originalAdmission.Scope; after = normalizedAdmission.Scope;
                 if (originalAdmission.Fingerprint != normalizedAdmission.Fingerprint)
                     throw new InvalidDataException("Normalization cannot change the exact admitted Shining patient tuple.");
             }
-            else if (aid.ExplicitLocality is { Realm: "shining_abode" } locality)
+            else
             {
-                var originalAdmission = SpiritualTreatmentParticipation.RequireShiningProviderAdmission(
-                    guardians, residents, profiles, shining, aid.Healer("shining_abode"), locality);
-                var normalizedAdmission = SpiritualTreatmentParticipation.RequireShiningProviderAdmission(
-                    afterGuardians, afterResidents, profiles, afterShining, aid.Healer("shining_abode"), locality);
-                if (originalAdmission.Fingerprint != normalizedAdmission.Fingerprint)
-                    throw new InvalidDataException("Normalization cannot change the exact negotiated healer membership/role/locality tuple.");
+                before = SpiritualTreatmentParticipation.RequireAidScope(guardians, residents, profiles, aid, wound, shining);
+                after = SpiritualTreatmentParticipation.RequireAidScope(afterGuardians, afterResidents, profiles, aid, wound, afterShining);
+                if (aid.ExplicitLocality is { Realm: "shining_abode" } locality)
+                {
+                    var originalAdmission = SpiritualTreatmentParticipation.RequireShiningProviderAdmission(
+                        guardians, residents, profiles, shining, aid.Healer("shining_abode"), locality);
+                    var normalizedAdmission = SpiritualTreatmentParticipation.RequireShiningProviderAdmission(
+                        afterGuardians, afterResidents, profiles, afterShining, aid.Healer("shining_abode"), locality);
+                    if (originalAdmission.Fingerprint != normalizedAdmission.Fingerprint)
+                        throw new InvalidDataException("Normalization cannot change the exact negotiated healer membership/role/locality tuple.");
+                }
             }
             if (before.RealmKind != after.RealmKind || before.LocationId != after.LocationId || before.CurrentGuardianId != after.CurrentGuardianId ||
                 !before.LocalActorIds.ToHashSet(StringComparer.Ordinal).SetEquals(after.LocalActorIds) ||

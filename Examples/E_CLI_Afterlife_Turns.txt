@@ -14339,7 +14339,7 @@ end_spiritual_negotiated_provider_v1
 
 spiritual_shining_patient_v8 — worked two-turn alternatives, not standalone state
 Assume turn43 safe current revealed faction_patient/hall_patient, exact alive visible
-materialized patient with a known wound_shining_patient III1. PLAYER HealingIII;
+materialized patient with a known wound_shining_patient III0. PLAYER HealingIII;
 patient Healing0, no healer role/service profile. The resident is truly ascended
 in that faction; alternatively radiant_actor is its actual occupied canonical head
 with matching shiningPoliticalActors currentFactionId/head. Use ONE alternative:
@@ -14350,7 +14350,8 @@ with matching shiningPoliticalActors currentFactionId/head. Use ONE alternative:
 {"actorType":"radiant_actor","actorRef":"shining_patient","spiritualTreatmentParticipationChange":{"schemaVersion":5,"kind":"shining_target_consent","operation":"grant","healerId":"player_soul","woundId":"wound_shining_patient","locality":{"factionId":"faction_patient","hallId":"hall_patient"},"conscious":true,"capable":true,"readableEvidence":"Как нынешний глава фракции, я сознательно разрешаю игроку отдельную попытку лечения моей известной раны."}}
 ```
 Publish all ordinary requested natural graphs/report/Brain and correct patient
-memory. Client alone accepts schema5/natural8/full History witness. After normal
+memory. The H0 grant-turn natural tick advances III0 to III1. Client alone accepts
+schema5/natural8/full History witness. After normal
 Engine cleanup, turn44 /лечить selects patient→known wound, then a SEPARATE actual
 confirmation. Read/cancel ZERO draw/attempt/payment/world cycle/write. The client
 retains active8, direction=player_to_shining_entity, complete witness and original

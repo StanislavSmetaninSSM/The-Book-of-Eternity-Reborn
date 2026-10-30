@@ -1,6 +1,36 @@
 {
     "schemaVersion": 1,
     "categories": [
+{
+  "id": "shining-patient-menu-current",
+  "responsibility": "T108-SHINING-PATIENT current menu and known detail over the complete initial independent Shining patient fixture: resident/radiant with absent or malformed unrelated Guardian registry, actual one-read locality counters and no treatment authority before accepted consent.",
+  "excludes": "No genuine grant/draw/accepted treatment/replay/rollback, full Engine, DOM/provider/fresh process or diagnosis execution.",
+  "changeHints": [
+    "BookOfEternityClient/Services/WoundApplicationService.cs",
+    "BookOfEternityClient/Services/WoundTargetSelectionService.cs"
+  ],
+  "related": [
+    {
+      "id": "shining-patient-current-contracts",
+      "when": "Exact patient DATA/codec/GM requirements changed."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.PatientMenuDoesNotDependOnUnrelatedGuardianRegistryAndReadsSelectedRootsOnce"
+      ]
+    }
+  ]
+},
     {
       "id": "shining-patient-current-contracts",
       "responsibility": "T108-SHINING-PATIENT pure current resident/radiant admission, exact source dependencies and invalidation, no provider role/art/service prerequisite; family8 retained request, independent natural tier, closed selection and valid-cycle consent refusals.",

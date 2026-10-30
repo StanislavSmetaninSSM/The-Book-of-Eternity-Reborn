@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using BookOfEternityClient.Core;
 
 namespace BookOfEternityClient.Services;
 
@@ -43,6 +44,8 @@ internal static partial class SpiritualTreatmentParticipation
         if (target is not { Realm: "shining_abode", OwnerKind: "resident" or "radiant_actor", CarrierPath: WoundCarrierCatalog.AfterlifeProfilesPath } ||
             !ResourceMaterializationContract.IsExactIdentifier(target.OwnerId) || locality.Value is not SpiritualAidLocality.ShiningFactionHall selected)
             throw new InvalidDataException("Patient admission requires an exact Shining member/head and faction hall.");
+        if (ShiningAbodeState.GetPreparedIncarnationPackageMode(shining) != ShiningAbodeState.PreparedIncarnationPackageMode.Absent)
+            throw new InvalidDataException("Patient admission requires ordinary Shining mode without an incarnation handoff.");
         var scope = ShiningCurrentHallContract.RequireCurrentScope(shining, target.OwnerKind == "resident" ? residents : null);
         var factions = (shining?["factions"] as JsonArray)?.OfType<JsonObject>().Where(f =>
             string.Equals(Text(f, "factionId"), selected.FactionId, StringComparison.OrdinalIgnoreCase)).ToArray();
@@ -58,8 +61,7 @@ internal static partial class SpiritualTreatmentParticipation
             !WoundCarrierCollectionAuthority.AfterlifeProfileMatches(actors[0], target) ||
             Text(actors[0], "lifeState") != "alive" || !AfterlifeProfileVisibility.IsVisibleToPlayer(actors[0]) ||
             Text(actors[0], "locationId") != selected.HallId || !LocalInteractionScopeService.IsAfterlifeActorLocal(scope, actors[0]) ||
-            ActorMaterializationContract.ValidateHistoricalAfterlifeProfile(JsonSerializer.SerializeToElement(actors[0]),
-                AfterlifeEntityProfileState.StatePath).Count != 0)
+            !HasShiningPatientMaterialization(actors[0]))
             throw new InvalidDataException("Patient admission requires one exact living visible materialized local profile.");
         var tuple = new JsonObject
         {
@@ -103,4 +105,11 @@ internal static partial class SpiritualTreatmentParticipation
             { "book_of_eternity.shining_patient_admission", "1", WoundAcceptedTurnFingerprintWriter.CanonicalJson(tuple) }),
             actors[0], target.OwnerKind == "radiant_actor");
     }
+    private static bool HasShiningPatientMaterialization(JsonObject profile)
+    {
+        using var computation = FileSystemManager.MeasureCurrentPassiveOperation("SpiritualTreatment.ShiningPatient.Materialization");
+        return ActorMaterializationContract.ValidateHistoricalAfterlifeProfile(JsonSerializer.SerializeToElement(profile),
+            AfterlifeEntityProfileState.StatePath).Count == 0;
+    }
+
 }

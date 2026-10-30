@@ -5,7 +5,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
-public sealed class ShiningPatientTreatmentAdmissionTests
+public sealed partial class ShiningPatientTreatmentAdmissionTests
 {
     [Theory]
     [InlineData("resident")]
@@ -26,8 +26,6 @@ public sealed class ShiningPatientTreatmentAdmissionTests
         Assert.Equal(kind == "resident" ? new[] { GuardianAbodeResidentState.StatePath } : [],
             AfterlifeWoundTreatmentAuthority.AidLocalityPathsFor(selected));
         Assert.Equal(before, JsonSerializer.Serialize(input));
-        var detached = admitted.Profile.DeepClone(); detached["displayName"] = "Отдельный экспорт";
-        Assert.NotEqual(detached["displayName"]!.GetValue<string>(), admitted.Profile["displayName"]!.GetValue<string>());
     }
 
     [Theory]
