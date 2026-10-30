@@ -61,7 +61,11 @@ public sealed partial class LifecyclePassiveTimingDiagnosticsTests
         finally
         {
             release.TrySetResult();
-            if (body is not null) primary ??= await Record.ExceptionAsync(() => body!);
+            if (body is not null)
+            {
+                var bodyFailure = await Record.ExceptionAsync(() => body!);
+                primary ??= bodyFailure;
+            }
             try { if (Directory.Exists(root)) Directory.Delete(root, recursive: true); }
             catch (Exception error) { primary ??= error; }
             await capture.CompleteAsync(primary);
