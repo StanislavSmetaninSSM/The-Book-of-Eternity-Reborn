@@ -18,7 +18,21 @@ legacy names не переносятся. Цена custom Main/noDE только
 и feature532 T005/T023 открыты; source-аудит не подтверждает реализацию.
 Оптимизация: existing service для стабильных источников/проекций, инвалидирование
 изменений, fresh source/owner/effect/publication. Простые проценты не кэшировать;
-канон не временный cache, ускорение не заявлено. Проверки/публикация ещё впереди.
+канон не временный cache, ускорение не заявлено.
+
+WIPc7762c0d735d5f9d5bff22287bf2f66e46922120 опубликован до review; remote SHA
+совпал, новое приложение прочитано через GitHub. Независимый GPT-6 Astra/high
+review_encounters_custom1573 проверил весь diff девяти документов и выборочно
+ReadableInventoryDocumentAuthority, MortalItemMaterializationContract,
+MortalItemConsumptionPlanner, ActorMaterializationContract, GuardianPolicyContracts,
+Block10. Материальных P1/P2 нет: знаменатель/conditional discovery, повторы,
+реальные источники, custom lifecycle и будущие schema/бюджеты разделены корректно.
+Parent проверил264относительные файловые ссылки (не anchors),100/100/100 и18%,
+diff. Финальная публикация сверяет девять blob/HEAD и истории #1573/#1572.
+T097/T098 готовы к авторскому рассмотрению; production/tests/build/симуляция
+не запускались. Посторонний obj не включён. Два раздельных аудита обнаружили
+важные ограничения text authority/GM trigger и relic-only scope; они отражены
+до ревью. Экономия времени/стоимости не измерена, новая настройка routing не нужна.
 
 ## Текущий checkpoint T094–T095: исследование Моря
 
