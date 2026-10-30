@@ -1,3 +1,14 @@
+# Отдельная точка принятого публичного лечения
+
+Принятый функциональный код до B-scaffold: `fd69947ad1d61678fe2fb1af32ecb58fcf070c6b`.
+Подробный отдельный checkpoint: [публичное фракционное лечение](recovery/us6-public-faction-accepted-20261030.md).
+Он фиксирует console/browser-handler/rollback 3/3 PASS, совместимость private5 и
+179 функциональных случаев + 3 controls на указанных lineage. Незавершённая B в
+текущей ветке не входит в этот принятый охват. Новый Unit build B-scaffold прошёл,
+но причинный RED и production B ещё не выполнены. Продолжаем договорные условия.
+
+---
+
 # US6 public faction A accepted; continue negotiated B, first causal DATA controls WIP
 
 Independent Sol finalOUTCOME accepts currentprivate5/5PASS: aid4category142.1052995s,
