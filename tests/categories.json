@@ -37566,6 +37566,33 @@
       },
       "timeoutMinutes": 2,
       "expectedSeconds": null
+    },
+    {
+      "id": "negotiated-healing-provider-data",
+      "responsibility": "Four file-free causal controls for optional closed provider consideration in Guardian2/resident4 proposals and exact closed Shining faction/Elyara-hall locality roundtrips. Valid old proposal/locality prerequisites precede new lawful DATA admission; detached outputs preserve inputs.",
+      "excludes": "No grant/consent/obligation/publication authority, player confirmation, wallet/roll/world side effect, live provider or full negotiated-route qualification; no new price/fulfillment ledger.",
+      "changeHints": [
+        "BookOfEternityClient.Tests/SpiritualResidentProviderParticipationTests.Negotiated.cs",
+        "BookOfEternityClient/Services/SpiritualTreatmentParticipation.cs",
+        "BookOfEternityClient/Services/SpiritualTreatmentParticipation.Residents.cs"
+      ],
+      "related": [],
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.SpiritualResidentProviderParticipationTests.ProviderOfferRetainsClosedExplicitNoncurrencyConsideration",
+            "BookOfEternityClient.Tests.SpiritualResidentProviderParticipationTests.ShiningProviderLocalityRoundTripsItsExactClosedVariant"
+          ]
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null
     }
   ]
 }

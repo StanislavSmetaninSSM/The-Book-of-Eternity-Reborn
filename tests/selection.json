@@ -175,6 +175,13 @@
       "contracts": [
         "#1536 T137-AUTO-HISTORY/T142/T143 historical creation evidence versus current faction healer DATA"
       ]
+    },
+    {
+      "category": "negotiated-healing-provider-data",
+      "reason": "Next US6 negotiated compensation must use existing provider proposal/result families and typed Shining localities. Cheap existing-API causal DATA controls precede production changes; not gameplay acceptance.",
+      "contracts": [
+        "#1536 US6 T133/T134/T136/T138/T143/T146/T147, FR080/084 accepted B design"
+      ]
     }
   ]
 }

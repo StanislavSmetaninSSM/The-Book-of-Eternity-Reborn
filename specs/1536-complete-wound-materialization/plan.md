@@ -1,3 +1,42 @@
+# US6 public faction A accepted; continue negotiated B, first causal DATA controls WIP
+
+Independent Sol finalOUTCOME accepts currentprivate5/5PASS: aid4category142.1052995s,
+provider1category36.9227696s,wall191.5665675s,each3min; exactTRX/methods/uniqueIDs/pins/
+cleanup verified. This closes the current affected gate. Older190stimeout remains
+unexplained historical evidence, not relabeled. A scoped qualification complete:
+179distinct functional+3diagnostic controls across explicit accepted06/c1 lineages,
+not onefreshaggregate. Actual publicconsole/sharedbrowser/physicalrollback is ready;
+wholeUS6, B, DOM/liveprovider/freshprocess and HOLD remain open/separate.
+
+Next complete user result is negotiated consideration through existing accepted
+provider offers and confirmed treatment, same roll/gate/target/cycle/C4/History, with
+failure/rollback/replay behavior. Existing Astra DESIGN refined closed locality union:
+Chaos{guardianId,abodeId}unchanged; Shiningresident{factionId,hallId}; exactElyara
+{kind:elyara_shining_hall,hallId}, no nullable Guardian/Abode aliases. Add optional
+Guardian provider locality to existing selection; keep result4/6, no new publisher.
+Realm follows exact owner+variant. Preserve NextChaosSeaTurnOrdinal as shared
+existing afterlife ordinal. Match complete terms/owners/locality; fresh roster/role/
+life/visibility/currenthall checks and signed opening/closing fences remain live.
+
+Compensation optional closed{kind,agreementRef,readableTerms},provider-offer-only
+favor/debt/quest/allegiance/free_aid; absence preserves oldfreeaid serialization.
+Proposal/reference alone creates no obligation. Actual accepted natural record and
+History witness then separate player confirmation bind terms to accepted attempt;
+no new debt/quest ledger/fulfillment or economic rule. Explicit terms require exact
+presence-aware originalwallet requestDATA, refusal of any GMFeathercommand(even0),
+actual proposedwallet comparison at assembly/publication, historical replay without
+consulting/restoring today'swallet. Reuse existing source owners/service/recorder/UI.
+
+Four new file-free existing-API causal DATA tests now cover Guardian/resident explicit
+consideration and faction/Elyara locality shapes; each proves the old valid input
+first. Production unchanged; testsUNCOMPILED/REDpending. This is one B implementation
+route, not its completion. Next SOURCE/PREP of cheap4 after freshUnit/currentpins/
+catalog/PlanOnly -> actual missing-contract RED -> coherent B implementation,
+GM synchronization and whole SOURCE before owning builds/focused/fulljourney proof.
+Allraw external/no deletions/uploads; no A/HOLD/acceptedPASS replay.
+
+---
+
 # US6 public faction route bounded ACCEPTED; private compatibility gate prepared
 
 Independent Sol finalOUTCOME accepts console/shared-browser/physicalrollback3/3PASS,
