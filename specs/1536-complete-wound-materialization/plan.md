@@ -1,3 +1,19 @@
+## S7 SOURCE acceptance and fresh-build boundary
+
+Independent Astra SOURCE accepted 40d0d5587f6c2ad5b64970c7204ce4ca95383076:
+no blocking findings; exact previous-turn/family/fingerprint/cohort guards remain.
+Detached History controls reuse actual owners and add no I/O or fixture setup.
+CI selection reconciles to 110 distinct cases / 46 methods / 23 descriptors.
+Catalog selectors and IDs are unchanged, so the existing valid full inventory
+1191/12994 is retained; exact fresh PlanOnly is still required.
+
+Next are fresh Main, Support, Unit and Integration builds, bindings and artifact
+fences, then native four at 120s each. Prior cheap33, cheap62 and owner4 evidence
+is retained only under its stated epochs/scopes and overlap must not be counted
+twice. Resident-console at 180s still requires separate admission after native.
+No build or new GREEN result is claimed by this checkpoint. Writer is paused.
+S6 measured archive hash/EOF proof was rechecked before any owning overwrite.
+
 # T108 family8 History correction — WIP, UNCOMPILED/UNRUN
 
 The retained S6 radiant-active failure is the causal RED: a genuine natural8 grant
