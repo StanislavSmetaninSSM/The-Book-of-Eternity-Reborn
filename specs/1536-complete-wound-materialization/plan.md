@@ -1,3 +1,47 @@
+# T121 EX6FIX terminal failure — graph-knowledge causal scaffold, UNCOMPILED/UNRUN
+
+The file-free lifecycle two-case GREEN was accepted. The actual next native attempt
+at `1ee5c4a4b` completed two rows: resident PASS (36.5168936s/120s), first terminal
+Healing V FAIL (12.544844s/120s), wall 1:02.7646735 without timeout. Cleanup and pins
+were stable. The exact failed terminal issue is spiritual_healing_finalization_invalid:
+the strict persisted-stage guard rejects unrelated care/recovery/complication changes.
+External `EX6FIX-native-actual/verified-partial-failure.json` and full raw remain intact.
+Four distinct new native passes are now historical (both self realms, retained radiant,
+resident); terminal remains FAIL and UI three remain UNRUN/held. Cheap138/native4
+retention is conditional on the actual next dependency delta, not blanket replay.
+
+Source trace and independent Astra DESIGN confirm a production metadata-source gap:
+AdmitGraphs parses lower-rank graphs using signed original wounds, whose selected
+complication is still hidden. The diagnosis step correctly reveals it. The real graph
+parser copies the supplied complication metadata; predecessor binding changes root
+references only. The first lower-rank natural step therefore carries stale hidden
+visibility, which the strict result guard correctly refuses. The GM fixture authors
+only stageRef/consequenceDefinitions, so changing its input would not fix this capture.
+
+This RED extraction adds only an internal pure SelectGraphAdmissionWounds DATA seam,
+called once per AdmitGraphs invocation and currently returning the original cohort
+unchanged. The parser call/semantic anchors, signed _wounds/source evidence, references,
+fingerprints/order and strict persisted guard stay unchanged. No GREEN behavior is
+implemented yet. The new Unit category has three source-estimated rows / one method /
+one descriptor at 60s: selected diagnosis intends one final full-metadata FAIL;
+unselected and ordinary originals are passing controls. It reuses actual H5 program
+inputs, actual parser/predecessor binder, complete ordered canonical-value comparison
+and frozen inputs before the final oracle. Independent well-formed typed stage DATA
+also proves the existing scope consumer rejects hidden-knowledge regression; no
+accepted owner, receipt or execution authority is fabricated.
+
+Next is bounded SOURCE, fresh Main/Support/Unit only and exact three-row RED PREP.
+The selected 18 artifacts/three owning source-PDB sets must be current; Integration
+is explicitly stale/uncompiled/unselected for this Main API extraction. No writer
+build/test ran. After verified RED, GREEN changes only graph-source selection to the
+program's already owned NaturalMembers once per invocation; historical originals
+remain separate. Full CI is source-estimated 154 cases / 66 methods / 27 descriptors,
+with official discovery the authority. Native terminal and UI remain mandatory later.
+No new GM contract/update is required: current guidance already requires knowledge
+first and the complete natural suffix, and the graph wire contract is unchanged.
+No new cache, publisher, diagnostic stack, rule, timeout or speedup claim is added.
+All failures/archives remain external; broader Mortal/adapter work and holds stay open.
+
 # T121 EX5GREEN native partial — canonical fault-fixture correction, UNCOMPILED/UNRUN
 
 The actual native attempt at plan-only `62e31c4ad` / compiled `239884347` exited 1

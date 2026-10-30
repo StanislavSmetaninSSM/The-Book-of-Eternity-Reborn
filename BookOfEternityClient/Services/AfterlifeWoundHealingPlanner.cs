@@ -213,6 +213,11 @@ internal static partial class AfterlifeWoundHealingPlanner
 
         private string GraphRef(string woundId, int rank) => SpiritualHealingRequestProjection.GraphRef(ProgramReference, woundId, rank);
 
+        // Operation-local parsed DATA selection only, never execution authority.
+        // The causal scaffold preserves the original selection until its RED is observed.
+        internal static IReadOnlyList<WoundMaterializationEnvelope> SelectGraphAdmissionWounds(
+            IReadOnlyList<WoundMaterializationEnvelope> originals, SpiritualDiagnosisProgram? diagnosisProgram) => originals;
+
         private void AdmitGraphs(JsonObject? interfaceUpdates)
         {
             if ((_data?.ServiceQuote is not null || _data?.NegotiatedWalletInvariant is not null) && interfaceUpdates?["metaStateUpdates"] is JsonObject meta && meta.ContainsKey("inkFeatherChanges"))
@@ -233,6 +238,7 @@ internal static partial class AfterlifeWoundHealingPlanner
                         ["woundName"] = _wounds.Single(w => w.WoundId == r.WoundId).Display.Name,
                         ["complications"] = ComplicationRefs(_wounds.Single(w => w.WoundId == r.WoundId))
                     }).ToArray()).ToJsonString());
+            var graphSources = SelectGraphAdmissionWounds(_wounds, _diagnosis?.Program);
             foreach (var item in rows)
             {
                 if (item is not JsonObject row || row.Count != 2 || !row.ContainsKey("stageRef") || !row.ContainsKey("consequenceDefinitions"))
@@ -242,7 +248,7 @@ internal static partial class AfterlifeWoundHealingPlanner
                 if (matching.Length != 1 || _graphs.ContainsKey(reference))
                     throw new InvalidDataException("Duplicate or foreign spiritual destination graph.");
                 var target = matching[0];
-                var wound = _wounds.Single(w => w.WoundId == target.WoundId);
+                var wound = graphSources.Single(w => w.WoundId == target.WoundId);
                 var map = wound.Complications.ToDictionary(c => ComplicationRef(c.ComplicationId), c => c.ComplicationId, StringComparer.Ordinal);
                 _graphs.Add(reference, WoundResponseInputComposer.ParseSpiritualHealingGraph(
                     JsonSerializer.SerializeToElement(row["consequenceDefinitions"]), wound, target.Rank, reference, map));

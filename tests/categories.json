@@ -2,6 +2,16 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "spiritual-diagnosis-graph-knowledge-causal",
+  "responsibility": "T121 file-free producer-to-graph-consumer causal proof: actual H5 selected-not-first diagnosis program, one operation-local production graph-source selector, actual graph parser and predecessor binder, complete ordered complication metadata and frozen inputs. Selected knowledge is the intended RED; unselected and ordinary originals are controls. Existing typed stage DATA also proves the strict persisted scope guard refuses a knowledge downgrade.",
+  "excludes": "No accepted owner, signed receipt, publication, Engine, fabricated Mortal route, new graph wire shape or guard relaxation. The scaffold returns the original cohort unchanged until observed RED; actual terminal native failure is retained separately.",
+  "changeHints": ["BookOfEternityClient/Services/AfterlifeWoundHealingPlanner.cs", "BookOfEternityClient.Tests/SpiritualDiagnosisGraphKnowledgeTests.cs"],
+  "related": [{ "id": "spiritual-diagnosis-native-terminal", "when": "Actual closed terminal publication remains required after the cheap producer/metadata consumer is corrected." }],
+  "requirements": { "frontendBuild": false, "exclusive": false },
+  "timeoutMinutes": 1, "expectedSeconds": null,
+  "selectors": [{ "project": "unit", "tests": ["BookOfEternityClient.Tests.SpiritualDiagnosisGraphKnowledgeTests.*"] }]
+},
+{
   "id": "spiritual-diagnosis-lifecycle-fixture-data",
   "responsibility": "T121 file-free typed fixture proof for a canonical lifecycle-drift fault: existing leaderless strength 21 becomes 36 when its 15-point penalty is removed; active strength 33 stays 33. The shared native fault constructor may change only requested lifecycle and independently expected derived strength, preserves inputs, and a second real Shining normalizer is an exact no-op. Active/radiant output is identical to the previously accepted state-only fault image.",
   "excludes": "No production change, accepted world/authority, files, Engine, new actor/head, runtime policy or gameplay outcome. The actual native source-drift refusal and publication remain separate owners.",
