@@ -1,3 +1,53 @@
+# T121 EX5RED2 accepted — current-source GREEN candidate, UNCOMPILED/UNRUN
+
+Independent Astra OUTCOME accepted the corrected causal attempt at `dfcfd48f1`:
+four complete rows, three intended final failures and one passing refusal control.
+Both menu rows reached line 46 only after valid current-root confirmation and inert
+read prerequisites, then showed available=true/confirmation=none. Missing-source
+StagePlayer reached line 71 with staged/control/request=true and changed canonical
+bytes; unreadable-source staging refused. Category 7.3680682s/60s, wall16.0983117s;
+no timeout, skip, duplicate or underfill; cleanup and binary pins remained stable.
+The exact proof/TRX stays in external `EX5RED2-red` (TRX SHA256
+`a49763cbcbb89e86ede2150113ebe3109bd2d5cf60cd38d1b7adf727041ec565`).
+Fresh Unit built this corrected source; selected Main/Support/Unit source/PDB/artifact
+continuity was verified. Integration's earlier fixture WIP was explicitly uncompiled
+and unselected, not attributed to that Unit-only RED.
+
+The primary completed the EX5RED2 owning archive before further binary writes:
+27 members, 62,350,476 stored /195,563,520 decoded bytes, all member hashes and full
+gzip EOF/CRC verified; SHA256 `2f6067e4b7fc7e39e5416f3e046ce38d998f3cb277857874321428aa6853b553`.
+It truthfully retains the then-existing Integration binary rather than claiming that
+the uncompiled fixture body was built. Earlier setup/native/compile failures remain
+preserved; all raw and archives stay outside Git.
+
+The bounded production candidate shares one diagnosis-only parsed current-realm
+predicate across the actual menu, pre-scheduler candidate admission and late
+Continuation. Shining requires an actual root with no incarnation package; Chaos
+semantics and the global null-package API are unchanged. The async owner constructs
+Self once after its existing locality read. Missing/unreadable Shining cannot recover
+an executable diagnosis through fallback; other treatment choices retain their own
+admission. Pure detached requirement/CreateState DATA APIs are unchanged. No new IO,
+validation loop, cache, owner, game rule or diagnostic framework is added.
+
+Next source-estimated bounded GREEN selection is 17 cases /ten methods /four existing
+or focused descriptors: new source four, affected staging nine, existing service
+menu-source counter one and semantic source guards three, at unchanged 60s budgets.
+Full feature CI membership is source-estimated 149 cases /64 methods /25 descriptors;
+official discovery remains the authority and no aggregate execution is requested.
+Because the three source guards are rechecked against changed production bodies,
+119 of the old cheap131 are proposed unchanged-consumer retention, not 122 plus
+duplicate guard qualification; that retention and legacy native five await delta
+SOURCE confirmation. Corrected new diagnosis native five and UI three remain required
+after cheap GREEN and their own PREP, with no whole131 or legacy native replay.
+
+No GM contract update is needed: active guidance already requires typed current
+target/locality and fresh canonical source proof. This closes an early client
+enforcement gap without changing any GM-authored field, schema, response or rule.
+Existing operation DATA is reused once; all source/lease/publication checks stay
+fresh and no speedup is claimed. Code is UNCOMPILED/UNRUN pending bounded independent
+SOURCE and the primary's fresh owning builds/discovery/PREP; no writer build/test
+ran. Mortal procedural diagnosis, eight unavailable adapters and all holds stay open.
+
 # T121 EX5RED scaffold setup correction — complete causal outcome not accepted
 
 The actual Unit-only `EX5RED-red` attempt at `05d9024c4` completed four rows:

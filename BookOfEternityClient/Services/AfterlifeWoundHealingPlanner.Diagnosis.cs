@@ -101,7 +101,7 @@ internal static partial class AfterlifeWoundHealingPlanner
                 WoundCarrierCollectionAuthority.AfterlifeProfileMatches(p, playerOwner)).ToArray();
             if (players is not { Length: 1 } || !AfterlifeProfileVisibility.IsVisibleToPlayer(players[0]))
                 throw new InvalidDataException("Diagnosis lost its exact currently visible player source.");
-            if (candidate.Realm == "shining_abode" && (shining is null || ShiningAbodeState.GetPreparedIncarnationPackageMode(shining) != ShiningAbodeState.PreparedIncarnationPackageMode.Absent))
+            if (!AfterlifeWoundTreatmentAuthority.HasCurrentDiagnosisRealmSource(candidate.Realm, shining))
                 throw new InvalidDataException("Diagnosis requires the actual current safe Shining locality, without an incarnation package.");
             var patients = candidate.Realm == "shining_abode" ? SpiritualTreatmentParticipation.ReadShiningPatientAdmissions(shining,
                 profiles, residents) : Array.Empty<SpiritualShiningPatientAdmission>();

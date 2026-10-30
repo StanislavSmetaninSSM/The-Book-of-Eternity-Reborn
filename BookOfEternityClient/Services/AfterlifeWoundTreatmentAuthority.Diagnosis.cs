@@ -21,6 +21,11 @@ internal static partial class AfterlifeWoundTreatmentAuthority
         realm == "chaos_sea" ? AidLocalityPaths : new[] { GuardianAbodeResidentState.StatePath })
         .Distinct(StringComparer.Ordinal).ToArray());
 
+    // Parsed current realm DATA only; callers retain their own fresh source/lease guards.
+    internal static bool HasCurrentDiagnosisRealmSource(string realm, JsonObject? shining) =>
+        realm == "chaos_sea" || realm == "shining_abode" && shining is not null &&
+        ShiningAbodeState.GetPreparedIncarnationPackageMode(shining) == ShiningAbodeState.PreparedIncarnationPackageMode.Absent;
+
     internal static DiagnosisCandidate PrepareDiagnosisCandidate(SpiritualSelfTreatmentSelection selection,
         IReadOnlyList<SourceFile> sources, int turn)
     {
@@ -31,8 +36,7 @@ internal static partial class AfterlifeWoundTreatmentAuthority
         if (!AfterlifeEntityProfileState.TryNormalizeEffectRealm(String(soul["currentRealm"]), out var realm) ||
             realm != chosen.Target.Realm || realm is not ("chaos_sea" or "shining_abode") ||
             Root(AfterlifeSpiritualConflictState.StatePath)?["activeConflict"] is not null ||
-            realm == "shining_abode" && ShiningAbodeState.GetPreparedIncarnationPackageMode(Root(ShiningAbodeState.StatePath)) !=
-                ShiningAbodeState.PreparedIncarnationPackageMode.Absent)
+            !HasCurrentDiagnosisRealmSource(realm, Root(ShiningAbodeState.StatePath)))
             throw new InvalidDataException("Diagnosis requires its exact current safe spiritual realm.");
         var carriers = new WoundCarrierCatalogInput(Root(WoundCarrierCatalog.PlayerPath), Root(WoundCarrierCatalog.NpcPath),
             Root(WoundCarrierCatalog.EnemiesPath), Root(WoundCarrierCatalog.AlliesPath), Root(WoundCarrierCatalog.AfterlifeProfilesPath));

@@ -152,9 +152,9 @@ internal static partial class WoundApplicationService
         FileSystemManager.CanonicalWriteLease lease, string generation, WoundPlayerReadContext context)
     {
         var diagnosisSource = PrepareDiagnosisSource(context);
-        var self = CreateStateCore(generation, context, diagnosisSource);
         if (!context.Input.SelfVisible || context.Input.Realm is not ("chaos_sea" or "shining_abode") || context.SpiritualConflict?["activeConflict"] is not null)
-            return new(self, context);
+            return new(CreateStateCore(generation, context, diagnosisSource), context);
+        WoundCommandState? self = null;
         async Task<JsonObject?> Root(string path)
         {
             var bytes = await fs.ReadFileBytesAsync(lease, path);
@@ -174,6 +174,11 @@ internal static partial class WoundApplicationService
                 failure is JsonException or InvalidDataException or InvalidOperationException or ArgumentException or OverflowException)
             { /* A malformed roster cannot admit a resident; a radiant head has separate dependencies. */ }
             var shining = context.Input.Realm == "shining_abode" ? await Root(ShiningAbodeState.StatePath) : null;
+            if (!AfterlifeWoundTreatmentAuthority.HasCurrentDiagnosisRealmSource(context.Input.Realm, shining))
+                diagnosisSource = null;
+            // Construct Self once, after its actual realm source has been read.
+            // Other treatment choices keep their existing independent admission.
+            self = CreateStateCore(generation, context, diagnosisSource);
             if (context.Input.Realm == "shining_abode")
             {
                 using var computationContext = fs.EnterOperationTimingContext();
@@ -184,7 +189,12 @@ internal static partial class WoundApplicationService
         }
         catch (Exception failure) when (failure is not CoordinatedStatePublicationUncertainException &&
             failure is JsonException or InvalidDataException or InvalidOperationException or ArgumentException or OverflowException)
-        { return new(self, context); }
+        {
+            // An unreadable Shining source cannot turn a detached diagnosis
+            // proof into live availability through the ordinary Self fallback.
+            return new(self ?? CreateStateCore(generation, context,
+                context.Input.Realm == "shining_abode" ? null : diagnosisSource), context);
+        }
     }
 
     private static async Task<WoundCommandState> BuildStateFromLocalityAsync(FileSystemManager fs,
