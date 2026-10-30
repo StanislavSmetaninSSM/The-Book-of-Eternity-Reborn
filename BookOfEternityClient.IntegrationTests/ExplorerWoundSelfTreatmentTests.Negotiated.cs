@@ -223,6 +223,16 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                             var promptResult = await service.ExecuteAsync(new("/лечить", Owner));
                             Assert.DoesNotContain(currentWound.WoundId, JsonSerializer.Serialize(promptResult));
                             Assert.DoesNotContain(providerId, JsonSerializer.Serialize(promptResult));
+                            var targets = promptResult.Prompts.OfType<UiSelectionPrompt>().SingleOrDefault(p => p.Id == "wound_target");
+                            Assert.Equal(faction, targets is not null);
+                            if (targets is not null)
+                            {
+                                Assert.Equal("Себя", targets.Options[0].Label);
+                                var self = Assert.Single(targets.Options, o => !o.Disabled && o.Label == "Себя");
+                                promptResult = await service.SubmitPromptSessionAsync(new(promptResult.InteractiveSession!.SessionId,
+                                    new() { ["wound_target"] = JsonValue.Create(self.Value) }, Owner));
+                                activeFixture.AssertMutationRootsUnchanged(before);
+                            }
                             var prompt = Assert.IsType<UiSelectionPrompt>(Assert.Single(promptResult.Prompts, p => p.Id == "wound_selection"));
                             var option = Assert.Single(prompt.Options, o => !o.Disabled && o.Label.Contains(providerName, StringComparison.Ordinal) && o.Description.Contains(terms, StringComparison.Ordinal));
                             var submitted = await service.SubmitPromptSessionAsync(new(promptResult.InteractiveSession!.SessionId,
@@ -238,6 +248,13 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                             console.QueueAnySelection("Отмена");
                             Assert.Equal(string.Empty, await runtime.Explorer.TryProcessCommand("/лечить"));
                             activeFixture.AssertMutationRootsUnchanged(before); Assert.Empty(console.ConfirmPrompts);
+                            Assert.Equal(faction, opened.WoundCommandState.IsTargetSelection);
+                            if (opened.WoundCommandState.IsTargetSelection)
+                            {
+                                var targets = opened.WoundCommandState.Targets.Where(t => t.Available).ToArray();
+                                var self = Assert.Single(targets, t => t.Owner.OwnerKind == "player_soul");
+                                console.QueueAnySelection((Array.IndexOf(targets, self) + 1) + ". " + self.Label);
+                            }
                             var available = opened.WoundCommandState.Choices.Where(c => c.Available).ToArray();
                             console.QueueAnySelection((Array.IndexOf(available, choice) + 1) + ". " + choice.Name + " — " + choice.Severity);
                             console.QueueAnyConfirmResponse(true);

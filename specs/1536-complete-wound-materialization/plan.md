@@ -136,6 +136,17 @@ expect refusal with zero new control/draw and byte-exact unchanged roots. This i
 repeat-stage refusal plus published replay/C4 request preservation, not a second
 submitted Engine execution after outer rollback. Small fixture delta review pending.
 
+Fresh Integration10db0cc79 exit0/102baselinewarnings/2:40.76. Final consumer audit
+before runtime found four existing faction-provider UI facts affected by canonical
+Self-first Shining target navigation (US5scenario3/FR072 includes visible nearby
+entities even without wounds). Preserve production targeting; do not filter away
+unwounded actors merely to keep old fixture shape. Existing public service helper
+already handles target choice but had a Chaos-only assertion; negotiated helper
+needs explicit Self target step before the same wound/terms confirmation. Both
+fixtures now follow that actual flow; four addressed console/browser regressions
+are selected, unchanged Elyara-only UI excluded. This is Integration-only fixture
+adaptation, SOURCE delta/rebuild pending; all runtime still UNRUN.
+
 Авторское решение диагностики принято2026-10-30 11:48UTC и отражено в FR071/tasks.
 После текущего Shining patient: Mortal method declares own procedure check/time/
 cost; spiritual Healing>=0 plus ALL path requirements, guaranteed declared reveals,

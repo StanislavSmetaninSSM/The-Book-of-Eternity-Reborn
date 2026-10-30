@@ -176,7 +176,7 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                     var opened = await service.ExecuteAsync(new(realm == "Shining Abode" && !faction ? "/элиара" : "/лечить", Owner));
                     Assert.Equal(CommandExecutionState.RequiresInput, opened.State);
                     var targets = opened.Prompts.OfType<UiSelectionPrompt>().SingleOrDefault(p => p.Id == "wound_target");
-                    Assert.Equal(realm == "Chaos Sea", targets is not null);
+                    Assert.Equal(realm == "Chaos Sea" || faction, targets is not null);
                     if (targets is not null)
                     {
                         var self = Assert.Single(targets.Options, o => !o.Disabled && o.Label == "Себя");
@@ -209,7 +209,7 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                     var offered = (await WoundApplicationService.OpenAsync(files, "/лечить", treatment: true)).WoundCommandState!;
                     var choice = Assert.Single(offered.Choices, c => c.Available && c.Selection.Service is not null &&
                         (c.Selection.Service.Quote.Provider.OwnerKind == "resident") == faction);
-                    Assert.Equal(realm == "Chaos Sea", offered.IsTargetSelection);
+                    Assert.Equal(realm == "Chaos Sea" || faction, offered.IsTargetSelection);
                     var selections = new List<string>();
                     if (offered.IsTargetSelection)
                     {

@@ -217,6 +217,34 @@
       "contracts": [
         "#1536 T108-SHINING-PATIENT; US4 scenario8 FR043–054 FR072–074; accepted design d4aa700df and source7e4e16c18"
       ]
+    },
+    {
+      "category": "shining-faction-service-console",
+      "reason": "Affected existing Shining faction provider UI now follows canonical Self-first target phase before the same confirmed public/negotiated player treatment; preserve payment/terms/world/History/memory through both handlers. Unchanged Elyara-only UI is excluded.",
+      "contracts": [
+        "#1536 T108-SHINING-PATIENT; US5scenario3 FR072; existing US6 public/negotiated provider-to-player semantics"
+      ]
+    },
+    {
+      "category": "shining-faction-service-browser",
+      "reason": "Affected existing Shining faction provider UI now follows canonical Self-first target phase before the same confirmed public/negotiated player treatment; preserve payment/terms/world/History/memory through both handlers. Unchanged Elyara-only UI is excluded.",
+      "contracts": [
+        "#1536 T108-SHINING-PATIENT; US5scenario3 FR072; existing US6 public/negotiated provider-to-player semantics"
+      ]
+    },
+    {
+      "category": "negotiated-healing-faction-console",
+      "reason": "Affected existing Shining faction provider UI now follows canonical Self-first target phase before the same confirmed public/negotiated player treatment; preserve payment/terms/world/History/memory through both handlers. Unchanged Elyara-only UI is excluded.",
+      "contracts": [
+        "#1536 T108-SHINING-PATIENT; US5scenario3 FR072; existing US6 public/negotiated provider-to-player semantics"
+      ]
+    },
+    {
+      "category": "negotiated-healing-faction-browser",
+      "reason": "Affected existing Shining faction provider UI now follows canonical Self-first target phase before the same confirmed public/negotiated player treatment; preserve payment/terms/world/History/memory through both handlers. Unchanged Elyara-only UI is excluded.",
+      "contracts": [
+        "#1536 T108-SHINING-PATIENT; US5scenario3 FR072; existing US6 public/negotiated provider-to-player semantics"
+      ]
     }
   ]
 }
