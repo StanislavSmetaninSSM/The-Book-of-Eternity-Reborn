@@ -1,3 +1,44 @@
+# US6 DESIGN accepted with concrete owner boundaries
+
+Independent gpt-6-astra/high reviewed b27fed7f8ed67b0db90708846dcbd85619fd51d3.
+A is admitted to bounded implementation; existing accepted participation evidence
+supports B. No product/economic contradiction or new author decision was found.
+The causal quote scaffold41fd6f94f remains uncompiled/unrun pending narrow SOURCE.
+
+Required A closure beyond admission: preserve original Elyara family7 source order,
+namespace and serialization; choose any new source-set only from the parsed exact
+quote.Provider. Resident roster is mandatory for that service, no missing-file fallback.
+Share selected paths across staging/fingerprint, rollback coverage/signed-original,
+normalizer and original roster for protected memory. Historical result7 replays
+recorded DATA; do not recheck historical provider presence against today's roster.
+Composed-image and final publication checks select the exact quoted actor, not Elyara.
+Before/after normalization must compare exact admitted provider/faction/hall/ascension/
+role/visibility/life/service tuple, not only sets of local actors/factions. Keep byte
+readback, fresh closing source/authority guards and actual append-only journal checks.
+Resident memory must flow through AdmitGraphs/BindResidentThoughts and post-publication
+ValidationService.SpiritualHealingInterface; only an actual admitted quote and verified
+result7 may identify the participant. No exception for generic family7 or Elyara.
+
+B optional closed compensation={kind,agreementRef,readableTerms} belongs only to
+provider offers, never target consent. Existing accepted outcome is agreement proof;
+reference/prose alone is not. Bind all data into record/witness/request/result equality,
+retain absent-field historical semantics and current no-extra-Feather behavior. Show
+exact terms instead of calling every offer free; no automatic quest/debt fulfillment.
+After Chaos4/6, full Shining negotiated needs one explicit typed participation variant
+(factionId,hallId), never aliases of guardianId/abodeId. Reuse existing natural owner,
+accepted History, fresh witness and common handler/scheduler, not a parallel stack.
+Accompanying Elyara also must not inherit fictitious faction membership or another
+Guardian's private-offer authority. These are concrete remaining implementation
+boundaries, not reasons to block independent public faction code or resume HOLD gates.
+
+Cheap checks before UI: unchanged Elyara7 replay/source set; missing/drifting roster;
+member/role drift with identical locality sets; exact resident journal before/after and
+foreign append; changed/revoked/forged agreement; same attempt/cycle and payment/wallet
+invariants; one real roster read for1/20providers. Whole worked GM examples/entrypoints
+must match each implemented route before acceptance. No tests/builds run by reviewer.
+
+---
+
 # US6 public faction-service causal scaffold — WIP, uncompiled/unrun
 
 Design b27fed7f8ed67b0db90708846dcbd85619fd51d3 is in independent Astra/high review;
