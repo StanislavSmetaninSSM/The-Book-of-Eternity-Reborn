@@ -184,11 +184,17 @@ public partial class ValidationService
             {
                 // I runs after common publication in the Engine. A request or
                 // proposed grant alone cannot exempt memory from ordinary policy.
-                if (residentMemory.ValueKind != JsonValueKind.Array || publishedSafe is not { SchemaVersion: 5 or 6 } ||
-                    new CanonicalBeforeImage(true, responseBytes).Fingerprint != publishedSafe.GraphResponseFingerprint ||
-                    publishedSafe.ResidentParticipationRecord is not { } record)
-                    throw new InvalidDataException($"Protected resident memory requires its exact published family{(publishedSafe?.SchemaVersion == 6 ? 6 : 5)} response.");
-                memoryLocality = AfterlifeWoundHealingPlanner.ReadOriginalAidLocalitySource(_fs, lease);
+                var residentRecord = publishedSafe?.ResidentParticipationRecord;
+                var residentQuote = publishedSafe?.ServiceQuote is { Provider: { Realm: "shining_abode", OwnerKind: "resident" } } serviceQuote
+                    ? serviceQuote : null;
+                var residentOwnerId = residentRecord is not null ? SpiritualTreatmentParticipation.RecordOwnerId(residentRecord)
+                    : residentQuote?.Provider.OwnerId;
+                if (residentMemory.ValueKind != JsonValueKind.Array || publishedSafe is null || residentOwnerId is null ||
+                    new CanonicalBeforeImage(true, responseBytes).Fingerprint != publishedSafe.GraphResponseFingerprint)
+                    throw new InvalidDataException("Protected resident memory requires its exact published participation or faction-service response.");
+                memoryLocality = residentQuote is not null
+                    ? AfterlifeWoundHealingPlanner.ReadOriginalServiceLocalitySource(_fs, lease, residentQuote)
+                    : AfterlifeWoundHealingPlanner.ReadOriginalAidLocalitySource(_fs, lease);
                 if (!memoryLocality.Success || memoryLocality.Snapshot is not { } local || memoryLocality.Evidence is not { } localEvidence ||
                     local.SessionId != snapshot.SessionId || local.RequestId != snapshot.RequestId || local.TurnNumber != snapshot.TurnNumber ||
                     local.SnapshotToken != snapshot.SnapshotToken || !local.CoveredLogicalPaths.Contains(GuardianAbodeResidentState.StatePath, StringComparer.Ordinal))
@@ -197,7 +203,7 @@ public partial class ValidationService
                 var before = StrictJsonAuthority.Deserialize<JsonObject>(CanonicalJsonUtf8.DecodeOneOptionalBom(
                     local.ReadRequiredBytes(GuardianAbodeResidentState.StatePath)), new JsonSerializerOptions(), "original resident memory roster")!;
                 var commands = SpiritualTreatmentParticipation.ValidateResidentThoughtAppend(JsonNode.Parse(residentMemory.GetRawText())!.AsArray(),
-                    SpiritualTreatmentParticipation.RecordOwnerId(record), snapshot.TurnNumber, before);
+                    residentOwnerId, snapshot.TurnNumber, before);
                 var expected = before.DeepClone().AsObject();
                 GuardianAbodeResidentState.ApplyThoughtJournalUpdates(expected, commands);
                 var currentBytes = await ReadPublished(GuardianAbodeResidentState.StatePath)
@@ -225,7 +231,7 @@ public partial class ValidationService
         {
             operationFailure = failure;
             issues.Add(new("output/interface_updates.json." + (hasResidentMemory ? SpiritualTreatmentParticipation.ResidentThoughtResponseProperty : "spiritualHealingGraphs"), IssueSeverity.Error,
-                hasResidentMemory ? "Resident memory requires its exact published family5 or family6 and append proof." : "Spiritual healing graphs require the actual signed safe or combat source.",
+                hasResidentMemory ? "Resident memory requires its exact published resident participation or faction-service result and append proof." : "Spiritual healing graphs require the actual signed safe or combat source.",
                 code: "spiritual_healing_interface_unbound", actual: failure.Message,
                 repairHint: "Keep the original turn/cycle and any existing treatment attempt/dice. Supply only requested stageRefs; never replace the source."));
             return null;

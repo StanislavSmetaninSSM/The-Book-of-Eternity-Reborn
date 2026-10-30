@@ -11,8 +11,23 @@ internal static partial class AfterlifeWoundTreatmentAuthority
     internal const string ElyaraId = "guard_system_elyara_001";
     internal const string ElyaraAbodeId = "abode_system_elyara_001";
     internal static IReadOnlyList<string> ServiceLocalityPaths { get; } = Array.AsReadOnly(new[] { AidGuardiansPath });
+    private static readonly IReadOnlyList<string> FactionServiceLocalityPaths =
+        Array.AsReadOnly(new[] { GuardianAbodeResidentState.StatePath });
+
+    /// <summary>Chooses exact extra source dependencies from the already parsed immutable quote.</summary>
+    /// <param name="quote">The admitted quote DATA; current access is checked separately.</param>
+    /// <returns>Elyara's unchanged original path order, or the mandatory faction roster.</returns>
+    internal static IReadOnlyList<string> ServiceLocalityPathsFor(AfterlifeHealingServiceQuote quote) =>
+        quote.Provider is { Realm: "shining_abode", OwnerKind: "resident" }
+            ? FactionServiceLocalityPaths : ServiceLocalityPaths;
+
+    /// <summary>Parsed operation-local access DATA; it carries no permission beyond the current owner.</summary>
+    internal sealed record ServiceAdmission(LocalInteractionScope Scope,
+        AfterlifeHealingServiceProfile Profile, string ProviderFingerprint);
+
     private sealed record ServiceSourceData(SelectedWoundSourceData Selected,
-        AfterlifeHealingServiceQuote Quote, IReadOnlyList<SpiritualWoundRecoveryMember> Members);
+        AfterlifeHealingServiceQuote Quote, IReadOnlyList<SpiritualWoundRecoveryMember> Members,
+        string ProviderAdmissionFingerprint);
     internal sealed record ServiceTurnStageResult(ProgressionControl? Control, SpiritualSelfTreatmentStageResult Stage);
 
     // The existing source reader owns one parsed DATA set. Control changes only
@@ -37,7 +52,7 @@ internal static partial class AfterlifeWoundTreatmentAuthority
                 String(existing["requestId"]) != requestId || Integer(existing["turn"]) != turn))
                 return new(null, Refuse("pending_conflict"));
             var sources = new List<SourceFile>();
-            foreach (var path in SourcePaths.Concat(ServiceLocalityPaths))
+            foreach (var path in SourcePaths.Concat(ServiceLocalityPathsFor(selection.Service.Quote)))
                 sources.Add(await ReadSourceAsync(files, lease, path));
             var prepared = PrepareServiceSelectionSource(selection, sources, turn);
             await RequireAidReadImagesCurrentAsync(files, lease, sources.Append(pending));
@@ -80,7 +95,7 @@ internal static partial class AfterlifeWoundTreatmentAuthority
         if (selection is not { Service.PlayerConfirmed: true, Aid: null, Combat: null })
             throw new InvalidDataException("Service admission requires actual player confirmation.");
         var quote = AfterlifeHealingServiceContract.ParseQuote(selection.Service.Quote.ToJson());
-        JsonObject? Root(string path) => sources.Single(s => s.Path == path).Root;
+        JsonObject? Root(string path) => sources.SingleOrDefault(s => s.Path == path)?.Root;
         var soul = Root(SoulPath);
         if (!AfterlifeEntityProfileState.TryNormalizeEffectRealm(String(soul?["currentRealm"]), out var realm) ||
             realm is not ("chaos_sea" or "shining_abode") || realm != quote.Provider.Realm ||
@@ -89,39 +104,59 @@ internal static partial class AfterlifeWoundTreatmentAuthority
                 ShiningAbodeState.PreparedIncarnationPackageMode.Absent ||
             SpiritualTreatmentParticipation.HasUnsettledChange(Root(WoundCarrierCatalog.AfterlifeProfilesPath)))
             throw new InvalidDataException("Public treatment requires the same current safe afterlife realm.");
-        var scope = RequireServiceScope(Root(AidGuardiansPath) ?? throw new InvalidDataException("Missing service locality."),
+        var admission = RequireServiceAdmission(Root(AidGuardiansPath),
             Root(WoundCarrierCatalog.AfterlifeProfilesPath) ?? throw new InvalidDataException("Missing service profiles."), quote,
-            Root(ShiningAbodeState.StatePath));
+            Root(ShiningAbodeState.StatePath), Root(GuardianAbodeResidentState.StatePath));
         var selected = PrepareSelectedWoundSource(selection, sources, realm, quote.Provider, requireWholeCohortLineage: true).Data
             ?? throw new InvalidDataException("Public treatment lost its exact current wound, healer or effect lineage.");
-        var actor = selected.Carriers.AfterlifeProfiles!["profiles"]!.AsArray().OfType<JsonObject>().Single(p =>
-            WoundCarrierCollectionAuthority.AfterlifeProfileMatches(p, quote.Provider));
-        var profile = AfterlifeHealingServiceContract.ReadPublicCurrencyProfile(quote.Provider, actor)!;
-        var current = AfterlifeHealingServiceContract.CreateQuote(profile, selected.Wound, selected.Source, scope.LocationId);
+        var current = AfterlifeHealingServiceContract.CreateQuote(admission.Profile,
+            selected.Wound, selected.Source, admission.Scope.LocationId);
         if (current != quote || !GuardianPolicyContracts.TryPrepareHealingFeatherWallet(soul!, quote.Amount, out _))
             throw new InvalidDataException("Displayed service terms, actual check or available Feathers changed.");
         var members = SpiritualHealingRequestProjection.ReadNaturalMembers(selected.Catalog, selected.Carriers.AfterlifeProfiles, soul, realm);
         if (members.Any(m => !selected.Identities.TryGetEntry(m.Wound.WoundId, out var identity) || identity.CreatedAtTurn >= turn))
             throw new InvalidDataException("Public treatment requires the complete earlier accepted wound cohort.");
-        return new(selected, quote, members);
+        return new(selected, quote, members, admission.ProviderFingerprint);
     }
 
-    internal static LocalInteractionScope RequireServiceScope(JsonObject guardians, JsonObject profiles,
-        AfterlifeHealingServiceQuote quote, JsonObject? shining = null)
+    /// <summary>Checks the exact quoted provider through current roots; no DATA is read from disk here.</summary>
+    /// <param name="guardians">The original Elyara registry/locality, required only for that route.</param>
+    /// <param name="profiles">Current exact complete actor profiles.</param>
+    /// <param name="quote">The parsed selected quote.</param>
+    /// <param name="shining">The current Shining state when applicable.</param>
+    /// <param name="residents">The mandatory current faction roster for a resident provider.</param>
+    /// <returns>Operation-private admission DATA; physical source/lease checks stay with the caller.</returns>
+    internal static ServiceAdmission RequireServiceAdmission(JsonObject? guardians, JsonObject profiles,
+        AfterlifeHealingServiceQuote quote, JsonObject? shining = null, JsonObject? residents = null)
     {
         var realm = quote.Provider.Realm;
-        if (realm is not ("chaos_sea" or "shining_abode") ||
+        if (quote.Provider is { Realm: "shining_abode", OwnerKind: "resident" })
+        {
+            if (shining is null || residents is null)
+                throw new InvalidDataException("Faction service requires its actual current state and resident roster.");
+            var service = ShiningFactionHealingSupport.ProjectCurrentCurrencyServices(shining, residents, profiles, quote.Provider).SingleOrDefault()
+                ?? throw new InvalidDataException("The exact current faction healer no longer offers this local public service.");
+            if (service.Profile.Fingerprint != quote.ServiceFingerprint || service.HallId != quote.LocationRef)
+                throw new InvalidDataException("The current faction service differs from its sealed quote.");
+            return new(service.Scope, service.Profile, service.AdmissionFingerprint);
+        }
+        if (realm is not ("chaos_sea" or "shining_abode") || guardians is null ||
             quote.Provider != new WoundOwnerCoordinate(realm, "guardian", ElyaraId, WoundCarrierCatalog.AfterlifeProfilesPath))
-            throw new InvalidDataException("This executable service route is the current public Elyara route.");
-        var scope = ElyaraVisitService.RequirePlayerScope(realm, guardians, shining);
+            throw new InvalidDataException("Unsupported public service provider or missing current locality.");
+        var elyaraScope = ElyaraVisitService.RequirePlayerScope(realm, guardians, shining);
         var actor = ElyaraVisitService.RequireCanonicalActor(profiles);
         if (!WoundCarrierCollectionAuthority.AfterlifeProfileMatches(actor, quote.Provider) ||
             AfterlifeHealingServiceContract.ReadPublicCurrencyProfile(quote.Provider, actor) is not { } current ||
-            realm == "shining_abode" && !LocalInteractionScopeService.IsAfterlifeActorLocal(scope, actor) ||
-            current.Fingerprint != quote.ServiceFingerprint || current.LocationRef != scope.LocationId || quote.LocationRef != scope.LocationId)
+            realm == "shining_abode" && !LocalInteractionScopeService.IsAfterlifeActorLocal(elyaraScope, actor) ||
+            current.Fingerprint != quote.ServiceFingerprint || current.LocationRef != elyaraScope.LocationId || quote.LocationRef != elyaraScope.LocationId)
             throw new InvalidDataException("Elyara is no longer alive, visible, available and co-located at the quoted public terms.");
-        return scope;
+        return new(elyaraScope, current, current.Fingerprint);
     }
+
+    /// <summary>Scope view of the same live admission for existing typed callers.</summary>
+    internal static LocalInteractionScope RequireServiceScope(JsonObject? guardians, JsonObject profiles,
+        AfterlifeHealingServiceQuote quote, JsonObject? shining = null, JsonObject? residents = null) =>
+        RequireServiceAdmission(guardians, profiles, quote, shining, residents).Scope;
 
     internal static LocalInteractionScope RequireServicePlayerScope(JsonObject guardians)
     {
@@ -153,7 +188,7 @@ internal static partial class AfterlifeWoundTreatmentAuthority
         {
             "spiritual_public_service_source", "7", context.SessionId, context.RequestId, context.Turn.ToString(CultureInfo.InvariantCulture),
             WoundAcceptedTurnFingerprintWriter.CanonicalJson(JsonSerializer.SerializeToNode(context.Progression)), prepared.Quote.Fingerprint
-        }.Concat(SourcePaths.Concat(ServiceLocalityPaths).SelectMany(path =>
+        }.Concat(SourcePaths.Concat(ServiceLocalityPathsFor(prepared.Quote)).SelectMany(path =>
         {
             var image = sources.Single(s => s.Path == path).Image;
             return new[] { path, image.Fingerprint };
@@ -164,6 +199,7 @@ internal static partial class AfterlifeWoundTreatmentAuthority
         var selected = prepared.Selected;
         return new(selected.Wound, selected.Source, realm, ordinal, fingerprint, selected.Carriers, selected.Effects,
             selected.Identities, selected.History, selected.Catalog, prepared.Members,
-            ServiceQuote: prepared.Quote, ServicePayment: payment);
+            ServiceQuote: prepared.Quote, ServicePayment: payment)
+        { ServiceProviderAdmissionFingerprint = prepared.ProviderAdmissionFingerprint };
     }
 }

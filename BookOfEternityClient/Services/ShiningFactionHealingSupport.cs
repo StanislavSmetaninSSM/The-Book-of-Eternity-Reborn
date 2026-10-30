@@ -79,7 +79,7 @@ internal static partial class ShiningFactionHealingSupport
     // each distinct profile still receives its real materialization validation once.
     private static IReadOnlyList<ShiningFactionRosterEntry> ProjectVisibleRoster(JsonObject faction,
         JsonArray residents, ILookup<string, JsonObject> residentIndex,
-        ILookup<(string, string), JsonObject> profileIndex)
+        ILookup<(string, string), JsonObject> profileIndex, string? onlyResidentId = null)
     {
         var factionId = Text(faction["factionId"]);
         var result = new List<ShiningFactionRosterEntry>();
@@ -87,7 +87,7 @@ internal static partial class ShiningFactionHealingSupport
         {
             if (!IsCurrentMember(resident, factionId)) continue;
             var id = Text(resident["residentId"]);
-            if (residentIndex[id].Count() != 1) continue;
+            if (onlyResidentId is not null && id != onlyResidentId || residentIndex[id].Count() != 1) continue;
             var matching = profileIndex[("resident", id)].ToArray();
             if (matching is not { Length: 1 }) continue;
             var profile = matching[0];

@@ -26,9 +26,14 @@ internal static partial class AfterlifeWoundHealingPlanner
             new PendingTurnSnapshotPathSelection(new[] { AfterlifeWoundTreatmentAuthority.AidLocalityPaths[0] },
                 new[] { AfterlifeWoundTreatmentAuthority.AidLocalityPaths[1] }));
 
+    /// <summary>Reads the same signed locality dependency family selected by the parsed quote.</summary>
+    /// <param name="files">The current filesystem owner.</param>
+    /// <param name="lease">Its actual current lease.</param>
+    /// <param name="quote">Null retains the original Elyara-only reader for existing callers.</param>
     internal static PendingTurnSnapshotObservedReadResult ReadOriginalServiceLocalitySource(FileSystemManager files,
-        FileSystemManager.CanonicalWriteLease lease) => PendingTurnSnapshotReader.ReadObservedCurrent(files, lease,
-            AfterlifeWoundTreatmentAuthority.ServiceLocalityPaths);
+        FileSystemManager.CanonicalWriteLease lease, AfterlifeHealingServiceQuote? quote = null) =>
+        PendingTurnSnapshotReader.ReadObservedCurrent(files, lease, quote is null
+            ? AfterlifeWoundTreatmentAuthority.ServiceLocalityPaths : AfterlifeWoundTreatmentAuthority.ServiceLocalityPathsFor(quote));
 
     internal sealed partial class Continuation
     {
@@ -204,7 +209,7 @@ internal static partial class AfterlifeWoundHealingPlanner
             if (_data?.ServiceQuote is not null && interfaceUpdates?["metaStateUpdates"] is JsonObject meta && meta.ContainsKey("inkFeatherChanges"))
                 throw new InvalidDataException("Public healing owns its exact Feather payment; competing GM currency changes must be removed.");
             AdmitResidentThoughtResponse(interfaceUpdates);
-            if (_data?.AidWitness is not null)
+            if (_data?.AidWitness is not null || _data?.ServiceQuote?.Provider is { Realm: "shining_abode", OwnerKind: "resident" })
                 BindResidentThoughts(_parsedSourceRoots.GetValueOrDefault(GuardianAbodeResidentState.StatePath) as JsonObject);
             var required = SpiritualHealingRequestProjection.RequiredGraphs(_wounds, _stages).ToArray();
             var rows = interfaceUpdates?["spiritualHealingGraphs"] as JsonArray;
@@ -370,12 +375,12 @@ internal static partial class AfterlifeWoundHealingPlanner
             PendingTurnSnapshotObservedReadResult? aidLocality = null;
             if (selection.Aid is not null || selection.Service is not null)
             {
-                var localityPaths = selection.Service is not null ? AfterlifeWoundTreatmentAuthority.ServiceLocalityPaths
+                var localityPaths = selection.Service is not null ? AfterlifeWoundTreatmentAuthority.ServiceLocalityPathsFor(selection.Service.Quote)
                     : AfterlifeWoundTreatmentAuthority.AidLocalityPaths;
                 if (!PendingTurnSnapshotAuthority.HasValidatedRollbackSnapshotCoverage(manifest, m => m.Files,
                         m => m.SnapshotFileHashes, m => m.RollbackBaselineFiles, localityPaths, out _))
                     throw new InvalidDataException("Aid lacks its signed locality baseline coverage.");
-                aidLocality = selection.Service is not null ? ReadOriginalServiceLocalitySource(files, lease) : ReadOriginalAidLocalitySource(files, lease);
+                aidLocality = selection.Service is not null ? ReadOriginalServiceLocalitySource(files, lease, selection.Service.Quote) : ReadOriginalAidLocalitySource(files, lease);
                 if (!aidLocality.Success || aidLocality.Snapshot is not { } local || aidLocality.Evidence is not { } localEvidence ||
                     local.SessionId != snapshot.SessionId || local.RequestId != snapshot.RequestId ||
                     local.TurnNumber != snapshot.TurnNumber || local.SnapshotToken != snapshot.SnapshotToken)

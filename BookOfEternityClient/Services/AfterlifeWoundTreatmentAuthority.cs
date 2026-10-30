@@ -263,7 +263,11 @@ internal static partial class AfterlifeWoundTreatmentAuthority
         string SourceFingerprint, WoundCarrierCatalogInput Carriers, EffectCarrierCatalog Effects,
         WoundIdentityState Identities, WoundHistoryState History, WoundCarrierCatalog Catalog,
         IReadOnlyList<SpiritualWoundRecoveryMember> NaturalMembers, JsonObject? AidWitness = null,
-        AfterlifeHealingServiceQuote? ServiceQuote = null, AfterlifeHealingServicePayment? ServicePayment = null);
+        AfterlifeHealingServiceQuote? ServiceQuote = null, AfterlifeHealingServicePayment? ServicePayment = null)
+    {
+        /// <summary>Operation-private provider tuple DATA; never persistent permission or historical availability.</summary>
+        internal string? ServiceProviderAdmissionFingerprint { get; init; }
+    }
     internal sealed record SourceResult(SourceData? Data, string? IssueCode);
     private static SourceResult SourceRefuse(string suffix) => new(null, suffix);
 

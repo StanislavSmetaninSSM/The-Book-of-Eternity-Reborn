@@ -10,7 +10,7 @@ internal static partial class AfterlifeWoundHealingPlanner
     {
         internal bool HasLocalityGuards => _participationSources is not null || _data?.AidWitness is not null || HasServicePayment;
         internal bool OwnsLocalityPath(string path) => HasLocalityGuards &&
-            (HasServicePayment ? AfterlifeWoundTreatmentAuthority.ServiceLocalityPaths : AfterlifeWoundTreatmentAuthority.AidLocalityPaths)
+            (HasServicePayment ? AfterlifeWoundTreatmentAuthority.ServiceLocalityPathsFor(_data!.ServiceQuote!) : AfterlifeWoundTreatmentAuthority.AidLocalityPaths)
                 .Contains(path, StringComparer.Ordinal);
 
         // Only the actual validated normalizer calls this around its computed
@@ -30,12 +30,24 @@ internal static partial class AfterlifeWoundHealingPlanner
                 // Existing operation-private parsed DATA; RequireCurrent above/below
                 // still closes every physical source, including the current hall.
                 var shining = _parsedSourceRoots.GetValueOrDefault(ShiningAbodeState.StatePath) as JsonObject;
-                var beforeScope = AfterlifeWoundTreatmentAuthority.RequireServiceScope(beforeRoot, _data!.Carriers.AfterlifeProfiles!, _data.ServiceQuote!, shining);
-                var afterScope = AfterlifeWoundTreatmentAuthority.RequireServiceScope(afterRoot, _data.Carriers.AfterlifeProfiles!, _data.ServiceQuote!, shining);
-                if (beforeScope.LocationId != afterScope.LocationId || beforeScope.CurrentGuardianId != afterScope.CurrentGuardianId ||
-                    !beforeScope.LocalActorIds.ToHashSet(StringComparer.Ordinal).SetEquals(afterScope.LocalActorIds) ||
-                    !beforeScope.LocalFactionIds.ToHashSet(StringComparer.Ordinal).SetEquals(afterScope.LocalFactionIds))
-                    throw new InvalidDataException("Locality normalization cannot move a confirmed public service.");
+                var rosterPath = GuardianAbodeResidentState.StatePath;
+                var guardianPath = AfterlifeWoundTreatmentAuthority.ServiceLocalityPaths[0];
+                var guardians = _parsedSourceRoots.GetValueOrDefault(guardianPath) as JsonObject;
+                var residents = _parsedSourceRoots.GetValueOrDefault(rosterPath) as JsonObject;
+                var beforeAdmission = AfterlifeWoundTreatmentAuthority.RequireServiceAdmission(
+                    path == guardianPath ? beforeRoot : guardians, _data!.Carriers.AfterlifeProfiles!, _data.ServiceQuote!,
+                    shining, path == rosterPath ? beforeRoot : residents);
+                var afterAdmission = AfterlifeWoundTreatmentAuthority.RequireServiceAdmission(
+                    path == guardianPath ? afterRoot : guardians, _data.Carriers.AfterlifeProfiles!, _data.ServiceQuote!,
+                    shining, path == rosterPath ? afterRoot : residents);
+                if (beforeAdmission.ProviderFingerprint != _data.ServiceProviderAdmissionFingerprint ||
+                    afterAdmission.ProviderFingerprint != beforeAdmission.ProviderFingerprint ||
+                    beforeAdmission.Scope.LocationId != afterAdmission.Scope.LocationId ||
+                    beforeAdmission.Scope.CurrentGuardianId != afterAdmission.Scope.CurrentGuardianId ||
+                    !beforeAdmission.Scope.LocalActorIds.ToHashSet(StringComparer.Ordinal).SetEquals(afterAdmission.Scope.LocalActorIds) ||
+                    !beforeAdmission.Scope.LocalFactionIds.ToHashSet(StringComparer.Ordinal).SetEquals(afterAdmission.Scope.LocalFactionIds))
+                    throw new InvalidDataException("Locality normalization cannot change the exact admitted public service tuple.");
+                if (path == rosterPath) RequireResidentThoughtAfterImage(beforeRoot, afterRoot);
                 var expectedService = new CanonicalBeforeImage(true, FileSystemManager.EncodeUtf8WithPreamble(content));
                 await publish(images[path]);
                 var publishedService = await files.ReadFileBytesAsync(lease, path);

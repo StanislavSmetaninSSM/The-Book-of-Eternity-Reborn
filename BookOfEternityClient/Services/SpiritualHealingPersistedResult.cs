@@ -19,8 +19,12 @@ internal sealed class SpiritualHealingPersistedResult : WoundTransitionResult
 {
     private readonly JsonObject _root;
     private readonly ImmutableArray<SpiritualHealingPublishedStage> _stages;
-    private SpiritualHealingPersistedResult(JsonObject root, IEnumerable<SpiritualHealingPublishedStage> stages)
-    { _root = root.DeepClone().AsObject(); _stages = stages.ToImmutableArray(); }
+    private readonly AfterlifeHealingServiceQuote? _serviceQuote;
+    private SpiritualHealingPersistedResult(JsonObject root, IEnumerable<SpiritualHealingPublishedStage> stages,
+        AfterlifeHealingServiceQuote? serviceQuote)
+    { _root = root.DeepClone().AsObject(); _stages = stages.ToImmutableArray(); _serviceQuote = serviceQuote; }
+    /// <summary>Already parsed immutable quote DATA from this completely validated result, not current access.</summary>
+    internal AfterlifeHealingServiceQuote? ServiceQuote => _serviceQuote;
     public override string Kind => "spiritual_healing";
     internal string Mode => _root["mode"]!.GetValue<string>();
     internal bool IsNatural => Mode == "natural";
@@ -161,6 +165,7 @@ internal sealed class SpiritualHealingPersistedResult : WoundTransitionResult
             string? attemptId = null;
             WoundMaterializationEnvelope? selected = null;
             SpiritualHealingResolution? resolution = null;
+            AfterlifeHealingServiceQuote? completedServiceQuote = null;
             IReadOnlyDictionary<WoundOwnerCoordinate, int> tiers;
             if (mode == "natural")
             {
@@ -197,6 +202,7 @@ internal sealed class SpiritualHealingPersistedResult : WoundTransitionResult
                 else if (mode == "service")
                 {
                     var quote = selection.Service?.Quote ?? throw new InvalidDataException("Service result lacks its exact quote.");
+                    completedServiceQuote = quote;
                     healer = quote.Provider;
                     servicePrepared = SpiritualSelfTreatmentRequestCodec.ReadServiceActiveSource(request["activeSource"], quote);
                     var persistedCheck = new JsonObject
@@ -271,7 +277,7 @@ internal sealed class SpiritualHealingPersistedResult : WoundTransitionResult
             if (version is 3 or 4 or 5 or 6 && mode == "natural")
                 SpiritualTreatmentParticipation.ValidateOutcomes(root["participationOutcomes"]!.AsArray(), binding,
                     control.NextChaosSeaTurnOrdinal, stages, version);
-            return new(root, stages);
+            return new(root, stages, completedServiceQuote);
         }
         catch (Exception failure) when (failure is JsonException or InvalidDataException or InvalidOperationException or ArgumentException or OverflowException or KeyNotFoundException or NullReferenceException)
         {

@@ -26,7 +26,14 @@ internal static partial class AfterlifeWoundHealingPlanner
         // Used both at assembly and just before the actual atomic publication.
         // The sealed common plan and its existing byte-for-byte C4 read-back own
         // physical payment evidence; a detached receipt/History amount cannot pass.
-        internal void RequireServiceComposedImages(JsonObject soul, JsonObject profiles, JsonObject history)
+        /// <summary>Checks exact composed payment, provider tuple and History at both existing publication boundaries.</summary>
+        /// <param name="soul">The actual proposed Soul after-image.</param>
+        /// <param name="profiles">The actual proposed wound/profile carrier.</param>
+        /// <param name="history">The actual proposed immutable treatment History.</param>
+        /// <param name="residents">A composed roster, or this owner's already checked original/normalized roster.</param>
+        /// <param name="shining">A composed Shining state, or this owner's already checked original state.</param>
+        internal void RequireServiceComposedImages(JsonObject soul, JsonObject profiles, JsonObject history,
+            JsonObject? residents = null, JsonObject? shining = null)
         {
             if (!HasServicePayment) return;
             var data = _data ?? throw new InvalidDataException("Service source DATA is absent.");
@@ -34,11 +41,12 @@ internal static partial class AfterlifeWoundHealingPlanner
             var payment = data.ServicePayment ?? throw new InvalidDataException("Service payment DATA is absent.");
             if (_published || WoundAcceptedTurnFingerprintWriter.CanonicalJson(soul["inkFeathers"]) != payment.WalletAfterJson)
                 throw new InvalidDataException("Common Soul after-image does not contain the exact service charge.");
-            var actor = ElyaraVisitService.RequireCanonicalActor(profiles);
-            if (!WoundCarrierCollectionAuthority.AfterlifeProfileMatches(actor, quote.Provider) ||
-                AfterlifeHealingServiceContract.ReadPublicCurrencyProfile(quote.Provider, actor) is not { } current ||
-                current.Fingerprint != quote.ServiceFingerprint)
-                throw new InvalidDataException("Accepted profile changes invalidate the current service quote.");
+            var admission = AfterlifeWoundTreatmentAuthority.RequireServiceAdmission(
+                _parsedSourceRoots.GetValueOrDefault(AfterlifeWoundTreatmentAuthority.ServiceLocalityPaths[0]) as JsonObject,
+                profiles, quote, shining ?? _parsedSourceRoots.GetValueOrDefault(ShiningAbodeState.StatePath) as JsonObject,
+                residents ?? _parsedSourceRoots.GetValueOrDefault(GuardianAbodeResidentState.StatePath) as JsonObject);
+            if (admission.ProviderFingerprint != data.ServiceProviderAdmissionFingerprint)
+                throw new InvalidDataException("Accepted membership, locality or profile changes invalidate the exact service provider.");
             var rows = history["transitions"] as JsonArray ?? throw new InvalidDataException("Service History is absent.");
             var index = rows.Count - _stages.Count;
             var result = index < 0 ? null : rows[index]?["transitionResult"] as JsonObject;
@@ -56,7 +64,9 @@ internal static partial class AfterlifeWoundHealingPlanner
                 !writes.TryGetValue(WoundCarrierCatalog.AfterlifeProfilesPath, out var profiles) ||
                 !writes.TryGetValue(WoundHistoryState.HistoryPath, out var history))
                 throw new InvalidDataException("Service cannot publish separately from Soul, wound/effects and History.");
-            RequireServiceComposedImages(soul, profiles, history);
+            RequireServiceComposedImages(soul, profiles, history,
+                writes.GetValueOrDefault(GuardianAbodeResidentState.StatePath),
+                writes.GetValueOrDefault(ShiningAbodeState.StatePath));
         }
     }
 }

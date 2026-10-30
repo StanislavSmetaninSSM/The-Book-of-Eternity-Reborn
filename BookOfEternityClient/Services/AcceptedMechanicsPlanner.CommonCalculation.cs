@@ -400,7 +400,9 @@ internal static partial class AcceptedMechanicsPlanner
                     woundPublication?.CarrierAfterImages.GetValueOrDefault(WoundCarrierCatalog.AfterlifeProfilesPath);
                 serviceOwner.RequireServiceComposedImages(ownerCompanionAfterImages[AfterlifeWoundHealingPlanner.Continuation.ServiceSoulPath],
                     profiles ?? throw new InvalidDataException("Service wound carrier is absent."),
-                    woundPublication?.HistoryAfterImage ?? throw new InvalidDataException("Service History is absent."));
+                    woundPublication?.HistoryAfterImage ?? throw new InvalidDataException("Service History is absent."),
+                    ownerCompanionAfterImages.GetValueOrDefault(GuardianAbodeResidentState.StatePath),
+                    ownerCompanionAfterImages.GetValueOrDefault(ShiningAbodeState.StatePath));
             }
             catch (InvalidDataException failure)
             { return new(null, Issue("spiritual_service_payment_composition_invalid", "one exact paid treatment common plan", failure.Message)); }

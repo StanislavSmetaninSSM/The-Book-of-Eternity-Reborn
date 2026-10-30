@@ -21,11 +21,18 @@ internal static partial class AfterlifeWoundHealingPlanner
         private JsonObject? ResidentThoughtRecord => _data?.AidWitness?["record"]?.AsObject() ??
             (_participationOutcomes is { Count: 1 } ? _participationOutcomes[0]?["record"]?.AsObject() : null);
 
+        // An actual service continuation admits this exact quoted resident; a
+        // mode flag or an arbitrary resident coordinate alone cannot enable memory.
+        private string? ResidentThoughtOwnerId => ResidentThoughtRecord is { } record &&
+            SpiritualTreatmentParticipation.IsResidentParticipation(record)
+                ? SpiritualTreatmentParticipation.RecordOwnerId(record)
+                : _data is { ServiceProviderAdmissionFingerprint: not null,
+                    ServiceQuote.Provider: { Realm: "shining_abode", OwnerKind: "resident" } provider } ? provider.OwnerId : null;
+
         private void RequireResidentThoughtFamily()
         {
-            if (_residentThoughtCommands is not null && (ResidentThoughtRecord is not { } record ||
-                !SpiritualTreatmentParticipation.IsResidentParticipation(record)))
-                throw new InvalidDataException("Protected resident thoughts require this actual resident grant or aid owner.");
+            if (_residentThoughtCommands is not null && ResidentThoughtOwnerId is null)
+                throw new InvalidDataException("Protected resident thoughts require this actual resident participation or faction-service owner.");
         }
 
         private void BindResidentThoughts(JsonObject? roster)
@@ -34,7 +41,7 @@ internal static partial class AfterlifeWoundHealingPlanner
             RequireResidentThoughtFamily();
             if (roster is null) throw new InvalidDataException("Resident memory requires its original roster.");
             var commands = SpiritualTreatmentParticipation.ValidateResidentThoughtAppend(_residentThoughtCommands,
-                SpiritualTreatmentParticipation.RecordOwnerId(ResidentThoughtRecord!), _input.Binding.Turn, roster);
+                ResidentThoughtOwnerId!, _input.Binding.Turn, roster);
             var expected = roster.DeepClone().AsObject();
             GuardianAbodeResidentState.ApplyThoughtJournalUpdates(expected, commands);
             _residentThoughtBeforeImage = (roster[GuardianAbodeResidentState.ThoughtJournalProperty] as JsonArray)?.DeepClone().AsArray() ?? new JsonArray();

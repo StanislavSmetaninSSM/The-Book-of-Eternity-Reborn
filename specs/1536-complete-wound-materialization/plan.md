@@ -1,3 +1,29 @@
+# US6 public faction execution wiring — WIP, not compiled or qualified
+
+Saved first source50322996e6d96a9eef5f61f740741162564bcc1d. Following accepted design and
+causal RED, the current continuation now selects owner-specific locality sources
+(Elyara original guardians path unchanged; faction service requires actual roster),
+binds the exact provider tuple, and uses that same source set in staging, signed
+original/rollback coverage and owned normalizer. Accepted profile/roster/Shining
+images are rechecked at assembly/publication; role/membership changes cannot hide
+behind unchanged locality actor sets. Existing full physical closing/readback remains.
+
+Resident journal support uses this admitted quote's resident identity in the existing
+memory owner, not a family7-wide exemption. Verified result7 retains its already-parsed
+immutable quote DATA for post-publication interface validation, which reads the same
+signed original roster and proves the complete append. No extra historical quote
+parsing/cache or new publisher. Existing resident/Guardian aid semantics remain separate.
+
+Common console/browser menu now discovers explicit current faction currency services,
+reuses its parsed profiles/wounds/checks, reads the roster once, and preserves separate
+Elyara failure/dependencies. Name/price/confirmation/action stop falsely naming Elyara
+for a resident provider. Existing safe realm, conflict, preparation, funds, quote and
+fresh confirmation guards remain; no view/grant/default free service. Source is WIP:
+whole typed negative/source/consumer tests, GM synchronization, independent SOURCE,
+fresh builds and actual GREEN are pending. Negotiated B remains unimplemented.
+
+---
+
 # US6 causal RED accepted; public faction implementation WIP
 
 Actual RED source106927124f8ff6f594aec9a4bbd092a67a242e64: exact1expectedFAIL at

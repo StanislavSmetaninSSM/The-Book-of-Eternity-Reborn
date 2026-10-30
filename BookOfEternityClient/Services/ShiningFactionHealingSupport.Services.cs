@@ -4,7 +4,11 @@ namespace BookOfEternityClient.Services;
 
 /// <summary>Detached current public service DATA, never a retained access or publication grant.</summary>
 internal sealed record ShiningFactionCurrencyService(AfterlifeHealingServiceProfile Profile,
-    string Name, string FactionId, string HallId, string AdmissionFingerprint);
+    string Name, string FactionId, LocalInteractionScope Scope, string AdmissionFingerprint)
+{
+    /// <summary>The already resolved exact current hall DATA.</summary>
+    internal string HallId => Scope.LocationId;
+}
 
 internal static partial class ShiningFactionHealingSupport
 {
@@ -12,9 +16,10 @@ internal static partial class ShiningFactionHealingSupport
     /// <param name="shining">Current Shining state, including the exact current hall.</param>
     /// <param name="residentsRoot">Current complete resident roster; it is mandatory for this route.</param>
     /// <param name="profilesRoot">Current exact materialized actor profiles.</param>
+    /// <param name="selectedProvider">When staging one selection, validate only its exact profile.</param>
     /// <returns>Detached quotes' provider DATA; confirmation and staging must read sources freshly.</returns>
     internal static IReadOnlyList<ShiningFactionCurrencyService> ProjectCurrentCurrencyServices(
-        JsonObject shining, JsonObject residentsRoot, JsonObject profilesRoot)
+        JsonObject shining, JsonObject residentsRoot, JsonObject profilesRoot, WoundOwnerCoordinate? selectedProvider = null)
     {
         var scope = ShiningCurrentHallContract.RequireCurrentScope(shining, residentsRoot);
         if (shining["factions"] is not JsonArray factions || residentsRoot["entries"] is not JsonArray residents ||
@@ -31,14 +36,15 @@ internal static partial class ShiningFactionHealingSupport
                 !SarefMainStoryState.IsPlayerVisibleShiningFaction(faction) || Text(faction["hallId"]) != scope.LocationId ||
                 faction["factionLifecycle"] is not JsonObject lifecycle || Text(lifecycle["state"]) is not ("active" or "weakened" or "leaderless"))
                 continue;
-            foreach (var member in ProjectVisibleRoster(faction, residents, residentIndex, profileIndex))
+            foreach (var member in ProjectVisibleRoster(faction, residents, residentIndex, profileIndex, selectedProvider?.OwnerId))
             {
                 if (member.HealingTier is null) continue;
                 var resident = residentIndex[member.ResidentId].Single();
                 var actor = profileIndex[("resident", member.ResidentId)].Single();
                 var provider = new WoundOwnerCoordinate("shining_abode", "resident", member.ResidentId,
                     WoundCarrierCatalog.AfterlifeProfilesPath);
-                if (AfterlifeHealingServiceContract.ReadPublicCurrencyProfile(provider, actor) is not { } profile ||
+                if (selectedProvider is not null && provider != selectedProvider ||
+                    AfterlifeHealingServiceContract.ReadPublicCurrencyProfile(provider, actor) is not { } profile ||
                     profile.LocationRef != scope.LocationId || !LocalInteractionScopeService.IsAfterlifeActorLocal(scope, actor))
                     continue;
                 var admission = new JsonObject
@@ -54,7 +60,7 @@ internal static partial class ShiningFactionHealingSupport
                     ["isPlayerVisible"] = actor["isPlayerVisible"]?.DeepClone(),
                     ["serviceFingerprint"] = profile.Fingerprint
                 };
-                result.Add(new(profile, member.Name, factionId, scope.LocationId,
+                result.Add(new(profile, member.Name, factionId, scope,
                     AfterlifeHealingServiceContract.Fingerprint(admission, "faction_service_admission")));
             }
         }

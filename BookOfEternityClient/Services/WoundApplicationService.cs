@@ -17,7 +17,9 @@ internal static partial class WoundApplicationService
     internal const string ResidentReceiveAidActionText = "Принять добровольную безвозмездную помощь жителя текущей Обители Хранителя в лечении моей выбранной духовной раны вне конфликта. Продолжить обычный безопасный цикл мира.";
     internal const string CombatActionText = "Лечить выбранную собственную духовную рану стандартным Исцелением в текущей духовной дуэли. Это прерываемое противником действие за ОД, без безопасного цикла мира.";
     internal const string ServiceActionText = "Принять платное лечение моей выбранной духовной раны у Элиары по подтверждённой котировке. Оплатить одну принятую попытку и продолжить один обычный безопасный цикл мира.";
-    internal static string ActionFor(SpiritualSelfTreatmentSelection selection) => selection.Service is not null ? ServiceActionText : selection.Combat is not null ? CombatActionText : selection.Aid is null ? ActionText
+    internal const string FactionServiceActionText = "Принять платное лечение моей выбранной духовной раны у выбранного целителя фракции по подтверждённой котировке. Оплатить одну принятую попытку и продолжить один обычный безопасный цикл мира.";
+    internal static string ActionFor(SpiritualSelfTreatmentSelection selection) => selection.Service is { } service
+        ? service.Quote.Provider.OwnerKind == "resident" ? FactionServiceActionText : ServiceActionText : selection.Combat is not null ? CombatActionText : selection.Aid is null ? ActionText
         : selection.Aid.Resident is not null ? selection.Aid.ReceiveAid ? ResidentReceiveAidActionText : ResidentAidActionText
         : selection.Aid.ReceiveAid ? ReceiveAidActionText : AidActionText;
 
@@ -148,7 +150,11 @@ internal static partial class WoundApplicationService
             {
                 var registry = await Root(AfterlifeWoundTreatmentAuthority.AidLocalityPaths[0]);
                 var shining = await Root(ShiningAbodeState.StatePath);
-                return new(generation, BuildPublicServiceChoices(context, registry, self.Choices, shining));
+                JsonObject? residents = null;
+                try { residents = await Root(GuardianAbodeResidentState.StatePath); }
+                catch (Exception failure) when (failure is JsonException or InvalidDataException or InvalidOperationException or ArgumentException or OverflowException)
+                { /* An invalid optional faction roster cannot create a service or change Elyara's dependencies. */ }
+                return new(generation, BuildPublicServiceChoices(context, registry, self.Choices, shining, residents));
             }
             catch (Exception failure) when (failure is not CoordinatedStatePublicationUncertainException &&
                 failure is (JsonException or InvalidDataException or InvalidOperationException or ArgumentException or OverflowException))
