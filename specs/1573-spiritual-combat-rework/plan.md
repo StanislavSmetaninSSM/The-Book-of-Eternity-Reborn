@@ -1,5 +1,52 @@
 # План перехода к личной модели духовного боя — #1573
 
+## Текущий срез T115–T117: проверка принятого профиля
+
+Goal: проверить принятый T114 против самоисцеления и предложить понятное объяснение.
+Spec: [spec](spec.md), [принятые реакции](reactions-and-interruptions-proposal.md),
+[границы исследования](reaction-balance-investigation.md), [tasks](tasks.md).
+Baseline3c1c895b610a98ba6f797d4c77822ec61a1f4d2f совпал с origin; отдельная копия
+проекта/веткаstory остаётся рабочей, main/1536 не затрагиваются. PathsOnly1573,
+workflow1.7/конституция и Serena csharp/typescript/python проверены; JS symbols доступны.
+Пользователь прямо одобрил показанный T114 и поручил численную проверку; новых
+правил до пробы не вводим. Используются writing-plans/executing-plans/TDD и Spec Kit
+bridge, журнал — этот checkpoint/tasks; duplicate Superpowers plans не создаём.
+
+Архитектура: Node24 standalone probe поверх прежних чистых numerical fixtures,
+без production imports. Создать probes/reaction-model.mjs (личный budget/Heal/sрыв),
+reaction-model.test.mjs (инварианты), reaction-probe.mjs (политики/матрица/метрики).
+Не менять старые пробы, чтобы сохранить историческое воспроизведение. Основные
+interfaces: createActor/beginTurn/endTurn, attemptHeal, react, checkedQuality;
+probe simulate(options) возвращает метрики, решения получают только текущее состояние.
+Временный кэш неизменяемых damage/проверочных таблиц на профиль/пробу, мутабельные
+HP/ДЭ/метки/остатки всегда личные; не создавать дорогие game objects в траекториях.
+
+- [ ] T115: статусы/spec/crossrefs; показать фактические spec/plan/tasks.
+- [ ] T116a: failing guards shared spend/reset/no-refund/no-regen/HP0, full/partial
+  interrupt, counter-interruption/defense, cleanse и длительность; запустить RED,
+  реализовать минимальную модель, GREEN всего probes/*.test.mjs.
+- [ ] T116b: политики без foresight, матрица/профили/seed/censoring, дешёвый smoke;
+  WIP/push/readback; полный прогон с raw D:/BoeDiagnostics/spiritual-reactions-t116/;
+  отдельно10000на значимые выводы и support/Will sensitivity. Динамических лимитов
+  диагностики нет; горизонт2000 — цензурирование, не доказанная бесконечность.
+- [ ] T116c/T117: прочитать полные результаты/свести краткий отчёт/объяснение,
+  independent Astra/high review всего coherent diff, исправления/адресная проверка,
+  финальный commit/push/blob/issue readback. Только численная модель; нет game build.
+
+Review focus: 1) reset личный, не общийround; 2) цена и место потрачены при срыве;
+3) противник вправе ответить на срыв тем же общим бюджетом, без повторного ответа
+исходного actor; 4) HP0 не регенерирует/не действует; 5) защита/политики не видят
+будущие dice, контроль имеет те же stats/horizon, censored не выдаются за победу.
+Каждый пункт покрывается дешёвыми guards/сверкой матрицы. Консистентность до
+выполнения: T115↔одобрение, T116↔запрошенная проба, T117↔UX-предложение;
+нет нового production-контракта/невыбранных цен, требования покрыты задачами.
+
+T116a:13новых guards (вместе с16прежними —29) проходят на Node24.21.0.
+Первый RED на API scaffold:10ожидаемых assertion failures/2pass; после реализации
+12/12GREEN, затем добавлена полная сверка400равных встречных исходов и guard5.
+Smoke30траекторийD130/counter: модель завершила все, игровые выводы не делаются.
+Затем WIP/push перед основным прогоном396ячеек×2000; результаты ещё не получены.
+
 ## Текущий срез T113–T114: принятие хода и активные реакции
 
 2026-10-30 baseline617b63b0d78f0f7cec1cc8b31f0f769d0429f26c совпал с origin,
