@@ -46,7 +46,11 @@ wall10.6344285/category4.6771892<60s; независимый OUTCOME приня�
 и при известной предпосылке. New DATA теперь8cases; original causalRED6
 сохраняется без изменения и не выдаётся за запуск расширенных8.
 Минимальное rich отображение и два реальных handler cases написаны, пока
-UNCOMPILED/UNRUN и SOURCE pending. Shared method/diagnosis shape остаётся
+UNCOMPILED/UNRUN и SOURCE pending. Sol review обнаружил старое status-test
+ожидание пустого child list при публичном осмотре: теперь ровно одна разрешённая
+диагностическая карточка, unavailable policy/no action; все прежние hidden/foreign/
+unknown omissions сохранены. Исправлено до Integration build/runtime.
+Shared method/diagnosis shape остаётся
 внутренним display DATA; browser UiBlocks неизменны. Новых полей ГМ, ответов,
 цены или action нет, поэтому daemon/prompt/manifest schema не меняются; общий
 GM guide и существующий worked known-card fragment синхронизированы.

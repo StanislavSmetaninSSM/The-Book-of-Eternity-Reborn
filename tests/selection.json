@@ -3,7 +3,7 @@
   "selections": [
     {
       "category": "wound-diagnosis-recommendations",
-      "reason": "Causal six-case GREEN for missing diagnostic conditions, both rendering consumers and private/current-knowledge/opaque-spiritual controls.",
+      "reason": "Eight-case GREEN for missing diagnostic conditions, both rendering consumers and private/current-knowledge/opaque-spiritual controls; original six-case causal RED retained separately.",
       "contracts": [
         "#1536 T121-DIAGNOSIS-READ; FR071 privacy/read-only recommendations; actual diagnosis rules pending"
       ]

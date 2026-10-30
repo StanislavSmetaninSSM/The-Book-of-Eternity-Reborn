@@ -103,7 +103,11 @@ public sealed class WoundPlayerStatusTests(ITestOutputHelper output)
         var result = await ReadBothAsync(fixture);
         var card = Assert.Single(Status(result.Browser).Cards);
         Assert.Equal("Известная рана путника", card.Title);
-        Assert.Empty(card.Cards);
+        var diagnosis = Assert.Single(card.Cards);
+        Assert.Equal("Осмотр раны", diagnosis.Title);
+        Assert.Equal("Известное обследование (рекомендация)", diagnosis.Subtitle);
+        Assert.Contains("пока недоступно", diagnosis.Summary);
+        Assert.Null(diagnosis.PrimaryAction);
         foreach (var text in new[] { result.Console, Text(Status(result.Browser)) })
         {
             foreach (var forbidden in new[] { "Секретный способ", "Скрытая травма", "Чужая травма", "npc_private", "other_soul" })
