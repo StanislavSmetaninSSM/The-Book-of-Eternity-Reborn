@@ -123,6 +123,28 @@ test('Ready reserves Main and trigger uses shared reaction/price; long has no Re
   assert.equal(a.energy,e-price(a,12));assert.equal(a.reaction,0);
   assert.equal(heal(a,t,{context:'ready',id:'ready-2'}).accepted,false);
 });
+test('first matching Ready trigger closes preparation on unaffordable or unavailable execution',()=>{
+  for(const refused of ['energy','reaction','access']){
+    const a=actor(130,'a'),t=actor(130,'t');t.hp=1;begin(a);prepareReady(a,'instant');end(a);
+    if(refused==='energy')a.energy=0;if(refused==='reaction')a.reaction=0;
+    const before=a.energy;
+    const out=heal(a,t,{context:'ready',id:'first-trigger',access:refused!=='access'});
+    assert.equal(out.accepted,false);assert.equal(a.ready,false);assert.equal(a.energy,before);assert.equal(t.hp,1);
+    a.energy=a.p.max;a.reaction=1;
+    assert.equal(heal(a,t,{context:'ready',id:'later-trigger'}).accepted,false);
+  }
+});
+test('revival permits retained Ready reaction without reopening Main or end regeneration',()=>{
+  for(const active of [false,true]){
+    const a=actor(130,'a'),h=actor(1000,'helper'),t=actor(130,'patient');t.hp=1;
+    begin(a);prepareReady(a,'instant');damage(a,a.hp);if(!active)end(a);
+    begin(h);heal(h,a);end(h);assert.equal(a.collapsed,false);assert.equal(a.reaction,1);assert.equal(a.collapsedThisTurn,true);
+    assert.equal(heal(a,a,{id:'forbidden-main'}).accepted,false);
+    const out=heal(a,t,{context:'ready',id:'restored-trigger'});
+    assert.equal(out.restored,72);assert.equal(a.reaction,0);assert.equal(a.used,true);
+    const e=a.energy;if(active){end(a);assert.equal(a.energy,e);}
+  }
+});
 test('counter cancels interruption before original dice; forced-failure interference still costs',()=>{
   const a=actor(130,'a'),b=actor(130,'b');a.hp=1;begin(a);let calls=0;
   const out=heal(a,a,{opponent:b,reply:'counter',roll:()=>{calls++;return[20,1];}});

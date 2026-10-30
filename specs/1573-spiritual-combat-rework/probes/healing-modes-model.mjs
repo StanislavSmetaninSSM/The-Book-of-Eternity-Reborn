@@ -2,7 +2,7 @@
 import assert from 'node:assert/strict';
 import { round } from './healing-counters.mjs';
 import { strength } from './suppression-model.mjs';
-import { createActor, beginTurn, endTurn, react, price, checkedQuality } from './reaction-model.mjs';
+import { createActor, beginTurn, endTurn, price, checkedQuality } from './reaction-model.mjs';
 
 export function actor(D,id,options={}) {
   const a=createActor(D,id,options);
@@ -60,6 +60,12 @@ export function healingCalculator() {
   calculate.stats=stats;return calculate;
 }
 
+function reactCurrent(a,costP,root) {
+  // T114: revival can restore permission to spend an existing reaction, but never a Main/reset.
+  const cost=price(a,costP);
+  if(!a.inEncounter||a.collapsed||a.hp<=0||a.reaction<1||a.energy<cost||root.has(a.id))return false;
+  a.energy-=cost;a.reaction=0;root.add(a.id);return true;
+}
 function interruption(a,opponent,{reply,roll,forceInterruptFailure},out) {
   if(!opponent)return;
   out.noInterruptEnergy=opponent.energy<price(opponent,8);
@@ -67,10 +73,10 @@ function interruption(a,opponent,{reply,roll,forceInterruptFailure},out) {
   const root=new Set();
   // A Ready trigger already used this actor's one reaction in the same root.
   if(out.ready)root.add(a.id);
-  if(!opponent.collapsed&&react(opponent,8,root)){
+  if(reactCurrent(opponent,8,root)){
     out.attempted=true;out.interruptPaid=price(opponent,8);
-    if(reply==='guard'&&react(a,4,root)){out.defended=true;out.responsePaid=price(a,4);}
-    if(reply==='counter'&&react(a,8,root)){
+    if(reply==='guard'&&reactCurrent(a,4,root)){out.defended=true;out.responsePaid=price(a,4);}
+    if(reply==='counter'&&reactCurrent(a,8,root)){
       out.counterAttempted=true;out.responsePaid=price(a,8);
       const [x,y]=roll();out.countered=checkedQuality(x,y,a.p.X,a.willDelta-opponent.willDelta)>=2;
     }
@@ -96,8 +102,10 @@ export function applyHeal(a,t,{id,mode='instant',phase='cast',level=5,access=tru
     countered:false,restored:0,paid:0,interruptPaid:0,responsePaid:0,noInterruptEnergy:false,
     noInterruptReaction:false,ready:context==='ready',started:false,completed:false};
   const finishing=mode==='long'&&phase==='finish';
-  const alive=a.inEncounter&&!a.collapsed&&!a.collapsedThisTurn&&a.hp>0;
-  const slot=context==='main'?a.active&&!a.used:a.ready&&a.reaction>0&&mode==='instant'&&phase==='cast';
+  const alive=a.inEncounter&&!a.collapsed&&a.hp>0;
+  const slot=context==='main'?a.active&&!a.used&&!a.collapsedThisTurn:a.ready&&a.reaction>0&&mode==='instant'&&phase==='cast';
+  // Calling the Ready path represents the first matching trigger; even refusal consumes preparation.
+  if(context==='ready')a.ready=false;
   const pending=a.pending;
   const continuation=finishing&&pending&&pending.target===t.id&&pending.level===level&&
     pending.due===a.started&&context==='main';
@@ -109,7 +117,7 @@ export function applyHeal(a,t,{id,mode='instant',phase='cast',level=5,access=tru
   const cost=price(a,K+burdenP);
   if(a.energy<cost){if(finishing)cancelChannel(a);return out;}
   if(context==='ready'){
-    if(!react(a,0,new Set()))return out;a.ready=false;
+    if(!reactCurrent(a,0,new Set()))return out;
   }else a.used=true;
   a.energy-=cost;out.paid=cost;out.accepted=true;
   cancelChannel(a); // Completion consumes old channel; any accepted new Main replaces it.
