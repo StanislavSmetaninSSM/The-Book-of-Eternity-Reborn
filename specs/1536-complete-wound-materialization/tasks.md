@@ -64,15 +64,17 @@ archive are outside checkout; original failures and all other holds are retained
   request/check/procedure/discovery/publication owners and shared guided handlers;
   retain exact current authority, complete declared success/failure and terminal
   retry-safe attempt. T093-ASSESSMENT/read cards are not execution. Other holds stay.
-- [ ] T121-DIAGNOSIS-SPIRITUAL-DESIGN [US5] Independently review the concrete
+- [x] T121-DIAGNOSIS-SPIRITUAL-DESIGN [US5] Independently review the concrete
   diagnosis/optional natural suffix design in `spiritual-aid-design.md`; retain
   explicit requirement authority, original versus working images, durable private
   evidence and one owner/cycle/common publisher, including V-only completion.
-- [ ] T121-DIAGNOSIS-SPIRITUAL-CAUSAL [US5] Compile/review/run only the existing-API
+- [x] T121-DIAGNOSIS-SPIRITUAL-CAUSAL [US5] Compile/review/run only the existing-API
   H0 menu scaffold in `BookOfEternityClient.Tests/SpiritualWoundDiagnosisMenuTests.cs`
   after fresh Unit/PDB/artifact/catalog/exact PlanOnly/PREP; expect exactly 2 final
   missing diagnostic-choice failures, not setup errors. Source 2 rows / 1 method / 60s;
-  currently UNCOMPILED/UNRUN and no production change.
+  Accepted EX1: dc0c2e9, two intended line71 failures, all preconditions passed;
+  12.5344436s/60s, no timeout, independent Astra OUTCOME accepted. Production
+  unchanged at RED; next admission block is not yet qualified.
 - [ ] T121-DIAGNOSIS-SPIRITUAL-ADMISSION [US5] Add meaningful requirement/source/
   stale/privacy/cost/draw tests, then typed diagnosis selection/request and current
   requirement adapter in `Services/WoundApplicationService.cs`,

@@ -1,3 +1,31 @@
+# T121 spiritual diagnosis — EX1 causal RED accepted; admission block next
+
+Unified independent DESIGN/SOURCE/PREP and actual RED are accepted for scaffold
+source dc0c2e9f3df67c0a0e991b05a753d658444c4aa7. Fresh Unit build had zero errors
+and26 baseline warnings; four PE/PDB pairs,176 source bindings and27 artifacts
+were verified. Catalog1192/12995 and exact PlanOnly confirmed one descriptor,
+one method/two realm cases, zero execution before PREP.
+
+EX1 then completed exactly2expected final missing-choice failures at line71;
+all source/H0/identity/History/read-only preconditions passed. No timeout/skip or
+other failure. Category12.5344436s/60, wall29.0761127s; TRX SHA256
+3ae20604f01eb82eb8218ca58a1bef1c355f42ea978963216474776118e77a98.
+Independent Astra accepted that causal outcome. Production was unchanged.
+
+The first coherent production block now authors closed-admission tests before
+implementing typed diagnosis selection schema9, request schema1, exact path/check/
+requirement DATA and coherent-source menu projection. Every declared requirement
+must have canonical proof or make the path unavailable. Unknown/nonempty check
+shapes cannot be ignored. Menu DATA is not stage/publication authority; confirmed
+execution remains fail-closed until following continuation/publication/completion
+and GM/native/UI gates. No build/test by writer; no repeated Shining110/read83.
+
+EX1 owning archive completed before future overwrite:27members,62,085,392B,
+SHA25653688b32d116586326ccc69c7d703b5c32795b255130bb420c30982317113677,
+all member hashes/full gzip EOF/CRC verified, decoded194,785,280B. Raw remains
+outside checkout under us5-guided-diagnosis/EX1-*. No deletion or raw Git upload.
+This checkpoint records accepted RED only, not spiritual diagnosis execution.
+
 # T121 spiritual guided diagnosis — design + causal scaffold WIP
 
 Author rules are approved under FR071/T093; no game-rule question is pending.
