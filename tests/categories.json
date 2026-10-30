@@ -2,6 +2,30 @@
     "schemaVersion": 1,
     "categories": [
     {
+      "id": "wound-read-semantic-source-guards",
+      "responsibility": "T121-DIAGNOSIS-READ-GUARDS exact existing ownership inventory consistency, outside-scope legacy token discovery and status/wounds normal-refresh exclusion. Five method-bounded typed client GM request/error label allowances, no broad file exemptions.",
+      "excludes": "No production behavior, loose wound compatibility, graph/authority weakening, broad source-test suite or replay of unaffected read DATA.",
+      "changeHints": ["BookOfEternityClient.Tests/WoundMaterializationSourceGuardTests.cs", "BookOfEternityClient.Tests/WoundPlayerStatusSourceGuardTests.cs"],
+      "related": [{ "id": "wound-status-read-interfaces", "when": "Actual status privacy/no-repair behavior qualifies the source boundary after guard repair." }],
+      "requirements": { "frontendBuild": false, "exclusive": false, "ciRunner": "ubuntu-24.04" },
+      "timeoutMinutes": 1, "expectedSeconds": null,
+      "selectors": [{ "project": "unit", "tests": [
+        "BookOfEternityClient.Tests.WoundMaterializationSourceGuardTests.WoundOwnershipInventory_ResolvesEveryDeclaredFileAndSemanticAnchor",
+        "BookOfEternityClient.Tests.WoundMaterializationSourceGuardTests.ProductionLegacyWoundOccurrences_AreConfinedToInventoriedSemanticScopes",
+        "BookOfEternityClient.Tests.WoundPlayerStatusSourceGuardTests.StatusEntryPoints_RetireLooseReadersAndNormalMirrorRepair"
+      ] }]
+    },
+    {
+      "id": "wound-status-read-interfaces",
+      "responsibility": "Existing fifteen actual console/shared-browser status cases separated for still-unrun view qualification: current realms, known active/healed cards, literal text, hidden/foreign/unknown omissions, missing authority and no repair/mutation.",
+      "excludes": "No rerun of already accepted DATA or unrelated static guards, treatment/diagnostic execution, DOM/provider/fresh process or full US5.",
+      "changeHints": ["BookOfEternityClient/UI/WoundPlayerStatusBlocks.cs", "BookOfEternityClient.IntegrationTests/WoundPlayerStatusTests.cs"],
+      "related": [{ "id": "wound-read-semantic-source-guards", "when": "Source ownership/refresh guards changed; review their exact bounded selection." }],
+      "requirements": { "frontendBuild": false, "exclusive": false, "ciRunner": "ubuntu-24.04" },
+      "timeoutMinutes": 3, "expectedSeconds": null,
+      "selectors": [{ "project": "integration", "tests": ["BookOfEternityClient.Tests.WoundPlayerStatusTests.*"] }]
+    },
+    {
       "id": "wound-diagnosis-read-interfaces",
       "responsibility": "T121-DIAGNOSIS-READ two minimal real /раны and /статус cases through console and shared browser handlers: readable diagnostic conditions, close/no confirmation or pending action, whole-tree byte identity/no repair and exact existing source counts: wounds/identity/woundHistory1, definitions1 for /раны or2 for Mortal status header+known-wound consumers.",
       "excludes": "No Engine/provider, DOM/fresh-process, diagnostic execution/reveal/check/time/resource policy or full US5 qualification.",

@@ -8,7 +8,7 @@ public sealed class WoundPlayerStatusSourceGuardTests
     public void StatusEntryPoints_RetireLooseReadersAndNormalMirrorRepair()
     {
         var browser = Read("BookOfEternityClient/WebUi/ExplorerWebCommandService.cs");
-        Assert.Contains("if (descriptor.Id != \"status\")\n            await _stateManager.RefreshGameStateAsync();", browser);
+        Assert.Contains("if (descriptor.Id != \"status\" && descriptor.BrowserHandlerKind != ExplorerCommandBrowserHandlerKind.Wounds)\n            await _stateManager.RefreshGameStateAsync();", browser);
         var builder = Read("BookOfEternityClient/UI/ExplorerUniversalMetaCommandResultBuilder.cs");
         Assert.Contains("if (kind != CommandKind.Status)\n            await stateManager.RefreshGameStateAsync();", builder);
         Assert.Contains("WoundPlayerStatusReadService.LoadAsync(stateManager, fs)", builder);

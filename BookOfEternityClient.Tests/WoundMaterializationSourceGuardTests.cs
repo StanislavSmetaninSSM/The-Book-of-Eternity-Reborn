@@ -65,6 +65,40 @@ public sealed class WoundMaterializationSourceGuardTests
     private static readonly InventoryEntry[] Inventory =
     {
         new(
+            "spiritual-safe-healing-graph-request-label",
+            InventoryCategory.AcceptedMechanicsIntegrationSeam,
+            "BookOfEternityClient/Services/AfterlifeWoundHealingPlanner.cs",
+            "private void AdmitGraphs(JsonObject? interfaceUpdates)",
+            "_wounds.Single(w => w.WoundId == r.WoundId).Display.Name",
+            "row.Count != 2", "WoundResponseInputComposer.ParseSpiritualHealingGraph("),
+        new(
+            "spiritual-combat-intent-request-label",
+            InventoryCategory.AcceptedMechanicsIntegrationSeam,
+            "BookOfEternityClient/Services/SpiritualCombatHealingIntent.cs",
+            "CreateGmProjection(WoundMaterializationEnvelope wound, SpiritualHealingPreparedSource source)",
+            "wound.Display.Name", "JsonSerializer.SerializeToNode(source)",
+            "internal static string ConflictFingerprint("),
+        new(
+            "spiritual-natural-recovery-request-labels",
+            InventoryCategory.AcceptedMechanicsIntegrationSeam,
+            "BookOfEternityClient/Services/SpiritualHealingRequestProjection.cs",
+            "CreateNatural(string realm, int ordinal, string fingerprint,",
+            "BuildNaturalProgram(realm, ordinal, members)", "m.Wound.Display.Name",
+            "RequiredGraphs(program.Wounds, program.Stages)"),
+        new(
+            "spiritual-treatment-request-labels",
+            InventoryCategory.AcceptedMechanicsIntegrationSeam,
+            "BookOfEternityClient/Services/SpiritualHealingRequestProjection.cs",
+            "Create(AfterlifeWoundTreatmentAuthority.SourceData data, JsonObject request,",
+            "SpiritualHealingResolver.ResolvePrepared(", "data.Wound.Display.Name", "return projection;"),
+        new(
+            "spiritual-combat-graph-request-label",
+            InventoryCategory.AcceptedMechanicsIntegrationSeam,
+            "BookOfEternityClient/Services/Validation/ValidationService.SpiritualCombatHealingSelection.cs",
+            "internal void AdmitDestinationGraph()", "Target.Display.Name",
+            "Combat graph must bind exactly its client stageRef",
+            "WoundResponseInputComposer.ParseSpiritualHealingGraph("),
+        new(
             "game-response-wound-decision",
             InventoryCategory.AcceptedMechanicsIntegrationSeam,
             "BookOfEternityClient/Models/GameResponse.cs",
@@ -390,6 +424,13 @@ public sealed class WoundMaterializationSourceGuardTests
 
     private static readonly DiscoveryAllowance[] DiscoveryAllowances =
     {
+        // Typed client-owned GM labels/error projections, never loose canonical wound writes.
+        // Keep every allowance within its separately reviewed method, not the whole file.
+        Scope("safe-healing-graph-label", "spiritual-safe-healing-graph-request-label", "woundName", "private void AdmitGraphs(JsonObject? interfaceUpdates)", "private string ComplicationRef("),
+        Scope("combat-intent-label", "spiritual-combat-intent-request-label", "woundName", "CreateGmProjection(WoundMaterializationEnvelope wound, SpiritualHealingPreparedSource source)", "internal static string ConflictFingerprint("),
+        Scope("natural-recovery-labels", "spiritual-natural-recovery-request-labels", "woundName", "CreateNatural(string realm, int ordinal, string fingerprint,", "Create(AfterlifeWoundTreatmentAuthority.SourceData data, JsonObject request,"),
+        Scope("spiritual-treatment-labels", "spiritual-treatment-request-labels", "woundName", "Create(AfterlifeWoundTreatmentAuthority.SourceData data, JsonObject request,", "return projection;"),
+        Scope("combat-graph-label", "spiritual-combat-graph-request-label", "woundName", "internal void AdmitDestinationGraph()", "internal WoundWorkingOwnedGraph ResolveGraph("),
         Scope("player-validation-state-path", "player-loose-wound-validation", "game_state/player/wounds.json", "private async Task ValidatePlayerStateFiles(", "private async Task ValidatePlayerContractFile("),
         Scope("player-validation-file-path", "player-loose-wound-validation", "game_state/player/wounds.json", "private async Task ValidatePlayerFile(", "private void ValidatePlayerContract("),
         Scope("player-validation-command", "player-loose-wound-validation", "playerWoundChanges", "private void ValidatePlayerContract(", "private void ValidatePlayerStatus("),

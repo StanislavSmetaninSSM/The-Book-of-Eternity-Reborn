@@ -95,6 +95,18 @@ All D3 raw, including both source-guard FAIL and full27artifact archive/CRC/memb
 proof, remains outside checkout. D3 archive sha256
 `34f0350bffbcb08041796b138ef5b7d86cfb1413d9b69ba3215be2da57b7ff2e`.
 
+Sol завершил предметный audit: семь labels принадлежат пяти точным методам,
+не четырём file-wide исключениям. Inventory дополняется typed GM projection/error
+owners с обязательными source/admission anchors; discovery enumeration, matching,
+unused-allowance rejection и outside-scope refusal не меняются. Status guard
+требует фактическую конъюнкцию исключений status/Wounds и следующий refresh.
+Изменены только два Unit source-guard файла и catalog. Новые bounded owners
+`wound-read-semantic-source-guards`3 + `wound-status-read-interfaces`15 позволяют
+квалифицировать ровно18: два FAIL, один повтор затронутой inventory consistency,
+15UNRUN; остальные принятые read cases не повторяются. Старый CI selection
+`wounds-player-status` уже включает все эти методы, нового общего отбора нет.
+Guard correction пока UNCOMPILED/UNRUN, delta SOURCE/PREP pending.
+
 HOLD DFR/Mortal/Windows и общая незавершённость #1536 сохраняются.
 
 # Договорная помощь US6 B: ограниченный игровой маршрут принят
