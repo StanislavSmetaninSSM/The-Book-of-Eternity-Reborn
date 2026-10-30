@@ -1,5 +1,24 @@
 # Проверка проекта #1573
 
+## Текущий checkpoint T115–T117: численная проверка принятого T114
+
+Baseline3c1c895b610a98ba6f797d4c77822ec61a1f4d2f; автор принял профиль и прямо
+поручил проверку. Канонические spec/plan/tasks обновлены и связаны до выполнения,
+bridge consistency/review-focus покрыты. Writing-plans/executing-plans/TDD применены
+к numerical probe, без production runtime. Начальный RED10assertionfail/2pass,
+затем12/12GREEN; ещё400-check parity/runner/matrix guards, всего31/31PASS.
+Sol6.1/high audit_combat_explanation_t117 проверил реальные shared presenters,
+console/browser/help/preview: новая UX ещё отсутствует, будущие dice не показывать.
+
+WIPd0dd9d5ca опубликован до долгой пробы, GitHub source readback подтверждён.
+Main792000/confirm630000/support192000/sensitivity240000 =1 854 000траекторий,
+все4процессаexit0/empty stderr/complete records. Raw наD: внеGit; human findings
+в reaction-balance-investigation. Статистические/модельные ограничения указаны:
+finite horizon не бесконечность, support1v2 не полноценный2v2, D0/V stress-case,
+HealV/подавление ещё кандидаты, сравнение не доказывает оптимальность тактик.
+Проверка документов/исходников/результатов и независимый complex Astra/high review
+впереди; это не итоговая приёмка runtime/баланса.
+
 ## Текущий checkpoint T113–T114: принятие хода и проект реакций
 
 2026-10-30 baseline617b63b0d78f0f7cec1cc8b31f0f769d0429f26c проверен с origin.

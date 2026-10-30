@@ -4,6 +4,7 @@ import assert from 'node:assert/strict';
 import { createActor, beginTurn, endTurn, react, checkedQuality, attemptHeal } from './reaction-model.mjs';
 import { mark, cleanse, strength } from './suppression-model.mjs';
 import { quality } from './healing-counters.mjs';
+import { simulate, scenarios } from './reaction-probe.mjs';
 
 test('one common reaction pays once; only own start resets it without stacking',()=>{
   const a=createActor(0,'a'),b=createActor(0,'b'),root=new Set();const e=a.energy;
@@ -86,5 +87,23 @@ test('all 400 equal-Will checks match old outcomes, guard changes margin not nat
       full+=Number(checkedQuality(a,b,F)>=2);guard+=Number(checkedQuality(a,b,F,-5)>=2);
     }
     assert.equal(full,fullExpected);assert.equal(guard,guardExpected);
+  }
+});
+test('runner is reproducible, reports censored cases separately and preserves event counts',()=>{
+  const options={D:130,n:12,horizon:2,style:'reserve',reply:'counter'};
+  const first=simulate(options);assert.deepEqual(simulate(options),first);
+  assert.equal(first.censored,12);assert.equal(first.winA+first.winB,0);
+  assert.ok(first.counts.cancelled<=first.counts.interruption);
+  assert.ok(first.counts.interruption<=first.counts.heals);
+  assert.ok(first.counts.counterSucceeded<=first.counts.counterAttempt);
+  const control=simulate({...options,horizon:40,style:'ordinary',policy:'noheal'});
+  assert.equal(control.counts.heals,0);assert.equal(control.counts.interruption,0);
+  assert.ok(Math.abs(control.winA+control.winB+control.censored/control.n-1)<1e-12);
+});
+test('matrix includes both personal orders and all six support orders without duplicate scenarios',()=>{
+  for(const [mode,count] of [['main',396],['support',96],['sensitivity',120]]){
+    const rows=scenarios(mode);assert.equal(rows.length,count);
+    assert.equal(new Set(rows.map(r=>JSON.stringify(r))).size,count);
+    assert.equal(new Set(rows.map(r=>r.order.join(','))).size,mode==='support'?6:2);
   }
 });

@@ -97,7 +97,7 @@ if(process.argv[1]&&pathToFileURL(resolve(process.argv[1])).href===import.meta.u
   const mode=process.argv.find(x=>x.startsWith('--mode='))?.split('=')[1]??'main';
   const n=Number(process.argv.find(x=>x.startsWith('--samples='))?.split('=')[1]??2000);
   const selected=mode==='confirm'?
-    [0,130,1000].flatMap(D=>['normal','both36'].flatMap(harmony=>['ordinary','reserve','suppress_reserve'].flatMap(style=>
+    [0,130,1000].flatMap(D=>['normal','healer28','both36'].flatMap(harmony=>['ordinary','reserve','suppress_reserve'].flatMap(style=>
       (style==='ordinary'?['none']:['none','guard','counter']).map(reply=>({D,harmony,style,reply,policy:style==='suppress_reserve'?'cleanse_safe':'heal',seedSuffix:'confirmation'}))))):scenarios(mode);
   const started=performance.now();
   console.log(JSON.stringify({type:'metadata',version:1,mode,samples:n,horizon:2000,cells:selected.length,node:process.version,

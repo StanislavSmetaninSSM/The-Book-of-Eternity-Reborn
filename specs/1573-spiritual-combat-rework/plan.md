@@ -21,11 +21,11 @@ probe simulate(options) возвращает метрики, решения по
 Временный кэш неизменяемых damage/проверочных таблиц на профиль/пробу, мутабельные
 HP/ДЭ/метки/остатки всегда личные; не создавать дорогие game objects в траекториях.
 
-- [ ] T115: статусы/spec/crossrefs; показать фактические spec/plan/tasks.
-- [ ] T116a: failing guards shared spend/reset/no-refund/no-regen/HP0, full/partial
+- [x] T115: статусы/spec/crossrefs; показаны фактические spec/plan/tasks.
+- [x] T116a: failing guards shared spend/reset/no-refund/no-regen/HP0, full/partial
   interrupt, counter-interruption/defense, cleanse и длительность; запустить RED,
   реализовать минимальную модель, GREEN всего probes/*.test.mjs.
-- [ ] T116b: политики без foresight, матрица/профили/seed/censoring, дешёвый smoke;
+- [x] T116b: политики без foresight, матрица/профили/seed/censoring, дешёвый smoke;
   WIP/push/readback; полный прогон с raw D:/BoeDiagnostics/spiritual-reactions-t116/;
   отдельно10000на значимые выводы и support/Will sensitivity. Динамических лимитов
   диагностики нет; горизонт2000 — цензурирование, не доказанная бесконечность.
@@ -46,6 +46,16 @@ T116a:13новых guards (вместе с16прежними —29) проход
 12/12GREEN, затем добавлена полная сверка400равных встречных исходов и guard5.
 Smoke30траекторийD130/counter: модель завершила все, игровые выводы не делаются.
 Затем WIP/push перед основным прогоном396ячеек×2000; результаты ещё не получены.
+
+WIPd0dd9d5ca31d320ab9dccab95389635956766454 опубликован до долгой пробы;
+GitHub source readback подтверждён. Последующие confirm/support/sensitivity
+завершены;1 854 000траекторий,31/31guards. Raw4части/пустыеstderr/complete/cells/
+win+censor проверены. [Результаты](reaction-balance-investigation.md) и
+[UX-предложение](combat-explanation-proposal.md) готовы к independent review;
+доказано улучшение выбранных сценариев, но не решение heal stalemate.
+Parent не менял принятые числа. Sol6.1/high отдельно проверил actual UI/help/preview,
+SerenaC#/TS symbols, старыеoperation_type/position/AP обозначены как будущая замена.
+Далее checkpoint/push, сложный Astra/high review всего diff и финальная публикация.
 
 ## Текущий срез T113–T114: принятие хода и активные реакции
 
