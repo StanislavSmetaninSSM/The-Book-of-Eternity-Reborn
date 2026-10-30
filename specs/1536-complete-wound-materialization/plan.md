@@ -1,3 +1,38 @@
+# T142 GREEN preparation — builds and exact selection ready, runtime UNRUN
+
+2026-10-30 continuation on source a2c78bb439c32d48fa0492302522a3181f911db4.
+Whole SOURCE/selection accepted5b6b52049e623a8c13a4f8affe8ce4c63b3983ca;
+required full-example tail d1a6f786d7838ff2aae8272bbd75f3e4b65df3d0 and tiny fixture
+constructor correction a2c78 independently accepted. No open source finding.
+
+All owning builds exit0/0errors, baseline warnings retained: Main/Support5b6b
+12/23warnings2:37.08/13.00s; Unitd1a6 26warnings1:17.37; Integrationa2c78
+102warnings2:09.66. Failed first Integration compile is preserved, not a test RED.
+Current4PE/PDB/100source bindings and27artifacts/dependency copies verified. Owning
+MSBuild content refresh kept all27binary hashes and made changed GM resources current;
+8operational sources across4outputs plus4daemon copies match. Retained projects have
+explicit current C# equivalence, not selective binary transfer. This checkpoint changes
+only plan.md; no rebuild is needed for its prose delta.
+
+Discovery1137categories/12910methods, no stale/unmapped tests,0executions. Exact PlanOnly
+9categories/133cases/30methods,16.5251589s,0executions, clean revision and owned cleanup.
+First run cheap8categories105cases, then affected complete-route consumers28 after
+independent outcome/admission. Existing entrypoints-coverage budget is600s; other8
+category budgets60s. Earlier all60s shorthand corrected; no limits changed. GREEN/PREP
+is still pending; builds and discovery are not qualification.
+
+Optimization: one invocation-private parsed-root index and existing requiredActors
+reuse, no persistent cache/new framework; fresh raw/post validation and current trade,
+identity, authority/history checks retained. Actual opens1vs20 and head+healer single
+validation controls are written/compiled but UNRUN. No speedup claim.
+
+Full raw outside checkout: /workspace/tboe-linux-evidence-20261025/us6-faction-living-healer.
+Available6.72GB with400MiB reserve and full uncapped output; all causal/T143 evidence,
+saves and recovery retained. No new clone/restore or raw/binary upload. T143 accepted
+lineages and DFR/Mortal/Windows HOLD remain unchanged. T142/US6/#1536 remain open.
+
+---
+
 # T142 owning build continuation — Integration-only fixture compile correction
 
 Main/Support5b6b completed0errors,12/23baselinewarnings,2:37.08/13.00s.
@@ -41,7 +76,7 @@ This tail changes only documentation/tests/catalog/plan; Main/Support C# hashes 
 exact5b6b. Their fresh compiled outputs may stand after explicit current operational-content
 refresh through the owning MSBuild targets and hash proof; no manual binary/file transfer.
 Unit/Integration need their first fresh builds after bounded tail SOURCE. Current category
-budgets remain60s. All source is WIP/UNQUALIFIED until actual GREEN/review. Existing27causal
+budgets remain60s except existing entrypoint coverage600s. All source is WIP/UNQUALIFIED until actual GREEN/review. Existing27causal
 artifacts were preserved before Main/Support replacement; no raw/saves/recovery deleted.
 
 ---
@@ -87,7 +122,7 @@ Finite source-derived selection9categories: causal; invariant DATA; actual lifec
 disclosure; actual identity/capability; source/dedup controls; affected complete native/
 founding/story/required-actor consumers; shared visible-capability DATA; focused GM docs;
 mandatory afterlife entrypoint coverage. No full factions/afterlife or T143173 replay.
-Original/new bounded budgets remain60s for these cheap categories. Exact case counts
+Original/new bounded budgets remain60s except existing entrypoint coverage600s. Exact case counts
 must come from fresh discovery/PlanOnly; this checkpoint is NOT qualification.
 
 Next: one whole independent SOURCE/selection review; preserve current27 scaffold build
