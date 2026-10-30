@@ -1024,7 +1024,8 @@ is not claimed without measured production evidence.
    active+natural program and the two memory owners. Update canonical technical
    contract/data model, effective GM instructions, worked schema5 examples and
    source/manifest guards together. Review one coherent SOURCE cut; fresh owning
-   projects and affected old self2/Chaos5/6/Shiningprovider6/service7 consumers.
+   projects and affected old self2/Guardian3/4/resident5/6/Shiningprovider6/service7
+   codec/native consumers; shared dispatch changes must not omit Guardian3/4.
 4. Qualify actual consent turn→normal cleanup→separate confirmation and real
    treatment for resident and radiant head through BOTH console and shared
    browser handlers. Whole initial setup includes all ordinary resource/actor

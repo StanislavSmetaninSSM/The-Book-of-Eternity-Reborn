@@ -2,52 +2,10 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "wound-diagnosis-recommendations",
-      "reason": "Eight-case GREEN for missing diagnostic conditions, both rendering consumers and private/current-knowledge/opaque-spiritual controls; original six-case causal RED retained separately.",
+      "category": "shining-patient-proposal-causal",
+      "reason": "First existing-API causal RED for the genuinely missing player→Shining patient branch, schema5 resident and radiant profile proposal correlation only; actual authority/Engine remains unrun.",
       "contracts": [
-        "#1536 T121-DIAGNOSIS-READ; FR071 privacy/read-only recommendations; actual diagnosis rules pending"
-      ]
-    },
-    {
-      "category": "wounds-player-projection",
-      "reason": "Changed shared typed projection/one physical parse preserves known treatment methods, all current realms, effects, History and recursive privacy.",
-      "contracts": [
-        "#1536 T121-DIAGNOSIS-READ; FR071 privacy/read-only recommendations; actual diagnosis rules pending"
-      ]
-    },
-    {
-      "category": "wound-foreign-detail-contract",
-      "reason": "Changed internal diagnosis display shape preserves selected foreign spiritual current-known/hidden path and detached projection behavior.",
-      "contracts": [
-        "#1536 T121-DIAGNOSIS-READ; FR071 privacy/read-only recommendations; actual diagnosis rules pending"
-      ]
-    },
-    {
-      "category": "wound-foreign-detail-gm",
-      "reason": "Changed worked known-card explanation and internal display shape retain authorable example validity and synchronized guidance.",
-      "contracts": [
-        "#1536 T121-DIAGNOSIS-READ; FR071 privacy/read-only recommendations; actual diagnosis rules pending"
-      ]
-    },
-    {
-      "category": "wounds-player-status",
-      "reason": "Changed actual status dossier consumer preserves current realms, literal text, unavailable authority and no repair/mutation.",
-      "contracts": [
-        "#1536 T121-DIAGNOSIS-READ; FR071 privacy/read-only recommendations; actual diagnosis rules pending"
-      ]
-    },
-    {
-      "category": "wound-foreign-detail-interfaces",
-      "reason": "Changed common command card renders existing known foreign paths through actual minimal console/browser handlers without granting treatment.",
-      "contracts": [
-        "#1536 T121-DIAGNOSIS-READ; FR071 privacy/read-only recommendations; actual diagnosis rules pending"
-      ]
-    },
-    {
-      "category": "wound-diagnosis-read-interfaces",
-      "reason": "Two new minimal real /раны and /статус console/browser cases prove readable conditions, inert close/no prompts, whole-tree identity/no repair and measured source reuse after cheap GREEN.",
-      "contracts": [
-        "#1536 T121-DIAGNOSIS-READ; FR071 privacy/read-only recommendations; actual diagnosis rules pending"
+        "#1536 T108-SHINING-PATIENT; US4scenario8 FR043–054 FR072–074; accepted technical design d4aa700df"
       ]
     }
   ]

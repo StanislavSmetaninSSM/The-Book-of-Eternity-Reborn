@@ -34,9 +34,18 @@ consultation дала конкретные identity/memory/versioning грани
 DESIGN review потребовал два точных уточнения: natural8 отдельно от старого
 Chaos natural5, и точный patient membership/headship/lifecycle tuple до/после
 owned normalization с readback перед продвижением всех live guards. Уточнения
-внесены в spiritual-aid-design.md; delta DESIGN review pending. Один writer, затем причинный RED,
+внесены в spiritual-aid-design.md; independent Astra/high DESIGN принят на
+`d4aa700df3ced79bbfa81bb2c0007f2b82ec6798`. Один writer, затем причинный RED,
 минимальная реализация с GM sync, fresh owning builds/exact categories/PREP,
-реальные обе UI цепочки и независимый OUTCOME. Пока кода/новых runtime нет.
+реальные обе UI цепочки и независимый OUTCOME. Создан только existing-API two-row
+proposal scaffold, UNCOMPILED/UNRUN, production ещё не менялся. Ожидаемый causal
+refusal различается: resident упирается в unknownschema5, radiant раньше в
+enclosing-kind gate; не требовать одинаковой строки ошибки. Полный profile helper
+и original/response immutability используют прежний независимый test pattern.
+До runtime отдельный Sol проверяет всю подготовку. Для будущих Engine fixtures
+заранее выявлены playerTier0 default, отдельный обязательный healing_support
+actor, корректное active/radiant head+political materialization и существующие
+разные memory owners; их подготовка выполняется до единственного bootstrap.
 
 Оптимизация: caller-owned parsed profiles/Shining/actual resident roster и existing
 catalog/index/read-set передаются по одной операции; полный key/dependencies включают

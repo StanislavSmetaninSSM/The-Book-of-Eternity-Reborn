@@ -2,6 +2,16 @@
     "schemaVersion": 1,
     "categories": [
     {
+      "id": "shining-patient-proposal-causal",
+      "responsibility": "T108-SHINING-PATIENT existing profile proposal reader admission for exact schema5 resident and radiant_actor patient inputs; independent complete preexisting profile DATA, implicit typed enclosing owner, closed locality and no mutation.",
+      "excludes": "No live patient locality/consent witness authority, canonical record mint, draw, stage, publication, Engine, provider, DOM, full US4 or diagnostic rule.",
+      "changeHints": ["BookOfEternityClient/Services/SpiritualTreatmentParticipation*.cs"],
+      "related": [],
+      "requirements": { "frontendBuild": false, "exclusive": false, "ciRunner": "ubuntu-24.04" },
+      "timeoutMinutes": 1, "expectedSeconds": null,
+      "selectors": [{ "project": "unit", "tests": ["BookOfEternityClient.Tests.ShiningPatientTreatmentParticipationTests.ExistingProfileReaderAcceptsExactShiningPatientProposalWithoutMutation"] }]
+    },
+    {
       "id": "wound-read-semantic-source-guards",
       "responsibility": "T121-DIAGNOSIS-READ-GUARDS exact existing ownership inventory consistency, outside-scope legacy token discovery and status/wounds normal-refresh exclusion. Five method-bounded typed client GM request/error label allowances, no broad file exemptions.",
       "excludes": "No production behavior, loose wound compatibility, graph/authority weakening, broad source-test suite or replay of unaffected read DATA.",
