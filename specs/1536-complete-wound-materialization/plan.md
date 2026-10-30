@@ -1,3 +1,31 @@
+# US6 immutable/current correction171/171PASS on frozen source; UI next
+
+Independent Sol PREP accepted staged execution on compiledsource06a6de91fa8e0bae4f8d7cdc8bed982072d1a2b9,
+metadata6e8c094e0; no aggregate179run. Actual Unit76/76PASS42.9360357s, historical/
+referenceIntegration85/85PASS55.9812289s; publicoutcomes/projection/fullnormalizer
+10/10PASS (exact wall/categories in external verified-outcome). All three runs exact
+planned/completed counts/TRX/methods, no failures/skips/duplicates/timeouts, process
+cleanup/current pins verified. This is171distinct on one frozen code version through
+three bounded selections, not a single aggregate suite or wholeUS6 qualification.
+
+Causal whole-envelope preservation is GREEN with real first income/ledger and replay;
+strict new/promotion and malformed binding/reason/closed fields remain rejected.
+RawMissing/Unusable/source-byte tamper/duplicate originals fail closed; ordinary
+cleaned-snapshot grown healer and exact signed historical growth pass. Current and
+signed-original profile reads each1for1or20factions. Actual failure/partial/success
+still charge once, keep quoted source tier through true same-cycle progression and
+reject invented tier/locality/memory. Full owned normalizer/foreign refusal pass.
+
+Raw /workspace/tboe-linux-evidence-20261025/us6-faction-service-agreement/HISTGREEN-
+unit-runtime, reference-runtime, public-runtime; exact full verifier findings retained.
+Next admitted originalconsole1 at unchanged3min, then browser/rollback only after prior
+complete PASS/capture/cleanup/pins/resources. Fresh reserve>=400MiB+256MiB; no quotas.
+Private5 separate admission pending, earlier timeout not claimed fixed. NegotiatedB,
+wholeUS6/#1536 and HOLD remain open. All oldfailed/incomplete raw/root preserved,
+no deletions/uploads. Metadata-only checkpoint; no C# rebuild or accepted-case repeat.
+
+---
+
 # US6 historical/current correction fresh builds and exact PREP ready; no GREEN yet
 
 Whole Astra/high SOURCE ACCEPT06a6de91fa8e0bae4f8d7cdc8bed982072d1a2b9 after
