@@ -1,5 +1,24 @@
 # План перехода к личной модели духовного боя — #1573
 
+## Текущий срез T107–T108: принятие HP0; капитуляция и плен
+
+2026-10-30 baselinecae83c77e175da68e80b266141439aaa676151a0 совпал с origin.
+Прочитаны #1573/#1572, PathsOnly1573 выполнен, workflow1.7 сохранён.
+Продолжаются brainstorming/Spec Kit bridge в активной feature. T107 записывает
+прямое одобрение T106 без изменения формул. T108 предлагает следующий игровой
+договор; новые правила ещё не одобрены. [Спецификация](spec.md),
+[профиль](surrender-and-captivity-proposal.md), [задачи](tasks.md).
+
+Sol6.1/high audit_surrender_captivity отдельно проверил реальные добровольность,
+side-wide control (не переносить), lifetime/source ownership, combat vow,
+клятву Сарефу, terminal-proof и obsolete reset старого перехода. Serena csharp/
+typescript/python сохранены, C# символы прочитаны. Parent сводит проект и
+принятые HP0/rest/free travel; схема пленения/новые цены/обыск/runtime не делаются.
+Порядок: источники → проект/статусы → consistency/ссылки/diff → WIP/push →
+независимый GPT-6 Astra/high review coherent diff → исправления/адресная проверка
+→ финальный SHA/blob/issues readback → документ автору для рассмотрения.
+Никаких игровых tests/build/симуляций; T001/T077/T012–T013 остаются открытыми.
+
 ## Текущий срез T106: HP0 и возвращение формы
 
 2026-10-30 baseline832fd4051731add252752ab872b1c091d8910907 совпал с origin,
