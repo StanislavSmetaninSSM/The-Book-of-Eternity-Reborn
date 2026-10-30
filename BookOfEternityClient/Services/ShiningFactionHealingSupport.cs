@@ -61,7 +61,7 @@ internal static partial class ShiningFactionHealingSupport
     /// visibility. It must not be used to authorize access to a hidden faction.
     /// </summary>
     internal static IReadOnlyList<ShiningFactionRosterEntry> ProjectVisibleRoster(
-        JsonObject faction, JsonObject? residentsRoot, JsonObject? profilesRoot)
+        JsonObject faction, JsonObject? residentsRoot, JsonObject? profilesRoot, string? onlyResidentId = null)
     {
         var factionId = Text(faction["factionId"]);
         if (string.IsNullOrWhiteSpace(factionId) || residentsRoot?["entries"] is not JsonArray residents ||
@@ -72,7 +72,7 @@ internal static partial class ShiningFactionHealingSupport
         // unchanged; nothing survives or grants permission to the next action.
         var residentIndex = residents.OfType<JsonObject>().ToLookup(r => Text(r["residentId"]), StringComparer.Ordinal);
         var profileIndex = profiles.OfType<JsonObject>().ToLookup(p => (Text(p["actorType"]), Text(p["actorId"])));
-        return ProjectVisibleRoster(faction, residents, residentIndex, profileIndex);
+        return ProjectVisibleRoster(faction, residents, residentIndex, profileIndex, onlyResidentId);
     }
 
     // One caller operation may project several factions. Reuse its exact indexes;

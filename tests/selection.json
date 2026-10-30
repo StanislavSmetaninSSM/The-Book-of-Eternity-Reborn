@@ -2,185 +2,87 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "shining-faction-service-causal",
-      "reason": "Previously observed exact missing quote must become GREEN.",
+      "category": "negotiated-healing-provider-data",
+      "reason": "New closed terms/locality, actual selected-faction DATA, presence-aware wallet/request binding and effective GM examples; original four RED cases become GREEN.",
       "contracts": [
-        "#1536 US6 T132/T133/T136/T137/T138/T143–147; FR077–085"
+        "#1536 US6 T133/T134/T136/T138/T143/T146/T147; FR080/084 negotiated existing offer/attempt path"
       ]
     },
     {
-      "category": "shining-faction-service-access-data",
-      "reason": "Exact current membership/profile/access/lifecycle/tuple and original dependency controls.",
+      "category": "spiritual-resident-provider-contract",
+      "reason": "Changed shared record/selection/request codecs preserve prior resident-provider direction, exact confirmation and unavailable offer refusals.",
       "contracts": [
-        "#1536 US6 T132/T133/T136/T137/T138/T143–147; FR077–085"
+        "#1536 US6 T133/T134/T136/T138/T143/T146/T147; FR080/084 negotiated existing offer/attempt path"
       ]
     },
     {
-      "category": "healing-service-contract-data",
-      "reason": "Changed shared quote owner/serialization/current actor contracts preserve old supported quote/refusal behavior.",
+      "category": "spiritual-resident-provider-causal",
+      "reason": "Existing accepted typed resident provider proposal remains admitted independently of the extension.",
       "contracts": [
-        "#1536 US6 T132/T133/T136/T137/T138/T143–147; FR077–085"
+        "#1536 US6 T133/T134/T136/T138/T143/T146/T147; FR080/084 negotiated existing offer/attempt path"
       ]
     },
     {
-      "category": "shining-healer-capability-data",
-      "reason": "Factored roster projector/DescribeAccess retain exact typed role/profile/visibility behavior.",
+      "category": "spiritual-aid-participation-contract",
+      "reason": "Changed Guardian record and shared locality union preserve the original patient consent and Guardian provider DATA family.",
       "contracts": [
-        "#1536 US6 T132/T133/T136/T137/T138/T143–147; FR077–085"
+        "#1536 US6 T133/T134/T136/T138/T143/T146/T147; FR080/084 negotiated existing offer/attempt path"
       ]
     },
     {
-      "category": "shining-faction-service-documentation",
-      "reason": "Changed actual GM faction service path and unchanged restricted display, worked production parser/append.",
+      "category": "spiritual-resident-aid-contract",
+      "reason": "Shared resident coordinate/locality reader retains the opposite patient-consent direction and protected memory DATA.",
       "contracts": [
-        "#1536 US6 T132/T133/T136/T137/T138/T143–147; FR077–085"
+        "#1536 US6 T133/T134/T136/T138/T143/T146/T147; FR080/084 negotiated existing offer/attempt path"
+      ]
+    },
+    {
+      "category": "spiritual-resident-provider-gm",
+      "reason": "New extension to effective daemon/guidance retains the old worked resident provider proposal and separate player confirmation.",
+      "contracts": [
+        "#1536 US6 T133/T134/T136/T138/T143/T146/T147; FR080/084 negotiated existing offer/attempt path"
       ]
     },
     {
       "category": "healing-service-documentation",
-      "reason": "Shared service7/daemon/registry and existing worked Elyara semantics remain valid.",
+      "reason": "Changed shared daemon/GM guidance retains actual paid-service7 contract and worked reference profile.",
       "contracts": [
-        "#1536 US6 T132/T133/T136/T137/T138/T143–147; FR077–085"
+        "#1536 US6 T133/T134/T136/T138/T143/T146/T147; FR080/084 negotiated existing offer/attempt path"
       ]
     },
     {
-      "category": "shining-faction-service-fresh-source",
-      "reason": "Real source-open invariance plus fresh confirm/stage roster refusals before entropy.",
+      "category": "shining-faction-service-documentation",
+      "reason": "Negotiated extension must not turn a public declaration/view into an accepted agreement or regress paid faction documentation.",
       "contracts": [
-        "#1536 US6 T132/T133/T136/T137/T138/T143–147; FR077–085"
+        "#1536 US6 T133/T134/T136/T138/T143/T146/T147; FR080/084 negotiated existing offer/attempt path"
       ]
     },
     {
-      "category": "shining-faction-service-projection",
-      "reason": "Same-cycle exact client-projected admission versus original quoted check; owned normalizer/memory negatives.",
+      "category": "healing-service-request-data",
+      "reason": "Shared selected request/current wallet owner changes preserve paid request7 exact binding.",
       "contracts": [
-        "#1536 US6 T132/T133/T136/T137/T138/T143–147; FR077–085"
+        "#1536 US6 T133/T134/T136/T138/T143/T146/T147; FR080/084 negotiated existing offer/attempt path"
       ]
     },
     {
-      "category": "shining-faction-service-outcomes",
-      "reason": "Actual failed/partial/success one-charge retained result7 and inert replay.",
+      "category": "healing-service-menu-data",
+      "reason": "Shared guided menu changes retain public quote construction and fresh refusal DATA.",
       "contracts": [
-        "#1536 US6 T132/T133/T136/T137/T138/T143–147; FR077–085"
-      ]
-    },
-    {
-      "category": "elyara-current-location-shining-results",
-      "reason": "Changed shared composition/normalizer/persisted quote must retain existing Elyara Shining source family and outcome/replay.",
-      "contracts": [
-        "#1536 US6 T132/T133/T136/T137/T138/T143–147; FR077–085"
-      ]
-    },
-    {
-      "category": "shining-faction-service-console",
-      "reason": "Changed console helper: actual faction selection/cancel/separate confirm -> paid turn/memory.",
-      "contracts": [
-        "#1536 US6 T132/T133/T136/T137/T138/T143–147; FR077–085"
-      ]
-    },
-    {
-      "category": "shining-faction-service-browser",
-      "reason": "Changed shared browser helper: same exact quote/confirm/queue -> paid turn/memory.",
-      "contracts": [
-        "#1536 US6 T132/T133/T136/T137/T138/T143–147; FR077–085"
-      ]
-    },
-    {
-      "category": "shining-faction-service-rollback",
-      "reason": "Physical wallet cut exercises actual full Engine compensation and restores all wound/world/journal roots.",
-      "contracts": [
-        "#1536 US6 T132/T133/T136/T137/T138/T143–147; FR077–085"
+        "#1536 US6 T133/T134/T136/T138/T143/T146/T147; FR080/084 negotiated existing offer/attempt path"
       ]
     },
     {
       "category": "healing-service-payment-results",
-      "reason": "Changed common service composition and generalized fixture preserve actual Chaos Elyara retained payment/outcome/replay, not only Shining.",
+      "reason": "Changed shared wallet assembly/publication keeps real paid failed/partial/success one-charge results.",
       "contracts": [
-        "#1536 US6 existing service7 same owned composition"
-      ]
-    },
-    {
-      "category": "spiritual-resident-aid-backend",
-      "reason": "Changed existing resident-memory owner and signed-original validation retain accepted private resident aid/revocation and ordinary-owner protected-memory refusal.",
-      "contracts": [
-        "#1536 US4/US6 existing resident4/6 memory boundary"
-      ]
-    },
-    {
-      "category": "spiritual-resident-provider-backend",
-      "reason": "Changed already-parsed verified result and protected-memory interface also consume existing resident healer offer/result6; retain exact helper versus patient tier, full owned memory/replay/refusal semantics.",
-      "contracts": [
-        "#1536 existing resident provider4/result6 boundary"
-      ]
-    },
-    {
-      "category": "shining-faction-progression-materialization-data",
-      "reason": "Actual public faction outcome failed because real automatic income appended progressionLedger without advancing its initially valid empty materialization disposition. Cheap actual projector proof isolates this before the narrow production fix.",
-      "contracts": [
-        "#1536 US6 T137-AUTO-HISTORY complete profile after actual client progression"
+        "#1536 US6 T133/T134/T136/T138/T143/T146/T147; FR080/084 negotiated existing offer/attempt path"
       ]
     },
     {
       "category": "spiritual-aid-locality-normalization",
-      "reason": "Changed generic automatic progression must retain genuine client H0→H1 upgrade, original-versus-projected healing tier, actual full owned locality normalization and foreign-write refusal through the existing accepted helper path.",
+      "reason": "Changed shared locality closing-image advancement must preserve genuine existing normalized aid source ownership.",
       "contracts": [
-        "#1536 T137-AUTO-HISTORY current profile projection/normalizer boundary"
-      ]
-    },
-    {
-      "category": "shining-faction-service-stage-fence",
-      "reason": "Split the corrected staged Shining roster fault injection from the five already accepted read/confirmation cases; preserve exact coverage/budget and avoid replaying unchanged PASS only to reach the corrected singleton.",
-      "contracts": [
-        "#1536 US6 current source closing fence before treatment entropy"
-      ]
-    },
-    {
-      "category": "shining-faction-service-capture-wiring",
-      "reason": "Existing timeout prefix lacks Engine phase messages. Prove bounded reuse of original message writer and passive macro recorder before one unchanged-budget diagnostic console attempt.",
-      "contracts": [
-        "#1536 US6 T136 full original diagnostic visibility/closing; no game-contract change"
-      ]
-    },
-    {
-      "category": "shining-faction-historical-envelope-data",
-      "reason": "Exact actual console repair exposes client automatic rewrite of immutable historical creation evidence. One causal file-free proof isolates it before any production correction.",
-      "contracts": [
-        "#1536 T137-AUTO-HISTORY immutable historical envelope versus current healing/progression DATA"
-      ]
-    },
-    {
-      "category": "shining-faction-historical-envelope-guards",
-      "reason": "Historical current-provider shape must preserve malformed/strict-new refusals.",
-      "contracts": [
-        "#1536 T137-AUTO-HISTORY/T142/T143 historical creation evidence versus current faction healer DATA"
-      ]
-    },
-    {
-      "category": "shining-faction-historical-envelope-validation",
-      "reason": "Actual immutable history conflict requires exact signed pre-turn/phase matrix, new actor in old faction, source counts and unchanged generic historical guard consumers.",
-      "contracts": [
-        "#1536 T137-AUTO-HISTORY/T142/T143 historical creation evidence versus current faction healer DATA"
-      ]
-    },
-    {
-      "category": "shining-faction-healer-lifecycle",
-      "reason": "Shared faction actor-materialization validation changed; retain exact raw/post life and disclosure branches.",
-      "contracts": [
-        "#1536 T137-AUTO-HISTORY/T142/T143 historical creation evidence versus current faction healer DATA"
-      ]
-    },
-    {
-      "category": "shining-faction-healer-identity",
-      "reason": "Shared faction actor-materialization validation changed; retain current exact role/membership/tier/visibility and malformed unrelated-profile semantics.",
-      "contracts": [
-        "#1536 T137-AUTO-HISTORY/T142/T143 historical creation evidence versus current faction healer DATA"
-      ]
-    },
-    {
-      "category": "negotiated-healing-provider-data",
-      "reason": "Next US6 negotiated compensation must use existing provider proposal/result families and typed Shining localities. Cheap existing-API causal DATA controls precede production changes; not gameplay acceptance.",
-      "contracts": [
-        "#1536 US6 T133/T134/T136/T138/T143/T146/T147, FR080/084 accepted B design"
+        "#1536 US6 T133/T134/T136/T138/T143/T146/T147; FR080/084 negotiated existing offer/attempt path"
       ]
     }
   ]

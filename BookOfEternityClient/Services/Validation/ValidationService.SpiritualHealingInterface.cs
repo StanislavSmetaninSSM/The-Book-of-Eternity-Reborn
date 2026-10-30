@@ -194,7 +194,7 @@ public partial class ValidationService
                     throw new InvalidDataException("Protected resident memory requires its exact published participation or faction-service response.");
                 memoryLocality = residentQuote is not null
                     ? AfterlifeWoundHealingPlanner.ReadOriginalServiceLocalitySource(_fs, lease, residentQuote)
-                    : AfterlifeWoundHealingPlanner.ReadOriginalAidLocalitySource(_fs, lease);
+                    : AfterlifeWoundHealingPlanner.ReadOriginalAidLocalitySource(_fs, lease, SpiritualTreatmentParticipation.Selection(residentRecord!));
                 if (!memoryLocality.Success || memoryLocality.Snapshot is not { } local || memoryLocality.Evidence is not { } localEvidence ||
                     local.SessionId != snapshot.SessionId || local.RequestId != snapshot.RequestId || local.TurnNumber != snapshot.TurnNumber ||
                     local.SnapshotToken != snapshot.SnapshotToken || !local.CoveredLogicalPaths.Contains(GuardianAbodeResidentState.StatePath, StringComparer.Ordinal))

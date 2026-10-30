@@ -29,7 +29,7 @@ internal static partial class SpiritualTreatmentParticipation
                 factions[0]["factionLifecycle"] is not JsonObject lifecycle ||
                 Text(lifecycle, "state") is not ("active" or "weakened" or "leaderless"))
                 throw new InvalidDataException("Negotiated treatment requires its exact current visible faction and hall.");
-            var members = ShiningFactionHealingSupport.ProjectVisibleRoster(factions[0], residents, profiles)
+            var members = ShiningFactionHealingSupport.ProjectVisibleRoster(factions[0], residents, profiles, healer.OwnerId)
                 .Where(m => m.ResidentId == healer.OwnerId && m.HealingTier is not null).ToArray();
             var rows = (residents?["entries"] as JsonArray)?.OfType<JsonObject>().Where(r =>
                 string.Equals(Text(r, "residentId"), healer.OwnerId, StringComparison.OrdinalIgnoreCase)).ToArray();

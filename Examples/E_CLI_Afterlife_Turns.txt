@@ -14288,3 +14288,47 @@ GM never fabricates an initial ledger or repairs a malformed envelope to make a 
 No GM inkFeatherChanges, replacement quote, foreign memory or private aid grant.
 Negotiated compensation is not implemented by this currency example.
 end_shining_faction_service_v7
+
+spiritual_negotiated_provider_v1 — worked faction and Elyara noncurrency offers
+
+This is a two-turn ordinary safe treatment route, not a public quote or completed
+fulfillment quest. Before43, exact living visible ascended resident_example belongs
+to faction_example at current hall_example, primary healing_support and real H3.
+PLAYER has known active spiritual wound wound_player_example and natural H0. All
+ordinary authorities, participant Brain/memory, resources, second-turn inputs and
+complete independent profiles exist before sole bootstrap. No public currency
+profile is needed. On that existing resident profile author only this proposal:
+```json
+{"schemaVersion":4,"kind":"resident_provider_offer","operation":"offer","targetId":"player_soul","woundId":"wound_player_example","providerConscious":true,"providerCapable":true,"targetConscious":true,"targetCapable":true,"readableEvidence":"Целитель предлагает лечение за согласованную помощь архиву; решение принять остаётся за игроком.","locality":{"factionId":"faction_example","hallId":"hall_example"},"compensation":{"kind":"favor","agreementRef":"agreement_healer_archive","readableTerms":"Перенести архив целителя после принятой попытки лечения."}}
+```
+
+Alternative, not simultaneous: the ONE canonical living visible Elyara is currently
+in the same Shining hall, with registry identity guard_system_elyara_001 and real H5.
+No fake faction membership or host Guardian consent is added. Her proposal is:
+```json
+{"schemaVersion":2,"kind":"provider_offer","operation":"offer","targetId":"player_soul","woundId":"wound_player_example","providerConscious":true,"providerCapable":true,"targetConscious":true,"targetCapable":true,"readableEvidence":"Элиара предлагает помощь за прямо оговорённое обязательство.","locality":{"kind":"elyara_shining_hall","hallId":"hall_example"},"compensation":{"kind":"debt","agreementRef":"agreement_elyara_memory","readableTerms":"Сохранить и передать оговорённое свидетельство о пережитой ране."}}
+```
+
+The client independently resolves exact locality and publishes natural record/result
+4/6 or2/4 with actual History witness and one ordinary natural cycle. Proposal and
+agreementRef alone are no player obligation. Author accurate healer Brain and its
+ordinary protected memory; resident uses spiritualResidentThoughtJournalUpdates,
+Elyara existing Guardian memory. Preserve physical roster until owned normalization.
+
+After actual acceptance and normal Engine cleanup, turn44 /лечить lists the player's
+wound with the actual readable terms, never internal IDs. Read/cancel is inert.
+Only separate actual player confirmation accepts treatment; a stale hall, role,
+membership, life, offer or healer tier refuses before a new draw. Client retains
+request4/6, exact witness, compensation, original die and currencyInvariant. Even
+an absent wallet stays absent; missing total is not manufactured. Never author an
+inkFeatherChanges field, including zero/null, or a private wallet/request/result.
+
+For residentH3/playerIII1/d20=14, active healing givesII1 then playerH0 natural gives
+II2, one cycle. Author only supplied weaker PLAYER graphs/stageRefs/complicationRefs,
+ordinary progression/report and exact new healer memory. Failure retains the same
+attempt/die and agreed terms, without charging Feathers; no reroll or fulfillment
+ledger. Atomic fault restores wallet presence, wound/effects, History, cycle and
+participant memory; retry uses the retained original request. Historical replay
+validates retained agreement DATA without touching today's wallet. Free_aid is an
+explicit agreement kind; absent compensation retains old free-aid serialization.
+end_spiritual_negotiated_provider_v1

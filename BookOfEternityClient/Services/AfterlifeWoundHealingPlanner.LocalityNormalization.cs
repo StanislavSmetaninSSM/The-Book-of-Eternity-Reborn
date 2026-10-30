@@ -107,7 +107,14 @@ internal static partial class AfterlifeWoundHealingPlanner
             var advanced = images.ToDictionary(p => p.Key, p => p.Value, StringComparer.Ordinal);
             advanced[path] = expected;
             if (_participationSources is not null) _participationSources = advanced;
-            else _sources = advanced; // Active aid carries locality in its existing main live closing set.
+            if (_sources.ContainsKey(path))
+            {
+                // Shining state is also a core source. Advance every existing live
+                // closing guard after exact read-back, never the signed original DATA.
+                var advancedSources = _sources.ToDictionary(p => p.Key, p => p.Value, StringComparer.Ordinal);
+                advancedSources[path] = expected;
+                _sources = advancedSources;
+            }
             RequireCurrent(files, lease);
         }
     }

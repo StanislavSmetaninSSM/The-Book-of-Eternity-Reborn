@@ -37569,12 +37569,13 @@
     },
     {
       "id": "negotiated-healing-provider-data",
-      "responsibility": "Four file-free causal controls for optional closed provider consideration in Guardian2/resident4 proposals and exact closed Shining faction/Elyara-hall locality roundtrips. Valid old proposal/locality prerequisites precede new lawful DATA admission; detached outputs preserve inputs.",
-      "excludes": "No grant/consent/obligation/publication authority, player confirmation, wallet/roll/world side effect, live provider or full negotiated-route qualification; no new price/fulfillment ledger.",
+      "responsibility": "File-free closed provider consideration/locality DATA, exact request/selection/draw/terms binding, presence-aware original wallet preservation and variant-selected source dependency controls. Includes original four causal RED controls; no access/publication permission is inferred from codec DATA. Exact selected-faction living/role/member/hall DATA and worked GM guidance are checked without real publication.",
+      "excludes": "No actual grant/confirmation/publication authority or new obligation ledger; no physical live-source authority, proposed C4 after-image, wallet command, rollback, UI/provider or full-route qualification.",
       "changeHints": [
         "BookOfEternityClient.Tests/SpiritualResidentProviderParticipationTests.Negotiated.cs",
         "BookOfEternityClient/Services/SpiritualTreatmentParticipation.cs",
-        "BookOfEternityClient/Services/SpiritualTreatmentParticipation.Residents.cs"
+        "BookOfEternityClient/Services/SpiritualTreatmentParticipation.Residents.cs",
+        "BookOfEternityClient.Tests/SpiritualResidentProviderParticipationTests.NegotiatedGuards.cs"
       ],
       "related": [],
       "selectors": [
@@ -37582,7 +37583,15 @@
           "project": "unit",
           "tests": [
             "BookOfEternityClient.Tests.SpiritualResidentProviderParticipationTests.ProviderOfferRetainsClosedExplicitNoncurrencyConsideration",
-            "BookOfEternityClient.Tests.SpiritualResidentProviderParticipationTests.ShiningProviderLocalityRoundTripsItsExactClosedVariant"
+            "BookOfEternityClient.Tests.SpiritualResidentProviderParticipationTests.ShiningProviderLocalityRoundTripsItsExactClosedVariant",
+            "BookOfEternityClient.Tests.SpiritualResidentProviderParticipationTests.NegotiatedTermsBindTheSameConfirmedRequestAndRetainedDraw",
+            "BookOfEternityClient.Tests.SpiritualResidentProviderParticipationTests.NegotiatedConsiderationRejectsNullCurrencyAndIncompleteTerms",
+            "BookOfEternityClient.Tests.SpiritualResidentProviderParticipationTests.ShiningProviderSelectionRetainsExactOwnerLocalityAndTerms",
+            "BookOfEternityClient.Tests.SpiritualResidentProviderParticipationTests.NegotiatedWalletPreservesPresenceAndEveryOriginalField",
+            "BookOfEternityClient.Tests.SpiritualResidentProviderParticipationTests.NegotiatedSourceDependenciesPreserveChaosOrderWithoutDuplicatingShiningState",
+            "BookOfEternityClient.Tests.NegotiatedHealingProviderAdmissionTests.ExactFactionOfferNeedsCurrentHealerButNoPublicCurrencyProfile",
+            "BookOfEternityClient.Tests.NegotiatedHealingProviderAdmissionTests.NegotiatedAdmissionRefusesCurrentTupleDriftWithoutMutation",
+            "BookOfEternityClient.Tests.NegotiatedHealingProviderDocumentationTests.WorkedBothProviderVariantsAndEffectiveGuidanceUseTheClosedExistingContract"
           ]
         }
       ],

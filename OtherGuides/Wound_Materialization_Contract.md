@@ -2141,7 +2141,7 @@ Reading, back or closing creates no draw, attempt, payment, world cycle, repair 
 This read-only view has no active treatment button and grants no quote or payment.
 An explicit unrestricted public currency provider may point to the shared /лечить
 route, where fresh checks and separate confirmation still apply (shining_faction_service_v7).
-Restricted/negotiated declarations remain unavailable for execution. Never manufacture
+Restricted/negotiated declarations alone never authorize execution; a separate actual accepted provider agreement may use spiritual_negotiated_provider_v1. Never manufacture
 life, tier, location or access from a view. Historical broken/dissolved factions are
 exempt only from the living-healer invariant; retain their historical records.
 
@@ -2206,3 +2206,46 @@ append a foreign actor, replace prior memory or manufacture a private grant. The
 client rechecks the complete append through the same signed original and result7.
 See the worked shining_faction_service_v7 fragment. Negotiated compensation remains
 separate unfinished work; displaying favor/debt/quest/allegiance/free_aid is no grant.
+
+## spiritual_negotiated_provider_v1 — accepted noncurrency provider agreement
+
+This extends provider offers only; target-consent families remain Chaos-only. Use
+existing Guardian proposal/record2 → request/result4 or resident proposal/record4 →
+request/result6. During an ordinary safe turn, only the actual living visible capable
+provider may author spiritualTreatmentParticipationChange offer|revoke, with the
+same four explicit conscious/capable flags and exact known player wound. Optional
+closed compensation is {kind,agreementRef,readableTerms}, kind exactly
+favor|debt|quest|allegiance|free_aid, exact stable agreementRef and nonempty readable
+terms. No currency/amount, unknown fields or explicit null. Absence retains the
+existing free-aid contract. A proposal/reference alone never creates an obligation.
+The actual accepted natural record/History witness, normal Engine cleanup and a
+separately confirmed player treatment are required. Accepted treatment, including
+failure, retains those exact agreed terms; cancel/refusal/rollback does not bind a
+new treatment obligation. This adds no debt/quest fulfillment ledger or new economy.
+
+Chaos offers keep their existing Guardian/Abode locality serialization and actual
+current sources. In Shining, provider proposals additionally require exactly one
+closed locality: resident {factionId,hallId}, or canonical Elyara only
+{kind:"elyara_shining_hall",hallId}. No Guardian/Abode aliases in these variants.
+The client revalidates actual current hall, faction lifecycle/visibility, ascended
+membership, primary healing_support role, materialized life/visibility and real
+Healing tier; Elyara uses her unique canonical registry/profile and actual current
+hall. A negotiated deal does not require an unrestricted public currency profile.
+Do not invent travel, respawn, hidden access, same-turn grants or player consent.
+
+Shared /лечить console/browser displays readable terms and asks for a separate
+confirmation. The existing final gate, helper Healing tier, player target/natural
+tier, retained die, one safe world cycle, weaker GM-authored graphs and atomic C4
+publication remain unchanged. Preserve the complete client request4/6 and its exact
+participation witness/activeSource/attempt. The client-owned currencyInvariant binds
+the original inkFeathers subtree by presence, including an absent wallet or absent
+total. Author NO inkFeatherChanges field, even zero/null, and never edit a wallet,
+accepted record, receipt, draw, cycle or private request. A proposed wallet conflict
+refuses; it is not silently repaired. Historical replay validates retained DATA
+without reading/restoring today's wallet; current settlement checks current bytes.
+
+Keep full Actor Brain reasoning for all changed participants. Resident healers use
+output-only spiritualResidentThoughtJournalUpdates with unique current-turn entries;
+physical roster remains unchanged until the same owner appends memory. Elyara uses
+existing Guardian memory. Client compares exact membership/role/locality through
+owned normalization, source closing and publication. Read the worked example.

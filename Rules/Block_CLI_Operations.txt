@@ -1783,7 +1783,7 @@ replay. Accepted failure/partial charges once; cancel/invalid/rollback charges z
 No GM inkFeatherChanges or manual fee/receipt/roll. Read the current full service
 section and worked example; author only requested weaker graphs, progression report
 and actual first-person healer reasoning. Current-location access follows elyara_current_location_v1 below; negotiated routes
-remain unavailable, and stale life/location/access/price/funds refuses.
+follow spiritual_negotiated_provider_v1; stale life/location/access/price/funds refuses.
 
 
 elyara_current_location_v1: /элиара (/elyara), or «Пойти к Элиаре за лечением»,
@@ -1869,3 +1869,13 @@ append a foreign actor, replace prior memory or manufacture a private grant. The
 client rechecks the complete append through the same signed original and result7.
 See the worked shining_faction_service_v7 fragment. Negotiated compensation remains
 separate unfinished work; displaying favor/debt/quest/allegiance/free_aid is no grant.
+
+spiritual_negotiated_provider_v1: accepted provider-only noncurrency compensation
+{kind,agreementRef,readableTerms}, favor|debt|quest|allegiance|free_aid, uses the same
+natural grant/History → normal cleanup → separate player confirmation → request4/6
+healing/roll/cycle/C4. Explicit Shining locality is resident{factionId,hallId} or exact
+Elyara{kind:elyara_shining_hall,hallId}; actual life/role/membership/hall/tier stay fresh.
+No public currency profile is required for a negotiated offer. No new economic or
+fulfillment rules. Preserve client currencyInvariant and entire original wallet;
+NO inkFeatherChanges field even zero/null. Read full Wound_Materialization_Contract
+and worked example; proposal/ref alone is no obligation or patient confirmation.

@@ -1,3 +1,31 @@
+# Negotiated B: SOURCE corrections, cheap controls and GM synchronization WIP
+
+Astra whole SOURCE40c found two specific integration defects, now corrected:
+verified owned Shining normalization advances every existing live closing-image
+set containing that path, preserving signed snapshot/parsed original DATA; published
+resident memory selects source dependencies from its exact validated record, without
+requiring unrelated Guardian registry for a faction healer. Delta SOURCE pending.
+Existing selected-provider roster projection is reused before profile materialization,
+so one admission does not revalidate every other faction member. No new cache/IO owner.
+
+New cheap file-free controls cover closed five kinds, malformed/null/currency terms,
+exact terms/locality/confirmation/request/draw binding, forged wallet invariant,
+present/absent/null/empty/complete wallet, precise dependency union, current faction
+role/life/member/hall refusal and one-versus-twenty selected inputs. They are not
+physical authority/source-count or actual C4 proof. GM effective daemon, guides,
+canonical clarification, Elyara dossier and two worked provider proposals synchronized;
+new source guard parses examples through runtime DATA APIs. C# UNCOMPILED, GREEN
+and B journeys UNRUN; ordinary fixture/docs/source review pending. Exact current
+impact-selection replaces earlier A selection; no unaffected accepted A/HOLD repeat.
+
+Next: finish source review and fresh owning builds; preserve current BRED binaries
+externally before overwrite. Then exact catalog/PlanOnly/PREP, cheap GREEN, real
+accepted offer→cleanup→confirm→treat with normalization/memory/wallet/rollback/replay.
+All raw stays outside checkout. No raw deletion, new economic rule or qualification
+claim. Accepted public A checkpoint ad0b0382b remains separate and unchanged.
+
+---
+
 # Negotiated B: связный production WIP сохранён; SOURCE/сборки ещё впереди
 
 К принятой DATA-модели подключены selection/request4/6, закрытый Shining scope,

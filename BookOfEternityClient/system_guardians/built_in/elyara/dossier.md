@@ -111,7 +111,7 @@ replay. Accepted failure/partial charges once; cancel/invalid/rollback charges z
 No GM inkFeatherChanges or manual fee/receipt/roll. Read the current full service
 section and worked example; author only requested weaker graphs, progression report
 and actual first-person healer reasoning. Current-location access follows elyara_current_location_v1 below; negotiated routes
-remain unavailable, and stale life/location/access/price/funds refuses.
+follow spiritual_negotiated_provider_v1 below; stale life/location/access/price/funds refuses.
 
 
 elyara_current_location_v1: /элиара (/elyara), or «Пойти к Элиаре за лечением»,
@@ -138,3 +138,13 @@ elyara_current_location_v1 worked example; faction-healer display itself grants 
 
 
 shining_current_hall_v1: currentHallId is optional canonical locality DATA. When present it is one exact nonempty identifier matching exactly ONE halls[].hallId; no aliases or alternate key casing. Missing means unresolved locality. Preserve its presence and value from authenticated PRE-TURN state in every ordinary GM turn; progressionProcessingReport, treatment, political/trade closure and Source of Light do NOT grant hall movement or coordinate addition/removal. Never infer, select, trim or reset it. No new hall-travel route is introduced.
+
+spiritual_negotiated_provider_v1: accepted provider-only noncurrency compensation
+{kind,agreementRef,readableTerms}, favor|debt|quest|allegiance|free_aid, uses the same
+natural grant/History → normal cleanup → separate player confirmation → request4/6
+healing/roll/cycle/C4. Explicit Shining locality is resident{factionId,hallId} or exact
+Elyara{kind:elyara_shining_hall,hallId}; actual life/role/membership/hall/tier stay fresh.
+No public currency profile is required for a negotiated offer. No new economic or
+fulfillment rules. Preserve client currencyInvariant and entire original wallet;
+NO inkFeatherChanges field even zero/null. Read full Wound_Materialization_Contract
+and worked example; proposal/ref alone is no obligation or patient confirmation.
