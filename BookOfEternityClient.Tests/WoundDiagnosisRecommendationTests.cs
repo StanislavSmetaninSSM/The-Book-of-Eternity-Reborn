@@ -66,7 +66,8 @@ public sealed class WoundDiagnosisRecommendationTests
     [InlineData("shining_abode")]
     public void SpiritualDiagnosisDoesNotPrintOpaquePrivateRequirements(string realm)
     {
-        var node = WoundContractTestData.CreateSpiritualActiveWound(realm: realm);
+        var node = WoundContractTestData.CreateSpiritualActiveWound(realm: realm,
+            ownerId: "player_soul", carrierPath: WoundCarrierCatalog.AfterlifeProfilesPath);
         node["treatment"]!["diagnosisPaths"] = new JsonArray(new JsonObject
         {
             ["diagnosisPathId"] = "diagnosis_private", ["displayName"] = "Оценить духовную ткань", ["visibility"] = "public",

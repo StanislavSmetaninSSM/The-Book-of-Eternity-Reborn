@@ -25,8 +25,13 @@ reuse authority; текущие catalog/identity/history/source guards неиз�
 Speedup не заявляется. Raw нового блока —
 `/workspace/tboe-linux-evidence-20261025/us5-guided-diagnosis` вне checkout.
 D1 Unit build exit0, 26 прежних warnings, 1:18.99. До runtime исправлена
-ошибка fixture key `skillRef` → существующий `capabilityRef`; этот build не
-квалифицирует исправленную фикстуру. PlanOnly/runtime пока UNRUN.
+ошибка fixture key `skillRef` → существующий `capabilityRef`; corrected build
+exit0/26 warnings/1:11.93, catalog1165/12956, PlanOnly6cases/0executions,
+27artifacts/133bindings verified. После PREP, но ДО runtime найден ещё один
+setup defect: default spiritual fixture owner/path не являются current Self;
+переданы явные existing canonical self owner/path. Прежний PREP удержан,
+исправленная фикстура требует fresh Unit build/delta review. Runtime UNRUN;
+никакая ошибка подготовки не принимается как causal RED.
 HOLD DFR/Mortal/Windows и общая незавершённость #1536 сохраняются.
 
 # Договорная помощь US6 B: ограниченный игровой маршрут принят
