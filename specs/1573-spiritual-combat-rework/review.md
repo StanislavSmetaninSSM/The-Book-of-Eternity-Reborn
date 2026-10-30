@@ -1,5 +1,25 @@
 # Проверка проекта #1573
 
+## Текущий checkpoint T096–T098: частоты/custom
+
+2026-10-30 baseline9b0c0b4d7 совпал с origin, #1573/#1572 прочитаны. Brainstorming/
+bridge/clarify и PathsOnly1573 использованы, optional hook/обычный scoped commit;
+Serena ready с csharp/typescript/python, parent semantic ResolveDocumentsCore.
+Приняты T095 цикл/время; авторский custom scope записан. Новые таблицы/способности/
+действия/границы переноса ещё кандидаты. Parent + два Sol6.1/high source-аудита,
+без совместного редактирования. Документальный блок направляется на независимое
+Astra/high ревью после WIP/push; tests/build/симуляция не выполняются.
+
+Consistency gate: проценты имеют один знаменатель/сумму100; discovery не гарантирован,
+реальный контекст приоритетен, repeat/короткийход не новые4ч. Нет нового quality-roll,
+добыча/владение/бой отделены. custom не relicData, общий owner/lifecycle/текст/эффект;
+оба UI, памяти и realm сохранены. GM-конвенция onUse не названа runtime; mortal
+legacy names не переносятся. Цена custom Main/noDE только предложение. T077/T001
+и feature532 T005/T023 открыты; source-аудит не подтверждает реализацию.
+Оптимизация: existing service для стабильных источников/проекций, инвалидирование
+изменений, fresh source/owner/effect/publication. Простые проценты не кэшировать;
+канон не временный cache, ускорение не заявлено. Проверки/публикация ещё впереди.
+
 ## Текущий checkpoint T094–T095: исследование Моря
 
 2026-10-30 baseline814dcdc5 совпал с origin. Продолжены brainstorming/bridge/

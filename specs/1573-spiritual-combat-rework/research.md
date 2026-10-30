@@ -1,5 +1,52 @@
 # Исследование текущего кода для #1573
 
+## T096–T098: предметные возможности и частоты
+
+2026-10-30 baseline9b0c0b4d7. Parent подтвердил baseline/#1573/#1572, прочёл
+ResolveDocumentsCore через Serena, root SoulRelics validation и afterlife
+actor capabilities. Два независимых source-аудита Sol6.1/high:
+audit_mortal_items1573 и audit_spirit_items1573. Файлы/код не меняли, тестов нет.
+
+- [MortalItemMaterializationContract](../../BookOfEternityClient/Services/MortalItemMaterializationContract.cs#L109)
+  разделяет presentation/mechanics/equipment/container/consumption/readable/
+  crafting/quest. [Block10](../../Rules/Block_10.txt#L25) даёт описательные type/group,
+  не закрытый enum. Реальная основа custom — возможности, а не магическое имя.
+- [ReadableInventoryDocumentAuthority](../../BookOfEternityClient/Services/ReadableInventoryDocumentAuthority.cs#L37)
+  объединяет textContent и sidecars по точному accepted itemId; roots/identity
+  сейчас mortal. [ShelfProjection](../../BookOfEternityClient/UI/ReadableInventoryDocumentShelfProjection.cs#L66)
+  используется console/browser. Block10:1098+ требует настоящее написанное или
+  explicit unreadable reason,1142+ отдельный append,1223+ отличает журнал разумной вещи.
+- [ConsumptionPlanner](../../BookOfEternityClient/Services/MortalItemConsumptionPlanner.cs#L64)
+  ведёт count/identity/receipt, не применяет эффект. Terminal137+ проверяет
+  связанные данные; source182+ имеет mortal_world. [Block10](../../Rules/Block_10.txt#L804)
+  и Block12:1271 задают onConsume/onEquip/onUse как GM-конвенцию; автоматический
+  исполнитель C# source-аудитом не установлен. Духовный consume+effect новый путь.
+- [Stack transitions](../../BookOfEternityClient/Services/MortalItemTransitionWriter.Stacks.cs#L188)
+  сохраняют split lineage и сопоставляют семантику при merge; имя не identity.
+  [CarrierCatalog](../../BookOfEternityClient/Services/MortalItemCarrierCatalog.cs#L789)
+  требует ordered IDs в container path, хотя старый пример Block10:1039 — имена.
+  Аналогично старый fallback itemName:1120 не соответствует accepted reader IDs.
+- [MortalItemLocalActionPolicy](../../BookOfEternityClient/Services/MortalItemLocalActionPolicy.cs#L37)
+  и [NpcTradeService](../../BookOfEternityClient/Services/NpcTradeService.cs#L550)
+  ограничивают продажу quest-bound. Это не универсальная защита от потери/уничтожения.
+- [GuardianPolicyContracts](../../BookOfEternityClient/Services/GuardianPolicyContracts.cs#L1114)
+  разрешает только equipped/stored, требует relicId/name/rarity1354+.
+  GuardianTradeService:384+ и ShiningTradeService:627+ используют relicData;
+  coordinated rollback полезен, payload пока не generic custom.
+- [ActorMaterializationContract](../../BookOfEternityClient/Services/ActorMaterializationContract.cs#L45)
+  afterlife не имеет ownsItems/inventory, в отличие от mortal.
+  [AfterlifeEntityProfileState](../../BookOfEternityClient/Services/AfterlifeEntityProfileState.cs#L608)
+  сохраняет ряд progression/effect/wound связей, но не полный предметный transfer.
+  #1572/feature532 SR-01–08 это требуют, но T005/T023 открыты; нового runtime нет.
+
+Предложение §1.5 использует45/5/10/15/25,30/25/30/10/5,10/40/35/10/5
+суммой100% каждое. Одна первичная ситуация нового4ч общего исследования;
+реальный заданный контекст имеет приоритет.30% возможности×условные60% нахождения
+=18%, не новый универсальный discovery rate. Смежные находки/наводки меняют
+частоту фактических открытий. Никакой симуляции кампании/прибыльности/частоты боёв.
+Опоры предметов, предлагаемая адаптация и откладываемые mortal-подсистемы
+различены в [приложении](spiritual-adventure-items-proposal.md).
+
 ## T094–T095: места, встречи и время исследования
 
 2026-10-30 baseline814dcdc5. Parent проверил поиск/переходы и local scope;
