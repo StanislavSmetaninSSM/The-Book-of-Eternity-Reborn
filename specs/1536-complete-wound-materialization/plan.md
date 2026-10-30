@@ -1,3 +1,28 @@
+# US6 bounded capture source/build/discovery prepared; runtime UNRUN
+
+Independent Sol6.1/xhigh delta SOURCE ACCEPT bacf0c0ec9adedb0db8650eaef2b47729931ff9d;
+both forwarding/closing findings fixed, gameplay actions/assertions unchanged.
+Fresh corrected Integration build bacf0c0ec exit0/0errors/102baselinewarnings2:06.99;
+Main/Support/Unit retain reviewed HGREEN sourcea48a7c249 with exact no-C# delta.
+FCAP artifact proof:27DLL/PDB/deps,4PE/PDB pairs,114sourcebindings,8operational
+resources/32copies and daemon copies verified. HGREEN27owning artifacts and first
+unrun wiring3unique Integration artifacts preserved, decoded/hash-verified externally.
+
+Official catalog1150categories/12931methods-files valid,0executed; exact PlanOnly
+2descriptors/3cases/3methods10.2800484s: wiring2 at1min, original console1 at3min.
+No tests executed, no duplicate/missing selector or owned cleanup/pin discrepancy.
+The plan includes console discovery only; execution remains conditional on cheap2
+complete PASS and fresh resource/ownership admission after independent PREP.
+Free6.26GB exceeds400MiB reserve+256MiB output headroom; no collection quota.
+
+Raw /workspace/tboe-linux-evidence-20261025/us6-faction-service-agreement/FCAP*;
+no raw or generated evidence in Git. Metadata-only checkpoint; verify source delta
+rather than rebuild unchanged C#. Next independent PREP -> cheap2 -> at-most-one
+console diagnostic. Browser/rollback/private5 and HOLD unchanged,119distinct old
+PASS remain separate; no new route qualification or timeout explanation yet.
+
+---
+
 # US6 bounded capture SOURCE findings addressed; confirmation pending
 
 First wiring Integration build1e07f605 exit0/0errors/102existingwarnings2:16.54,
