@@ -22,7 +22,8 @@ patient-consent/admission ограничены Chaos, а приём помощи
 WoundApplicationService.CreateState возвращает пустые Mortal choices, хотя typed
 route/requirements/check/resource primitives уже есть. Он следует после текущего
 Shining среза; HOLD старой Mortal compatibility квалификации не подменяет отсутствие
-UI/adapter. T093/FR071 execution отдельно ждёт автора; вопрос не повторяется.
+UI/adapter. T093/FR071 rules accepted by author2026-10-30 11:48UTC; execution follows this
+coherent Shining-patient slice, not an interruption or implicit qualification.
 T118/T126 browser cards существуют, DOM/provider/fresh-process — оставшаяся
 квалификация, не основание переписывать готовые cards. Saref follow-up и текущие
 DFR/Mortal/Windows/guardian/cross-OS ограничения не объявляются закрытыми.
@@ -89,6 +90,14 @@ parallel cache, другой publisher или recorder; source counts доказ
 Диагностика будущего среза — вне checkout в
 `/workspace/tboe-linux-evidence-20261025/us4-shining-patient-aid`, reserve400MiB+
 полный output headroom обязателен; текущий полный D4 artifact archive уже сохранён.
+
+Авторское решение диагностики принято2026-10-30 11:48UTC и отражено в FR071/tasks.
+После текущего Shining patient: Mortal method declares own procedure check/time/
+cost; spiritual Healing>=0 plus ALL path requirements, guaranteed declared reveals,
+one ordinary safe cycle/no OD/Feathers/items, no direct healing, natural recovery
+retained. Read/cancel inert. Execution UNIMPLEMENTED; DFR/Mortal compatibility/
+Windows HOLD не сняты. Текущие новые fixtures/source/docs ещё UNCOMPILED/UNRUN;
+S2 measured27 artifacts полностью archived/allhash+EOFCRC verified before overwrite.
 
 # T121: условия известных диагностических путей приняты — #1536
 

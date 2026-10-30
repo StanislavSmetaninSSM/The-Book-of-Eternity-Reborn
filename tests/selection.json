@@ -2,15 +2,20 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "shining-patient-current-contracts",
+      "reason": "New current patient admission/source dependency/invalidation, request8/direction/retained draw/natural tier, valid-cycle refusal and effective GM worked-proposal contracts before live authority or UI acceptance.",
+      "contracts": ["#1536 T108-SHINING-PATIENT; accepted design d4aa700df; FR043–054 FR072–074; closed record5/natural8/active8"]
+    },
+    {
       "category": "shining-patient-proposal-causal",
-      "reason": "First existing-API causal RED for the genuinely missing player→Shining patient branch, schema5 resident and radiant profile proposal correlation only; actual authority/Engine remains unrun.",
+      "reason": "Affected schema5 proposal reader GREEN after accepted RED2; exact resident/radiant profile correlation and immutability, no live authority claim.",
       "contracts": [
         "#1536 T108-SHINING-PATIENT; US4scenario8 FR043–054 FR072–074; accepted technical design d4aa700df"
       ]
     },
     {
       "category": "shining-patient-codec-causal",
-      "reason": "Four further existing-API REDs pin closed record5→result8 and selection8 independently before codec changes; retain original2 proposalRED without repetition.",
+      "reason": "Affected record5→result8 factory and selection8 GREEN after accepted RED4; exact typed owners/family closure and immutable exports.",
       "contracts": [
         "#1536 T108-SHINING-PATIENT; accepted design d4aa700df"
       ]

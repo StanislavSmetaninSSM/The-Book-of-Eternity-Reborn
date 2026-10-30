@@ -3776,6 +3776,16 @@ cannot be supplied by later correlation input, and makes `none` invalid after re
 - **FR-069**: Active wound detail MUST show readable severity, origin, symptoms, visible effects, recovery state, known treatment options, available help, and a treatment action without internal metadata.
 - **FR-070**: `/лечить` and `/treat` MUST provide one guided treatment flow; `/исцелить` and `/heal` MUST act as afterlife aliases.
 - **FR-071**: Diagnosis MUST be integrated into the guided treatment flow. Client-sealed diagnosis evidence MUST declare exactly `success` or `failure`: success reveals the complete fact set declared by exactly one reachable path, while failure reveals none, leaks no hidden route or complication, and remains one terminal retry-safe attempt.
+  Author decision2026-10-30 11:48UTC: Mortal diagnosis follows the chosen method's
+  explicitly declared procedure check, duration and costs; no invented tariff or
+  default check. Spiritual diagnosis outside combat requires Healing>=0 and ALL
+  current path requirements, guaranteed complete declared reveals and one ordinary
+  safe cycle, with no OD, Feathers or items. Diagnosis itself does not heal; ordinary
+  natural recovery for that cycle remains enabled. Reading known facts/cancel uses
+  no attempt, resources or time. Failed Mortal diagnosis reveals nothing and the
+  retained attempt cannot be rerolled. Execution still requires its own implementation
+  and acceptance; this decision does not lift DFR/Mortal-compatibility/Windows holds.
+
 - **FR-072**: Target selection MUST list Self first and then visible reachable nearby entities; players MUST NOT need to type names or technical identities.
 - **FR-073**: Equal display names MUST be disambiguated with visible context while the selected exact identity remains hidden.
 - **FR-074**: Reachability, consent, wound activity, provider capability, and exact requirements MUST be revalidated immediately before publication.

@@ -2,6 +2,38 @@
     "schemaVersion": 1,
     "categories": [
     {
+      "id": "shining-patient-current-contracts",
+      "responsibility": "T108-SHINING-PATIENT pure current resident/radiant admission, exact source dependencies and invalidation, no provider role/art/service prerequisite; family8 retained request, independent natural tier, closed selection and valid-cycle consent refusals.",
+      "excludes": "No accepted natural witness, genuine entropy, publish/replay/rollback, Engine, UI handler/DOM/provider, diagnosis execution or full US4 qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/SpiritualTreatmentParticipation.ShiningPatientAdmission.cs",
+        "BookOfEternityClient/Services/SpiritualSelfTreatmentRequestCodec.Aid.cs"
+      ],
+      "related": [
+        {
+          "id": "shining-patient-codec-causal",
+          "when": "Closed proposal/outcome/selection codec changed."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.ShiningPatientTreatmentAdmissionTests.*",
+            "BookOfEternityClient.Tests.ShiningPatientTreatmentRequestTests.*",
+            "BookOfEternityClient.Tests.ShiningPatientTreatmentDocumentationTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "shining-patient-codec-causal",
       "responsibility": "T108-SHINING-PATIENT four detached existing-API causal rows: schema5 outcome factory maps to natural/active8 record family and selection8 roundtrips resident/radiant without old resident alias. Exact owners/locality/next-cycle/immutability, no live authority claim.",
       "excludes": "No current faction/profile admission, accepted witness, staging/dice, publication, memory, Engine or diagnosis rule qualification.",

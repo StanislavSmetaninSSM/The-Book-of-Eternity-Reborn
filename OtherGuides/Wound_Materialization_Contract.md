@@ -2214,7 +2214,7 @@ favor/debt/quest/allegiance/free_aid alone is no grant.
 
 ## spiritual_negotiated_provider_v1 — accepted noncurrency provider agreement
 
-This extends provider offers only; target-consent families remain Chaos-only. Use
+This extends provider offers only; legacy target-consent families remain Chaos-only. Use
 existing Guardian proposal/record2 → request/result4 or resident proposal/record4 →
 request/result6. During an ordinary safe turn, only the actual living visible capable
 provider may author spiritualTreatmentParticipationChange offer|revoke, with the
@@ -2254,3 +2254,50 @@ output-only spiritualResidentThoughtJournalUpdates with unique current-turn entr
 physical roster remains unchanged until the same owner appends memory. Elyara uses
 existing Guardian memory. Client compares exact membership/role/locality through
 owned normalization, source closing and publication. Read the worked example.
+
+
+## spiritual_shining_patient_v8 — player treats a consenting Shining patient
+
+This is a distinct patient family, not a provider service or a relaxed Chaos
+schema. In safe ordinary Shining mode with an exact active currentHallId, the
+player may treat one known active spiritual wound of a visible living materialized
+ascended faction resident, or the actual radiant_actor head resolved by the
+current faction leadership AND shiningPoliticalActors currentFactionId/head row.
+The faction must be revealed, current and active/weakened/leaderless; a radiant
+head requires occupied leadership. No hidden/remote actor, owner-kind alias,
+helpless exception or implicit consent. A patient needs NO Healing tier,
+healing_support role, public service or price. Old families1–4 remain strict.
+
+On the exact PREEXISTING patient profile, propose only the closed
+spiritualTreatmentParticipationChange schema5: kind=shining_target_consent,
+operation=grant|revoke, healerId=player_soul, exact woundId,
+locality={factionId,hallId}, conscious, capable and readableEvidence. A grant
+requires both booleans true. Do not author a canonical participation record,
+binding, cycle, fingerprint, private request, die or acceptance receipt. The
+client validates the actual current typed patient/source tuple and alone publishes
+natural result8 with a schema5 record and complete History witness. Natural8 has
+mode=natural, request=null, no active direction and the existing natural cohort.
+
+After actual acceptance and normal Engine cleanup, /лечить shows the patient and
+known wound. Read/cancel performs ZERO draw/attempt/payment/world cycle/write.
+Separate player confirmation is mandatory. Fresh current life, visibility,
+faction/hall/membership or radiant head/political identity, prior-turn consent,
+next-cycle eligibility, source/effect/History and player Healing>=wound rank are
+checked again. The UI selection is shining_entity_aid8; the client retained request
+and active result are mode=aid8, direction=player_to_shining_entity. Preserve the
+complete request/witness/activeSource/attempt/original die. No provider confirmation,
+compensation, wallet field, fee or aid OD is added. Active healing uses PLAYER
+Healing; the patient's separate natural Healing follows once, one safe cycle even
+on failure. Author only the exact requested weaker destinationGraphs/stageRefs and
+ordinary progression/report, never a chosen degree or automatic consequence rule.
+
+All affected actors require truthful phase-specific Actor Brain reasoning. Resident
+patient memory uses existing output-only spiritualResidentThoughtJournalUpdates,
+unique exact current resident/turn append; keep the physical roster unchanged until
+owned normalization. A radiant head uses its existing nonempty profile
+gmThoughtsSummary and ordinary actor-memory validation, never the resident journal.
+The same atomic publication owns wound/effects, History, one cycle and memory;
+rollback restores all of them, retained retry never rerolls. Historical completed
+replay validates its immutable accepted proof without renewing live consent.
+Diagnosis execution rules are separately approved; their runtime is not enabled by this patient family.
+Read the worked spiritual_shining_patient_v8 example before authoring a proposal.

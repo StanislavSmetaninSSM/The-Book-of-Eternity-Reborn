@@ -2,6 +2,29 @@
   "version": 1,
   "effectMaterializationCoverage": [
 {
+  "contractId": "spiritual_shining_patient_v8",
+  "file": "E_CLI_Afterlife_Turns.txt",
+  "statePath": "existing exact typed Shining patient profile, faction/head/political or resident roster; no new control path",
+  "responseSurface": "schema5 spiritualTreatmentParticipationChange, existing requested spiritualHealingGraphs and type-specific memory",
+  "realms": [
+    "Shining Abode"
+  ],
+  "description": "Player-to-current consenting resident or exact radiant head, natural8 then cleanup and separate confirmed active8, no provider service prerequisite.",
+  "validationKind": "focused-fragment",
+  "focusedFragmentReason": "ShiningPatientTreatmentDocumentationTests overlays both alternatives on independent complete preexisting typed profiles and exercises the actual closed proposal reader; dedicated Engine journeys own authority.",
+  "coverageLimit": "Not standalone world/materialization, actual grant/draw/publish/replay/rollback, full US4, DOM/provider/fresh-process or diagnosis execution qualification.",
+  "requiredText": [
+    "spiritual_shining_patient_v8",
+    "shining_target_consent",
+    "player_to_shining_entity",
+    "normal Engine cleanup",
+    "ZERO draw/attempt/payment/world cycle/write",
+    "spiritualResidentThoughtJournalUpdates",
+    "gmThoughtsSummary",
+    "ONE safe cycle"
+  ]
+},
+{
   "contractId": "elyara_current_location_v1",
   "file": "E_CLI_Afterlife_Turns.txt",
   "statePath": "existing current canonical profiles/guardians/Shining and sealed ordinary Action; no new queue file",

@@ -8,7 +8,7 @@
   Canon US4 scenario8/FR043–054/FR072–074 already defines the gameplay.
   Technical design is appended to spiritual-aid-design.md; independent Astra
   DESIGN and Sol SOURCE/fixtures/selection/PREP/OUTCOME precede acceptance.
-  Preserve old families, all current authority fences and pending diagnosis rules.
+  Preserve old families, all current authority fences and the separately approved diagnosis contract.
 - [ ] T108-SHINING-PATIENT-CAUSAL Freeze/review a compilable existing-API proposal
   refusal RED for both patient kinds; cheap typed/source-count/cross-family,
   locality/visibility/life/head/political/consent/rollback controls before real UI.
@@ -30,11 +30,17 @@
   Accepted2026-10-30:83distinct/48methods across17b15/4e505/763a6 (8+57+18),
   not one fresh83; all raw hashes/21cleanup roots/actual source1/2 verified,
   Sol XHigh SOURCE/PREP/OUTCOME accepted. Actual diagnosis execution remains open.
-- [ ] T093-DIAGNOSIS-RULES / T121-DIAGNOSIS-EXECUTION Author clarification pending:
-  current diagnosis `check` is exactly `{}` and no duration/resource policy is
-  defined. Proposed rules were asked, not accepted. Do not silently inherit
-  treatment roll/time rules or enable diagnosis publication. Existing accepted
-  T093-ASSESSMENT remains read-only assessment, not FR071 discovery.
+- [x] T093-DIAGNOSIS-RULES Author accepted the recommended rules2026-10-30
+  11:48UTC: Mortal methods declare their own procedure check/duration/costs;
+  spiritual safe diagnosis requires Healing>=0 plus every current path condition,
+  guarantees declared reveals, one ordinary safe cycle/no OD/Feathers/items,
+  no direct healing but ordinary natural recovery retained; read/cancel inert.
+  No new economic/check default. This removes only the author-decision hold.
+- [ ] T121-DIAGNOSIS-EXECUTION / FR071 Implement the above canonical decision
+  after the current coherent Shining-patient treatment slice, through existing
+  request/check/procedure/discovery/publication owners and shared guided handlers;
+  retain exact current authority, complete declared success/failure and terminal
+  retry-safe attempt. T093-ASSESSMENT/read cards are not execution. Other holds stay.
 - [x] T121-DIAGNOSIS-READ-GUARDS Repair the two pre-existing source-guard drifts
   exposed by the affected status selection: independently audit seven descriptive
   `woundName` occurrences in five existing client-owned projection/error methods,
