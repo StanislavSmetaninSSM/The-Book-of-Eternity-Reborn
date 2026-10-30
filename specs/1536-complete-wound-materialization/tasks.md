@@ -1,3 +1,23 @@
+# T108 Shining patient treatment — #1536
+
+- [ ] T108-SHINING-PATIENT Complete player→visible conscious consenting current
+  Shining faction-hall resident / canonical radiant faction head treatment via
+  the existing grant, natural witness, guided console/browser confirmation,
+  retained roll, active+natural program, common publication, History/memory,
+  replay and rollback. No healing-support/public-service role on the patient.
+  Canon US4 scenario8/FR043–054/FR072–074 already defines the gameplay.
+  Technical design is appended to spiritual-aid-design.md; independent Astra
+  DESIGN and Sol SOURCE/fixtures/selection/PREP/OUTCOME precede acceptance.
+  Preserve old families, all current authority fences and pending diagnosis rules.
+- [ ] T108-SHINING-PATIENT-CAUSAL Freeze/review a compilable existing-API proposal
+  refusal RED for both patient kinds; cheap typed/source-count/cross-family,
+  locality/visibility/life/head/political/consent/rollback controls before real UI.
+- [ ] T108-SHINING-PATIENT-JOURNEYS After owning builds/exact discovery/PREP,
+  qualify actual resident and radiant-head grant→normal cleanup→separate aid
+  through both console/shared browser, retained replay and actual common rollback.
+  Audit complete ordinary resource/progression/memory/response setup before runs.
+  Reuse full passive gzip/macro capture outside checkout; no quota or new stack.
+
 # T121 diagnosis recommendations — #1536
 
 - [x] T121-DIAGNOSIS-READ Show readable declared conditions of currently known

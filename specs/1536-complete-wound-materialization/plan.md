@@ -1,3 +1,50 @@
+# Следующий игровой результат: игрок лечит пациента в Сияющей Обители — #1536
+
+База `d601411b0c105ca3fdf409a668f1f0dc11098b4a` проверена локально/удалённо,
+дерево чистое, owned runtime/build отсутствуют. Короткая сверка canonical/code:
+самолечение и бой, обычное естественное восстановление, Chaos Guardian/resident
+помощь в обе стороны, public/negotiated Elyara/faction provider→player, current
+Elyara life/location, healer roles, target/detail/History и read-only diagnosis
+conditions уже реализованы и приняты на собственных lineages. Открытый родительский
+checkbox не означает, что всё его содержимое отсутствует.
+
+Действительно не хватает player→Shining patient: target/navigation/foreign card и
+patient-consent/admission ограничены Chaos, а приём помощи Shining provider не
+реализует обратное направление. Независимый Sol подтвердил конкретные code gates.
+Следующий законченный срез T108-SHINING-PATIENT: видимый живой сознательный
+согласившийся resident либо канонический radiant head текущего faction hall;
+настоящий grant→штатная очистка→отдельное подтверждение→лечение/естественное
+восстановление→один цикл→рана/effects/History/существующая память и rollback.
+Роль healing_support/public service и цена у пациента не требуются. Не вводятся
+новые игровые правила, диагноз, unwilling/helpless exception или remote aid.
+
+Другой реальный независимый пробел — Mortal guided known-route/helper execution:
+WoundApplicationService.CreateState возвращает пустые Mortal choices, хотя typed
+route/requirements/check/resource primitives уже есть. Он следует после текущего
+Shining среза; HOLD старой Mortal compatibility квалификации не подменяет отсутствие
+UI/adapter. T093/FR071 execution отдельно ждёт автора; вопрос не повторяется.
+T118/T126 browser cards существуют, DOM/provider/fresh-process — оставшаяся
+квалификация, не основание переписывать готовые cards. Saref follow-up и текущие
+DFR/Mortal/Windows/guardian/cross-OS ограничения не объявляются закрытыми.
+
+Технический подход: отдельная closed participation schema5 / active family8
+(family7 уже service), existing locality union и exact patient-source admission.
+Existing schemas1–4/families3–7 и Chaos patient guard сохраняются. Astra/high
+consultation дала конкретные identity/memory/versioning границы; actual written
+DESIGN review pending в spiritual-aid-design.md. Один writer, затем причинный RED,
+минимальная реализация с GM sync, fresh owning builds/exact categories/PREP,
+реальные обе UI цепочки и независимый OUTCOME. Пока кода/новых runtime нет.
+
+Оптимизация: caller-owned parsed profiles/Shining/actual resident roster и existing
+catalog/index/read-set передаются по одной операции; полный key/dependencies включают
+realm, exact owner/wound, current hall/faction/head/political/roster/visibility/life,
+consent/witness и generation. Между menu/confirmation/stage/publication DATA не
+становится authority; current lease/source/history/closing fences свежие. Не создаётся
+parallel cache, другой publisher или recorder; source counts доказываются дёшево.
+Диагностика будущего среза — вне checkout в
+`/workspace/tboe-linux-evidence-20261025/us4-shining-patient-aid`, reserve400MiB+
+полный output headroom обязателен; текущий полный D4 artifact archive уже сохранён.
+
 # T121: условия известных диагностических путей приняты — #1536
 
 Функциональный результат: `/раны`, статус и выбранная известная чужая рана

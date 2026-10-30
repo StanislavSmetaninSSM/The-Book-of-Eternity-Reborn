@@ -845,3 +845,189 @@ read framework; no speedup claim. If actual new repeated expensive reads arise,
 prove cause and use the existing service with cheap source-count/invalidation
 controls before a heavy run. Full raw remains outside checkout; no deletion or
 newclone/restore. WIP/checkpoints publish on current branch with remote SHA checks.
+
+## T108-SHINING-PATIENT — player treats a Shining patient (2026-10-30)
+
+Issue #1536. Base d601411b0c105ca3fdf409a668f1f0dc11098b4a.
+Status: technical recommendation from independent Astra/high; this written
+DESIGN awaits review. Gameplay is already authorized by US4 scenario8,
+FR043–054 and FR072–074. The owner authorized autonomous implementation;
+no new game rule or repeated design-approval question is introduced.
+
+### Complete player result
+
+At the current revealed faction hall, `/лечить` lists Self first and visible
+nearby patients. The player can ask an ordinary resident or the canonical
+radiant faction head for permission through the existing ordinary GM turn.
+After the genuine consent turn and normal Engine cleanup, the player chooses
+that patient's known active spiritual wound and separately confirms treatment.
+The real retained roll uses the player's Healing; natural recovery uses the
+patient's Healing. The existing active-then-natural program advances one safe
+world cycle and publishes wound/effects/History and the proper existing memory
+atomically. Cancel, missing consent or stale identity/locality performs no draw,
+control write, payment or treatment. Exact replay retains the same outcome.
+
+This is full treatment, not another recommendation-only card. The selected
+scope is resident and canonical `radiant_actor` faction head. A leader is a
+role, not an owner kind: resolve `leadership.headActorType/headActorId`, never
+invent `leader` or alias `afterlife_actor` to `radiant_actor`. Other head kinds,
+generic custom actors, unwilling/conflict aid and helpless exceptions remain
+outside this bounded acceptance. Diagnosis rules stay pending; public/negotiated
+provider→player services and their prices do not change. The patient need not
+have Healing≥I, `healing_support`, a service profile or a paid-access tariff.
+
+### Chosen approach and rejected alternatives
+
+Reuse participation, accepted natural witness, private selection/attempt,
+continuation, active+natural reducer, common publisher, History, existing
+memory and shared UI. Add one closed Shining patient branch. A separate healing
+service/price/publisher or diagnostic framework would duplicate those owners.
+Globally relaxing Chaos patient rules would silently change old schemas and
+is rejected. A radiant patient must not be disguised as a resident.
+
+### Closed schema and version boundaries
+
+Participation proposal/record schema5; active selection/request/result family8.
+Family7 is already paid service. Schemas1–4 and aid families3–6 stay strict;
+no relaxed old owner reader, implicit direction or cross-family fallback.
+
+New proposal on the exact preexisting patient's profile, under existing
+`spiritualTreatmentParticipationChange`, has exactly:
+
+```json
+{
+  "schemaVersion": 5,
+  "kind": "shining_target_consent",
+  "operation": "grant",
+  "healerId": "player_soul",
+  "woundId": "wound_patient_example",
+  "locality": { "factionId": "faction_example", "hallId": "hall_example" },
+  "conscious": true,
+  "capable": true,
+  "readableEvidence": "Пациент осознанно согласился на лечение игроком."
+}
+```
+
+`operation` is grant/revoke; grant requires both booleans true. The enclosing
+original typed profile determines the patient; no GM-authored canonical record,
+binding, digest, cycle or History witness is accepted. Healer is exactly
+`(shining_abode,player_soul,player_soul,AfterlifeProfilesPath)`. Locality is only
+existing `ShiningFactionHall`; all coordinates are correlation until current
+admission and accepted natural publication prove them.
+
+The client-derived schema5 record has exactly schemaVersion, kind, status,
+healer, target, woundId, locality, conscious, capable, readableEvidence, binding,
+acceptedCycleOrdinal, eligibleCycleOrdinal and primaryTransitionId. It uses the
+existing next-cycle/previous-turn lifetime and full accepted witness matching.
+The natural result's existing closed participation-outcome container gains an
+explicit schema5 branch; old branch shapes and fingerprints remain unchanged.
+The active family8 retains that full accepted natural witness and complete
+source tuple for original reconstruction, continuation, terminal replay and
+rollback. It must not use a source-shaped public record as authority.
+
+Add `SpiritualShiningPatientParticipant(Healer,Target,Locality)` to
+`SpiritualAidSelection` as a distinct variant. It is mutually exclusive with
+Resident, GuardianProviderLocality, Compensation, Service and Combat; direction
+is player→patient, ReceiveAid=false and no provider/player-target confirmation
+field. Use a closed distinct selection mode `shining_entity_aid`; do not remove
+the existing Chaos-only patient serializer guard. The ordinary guided action
+confirmation remains mandatory before staging.
+
+### Exact current admission
+
+Add a pure operation-DATA patient scope beside existing provider admission:
+`RequireShiningPatientAdmission(shining,profiles,residents,target,locality)`.
+Its `ShiningPatientAdmission` result identifies the typed target/profile and
+head/member role; it is not lease or publication authority.
+
+1. Require ordinary Shining mode, exact `ShiningCurrentHallContract` current hall,
+   one revealed current faction with that exact hall and supported lifecycle.
+2. Resident: exact ascended membership in the actual existing resident roster,
+   one matching typed visible/living materialized profile in the current hall.
+3. Radiant head: exact occupied leadership with headActorType=radiant_actor and
+   headActorId; one corresponding `shiningPoliticalActors` row with matching
+   currentFactionId; one visible/living/materialized radiant_actor profile in
+   the current hall. No same-ID wrong-kind or generic afterlife_actor alias.
+4. Require the exact known active spiritual wound owned by that participant.
+   Full accepted schema5 consent/witness remains an additional prerequisite.
+
+Reuse current role/life/location/materialization helpers only with these exact
+joins; permissive alias/ID-set lookup is supporting DATA, not sufficient proof.
+Do not reuse provider admission's healing-support/service gate on a patient.
+Selected source dependencies are Shining state plus resident roster for a
+resident; radiant leadership/political DATA is already in Shining state.
+No fake Guardian dependency or GuardianId alias is added for either patient.
+
+### Operation ownership, existing consumers and memory
+
+- `SpiritualTreatmentParticipation.ShiningPatients.cs`: explicit schema5
+  proposal/record dispatch, outcome and selection bindings; legacy branches
+  stay closed. Reuse the existing one-distinct-change/mirrored-intent rule.
+- `AfterlifeWoundTreatmentAuthority.ShiningPatients.cs`: exact pure admission;
+  existing Aid source collector carries selected roots through fresh pre-control,
+  pre-entropy and closing checks. Extend active family8 and persisted readers
+  explicitly through existing serializers/reducer/planner, not a new publisher.
+- Shared navigation/projection: reuse prepared wound catalog/profiles. Enrich
+  only the treatment operation with caller-owned Shining/roster DATA; `/раны`
+  and status acquire no new global roots. Introduce operation-local
+  `WoundApplicationMenuData(State,Context)` via `BuildStateAsync`; keep existing
+  `CreateStateAsync` wrapper returning State. SelectTarget consumes the enriched
+  fresh context; only detached State/choices reach UI sessions. No parsed roots
+  are retained in WoundCommandState or serialized to browser. Projection rechecks
+  the exact fresh patient scope instead of trusting a forged target DATA value.
+- Memory: resident uses existing protected
+  `spiritualResidentThoughtJournalUpdates` for the exact schema5 resident only.
+  Radiant head uses existing nonempty profile `gmThoughtsSummary` and ordinary
+  actor-memory validation/owned profile composition. Faction chronicle and
+  progression ledger do not substitute; no new journal is introduced.
+- Historical completed replay checks the immutable accepted proof/result and
+  does not require renewed live consent or a second draw/world cycle. Pending
+  execution still requires every fresh participant/source permission check.
+
+Reuse stable parsed roots/indexes through the existing read-set/operation
+services. Key/dependencies include exact realm/owner/wound/generation, current
+hall/faction/lifecycle/visibility, roster or head/political relation, profile
+life/art/effects, consent/full witness and source fingerprints. Lifetime is one
+read or planning/validation operation. No cross-action authority cache, static
+dictionary or new cache framework. Cheap actual source counters prove selected
+roots are reused; integrity/source/history/closing checks remain fresh. Speedup
+is not claimed without measured production evidence.
+
+### Implementation and finite acceptance plan
+
+1. Freeze a compilable existing-API RED in a dedicated cheap category: schema5
+   resident and radiant proposals on independent preexisting profiles must be
+   returned by `ReadChanges` without mutation; old code's explicit unsupported
+   family refusal is the intended assertion failure. Preserve/review exact input
+   completeness before fresh owning build/discovery/PlanOnly/PREP/run.
+2. Implement the closed codecs and exact patient scope; cheap typed controls for
+   both kinds, same-ID/wrong-kind, cross-family/realm/locality, changed head,
+   missing/duplicate political row, hidden/dead/nonmember, grant/revoke/expiry,
+   same-turn forged witness, insufficient healer and independent exported DATA.
+   Add actual source-read/compute counters with full dependency invalidation.
+3. Connect existing producer/witness, original/request/result/replay/rollback,
+   active+natural program and the two memory owners. Update canonical technical
+   contract/data model, effective GM instructions, worked schema5 examples and
+   source/manifest guards together. Review one coherent SOURCE cut; fresh owning
+   projects and affected old self2/Chaos5/6/Shiningprovider6/service7 consumers.
+4. Qualify actual consent turn→normal cleanup→separate confirmation and real
+   treatment for resident and radiant head through BOTH console and shared
+   browser handlers. Whole initial setup includes all ordinary resource/actor
+   progression/brain/memory/timestamp/relationships/ready contracts, using existing
+   complete helpers. One actual C4/outer rollback for each owner kind and exact
+   retained retry; no post-accepted-turn seed files or fabricated witness.
+5. Exact categories, discovery, PlanOnly, resource/artifact/PDB PREP and independent
+   OUTCOME before acceptance. Existing 180s functional peer budgets are protective
+   bounds; never raise them for GREEN. Reuse existing full original-message,
+   macro/named timing and sealed passive gzip capture, preserving footer/CRC/full
+   decode/source hashes and owned cleanup, outside checkout. No record/byte cap.
+   Check reserve400MiB plus full-output headroom before each real run; preserve
+   all unique evidence and current qualified binaries before overwrite.
+
+Implementation is native in the existing clean task checkout, with one writer.
+Astra/high reviews this unresolved typed-version/authority design; independent
+Sol/xhigh reviews source/fixture/selection/PREP/OUTCOME. WIP code/checkpoints go
+to the same branch with verified remote SHA. No new clone/restore, history rewrite,
+raw upload, merge or issue closure. DFR/Mortalcompat/Windows and pending diagnosis
+execution remain separate. No unchanged accepted PASS is replayed without a
+new affected dependency.
