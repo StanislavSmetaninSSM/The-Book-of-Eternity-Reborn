@@ -77,6 +77,24 @@ existing source не вводится без доказанной пользы; 
 не изменены. Требуются delta SOURCE, fresh Integration build/PDB/PlanOnly/PREP;
 Main/Support/Unit и принятые8 DATA не повторять без нового source delta.
 
+D3 Integration4e505 build exit0/102baselinewarnings/2:23.65,4PE-PDB/141bindings/
+27artifacts verified; exact75 PlanOnly/PREP accepted. Actual D3 remaining:
+60complete/58PASS/2FAIL,15status UI UNRUN, no timeout. Both new real read handlers
+PASS with actual exact source1/2, zero gameplay mutation/repair and owned cleanup.
+Five other affected categories PASS. Two pre-existing source guards fail: seven
+descriptive `woundName` fields in five methods of four already accepted healing
+files were not inventoried, and status-source guard expected an older browser
+condition before its lawful Wounds read-only exclusion. Independent Sol confirmed
+all five production files are byte-identical to accepted708d2f6. This is finite
+guard drift, not new diagnosis failure or permission to accept loose wound writes.
+T121-DIAGNOSIS-READ-GUARDS tracks exact per-method review/repair and fresh Unit
+qualification; no production change, cache or new diagnostic framework. Retain8
+DATA and unaffected58PASS; inventory consistency must be rechecked after its
+table changes, and15unrun status UI cases still require execution.
+All D3 raw, including both source-guard FAIL and full27artifact archive/CRC/member
+proof, remains outside checkout. D3 archive sha256
+`34f0350bffbcb08041796b138ef5b7d86cfb1413d9b69ba3215be2da57b7ff2e`.
+
 HOLD DFR/Mortal/Windows и общая незавершённость #1536 сохраняются.
 
 # Договорная помощь US6 B: ограниченный игровой маршрут принят

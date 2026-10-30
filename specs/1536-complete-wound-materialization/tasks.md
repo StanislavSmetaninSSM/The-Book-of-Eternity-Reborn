@@ -12,6 +12,13 @@
   defined. Proposed rules were asked, not accepted. Do not silently inherit
   treatment roll/time rules or enable diagnosis publication. Existing accepted
   T093-ASSESSMENT remains read-only assessment, not FR071 discovery.
+- [ ] T121-DIAGNOSIS-READ-GUARDS Repair the two pre-existing source-guard drifts
+  exposed by the affected status selection: independently audit seven descriptive
+  `woundName` occurrences in five existing client-owned projection/error methods,
+  add only exact per-method semantic inventory scopes, and preserve the real
+  status/wounds read-only refresh exclusion. No production or legacy compatibility
+  change. Fresh affected Unit build and exact guards plus15unrun status UI cases;
+  retain unaffected PASS, recheck inventory consistency after its data changes.
 
 # T609 retained effect-source DATA audit — #1536
 
