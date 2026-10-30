@@ -1,3 +1,33 @@
+# Договорная помощь: native-публикация предложения подтверждена
+
+B5 на runtime `791c1f625efe5cd87711474fa38c44a0409ed747` завершил точные два
+`negotiated-healing-normalization`: 2/2 PASS, 57.6832503 из прежних 120 секунд,
+wall 68.5600273 секунды. TRX SHA256
+`a4aca2974223954fee59b3b2dee853c4155b2f43b64fd0f5ca2a92800e84124e`.
+Проверены полный состав, уникальные test/execution IDs, отсутствие timeout/skip,
+очистка owned/runtime и неизменные отпечатки бинарников. Integration собрана из
+`2dd1863c1075759dcf90dc987094262d6c341d9b`, Main/Support/Unit из неизменной
+`1211602661ff8d97c9b4a868bd4108453546b481`; runtime delta — только plan.md.
+
+Оба варианта прошли независимое changed-write окно с foreign-hall refusal,
+свежими двумя live-guards и неизменным подписанным original/fingerprint, затем
+свежее полное no-op окно с настоящим natural grant/schema6/точными условиями,
+resident memory, I-validation и сохранностью ресурсов. Это direct-native
+публикация предложения, ещё не Engine cleanup или принятие активного лечения.
+Независимый Sol PREP принят, OUTCOME запрошен; прошлые B3/B4 FAIL сохранены.
+
+Точный B5 UI PlanOnly: 5 дескрипторов/5 случаев/0 исполнений, 13.6526270 секунды.
+Следующий конечный результат — один реальный console-маршрут предложения43,
+штатной очистки и отдельно подтверждённой попытки44 при исходных 180 секундах;
+PREP ожидается. UI5 и 150 затронутых регрессий пока UNRUN. Принятые 40 DATA не
+повторяются. Новых cache/диагностических стеков, ограничений вывода и утверждений
+о speedup нет: используется прежний operation-owned DATA/recorder, fresh guards
+сохранены. Полный raw: `/workspace/tboe-linux-evidence-20261025/us6-faction-service-agreement`;
+ничего не удалено и не загружено в Git. Публичный маршрут A принят отдельно;
+US6/#1536, DOM/provider/fresh-process и отложенные DFR/Mortal/Windows не закрыты.
+
+---
+
 # Native-контроль: подтверждён правильный контракт no-op, сборка готова
 
 Astra и Sol независимо подтвердили: полный normalizer обязан сохранить физические
