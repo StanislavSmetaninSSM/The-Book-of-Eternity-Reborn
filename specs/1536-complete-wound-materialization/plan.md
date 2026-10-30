@@ -1,113 +1,92 @@
-# T093 / FR071 / T121: следующий диагностический маршрут — #1536
+# T121: условия известных диагностических путей проверены — #1536
 
-База: принятый T138-NEGOTIATED `708d2f6b1e2c4664cc4c4ffbe6a0d7c181aafeb2`.
-Уже принятая T093-ASSESSMENT (17 PASS) оценивает известную духовную рану без
-действия и не повторяется без затронутой зависимости. Настоящая диагностика
-пока не подключена: physical codec допускает только `check: {}`, duration и
-resource policy отсутствуют, accepted adapter намеренно закрыт. Предложенные
-автору правила проверки/времени/расходов остаются PENDING, не требованием.
+Функциональный результат: `/раны`, статус и выбранная известная чужая рана
+показывают название осмотра и читаемые заявленные условия через общие console/
+shared-browser представления. Физические требования используют существующий
+formatter; непрозрачные духовные условия остаются общим пояснением. Текущее знание
+не подменяется будущей достижимостью: hidden требует уже принятой предпосылки,
+gm_only не показывается. Нет ID, сырого JSON, обещания доступности/цены, нового
+действия или GM-ответа. Просмотр/закрытие не меняют рану, ресурсы, время, History
+и состояние; исполнение осмотра честно помечено недоступным.
 
-Независимый законченный срез T121-DIAGNOSIS-READ: название и читаемые условия
-только текущего известного diagnostic path через существующую projection и
-общие console/browser cards/status; без скрытых фактов/IDs, проверки наличия,
-записи, броска, цены, времени или имитации работающей кнопки. Сначала causal
-RED на потерянных условиях, затем минимальная rich projection, затронутые
-privacy/foreign-card/status controls и реальные read handlers с unchanged tree.
-Обычный Sol XHigh проверяет SOURCE/selection/PREP/OUTCOME; консультация Astra
-уже отделила закрытый live adapter от пригодной read-only основы.
+Проверено владельцем: **83 distinct PASS / 48 methods на трёх runtime SHA**,
+не единый свежий прогон. Итоговый независимый OUTCOME/checkpoint review PENDING;
+T121-DIAGNOSIS-READ и его guard repair пока не помечены принятыми.
 
-Оптимизация: существующий operation-owned physical treatment parse используется
-одновременно для методов и diagnosis, typed requirement formatter общий.
-Ключ — точный переданный immutable envelope/input одного Project; lifetime —
-один вызов, за его пределами DATA не сохраняется. Нет нового кэша, чтений или
-reuse authority; текущие catalog/identity/history/source guards неизменны.
-Непрозрачные spiritual requirements не интерпретируются как новый игровой codec.
-Speedup не заявляется. Raw нового блока —
-`/workspace/tboe-linux-evidence-20261025/us5-guided-diagnosis` вне checkout.
-D1 Unit build exit0, 26 прежних warnings, 1:18.99. До runtime исправлена
-ошибка fixture key `skillRef` → существующий `capabilityRef`; corrected build
-exit0/26 warnings/1:11.93, catalog1165/12956, PlanOnly6cases/0executions,
-27artifacts/133bindings verified. После PREP, но ДО runtime найден ещё один
-setup defect: default spiritual fixture owner/path не являются current Self;
-переданы явные existing canonical self owner/path. В том же source audit
-добавлен обязательный generic requirement discriminator `kind`; opaque spiritual
-payload остаётся неинтерпретируемым. Прежний PREP удержан,
-исправленная фикстура требует fresh Unit build/delta review. Runtime UNRUN;
-никакая ошибка подготовки не принимается как causal RED.
-Независимый Sol XHigh повторно проверил весь fixture pipeline; D1final build
-exit0/26warnings/1:04.91,4PE-PDB/133bindings/27artifacts и exact PlanOnly6
-подтверждены. Actual RED на `fdb11da54b9d7f06321552c29bcb47b9da1ed329`:
-6executed,2physical FAIL ровно на missing17,4privacy PASS, no skip/timeout/duplicate,
-wall10.6344285/category4.6771892<60s; независимый OUTCOME принял causal RED.
-Полные raw/TRX SHA/cleanup/pins сохранены в D1-red вне checkout.
+| Принятая для объединения группа | Случаи | Runtime |
+|---|---:|---|
+| Новые DATA conditions/current-known/opaque privacy | 8 | 17b15ec5c1aa80ee8b5d50f5cb311806725deb89 |
+| Реальные новые `/раны` и `/статус`, каждый console+browser | 2 | 4e505e2c342bbb0b7dc05e995bfafff39b154b5d |
+| Foreign projection / worked GM fragment / real read handlers | 18 | 4e505e2c342bbb0b7dc05e995bfafff39b154b5d |
+| Self projection / effects / History / privacy | 35 | 4e505e2c342bbb0b7dc05e995bfafff39b154b5d |
+| Два неизменённых status source controls | 2 | 4e505e2c342bbb0b7dc05e995bfafff39b154b5d |
+| Exact inventory/discovery/status-refresh source guards | 3 | 763a6bbbdd0dd05d809d711fc878bf425e44bdc3 |
+| Реальный status: realms/hidden/foreign/History/literal/refusal | 15 | 763a6bbbdd0dd05d809d711fc878bf425e44bdc3 |
 
-В GREEN добавлены два противоположных current-known controls: hidden path с
-уже известной предпосылкой показывает свои условия; gm_only остаётся закрытым
-и при известной предпосылке. New DATA теперь8cases; original causalRED6
-сохраняется без изменения и не выдаётся за запуск расширенных8.
-Минимальное rich отображение и два реальных handler cases написаны, пока
-UNCOMPILED/UNRUN и SOURCE pending. Sol review обнаружил старое status-test
-ожидание пустого child list при публичном осмотре: теперь ровно одна разрешённая
-диагностическая карточка, unavailable policy/no action; все прежние hidden/foreign/
-unknown omissions сохранены. Исправлено до Integration build/runtime.
-Shared method/diagnosis shape остаётся
-внутренним display DATA; browser UiBlocks неизменны. Новых полей ГМ, ответов,
-цены или action нет, поэтому daemon/prompt/manifest schema не меняются; общий
-GM guide и существующий worked known-card fragment синхронизированы.
-D2 SOURCE принят Sol XHigh на `17b15ec5c1aa80ee8b5d50f5cb311806725deb89`.
-Все owning builds exit0: Main4cd (Main C#/resources равны17b), Support/Unit/
-Integration17b; warnings12/23/26/102, времена2:45.46/15.97s/2:39.30/3:16.59.
-27artifacts/141sourcebindings/4PE-PDB/32resourcescopies/4daemon подтверждены;
-catalog1166/12957 valid. Cheap8/8PASS на17b, wall13.2134428/category6.3538389<60,
-independent OUTCOME/PREP принят. Full remaining exactplan75cases/45methods в
-7descriptors/6categories: actual остановился после2cases (1PASS /раны,1FAIL
-/статус,73UNRUN), no timeout. Причина FAIL — неверное тестовое ожидание одного
-definitions read у статуса; полный raw/cleanup/TRX сохранены в D2-remaining-green.
+Это 8 + 57 + 18. Старый PASS InventoryResolution после изменения его registry
+заменён свежим, не считается ещё одним distinct case. Ни FAIL, ни UNRUN/skip/timeout
+в union не включён. Проверены все9TRX hashes, точные method/case counts,83unique
+accepted test/execution IDs,21unique owned fixture roots: lease inactive, cleanup
+without failure, actual absence без follow. Принятые8 DATA не повторялись.
 
-Source audit: существующий неизменённый status owner под одной publication lease
-сначала вызывает StateManager resource header projection (definitions/state/
-resourceHistory), затем отдельный strict wound reader (definitions для labels).
-Второй read существовал до карточки; новое отображение добавляет0IO и не дублирует
-physical parse. Header не экспортирует parsed catalog, может отказаться из-за
-state/History независимо от допустимой known-wound карточки; его result нельзя
-выдать за strict reader DATA. Новый cross-owner export/cache для одного небольшого
-existing source не вводится без доказанной пользы; speedup не заявляется.
-Исправлен только fixture oracle: wounds/identity/woundHistory1 всегда; definitions
-/раны1, Mortal/status2; прежние no write/repair/pending/privacy/text assertions
-не изменены. Требуются delta SOURCE, fresh Integration build/PDB/PlanOnly/PREP;
-Main/Support/Unit и принятые8 DATA не повторять без нового source delta.
+Точный CI selection остаётся7 IDs в `tests/selection.json`: diagnosis-recommendations,
+diagnosis-read-interfaces, foreign-detail-contract/gm/interfaces, player-projection,
+player-status (полные ID с префиксами в файле). Для последних18 отдельно зарегистрированы
+`wound-read-semantic-source-guards`3 и `wound-status-read-interfaces`15; они перекрываются
+с прежним status owner и позволяют не повторять неизменённые PASS. Catalog1168/12957
+valid. D4 exactPlanOnly2descriptors/9methods/18cases,0execution; actual18/18PASS,
+guards7.9979494/60s затем status15.8952797/180s, wall43.3396059s. Cheap8 category
+6.3538389/60s, wall13.2134428s. Все protective budgets сохранены.
 
-D3 Integration4e505 build exit0/102baselinewarnings/2:23.65,4PE-PDB/141bindings/
-27artifacts verified; exact75 PlanOnly/PREP accepted. Actual D3 remaining:
-60complete/58PASS/2FAIL,15status UI UNRUN, no timeout. Both new real read handlers
-PASS with actual exact source1/2, zero gameplay mutation/repair and owned cleanup.
-Five other affected categories PASS. Two pre-existing source guards fail: seven
-descriptive `woundName` fields in five methods of four already accepted healing
-files were not inventoried, and status-source guard expected an older browser
-condition before its lawful Wounds read-only exclusion. Independent Sol confirmed
-all five production files are byte-identical to accepted708d2f6. This is finite
-guard drift, not new diagnosis failure or permission to accept loose wound writes.
-T121-DIAGNOSIS-READ-GUARDS tracks exact per-method review/repair and fresh Unit
-qualification; no production change, cache or new diagnostic framework. Retain8
-DATA and unaffected58PASS; inventory consistency must be rechecked after its
-table changes, and15unrun status UI cases still require execution.
-All D3 raw, including both source-guard FAIL and full27artifact archive/CRC/member
-proof, remains outside checkout. D3 archive sha256
-`34f0350bffbcb08041796b138ef5b7d86cfb1413d9b69ba3215be2da57b7ff2e`.
+Fresh owning builds: Main4cd467a3aa170e5bea0d90c644ca3bd74648cad1 exit0/12warnings/
+2:45.46; Support17b15ec5 exit0/23warnings/15.97s; Unit763a6bbb exit0/26warnings/
+1:06.22; Integration4e505e2c exit0/102warnings/2:23.65. Предупреждения baseline.
+Main/Support и production C# одинаковы во всех трёх accepted epochs; после4e менялись
+лишь два Unit source guards. Current27artifacts/143sourcebindings/4PE-PDB/
+8resources с32copies/4daemon copies проверены; оставшиеся owning проекты не
+пересобирались после metadata-only либо чужого project delta.
 
-Sol завершил предметный audit: семь labels принадлежат пяти точным методам,
-не четырём file-wide исключениям. Inventory дополняется typed GM projection/error
-owners с обязательными source/admission anchors; discovery enumeration, matching,
-unused-allowance rejection и outside-scope refusal не меняются. Status guard
-требует фактическую конъюнкцию исключений status/Wounds и следующий refresh.
-Изменены только два Unit source-guard файла и catalog. Новые bounded owners
-`wound-read-semantic-source-guards`3 + `wound-status-read-interfaces`15 позволяют
-квалифицировать ровно18: два FAIL, один повтор затронутой inventory consistency,
-15UNRUN; остальные принятые read cases не повторяются. Старый CI selection
-`wounds-player-status` уже включает все эти методы, нового общего отбора нет.
-Guard correction пока UNCOMPILED/UNRUN, delta SOURCE/PREP pending.
+Причинность и исправления: исходный корректный RED6 на fdb11da5 дал ровно2 missing17
+FAIL +4privacyPASS. Ошибки подготовки были исправлены до него. В D2 actual remaining
+было1PASS/1FAIL/73UNRUN: неверное ожидание definitions1 у Mortal status, где прежние
+header и wound-label owners независимо читают definitions2 под одной publication
+lease. Исправлен только oracle. D3 затем дал58PASS/2старых source-guard FAIL/15UNRUN:
+пять категорий полностью PASS, включая новые handlers (четыре другие). Семь
+`woundName` labels в пяти методах четырёх старых production files предметно
+проверены; пять exact method scopes не дают file-wide exemption или loose write.
+Discovery/unused/outside-scope refusal сохранены. Status guard требует реальную
+конъюнкцию status/Wounds и следующий refresh. Все эти production files были
+byte-unchanged от принятого708d2f6; это finite guard drift, не новый gameplay defect.
 
-HOLD DFR/Mortal/Windows и общая незавершённость #1536 сохраняются.
+Оптимизация: один существующий detached physical treatment parse на Project
+служит methods и diagnosis; formatter общий, lifetime — один вызов по точному
+immutable envelope/input, cross-call хранения нет. Свежие catalog/identity/history/
+source guards не менялись, новых IO/cache/framework нет. Actual counters каждого
+нового handler: wounds/identity/woundHistory1, definitions `/раны`1, Mortal `/статус`2;
+0gameplay mutations/repair. Header не экспортирует catalog и может отказать отдельно
+от допустимой known-wound карточки; его result не заменяет strict reader DATA.
+Cross-owner cache API без доказанной пользы не добавлялся, speedup не заявляется.
+
+Sol XHigh принял SOURCE, delta reviews и все PREP; исходный causal RED и cheap8
+OUTCOME приняты. Финальное OUTCOME ожидается. GM guide и existing worked known-card
+fragment синхронизированы; новых GM fields/schema/action нет, поэтому daemon,
+prompts и manifest schema не менялись. Старый H0 assessment17, принятые B200,
+Candidate69 и иные неизменённые gameplay qualification не повторялись.
+
+Полный raw/failed attempts/TRX/JSON/PDB/binaries вне checkout:
+`/workspace/tboe-linux-evidence-20261025/us5-guided-diagnosis`.
+Индекс `D4-verified-accepted-union.json`; актуальный полный owning artifact archive
+D4 сохраняется с27member hashes и полным gzip EOF/CRC proof. D1/D2/D3 evidence
+сохранены, внешние raw/saves/recovery не удалялись; в Git только source и краткий
+checkpoint, не журналы/TRX/диагностические JSON/бинарники/архивы.
+
+**Открытая зависимость:** T093/FR071/guided diagnosis execution ждут ответа автора
+о check/duration/resource policy. В текущем physical codec `check` ровно `{}`,
+длительность и consumption policy отсутствуют; spiritual H0 assessment не является
+реальной диагностикой. Предложенные правила НЕ одобрены и НЕ реализованы. Зависимое
+исполнение удержано, не заменено процедурой или фиктивным диагнозом.
+DOM/provider/fresh-process UNRUN; DFR/Mortal/Windows HOLD, first-guardian intermittent
+и cross-OS DATA остаются открытыми. US5/US6/#1536 целиком не закрываются.
 
 # Договорная помощь US6 B: ограниченный игровой маршрут принят
 
