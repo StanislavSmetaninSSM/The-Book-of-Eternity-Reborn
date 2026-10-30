@@ -227,6 +227,14 @@ internal static partial class SpiritualTreatmentParticipation
     internal static LocalInteractionScope RequireAidScope(JsonObject? guardians, JsonObject? residents,
         JsonObject profiles, SpiritualAidSelection aid, WoundMaterializationEnvelope wound, JsonObject? shining = null)
     {
+        if (aid.ShiningPatient is { } patient)
+        {
+            _ = aid.Target("shining_abode");
+            if (wound.Owner != patient.Target || wound.Classification.Domain != "spiritual" ||
+                wound.Lifecycle != "active" || wound.Display.Visibility is not ("public" or "known_to_player"))
+                throw new InvalidDataException("Shining patient requires its exact known active spiritual wound.");
+            return RequireShiningPatientAdmission(shining, profiles, residents, patient.Target, patient.Locality).Scope;
+        }
         if (aid.ExplicitLocality is { Realm: "shining_abode" } locality)
         {
             if (!aid.ReceiveAid || wound.Owner != aid.Target("shining_abode") ||

@@ -45,6 +45,15 @@ internal static class WoundTargetSelectionService
             catch (Exception failure) when (Malformed(failure)) { }
         }
         targets.Add(Create(selfOwner, "Себя", "Ваш текущий персонаж", locality));
+        if (realm == "shining_abode")
+        {
+            var patients = context.ShiningPatients.Select(a => Create(a.Target,
+                Name(a.Profile, "", a.IsFactionHead ? "Глава фракции" : "Житель фракции"),
+                a.IsFactionHead ? "Глава фракции · Текущий зал" : "Житель фракции · Текущий зал", a.Locality))
+                .OrderBy(t => t.Owner.OwnerKind == "radiant_actor" ? 0 : 1)
+                .ThenBy(t => t.Name, StringComparer.OrdinalIgnoreCase).ToList();
+            return CompleteTargets(patients);
+        }
         if (scope is null || locality is null) return targets.AsReadOnly();
         var abodeName = Read(guardians!["activeGuardian"]?["abode"]?["name"]);
         if (abodeName.Length == 0) abodeName = "Текущая Обитель";
@@ -79,6 +88,10 @@ internal static class WoundTargetSelectionService
         }
         nearby = nearby.OrderBy(t => t.Owner.OwnerKind == "guardian" ? 0 : 1)
             .ThenBy(t => t.Name, StringComparer.OrdinalIgnoreCase).ToList();
+        return CompleteTargets(nearby);
+
+        IReadOnlyList<WoundTargetChoice> CompleteTargets(List<WoundTargetChoice> nearby)
+        {
         var ambiguous = nearby.GroupBy(t => (t.Name + "\n" + t.Context).Normalize(System.Text.NormalizationForm.FormKC), StringComparer.OrdinalIgnoreCase)
             .Where(g => g.Count() > 1).SelectMany(g => g).Select(t => t.Owner).ToHashSet();
         var repeatedNames = nearby.Append(targets[0]).GroupBy(t => t.Name.Normalize(System.Text.NormalizationForm.FormKC), StringComparer.OrdinalIgnoreCase)
@@ -89,6 +102,7 @@ internal static class WoundTargetSelectionService
                 Available = !ambiguous.Contains(target.Owner), Reason = ambiguous.Contains(target.Owner)
                     ? "Сейчас не удаётся различить одноимённых обитателей по известным сведениям." : "" });
         return targets.AsReadOnly();
+        }
 
         WoundTargetChoice Create(WoundOwnerCoordinate owner, string name, string description, SpiritualAidLocality? currentLocality)
         {
@@ -98,7 +112,8 @@ internal static class WoundTargetSelectionService
             var fingerprint = WoundAcceptedTurnFingerprintWriter.Compute(new[]
             {
                 "wound_target_navigation", "1", WoundAcceptedTurnFingerprintWriter.CanonicalJson(SpiritualHealingRequestProjection.OwnerJson(owner)),
-                currentLocality is null ? "" : WoundAcceptedTurnFingerprintWriter.CanonicalJson(SpiritualTreatmentParticipation.LocalityJson(currentLocality)), name, description
+                currentLocality is null ? "" : WoundAcceptedTurnFingerprintWriter.CanonicalJson(SpiritualTreatmentParticipation.LocalityJson(currentLocality)), name, description,
+                context.ShiningPatients.SingleOrDefault(a => a.Target == owner && a.Locality == currentLocality)?.Fingerprint ?? ""
             }.Concat(summaries.SelectMany(w => new[] { w.WoundId, w.Fingerprint, w.Name, w.Severity, w.Description })));
             return new("target_0", name, description, Array.AsReadOnly(summaries), owner, currentLocality, fingerprint);
         }

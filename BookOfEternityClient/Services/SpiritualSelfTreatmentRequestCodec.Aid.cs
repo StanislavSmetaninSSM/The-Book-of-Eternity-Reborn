@@ -8,8 +8,8 @@ internal static partial class SpiritualSelfTreatmentRequestCodec
 {
     private const string AidKind = "spiritual_treatment_request";
     internal static string? AidDirection(int version) => version switch
-    { 4 => "guardian_to_player", 5 => "player_to_resident", 6 => "resident_to_player", _ => null };
-    internal static bool IsAidHeader(JsonObject root) => Int(root["schemaVersion"]) is 3 or 4 or 5 or 6 &&
+    { 4 => "guardian_to_player", 5 => "player_to_resident", 6 => "resident_to_player", 8 => "player_to_shining_entity", _ => null };
+    internal static bool IsAidHeader(JsonObject root) => Int(root["schemaVersion"]) is 3 or 4 or 5 or 6 or 8 &&
         Text(root["kind"]) == AidKind && Text(root["mode"]) == "aid";
     internal static bool IsReceiveAidHeader(JsonObject root) => IsAidHeader(root) && Int(root["schemaVersion"]) is 4 or 6;
     internal static bool IsActiveKind(JsonObject root) => Text(root["kind"]) is Kind or AidKind;
@@ -112,10 +112,10 @@ internal static partial class SpiritualSelfTreatmentRequestCodec
             }
             if (!IsAidHeader(root) || Int(root["schemaVersion"]) != aid.FamilyVersion ||
                 aid.ReceiveAid && (!aid.PlayerConfirmed || Text(root["direction"]) != AidDirection(aid.FamilyVersion) || Text(root["playerConfirmation"]) != "player_target_confirmed") ||
-                aid.Resident is not null && !aid.ReceiveAid && Text(root["direction"]) != "player_to_resident" ||
-                realm is not ("chaos_sea" or "shining_abode") || !aid.ReceiveAid && realm != "chaos_sea" || ordinal < 1 ||
+                (aid.Resident is not null || aid.ShiningPatient is not null) && !aid.ReceiveAid && Text(root["direction"]) != AidDirection(aid.FamilyVersion) ||
+                realm is not ("chaos_sea" or "shining_abode") || !aid.ReceiveAid && aid.ShiningPatient is null && realm != "chaos_sea" || ordinal < 1 ||
                 !Closed(root, aid.ReceiveAid ? fields.Concat(new[] { "direction", "playerConfirmation" }).ToArray()
-                    : aid.Resident is not null ? fields.Append("direction").ToArray() : fields) ||
+                    : aid.Resident is not null || aid.ShiningPatient is not null ? fields.Append("direction").ToArray() : fields) ||
                 Text(root["sessionId"]) != context.SessionId || Text(root["requestId"]) != context.RequestId || Int(root["turn"]) != context.Turn ||
                 root["healer"] is not JsonObject healer || root["target"] is not JsonObject target ||
                 !JsonNode.DeepEquals(healer, SpiritualHealingRequestProjection.OwnerJson(aid.Healer(realm))) ||
@@ -137,7 +137,7 @@ internal static partial class SpiritualSelfTreatmentRequestCodec
                 !ResourceMaterializationContract.IsAuthorityFingerprint(Text(witness["grantResultFingerprint"])) ||
                 Int(record["eligibleCycleOrdinal"]) != ordinal || Text(record["binding"]?["sessionId"]) != context.SessionId ||
                 Int(record["binding"]?["turn"]) is not { } grantTurn || grantTurn >= context.Turn ||
-                aid.Resident is not null && grantTurn != context.Turn - 1 ||
+                (aid.Resident is not null || aid.ShiningPatient is not null) && grantTurn != context.Turn - 1 ||
                 root["attempt"] is not JsonObject attempt ||
                 !Closed(attempt, "attemptId", "woundId", "woundFingerprint", "realm", "cycleOrdinal", "cycleKey", "sourceFingerprint", "roll") ||
                 Text(attempt["woundId"]) != selection.WoundId || Text(attempt["woundFingerprint"]) != selection.ExpectedWoundFingerprint ||

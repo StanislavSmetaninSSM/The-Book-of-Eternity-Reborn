@@ -7,7 +7,12 @@ namespace BookOfEternityClient.Services;
 
 /// <summary>Coherent read-only wound status; never issues command or healing authority.</summary>
 internal sealed record WoundPlayerReadContext(WoundPlayerProjectionInput Input, WoundCarrierCatalog Catalog,
-    JsonObject Soul, JsonObject? SpiritualConflict, WoundPlayerProjectionResult Projection);
+    JsonObject Soul, JsonObject? SpiritualConflict, WoundPlayerProjectionResult Projection)
+{
+    // Only the treatment-menu operation populates these freshly parsed DATA.
+    // Detached UI state never contains roots or admissions; confirm reloads them.
+    internal IReadOnlyList<SpiritualShiningPatientAdmission> ShiningPatients { get; init; } = [];
+}
 
 internal static class WoundPlayerReadService
 {

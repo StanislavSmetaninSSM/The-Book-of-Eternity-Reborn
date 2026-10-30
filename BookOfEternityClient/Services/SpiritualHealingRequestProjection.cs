@@ -149,6 +149,7 @@ internal static class SpiritualHealingRequestProjection
                 projection["playerConfirmationVerified"] = true; // Exact client original, not GM consent.
             }
             if (request["schemaVersion"]!.GetValue<int>() == 5) projection["direction"] = "player_to_resident";
+            if (request["schemaVersion"]!.GetValue<int>() == 8) projection["direction"] = "player_to_shining_entity";
             if (SpiritualTreatmentParticipation.ReadCompensation(data.AidWitness["record"]!.AsObject()) is { } compensation)
                 projection["compensation"] = SpiritualTreatmentParticipation.CompensationJson(compensation);
             var locality = SpiritualTreatmentParticipation.RecordLocality(data.AidWitness["record"]!.AsObject());

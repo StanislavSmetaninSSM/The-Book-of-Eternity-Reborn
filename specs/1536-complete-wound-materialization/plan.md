@@ -54,7 +54,7 @@ catalog1169/12958 valid, exactPlanOnly1method/2cases/0execution. Actual RED2/2
 assertion FAIL ровноline38: resident unknownschema5, radiant unsupported enclosing
 kind; no setup failure/timeout/skip/duplicate, full selection, cleanup and pins.
 Category6.0672381/60s, wall14.9925122s. Full raw/TRX/verified cause вне checkout
-в `us4-shining-patient-aid/S1-red`; independent OUTCOME pending. Это доказывает
+в `us4-shining-patient-aid/S1-red`; independent Sol OUTCOME accepted. Это доказывает
 только отсутствующее proposal admission, не live consent или healing authority.
 Sol XHigh принял intended RED2. Перед реализацией codec добавлены4 отдельные
 existing-API assertion rows для canonical outcome DATA factory и raw selection8
@@ -67,13 +67,18 @@ S1 RED2 не повторялся. Полный S1 artifact archive заверш
 Unit DLL; собственный csc кратко pause/resume тем же процессом, без повторной
 сборки или потери evidence. Raw остаётся снаружи. Это не live grant authority.
 
-Первый coherent production WIP: явный schema5 proposal/record outcome codec,
-family8 typed selection и отдельный ShiningPatient participant. Старые reader/
-Chaos patient branches не расслаблены, raw record всё ещё не даёт authority.
-Код UNCOMPILED/UNRUN; actual patient admission/accepted witness/staging/result8/
-UI/normalization/memory и полная функция пока не подключены. Следующий шаг —
-existing-source patient admission и shared live/replay pipeline; завершённый
-Source review/cheap GREEN предшествуют любому настоящему healing run.
+Текущий production WIP: closed schema5 proposal/record/outcome и selection8,
+точный current resident/radiant-head admission, natural grant producer, selected
+source paths/fingerprints, request/result natural8+active8, patient normalization
+и resident-only protected memory подключены к existing owners. Treatment menu
+передаёт private admission DATA дальше по одной операции, projection проверяет
+точного пациента; exported State не сохраняет roots или authority. Radiant не
+получает fake Guardian/roster dependency, provider/Chaos ветви остаются прежними.
+Код UNCOMPILED/UNRUN, это не принятый пользовательский результат. Ещё нужны
+целостные негативные/codec/source-count fixtures, GM sync, independent SOURCE,
+fresh affected builds/cheap GREEN и реальные consent→cleanup→confirm journeys
+для обоих типов в обоих UI, retained replay/rollback. Ни один новый healing run
+не допущен; S1/S2 causal RED сохраняются отдельно.
 
 Оптимизация: caller-owned parsed profiles/Shining/actual resident roster и existing
 catalog/index/read-set передаются по одной операции; полный key/dependencies включают

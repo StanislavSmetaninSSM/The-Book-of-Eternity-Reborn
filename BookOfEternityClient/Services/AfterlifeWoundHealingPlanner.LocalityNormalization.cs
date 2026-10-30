@@ -14,7 +14,9 @@ internal static partial class AfterlifeWoundHealingPlanner
                 ? SpiritualTreatmentParticipation.Selection(record) : null;
         internal bool OwnsLocalityPath(string path) => HasLocalityGuards &&
             (HasServicePayment ? AfterlifeWoundTreatmentAuthority.ServiceLocalityPathsFor(_data!.ServiceQuote!) :
-                AfterlifeWoundTreatmentAuthority.AidLocalityPathsFor(RetainedAidSelection?.ExplicitLocality, includeCoreState: true))
+                RetainedAidSelection is { } retained
+                    ? AfterlifeWoundTreatmentAuthority.AidLocalityPathsFor(retained, includeCoreState: true)
+                    : Array.Empty<string>())
                 .Contains(path, StringComparer.Ordinal);
 
         // Only the actual validated normalizer calls this around its computed
@@ -85,7 +87,16 @@ internal static partial class AfterlifeWoundHealingPlanner
             var afterShining = path == shiningPath ? Root(path, content) : shining;
             var before = SpiritualTreatmentParticipation.RequireAidScope(guardians, residents, profiles, aid, wound, shining);
             var after = SpiritualTreatmentParticipation.RequireAidScope(afterGuardians, afterResidents, profiles, aid, wound, afterShining);
-            if (aid.ExplicitLocality is { Realm: "shining_abode" } locality)
+            if (aid.ShiningPatient is { } patient)
+            {
+                var originalAdmission = SpiritualTreatmentParticipation.RequireShiningPatientAdmission(
+                    shining, profiles, residents, patient.Target, patient.Locality);
+                var normalizedAdmission = SpiritualTreatmentParticipation.RequireShiningPatientAdmission(
+                    afterShining, profiles, afterResidents, patient.Target, patient.Locality);
+                if (originalAdmission.Fingerprint != normalizedAdmission.Fingerprint)
+                    throw new InvalidDataException("Normalization cannot change the exact admitted Shining patient tuple.");
+            }
+            else if (aid.ExplicitLocality is { Realm: "shining_abode" } locality)
             {
                 var originalAdmission = SpiritualTreatmentParticipation.RequireShiningProviderAdmission(
                     guardians, residents, profiles, shining, aid.Healer("shining_abode"), locality);

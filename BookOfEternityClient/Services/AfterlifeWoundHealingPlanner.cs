@@ -25,7 +25,7 @@ internal static partial class AfterlifeWoundHealingPlanner
         FileSystemManager.CanonicalWriteLease lease, SpiritualAidSelection? aid = null) =>
         PendingTurnSnapshotReader.ReadObservedCurrent(files, lease,
             aid?.ExplicitLocality?.Realm == "shining_abode"
-                ? new PendingTurnSnapshotPathSelection(AfterlifeWoundTreatmentAuthority.AidLocalityPathsFor(aid), Array.Empty<string>())
+                ? new PendingTurnSnapshotPathSelection(AfterlifeWoundTreatmentAuthority.AidLocalityPathsFor(aid, includeCoreState: aid.ShiningPatient is not null), Array.Empty<string>())
                 : new PendingTurnSnapshotPathSelection(new[] { AfterlifeWoundTreatmentAuthority.AidLocalityPaths[0] },
                     new[] { AfterlifeWoundTreatmentAuthority.AidLocalityPaths[1] }));
 

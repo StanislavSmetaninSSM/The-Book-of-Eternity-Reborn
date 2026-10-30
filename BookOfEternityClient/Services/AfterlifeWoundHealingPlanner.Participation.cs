@@ -27,7 +27,7 @@ internal static partial class AfterlifeWoundHealingPlanner
             RequireCurrent(_files, _lease);
             var localities = detachedChanges.Select(c => c.Owner.Realm == "shining_abode"
                 ? SpiritualTreatmentParticipation.ReadLocality(c.Proposal["locality"]) : null).ToArray();
-            var localityPaths = localities.SelectMany(l => AfterlifeWoundTreatmentAuthority.AidLocalityPathsFor(l, includeCoreState: true))
+            var localityPaths = detachedChanges.SelectMany(AfterlifeWoundTreatmentAuthority.ParticipationLocalityPathsFor)
                 .Distinct(StringComparer.Ordinal).ToArray();
             var requiredPaths = localityPaths.Where(p => p != GuardianAbodeResidentState.StatePath ||
                 localities.Any(l => l?.Value is SpiritualAidLocality.ShiningFactionHall)).ToArray();
@@ -72,11 +72,14 @@ internal static partial class AfterlifeWoundHealingPlanner
                 if (change.Owner.Realm == "shining_abode")
                 {
                     locality = SpiritualTreatmentParticipation.ReadLocality(change.Proposal["locality"]);
-                    var admission = SpiritualTreatmentParticipation.RequireShiningProviderAdmission(
+                    if (SpiritualTreatmentParticipation.IsShiningPatientParticipation(change.Proposal))
+                        scope = SpiritualTreatmentParticipation.RequireShiningPatientAdmission(
+                            currentRoots.GetValueOrDefault(ShiningAbodeState.StatePath), acceptedProfiles,
+                            currentRoots.GetValueOrDefault(GuardianAbodeResidentState.StatePath), change.Owner, locality).Scope;
+                    else scope = SpiritualTreatmentParticipation.RequireShiningProviderAdmission(
                         currentRoots.GetValueOrDefault(ParticipationGuardiansPath),
                         currentRoots.GetValueOrDefault(GuardianAbodeResidentState.StatePath), acceptedProfiles,
-                        currentRoots.GetValueOrDefault(ShiningAbodeState.StatePath), change.Owner, locality);
-                    scope = admission.Scope;
+                        currentRoots.GetValueOrDefault(ShiningAbodeState.StatePath), change.Owner, locality).Scope;
                 }
                 else
                 {

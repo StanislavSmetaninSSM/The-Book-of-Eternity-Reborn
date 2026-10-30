@@ -28,7 +28,18 @@ internal static partial class AfterlifeWoundTreatmentAuthority
         return includeCoreState && locality?.Realm == "shining_abode"
             ? Array.AsReadOnly(extra.Append(ShiningAbodeState.StatePath).ToArray()) : extra;
     }
-    internal static IReadOnlyList<string> AidLocalityPathsFor(SpiritualAidSelection aid) => AidLocalityPathsFor(aid.ExplicitLocality);
+    internal static IReadOnlyList<string> AidLocalityPathsFor(SpiritualAidSelection aid, bool includeCoreState = false) =>
+        aid.ShiningPatient is { Target.OwnerKind: "radiant_actor" }
+            ? includeCoreState ? Array.AsReadOnly(new[] { ShiningAbodeState.StatePath }) : Array.Empty<string>()
+            : AidLocalityPathsFor(aid.ExplicitLocality, includeCoreState);
+
+    internal static IReadOnlyList<string> ParticipationLocalityPathsFor(SpiritualTreatmentParticipation.Change change) =>
+        SpiritualTreatmentParticipation.IsShiningPatientParticipation(change.Proposal)
+            ? AidLocalityPathsFor(new SpiritualAidSelection("player_soul", change.Owner.OwnerId, "")
+                { ShiningPatient = new(new("shining_abode", "player_soul", "player_soul", WoundCarrierCatalog.AfterlifeProfilesPath),
+                    change.Owner, SpiritualTreatmentParticipation.ReadLocality(change.Proposal["locality"])) }, includeCoreState: true)
+            : AidLocalityPathsFor(change.Owner.Realm == "shining_abode"
+                ? SpiritualTreatmentParticipation.ReadLocality(change.Proposal["locality"]) : null, includeCoreState: true);
 
     // Entirely operation-local DATA. The caller keeps the actual lease and closes
     // the read images before control, before entropy and on request publication.
@@ -108,7 +119,7 @@ internal static partial class AfterlifeWoundTreatmentAuthority
             context.Turn.ToString(System.Globalization.CultureInfo.InvariantCulture),
             WoundAcceptedTurnFingerprintWriter.CanonicalJson(JsonSerializer.SerializeToNode(context.Progression)!),
             WoundAcceptedTurnFingerprintWriter.CanonicalJson(witness)
-        }.Concat(SourcePaths.Concat(AidLocalityPathsFor(SpiritualTreatmentParticipation.RecordLocality(witness["record"]!.AsObject()))).SelectMany(path =>
+        }.Concat(SourcePaths.Concat(AidLocalityPathsFor(SpiritualTreatmentParticipation.Selection(witness["record"]!.AsObject()))).SelectMany(path =>
         {
             var source = sources.Single(s => s.Path == path);
             return new[] { path, source.Image.Fingerprint };

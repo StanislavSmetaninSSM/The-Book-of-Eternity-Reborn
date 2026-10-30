@@ -10,11 +10,17 @@ internal static partial class WoundPlayerProjection
     {
         var input = context.Input;
         if (!context.Projection.IsAvailable || !input.Effects.IsAccepted || !input.SelfVisible ||
-            input.Realm != "chaos_sea" || context.SpiritualConflict?["activeConflict"] is not null || !target.Available ||
-            target.Owner is not { Realm: "chaos_sea", OwnerKind: "guardian" or "resident", CarrierPath: WoundCarrierCatalog.AfterlifeProfilesPath } ||
+            input.Realm is not ("chaos_sea" or "shining_abode") || context.SpiritualConflict?["activeConflict"] is not null || !target.Available ||
+            target.Owner.Realm != input.Realm || target.Owner.CarrierPath != WoundCarrierCatalog.AfterlifeProfilesPath ||
+            (input.Realm == "chaos_sea" ? target.Owner.OwnerKind is not ("guardian" or "resident") :
+                target.Owner.OwnerKind is not ("resident" or "radiant_actor")) ||
             target.Locality is not { } locality) return Unavailable();
         try
         {
+            // SelectTarget built this admission from the actual current parsed
+            // sources in the same operation, without retaining it in UI state.
+            if (input.Realm == "shining_abode" && !context.ShiningPatients.Any(a =>
+                    a.Target == target.Owner && a.Locality == locality)) return Unavailable();
             // This does not re-prove Guardian/roster roots: SelectTargetAsync just did so
             // under its actual lease. Exact typed DATA validation precedes normalized mapping.
             var profiles = (input.Carriers.AfterlifeProfiles?["profiles"] as JsonArray)?.OfType<JsonObject>()
@@ -24,7 +30,7 @@ internal static partial class WoundPlayerProjection
                 SpiritualTreatmentParticipation.ProfileId(profiles[0]) != target.Owner.OwnerId ||
                 !WoundCarrierCollectionAuthority.AfterlifeProfileMatches(profiles[0], target.Owner) ||
                 !AfterlifeProfileVisibility.IsVisibleToPlayer(profiles[0]) ||
-                profiles[0]["locationId"]?.GetValue<string>() != locality.AbodeId ||
+                profiles[0]["locationId"]?.GetValue<string>() != locality.LocationId ||
                 target.Owner.OwnerKind == "guardian" && target.Owner.OwnerId != locality.GuardianId ||
                 !AfterlifeEntityProfileState.TryResolveEffectTarget(profiles[0], out var effectTarget)) return Unavailable();
             var active = new List<WoundPlayerEntry>();

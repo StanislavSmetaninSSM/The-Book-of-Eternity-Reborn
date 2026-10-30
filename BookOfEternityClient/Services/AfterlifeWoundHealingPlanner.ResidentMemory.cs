@@ -24,7 +24,9 @@ internal static partial class AfterlifeWoundHealingPlanner
         // An actual service continuation admits this exact quoted resident; a
         // mode flag or an arbitrary resident coordinate alone cannot enable memory.
         private string? ResidentThoughtOwnerId => ResidentThoughtRecord is { } record &&
-            SpiritualTreatmentParticipation.IsResidentParticipation(record)
+            (SpiritualTreatmentParticipation.IsResidentParticipation(record) ||
+                SpiritualTreatmentParticipation.IsShiningPatientParticipation(record) &&
+                SpiritualTreatmentParticipation.RecordOwner(record).OwnerKind == "resident")
                 ? SpiritualTreatmentParticipation.RecordOwnerId(record)
                 : _data is { ServiceProviderAdmissionFingerprint: not null,
                     ServiceQuote.Provider: { Realm: "shining_abode", OwnerKind: "resident" } provider } ? provider.OwnerId : null;
