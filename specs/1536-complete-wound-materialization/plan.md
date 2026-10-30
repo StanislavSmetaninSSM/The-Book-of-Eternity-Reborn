@@ -147,6 +147,20 @@ fixtures now follow that actual flow; four addressed console/browser regressions
 are selected, unchanged Elyara-only UI excluded. This is Integration-only fixture
 adaptation, SOURCE delta/rebuild pending; all runtime still UNRUN.
 
+S3 compiled-source boundary: Main7e4e16c18, Support9c2ab3025, Unitc26f1bb4c,
+Integrationc0c23de0c all exit0, baseline warnings12/23/26/102. Final Integration
+3:00.53. Source delta after each owning epoch is empty for its C#/build inputs;
+no extra Main/Support/Unit rebuild for Integration-only fixture changes. Astra
+production SOURCE7e and Sol whole fixtures/consumer delta SOURCEc0 accepted.
+Official catalog1179/12977 valid, no unmapped/stale, zero execution. Preflight27
+owning artifacts,158sourcebindings,4PE/PDBpairs,8operationalresources/32copies and
+4daemon copies verified. Exact first PlanOnly3Unitdescriptors/13methods/68cases,
+zero execution/TRX, stable pins and cleanup; wall8.0927644s. Sol independently
+verified raw fences/plan; final PREP pending. Runtime68/menu4/native10/oldproviderUI4/
+newjourneys6 remain UNRUN. Full raw/existing archives external, free4.7GiB versus
+reserve400MiB+full output headroom. Next only first68, after PREP; metadata-only
+checkpoint may advance HEAD without rebuilding unchanged bound code/artifacts.
+
 Авторское решение диагностики принято2026-10-30 11:48UTC и отражено в FR071/tasks.
 После текущего Shining patient: Mortal method declares own procedure check/time/
 cost; spiritual Healing>=0 plus ALL path requirements, guaranteed declared reveals,
