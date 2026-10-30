@@ -1,3 +1,20 @@
+# T142 first GREEN gate — 105/105 PASS, final consumers pending
+
+Runtime revision3d8a276cee3daf4ceb9b76cbaad65b998335b487, with unchanged compiled
+lineages below. Exact8categories/105cases/16methods completed105PASS,0FAIL/skip/timeout/
+duplicate/underfill,76.2413859s wall; both cleanup flags true and binary pins unchanged.
+Actual category seconds: entrypoints5.0718519/600; causal5.4348174/60; docs4.8330257/60;
+identity15.2080686/60; invariant4.6289978/60; lifecycle14.8661744/60;
+source-controls6.2787601/60; existing capability5.7527139/60.
+Real owner source controls pass: one profile-file open for1/20factions; existing
+head+healer binding validates one full actor, preserving all invalid-profile errors.
+No persistent DATA cache or speedup claim. Independent OUTCOME/admission pending;
+remaining28complete-route consumers UNRUN. This is not T142/US6 completion.
+Full raw green-cheap-runtime retained outside checkout; no evidence/saves removed.
+This update changes only plan.md, so owning C#/resources remain the accepted build.
+
+---
+
 # T142 GREEN preparation — builds and exact selection ready, runtime UNRUN
 
 2026-10-30 continuation on source a2c78bb439c32d48fa0492302522a3181f911db4.
