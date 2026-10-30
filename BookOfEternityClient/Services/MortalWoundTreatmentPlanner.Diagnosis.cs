@@ -26,7 +26,7 @@ internal static partial class MortalWoundTreatmentPlanner
 
 // Local, detached diagnosis authority. External seals are only bindings here;
 // the eventual publisher must independently revalidate their fresh world sources.
-internal sealed record WoundDiagnosisEvidence : WoundTransitionEvidence
+internal sealed partial record WoundDiagnosisEvidence : WoundTransitionEvidence
 {
     private WoundDiagnosisEvidence(string commandRef, string beforeFingerprint,
         string afterFingerprint, string woundId, string attemptId, string diagnosisPathId,
@@ -89,6 +89,7 @@ internal sealed record WoundDiagnosisEvidence : WoundTransitionEvidence
 
     internal bool MatchesRequest(WoundTransitionRequest request) =>
         string.Equals(RequestFingerprint, ComputeRequestFingerprint(request), StringComparison.Ordinal) &&
+        (SpiritualProof is null || SpiritualProof.Matches(request, this)) &&
         string.Equals(WoundId, request.Before!.WoundId, StringComparison.Ordinal) &&
         string.Equals(ExpectedBeforeFingerprint, WoundIdentityState.ComputeSemanticFingerprint(request.Before), StringComparison.Ordinal) &&
         string.Equals(ExpectedAfterFingerprint, WoundIdentityState.ComputeSemanticFingerprint(request.ProposedAfter!), StringComparison.Ordinal) &&
@@ -99,7 +100,7 @@ internal sealed record WoundDiagnosisEvidence : WoundTransitionEvidence
         string.Equals(TransitionResult.ResultFingerprint,
             WoundHistoryState.ComputeTransitionResultFingerprint(TransitionResult.ToCanonicalJson()), StringComparison.Ordinal);
 
-    private string ComputeRequestFingerprint(WoundTransitionRequest request) =>
+    private string ComputeMortalRequestFingerprint(WoundTransitionRequest request) =>
         WoundAcceptedTurnFingerprintWriter.Compute(new string?[]
         {
             "book_of_eternity.mortal_wound.diagnosis_request", "1",

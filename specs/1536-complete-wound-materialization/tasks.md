@@ -65,9 +65,11 @@ archive are outside checkout; original failures and all other holds are retained
   retain exact current authority, complete declared success/failure and terminal
   retry-safe attempt. T093-ASSESSMENT/read cards are not execution. Other holds stay.
 - [x] T121-DIAGNOSIS-SPIRITUAL-DESIGN [US5] Independently review the concrete
-  diagnosis/optional natural suffix design in `spiritual-aid-design.md`; retain
+  diagnosis/required complete natural suffix design in `spiritual-aid-design.md`; retain
   explicit requirement authority, original versus working images, durable private
-  evidence and one owner/cycle/common publisher, including V-only completion.
+  evidence and one owner/cycle/common publisher. Canonical reconciliation supersedes
+  the earlier V-wound/empty-suffix assumption: wounds I–IV, Healing tier V, one
+  mandatory nonempty suffix/natural result; no new author decision or severity.
 - [x] T121-DIAGNOSIS-SPIRITUAL-CAUSAL [US5] Compile/review/run only the existing-API
   H0 menu scaffold in `BookOfEternityClient.Tests/SpiritualWoundDiagnosisMenuTests.cs`
   after fresh Unit/PDB/artifact/catalog/exact PlanOnly/PREP; expect exactly 2 final
@@ -88,11 +90,12 @@ archive are outside checkout; original failures and all other holds are retained
   profile field, reserve costs, invent Mortal snapshots or skip a declaration.
   Current first block supports only capability/tier/current-player provider DATA.
 - [ ] T121-DIAGNOSIS-SPIRITUAL-PUBLICATION [US5] Add closed durable diagnosis and
-  full-cohort optional suffix tests, then integrate knowledge-only diagnosis and
+  full-cohort nonempty suffix tests, then integrate knowledge-only diagnosis and
   real recovery with `Services/WoundAcceptedTurnPlannerCore.SpiritualHealing.cs`,
   `Services/WoundHistoryState.TransitionResults.cs` and the existing common writer.
-  Cover V-only empty, V+other, selected not first, no-heal progress, terminal removal,
-  omitted/extra/reordered suffix, wrong original/binding and duplicate/fingerprint.
+  Cover Healing tier V with a valid I–IV wound, multiple wounds, selected not first,
+  no-heal progress, terminal removal, empty/omitted/extra/reordered suffix refusal,
+  wrong original/binding and duplicate/fingerprint.
 - [ ] T121-DIAGNOSIS-SPIRITUAL-COMPLETION [US5] Extend actual completed-cycle readers,
   retained request/replay and shared handlers in existing
   `Services/ProgressionScheduleService.SpiritualReplay.cs`,

@@ -1,3 +1,37 @@
+# T121 coherent spiritual execution — first code WIP, UNCOMPILED/UNRUN
+
+Test-first sealed-proof guards now accompany the accepted two-realm causal pair.
+The existing diagnosis evidence family has an explicit spiritual companion that
+freezes the exact retained request, full control and admission DATA. Only that
+companion admits a spiritual knowledge delta; the original Mortal factory, digest
+domain, identities and refusal remain unchanged. The old request-fingerprint-as-
+check placeholder is replaced with an explicit guaranteed-knowledge proof, not a
+fabricated roll or Mortal receipt. The shared reducer still checks the full path,
+complete reveals and unchanged mechanics. No actual staging or publication is
+enabled by this intermediate cut.
+
+Current estimated component selection is 10 cases / 6 methods / 2 Unit descriptors:
+the observed causal2, five new negative/export rows and three directly affected
+existing Mortal factory rows. Original budgets remain 60s. Full execution/result/
+native/UI/GM tests and selection are still being authored; no build or runtime has
+been run against this WIP. This is preservation before continued coherent work,
+not a helper acceptance or a request for a separate build/review cycle.
+
+Independent Astra canonical reconciliation superseded the earlier V-wound/optional
+empty-suffix technical assumption. FR002/003 and ParseSeverity close wounds I–IV;
+FR042 permits Healing tier V. Every selected valid active spiritual wound belongs
+to the natural cohort, and ordinary recovery always emits recover. Therefore the
+execution requires one complete NONEMPTY suffix and exactly one linked strict
+natural result. Genuine Healing V, selected-not-first, no-heal and terminal cases
+replace impossible V-wound positives; empty/omitted/extra/reordered suffixes refuse.
+No new author decision, severity or fixture bypass was added. Parent T121/Mortal
+procedural path and all HOLDs stay open.
+
+Optimization: request/control/admission are detached once by the private proof
+factory; matching reuses that immutable DATA and existing full request/wound seals.
+No cache, filesystem read, separate executor or publisher is added. Current-world
+checks belong to the actual continuation and are not replaced by the local proof.
+
 # T121 spiritual diagnosis — EX3 semantic RED accepted
 
 Independent Astra OUTCOME accepted the actual causal result at source

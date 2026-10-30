@@ -6,7 +6,7 @@ using Xunit;
 namespace BookOfEternityClient.Tests;
 
 /// <summary>Local sealed reduction DATA only; no accepted turn or publication authority.</summary>
-public sealed class SpiritualDiagnosisReductionTests
+public sealed partial class SpiritualDiagnosisReductionTests
 {
     [Theory]
     [InlineData("chaos_sea")]
@@ -83,7 +83,8 @@ public sealed class SpiritualDiagnosisReductionTests
             transitionId, "operation_spiritual_diagnosis_reduction", "turn_43:spiritual_diagnosis");
         var evidence = Assert.IsType<WoundDiagnosisEvidence>(request.Evidence);
         Assert.Equal(admitted.RequirementFingerprint, evidence.RequirementAuthorityFingerprint);
-        Assert.Equal(retained["requestFingerprint"]!.GetValue<string>(), evidence.CheckResultFingerprint);
+        var spiritual = Assert.IsType<SpiritualDiagnosisTransitionProof>(evidence.SpiritualProof);
+        Assert.Equal(retained["requestFingerprint"]!.GetValue<string>(), spiritual.RequestFingerprint);
         Assert.Equal(retained["diagnosis"]!["attemptId"]!.GetValue<string>(), evidence.AttemptId);
         Assert.Equal(beforeCanonical, WoundMaterializationContract.SerializeCanonical(request.Before!));
         Assert.Equal(afterCanonical, WoundMaterializationContract.SerializeCanonical(request.ProposedAfter!));
@@ -93,8 +94,8 @@ public sealed class SpiritualDiagnosisReductionTests
         Assert.Equal(beforeCanonical, WoundMaterializationContract.SerializeCanonical(before));
         Assert.Equal(afterCanonical, WoundMaterializationContract.SerializeCanonical(after));
 
-        // Intended RED: the current reducer still rejects spiritual diagnosis at
-        // its physical/Mortal-only semantic boundary, after valid sealed inputs.
+        // EX3 at 255d51464 failed only here. Explicit spiritual proof must now
+        // preserve the functional knowledge-only outcome without Mortal authority.
         Assert.True(reduced.IsValid, string.Join("; ", reduced.Issues.Select(issue => issue.Code + ": " + issue.Actual)));
         Assert.Equal(3, reduced.Intents.Count);
         Assert.Single(reduced.Intents.OfType<WoundCarrierTransitionIntent>());

@@ -1368,9 +1368,13 @@ internal static partial class WoundTransitionReducer
             EvidenceKindMismatch(issues, "WoundDiagnosisEvidence", request.Evidence);
             return;
         }
-        if (!ActivePair(before, after) ||
-            before.Classification.Domain != "physical" || after.Classification.Domain != "physical" ||
-            before.Owner.Realm != "mortal_world" || after.Owner.Realm != "mortal_world")
+        var spiritual = evidence.SpiritualProof is not null;
+        if (!ActivePair(before, after) || (spiritual
+            ? before.Classification.Domain != "spiritual" || after.Classification.Domain != "spiritual" ||
+                before.Owner.Realm is not ("chaos_sea" or "shining_abode") || after.Owner.Realm != before.Owner.Realm ||
+                !evidence.SpiritualProof!.Matches(request, evidence)
+            : before.Classification.Domain != "physical" || after.Classification.Domain != "physical" ||
+                before.Owner.Realm != "mortal_world" || after.Owner.Realm != "mortal_world"))
         {
             ActiveSourceInvalid(issues, before, after);
             return;

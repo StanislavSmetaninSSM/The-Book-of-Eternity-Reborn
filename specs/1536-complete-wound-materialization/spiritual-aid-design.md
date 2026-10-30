@@ -1190,7 +1190,7 @@ rejected. Technical choices below introduce no new check, tariff or game rule.
   Proposed request schema1/kind `spiritual_diagnosis_request`: exact session/request/realm/turn binding,
   selection, attemptId, cycleKey, original wound/path and requirement fingerprints,
   admitted Healing source and COMPLETE exact canonical control. Other control
-  fields cannot drift merely because type/realm/ordinal still match. No
+  fields cannot drift merely because realm/ordinal still match. No
   roll/payment/cost fields are accepted.
   The retained request has no snapshot token; the admitted owner/result binds the
   actual signed token without backfilling or changing that request. Repeated staging
@@ -1200,7 +1200,7 @@ rejected. Technical choices below introduce no new check, tariff or game rule.
   Ordinary natural admission currently requires command absence and cannot be
   reused by bypassing that guard when a diagnosis request exists.
 
-### One working program, optional exact recovery suffix
+### One working program, required complete recovery suffix
 
 Keep original signed DATA and diagnosed working DATA separately. Current path
 prerequisites/requirements are checked only against original current knowledge.
@@ -1218,12 +1218,14 @@ wound need not be selected. Execute existing recovery math/graphs in that order.
 Every selected recovery stage must follow its diagnosed image exactly. Only real
 recover/heal stages may change mechanics, remove a carrier or close identity.
 
-The suffix can be empty. RankV is excluded by current natural eligibility; a V-only
-world still completes diagnosis and one cycle without a fake recover row or natural
-result. V plus another eligible wound recovers that other wound. Nonempty recovery
-need not heal: existing Build always emits an ordinary recover step for an eligible
-unhealed member, and may emit recover/heal when its real arithmetic reaches closure.
-Do not impose a new requirement that diagnosis must heal or lower severity.
+Canonical reconciliation supersedes the earlier technical V-wound/empty-suffix
+assumption: FR002/FR003 and the wound contract allow only severity I–IV; FR042
+allows Healing art tier V. A valid selected active spiritual wound is therefore
+always a member of ReadNaturalMembers, and Build(active:null) always emits recover.
+Every admitted diagnosis has a complete NONEMPTY natural suffix and exactly one
+existing natural result. Empty/omitted suffixes are refusals, not supported positive
+cases. No new wound severity is introduced. Recovery need not heal or lower rank;
+it may merely add progress, or emit recover/heal at its real arithmetic boundary.
 
 ### Durable results and exact completion
 
@@ -1231,13 +1233,13 @@ The existing WoundDiagnosisTransitionResult lacks the durable original needed af
 terminal recovery. Add an OWN closed schema1 `spiritual_diagnosis` result containing
 exact binding/request, complete original selected wound and knowledge-after image,
 complete admitted original cohort/tiers, requirement binding, source fingerprint,
-cycle/control, scheduler before/report/after images and fingerprint, optional
+cycle/control, scheduler before/report/after images and fingerprint, required
 naturalSuffix reference and resultFingerprint. Full private images remain internal
 History/replay DATA; public projection exposes only authorized readable discoveries.
 
-The optional reference identifies exactly one existing natural persisted result,
-its primary transition/result fingerprint and ordered suffix stage IDs. With no
-suffix it is explicit null and no natural result exists. With a suffix the existing
+The required reference identifies exactly one existing natural persisted result,
+its primary transition/result fingerprint and complete nonempty ordered suffix
+stage IDs. Null, missing, empty, extra or reordered suffixes refuse. The existing
 natural result covers ONLY recover/heal, starting at the diagnosed working images,
 with its normal strict cohort/control/result codec; it cannot claim the diagnosis.
 No schema5 consent grant, payment or provider receipt is fabricated for diagnosis.
@@ -1250,11 +1252,11 @@ injection. Merge final carrier/identity/History/effects through the same common
 assembly and publication; claim/consume the scheduler and retained request once.
 
 Completion/replay gets an explicit diagnosis branch: validate its exact request,
-original→knowledge delta, zero/one exact suffix derived from the COMPLETE admitted
+original→knowledge delta, one exact nonempty suffix derived from the COMPLETE admitted
 cohort, settled scheduler, consumed input absence, current carrier/identity/History
-and every final row. Existing natural readers index stages[0] and assume their
-ordinary identity set; neither assumption is valid for empty suffix or a diagnosed
-V wound beside another recovering owner. Retain original prefixes, exact operation
+and every final row. The first suffix wound need not be the diagnosed wound, and
+terminal recovery may remove that diagnosed carrier. A valid Healing tier V remains
+supported with a canonical severity I–IV wound. Retain original prefixes, exact operation
 and attempt replay, wrong-family/duplicate/conflict refusals and rollback. Historical
 component consistency does not mint fresh source or publication authority.
 
@@ -1292,9 +1294,9 @@ component consistency does not mint fresh source or publication authority.
    source, conflict and stale target/path/realm/generation. Keep all cost/draw paths
    structurally absent and denied, rather than calling them with zero arguments.
 3. Add spiritual knowledge-only reduction and closed durable result/reconstruction
-   tests, then one-owner common composition. Required cheap cases: V-only empty,
-   V+other recoverable, selected eligible member not first, normal no-heal recovery,
-   selected terminal removal, omitted/extra/reordered suffix, wrong original or
+   tests, then one-owner common composition. Required cheap cases: genuine Healing
+   tier V with severity I–IV, multiple wounds, selected member not first, normal
+   no-heal recovery, selected terminal removal, empty/omitted/extra/reordered suffix, wrong original or
    binding, altered private image/fingerprint, duplicate/conflicting and exact replay.
 4. Wire shared handlers/confirmation/staging and completed-cycle readers. Add real
    signed native publication/Full reasoning and physical rollback controls before
