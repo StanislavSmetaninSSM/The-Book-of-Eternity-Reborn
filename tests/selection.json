@@ -7,6 +7,13 @@
       "contracts": [
         "#1536 T108-SHINING-PATIENT; US4scenario8 FR043–054 FR072–074; accepted technical design d4aa700df"
       ]
+    },
+    {
+      "category": "shining-patient-codec-causal",
+      "reason": "Four further existing-API REDs pin closed record5→result8 and selection8 independently before codec changes; retain original2 proposalRED without repetition.",
+      "contracts": [
+        "#1536 T108-SHINING-PATIENT; accepted design d4aa700df"
+      ]
     }
   ]
 }

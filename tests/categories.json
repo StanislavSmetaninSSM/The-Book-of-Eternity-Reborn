@@ -2,6 +2,16 @@
     "schemaVersion": 1,
     "categories": [
     {
+      "id": "shining-patient-codec-causal",
+      "responsibility": "T108-SHINING-PATIENT four detached existing-API causal rows: schema5 outcome factory maps to natural/active8 record family and selection8 roundtrips resident/radiant without old resident alias. Exact owners/locality/next-cycle/immutability, no live authority claim.",
+      "excludes": "No current faction/profile admission, accepted witness, staging/dice, publication, memory, Engine or diagnosis rule qualification.",
+      "changeHints": ["BookOfEternityClient/Services/SpiritualTreatmentParticipation*.cs", "BookOfEternityClient/Services/AfterlifeWoundTreatmentAuthority.cs"],
+      "related": [{ "id": "shining-patient-proposal-causal", "when": "Existing profile proposal admission changes in the same closed schema5 family." }],
+      "requirements": { "frontendBuild": false, "exclusive": false, "ciRunner": "ubuntu-24.04" },
+      "timeoutMinutes": 1, "expectedSeconds": null,
+      "selectors": [{ "project": "unit", "tests": ["BookOfEternityClient.Tests.ShiningPatientTreatmentCodecTests.*"] }]
+    },
+    {
       "id": "shining-patient-proposal-causal",
       "responsibility": "T108-SHINING-PATIENT existing profile proposal reader admission for exact schema5 resident and radiant_actor patient inputs; independent complete preexisting profile DATA, implicit typed enclosing owner, closed locality and no mutation.",
       "excludes": "No live patient locality/consent witness authority, canonical record mint, draw, stage, publication, Engine, provider, DOM, full US4 or diagnostic rule.",

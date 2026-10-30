@@ -56,6 +56,11 @@ kind; no setup failure/timeout/skip/duplicate, full selection, cleanup and pins.
 Category6.0672381/60s, wall14.9925122s. Full raw/TRX/verified cause вне checkout
 в `us4-shining-patient-aid/S1-red`; independent OUTCOME pending. Это доказывает
 только отсутствующее proposal admission, не live consent или healing authority.
+Sol XHigh принял intended RED2. Перед реализацией codec добавлены4 отдельные
+existing-API assertion rows для canonical outcome DATA factory и raw selection8
+parser; оба типа пациента, точный следующий cycle и immutable input. Новых C# API
+они не требуют; production по-прежнему не менялся. Source/compile/PREP/runtime
+этих4 пока pending, originalRED2 не повторяется. Это не live grant authority.
 
 Оптимизация: caller-owned parsed profiles/Shining/actual resident roster и existing
 catalog/index/read-set передаются по одной операции; полный key/dependencies включают
