@@ -1,3 +1,28 @@
+## S6 actual history failure — narrow production cause confirmed
+
+Cheap33 OUTCOME and native-four PREP were independently accepted. The native
+run at 0a1e8150a800546abfebe4afdf793f2170a6cfc2 then completed one radiant-active
+FAIL, three UNRUN, no timeout. Test 23.4362203s, category 31.7709501s/120s;
+runner wall 3:08.9059332 includes preparation overhead and is not test duration.
+The actual grant preparation succeeded; active preparation refused with
+`spiritual_aid_grant_history_invalid`, requiring one exact previous accepted result.
+TRX hash: 2f66d40356842debd730d0a5d84164a9e48cef03e664b1a330ee5875f8e58685.
+Pins and cleanup are verified; no live managed owners remain.
+
+Main, writer and independent Astra traced the defect to the closed natural-grant
+lookup in WoundHistoryState.SpiritualHealing: it includes families 3–6 but omits 8.
+The existing AidGrantAgrees comparison already checks the correct exact family,
+record, session, previous turn and final wound. Add only family8 to the lookup;
+retain duplicate/missing/wrong-family refusal and all current authority checks.
+The bounded adjacent request/grant/result/history/replay audit found no second
+stale whitelist. New cheap complete-history regression and existing old-family
+controls precede native-four and then UI; no repeated unchanged cheap33.
+
+S6 measured 27-artifact archive is complete before any replacement: 62,077,800B,
+SHA256 89eee2267f0ba9519ade320d6c32161d5c78291ac450a08fe0e636ab1f94cfb3, all member hashes and gzip EOF/CRC verified. Full failed raw
+and archive stay outside checkout under S6-*. UI remains unreleased; diagnosis
+execution stays the next functional slice after this treatment path is qualified.
+
 ## S6 cheap result and Engine plan
 
 At runtime 33170bd506ef6b8f1cbd05eed536cf1396996861, S6-cheap completed 33/33
