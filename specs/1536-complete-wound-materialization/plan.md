@@ -1,4 +1,34 @@
-# T121 final fixture member correction — UNCOMPILED/UNRUN
+# T121 spiritual diagnosis — EX2B admission/menu 53 PASS accepted
+
+Independent Astra OUTCOME accepted the bounded admission/menu block at source
+1deb956a0d4dfcca0328f4bb0f1e19ee6a20f21f: 53/53 PASS, 19 methods and three
+complete descriptors, with no timeout, skip, duplicate or underfill. Wall time was
+33.8920824s. Admission's 48 cases took 7.9603299s, menu causal's two cases took
+6.863024s and the three source guards took 6.3997633s; each category retained its
+original 60s budget.
+
+All four fresh EX2B owning builds completed with zero errors and baseline warnings:
+Main 2:50.59/12, Support 16.34s/23, Unit 1:28.03/26 and Integration 2:40.72/102
+(duration/warnings). Four PE/PDB pairs, 186 source bindings and 27 artifacts were
+verified; catalog 1193/13010 and exact PlanOnly 53/19/3 preceded runtime. Actual complete selection,
+TRX hashes, binary pins and cleanup proofs remain in the external receipt
+/workspace/tboe-linux-evidence-20261025/us5-guided-diagnosis/EX2B-green/verified-outcome.json.
+
+EX2B-artifact-archive-proof.json records the retained 27-member owning archive:
+62,148,138 B, decoded 194,969,600 B, SHA256
+ab3e2e082ad9fab85cb0d2906617e10c6e5949dca9091845888c871c3e122472,
+all member hashes matching and full gzip EOF/CRC verified. No raw was deleted or
+committed; no new restore was performed or claimed. The EX2 compile failure and
+prior accepted lineages below remain historical evidence, not relabelled PASS.
+
+Acceptance covers detached menu/admission DATA with exactly three supported
+requirement proofs and eight unavailable canonical-source adapters. Real diagnosis
+staging, publication, completion, native/UI and GM execution remain UNRUN; parent
+T121/US4/US5/#1536 and all existing HOLDs remain open. Optimization reuses one
+operation's detached DATA, adds no cache, and retains fresh confirmation; these
+costs are observations, not a speedup claim. No accepted runtime was repeated.
+
+# T121 final fixture member correction — historical pre-EX2B WIP
 
 Independent actual-model review found that PendingChaosSeaCycles belongs to
 ProgressionSchedule, not ProgressionControl. The same-realm/ordinal drift control
