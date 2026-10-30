@@ -193,7 +193,7 @@ public sealed class SpiritualDiagnosisAdmissionTests
         var context = Context(); var wound = Assert.Single(context.Catalog.Occurrences).Wound;
         var admitted = Assert.IsType<SpiritualDiagnosisAdmission>(new SpiritualDiagnosisSourceData(context).Admit(wound, "diagnose_tissue").Data);
         var turn = new SpiritualSelfTreatmentStageContext("session_diagnosis", "request_diagnosis", 43,
-            new ProgressionControl { Type = "afterlife", CurrentRealm = "Chaos Sea", NextChaosSeaTurnOrdinal = 1 });
+            new ProgressionControl { CurrentRealm = "Chaos Sea", NextChaosSeaTurnOrdinal = 1 });
         var root = SpiritualDiagnosisRequestCodec.Create(turn, admitted.Selection, admitted);
         Assert.Equal(admitted.Selection, SpiritualDiagnosisRequestCodec.ReadSelection(root));
         Assert.True(SpiritualDiagnosisRequestCodec.IsExact(root, turn, admitted.Selection, admitted));
@@ -208,18 +208,18 @@ public sealed class SpiritualDiagnosisAdmissionTests
     }
 
     [Fact]
-    public void RequestBindsCompleteControlEvenWhenRealmTypeAndOrdinalStayEqual()
+    public void RequestBindsCompleteControlEvenWhenRealmAndOrdinalStayEqual()
     {
         var context = Context(); var wound = Assert.Single(context.Catalog.Occurrences).Wound;
         var data = Assert.IsType<SpiritualDiagnosisAdmission>(new SpiritualDiagnosisSourceData(context).Admit(wound, "diagnose_tissue").Data);
-        var control = new ProgressionControl { Type = "afterlife", CurrentRealm = "Chaos Sea", NextChaosSeaTurnOrdinal = 1 };
+        var control = new ProgressionControl { CurrentRealm = "Chaos Sea", NextChaosSeaTurnOrdinal = 1 };
         var turn = new SpiritualSelfTreatmentStageContext("session_control", "request_control", 43, control);
         var original = SpiritualDiagnosisRequestCodec.Create(turn, data.Selection, data);
         Assert.True(SpiritualDiagnosisRequestCodec.IsExact(original, turn, data.Selection, data));
         Assert.True(JsonNode.DeepEquals(JsonSerializer.SerializeToNode(control), original["control"]));
         var changed = JsonSerializer.Deserialize<ProgressionControl>(JsonSerializer.Serialize(control))!;
         changed.PendingChaosSeaCycles = 1;
-        Assert.Equal(control.Type, changed.Type); Assert.Equal(control.CurrentRealm, changed.CurrentRealm);
+        Assert.Equal(control.CurrentRealm, changed.CurrentRealm);
         Assert.Equal(control.NextChaosSeaTurnOrdinal, changed.NextChaosSeaTurnOrdinal);
         var otherTurn = turn with { Progression = changed };
         var other = SpiritualDiagnosisRequestCodec.Create(otherTurn, data.Selection, data);

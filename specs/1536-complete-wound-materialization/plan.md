@@ -1,3 +1,20 @@
+# T121 EX2 compile failure and narrow API correction — UNCOMPILED/UNRUN
+
+The primary's fresh EX2 Main build at source
+b1b8198576264e7def7e7916c537d3a7d324157f stopped with exit 1 after 2:26.03:
+two CS1061 errors and 12 baseline warnings. ProgressionControl has no Type
+property; the diagnosis codec incorrectly referenced one. Support, Unit and
+Integration builds and all EX2 runtime are UNRUN. Full raw remains outside Git:
+/workspace/tboe-linux-evidence-20261025/us5-guided-diagnosis/EX2-build-main.
+
+The narrow correction removes that fictional property from the two codec checks
+and test initializers/assertion, and renames the same-ordinal test accordingly.
+The actual current realm/ordinal checks and complete canonical control binding
+are unchanged. No model field, default, mode gate, rule or feature was added.
+Corrected source is UNCOMPILED/UNRUN; independent delta review and a fresh EX2B
+owning build epoch precede discovery/PREP/runtime. Membership remains 53 cases /
+19 methods / 3 Unit descriptors at unchanged budgets. No build/test by the writer.
+
 # T121 admission/menu final review correction — UNCOMPILED/UNRUN
 
 Independent final SOURCE review identified a new display-only local named
@@ -43,7 +60,7 @@ GM guidance still truthfully says execution is unimplemented; full GM/examples/
 manifest sync is required before enabling that following block.
 
 The request now retains the complete exact canonical ProgressionControl, not
-only type/realm/ordinal. A same-ordinal changed-control regression compares two
+only realm/ordinal. A same-ordinal changed-control regression compares two
 independently valid codec envelopes. Diagnosis choice labels include authorized
 wound name/locus, with typed wound/path selection and a two-wound presentation/
 selection control. Unavailable panels and console/browser prompts distinguish

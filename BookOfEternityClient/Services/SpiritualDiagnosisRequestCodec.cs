@@ -15,7 +15,7 @@ internal static class SpiritualDiagnosisRequestCodec
         ArgumentNullException.ThrowIfNull(context); ArgumentNullException.ThrowIfNull(selection); ArgumentNullException.ThrowIfNull(data);
         if (selection.Diagnosis is not { } diagnosis || selection != data.Selection ||
             !ResourceMaterializationContract.IsExactIdentifier(context.SessionId) || !ResourceMaterializationContract.IsExactIdentifier(context.RequestId) ||
-            context.Turn < 1 || context.Progression is null || context.Progression.Type != "afterlife" ||
+            context.Turn < 1 || context.Progression is null ||
             !AfterlifeEntityProfileState.TryNormalizeEffectRealm(context.Progression.CurrentRealm, out var realm) ||
             realm != diagnosis.Target.Realm || context.Progression.NextChaosSeaTurnOrdinal < 1 ||
             data.Wound.Owner != diagnosis.Target || data.Wound.WoundId != selection.WoundId ||
@@ -73,7 +73,7 @@ internal static class SpiritualDiagnosisRequestCodec
         var context = new SpiritualSelfTreatmentStageContext(Text(root, "sessionId"), Text(root, "requestId"), Number(root, "turn"),
             control);
         if (ordinal < 1 || Number(diagnosis, "healingTier") is < 0 or > 5 ||
-            control.Type != "afterlife" || control.NextChaosSeaTurnOrdinal != ordinal ||
+            control.NextChaosSeaTurnOrdinal != ordinal ||
             !AfterlifeEntityProfileState.TryNormalizeEffectRealm(control.CurrentRealm, out var controlRealm) || controlRealm != realm ||
             !ResourceMaterializationContract.IsAuthorityFingerprint(Text(diagnosis, "requirementFingerprint")) ||
             !ResourceMaterializationContract.IsAuthorityFingerprint(Text(diagnosis, "sourceFingerprint")) ||
