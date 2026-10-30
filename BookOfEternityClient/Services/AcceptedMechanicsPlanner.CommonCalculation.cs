@@ -392,6 +392,20 @@ internal static partial class AcceptedMechanicsPlanner
                 static pair => pair.Value.DeepClone().AsObject(),
                 StringComparer.Ordinal);
         var woundPublication = carrierComposition.WoundPublication;
+        if (serviceOwner?.HasShiningPatientAdmission == true)
+        {
+            try
+            {
+                var patientProfiles = carriers.GetValueOrDefault(WoundCarrierCatalog.AfterlifeProfilesPath) ??
+                    woundPublication?.CarrierAfterImages.GetValueOrDefault(WoundCarrierCatalog.AfterlifeProfilesPath);
+                serviceOwner.RequireShiningPatientComposedImages(
+                    patientProfiles ?? throw new InvalidDataException("Shining patient wound carrier is absent."),
+                    ownerCompanionAfterImages.GetValueOrDefault(GuardianAbodeResidentState.StatePath),
+                    ownerCompanionAfterImages.GetValueOrDefault(ShiningAbodeState.StatePath));
+            }
+            catch (InvalidDataException failure)
+            { return new(null, Issue("spiritual_shining_patient_composition_invalid", "one exact admitted Shining patient common plan", failure.Message)); }
+        }
         if (serviceOwner?.HasWalletContribution == true)
         {
             try

@@ -13,24 +13,37 @@ internal static partial class AfterlifeWoundHealingPlanner
         internal string? ServiceWoundId => _data?.ServiceQuote?.WoundId;
         private string? _expectedServiceAfterImageAdmissionFingerprint;
         private string? _expectedNegotiatedAfterImageAdmissionFingerprint;
+        private SpiritualProjectedShiningAidAdmission? _expectedShiningPatientAfterImageAdmission;
+        private JsonObject? ProjectedShiningAidRecord => _data?.AidWitness?["record"] as JsonObject ??
+            (ResidentThoughtRecord is { } natural && SpiritualTreatmentParticipation.IsShiningPatientParticipation(natural) ? natural : null);
+        internal bool HasShiningPatientAdmission => ProjectedShiningAidRecord is JsonObject record &&
+            SpiritualTreatmentParticipation.IsShiningPatientParticipation(record);
+        private JsonObject? ParsedAdmissionRoot(string path) =>
+            _parsedParticipationRoots?.GetValueOrDefault(path) ?? _parsedSourceRoots.GetValueOrDefault(path) as JsonObject;
 
         /// <summary>Binds existing client projector DATA to this live continuation before comparing any proposed image.</summary>
         /// <param name="projectedProfiles">The existing projection from signed originals and this owner's retained accepted report.</param>
         private void BindProjectedServiceAdmission(JsonObject projectedProfiles)
         {
-            if (_data?.AidWitness is { } witness && SpiritualTreatmentParticipation.RecordRealm(witness["record"]!.AsObject()) == "shining_abode")
+            if (ProjectedShiningAidRecord is { } record && SpiritualTreatmentParticipation.RecordRealm(record) == "shining_abode")
             {
                 RequireExecutionCurrent();
-                var aid = SpiritualTreatmentParticipation.Selection(witness["record"]!.AsObject());
-                var negotiatedAdmission = SpiritualTreatmentParticipation.RequireShiningProviderAdmission(
-                    _parsedSourceRoots.GetValueOrDefault(AfterlifeWoundTreatmentAuthority.ServiceLocalityPaths[0]) as JsonObject,
-                    _parsedSourceRoots.GetValueOrDefault(GuardianAbodeResidentState.StatePath) as JsonObject, projectedProfiles,
-                    _parsedSourceRoots.GetValueOrDefault(ShiningAbodeState.StatePath) as JsonObject,
-                    aid.Healer("shining_abode"), aid.ExplicitLocality!);
-                if (_expectedNegotiatedAfterImageAdmissionFingerprint is not null &&
-                    _expectedNegotiatedAfterImageAdmissionFingerprint != negotiatedAdmission.Fingerprint)
-                    throw new InvalidDataException("The owned negotiated provider projection changed within its operation.");
-                _expectedNegotiatedAfterImageAdmissionFingerprint = negotiatedAdmission.Fingerprint;
+                var aidAdmission = SpiritualTreatmentParticipation.RequireProjectedShiningAidAdmission(record,
+                    ParsedAdmissionRoot(AfterlifeWoundTreatmentAuthority.ServiceLocalityPaths[0]),
+                    ParsedAdmissionRoot(GuardianAbodeResidentState.StatePath), projectedProfiles, ParsedAdmissionRoot(ShiningAbodeState.StatePath));
+                if (aidAdmission.IsPatient)
+                {
+                    if (_expectedShiningPatientAfterImageAdmission is not null)
+                        SpiritualTreatmentParticipation.RequireSameProjectedShiningPatientAdmission(_expectedShiningPatientAfterImageAdmission, aidAdmission);
+                    _expectedShiningPatientAfterImageAdmission = aidAdmission;
+                }
+                else
+                {
+                    if (_expectedNegotiatedAfterImageAdmissionFingerprint is not null &&
+                        _expectedNegotiatedAfterImageAdmissionFingerprint != aidAdmission.Fingerprint)
+                        throw new InvalidDataException("The owned negotiated provider projection changed within its operation.");
+                    _expectedNegotiatedAfterImageAdmissionFingerprint = aidAdmission.Fingerprint;
+                }
             }
             if (!HasServicePayment) return;
             RequireExecutionCurrent();
@@ -79,6 +92,7 @@ internal static partial class AfterlifeWoundHealingPlanner
         internal void RequireServiceComposedImages(JsonObject soul, JsonObject profiles, JsonObject history,
             JsonObject? residents = null, JsonObject? shining = null)
         {
+            if (HasShiningPatientAdmission) RequireShiningPatientComposedImages(profiles, residents, shining);
             if (_data?.NegotiatedWalletInvariant is { } invariant)
             {
                 if (_published || !JsonNode.DeepEquals(_request?["currencyInvariant"], invariant.ToJson()))
@@ -119,20 +133,30 @@ internal static partial class AfterlifeWoundHealingPlanner
 
         private void RequireNegotiatedComposedProvider(JsonObject profiles, JsonObject? residents, JsonObject? shining)
         {
+            if (HasShiningPatientAdmission) { RequireShiningPatientComposedImages(profiles, residents, shining); return; }
             if (_data?.AidWitness is not { } witness || SpiritualTreatmentParticipation.RecordRealm(witness["record"]!.AsObject()) != "shining_abode") return;
-            var aid = SpiritualTreatmentParticipation.Selection(witness["record"]!.AsObject());
-            var admission = SpiritualTreatmentParticipation.RequireShiningProviderAdmission(
+            var admission = SpiritualTreatmentParticipation.RequireProjectedShiningAidAdmission(witness["record"]!.AsObject(),
                 _parsedSourceRoots.GetValueOrDefault(AfterlifeWoundTreatmentAuthority.ServiceLocalityPaths[0]) as JsonObject,
                 residents ?? _parsedSourceRoots.GetValueOrDefault(GuardianAbodeResidentState.StatePath) as JsonObject, profiles,
-                shining ?? _parsedSourceRoots.GetValueOrDefault(ShiningAbodeState.StatePath) as JsonObject,
-                aid.Healer("shining_abode"), aid.ExplicitLocality!);
+                shining ?? _parsedSourceRoots.GetValueOrDefault(ShiningAbodeState.StatePath) as JsonObject);
             if (_expectedNegotiatedAfterImageAdmissionFingerprint is null || admission.Fingerprint != _expectedNegotiatedAfterImageAdmissionFingerprint)
                 throw new InvalidDataException("The actual negotiated provider differs from this owner's exact client projection.");
         }
 
+        internal void RequireShiningPatientComposedImages(JsonObject profiles, JsonObject? residents = null, JsonObject? shining = null)
+        {
+            if (_published || !HasShiningPatientAdmission)
+                throw new InvalidDataException("Patient after-images require the live exact Shining patient owner.");
+            var admission = SpiritualTreatmentParticipation.RequireProjectedShiningAidAdmission(ProjectedShiningAidRecord!,
+                ParsedAdmissionRoot(AfterlifeWoundTreatmentAuthority.ServiceLocalityPaths[0]),
+                residents ?? ParsedAdmissionRoot(GuardianAbodeResidentState.StatePath), profiles,
+                shining ?? ParsedAdmissionRoot(ShiningAbodeState.StatePath));
+            SpiritualTreatmentParticipation.RequireSameProjectedShiningPatientAdmission(_expectedShiningPatientAfterImageAdmission, admission);
+        }
+
         internal void RequireServicePublication(IReadOnlyDictionary<string, JsonObject> writes)
         {
-            if (!HasWalletContribution && _expectedNegotiatedAfterImageAdmissionFingerprint is null) return;
+            if (!HasWalletContribution && _expectedNegotiatedAfterImageAdmissionFingerprint is null && !HasShiningPatientAdmission) return;
             if (!HasWalletContribution)
             {
                 if (!writes.TryGetValue(WoundCarrierCatalog.AfterlifeProfilesPath, out var negotiatedProfiles))

@@ -2,6 +2,65 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "shining-patient-projected-admission",
+  "responsibility": "Typed current projected patient-versus-receiving-provider admission, exact H0 resident/radiant targets, unchanged faction/Elyara providers, composed tuple drift, missing binding and typed-role substitution refusal.",
+  "excludes": "No live grant/publication authority, Engine/UI/provider or unrelated HOLD/performance qualification.",
+  "changeHints": [
+    "BookOfEternityClient/Services/SpiritualTreatmentParticipation.ProjectedAdmission.cs",
+    "BookOfEternityClient/Services/AfterlifeWoundHealingPlanner.Service.cs"
+  ],
+  "related": [
+    {
+      "id": "shining-patient-radiant-active-memory",
+      "when": "Actual retained native active44 consumer must pass after cheap typed dispatch and refusal controls."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.ShiningPatientProjectedAdmissionTests.*"
+      ]
+    }
+  ]
+},
+{
+  "id": "shining-patient-projected-provider-regressions",
+  "responsibility": "Affected existing receiving-faction provider membership/role/current-locality admission and exact refusal matrix; preserves provider contract under typed dispatch.",
+  "excludes": "No live grant/publication authority, Engine/UI/provider or unrelated HOLD/performance qualification.",
+  "changeHints": [
+    "BookOfEternityClient/Services/SpiritualTreatmentParticipation.ProjectedAdmission.cs",
+    "BookOfEternityClient/Services/AfterlifeWoundHealingPlanner.Service.cs"
+  ],
+  "related": [
+    {
+      "id": "shining-patient-radiant-active-memory",
+      "when": "Actual retained native active44 consumer must pass after cheap typed dispatch and refusal controls."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.NegotiatedHealingProviderAdmissionTests.ExactFactionOfferNeedsCurrentHealerButNoPublicCurrencyProfile",
+        "BookOfEternityClient.Tests.NegotiatedHealingProviderAdmissionTests.NegotiatedAdmissionRefusesCurrentTupleDriftWithoutMutation"
+      ]
+    }
+  ]
+},
+{
   "id": "shining-patient-memory-parser",
   "responsibility": "Exactly seven closed radiant response parser rows: explicit null, array, extra field, stale turn, blank text, genuinely invalid identifier and wrong text type. Split after one invalid negative fixture used a legal internal-space identifier.",
   "excludes": "Other24 already passed detached memory/transport cases, live authority, publication and UI.",

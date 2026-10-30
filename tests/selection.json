@@ -2,10 +2,52 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "shining-patient-radiant-active-memory",
-      "reason": "One observational native active44 rerun with existing full preparation ValidationIssue values exposed before unchanged assertion. No production fix or budget increase; retain prior5native/62cheap PASS and keep other two native rows/UI unrun.",
+      "category": "shining-patient-projected-admission",
+      "reason": "Typed projected-admission correction after actual active44 causal RED: cheap new15/affected provider15/sourceguards3, then four actual native kind/phase consumers. Resident grant43 repeats because natural expected-tuple/assembly guard is newly bound. Original owner4 and other old PASS are not blindly replayed; retention remains subject to SOURCE review.",
       "contracts": [
-        "#1536 T108-SHINING-PATIENT-MEMORY; actual signed active44 admission failure diagnostic visibility"
+        "#1536 T108-SHINING-PATIENT-MEMORY; exact typed projected patient at assembly and prepublication; unchanged service wallet and receiving providers"
+      ]
+    },
+    {
+      "category": "shining-patient-projected-provider-regressions",
+      "reason": "Typed projected-admission correction after actual active44 causal RED: cheap new15/affected provider15/sourceguards3, then four actual native kind/phase consumers. Resident grant43 repeats because natural expected-tuple/assembly guard is newly bound. Original owner4 and other old PASS are not blindly replayed; retention remains subject to SOURCE review.",
+      "contracts": [
+        "#1536 T108-SHINING-PATIENT-MEMORY; exact typed projected patient at assembly and prepublication; unchanged service wallet and receiving providers"
+      ]
+    },
+    {
+      "category": "wound-read-semantic-source-guards",
+      "reason": "Typed projected-admission correction after actual active44 causal RED: cheap new15/affected provider15/sourceguards3, then four actual native kind/phase consumers. Resident grant43 repeats because natural expected-tuple/assembly guard is newly bound. Original owner4 and other old PASS are not blindly replayed; retention remains subject to SOURCE review.",
+      "contracts": [
+        "#1536 T108-SHINING-PATIENT-MEMORY; exact typed projected patient at assembly and prepublication; unchanged service wallet and receiving providers"
+      ]
+    },
+    {
+      "category": "shining-patient-response-memory-causal",
+      "reason": "Typed projected-admission correction after actual active44 causal RED: cheap new15/affected provider15/sourceguards3, then four actual native kind/phase consumers. Resident grant43 repeats because natural expected-tuple/assembly guard is newly bound. Original owner4 and other old PASS are not blindly replayed; retention remains subject to SOURCE review.",
+      "contracts": [
+        "#1536 T108-SHINING-PATIENT-MEMORY; exact typed projected patient at assembly and prepublication; unchanged service wallet and receiving providers"
+      ]
+    },
+    {
+      "category": "shining-patient-radiant-response-memory",
+      "reason": "Typed projected-admission correction after actual active44 causal RED: cheap new15/affected provider15/sourceguards3, then four actual native kind/phase consumers. Resident grant43 repeats because natural expected-tuple/assembly guard is newly bound. Original owner4 and other old PASS are not blindly replayed; retention remains subject to SOURCE review.",
+      "contracts": [
+        "#1536 T108-SHINING-PATIENT-MEMORY; exact typed projected patient at assembly and prepublication; unchanged service wallet and receiving providers"
+      ]
+    },
+    {
+      "category": "shining-patient-radiant-active-memory",
+      "reason": "Typed projected-admission correction after actual active44 causal RED: cheap new15/affected provider15/sourceguards3, then four actual native kind/phase consumers. Resident grant43 repeats because natural expected-tuple/assembly guard is newly bound. Original owner4 and other old PASS are not blindly replayed; retention remains subject to SOURCE review.",
+      "contracts": [
+        "#1536 T108-SHINING-PATIENT-MEMORY; exact typed projected patient at assembly and prepublication; unchanged service wallet and receiving providers"
+      ]
+    },
+    {
+      "category": "shining-patient-resident-active-memory",
+      "reason": "Typed projected-admission correction after actual active44 causal RED: cheap new15/affected provider15/sourceguards3, then four actual native kind/phase consumers. Resident grant43 repeats because natural expected-tuple/assembly guard is newly bound. Original owner4 and other old PASS are not blindly replayed; retention remains subject to SOURCE review.",
+      "contracts": [
+        "#1536 T108-SHINING-PATIENT-MEMORY; exact typed projected patient at assembly and prepublication; unchanged service wallet and receiving providers"
       ]
     }
   ]

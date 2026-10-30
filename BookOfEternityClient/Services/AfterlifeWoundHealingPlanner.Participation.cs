@@ -14,6 +14,7 @@ internal static partial class AfterlifeWoundHealingPlanner
         private PendingTurnSnapshotReadAuthority? _participationSnapshot;
         private PendingTurnSnapshotReader.OriginalReadEvidence? _participationOriginal;
         private IReadOnlyDictionary<string, CanonicalBeforeImage>? _participationSources;
+        private IReadOnlyDictionary<string, JsonObject?>? _parsedParticipationRoots;
         internal JsonArray? ParticipationOutcomes => _participationOutcomes?.DeepClone().AsArray();
 
         internal async Task PrepareParticipationAsync(IReadOnlyList<SpiritualTreatmentParticipation.Change> changes,
@@ -101,11 +102,13 @@ internal static partial class AfterlifeWoundHealingPlanner
                     _natural!.CycleOrdinal, _stages[0].TransitionId));
             }
             _participationSnapshot = snapshot; _participationOriginal = evidence; _participationSources = sources;
+            _parsedParticipationRoots = currentRoots;
             _participationChanges = detachedChanges;
             _participationOutcomes = outcomes;
             BindResidentThoughts(currentRoots.GetValueOrDefault(GuardianAbodeResidentState.StatePath));
             await BindShiningPatientMemoryAsync(currentRoots.GetValueOrDefault(GuardianAbodeResidentState.StatePath));
             _patientMemory?.ApplyProfiles(acceptedProfiles);
+            if (HasShiningPatientAdmission) BindProjectedServiceAdmission(acceptedProfiles);
             RequireCurrent(_files, _lease);
         }
 
