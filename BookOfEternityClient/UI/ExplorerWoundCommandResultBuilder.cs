@@ -38,7 +38,8 @@ internal static class ExplorerWoundCommandResultBuilder
         {
             var lines = new List<string> { wound.Description };
             lines.AddRange(wound.Facts.Select(f => f.Label + ": " + f.Value));
-            lines.AddRange(wound.Diagnosis.Select(name => "Диагностика (рекомендация): " + name + ". Выполнение этого осмотра через команду пока недоступно."));
+            lines.AddRange(wound.Diagnosis.Select(path => "Диагностика (рекомендация): " + path.Name + ": " +
+                string.Join("; ", path.Requirements) + ". " + path.Policy));
             lines.AddRange(wound.Methods.Select(m => "Известный способ (рекомендация): " + m.Name + ": " + string.Join("; ", m.Requirements) + ". " + m.Policy));
             blocks.Add(new UiPanelBlock { Title = wound.Name + " — " + wound.Severity,
                 Blocks = lines.Where(l => !string.IsNullOrWhiteSpace(l)).Select(l => (UiBlock)new UiTextBlock { Text = l }).ToList() });

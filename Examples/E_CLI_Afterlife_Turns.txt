@@ -14020,8 +14020,11 @@ the card does not apply this fragment or ask the GM to mutate anything.
 Visible result: name/severity, declared visible symptom/prognosis, current readable
 care/recovery and exact visible owned effects if present. Поддержать духовную ткань
 is a recommendation with uncertain requirements, no executable route button.
-Уточнить состояние духовной ткани is a diagnosis recommendation, not an executed
-check or a grant of its future reveal. НЕРАСКРЫТЫЙ_РИТУАЛ and ЧАСТНОЕ_УСЛОВИЕ remain
+Уточнить состояние духовной ткани is a diagnosis recommendation with generic
+conditions to clarify with a specialist, not an executed check or a grant of its
+future reveal. No opaque spiritual requirement is printed or treated as an
+availability proof. The command explicitly says execution is not yet available.
+НЕРАСКРЫТЫЙ_РИТУАЛ and ЧАСТНОЕ_УСЛОВИЕ remain
 absent from both public views. No other actor's wounds, Self History, IDs, selectors
 or private complication/effect payloads appear. Read/cancel: ZERO attempt/draw/cycle/
 charge/repair. Existing lawful treatment, if actually available, still requires the

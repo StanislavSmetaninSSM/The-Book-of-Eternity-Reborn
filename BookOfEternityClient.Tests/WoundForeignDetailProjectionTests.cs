@@ -71,7 +71,8 @@ public sealed class WoundForeignDetailProjectionTests
         var result = WoundPlayerProjection.ProjectKnownTarget(context, Target(context, data.Guardians, data.Residents, "guardian"));
         var wound = Assert.Single(result.Active);
         Assert.Equal(known ? 1 : 0, wound.Methods.Count);
-        Assert.Contains("Явный осмотр", wound.Diagnosis); Assert.Equal(known, wound.Diagnosis.Contains("Будущий закрытый осмотр"));
+        Assert.Contains(wound.Diagnosis, path => path.Name == "Явный осмотр");
+        Assert.Equal(known, wound.Diagnosis.Any(path => path.Name == "Будущий закрытый осмотр"));
         Assert.DoesNotContain("ПРИВАТНАЯ_ДИАГНОСТИКА", Text(result));
         if (!known) Assert.DoesNotContain("Укрепить духовную ткань", Text(result));
         Assert.DoesNotContain("route_detail_known", Text(result));

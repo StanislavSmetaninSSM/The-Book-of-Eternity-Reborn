@@ -2,6 +2,17 @@
     "schemaVersion": 1,
     "categories": [
     {
+      "id": "wound-diagnosis-read-interfaces",
+      "responsibility": "T121-DIAGNOSIS-READ two minimal real /раны and /статус cases through console and shared browser handlers: readable diagnostic conditions, close/no confirmation or pending action, whole-tree byte identity/no repair and one actual source read per required root per handler.",
+      "excludes": "No Engine/provider, DOM/fresh-process, diagnostic execution/reveal/check/time/resource policy or full US5 qualification.",
+      "changeHints": ["BookOfEternityClient/UI/ExplorerWoundCommandResultBuilder.cs", "BookOfEternityClient/UI/WoundPlayerStatusBlocks.cs", "BookOfEternityClient/Services/WoundPlayerProjection*.cs"],
+      "related": [{ "id": "wound-diagnosis-recommendations", "when": "Cheap projection/privacy conditions must pass before handler qualification." }],
+      "requirements": { "frontendBuild": false, "exclusive": true, "ciRunner": "ubuntu-24.04" },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [{ "project": "integration", "tests": ["BookOfEternityClient.Tests.WoundDiagnosisReadInterfaceTests.KnownDiagnosticConditionsAreReadableAndInertThroughBothHandlers"] }]
+    },
+    {
       "id": "wound-diagnosis-recommendations",
       "responsibility": "T121-DIAGNOSIS-READ cheap real projection and command/status rendering: declared physical diagnostic requirements, no execution or source mutation, current-knowledge/private-path filtering and opaque spiritual privacy.",
       "excludes": "No actual diagnostic draw/discovery, duration or resource consumption policy, treatment, DOM/provider or fresh-process qualification.",

@@ -34,12 +34,15 @@ internal static class WoundPlayerStatusBlocks
     {
         Title = wound.Name, Subtitle = "Тяжесть: " + wound.Severity, Summary = wound.Description,
         Facts = wound.Facts.Select(fact => new UiEntityFact { Label = fact.Label, Value = fact.Value }).ToList(),
-        List = (wound.Methods.Count == 0 ? new[] { "Известные способы лечения пока не определены." } : [])
-            .Concat(wound.Diagnosis.Select(name => "Известное обследование: " + name)).ToList(),
+        List = (wound.Methods.Count == 0 ? new[] { "Известные способы лечения пока не определены." } : []).ToList(),
         Cards = wound.Methods.Select(method => new UiEntityCard
         {
             Title = method.Name, Subtitle = "Известный способ лечения", Summary = method.Policy,
             List = method.Requirements.ToList()
-        }).ToList()
+        }).Concat(wound.Diagnosis.Select(path => new UiEntityCard
+        {
+            Title = path.Name, Subtitle = "Известное обследование (рекомендация)", Summary = path.Policy,
+            List = path.Requirements.ToList()
+        })).ToList()
     };
 }

@@ -7,7 +7,7 @@ internal sealed record WoundPlayerFact(string Label, string Value);
 internal sealed record WoundPlayerMethod(string Name, IReadOnlyList<string> Requirements, string Policy);
 internal sealed record WoundPlayerEntry(
     string Name, string Severity, string Description, IReadOnlyList<WoundPlayerFact> Facts,
-    IReadOnlyList<WoundPlayerMethod> Methods, IReadOnlyList<string> Diagnosis);
+    IReadOnlyList<WoundPlayerMethod> Methods, IReadOnlyList<WoundPlayerMethod> Diagnosis);
 internal sealed record WoundPlayerHistoryEntry(string Name, string Severity, string Summary);
 internal sealed record WoundPlayerProjectionResult(
     bool IsAvailable, string StatusMessage, IReadOnlyList<WoundPlayerEntry> Active,
@@ -109,8 +109,16 @@ internal static partial class WoundPlayerProjection
             if (!string.IsNullOrWhiteSpace(effect.Summary)) Add("Влияние", effect.Summary);
             foreach (var fact in effect.Facts) Add(fact.Label, fact.Value);
         }
+        // One detached physical parse serves both read-only lists within this card.
+        // Nothing is retained across reads or used as mutation/availability authority.
+        var parsed = wound.Classification.Domain == "physical"
+            ? MortalWoundTreatmentContract.ParseProjection(wound.Treatment, "projection.treatment",
+                wound.Owner.Realm, wound.Owner.OwnerKind, wound.Severity.Rank, wound.Complications,
+                wound.Recovery.DeteriorationPolicy)
+            : null;
+        var treatment = parsed is { IsValid: true } ? parsed.Treatment : null;
         return new(Text(wound.Display.Name), wound.Severity.Value, Text(wound.Display.Description),
-            facts, ProjectMethods(wound, input), ProjectDiagnosis(wound));
+            facts, ProjectMethods(wound, input, treatment), ProjectDiagnosis(wound, input, treatment));
 
         void Add(string label, string? value)
         {

@@ -38,7 +38,7 @@ public sealed class WoundForeignDetailDocumentationTests
         Assert.Contains(wound.Facts, f => f.Value == "Заметная потеря устойчивости");
         Assert.Equal("Поддержать духовную ткань", Assert.Single(wound.Methods).Name);
         Assert.Contains("рекомендация", wound.Methods[0].Policy);
-        Assert.Equal("Уточнить состояние духовной ткани", Assert.Single(wound.Diagnosis));
+        Assert.Equal("Уточнить состояние духовной ткани", Assert.Single(wound.Diagnosis).Name);
         var rendered = JsonSerializer.Serialize(result, new JsonSerializerOptions { Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping });
         foreach (var secret in new[] { "НЕРАСКРЫТЫЙ_РИТУАЛ", "ЧАСТНОЕ_УСЛОВИЕ", "undiscovered_rite", "known_support", "wound_foreign_detail" })
             Assert.DoesNotContain(secret, rendered);

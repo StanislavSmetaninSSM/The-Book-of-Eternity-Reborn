@@ -44,7 +44,7 @@ public sealed partial class WoundProjectionPrivacyTests
         Assert.Empty(Assert.Single(result.Active).Methods);
         Assert.DoesNotContain("clean_and_suture", Text(result));
         Assert.DoesNotContain("Очистить и наложить швы", Text(result));
-        Assert.Equal("Осмотр раны", Assert.Single(Assert.Single(result.Active).Diagnosis));
+        Assert.Equal("Осмотр раны", Assert.Single(Assert.Single(result.Active).Diagnosis).Name);
     }
 
     [Fact]
@@ -68,7 +68,7 @@ public sealed partial class WoundProjectionPrivacyTests
         later["requiresKnownFacts"] = new System.Text.Json.Nodes.JsonArray("route:clean_and_suture");
         node["treatment"]!["diagnosisPaths"] = new System.Text.Json.Nodes.JsonArray(Diagnosis("public", "Первичный осмотр"), later);
         var result = WoundPlayerProjection.Build(WoundPlayerProjectionTestData.Input(node));
-        Assert.Equal("Первичный осмотр", Assert.Single(Assert.Single(result.Active).Diagnosis));
+        Assert.Equal("Первичный осмотр", Assert.Single(Assert.Single(result.Active).Diagnosis).Name);
         Assert.Empty(result.Active[0].Methods);
         Assert.DoesNotContain("Будущий тайный осмотр", Text(result));
     }

@@ -8,7 +8,7 @@ internal static partial class WoundPlayerProjection
         "Указанные требования не подтверждают наличие ресурсов, доступность помощника или точную цену.";
 
     private static IReadOnlyList<WoundPlayerMethod> ProjectMethods(WoundMaterializationEnvelope wound,
-        WoundPlayerProjectionInput input)
+        WoundPlayerProjectionInput input, MortalWoundTreatmentDefinition? treatment)
     {
         var known = wound.Treatment.KnownRouteIds.ToHashSet(StringComparer.Ordinal);
         if (wound.Classification.Domain != "physical")
@@ -20,11 +20,8 @@ internal static partial class WoundPlayerProjection
                     ["Условия известного способа следует уточнить у специалиста."],
                     RequirementNotice + " Этот пункт — рекомендация; отдельное действие для него пока недоступно.")).ToArray();
         }
-        var parsed = MortalWoundTreatmentContract.ParseProjection(wound.Treatment, "projection.treatment",
-            wound.Owner.Realm, wound.Owner.OwnerKind, wound.Severity.Rank, wound.Complications,
-            wound.Recovery.DeteriorationPolicy);
-        if (!parsed.IsValid || parsed.Treatment is null) return [];
-        return parsed.Treatment.Routes.Where(r => known.Contains(r.RouteId) && r.Visibility != "gm_only")
+        if (treatment is null) return [];
+        return treatment.Routes.Where(r => known.Contains(r.RouteId) && r.Visibility != "gm_only")
             .Select(r => new WoundPlayerMethod(Text(r.DisplayName),
                 r.Requirements.Select(q => Requirement(q, input)).ToArray(),
                 string.Join(" ", RequirementNotice, DescribeMode(r.Mode),
@@ -64,16 +61,28 @@ internal static partial class WoundPlayerProjection
         return $"{Text(definition.DisplayName)}: {q.Quantity.ToString(CultureInfo.InvariantCulture)} ед. ({Role(q.OwnerRole)})";
     }
 
-    private static IReadOnlyList<string> ProjectDiagnosis(WoundMaterializationEnvelope wound)
+    private static IReadOnlyList<WoundPlayerMethod> ProjectDiagnosis(WoundMaterializationEnvelope wound,
+        WoundPlayerProjectionInput input, MortalWoundTreatmentDefinition? treatment)
     {
         var current = wound.Treatment.KnownRouteIds.Select(id => "route:" + id)
             .Concat(wound.Complications.Where(c => Visible(c.Visibility)).Select(c => "complication:" + c.ComplicationId))
             .ToHashSet(StringComparer.Ordinal);
         // Future reachable reveals validate a contract; they are not current knowledge.
-        return wound.Treatment.DiagnosisPaths.Where(p => p.Visibility != "gm_only" &&
-                (Visible(p.Visibility) || p.Visibility == "hidden" && p.RequiresKnownFacts.Count > 0) &&
-                p.RequiresKnownFacts.All(current.Contains))
-            .Select(p => Text(p.DisplayName)).Where(n => n.Length > 0).ToArray();
+        var policy = RequirementNotice + " Выполнение этого осмотра через команду пока недоступно.";
+        if (wound.Classification.Domain == "physical")
+            return treatment is null ? [] : treatment.DiagnosisPaths
+                .Where(p => Known(p.Visibility, p.RequiresKnownFacts.Length, p.RequiresKnownFacts.Select(f => f.CanonicalValue)))
+                .Select(p => new WoundPlayerMethod(Text(p.DisplayName),
+                    p.Requirements.Select(q => Requirement(q, input)).ToArray(), policy))
+                .Where(p => p.Name.Length > 0).ToArray();
+        return wound.Treatment.DiagnosisPaths.Where(p => Known(p.Visibility, p.RequiresKnownFacts.Count, p.RequiresKnownFacts))
+            .Select(p => new WoundPlayerMethod(Text(p.DisplayName),
+                ["Условия осмотра следует уточнить у специалиста."], policy))
+            .Where(p => p.Name.Length > 0).ToArray();
+
+        bool Known(string visibility, int prerequisiteCount, IEnumerable<string> prerequisites) =>
+            visibility != "gm_only" && (Visible(visibility) || visibility == "hidden" && prerequisiteCount > 0)
+            && prerequisites.All(current.Contains);
     }
 
     private static string Role(string role) => role == "target" ? "у получателя лечения" : "у лечащего";

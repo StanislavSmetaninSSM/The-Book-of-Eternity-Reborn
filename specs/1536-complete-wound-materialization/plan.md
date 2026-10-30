@@ -34,6 +34,18 @@ setup defect: default spiritual fixture owner/path не являются current
 payload остаётся неинтерпретируемым. Прежний PREP удержан,
 исправленная фикстура требует fresh Unit build/delta review. Runtime UNRUN;
 никакая ошибка подготовки не принимается как causal RED.
+Независимый Sol XHigh повторно проверил весь fixture pipeline; D1final build
+exit0/26warnings/1:04.91,4PE-PDB/133bindings/27artifacts и exact PlanOnly6
+подтверждены. Actual RED на `fdb11da54b9d7f06321552c29bcb47b9da1ed329`:
+6executed,2physical FAIL ровно на missing17,4privacy PASS, no skip/timeout/duplicate,
+wall10.6344285/category4.6771892<60s; независимый OUTCOME принял causal RED.
+Полные raw/TRX SHA/cleanup/pins сохранены в D1-red вне checkout.
+
+Минимальное rich отображение и два реальных handler cases написаны, пока
+UNCOMPILED/UNRUN и SOURCE pending. Shared method/diagnosis shape остаётся
+внутренним display DATA; browser UiBlocks неизменны. Новых полей ГМ, ответов,
+цены или action нет, поэтому daemon/prompt/manifest schema не меняются; общий
+GM guide и существующий worked known-card fragment синхронизированы.
 HOLD DFR/Mortal/Windows и общая незавершённость #1536 сохраняются.
 
 # Договорная помощь US6 B: ограниченный игровой маршрут принят
