@@ -7,8 +7,16 @@
 Sol6.1/high audit_surrender_captivity установил границы добровольности,
 устаревшего side control, source lifetime, отдельных oath/terminal-proof и
 старого realm reset. Эти исходники не объявляются готовым пленением.
-Проверяется весь coherent diff принятия/нового профиля/ссылок; независимое
-сложное ревью GPT-6 Astra/high и публикация ещё предстоят.
+WIP0741f78f50ce08b8a3ef1df1dc788140e229723c опубликован до review; remoteSHA
+и GitHub readback профиля подтверждены.144относительные файловые ссылки
+(без anchors), неизменность блока формулы HP0, diff/consistency проверены.
+Независимый GPT-6 Astra/high review_surrender_captivity проверил весь diff
+cae83c77..0741f78f всех11документов и связанные исходники; замечаний нет.
+Проверены actor isolation/HP0/rest/no-refill, reentry, источники/сроки/authority,
+realm access, отдельные oath/terminal-proof и ownership. Финальная публикация
+проверяет11blob/remoteHEAD и два issue с точным сохранением старой истории.
+Документальный результат готов к рассмотрению; T108 ещё не принят автором.
+Отдельное ревью не потребовало доработки; измеренной экономии времени нет.
 Код/tests/build/симуляции не запускались; баланс долгого удержания не доказан.
 
 ## Текущий checkpoint T106: нулевое HP
