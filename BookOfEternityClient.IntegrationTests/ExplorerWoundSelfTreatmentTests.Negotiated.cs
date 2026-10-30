@@ -328,7 +328,7 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
     {
         const string elyara = "Элиара Последней Раны";
         var timestamp = DateTime.UtcNow.ToString("o"); var offer = turn.TurnNumber == 43;
-        var thought = offer ? "Я предлагаю договорную помощь; душа ещё не принимает лечение." : "Душа отдельно подтвердила оговорённую помощь; исход считает клиент.";
+        var thought = offer ? "Я предлагаю договорную помощь; душа ещё не принимает лечение." : "Я оказываю отдельно подтверждённую договорную помощь; исход рассчитывает клиент.";
         var consequence = offer ? "Запись предложения не создаёт нового обязательства души." : "Согласованные условия относятся к принятой попытке, включая неудачу; Перья не списываются.";
         JsonObject Memory(string id, string summary) => new()
         {
