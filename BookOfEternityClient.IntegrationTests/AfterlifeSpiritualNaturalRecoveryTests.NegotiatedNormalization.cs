@@ -115,7 +115,9 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
                     .BindTo(lease).NormalizeAccumulatedStateWithPlanAsync(manifest.Files);
                 Assert.Same(ready.Plan, published); Assert.True(owner.IsClosed);
                 var actualShining = (await files.ReadFileBytesAsync(lease, shiningPath))!;
-                Assert.False(before.AsSpan().SequenceEqual(actualShining));
+                // This seed is already canonical. WriteIfChanged must preserve
+                // its physical bytes; the independent writer window proves a real change.
+                Assert.Equal(before, actualShining);
                 var result = Assert.IsType<SpiritualHealingPersistedResult>(Assert.Single((await fixture.ReadHistoryAsync()).Transitions,
                     t => t.TransitionResult is SpiritualHealingPersistedResult).TransitionResult);
                 Assert.True(result.IsNatural); Assert.Equal(6, result.SchemaVersion);
