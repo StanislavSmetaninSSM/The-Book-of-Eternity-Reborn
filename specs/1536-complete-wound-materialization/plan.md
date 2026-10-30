@@ -1,3 +1,32 @@
+# US6 historical/current correction fresh builds and exact PREP ready; no GREEN yet
+
+Whole Astra/high SOURCE ACCEPT06a6de91fa8e0bae4f8d7cdc8bed982072d1a2b9 after
+finite dedup fixture fix; Sol fixture/final-membership ACCEPT. Same frozen source
+fresh owning builds all exit0/0errors: Main1:55.22/12baselinewarnings,Support15.01/23,
+Unit1:07.21/26,Integration1:58.94/102. HISTGREEN-artifact-preflight verifies27artifacts,
+4PE/PDBpairs,116sourcebindings,8operationalresources/32copies+daemon consistent.
+Prior27mixed-source owning artifacts preserved externally and fully decoded/hash-
+verified:61837631bytes,SHA2bd272ee149b4c97754b669cbc0de4b308a24ce6c8a80b0fa50fa6ab38d12f2c.
+No raw/source/save/recovery deletion or generated evidence uploaded.
+
+Official catalog1153/12935valid,0executed; exact PlanOnly17descriptors/179cases,
+15.4166544s,0executed/duplicates, cleanup/pins unchanged. Full finite impact discovery
+is not an aggregate runtime request. Proposed staged execution after independent PREP:
+Unit76 -> historical/referenceIntegration85 -> publicoutcomes3/projection6/full-
+normalizer1 -> originalconsole1(3min) -> browser1 -> rollback1, each later stage only
+following verified prior PASS/full capture/current pins and resource/ownership checks.
+Private5 still affected/open and needs separate admission after the new public route;
+prior timeout is neither PASS nor claimed fixed. All budgets unchanged; new21realfile
+controls2min as already reviewed. No HOLD or unrelated oldElyara UI/fullsuite repeat.
+
+Raw/proof /workspace/tboe-linux-evidence-20261025/us6-faction-service-agreement/HISTGREEN*.
+Free~6GB exceeds400MiB protected reserve+256MiB output allowance, no collection quota.
+This checkpoint changes plan.md only; source06a6de91f remains compiled, verify that
+metadata delta rather than rebuild. Next independent PREP then causal/current DATA
+qualification; corrected actual healing/US6 acceptance is still pending runtime.
+
+---
+
 # US6 correction whole SOURCE accepted; one selected fixture oracle corrected
 
 Astra/high production SOURCE ACCEPT2759201a35e394ced000979c56fc0690af246f6b;
