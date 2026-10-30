@@ -20,8 +20,8 @@ internal static partial class AfterlifeWoundHealingPlanner
                 _ordinaryResidentThoughtCommands = response[GuardianAbodeResidentState.UpdateThoughtJournalProperty] is JsonArray ordinary
                     ? ordinary.DeepClone().AsArray() : throw new InvalidDataException("Ordinary patient memory requires an explicit array.");
             if (response?.ContainsKey(SpiritualTreatmentParticipation.ShiningPatientMemoryResponseProperty) == true)
-                _radiantThoughtCommand = response[SpiritualTreatmentParticipation.ShiningPatientMemoryResponseProperty] is JsonObject radiant
-                    ? radiant.DeepClone().AsObject() : throw new InvalidDataException("Radiant patient memory requires an explicit object.");
+                _radiantThoughtCommand = SpiritualTreatmentParticipation.ReadShiningPatientMemoryCommand(
+                    response[SpiritualTreatmentParticipation.ShiningPatientMemoryResponseProperty], _input.Binding.Turn);
         }
 
         private JsonObject? ResidentThoughtRecord => _data?.AidWitness?["record"]?.AsObject() ??

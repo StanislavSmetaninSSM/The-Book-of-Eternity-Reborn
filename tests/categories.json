@@ -2,6 +2,121 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "shining-patient-memory-data",
+  "responsibility": "Detached exact local ordinary/protected resident append composition, radiant ledger/summary complete afterimages, global IDs, wrong owner/location/turn/shape, explicit null and response refresh presence.",
+  "excludes": "No live consent, snapshot/publication authority, Engine or provider claims.",
+  "changeHints": [
+    "BookOfEternityClient/Services/SpiritualTreatmentParticipation.ShiningPatientMemory.cs"
+  ],
+  "related": [
+    {
+      "id": "shining-patient-response-memory-causal",
+      "when": "Actual signed source/publication and Full reasoning proves consumer integration."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.ShiningPatientMemoryProgramTests.*"
+      ]
+    }
+  ]
+},
+{
+  "id": "shining-patient-radiant-response-memory",
+  "responsibility": "T108 patient memory actual signed radiant grant43 response, common normalization/publication and Full reasoning validation.",
+  "excludes": "No Engine/repair/provider/DOM, unrelated performance or HOLD qualification.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/ExplorerWoundSelfTreatmentTests.ShiningPatientResponse.cs"
+  ],
+  "related": [
+    {
+      "id": "shining-patient-memory-data",
+      "when": "Detached composition/refusal controls pass before native response publication."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.RadiantPatientConsentResponsePublishesAllRequiredActorMemory"
+      ]
+    }
+  ]
+},
+{
+  "id": "shining-patient-resident-active-memory",
+  "responsibility": "T108 patient memory actual signed resident active44 after real grant43 response, common normalization/publication and Full reasoning validation.",
+  "excludes": "No Engine/repair/provider/DOM, unrelated performance or HOLD qualification.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/ExplorerWoundSelfTreatmentTests.ShiningPatientResponse.cs"
+  ],
+  "related": [
+    {
+      "id": "shining-patient-memory-data",
+      "when": "Detached composition/refusal controls pass before native response publication."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.ShiningResidentActiveResponsePublishesAllRequiredActorMemory"
+      ]
+    }
+  ]
+},
+{
+  "id": "shining-patient-radiant-active-memory",
+  "responsibility": "T108 patient memory actual signed radiant active44 after real grant43 response, common normalization/publication and Full reasoning validation.",
+  "excludes": "No Engine/repair/provider/DOM, unrelated performance or HOLD qualification.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/ExplorerWoundSelfTreatmentTests.ShiningPatientResponse.cs"
+  ],
+  "related": [
+    {
+      "id": "shining-patient-memory-data",
+      "when": "Detached composition/refusal controls pass before native response publication."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.RadiantPatientActiveResponsePublishesAllRequiredActorMemory"
+      ]
+    }
+  ]
+},
+{
   "id": "shining-patient-response-memory-causal",
   "responsibility": "Actual signed resident consent43 response, common publication and Full cross-owner actor memory validation; causal check for T108-SHINING-PATIENT-MEMORY.",
   "excludes": "Engine/UI/repair loop, radiant or active44 memory and unrelated gameplay.",

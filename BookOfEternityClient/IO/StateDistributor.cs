@@ -119,9 +119,11 @@ public class StateDistributor
             response,
             acceptedWoundInput);
         var modifiedFiles = new List<string>();
-        var fileUpdates = CollectFileUpdates(response);
+        var patientResidentMemory = await ShiningPatientMemoryTransport.RoutesOrdinaryResidentsAsync(_fs, writeLease, response);
+        if (patientResidentMemory) response.ResidentThoughtsFromPatientInterface = true;
+        var fileUpdates = CollectFileUpdates(response, patientResidentMemory);
         var targetPaths = fileUpdates.Keys
-            .Concat(CollectOutputPaths(response))
+            .Concat(CollectOutputPaths(response, patientResidentMemory))
             .Concat(acceptedWoundCommand is null
                 ? Array.Empty<string>()
                 : new[] { AcceptedMechanicsPlan.WoundCommandPath })
@@ -170,7 +172,7 @@ public class StateDistributor
             }
 
             // Phase 3: Write output interface files
-            await WriteOutputFiles(writeLease, response, mutations);
+            await WriteOutputFiles(writeLease, response, mutations, patientResidentMemory);
 
             if (acceptedWoundCommand is { TreatmentRequests.Count: > 0 })
             {
@@ -237,7 +239,7 @@ public class StateDistributor
         return modifiedFiles;
     }
 
-    private Dictionary<string, Dictionary<string, JsonElement>> CollectFileUpdates(GameResponse response)
+    private Dictionary<string, Dictionary<string, JsonElement>> CollectFileUpdates(GameResponse response, bool patientResidentMemory)
     {
         var result = new Dictionary<string, Dictionary<string, JsonElement>>();
         var responseJson = JsonSerializer.SerializeToElement(response, JsonOpts);
@@ -247,6 +249,7 @@ public class StateDistributor
 
         foreach (var prop in responseJson.EnumerateObject())
         {
+            if (patientResidentMemory && prop.Name == GuardianAbodeResidentState.UpdateThoughtJournalProperty) continue;
             if (prop.Value.ValueKind == JsonValueKind.Null ||
                 prop.Value.ValueKind == JsonValueKind.Undefined)
                 continue;
@@ -589,7 +592,8 @@ public class StateDistributor
     private async Task WriteOutputFiles(
         FileSystemManager.CanonicalWriteLease writeLease,
         GameResponse response,
-        IReadOnlyDictionary<string, DistributionMutation> mutations)
+        IReadOnlyDictionary<string, DistributionMutation> mutations,
+        bool patientResidentMemory)
     {
         // Narrative response
         if (response.Response != null)
@@ -606,7 +610,8 @@ public class StateDistributor
         }
 
         // Interface updates
-        if (response.DialogueOptions != null || response.ImagePrompt != null || response.SpiritualHealingGraphs != null || response.SpiritualResidentThoughtJournalUpdates != null)
+        if (response.DialogueOptions != null || response.ImagePrompt != null || response.SpiritualHealingGraphs != null || response.SpiritualResidentThoughtJournalUpdates != null ||
+            patientResidentMemory || response.SpiritualShiningPatientMemory.ValueKind != JsonValueKind.Undefined)
         {
             var ui = new
             {
@@ -615,20 +620,16 @@ public class StateDistributor
                 timestamp = DateTime.UtcNow.ToString("o")
             };
             const string path = "output/interface_updates.json";
-            var interfaceJson = JsonSerializer.Serialize(ui, JsonOpts);
+            var root = JsonSerializer.SerializeToNode(ui, JsonOpts)!.AsObject();
             if (response.SpiritualHealingGraphs is not null)
-            {
-                var root = JsonNode.Parse(interfaceJson)!.AsObject();
                 root["spiritualHealingGraphs"] = JsonSerializer.SerializeToNode(response.SpiritualHealingGraphs, JsonOpts);
-                interfaceJson = root.ToJsonString(JsonOpts);
-            }
             if (response.SpiritualResidentThoughtJournalUpdates is not null)
-            {
-                var root = JsonNode.Parse(interfaceJson)!.AsObject();
                 root[SpiritualTreatmentParticipation.ResidentThoughtResponseProperty] = JsonSerializer.SerializeToNode(response.SpiritualResidentThoughtJournalUpdates, JsonOpts);
-                interfaceJson = root.ToJsonString(JsonOpts);
-            }
-            await _fs.WriteFileAtomicAsync(writeLease, path, interfaceJson);
+            if (patientResidentMemory)
+                root[GuardianAbodeResidentState.UpdateThoughtJournalProperty] = JsonSerializer.SerializeToNode(response.ResidentThoughtJournalUpdates, JsonOpts);
+            if (response.SpiritualShiningPatientMemory.ValueKind != JsonValueKind.Undefined)
+                root[SpiritualTreatmentParticipation.ShiningPatientMemoryResponseProperty] = JsonSerializer.SerializeToNode(response.SpiritualShiningPatientMemory, JsonOpts);
+            await _fs.WriteFileAtomicAsync(writeLease, path, root.ToJsonString(JsonOpts));
             await MarkMutationAppliedAsync(path, mutations);
         }
 
@@ -647,11 +648,12 @@ public class StateDistributor
         }
     }
 
-    private static IEnumerable<string> CollectOutputPaths(GameResponse response)
+    private static IEnumerable<string> CollectOutputPaths(GameResponse response, bool patientResidentMemory)
     {
         if (response.Response != null)
             yield return "output/narrative_response.json";
-        if (response.DialogueOptions != null || response.ImagePrompt != null || response.SpiritualHealingGraphs != null || response.SpiritualResidentThoughtJournalUpdates != null)
+        if (response.DialogueOptions != null || response.ImagePrompt != null || response.SpiritualHealingGraphs != null || response.SpiritualResidentThoughtJournalUpdates != null ||
+            patientResidentMemory || response.SpiritualShiningPatientMemory.ValueKind != JsonValueKind.Undefined)
             yield return "output/interface_updates.json";
         if (response.GmThoughtsMarkdown != null)
             yield return "output/debug_logs.json";

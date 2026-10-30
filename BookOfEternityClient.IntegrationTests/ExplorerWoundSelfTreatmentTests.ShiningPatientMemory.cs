@@ -2,6 +2,7 @@ using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Models;
 using BookOfEternityClient.Services;
+using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
@@ -18,7 +19,7 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
             ["entryId"] = "shining_patient_thought_" + id + "_" + turn.RequestId, ["turn"] = turn.TurnNumber, ["timestamp"] = timestamp,
             ["title"] = grant ? "Осознанное согласие" : "Подтверждённая попытка", ["summary"] = summary,
             ["eventType"] = "conversation", ["consequence"] = "Обычный цикл продолжается без платы, долга и навязанного результата.",
-            ["attitude"] = "attentive", ["intent"] = "Восстановить мою целостность с сохранением отдельного решения души.", ["tags"] = new JsonArray()
+            ["attitude"] = "attentive", ["intent"] = "Сохранить самостоятельное решение и обычную стратегию.", ["tags"] = new JsonArray()
         };
         var guardianMemory = Memory(AfterlifeWoundTreatmentAuthority.ElyaraId,
             "Я остаюсь в текущем зале, продолжаю обычную стратегию и не подменяю игрока в лечении другого обитателя.");
@@ -27,6 +28,10 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
         guardianJournal[GuardianThoughtJournalState.UpdateProperty] = new JsonArray(guardianMemory);
         await files.WriteFileAtomicAsync(lease, GuardianThoughtJournalState.StatePath, guardianJournal.ToJsonString());
         var response = JsonNode.Parse((await files.ReadFileAsync(lease, "output/interface_updates.json"))!)!.AsObject();
+        var supportMemory = Memory(AfterlifeHealingPaymentLifecycleTests.FactionHealerId,
+            "Я продолжаю собственную обычную стратегию; лечение другого обитателя не делает меня целителем или пациентом этой попытки.");
+        supportMemory["residentId"] = AfterlifeHealingPaymentLifecycleTests.FactionHealerId;
+        response[GuardianAbodeResidentState.UpdateThoughtJournalProperty] = new JsonArray(supportMemory);
         if (kind == "resident")
         {
             var memory = Memory(ShiningPatientId, thought); memory["residentId"] = ShiningPatientId;
@@ -34,13 +39,11 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
         }
         else
         {
-            // Existing ordinary actor-owned memory surface. Historical profiles
-            // cannot be resent as UpdateProperty full carriers, nor placed in UI.
-            var profiles = JsonNode.Parse((await files.ReadFileAsync(lease, WoundCarrierCatalog.AfterlifeProfilesPath))!)!.AsObject();
-            var patient = profiles["profiles"]!.AsArray().OfType<JsonObject>().Single(p =>
-                p["actorType"]?.GetValue<string>() == kind && p["actorId"]?.GetValue<string>() == ShiningPatientId);
-            patient["gmThoughtsSummary"] = thought;
-            await files.WriteFileAtomicAsync(lease, WoundCarrierCatalog.AfterlifeProfilesPath, profiles.ToJsonString());
+            response[SpiritualTreatmentParticipation.ShiningPatientMemoryResponseProperty] = new JsonObject
+            {
+                ["entryId"] = "shining_patient_ledger_" + turn.RequestId, ["summary"] = thought,
+                ["turnNumber"] = turn.TurnNumber, ["gmThoughtsSummary"] = thought
+            };
         }
         await files.WriteFileAtomicAsync(lease, "output/interface_updates.json", response.ToJsonString());
         string Brain(string name, bool patient) => string.Join("\n", "", "### " + name,
@@ -57,7 +60,10 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
             "- Rejected alternatives: Нет основания менять зал, роль, членство, степень раны или плату.",
             "- Actions: " + (patient ? thought : "Я продолжаю обычную стратегию; автоматическое развитие рассчитывает клиент."),
             "- State changes: " + (patient ? kind == "resident" ? "spiritualResidentThoughtJournalUpdates сохраняет мою first-person память; physical roster меняет только owned normalizer."
-                : "gmThoughtsSummary сохраняет мою first-person память; resident journal не используется." : "Обычное развитие определяется текущим progression control; иных действий не заявлено.") +
+                : "spiritualShiningPatientMemory добавляет мою first-person запись в afterlife_entity_profiles ledger и обновляет gmThoughtsSummary; resident journal не используется."
+                : name == AfterlifeHealingPaymentLifecycleTests.FactionHealerName
+                    ? "residentThoughtJournalUpdates добавляет мою отдельную first-person память обычной стратегии; я не участник лечения."
+                    : "guardianThoughtJournalUpdates добавляет мою first-person память обычной стратегии.") +
                 " Клиент публикует реальный исход, effects/History и один цикл; сохранённый бросок не меняется.");
         var names = new[] { PatientName(kind), "Элиара Последней Раны", AfterlifeHealingPaymentLifecycleTests.FactionHealerName };
         var text = string.Join("\n", "## NPC Scope", "- Mode: Scene-local", "- Relevant actors: " + string.Join(", ", names),
@@ -65,5 +71,36 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
             "- Actors outside scope: нет", "- Why outside scope: Другие акторы не получают изменений.", "", "## Reasoning") +
             Brain(names[0], true) + Brain(names[1], false) + Brain(names[2], false);
         await files.WriteFileAtomicAsync(lease, "output/debug_logs.json", new JsonObject { ["timestamp"] = timestamp, ["gm_thoughts_markdown"] = text }.ToJsonString());
+    }
+
+    private static async Task<(JsonArray? Ledger, JsonArray Residents, JsonArray Guardians)> AssertShiningPatientResponseMemoryAsync(
+        FileSystemManager files, string kind, int turn, JsonArray? previousLedger = null, JsonArray? previousResidents = null, JsonArray? previousGuardians = null)
+    {
+        void Prefix(JsonArray? before, JsonArray after)
+        {
+            if (before is null) return;
+            Assert.True(after.Count >= before.Count);
+            for (var i = 0; i < before.Count; i++) Assert.True(JsonNode.DeepEquals(before[i], after[i]));
+        }
+        var residents = JsonNode.Parse((await files.ReadFileAsync(GuardianAbodeResidentState.StatePath))!)!["thoughtJournal"]!.AsArray();
+        Prefix(previousResidents, residents);
+        Assert.Contains(residents, e => e!["residentId"]?.GetValue<string>() == AfterlifeHealingPaymentLifecycleTests.FactionHealerId && e["turn"]!.GetValue<int>() == turn);
+        if (kind == "resident") Assert.Contains(residents, e => e!["residentId"]?.GetValue<string>() == ShiningPatientId && e["turn"]!.GetValue<int>() == turn);
+        else Assert.DoesNotContain(residents, e => e!["residentId"]?.GetValue<string>() == ShiningPatientId);
+        Assert.Equal(residents.Count, residents.Select(e => e!["entryId"]!.GetValue<string>()).Distinct(StringComparer.OrdinalIgnoreCase).Count());
+        var guardians = JsonNode.Parse((await files.ReadFileAsync(GuardianThoughtJournalState.StatePath))!)!["entries"]!.AsArray();
+        Prefix(previousGuardians, guardians);
+        Assert.Contains(guardians, e => e!["guardianId"]?.GetValue<string>() == AfterlifeWoundTreatmentAuthority.ElyaraId && e["turn"]!.GetValue<int>() == turn);
+        JsonArray? ledger = null;
+        if (kind == "radiant_actor")
+        {
+            var profiles = JsonNode.Parse((await files.ReadFileAsync(WoundCarrierCatalog.AfterlifeProfilesPath))!)!;
+            var patient = profiles["profiles"]!.AsArray().OfType<JsonObject>().Single(p => p["actorType"]?.GetValue<string>() == kind && p["actorId"]?.GetValue<string>() == ShiningPatientId);
+            ledger = patient["ledger"]!.AsArray(); Prefix(previousLedger, ledger);
+            var entry = Assert.Single(ledger.OfType<JsonObject>(), e => e["turnNumber"]?.GetValue<int>() == turn);
+            Assert.Contains("Я", entry["summary"]!.GetValue<string>());
+            Assert.Equal(entry["summary"]!.GetValue<string>(), patient["gmThoughtsSummary"]!.GetValue<string>());
+        }
+        return (ledger?.DeepClone().AsArray(), residents.DeepClone().AsArray(), guardians.DeepClone().AsArray());
     }
 }

@@ -107,6 +107,14 @@ public partial class GameEngine
                     response.SpiritualHealingGraphs = healingGraphs.EnumerateArray().Select(g => g.Clone()).ToArray();
                 if (doc.RootElement.TryGetProperty(SpiritualTreatmentParticipation.ResidentThoughtResponseProperty, out var residentThoughts) && residentThoughts.ValueKind == JsonValueKind.Array)
                     response.SpiritualResidentThoughtJournalUpdates = residentThoughts.EnumerateArray().Select(g => g.Clone()).ToArray();
+                if (doc.RootElement.TryGetProperty(SpiritualTreatmentParticipation.ShiningPatientMemoryResponseProperty, out var patientMemory))
+                    response.SpiritualShiningPatientMemory = patientMemory.Clone();
+                if (doc.RootElement.TryGetProperty(GuardianAbodeResidentState.UpdateThoughtJournalProperty, out var ordinaryThoughts))
+                {
+                    response.ResidentThoughtJournalUpdates = ordinaryThoughts.ValueKind == JsonValueKind.Null ? null
+                        : ordinaryThoughts.Deserialize<JsonElement[]>() ?? throw new InvalidDataException("Private patient resident memory requires an array.");
+                    response.ResidentThoughtsFromPatientInterface = true;
+                }
                 if (doc.RootElement.TryGetProperty("image_prompt", out var img))
                     response.ImagePrompt = img.GetString();
             }

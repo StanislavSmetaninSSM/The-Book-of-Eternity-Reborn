@@ -2,6 +2,34 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "shining-patient-memory-data",
+      "reason": "New memory program and native kind/phase proof after independently accepted retained native RED; no old68/239 replay.",
+      "contracts": [
+        "#1536 T108-SHINING-PATIENT-MEMORY; accepted6416 design"
+      ]
+    },
+    {
+      "category": "shining-patient-radiant-response-memory",
+      "reason": "New memory program and native kind/phase proof after independently accepted retained native RED; no old68/239 replay.",
+      "contracts": [
+        "#1536 T108-SHINING-PATIENT-MEMORY; accepted6416 design"
+      ]
+    },
+    {
+      "category": "shining-patient-resident-active-memory",
+      "reason": "New memory program and native kind/phase proof after independently accepted retained native RED; no old68/239 replay.",
+      "contracts": [
+        "#1536 T108-SHINING-PATIENT-MEMORY; accepted6416 design"
+      ]
+    },
+    {
+      "category": "shining-patient-radiant-active-memory",
+      "reason": "New memory program and native kind/phase proof after independently accepted retained native RED; no old68/239 replay.",
+      "contracts": [
+        "#1536 T108-SHINING-PATIENT-MEMORY; accepted6416 design"
+      ]
+    },
+    {
       "category": "shining-patient-response-memory-causal",
       "reason": "One existing-API native causal response proof before memory production changes; retain prior68/239/menu4/docs2/native10 PASS and incomplete Engine evidence, without replay.",
       "contracts": [

@@ -1,3 +1,7 @@
+# T108 memory transport/fixtures WIP — UNCOMPILED/UNRUN
+
+Added conditional real-family StateDistributor routing, presence-aware radiant JSON null transport/refresh, published interface program proof, corrected complete43/44 actor memory and genuine radiant ledger/C4 assertions. Added expected18 detached DATA cases and four independent signed native response cases (each original native120s bound; active44 has real native43 grant setup), reusing existing publishers and no-argument Full reasoning. Production/tests UNCOMPILED/UNRUN; GM docs/examples/harness guidance and final whole-change selection still pending. Current old323distinct PASS is historical before this memory correction, not new-code qualification. No build/runtime or Engine release.
+
 # T108-SHINING-PATIENT-MEMORY implementation WIP
 
 Sole writer resumed after independent Astra accepted S5R native RED: actual resident43 publication prerequisites passed, final Full reasoning alone failed with the two observed cross-owner memory codes. Core detached composition and Continuation integration now written: globally fresh resident appends in original→ordinary→protected order; exact radiant ledger/summary program; conditional signed roster source with fresh readback/closing. UNCOMPILED/UNRUN and incomplete pending transport/interface validation, full response fixture/tests and GM sync. No build/runtime by writer; prior PASS and failed raw remain external. No Engine admission.

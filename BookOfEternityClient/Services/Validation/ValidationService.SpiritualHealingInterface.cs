@@ -14,7 +14,10 @@ public partial class ValidationService
         if (root.ValueKind != JsonValueKind.Object) return null;
         var hasGraphs = root.TryGetProperty("spiritualHealingGraphs", out var graphs);
         var hasResidentMemory = root.TryGetProperty(SpiritualTreatmentParticipation.ResidentThoughtResponseProperty, out var residentMemory);
-        if (!hasGraphs && !hasResidentMemory) return null;
+        var hasOrdinaryMemory = root.TryGetProperty(GuardianAbodeResidentState.UpdateThoughtJournalProperty, out var ordinaryMemory);
+        var hasRadiantMemory = root.TryGetProperty(SpiritualTreatmentParticipation.ShiningPatientMemoryResponseProperty, out var radiantMemory);
+        var hasAnyMemory = hasResidentMemory || hasOrdinaryMemory || hasRadiantMemory;
+        if (!hasGraphs && !hasAnyMemory) return null;
         if (!hasGraphs) graphs = JsonSerializer.SerializeToElement(Array.Empty<object>());
         FileSystemManager.CanonicalWriteLease? lease = null;
         var ownsLease = false;
@@ -180,7 +183,50 @@ public partial class ValidationService
                         combatOriginal.Wound, rank, row.GetProperty("stageRef").GetString()!, complications);
                 }
             }
-            if (hasResidentMemory)
+            var patientRecord = publishedSafe?.ShiningPatientParticipationRecord;
+            if (hasOrdinaryMemory || hasRadiantMemory || hasResidentMemory && patientRecord is not null)
+            {
+                if (publishedSafe is null || patientRecord is null || !SpiritualTreatmentParticipation.IsShiningPatientParticipation(patientRecord) ||
+                    new CanonicalBeforeImage(true, responseBytes).Fingerprint != publishedSafe.GraphResponseFingerprint ||
+                    hasOrdinaryMemory && ordinaryMemory.ValueKind != JsonValueKind.Array ||
+                    hasRadiantMemory && radiantMemory.ValueKind != JsonValueKind.Object ||
+                    hasResidentMemory && residentMemory.ValueKind != JsonValueKind.Array)
+                    throw new InvalidDataException("Patient memory requires its exact published schema5 natural8/active8 response.");
+                var owner = SpiritualTreatmentParticipation.RecordOwner(patientRecord);
+                var needsRoster = owner.OwnerKind == "resident" || hasOrdinaryMemory;
+                var paths = new[] { WoundCarrierCatalog.AfterlifeProfilesPath, ShiningAbodeState.StatePath }
+                    .Concat(needsRoster ? new[] { GuardianAbodeResidentState.StatePath } : Array.Empty<string>()).ToArray();
+                memoryLocality = PendingTurnSnapshotReader.ReadObservedCurrent(_fs, lease, paths);
+                if (!memoryLocality.Success || memoryLocality.Snapshot is not { } local || memoryLocality.Evidence is not { } localEvidence ||
+                    local.SessionId != snapshot.SessionId || local.RequestId != snapshot.RequestId ||
+                    local.TurnNumber != snapshot.TurnNumber || local.SnapshotToken != snapshot.SnapshotToken)
+                    throw new InvalidDataException("Patient memory lost its same signed profiles/locality/conditional roster.");
+                localEvidence.RequireCurrent(_fs, lease, local);
+                JsonObject Original(string path) => StrictJsonAuthority.Deserialize<JsonObject>(CanonicalJsonUtf8.DecodeOneOptionalBom(
+                    local.ReadRequiredBytes(path)), new JsonSerializerOptions(), path)!;
+                var beforeRoster = needsRoster ? Original(GuardianAbodeResidentState.StatePath) : null;
+                var program = SpiritualTreatmentParticipation.PrepareShiningPatientMemory(owner,
+                    SpiritualTreatmentParticipation.RecordLocality(patientRecord), Original(WoundCarrierCatalog.AfterlifeProfilesPath),
+                    beforeRoster, Original(ShiningAbodeState.StatePath), snapshot.TurnNumber,
+                    hasOrdinaryMemory ? JsonNode.Parse(ordinaryMemory.GetRawText())!.AsArray() : null,
+                    hasResidentMemory ? JsonNode.Parse(residentMemory.GetRawText())!.AsArray() : null,
+                    hasRadiantMemory ? JsonNode.Parse(radiantMemory.GetRawText())!.AsObject() : null);
+                if (needsRoster)
+                {
+                    var bytes = await ReadPublished(GuardianAbodeResidentState.StatePath)
+                        ?? throw new InvalidDataException("Published patient memory roster is absent.");
+                    program.RequireResidentAfterImage(beforeRoster!, StrictJsonAuthority.Deserialize<JsonObject>(
+                        CanonicalJsonUtf8.DecodeOneOptionalBom(bytes), new JsonSerializerOptions(), "published patient memory roster")!);
+                }
+                if (hasRadiantMemory)
+                {
+                    var bytes = await ReadPublished(WoundCarrierCatalog.AfterlifeProfilesPath)
+                        ?? throw new InvalidDataException("Published radiant profile is absent.");
+                    program.RequireProfileAfterImage(StrictJsonAuthority.Deserialize<JsonObject>(CanonicalJsonUtf8.DecodeOneOptionalBom(bytes),
+                        new JsonSerializerOptions(), "published radiant memory")!);
+                }
+            }
+            else if (hasResidentMemory)
             {
                 // I runs after common publication in the Engine. A request or
                 // proposed grant alone cannot exempt memory from ordinary policy.
@@ -216,6 +262,8 @@ public partial class ValidationService
             var projected = JsonNode.Parse(root.GetRawText())!.AsObject();
             projected.Remove("spiritualHealingGraphs");
             if (hasResidentMemory) projected.Remove(SpiritualTreatmentParticipation.ResidentThoughtResponseProperty);
+            if (hasOrdinaryMemory) projected.Remove(GuardianAbodeResidentState.UpdateThoughtJournalProperty);
+            if (hasRadiantMemory) projected.Remove(SpiritualTreatmentParticipation.ShiningPatientMemoryResponseProperty);
             // Graphs-only is a payload only on this authenticated route; ordinary policy stays unchanged.
             if (!projected.ContainsKey("dialogueOptions") && !projected.ContainsKey("image_prompt")) projected["dialogueOptions"] = new JsonArray();
             evidence.RequireCurrent(_fs, lease, snapshot);
@@ -230,8 +278,9 @@ public partial class ValidationService
                 ArgumentException or KeyNotFoundException or NullReferenceException or IOException or UnauthorizedAccessException))
         {
             operationFailure = failure;
-            issues.Add(new("output/interface_updates.json." + (hasResidentMemory ? SpiritualTreatmentParticipation.ResidentThoughtResponseProperty : "spiritualHealingGraphs"), IssueSeverity.Error,
-                hasResidentMemory ? "Resident memory requires its exact published resident participation or faction-service result and append proof." : "Spiritual healing graphs require the actual signed safe or combat source.",
+            issues.Add(new("output/interface_updates.json." + (hasRadiantMemory ? SpiritualTreatmentParticipation.ShiningPatientMemoryResponseProperty :
+                    hasOrdinaryMemory ? GuardianAbodeResidentState.UpdateThoughtJournalProperty : hasResidentMemory ? SpiritualTreatmentParticipation.ResidentThoughtResponseProperty : "spiritualHealingGraphs"), IssueSeverity.Error,
+                hasAnyMemory ? "Memory requires its exact published treatment result and complete append proof." : "Spiritual healing graphs require the actual signed safe or combat source.",
                 code: "spiritual_healing_interface_unbound", actual: failure.Message,
                 repairHint: "Keep the original turn/cycle and any existing treatment attempt/dice. Supply only requested stageRefs; never replace the source."));
             return null;

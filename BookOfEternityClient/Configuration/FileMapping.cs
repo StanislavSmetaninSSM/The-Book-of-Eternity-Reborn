@@ -228,7 +228,8 @@ public static class FileMapping
         "dialogueOptions",
         "image_prompt",
         "spiritualHealingGraphs",
-        "spiritualResidentThoughtJournalUpdates"
+        "spiritualResidentThoughtJournalUpdates",
+        "spiritualShiningPatientMemory"
     };
 
     /// <summary>

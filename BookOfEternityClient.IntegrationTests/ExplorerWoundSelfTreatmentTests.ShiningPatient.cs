@@ -170,6 +170,7 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                     Assert.True(grant.IsNatural); Assert.Equal(8, grant.SchemaVersion);
                     Assert.Null(grant.ToCanonicalJson()["request"]); Assert.False(grant.ToCanonicalJson().ContainsKey("direction"));
                     Assert.Equal(5, grant.ParticipationOutcomes![0]!["record"]!["schemaVersion"]!.GetValue<int>());
+                    var grantMemory = await AssertShiningPatientResponseMemoryAsync(files, kind, 43);
                     var tracked = new[] { AfterlifeWoundHealingPlanner.Continuation.ServiceSoulPath, GuardianThoughtJournalState.StatePath,
                         GuardianAbodeResidentState.StatePath, ShiningAbodeState.StatePath, EffectAcceptedTurnInputComposer.WorldTimePath, PendingTurnStateService.PendingDiceStatePath };
                     var before = fixture.CaptureMutationRoots(tracked);
@@ -226,10 +227,22 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                         Assert.Equal(1, cuts); Assert.NotNull(compensationExpected); Assert.NotNull(compensationActual); Assert.NotNull(memoryAtCut);
                         foreach (var pair in compensationExpected!) Assert.Equal(pair.Value, compensationActual![pair.Key]);
                         Assert.True(JsonNode.DeepEquals(retained, JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(compensationActual![AcceptedMechanicsPlan.WoundCommandPath]!))));
-                        if (kind == "resident") Assert.Contains(JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(memoryAtCut!))!["thoughtJournal"]!.AsArray(),
-                            e => e!["residentId"]?.GetValue<string>() == ShiningPatientId && e["turn"]!.GetValue<int>() == 44);
-                        else Assert.Contains("отдельно подтверждённую", JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(memoryAtCut!))!["profiles"]!.AsArray()
-                            .OfType<JsonObject>().Single(p => p["actorType"]?.GetValue<string>() == kind && p["actorId"]?.GetValue<string>() == ShiningPatientId)["gmThoughtsSummary"]!.GetValue<string>());
+                        if (kind == "resident")
+                        {
+                            var journal = JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(memoryAtCut!))!["thoughtJournal"]!.AsArray();
+                            foreach (var id in new[] { ShiningPatientId, AfterlifeHealingPaymentLifecycleTests.FactionHealerId })
+                                Assert.Contains(journal, e => e!["residentId"]?.GetValue<string>() == id && e["turn"]!.GetValue<int>() == 44);
+                            for (var i = 0; i < grantMemory.Residents.Count; i++) Assert.True(JsonNode.DeepEquals(grantMemory.Residents[i], journal[i]));
+                        }
+                        else
+                        {
+                            var patient = JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(memoryAtCut!))!["profiles"]!.AsArray()
+                                .OfType<JsonObject>().Single(p => p["actorType"]?.GetValue<string>() == kind && p["actorId"]?.GetValue<string>() == ShiningPatientId);
+                            var ledger = patient["ledger"]!.AsArray();
+                            var memory = Assert.Single(ledger.OfType<JsonObject>(), e => e["turnNumber"]?.GetValue<int>() == 44);
+                            Assert.Equal(memory["summary"]!.GetValue<string>(), patient["gmThoughtsSummary"]!.GetValue<string>());
+                            for (var i = 0; i < grantMemory.Ledger!.Count; i++) Assert.True(JsonNode.DeepEquals(grantMemory.Ledger[i], ledger[i]));
+                        }
                         Assert.Equal(43, runtime.GameLoop.TurnNumber);
                         fixture.AssertMutationRootsUnchanged(before);
                         Assert.DoesNotContain((await fixture.ReadHistoryAsync()).Transitions, t => t.AttemptId is not null);
@@ -261,6 +274,7 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                         Assert.NotNull(await ProgressionScheduleService.ReadPublishedSpiritualCycleCoreAsync(treatmentTurn.ProgressionControl,
                             treatmentTurn.SessionId, treatmentTurn.RequestId, treatmentTurn.TurnNumber, p => files.ReadFileBytesAsync(lease, p)));
                     fixture.AssertMutationRootsUnchanged(settled); fixture.AssertResourcesUnchanged();
+                    await AssertShiningPatientResponseMemoryAsync(files, kind, 44, grantMemory.Ledger, grantMemory.Residents, grantMemory.Guardians);
                     if (kind == "resident")
                     {
                         var journal = JsonNode.Parse((await files.ReadFileAsync(GuardianAbodeResidentState.StatePath))!)!["thoughtJournal"]!.AsArray();

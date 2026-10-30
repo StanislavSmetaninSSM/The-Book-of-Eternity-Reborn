@@ -6,6 +6,16 @@ internal static partial class SpiritualTreatmentParticipation
 {
     internal const string ShiningPatientMemoryResponseProperty = "spiritualShiningPatientMemory";
 
+    internal static JsonObject ReadShiningPatientMemoryCommand(JsonNode? value, int turn)
+    {
+        var command = value as JsonObject ?? throw new InvalidDataException("Radiant patient memory requires an explicit object.");
+        Closed(command, "entryId", "summary", "turnNumber", "gmThoughtsSummary");
+        if (!ResourceMaterializationContract.IsExactIdentifier(Text(command, "entryId")) || Scalar<int>(command, "turnNumber") != turn ||
+            string.IsNullOrWhiteSpace(Text(command, "summary")) || string.IsNullOrWhiteSpace(Text(command, "gmThoughtsSummary")))
+            throw new InvalidDataException("Radiant memory requires exact current-turn text and a fresh ledger ID.");
+        return command.DeepClone().AsObject();
+    }
+
     // Detached DATA only. The Continuation supplies the actual retained patient,
     // signed sources and turn; this object grants no publication permission.
     internal static ShiningPatientMemoryProgram PrepareShiningPatientMemory(WoundOwnerCoordinate owner,
@@ -27,7 +37,7 @@ internal static partial class SpiritualTreatmentParticipation
             {
                 var row = item as JsonObject ?? throw new InvalidDataException("Resident memory requires object rows.");
                 var id = Text(row, "residentId");
-                if (id == owner.OwnerId)
+                if (owner.OwnerKind == "resident" && id == owner.OwnerId)
                     throw new InvalidDataException("The selected patient cannot enter ordinary nonpatient memory.");
                 if (!localResidents.ContainsKey(id))
                     localResidents.Add(id, RequireShiningPatientAdmission(shining, profiles, roster,
@@ -57,11 +67,8 @@ internal static partial class SpiritualTreatmentParticipation
         JsonArray? beforeLedger = null; JsonArray? afterLedger = null; JsonNode? beforeSummary = null; JsonNode? afterSummary = null;
         if (radiant is not null)
         {
-            Closed(radiant, "entryId", "summary", "turnNumber", "gmThoughtsSummary");
+            radiant = ReadShiningPatientMemoryCommand(radiant, turn);
             var id = Text(radiant, "entryId");
-            if (!ResourceMaterializationContract.IsExactIdentifier(id) || Scalar<int>(radiant, "turnNumber") != turn ||
-                string.IsNullOrWhiteSpace(Text(radiant, "summary")) || string.IsNullOrWhiteSpace(Text(radiant, "gmThoughtsSummary")))
-                throw new InvalidDataException("Radiant memory requires exact current-turn text and a fresh ledger ID.");
             var profile = ExactMemoryProfile(profiles, owner);
             beforeLedger = profile["ledger"] is JsonArray ledger ? ledger.DeepClone().AsArray()
                 : throw new InvalidDataException("Radiant memory requires its original ledger array.");
@@ -100,6 +107,8 @@ internal static partial class SpiritualTreatmentParticipation
             JsonObject shining, IReadOnlyDictionary<string, string> residents, JsonArray commands, JsonArray beforeJournal,
             JsonArray afterJournal, JsonArray? beforeLedger, JsonArray? afterLedger, JsonNode? beforeSummary, JsonNode? afterSummary)
         {
+            // Freeze caller-owned DATA once. Later normalizer/readback calls reuse
+            // these copies for the exact ordinary member/hall tuple, never I/O or authority.
             _owner = owner; _locality = locality; _profiles = profiles.DeepClone().AsObject(); _shining = shining.DeepClone().AsObject();
             _residents = residents.ToDictionary(p => p.Key, p => p.Value, StringComparer.Ordinal);
             _commands = commands.DeepClone().AsArray(); _beforeJournal = beforeJournal.DeepClone().AsArray(); _afterJournal = afterJournal.DeepClone().AsArray();
@@ -140,6 +149,14 @@ internal static partial class SpiritualTreatmentParticipation
             if (!JsonNode.DeepEquals(profile["ledger"], _beforeLedger) || !JsonNode.DeepEquals(profile["gmThoughtsSummary"], _beforeSummary))
                 throw new InvalidDataException("Radiant memory differs from its complete before/after image.");
             profile["ledger"] = _afterLedger.DeepClone(); profile["gmThoughtsSummary"] = _afterSummary!.DeepClone();
+        }
+
+        internal void RequireProfileAfterImage(JsonObject profiles)
+        {
+            if (_afterLedger is null) return;
+            var profile = ExactMemoryProfile(profiles, _owner);
+            if (!JsonNode.DeepEquals(profile["ledger"], _afterLedger) || !JsonNode.DeepEquals(profile["gmThoughtsSummary"], _afterSummary))
+                throw new InvalidDataException("Published radiant memory differs from its complete admitted afterimage.");
         }
     }
 }

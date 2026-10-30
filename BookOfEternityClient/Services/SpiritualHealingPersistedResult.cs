@@ -31,6 +31,9 @@ internal sealed class SpiritualHealingPersistedResult : WoundTransitionResult
     internal int SchemaVersion => _root["schemaVersion"]!.GetValue<int>();
     internal string ResultFingerprint => _root["resultFingerprint"]!.GetValue<string>();
     internal JsonArray? ParticipationOutcomes => _root["participationOutcomes"]?.DeepClone().AsArray();
+    internal JsonObject? ShiningPatientParticipationRecord => SchemaVersion == 8
+        ? (IsNatural ? _root["participationOutcomes"]?[0]?["record"] : _root["request"]?["participation"]?["record"])?.DeepClone().AsObject()
+        : null;
     internal JsonObject? ResidentParticipationRecord
     {
         get
