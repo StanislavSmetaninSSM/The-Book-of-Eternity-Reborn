@@ -3,9 +3,16 @@
   "selections": [
     {
       "category": "negotiated-healing-provider-data",
-      "reason": "New closed terms/locality, actual selected-faction DATA, presence-aware wallet/request binding and effective GM examples; original four RED cases become GREEN.",
+      "reason": "Unchanged30 closed-term/locality/admission/docs cases passed in complete B1 run; retained scope, do not rerun without affected changes.",
       "contracts": [
         "#1536 US6 T133/T134/T136/T138/T143/T146/T147; FR080/084 negotiated existing offer/attempt path"
+      ]
+    },
+    {
+      "category": "negotiated-healing-wallet-request-data",
+      "reason": "Only these10 wallet/request cases need fresh execution after explicit-null ToJson correction and stronger correct Russian assertion; remaining30 already passed.",
+      "contracts": [
+        "#1536 US6 T133/T138/T143, exact original wallet and accepted confirmed terms"
       ]
     },
     {

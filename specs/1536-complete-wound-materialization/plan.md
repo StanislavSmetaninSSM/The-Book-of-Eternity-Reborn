@@ -1,3 +1,26 @@
+# Negotiated B: cheap40 завершён34PASS/6FAIL; две причины исправлены WIP
+
+Первый фактический B1-data runtime из25f4d4e3 (compiled266798660) завершил все40cases,
+34PASS/6FAIL, wall14.5100742s/category5.6735388s при60s, безtimeout/skip/duplicates,
+cleanupcomplete/pinsstable. Sol независимо подтвердил полный TRX SHA
+7ffb3d5ca53bdc6f8ee2871752ff363a3a176c4f0410f1d427b7695464d94aca.
+Один production дефект: CanonicalJson(null) возвращаетC#null; ToJson пытался
+JsonNode.Parse(null) для present explicit-null wallet. WIP теперь прямо сохраняет
+value:null приPresent=true; отсутствие остаётся отдельнымPresent=false. Пять других
+FAIL — неверный падеж ожидаемой фразы; проверка усилена до точного «без списания
+Чернильных Перьев». Предикаты защиты/бросок/сумма не ослаблены. Последующие forgery
+assertions этих5cases ранее UNREACHED, не засчитываются.
+
+Два затронутых метода перенесены в negotiated-healing-wallet-request-data10cases
+(5terms+5walletshapes), прежний60s бюджет сохранён. Другие30cases ужеPASS и не
+повторяются;4прошедшихwalletshapes повторятся из-за изменения их ToJson пути.
+Delta SOURCE, corrected fresh affected builds/catalog/PlanOnly/PREP/runtimepending.
+Остальные150regressions и B Enginejourneys UNRUN. Реальный двухходовый сценарий
+продолжится после этого конечного gate; новые диагностика/экономика не создаются.
+Raw/unique measured binaries сохраняются снаружи; удалений/новыхrawвGitнет.
+
+---
+
 # Negotiated B: свежие сборки/discovery/точный PlanOnly готовы, runtime UNRUN
 
 Исправленная Main source26679866010230b67240554c81e24b7141fbf1e3 собрана exit0,

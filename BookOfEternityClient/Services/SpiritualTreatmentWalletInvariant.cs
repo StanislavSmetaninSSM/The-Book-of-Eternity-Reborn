@@ -15,7 +15,7 @@ internal sealed record SpiritualTreatmentWalletInvariant
     internal JsonObject ToJson()
     {
         var before = new JsonObject { ["present"] = Present };
-        if (Present) before["value"] = JsonNode.Parse(ValueJson!);
+        if (Present) before["value"] = ValueJson is null ? null : JsonNode.Parse(ValueJson);
         return new() { ["walletBefore"] = before };
     }
 

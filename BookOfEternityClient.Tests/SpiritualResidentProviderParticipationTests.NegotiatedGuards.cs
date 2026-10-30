@@ -24,7 +24,7 @@ public sealed partial class SpiritualResidentProviderParticipationTests
         Assert.Equal(selected, SpiritualSelfTreatmentRequestCodec.ReadActiveSelection(request));
         Assert.Equal(14, request["attempt"]!["roll"]!["values"]![0]!.GetValue<int>());
         Assert.True(JsonNode.DeepEquals(Terms(kind), SpiritualHealingRequestProjection.Create(data, request)["compensation"]));
-        Assert.Contains("Чернильные Перья", WoundApplicationService.ActionFor(selected));
+        Assert.Contains("без списания Чернильных Перьев", WoundApplicationService.ActionFor(selected));
         Assert.DoesNotContain("бесплат", WoundApplicationService.ActionFor(selected));
         Assert.Contains("Перенести архив", WoundApplicationService.ConfirmationFor(selected));
         Assert.Throws<InvalidDataException>(() => SpiritualSelfTreatmentRequestCodec.CreateActive(context, selected,
