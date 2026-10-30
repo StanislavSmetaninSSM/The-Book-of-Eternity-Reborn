@@ -1,3 +1,4 @@
+using System.Runtime.ExceptionServices;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.CommandProtocol;
@@ -74,7 +75,20 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                     armed = false; cuts++; throw new InvalidOperationException("Paid service Engine C4 cut after wallet publication.");
                 }
             };
-        await using var fixture = await CreateFixtureAsync();
+        var fixture = await CreateFixtureAsync();
+        Exception? primaryFailure = null;
+        try { await RunWithFixtureAsync(); }
+        catch (Exception error) { primaryFailure ??= error; }
+        finally
+        {
+            try { await fixture.DisposeAsync(); }
+            catch (Exception error)
+            {
+                primaryFailure ??= error;
+                persistent?.RecordClosingFailure(error, "faction-service-fixture-close");
+            }
+        }
+        if (primaryFailure is not null) ExceptionDispatchInfo.Capture(primaryFailure).Throw();
         async Task<AfterlifeWoundHealingLifecycleTests.Fixture> CreateFixtureAsync()
         {
             using var preparation = timings?.Measure("FactionService.FixturePreparation");
@@ -83,176 +97,201 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                     allocatedRootForDiagnostics: allocatedRootForDiagnostics)
                 : await AfterlifeHealingPaymentLifecycleTests.CreateServiceFixtureAsync(rank, 20, hooks, engine: true, realm: realm);
         }
-        var files = fixture.Files; ownedFiles = files;
-        var beforeWound = Assert.Single((await fixture.ReadWoundsAsync()).Occurrences).Wound;
-        var console = new TestExplorerConsole();
-        var diagnostics = new GameEngineTurnLifecycleTests.SpiritualLifecycleTestLogger(persistent);
-        JsonObject? retained = null; TurnRequest? turn = null; var wroteResponse = false;
-        using var construction = timings?.Measure("FactionService.RuntimeConstruction");
-        var runtime = GameEngineTurnLifecycleTests.CreateGameEngineRuntime(files, inputSource: new NoPlayerInput(diagnostics),
-            logger: diagnostics, explorerConsole: console, finalizationHooks: new GameEngineSessionFinalizationHooks
-            {
-                AtCheckpointAsync = async checkpoint =>
-                {
-                    persistent?.WriteLine("Faction service finalization checkpoint: " + checkpoint);
-                    if (checkpoint != SessionFinalizationCheckpoint.TerminalWaitStarted || wroteResponse) return;
-                    using var response = timings?.Measure("FactionService.GmResponse");
-                    await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
-                    turn = JsonSerializer.Deserialize<TurnRequest>((await files.ReadFileAsync(lease, LiveTurnPreparationService.TurnRequestPath))!,
-                        SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)!;
-                    Assert.Equal("service", turn.SpiritualHealing!["mode"]!.GetValue<string>());
-                    Assert.Equal(price, turn.SpiritualHealing["quote"]!["amount"]!.GetValue<int>());
-                    retained = JsonNode.Parse((await files.ReadFileAsync(lease, AcceptedMechanicsPlan.WoundCommandPath))!)!.AsObject();
-                    Assert.Equal(7, retained["schemaVersion"]!.GetValue<int>());
-                    Assert.Equal("player_service_confirmed", retained["playerConfirmation"]!.GetValue<string>());
-                    Assert.Equal(500, JsonNode.Parse((await files.ReadFileAsync(lease, AfterlifeWoundHealingPlanner.Continuation.ServiceSoulPath))!)!["inkFeathers"]!["current"]!.GetValue<int>());
-                    await WriteNativeCompletionAsync(files, lease, turn,
-                        AfterlifeSpiritualNaturalRecoveryTests.AuthorNaturalGraphs(beforeWound, turn.SpiritualHealing["destinationGraphs"]!.AsArray()),
-                        providerName + " принимает подтверждённую платную попытку лечения; клиент рассчитывает её результат и один обычный цикл.");
-                    await WriteElyaraServiceReasoningAsync(files, lease, turn, faction ? ElyaraFixtureReasoning.FactionWitness : ElyaraFixtureReasoning.Paid);
-                    if (faction) await WriteFactionServiceReasoningAsync(files, lease, turn);
-                    wroteResponse = true; armed = failPublication;
-                }
-            });
-        construction?.Dispose();
-        try
+        async Task RunWithFixtureAsync()
         {
-            runtime.GameLoop.SetSession("session_elyara_service_" + (browser ? "browser" : "console"), 42);
-            using (timings?.Measure("FactionService.RefreshGameState"))
-                await runtime.StateManager.RefreshGameStateAsync();
-            if (failPublication)
-            {
-                // Ordinary runtime health initializes this ledger before the
-                // pre-turn backup. Match that committed zero-cycle baseline;
-                // do not mistake first initialization for a retained paid turn.
-                Assert.False(files.FileExists(ProgressionScheduleService.SchedulePath));
-                var initialized = await new ProgressionScheduleService(files,
-                    NullLogger<ProgressionScheduleService>.Instance).EnsureInitializedAsync();
-                Assert.Equal(0, initialized.CurrentChaosSeaTurnOrdinal);
-                Assert.Equal(0, initialized.PendingChaosSeaCycles);
-            }
-            var before = fixture.CaptureMutationRoots(new[] { AfterlifeWoundHealingPlanner.Continuation.ServiceSoulPath,
-                GuardianThoughtJournalState.StatePath, EffectAcceptedTurnInputComposer.WorldTimePath,
-                PendingTurnStateService.PendingDiceStatePath }.Concat(AfterlifeWoundTreatmentAuthority.ServiceLocalityPaths)
-                .Concat(realm == "Shining Abode" ? new[] { ShiningAbodeState.StatePath } : Array.Empty<string>())
-                .Concat(faction ? new[] { GuardianAbodeResidentState.StatePath } : Array.Empty<string>()));
-            using var handler = timings?.Measure("FactionService.HandlerAndTurn");
-            if (browser)
-            {
-                var service = CreateCommands(files);
-                var cancelled = await service.ExecuteAsync(new("/лечить", Owner));
-                await service.CancelPromptSessionAsync(new(cancelled.InteractiveSession!.SessionId, Owner));
-                fixture.AssertMutationRootsUnchanged(before);
-                var opened = await service.ExecuteAsync(new(realm == "Shining Abode" && !faction ? "/элиара" : "/лечить", Owner));
-                Assert.Equal(CommandExecutionState.RequiresInput, opened.State);
-                var targets = opened.Prompts.OfType<UiSelectionPrompt>().SingleOrDefault(p => p.Id == "wound_target");
-                Assert.Equal(realm == "Chaos Sea", targets is not null);
-                if (targets is not null)
+            var files = fixture.Files; ownedFiles = files;
+            var beforeWound = Assert.Single((await fixture.ReadWoundsAsync()).Occurrences).Wound;
+            var console = new TestExplorerConsole();
+            var diagnostics = new GameEngineTurnLifecycleTests.SpiritualLifecycleTestLogger(persistent);
+            JsonObject? retained = null; TurnRequest? turn = null; var wroteResponse = false;
+            using var construction = timings?.Measure("FactionService.RuntimeConstruction");
+            var runtime = GameEngineTurnLifecycleTests.CreateGameEngineRuntime(files, inputSource: new NoPlayerInput(diagnostics),
+                logger: diagnostics, explorerConsole: console, finalizationHooks: new GameEngineSessionFinalizationHooks
                 {
-                    var self = Assert.Single(targets.Options, o => !o.Disabled && o.Label == "Себя");
-                    opened = await service.SubmitPromptSessionAsync(new(opened.InteractiveSession!.SessionId,
-                        new() { ["wound_target"] = JsonValue.Create(self.Value) }, Owner));
-                }
-                var prompt = Assert.IsType<UiSelectionPrompt>(Assert.Single(opened.Prompts, p => p.Id == "wound_selection"));
-                var paid = Assert.Single(prompt.Options, o => !o.Disabled && o.Label.Contains(providerName, StringComparison.Ordinal));
-                Assert.Contains(price.ToString(), paid.Label);
-                var submitted = await service.SubmitPromptSessionAsync(new(opened.InteractiveSession!.SessionId,
-                    new() { ["wound_selection"] = JsonValue.Create(paid.Value), ["confirm_wound_treatment"] = JsonValue.Create(true) }, Owner));
-                Assert.DoesNotContain(submitted.Notifications, n => n.Severity == UiNotificationSeverity.Error);
-                PendingPlayerActionService.Binding binding;
-                await using (var lease = await files.AcquireCanonicalWriteLeaseAsync())
+                    AtCheckpointAsync = async checkpoint =>
+                    {
+                        WritePhase("Faction service finalization checkpoint: " + checkpoint);
+                        if (checkpoint != SessionFinalizationCheckpoint.TerminalWaitStarted || wroteResponse) return;
+                        using var response = timings?.Measure("FactionService.GmResponse");
+                        await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+                        turn = JsonSerializer.Deserialize<TurnRequest>((await files.ReadFileAsync(lease, LiveTurnPreparationService.TurnRequestPath))!,
+                            SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)!;
+                        Assert.Equal("service", turn.SpiritualHealing!["mode"]!.GetValue<string>());
+                        Assert.Equal(price, turn.SpiritualHealing["quote"]!["amount"]!.GetValue<int>());
+                        retained = JsonNode.Parse((await files.ReadFileAsync(lease, AcceptedMechanicsPlan.WoundCommandPath))!)!.AsObject();
+                        Assert.Equal(7, retained["schemaVersion"]!.GetValue<int>());
+                        Assert.Equal("player_service_confirmed", retained["playerConfirmation"]!.GetValue<string>());
+                        Assert.Equal(500, JsonNode.Parse((await files.ReadFileAsync(lease, AfterlifeWoundHealingPlanner.Continuation.ServiceSoulPath))!)!["inkFeathers"]!["current"]!.GetValue<int>());
+                        await WriteNativeCompletionAsync(files, lease, turn,
+                            AfterlifeSpiritualNaturalRecoveryTests.AuthorNaturalGraphs(beforeWound, turn.SpiritualHealing["destinationGraphs"]!.AsArray()),
+                            providerName + " принимает подтверждённую платную попытку лечения; клиент рассчитывает её результат и один обычный цикл.");
+                        await WriteElyaraServiceReasoningAsync(files, lease, turn, faction ? ElyaraFixtureReasoning.FactionWitness : ElyaraFixtureReasoning.Paid);
+                        if (faction) await WriteFactionServiceReasoningAsync(files, lease, turn);
+                        wroteResponse = true; armed = failPublication;
+                    }
+                });
+            construction?.Dispose();
+            try
+            {
+                runtime.GameLoop.SetSession("session_elyara_service_" + (browser ? "browser" : "console"), 42);
+                using (timings?.Measure("FactionService.RefreshGameState"))
+                    await runtime.StateManager.RefreshGameStateAsync();
+                if (failPublication)
                 {
-                    var queued = Assert.IsType<PendingPlayerActionService.State>(await PendingPlayerActionService.ReadAsync(files, lease));
-                    Assert.Equal("queued", queued.Phase); binding = queued.Binding;
-                    Assert.True(binding.SpiritualSelfTreatment!.Service!.PlayerConfirmed);
-                    Assert.Equal(price, binding.SpiritualSelfTreatment.Service.Quote.Amount);
+                    // Ordinary runtime health initializes this ledger before the
+                    // pre-turn backup. Match that committed zero-cycle baseline;
+                    // do not mistake first initialization for a retained paid turn.
+                    Assert.False(files.FileExists(ProgressionScheduleService.SchedulePath));
+                    var initialized = await new ProgressionScheduleService(files,
+                        NullLogger<ProgressionScheduleService>.Instance).EnsureInitializedAsync();
+                    Assert.Equal(0, initialized.CurrentChaosSeaTurnOrdinal);
+                    Assert.Equal(0, initialized.PendingChaosSeaCycles);
                 }
-                fixture.AssertMutationRootsUnchanged(before);
-                using (timings?.Measure("FactionService.ProcessPlayerTurn"))
-                    await runtime.Engine.ProcessPlayerTurn(binding.Action, browserAction: binding);
-            }
-            else
-            {
-                console.QueueAnySelection("Отмена");
-                Assert.Equal(string.Empty, await runtime.Explorer.TryProcessCommand("/лечить"));
-                fixture.AssertMutationRootsUnchanged(before); Assert.Empty(console.ConfirmPrompts);
-                var offered = (await WoundApplicationService.OpenAsync(files, "/лечить", treatment: true)).WoundCommandState!;
-                var choice = Assert.Single(offered.Choices, c => c.Available && c.Selection.Service is not null &&
-                    (c.Selection.Service.Quote.Provider.OwnerKind == "resident") == faction);
-                Assert.Equal(realm == "Chaos Sea", offered.IsTargetSelection);
-                var selections = new List<string>();
-                if (offered.IsTargetSelection)
+                var before = fixture.CaptureMutationRoots(new[] { AfterlifeWoundHealingPlanner.Continuation.ServiceSoulPath,
+                    GuardianThoughtJournalState.StatePath, EffectAcceptedTurnInputComposer.WorldTimePath,
+                    PendingTurnStateService.PendingDiceStatePath }.Concat(AfterlifeWoundTreatmentAuthority.ServiceLocalityPaths)
+                    .Concat(realm == "Shining Abode" ? new[] { ShiningAbodeState.StatePath } : Array.Empty<string>())
+                    .Concat(faction ? new[] { GuardianAbodeResidentState.StatePath } : Array.Empty<string>()));
+                using var handler = timings?.Measure("FactionService.HandlerAndTurn");
+                if (browser)
                 {
-                    var targets = offered.Targets.Where(t => t.Available).ToArray();
-                    var self = Assert.Single(targets, t => t.Owner.OwnerKind == "player_soul");
-                    selections.Add((Array.IndexOf(targets, self) + 1) + ". " + self.Label);
+                    var service = CreateCommands(files);
+                    var cancelled = await service.ExecuteAsync(new("/лечить", Owner));
+                    await service.CancelPromptSessionAsync(new(cancelled.InteractiveSession!.SessionId, Owner));
+                    fixture.AssertMutationRootsUnchanged(before);
+                    var opened = await service.ExecuteAsync(new(realm == "Shining Abode" && !faction ? "/элиара" : "/лечить", Owner));
+                    Assert.Equal(CommandExecutionState.RequiresInput, opened.State);
+                    var targets = opened.Prompts.OfType<UiSelectionPrompt>().SingleOrDefault(p => p.Id == "wound_target");
+                    Assert.Equal(realm == "Chaos Sea", targets is not null);
+                    if (targets is not null)
+                    {
+                        var self = Assert.Single(targets.Options, o => !o.Disabled && o.Label == "Себя");
+                        opened = await service.SubmitPromptSessionAsync(new(opened.InteractiveSession!.SessionId,
+                            new() { ["wound_target"] = JsonValue.Create(self.Value) }, Owner));
+                    }
+                    var prompt = Assert.IsType<UiSelectionPrompt>(Assert.Single(opened.Prompts, p => p.Id == "wound_selection"));
+                    var paid = Assert.Single(prompt.Options, o => !o.Disabled && o.Label.Contains(providerName, StringComparison.Ordinal));
+                    Assert.Contains(price.ToString(), paid.Label);
+                    var submitted = await service.SubmitPromptSessionAsync(new(opened.InteractiveSession!.SessionId,
+                        new() { ["wound_selection"] = JsonValue.Create(paid.Value), ["confirm_wound_treatment"] = JsonValue.Create(true) }, Owner));
+                    Assert.DoesNotContain(submitted.Notifications, n => n.Severity == UiNotificationSeverity.Error);
+                    PendingPlayerActionService.Binding binding;
+                    await using (var lease = await files.AcquireCanonicalWriteLeaseAsync())
+                    {
+                        var queued = Assert.IsType<PendingPlayerActionService.State>(await PendingPlayerActionService.ReadAsync(files, lease));
+                        Assert.Equal("queued", queued.Phase); binding = queued.Binding;
+                        Assert.True(binding.SpiritualSelfTreatment!.Service!.PlayerConfirmed);
+                        Assert.Equal(price, binding.SpiritualSelfTreatment.Service.Quote.Amount);
+                    }
+                    fixture.AssertMutationRootsUnchanged(before);
+                    using (timings?.Measure("FactionService.ProcessPlayerTurn"))
+                        await runtime.Engine.ProcessPlayerTurn(binding.Action, browserAction: binding);
                 }
-                var choices = offered.Choices.Where(c => c.Available).ToArray();
-                selections.Add((Array.IndexOf(choices, choice) + 1) + ". " + choice.Name + " — " + choice.Severity);
-                console.QueueAnySelection(selections.ToArray());
-                console.QueueAnyConfirmResponse(true);
-                var action = await runtime.Explorer.TryProcessCommand(realm == "Shining Abode" && !faction ? "/элиара" : "/лечить");
-                Assert.Equal(faction ? WoundApplicationService.FactionServiceActionText : WoundApplicationService.ServiceActionText, action);
-                Assert.Contains(price.ToString(), Assert.Single(console.ConfirmPrompts));
-                fixture.AssertMutationRootsUnchanged(before);
-                using (timings?.Measure("FactionService.ProcessPlayerTurn"))
-                    await runtime.Engine.ProcessPlayerTurn(action!);
+                else
+                {
+                    console.QueueAnySelection("Отмена");
+                    Assert.Equal(string.Empty, await runtime.Explorer.TryProcessCommand("/лечить"));
+                    fixture.AssertMutationRootsUnchanged(before); Assert.Empty(console.ConfirmPrompts);
+                    var offered = (await WoundApplicationService.OpenAsync(files, "/лечить", treatment: true)).WoundCommandState!;
+                    var choice = Assert.Single(offered.Choices, c => c.Available && c.Selection.Service is not null &&
+                        (c.Selection.Service.Quote.Provider.OwnerKind == "resident") == faction);
+                    Assert.Equal(realm == "Chaos Sea", offered.IsTargetSelection);
+                    var selections = new List<string>();
+                    if (offered.IsTargetSelection)
+                    {
+                        var targets = offered.Targets.Where(t => t.Available).ToArray();
+                        var self = Assert.Single(targets, t => t.Owner.OwnerKind == "player_soul");
+                        selections.Add((Array.IndexOf(targets, self) + 1) + ". " + self.Label);
+                    }
+                    var choices = offered.Choices.Where(c => c.Available).ToArray();
+                    selections.Add((Array.IndexOf(choices, choice) + 1) + ". " + choice.Name + " — " + choice.Severity);
+                    console.QueueAnySelection(selections.ToArray());
+                    console.QueueAnyConfirmResponse(true);
+                    var action = await runtime.Explorer.TryProcessCommand(realm == "Shining Abode" && !faction ? "/элиара" : "/лечить");
+                    Assert.Equal(faction ? WoundApplicationService.FactionServiceActionText : WoundApplicationService.ServiceActionText, action);
+                    Assert.Contains(price.ToString(), Assert.Single(console.ConfirmPrompts));
+                    fixture.AssertMutationRootsUnchanged(before);
+                    using (timings?.Measure("FactionService.ProcessPlayerTurn"))
+                        await runtime.Engine.ProcessPlayerTurn(action!);
+                }
+                using var assertions = timings?.Measure("FactionService.Assertions");
+                Assert.True(wroteResponse);
+                if (failPublication)
+                {
+                    Assert.Equal(1, cuts); Assert.Equal(42, runtime.GameLoop.TurnNumber);
+                    fixture.AssertMutationRootsUnchanged(before);
+                    Assert.DoesNotContain((await fixture.ReadHistoryAsync()).Transitions, t => t.AttemptId is not null);
+                    Assert.Null(await files.ReadFileBytesAsync(AcceptedMechanicsPlan.WoundCommandPath));
+                    Assert.Null(await files.ReadFileBytesAsync(LiveTurnPreparationService.PendingTurnSnapshotManifestPath));
+                    output.WriteLine("Console paid service C4 cut: wallet and complete pre-turn wound/effects/History/cycle restored; no accepted payment.");
+                    return;
+                }
+                Assert.Equal(realm, turn!.ProgressionControl!.CurrentRealm);
+                Assert.Equal(realm == "Shining Abode" ? 1 : 0, turn.ProgressionControl.ShiningAbodeCyclesExpectedThisTurn);
+                Assert.Equal(realm == "Chaos Sea" ? 1 : 0, turn.ProgressionControl.ChaosSeaCyclesExpectedThisTurn);
+                Assert.Equal(43, runtime.GameLoop.TurnNumber);
+                var wallet = JsonNode.Parse((await files.ReadFileAsync(AfterlifeWoundHealingPlanner.Continuation.ServiceSoulPath))!)!["inkFeathers"]!;
+                Assert.Equal(500 - price, wallet["current"]!.GetValue<int>()); Assert.Equal(900, wallet["total"]!.GetValue<int>());
+                var history = await fixture.ReadHistoryAsync();
+                var paidResult = Assert.IsType<SpiritualHealingPersistedResult>(Assert.Single(history.Transitions, t => t.AttemptId is not null).TransitionResult);
+                Assert.Equal("service", paidResult.Mode); Assert.True(JsonNode.DeepEquals(retained, paidResult.ToCanonicalJson()["request"]));
+                var die = retained!["attempt"]!["roll"]!["values"]![0]!.GetValue<int>();
+                var calculation = SpiritualHealingOutcomeMath.Calculate(new(tier, rank, die, 0, 0))!;
+                var expected = SpiritualWoundRecoveryPlanner.Build(beforeWound, 0, retained["attempt"]!["attemptId"]!.GetValue<string>(),
+                    retained["attempt"]!["cycleKey"]!.GetValue<string>(), calculation);
+                Assert.Equal(expected.Select(s => (s.Kind, s.SeverityRank, s.Progress)), paidResult.Stages.Select(s => (s.Kind, s.After.Severity.Rank, s.After.Recovery.CurrentStepProgress)));
+                var schedule = JsonNode.Parse((await files.ReadFileAsync(ProgressionScheduleService.SchedulePath))!)!;
+                Assert.Equal(turn!.ProgressionControl!.NextChaosSeaTurnOrdinal, schedule["currentChaosSeaTurnOrdinal"]!.GetValue<int>());
+                if (realm == "Shining Abode")
+                {
+                    Assert.Equal(1, schedule["lastShiningAbodeCycleOrdinal"]!.GetValue<int>());
+                    Assert.Equal(0, schedule["lastChaosSeaSimulationOrdinal"]!.GetValue<int>());
+                }
+                foreach (var path in new[] { AcceptedMechanicsPlan.WoundCommandPath, ProgressionScheduleService.ReportPath,
+                    LiveTurnPreparationService.PendingTurnSnapshotManifestPath, PendingPlayerActionService.PendingPath })
+                    Assert.Null(await files.ReadFileBytesAsync(path));
+                if (faction)
+                {
+                    var roster = JsonNode.Parse((await files.ReadFileAsync(GuardianAbodeResidentState.StatePath))!)!;
+                    var thought = Assert.Single(roster[GuardianAbodeResidentState.ThoughtJournalProperty]!.AsArray().OfType<JsonObject>());
+                    Assert.Equal(AfterlifeHealingPaymentLifecycleTests.FactionHealerId, thought["residentId"]!.GetValue<string>());
+                    Assert.Equal(43, thought["turn"]!.GetValue<int>());
+                    Assert.Contains("Я", thought["summary"]!.GetValue<string>());
+                    Assert.Null(roster[GuardianAbodeResidentState.UpdateThoughtJournalProperty]);
+                }
+                fixture.AssertResourcesUnchanged();
+                output.WriteLine($"{(browser ? "Browser" : "Console")} public {providerName}: cancel=0, confirmed price{price}, wallet500→{500-price},total900, actual d{die}/{calculation.ResultBand}; one accepted attempt/cycle/result7, complete transient cleanup.");
             }
-            using var assertions = timings?.Measure("FactionService.Assertions");
-            Assert.True(wroteResponse);
-            if (failPublication)
+            catch (Exception error) { primaryFailure = error; }
+            finally
             {
-                Assert.Equal(1, cuts); Assert.Equal(42, runtime.GameLoop.TurnNumber);
-                fixture.AssertMutationRootsUnchanged(before);
-                Assert.DoesNotContain((await fixture.ReadHistoryAsync()).Transitions, t => t.AttemptId is not null);
-                Assert.Null(await files.ReadFileBytesAsync(AcceptedMechanicsPlan.WoundCommandPath));
-                Assert.Null(await files.ReadFileBytesAsync(LiveTurnPreparationService.PendingTurnSnapshotManifestPath));
-                output.WriteLine("Console paid service C4 cut: wallet and complete pre-turn wound/effects/History/cycle restored; no accepted payment.");
-                return;
+                closingForDiagnostics?.Invoke();
+                armed = false;
+                WritePhase("Faction service closing begin; actual audio and fixture disposal follow.");
+                try { output.WriteLine(diagnostics.Describe()); }
+                catch (Exception error)
+                {
+                    primaryFailure ??= error;
+                    persistent?.RecordClosingFailure(error, "faction-service-describe-forward");
+                }
+                try
+                {
+                    using (timings?.Measure("FactionService.AudioDisposal"))
+                        await runtime.AudioService.DisposeAsync();
+                }
+                catch (Exception error)
+                {
+                    primaryFailure ??= error;
+                    persistent?.RecordClosingFailure(error, "faction-service-audio-close");
+                }
             }
-            Assert.Equal(realm, turn!.ProgressionControl!.CurrentRealm);
-            Assert.Equal(realm == "Shining Abode" ? 1 : 0, turn.ProgressionControl.ShiningAbodeCyclesExpectedThisTurn);
-            Assert.Equal(realm == "Chaos Sea" ? 1 : 0, turn.ProgressionControl.ChaosSeaCyclesExpectedThisTurn);
-            Assert.Equal(43, runtime.GameLoop.TurnNumber);
-            var wallet = JsonNode.Parse((await files.ReadFileAsync(AfterlifeWoundHealingPlanner.Continuation.ServiceSoulPath))!)!["inkFeathers"]!;
-            Assert.Equal(500 - price, wallet["current"]!.GetValue<int>()); Assert.Equal(900, wallet["total"]!.GetValue<int>());
-            var history = await fixture.ReadHistoryAsync();
-            var paidResult = Assert.IsType<SpiritualHealingPersistedResult>(Assert.Single(history.Transitions, t => t.AttemptId is not null).TransitionResult);
-            Assert.Equal("service", paidResult.Mode); Assert.True(JsonNode.DeepEquals(retained, paidResult.ToCanonicalJson()["request"]));
-            var die = retained!["attempt"]!["roll"]!["values"]![0]!.GetValue<int>();
-            var calculation = SpiritualHealingOutcomeMath.Calculate(new(tier, rank, die, 0, 0))!;
-            var expected = SpiritualWoundRecoveryPlanner.Build(beforeWound, 0, retained["attempt"]!["attemptId"]!.GetValue<string>(),
-                retained["attempt"]!["cycleKey"]!.GetValue<string>(), calculation);
-            Assert.Equal(expected.Select(s => (s.Kind, s.SeverityRank, s.Progress)), paidResult.Stages.Select(s => (s.Kind, s.After.Severity.Rank, s.After.Recovery.CurrentStepProgress)));
-            var schedule = JsonNode.Parse((await files.ReadFileAsync(ProgressionScheduleService.SchedulePath))!)!;
-            Assert.Equal(turn!.ProgressionControl!.NextChaosSeaTurnOrdinal, schedule["currentChaosSeaTurnOrdinal"]!.GetValue<int>());
-            if (realm == "Shining Abode")
-            {
-                Assert.Equal(1, schedule["lastShiningAbodeCycleOrdinal"]!.GetValue<int>());
-                Assert.Equal(0, schedule["lastChaosSeaSimulationOrdinal"]!.GetValue<int>());
-            }
-            foreach (var path in new[] { AcceptedMechanicsPlan.WoundCommandPath, ProgressionScheduleService.ReportPath,
-                LiveTurnPreparationService.PendingTurnSnapshotManifestPath, PendingPlayerActionService.PendingPath })
-                Assert.Null(await files.ReadFileBytesAsync(path));
-            if (faction)
-            {
-                var roster = JsonNode.Parse((await files.ReadFileAsync(GuardianAbodeResidentState.StatePath))!)!;
-                var thought = Assert.Single(roster[GuardianAbodeResidentState.ThoughtJournalProperty]!.AsArray().OfType<JsonObject>());
-                Assert.Equal(AfterlifeHealingPaymentLifecycleTests.FactionHealerId, thought["residentId"]!.GetValue<string>());
-                Assert.Equal(43, thought["turn"]!.GetValue<int>());
-                Assert.Contains("Я", thought["summary"]!.GetValue<string>());
-                Assert.Null(roster[GuardianAbodeResidentState.UpdateThoughtJournalProperty]);
-            }
-            fixture.AssertResourcesUnchanged();
-            output.WriteLine($"{(browser ? "Browser" : "Console")} public {providerName}: cancel=0, confirmed price{price}, wallet500→{500-price},total900, actual d{die}/{calculation.ResultBand}; one accepted attempt/cycle/result7, complete transient cleanup.");
         }
-        finally
+
+        void WritePhase(string message)
         {
-            closingForDiagnostics?.Invoke();
-            persistent?.WriteLine("Faction service closing begin; actual audio and fixture disposal follow.");
-            armed = false; output.WriteLine(diagnostics.Describe());
-            using (timings?.Measure("FactionService.AudioDisposal"))
-                await runtime.AudioService.DisposeAsync();
+            if (persistent is null) return;
+            try { persistent.WriteLine(message); }
+            catch (Exception error) { persistent.RecordClosingFailure(error, "faction-service-phase-forward"); }
         }
     }
 

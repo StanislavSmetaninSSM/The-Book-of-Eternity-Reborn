@@ -1,3 +1,16 @@
+# US6 bounded capture SOURCE findings addressed; confirmation pending
+
+First wiring Integration build1e07f605 exit0/0errors/102existingwarnings2:16.54,
+no runtime. Sol/xhigh found two finite failure paths: new phase forwarding could
+throw before audio closing, and implicit fixture unwind could replace a body error.
+Both are corrected using the existing lifecycle pattern: retain the original body
+exception before closing, guard/defer new phase writes, always attempt audio then
+fixture close, record secondary close failures and rethrow original with EDI. No
+assertion/game/source/cache/budget change. Source confirmation and a fresh changed
+Integration build are pending; earlier compiled wiring artifacts remain external.
+
+---
+
 # US6 T136 bounded existing-capture wiring WIP
 
 Remote base03401e57c8933f620920e74153417741da721b81 verified on2026-10-30.
@@ -10,7 +23,7 @@ OperationTimingAccumulator caller macro scopes. The actual allocated root binds
 before file-manager creation/seeding; full enabled original Engine messages and
 exceptions retain the same threshold/format/queue and are also persisted. No FS
 observer/timing recorder is attached, so DATA reuse and fresh fences are unchanged.
-Audio/fixture unwind precede completion, strict root/footer/decode proof retained.
+Audio/fixture closing precede completion, strict root/footer/decode proof retained.
 No production/game/GM-authored contract changes; GM surfaces need no further update.
 Optimization assessment: constant-count macros reuse existing writer/event queue,
 no new cache or repeated source reads, no speedup claim. Source review pending.
