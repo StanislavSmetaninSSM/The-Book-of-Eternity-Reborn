@@ -1,3 +1,41 @@
+# Договорная помощь: первый настоящий console-маршрут прошёл
+
+B6 на `0b2dd154683c9384eee79b886a48405ad99daff5`: точный
+`negotiated-healing-faction-console` 1/1 PASS, 61.4020214 из 180 секунд,
+wall 69.4507827. TRX SHA256
+`7303a0e57f00ae9e5e5c79940e1ca2e9776096574ad07b9644014db0fec3ef4e`.
+Реальный Engine принял offer43/natural grant, выполнил штатную очистку; чтение и
+отмена `/лечить` были инертны, отдельное подтверждение привело к настоящему
+attempt44/result6. Проверены точные условия favor, сохранённый реальный бросок,
+независимый рассчитанный исход/рана, один цикл, History и память обоих участников,
+неизменный полный кошелёк и инертное current replay. Публичного денежного профиля
+у фракционного поставщика нет. Независимый OUTCOME запрошен; это не приёмка всего B.
+
+Полный capture проверен: 22 исходных timing events/11 пар с исходными timestamps,
+1 полное сообщение, gzip footer/CRC/decode, stored/decoded SHA, writer completion,
+последовательность и фактическое отсутствие закрытой fixture root без follow.
+Stored SHA256 `9dc51c72df3bd04bb2c4659ff2e339aec49cbf575022858e4e32e00e39497ef4`;
+decoded SHA256 `7a55b8fd1e643c5ea0e7bf26d31a1ccfe8a6775b4cafb9df31a16c48615b6387`.
+Полные selection/unique IDs/очистка/pins проверены. Предыдущий B5 TIMEOUT и его
+неполный capture сохранены; ничего не удалялось и не переименовывалось в PASS.
+
+Integration из того же SHA: 0 errors/102 baseline warnings, 3:00.79; три других
+проекта C# неизменны с `121160266`. B6 подтвердил 27 артефактов, 131 source binding,
+4 PE/PDB, 8 ресурсов/32 copies и daemon. Новый remaining PlanOnly: 16 дескрипторов,
+154 случая/0 исполнений, 31.0310586 секунды — UI4 и 150 выбранных старых регрессий,
+без принятых console1/Native2/DATA40. Их PREP ожидается, все пока UNRUN.
+Следом — shared browser/Элиара/откат и эти затронутые контракты; дополнительные
+native-negatives competing zero/null GM currency и proposed-wallet conflict ещё
+не квалифицированы. Нельзя объявлять завершёнными весь B/US6/#1536.
+
+Операционные DATA/recorder и fresh guards прежние; cache/экономика/diagnostic format
+не расширяются, speedup не заявляется. Raw полностью вне checkout:
+`/workspace/tboe-linux-evidence-20261025/us6-faction-service-agreement`.
+Публичный маршрут A, прежний Native2/DATA40 и HOLD DFR/Mortal/Windows сохраняют
+свои отдельные принятые/открытые границы; DOM/provider/fresh-process не проверены.
+
+---
+
 # Договорная помощь: отказ фикстуры памяти на втором ходе сохранён
 
 Первый console B5 на `2700f265f80251b1e0ec48b4de2b8ee8f1e852d7` дошёл до
