@@ -61,7 +61,10 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                 var detail = (await WoundApplicationService.SelectTargetAsync(files, stageLease, state, target.Value, "/лечить")).WoundCommandState!;
                 var choice = Assert.Single(detail.Choices, c => c.Available && c.Selection.Aid?.ShiningPatient?.Target == target.Owner);
                 var selected = await WoundApplicationService.ConfirmAsync(files, stageLease, detail, choice.Value);
-                Assert.True(selected.Aid!.PlayerConfirmed);
+                Assert.Equal(choice.Selection, selected);
+                Assert.False(selected.Aid!.ReceiveAid);
+                Assert.False(selected.Aid.PlayerConfirmed);
+                Assert.Equal(target.Owner, selected.Aid.ShiningPatient!.Target);
                 var draws = 0;
                 var staged = await AfterlifeWoundTreatmentAuthority.StagePlayerAidTurnAsync(files, stageLease, scheduler,
                     "session_patient_response", requestId, number, selected, count => { draws++; return Enumerable.Repeat(1, count).ToArray(); });

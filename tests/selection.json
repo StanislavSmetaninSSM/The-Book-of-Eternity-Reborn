@@ -2,31 +2,24 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "shining-patient-memory-parser",
-      "reason": "Only changed seven-row parser theory plus29 previously unrun guidance/transport/source-guard cases after S5 partial33. Retain26 unaffected PASS (24DATA+2example inventory); supersede six old passed rows from the changed parser theory. No Engine/native release or unrelated PASS replay.",
+      "category": "shining-patient-radiant-active-memory",
+      "reason": "Only failed radiant active44 plus two previously unrun native response singletons after S5F partial stop. Shared fixture correction preserves real ConfirmAsync/current target validation and player-to-target flag semantics; retain resident grant43 and four owner-control PASS.",
       "contracts": [
-        "#1536 T108-SHINING-PATIENT-MEMORY; exact existing identifier grammar; scoped partial-outcome follow-up"
+        "#1536 T108-SHINING-PATIENT-MEMORY; actual player-to-Shining-target confirmation/admission; no receiving-aid flag or providerConfirmation"
       ]
     },
     {
-      "category": "shining-patient-memory-guidance",
-      "reason": "Only changed seven-row parser theory plus29 previously unrun guidance/transport/source-guard cases after S5 partial33. Retain26 unaffected PASS (24DATA+2example inventory); supersede six old passed rows from the changed parser theory. No Engine/native release or unrelated PASS replay.",
+      "category": "shining-patient-radiant-response-memory",
+      "reason": "Only failed radiant active44 plus two previously unrun native response singletons after S5F partial stop. Shared fixture correction preserves real ConfirmAsync/current target validation and player-to-target flag semantics; retain resident grant43 and four owner-control PASS.",
       "contracts": [
-        "#1536 T108-SHINING-PATIENT-MEMORY; exact existing identifier grammar; scoped partial-outcome follow-up"
+        "#1536 T108-SHINING-PATIENT-MEMORY; actual player-to-Shining-target confirmation/admission; no receiving-aid flag or providerConfirmation"
       ]
     },
     {
-      "category": "shining-patient-memory-transport-regressions",
-      "reason": "Only changed seven-row parser theory plus29 previously unrun guidance/transport/source-guard cases after S5 partial33. Retain26 unaffected PASS (24DATA+2example inventory); supersede six old passed rows from the changed parser theory. No Engine/native release or unrelated PASS replay.",
+      "category": "shining-patient-resident-active-memory",
+      "reason": "Only failed radiant active44 plus two previously unrun native response singletons after S5F partial stop. Shared fixture correction preserves real ConfirmAsync/current target validation and player-to-target flag semantics; retain resident grant43 and four owner-control PASS.",
       "contracts": [
-        "#1536 T108-SHINING-PATIENT-MEMORY; exact existing identifier grammar; scoped partial-outcome follow-up"
-      ]
-    },
-    {
-      "category": "wound-read-semantic-source-guards",
-      "reason": "Only changed seven-row parser theory plus29 previously unrun guidance/transport/source-guard cases after S5 partial33. Retain26 unaffected PASS (24DATA+2example inventory); supersede six old passed rows from the changed parser theory. No Engine/native release or unrelated PASS replay.",
-      "contracts": [
-        "#1536 T108-SHINING-PATIENT-MEMORY; exact existing identifier grammar; scoped partial-outcome follow-up"
+        "#1536 T108-SHINING-PATIENT-MEMORY; actual player-to-Shining-target confirmation/admission; no receiving-aid flag or providerConfirmation"
       ]
     }
   ]
