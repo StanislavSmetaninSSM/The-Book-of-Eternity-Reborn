@@ -22,8 +22,12 @@ privacy/foreign-card/status controls и реальные read handlers с unchan
 один вызов, за его пределами DATA не сохраняется. Нет нового кэша, чтений или
 reuse authority; текущие catalog/identity/history/source guards неизменны.
 Непрозрачные spiritual requirements не интерпретируются как новый игровой codec.
-Speedup не заявляется. Raw нового блока — вне checkout, builds/PlanOnly/runtime
-пока UNRUN. HOLD DFR/Mortal/Windows и общая незавершённость #1536 сохраняются.
+Speedup не заявляется. Raw нового блока —
+`/workspace/tboe-linux-evidence-20261025/us5-guided-diagnosis` вне checkout.
+D1 Unit build exit0, 26 прежних warnings, 1:18.99. До runtime исправлена
+ошибка fixture key `skillRef` → существующий `capabilityRef`; этот build не
+квалифицирует исправленную фикстуру. PlanOnly/runtime пока UNRUN.
+HOLD DFR/Mortal/Windows и общая незавершённость #1536 сохраняются.
 
 # Договорная помощь US6 B: ограниченный игровой маршрут принят
 
