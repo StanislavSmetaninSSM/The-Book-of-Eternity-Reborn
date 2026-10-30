@@ -1,3 +1,33 @@
+# US6 console functional body completed; capture epoch wiring corrected WIP
+
+Actual HISTGREEN-console sourcea2fa8e932(compiled06):1completedFAIL,category33.7909115s,
+wall42.5387293s,no timeout. Console body reached every original assertion and summary:
+read/cancel/separateconfirm -> price51,wallet500→449,real d16/ReduceTwo,wound/History/
+onecycle/result7/exact resident memory,complete transient cleanup. Do NOT label test
+PASS: diagnostic completion failed. Real root absent, gzip/footer/hash valid but only
+18of20original timing events stored, so full capture is incomplete. Exact cause is
+both journey/preparation begins occurred before bound writer _started; strict source
+clock guard correctly rejects them. No new gameplay defect or unexplained timing.
+
+Sol bounded SOURCE accepted ordering fix: same actual allocation callback first
+Bind+Arm, then start journey; nested factory callback starts preparation after binding
+and closes it after factory settlement. Journey ends after actual audio/fixture close.
+Window may predate binding; no scopes may. Original timestamps/strict guard/serializer/
+queue/cache/production/budgets unchanged. No filtering/rebasing/synthetic timestamps.
+One added cheap negative proves real two pre-bind events cannot claim complete trace;
+existing positive wiring uses window-before-bind/scopes-after-bind. Existing category
+now3cases/1min; deliberate negative is incomplete by design while2positives must be
+complete, all require intact gzip/root cleanup as applicable. This test-only delta is
+UNCOMPILED/UNRUN; fresh Integration only, artifact/catalog/Plan/PREP thencheap3 required
+before one console3min rerun.171accepted production cases retained, not repeated.
+
+Raw/full failed TRX/report/exact failure proof outside Git at HISTGREEN-console-runtime;
+old incomplete captures/fixture root retained and no raw deleted. Browser/rollback/
+private5 still held. Next freezepublishedwiringSHA, freshIntegration and finiteproof;
+no general diagnostic project or higher limit. Whole US6/negotiatedB remains open.
+
+---
+
 # US6 immutable/current correction171/171PASS on frozen source; UI next
 
 Independent Sol PREP accepted staged execution on compiledsource06a6de91fa8e0bae4f8d7cdc8bed982072d1a2b9,

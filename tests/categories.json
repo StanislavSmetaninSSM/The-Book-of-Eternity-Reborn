@@ -37440,7 +37440,7 @@
     },
     {
       "id": "shining-faction-service-capture-wiring",
-      "responsibility": "Two cheap real-file controls for the existing faction journey capture: original gzip macro begin visible before body release and complete Information-level Engine message/exception forwarded once while retaining the existing disabled-level behavior. Verify final original events, actual-root cleanup and strict gzip/footer/decode completion through the existing transport.",
+      "responsibility": "Three cheap real-file controls for the existing faction journey capture: original gzip macro begin and complete Information-level Engine message/exception persist before body release, while two original pre-binding events remain rejected by the unchanged writer clock guard. Positive captures require full completion; the deliberate negative requires incomplete accounting with intact full-output gzip/footer and actual-root cleanup.",
       "excludes": "No GameEngine/world/native, FS recorder or observer, DATA reuse change, new transport, timeout increase, diagnostic quotas or public-route acceptance. Existing full transport suite is unchanged.",
       "changeHints": [
         "BookOfEternityClient.IntegrationTests/ExplorerWoundSelfTreatmentTests.Services.cs",
@@ -37458,7 +37458,8 @@
           "project": "integration",
           "tests": [
             "BookOfEternityClient.Tests.LifecyclePassiveTimingDiagnosticsTests.GzipOriginalBeginIsPersistentWhileActualBodyRemainsBlocked",
-            "BookOfEternityClient.Tests.LifecyclePassiveTimingDiagnosticsTests.SpiritualLoggerAndMacroBeginArePersistentBeforeTheBodyReturns"
+            "BookOfEternityClient.Tests.LifecyclePassiveTimingDiagnosticsTests.SpiritualLoggerAndMacroBeginArePersistentBeforeTheBodyReturns",
+            "BookOfEternityClient.Tests.LifecyclePassiveTimingDiagnosticsTests.EventsBeforeFixtureBindingCannotClaimCompleteCapture"
           ]
         }
       ],

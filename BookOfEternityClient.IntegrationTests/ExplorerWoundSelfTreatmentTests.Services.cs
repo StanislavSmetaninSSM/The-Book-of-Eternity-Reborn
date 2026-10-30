@@ -42,11 +42,16 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
         var window = timings.StartWindow(captureEvents: true);
         Exception? primary = null;
         IDisposable? closing = null;
+        IDisposable? journey = null;
         try
         {
-            using var journey = timings.Measure("FactionService.JourneyIncludingClosing");
             await RunServiceJourneyCoreAsync(browser, failPublication, realm, faction, capture, timings,
-                actualRoot => { capture.BindFixtureRoot(actualRoot); capture.Arm(window); },
+                actualRoot =>
+                {
+                    capture.BindFixtureRoot(actualRoot);
+                    capture.Arm(window);
+                    journey = timings.Measure("FactionService.JourneyIncludingClosing");
+                },
                 () => closing = timings.Measure("FactionService.Closing"));
         }
         catch (Exception error) { primary = error; }
@@ -54,6 +59,7 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
         {
             // The inner await-using fixture and audio close have already unwound.
             closing?.Dispose();
+            journey?.Dispose();
             await capture.CompleteAsync(primary);
         }
     }
@@ -91,11 +97,19 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
         if (primaryFailure is not null) ExceptionDispatchInfo.Capture(primaryFailure).Throw();
         async Task<AfterlifeWoundHealingLifecycleTests.Fixture> CreateFixtureAsync()
         {
-            using var preparation = timings?.Measure("FactionService.FixturePreparation");
-            return faction
-                ? await AfterlifeHealingPaymentLifecycleTests.CreateFactionServiceFixtureAsync(rank, 20, hooks, engine: true,
-                    allocatedRootForDiagnostics: allocatedRootForDiagnostics)
-                : await AfterlifeHealingPaymentLifecycleTests.CreateServiceFixtureAsync(rank, 20, hooks, engine: true, realm: realm);
+            IDisposable? preparation = null;
+            try
+            {
+                return faction
+                    ? await AfterlifeHealingPaymentLifecycleTests.CreateFactionServiceFixtureAsync(rank, 20, hooks, engine: true,
+                        allocatedRootForDiagnostics: actualRoot =>
+                        {
+                            allocatedRootForDiagnostics?.Invoke(actualRoot);
+                            preparation = timings?.Measure("FactionService.FixturePreparation");
+                        })
+                    : await AfterlifeHealingPaymentLifecycleTests.CreateServiceFixtureAsync(rank, 20, hooks, engine: true, realm: realm);
+            }
+            finally { preparation?.Dispose(); }
         }
         async Task RunWithFixtureAsync()
         {

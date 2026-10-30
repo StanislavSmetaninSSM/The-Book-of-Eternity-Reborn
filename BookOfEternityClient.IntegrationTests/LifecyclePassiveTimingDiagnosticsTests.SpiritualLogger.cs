@@ -27,8 +27,9 @@ public sealed partial class LifecyclePassiveTimingDiagnosticsTests
         try
         {
             Directory.CreateDirectory(root);
-            capture.BindFixtureRoot(root);
+            // Match the journey: a window may predate binding, original scopes may not.
             var window = timings.StartWindow(captureEvents: true);
+            capture.BindFixtureRoot(root);
             capture.Arm(window);
             var logger = new GameEngineTurnLifecycleTests.SpiritualLifecycleTestLogger(capture);
             body = BodyAsync();
@@ -75,4 +76,32 @@ public sealed partial class LifecyclePassiveTimingDiagnosticsTests
         Assert.True(report.RootElement.GetProperty("GzipFooterClosed").GetBoolean());
         Assert.Equal(2, ReadRows(capture.RecordsPath).Count(r => r.TryGetProperty("Operation", out _)));
     }
+
+    /// <summary>Original events older than the bound writer's clock must remain an incomplete capture.</summary>
+    [Fact]
+    public async Task EventsBeforeFixtureBindingCannotClaimCompleteCapture()
+    {
+        var root = CreateRoot();
+        var capture = new LifecyclePassiveTimingDiagnostics(nameof(EventsBeforeFixtureBindingCannotClaimCompleteCapture),
+            _transportTestOutput, gzipRecords: true);
+        var timings = new OperationTimingAccumulator();
+        var window = timings.StartWindow(captureEvents: true);
+        using (timings.Measure("FactionService.BeforeBinding")) { }
+        capture.BindFixtureRoot(root);
+        capture.Arm(window);
+        capture.WriteLine("Full original post-binding message ensures a real gzip member.");
+        Directory.Delete(root, recursive: true);
+        var failure = await Record.ExceptionAsync(() => capture.CompleteAsync());
+        var aggregate = Assert.IsType<AggregateException>(failure);
+        Assert.Contains(aggregate.Flatten().InnerExceptions, error => error.Message == "Invalid original passive timing event.");
+        using var report = JsonDocument.Parse(File.ReadAllText(capture.ReportPath));
+        Assert.False(report.RootElement.GetProperty("DiagnosticComplete").GetBoolean());
+        Assert.True(report.RootElement.GetProperty("GzipFooterClosed").GetBoolean());
+        Assert.Equal(2, report.RootElement.GetProperty("TimingAttempted").GetInt64());
+        Assert.Equal(0, report.RootElement.GetProperty("TimingStored").GetInt64());
+        Assert.Equal(1, report.RootElement.GetProperty("OutputStored").GetInt64());
+        Assert.True(window.Capture().Complete);
+        Assert.False(report.RootElement.GetProperty("FixtureClosing").GetProperty("Retained").GetBoolean());
+    }
+
 }
