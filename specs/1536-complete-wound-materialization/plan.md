@@ -1,3 +1,26 @@
+# US6 immutable envelope causal RED reproduced; correction implementation next
+
+New sourcee2490ed300428ab2a575be94b597a43c53415ae0 Unit build exit0/0errors/
+26baselinewarnings1:15.76;27artifacts/115bindings/4PE/PDB8resources verified. Catalog
+1151/12932valid; exact singletonPlanOnly0executed and independent Sol SOURCE/PREP.
+Actual HISTRED-runtime1/1expectedFAIL,wall11.9812376s,no timeout/skips/duplicates,
+completeTRX/processcleanup/pins. Only final equality at HistoricalContinuity.cs41
+fails with exact client-envelope-rewrite message after all genuine prerequisites.
+External verified-causal-red.json retains exact TRXSHA/message/stack. This is causal
+RED, not gameplay acceptance; previous erroneous strict-populated expectation must
+be corrected, not preserved as the canonical contract.
+
+Astra refined phase boundary: absent snapshot in ordinary current canonical checks
+uses historical structure; absent snapshot in raw accepted-turn and unusable authority
+fail closed. Usable exact pre-turn pair+envelope uses historical shape+exact equality;
+new actor/first envelope keeps strict creation validation even in an existing faction.
+No authored turn/faction-creation inference or continuity/source exemption. One signed
+profile source/index per fresh invocation; no new cache, no repeated per-actor I/O.
+Proceed finite implementation/negative controls/GM synchronization and whole SOURCE.
+Console remains TIMEOUT and incomplete; retained root not deleted. No new UI release.
+
+---
+
 # US6 immutable historical-envelope correction DESIGN accepted; causal RED pending
 
 Astra/high confirmed the client-caused conflict and superseded its earlier acceptance
