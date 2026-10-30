@@ -66,8 +66,15 @@ public sealed class SpiritualWoundDiagnosisMenuTests
         Assert.Equal(before, Snapshot());
         Assert.Contains(state.Choices, choice => !choice.Available && choice.Name == wound.Display.Name);
 
-        // Intended causal RED: current production exposes this path only as a
-        // read-only recommendation and supplies no executable diagnostic choice.
-        Assert.Contains(state.Choices, choice => choice.Available && choice.Name == DiagnosisName);
+        // EX1 at dc0c2e9 failed only on the missing executable choice. Preserve
+        // that capability requirement and now also pin its typed wound/path and
+        // readable label; seeing the old recommendation alone cannot satisfy it.
+        var diagnostic = Assert.Single(state.Choices, choice => choice.Selection.Diagnosis is { } selected &&
+            selected.Target == wound.Owner && selected.DiagnosisPathId == path.DiagnosisPathId && choice.Selection.WoundId == wound.WoundId);
+        Assert.True(diagnostic.Available);
+        Assert.Equal(WoundDiagnosisEvidence.ComputePathFingerprint(wound, path.DiagnosisPathId),
+            diagnostic.Selection.Diagnosis!.ExpectedDiagnosisPathFingerprint);
+        Assert.Contains(DiagnosisName, diagnostic.Name);
+        Assert.Contains(wound.Display.Name, diagnostic.Name);
     }
 }

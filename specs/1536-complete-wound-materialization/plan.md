@@ -26,12 +26,21 @@ continuation/result/publication/completion and native/UI remain pending. Current
 GM guidance still truthfully says execution is unimplemented; full GM/examples/
 manifest sync is required before enabling that following block.
 
+The request now retains the complete exact canonical ProgressionControl, not
+only type/realm/ordinal. A same-ordinal changed-control regression compares two
+independently valid codec envelopes. Diagnosis choice labels include authorized
+wound name/locus, with typed wound/path selection and a two-wound presentation/
+selection control. Unavailable panels and console/browser prompts distinguish
+examination from self-healing; no internal IDs enter the label. Historical EX1
+RED source/receipts are preserved; its current GREEN regression additionally
+checks typed diagnosis identity and readable wound context.
+
 New source controls include both original realm cases, malformed/missing art and
 mirror, valid next-operation invalidation (profile+soul changed together), exact
 check refusal, requirement closure/unavailable source, known/future privacy,
 independently valid family mixing, target filter and closed request exports.
-Source-estimated temporary membership is 48 cases / 14 methods / 2 Unit
-descriptors: original causal2 + new admission45 + actual old-stage refusal1.
+Source-estimated temporary membership is 50 cases / 16 methods / 2 Unit
+descriptors: original causal2 + new admission47 + actual old-stage refusal1.
 Current C# is UNCOMPILED/UNRUN. Selection is temporary admission/menu only; exact
 post-build discovery/PREP/GREEN is pending. No build/test by writer, no repeated
 old PASS, no DFR/Mortalcompat/Windows or diagnosis execution qualification.

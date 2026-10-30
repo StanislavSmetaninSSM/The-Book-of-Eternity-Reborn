@@ -1,6 +1,9 @@
+using System.Text.Json;
 using System.Text.Json.Nodes;
+using BookOfEternityClient.CommandProtocol;
 using BookOfEternityClient.Models;
 using BookOfEternityClient.Services;
+using BookOfEternityClient.UI;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
@@ -202,6 +205,75 @@ public sealed class SpiritualDiagnosisAdmissionTests
             admitted.SourceFingerprint, "normal", [14]));
         Assert.False(SpiritualSelfTreatmentRequestCodec.IsBound(root, turn, admitted.Selection, wound.Owner.Realm, 1));
         Assert.False(SpiritualSelfTreatmentRequestCodec.IsBoundActive(root, turn, admitted.Selection, wound.Owner.Realm, 1));
+    }
+
+    [Fact]
+    public void RequestBindsCompleteControlEvenWhenRealmTypeAndOrdinalStayEqual()
+    {
+        var context = Context(); var wound = Assert.Single(context.Catalog.Occurrences).Wound;
+        var data = Assert.IsType<SpiritualDiagnosisAdmission>(new SpiritualDiagnosisSourceData(context).Admit(wound, "diagnose_tissue").Data);
+        var control = new ProgressionControl { Type = "afterlife", CurrentRealm = "Chaos Sea", NextChaosSeaTurnOrdinal = 1 };
+        var turn = new SpiritualSelfTreatmentStageContext("session_control", "request_control", 43, control);
+        var original = SpiritualDiagnosisRequestCodec.Create(turn, data.Selection, data);
+        Assert.True(SpiritualDiagnosisRequestCodec.IsExact(original, turn, data.Selection, data));
+        Assert.True(JsonNode.DeepEquals(JsonSerializer.SerializeToNode(control), original["control"]));
+        var changed = JsonSerializer.Deserialize<ProgressionControl>(JsonSerializer.Serialize(control))!;
+        changed.PendingChaosSeaCycles = 1;
+        Assert.Equal(control.Type, changed.Type); Assert.Equal(control.CurrentRealm, changed.CurrentRealm);
+        Assert.Equal(control.NextChaosSeaTurnOrdinal, changed.NextChaosSeaTurnOrdinal);
+        var otherTurn = turn with { Progression = changed };
+        var other = SpiritualDiagnosisRequestCodec.Create(otherTurn, data.Selection, data);
+        Assert.Equal(data.Selection, SpiritualDiagnosisRequestCodec.ReadSelection(other));
+        Assert.False(SpiritualDiagnosisRequestCodec.IsExact(original, otherTurn, data.Selection, data));
+        Assert.False(SpiritualDiagnosisRequestCodec.IsExact(other, turn, data.Selection, data));
+        var extra = original.DeepClone().AsObject(); extra["control"]!["unownedExtra"] = true;
+        Assert.Throws<InvalidDataException>(() => SpiritualDiagnosisRequestCodec.ReadSelection(extra));
+    }
+
+    [Fact]
+    public void IdenticalMethodsRetainWoundContextAndAccurateUnavailablePresentation()
+    {
+        var prototype = Context();
+        var template = JsonNode.Parse(WoundMaterializationContract.SerializeCanonical(Assert.Single(prototype.Catalog.Occurrences).Wound))!.AsObject();
+        JsonObject Wound(string id, string locus)
+        {
+            var node = WoundContractTestData.CreateSpiritualActiveWound(woundId: id, ownerId: "player_soul",
+                carrierPath: WoundCarrierCatalog.AfterlifeProfilesPath);
+            node["complications"] = template["complications"]!.DeepClone();
+            node["treatment"]!["diagnosisPaths"] = template["treatment"]!["diagnosisPaths"]!.DeepClone();
+            node["classification"]!["locationProfile"]!["readableLocus"] = locus;
+            // The factory already binds the source woundId. Rekey only its known
+            // owned identifiers and every matching reference for this second vector.
+            var text = node.ToJsonString();
+            foreach (var owned in new[] { "effect_spiritual_roll", "effect_spiritual_cost", "definition_spiritual_roll", "definition_spiritual_cost",
+                "component_spiritual_roll", "component_spiritual_cost", "stack_definition_spiritual_roll", "stack_definition_spiritual_cost" })
+                text = text.Replace("\"" + owned + "\"", "\"" + owned + "_" + id + "\"", StringComparison.Ordinal);
+            return JsonNode.Parse(text)!.AsObject();
+        }
+        var input = WoundPlayerProjectionTestData.InputInRealm("chaos_sea", Wound("wound_twin_a", "воля"), Wound("wound_twin_b", "память"));
+        input.Carriers.AfterlifeProfiles!["profiles"]![0]!["standardArts"] = new JsonObject { ["spiritual_healing"] = 0 };
+        var catalog = WoundCarrierCatalog.Build(input.Carriers); Assert.Empty(catalog.Issues);
+        Assert.Empty(input.History.ValidateAgreement(input.Identities, catalog));
+        var context = new WoundPlayerReadContext(input, catalog, prototype.Soul.DeepClone().AsObject(), null, WoundPlayerProjection.Build(input, catalog));
+        var state = WoundApplicationService.CreateState("two_wounds", context);
+        var choices = state.Choices.Where(choice => choice.Available && choice.Selection.Diagnosis is not null).ToArray();
+        Assert.Equal(2, choices.Length); Assert.NotEqual(choices[0].Name, choices[1].Name);
+        Assert.All(choices, choice =>
+        {
+            Assert.Contains("Осмотреть духовную ткань", choice.Name);
+            Assert.Contains("Трещина духовной целостности", choice.Name);
+            Assert.DoesNotContain(choice.Selection.WoundId, choice.Name);
+        });
+        Assert.Contains("воля", choices[0].Name); Assert.Contains("память", choices[1].Name);
+        var command = ExplorerWoundCommandResultBuilder.Build("/лечить", context.Projection, state, true);
+        var prompt = Assert.IsType<UiSelectionPrompt>(Assert.Single(command.Prompts, candidate => candidate.Id == "wound_selection"));
+        Assert.Equal(choices.Select(choice => choice.Name + " — " + choice.Severity), prompt.Options.Where(option => !option.Disabled).Select(option => option.Label));
+        Assert.Equal("wound_twin_b", state.Resolve(choices[1].Value).Selection.WoundId);
+        var unsupported = Context(check: new JsonObject { ["formula"] = "not_supported" });
+        var disabled = WoundApplicationService.CreateState("disabled_diagnosis", unsupported);
+        var panels = ExplorerWoundCommandResultBuilder.Build("/лечить", unsupported.Projection, disabled, true).Blocks.OfType<UiPanelBlock>().ToArray();
+        Assert.Contains(panels, panel => panel.Title.StartsWith("Духовный осмотр", StringComparison.Ordinal));
+        Assert.DoesNotContain(panels, panel => panel.Title.StartsWith("Самостоятельное лечение", StringComparison.Ordinal) && panel.Title.Contains("Осмотреть духовную ткань", StringComparison.Ordinal));
     }
 
     internal static WoundPlayerReadContext Context(string realm = "chaos_sea", JsonObject? requirement = null,

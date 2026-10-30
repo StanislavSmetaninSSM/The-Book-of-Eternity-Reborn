@@ -80,7 +80,9 @@ internal static partial class WoundApplicationService
         return choices.AsReadOnly();
     }
 
-    internal static string ConfirmationFor(SpiritualSelfTreatmentSelection selection) => selection.Service is { } service
+    internal static string ConfirmationFor(SpiritualSelfTreatmentSelection selection) => selection.Diagnosis is not null
+        ? "Подтвердить духовный осмотр и один обычный безопасный цикл? Он раскроет предусмотренные сведения без броска и платы; сам осмотр не лечит."
+        : selection.Service is { } service
         ? "Подтвердить лечение " + (service.Quote.Provider.OwnerKind == "resident" ? "у выбранного целителя фракции" : "у Элиары") +
             " за " + service.Quote.Amount + " Чернильных Перьев за принятую попытку, включая неудачу, и один цикл мира?"
         : selection.Aid?.Compensation is { } compensation

@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 
 namespace BookOfEternityClient.Services;
@@ -26,6 +27,7 @@ internal static class SpiritualDiagnosisRequestCodec
         var root = new JsonObject
         {
             ["schemaVersion"] = 1, ["kind"] = Kind, ["sessionId"] = context.SessionId, ["requestId"] = context.RequestId, ["turn"] = context.Turn,
+            ["control"] = JsonSerializer.SerializeToNode(context.Progression),
             ["diagnosis"] = new JsonObject
             {
                 ["attemptId"] = AttemptId(context, selection, ordinal), ["woundId"] = selection.WoundId,
@@ -43,7 +45,7 @@ internal static class SpiritualDiagnosisRequestCodec
 
     internal static SpiritualSelfTreatmentSelection ReadSelection(JsonObject root)
     {
-        if (!Closed(root, "schemaVersion", "kind", "sessionId", "requestId", "turn", "diagnosis", "requestFingerprint") ||
+        if (!Closed(root, "schemaVersion", "kind", "sessionId", "requestId", "turn", "control", "diagnosis", "requestFingerprint") ||
             Number(root, "schemaVersion") != 1 || Text(root, "kind") != Kind || root["diagnosis"] is not JsonObject diagnosis ||
             !Closed(diagnosis, "attemptId", "woundId", "woundFingerprint", "target", "diagnosisPathId", "pathFingerprint",
                 "requirementFingerprint", "sourceFingerprint", "healingTier", "cycleOrdinal", "cycleKey") ||
@@ -51,6 +53,15 @@ internal static class SpiritualDiagnosisRequestCodec
             !ResourceMaterializationContract.IsExactIdentifier(Text(root, "requestId")) || Number(root, "turn") < 1 ||
             Text(root, "requestFingerprint") != Fingerprint(root))
             throw new InvalidDataException("Invalid closed spiritual diagnosis request.");
+        if (root["control"] is not JsonObject controlNode)
+            throw new InvalidDataException("Diagnosis request requires its complete admitted control.");
+        BookOfEternityClient.Models.ProgressionControl control;
+        try { control = controlNode.Deserialize<BookOfEternityClient.Models.ProgressionControl>()
+            ?? throw new InvalidDataException("Diagnosis request control is absent."); }
+        catch (JsonException failure) { throw new InvalidDataException("Diagnosis request control is malformed.", failure); }
+        if (WoundAcceptedTurnFingerprintWriter.CanonicalJson(controlNode) !=
+            WoundAcceptedTurnFingerprintWriter.CanonicalJson(JsonSerializer.SerializeToNode(control)))
+            throw new InvalidDataException("Diagnosis request control must have its complete exact closed shape.");
         var selected = SpiritualSelfTreatmentSelection.Parse(new JsonObject
         {
             ["schemaVersion"] = 9, ["mode"] = "diagnose", ["woundId"] = Text(diagnosis, "woundId"),
@@ -60,8 +71,10 @@ internal static class SpiritualDiagnosisRequestCodec
         var ordinal = Number(diagnosis, "cycleOrdinal");
         var realm = selected.Diagnosis!.Target.Realm;
         var context = new SpiritualSelfTreatmentStageContext(Text(root, "sessionId"), Text(root, "requestId"), Number(root, "turn"),
-            new BookOfEternityClient.Models.ProgressionControl());
+            control);
         if (ordinal < 1 || Number(diagnosis, "healingTier") is < 0 or > 5 ||
+            control.Type != "afterlife" || control.NextChaosSeaTurnOrdinal != ordinal ||
+            !AfterlifeEntityProfileState.TryNormalizeEffectRealm(control.CurrentRealm, out var controlRealm) || controlRealm != realm ||
             !ResourceMaterializationContract.IsAuthorityFingerprint(Text(diagnosis, "requirementFingerprint")) ||
             !ResourceMaterializationContract.IsAuthorityFingerprint(Text(diagnosis, "sourceFingerprint")) ||
             Text(diagnosis, "cycleKey") != AfterlifeWoundTreatmentAuthority.CycleKey(realm, ordinal) ||

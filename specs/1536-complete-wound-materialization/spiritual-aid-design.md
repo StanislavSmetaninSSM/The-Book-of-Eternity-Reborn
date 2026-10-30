@@ -1189,7 +1189,9 @@ rejected. Technical choices below introduce no new check, tariff or game rule.
   same current session/generation lease, request retention and scheduler owner.
   Proposed request schema1/kind `spiritual_diagnosis_request`: exact session/request/realm/turn binding,
   selection, attemptId, cycleKey, original wound/path and requirement fingerprints,
-  admitted Healing source and control. No roll/payment/cost fields are accepted.
+  admitted Healing source and COMPLETE exact canonical control. Other control
+  fields cannot drift merely because type/realm/ordinal still match. No
+  roll/payment/cost fields are accepted.
   The retained request has no snapshot token; the admitted owner/result binds the
   actual signed token without backfilling or changing that request. Repeated staging
   preserves the original request without new work.
