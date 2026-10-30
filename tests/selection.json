@@ -1,6 +1,8 @@
 {
   "schemaVersion": 1,
   "selections": [
+    { "category": "spiritual-diagnosis-binding-data", "reason": "New closed requirement evidence is now retained and fingerprint-bound in the exact request; malformed data must refuse before any live owner is involved.", "contracts": ["#1536 T121-DIAGNOSIS-SPIRITUAL-PUBLICATION; exact statement/actor/source proof DATA, not current authority"] },
+    { "category": "spiritual-diagnosis-native", "reason": "New signed native publication/strict-history/interface/replay proof is authored test-first. Runtime remains held until coherent whole SOURCE/fresh builds/PREP and cheap PASS; original 120s peer budget.", "contracts": ["#1536 T121 / FR071; knowledge-first plus one complete natural suffix, one owner/cycle/common publisher"] },
     { "category": "spiritual-diagnosis-program-data", "reason": "New complete knowledge/natural program and meaningful original-cohort/order/tier guards; no fake severity V or empty positive suffix.", "contracts": ["#1536 T121-DIAGNOSIS-SPIRITUAL-PUBLICATION / FR071; required complete nonempty natural suffix"] },
     { "category": "spiritual-diagnosis-staging-data", "reason": "New actual no-draw prepared-stage and retry/refusal boundary, using the existing file-light fixture.", "contracts": ["#1536 T121-DIAGNOSIS-EXECUTION / FR071; fresh exact source/target and retained no-cost request"] },
     { "category": "spiritual-diagnosis-admission", "reason": "The source constructor now has a shared parsed-DATA overload for actual staging; requalify its directly affected closure/availability/immutability and old-stage refusal consumers.", "contracts": ["#1536 T121-DIAGNOSIS-EXECUTION; existing three supported requirements, other eight unavailable"] },

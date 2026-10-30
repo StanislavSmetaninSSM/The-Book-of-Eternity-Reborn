@@ -2,6 +2,26 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "spiritual-diagnosis-binding-data",
+  "responsibility": "T121 closed statement-indexed proof DATA for the three supported spiritual requirements; actual request factory refuses missing rows, wrong order/typed actor/tier/source paths and unknown proof fields, with detached export protection.",
+  "excludes": "No live source authority, new requirement kinds, staging/publication, Engine or broad regression.",
+  "changeHints": ["BookOfEternityClient/Services/SpiritualDiagnosisRequirementBindings.cs", "BookOfEternityClient.Tests/SpiritualDiagnosisBindingTests.cs"],
+  "related": [{ "id": "spiritual-diagnosis-staging-data", "when": "Actual stage owns current canonical source bytes; serialized proof DATA never substitutes for it." }],
+  "requirements": { "frontendBuild": false, "exclusive": false },
+  "timeoutMinutes": 1, "expectedSeconds": null,
+  "selectors": [{ "project": "unit", "tests": ["BookOfEternityClient.Tests.SpiritualDiagnosisBindingTests.*"] }]
+},
+{
+  "id": "spiritual-diagnosis-native",
+  "responsibility": "T121 actual signed H0 diagnosis in both spiritual realms through existing full normalizer/common publication, two durable results, original/knowledge/natural agreement, consumed request/report, strict completed replay, interface/Full reasoning and isolated malformed durable-history controls.",
+  "excludes": "No Engine/DOM/provider/fresh-process, Mortal compatibility or full parent qualification. New fixture is UNCOMPILED/UNRUN until whole execution source and PREP gates.",
+  "changeHints": ["BookOfEternityClient.IntegrationTests/AfterlifeSpiritualNaturalRecoveryTests.Diagnosis.cs"],
+  "related": [{ "id": "spiritual-diagnosis-program-data", "when": "Complete required nonempty program must pass before actual signed publication." }],
+  "requirements": { "frontendBuild": false, "exclusive": true, "ciRunner": "ubuntu-24.04" },
+  "timeoutMinutes": 2, "expectedSeconds": null,
+  "selectors": [{ "project": "integration", "tests": ["BookOfEternityClient.Tests.AfterlifeSpiritualNaturalRecoveryTests.ActualDiagnosisPublishesKnowledgeAndOneNaturalResultThenReplaysWithoutInput"] }]
+},
+{
   "id": "spiritual-diagnosis-program-data",
   "responsibility": "T121 deterministic knowledge-first plus complete required ordinary recovery cohort: genuine Healing V with canonical severity II, selected-not-first ordering, no-heal and terminal math, exact projection/program reference, and empty/missing/duplicate/reordered/changed cohort or tier refusals. Uses the existing natural persisted-stage bound.",
   "excludes": "No live signed source/publication, V wound, empty positive suffix, graph authoring, resource/cycle mutation, Engine or broad regression.",

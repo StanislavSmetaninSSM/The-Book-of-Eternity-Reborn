@@ -13,6 +13,7 @@ internal static class SpiritualDiagnosisRequestCodec
         SpiritualSelfTreatmentSelection selection, SpiritualDiagnosisAdmission data)
     {
         ArgumentNullException.ThrowIfNull(context); ArgumentNullException.ThrowIfNull(selection); ArgumentNullException.ThrowIfNull(data);
+        SpiritualDiagnosisRequirementBindings.Validate(data);
         if (selection.Diagnosis is not { } diagnosis || selection != data.Selection ||
             !ResourceMaterializationContract.IsExactIdentifier(context.SessionId) || !ResourceMaterializationContract.IsExactIdentifier(context.RequestId) ||
             context.Turn < 1 || context.Progression is null ||
@@ -34,6 +35,7 @@ internal static class SpiritualDiagnosisRequestCodec
                 ["woundFingerprint"] = selection.ExpectedWoundFingerprint, ["target"] = SpiritualHealingRequestProjection.OwnerJson(diagnosis.Target),
                 ["diagnosisPathId"] = diagnosis.DiagnosisPathId, ["pathFingerprint"] = data.PathFingerprint,
                 ["requirementFingerprint"] = data.RequirementFingerprint, ["sourceFingerprint"] = data.SourceFingerprint,
+                ["requirementBindingFingerprint"] = data.RequirementBindingFingerprint,
                 ["healingTier"] = data.HealingTier, ["cycleOrdinal"] = ordinal,
                 ["cycleKey"] = AfterlifeWoundTreatmentAuthority.CycleKey(realm, ordinal)
             }
@@ -48,7 +50,7 @@ internal static class SpiritualDiagnosisRequestCodec
         if (!Closed(root, "schemaVersion", "kind", "sessionId", "requestId", "turn", "control", "diagnosis", "requestFingerprint") ||
             Number(root, "schemaVersion") != 1 || Text(root, "kind") != Kind || root["diagnosis"] is not JsonObject diagnosis ||
             !Closed(diagnosis, "attemptId", "woundId", "woundFingerprint", "target", "diagnosisPathId", "pathFingerprint",
-                "requirementFingerprint", "sourceFingerprint", "healingTier", "cycleOrdinal", "cycleKey") ||
+                "requirementFingerprint", "sourceFingerprint", "requirementBindingFingerprint", "healingTier", "cycleOrdinal", "cycleKey") ||
             !ResourceMaterializationContract.IsExactIdentifier(Text(root, "sessionId")) ||
             !ResourceMaterializationContract.IsExactIdentifier(Text(root, "requestId")) || Number(root, "turn") < 1 ||
             Text(root, "requestFingerprint") != Fingerprint(root))
@@ -76,6 +78,7 @@ internal static class SpiritualDiagnosisRequestCodec
             control.NextChaosSeaTurnOrdinal != ordinal ||
             !AfterlifeEntityProfileState.TryNormalizeEffectRealm(control.CurrentRealm, out var controlRealm) || controlRealm != realm ||
             !ResourceMaterializationContract.IsAuthorityFingerprint(Text(diagnosis, "requirementFingerprint")) ||
+            !ResourceMaterializationContract.IsAuthorityFingerprint(Text(diagnosis, "requirementBindingFingerprint")) ||
             !ResourceMaterializationContract.IsAuthorityFingerprint(Text(diagnosis, "sourceFingerprint")) ||
             Text(diagnosis, "cycleKey") != AfterlifeWoundTreatmentAuthority.CycleKey(realm, ordinal) ||
             Text(diagnosis, "attemptId") != AttemptId(context, selected, ordinal))

@@ -1,4 +1,30 @@
-# T121 coherent spiritual execution — program/staging WIP, UNCOMPILED/UNRUN
+# T121 coherent spiritual execution — binding/native-test WIP, UNCOMPILED/UNRUN
+
+The staged boundary now detaches caller control before its first await and lets
+typed uncertain publication/readback outcomes propagate. Focused actual-read fault
+controls use the existing hook; no new diagnostic framework is introduced.
+
+The three supported requirement kinds now produce closed ordered proof DATA with
+statement fingerprints, typed actors, explicit art/mirror tiers and logical source
+dependencies. Their fingerprint is retained in the current schema1 request. Six
+new actual request-factory refusal rows guard malformed proof data. Whole current
+source availability and actual byte guards remain owned by staging/continuation;
+these detached facts never mint permission. Unproven eight-kind sources still refuse.
+
+Two signed native H0 publication/history/replay/interface/Full-reasoning tests are
+authored before the durable result/common execution implementation. They reuse the
+existing complete initial fixture, before-bootstrap wound/identity/History seed and
+native response writer. Durable result/continuation/common publication and Engine/
+GM synchronization remain unfinished; intermediate native references are not a
+compile or runtime claim. The Engine still refuses diagnosis.
+
+Current source-estimated selection is 106 cases / 42 methods / 10 descriptors
+(nine Unit, one Integration). All C# here is UNCOMPILED/UNRUN; no build/test was
+started by the writer and no runtime admission is requested for this intermediate
+save. The next coherent code unit closes the durable original/source/scheduler
+result and actual single-owner publication/completion before whole SOURCE review.
+
+# T121 coherent spiritual execution — program/staging WIP
 
 The next preserved code cut adds deterministic knowledge-first recovery-program
 DATA and actual prepared/no-draw staging APIs. The original full ordered cohort
@@ -17,9 +43,15 @@ with no fake UI resource/Mortal authority or extra per-requirement source reads.
 Engine dispatch still refuses diagnosis: common execution, durable two-result
 publication/completion, real native/UI and full GM sync remain in progress. No
 build/test was run against this WIP. Current source-estimated component selection
-is 96 cases / 38 methods / 8 Unit descriptors, including directly affected existing
+is 98 cases / 40 methods / 8 Unit descriptors, including directly affected existing
 admission/menu/target/source guards; official discovery and whole final selection
 review remain pending. No unchanged Shining110/read83 gameplay is replayed.
+
+Actual staging now preserves typed uncertain publication/readback outcomes and
+detaches caller control before its first source-read await. Two additional tests
+use the existing canonical-read fault seam: mutate the borrowed control at the
+first actual read, and inject uncertainty at actual stored-request readback.
+No new fault/diagnostic framework or retry budget is introduced.
 
 # T121 coherent spiritual execution — first sealed-proof code WIP
 

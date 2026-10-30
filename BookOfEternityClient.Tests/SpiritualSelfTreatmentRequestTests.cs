@@ -456,13 +456,14 @@ public sealed class SpiritualSelfTreatmentRequestTests
         internal SpiritualSelfTreatmentStageContext Context { get; }
         internal SpiritualSelfTreatmentSelection Selection { get; }
 
-        internal static async Task<Fixture> CreateAsync(int tier = 2, string realm = "chaos_sea")
+        internal static async Task<Fixture> CreateAsync(int tier = 2, string realm = "chaos_sea", FileSystemManagerHooks? hooks = null)
         {
             var root = Path.Combine(Path.GetTempPath(), "boe-spiritual-self-request-" + Guid.NewGuid().ToString("N"));
             Directory.CreateDirectory(root);
             try
             {
-                var files = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+                var files = hooks is null ? new FileSystemManager(root, NullLogger<FileSystemManager>.Instance)
+                    : new FileSystemManager(root, NullLogger<FileSystemManager>.Instance, PhysicalLoadTransactionOperations.Instance, hooks);
                 var wound = WoundContractTestData.CreateSpiritualActiveWound(realm: realm, ownerId: "player_soul",
                     carrierPath: WoundCarrierCatalog.AfterlifeProfilesPath);
                 var seed = WoundPlayerProjectionTestData.InputInRealm(realm, wound);

@@ -100,6 +100,7 @@ internal static partial class AfterlifeWoundTreatmentAuthority
         FileSystemManager.CanonicalWriteLease lease, SpiritualSelfTreatmentStageContext context, SpiritualSelfTreatmentSelection selection)
     {
         files.EnsureCanonicalWriteLeaseActive(lease); files.VerifyCurrentSessionOperation(lease);
+        context = context with { Progression = JsonSerializer.Deserialize<ProgressionControl>(JsonSerializer.Serialize(context.Progression))! };
         try
         {
             var sources = await ReadDiagnosisSourcesAsync(files, lease, selection);
@@ -108,7 +109,8 @@ internal static partial class AfterlifeWoundTreatmentAuthority
             return await StageBoundDiagnosisAsync(files, lease, sources, pending,
                 BindPreparedDiagnosisSource(context, candidate, sources, pending.Root));
         }
-        catch (Exception failure) when (failure is JsonException or InvalidDataException or InvalidOperationException or ArgumentException or OverflowException)
+        catch (Exception failure) when (failure is not CoordinatedStatePublicationUncertainException &&
+            failure is JsonException or InvalidDataException or InvalidOperationException or ArgumentException or OverflowException)
         { return new(false, false, "spiritual_diagnosis_admission_invalid", null); }
     }
 
@@ -163,9 +165,14 @@ internal static partial class AfterlifeWoundTreatmentAuthority
             : new(pending.Path, null, json, RequireCurrentBaseline: true, ExactPrevious: pending.Image));
         if (!await CoordinatedStateWriteHelper.TryCommitAsync(files, lease, writes.ToArray()))
             return new(false, false, "source_changed", null);
-        var stored = await files.ReadFileBytesAsync(lease, pending.Path);
-        if (stored is null || CanonicalJsonUtf8.DecodeOneOptionalBom(stored) != json)
-            throw new CoordinatedStatePublicationUncertainException(new InvalidDataException("Diagnosis request readback differs."));
+        try
+        {
+            var stored = await files.ReadFileBytesAsync(lease, pending.Path);
+            if (stored is null || CanonicalJsonUtf8.DecodeOneOptionalBom(stored) != json)
+                throw new InvalidDataException("Diagnosis request readback differs.");
+        }
+        catch (Exception failure) when (failure is IOException or InvalidDataException or UnauthorizedAccessException)
+        { throw new CoordinatedStatePublicationUncertainException(failure); }
         return new(true, pending.Image.Existed, null, data.Request["requestFingerprint"]!.GetValue<string>())
         { GmContext = data.Program.Projection };
     }

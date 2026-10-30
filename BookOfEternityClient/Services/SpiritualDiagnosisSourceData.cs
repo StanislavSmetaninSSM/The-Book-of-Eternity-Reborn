@@ -5,7 +5,12 @@ namespace BookOfEternityClient.Services;
 
 internal sealed record SpiritualDiagnosisAdmission(
     SpiritualSelfTreatmentSelection Selection, WoundMaterializationEnvelope Wound,
-    int HealingTier, string PathFingerprint, string RequirementFingerprint, string SourceFingerprint);
+    int HealingTier, string PathFingerprint, string RequirementFingerprint, string SourceFingerprint)
+{
+    private JsonArray _bindings = new();
+    internal JsonArray RequirementBindings { get => _bindings.DeepClone().AsArray(); init => _bindings = value.DeepClone().AsArray(); }
+    internal string RequirementBindingFingerprint => SpiritualDiagnosisRequirementBindings.Fingerprint(_bindings);
+}
 
 internal sealed record SpiritualDiagnosisAdmissionResult(SpiritualDiagnosisAdmission? Data, string? IssueCode);
 
@@ -13,7 +18,7 @@ internal sealed record SpiritualDiagnosisAdmissionResult(SpiritualDiagnosisAdmis
 internal sealed class SpiritualDiagnosisSourceData
 {
     private sealed record PathData(WoundDiagnosisPath Path, string Fingerprint,
-        string RequirementFingerprint, WoundRequirementProjection Requirements);
+        string RequirementFingerprint, WoundRequirementProjection Requirements, IReadOnlyList<string> StatementFingerprints);
     private sealed record WoundData(WoundMaterializationEnvelope Wound, string Fingerprint,
         IReadOnlyList<PathData> Paths, IReadOnlySet<string> KnownFacts);
     private readonly JsonObject? _profiles;
@@ -23,6 +28,8 @@ internal sealed class SpiritualDiagnosisSourceData
     private readonly bool _conflict;
     private readonly IReadOnlyList<WoundData> _wounds;
     private readonly string _sourceFingerprint;
+    private readonly string _profileFingerprint;
+    private readonly string _soulFingerprint;
 
     internal SpiritualDiagnosisSourceData(WoundPlayerReadContext context) : this((context ?? throw new ArgumentNullException(nameof(context))).Catalog,
         context.Input.Carriers.AfterlifeProfiles, context.Soul, context.Input.Realm, context.Input.SelfVisible,
@@ -37,11 +44,14 @@ internal sealed class SpiritualDiagnosisSourceData
         ArgumentNullException.ThrowIfNull(catalog); ArgumentNullException.ThrowIfNull(soul);
         _profiles = profiles?.DeepClone().AsObject(); _soul = soul.DeepClone().AsObject();
         _realm = realm; _selfVisible = selfVisible; _conflict = conflict;
+        var profileJson = WoundAcceptedTurnFingerprintWriter.CanonicalJson(_profiles);
+        var soulJson = WoundAcceptedTurnFingerprintWriter.CanonicalJson(_soul);
+        _profileFingerprint = WoundAcceptedTurnFingerprintWriter.Compute(new[] { profileJson });
+        _soulFingerprint = WoundAcceptedTurnFingerprintWriter.Compute(new[] { soulJson });
         _sourceFingerprint = WoundAcceptedTurnFingerprintWriter.Compute(new[]
         {
             "book_of_eternity.spiritual_diagnosis.menu_sources", "1", _realm,
-            WoundAcceptedTurnFingerprintWriter.CanonicalJson(_profiles),
-            WoundAcceptedTurnFingerprintWriter.CanonicalJson(_soul)
+            profileJson, soulJson
         });
         _wounds = catalog.Occurrences.Where(occurrence => occurrence.Wound.Owner.Realm == _realm &&
             occurrence.Wound.Classification.Domain == "spiritual" && occurrence.Wound.Lifecycle == "active" &&
@@ -56,7 +66,8 @@ internal sealed class SpiritualDiagnosisSourceData
                 MortalWoundTreatmentMemberFingerprint.ComputeDiagnosisPath(pathNodes[index]),
                 WoundAcceptedTurnFingerprintWriter.Compute(new[] { "spiritual_diagnosis.requirements", "1",
                     WoundAcceptedTurnFingerprintWriter.CanonicalJson(pathNodes[index]!["requirements"]) }),
-                MortalWoundTreatmentContract.ParseRequirementProjection(path.Requirements, path.SourcePath + ".requirements"))).ToArray();
+                MortalWoundTreatmentContract.ParseRequirementProjection(path.Requirements, path.SourcePath + ".requirements"),
+                path.Requirements.Select(SpiritualDiagnosisRequirementBindings.StatementFingerprint).ToArray())).ToArray();
             return new WoundData(wound, WoundIdentityState.ComputeSemanticFingerprint(wound), paths,
                 wound.Treatment.KnownRouteIds.Select(id => "route:" + id)
                     .Concat(wound.Complications.Where(c => WoundPlayerProjection.Visible(c.Visibility)).Select(c => "complication:" + c.ComplicationId))
@@ -93,7 +104,8 @@ internal sealed class SpiritualDiagnosisSourceData
         { Diagnosis = new(wound.Owner, path.DiagnosisPathId, parsed.Fingerprint) };
         return new(new(selection, wound, tier, parsed.Fingerprint, parsed.RequirementFingerprint,
             WoundAcceptedTurnFingerprintWriter.Compute(new[] { "spiritual_diagnosis.admission", "1", _sourceFingerprint,
-                data.Fingerprint, parsed.Fingerprint, parsed.RequirementFingerprint, currentTarget?.BindingFingerprint ?? "self" })), null);
+                data.Fingerprint, parsed.Fingerprint, parsed.RequirementFingerprint, currentTarget?.BindingFingerprint ?? "self" }))
+            { RequirementBindings = BuildRequirementBindings(parsed, self, player, wound.Owner, target) }, null);
     }
 
     internal SpiritualSelfTreatmentSelection? DescribeSelection(WoundMaterializationEnvelope requested, string pathId)
@@ -127,6 +139,41 @@ internal sealed class SpiritualDiagnosisSourceData
                 // infer quantities from names, reserve costs, or silently ignore them.
                 return false;
         }
+    }
+
+    private JsonArray BuildRequirementBindings(PathData path, WoundOwnerCoordinate playerOwner, JsonObject player,
+        WoundOwnerCoordinate targetOwner, JsonObject target)
+    {
+        var rows = new JsonArray();
+        for (var index = 0; index < path.Requirements.Requirements.Length; index++)
+        {
+            var requirement = path.Requirements.Requirements[index];
+            var role = requirement switch { MortalWoundSourceCapabilityRequirement c => c.ActorRole,
+                MortalWoundSkillTierRequirement s => s.ActorRole, _ => "provider" };
+            var owner = role == "provider" ? playerOwner : targetOwner;
+            var profile = role == "provider" ? player : target;
+            var art = requirement switch { MortalWoundSourceCapabilityRequirement c => c.CapabilityRef,
+                MortalWoundSkillTierRequirement s => s.CapabilityRef, _ => null };
+            int? actualTier = null;
+            if (art is not null)
+            {
+                if (!TryArt(owner, profile, art, out var actual)) throw new InvalidDataException("A previously satisfied diagnosis art changed.");
+                actualTier = actual;
+            }
+            var dependencies = new JsonArray(new JsonObject
+            { ["path"] = WoundCarrierCatalog.AfterlifeProfilesPath, ["fingerprint"] = _profileFingerprint });
+            if (owner.OwnerKind == "player_soul") dependencies.Add(new JsonObject
+            { ["path"] = "game_state/meta/soul_state.json", ["fingerprint"] = _soulFingerprint });
+            rows.Add(new JsonObject
+            {
+                ["ordinal"] = index, ["statementFingerprint"] = path.StatementFingerprints[index],
+                ["kind"] = path.Path.Requirements[index].GetProperty("kind").GetString(),
+                ["actor"] = SpiritualHealingRequestProjection.OwnerJson(owner), ["capabilityRef"] = art,
+                ["tier"] = actualTier, ["mirrorTier"] = owner.OwnerKind == "player_soul" ? actualTier : null,
+                ["sourceDependencies"] = dependencies
+            });
+        }
+        return rows;
     }
 
     private JsonObject? Profile(WoundOwnerCoordinate owner)

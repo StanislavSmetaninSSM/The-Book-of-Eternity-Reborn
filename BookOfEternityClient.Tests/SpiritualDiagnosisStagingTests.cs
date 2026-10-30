@@ -1,5 +1,7 @@
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
+using BookOfEternityClient.Models;
 using BookOfEternityClient.Services;
 using Xunit;
 
@@ -7,6 +9,61 @@ namespace BookOfEternityClient.Tests;
 
 public sealed class SpiritualDiagnosisStagingTests
 {
+    [Fact]
+    public async Task CallerControlIsDetachedBeforeTheFirstActualSourceRead()
+    {
+        ProgressionControl? borrowed = null; var armed = false; var cut = 0;
+        var hooks = new FileSystemManagerHooks { BeforeCanonicalReadOpenAsync = _ =>
+        {
+            if (armed)
+            {
+                armed = false; cut++;
+                borrowed!.CurrentRealm = "Mortal World"; borrowed.NextChaosSeaTurnOrdinal = 99;
+                borrowed.ChaosSeaCyclesExpectedThisTurn = 99;
+            }
+            return Task.CompletedTask;
+        } };
+        await using var fixture = await SpiritualSelfTreatmentRequestTests.Fixture.CreateAsync(tier: 0, hooks: hooks);
+        await using var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync();
+        var selection = await InstallDiagnosisAsync(fixture.Files, lease);
+        borrowed = fixture.Context.Progression;
+        var before = JsonSerializer.Serialize(borrowed);
+        armed = true;
+        var stage = await AfterlifeWoundTreatmentAuthority.StageDiagnosisAsync(fixture.Files, lease, fixture.Context, selection);
+        Assert.Equal(1, cut); Assert.True(stage.IsStaged, stage.IssueCode);
+        Assert.Equal(99, borrowed.NextChaosSeaTurnOrdinal);
+        var request = await fixture.ReadRequestAsync(lease);
+        Assert.Equal(before, JsonSerializer.Serialize(request["control"]!.Deserialize<ProgressionControl>()));
+    }
+
+    [Fact]
+    public async Task ActualRequestReadbackUncertaintyIsNeverAnOrdinaryStagingRefusal()
+    {
+        SpiritualSelfTreatmentRequestTests.Fixture? owned = null; var armed = false; var cut = 0;
+        var hooks = new FileSystemManagerHooks { BeforeCanonicalReadOpenAsync = path =>
+        {
+            if (armed && path == AcceptedMechanicsPlan.WoundCommandPath && File.Exists(owned!.Files.ResolvePath(path)))
+            {
+                armed = false; cut++;
+                throw new CoordinatedStatePublicationUncertainException(new IOException("Injected actual request readback uncertainty."));
+            }
+            return Task.CompletedTask;
+        } };
+        await using var fixture = await SpiritualSelfTreatmentRequestTests.Fixture.CreateAsync(tier: 0, hooks: hooks);
+        owned = fixture;
+        await using var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync();
+        var selection = await InstallDiagnosisAsync(fixture.Files, lease);
+        armed = true;
+        try
+        {
+            await Assert.ThrowsAsync<CoordinatedStatePublicationUncertainException>(() =>
+                AfterlifeWoundTreatmentAuthority.StageDiagnosisAsync(fixture.Files, lease, fixture.Context, selection));
+        }
+        finally { armed = false; }
+        Assert.Equal(1, cut);
+        Assert.True(File.Exists(fixture.Files.ResolvePath(AcceptedMechanicsPlan.WoundCommandPath)));
+    }
+
     [Theory]
     [InlineData("chaos_sea")][InlineData("shining_abode")]
     public async Task ActualPreparedH0StageRetainsExactNoDrawRequestAndDoesNotHealOrAdvance(string realm)

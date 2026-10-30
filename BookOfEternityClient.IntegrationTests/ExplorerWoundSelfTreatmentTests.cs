@@ -812,7 +812,7 @@ public sealed partial class ExplorerWoundSelfTreatmentTests(ITestOutputHelper ou
         return new(files, state, new LocalizationManager(), new ValidationService(files, NullLogger<ValidationService>.Instance), prompts);
     }
 
-    private static async Task WriteNativeCompletionAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease,
+    internal static async Task WriteNativeCompletionAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease,
         TurnRequest request, JsonArray? healingGraphs = null, string? narrative = null)
     {
         var timestamp = DateTime.UtcNow.ToString("o");
