@@ -2,6 +2,36 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "spiritual-diagnosis-menu-causal",
+  "responsibility": "T121/FR071 existing-API causal menu DATA: canonical public reachable spiritual diagnosis with current Healing0 capability is selectable in Chaos Sea and Shining Abode; preconditions prove source/identity/History, known recommendation and input immutability before missing-choice RED.",
+  "excludes": "No signed authority, confirmation/staging, draw/cost/cycle, live publication/replay/rollback, Engine, Mortal diagnosis, or repeated accepted Shining/read qualification.",
+  "changeHints": [
+    "BookOfEternityClient.Tests/SpiritualWoundDiagnosisMenuTests.cs",
+    "BookOfEternityClient/Services/WoundApplicationService.cs",
+    "specs/1536-complete-wound-materialization/spiritual-aid-design.md"
+  ],
+  "related": [
+    {
+      "id": "wound-diagnosis-recommendations",
+      "when": "Existing current-knowledge/privacy projection remains the read-only baseline; execution is a separately tested purpose."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.SpiritualWoundDiagnosisMenuTests.CurrentPublicDiagnosisIsExecutableAtHealingZeroWhenItsRequirementIsPresent"
+      ]
+    }
+  ]
+},
+{
   "id": "shining-patient-projected-admission",
   "responsibility": "Typed current projected patient-versus-receiving-provider admission, exact H0 resident/radiant targets, unchanged faction/Elyara providers, composed tuple drift, missing binding and typed-role substitution refusal.",
   "excludes": "No live grant/publication authority, Engine/UI/provider or unrelated HOLD/performance qualification.",

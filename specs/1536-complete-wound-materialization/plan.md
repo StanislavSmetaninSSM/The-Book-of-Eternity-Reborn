@@ -1,3 +1,51 @@
+# T121 spiritual guided diagnosis — design + causal scaffold WIP
+
+Author rules are approved under FR071/T093; no game-rule question is pending.
+The technical design is appended to spiritual-aid-design.md under
+T121-DIAGNOSIS-SPIRITUAL. It extends existing typed selection/staging/Continuation
+and common publication, with explicit current requirement authority, a knowledge-only
+diagnosis before the unchanged full natural cohort, one scheduler claim and its
+own closed durable result retaining original/knowledge-after/request/control proof.
+A natural result covers only a nonempty recover/heal suffix. RankV-only diagnosis
+must complete without a fake recovery row; selected V plus other eligible wounds,
+non-first selected recovery and terminal removal have explicit tests/tasks.
+
+Only the minimal existing-API RED scaffold is authored now:
+SpiritualWoundDiagnosisMenuTests, one method/two realm rows, original 60s Unit bound.
+It uses the existing canonical rankII/H0 self menu DATA and one current public
+path revealing a real hidden spiritual complication. Its one declared capability
+requirement is present. Source/profile mirror, materialization/catalog/identity/
+History agreement, readable path and read-only input are checked before the final
+assertion that an executable diagnostic choice is available. Current production
+still supplies only the unavailable healing choice. No unimplemented API or fake
+accepted authority is used. Expected RED is exactly the two final missing-choice
+assertions; compile/setup/privacy failure is not acceptable RED.
+
+Current production is unchanged. Scaffold is UNCOMPILED/UNRUN. Temporary selection
+contains only spiritual-diagnosis-menu-causal: source-estimated 1 descriptor / 1 method / 
+2 cases at 60s. New category count is 1192; official fresh Unit build, PDB/artifact
+fence, catalog/exact PlanOnly, independent DESIGN/SOURCE/PREP and one actual RED
+are pending. No build/test by writer; no production execution before that outcome.
+The full accepted Shining 110 selection/receipts remain preserved at 4f9639d4;
+this temporary RED selection neither retires nor requests replay of old PASS.
+
+Task order: diagnosis DESIGN+RED; closed requirement/selection/request tests and
+minimal implementation; durable diagnosis/optional suffix/common publication and
+replay controls; actual shared handlers/native/physical rollback/UI; GM guides,
+examples/manifest/source guards and coherent qualification. Mortal per-method
+check/duration/cost extension follows separately without invented defaults.
+T121/US4/US5/#1536 remain open; DFR/Mortalcompat/Windows and browser DOM/provider/
+fresh-process scope are unchanged. No dependencies or diagnostic stack change.
+
+Optimization: reuse one typed menu/operation read-set and frozen original/working
+DATA, with complete requirement dependencies. Current source/lease/session,
+confirmation, publication and closing checks remain fresh. The scaffold allocates
+only detached existing typed DATA and performs no filesystem/world/Engine setup.
+Spec Kit tasks/analyze guidance and constitution were read; this is an additive
+canonical task delta, not setup regeneration. The metadata prerequisite script
+could not run because pwsh is absent from this writer shell PATH (exit 127);
+required artifacts were checked directly. No C# test or build was invoked.
+
 # T108 Shining-patient bounded slice accepted — 2026-10-30
 
 Independent final OUTCOME accepted the final four service regressions, exact

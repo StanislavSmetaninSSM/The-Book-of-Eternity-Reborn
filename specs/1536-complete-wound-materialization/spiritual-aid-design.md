@@ -873,7 +873,7 @@ scope is resident and canonical `radiant_actor` faction head. A leader is a
 role, not an owner kind: resolve `leadership.headActorType/headActorId`, never
 invent `leader` or alias `afterlife_actor` to `radiant_actor`. Other head kinds,
 generic custom actors, unwilling/conflict aid and helpless exceptions remain
-outside this bounded acceptance. Diagnosis rules stay pending; public/negotiated
+outside this bounded acceptance. Diagnosis execution follows its separately approved contract; public/negotiated
 provider→player services and their prices do not change. The patient need not
 have Healing≥I, `healing_support`, a service profile or a paid-access tariff.
 
@@ -1047,7 +1047,7 @@ Implementation is native in the existing clean task checkout, with one writer.
 Astra/high reviews this unresolved typed-version/authority design; independent
 Sol/xhigh reviews source/fixture/selection/PREP/OUTCOME. WIP code/checkpoints go
 to the same branch with verified remote SHA. No new clone/restore, history rewrite,
-raw upload, merge or issue closure. DFR/Mortalcompat/Windows and pending diagnosis
+raw upload, merge or issue closure. DFR/Mortalcompat/Windows and separate diagnosis execution
 execution remain separate. No unchanged accepted PASS is replayed without a
 new affected dependency.
 
@@ -1132,3 +1132,203 @@ then four real kind×phase43/44 response proofs using actual signed preparation,
 normalization/publication and no-argument Full reasoning validation. Phase44
 requires a real committed grant. Retain prior PASS; only affected source/owning
 builds and gates repeat. The same full gzip capture and 180s Engine budget stay.
+
+
+## T121-DIAGNOSIS-SPIRITUAL — guided execution design (2026-10-30)
+
+Source: #1536, T093/T121 and FR071, including the author decision accepted
+2026-10-30 11:48UTC. This is the next bounded functional slice after accepted
+T108. It does not close Mortal procedural diagnosis, T121, US4/US5 or #1536.
+
+### Player result and chosen owner
+
+A player with a valid current Healing tier0–V can separately confirm one currently
+reachable diagnostic path for a visible active spiritual wound outside conflict.
+Every declared requirement must have current canonical proof. Success is guaranteed
+and reveals exactly that path's complete declared facts. The diagnostic operation
+has no die, OD, Feather, item or other resource mutation and performs no direct
+healing. It consumes one ordinary safe cycle, retaining ordinary natural recovery
+and other world progression. Opening known detail and cancellation remain inert.
+Missing/invalid art authority is not H0; unknown requirements never mean satisfied.
+Read the current art directly: do not apply the healing tier>=wound-rank gate to
+diagnosis or reject rankV merely because it is outside ordinary recovery.
+
+Chosen approach: extend the existing guided selection, spiritual staging and
+AfterlifeWoundHealingPlanner.Continuation with an explicit diagnosis purpose.
+Reuse the current requirement/source owners, working wound reducer, scheduler and
+common publisher. A fake self-treatment/aid/Mortal route would apply the wrong
+severity gate, roll or consent contract; an independent diagnosis executor or
+second natural owner would duplicate the cycle and carrier ownership. Both are
+rejected. Technical choices below introduce no new check, tariff or game rule.
+
+### Closed selection, requirements and request
+
+- Add a mutually exclusive SpiritualDiagnosisSelection to the existing
+  SpiritualSelfTreatmentSelection carrier. Proposed exact selection schema9/mode
+  `diagnose`: woundId, expectedWoundFingerprint, target WoundOwnerCoordinate,
+  diagnosisPathId and expectedDiagnosisPathFingerprint. Aid/Combat/Service and
+  diagnosis cannot coexist. UI generation/target fingerprints remain detached DATA.
+- WoundApplicationService builds a diagnostic choice named by the canonical path,
+  separate from healing. WoundTargetSelectionService retains Self-first and exact
+  visible/reachable target admission. Confirm reloads current sources; it does not
+  trust names, prior availability, future-reachable facts or a stale menu.
+- Add SpiritualDiagnosisRequirementAuthority within the existing continuation,
+  using closed typed requirements rather than opaque JsonElement acceptance.
+  Reuse the existing exact requirement shapes for item_quantity, resource_quantity,
+  skill_tier, source_capability, provider, consent, facility, location, quest_state,
+  effect_state and environment through realm-appropriate canonical readers. The
+  diagnostic provider role is the current player; target is the exact selected
+  owner. Unsupported capability/source/role shapes are unavailable, never ignored.
+  Spiritual standard-art skill requirements use explicit0–5 authority. Requirement
+  quantities check current possession/availability only; diagnosis consumes none.
+- A detached binding table retains every requirement index, exact statement hash,
+  resolved typed role, complete logical source dependencies/bytes hashes and its
+  satisfied proof DATA. The private actual owner alone authorizes execution and
+  rechecks current source/lease/session. Serialized bindings grant no authority.
+- StageDiagnosisAsync lives beside existing StageSelfTreatmentAsync and uses the
+  same current session/generation lease, request retention and scheduler owner.
+  Proposed request schema1/kind `spiritual_diagnosis_request`: exact session/request/realm/turn binding,
+  selection, attemptId, cycleKey, original wound/path and requirement fingerprints,
+  admitted Healing source and control. No roll/payment/cost fields are accepted.
+  The retained request has no snapshot token; the admitted owner/result binds the
+  actual signed token without backfilling or changing that request. Repeated staging
+  preserves the original request without new work.
+- Add explicit diagnosis dispatch in pending action, turn preparation, original
+  snapshot classification, interface validation and retained request parsing.
+  Ordinary natural admission currently requires command absence and cannot be
+  reused by bypassing that guard when a diagnosis request exists.
+
+### One working program, optional exact recovery suffix
+
+Keep original signed DATA and diagnosed working DATA separately. Current path
+prerequisites/requirements are checked only against original current knowledge.
+Use WoundDiagnosisEvidence/CreateRequest and the knowledge-only reducer with a
+spiritual admission proof; preserve the existing physical/Mortal factory behavior.
+The diagnosed after-image may change only declared route/complication knowledge
+and its diagnosis transition. It cannot edit care, rank, recovery, owned effects,
+display prose or unrelated fields. Emit one terminal diagnosis-attempt intent.
+
+Then derive the FULL ordinary cohort from admitted original sources using unchanged
+ReadNaturalMembers rules: active spiritual ranksI–IV, ordered owner kind, owner ID,
+then wound ID. Replace only the selected member's recovery start image with the
+validated diagnosis after-image. Do not prioritize that member: the first recovery
+wound need not be selected. Execute existing recovery math/graphs in that order.
+Every selected recovery stage must follow its diagnosed image exactly. Only real
+recover/heal stages may change mechanics, remove a carrier or close identity.
+
+The suffix can be empty. RankV is excluded by current natural eligibility; a V-only
+world still completes diagnosis and one cycle without a fake recover row or natural
+result. V plus another eligible wound recovers that other wound. Nonempty recovery
+need not heal: existing Build always emits an ordinary recover step for an eligible
+unhealed member, and may emit recover/heal when its real arithmetic reaches closure.
+Do not impose a new requirement that diagnosis must heal or lower severity.
+
+### Durable results and exact completion
+
+The existing WoundDiagnosisTransitionResult lacks the durable original needed after
+terminal recovery. Add an OWN closed schema1 `spiritual_diagnosis` result containing
+exact binding/request, complete original selected wound and knowledge-after image,
+complete admitted original cohort/tiers, requirement binding, source fingerprint,
+cycle/control, scheduler before/report/after images and fingerprint, optional
+naturalSuffix reference and resultFingerprint. Full private images remain internal
+History/replay DATA; public projection exposes only authorized readable discoveries.
+
+The optional reference identifies exactly one existing natural persisted result,
+its primary transition/result fingerprint and ordered suffix stage IDs. With no
+suffix it is explicit null and no natural result exists. With a suffix the existing
+natural result covers ONLY recover/heal, starting at the diagnosed working images,
+with its normal strict cohort/control/result codec; it cannot claim the diagnosis.
+No schema5 consent grant, payment or provider receipt is fabricated for diagnosis.
+
+Extend existing continuation/common reduction to preserve the diagnosis result on
+its own row AND the natural result on its first recover row. Current
+ReduceExecutedSpiritualState attaches one result only at index0 and clears later
+results, so it needs this explicit two-result boundary rather than a loose result
+injection. Merge final carrier/identity/History/effects through the same common
+assembly and publication; claim/consume the scheduler and retained request once.
+
+Completion/replay gets an explicit diagnosis branch: validate its exact request,
+original→knowledge delta, zero/one exact suffix derived from the COMPLETE admitted
+cohort, settled scheduler, consumed input absence, current carrier/identity/History
+and every final row. Existing natural readers index stages[0] and assume their
+ordinary identity set; neither assumption is valid for empty suffix or a diagnosed
+V wound beside another recovering owner. Retain original prefixes, exact operation
+and attempt replay, wrong-family/duplicate/conflict refusals and rollback. Historical
+component consistency does not mint fresh source or publication authority.
+
+### Planned code units and interfaces
+
+- `Services/SpiritualSelfTreatmentSelection.Diagnosis.cs`: closed selection arm;
+  `Services/WoundApplicationService` and `Services/WoundCommandState` reuse the
+  current guided choice/target contract rather than introduce a second UI stack.
+- `Services/SpiritualDiagnosisRequirementAuthority.cs`: closed typed requirement
+  and binding DATA, subordinate to the actual existing continuation/source owner.
+  No reusable live lease, admission or mutation authority is serialized or cached.
+- `Services/AfterlifeWoundTreatmentAuthority.Diagnosis.cs`:
+  `Task<SpiritualSelfTreatmentStageResult> StageDiagnosisAsync(FileSystemManager,
+  CanonicalWriteLease, SpiritualSelfTreatmentStageContext,
+  SpiritualSelfTreatmentSelection)`; deliberately no entropy/cost callback.
+- `Services/AfterlifeWoundHealingPlanner.Diagnosis.cs`: admit/build diagnosis
+  within the existing Continuation, preserving both source and working baselines.
+- `Services/SpiritualDiagnosisPersistedResult.cs`: closed result with
+  `Parse(JsonElement, string, ICollection<ValidationIssue>)` and canonical writing;
+  `Services/WoundHistoryState.SpiritualDiagnosis.cs` proves exact row/suffix links.
+- Existing `WoundAcceptedTurnPlannerCore.SpiritualHealing.cs` and common carrier
+  assembler preserve both result boundaries and compose each final root once.
+  `ProgressionScheduleService.SpiritualReplay.cs` dispatches exact diagnosis
+  completion; pending action, turn snapshot and shared handler consumers dispatch
+  the same typed purpose. No alternate publisher or cleanup mechanism is added.
+
+### Implementation order and finite qualification
+
+1. Freeze the existing-API menu RED below; independent DESIGN/SOURCE, fresh Unit,
+   current artifacts/PDB/catalog/exact PlanOnly/PREP, then exactly2rows/60s. Accept
+   only final missing diagnostic-choice failures after valid source preconditions.
+2. Add typed requirement/selection/request and immutable operation-owned admission
+   tests, then their minimal implementation in existing Services partials. Cover
+   every supported requirement kind, unknown/absent/false proof, H0 versus invalid
+   source, conflict and stale target/path/realm/generation. Keep all cost/draw paths
+   structurally absent and denied, rather than calling them with zero arguments.
+3. Add spiritual knowledge-only reduction and closed durable result/reconstruction
+   tests, then one-owner common composition. Required cheap cases: V-only empty,
+   V+other recoverable, selected eligible member not first, normal no-heal recovery,
+   selected terminal removal, omitted/extra/reordered suffix, wrong original or
+   binding, altered private image/fingerprint, duplicate/conflicting and exact replay.
+4. Wire shared handlers/confirmation/staging and completed-cycle readers. Add real
+   signed native publication/Full reasoning and physical rollback controls before
+   console/shared-browser Engine qualification. Test replay after normal cleanup,
+   cancellation/read tree identity, no diagnostic draws/spending and one cycle.
+   Audit complete initial worlds and every GM response before expensive runs.
+5. Synchronize active Wound_Materialization_Contract, Afterlife_Contract_Matrix,
+   CLI_API_Specification, CLI_Step_Main, Block32/Actor_Brain, both applicable daemon
+   directives, worked examples/manifest and source/doc guards in the same behavior
+   block. The GM describes world response and required natural graphs/memory;
+   it cannot select success, add reveals, author a receipt or charge diagnosis.
+6. Independently review coherent SOURCE, fresh owning builds, exact bounded catalog/
+   PlanOnly/PREP, cheap before native before UI, original budgets and full captures.
+   Preserve accepted110 and diagnosis-read83 lineages; rerun only changed consumers.
+
+The later Mortal extension must explicitly retain each method's declared procedure
+check, duration and cost policy through its existing owners. Its typed model drops
+Check and writes{}, and paths have no duration/resourcePolicy fields today. It is
+not implemented or silently defaulted by this spiritual slice.
+
+### Preparation and optimization assessment
+
+Initial scaffold: SpiritualWoundDiagnosisMenuTests uses existing CreateState and
+WoundPlayerProjectionTestData in two realms. Canonical self owner/path, original
+rankII wound, valid H0 profile/soul mirror, no conflict and one public path revealing
+an actual hidden spiritual complication; its sole requirement is current
+source_capability/spiritual_healing for the provider. Existing PrepareSource proves
+that capability; catalog/identity/History agreement, readable recommendation and
+input immutability precede the final missing executable-choice assertion. No new
+production API, accepted receipt, file setup, Engine, draw or cycle is claimed.
+
+Parse typed wound/path/requirements once per menu or accepted preparation and pass
+immutable operation DATA through existing source/continuation owners. Complete
+source identity includes session/request/token/realm/turn, original wound/path,
+actor roles and every requirement dependency. Freeze original and working images
+once; never alias or reparse them at each consumer. Confirmation, current lease,
+source mutation/normalization advancement, prepublication and closing remain fresh.
+A new call, mutation, rollback, retry or owner close ends reuse. No new cache,
+parallel publisher, diagnostic stack, dependency, timer or budget is introduced.

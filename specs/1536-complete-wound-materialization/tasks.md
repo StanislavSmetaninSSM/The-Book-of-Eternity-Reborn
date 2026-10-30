@@ -64,6 +64,37 @@ archive are outside checkout; original failures and all other holds are retained
   request/check/procedure/discovery/publication owners and shared guided handlers;
   retain exact current authority, complete declared success/failure and terminal
   retry-safe attempt. T093-ASSESSMENT/read cards are not execution. Other holds stay.
+- [ ] T121-DIAGNOSIS-SPIRITUAL-DESIGN [US5] Independently review the concrete
+  diagnosis/optional natural suffix design in `spiritual-aid-design.md`; retain
+  explicit requirement authority, original versus working images, durable private
+  evidence and one owner/cycle/common publisher, including V-only completion.
+- [ ] T121-DIAGNOSIS-SPIRITUAL-CAUSAL [US5] Compile/review/run only the existing-API
+  H0 menu scaffold in `BookOfEternityClient.Tests/SpiritualWoundDiagnosisMenuTests.cs`
+  after fresh Unit/PDB/artifact/catalog/exact PlanOnly/PREP; expect exactly 2 final
+  missing diagnostic-choice failures, not setup errors. Source 2 rows / 1 method / 60s;
+  currently UNCOMPILED/UNRUN and no production change.
+- [ ] T121-DIAGNOSIS-SPIRITUAL-ADMISSION [US5] Add meaningful requirement/source/
+  stale/privacy/cost/draw tests, then typed diagnosis selection/request and current
+  requirement adapter in `Services/WoundApplicationService.cs`,
+  `Services/AfterlifeWoundTreatmentAuthority.Diagnosis.cs` and existing pending/
+  snapshot/Continuation consumers. Every declared condition must have exact proof.
+- [ ] T121-DIAGNOSIS-SPIRITUAL-PUBLICATION [US5] Add closed durable diagnosis and
+  full-cohort optional suffix tests, then integrate knowledge-only diagnosis and
+  real recovery with `Services/WoundAcceptedTurnPlannerCore.SpiritualHealing.cs`,
+  `Services/WoundHistoryState.TransitionResults.cs` and the existing common writer.
+  Cover V-only empty, V+other, selected not first, no-heal progress, terminal removal,
+  omitted/extra/reordered suffix, wrong original/binding and duplicate/fingerprint.
+- [ ] T121-DIAGNOSIS-SPIRITUAL-COMPLETION [US5] Extend actual completed-cycle readers,
+  retained request/replay and shared handlers in existing
+  `Services/ProgressionScheduleService.SpiritualReplay.cs`,
+  `Core/GameEngine/GameEngine.TurnLifecycle.cs` and console/browser wound flows;
+  test cleanup, exact/conflicting repeat, no spend/draw, one cycle and physical
+  rollback before bounded real UI; never reconstruct authority from player DATA.
+- [ ] T121-DIAGNOSIS-SPIRITUAL-GM [US5] Synchronize the six active guides, applicable
+  daemon entrypoints, `Examples/E_CLI_Wound_Materialization.txt`, worked manifest
+  and doc/source guards with exact client-owned diagnosis and ordinary recovery.
+  Run coherence analysis, independent SOURCE and affected cheap/native/UI gates;
+  preserve accepted110/read83/HOLD lineages and do not close parent T121/US4/US5.
 - [x] T121-DIAGNOSIS-READ-GUARDS Repair the two pre-existing source-guard drifts
   exposed by the affected status selection: independently audit seven descriptive
   `woundName` occurrences in five existing client-owned projection/error methods,
