@@ -63,6 +63,13 @@
       "contracts": [
         "#1536 T142 / mandatory afterlife documentation synchronization"
       ]
+    },
+    {
+      "category": "shining-faction-healer-strength-trade-control",
+      "reason": "Run only the failed forged-strength consumer after correcting its required-healer resident bonus precondition. Original assertion remains; unchanged PASS retained with explicit lineage.",
+      "contracts": [
+        "#1536 T142 / FR083; existing derived trade authority"
+      ]
     }
   ]
 }

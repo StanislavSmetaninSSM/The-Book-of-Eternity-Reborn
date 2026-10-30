@@ -37140,6 +37140,30 @@
           ]
         }
       ]
+    },
+    {
+      "id": "shining-faction-healer-strength-trade-control",
+      "responsibility": "Exact forged-strength actor trade rejection with the required separate healer baseline: real strength24 below25 while authored strength30 cannot grant trade. Narrow correction of the one known failed T142 consumer.",
+      "excludes": "No repeated unchanged 105 cheap or 27 consumer PASS; no production threshold/assertion change, complete suite or HOLD gates.",
+      "changeHints": [
+        "#1536 T142 fixture resident-count precondition; original trade authority retained"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.FactionMaterializationValidationTests.ShiningRequiredActor_ForgedStrengthCannotGrantTradeAuthority"
+          ]
+        }
+      ]
     }
   ]
 }

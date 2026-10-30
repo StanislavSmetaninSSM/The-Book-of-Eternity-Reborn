@@ -878,7 +878,9 @@ public sealed partial class FactionMaterializationValidationTests : IDisposable
             "head",
             includeProfile: true,
             includeEnvelope: true,
-            derivedBaseStrength: 20,
+            // The required separate healer adds the second resident: 18 + 2 * 3 = 24,
+            // below the real trade threshold of 25; submitted strength 30 stays forged.
+            derivedBaseStrength: 18,
             submittedFactionStrength: 30,
             factionCanTrade: false,
             actorCanTrade: true);

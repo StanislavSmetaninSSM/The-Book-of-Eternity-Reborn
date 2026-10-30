@@ -1,3 +1,22 @@
+# T142 final-consumer fixture correction — WIP, singleton GREEN UNRUN
+
+Known runtime9cde4bbe13f426b9ce54e70aef087740dccc54a3 completed28/28 consumers:
+27PASS/1FAIL,16.1963492s<60,25.2876340s wall, no timeout/skip/duplicate, both cleanups
+true/pins unchanged. Only ForgedStrengthCannotGrantTradeAuthority failed: faction
+mismatch true, actor mismatch false. Full original TRX/raw retained; no full PASS claim.
+
+Cause: adding the mandatory separate healer made two actual residents; old base20
+now yields20+6=26 and genuine trade authority at25. Fixture now authors base18 so
+real strength24 remains below25 while submitted30 stays forged. Original strict
+assertion is unchanged; no production/threshold/GM-contract change. Existing forged
+project case10+6+8=24 already passed. Narrow independent SOURCE/selection pending.
+New exact singleton category60s avoids repeating105+27 unchanged PASS. Preserve current
+compiled artifacts, fresh Integration-only build, catalog/singletonPlan/PREP then one
+corrected run. This is fixture failure/correction, not a new product defect or policy
+blocker. No raw/saves/recovery deleted; T143/HOLD/US6 boundaries remain unchanged.
+
+---
+
 # T142 first GREEN gate — 105/105 PASS, final consumers pending
 
 Runtime revision3d8a276cee3daf4ceb9b76cbaad65b998335b487, with unchanged compiled
