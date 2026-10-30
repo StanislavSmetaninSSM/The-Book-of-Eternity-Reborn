@@ -1,3 +1,7 @@
+# S5 owning builds complete; Unit assertion-warning delta pending rebuild
+
+Main/Support/Unit/Integration builds all exited0: baseline warnings12/23/(26+2new xUnit2017)/102, durations4:07.09/30.44s/2:07.30/3:50.59. No runtime has run. At the authorized settled build boundary, replaced only two Bool(Collection.Contains) assertions with xUnit membership predicates using explicit StringComparer.OrdinalIgnoreCase, preserving the original HashSet membership semantics. No production or assertion-condition change and no suppression. Fresh Unit-only rebuild is required; unchanged Main/Support/Integration owning source remains valid subject to fresh artifact/PDB fences. Prior measured S5R archive remains preserved; current S5 outputs are unmeasured. Writer pauses again for primary delta review/build/discovery/PREP.
+
 # T108-SHINING-PATIENT-MEMORY — coherent implementation, SOURCE pending
 
 Sole writer fixture-audit resumed from0f0326fbd93389795f98ad672f0a504c648d391e after main/Astra independently accepted the actual existing-API S5R native RED: resident43 common publication prerequisites passed; final Full reasoning failed only the two observed support-journal/Elyara-surface codes. The original180s Engine timeout remains incomplete/0TRX and retained externally. S5R measured27 artifacts were archived before overwrite:62,016,267bytes, SHA f5ea6ad553f4b7b289b3304674b456334d2d45afbc1fbf23d42fca806a77de3b, full member hashes/gzip EOF/CRC verified by main. No build or runtime executed by writer.

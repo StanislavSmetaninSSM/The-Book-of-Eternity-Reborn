@@ -128,8 +128,10 @@ public sealed class ShiningPatientMemoryProgramTests
         var json = JsonSerializer.SerializeToNode(merged, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)!.AsObject();
         Assert.True(json.ContainsKey(SpiritualTreatmentParticipation.ShiningPatientMemoryResponseProperty)); Assert.Null(json[SpiritualTreatmentParticipation.ShiningPatientMemoryResponseProperty]);
         Assert.Throws<InvalidDataException>(() => SpiritualTreatmentParticipation.ReadShiningPatientMemoryCommand(json[SpiritualTreatmentParticipation.ShiningPatientMemoryResponseProperty], 43));
-        Assert.False(FileMapping.OutputOnlyResponseFields.Contains(GuardianAbodeResidentState.UpdateThoughtJournalProperty));
-        Assert.True(FileMapping.OutputOnlyResponseFields.Contains(SpiritualTreatmentParticipation.ShiningPatientMemoryResponseProperty));
+        Assert.DoesNotContain(FileMapping.OutputOnlyResponseFields,
+            field => StringComparer.OrdinalIgnoreCase.Equals(field, GuardianAbodeResidentState.UpdateThoughtJournalProperty));
+        Assert.Contains(FileMapping.OutputOnlyResponseFields,
+            field => StringComparer.OrdinalIgnoreCase.Equals(field, SpiritualTreatmentParticipation.ShiningPatientMemoryResponseProperty));
     }
 
     [Theory]
