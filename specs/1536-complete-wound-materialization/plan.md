@@ -1,3 +1,28 @@
+# US6 faction service current fixture boundary — WIP, UNCOMPILED
+
+2026-10-30: remote bf960d33b4bcc443bfcf66edff62aea23124d134 and the six local
+fixture/navigation files were rechecked after context recovery. Same machine;
+no live owned build/test, 6.61 GB free. The complete existing faction/resident
+factories are reused before the sole resource bootstrap, rather than extending
+minimal pure-boundary DATA into an incomplete Engine world. New actual-source
+menu-count, fresh-confirmation/staging refusal and paid outcome/replay controls
+are written, not compiled or executed. Public access text now points to /лечить
+only for explicit unrestricted currency offers; other access remains read-only.
+
+Independent design tracing found a real remaining composition issue: ordinary
+client auto-progression can upgrade a resident healer III to IV in the same
+accepted cycle. The original quote/check/price must stay III, while composed
+profiles must match the exact existing projector output from the signed original
+and retained accepted report. Comparing composed tier to the original quote would
+wrongly reject that valid turn. Next: reuse that already-computed private projected
+DATA in the existing continuation, add the causal progression control, finish the
+whole A UI/memory/rollback fixtures and GM synchronization, then coherent SOURCE,
+fresh affected builds and bounded qualification. No broad tier relaxation, new
+cache, re-roll or re-price. Negotiated B remains unimplemented; all prior HOLDs
+and accepted lineages remain separate. Raw remains outside checkout.
+
+---
+
 # US6 faction-service independent access controls — WIP, UNRUN
 
 Execution wiring is remotely preserved at6f30bd4d02ac1f52882d86be2744ca77f01ad9fb.

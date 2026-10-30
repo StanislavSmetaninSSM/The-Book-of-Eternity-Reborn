@@ -121,6 +121,21 @@ public sealed partial class ShiningFactionHealingServiceContractTests
         Assert.Equal(elyara, AfterlifeHealingServiceContract.ParseQuote(elyara.ToJson()));
     }
 
+    [Fact]
+    public void ReadOnlyAccessPointsToTheCommonCommandWithoutIssuingTreatmentOrPayment()
+    {
+        var input = ShiningFactionHealingServiceTestData.Create();
+        var faction = input.Shining["factions"]![0]!.AsObject();
+        var before = Serialize(input);
+        var member = Assert.Single(ShiningFactionHealingSupport.ProjectVisibleRoster(faction, input.Residents, input.Profiles));
+        Assert.Contains(ShiningFactionHealingSupport.DescribeAccess(member), line =>
+            line.Contains("/лечить", StringComparison.Ordinal) && line.Contains("отдельное подтверждение", StringComparison.Ordinal));
+        Assert.Equal(before, Serialize(input));
+        input.Profiles["profiles"]![0]!["healingServiceProfile"]!["availability"] = "unavailable";
+        var changed = Assert.Single(ShiningFactionHealingSupport.ProjectVisibleRoster(faction, input.Residents, input.Profiles));
+        Assert.Contains("Лечение через команду этого целителя пока недоступно.", ShiningFactionHealingSupport.DescribeAccess(changed));
+    }
+
     private static AfterlifeHealingServiceQuote Quote(AfterlifeHealingServiceProfile profile, JsonObject actor)
     {
         var node = WoundContractTestData.CreateSpiritualActiveWound(realm: "shining_abode", ownerId: "player_soul",

@@ -37211,7 +37211,8 @@
             "BookOfEternityClient.Tests.ShiningFactionHealingServiceContractTests.ExplicitCurrentFactionServiceIncludesSupportedLeaderlessWithoutTradePrivileges",
             "BookOfEternityClient.Tests.ShiningFactionHealingServiceContractTests.RoleOrUnprovedCurrentServiceNeverBecomesAnExecutableProvider",
             "BookOfEternityClient.Tests.ShiningFactionHealingServiceContractTests.ExactProviderTupleDetectsRoleOrMembershipDriftEvenWhenLocalitySetsStayTheSame",
-            "BookOfEternityClient.Tests.ShiningFactionHealingServiceContractTests.OwnerSpecificDependenciesKeepExistingElyaraOrderAndRequireTheFactionRoster"
+            "BookOfEternityClient.Tests.ShiningFactionHealingServiceContractTests.OwnerSpecificDependenciesKeepExistingElyaraOrderAndRequireTheFactionRoster",
+            "BookOfEternityClient.Tests.ShiningFactionHealingServiceContractTests.ReadOnlyAccessPointsToTheCommonCommandWithoutIssuingTreatmentOrPayment"
           ]
         }
       ]

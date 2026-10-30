@@ -140,7 +140,10 @@ internal static partial class ShiningFactionHealingSupport
                         lines.Add("Объявленный тариф для раны " + RomanTier(severity) + ": " +
                             price.ToString(System.Globalization.CultureInfo.InvariantCulture) + " Чернильных Перьев.");
         }
-        lines.Add("Лечение через команду этого целителя пока недоступно.");
+        lines.Add(member.DisplayTerms is { DeclaredAvailable: true, MinimumRelationship: null } current &&
+            current.AccessConditions.Count == 0 && current.CompensationKinds.Contains("ink_feathers", StringComparer.Ordinal)
+            ? "Проверить подходящую рану и текущую цену можно через /лечить. Зал, условия и состояние целителя проверяются заново; затем требуется отдельное подтверждение."
+            : "Лечение через команду этого целителя пока недоступно.");
         return lines.AsReadOnly();
     }
 

@@ -3139,7 +3139,8 @@ public sealed partial class FactionMaterializationValidationTests : IDisposable
             [GuardianAbodeResidentState.HistoryLogProperty] = new JsonArray()
         };
 
-    private static JsonObject BuildRouteResident(
+    /// <summary>Creates an independent exact ascended affiliation for typed fixture preparation.</summary>
+    internal static JsonObject BuildRouteResident(
         string residentId,
         string factionId) =>
         new()
@@ -3665,7 +3666,8 @@ public sealed partial class FactionMaterializationValidationTests : IDisposable
     private static JsonObject CloneJsonObject(JsonObject source) =>
         JsonNode.Parse(source.ToJsonString())!.AsObject();
 
-    private static JsonObject BuildCompleteNativeShiningFaction() =>
+    /// <summary>Returns the existing independent complete native faction fixture, without any owner or runtime.</summary>
+    internal static JsonObject BuildCompleteNativeShiningFaction() =>
         new()
         {
             ["factionId"] = "shine_faction_dawn_archive",

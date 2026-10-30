@@ -133,11 +133,13 @@ public sealed partial class AfterlifeHealingPaymentLifecycleTests(ITestOutputHel
     public Task AcceptedSuccessPartialAndFailedAttemptChargeOnceAndReplayWithoutWrites(int die, string band) =>
         RunAcceptedServiceAsync(die, band, "Chaos Sea");
 
-    private async Task RunAcceptedServiceAsync(int die, string band, string realm)
+    private async Task RunAcceptedServiceAsync(int die, string band, string realm, bool faction = false)
     {
-        await using var fixture = await CreateServiceFixtureAsync(3, die, realm: realm);
+        var rank = faction ? 2 : 3; var tier = faction ? 3 : 5; var price = faction ? 51 : 100;
+        await using var fixture = faction ? await CreateFactionServiceFixtureAsync(rank, die)
+            : await CreateServiceFixtureAsync(rank, die, realm: realm);
         var original = Assert.Single((await fixture.ReadWoundsAsync()).Occurrences).Wound;
-        var (stage, request) = await StageAsync(fixture, die, proveRetry: true, realm: realm);
+        var (stage, request) = await StageAsync(fixture, die, proveRetry: true, realm: realm, faction: faction);
         var graphs = AfterlifeSpiritualNaturalRecoveryTests.AuthorNaturalGraphs(original, stage.Stage.GmContext!["destinationGraphs"]!.AsArray());
         await fixture.Files.WriteFileAtomicAsync("output/interface_updates.json", new JsonObject
             { ["spiritualHealingGraphs"] = graphs, ["dialogueOptions"] = new JsonArray(), ["timestamp"] = DateTime.UtcNow.ToString("o") }.ToJsonString());
@@ -148,12 +150,12 @@ public sealed partial class AfterlifeHealingPaymentLifecycleTests(ITestOutputHel
         var plan = await fixture.PublishAsync();
         Assert.True(plan.OwnerCompanionAfterImages.ContainsKey(AfterlifeWoundHealingPlanner.Continuation.ServiceSoulPath));
         var wallet = JsonNode.Parse((await fixture.Files.ReadFileAsync(AfterlifeWoundHealingPlanner.Continuation.ServiceSoulPath))!)!["inkFeathers"]!;
-        Assert.Equal(400, wallet["current"]!.GetValue<int>()); Assert.Equal(900, wallet["total"]!.GetValue<int>());
+        Assert.Equal(500 - price, wallet["current"]!.GetValue<int>()); Assert.Equal(900, wallet["total"]!.GetValue<int>());
         var history = await fixture.ReadHistoryAsync();
         var paid = Assert.IsType<SpiritualHealingPersistedResult>(Assert.Single(history.Transitions, t => t.AttemptId is not null).TransitionResult);
         Assert.Equal("service", paid.Mode); Assert.Equal(7, paid.SchemaVersion);
         Assert.True(JsonNode.DeepEquals(request, paid.ToCanonicalJson()["request"]));
-        var calculation = SpiritualHealingOutcomeMath.Calculate(new(5, 3, die, 0, 0))!;
+        var calculation = SpiritualHealingOutcomeMath.Calculate(new(tier, rank, die, 0, 0))!;
         Assert.Equal(band, calculation.ResultBand.ToString());
         var expected = SpiritualWoundRecoveryPlanner.Build(original, 0, request["attempt"]!["attemptId"]!.GetValue<string>(),
             request["attempt"]!["cycleKey"]!.GetValue<string>(), calculation);
@@ -183,7 +185,7 @@ public sealed partial class AfterlifeHealingPaymentLifecycleTests(ITestOutputHel
             Assert.True(WoundHistoryState.Parse((await fixture.Files.ReadFileAsync(lease, WoundHistoryState.HistoryPath))!, WoundHistoryState.HistoryPath).IsValid);
             fixture.AssertMutationRootsUnchanged(changed);
         }
-        output.WriteLine($"Service {band}: d{die}, fee100 once, wallet500→400,total900; one retained draw/cycle, strict result7; two complete replay reads write nothing.");
+        output.WriteLine($"Service {band}: d{die}, fee{price} once, wallet500→{500 - price},total900; one retained draw/cycle, strict result7; two complete replay reads write nothing.");
     }
 
     [Fact]
@@ -235,11 +237,15 @@ public sealed partial class AfterlifeHealingPaymentLifecycleTests(ITestOutputHel
         fixture.AssertMutationRootsUnchanged(before);
     }
 
-    internal static Task<HealingFixture> CreateServiceFixtureAsync(int rank, int die, FileSystemManagerHooks? hooks = null, bool engine = false, string realm = "Chaos Sea", bool remoteElyara = false) =>
+    /// <summary>Uses the existing whole resource bootstrap; optional extra authored input runs before that boundary only.</summary>
+    internal static Task<HealingFixture> CreateServiceFixtureAsync(int rank, int die, FileSystemManagerHooks? hooks = null,
+        bool engine = false, string realm = "Chaos Sea", bool remoteElyara = false,
+        Func<FileSystemManager, JsonObject, Task>? additionalBeforeResourceBootstrap = null) =>
         HealingFixture.CreateAsync(rank, 0, die, stageRequest: false, hooks: hooks, beforeResourceBootstrap: async (files, profiles) =>
             {
                 await SeedServiceAsync(files, profiles, realm);
                 if (remoteElyara) await ElyaraCurrentLocationNavigationTests.SeedRemoteSourceAsync(files, profiles);
+                if (additionalBeforeResourceBootstrap is not null) await additionalBeforeResourceBootstrap(files, profiles);
                 if (engine) await ExplorerWoundSelfTreatmentTests.SeedAidJourneyLoreAsync(files);
             },
             realm: realm, configureSoul: soul => soul["inkFeathers"] = new JsonObject { ["current"] = 500, ["total"] = 900 });
@@ -286,11 +292,12 @@ public sealed partial class AfterlifeHealingPaymentLifecycleTests(ITestOutputHel
     }
 
     internal static async Task<(AfterlifeWoundTreatmentAuthority.ServiceTurnStageResult Stage, JsonObject Request)> StageAsync(
-        HealingFixture fixture, int die, bool proveRetry = false, string realm = "Chaos Sea")
+        HealingFixture fixture, int die, bool proveRetry = false, string realm = "Chaos Sea", bool faction = false)
     {
         var files = fixture.Files;
         var offered = (await WoundApplicationService.OpenAsync(files, "/лечить", treatment: true)).WoundCommandState!;
-        var choice = Assert.Single(offered.Choices, c => c.Selection.Service is not null && c.Available);
+        var choice = Assert.Single(offered.Choices, c => c.Selection.Service is not null && c.Available &&
+            (!faction || c.Selection.Service.Quote.Provider.OwnerKind == "resident"));
         var selected = choice.Selection with { Service = choice.Selection.Service! with { PlayerConfirmed = true } };
         var scheduler = new ProgressionScheduleService(files, NullLogger<ProgressionScheduleService>.Instance);
         AfterlifeWoundTreatmentAuthority.ServiceTurnStageResult stage;
