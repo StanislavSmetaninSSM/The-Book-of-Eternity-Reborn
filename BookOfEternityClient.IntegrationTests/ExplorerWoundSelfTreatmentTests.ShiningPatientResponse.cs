@@ -28,7 +28,7 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
     public Task RadiantOrdinaryMemoryAddsOnlyItsActualConditionalRosterGuard(string control) =>
         RunShiningPatientResponseAsync("radiant_actor", 43, control);
 
-    private static async Task RunShiningPatientResponseAsync(string kind, int lastTurn, string? ownerControl = null)
+    private async Task RunShiningPatientResponseAsync(string kind, int lastTurn, string? ownerControl = null)
     {
         await using var fixture = await CreateShiningPatientFixtureAsync(kind, engine: false);
         var files = fixture.Files;
@@ -132,6 +132,7 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                     Assert.DoesNotContain((await fixture.ReadHistoryAsync()).Transitions, t => t.TransitionResult is SpiritualHealingPersistedResult);
                     return; // Deliberately stale original: no publication or Full-reasoning claim.
                 }
+                output.WriteLine(JsonSerializer.Serialize(preparation, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
                 Assert.DoesNotContain(preparation, i => i.Severity == IssueSeverity.Error);
                 if (ownerControl is not null)
                 {
