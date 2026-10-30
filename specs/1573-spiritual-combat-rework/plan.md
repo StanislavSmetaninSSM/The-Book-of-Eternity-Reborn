@@ -10,6 +10,14 @@ Baselineae63cd16c4c635db2a6eaa5550f45d3d2b123d33 совпал с origin; тек�
 Sol6.1/xhigh review, финальный SHA/blob/issues readback. Runtime/tests/build/
 симуляции не запускаются; технические gates и решение о реализации открыты.
 
+T111: WIP34aad01e0da7ba62db674ab8f27370df801db3c5 опубликован до review,
+remoteSHA/readback подтверждены.161относительная файловая ссылка проверена
+(без anchors); игровые разделы1–8 неизменны после нормализации трёх фраз
+принятия, diff/consistency проверены. Независимый Sol6.1/xhigh review нашёл
+одну P3: старая подпись активной ссылки532 называла T110 предлагаемым.
+Подпись исправлена и адресно проверена parent; других замечаний нет.
+Финальная публикация T111 сверяет9blob/remoteHEAD и два issue с сохранением истории.
+
 2026-10-30 baseline6c5f43bed5099206974c41c2df70bbf11ea3375d совпал с origin;
 #1573/#1572 прочитаны, workflow1.7 сохранён, PathsOnly1573 выполнен.
 Продолжаются brainstorming/Spec Kit bridge в активной feature. T109 записывает
