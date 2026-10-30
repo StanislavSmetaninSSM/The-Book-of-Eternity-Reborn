@@ -218,7 +218,7 @@ public sealed class SpiritualDiagnosisAdmissionTests
         Assert.True(SpiritualDiagnosisRequestCodec.IsExact(original, turn, data.Selection, data));
         Assert.True(JsonNode.DeepEquals(JsonSerializer.SerializeToNode(control), original["control"]));
         var changed = JsonSerializer.Deserialize<ProgressionControl>(JsonSerializer.Serialize(control))!;
-        changed.PendingChaosSeaCycles = 1;
+        changed.ChaosSeaCyclesExpectedThisTurn = 1;
         Assert.Equal(control.CurrentRealm, changed.CurrentRealm);
         Assert.Equal(control.NextChaosSeaTurnOrdinal, changed.NextChaosSeaTurnOrdinal);
         var otherTurn = turn with { Progression = changed };

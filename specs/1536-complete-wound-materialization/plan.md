@@ -1,3 +1,18 @@
+# T121 final fixture member correction — UNCOMPILED/UNRUN
+
+Independent actual-model review found that PendingChaosSeaCycles belongs to
+ProgressionSchedule, not ProgressionControl. The same-realm/ordinal drift control
+now changes the actual ChaosSeaCyclesExpectedThisTurn property. Both valid codec
+envelopes and the complete canonical control binding remain unchanged in purpose;
+no production source, model property or new fixture was added.
+
+One bounded static pass checked the newly authored admission/menu/stage tests
+against their actual model, UI DTO, selection/target constructors, request/staging
+signatures and reused fixture-helper declarations. No further member mismatch was
+identified. This is source inspection, not compile or runtime proof. EX2B has not
+started; fresh builds, discovery, PREP and tests remain pending. Membership stays
+53 cases / 19 methods / 3 Unit descriptors with unchanged budgets.
+
 # T121 EX2 compile failure and narrow API correction — UNCOMPILED/UNRUN
 
 The primary's fresh EX2 Main build at source
