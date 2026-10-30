@@ -1,3 +1,20 @@
+## S7 native causal GREEN — four actual phases
+
+Runtime 0b5fdab53768644ad14c8c8878b1c7e8a44ff41b completed 4/4 PASS, four
+methods/descriptors, no timeout, exact unique TRX IDs and stable binary pins.
+Both patient kinds pass actual grant43 and active44 common publication plus Full
+reasoning/memory validation. Both active cases pass detached full serialized
+History/round-trip/exact replay and five refusal controls. The former family8
+history failure is causal GREEN. Category seconds: radiant active68.6388927,
+radiant grant36.7992152, resident active55.8932295, resident grant31.3649395;
+all below their unchanged 120s bounds. Runner wall3:28.2138277. Owned/runtime
+cleanup is complete. Full TRX hashes and receipts remain external in S7-native.
+
+Independent OUTCOME is pending. Next admission is only the first resident-console
+Engine singleton at180s, using the already audited complete response and real
+normal cleanup. All ten UI cases remain unrun on current source. No old cheap
+PASS was repeated. No new source or GM change is included in this receipt.
+
 ## S7 build and exact-plan receipt
 
 Fresh owning builds at 5fe0bbe91ab10db3847af682a4107f254a04577b all exited 0.
