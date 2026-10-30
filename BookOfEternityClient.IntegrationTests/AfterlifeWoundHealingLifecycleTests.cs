@@ -71,7 +71,7 @@ public sealed class AfterlifeWoundHealingLifecycleTests
         var beforeInterface = f.CaptureMutationRoots();
         var wrongFamily = await new ValidationService(f.Files, NullLogger<ValidationService>.Instance).ValidateAcceptedTurnInterfacePayloadAsync();
         Assert.Contains(wrongFamily, issue => issue.Code == "spiritual_healing_interface_unbound" &&
-            issue.Actual!.Contains("exact published family5 response", StringComparison.Ordinal));
+            issue.Actual!.Contains("exact published participation or faction-service response", StringComparison.Ordinal));
         f.AssertMutationRootsUnchanged(beforeInterface);
         await using (var restore = await f.Files.AcquireCanonicalWriteLeaseAsync())
         {

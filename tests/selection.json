@@ -105,6 +105,13 @@
       "contracts": [
         "#1536 US4/US6 existing resident4/6 memory boundary"
       ]
+    },
+    {
+      "category": "spiritual-resident-provider-backend",
+      "reason": "Changed already-parsed verified result and protected-memory interface also consume existing resident healer offer/result6; retain exact helper versus patient tier, full owned memory/replay/refusal semantics.",
+      "contracts": [
+        "#1536 existing resident provider4/result6 boundary"
+      ]
     }
   ]
 }

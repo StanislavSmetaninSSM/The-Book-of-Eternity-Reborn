@@ -415,7 +415,7 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
                 }
                 var refused = await new ValidationService(files, NullLogger<ValidationService>.Instance).ValidateAcceptedTurnInterfacePayloadAsync();
                 Assert.Contains(refused, issue => issue.Code == "spiritual_healing_interface_unbound" &&
-                    issue.Actual!.Contains(drift == "response" ? $"exact published family{family} response" : "complete exact accepted append", StringComparison.Ordinal));
+                    issue.Actual!.Contains(drift == "response" ? "exact published participation or faction-service response" : "complete exact accepted append", StringComparison.Ordinal));
                 await using var restore = await files.AcquireCanonicalWriteLeaseAsync();
                 await files.WriteFileAtomicBytesAsync(restore, "output/interface_updates.json", outputBytes);
                 await files.WriteFileAtomicBytesAsync(restore, GuardianAbodeResidentState.StatePath, rosterBytes);

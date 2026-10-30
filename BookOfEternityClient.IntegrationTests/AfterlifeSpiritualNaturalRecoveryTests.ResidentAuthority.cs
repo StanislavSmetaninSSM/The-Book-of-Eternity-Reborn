@@ -109,7 +109,7 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
         try
         {
             var profiles = JsonNode.Parse((await fixture.Files.ReadFileAsync(lease, WoundCarrierCatalog.AfterlifeProfilesPath))!)!.AsObject();
-            Assert.Contains("actual resident grant or aid owner", Assert.Throws<InvalidDataException>(() => owner.ApplyParticipationAfterImage(profiles)).Message);
+            Assert.Contains("actual resident participation or faction-service owner", Assert.Throws<InvalidDataException>(() => owner.ApplyParticipationAfterImage(profiles)).Message);
             fixture.AssertMutationRootsUnchanged(before);
         }
         finally { owner.Close(); }

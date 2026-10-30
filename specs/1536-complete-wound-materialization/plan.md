@@ -1,3 +1,32 @@
+# US6 public faction A SOURCE accepted; builds/runtime pending
+
+Independent gpt-6-astra/high whole SOURCE accepted base106927124 to3e94083f plus
+four inspected corrections: exact current refusal text in three existing negative
+consumers (all refusal codes/append/inertness/restore assertions retained), and the
+single existing resident-provider result6 backend descriptor. Exact selection is now
+16 bounded descriptors; no whole-suite/HOLD run. No confirmed production source
+blocker remains. Sol/xhigh independently verified the four complete fixture fixes
+and actual owned projection/locality/memory API preparation. Review is source-only,
+not compilation or gameplay qualification.
+
+Before replacing builds, all27 actual current owning DLL/PDB/deps artifacts matched
+their previous source/length/SHA and were retained losslessly outside checkout in
+pre-A-owning-artifacts.tar.gz (61,778,982bytes, SHA256
+34f4c3614abc64a55a2bc9e8d97c645e9f1103760a473026e2ffb41a899d25a8); every decoded
+member was rehashed against causal-artifact-preflight.json. No raw/saves/recovery or
+old evidence removed. Current source tree/remote were verified before implementation;
+no new full restore is claimed. Static authored manifest JSON/two worked fragments,
+GM Rules XML and both effective daemon markers parsed/checked successfully.
+
+Next finite sequence: fresh four owning builds -> artifact/PE/PDB source bindings ->
+whole catalog discovery only/exact16-descriptor PlanOnly -> resource+independent PREP
+-> cheap typed/docs/current-source/projection/outcome and affected old service/aid
+consumers -> console/browser/C4 rollback serially if admitted. Original budgets and
+full external diagnostics remain. Public currency A and negotiated B stay distinct;
+no new GREEN, speedup, DOM/live-provider/fresh-process or whole US6 closure claimed.
+
+---
+
 # US6 public faction A whole SOURCE candidate — WIP, UNCOMPILED
 
 2026-10-30: execution, complete independent fixtures, owned composed-tier/normalizer/
