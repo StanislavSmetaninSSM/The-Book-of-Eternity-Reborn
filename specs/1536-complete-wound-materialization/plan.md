@@ -378,6 +378,19 @@ fullmemberhash/EOFCRC beforeoverwrite. FreshIntegration-onlyS5N7f exit0/
 pinscleanupstable; unchangedcataloginventory retainedwithreview. PREPpending.
 UI10 remainsUNRUN/unreleased, earlierEngine180timeoutnotPASS. RawfulloutsideGit.
 
+S5N native1FAIL/2UNRUN@a403e2cb,notimeout; passedcorrectconfirmation/stage/
+signedpreparation thenadmissionerror atResponse.cs135. GenericToStringomitted
+existingValidationIssue.Actual, so productioncauseUNRESOLVED. Preserve62cheap+
+5nativePASS; no UIrelease. Astraacceptedminimalvisibilitydelta6a3a0085: serialize
+FULLexistingpreparationissues toITestOutputHelper beforeUNCHANGEDassert; helper
+instanceonlyforoutput, no newdiagstack/timers/limits/productionchange. NextONLY
+radiantactive1/120s foractualcause, notqualificationclaim. S5N measured27archive
+62,066,389B SHA55826e171be758e7483b264a173374b79c3aab9b0eca863549de277b670cb9cf
+fullmemberhash/EOFCRC beforeoverwrite. FreshIntegration-onlyS5D6a3a exit0/
+102baselinewarnings/3:08.35,4PE-PDB/171bindings/27artifacts/9resources36copies/
+4daemonsverified. ExactsingletonPlanOnly0execution/TRX,stablepinscleanup;
+PREPpending. Otherowningcode/catalogmembershipunchanged, no redundantbuild/audit.
+
 Авторское решение диагностики принято2026-10-30 11:48UTC и отражено в FR071/tasks.
 После текущего Shining patient: Mortal method declares own procedure check/time/
 cost; spiritual Healing>=0 plus ALL path requirements, guaranteed declared reveals,
