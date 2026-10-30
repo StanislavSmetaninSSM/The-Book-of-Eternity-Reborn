@@ -1,5 +1,49 @@
 # Исследование текущего кода для #1573
 
+## T094–T095: места, встречи и время исследования
+
+2026-10-30 baseline814dcdc5. Parent проверил поиск/переходы и local scope;
+Sol6.1/high audit_chaos_encounters1573 независимо проверил actor/resident/conflict.
+Это чтение источников и проектирование, не новая игровая проба.
+
+- [Block32 extension](../../Rules/Block_32_extension.txt#L75): известные Обители
+  посещаются свободно; старый поиск использует rawd20 и instant/next-turn arrival.
+  [ShowSearchAbodePrompt](../../BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Afterlife.GuardiansProjectsTrade.cs#L337)
+  прочитан через Serena: freeform GM-поиск без client pending file, distant clue
+  не телепортирует; системное притяжение — отдельный режим. Переход к известной
+  Обители в том же файле отправляет GM-действие с явными guardian/abode ids.
+- [LocalInteractionScopeService](../../BookOfEternityClient/Services/LocalInteractionScopeService.cs#L318)
+  требует currentAbodeId и activeGuardianId, проверяет их соответствие и собирает
+  местных резидентов. Для встреч вне Обители необходим новый допустимый scope,
+  а не подставной Хранитель. [ExplorerChaosSeaCommandResultBuilder](../../BookOfEternityClient/UI/ExplorerChaosSeaCommandResultBuilder.cs)
+  строит обзорные карточки, не готовый движок экспедиции.
+- [Actor profiles](../../BookOfEternityClient/Services/AfterlifeEntityProfileState.cs#L49)
+  дают постоянные личности, но не членство бродячей группы/маршрут монстра.
+  [Резиденты](../../BookOfEternityClient/Services/GuardianAbodeResidentState.cs#L224)
+  уже имеют личность, ценности, bond/devotion/restlessness/migration; разговоры
+  и история сохраняются. Это опоры новых встреч, не готовая система странников.
+- [Transfer validation](../../BookOfEternityClient/Services/Validation/ValidationService.LifecycleControlAndStateFiles.cs#L5499)
+  требует исходного резидента ready_to_transfer; перенос сохраняет residentId
+  и bond, создаёт историю прибытия/ухода. [Request contract](../../BookOfEternityClient/Services/GuardianAbodeResidentRequestState.cs#L1013)
+  запрещает автоматический перенос вне явного pending-запроса. Приём новых душ
+  и автономные миграции должны явно расширить договор, не обойти его нормализатором.
+- [Competition candidates](../../BookOfEternityClient/Services/GuardianAbodeResidentState.cs#L1483)
+  рассматривают все Обители: оценка привлекательности не знание душ о каждой
+  из них и не гарантия допуска. Новая сцена ограничивает выбор известными местами.
+- [Conflict start](../../BookOfEternityClient/Services/AfterlifeSpiritualConflictState.cs#L744)
+  не допускает второй active conflict. [Danger validation](../../BookOfEternityClient/Services/Validation/ValidationService.AfterlifeSpiritualConflict.Danger.cs#L18)
+  сохраняет явно объявленный профиль опасности; встреча с существом сама не бой.
+  [Матрица afterlife](../../OtherGuides/Afterlife_Contract_Matrix.md) запрещает
+  подменять духовную навигацию Mortal currentLocationData/UpdateNPCs/world events.
+
+Выбрано предложение причинных ситуаций по состоянию района, а не универсальный
+monster-roll на каждое сообщение. Шанс типа жилы не шанс встречи; статистическая
+частота боёв/расходов не рассчитана. Пример времени:90мин до встречи+20разговор+
+130продолжение=240мин этап, плюс60обратно=300мин. Суточная добычная вылазка T091
+уже roundtrip, дополнительный обратный день ей не начисляется. Одобрение T094
+сохраняет fixed-source discovery, не утверждает +1/+2 общей редкости реликвий.
+Новые схемы/миграция/численные профили опасностей требуют будущего плана реализации.
+
 ## T092–T093: качество обнаружения при фиксированном мире
 
 2026-10-30 baseline d9bb88034. Parent прочёл актуальные crit/find/supply договоры;
