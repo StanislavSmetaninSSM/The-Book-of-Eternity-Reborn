@@ -1,5 +1,6 @@
 using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
+using System.Xml.Linq;
 using BookOfEternityClient.Services;
 using Xunit;
 
@@ -15,6 +16,8 @@ public sealed class NegotiatedHealingProviderDocumentationTests
             "CLI_API_Specification.md", "Rules/Block_CLI_Operations.txt", "Rules/Block_32_Guardians.txt", "TaskGuides/CLI_Step_Main.txt",
             "BookOfEternityClient/system_guardians/built_in/elyara/dossier.md" })
             Assert.Contains(marker, File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, file)));
+        Assert.Contains(marker, XDocument.Parse(File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot,
+            "Rules/Block_32_Guardians.txt"))).Root!.Value);
         var daemon = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient/game_master_daemon.ps1"));
         var directives = Regex.Matches(daemon, "\\$script:WoundMaterializationDirective = \\\"[^\\\"]*\\\"");
         Assert.Equal(2, directives.Count); Assert.All(directives.Cast<Match>(), d => Assert.Contains(marker, d.Value));

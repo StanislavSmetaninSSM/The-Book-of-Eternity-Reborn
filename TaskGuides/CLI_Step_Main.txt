@@ -1236,8 +1236,8 @@ output-only spiritualResidentThoughtJournalUpdates carries that exact resident's
 first-person current-turn memory. Never write its canonical roster/journal directly,
 append a foreign actor, replace prior memory or manufacture a private grant. The
 client rechecks the complete append through the same signed original and result7.
-See the worked shining_faction_service_v7 fragment. Negotiated compensation remains
-separate unfinished work; displaying favor/debt/quest/allegiance/free_aid is no grant.
+See the worked shining_faction_service_v7 fragment. Negotiated compensation uses spiritual_negotiated_provider_v1 below; displaying
+favor/debt/quest/allegiance/free_aid alone is no grant.
 
 spiritual_negotiated_provider_v1: accepted provider-only noncurrency compensation
 {kind,agreementRef,readableTerms}, favor|debt|quest|allegiance|free_aid, uses the same
