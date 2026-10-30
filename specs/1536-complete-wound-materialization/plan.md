@@ -1,3 +1,31 @@
+# Negotiated B: whole journey SOURCE findings corrected; focused native controls WIP
+
+Sol whole fixtureSOURCE нашёл конечные замечания: Describe forwarding мог пропустить
+закрытие аудио/заменить первичную ошибку; текст Элиары наoffer43 преждевременно говорил
+о принятии; не хватало независимого expected program и обоих43/44 Guardian-memory
+prefix. Исправлено по принятому существующему Services pattern: ошибки закрытия
+отдельно guarded, исходная ошибка сохраняется до фактического fixture disposal;
+phase-aware Brain, math program из grant wound/retainedactualdie/H3orH5/targetH0,
+точные стадии/финальная рана и Guardian journalprefix. DeltaSOURCE pending.
+
+Добавлены2focused native controls actual Shining offer/full normalizer/I memory:
+проверенный write меняет физические Shining bytes и обновляет обаliveguards при
+неизменных signed original/sourcefingerprint; foreignhallrefusal доwrite. Exact
+selected reader покрывает только roster. Второй вариант убирает И Элиару, И её
+registry до единственногоresourcebootstrap, оставляя faction-only sources; требует
+реальную native publication и I memory без Guardianoriginal. Это конкретная
+UNCOMPILED/UNRUN фикстура, её пригодность ещё не подтверждена; не заявляется
+универсальная canonical/Engineподдержка отсутствующегоregistry. ExistingStageAsync
+получает optionalrealm дляShining, прежнийChaosdefaultполностьюсохранён.
+
+Ни native2, ни UI5, ни150regressions ещё не запускались. Цель остаётся закончить
+настоящую договорную помощь; no newpublisher/cache/diagnosticformat/экономика.
+Перед build — цельный fixtureSOURCE и сохранение B2 measured artifacts; далее fresh
+Integration только (Main/Support/UnitC#121unchanged), discovery/PlanOnly/PREP native2
+перед первым UI singleton. Fullrawexternal/400MiB+полныйвывод/no HOLDreplays.
+
+---
+
 # Negotiated B: independent cheap OUTCOME accepted; real Engine journeys WIP
 
 Sol принял B2wallet10/10 с фактическимTRX2afeac95...eb6de56 и полной accounting;

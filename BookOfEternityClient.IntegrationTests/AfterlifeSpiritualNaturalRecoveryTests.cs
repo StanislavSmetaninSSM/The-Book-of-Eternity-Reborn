@@ -225,7 +225,7 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
         fixture.AssertMutationRootsUnchanged(before);
     }
 
-    private static async Task<(ProgressionControl Control, JsonObject Projection)> StageAsync(HealingFixture fixture)
+    private static async Task<(ProgressionControl Control, JsonObject Projection)> StageAsync(HealingFixture fixture, string realm = "Chaos Sea")
     {
         await fixture.Files.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath,
             AfterlifeSpiritualConflictState.CreateDefaultRoot().ToJsonString());
@@ -240,7 +240,7 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
         await new LiveTurnPreparationService(fixture.Files).PrepareAsync(new LiveTurnPreparationOptions
         {
             SessionId = "session_spiritual_healing", RequestId = "request_spiritual_healing", TurnNumber = 43,
-            CurrentRealm = "Chaos Sea", PlayerAction = "Спокойно наблюдать за Морем Хаоса.", ProgressionControl = control
+            CurrentRealm = realm, PlayerAction = realm == "Chaos Sea" ? "Спокойно наблюдать за Морем Хаоса." : "Спокойно наблюдать за Сияющей Обителью.", ProgressionControl = control
         });
         return (control, projection);
     }

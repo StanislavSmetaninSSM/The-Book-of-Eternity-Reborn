@@ -129,6 +129,7 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                             if (turn.TurnNumber == 43 && !offeredTurn)
                             {
                                 Assert.Equal("natural", turn.SpiritualHealing!["mode"]!.GetValue<string>());
+                                Assert.Equal(0, Assert.Single(turn.SpiritualHealing["cohort"]!.AsArray())!["healingTier"]!.GetValue<int>());
                                 var profiles = JsonNode.Parse((await files.ReadFileAsync(lease, WoundCarrierCatalog.AfterlifeProfilesPath))!)!.AsObject();
                                 var actor = profiles["profiles"]!.AsArray().OfType<JsonObject>().Single(p => p["actorId"]!.GetValue<string>() == providerId);
                                 var shining = JsonNode.Parse((await files.ReadFileAsync(lease, ShiningAbodeState.StatePath))!)!.AsObject();
@@ -154,9 +155,11 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                                 Assert.Equal(44, turn.TurnNumber); Assert.False(treatmentWritten);
                                 Assert.Equal("aid", turn.SpiritualHealing!["mode"]!.GetValue<string>());
                                 Assert.Equal(tier, turn.SpiritualHealing["healingTier"]!.GetValue<int>());
+                                Assert.Equal(0, turn.SpiritualHealing["targetNaturalHealingTier"]!.GetValue<int>());
                                 retained = JsonNode.Parse((await files.ReadFileAsync(lease, AcceptedMechanicsPlan.WoundCommandPath))!)!.AsObject();
                                 Assert.Equal(family, retained["schemaVersion"]!.GetValue<int>());
                                 Assert.Equal("player_target_confirmed", retained["playerConfirmation"]!.GetValue<string>());
+                                Assert.Equal(0, retained["activeSource"]!["complicationModifier"]!.GetValue<long>());
                                 Assert.True(JsonNode.DeepEquals(proposal!["compensation"], retained["participation"]!["record"]!["compensation"]));
                                 Assert.True(JsonNode.DeepEquals(proposal["locality"], turn.SpiritualHealing["locality"]));
                                 var soul = JsonNode.Parse((await files.ReadFileAsync(lease, AfterlifeWoundHealingPlanner.Continuation.ServiceSoulPath))!)!.AsObject();
@@ -188,6 +191,10 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                     Assert.True(grant.IsNatural); Assert.Equal(family, grant.SchemaVersion);
                     Assert.True(JsonNode.DeepEquals(proposal!["compensation"], grant.ParticipationOutcomes![0]!["record"]!["compensation"]));
                     wallet.RequirePreserved(JsonNode.Parse((await files.ReadFileAsync(AfterlifeWoundHealingPlanner.Continuation.ServiceSoulPath))!)!.AsObject());
+                    var grantGuardianJournal = JsonNode.Parse((await files.ReadFileAsync(GuardianThoughtJournalState.StatePath))!)!["entries"]!.AsArray();
+                    var grantGuardianMemory = Assert.Single(grantGuardianJournal)!.DeepClone();
+                    Assert.Equal(43, grantGuardianMemory["turn"]!.GetValue<int>());
+                    Assert.Equal(AfterlifeWoundTreatmentAuthority.ElyaraId, grantGuardianMemory["guardianId"]!.GetValue<string>());
                     var before = activeFixture.CaptureMutationRoots(new[] { AfterlifeWoundHealingPlanner.Continuation.ServiceSoulPath,
                         GuardianThoughtJournalState.StatePath, GuardianAbodeResidentState.StatePath, ShiningAbodeState.StatePath,
                         EffectAcceptedTurnInputComposer.WorldTimePath, PendingTurnStateService.PendingDiceStatePath });
@@ -253,6 +260,13 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                     var result = Assert.IsType<SpiritualHealingPersistedResult>(Assert.Single(history.Transitions, t => t.AttemptId is not null).TransitionResult);
                     Assert.Equal("aid", result.Mode); Assert.Equal(family, result.SchemaVersion);
                     Assert.True(JsonNode.DeepEquals(retained, result.ToCanonicalJson()["request"]));
+                    var values = retained!["attempt"]!["roll"]!["values"]!.AsArray().Select(v => v!.GetValue<int>()).ToArray();
+                    var die = retained["attempt"]!["roll"]!["mode"]!.GetValue<string>() == "disadvantage" ? values.Min() : values.Max();
+                    var calculation = SpiritualHealingOutcomeMath.Calculate(new(tier, currentWound.Severity.Rank, die, 0, 0))!;
+                    var expected = SpiritualWoundRecoveryPlanner.Build(currentWound, 0, retained["attempt"]!["attemptId"]!.GetValue<string>(),
+                        retained["attempt"]!["cycleKey"]!.GetValue<string>(), calculation);
+                    Assert.Equal(expected.Select(v => (v.Kind, v.SeverityRank, v.Progress)),
+                        result.Stages.Select(v => (v.Kind, v.After.Severity.Rank, v.After.Recovery.CurrentStepProgress)));
                     var after = result.Stages[^1].After;
                     if (after.Lifecycle == "healed") Assert.Empty((await activeFixture.ReadWoundsAsync()).Occurrences);
                     else Assert.Equal(WoundMaterializationContract.SerializeCanonical(after), WoundMaterializationContract.SerializeCanonical(
@@ -270,6 +284,12 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                         Assert.NotNull(await ProgressionScheduleService.ReadPublishedSpiritualCycleCoreAsync(treatmentTurn!.ProgressionControl!,
                             treatmentTurn.SessionId, treatmentTurn.RequestId, treatmentTurn.TurnNumber, p => files.ReadFileBytesAsync(lease, p)));
                     activeFixture.AssertMutationRootsUnchanged(settled);
+                    var guardianJournal = JsonNode.Parse((await files.ReadFileAsync(GuardianThoughtJournalState.StatePath))!)!.AsObject();
+                    Assert.False(guardianJournal.ContainsKey(GuardianThoughtJournalState.UpdateProperty));
+                    var guardianMemories = guardianJournal["entries"]!.AsArray();
+                    Assert.Equal(new[] { 43, 44 }, guardianMemories.Select(e => e!["turn"]!.GetValue<int>()));
+                    Assert.True(JsonNode.DeepEquals(grantGuardianMemory, guardianMemories[0]));
+                    Assert.All(guardianMemories, e => Assert.Equal(AfterlifeWoundTreatmentAuthority.ElyaraId, e!["guardianId"]!.GetValue<string>()));
                     if (faction)
                     {
                         var journal = JsonNode.Parse((await files.ReadFileAsync(GuardianAbodeResidentState.StatePath))!)!["thoughtJournal"]!.AsArray();
@@ -279,7 +299,18 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                     activeFixture.AssertResourcesUnchanged();
                     output.WriteLine($"Negotiated {kind}/{family}: real Engine offer43/cleanup/confirmed44, {after.Lifecycle}/{after.Severity.Rank}/{after.Recovery.CurrentStepProgress}; wallet unchanged, accepted terms/draw/history and current inert replay.");
                 }
-                finally { capture.WriteLine(diagnostics.Describe()); await runtime.AudioService.DisposeAsync(); }
+                catch (Exception error) { fixtureFailure ??= error; }
+                finally
+                {
+                    armed = false;
+                    try { capture.WriteLine(diagnostics.Describe()); }
+                    catch (Exception error) { fixtureFailure ??= error; capture.RecordClosingFailure(error, "negotiated-describe-forward"); }
+                    try
+                    {
+                        using (timings.Measure("Negotiated.AudioDisposal")) await runtime.AudioService.DisposeAsync();
+                    }
+                    catch (Exception error) { fixtureFailure ??= error; capture.RecordClosingFailure(error, "negotiated-audio-close"); }
+                }
             }
         }
     }
@@ -322,7 +353,8 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
         string Brain(string name, bool provider) => string.Join("\n", "", "### " + name,
             "- Current location: Зал сопровождения; остаюсь в текущем каноническом зале.",
             "- Situation: " + (provider ? thought : "Душа обсуждает или принимает помощь другого целителя; обычное развитие Хранителя продолжается."),
-            "- Profile inputs: " + (provider ? faction ? "Живой видимый вознесённый healing_support, ИсцелениеIII, точное членство текущей фракции; публичного денежного профиля нет." : "Единственная живая видимая Элиара, ИсцелениеV, канонический профиль100%, публичный приём сейчас недоступен; частное предложение явно принято отдельно." : "Живая видимая Элиара в текущем зале; действующая обычная стратегия, в этой попытке не является целителем."),
+            "- Profile inputs: " + (provider ? faction ? "Живой видимый вознесённый healing_support, ИсцелениеIII, точное членство текущей фракции; публичного денежного профиля нет." : "Единственная живая видимая Элиара, ИсцелениеV, канонический профиль100%, публичный приём сейчас недоступен; " +
+                    (offer ? "частное предложение только выдвинуто, подтверждения души ещё нет." : "частное предложение явно принято отдельно.") : "Живая видимая Элиара в текущем зале; действующая обычная стратегия, в этой попытке не является целителем."),
             "- Thoughts: " + (provider ? thought : "Я сохраняю самостоятельный выбор души и продолжаю свою обычную стратегию."),
             "- Motivation: Поддержать целостность души без навязанного решения.",
             "- Constraints: " + terms + " Клиент владеет броском, раной, кошельком и циклом; предложение не заменяет подтверждение.",

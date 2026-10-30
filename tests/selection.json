@@ -126,6 +126,13 @@
       "contracts": [
         "#1536 US6 T133/T134/T136/T138/T143; same accepted agreement/attempt/cycle/C4"
       ]
+    },
+    {
+      "category": "negotiated-healing-normalization",
+      "reason": "Actual causal native owner covers both Astra SOURCE fixes before new Engine positive: shared Shining guards, immutable snapshot and exact resident-memory selected dependencies; no fake Engine cleanup.",
+      "contracts": [
+        "#1536 US6 T133/T136/T138 source/normalization/memory authority"
+      ]
     }
   ]
 }
