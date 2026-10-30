@@ -1,3 +1,54 @@
+# T142 functional result verified — final independent OUTCOME pending
+
+Issue #1536 / FR083. Current materialized Shining factions, including hidden,
+weakened and leaderless, require one exact living primary healing_support resident
+with a unique complete afterlife profile and authored Healing I-V. Only historical
+broken/dissolved factions are exempt; their records remain. Revealed roster requires
+a visible qualifying healer; neither capability nor visibility grants a service.
+Raw and post owners, current canonical spec/data-model/contract and GM guidance agree.
+
+Verified133distinct PASS /30methods /10TRX across explicit lineages, NOT one fresh run:
+105PASS at3d8a276cee3daf4ceb9b76cbaad65b998335b487,76.2413859s wall;
+27PASS retained from28executed at9cde4bbe13f426b9ce54e70aef087740dccc54a3,
+25.2876340s wall; corrected singleton1PASS atfe107ecbfc2621dd1a41fa98985748dc0005f315,
+14.0990376s wall /6.7341049s category<60. Prior sole FAIL was a proved fixture
+precondition: mandatory second resident changed base20+6 to genuine trade26;
+base18+6=24 restores the original forged30 negative. Strict assertion/production
+threshold unchanged. Original mixed TRX and every failure retained, not hidden.
+All planned cases completed, no timeout/skip/duplicate/lost result; owned/runtime
+cleanup true and pins unchanged. Independent final OUTCOME is pending, T142 stays open.
+
+Owning successful builds: Main/Support5b6b52049e623a8c13a4f8affe8ce4c63b3983ca,
+0errors/12,23baselinewarnings; Unitd1a6f786d7838ff2aae8272bbd75f3e4b65df3d0,
+0errors/26baselinewarnings; Integration4936f6ee92ff124903ee77658f6686c2a1782de8,
+0errors/102baselinewarnings2:33.95. Earlier Integrationa2c78 supplied105+27retainedPASS;
+only one fixture-method input changed, retained method bodies/production equal.
+Current4PE/PDB100sourcebindings,27artifacts,8GMresources across4outputs+4daemons verified.
+Catalog1138categories/12910methods valid; new singleton exactPlanOnly1/60s. No unchanged
+PASS replay, broad suite, budget increase or new diagnostic framework.
+
+Optimization proof: invocation-local parsed-root indexes and existing requiredActors
+reuse; one real profiles open for1/20factions and one full validation of shared
+head/healer in raw/post pass. No retained cache/callback/authority, and every new
+invocation retains fresh identity, complete materialization, trade/history/source
+checks. No measured game speedup is claimed. GM rule/guide/matrix/API/main task/both
+daemon entrypoints/worked native/player/hidden-story examples and manifest/source
+guards are synchronized. This Shining-only invariant changes no Mortal response.
+
+Complete raw outside checkout: /workspace/tboe-linux-evidence-20261025/us6-faction-living-healer.
+Frozen227files/231202527bytes, manifest SHA256
+66f09dd6608423cb9a68cc877aea86d7524046e69cfec6e29e2d3e73d5c9470d; every member hash
+reverified. No raw/TRX/archive/binary uploaded or evidence/saves/recovery removed.
+No new clone/restore claim. All owned build/test processes completed.
+T143 accepted173distinct lineages remain separate. US6/#1536 stay open: generic
+faction-provider execution and negotiated compensation remain, followed by other
+canonical tasks. Next functional route is an accessible local faction provider
+through the existing common confirmation/payment/wound/world/History handler.
+DFR300.1806894s timeout, Mortal timeout, Windows HOLD, first-guardian intermittence,
+cross-OS DATA and DOM/provider/fresh-process limits remain explicitly open.
+
+---
+
 # T142 corrected singleton preparation — runtime UNRUN
 
 Source4936f6ee92ff124903ee77658f6686c2a1782de8 independently SOURCE/selection accepted.
