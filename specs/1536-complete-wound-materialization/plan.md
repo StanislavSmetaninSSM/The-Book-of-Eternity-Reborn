@@ -1,3 +1,39 @@
+# US6 public backend accepted by actual checks; console timeout unresolved
+
+Current source98dd9955eb62314cc60c8f707f77ad07bde0dfdf (compileda48a7c249): actual
+HGREEN Unit13/13PASS16.8646248s, publicbackend10/10PASS136.0176975s and owned full
+normalizer1/1PASS33.6661624s; exact methods/casecounts/TRX/cleanup/binarypins verified.
+New client first-history fix is GREEN for original8causal cases plusChaos1; docs4PASS.
+Actual failure/partial/success charge once, wound/effects/History/cycle and no-recharge
+replay now pass. Same-cycle H3→H4 preserves originalH3 quote/check/price51; disabled/
+unfunded controls and invented-tier/locality/memory refusal pass. Physical roster
+role drift after actual Shining control refuses before entropy/request/payment. Full
+normalizer retains real H0→H1 versus original source tier and foreign-write refusal.
+With independently reviewed95retained cases,119distinct have PASS on explicit versions;
+not onefresh119 and not wholeUS6 acceptance. Original FAIL/RED data retained.
+
+Console actual singleton then TIMEOUT:188.8398022s wall at original3minute category,
+child137 killed by runner,0completedTRX cases, cleanup/pins verified. Browser/rollback
+UNRUN and private5earlier190.1679s timeout remains open. No positive UI or full route
+claim. Full stdout is retained HGREEN-console-runtime; it contains no Engine-phase
+messages because existing SpiritualLifecycleTestLogger queues them and Describe is
+printed only in finally. Kill never reached it. Existing prefix cannot identify
+setup/handler/ProcessPlayerTurn/GM-repair/cleanup frontier; no speculative cause claim.
+
+Next bounded diagnostic wiring (T136): reuse existing LifecyclePassiveTimingDiagnostics,
+OperationTimingAccumulator and persistent full gzip/message writer, never a new stack.
+Only a few named caller macro sections plus the original Engine log stream are needed
+for that finite phase question; do not attach arbitrary filesystem observers or alter
+DATA reuse. Bind to the actual newly allocated fixture before expensive setup; retain
+original event times/full messages and strict closing/footer/decode checks. One cheap
+wiring/prefix proof, independent review/PREP, then at most one same original console
+case at unchanged3minutes; diagnose actual result and fix its concrete cause. No
+quotas/truncation/budget increase or blind retry. No production diagnostic expansion.
+All code/artifacts/raw remain external where required; no raw/saves/recovery deleted.
+Current code is unchanged since reviewed correction; negotiatedB still unimplemented.
+
+---
+
 # US6 corrected source a48a built; exact remaining-route preparation
 
 Fresh Main/Support/Unit/Integration all exit0 with0errors; sourcea48a7c2496b45968d7ce506aee69195e64d0c852,
