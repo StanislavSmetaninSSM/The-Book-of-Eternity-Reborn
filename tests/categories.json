@@ -37164,6 +37164,30 @@
           ]
         }
       ]
+    },
+    {
+      "id": "shining-faction-service-causal",
+      "responsibility": "Missing exact Shining resident public-currency quote support through the existing prepared healing check and canonical price; independent inert fixture.",
+      "excludes": "No claim of roster/access/staging/payment/publication or whole US6 completion; those have subsequent bounded consumers. No repeated accepted T142/T143 or HOLD gates.",
+      "changeHints": [
+        "#1536 US6 T132/T136/T137/T138/T143 local faction service"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.ShiningFactionHealingServiceContractTests.ExactShiningResidentCurrencyQuoteUsesTheExistingHealingCheckAndPrice"
+          ]
+        }
+      ]
     }
   ]
 }

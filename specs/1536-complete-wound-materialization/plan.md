@@ -1,3 +1,21 @@
+# US6 public faction-service causal scaffold — WIP, uncompiled/unrun
+
+Design b27fed7f8ed67b0db90708846dcbd85619fd51d3 is in independent Astra/high review;
+no product implementation starts before resolving concrete design risks. In parallel,
+a single minimal typed causal quote test uses existing real profile/check/price APIs.
+It constructs exact Shining resident/patient DATA, proves check/profile preparation
+and byte/value inertness before the expected missing-quote Assert.NotNull. RankII,
+tierIII, multiplier101% must yield51Feathers after implementation. It does not pretend
+to prove membership/access or publication; those remain explicit later consumers.
+New exact Unit category1case/60s; current CI selection is this causal boundary only.
+All other PASSES retained, no broad suite. Fresh Unit-only build/discovery/Plan/PREP/
+actual RED pending. Retained current9Unit artifacts already fully match the frozen
+T142 archive, reverified outside checkout before replacement; no repeated archive or
+deletions needed. No new code/cache/read duplication or product/GM contract yet.
+Full new raw outside checkout: /workspace/tboe-linux-evidence-20261025/us6-faction-service-agreement.
+
+---
+
 # US6 executable faction service and negotiated aid — DESIGN WIP
 
 Source issue #1536; accepted base43f0b8f4c09629be5b9cf0933ea00737030ddebc.
