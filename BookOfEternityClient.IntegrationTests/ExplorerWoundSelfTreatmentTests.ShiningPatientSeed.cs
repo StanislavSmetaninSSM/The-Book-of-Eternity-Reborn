@@ -120,6 +120,7 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
         var detail = await WoundApplicationService.SelectTargetAsync(fixture.Files, lease, opened.WoundCommandState, target.Value, "/лечить");
         Assert.DoesNotContain(detail.Notifications, n => n.Severity == BookOfEternityClient.CommandProtocol.UiNotificationSeverity.Error);
         Assert.Equal(target.Owner, detail.WoundCommandState!.SelectedTarget!.Owner);
+        for (var i = 0; i < paths.Length; i++) Assert.Equal(2L, reads.ReadCount(paths[i]) - counts[i]);
         fixture.AssertMutationRootsUnchanged(before);
     }
 }

@@ -99,10 +99,16 @@ Self, and require existing package modeAbsent. Existing sealed passive timer cou
 real materialization computation; typed menu/detail consumers share one fresh
 private admission, no arbitrary callback/cache. Added valid/invalid-package and
 counter controls, plus four actual initial-world menu/known-detail isolation rows
-with one real read of each locality source. Full Engine journeys UNWRITTEN/UNRUN.
+with one real read of each locality source. Full Engine journeys subsequently authored with existing full passive capture;
+both patient kinds/both handlers, and actual C4 compensation+outer rollback per kind
+remain UNCOMPILED/UNRUN and await their own fixture review/PREP.
 Example grant-turn tick corrected to startIII0→grantIII1→activeII1→naturalII2.
 Manifest exact family dictionary updated for the new focused worked example.
-These corrections remain UNCOMPILED/UNRUN, delta SOURCE pending; no PASS claimed.
+Astra/high delta SOURCE accepted7e4e16c18 (no runtime claim). Main fresh build
+started on that source; pending owning builds, source/PDB/resource proof, catalog,
+exact PlanOnly and independent PREP before cheap68, then menu4 and genuine journeys.
+Sol fixture audit accepted initial seed and requested one-read counter also after
+SelectTarget; cumulative2 is now asserted. No runtime PASS claimed.
 
 Авторское решение диагностики принято2026-10-30 11:48UTC и отражено в FR071/tasks.
 После текущего Shining patient: Mortal method declares own procedure check/time/
