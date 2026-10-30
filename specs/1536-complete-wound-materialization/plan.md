@@ -288,6 +288,22 @@ pure append/refusal tests, four actual phase proofs and GM sync. Main owns build
 runtime and independent Astra SOURCE/OUTCOME. S5R measured artifacts must be
 archived/full-verified before any fresh owning overwrite; archive in preparation.
 
+Whole memory-correction SOURCE independently accepted by Astra at88a0d81b4fb65938b5bb3338e089d9d2a3f88ecf.
+Transport private/direct-newfield fallback is closed, explicit selected-radiant
+memory required, documentation identity fixed, actual conditional-roster controls
+added; signed/current/readback/actor separation preserved. GM guides/daemonboth/
+repairguidance/worked2fragments/manifest57 synchronized. Optimization: detached
+program DATA frozen once per live continuation, reused exact before/after images;
+independent interface owner reconstructs its own proof; physical guards stayfresh.
+No cache/speedclaim. Staticcatalog1188/alloldobjectsunchanged; selectionestimate
+20descriptors/40methods/80cases is NOTdiscovery/PASS. Allcode/fixturesUNCOMPILED/
+UNRUN; next onefreshMain→Support→Unit→Integration epoch, then actualPDB/artifacts/
+resources/catalog/PlanOnly/PREP, cheap62 before native8 and separatelyadmittedUI10.
+S5R measured27archive62,016,267B SHA f5ea6ad553f4b7b289b3304674b456334d2d45afbc1fbf23d42fca806a77de3b
+fullmemberhash/EOFCRC verified before any overwrite. SourceWIPwriterpaused;
+main owns builds/runtime. Prior323historicalPASS, actualEngine180timeout and
+acceptednativeRED1fail remain separate, not current memory qualification.
+
 Авторское решение диагностики принято2026-10-30 11:48UTC и отражено в FR071/tasks.
 После текущего Shining patient: Mortal method declares own procedure check/time/
 cost; spiritual Healing>=0 plus ALL path requirements, guaranteed declared reveals,
