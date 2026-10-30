@@ -1,3 +1,32 @@
+# T108 Shining-patient bounded slice accepted — 2026-10-30
+
+Independent final OUTCOME accepted the final four service regressions, exact
+110-case mixed-epoch union, all ten full captures/physical closing roots, clean
+source fence and the 27-artifact archive. No blocker remains in the five top
+Shining-patient subtasks, including the verified family8 History correction.
+Primary readback matched every planned method/count and TRX hash. The actual
+player route now supports willing capable visible local residents and canonical
+radiant faction heads through console/shared browser, using real grant, ordinary
+cleanup, separate confirmation, wound/effects/History/memory, replay and rollback.
+
+Source code is accepted40d0d558; fresh build source5fe0bbe9. This final checkpoint
+changes plan/tasks metadata only, so no additional build/test is required.
+Evidence and exact durations/cohort scopes are in the S7 receipt below and in
+external /workspace/tboe-linux-evidence-20261025/us4-shining-patient-aid/S7-*.
+No raw, TRX, diagnostic JSON, archive or binary is in the published change.
+The original timeout and causal failures remain retained. No fresh restore is
+claimed in this same-checkout phase. Broader US4/US6/#1536, DOM/provider/fresh-
+process and all separately held qualification results remain open.
+
+Next is T121-DIAGNOSIS-EXECUTION / FR071 under the author-approved rules. The
+bounded read-only DESIGN review found a feasible existing-owner path: explicit
+diagnosis purpose/current requirement adapter; knowledge-only diagnosis then
+ordinary recovery inside one continuation/cycle; two strictly bound durable
+results with original/knowledge-after evidence, preserving terminal reconstruction
+and replay even when recovery removes the wound. No new game-rule decision is
+needed. Persist the concrete technical plan and causal existing-API scaffold
+before implementation; do not revive DFR/Mortal-compatibility/Windows work.
+
 ## S7 bounded qualification — final OUTCOME pending
 
 All required current UI journeys completed with PASS and complete capture before

@@ -1,6 +1,6 @@
 # T108 Shining patient treatment — #1536
 
-- [ ] T108-SHINING-PATIENT Complete player→visible conscious consenting current
+- [x] T108-SHINING-PATIENT Complete player→visible conscious consenting current
   Shining faction-hall resident / canonical radiant faction head treatment via
   the existing grant, natural witness, guided console/browser confirmation,
   retained roll, active+natural program, common publication, History/memory,
@@ -9,27 +9,37 @@
   Technical design is appended to spiritual-aid-design.md; independent Astra
   DESIGN and Sol SOURCE/fixtures/selection/PREP/OUTCOME precede acceptance.
   Preserve old families, all current authority fences and the separately approved diagnosis contract.
-- [ ] T108-SHINING-PATIENT-CAUSAL Freeze/review a compilable existing-API proposal
+- [x] T108-SHINING-PATIENT-CAUSAL Freeze/review a compilable existing-API proposal
   refusal RED for both patient kinds; cheap typed/source-count/cross-family,
   locality/visibility/life/head/political/consent/rollback controls before real UI.
-- [ ] T108-SHINING-PATIENT-MEMORY Compose ordinary support-resident memory and
+- [x] T108-SHINING-PATIENT-MEMORY Compose ordinary support-resident memory and
   exact selected radiant ledger DATA through existing publication owners, without
   broadening the selected resident protected channel or weakening signed/fresh
   sources. Actual grant timeout exposes the cross-owner gap. Bounded DESIGN,
   cheap causal append/refusal controls and four kind×phase Full reasoning proofs
   precede a changed Engine retry; preserve all prior PASS and the original budget.
-- [ ] T108-SHINING-PATIENT-HISTORY Close the actual S6 natural8→active8
+- [x] T108-SHINING-PATIENT-HISTORY Close the actual S6 natural8→active8
   History lookup gap by adding only family 8 to the closed grant set. Reuse the
   two required native44 typed pairs for detached full serialized History and
   exact/conflicting replay, missing/duplicate/wrong-primary-family/fingerprint
   controls. Preserve existing family 3–6 and all exact grant/source checks.
-  WIP: source written, UNCOMPILED/UNRUN; independent SOURCE and fresh PREP/GREEN
-  remain required. Full memory CI membership 110 is not a request to repeat PASS.
-- [ ] T108-SHINING-PATIENT-JOURNEYS After owning builds/exact discovery/PREP,
+  Accepted: SOURCE40d0d558, fresh owning build5fe0bbe9, actual native4 GREEN
+  on0b5fdab5 with full History/replay controls and independent OUTCOME. No guard
+  or budget was relaxed; prior failed raw remains preserved.
+- [x] T108-SHINING-PATIENT-JOURNEYS After owning builds/exact discovery/PREP,
   qualify actual resident and radiant-head grant→normal cleanup→separate aid
   through both console/shared browser, retained replay and actual common rollback.
   Audit complete ordinary resource/progression/memory/response setup before runs.
   Reuse full passive gzip/macro capture outside checkout; no quota or new stack.
+
+Accepted 2026-10-30 in this bounded resident/radiant-head scope: independent
+SOURCE/PREP/OUTCOME plus primary TRX/hash/capture/closing readback. Qualification
+frontier is 110 distinct PASS / 46 methods / 23 descriptors across seven runtime
+SHAs, not one fresh110; historical323 stays separate. Four native phases and ten
+UI journeys cover actual grant/cleanup/confirmation/publication, memory, retained
+replay and physical rollback. Browser means shared handler queue; DOM/provider/
+fresh-process and broader US4/US6/#1536 remain open. Full raw and 27-artifact
+archive are outside checkout; original failures and all other holds are retained.
 
 # T121 diagnosis recommendations — #1536
 
