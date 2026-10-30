@@ -39,6 +39,7 @@ internal static partial class AfterlifeWoundTreatmentAuthority
     {
         files.EnsureCanonicalWriteLeaseActive(lease);
         files.VerifyCurrentSessionOperation(lease);
+        selection.RequireTreatmentPurpose();
         ProgressionControl? control = null;
         try
         {

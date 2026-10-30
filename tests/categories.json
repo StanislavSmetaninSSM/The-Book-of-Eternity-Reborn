@@ -2,6 +2,39 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "spiritual-diagnosis-admission",
+  "responsibility": "T121 spiritual diagnosis ADMISSION WIP: closed eleven-kind requirement DATA grammar, exact empty check, three supported coherent-context proofs (standard-art capability/tier and current-player provider), eight registered shapes fail unavailable without actual canonical source; schema9 selection/schema1 request, target filtering, detached export/invalidation and actual old self-stage purpose refusal. Not execution authority.",
+  "excludes": "No actual diagnosis staging/accepted turn, cycle/publication/completion/replay/rollback, new canonical proof for missing adapters, full Engine, Mortal procedural diagnosis or repeated accepted110/read83.",
+  "changeHints": [
+    "BookOfEternityClient.Tests/SpiritualDiagnosisAdmissionTests.cs",
+    "BookOfEternityClient/Services/SpiritualDiagnosisSourceData.cs",
+    "BookOfEternityClient/Services/SpiritualDiagnosisRequestCodec.cs",
+    "BookOfEternityClient/Services/SpiritualSelfTreatmentSelection.Diagnosis.cs",
+    "BookOfEternityClient/Services/MortalWoundTreatmentContract.RequirementProjection.cs"
+  ],
+  "related": [
+    {
+      "id": "spiritual-diagnosis-menu-causal",
+      "when": "Both original missing-choice realm cases must become GREEN after the accepted EX1 RED; this still does not qualify execution."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.SpiritualDiagnosisAdmissionTests.*",
+        "BookOfEternityClient.Tests.SpiritualSelfTreatmentRequestTests.Stage_DiagnosisPurposeCannotFallThroughBeforeAnyAdditionalDrawOrWrite"
+      ]
+    }
+  ]
+},
+{
   "id": "spiritual-diagnosis-menu-causal",
   "responsibility": "T121/FR071 existing-API causal menu DATA: canonical public reachable spiritual diagnosis with current Healing0 capability is selectable in Chaos Sea and Shining Abode; preconditions prove source/identity/History, known recommendation and input immutability before missing-choice RED.",
   "excludes": "No signed authority, confirmation/staging, draw/cost/cycle, live publication/replay/rollback, Engine, Mortal diagnosis, or repeated accepted Shining/read qualification.",

@@ -19,7 +19,7 @@ internal static partial class WoundApplicationService
     internal const string CombatActionText = "Лечить выбранную собственную духовную рану стандартным Исцелением в текущей духовной дуэли. Это прерываемое противником действие за ОД, без безопасного цикла мира.";
     internal const string ServiceActionText = "Принять платное лечение моей выбранной духовной раны у Элиары по подтверждённой котировке. Оплатить одну принятую попытку и продолжить один обычный безопасный цикл мира.";
     internal const string FactionServiceActionText = "Принять платное лечение моей выбранной духовной раны у выбранного целителя фракции по подтверждённой котировке. Оплатить одну принятую попытку и продолжить один обычный безопасный цикл мира.";
-    internal static string ActionFor(SpiritualSelfTreatmentSelection selection) => selection.Service is { } service
+    internal static string ActionFor(SpiritualSelfTreatmentSelection selection) => selection.Diagnosis is not null ? DiagnosisActionText : selection.Service is { } service
         ? service.Quote.Provider.OwnerKind == "resident" ? FactionServiceActionText : ServiceActionText : selection.Combat is not null ? CombatActionText : selection.Aid is null ? ActionText
         : selection.Aid.Compensation is not null ? "Принять помощь выбранного целителя на отдельно подтверждённых договорных условиях. Выполнить ту же попытку лечения и один безопасный цикл мира, без списания Чернильных Перьев."
         : selection.Aid.ShiningPatient is not null ? ShiningPatientAidActionText
@@ -93,7 +93,11 @@ internal static partial class WoundApplicationService
     }
 
     // Detached menu DATA only; confirmation and staging revalidate the current source.
-    internal static WoundCommandState CreateState(string generation, WoundPlayerReadContext context)
+    internal static WoundCommandState CreateState(string generation, WoundPlayerReadContext context) =>
+        CreateStateCore(generation, context, PrepareDiagnosisSource(context));
+
+    private static WoundCommandState CreateStateCore(string generation, WoundPlayerReadContext context,
+        SpiritualDiagnosisSourceData? diagnosisSource)
     {
         var input = context.Input;
         if (!input.SelfVisible || input.Realm == "mortal_world")
@@ -134,6 +138,7 @@ internal static partial class WoundApplicationService
                 WoundPlayerProjection.Text(wound.Display.Name), wound.Severity.Value, source?.HealingTier, available,
                 reason));
         }
+        AddDiagnosisChoices(choices, context, diagnosisSource);
         return new(generation, choices);
     }
 
@@ -146,7 +151,8 @@ internal static partial class WoundApplicationService
     private static async Task<WoundApplicationMenuData> BuildStateAsync(FileSystemManager fs,
         FileSystemManager.CanonicalWriteLease lease, string generation, WoundPlayerReadContext context)
     {
-        var self = CreateState(generation, context);
+        var diagnosisSource = PrepareDiagnosisSource(context);
+        var self = CreateStateCore(generation, context, diagnosisSource);
         if (!context.Input.SelfVisible || context.Input.Realm is not ("chaos_sea" or "shining_abode") || context.SpiritualConflict?["activeConflict"] is not null)
             return new(self, context);
         async Task<JsonObject?> Root(string path)
@@ -174,7 +180,7 @@ internal static partial class WoundApplicationService
                 context = context with { ShiningPatients = SpiritualTreatmentParticipation.ReadShiningPatientAdmissions(
                     shining, context.Input.Carriers.AfterlifeProfiles!, residents) };
             }
-            return new(await BuildStateFromLocalityAsync(fs, lease, generation, context, self, guardians, residents, shining), context);
+            return new(await BuildStateFromLocalityAsync(fs, lease, generation, context, self, guardians, residents, shining, diagnosisSource), context);
         }
         catch (Exception failure) when (failure is not CoordinatedStatePublicationUncertainException &&
             failure is JsonException or InvalidDataException or InvalidOperationException or ArgumentException or OverflowException)
@@ -183,7 +189,7 @@ internal static partial class WoundApplicationService
 
     private static async Task<WoundCommandState> BuildStateFromLocalityAsync(FileSystemManager fs,
         FileSystemManager.CanonicalWriteLease lease, string generation, WoundPlayerReadContext context, WoundCommandState self,
-        JsonObject? guardians, JsonObject? residents, JsonObject? shining)
+        JsonObject? guardians, JsonObject? residents, JsonObject? shining, SpiritualDiagnosisSourceData? diagnosisSource)
     {
         var profiles = (context.Input.Carriers.AfterlifeProfiles?["profiles"] as JsonArray)?.OfType<JsonObject>().ToArray() ?? [];
         var visibleActors = profiles.Where(p => p["actorType"]?.GetValue<string>() is "guardian" or "resident" or "radiant_actor" &&
@@ -197,6 +203,10 @@ internal static partial class WoundApplicationService
             // Target visibility needs no grant, schedule, attempt or treatment authority.
             navigation = new WoundCommandState(generation, BuildPublicServiceChoices(context, guardians, self.Choices, shining, residents));
             navigation = navigation.WithTargets(WoundTargetSelectionService.Build(context, guardians, residents));
+            var diagnosticChoices = navigation.Choices.Where(choice => choice.Selection.Diagnosis is null).ToList();
+            foreach (var target in navigation.Targets.Where(target => target.Available))
+                AddDiagnosisChoices(diagnosticChoices, context, diagnosisSource, target);
+            navigation = new WoundCommandState(generation, diagnosticChoices).WithTargets(navigation.Targets);
             if (candidates.Length == 0) return navigation;
             var scheduleBytes = await fs.ReadFileBytesAsync(lease, ProgressionScheduleService.SchedulePath);
             if (context.Input.Realm == "chaos_sea" && guardians is null || scheduleBytes is null || fs.FileExists(lease, AcceptedMechanicsPlan.WoundCommandPath) ||

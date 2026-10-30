@@ -64,6 +64,7 @@ internal sealed partial record SpiritualSelfTreatmentSelection(string WoundId, s
     internal SpiritualServiceTreatmentSelection? Service { get; init; }
     internal JsonObject ToJson()
     {
+        if (Diagnosis is not null) return DiagnosisJson();
         if (Service is not null) return ServiceJson();
         if (Combat is { } combat)
         {
@@ -137,6 +138,8 @@ internal sealed partial record SpiritualSelfTreatmentSelection(string WoundId, s
             throw new InvalidDataException("Invalid exact spiritual wound selection.");
         var selection = new SpiritualSelfTreatmentSelection(woundId!, fingerprint!);
         if (root.Count == 2) return selection; // Still-produced exact self form.
+        if (root["schemaVersion"] is JsonValue diagnosisVersion && diagnosisVersion.TryGetValue<int>(out var diagnosisSchema) && diagnosisSchema == 9)
+            return ParseDiagnosis(selection, root);
         if (root["schemaVersion"] is JsonValue patientVersion && patientVersion.TryGetValue<int>(out var patientSchema) && patientSchema == 8)
             return ParseShiningPatient(selection, root);
         if (root["schemaVersion"] is JsonValue serviceVersion && serviceVersion.TryGetValue<int>(out var serviceSchema) && serviceSchema == 7)
@@ -236,6 +239,7 @@ internal static partial class AfterlifeWoundTreatmentAuthority
         ArgumentNullException.ThrowIfNull(selection);
         files.EnsureCanonicalWriteLeaseActive(lease);
         files.VerifyCurrentSessionOperation(lease);
+        selection.RequireTreatmentPurpose();
         if (!ResourceMaterializationContract.IsExactIdentifier(context.SessionId) ||
             !ResourceMaterializationContract.IsExactIdentifier(context.RequestId) || context.Turn < 1 ||
             context.Progression is null || selection.Aid is not null || selection.Combat is not null || selection.Service is not null || !ResourceMaterializationContract.IsExactIdentifier(selection.WoundId))
@@ -337,6 +341,7 @@ internal static partial class AfterlifeWoundTreatmentAuthority
     internal static SourceResult PrepareSourceData(SpiritualSelfTreatmentStageContext context,
         SpiritualSelfTreatmentSelection selection, IReadOnlyList<SourceFile> sources)
     {
+        selection.RequireTreatmentPurpose();
         if (selection.Aid is not null || selection.Combat is not null || selection.Service is not null) return SourceRefuse("target_invalid");
         var control = context.Progression;
         JsonObject? Root(string path) => sources.Single(s => s.Path == path).Root;

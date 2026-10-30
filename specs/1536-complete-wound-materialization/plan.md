@@ -1,3 +1,41 @@
+# T121 admission/menu core — functional WIP, UNCOMPILED/UNRUN
+
+After accepted EX1 RED2, new admission tests were authored before production.
+This first block adds exact schema9 diagnosis selection, schema1 request DATA,
+closed requirement projection reusing unchanged Mortal grammar, and one detached
+SpiritualDiagnosisSourceData per eligible menu operation. Exact nonempty/unknown
+check shapes refuse. Current path knowledge, target filtering, source mirror and
+all declared requirements are checked before menu availability. No source/file
+cache or per-requirement filesystem read is introduced; no-path/other-realm menus
+skip diagnosis DATA construction.
+
+Supported current proofs are exactly THREE: explicit standard-art capability,
+standard-art tier and current-player provider identity. EIGHT registered shapes
+(item/resource quantities, consent, facility, location, quest/effect/environment)
+remain unavailable without a real canonical reader/proof. In particular arbitrary
+player profile.locationId is not locality authority. Those adapters are tracked
+before whole feature acceptance; this is not a claim that all eleven can execute.
+Mortal route/accepted-state/reservation owners are not fabricated or repurposed.
+
+Every old treatment stage entry and old self/active request factory explicitly
+rejects diagnosis. A real existing self-stage fixture supplies a valid baseline
+and tests diagnosis refusal with no additional draw/write or retained-request
+change. Engine also refuses the new purpose before progression-control staging.
+Thus no accepted play or GM diagnosis turn is exposed: actual diagnosis staging,
+continuation/result/publication/completion and native/UI remain pending. Current
+GM guidance still truthfully says execution is unimplemented; full GM/examples/
+manifest sync is required before enabling that following block.
+
+New source controls include both original realm cases, malformed/missing art and
+mirror, valid next-operation invalidation (profile+soul changed together), exact
+check refusal, requirement closure/unavailable source, known/future privacy,
+independently valid family mixing, target filter and closed request exports.
+Source-estimated temporary membership is 48 cases / 14 methods / 2 Unit
+descriptors: original causal2 + new admission45 + actual old-stage refusal1.
+Current C# is UNCOMPILED/UNRUN. Selection is temporary admission/menu only; exact
+post-build discovery/PREP/GREEN is pending. No build/test by writer, no repeated
+old PASS, no DFR/Mortalcompat/Windows or diagnosis execution qualification.
+
 # T121 spiritual diagnosis — EX1 causal RED accepted; admission block next
 
 Unified independent DESIGN/SOURCE/PREP and actual RED are accepted for scaffold

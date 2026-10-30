@@ -9,6 +9,26 @@ namespace BookOfEternityClient.Tests;
 public sealed class SpiritualSelfTreatmentRequestTests
 {
     [Fact]
+    public async Task Stage_DiagnosisPurposeCannotFallThroughBeforeAnyAdditionalDrawOrWrite()
+    {
+        await using var f = await Fixture.CreateAsync();
+        await using var lease = await f.Files.AcquireCanonicalWriteLeaseAsync();
+        var first = await AfterlifeWoundTreatmentAuthority.StageSelfTreatmentAsync(f.Files, lease,
+            f.Context, f.Selection, _ => [14]);
+        Assert.True(first.IsStaged, first.IssueCode);
+        var retained = await f.Files.ReadFileBytesAsync(lease, AcceptedMechanicsPlan.WoundCommandPath);
+        var before = f.CanonicalBytes();
+        var diagnosis = f.Selection with { Diagnosis = new(new("chaos_sea", "player_soul", "player_soul",
+            WoundCarrierCatalog.AfterlifeProfilesPath), "diagnosis_unexecuted", "sha256:" + new string('a', 64)) };
+        var draws = 0;
+        var error = await Assert.ThrowsAsync<InvalidDataException>(() => AfterlifeWoundTreatmentAuthority.StageSelfTreatmentAsync(
+            f.Files, lease, f.Context, diagnosis, _ => { draws++; return [20]; }));
+        Assert.Equal("Diagnosis requires its own execution boundary.", error.Message);
+        Assert.Equal(0, draws); Assert.Equal(before, f.CanonicalBytes());
+        Assert.Equal(retained, await f.Files.ReadFileBytesAsync(lease, AcceptedMechanicsPlan.WoundCommandPath));
+    }
+
+    [Fact]
     public async Task Stage_ValidSelfSourcePersistsSeparateDrawWithoutHealingOrAdvancingWorld()
     {
         await using var f = await Fixture.CreateAsync();

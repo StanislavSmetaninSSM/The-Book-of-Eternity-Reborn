@@ -14,9 +14,9 @@ internal static partial class SpiritualSelfTreatmentRequestCodec
     internal static bool IsReceiveAidHeader(JsonObject root) => IsAidHeader(root) && Int(root["schemaVersion"]) is 4 or 6;
     internal static bool IsActiveKind(JsonObject root) => Text(root["kind"]) is Kind or AidKind;
     internal static bool IsBoundActive(JsonObject root, SpiritualSelfTreatmentStageContext context,
-        SpiritualSelfTreatmentSelection selection, string realm, int ordinal) => selection.Service is not null
+        SpiritualSelfTreatmentSelection selection, string realm, int ordinal) => selection.Diagnosis is null && (selection.Service is not null
         ? IsBoundService(root, context, selection, realm, ordinal) : selection.Aid is null
-            ? IsBound(root, context, selection, realm, ordinal) : IsBoundAid(root, context, selection, realm, ordinal);
+            ? IsBound(root, context, selection, realm, ordinal) : IsBoundAid(root, context, selection, realm, ordinal));
 
     internal static JsonObject ActiveSourceJson(SpiritualHealingPreparedSource source) => new()
     {
@@ -45,6 +45,7 @@ internal static partial class SpiritualSelfTreatmentRequestCodec
     internal static JsonObject CreateActive(SpiritualSelfTreatmentStageContext context, SpiritualSelfTreatmentSelection selection,
         AfterlifeWoundTreatmentAuthority.SourceData data, IReadOnlyList<int> draws)
     {
+        selection.RequireTreatmentPurpose();
         if (selection.Service is not null || data.ServiceQuote is not null || data.ServicePayment is not null)
             return CreateService(context, selection, data, draws);
         if ((selection.Aid is null) != (data.AidWitness is null))
@@ -56,11 +57,11 @@ internal static partial class SpiritualSelfTreatmentRequestCodec
 
     internal static bool IsExactActive(JsonObject root, SpiritualSelfTreatmentStageContext context,
         SpiritualSelfTreatmentSelection selection, AfterlifeWoundTreatmentAuthority.SourceData data) =>
-        selection.Service is not null || data.ServiceQuote is not null || data.ServicePayment is not null
+        selection.Diagnosis is null && (selection.Service is not null || data.ServiceQuote is not null || data.ServicePayment is not null
             ? IsExactService(root, context, selection, data)
             : data.AidWitness is null
                 ? selection.Aid is null && IsExact(root, context, selection, data.Realm, data.CycleOrdinal, data.SourceFingerprint, data.Source)
-                : IsExactAid(root, context, selection, data);
+                : IsExactAid(root, context, selection, data));
 
     private static JsonObject CreateAid(SpiritualSelfTreatmentStageContext context, SpiritualSelfTreatmentSelection selection,
         AfterlifeWoundTreatmentAuthority.SourceData data, IReadOnlyList<int> draws)

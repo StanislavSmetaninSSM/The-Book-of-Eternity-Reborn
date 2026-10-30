@@ -23,7 +23,8 @@ internal sealed class WoundCommandState(string generation, IEnumerable<WoundTrea
             ?? throw new InvalidDataException("Выбранная цель больше недоступна; откройте /лечить заново.")
         : throw new InvalidDataException("Выбор цели уже завершён; продолжите текущую форму.");
     internal WoundCommandState ForTarget(WoundTargetChoice target) => new(Generation,
-        _choices.Where(c => c.Selection.Aid?.Target(target.Owner.Realm) == target.Owner ||
+        _choices.Where(c => c.Selection.Diagnosis is { } diagnosis ? diagnosis.Target == target.Owner :
+            c.Selection.Aid?.Target(target.Owner.Realm) == target.Owner ||
             c.Selection.Aid is null && target.Owner.OwnerKind is "player" or "player_soul"))
         { _targets = _targets.ToArray(), SelectedTarget = target, IsTargetSelection = false };
     internal WoundTreatmentChoice Resolve(string value) => !IsTargetSelection

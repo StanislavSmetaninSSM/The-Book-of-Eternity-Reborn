@@ -1699,6 +1699,8 @@ public partial class GameEngine
             var healingSelection = browserAction is null
                 ? _explorer.ConsumePendingSpiritualSelfTreatment(action, sessionGeneration)
                 : browserAction.SpiritualSelfTreatment;
+            if (healingSelection?.Diagnosis is not null)
+                throw new InvalidDataException("Выполнение духовного осмотра ещё не подключено; время и ресурсы не потрачены.");
             var visit = browserAction is null ? consoleVisit
                 : browserAction.Source == ElyaraVisitService.BrowserSource ? ElyaraVisitService.ParseAction(action) : null;
             if (ElyaraVisitService.HasMarker(action) != (visit is not null) || visit is not null && healingSelection is not null)

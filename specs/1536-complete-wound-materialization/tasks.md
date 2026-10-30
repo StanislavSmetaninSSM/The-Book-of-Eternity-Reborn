@@ -80,6 +80,13 @@ archive are outside checkout; original failures and all other holds are retained
   requirement adapter in `Services/WoundApplicationService.cs`,
   `Services/AfterlifeWoundTreatmentAuthority.Diagnosis.cs` and existing pending/
   snapshot/Continuation consumers. Every declared condition must have exact proof.
+- [ ] T121-DIAGNOSIS-SPIRITUAL-CANONICAL-ADAPTERS [US5] Before whole acceptance,
+  supply exact realm-owned proofs for currently unavailable item_quantity,
+  resource_quantity, consent, facility, location, quest_state, effect_state and
+  environment requirements through the existing read-set/context owner and
+  `Services/SpiritualDiagnosisSourceData.cs`. Do not infer locality from an arbitrary
+  profile field, reserve costs, invent Mortal snapshots or skip a declaration.
+  Current first block supports only capability/tier/current-player provider DATA.
 - [ ] T121-DIAGNOSIS-SPIRITUAL-PUBLICATION [US5] Add closed durable diagnosis and
   full-cohort optional suffix tests, then integrate knowledge-only diagnosis and
   real recovery with `Services/WoundAcceptedTurnPlannerCore.SpiritualHealing.cs`,

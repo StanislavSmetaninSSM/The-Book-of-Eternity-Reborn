@@ -61,6 +61,7 @@ internal static partial class AfterlifeWoundTreatmentAuthority
     {
         files.EnsureCanonicalWriteLeaseActive(lease);
         files.VerifyCurrentSessionOperation(lease);
+        selection.RequireTreatmentPurpose();
         selection = SpiritualSelfTreatmentSelection.Parse(selection.ToJson());
         if (selection.Aid is null || selection.Combat is not null || selection.Aid is { ReceiveAid: true, PlayerConfirmed: false } ||
             !ResourceMaterializationContract.IsExactIdentifier(sessionId) ||
