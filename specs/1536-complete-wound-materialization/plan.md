@@ -339,6 +339,16 @@ remain valid@24e. Current27artifacts/171bindings/4PE-PDB/9resources36copies/
 remainingPlanOnly4Unitdescriptors/36cases/0execution, pins/cleanupstable. Independent
 PREPpending; native8/UI10 remainUNRUN/unreleased. No repeatedunchanged26PASS.
 
+S5F remaining36/36PASS@90d63eaec23a49a4599a9b2ce9cbff3bda7c926f:
+4descriptors/17methods, exactuniqueIDs/no skip/timeout/duplicate, cleanup/pinsstable,
+wall56.6708862s, allcategories9.25–14.40/60s. Primaryverified exactcheap union
+62distinct/25methods =26retained@facb +36@90d; sixearlierpassed changedTheoryrows
+superseded andoldFAILexcluded, notonefresh62. Native8/UI10 stillUNRUN/unreleased;
+nextindependentOUTCOME/PREP for existingunchangednative8plan, firstresidentgrant
+causalGREEN120s thenremaining7 onlyafterPASS/freshfences. No productionchanges.
+TemporaryCIselection36 will restorefullcoherent80 beforefinalqualificationclose;
+actualnative/UI commands remainexplicitreviewedcatalogsubsets. Fullrawexternal.
+
 Авторское решение диагностики принято2026-10-30 11:48UTC и отражено в FR071/tasks.
 После текущего Shining patient: Mortal method declares own procedure check/time/
 cost; spiritual Healing>=0 plus ALL path requirements, guaranteed declared reveals,
