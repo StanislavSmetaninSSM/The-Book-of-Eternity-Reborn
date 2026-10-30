@@ -21,7 +21,7 @@ public sealed class ShiningFactionServiceDocumentationTests
             var text = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, file));
             var start = text.IndexOf(Marker + ":", StringComparison.Ordinal); Assert.True(start >= 0);
             foreach (var token in new[] { "leaderless", "broken/dissolved", "H>=W", "ORIGINAL", "client_auto_strategy",
-                "spiritualResidentThoughtJournalUpdates", "signed", "rollback", "unfinished", "progressionHistory", "historical materialization envelope remains immutable" })
+                "spiritualResidentThoughtJournalUpdates", "signed", "rollback", "spiritual_negotiated_provider_v1", "progressionHistory", "historical materialization envelope remains immutable" })
                 Assert.Contains(token, text[start..]);
         }
         XDocument.Parse(File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "Rules/Block_32_Guardians.txt")));
@@ -31,6 +31,9 @@ public sealed class ShiningFactionServiceDocumentationTests
         {
             Assert.Contains(Marker, d.Value);
             Assert.Contains("historical materialization envelope remains immutable", d.Value);
+            Assert.Contains("fresh separately confirmed public service7 quote", d.Value);
+            Assert.Contains("accepted spiritual_negotiated_provider_v1 offer", d.Value);
+            Assert.DoesNotContain("Shining command treatment remains unimplemented", d.Value);
         });
         var registry = AfterlifeContractRegistry.Find(AcceptedMechanicsPlan.WoundCommandPath)!;
         Assert.True(registry.IsKnownClientOwnedSurface); Assert.True(registry.IsPrivateMechanicsSurface);

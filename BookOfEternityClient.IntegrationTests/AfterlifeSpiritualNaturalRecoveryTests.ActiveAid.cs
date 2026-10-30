@@ -430,15 +430,18 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
         Assert.Equal(1, draws);
     }
 
-    private static async Task<SpiritualSelfTreatmentSelection> CommitAidGrantAsync(HealingFixture fixture, bool receiveAid = false, bool resident = false)
+    private static async Task<SpiritualSelfTreatmentSelection> CommitAidGrantAsync(HealingFixture fixture, bool receiveAid = false,
+        bool resident = false, JsonObject? compensation = null)
     {
         var participantId = resident ? AidResidentId : AidGuardianId;
         await StageAsync(fixture);
         await using (var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync())
         {
             var profiles = JsonNode.Parse((await fixture.Files.ReadFileAsync(lease, WoundCarrierCatalog.AfterlifeProfilesPath))!)!.AsObject();
+            var proposal = resident ? receiveAid ? ResidentOfferProposal() : ResidentGrantProposal() : receiveAid ? GuardianOfferProposal() : AidGrantProposal();
+            if (compensation is not null) proposal["compensation"] = compensation.DeepClone();
             profiles["profiles"]!.AsArray().OfType<JsonObject>().Single(p => SpiritualTreatmentParticipation.ProfileId(p) == participantId)
-                [SpiritualTreatmentParticipation.ChangeProperty] = resident ? receiveAid ? ResidentOfferProposal() : ResidentGrantProposal() : receiveAid ? GuardianOfferProposal() : AidGrantProposal();
+                [SpiritualTreatmentParticipation.ChangeProperty] = proposal;
             await fixture.Files.WriteFileAtomicAsync(lease, WoundCarrierCatalog.AfterlifeProfilesPath, profiles.ToJsonString());
         }
         if (resident)

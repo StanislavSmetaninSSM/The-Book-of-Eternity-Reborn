@@ -1,3 +1,55 @@
+# Договорная помощь: фракционные маршруты/откат прошли; сгруппирован остаток B7 WIP
+
+B6 на `b94ded5d2b0334983a1c4ba33d1e0559c7c3112b`:
+- faction browser 1/1 PASS, 101.8773624/180 секунд, wall109.6702767,
+  TRX `68efb9f28629496d33041d7ed0fdcfc05c95a0dfd38cba61dcf4e89ecd7178b0`;
+- faction rollback 1/1 PASS, 49.1548465/180, wall57.1948462,
+  TRX `a7d8d466eef3f1c06b4a82160ec0e7dc20d679913eeca9d521ff79f4977d0983`.
+Для обоих проверены точные полные TRX/IDs/cleanup/pins и полный gzip capture:
+22 события/11 исходных пар, CRC/footer/decode/hashes, закрытая отсутствующая root.
+Первый console принят отдельно на `0b2dd1546`; это 3 разных UI-случая на двух
+runtime-версиях с теми же B6 бинарниками, не один свежий общий прогон.
+
+Elyara console: 1/1 FAIL без timeout, 34.2746881/180, wall43.4949128, TRX
+`29f4dc5d1c1ddd1c8d8cc9537e1b931a861f3a13af7d4ad909394b753da1ef01`.
+Отказ только на счётчике actual open: seed не содержит optional resident roster,
+а assertion требует одного открытия. Sol подтвердил причину и fixture-only fix:
+обычный нормализованный пустой roster до единственного bootstrap. Проверка одного
+чтения сохраняется. Его полный failed capture сохранён; browser Элиары UNRUN.
+
+Выбранные 150 регрессий завершили первые37:36 PASS/1 FAIL, без timeout,
+wall78.1332855; ещё113 UNRUN. Старый source guard требует `unfinished`, хотя
+договорной путь уже реализован. Все37 уникальных TRX-строк, hashes, cleanup и pins
+проверены. Три неизменённых успешных случая старой doc-категории не повторяются.
+B7 исправляет guard на точный `spiritual_negotiated_provider_v1` и убирает
+противоречивое `Shining command treatment remains unimplemented` в двух daemon
+директивах: просмотр по-прежнему не даёт лечения, нужны fresh separate public quote
+или действительное принятое предложение. Шесть полных руководств уже описывают это.
+
+B7 также добавляет три адресных actual-owner wallet controls: zero/null GM command
+presence refusal и отказ изменённому cloned proposed wallet, затем нормальную
+публикацию настоящего NoImprovement/free_aid/цикла/History/памяти/replay. Используется
+существующий Chaos resident grant43/подтверждение/stage44 с одним реальным retained
+броском. Новый optional compensation в том же тестовом producer по умолчанию null
+и сохраняет старых callers; mutable fixtures независимы, один bootstrap на случай.
+Это не новый Engine cleanup proof, injected C4 cut или новая экономика/система
+диагностики. Владельцы operation DATA и все fresh guards прежние; speedup не заявляется.
+
+Новые exact категории: guidance2/60s и wallet-native3/120s. Из прежних категорий
+перенесены только два затронутых guidance-метода; 29 DATA и3 doc PASS сохраняются.
+Остаток113, guidance2, wallet-native3 и Elyara2 требуют SOURCE/build/discovery/PREP;
+сейчас UNCOMPILED/UNRUN, весь B/US6/#1536 не принят. Публичный A, Native2/DATA40 и
+HOLD DFR/Mortal/Windows сохраняют отдельные границы; DOM/provider/fresh-process UNRUN.
+
+Измеренные B6 Integration DLL/PDB/deps полностью сохранены/декодированы/сверены:
+`B6-measured-integration-artifacts.tar.gz`, 10615361 байт, SHA256
+`c1ae5d6543ceaf0e8e6028b95c825c8cf5886de9d4c52ee76a574b4d0b4124dd`;
+прочие24 неизменны в полном B2 архиве. Весь raw вне checkout:
+`/workspace/tboe-linux-evidence-20261025/us6-faction-service-agreement`.
+Удалений/загрузки raw нет, прежние неудачи не переименованы в PASS.
+
+---
+
 # Договорная помощь: первый настоящий console-маршрут прошёл
 
 B6 на `0b2dd154683c9384eee79b886a48405ad99daff5`: точный

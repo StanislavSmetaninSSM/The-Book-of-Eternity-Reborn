@@ -89,6 +89,11 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                                 ["healingServiceProfile"]!["availability"] = "unavailable";
                             await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
                             await files.WriteFileAtomicAsync(lease, WoundCarrierCatalog.AfterlifeProfilesPath, profiles.ToJsonString());
+                            // Count real opens, as in the existing public-service
+                            // comparison: an absent optional roster has no open event.
+                            var residents = new JsonObject();
+                            GuardianAbodeResidentState.NormalizeShape(residents);
+                            await files.WriteFileAtomicAsync(lease, GuardianAbodeResidentState.StatePath, residents.ToJsonString());
                         });
             }
             finally { preparation?.Dispose(); preparation = null; }

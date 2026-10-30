@@ -37364,30 +37364,30 @@
       ]
     },
     {
-      "id": "shining-faction-service-documentation",
-      "responsibility": "Effective faction-service GM guides/both daemon directives/private registry, production-parsed worked service/GameResponse/protected append; old restricted access remains read-only.",
-      "excludes": "No standalone example authority, runtime, negotiated B or unrelated accepted suites/HOLD gates.",
-      "changeHints": [
-        "#1536 US6 T144–T147 exact public faction service"
-      ],
-      "related": [],
-      "requirements": {
-        "frontendBuild": false,
-        "exclusive": false,
-        "ciRunner": "ubuntu-24.04"
-      },
-      "timeoutMinutes": 1,
-      "expectedSeconds": null,
-      "selectors": [
-        {
-          "project": "unit",
-          "tests": [
-            "BookOfEternityClient.Tests.ShiningFactionServiceDocumentationTests.*",
-            "BookOfEternityClient.Tests.ShiningHealingAccessDocumentationTests.*"
-          ]
-        }
+  "id": "shining-faction-service-documentation",
+  "responsibility": "Three unchanged public faction worked-profile/request/refusal documentation contracts; effective public-versus-negotiated guidance belongs to negotiated-healing-guidance.",
+  "excludes": "No standalone example authority, runtime, negotiated B or unrelated accepted suites/HOLD gates.",
+  "changeHints": [
+    "#1536 US6 T144–T147 exact public faction service"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.ShiningFactionServiceDocumentationTests.WorkedFactionServiceUsesActualProfileResponseAppendAndOutcomeContracts",
+        "BookOfEternityClient.Tests.ShiningHealingAccessDocumentationTests.*"
       ]
-    },
+    }
+  ]
+},
     {
       "id": "shining-faction-progression-materialization-data",
       "responsibility": "Real typed client ProjectAcceptedRoot first automatic Shining and Chaos income keeps initially empty actor progressionHistory complete; exact envelope delta/repeated-cycle and disabled/no-report/malformed/inconsistent physical history controls. Independent parsed DATA, no GameState fixture.",
@@ -37568,39 +37568,38 @@
       "expectedSeconds": null
     },
     {
-      "id": "negotiated-healing-provider-data",
-      "responsibility": "Thirty file-free closed consideration/locality, exact selected faction admission, dependency union, malformed terms and worked GM guidance cases. Original four causal controls retained; request/wallet10 moved to negotiated-healing-wallet-request-data after isolated B1 failures.",
-      "excludes": "No actual grant/confirmation/publication authority or new obligation ledger; no physical live-source authority, proposed C4 after-image, wallet command, rollback, UI/provider or full-route qualification.",
-      "changeHints": [
-        "BookOfEternityClient.Tests/SpiritualResidentProviderParticipationTests.Negotiated.cs",
-        "BookOfEternityClient/Services/SpiritualTreatmentParticipation.cs",
-        "BookOfEternityClient/Services/SpiritualTreatmentParticipation.Residents.cs",
-        "BookOfEternityClient.Tests/SpiritualResidentProviderParticipationTests.NegotiatedGuards.cs"
-      ],
-      "related": [],
-      "selectors": [
-        {
-          "project": "unit",
-          "tests": [
-            "BookOfEternityClient.Tests.SpiritualResidentProviderParticipationTests.ProviderOfferRetainsClosedExplicitNoncurrencyConsideration",
-            "BookOfEternityClient.Tests.SpiritualResidentProviderParticipationTests.ShiningProviderLocalityRoundTripsItsExactClosedVariant",
-            "BookOfEternityClient.Tests.SpiritualResidentProviderParticipationTests.NegotiatedConsiderationRejectsNullCurrencyAndIncompleteTerms",
-            "BookOfEternityClient.Tests.SpiritualResidentProviderParticipationTests.ShiningProviderSelectionRetainsExactOwnerLocalityAndTerms",
-            "BookOfEternityClient.Tests.SpiritualResidentProviderParticipationTests.NegotiatedSourceDependenciesPreserveChaosOrderWithoutDuplicatingShiningState",
-            "BookOfEternityClient.Tests.NegotiatedHealingProviderAdmissionTests.ExactFactionOfferNeedsCurrentHealerButNoPublicCurrencyProfile",
-            "BookOfEternityClient.Tests.NegotiatedHealingProviderAdmissionTests.NegotiatedAdmissionRefusesCurrentTupleDriftWithoutMutation",
-            "BookOfEternityClient.Tests.NegotiatedHealingProviderDocumentationTests.WorkedBothProviderVariantsAndEffectiveGuidanceUseTheClosedExistingContract"
-          ]
-        }
-      ],
-      "requirements": {
-        "frontendBuild": false,
-        "exclusive": true,
-        "ciRunner": "ubuntu-24.04"
-      },
-      "timeoutMinutes": 1,
-      "expectedSeconds": null
-    },
+  "id": "negotiated-healing-provider-data",
+  "responsibility": "Twenty-nine file-free closed consideration/locality, exact selected faction admission, dependency union and malformed terms cases; the changed guidance guard now belongs to negotiated-healing-guidance.",
+  "excludes": "No actual grant/confirmation/publication authority or new obligation ledger; no physical live-source authority, proposed C4 after-image, wallet command, rollback, UI/provider or full-route qualification.",
+  "changeHints": [
+    "BookOfEternityClient.Tests/SpiritualResidentProviderParticipationTests.Negotiated.cs",
+    "BookOfEternityClient/Services/SpiritualTreatmentParticipation.cs",
+    "BookOfEternityClient/Services/SpiritualTreatmentParticipation.Residents.cs",
+    "BookOfEternityClient.Tests/SpiritualResidentProviderParticipationTests.NegotiatedGuards.cs"
+  ],
+  "related": [],
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.SpiritualResidentProviderParticipationTests.ProviderOfferRetainsClosedExplicitNoncurrencyConsideration",
+        "BookOfEternityClient.Tests.SpiritualResidentProviderParticipationTests.ShiningProviderLocalityRoundTripsItsExactClosedVariant",
+        "BookOfEternityClient.Tests.SpiritualResidentProviderParticipationTests.NegotiatedConsiderationRejectsNullCurrencyAndIncompleteTerms",
+        "BookOfEternityClient.Tests.SpiritualResidentProviderParticipationTests.ShiningProviderSelectionRetainsExactOwnerLocalityAndTerms",
+        "BookOfEternityClient.Tests.SpiritualResidentProviderParticipationTests.NegotiatedSourceDependenciesPreserveChaosOrderWithoutDuplicatingShiningState",
+        "BookOfEternityClient.Tests.NegotiatedHealingProviderAdmissionTests.ExactFactionOfferNeedsCurrentHealerButNoPublicCurrencyProfile",
+        "BookOfEternityClient.Tests.NegotiatedHealingProviderAdmissionTests.NegotiatedAdmissionRefusesCurrentTupleDriftWithoutMutation"
+      ]
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null
+},
     {
       "id": "negotiated-healing-wallet-request-data",
       "responsibility": "Ten file-free exact confirmed request/terms/draw/invariant forgery controls and presence-aware absent/null/empty/full wallet preservation; isolated from B1 already accepted unaffected30.",
@@ -37771,6 +37770,56 @@
       },
       "timeoutMinutes": 2,
       "expectedSeconds": null
+    },
+{
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "expectedSeconds": null,
+  "related": [],
+  "id": "negotiated-healing-guidance",
+  "responsibility": "Two exact effective-guidance/worked-proposal controls: public currency service and accepted negotiated aid remain distinct, both daemon directives require fresh separate authority and reject the obsolete unimplemented claim.",
+  "excludes": "No live GM/provider/DOM or new mechanics; no unrelated unchanged DATA rerun.",
+  "changeHints": [
+    "BookOfEternityClient/game_master_daemon.ps1",
+    "BookOfEternityClient.Tests/ShiningFactionServiceDocumentationTests.cs"
+  ],
+  "timeoutMinutes": 1,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.ShiningFactionServiceDocumentationTests.EffectiveGuidanceAndBothDaemonDirectivesNameExactResidentServiceAndKeepPrivateAuthority",
+        "BookOfEternityClient.Tests.NegotiatedHealingProviderDocumentationTests.WorkedBothProviderVariantsAndEffectiveGuidanceUseTheClosedExistingContract"
+      ]
     }
+  ]
+},
+{
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "expectedSeconds": null,
+  "related": [],
+  "id": "negotiated-healing-wallet-native",
+  "responsibility": "Three independent real Chaos resident-provider grant43/confirmed stage44/native owner controls for explicit free_aid: zero/null GM Feather command presence rejects without writes; changed cloned proposed wallet refuses, then the untouched wallet publishes the actual failed attempt, natural cycle, terms, memory and inert replay.",
+  "excludes": "No Engine cleanup substitute, Shining provider/UI qualification, wallet-null world contract, injected C4 transaction failure, new cache/economy or fulfillment ledger.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/AfterlifeSpiritualNaturalRecoveryTests.NegotiatedWallet.cs"
+  ],
+  "timeoutMinutes": 2,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.AfterlifeSpiritualNaturalRecoveryTests.NegotiatedWalletRefusesCompetingCommandsAndProposedChangeWithoutLosingTheFailedAttempt"
+      ]
+    }
+  ]
+}
   ]
 }

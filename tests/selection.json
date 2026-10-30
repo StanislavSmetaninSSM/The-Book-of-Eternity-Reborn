@@ -3,7 +3,7 @@
   "selections": [
     {
       "category": "negotiated-healing-provider-data",
-      "reason": "Unchanged30 closed-term/locality/admission/docs cases passed in complete B1 run; retained scope, do not rerun without affected changes.",
+      "reason": "Twenty-nine unchanged DATA cases retain B1 PASS; changed guidance moved to negotiated-healing-guidance. Do not rerun unaffected cases.",
       "contracts": [
         "#1536 US6 T133/T134/T136/T138/T143/T146/T147; FR080/084 negotiated existing offer/attempt path"
       ]
@@ -59,7 +59,7 @@
     },
     {
       "category": "shining-faction-service-documentation",
-      "reason": "Negotiated extension must not turn a public declaration/view into an accepted agreement or regress paid faction documentation.",
+      "reason": "Three unchanged cases passed in B6 partial37; obsolete unfinished guard moved to negotiated-healing-guidance. Do not rerun those PASS.",
       "contracts": [
         "#1536 US6 T133/T134/T136/T138/T143/T146/T147; FR080/084 negotiated existing offer/attempt path"
       ]
@@ -132,6 +132,20 @@
       "reason": "Actual causal native owner covers both Astra SOURCE fixes before new Engine positive: shared Shining guards, immutable snapshot and exact resident-memory selected dependencies; no fake Engine cleanup.",
       "contracts": [
         "#1536 US6 T133/T136/T138 source/normalization/memory authority"
+      ]
+    },
+    {
+      "category": "negotiated-healing-guidance",
+      "reason": "Observed B6 failure requires the effective contract to name implemented negotiated aid rather than unfinished; both daemon entrypoints must remove the contradictory unimplemented claim without granting authority to a view.",
+      "contracts": [
+        "#1536 US6 T133/T138/T143/T146/T147; FR080/084/086 effective GM guidance"
+      ]
+    },
+    {
+      "category": "negotiated-healing-wallet-native",
+      "reason": "Close finite actual-owner gaps after the accepted DATA and real UI routes: reject zero/null competing currency, reject a proposed wallet change, and retain explicit free_aid terms on a deterministic failed attempt.",
+      "contracts": [
+        "#1536 US6 T133/T138/T147; FR080 exact original wallet and same retained attempt/world-cycle"
       ]
     }
   ]
