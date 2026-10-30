@@ -82,6 +82,83 @@ internal static partial class AfterlifeWoundHealingPlanner
             return owner;
         }
 
+        private string? _expectedDiagnosisPermissionFingerprint;
+
+        private WoundTargetChoice RequireDiagnosisTarget(JsonObject profiles, JsonObject? guardians, JsonObject? residents, JsonObject? shining)
+        {
+            var data = _diagnosis ?? throw new InvalidDataException("No current diagnosis owner.");
+            var candidate = data.Candidate;
+            var patients = candidate.Realm == "shining_abode" ? SpiritualTreatmentParticipation.ReadShiningPatientAdmissions(shining,
+                profiles, residents) : Array.Empty<SpiritualShiningPatientAdmission>();
+            var targets = WoundTargetSelectionService.Build(candidate.Catalog, profiles, candidate.Realm, true,
+                _parsedSourceRoots.GetValueOrDefault(AfterlifeSpiritualConflictState.StatePath) as JsonObject, patients, guardians, residents);
+            return WoundTargetSelectionService.RequireCurrent(candidate.Target, targets);
+        }
+
+        private string DiagnosisPermissionFingerprint(JsonObject profiles, JsonObject soul, JsonObject? guardians, JsonObject? residents, JsonObject? shining)
+        {
+            var data = _diagnosis!;
+            var target = RequireDiagnosisTarget(profiles, guardians, residents, shining);
+            var admitted = new SpiritualDiagnosisSourceData(data.Candidate.Catalog, profiles, soul, data.Candidate.Realm, true, false)
+                .Admit(data.Candidate.Admission.Wound, data.Candidate.Admission.Selection.Diagnosis!.DiagnosisPathId, target).Data
+                ?? throw new InvalidDataException("Diagnosis current requirements are no longer proved.");
+            // Dependency byte images have their independent physical/original fences.
+            // Compare the actual semantic permission facts across the trusted client
+            // projection and composed after-images; wound recovery and ordinary income
+            // legitimately alter the encompassing profile/soul roots in this operation.
+            var facts = admitted.RequirementBindings;
+            foreach (var row in facts.OfType<JsonObject>())
+                foreach (var dependency in row["sourceDependencies"]!.AsArray().OfType<JsonObject>()) dependency.Remove("fingerprint");
+            return WoundAcceptedTurnFingerprintWriter.Compute(new[] { "spiritual_diagnosis.projected_permission", "1",
+                target.BindingFingerprint, admitted.HealingTier.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                admitted.PathFingerprint, admitted.RequirementFingerprint, WoundAcceptedTurnFingerprintWriter.CanonicalJson(facts) });
+        }
+
+        private void BindDiagnosisProjectedAdmission(JsonObject? profiles, JsonObject? soul, JsonObject? shining)
+        {
+            if (!IsDiagnosis) return;
+            if (profiles is null || soul is null) throw new InvalidDataException("Diagnosis requires the actual ordinary profile and Soul projection.");
+            var fingerprint = DiagnosisPermissionFingerprint(profiles, soul,
+                _parsedSourceRoots.GetValueOrDefault(AfterlifeWoundTreatmentAuthority.AidLocalityPaths[0]) as JsonObject,
+                _parsedSourceRoots.GetValueOrDefault(GuardianAbodeResidentState.StatePath) as JsonObject, shining);
+            if (_expectedDiagnosisPermissionFingerprint is not null && _expectedDiagnosisPermissionFingerprint != fingerprint)
+                throw new InvalidDataException("Diagnosis trusted ordinary projection changed within its current owner.");
+            _expectedDiagnosisPermissionFingerprint = fingerprint;
+        }
+
+        internal void RequireDiagnosisComposedImages(IReadOnlyDictionary<string, JsonObject> writes)
+        {
+            if (!IsDiagnosis) return;
+            JsonObject? Root(string path) => writes.GetValueOrDefault(path) ?? _parsedSourceRoots.GetValueOrDefault(path) as JsonObject;
+            if (_expectedDiagnosisPermissionFingerprint is null || !writes.TryGetValue(WoundCarrierCatalog.AfterlifeProfilesPath, out var profiles) ||
+                Root(ServiceSoulPath) is not { } soul ||
+                DiagnosisPermissionFingerprint(profiles, soul, Root(AfterlifeWoundTreatmentAuthority.AidLocalityPaths[0]),
+                    Root(GuardianAbodeResidentState.StatePath), Root(ShiningAbodeState.StatePath)) != _expectedDiagnosisPermissionFingerprint)
+                throw new InvalidDataException("Diagnosis composed target/locality/requirements differ from the actual trusted projection.");
+        }
+
+        private async Task PublishDiagnosisLocalityNormalizationAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease,
+            string path, string content, Func<CanonicalBeforeImage, Task> publish)
+        {
+            JsonObject? Root(string selectedPath, bool after) => selectedPath == path && after
+                ? StrictJsonAuthority.Deserialize<JsonObject>(content, new JsonSerializerOptions(), path)
+                : _sources.TryGetValue(selectedPath, out var source) && source.Bytes is { } bytes
+                    ? StrictJsonAuthority.Deserialize<JsonObject>(CanonicalJsonUtf8.DecodeOneOptionalBom(bytes), new JsonSerializerOptions(), selectedPath) : null;
+            var profiles = _diagnosis!.Candidate.Carriers.AfterlifeProfiles!;
+            _ = RequireDiagnosisTarget(profiles, Root(AfterlifeWoundTreatmentAuthority.AidLocalityPaths[0], false),
+                Root(GuardianAbodeResidentState.StatePath, false), Root(ShiningAbodeState.StatePath, false));
+            _ = RequireDiagnosisTarget(profiles, Root(AfterlifeWoundTreatmentAuthority.AidLocalityPaths[0], true),
+                Root(GuardianAbodeResidentState.StatePath, true), Root(ShiningAbodeState.StatePath, true));
+            var expected = new CanonicalBeforeImage(true, FileSystemManager.EncodeUtf8WithPreamble(content));
+            await publish(_sources[path]);
+            var actual = await files.ReadFileBytesAsync(lease, path);
+            if (new CanonicalBeforeImage(actual is not null, actual).Fingerprint != expected.Fingerprint)
+                throw new InvalidDataException("Diagnosis locality normalizer did not publish its exact computed output.");
+            var advanced = _sources.ToDictionary(p => p.Key, p => p.Value, StringComparer.Ordinal);
+            advanced[path] = expected; _sources = advanced;
+            RequireCurrent(files, lease);
+        }
+
         internal WoundExecutedBoundary ExecuteDiagnosis(WoundMaterializationEnvelope before, SpiritualWoundStage stage)
         {
             RequireExecutionCurrent();

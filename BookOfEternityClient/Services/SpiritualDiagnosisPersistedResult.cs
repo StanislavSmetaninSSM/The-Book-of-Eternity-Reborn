@@ -12,6 +12,8 @@ internal sealed class SpiritualDiagnosisPersistedResult : WoundTransitionResult
     private SpiritualDiagnosisPersistedResult(JsonObject root, SpiritualDiagnosisProgram program)
     { _root = root.DeepClone().AsObject(); _program = program; }
     public override string Kind => "spiritual_diagnosis";
+    internal (string SessionId, string RequestId, int Turn) BindingIdentity =>
+        (_root["binding"]!["sessionId"]!.GetValue<string>(), _root["binding"]!["requestId"]!.GetValue<string>(), _root["binding"]!["turn"]!.GetValue<int>());
     internal string ResultFingerprint => Text(_root, "resultFingerprint");
     internal WoundMaterializationEnvelope Original => _program.KnowledgeBefore;
     internal WoundMaterializationEnvelope KnowledgeAfter => _program.KnowledgeAfter;
@@ -159,6 +161,12 @@ internal sealed class SpiritualDiagnosisPersistedResult : WoundTransitionResult
             root["source"]?["graphResponseFingerprint"]?.GetValue<string>() != Text(_root, "graphResponseFingerprint") ||
             !natural.Stages.Select(s => s.TransitionId).SequenceEqual(_program.NaturalStages.Select(s => s.TransitionId), StringComparer.Ordinal))
             throw new InvalidDataException("Diagnosis natural result differs from its exact linked cycle/program.");
+        var expectedTiers = new JsonArray(_program.NaturalMembers.GroupBy(m => m.Wound.Owner).Select(g => (JsonNode)new JsonObject
+        { ["owner"] = SpiritualHealingRequestProjection.OwnerJson(g.Key), ["healingTier"] = g.First().HealingTier }).ToArray());
+        if (!JsonNode.DeepEquals(root["source"]!["ownerTiers"], expectedTiers))
+            throw new InvalidDataException("Diagnosis suffix changed an original owner's admitted natural tier.");
+        for (var index = 0; index < natural.Stages.Count; index++)
+            SpiritualHealingPersistedResult.ValidateStageScope(natural.Stages[index], _program.NaturalStages[index]);
         var starts = natural.Stages.GroupBy(s => s.Before.WoundId).ToDictionary(g => g.Key, g => g.First().Before, StringComparer.Ordinal);
         if (starts.Count != _program.NaturalMembers.Count || _program.NaturalMembers.Any(m =>
             !starts.TryGetValue(m.Wound.WoundId, out var wound) || WoundMaterializationContract.SerializeCanonical(wound) != WoundMaterializationContract.SerializeCanonical(m.Wound)))

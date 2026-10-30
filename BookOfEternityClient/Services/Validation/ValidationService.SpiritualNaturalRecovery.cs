@@ -133,7 +133,7 @@ public partial class ValidationService
         var bundle = new AcceptedMechanicsWoundStageBundle(woundInput, prepared, effects.Plan!, final.Plan!);
         sink.Value = new(new JsonObject
         {
-            ["schemaVersion"] = 1, ["authorityKind"] = "accepted_spiritual_natural_recovery",
+            ["schemaVersion"] = 1, ["authorityKind"] = owner.IsDiagnosis ? "accepted_spiritual_diagnosis" : "accepted_spiritual_natural_recovery",
             ["inputFingerprint"] = bundle.InputFingerprint, ["bundleFingerprint"] = bundle.BundleFingerprint
         }, woundInput, bundle, null);
     }

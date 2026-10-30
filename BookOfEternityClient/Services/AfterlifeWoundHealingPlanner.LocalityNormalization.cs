@@ -8,11 +8,14 @@ internal static partial class AfterlifeWoundHealingPlanner
 {
     internal sealed partial class Continuation
     {
-        internal bool HasLocalityGuards => _participationSources is not null || _data?.AidWitness is not null || HasServicePayment;
+        internal bool HasLocalityGuards => IsDiagnosis || _participationSources is not null || _data?.AidWitness is not null || HasServicePayment;
         private SpiritualAidSelection? RetainedAidSelection =>
             (_data?.AidWitness ?? _participationOutcomes?.Single()?.AsObject())?["record"] is JsonObject record
                 ? SpiritualTreatmentParticipation.Selection(record) : null;
-        internal bool OwnsLocalityPath(string path) => HasLocalityGuards &&
+        internal bool OwnsLocalityPath(string path) => IsDiagnosis
+            ? _sources.ContainsKey(path) && (path == ShiningAbodeState.StatePath || path == GuardianAbodeResidentState.StatePath ||
+                path == AfterlifeWoundTreatmentAuthority.AidLocalityPaths[0])
+            : HasLocalityGuards &&
             (path == GuardianAbodeResidentState.StatePath && _memoryRosterImage is not null ||
             (HasServicePayment ? AfterlifeWoundTreatmentAuthority.ServiceLocalityPathsFor(_data!.ServiceQuote!) :
                 RetainedAidSelection is { } retained
@@ -29,6 +32,11 @@ internal static partial class AfterlifeWoundHealingPlanner
             if (!OwnsLocalityPath(path)) throw new InvalidDataException("A spiritual owner cannot advance an unrelated normalizer source.");
             using var fresh = FileSystemManager.SuppressValidationReuse();
             RequireCurrent(files, lease);
+            if (IsDiagnosis)
+            {
+                await PublishDiagnosisLocalityNormalizationAsync(files, lease, path, content, publish);
+                return;
+            }
             var images = (_participationSources ?? _sources).ToDictionary(p => p.Key, p => p.Value, StringComparer.Ordinal);
             if (_memoryRosterImage is { } memoryRoster) images[GuardianAbodeResidentState.StatePath] = memoryRoster;
             if (HasServicePayment)

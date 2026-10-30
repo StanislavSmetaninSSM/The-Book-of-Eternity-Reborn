@@ -367,6 +367,13 @@ public partial class ValidationService
             await ValidateResourceSnapshotContinuityAsync(manifest, issues, currentInputs);
         var commands = ResourceAcceptedTurnInputComposer.Parse(commandJson);
         issues.AddRange(commands.Issues);
+        if (naturalOwner?.IsDiagnosis == true && commands.IsValid &&
+            (commands.ResourceChanges.Count != 0 || commands.CapacityChanges.Count != 0 || commands.DefinitionCreations.Count != 0 || hasStagedFullPartyResourcePackets))
+        {
+            issues.Add(ResourceIssue(ResourceMaterializationContract.CommandPath, "spiritual_diagnosis_cost_forbidden",
+                "a guaranteed diagnosis without resource, item, capacity or party charges", "nonempty diagnostic resource work"));
+            return issues;
+        }
         var acceptedCommands = commands;
         if (commands.IsValid &&
             hasStagedFullPartyResourcePackets &&

@@ -1,3 +1,28 @@
+# T121 coherent spiritual execution — common-flow WIP, UNCOMPILED/UNRUN
+
+The saved flow now dispatches diagnosis explicitly through the existing Engine,
+signed-source classifier, ordinary resource/effect composition and common publisher.
+The knowledge prefix uses its sealed spiritual proof; the existing natural executor
+handles the complete suffix. Diagnosis never falls into a Mortal/opportunity request
+or self-healing fallback. The common assembly and actual prepublication fence compare
+the fresh target/locality and supported requirement facts with the trusted client
+projection. Client locality normalization may advance only its exact computed live
+closing image; signed originals remain frozen. Resource/party charges and competing
+Ink Feather changes are refused, while ordinary client cycle projection is retained.
+
+Current completed-cycle reads require the linked diagnosis plus natural results,
+settled scheduler, consumed inputs and independently complete current wound cohort.
+The knowledge row is excluded only by its exact validated identity from the natural
+stage bijection. History uses a duplicate-preserving operation-local binding index,
+not repeated whole-result cloning or diagnosis-by-natural quadratic lookup. No cache,
+publisher, receipt forgery, new game rule or performance claim is introduced.
+
+This remains source WIP: GM guidance, representative controlled UI and the complete
+final test/selection/API audit are unfinished. New C# is UNCOMPILED/UNRUN; no build or
+test was started by the writer. The accepted EX2B/EX3 receipts and all existing holds
+remain unchanged. The next code unit completes those consumer tests and GM sync before
+one whole independent SOURCE review and fresh owning builds.
+
 # T121 coherent spiritual execution — durable-boundary WIP, UNCOMPILED/UNRUN
 
 The next saved source cut adds a closed diagnosis result retaining the exact request,

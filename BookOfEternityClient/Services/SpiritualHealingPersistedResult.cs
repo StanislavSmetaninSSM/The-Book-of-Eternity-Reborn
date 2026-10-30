@@ -30,6 +30,8 @@ internal sealed class SpiritualHealingPersistedResult : WoundTransitionResult
     internal string Mode => _root["mode"]!.GetValue<string>();
     internal bool IsNatural => Mode == "natural";
     internal int SchemaVersion => _root["schemaVersion"]!.GetValue<int>();
+    internal (string SessionId, string RequestId, int Turn) BindingIdentity =>
+        (_root["binding"]!["sessionId"]!.GetValue<string>(), _root["binding"]!["requestId"]!.GetValue<string>(), _root["binding"]!["turn"]!.GetValue<int>());
     internal string ResultFingerprint => _root["resultFingerprint"]!.GetValue<string>();
     internal JsonArray? ParticipationOutcomes => _root["participationOutcomes"]?.DeepClone().AsArray();
     internal JsonObject? ShiningPatientParticipationRecord => SchemaVersion == 8

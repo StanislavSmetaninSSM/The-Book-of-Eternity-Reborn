@@ -1699,8 +1699,6 @@ public partial class GameEngine
             var healingSelection = browserAction is null
                 ? _explorer.ConsumePendingSpiritualSelfTreatment(action, sessionGeneration)
                 : browserAction.SpiritualSelfTreatment;
-            if (healingSelection?.Diagnosis is not null)
-                throw new InvalidDataException("Выполнение духовного осмотра ещё не подключено; время и ресурсы не потрачены.");
             var visit = browserAction is null ? consoleVisit
                 : browserAction.Source == ElyaraVisitService.BrowserSource ? ElyaraVisitService.ParseAction(action) : null;
             if (ElyaraVisitService.HasMarker(action) != (visit is not null) || visit is not null && healingSelection is not null)
@@ -1715,7 +1713,7 @@ public partial class GameEngine
                 request.ProgressionControl = await _progressionSchedule.BuildControlForNextTurnAsync(visitLease, activeTurnRealm: null);
                 await ElyaraVisitService.RequireImagesCurrentAsync(_fs, visitLease, currentVisit);
             }
-            else if (healingSelection?.Aid is null && healingSelection?.Combat is null && healingSelection?.Service is null)
+            else if (healingSelection?.Aid is null && healingSelection?.Combat is null && healingSelection?.Service is null && healingSelection?.Diagnosis is null)
                 using (_fs.MeasureOperation("PlayerTurn.Stage.BuildProgressionControl"))
                     request.ProgressionControl = await _progressionSchedule.BuildControlForNextTurnAsync();
             if (healingSelection is not null)
@@ -1731,7 +1729,14 @@ public partial class GameEngine
                 if (!_fs.FileExists(healingLease, AfterlifeSpiritualConflictState.StatePath))
                     throw new InvalidDataException("Healing preparation requires initialized spiritual conflict state before its draw.");
                 SpiritualSelfTreatmentStageResult stagedHealing;
-                if (healingSelection.Combat is not null)
+                if (healingSelection.Diagnosis is not null)
+                {
+                    var diagnosis = await AfterlifeWoundTreatmentAuthority.StagePlayerDiagnosisTurnAsync(_fs, healingLease, _progressionSchedule,
+                        request.SessionId, request.RequestId, request.TurnNumber, healingSelection);
+                    request.ProgressionControl = diagnosis.Control;
+                    stagedHealing = diagnosis.Stage;
+                }
+                else if (healingSelection.Combat is not null)
                 {
                     var combat = await AfterlifeWoundTreatmentAuthority.StagePlayerCombatTurnAsync(_fs, healingLease, _progressionSchedule,
                         request.SessionId, request.RequestId, request.TurnNumber, healingSelection);

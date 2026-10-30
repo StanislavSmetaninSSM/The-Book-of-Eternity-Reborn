@@ -48,7 +48,7 @@ public partial class ProgressionScheduleService
     // can pass this object instead of the actual lease/source closing checks.
     internal sealed record PublishedSpiritualCycleData(SpiritualHealingPersistedResult Result,
         JsonObject Root, WoundHistoryState History, WoundIdentityState Identities,
-        WoundCarrierCatalog Catalog, IReadOnlyDictionary<string, JsonObject?> CarrierRoots);
+        WoundCarrierCatalog Catalog, IReadOnlyDictionary<string, JsonObject?> CarrierRoots, SpiritualDiagnosisPersistedResult? Diagnosis = null);
 
     internal static async Task<PublishedSpiritualCycleData?> ReadPublishedSpiritualCycleDataAsync(ProgressionControl control,
         string sessionId, string requestId, int turn, Func<string, Task<byte[]?>> read,
@@ -115,10 +115,17 @@ public partial class ProgressionScheduleService
         if (matching.Length == 0) return null;
         if (matching.Length != 1) throw new InvalidDataException("Published spiritual cycle identity is ambiguous.");
         var accepted = matching[0];
+        var diagnoses = history.Transitions.Select(t => t.TransitionResult).OfType<SpiritualDiagnosisPersistedResult>()
+            .Where(r => r.MatchesBinding(sessionId, requestId, turn)).ToArray();
+        if (diagnoses.Length > 1) throw new InvalidDataException("Published diagnosis identity is ambiguous.");
+        var diagnosis = diagnoses.SingleOrDefault();
+        diagnosis?.RequireNatural(accepted.Result);
         if (expectedSnapshotToken is not null)
         {
             if (accepted.Root["binding"]!["snapshotToken"]!.GetValue<string>() != expectedSnapshotToken ||
-                (accepted.Result.IsNatural ? expectedNaturalProjection is null || expectedRequest is not null ||
+                (diagnosis is not null ? expectedRequest is null || expectedNaturalProjection is not null ||
+                    !JsonNode.DeepEquals(diagnosis.Request, expectedRequest)
+                : accepted.Result.IsNatural ? expectedNaturalProjection is null || expectedRequest is not null ||
                     !JsonNode.DeepEquals(accepted.Root["source"]!["projection"], expectedNaturalProjection)
                     : expectedRequest is null || expectedNaturalProjection is not null ||
                     !JsonNode.DeepEquals(accepted.Root["request"], expectedRequest)))
@@ -131,6 +138,8 @@ public partial class ProgressionScheduleService
             await read(ResourceMaterializationContract.CommandPath) is not null ||
             await read(EffectAcceptedTurnPlan.CommandPath) is not null)
             throw new InvalidDataException("A published spiritual cycle has changed control or a replaced consumed input.");
+        if (diagnosis is not null && await read(ResourcePendingResolutionState.PendingPath) is not null)
+            throw new InvalidDataException("Published diagnosis cannot retain or replace pending resolution work.");
         var schedule = await read(SchedulePath);
         if (schedule is null || new CanonicalBeforeImage(true, schedule).Fingerprint != accepted.Root["scheduleAfterFingerprint"]!.GetValue<string>())
             throw new InvalidDataException("A published spiritual cycle has changed its complete scheduler after-image.");
@@ -168,20 +177,20 @@ public partial class ProgressionScheduleService
         if (catalog.Issues.Count != 0 || !identities.IsValid || history.ValidateAgreement(identities.State!, catalog).Count != 0)
             throw new InvalidDataException("Published spiritual cycle lost current wound/identity/history agreement.");
         RequireCompleteSpiritualSettlementCohort(accepted.Result, history, identities.State!,
-            catalog, roots[WoundCarrierCatalog.AfterlifeProfilesPath], accepted.Root["binding"]!["realm"]!.GetValue<string>(), turn);
+            catalog, roots[WoundCarrierCatalog.AfterlifeProfilesPath], accepted.Root["binding"]!["realm"]!.GetValue<string>(), turn, diagnosis);
         if (accepted.Root["participationOutcomes"] is JsonArray participation)
             SpiritualTreatmentParticipation.RequirePublishedRecords(participation, roots[WoundCarrierCatalog.AfterlifeProfilesPath]);
         foreach (var group in accepted.Result.Stages.GroupBy(s => s.After.WoundId))
             if (history.Transitions.Last(t => t.WoundId == group.Key).TransitionId != group.Last().TransitionId)
                 throw new InvalidDataException("A published spiritual result no longer describes the current wound cohort.");
-        return new(accepted.Result, accepted.Root, history, identities.State!, catalog, roots);
+        return new(accepted.Result, accepted.Root, history, identities.State!, catalog, roots, diagnosis);
     }
 
     // Independent current completeness witness, not reconstruction of the historical
     // start tier or permission to replace the required original on source-bound calls.
     private static void RequireCompleteSpiritualSettlementCohort(SpiritualHealingPersistedResult result,
         WoundHistoryState history, WoundIdentityState identities, WoundCarrierCatalog catalog,
-        JsonObject? profiles, string realm, int turn)
+        JsonObject? profiles, string realm, int turn, SpiritualDiagnosisPersistedResult? diagnosis = null)
     {
         var stages = result.Stages;
         var eventRef = stages[0].EventRef; // The strict result codec rederives this from the exact turn binding.
@@ -217,7 +226,8 @@ public partial class ProgressionScheduleService
         var primary = history.Transitions.Single(t => t.TransitionId == stages[0].TransitionId);
         // Select from independent cohort/event/turn first. Filtering by an already
         // matching SourceFingerprint would let altered omitted rows evade this check.
-        var actual = history.Transitions.Where(t => expected.Contains(t.WoundId) && t.Turn == turn && t.EventRef == eventRef).ToArray();
+        var actual = history.Transitions.Where(t => expected.Contains(t.WoundId) && t.Turn == turn && t.EventRef == eventRef &&
+            (diagnosis is null || t.TransitionId != diagnosis.DiagnosisStage.TransitionId)).ToArray();
         if (actual.Length != stages.Count || !actual.Select(t => t.TransitionId).ToHashSet(StringComparer.Ordinal)
                 .SetEquals(stages.Select(s => s.TransitionId)) || actual.Any(t => t.SourceFingerprint != primary.SourceFingerprint))
             throw new InvalidDataException("Spiritual settlement stages do not biject with the independently witnessed cycle rows.");

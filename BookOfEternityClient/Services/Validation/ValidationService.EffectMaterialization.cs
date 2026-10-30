@@ -204,6 +204,13 @@ public partial class ValidationService
         var woundCommandJson = await ReadEffectFileAsync(AcceptedMechanicsPlan.WoundCommandPath,
             writeLease, currentInputs);
         var hasWoundCommand = woundCommandJson is not null;
+        if (naturalOwner?.IsDiagnosis == true)
+        {
+            // The exact signed diagnosis request is consumed by this live owner,
+            // never reinterpreted as an ordinary opportunity/Mortal command.
+            naturalOwner.RequireCurrent(_fs, writeLease);
+            hasWoundCommand = false;
+        }
         var currentCarriers = await ReadEffectCarriersAsync(null, issues, currentInputs);
         if (currentCarriers.SpiritualConflict?[AfterlifeSpiritualConflictState.ResponseField]
             is JsonNode spiritualConflictUpdate)

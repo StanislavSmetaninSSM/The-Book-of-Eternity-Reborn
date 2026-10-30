@@ -55,6 +55,7 @@ public partial class ValidationService
             byte[]? sourceBytes = null;
             SpiritualCombatHealingIntent? combatIntent = null;
             AfterlifeWoundTreatmentAuthority.SelectedWoundSourceData? combatOriginal = null;
+            SpiritualDiagnosisProgram? diagnosisProgram = null;
             if (snapshot.CoveredLogicalPaths.Contains(AcceptedMechanicsPlan.WoundCommandPath, StringComparer.Ordinal))
             {
                 sourceBytes = snapshot.ReadRequiredBytes(AcceptedMechanicsPlan.WoundCommandPath);
@@ -76,6 +77,27 @@ public partial class ValidationService
                     combatOriginal = AfterlifeWoundTreatmentAuthority.ReadCombatOriginalSource(snapshot, combatIntent, out _);
                     if (!combatIntent.IsBound(new(snapshot.SessionId, snapshot.RequestId, snapshot.TurnNumber, frame.ProgressionControl), combatIntent.Selection))
                         throw new InvalidDataException("Interface combat graphs differ from the exact original control/selection.");
+                }
+                else if (SpiritualDiagnosisRequestCodec.IsKind(request))
+                {
+                    if (!AfterlifeEntityProfileState.TryNormalizeEffectRealm(frame.ProgressionControl.CurrentRealm, out var diagnosisRealm))
+                        throw new InvalidDataException("Diagnosis interface lost its current spiritual realm.");
+                    var original = AfterlifeWoundHealingPlanner.ReadOriginalDiagnosisSource(_fs, lease, diagnosisRealm);
+                    if (!original.Success || original.Snapshot is not { } diagnosisSnapshot || original.Evidence is not { } diagnosisEvidence ||
+                        diagnosisSnapshot.SnapshotToken != snapshot.SnapshotToken || diagnosisSnapshot.SessionId != snapshot.SessionId ||
+                        diagnosisSnapshot.RequestId != snapshot.RequestId || diagnosisSnapshot.TurnNumber != snapshot.TurnNumber)
+                        throw new InvalidDataException("Diagnosis graphs lost their complete same signed original.");
+                    snapshot = diagnosisSnapshot; evidence = diagnosisEvidence;
+                    var context = new SpiritualSelfTreatmentStageContext(snapshot.SessionId, snapshot.RequestId, snapshot.TurnNumber, frame.ProgressionControl);
+                    if (!SpiritualDiagnosisRequestCodec.IsBound(request, context))
+                        throw new InvalidDataException("Diagnosis interface differs from its complete original request/control.");
+                    var sources = AfterlifeWoundHealingPlanner.Continuation.ReadSignedSources(snapshot,
+                        AfterlifeWoundTreatmentAuthority.DiagnosisSourcePaths(diagnosisRealm));
+                    var candidate = AfterlifeWoundTreatmentAuthority.PrepareDiagnosisCandidate(SpiritualDiagnosisRequestCodec.ReadSelection(request), sources, context.Turn);
+                    diagnosisProgram = AfterlifeWoundTreatmentAuthority.BindPreparedDiagnosisSource(context, candidate, sources, request).Program;
+                    if (hasResidentMemory || hasRadiantMemory)
+                        throw new InvalidDataException("Diagnosis cannot use patient-participation protected memory responses.");
+                    if (!hasGraphs) return null; // Ordinary resident memory retains its existing response owner.
                 }
                 else
                 {
@@ -169,6 +191,23 @@ public partial class ValidationService
                     ValidatePublishedSpiritualGraphs(graphs, published);
                 }
             }
+            else if (diagnosisProgram is not null)
+            {
+                var members = diagnosisProgram.NaturalMembers.ToDictionary(m => m.Wound.WoundId, m => m.Wound, StringComparer.Ordinal);
+                var required = SpiritualHealingRequestProjection.RequiredGraphs(members.Values.ToArray(), diagnosisProgram.NaturalStages)
+                    .ToDictionary(r => SpiritualHealingRequestProjection.GraphRef(diagnosisProgram.NaturalProgramReference, r.WoundId, r.Rank), StringComparer.Ordinal);
+                if (graphs.GetArrayLength() != required.Count) throw new InvalidDataException("Diagnosis graphs omit or add a natural destination.");
+                foreach (var row in graphs.EnumerateArray())
+                {
+                    var reference = row.GetProperty("stageRef").GetString()!;
+                    if (!required.TryGetValue(reference, out var destination)) throw new InvalidDataException("Foreign diagnosis natural destination.");
+                    var wound = members[destination.WoundId];
+                    var complications = wound.Complications.ToDictionary(c => SpiritualHealingRequestProjection.ComplicationRef(
+                        diagnosisProgram.NaturalProgramReference, c.ComplicationId), c => c.ComplicationId, StringComparer.Ordinal);
+                    _ = WoundResponseInputComposer.ParseSpiritualHealingGraph(row.GetProperty("consequenceDefinitions"), wound,
+                        destination.Rank, reference, complications);
+                }
+            }
             else if (combatIntent is not null && combatOriginal is not null)
             {
                 var possible = Enumerable.Range(1, combatOriginal.Wound.Severity.Rank - 1).ToDictionary(
@@ -184,7 +223,7 @@ public partial class ValidationService
                 }
             }
             var patientRecord = publishedSafe?.ShiningPatientParticipationRecord;
-            if (hasOrdinaryMemory || hasRadiantMemory || hasResidentMemory && patientRecord is not null)
+            if (diagnosisProgram is null && (hasOrdinaryMemory || hasRadiantMemory || hasResidentMemory && patientRecord is not null))
             {
                 if (publishedSafe is null || patientRecord is null || !SpiritualTreatmentParticipation.IsShiningPatientParticipation(patientRecord) ||
                     new CanonicalBeforeImage(true, responseBytes).Fingerprint != publishedSafe.GraphResponseFingerprint ||
@@ -262,7 +301,7 @@ public partial class ValidationService
             var projected = JsonNode.Parse(root.GetRawText())!.AsObject();
             projected.Remove("spiritualHealingGraphs");
             if (hasResidentMemory) projected.Remove(SpiritualTreatmentParticipation.ResidentThoughtResponseProperty);
-            if (hasOrdinaryMemory) projected.Remove(GuardianAbodeResidentState.UpdateThoughtJournalProperty);
+            if (hasOrdinaryMemory && diagnosisProgram is null) projected.Remove(GuardianAbodeResidentState.UpdateThoughtJournalProperty);
             if (hasRadiantMemory) projected.Remove(SpiritualTreatmentParticipation.ShiningPatientMemoryResponseProperty);
             // Graphs-only is a payload only on this authenticated route; ordinary policy stays unchanged.
             if (!projected.ContainsKey("dialogueOptions") && !projected.ContainsKey("image_prompt")) projected["dialogueOptions"] = new JsonArray();

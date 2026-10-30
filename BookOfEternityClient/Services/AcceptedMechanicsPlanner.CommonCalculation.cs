@@ -392,6 +392,19 @@ internal static partial class AcceptedMechanicsPlanner
                 static pair => pair.Value.DeepClone().AsObject(),
                 StringComparer.Ordinal);
         var woundPublication = carrierComposition.WoundPublication;
+        if (serviceOwner?.IsDiagnosis == true)
+        {
+            try
+            {
+                var diagnosisWrites = ownerCompanionAfterImages.ToDictionary(p => p.Key, p => p.Value, StringComparer.Ordinal);
+                foreach (var carrier in carriers) diagnosisWrites[carrier.Key] = carrier.Value;
+                if (woundPublication is not null)
+                    foreach (var carrier in woundPublication.CarrierAfterImages) diagnosisWrites[carrier.Key] = carrier.Value;
+                serviceOwner.RequireDiagnosisComposedImages(diagnosisWrites);
+            }
+            catch (InvalidDataException failure)
+            { return new(null, Issue("spiritual_diagnosis_composition_invalid", "exact diagnosed target and requirements in the common publication", failure.Message)); }
+        }
         if (serviceOwner?.HasShiningPatientAdmission == true)
         {
             try

@@ -10,7 +10,7 @@ internal static partial class AfterlifeWoundTreatmentAuthority
     internal sealed record DiagnosisCandidate(string Realm, SpiritualDiagnosisAdmission Admission,
         WoundCarrierCatalogInput Carriers, EffectCarrierCatalog Effects, WoundIdentityState Identities,
         WoundHistoryState History, WoundCarrierCatalog Catalog, IReadOnlyList<SpiritualWoundRecoveryMember> Members,
-        EffectMechanicsSnapshot Mechanics);
+        EffectMechanicsSnapshot Mechanics, WoundTargetChoice Target);
     internal sealed record DiagnosisSourceData(DiagnosisCandidate Candidate, NaturalSourceData Natural,
         SpiritualSelfTreatmentStageContext Context, JsonObject Request, SpiritualDiagnosisProgram Program,
         string SourceFingerprint, IReadOnlyList<DiagnosisSourceStamp> OriginalSources);
@@ -72,7 +72,7 @@ internal static partial class AfterlifeWoundTreatmentAuthority
             .Admit(wound, chosen.DiagnosisPathId, target).Data
             ?? throw new InvalidDataException("Every current diagnosis requirement/check/path must be proved.");
         if (admission.Selection != selection) throw new InvalidDataException("The retained diagnosis path changed.");
-        return new(realm, admission, carriers, effects, identities.State!, history.State!, catalog, members, mechanics);
+        return new(realm, admission, carriers, effects, identities.State!, history.State!, catalog, members, mechanics, target);
     }
 
     internal static DiagnosisSourceData BindPreparedDiagnosisSource(SpiritualSelfTreatmentStageContext context,

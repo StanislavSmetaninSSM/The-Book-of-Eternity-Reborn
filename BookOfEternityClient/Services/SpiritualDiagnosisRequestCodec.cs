@@ -9,6 +9,17 @@ internal static class SpiritualDiagnosisRequestCodec
 {
     private const string Kind = "spiritual_diagnosis_request";
 
+    internal static bool IsKind(JsonObject root) => root["kind"] is JsonValue kind &&
+        kind.TryGetValue<string>(out var value) && value == Kind;
+
+    internal static bool IsBound(JsonObject root, SpiritualSelfTreatmentStageContext context)
+    {
+        _ = ReadSelection(root);
+        return Text(root, "sessionId") == context.SessionId && Text(root, "requestId") == context.RequestId &&
+            Number(root, "turn") == context.Turn && WoundAcceptedTurnFingerprintWriter.CanonicalJson(root["control"]) ==
+            WoundAcceptedTurnFingerprintWriter.CanonicalJson(JsonSerializer.SerializeToNode(context.Progression));
+    }
+
     internal static JsonObject Create(SpiritualSelfTreatmentStageContext context,
         SpiritualSelfTreatmentSelection selection, SpiritualDiagnosisAdmission data)
     {

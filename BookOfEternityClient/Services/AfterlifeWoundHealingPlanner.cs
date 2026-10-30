@@ -217,6 +217,8 @@ internal static partial class AfterlifeWoundHealingPlanner
         {
             if ((_data?.ServiceQuote is not null || _data?.NegotiatedWalletInvariant is not null) && interfaceUpdates?["metaStateUpdates"] is JsonObject meta && meta.ContainsKey("inkFeatherChanges"))
                 throw new InvalidDataException("Healing owns its exact original wallet/payment; competing GM currency changes must be removed.");
+            if (IsDiagnosis && interfaceUpdates?["metaStateUpdates"] is JsonObject diagnosisMeta && diagnosisMeta.ContainsKey("inkFeatherChanges"))
+                throw new InvalidDataException("Diagnosis has no GM-authored Ink Feather change, including explicit zero/null.");
             AdmitResidentThoughtResponse(interfaceUpdates);
             if (_data?.AidWitness is not null || _data?.ServiceQuote?.Provider is { Realm: "shining_abode", OwnerKind: "resident" })
                 BindResidentThoughts(_parsedSourceRoots.GetValueOrDefault(GuardianAbodeResidentState.StatePath) as JsonObject);
@@ -283,6 +285,7 @@ internal static partial class AfterlifeWoundHealingPlanner
             var result = AfterlifeEntityProfileState.ProjectAcceptedRoot(current, previous,
                 _acceptedProgressionReport, soul, shining);
             _patientMemory?.ApplyProfiles(result);
+            BindDiagnosisProjectedAdmission(result, soul, shining);
             HasCompleteProfileProjection = true;
             return result;
         }

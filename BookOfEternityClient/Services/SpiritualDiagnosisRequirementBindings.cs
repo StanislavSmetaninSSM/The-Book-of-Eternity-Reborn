@@ -64,7 +64,7 @@ internal static class SpiritualDiagnosisRequirementBindings
             }
         }
         catch (Exception failure) when (failure is not InvalidDataException && failure is
-            (InvalidOperationException or ArgumentException or JsonException or KeyNotFoundException or NullReferenceException))
+            (InvalidOperationException or ArgumentException or JsonException or KeyNotFoundException or NullReferenceException or FormatException))
         { throw new InvalidDataException("Malformed closed diagnosis requirement proof.", failure); }
     }
 

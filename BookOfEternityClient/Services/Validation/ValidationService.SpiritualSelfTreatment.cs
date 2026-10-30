@@ -58,6 +58,7 @@ public partial class ValidationService
         var deferPublication = phase == SpiritualSelfTreatmentPhase.DeferredRouting;
         var currentBytes = await _fs.ReadFileBytesAsync(lease, AcceptedMechanicsPlan.WoundCommandPath);
         var liveCandidate = false;
+        var liveDiagnosis = false;
         if (currentBytes is not null)
         {
             try
@@ -67,7 +68,9 @@ public partial class ValidationService
                 liveCandidate = root.ValueKind == JsonValueKind.Object &&
                     (root.TryGetProperty("schemaVersion", out var version) && version.ValueKind == JsonValueKind.Number && version.TryGetInt32(out var v) && v == 2 ||
                      root.TryGetProperty("kind", out var kind) && kind.ValueKind == JsonValueKind.String &&
-                        kind.GetString() is "spiritual_self_treatment_request" or "spiritual_treatment_request");
+                        kind.GetString() is "spiritual_self_treatment_request" or "spiritual_treatment_request" or "spiritual_diagnosis_request");
+                liveDiagnosis = root.ValueKind == JsonValueKind.Object && root.TryGetProperty("kind", out var family) &&
+                    family.ValueKind == JsonValueKind.String && family.GetString() == "spiritual_diagnosis_request";
             }
             catch (Exception failure) when (failure is JsonException or System.Text.DecoderFallbackException)
             { } // The authenticated original still selects the family.
@@ -97,25 +100,36 @@ public partial class ValidationService
             }
             // Ordinary v1 needs only its original family classification here. A live
             // v2 candidate shares the full observed source DATA directly with admission.
-            var observed = liveCandidate && !deferPublication ? AfterlifeWoundHealingPlanner.ReadOriginalSource(_fs, lease) :
+            var observed = liveCandidate && !deferPublication ? liveDiagnosis
+                ? AfterlifeWoundHealingPlanner.ReadOriginalDiagnosisSource(_fs, lease,
+                    AfterlifeEntityProfileState.TryNormalizeEffectRealm(frame.ProgressionControl?.CurrentRealm, out var diagnosisRealm) ? diagnosisRealm : "")
+                : AfterlifeWoundHealingPlanner.ReadOriginalSource(_fs, lease) :
                 PendingTurnSnapshotReader.ReadObservedCurrent(_fs, lease, new[] { AcceptedMechanicsPlan.WoundCommandPath });
             if (!observed.Success || observed.Snapshot is not { } signed || observed.Evidence is not { } evidence)
                 return sourceExpected ? observed.Issues : null;
             var original = StrictJsonAuthority.Deserialize<JsonObject>(CanonicalJsonUtf8.DecodeOneOptionalBom(
                 signed.ReadRequiredBytes(AcceptedMechanicsPlan.WoundCommandPath)), new JsonSerializerOptions(), "original wound request")!;
-            if (!SpiritualSelfTreatmentRequestCodec.IsActiveKind(original)) return null;
+            var diagnosis = SpiritualDiagnosisRequestCodec.IsKind(original);
+            if (!diagnosis && !SpiritualSelfTreatmentRequestCodec.IsActiveKind(original)) return null;
             spiritualOriginal = true;
             if (frame.ProgressionControl is null || frame.ManifestPayloadHash != signed.SnapshotToken ||
                 PendingTurnSnapshotAuthority.ComputeManifestPayloadHash(frame, LiveTurnPreparationService.ManifestHashJsonOptions,
                     static m => m.ManifestPayloadHash, static (m, hash) => m.ManifestPayloadHash = hash) != signed.SnapshotToken)
                 throw new InvalidDataException("Spiritual treatment lost its original signed control.");
             evidence.RequireCurrent(_fs, lease, signed);
-            var selection = SpiritualSelfTreatmentRequestCodec.ReadActiveSelection(original);
-            if (!AfterlifeEntityProfileState.TryNormalizeEffectRealm(frame.ProgressionControl.CurrentRealm, out var realm) ||
-                !SpiritualSelfTreatmentRequestCodec.IsBoundActive(original,
-                    new(signed.SessionId, signed.RequestId, signed.TurnNumber, frame.ProgressionControl),
-                    selection, realm, frame.ProgressionControl.NextChaosSeaTurnOrdinal))
-                throw new InvalidDataException("Spiritual treatment requires its exact closed signed active family.");
+            var context = new SpiritualSelfTreatmentStageContext(signed.SessionId, signed.RequestId, signed.TurnNumber, frame.ProgressionControl);
+            if (diagnosis)
+            {
+                if (!SpiritualDiagnosisRequestCodec.IsBound(original, context))
+                    throw new InvalidDataException("Diagnosis requires its exact signed request and full original control.");
+            }
+            else
+            {
+                var selection = SpiritualSelfTreatmentRequestCodec.ReadActiveSelection(original);
+                if (!AfterlifeEntityProfileState.TryNormalizeEffectRealm(frame.ProgressionControl.CurrentRealm, out var realm) ||
+                    !SpiritualSelfTreatmentRequestCodec.IsBoundActive(original, context, selection, realm, frame.ProgressionControl.NextChaosSeaTurnOrdinal))
+                    throw new InvalidDataException("Spiritual treatment requires its exact closed signed active family.");
+            }
             // A former self entry may retain its full planning result after the
             // generic validated slot was cleared. Its old live owner cannot cross leases.
             if (phase == SpiritualSelfTreatmentPhase.DeferredRouting)
@@ -129,16 +143,25 @@ public partial class ValidationService
             }
             if (!currentBytes.AsSpan().SequenceEqual(signed.ReadRequiredBytes(AcceptedMechanicsPlan.WoundCommandPath)))
                 throw new InvalidDataException("The retained spiritual treatment request changed.");
-            foreach (var path in new[] { ResourceMaterializationContract.CommandPath, EffectAcceptedTurnPlan.CommandPath,
-                         ResourcePendingResolutionState.PendingPath })
+            foreach (var path in diagnosis ? new[] { ResourcePendingResolutionState.PendingPath } :
+                new[] { ResourceMaterializationContract.CommandPath, EffectAcceptedTurnPlan.CommandPath, ResourcePendingResolutionState.PendingPath })
                 if (await _fs.ReadFileBytesAsync(lease, path) is not null)
                     throw new InvalidDataException("Concurrent resource/effect/pending work requires its ordinary owner: " + path);
             // The real GameEngine releases this diagnostic lease before refresh.
             // Full catalog admission, scheduler mutation and all identity allocation
             // occur once, under the coordinator's later publication lease.
             if (deferPublication) return Array.Empty<ValidationIssue>();
-            owner = await AfterlifeWoundHealingPlanner.Continuation.AdmitAsync(_fs, lease, frame,
+            owner = diagnosis ? await AfterlifeWoundHealingPlanner.Continuation.AdmitDiagnosisAsync(_fs, lease, frame,
+                liveDiagnosis ? observed : null) : await AfterlifeWoundHealingPlanner.Continuation.AdmitAsync(_fs, lease, frame,
                 liveCandidate ? observed : null);
+            if (diagnosis)
+            {
+                using var frameData = UsePrevalidatedPendingTurnSnapshotScope(frame);
+                var issues = await ValidateAcceptedTurnRawResourceMaterializationCoreAsync(lease, naturalOwner: owner);
+                owner.RequireCurrent(_fs, lease);
+                retainOwner = !issues.Any(i => i.Severity == IssueSeverity.Error) && AcceptedMechanicsPlanAuthority.HasValidated(_fs, lease);
+                return issues;
+            }
             var prepared = owner.Prepare();
             var effectInput = owner.ComposeEffectInput(prepared);
             var effect = WoundEffectBatchPlanner.Build(prepared, effectInput, new EffectIdentityFactory());

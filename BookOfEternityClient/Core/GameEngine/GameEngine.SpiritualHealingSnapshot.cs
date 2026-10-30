@@ -40,6 +40,13 @@ public partial class GameEngine
                 evidence.RequireCurrent(_fs, lease, snapshot);
                 return combatBound;
             }
+            if (SpiritualDiagnosisRequestCodec.IsKind(request))
+            {
+                var diagnosisBound = SpiritualDiagnosisRequestCodec.IsBound(request,
+                    new(context.SessionId, context.RequestId, context.TurnNumber, context.ProgressionControl));
+                evidence.RequireCurrent(_fs, lease, snapshot);
+                return diagnosisBound;
+            }
             if (!SpiritualSelfTreatmentRequestCodec.IsActiveKind(request) || request["attempt"] is not JsonObject ||
                 !AfterlifeEntityProfileState.TryNormalizeEffectRealm(context.ProgressionControl.CurrentRealm, out var realm))
                 return false;

@@ -41,6 +41,14 @@ internal static class ShiningPatientMemoryTransport
         {
             var retained = StrictJsonAuthority.Deserialize<JsonObject>(CanonicalJsonUtf8.DecodeOneOptionalBom(
                 snapshot.ReadRequiredBytes(AcceptedMechanicsPlan.WoundCommandPath)), new JsonSerializerOptions(), "resident memory retained request")!;
+            if (SpiritualDiagnosisRequestCodec.IsKind(retained))
+            {
+                if (turn.ProgressionControl is null || !SpiritualDiagnosisRequestCodec.IsBound(retained,
+                    new(snapshot.SessionId, snapshot.RequestId, snapshot.TurnNumber, turn.ProgressionControl)) || requiresPatientRoute)
+                    throw new InvalidDataException("Diagnosis cannot use private patient memory transport.");
+                evidence.RequireCurrent(files, lease, snapshot);
+                return false; // Ordinary resident commands keep their existing canonical owner.
+            }
             var selection = SpiritualSelfTreatmentRequestCodec.ReadActiveSelection(retained);
             if (turn.ProgressionControl is null || !SpiritualSelfTreatmentRequestCodec.IsBoundActive(retained,
                 new(snapshot.SessionId, snapshot.RequestId, snapshot.TurnNumber, turn.ProgressionControl), selection,

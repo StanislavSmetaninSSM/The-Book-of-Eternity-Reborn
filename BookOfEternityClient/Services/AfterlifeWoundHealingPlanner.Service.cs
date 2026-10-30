@@ -156,6 +156,7 @@ internal static partial class AfterlifeWoundHealingPlanner
 
         internal void RequireServicePublication(IReadOnlyDictionary<string, JsonObject> writes)
         {
+            RequireDiagnosisComposedImages(writes);
             if (!HasWalletContribution && _expectedNegotiatedAfterImageAdmissionFingerprint is null && !HasShiningPatientAdmission) return;
             if (!HasWalletContribution)
             {

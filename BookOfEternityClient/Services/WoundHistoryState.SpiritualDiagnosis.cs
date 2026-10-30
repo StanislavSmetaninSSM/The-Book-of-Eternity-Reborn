@@ -10,16 +10,15 @@ internal sealed partial class WoundHistoryState
         if (diagnoses.Length == 0) return;
         // One operation-local index. Historical DATA does not grant a live cycle.
         var byId = rows.ToLookup(r => r.TransitionId, StringComparer.Ordinal);
-        var naturalResults = rows.Where(r => r.TransitionResult is SpiritualHealingPersistedResult { IsNatural: true }).ToArray();
+        var naturalResults = rows.Where(r => r.TransitionResult is SpiritualHealingPersistedResult { IsNatural: true })
+            .ToLookup(r => ((SpiritualHealingPersistedResult)r.TransitionResult!).BindingIdentity);
         foreach (var primary in diagnoses)
         {
             try
             {
                 var result = (SpiritualDiagnosisPersistedResult)primary.TransitionResult!;
                 var stage = result.DiagnosisStage;
-                var binding = result.Binding;
-                var naturals = naturalResults.Where(r => r.TransitionResult is SpiritualHealingPersistedResult natural &&
-                    natural.ToCanonicalJson()["binding"] is { } tuple && System.Text.Json.Nodes.JsonNode.DeepEquals(tuple, binding)).ToArray();
+                var naturals = naturalResults[result.BindingIdentity].ToArray();
                 if (naturals.Length != 1) throw new InvalidDataException("Diagnosis requires exactly one linked natural result in its exact turn.");
                 var naturalPrimary = naturals[0];
                 var natural = (SpiritualHealingPersistedResult)naturalPrimary.TransitionResult!;
