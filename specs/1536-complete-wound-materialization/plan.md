@@ -1,3 +1,43 @@
+# T121 EX7RED accepted — selector-only GREEN candidate, UNCOMPILED/UNRUN
+
+Independent Astra OUTCOME accepted the actual causal attempt at `3dc220c0d`:
+three complete rows, ordinary/unselected two PASS and selected diagnosis one FAIL
+only at final metadata line 73 (expected known_to_player, actual hidden). Actual
+H5 program/parser/binder/root-lineage/frozen-input and strict scope positive/refusal
+prerequisites all passed. Category 6.5142693s/60s, wall 16.4998378s; no timeout, skip,
+duplicate or underfill; selected 18 pins and owned cleanup stayed valid. The closing
+fence at 23:37:53 UTC found no owners and about 4.214 GB free. Exact external proof
+is `EX7RED-red/verified-expected-red.json`, TRX SHA256
+`66aa3e3a5c821c936bceb67bd00695afbbcbdb79039b3d31499053dd1b7b5339`.
+
+The selected three-owner archive completed before future binary writes: 18 members,
+39,649,085 stored / 121,026,560 decoded bytes, all member hashes and full gzip
+EOF/CRC verified; SHA256 `2942c7feda7b37607bddae14f68c95a0e4276b19bdf296d78f5ab79289c3f24e`.
+This preserves exactly compiled Main/Support/Unit, with old Integration copies
+excluded rather than qualified. Raw, original terminal failure and older archives
+remain outside Git.
+
+Only graph-source selection changes: diagnosis uses the admitted program's already
+owned NaturalMembers, selected once by the existing AdmitGraphs call; null program
+returns the original cohort exactly. Signed _wounds/original source evidence,
+fingerprints/order, graph parser/predecessor lineage, strict persisted guards and
+GM wire format remain unchanged. No per-graph source rebuild, new cache or speedup
+claim is introduced; current owner/source/publication checks stay fresh.
+
+Next bounded GREEN is six cases / four methods / two IDs at their existing 60s
+budgets: graph three and semantic source guards three. Accounting proposes 135
+retained from the old 138 cheap cases after superseding their three guards, plus
+six fresh = 141 distinct cheap cases, not 144 or one fresh 141. Program eleven, four H0/no-lowering
+native passes and five legacy null-program native passes are unchanged-consumer
+retention subject to delta SOURCE. Then only the failed terminal native case and
+three held serial UI cases require conditional PREP; no retry is launched here.
+
+This C# is UNCOMPILED/UNRUN pending bounded SOURCE and fresh four-owner builds;
+the writer ran no build/test. No GM update is needed: existing guidance requires
+knowledge-first preservation and the graph language still authors consequences only.
+Full CI membership remains source-estimated 154 cases / 66 methods / 27 descriptors,
+with discovery authoritative. Broader Mortal/adapter work and all holds stay open.
+
 # T121 EX6FIX terminal failure — graph-knowledge causal scaffold, UNCOMPILED/UNRUN
 
 The file-free lifecycle two-case GREEN was accepted. The actual next native attempt

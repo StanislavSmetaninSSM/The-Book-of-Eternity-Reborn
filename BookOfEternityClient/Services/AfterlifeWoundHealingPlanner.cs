@@ -213,10 +213,11 @@ internal static partial class AfterlifeWoundHealingPlanner
 
         private string GraphRef(string woundId, int rank) => SpiritualHealingRequestProjection.GraphRef(ProgramReference, woundId, rank);
 
-        // Operation-local parsed DATA selection only, never execution authority.
-        // The causal scaffold preserves the original selection until its RED is observed.
+        // Stable admitted working DATA supplies graph metadata after diagnosis.
+        // Signed originals stay separate; this selection grants no execution authority.
         internal static IReadOnlyList<WoundMaterializationEnvelope> SelectGraphAdmissionWounds(
-            IReadOnlyList<WoundMaterializationEnvelope> originals, SpiritualDiagnosisProgram? diagnosisProgram) => originals;
+            IReadOnlyList<WoundMaterializationEnvelope> originals, SpiritualDiagnosisProgram? diagnosisProgram) =>
+            diagnosisProgram is null ? originals : diagnosisProgram.NaturalMembers.Select(member => member.Wound).ToArray();
 
         private void AdmitGraphs(JsonObject? interfaceUpdates)
         {

@@ -3,8 +3,8 @@
     "categories": [
 {
   "id": "spiritual-diagnosis-graph-knowledge-causal",
-  "responsibility": "T121 file-free producer-to-graph-consumer causal proof: actual H5 selected-not-first diagnosis program, one operation-local production graph-source selector, actual graph parser and predecessor binder, complete ordered complication metadata and frozen inputs. Selected knowledge is the intended RED; unselected and ordinary originals are controls. Existing typed stage DATA also proves the strict persisted scope guard refuses a knowledge downgrade.",
-  "excludes": "No accepted owner, signed receipt, publication, Engine, fabricated Mortal route, new graph wire shape or guard relaxation. The scaffold returns the original cohort unchanged until observed RED; actual terminal native failure is retained separately.",
+  "responsibility": "T121 file-free producer-to-graph-consumer causal proof: actual H5 selected-not-first diagnosis program, one operation-local production graph-source selector, actual graph parser and predecessor binder, complete ordered complication metadata and frozen inputs. The GREEN candidate preserves selected knowledge and unselected/ordinary originals. Existing typed stage DATA also proves the strict persisted scope guard refuses a knowledge downgrade; the accepted EX7RED final metadata failure stays historical.",
+  "excludes": "No accepted owner, signed receipt, publication, Engine, fabricated Mortal route, new graph wire shape or guard relaxation. Actual terminal native publication remains separate and required after component GREEN.",
   "changeHints": ["BookOfEternityClient/Services/AfterlifeWoundHealingPlanner.cs", "BookOfEternityClient.Tests/SpiritualDiagnosisGraphKnowledgeTests.cs"],
   "related": [{ "id": "spiritual-diagnosis-native-terminal", "when": "Actual closed terminal publication remains required after the cheap producer/metadata consumer is corrected." }],
   "requirements": { "frontendBuild": false, "exclusive": false },
