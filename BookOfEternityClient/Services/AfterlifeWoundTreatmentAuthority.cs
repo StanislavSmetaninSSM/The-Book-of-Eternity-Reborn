@@ -12,6 +12,8 @@ internal sealed record SpiritualAidSelection(string HealerId, string TargetId, s
     internal bool ReceiveAid { get; init; }
     internal bool PlayerConfirmed { get; init; }
     internal SpiritualResidentAidParticipant? Resident { get; init; }
+    internal SpiritualAidLocality? GuardianProviderLocality { get; init; }
+    internal SpiritualTreatmentCompensation? Compensation { get; init; }
     internal int FamilyVersion => Resident is not null ? ReceiveAid ? 6 : 5 : ReceiveAid ? 4 : 3;
     internal string GuardianId => Resident?.Locality.GuardianId ?? (ReceiveAid ? HealerId : TargetId);
     internal WoundOwnerCoordinate Healer(string realm) => Resident?.Healer ?? new(realm, ReceiveAid ? "guardian" : "player_soul", HealerId, WoundCarrierCatalog.AfterlifeProfilesPath);

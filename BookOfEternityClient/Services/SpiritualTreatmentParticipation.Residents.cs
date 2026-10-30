@@ -2,7 +2,6 @@ using System.Text.Json.Nodes;
 
 namespace BookOfEternityClient.Services;
 
-internal sealed record SpiritualAidLocality(string GuardianId, string AbodeId);
 internal sealed record SpiritualResidentAidParticipant(
     WoundOwnerCoordinate Healer, WoundOwnerCoordinate Target, SpiritualAidLocality Locality);
 
@@ -14,12 +13,14 @@ internal static partial class SpiritualTreatmentParticipation
     internal static bool IsResidentParticipation(JsonObject record) => Scalar<int>(record, "schemaVersion") is 3 or 4;
     internal static WoundOwnerCoordinate RecordHealer(JsonObject record) => IsResidentParticipation(record)
         ? ReadOwner(record["healer"])
-        : new("chaos_sea", IsProviderOffer(record) ? "guardian" : "player_soul", Text(record, "healerId"), WoundCarrierCatalog.AfterlifeProfilesPath);
+        : new(RecordRealm(record), IsProviderOffer(record) ? "guardian" : "player_soul", Text(record, "healerId"), WoundCarrierCatalog.AfterlifeProfilesPath);
     internal static WoundOwnerCoordinate RecordTarget(JsonObject record) => IsResidentParticipation(record)
         ? ReadOwner(record["target"])
-        : new("chaos_sea", IsProviderOffer(record) ? "player_soul" : "guardian", Text(record, "targetId"), WoundCarrierCatalog.AfterlifeProfilesPath);
+        : new(RecordRealm(record), IsProviderOffer(record) ? "player_soul" : "guardian", Text(record, "targetId"), WoundCarrierCatalog.AfterlifeProfilesPath);
     internal static WoundOwnerCoordinate RecordOwner(JsonObject record) => IsProviderOffer(record) ? RecordHealer(record) : RecordTarget(record);
-    internal static SpiritualAidLocality RecordLocality(JsonObject record) => IsResidentParticipation(record)
+    internal static string RecordRealm(JsonObject record) => IsResidentParticipation(record)
+        ? ReadOwner(record["target"]).Realm : Text(record, "realm");
+    internal static SpiritualAidLocality RecordLocality(JsonObject record) => IsResidentParticipation(record) || record.ContainsKey("locality")
         ? ReadLocality(record["locality"]) : new(RecordOwnerId(record), Text(record, "locationId"));
 
     internal static WoundOwnerCoordinate ReadOwner(JsonNode? value)
@@ -27,25 +28,49 @@ internal static partial class SpiritualTreatmentParticipation
         var root = value as JsonObject ?? throw new InvalidDataException("Participation requires a typed owner coordinate.");
         Closed(root, "realm", "ownerKind", "ownerId", "carrierPath");
         var owner = new WoundOwnerCoordinate(Text(root, "realm"), Text(root, "ownerKind"), Text(root, "ownerId"), Text(root, "carrierPath"));
-        if (owner.Realm != "chaos_sea" || owner.OwnerKind is not ("player_soul" or "guardian" or "resident") ||
+        if (owner.Realm is not ("chaos_sea" or "shining_abode") || owner.OwnerKind is not ("player_soul" or "guardian" or "resident") ||
             !ResourceMaterializationContract.IsExactIdentifier(owner.OwnerId) || owner.CarrierPath != WoundCarrierCatalog.AfterlifeProfilesPath)
-            throw new InvalidDataException("Participation owner coordinate is outside its exact Chaos profile family.");
+            throw new InvalidDataException("Participation owner coordinate is outside its exact afterlife profile family.");
         return owner;
     }
 
     internal static SpiritualAidLocality ReadLocality(JsonNode? value)
     {
         var root = value as JsonObject ?? throw new InvalidDataException("Participation requires exact locality.");
-        Closed(root, "guardianId", "abodeId");
-        var locality = new SpiritualAidLocality(Text(root, "guardianId"), Text(root, "abodeId"));
-        if (!ResourceMaterializationContract.IsExactIdentifier(locality.GuardianId) ||
-            !ResourceMaterializationContract.IsExactIdentifier(locality.AbodeId))
-            throw new InvalidDataException("Participation locality requires exact Guardian and Abode identities.");
+        SpiritualAidLocality locality;
+        if (root.ContainsKey("factionId"))
+        {
+            Closed(root, "factionId", "hallId");
+            if (!ResourceMaterializationContract.IsExactIdentifier(Text(root, "factionId")))
+                throw new InvalidDataException("Participation requires an exact faction identity.");
+            locality = SpiritualAidLocality.ForFaction(Text(root, "factionId"), Text(root, "hallId"));
+        }
+        else if (root.ContainsKey("kind"))
+        {
+            Closed(root, "kind", "hallId");
+            if (Text(root, "kind") != "elyara_shining_hall")
+                throw new InvalidDataException("Unknown exact Guardian Shining locality.");
+            locality = SpiritualAidLocality.ForElyara(Text(root, "hallId"));
+        }
+        else
+        {
+            Closed(root, "guardianId", "abodeId");
+            locality = new SpiritualAidLocality(Text(root, "guardianId"), Text(root, "abodeId"));
+            if (!ResourceMaterializationContract.IsExactIdentifier(locality.GuardianId))
+                throw new InvalidDataException("Participation locality requires an exact Guardian identity.");
+        }
+        if (!ResourceMaterializationContract.IsExactIdentifier(locality.LocationId))
+            throw new InvalidDataException("Participation locality requires an exact location identity.");
         return locality;
     }
 
-    internal static JsonObject LocalityJson(SpiritualAidLocality locality) => new()
-    { ["guardianId"] = locality.GuardianId, ["abodeId"] = locality.AbodeId };
+    internal static JsonObject LocalityJson(SpiritualAidLocality locality) => locality.Value switch
+    {
+        SpiritualAidLocality.ChaosAbode chaos => new() { ["guardianId"] = chaos.GuardianId, ["abodeId"] = chaos.AbodeId },
+        SpiritualAidLocality.ShiningFactionHall faction => new() { ["factionId"] = faction.FactionId, ["hallId"] = faction.HallId },
+        SpiritualAidLocality.ElyaraShiningHall elyara => new() { ["kind"] = "elyara_shining_hall", ["hallId"] = elyara.HallId },
+        _ => throw new InvalidDataException("Unknown spiritual aid locality.")
+    };
 
     internal static SpiritualAidSelection Selection(JsonObject record)
     {
@@ -53,14 +78,19 @@ internal static partial class SpiritualTreatmentParticipation
         return new(healer.OwnerId, target.OwnerId, Fingerprint(record))
         {
             ReceiveAid = IsProviderOffer(record),
-            Resident = IsResidentParticipation(record) ? new(healer, target, RecordLocality(record)) : null
+            Resident = IsResidentParticipation(record) ? new(healer, target, RecordLocality(record)) : null,
+            GuardianProviderLocality = !IsResidentParticipation(record) && IsProviderOffer(record) && healer.Realm == "shining_abode"
+                ? RecordLocality(record) : null,
+            Compensation = ReadCompensation(record)
         };
     }
 
     internal static bool MatchesSelection(JsonObject record, SpiritualAidSelection aid) =>
-        ResultVersion(record) == aid.FamilyVersion && RecordHealer(record) == aid.Healer("chaos_sea") &&
-        RecordTarget(record) == aid.Target("chaos_sea") &&
-        (aid.Resident is null || RecordLocality(record) == aid.Resident.Locality);
+        ResultVersion(record) == aid.FamilyVersion && IsProviderOffer(record) == aid.ReceiveAid &&
+        RecordHealer(record) == aid.Healer(RecordRealm(record)) && RecordTarget(record) == aid.Target(RecordRealm(record)) &&
+        Equals(ReadCompensation(record), aid.Compensation) &&
+        (IsResidentParticipation(record) ? aid.Resident is not null && RecordLocality(record) == aid.Resident.Locality :
+            RecordRealm(record) == "shining_abode" ? aid.GuardianProviderLocality == RecordLocality(record) : aid.GuardianProviderLocality is null);
 
     private static void ValidateResidentRecord(JsonObject record)
     {
@@ -70,7 +100,7 @@ internal static partial class SpiritualTreatmentParticipation
         _ = RecordLocality(record);
         if (Text(record, "kind") != "resident_target_consent" || Text(record, "status") is not ("granted" or "revoked") ||
             healer != new WoundOwnerCoordinate("chaos_sea", "player_soul", "player_soul", WoundCarrierCatalog.AfterlifeProfilesPath) ||
-            target.OwnerKind != "resident")
+            target.OwnerKind != "resident" || target.Realm != "chaos_sea" || RecordLocality(record).Value is not SpiritualAidLocality.ChaosAbode)
             throw new InvalidDataException("Invalid canonical resident target-consent record.");
         var conscious = Scalar<bool>(record, "conscious"); var capable = Scalar<bool>(record, "capable");
         if (Text(record, "status") == "granted" && (!conscious || !capable))
@@ -79,13 +109,14 @@ internal static partial class SpiritualTreatmentParticipation
 
     private static void ValidateResidentProviderRecord(JsonObject record)
     {
-        Closed(record, new[] { "schemaVersion", "kind", "status", "healer", "target", "woundId", "locality",
+        Closed(record, ProviderFields(record, new[] { "schemaVersion", "kind", "status", "healer", "target", "woundId", "locality",
             "readableEvidence", "binding", "acceptedCycleOrdinal", "eligibleCycleOrdinal", "primaryTransitionId" }
-            .Concat(OfferConditionFields).ToArray());
+            .Concat(OfferConditionFields)));
         var healer = RecordHealer(record); var target = RecordTarget(record);
-        _ = RecordLocality(record);
+        RequireProviderLocality(healer, RecordLocality(record));
+        _ = ReadCompensation(record);
         if (Text(record, "kind") != "resident_provider_offer" || Text(record, "status") is not ("offered" or "revoked") ||
-            healer.OwnerKind != "resident" || target != new WoundOwnerCoordinate("chaos_sea", "player_soul", "player_soul", WoundCarrierCatalog.AfterlifeProfilesPath))
+            healer.OwnerKind != "resident" || target != new WoundOwnerCoordinate(healer.Realm, "player_soul", "player_soul", WoundCarrierCatalog.AfterlifeProfilesPath))
             throw new InvalidDataException("Invalid canonical resident provider-offer record.");
         foreach (var field in OfferConditionFields)
             if (!Scalar<bool>(record, field) && Text(record, "status") == "offered")
@@ -96,7 +127,7 @@ internal static partial class SpiritualTreatmentParticipation
         int cycleOrdinal, string primaryTransitionId)
     {
         if (change.Owner.OwnerKind != "resident")
-            return CreateOutcome(change, locality.AbodeId, binding, cycleOrdinal, primaryTransitionId);
+            return CreateGuardianOutcome(change, locality, binding, cycleOrdinal, primaryTransitionId);
         ValidateProposal(change.Proposal);
         if (IsResidentProviderOffer(change.Proposal))
             return CreateResidentProviderOutcome(change, locality, binding, cycleOrdinal, primaryTransitionId);
@@ -122,21 +153,23 @@ internal static partial class SpiritualTreatmentParticipation
     private static JsonObject CreateResidentProviderOutcome(Change change, SpiritualAidLocality locality,
         JsonObject binding, int cycleOrdinal, string primaryTransitionId)
     {
-        if (change.Owner is not { Realm: "chaos_sea", OwnerKind: "resident", CarrierPath: WoundCarrierCatalog.AfterlifeProfilesPath })
+        if (change.Owner is not { OwnerKind: "resident", CarrierPath: WoundCarrierCatalog.AfterlifeProfilesPath })
             throw new InvalidDataException("Resident offer lost its complete typed healer.");
+        RequireProposedProviderLocality(change, locality);
         var proposal = change.Proposal;
         var record = new JsonObject
         {
             ["schemaVersion"] = 4, ["kind"] = "resident_provider_offer",
             ["status"] = Text(proposal, "operation") == "offer" ? "offered" : "revoked",
             ["healer"] = SpiritualHealingRequestProjection.OwnerJson(change.Owner),
-            ["target"] = SpiritualHealingRequestProjection.OwnerJson(new("chaos_sea", "player_soul", "player_soul", WoundCarrierCatalog.AfterlifeProfilesPath)),
+            ["target"] = SpiritualHealingRequestProjection.OwnerJson(new(change.Owner.Realm, "player_soul", "player_soul", WoundCarrierCatalog.AfterlifeProfilesPath)),
             ["woundId"] = Text(proposal, "woundId"), ["locality"] = LocalityJson(locality),
             ["readableEvidence"] = Text(proposal, "readableEvidence"), ["binding"] = binding.DeepClone(),
             ["acceptedCycleOrdinal"] = cycleOrdinal, ["eligibleCycleOrdinal"] = checked(cycleOrdinal + 1),
             ["primaryTransitionId"] = primaryTransitionId
         };
         foreach (var field in OfferConditionFields) record[field] = proposal[field]!.DeepClone();
+        CopyCompensation(proposal, record);
         ValidateRecord(record);
         return new() { ["record"] = record, ["contentFingerprint"] = Fingerprint(record) };
     }

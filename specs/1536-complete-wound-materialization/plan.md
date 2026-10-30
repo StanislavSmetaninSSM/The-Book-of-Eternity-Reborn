@@ -1,3 +1,28 @@
+# Negotiated B: DATA-модели и чтение условий написаны, общий путь ещё не подключён
+
+После принятого RED добавлены неизменяемая compensation и закрытый locality union:
+Chaos Abode, Shining faction hall, exact Elyara hall. В Shining-вариантах нет nullable
+Guardian/Abode aliases; старый Chaos-конструктор и canonical JSON сохраняются.
+Условия допускаются только у provider offer, копируются в принятую запись и точное
+сопоставление selection; record/binding realm проверяется вместе с locality и направлением.
+Целевое согласие остаётся Chaos-only. Подписанный History и фактический publisher
+по-прежнему необходимы: эти DATA сами не дают права лечить и не создают долг.
+
+Это WIP, C# ещё не собран: selection/request codec, текущие source joins, wallet
+invariant, общий accepted-turn путь, UI и GM-примеры ещё предстоит закончить вместе.
+Нового publisher/ledger/scheduler нет. Optimization: маленькие immutable строки и
+вариантные значения не требуют отдельного кэша; используются существующие source
+owners. Ключи включат realm, тип provider, variant/координаты и полные условия;
+owner/lifetime остаются одной исходной операции, свежие подтверждение, lease и
+opening/closing checks не кэшируются. Не заявляется GREEN или готовность B.
+Принятый публичный срез остаётся отдельно на ad0b0382b/fd69947ad.
+
+Следующий кодовый шаг — провести точные DATA через существующий selection/request,
+затем подключить реальные Shining scope и presence-aware wallet proof до общего C4.
+Перед сборками закончить связный блок и целостный SOURCE; принятые A/HOLD не повторять.
+
+---
+
 # Negotiated B: причинный RED принят, начинается реализация
 
 Новая Unit-сборка BRED завершилась с 0 ошибок и 26 прежними предупреждениями.
