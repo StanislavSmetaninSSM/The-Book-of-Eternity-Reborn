@@ -172,6 +172,17 @@ S3 measured27binary artifacts are being archived/verified before any Unit overwr
 failed raw/TRX/causes remain external. Independent cause/delta review, fresh Unit,
 current source/PDB/catalog/PlanOnly/PREP still required; no heavy release.
 
+S3partial OUTCOME/cause and one-line fixture SOURCE accepted by Sol onad0c84dc4.
+S3archive settled before Unit overwrite:27members,62,014,050bytes,
+SHA8732f9c99c69f01b549e3f4a8dbd91588ba29787477ed371789c3a90e98954c1,
+allmemberhash+fullgzipEOF/CRC verified. S4 Unitad0 exit0/26baselinewarnings/2:09.04;
+Main/Support/Integration C# unchanged, retained owning epochs valid. PDB4pairs/
+158sources and27artifacts/8resources32copies/4daemon verified; catalog1180/12977
+valid/no stale/unmapped/tests0. Exact remaining PlanOnly2Unitdescriptors/4methods/
+23cases/zeroexecution, pins/cleanup stable, wall10.8349235s. Only request21+prior
+unrun proposal2 may execute after independent PREP. Earlier45PASS@b04f98a6d retained,
+no new runtime yet; no menu/native/UI release. Current checkpoint delta is plan only.
+
 Авторское решение диагностики принято2026-10-30 11:48UTC и отражено в FR071/tasks.
 После текущего Shining patient: Mortal method declares own procedure check/time/
 cost; spiritual Healing>=0 plus ALL path requirements, guaranteed declared reveals,
