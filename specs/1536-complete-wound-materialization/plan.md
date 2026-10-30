@@ -1,3 +1,32 @@
+# Negotiated B: wallet/request10PASS; далее настоящий двухходовый маршрут
+
+После SOURCEdelta121160266 выполнены четыре fresh B2 owning builds0errors,
+baselinewarnings12/23/26/102; Main3:45.27/Support0:14.84/Unit1:07.92/Integration2:19.04.
+27artifacts/128sourcebindings/4PEPDB/8resources32copies/daemon проверены. Catalog
+1155/12946valid0exec. Exact PlanOnly10cases/2methods0exec8.3825944s; независимый
+PREP принял только negotiated-healing-wallet-request-data10 при прежних60s.
+Actual source121160266:10/10PASS,wall16.5873481s/category6.4886539s,exit0,безskip/
+timeout/duplicates,cleanupcomplete/pinsstable,verified-outcome.json сохранён.
+TRX SHA2afeac95da8a89e89b3f7b95ff2a06a9f0b3ed456d53262535147b1beeb6de56.
+Null исправлен; пять term cases дошли до exact binding/forgery assertions. Final
+OUTCOME pending. Сохранённые30B1PASS не повторялись:40distinct на двухlineage,
+не новый fresh40. Старые34PASS/6FAIL и полный B1binary archive сохранены отдельно.
+
+Далее реализуется реальный existing Engine two-turn negotiated route: proposal43
+→actual natural History/normal cleanup→fresh /лечить menu/read/cancel→separate player
+confirmation→same actual attempt/roll/wound/cycle/History/memory44, плюс whole-owner
+rollback/replay. Используются existing complete Shining/Elyara service seeds, ordinary
+resource/Brain/memory prerequisites и shared console/browser handlers; не новая
+fixture/publisher/cache/diagnostic architecture. До runtime целостный fixtureSOURCE,
+fresh Integration/discovery/PlanOnly/PREP и достаточный reserve. Остальные150affected
+regressions ещё UNRUN, ни B/US6/#1536, ни DOM/liveprovider/freshprocess не закрыты.
+Публичный A закреплён отдельно на ad0b0382b. HOLD DFR/Mortal/Windows отдельно.
+Raw полностью /workspace/tboe-linux-evidence-20261025/us6-faction-service-agreement,
+без uploads/deletions. Следующий пользовательский результат — исполнение принятой
+неденежной помощи, а не дополнительный просмотр.
+
+---
+
 # Negotiated B: cheap40 завершён34PASS/6FAIL; две причины исправлены WIP
 
 Первый фактический B1-data runtime из25f4d4e3 (compiled266798660) завершил все40cases,
