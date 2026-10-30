@@ -1,5 +1,20 @@
 # План перехода к личной модели духовного боя — #1573
 
+## Текущий срез T113–T114: принятие хода и активные реакции
+
+2026-10-30 baseline617b63b0d78f0f7cec1cc8b31f0f769d0429f26c совпал с origin,
+#1573/workflow1.7 сверены, PathsOnly1573 выполнен. Продолжаются brainstorming/
+Spec Kit bridge: [spec](spec.md), [tasks](tasks.md). T113 записывает одобрение T112;
+T114 — новый проект реакции/цены/счётчика, а не готовый runtime или баланс.
+Parent сводит принятые ДЭ/HP0/очередь/барьеры и пишет профиль; Sol6.1/high отдельно
+проверяет mortal Block/Parry/Ready, pending dice/preview и реальные effect reactions.
+Порядок: источник → проект/статусы → consistency/ссылки/ручные примеры/diff →
+WIP/push → независимый Astra/high review → исправления/адресная проверка →
+финальный SHA/blob/issue readback → автору. Никаких code/tests/build/симуляций;
+полный баланс и T001/T009–T015 остаются открытыми. Цена реакции не доказывает
+устранение старого healing stalemate. Стабильные профили/источники — через existing
+operation service; pending identity/права/цена/остаток/фаза проверяются свежими.
+
 ## Текущий срез T112: инициатива и состав личного хода
 
 2026-10-30 baseline9600203d787de07bf8e22e8bcfc3f3b89bd5e7ea совпал с origin;
