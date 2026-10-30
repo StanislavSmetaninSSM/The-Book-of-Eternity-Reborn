@@ -25,8 +25,14 @@ internal static partial class AfterlifeWoundHealingPlanner
             var detachedChanges = changes.Select(c => new SpiritualTreatmentParticipation.Change(c.Owner,
                 c.Proposal.DeepClone().AsObject())).ToArray();
             RequireCurrent(_files, _lease);
+            var localities = detachedChanges.Select(c => c.Owner.Realm == "shining_abode"
+                ? SpiritualTreatmentParticipation.ReadLocality(c.Proposal["locality"]) : null).ToArray();
+            var localityPaths = localities.SelectMany(l => AfterlifeWoundTreatmentAuthority.AidLocalityPathsFor(l, includeCoreState: true))
+                .Distinct(StringComparer.Ordinal).ToArray();
+            var requiredPaths = localityPaths.Where(p => p != GuardianAbodeResidentState.StatePath ||
+                localities.Any(l => l?.Value is SpiritualAidLocality.ShiningFactionHall)).ToArray();
             var observed = PendingTurnSnapshotReader.ReadObservedCurrent(_files, _lease,
-                new PendingTurnSnapshotPathSelection(new[] { ParticipationGuardiansPath }, new[] { GuardianAbodeResidentState.StatePath }));
+                new PendingTurnSnapshotPathSelection(requiredPaths, localityPaths.Except(requiredPaths, StringComparer.Ordinal).ToArray()));
             if (!observed.Success || observed.Snapshot is not { } snapshot || observed.Evidence is not { } evidence ||
                 snapshot.SessionId != _snapshot.SessionId || snapshot.RequestId != _snapshot.RequestId ||
                 snapshot.TurnNumber != _snapshot.TurnNumber || snapshot.SnapshotToken != _snapshot.SnapshotToken)
@@ -34,7 +40,7 @@ internal static partial class AfterlifeWoundHealingPlanner
             evidence.RequireCurrent(_files, _lease, snapshot);
             var sources = new Dictionary<string, CanonicalBeforeImage>(StringComparer.Ordinal);
             var currentRoots = new Dictionary<string, JsonObject?>(StringComparer.Ordinal);
-            foreach (var path in new[] { ParticipationGuardiansPath, GuardianAbodeResidentState.StatePath })
+            foreach (var path in localityPaths)
             {
                 var original = snapshot.CoveredLogicalPaths.Contains(path, StringComparer.Ordinal) ? snapshot.ReadRequiredBytes(path) : null;
                 var current = await _files.ReadFileBytesAsync(_lease, path);
@@ -46,8 +52,8 @@ internal static partial class AfterlifeWoundHealingPlanner
                     CanonicalJsonUtf8.DecodeOneOptionalBom(current), new JsonSerializerOptions(), path);
                 currentRoots.Add(path, root);
             }
-            if (_input.Binding.Realm != "chaos_sea")
-                throw new InvalidDataException("Participation requires the exact current safe Chaos Abode.");
+            if (_input.Binding.Realm is not ("chaos_sea" or "shining_abode"))
+                throw new InvalidDataException("Participation requires the exact current safe afterlife realm.");
             var binding = new JsonObject
             {
                 ["sessionId"] = _input.Binding.SessionId, ["requestId"] = _input.Binding.RequestId,
@@ -58,28 +64,43 @@ internal static partial class AfterlifeWoundHealingPlanner
             {
                 var resident = change.Owner.OwnerKind == "resident";
                 var woundOwner = change.Proposal["schemaVersion"]!.GetValue<int>() is 2 or 4
-                    ? new WoundOwnerCoordinate("chaos_sea", "player_soul", "player_soul", WoundCarrierCatalog.AfterlifeProfilesPath) : change.Owner;
+                    ? new WoundOwnerCoordinate(_input.Binding.Realm, "player_soul", "player_soul", WoundCarrierCatalog.AfterlifeProfilesPath) : change.Owner;
                 var wound = _wounds.SingleOrDefault(w => w.Owner == woundOwner && w.WoundId == change.Proposal["woundId"]!.GetValue<string>())
                     ?? throw new InvalidDataException("Participation lost the exact admitted typed wound binding.");
-                var scope = resident && SpiritualTreatmentParticipation.IsResidentProviderOffer(change.Proposal)
-                    ? SpiritualTreatmentParticipation.RequireResidentProviderScope(currentRoots[ParticipationGuardiansPath]!,
-                        currentRoots[GuardianAbodeResidentState.StatePath], acceptedProfiles, change.Owner, wound)
-                    : resident ? SpiritualTreatmentParticipation.RequireResidentScope(currentRoots[ParticipationGuardiansPath]!,
-                    currentRoots[GuardianAbodeResidentState.StatePath], acceptedProfiles, change.Owner, wound)
-                    : SpiritualTreatmentParticipation.RequireCurrentGuardianScope(currentRoots[ParticipationGuardiansPath]!,
-                        currentRoots[GuardianAbodeResidentState.StatePath], change.TargetId);
+                SpiritualAidLocality locality;
+                LocalInteractionScope scope;
+                if (change.Owner.Realm == "shining_abode")
+                {
+                    locality = SpiritualTreatmentParticipation.ReadLocality(change.Proposal["locality"]);
+                    var admission = SpiritualTreatmentParticipation.RequireShiningProviderAdmission(
+                        currentRoots.GetValueOrDefault(ParticipationGuardiansPath),
+                        currentRoots.GetValueOrDefault(GuardianAbodeResidentState.StatePath), acceptedProfiles,
+                        currentRoots.GetValueOrDefault(ShiningAbodeState.StatePath), change.Owner, locality);
+                    scope = admission.Scope;
+                }
+                else
+                {
+                    scope = resident && SpiritualTreatmentParticipation.IsResidentProviderOffer(change.Proposal)
+                        ? SpiritualTreatmentParticipation.RequireResidentProviderScope(currentRoots[ParticipationGuardiansPath]!,
+                            currentRoots[GuardianAbodeResidentState.StatePath], acceptedProfiles, change.Owner, wound)
+                        : resident ? SpiritualTreatmentParticipation.RequireResidentScope(currentRoots[ParticipationGuardiansPath]!,
+                            currentRoots[GuardianAbodeResidentState.StatePath], acceptedProfiles, change.Owner, wound)
+                        : SpiritualTreatmentParticipation.RequireCurrentGuardianScope(currentRoots[ParticipationGuardiansPath]!,
+                            currentRoots[GuardianAbodeResidentState.StatePath], change.TargetId);
+                    locality = new SpiritualAidLocality(scope.CurrentGuardianId!, scope.LocationId!);
+                }
                 var target = (acceptedProfiles[AfterlifeEntityProfileState.ProfilesProperty] as JsonArray)?.OfType<JsonObject>()
                     .Where(p => p["actorType"]?.GetValue<string>() == change.Owner.OwnerKind && SpiritualTreatmentParticipation.ProfileId(p) == change.TargetId &&
                         AfterlifeEntityProfileState.TryNormalizeEffectRealm(p["realm"]?.GetValue<string>(), out var realm) && realm == change.Owner.Realm).ToArray();
                 if (target is not { Length: 1 } || target[0]["locationId"]?.GetValue<string>() != scope.LocationId)
                     throw new InvalidDataException("Participation lost the exact admitted profile/locality binding.");
-                outcomes.Add(SpiritualTreatmentParticipation.CreateOutcome(change, new SpiritualAidLocality(scope.CurrentGuardianId!, scope.LocationId!), binding,
+                outcomes.Add(SpiritualTreatmentParticipation.CreateOutcome(change, locality, binding,
                     _natural!.CycleOrdinal, _stages[0].TransitionId));
             }
             _participationSnapshot = snapshot; _participationOriginal = evidence; _participationSources = sources;
             _participationChanges = detachedChanges;
             _participationOutcomes = outcomes;
-            BindResidentThoughts(currentRoots[GuardianAbodeResidentState.StatePath]);
+            BindResidentThoughts(currentRoots.GetValueOrDefault(GuardianAbodeResidentState.StatePath));
             RequireCurrent(_files, _lease);
         }
 

@@ -220,9 +220,19 @@ internal static partial class SpiritualTreatmentParticipation
         return RequireResidentParticipantScope(guardians, residents, profiles, healer);
     }
 
-    internal static LocalInteractionScope RequireAidScope(JsonObject guardians, JsonObject? residents,
-        JsonObject profiles, SpiritualAidSelection aid, WoundMaterializationEnvelope wound)
+    internal static LocalInteractionScope RequireAidScope(JsonObject? guardians, JsonObject? residents,
+        JsonObject profiles, SpiritualAidSelection aid, WoundMaterializationEnvelope wound, JsonObject? shining = null)
     {
+        if (aid.ExplicitLocality is { Realm: "shining_abode" } locality)
+        {
+            if (!aid.ReceiveAid || wound.Owner != aid.Target("shining_abode") ||
+                wound.Classification.Domain != "spiritual" || wound.Lifecycle != "active" ||
+                wound.Display.Visibility is not ("public" or "known_to_player"))
+                throw new InvalidDataException("Shining provider requires the exact known active player wound.");
+            return RequireShiningProviderAdmission(guardians, residents, profiles, shining,
+                aid.Healer("shining_abode"), locality).Scope;
+        }
+        if (guardians is null) throw new InvalidDataException("Chaos aid requires its actual Guardian locality.");
         if (aid.Resident is not { } resident) return RequireCurrentGuardianScope(guardians, residents, aid.GuardianId);
         var scope = aid.ReceiveAid
             ? RequireResidentProviderScope(guardians, residents, profiles, resident.Healer, wound)

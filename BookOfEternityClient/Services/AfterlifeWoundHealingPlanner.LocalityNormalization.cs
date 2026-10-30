@@ -9,8 +9,12 @@ internal static partial class AfterlifeWoundHealingPlanner
     internal sealed partial class Continuation
     {
         internal bool HasLocalityGuards => _participationSources is not null || _data?.AidWitness is not null || HasServicePayment;
+        private SpiritualAidSelection? RetainedAidSelection =>
+            (_data?.AidWitness ?? _participationOutcomes?.Single()?.AsObject())?["record"] is JsonObject record
+                ? SpiritualTreatmentParticipation.Selection(record) : null;
         internal bool OwnsLocalityPath(string path) => HasLocalityGuards &&
-            (HasServicePayment ? AfterlifeWoundTreatmentAuthority.ServiceLocalityPathsFor(_data!.ServiceQuote!) : AfterlifeWoundTreatmentAuthority.AidLocalityPaths)
+            (HasServicePayment ? AfterlifeWoundTreatmentAuthority.ServiceLocalityPathsFor(_data!.ServiceQuote!) :
+                AfterlifeWoundTreatmentAuthority.AidLocalityPathsFor(RetainedAidSelection?.ExplicitLocality, includeCoreState: true))
                 .Contains(path, StringComparer.Ordinal);
 
         // Only the actual validated normalizer calls this around its computed
@@ -65,19 +69,31 @@ internal static partial class AfterlifeWoundHealingPlanner
             var wound = _wounds.Single(w => w.WoundId == record["woundId"]!.GetValue<string>());
             JsonObject? Root(string selectedPath, string? replacement = null)
             {
-                var image = images[selectedPath];
+                if (!images.TryGetValue(selectedPath, out var image)) return null;
                 return replacement is not null ? StrictJsonAuthority.Deserialize<JsonObject>(replacement, new JsonSerializerOptions(), selectedPath)
                     : !image.Existed ? null : StrictJsonAuthority.Deserialize<JsonObject>(
                         CanonicalJsonUtf8.DecodeOneOptionalBom(image.Bytes!), new JsonSerializerOptions(), selectedPath);
             }
             var guardianPath = AfterlifeWoundTreatmentAuthority.AidLocalityPaths[0];
             var residentPath = AfterlifeWoundTreatmentAuthority.AidLocalityPaths[1];
-            var guardians = Root(guardianPath)!;
+            var shiningPath = ShiningAbodeState.StatePath;
+            var guardians = Root(guardianPath);
             var residents = Root(residentPath);
-            var before = SpiritualTreatmentParticipation.RequireAidScope(guardians, residents, profiles, aid, wound);
-            var after = SpiritualTreatmentParticipation.RequireAidScope(
-                path == guardianPath ? Root(path, content)! : guardians,
-                path == residentPath ? Root(path, content) : residents, profiles, aid, wound);
+            var shining = Root(shiningPath);
+            var afterGuardians = path == guardianPath ? Root(path, content) : guardians;
+            var afterResidents = path == residentPath ? Root(path, content) : residents;
+            var afterShining = path == shiningPath ? Root(path, content) : shining;
+            var before = SpiritualTreatmentParticipation.RequireAidScope(guardians, residents, profiles, aid, wound, shining);
+            var after = SpiritualTreatmentParticipation.RequireAidScope(afterGuardians, afterResidents, profiles, aid, wound, afterShining);
+            if (aid.ExplicitLocality is { Realm: "shining_abode" } locality)
+            {
+                var originalAdmission = SpiritualTreatmentParticipation.RequireShiningProviderAdmission(
+                    guardians, residents, profiles, shining, aid.Healer("shining_abode"), locality);
+                var normalizedAdmission = SpiritualTreatmentParticipation.RequireShiningProviderAdmission(
+                    afterGuardians, afterResidents, profiles, afterShining, aid.Healer("shining_abode"), locality);
+                if (originalAdmission.Fingerprint != normalizedAdmission.Fingerprint)
+                    throw new InvalidDataException("Normalization cannot change the exact negotiated healer membership/role/locality tuple.");
+            }
             if (before.RealmKind != after.RealmKind || before.LocationId != after.LocationId || before.CurrentGuardianId != after.CurrentGuardianId ||
                 !before.LocalActorIds.ToHashSet(StringComparer.Ordinal).SetEquals(after.LocalActorIds) ||
                 !before.LocalFactionIds.ToHashSet(StringComparer.Ordinal).SetEquals(after.LocalFactionIds))

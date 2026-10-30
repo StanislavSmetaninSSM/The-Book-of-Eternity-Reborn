@@ -1,3 +1,27 @@
+# Negotiated B: связный production WIP сохранён; SOURCE/сборки ещё впереди
+
+К принятой DATA-модели подключены selection/request4/6, закрытый Shining scope,
+принятие provider offer через прежний natural owner, текущий signed source set,
+variant-selected locality dependencies и сравнение точного member/role tuple при
+normalization. UI использует прежние menu/confirm handlers и показывает реальные
+неденежные условия; отмена не выдаёт разрешения. Existing shared afterlife ordinal
+NextChaosSeaTurnOrdinal сохранён. Presence-aware immutable wallet DATA включаются
+только при явной compensation и входят в attempt/request fingerprints; common
+assembly/publication и current settlement сравнивают реальный кошелёк, не исправляя
+конфликт. GM Feather-command отвергается по наличию поля, включая нулевое значение.
+Исторический result parser не читает и не восстанавливает сегодняшний кошелёк.
+
+Это непроверенный WIP: новые C# ещё UNCOMPILED, B GREEN/functional runtime UNRUN.
+Остаются причинные negative controls, GM contract/examples/source guards и целостный
+SOURCE, затем свежие затронутые builds/catalog/PlanOnly/PREP и адресная приёмка.
+Новый publisher/economy/cache framework не создаётся; уже принятые A и HOLD не
+повторяются. Optimization: сохраняются caller-owned parsed roots/read-set и fresh
+opening/closing/lease checks; один выбранный dependency family, без повторного IO
+для DATA projections. Стоимость и source counts нового B ещё не измерены.
+Все raw остаются вне checkout; удалений и uploads raw нет. Активных runtime нет.
+
+---
+
 # Negotiated B: DATA-модели и чтение условий написаны, общий путь ещё не подключён
 
 После принятого RED добавлены неизменяемая compensation и закрытый locality union:

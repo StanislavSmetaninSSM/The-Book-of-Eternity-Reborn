@@ -56,7 +56,7 @@ internal static partial class SpiritualTreatmentParticipation
             throw new InvalidDataException("A Chaos proposal cannot add a Shining locality alias.");
     }
 
-    private static void RequireProviderLocality(WoundOwnerCoordinate healer, SpiritualAidLocality locality)
+    internal static void RequireProviderLocality(WoundOwnerCoordinate healer, SpiritualAidLocality locality)
     {
         if (healer.CarrierPath != WoundCarrierCatalog.AfterlifeProfilesPath || healer.Realm != locality.Realm ||
             ((healer.OwnerKind, locality.Value) switch

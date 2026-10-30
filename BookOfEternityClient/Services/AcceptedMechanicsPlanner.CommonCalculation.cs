@@ -359,7 +359,7 @@ internal static partial class AcceptedMechanicsPlanner
         var ownerTransitions = transitions.Select(static value => value.Clone()).ToList();
         var issues = new List<ValidationIssue>();
         var serviceOwner = woundStages?.SpiritualHealingContinuation;
-        if (serviceOwner?.HasServicePayment == true)
+        if (serviceOwner?.HasWalletContribution == true)
         {
             try
             {
@@ -392,7 +392,7 @@ internal static partial class AcceptedMechanicsPlanner
                 static pair => pair.Value.DeepClone().AsObject(),
                 StringComparer.Ordinal);
         var woundPublication = carrierComposition.WoundPublication;
-        if (serviceOwner?.HasServicePayment == true)
+        if (serviceOwner?.HasWalletContribution == true)
         {
             try
             {

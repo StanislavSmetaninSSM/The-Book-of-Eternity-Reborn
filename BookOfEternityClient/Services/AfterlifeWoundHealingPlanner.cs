@@ -22,9 +22,12 @@ internal static partial class AfterlifeWoundHealingPlanner
                 AfterlifeWoundTreatmentAuthority.SourcePaths));
 
     internal static PendingTurnSnapshotObservedReadResult ReadOriginalAidLocalitySource(FileSystemManager files,
-        FileSystemManager.CanonicalWriteLease lease) => PendingTurnSnapshotReader.ReadObservedCurrent(files, lease,
-            new PendingTurnSnapshotPathSelection(new[] { AfterlifeWoundTreatmentAuthority.AidLocalityPaths[0] },
-                new[] { AfterlifeWoundTreatmentAuthority.AidLocalityPaths[1] }));
+        FileSystemManager.CanonicalWriteLease lease, SpiritualAidSelection? aid = null) =>
+        PendingTurnSnapshotReader.ReadObservedCurrent(files, lease,
+            aid?.ExplicitLocality?.Realm == "shining_abode"
+                ? new PendingTurnSnapshotPathSelection(AfterlifeWoundTreatmentAuthority.AidLocalityPathsFor(aid))
+                : new PendingTurnSnapshotPathSelection(new[] { AfterlifeWoundTreatmentAuthority.AidLocalityPaths[0] },
+                    new[] { AfterlifeWoundTreatmentAuthority.AidLocalityPaths[1] }));
 
     /// <summary>Reads the same signed locality dependency family selected by the parsed quote.</summary>
     /// <param name="files">The current filesystem owner.</param>
@@ -206,8 +209,8 @@ internal static partial class AfterlifeWoundHealingPlanner
 
         private void AdmitGraphs(JsonObject? interfaceUpdates)
         {
-            if (_data?.ServiceQuote is not null && interfaceUpdates?["metaStateUpdates"] is JsonObject meta && meta.ContainsKey("inkFeatherChanges"))
-                throw new InvalidDataException("Public healing owns its exact Feather payment; competing GM currency changes must be removed.");
+            if ((_data?.ServiceQuote is not null || _data?.NegotiatedWalletInvariant is not null) && interfaceUpdates?["metaStateUpdates"] is JsonObject meta && meta.ContainsKey("inkFeatherChanges"))
+                throw new InvalidDataException("Healing owns its exact original wallet/payment; competing GM currency changes must be removed.");
             AdmitResidentThoughtResponse(interfaceUpdates);
             if (_data?.AidWitness is not null || _data?.ServiceQuote?.Provider is { Realm: "shining_abode", OwnerKind: "resident" })
                 BindResidentThoughts(_parsedSourceRoots.GetValueOrDefault(GuardianAbodeResidentState.StatePath) as JsonObject);
@@ -377,11 +380,11 @@ internal static partial class AfterlifeWoundHealingPlanner
             if (selection.Aid is not null || selection.Service is not null)
             {
                 var localityPaths = selection.Service is not null ? AfterlifeWoundTreatmentAuthority.ServiceLocalityPathsFor(selection.Service.Quote)
-                    : AfterlifeWoundTreatmentAuthority.AidLocalityPaths;
+                    : AfterlifeWoundTreatmentAuthority.AidLocalityPathsFor(selection.Aid!);
                 if (!PendingTurnSnapshotAuthority.HasValidatedRollbackSnapshotCoverage(manifest, m => m.Files,
                         m => m.SnapshotFileHashes, m => m.RollbackBaselineFiles, localityPaths, out _))
                     throw new InvalidDataException("Aid lacks its signed locality baseline coverage.");
-                aidLocality = selection.Service is not null ? ReadOriginalServiceLocalitySource(files, lease, selection.Service.Quote) : ReadOriginalAidLocalitySource(files, lease);
+                aidLocality = selection.Service is not null ? ReadOriginalServiceLocalitySource(files, lease, selection.Service.Quote) : ReadOriginalAidLocalitySource(files, lease, selection.Aid);
                 if (!aidLocality.Success || aidLocality.Snapshot is not { } local || aidLocality.Evidence is not { } localEvidence ||
                     local.SessionId != snapshot.SessionId || local.RequestId != snapshot.RequestId ||
                     local.TurnNumber != snapshot.TurnNumber || local.SnapshotToken != snapshot.SnapshotToken)

@@ -8,14 +8,30 @@ internal static partial class AfterlifeWoundHealingPlanner
     {
         internal const string ServiceSoulPath = "game_state/meta/soul_state.json";
         internal bool HasServicePayment => _data?.ServiceQuote is not null;
+        internal bool HasWalletContribution => HasServicePayment || _data?.NegotiatedWalletInvariant is not null;
         internal int? ServiceAmount => _data?.ServicePayment?.Amount;
         internal string? ServiceWoundId => _data?.ServiceQuote?.WoundId;
         private string? _expectedServiceAfterImageAdmissionFingerprint;
+        private string? _expectedNegotiatedAfterImageAdmissionFingerprint;
 
         /// <summary>Binds existing client projector DATA to this live continuation before comparing any proposed image.</summary>
         /// <param name="projectedProfiles">The existing projection from signed originals and this owner's retained accepted report.</param>
         private void BindProjectedServiceAdmission(JsonObject projectedProfiles)
         {
+            if (_data?.AidWitness is { } witness && SpiritualTreatmentParticipation.RecordRealm(witness["record"]!.AsObject()) == "shining_abode")
+            {
+                RequireExecutionCurrent();
+                var aid = SpiritualTreatmentParticipation.Selection(witness["record"]!.AsObject());
+                var admission = SpiritualTreatmentParticipation.RequireShiningProviderAdmission(
+                    _parsedSourceRoots.GetValueOrDefault(AfterlifeWoundTreatmentAuthority.ServiceLocalityPaths[0]) as JsonObject,
+                    _parsedSourceRoots.GetValueOrDefault(GuardianAbodeResidentState.StatePath) as JsonObject, projectedProfiles,
+                    _parsedSourceRoots.GetValueOrDefault(ShiningAbodeState.StatePath) as JsonObject,
+                    aid.Healer("shining_abode"), aid.ExplicitLocality!);
+                if (_expectedNegotiatedAfterImageAdmissionFingerprint is not null &&
+                    _expectedNegotiatedAfterImageAdmissionFingerprint != admission.Fingerprint)
+                    throw new InvalidDataException("The owned negotiated provider projection changed within its operation.");
+                _expectedNegotiatedAfterImageAdmissionFingerprint = admission.Fingerprint;
+            }
             if (!HasServicePayment) return;
             RequireExecutionCurrent();
             var quote = _data!.ServiceQuote!;
@@ -34,6 +50,15 @@ internal static partial class AfterlifeWoundHealingPlanner
         // other accepted domains, but its wallet must still be the exact original.
         internal JsonObject ComposeServiceSoulAfterImage(JsonObject? projected)
         {
+            if (_data?.NegotiatedWalletInvariant is { } invariant)
+            {
+                if (_published || _parsedSourceRoots.GetValueOrDefault(ServiceSoulPath) is not JsonObject originalSoul)
+                    throw new InvalidDataException("Only the live negotiated owner can preserve its original wallet.");
+                invariant.RequirePreserved(originalSoul);
+                var proposedSoul = projected ?? originalSoul;
+                invariant.RequirePreserved(proposedSoul);
+                return proposedSoul.DeepClone().AsObject();
+            }
             if (_published || _data?.ServiceQuote is not { } quote || _data.ServicePayment is not { } payment ||
                 _parsedSourceRoots.GetValueOrDefault(ServiceSoulPath) is not JsonObject original)
                 throw new InvalidDataException("Only the live service owner can compose its original wallet contribution.");
@@ -54,6 +79,19 @@ internal static partial class AfterlifeWoundHealingPlanner
         internal void RequireServiceComposedImages(JsonObject soul, JsonObject profiles, JsonObject history,
             JsonObject? residents = null, JsonObject? shining = null)
         {
+            if (_data?.NegotiatedWalletInvariant is { } invariant)
+            {
+                if (_published || !JsonNode.DeepEquals(_request?["currencyInvariant"], invariant.ToJson()))
+                    throw new InvalidDataException("Negotiated wallet DATA differs from the exact retained request.");
+                invariant.RequirePreserved(soul);
+                RequireNegotiatedComposedProvider(profiles, residents, shining);
+                var negotiatedRows = history["transitions"] as JsonArray;
+                var negotiatedIndex = (negotiatedRows?.Count ?? 0) - _stages.Count;
+                var negotiatedResult = negotiatedIndex < 0 ? null : negotiatedRows?[negotiatedIndex]?["transitionResult"] as JsonObject;
+                if (negotiatedResult is null || negotiatedResult["mode"]?.GetValue<string>() != "aid" ||
+                    !JsonNode.DeepEquals(negotiatedResult["request"], _request))
+                    throw new InvalidDataException("Negotiated History must retain the exact confirmed terms and wallet invariant.");
+            }
             if (!HasServicePayment) return;
             var data = _data ?? throw new InvalidDataException("Service source DATA is absent.");
             var quote = data.ServiceQuote!;
@@ -78,9 +116,31 @@ internal static partial class AfterlifeWoundHealingPlanner
                 throw new InvalidDataException("Published History is not the exact paid attempt and wallet evidence.");
         }
 
+
+        private void RequireNegotiatedComposedProvider(JsonObject profiles, JsonObject? residents, JsonObject? shining)
+        {
+            if (_data?.AidWitness is not { } witness || SpiritualTreatmentParticipation.RecordRealm(witness["record"]!.AsObject()) != "shining_abode") return;
+            var aid = SpiritualTreatmentParticipation.Selection(witness["record"]!.AsObject());
+            var admission = SpiritualTreatmentParticipation.RequireShiningProviderAdmission(
+                _parsedSourceRoots.GetValueOrDefault(AfterlifeWoundTreatmentAuthority.ServiceLocalityPaths[0]) as JsonObject,
+                residents ?? _parsedSourceRoots.GetValueOrDefault(GuardianAbodeResidentState.StatePath) as JsonObject, profiles,
+                shining ?? _parsedSourceRoots.GetValueOrDefault(ShiningAbodeState.StatePath) as JsonObject,
+                aid.Healer("shining_abode"), aid.ExplicitLocality!);
+            if (_expectedNegotiatedAfterImageAdmissionFingerprint is null || admission.Fingerprint != _expectedNegotiatedAfterImageAdmissionFingerprint)
+                throw new InvalidDataException("The actual negotiated provider differs from this owner's exact client projection.");
+        }
+
         internal void RequireServicePublication(IReadOnlyDictionary<string, JsonObject> writes)
         {
-            if (!HasServicePayment) return;
+            if (!HasWalletContribution && _expectedNegotiatedAfterImageAdmissionFingerprint is null) return;
+            if (!HasWalletContribution)
+            {
+                if (!writes.TryGetValue(WoundCarrierCatalog.AfterlifeProfilesPath, out var negotiatedProfiles))
+                    throw new InvalidDataException("Negotiated treatment cannot publish without its actual profile carrier.");
+                RequireNegotiatedComposedProvider(negotiatedProfiles, writes.GetValueOrDefault(GuardianAbodeResidentState.StatePath),
+                    writes.GetValueOrDefault(ShiningAbodeState.StatePath));
+                return;
+            }
             if (!writes.TryGetValue(ServiceSoulPath, out var soul) ||
                 !writes.TryGetValue(WoundCarrierCatalog.AfterlifeProfilesPath, out var profiles) ||
                 !writes.TryGetValue(WoundHistoryState.HistoryPath, out var history))

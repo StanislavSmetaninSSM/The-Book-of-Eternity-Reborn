@@ -12,6 +12,24 @@ internal static partial class AfterlifeWoundTreatmentAuthority
     internal static IReadOnlyList<string> AidLocalityPaths { get; } = Array.AsReadOnly(new[]
         { AidGuardiansPath, GuardianAbodeResidentState.StatePath });
 
+    private static readonly IReadOnlyList<string> FactionAidLocalityPaths =
+        Array.AsReadOnly(new[] { GuardianAbodeResidentState.StatePath });
+    private static readonly IReadOnlyList<string> ElyaraAidLocalityPaths = Array.AsReadOnly(new[] { AidGuardiansPath });
+
+    // Extra paths only: Shining state is already in SourcePaths. Keep original Chaos ordering.
+    internal static IReadOnlyList<string> AidLocalityPathsFor(SpiritualAidLocality? locality, bool includeCoreState = false)
+    {
+        var extra = locality?.Value switch
+        {
+            SpiritualAidLocality.ShiningFactionHall => FactionAidLocalityPaths,
+            SpiritualAidLocality.ElyaraShiningHall => ElyaraAidLocalityPaths,
+            _ => AidLocalityPaths
+        };
+        return includeCoreState && locality?.Realm == "shining_abode"
+            ? Array.AsReadOnly(extra.Append(ShiningAbodeState.StatePath).ToArray()) : extra;
+    }
+    internal static IReadOnlyList<string> AidLocalityPathsFor(SpiritualAidSelection aid) => AidLocalityPathsFor(aid.ExplicitLocality);
+
     // Entirely operation-local DATA. The caller keeps the actual lease and closes
     // the read images before control, before entropy and on request publication.
     private sealed record AidGrantData(JsonObject Witness, List<SourceFile> Reads,
@@ -51,7 +69,7 @@ internal static partial class AfterlifeWoundTreatmentAuthority
                 return StrictJsonAuthority.Deserialize<JsonObject>(CanonicalJsonUtf8.DecodeOneOptionalBom(source.Image.Bytes!),
                     new JsonSerializerOptions(), path);
             }
-            if (control.AfterlifeCatchupRequired || !AfterlifeEntityProfileState.TryNormalizeEffectRealm(control.CurrentRealm, out var realm) || realm != "chaos_sea" ||
+            if (control.AfterlifeCatchupRequired || !AfterlifeEntityProfileState.TryNormalizeEffectRealm(control.CurrentRealm, out var realm) || realm != SpiritualTreatmentParticipation.RecordRealm(grant.Witness["record"]!.AsObject()) ||
                 !ProgressionScheduleService.TryBindPreparedSpiritualCycle(preparedSchedule.Root,
                     grant.Reads.Single(s => s.Path == EffectAcceptedTurnInputComposer.WorldTimePath).Image.Bytes,
                     Root(ShiningAbodeState.StatePath), control, realm, out var ordinal) ||
@@ -63,10 +81,12 @@ internal static partial class AfterlifeWoundTreatmentAuthority
                 grant.History.Transitions.Any(t => t.WoundId == selection.WoundId && t.AttemptId is not null && t.CycleKey == cycle))
                 throw new InvalidDataException("Aid would repeat a wound session or natural tick.");
             grant.Reads[grant.Reads.FindIndex(s => s.Path == ProgressionScheduleService.SchedulePath)] = preparedSchedule;
-            var stageSources = SourcePaths.Concat(AidLocalityPaths).Select(p => grant.Reads.Single(s => s.Path == p)).ToArray();
+            var stageSources = SourcePaths.Concat(AidLocalityPathsFor(selection.Aid!)).Select(p => grant.Reads.Single(s => s.Path == p)).ToArray();
             var context = new SpiritualSelfTreatmentStageContext(sessionId, requestId, turn, control);
             var data = new SourceData(grant.Wound, grant.Source, realm, ordinal, AidSourceFingerprint(context, stageSources, grant.Witness),
-                grant.Carriers, grant.Effects, grant.Identities, grant.History, grant.Catalog, grant.NaturalMembers, grant.Witness.DeepClone().AsObject());
+                grant.Carriers, grant.Effects, grant.Identities, grant.History, grant.Catalog, grant.NaturalMembers, grant.Witness.DeepClone().AsObject())
+            { NegotiatedWalletInvariant = selection.Aid!.Compensation is null ? null : SpiritualTreatmentWalletInvariant.Capture(
+                grant.Reads.Single(s => s.Path == SoulPath).Root!) };
             var pending = grant.Reads.Single(s => s.Path == AcceptedMechanicsPlan.WoundCommandPath);
             // Include the preceding input/protocol read images as operation guards;
             // only the canonical 18 source paths enter the new signed source hash.
@@ -88,7 +108,7 @@ internal static partial class AfterlifeWoundTreatmentAuthority
             context.Turn.ToString(System.Globalization.CultureInfo.InvariantCulture),
             WoundAcceptedTurnFingerprintWriter.CanonicalJson(JsonSerializer.SerializeToNode(context.Progression)!),
             WoundAcceptedTurnFingerprintWriter.CanonicalJson(witness)
-        }.Concat(SourcePaths.Concat(AidLocalityPaths).SelectMany(path =>
+        }.Concat(SourcePaths.Concat(AidLocalityPathsFor(SpiritualTreatmentParticipation.RecordLocality(witness["record"]!.AsObject()))).SelectMany(path =>
         {
             var source = sources.Single(s => s.Path == path);
             return new[] { path, source.Image.Fingerprint };
@@ -101,8 +121,8 @@ internal static partial class AfterlifeWoundTreatmentAuthority
         if (SpiritualTreatmentParticipation.HasUnsettledChange(sources.Single(s => s.Path == WoundCarrierCatalog.AfterlifeProfilesPath).Root))
             return SourceRefuse("participation_change_unsupported");
         var natural = PrepareNaturalSourceData(context, sources);
-        if (natural is null || natural.Realm != "chaos_sea") return SourceRefuse("cycle_invalid");
-        JsonObject? Root(string path) => sources.Single(s => s.Path == path).Root;
+        if (natural is null || natural.Realm != SpiritualTreatmentParticipation.RecordRealm(witness["record"]!.AsObject())) return SourceRefuse("cycle_invalid");
+        JsonObject? Root(string path) => sources.SingleOrDefault(s => s.Path == path)?.Root;
         var matches = natural.Catalog.Occurrences.Where(o => o.WoundId == selection.WoundId).ToArray();
         if (matches is not { Length: 1 } || matches[0].Wound is not { Lifecycle: "active" } wound ||
             wound.Owner != aid.Target(natural.Realm) ||
@@ -114,9 +134,8 @@ internal static partial class AfterlifeWoundTreatmentAuthority
         var healerCoordinate = aid.Healer(natural.Realm);
         var healers = natural.Carriers.AfterlifeProfiles["profiles"]!.AsArray().OfType<JsonObject>()
             .Where(p => WoundCarrierCollectionAuthority.AfterlifeProfileMatches(p, healerCoordinate)).ToArray();
-        var scope = SpiritualTreatmentParticipation.RequireAidScope(Root(AidGuardiansPath)
-            ?? throw new InvalidDataException("Aid original locality is absent."), Root(GuardianAbodeResidentState.StatePath),
-            natural.Carriers.AfterlifeProfiles, aid, wound);
+        var scope = SpiritualTreatmentParticipation.RequireAidScope(Root(AidGuardiansPath), Root(GuardianAbodeResidentState.StatePath),
+            natural.Carriers.AfterlifeProfiles, aid, wound, Root(ShiningAbodeState.StatePath));
         if (healers is not { Length: 1 } || !AfterlifeProfileVisibility.IsVisibleToPlayer(target) ||
             !AfterlifeProfileVisibility.IsVisibleToPlayer(healers[0]))
             return SourceRefuse("target_invalid");
@@ -129,7 +148,8 @@ internal static partial class AfterlifeWoundTreatmentAuthority
                 t.CycleKey == CycleKey(natural.Realm, natural.CycleOrdinal))) return SourceRefuse("attempt_already_accepted");
         return new(new(wound, source, natural.Realm, natural.CycleOrdinal, AidSourceFingerprint(context, sources, witness),
             natural.Carriers, natural.Effects, natural.Identities, natural.History, natural.Catalog, natural.Members,
-            witness.DeepClone().AsObject()), null);
+            witness.DeepClone().AsObject())
+        { NegotiatedWalletInvariant = aid.Compensation is null ? null : SpiritualTreatmentWalletInvariant.Capture(Root(SoulPath)!) }, null);
     }
 
     private static void RequireOriginalAidWitness(JsonObject witness, SpiritualSelfTreatmentStageContext context,
@@ -151,7 +171,7 @@ internal static partial class AfterlifeWoundTreatmentAuthority
             !SpiritualTreatmentParticipation.MatchesSelection(record, selection.Aid) || previous[0].ParticipationOutcomes is not JsonArray outcomes || outcomes.Count != 1 ||
             !JsonNode.DeepEquals(outcomes[0]?["record"], record) || !SpiritualTreatmentParticipation.IsAvailable(record) ||
             String(record["woundId"]) != wound.WoundId || Integer(record["eligibleCycleOrdinal"]) != context.Progression.NextChaosSeaTurnOrdinal ||
-            SpiritualTreatmentParticipation.RecordLocality(record).AbodeId != String(target["locationId"]) ||
+            SpiritualTreatmentParticipation.RecordLocality(record).LocationId != String(target["locationId"]) ||
             String(record["binding"]?["sessionId"]) != context.SessionId || Integer(record["binding"]?["turn"]) != context.Turn - 1 ||
             final is null || WoundIdentityState.ComputeSemanticFingerprint(final) != WoundIdentityState.ComputeSemanticFingerprint(wound))
             throw new InvalidDataException("Aid original grant identity/cycle/current wound does not match its full accepted result.");
@@ -193,9 +213,9 @@ internal static partial class AfterlifeWoundTreatmentAuthority
             sessionId, checked(turn - 1), selection, Read)
             ?? throw new InvalidDataException("Aid requires the actual immediately preceding published participation turn.");
         var control = published.Root["control"]!.Deserialize<ProgressionControl>()!;
-        var realm = "chaos_sea";
+        var realm = SpiritualTreatmentParticipation.RecordRealm(published.Root["participationOutcomes"]![0]!["record"]!.AsObject());
         if (!AfterlifeEntityProfileState.TryNormalizeEffectRealm(control.CurrentRealm, out var acceptedRealm) || acceptedRealm != realm)
-            throw new InvalidDataException("Aid requires a published Chaos participation cycle.");
+            throw new InvalidDataException("Aid requires a published participation cycle in the exact provider realm.");
         if (requestRoot is not null)
         {
             var previous = requestRoot.Deserialize<TurnRequest>(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)
@@ -222,15 +242,17 @@ internal static partial class AfterlifeWoundTreatmentAuthority
         var soul = await Root(SoulPath) ?? throw new InvalidDataException("Aid requires its current player soul.");
         if (!AfterlifeEntityProfileState.TryNormalizeEffectRealm(String(soul["currentRealm"]), out var currentRealm) || currentRealm != realm ||
             (await Root(AfterlifeSpiritualConflictState.StatePath))?["activeConflict"] is not null)
-            throw new InvalidDataException("Aid requires the same current safe Chaos realm without an active conflict.");
-        var guardians = await Root(AidGuardiansPath) ?? throw new InvalidDataException("Aid requires current Guardian locality.");
+            throw new InvalidDataException("Aid requires the same current safe afterlife realm without an active conflict.");
+        var localityPaths = AidLocalityPathsFor(aid);
+        var guardians = localityPaths.Contains(AidGuardiansPath) ? await Root(AidGuardiansPath) : null;
+        var residents = localityPaths.Contains(GuardianAbodeResidentState.StatePath) ? await Root(GuardianAbodeResidentState.StatePath) : null;
         var profiles = published.CarrierRoots[WoundCarrierCatalog.AfterlifeProfilesPath]!;
         var selectedWound = published.Catalog.Occurrences.SingleOrDefault(o => o.WoundId == selection.WoundId)?.Wound
             ?? throw new InvalidDataException("Aid requires its exact current wound.");
         var scope = SpiritualTreatmentParticipation.RequireAidScope(guardians,
-            await Root(GuardianAbodeResidentState.StatePath), profiles, aid, selectedWound);
-        if (SpiritualTreatmentParticipation.RecordLocality(record).AbodeId != scope.LocationId)
-            throw new InvalidDataException("Aid participation belongs to a different Abode.");
+            residents, profiles, aid, selectedWound, await Root(ShiningAbodeState.StatePath));
+        if (SpiritualTreatmentParticipation.RecordLocality(record).LocationId != scope.LocationId)
+            throw new InvalidDataException("Aid participation belongs to a different exact locality.");
         if (SpiritualTreatmentParticipation.HasUnsettledChange(profiles))
             throw new InvalidDataException("Active aid cannot issue a new participation change in the same turn.");
         var target = profiles["profiles"]!.AsArray().OfType<JsonObject>().Where(p =>
@@ -259,7 +281,7 @@ internal static partial class AfterlifeWoundTreatmentAuthority
         var prepared = SpiritualHealingResolver.PrepareSource(new(wound, healer, aid.ReceiveAid ? target[0] : player[0], soul, effects)).Source;
         if (prepared is null || prepared.HealingTier < wound.Severity.Rank)
             throw new InvalidDataException("Aid requires the actual selected healer's sufficient current healing art.");
-        foreach (var path in SourcePaths.Concat(AidLocalityPaths))
+        foreach (var path in SourcePaths.Concat(localityPaths))
             await Read(path); // Complete source/absence identity; roots are decoded only when used.
         await RequireAidReadImagesCurrentAsync(files, lease, reads);
         var witness = new JsonObject { ["record"] = record.DeepClone(),

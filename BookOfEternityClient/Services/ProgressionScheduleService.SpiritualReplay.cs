@@ -147,6 +147,15 @@ public partial class ProgressionScheduleService
                     WoundAcceptedTurnFingerprintWriter.CanonicalJson(accepted.Root["request"]!["payment"]!["walletAfter"]))
                 throw new InvalidDataException("Published service current wallet differs from its exact accepted payment after-image.");
         }
+        if (accepted.Root["request"] is JsonObject negotiatedRequest && negotiatedRequest.ContainsKey("currencyInvariant"))
+        {
+            // Current settlement only; historical result parsing never reads or restores today's wallet.
+            var invariant = SpiritualTreatmentWalletInvariant.Parse(negotiatedRequest["currencyInvariant"]);
+            var soulJson = await Text(AfterlifeWoundHealingPlanner.Continuation.ServiceSoulPath);
+            var soul = soulJson is null ? null : StrictJsonAuthority.Deserialize<JsonObject>(soulJson,
+                new JsonSerializerOptions(), "published negotiated Soul settlement");
+            invariant.RequirePreserved(soul ?? throw new InvalidDataException("Published negotiated Soul is absent."));
+        }
         var roots = new Dictionary<string, JsonObject?>(StringComparer.Ordinal);
         foreach (var path in WoundAcceptedTurnSnapshotContract.CarrierPaths)
         {

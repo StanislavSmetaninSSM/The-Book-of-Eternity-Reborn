@@ -20,6 +20,7 @@ internal static partial class WoundApplicationService
     internal const string FactionServiceActionText = "Принять платное лечение моей выбранной духовной раны у выбранного целителя фракции по подтверждённой котировке. Оплатить одну принятую попытку и продолжить один обычный безопасный цикл мира.";
     internal static string ActionFor(SpiritualSelfTreatmentSelection selection) => selection.Service is { } service
         ? service.Quote.Provider.OwnerKind == "resident" ? FactionServiceActionText : ServiceActionText : selection.Combat is not null ? CombatActionText : selection.Aid is null ? ActionText
+        : selection.Aid.Compensation is not null ? "Принять помощь выбранного целителя на отдельно подтверждённых договорных условиях. Выполнить ту же попытку лечения и один безопасный цикл мира, без списания Чернильных Перьев."
         : selection.Aid.Resident is not null ? selection.Aid.ReceiveAid ? ResidentReceiveAidActionText : ResidentAidActionText
         : selection.Aid.ReceiveAid ? ReceiveAidActionText : AidActionText;
 
@@ -144,22 +145,6 @@ internal static partial class WoundApplicationService
             return bytes is null ? null : StrictJsonAuthority.Deserialize<JsonObject>(CanonicalJsonUtf8.DecodeOneOptionalBom(bytes),
                 new JsonSerializerOptions(), path);
         }
-        if (context.Input.Realm == "shining_abode")
-        {
-            try
-            {
-                var registry = await Root(AfterlifeWoundTreatmentAuthority.AidLocalityPaths[0]);
-                var shining = await Root(ShiningAbodeState.StatePath);
-                JsonObject? residents = null;
-                try { residents = await Root(GuardianAbodeResidentState.StatePath); }
-                catch (Exception failure) when (failure is JsonException or InvalidDataException or InvalidOperationException or ArgumentException or OverflowException)
-                { /* An invalid optional faction roster cannot create a service or change Elyara's dependencies. */ }
-                return new(generation, BuildPublicServiceChoices(context, registry, self.Choices, shining, residents));
-            }
-            catch (Exception failure) when (failure is not CoordinatedStatePublicationUncertainException &&
-                failure is (JsonException or InvalidDataException or InvalidOperationException or ArgumentException or OverflowException))
-            { return self; }
-        }
         var profiles = (context.Input.Carriers.AfterlifeProfiles?["profiles"] as JsonArray)?.OfType<JsonObject>().ToArray() ?? [];
         var visibleActors = profiles.Where(p => p["actorType"]?.GetValue<string>() is "guardian" or "resident" &&
             AfterlifeProfileVisibility.IsVisibleToPlayer(p)).ToArray();
@@ -169,21 +154,30 @@ internal static partial class WoundApplicationService
         try
         {
             var guardians = await Root(AfterlifeWoundTreatmentAuthority.AidLocalityPaths[0]);
-            var residents = await Root(GuardianAbodeResidentState.StatePath);
+            JsonObject? residents = null;
+            try { residents = await Root(GuardianAbodeResidentState.StatePath); }
+            catch (Exception failure) when (context.Input.Realm == "shining_abode" &&
+                failure is JsonException or InvalidDataException or InvalidOperationException or ArgumentException or OverflowException)
+            { /* Optional malformed faction DATA cannot create a provider or change Elyara's dependencies. */ }
+            var shining = context.Input.Realm == "shining_abode" ? await Root(ShiningAbodeState.StatePath) : null;
             // Share these parsed locality roots and the caller's existing catalog.
             // Target visibility needs no grant, schedule, attempt or treatment authority.
-            navigation = new WoundCommandState(generation, BuildPublicServiceChoices(context, guardians, self.Choices))
-                .WithTargets(WoundTargetSelectionService.Build(context, guardians, residents));
+            navigation = new WoundCommandState(generation, BuildPublicServiceChoices(context, guardians, self.Choices, shining, residents));
+            if (context.Input.Realm == "chaos_sea")
+                navigation = navigation.WithTargets(WoundTargetSelectionService.Build(context, guardians, residents));
             if (candidates.Length == 0) return navigation;
             var scheduleBytes = await fs.ReadFileBytesAsync(lease, ProgressionScheduleService.SchedulePath);
-            if (guardians is null || scheduleBytes is null || fs.FileExists(lease, AcceptedMechanicsPlan.WoundCommandPath) ||
+            if (context.Input.Realm == "chaos_sea" && guardians is null || scheduleBytes is null || fs.FileExists(lease, AcceptedMechanicsPlan.WoundCommandPath) ||
                 fs.FileExists(lease, ProgressionScheduleService.ReportPath)) return navigation;
-            var currentGuardianId = guardians["chaosSeaNavigation"]?["currentGuardianId"]?.GetValue<string>();
-            if (string.IsNullOrWhiteSpace(currentGuardianId)) return navigation;
-            var scope = SpiritualTreatmentParticipation.RequireCurrentGuardianScope(guardians, residents, currentGuardianId);
-            candidates = candidates.Where(p => p["actorType"]?.GetValue<string>() == "resident" ||
-                SpiritualTreatmentParticipation.ProfileId(p) == currentGuardianId).ToArray();
-            if (candidates.Count(p => p["actorType"]?.GetValue<string>() == "guardian") > 1) return navigation;
+            if (context.Input.Realm == "chaos_sea")
+            {
+                var currentGuardianId = guardians!["chaosSeaNavigation"]?["currentGuardianId"]?.GetValue<string>();
+                if (string.IsNullOrWhiteSpace(currentGuardianId)) return navigation;
+                _ = SpiritualTreatmentParticipation.RequireCurrentGuardianScope(guardians, residents, currentGuardianId);
+                candidates = candidates.Where(p => p["actorType"]?.GetValue<string>() == "resident" ||
+                    SpiritualTreatmentParticipation.ProfileId(p) == currentGuardianId).ToArray();
+                if (candidates.Count(p => p["actorType"]?.GetValue<string>() == "guardian") > 1) return navigation;
+            }
             var healer = profiles.SingleOrDefault(p => p["actorType"]?.GetValue<string>() == "player_soul" &&
                 SpiritualTreatmentParticipation.ProfileId(p) == "player_soul");
             if (healer is null) return navigation;
@@ -192,12 +186,13 @@ internal static partial class WoundApplicationService
             {
                 var record = target[SpiritualTreatmentParticipation.RecordProperty]!.AsObject();
                 SpiritualTreatmentParticipation.ValidateRecord(record);
-                if (!SpiritualTreatmentParticipation.IsAvailable(record) || SpiritualTreatmentParticipation.HasUnsettledChange(context.Input.Carriers.AfterlifeProfiles)) continue;
+                if (SpiritualTreatmentParticipation.RecordRealm(record) != context.Input.Realm ||
+                    context.Input.Realm == "shining_abode" && !SpiritualTreatmentParticipation.IsProviderOffer(record) ||
+                    !SpiritualTreatmentParticipation.IsAvailable(record) || SpiritualTreatmentParticipation.HasUnsettledChange(context.Input.Carriers.AfterlifeProfiles)) continue;
                 var targetId = SpiritualTreatmentParticipation.ProfileId(target);
                 var receiveAid = SpiritualTreatmentParticipation.IsProviderOffer(record);
                 if (SpiritualTreatmentParticipation.RecordOwnerId(record) != targetId ||
                     target["actorType"]?.GetValue<string>() != SpiritualTreatmentParticipation.RecordOwner(record).OwnerKind) continue;
-                if (target["locationId"]?.GetValue<string>() != scope.LocationId || SpiritualTreatmentParticipation.RecordLocality(record).AbodeId != scope.LocationId) continue;
                 var primary = context.Input.History.Transitions.SingleOrDefault(t => t.TransitionId == record["primaryTransitionId"]!.GetValue<string>());
                 if (primary?.TransitionResult is not SpiritualHealingPersistedResult { IsNatural: true } grant ||
                     grant.SchemaVersion != SpiritualTreatmentParticipation.ResultVersion(record) || grant.ParticipationOutcomes is not JsonArray outcomes || outcomes.Count != 1 || !JsonNode.DeepEquals(outcomes[0]?["record"], record)) continue;
@@ -208,7 +203,9 @@ internal static partial class WoundApplicationService
                     wound.Owner != SpiritualTreatmentParticipation.RecordTarget(record) ||
                     wound.Display.Visibility is not ("public" or "known_to_player")) continue;
                 var aid = SpiritualTreatmentParticipation.Selection(record);
-                _ = SpiritualTreatmentParticipation.RequireAidScope(guardians, residents, context.Input.Carriers.AfterlifeProfiles!, aid, wound);
+                var scope = SpiritualTreatmentParticipation.RequireAidScope(guardians, residents, context.Input.Carriers.AfterlifeProfiles!, aid, wound, shining);
+                if (target["locationId"]?.GetValue<string>() != scope.LocationId ||
+                    SpiritualTreatmentParticipation.RecordLocality(record).LocationId != scope.LocationId) continue;
                 var source = SpiritualHealingResolver.PrepareSource(new(wound,
                     SpiritualTreatmentParticipation.RecordHealer(record),
                     receiveAid ? target : healer, context.Soul, context.Input.Effects)).Source;
@@ -217,10 +214,12 @@ internal static partial class WoundApplicationService
                 choices.Add(new("wound_" + choices.Count,
                     new SpiritualSelfTreatmentSelection(wound.WoundId, WoundIdentityState.ComputeSemanticFingerprint(wound))
                         { Aid = aid },
-                    receiveAid ? "Себя: " + WoundPlayerProjection.Text(wound.Display.Name) + (aid.Resident is null ? " — помощь Хранителя" : " — помощь жителя Обители") + (name.Length == 0 ? "" : " «" + name + "»")
+                    receiveAid ? "Себя: " + WoundPlayerProjection.Text(wound.Display.Name) + (aid.Resident is null ? " — помощь Хранителя" : context.Input.Realm == "shining_abode" ? " — помощь целителя фракции" : " — помощь жителя Обители") + (name.Length == 0 ? "" : " «" + name + "»")
                         : (aid.Resident is not null ? "Житель Обители" : "Хранитель") + (name.Length == 0 ? "" : " «" + name + "»") + ": " + WoundPlayerProjection.Text(wound.Display.Name),
                     wound.Severity.Value, source.HealingTier, true,
-                    receiveAid ? (aid.Resident is null ? "Хранитель" : "Житель Обители") + " готов помочь бесплатно. Примите помощь подтверждением; один безопасный цикл мира, без затрат ОД."
+                    receiveAid ? aid.Compensation is { } compensation
+                        ? "Условия помощи: " + WoundPlayerProjection.Text(compensation.ReadableTerms) + ". Подтвердите отдельно: условия принятой попытки действуют и при неудаче. Один безопасный цикл мира; Чернильные Перья не списываются."
+                        : (aid.Resident is null ? "Хранитель" : context.Input.Realm == "shining_abode" ? "Целитель фракции" : "Житель Обители") + " готов помочь бесплатно. Примите помощь подтверждением; один безопасный цикл мира, без затрат ОД."
                         : "Согласие получено на следующий безопасный цикл. Без затрат ОД; перед броском согласие и близость проверяются заново."));
             }
             return new WoundCommandState(generation, choices).WithTargets(navigation.Targets);

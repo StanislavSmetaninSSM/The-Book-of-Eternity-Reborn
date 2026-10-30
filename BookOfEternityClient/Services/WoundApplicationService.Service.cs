@@ -83,6 +83,9 @@ internal static partial class WoundApplicationService
     internal static string ConfirmationFor(SpiritualSelfTreatmentSelection selection) => selection.Service is { } service
         ? "Подтвердить лечение " + (service.Quote.Provider.OwnerKind == "resident" ? "у выбранного целителя фракции" : "у Элиары") +
             " за " + service.Quote.Amount + " Чернильных Перьев за принятую попытку, включая неудачу, и один цикл мира?"
+        : selection.Aid?.Compensation is { } compensation
+            ? "Подтвердить лечение на условиях: " + WoundPlayerProjection.Text(compensation.ReadableTerms) +
+                ". Условия относятся к принятой попытке, включая неудачу; один цикл мира, без списания Чернильных Перьев?"
         : selection.Combat is not null ? "Подтвердить прерываемое лечение за ОД в этом обмене?"
         : "Подтвердить лечение без затрат ОД и один цикл мира?";
 }
