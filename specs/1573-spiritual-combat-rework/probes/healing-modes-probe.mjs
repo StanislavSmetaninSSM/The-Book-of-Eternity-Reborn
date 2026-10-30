@@ -2,7 +2,7 @@
 import assert from 'node:assert/strict';
 import { pathToFileURL } from 'node:url';
 import { resolve } from 'node:path';
-import { rng,seedFor } from './healing-counters.mjs';
+import { rng,seedFor,round } from './healing-counters.mjs';
 import { profileFor,damageTable,strength,remaining,cleanse,recover,attack } from './suppression-model.mjs';
 import { price } from './reaction-model.mjs';
 import { actor,begin,end,applyHeal,damage,replaceMain,healingCalculator,healingValue } from './healing-modes-model.mjs';
@@ -12,6 +12,16 @@ const tables=new Map([0,130,1000].map(D=>[D,{
   ordinary:damageTable(profileFor(D),28),suppress:damageTable(profileFor(D),24)
 }]));
 const calculate=healingCalculator();
+export function protectedDamageTable(D,B,extraResistance) {
+  const p=profileFor(D),a2=BigInt(Math.min(40+D,2*p.X)),den=200n+3n*a2;
+  // Accepted additive resistance, clamped at 90%; no rounding before final HP damage.
+  const retain=(100n-BigInt(extraResistance))*den-100n*a2;
+  const bounded=retain<10n*den?10n*den:retain>200n*den?200n*den:retain;
+  const numerator=BigInt(B)*(200n+3n*a2)*BigInt(50+D)*bounded,denominator=1000000n*den;
+  return damageTable(p,B).map(x=>({quality:x.quality,damage:x.quality===0?0:
+    x.quality===3?round(numerator*BigInt(150+2*p.X),denominator*BigInt(100+p.X)):
+    round(numerator,denominator*(x.quality===1?2n:1n))}));
+}
 export function chooseMode(a,mode,maxNextDamage) {
   if(mode!=='adaptive')return mode;
   if(a.pending)return 'long';
@@ -31,6 +41,8 @@ export function simulateModes({D=130,mode='instant',style='ordinary',policy='hea
   const seed=seedFor(JSON.stringify(options)),randomDamage=rng(seed),randomReaction=rng(seedFor(`reaction|${seed}`));
   const roll=()=>{const k=randomReaction()%400;return[Math.floor(k/20)+1,k%20+1];};
   const table=tables.get(D),maxNextDamage=Math.max(...table.ordinary.map(x=>x.damage));
+  // Prepared once for this cell's immutable patient protection, never inside a trajectory.
+  const patientTable=resistance?{ordinary:protectedDamageTable(D,28,resistance),suppress:protectedDamageTable(D,24,resistance)}:table;
   const counts={attacks:0,damageToB:0,suppression:0,healingMains:0,instant:0,old:0,starts:0,finishes:0,
     startAttempts:0,finishAttempts:0,abandoned:0,interruption:0,cancelled:0,cancelledStart:0,cancelledFinish:0,
     guard:0,counterAttempt:0,counterSucceeded:0,noInterruptEnergy:0,noInterruptReaction:0,
@@ -51,9 +63,7 @@ export function simulateModes({D=130,mode='instant',style='ordinary',policy='hea
           const reserve=style==='reserve'||style==='suppress_reserve';
           const canReserve=Math.min(a.p.max,a.energy-cost+a.regen)>=price(a,8);
           if(a.energy>=cost&&(!reserve||canReserve)){
-            const original=table[kind][randomDamage()%400];
-            // Explicit sensitivity: extra final damage reduction, not a second innate contribution.
-            const result=resistance?{...original,damage:Math.floor((original.damage*(100-resistance)+50)/100)}:original;
+            const result=patientTable[kind][randomDamage()%400];
             const before=b.hp;assert.ok(attack(a,b,result,kind));damage(b,0);
             counts.attacks++;counts.damageToB+=before-b.hp;if(kind==='suppress')counts.suppression++;
           }else{assert.ok(recover(a));counts.recoverA++;}

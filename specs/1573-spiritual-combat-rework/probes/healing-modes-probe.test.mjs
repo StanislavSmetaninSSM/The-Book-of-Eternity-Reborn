@@ -1,7 +1,16 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { simulateModes, scenarios, chooseMode } from './healing-modes-probe.mjs';
+import { simulateModes, scenarios, chooseMode, protectedDamageTable } from './healing-modes-probe.mjs';
 import { actor } from './healing-modes-model.mjs';
+import { profileFor, damageTable } from './suppression-model.mjs';
+
+test('sensitivity resistance adds percentage points to innate before the sole rounding',()=>{
+  for(const D of [0,130,1000])assert.deepEqual(protectedDamageTable(D,28,0),damageTable(profileFor(D),28));
+  // Roll 10 vs 5: full outcome. D0 outgoing33.88; innate=700/121; extra25pp =>23.45, rounded23.
+  assert.equal(protectedDamageTable(0,28,25)[9*20+4].damage,23);
+  assert.equal(protectedDamageTable(130,28,25)[9*20+4].damage,154);
+  assert.equal(protectedDamageTable(0,28,90)[9*20+4].damage,3);
+});
 
 test('adaptive mode uses current HP/energy and known damage ceiling, never future dice',()=>{
   const a=actor(130,'a');assert.equal(chooseMode(a,'adaptive',300),'long');
