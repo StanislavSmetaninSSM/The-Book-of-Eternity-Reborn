@@ -1,3 +1,26 @@
+# US6 public faction route bounded ACCEPTED; private compatibility gate prepared
+
+Independent Sol finalOUTCOME accepts console/shared-browser/physicalrollback3/3PASS,
+including full20event5message captures,strict clocks/CRC/footer/hashes/rootabsence/
+currentpins. Wiring3 accepted with intentionalnegative distinguished. Mainbusiness
+source06a6de91f,Integrationc1e6b36a9;171prior cases keep explicitoriginal lineage.
+This is real public faction treatment through existing interfaces, not only viewing.
+WholeUS6/negotiatedB/DOM/liveprovider/freshprocess remain open.
+
+Current-binary EPOCH-private-plan exact2descriptors/5cases/5methods0executed,
+12.7165544s/no duplicates/cleanup/pinsstable. Current27artifacts and reserve verified;
+separate finalPREP confirmation pending for one original-budget private5 regression.
+Old190.1679s timeout remains unexplained, never relabeled fixed/PASS. No codechanges,
+aggregate run or171case replay. After this finite gate, continue accepted B design:
+closed optional provider-offer consideration, samegrant/attempt/result owners, exact
+wallet-presence invariant and typedShining locality, no invented economic/fulfillment
+rule. Astra is refining the existing model/API dependency order read-only while the
+ordinary regression is prepared; no competing writer/new diagnostic framework.
+
+All raw outside checkout, no deletions/uploads; metadata-only checkpoint.
+
+---
+
 # US6 public faction treatment console/browser/rollback3/3PASS; final review pending
 
 New real public route now completes through existing console and shared browser
