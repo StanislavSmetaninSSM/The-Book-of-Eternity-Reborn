@@ -100,7 +100,7 @@ public sealed class ShiningPatientMemoryProgramTests
         if (shape == "extra") value!["actorId"] = "foreign_actor";
         if (shape == "stale") value!["turnNumber"] = 42;
         if (shape == "blank") value!["gmThoughtsSummary"] = " ";
-        if (shape == "bad_id") value!["entryId"] = "bad id";
+        if (shape == "bad_id") value!["entryId"] = " bad_id";
         if (shape == "wrong_text_type") value!["summary"] = 7;
         Assert.Throws<InvalidDataException>(() => SpiritualTreatmentParticipation.ReadShiningPatientMemoryCommand(value, 43));
     }

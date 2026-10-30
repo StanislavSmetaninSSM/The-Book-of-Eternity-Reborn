@@ -2,143 +2,31 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "shining-patient-memory-data",
-      "reason": "New detached/transport/memory/GM source and refusal controls first; exact signed native kind×phase and conditional roster owner controls next; original180s patient/provider UI only after cheap/native PASS and separate PREP. Retain historical unrelated PASS; do not replay old68/239 aggregate.",
+      "category": "shining-patient-memory-parser",
+      "reason": "Only changed seven-row parser theory plus29 previously unrun guidance/transport/source-guard cases after S5 partial33. Retain26 unaffected PASS (24DATA+2example inventory); supersede six old passed rows from the changed parser theory. No Engine/native release or unrelated PASS replay.",
       "contracts": [
-        "#1536 T108-SHINING-PATIENT-MEMORY; accepted6416 design; actualS5R native causal RED"
-      ]
-    },
-    {
-      "category": "shining-patient-memory-transport-regressions",
-      "reason": "New detached/transport/memory/GM source and refusal controls first; exact signed native kind×phase and conditional roster owner controls next; original180s patient/provider UI only after cheap/native PASS and separate PREP. Retain historical unrelated PASS; do not replay old68/239 aggregate.",
-      "contracts": [
-        "#1536 T108-SHINING-PATIENT-MEMORY; accepted6416 design; actualS5R native causal RED"
+        "#1536 T108-SHINING-PATIENT-MEMORY; exact existing identifier grammar; scoped partial-outcome follow-up"
       ]
     },
     {
       "category": "shining-patient-memory-guidance",
-      "reason": "New detached/transport/memory/GM source and refusal controls first; exact signed native kind×phase and conditional roster owner controls next; original180s patient/provider UI only after cheap/native PASS and separate PREP. Retain historical unrelated PASS; do not replay old68/239 aggregate.",
+      "reason": "Only changed seven-row parser theory plus29 previously unrun guidance/transport/source-guard cases after S5 partial33. Retain26 unaffected PASS (24DATA+2example inventory); supersede six old passed rows from the changed parser theory. No Engine/native release or unrelated PASS replay.",
       "contracts": [
-        "#1536 T108-SHINING-PATIENT-MEMORY; accepted6416 design; actualS5R native causal RED"
+        "#1536 T108-SHINING-PATIENT-MEMORY; exact existing identifier grammar; scoped partial-outcome follow-up"
+      ]
+    },
+    {
+      "category": "shining-patient-memory-transport-regressions",
+      "reason": "Only changed seven-row parser theory plus29 previously unrun guidance/transport/source-guard cases after S5 partial33. Retain26 unaffected PASS (24DATA+2example inventory); supersede six old passed rows from the changed parser theory. No Engine/native release or unrelated PASS replay.",
+      "contracts": [
+        "#1536 T108-SHINING-PATIENT-MEMORY; exact existing identifier grammar; scoped partial-outcome follow-up"
       ]
     },
     {
       "category": "wound-read-semantic-source-guards",
-      "reason": "New detached/transport/memory/GM source and refusal controls first; exact signed native kind×phase and conditional roster owner controls next; original180s patient/provider UI only after cheap/native PASS and separate PREP. Retain historical unrelated PASS; do not replay old68/239 aggregate.",
+      "reason": "Only changed seven-row parser theory plus29 previously unrun guidance/transport/source-guard cases after S5 partial33. Retain26 unaffected PASS (24DATA+2example inventory); supersede six old passed rows from the changed parser theory. No Engine/native release or unrelated PASS replay.",
       "contracts": [
-        "#1536 T108-SHINING-PATIENT-MEMORY; accepted6416 design; actualS5R native causal RED"
-      ]
-    },
-    {
-      "category": "shining-patient-documentation-inventory",
-      "reason": "New detached/transport/memory/GM source and refusal controls first; exact signed native kind×phase and conditional roster owner controls next; original180s patient/provider UI only after cheap/native PASS and separate PREP. Retain historical unrelated PASS; do not replay old68/239 aggregate.",
-      "contracts": [
-        "#1536 T108-SHINING-PATIENT-MEMORY; accepted6416 design; actualS5R native causal RED"
-      ]
-    },
-    {
-      "category": "shining-patient-memory-roster-guard",
-      "reason": "New detached/transport/memory/GM source and refusal controls first; exact signed native kind×phase and conditional roster owner controls next; original180s patient/provider UI only after cheap/native PASS and separate PREP. Retain historical unrelated PASS; do not replay old68/239 aggregate.",
-      "contracts": [
-        "#1536 T108-SHINING-PATIENT-MEMORY; accepted6416 design; actualS5R native causal RED"
-      ]
-    },
-    {
-      "category": "shining-patient-response-memory-causal",
-      "reason": "New detached/transport/memory/GM source and refusal controls first; exact signed native kind×phase and conditional roster owner controls next; original180s patient/provider UI only after cheap/native PASS and separate PREP. Retain historical unrelated PASS; do not replay old68/239 aggregate.",
-      "contracts": [
-        "#1536 T108-SHINING-PATIENT-MEMORY; accepted6416 design; actualS5R native causal RED"
-      ]
-    },
-    {
-      "category": "shining-patient-radiant-response-memory",
-      "reason": "New detached/transport/memory/GM source and refusal controls first; exact signed native kind×phase and conditional roster owner controls next; original180s patient/provider UI only after cheap/native PASS and separate PREP. Retain historical unrelated PASS; do not replay old68/239 aggregate.",
-      "contracts": [
-        "#1536 T108-SHINING-PATIENT-MEMORY; accepted6416 design; actualS5R native causal RED"
-      ]
-    },
-    {
-      "category": "shining-patient-resident-active-memory",
-      "reason": "New detached/transport/memory/GM source and refusal controls first; exact signed native kind×phase and conditional roster owner controls next; original180s patient/provider UI only after cheap/native PASS and separate PREP. Retain historical unrelated PASS; do not replay old68/239 aggregate.",
-      "contracts": [
-        "#1536 T108-SHINING-PATIENT-MEMORY; accepted6416 design; actualS5R native causal RED"
-      ]
-    },
-    {
-      "category": "shining-patient-radiant-active-memory",
-      "reason": "New detached/transport/memory/GM source and refusal controls first; exact signed native kind×phase and conditional roster owner controls next; original180s patient/provider UI only after cheap/native PASS and separate PREP. Retain historical unrelated PASS; do not replay old68/239 aggregate.",
-      "contracts": [
-        "#1536 T108-SHINING-PATIENT-MEMORY; accepted6416 design; actualS5R native causal RED"
-      ]
-    },
-    {
-      "category": "shining-patient-resident-console",
-      "reason": "New detached/transport/memory/GM source and refusal controls first; exact signed native kind×phase and conditional roster owner controls next; original180s patient/provider UI only after cheap/native PASS and separate PREP. Retain historical unrelated PASS; do not replay old68/239 aggregate.",
-      "contracts": [
-        "#1536 T108-SHINING-PATIENT-MEMORY; accepted6416 design; actualS5R native causal RED"
-      ]
-    },
-    {
-      "category": "shining-patient-resident-browser",
-      "reason": "New detached/transport/memory/GM source and refusal controls first; exact signed native kind×phase and conditional roster owner controls next; original180s patient/provider UI only after cheap/native PASS and separate PREP. Retain historical unrelated PASS; do not replay old68/239 aggregate.",
-      "contracts": [
-        "#1536 T108-SHINING-PATIENT-MEMORY; accepted6416 design; actualS5R native causal RED"
-      ]
-    },
-    {
-      "category": "shining-patient-radiant-console",
-      "reason": "New detached/transport/memory/GM source and refusal controls first; exact signed native kind×phase and conditional roster owner controls next; original180s patient/provider UI only after cheap/native PASS and separate PREP. Retain historical unrelated PASS; do not replay old68/239 aggregate.",
-      "contracts": [
-        "#1536 T108-SHINING-PATIENT-MEMORY; accepted6416 design; actualS5R native causal RED"
-      ]
-    },
-    {
-      "category": "shining-patient-radiant-browser",
-      "reason": "New detached/transport/memory/GM source and refusal controls first; exact signed native kind×phase and conditional roster owner controls next; original180s patient/provider UI only after cheap/native PASS and separate PREP. Retain historical unrelated PASS; do not replay old68/239 aggregate.",
-      "contracts": [
-        "#1536 T108-SHINING-PATIENT-MEMORY; accepted6416 design; actualS5R native causal RED"
-      ]
-    },
-    {
-      "category": "shining-patient-resident-rollback",
-      "reason": "New detached/transport/memory/GM source and refusal controls first; exact signed native kind×phase and conditional roster owner controls next; original180s patient/provider UI only after cheap/native PASS and separate PREP. Retain historical unrelated PASS; do not replay old68/239 aggregate.",
-      "contracts": [
-        "#1536 T108-SHINING-PATIENT-MEMORY; accepted6416 design; actualS5R native causal RED"
-      ]
-    },
-    {
-      "category": "shining-patient-radiant-rollback",
-      "reason": "New detached/transport/memory/GM source and refusal controls first; exact signed native kind×phase and conditional roster owner controls next; original180s patient/provider UI only after cheap/native PASS and separate PREP. Retain historical unrelated PASS; do not replay old68/239 aggregate.",
-      "contracts": [
-        "#1536 T108-SHINING-PATIENT-MEMORY; accepted6416 design; actualS5R native causal RED"
-      ]
-    },
-    {
-      "category": "shining-faction-service-console",
-      "reason": "New detached/transport/memory/GM source and refusal controls first; exact signed native kind×phase and conditional roster owner controls next; original180s patient/provider UI only after cheap/native PASS and separate PREP. Retain historical unrelated PASS; do not replay old68/239 aggregate.",
-      "contracts": [
-        "#1536 T108-SHINING-PATIENT-MEMORY; accepted6416 design; actualS5R native causal RED"
-      ]
-    },
-    {
-      "category": "shining-faction-service-browser",
-      "reason": "New detached/transport/memory/GM source and refusal controls first; exact signed native kind×phase and conditional roster owner controls next; original180s patient/provider UI only after cheap/native PASS and separate PREP. Retain historical unrelated PASS; do not replay old68/239 aggregate.",
-      "contracts": [
-        "#1536 T108-SHINING-PATIENT-MEMORY; accepted6416 design; actualS5R native causal RED"
-      ]
-    },
-    {
-      "category": "negotiated-healing-faction-console",
-      "reason": "New detached/transport/memory/GM source and refusal controls first; exact signed native kind×phase and conditional roster owner controls next; original180s patient/provider UI only after cheap/native PASS and separate PREP. Retain historical unrelated PASS; do not replay old68/239 aggregate.",
-      "contracts": [
-        "#1536 T108-SHINING-PATIENT-MEMORY; accepted6416 design; actualS5R native causal RED"
-      ]
-    },
-    {
-      "category": "negotiated-healing-faction-browser",
-      "reason": "New detached/transport/memory/GM source and refusal controls first; exact signed native kind×phase and conditional roster owner controls next; original180s patient/provider UI only after cheap/native PASS and separate PREP. Retain historical unrelated PASS; do not replay old68/239 aggregate.",
-      "contracts": [
-        "#1536 T108-SHINING-PATIENT-MEMORY; accepted6416 design; actualS5R native causal RED"
+        "#1536 T108-SHINING-PATIENT-MEMORY; exact existing identifier grammar; scoped partial-outcome follow-up"
       ]
     }
   ]

@@ -2,6 +2,34 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "shining-patient-memory-parser",
+  "responsibility": "Exactly seven closed radiant response parser rows: explicit null, array, extra field, stale turn, blank text, genuinely invalid identifier and wrong text type. Split after one invalid negative fixture used a legal internal-space identifier.",
+  "excludes": "Other24 already passed detached memory/transport cases, live authority, publication and UI.",
+  "changeHints": [
+    "BookOfEternityClient.Tests/ShiningPatientTreatmentAdmissionTests.Memory.cs"
+  ],
+  "related": [
+    {
+      "id": "shining-patient-memory-data",
+      "when": "Independent detached composition and transport contracts remain separate."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.ShiningPatientMemoryProgramTests.RadiantMemoryClosedParserRefusesMalformedPresence"
+      ]
+    }
+  ]
+},
+{
   "id": "shining-patient-memory-roster-guard",
   "responsibility": "Actual signed conditional radiant roster dependency: no ordinary rows/no guard, changed current or stale signed original refusal, exact owned guard advancement/readback; no publication claim.",
   "excludes": "No broad suite, provider/DOM/fresh-process or DFR/Mortal/Windows/performance qualification.",
@@ -97,8 +125,8 @@
 },
 {
   "id": "shining-patient-memory-data",
-  "responsibility": "Detached exact local ordinary/protected resident append composition, radiant ledger/summary complete afterimages, global IDs, wrong owner/location/turn/shape, explicit null and response refresh presence.",
-  "excludes": "No live consent, snapshot/publication authority, Engine or provider claims.",
+  "responsibility": "Detached exact local ordinary/protected resident append composition, radiant ledger/summary complete afterimages, global IDs, wrong owner/location/turn, explicit-null transport and response refresh presence. The separate seven-row closed parser has its own category.",
+  "excludes": "Closed radiant object parser rows; no live consent, snapshot/publication authority, Engine or provider claims.",
   "changeHints": [
     "BookOfEternityClient/Services/SpiritualTreatmentParticipation.ShiningPatientMemory.cs"
   ],
@@ -118,7 +146,12 @@
     {
       "project": "unit",
       "tests": [
-        "BookOfEternityClient.Tests.ShiningPatientMemoryProgramTests.*"
+        "BookOfEternityClient.Tests.ShiningPatientMemoryProgramTests.MemoryProgramsComposeDisjointAppendsWithAutoProgressionDisabled",
+        "BookOfEternityClient.Tests.ShiningPatientMemoryProgramTests.MemoryProgramsRefuseWrongOwnerLocationTurnAndGlobalIdCollisions",
+        "BookOfEternityClient.Tests.ShiningPatientMemoryProgramTests.OrdinaryResidentSharingRadiantIdRemainsAnIndependentTypedActor",
+        "BookOfEternityClient.Tests.ShiningPatientMemoryProgramTests.RadiantPatientRequiresExplicitMemoryEvenWhenOrdinaryOrAutomaticMemoryExists",
+        "BookOfEternityClient.Tests.ShiningPatientMemoryProgramTests.ResponseAndRefreshPreserveExplicitRadiantNullAndKeepOrdinaryRoutingConditional",
+        "BookOfEternityClient.Tests.ShiningPatientMemoryProgramTests.PrivateResidentTransportCannotFallBackOutsideItsActualShiningRealm"
       ]
     }
   ]
