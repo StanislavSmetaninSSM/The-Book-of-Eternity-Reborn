@@ -1,3 +1,36 @@
+# T121 EX5GREEN cheap block accepted — remaining eight cases pending
+
+Independent Astra OUTCOME and the primary's strict union accept 136 distinct cheap
+PASS / 54 methods across explicit epochs: 119 retained at `c870ed36d`/`0c73c929c`
+plus 17 fresh at `239884347`, not one fresh 136-case run. The old staging nine and source
+guards three are superseded by the fresh results. EX5GREEN completed 17/17 in
+47.6543386s; category times 8.8018708/7.6575382/9.496941/6.4511989s stayed within
+their unchanged 60s budgets. No timeout, skip, duplicate or underfill occurred;
+owned cleanup completed and all pins remained stable. Exact TRX/hash/ID evidence
+is external in `EX5GREEN-verified-cheap-union.json` and its referenced raw receipts.
+
+Four fresh builds at `239884347` exited 0 with baseline warnings 12/23/26/102:
+Main 2:21.43, Support 18.54s, Unit 1:10.43, Integration 2:14.73. Four PE/PDB pairs,
+214 source bindings, 27 artifacts, 40 operational resource copies and four daemon
+copies matched. Official full PlanOnly proved 149 cases / 64 methods / 25 descriptors,
+zero executions. Closing fence 22:47:17 UTC found no live owners and about 4.412GB
+free. The primary's EX5GREEN owning archive is still in progress, not yet complete.
+
+The actual existing service-menu counter observed 12 paths / 16 opens in each
+available=false/true invocation, retaining fresh reads and no mutation. This proves
+that bounded path comparison, not an old-to-new latency improvement. Parsed
+operation DATA/getters are reused; no new IO/cache or speedup claim is introduced,
+and all actual source/authority/publication checks remain fresh.
+
+Delta SOURCE accepts retaining the five earlier legacy native passes separately
+from the cheap 136-case union. New diagnosis native five and UI three are UNRUN. Next is
+one exact remaining-eight PlanOnly/PREP, then conditionally native five with complete
+PASS/current fences before three serial UI cases with full capture/cleanup checks
+between cases. Any failure or drift holds dependent UI; budgets stay unchanged.
+Only this plan changes, with no feature-task closure, source edit, writer build/test/
+discovery, new checkout or full-restore claim. Existing failed raw/archives, broad
+T121/Mortal work, eight unavailable adapters and all holds remain preserved.
+
 # T121 EX5RED2 accepted — current-source GREEN candidate, UNCOMPILED/UNRUN
 
 Independent Astra OUTCOME accepted the corrected causal attempt at `dfcfd48f1`:
