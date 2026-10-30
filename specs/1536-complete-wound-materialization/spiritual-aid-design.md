@@ -849,8 +849,9 @@ newclone/restore. WIP/checkpoints publish on current branch with remote SHA chec
 ## T108-SHINING-PATIENT — player treats a Shining patient (2026-10-30)
 
 Issue #1536. Base d601411b0c105ca3fdf409a668f1f0dc11098b4a.
-Status: technical recommendation from independent Astra/high; this written
-DESIGN awaits review. Gameplay is already authorized by US4 scenario8,
+Status: written DESIGN accepted by independent Astra/high at
+`d4aa700df3ced79bbfa81bb2c0007f2b82ec6798`, including the natural8 and owned
+normalization clarifications. Gameplay is already authorized by US4 scenario8,
 FR043–054 and FR072–074. The owner authorized autonomous implementation;
 no new game rule or repeated design-approval question is introduced.
 

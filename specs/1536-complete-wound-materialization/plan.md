@@ -38,7 +38,7 @@ owned normalization с readback перед продвижением всех liv
 `d4aa700df3ced79bbfa81bb2c0007f2b82ec6798`. Один writer, затем причинный RED,
 минимальная реализация с GM sync, fresh owning builds/exact categories/PREP,
 реальные обе UI цепочки и независимый OUTCOME. Создан только existing-API two-row
-proposal scaffold, UNCOMPILED/UNRUN, production ещё не менялся. Ожидаемый causal
+proposal scaffold; production ещё не менялся. Ожидаемый causal
 refusal различается: resident упирается в unknownschema5, radiant раньше в
 enclosing-kind gate; не требовать одинаковой строки ошибки. Полный profile helper
 и original/response immutability используют прежний независимый test pattern.
@@ -46,6 +46,16 @@ enclosing-kind gate; не требовать одинаковой строки �
 заранее выявлены playerTier0 default, отдельный обязательный healing_support
 actor, корректное active/radiant head+political materialization и существующие
 разные memory owners; их подготовка выполняется до единственного bootstrap.
+
+S1 scaffold Source/Sol PREP приняты на
+`fd1220170b48bd9123b0ebe606da7f7839b6a64d`: fresh Unit exit0/26baselinewarnings/
+1:26.26,27artifacts/144sourcebindings/4PE-PDB/32resourcecopies/4daemon verified,
+catalog1169/12958 valid, exactPlanOnly1method/2cases/0execution. Actual RED2/2
+assertion FAIL ровноline38: resident unknownschema5, radiant unsupported enclosing
+kind; no setup failure/timeout/skip/duplicate, full selection, cleanup and pins.
+Category6.0672381/60s, wall14.9925122s. Full raw/TRX/verified cause вне checkout
+в `us4-shining-patient-aid/S1-red`; independent OUTCOME pending. Это доказывает
+только отсутствующее proposal admission, не live consent или healing authority.
 
 Оптимизация: caller-owned parsed profiles/Shining/actual resident roster и existing
 catalog/index/read-set передаются по одной операции; полный key/dependencies включают
