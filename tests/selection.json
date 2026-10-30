@@ -140,6 +140,13 @@
       "contracts": [
         "#1536 US6 T136 full original diagnostic visibility/closing; no game-contract change"
       ]
+    },
+    {
+      "category": "shining-faction-historical-envelope-data",
+      "reason": "Exact actual console repair exposes client automatic rewrite of immutable historical creation evidence. One causal file-free proof isolates it before any production correction.",
+      "contracts": [
+        "#1536 T137-AUTO-HISTORY immutable historical envelope versus current healing/progression DATA"
+      ]
     }
   ]
 }

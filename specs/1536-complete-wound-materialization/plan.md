@@ -1,3 +1,27 @@
+# US6 immutable historical-envelope correction DESIGN accepted; causal RED pending
+
+Astra/high confirmed the client-caused conflict and superseded its earlier acceptance
+of the automatic envelope rewrite. Existing creation evidence is immutable; current
+capabilities/history are separate DATA. No product contradiction or new author rule.
+Minimal production boundaries: remove automatic envelope rewrite while keeping real
+income/upgrade/append; use existing historical structural validation for canonical
+roster projection; full faction-reference validation distinguishes exact already-
+materialized actors/envelopes through validated pre-turn authority, once per invocation,
+while retaining strict new/promotion validation. Keep continuity equality, snapshot
+integrity and every current healing/service/tier/life/roster/authority fence unchanged.
+Do not infer actor history from faction creation or authored materializedAtTurn.
+
+Before implementation one new file-free typed control uses actual valid initial
+profile and real ProjectAcceptedRoot/income/ledger/current service/replay, then checks
+whole historical envelope equality as the sole final causal oracle. Existing old9
+causal tests contain the disproved populated-envelope expectation; retain old results
+but replace that expectation only in the correction, with proper new-versus-historical
+negatives and signed continuity consumer controls. New singleton1min category added;
+source/build/catalog/PlanOnly/PREP/actual RED pending. Production is unchanged here.
+No additional diagnostic framework or costly blind UI retry is authorized by this note.
+
+---
+
 # US6 console diagnostic isolated historical-envelope conflict; no UI PASS
 
 Independent Sol OUTCOME accepted cheap2 and released exactly one original console

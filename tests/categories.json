@@ -37469,6 +37469,37 @@
       },
       "timeoutMinutes": 1,
       "expectedSeconds": null
+    },
+    {
+      "id": "shining-faction-historical-envelope-data",
+      "responsibility": "One file-free actual first client progression control: valid initial materialization, real income/ledger, input immutability, historical structure, current faction service admission and same-cycle inertness precede exact whole historical-envelope equality.",
+      "excludes": "No GameEngine/native/world setup, relaxation of new-materialization or signed continuity, generic resident exemption, budget increase, or route acceptance.",
+      "changeHints": [
+        "BookOfEternityClient.Tests/ShiningFactionHealingServiceContractTests.HistoricalContinuity.cs",
+        "BookOfEternityClient/Services/AfterlifeEntityProfileState.cs",
+        "BookOfEternityClient/Services/ShiningFactionHealingSupport.cs"
+      ],
+      "related": [
+        {
+          "id": "shining-faction-service-console",
+          "when": "Concrete actual repair identifies client historical-envelope mutation; cheap causal proof precedes a fixed route."
+        }
+      ],
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.ShiningFactionHealingServiceContractTests.FirstAutomaticIncomePreservesTheEntireHistoricalEnvelope"
+          ]
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null
     }
   ]
 }
