@@ -1,5 +1,30 @@
 # Проверка проекта #1573
 
+## Активный checkpoint T120/T121 — WIP перед измерениями
+
+Точный T119 прямо принят автором, повторное согласование не требуется.
+Baseline b704855 подтверждён origin/#1573, отдельная story-копия сохранена.
+PathsOnly указывает1573. Bridge consistency перед моделью: T119 §§2–5 →
+T120.1 phase/price/freshness/HP0 guards; §7 → T120.2–3 матрицы/пороги;
+§8 → T120.4 review/publication. Production/UX/1536 исключены; противоречий
+новому поручению не обнаружено, исторические пробы оставлены неизменными.
+Применены executing-plans/TDD к canonical plan/tasks; прежний чужой SDD ledger
+не трогается. Sol6.1/high audit_t120_matrix дал независимые замечания к матрице:
+both36 — equal stableenergy контроль; healer28 — отдельная асимметрия;
+нулевое вмешательство и оплаченные неуспешные срывы различаются.
+
+RED: новые model/runner guards падали на отсутствии соответствующего модуля.
+GREEN:25новых guards +31 прежний =56/56, node --test probes/*.test.mjs,0.286с.
+Два этапа/реакции/свежесть/HP0/Ready/serializable replay проверены на численных
+fixtures без игровых объектов. Это не проверка runtime persistence.
+Immutable damage fixtures переиспользованы; calculator полностью ключует B/D/
+Мощь/flat/outgoing/incoming/suppression, guards подтверждают fresh изменение
+и реальный hit. HP/допуск/платежи не кэшируются.
+
+UNRUN: полная матрица, результаты и независимое сложное review. WIP сохраняется
+до измерений; приёмочные критерии и значения не меняются.
+
+
 ## Текущий checkpoint T118–T119: подача принята, лечение пересматривается
 
 Baseline1411f4074f5c83e24f24c9d14b012cc8b724c193 сверён с origin/issue/workflow1.7;
