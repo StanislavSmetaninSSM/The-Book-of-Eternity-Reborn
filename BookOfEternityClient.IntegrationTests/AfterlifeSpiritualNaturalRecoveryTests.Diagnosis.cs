@@ -32,12 +32,13 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
         { Diagnosis = new(before.Owner, "native_diagnosis", WoundDiagnosisEvidence.ComputePathFingerprint(before, "native_diagnosis")) };
         var scheduler = new ProgressionScheduleService(files, NullLogger<ProgressionScheduleService>.Instance);
         var control = await scheduler.BuildControlForNextTurnAsync();
-        JsonObject retained;
+        JsonObject retained; JsonObject projection;
         await using (var lease = await files.AcquireCanonicalWriteLeaseAsync())
         {
             var staged = await AfterlifeWoundTreatmentAuthority.StageDiagnosisAsync(files, lease,
                 new("session_spiritual_healing", "request_spiritual_healing", 43, control), selection);
             Assert.True(staged.IsStaged, staged.IssueCode);
+            projection = Assert.IsType<JsonObject>(staged.GmContext);
             retained = JsonNode.Parse((await files.ReadFileAsync(lease, AcceptedMechanicsPlan.WoundCommandPath))!)!.AsObject();
             Assert.Equal(tier, retained["diagnosis"]!["healingTier"]!.GetValue<int>());
         }
@@ -52,7 +53,7 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
             var turn = JsonSerializer.Deserialize<TurnRequest>((await files.ReadFileAsync(lease,
                 LiveTurnPreparationService.TurnRequestPath))!, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)!;
             await ExplorerWoundSelfTreatmentTests.WriteNativeCompletionAsync(files, lease, turn,
-                narrative: "Я внимательно осматриваю духовную рану. Раскрылись предусмотренные способом сведения; мир продолжил безопасный цикл.");
+                AuthorNaturalGraphs(before, projection["destinationGraphs"]!.AsArray()), narrative: "Я внимательно осматриваю духовную рану. Раскрылись предусмотренные способом сведения; мир продолжил безопасный цикл.");
             var preparation = await validator.PrepareSpiritualSelfTreatmentPublicationAsync(lease);
             Assert.DoesNotContain(preparation, i => i.Severity == IssueSeverity.Error);
             Assert.True(AcceptedMechanicsPlanAuthority.TryPeekValidated(files, lease, out _, out var validated));
@@ -67,10 +68,17 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
                 .Single(p => p["actorType"]?.GetValue<string>() == "player_soul");
             var changedTier = tier == 5 ? 0 : 5;
             player["standardArts"]!["spiritual_healing"] = changedTier;
+            if (!invalid.ContainsKey(AfterlifeWoundHealingPlanner.Continuation.ServiceSoulPath))
+                invalid[AfterlifeWoundHealingPlanner.Continuation.ServiceSoulPath] = JsonNode.Parse((await files.ReadFileAsync(lease,
+                    AfterlifeWoundHealingPlanner.Continuation.ServiceSoulPath))!)!.AsObject();
             invalid[AfterlifeWoundHealingPlanner.Continuation.ServiceSoulPath]["afterlifeCombatProfile"]!["artTiers"]!["spiritual_healing"] = changedTier;
             Assert.Throws<InvalidDataException>(() => owner.RequireDiagnosisComposedImages(invalid));
             var missing = new Dictionary<string, JsonObject>(writes, StringComparer.Ordinal); missing.Remove(WoundCarrierCatalog.AfterlifeProfilesPath);
             Assert.Throws<InvalidDataException>(() => owner.RequireDiagnosisComposedImages(missing));
+            var hidden = writes.ToDictionary(p => p.Key, p => p.Value.DeepClone().AsObject(), StringComparer.Ordinal);
+            hidden[WoundCarrierCatalog.AfterlifeProfilesPath]["profiles"]!.AsArray().OfType<JsonObject>()
+                .Single(p => p["actorType"]?.GetValue<string>() == "player_soul")["visibility"] = "hidden";
+            Assert.Throws<InvalidDataException>(() => owner.RequireDiagnosisComposedImages(hidden));
             owner.RequireDiagnosisComposedImages(writes);
             await new CanonicalStateNormalizer(files, NullLogger<CanonicalStateNormalizer>.Instance)
                 .BindTo(lease).NormalizeAccumulatedStateWithPlanAsync((await fixture.ReadManifestAsync(lease)).Files);

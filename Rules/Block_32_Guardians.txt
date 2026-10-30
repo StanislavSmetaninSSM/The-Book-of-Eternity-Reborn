@@ -907,4 +907,56 @@ completed replay does not reapply memory. Common atomic rollback includes journa
 and profiles. Controlled fixtures do not qualify provider-driven repair behavior.
 Read the focused spiritual_shining_patient_memory_v8 worked example.
 
+<SpiritualDiagnosisExecution>
+spiritual_diagnosis_execution_v1 — guaranteed spiritual diagnosis, REQUIRED ordinary natural suffix.
+In Chaos Sea and Shining Abode, /лечить offers a distinct diagnose purpose only for one
+currently visible reachable wound and one current reachable declared diagnosis path.
+Healing >=0 (through V) and EVERY declared requirement must be proved from current
+canonical sources. Present H0 is valid; missing art, source or mirror is not H0.
+Current supported requirements: source_capability and skill_tier for standard spiritual
+Healing/Stabilization with the declared actor role, and provider=player_soul. The other
+eight registered requirement kinds are unavailable until their real canonical adapter
+exists. Do not invent an item, resource, consent, facility, location, quest, effect or
+environment store, infer permission from a label, or ignore a requirement. The current
+spiritual check is exactly {}; nonempty/unknown check is unsupported, not a hidden roll.
+
+Read/cancel remain inert. A fresh separately confirmed diagnostic choice stages the
+client-owned spiritual_diagnosis_request schema1 in the existing wound_commands path.
+The selection is schema9/mode=diagnose; it is DATA, not permission or a healing attempt.
+The input turn's spiritualHealing.mode=diagnose names the retained path and natural
+Recovery destinationGraphs. It binds full control, typed current target/locality,
+path/requirement/source fingerprints and ordered requirement proof DATA. The client
+rechecks original evidence, current sources, composed after-images and publication.
+
+A confirmed safe diagnosis guarantees EXACTLY all declared route: and complication:
+reveals; it changes only knowledge first. Diagnostic cost and entropy are zero. No diagnostic roll, OD, Feathers, items,
+resource command, price, consent grant or direct healing is permitted. The same one
+ordinary safe cycle then executes its REQUIRED complete nonempty natural recovery
+cohort in the ordinary order. Severity remains I-IV; Healing V is an art tier, never
+severity V. Other eligible wounds may recover first; the selected wound is not
+prioritized. Only real recover/heal may change mechanics or remove a carrier.
+
+The GM narrates the guaranteed knowledge and ordinary world cycle, writes the exact
+progressionProcessingReport for the supplied control, requested spiritualHealingGraphs
+only at supplied stageRefs, and truthful ordinary actor reasoning/memory. Diagnosis is
+NOT patient consent or an aid family. Ordinary residentThoughtJournalUpdates keeps the
+canonical ordinary owner, including when transported by this authenticated diagnosis
+interface; use no spiritualResidentThoughtJournalUpdates or spiritualShiningPatientMemory.
+Existing Guardian journals and existing profile ledger plus gmThoughtsSummary keep their
+ordinary append-only routes. Never write wound knowledge, effects, identities, History,
+scheduler, client_auto_strategy, dice or result seals directly to make the turn pass.
+
+The single existing common owner publishes one spiritual_diagnosis result (schema1)
+on its diagnose row and exactly one strict existing natural result on the first recover
+row. The diagnosis retains request, original/knowledge-after images, original cohort,
+requirement bindings, original source fingerprints, full control/scheduler images and
+exact naturalSuffix transitionIds/result link. No empty/optional suffix or fake recovery.
+Consumed request/report cleanup and exact completed-cycle replay are client-owned;
+replay never repeats reveals/recovery or charges. Full private images never enter player
+cards. Failed/uncertain publication keeps its existing whole-turn compensation/rollback.
+
+Mortal diagnosis is a separate later procedural route with explicitly declared method
+check, duration and cost; this does not supply defaults or enable Mortal execution.
+Read Examples/E_CLI_Afterlife_Turns.txt worked spiritual_diagnosis_execution_v1.
+</SpiritualDiagnosisExecution>
 </Root>

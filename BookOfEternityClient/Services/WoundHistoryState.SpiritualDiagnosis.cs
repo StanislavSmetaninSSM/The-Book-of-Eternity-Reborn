@@ -5,9 +5,9 @@ internal sealed partial class WoundHistoryState
     private static void ValidateSpiritualDiagnosisReplayAgreement(IEnumerable<WoundHistoryTransition> transitions,
         string path, ICollection<ValidationIssue> issues)
     {
-        var rows = transitions.ToArray();
-        var diagnoses = rows.Where(r => r.TransitionResult is SpiritualDiagnosisPersistedResult).ToArray();
+        var diagnoses = transitions.Where(r => r.TransitionResult is SpiritualDiagnosisPersistedResult).ToArray();
         if (diagnoses.Length == 0) return;
+        var rows = transitions.ToArray();
         // One operation-local index. Historical DATA does not grant a live cycle.
         var byId = rows.ToLookup(r => r.TransitionId, StringComparer.Ordinal);
         var naturalResults = rows.Where(r => r.TransitionResult is SpiritualHealingPersistedResult { IsNatural: true })

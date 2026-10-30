@@ -1,3 +1,41 @@
+# T121 coherent spiritual execution — complete source candidate, UNCOMPILED/UNRUN
+
+The source candidate now includes the usable three-proof-kind spiritual route from
+fresh separate confirmation through knowledge-only execution, the REQUIRED complete
+nonempty ordinary natural suffix, two linked durable History results, common atomic
+publication, exact current completed-cycle replay and ordinary Engine cleanup.
+Healing V uses legal severity I-IV. Mortal procedural execution and the eight currently
+unavailable source adapters remain separate open work; broad T121/US4/US5/#1536 is not closed.
+
+Tests cover complete declared knowledge without mechanical edits, exact request/control/
+path/requirements, incomplete or reordered cohorts/suffixes, genuine H5 terminal removal,
+current composed permission drift, both Shining target kinds and ordinary actor memory,
+no-op-normalizer locality drift, read/cancel/separate-confirm in console/shared browser,
+and physical C4 compensation plus outer rollback. Existing capture and closing helpers
+are reused. The at-cut oracle requires actual diagnosis plus linked natural publication,
+not merely any valid History. Graphs come from the actual staged program; a no-cost plan
+is not required to emit a Soul companion just for a negative test.
+
+All six active guides, both daemon assignments, worked afterlife/wound examples, the
+exact reviewed manifest and focused documentation guards are synchronized. Spiritual
+cards now name the separate /лечить route conditionally; cards themselves stay inert.
+Ordinary memory keeps its canonical owner; patient-only fields never enter diagnosis.
+No new schema is GM-authored, publisher/cache/economy/diagnostic framework or quota is added.
+
+Source-estimated CI selection: 142 cases / 61 methods / 23 descriptors across 23 IDs.
+It includes only direct new/changed contracts and finite ordinary-natural/self/combat,
+transport, read-card and manifest/guidance regressions. Official discovery remains the
+count authority. Whole SOURCE final delta is pending. The bounded static member/fixture scan and JSON/XML checks completed without running C#; all
+new C# is UNCOMPILED/UNRUN. The writer has run no build, test or gameplay. Primary owns
+fresh builds/PlanOnly, then cheap -> native -> serial captured UI admission at unchanged
+category budgets. Existing accepted receipts stay historical, not qualification of this cut.
+
+Optimization: one disposable operation owns parsed source/program/current-locality DATA;
+signed originals stay separate, dependency/byte/evidence and publication checks remain
+fresh. Historical binding lookup and natural-stage exports are captured once rather than
+cloned inside cohort loops. Repeated full current source work is retained only at distinct
+ownership/closing boundaries; no speedup claim or new persistent cache is made.
+
 # T121 coherent spiritual execution — consumer/refusal WIP, UNCOMPILED/UNRUN
 
 The next saved cut adds representative console, shared-browser and physical common

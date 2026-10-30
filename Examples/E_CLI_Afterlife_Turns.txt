@@ -14393,3 +14393,48 @@ old/duplicate IDs, partial/different afterimages refuse. Repeated pending applic
 accepts only its complete exact before/after; completed replay is inert; atomic
 rollback restores the journals/profile ledger together with wound/effects/History.
 end_spiritual_shining_patient_memory_v8
+
+
+spiritual_diagnosis_execution_v1 — worked spiritual path and controlled response
+This focused fragment is placed on an already canonical spiritual severity II wound
+with the existing hidden complication hidden_instability. It declares all three
+currently supported source proof kinds; missing sources do not default to H0.
+```json
+{
+  "diagnosisPathId": "inspect_known_spirit",
+  "displayName": "Осмотреть духовную ткань",
+  "visibility": "public",
+  "requiresKnownFacts": [],
+  "requirements": [
+    { "kind": "source_capability", "capabilityRef": "spiritual_healing", "actorRole": "provider" },
+    { "kind": "skill_tier", "capabilityRef": "spiritual_healing", "minimumTier": 0, "actorRole": "provider" },
+    { "kind": "provider", "providerRef": "player_soul" }
+  ],
+  "check": {},
+  "reveals": ["complication:hidden_instability"],
+  "failurePolicy": "no_reveal"
+}
+```
+After separate /лечить confirmation, the client retains spiritual_diagnosis_request
+schema1 and selection schema9/mode=diagnose. The GM does not author them or an attempt
+roll. This H0 example needs no destination graph because natural recovery makes only
+II progress0→1. The complete guaranteed knowledge delta makes hidden_instability known;
+it does not change rank, care, effects or recovery. Then the REQUIRED ordinary natural
+suffix runs once, with zero diagnostic OD/Feathers/items/resource changes.
+
+The GM writes a truthful narrative and the supplied progressionProcessingReport;
+output/interface_updates.json may contain ordinary dialogueOptions and timestamp.
+If supplied destinationGraphs is nonempty in a different legal tier/rank case, author
+exact spiritualHealingGraphs at those stageRefs and preserve complication bindings.
+Ordinary residentThoughtJournalUpdates and existing Guardian journals/profile ledger
+plus gmThoughtsSummary record actual current actors; never use patient-only
+spiritualResidentThoughtJournalUpdates or spiritualShiningPatientMemory for diagnosis.
+
+The client alone writes spiritual_diagnosis schema1 with original/knowledgeAfter,
+request/control/requirement/source/scheduler binding and naturalSuffix linkage, plus
+exactly one existing natural result on the first recover row. Current replay and
+cleanup are inert; failed publication compensates the whole original turn. No private
+result image is a player card, consent grant, new source authority or fake Mortal route.
+This example is detached source/knowledge DATA, not signed live or provider acceptance.
+Mortal check/duration/cost remain explicitly method-defined and later execution work.
+end_spiritual_diagnosis_execution_v1

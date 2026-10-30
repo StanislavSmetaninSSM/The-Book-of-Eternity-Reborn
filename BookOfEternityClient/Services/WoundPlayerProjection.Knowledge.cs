@@ -68,7 +68,9 @@ internal static partial class WoundPlayerProjection
             .Concat(wound.Complications.Where(c => Visible(c.Visibility)).Select(c => "complication:" + c.ComplicationId))
             .ToHashSet(StringComparer.Ordinal);
         // Future reachable reveals validate a contract; they are not current knowledge.
-        var policy = RequirementNotice + " Выполнение этого осмотра через команду пока недоступно.";
+        var policy = RequirementNotice + (wound.Classification.Domain == "physical"
+            ? " Выполнение этого осмотра через команду пока недоступно."
+            : " Духовный осмотр выбирается и отдельно подтверждается через /лечить, если все текущие условия доказаны. Карточка сама не исполняет действие.");
         if (wound.Classification.Domain == "physical")
             return treatment is null ? [] : treatment.DiagnosisPaths
                 .Where(p => Known(p.Visibility, p.RequiresKnownFacts.Length, p.RequiresKnownFacts.Select(f => f.CanonicalValue)))

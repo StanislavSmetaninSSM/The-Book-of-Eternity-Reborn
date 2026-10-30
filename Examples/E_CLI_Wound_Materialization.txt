@@ -2652,3 +2652,6 @@ This example proves the display contract only. Full guided /раны /wounds /л
 /treat, targeting, providers, quotes, staging and full treatment-only History remain
 outside this slice. Native consumers are covered by WoundPlayerStatusTests; focused
 source/documentation guards bind this example marker and its limitations.
+
+
+spiritual_diagnosis_execution_v1: the separate spiritual guided route uses H0-V plus every current requirement, exact empty check, guaranteed complete declared knowledge only, zero diagnostic roll/OD/Feathers/items/cost and one REQUIRED nonempty natural suffix. Read the worked path in E_CLI_Afterlife_Turns.txt. Mortal procedural check/duration/cost are separate and not defaulted. The earlier display-only fragment still creates no action itself.

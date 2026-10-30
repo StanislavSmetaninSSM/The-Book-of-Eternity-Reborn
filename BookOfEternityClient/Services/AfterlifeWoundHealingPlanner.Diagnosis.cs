@@ -96,7 +96,12 @@ internal static partial class AfterlifeWoundHealingPlanner
         {
             var data = _diagnosis ?? throw new InvalidDataException("No current diagnosis owner.");
             var candidate = data.Candidate;
-            if (candidate.Realm == "shining_abode" && ShiningAbodeState.GetPreparedIncarnationPackageMode(shining) != ShiningAbodeState.PreparedIncarnationPackageMode.Absent)
+            var playerOwner = new WoundOwnerCoordinate(candidate.Realm, "player_soul", "player_soul", WoundCarrierCatalog.AfterlifeProfilesPath);
+            var players = (profiles["profiles"] as JsonArray)?.OfType<JsonObject>().Where(p =>
+                WoundCarrierCollectionAuthority.AfterlifeProfileMatches(p, playerOwner)).ToArray();
+            if (players is not { Length: 1 } || !AfterlifeProfileVisibility.IsVisibleToPlayer(players[0]))
+                throw new InvalidDataException("Diagnosis lost its exact currently visible player source.");
+            if (candidate.Realm == "shining_abode" && (shining is null || ShiningAbodeState.GetPreparedIncarnationPackageMode(shining) != ShiningAbodeState.PreparedIncarnationPackageMode.Absent))
                 throw new InvalidDataException("Diagnosis requires the actual current safe Shining locality, without an incarnation package.");
             var patients = candidate.Realm == "shining_abode" ? SpiritualTreatmentParticipation.ReadShiningPatientAdmissions(shining,
                 profiles, residents) : Array.Empty<SpiritualShiningPatientAdmission>();
@@ -139,7 +144,12 @@ internal static partial class AfterlifeWoundHealingPlanner
         internal void RequireDiagnosisComposedImages(IReadOnlyDictionary<string, JsonObject> writes)
         {
             if (!IsDiagnosis) return;
-            JsonObject? Root(string path) => writes.GetValueOrDefault(path) ?? DiagnosisLocalityRoot(path) ?? _parsedSourceRoots.GetValueOrDefault(path) as JsonObject;
+            JsonObject? Root(string path)
+            {
+                if (writes.TryGetValue(path, out var written)) return written;
+                if (_diagnosisLocalityRoots?.TryGetValue(path, out var currentLocality) == true) return currentLocality;
+                return _parsedSourceRoots.GetValueOrDefault(path) as JsonObject;
+            }
             if (_published || Root(AfterlifeSpiritualConflictState.StatePath)?["activeConflict"] is not null || _expectedDiagnosisPermissionFingerprint is null || !writes.TryGetValue(WoundCarrierCatalog.AfterlifeProfilesPath, out var profiles) ||
                 Root(ServiceSoulPath) is not { } soul ||
                 DiagnosisPermissionFingerprint(profiles, soul, Root(AfterlifeWoundTreatmentAuthority.AidLocalityPaths[0]),

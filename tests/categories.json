@@ -59,8 +59,8 @@
 },
 {
   "id": "spiritual-diagnosis-reduction-causal",
-  "responsibility": "T121/FR071 spiritual knowledge-only reducer causal proof: one method/two current realms, exact retained schema1 request/context/admission, structurally valid complete before/knowledge-after, all declared route and complication discoveries, no mechanical or source/input mutation. Explicit typed spiritual-purpose seam retains the explicit spiritual sealed reducer behavior until observed semantic RED.",
-  "excludes": "No accepted turn, live source authority, scheduler claim, natural suffix implementation, durable spiritual result, replay/completion/rollback, Engine, GM execution, Mortal route or repeated accepted admission53/Shining110/read83.",
+  "responsibility": "T121/FR071 spiritual knowledge-only reducer causal proof: one method/two current realms, exact retained schema1 request/context/admission, structurally valid complete before/knowledge-after, all declared route and complication discoveries, no mechanical or source/input mutation. The GREEN candidate uses explicit sealed spiritual proof; the two originally observed semantic RED rows retain all functional assertions.",
+  "excludes": "Component knowledge-only DATA coverage; signed admission, REQUIRED natural suffix, durable result, completion/rollback, Engine and GM consumers are separately selected in the coherent block. No Mortal route or blanket prior PASS replay.",
   "changeHints": [
     "BookOfEternityClient.Tests/SpiritualDiagnosisReductionTests.cs",
     "BookOfEternityClient/Services/SpiritualDiagnosisTransitionPlanner.cs",
@@ -38867,6 +38867,136 @@
         "ciRunner": "ubuntu-24.04"
       },
       "timeoutMinutes": 3,
+      "expectedSeconds": null
+    },
+    {
+      "id": "spiritual-diagnosis-guidance",
+      "responsibility": "Three focused guide/daemon/worked-path rows: actual canonical path/source/request/sealed-program semantics in both realms, six effective guides, both daemon entrypoints, required nonempty suffix and no invented authority.",
+      "excludes": "Bounded directly affected contracts only; no whole Shining110/read83/provider suite, DOM/external provider, Mortal compatibility or HOLD qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/SpiritualDiagnosisPersistedResult.cs",
+        "BookOfEternityClient/Services/WoundAcceptedTurnPlannerCore.SpiritualHealing.cs",
+        "BookOfEternityClient/Services/ShiningPatientMemoryTransport.cs"
+      ],
+      "related": [],
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.SpiritualDiagnosisDocumentationTests.*"
+          ]
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null
+    },
+    {
+      "id": "spiritual-diagnosis-legacy-natural",
+      "responsibility": "One directly affected existing ordinary-natural result/common-execution consumer preserves lawful ordinary cost, source tier and actual natural recovery. Diagnosis-only zero-cost guards must not restrict ordinary turns.",
+      "excludes": "Bounded directly affected contracts only; no whole Shining110/read83/provider suite, DOM/external provider, Mortal compatibility or HOLD qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/SpiritualDiagnosisPersistedResult.cs",
+        "BookOfEternityClient/Services/WoundAcceptedTurnPlannerCore.SpiritualHealing.cs",
+        "BookOfEternityClient/Services/ShiningPatientMemoryTransport.cs"
+      ],
+      "related": [],
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.AfterlifeSpiritualNaturalRecoveryTests.OrdinaryCostAndArtUpgradeSurviveWhileRecoveryUsesSignedStartTier"
+          ]
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null
+    },
+    {
+      "id": "spiritual-diagnosis-legacy-self",
+      "responsibility": "One existing active self family2 actual publication/result/terminal replay and protected-memory refusal consumer of the shared CreateCore and ReduceExecutedSpiritualState boundaries.",
+      "excludes": "Bounded directly affected contracts only; no whole Shining110/read83/provider suite, DOM/external provider, Mortal compatibility or HOLD qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/SpiritualDiagnosisPersistedResult.cs",
+        "BookOfEternityClient/Services/WoundAcceptedTurnPlannerCore.SpiritualHealing.cs",
+        "BookOfEternityClient/Services/ShiningPatientMemoryTransport.cs"
+      ],
+      "related": [],
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.AfterlifeWoundHealingLifecycleTests.SuccessfulActiveCheckHealsWithoutASecondNaturalHeal"
+          ]
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null
+    },
+    {
+      "id": "spiritual-diagnosis-legacy-combat",
+      "responsibility": "One existing actual combat pair/durable result consumer of the shared spiritual History reducer preserves no-safe-cycle and existing combat ownership.",
+      "excludes": "Bounded directly affected contracts only; no whole Shining110/read83/provider suite, DOM/external provider, Mortal compatibility or HOLD qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/SpiritualDiagnosisPersistedResult.cs",
+        "BookOfEternityClient/Services/WoundAcceptedTurnPlannerCore.SpiritualHealing.cs",
+        "BookOfEternityClient/Services/ShiningPatientMemoryTransport.cs"
+      ],
+      "related": [],
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.CombatHealingUsesAnActualPairAndDurableOutcomeWithoutASafeCycle"
+          ]
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null
+    },
+    {
+      "id": "spiritual-diagnosis-legacy-memory-transport",
+      "responsibility": "Ten directly affected existing transport refusal rows: private ordinary/radiant presence must still refuse unbound Chaos, Mortal, unknown, null and missing turns after adding the authenticated diagnosis ordinary route.",
+      "excludes": "Bounded directly affected contracts only; no whole Shining110/read83/provider suite, DOM/external provider, Mortal compatibility or HOLD qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/SpiritualDiagnosisPersistedResult.cs",
+        "BookOfEternityClient/Services/WoundAcceptedTurnPlannerCore.SpiritualHealing.cs",
+        "BookOfEternityClient/Services/ShiningPatientMemoryTransport.cs"
+      ],
+      "related": [],
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.ShiningPatientMemoryProgramTests.PrivateResidentTransportCannotFallBackOutsideItsActualShiningRealm"
+          ]
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
       "expectedSeconds": null
     }
   ]

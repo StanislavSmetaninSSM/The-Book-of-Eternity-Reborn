@@ -37,13 +37,15 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
         {
             FileSystemManager? owned = null; var armed = false; var cuts = 0;
             Dictionary<string, byte[]?>? compensationExpected = null; Dictionary<string, byte[]?>? compensationActual = null;
-            byte[]? historyAtCut = null;
+            byte[]? historyAtCut = null; Dictionary<string, byte[]?>? publishedAtCut = null;
             var hooks = new FileSystemManagerHooks
             {
                 LocalPublicationObserver = !failPublication ? null : (phase, _) =>
                 {
                     if (!armed || phase != TrustedLocalPublicationPhase.MemberPublished || File.Exists(owned!.ResolvePath(AcceptedMechanicsPlan.WoundCommandPath))) return;
                     armed = false; cuts++; historyAtCut = File.ReadAllBytes(owned.ResolvePath(WoundHistoryState.HistoryPath));
+                    publishedAtCut = WoundAcceptedTurnSnapshotContract.CarrierPaths.Concat(new[] { WoundIdentityState.StatePath, ProgressionScheduleService.SchedulePath })
+                        .ToDictionary(p => p, p => File.Exists(owned.ResolvePath(p)) ? File.ReadAllBytes(owned.ResolvePath(p)) : null, StringComparer.Ordinal);
                     throw new InvalidOperationException("Diagnosis common publication cut after exact request consumption.");
                 },
                 BeforeCanonicalReadOpenAsync = !failPublication ? null : path =>
@@ -108,7 +110,7 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                             Assert.True(repeated.IsStaged); Assert.True(repeated.AlreadyStaged);
                             fixture.AssertMutationRootsUnchanged(repeatedBefore);
                             await WriteNativeCompletionAsync(files, lease, turn,
-                                narrative: "Я осматриваю духовную рану по выбранному способу. Сведения раскрывает клиент; мир продолжает один обычный безопасный цикл без платы и броска осмотра.");
+                                AfterlifeSpiritualNaturalRecoveryTests.AuthorNaturalGraphs(original, turn.SpiritualHealing["destinationGraphs"]!.AsArray()), narrative: "Я осматриваю духовную рану по выбранному способу. Сведения раскрывает клиент; мир продолжает один обычный безопасный цикл без платы и броска осмотра.");
                             compensationExpected = fixture.CaptureMutationRoots(CanonicalStateNormalizer.NormalizerRollbackTrackedFiles.Concat(
                                 new[] { AcceptedMechanicsPlan.WoundCommandPath, ProgressionScheduleService.ReportPath }));
                             responded = true; armed = failPublication;
@@ -179,7 +181,26 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                     {
                         Assert.Equal(1, cuts); Assert.NotNull(compensationExpected); Assert.NotNull(compensationActual); Assert.NotNull(historyAtCut);
                         foreach (var pair in compensationExpected!) Assert.Equal(pair.Value, compensationActual![pair.Key]);
-                        Assert.True(WoundHistoryState.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(historyAtCut!), WoundHistoryState.HistoryPath).IsValid);
+                        var cutHistory = WoundHistoryState.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(historyAtCut!), WoundHistoryState.HistoryPath);
+                        Assert.True(cutHistory.IsValid); Assert.NotNull(publishedAtCut);
+                        var knowledgeRow = Assert.Single(cutHistory.State!.Transitions, t => t.Kind == "diagnose");
+                        var cutDiagnosis = Assert.IsType<SpiritualDiagnosisPersistedResult>(knowledgeRow.TransitionResult);
+                        var naturalRow = Assert.Single(cutHistory.State.Transitions, t => t.TransitionResult is SpiritualHealingPersistedResult);
+                        var cutNatural = Assert.IsType<SpiritualHealingPersistedResult>(naturalRow.TransitionResult);
+                        cutDiagnosis.RequireNatural(cutNatural);
+                        Assert.True(cutDiagnosis.MatchesBinding(turn!.SessionId, turn.RequestId, turn.TurnNumber));
+                        Assert.True(JsonNode.DeepEquals(retained, cutDiagnosis.Request));
+                        Assert.True(JsonNode.DeepEquals(JsonSerializer.SerializeToNode(turn.ProgressionControl), cutDiagnosis.ToCanonicalJson()["control"]));
+                        Assert.Equal(knowledgeRow.SourceFingerprint, naturalRow.SourceFingerprint);
+                        Assert.Equal(retained!["diagnosis"]!["cycleKey"]!.GetValue<string>(), cutNatural.Stages[0].CycleKey);
+                        Assert.Equal(cutDiagnosis.ToCanonicalJson()["scheduleAfterFingerprint"]!.GetValue<string>(),
+                            new CanonicalBeforeImage(true, publishedAtCut![ProgressionScheduleService.SchedulePath]).Fingerprint);
+                        JsonObject? CutRoot(string path) => publishedAtCut![path] is { } bytes ? JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(bytes))!.AsObject() : null;
+                        var cutCatalog = WoundCarrierCatalog.Build(new(CutRoot(WoundCarrierCatalog.PlayerPath), CutRoot(WoundCarrierCatalog.NpcPath),
+                            CutRoot(WoundCarrierCatalog.EnemiesPath), CutRoot(WoundCarrierCatalog.AlliesPath), CutRoot(WoundCarrierCatalog.AfterlifeProfilesPath)));
+                        var cutIdentity = WoundIdentityState.Parse(CutRoot(WoundIdentityState.StatePath)!.ToJsonString(), WoundIdentityState.StatePath);
+                        Assert.Empty(cutCatalog.Issues); Assert.True(cutIdentity.IsValid);
+                        Assert.Empty(cutHistory.State.ValidateAgreement(cutIdentity.State!, cutCatalog));
                         Assert.Equal(42, runtime.GameLoop.TurnNumber); fixture.AssertMutationRootsUnchanged(before);
                         Assert.DoesNotContain((await fixture.ReadHistoryAsync()).Transitions, t => t.Kind == "diagnose");
                     }

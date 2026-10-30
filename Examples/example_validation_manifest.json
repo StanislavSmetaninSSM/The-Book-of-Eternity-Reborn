@@ -2,6 +2,34 @@
   "version": 1,
   "effectMaterializationCoverage": [
 {
+  "contractId": "spiritual_diagnosis_execution_v1",
+  "file": "E_CLI_Afterlife_Turns.txt",
+  "statePath": "existing wound_commands, signed original sources, wound History and scheduler; no new publisher",
+  "responseSurface": "existing spiritualHealingGraphs, progressionProcessingReport and ordinary actor memory",
+  "realms": [
+    "Chaos Sea",
+    "Shining Abode"
+  ],
+  "description": "Guaranteed knowledge-only spiritual diagnosis followed by its REQUIRED complete nonempty ordinary natural suffix.",
+  "validationKind": "focused-fragment",
+  "focusedFragmentReason": "SpiritualDiagnosisDocumentationTests feeds the worked path through the actual canonical parser, current source admission, request and sealed program. Native/UI own signed current publication.",
+  "coverageLimit": "No live authority from the fragment, Mortal procedural execution, unsupported adapters, external provider or HOLD qualification.",
+  "requiredText": [
+    "spiritual_diagnosis_execution_v1",
+    "spiritual_diagnosis_request",
+    "schema9/mode=diagnose",
+    "spiritualHealingGraphs",
+    "progressionProcessingReport",
+    "residentThoughtJournalUpdates",
+    "gmThoughtsSummary",
+    "REQUIRED",
+    "naturalSuffix",
+    "original/knowledgeAfter",
+    "zero diagnostic",
+    "Mortal"
+  ]
+},
+{
   "contractId": "spiritual_shining_patient_memory_v8",
   "file": "E_CLI_Afterlife_Turns.txt",
   "statePath": "existing signed profiles and conditional original resident roster; no new journal or control path",

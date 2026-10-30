@@ -8,6 +8,27 @@ namespace BookOfEternityClient.Tests;
 public sealed class SpiritualDiagnosisBindingTests
 {
     [Theory]
+    [InlineData("source_capability")][InlineData("skill_tier")]
+    public void DeclaredStabilizationUsesItsOwnCanonicalTierWhileHealingZeroRemainsValid(string kind)
+    {
+        var requirement = new JsonObject { ["kind"] = kind, ["capabilityRef"] = "spiritual_stabilization", ["actorRole"] = "provider" };
+        if (kind == "skill_tier") requirement["minimumTier"] = 2;
+        var context = SpiritualDiagnosisAdmissionTests.Context(requirement: requirement);
+        context.Input.Carriers.AfterlifeProfiles!["profiles"]![0]!["standardArts"]!["spiritual_stabilization"] = 2;
+        context.Soul["afterlifeCombatProfile"]!["artTiers"]!["spiritual_stabilization"] = 2;
+        var wound = Assert.Single(context.Catalog.Occurrences).Wound;
+        var admission = Assert.IsType<SpiritualDiagnosisAdmission>(new SpiritualDiagnosisSourceData(context).Admit(wound, "diagnose_tissue").Data);
+        Assert.Equal(0, admission.HealingTier);
+        Assert.Equal(2, Assert.Single(admission.RequirementBindings)!["tier"]!.GetValue<int>());
+        var turn = new SpiritualSelfTreatmentStageContext("session_binding", "request_binding", 43,
+            new ProgressionControl { CurrentRealm = "Chaos Sea", NextChaosSeaTurnOrdinal = 1 });
+        Assert.True(SpiritualDiagnosisRequestCodec.IsExact(SpiritualDiagnosisRequestCodec.Create(turn, admission.Selection, admission),
+            turn, admission.Selection, admission));
+        context.Soul["afterlifeCombatProfile"]!["artTiers"]!["spiritual_stabilization"] = 1;
+        Assert.Null(new SpiritualDiagnosisSourceData(context).Admit(wound, "diagnose_tissue").Data);
+    }
+
+    [Theory]
     [InlineData("missing")][InlineData("ordinal")][InlineData("foreign_actor")]
     [InlineData("tier")][InlineData("unknown_field")][InlineData("source")]
     public void ActualRequestFactoryRefusesIncompleteOrChangedRequirementProofData(string fault)

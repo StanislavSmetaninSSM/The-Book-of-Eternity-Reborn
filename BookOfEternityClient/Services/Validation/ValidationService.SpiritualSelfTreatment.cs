@@ -79,6 +79,7 @@ public partial class ValidationService
         AfterlifeWoundHealingPlanner.Continuation? owner = null;
         var retainOwner = false;
         var spiritualOriginal = false;
+        var diagnosisOriginal = false;
         // These hints can only require refusal when original proof is lost. They
         // never select an admissible family or substitute for the fresh reader.
         var sourceExpected = liveCandidate || AcceptedMechanicsPlanAuthority.HasOpenSpiritualSelfTreatment(_fs, lease) ||
@@ -110,6 +111,7 @@ public partial class ValidationService
             var original = StrictJsonAuthority.Deserialize<JsonObject>(CanonicalJsonUtf8.DecodeOneOptionalBom(
                 signed.ReadRequiredBytes(AcceptedMechanicsPlan.WoundCommandPath)), new JsonSerializerOptions(), "original wound request")!;
             var diagnosis = SpiritualDiagnosisRequestCodec.IsKind(original);
+            diagnosisOriginal = diagnosis;
             if (!diagnosis && !SpiritualSelfTreatmentRequestCodec.IsActiveKind(original)) return null;
             spiritualOriginal = true;
             if (frame.ProgressionControl is null || frame.ManifestPayloadHash != signed.SnapshotToken ||
@@ -181,9 +183,11 @@ public partial class ValidationService
         {
             if (!spiritualOriginal && !sourceExpected) return null; // Preserve the original v1 parser's failures.
             return new[] { new ValidationIssue(AcceptedMechanicsPlan.WoundCommandPath, IssueSeverity.Error,
-                "Spiritual self-treatment could not produce one complete accepted contribution.",
-                code: "spiritual_self_treatment_admission_invalid", actual: failure.Message,
-                repairHint: "Keep the original attempt and dice. Correct the exact signed source, progression report or requested destination graphs.") };
+                diagnosisOriginal ? "Spiritual diagnosis could not produce its complete knowledge and ordinary recovery contribution."
+                    : "Spiritual self-treatment could not produce one complete accepted contribution.",
+                code: diagnosisOriginal ? "spiritual_diagnosis_admission_invalid" : "spiritual_self_treatment_admission_invalid", actual: failure.Message,
+                repairHint: diagnosisOriginal ? "Keep the exact diagnostic request/control. No diagnosis dice or fees may be created; correct only the source, progression report or requested natural graphs."
+                    : "Keep the original attempt and dice. Correct the exact signed source, progression report or requested destination graphs.") };
         }
         finally
         {
