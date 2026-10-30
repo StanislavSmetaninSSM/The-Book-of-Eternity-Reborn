@@ -1,13 +1,24 @@
+## S7 remaining UI admission
+
+Independent Astra accepted the resident-console OUTCOME, including independent
+full gzip decode, hashes, original event pairs/sequences, footer and actual root
+absence. PREP accepted the remaining nine exact exclusive UI singletons at their
+unchanged 180s bounds. Run them serially and verify each TRX/capture/closing before
+launching the next case; stop on the first failure or incomplete capture. No
+accepted native or first-console case is repeated. The complete variant audit
+found no fixture blocker. Source remains frozen; only this plan has changed.
+The first complete capture and all earlier failure evidence remain preserved.
+
 ## S7 first complete Engine journey
 
 Native-four OUTCOME is independently accepted. The first resident-console at
 runtime 117f462609999321756be9a6e90c66308ddaccc5 completed 1/1 PASS, category
-75.3748645s/180s, runner wall1:26.9991534. Actual grant43, ordinary Engine cleanup,
+75.3748645s/180s, runner wall 1:26.9991534. Actual grant43, ordinary Engine cleanup,
 separate confirmed aid44, wound/effects/History/memory and inert replay succeeded.
-TRX SHA2564654302b4ab76147a9c0b3c273a27635a6aadbf15e71dface6103a9e592c170c.
+TRX SHA256 4654302b4ab76147a9c0b3c273a27635a6aadbf15e71dface6103a9e592c170c.
 Full existing capture: 22 original timing events plus one message row, all pairs
 and sequences, full gzip decode/CRC/footer, stored/decoded hashes and owned-root
-absence verified. Stored SHA2568427bed94cf241bc86555d7286fd271d2e7f1525c2962aae3f22480ebf394504.
+absence verified. Stored SHA256 8427bed94cf241bc86555d7286fd271d2e7f1525c2962aae3f22480ebf394504.
 The former timeout/incomplete capture remains preserved outside checkout.
 
 Independent first-journey OUTCOME is pending. The bounded complete preparation
