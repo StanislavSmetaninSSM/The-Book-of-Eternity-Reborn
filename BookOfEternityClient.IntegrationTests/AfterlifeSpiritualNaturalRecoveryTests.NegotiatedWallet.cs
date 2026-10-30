@@ -59,7 +59,10 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
             projection = Assert.IsType<JsonObject>(stage.Stage.GmContext);
             request = JsonNode.Parse((await files.ReadFileAsync(lease, AcceptedMechanicsPlan.WoundCommandPath))!)!.AsObject();
             Assert.Equal(1, draws); Assert.Equal(6, request["schemaVersion"]!.GetValue<int>());
+            var retainedDice = request["attempt"]!["roll"]!["values"]!.AsArray();
+            Assert.NotEmpty(retainedDice); Assert.All(retainedDice, value => Assert.Equal(1, value!.GetValue<int>()));
             Assert.Equal(3, request["activeSource"]!["healingTier"]!.GetValue<int>());
+            Assert.Equal(0, projection["targetNaturalHealingTier"]!.GetValue<int>());
             Assert.Equal(0L, request["activeSource"]!["complicationModifier"]!.GetValue<long>());
             Assert.True(JsonNode.DeepEquals(compensation, request["participation"]!["record"]!["compensation"]));
             before = fixture.CaptureMutationRoots(protectedPaths);
