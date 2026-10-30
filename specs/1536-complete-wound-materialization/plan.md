@@ -1,3 +1,27 @@
+# Договорная помощь B8: точечный codec fix собран, последний отбор ожидает PREP
+
+Sol XHigh принял source/partition/checkpoint `7189718c570331b39ce8412aa9068f823cc3ce81`:
+ровно одна проверка Chaos target realm в существующем направлении patient-consent;
+provider ReceiveAid=true неизменён. Существующий causal RED Fact проверяет также
+valid Chaos round-trip; 47 других resident-кейсов сохраняют свой PASS.
+
+Свежие четыре сборки того же SHA: Main 0 ошибок/12 прежних предупреждений/1:53.83,
+TestSupport 0/23/0:15.21, Unit 0/26/1:01.20, Integration 0/102/1:56.55.
+Проверены 27 артефактов, 132 source bindings, 4 PE/PDB, 8 ресурсов/32 copies и
+4 daemon-копии. Catalog valid: 1164 категории/12953 метода, 0 исполнений, без
+unmapped/stale. Точный PlanOnly: 4 дескриптора/59 случаев/0 исполнений, 6.5268537
+секунды, cleanup/pins стабильны. Состав — только исправленный Fact1 и58 незапущенных
+provider cases; бюджеты прежние. Независимый PREP запрошен, runtime пока UNRUN.
+
+Все предыдущие принятые UI5/wallet-native3/Native2/DATA/частичные регрессии остаются
+на своих записанных версиях без повторов. Никакие failures/timeouts не переименованы.
+Этот блок не меняет правила лечения, live authority, источник, cache или диагностику;
+speedup не заявляется. Полный raw и B7 archive сохранены вне checkout по прежнему
+пути. Весь B/US6/#1536 ещё не принят; DOM/provider/fresh-process и HOLD-направления
+сохраняют прежние ограничения. Новый clone/restore не выполнялся.
+
+---
+
 # Договорная помощь: все пять UI приняты; закрытый realm guard исправлен WIP
 
 Sol OUTCOME принял B7 guidance2/wallet-native3 и Elyara2 на runtime
