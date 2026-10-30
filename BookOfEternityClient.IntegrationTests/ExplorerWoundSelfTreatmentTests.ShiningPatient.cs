@@ -7,6 +7,7 @@ using BookOfEternityClient.Core;
 using BookOfEternityClient.Models;
 using BookOfEternityClient.Services;
 using Xunit;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace BookOfEternityClient.Tests;
 
@@ -126,6 +127,18 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                                 Assert.Equal(8, retained["schemaVersion"]!.GetValue<int>());
                                 Assert.Equal(kind, retained["target"]!["ownerKind"]!.GetValue<string>());
                                 Assert.False(retained.ContainsKey("playerConfirmation")); Assert.False(retained.ContainsKey("currencyInvariant"));
+                                // A repeated real pre-stage call while this original
+                                // request is retained must refuse before control/dice.
+                                var beforeRepeat = fixture.CaptureMutationRoots(new[] { ShiningAbodeState.StatePath,
+                                    GuardianAbodeResidentState.StatePath, GuardianThoughtJournalState.StatePath });
+                                var unexpectedDraws = 0;
+                                var repeated = await AfterlifeWoundTreatmentAuthority.StagePlayerAidTurnAsync(files, lease,
+                                    new ProgressionScheduleService(files, NullLogger<ProgressionScheduleService>.Instance),
+                                    turn.SessionId, turn.RequestId, turn.TurnNumber,
+                                    SpiritualSelfTreatmentRequestCodec.ReadActiveSelection(retained), _ => { unexpectedDraws++; return [20]; });
+                                Assert.False(repeated.Stage.IsStaged); Assert.Null(repeated.Control); Assert.Equal(0, unexpectedDraws);
+                                fixture.AssertMutationRootsUnchanged(beforeRepeat);
+
                                 treatmentTurn = turn; treatmentWritten = true;
                             }
                             await WriteNativeCompletionAsync(files, lease, turn,

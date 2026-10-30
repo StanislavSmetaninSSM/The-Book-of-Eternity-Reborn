@@ -127,6 +127,15 @@ new UI whitelist or resident-journal privilege. Runtime remains UNRUN. Selected
 finite old cheap/native consumers are listed in tests/selection; they are affected
 by shared dispatch/menu changes, not reruns of unchanged qualified UI journeys.
 
+Fresh corrected Unitc26f1bb4c exit0/26baselinewarnings/1:25.16. First Integration
+c26f1bb4c exit0/103warnings/3:35.33; one NEW nullable warning at exact faction seed
+was caught and fixed with Assert.IsType<JsonObject> (same strict shape, no null
+suppression), requiring Integration-only rebuild. The actual treatment response
+now also attempts the same public aid pre-stage while its exact request is retained:
+expect refusal with zero new control/draw and byte-exact unchanged roots. This is
+repeat-stage refusal plus published replay/C4 request preservation, not a second
+submitted Engine execution after outer rollback. Small fixture delta review pending.
+
 Авторское решение диагностики принято2026-10-30 11:48UTC и отражено в FR071/tasks.
 После текущего Shining patient: Mortal method declares own procedure check/time/
 cost; spiritual Healing>=0 plus ALL path requirements, guaranteed declared reveals,

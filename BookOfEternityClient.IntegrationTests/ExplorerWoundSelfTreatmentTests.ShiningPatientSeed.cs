@@ -25,7 +25,7 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
     {
         var shining = JsonNode.Parse((await files.ReadFileAsync(lease, ShiningAbodeState.StatePath))!)!.AsObject();
         var residents = JsonNode.Parse((await files.ReadFileAsync(lease, GuardianAbodeResidentState.StatePath))!)!.AsObject();
-        var faction = Assert.Single(shining["factions"]!.AsArray()).AsObject();
+        var faction = Assert.IsType<JsonObject>(Assert.Single(shining["factions"]!.AsArray()));
         var factionId = faction["factionId"]!.GetValue<string>();
         var player = profiles["profiles"]!.AsArray().OfType<JsonObject>().Single(p => p["actorType"]?.GetValue<string>() == "player_soul");
         Assert.Equal(3, player["standardArts"]!["spiritual_healing"]!.GetValue<int>());
