@@ -1,3 +1,25 @@
+# US6 bounded original-capture controls2/2PASS; console still conditional
+
+Independent Sol6.1/xhigh PREP accepted exact cheap2 at1min after bacf0c0ec source/
+build and clean metadata1c8b4f9aec4cfbd3f73ee657c7063dc6bd4ddb1c verification.
+Actual FCAP-wiring-runtime source1c8b4f9a:2/2PASS,0failed/skipped/duplicates;
+wall14.7636385s, category7.0664982s<60. Exact methods/TRX/cleanup/binarypins verified.
+Both actual gzip captures decode fully, strict footer/complete receipts and stored
+hashes match, registered temporary roots removed. New logger control retains complete
+Unicode/multiline message+original exception once, disabled formatter uncalled, original
+macro begin visible before blocked body release; final paired events complete.
+
+External raw/proof: /workspace/tboe-linux-evidence-20261025/us6-faction-service-agreement/
+FCAP-wiring-runtime (verified-outcome.json, verified-capture-integrity.json, both full
+captures/TRX). No raw in Git, no deletions. No application speedup/route PASS claim.
+One original console3min diagnostic remains conditional on outcome confirmation and
+fresh resource/ownership admission. Browser/rollback/private5/HOLD still held.
+Metadata-only checkpoint, compiledsourcebacf0c0ec unchanged; do not rebuild or repeat
+accepted controls for this note. Next read original console live phase evidence and
+fix a concrete cause, preserving original assertions/cold/authority/capture rules.
+
+---
+
 # US6 bounded capture source/build/discovery prepared; runtime UNRUN
 
 Independent Sol6.1/xhigh delta SOURCE ACCEPT bacf0c0ec9adedb0db8650eaef2b47729931ff9d;
