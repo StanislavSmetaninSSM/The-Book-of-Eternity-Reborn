@@ -1,3 +1,22 @@
+# T121 EX4B builds and discovery — warning-only correction pending
+
+All four actual EX4B builds at `03a1793da` exited 0: Main 2:21.36 with 12 baseline
+warnings, Support 19.63s/23, Unit 1:24.84/26, Integration 2:36.13/104. Integration's
+104 included two new warnings above its 102 baseline: xUnit2031 at native diagnosis
+line 89 and CS8602 at the UI construction-timing dispose. Current proof recorded
+27 artifacts, four PE/PDB pairs, 213 source bindings and ten operational resources.
+Official catalog validation and full PlanOnly completed with 144 cases / 61 methods /
+23 descriptors and zero executions. No runtime qualification is claimed.
+
+The only C# corrections use Assert.Single(sequence, the unchanged predicate) and
+assert the required construction timing scope is nonnull before runtime allocation;
+its existing Dispose remains active. No predicate, game assertion, diagnostic capture,
+behavior, selector or budget is weakened. The primary will retain EX4B artifacts and,
+after narrow SOURCE readback, rebuild only Integration. Unchanged Main/Support/Unit
+remain subject to actual source/PDB continuity proof. The corrected Integration and
+all execution tests remain UNRUN; no writer build/test was started. Failed EX4 raw
+and earlier accepted evidence remain preserved outside Git.
+
 # T121 EX4 compile-only correction — fresh builds pending
 
 Astra accepted whole SOURCE at `51ff4e6d8`; metadata-only `63ac2451a` corrected

@@ -89,6 +89,7 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                 var diagnostics = new GameEngineTurnLifecycleTests.SpiritualLifecycleTestLogger(capture);
                 JsonObject? retained = null; TurnRequest? turn = null; var responded = false;
                 using var construction = timings.Measure("SpiritualDiagnosis.RuntimeConstruction");
+                Assert.NotNull(construction);
                 var runtime = GameEngineTurnLifecycleTests.CreateGameEngineRuntime(files, inputSource: new NoPlayerInput(diagnostics),
                     logger: diagnostics, explorerConsole: console, finalizationHooks: new GameEngineSessionFinalizationHooks
                     {

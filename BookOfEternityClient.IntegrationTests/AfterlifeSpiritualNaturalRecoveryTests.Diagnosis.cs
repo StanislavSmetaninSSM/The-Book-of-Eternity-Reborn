@@ -86,7 +86,7 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
         var historyText = (await files.ReadFileAsync(WoundHistoryState.HistoryPath))!;
         var history = WoundHistoryState.Parse(historyText, WoundHistoryState.HistoryPath);
         Assert.True(history.IsValid, string.Join(";", history.Issues));
-        var diagnosis = Assert.Single(history.State!.Transitions.Where(t => t.TransitionResult is SpiritualDiagnosisPersistedResult));
+        var diagnosis = Assert.Single(history.State!.Transitions, t => t.TransitionResult is SpiritualDiagnosisPersistedResult);
         var result = Assert.IsType<SpiritualDiagnosisPersistedResult>(diagnosis.TransitionResult);
         var natural = Assert.Single(history.State.Transitions.Select(t => t.TransitionResult).OfType<SpiritualHealingPersistedResult>());
         Assert.True(natural.IsNatural);
