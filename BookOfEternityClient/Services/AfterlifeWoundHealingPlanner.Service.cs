@@ -22,15 +22,15 @@ internal static partial class AfterlifeWoundHealingPlanner
             {
                 RequireExecutionCurrent();
                 var aid = SpiritualTreatmentParticipation.Selection(witness["record"]!.AsObject());
-                var admission = SpiritualTreatmentParticipation.RequireShiningProviderAdmission(
+                var negotiatedAdmission = SpiritualTreatmentParticipation.RequireShiningProviderAdmission(
                     _parsedSourceRoots.GetValueOrDefault(AfterlifeWoundTreatmentAuthority.ServiceLocalityPaths[0]) as JsonObject,
                     _parsedSourceRoots.GetValueOrDefault(GuardianAbodeResidentState.StatePath) as JsonObject, projectedProfiles,
                     _parsedSourceRoots.GetValueOrDefault(ShiningAbodeState.StatePath) as JsonObject,
                     aid.Healer("shining_abode"), aid.ExplicitLocality!);
                 if (_expectedNegotiatedAfterImageAdmissionFingerprint is not null &&
-                    _expectedNegotiatedAfterImageAdmissionFingerprint != admission.Fingerprint)
+                    _expectedNegotiatedAfterImageAdmissionFingerprint != negotiatedAdmission.Fingerprint)
                     throw new InvalidDataException("The owned negotiated provider projection changed within its operation.");
-                _expectedNegotiatedAfterImageAdmissionFingerprint = admission.Fingerprint;
+                _expectedNegotiatedAfterImageAdmissionFingerprint = negotiatedAdmission.Fingerprint;
             }
             if (!HasServicePayment) return;
             RequireExecutionCurrent();

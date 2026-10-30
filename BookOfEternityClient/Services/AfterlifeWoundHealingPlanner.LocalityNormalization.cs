@@ -33,17 +33,17 @@ internal static partial class AfterlifeWoundHealingPlanner
                 var afterRoot = StrictJsonAuthority.Deserialize<JsonObject>(content, new JsonSerializerOptions(), path)!;
                 // Existing operation-private parsed DATA; RequireCurrent above/below
                 // still closes every physical source, including the current hall.
-                var shining = _parsedSourceRoots.GetValueOrDefault(ShiningAbodeState.StatePath) as JsonObject;
+                var serviceShining = _parsedSourceRoots.GetValueOrDefault(ShiningAbodeState.StatePath) as JsonObject;
                 var rosterPath = GuardianAbodeResidentState.StatePath;
                 var serviceGuardianPath = AfterlifeWoundTreatmentAuthority.ServiceLocalityPaths[0];
                 var serviceGuardians = _parsedSourceRoots.GetValueOrDefault(serviceGuardianPath) as JsonObject;
                 var serviceResidents = _parsedSourceRoots.GetValueOrDefault(rosterPath) as JsonObject;
                 var beforeAdmission = AfterlifeWoundTreatmentAuthority.RequireServiceAdmission(
                     path == serviceGuardianPath ? beforeRoot : serviceGuardians, _data!.Carriers.AfterlifeProfiles!, _data.ServiceQuote!,
-                    shining, path == rosterPath ? beforeRoot : serviceResidents);
+                    serviceShining, path == rosterPath ? beforeRoot : serviceResidents);
                 var afterAdmission = AfterlifeWoundTreatmentAuthority.RequireServiceAdmission(
                     path == serviceGuardianPath ? afterRoot : serviceGuardians, _data.Carriers.AfterlifeProfiles!, _data.ServiceQuote!,
-                    shining, path == rosterPath ? afterRoot : serviceResidents);
+                    serviceShining, path == rosterPath ? afterRoot : serviceResidents);
                 if (beforeAdmission.ProviderFingerprint != _data.ServiceProviderAdmissionFingerprint ||
                     afterAdmission.ProviderFingerprint != beforeAdmission.ProviderFingerprint ||
                     beforeAdmission.Scope.LocationId != afterAdmission.Scope.LocationId ||

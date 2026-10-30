@@ -1,3 +1,19 @@
+# Negotiated B: первая fresh Main-сборка выявила три compile-only дефекта
+
+SOURCE production/delta приняты Astra, bounded tests/docs/selection — Sol на b959e823e.
+Первый Main build B1 из b959 завершился exit1 за2:13.21: три compiler errors
+(обязательный optional-path argument и два пересекающихся имени локальных переменных),
+12 прежних warnings. Ошибки исправлены узко, без изменения predicates/assertions;
+независимый delta review и свежий owning build pending. Это не причинный игровой RED.
+Support/Unit/Integration ещё не запускались; runtime B UNRUN, квалификация не заявлена.
+BRED27 исходные бинарники сохранены/полностью decoded-hash verified вне checkout:
+BRED-owning-artifacts.tar.gz61840847 bytes SHA b85abe535f21d7240b4442dc3127bc153327da4093670863063378f12c49160f.
+Raw полного B1 compiler output сохранён; удалений и загрузок raw нет.
+Следующий шаг — исправленная свежая Main и остальные owning builds, затем exact
+catalog/PlanOnly/PREP и новый40casecheap gate. A/HOLD не повторять.
+
+---
+
 # Negotiated B: SOURCE corrections, cheap controls and GM synchronization WIP
 
 Astra whole SOURCE40c found two specific integration defects, now corrected:
