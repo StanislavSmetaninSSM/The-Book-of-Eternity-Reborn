@@ -3,7 +3,8 @@
 2026-10-30, T119, [#1573](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1573),
 [spec v1.73](spec.md), [план](plan.md), [задачи](tasks.md).
 **Автор прямо принял конкретные числа и договор фаз ниже в T121. Численная
-проверка T120 выполняется; production-реализация не входит в это поручение.** Принятая подача
+проверка T120 выполнена: [результаты и ограничения](healing-modes-investigation.md).
+Production-реализация не входит в это поручение; review/publication — в review.md.** Принятая подача
 правил T117 фиксируется отдельно в T118. Старый HealV/B22 не был окончательно
 принят; его измеренные результаты сохраняются в [T116](reaction-balance-investigation.md).
 
