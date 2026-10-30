@@ -195,13 +195,22 @@ exclusive only after fullPASS and fresh pin/resource/owner checks. Native10,
 providerUI4 and actual patientEngine6 UNRUN/unreleased. Artifacts/source/resources
 remain unchanged; this checkpoint changes only plan metadata. Full raw external.
 
+S4 affected cheap:239/239PASS@3d4690c308fa0fe43200b11bc4c1078f27a6a246,
+87methods/13descriptors/TRX, exact unique IDs, no skip/timeout/duplicates, full
+owned/runtime cleanup and unchanged pins; wall4:16.1912197. Independent OUTCOME
+pending; prior conditional menu PREP requires fresh resource/artifact/owner fences.
+Completed next PlanOnlys: docs2/2methods/1descriptor and native10/7methods/7descriptors,
+zero executions, stable pins/cleanup; no native admission implied. Next menu4 only,
+then finite existing native/provider controls and six genuine patient journeys.
+
 Авторское решение диагностики принято2026-10-30 11:48UTC и отражено в FR071/tasks.
 После текущего Shining patient: Mortal method declares own procedure check/time/
 cost; spiritual Healing>=0 plus ALL path requirements, guaranteed declared reveals,
 one ordinary safe cycle/no OD/Feathers/items, no direct healing, natural recovery
 retained. Read/cancel inert. Execution UNIMPLEMENTED; DFR/Mortal compatibility/
-Windows HOLD не сняты. Текущие новые fixtures/source/docs ещё UNCOMPILED/UNRUN;
-S2 measured27 artifacts полностью archived/allhash+EOFCRC verified before overwrite.
+Windows HOLD не сняты. Patient code/fixtures compiled as recorded above; actual
+menu/native/providerUI/journeys remain UNRUN. S2/S3 measured artifacts retained
+with full member hashes and gzip EOF/CRC proof before owning Unit overwrites.
 
 # T121: условия известных диагностических путей приняты — #1536
 
