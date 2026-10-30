@@ -1,4 +1,27 @@
-# T121 coherent spiritual execution — first code WIP, UNCOMPILED/UNRUN
+# T121 coherent spiritual execution — program/staging WIP, UNCOMPILED/UNRUN
+
+The next preserved code cut adds deterministic knowledge-first recovery-program
+DATA and actual prepared/no-draw staging APIs. The original full ordered cohort
+is retained separately from the diagnosed recovery start. The natural program
+reference is derived consistently for its existing strict projection/codec; one
+immutable operation projection is constructed and detached exports reuse it.
+Only the existing natural 2048-stage bound applies, not a new member quota.
+
+Test-first controls cover genuine Healing V with canonical severity II, selected
+not first, ordinary no-heal and terminal recovery, invalid/empty/changed original
+cohorts, and actual H0 staging/retry/refusals in both realms. The existing light
+self-stage fixture is reused. Staged source admission shares the exact existing
+pure target/locality rules and source constructor via parsed-DATA overloads,
+with no fake UI resource/Mortal authority or extra per-requirement source reads.
+
+Engine dispatch still refuses diagnosis: common execution, durable two-result
+publication/completion, real native/UI and full GM sync remain in progress. No
+build/test was run against this WIP. Current source-estimated component selection
+is 96 cases / 38 methods / 8 Unit descriptors, including directly affected existing
+admission/menu/target/source guards; official discovery and whole final selection
+review remain pending. No unchanged Shining110/read83 gameplay is replayed.
+
+# T121 coherent spiritual execution — first sealed-proof code WIP
 
 Test-first sealed-proof guards now accompany the accepted two-realm causal pair.
 The existing diagnosis evidence family has an explicit spiritual companion that

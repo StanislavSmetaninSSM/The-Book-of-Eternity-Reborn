@@ -2,6 +2,26 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "spiritual-diagnosis-program-data",
+  "responsibility": "T121 deterministic knowledge-first plus complete required ordinary recovery cohort: genuine Healing V with canonical severity II, selected-not-first ordering, no-heal and terminal math, exact projection/program reference, and empty/missing/duplicate/reordered/changed cohort or tier refusals. Uses the existing natural persisted-stage bound.",
+  "excludes": "No live signed source/publication, V wound, empty positive suffix, graph authoring, resource/cycle mutation, Engine or broad regression.",
+  "changeHints": ["BookOfEternityClient/Services/SpiritualDiagnosisProgram.cs", "BookOfEternityClient.Tests/SpiritualDiagnosisProgramTests.cs"],
+  "related": [{ "id": "spiritual-diagnosis-reduction-causal", "when": "Knowledge-only reduction must be validated before the natural suffix is calculated." }],
+  "requirements": { "frontendBuild": false, "exclusive": false },
+  "timeoutMinutes": 1, "expectedSeconds": null,
+  "selectors": [{ "project": "unit", "tests": ["BookOfEternityClient.Tests.SpiritualDiagnosisProgramTests.*"] }]
+},
+{
+  "id": "spiritual-diagnosis-staging-data",
+  "responsibility": "T121 actual file-light prepared diagnosis staging: H0 in both spiritual realms, exact retained no-draw request, unchanged wounds/world/schedule, inert retry and missing art/unknown requirement/check/foreign or stale target refusal before a request write.",
+  "excludes": "No full Engine, accepted turn/publication/completion, provider, DOM/fresh process or real GM response qualification.",
+  "changeHints": ["BookOfEternityClient/Services/AfterlifeWoundTreatmentAuthority.Diagnosis.cs", "BookOfEternityClient.Tests/SpiritualDiagnosisStagingTests.cs"],
+  "related": [{ "id": "spiritual-diagnosis-admission", "when": "The same closed request/source admission is freshly reused at the staged boundary." }],
+  "requirements": { "frontendBuild": false, "exclusive": false },
+  "timeoutMinutes": 1, "expectedSeconds": null,
+  "selectors": [{ "project": "unit", "tests": ["BookOfEternityClient.Tests.SpiritualDiagnosisStagingTests.*"] }]
+},
+{
   "id": "spiritual-diagnosis-reduction-guards",
   "responsibility": "T121 explicit sealed spiritual diagnosis proof and exact knowledge-only delta: partial discoveries, progress/display edits, old Mortal authority refusal, tampered/foreign evidence, exact retained context and detached export. Includes the existing two-row Mortal success/failure factory baseline and existing spiritual-through-Mortal refusal because the shared seal implementation changed.",
   "excludes": "No live admission/publication, natural suffix, durable completed result, Engine, Mortal compatibility suite or unrelated prior PASS replay.",

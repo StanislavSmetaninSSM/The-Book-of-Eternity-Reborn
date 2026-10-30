@@ -446,7 +446,7 @@ public sealed class SpiritualSelfTreatmentRequestTests
         Assert.Null(await f.Files.ReadFileBytesAsync(lease, AcceptedMechanicsPlan.WoundCommandPath));
     }
 
-    private sealed class Fixture : IAsyncDisposable
+    internal sealed class Fixture : IAsyncDisposable
     {
         private readonly string _root;
         private Fixture(string root, FileSystemManager files, SpiritualSelfTreatmentStageContext context,

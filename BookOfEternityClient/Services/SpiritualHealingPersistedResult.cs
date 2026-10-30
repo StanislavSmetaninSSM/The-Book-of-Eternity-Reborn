@@ -17,6 +17,7 @@ internal sealed record SpiritualHealingPublishedStage(WoundMaterializationEnvelo
 /// <summary>Strict replay DATA for one completed treatment and its single ordered recovery cycle.</summary>
 internal sealed class SpiritualHealingPersistedResult : WoundTransitionResult
 {
+    internal const int MaxStageCount = 2048;
     private readonly JsonObject _root;
     private readonly ImmutableArray<SpiritualHealingPublishedStage> _stages;
     private readonly AfterlifeHealingServiceQuote? _serviceQuote;
@@ -160,7 +161,7 @@ internal sealed class SpiritualHealingPersistedResult : WoundTransitionResult
                 !ResourceMaterializationContract.IsAuthorityFingerprint(Text(source, "graphResponseFingerprint")))
                 throw new InvalidDataException("Invalid spiritual source/graph-response fingerprint.");
             var rows = root["stages"]!.AsArray();
-            if (rows.Count is < 1 or > 2048) throw new InvalidDataException("Unbounded spiritual stage cohort.");
+            if (rows.Count is < 1 or > MaxStageCount) throw new InvalidDataException("Unbounded spiritual stage cohort.");
             var stages = new List<SpiritualHealingPublishedStage>();
             foreach (var node in rows)
             {

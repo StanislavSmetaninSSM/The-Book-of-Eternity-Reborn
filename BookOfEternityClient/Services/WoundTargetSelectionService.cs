@@ -20,21 +20,27 @@ internal sealed record WoundTargetChoice(string Value, string Name, string Conte
 internal static class WoundTargetSelectionService
 {
     internal static IReadOnlyList<WoundTargetChoice> Build(WoundPlayerReadContext context,
-        JsonObject? guardians, JsonObject? residents)
+        JsonObject? guardians, JsonObject? residents) => Build(context.Catalog, context.Input.Carriers.AfterlifeProfiles,
+            context.Input.Realm, context.Input.SelfVisible, context.SpiritualConflict, context.ShiningPatients, guardians, residents);
+
+    // Menu and actual staged/signed source admission share the same target rules
+    // on one operation's parsed DATA. This overload performs no IO or publication.
+    internal static IReadOnlyList<WoundTargetChoice> Build(WoundCarrierCatalog catalog, JsonObject? profileRoot,
+        string realm, bool selfVisible, JsonObject? spiritualConflict,
+        IReadOnlyList<SpiritualShiningPatientAdmission> shiningPatients, JsonObject? guardians, JsonObject? residents)
     {
-        if (!context.Input.SelfVisible) return Array.Empty<WoundTargetChoice>();
-        var realm = context.Input.Realm;
+        if (!selfVisible) return Array.Empty<WoundTargetChoice>();
         var selfOwner = new WoundOwnerCoordinate(realm, realm == "mortal_world" ? "player" : "player_soul",
             realm == "mortal_world" ? "player_current" : "player_soul",
             realm == "mortal_world" ? WoundCarrierCatalog.PlayerPath : WoundCarrierCatalog.AfterlifeProfilesPath);
         // One index over the caller's prepared catalog; no rebuild, filesystem or retained cache.
-        var wounds = context.Catalog.Occurrences.Select(o => o.Wound).Where(w => w.Lifecycle == "active" &&
+        var wounds = catalog.Occurrences.Select(o => o.Wound).Where(w => w.Lifecycle == "active" &&
             w.Owner.Realm == realm && WoundPlayerProjection.Visible(w.Display.Visibility)).ToLookup(w => w.Owner);
         var targets = new List<WoundTargetChoice>();
         SpiritualAidLocality? locality = null;
         LocalInteractionScope? scope = null;
-        var profiles = (context.Input.Carriers.AfterlifeProfiles?["profiles"] as JsonArray)?.OfType<JsonObject>().ToArray() ?? [];
-        if (realm == "chaos_sea" && context.SpiritualConflict?["activeConflict"] is null && guardians is not null)
+        var profiles = (profileRoot?["profiles"] as JsonArray)?.OfType<JsonObject>().ToArray() ?? [];
+        if (realm == "chaos_sea" && spiritualConflict?["activeConflict"] is null && guardians is not null)
         {
             try
             {
@@ -47,7 +53,7 @@ internal static class WoundTargetSelectionService
         targets.Add(Create(selfOwner, "Себя", "Ваш текущий персонаж", locality));
         if (realm == "shining_abode")
         {
-            var patients = context.ShiningPatients.Select(a => Create(a.Target,
+            var patients = shiningPatients.Select(a => Create(a.Target,
                 Name(a.Profile, "", a.IsFactionHead ? "Глава фракции" : "Житель фракции"),
                 a.IsFactionHead ? "Глава фракции · Текущий зал" : "Житель фракции · Текущий зал", a.Locality))
                 .OrderBy(t => t.Owner.OwnerKind == "radiant_actor" ? 0 : 1)
@@ -76,7 +82,7 @@ internal static class WoundTargetSelectionService
             {
                 var owner = new WoundOwnerCoordinate("chaos_sea", "resident", SpiritualTreatmentParticipation.ProfileId(profile), WoundCarrierCatalog.AfterlifeProfilesPath);
                 _ = SpiritualTreatmentParticipation.RequireResidentParticipantScope(guardians!, residents,
-                    context.Input.Carriers.AfterlifeProfiles!, owner);
+                    profileRoot!, owner);
                 if (profile["locationId"]?.GetValue<string>() != scope.LocationId) continue;
                 var row = residents!["entries"]!.AsArray().OfType<JsonObject>().Single(r => r["residentId"]?.GetValue<string>() == owner.OwnerId);
                 var kind = Read(row["residentKind"]);
@@ -113,7 +119,7 @@ internal static class WoundTargetSelectionService
             {
                 "wound_target_navigation", "1", WoundAcceptedTurnFingerprintWriter.CanonicalJson(SpiritualHealingRequestProjection.OwnerJson(owner)),
                 currentLocality is null ? "" : WoundAcceptedTurnFingerprintWriter.CanonicalJson(SpiritualTreatmentParticipation.LocalityJson(currentLocality)), name, description,
-                context.ShiningPatients.SingleOrDefault(a => a.Target == owner && a.Locality == currentLocality)?.Fingerprint ?? ""
+                shiningPatients.SingleOrDefault(a => a.Target == owner && a.Locality == currentLocality)?.Fingerprint ?? ""
             }.Concat(summaries.SelectMany(w => new[] { w.WoundId, w.Fingerprint, w.Name, w.Severity, w.Description })));
             return new("target_0", name, description, Array.AsReadOnly(summaries), owner, currentLocality, fingerprint);
         }

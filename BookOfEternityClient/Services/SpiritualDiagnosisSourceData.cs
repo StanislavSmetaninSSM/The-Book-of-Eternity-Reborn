@@ -24,20 +24,26 @@ internal sealed class SpiritualDiagnosisSourceData
     private readonly IReadOnlyList<WoundData> _wounds;
     private readonly string _sourceFingerprint;
 
-    internal SpiritualDiagnosisSourceData(WoundPlayerReadContext context)
+    internal SpiritualDiagnosisSourceData(WoundPlayerReadContext context) : this((context ?? throw new ArgumentNullException(nameof(context))).Catalog,
+        context.Input.Carriers.AfterlifeProfiles, context.Soul, context.Input.Realm, context.Input.SelfVisible,
+        context.SpiritualConflict?["activeConflict"] is not null)
+    { }
+
+    // Reuses the actual source owner's already parsed roots; no display catalog,
+    // extra read or fabricated resource/Mortal context is required by admission.
+    internal SpiritualDiagnosisSourceData(WoundCarrierCatalog catalog, JsonObject? profiles, JsonObject soul,
+        string realm, bool selfVisible, bool conflict)
     {
-        ArgumentNullException.ThrowIfNull(context);
-        _profiles = context.Input.Carriers.AfterlifeProfiles?.DeepClone().AsObject();
-        _soul = context.Soul.DeepClone().AsObject();
-        _realm = context.Input.Realm; _selfVisible = context.Input.SelfVisible;
-        _conflict = context.SpiritualConflict?["activeConflict"] is not null;
+        ArgumentNullException.ThrowIfNull(catalog); ArgumentNullException.ThrowIfNull(soul);
+        _profiles = profiles?.DeepClone().AsObject(); _soul = soul.DeepClone().AsObject();
+        _realm = realm; _selfVisible = selfVisible; _conflict = conflict;
         _sourceFingerprint = WoundAcceptedTurnFingerprintWriter.Compute(new[]
         {
             "book_of_eternity.spiritual_diagnosis.menu_sources", "1", _realm,
             WoundAcceptedTurnFingerprintWriter.CanonicalJson(_profiles),
             WoundAcceptedTurnFingerprintWriter.CanonicalJson(_soul)
         });
-        _wounds = context.Catalog.Occurrences.Where(occurrence => occurrence.Wound.Owner.Realm == _realm &&
+        _wounds = catalog.Occurrences.Where(occurrence => occurrence.Wound.Owner.Realm == _realm &&
             occurrence.Wound.Classification.Domain == "spiritual" && occurrence.Wound.Lifecycle == "active" &&
             occurrence.Wound.Treatment.DiagnosisPaths.Count != 0).Select(occurrence =>
         {
