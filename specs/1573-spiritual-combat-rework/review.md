@@ -1,5 +1,20 @@
 # Проверка проекта #1573
 
+## T126 — пересмотр концепции Heal, 2026-11-01
+
+Baseline/origin d9c4b6b877247ce8a7a70da6bb5aa72026d19540 совпали; tracked1573.
+Brainstorming/Spec Kit bridge применены к canonical spec/plan/tasks. Это проект
+для обсуждения, не implementation/probe. Пользователь предложил direct/HoT,
+no Heal interrupts, атаки с подавлением до90%;30/45/60/75/90 и3тика — только
+предложения исполнителя. Силы/цены/stack/HP0/lifecycle явно открыты.
+Sol6.1/high провёл read-only source-аудит с рабочей Serena/C#символикой; parent
+прочёл связанные Heal/suppression/личные часы. periodic_restore — fixed amount,
+outer owner_turn_end — не personal1573 clock. Общий accepted/effect/resource
+pipeline переиспользуется; wound healing math не является HP-формулой.
+Optimization assessment: нет нового вычисляющего кода/нового кэша/прогона.
+Будущие stable formula DATA допускают existing operation reuse; текущие
+HP/метки/phase/authority всегда свежие. Независимое review ещё впереди.
+
 ## T125 — исходный checkpoint, 2026-11-01
 
 User прямо поручил совместный бюджет атаки/срыва без допсогласований.
