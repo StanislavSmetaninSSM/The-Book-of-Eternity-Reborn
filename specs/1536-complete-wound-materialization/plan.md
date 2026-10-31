@@ -1,3 +1,40 @@
+# T121 physical guided causal3 — actual intended RED, OUTCOME pending
+
+Runtime9b0256956049b666c81d2266d5c968663ce1e74c, fresh Integration source
+9b06fa9bab76be9d9147581ad5081650208537ec; other3 unchanged C22 ownersf2f4.
+One exact60s category executes all3 planned cases and exits1 with3 FAIL/0 PASS,
+no timeout, missing/skip or duplicate. Each actual failure is ONLY the explicit
+mode-specific missing-executable-physical-route assertion at source line168,
+after complete canonical/known-route/actor/provider/requirement/capability or
+course-clock premises, real menu Self/provider and whole JSON inertness.
+Category6.6824986s/60, wall14.1880972s. This is genuine primary causal RED evidence,
+not physical treatment GREEN or feature acceptance. Independent OUTCOME is pending.
+
+Actual passive menu source counts in EACH case are player wound1, NPC core2,
+world clock1/current location1. They are observed baseline costs, not a source-
+reduction/speedup claim. The implementation must inspect whether the second NPC
+source read needs a separate fresh boundary or can reuse already owned stable
+menu DATA; preserve every necessary source/authority fence and prove any reuse.
+No separate optimization/performance investigation is opened.
+
+Strict raw proof / unique case+execution IDs / unchanged pins / runner cleanup
+are verified; the fresh physical-menu fixture namespace is empty. No individual
+fixture root IDs or passive event stream were emitted and none is invented.
+All original raw remains external in P1RED-runtime; TRX SHA256
+3175233abce22a6783352e1ccb654c079811e1687418fdee61df4cb060eea2e7,
+verified-causal-red.json SHA256
+30cbc43ba2f5790dbfb9f27aa046680b3d7570695b1150ba50d71e7951bad0ef.
+Closing fence preserves27 artifacts/40 resources/4 daemons, no live managed owners,
+free1,139,453,952bytes. No old raw/saves/recovery or product code was changed.
+
+Next after independent acceptance: implement the SAME whole three-mode user route,
+including its genuine pre-GM hold and strict browser current-settlement leaf.
+Existing Request+Receipt is replay DATA, not publication proof; reuse C21 frozen
+inputs/pure identities/current validators and generalize only the existing mode-
+restricted detached finalization as needed. No parallel calculator/publisher/registry,
+new game rule or broader HOLD admission. Console/browser journeys, exact replay,
+course reconstruction/interruption and original rollback remain mandatory.
+
 # T121 physical causal3 freshly prepared — runtime UNRUN
 
 Independent Astra/high SOURCE accepts9b06fa9bab76be9d9147581ad5081650208537ec.
