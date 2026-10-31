@@ -1,3 +1,36 @@
+# T121 C12 builds/discovery complete — focused4 PREP pending
+
+Independent Astra SOURCE accepted `99703ab62991dcfd8eed72777120de024bb3f921`.
+Root verified remote/local equality and four fresh owning builds at that source,
+all exit0: Main2:15.58, Support17.67s, Unit1:27.11, Integration2:48.57. Exact
+warning code/message multisets remain12/23/26/102. Four PE/PDB pairs/331 actual
+Compile-owned bindings,27 artifacts,40 resource copies and four daemons agree.
+External archive62910974bytes, SHA256
+`c6feb275c937eab2b57a2521b264ed23e577f497b9539990361461754c689be0`,
+passes every member hash and full gzip EOF/CRC over197140480 decoded bytes.
+
+Official discovery1264/13080 and current exact PlanOnly218cases/90methods/
+50descriptors/48 selected categories pass, zero executions/duplicates and complete
+cleanup. Disjoint phases: focused4 (stage1 plus guards3, four methods/two60s
+descriptors), native9 (input-role6, outer2, published-recovery1, three methods/
+three120s descriptors), UI3 separately180s, retained202 (80methods/42descriptors/
+40categories). The retained202 exact method counts and category membership match
+this official plan. Its immutable qualified subset derives from the independently
+verified211, excluding all nine newly affected native cases; external SHA256
+`0394968ab9928008895e7c48617ed089085e4d8c89d59444d812fd36f4d1d567`.
+Retained evidence is mixed lineage, not a fresh202 run. Old guards are replaced
+by the current gate. No native or UI rerun is claimed from discovery.
+
+All C12 runtime is UNRUN. Request only independent focused4 PREP after remote
+persistence and fresh source/resource fence. Actual owner rebind, authenticated
+outer bytes, atomic prepared-T0 resume, tamper refusals and full exact restoration
+must pass the existing stage Fact before native9/UI3 admission. The earlier C11
+full Fact remains FAIL despite its successful prefix; C10 remains UNKNOWN with
+incomplete capture and retained owned root. All raw remains external under
+`M2GREENC12-*`; no diagnostics are committed or deleted. Existing no-new-authority/
+cache/Reserve/draw and no-GM-wire-change assessments stand. Physical guided
+treatment, eight spiritual adapters, parent acceptance and old HOLDs remain open.
+
 # T121 C12 retry claims and both schedule roles — UNCOMPILED / UNRUN
 
 C11 focused4 at source6dd9826 executed one new staging Fact and failed only at
