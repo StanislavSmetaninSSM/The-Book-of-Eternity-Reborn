@@ -1,3 +1,22 @@
+# T121 C21 owning builds complete; catalog relation metadata correction
+
+Integration-c1 at `c891eea80297d5ae13fd588d936ddb22b1e30884` exits0 in1:47.82
+with102 baseline warnings. Its one nested-type qualification is independently
+accepted. Main/Support/Unit remain successful at c461829f with12/23/26 warnings;
+all four warning code/message multisets equal their C19 owner. Actual Compile
+ownership, four PE/PDB pairs and355 source bindings match, including every new
+source. This is preparation, not runtime qualification.
+
+The first official C21 catalog attempt exits1 before discovery because both new
+categories omit required explicit related links. Their change hints already exist.
+This metadata-only correction adds links between the complementary item/resource
+controls, historical durable-data control and actual browser gate. Selectors,
+methods, case estimates and budgets are unchanged; all C# and source bindings remain
+identical. Independent narrow readback and a new catalog-c1 attempt precede exact
+PlanOnly/PREP/runtime. The failed attempt remains external at M2GREENC21-catalog.
+No C21 tests have run. Raw remains outside checkout; no new cache, source read,
+permission, GM wire or performance claim follows from category-link metadata.
+
 # T121 C21 preparation — Integration type-qualification correction WIP
 
 SOURCE/delta SOURCE independently accepts `c461829f281dd2baaf62302137dd6d49120da8b5`.
