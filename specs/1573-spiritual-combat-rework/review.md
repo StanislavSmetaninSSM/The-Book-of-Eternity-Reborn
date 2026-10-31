@@ -1,5 +1,19 @@
 # Проверка проекта #1573
 
+## T131 — аудит исходных правил, checkpoint
+
+2026-11-01. Baseline e8e01f6465eaf57c51c536140743421595d4bb3c; checkout/origin
+сверены. Два read-only Sol6.1/high аудита: смертные Rules и духовные договоры/
+numerical probes. Parent проверил реальные формулы/единицы и C# capacity/
+MathAssistant/resource command boundary через Serena. Сервер ready, локальная
+конфигурация сохраняет csharp/typescript/python; C# symbol bodies доступны.
+Никакого production/probe изменения, новых прогонов или нового design не задано.
+Systematic-debugging применён как проверка оснований прежних выводов; результат
+идёт в существующий comparative report. T130 grace/no-refresh отозваны,
+прочие числа T130 остаются неутверждёнными/отложенными.
+
+Независимое review итогового doc-only блока и публикация ещё впереди.
+
 ## T130 — проект контроля, итоговый checkpoint
 
 Baseline/origin c8236e1049892ceb6adfc152b20da861397c9882 совпали. Автор одобрил
