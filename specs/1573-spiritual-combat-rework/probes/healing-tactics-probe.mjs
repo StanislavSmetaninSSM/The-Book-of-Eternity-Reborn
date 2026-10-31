@@ -69,7 +69,7 @@ export function simulateTactics(options={}) {
     maxDE:a.p.max/100,regenDE:a.regen/100,healingPercent:a.healingPercent,resistance:a.resistance,
     attackable:a.attackable,canHeal:a.role==='healer',canCleanse:['healer','helper'].includes(a.role),
     canInterrupt:cell.interrupt!==false,reaction:1,ordinaryAttack:true,
-    mainAttackPolicy:a.role==='primary'?(cell.attackPolicy??'suppress_reserve'):'fixed_ordinary'}));
+    mainAttackPolicy:a.role==='primary'?(cell.jointPolicy!==undefined?'joint_pressure_v1':cell.attackPolicy??'suppress_reserve'):'fixed_ordinary'}));
   const endpoints={total:[],firstPatientFall:[],firstAnyFall:[]},counts={},outcomes={team0:0,team1:0,horizon:0};
   for(let trial=0;trial<n;trial++){
     const result=runTrial({...cell,horizon,operation,seed:seedFor(`${seed}|trial|${trial}`)});

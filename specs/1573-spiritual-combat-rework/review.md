@@ -17,7 +17,32 @@ operation, fresh mutable admission. Preflight/6критериев в плане,
 публикуются документы; финальное whole-block review будет отдельным Astra/high.
 Первая составная shell-команда записи и публикации была отклонена automatic
 review с «blocked by policy», без подробной причины. Она не выполнилась;
-документы записаны отдельным штатным apply_patch, публикация проверяется отдельно.
+документы записаны отдельным штатным apply_patch.8434d4d4a опубликован,
+originSHA/specblob0de9d86e84f1df52d127a148cc3d1cc8f993684b прочитаны; issue1573
+обновлён с сохранением historical tail. T125 source ещё в работе.
+
+Независимый Astra/high design-risk scan не нашёл противоречий в h3/λ/договорах.
+Выделены guards: expires−started до target.begin, +1 внутри active Heal;
+pending long имеет приоритет перед last mode; λ переводится изHP/ДЭ вHP/цент;
+одинаковый Main-selector у трёх абляций. API исполнителя записан в плане доGREEN.
+Baseline42legacy cases сохранены внеGit, SHA256
+1e11934e9e7e958e11fed7fd8331c8f9117fad88640767cc0777180603756d7c.
+Это проверка рисков до замера, не финальный source/report verdict.
+
+T125.2/source freeze: Sol6.1/high завершил6owned файлов, actual diff/model/runner
+parent прочитал.120/120guards (99прежних+21новых),exit0/stderr0,
+3681.5834мс Node/3837.3791мс shell; прежние42cases checksum сохранены.
+Observed RED→GREEN policy/integration/runner; две первоначальные ошибочные
+fixture expectations исправлены по ручной арифметике, не изменением алгоритма.
+Добавлены oracle guards потребления suppress и последовательности h1/h2/h3 long.
+Parent самостоятельно сверил108main/108confirm n1h3,54+54union exact без timings,
+все params/seeds/stderr. Cold preparation88.3536мс;1000warm prepare5.3831мс,
+20000lookup61.9278мс,3096states не пересчитаны. Полные keys/отдельные операции
+и fresh live permission покрыты guards. Raw/evidence/source-freeze.json наD:.
+
+Source-stage независимый Astra/high просмотрел интеграцию и прогнозы: замечаний
+пока нет. Это не финальный verdict полных данных. Source публикуется перед
+main108000/confirm1080000, horizon2000. Игровые договоры/utility guards сохранены.
 
 ## T124 — автономное исполнение, 2026-11-01
 

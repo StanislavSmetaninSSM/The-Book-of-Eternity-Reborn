@@ -1,10 +1,11 @@
 // T123 standalone numerical experiment. Accepted formulas remain in the earlier models.
 import assert from 'node:assert/strict';
 import {rng,seedFor} from './healing-counters.mjs';
-import {price} from './reaction-model.mjs';
+import {price,checkedQuality} from './reaction-model.mjs';
 import {strength,remaining,mark,cleanse,recover} from './suppression-model.mjs';
 import {actor,begin,end,damage,applyHeal,replaceMain,healingCalculator} from './healing-modes-model.mjs';
 import {protectedDamageTable,chooseMode,strikeAttack} from './healing-modes-probe.mjs';
+import {jointPolicies,createJointBudgetCache,normalizeJointMarks,chooseJointMain,chooseJointReaction} from './healing-joint-budget-model.mjs';
 
 export const attackProfiles=Object.freeze(Object.fromEntries(Object.entries({
   ordinary:[28,8],strong:[36,16],large:[44,24],suppress:[24,12]
@@ -30,13 +31,44 @@ export function chooseInterrupt(view,policy) {
 // One measurement owns these immutable DATA, released with the operation. Current permission is never cached.
 export function createOperation() {
   const tables=new Map(),calculate=healingCalculator(),stats={damageComputed:0,damageHits:0};
-  return {stats,calculate,table(D,B,resistance){
+  const jointProfiles=new Map();let jointCache;
+  const operation={stats,calculate,table(D,B,resistance){
     const key=`T123-damage-v1|${D}|${B}|${resistance}`;
     if(tables.has(key)){stats.damageHits++;return tables.get(key);}
     const entries=Object.freeze(protectedDamageTable(D,B,resistance).map(Object.freeze));
     const data=Object.freeze({entries,max:Math.max(...entries.map(x=>x.damage))});
     tables.set(key,data);stats.damageComputed++;return data;
+  },jointFor(self,target){
+    // Complete public fixture inputs to the unchanged numerical formulas. No enemy energy, HP or future choice.
+    const inputs={version:'joint_pressure_v1/public-profile-v1',D:self.p.D,maxEnergy:self.p.max,regen:self.regen,
+      recoverGain:self.p.gain,costs:Object.fromEntries(Object.entries(attackProfiles).map(([k,p])=>[k,price(self,p.K)])),
+      interruptCost:price(self,8),will:self.p.X,willDelta:self.willDelta,targetWillDelta:target.willDelta,
+      targetD:target.p.D,power:target.power,flatHealing:target.flatHealing,healingPercent:target.healingPercent,
+      incomingHealingPercent:target.incomingHealingPercent,resistance:target.resistance,attackProfiles};
+    const key=JSON.stringify(inputs);
+    if(jointProfiles.has(key)){jointCache.stats.hits++;return jointProfiles.get(key);}
+    jointCache??=createJointBudgetCache();operation.jointStats=jointCache.stats;
+    const attacks=Object.fromEntries(Object.entries(attackProfiles).map(([kind,p])=>{
+      const rows=operation.table(inputs.D,p.B,inputs.resistance).entries,groups=[];
+      for(let quality=0;quality<=3;quality++){
+        const selected=rows.filter(row=>row.quality===quality);
+        if(selected.length)groups.push({quality,probability:selected.length/400,
+          damage:selected.reduce((sum,row)=>sum+row.damage,0)/selected.length});
+      }
+      return [kind,groups];
+    }));
+    const publicHealer={p:{D:inputs.targetD},power:inputs.power,flatHealing:inputs.flatHealing,
+      healingPercent:inputs.healingPercent,incomingHealingPercent:inputs.incomingHealingPercent};
+    const healing=Object.fromEntries([['instant',7],['long',16]].map(([mode,B])=>[mode,
+      Object.fromEntries([0,25,50].map(amount=>[amount,calculate(publicHealer,{...publicHealer,marks:amount?[{amount}]:[]},B)]))]));
+    let successes=0;
+    for(let a=1;a<=20;a++)for(let b=1;b<=20;b++)
+      if(checkedQuality(a,b,inputs.will,inputs.willDelta-inputs.targetWillDelta-5)>=2)successes++;
+    const curve=jointCache.prepare({maxEnergy:inputs.maxEnergy,regen:inputs.regen,recoverGain:inputs.recoverGain,
+      costs:{...inputs.costs,interrupt:inputs.interruptCost},attacks,healing,interruptSuccess:successes/400});
+    jointProfiles.set(key,curve);return curve;
   }};
+  return operation;
 }
 
 /** Select from current visible data only; this function neither mutates state nor receives dice. */
@@ -89,6 +121,13 @@ export function createEncounter(options={}) {
   assert.ok(['normal','healer28','both36'].includes(o.harmony)&&attackPolicies.includes(o.attackPolicy));
   assert.ok(['passive','offensive'].includes(o.defender)&&['heal','cleanse_safe'].includes(o.healerPolicy));
   assert.ok(['none','guard','counter'].includes(o.reply)&&Number.isInteger(o.horizon)&&o.horizon>0);
+  if(o.jointPolicy!==undefined){
+    assert.ok(jointPolicies.includes(o.jointPolicy),'Unknown joint policy');
+    assert.equal(o.kind,'duel','Joint policies support duel encounters only');
+    assert.equal(o.interruptPolicy,undefined,'Joint and interruption policy options cannot be combined');
+    if(options.attackPolicy===undefined)o.attackPolicy='fixed_large';
+    assert.equal(o.attackPolicy,'fixed_large','Joint planner requires fixed_large metadata for adaptive maximum damage');
+  }
   if(o.interruptPolicy!==undefined){
     assert.ok(interruptPolicies.includes(o.interruptPolicy),'Unknown interruption policy');
     assert.equal(o.kind,'duel','Interruption policies currently support duel encounters only');
@@ -112,7 +151,15 @@ export function createEncounter(options={}) {
       .map(reason=>`interruptDecision_${reason}`)];
     for(const row of [counts,...Object.values(counts.byActor)])for(const key of keys)row[key]=0;
   }
+  let jointCurve;
+  if(o.jointPolicy!==undefined){
+    jointCurve=operation.jointFor(actors[0],actors[1]);actors[0].jointObservedMode='instant';
+    const keys=['jointMainDecisions','jointDecisions',...['inactive','no_reaction','no_energy','policy_never','forecast','attempt']
+      .map(reason=>`jointDecision_${reason}`)];
+    for(const row of [counts,...Object.values(counts.byActor)])for(const key of keys)row[key]=0;
+  }
   return {options:o,operation,actors,order:[...order],counts,round:0,cursor:0,done:false,winner:null,
+    ...(jointCurve?{jointCurve}:{}),
     patientId:actors.find(a=>a.team===1&&a.role==='healer').id,
     endpoints:{total:null,firstPatientFall:null,firstAnyFall:null}};
 }
@@ -127,7 +174,13 @@ function doCleanse(e,a,t){
 function doAttack(e,a,policy,dice){
   const target=chooseTarget(e.actors,a.id,e.options.targetPolicy);
   if(!target){doRecover(e,a);return;}
-  const kind=chooseAttack({self:a,target},policy);
+  let kind;
+  if(e.options.jointPolicy!==undefined&&a.role==='primary'){
+    kind=chooseJointMain(e.jointCurve,{canAct:eligibleMain(a),energy:a.energy,
+      mark:normalizeJointMarks(target.marks,target.started,target.active),
+      phase:target.pending?'finish':a.jointObservedMode==='long'?'cast':'instant'}).kind;
+    count(e,a,'jointMainDecisions');
+  }else kind=chooseAttack({self:a,target},policy);
   if(kind==='recover'){doRecover(e,a);return;}
   const cost=price(a,attackProfiles[kind].K);
   assert.ok(eligibleMain(a)&&a.energy>=cost,'Current resources must fund the chosen action before RNG');
@@ -143,6 +196,15 @@ function doAttack(e,a,policy,dice){
 }
 function chooseInterrupter(e,source,mode,phase){
   if(!e.options.interrupt)return null;
+  if(e.options.jointPolicy!==undefined){
+    const candidate=e.actors.find(a=>a.team!==source.team);
+    const out=chooseJointReaction(e.jointCurve,{canAct:living(candidate)&&candidate.inEncounter,
+      hasReaction:candidate.reaction>0,energy:candidate.energy,
+      mark:normalizeJointMarks(source.marks,source.started,source.active),
+      phase:mode==='instant'?'instant':phase,missingHp:Math.max(0,source.maxHp-source.hp)},e.options.jointPolicy);
+    count(e,candidate,'jointDecisions');count(e,candidate,`jointDecision_${out.reason}`);
+    return out.attempt?candidate:null;
+  }
   if(e.options.interruptPolicy!==undefined){
     // Opt-in is duel-only: identify the sole opponent before checking its current eligibility.
     const candidate=e.actors.find(a=>a.team!==source.team);
@@ -168,6 +230,7 @@ function doHeal(e,a,dice){
   const mode=chooseMode(a,o.mode,maxNextDamage),patient=choosePatient(e.actors,a.id)??(mode==='long'?a:null);
   const finish=mode==='long'&&hadPending,cost=price(a,finish?0:mode==='long'?24:12);
   if(!patient||a.energy<cost){doRecover(e,a);if(hadPending)count(e,a,'abandoned');return;}
+  if(o.jointPolicy!==undefined)e.actors.find(t=>t.team!==a.team).jointObservedMode=mode;
   const opponent=chooseInterrupter(e,a,mode,finish?'finish':'cast'),suppression=strength(patient),collapsed=patient.collapsed;
   const potential=mode==='long'&&!finish?0:e.operation.calculate(a,patient,mode==='long'?16:7);
   const out=applyHeal(a,patient,{id:`${a.id}:${a.started}`,mode,phase:finish?'finish':'cast',

@@ -15,36 +15,51 @@ Astra/high проверяет interacting clocks/ресурсы/целый бл�
 
 - [x] Source-аудит chooseAttack/doAttack/chooseInterrupter/stepEncounter;
   baseline/origin5fae43131 совпали, issue1573 открыт; h3/λ закреплены до source.
-- [ ] Создать `probes/healing-joint-budget-model.mjs`: immutable forecast curves,
-  pure Main/reaction selectors. Сигнатуры записать в ledger до GREEN. Внутренний
+- [x] Создать `probes/healing-joint-budget-model.mjs`: immutable forecast curves,
+  pure Main/reaction selectors. Сигнатуры закреплены ниже до GREEN. Внутренний
   key(h,energy,mark amount/countdown,mode/phase); outer key — version/h/λ,
   MaxDE/regen/Recover/цены, damage-quality distributions/resistance, Heal values
   при0/25/50, reaction odds/guard/forecast. Не кэшировать live permission.
-- [ ] В `healing-tactics-model.mjs` добавить duel-only `jointPolicy`
+- [x] В `healing-tactics-model.mjs` добавить duel-only `jointPolicy`
   ('never','always','joint'), observation/seams в doAttack/chooseInterrupter/doHeal,
   operation-owned подготовку. Reject совместно с interruptPolicy. Legacy schema/
   defaults unchanged. Новая metadata-compatible attackPolicy=fixed_large задаёт
   прежнему chooseMode максимальный возможный удар44, не будущий выбор planner.
   Opt-in roster явно сообщает planner; узкая правка healing-tactics-probe.mjs
   разрешена для этого поля. Mode записать до applyHeal, в том числе при срыве.
-- [ ] Создать `probes/healing-joint-budget.test.mjs`: RED λ=85.7825/86.4HP/ДЭ,
+- [x] Создать `probes/healing-joint-budget.test.mjs`: RED λ=85.7825/86.4HP/ДЭ,
   разные terminal energy при одинаковом Recover; ручные бюджетные примеры пяти
   Main, skip/attempt/ties, равенство цены и нехватка1цента, отсутствие RNG/hidden
   energy/future guard, pure input. Fresh payment/reaction после мутации состояния,
   revival reaction без восстановления Main; обе очереди и current-HP cap.
-- [ ] Проверить forecast transitions против общей модели: stronger-mark renewal,
+- [x] Проверить forecast transitions против общей модели: stronger-mark renewal,
   weak-under-strong, expiry до/после target.begin/end, long start success/cancel/
   finish, initial instant/last observed mode. Фактические действия не заменять
   прогнозом. Legacy checksum до/после и прежние utility guards сохранить.
-- [ ] Создать `healing-joint-budget-probe.mjs`/`.test.mjs`, переиспользовать
+- [x] Создать `healing-joint-budget-probe.mjs`/`.test.mjs`, переиспользовать
   simulateTactics.108cases из spec, seedSuffix T125-main-v1/T125-confirm-v1,
   прежний seed pipeline; shards index%count, metadata/cell/complete/timers/reuse.
-- [ ] GREEN `node --test specs/1573-spiritual-combat-rework/probes/*.test.mjs`
+- [x] GREEN `node --test specs/1573-spiritual-combat-rework/probes/*.test.mjs`
   (99прежних + новые связанные guards), без C# build/fullsuite. Smoke108main/
   108confirm n1,h3 + shard union. Parent читает actual diff/output/evidence.
-- [ ] Измерить cold preparation и repeated lookup, complete-key separation/
+- [x] Измерить cold preparation и repeated lookup, complete-key separation/
   operation ownership. Не вычислять глубокий прогноз повторно каждый ход;
   при дорогой подготовке сначала named timings, не повышение лимита.
+
+API до GREEN: `jointPolicies`; `normalizeJointMarks(marks,started,active)` и
+`forecastJointMark(mark,quality)` возвращают `{amount,remaining}`;
+`forecastJointPhase(phase,cancelled)` для instant/cast/finish;
+`createJointBudgetCache()->{stats,prepare(profile)}`;
+`chooseJointMain(curve,view)->{kind,score}`;
+`chooseJointReaction(curve,view,policy)->{attempt,reason,skipScore?,attemptScore?}`.
+Profile использует сотыеДЭ: maxEnergy/regen/recoverGain/costs,4сжатых массива
+quality/probability/conditional damage, healing.instant/long при0/25/50,
+interruptSuccess. Curve даёт lambda вHP/цент,value(view,h),immutable profile.
+Новые счётчики jointDecisions/jointDecision_reason/jointMainDecisions только opt-in.
+Будущие value не зависят от current missingHp; root reaction cap свежий.
+Поддержанная пассивная дуэль имеет один источник подавления; многoисточниковую
+форму нельзя молча сжать, если слабая метка переживает сильную: её явно отклонять
+либо сохранять полный прогноз. Legacy работа marks остаётся прежней.
 
 ### T125.3–4 — измерения и завершение
 
