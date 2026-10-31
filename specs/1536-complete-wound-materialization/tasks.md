@@ -66,7 +66,7 @@ archive are outside checkout; original failures and all other holds are retained
   recovery at checked T1, durable History/replay, guided console/browser and GM
   synchronization. Independent SOURCE, fresh owning builds and accepted cheap
   controls are recorded by epoch in plan.md; C5 exact PlanOnly is 204 cases /
-  81 methods / 39 descriptors / 37 categories. The new response/fixture correction
+  81 methods / 39 descriptors / 37 categories. The latest effect-input correction
   is UNCOMPILED/UNRUN. Native19/6 and UI3 still require actual qualification;
   prior compiled/accepted controls are not labelled wholly unrun or replayed.
   This task stays unchecked; other physical treatment remains recommendation-only.
@@ -108,8 +108,11 @@ archive are outside checkout; original failures and all other holds are retained
   and13-field surface unchanged; typed JSON-kind controls and a genuine ordinary
   consumer precede native retry. Complete only the failing DATA theory's real
   pre-snapshot scheduler premise, preserving exact B-specific/no-mutation guards.
-  Current grouped correction is UNCOMPILED/UNRUN; earlier accepted epochs and
-  pending native/UI are recorded separately in plan.md.
+  C6 shape9 and corrected resource3 passed after owning builds; actual diagnosis
+  now reaches its next effect-input family gate. Broader ordinary envelope case
+  timed out/attempted UNKNOWN and stays open; accepted bounded substitution is
+  typed shape9 plus required actual ordinary-procedure native1 if it passes.
+  Latest effect-input code is UNCOMPILED/UNRUN; exact epochs remain in plan.md.
 
 - [ ] T121-DIAGNOSIS-MORTAL-EFFECT-INPUT Close the actual common callback's
   treatment-only type gate using the existing procedure-family wrappers and exact

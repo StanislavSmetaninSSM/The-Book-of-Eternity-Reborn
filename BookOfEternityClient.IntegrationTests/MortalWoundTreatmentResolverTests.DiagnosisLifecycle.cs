@@ -35,8 +35,23 @@ public sealed partial class MortalWoundTreatmentResolverTests
         var original = continuation.Input;
         var expectedEvents = EffectAcceptedTurnInputComposer.BuildAcceptedEventInput(owner.Binding.Turn, new JsonObject(),
             working.ResultingMinute, original.PreTurnEffectCarriers, original.PreTurnEffectCarriers, owner.Binding.Realm);
-        Assert.True(JsonNode.DeepEquals(expectedEvents, input.EventInput));
-        Assert.NotEmpty(input.EventInput["lifecycleEvents"]!.AsArray());
+        Assert.True(JsonNode.DeepEquals(expectedEvents["lifecycleEvents"], input.EventInput["lifecycleEvents"]));
+        Assert.Equal(owner.Binding.Turn, input.EventInput["turn"]!.GetValue<int>());
+        Assert.Equal(working.ResultingMinute, input.EventInput["currentTime"]!.GetValue<long>());
+        var acceptedEvents = input.EventInput["events"]!.AsArray();
+        if (owner.Binding.AcceptedEvents.Count != 0)
+        {
+            Assert.Equal(owner.Binding.AcceptedEvents.Count, acceptedEvents.Count);
+            for (var index = 0; index < acceptedEvents.Count; index++)
+            {
+                Assert.Equal(owner.Binding.AcceptedEvents[index].EventRef, acceptedEvents[index]!["eventRef"]!.GetValue<string>());
+                Assert.Equal(owner.Binding.AcceptedEvents[index].Kind, acceptedEvents[index]!["kind"]!.GetValue<string>());
+                Assert.Equal(owner.Binding.AcceptedEvents[index].AuthorityId, acceptedEvents[index]!["authorityId"]!.GetValue<string>());
+            }
+        }
+        else Assert.True(JsonNode.DeepEquals(expectedEvents["events"], acceptedEvents));
+        var frozenEvents = input.EventInput.ToJsonString();
+        Assert.Single(input.EventInput["lifecycleEvents"]!.AsArray());
         Assert.Empty(input.RawCommands);
         Assert.NotNull(input.PreTurnCarriers);
         Assert.NotNull(input.PreTurnIdentityIndex);
@@ -48,10 +63,11 @@ public sealed partial class MortalWoundTreatmentResolverTests
         var resource = Assert.IsType<MortalWoundTreatmentResourceFinalization>(finalization.Finalization);
         var heldBefore = AcceptedTurnAuthorityRegistry.InspectConfirmedMortalWoundTreatmentResourceClaim(fixture.Files, fixture.Lease, request, resource);
         Assert.True(heldBefore.IsValid, JsonSerializer.Serialize(heldBefore.Issues));
+        Assert.Equal(MortalWoundTreatmentResourceReservationState.ConfirmedHeld, heldBefore.State);
 
         Assert.True(WoundAcceptedTurnPlanner.MortalProcedureEffectInputAgrees(continuation, prepared, input));
         foreach (var fault in new[] { "omitted_lifecycle", "extra_lifecycle", "changed_lifecycle", "raw_commands", "session", "snapshot",
-                     "realm", "turn", "time", "source", "target", "carriers", "identity", "publication_baseline", "malformed_event_input" })
+                     "realm", "turn", "time", "event_list", "source", "target", "carriers", "identity", "publication_baseline", "malformed_event_input" })
         {
             var changed = WoundAcceptedTurnData.CloneEffectInput(input);
             switch (fault)
@@ -65,6 +81,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
                 case "realm": changed = changed with { Realm = "chaos_sea" }; break;
                 case "turn": changed.EventInput["turn"] = owner.Binding.Turn + 1; break;
                 case "time": changed.EventInput["currentTime"] = working.ResultingMinute + 1; break;
+                case "event_list": changed.EventInput["events"] = new JsonArray(); break;
                 case "source": changed = changed with { SourceAuthority = null! }; break;
                 case "target": changed = changed with { TargetAuthority = null! }; break;
                 case "carriers": changed = changed with { PreTurnCarriers = null }; break;
@@ -83,19 +100,21 @@ public sealed partial class MortalWoundTreatmentResolverTests
         var otherOwner = Assert.IsType<WoundAcceptedTurnPlanner.MortalDiagnosisContinuation>(other.MortalDiagnosisAuthority);
         Assert.NotSame(continuation, otherOwner);
         var otherInput = WoundAcceptedTurnPlanner.ComposeMortalDiagnosisEffectInput(other);
+        Assert.Equal(frozenInput, WoundAcceptedTurnFingerprints.ComputeEffectInput(other, otherInput));
         Assert.True(WoundAcceptedTurnPlanner.MortalProcedureEffectInputAgrees(otherOwner, other, otherInput));
         Assert.False(WoundAcceptedTurnPlanner.MortalProcedureEffectInputAgrees(continuation, other, otherInput));
         Assert.False(WoundAcceptedTurnPlanner.MortalProcedureEffectInputAgrees(otherOwner, prepared, input));
         Assert.False(WoundAcceptedTurnPlanner.MortalProcedureEffectInputAgrees(new object(), prepared, input));
         Assert.Equal(frozenInput, WoundAcceptedTurnFingerprints.ComputeEffectInput(prepared, input));
-        Assert.True(JsonNode.DeepEquals(expectedEvents, input.EventInput));
+        Assert.Equal(frozenEvents, input.EventInput.ToJsonString());
         Assert.True(owner.HasLiveProcedureReservationAgreement(check));
         var heldAfter = AcceptedTurnAuthorityRegistry.InspectConfirmedMortalWoundTreatmentResourceClaim(fixture.Files, fixture.Lease, request, resource);
         Assert.True(heldAfter.IsValid, JsonSerializer.Serialize(heldAfter.Issues));
         Assert.Equal(heldBefore.State, heldAfter.State);
         Assert.Equal(request.RequestFingerprint, heldAfter.RequestFingerprint);
         fixture.AssertJson(before);
-        // Component DATA agreement is not a publication/Fate proof. The actual
-        // common callback and typed-Fate native publication remain required.
+        // This genuine single-event component is not a publication/Fate or
+        // multi-event order proof. The actual typed-Fate native case supplies
+        // its real base+Fate reversal control; common publication remains required.
     }
 }

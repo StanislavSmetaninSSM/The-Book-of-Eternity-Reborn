@@ -1755,3 +1755,22 @@ before cohort/cycle binding, preserving raw-resource routing and all exact
 changedPath/final-freshness/no-mutation assertions. No post-snapshot patch or
 production guard exception is permitted. Qualification remains in plan.md; new
 source is UNCOMPILED/UNRUN and all native/UI/parent residuals remain open.
+
+### Diagnosis effect-input agreement in the existing procedure family
+
+The registry must dispatch its actual private diagnosis continuation alongside
+ordinary treatment, matching the existing prepared/final/publication wrappers.
+Require exact prepared/continuation identity, PreparedAgrees and the same full
+ComposeMortalDiagnosisEffectInput/ComputeEffectInput equality used by diagnosis
+execution. Reuse one predicate in registry admission and BuildMortalDiagnosis;
+ordinary treatment's predicate stays unchanged. Keep full canonical lifecycle,
+typed Fate order, commands, source/target/carrier/frame dependencies, reservation,
+currentness and claims. Invalid DATA refuses; no marker-only exemption or owner.
+
+The cheap actual-owner component has no publication binding/Fate and genuinely
+one base lifecycle row. It proves complete input and foreign-scope refusal with
+inert bytes/claims, not multi-event/Fate execution. Genuine order is checked by a
+detached reversal within the already-required real typed-Fate native case. The
+historical broader ordinary-envelope timeout remains UNKNOWN/open; approved
+active coverage is typed shape9 plus actual ordinary-procedure native1 if it
+passes. No new case/budget/cache/I/O/GM contract or hidden timeout qualification.

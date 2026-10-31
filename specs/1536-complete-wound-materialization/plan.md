@@ -1,3 +1,49 @@
+# T121 effect-input dispatch — coherent SOURCE freeze, UNCOMPILED / UNRUN
+
+Core/test WIP was published at `3920d0a99a6fcac273d2160bf64dbe3abedfc8fe`.
+The procedure-family predicate now requires exact private diagnosis/prepared
+identity, PreparedAgrees and the existing complete Compose/ComputeEffectInput
+comparison. Registry admission and BuildMortalDiagnosis use that same predicate;
+ordinary treatment remains unchanged. Invalid DATA yields structured refusal,
+while reservation/current-source/claim/execution guards and uncertain outcomes
+remain intact. This is not unconditional acceptance based on a family marker.
+
+One actual-owner null-publication component Fact proves the genuine single base
+lifecycle event, accepted event bindings/frame/time, full input agreement and
+copied lifecycle/command/frame/dependency/foreign-prepared refusal. Two independently
+created real private companions have equal fingerprints but cannot exchange their
+prepared scope. Canonical bytes, original input and confirmed claims remain inert.
+It makes NO typed-Fate/publication or multi-event order claim. The existing required
+Fate native case now checks reversal of its genuine distinct base+Fate pair using
+the same predicate, preserving original fingerprint/bytes/live claims; no extra
+world, case, budget or fabricated publication binding is introduced.
+
+Finite adjacent path audit found no other confirmed sibling omission: registry
+reservation, prepared-cache replay, effect dispatch, finalization, common provenance,
+capability and item registration already select diagnosis explicitly. Generic
+ordinary treatment guards remain on their original path. No broad registry,
+publication, cold/DFR or other-owner refactor is part of this correction.
+
+Proposed fresh cheap gate is new component1 + failed real callback1 + changed
+semantic sourceguards3 = 5 cases / 5 methods / 3 descriptors / 3 categories, all60s.
+Accepted C6 shape9/resource3 are retained, while its guards3 are superseded by fresh
+source checks. C5 ordinary2/effect-companion4 stay separate retained lineages.
+The historical broader ordinary-envelope TIMEOUT remains UNKNOWN/open in its
+catalog owner and raw evidence; it is removed from current active selection only
+by approved bounded substitution: accepted typed shape9 plus the still-required
+actual ordinary-procedure native1 if it passes. No timeout retry/increase or hidden
+PASS. One component case replaces that one selector: full static membership remains
+214 cases / 84 methods / 43 descriptors / 41 categories, with DIFFERENT identity;
+official discovery remains authoritative. Native19/6 and UI3 remain required.
+
+All changed C# is UNCOMPILED/UNRUN pending the same complete narrow SOURCE and
+root-owned fresh builds/catalog/PlanOnly/PREP. No writer builds/tests/runtime or
+additional causal RED loop. Expected DATA is reconstructed once per independently
+callable predicate entry; the actual owner still checks freshness before execution.
+No new I/O, cache, authority or speedup claim. GM contract/event wire and all
+ordinary/Fate rules are unchanged, so existing guides/examples need no update.
+All broader parent/physical-treatment/eight-adapter/HOLD residuals remain open.
+
 # T121 diagnosis effect-input family dispatch — WIP, UNCOMPILED / UNRUN
 
 The actual C6 focused17 attempt completed 1 FAIL / 16 UNRUN in 25.2818407s,

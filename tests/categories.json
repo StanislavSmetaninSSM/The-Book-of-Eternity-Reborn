@@ -2,6 +2,45 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "mortal-diagnosis-effect-input-agreement",
+  "responsibility": "One real accepted-owner null-publication component: exact private diagnosis/prepared identity, complete canonical one-base-event input and full fingerprint agreement; copied lifecycle/command/frame/source/target/carrier/identity/baseline malformed DATA plus separately real same-fingerprint foreign prepared scope refuse with unchanged bytes/confirmed claims. No typed-Fate/publication/order proof from this single-event component: the unchanged required native Fate case supplies genuine two-event reversal. Actual failed common callback is causal RED. UNCOMPILED/UNRUN.",
+  "excludes": "No fake reservation/publication authority, ordinary treatment conversion, type-only success, new cache/I/O, reflection, Engine/GM loop, broad timeout retry or HOLD run.",
+  "changeHints": [
+    "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalProcedurePublication.cs",
+    "BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.cs",
+    "BookOfEternityClient/Services/EffectAcceptedTurnPlanner.MortalDiagnosis.cs",
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.DiagnosisLifecycle.cs"
+  ],
+  "related": [
+    {
+      "id": "mortal-diagnosis-explicit-lease",
+      "when": "The actual common callback/retained admission must pass after component agreement."
+    },
+    {
+      "id": "mortal-diagnosis-fate-publication",
+      "when": "The required actual typed-Fate owner proves real sealed event ordering; component has no publication binding."
+    },
+    {
+      "id": "mortal-diagnosis-ordinary-procedure-regression",
+      "when": "Actual ordinary native path and accepted shape9 provide reviewed bounded shared-freezer coverage; broader timeout stays unknown/open."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.DiagnosisProcedureEffectAgreementRequiresItsExactPrivatePreparedProgramAndCompleteInput"
+      ]
+    }
+  ]
+},
+{
   "id": "mortal-diagnosis-publication-response-shape",
   "responsibility": "Nine typed file-free cases call the SAME complete response-surface validator used by ordinary/joint/diagnosis. Constructed and deserialized omission stay Undefined/omitted; all seven defined JsonElement kinds including explicit null refuse. All13 supported fields and exact existing Fate flag remain unchanged with input immutability. C5 real callback failure is causal RED; UNCOMPILED/UNRUN.",
   "excludes": "No broad aggregate/HOLD or Engine/GM run, parallel validator/cache/authority, new reflection access, model/wire change or game rule. Fresh runtime requires independent SOURCE/PREP; rehomed passing rows are not replayed.",
@@ -33,7 +72,7 @@
 },
 {
   "id": "mortal-diagnosis-ordinary-response-regression",
-  "responsibility": "One actual ordinary guaranteed-publication consumer proves all13 supported fields, frozen envelope/projection integrity and input immutability. Existing value helpers distinguish Undefined/null and produce a genuinely defined nonnullable JsonElement negative value. No new reflection or all-properties MemberData replay. UNRUN for this correction.",
+  "responsibility": "Historical broader ordinary13-field/frozen-envelope consumer. C6 attempt TIMEOUT at60.0709534s,0reportedcompleted/noTRX: attempted outcome UNKNOWN and open, no PASS/retry/budget increase. This multi-flow method remains catalog-owned unchanged in membership, but is excluded from current T121 active selection by reviewed bounded substitution: typed response-shape9 plus required real ordinary-procedure native1 if it passes. Existing value helpers preserve genuine Undefined/null semantics.",
   "excludes": "No broad aggregate/HOLD or Engine/GM run, parallel validator/cache/authority, new reflection access, model/wire change or game rule. Fresh runtime requires independent SOURCE/PREP; rehomed passing rows are not replayed.",
   "changeHints": [
     "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalTreatmentSkillPublication.cs",
@@ -119,7 +158,7 @@
 },
 {
   "id": "mortal-diagnosis-explicit-lease",
-  "responsibility": "One actual async-factory diagnosis-lease Fact: inert no-callback refusal, real common preparation under the identical lease, then retained dynamic coverage without publication, preserving bytes and exact live request/confirmed claims. C5 reached the callback and exposed Undefined response handling; this affected Fact must rerun. Ordinary factory-lease2 passed and are rehomed unchanged.",
+  "responsibility": "One actual async-factory diagnosis-lease Fact: inert no-callback refusal, real common callback under identical lease and retained dynamic validation with exact bytes/claims. C6 passed response shape and failed the registry treatment-only lifecycle gate; this is the actual causal RED. Rerun only this Fact after typed family dispatch. Ordinary lease2 remains passed/rehomed and is not replayed.",
   "excludes": "No ambient/lock/loader policy change, fake callback, publication, Engine/GM wait, lease retry, broad GameState/changed-owner refactor, accepted aggregate replay or HOLD run.",
   "changeHints": [
     "BookOfEternityClient/Services/Validation/ValidationService.ResourceMaterialization.cs",
@@ -888,7 +927,7 @@
 },
 {
   "id": "mortal-diagnosis-fate-publication",
-  "responsibility": "T121 one actual signed-owner natural1 diagnosis with two genuinely seeded player Fate Shields. It reserves the oldest accepted shield, retains exact die span/rolls/intent across lease rebind and builds the actual common effect publication expiring only that shield while preserving the other. All canonical JSON remains unchanged during preparation. UNCOMPILED/UNRUN WIP.",
+  "responsibility": "T121 one actual signed-owner natural1 diagnosis with two genuinely seeded player Fate Shields. It reserves the oldest accepted shield, retains exact die span/rolls/intent across lease rebind and builds the actual common effect publication expiring only that shield while preserving the other. All canonical JSON remains unchanged during preparation. UNCOMPILED/UNRUN WIP. The same required native case now also reverses a detached copy of its genuine two distinct base+typed-Fate lifecycle rows and requires refusal by the shared procedure predicate, with original input fingerprint/bytes/live reservation unchanged. No new case/world/budget or claim that the null-publication component proves typed Fate.",
   "excludes": "No fake Fate receipt, new dice hook, Engine/GM wait, actual canonical/C4 settlement or broad old Mortal category. Actual publication/retry/rollback coverage remains required in the complete route.",
   "changeHints": [
     "BookOfEternityClient/Services/MortalWoundCriticalReactionPublicationPlanner.cs",

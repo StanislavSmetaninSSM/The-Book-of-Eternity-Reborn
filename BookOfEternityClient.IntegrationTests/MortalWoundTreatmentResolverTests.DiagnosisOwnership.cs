@@ -630,6 +630,23 @@ public sealed partial class MortalWoundTreatmentResolverTests
         var common = await WoundAcceptedTurnPlanner.ComposeMortalDiagnosisPublicationAsync(fixture.Files, fixture.Lease,
             new GameResponse(), owner, recovered.Request);
         Assert.True(common.IsValid, JsonSerializer.Serialize(common.Issues));
+        var stage = Assert.IsType<AcceptedMechanicsWoundStageBundle>(common.Plan!.WoundStageBundle);
+        var prepared = stage.PreparedPlan;
+        var continuation = Assert.IsType<WoundAcceptedTurnPlanner.MortalDiagnosisContinuation>(prepared.MortalDiagnosisAuthority);
+        var effectInput = stage.EffectBatchPlan.EffectInput;
+        var lifecycle = effectInput.EventInput["lifecycleEvents"]!.AsArray();
+        Assert.Equal(2, lifecycle.Count); // One real base event followed by the sealed typed Fate event.
+        Assert.NotEqual(WoundAcceptedTurnFingerprintWriter.CanonicalJson(lifecycle[0]),
+            WoundAcceptedTurnFingerprintWriter.CanonicalJson(lifecycle[1]));
+        var fingerprint = WoundAcceptedTurnFingerprints.ComputeEffectInput(prepared, effectInput);
+        Assert.True(WoundAcceptedTurnPlanner.MortalProcedureEffectInputAgrees(continuation, prepared, effectInput));
+        Assert.True(owner.HasLiveProcedureReservationAgreement(exact));
+        var reversed = WoundAcceptedTurnData.CloneEffectInput(effectInput);
+        reversed.EventInput["lifecycleEvents"] = new JsonArray(lifecycle.Reverse().Select(value => value!.DeepClone()).ToArray());
+        Assert.False(WoundAcceptedTurnPlanner.MortalProcedureEffectInputAgrees(continuation, prepared, reversed));
+        Assert.NotEqual(fingerprint, WoundAcceptedTurnFingerprints.ComputeEffectInput(prepared, reversed));
+        Assert.Equal(fingerprint, WoundAcceptedTurnFingerprints.ComputeEffectInput(prepared, effectInput));
+        Assert.True(owner.HasLiveProcedureReservationAgreement(exact));
         var identities = EffectIdentityState.Parse(JsonSerializer.SerializeToElement(common.Plan!.EffectPlan!.IdentityIndexAfterImage), EffectIdentityState.StatePath);
         Assert.NotNull(identities.State);
         Assert.Empty(identities.Issues);
