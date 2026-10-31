@@ -43,6 +43,16 @@ archive are outside checkout; original failures and all other holds are retained
 
 # T121 diagnosis recommendations — #1536
 
+- [ ] T121-DIAGNOSIS-MORTAL-NPC-TAIL Close the actual resource-only diagnosis
+  publication failure through the existing genuine procedure-family NPC-tail
+  dispatch. Registry and runtime must honor the same sealed disposition without
+  changing ownership prediction, actual seal/currentness, backup or full NPC root
+  equality guards. Preserve explicit empty response envelopes. Use the existing
+  real resource Fact for nonvacuous diagnosis/Skip/Apply topology premises and
+  actual publication/completion regression; no extra case or budget. Source cause
+  independently confirmed after C21 item2 PASS/resource1 FAIL; remaining4 passed
+  separately at the same epoch. Raw/retention and broader task limits stay in plan.
+
 - [ ] T121-DIAGNOSIS-MORTAL-BROWSER-COMPLETION Close actual C20 browser final-tail
   family refusal without bypassing accepted-result verification. Dispatch the
   already authenticated Mortal diagnosis original through a narrow durable current

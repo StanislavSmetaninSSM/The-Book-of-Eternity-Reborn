@@ -1,3 +1,40 @@
+# T121 C21 actual6 PASS; resource1 exposes NPC family dispatch defect
+
+At runtime `44ab0fe6d3a28865811f81a98f71e46f0d649caa`, compiled Main/Support/Unit
+c461829f and Integration c891eea8, focused7 stops after3 actual cases: item success0
+and true Fate30 both PASS (13.8614887s /25.7691370s; category44.9201904s/60).
+Resource1 FAILS before the completion reader at the actual whole NPC item-baseline
+comparison, category23.1510786s/60 (test18.2041570s); no timeout. Remaining4 were
+UNRUN by fail-fast. Strict raw/TRX/unique-ID/pin/runner cleanup verification and
+independent partial OUTCOME accept exactly this result. External partial receipt
+SHA256 `ead4653c1c1c53246790b6d64c1a782bf1d2772a922fe01166cc3cadeeca3fd7`.
+
+After separate exact PlanOnly/PREP/fresh fence, independent remaining4 exits0:
+durable1 10.5035216s/120 and semantic3 4.4242238s/60, wall27.0030751s. Primary
+strict verification accepts4/4; independent OUTCOME is pending. Thus6 distinct
+PASS and1 production FAIL across two runs at one runtime epoch, not fresh7 PASS.
+Native fixtures report successful disposal and their namespace is empty; no
+individual root IDs or passive captures were emitted and none is invented.
+Full raw remains external in M2GREENC21-fresh7 and M2GREENC21-remaining4.
+
+Two independent source audits locate the actual mismatch: registry baseline uses
+the shared procedure family and seals SkipUntouchedTreatmentContinuation when
+resource-only diagnosis owns no NPC skill/item after-image. Runtime Npcs.cs190–204
+recognizes only ordinary TreatmentContinuationAuthority, discards the genuine
+MortalDiagnosis companion's sealed disposition and chooses Apply. Its NpcTrade
+transform inserts absent tradeInventoryReceipts:[], violating the exact baseline.
+Item rows own an NPC debit and choose Apply on both paths, explaining their PASS.
+Actual failed-root JSON was disposed; this deterministic field difference is
+source-proven, not a retained observed before/after diff. Explicit empty envelopes
+are valid and remain in the resource case; fixture normalization cannot mask it.
+
+Next bounded task: honor the genuine diagnosis companion through existing runtime
+NPC-tail selection, retaining seal, backup, ownership and whole-root guards. Extend
+only the existing resource Fact with actual companion/sealed Skip/full-root
+Skip-versus-Apply premises, then independent SOURCE and fresh affected builds.
+No new case, budget, cache/authority, game rule, GM wire or performance claim.
+Browser/rollback remain UNRUN/held; old failed and incomplete raw/roots/HOLDs stay.
+
 # T121 C21 preparation verified — focused7 and original UI2 UNRUN
 
 Independent SOURCE/delta SOURCE accepts c461829f and the test-only type correction
