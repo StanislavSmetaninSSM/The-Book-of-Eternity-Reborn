@@ -19,7 +19,7 @@ internal static partial class WoundApplicationService
     internal const string CombatActionText = "Лечить выбранную собственную духовную рану стандартным Исцелением в текущей духовной дуэли. Это прерываемое противником действие за ОД, без безопасного цикла мира.";
     internal const string ServiceActionText = "Принять платное лечение моей выбранной духовной раны у Элиары по подтверждённой котировке. Оплатить одну принятую попытку и продолжить один обычный безопасный цикл мира.";
     internal const string FactionServiceActionText = "Принять платное лечение моей выбранной духовной раны у выбранного целителя фракции по подтверждённой котировке. Оплатить одну принятую попытку и продолжить один обычный безопасный цикл мира.";
-    internal static string ActionFor(SpiritualSelfTreatmentSelection selection) => selection.Diagnosis is not null ? DiagnosisActionText : selection.Service is { } service
+    internal static string ActionFor(SpiritualSelfTreatmentSelection selection) => selection.MortalDiagnosis is not null ? MortalDiagnosisActionText : selection.Diagnosis is not null ? DiagnosisActionText : selection.Service is { } service
         ? service.Quote.Provider.OwnerKind == "resident" ? FactionServiceActionText : ServiceActionText : selection.Combat is not null ? CombatActionText : selection.Aid is null ? ActionText
         : selection.Aid.Compensation is not null ? "Принять помощь выбранного целителя на отдельно подтверждённых договорных условиях. Выполнить ту же попытку лечения и один безопасный цикл мира, без списания Чернильных Перьев."
         : selection.Aid.ShiningPatient is not null ? ShiningPatientAidActionText
@@ -33,7 +33,7 @@ internal static partial class WoundApplicationService
         command = read?.CanonicalCommand ?? command;
         await using var lease = await fs.AcquireCanonicalWriteLeaseAsync();
         fs.VerifyCurrentSessionOperation(lease);
-        var context = await WoundPlayerReadService.LoadContextAsync(fs, lease);
+        var context = await WoundPlayerReadService.LoadContextAsync(fs, lease, retainMenuInputs: treatment);
         if (context is null) return ExplorerWoundCommandResultBuilder.Build(command, WoundPlayerProjection.Unavailable(), null, treatment, history);
         var state = treatment ? await CreateStateAsync(fs, lease, fs.GetOrCreateSessionGeneration(lease), context) : null;
         return ExplorerWoundCommandResultBuilder.Build(command, context.Projection, state, treatment, history,
@@ -59,7 +59,7 @@ internal static partial class WoundApplicationService
         if (!fs.IsCurrentSessionGeneration(lease, state.Generation))
             throw new InvalidDataException("Игровая сессия изменилась; откройте /лечить заново.");
         var selected = state.Resolve(value);
-        var current = await WoundPlayerReadService.LoadContextAsync(fs, lease)
+        var current = await WoundPlayerReadService.LoadContextAsync(fs, lease, retainMenuInputs: true)
             ?? throw new InvalidDataException(WoundPlayerProjection.UnavailableMessage);
         var fresh = await CreateStateAsync(fs, lease, state.Generation, current);
         if (state.SelectedTarget is { } target) _ = WoundTargetSelectionService.RequireCurrent(target, fresh.Targets);
@@ -78,7 +78,7 @@ internal static partial class WoundApplicationService
         if (!fs.IsCurrentSessionGeneration(lease, state.Generation))
             throw new InvalidDataException("Игровая сессия изменилась; откройте /лечить заново.");
         var previous = state.ResolveTarget(value); // The old value names its frozen owner, not a new index.
-        var context = await WoundPlayerReadService.LoadContextAsync(fs, lease)
+        var context = await WoundPlayerReadService.LoadContextAsync(fs, lease, retainMenuInputs: true)
             ?? throw new InvalidDataException(WoundPlayerProjection.UnavailableMessage);
         var menu = await BuildStateAsync(fs, lease, state.Generation, context);
         var fresh = menu.State;
@@ -151,6 +151,11 @@ internal static partial class WoundApplicationService
     private static async Task<WoundApplicationMenuData> BuildStateAsync(FileSystemManager fs,
         FileSystemManager.CanonicalWriteLease lease, string generation, WoundPlayerReadContext context)
     {
+        if (context.Input.Realm == "mortal_world")
+        {
+            var mortal = await BuildMortalDiagnosisMenuAsync(fs, lease, generation, context);
+            return new(mortal.State, mortal.Context);
+        }
         var diagnosisSource = PrepareDiagnosisSource(context);
         if (!context.Input.SelfVisible || context.Input.Realm is not ("chaos_sea" or "shining_abode") || context.SpiritualConflict?["activeConflict"] is not null)
             return new(CreateStateCore(generation, context, diagnosisSource), context);

@@ -45,6 +45,30 @@ internal static class MortalWoundTreatmentAcceptedCanonicalProjection
         var issues = new List<ValidationIssue>();
         var resources = ComposeResources(signed, issues);
         var items = ComposeItems(roots, signed, issues);
+        return ComposeActorAndSceneData(context, roots, playerCapabilities, npcCapabilities, resources, items, issues);
+    }
+
+    // Current menu facts only. These already-loaded roots do not fabricate a
+    // pending snapshot or accepted-world authority; the live exporter stays separate.
+    internal static MortalWoundTreatmentAcceptedCanonicalProjectionResult ComposeMenuData(
+        MortalWoundTreatmentAuthority.Context context, IReadOnlyDictionary<string, JsonObject> roots,
+        ResourceDefinitionCatalog definitions, IReadOnlyList<MortalWoundTreatmentCapabilitySkillSource> playerCapabilities,
+        IReadOnlyList<MortalWoundTreatmentCapabilitySkillSource> npcCapabilities)
+    {
+        var issues = new List<ValidationIssue>();
+        string? Read(string path) => roots.TryGetValue(path, out var root) ? root.ToJsonString() : null;
+        var resources = ComposeResourceData(definitions, Read, issues);
+        var items = ComposeItemData(roots, Read(ItemIdentityPath) ?? throw new InvalidDataException("Missing canonical item identity."), issues);
+        return ComposeActorAndSceneData(context, roots, playerCapabilities, npcCapabilities, resources, items, issues);
+    }
+
+    private static MortalWoundTreatmentAcceptedCanonicalProjectionResult ComposeActorAndSceneData(
+        MortalWoundTreatmentAuthority.Context context, IReadOnlyDictionary<string, JsonObject> roots,
+        IReadOnlyList<MortalWoundTreatmentCapabilitySkillSource> playerCapabilities,
+        IReadOnlyList<MortalWoundTreatmentCapabilitySkillSource> npcCapabilities,
+        IReadOnlyList<MortalWoundTreatmentAuthority.Resource> resources,
+        IReadOnlyList<MortalWoundTreatmentAuthority.Item> items, List<ValidationIssue> issues)
+    {
         var location = ValidateLocation(context, roots, issues);
         var actors = ComposeActors(
             context,
@@ -99,12 +123,18 @@ internal static class MortalWoundTreatmentAcceptedCanonicalProjection
         Add(issues, definitionsResult.Issues);
         if (definitionsResult.Catalog is not { } definitions)
             return Array.Empty<MortalWoundTreatmentAuthority.Resource>();
+        return ComposeResourceData(definitions, path => ReadOptional(signed, path), issues);
+    }
+
+    private static IReadOnlyList<MortalWoundTreatmentAuthority.Resource> ComposeResourceData(
+        ResourceDefinitionCatalog definitions, Func<string, string?> read, ICollection<ValidationIssue> issues)
+    {
         var stateResult = ResourceStateContract.ParseCanonical(
-            Read(signed, ResourceMaterializationContract.StatePath),
+            read(ResourceMaterializationContract.StatePath),
             definitions,
             allowMissingPristine: false);
         var historyResult = ResourceHistoryState.ParseCanonical(
-            Read(signed, ResourceMaterializationContract.HistoryPath),
+            read(ResourceMaterializationContract.HistoryPath),
             definitions,
             allowMissingPristine: false);
         Add(issues, stateResult.Issues);
@@ -114,7 +144,7 @@ internal static class MortalWoundTreatmentAcceptedCanonicalProjection
         Add(issues, history.ValidateStateAgreement(state));
         var ownerResult = CanonicalResourceOwnerAuthorityComposer.ComposeAsync(
                 definitions,
-                path => Task.FromResult(ReadOptional(signed, path)),
+                path => Task.FromResult(read(path)),
                 state,
                 history,
                 CanonicalResourceOwnerAuthorityPurpose.ExistingSessionValidation)
@@ -174,7 +204,10 @@ internal static class MortalWoundTreatmentAcceptedCanonicalProjection
     private static IReadOnlyList<MortalWoundTreatmentAuthority.Item> ComposeItems(
         IReadOnlyDictionary<string, JsonObject> roots,
         PendingTurnSnapshotReadAuthority signed,
-        ICollection<ValidationIssue> issues)
+        ICollection<ValidationIssue> issues) => ComposeItemData(roots, Read(signed, ItemIdentityPath), issues);
+
+    private static IReadOnlyList<MortalWoundTreatmentAuthority.Item> ComposeItemData(
+        IReadOnlyDictionary<string, JsonObject> roots, string identityJson, ICollection<ValidationIssue> issues)
     {
         var companions = ItemCompanionPaths
             .Where(roots.ContainsKey)
@@ -190,7 +223,7 @@ internal static class MortalWoundTreatmentAcceptedCanonicalProjection
         foreach (var issue in catalog.Issues)
             issues.Add(Issue(issue.Path, issue.Code, "one exact full Mortal item carrier catalog", issue.Message));
 
-        var identity = MortalItemIdentityState.Parse(Read(signed, ItemIdentityPath));
+        var identity = MortalItemIdentityState.Parse(identityJson);
         Add(issues, identity.Issues);
         ValidateItemAgreement(catalog, identity, issues);
         if (issues.Count != 0)

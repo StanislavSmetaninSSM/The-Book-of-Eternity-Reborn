@@ -5,10 +5,28 @@ namespace BookOfEternityClient.Services;
 
 internal static partial class WoundPlayerProjection
 {
+    private static WoundPlayerProjectionResult ProjectMortalKnownTarget(WoundPlayerReadContext context, WoundTargetChoice target)
+    {
+        if (!context.Projection.IsAvailable || !context.Input.Effects.IsAccepted || !context.Input.SelfVisible || !target.Available ||
+            target.Owner.Realm != "mortal_world" || !context.MortalTargets.Any(current => current.Owner == target.Owner &&
+                current.BindingFingerprint == target.BindingFingerprint)) return Unavailable();
+        var active = new List<WoundPlayerEntry>();
+        foreach (var summary in target.Wounds)
+        {
+            if (!context.Catalog.TryResolveOne(summary.WoundId, out var row) || !context.Input.Identities.TryGetEntry(summary.WoundId, out var identity) ||
+                row.Wound.Owner != target.Owner || row.Wound.Lifecycle != "active" || row.Wound.Classification.Domain != "physical" ||
+                !Visible(row.Wound.Display.Visibility) || identity.Status != "active" || identity.SemanticFingerprint != summary.Fingerprint)
+                return Unavailable();
+            active.Add(Project(row.Wound, context.Input, target.Owner.OwnerKind is "combatant_member" ? "combatant" : target.Owner.OwnerKind));
+        }
+        return new(true, active.Count == 0 ? "У этой цели сейчас нет известных активных ран." : "", active, []);
+    }
+
     /// <summary>Formats only the exact fresh known target proven by the application's current navigation read.</summary>
     internal static WoundPlayerProjectionResult ProjectKnownTarget(WoundPlayerReadContext context, WoundTargetChoice target)
     {
         var input = context.Input;
+        if (input.Realm == "mortal_world") return ProjectMortalKnownTarget(context, target);
         if (!context.Projection.IsAvailable || !input.Effects.IsAccepted || !input.SelfVisible ||
             input.Realm is not ("chaos_sea" or "shining_abode") || context.SpiritualConflict?["activeConflict"] is not null || !target.Available ||
             target.Owner.Realm != input.Realm || target.Owner.CarrierPath != WoundCarrierCatalog.AfterlifeProfilesPath ||

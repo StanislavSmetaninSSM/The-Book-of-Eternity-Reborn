@@ -1716,7 +1716,19 @@ public partial class GameEngine
             else if (healingSelection?.Aid is null && healingSelection?.Combat is null && healingSelection?.Service is null && healingSelection?.Diagnosis is null)
                 using (_fs.MeasureOperation("PlayerTurn.Stage.BuildProgressionControl"))
                     request.ProgressionControl = await _progressionSchedule.BuildControlForNextTurnAsync();
-            if (healingSelection is not null)
+            if (healingSelection?.MortalDiagnosis is not null)
+            {
+                using var diagnosisTiming = _fs.MeasureOperation("PlayerTurn.Stage.MortalDiagnosisInput");
+                await using var diagnosisLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+                if (!_fs.IsCurrentSessionGeneration(diagnosisLease, sessionGeneration))
+                    throw new SessionReplacedException("Diagnosis selection belongs to a replaced session.", sessionGeneration, actualGeneration: null);
+                var staged = await WoundApplicationService.StageMortalDiagnosisInputAsync(_fs, diagnosisLease,
+                    new(request.SessionId, request.RequestId, request.TurnNumber, request.ProgressionControl!), healingSelection);
+                if (!staged.IsStaged || staged.GmContext is null) throw new InvalidDataException("Mortal diagnosis staging was refused: " + staged.IssueCode);
+                backedUpFiles.ValidationSnapshotFiles.Add(AcceptedMechanicsPlan.WoundCommandPath);
+                request.MortalDiagnosis = staged.GmContext.DeepClone().AsObject();
+            }
+            else if (healingSelection is not null)
             {
                 using var healingTiming = _fs.MeasureOperation("PlayerTurn.Stage.SpiritualSelfTreatment");
                 await using var healingLease = await _fs.AcquireCanonicalWriteLeaseAsync();

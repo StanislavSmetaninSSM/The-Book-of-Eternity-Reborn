@@ -2,6 +2,40 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "mortal-diagnosis-guided-staging",
+  "responsibility": "T121 three file-light current canonical menu/confirm/stage rows use the existing independent Mortal seed before its original producer. Valid explicit method shows check/duration/conditional expenses; read/cancel/confirmation are inert and staging writes only its closed input without held claims. Missing actual location and changed wound refuse fresh confirmation/staging without additional mutation. UNCOMPILED/UNRUN WIP.",
+  "excludes": "No accepted-world authority from menu DATA, fake pending snapshot, dice/reservation/cost/time before final original, physical treatment execution, full ProcessPlayerTurn/GM wait, new cache or broad Mortal category. Full native/UI/GM qualification remains required.",
+  "changeHints": [
+    "BookOfEternityClient/Services/WoundApplicationService.MortalDiagnosisMenu.cs",
+    "BookOfEternityClient/Services/WoundPlayerReadService.cs",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs"
+  ],
+  "related": [
+    {
+      "id": "mortal-diagnosis-input-role",
+      "when": "Only the final signed original may produce and retain the procedure afterward."
+    },
+    {
+      "id": "wound-diagnosis-recommendations",
+      "when": "Physical diagnosis guidance now names its actual declared-procedure command, while other physical treatment remains recommendations only."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.GuidedMortalDiagnosisReadsCancelConfirmsAndStagesOnlyFreshDeclaredMethod"
+      ]
+    }
+  ]
+},
+{
   "id": "mortal-diagnosis-outer-retry",
   "responsibility": "T121 two independent actual Engine original/snapshot plus native common-publication rows cover natural20 and player natural1 with canonical oldest Fate Shield. Real C4 compensation restores a separately captured held image; actual Engine outer rollback restores the independently captured original bytes/absence. Existing registry continuity then restores only exact owned inputs/claims before a competing claim, with wrong-control and terminal non-reactivation refusals. UNCOMPILED/UNRUN WIP.",
   "excludes": "No ProcessPlayerTurn/GM wait, fabricated receipt/manifest, reflection, post-failure before-map replacement, reroll/Reserve during restoration, second registry/publisher, provider/DFR/compatibility qualification or budget increase.",

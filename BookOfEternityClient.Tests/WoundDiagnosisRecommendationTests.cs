@@ -28,7 +28,7 @@ public sealed class WoundDiagnosisRecommendationTests
         Assert.Contains("17 ед.", text);
         Assert.Contains("не ниже 3 ступени", text);
         Assert.Contains("не подтверждают наличие", text);
-        Assert.Contains("пока недоступно", text);
+        Assert.Contains("/лечить", text); Assert.Contains("длительности и расходам", text);
         Assert.Equal(CommandExecutionState.Completed, command.State);
         Assert.Empty(command.Prompts);
         Assert.Equal(before, input.Carriers.PlayerWounds.ToJsonString());

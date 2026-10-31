@@ -1,3 +1,35 @@
+# T121 Mortal guided menu and initial staging WIP — UNCOMPILED / UNRUN
+
+The async /лечить owner now reads the current Mortal canonical menu DATA once per
+operation, reusing the existing wound/card inputs and existing item/resource/
+actor/scene/skill/effect/requirement readers. The signed-source exporter remains
+separate; no menu snapshot or binding seal issues permission. Current known paths
+show their explicitly authored check, duration and conditional expense. Target and
+provider values are typed; fresh confirmation reloads the complete current menu.
+Other physical procedure/course/guaranteed treatment remains recommendation-only.
+
+Initial staging detaches full caller control before its first await, re-proves the
+current canonical method/context/control, and uses exact source-image guards to
+publish only the closed input. It creates no draw/hold/cost/time. Actual Engine
+wiring gives Mortal diagnosis its separate branch and mortalDiagnosis GM reference;
+it cannot initialize an afterlife cycle or fall into self-healing. The final signed
+original hook then retains its one real procedure before GM, as saved previously.
+
+Three source-authored file-light rows cover valid readable/inert staging and
+missing-location/changed-wound refusals before their real initial original. Shared
+physical card guidance now points to the actual declared-procedure route; eight
+finite existing recommendation/privacy rows are selected as affected consumers.
+Source estimate is 84 cases / twenty-three methods / eighteen categories including
+those eight existing rows; discovery will settle exact membership. All are
+UNCOMPILED/UNRUN, and no writer build/test/discovery/runtime was performed.
+
+The read DATA owner is this invocation and its lease; no static/service cache or
+new I/O framework is added. Known card roots/parsed resource definitions are reused,
+additional canonical roots load once, and confirmation/staging/publication keep
+fresh authority/source/byte fences. No measured speedup claim. Complete controlled
+Engine/native/C4/UI qualification, GM/current-input migration and final whole
+SOURCE remain open. Parent T121 and #1536 are not closed; all other bounds/HOLDs stay.
+
 # T121 Mortal complete private cohort proof WIP — UNCOMPILED / UNRUN
 
 The existing independent fixture has an optional second physical wound seeded

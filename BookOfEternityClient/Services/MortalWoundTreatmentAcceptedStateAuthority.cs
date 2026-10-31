@@ -1456,7 +1456,7 @@ internal sealed partial class MortalWoundTreatmentAcceptedStateAuthority
         return BindingAgrees(_binding, woundInput.Binding);
     }
 
-    private static PendingTurnSnapshotPathSelection BuildPathSelection(
+    internal static PendingTurnSnapshotPathSelection BuildPathSelection(
         MortalWoundTreatmentAuthority.Context context,
         ICollection<ValidationIssue> issues)
     {
@@ -1587,7 +1587,7 @@ internal sealed partial class MortalWoundTreatmentAcceptedStateAuthority
         return false;
     }
 
-    private static IReadOnlyList<MortalWoundTreatmentCapabilitySkillSource>
+    internal static IReadOnlyList<MortalWoundTreatmentCapabilitySkillSource>
         ParsePlayerCapabilities(
             IReadOnlyDictionary<string, JsonObject> roots,
             ICollection<ValidationIssue> issues)
@@ -1603,7 +1603,7 @@ internal sealed partial class MortalWoundTreatmentAcceptedStateAuthority
         return result.Sources;
     }
 
-    private static IReadOnlyList<MortalWoundTreatmentCapabilitySkillSource>
+    internal static IReadOnlyList<MortalWoundTreatmentCapabilitySkillSource>
         ParseNpcCapabilities(JsonObject npcRoot, ICollection<ValidationIssue> issues)
     {
         var result = new List<MortalWoundTreatmentCapabilitySkillSource>();
@@ -1675,7 +1675,7 @@ internal sealed partial class MortalWoundTreatmentAcceptedStateAuthority
         return snapshot;
     }
 
-    private static IReadOnlyList<MortalWoundTreatmentAuthority.Effect>
+    internal static IReadOnlyList<MortalWoundTreatmentAuthority.Effect>
         ComposeRequirementEffects(EffectMechanicsSnapshot snapshot) =>
         snapshot.Effects.Select(effect =>
         {
@@ -2190,7 +2190,7 @@ internal sealed partial class MortalWoundTreatmentAcceptedStateAuthority
                 wound.Owner.OwnerId, wound.Owner.CarrierPath), wound);
     }
 
-    private static bool TryParseProjectionCatalogObject(
+    internal static bool TryParseProjectionCatalogObject(
         byte[] bytes,
         string path,
         ICollection<ValidationIssue> issues,

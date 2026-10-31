@@ -48,16 +48,19 @@ internal static class ExplorerWoundCommandResultBuilder
         }
         if (treatment && state is not null)
             foreach (var choice in state.Choices.Where(c => !c.Available))
-                blocks.Add(new UiPanelBlock { Title = (choice.Selection.Diagnosis is null ? "Самостоятельное лечение" : "Духовный осмотр") + " — " + choice.Name + " — " + choice.Severity,
+                blocks.Add(new UiPanelBlock { Title = (choice.Selection.MortalDiagnosis is not null ? "Осмотр физической раны" : choice.Selection.Diagnosis is null ? "Самостоятельное лечение" : "Духовный осмотр") + " — " + choice.Name + " — " + choice.Severity,
                     Blocks = [new UiTextBlock { Text = choice.Reason }] });
         var canTreat = treatment && state?.Choices.Any(c => c.Available) == true;
-        var hasDiagnosis = state?.Choices.Any(c => c.Selection.Diagnosis is not null) == true;
+        var hasMortalDiagnosis = state?.Choices.Any(c => c.Selection.MortalDiagnosis is not null) == true;
+        var hasDiagnosis = hasMortalDiagnosis || state?.Choices.Any(c => c.Selection.Diagnosis is not null) == true;
         var combat = state?.Choices.Any(c => c.Selection.Combat is not null) == true;
         if (treatment)
             blocks.Add(new UiTextBlock { Text = canTreat
-                ? combat ? "Выберите собственную рану для лечения в духовной дуэли. Противник может прервать действие; ОД списываются один раз и при прерывании. Безопасный цикл и естественное восстановление не проходят. Используется бросок этого обмена."
+                ? hasMortalDiagnosis ? "Выберите известную физическую рану, способ и участника осмотра. Проверка, длительность и условные расходы указаны у способа; результат попытки сохраняется. Сам осмотр не лечит, обычное восстановление за прошедшее время продолжается. Просмотр и отмена бесплатны."
+                    : combat ? "Выберите собственную рану для лечения в духовной дуэли. Противник может прервать действие; ОД списываются один раз и при прерывании. Безопасный цикл и естественное восстановление не проходят. Используется бросок этого обмена."
                     : hasDiagnosis ? "Выберите известную рану и доступный способ лечения или осмотра. У каждого способа свои условия. Осмотр раскрывает предусмотренные сведения за один безопасный цикл, без броска и платы; сам осмотр не лечит. Просмотр и отмена не тратят время."
                         : "Выберите известную рану и доступный способ лечения. Помощь сознательному обитателю требует его согласия; принятие частной помощи подтверждаете вы. ОД не тратятся; мир совершит один обычный цикл и при неудаче. Бросок сохраняется после отправки."
+                : hasMortalDiagnosis ? "Сейчас невозможно подтвердить все условия доступного физического осмотра. Уже известные сведения можно просматривать бесплатно."
                 : hasDiagnosis ? "Сейчас невозможно подтвердить условия лечения или духовного осмотра. Просмотр известных сведений и отмена не тратят время или ресурсы."
                     : "Сейчас лечение духовной раны недоступно. Нужны видимая активная рана I–IV степени, достаточное Исцеление и согласие участников." });
         return new()
@@ -71,7 +74,8 @@ internal static class ExplorerWoundCommandResultBuilder
                 new UiSelectionPrompt { Id = "wound_selection", Prompt = hasDiagnosis ? "Какую рану осмотреть или лечить?" : "Какую рану лечить?", Required = true,
                     Options = state!.Choices.Select(c => new UiSelectionOption { Value = c.Value, Label = c.Name + " — " + c.Severity,
                         Description = c.Reason, Disabled = !c.Available }).ToList() },
-                new UiConfirmationPrompt { Id = "confirm_wound_treatment", Prompt = hasDiagnosis ? "Подтвердить выбранное действие и его указанные условия? Осмотр занимает один безопасный цикл без броска и платы; сам осмотр не лечит."
+                new UiConfirmationPrompt { Id = "confirm_wound_treatment", Prompt = hasMortalDiagnosis ? "Подтвердить выбранный осмотр с явно указанными проверкой, длительностью и расходами при его исходах? Бросок и результат сохраняются; отмена формы бесплатна."
+                    : hasDiagnosis ? "Подтвердить выбранное действие и его указанные условия? Осмотр занимает один безопасный цикл без броска и платы; сам осмотр не лечит."
                     : combat ? "Подтвердить прерываемое лечение за ОД в этом обмене?"
                     : state!.Choices.Any(c => c.Selection.Service is not null)
                         ? "Подтвердить выбранный способ лечения, указанную в нём цену за принятую попытку (включая неудачу) и один цикл мира?"

@@ -76,7 +76,7 @@ public partial class ExplorerMode
         }
         var choices = state.Choices.Where(c => c.Available).ToArray();
         var labels = choices.Select((c, i) => (i + 1) + ". " + c.Name + " — " + c.Severity).Concat(VisitLabels()).Append("Отмена").ToArray();
-        var label = _console.Prompt(new SelectionPrompt<string>().Title(choices.Any(choice => choice.Selection.Diagnosis is not null)
+        var label = _console.Prompt(new SelectionPrompt<string>().Title(choices.Any(choice => choice.Selection.Diagnosis is not null || choice.Selection.MortalDiagnosis is not null)
                 ? "Какую рану осмотреть или лечить?" : "Какую рану лечить?")
             .UseConverter(GameInterface.EscapeMarkup).AddChoices(labels));
         if (await VisitSelected(label)) return;

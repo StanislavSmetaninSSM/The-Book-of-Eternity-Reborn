@@ -44,6 +44,11 @@ public class TurnRequest
     [JsonPropertyName("afterlifeSpiritualConflictPreview")]
     public JsonObject? AfterlifeSpiritualConflictPreview { get; set; }
 
+    /// <summary>Client-authored declared Mortal diagnosis selection for GM reference; actual procedure authority remains in the existing held request.</summary>
+    [JsonPropertyName("mortalDiagnosis")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public JsonObject? MortalDiagnosis { get; set; }
+
     [JsonPropertyName("spiritualHealing")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public JsonObject? SpiritualHealing { get; set; }

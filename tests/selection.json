@@ -112,6 +112,20 @@
       "contracts": [
         "#1536 T121-DIAGNOSIS-MORTAL; retained terminal outcome across C4 and outer rollback, exact restoration without Reserve"
       ]
+    },
+    {
+      "category": "mortal-diagnosis-guided-staging",
+      "reason": "Actual guided Mortal diagnosis menu/fresh confirmation/initial staging plus no-claim/inertness and canonical-source drift refusals. Reuses operation-local read DATA and existing exact requirement readers; no invented accepted snapshot. Source-authored three rows, UNCOMPILED/UNRUN; full SOURCE still precedes qualification.",
+      "contracts": [
+        "#1536 T121-DIAGNOSIS-MORTAL / FR071; declared procedure, fresh canonical context and separate confirmation"
+      ]
+    },
+    {
+      "category": "wound-diagnosis-recommendations",
+      "reason": "The shared physical diagnosis policy now truthfully points to the declared-procedure /лечить route; rich conditions/current-knowledge/privacy stay intact. Eight finite existing DATA cases are affected-consumer qualification, not a replay of accepted read83. UNRUN.",
+      "contracts": [
+        "#1536 T121-DIAGNOSIS-MORTAL; current physical diagnosis guidance and preserved private/future filtering"
+      ]
     }
   ]
 }

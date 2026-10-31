@@ -12,6 +12,9 @@ internal sealed record WoundPlayerReadContext(WoundPlayerProjectionInput Input, 
     // Only the treatment-menu operation populates these freshly parsed DATA.
     // Detached UI state never contains roots or admissions; confirm reloads them.
     internal IReadOnlyList<SpiritualShiningPatientAdmission> ShiningPatients { get; init; } = [];
+    internal IReadOnlyList<WoundTargetChoice> MortalTargets { get; init; } = [];
+    internal IReadOnlyDictionary<string, CanonicalBeforeImage> CurrentMenuImages { get; init; } = new Dictionary<string, CanonicalBeforeImage>();
+    internal IReadOnlyDictionary<string, JsonObject> CurrentMenuRoots { get; init; } = new Dictionary<string, JsonObject>();
 }
 
 internal static class WoundPlayerReadService
@@ -40,26 +43,30 @@ internal static class WoundPlayerReadService
 
     // Parsed DATA lives only in this read operation; UI exports detached choices, not these roots.
     internal static async Task<WoundPlayerReadContext?> LoadContextAsync(FileSystemManager fs,
-        FileSystemManager.CanonicalWriteLease lease)
+        FileSystemManager.CanonicalWriteLease lease, bool retainMenuInputs = false)
     {
         ArgumentNullException.ThrowIfNull(fs);
         ArgumentNullException.ThrowIfNull(lease);
         fs.EnsureCanonicalWriteLeaseActive(lease);
         fs.VerifyCurrentSessionOperation(lease);
+        var images = retainMenuInputs ? new Dictionary<string, CanonicalBeforeImage>(StringComparer.Ordinal) : null;
+        var roots = retainMenuInputs ? new Dictionary<string, JsonObject>(StringComparer.Ordinal) : null;
+        Task<JsonObject?> CurrentRoot(string path, bool required = true) => Root(fs, lease, path, required, images, roots);
+        Task<string> CurrentText(string path) => RequiredText(fs, lease, path, images);
         try
         {
             var carriers = new WoundCarrierCatalogInput(
-                await Root(fs, lease, WoundCarrierCatalog.PlayerPath),
-                await Root(fs, lease, WoundCarrierCatalog.NpcPath),
-                await Root(fs, lease, WoundCarrierCatalog.EnemiesPath),
-                await Root(fs, lease, WoundCarrierCatalog.AlliesPath),
-                await Root(fs, lease, WoundCarrierCatalog.AfterlifeProfilesPath));
-            var identities = WoundIdentityState.Parse(await RequiredText(fs, lease, WoundIdentityState.StatePath), WoundIdentityState.StatePath);
-            var history = WoundHistoryState.Parse(await RequiredText(fs, lease, WoundHistoryState.HistoryPath), WoundHistoryState.HistoryPath);
+                await CurrentRoot(WoundCarrierCatalog.PlayerPath),
+                await CurrentRoot(WoundCarrierCatalog.NpcPath),
+                await CurrentRoot(WoundCarrierCatalog.EnemiesPath),
+                await CurrentRoot(WoundCarrierCatalog.AlliesPath),
+                await CurrentRoot(WoundCarrierCatalog.AfterlifeProfilesPath));
+            var identities = WoundIdentityState.Parse(await CurrentText(WoundIdentityState.StatePath), WoundIdentityState.StatePath);
+            var history = WoundHistoryState.Parse(await CurrentText(WoundHistoryState.HistoryPath), WoundHistoryState.HistoryPath);
             if (!identities.IsValid || !history.IsValid) return null;
             var catalog = WoundCarrierCatalog.Build(carriers);
             if (catalog.Issues.Count != 0) return null;
-            var soul = (await Root(fs, lease, "game_state/meta/soul_state.json"))!;
+            var soul = (await CurrentRoot("game_state/meta/soul_state.json"))!;
             var currentRealm = ExactString(soul["currentRealm"]);
             string realm;
             if (AfterlifeEntityProfileState.TryNormalizeEffectRealm(currentRealm, out var afterlifeRealm))
@@ -80,22 +87,26 @@ internal static class WoundPlayerReadService
             }
             // A persistent old afterlife profile is intentionally retained during Mortal life.
             var resources = ResourceDefinitionCatalog.ParseCanonical(
-                await RequiredText(fs, lease, ResourceMaterializationContract.DefinitionsPath), allowMissingPristine: false);
+                await CurrentText(ResourceMaterializationContract.DefinitionsPath), allowMissingPristine: false);
             if (!resources.IsValid || resources.Catalog is null) return null;
-            var names = KnownItems(await Root(fs, lease, "game_state/inventory/items.json", required: false));
+            var names = KnownItems(await CurrentRoot("game_state/inventory/items.json", required: false));
             JsonObject? spiritualConflict = null;
             foreach (var path in new[] { EffectCarrierCatalog.PlayerPath, EffectCarrierCatalog.NpcPath,
                 EffectCarrierCatalog.SpiritualConflictPath, EffectIdentityState.StatePath,
                 "game_state/player/skills_active.json", "game_state/player/skills_passive.json", "game_state/npcs/npc_core.json" })
             {
-                var parsed = await Root(fs, lease, path, required: false);
+                var parsed = await CurrentRoot(path, required: false);
                 if (path == EffectCarrierCatalog.SpiritualConflictPath) spiritualConflict = parsed;
             }
             var effects = await EffectMechanicsSnapshot.LoadAsync(fs, lease);
             var input = new WoundPlayerProjectionInput(carriers, identities.State!, history.State!, effects,
                 realm, resources.Catalog, names, selfVisible);
             var projection = WoundPlayerProjection.Build(input, catalog);
-            return projection.IsAvailable ? new(input, catalog, soul, spiritualConflict, projection) : null;
+            return projection.IsAvailable ? new(input, catalog, soul, spiritualConflict, projection)
+            {
+                CurrentMenuImages = images ?? new Dictionary<string, CanonicalBeforeImage>(),
+                CurrentMenuRoots = roots ?? new Dictionary<string, JsonObject>()
+            } : null;
         }
         catch (Exception failure) when (failure is not CoordinatedStatePublicationUncertainException &&
             failure is (IOException or InvalidDataException or UnauthorizedAccessException or JsonException or InvalidOperationException))
@@ -105,24 +116,37 @@ internal static class WoundPlayerReadService
         }
     }
 
-    private static async Task<string> RequiredText(FileSystemManager fs, FileSystemManager.CanonicalWriteLease lease, string path)
+    private static async Task<string> RequiredText(FileSystemManager fs, FileSystemManager.CanonicalWriteLease lease, string path,
+        IDictionary<string, CanonicalBeforeImage>? images = null)
     {
-        var bytes = await fs.ReadFileBytesAsync(lease, path);
+        var bytes = await ReadDisplayBytes(fs, lease, path, images);
         return bytes is null ? throw new InvalidDataException("Required wound display authority is absent.") :
             CanonicalJsonUtf8.DecodeOneOptionalBom(bytes);
     }
 
     private static async Task<JsonObject?> Root(FileSystemManager fs, FileSystemManager.CanonicalWriteLease lease,
-        string path, bool required = true)
+        string path, bool required = true, IDictionary<string, CanonicalBeforeImage>? images = null,
+        IDictionary<string, JsonObject>? roots = null)
     {
-        var bytes = await fs.ReadFileBytesAsync(lease, path);
+        var bytes = await ReadDisplayBytes(fs, lease, path, images);
         if (bytes is null)
         {
             if (required) throw new InvalidDataException("Required wound display carrier is absent.");
             return null;
         }
-        return StrictJsonAuthority.Deserialize<JsonObject>(CanonicalJsonUtf8.DecodeOneOptionalBom(bytes), StrictOptions,
+        var root = StrictJsonAuthority.Deserialize<JsonObject>(CanonicalJsonUtf8.DecodeOneOptionalBom(bytes), StrictOptions,
             "Wound display input") ?? throw new InvalidDataException("Wound display input must be an object.");
+        if (roots is not null) roots[path] = root;
+        return root;
+    }
+
+    private static async Task<byte[]?> ReadDisplayBytes(FileSystemManager fs, FileSystemManager.CanonicalWriteLease lease,
+        string path, IDictionary<string, CanonicalBeforeImage>? images)
+    {
+        if (images is not null && images.TryGetValue(path, out var existing)) return existing.Bytes;
+        var bytes = await fs.ReadFileBytesAsync(lease, path);
+        if (images is not null) images.Add(path, new(bytes is not null, bytes));
+        return bytes;
     }
 
     private static IReadOnlyDictionary<string, string> KnownItems(JsonObject? inventory)

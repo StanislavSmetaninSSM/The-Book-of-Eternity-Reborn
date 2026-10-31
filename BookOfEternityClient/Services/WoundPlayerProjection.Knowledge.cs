@@ -32,7 +32,7 @@ internal static partial class WoundPlayerProjection
             .ToArray();
     }
 
-    private static string Requirement(MortalWoundTreatmentRequirement requirement, WoundPlayerProjectionInput input) => requirement switch
+    internal static string Requirement(MortalWoundTreatmentRequirement requirement, WoundPlayerProjectionInput input) => requirement switch
     {
         MortalWoundItemQuantityRequirement q => $"{ItemName(q, input)}: {q.Quantity.ToString(CultureInfo.InvariantCulture)} шт. ({Role(q.OwnerRole)})",
         MortalWoundResourceQuantityRequirement q => Resource(q, input),
@@ -69,7 +69,7 @@ internal static partial class WoundPlayerProjection
             .ToHashSet(StringComparer.Ordinal);
         // Future reachable reveals validate a contract; they are not current knowledge.
         var policy = RequirementNotice + (wound.Classification.Domain == "physical"
-            ? " Выполнение этого осмотра через команду пока недоступно."
+            ? " Физический осмотр выбирается и отдельно подтверждается через /лечить по явно указанным проверке, длительности и расходам. Карточка сама не исполняет действие."
             : " Духовный осмотр выбирается и отдельно подтверждается через /лечить, если все текущие условия доказаны. Карточка сама не исполняет действие.");
         if (wound.Classification.Domain == "physical")
             return treatment is null ? [] : treatment.DiagnosisPaths
