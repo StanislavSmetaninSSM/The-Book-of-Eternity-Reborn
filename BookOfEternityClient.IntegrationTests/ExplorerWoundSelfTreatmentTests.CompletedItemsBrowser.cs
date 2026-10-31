@@ -101,6 +101,10 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                     GameEngine.PendingTurnSnapshotManifest manifest;
                     PendingPlayerActionService.Staged staged;
                     var validator = new ValidationService(files, NullLogger<ValidationService>.Instance);
+                    // Component scope uses the same production NPC -> World consumers and all their files.
+                    // Full All postvalidation remains mandatory in the original UI journeys.
+                    var npcWorld = new GameStateValidationSelection(GameStateValidationPhase.NpcStateFiles |
+                        GameStateValidationPhase.WorldQuestCombatFactionStateFiles);
                     using (timings.Measure("MortalDiagnosisBrowserComponent.ReadStaged"))
                     await using (var lease = await files.AcquireCanonicalWriteLeaseAsync())
                     {
@@ -187,13 +191,13 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                         using (validator.UsePrevalidatedPendingTurnSnapshotScope(foreignManifest))
                         {
                             List<ValidationIssue> foreignRaw;
-                            using (timings.Measure("MortalDiagnosisBrowserComponent.ForeignRawPostValidation"))
-                                foreignRaw = await validator.ValidatePostMaterializedGameStateAsync();
+                            using (timings.Measure("MortalDiagnosisBrowserComponent.ForeignRawNpcWorldValidation"))
+                                foreignRaw = await validator.ValidateGameStateAsync(npcWorld);
                             Assert.Single(foreignRaw, MortalWoundTreatmentResolverTests.IsCompletedItemInventoryIssue);
                             using var foreignScope = validator.UseCompletedTreatmentItemValidationScope(completed);
                             List<ValidationIssue> foreignActual;
-                            using (timings.Measure("MortalDiagnosisBrowserComponent.ForeignScopedPostValidation"))
-                                foreignActual = await validator.ValidatePostMaterializedGameStateAsync();
+                            using (timings.Measure("MortalDiagnosisBrowserComponent.ForeignScopedNpcWorldValidation"))
+                                foreignActual = await validator.ValidateGameStateAsync(npcWorld);
                             Assert.True(foreignScope.Observed);
                             Assert.True(foreignScope.Invalidated);
                             Assert.Equal(JsonSerializer.Serialize(foreignRaw), JsonSerializer.Serialize(foreignActual));
@@ -203,8 +207,8 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                         throw stop;
                     }
                     List<ValidationIssue> raw;
-                    using (timings.Measure("MortalDiagnosisBrowserComponent.RawPostValidation"))
-                        raw = await validator.ValidatePostMaterializedGameStateAsync();
+                    using (timings.Measure("MortalDiagnosisBrowserComponent.RawNpcWorldValidation"))
+                        raw = await validator.ValidateGameStateAsync(npcWorld);
                     var exact = Assert.Single(raw, MortalWoundTreatmentResolverTests.IsCompletedItemInventoryIssue);
                     if (fault == "exact")
                     {
@@ -221,8 +225,8 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                         Exception? failure;
                         try
                         {
-                            using (timings.Measure("MortalDiagnosisBrowserComponent.ScopedPostValidation"))
-                                failure = await Record.ExceptionAsync(async () => actual = await validator.ValidatePostMaterializedGameStateAsync());
+                            using (timings.Measure("MortalDiagnosisBrowserComponent.ScopedNpcWorldValidation"))
+                                failure = await Record.ExceptionAsync(async () => actual = await validator.ValidateGameStateAsync(npcWorld));
                         }
                         finally { armed = false; File.WriteAllBytes(files.ResolvePath(NpcCoreChangesContract.NpcCorePath), exactPublishedNpc); }
                         if (fault == "after_comparison")

@@ -1,3 +1,33 @@
+# T121 C18 NPC-to-World component scope — UNCOMPILED / UNRUN
+
+Independent Astra DESIGN accepts the bounded scope correction after C16/C17 cost
+timeouts. Browser postvalidation already delegates to ValidateGameStateAsync(All);
+these four component calls now use that same production entry with NPC+World phases
+and ALL files in those phases. NPC observation still precedes the actual World
+comparison; its reservation is independent of Meta. Dynamic priorIssueCount,
+original/frame/current bytes, full end proof, unchanged readset, close/owner checks
+and removal of only the exact issue remain in the same production implementation.
+
+Both raw and completed comparisons use the same immutable two-phase selection.
+NPC-only no-World refusal is unchanged. Every nonvacuous inventory/foreign/frame,
+ordered issue-vector, whole-image, parse-drift and final-proof assertion remains;
+normal callbacks stay null and actual drift callbacks stay fresh. Existing passive
+capture remains complete, with four macro names explicitly reflecting NPC/World
+scope. No new diagnostic mechanism, source permission, cache or production change.
+No speedup claim: the selected work differs from C17 All. Four60s bounds and full
+source estimate234/102/61/58 remain unchanged, pending official discovery.
+
+This is transparent component responsibility, not cancellation of any gameplay
+validation. Original console/shared-browser/rollback UI3 must still execute full
+All postvalidation at their original180s bounds; all remain UNRUN/held. Current
+direct full-post controls and retained226 keep their historical lineages. C17
+TIMEOUT/UNKNOWN, incomplete26-event capture and205-file root/copy remain untouched.
+C18 is test/catalog/canonical metadata only and UNCOMPILED/UNRUN. Coherent SOURCE,
+fresh Integration provenance and exact PREP precede one admitted component run;
+no blind repeat, budget raise, raw/root deletion or parent closure. Internal test
+selection adds no GM rule/wire; synchronized GM surfaces need no update. Physical
+treatment, eight adapters and broader parents/DFR/Mortal-compat/Windows remain open.
+
 # T121 C17 exact TIMEOUT — measured validation boundary, scope redesign pending
 
 Actual runtime `8e00058fb67f3a42430d69fe4b38e8b1b8499225`, Integration compileda3b58069

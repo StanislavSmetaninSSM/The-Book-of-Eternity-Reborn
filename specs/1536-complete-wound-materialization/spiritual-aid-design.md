@@ -2067,3 +2067,21 @@ not needed to answer this question. No new stack, quota, source permission or ti
 claim is created. Normal assertions/control stop, all four60s categories and234/
 102/61/58 source estimate remain; C17 is UNCOMPILED/UNRUN until root qualification.
 This is internal fixture/capture behavior, so no GM wire/example update is needed.
+
+
+C18 component responsibility after measured C17 prefix: browser
+ValidatePostMaterializedGameStateAsync delegates to ValidateGameStateAsync(All).
+The completed item comparison itself observes NPC before World, whose reservation
+is independent of Meta selection. Independent Astra DESIGN accepts using the
+existing ValidateGameStateAsync with NpcStateFiles | WorldQuestCombatFactionStateFiles
+and no state-file filter for the four component controls. Both raw and scoped
+calls use the same selection; NPC-only no-World refusal is unchanged. Actual owner,
+original/frame/current bytes, World readset/end/close and dynamic priorIssueCount
+indexing remain, as do nonvacuous foreign refusal, complete selected-phase issue
+vectors, whole images and both fault assertions. No production selection or guard
+is changed. Full All postvalidation remains mandatory in the original UI3 at180s;
+components do not qualify the omitted phases or terminal claiming. Existing direct
+full-post controls remain separately accepted. Macro names explicitly identify the
+NPC/World scope, so their future duration is not an equal-work speedup comparison
+to C17 All. No new cache/diagnostic stack, limit increase, root deletion or blanket
+acceptance. C18 source is UNCOMPILED/UNRUN pending coherent SOURCE/build/PREP.

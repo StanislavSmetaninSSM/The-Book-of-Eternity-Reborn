@@ -58,6 +58,10 @@ archive are outside checkout; original failures and all other holds are retained
   processing component for all browser producer/validator work. Four separate60s
   controls preserve positive/no-World, foreign frame/override, parse drift and
   final-proof assertions; no production guard or terminal-claim behavior changes.
+  C18 independently narrows these component calls to the existing production
+  NPC+World phases with all files and unchanged original/readset/end/issue-vector
+  assertions; full All postvalidation through original UI3 remains mandatory.
+  The four60s bounds are unchanged; candidate UNCOMPILED/UNRUN.
   C16 exact timed out UNKNOWN; C17 leaves production untouched, installs no read
   callback for normal exact/foreign cases, retains it for actual drift faults and
   reuses the accepted full passive macro capture/closing transport. Four60s bounds
