@@ -1,3 +1,37 @@
+# T121 C11 focused original FAIL — retry rebind/rollback joins under grouped design
+
+Focused4 at `544a62fd8769c1ba0d58ff1b23fafdb27e6dc332` completed one FAIL and
+three UNRUN in30.5997252s, no timeout. The Engine-original descriptor took16.6143059s.
+Its genuine prepared/signed schedule, distinct rollback hashes, T0/T1 calculation,
+both exact drift refusals and sentinel assertions reached completion, then existing
+RestoreOriginalForRepairAsync refused RequireDiagnosisRetryClaims. Those prefixes
+are not a full case PASS. Full16-event capture/EOFCRC/hash/owned-root removal and
+stable pins are verified; strict failed TRX is external in `M2GREENC11-focused4`.
+The independent untouched Unit guards then passed3/3 in15.7209695s, full cleanup,
+at the same source. Closing13:55:01Z confirms27 artifacts/40 resources/four daemons
+stable, no live managed owners and2.221GB free. Runtime prefixes do not qualify UI3.
+
+Read-only Sol and Astra independently found two concrete production joins, beyond
+the now-correct schedule registration. Fresh accepted-owner lease binding invalidates
+and reconstructs persisted reservation objects. ReadHeld returns the current request,
+but the retained retry checkpoint still references its original reservation object;
+its reference-identity live check therefore refuses. Cancellation-driven release
+was an initial hypothesis and is not the established cause. Separately,
+DiagnosisOriginalCanonicalImagesAgree compares signed prepared schedule bytes to
+the earlier schedule that exact outer rollback must restore. Moving the test restore
+inside the live hook alone cannot correct either join.
+
+One bounded correction is under independent design: reconcile the retained request
+only with the genuinely recovered exact current claims, preserving phase/original
+DATA and all source/span/Fate/resource checks; use existing authenticated frozen
+rollback evidence for the schedule restoration comparison, keeping signed prepared
+bytes for calculation. No new draw/Reserve, timestamp exemption, ignored path,
+late baseline, cache/framework or detached permission. The focused restore also
+belongs after the hook lease closes but before the actual process owner unwinds.
+No such code is applied yet. Source C11 remains compiled6dd98263; current stage1
+FAIL, UI3 UNRUN,214 other mixed-lineage PASS, earlier C10 UNKNOWN/root/capture and
+all parent/physical-treatment/adapters/HOLD boundaries remain preserved.
+
 # T121 C11 fresh builds/discovery — focused4 PREP pending
 
 Independent Astra SOURCE accepted `6dd982639156d914fa5c07890a596a090c7ee65f`.

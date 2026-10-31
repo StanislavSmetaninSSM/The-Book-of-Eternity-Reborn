@@ -46,7 +46,10 @@ archive are outside checkout; original failures and all other holds are retained
 - [ ] T121-DIAGNOSIS-MORTAL-ENGINE-ORIGINAL Correct the actual Engine diagnosis
   prepared-original schedule registration through existing ValidationSnapshotFiles,
   retaining distinct earlier rollback bytes/hash and the exact current clock/schedule
-  guard. Real backup → staging/control → original proof must distinguish signed
+  guard. Reconcile the retained retry request with genuinely recovered current
+  reservation objects after owner rebinding, and use authenticated rollback schedule
+  DATA for exact restoration agreement; no new draw/claim or timestamp exemption.
+  Real backup → staging/control → original proof must distinguish signed
   prepared DATA from rollback DATA and preserve exact rollback/later mutation refusal.
   Current C10 console is timeout/UNKNOWN with persisted runtime refusal, not PASS;
   no TRX/final capture, actual owned root retained. Same bounded independent review,
