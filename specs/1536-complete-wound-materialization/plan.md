@@ -1,3 +1,61 @@
+# T121-PHYSICAL-GUIDED implementation plan — design proposed
+
+Issue #1536; spec US2/US5, FR060–064/067–074 and the new bounded section in
+spiritual-aid-design.md. Goal: execute all3 existing physical treatment modes
+through shared console/browser from a private known-route/provider selection.
+Architecture: existing menu/current projection → exact pre-original selection →
+existing accepted-state/claims owner with one new closed guided hold role →
+existing reducer/common publisher/current settlement. C#/net8, current JSON and
+PowerShell category runner; no parallel engine/registry/diagnostics/cache.
+Canonical gameplay, protective bounds, full raw and all broader HOLDs stay fixed.
+
+Review focus: stale/hidden/foreign choices; semantic drift under exact IDs;
+crash between durable write and claim confirmation; real repair versus new private
+hold; course timing/ordinal/restart and no repeated cost/draw. Each is included in
+the finite causal/typed/real mode controls below. No author rule is missing.
+
+- [ ] DESIGN: independently review the finite new pre-GM hold role against the
+  current ordinary nonempty-wave contract; source map is confirmed by Sol, not a
+  substitute for this owner/persistence review. No production change before RED.
+- [ ] CAUSAL: add one3-row existing-API menu theory in the current typed Mortal
+  integration fixture, with valid procedure/course/guaranteed known routes and
+  current actors/requirements. Snapshot whole-tree bytes and draw/source counters,
+  require actual declared route premises, then assert a physical executable choice.
+  Document its small category in tests/categories.json/selection.json; fresh affected
+  test build, catalog/exact PlanOnly/PREP, then record the intended missing-choice
+  failures. Setup errors or compilation failure do not establish RED.
+- [ ] IMPLEMENT: extend the existing selection partial/closed codec and
+  WoundCommandState target filtering; share BuildMortalDiagnosisMenuAsync's current
+  source/projection rather than a second reader. Add known route/provider/mode
+  choices, readable current conditions and inert confirmation. Correct quest_state
+  copy to describe a quest condition, not negotiated compensation.
+- [ ] IMPLEMENT: extend WoundApplicationService's existing staging/actual-original
+  resolution seam, MortalWoundTreatmentAcceptedStateAuthority and existing pending/
+  registry persistence with the new owned role described in the design. Actual
+  Prepare* factories, typed request seals, confirm/restore/finalize and atomic
+  compensation stay authoritative. Add no ordinary submitted-request exemption.
+- [ ] IMPLEMENT: connect TurnLifecycle, the current guaranteed-only ordinary
+  intake/resource seam, shared browser original/completion and notification owners
+  to the selected existing mode. Use actual final scene/mechanical input and
+  six-argument common publication; preserve unrelated ordinary/diagnosis dispatch.
+  Synchronize applicable Mortal GM docs, prompt entrypoint, worked example and guards.
+- [ ] VERIFY: cheap typed parse/copy/mode/source/privacy/stale/foreign/no-wave/
+  cancellation/uncertain-confirm/recovery and real source/die/resource count proofs;
+  targeted affected ordinary/diagnosis consumers selected from the complete diff,
+  without repeating unchanged PASS. Independent coherent SOURCE includes selection,
+  optimization and full fixture preparation; fresh owning builds/PE-PDB/source pins,
+  official discovery and exact PlanOnly, unchanged small category bounds, then PREP.
+- [ ] QUALIFY: real console and shared-browser journeys for procedure/course/
+  guaranteed, exact costs/Fate/result/History/replay and course next-milestone
+  reconstruction/early/deadline/interruption, plus common compensation/full original
+  rollback. Verify strict raw/TRX/pins/full captures/root cleanup and independent
+  OUTCOME, then compact canonical checkpoint commit/push/remoteSHA. Distinguish
+  handler queue from DOM/provider/fresh-process; do not close US2/US5/#1536 solely
+  from this slice or relabel broader unresolved gates PASS.
+
+No physical code/test changes, builds or runtime at this design checkpoint.
+Accepted diagnosis source/lineages and full evidence remain in the next receipt.
+
 # T121 guided Mortal diagnosis — bounded qualification accepted
 
 Issue #1536. Independent Astra/high coherent OUTCOME accepts this functional

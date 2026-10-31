@@ -1,3 +1,124 @@
+# T121-PHYSICAL-GUIDED — existing three-mode execution design
+
+Issue #1536; canonical US2 scenarios2–5, US5 and FR060–064/067–074.
+Status: proposed implementation design, no physical code/test changes or runtime.
+Mortal diagnosis qualification is accepted separately below. The player result is
+known target → physical wound → known route/provider → current requirements and
+costs → separate confirmation → one actual mode-specific attempt/result. Cover
+procedure, course milestone and guaranteed, using the existing resolver/publication
+owners, not another calculator or display-only treatment recommendation.
+
+## Approach and existing gap
+
+Keep shared WoundApplicationService, WoundCommandState and console/browser prompt
+owners, current Mortal target/provider projection and existing mode factories.
+Procedure/course/guaranteed backends and common publication already exist. Extending
+only the UI would leave no usable execution. A new treatment engine would duplicate
+working rules, owners and reducers and is excluded.
+
+The finite missing persistence seam is confirmed in source and the genuine native
+procedure fixture: ordinary submittedTreatmentRequests is legal only with a real
+nonempty repair wave; otherwise a complete command is written and confirmed by
+StateDistributor after resolution and actual finalSceneText. ConfirmPersistedTreatmentResources
+alone is not durable retention. No current API holds the guided attempt before GM.
+Preserve that contract and its negative test. Do not copy diagnosis's special
+empty-wave submittedTreatmentRequests exemption or fabricate a repair packet.
+
+Add a distinct, closed client-guided held role in the EXISTING pending treatment
+channel and accepted-state/registry owners. Proposed private member name is
+guidedTreatmentRequest, one complete detached request plus exact immutable selection/
+original binding, not a repair submission or authority obtained from DATA alone.
+Final representation/API naming is an implementation choice subject to SOURCE review;
+the semantic distinctions and refusal requirements here are mandatory.
+
+## Lifecycle and ownership
+
+1. Read/abandon/cancel is inert. Reuse the current operation-owned menu DATA and
+   parse each physical treatment definition once. Offer only known non-GM routes
+   on visible active wounds and exact current reachable actors/providers. Preserve
+   Self-first target choice, duplicate-name context and private exact coordinates.
+   Explain procedure check/resource policy, course current milestone/window and
+   guarantee requirements without exposing hidden details or authority IDs.
+2. Confirm reopens current source/generation/target/provider/locality/consent and
+   compares the full selected wound/route/context/mode. It reserves nothing.
+   Stage only a closed immutable selection in the existing wound input slot before
+   the official original; keep exact earlier rollback bytes distinct from the
+   prepared original. Use the actual final request/control, never caller-signed
+   snapshots or temporary replacement state.
+3. After the final request and validated original exist, fresh ExportCurrent
+   authenticates source/history and exact mode. Recover an already retained exact
+   request first. Otherwise call existing PrepareProcedureRequest,
+   PrepareCourseMilestoneRequest or PrepareGuaranteedRequest. Only those factories
+   may choose actual dice/Fate/mode/resource claims and seal the complete request.
+   Write/read back the new owned guided hold under that lease, then confirm the
+   same claims through the existing lifecycle registry. A raw selection/row or
+   caller hash cannot confirm, restore, resolve or authorize publication.
+4. Pre-commit failure releases provisional claims through existing cleanup. After
+   an uncertain write/readback/confirmation, keep evidence/holds and fail closed;
+   never release a possibly durable claim to allow a second draw/spend. Exact
+   retained retry reconstructs the same request; foreign/duplicate/confusable/
+   mode/source/original/generation changes conflict before History coalescing.
+   Fresh owner recovery uses the existing parsed request/registry reconstruction,
+   not a second claim registry or a reconstructed live authority from History.
+5. GM supplies ordinary narrative and supported mechanical outputs. Document the
+   client-owned selection/attempt and mode outcome; GM does not invent a die,
+   resource claim, authority seal or repair wave. After GM, recover the same request
+   and run the existing mode-specific reducer. Bind the actual scene and mechanical
+   envelope, then use the existing six-argument ComposeMortalWoundTreatmentPublication.
+   Ordinary real submitted/repair-wave storage retains all current constraints.
+   If a real repair is necessary, transfer/coalesce only the same complete request
+   through the actual existing wave, retaining exact claims; no synthetic wave or
+   alternate publication pipeline. Unrelated mixed/joint work remains rejected by
+   its existing owner rules, never silently ignored by this guided dispatch.
+6. Preserve ordinary time/resource/effect progression, complete History, notification,
+   completion and final cleanup. Browser's authenticated original must dispatch to
+   an exact current physical settlement check using existing canonical owners;
+   detached History/replay DATA never becomes new authority. Exact repeated accepted
+   input returns the prior result without new draw/payment. Retryable compensation
+   retains/rearms only the original valid plan/hold; terminal cancellation atomically
+   removes owned input/hold or restores bytes and retains the hold on failure.
+   Full original rollback remains mandatory.
+
+## Existing mode rules, unchanged
+
+Procedure retains predeclared bands, legal-result simulation, natural20/1, actual
+skill/effect roll authority and oldest eligible Fate handling. Course retains the
+sealed starting baseline, exact next ordinal reconstructed from History, active
+course exclusivity, inclusive canonical-minute due/deadline, TooEarly refusal and
+ordinary classified interruption. Each milestone is separately confirmed; no
+background waiting or new dose. Guaranteed uses the exact selected current player/
+NPC skill capability/severity/operation proof and final composed-source recheck.
+All modes preserve the severity-I final heal gate and exact foreign target/provider
+consent/reachability. Procedure and guaranteed schemas declare no duration: do not
+import diagnosis30minutes or invent cost/time/economic defaults. Existing ordinary
+world progression still applies according to its owner.
+
+## Optimization and finite proof
+
+Menu/read/confirm each owns its own existing current context; share already read
+roots and the single typed treatment parse within that operation. Complete menu
+identity includes generation, current realm/location/actor/provider, wound+known
+route fingerprints and each actual source dependency. No menu DATA survives as
+permission. Staging, claims, post-GM intake, publication and accepted completion
+remain separate fresh epochs; no live owner/lease/permission cache. Reuse existing
+service/repository/operation mechanisms only where a stable computation repeats;
+no new dictionary/static cache framework or blanket whole-turn cache. Count actual
+source reads, not setup-only hits; do not claim speedup from this wiring.
+
+Causal proof first: an existing-API menu theory for all3 valid known routes proves
+all setup/requirements/current actors/read-only invariants, then fails only because
+no executable physical choice exists. Do not add production before genuine RED.
+Then typed selection/private-hold/recovery/refusal controls must prove exact request
+and real source/die/resource counts; retain the ordinary no-wave negative and
+unchanged diagnosis controls. Real shared console/browser execution covers all3
+modes, separate course milestones/reconstruction and replay, plus full common
+rollback/compensation. Audit complete fixtures once before expensive native/UI.
+No repeated unchanged accepted suite or DFR/Mortal-compatibility/Windows/performance
+HOLD work. Independent bounded DESIGN (this owner/persistence seam), coherent
+SOURCE/selection, fresh affected builds/exact catalog/PlanOnly/PREP, actual results
+and full external capture/cleanup precede acceptance. GM guides/examples/guards
+must describe this new client-owned guided input without new gameplay rules.
+
 # T121 current qualification boundary — Mortal diagnosis accepted
 
 The bounded guided Mortal diagnosis route is accepted on compiled source
