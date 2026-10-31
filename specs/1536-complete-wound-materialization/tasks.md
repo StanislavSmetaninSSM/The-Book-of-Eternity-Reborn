@@ -52,6 +52,12 @@ archive are outside checkout; original failures and all other holds are retained
   actual publication/completion regression; no extra case or budget. Source cause
   independently confirmed after C21 item2 PASS/resource1 FAIL; remaining4 passed
   separately at the same epoch. Raw/retention and broader task limits stay in plan.
+  C22 uses the existing actual MortalProcedureContinuation accessor, preserving
+  ordinary fallback and every seal/currentness/backup/full-root guard. The same
+  resource Fact pins exact companion identity/sealed Skip and complete detached
+  Skip-versus-Apply receipt topology. Two costs and explicit empty envelopes stay;
+  no new case/read/cache/GM wire. Candidate UNCOMPILED/UNRUN, pending delta SOURCE
+  and root-owned resource1 then original browser/rollback; no task closure.
 
 - [ ] T121-DIAGNOSIS-MORTAL-BROWSER-COMPLETION Close actual C20 browser final-tail
   family refusal without bypassing accepted-result verification. Dispatch the

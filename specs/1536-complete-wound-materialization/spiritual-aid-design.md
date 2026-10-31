@@ -1,3 +1,23 @@
+# T121 C22 bounded NPC-tail family correction
+
+C21 actual resource publication proves predicted/runtime family disagreement:
+registry seals Skip for a genuine diagnosis with no NPC skill/item ownership,
+while runtime recognized only the ordinary companion and selected Apply. Honor
+the same existing sealed disposition through WoundStageBundle.MortalProcedureContinuation,
+which returns the actual diagnosis or ordinary private companion without cloning.
+Do not change ownership prediction, HasValidSeal, backup roles, tail transforms,
+current authority or exact final-root comparison. Explicit empty envelopes remain
+valid and cannot be removed or fixture-normalized to hide the mismatch.
+
+The existing resource Fact pins diagnosis/no ordinary, exact resource-authority
+identity and sealed Skip, then compares complete copied NPC roots: Skip preserves
+the original; Apply adds only the absent tradeInventoryReceipts array. Real
+normalization/publication/current completion remains the causal regression. Reuse
+already sealed DATA and existing pure transforms; no physical read, cache, owner,
+formula or extra setup is introduced. C22 UNCOMPILED/UNRUN; SOURCE/build/runtime
+remain root-owned. Item2 Apply, durable1 and semantic3 lineages are retainable only
+after exact impact review. No new GM wire/example/rule, case or protective budget.
+
 # T121 Mortal diagnosis browser completion — C21 bounded design
 
 The C20 actual browser tail proves a missing family dispatch after otherwise

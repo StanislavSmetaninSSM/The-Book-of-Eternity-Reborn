@@ -1,3 +1,13 @@
+# T121 C22 internal diagnosis NPC-tail correction
+
+T121-DIAGNOSIS-MORTAL-NPC-TAIL (#1536) requires runtime normalization to honor
+the genuine prepared diagnosis companion's existing sealed NPC-tail disposition,
+as ordinary procedure publication already does. Preserve exact ownership, seal,
+backup and full-root comparison guards; present-empty response arrays stay valid.
+This is a client-owned dispatch correction, with no new gameplay, GM-authored
+field, cost, rule or wire/example change. Existing resource publication/current
+completion and original browser/rollback remain required; C22 UNCOMPILED/UNRUN.
+
 # T609 private effect-source parsing — bounded technical amendment
 
 EFFECTSRC-WIRE: After accepted helper qualification, first qualify one genuine

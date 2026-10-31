@@ -46,7 +46,8 @@
     "BookOfEternityClient/Services/MortalWoundDiagnosisPersistedResult.cs",
     "BookOfEternityClient/Core/GameEngine/GameEngine.BrowserPlayerInput.cs",
     "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.DiagnosisCompletion.cs",
-    "BookOfEternityClient/Services/Validation/ValidationService.MortalDiagnosisCompletion.cs"
+    "BookOfEternityClient/Services/Validation/ValidationService.MortalDiagnosisCompletion.cs",
+    "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.Npcs.cs"
   ],
   "requirements": {
     "frontendBuild": false,
@@ -65,7 +66,7 @@
       "when": "Exact historical v1 parsing remains separate from v2 current publication proof."
     }
   ],
-  "responsibility": "T121 C21 one independent actual common-publication resource_quantity fixture with two explicit same-coordinate consumptions and frozen present-empty skill and item envelopes. Recompose actual publication semantic/identity seed, exact resource spend set/order/IDs/source/policy/full quantity snapshots and canonical current agreement. A fully resealed valid changed semantic must refuse against independently derived real spend identities. No expected identity is learned from candidate History. Candidate UNCOMPILED/UNRUN. SOURCE HOLD3 clone-only counterexample adds a valid initialized/live unresolved NPC coordinate and rebuilds canonical owner JSON as DATA: old composition IsValid succeeds, exact live owner agreement fails. This proves unresolved ownership, not terminal-cleanup coverage; no additional case or budget.",
+  "responsibility": "T121 C22 one independent actual common-publication resource_quantity fixture with two explicit same-coordinate consumptions and frozen present-empty skill and item envelopes. Recompose actual publication semantic/identity seed, exact resource spend set/order/IDs/source/policy/full quantity snapshots and canonical current agreement. A fully resealed valid changed semantic must refuse against independently derived real spend identities. No expected identity is learned from candidate History. C22 candidate UNCOMPILED/UNRUN. SOURCE HOLD3 clone-only counterexample adds a valid initialized/live unresolved NPC coordinate and rebuilds canonical owner JSON as DATA: old composition IsValid succeeds, exact live owner agreement fails. This proves unresolved ownership, not terminal-cleanup coverage; no additional case or budget. C22 also pins the actual diagnosis/no-ordinary companion and its exact resource authority, sealed Skip disposition and whole NPC root Skip-versus-Apply receipt topology before genuine normalization. Both present-empty arrays and two declared energy spends remain. Existing private family accessor honors the sealed policy; no new case, read, cache, authority or budget.",
   "selectors": [
     {
       "project": "integration",

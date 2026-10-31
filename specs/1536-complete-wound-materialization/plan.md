@@ -1,3 +1,42 @@
+# T121 C22 genuine diagnosis NPC-tail dispatch — WIP UNCOMPILED/UNRUN
+
+Tracked task T121-DIAGNOSIS-MORTAL-NPC-TAIL, issue #1536. Base remote/source
+7b961912cde417b9877f8a5cdf7d2c4532803840 records C21's six distinct PASS and
+one resource publication FAIL across two runs at runtime44ab0fe6; remaining4
+OUTCOME is now independently accepted. The original resource FAIL and both raw
+sets remain external in M2GREENC21-fresh7 and M2GREENC21-remaining4. No failed-root
+JSON was retained; the receipt-topology difference remains source-proven.
+
+C22 changes only runtime companion recognition to the existing actual
+WoundStageBundle.MortalProcedureContinuation accessor. Its diagnosis-first/ordinary
+fallback preserves the ordinary nonnull path and honors the existing sealed
+NpcTradeDisposition. Seal, original/current ownership, backup, tail policy and
+full-root equality checks are unchanged. The same resource Fact now pins genuine
+diagnosis/no ordinary companion and exact authority identity, sealed Skip and
+detached complete-root Skip-versus-Apply receipt topology before normalization.
+Two real energy consumptions and both explicit empty response arrays remain.
+
+Optimization: production reuses the existing private companion and already sealed
+disposition without an additional parse, hash, owner, cache or physical read.
+The added test explicitly rechecks the seal. Test-only copies of the
+existing baseline and NPC backup are read once and reused within this operation;
+the genuine normalizer/publication/completion and all fresh fences still run.
+No cost or speedup claim. This client-owned family correction changes no GM wire,
+rule or authored surface; existing diagnosis guidance/examples need no update.
+
+Proposed fresh selection is resource1/60s, then original browser1 and rollback1
+separately/180s after independent SOURCE/build/PREP. Existing item2 keeps Apply;
+durable1 avoids this tail; semantic3 checks unrelated input semantics. Their six
+PASS lineages may be retained after exact delta review, never relabeled fresh.
+No new case/method/category/budget: prior official full plan237/104/63/60 remains
+the inventory reference pending root reproof. C22 is UNCOMPILED/UNRUN; static diff
+and JSON checks do not establish runtime GREEN. Task/parents/physical treatment,
+eight adapters and HOLDs remain open; raw, saves and retained roots are untouched.
+Actual static checks: git diff --check and parsing both catalog/selection JSON
+passed. Comparison with the base preserves every existing selector, category
+membership and budget; only the resource responsibility/hint and resource/semantic
+selection reasons change. No discovery, build or test was run by the writer.
+
 # T121 C21 actual6 PASS; resource1 exposes NPC family dispatch defect
 
 At runtime `44ab0fe6d3a28865811f81a98f71e46f0d649caa`, compiled Main/Support/Unit

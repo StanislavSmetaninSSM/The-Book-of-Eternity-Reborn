@@ -56,6 +56,40 @@ public sealed partial class MortalWoundTreatmentResolverTests
         var common = await WoundAcceptedTurnPlanner.ComposeMortalDiagnosisPublicationAsync(fs, fixture.Lease, response, admission.Owner, request);
         Assert.True(common.IsValid, JsonSerializer.Serialize(common.Issues));
         var publicationAuthority = Assert.IsType<MortalWoundTreatmentResourcePublicationAuthority>(common.Plan!.TreatmentResourcePublicationAuthority);
+        if (resourceCost)
+        {
+            var bundle = Assert.IsType<AcceptedMechanicsWoundStageBundle>(common.Plan.WoundStageBundle);
+            var prepared = bundle.PreparedPlan;
+            Assert.NotNull(prepared.MortalDiagnosisAuthority);
+            Assert.Null(prepared.TreatmentContinuationAuthority);
+            Assert.Same(prepared.MortalDiagnosisAuthority, bundle.MortalProcedureContinuation);
+            Assert.Same(bundle.MortalProcedureContinuation, publicationAuthority.ContinuationAuthority);
+            Assert.True(publicationAuthority.HasValidSeal());
+            Assert.Equal(MortalItemNpcTradeTailDisposition.SkipUntouchedTreatmentContinuation,
+                publicationAuthority.NpcTradeDisposition);
+
+            // The sealed resource-only plan owns no NPC change. Its exact full
+            // root must survive the same tail used by real normalization below.
+            var baseline = publicationAuthority.ItemPublicationBaseline;
+            var npcBaseline = Assert.IsType<JsonObject>(baseline.FinalCarrierRoots[NpcCoreChangesContract.NpcCorePath]);
+            var npcBefore = publicationAuthority.NpcCoreBackupRoot;
+            var npc = Assert.IsType<JsonObject>(Assert.Single(npcBefore["NPCsInScene"]!.AsArray()));
+            Assert.False(npcBefore.ContainsKey("UpdateNPCs"));
+            Assert.False(npcBefore.ContainsKey(NpcTradeRequestState.UpdateReceiptsProperty));
+            Assert.False(npc.ContainsKey(NpcTradeRequestState.ReceiptsProperty));
+            Assert.True(JsonNode.DeepEquals(npcBefore, npcBaseline));
+            var skipped = MortalItemPublicationTailTransforms.NpcTrade(npcBefore, npcBefore,
+                publicationAuthority.NpcTradeDisposition);
+            Assert.True(JsonNode.DeepEquals(npcBefore, skipped));
+
+            var expectedApplied = npcBefore.DeepClone().AsObject();
+            expectedApplied["NPCsInScene"]![0]![NpcTradeRequestState.ReceiptsProperty] = new JsonArray();
+            var applied = MortalItemPublicationTailTransforms.NpcTrade(npcBefore, npcBefore,
+                MortalItemNpcTradeTailDisposition.Apply);
+            Assert.True(JsonNode.DeepEquals(expectedApplied, applied));
+            Assert.False(JsonNode.DeepEquals(npcBaseline, applied));
+            Assert.True(JsonNode.DeepEquals(npcBefore, npcBaseline));
+        }
         var expectedSemantic = publicationAuthority.SemanticFingerprint;
         var expectedSeed = publicationAuthority.IdentitySeed;
         await fixture.ReleaseLeaseAsync();
