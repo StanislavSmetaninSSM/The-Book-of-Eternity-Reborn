@@ -909,6 +909,14 @@ public partial class ProgressionScheduleService
         ProgressionReportSnapshot reportSnapshot,
         PendingTurnRequestContext? currentTurnContext,
         int resultingWorldTime,
+        List<ValidationIssue> issues) =>
+        ValidateMortalOutcomeData(control, reportSnapshot, currentTurnContext, resultingWorldTime, issues);
+
+    private static void ValidateMortalOutcomeData(
+        ProgressionControl control,
+        ProgressionReportSnapshot reportSnapshot,
+        PendingTurnRequestContext? currentTurnContext,
+        int resultingWorldTime,
         List<ValidationIssue> issues)
     {
         var report = reportSnapshot.Report;

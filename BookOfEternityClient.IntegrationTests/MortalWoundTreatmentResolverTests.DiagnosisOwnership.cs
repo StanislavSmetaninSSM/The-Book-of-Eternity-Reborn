@@ -166,6 +166,57 @@ public sealed partial class MortalWoundTreatmentResolverTests
         Assert.Throws<InvalidDataException>(() => working.RequireCurrent(fixture.Authority));
     }
 
+    [Fact]
+    public async Task DiagnosisDurableComparisonRetainsOriginalAndRefusesResealedSemanticDrift()
+    {
+        await using var fixture = await DiagnosisOwnershipFixture.CreateAsync(20, signedInput: true, duration: 0);
+        var owner = fixture.Authority;
+        var history = WoundHistoryState.Parse(await fixture.Files.ReadFileAsync(fixture.Lease, WoundHistoryState.HistoryPath), WoundHistoryState.HistoryPath);
+        var prepared = MortalWoundTreatmentPlanner.PrepareDiagnosisRequest(owner, history, owner.CurrentWound,
+            "diagnosis_durable_comparison", "inspect_explicit_method", fixture.EventRef);
+        Assert.True(prepared.IsValid, JsonSerializer.Serialize(prepared.Issues));
+        var outcome = MortalWoundDiagnosisOutcome.Resolve(owner, history, prepared.Request!);
+        var working = MortalWoundDiagnosisWorkingProjection.Build(owner, outcome);
+        var calculation = await new ProgressionScheduleService(fixture.Files, NullLogger<ProgressionScheduleService>.Instance)
+            .PrepareDiagnosisOutcomeAsync(fixture.Lease, working);
+        var unchanged = fixture.CaptureJson();
+        // Comparison DATA only. No effect publication, accepted receipt, live
+        // result authority or History row is fabricated by this codec control.
+        var result = MortalWoundDiagnosisPersistedResult.CreateComparisonEvidence(owner, outcome, working, calculation,
+            working.Members.ToDictionary(value => value.Original.WoundId,
+                _ => (IReadOnlyList<MortalWoundRecoveryPublishedStage>)Array.Empty<MortalWoundRecoveryPublishedStage>(), StringComparer.Ordinal));
+        Assert.Equal("mortal_diagnosis", result.Kind);
+        Assert.Equal(WoundMaterializationContract.SerializeCanonical(owner.CurrentWound), WoundMaterializationContract.SerializeCanonical(result.Original));
+        Assert.Equal(WoundMaterializationContract.SerializeCanonical(outcome.KnowledgeAfter), WoundMaterializationContract.SerializeCanonical(result.KnowledgeAfter));
+        var root = result.ToCanonicalJson();
+        var issues = new List<ValidationIssue>();
+        Assert.NotNull(MortalWoundDiagnosisPersistedResult.Parse(JsonSerializer.SerializeToElement(root), "diagnosis.result", issues));
+        Assert.Empty(issues);
+        foreach (var fault in new[] { "knowledge", "result", "duration", "control", "cohort", "extra", "resource" })
+        {
+            var changed = root.DeepClone().AsObject();
+            switch (fault)
+            {
+                case "knowledge": changed["knowledgeAfter"]!["treatment"]!["knownRouteIds"]!.AsArray().RemoveAt(owner.CurrentWound.Treatment.KnownRouteIds.Count); break;
+                case "result": changed["terminal"]!["category"] = "failed_attempt"; break;
+                case "duration": changed["clock"]!["resultingMinute"] = working.ResultingMinute + 1; break;
+                case "control":
+                    changed["input"]!["control"]!["worldCycleMinutes"] = 1;
+                    changed["input"]!["inputFingerprint"] = MortalWoundDiagnosisInputCodec.Fingerprint(changed["input"]!.AsObject());
+                    break;
+                case "cohort": changed["cohort"]!.AsArray().Clear(); break;
+                case "extra": changed["terminal"]!["treatmentOperations"] = new JsonArray(); break;
+                case "resource": changed["resourceFinalization"]!["consumptionTrigger"] = "none"; break;
+            }
+            changed["resultFingerprint"] = WoundHistoryState.ComputeTransitionResultFingerprint(changed);
+            var failure = new List<ValidationIssue>();
+            Assert.Null(MortalWoundDiagnosisPersistedResult.Parse(JsonSerializer.SerializeToElement(changed), "diagnosis.result", failure));
+            Assert.Contains(failure, value => value.Code == "mortal_wound_diagnosis_result_invalid");
+        }
+        Assert.True(JsonNode.DeepEquals(root, result.ToCanonicalJson()));
+        fixture.AssertJson(unchanged);
+    }
+
     private sealed class DiagnosisOwnershipFixture : IAsyncDisposable
     {
         private DiagnosisOwnershipFixture(string root, FileSystemManager files, FileSystemManager.CanonicalWriteLease lease,

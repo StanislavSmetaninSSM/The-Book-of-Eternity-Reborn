@@ -31,24 +31,35 @@ internal sealed class MortalWoundDiagnosisOutcome
             requirements.Authority.AuthorityFingerprint != request.RequirementAuthority.AuthorityFingerprint ||
             !check.MatchesFreshDiagnosis(owner, request.Coordinates, owner.CurrentWound, requirements.Authority))
             throw new InvalidDataException("Diagnosis requirements or retained die/Fate agreement changed before resolution.");
-        var subject = MortalWoundProcedureSubject.FromAccepted(owner, owner.CurrentWound, "diagnosis", request.Coordinates.MemberId);
+        var reaction = EffectAcceptedEventReportCatalog.ResolvePreparedMortalWoundCriticalReaction(request, owner);
+        if (!reaction.IsValid) throw new InvalidDataException("Diagnosis critical reaction differs from its actual retained check.");
+        var resolution = ReconstructResolution(request);
+        if (resolution.CriticalReactionIntent?.IntentFingerprint != reaction.Intent?.IntentFingerprint)
+            throw new InvalidDataException("The retained diagnosis Fate result differs from its actual private reservation.");
+        var method = MortalWoundProcedureSubject.FromAccepted(owner, owner.CurrentWound, "diagnosis", request.Coordinates.MemberId).Diagnosis!;
+        return new(owner, resolution, ReconstructKnowledge(resolution), checked(owner.CurrentGameMinute + method.Check.DurationMinutes));
+    }
+
+    internal static MortalWoundTreatmentResolution ReconstructResolution(MortalWoundTreatmentAttemptRequest request)
+    {
+        if (request.Mode != "diagnosis" || request.Coordinates.Purpose != "diagnosis" ||
+            !MortalWoundTreatmentDetachedSealValidator.IsValid(request) || request.ModeAuthority is not MortalWoundProcedureCheckAuthority check)
+            throw new InvalidDataException("A diagnosis result needs a complete strictly reconstructed retained request.");
+        var subject = MortalWoundProcedureSubject.FromDetached(request.RouteSourceWound, "diagnosis", request.Coordinates.MemberId);
         var method = subject.Diagnosis!;
         var total = checked((long)check.NaturalRoll + check.Modifier);
         var margin = checked(total - check.EffectiveDifficulty);
-        var reaction = EffectAcceptedEventReportCatalog.ResolvePreparedMortalWoundCriticalReaction(request, owner);
-        if (!reaction.IsValid) throw new InvalidDataException("Diagnosis critical reaction differs from its actual retained check.");
-        var index = MortalWoundTreatmentPlanner.SelectDiagnosisBand(method.Check, check.NaturalRoll, margin, reaction.Intent is not null);
+        var reaction = check.PreparedCriticalReaction is null ? null : MortalWoundCriticalReactionIntent.Create(request, check.PreparedCriticalReaction);
+        var index = MortalWoundTreatmentPlanner.SelectDiagnosisBand(method.Check, check.NaturalRoll, margin, reaction is not null);
         if (index < 0) throw new InvalidDataException("No declared diagnostic band covers the retained procedure result.");
         var band = method.Check.Bands[index];
         var original = check.NaturalRoll switch { 20 => "critical_success", 1 => "critical_failure", _ => "ordinary" };
-        var resolved = check.NaturalRoll == 1 && reaction.Intent is not null ? "failure" : original;
-        var evidence = MortalWoundProcedureModeEvidence.CreateForDiagnosis(check, method.Check, total, margin, original, resolved, index, reaction.Intent);
-        var resolution = MortalWoundTreatmentResolution.Create("diagnosis", request.Coordinates, "AcceptedTerminal",
+        var resolved = check.NaturalRoll == 1 && reaction is not null ? "failure" : original;
+        var evidence = MortalWoundProcedureModeEvidence.CreateForDiagnosis(check, method.Check, total, margin, original, resolved, index, reaction);
+        return MortalWoundTreatmentResolution.Create("diagnosis", request.Coordinates, "AcceptedTerminal",
             band.Category, index, false, Array.Empty<MortalWoundTreatmentOperation>(), Array.Empty<MortalWoundTreatmentOutcomeIntent>(),
-            reaction.Intent, subject.ResourcePolicy.ConsumeOn.Contains(band.Category, StringComparer.Ordinal) ? band.Category : "none",
+            reaction, subject.ResourcePolicy.ConsumeOn.Contains(band.Category, StringComparer.Ordinal) ? band.Category : "none",
             null, null, null, request, evidence, subject.Fingerprint, "None");
-        var knowledge = ReconstructKnowledge(resolution);
-        return new(owner, resolution, knowledge, checked(owner.CurrentGameMinute + method.Check.DurationMinutes));
     }
 
     internal void RequireCurrent(MortalWoundTreatmentAcceptedStateAuthority owner, WoundHistoryParseResult history)

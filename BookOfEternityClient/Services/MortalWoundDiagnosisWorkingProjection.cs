@@ -67,16 +67,22 @@ internal sealed class MortalWoundDiagnosisWorkingProjection
             members.Add(new(original.Path, original.Wound, working, consumed.Recovery, consumed.Deterioration, calculated.Resolution));
         }
         clock["currentTimeInMinutes"] = outcome.ResultingMinute;
-        var fingerprint = WoundAcceptedTurnFingerprintWriter.Compute(new[]
-        {
-            "mortal_diagnosis.working_projection", "1", outcome.Request.RequestFingerprint, outcome.Resolution.ResultFingerprint,
-            owner.AcceptedStateFingerprint, outcome.OriginalMinute.ToString(CultureInfo.InvariantCulture),
-            outcome.ResultingMinute.ToString(CultureInfo.InvariantCulture), WoundAcceptedTurnFingerprintWriter.CanonicalJson(control),
-            WoundAcceptedTurnFingerprintWriter.CanonicalJson(schedule), WoundAcceptedTurnFingerprintWriter.CanonicalJson(clock)
-        }.Concat(members.SelectMany(value => new[] { value.OriginalSourcePath, WoundMaterializationContract.SerializeCanonical(value.Original),
-            WoundMaterializationContract.SerializeCanonical(value.Working), value.Resolution.AuthorityFingerprint })));
+        var fingerprint = ComputeComparisonFingerprint(outcome.Request, outcome.Resolution, owner.AcceptedStateFingerprint,
+            outcome.OriginalMinute, outcome.ResultingMinute, control, schedule, clock, members);
         return new(owner, outcome, source, clock, control, schedule, members.ToImmutable(), fingerprint);
     }
+
+    internal static string ComputeComparisonFingerprint(MortalWoundTreatmentAttemptRequest request,
+        MortalWoundTreatmentResolution resolution, string acceptedFingerprint, long originalMinute, long resultingMinute,
+        JsonObject control, JsonObject schedule, JsonObject clock, IEnumerable<MortalWoundDiagnosisRecoveryMember> members) =>
+        WoundAcceptedTurnFingerprintWriter.Compute(new[]
+        {
+            "mortal_diagnosis.working_projection", "1", request.RequestFingerprint, resolution.ResultFingerprint, acceptedFingerprint,
+            originalMinute.ToString(CultureInfo.InvariantCulture), resultingMinute.ToString(CultureInfo.InvariantCulture),
+            WoundAcceptedTurnFingerprintWriter.CanonicalJson(control), WoundAcceptedTurnFingerprintWriter.CanonicalJson(schedule),
+            WoundAcceptedTurnFingerprintWriter.CanonicalJson(clock)
+        }.Concat(members.SelectMany(value => new[] { value.OriginalSourcePath, WoundMaterializationContract.SerializeCanonical(value.Original),
+            WoundMaterializationContract.SerializeCanonical(value.Working), value.Resolution.AuthorityFingerprint })));
 
     internal MortalWoundTreatmentAttemptCoordinates Coordinates => _outcome.Request.Coordinates;
     internal byte[] ReadOriginalBytes(string path) => _owner.ReadDiagnosisOriginalBytes(path);

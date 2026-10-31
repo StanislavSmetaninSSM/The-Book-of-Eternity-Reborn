@@ -1,3 +1,36 @@
+# T121 Mortal durable reconstruction WIP — UNCOMPILED / UNRUN
+
+The connected result DATA cut retains the actual original binding/source, exact
+staged input and produced request, original/knowledge-after images, terminal check/
+resource result, original carriers/cohort and raw clock/schedule/report before and
+after images. Parsing independently reconstructs the procedure band, complete
+knowledge delta, declared duration/T1, ordinary progression and every real recovery
+stage through existing strict source/graph/epoch checks. No-due recovery permits
+zero rows; it cannot invent a recover receipt. Serialized DATA grants no live owner,
+reservation, accepted execution or publication permission.
+
+One actual-owner component setup authors seven independently outer-resealed
+semantic negatives without manufacturing a publication receipt. Existing recovery
+source/binding/stage comparison helpers are shared; old standalone recovery still
+uses its original complete stage contract. Current estimate is 49 cases / eleven
+methods / nine categories, all UNCOMPILED/UNRUN. No writer build/discovery/runtime.
+
+Exact source review clarified that old ValidateMortalOutcome accepts but does not
+read resultingWorldTime. It still validates original-control report obligations,
+correlation and markers. The diagnosis-only calculation now explicitly reconstructs
+full original control from settled schedule/T0, checked admitted duration/T1 and
+exact after-images, and bounds contradictory report markers itself. It does not
+invent newly due same-turn reports; ordinary pending-cycle semantics remain.
+
+This comparison result is not yet attached to live History or a common plan.
+Next work is linked complete-History/replay, genuine effect/recovery execution,
+common resources/time publication and C4 rearm/outer original rollback, then actual
+shared guided UI and complete GM/current-input synchronization. The two pending
+before-images and ordinary treatment predicates remain protected; no kind-only
+exception or coverage removal has been made. Existing source DATA is reused
+within the operation, with no cache/publisher stack and fresh authority checks
+still required. No task closure or qualification is claimed.
+
 # T121 Mortal working time/recovery WIP — UNCOMPILED / UNRUN
 
 The same checkout recovered after a brief environment transition; no build/test

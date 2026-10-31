@@ -2,6 +2,36 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "mortal-diagnosis-durable-data",
+  "responsibility": "T121 one actual original-owner setup produces strictly detached comparison result DATA at explicit zero duration. The codec retains original/knowledge images, exact held request/procedure/resources, full control/schedule/clock and complete original physical cohort; seven independently outer-resealed copies must reject knowledge regression, altered result/duration/control, cohort omission, foreign terminal operations and resource-trigger drift. This does not fabricate execution or publication receipts. UNCOMPILED/UNRUN WIP.",
+  "excludes": "No actual History/publication/Engine/GM wait, fake accepted receipt, permission from serialized seals, broad Mortal aggregate or accepted spiritual replay. Actual native/UI and linked History completion remain required later.",
+  "changeHints": [
+    "BookOfEternityClient/Services/MortalWoundDiagnosisPersistedResult.cs",
+    "BookOfEternityClient/Services/MortalWoundRecoveryPersistence.cs",
+    "BookOfEternityClient/Services/ProgressionScheduleService.MortalDiagnosis.cs"
+  ],
+  "related": [
+    {
+      "id": "mortal-diagnosis-working-time",
+      "when": "Original time, complete cohort and knowledge-before-recovery inputs are the prerequisite; this category validates durable comparison reconstruction, not live permission."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.DiagnosisDurableComparisonRetainsOriginalAndRefusesResealedSemanticDrift"
+      ]
+    }
+  ]
+},
+{
   "id": "mortal-diagnosis-working-time",
   "responsibility": "T121 two actual signed original-owner rows for explicit zero or 300-minute diagnosis: original clock/control/schedule and recovery epoch remain unchanged; knowledge working image precedes existing ordinary recovery math at checked T1, standard schedule calculation leaves newly elapsed cycles pending without inventing same-turn report obligations, detached clock exports cannot mutate the retained image, and a new owner/lease cannot reuse it. UNCOMPILED/UNRUN WIP.",
   "excludes": "No future physical writes, accepted-state clock/wound rewriting, fabricated authority, publication/History, C4/Engine/GM wait or broad Mortal suite. All durations/cadences are explicit fixture inputs.",

@@ -379,7 +379,7 @@ internal sealed class MortalWoundRecoveryPersistedResult : WoundTransitionResult
     /// <param name="wound">
     /// The complete canonical wound before evaluation.
     /// </param>
-    private static void ValidateSource(MortalWoundRecoverySourceEvidence source,
+    internal static void ValidateSource(MortalWoundRecoverySourceEvidence source,
         WoundAcceptedTurnBinding binding, WoundMaterializationEnvelope wound)
     {
         if (source.Context.SchemaVersion != 1 || source.Context.Realm != "mortal_world" ||
@@ -466,11 +466,31 @@ internal sealed class MortalWoundRecoveryPersistedResult : WoundTransitionResult
     /// </param>
     private static void ValidateStages(MortalWoundRecoverySourceEvidence source, WoundAcceptedTurnBinding binding,
         WoundMaterializationEnvelope wound, MortalWoundRecoveryResolution resolution,
+        IReadOnlyList<MortalWoundRecoveryPublishedStage> stages) =>
+        ValidateStageChain(source.WoundFingerprint, binding, wound, resolution, stages);
+
+    // Diagnosis may have no due mechanical boundary. Every real ordinary stage
+    // still uses the existing complete coordinate, epoch, graph and delta checks.
+    internal static void ValidateDiagnosisWorkingStages(WoundAcceptedTurnBinding binding,
+        WoundMaterializationEnvelope working, MortalWoundRecoveryResolution resolution,
+        IReadOnlyList<MortalWoundRecoveryPublishedStage> stages)
+    {
+        var mechanical = resolution.TransitionIntents.Any(value => value is MortalWoundRecoveryProgressIntent or MortalWoundRecoveryDeteriorationIntent);
+        if (!mechanical)
+        {
+            if (stages.Count != 0) throw new InvalidDataException("No-due diagnosis recovery cannot invent a wound transition row.");
+            return;
+        }
+        ValidateStageChain(WoundIdentityState.ComputeSemanticFingerprint(working), binding, working, resolution, stages);
+    }
+
+    private static void ValidateStageChain(string originalFingerprint, WoundAcceptedTurnBinding binding,
+        WoundMaterializationEnvelope wound, MortalWoundRecoveryResolution resolution,
         IReadOnlyList<MortalWoundRecoveryPublishedStage> stages)
     {
         if (stages.Count is < 1 or > 6 || stages[0].Kind != "recover")
             throw new InvalidDataException("Expected a bounded recovery stage chain beginning with recover.");
-        var previous = source.WoundFingerprint;
+        var previous = originalFingerprint;
         var identities = new HashSet<string>(StringComparer.Ordinal);
         var operations = new HashSet<string>(StringComparer.Ordinal);
         for (var index = 0; index < stages.Count; index++)
@@ -779,7 +799,7 @@ internal sealed class MortalWoundRecoveryPersistedResult : WoundTransitionResult
     /// <returns>
     /// The detached binding whose event and binding seals are checked by source validation.
     /// </returns>
-    private static WoundAcceptedTurnBinding ParseBinding(JsonElement value, string path, ICollection<ValidationIssue> issues)
+    internal static WoundAcceptedTurnBinding ParseBinding(JsonElement value, string path, ICollection<ValidationIssue> issues)
     {
         Closed(value, path, issues, "sessionId", "requestId", "snapshotToken", "realm", "turn", "acceptedEvents", "acceptedEventsFingerprint");
         var events = new List<WoundAcceptedEventAuthority>();
@@ -805,7 +825,7 @@ internal sealed class MortalWoundRecoveryPersistedResult : WoundTransitionResult
     /// <returns>
     /// A detached closed binding projection.
     /// </returns>
-    private static JsonObject BindingJson(WoundAcceptedTurnBinding binding) => new()
+    internal static JsonObject BindingJson(WoundAcceptedTurnBinding binding) => new()
     {
         ["sessionId"] = binding.SessionId, ["requestId"] = binding.RequestId, ["snapshotToken"] = binding.SnapshotToken,
         ["realm"] = binding.Realm, ["turn"] = binding.Turn,
@@ -849,7 +869,7 @@ internal sealed class MortalWoundRecoveryPersistedResult : WoundTransitionResult
     /// <returns>
     /// An immutable list of complete stage evidence; failures remain in the enclosing parser issue collection.
     /// </returns>
-    private static IReadOnlyList<MortalWoundRecoveryPublishedStage> ParseStages(JsonElement value, string path, ICollection<ValidationIssue> issues)
+    internal static IReadOnlyList<MortalWoundRecoveryPublishedStage> ParseStages(JsonElement value, string path, ICollection<ValidationIssue> issues)
     {
         if (value.ValueKind != JsonValueKind.Array || value.GetArrayLength() is < 1 or > 6)
             throw new InvalidDataException("Expected one to six bounded executed stages.");
@@ -902,7 +922,7 @@ internal sealed class MortalWoundRecoveryPersistedResult : WoundTransitionResult
     /// <returns>
     /// A detached closed stage projection.
     /// </returns>
-    private static JsonObject StageJson(MortalWoundRecoveryPublishedStage stage) => new()
+    internal static JsonObject StageJson(MortalWoundRecoveryPublishedStage stage) => new()
     {
         ["transitionId"] = stage.TransitionId, ["kind"] = stage.Kind,
         ["beforeFingerprint"] = stage.BeforeFingerprint, ["afterFingerprint"] = stage.AfterFingerprint,

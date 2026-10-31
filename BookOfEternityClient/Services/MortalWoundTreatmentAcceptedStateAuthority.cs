@@ -79,6 +79,13 @@ internal sealed partial class MortalWoundTreatmentAcceptedStateAuthority
     internal JsonObject ReadDiagnosisOriginalRoot(string path) => _diagnosisOriginalRoots is not null &&
         _diagnosisOriginalRoots.TryGetValue(path, out var value) ? value.DeepClone().AsObject() :
         throw new InvalidDataException("The diagnosis original root is absent: " + path);
+    internal JsonObject ReadDiagnosisOriginalInput() => _diagnosisInput?.DeepClone().AsObject() ??
+        throw new InvalidDataException("The diagnosis original input is absent.");
+    internal WoundCarrierCatalogInput ReadDiagnosisOriginalCarriers() => new(
+        _diagnosisOriginalRoots?.GetValueOrDefault(WoundCarrierCatalog.PlayerPath)?.DeepClone().AsObject(),
+        _diagnosisOriginalRoots?.GetValueOrDefault(WoundCarrierCatalog.NpcPath)?.DeepClone().AsObject(),
+        _diagnosisOriginalRoots?.GetValueOrDefault(WoundCarrierCatalog.EnemiesPath)?.DeepClone().AsObject(),
+        _diagnosisOriginalRoots?.GetValueOrDefault(WoundCarrierCatalog.AlliesPath)?.DeepClone().AsObject(), null);
     internal JsonObject ReadDiagnosisOriginalControl() => _diagnosisControl?.DeepClone().AsObject() ??
         throw new InvalidDataException("The diagnosis original control is absent.");
 
