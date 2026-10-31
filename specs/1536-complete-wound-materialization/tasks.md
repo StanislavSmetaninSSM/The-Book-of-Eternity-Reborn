@@ -58,7 +58,11 @@ archive are outside checkout; original failures and all other holds are retained
   without temporary writes or new accepted-state authority. Retain same-attempt
   C4 claims before History and use capability-controlled exact restoration; test
   competing claims and cross-purpose identity collisions, not release-plus-reroll.
-  Current checkpoint is design/plan/tasks only; production/tests/builds/runtime UNRUN.
+  Astra delta DESIGN accepted4152f330; only a two-row existing-parser causal
+  scaffold is authored, category mortal-diagnosis-method-causal/60s. Canonical and
+  ordinary procedure/policy/shared-parser prerequisites precede the intended final
+  exact-empty Check refusal. Fresh Unit build/discovery/PREP/actual RED are pending;
+  all production/live authority and feature acceptance remain UNRUN/open.
 
 - [x] T121-DIAGNOSIS-READ Show readable declared conditions of currently known
   diagnostic paths in the existing wound/status cards for console/browser. Reuse

@@ -2,6 +2,37 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "mortal-diagnosis-method-causal",
+  "responsibility": "T121 existing-API Mortal diagnosis method contract causal proof. Two independent file-free Unit rows declare free/zero-duration or item-cost/nonzero-duration parameters. Canonical physical baseline, actual ordinary procedure resolution/binary bands/resource-policy parse and canonical round-trip, shared raw path parsing and all input-immutability checks precede the sole intended final strict-Mortal nonempty-check refusal. Full method round-trip assertions remain after that causal oracle for later GREEN.",
+  "excludes": "No live accepted-world/check/resource/time authority, treatment execution, dice/Fate reservation, GM wait, Engine, publication, fake receipts, reflection, new API, production semantics, broad Mortal categories or accepted spiritual PASS replay. This is source contract DATA, not an executable diagnosis feature.",
+  "changeHints": [
+    "BookOfEternityClient.Tests/MortalWoundDiagnosisMethodContractTests.cs",
+    "BookOfEternityClient/Services/MortalWoundTreatmentContract.MemberShapes.cs",
+    "BookOfEternityClient/Services/MortalWoundTreatmentContract.cs",
+    "BookOfEternityClient/Services/MortalWoundTreatmentModel.cs"
+  ],
+  "related": [
+    {
+      "id": "spiritual-diagnosis-admission",
+      "when": "A later shared Check/parser implementation must preserve exact spiritual empty-check admission; this scaffold changes no production source and admits no old PASS rerun."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.MortalWoundDiagnosisMethodContractTests.ExplicitMortalMethodRetainsProcedureDurationAndCostWithoutDefaulting"
+      ]
+    }
+  ]
+},
+{
   "id": "spiritual-diagnosis-browser-binding-causal",
   "responsibility": "T121 file-light actual detached browser original validation with a real queue generation, backup, spiritual staging or typed combat comparison DATA, Explorer overlay and signed snapshot. Six unchanged rows cover lawful full guided diagnosis, separately admitted mismatched selection, same-ordinal full-control mismatch, signed byte tamper, and unchanged active/combat siblings. Accepted EX10RED proved only the lawful diagnosis final refusal. The GREEN candidate requires strict full-context diagnosis binding and exact queued selection equality after all existing authenticated-original checks; outer metadata/hash and no-mutation oracles remain unchanged.",
   "excludes": "No ProcessPlayerTurn, GM wait, publication, accepted receipt or live combat authority claim, forged/re-signed manifest, reflection, relaxed metadata/hash/path/control or active/combat guards, limit increase, broad old UI replay or new diagnostic stack.",

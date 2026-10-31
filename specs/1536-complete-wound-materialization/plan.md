@@ -1,11 +1,25 @@
-# T121 Mortal guided diagnosis — bounded DESIGN candidate, implementation UNRUN
+# T121 Mortal explicit-method parser causal scaffold — UNCOMPILED / UNRUN
 
 The next tracked player milestone is T121-DIAGNOSIS-MORTAL under #1536/FR-071 and
 the author-approved per-method procedure/check/duration/cost rules. The concrete
-existing-owner proposal is appended to spiritual-aid-design.md. This checkpoint
-changes only design/plan/tasks: no production, tests, catalogue, dependency, build,
-discovery or runtime. Independent Astra DESIGN is required before the first causal
-scaffold; no new author approval is requested for already approved gameplay.
+existing-owner proposal is appended to spiritual-aid-design.md. Independent Astra
+delta DESIGN accepted `4152f33092317239c3d1ec45cf653617ca186309`; only the
+two-row existing-parser scaffold is released. It adds one file-free Unit Theory,
+one category and a temporary exact selection, plus canonical checkpoint/editorial
+updates. No production semantic code, dependency, live authority, build, discovery
+or runtime changes; no new author approval is requested for approved gameplay.
+
+The method `MortalWoundDiagnosisMethodContractTests.ExplicitMortalMethodRetainsProcedureDurationAndCostWithoutDefaulting`
+has source-estimated two cases / one method / one Unit descriptor, category
+`mortal-diagnosis-method-causal` at60s. Free/zero-duration and item-cost/30-minute
+rows prove a canonical physical baseline, real ordinary procedure parameter/policy
+parse and complete canonical round-trip, the shared raw diagnosis-path contract,
+and immutable source DATA before final Assert.True(parsed.IsValid). Only that final
+current exact-empty Check refusal is intended RED. Future full method canonical
+round-trip assertions remain after it; no fake live authority or reflection is used.
+All scaffold source is UNCOMPILED/UNRUN pending independent SOURCE and root's fresh
+Unit/PDB/artifact/catalog/exact PlanOnly/PREP. Unchanged other owning projects may
+retain their actual source/PDB continuity; the writer runs no build or tests.
 
 Bounded DESIGN corrections after independent review: current Mortal methods must
 migrate to complete explicit checks; empty current inputs receive no legacy
@@ -18,8 +32,8 @@ authority is permitted. Retryable C4 before History retains the exact held reque
 dice span/result, Fate decision and confirmed reservation agreement; rebind through
 the existing capability-controlled exact restore path, never release then Reserve.
 Diagnosis/treatment purpose is bound throughout identity/claims/replay, with same-ID
-cross-purpose collision refusal. These are technical design corrections only;
-independent delta DESIGN remains pending and all implementation/runtime is UNRUN.
+cross-purpose collision refusal. These technical design corrections are accepted;
+actual implementation, retained live authority and gameplay runtime remain UNRUN.
 
 Confirmed gaps: actual guided state skips Mortal; the shared path keeps raw Check
 but the Mortal typed definition drops it and canonical writer emits{}; live
@@ -39,10 +53,10 @@ preserving original clock/control/schedule separately from later request-bound
 reports and binding all future time/recovery images to the same atomic plan.
 No fake treatment route, spiritual cycle, parallel issuer/cache/History/publisher.
 
-Initial proposed causal selection is two file-light existing-parser rows/60s,
+Initial authored causal selection is two file-light existing-parser rows/60s,
 proving complete explicit method parameters before the expected current empty-check
 rejection. Further exact bounded contract/procedure/resource/time/replay/native/UI
-selectors are described in the design and will be authored only after DESIGN;
+selectors are described in the accepted design and follow only after observed RED;
 official discovery, actual owning builds/PDB/artifacts and PREP precede execution.
 No accepted PASS is repeated at this planning stage. Implementation owns one parsed
 method/source set per operation, with full current lease/generation and original

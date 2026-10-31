@@ -1352,10 +1352,12 @@ parallel publisher, diagnostic stack, dependency, timer or budget is introduced.
 ## T121-DIAGNOSIS-MORTAL — existing-owner implementation proposal (2026-10-31)
 
 Source: #1536, open T093/T121 and FR-071; author rules accepted 2026-10-30
-11:48UTC. This is a DESIGN candidate only. Production, tests, schema migrations,
-catalogue and runtime are unchanged. Independent Astra DESIGN must precede the
-first compilable causal scaffold. Accepted spiritual173/read83/Shining110 lineages
-are not replayed or reinterpreted by this proposal; all HOLDs remain.
+11:48UTC. Independent Astra delta DESIGN accepted
+`4152f33092317239c3d1ec45cf653617ca186309`, releasing only the two-row
+existing-parser causal scaffold. That test-only cut is authored but UNCOMPILED /
+UNRUN; no production semantic or live authority implementation is qualified.
+Accepted spiritual173/read83/Shining110 lineages are not replayed or reinterpreted
+by this proposal; all HOLDs remain.
 
 ### Complete player milestone and alternatives
 
@@ -1514,7 +1516,8 @@ the independently sealed spiritual result family.
 ### Duration, ordinary recovery and one common publication
 
 Canonical clock input is `game_state/world/world_time.json`, interpreted through
-`ProgressionScheduleService` with the signed full Mortal control/schedule/report.
+`ProgressionScheduleService` with signed original Mortal control/schedule and the
+subsequently validated request-bound report.
 `FileMapping` transports `timeChange|setWorldTime`; those response fields themselves
 grant no diagnosis time authority. The existing owner method is
 `PrepareAcceptedTurnOutcomeMutationAsync`; `CaptureMortalOutcomeInputsAsync` and
@@ -1638,8 +1641,10 @@ entries and doc/source guards; preserve spiritual guarantee/empty-check guidance
 GM describes the scene and ordinary world response, not check success, arbitrary
 reveals, rolled dice, resource receipt or a second time advance.
 
-Independent DESIGN must verify the purpose-bound procedure reuse, unchanged
-spiritual/alternative parser boundaries and atomic clock/recovery ownership before
-code. No genuine new author-rule contradiction has been found. Exact new C# member
+Independent DESIGN accepted the purpose-bound procedure reuse, unchanged
+spiritual/alternative parser boundaries, working-image handoff and exact C4 claim
+restoration. It releases no production GREEN before the actual intended parser
+RED and subsequent implementation handoff. No genuine new author-rule contradiction
+has been found. Exact new C# member
 names/signatures, final schema spelling and fixtures remain technical implementation
 choices under that review; all implementation, builds and runtime are UNRUN.
