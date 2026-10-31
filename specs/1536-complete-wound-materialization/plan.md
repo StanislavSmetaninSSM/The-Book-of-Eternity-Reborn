@@ -1,3 +1,27 @@
+# T121 physical causal3 freshly prepared — runtime UNRUN
+
+Independent Astra/high SOURCE accepts9b06fa9bab76be9d9147581ad5081650208537ec.
+Fresh Integration builds that SHA in2:11.49, zero errors/102 existing warnings;
+warning code/message multiset exactly equals C19. Main/Support/Unit remain compiled
+f2f4f5795b88d98ec337d52e3b5289d95df320d8 with no owning-source changes. Four
+PE/PDB pairs and357 actual changed-source bindings match;27 artifacts,40 resource
+copies and4 daemon copies agree. Full external27-member archive63,048,409bytes,
+SHA256 ab6cf1e262417495ff32914990fa6bf6685eecad431c2974a3a4aea4da757161,
+passes every member hash and197,509,120-byte full gzip EOF/CRC decode.
+
+Official discovery exits0:1276 categories/13091 methods, no unmapped/stale entries,
+zero tests. Exact PlanOnly confirms3 cases/1 method/1 descriptor, only
+mortal-physical-guided-menu-causal, exclusive60s, zero execution. Full raw/proofs
+remain external under us5-guided-diagnosis/P1RED-*. Free space after archive is
+1,143,214,080bytes, above400MiB reserve plus256MiB output headroom; no earlier raw,
+saves or recovery was removed. Product code is unchanged. Menu observations carry
+no cost-reduction claim and test-only scaffolding needs no GM wire update.
+
+Independent PREP, verified remote checkpoint and immediate source/resource/process/
+disk fence precede the one causal3 run. Only all3 explicit final missing-route
+messages after their strict premises would establish the intended RED; setup failure,
+timeout, skip or lost output would not. Physical implementation remains UNRUN.
+
 # T121 physical guided menu causal scaffold — WIP UNCOMPILED/UNRUN
 
 Accepted diagnosis checkpoint6a8794f7e5dc33c46d0ba54285afc5c8a302ae33 is unchanged.
