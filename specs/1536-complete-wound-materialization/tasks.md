@@ -56,8 +56,13 @@ archive are outside checkout; original failures and all other holds are retained
   stays TIMEOUT/UNKNOWN with retained root/incomplete capture. Seven new genuine
   consumer/export/browser rows, existing engine-original1, semantic guards3 and
   explicit World closure1 are the finite fresh proposal; UI3 follows only after
-  independent SOURCE/build/PREP. All new C14 work is UNCOMPILED/UNRUN; accepted
-  lineages and remaining parent/physical-guided/eight-adapter/HOLD work remain open.
+  independent SOURCE/build/PREP. Initial C14 owners were compiled, but post8
+  lifetime closed1P/1F/6U and post6 refused the protected reader before other five
+  controls. Both failures remain preserved. The grouped correction adds genuine
+  caller-flow MainAdmission/rebind and the actual same-completion owned close
+  dependency; only this new delta is UNCOMPILED/UNRUN. Old False PASS is historical
+  until rerun, while all source guard4/UI/whole-feature acceptance stays open.
+  Parent/physical-guided/eight-adapter/HOLD work remains open.
 
 - [ ] T121-DIAGNOSIS-MORTAL-OUTPUT Bind the complete sealed diagnosis execution
   to the existing player-notification dispatcher after publication/lease closure.

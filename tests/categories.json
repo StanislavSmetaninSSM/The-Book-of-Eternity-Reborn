@@ -3,12 +3,14 @@
     "categories": [
 {
   "id": "mortal-completed-item-postvalidation",
-  "responsibility": "T121 C14 one actual diagnosis post-validator row: immutable whole NPC/frame/generation, no-proof/invalidation/foreign owner, exact issue multiplicity, item/count/actor/root/byte/frame drift and canonical/request/resource-claim inertness. Separate exclusive60s owner; lifetime theory2 belongs only to mortal-completed-item-export-lifetime. Source remains UNCOMPILED/UNRUN; no timing or cost qualification claim.",
+  "responsibility": "T121 C14 one actual diagnosis post-validator row under genuine caller-flow MainAdmission spanning a fresh original-source rebind, production and protected read. No ambient write lease at reader entry; foreign same-root manager has its own acquired child admission. Whole NPC/frame/generation, exact issue multiplicity/tamper refusals and canonical/request/claim inertness remain. The prior no-live-owner failure is preserved; grouped correction UNCOMPILED/UNRUN, exclusive60s unchanged.",
   "excludes": "No new authority, cache, publisher, original re-sign, private reflection, GM wait, budget increase, diagnostic framework, full-suite/HOLD or physical-treatment execution. Actual prior UI timeout remains UNKNOWN.",
   "changeHints": [
     "BookOfEternityClient/Services/MortalWoundTreatmentResourcePublicationTransaction.CompletedItemValidation.cs",
     "BookOfEternityClient/Services/Validation/ValidationService.CompletedTreatmentItemValidation.cs",
-    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.DiagnosisCompletedItems.cs"
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.DiagnosisCompletedItems.cs",
+    "BookOfEternityClient/Core/FileSystemManager.ValidationMutationReservation.cs",
+    "BookOfEternityClient/Services/MortalWoundTreatmentResourcePublicationTransaction.cs"
   ],
   "related": [
     {
@@ -37,12 +39,14 @@
 },
 {
   "id": "mortal-completed-item-export-lifetime",
-  "responsibility": "T121 C14 two rows of the genuine finalized/compensated/suppressed-close export theory. Published alone and compensated/rearmed transactions export nothing; valid Finalized/ChangedCount1 settlement survives an actually observed suppressed lease-close failure without compensation or repeated spend, but exports no completed comparison. Separate exclusive60s owner; same two existing rows/assertions, no new case or budget increase. UNCOMPILED/UNRUN; no timing or cost qualification claim.",
+  "responsibility": "T121 C14 two existing lifetime rows under genuine caller-flow MainAdmission and exact diagnosis rebind. Same CompleteAsync default-null entry; nonnull owned close dependency suppresses reuse before acquisition, attaches through real physical-lease mutation reservation, rejects occupied context without transfer, and stays reserved/suppressed through all disposal. Full result assertions precede cut1; finalized settlement remains on suppressed close failure with no export/re-spend. Old False PASS is historical until rerun; no new cases or60s budget change; grouped correction UNCOMPILED/UNRUN.",
   "excludes": "No new authority, cache, publisher, original re-sign, private reflection, GM wait, budget increase, diagnostic framework, full-suite/HOLD or physical-treatment execution. Actual prior UI timeout remains UNKNOWN.",
   "changeHints": [
     "BookOfEternityClient/Services/MortalWoundTreatmentResourcePublicationTransaction.CompletedItemValidation.cs",
     "BookOfEternityClient/Services/Validation/ValidationService.CompletedTreatmentItemValidation.cs",
-    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.DiagnosisCompletedItems.cs"
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.DiagnosisCompletedItems.cs",
+    "BookOfEternityClient/Core/FileSystemManager.ValidationMutationReservation.cs",
+    "BookOfEternityClient/Services/MortalWoundTreatmentResourcePublicationTransaction.cs"
   ],
   "related": [
     {
@@ -75,11 +79,13 @@
 },
 {
   "id": "mortal-ordinary-completed-item-postvalidation",
-  "responsibility": "T121 C14 one genuine ordinary procedure item publication -> finalized/closed completed DATA -> actual outer post-validator. The shared existing guard remains without proof; only its one exact legitimate inventory issue is removed, all other ordered errors/bytes/claims unchanged. No reflective historical full-state helper. UNCOMPILED/UNRUN.",
+  "responsibility": "T121 C14 one genuine ordinary procedure producer and actual post-validator under caller-flow MainAdmission. Factory defaults energy=true/Fate=false exactly match fresh typed restore/composition; complete original request and bytes remain exact across reconstruction. Publish only after releasing its write lease; completed comparison removes one uniquely proved issue and preserves every other ordered error/byte/claim. No reflection, new draw or original recapture; exclusive60s unchanged, grouped correction UNCOMPILED/UNRUN.",
   "excludes": "No new authority, cache, publisher, original re-sign, private reflection, GM wait, budget increase, diagnostic framework, full-suite/HOLD or physical-treatment execution. Actual prior UI timeout remains UNKNOWN.",
   "changeHints": [
     "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.CompletedTreatmentItems.cs",
-    "BookOfEternityClient/Services/MortalWoundTreatmentItemPublication.Proof.cs"
+    "BookOfEternityClient/Services/MortalWoundTreatmentItemPublication.Proof.cs",
+    "BookOfEternityClient/Core/FileSystemManager.ValidationMutationReservation.cs",
+    "BookOfEternityClient/Services/MortalWoundTreatmentResourcePublicationTransaction.cs"
   ],
   "related": [
     {
@@ -4025,7 +4031,7 @@
 },
 {
   "id": "spiritual-world-source-closure",
-  "responsibility": "The existing standalone60s World source-closure Fact. C14 explicitly reviews six whole-file pin changes for invocation-root capture, same existing lease comparison, actual browser original frame and already-observed generation; adds the three concrete completed-comparison DATA/helper files to the closure. All existing end-proof/cleanup assertions remain; no mechanical rebaseline or broad World run.",
+  "responsibility": "The existing standalone60s World closure Fact. All69 members remain; the grouped C14 follow-up changes only the explicitly reviewed Core ValidationMutationReservation pin for a narrow actual lease-close attachment using the existing mutation guard. Prior approved pin provenance and every existing final-proof/cleanup assertion remain. No broad World runtime or mechanical refresh.",
   "excludes": "No World runtime suite, cache/performance qualification, mechanical rebaseline, DFR/Mortal/Windows or repeat of accepted combat cases.",
   "changeHints": [
     "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.WorldReadPhase.cs"

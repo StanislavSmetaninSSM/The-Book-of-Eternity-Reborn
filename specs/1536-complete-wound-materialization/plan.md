@@ -1,4 +1,4 @@
-# T121 C14 grouped completion dependency and caller-owner WIP
+# T121 C14 grouped completion dependency and caller-owner SOURCE candidate
 
 The two preserved actual attempts remain distinct: M2GREENC14-post8 has1 PASS /
 1 FAIL /6 UNRUN (lifetime32.1029621s/60, wall46.2223671s), with False passing and
@@ -35,8 +35,31 @@ session participation and Engine main/staged originals; their native foreign DAT
 read uses its exact explicit lease, released before actual World reading. Their
 controlled stop and whole owned-root cleanup remain unchanged.
 
-This coherent core/test WIP is remotely preserved before final source-pin,
-category/selection and finite owner audit. Seven rows and all protective limits
+Connected core/test WIP is remotely preserved at
+`eedf1155c498de2a829538ef4031283edc9bac60`. The finite owner/API audit is complete
+for SOURCE: both direct console consumers use acquired caller-flow MainAdmission
+and no ambient write lease at protected reader entry; lifetime shares that producer;
+foreign same-root admission retains the parent's genuine shared access; browser3
+keeps actual Engine/current-session/main/staged ownership, with explicit native
+foreign reads closed before World access. Fixture/context disposal happens after
+all operation/read scopes; the writer has executed none of these corrected rows.
+The ordinary factory's actual defaults are energy=true / Fate=false / compose=true,
+exactly the explicit restore settings; this is not a reconfigured attempt. The
+same-root foreign manager resolves the identical interned root and its child
+MainAdmission retains existing parent access, matching the current nested-owner
+contract. Existing one-argument completion callers remain unambiguous, including
+historical wrappers that resolve by exact arity; no old reflection test is copied
+or changed and no broad old category is selected.
+
+Only one existing World closure pin changes for this follow-up: Core
+ValidationMutationReservation's existing guard gains the narrow actual physical-
+lease attachment operation. Old `2FF09FF9D1F05135347A13174DD053888D01E5ABDE77DC5E5F11D2946D8DDCA9` →
+`67F97AE0514F844DB9FBCE8FB0C91E84C2723D33E19E95F79CA6FA535DD81A8C`; the same69 members remain. This is an explicit
+semantic source-review proposal, not approval by hash equality. Category ownership,
+seven rows, 60s limits and full12/11/NINE fresh selection remain unchanged.
+Static JSON/selector ownership, all69 LF pin equality and diff checks alone are
+recorded; source guard4, current post controls, native/UI results remain UNRUN.
+ Seven rows and all protective limits
 stay unchanged; no writer build/discovery/test occurred. Root owns the next grouped
 SOURCE/build/PREP. Fresh rebind is required because factory AsyncLocal admission
 is not inherited permission; existing exact request DATA/claims are reused without

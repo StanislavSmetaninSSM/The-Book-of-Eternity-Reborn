@@ -1977,3 +1977,33 @@ source guards3 and explicit World closure1. These are UNCOMPILED/UNRUN estimates
 root alone owns builds/discovery/runtime. Conditional retention is218 old cases
 (the prior219 pool minus engine-original1), not a fresh218 pass claim. Original
 console/browser/rollback180s remain unqualified until the new finite proof succeeds.
+
+
+C14 grouped fixture/completion follow-up: a protected console reader requires a
+live acquired MainAdmission in the caller's async flow. Factory-created admission
+is not inherited permission. Direct diagnosis/lifetime fixtures therefore release
+the factory lease, acquire the caller owner, and perform genuine original-source
+rebind before production. Ordinary uses the identical energy=true/Fate=false
+scenario, exact persisted request/claim restore and current composition under its
+caller owner. Full original request and canonical byte comparisons forbid scenario
+reconfiguration or post-accepted repair. Both actual post calls begin without a
+write lease. The foreign-manager child borrows the same interned root access;
+completed comparison still binds its original filesystem identity. Browser3 already
+uses actual Engine/current-session/main/staged scopes and releases its native
+foreign lease before World access; no new browser preparation is introduced.
+
+The one-argument completion API remains. A narrow typed overload can transfer an
+owned IDisposable only to the same actually acquired completion lease. Non-null
+enters existing SuppressValidationReuse before acquisition; the existing Core
+BeginValidationMutation reservation survives all owning disposal and releases
+only afterward. Occupied context refuses with no transfer or caller disposal;
+attached context is disposed once by the actual lease. No global acquisition hook
+or alternative completion exists. The genuine result/issue/Finalized/Changed1
+assertions precede the close counter, then prove no completed DATA, unchanged bytes
+and terminal replay without another spend. Suppressed close failure retains the
+existing settlement. The initial ordinary-writer hook and missing caller owner
+were fixture mistakes, not reasons to weaken production guards. Earlier failed
+raw and historical False PASS stay separate; new code/controls remain UNCOMPILED/
+UNRUN pending whole SOURCE/root verification. Rebind's fresh source proof is
+necessary ownership, while exact request DATA is reused; no cache or speedup claim.
+No command/schema/GM wire/game-rule change or new authored output is introduced.
