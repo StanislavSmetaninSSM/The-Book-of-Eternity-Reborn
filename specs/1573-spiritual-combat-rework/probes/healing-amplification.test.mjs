@@ -42,6 +42,11 @@ test('ally revival remains useful, modifiers reach real threshold and suppressio
   assert.equal(find('long',0,50).firstHeal,82);assert.equal(find('long',0,50).mainsToRevival,4);
   assert.equal(find('long',25,50).firstHeal,103);assert.equal(find('long',25,50).mainsToRevival,2);
 });
+test('collapsed patient still has skipped personal opportunities that expire suppression',()=>{
+  const rows=utilityReport().revival;
+  assert.equal(rows.find(x=>x.mode==='instant'&&x.bonus===0&&x.suppression===50).finalHP,144);
+  assert.equal(rows.find(x=>x.mode==='long'&&x.bonus===0&&x.suppression===50).finalHP,247);
+});
 test('matrix covers approved countermeasures and keeps support/scale/confirmation explicit',()=>{
   const rows=amplificationScenarios('main');assert.ok(rows.some(r=>r.strike==='strong'&&r.reply==='guard'));
   assert.ok(rows.some(r=>r.strike==='large'));assert.ok(rows.some(r=>r.policy==='cleanse_safe'));

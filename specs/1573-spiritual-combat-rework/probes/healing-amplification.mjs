@@ -29,6 +29,8 @@ export function utilityReport() {
     while(t.collapsed){
       begin(h);const result=cast(h,t,mode,h.pending?'finish':'cast');assert.ok(result.accepted);
       mains++;paid+=result.paid;if(result.completed&&firstHeal===null)firstHeal=result.restored;end(h);
+      // Helper then patient in each round. Collapsed slots still age marks, without Main/reset/regen.
+      if(t.collapsed){begin(t);end(t);}
       assert.ok(mains<=10,'Finite hand fixture must reach threshold');
     }
     revival.push({mode,bonus,suppression,threshold:103,firstHeal,mainsToRevival:mains,paidDE:paid/100,finalHP:t.hp});

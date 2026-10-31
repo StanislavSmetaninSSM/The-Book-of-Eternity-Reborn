@@ -17,7 +17,14 @@ RED: новый numerical module отсутствовал. GREEN65/65 (6новы
 324cells×20 совпали полностью с ранее восстановленным aa2f7e5aa при default;
 старые seeds/поля не меняются. Damage таблицы keyedD/extra/B переиспользуются
 в операции; current resources/marks/channel свежие. Не создаются игровые объекты.
-UNRUN: полные матрицы/итоги/независимое review.
+WIP42335ea5d опубликован/remoteSHA/GitHub source readback подтверждены; четыре
+матрицы запущены. Parent при проверке utility обнаружил, что в изолированной
+revival-фикстуре пропущенные личные места пациента не продвигались и подавление
+не истекало. RED показал108вместо144HP на третьем instant; исправлен только
+utility loop: helper→skipped patient slot, сохранены Main/regen/threshold.
+GREEN66/66,0.283с. Матрицы utility не вызывают и не затронуты; их не повторяем.
+Utility raw будет заменён после публикации исправления. UNRUN: остаток main,
+итоги/независимое review.
 
 
 ## Завершённый checkpoint T120/T121 — принятый профиль и измерения
