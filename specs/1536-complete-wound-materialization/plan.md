@@ -1,3 +1,40 @@
+# T121 EX9GREEN component gate accepted — UI three still unqualified
+
+Independent Astra OUTCOME accepted the actual nine-case GREEN at compiled source
+`0b661addfd28134f5056ab688f03688493624b6e`: dynamic roles six PASS
+(37.4041993s/60s), semantic source guards three PASS (5.7452932s/60s), wall
+60.1148246s. Exact identities/counts, no timeout/skip/duplicate/underfill, current
+pins and owned cleanup were verified. TRX SHA256: dynamic
+`b99e7e0088ab89124443ca00bd4f71a510c2a10f964400bc5508c293797b501a`;
+guards `2656777fdc37f605ba1110fe00f5410e3e7dbe80f0b473d8128a48a4d5759d26`.
+
+The external EX9GREEN accepted unions reconcile 153 distinct cheap PASS / 58
+methods (144 retained plus nine fresh), then 163 distinct pre-UI PASS / 65 methods
+including ten native cases across seven explicit retained method lineages. These
+are reviewed mixed-epoch unions, not one fresh 153 or 163 run. The exact full plan
+is 166 cases / 68 methods / 29 descriptors; exactly UI three remain unqualified.
+Both original console 180s timeouts, incomplete prefixes and retained roots/raw
+remain preserved. Browser and rollback remain UNRUN; no task flag is closed.
+
+Four fresh builds completed with zero errors and baseline warnings 12/23/26/102:
+Main 1:47.98, Support 12.01s, Unit 1:04.90, Integration 2:11.38. Current proofs bind
+four PE/PDB pairs, 220 source bindings, 27 artifacts, 40 resource copies and four
+daemon copies. The complete 27-member archive is 62,361,820 bytes, all member
+hashes/full gzip EOF/CRC verified; SHA256
+`00e1f9db698a413364e6c88b8821fdcc90098a3c6bf8af09efb24f82f4c8e5a8`.
+The 01:15:09 UTC closing fence found stable pins, no live owners and 3,813,523,456
+bytes free; terminal zombies are not live owners.
+
+This checkpoint changes only the plan; compiled source/builds stay at 0b661 and no
+accepted case is repeated. Astra conditionally admits only one original console
+case at 180s after publication and a fresh root source/resource/ownership fence.
+Complete functional PASS, full capture/footer/CRC/decode/hash proof and physical
+root absence are required before separate browser or rollback admission. The DATA
+role query adds no IO; fresh physical owner/source/request checks remain mandatory,
+so this is no overall zero-IO or speedup claim. Existing operation-local DATA reuse
+and publication guards remain intact. All raw/archive evidence stays outside Git;
+broader T121/Mortal/eight-adapter work and all holds remain open.
+
 # T121 EX9RED accepted — authenticated dynamic-role GREEN candidate, UNCOMPILED/UNRUN
 
 Independent Astra OUTCOME accepted the exact actual public-validator RED at
