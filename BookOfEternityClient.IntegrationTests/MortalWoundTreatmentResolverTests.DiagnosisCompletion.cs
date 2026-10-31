@@ -39,8 +39,9 @@ public sealed partial class MortalWoundTreatmentResolverTests
         var observed = PendingTurnSnapshotReader.ReadCurrent(fs, fixture.Lease,
             new[] { AcceptedMechanicsPlan.WoundCommandPath, ResourceMaterializationContract.HistoryPath });
         Assert.True(observed.Success, JsonSerializer.Serialize(observed.Issues));
+        var signedInputBytes = observed.Snapshot!.ReadRequiredBytes(AcceptedMechanicsPlan.WoundCommandPath);
         Assert.True(JsonNode.DeepEquals(input, JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(
-            observed.Snapshot!.ReadRequiredBytes(AcceptedMechanicsPlan.WoundCommandPath)))));
+            signedInputBytes))));
         Assert.True(MortalWoundDiagnosisInputCodec.IsBound(input,
             new(original.SessionId, original.RequestId, original.TurnNumber, original.ProgressionControl!)));
         var admission = await WoundApplicationService.ResolveMortalDiagnosisInputAsync(fs, fixture.Lease, selected.Frame);
@@ -101,7 +102,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
         var binding = new PendingPlayerActionService.Binding(original.RequestId, generation, original.PlayerAction,
             "browser-wound-action", selected.Selection.ToJson().ToJsonString(), selected.Selection);
         var staged = new PendingPlayerActionService.Staged(binding, requestJson, manifestJson, authorityJson,
-            string.Empty, string.Empty, Convert.ToBase64String(Encoding.UTF8.GetBytes(input.ToJsonString())));
+            string.Empty, string.Empty, Convert.ToBase64String(signedInputBytes));
         counts.Clear();
         await GameEngine.RequireAcceptedSpiritualResultAsync(staged, manifest, Read);
         Assert.All(counts.Values, count => Assert.Equal(1, count));
@@ -171,8 +172,39 @@ public sealed partial class MortalWoundTreatmentResolverTests
         await Refuse("reintroduced command", map => map[AcceptedMechanicsPlan.WoundCommandPath] = Encoding.UTF8.GetBytes(input.ToJsonString()));
         await Refuse("reintroduced pending work", map => map[WoundAcceptedTurnSnapshotContract.PendingResolutionPath] = Encoding.UTF8.GetBytes("{}"));
         await Refuse("reintroduced report", map => map[ProgressionScheduleService.ReportPath] = Encoding.UTF8.GetBytes("{}"));
+        await Refuse("reintroduced resource command", map => map[ResourceMaterializationContract.CommandPath] = Encoding.UTF8.GetBytes("{}"));
+        await Refuse("reintroduced effect command", map => map[EffectAcceptedTurnPlan.CommandPath] = Encoding.UTF8.GetBytes("{}"));
+        await Refuse("uninstantiated malformed definition", map =>
+        {
+            Change(map, "game_state/player/skills_active.json", root => root["activeSkillChanges"]!.AsArray().Add(new JsonObject
+            {
+                ["skillId"] = "skill_uninstantiated_bad_definition", ["skillName"] = "Unused definition",
+                ["activeEffectDefinitions"] = new JsonObject()
+            }));
+            var roots = CompletionSourceNodes(map);
+            Assert.Empty(EffectAcceptedTurnInputComposer.BuildCanonicalSourceAuthority(roots).Issues);
+            Assert.Contains(ValidationService.ValidateMortalDiagnosisEffectSources(roots), issue =>
+                issue.Code == "effect_source_definition_invalid_field" && issue.FilePath.Contains("activeEffectDefinitions", StringComparison.Ordinal));
+        });
+        await Refuse("uninstantiated unregistered owner", map =>
+        {
+            Change(map, "game_state/player/skills_active.json", root => root["activeSkillChanges"]!.AsArray().Add(new JsonObject
+            {
+                ["skillName"] = "Unregistered unused owner", ["activeEffectDefinitions"] = new JsonArray()
+            }));
+            var roots = CompletionSourceNodes(map);
+            Assert.Empty(EffectAcceptedTurnInputComposer.BuildCanonicalSourceAuthority(roots).Issues);
+            Assert.Contains(ValidationService.ValidateMortalDiagnosisEffectSources(roots), issue =>
+                issue.Code == "effect_source_authority_invalid_owner_identity" && issue.FilePath.Contains("activeEffectDefinitions", StringComparison.Ordinal));
+        });
         if (resourceCost)
         {
+            var unresolvedOwner = await WithUnresolvedCompletionOwnerAsync(current);
+            await Refuse("valid ledger and composed owner omit live owner agreement", map =>
+            {
+                foreach (var path in new[] { ResourceMaterializationContract.StatePath, ResourceMaterializationContract.HistoryPath,
+                    CanonicalResourceOwnerAuthorityComposer.AuthorityPath }) map[path] = unresolvedOwner[path];
+            });
             await Refuse("resealed changed semantic", map =>
             {
                 ChangeResult(map, result => result["publicationInputs"]!["skillCommands"]!.AsObject().Remove("removeActiveSkills"));
@@ -223,6 +255,65 @@ public sealed partial class MortalWoundTreatmentResolverTests
     {
         var root = JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(files[path]!))!.AsObject();
         change(root); files[path] = Encoding.UTF8.GetBytes(root.ToJsonString());
+    }
+
+    private static Dictionary<string, JsonNode?> CompletionSourceNodes(Dictionary<string, byte[]?> files) =>
+        EffectAcceptedTurnInputComposer.SourceAuthorityPaths.ToDictionary(path => path,
+            path => files.GetValueOrDefault(path) is { } bytes ? JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(bytes)) : null,
+            StringComparer.Ordinal);
+
+    private static async Task<Dictionary<string, byte[]?>> WithUnresolvedCompletionOwnerAsync(Dictionary<string, byte[]?> original)
+    {
+        var files = original.ToDictionary(pair => pair.Key, pair => pair.Value?.ToArray(), StringComparer.Ordinal);
+        var historyRoot = JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(files[ResourceMaterializationContract.HistoryPath]!))!.AsObject();
+        var stateRoot = JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(files[ResourceMaterializationContract.StatePath]!))!.AsObject();
+        var rows = historyRoot["entries"]!.AsArray();
+        var initialized = rows.First(row => row!["operation"]!.GetValue<string>() == "initialize" &&
+            row["coordinate"]!["resourceKey"]!.GetValue<string>() == "health")!.DeepClone().AsObject();
+        const string ownerId = "npc_unresolved_completion";
+        var turn = initialized["turn"]!.GetValue<int>(); var eventRef = $"turn_{turn}:completion_owner_gap";
+        var transitionId = "resource_transition_" + Guid.NewGuid().ToString("N");
+        initialized["coordinate"]!["ownerKind"] = "npc"; initialized["coordinate"]!["resourceOwnerId"] = ownerId;
+        initialized["transitionId"] = transitionId; initialized["operationId"] = "resource_operation_" + Guid.NewGuid().ToString("N");
+        initialized["eventRef"] = eventRef;
+        initialized["executionSequence"] = rows.Where(row => row!["turn"]!.GetValue<int>() == turn)
+            .Max(row => row!["executionSequence"]!.GetValue<int>()) + 1;
+        var after = initialized["afterState"]!.AsObject();
+        var live = new JsonObject
+        {
+            ["realm"] = "mortal_world", ["ownerKind"] = "npc", ["resourceOwnerId"] = ownerId, ["resourceKey"] = "health",
+            ["current"] = after["current"]!.DeepClone(), ["maximum"] = after["maximum"]!.DeepClone(),
+            ["capacityBinding"] = after["capacityBinding"]!.DeepClone(), ["state"] = after["state"]!.DeepClone(),
+            ["chronology"] = new JsonObject
+            {
+                ["createdAtTurn"] = turn, ["createdEventRef"] = eventRef, ["lastTransitionId"] = transitionId,
+                ["lastEventRef"] = eventRef, ["lastTransitionTurn"] = turn
+            }
+        };
+        rows.Add(initialized); stateRoot["entries"]!.AsArray().Add(live);
+        files[ResourceMaterializationContract.HistoryPath] = Encoding.UTF8.GetBytes(historyRoot.ToJsonString());
+        files[ResourceMaterializationContract.StatePath] = Encoding.UTF8.GetBytes(stateRoot.ToJsonString());
+        var definitions = ResourceDefinitionCatalog.ParseCanonical(CanonicalJsonUtf8.DecodeOneOptionalBom(files[ResourceMaterializationContract.DefinitionsPath]!), false);
+        Assert.True(definitions.IsValid);
+        var catalog = Assert.IsType<ResourceDefinitionCatalog>(definitions.Catalog);
+        var history = ResourceHistoryState.ParseCanonical(historyRoot.ToJsonString(), catalog, false);
+        var state = ResourceStateContract.ParseCanonical(stateRoot.ToJsonString(), catalog, false);
+        Assert.True(history.IsValid, JsonSerializer.Serialize(history.Issues)); Assert.True(state.IsValid, JsonSerializer.Serialize(state.Issues));
+        var parsedHistory = Assert.IsType<ResourceHistoryState>(history.History); var ledger = Assert.IsType<ResourceStateLedger>(state.Ledger);
+        Assert.Empty(parsedHistory.ValidateStateAgreement(ledger));
+        Task<string?> Read(string path) => Task.FromResult(files.GetValueOrDefault(path) is { } bytes ? CanonicalJsonUtf8.DecodeOneOptionalBom(bytes) : null);
+        var rebuilt = await CanonicalResourceOwnerAuthorityComposer.ComposeAsync(catalog, Read, ledger, parsedHistory,
+            CanonicalResourceOwnerAuthorityPurpose.FinalAfterImage);
+        Assert.True(rebuilt.IsValid, JsonSerializer.Serialize(rebuilt.Issues));
+        files[CanonicalResourceOwnerAuthorityComposer.AuthorityPath] = Encoding.UTF8.GetBytes(Assert.IsType<string>(rebuilt.CanonicalAuthorityJson));
+        var existing = await CanonicalResourceOwnerAuthorityComposer.ComposeAsync(catalog, Read, ledger, parsedHistory,
+            CanonicalResourceOwnerAuthorityPurpose.ExistingSessionValidation);
+        Assert.True(existing.IsValid, JsonSerializer.Serialize(existing.Issues));
+        Assert.Contains(existing.Authority!.ValidateCanonicalAgreement(ledger, parsedHistory), issue =>
+            issue.Code == "resource_owner_unresolved" && issue.Severity == IssueSeverity.Error &&
+            issue.FilePath.StartsWith("resourceState.entries[", StringComparison.Ordinal));
+        // This is the unresolved-owner branch, not a claim to cover terminal-owner cleanup.
+        return files;
     }
 
     private static void ChangeResult(Dictionary<string, byte[]?> files, Action<JsonObject> change) =>

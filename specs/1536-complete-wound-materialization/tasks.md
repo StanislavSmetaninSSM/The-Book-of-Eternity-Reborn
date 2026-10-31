@@ -73,6 +73,12 @@ archive are outside checkout; original failures and all other holds are retained
   resource costs), exact v1 durable consumer and three semantic guards precede
   original browser/rollback. Source estimate237/104/63/60 is UNCOMPILED/UNRUN and
   discovery/review dependent. No task flag closes; see current plan for exact scope.
+  Astra SOURCE HOLD3 at64b542cc requires owner↔live-ledger agreement, consumed
+  resource/effect command absence and full uninstantiated definition/owner checking.
+  The grouped candidate reuses existing canonical functions, proves the IsValid-only
+  unresolved-owner counterexample, preserves exact observed source bytes and keeps
+  NPC drafts outside the canonical item role. Same7/6/4 proposal and budgets;
+  correction UNCOMPILED/UNRUN pending bounded delta SOURCE, with no new design gate.
 
 - [ ] T121-DIAGNOSIS-MORTAL-ITEM-POSTVALIDATION Close the confirmed client-owned
   medic debit versus outer post-materialization inventory guard using the existing

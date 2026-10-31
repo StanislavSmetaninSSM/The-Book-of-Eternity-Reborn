@@ -102,6 +102,24 @@ transport is introduced. Client-owned History/completion leaf alone changes;
 existing GM diagnosis wire/example stays synchronized without edits. Parents,
 physical guided treatment, eight adapters and all other HOLD/UNKNOWN work remain.
 
+
+C21 bounded SOURCE HOLD3 correction: catalog composition success is not the live
+resource-owner proof. Require its existing ValidateCanonicalAgreement on the same
+parsed ledger/History. The resource fixture's extra initialized/live unresolved NPC
+coordinate is syntactically valid and state/History-consistent; after rebuilding
+only canonical owner JSON as DATA, the old IsValid-only condition succeeds and the
+new exact unresolved-owner check refuses. This does not claim terminal-owner branch
+coverage. Require absence of resource_commands and effect_commands from two fresh
+once-per-invocation reads. Reuse complete ValidateEffectSourceDefinitions and
+ValidateRegisteredSourceOwners through a narrow facade over SourceAuthorityPaths,
+not historical/control roots; unused malformed definition containers and missing
+registered identities must refuse despite the old source builder being issue-free.
+Use exact observed signed input bytes for staged comparison Base64. Canonical item
+catalogs receive null for NPC draft commands, matching their existing role; no
+universal NPC draft read/absence requirement is added. Existing3 rows/categories/
+budgets and7/6/4 focused proposal remain. No new owner, authority, cache, replay,
+GM-authored wire or rule is introduced; all corrected code is UNCOMPILED/UNRUN.
+
 # T108: safe player aid to the current Guardian
 
 Issue: https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536

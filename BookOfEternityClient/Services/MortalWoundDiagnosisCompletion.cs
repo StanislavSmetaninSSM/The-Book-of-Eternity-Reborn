@@ -37,7 +37,8 @@ internal static class MortalWoundDiagnosisCompletion
                 ResourceMaterializationContract.StatePath, ResourceMaterializationContract.HistoryPath,
                 CanonicalResourceOwnerAuthorityComposer.AuthorityPath, EffectAcceptedTurnInputComposer.WorldTimePath,
                 ProgressionScheduleService.SchedulePath, ProgressionScheduleService.ReportPath,
-                AcceptedMechanicsPlan.WoundCommandPath, WoundAcceptedTurnSnapshotContract.PendingResolutionPath })
+                AcceptedMechanicsPlan.WoundCommandPath, WoundAcceptedTurnSnapshotContract.PendingResolutionPath,
+                ResourceMaterializationContract.CommandPath, EffectAcceptedTurnPlan.CommandPath })
             .Distinct(StringComparer.Ordinal).ToArray();
         var bytes = new Dictionary<string, byte[]?>(StringComparer.Ordinal);
         var nodes = new Dictionary<string, JsonNode?>(StringComparer.Ordinal);
@@ -90,7 +91,8 @@ internal static class MortalWoundDiagnosisCompletion
         if (!JsonNode.DeepEquals(nodes[EffectAcceptedTurnInputComposer.WorldTimePath], clock["after"]) ||
             !Equal(bytes[ProgressionScheduleService.SchedulePath], Decode(clock["scheduleAfterBase64"])) ||
             !Equal(bytes[ProgressionScheduleService.ReportPath], Decode(clock["reportAfterBase64"])) ||
-            bytes[AcceptedMechanicsPlan.WoundCommandPath] is not null || bytes[WoundAcceptedTurnSnapshotContract.PendingResolutionPath] is not null)
+            bytes[AcceptedMechanicsPlan.WoundCommandPath] is not null || bytes[WoundAcceptedTurnSnapshotContract.PendingResolutionPath] is not null ||
+            bytes[ResourceMaterializationContract.CommandPath] is not null || bytes[EffectAcceptedTurnPlan.CommandPath] is not null)
             throw Invalid("Clock/schedule/report changed or consumed diagnosis work reappeared.");
 
         var definitions = ResourceDefinitionCatalog.ParseCanonical(Text(ResourceMaterializationContract.DefinitionsPath), false);
@@ -102,12 +104,13 @@ internal static class MortalWoundDiagnosisCompletion
         var owners = await CanonicalResourceOwnerAuthorityComposer.ComposeAsync(definitions.Catalog!,
             path => Task.FromResult(Text(path)), state.Ledger, resources.History,
             CanonicalResourceOwnerAuthorityPurpose.ExistingSessionValidation);
-        if (!owners.IsValid) throw Invalid("Current resource owners are invalid.");
+        if (!owners.IsValid || owners.Authority!.ValidateCanonicalAgreement(state.Ledger!, resources.History!).Count != 0)
+            throw Invalid("Current resource owners do not agree with the live ledger.");
         RequireResourceConsumptions(result, finalization, semantic, identitySeed, definitions.Catalog!, resources.History!);
 
         var companions = ItemCompanions.Where(path => Root(path) is not null).ToDictionary(path => path, path => Root(path)!, StringComparer.Ordinal);
         var items = MortalItemCarrierCatalog.Build(new(Root(InventoryEquipmentService.ItemsPath), Root(NpcCoreChangesContract.NpcCorePath),
-            Root("game_state/npcs/npc_inventory.json"), Root(StorageTransportMoveService.CurrentLocationPath),
+            null, Root(StorageTransportMoveService.CurrentLocationPath),
             MortalItemProjectionRootParser.ToCarrierCatalogObject(nodes.GetValueOrDefault(StorageTransportMoveService.VehiclesPath), StorageTransportMoveService.VehiclesPath),
             companions, Root(MortalLocationStorageContentsState.StatePath)));
         var itemIndex = MortalItemIdentityState.Parse(nodes[MortalItemIdentityState.StatePath]);
@@ -123,8 +126,11 @@ internal static class MortalWoundDiagnosisCompletion
         if (effects.Issues.Count != 0 || effectIndex.State is null || effectIndex.Issues.Count != 0)
             throw Invalid("Current effect catalog/index is invalid.");
         ValidationService.ValidateEffectCarrierIndexAgreement(effects, effectIndex.State, issues);
-        var sourceAuthority = EffectAcceptedTurnInputComposer.BuildCanonicalSourceAuthority(nodes);
-        var targetAuthority = EffectAcceptedTurnInputComposer.BuildCanonicalTargetAuthority(effectInput, nodes);
+        var sourceRoots = EffectAcceptedTurnInputComposer.SourceAuthorityPaths.ToDictionary(path => path,
+            path => nodes.GetValueOrDefault(path), StringComparer.Ordinal);
+        issues.AddRange(ValidationService.ValidateMortalDiagnosisEffectSources(sourceRoots));
+        var sourceAuthority = EffectAcceptedTurnInputComposer.BuildCanonicalSourceAuthority(sourceRoots);
+        var targetAuthority = EffectAcceptedTurnInputComposer.BuildCanonicalTargetAuthority(effectInput, sourceRoots);
         issues.AddRange(sourceAuthority.Issues); issues.AddRange(targetAuthority.Issues);
         issues.AddRange(targetAuthority.ValidateNamedCombatantBindings(effectInput));
         ValidationService.ValidateCanonicalEffectBindings(effects, sourceAuthority, targetAuthority, issues);

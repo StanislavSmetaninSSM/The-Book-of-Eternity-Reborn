@@ -8,7 +8,8 @@
     "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalDiagnosisPublicationData.cs",
     "BookOfEternityClient/Services/MortalWoundDiagnosisPersistedResult.cs",
     "BookOfEternityClient/Core/GameEngine/GameEngine.BrowserPlayerInput.cs",
-    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.DiagnosisCompletion.cs"
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.DiagnosisCompletion.cs",
+    "BookOfEternityClient/Services/Validation/ValidationService.MortalDiagnosisCompletion.cs"
   ],
   "requirements": {
     "frontendBuild": false,
@@ -17,7 +18,7 @@
   "timeoutMinutes": 1,
   "expectedSeconds": null,
   "id": "mortal-diagnosis-browser-completion-items",
-  "responsibility": "T121 C21 two independent actual common-publication item-cost fixtures: success/zero duration and real Fate/elapsed30, selected-not-first private cohort. Genuine original/request/claims/transaction closure precede direct current reader and same shared live-Finish/accepted-record predicate. Exact witness/version/refreezing, current cohort/time/resource/item/effect agreement, consumed work, drift and inert canonical/request DATA are checked. Per-invocation reads remain fresh and exactly once per path; cloned negative DATA reuse no permission. Version1 parses as historical DATA but refuses current completion. Candidate UNCOMPILED/UNRUN.",
+  "responsibility": "T121 C21 two independent actual common-publication item-cost fixtures: success/zero duration and real Fate/elapsed30, selected-not-first private cohort. Genuine original/request/claims/transaction closure precede direct current reader and same shared live-Finish/accepted-record predicate. Exact witness/version/refreezing, current cohort/time/resource/item/effect agreement, consumed work, drift and inert canonical/request DATA are checked. Per-invocation reads remain fresh and exactly once per path; cloned negative DATA reuse no permission. Version1 parses as historical DATA but refuses current completion. Candidate UNCOMPILED/UNRUN. Source HOLD3 correction also checks consumed resource/effect command absence, unused malformed definition/registered-owner refusal and exact observed signed source bytes. Canonical item role explicitly excludes NPC draft commands.",
   "selectors": [
     {
       "project": "integration",
@@ -34,7 +35,8 @@
     "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalDiagnosisPublicationData.cs",
     "BookOfEternityClient/Services/MortalWoundDiagnosisPersistedResult.cs",
     "BookOfEternityClient/Core/GameEngine/GameEngine.BrowserPlayerInput.cs",
-    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.DiagnosisCompletion.cs"
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.DiagnosisCompletion.cs",
+    "BookOfEternityClient/Services/Validation/ValidationService.MortalDiagnosisCompletion.cs"
   ],
   "requirements": {
     "frontendBuild": false,
@@ -43,7 +45,7 @@
   "timeoutMinutes": 1,
   "expectedSeconds": null,
   "id": "mortal-diagnosis-browser-completion-resources",
-  "responsibility": "T121 C21 one independent actual common-publication resource_quantity fixture with two explicit same-coordinate consumptions and frozen present-empty skill and item envelopes. Recompose actual publication semantic/identity seed, exact resource spend set/order/IDs/source/policy/full quantity snapshots and canonical current agreement. A fully resealed valid changed semantic must refuse against independently derived real spend identities. No expected identity is learned from candidate History. Candidate UNCOMPILED/UNRUN.",
+  "responsibility": "T121 C21 one independent actual common-publication resource_quantity fixture with two explicit same-coordinate consumptions and frozen present-empty skill and item envelopes. Recompose actual publication semantic/identity seed, exact resource spend set/order/IDs/source/policy/full quantity snapshots and canonical current agreement. A fully resealed valid changed semantic must refuse against independently derived real spend identities. No expected identity is learned from candidate History. Candidate UNCOMPILED/UNRUN. SOURCE HOLD3 clone-only counterexample adds a valid initialized/live unresolved NPC coordinate and rebuilds canonical owner JSON as DATA: old composition IsValid succeeds, exact live owner agreement fails. This proves unresolved ownership, not terminal-cleanup coverage; no additional case or budget.",
   "selectors": [
     {
       "project": "integration",

@@ -5,6 +5,19 @@ namespace BookOfEternityClient.Services;
 public partial class ValidationService
 {
     /// <summary>
+    /// Applies complete existing definition and registered-owner validation even
+    /// when no current effect instantiates a malformed source.
+    /// </summary>
+    internal static IReadOnlyList<ValidationIssue> ValidateMortalDiagnosisEffectSources(
+        IReadOnlyDictionary<string, JsonNode?> roots)
+    {
+        var issues = new List<ValidationIssue>();
+        ValidateEffectSourceDefinitions(roots, issues);
+        issues.AddRange(EffectAcceptedTurnInputComposer.ValidateRegisteredSourceOwners(roots));
+        return issues;
+    }
+
+    /// <summary>
     /// Applies the existing canonical item/index/companion checks to one already
     /// parsed current read. It neither reads files nor issues item authority.
     /// </summary>

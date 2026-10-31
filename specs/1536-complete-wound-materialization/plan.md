@@ -1,3 +1,39 @@
+# T121 C21 grouped SOURCE HOLD3 correction — UNCOMPILED/UNRUN
+
+Astra's final SOURCE at64b542cc held three current-settlement joins; it did not
+admit a build or report runtime. This candidate corrects those exact findings in
+one block. A valid composed owner catalog must additionally ValidateCanonicalAgreement
+against the live resource ledger/History. Resource/effect command paths are read
+once and must be absent. Existing complete source-definition and registered-owner
+validation runs on the canonical SourceAuthorityPaths DATA before final effect
+agreement; uninstantiated malformed sources cannot be silently skipped.
+
+The three existing real-publication rows keep their selectors and60s bounds. Their
+clone-only faults now include both command paths and unused malformed definition/
+missing registered identity sources, with old source-builder success explicitly
+proved. The resource row adds a valid initialized/live unresolved NPC coordinate:
+state/History parsers and state agreement pass; only canonical owner JSON is rebuilt
+through existing pure DATA composition; ExistingSessionValidation.IsValid still
+passes, while ValidateCanonicalAgreement requires the precise unresolved-live-owner
+error. This covers unresolved ownership, not a terminal-cleanup branch. No extra
+Engine world, case, runtime gate, authority, cache or historical replay was added.
+
+The component's staged source Base64 now uses exact authenticated observed bytes,
+not a JSON reserialization. Canonical item catalog role receives explicit null for
+NPC inventory draft; no universal NPC-draft absence/read gate is introduced.
+Each new command dependency is a necessary fresh once-per-invocation read; owner
+and source checks reuse the same parsed DATA and existing functions, with no new
+physical parse/owner or speedup claim. No GM wire, rule or schema change arises
+from completing these already-canonical checks.
+
+Fresh proposal stays7 cases /6 methods /4 categories, then original browser1 and
+rollback1 at180s each. Full237/104/63/60 remains a source estimate pending official
+discovery. JSON, exact selector/budget equality, diff whitespace and unchanged69
+World pins are statically checked; C# remains UNCOMPILED/UNRUN. Await only Astra's
+bounded delta SOURCE readback, then root-owned four builds/catalog/PREP/runtime.
+All earlier failures, raw/owned roots, accepted lineages and HOLDs remain preserved.
+No task/parent/feature acceptance or runtime success is claimed by this checkpoint.
+
 # T121 C21 coherent source candidate — UNCOMPILED/UNRUN
 
 Implementation/fixture frontier is complete for independent whole SOURCE, not
