@@ -52,6 +52,12 @@ archive are outside checkout; original failures and all other holds are retained
   proposal is in `spiritual-aid-design.md` (2026-10-31 Mortal section). First obtain
   independent DESIGN, then actual existing-API semantic RED before implementation;
   finite cheap/native/console/browser and GM coherence gates precede acceptance.
+  DESIGN corrections: migrate all affected current empty-check inputs with no
+  compatibility fallback; preserve only exact immutable historical seals. Reuse a
+  private owner-verified original→knowledge→future-time→ordinary-recovery projection
+  without temporary writes or new accepted-state authority. Retain same-attempt
+  C4 claims before History and use capability-controlled exact restoration; test
+  competing claims and cross-purpose identity collisions, not release-plus-reroll.
   Current checkpoint is design/plan/tasks only; production/tests/builds/runtime UNRUN.
 
 - [x] T121-DIAGNOSIS-READ Show readable declared conditions of currently known

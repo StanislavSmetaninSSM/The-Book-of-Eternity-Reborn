@@ -7,6 +7,20 @@ changes only design/plan/tasks: no production, tests, catalogue, dependency, bui
 discovery or runtime. Independent Astra DESIGN is required before the first causal
 scaffold; no new author approval is requested for already approved gameplay.
 
+Bounded DESIGN corrections after independent review: current Mortal methods must
+migrate to complete explicit checks; empty current inputs receive no legacy
+read-only fallback, distinct from narrowly identified immutable historical seals.
+An owner-private working projection must reconstruct signed original → retained
+knowledge-after → exact declared future clock → due ordinary recovery. Existing
+current-time/current-wound readers cannot consume those future images without a
+verified owner-bound handoff, and no temporary canonical write or new accepted-state
+authority is permitted. Retryable C4 before History retains the exact held request,
+dice span/result, Fate decision and confirmed reservation agreement; rebind through
+the existing capability-controlled exact restore path, never release then Reserve.
+Diagnosis/treatment purpose is bound throughout identity/claims/replay, with same-ID
+cross-purpose collision refusal. These are technical design corrections only;
+independent delta DESIGN remains pending and all implementation/runtime is UNRUN.
+
 Confirmed gaps: actual guided state skips Mortal; the shared path keeps raw Check
 but the Mortal typed definition drops it and canonical writer emits{}; live
 persisted/validator capture explicitly refuses detached diagnosis/alternative
@@ -18,10 +32,11 @@ accepted-world/check/publication authority.
 Chosen direction: distinct Mortal diagnosis subject through the existing accepted
 state exporter, requirement bundle, procedure dice/Fate and reservation owners,
 request/persistence and common publisher. A closed Mortal Check retains explicit
-resolution/binary bands, duration and ordinary resource policy; spiritual empty
-Check stays exact. Reuse ProgressionScheduleService accepted outcome mutation and
-current clock/schedule arithmetic, binding the declared duration to the same atomic
-plan; preserve ordinary physical recovery through its actual cadence/planner owner.
+resolution/complete binary bands (first success, last failed_attempt), duration and
+ordinary resource policy/refund reasons; spiritual empty Check stays exact. Reuse
+the progression/recovery owners through the private verified working projection,
+preserving original clock/control/schedule separately from later request-bound
+reports and binding all future time/recovery images to the same atomic plan.
 No fake treatment route, spiritual cycle, parallel issuer/cache/History/publisher.
 
 Initial proposed causal selection is two file-light existing-parser rows/60s,

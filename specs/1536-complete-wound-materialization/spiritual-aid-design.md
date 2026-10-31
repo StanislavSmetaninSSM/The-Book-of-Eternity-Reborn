@@ -1401,9 +1401,11 @@ top-level fields that would silently change spiritual paths. Proposed exact payl
   (`formulaKey`, `difficulty`, `rollSource`, `criticalPolicy`, `modifierSource`);
 - `outcomes`: existing ordered, complete nonoverlapping procedure-band coordinates
   (`bandId`, `minimumMargin`, `maximumMargin`, `category`), but only explicit
-  `success|failed_attempt`, with no treatment `result` operations. Reuse ordinary
-  critical/Fate selection; success maps to all path reveals, failed_attempt to none.
-  A partial-success category or undeclared threshold is not inferred;
+  `success|failed_attempt`, first band success and last band failed_attempt, with
+  complete ordered coverage and no treatment `result` operations. Reuse ordinary
+  natural20/natural1/Fate selection; success maps to all path reveals,
+  failed_attempt to none. A partial-success category or undeclared threshold is
+  not inferred; retain the ordinary explicit refund reasons;
 - `durationMinutes`: an explicitly declared nonnegative integer in the existing
   incremental-time representation; zero is valid only when authored explicitly;
 - `resourcePolicy`: the existing typed reserve/consume/refund/mutation contract,
@@ -1413,10 +1415,19 @@ top-level fields that would silently change spiritual paths. Proposed exact payl
 This is a technical serialization proposal, not new gameplay. Unsupported check
 versions/shapes and missing parameters are unavailable/refused, never defaulted.
 Spiritual guarantee still requires its exact supported empty check; no Mortal
-procedure parameters, roll or duration may enter that route. Existing empty Mortal
-path DATA must never be normalized into a runnable procedure: retain its exact
-non-executable/read-only meaning or reject new execution admission. Immutable
-historical path/result seals cannot be backfilled or silently rewritten.
+procedure parameters, roll or duration may enter that route. Current authored
+Mortal methods require the complete explicit closed check. Migrate affected active
+bootstrap inputs, fixture builders, draft/alternative authoring and worked examples;
+empty current checks are invalid, not a legacy read-only compatibility fallback,
+and cannot be normalized into invented procedure defaults.
+
+Immutable historical evidence is a separate boundary. Do not rewrite or backfill
+its old path/result seals. If preserving a current immutable historical receipt
+requires an old-shape reader, identify that exact receipt/member ingress and retain
+only comparison/replay of its sealed original representation. No such exception is
+authorized for current wound parsing, current menu/admission or alternative/draft
+authoring. Do not add a generic historical/legacy switch or infer historical
+permission merely because a current method has an empty check.
 
 Audit the actual shared consumers together: base path parser and canonical writer;
 `ParseDiagnosisPathShape` and `WriteDiagnosisPathCanonical`; alternative-route draft
@@ -1436,6 +1447,14 @@ console, browser detached binding, accepted/recovery/settlement and completion m
 dispatch it explicitly. Never turn a Mortal choice into self-healing or schema9
 spiritual diagnosis. Show only authorized method/wound labels, never private images.
 
+Discriminate diagnosis versus treatment in coordinates, identity/fingerprint
+domains, selected member/path identity, request/check/resource/dice/Fate claims,
+persisted results and replay reconstruction. Keep the registry's shared operation
+identity collision guard: the same operation/attempt/member string used under a
+different purpose must refuse, not alias or receive a fresh independent claim.
+Purpose must come from the closed typed request and actual owner, not a caller
+label passed beside treatment coordinates.
+
 Pre-original intent is detached selection DATA only. The actual Engine snapshot
 signs its exact selected input and ordinary d20 pool. A current accepted-state
 export then proves requirements, issues the existing procedure/resource claims and
@@ -1445,6 +1464,42 @@ signed snapshot and complete control; exact method source and check/policy seals
 typed actors/locality; actual requirement, item/resource and effect/check evidence.
 Reuse ordinary Fate Shield selection/consumption through its current owner and
 common plan, never a local replacement or fabricated check-result fingerprint.
+
+### Retryable compensation before History versus terminal release
+
+One existing request/registry owner must retain the confirmed held request before
+common publication, including exact selected source indices/rolls, selected result,
+Fate decision and confirmed resource-reservation agreement. This retained input is
+not a successful History row or a permission cache. A retryable C4 compensation
+restores canonical before-images but leaves that exact same-attempt outcome/claim
+binding available under the existing owner; it must not call generic release then
+Reserve to obtain another result.
+
+This distinction is required by the actual dice registry:
+`ReleaseUnchecked` removes operation registration and reserved indices. The existing
+`MortalWoundProcedureClaimRecoveryCoordinator` instead revalidates current accepted
+original authority and uses capability-controlled `RestoreExact` or
+`RestoreFinalizedExact` with carried coordinates, roll mode, exact source indices/
+values, actual accepted pool and pool fingerprint. Use that path, plus the existing
+Fate and confirmed/finalized resource-agreement reconstruction, when a lease or
+process must rebind the retained diagnosis request. Extend their closed purpose
+dispatch rather than constructing a second registry or reserving new dice.
+
+Restore the exact carried claim before admitting competing new allocations; if
+the pool, original source, generation, purpose or carried span conflicts, refuse
+without choosing another span. Detached result/indices alone cannot reactivate
+authority. Fresh original/lease/requirement checks and reconstruction remain
+mandatory even when the terminal roll/result is already retained. A terminal
+cancellation, superseded/closed turn or explicit abandoned request is different:
+only its existing owner may perform final release/cleanup, and a stale detached
+request cannot resume it as retryable compensation.
+
+Add a causal C4-before-History retry with a competing claim: the same attempt must
+reuse exactly its original span, Fate decision, reservation and result while the
+competitor receives only a disjoint lawful span. Also reject a conflicting carried
+span/current pool and same-ID cross-purpose restoration. This exposes a mistaken
+release-plus-Reserve implementation even when ordinary retry without a competitor
+happens to return the same die.
 
 Add a closed versioned Mortal diagnosis durable result to the existing History
 result family, retaining the exact request and original/knowledge-after images,
@@ -1467,20 +1522,62 @@ grant no diagnosis time authority. The existing owner method is
 standalone permission token. Reuse that calculation/current-input discipline inside
 the ordinary Mortal owner, not the unrelated private joint-repair exception.
 
-The admitted method supplies the exact duration. Compose checked before→after
-world-time and scheduler images once into the same accepted plan as knowledge,
-resource/item/Fate outcomes and History. Reject missing/unresolved clock, overflow,
-changed control, source drift or competing GM time that would charge/advance twice.
-Do not write time before final publication or accept a later report as permission
-to change the method duration. Read/cancel/refusal leaves clock and claims untouched.
+Those entry points alone are not a future-image handoff:
+`PrepareAcceptedTurnOutcomeMutationAsync` reads already-current physical time and
+returns schedule/report mutations; `PlanRegistered` reads
+`acceptedState.CurrentWound/CurrentGameMinute`. Neither may be pointed at temporarily
+written future bytes or a fabricated accepted-state instance.
+
+The existing diagnosis operation owner therefore retains one private immutable
+working projection, derived only after actual signed-original admission. It binds
+the owning FS/lease/generation and complete original binding/control, frozen
+canonical roots/catalog/identity/History, original numeric clock T0 and schedule,
+exact admitted method/duration, and retained procedure outcome/reservation agreement.
+Its constructor/issuer is private to that owner; it is not deserializable live
+authority. The projection explicitly contains these reconstructable stages:
+
+1. Original wound and full original cohort, with original signed source identities.
+2. Knowledge-after from the existing diagnosis reducer and exact retained terminal
+   outcome: complete path facts on success, identical knowledge on failure; no
+   care/recovery/effect/mechanical edits.
+3. Future numeric clock T1 = checked(T0 + admitted duration), exact canonical
+   world-time after-image and expected scheduler progression. No wall-clock or GM
+   report chooses T1. Preserve the original signed clock/control/schedule as inputs;
+   derive due ordinary progression through existing Mortal arithmetic.
+4. Due ordinary physical recovery from the knowledge-working cohort at T1, using
+   original care/anchors/consumed cadence and the existing recovery rules. The
+   selected wound's recovery predecessor is knowledge-after; unselected wounds
+   retain their own original predecessors. Zero due intervals adds no fake row.
+
+Extend the existing progression and recovery owners with a narrowly owner-bound
+working-input handoff. They independently reconstruct T1, the knowledge delta and
+cohort/cadence inputs against the authenticated original plus retained outcome,
+then run their existing pure calculations. For recovery, pass those verified
+working wounds/current minute to the existing calculation beneath PlanRegistered;
+never mutate CurrentWound/CurrentGameMinute or mint another accepted-state authority.
+For progression, use the same existing accepted-outcome mutation representation
+and validated schedule/report arithmetic, alongside an exact world-time planned
+write in the common plan. No generic caller-provided future image is accepted.
+
+A later progression report is request-bound current response input, not part of
+the original signed before-image and not permission to change the method duration.
+Validate its actual session/request/turn, full control and due world/faction work
+against the projected clock; freeze it only after ordinary report validation.
+Consume it through the same common plan. Reject competing timeChange/setWorldTime,
+changed control, missing/unresolved original clock, checked overflow, stale report
+or repeated time charge. Read/cancel/refusal leaves physical clock and claims
+untouched. Before publication re-prove original source equality and owner/lease;
+publish world-time, schedule/report, resource/item/Fate, knowledge/recovery and
+History after-images atomically. Do not write projected roots temporarily to make
+an existing reader accept them.
 
 Ordinary physical recovery during elapsed time stays with
 `MortalWoundRecoveryPlanner.Plan/PlanRegistered`, the accepted recovery composer,
 cadence math in `MortalWoundRecoveryPersistence.Math` and `MortalWoundRecoveryProgressProgram`.
-Use existing care/anchor/consumed-cadence eligibility and ordinary selected cohort;
-zero newly due intervals means no fabricated recovery row. Diagnosis knowledge is
-applied before any legitimate later recovery of the same wound; preserve separate
-result/row authority and exact final carrier/effect/identity/History agreement.
+Use their existing checked care/anchor/consumed-cadence eligibility and ordinary
+selected cohort through the verified working projection above. Preserve separate
+diagnosis/recovery result and row authority, exact final carrier/effect/identity/
+History agreement and unchanged physical sources until the one common publication.
 There is no required spiritual suffix or invented Mortal recovery progress.
 
 ### Finite causal, regression and actual-route gates
@@ -1493,11 +1590,16 @@ There is no required spiritual suffix or invented Mortal recovery progress.
    malformed baseline failure. Proposed initial budget60s; production unchanged.
 2. Before GREEN implementation, add meaningful closed-field/omission/null and
    realm-split tests, exact path/check/policy fingerprint round-trip, current-known
-   versus future/private path, requirements/source drift and old-stage refusal.
+   versus future/private path, mandatory current empty-check refusal and migration,
+   shared-parser/alternative/seal negatives, requirements/source drift and
+   old-stage refusal. Preserve only narrowly identified immutable history readers.
    Then complete request/check/Fate/resource/time/publication/replay together, with
    success/failure, natural1/20, advantage/disadvantage, exact retry/no reroll,
    changed same-ordinal control, no-cost/cost/refund, clock overflow/competing time,
-   due/not-due physical recovery, stale/double-spend and publication rollback controls.
+   due/not-due working-image physical recovery, stale/double-spend, same-ID
+   cross-purpose refusal and publication rollback controls. Cover retryable C4
+   before History with a competing claim and exact carried span/Fate/resource
+   agreement restoration; separate terminal cancellation/release.
 3. Direct existing regressions are selected by actual changed contracts, not the
    broad 10-minute Mortal categories: exact diagnosis reducer success/failure,
    immutable path seal and `Reduce_SpiritualWoundCannotUseMortalDiagnosisAuthority`;
