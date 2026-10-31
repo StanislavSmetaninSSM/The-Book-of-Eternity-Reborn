@@ -2,6 +2,105 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "mortal-diagnosis-console",
+  "responsibility": "T121 one independent complete Mortal Engine journey: actual console target/provider/method cancellation and confirmation. Complete initial template plus the existing typed physical seed before one resource bootstrap; actual signed Engine die determines the expected binary procedure outcome. Involved medic uses genuine append-only npc_journals with full Scope/Brain, while npc_core remains exact. Client knowledge/time/ordinary recovery/History/resources, strict replay and cleanup retain complete passive gzip/timing capture. Source-authored UNCOMPILED/UNRUN; original 180-second peer bound.",
+  "excludes": "No replacement Engine dice, fake accepted-world authority/receipt, post-accepted seed patches, calendar arithmetic, direct diagnosis healing, broad Mortal/HOLD aggregate, provider experiment or second publisher.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/ExplorerWoundSelfTreatmentTests.MortalDiagnosis.cs",
+    "BookOfEternityClient.IntegrationTests/ExplorerWoundSelfTreatmentTests.MortalDiagnosisResponse.cs"
+  ],
+  "related": [
+    {
+      "id": "mortal-diagnosis-guided-staging",
+      "when": "Cheap current-source menu, inertness and freshness precede actual Engine qualification."
+    },
+    {
+      "id": "mortal-diagnosis-outer-retry",
+      "when": "Actual procedure retention and both rollback images remain under the existing owner."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 3,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.ConsoleMortalDiagnosisUsesActualSignedProcedureAndDeclaredTime"
+      ]
+    }
+  ]
+},
+{
+  "id": "mortal-diagnosis-browser",
+  "responsibility": "T121 one independent complete Mortal Engine journey: shared browser target/provider/method prompt cancellation, confirmation and authenticated detached staging. Complete initial template plus the existing typed physical seed before one resource bootstrap; actual signed Engine die determines the expected binary procedure outcome. Involved medic uses genuine append-only npc_journals with full Scope/Brain, while npc_core remains exact. Client knowledge/time/ordinary recovery/History/resources, strict replay and cleanup retain complete passive gzip/timing capture. Source-authored UNCOMPILED/UNRUN; original 180-second peer bound.",
+  "excludes": "No replacement Engine dice, fake accepted-world authority/receipt, post-accepted seed patches, calendar arithmetic, direct diagnosis healing, broad Mortal/HOLD aggregate, provider experiment or second publisher.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/ExplorerWoundSelfTreatmentTests.MortalDiagnosis.cs",
+    "BookOfEternityClient.IntegrationTests/ExplorerWoundSelfTreatmentTests.MortalDiagnosisResponse.cs"
+  ],
+  "related": [
+    {
+      "id": "mortal-diagnosis-guided-staging",
+      "when": "Cheap current-source menu, inertness and freshness precede actual Engine qualification."
+    },
+    {
+      "id": "mortal-diagnosis-outer-retry",
+      "when": "Actual procedure retention and both rollback images remain under the existing owner."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 3,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.BrowserMortalDiagnosisUsesActualSignedProcedureAndDeclaredTime"
+      ]
+    }
+  ]
+},
+{
+  "id": "mortal-diagnosis-rollback",
+  "responsibility": "T121 one independent complete Mortal Engine journey: actual common publication cut, exact held image compensation and independently captured whole-original restoration. Complete initial template plus the existing typed physical seed before one resource bootstrap; actual signed Engine die determines the expected binary procedure outcome. Involved medic uses genuine append-only npc_journals with full Scope/Brain, while npc_core remains exact. Client knowledge/time/ordinary recovery/History/resources, strict replay and cleanup retain complete passive gzip/timing capture. Source-authored UNCOMPILED/UNRUN; original 180-second peer bound.",
+  "excludes": "No replacement Engine dice, fake accepted-world authority/receipt, post-accepted seed patches, calendar arithmetic, direct diagnosis healing, broad Mortal/HOLD aggregate, provider experiment or second publisher.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/ExplorerWoundSelfTreatmentTests.MortalDiagnosis.cs",
+    "BookOfEternityClient.IntegrationTests/ExplorerWoundSelfTreatmentTests.MortalDiagnosisResponse.cs"
+  ],
+  "related": [
+    {
+      "id": "mortal-diagnosis-guided-staging",
+      "when": "Cheap current-source menu, inertness and freshness precede actual Engine qualification."
+    },
+    {
+      "id": "mortal-diagnosis-outer-retry",
+      "when": "Actual procedure retention and both rollback images remain under the existing owner."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 3,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.MortalDiagnosisCommonPublicationCutRestoresHeldAndOriginalImages"
+      ]
+    }
+  ]
+},
+{
   "id": "mortal-diagnosis-documentation",
   "responsibility": "T121 current closed Mortal Check migration and effective GM contract: two new DATA guidance/whole-wound worked tests, one exact migrated ashglass path assertion, and the sole complete example-family inventory method. Six effective guides, both daemon assignments, actual client input/held request/time/retry roles and separate spiritual empty checks are synchronized. Four cases/four methods/two projects, UNCOMPILED/UNRUN.",
   "excludes": "No broad documentation or Mortal aggregate, live authority from fragments, provider/DOM/DFR/compatibility qualification, client-side default procedure/time/tariff or physical treatment-route enablement.",

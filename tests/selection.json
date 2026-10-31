@@ -133,6 +133,27 @@
       "contracts": [
         "#1536 T121-DIAGNOSIS-MORTAL; GM/current-input explicit check/duration/cost, client T0/T1/common publication, ordinary NPC sidecar and retained retry"
       ]
+    },
+    {
+      "category": "mortal-diagnosis-console",
+      "reason": "T121 one independent complete Mortal Engine journey: actual console target/provider/method cancellation and confirmation. Complete initial template plus the existing typed physical seed before one resource bootstrap; actual signed Engine die determines the expected binary procedure outcome. Involved medic uses genuine append-only npc_journals with full Scope/Brain, while npc_core remains exact. Client knowledge/time/ordinary recovery/History/resources, strict replay and cleanup retain complete passive gzip/timing capture. Source-authored UNCOMPILED/UNRUN; original 180-second peer bound.",
+      "contracts": [
+        "#1536 T121-DIAGNOSIS-MORTAL / FR071; actual guided Mortal diagnosis, full ordinary Engine response and common publication/replay/rollback"
+      ]
+    },
+    {
+      "category": "mortal-diagnosis-browser",
+      "reason": "T121 one independent complete Mortal Engine journey: shared browser target/provider/method prompt cancellation, confirmation and authenticated detached staging. Complete initial template plus the existing typed physical seed before one resource bootstrap; actual signed Engine die determines the expected binary procedure outcome. Involved medic uses genuine append-only npc_journals with full Scope/Brain, while npc_core remains exact. Client knowledge/time/ordinary recovery/History/resources, strict replay and cleanup retain complete passive gzip/timing capture. Source-authored UNCOMPILED/UNRUN; original 180-second peer bound.",
+      "contracts": [
+        "#1536 T121-DIAGNOSIS-MORTAL / FR071; actual guided Mortal diagnosis, full ordinary Engine response and common publication/replay/rollback"
+      ]
+    },
+    {
+      "category": "mortal-diagnosis-rollback",
+      "reason": "T121 one independent complete Mortal Engine journey: actual common publication cut, exact held image compensation and independently captured whole-original restoration. Complete initial template plus the existing typed physical seed before one resource bootstrap; actual signed Engine die determines the expected binary procedure outcome. Involved medic uses genuine append-only npc_journals with full Scope/Brain, while npc_core remains exact. Client knowledge/time/ordinary recovery/History/resources, strict replay and cleanup retain complete passive gzip/timing capture. Source-authored UNCOMPILED/UNRUN; original 180-second peer bound.",
+      "contracts": [
+        "#1536 T121-DIAGNOSIS-MORTAL / FR071; actual guided Mortal diagnosis, full ordinary Engine response and common publication/replay/rollback"
+      ]
     }
   ]
 }

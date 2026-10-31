@@ -629,6 +629,50 @@ public sealed partial class MortalWoundTreatmentResolverTests
         fixture.AssertJson(unchanged);
     }
 
+    private static ResolverScenario CreateDiagnosisInitialScenario(int? natural, int duration, bool seedFate)
+    {
+        var scenario = CreateScenario("procedure_normal_uses_lowest_free_die", "procedure");
+        if (seedFate) scenario = scenario with { SeedFateEffectId = "effect_fate_shield_older" };
+        if (natural is not null) scenario.AcceptedState["acceptedDice"] = new JsonArray(natural.Value, 17, 1, 20);
+        var method = WoundContractTestData.CreateMortalDiagnosisPath(true, duration);
+        if (seedFate) method["requirements"]![1]!["actorRole"] = "target";
+        var route = Assert.IsType<JsonObject>(Assert.Single(scenario.Before["treatment"]!["routes"]!.AsArray())).DeepClone().AsObject();
+        route["routeId"] = "inspect_explicit_method";
+        scenario.Before["treatment"]!["routes"]!.AsArray().Add(route);
+        scenario.Before["treatment"]!["knownRouteIds"]!.AsArray().Add("inspect_explicit_method");
+        var hidden = route.DeepClone().AsObject();
+        hidden["routeId"] = "diagnostic_hidden_route"; hidden["visibility"] = "hidden";
+        scenario.Before["treatment"]!["routes"]!.AsArray().Add(hidden);
+        method["reveals"] = new JsonArray("route:diagnostic_hidden_route");
+        scenario.Before["treatment"]!["diagnosisPaths"] = new JsonArray(method);
+        // Explicit current physical recovery epoch, not the older procedure
+        // fixture's read-only clock label or an absent recovery anchor.
+        scenario.Before["recovery"]!["mode"] = "progressive";
+        scenario.Before["recovery"]!["clockKind"] = "world_time.currentTimeInMinutes";
+        scenario.Before["recovery"]!["cadence"] = 10;
+        scenario.Before["recovery"]!["currentStepThreshold"] = 1000;
+        scenario.Before["recovery"]!["blockers"] = new JsonArray();
+        scenario.Before["recovery"]!["recoveryAnchor"] = new JsonObject
+        {
+            ["anchorKind"] = "creation", ["anchorMinute"] = scenario.AcceptedState["worldMinute"]!.DeepClone(),
+            ["anchorTransitionId"] = scenario.Before["lastTransition"]!["transitionId"]!.DeepClone()
+        };
+        scenario = scenario with { History = CreateCurrentWoundHistory(scenario.Before), SeedCanonicalWoundEffects = true };
+        return scenario;
+    }
+
+    /// <summary>Seeds the same complete initial diagnosis graph before the caller's sole resource bootstrap, without preparing an original or issuing live authority.</summary>
+    internal static WoundMaterializationEnvelope SeedGuidedDiagnosisInitialWorld(FileSystemManager files,
+        Action<FileSystemManager> beforeResourceBootstrap)
+    {
+        var scenario = CreateDiagnosisInitialScenario(null, 30, false);
+        _ = AcceptedStateFixture.SeedCanonicalComponentData(files, scenario, "player", "player_current",
+            WoundCarrierCatalog.PlayerPath, beforeResourceBootstrap);
+        var parsed = WoundMaterializationContract.Parse(scenario.Before.ToJsonString(), WoundCarrierCatalog.PlayerPath);
+        Assert.True(parsed.IsValid, JsonSerializer.Serialize(parsed.Issues));
+        return Assert.IsType<WoundMaterializationEnvelope>(parsed.Wound);
+    }
+
     internal sealed class DiagnosisOwnershipFixture : IAsyncDisposable
     {
         private DiagnosisOwnershipFixture(string root, FileSystemManager files, FileSystemManager.CanonicalWriteLease lease,
@@ -645,33 +689,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
         {
             // Initial canonical scenario DATA only. The real live preparation and
             // exporter below issue ownership; these JSON values are not receipts.
-            var scenario = CreateScenario("procedure_normal_uses_lowest_free_die", "procedure");
-            if (seedFate) scenario = scenario with { SeedFateEffectId = "effect_fate_shield_older" };
-            if (natural is not null) scenario.AcceptedState["acceptedDice"] = new JsonArray(natural.Value, 17, 1, 20);
-            var method = WoundContractTestData.CreateMortalDiagnosisPath(true, duration);
-            if (seedFate) method["requirements"]![1]!["actorRole"] = "target";
-            var route = Assert.IsType<JsonObject>(Assert.Single(scenario.Before["treatment"]!["routes"]!.AsArray())).DeepClone().AsObject();
-            route["routeId"] = "inspect_explicit_method";
-            scenario.Before["treatment"]!["routes"]!.AsArray().Add(route);
-            scenario.Before["treatment"]!["knownRouteIds"]!.AsArray().Add("inspect_explicit_method");
-            var hidden = route.DeepClone().AsObject();
-            hidden["routeId"] = "diagnostic_hidden_route"; hidden["visibility"] = "hidden";
-            scenario.Before["treatment"]!["routes"]!.AsArray().Add(hidden);
-            method["reveals"] = new JsonArray("route:diagnostic_hidden_route");
-            scenario.Before["treatment"]!["diagnosisPaths"] = new JsonArray(method);
-            // Explicit current physical recovery epoch, not the older procedure
-            // fixture's read-only clock label or an absent recovery anchor.
-            scenario.Before["recovery"]!["mode"] = "progressive";
-            scenario.Before["recovery"]!["clockKind"] = "world_time.currentTimeInMinutes";
-            scenario.Before["recovery"]!["cadence"] = 10;
-            scenario.Before["recovery"]!["currentStepThreshold"] = 1000;
-            scenario.Before["recovery"]!["blockers"] = new JsonArray();
-            scenario.Before["recovery"]!["recoveryAnchor"] = new JsonObject
-            {
-                ["anchorKind"] = "creation", ["anchorMinute"] = scenario.AcceptedState["worldMinute"]!.DeepClone(),
-                ["anchorTransitionId"] = scenario.Before["lastTransition"]!["transitionId"]!.DeepClone()
-            };
-            scenario = scenario with { History = CreateCurrentWoundHistory(scenario.Before), SeedCanonicalWoundEffects = true };
+            var scenario = CreateDiagnosisInitialScenario(natural, duration, seedFate);
             var root = Path.Combine(Path.GetTempPath(), "boe-mortal-diagnosis-owner-" + Guid.NewGuid().ToString("N"));
             Directory.CreateDirectory(root);
             var files = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);

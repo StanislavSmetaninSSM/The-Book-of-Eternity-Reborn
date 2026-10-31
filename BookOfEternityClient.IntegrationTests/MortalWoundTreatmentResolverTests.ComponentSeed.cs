@@ -50,6 +50,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
         /// <param name="targetCarrierPath">
         /// The canonical carrier path for the selected target kind.
         /// </param>
+        /// <param name="beforeResourceBootstrap">Optional initial-world preparation, completed before the single resource bootstrap.</param>
         /// <returns>
         /// The seeded effect identity data used by the original fixture's normal snapshot check.
         /// </returns>
@@ -58,7 +59,8 @@ public sealed partial class MortalWoundTreatmentResolverTests
             ResolverScenario scenario,
             string targetKind,
             string targetId,
-            string targetCarrierPath)
+            string targetCarrierPath,
+            Action<FileSystemManager>? beforeResourceBootstrap = null)
         {
             foreach (var relativePath in new[]
                      {
@@ -252,6 +254,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
                 {
                     ["quests"] = new JsonArray(CreateProductionRegularQuest())
                 }.ToJsonString());
+            beforeResourceBootstrap?.Invoke(fileSystem);
             WriteCanonicalResourceAuthority(
                 fileSystem,
                 targetKind,

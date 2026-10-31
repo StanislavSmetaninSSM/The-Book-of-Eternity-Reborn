@@ -1,3 +1,28 @@
+# T121 Mortal controlled actual Engine fixtures WIP — UNCOMPILED / UNRUN
+
+Three independent console, shared-browser and publication-cut journeys now use
+complete Mortal template DATA plus the same typed wound/item/medic seed before
+one canonical resource bootstrap. The initial callback preserves full soul and
+mixed calendar/numeric clock fields and initializes legitimate defaults/schedule
+before the original whole-turn capture. No post-accepted fixture patch or Engine
+dice replacement is used: expected success/failure follows its actual signed die.
+
+The controlled response uses the involved medic's ordinary Scope/Brain and a
+first-person npc_journals append, preserving full npc_core identity/skills/location.
+Original control/report obligations are asserted; newly elapsed diagnosis time
+does not fabricate a same-turn report. Each route keeps real confirmation,
+retained request/span, knowledge-only delta, ordinary due recovery, exact History
+replay and closing. The cut retains independent held and original before-images.
+Existing passive gzip capture and named timers include closing; no new harness,
+cache or diagnostic quota. All assertions and full fixture validity are UNRUN.
+
+Source estimate is 91 cases / thirty methods / twenty-two categories before the
+final affected-consumer/static membership review. The three new cases each keep
+an existing 180-second peer budget. No build, test, discovery or runtime by writer;
+whole independent SOURCE and parent-owned fresh qualification remain pending.
+GM/current-input synchronization was saved at 6b9f520. All wider task/HOLD bounds
+and previous actual causal evidence remain unchanged; this is not acceptance.
+
 # T121 Mortal GM and current-input synchronization WIP — UNCOMPILED / UNRUN
 
 Six effective guides and both daemon directive assignments now describe the
