@@ -70,7 +70,7 @@ interruptSuccess. Curve даёт lambda вHP/цент,value(view,h),immutable pr
 - [x] `healing-joint-budget-investigation.md`: обе очереди и main/confirm отдельно,
   сравнение6тактик/профилей, actions/Recover/расходы/reasons/actualHeal/overheal,
   стоимость подготовки/reuse, ограничения прогноза и плохие хвосты.
-- [ ] Whole-block Astra/high review actual diff/contracts/raw, исправления и
+- [x] Whole-block Astra/high review actual diff/contracts/raw, исправления и
   адресные проверки. Final publication/readback/restore/issue1573; production
   не реализуется. Retention после полного нового замера штатным способом;
   ранее не выполненная очистка T124.4r остаётся отдельно открытой.
@@ -81,7 +81,13 @@ Confirmation1080000 завершена:38009horizon; wall960622мс для3shard
 всеexit0/stderr0. Parent проверил216cells/1188000trials/41779horizon и union/readback.
 120/120guards; source-stage Astra/high review без замечаний.
 [Отчёт](healing-joint-budget-investigation.md) сохраняет обе выборки по очередям
-и отрицательный результат Joint. Итоговый verdict/retention ещё впереди.
+и отрицательный результат Joint. Whole-block GPT-6 Astra/high review
+5fae43131..00972610a без оставшихся замечаний; P3 об области отсутствия large
+исправлен.120/120 actual evidence,72endpoint и24accounting rows проверены.
+Parent сверил54confirm строки/159ссылок. Удалены9старых T124JSONL/4581983байта
+после нового полного замера/review; ранее отклонённые T123 не трогались.
+Финальные SHA/readback/restore фиксируются в issue1573. Улучшение long/adaptive
+не достигнуто; никаких новых Heal/production правил не принято.
 
 ### Consistency/preflight
 

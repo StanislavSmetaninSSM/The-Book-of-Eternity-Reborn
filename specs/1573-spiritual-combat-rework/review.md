@@ -70,6 +70,22 @@ cast/finish V3−200/−400 приH200; это механизм, не колич
 assert.strictEqual(0,−0) в разовом анализе заменена математическим равенством,
 модель/её guards не менялись. Полный отчёт передаётся на независимое review.
 
+T125.4 independent whole-block GPT-6 Astra/high review5fae43131..00972610a:
+без оставшихся замечаний. Reviewer самостоятельно сверил216cells/1188000trials,
+41779horizon, union/shas,120/120actual test evidence,72endpoint rows
+(18main+54confirm) и24accounting/action/reaction rows. P3 про отсутствие large
+уточнён доfortified_healer28: both36 использует large. Source остаётся0da.
+Parent дополнительно сравнил54confirm-строки с raw и проверил159ссылок без
+anchors. C#/production не менялись, новые полные сборки не запускались.
+Retention: после нового полного замера/review штатным Remove-Item удалены
+9точных старых T124measurement/smoke JSONL/4581983байта; отсутствие проверено.
+Компактные source/test/verification evidence и sibling restore сохранены.
+Ранее отклонённые21T123raw и oldrestore не трогались: T124.4r открыт.
+Финальная publication/readback/restore отмечается в issue1573 с точным SHA.
+Routing checkpoint: один Sol6.1/high owner и Astra/high reviewer оправдались
+связным source+tests и проверкой clock/ресурсов;1P3 в итоговом тексте исправлен,
+существенных source-замечаний нет. Оценка экономии tokens/time не заявляется.
+
 ## T124 — автономное исполнение, 2026-11-01
 
 После предъявления ebcfb6a21 автор явно отменил ожидание согласования спецификаций

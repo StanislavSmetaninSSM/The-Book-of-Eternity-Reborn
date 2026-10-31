@@ -6,7 +6,7 @@
 - [x] T125.1 Writing-plans + Spec Kit plan/tasks/consistency: зависимости,108cases×11000, прогнозы/guards/оптимизация записаны до реализации.
 - [x] T125.2 RED→GREEN:120/120numerical guards (99старых+21новых),exit0/stderr0; legacy42case checksum сохранён. Parent прочёл source/diff/evidence, проверил108main/108confirm smoke и54+54union/params/seeds. Coldprep88.35мс,20000lookup61.93мс; profile/3096states reused.
 - [x] T125.3 Frozen source опубликован;216cells/1188000траекторий завершены,41779horizon. Params/seeds/coverage/sums/payments/shard union/readback проверены. Отчёт сохраняет оба порядка, плохие хвосты и отрицательный результат Joint; Heal/source после freeze неизменны.
-- [ ] T125.4 Whole-block review, исправления/verification, GitHub publication/readback/restore/issue; raw local-only и штатная retention после нового полного замера.
+- [x] T125.4 Whole-block GPT-6 Astra/high review5fae43131..00972610a без оставшихся замечаний; P3 области large уточнён.120/120actual guards/полные данные/72endpoint+24accounting rows проверены. Scoped publication/readback/restore/issue — финальный checkpoint в issue1573; raw local-only,9старых T124JSONL/4581983байта удалены после нового полного замера/review. Затяжной long/adaptive не исправлен, отрицательный вывод сохранён; прежний T124.4r отдельно открыт.
 
 ## T124 — выбор момента срыва при дефиците ДЭ, 2026-11-01
 
