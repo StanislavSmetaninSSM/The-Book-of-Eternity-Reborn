@@ -201,7 +201,7 @@ public partial class ValidationService
             }
         }
         var commandJson = await ReadEffectFileAsync(EffectAcceptedTurnPlan.CommandPath,
-            writeLease: null, currentInputs: currentInputs);
+            writeLease: writeLease, currentInputs: currentInputs);
         var woundCommandJson = await ReadEffectFileAsync(AcceptedMechanicsPlan.WoundCommandPath,
             writeLease, currentInputs);
         var hasWoundCommand = woundCommandJson is not null;
@@ -212,7 +212,7 @@ public partial class ValidationService
             naturalOwner.RequireCurrent(_fs, writeLease);
             hasWoundCommand = false;
         }
-        var currentCarriers = await ReadEffectCarriersAsync(null, issues, currentInputs);
+        var currentCarriers = await ReadEffectCarriersAsync(writeLease, issues, currentInputs);
         if (currentCarriers.SpiritualConflict?[AfterlifeSpiritualConflictState.ResponseField]
             is JsonNode spiritualConflictUpdate)
         {
@@ -225,14 +225,14 @@ public partial class ValidationService
                 issues);
         }
         var currentIndexJson = await ReadEffectFileAsync(EffectAcceptedTurnPlan.IdentityIndexPath,
-            writeLease: null, currentInputs: currentInputs);
+            writeLease: writeLease, currentInputs: currentInputs);
         _ = ParseEffectObjectRoot(
             currentIndexJson,
             EffectAcceptedTurnPlan.IdentityIndexPath,
             "effect_identity_invalid_root",
             issues);
         var lookup = validatedManifest == null
-            ? await LoadValidatedPendingTurnSnapshotLookupAsync()
+            ? await LoadValidatedPendingTurnSnapshotLookupAsync(writeLease)
             : null;
         var hasCommand = commandJson != null;
         var hasCurrentEffectAuthority = HasAnyEffectAuthority(currentCarriers, currentIndexJson);
@@ -314,7 +314,7 @@ public partial class ValidationService
             : null;
         if (hasWoundCommand && rawWoundDraft is null)
             return;
-        var preTurnCarriers = await ReadSnapshotEffectCarriersAsync(manifest, issues);
+        var preTurnCarriers = await ReadSnapshotEffectCarriersAsync(manifest, issues, writeLease);
         var plannedCarriers = ProjectAcceptedSpiritualConflictCarrier(
             ApplyResourceOwnerAfterImages(
                 currentCarriers,
@@ -327,7 +327,7 @@ public partial class ValidationService
                 resourceOwners?.CombatantIdentities);
         var preTurnIndexJson = await ReadValidatedPendingTurnSnapshotFileAsync(
             manifest,
-            EffectAcceptedTurnPlan.IdentityIndexPath);
+            EffectAcceptedTurnPlan.IdentityIndexPath, writeLease);
         var preTurnIndex = ParseEffectObjectRoot(
             preTurnIndexJson,
             EffectAcceptedTurnPlan.IdentityIndexPath,
@@ -339,11 +339,11 @@ public partial class ValidationService
             preTurnIndexJson,
             currentIndexJson,
             issues);
-        var preTurnSources = await ReadSnapshotEffectSourceRootsAsync(manifest, issues);
-        var acceptedSources = await ReadCurrentEffectSourceRootsAsync(issues, currentInputs);
+        var preTurnSources = await ReadSnapshotEffectSourceRootsAsync(manifest, issues, writeLease);
+        var acceptedSources = await ReadCurrentEffectSourceRootsAsync(issues, currentInputs, writeLease);
         var currentWorldTime = EffectAcceptedTurnInputComposer.ReadCanonicalWorldTime(
             await ReadEffectFileAsync(EffectAcceptedTurnInputComposer.WorldTimePath,
-                writeLease: null, currentInputs: currentInputs));
+                writeLease: writeLease, currentInputs: currentInputs));
         issues.AddRange(EffectAcceptedTurnInputComposer
             .ValidateAcceptedSkillComposition(preTurnSources, acceptedSources));
         if (issues.Any(static issue => issue.Severity == IssueSeverity.Error))
@@ -949,21 +949,23 @@ public partial class ValidationService
 
     private async Task<EffectCarrierCatalogInput> ReadSnapshotEffectCarriersAsync(
         ValidationPendingTurnSnapshotManifest manifest,
-        List<ValidationIssue> issues) =>
+        List<ValidationIssue> issues,
+        FileSystemManager.CanonicalWriteLease? writeLease = null) =>
         new(
-            await ReadSnapshotEffectCarrierRootAsync(manifest, EffectCarrierCatalog.PlayerPath, issues),
-            await ReadSnapshotEffectCarrierRootAsync(manifest, EffectCarrierCatalog.NpcPath, issues),
-            await ReadSnapshotEffectCarrierRootAsync(manifest, EffectCarrierCatalog.EnemiesPath, issues),
-            await ReadSnapshotEffectCarrierRootAsync(manifest, EffectCarrierCatalog.AlliesPath, issues),
-            await ReadSnapshotEffectCarrierRootAsync(manifest, EffectCarrierCatalog.AfterlifeProfilesPath, issues),
-            await ReadSnapshotEffectCarrierRootAsync(manifest, EffectCarrierCatalog.SpiritualConflictPath, issues));
+            await ReadSnapshotEffectCarrierRootAsync(manifest, EffectCarrierCatalog.PlayerPath, issues, writeLease),
+            await ReadSnapshotEffectCarrierRootAsync(manifest, EffectCarrierCatalog.NpcPath, issues, writeLease),
+            await ReadSnapshotEffectCarrierRootAsync(manifest, EffectCarrierCatalog.EnemiesPath, issues, writeLease),
+            await ReadSnapshotEffectCarrierRootAsync(manifest, EffectCarrierCatalog.AlliesPath, issues, writeLease),
+            await ReadSnapshotEffectCarrierRootAsync(manifest, EffectCarrierCatalog.AfterlifeProfilesPath, issues, writeLease),
+            await ReadSnapshotEffectCarrierRootAsync(manifest, EffectCarrierCatalog.SpiritualConflictPath, issues, writeLease));
 
     private async Task<JsonObject?> ReadSnapshotEffectCarrierRootAsync(
         ValidationPendingTurnSnapshotManifest manifest,
         string path,
-        List<ValidationIssue> issues) =>
+        List<ValidationIssue> issues,
+        FileSystemManager.CanonicalWriteLease? writeLease = null) =>
         ParseEffectObjectRoot(
-            await ReadValidatedPendingTurnSnapshotFileAsync(manifest, path),
+            await ReadValidatedPendingTurnSnapshotFileAsync(manifest, path, writeLease),
             path,
             "effect_materialization_invalid_carrier_root",
             issues);
@@ -971,13 +973,14 @@ public partial class ValidationService
     private async Task<IReadOnlyDictionary<string, JsonNode?>>
         ReadSnapshotEffectSourceRootsAsync(
             ValidationPendingTurnSnapshotManifest manifest,
-            List<ValidationIssue> issues)
+            List<ValidationIssue> issues,
+            FileSystemManager.CanonicalWriteLease? writeLease = null)
     {
         var result = new Dictionary<string, JsonNode?>(StringComparer.Ordinal);
         foreach (var path in EffectAcceptedTurnInputComposer.SourceAuthorityPaths)
         {
             result[path] = ParseEffectNode(
-                await ReadValidatedPendingTurnSnapshotFileAsync(manifest, path),
+                await ReadValidatedPendingTurnSnapshotFileAsync(manifest, path, writeLease),
                 path,
                 issues);
         }
@@ -998,12 +1001,13 @@ public partial class ValidationService
     /// </returns>
     private async Task<IReadOnlyDictionary<string, JsonNode?>>
         ReadCurrentEffectSourceRootsAsync(List<ValidationIssue> issues,
-            SpiritualOriginalDraftInputs? currentInputs = null)
+            SpiritualOriginalDraftInputs? currentInputs = null,
+            FileSystemManager.CanonicalWriteLease? writeLease = null)
     {
         var result = new Dictionary<string, JsonNode?>(StringComparer.Ordinal);
         foreach (var path in EffectAcceptedTurnInputComposer.SourceAuthorityPaths)
             result[path] = ParseEffectNode(
-                await ReadEffectFileAsync(path, writeLease: null,
+                await ReadEffectFileAsync(path, writeLease: writeLease,
                     currentInputs: currentInputs),
                 path,
                 issues);

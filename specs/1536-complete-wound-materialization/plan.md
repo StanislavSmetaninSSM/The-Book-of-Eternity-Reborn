@@ -1,3 +1,31 @@
+# T121 explicit-lease raw validation correction — WIP, UNCOMPILED / UNRUN
+
+The actual `M2GREENC4-native` at `51ea75980365a01871d8b310df65a59f577fe6d0`
+completed 1 FAIL / 24 UNRUN in 26.7406621s, without timeout and with complete
+cleanup/stable pins. Original pending proof and bare-hold reconstruction now pass.
+The failure is a production explicit-lease defect: resource Core validates the
+supplied active lease but drops it at its snapshot lookup and dependent physical
+reads, causing nested MainAdmission on gm-main-owner.lock. An async fixture
+factory's lease is not promised to remain ambient in its caller. Actual raw output
+and prior successful focused18/focused14 remain separate external evidence.
+
+Root/Astra accepted one grouped correction through the actual resource→effect→
+retained diagnosis read chain. Already-retained currentInputs stays FIRST; other
+physical and original reads receive the same lease. Existing lookup/authority
+loaders already thread it through sync request/hash/freshness checks. No global
+lock, ambient scope, loader policy, cache, permission or source guard is bypassed.
+Wider changed-owner/GameState branches retain their existing behavior.
+
+The core source and three controls are saved as UNCOMPILED/UNRUN WIP. A real
+factory-lease diagnosis Fact requires inert missing-callback refusal, then actual
+common preparation and retained dynamic validation without publication. Two
+ordinary factory-lease rows require healthy full raw composition versus strict
+canonical resource drift refusal. Whole images, real requests and claims remain
+checked. Final API/fixture/finite affected selection and GM-impact audit are still
+pending before the same complete narrow SOURCE and root-owned builds/runtime.
+No new RED build loop or accepted aggregate/HOLD run is requested; the actual
+native failure is causal evidence. No fresh qualification or speedup is claimed.
+
 # T121 bare-hold focused14 GREEN — native/UI still pending
 
 At runtime `3dd0ff8618de4f26bae36ecc541311352980d2da`, the exact focused

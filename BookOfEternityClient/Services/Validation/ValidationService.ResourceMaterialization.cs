@@ -214,7 +214,7 @@ public partial class ValidationService
         ArgumentNullException.ThrowIfNull(writeLease);
         _fs.EnsureCanonicalWriteLeaseActive(writeLease);
         var issues = new List<ValidationIssue>();
-        var lookup = await LoadValidatedPendingTurnSnapshotLookupAsync();
+        var lookup = await LoadValidatedPendingTurnSnapshotLookupAsync(writeLease);
         var currentInputs = spiritualCapture?.CurrentInputs;
         if (currentInputs is not null)
         {
@@ -265,12 +265,12 @@ public partial class ValidationService
                 return issues;
             }
         }
-        var commandJson = await ReadResourceCurrentTextAsync(ResourceMaterializationContract.CommandPath, currentInputs);
-        var definitionsJson = await ReadResourceCurrentTextAsync(ResourceMaterializationContract.DefinitionsPath, currentInputs);
-        var stateJson = await ReadResourceCurrentTextAsync(ResourceMaterializationContract.StatePath, currentInputs);
-        var historyJson = await ReadResourceCurrentTextAsync(ResourceMaterializationContract.HistoryPath, currentInputs);
-        var pendingResolutionJson = await ReadResourceCurrentTextAsync(ResourcePendingResolutionState.PendingPath, currentInputs);
-        var fullPartyBytes = await ReadResourceCurrentBytesAsync(FullPartyInteractionsPath, currentInputs);
+        var commandJson = await ReadResourceCurrentTextAsync(ResourceMaterializationContract.CommandPath, currentInputs, writeLease);
+        var definitionsJson = await ReadResourceCurrentTextAsync(ResourceMaterializationContract.DefinitionsPath, currentInputs, writeLease);
+        var stateJson = await ReadResourceCurrentTextAsync(ResourceMaterializationContract.StatePath, currentInputs, writeLease);
+        var historyJson = await ReadResourceCurrentTextAsync(ResourceMaterializationContract.HistoryPath, currentInputs, writeLease);
+        var pendingResolutionJson = await ReadResourceCurrentTextAsync(ResourcePendingResolutionState.PendingPath, currentInputs, writeLease);
+        var fullPartyBytes = await ReadResourceCurrentBytesAsync(FullPartyInteractionsPath, currentInputs, writeLease);
         var fullPartyJson = fullPartyBytes == null
             ? null
             : DecodeResourceUtf8(fullPartyBytes);
@@ -297,7 +297,7 @@ public partial class ValidationService
         var manifest = lookup.Manifest;
         var preTurnFullPartyJson = await ReadValidatedPendingTurnSnapshotFileAsync(
             manifest,
-            FullPartyInteractionsPath);
+            FullPartyInteractionsPath, writeLease);
         var hasStagedFullPartyResourcePackets = fullParty.HasResourcePackets &&
             !string.Equals(
                 fullPartyJson,
@@ -370,7 +370,7 @@ public partial class ValidationService
             }
         }
         if (!completedMortalReplay)
-            await ValidateResourceSnapshotContinuityAsync(manifest, issues, currentInputs);
+            await ValidateResourceSnapshotContinuityAsync(manifest, issues, currentInputs, writeLease);
         var commands = ResourceAcceptedTurnInputComposer.Parse(commandJson);
         issues.AddRange(commands.Issues);
         if (naturalOwner?.IsDiagnosis == true && commands.IsValid &&
@@ -408,8 +408,8 @@ public partial class ValidationService
                         path,
                         CanonicalResourceOwnerAuthorityComposer.AuthorityPath,
                         StringComparison.Ordinal)
-                    ? ReadResourceCurrentTextAsync(path, currentInputs)
-                    : ReadValidatedPendingTurnSnapshotFileAsync(manifest, path),
+                    ? ReadResourceCurrentTextAsync(path, currentInputs, writeLease)
+                    : ReadValidatedPendingTurnSnapshotFileAsync(manifest, path, writeLease),
                 stateResult.Ledger,
                 historyResult.History,
                 CanonicalResourceOwnerAuthorityPurpose.ExistingSessionValidation);
@@ -430,8 +430,8 @@ public partial class ValidationService
                 manifest.ManifestPayloadHash, spiritualCapture?.Allocations.Items);
         var mortalOwnerInput = new MortalResourceOwnerCompositionInput(
                 definitions,
-                await ReadMortalResourceOwnerRootsAsync(manifest, issues),
-                await ReadMortalResourceOwnerRootsAsync(null, issues, currentInputs: currentInputs),
+                await ReadMortalResourceOwnerRootsAsync(manifest, issues, writeLease),
+                await ReadMortalResourceOwnerRootsAsync(null, issues, writeLease, currentInputs),
                 BuildSameTurnResourceOwnerCapabilities(commands),
                 acceptedItemOwners,
                 missingGovernedItemIds);
@@ -441,11 +441,11 @@ public partial class ValidationService
                 spiritualCapture.Allocations.Effects, spiritualCapture.Allocations.Vehicles);
         var preTurnAfterlifeOwners = await ReadAfterlifeResourceOwnerRootsAsync(
             manifest,
-            issues);
+            issues, writeLease);
         var acceptedAfterlifeOwners = await ReadAcceptedAfterlifeResourceOwnerRootsAsync(
             manifest,
             preTurnAfterlifeOwners,
-            issues, spiritualCapture?.Allocations.Clock, currentInputs, naturalOwner);
+            issues, spiritualCapture?.Allocations.Clock, currentInputs, naturalOwner, writeLease);
         var afterlifeOwnerComposition = AfterlifeResourceOwnerComposer.Compose(
             new AfterlifeResourceOwnerCompositionInput(
                 definitions,
@@ -494,7 +494,7 @@ public partial class ValidationService
         }
         var effectCommandJson = spiritualCapture?.CurrentInputs is { } effectCurrentInputs
             ? effectCurrentInputs.ReadText(EffectAcceptedTurnPlan.CommandPath)
-            : await _fs.ReadFileAsync(EffectAcceptedTurnPlan.CommandPath);
+            : await _fs.ReadFileAsync(writeLease, EffectAcceptedTurnPlan.CommandPath);
         var isTerminalReceiptReplay = IsTerminalEffectReceiptReplay(
             effectCommandJson,
             pendingResolutionState);
@@ -581,12 +581,12 @@ public partial class ValidationService
                         "mortal_wound_treatment_ordinary_concurrent_work_unsupported", "no competing unconsumed wound occurrence",
                         "the occurrence/decision owner must handle this original input"));
                 if (issues.Any(static issue => issue.Severity == IssueSeverity.Error)) return issues;
-                var originalEffects = await ReadSnapshotEffectCarriersAsync(manifest, issues);
+                var originalEffects = await ReadSnapshotEffectCarriersAsync(manifest, issues, writeLease);
                 var currentEffects = await ReadEffectCarriersAsync(writeLease, issues);
                 ValidateEffectOwnedContinuity(originalEffects, currentEffects,
-                    await ReadValidatedPendingTurnSnapshotFileAsync(manifest, EffectAcceptedTurnPlan.IdentityIndexPath),
+                    await ReadValidatedPendingTurnSnapshotFileAsync(manifest, EffectAcceptedTurnPlan.IdentityIndexPath, writeLease),
                     await _fs.ReadFileAsync(writeLease, EffectAcceptedTurnPlan.IdentityIndexPath), issues);
-                var originalSources = await ReadSnapshotEffectSourceRootsAsync(manifest, issues);
+                var originalSources = await ReadSnapshotEffectSourceRootsAsync(manifest, issues, writeLease);
                 var currentSources = new Dictionary<string, JsonNode?>(StringComparer.Ordinal);
                 foreach (var path in EffectAcceptedTurnInputComposer.SourceAuthorityPaths)
                     currentSources[path] = ParseEffectNode(await _fs.ReadFileAsync(writeLease, path), path, issues);
@@ -595,7 +595,7 @@ public partial class ValidationService
                 issues.AddRange(EffectAcceptedTurnInputComposer.ValidateRegisteredSourceOwners(currentSources));
                 issues.AddRange(EffectAcceptedTurnInputComposer.BuildCanonicalSourceAuthority(currentSources).Issues);
                 var registered = await ComposeRegisteredResourceOutcomesAsync(manifest, preTurnAfterlifeOwners,
-                    acceptedAfterlifeOwners, ownerComposition, stateResult.Ledger, issues);
+                    acceptedAfterlifeOwners, ownerComposition, stateResult.Ledger, issues, writeLease: writeLease);
                 if (registered.Count != 0)
                     issues.Add(WoundIssue(AcceptedMechanicsPlan.WoundCommandPath,
                         "mortal_wound_treatment_ordinary_concurrent_work_unsupported", "no unrelated registered system outcome",
@@ -757,7 +757,7 @@ public partial class ValidationService
             stateResult.Ledger,
             issues, deferSpiritualConflict: spiritualCapture?.AwaitOriginalPrefix == true,
             projectionClock: spiritualCapture?.Allocations.Clock,
-            currentInputs: currentInputs);
+            currentInputs: currentInputs, writeLease: writeLease);
         if (issues.Any(static issue => issue.Severity == IssueSeverity.Error))
             return issues;
         if (commands.IsMissing && effectPlan == null &&
@@ -771,7 +771,7 @@ public partial class ValidationService
             woundHandoff is null && mortalReceipt is null && spiritualCapture == null && mortalCapture == null)
             return issues;
 
-        var requestJson = await _fs.ReadFileAsync("input/turn_request.json");
+        var requestJson = await _fs.ReadFileAsync(writeLease, "input/turn_request.json");
         if (!TryParseResourceTurnRequest(
                 requestJson,
                 manifest.SessionId,
@@ -814,7 +814,7 @@ public partial class ValidationService
 
         var effectIdentityJson = spiritualCapture?.CurrentInputs is { } indexCurrentInputs
             ? indexCurrentInputs.ReadText(EffectAcceptedTurnPlan.IdentityIndexPath)
-            : await _fs.ReadFileAsync(EffectAcceptedTurnPlan.IdentityIndexPath);
+            : await _fs.ReadFileAsync(writeLease, EffectAcceptedTurnPlan.IdentityIndexPath);
         JsonObject effectIdentity;
         if (effectPlan != null)
         {
@@ -988,7 +988,7 @@ public partial class ValidationService
                 return issues;
             }
         }
-        var beforeImages = (await CaptureResourceBeforeImagesAsync(beforePaths, currentInputs))
+        var beforeImages = (await CaptureResourceBeforeImagesAsync(beforePaths, currentInputs, writeLease))
             .ToDictionary(static pair => pair.Key, static pair => pair.Value, StringComparer.Ordinal);
         if (hasStagedFullPartyResourcePackets)
         {
@@ -1182,9 +1182,9 @@ public partial class ValidationService
     /// Current text, or <see langword="null"/> when the selected image is absent.
     /// </returns>
     private Task<string?> ReadResourceCurrentTextAsync(string path,
-        SpiritualOriginalDraftInputs? currentInputs) => currentInputs is null
-            ? _fs.ReadFileAsync(path)
-            : Task.FromResult(currentInputs.ReadText(path));
+        SpiritualOriginalDraftInputs? currentInputs, FileSystemManager.CanonicalWriteLease? writeLease = null) => currentInputs is not null
+            ? Task.FromResult(currentInputs.ReadText(path))
+            : writeLease is null ? _fs.ReadFileAsync(path) : _fs.ReadFileAsync(writeLease, path);
 
     /// <summary>
     /// Reads exact current resource bytes from the named original view when supplied.
@@ -1199,9 +1199,9 @@ public partial class ValidationService
     /// Current bytes, or <see langword="null"/> when the selected image is absent.
     /// </returns>
     private Task<byte[]?> ReadResourceCurrentBytesAsync(string path,
-        SpiritualOriginalDraftInputs? currentInputs) => currentInputs is null
-            ? _fs.ReadFileBytesAsync(path)
-            : Task.FromResult(currentInputs.ReadImage(path).Bytes);
+        SpiritualOriginalDraftInputs? currentInputs, FileSystemManager.CanonicalWriteLease? writeLease = null) => currentInputs is not null
+            ? Task.FromResult(currentInputs.ReadImage(path).Bytes)
+            : writeLease is null ? _fs.ReadFileBytesAsync(path) : _fs.ReadFileBytesAsync(writeLease, path);
 
     private static ResourceCommandCompositionResult ComposeAcceptedResourceCommands(
         ResourceCommandCompositionResult localCommands,
@@ -1388,11 +1388,12 @@ public partial class ValidationService
             AfterlifeResourceOwnerRoots preTurn,
             List<ValidationIssue> issues, AcceptedTurnProjectionClock? projectionClock = null,
             SpiritualOriginalDraftInputs? currentInputs = null,
-            AfterlifeWoundHealingPlanner.Continuation? naturalOwner = null)
+            AfterlifeWoundHealingPlanner.Continuation? naturalOwner = null,
+            FileSystemManager.CanonicalWriteLease? writeLease = null)
     {
         var current = await ReadAfterlifeResourceOwnerRootsAsync(
             manifest: null,
-            issues, currentInputs: currentInputs);
+            issues, writeLease, currentInputs);
         var profiles = naturalOwner is null
             ? AfterlifeEntityProfileState.ProjectCanonicalRoot(current.Profiles, preTurn.Profiles)
             : naturalOwner.ProjectAcceptedProfiles(current.Profiles, preTurn.Profiles,
@@ -1467,10 +1468,8 @@ public partial class ValidationService
         SpiritualOriginalDraftInputs? currentInputs = null)
     {
         var json = manifest == null
-            ? writeLease == null
-                ? await ReadResourceCurrentTextAsync(path, currentInputs)
-                : await _fs.ReadFileAsync(writeLease, path)
-            : await ReadValidatedPendingTurnSnapshotFileAsync(manifest, path);
+            ? await ReadResourceCurrentTextAsync(path, currentInputs, writeLease)
+            : await ReadValidatedPendingTurnSnapshotFileAsync(manifest, path, writeLease);
         if (json == null)
             return missingFactory();
         if (TryParseStrictResourceObject(json, out var root))
@@ -1517,10 +1516,8 @@ public partial class ValidationService
         SpiritualOriginalDraftInputs? currentInputs = null)
     {
         var json = manifest == null
-            ? writeLease == null
-                ? await ReadResourceCurrentTextAsync(path, currentInputs)
-                : await _fs.ReadFileAsync(writeLease, path)
-            : await ReadValidatedPendingTurnSnapshotFileAsync(manifest, path);
+            ? await ReadResourceCurrentTextAsync(path, currentInputs, writeLease)
+            : await ReadValidatedPendingTurnSnapshotFileAsync(manifest, path, writeLease);
         if (json == null)
             return new JsonObject { [canonicalCollection] = new JsonArray() };
         if (TryParseStrictResourceObject(json, out var root))
@@ -1684,7 +1681,8 @@ public partial class ValidationService
     private async Task ValidateResourceSnapshotContinuityAsync(
         ValidationPendingTurnSnapshotManifest manifest,
         List<ValidationIssue> issues,
-        SpiritualOriginalDraftInputs? currentInputs = null)
+        SpiritualOriginalDraftInputs? currentInputs = null,
+        FileSystemManager.CanonicalWriteLease? writeLease = null)
     {
         await Compare(ResourceMaterializationContract.DefinitionsPath,
             "resource_materialization_direct_definition_mutation");
@@ -1698,12 +1696,13 @@ public partial class ValidationService
 
         async Task Compare(string path, string code)
         {
-            var current = await ReadResourceCurrentBytesAsync(path, currentInputs);
+            var current = await ReadResourceCurrentBytesAsync(path, currentInputs, writeLease);
             byte[]? previous = null;
             if (manifest.Files.TryGetValue(path, out var snapshotPath) &&
                 !string.IsNullOrWhiteSpace(snapshotPath))
             {
-                previous = await _fs.ReadFileBytesAsync(snapshotPath);
+                previous = writeLease is null ? await _fs.ReadFileBytesAsync(snapshotPath)
+                    : await _fs.ReadFileBytesAsync(writeLease, snapshotPath);
             }
             if (previous == null
                     ? current == null
@@ -1737,7 +1736,8 @@ public partial class ValidationService
     /// </returns>
     private async Task<IReadOnlyDictionary<string, CanonicalBeforeImage>>
         CaptureResourceBeforeImagesAsync(IEnumerable<string> paths,
-            SpiritualOriginalDraftInputs? currentInputs = null)
+            SpiritualOriginalDraftInputs? currentInputs = null,
+            FileSystemManager.CanonicalWriteLease? writeLease = null)
     {
         var result = new Dictionary<string, CanonicalBeforeImage>(StringComparer.Ordinal);
         foreach (var path in paths.Distinct(StringComparer.Ordinal))
@@ -1748,7 +1748,8 @@ public partial class ValidationService
             }
             else
             {
-                var bytes = await _fs.ReadFileBytesAsync(path);
+                var bytes = writeLease is null ? await _fs.ReadFileBytesAsync(path)
+                    : await _fs.ReadFileBytesAsync(writeLease, path);
                 result[path] = new CanonicalBeforeImage(bytes is not null, bytes);
             }
         }
@@ -1797,7 +1798,8 @@ public partial class ValidationService
             ResourceStateLedger state,
             List<ValidationIssue> issues, bool deferSpiritualConflict = false,
             AcceptedTurnProjectionClock? projectionClock = null,
-            SpiritualOriginalDraftInputs? currentInputs = null)
+            SpiritualOriginalDraftInputs? currentInputs = null,
+            FileSystemManager.CanonicalWriteLease? writeLease = null)
     {
         var outcomes = new List<IResourceRegisteredSystemOutcomeDraft>();
         var owners = ownerComposition.Authority!;
@@ -1819,7 +1821,7 @@ public partial class ValidationService
             out var shiningAfterImage)
             ? shiningAfterImage
             : acceptedAfterlifeOwners.ShiningAbode;
-        var shiningBytes = await ReadResourceCurrentBytesAsync(ShiningAbodeState.StatePath, currentInputs);
+        var shiningBytes = await ReadResourceCurrentBytesAsync(ShiningAbodeState.StatePath, currentInputs, writeLease);
         if (shiningBytes != null)
         {
             var shiningBuild = AfterlifeShiningGachaResourceOutcome.TryCreate(
@@ -1836,7 +1838,7 @@ public partial class ValidationService
         }
 
         const string guardiansPath = "game_state/meta/guardians.json";
-        var guardiansBytes = await ReadResourceCurrentBytesAsync(guardiansPath, currentInputs);
+        var guardiansBytes = await ReadResourceCurrentBytesAsync(guardiansPath, currentInputs, writeLease);
         if (guardiansBytes != null)
         {
             var guardianBuild = AfterlifeGuardianGachaResourceOutcome
@@ -1856,19 +1858,19 @@ public partial class ValidationService
 
         const string soulPath = "game_state/meta/soul_state.json";
         const string worldEventsPath = "game_state/world/world_events.json";
-        var currentSoulBytes = await ReadResourceCurrentBytesAsync(soulPath, currentInputs);
+        var currentSoulBytes = await ReadResourceCurrentBytesAsync(soulPath, currentInputs, writeLease);
         if (currentSoulBytes == null ||
             !TryParseStrictResourceObject(DecodeResourceUtf8(currentSoulBytes), out var currentSoul))
         {
             return outcomes;
         }
 
-        var preTurnSoulJson = await ReadValidatedPendingTurnSnapshotFileAsync(manifest, soulPath);
+        var preTurnSoulJson = await ReadValidatedPendingTurnSnapshotFileAsync(manifest, soulPath, writeLease);
         var preTurnSoul = TryParseStrictResourceObject(preTurnSoulJson, out var parsedPreTurnSoul)
             ? parsedPreTurnSoul
             : null;
         var lifeTransitionsJson = await ReadResourceCurrentTextAsync(
-            "game_state/control/life_transitions.json", currentInputs);
+            "game_state/control/life_transitions.json", currentInputs, writeLease);
         JsonObject normalizedSoul;
         try
         {
@@ -1893,7 +1895,7 @@ public partial class ValidationService
             return outcomes;
         }
 
-        var currentWorldBytes = await ReadResourceCurrentBytesAsync(worldEventsPath, currentInputs);
+        var currentWorldBytes = await ReadResourceCurrentBytesAsync(worldEventsPath, currentInputs, writeLease);
         if (currentWorldBytes == null ||
             !TryParseStrictResourceObject(
                 DecodeResourceUtf8(currentWorldBytes),
@@ -1903,7 +1905,7 @@ public partial class ValidationService
         }
         var preTurnWorldEventsJson = await ReadValidatedPendingTurnSnapshotFileAsync(
             manifest,
-            worldEventsPath);
+            worldEventsPath, writeLease);
         JsonNode? preTurnWorldEvents = null;
         if (preTurnWorldEventsJson != null)
         {

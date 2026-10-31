@@ -60,7 +60,7 @@ public partial class ValidationService
                 !ReferenceEquals(owner.Owner, authority.AcceptedStateAuthority) ||
                 owner.Outcome.Request.RequestFingerprint != authority.RequestFingerprint)
                 throw new InvalidDataException("The diagnosis dynamic plan has no matching actual private continuation/owner.");
-            var lookup = await LoadValidatedPendingTurnSnapshotLookupAsync();
+            var lookup = await LoadValidatedPendingTurnSnapshotLookupAsync(lease);
             if (lookup.Status != ValidatedPendingTurnSnapshotStatus.Usable || lookup.Manifest is not { } manifest)
                 throw new InvalidDataException("Diagnosis dynamic coverage lost its validated original frame.");
             var required = WoundAcceptedTurnSnapshotContract.BuildRequiredPaths(plan.TouchedPaths);
