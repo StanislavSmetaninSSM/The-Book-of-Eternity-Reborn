@@ -1,3 +1,37 @@
+# T121 C13 output and notification peers GREEN — original UI3 pending
+
+At runtime `73b8a49da50b0ab0df302eb48e3a4e586c435a93`, compiled owners all
+`3a25476674debde692cc0814e1f036f759ad69ea`, focused5 exits0 with exactly
+5 PASS /4 methods /2 descriptors: output2 34.0445121s and guards3 4.8273502s,
+each below60s, wall59.2322468s. Independent OUTCOME accepts it. The actual
+post-lease direct/published binders now preserve complete immutable execution,
+selected-only knowledge/ordinary recovery output, escaping and malformed/foreign
+refusals. Successful await-using disposal plus an empty typed-fixture namespace
+is the cleanup evidence; that unchanged fixture does not emit per-case root IDs
+or passive capture, and none is invented.
+
+After separate PREP/fresh fence, notification peer5 exits0 with exactly5 PASS /
+3 methods /2 descriptors: ordinary guaranteed/partial/failed3, genuine spiritual
+publication-owner1 and acquisition escaping1. Category64.2532559s stays within
+120s, wall1:20.6548453. Primary strict TRX verification confirms unique IDs, exact
+membership, no fail/skip/timeout/underfill, stable owning pins and runner cleanup.
+Fresh post-fence at15:20:52 UTC preserves all27 artifacts,40 resource copies and
+4 daemons, no active managed owners, about2.04GB free. Raw is external in
+M2GREENC13-focused5 and M2GREENC13-peer5 under the diagnosis evidence root.
+Peer OUTCOME and independent UI3 PREP are the next admission boundary; no UI
+PASS, current diagnosis acceptance or parent closure is claimed yet.
+
+The next functional slice remains guided physical treatment using all three
+existing mode factories. Canon requires exact KnownRouteIds membership and all
+current provider/target/source requirements. Existing course history reconstructs
+the next ordinal and enforces due/deadline windows; every milestone is separately
+confirmed. Current Engine held-treatment dispatch explicitly supports guaranteed
+mode only. Reuse the existing request, claim, persistence, common publication and
+shared console/browser owners for procedure/course/guaranteed execution. No new
+price, duration, automatic wait, diagnosis timing substitution or author question
+has been established. Eight spiritual proof adapters and wider canonical/held
+qualification remain open as listed below.
+
 # T121 C13 fresh preparation verified — runtime UNRUN
 
 Corrected source `3a25476674debde692cc0814e1f036f759ad69ea` now has four
