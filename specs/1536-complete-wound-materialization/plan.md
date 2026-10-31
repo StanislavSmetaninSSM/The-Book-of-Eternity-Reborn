@@ -1,3 +1,37 @@
+# T121 C17 exact TIMEOUT — measured validation boundary, scope redesign pending
+
+Actual runtime `8e00058fb67f3a42430d69fe4b38e8b1b8499225`, Integration compileda3b58069
+and other owners78918350, reaches TIMEOUT60.2006077s at60s; no TRX and zero completed
+cases. This is UNKNOWN. Other browser3, Engine-original1 and UI3 remain UNRUN/held.
+Pins/resources stay stable and runner cleanup/no live owners is verified. Fixture
+cleanup is not: root `/tmp/boe-completed-item-browser-eadb7755c5e9424fa38ff303a73e16df`
+and its205 files /1,066,728 bytes remain; full external copy/source hashes agree.
+
+The existing passive transport retains26 complete macro-event rows in2,407 stored
+bytes, SHA256 `a829e92bbbabfc014fb79ea3a49a5ee30db3ac61fb7ffd483c8eb8e961a711b3`.
+Gzip EOF/CRC and final report are absent; it is an incomplete prefix, not a new full
+measurement. Stored prefix sequences/pairs agree. Observed completion intervals:
+common preparation10.834s, publication4.046s, progression0.673s, Complete1.000s,
+raw post-validation21.996s, no-World validation0.756s. Scoped validation begins
+about49.17s into the recorded body and has no observed end. Do not sum overlapping
+outer intervals, infer unobserved completion, or attribute the whole prior timeout
+to the removed hook. Complete returned; raw validation cost is now localized.
+
+After two cost timeouts, no blind/permutation retry is admitted. Independent
+DESIGN is checking whether this newly introduced component test should use the
+existing production NPC+World phase selection with all files in those phases,
+rather than repeat All game-state validation. The browser post wrapper currently
+just delegates to ValidateGameStateAsync(All); no extra console owner is bypassed.
+All actual NPC/World guards, original/frame, readset/end proof, raw/scoped issue
+vector, whole images and fault assertions must stay. This is a PENDING scope
+proposal, not implementation or waiver: full All post-validation remains unchanged
+and mandatory in original UI3 at180s, and current direct full-post controls remain
+accepted separately. Any correction needs coherent review, fresh owning build and
+PREP before one specifically admitted run. No limit increase, new diagnostic stack,
+production/cache change, raw/root deletion or broader parent/HOLD acceptance.
+Full raw/proofs/copy remain external in M2GREENC17-browser-exact1; historical226
+and all original incomplete roots stay preserved.
+
 # T121 C17 fresh build and exact diagnostic preparation — runtime UNRUN
 
 Independent Astra SOURCE accepts `a3b5806995b976396b81da055508aab94cd84464`.
