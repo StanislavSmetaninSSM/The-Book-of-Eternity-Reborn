@@ -13,7 +13,17 @@ outer owner_turn_end — не personal1573 clock. Общий accepted/effect/res
 pipeline переиспользуется; wound healing math не является HP-формулой.
 Optimization assessment: нет нового вычисляющего кода/нового кэша/прогона.
 Будущие stable formula DATA допускают existing operation reuse; текущие
-HP/метки/phase/authority всегда свежие. Независимое review ещё впереди.
+HP/метки/phase/authority всегда свежие.
+
+WIP aa0ed445a9a6a61460dc126c3beba43c116c7262 опубликован, originSHA совпал.
+Независимое GPT-6 Astra/high review d9c4b6b..aa0ed445 завершено без замечаний:
+проверены7документов и связанные suppression/HP0/personal-turn, отсутствие
+скрытого Heal interrupt, личные тики/expiry, no-double suppression и открытые
+stack/source/flat/lifecycle. Parent сверил185относительных файловых ссылок,
+diff --check и doc-only scope. Новой матрицы/тестов/C#сборки нет — это проект.
+Свежий sparse restore начат из GitHub в новом пустом каталоге
+D:\BoeDiagnostics\healing-redesign-t126\remote-restore-20261101;
+итоговый SHA/содержимое/readback фиксируются после публикации в issue1573.
 
 ## T125 — исходный checkpoint, 2026-11-01
 

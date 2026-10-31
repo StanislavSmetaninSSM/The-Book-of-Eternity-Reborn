@@ -14,7 +14,7 @@ Brainstorming + Spec Kit bridge используют active spec/plan/tasks. Sco
   periodic_restore/resource accepted-путь; записать реальное переиспользование.
 - [x] T126.2 Записать в spec пожелания/кандидаты/неопределённости и приёмку;
   сравнить scope с T119/T114, сохранить исторические измерения.
-- [ ] T126.3 Независимое review документа, адресные исправления, проверки diff/
+- [x] T126.3 Независимое review документа, адресные исправления, проверки diff/
   ссылок/статусов, публикация/readback. Не выдавать review за численный баланс.
 
 Consistency bridge: запрос→T126spec→три задачи, немедленный/HoT и no-interrupt
@@ -24,6 +24,12 @@ Optimization: вычислительных изменений нет. Для б�
 общий effect/resource pipeline и существующий operation-сервис; допускается
 reuse неизменных DATA по полному ключу, живые HP/метки/тик/authority проверять
 свежими. Численной экономии/производительности этот блок не измеряет.
+
+Checkpoint T126: WIP aa0ed445a опубликован/remoteSHA совпал. Независимое
+GPT-6 Astra/high review точного d9c4b6b..aa0ed445: без замечаний. Parent сверил
+7doc-only diff,185файловых ссылок и отсутствие source/probe изменений.
+Финальные publication/readback/новый sparse restore — issue1573. C#/frontend/
+численная матрица UNRUN: результатом является проект для дальнейшего обсуждения.
 
 ## Исполнение T125 — 2026-11-01
 
