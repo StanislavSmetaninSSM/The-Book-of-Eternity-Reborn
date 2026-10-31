@@ -1,4 +1,4 @@
-# T121 physical guided causal3 — actual intended RED, OUTCOME pending
+# T121 physical guided causal3 — independent OUTCOME accepted
 
 Runtime9b0256956049b666c81d2266d5c968663ce1e74c, fresh Integration source
 9b06fa9bab76be9d9147581ad5081650208537ec; other3 unchanged C22 ownersf2f4.
@@ -8,7 +8,8 @@ mode-specific missing-executable-physical-route assertion at source line168,
 after complete canonical/known-route/actor/provider/requirement/capability or
 course-clock premises, real menu Self/provider and whole JSON inertness.
 Category6.6824986s/60, wall14.1880972s. This is genuine primary causal RED evidence,
-not physical treatment GREEN or feature acceptance. Independent OUTCOME is pending.
+not physical treatment GREEN or feature acceptance. Independent Astra/high OUTCOME
+accepts the exact three intended final failures; no rerun is needed.
 
 Actual passive menu source counts in EACH case are player wound1, NPC core2,
 world clock1/current location1. They are observed baseline costs, not a source-
@@ -111,9 +112,9 @@ the finite causal/typed/real mode controls below. No author rule is missing.
   recovery with current ownership and separate signed images. Ordinary no-wave
   submission remains forbidden. No author decision or product code change; causal
   three-mode existing-API menu RED precedes implementation.
-- [ ] CAUSAL: add one3-row existing-API menu theory in the current typed Mortal
+- [x] CAUSAL: add one3-row existing-API menu theory in the current typed Mortal
   integration fixture, with valid procedure/course/guaranteed known routes and
-  current actors/requirements. Snapshot whole-tree bytes and draw/source counters,
+  current actors/requirements. Snapshot whole-tree bytes and passive source-read counters,
   require actual declared route premises, then assert a physical executable choice.
   Document its small category in tests/categories.json/selection.json; fresh affected
   test build, catalog/exact PlanOnly/PREP, then record the intended missing-choice

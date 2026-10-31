@@ -156,15 +156,20 @@ this bounded route, not parent T121/FR071/US5/#1536 or the eight proof adapters.
   This functional wiring is unimplemented; backend arithmetic/publication exists.
   Follow existing spec/contracts; independent coherent design/source/selection/
   outcome and GM synchronization precede acceptance. Other parents/HOLDs stay open.
-  Test-only causal scaffold authored after accepted DESIGN: one existing-API theory,
-  estimated3 independent procedure/course/guaranteed cases, category
-  mortal-physical-guided-menu-causal/exclusive60s. Direct typed initial seeding avoids
-  the old reflection factory and Engine; complete canonical route/actor/requirement/
-  capability/course-clock premises, actual menu Self/provider, full JSON inertness
-  and passive menu-read observations precede the explicit missing-executable-route
-  assertion. No product/GM/claims/schema change, build/discovery/runtime or task
-  closure; scaffold UNCOMPILED/UNRUN. Source review and root-owned exact PREP/RED
-  precede product implementation. Existing accepted tests are not replayed here.
+  Causal prerequisite accepted separately: SOURCE/compiled Integration9b06fa9,
+  runtime9b0256956; three actual intended final missing-choice failures/zero PASS,
+  category6.6824986s/60. Complete premises, actual Self/provider menu, byte inertness,
+  unique IDs/pins/cleanup and actual source counts1/2/1/1 are checked; independent
+  Astra/high DESIGN/SOURCE/PREP/OUTCOME accepted. No physical GREEN or execution.
+
+- [x] T121-PHYSICAL-GUIDED-CAUSAL [US2/US5] Prove the existing-API missing
+  executable physical choice for valid independent procedure/course/guaranteed
+  roots after complete canonical requirements, actual Self/provider menu and inert
+  JSON checks. Direct typed fixture, no Engine/reflection/original/claims. Exact3
+  intended failures at the final assertion are independently accepted; full source,
+  compiled/runtime SHAs and external raw/proof hashes are in plan.md. Future GREEN
+  must strengthen the temporary unique-label predicate to typed route/provider/mode.
+
 
 - [x] T121-DIAGNOSIS-READ Show readable declared conditions of currently known
   diagnostic paths in the existing wound/status cards for console/browser. Reuse
