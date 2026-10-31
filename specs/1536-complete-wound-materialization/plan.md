@@ -1,3 +1,34 @@
+# T121 C19 four fresh owning builds verified — sourceguard/browser runtime UNRUN
+
+Independent Astra SOURCE accepts `21c3a0560e9d04a1409a736afd4908071f23b79a`,
+including the exact one-leaf registration and reviewed WorldRead hash05586D48.
+All four managed owners are freshly compiled at that source and exit0: Main1:43.61,
+Support12.59s, Unit56.25s, Integration1:45.90. Warning code/message multisets remain
+12/23/26/102. All4 PE/PDB pairs,347 source bindings,27 artifacts,40 operational
+resource copies and4 daemons match. Complete external archive62,983,082 bytes,
+SHA256 `ec831d9d4305c33fe5d28294267251cf7fe6399d3ca17bbaa329debff246af82`,
+passes every member hash and full197,314,560-byte gzip EOF/CRC decode. Native
+sources/package are unchanged; no new native or Windows PASS is claimed.
+
+Official catalog exits0:1273 categories /13088 methods, no holes. Strict PlanOnly
+exits0:234 cases /102 methods /61 descriptors /58 categories, ZERO executions.
+Four affected old guard rows are removed from current retained accounting, not
+from their raw evidence. Historical retained222 /90 methods /51 descriptors /
+48 categories across19 epochs /25 used runs matches the current plan; all51 used
+raw TRX hashes agree. External retained proof SHA256 is
+`8dae05c0bfb0669b289aeee453568a562ac6f6a91668481f9653e63be7961ce2`.
+No fresh222/234 run or feature/parent acceptance is claimed.
+
+PREP is requested for closure1+semantic3, then four separate NPC-to-World browser
+singletons in exact/foreign/parse/final order, with original60s owner bounds.
+Strict actual counts/pins/cleanup plus full original capture/footer/CRC/root proof
+for each browser case and a fresh live fence precede every next step; stop on any
+failure/uncertainty, with no source changes between stages. Engine-original1 and
+full All UI3 remain held and mandatory. The completed C18 production RED and
+C16/C17 incomplete raw/roots stay preserved. No budget raise, new cache/stack,
+source authority/readset relaxation, raw deletion or speedup claim. Full raw and
+compiled provenance remain outside checkout under M2GREENC19-*.
+
 # T121 C19 closed current-NPC dependency — production RED preserved; candidate UNCOMPILED
 
 C18 exact at runtime `ccd523b1f366d5131f2ecbae0edcc31a900a5274`, Integration
