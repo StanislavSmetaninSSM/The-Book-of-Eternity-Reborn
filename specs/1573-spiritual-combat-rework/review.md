@@ -23,8 +23,13 @@ revival-фикстуре пропущенные личные места паци
 не истекало. RED показал108вместо144HP на третьем instant; исправлен только
 utility loop: helper→skipped patient slot, сохранены Main/regen/threshold.
 GREEN66/66,0.283с. Матрицы utility не вызывают и не затронуты; их не повторяем.
-Utility raw будет заменён после публикации исправления. UNRUN: остаток main,
-итоги/независимое review.
+Utility raw заменён после публикации077bced26 и readback. Все матрицы42335ea5d
+завершились exit0;960cells/1 284 000траекторий, последовательные indices,
+metadata/count/outcome sums/complete/stderr проверены. Censored main19881,
+support13001,scaling738,confirm0; ограничения/таблицы описаны в
+[отчёте](healing-amplification-investigation.md). Модель сохраняет T119/цены и
+полезность лечения; рекомендации не являются внедрением/новыми бюджетами.
+UNRUN: независимое сложное review и финальная публикация.
 
 
 ## Завершённый checkpoint T120/T121 — принятый профиль и измерения

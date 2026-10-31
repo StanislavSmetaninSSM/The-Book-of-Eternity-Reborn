@@ -46,7 +46,12 @@ Spec Kit bridge/writing-plans/executing-plans/TDD используются в э
 
 Приёмка — воспроизводимые расчёты/guards, честный вывод об усилениях и полезности,
 не автоматически успешный баланс и не изменение согласованных игровых чисел.
-UNRUN: новые guards, матрицы, итог, review.
+Результат:66/66guards,0.283с, default parity324cells×20;1 284 000траекторий,
+960cells,4complete/exit0/пустые stderr и outcome sums проверены.
+[Итоги](healing-amplification-investigation.md) показывают и полезность лечения,
+и оставшиеся случаи затяжного боя. Матрицы42335ea5d, utility-only fix077bced26
+опубликованы/remoteSHA/source readback подтверждены. Числа T119 неизменны.
+UNRUN: независимое review и финальная публикация.
 
 
 ## Активный план T120/T121: проверка принятых двух режимов
