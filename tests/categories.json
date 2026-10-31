@@ -2,6 +2,37 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "mortal-diagnosis-method-guards",
+  "responsibility": "T121 strict current Mortal diagnosis Check guards: twenty file-free malformed/semantic closure rows and two independent realm rows refusing a complete Mortal check as a spiritual guarantee. Current empty checks reject; typed policy/quantity/modifier/band ownership and no input mutation remain exact. Source-authored before implementation; no runtime claim.",
+  "excludes": "No accepted-world authority, procedure execution or reservations, clock publication, Engine, GM wait, reflection, legacy current-input fallback or unrelated accepted PASS replay.",
+  "changeHints": [
+    "BookOfEternityClient.Tests/MortalWoundDiagnosisMethodGuardTests.cs",
+    "BookOfEternityClient/Services/MortalWoundTreatmentContract.DiagnosisCheck.cs",
+    "BookOfEternityClient/Services/MortalWoundTreatmentContract.cs",
+    "BookOfEternityClient/Services/MortalWoundTreatmentModel.cs"
+  ],
+  "related": [
+    {
+      "id": "mortal-diagnosis-method-causal",
+      "when": "The accepted M1RED two-row contract probe is the functional positive/complete canonical round-trip counterpart."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.MortalWoundDiagnosisMethodGuardTests.*"
+      ]
+    }
+  ]
+},
+{
   "id": "mortal-diagnosis-method-causal",
   "responsibility": "T121 existing-API Mortal diagnosis method contract causal proof. Two independent file-free Unit rows declare free/zero-duration or item-cost/nonzero-duration parameters. Canonical physical baseline, actual ordinary procedure resolution/binary bands/resource-policy parse and canonical round-trip, shared raw path parsing and all input-immutability checks precede the sole intended final strict-Mortal nonempty-check refusal. Full method round-trip assertions remain after that causal oracle for later GREEN.",
   "excludes": "No live accepted-world/check/resource/time authority, treatment execution, dice/Fate reservation, GM wait, Engine, publication, fake receipts, reflection, new API, production semantics, broad Mortal categories or accepted spiritual PASS replay. This is source contract DATA, not an executable diagnosis feature.",

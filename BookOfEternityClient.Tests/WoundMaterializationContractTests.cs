@@ -1870,7 +1870,7 @@ public sealed class WoundMaterializationContractTests
         ["visibility"] = "gm_only",
         ["requiresKnownFacts"] = new JsonArray(),
         ["requirements"] = new JsonArray(),
-        ["check"] = new JsonObject(),
+        ["check"] = WoundContractTestData.CreateMortalDiagnosisCheck(0),
         ["reveals"] = new JsonArray(),
         ["failurePolicy"] = "no_reveal"
     };

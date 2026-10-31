@@ -66,7 +66,7 @@ internal static class WoundAcceptedTransitionCommandTestData
         ["visibility"] = "known_to_player",
         ["requiresKnownFacts"] = new JsonArray("route:clean_and_suture"),
         ["requirements"] = new JsonArray(),
-        ["check"] = new JsonObject(),
+        ["check"] = WoundContractTestData.CreateMortalDiagnosisCheck(0),
         ["reveals"] = new JsonArray("route:" + routeId),
         ["failurePolicy"] = "no_reveal"
     };

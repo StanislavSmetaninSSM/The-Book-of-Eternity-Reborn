@@ -2050,7 +2050,7 @@ public sealed class MortalWoundDiagnosisTests
         ["requiresKnownFacts"] = new JsonArray(
             requiresKnownFacts.Select(static value => (JsonNode)value).ToArray()),
         ["requirements"] = new JsonArray(),
-        ["check"] = new JsonObject(),
+        ["check"] = WoundContractTestData.CreateMortalDiagnosisCheck(0),
         ["reveals"] = new JsonArray(
             reveals.Select(static value => (JsonNode)value).ToArray()),
         ["failurePolicy"] = "no_reveal"

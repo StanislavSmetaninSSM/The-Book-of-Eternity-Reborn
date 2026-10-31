@@ -343,7 +343,7 @@ public sealed class MortalWoundAlternativeTransitionTests
     {
         ["diagnosisPathId"] = id, ["displayName"] = "Read the moon-silver resonance",
         ["visibility"] = "known_to_player", ["requiresKnownFacts"] = new JsonArray("route:clean_and_suture"),
-        ["requirements"] = new JsonArray(), ["check"] = new JsonObject(),
+        ["requirements"] = new JsonArray(), ["check"] = WoundContractTestData.CreateMortalDiagnosisCheck(0),
         ["reveals"] = new JsonArray(reveals), ["failurePolicy"] = "no_reveal"
     };
 

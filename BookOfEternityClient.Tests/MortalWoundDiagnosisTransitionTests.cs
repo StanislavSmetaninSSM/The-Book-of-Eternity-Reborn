@@ -415,7 +415,7 @@ public sealed class MortalWoundDiagnosisTransitionTests
         {
             ["diagnosisPathId"] = PathId, ["displayName"] = "Examine the wound",
             ["visibility"] = "known_to_player", ["requiresKnownFacts"] = new JsonArray("route:clean_and_suture"),
-            ["requirements"] = new JsonArray(), ["check"] = new JsonObject(),
+            ["requirements"] = new JsonArray(), ["check"] = WoundContractTestData.CreateMortalDiagnosisCheck(0),
             ["reveals"] = new JsonArray(Facts.Select(fact => (JsonNode)fact).ToArray()),
             ["failurePolicy"] = "no_reveal"
         };

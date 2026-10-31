@@ -87,7 +87,7 @@ public sealed class WoundPlayerStatusTests(ITestOutputHelper output)
         {
             ["diagnosisPathId"] = "status_examine", ["displayName"] = "Осмотр раны",
             ["visibility"] = "public", ["requiresKnownFacts"] = new JsonArray(),
-            ["requirements"] = new JsonArray(), ["check"] = new JsonObject(),
+            ["requirements"] = new JsonArray(), ["check"] = WoundContractTestData.CreateMortalDiagnosisCheck(0),
             ["reveals"] = new JsonArray("route:" + visible["treatment"]!["routes"]![0]!["routeId"]!.GetValue<string>()),
             ["failurePolicy"] = "no_reveal"
         });

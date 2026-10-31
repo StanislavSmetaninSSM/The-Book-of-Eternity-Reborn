@@ -1,3 +1,29 @@
+# T121 Mortal typed-contract implementation WIP — UNCOMPILED / UNRUN
+
+The first connected code cut adds a typed complete Mortal Check, canonical writing
+and strict current-method validation. Existing procedure resolution, resource policy
+and ordered-band coverage calculations are shared rather than copied; the physical/
+Mortal parser boundary leaves spiritual empty-check behavior with its existing
+owner. Tests authored first cover 20 malformed/semantic cases plus two realm
+transplants, alongside the accepted two-row M1 causal/round-trip probe. No C# build,
+new discovery or runtime has been run by the writer.
+
+Affected physical fixture builders/read interfaces are migrating to explicit Check
+DATA through the existing WoundContractTestData owner; their chosen zero-duration/
+free fixed-modifier values are authored test input, never production defaults.
+Remaining active inputs/examples, GM synchronization and the coherent explicit-
+purpose live owner/request/claims, private future-time/recovery projection, common
+publication/completion and guided route are still pending. This remote WIP is not
+whole SOURCE, parser-only acceptance or the full Mortal player milestone.
+
+All prior M1RED and accepted173/read83/Shining110 lineages remain unchanged evidence.
+New Check/category source is estimated 24 cases across three methods/two Unit
+categories; exact discovery is future root-owned work. Final affected-contract
+selection will cover the whole route rather than the temporary parser cut. Current
+DATA reuse shares existing pure parameter/coverage checks, with no new cache or
+permission reuse; live source, lease, reservation and publication freshness remains
+required. No new gameplay, tariff or check default; all HOLDs remain open.
+
 # T121 M1 explicit-method semantic RED accepted — Mortal implementation pending
 
 Independent Astra OUTCOME accepted the actual M1RED at source

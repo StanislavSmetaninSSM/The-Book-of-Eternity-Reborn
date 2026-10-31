@@ -5,6 +5,43 @@ namespace BookOfEternityClient.Tests;
 /// <summary>Strict, deterministic version-1 JSON data for future wound contract tests.</summary>
 internal static class WoundContractTestData
 {
+    internal static JsonObject CreateMortalDiagnosisCheck(int durationMinutes)
+    {
+        var check = CreateMortalDiagnosisPath(false, durationMinutes)["check"]!.DeepClone().AsObject();
+        check["resolution"]!["modifierSource"] = new JsonObject { ["kind"] = "fixed_zero" };
+        return check;
+    }
+
+    internal static JsonObject CreateMortalDiagnosisPath(bool consumesItem, int durationMinutes)
+    {
+        var ordinary = CreateMortalProcedureRoute();
+        if (!consumesItem)
+        {
+            ordinary["requirements"]!.AsArray().RemoveAt(0);
+            ordinary["resolution"]!["modifierSource"]!["requirementIndex"] = 0;
+            ordinary["resourcePolicy"]!["mutations"] = new JsonArray();
+        }
+        ordinary["resourcePolicy"]!["consumeOn"] = new JsonArray("success", "failed_attempt");
+        return new JsonObject
+        {
+            ["diagnosisPathId"] = "inspect_explicit_method", ["displayName"] = "Осмотреть края раны",
+            ["visibility"] = "public", ["requiresKnownFacts"] = new JsonArray(),
+            ["requirements"] = ordinary["requirements"]!.DeepClone(),
+            ["check"] = new JsonObject
+            {
+                ["schemaVersion"] = 1, ["kind"] = "mortal_procedure_diagnosis",
+                ["resolution"] = ordinary["resolution"]!.DeepClone(), ["durationMinutes"] = durationMinutes,
+                ["resourcePolicy"] = ordinary["resourcePolicy"]!.DeepClone(),
+                ["outcomes"] = new JsonArray(
+                    new JsonObject { ["bandId"] = "diagnostic_success", ["minimumMargin"] = 0,
+                        ["maximumMargin"] = null, ["category"] = "success" },
+                    new JsonObject { ["bandId"] = "diagnostic_failure", ["minimumMargin"] = null,
+                        ["maximumMargin"] = -1, ["category"] = "failed_attempt" })
+            },
+            ["reveals"] = new JsonArray("route:clean_and_suture"), ["failurePolicy"] = "no_reveal"
+        };
+    }
+
     internal static JsonArray CreateRootBoundReactionComplicationDefinitions(
         string targetPolicy)
     {

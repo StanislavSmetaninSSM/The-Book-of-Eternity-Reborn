@@ -98,7 +98,7 @@ public sealed class WoundDiagnosisRecommendationTests
         ["requirements"] = new JsonArray(
             new JsonObject { ["kind"] = "resource_quantity", ["resourceRef"] = "energy", ["quantity"] = 17, ["ownerRole"] = "target" },
             new JsonObject { ["kind"] = "skill_tier", ["capabilityRef"] = "field_medicine", ["minimumTier"] = 3, ["actorRole"] = "provider" }),
-        ["check"] = new JsonObject(), ["reveals"] = new JsonArray("route:clean_and_suture"), ["failurePolicy"] = "no_reveal"
+        ["check"] = WoundContractTestData.CreateMortalDiagnosisCheck(0), ["reveals"] = new JsonArray("route:clean_and_suture"), ["failurePolicy"] = "no_reveal"
     };
 
     private static string Text<T>(T value) => JsonSerializer.Serialize(value,

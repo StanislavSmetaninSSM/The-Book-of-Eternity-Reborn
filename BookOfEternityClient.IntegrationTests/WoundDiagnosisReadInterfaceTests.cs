@@ -29,7 +29,7 @@ public sealed class WoundDiagnosisReadInterfaceTests(ITestOutputHelper output)
             ["requiresKnownFacts"] = new JsonArray(),
             ["requirements"] = new JsonArray(new JsonObject
             { ["kind"] = "resource_quantity", ["resourceRef"] = "energy", ["quantity"] = 17, ["ownerRole"] = "target" }),
-            ["check"] = new JsonObject(), ["reveals"] = new JsonArray("route:clean_and_suture"), ["failurePolicy"] = "no_reveal"
+            ["check"] = WoundContractTestData.CreateMortalDiagnosisCheck(0), ["reveals"] = new JsonArray("route:clean_and_suture"), ["failurePolicy"] = "no_reveal"
         });
         var reads = new CanonicalReadActivityAccumulator(); var mutations = new List<string>(); var armed = false;
         await using var fixture = await WoundPlayerReadFixture.CreateAsync(output,

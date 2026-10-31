@@ -104,7 +104,7 @@ public sealed partial class WoundAlternativeTreatmentRepairTests
                 ["visibility"] = "known_to_player",
                 ["requiresKnownFacts"] = new JsonArray("route:clean_and_suture"),
                 ["requirements"] = new JsonArray(),
-                ["check"] = new JsonObject(),
+                ["check"] = WoundContractTestData.CreateMortalDiagnosisCheck(0),
                 ["reveals"] = new JsonArray("route:alternative_hidden_route"),
                 ["failurePolicy"] = "no_reveal"
             }
