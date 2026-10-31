@@ -36,6 +36,19 @@ WIP2562aca30 был опубликован до завершения модел�
 Следующий checkpoint фиксирует GREEN source перед четырьмя длинными матрицами.
 T123.3/4 остаются открыты; пока нет новых балансных выводов и финального review.
 
+T123.3 checkpoint: все четыре матрицы запущены на c5bd379b65db3c16bce34c7a2722879f887c0e9e
+после push/remoteSHA и model-blob readback. Group завершена exit0:1152cells,
+1 152 000траекторий,246.298с wall,stderr0; parent проверил indices/counts/outcome
+и endpoint sums. Censor0 во всех group cells. Это ещё не завершение T123: duel,
+support иconfirm продолжаются. Group source reuse:8damage computations,
+47985630hits;12healing computations,18450336hits, mutable actors остаются свежими.
+Первые групповые данные не переносятся на все дуэли: offensive/passive, разные
+составы ицелевые тактики считаются раздельно. Source-stage Astra/high review
+без существенных замечаний; итоговый verdict ждёт полный report/raw.
+Прежний utility повторно выполнен в новой папке raw exit0: спасение10HP,
+long1HP против двух instant0 за одинаковые86.4ДЭ; +50% instant возвращает103-порог
+за1Main/43.2ДЭ. Это отдельные допустимые последовательности, не win-rate эффект.
+
 ## T123 — проект исследования, 2026-10-31
 
 Baseline 493cce3df289da5bc0c5a5f0ae29b055fad319e9 совпал с origin;
