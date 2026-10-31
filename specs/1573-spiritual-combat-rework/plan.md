@@ -48,27 +48,34 @@ PowerShell7.6.6/Windows; новых зависимостей нет. Canonical p
 
 ### T124.2 — дешёвые проверки и реализация
 
-- [ ] Записать RED guards pure selector: приD130 срыв28.8ДЭ, strong57.6,
+- [x] Записать RED guards pure selector: приD130 срыв28.8ДЭ, strong57.6,
   large86.4; energy86.39/86.40 дают отказ/допуск reserve_strong,
   115.19/115.20 — reserve_large. Низкая фактическая energy не исправляется
   будущим regen. Проверить equality, pure view, недееспособность/noReaction.
-- [ ] RED real runner: Never/недостаточный резерв не списываютДЭ/реакцию и
+- [x] RED real runner: Never/недостаточный резерв не списываютДЭ/реакцию и
   не вызывают reaction RNG; разрешённая попытка оплачивается до dice.
   Release пропускает start long, оставляет pending/его предоплату и допускает
   finish при достаточнойДЭ, с личным refresh между ними; instant не блокируется
   проверкой фазы. Проверить причины пропуска и единичность учёта.
-- [ ] Зафиксировать дешёвый default T123 контроль до изменения (обе очереди,
+- [x] Зафиксировать дешёвый default T123 контроль до изменения (обе очереди,
   instant/long/adaptive, on/off): без option результаты сохраняются точно;
   новые counters не меняют прежние summaries. Старые84tests не переписывать.
-- [ ] Реализовать selector/seam/runner минимально; fresh budget check остаётся
+- [x] Реализовать selector/seam/runner минимально; fresh budget check остаётся
   в applyHeal, Main/час/оплата не дублируются. Проверить matrix120unique/cross
   product, main-confirm suffix, shard union/без дублей/те же seeds, validation
   некорректного shard. Отдельное mutable состояние на каждый trial.
-- [ ] GREEN `node --test specs/1573-spiritual-combat-rework/probes/*.test.mjs`.
+- [x] GREEN `node --test specs/1573-spiritual-combat-rework/probes/*.test.mjs`.
   Это связанный numerical набор, не C# suite. Smoke main/confirm n1,horizon3
   и небольшие shards; counts/endpoints/metadata/stderr/exit проверить.
 
 ### T124.3–4 — измерение, review, сохранение
+
+T124.2 evidence:99/99passed,3269.2947мс Node/3506.0386мс shell,exit0/stderr0.
+Main/confirm smoke120cells каждый и2main-shards по60 прошли; default checksum
+12cases неизменен. Новые counts: interruptDecisions/interruptDecision_<reason>
+в aggregate/byActor, только opt-in. Ruling: collapsedThisTurn запрещает Main,
+но не сохранённую реакцию после revival; лишний conjunct удалён по RED→GREEN.
+Source frozen для дальнейшего замера; подробности/хеши в review и raw наD:.
 
 - [ ] Опубликовать frozen source/WIP перед дорогим прогоном. Основная матрица
   120×1000; confirmation120×10000, horizon2000. Можно запускать shards параллельно

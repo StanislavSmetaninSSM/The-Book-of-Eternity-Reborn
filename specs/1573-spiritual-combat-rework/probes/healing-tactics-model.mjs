@@ -10,6 +10,22 @@ export const attackProfiles=Object.freeze(Object.fromEntries(Object.entries({
   ordinary:[28,8],strong:[36,16],large:[44,24],suppress:[24,12]
 }).map(([key,[B,K]])=>[key,Object.freeze({B,K})])));
 export const attackPolicies=Object.freeze(['fixed_ordinary','fixed_strong','fixed_large','fixed_suppress','greedy','reserve','suppress_reserve']);
+export const interruptPolicies=Object.freeze(['never','always','reserve_strong','reserve_large','release_reserve_large']);
+
+/** Decide from current self resources and the visible Heal intent, without mutation or dice. */
+export function chooseInterrupt(view,policy) {
+  assert.ok(interruptPolicies.includes(policy),'Unknown interruption policy');
+  const skip=reason=>({attempt:false,reason});
+  if(!view.canAct)return skip('inactive');
+  if(!view.hasReaction)return skip('no_reaction');
+  if(view.energy<view.interruptCost)return skip('no_energy');
+  if(policy==='never')return skip('policy_never');
+  if(policy==='release_reserve_large'&&view.mode==='long'&&view.phase==='cast')return skip('long_start');
+  const reserve=policy==='reserve_strong'?view.strongCost:
+    ['reserve_large','release_reserve_large'].includes(policy)?view.largeCost:0;
+  if(view.energy-view.interruptCost<reserve)return skip('reserve');
+  return {attempt:true,reason:'attempt'};
+}
 
 // One measurement owns these immutable DATA, released with the operation. Current permission is never cached.
 export function createOperation() {
@@ -73,6 +89,10 @@ export function createEncounter(options={}) {
   assert.ok(['normal','healer28','both36'].includes(o.harmony)&&attackPolicies.includes(o.attackPolicy));
   assert.ok(['passive','offensive'].includes(o.defender)&&['heal','cleanse_safe'].includes(o.healerPolicy));
   assert.ok(['none','guard','counter'].includes(o.reply)&&Number.isInteger(o.horizon)&&o.horizon>0);
+  if(o.interruptPolicy!==undefined){
+    assert.ok(interruptPolicies.includes(o.interruptPolicy),'Unknown interruption policy');
+    assert.equal(o.kind,'duel','Interruption policies currently support duel encounters only');
+  }
   const roles=o.kind==='duel'?['primary','healer']:o.kind==='support'?['primary','healer','helper']:
     o.mirror?['healer','helper','healer','helper']:['primary','striker','healer','helper'];
   const order=o.order??roles.map((_,i)=>i);assert.deepEqual([...order].sort(),roles.map((_,i)=>i));
@@ -87,6 +107,11 @@ export function createEncounter(options={}) {
     return a;
   });
   const counts=counters();counts.byActor=Object.fromEntries(actors.map(a=>[a.id,counters()]));
+  if(o.interruptPolicy!==undefined){
+    const keys=['interruptDecisions',...['inactive','no_reaction','no_energy','policy_never','long_start','reserve','attempt']
+      .map(reason=>`interruptDecision_${reason}`)];
+    for(const row of [counts,...Object.values(counts.byActor)])for(const key of keys)row[key]=0;
+  }
   return {options:o,operation,actors,order:[...order],counts,round:0,cursor:0,done:false,winner:null,
     patientId:actors.find(a=>a.team===1&&a.role==='healer').id,
     endpoints:{total:null,firstPatientFall:null,firstAnyFall:null}};
@@ -116,8 +141,17 @@ function doAttack(e,a,policy,dice){
   if(a.lastTarget!==null&&a.lastTarget!==target.id)count(e,a,'targetChanges');a.lastTarget=target.id;
   count(e,a,'attacks');count(e,a,kind);count(e,a,'attackPaid',cost);count(e,a,'damage',before-target.hp);
 }
-function chooseInterrupter(e,source){
+function chooseInterrupter(e,source,mode,phase){
   if(!e.options.interrupt)return null;
+  if(e.options.interruptPolicy!==undefined){
+    // Opt-in is duel-only: identify the sole opponent before checking its current eligibility.
+    const candidate=e.actors.find(a=>a.team!==source.team);
+    const out=chooseInterrupt({canAct:living(candidate)&&candidate.inEncounter,
+      hasReaction:candidate.reaction>0,energy:candidate.energy,interruptCost:price(candidate,8),
+      strongCost:price(candidate,16),largeCost:price(candidate,24),mode,phase},e.options.interruptPolicy);
+    count(e,candidate,'interruptDecisions');count(e,candidate,`interruptDecision_${out.reason}`);
+    return out.attempt?candidate:null;
+  }
   return e.actors.filter(a=>a.team!==source.team&&living(a)&&a.reaction>0&&a.energy>=price(a,8))
     .sort((a,b)=>b.energy-a.energy||queue(a,b))[0]??null;
 }
@@ -134,7 +168,7 @@ function doHeal(e,a,dice){
   const mode=chooseMode(a,o.mode,maxNextDamage),patient=choosePatient(e.actors,a.id)??(mode==='long'?a:null);
   const finish=mode==='long'&&hadPending,cost=price(a,finish?0:mode==='long'?24:12);
   if(!patient||a.energy<cost){doRecover(e,a);if(hadPending)count(e,a,'abandoned');return;}
-  const opponent=chooseInterrupter(e,a),suppression=strength(patient),collapsed=patient.collapsed;
+  const opponent=chooseInterrupter(e,a,mode,finish?'finish':'cast'),suppression=strength(patient),collapsed=patient.collapsed;
   const potential=mode==='long'&&!finish?0:e.operation.calculate(a,patient,mode==='long'?16:7);
   const out=applyHeal(a,patient,{id:`${a.id}:${a.started}`,mode,phase:finish?'finish':'cast',
     opponent,reply:o.reply,roll:dice.reaction,calculate:e.operation.calculate});

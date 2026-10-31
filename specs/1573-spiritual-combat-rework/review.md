@@ -16,6 +16,28 @@ checkout, не linked worktree, вне main; новый checkout не нужен
 владеет один Sol6.1/high; parent интегрирует/измеряет; отдельный Astra/high review.
 T124.1 завершён, T124.2–4 ещё не завершены. Нового измеренного эффекта нет.
 
+T124.2 завершён одним GPT-6.1 Sol/high:4ownedфайла, источникфаз/Heal/цены не
+дублированы. Observed RED policy9assertions, runner4, revival1; GREEN99/99
+(84старых+15новых),exit0/stderr0,3269.2947мс Node,3506.0386мс shell.
+Команда `node --test specs/1573-spiritual-combat-rework/probes/*.test.mjs`.
+Parent прочёл actual model diff/new runner/tests и final evidence. Обнаруженный
+parent Main-only collapsedThisTurn в reaction eligibility подтверждён по
+reactCurrent: отдельный RED0roll/expected1, затем удалён conjunct, GREEN.
+Это сохраняет T114 и не возвращает потерянный Main. Новых правил нет.
+
+Default12cases (2orders×3modes×on/off,n3,h20) до/после совпали по SHA256
+bb1fb7aeefa417362301b1d00611c5994903ad3567dc5faa26b590ab4a80b03c.
+Smoke `node .../healing-interruption-probe.mjs --matrix=main|confirm --samples=1 --horizon=3`
+дал120cells+metadata/complete каждый; main --shard-index=0|1 --shard-count=2
+по60cells, exact union=unsharded без timings. Parent проверил каждый JSONL,
+indices/counts/outcome+endpoint+decision sums, всеexit0/stderr0. Source hashes,
+RED/GREEN и smoke evidence только D:\BoeDiagnostics\healing-interruption-t124\20261101-v1.
+Reuse smoke8damage computations/2272hits,6Heal computations/270или282hits;
+mutable self/допуск свежие. Решение attempt и фактическая реакция различаются
+при искусственной мутации между gate и оплатой: fresh applyHeal отказывает,
+guard проверяет отсутствие расхода/костей. В штатной матрице такой hook отсутствует.
+Frozen source публикуется до полного замера; T124.3–4 открыты.
+
 ## T124 — проект scope, 2026-11-01
 
 Baseline/origin741944f6d46f6cf9558238379679bf993c6d3d86 и issue1573 сверены.
