@@ -443,7 +443,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
     {
         await using var fixture = await DiagnosisOwnershipFixture.CreateAsync(20, signedInput: true, duration: 300);
         var originalPending = await fixture.Files.ReadFileBytesAsync(fixture.Lease, WoundAcceptedTurnSnapshotContract.PendingResolutionPath);
-        var input = JsonNode.Parse(await fixture.Files.ReadFileAsync(fixture.Lease, AcceptedMechanicsPlan.WoundCommandPath))!.AsObject();
+        var input = JsonNode.Parse(Assert.IsType<string>(await fixture.Files.ReadFileAsync(fixture.Lease, AcceptedMechanicsPlan.WoundCommandPath)))!.AsObject();
         var admission = await WoundApplicationService.ResolveMortalDiagnosisInputAsync(fixture.Files, fixture.Lease,
             MortalWoundDiagnosisInputCodec.Read(input).Frame);
         var owner = admission.Owner;
@@ -480,8 +480,8 @@ public sealed partial class MortalWoundTreatmentResolverTests
         Assert.Contains(ProgressionScheduleService.SchedulePath, plan.TouchedPaths);
         Assert.Contains(WoundAcceptedTurnSnapshotContract.PendingResolutionPath, plan.ConsumedPaths);
         Assert.Contains(AcceptedMechanicsPlan.WoundCommandPath, plan.ConsumedPaths);
-        Assert.Equal(owner.CurrentGameMinute, JsonNode.Parse(await fixture.Files.ReadFileAsync(fixture.Lease,
-            EffectAcceptedTurnInputComposer.WorldTimePath))!["currentTimeInMinutes"]!.GetValue<long>());
+        Assert.Equal(owner.CurrentGameMinute, JsonNode.Parse(Assert.IsType<string>(await fixture.Files.ReadFileAsync(fixture.Lease,
+            EffectAcceptedTurnInputComposer.WorldTimePath)))!["currentTimeInMinutes"]!.GetValue<long>());
         fixture.AssertJson(heldTree);
     }
 
@@ -490,7 +490,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
     {
         await using var fixture = await DiagnosisOwnershipFixture.CreateAsync(20, signedInput: true, duration: 300);
         var fs = fixture.Files;
-        var originalInput = JsonNode.Parse(await fs.ReadFileAsync(fixture.Lease, AcceptedMechanicsPlan.WoundCommandPath))!.AsObject();
+        var originalInput = JsonNode.Parse(Assert.IsType<string>(await fs.ReadFileAsync(fixture.Lease, AcceptedMechanicsPlan.WoundCommandPath)))!.AsObject();
         var frame = MortalWoundDiagnosisInputCodec.Read(originalInput).Frame;
         var admitted = await WoundApplicationService.ResolveMortalDiagnosisInputAsync(fs, fixture.Lease, frame);
         var check = Assert.IsType<MortalWoundProcedureCheckAuthority>(admitted.Request.ModeAuthority);
@@ -555,7 +555,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
         var member = Assert.Single(result.Recoveries);
         Assert.NotEmpty(member.Stages);
         Assert.Equal("active", member.Stages[^1].AfterWound.Lifecycle);
-        var minute = JsonNode.Parse(await fs.ReadFileAsync(EffectAcceptedTurnInputComposer.WorldTimePath))!["currentTimeInMinutes"]!.GetValue<long>();
+        var minute = JsonNode.Parse(Assert.IsType<string>(await fs.ReadFileAsync(EffectAcceptedTurnInputComposer.WorldTimePath)))!["currentTimeInMinutes"]!.GetValue<long>();
         Assert.Equal(result.ToCanonicalJson()["clock"]!["resultingMinute"]!.GetValue<long>(), minute);
         // A genuine next original is captured from the actual published world.
         // No canonical clock/wound/source is patched to invent a later journey.
@@ -621,7 +621,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
         var common = await WoundAcceptedTurnPlanner.ComposeMortalDiagnosisPublicationAsync(fixture.Files, fixture.Lease,
             new GameResponse(), owner, recovered.Request);
         Assert.True(common.IsValid, JsonSerializer.Serialize(common.Issues));
-        var identities = EffectIdentityState.Parse(common.Plan!.EffectPlan!.IdentityIndexAfterImage.ToJsonString(), EffectIdentityState.StatePath);
+        var identities = EffectIdentityState.Parse(JsonSerializer.SerializeToElement(common.Plan!.EffectPlan!.IdentityIndexAfterImage), EffectIdentityState.StatePath);
         Assert.NotNull(identities.State);
         Assert.Empty(identities.Issues);
         Assert.Equal("expired", Assert.Single(identities.State!.Entries, row => row.EffectId == "effect_fate_shield_older").State);
@@ -699,7 +699,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
             {
                 _ = AcceptedStateFixture.SeedCanonicalComponentData(files, scenario, "player", "player_current", WoundCarrierCatalog.PlayerPath);
                 if (twoMembers) await SeedDiagnosisPrivateMemberAsync(files, scenario.Before);
-                var clock = JsonNode.Parse(await files.ReadFileAsync(EffectAcceptedTurnInputComposer.WorldTimePath))!.AsObject();
+                var clock = JsonNode.Parse(Assert.IsType<string>(await files.ReadFileAsync(EffectAcceptedTurnInputComposer.WorldTimePath)))!.AsObject();
                 clock["timeOfDay"] = "08:00";
                 await files.WriteFileAtomicAsync(EffectAcceptedTurnInputComposer.WorldTimePath, clock.ToJsonString());
                 var stagedContext = ParseContext();

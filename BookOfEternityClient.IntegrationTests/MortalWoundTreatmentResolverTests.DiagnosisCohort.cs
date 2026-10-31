@@ -118,24 +118,24 @@ public sealed partial class MortalWoundTreatmentResolverTests
         Rebind(copy); copy["display"]!["visibility"] = "gm_only"; copy["display"]!["name"] = "ПРИВАТНАЯ_РАНА";
         var wound = WoundMaterializationContract.Parse(copy.ToJsonString(), "private.original");
         Assert.True(wound.IsValid, JsonSerializer.Serialize(wound.Issues));
-        var carrier = JsonNode.Parse(await files.ReadFileAsync(WoundCarrierCatalog.PlayerPath))!.AsObject();
+        var carrier = JsonNode.Parse(Assert.IsType<string>(await files.ReadFileAsync(WoundCarrierCatalog.PlayerPath)))!.AsObject();
         carrier["activeWounds"]!.AsArray().Insert(0, copy);
         await files.WriteFileAtomicAsync(WoundCarrierCatalog.PlayerPath, carrier.ToJsonString());
-        var identities = JsonNode.Parse(await files.ReadFileAsync(WoundIdentityState.StatePath))!.AsObject();
+        var identities = JsonNode.Parse(Assert.IsType<string>(await files.ReadFileAsync(WoundIdentityState.StatePath)))!.AsObject();
         identities["entries"]!.AsArray().Add(WoundContractTestData.CreateIdentityEntry(woundId: wound.Wound!.WoundId,
             createdAtTurn: wound.Wound.Origin.CreatedAtTurn, createdEventRef: wound.Wound.Origin.EventRef,
             lastTransitionOrdinal: wound.Wound.LastTransition.Ordinal, semanticFingerprint: WoundIdentityState.ComputeSemanticFingerprint(wound.Wound)));
         await files.WriteFileAtomicAsync(WoundIdentityState.StatePath, identities.ToJsonString());
-        var history = JsonNode.Parse(await files.ReadFileAsync(WoundHistoryState.HistoryPath))!.AsObject();
+        var history = JsonNode.Parse(Assert.IsType<string>(await files.ReadFileAsync(WoundHistoryState.HistoryPath)))!.AsObject();
         var privateRow = Assert.IsType<JsonObject>(Assert.Single(CreateCurrentWoundHistory(copy)["transitions"]!.AsArray())).DeepClone().AsObject();
         privateRow["ordinal"] = history["nextOrdinal"]!.GetValue<int>(); privateRow["operationKey"] = "operation_private_diagnosis_initial";
         history["transitions"]!.AsArray().Add(privateRow); history["nextOrdinal"] = history["nextOrdinal"]!.GetValue<int>() + 1;
         await files.WriteFileAtomicAsync(WoundHistoryState.HistoryPath, history.ToJsonString());
         var effects = CreateCanonicalWoundEffects(copy).ToArray();
-        var effectCarrier = JsonNode.Parse(await files.ReadFileAsync(EffectCarrierCatalog.PlayerPath))!.AsObject();
+        var effectCarrier = JsonNode.Parse(Assert.IsType<string>(await files.ReadFileAsync(EffectCarrierCatalog.PlayerPath)))!.AsObject();
         foreach (var effect in effects) effectCarrier["activeEffects"]!.AsArray().Add(effect.DeepClone());
         await files.WriteFileAtomicAsync(EffectCarrierCatalog.PlayerPath, effectCarrier.ToJsonString());
-        var indexRoot = JsonNode.Parse(await files.ReadFileAsync(EffectIdentityState.StatePath))!.AsObject();
+        var indexRoot = JsonNode.Parse(Assert.IsType<string>(await files.ReadFileAsync(EffectIdentityState.StatePath)))!.AsObject();
         var added = EffectMaterializationTestFixture.CreateIdentityIndex(effects)["entries"]!.AsArray();
         for (var index = 0; index < added.Count; index++)
         {

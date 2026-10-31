@@ -82,7 +82,8 @@ public sealed partial class GameEngineTurnLifecycleTests
                 Assert.Equal(before.RequestFingerprint, result.Request.RequestFingerprint);
                 if (shield)
                 {
-                    var identity = EffectIdentityState.Parse(await fs.ReadFileAsync(EffectIdentityState.StatePath), EffectIdentityState.StatePath);
+                    var identity = EffectIdentityState.Parse(JsonSerializer.Deserialize<JsonElement>(
+                        Assert.IsType<string>(await fs.ReadFileAsync(EffectIdentityState.StatePath))), EffectIdentityState.StatePath);
                     Assert.Empty(identity.Issues);
                     Assert.Equal("expired", Assert.Single(identity.State!.Entries, row => row.EffectId == "effect_fate_shield_older").State);
                     Assert.Equal("active", Assert.Single(identity.State.Entries, row => row.EffectId == "effect_fate_shield_newer").State);
@@ -133,7 +134,9 @@ public sealed partial class GameEngineTurnLifecycleTests
     }
 
     private static Dictionary<string, byte[]> CaptureDiagnosisRollbackCanonical(FileSystemManager files) =>
-        GameEngine.EnumerateOriginalBrowserRollbackTrackedFiles(files.EnumerateFiles("*").ToArray())
+        GameEngine.EnumerateOriginalBrowserRollbackTrackedFiles(
+                FileSystemManager.EnumerateFilesWithoutFollowingReparsePoints(files.GameSessionPath, "*")
+                    .Select(path => Path.GetRelativePath(files.GameSessionPath, path).Replace(Path.DirectorySeparatorChar, '/')).ToArray())
             .ToDictionary(path => path, path => File.ReadAllBytes(files.ResolvePath(path)), StringComparer.Ordinal);
 
     private static void AssertDiagnosisRollbackCanonical(IReadOnlyDictionary<string, byte[]> expected, FileSystemManager files)

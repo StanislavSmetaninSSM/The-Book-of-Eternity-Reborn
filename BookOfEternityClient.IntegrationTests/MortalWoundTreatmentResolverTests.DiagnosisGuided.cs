@@ -80,9 +80,11 @@ public sealed partial class MortalWoundTreatmentResolverTests
             });
     }
 
-    private static Dictionary<string, byte[]> CaptureDiagnosisMenuJson(FileSystemManager files) => files.EnumerateFiles("*.json")
-        .Where(path => !path.StartsWith(".boe_runtime", StringComparison.Ordinal))
-        .ToDictionary(files.ResolvePath, path => File.ReadAllBytes(files.ResolvePath(path)), StringComparer.Ordinal);
+    private static Dictionary<string, byte[]> CaptureDiagnosisMenuJson(FileSystemManager files) =>
+        FileSystemManager.EnumerateFilesWithoutFollowingReparsePoints(files.GameSessionPath, "*.json")
+            .Where(path => !Path.GetRelativePath(files.GameSessionPath, path).Replace(Path.DirectorySeparatorChar, '/')
+                .StartsWith(".boe_runtime", StringComparison.Ordinal))
+            .ToDictionary(static path => path, File.ReadAllBytes, StringComparer.Ordinal);
     private static void AssertDiagnosisMenuJson(IReadOnlyDictionary<string, byte[]> expected, FileSystemManager files)
     {
         var actual = CaptureDiagnosisMenuJson(files);

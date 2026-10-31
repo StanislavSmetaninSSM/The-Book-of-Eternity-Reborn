@@ -1,3 +1,28 @@
+# T121 first Integration build failed — grouped fixture API correction, UNRUN
+
+At source `5ca66981af12df032046e1adcbd7c987a3de3092`, fresh Main, Support
+and Unit builds completed with zero errors and their 12/23/26 baseline warnings.
+The first Integration build failed with exit 1 after 2:07.60: four API compiler
+errors and 112 warnings, comprising 102 prior baseline plus ten new CS8604.
+Full output remains external at `M2GREEN-build-integration/build.log`.
+No discovery, PlanOnly or test/runtime has run; this is not semantic RED.
+
+Only Integration fixture code is corrected: both whole-tree captures call the
+same existing FileSystemManager no-follow DATA enumerator used by its leased
+wrapper, with exact relative-path normalization before the original rollback
+filter. No nested lease, omitted tracked path, new enumerator or inventory scope
+is introduced. Both effect-identity reads now pass the required JsonElement,
+retaining their complete canonical DATA and all identity assertions. Ten required
+JSON inputs have explicit string-presence assertions before parsing; no nullable
+suppression, skipped assertion or changed predicate.
+
+Main/Support/Unit production/test source remains unchanged at its successful
+compiled epoch. The correction is UNCOMPILED/UNRUN; same-reviewer narrow delta
+read and a new parent-owned Integration build directory precede artifact/PDB
+continuity checks and discovery. Selected tests/categories/budgets and all other
+feature source stay frozen. No writer build, test, restore or runtime; original
+failed build output and all earlier receipts are preserved outside checkout.
+
 # T121 M2 first Main build failed — narrow compiler correction, UNRUN
 
 The first fresh Main build at source
