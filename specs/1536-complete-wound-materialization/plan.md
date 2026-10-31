@@ -1,3 +1,37 @@
+# T121 C20 console PASS; actual browser completion-family FAIL
+
+At runtime `319b75b9a2c91e6f36e4940dc3c5a2fdf55a678c`, Integration compiled
+`4b542575b72cc77b7dd836580517a5ac65a2416c` and other three owners compiled
+`21c3a0560e9d04a1409a736afd4908071f23b79a`, original console1 passes in
+48.7228678s/180 (wall57.9886074s). Strict case/method/TRX/pin checks and complete
+20-event original-timestamp capture, full gzip/footer/CRC/writer and actual root
+absence are verified. Stored SHA256
+`568ab8eb182688a44433185026e742b84f9f78412eadff0cdbf59beb2d918d80`;
+decoded `904b6e55e14df07f08c31364de7ee45eb723f2ba86b9af0b8477203ef5bbbab9`.
+This is primary console evidence pending coherent independent OUTCOME.
+
+After its fresh fence, browser1 completes with1 FAIL, no timeout, in125.3215579s/180
+(wall2:17.1126721). The actual final accepted tail invokes
+RequireAcceptedSpiritualResultAsync and rejects at GameEngine.BrowserPlayerInput.cs492.
+Detached original decoding already distinguishes MortalDiagnosis, but the final
+result verifier dispatches only combat healing or spiritual safe-cycle results;
+Mortal current control cannot satisfy the afterlife-only reader. Independent bounded
+root-cause/design review is requested before any correction. No bypass or new run
+is authorized by this failed receipt; rollback remains UNRUN.
+
+Full18-event capture, original pairs/sequences, gzip EOF/CRC/footer, writer closure,
+actual owned-root absence, runner cleanup and unchanged artifact/resource pins
+are verified. Stored SHA256
+`235bcbf7aad60fbf0bd26e556e0d674e4d3815ea562b6dcf03dedc272f2addbd`;
+decoded `bd4bc389943d80a2ca6894ee76ec34ddb0b8b0caea5bd9603dc60e3c964d6bc5`.
+Full raw/TRX and honest failed receipt remain external in M2GREENC20-browser1;
+console evidence is separate in M2GREENC20-console1. No accepted 234 aggregate,
+feature/parent closure, limit increase or weakening of completed-result checks.
+Existing signed original, full History/current settlement and cleanup proof must
+remain required for both immediate completion and retained accepted-record reading.
+No production reuse/cache or speedup claim follows from this dispatch failure.
+All prior raw/roots/HOLDs and the functional remainder stay unchanged.
+
 # T121 C20 fresh fixture build verified — original UI3 UNRUN
 
 Independent Astra SOURCE accepts `4b542575b72cc77b7dd836580517a5ac65a2416c`.
