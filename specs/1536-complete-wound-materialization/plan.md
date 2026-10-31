@@ -1,3 +1,38 @@
+# T121 C22 fresh owning builds/provenance verified — resource1/UI2 UNRUN
+
+Independent C22 SOURCE accepts `f2f4f5795b88d98ec337d52e3b5289d95df320d8`.
+All four successful fresh owners compile that exact SHA: Main1:47.01 /12 warnings,
+Support17.14s /23, Unit59.45s /26, Integration1:51.37 /102. All warning code/message
+multisets exactly match C19; no new warnings/errors. Actual Compile ownership,
+four PE/PDB pairs and356 changed-source bindings match. All27 artifacts,40 resource
+copies and4 daemon copies are verified. Full external artifact archive63,046,266
+bytes has SHA256 `cb38cac43af27d9132963ba813664205793c1ad971703b76ce0af186890bfc24`;
+all27 member hashes and197,488,640-byte gzip EOF/CRC decode agree.
+
+Official catalog exits0 with1275 categories /13090 methods and no unmapped/stale
+selector. Full PlanOnly remains237 cases /104 methods /63 descriptors /60 categories,
+zero execution. Rereading60 raw TRX reconciles234 retained historical PASS /
+101 methods /60 descriptors /57 categories across23 epochs /34 used runs. This
+includes the independently accepted C21 item2/durable1/semantic3, by reviewed narrow
+source continuity; it is not a fresh234 or237. Failed resource evidence remains
+excluded and preserved. External retained proof SHA256
+`b7d3c8ddd855fef5aeda80fdb9d8d9b1db89b147505b3f087c1153a0adb706a4`.
+
+Exact resource PlanOnly confirms one case /method /descriptor at unchanged60s,
+zero execution. Independent PREP and immediate source/artifact/resource/process/disk
+fence precede this single retry after the proven purpose-dispatch correction.
+Original browser and rollback each keep180s and remain held until resource OUTCOME
+and separate PREP. No C22 runtime has started. No accepted6 replay is proposed.
+Raw/package/proofs remain outside checkout under
+/workspace/tboe-linux-evidence-20261025/us5-guided-diagnosis/M2GREENC22-*.
+All prior captures/roots, open parents and broader qualification HOLDs remain.
+
+The existing accessor adds no production read, parse, cache or authority. Existing
+seal, backup, ownership and whole-root equality stay exact; no new GM-authored
+field/rule/default or timing/speedup claim. After current diagnosis acceptance,
+continue guided physical procedure/course/guaranteed treatment using existing
+mode factories, full ordinary held-request contract and console/browser owners.
+
 # T121 C22 genuine diagnosis NPC-tail dispatch — WIP UNCOMPILED/UNRUN
 
 Tracked task T121-DIAGNOSIS-MORTAL-NPC-TAIL, issue #1536. Base remote/source
