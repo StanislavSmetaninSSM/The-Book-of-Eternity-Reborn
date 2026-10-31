@@ -69,7 +69,7 @@ internal sealed class WoundAcceptedTurnOutputBindingResult
     internal bool Success => _issues.Length == 0;
 }
 
-internal sealed record WoundPlayerNotification(
+internal sealed partial record WoundPlayerNotification(
     WoundPlayerTextProjection Text,
     string DetailCommand)
 {
@@ -118,6 +118,9 @@ internal sealed record WoundPlayerNotification(
         var mutations = final.CarrierContributions
             .SelectMany(static value => value.Mutations)
             .ToArray();
+
+        if (prepared.MortalDiagnosisAuthority is not null)
+            return ComposeAcceptedMortalDiagnosis(bundle, input, prepared, final, mutations);
 
         if (prepared.JointRepairContinuationAuthority is not null)
             return ComposeAcceptedJointRepair(bundle, finalSceneText, mutations);

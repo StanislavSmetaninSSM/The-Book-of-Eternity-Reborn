@@ -1,3 +1,56 @@
+# T121 C13 sealed diagnosis output candidate — UNCOMPILED / UNRUN
+
+The C12 console at9c8e3d3d (owning code99703ab6) completed FAIL in47.2731659s,
+not timeout. Turn stayed42 after safe Rearmed compensation. The complete21-row /
+20-event capture and actual owned-root absence are preserved outside Git. The
+specific runtime refusal was the accepted wound output/finalized typed stages join;
+existing notification dispatch lacked MortalDiagnosisAuthority and compared zero
+acquisition transitions to real diagnosis/recovery mutations. This is causal RED;
+no additional180-second RED attempt is required. Browser/rollback are held.
+
+Tracked task T121-DIAGNOSIS-MORTAL-OUTPUT now has a candidate separate diagnosis
+branch in the existing notification architecture. It checks the existing complete
+immutable final/History predicate once and the actual sealed diagnosis execution/
+result, validates every ordered recovery member and exact changed carrier, and
+requires zero mutation for unchanged zero-due members. Only the exact selected
+visible wound yields escaped truthful success/failed-attempt and actual ordinary
+recovery text plus /раны. Private/unselected names, IDs and facts remain undisclosed.
+No unconditional empty success, direct-heal claim or acquisition narration demand
+is introduced. The already-correct authenticated snapshot/progression paths remain
+unchanged; their full original UI consumer stays required.
+
+Two genuine common-bundle rows cover success/zero duration and failure/elapsed30
+with selected-second/private cohort. Both actual Engine output binders run after
+the producing lease closes; typed fully resealed omission/extra/changed/reordered
+final data and a genuine foreign preparation must refuse at the first real bundle
+constructor/binder boundary. Full canonical bytes and confirmed resource agreement
+stay exact. The optional fixture label is applied only before initial seeding and
+its matching History, so real untrusted visible markup exercises all renderer
+escaping without changing an accepted source. No fake authority or reflection.
+
+Fresh selection proposal is new output2 plus semantic guards3 (60-second owners),
+then exact existing notification peers5 under a separate exclusive120-second owner:
+ordinary treatment success/partial/failure3, spiritual publication-owner1 and
+acquisition escaping1, rehomed from their broader owners. Original UI3 still runs
+separately at180 seconds only after SOURCE/build/discovery/PREP. No new peer tests
+or broad HOLD aggregate is selected. Current source estimate is225 cases /
+94 methods /53 descriptors /50 categories; official discovery is authoritative.
+The pre-UI accounting proposal is212 retained (prior215 minus fresh guards3) plus
+new output2/guards3/peers5 =222, then UI3. C12 focused4/native9 retain only their
+unaffected reviewed lineages; this is not one fresh225 PASS or feature closure.
+
+Reuse/ownership: notification receives actual private sealed bundle DATA, not live
+publication permission. Export preparation/effect/final/mutations once per binding;
+the existing final-agreement DATA overload reuses these exact exports rather than
+cloning the full graph repeatedly. Its ordinary branch is unchanged. Complete
+sealed final validation and exact execution proofs remain mandatory. No source IO,
+new owner/cache or world reconstruction is added to notification; published-output
+wrapper retains its existing narrative read. No speedup/global no-I/O claim is made.
+GM fields, check/cost/duration/outcome authority, narrative obligations, examples
+and manifest wire stay synchronized and unchanged. Client notification truthfulness
+is enforced here, so no new GM-authoring update is needed. All parents, physical
+guided treatment, eight adapters, earlier UNKNOWN/timeouts and HOLDs remain open.
+
 # T121 C12 console FAIL — missing finalized diagnosis notification dispatch
 
 Console at `9c8e3d3d676582a9ece00b4868566e3cbadc8d28` completed one FAIL in

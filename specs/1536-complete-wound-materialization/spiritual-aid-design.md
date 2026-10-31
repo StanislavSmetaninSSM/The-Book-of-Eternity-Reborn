@@ -1905,3 +1905,24 @@ inspection leases before the existing restore owner acquires its lease. Existing
 strict byte, source, claim, negative and whole-original assertions remain. GM wire,
 authored fields, rules and examples do not change. Current qualification is only
 in plan.md; the C12 candidate is UNCOMPILED/UNRUN.
+
+
+### C13 sealed Mortal diagnosis player output
+
+Post-publication output has no live-owner admission. The existing notification
+architecture must dispatch genuine MortalDiagnosisAuthority before acquisition
+cardinality. Validate the existing complete immutable final/History agreement and
+actual sealed execution/result, then bind the complete ordered cohort to exact
+carrier mutations: changed members need one update/delete, unchanged zero-due
+members need none. Reject omitted/extra/reordered/foreign DATA before any notice.
+Only the selected visible diagnosis and its actual ordinary recovery yield escaped
+player text and /раны; private/unselected images/facts/IDs stay internal. Success
+and failed-attempt are truthful, diagnosis claims no healing, and acquisition
+narration is not a requirement for this route.
+
+Use one operation-local export of prepared/effect/final/mutation DATA and the same
+existing strict final predicate. No source read/current admission/cache/authority
+is introduced by notification. Existing published-output narrative read remains.
+The authenticated Mortal prepared-command role and diagnosis progression completion
+already dispatch correctly and are unchanged. GM wire/rules/examples remain valid;
+current source and still-unqualified outcomes are only in plan.md.

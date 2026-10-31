@@ -2,6 +2,89 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "mortal-diagnosis-output-binding",
+  "responsibility": "T121 two genuine common-bundle rows: success/zero-duration and failed-attempt/elapsed30, selected second in a private two-member cohort. Actual GameEngine direct/published output binders work after producing lease closure; exact zero-due absence and complete changed cohort mutations, sealed History/execution, truthful selected-only diagnosis/ordinary recovery, escaped plain/console/browser parity, no private data, canonical/confirmed-claim inertness. Typed resealed omitted/extra/changed/reordered/foreign bundles refuse at the real constructor/binder boundary. Actual console compensation is causal RED; UNCOMPILED/UNRUN.",
+  "excludes": "No current owner readmission for notification, direct diagnosis healing, acquisition narration requirement, unconditional empty success, fake receipt/authority, reflection, snapshot/progression refactor, new cache/IO/framework or broad replay.",
+  "changeHints": [
+    "BookOfEternityClient/UI/WoundPlayerNotification.cs",
+    "BookOfEternityClient/UI/WoundPlayerNotification.MortalDiagnosis.cs",
+    "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalProcedurePublication.cs",
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.DiagnosisOutput.cs"
+  ],
+  "related": [
+    {
+      "id": "wound-notification-accepted-regressions",
+      "when": "Exact ordinary/spiritual/acquisition peers preserve unaffected notification branches and escaping."
+    },
+    {
+      "id": "wound-read-semantic-source-guards",
+      "when": "New production output file and exact existing full-final predicate require source guard qualification."
+    },
+    {
+      "id": "mortal-diagnosis-console",
+      "when": "Original Engine console must pass after focused output binding; previous actual console is FAIL."
+    },
+    {
+      "id": "mortal-diagnosis-browser",
+      "when": "Shared renderer/player output must remain semantically equivalent."
+    },
+    {
+      "id": "mortal-diagnosis-rollback",
+      "when": "Original real cut still proves exact compensation and outer restoration."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.DiagnosisOutputBindsClosedSelectedResultAndCompletePrivateCohortWithoutLiveAuthority"
+      ]
+    }
+  ]
+},
+{
+  "id": "wound-notification-accepted-regressions",
+  "responsibility": "Exact unchanged output peers rehomed without new tests: ordinary guaranteed/partial/failed treatment3, genuine spiritual publication-owner1 and acquisition escaping1. Preserve real bundle/publication branch semantics and shared escaping while diagnosis gains its separate sealed-DATA dispatch. Source estimate5cases/3methods/2descriptors; exclusive120s peer bound, no broad Mortal or spiritual aggregate.",
+  "excludes": "No old full Mortal/HOLD category, ordinary envelope timeout retry, unrelated repair/QTE/provider/performance scenarios or new fixture.",
+  "changeHints": [
+    "BookOfEternityClient/UI/WoundPlayerNotification.cs",
+    "BookOfEternityClient/UI/WoundPlayerNotification.MortalDiagnosis.cs"
+  ],
+  "related": [
+    {
+      "id": "mortal-diagnosis-output-binding",
+      "when": "New diagnosis dispatch must preserve these exact existing siblings."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.ProcedureReduction_PublicationUsesFreshCanonicalWoundForGuaranteedPartialAndFailedOutcomes",
+        "BookOfEternityClient.Tests.AfterlifeWoundHealingPublicationOwnerTests.DeferredRoutingLeavesNoExecutablePlanAndPublicationUsesItsOwnLease"
+      ]
+    },
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.WoundAcquisitionOutputTests.Compose_EscapesUntrustedConsoleAndBrowserMarkup"
+      ]
+    }
+  ]
+},
+{
   "id": "mortal-diagnosis-engine-prepared-original",
   "responsibility": "T121 one genuine Engine staging Fact: authenticate distinct prepared/outer schedule images, real fresh-lease retained request recovery, original T0/T1 calculation and independent current clock/schedule refusal; close inspection lease then restore/resume inside the actual live Engine operation. Altered outer/signed/rollback schedule evidence must refuse without consuming the checkpoint. Resume must retain exact request/dice/Fate/resources and restore signed prepared T0 atomically with command/pending; subsequent read-only calculation and final exact whole-original restoration precede the controlled pre-wait sentinel. Existing passive capture/closing; C11 runtime refusal is causal RED; C12 UNCOMPILED/UNRUN.",
   "excludes": "No GM response/wait/publication, forged authority/receipt, invented backup paths/hashes, private reflection, new API/cache/validator/diagnostic stack, ignored timestamps, late rebasing, broad accepted-case replay or HOLD work.",
@@ -5004,7 +5087,7 @@
 {
   "id": "spiritual-healing-publication-owner",
   "responsibility": "Two typed real-snapshot controls for deferred raw routing without an executable plan, actual preparation/publication under a later lease, and absent/replaced source refusal without a stale earlier-lease fallback.",
-  "excludes": "Actual GameEngine guided flow, broad admission matrices, other wound families, Mortal timeout work and performance diagnostics.",
+  "excludes": "Actual GameEngine guided flow, broad admission matrices, other wound families, Mortal timeout work and performance diagnostics. DeferredRoutingLeavesNoExecutablePlanAndPublicationUsesItsOwnLease is now owned by wound-notification-accepted-regressions.",
   "changeHints": [
     "BookOfEternityClient/Services/Validation/ValidationService.SpiritualSelfTreatment.cs",
     "BookOfEternityClient/Services/AcceptedMechanicsPlanCache.cs",
@@ -5015,8 +5098,7 @@
   "timeoutMinutes": 2,
   "expectedSeconds": null,
   "selectors": [{ "project": "integration", "tests": [
-    "BookOfEternityClient.Tests.AfterlifeWoundHealingPublicationOwnerTests.DeferredRoutingLeavesNoExecutablePlanAndPublicationUsesItsOwnLease",
-    "BookOfEternityClient.Tests.AfterlifeWoundHealingPublicationOwnerTests.MissingOrReplacedSourceCannotFallBackToAnEarlierLeasePlan"
+        "BookOfEternityClient.Tests.AfterlifeWoundHealingPublicationOwnerTests.MissingOrReplacedSourceCannotFallBackToAnEarlierLeasePlan"
   ] }]
 },
 {
@@ -25963,7 +26045,7 @@
         {
             "id": "mortal-wounds-state",
             "responsibility": "Mortal wound acquisition, identity, history, deterioration, and transition state.",
-            "excludes": "Spiritual conflict wounds and unrelated afterlife state.",
+            "excludes": "Spiritual conflict wounds and unrelated afterlife state. The exact ProcedureReduction three-outcome notification method is now owned by wound-notification-accepted-regressions.",
             "changeHints": [
                 "BookOfEternityClient/Services/Wound*",
                 "BookOfEternityClient/Services/MortalWound*"
@@ -25995,7 +26077,10 @@
                         "BookOfEternityClient.Tests.WoundAcceptedEventAuthorityComposerTests.*",
                         "BookOfEternityClient.Tests.WoundAcceptedTransitionCommandTests.*",
                         "BookOfEternityClient.Tests.WoundAcceptedTurnPlanCacheTests.*",
-                        "BookOfEternityClient.Tests.WoundAcquisitionOutputTests.*",
+                        "BookOfEternityClient.Tests.WoundAcquisitionOutputTests.Compose_RequiresCompleteAcquisitionNarrationInFinalScene",
+"BookOfEternityClient.Tests.WoundAcquisitionOutputTests.Compose_RejectsNarrationClaimContradictingAcceptedWound",
+"BookOfEternityClient.Tests.WoundAcquisitionOutputTests.Compose_ProducesDeterministicRussianNotification",
+"BookOfEternityClient.Tests.WoundAcquisitionOutputTests.Compose_PlayerProjectionContainsNoInternalIdentityOrAuthorityTerms",
                         "BookOfEternityClient.Tests.WoundDetachedConsequenceShapeTests.*",
                         "BookOfEternityClient.Tests.WoundHistoryStateTests.*",
                         "BookOfEternityClient.Tests.WoundIdentityStateTests.*",
@@ -26100,7 +26185,7 @@
         {
             "id": "mortal-wounds-effects",
             "responsibility": "Wound consequences, effect lineage, carrier adaptation, and batch planning.",
-            "excludes": "Spiritual conflict wounds and unrelated afterlife state.",
+            "excludes": "Spiritual conflict wounds and unrelated afterlife state. Acquisition escaping singleton is now owned by wound-notification-accepted-regressions; the remaining four acquisition methods stay here.",
             "changeHints": [
                 "BookOfEternityClient/Services/Wound*",
                 "BookOfEternityClient/Services/Effect*"
@@ -26921,8 +27006,7 @@
                         "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.ProcedureReduction_DestinationSlotOverflowRejectsBeforeDieClaim",
                         "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.ProcedureReduction_FinalContinuationAgreementRejectsPubliclyResealedCarrierContourTamper",
                         "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.ProcedureReduction_PublicationAcceptsAuthenticatedEmptyBatchWithoutAllocatingEffects",
-                        "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.ProcedureReduction_PublicationUsesFreshCanonicalWoundForGuaranteedPartialAndFailedOutcomes",
-                        "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.ProcedureReduction_RejectedBandLeavesLowestFreeDieForNextLegalRoute",
+                                                "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.ProcedureReduction_RejectedBandLeavesLowestFreeDieForNextLegalRoute",
                         "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.ProcedureReduction_TreatmentCacheRejectsPubliclyResealedTopologyTamper",
                         "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.ProcedureRepeatedStabilization_PublishesWithoutAppendingCompletedRouteAgain",
                         "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.ProcedureRepeatedStabilization_RejectsResealedFalseAppendOnceCompletion",

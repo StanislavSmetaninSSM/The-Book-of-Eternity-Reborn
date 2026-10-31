@@ -52,6 +52,12 @@ archive are outside checkout; original failures and all other holds are retained
   console FAIL is causal evidence; existing snapshot/progression dispatch already
   supports diagnosis and must not be changed on a naming inference. Cheap typed
   bundle/consumer regressions and original UI3 remain required before acceptance.
+  C13 adds two actual common-bundle output rows and rehomes five exact existing
+  ordinary/spiritual/acquisition notification peers. Immutable execution/final/
+  History agreement precedes selected-only escaped text; unchanged zero-due members
+  require no carrier mutation. Snapshot/progression dispatch is unchanged. Candidate
+  UNCOMPILED/UNRUN; source-estimated225/94methods/53descriptors/50categories, subject
+  to official discovery and independent SOURCE/PREP/OUTCOME. No checkbox closes.
 
 - [ ] T121-DIAGNOSIS-MORTAL-ENGINE-ORIGINAL Correct the actual Engine diagnosis
   prepared-original schedule registration through existing ValidationSnapshotFiles,

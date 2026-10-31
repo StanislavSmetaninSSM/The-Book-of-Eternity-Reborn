@@ -74,10 +74,15 @@ internal static partial class WoundAcceptedTurnPlanner
 
     internal static bool MortalProcedureFinalPlanAgrees(object authority, AcceptedMechanicsWoundStageBundle bundle) =>
         authority is MortalDiagnosisContinuation diagnosis
-            ? ReferenceEquals(bundle.PreparedPlan.MortalDiagnosisAuthority, diagnosis) && diagnosis.PreparedAgrees(bundle.PreparedPlan) &&
-              WoundAcceptedTurnPlanCache.ValidateFinalResult(bundle.PreparedPlan, bundle.EffectBatchPlan,
-                  new(bundle.FinalPlan, Array.Empty<ValidationIssue>())).Success
+            ? MortalProcedureFinalPlanAgrees(diagnosis, bundle.PreparedPlan, bundle.EffectBatchPlan, bundle.FinalPlan)
             : TreatmentContinuationFinalPlanAgrees(authority, bundle);
+
+    /// <summary>Checks the same immutable diagnosis handoff using one caller-owned export of each stage; this DATA comparison grants no current authority.</summary>
+    internal static bool MortalProcedureFinalPlanAgrees(MortalDiagnosisContinuation diagnosis,
+        WoundPreparedAcceptedTurnPlan prepared, WoundEffectBatchAcceptedPlan effects, WoundAcceptedTurnPlan final) =>
+        ReferenceEquals(prepared.MortalDiagnosisAuthority, diagnosis) && diagnosis.PreparedAgrees(prepared) &&
+        WoundAcceptedTurnPlanCache.ValidateFinalResult(prepared, effects,
+            new(final, Array.Empty<ValidationIssue>())).Success;
 
     internal static bool MortalDiagnosisPublicationAgrees(object authority, AcceptedMechanicsWoundStageBundle bundle,
         MortalWoundTreatmentAcceptedStateAuthority accepted, MortalWoundTreatmentAttemptRequest request,

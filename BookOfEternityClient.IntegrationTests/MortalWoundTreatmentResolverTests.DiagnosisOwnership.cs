@@ -739,11 +739,16 @@ public sealed partial class MortalWoundTreatmentResolverTests
 
         internal static async Task<DiagnosisOwnershipFixture> CreateAsync(int? natural = null, bool signedInput = false, int duration = 30, bool seedFate = false,
             Func<FileSystemManager, TurnRequest, Task>? originalProducer = null, bool twoMembers = false, bool exportDiagnosis = true,
-            FileSystemManagerHooks? hooks = null)
+            FileSystemManagerHooks? hooks = null, string? woundLabel = null)
         {
             // Initial canonical scenario DATA only. The real live preparation and
             // exporter below issue ownership; these JSON values are not receipts.
             var scenario = CreateDiagnosisInitialScenario(natural, duration, seedFate);
+            if (woundLabel is not null)
+            {
+                scenario.Before["display"]!["name"] = woundLabel;
+                scenario = scenario with { History = CreateCurrentWoundHistory(scenario.Before) };
+            }
             var root = Path.Combine(Path.GetTempPath(), "boe-mortal-diagnosis-owner-" + Guid.NewGuid().ToString("N"));
             Directory.CreateDirectory(root);
             var files = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance,
