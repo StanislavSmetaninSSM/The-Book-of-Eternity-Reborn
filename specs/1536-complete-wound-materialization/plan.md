@@ -1,3 +1,30 @@
+# T121 private cohort initial graph — exact singleton PREP, UNRUN
+
+Astra SOURCE accepted `25ee4df4f8e12b30ddd39943d0f625e5d23d89c8` for
+Integration-only build. Fresh Integration exits0 in1:49.70 with unchanged102
+warnings. Main/Support/Unit retain unchanged successful source797cc898. Four
+PE/PDB pairs/328 source bindings match; only Integration DLL/PDB changed among27
+artifacts. Forty resource copies/four daemons are stable. Archive62880572 bytes,
+SHA256 `87429b897d63af255e5acd88cc03264664a444a5e5f3e2ee36fb855c936d7938`;
+27 member hashes/fullEOFCRC over197058560 decoded bytes pass.
+
+Catalog1261/13077 and exact official PlanOnly215cases/87methods/47descriptors/
+45categories pass, zero executions/duplicates and complete cleanup. Disjoint
+phases: retained205 (78methods/38descriptors), cohort1, dependent6 and UI3.
+Retained205 is historical source lineage, not one fresh run. Independent native19
+currently retains18 PASS across epochs; cohort remains FAIL/unqualified until
+its corrected full case executes. The current fixture validates the assembled
+private effect graph with existing typed APIs before initial effect writes,
+while preserving shared wound acquisition and all product assertions.
+
+Next independent PREP requests only mortal-diagnosis-private-cohort1, one method/
+exclusive Integration descriptor at120s. No dependent6/UI admission or whole-feature
+PASS. Full external raw/provenance is under
+`/workspace/tboe-linux-evidence-20261025/us5-guided-diagnosis/M2GREENC8C4-*`.
+No production/GM rule/cache/source reread changed; other3 build sources and their
+bindings are exact. Ordinary broader TIMEOUT/UNKNOWN, all parent/physical-treatment/
+eight-adapter residuals and prior HOLDs remain open.
+
 # T121 private-cohort effect graph — fixture-only WIP, UNCOMPILED / UNRUN
 
 At runtime `23a68c0f568e5f2e97ff9e66e6ee34a583754a9b`, corrected4 completed
