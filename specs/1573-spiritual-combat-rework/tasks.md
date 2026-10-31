@@ -2,8 +2,8 @@
 
 ## T129 — включить контроль в проверку лечения, 2026-11-01
 
-- [ ] T129.1 Audit/Spec Kit scope/параметры/план/матрица/API и preflight, публикация до реализации.
-- [ ] T129.2 TDD opt-in контроля в общей numerical-машине; cheap fixtures/legacy/smoke/reuse/адресность.
+- [x] T129.1 Audit/Spec Kit scope/параметры/план/матрица/API и preflight; c9a6ef424/bd1811065 опубликованы, remoteSHA/spec readback подтверждены.
+- [x] T129.2 TDD opt-in контроля:167/167guards (144прежних+23новых); legacy42/T12810 unchanged;504main/confirm smoke и3shard union. Parent прочитал actualdiff/fixtures/evidence. Подготовка46.070мс/12таблиц,20000lookup12.628мс/0новых.
 - [ ] T129.3 Frozen source/554400траекторий, полный coverage/costs/HP/control/outcomes; диагностика безквот толькоD:.
 - [ ] T129.4 Полный отчёт, независимое whole-block review/исправления, verification/publication/readback/restore/retention; честная область выводов.
 

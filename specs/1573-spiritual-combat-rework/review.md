@@ -9,7 +9,7 @@
 личныеclock/regen/реакции/HoT, отсутствие утверждённых цен новогоCC. Legacy
 Оковы и side-wideproduction не переносить. Serena три языка ready, реальная
 символика проверена. T129 параметры/политики/504cases явно экспериментальны.
-Новаяпроверка — численныйscope, неproduction. Source/tests/fullmatrix UNRUN.
+Новаяпроверка — численныйscope, неproduction. Полнаяматрица/review ещё впереди.
 Optimization: reuse existingoperation immutableformula/quality; livecontrol/
 permission/resources свежие. T128raw сохраняется до нового полногоreview.
 
@@ -19,6 +19,16 @@ missingHP/noHoT), чтобы отделитьполезностьCC отспам
 здоровойцели;7tactics/504cases/554400траекторий. Числа/срокиCC неизменны,
 полных исходов ещёнет. RED16/16; начальныйGREEN12/13 выявилошибочныйfixture
 бросок18вместо19 для naturalcritF62; исправляетсяожидание, неформула.
+
+Source freeze:167/167guards (144старых+23новых),0fail/skip/cancel,
+5586.889мс; defaultopt-in suppress_needed исправлен RED→GREEN без изменения
+T128 defaults. Все504main/confirm smoke и3shard exactunion проверены.
+Legacy42checksum1e11934e9e7e958e11fed7fd8331c8f9117fad88640767cc0777180603756d7c;
+boundedT12810checksum465efbacf588326ff7b126193bc4166c56c8dd9941685a2ffc313f6733f21810
+совпадают сbaseline. Parent прочитал actual7file diff иновыеfixtures/evidence.
+Preparation504=46.070мс/12таблиц;20000lookup12.628мс/0новыхвычислений.
+Independent GPT-6 Astra/high source-review начат; итоговыевыводы после полной
+матрицы иreview. Ниprices, ниHeal, ниAI не подгонять к исходам.
 
 ## T128 — численная проверка direct/HoT, 2026-11-01
 

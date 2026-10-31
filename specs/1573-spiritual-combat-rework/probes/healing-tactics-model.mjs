@@ -7,6 +7,7 @@ import {actor,begin,end,damage,applyHeal,replaceMain,healingCalculator,closeEnco
 import {protectedDamageTable,chooseMode,strikeAttack} from './healing-modes-probe.mjs';
 import {jointPolicies,createJointBudgetCache,normalizeJointMarks,chooseJointMain,chooseJointReaction} from './healing-joint-budget-model.mjs';
 import {periodicProfiles,applyPeriodicHeal,tickPeriodic,applyPeriodicMark,choosePeriodicMain,choosePeriodicAttack} from './healing-periodic-model.mjs';
+import {controlProfiles,controlsFor,blocksControl,applyControl,expireControls,breakControl,chooseControlMain,chooseControlCast} from './healing-control-model.mjs';
 
 export const attackProfiles=Object.freeze(Object.fromEntries(Object.entries({
   ordinary:[28,8],strong:[36,16],large:[44,24],suppress:[24,12]
@@ -126,14 +127,24 @@ export function createEncounter(options={}) {
     attackPolicy:'suppress_reserve',targetPolicy:'patient',helperAccess:true,defender:'passive',
     healerPolicy:'heal',reply:'guard',interrupt:true,mirror:false,horizon:2000,...options};
   const periodic=o.healingRules==='periodic-v1';
+  const controlled=o.controlRules==='control-v1';
+  assert.ok(o.controlRules===undefined||controlled,'Unknown control rules');
+  if(controlled){
+    assert.ok(periodic,'Control rules require periodic healing');
+    o.controlProfile??='none';o.controlPolicy??='pressure';o.helperControlRelease??=false;
+    assert.ok(o.controlProfile==='none'||Object.hasOwn(controlProfiles,o.controlProfile),'Unknown control profile');
+    assert.equal(typeof o.helperControlRelease,'boolean');
+    assert.ok(['pressure','window'].includes(o.controlPolicy),'Unknown control policy');
+  }else assert.ok(o.controlProfile===undefined&&o.controlPolicy===undefined&&o.helperControlRelease===undefined,'Control options require control rules');
   assert.ok(o.healingRules===undefined||periodic,'Unknown healing rules');
   if(periodic){
-    Object.assign(o,{periodicMode:'combined',periodicAttack:'suppress_always',level:5,effectResistance:0,
+    Object.assign(o,{periodicMode:'combined',periodicAttack:controlled?'suppress_needed':'suppress_always',level:5,effectResistance:0,
       cleansePolicy:'never',activeGuard:false,...options,interrupt:false});
     assert.ok(['direct','hot','combined'].includes(o.periodicMode)&&['ordinary','suppress_always','suppress_needed'].includes(o.periodicAttack));
     assert.ok(Number.isInteger(o.level)&&o.level>=1&&o.level<=5&&Number.isFinite(o.effectResistance)&&o.effectResistance>=0&&o.effectResistance<=100);
     assert.ok(['never','first'].includes(o.cleansePolicy)&&typeof o.activeGuard==='boolean');
     assert.equal(o.jointPolicy,undefined);assert.equal(o.interruptPolicy,undefined);
+    if(controlled)assert.equal(o.periodicAttack,'suppress_needed','Control variants require the same suppress_needed fallback');
   }
   assert.ok(['duel','support','group'].includes(o.kind)&&['instant','long','adaptive'].includes(o.mode));
   assert.ok(['normal','healer28','both36'].includes(o.harmony)&&attackPolicies.includes(o.attackPolicy));
@@ -161,15 +172,22 @@ export function createEncounter(options={}) {
     a.healingPercent=role==='healer'?o.healingPercent:0;a.resistance=role==='healer'?o.resistance:0;
     a.lastTarget=null;
     if(periodic){a.hots=[];a.effectResistance=role==='healer'?o.effectResistance:0;}
+    if(controlled)a.controls=[];
     a.tables=periodic?Object.fromEntries([['ordinary',28],['suppress',periodicProfiles[o.level-1].attackB]].flatMap(([kind,B])=>
       [0,-5].map(delta=>[`${kind}|${delta}`,operation.table(o.D,B,a.resistance,delta)]))):
       Object.fromEntries(Object.entries(attackProfiles).map(([kind,p])=>[kind,operation.table(o.D,p.B,a.resistance)]));
+    if(controlled&&o.controlProfile!=='none')for(const delta of [0,-5])
+      a.tables[`control|${delta}`]=operation.table(o.D,controlProfiles[o.controlProfile].B,a.resistance,delta);
     return a;
   });
   const counts=counters();counts.byActor=Object.fromEntries(actors.map(a=>[a.id,counters()]));
   if(periodic)for(const row of [counts,...Object.values(counts.byActor)])for(const key of [
     'direct','hotCasts','hotTicks','hotSuppressedTicks','potentialHealing','directRestored','hotRestored','markHits','saveAttempts',
     'saves','marksApplied','partialMarks','fullMarks','guardPaid','recoverGained','regenGained'
+  ])row[key]=0;
+  if(controlled)for(const row of [counts,...Object.values(counts.byActor)])for(const key of [
+    'controlCasts','controlPaid','controlHits','controlSaveAttempts','controlSaves','controlsApplied',
+    'controlBlockedMains','controlGuardDenials','controlBreakAttempts','controlBreakSucceeded','controlBreakPaid','allyControlBreaks'
   ])row[key]=0;
   if(o.interruptPolicy!==undefined){
     const keys=['interruptDecisions',...['inactive','no_reaction','no_energy','policy_never','long_start','reserve','attempt']
@@ -189,10 +207,11 @@ export function createEncounter(options={}) {
     endpoints:{total:null,firstPatientFall:null,firstAnyFall:null}};
 }
 
-function eligibleMain(a){return living(a)&&a.active&&!a.used&&!a.collapsedThisTurn;}
+function eligibleMain(a){return living(a)&&a.active&&!a.used&&!a.collapsedThisTurn&&!blocksControl(a,'main');}
 function doRecover(e,a){const before=a.energy;if(replaceMain(a,()=>recover(a))){count(e,a,'recover');
   if(e.options.healingRules==='periodic-v1')count(e,a,'recoverGained',a.energy-before);}}
 function doCleanse(e,a,t){
+  if(blocksControl(a,'cleanse'))return false;
   const hadPending=Boolean(a.pending);
   if(!replaceMain(a,()=>cleanse(a,t)))return false;
   count(e,a,'cleanse');count(e,a,'cleansePaid',price(a,8));if(hadPending)count(e,a,'abandoned');return true;
@@ -201,17 +220,29 @@ function doAttack(e,a,policy,dice){
   const target=chooseTarget(e.actors,a.id,e.options.targetPolicy);
   if(!target){doRecover(e,a);return;}
   if(e.options.healingRules==='periodic-v1'){
-    const level=e.options.level,kind=a.role==='primary'?choosePeriodicAttack({target,policy:e.options.periodicAttack,level}):'ordinary';
-    const p=kind==='ordinary'?{B:28,K:8}:{B:periodicProfiles[level-1].attackB,K:periodicProfiles[level-1].attackK};
+    const level=e.options.level,profile=e.options.controlProfile;
+    const casting=e.options.controlRules==='control-v1'&&a.role==='primary'&&
+      chooseControlCast({target,profile,policy:e.options.controlPolicy});
+    const kind=casting?'control':a.role==='primary'?choosePeriodicAttack({target,policy:e.options.periodicAttack,level}):'ordinary';
+    const p=casting?controlProfiles[profile]:kind==='ordinary'?{B:28,K:8}:{B:periodicProfiles[level-1].attackB,K:periodicProfiles[level-1].attackK};
     const cost=price(a,p.K);if(a.energy<cost){doRecover(e,a);return;}
     assert.ok(eligibleMain(a));a.used=true;a.energy-=cost;a.pending=null;
     let guard=0;
     if(e.options.activeGuard&&living(target)&&target.inEncounter&&target.reaction>0&&target.energy>=price(target,4)){
-      guard=-5;target.energy-=price(target,4);target.reaction=0;count(e,target,'guard');count(e,target,'guardPaid',price(target,4));
+      if(blocksControl(target,'guard'))count(e,target,'controlGuardDenials');
+      else{guard=-5;target.energy-=price(target,4);target.reaction=0;count(e,target,'guard');count(e,target,'guardPaid',price(target,4));}
     }
     const table=target.tables[`${kind}|${guard}`],outcome=table.entries[dice.damage()];
     assert.ok(outcome,'Damage dice index must be 0..399');const before=target.hp;
     damage(target,outcome.damage);
+    if(casting&&outcome.quality>0){
+      count(e,a,'controlHits');
+      if(outcome.quality>=2||p.partial>0){
+        count(e,a,'controlSaveAttempts');const save=dice.controlSave();
+        if(save<target.effectResistance)count(e,a,'controlSaves');
+        if(applyControl(target,a,profile,outcome.quality,{save,resistance:target.effectResistance}))count(e,a,'controlsApplied');
+      }
+    }
     if(kind==='suppress'&&outcome.quality>0){
       count(e,a,'markHits');count(e,a,'saveAttempts');const save=dice.save();
       if(save<target.effectResistance)count(e,a,'saves');
@@ -219,7 +250,9 @@ function doAttack(e,a,policy,dice){
         count(e,a,'marksApplied');count(e,a,outcome.quality===1?'partialMarks':'fullMarks');
       }
     }
-    count(e,a,'attacks');count(e,a,kind);count(e,a,'attackPaid',cost);count(e,a,'damage',before-target.hp);return;
+    count(e,a,'attacks');
+    if(casting){count(e,a,'controlCasts');count(e,a,'controlPaid',cost);}else count(e,a,kind);
+    count(e,a,'attackPaid',cost);count(e,a,'damage',before-target.hp);return;
   }
   let kind;
   if(e.options.jointPolicy!==undefined&&a.role==='primary'){
@@ -314,7 +347,7 @@ function doHeal(e,a,dice){
   delete a.receipts[`${a.id}:${a.started}`];
 }
 function finish(e,kind){
-  if(e.options.healingRules==='periodic-v1')for(const a of e.actors){a.hots=[];a.marks=[];closeEncounter(a);}
+  if(e.options.healingRules==='periodic-v1')for(const a of e.actors){a.hots=[];a.marks=[];closeEncounter(a);if(a.controls)a.controls=[];}
   e.done=true;e.endpoints.total={time:e.round,kind};
   for(const key of ['firstPatientFall','firstAnyFall'])if(!e.endpoints[key])e.endpoints[key]={time:e.round,kind:kind==='horizon'?'horizon':'no-event'};
 }
@@ -342,7 +375,21 @@ export function stepEncounter(e,dice) {
   assert.ok(dice&&typeof dice.damage==='function'&&typeof dice.reaction==='function');
   if(e.cursor===0)e.round++;
   const a=e.actors[e.order[e.cursor]],prior=e.actors.map(t=>t.collapsed);begin(a);
-  if(!eligibleMain(a))count(e,a,'skipped');
+  let controlAction={kind:'continue'};
+  if(e.options.controlRules==='control-v1'&&living(a)&&!a.collapsedThisTurn){
+    const ally=a.role==='helper'?e.actors.filter(t=>t.id!==a.id&&t.team===a.team&&controlsFor(t).length)
+      .sort((x,y)=>Number(y.role==='healer')-Number(x.role==='healer')||queue(x,y))[0]??null:null;
+    controlAction=chooseControlMain({self:a,offensive:e.options.defender==='offensive',ally,
+      helperControlRelease:a.role==='helper'&&e.options.helperControlRelease});
+  }
+  if(!eligibleMain(a)){count(e,a,'skipped');if(controlAction.kind==='blocked')count(e,a,'controlBlockedMains');}
+  else if(controlAction.kind==='break'){
+    const out=breakControl(a,controlAction.target,controlAction.control,{roll:dice.break});
+    assert.ok(out.accepted,'Fresh prechecked break must be admitted');count(e,a,'controlBreakAttempts');count(e,a,'controlBreakPaid',out.paid);
+    if(out.succeeded)count(e,a,'controlBreakSucceeded');if(out.ally)count(e,a,'allyControlBreaks');
+  }
+  else if(controlAction.kind==='recover')doRecover(e,a);
+  else if(controlAction.kind==='attack')doAttack(e,a,'fixed_ordinary',dice);
   else if(a.role==='healer')doHeal(e,a,dice);
   else if(a.role==='helper'){
     const allies=e.actors.filter(t=>t.team===a.team&&t.marks.length).sort((x,y)=>strength(y)-strength(x)||
@@ -361,6 +408,7 @@ export function stepEncounter(e,dice) {
       if(source.id!==a.id)count(e,source,'allyHeals');if(tick.revived)count(e,a,'revivals');
     }
   }
+  if(e.options.controlRules==='control-v1')expireControls(a);
   const beforeEnd=a.energy;end(a);
   if(e.options.healingRules==='periodic-v1')count(e,a,'regenGained',a.energy-beforeEnd);
   for(let i=0;i<e.actors.length;i++){
@@ -381,8 +429,10 @@ export function stepEncounter(e,dice) {
 
 export function runTrial(options={}) {
   const {seed=seedFor('T123-trial'),dice,setup,...rest}=options;
-  const randomDamage=rng(seed),randomReaction=rng(seedFor(`reaction|${seed}`)),randomSave=rng(seedFor(`effect-save|${seed}`));
-  const rolls=dice??{damage:()=>randomDamage()%400,save:()=>randomSave()%10000/100,
+  const randomDamage=rng(seed),randomReaction=rng(seedFor(`reaction|${seed}`)),randomSave=rng(seedFor(`effect-save|${seed}`)),
+    randomControlSave=rng(seedFor(`control-save|${seed}`)),randomBreak=rng(seedFor(`control-break|${seed}`));
+  const rolls=dice??{damage:()=>randomDamage()%400,save:()=>randomSave()%10000/100,controlSave:()=>randomControlSave()%10000/100,
+    break:()=>{const k=randomBreak()%400;return[Math.floor(k/20)+1,k%20+1];},
     reaction:()=>{const k=randomReaction()%400;return[Math.floor(k/20)+1,k%20+1];}};
   const e=createEncounter(rest);setup?.(e);
   while(!e.done){if(!fastForwardIdle(e))stepEncounter(e,rolls);}

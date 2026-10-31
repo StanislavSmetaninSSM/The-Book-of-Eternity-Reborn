@@ -71,6 +71,8 @@ export function simulateTactics(options={}) {
     canInterrupt:cell.interrupt!==false&&cell.healingRules!=='periodic-v1',reaction:1,ordinaryAttack:true,
     ...(cell.healingRules==='periodic-v1'?{effectResistance:a.effectResistance,healingRules:cell.healingRules,
       healingMode:cell.periodicMode,level:cell.level,activeGuard:cell.activeGuard,cleansePolicy:cell.cleansePolicy}:{}),
+    ...(cell.controlRules==='control-v1'?{controlRules:cell.controlRules,controlProfile:cell.controlProfile,
+      controlPolicy:cell.controlPolicy,helperControlRelease:cell.helperControlRelease,controlResistance:a.effectResistance}:{}),
     mainAttackPolicy:a.role==='primary'?(cell.healingRules==='periodic-v1'?cell.periodicAttack:
       cell.jointPolicy!==undefined?'joint_pressure_v1':cell.attackPolicy??'suppress_reserve'):'fixed_ordinary'}));
   const endpoints={total:[],firstPatientFall:[],firstAnyFall:[]},counts={},outcomes={team0:0,team1:0,horizon:0};

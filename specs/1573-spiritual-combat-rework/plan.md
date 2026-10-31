@@ -9,20 +9,20 @@ baseline/origin a8bb390e46c412b08bb3d3877dcaf08e974224a8, unrelated1536/obj не
 Один coherent Sol6.1/high source-owner, parent документы/измерения/интеграция,
 независимый Astra/high reviewer. Новый runtime/GM/C# не входит.
 
-- [ ] T129.1 Sol6.1/high read-only audit принятых control/clock/reaction договоров;
+- [x] T129.1 Sol6.1/high read-only audit принятых control/clock/reaction договоров;
   записать scope/параметры/матрицу/границы, опубликовать до source. Серверы
   Serena csharp/typescript/python ready; реальные JS/C#/Python symbols проверены.
-- [ ] T129.2 RED→GREEN узкий opt-in поверх periodic-v1 и общей encounter-машины.
+- [x] T129.2 RED→GREEN узкий opt-in поверх periodic-v1 и общей encounter-машины.
   Создать probes/healing-control-model.mjs/.test.mjs и healing-control-probe.mjs/
   .test.mjs; узкие изменения healing-tactics-model.mjs, healing-tactics-probe.mjs,
   при необходимости periodic-model.mjs для fresh admission. Не копировать HP/
   ДЭ/clock/endpoints и не возвращать Heal interruption. API закрепить доGREEN.
-- [ ] T129.2a Проверить связанные numerical guards (144прежних+новые), legacy42
+- [x] T129.2a Проверить связанные numerical guards (144прежних+новые), legacy42
   и bounded periodic baseline; smoke504main/confirm +3shard union. Fixtures:
   source/art/target, forbiddencast/allowedbreak, stunMain/reaction vs freecheck,
   dueHoT/regen/refresh, applysave/crit/partial, цены доRNG, escape consumesMain,
   allyrelease/no extraMain, independentcontrols/expiry/exit/finaltick.
-- [ ] T129.2b Stable quality/damage/healing reuse через существующую operation;
+- [x] T129.2b Stable quality/damage/healing reuse через существующую operation;
   полные key/D/B/guard/resistance/profile зависимости. Живые ограничения не
   кэшировать. Измерить подготовку/lookup; no newparallelcache/дорогихgamefixtures.
 - [ ] T129.3 Frozen source commit/push/readback; main504×100/confirm504×1000,

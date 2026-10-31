@@ -2,6 +2,7 @@
 import assert from 'node:assert/strict';
 import {price} from './reaction-model.mjs';
 import {healingSnapshot,healingValue} from './healing-modes-model.mjs';
+import {blocksControl} from './healing-control-model.mjs';
 
 export const periodicProfiles=Object.freeze([1,2,3,4,5].map(level=>Object.freeze({
   level,directB:6+2*level,directK:4+2*level,hotB:2+2*level,hotK:5+3*level,
@@ -18,7 +19,7 @@ function restore(t,potential,revive){
 /** One paid Main; HoT freezes outgoing inputs, while each later tick checks the recipient freshly. */
 export function applyPeriodicHeal(a,t,{mode='direct',level=5,calculate=healingValue,revive=false}={}) {
   assert.ok(['direct','hot'].includes(mode));const p=profile(level),cost=price(a,mode==='direct'?p.directK:p.hotK);
-  if(!eligible(a)||!t.inEncounter||t.collapsed&&!revive||mode==='direct'&&t.hp>=t.maxHp||a.energy<cost)
+  if(!eligible(a)||blocksControl(a,'heal')||!t.inEncounter||t.collapsed&&!revive||mode==='direct'&&t.hp>=t.maxHp||a.energy<cost)
     return {accepted:false,paid:0,restored:0};
   a.energy-=cost;a.used=true;a.pending=null;
   if(mode==='direct'){
