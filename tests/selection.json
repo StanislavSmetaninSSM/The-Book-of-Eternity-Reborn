@@ -2,6 +2,48 @@
   "schemaVersion": 1,
   "selections": [
 {
+  "category": "mortal-completed-item-postvalidation",
+  "reason": "T121 C14 actual diagnosis post-validator1 plus real compensated/suppressed-close export2: immutable whole NPC/frame/generation, no-proof/invalidation/foreign owner, exact issue multiplicity, item/count/actor/root/byte/frame drift, current request/resource-claim and canonical inertness. A successful finalized settlement survives suppressed lease-close failure but exports no comparison; no repeated spend. Seven new rows across the finite C14 categories are UNCOMPILED/UNRUN.",
+  "contracts": [
+    "#1536 T093 / FR071 / T121-DIAGNOSIS-MORTAL-ITEM-POSTVALIDATION; actual completed item publication versus unchanged pre-turn NPC guard and same-invocation current proof"
+  ]
+},
+{
+  "category": "mortal-ordinary-completed-item-postvalidation",
+  "reason": "T121 C14 one genuine ordinary procedure item publication -> finalized/closed completed DATA -> actual outer post-validator. The shared existing guard remains without proof; only its one exact legitimate inventory issue is removed, all other ordered errors/bytes/claims unchanged. No reflective historical full-state helper. UNCOMPILED/UNRUN.",
+  "contracts": [
+    "#1536 T093 / FR071 / T121-DIAGNOSIS-MORTAL-ITEM-POSTVALIDATION; actual completed item publication versus unchanged pre-turn NPC guard and same-invocation current proof"
+  ]
+},
+{
+  "category": "mortal-browser-completed-item-exact",
+  "reason": "T121 C14 singleton60s: Actual browser Engine stage -> sealed original -> genuine diagnosis item publication, then current World-phase comparison. Actual valid foreign original/override cannot borrow the current physical browser owner despite identical current NPC bytes; no-World selection retains raw errors. No GM wait. Controlled existing TerminalWaitStarted stop; all whole-image equality remains. UNCOMPILED/UNRUN.",
+  "contracts": [
+    "#1536 T093 / FR071 / T121-DIAGNOSIS-MORTAL-ITEM-POSTVALIDATION; actual completed item publication versus unchanged pre-turn NPC guard and same-invocation current proof"
+  ]
+},
+{
+  "category": "mortal-browser-completed-item-parse-drift",
+  "reason": "T121 C14 singleton60s: Actual early parsed NPC image versus later whole physical byte drift before World comparison; the exact original guard remains, not a stale-DATA exemption. Controlled existing TerminalWaitStarted stop; all whole-image equality remains. UNCOMPILED/UNRUN.",
+  "contracts": [
+    "#1536 T093 / FR071 / T121-DIAGNOSIS-MORTAL-ITEM-POSTVALIDATION; actual completed item publication versus unchanged pre-turn NPC guard and same-invocation current proof"
+  ]
+},
+{
+  "category": "mortal-browser-completed-item-final-proof",
+  "reason": "T121 C14 singleton60s: Actual physical drift after the completed comparison but before final World readset/end proof prevents any filtered result from being returned. Controlled existing TerminalWaitStarted stop; all whole-image equality remains. UNCOMPILED/UNRUN.",
+  "contracts": [
+    "#1536 T093 / FR071 / T121-DIAGNOSIS-MORTAL-ITEM-POSTVALIDATION; actual completed item publication versus unchanged pre-turn NPC guard and same-invocation current proof"
+  ]
+},
+{
+  "category": "spiritual-world-source-closure",
+  "reason": "The existing standalone60s World source-closure Fact. C14 explicitly reviews six whole-file pin changes for invocation-root capture, same existing lease comparison, actual browser original frame and already-observed generation; adds the three concrete completed-comparison DATA/helper files to the closure. All existing end-proof/cleanup assertions remain; no mechanical rebaseline or broad World run.",
+  "contracts": [
+    "#1536 T093 / FR071 / T121-DIAGNOSIS-MORTAL-ITEM-POSTVALIDATION; actual completed item publication versus unchanged pre-turn NPC guard and same-invocation current proof"
+  ]
+},
+{
   "category": "mortal-diagnosis-output-binding",
   "reason": "T121 two genuine common-bundle rows: success/zero-duration and failed-attempt/elapsed30, selected second in a private two-member cohort. Actual GameEngine direct/published output binders work after producing lease closure; exact zero-due absence and complete changed cohort mutations, sealed History/execution, truthful selected-only diagnosis/ordinary recovery, escaped plain/console/browser parity, no private data, canonical/confirmed-claim inertness. Typed resealed omitted/extra/changed/reordered/foreign bundles refuse at the real constructor/binder boundary. Actual console compensation is causal RED; UNCOMPILED/UNRUN.",
   "contracts": [
@@ -17,7 +59,7 @@
 },
 {
   "category": "mortal-diagnosis-engine-prepared-original",
-  "reason": "C12 fresh singleton60s proves genuine fresh-lease claim rebind, authenticated distinct schedule roles, exact live-owner outer restore/resume, changed original evidence refusals, unchanged request/dice/Fate/resource identity, successful recalculation after resume and final whole-original equality. Existing focused runtime failure is causal RED; no additional heavy RED attempt. UNCOMPILED/UNRUN.",
+  "reason": "C14 fresh existing singleton60s because its shared pre-original journey seed now initializes the lawful empty tradeInventoryReceipts default. Preserve genuine Engine signed/rollback schedule roles, fresh claim rebind, exact outer restore/resume and full original byte equality; do not assume unchanged producer or repeat native9.",
   "contracts": [
     "#1536 T093 / FR071 / T121-DIAGNOSIS-MORTAL-ENGINE-ORIGINAL; authenticated prepared-source role versus distinct original rollback role"
   ]

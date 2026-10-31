@@ -4945,3 +4945,17 @@ AfterlifeResourceCutoverTests и последующие ProcessIntegration/E2E �
 утверждения точного значения. Первая полная проверка покажет, достаточно ли
 одного переноса
 духовной матрицы или требуется дополнительное разделение других тяжелых классов.
+
+
+T121 C14 internal publication/validation closure (implementation WIP): the existing
+pre-turn NPC inventory guard remains strict for GM-authored changes. Only an exact
+client-owned item publication that truly finalized and closed may supply immutable
+comparison DATA to the same authenticated post-validation invocation. Whole current
+NPC bytes and parsed root, complete original frame/generation and unique exact issue
+multiplicity remain required; final proof/close failures return no filtered result,
+and repair discards eligibility irreversibly. This adds no command, GM wire field,
+price, check, duration or gameplay rule. Initial trade-receipt defaults precede the
+sole bootstrap/original, preserving complete cost and rollback equality. C13 UI
+remains TIMEOUT/UNKNOWN and all new C14 controls UNCOMPILED/UNRUN pending SOURCE and
+root-owned qualification; parent tasks, physical guided treatment and eight adapters
+remain open.

@@ -37,7 +37,7 @@ internal sealed partial class MortalWoundTreatmentResourcePublicationTransaction
                 return null;
             var comparison = item.CaptureExactPublishedNpcInventoryComparison(root);
             return comparison is null ? null : new CompletedItemValidation(CompletedItemValidationIssuer,
-                files, _receipt.SessionGenerationRevision, _receipt.Binding, bytes, root, comparison);
+                files, _receipt.SessionGenerationRevision, _receipt.SessionGeneration, _receipt.Binding, bytes, root, comparison);
         }
         catch (Exception error) when (error is ArgumentException or InvalidOperationException or
             JsonException or DecoderFallbackException or IOException)
@@ -55,7 +55,8 @@ internal sealed partial class MortalWoundTreatmentResourcePublicationTransaction
     {
         private readonly FileSystemManager _files;
         private readonly long _generationRevision;
-        private readonly AcceptedMechanicsPlanBinding _binding;
+        private readonly string _generation;
+        private readonly (string Session, string Request, int Turn, string Token) _frame;
         private readonly byte[] _npcBytes;
         private readonly JsonObject _npcRoot;
         private readonly MortalWoundTreatmentItemPublicationAuthority.NpcInventoryContinuityComparison _comparison;
@@ -66,17 +67,19 @@ internal sealed partial class MortalWoundTreatmentResourcePublicationTransaction
         /// <param name="issuer">Private transaction issuance identity.</param>
         /// <param name="files">Actual completed session owner.</param>
         /// <param name="generationRevision">Original session replacement generation revision.</param>
+        /// <param name="generation">Exact session generation of the real finalized receipt.</param>
         /// <param name="binding">Immutable full input frame sealed by the actual publication.</param>
         /// <param name="npcBytes">Exact whole published physical NPC image.</param>
         /// <param name="npcRoot">Its parsed complete root.</param>
         /// <param name="comparison">The existing recomposed item before/after comparison.</param>
-        internal CompletedItemValidation(object issuer, FileSystemManager files, long generationRevision,
+        internal CompletedItemValidation(object issuer, FileSystemManager files, long generationRevision, string generation,
             AcceptedMechanicsPlanBinding binding, byte[] npcBytes, JsonObject npcRoot,
             MortalWoundTreatmentItemPublicationAuthority.NpcInventoryContinuityComparison comparison)
         {
             if (!ReferenceEquals(issuer, CompletedItemValidationIssuer))
                 throw new InvalidOperationException("Completed item comparison has no actual transaction issuer.");
-            _files = files; _generationRevision = generationRevision; _binding = binding;
+            _files = files; _generationRevision = generationRevision; _generation = generation;
+            _frame = (binding.SessionId, binding.RequestId, binding.Turn, binding.SnapshotToken);
             _npcBytes = npcBytes.ToArray(); _npcRoot = npcRoot.DeepClone().AsObject(); _comparison = comparison;
         }
 
@@ -84,6 +87,7 @@ internal sealed partial class MortalWoundTreatmentResourcePublicationTransaction
         /// Binds one invocation's genuine original frame, parsed root and fresh whole physical bytes.
         /// </summary>
         /// <param name="files">Current session owner.</param>
+        /// <param name="generation">Generation observed by the actual invocation read owner.</param>
         /// <param name="sessionId">Authenticated original session.</param>
         /// <param name="requestId">Authenticated original request.</param>
         /// <param name="turn">Authenticated original turn.</param>
@@ -91,11 +95,11 @@ internal sealed partial class MortalWoundTreatmentResourcePublicationTransaction
         /// <param name="parsedRoot">Actual root parsed in this validation invocation.</param>
         /// <param name="physicalBytes">Whole NPC bytes read under this invocation's existing lease.</param>
         /// <returns>True only for the exact completed image in the same original frame and generation.</returns>
-        internal bool Matches(FileSystemManager files, string sessionId, string requestId, int turn,
+        internal bool Matches(FileSystemManager files, string generation, string sessionId, string requestId, int turn,
             string snapshotToken, JsonObject parsedRoot, byte[]? physicalBytes) =>
             ReferenceEquals(_files, files) && files.CanonicalRootAuthorityIdentity.SessionGenerationRevision == _generationRevision &&
-            _binding.SessionId == sessionId && _binding.RequestId == requestId && _binding.Turn == turn &&
-            _binding.SnapshotToken == snapshotToken && physicalBytes is not null &&
+            _generation == generation && _frame.Session == sessionId && _frame.Request == requestId && _frame.Turn == turn &&
+            _frame.Token == snapshotToken && physicalBytes is not null &&
             _npcBytes.AsSpan().SequenceEqual(physicalBytes) && JsonNode.DeepEquals(_npcRoot, parsedRoot);
 
         /// <summary>

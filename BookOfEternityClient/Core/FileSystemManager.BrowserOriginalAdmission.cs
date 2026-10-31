@@ -62,6 +62,20 @@ public partial class FileSystemManager
         internal PendingPlayerActionService.Staged? ExpectedStaged { get; private set; }
         private readonly string _submittedAtUtc;
         private Dictionary<string,string>? _cleanupInventory;
+        private (string Session, string Request, int Turn, string Token)? _validatedOriginalFrame;
+
+        /// <summary>
+        /// Compares only the frame copied after genuine full physical admission; never refreshes it from an override.
+        /// The World reader still proves current ownership and complete original bytes separately.
+        /// </summary>
+        /// <param name="sessionId">Validation invocation's original session.</param>
+        /// <param name="requestId">Validation invocation's original request.</param>
+        /// <param name="turn">Validation invocation's original turn.</param>
+        /// <param name="snapshotToken">Validation invocation's full original seal.</param>
+        /// <returns>True only for the exact already authenticated frame in this processing scope.</returns>
+        internal bool MatchesValidatedOriginalFrame(string sessionId, string requestId, int turn, string snapshotToken) =>
+            !_disposed && !Cleanup && Processing && _validatedOriginalFrame is { } frame &&
+            frame.Session == sessionId && frame.Request == requestId && frame.Turn == turn && frame.Token == snapshotToken;
         internal BrowserOriginalOperationScope(FileSystemManager files, MainAdmission owner,
             PendingPlayerActionService.Binding binding, PendingPlayerActionService.Staged? staged,
             BrowserOriginalOperationScope? parent)
@@ -83,6 +97,7 @@ public partial class FileSystemManager
                 RequireOriginalTuple(ExpectedStaged??throw BrowserOriginalMainCondition.Invalid(),staged);
                 var manifest=files.ValidateOriginalBrowserAdmission(staged, verifyPhysical: true);
                 if(manifest.BrowserOriginalMainCondition != Condition) throw BrowserOriginalMainCondition.Invalid();
+                _validatedOriginalFrame = (manifest.SessionId, manifest.RequestId, manifest.TurnNumber, manifest.ManifestPayloadHash);
                 Staged=staged;
             }
         }
@@ -103,6 +118,7 @@ public partial class FileSystemManager
             RequireOriginalTuple(ExpectedStaged??throw BrowserOriginalMainCondition.Invalid(),staged);
             var manifest=_files.ValidateOriginalBrowserAdmission(staged, verifyPhysical:true);
             if(manifest.BrowserOriginalMainCondition != Condition) throw BrowserOriginalMainCondition.Invalid();
+            _validatedOriginalFrame = (manifest.SessionId, manifest.RequestId, manifest.TurnNumber, manifest.ManifestPayloadHash);
             Staged=staged;
         }
         internal void BeginProcessing(PendingPlayerActionService.Staged staged)

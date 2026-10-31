@@ -1926,3 +1926,54 @@ is introduced by notification. Existing published-output narrative read remains.
 The authenticated Mortal prepared-command role and diagnosis progression completion
 already dispatch correctly and are unchanged. GM wire/rules/examples remain valid;
 current source and still-unqualified outcomes are only in plan.md.
+
+
+### T121 C14: completed item continuity at actual post-validation
+
+The actual C13 console refusal confirms a client-owned publication/consumer join,
+not new gameplay or GM inventory authoring. Keep the original inventory guard in
+place. The existing transaction may export private non-deserializable comparison
+DATA only after valid Finalized settlement, no issues, ChangedCount1, exact actual
+published agreement and observed successful lease disposal. Suppressed close
+failure preserves the settled outcome and exports nothing; no compensation or
+second spend is introduced. The completed value retains copied whole NPC bytes,
+parsed root, the existing sealed before/after comparison, frame scalars and exact
+generation/revision, with no executable receipt/owner or full input authority.
+
+Engine consumes it once at the existing completed boundary and clears it on turn,
+session or refusal. Repair invalidates it irreversibly. The actual parsed NPC root
+is observed once under the private validator invocation; missing, ambiguous or
+foreign observations cannot authorize filtering. Console comparison uses its
+Usable pending-snapshot invocation and existing physical lease, before final
+source recheck and close. Browser comparison uses the tracked World read API at
+phase end, before full end/readset proof and close; only after successful proof
+and close can the one candidate issue be removed. The browser physical owner
+compares against frame scalars captured after real full original admission and
+condition agreement in both construction and Seal paths, never from the override.
+Native/original generation and every staged-byte/ownership proof remain mandatory.
+Private scope state and atomic post-await consumption refuse concurrent invalidation.
+
+The existing item proof is recomposed once for eligible candidate sets and then
+reused as immutable comparison DATA. One fresh whole NPC byte read is necessary
+because early parsing precedes the owned World phase; tracked final readset/source
+proof prevents a stale-root exemption. There is no extra original parse/read,
+reader/lease, cache, callback or measured-speed claim. Exactly one matching ordinary
+inventory issue may be removed; duplicates/multiple candidates and all unrelated
+issues retain their original order and errors. Completed DATA grants no mutation,
+readmission, consumed-command reconstruction or late original replacement.
+
+The journey's missing lawful tradeInventoryReceipts default is created with the
+existing normalizer before its sole bootstrap/original. All final cost-only whole
+NPC root and rollback/compensation equality checks stay exact. Existing GM response,
+ordinary NPC journal/Scope/Brain, declared item cost and diagnosis/time rules are
+unchanged, so synchronized GM prompts/examples/manifest need no wire update.
+
+Finite source proposal: diagnosis actual post-validator1 + compensated/close-fail
+export2 + ordinary actual consumer1 + browser exact/early-drift/final-proof3,
+each category bounded60s. Browser singleton rows use actual staged Engine originals
+and the existing TerminalWaitStarted controlled stop before any GM wait. Existing
+engine-original1 is fresh because its shared seed changes, alongside semantic
+source guards3 and explicit World closure1. These are UNCOMPILED/UNRUN estimates;
+root alone owns builds/discovery/runtime. Conditional retention is218 old cases
+(the prior219 pool minus engine-original1), not a fresh218 pass claim. Original
+console/browser/rollback180s remain unqualified until the new finite proof succeeds.

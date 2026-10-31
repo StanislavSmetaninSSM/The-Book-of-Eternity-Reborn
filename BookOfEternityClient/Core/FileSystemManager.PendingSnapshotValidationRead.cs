@@ -187,6 +187,13 @@ public partial class FileSystemManager
         internal override MainAdmission? RetainedPhysicalAdmission => _retainedAdmission;
 
         /// <summary>
+
+        /// Generation captured by this read owner at opening and rechecked by RequireCurrent.
+
+        /// </summary>
+        internal string ObservedGeneration => _generation ?? throw new InvalidOperationException("Pending read generation is not observed.");
+
+        /// <summary>
         /// Finishes owned acquisition when required and binds the existing generation before admitting readers.
         /// </summary>
         /// <returns>

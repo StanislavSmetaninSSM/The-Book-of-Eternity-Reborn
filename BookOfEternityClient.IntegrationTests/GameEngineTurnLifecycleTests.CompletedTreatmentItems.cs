@@ -34,6 +34,14 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.True(finalized.IsValid, JsonSerializer.Serialize(finalized.Issues));
         Assert.Equal(MortalWoundTreatmentPublicationTransactionOutcome.Finalized, finalized.Outcome);
         var completed = Assert.IsType<MortalWoundTreatmentResourcePublicationTransaction.CompletedItemValidation>(transaction.ReadCompletedItemValidation());
+        async Task<string> ClaimsAsync()
+        {
+            await using var lease = await fs.AcquireCanonicalWriteLeaseAsync();
+            var publication = context.Plan.TreatmentResourcePublicationAuthority!;
+            return JsonSerializer.Serialize(AcceptedTurnAuthorityRegistry.InspectConfirmedMortalWoundTreatmentResourceClaim(fs,
+                lease, publication.RequestAuthority, publication.Finalization));
+        }
+        var claims = await ClaimsAsync();
         var before = await CaptureExactTreatmentTransactionBytesAsync(context);
         var raw = await validator.ValidatePostMaterializedGameStateAsync();
         var issue = Assert.Single(raw, value => value.Code == "npc_existing_inventory_resend_forbidden");
@@ -45,5 +53,6 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.Equal(-1, completed.FindUniqueIssue(new[] { issue, issue }));
         await AssertExactTreatmentTransactionBytesAsync(context, before);
         Assert.Equal(1, await ReadSelectedNpcItemCountAsync(context));
+        Assert.Equal(claims, await ClaimsAsync());
     }
 }

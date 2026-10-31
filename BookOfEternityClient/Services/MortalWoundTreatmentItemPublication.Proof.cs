@@ -174,19 +174,31 @@ internal sealed partial class MortalWoundTreatmentItemPublicationAuthority
         return skillNpcRoot is null ? null : new NpcInventoryContinuityComparison(skillNpcRoot, finalNpcRoot);
     }
 
-    /// <summary>Closed before/after inventory comparison DATA; it cannot mint an execution or publication permit.</summary>
+    /// <summary>
+
+    /// Closed before/after inventory comparison DATA; it cannot mint an execution or publication permit.
+
+    /// </summary>
     internal sealed class NpcInventoryContinuityComparison
     {
         private readonly JsonObject _before;
         private readonly JsonObject _after;
 
-        /// <summary>Copies the two complete already recomposed roots for this comparison.</summary>
+        /// <summary>
+
+        /// Copies the two complete already recomposed roots for this comparison.
+
+        /// </summary>
         /// <param name="before">The actual skill/item baseline.</param>
         /// <param name="after">The actual complete item publication image.</param>
         internal NpcInventoryContinuityComparison(JsonObject before, JsonObject after)
         { _before = before.DeepClone().AsObject(); _after = after.DeepClone().AsObject(); }
 
-        /// <summary>Checks the unchanged exact issue/actor/path/before/after inventory contract.</summary>
+        /// <summary>
+
+        /// Checks the unchanged exact issue/actor/path/before/after inventory contract.
+
+        /// </summary>
         /// <param name="issue">A candidate emitted by the ordinary inventory guard.</param>
         /// <returns>True only for this exact client-owned inventory transition.</returns>
         internal bool Proves(ValidationIssue issue)
@@ -204,7 +216,14 @@ internal sealed partial class MortalWoundTreatmentItemPublicationAuthority
         }
     }
 
-    private static bool TryParseNpcInventoryIssuePath(
+    /// <summary>
+    /// Reads only the canonical NPC inventory issue coordinate, before expensive recomposition.
+    /// </summary>
+    /// <param name="path">Actual ordinary guard issue path.</param>
+    /// <param name="section">Exact supported NPC array name.</param>
+    /// <param name="index">Canonical nonnegative row index.</param>
+    /// <returns>Whether the whole path has the existing exact inventory shape.</returns>
+    internal static bool TryParseNpcInventoryIssuePath(
         string path,
         out string section,
         out int index)

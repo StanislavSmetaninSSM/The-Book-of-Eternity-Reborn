@@ -1,3 +1,52 @@
+# T121 C14 bounded SOURCE candidate — UNCOMPILED / UNRUN
+
+Core and first consumer WIP are remotely preserved at `3a16eff4d8b4472018b9b4f550ee5bac5ea81ebd`
+and `ea73abfb56140ebccd9b4b2eb7347c74bb38f967`. The completed comparison now stores
+only copied NPC roots/bytes, frame scalars and exact generation/revision; it retains
+no live receipt/executable authority. Actual browser frame scalars are captured
+only after the existing full physical original admission and condition check in
+both constructor and Seal, and compared through the same World read owner's
+RequireCurrent. Console explicitly requires Usable evidence. Scope state is private
+and locked; atomic post-await consumption refuses invalidation/foreign identity.
+
+Fresh proposal is12 cases /11 methods /8 categories: diagnosis actual post-validator1,
+real compensated/suppressed-close export2, ordinary actual post-validator1,
+browser exact/early-drift/final-proof3, existing engine-original1, semantic guards3
+and explicit World source closure1. The browser rows are singleton60s owners to
+keep their distinct actual operation lifetimes bounded; no old budget increases.
+The genuine foreign original/override control preserves the actual current NPC
+bytes while the existing physical browser owner refuses the foreign tuple.
+Actual console/ordinary calls compare ordered raw versus filtered issues, exact
+bytes and existing request/resource-claim inspection; detached mutations pin whole
+item/count/actor/root/frame/generation and duplicate/multiple refusal. No returned
+filtered result is allowed after final World proof failure.
+
+All authored rows remain UNCOMPILED/UNRUN; official catalog/PlanOnly is root's next
+authoritative inventory. Source estimate full233 cases /101 methods, with seven
+new cases and the previously unselected standalone closure1 added to old225.
+The C13 retained219 proof is historical; SOURCE may retain218 after superseding the
+shared-seed engine-original1. UI3 remains unqualified. No unchanged PASS aggregate,
+unknown ordinary timeout, DFR/Mortal compatibility/Windows or physical-treatment
+work is selected. C13's retained root/raw/incomplete capture stay untouched.
+
+World closure explicitly proposes six existing whole-file pin changes:
+PendingSnapshotValidation (comparison inside the original final proof),
+NpcWorldAndMeta (actual parsed-root observation), WorldReadPhase (comparison before
+final proof and delayed issue removal), BrowserOriginalAdmission (genuine frame
+capture in both issuer paths), WorldValidationRead (same-owner frame comparison)
+and PendingSnapshotValidationRead (already-observed generation DATA). The concrete
+new validator/completed-comparison partials and existing item-proof implementation
+are added to this closure, bringing it from66 to69 members. ValidationPhases is
+unchanged. The pin diff is intentionally reviewable together with each semantic
+source delta; it is a proposal requiring independent SOURCE, not a blind refresh.
+
+Reuse/lifetime/invalidation and no-GM-wire rationale are in the current C14 design
+section. The one fresh whole NPC read binds earlier parsed DATA to current physical
+state under the existing read owner; final byte/source/readset checks still run.
+No source-read speedup, overall no-IO claim, new cache, reader, lease or permission
+is asserted. Parent task/US/#1536, guided physical treatment, eight canonical
+requirement adapters and all HOLD boundaries remain open.
+
 # T121 C14 actual-consumer test WIP — UNCOMPILED/UNRUN
 
 The coherent core is saved at `3a16eff4d8b4472018b9b4f550ee5bac5ea81ebd`.

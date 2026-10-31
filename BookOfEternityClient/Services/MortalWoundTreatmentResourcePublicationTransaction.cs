@@ -392,7 +392,8 @@ internal sealed partial class MortalWoundTreatmentResourcePublicationTransaction
             Volatile.Read(ref _closed) != 0 ||
             itemAuthority is null ||
             !issues.Any(static issue => issue.Severity == IssueSeverity.Error &&
-                issue.Code == "npc_existing_inventory_resend_forbidden" && issue.Section == "NPCInventory") ||
+                issue.Code == "npc_existing_inventory_resend_forbidden" && issue.Section == "NPCInventory" &&
+                MortalWoundTreatmentItemPublicationAuthority.TryParseNpcInventoryIssuePath(issue.FilePath, out _, out _)) ||
             !ReferenceEquals(_plan, _receipt.Plan) ||
             !ReferenceEquals(publicationAuthority, _receipt.PublicationAuthority) ||
             !publicationAuthority!.HasValidSeal() ||

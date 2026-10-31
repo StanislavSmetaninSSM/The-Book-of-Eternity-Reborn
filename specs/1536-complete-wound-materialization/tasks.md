@@ -43,16 +43,21 @@ archive are outside checkout; original failures and all other holds are retained
 
 # T121 diagnosis recommendations — #1536
 
-- [ ] T121-DIAGNOSIS-MORTAL-ITEM-POSTVALIDATION Resolve the actual console
-  post-materialization npc_existing_inventory_resend_forbidden join after the
-  declared medic item debit, first distinguishing controlled-reply fixture error
-  from production publication/continuity ownership. Preserve exact pre-turn GM
-  inventory protection, dedicated item command/receipt/source authority, full
-  original/compensation/replay and fresh current checks. Reuse existing item
-  publication proof/validator owners; no blanket exemption or snapshot replacement.
-  The C13 console timeout is UNKNOWN with incomplete capture and retained owned
-  root, not PASS or a cost-admission reason. Cheap causal positive/tamper/ordinary
-  controls and independent review precede any changed original180s UI attempt.
+- [ ] T121-DIAGNOSIS-MORTAL-ITEM-POSTVALIDATION Close the confirmed client-owned
+  medic debit versus outer post-materialization inventory guard using the existing
+  finalized transaction and actual read-owner scopes. Completed copied DATA is
+  issued only for valid Finalized/ChangedCount1/no-issues settlement, exact whole
+  publication and observed successful lease close; suppressed close failure keeps
+  settlement and exports nothing. Exact original/frame/generation, actual parsed
+  root plus fresh physical bytes and unique matching issue count remain required.
+  Scope state is private, consumption and irreversible invalidation are atomic,
+  and repair discards all eligibility. No execution authority survives closure.
+  Initial trade receipts are normalized before sole bootstrap/original. C13 console
+  stays TIMEOUT/UNKNOWN with retained root/incomplete capture. Seven new genuine
+  consumer/export/browser rows, existing engine-original1, semantic guards3 and
+  explicit World closure1 are the finite fresh proposal; UI3 follows only after
+  independent SOURCE/build/PREP. All new C14 work is UNCOMPILED/UNRUN; accepted
+  lineages and remaining parent/physical-guided/eight-adapter/HOLD work remain open.
 
 - [ ] T121-DIAGNOSIS-MORTAL-OUTPUT Bind the complete sealed diagnosis execution
   to the existing player-notification dispatcher after publication/lease closure.

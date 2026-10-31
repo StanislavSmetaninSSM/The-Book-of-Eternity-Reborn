@@ -11,15 +11,20 @@ namespace BookOfEternityClient.Tests;
 
 public sealed partial class ExplorerWoundSelfTreatmentTests
 {
-    [Theory]
-    [InlineData("exact")]
-    [InlineData("between_parse_and_world")]
-    [InlineData("after_comparison")]
-    public async Task BrowserCompletedItemComparisonRemainsInsideActualWorldReadProof(string fault)
+    [Fact]
+    public Task BrowserCompletedItemComparisonUsesActualFrameAndWorldProof() => RunCompletedItemsBrowserAsync("exact");
+
+    [Fact]
+    public Task BrowserCompletedItemComparisonRefusesDriftBetweenParseAndWorld() => RunCompletedItemsBrowserAsync("between_parse_and_world");
+
+    [Fact]
+    public Task BrowserCompletedItemComparisonWithholdsResultWhenFinalProofFails() => RunCompletedItemsBrowserAsync("after_comparison");
+
+    private async Task RunCompletedItemsBrowserAsync(string fault)
     {
         var root = Path.Combine(Path.GetTempPath(), "boe-completed-item-browser-" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(root);
-        FileSystemManager? files = null;
+        FileSystemManager files = null!;
         ValidationService.CompletedTreatmentItemValidationScope? scope = null;
         byte[]? publishedNpc = null;
         var armed = false; var cuts = 0; var checkpoints = 0;
@@ -39,7 +44,7 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
             }
         };
         var stop = new OperationCanceledException("Controlled stop after genuine browser post-validator proof, before GM wait.");
-        GameEngineTestRuntime? runtime = null;
+        GameEngineTestRuntime runtime = null!;
         try
         {
             files = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance,
@@ -86,18 +91,57 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                     Assert.True(finalized.IsValid, JsonSerializer.Serialize(finalized.Issues));
                     Assert.Equal(MortalWoundTreatmentPublicationTransactionOutcome.Finalized, finalized.Outcome);
                     var completed = Assert.IsType<MortalWoundTreatmentResourcePublicationTransaction.CompletedItemValidation>(tx.ReadCompletedItemValidation());
-                    publishedNpc = Assert.IsType<byte[]>(await files.ReadFileBytesAsync(NpcCoreChangesContract.NpcCorePath));
+                    var exactPublishedNpc = Assert.IsType<byte[]>(await files.ReadFileBytesAsync(NpcCoreChangesContract.NpcCorePath));
+                    publishedNpc = exactPublishedNpc;
                     var before = CaptureMortalDiagnosisImages(files);
                     using var original = validator.UsePrevalidatedPendingTurnSnapshotScope(manifest);
                     var raw = await validator.ValidatePostMaterializedGameStateAsync();
                     var exact = Assert.Single(raw, MortalWoundTreatmentResolverTests.IsCompletedItemInventoryIssue);
+                    if (fault == "exact")
+                    {
+                        // No World phase means no authenticated World comparison; the raw issue survives.
+                        using (validator.UseCompletedTreatmentItemValidationScope(completed))
+                            Assert.Contains(await validator.ValidateGameStateAsync(new GameStateValidationSelection(GameStateValidationPhase.NpcStateFiles)),
+                                MortalWoundTreatmentResolverTests.IsCompletedItemInventoryIssue);
+                        await using var foreign = await MortalWoundTreatmentResolverTests.DiagnosisOwnershipFixture.CreateAsync(20,
+                            signedInput: true, duration: 0);
+                        var foreignManifest = JsonSerializer.Deserialize<GameEngine.PendingTurnSnapshotManifest>(Assert.IsType<string>(
+                            await foreign.Files.ReadFileAsync(foreign.Lease, LiveTurnPreparationService.PendingTurnSnapshotManifestPath)),
+                            SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)!;
+                        var foreignRead = PendingTurnSnapshotReader.ReadCurrent(foreign.Files, foreign.Lease,
+                            new[] { EffectAcceptedTurnInputComposer.WorldTimePath });
+                        Assert.True(foreignRead.Success, JsonSerializer.Serialize(foreignRead.Issues));
+                        var foreignOriginal = Assert.IsType<PendingTurnSnapshotReadAuthority>(foreignRead.Snapshot);
+                        Assert.NotEqual(manifest.ManifestPayloadHash, foreignOriginal.SnapshotToken);
+                        await foreign.ReleaseLeaseAsync();
+                        var actualRead = Assert.IsType<FileSystemManager.WorldValidationReadScope>(files.BeginWorldValidationRead());
+                        await using (actualRead)
+                        {
+                            await actualRead.OpenAsync();
+                            Assert.True(actualRead.MatchesOriginalFrame(manifest.SessionId, manifest.RequestId, manifest.TurnNumber, manifest.ManifestPayloadHash));
+                            Assert.False(actualRead.MatchesOriginalFrame(foreignOriginal.SessionId, foreignOriginal.RequestId,
+                                foreignOriginal.TurnNumber, foreignOriginal.SnapshotToken));
+                            Assert.Equal(publishedNpc, await files.ReadFileBytesAsync(actualRead.Lease!, NpcCoreChangesContract.NpcCorePath));
+                            actualRead.RequireFullEndProof();
+                        }
+                        using (validator.UsePrevalidatedPendingTurnSnapshotScope(foreignManifest))
+                        {
+                            var foreignRaw = await validator.ValidatePostMaterializedGameStateAsync();
+                            using var foreignScope = validator.UseCompletedTreatmentItemValidationScope(completed);
+                            var foreignActual = await validator.ValidatePostMaterializedGameStateAsync();
+                            Assert.True(foreignScope.Observed);
+                            Assert.True(foreignScope.Invalidated);
+                            Assert.Equal(JsonSerializer.Serialize(foreignRaw), JsonSerializer.Serialize(foreignActual));
+                            Assert.Equal(publishedNpc, await files.ReadFileBytesAsync(NpcCoreChangesContract.NpcCorePath));
+                        }
+                    }
                     using (scope = validator.UseCompletedTreatmentItemValidationScope(completed))
                     {
                         List<ValidationIssue>? actual = null;
                         armed = true;
                         Exception? failure;
                         try { failure = await Record.ExceptionAsync(async () => actual = await validator.ValidatePostMaterializedGameStateAsync()); }
-                        finally { armed = false; File.WriteAllBytes(files.ResolvePath(NpcCoreChangesContract.NpcCorePath), publishedNpc); }
+                        finally { armed = false; File.WriteAllBytes(files.ResolvePath(NpcCoreChangesContract.NpcCorePath), exactPublishedNpc); }
                         if (fault == "after_comparison")
                         {
                             Assert.Equal(1, cuts);

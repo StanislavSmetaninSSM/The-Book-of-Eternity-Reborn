@@ -116,6 +116,27 @@ public partial class FileSystemManager
     internal sealed class WorldValidationReadScope(
         FileSystemManager files, BrowserOriginalOperationScope original, MainAdmission owner) : ValidationReadReservation, IAsyncDisposable
     {
+        /// <summary>
+        /// Requires the actual current original owner before comparing its physically admitted immutable frame.
+        /// </summary>
+        /// <param name="sessionId">Invocation's supplied original session.</param>
+        /// <param name="requestId">Invocation's supplied original request.</param>
+        /// <param name="turn">Invocation's supplied original turn.</param>
+        /// <param name="snapshotToken">Invocation's supplied original full seal.</param>
+        /// <returns>True only for this actual processing browser original.</returns>
+        internal bool MatchesOriginalFrame(string sessionId, string requestId, int turn, string snapshotToken)
+        {
+            RequireCurrent();
+            return original.MatchesValidatedOriginalFrame(sessionId, requestId, turn, snapshotToken);
+        }
+
+        /// <summary>
+
+        /// Generation already authenticated by the same actual browser operation.
+
+        /// </summary>
+        internal string ObservedGeneration => original.Binding.Generation;
+
         internal Task<CanonicalWriteLease> Acquisition { get; set; } = null!;
         internal CanonicalWriteLease? Lease { get; private set; }
         private bool _opening = true;

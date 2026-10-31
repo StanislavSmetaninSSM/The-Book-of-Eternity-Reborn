@@ -2,6 +2,173 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "mortal-completed-item-postvalidation",
+  "responsibility": "T121 C14 actual diagnosis post-validator1 plus real compensated/suppressed-close export2: immutable whole NPC/frame/generation, no-proof/invalidation/foreign owner, exact issue multiplicity, item/count/actor/root/byte/frame drift, current request/resource-claim and canonical inertness. A successful finalized settlement survives suppressed lease-close failure but exports no comparison; no repeated spend. Seven new rows across the finite C14 categories are UNCOMPILED/UNRUN.",
+  "excludes": "No new authority, cache, publisher, original re-sign, private reflection, GM wait, budget increase, diagnostic framework, full-suite/HOLD or physical-treatment execution. Actual prior UI timeout remains UNKNOWN.",
+  "changeHints": [
+    "BookOfEternityClient/Services/MortalWoundTreatmentResourcePublicationTransaction.CompletedItemValidation.cs",
+    "BookOfEternityClient/Services/Validation/ValidationService.CompletedTreatmentItemValidation.cs",
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.DiagnosisCompletedItems.cs"
+  ],
+  "related": [
+    {
+      "id": "wound-read-semantic-source-guards",
+      "when": "Changed production/source closure needs the existing three exact guards."
+    },
+    {
+      "id": "spiritual-world-source-closure",
+      "when": "Explicit whole-file closure pin delta for the reviewed current-read and original-frame additions."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.DiagnosisCompletedItemComparisonUsesActualPostValidatorAndExactWholeFrame",
+        "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.DiagnosisCompletedItemExportRequiresFinalizationAndObservedSuccessfulClose"
+      ]
+    }
+  ]
+},
+{
+  "id": "mortal-ordinary-completed-item-postvalidation",
+  "responsibility": "T121 C14 one genuine ordinary procedure item publication -> finalized/closed completed DATA -> actual outer post-validator. The shared existing guard remains without proof; only its one exact legitimate inventory issue is removed, all other ordered errors/bytes/claims unchanged. No reflective historical full-state helper. UNCOMPILED/UNRUN.",
+  "excludes": "No new authority, cache, publisher, original re-sign, private reflection, GM wait, budget increase, diagnostic framework, full-suite/HOLD or physical-treatment execution. Actual prior UI timeout remains UNKNOWN.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.CompletedTreatmentItems.cs",
+    "BookOfEternityClient/Services/MortalWoundTreatmentItemPublication.Proof.cs"
+  ],
+  "related": [
+    {
+      "id": "wound-read-semantic-source-guards",
+      "when": "Changed production/source closure needs the existing three exact guards."
+    },
+    {
+      "id": "spiritual-world-source-closure",
+      "when": "Explicit whole-file closure pin delta for the reviewed current-read and original-frame additions."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.OrdinaryProcedureCompletedItemComparisonReachesActualPostValidatorWithoutLiveReceipt"
+      ]
+    }
+  ]
+},
+{
+  "id": "mortal-browser-completed-item-exact",
+  "responsibility": "T121 C14 singleton60s: Actual browser Engine stage -> sealed original -> genuine diagnosis item publication, then current World-phase comparison. Actual valid foreign original/override cannot borrow the current physical browser owner despite identical current NPC bytes; no-World selection retains raw errors. No GM wait. Controlled existing TerminalWaitStarted stop; all whole-image equality remains. UNCOMPILED/UNRUN.",
+  "excludes": "No new authority, cache, publisher, original re-sign, private reflection, GM wait, budget increase, diagnostic framework, full-suite/HOLD or physical-treatment execution. Actual prior UI timeout remains UNKNOWN.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/ExplorerWoundSelfTreatmentTests.CompletedItemsBrowser.cs",
+    "BookOfEternityClient/Services/Validation/ValidationService.WorldReadPhase.cs"
+  ],
+  "related": [
+    {
+      "id": "wound-read-semantic-source-guards",
+      "when": "Changed production/source closure needs the existing three exact guards."
+    },
+    {
+      "id": "spiritual-world-source-closure",
+      "when": "Explicit whole-file closure pin delta for the reviewed current-read and original-frame additions."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.BrowserCompletedItemComparisonUsesActualFrameAndWorldProof"
+      ]
+    }
+  ]
+},
+{
+  "id": "mortal-browser-completed-item-parse-drift",
+  "responsibility": "T121 C14 singleton60s: Actual early parsed NPC image versus later whole physical byte drift before World comparison; the exact original guard remains, not a stale-DATA exemption. Controlled existing TerminalWaitStarted stop; all whole-image equality remains. UNCOMPILED/UNRUN.",
+  "excludes": "No new authority, cache, publisher, original re-sign, private reflection, GM wait, budget increase, diagnostic framework, full-suite/HOLD or physical-treatment execution. Actual prior UI timeout remains UNKNOWN.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/ExplorerWoundSelfTreatmentTests.CompletedItemsBrowser.cs",
+    "BookOfEternityClient/Services/Validation/ValidationService.WorldReadPhase.cs"
+  ],
+  "related": [
+    {
+      "id": "wound-read-semantic-source-guards",
+      "when": "Changed production/source closure needs the existing three exact guards."
+    },
+    {
+      "id": "spiritual-world-source-closure",
+      "when": "Explicit whole-file closure pin delta for the reviewed current-read and original-frame additions."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.BrowserCompletedItemComparisonRefusesDriftBetweenParseAndWorld"
+      ]
+    }
+  ]
+},
+{
+  "id": "mortal-browser-completed-item-final-proof",
+  "responsibility": "T121 C14 singleton60s: Actual physical drift after the completed comparison but before final World readset/end proof prevents any filtered result from being returned. Controlled existing TerminalWaitStarted stop; all whole-image equality remains. UNCOMPILED/UNRUN.",
+  "excludes": "No new authority, cache, publisher, original re-sign, private reflection, GM wait, budget increase, diagnostic framework, full-suite/HOLD or physical-treatment execution. Actual prior UI timeout remains UNKNOWN.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/ExplorerWoundSelfTreatmentTests.CompletedItemsBrowser.cs",
+    "BookOfEternityClient/Services/Validation/ValidationService.WorldReadPhase.cs"
+  ],
+  "related": [
+    {
+      "id": "wound-read-semantic-source-guards",
+      "when": "Changed production/source closure needs the existing three exact guards."
+    },
+    {
+      "id": "spiritual-world-source-closure",
+      "when": "Explicit whole-file closure pin delta for the reviewed current-read and original-frame additions."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.BrowserCompletedItemComparisonWithholdsResultWhenFinalProofFails"
+      ]
+    }
+  ]
+},
+{
   "id": "mortal-diagnosis-output-binding",
   "responsibility": "T121 two genuine common-bundle rows: success/zero-duration and failed-attempt/elapsed30, selected second in a private two-member cohort. Actual GameEngine direct/published output binders work after producing lease closure; exact zero-due absence and complete changed cohort mutations, sealed History/execution, truthful selected-only diagnosis/ordinary recovery, escaped plain/console/browser parity, no private data, canonical/confirmed-claim inertness. Typed resealed omitted/extra/changed/reordered/foreign bundles refuse at the real constructor/binder boundary. Actual console compensation is causal RED; UNCOMPILED/UNRUN.",
   "excludes": "No current owner readmission for notification, direct diagnosis healing, acquisition narration requirement, unconditional empty success, fake receipt/authority, reflection, snapshot/progression refactor, new cache/IO/framework or broad replay.",
@@ -3821,14 +3988,27 @@
 },
 {
   "id": "spiritual-world-source-closure",
-  "responsibility": "The exact existing World source-closure Fact after substantive independent review of six wound-related source deltas; checks all 66 LF-normalized pins and existing proof/cleanup source assertions.",
+  "responsibility": "The existing standalone60s World source-closure Fact. C14 explicitly reviews six whole-file pin changes for invocation-root capture, same existing lease comparison, actual browser original frame and already-observed generation; adds the three concrete completed-comparison DATA/helper files to the closure. All existing end-proof/cleanup assertions remain; no mechanical rebaseline or broad World run.",
   "excludes": "No World runtime suite, cache/performance qualification, mechanical rebaseline, DFR/Mortal/Windows or repeat of accepted combat cases.",
-  "changeHints": ["BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.WorldReadPhase.cs"],
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.WorldReadPhase.cs"
+  ],
   "related": [],
-  "requirements": {"frontendBuild": false, "exclusive": true, "ciRunner": "ubuntu-24.04"},
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
   "timeoutMinutes": 1,
   "expectedSeconds": null,
-  "selectors": [{"project": "integration", "tests": ["BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.WorldReadPhase_SourceClosurePinsRequireExplicitReview"]}]
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.WorldReadPhase_SourceClosurePinsRequireExplicitReview"
+      ]
+    }
+  ]
 },
 {
   "id": "spiritual-combat-console-source-guards",
