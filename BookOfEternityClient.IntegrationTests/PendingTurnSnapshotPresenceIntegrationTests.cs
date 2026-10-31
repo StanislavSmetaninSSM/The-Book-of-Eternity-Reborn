@@ -10,7 +10,7 @@ using Xunit;
 namespace BookOfEternityClient.Tests;
 
 [Trait("Category", "RegressionIntegration")]
-public sealed class PendingTurnSnapshotPresenceIntegrationTests
+public sealed partial class PendingTurnSnapshotPresenceIntegrationTests
 {
     private const string SoulPath = "game_state/meta/soul_state.json";
     private const string SettingsPath = "game_state/core/game_settings.json";
@@ -123,6 +123,7 @@ public sealed class PendingTurnSnapshotPresenceIntegrationTests
         await using var context = await CreateSeededContextAsync();
         await PrepareLiveAsync(context);
         var manifest = await ReadManifestAsync(context);
+        Assert.True(manifest["originalPathPresenceV1"]!.AsObject().Remove(WoundAcceptedTurnSnapshotContract.PendingResolutionPath));
         var observations = manifest["originalPathPresenceV1"]!.AsObject();
         Assert.True(observations.Remove(SpiritualWoundCaptureCheckpointState.StatePath));
         Assert.True(observations.Remove(SpiritualWoundDecisionPendingState.StatePath));
@@ -159,6 +160,7 @@ public sealed class PendingTurnSnapshotPresenceIntegrationTests
         await using var context = await CreateSeededContextAsync();
         await PrepareLiveAsync(context);
         var manifest = await ReadManifestAsync(context);
+        Assert.True(manifest["originalPathPresenceV1"]!.AsObject().Remove(WoundAcceptedTurnSnapshotContract.PendingResolutionPath));
         var observations = manifest["originalPathPresenceV1"]!.AsObject();
         Assert.True(observations.Remove(MortalWoundOccurrenceState.StatePath));
         Assert.True(observations.Remove(MortalWoundOpportunityReceiptState.StatePath));
@@ -197,6 +199,7 @@ public sealed class PendingTurnSnapshotPresenceIntegrationTests
             await context.WriteExactBytesAsync(receiptPath, originalBytes);
         await PrepareLiveAsync(context);
         var manifest = await ReadManifestAsync(context);
+        Assert.True(manifest["originalPathPresenceV1"]!.AsObject().Remove(WoundAcceptedTurnSnapshotContract.PendingResolutionPath));
         Assert.True(manifest["originalPathPresenceV1"]!.AsObject().Remove(receiptPath));
         Assert.True(manifest["originalPathPresenceV1"]!.AsObject().Remove(MortalWoundOccurrenceState.StatePath));
         Assert.True(manifest["originalPathPresenceV1"]!.AsObject().Remove(MortalWoundOpportunityReceiptState.StatePath));
@@ -230,6 +233,7 @@ public sealed class PendingTurnSnapshotPresenceIntegrationTests
         await using var context = await CreateSeededContextAsync();
         await PrepareLiveAsync(context);
         var manifest = await ReadManifestAsync(context);
+        Assert.True(manifest["originalPathPresenceV1"]!.AsObject().Remove(WoundAcceptedTurnSnapshotContract.PendingResolutionPath));
         Assert.True(manifest["originalPathPresenceV1"]!.AsObject().Remove(MortalQteDecisionPublication.StatePath));
         Assert.Equal(21, manifest["originalPathPresenceV1"]!.AsObject().Count);
         // Existing component snapshot-writer fixture establishes only this old closed-map reader contract.

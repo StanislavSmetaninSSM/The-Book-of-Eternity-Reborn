@@ -1,3 +1,32 @@
+# T121 pending observation controls WIP — UNCOMPILED / UNRUN
+
+Six focused rows are authored: Live and real Engine producers each with original
+pending absent or present, plus prior noncombat/combat signed-DATA forms that stay
+readable for unrelated work but cannot issue diagnosis authority from unobserved
+absence. Present DATA is exact signed coverage, not a manufactured pending owner.
+An omitted presence bit does not erase verified positive bytes; absence still
+requires explicit signed false and no mapping/hash. Capture is limited to a path
+already selected and exact/case-validated, so existing dictionary lookups replace
+additional whole-manifest scans. All new code/controls are UNCOMPILED/UNRUN.
+
+The four producer rows preserve copied exports and actual passive source counters:
+reading the narrow view repeatedly must open no additional source. Within those
+same independent scopes, old-evidence manifest drift and selected-artifact drift
+must fail RequireCurrent; fully resealed contradictory pending presence and
+one-sided mapping/hash must fail before any new evidence is issued. The existing
+six input-role assertions remain, with explicit healthy original-pending absence.
+The existing exact-hold/rebind case also refuses an actually unowned current
+pending image without altering it, before its ordinary exact hold/rebind checks.
+
+The existing signed-DATA helper accepts an optional real caller lease for its
+write, preserving old callers and avoiding nested-lease acquisition. No game
+receipt or live authority is invented. Two directly affected presence contract
+methods use typed APIs, and historical-map fixture builders explicitly remove the
+new bit when constructing their old sets. No broad old reflection cleanup or
+aggregate run is requested. Final finite selection/GM impact/source readback is
+next; no writer build/test/discovery/runtime. The accepted cheap 140 and failed
+native receipt remain separate, with no repeated successful aggregate.
+
 # T121 original pending observation correction WIP — UNCOMPILED / UNRUN
 
 The first native phase at runtime `ca01bdf0a24d28b6998b7497f77ebd08f5aee675`

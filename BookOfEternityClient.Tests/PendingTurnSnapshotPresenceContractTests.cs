@@ -51,36 +51,31 @@ public sealed class PendingTurnSnapshotPresenceContractTests
         "game_state/wounds/wound_opportunity_receipts.json"
     ];
 
-    private static readonly string[] CurrentExpectedPaths =
+    private static readonly string[] BeforeDiagnosisExpectedPaths =
     [
         .. BeforeCompletionExpectedPaths,
         "game_state/wounds/mortal_qte_decision_publication.json"
     ];
 
+    private static readonly string[] CurrentExpectedPaths =
+    [
+        .. BeforeDiagnosisExpectedPaths,
+        WoundAcceptedTurnSnapshotContract.PendingResolutionPath
+    ];
+
     [Fact]
     public void ClosedObservationContract_PreservesLegacySetsAndEmitsCurrentTwentyOnePaths()
     {
-        var helper = ClientAssembly.GetType(
-            "BookOfEternityClient.Services.PendingTurnSnapshotPathPresenceV1");
-        Assert.NotNull(helper);
-        var logicalPaths = Assert.IsAssignableFrom<IReadOnlyList<string>>(
-            helper!.GetProperty(
-                "LogicalPaths",
-                BindingFlags.Static | BindingFlags.NonPublic)!.GetValue(null));
-
-        var legacyLogicalPaths = Assert.IsAssignableFrom<IReadOnlyList<string>>(
-            helper.GetProperty(
-                "LegacyLogicalPaths",
-                BindingFlags.Static | BindingFlags.NonPublic)!.GetValue(null));
-        var previousLogicalPaths = Assert.IsAssignableFrom<IReadOnlyList<string>>(
-            helper.GetProperty(
-                "PreviousLogicalPaths",
-                BindingFlags.Static | BindingFlags.NonPublic)!.GetValue(null));
+        var logicalPaths = PendingTurnSnapshotPathPresenceV1.LogicalPaths;
+        var legacyLogicalPaths = PendingTurnSnapshotPathPresenceV1.LegacyLogicalPaths;
+        var previousLogicalPaths = PendingTurnSnapshotPathPresenceV1.PreviousLogicalPaths;
+        Assert.Equal(BeforeDiagnosisExpectedPaths, PendingTurnSnapshotPathPresenceV1.BeforeDiagnosisLogicalPaths);
+        Assert.Equal(BeforeDiagnosisExpectedPaths.Concat(AfterlifeWoundTreatmentAuthority.CombatSourcePaths).Distinct(StringComparer.Ordinal),
+            PendingTurnSnapshotPathPresenceV1.BeforeDiagnosisCombatLogicalPaths);
 
         Assert.Equal(CurrentExpectedPaths, logicalPaths);
-        Assert.Equal(22, logicalPaths.Count);
-        var beforeCompletion = Assert.IsAssignableFrom<IReadOnlyList<string>>(helper.GetProperty(
-            "BeforeCompletionLogicalPaths", BindingFlags.Static | BindingFlags.NonPublic)!.GetValue(null));
+        Assert.Equal(23, logicalPaths.Count);
+        var beforeCompletion = PendingTurnSnapshotPathPresenceV1.BeforeCompletionLogicalPaths;
         Assert.Equal(BeforeCompletionExpectedPaths, beforeCompletion);
         Assert.Equal(21, beforeCompletion.Count);
         Assert.DoesNotContain(MortalQteDecisionPublication.StatePath, beforeCompletion);
@@ -140,9 +135,6 @@ public sealed class PendingTurnSnapshotPresenceContractTests
     [Fact]
     public void Create_DerivesExactPresenceAndRejectsUntrustworthyCoverage()
     {
-        var create = PresenceHelperType.GetMethod(
-            "Create",
-            BindingFlags.Static | BindingFlags.NonPublic)!;
         var files = new Dictionary<string, string>(StringComparer.Ordinal)
         {
             [ExpectedPaths[0]] =
@@ -152,34 +144,27 @@ public sealed class PendingTurnSnapshotPresenceContractTests
         {
             [ExpectedPaths[0]] = new string('A', 64)
         };
-        var map = Assert.IsType<Dictionary<string, bool>>(
-            create.Invoke(null, [files, hashes]));
+        var map = PendingTurnSnapshotPathPresenceV1.Create(files, hashes);
 
         Assert.Equal(CurrentExpectedPaths, map.Keys);
         Assert.True(map[ExpectedPaths[0]]);
         Assert.All(CurrentExpectedPaths.Skip(1), path => Assert.False(map[path]));
 
         hashes.Clear();
-        var asymmetric = Assert.Throws<TargetInvocationException>(
-            () => create.Invoke(null, [files, hashes]));
-        Assert.IsType<InvalidDataException>(asymmetric.InnerException);
+        Assert.Throws<InvalidDataException>(() => PendingTurnSnapshotPathPresenceV1.Create(files, hashes));
 
         files.Clear();
         hashes.Clear();
         var caseVariant = ExpectedPaths[0].ToUpperInvariant();
         files[caseVariant] = "snapshot";
         hashes[caseVariant] = new string('B', 64);
-        var confusable = Assert.Throws<TargetInvocationException>(
-            () => create.Invoke(null, [files, hashes]));
-        Assert.IsType<InvalidDataException>(confusable.InnerException);
+        Assert.Throws<InvalidDataException>(() => PendingTurnSnapshotPathPresenceV1.Create(files, hashes));
 
         files.Clear();
         hashes.Clear();
         files[ExpectedPaths[0]] = "snapshot";
         hashes[ExpectedPaths[0]] = " ";
-        var blankHash = Assert.Throws<TargetInvocationException>(
-            () => create.Invoke(null, [files, hashes]));
-        Assert.IsType<InvalidDataException>(blankHash.InnerException);
+        Assert.Throws<InvalidDataException>(() => PendingTurnSnapshotPathPresenceV1.Create(files, hashes));
     }
 
     [Fact]

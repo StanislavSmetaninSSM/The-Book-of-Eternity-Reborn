@@ -99,6 +99,15 @@ public sealed partial class MortalWoundTreatmentResolverTests
         Assert.True(result.IsValid, JsonSerializer.Serialize(result.Issues));
         var request = result.Request!;
         var check = Assert.IsType<MortalWoundProcedureCheckAuthority>(request.ModeAuthority);
+        var beforeForeignPending = fixture.CaptureJson();
+        await fixture.Files.WriteFileAtomicAsync(fixture.Lease, WoundAcceptedTurnSnapshotContract.PendingResolutionPath,
+            "{\"schemaVersion\":1,\"owner\":\"unowned pending DATA\"}");
+        var foreignPending = fixture.CaptureJson();
+        var foreignRefusal = await Assert.ThrowsAsync<InvalidDataException>(() => fixture.Authority.RetainDiagnosisRequestAsync(request));
+        Assert.Contains("unowned pending before-image", foreignRefusal.Message);
+        fixture.AssertJson(foreignPending);
+        fixture.Files.DeleteFile(fixture.Lease, WoundAcceptedTurnSnapshotContract.PendingResolutionPath);
+        fixture.AssertJson(beforeForeignPending); // Restore only this pre-publication fault copy, not an accepted baseline.
         await fixture.Authority.RetainDiagnosisRequestAsync(request);
         var unchanged = fixture.CaptureJson();
         var outcome = MortalWoundDiagnosisOutcome.Resolve(fixture.Authority, history, request);
@@ -685,7 +694,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
         internal string EventRef { get; }
 
         internal static async Task<DiagnosisOwnershipFixture> CreateAsync(int? natural = null, bool signedInput = false, int duration = 30, bool seedFate = false,
-            Func<FileSystemManager, TurnRequest, Task>? originalProducer = null, bool twoMembers = false)
+            Func<FileSystemManager, TurnRequest, Task>? originalProducer = null, bool twoMembers = false, bool exportDiagnosis = true)
         {
             // Initial canonical scenario DATA only. The real live preparation and
             // exporter below issue ownership; these JSON values are not receipts.
@@ -738,7 +747,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
                     PreGeneratedDices1d20 = dices
                 });
                 lease = await files.AcquireCanonicalWriteLeaseAsync();
-                var exported = signedInput
+                var exported = signedInput && exportDiagnosis
                     ? MortalWoundTreatmentAcceptedStateAuthority.ExportDiagnosisCurrent(files, lease, stagedContext, scenario.Before["woundId"]!.GetValue<string>())
                     : MortalWoundTreatmentAcceptedStateAuthority.ExportCurrent(files, lease, stagedContext, scenario.Before["woundId"]!.GetValue<string>());
                 Assert.True(exported.IsValid, JsonSerializer.Serialize(exported.Issues));

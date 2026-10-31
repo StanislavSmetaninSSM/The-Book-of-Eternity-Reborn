@@ -84,6 +84,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         {
             Assert.Null(failure);
             Assert.NotNull(admission);
+            Assert.False(admission.Owner.ReadDiagnosisOriginalPending().Existed);
+            Assert.Null(admission.Owner.ReadDiagnosisOriginalPending().Bytes);
             var retained = await WoundApplicationService.ResolveMortalDiagnosisInputAsync(fs, lease,
                 new(request.SessionId, request.RequestId, request.TurnNumber, request.ProgressionControl!), requireRetained: true);
             Assert.Equal(admission.Request.RequestFingerprint, retained.Request.RequestFingerprint);

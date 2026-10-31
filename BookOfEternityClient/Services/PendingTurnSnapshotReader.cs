@@ -410,7 +410,9 @@ internal static partial class PendingTurnSnapshotReader
 
         // Project only this narrow DATA fact from the already verified manifest
         // and selected bytes. No second read/parse or generic optional widening.
-        sourceSession?.CapturePendingResolutionObservation(manifest, bytesByPath);
+        if (selection.RequiredLogicalPaths.Contains(WoundAcceptedTurnSnapshotContract.PendingResolutionPath, StringComparer.Ordinal) ||
+            selection.OptionalLogicalPaths.Contains(WoundAcceptedTurnSnapshotContract.PendingResolutionPath, StringComparer.Ordinal))
+            sourceSession?.CapturePendingResolutionObservation(manifest, bytesByPath);
         if (sourceSession is not null && !sourceSession.CloseAndRecheck(issues))
             return Failure(issues);
 

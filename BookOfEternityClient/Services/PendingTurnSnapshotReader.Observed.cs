@@ -318,17 +318,18 @@ internal static partial class PendingTurnSnapshotReader
             EnsureCapturing();
             const string path = WoundAcceptedTurnSnapshotContract.PendingResolutionPath;
             _pendingResolutionOriginal = null;
-            if (manifest.OriginalPathPresenceV1 is null ||
-                !manifest.OriginalPathPresenceV1.TryGetValue(path, out var present)) return;
-            var fileRows = manifest.Files.Where(row => string.Equals(row.Key, path, StringComparison.OrdinalIgnoreCase)).ToArray();
-            var hashRows = manifest.SnapshotFileHashes.Where(row => string.Equals(row.Key, path, StringComparison.OrdinalIgnoreCase)).ToArray();
-            if (present)
+            bool? present = manifest.OriginalPathPresenceV1 is not null &&
+                manifest.OriginalPathPresenceV1.TryGetValue(path, out var observed) ? observed : null;
+            // ReadCurrentCore calls this only for a selected path, after exact
+            // and case-confusable coverage plus its selected bytes were checked.
+            var mapped = manifest.Files.ContainsKey(path);
+            var hashed = manifest.SnapshotFileHashes.ContainsKey(path);
+            if (present != false)
             {
-                if (fileRows.Length == 1 && hashRows.Length == 1 && fileRows[0].Key == path && hashRows[0].Key == path &&
-                    verifiedSelectedBytes.TryGetValue(path, out var bytes))
+                if (mapped && hashed && verifiedSelectedBytes.TryGetValue(path, out var bytes))
                     _pendingResolutionOriginal = new(true, bytes);
             }
-            else if (fileRows.Length == 0 && hashRows.Length == 0)
+            else if (present == false && !mapped && !hashed)
                 _pendingResolutionOriginal = new(false, null);
         }
 

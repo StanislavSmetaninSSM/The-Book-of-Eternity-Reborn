@@ -498,8 +498,9 @@ internal sealed partial class MortalWoundTreatmentAcceptedStateAuthority
         CanonicalBeforeImage? diagnosisOriginalPending = null;
         if (diagnosis)
         {
-            observed!.Evidence!.RequireOwner(fileSystem, writeLease, signed);
-            diagnosisOriginalPending = observed.Evidence.ReadPendingResolutionOriginal();
+            var originalEvidence = observed?.Evidence ?? throw new InvalidDataException("Diagnosis original observation proof is missing.");
+            originalEvidence.RequireOwner(fileSystem, writeLease, signed);
+            diagnosisOriginalPending = originalEvidence.ReadPendingResolutionOriginal();
             if (diagnosisOriginalPending is null)
                 return Failure([Issue(WoundAcceptedTurnSnapshotContract.PendingResolutionPath,
                     "mortal_diagnosis_original_pending_unobserved", "exact signed original pending presence or absence",

@@ -46,7 +46,8 @@ internal static class PendingTurnSnapshotTestAuthority
         await WriteAuthorityForManifestAsync(fs, manifest);
     }
 
-    internal static async Task WriteAuthorityForManifestAsync(FileSystemManager fs, JsonObject manifest)
+    internal static async Task WriteAuthorityForManifestAsync(FileSystemManager fs, JsonObject manifest,
+        FileSystemManager.CanonicalWriteLease? writeLease = null)
     {
         var files = ToStringDictionary(manifest["files"] as JsonObject);
         var snapshotHashes = ToStringDictionary(manifest["snapshotFileHashes"] as JsonObject);
@@ -77,7 +78,8 @@ internal static class PendingTurnSnapshotTestAuthority
             relativePath => ReadRelativeFileBytes(fs, relativePath),
             hashSnapshotBytesExactly: snapshotHashesAreExactBytes);
 
-        await fs.WriteFileAtomicAsync(PendingTurnSnapshotAuthority.AuthorityPath, authorityJson);
+        if (writeLease is null) await fs.WriteFileAtomicAsync(PendingTurnSnapshotAuthority.AuthorityPath, authorityJson);
+        else await fs.WriteFileAtomicAsync(writeLease, PendingTurnSnapshotAuthority.AuthorityPath, authorityJson);
     }
 
     internal static string ComputeManifestPayloadHash(JsonObject manifest)
