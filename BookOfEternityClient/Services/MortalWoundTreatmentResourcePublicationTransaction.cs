@@ -300,6 +300,7 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
         ArgumentNullException.ThrowIfNull(binding);
         ArgumentNullException.ThrowIfNull(receipt);
         ArgumentNullException.ThrowIfNull(beforeImages);
+        RequireCompleteBeforeImageCoverage(plan, beforeImages);
 
         var authority = plan.TreatmentResourcePublicationAuthority;
         if (authority is null ||
@@ -326,6 +327,22 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
             binding,
             receipt,
             beforeImages);
+    }
+
+    /// <summary>
+    /// Requires original coverage for every path the actual common plan may
+    /// publish or consume. Shared by pre-take capture and this transaction factory;
+    /// coverage DATA alone grants no live receipt or publication authority.
+    /// </summary>
+    internal static void RequireCompleteBeforeImageCoverage(AcceptedMechanicsPlan plan,
+        IReadOnlyList<MortalWoundTreatmentPublicationBeforeImage> beforeImages)
+    {
+        ArgumentNullException.ThrowIfNull(plan);
+        ArgumentNullException.ThrowIfNull(beforeImages);
+        var paths = beforeImages.Select(row => row.Path).ToHashSet(StringComparer.Ordinal);
+        foreach (var path in plan.TouchedPaths)
+            if (!paths.Contains(path))
+                throw new InvalidDataException("Treatment publication lacks rollback coverage for touched path '" + path + "'.");
     }
 
     internal async Task<MortalWoundTreatmentPublicationProbeResult> ProbeAsync(

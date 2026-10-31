@@ -1,3 +1,32 @@
+# T121 dynamic compensation originals — core WIP, UNCOMPILED / UNRUN
+
+Dependent6 at `a045e1f33fe0ea35a5c5d459d12f3eb88269b630` completed 3 PASS
+(common, typed Fate and ordinary publication), 2 FAIL (outer retry) and 1 UNRUN
+(published recovery), in 118.9147s with no timeout, full cleanup and stable pins.
+Both outer rows failed exact held-byte restoration before outer rollback. Raw is
+external in `M2GREENC8C4-dependent6`; closing 12:11:47Z found no owners. Earlier
+independent-native19/cheap results remain separate lineages; UI is still held.
+
+Source-confirmed Important production gap: real diagnosis publishes dynamic
+world_time T1, but the refresh transaction captures only static normalizer paths,
+which omit world_time. Compensation correctly restores its supplied bytes, yet
+cannot restore an uncaptured T0. Root/Astra accepted extending the same operation
+capture after actual read-only treatment preflight and before take/publication.
+Existing static rows are retained; each missing touched path is read once under
+the same lease and must match the plan's sealed original presence/bytes. Export
+Plan.BeforeImages once. Assign the completed union only after all checks pass,
+then use it for both transaction and refresh error compensation. The transaction
+factory must refuse incomplete touched-path coverage before writes.
+
+Core code is saved WIP, UNCOMPILED/UNRUN; typed actual-plan present/absent/drift/
+coverage/copy/read-count proof and finite selection are being completed. The second
+factory caller is terminal cleanup, whose current-before-image role differs from
+publication's sealed-original role; exact role handling remains under the same
+bounded Astra consultation, not an invented T0 gate. No global inventory widening,
+late baseline capture, weakened byte equality, new cache/authority/diagnostic stack
+or writer runtime. Existing held versus original maps remain immutable. All raw/
+HOLD/ordinary-timeout restrictions and parent/physical-treatment residuals persist.
+
 # T121 independent native19 PASS by epochs — dependent6 PREP pending
 
 Cohort singleton at `4cbb45b2e518b33ec3dd5cfd85b4c03aa936ab53` completed

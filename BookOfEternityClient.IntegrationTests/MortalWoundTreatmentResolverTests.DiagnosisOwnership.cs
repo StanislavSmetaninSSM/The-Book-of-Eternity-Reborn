@@ -738,14 +738,16 @@ public sealed partial class MortalWoundTreatmentResolverTests
         internal string EventRef { get; }
 
         internal static async Task<DiagnosisOwnershipFixture> CreateAsync(int? natural = null, bool signedInput = false, int duration = 30, bool seedFate = false,
-            Func<FileSystemManager, TurnRequest, Task>? originalProducer = null, bool twoMembers = false, bool exportDiagnosis = true)
+            Func<FileSystemManager, TurnRequest, Task>? originalProducer = null, bool twoMembers = false, bool exportDiagnosis = true,
+            FileSystemManagerHooks? hooks = null)
         {
             // Initial canonical scenario DATA only. The real live preparation and
             // exporter below issue ownership; these JSON values are not receipts.
             var scenario = CreateDiagnosisInitialScenario(natural, duration, seedFate);
             var root = Path.Combine(Path.GetTempPath(), "boe-mortal-diagnosis-owner-" + Guid.NewGuid().ToString("N"));
             Directory.CreateDirectory(root);
-            var files = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            var files = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance,
+                PhysicalLoadTransactionOperations.Instance, hooks);
             files.EnsureDirectoryStructure();
             FileSystemManager.CanonicalWriteLease? lease = null;
             try

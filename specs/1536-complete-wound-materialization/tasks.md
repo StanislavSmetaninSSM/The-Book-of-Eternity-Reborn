@@ -150,6 +150,15 @@ archive are outside checkout; original failures and all other holds are retained
   construction and validates the complete merged source/identity graph. Only that
   singleton is UNCOMPILED/UNRUN; passed rows are retained. Parents stay open.
 
+- [ ] T121-DIAGNOSIS-MORTAL-DYNAMIC-COMPENSATION Capture every real common
+  touched original before take/publication, including diagnosis world_time T0.
+  Preserve static rows, same lease, sealed exact missing-path images and atomic
+  completed union for both transaction/error restore; factory refuses missing
+  coverage. Keep terminal-cleanup role separate without weakening publication.
+  Existing outer2 are causal failures; actual-plan cheap controls precede their
+  strict rerun and published recovery. Code/tests remain UNCOMPILED/UNRUN; no
+  global inventory/cache/authority or GM contract change. See current plan epochs.
+
 - [x] T121-DIAGNOSIS-READ Show readable declared conditions of currently known
   diagnostic paths in the existing wound/status cards for console/browser. Reuse
   the existing typed requirement projection and one operation-owned physical

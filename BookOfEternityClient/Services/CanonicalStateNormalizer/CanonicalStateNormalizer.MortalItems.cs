@@ -1802,6 +1802,11 @@ internal static class AcceptedTurnCanonicalStateRefresh
                 }
                 else
                 {
+                    // Preserve the static capture and extend it only after the
+                    // real read-only preflight identifies its exact common plan.
+                    // Assignment occurs only after every added image agrees.
+                    beforeImages = await CaptureTreatmentBeforeImagesAsync(
+                        fs, writeLease, treatmentPreflight.Plan, beforeImages);
                     if (!AcceptedMechanicsPlanAuthority
                             .TryTakeValidatedTreatmentPublication(
                                 fs,
@@ -1948,7 +1953,47 @@ internal static class AcceptedTurnCanonicalStateRefresh
         }
     }
 
-    private static async Task<IReadOnlyList<
+    /// <summary>
+    /// Extends this operation's original capture with missing touched paths from
+    /// its preflight plan, under the same active lease. Existing rows are reused;
+    /// each missing path is read once and must match the plan's sealed original.
+    /// This captures DATA and grants no take/publication permission.
+    /// </summary>
+    internal static async Task<IReadOnlyList<MortalWoundTreatmentPublicationBeforeImage>> CaptureTreatmentBeforeImagesAsync(
+        FileSystemManager fs, FileSystemManager.CanonicalWriteLease writeLease, AcceptedMechanicsPlan plan,
+        IReadOnlyList<MortalWoundTreatmentPublicationBeforeImage> original)
+    {
+        ArgumentNullException.ThrowIfNull(fs);
+        ArgumentNullException.ThrowIfNull(writeLease);
+        ArgumentNullException.ThrowIfNull(plan);
+        ArgumentNullException.ThrowIfNull(original);
+        fs.EnsureCanonicalWriteLeaseActive(writeLease);
+        fs.VerifyCurrentSessionOperation(writeLease);
+        var captured = original.ToDictionary(row => row.Path, StringComparer.Ordinal);
+        var sealedBefore = plan.BeforeImages; // One detached export for this operation.
+        var added = new List<MortalWoundTreatmentPublicationBeforeImage>();
+        foreach (var path in plan.TouchedPaths)
+        {
+            if (captured.ContainsKey(path)) continue;
+            if (!sealedBefore.TryGetValue(path, out var expected))
+                throw new InvalidDataException("Treatment publication lacks a sealed original for '" + path + "'.");
+            var actual = await fs.ReadFileBytesAsync(writeLease, path);
+            var expectedBytes = expected.Bytes;
+            if (expected.Existed != (actual is not null) ||
+                (actual is not null && (expectedBytes is null || !actual.AsSpan().SequenceEqual(expectedBytes))))
+                throw new InvalidDataException("Treatment publication original changed before capture: '" + path + "'.");
+            added.Add(new(path, actual));
+        }
+        var completed = original.Concat(added).ToArray();
+        MortalWoundTreatmentResourcePublicationTransaction.RequireCompleteBeforeImageCoverage(plan, completed);
+        return completed;
+    }
+
+    /// <summary>
+    /// Captures the unchanged static normalizer rollback inventory under its
+    /// active operation lease. Rows retain exact bytes or observed absence.
+    /// </summary>
+    internal static async Task<IReadOnlyList<
         MortalWoundTreatmentPublicationBeforeImage>> CaptureBeforeImagesAsync(
         FileSystemManager fs,
         FileSystemManager.CanonicalWriteLease writeLease)
