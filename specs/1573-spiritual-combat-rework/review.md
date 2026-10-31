@@ -22,6 +22,27 @@ fixed_large/suppress_reserve остаются прежними. Матрица12
 не нужен; immutable formula tables переиспользуются в прежней operation, mutable
 ресурс/допуск свежие. Отдельный reviewer проверит scope/границы и сохранённые договоры.
 
+Независимый GPT-6.1 Sol/xhigh review_t124_scope (отдельный контекст) проверил
+diff741944f6..0a168c8b и связанные chooseInterrupter/doHeal/applyHeal/interruption/
+begin/end: замечаний нет, документ готов к предъявлению. Резерв по текущейДЭ,
+видимая фаза, long/личное обновление, неизменные attack/guard controls и матрица
+соответствуют имеющимся договорам. Это review дизайна, не выполненная проба.
+Parent проверил фактический diff4docs,144relative links (без anchors), неизменность
+source/tests/пяти принятых договоров/T123report и diff-check. Статический подсчёт
+120×11000=1320000 согласован между spec/plan/tasks. Изменений после review,
+кроме статусов/этого evidence, нет. WIP0a168c8b949ed4d8bf04feefdb6581d3a96df46a
+и specblob19a3d6e3c78e76e80c9fa51527c61a7a945bbfe2 прочитаны с GitHub.
+
+Оптимизация проверена на уровне scope: те же operation-owned immutable tables,
+свежие mutable условия и отсутствие нового кэша для простого порога. Измеренного
+выигрыша T124 нет. Новый балансный прогон/tests/build/runtime UNRUN, rawT123
+сохранён. Применён Spec Kit bridge scope/consistency; writing-plans/исполнение
+следуют только после согласия автора. Следующий шаг — предъявить абсолютную
+ссылку наspec v1.76 и дождаться одобрения именно этого документа по его AGENTS.
+Итоговый SHA/readback и сверка4документов в существующем чистом sparse restore
+checkout будут записаны в issue1573 после финального push. Новое полное
+клонирование или проверка сборки для этой doc-only поправки не заявляются.
+
 ## T123 — исполнение после одобрения, 2026-10-31
 
 Автор одобрил точный документ11dbb105f ответом «да». Baseline/origin/issue сверены,

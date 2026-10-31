@@ -22,6 +22,13 @@ Bridge consistency scope: пять политик/личная оплата/фа
 сохранённые Heal/utility→T124.2–4; independent review/публикация/retention→T124.4.
 T124.0–0a закрывают gate до кода. Старые production-задачи не получают разрешения.
 
+Scope review завершён: отдельный GPT-6.1 Sol/xhigh проверил diff741944f6..0a168c8b
+и source seams, замечаний нет. Parent подтвердил144файловые ссылки (без anchors),
+4doc-only changes и неизменность исходников/пяти принятых договоров/T123report.
+WIP0a168c8b9 опубликован, remoteSHA и specblob19a3d6e3c78e76e80c9fa51527c61a7a945bbfe2
+сверены. T124.0a остаётся открытым: нужен review точного документа автором.
+Новые тесты/симуляции/production UNRUN; полный T123raw сохранён.
+
 ## Исполнение T123 — согласовано 2026-10-31
 
 **Spec:** [v1.75, T123](spec.md), одобрена после показа commit11dbb105f.
