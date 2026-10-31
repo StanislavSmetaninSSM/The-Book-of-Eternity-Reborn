@@ -1,3 +1,33 @@
+# T121 Mortal knowledge/recovery execution WIP — UNCOMPILED / UNRUN
+
+The existing wound/effect owners now have an exclusive diagnosis-purpose
+continuation. It retains the actual original accepted owner, terminal check,
+verified T1 working projection and independently reconstructed progression
+images. Publication baselines are read by that actual owner under its existing
+lease; callers cannot substitute detached root maps. Original accepted state is
+never rewritten or recreated for a different wound or future minute.
+
+Execution reduces the knowledge step first, then uses the existing ordinary
+recovery boundary executor/effect workspace for the complete admitted cohort.
+Members with no real mechanical change emit no fake recovery row. Finalization
+retains one strict diagnosis result and every linked actual recovery stage,
+rebuilds ordinary carrier/identity/History contributions and validates the whole
+serialized chain. This is a candidate common-plan contribution, not publication.
+
+Two source-authored actual-owner rows exercise explicit zero/300-minute methods,
+knowledge-first lineage, complete sealed effect/final History and zero canonical
+writes. The temporary estimate is now 51 cases / twelve methods / ten categories;
+all are UNCOMPILED/UNRUN. No build, test, discovery or restore was run by the writer.
+
+One parent freezes complete source/baseline DATA once; subordinate recovery
+members share it privately, and one execution-local detached export feeds the
+whole loop. Per-member scalar programs do not clone/reparse the complete world.
+Ordinary recovery keeps its prior fingerprint domain and default evaluation
+behavior. Fresh original/snapshot/lease/claim checks remain mandatory; no cache,
+publisher or speedup claim was added. Remaining code is common resources/time/
+pending publication and C4 rearm/outer rollback, actual guided UI and synchronized
+GM/current authored inputs. Existing tasks, accepted lineages and HOLDs remain open.
+
 # T121 Mortal complete-History reconstruction WIP — UNCOMPILED / UNRUN
 
 The strict diagnosis result now participates in complete serialized History and

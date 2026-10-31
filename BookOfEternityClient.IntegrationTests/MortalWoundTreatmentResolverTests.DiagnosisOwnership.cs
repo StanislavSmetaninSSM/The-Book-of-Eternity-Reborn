@@ -267,6 +267,48 @@ public sealed partial class MortalWoundTreatmentResolverTests
         fixture.AssertJson(unchanged);
     }
 
+    [Theory]
+    [InlineData(0)]
+    [InlineData(300)]
+    public async Task DiagnosisExecutesKnowledgeBeforeOnlyActuallyDueRecoveryInExistingEffectOwner(int duration)
+    {
+        await using var fixture = await DiagnosisOwnershipFixture.CreateAsync(20, signedInput: true, duration: duration);
+        var owner = fixture.Authority;
+        var history = new WoundHistoryParseResult(owner.History, Array.Empty<ValidationIssue>());
+        var request = MortalWoundTreatmentPlanner.PrepareDiagnosisRequest(owner, history, owner.CurrentWound,
+            "diagnosis_effect_execution", "inspect_explicit_method", fixture.EventRef);
+        Assert.True(request.IsValid, JsonSerializer.Serialize(request.Issues));
+        var outcome = MortalWoundDiagnosisOutcome.Resolve(owner, history, request.Request!);
+        var working = MortalWoundDiagnosisWorkingProjection.Build(owner, outcome);
+        var progression = await new ProgressionScheduleService(fixture.Files, NullLogger<ProgressionScheduleService>.Instance)
+            .PrepareDiagnosisOutcomeAsync(fixture.Lease, working);
+        var originals = fixture.CaptureJson();
+        var prepared = WoundAcceptedTurnPlanner.PrepareMortalDiagnosisContinuation(owner, outcome, working, progression);
+        Assert.True(prepared.Success, JsonSerializer.Serialize(prepared.Issues));
+        var effectInput = WoundAcceptedTurnPlanner.ComposeMortalDiagnosisEffectInput(prepared.Plan!);
+        var effects = WoundEffectBatchPlanner.Build(prepared.Plan!, effectInput, new EffectIdentityFactory());
+        Assert.True(effects.Success, JsonSerializer.Serialize(effects.Issues));
+        Assert.True(EffectAcceptedTurnPlanner.TryReadMortalDiagnosisExecution(prepared.Plan!, effects.Plan!.EffectPlan, out var stages));
+        var first = Assert.Single(stages, value => value.Kind == "diagnose");
+        Assert.Equal(WoundMaterializationContract.SerializeCanonical(outcome.KnowledgeAfter), WoundMaterializationContract.SerializeCanonical(first.After));
+        Assert.Equal(WoundMaterializationContract.SerializeCanonical(owner.CurrentWound), WoundMaterializationContract.SerializeCanonical(first.Before));
+        if (duration == 0) Assert.Single(stages);
+        else
+        {
+            Assert.True(stages.Count > 1);
+            Assert.Equal(WoundMaterializationContract.SerializeCanonical(first.After), WoundMaterializationContract.SerializeCanonical(stages[1].Before));
+            Assert.All(stages.Skip(1), value => Assert.Contains("diagnostic_hidden_route", value.After.Treatment.KnownRouteIds));
+        }
+        Assert.Equal(working.ResultingMinute, effectInput.EventInput["currentTime"]!.GetValue<long>());
+        var final = WoundAcceptedTurnPlanner.Finalize(prepared.Plan!, effects);
+        Assert.True(final.Success, JsonSerializer.Serialize(final.Issues));
+        var complete = WoundHistoryState.Parse(final.Plan!.HistoryAfterImage.ToJsonString(), WoundHistoryState.HistoryPath);
+        Assert.True(complete.IsValid, JsonSerializer.Serialize(complete.Issues));
+        Assert.Single(complete.State!.Transitions, value => value.TransitionResult is MortalWoundDiagnosisPersistedResult);
+        Assert.Equal(owner.History.Transitions.Count + stages.Count, complete.State.Transitions.Count);
+        fixture.AssertJson(originals);
+    }
+
     private sealed class DiagnosisOwnershipFixture : IAsyncDisposable
     {
         private DiagnosisOwnershipFixture(string root, FileSystemManager files, FileSystemManager.CanonicalWriteLease lease,

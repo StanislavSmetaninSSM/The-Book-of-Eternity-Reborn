@@ -71,4 +71,15 @@ internal sealed partial class MortalWoundTreatmentAcceptedStateAuthority
         if (request is not null) RequireOriginalDiagnosisRequest(request);
         return request;
     }
+
+    internal (WoundAcceptedTurnInput Input, IReadOnlyDictionary<string, JsonNode?> SourceRoots) ReadDiagnosisPublicationBaselines(
+        MortalWoundTreatmentAttemptRequest request)
+    {
+        RequireOriginalDiagnosisRequest(request);
+        var read = WoundAcceptedTurnPlanner.ReadRecoveryPublicationBaselines(_fileSystem, _writeLease, _binding);
+        if (read.Input is null || read.SourceRoots is null || read.Issues.Count != 0)
+            throw new InvalidDataException("Diagnosis publication requires complete current canonical wound/effect baselines.");
+        RequireOriginalDiagnosisRequest(request);
+        return (read.Input, read.SourceRoots);
+    }
 }

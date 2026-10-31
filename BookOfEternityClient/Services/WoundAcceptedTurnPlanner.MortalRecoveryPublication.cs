@@ -56,6 +56,8 @@ internal static partial class WoundAcceptedTurnPlanner
         private readonly string[] _transitionIds;
         private readonly string[] _operationKeys;
         private readonly IReadOnlyDictionary<string, JsonNode?> _sourceRoots;
+        private readonly WoundMaterializationEnvelope _before;
+        private readonly MortalDiagnosisContinuation? _diagnosis;
 
         /// <summary>
         /// Freezes one independently admitted recovery program and allocates its coordinates.
@@ -72,18 +74,30 @@ internal static partial class WoundAcceptedTurnPlanner
         /// <param name="sourceRoots">
         /// Canonical effect-source roots read under the same live lease.
         /// </param>
+        /// <param name="diagnosis">Actual diagnosis parent for an unpublished working member, otherwise null.</param>
+        /// <param name="member">Exact admitted working member of that parent, otherwise null.</param>
         internal RecoveryContinuationAuthority(
             MortalWoundTreatmentAcceptedStateAuthority acceptedState,
             MortalWoundRecoveryResolution resolution,
             WoundAcceptedTurnInput input,
-            IReadOnlyDictionary<string, JsonNode?> sourceRoots)
+            IReadOnlyDictionary<string, JsonNode?> sourceRoots,
+            MortalDiagnosisContinuation? diagnosis = null,
+            MortalWoundDiagnosisRecoveryMember? member = null)
         {
+            if ((diagnosis is null) != (member is null) || diagnosis is not null &&
+                (!ReferenceEquals(acceptedState, diagnosis.Owner) || !diagnosis.Working.Members.Any(value => ReferenceEquals(value, member))))
+                throw new InvalidDataException("A working recovery view requires its actual diagnosis owner and exact admitted cohort member.");
+            _diagnosis = diagnosis;
+            _before = WoundAcceptedTurnData.CloneWound(member?.Working ?? acceptedState.CurrentWound)!;
             AcceptedStateAuthority = acceptedState;
             _resolution = CloneRecoveryResolution(resolution);
-            _input = WoundAcceptedTurnData.CloneInput(input)!;
-            _sourceRoots = CloneRecoverySourceRoots(sourceRoots);
+            if (diagnosis is not null && !diagnosis.OwnsSharedBaselines(input, sourceRoots))
+                throw new InvalidDataException("A diagnosis child must share its exact parent's frozen original DATA.");
+            _input = diagnosis is null ? WoundAcceptedTurnData.CloneInput(input)! : input;
+            _sourceRoots = diagnosis is null ? CloneRecoverySourceRoots(sourceRoots) : sourceRoots;
             EventRef = input.Binding.AcceptedEvents.First().EventRef;
-            var count = RecoveryStageCount(acceptedState.CurrentWound, resolution);
+            var count = diagnosis is not null && !resolution.TransitionIntents.Any(value => value is MortalWoundRecoveryProgressIntent or MortalWoundRecoveryDeteriorationIntent)
+                ? 0 : RecoveryStageCount(_before, resolution);
             _transitionIds = Enumerable.Range(1, count).Select(ordinal =>
                 RecoveryCoordinate("wound_recovery_transition", resolution.TickKey, ordinal)).ToArray();
             _operationKeys = Enumerable.Range(1, count).Select(ordinal =>
@@ -105,6 +119,14 @@ internal static partial class WoundAcceptedTurnPlanner
         /// Gets the seal over the original inputs and deterministic stage coordinates.
         /// </summary>
         internal string Fingerprint { get; }
+        internal IReadOnlyList<string> TransitionIds => Array.AsReadOnly(_transitionIds);
+        internal RecoveryContinuationView ReadForDiagnosis(MortalDiagnosisContinuation owner, WoundAcceptedTurnInput input,
+            IReadOnlyDictionary<string, JsonNode?> roots)
+        {
+            if (!ReferenceEquals(owner, _diagnosis) || !IsSealed) throw new InvalidDataException("Foreign diagnosis recovery member.");
+            return new(WoundAcceptedTurnData.CloneWound(_before)!, AcceptedStateAuthority, CloneRecoveryResolution(_resolution),
+                input, Array.AsReadOnly(_transitionIds), EventRef, Array.AsReadOnly(_operationKeys), roots, Fingerprint);
+        }
 
         /// <summary>
         /// Exports detached comparison data while retaining the actual accepted source capability.
@@ -113,7 +135,7 @@ internal static partial class WoundAcceptedTurnPlanner
         /// A fresh view whose mutable JSON and collections do not expose retained state.
         /// </returns>
         internal RecoveryContinuationView Read() => new(
-            WoundAcceptedTurnData.CloneWound(AcceptedStateAuthority.CurrentWound)!,
+            WoundAcceptedTurnData.CloneWound(_before)!,
             AcceptedStateAuthority,
             CloneRecoveryResolution(_resolution),
             WoundAcceptedTurnData.CloneInput(_input)!,
@@ -136,11 +158,17 @@ internal static partial class WoundAcceptedTurnPlanner
         /// </returns>
         private string ComputeFingerprint()
         {
+            if (_diagnosis is not null)
+                return WoundAcceptedTurnFingerprintWriter.Compute(new[]
+                {
+                    "book_of_eternity.mortal_diagnosis.recovery_member", "1", _diagnosis.Fingerprint,
+                    WoundMaterializationContract.SerializeCanonical(_before), RecoveryResolutionProjection(_resolution).ToJsonString(), EventRef
+                }.Concat(_transitionIds.Zip(_operationKeys, (transition, operation) => transition + ":" + operation)));
             var fields = new List<string?>
             {
                 "book_of_eternity.mortal_wound.recovery_continuation", "1",
                 AcceptedStateAuthority.AcceptedStateFingerprint,
-                WoundMaterializationContract.SerializeCanonical(AcceptedStateAuthority.CurrentWound),
+                WoundMaterializationContract.SerializeCanonical(_before),
                 WoundAcceptedTurnFingerprints.ComputeInput(_input),
                 RecoveryResolutionProjection(_resolution).ToJsonString(),
                 EventRef,

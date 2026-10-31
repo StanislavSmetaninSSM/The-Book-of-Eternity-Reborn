@@ -63,6 +63,13 @@
       "contracts": [
         "#1536 T121-DIAGNOSIS-MORTAL; strict durable comparison, original/knowledge separation, complete cohort and no mechanical/clock/result forgery"
       ]
+    },
+    {
+      "category": "mortal-diagnosis-effect-execution",
+      "reason": "T121 two independent actual signed-original owner setups execute an explicit zero or 300-minute diagnosis through the existing wound/effect planner. Knowledge is first; only actually due ordinary recovery follows from the diagnosed working image. Real sealed execution and full final History are checked, with all canonical JSON bytes unchanged. UNCOMPILED/UNRUN WIP.",
+      "contracts": [
+        "#1536 T121-DIAGNOSIS-MORTAL / FR071; genuine knowledge-first execution, complete original cohort, same effect workspace and strict History"
+      ]
     }
   ]
 }

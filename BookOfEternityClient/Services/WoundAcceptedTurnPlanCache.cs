@@ -651,6 +651,12 @@ internal sealed class WoundAcceptedTurnPlanCache
 
         var transitions = input.Transitions;
         var batches = plan.EffectOperationBatches;
+        if (plan.MortalDiagnosisAuthority is { } diagnosis)
+        {
+            if (transitions.Count != 0 || input.Opportunities.Count != 0 || !diagnosis.PreparedAgrees(plan))
+            { mismatch = "Mortal diagnosis continuation authority"; return false; }
+            return true;
+        }
         if (plan.JointRepairContinuationAuthority is not null)
         {
             if (transitions.Count != 1 || input.Opportunities.Count != 1 ||
@@ -804,6 +810,8 @@ internal sealed class WoundAcceptedTurnPlanCache
         var replay = plan.JointRepairContinuationAuthority is not null
             ? WoundAcceptedTurnPlanner.PrepareJointRepairCandidate(
                 WoundAcceptedTurnData.CloneInput(input)!, plan.JointRepairContinuationAuthority)
+            : plan.MortalDiagnosisAuthority is { } diagnosis
+            ? diagnosis.Prepare()
             : plan.SpiritualHealingContinuationAuthority is AfterlifeWoundHealingPlanner.Continuation spiritual
             ? new WoundAcceptedTurnPreparationResult(spiritual.Prepare(), Array.Empty<ValidationIssue>())
             : plan.RecoveryContinuationAuthority is not null

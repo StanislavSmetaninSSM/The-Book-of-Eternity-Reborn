@@ -814,6 +814,7 @@ internal sealed class WoundPreparedAcceptedTurnPlan
     private readonly object? _recoveryContinuationAuthority;
     private readonly object? _jointRepairContinuationAuthority;
     private readonly object? _spiritualHealingContinuationAuthority;
+    private readonly WoundAcceptedTurnPlanner.MortalDiagnosisContinuation? _mortalDiagnosisAuthority;
     private readonly ValidationService.SpiritualOriginalTurnCapture.CombatHealingSelection? _combatHealingAuthority;
     private readonly object? _cacheAuthorityStateToken;
     private readonly object? _cachePreparedStageToken;
@@ -864,6 +865,7 @@ internal sealed class WoundPreparedAcceptedTurnPlan
     /// <param name="recoveryContinuationAuthority">
     /// Private recovery continuation companion, or <see langword="null"/> for other paths.
     /// </param>
+    /// <param name="mortalDiagnosisAuthority">Actual private diagnosis program, exclusive of other prepared purposes.</param>
     internal WoundPreparedAcceptedTurnPlan(
         WoundAcceptedTurnBinding binding,
         string bindingFingerprint,
@@ -881,8 +883,13 @@ internal sealed class WoundPreparedAcceptedTurnPlan
         object? recoveryContinuationAuthority = null,
         object? jointRepairContinuationAuthority = null,
         object? spiritualHealingContinuationAuthority = null,
-        ValidationService.SpiritualOriginalTurnCapture.CombatHealingSelection? combatHealingAuthority = null)
+        ValidationService.SpiritualOriginalTurnCapture.CombatHealingSelection? combatHealingAuthority = null,
+        WoundAcceptedTurnPlanner.MortalDiagnosisContinuation? mortalDiagnosisAuthority = null)
     {
+        if (mortalDiagnosisAuthority is not null && (treatmentContinuationAuthority is not null || recoveryContinuationAuthority is not null ||
+            jointRepairContinuationAuthority is not null || spiritualHealingContinuationAuthority is not null || combatHealingAuthority is not null || draftBefore is not null))
+            throw new ArgumentException("Mortal diagnosis is an exclusive prepared purpose.");
+        _mortalDiagnosisAuthority = mortalDiagnosisAuthority;
         if (combatHealingAuthority is not null &&
             (draftBefore is null || !ReferenceEquals(draftBefore.Selection.Combat, combatHealingAuthority) ||
              treatmentContinuationAuthority is not null || recoveryContinuationAuthority is not null ||
@@ -950,6 +957,7 @@ internal sealed class WoundPreparedAcceptedTurnPlan
         _recoveryContinuationAuthority;
     internal object? JointRepairContinuationAuthority => _jointRepairContinuationAuthority;
     internal object? SpiritualHealingContinuationAuthority => _spiritualHealingContinuationAuthority;
+    internal WoundAcceptedTurnPlanner.MortalDiagnosisContinuation? MortalDiagnosisAuthority => _mortalDiagnosisAuthority;
     internal ValidationService.SpiritualOriginalTurnCapture.CombatHealingSelection? CombatHealingAuthority => _combatHealingAuthority;
 
     internal WoundPreparedAcceptedTurnPlan BindToCacheAuthority(
@@ -975,7 +983,8 @@ internal sealed class WoundPreparedAcceptedTurnPlan
             _recoveryContinuationAuthority,
             _jointRepairContinuationAuthority,
             _spiritualHealingContinuationAuthority,
-            _combatHealingAuthority);
+            _combatHealingAuthority,
+            _mortalDiagnosisAuthority);
     }
 
     internal WoundPreparedAcceptedTurnPlan ClonePreservingCacheAuthority() =>
@@ -996,7 +1005,8 @@ internal sealed class WoundPreparedAcceptedTurnPlan
             _recoveryContinuationAuthority,
             _jointRepairContinuationAuthority,
             _spiritualHealingContinuationAuthority,
-            _combatHealingAuthority);
+            _combatHealingAuthority,
+            _mortalDiagnosisAuthority);
 
     internal bool HasCacheAuthorityState => _cacheAuthorityStateToken is not null;
 
@@ -2422,6 +2432,11 @@ internal static partial class WoundAcceptedTurnFingerprints
             fields.Add("spiritual_healing_continuation");
             fields.Add(spiritual.Fingerprint);
         }
+        if (plan.MortalDiagnosisAuthority is { } diagnosis)
+        {
+            fields.Add("mortal_diagnosis_continuation");
+            fields.Add(diagnosis.Fingerprint);
+        }
         if (plan.CombatHealingAuthority is { } combat)
         {
             fields.Add("spiritual_combat_healing_selection");
@@ -2674,6 +2689,11 @@ internal static partial class WoundAcceptedTurnFingerprints
         {
             fields.Add("spiritual_healing_execution");
             fields.Add(healingExecution);
+        }
+        if (EffectAcceptedTurnPlanner.GetMortalDiagnosisExecutionFingerprint(plan) is { } diagnosisExecution)
+        {
+            fields.Add("mortal_diagnosis_execution");
+            fields.Add(diagnosisExecution);
         }
         AppendOrdered(fields, plan.AllocatedCombatantIds, includeCount: true);
         AppendOrdered(fields, plan.AllocatedEffectIds, includeCount: true);

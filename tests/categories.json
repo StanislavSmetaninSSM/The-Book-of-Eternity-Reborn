@@ -2,9 +2,43 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "mortal-diagnosis-effect-execution",
+  "responsibility": "T121 two independent actual signed-original owner setups execute an explicit zero or 300-minute diagnosis through the existing wound/effect planner. Knowledge is first; only actually due ordinary recovery follows from the diagnosed working image. Real sealed execution and full final History are checked, with all canonical JSON bytes unchanged. UNCOMPILED/UNRUN WIP.",
+  "excludes": "No fabricated receipt, new accepted state, canonical publication, Engine/GM wait, C4, full guided UI or broad Mortal aggregate. Common resource/time/pending publication remains required.",
+  "changeHints": [
+    "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalDiagnosis.cs",
+    "BookOfEternityClient/Services/EffectAcceptedTurnPlanner.MortalDiagnosis.cs",
+    "BookOfEternityClient/Services/WoundAcceptedTurnPlannerCore.MortalDiagnosis.cs"
+  ],
+  "related": [
+    {
+      "id": "mortal-diagnosis-working-time",
+      "when": "The actual original owner and verified T1 working projection are prerequisites."
+    },
+    {
+      "id": "mortal-diagnosis-durable-data",
+      "when": "The complete executed cohort must reconstruct through the strict durable result and History codecs."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.DiagnosisExecutesKnowledgeBeforeOnlyActuallyDueRecoveryInExistingEffectOwner"
+      ]
+    }
+  ]
+},
+{
   "id": "mortal-diagnosis-durable-data",
   "responsibility": "T121 one actual original-owner setup produces strictly detached comparison result DATA at explicit zero duration. The codec retains original/knowledge images, exact held request/procedure/resources, full control/schedule/clock and complete original physical cohort; seven independently outer-resealed copies must reject knowledge regression, altered result/duration/control, cohort omission, foreign terminal operations and resource-trigger drift. This does not fabricate execution or publication receipts. UNCOMPILED/UNRUN WIP.",
-  "excludes": "No actual History/publication/Engine/GM wait, fake accepted receipt, permission from serialized seals, broad Mortal aggregate or accepted spiritual replay. Actual native/UI and linked History completion remain required later.",
+  "excludes": "No canonical publication/Engine/GM wait, fake accepted receipt, permission from serialized seals, broad Mortal aggregate or accepted spiritual replay. Actual native/UI and linked History completion remain required later.",
   "changeHints": [
     "BookOfEternityClient/Services/MortalWoundDiagnosisPersistedResult.cs",
     "BookOfEternityClient/Services/MortalWoundRecoveryPersistence.cs",

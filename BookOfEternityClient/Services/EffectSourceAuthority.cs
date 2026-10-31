@@ -657,9 +657,17 @@ internal sealed class EffectSourceAuthority
     // would resurrect replaced siblings or lose same-turn sources.
     internal EffectSourceAuthority WithCompletedSpiritualWounds(
         AfterlifeWoundHealingPlanner.Continuation owner, EffectSourceAuthority woundSources)
+        => WithCompletedOwnedWounds(owner.Wounds, owner.ReadCompletedSourceWounds(), woundSources);
+
+    internal EffectSourceAuthority WithCompletedMortalDiagnosisWounds(
+        WoundAcceptedTurnPlanner.MortalDiagnosisContinuation owner,
+        IReadOnlyCollection<WoundMaterializationEnvelope> completed, EffectSourceAuthority woundSources)
+        => WithCompletedOwnedWounds(owner.Working.Members.Select(member => member.Original).ToArray(), completed, woundSources);
+
+    private EffectSourceAuthority WithCompletedOwnedWounds(IReadOnlyCollection<WoundMaterializationEnvelope> originals,
+        IReadOnlyCollection<WoundMaterializationEnvelope> completed, EffectSourceAuthority woundSources)
     {
-        var completed = owner.ReadCompletedSourceWounds();
-        var original = owner.Wounds.ToDictionary(w => new EffectIdentitySourceGroup(w.Owner.Realm, "wound", w.WoundId));
+        var original = originals.ToDictionary(w => new EffectIdentitySourceGroup(w.Owner.Realm, "wound", w.WoundId));
         var replaced = original.Keys.ToHashSet();
         if (woundSources.Issues.Count != 0 || completed.Count != original.Count)
             throw new InvalidDataException("Spiritual source replacement lost its complete executed cohort.");

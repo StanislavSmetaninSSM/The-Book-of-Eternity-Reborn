@@ -117,6 +117,7 @@ internal sealed class EffectAcceptedTurnPlan
     /// </summary>
     internal object? MortalRecoveryExecutionAuthority { get; }
     internal object? SpiritualHealingExecutionAuthority { get; }
+    internal object? MortalDiagnosisExecutionAuthority { get; }
 
     /// <summary>
     /// Freezes one effect execution result and retains any private continuation proof.
@@ -215,6 +216,7 @@ internal sealed class EffectAcceptedTurnPlan
     /// </param>
     /// <param name="lifecycleExecutionLedger">Actual planner-owned lifetime observations, when available.</param>
     /// <param name="lifecycleLedgerIssuer">Private issuer when binding a newly executed ledger; null for exact copies.</param>
+    /// <param name="mortalDiagnosisExecutionAuthority">Actual private diagnosis execution proof, or null for every other purpose.</param>
     internal EffectAcceptedTurnPlan(
         string inputFingerprint,
         string carrierAuthorityFingerprint,
@@ -252,11 +254,13 @@ internal sealed class EffectAcceptedTurnPlan
         object? mortalRecoveryExecutionAuthority = null,
         EffectLifecycleExecutionLedger? lifecycleExecutionLedger = null,
         object? lifecycleLedgerIssuer = null,
-        object? spiritualHealingExecutionAuthority = null)
+        object? spiritualHealingExecutionAuthority = null,
+        object? mortalDiagnosisExecutionAuthority = null)
     {
         InputFingerprint = inputFingerprint;
         MortalRecoveryExecutionAuthority = mortalRecoveryExecutionAuthority;
         SpiritualHealingExecutionAuthority = spiritualHealingExecutionAuthority;
+        MortalDiagnosisExecutionAuthority = mortalDiagnosisExecutionAuthority;
         SkillScopeAuthority = skillScopeAuthority;
         CarrierAuthorityFingerprint = carrierAuthorityFingerprint;
         SourceAuthorityFingerprint = sourceAuthorityFingerprint;
@@ -515,7 +519,8 @@ internal sealed class EffectAcceptedTurnPlan
             source.SkillScopeAuthority,
             source.MortalRecoveryExecutionAuthority,
             source.LifecycleExecutionLedger,
-            spiritualHealingExecutionAuthority: source.SpiritualHealingExecutionAuthority);
+            spiritualHealingExecutionAuthority: source.SpiritualHealingExecutionAuthority,
+            mortalDiagnosisExecutionAuthority: source.MortalDiagnosisExecutionAuthority);
     }
 
     private static ReadOnlyCollection<T> ReadOnly<T>(IReadOnlyList<T> values) =>

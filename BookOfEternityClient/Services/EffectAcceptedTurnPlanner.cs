@@ -4121,6 +4121,8 @@ internal static partial class EffectAcceptedTurnPlanner
         ArgumentNullException.ThrowIfNull(prepared);
         ArgumentNullException.ThrowIfNull(identityFactory);
 
+        if (prepared.MortalDiagnosisAuthority is not null)
+            return BuildMortalDiagnosis(input, prepared, identityFactory);
         if (prepared.SpiritualHealingContinuationAuthority is not null)
             return BuildSpiritualHealing(input, prepared, identityFactory);
         if (prepared.RecoveryContinuationAuthority is not null)
@@ -4187,7 +4189,8 @@ internal static partial class EffectAcceptedTurnPlanner
         IReadOnlyList<WoundApplicationRequest> woundApplications,
         IReadOnlyList<WoundTerminalRequest> woundTerminations,
         WoundPreparedAcceptedTurnPlan? recoveryPrepared = null,
-        WoundPreparedAcceptedTurnPlan? spiritualHealingPrepared = null)
+        WoundPreparedAcceptedTurnPlan? spiritualHealingPrepared = null,
+        WoundPreparedAcceptedTurnPlan? mortalDiagnosisPrepared = null)
     {
         ArgumentNullException.ThrowIfNull(input);
         ArgumentNullException.ThrowIfNull(identityFactory);
@@ -4378,6 +4381,14 @@ internal static partial class EffectAcceptedTurnPlanner
                 usedSources, usedTargets, woundApplicationRootEffectBindings, issues, out finalSourceAuthority);
             if (healingProof is null || issues.Count != 0) return Failed(issues);
         }
+        MortalDiagnosisExecutionProof? diagnosisProof = null;
+        if (mortalDiagnosisPrepared is not null)
+        {
+            diagnosisProof = ExecuteMortalDiagnosis(input, mortalDiagnosisPrepared, workspace, identityRoot,
+                identityFactory, turn, effectIds, transitionIds, activeEffects, processedEventRefs,
+                usedSources, usedTargets, woundApplicationRootEffectBindings, issues, out finalSourceAuthority);
+            if (diagnosisProof is null || issues.Count != 0) return Failed(issues);
+        }
 
         foreach (var request in woundApplications)
         {
@@ -4510,9 +4521,11 @@ internal static partial class EffectAcceptedTurnPlanner
                 lifecycleExecutionLedger: CreateInitialLifecycleLedger(
                     input, fingerprint, carrierAuthorityFingerprint, targetAuthority, boundLifecyclePass),
                 lifecycleLedgerIssuer: LifecycleLedgerIssuer,
-                spiritualHealingExecutionAuthority: healingProof);
+                spiritualHealingExecutionAuthority: healingProof,
+                mortalDiagnosisExecutionAuthority: diagnosisProof);
         recoveryProof?.Seal(completedPlan);
         healingProof?.Seal(completedPlan);
+        diagnosisProof?.Seal(completedPlan);
         return new EffectAcceptedTurnPlanningResult(
             completedPlan,
             Array.Empty<ValidationIssue>());
