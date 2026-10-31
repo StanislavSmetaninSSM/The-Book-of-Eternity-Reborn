@@ -1,4 +1,27 @@
-# T121 C14 bounded SOURCE candidate — UNCOMPILED / UNRUN
+# T121 C14 SOURCE accepted — static follow-up, builds UNRUN
+
+Astra accepted whole SOURCE at frozen `59074c8408c82c74eac7ecd9bf37a76cf79d48da`.
+Only the approved five historical pin literals and category ownership are changed
+in this follow-up; every production body and all seven new test bodies remain
+exactly frozen. All five old pinned bodies are locally present at
+`8547d574035289653c81541881a9472e45d6ff07`. Current AcceptedTurnAndInkFeathers /
+ShiningAbode bytes equal accepted T143 `b46d12cccae1840b13f6fe47adc1143a0da0403b`;
+LifecycleControlAndStateFiles equals accepted T142
+`5b6b52049e623a8c13a4f8affe8ce4c63b3983ca`; EffectMaterialization /
+ResourceMaterialization equal Astra-accepted explicit-lease SOURCE
+`6bfe2f91a24c02fd73cff238fdf2623a634a5816`. Exact diffs/blob IDs and receipt
+references remain external in M2GREENC14-preexisting-pin-evidence/map.json,
+SHA256 `abb724a0d460d1ed84c4ee7c41c10b476824984c9304af8e98786b3c3aae6ea4`.
+The five literals now name those independently approved unchanged bodies.
+
+The actual post-validator singleton and the two-row export-lifetime theory have
+separate 60-second category owners. Methods, rows, assertions and each bound are
+unchanged; there is no budget increase or measured timing/cost claim. Fresh
+selection is 12 cases / 11 methods / NINE categories, followed by original UI3.
+Only static JSON/selector ownership, all 69 LF-normalized source-pin equality and
+diff checks were performed here. C14 remains UNCOMPILED/UNRUN; root owns fresh
+four-project builds, official discovery/PlanOnly, PREP and runtime after readback.
+
 
 Core and first consumer WIP are remotely preserved at `3a16eff4d8b4472018b9b4f550ee5bac5ea81ebd`
 and `ea73abfb56140ebccd9b4b2eb7347c74bb38f967`. The completed comparison now stores
@@ -9,7 +32,7 @@ both constructor and Seal, and compared through the same World read owner's
 RequireCurrent. Console explicitly requires Usable evidence. Scope state is private
 and locked; atomic post-await consumption refuses invalidation/foreign identity.
 
-Fresh proposal is12 cases /11 methods /8 categories: diagnosis actual post-validator1,
+Fresh proposal is 12 cases / 11 methods / NINE categories: diagnosis actual post-validator1,
 real compensated/suppressed-close export2, ordinary actual post-validator1,
 browser exact/early-drift/final-proof3, existing engine-original1, semantic guards3
 and explicit World source closure1. The browser rows are singleton60s owners to

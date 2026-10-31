@@ -3,7 +3,7 @@
     "categories": [
 {
   "id": "mortal-completed-item-postvalidation",
-  "responsibility": "T121 C14 actual diagnosis post-validator1 plus real compensated/suppressed-close export2: immutable whole NPC/frame/generation, no-proof/invalidation/foreign owner, exact issue multiplicity, item/count/actor/root/byte/frame drift, current request/resource-claim and canonical inertness. A successful finalized settlement survives suppressed lease-close failure but exports no comparison; no repeated spend. Seven new rows across the finite C14 categories are UNCOMPILED/UNRUN.",
+  "responsibility": "T121 C14 one actual diagnosis post-validator row: immutable whole NPC/frame/generation, no-proof/invalidation/foreign owner, exact issue multiplicity, item/count/actor/root/byte/frame drift and canonical/request/resource-claim inertness. Separate exclusive60s owner; lifetime theory2 belongs only to mortal-completed-item-export-lifetime. Source remains UNCOMPILED/UNRUN; no timing or cost qualification claim.",
   "excludes": "No new authority, cache, publisher, original re-sign, private reflection, GM wait, budget increase, diagnostic framework, full-suite/HOLD or physical-treatment execution. Actual prior UI timeout remains UNKNOWN.",
   "changeHints": [
     "BookOfEternityClient/Services/MortalWoundTreatmentResourcePublicationTransaction.CompletedItemValidation.cs",
@@ -30,7 +30,44 @@
     {
       "project": "integration",
       "tests": [
-        "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.DiagnosisCompletedItemComparisonUsesActualPostValidatorAndExactWholeFrame",
+        "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.DiagnosisCompletedItemComparisonUsesActualPostValidatorAndExactWholeFrame"
+      ]
+    }
+  ]
+},
+{
+  "id": "mortal-completed-item-export-lifetime",
+  "responsibility": "T121 C14 two rows of the genuine finalized/compensated/suppressed-close export theory. Published alone and compensated/rearmed transactions export nothing; valid Finalized/ChangedCount1 settlement survives an actually observed suppressed lease-close failure without compensation or repeated spend, but exports no completed comparison. Separate exclusive60s owner; same two existing rows/assertions, no new case or budget increase. UNCOMPILED/UNRUN; no timing or cost qualification claim.",
+  "excludes": "No new authority, cache, publisher, original re-sign, private reflection, GM wait, budget increase, diagnostic framework, full-suite/HOLD or physical-treatment execution. Actual prior UI timeout remains UNKNOWN.",
+  "changeHints": [
+    "BookOfEternityClient/Services/MortalWoundTreatmentResourcePublicationTransaction.CompletedItemValidation.cs",
+    "BookOfEternityClient/Services/Validation/ValidationService.CompletedTreatmentItemValidation.cs",
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.DiagnosisCompletedItems.cs"
+  ],
+  "related": [
+    {
+      "id": "mortal-completed-item-postvalidation",
+      "when": "The separate actual post-validator singleton consumes only genuinely finalized and successfully closed comparison DATA."
+    },
+    {
+      "id": "wound-read-semantic-source-guards",
+      "when": "Changed production/source closure needs the existing three exact guards."
+    },
+    {
+      "id": "spiritual-world-source-closure",
+      "when": "Explicit whole-file closure pin delta for the reviewed current-read and original-frame additions."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
         "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.DiagnosisCompletedItemExportRequiresFinalizationAndObservedSuccessfulClose"
       ]
     }

@@ -3,7 +3,14 @@
   "selections": [
 {
   "category": "mortal-completed-item-postvalidation",
-  "reason": "T121 C14 actual diagnosis post-validator1 plus real compensated/suppressed-close export2: immutable whole NPC/frame/generation, no-proof/invalidation/foreign owner, exact issue multiplicity, item/count/actor/root/byte/frame drift, current request/resource-claim and canonical inertness. A successful finalized settlement survives suppressed lease-close failure but exports no comparison; no repeated spend. Seven new rows across the finite C14 categories are UNCOMPILED/UNRUN.",
+  "reason": "T121 C14 one actual diagnosis post-validator row: immutable whole NPC/frame/generation, no-proof/invalidation/foreign owner, exact issue multiplicity, item/count/actor/root/byte/frame drift and canonical/request/resource-claim inertness. Separate exclusive60s owner; lifetime theory2 belongs only to mortal-completed-item-export-lifetime. Source remains UNCOMPILED/UNRUN; no timing or cost qualification claim.",
+  "contracts": [
+    "#1536 T093 / FR071 / T121-DIAGNOSIS-MORTAL-ITEM-POSTVALIDATION; actual completed item publication versus unchanged pre-turn NPC guard and same-invocation current proof"
+  ]
+},
+{
+  "category": "mortal-completed-item-export-lifetime",
+  "reason": "T121 C14 two rows of the genuine finalized/compensated/suppressed-close export theory. Published alone and compensated/rearmed transactions export nothing; valid Finalized/ChangedCount1 settlement survives an actually observed suppressed lease-close failure without compensation or repeated spend, but exports no completed comparison. Separate exclusive60s owner; same two existing rows/assertions, no new case or budget increase. UNCOMPILED/UNRUN; no timing or cost qualification claim.",
   "contracts": [
     "#1536 T093 / FR071 / T121-DIAGNOSIS-MORTAL-ITEM-POSTVALIDATION; actual completed item publication versus unchanged pre-turn NPC guard and same-invocation current proof"
   ]
