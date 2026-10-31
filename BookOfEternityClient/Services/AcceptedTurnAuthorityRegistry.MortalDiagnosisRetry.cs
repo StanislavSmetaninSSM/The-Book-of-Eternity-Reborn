@@ -28,8 +28,7 @@ internal static partial class AcceptedTurnAuthorityRegistry
         {
             if (!ReferenceEquals(retained, _retainedMortalDiagnosis) || _openTreatmentPublicationReceipt is not null ||
                 _treatmentPublicationRestartBlockerFingerprint is not null ||
-                retained.Request.ModeAuthority is not MortalWoundProcedureCheckAuthority check ||
-                !check.HasLiveReservationAgreement(ProcedureReservationLiveCheckCapability, _procedureDice, _criticalReactions) ||
+                !RetainedMortalRequestFamilyAgrees(retained.Owner, retained.Request) || !HasLiveRetainedMode(retained.Request) ||
                 !_treatmentResources.ConfirmPersisted(TreatmentResourceRegistryCapability, new[] { retained.Request }).IsValid)
                 throw new InvalidDataException("Retry checkpoint lost its exact produced diagnosis span, Fate or confirmed resource hold.");
         }
@@ -96,7 +95,11 @@ internal static partial class AcceptedTurnAuthorityRegistry
                     if (retained.OuterRollbackPhase != 2) throw new InvalidDataException("Diagnosis retry checkpoint is not in its restored-original phase.");
                     original.Evidence!.RequireCurrent(files, lease, original.Snapshot!);
                     RequireDiagnosisRetryClaims(retained);
-                    if (!MortalWoundDiagnosisInputCodec.IsBound(retained.Owner.ReadDiagnosisOriginalInput(), frame) ||
+                    var input = retained.Owner.ReadDiagnosisOriginalInput();
+                    var bound = retained.Owner.HasOriginalGuidedTreatmentInput
+                        ? MortalWoundGuidedTreatmentInputCodec.IsBound(input, frame)
+                        : MortalWoundDiagnosisInputCodec.IsBound(input, frame);
+                    if (!bound ||
                         !retained.Owner.DiagnosisOriginalCanonicalImagesAgree(files, lease) ||
                         !DiagnosisRetrySame(files.ReadFileBytesSync(lease, AcceptedMechanicsPlan.WoundCommandPath), retained.OriginalCommandBeforeImage.Bytes) ||
                         !DiagnosisRetrySame(files.ReadFileBytesSync(lease, WoundAcceptedTurnSnapshotContract.PendingResolutionPath), retained.OriginalPending.Bytes))

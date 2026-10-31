@@ -107,7 +107,14 @@ internal static class MortalWoundTreatmentPersistedRequestCatalog
     internal static MortalWoundTreatmentPersistedRequestCatalogResult Parse(
         JsonElement? commandRoot,
         JsonElement? pendingRoot,
-        WoundHistoryParseResult history)
+        WoundHistoryParseResult history) => ParseWithGuidedOriginal(commandRoot, pendingRoot, history, null);
+
+    /// <summary>
+    /// Parses complete DATA copies with an independently admitted guided original.
+    /// All input joins occur before History coalescing; this grants no live claims.
+    /// </summary>
+    internal static MortalWoundTreatmentPersistedRequestCatalogResult ParseWithGuidedOriginal(
+        JsonElement? commandRoot, JsonElement? pendingRoot, WoundHistoryParseResult history, JsonObject? guidedOriginal)
     {
         ArgumentNullException.ThrowIfNull(history);
         if (!history.IsValid)
@@ -141,7 +148,26 @@ internal static class MortalWoundTreatmentPersistedRequestCatalog
         var pendingHasRepairWave = false;
 
         JsonObject? diagnosisInput = null;
-        if (commandRoot is { } possibleDiagnosis && possibleDiagnosis.ValueKind == JsonValueKind.Object &&
+        JsonObject? guidedInput = guidedOriginal?.DeepClone().AsObject();
+        if (guidedInput is not null) _ = MortalWoundGuidedTreatmentInputCodec.Read(guidedInput);
+        if (commandRoot is { } possibleGuided && possibleGuided.ValueKind == JsonValueKind.Object &&
+            possibleGuided.TryGetProperty("kind", out var guidedKind) && guidedKind.ValueKind == JsonValueKind.String &&
+            guidedKind.GetString() == MortalWoundGuidedTreatmentInputCodec.Kind)
+        {
+            try
+            {
+                var current = JsonNode.Parse(possibleGuided.GetRawText())!.AsObject();
+                if (!MortalWoundTreatmentCommandCodec.HasNoDuplicateProperties(possibleGuided, AcceptedMechanicsPlan.WoundCommandPath, issues))
+                    throw new InvalidDataException("Duplicate guided input fields.");
+                _ = MortalWoundGuidedTreatmentInputCodec.Read(current);
+                if (guidedInput is not null && !JsonNode.DeepEquals(current, guidedInput))
+                    throw new InvalidDataException("Current guided input differs from the admitted original.");
+                guidedInput = current;
+            }
+            catch (Exception failure) when (failure is InvalidDataException or InvalidOperationException or JsonException or ArgumentException)
+            { issues.Add(PersistenceIssue("mortal_guided_treatment_input_invalid", "the exact immutable guided input", failure.Message)); }
+        }
+        else if (commandRoot is { } possibleDiagnosis && possibleDiagnosis.ValueKind == JsonValueKind.Object &&
             possibleDiagnosis.TryGetProperty("kind", out var inputKind) && inputKind.ValueKind == JsonValueKind.String &&
             inputKind.GetString() == MortalWoundDiagnosisInputCodec.Kind)
         {
@@ -205,6 +231,7 @@ internal static class MortalWoundTreatmentPersistedRequestCatalog
             pendingBinding = ParsePending(
                 pendingElement,
                 diagnosisInput,
+                guidedInput,
                 candidates,
                 issues,
                 out pendingHasRepairWave);
@@ -271,6 +298,7 @@ internal static class MortalWoundTreatmentPersistedRequestCatalog
     private static (string SessionId, string RequestId, string SnapshotToken)? ParsePending(
         JsonElement root,
         JsonObject? diagnosisInput,
+        JsonObject? guidedInput,
         ICollection<PersistedCandidate> candidates,
         ICollection<ValidationIssue> issues,
         out bool hasRepairWave)
@@ -289,10 +317,10 @@ internal static class MortalWoundTreatmentPersistedRequestCatalog
         var allowed = new HashSet<string>(new[]
         {
             "schemaVersion", "sessionId", "requestId", "snapshotToken",
-            "repairPackets", "repairReceipts", "submittedTreatmentRequests", "jointRepairCheckpoint", "jointInterfacePublication"
+            "repairPackets", "repairReceipts", "submittedTreatmentRequests", "jointRepairCheckpoint", "jointInterfacePublication", "guidedTreatmentRequest"
         }, StringComparer.Ordinal);
         var required = allowed.Where(static name =>
-            name != "submittedTreatmentRequests" && name != "jointRepairCheckpoint" && name != "jointInterfacePublication").ToHashSet(StringComparer.Ordinal);
+            name != "submittedTreatmentRequests" && name != "jointRepairCheckpoint" && name != "jointInterfacePublication" && name != "guidedTreatmentRequest").ToHashSet(StringComparer.Ordinal);
         var seen = new HashSet<string>(StringComparer.Ordinal);
         foreach (var property in root.EnumerateObject())
         {
@@ -328,6 +356,37 @@ internal static class MortalWoundTreatmentPersistedRequestCatalog
             out var submitted);
         hasRepairWave = packets.GetArrayLength() != 0 ||
                         receipts.GetArrayLength() != 0;
+        if (root.TryGetProperty("guidedTreatmentRequest", out var guidedRow))
+        {
+            // Distinct private role, not a submitted request or a made-up repair
+            // wave. Validate against the independently bound input BEFORE History
+            // can coalesce a matching terminal coordinate.
+            try
+            {
+                var names = guidedRow.ValueKind == JsonValueKind.Object
+                    ? guidedRow.EnumerateObject().Select(value => value.Name).ToArray() : Array.Empty<string>();
+                var expected = new[] { "kind", "inputFingerprint", "operationKey", "attemptId", "requestFingerprint", "request" };
+                if (guidedInput is null || diagnosisInput is not null || !binding.HasValue ||
+                    seen.Contains("jointRepairCheckpoint") || seen.Contains("jointInterfacePublication") ||
+                    names.Length != expected.Length || !names.ToHashSet(StringComparer.Ordinal).SetEquals(expected) ||
+                    guidedRow.GetProperty("kind").GetString() != "guided_treatment_hold" ||
+                    guidedRow.GetProperty("inputFingerprint").GetString() != MortalWoundGuidedTreatmentInputCodec.Fingerprint(guidedInput) ||
+                    !MortalWoundTreatmentCommandCodec.HasNoDuplicateProperties(guidedRow, path + ".guidedTreatmentRequest", issues))
+                    throw new InvalidDataException("A guided hold requires its exact original input, closed row and ordinary binding.");
+                var serialized = JsonNode.Parse(guidedRow.GetProperty("request").GetRawText())!.AsObject();
+                if (!MortalWoundTreatmentCommandCodec.TryParseRequest(serialized, path + ".guidedTreatmentRequest.request", issues, out var request) ||
+                    request is null || !MortalWoundTreatmentCommandCodec.MatchesRootBinding(request.Coordinates,
+                        binding.Value.SessionId, binding.Value.RequestId, binding.Value.SnapshotToken) ||
+                    guidedRow.GetProperty("operationKey").GetString() != request.Coordinates.OperationKey ||
+                    guidedRow.GetProperty("attemptId").GetString() != request.Coordinates.AttemptId ||
+                    guidedRow.GetProperty("requestFingerprint").GetString() != request.RequestFingerprint)
+                    throw new InvalidDataException("The guided complete request and row/root coordinates disagree.");
+                MortalWoundGuidedTreatmentInputCodec.RequireRequestMatches(guidedInput, request);
+                candidates.Add(new(serialized, request, "guided"));
+            }
+            catch (Exception failure) when (failure is InvalidDataException or InvalidOperationException or JsonException or ArgumentException or KeyNotFoundException)
+            { issues.Add(PersistenceIssue("mortal_guided_treatment_hold_invalid", "one exact original-bound complete guided request", failure.Message)); }
+        }
         // This private hold is not a repair wave. Its single parsed request is
         // joined to the validated immutable input below, before History can
         // coalesce a matching coordinate. The ordinary wave contract stays strict.

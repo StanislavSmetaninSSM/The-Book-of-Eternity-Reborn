@@ -739,11 +739,24 @@ public sealed partial class MortalWoundTreatmentResolverTests
 
         internal static async Task<DiagnosisOwnershipFixture> CreateAsync(int? natural = null, bool signedInput = false, int duration = 30, bool seedFate = false,
             Func<FileSystemManager, TurnRequest, Task>? originalProducer = null, bool twoMembers = false, bool exportDiagnosis = true,
-            FileSystemManagerHooks? hooks = null, string? woundLabel = null, bool resourceCost = false)
+            FileSystemManagerHooks? hooks = null, string? woundLabel = null, bool resourceCost = false, string? physicalMode = null)
         {
             // Initial canonical scenario DATA only. The real live preparation and
             // exporter below issue ownership; these JSON values are not receipts.
             var scenario = CreateDiagnosisInitialScenario(natural, duration, seedFate);
+            if (physicalMode is not null)
+            {
+                if (!signedInput || resourceCost || seedFate) throw new ArgumentException("Physical fixture requires its own exact signed scenario.");
+                scenario = physicalMode switch
+                {
+                    "procedure" => CreateScenario("procedure_normal_uses_lowest_free_die", physicalMode),
+                    "course" => CreateScalarCoursePublicationScenario(),
+                    "guaranteed" => CreateScenario("guaranteed_current_capability_proof_stabilizes", physicalMode),
+                    _ => throw new ArgumentOutOfRangeException(nameof(physicalMode))
+                };
+                if (natural is not null) scenario.AcceptedState["acceptedDice"] = new JsonArray(natural.Value, 17, 1, 20);
+                scenario = scenario with { History = CreateCurrentWoundHistory(scenario.Before), SeedCanonicalWoundEffects = true };
+            }
             if (resourceCost)
             {
                 scenario.Before["treatment"]!["diagnosisPaths"]![0]!["requirements"]![0] = new JsonObject
@@ -784,15 +797,19 @@ public sealed partial class MortalWoundTreatmentResolverTests
                 if (signedInput)
                 {
                     var wound = WoundMaterializationContract.Parse(scenario.Before.ToJsonString(), WoundCarrierCatalog.PlayerPath).Wound!;
-                    var selected = new SpiritualSelfTreatmentSelection(wound.WoundId, WoundIdentityState.ComputeSemanticFingerprint(wound))
-                    {
-                        MortalDiagnosis = new(wound.Owner, new("mortal_world", "npc", "field_medic_01", WoundCarrierCatalog.NpcPath),
-                            "inspect_explicit_method", WoundDiagnosisEvidence.ComputePathFingerprint(wound, "inspect_explicit_method"),
-                            MortalWoundDiagnosisInputCodec.ContextFingerprint(stagedContext))
-                    };
-                    var input = MortalWoundDiagnosisInputCodec.Create(new(scenario.AcceptedState["sessionId"]!.GetValue<string>(),
+                    var selected = new SpiritualSelfTreatmentSelection(wound.WoundId, WoundIdentityState.ComputeSemanticFingerprint(wound));
+                    var provider = new WoundOwnerCoordinate("mortal_world", "npc", "field_medic_01", WoundCarrierCatalog.NpcPath);
+                    selected = physicalMode is null ? selected with
+                    { MortalDiagnosis = new(wound.Owner, provider, "inspect_explicit_method",
+                        WoundDiagnosisEvidence.ComputePathFingerprint(wound, "inspect_explicit_method"), MortalWoundDiagnosisInputCodec.ContextFingerprint(stagedContext)) }
+                        : selected with { MortalTreatment = new(wound.Owner, provider, scenario.RouteId, physicalMode,
+                            physicalMode == "course" ? 1 : null, MortalWoundTreatmentRouteFingerprint.Compute(wound, scenario.RouteId),
+                            MortalWoundGuidedTreatmentInputCodec.ContextFingerprint(stagedContext)) };
+                    var frame = new SpiritualSelfTreatmentStageContext(scenario.AcceptedState["sessionId"]!.GetValue<string>(),
                         scenario.AcceptedState["requestId"]!.GetValue<string>(), scenario.AcceptedState["turn"]!.GetValue<int>(),
-                        control), selected, stagedContext);
+                        control);
+                    var input = physicalMode is null ? MortalWoundDiagnosisInputCodec.Create(frame, selected, stagedContext)
+                        : MortalWoundGuidedTreatmentInputCodec.Create(frame, selected, stagedContext);
                     await files.WriteFileAtomicAsync(AcceptedMechanicsPlan.WoundCommandPath, input.ToJsonString());
                 }
                 var dices = scenario.AcceptedState["acceptedDice"]!.AsArray().Select(value => value!.GetValue<int>()).ToArray();
@@ -814,7 +831,9 @@ public sealed partial class MortalWoundTreatmentResolverTests
                     PreGeneratedDices1d20 = dices
                 });
                 lease = await files.AcquireCanonicalWriteLeaseAsync();
-                var exported = signedInput && exportDiagnosis
+                var exported = physicalMode is not null
+                    ? MortalWoundTreatmentAcceptedStateAuthority.ExportGuidedTreatmentCurrent(files, lease, stagedContext, scenario.Before["woundId"]!.GetValue<string>())
+                    : signedInput && exportDiagnosis
                     ? MortalWoundTreatmentAcceptedStateAuthority.ExportDiagnosisCurrent(files, lease, stagedContext, scenario.Before["woundId"]!.GetValue<string>())
                     : MortalWoundTreatmentAcceptedStateAuthority.ExportCurrent(files, lease, stagedContext, scenario.Before["woundId"]!.GetValue<string>());
                 Assert.True(exported.IsValid, JsonSerializer.Serialize(exported.Issues));
@@ -852,7 +871,9 @@ public sealed partial class MortalWoundTreatmentResolverTests
         {
             var woundId = Authority.CurrentWound.WoundId;
             await Lease.DisposeAsync(); Lease = await Files.AcquireCanonicalWriteLeaseAsync();
-            return MortalWoundTreatmentAcceptedStateAuthority.ExportDiagnosisCurrent(Files, Lease, ParseContext(), woundId);
+            return Authority.HasOriginalGuidedTreatmentInput
+                ? MortalWoundTreatmentAcceptedStateAuthority.ExportGuidedTreatmentCurrent(Files, Lease, ParseContext(), woundId)
+                : MortalWoundTreatmentAcceptedStateAuthority.ExportDiagnosisCurrent(Files, Lease, ParseContext(), woundId);
         }
 
         internal Dictionary<string, byte[]> CaptureJson() => Directory.EnumerateFiles(Root, "*.json", SearchOption.AllDirectories)

@@ -51,7 +51,7 @@ internal static partial class AcceptedTurnAuthorityRegistry
             internal byte[] OriginalCommandBytes { get; }
             internal CanonicalBeforeImage OriginalPending { get; }
             internal bool Matches(MortalWoundTreatmentAcceptedStateAuthority owner) =>
-                owner.HasOriginalDiagnosisInput && owner.AcceptedStateFingerprint == AcceptedFingerprint && owner.SessionGeneration == SessionGeneration &&
+                owner.HasOriginalMortalPreparedInput && owner.AcceptedStateFingerprint == AcceptedFingerprint && owner.SessionGeneration == SessionGeneration &&
                 owner.ReadDiagnosisOriginalBytes(AcceptedMechanicsPlan.WoundCommandPath).AsSpan().SequenceEqual(OriginalCommandBytes);
         }
         private RetainedMortalDiagnosis? _retainedMortalDiagnosis;
@@ -59,33 +59,50 @@ internal static partial class AcceptedTurnAuthorityRegistry
         // Only the existing successful recovery path may replace this private
         // request reference. Immutable original DATA and rollback phase survive;
         // old reservation objects are never made live again.
+        private static bool RetainedMortalRequestFamilyAgrees(MortalWoundTreatmentAcceptedStateAuthority accepted,
+            MortalWoundTreatmentAttemptRequest request)
+        {
+            try
+            {
+                if (accepted.HasOriginalGuidedTreatmentInput)
+                {
+                    MortalWoundGuidedTreatmentInputCodec.RequireRequestMatches(accepted.ReadGuidedTreatmentOriginalInput(), request);
+                    return true;
+                }
+                if (!accepted.HasOriginalDiagnosisInput) return false;
+                MortalWoundDiagnosisInputCodec.RequireRequestMatches(accepted.ReadDiagnosisOriginalInput(), request);
+                return true;
+            }
+            catch (Exception failure) when (failure is InvalidDataException or InvalidOperationException or ArgumentException or System.Text.Json.JsonException)
+            { return false; }
+        }
+
+        private bool HasLiveRetainedMode(MortalWoundTreatmentAttemptRequest request) => request.Mode switch
+        {
+            "diagnosis" or "procedure" => request.ModeAuthority is MortalWoundProcedureCheckAuthority check &&
+                check.HasLiveReservationAgreement(ProcedureReservationLiveCheckCapability, _procedureDice, _criticalReactions),
+            "course" => request.Coordinates.Purpose == "treatment" && request.ModeAuthority is MortalWoundCourseModeAuthority,
+            "guaranteed" => request.Coordinates.Purpose == "treatment" && request.ModeAuthority is MortalWoundTreatmentCapabilityProof,
+            _ => false
+        };
+
         private bool RebindRetainedDiagnosisAfterRecovery(MortalWoundTreatmentAcceptedStateAuthority accepted)
         {
             if (_retainedMortalDiagnosis is not { } retained) return true;
-            if (!retained.Matches(accepted) || !retained.Request.Coordinates.MatchesAcceptedState(accepted) ||
-                retained.Request.ModeAuthority is not MortalWoundProcedureCheckAuthority originalCheck)
-                return false;
+            if (!retained.Matches(accepted) || !retained.Request.Coordinates.MatchesAcceptedState(accepted)) return false;
             var recovered = _recoveredHeldTreatmentRequests.Where(request =>
                 request.Coordinates.OperationKey == retained.Request.Coordinates.OperationKey).ToArray();
             if (recovered.Length != 1) return false;
             var current = recovered[0];
-            if (current.Mode != "diagnosis" || current.Coordinates.Purpose != "diagnosis" ||
-                !current.Coordinates.MatchesAcceptedState(accepted) ||
+            if (!RetainedMortalRequestFamilyAgrees(accepted, current) || !current.Coordinates.MatchesAcceptedState(accepted) ||
                 current.Coordinates.CoordinatesFingerprint != retained.Request.Coordinates.CoordinatesFingerprint ||
                 current.RequestFingerprint != retained.Request.RequestFingerprint ||
-                current.RouteSourceWoundFingerprint != retained.Request.RouteSourceWoundFingerprint ||
-                current.RequirementAuthority.AuthorityFingerprint != retained.Request.RequirementAuthority.AuthorityFingerprint ||
-                current.ResourceAuthority.AuthorityFingerprint != retained.Request.ResourceAuthority.AuthorityFingerprint ||
-                !MortalWoundTreatmentDetachedSealValidator.IsValid(current) ||
-                current.ModeAuthority is not MortalWoundProcedureCheckAuthority currentCheck ||
-                currentCheck.AuthorityFingerprint != originalCheck.AuthorityFingerprint ||
-                currentCheck.AcceptedStateFingerprint != originalCheck.AcceptedStateFingerprint ||
-                !currentCheck.SourceIndices.SequenceEqual(originalCheck.SourceIndices) ||
-                !currentCheck.SourceRolls.SequenceEqual(originalCheck.SourceRolls) ||
-                currentCheck.PreparedCriticalReaction?.PreparedReactionFingerprint != originalCheck.PreparedCriticalReaction?.PreparedReactionFingerprint ||
-                !currentCheck.HasLiveReservationAgreement(ProcedureReservationLiveCheckCapability, _procedureDice, _criticalReactions) ||
+                !System.Text.Json.Nodes.JsonNode.DeepEquals(WoundResponseInputComposer.SerializeMortalWoundTreatmentValue(current),
+                    WoundResponseInputComposer.SerializeMortalWoundTreatmentValue(retained.Request)) ||
+                !MortalWoundTreatmentDetachedSealValidator.IsValid(current) || !HasLiveRetainedMode(current) ||
                 !_treatmentResources.ConfirmPersisted(TreatmentResourceRegistryCapability, new[] { current }).IsValid)
                 return false;
+            // Recovery, not a new allocation, supplied the exact new live objects.
             retained.Request = current;
             return true;
         }
@@ -100,8 +117,11 @@ internal static partial class AcceptedTurnAuthorityRegistry
                 return handoff is not null && ReferenceEquals(handoff.PublicationAuthority, publication) &&
                     ReferenceEquals(_mortalWoundTreatmentAcceptedState, accepted) && accepted.IsLeaseBoundTo(files, lease) &&
                     CurrentTreatmentPublicationAcceptedStateAgrees(accepted) && CurrentTreatmentPublicationAcceptedStateAgrees(publication.AcceptedStateAuthority) &&
-                    publication.ContinuationAuthority is WoundAcceptedTurnPlanner.MortalDiagnosisContinuation &&
-                    publication.RequestAuthority.Mode == "diagnosis" && request.Mode == "diagnosis" &&
+                    (accepted.HasOriginalGuidedTreatmentInput
+                        ? WoundAcceptedTurnPlanner.TryReadMortalProcedurePublication(publication.ContinuationAuthority, out var procedure) &&
+                            ReferenceEquals(procedure.ReservationAuthority, publication.PublicationReservationAuthority)
+                        : publication.ContinuationAuthority is WoundAcceptedTurnPlanner.MortalDiagnosisContinuation) &&
+                    RetainedMortalRequestFamilyAgrees(accepted, request) && publication.RequestAuthority.Mode == request.Mode &&
                     publication.AcceptedStateAuthority.AcceptedStateFingerprint == accepted.AcceptedStateFingerprint &&
                     publication.RequestFingerprint == request.RequestFingerprint && request.Coordinates.MatchesAcceptedState(accepted) &&
                     RetainedDiagnosisCurrentImagesAgree(files, lease, accepted) &&
@@ -117,7 +137,7 @@ internal static partial class AcceptedTurnAuthorityRegistry
             {
                 if (!MortalWoundTreatmentAcceptedStateAuthority.IsDiagnosisRetentionCapability(capability) ||
                     !ReferenceEquals(_mortalWoundTreatmentAcceptedState, accepted) || !accepted.IsLeaseBoundTo(files, lease) ||
-                    request.Mode != "diagnosis" || !request.Coordinates.MatchesAcceptedState(accepted)) return false;
+                    !RetainedMortalRequestFamilyAgrees(accepted, request) || !request.Coordinates.MatchesAcceptedState(accepted)) return false;
                 if (_retainedMortalDiagnosis is { } previous && previous.Matches(accepted) && previous.Request.RequestFingerprint != request.RequestFingerprint)
                     return false;
                 var expected = _retainedMortalDiagnosis is { } retained && retained.Matches(accepted)
@@ -144,10 +164,9 @@ internal static partial class AcceptedTurnAuthorityRegistry
             {
                 if (!MortalWoundTreatmentAcceptedStateAuthority.IsDiagnosisRetentionCapability(capability) ||
                     !ReferenceEquals(_mortalWoundTreatmentAcceptedState, accepted) || !accepted.IsLeaseBoundTo(files, lease) ||
-                    !_procedureClaimRecoveryCompleted || request.Mode != "diagnosis" || request.Coordinates.Purpose != "diagnosis" ||
+                    !_procedureClaimRecoveryCompleted || !RetainedMortalRequestFamilyAgrees(accepted, request) ||
                     !request.Coordinates.MatchesAcceptedState(accepted) || !MortalWoundTreatmentDetachedSealValidator.IsValid(request) ||
-                    request.ModeAuthority is not MortalWoundProcedureCheckAuthority check ||
-                    !check.HasLiveReservationAgreement(ProcedureReservationLiveCheckCapability, _procedureDice, _criticalReactions) ||
+                    !HasLiveRetainedMode(request) ||
                     _openTreatmentPublicationReceipt is not null || _validatedTreatmentPublicationHandoff is not null ||
                     _treatmentPublicationRestartBlockerFingerprint is not null)
                     return false;
@@ -176,10 +195,9 @@ internal static partial class AcceptedTurnAuthorityRegistry
                     throw new InvalidDataException("Diagnosis request lookup has no current accepted owner or exact retained input images.");
                 var matches = _recoveredHeldTreatmentRequests.Where(value => value.Coordinates.OperationKey == coordinates.OperationKey).ToArray();
                 if (matches.Length == 0) return null;
-                if (matches.Length != 1 || matches[0].Mode != "diagnosis" ||
+                if (matches.Length != 1 || !RetainedMortalRequestFamilyAgrees(accepted, matches[0]) ||
                     matches[0].Coordinates.CoordinatesFingerprint != coordinates.CoordinatesFingerprint ||
-                    matches[0].ModeAuthority is not MortalWoundProcedureCheckAuthority check ||
-                    !check.HasLiveReservationAgreement(ProcedureReservationLiveCheckCapability, _procedureDice, _criticalReactions))
+                    !HasLiveRetainedMode(matches[0]))
                     throw new InvalidDataException("A retained diagnosis cannot change purpose, source or its exact die/Fate span.");
                 var request = matches[0];
                 var confirmed = _treatmentResources.ConfirmPersisted(TreatmentResourceRegistryCapability, new[] { request });

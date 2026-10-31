@@ -1,3 +1,41 @@
+# T121 physical owner/private hold — source WIP, UNCOMPILED/UNRUN
+
+Continues saved selection/input/menu0c3eab81ab5978afc1e985ca6014eb9749f95825.
+Sol froze8 source paths before Engine/browser/GM work; root checked actual paths
+and static diff. New GuidedRetention.cs and WoundApplicationService.MortalTreatment.cs
+connect the existing accepted-state/original DATA and registry retained-attempt slot,
+with exact diagnosis-versus-physical codec/purpose discrimination. Procedure/Dx
+retain live die-span agreement; course/guaranteed use their existing resource-only
+claims. No second registry, calculator or publisher is introduced.
+
+The private guidedTreatmentRequest member is parsed and joined to the authenticated
+input before History coalescing and existing claim reconstruction; ordinary
+submittedTreatmentRequests remains real-nonempty-wave-only. Exact recovery precedes
+Prepare*. Authored pre-allocation guards require actual input, signed pending
+presence/absence and complete original rollback coverage. Known failed retention
+releases only after unchanged pending bytes prove no durable hold; possibly durable
+or uncertain holds remain blocked rather than becoming free rerolls/spends.
+These are uncompiled source changes, not verified ownership/recovery outcomes.
+
+Healthy physical flow keeps the signed selected-input bytes immutable through
+publication. Existing ComposeMortalWoundTreatmentPublication derives its internal
+command from the genuine typed request/resolution; no fake full result command,
+pre-GM finalSceneText or synthetic repair wave is needed. Actual scene/envelope
+joining still belongs to the upcoming Engine group and must remain strict.
+
+PhysicalGuidedHold.cs adds3 source-only actual-owner hold→fresh-lease rebind controls
+with exact request/span/DATA and typed no-wave builder/ordinary refusal assertions.
+The existing fixture's optional physical mode is prepared entirely before original;
+its diagnosis default stays unchanged. No test/build/discovery ran. These3 plus
+prior input3 still need final category ownership; true cold/new-root/fault/transfer
+proofs and full real UI/rollback remain pending. No new Linux qualification or
+physical GREEN is claimed. Source reuse/freshness obligations and all earlier raw,
+HOLDs and unresolved broader acceptance remain unchanged.
+
+Next: SAME coherent three-mode Engine staging/post-GM dispatch/common compensation,
+strict frozen durable physical settlement in both browser consumers, finite tests,
+menu reuse/equivalence, GM/docs/examples/guards, then whole SOURCE and fresh builds.
+
 # T121 physical treatment selection/input/menu — source WIP, UNCOMPILED/UNRUN
 
 Implementation continues from accepted causal checkpoint
