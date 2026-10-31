@@ -1,3 +1,37 @@
+# T121 C13 console TIMEOUT — post-materialization NPC item continuity
+
+Actual console at `5082ea7d1ba6cdebb6ad0679ada7e61337132676`, compiled owners
+`3a25476674debde692cc0814e1f036f759ad69ea`, times out after180.1389549s
+(category180s; wall3:09.7849074). Summary exit124 has zero reported tests, no TRX
+and incomplete selection. This is UNKNOWN, not a functional PASS or completed
+FAIL case. Browser and rollback were never launched and remain held.
+
+Existing named timers preserve12 complete events plus one component message in
+13 complete prefix rows: preparation/read-confirm finish, ProcessPlayerTurn starts
+at3.1228485s and the actual GM response ends at13.5579741s. A real post-materialization
+repair request for turn43 records one npc_existing_inventory_resend_forbidden at
+npc_core.NPCsInScene[0].inventory: the selected medic's declared item count changed
+from2 to1. The precise source classification (controlled reply versus client-owned
+item debit/current post-validation continuity) is being checked independently.
+No production bypass, fixture mutation, new diagnostic stack, retry or limit
+increase is justified by this prefix. Earlier output5/peer5 remain accepted but
+are not substituted for the unfinished original Engine/UI path.
+
+Full capture is incomplete: stored1,450 bytes, SHA256
+`b535e2b086107d4bf717b70b95e8d82e1c17030b8a352379cb46b24c7fcbc602`,
+gzip EOF/CRC absent and no final close. Runner-owned/runtime process cleanup is
+reported complete and primary inspection finds no active managed owners; actual
+fixture disposal is unconfirmed and its root remains. Primary froze all212 files /
+926,398 bytes into the external run's retained-owned-root, verifying every source
+and copy hash and unchanged original inventory. Original owned root
+`/tmp/boe-mortal-diagnosis-journey-49e8aa37bdaa4fb3853ea27b86938821` and the
+older C10 root stay untouched. Raw/report/root copy are outside checkout under
+M2GREENC13-console1. Source/binary/resource pins stay exact; no older evidence is
+replaced or deleted by this incomplete measurement. The new tracked item continuity
+join is bounded to the actual accepted procedure and strict ordinary NPC inventory
+protection; all other held routes/parents and the physical-treatment/adapters
+functional remainder are unchanged.
+
 # T121 C13 output and notification peers GREEN — original UI3 pending
 
 At runtime `73b8a49da50b0ab0df302eb48e3a4e586c435a93`, compiled owners all

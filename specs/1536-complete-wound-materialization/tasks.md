@@ -43,6 +43,17 @@ archive are outside checkout; original failures and all other holds are retained
 
 # T121 diagnosis recommendations — #1536
 
+- [ ] T121-DIAGNOSIS-MORTAL-ITEM-POSTVALIDATION Resolve the actual console
+  post-materialization npc_existing_inventory_resend_forbidden join after the
+  declared medic item debit, first distinguishing controlled-reply fixture error
+  from production publication/continuity ownership. Preserve exact pre-turn GM
+  inventory protection, dedicated item command/receipt/source authority, full
+  original/compensation/replay and fresh current checks. Reuse existing item
+  publication proof/validator owners; no blanket exemption or snapshot replacement.
+  The C13 console timeout is UNKNOWN with incomplete capture and retained owned
+  root, not PASS or a cost-admission reason. Cheap causal positive/tamper/ordinary
+  controls and independent review precede any changed original180s UI attempt.
+
 - [ ] T121-DIAGNOSIS-MORTAL-OUTPUT Bind the complete sealed diagnosis execution
   to the existing player-notification dispatcher after publication/lease closure.
   Validate whole cohort/History/mutations before rendering only authorized selected
