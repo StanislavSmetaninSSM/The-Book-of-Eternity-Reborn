@@ -42,6 +42,18 @@ P2 исправлен source-owner: текущая конечная границ
 Related144/144,4101мс,0fail/skip/cancel,legacy42deepEqual/checksum сохранены.
 Parent actualdiff/evidence проверены; повторmain/confirm пойдут на новомSHA.
 
+P2 закрыт адреснымAstra/high reviewc36c9ee6e. Main684×10062.015с и
+confirm684×1000583.483с завершены,6exit0/stderr0;752400траекторий/1368cells.
+Parentfull-verification.json подтверждает всеparams/seeds/матрицы/shardunion,
+исходы/квантили/censor, общие иactorcounts/normalization, точныецены,
+actual/potential/overheal, saves/marks/ticks. Все684cases получилиconfirm.
+Код припрогонах неизменен. Mainдо/послеP2:684seed/endpoints/outcomes одинаковы,
+72offensivecases имеютисправленныеHPcounters. Reviewer не нашёлfindings в
+mainотчёте/арифметике; полныйотчёт/confirm сейчас передаются наfinalreview.
+Итог отрицательный дляустраненияstall:985/981из1000усиленныхguard+cleanse/R25
+доходятдо2000; приГармонииобоих844/841. Offensive72000/72000завершились,
+медианы12–42, усиленныйцелительчастопобеждает. Не выдавать это заравныйбаланс.
+
 ## T127 — сила/стоимость и сопротивление эффекту, 2026-11-01
 
 Автор принял основу/шкалуT126; добавил защиту/уклонение, очищение и effect-save.

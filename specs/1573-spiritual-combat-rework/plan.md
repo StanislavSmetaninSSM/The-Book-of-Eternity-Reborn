@@ -31,7 +31,7 @@ unrelated1536/obj не трогать. Нового runtime/GM/C# в задач�
   Key включает все параметры, в том числе guard delta, art level, fractional
   suppression, outgoing snapshot/incoming modifiers. Не кэшировать liveHP/
   допуска/остатоктиков/save. Измерить подготовку и повторное использование.
-- [ ] T128.3 Frozen source commit/push/readback перед main684×100 и
+- [x] T128.3 Frozen source commit/push/readback перед main684×100 и
   confirm684×1000 (оба допускают3shards), horizon2000. Raw без квот
   D:\BoeDiagnostics\healing-periodic-t128\20261101-v1. Сверить всё coverage/
   sums/расходы/endpoints/union и fixtures; не менять параметры по исходам.
@@ -91,6 +91,13 @@ coverage/params/seeds/outcomes/costs/HP/counters проверены,18726horizon
 Winner/endpoint результаты совпали с первымmain; correctedHP учтены новым
 прогоном. Confirm684×1000 выполняется с теми же правилами. Подготовлен
 [отчёт](healing-periodic-investigation.md), пока с явно незавершённымconfirm.
+
+Полныйconfirm завершён:684000траекторий/583.483с,3exit0/stderr0;
+full-verification.json проверяет1368cells/752400траекторий. Main/confirm
+отдельны, все684случая подтверждены,186954confirmhorizon. Отчёт теперь
+содержит полные срезы/отрицательныйрезультат/пользулечения/actualHP/costs.
+Astra/high адресно закрылP2 и не нашёлfindings вmain-отчёте; итоговый review
+полногоconfirm/отчёта впереди. Следующийкандидат сильныхатак не реализуется.
 
 ## T127 — профили лечения/подавления и сопротивление, 2026-11-01
 
