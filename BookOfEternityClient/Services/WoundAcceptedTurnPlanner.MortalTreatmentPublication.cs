@@ -573,7 +573,10 @@ internal static partial class WoundAcceptedTurnPlanner
             throw new InvalidOperationException(
                 "Treatment continuation requires one exact sealed skill projection.");
         }
-        var persisted = MortalWoundTreatmentPersistedResult.Create(resolution);
+        var persisted = acceptedState.HasOriginalGuidedTreatmentInput
+            ? MortalWoundTreatmentPersistedResult.CreateGuided(resolution, acceptedState,
+                MortalDiagnosisPublicationWitness.CaptureFrozen(skillProjection.CommandEnvelope, itemCommandEnvelope))
+            : MortalWoundTreatmentPersistedResult.Create(resolution);
         var fingerprint = ComputeTreatmentContinuationFingerprint(
             before,
             outcomePreparation,
@@ -1438,12 +1441,18 @@ internal static partial class WoundAcceptedTurnPlanner
         MortalWoundTreatmentAttemptRequest request,
         MortalWoundTreatmentResolution resolution,
         string outcomePreparationFingerprint) =>
+        ComputeTreatmentPublicationBaseFingerprint(acceptedState.AcceptedStateFingerprint,
+            acceptedState.BindingFingerprint, request, resolution, outcomePreparationFingerprint);
+
+    private static string ComputeTreatmentPublicationBaseFingerprint(string acceptedFingerprint,
+        string bindingFingerprint, MortalWoundTreatmentAttemptRequest request,
+        MortalWoundTreatmentResolution resolution, string outcomePreparationFingerprint) =>
         WoundAcceptedTurnFingerprintWriter.Compute(new string?[]
         {
             "book_of_eternity.mortal_wound_treatment.publication",
             "3",
-            acceptedState.AcceptedStateFingerprint,
-            acceptedState.BindingFingerprint,
+            acceptedFingerprint,
+            bindingFingerprint,
             request.RequestFingerprint,
             request.Coordinates.OperationKey,
             request.Coordinates.AttemptId,

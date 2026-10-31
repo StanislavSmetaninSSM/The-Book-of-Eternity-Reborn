@@ -746,6 +746,23 @@ internal static class MortalWoundTreatmentOutcomeIntentComposer
         out IReadOnlyList<ValidationIssue> issues)
     {
         ArgumentNullException.ThrowIfNull(acceptedState);
+        return TryComposeCore(request, operations, acceptedState, null, null, out intents, out issues);
+    }
+
+    /// <summary>
+    /// Reuses the complete declared-operation reducer for closed historical DATA,
+    /// without restoring accepted-state or reservation authority.
+    /// </summary>
+    internal static bool TryComposeDetached(MortalWoundTreatmentAttemptRequest request,
+        IReadOnlyList<MortalWoundTreatmentOperation> operations, string bindingFingerprint, string sourcePath,
+        out IReadOnlyList<MortalWoundTreatmentOutcomeIntent> intents, out IReadOnlyList<ValidationIssue> issues) =>
+        TryComposeCore(request, operations, null, bindingFingerprint, sourcePath, out intents, out issues);
+
+    private static bool TryComposeCore(MortalWoundTreatmentAttemptRequest request,
+        IReadOnlyList<MortalWoundTreatmentOperation> operations, MortalWoundTreatmentAcceptedStateAuthority? acceptedState,
+        string? bindingFingerprint, string? sourcePath,
+        out IReadOnlyList<MortalWoundTreatmentOutcomeIntent> intents, out IReadOnlyList<ValidationIssue> issues)
+    {
         var composed = new List<MortalWoundTreatmentOutcomeIntent>(operations.Count);
         var failures = new List<ValidationIssue>();
         for (var ordinal = 0; ordinal < operations.Count; ordinal++)
@@ -804,6 +821,14 @@ internal static class MortalWoundTreatmentOutcomeIntentComposer
             };
             if (operation is MortalWoundApplyDeteriorationOperation deterioration)
             {
+                if (acceptedState is null)
+                {
+                    intent = MortalWoundApplyDeteriorationOutcomeIntent.CreatePrepared(
+                        MortalWoundTreatmentDeteriorationPreparation.RecomposeDetached(
+                            request, ordinal, deterioration, bindingFingerprint!, sourcePath!));
+                    composed.Add(intent);
+                    continue;
+                }
                 if (!MortalWoundTreatmentDeteriorationPreparation.TryCreate(
                         request,
                         ordinal,

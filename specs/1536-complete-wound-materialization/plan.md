@@ -1,3 +1,40 @@
+# T121 physical frozen/current DATA — WIP UNCOMPILED/UNRUN
+
+Continues Engine/common bridge68e504c73dd1232d2a0809f71f4f8c8b1efe2b14.
+Sol froze11 service-source paths; root checked actual paths/static diff. Shared
+pure deterioration identity/intent, outcome preparation and all-mode detached
+resolution/finalization are authored without a registry/reservation or fake
+accepted owner. Live Prepare/current-owner checks remain at their existing callers.
+
+New MortalWoundTreatmentPersistedResult.Guided.cs wraps the exact old terminal
+Request+Receipt in guided version2 with actual frozen skill/item inputs, original
+binding/source/minute DATA and a full outer seal. Historical version1 remains
+unchanged and receives no implicit publication witness. Actual same-companion
+freeze/identity helpers from C21 are reused. New MortalWoundTreatmentCompletion.cs
+shares the existing diagnosis per-operation canonical resource/item/effect settlement
+checks; source path union/read count is intended unchanged, NOT yet runtime proved.
+This shared move makes the accepted diagnosis consumers directly affected peers.
+
+Browser hookup and complete selected-wound current comparison are STILL INCOMPLETE.
+The one remaining source join concerns real rematerialized effect allocations,
+not new gameplay. Independent Astra/high narrow guidance identifies existing pure
+BuildFinalWoundCore assembly: reconstruct expected scalars/selected graph, retain
+OriginalEffectId for unchanged roots, derive expected creation events with existing
+WoundEffectOperationEventRef, and join each new root to one exact durable effect
+identity/source/target/definition/materialization/ownership and current carrier.
+Effect IDs are ordinary allocated GUIDs, NOT derivable from the resource identity
+seed. Feed only validated IDs into shared pure assembly and compare full wound/
+History fingerprint. Reject missing/ambiguous/extra/foreign mappings; do not forge
+accepted application results/live batches, replay historical effects or store a
+full plan/History blob. Advice is not current SOURCE/runtime acceptance.
+
+No build, discovery or test ran on any physical product WIP. All source from0c3
+onward remains UNCOMPILED/UNRUN. Current exact input/hold rows are not yet cataloged;
+final typed current/refusal/fault/cold/transfer/UI coverage, menu reuse/equivalence,
+XML/GM/docs/examples/pins/catalog/selection and whole independent SOURCE remain.
+Then fresh owning builds/exact PREP and actual functional qualification are required.
+All raw, prior failures and broader HOLDs stay intact outside checkout/GitHub.
+
 # T121 physical Engine/common cleanup bridge — WIP UNCOMPILED/UNRUN
 
 Continues saved owner/private-hold d1c481405544e42414d9756a6eec854daff6d6cc.

@@ -771,6 +771,28 @@ internal static partial class MortalWoundTreatmentOutcomePublicationPlanner
         if (issues.Count != 0 || orderedIntents is null)
             return InvalidPreparation(issues);
 
+        return PrepareComparisonCore(request, resolution, currentGameMinute, orderedIntents);
+    }
+
+    /// <summary>
+    /// Reconstructs the preparation DATA after strict detached mode selection.
+    /// The live preparation entry still requires its original admission checks.
+    /// </summary>
+    internal static MortalWoundTreatmentOutcomePreparationResult RecomposeDetached(
+        MortalWoundTreatmentAttemptRequest request, MortalWoundTreatmentResolution resolution, long currentGameMinute)
+    {
+        if (!DetachedSelectionAgrees(resolution, currentGameMinute) ||
+            request.RequestFingerprint != resolution.RequestFingerprint ||
+            !HasSupportedGrammar(resolution, resolution.OutcomeIntents))
+            return InvalidPreparation(new[] { Issue("mortal_wound_treatment_detached_outcome_invalid",
+                "one exact independently selected terminal result", "changed detached selection") });
+        return PrepareComparisonCore(request, resolution, currentGameMinute, resolution.OutcomeIntents);
+    }
+
+    private static MortalWoundTreatmentOutcomePreparationResult PrepareComparisonCore(
+        MortalWoundTreatmentAttemptRequest request, MortalWoundTreatmentResolution resolution,
+        long currentGameMinute, IReadOnlyList<MortalWoundTreatmentOutcomeIntent> orderedIntents)
+    {
         try
         {
             var transitionId = CreateTransitionId(resolution);

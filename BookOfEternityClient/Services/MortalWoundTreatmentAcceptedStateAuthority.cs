@@ -2126,7 +2126,11 @@ internal sealed partial class MortalWoundTreatmentAcceptedStateAuthority
         return WoundAcceptedTurnFingerprintWriter.Compute(fields);
     }
 
-    private static string HashBinding(WoundAcceptedTurnBinding binding)
+    /// <summary>
+    /// Computes the existing original binding identity for detached comparison;
+    /// it does not issue accepted-state authority.
+    /// </summary>
+    internal static string HashBinding(WoundAcceptedTurnBinding binding)
     {
         var fields = new List<string?>
         {

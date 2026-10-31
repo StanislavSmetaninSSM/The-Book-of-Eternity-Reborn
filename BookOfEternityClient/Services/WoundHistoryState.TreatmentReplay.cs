@@ -6,7 +6,7 @@ using System.Text.Json.Serialization;
 namespace BookOfEternityClient.Services;
 
 [JsonConverter(typeof(WoundTransitionResultJsonConverter))]
-internal sealed class MortalWoundTreatmentPersistedResult : WoundTransitionResult
+internal sealed partial class MortalWoundTreatmentPersistedResult : WoundTransitionResult
 {
     private readonly JsonObject _canonicalResult;
 
@@ -55,6 +55,8 @@ internal sealed class MortalWoundTreatmentPersistedResult : WoundTransitionResul
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(path);
         ArgumentNullException.ThrowIfNull(issues);
+        if (element.ValueKind == JsonValueKind.Object && element.TryGetProperty("schemaVersion", out _))
+            return ParseGuided(element, path, issues);
         return MortalWoundTreatmentCommandCodec.TryParseHistoryResult(
             element,
             path,
@@ -73,7 +75,7 @@ internal sealed class MortalWoundTreatmentPersistedResult : WoundTransitionResul
     }
 
     internal JsonObject SerializeRequest() =>
-        _canonicalResult["requestAuthority"]!.DeepClone().AsObject();
+        (_canonicalResult["terminal"] ?? _canonicalResult)["requestAuthority"]!.DeepClone().AsObject();
 
     internal override void WriteCanonical(Utf8JsonWriter writer)
     {

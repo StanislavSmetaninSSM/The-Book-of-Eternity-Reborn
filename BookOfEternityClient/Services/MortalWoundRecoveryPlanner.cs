@@ -130,22 +130,10 @@ internal sealed class MortalWoundDeteriorationPolicyAuthority
         if (!IsApplicableStrictWorseningPolicy(wound, policy))
             return NotStrictlyWorsening(path, policy.ResultKind.ToString());
 
-        var authorityFingerprint = WoundAcceptedTurnFingerprintWriter.Compute(
-            new string?[]
-            {
-                AuthorityDomain,
-                "1",
-                scope,
-                acceptedState.SessionGeneration,
-                acceptedState.AcceptedStateFingerprint,
-                acceptedState.BindingFingerprint,
-                acceptedState.WoundFingerprint,
-                acceptedState.WoundSourcePath,
-                policy.CanonicalProjection,
-                policy.PolicyRef,
-                policy.Classification.ToString(),
-                coordinates?.CoordinatesFingerprint
-            });
+        var authorityFingerprint = ComputeComparisonFingerprint(scope,
+            acceptedState.SessionGeneration, acceptedState.AcceptedStateFingerprint,
+            acceptedState.BindingFingerprint, acceptedState.WoundFingerprint,
+            acceptedState.WoundSourcePath, policy, coordinates?.CoordinatesFingerprint);
         return new MortalWoundDeteriorationPolicyAuthorityResult(
             true,
             Array.Empty<ValidationIssue>(),
@@ -194,6 +182,20 @@ internal sealed class MortalWoundDeteriorationPolicyAuthority
             _ => false
         };
     }
+
+    /// <summary>
+    /// Reuses the policy identity formula for immutable result comparison; it
+    /// creates no deterioration authority and performs no registry admission.
+    /// </summary>
+    internal static string ComputeComparisonFingerprint(string scope, string generation,
+        string acceptedFingerprint, string bindingFingerprint, string woundFingerprint,
+        string sourcePath, MortalWoundDeteriorationPolicyDefinition policy, string? coordinatesFingerprint) =>
+        WoundAcceptedTurnFingerprintWriter.Compute(new string?[]
+        {
+            AuthorityDomain, "1", scope, generation, acceptedFingerprint, bindingFingerprint,
+            woundFingerprint, sourcePath, policy.CanonicalProjection, policy.PolicyRef,
+            policy.Classification.ToString(), coordinatesFingerprint
+        });
 
     private static bool CanAcceptComplication(
         WoundMaterializationEnvelope wound,
