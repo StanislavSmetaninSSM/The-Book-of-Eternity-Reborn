@@ -1,6 +1,116 @@
 # План перехода к личной модели духовного боя — #1573
 
-## T124 — подготовка scope, 2026-11-01
+## Исполнение T124 — 2026-11-01
+
+**Spec:** [v1.76/T124](spec.md); автор отменил отдельное ожидание review документа
+после предъявления ebcfb6a21. **Цель:** выяснить пользу избирательного срыва при
+дефицитеДЭ без ослабления Heal. **Метод:** subagent-driven-development/TDD:
+один Sol6.1/high владеет связным source/tests, parent — интеграцией/измерениями/
+отчётом, отдельный Astra/high — whole-block review взаимодействующих фаз/ресурсов.
+**Среда:** существующий отдельный checkout на D:, story-ветка, Node24.21.0/
+PowerShell7.6.6/Windows; новых зависимостей нет. Canonical plan/review — ledger,
+новой копии в .superpowers не создаётся. Unrelated1536/obj не трогать.
+
+### API, файлы и общие ограничения
+
+- Изменить только `probes/healing-tactics-model.mjs`: exported
+  `interruptPolicies`, `chooseInterrupt(view, policy) -> {attempt, reason}` и
+  optional `interruptPolicy` encounter-option. View содержит только canAct,
+  hasReaction, energy, interruptCost, strongCost, largeCost, mode, phase.
+  Цены берутся из прежней `price` для самого участника; нет future regen/RNG/
+  скрытых данных врага. Возвращаемое решение само не мутирует состояние.
+- Политики: `never`, `always`, `reserve_strong`, `reserve_large`,
+  `release_reserve_large`. Порядок причин: inactive, no_reaction, no_energy,
+  policy_never, long_start, reserve, attempt; записывается первая применимая.
+  Фаза long_start проверяется только у release_reserve_large; instant и finish
+  допускаются при выполненном резерве. Сравнение остатка включает равенство.
+- Без новой option сохранить T123 on/off/выбор кандидата и numeric output.
+  Новая option используется только в duel; неподдерживаемую group-комбинацию
+  отклонять явно, чтобы не выдумывать многосубъектную политику. `interrupt:false`
+  сохраняет прежнее выключение срыва. Оплата и кости по-прежнему в applyHeal.
+  Новые причины/числа решений собирать только для opt-in T124, не менять прежний
+  schema/counters default T123. Одна причина на каждую допустимую попытку Heal.
+- Создать `probes/healing-interruption-policy.test.mjs`,
+  `probes/healing-interruption-probe.mjs` и `.test.mjs`. Runner переиспользует
+  simulateTactics/createOperation, не копирует actor/Heal state machine.
+  Exports `interruptionScenarios(matrix)`, CLI `--matrix=main|confirm --samples=N`
+  плюс детерминированные `--shard-index=I --shard-count=N` для распределения
+  исходных индексов без смены cell/seed. По умолчанию shard-count1.
+- Полные matrix params из spec120cells; собственный seedSuffix T124-main-v1 /
+  T124-confirm-v1 передаётся в существующий seed pipeline, дополняя policy.
+  Seed не зависит от shard/index/time; параметры и seeds сохранять в JSONL.
+  Каждая shard пишет metadata с исходными индексами, cell и complete/counts/
+  elapsedMs/formulaReuse. Точные имена допустимо уточнить в ledger до замера.
+
+Сохранены все пять игровых договоров, source-based Heal/личный расход, фазы,
+смерть/возврат, существующий attack reserve16P даже при Never. Нет новогоAI,
+урезания Heal, новых цен, проигнорированных исходов или предсказания костей.
+
+### T124.2 — дешёвые проверки и реализация
+
+- [ ] Записать RED guards pure selector: приD130 срыв28.8ДЭ, strong57.6,
+  large86.4; energy86.39/86.40 дают отказ/допуск reserve_strong,
+  115.19/115.20 — reserve_large. Низкая фактическая energy не исправляется
+  будущим regen. Проверить equality, pure view, недееспособность/noReaction.
+- [ ] RED real runner: Never/недостаточный резерв не списываютДЭ/реакцию и
+  не вызывают reaction RNG; разрешённая попытка оплачивается до dice.
+  Release пропускает start long, оставляет pending/его предоплату и допускает
+  finish при достаточнойДЭ, с личным refresh между ними; instant не блокируется
+  проверкой фазы. Проверить причины пропуска и единичность учёта.
+- [ ] Зафиксировать дешёвый default T123 контроль до изменения (обе очереди,
+  instant/long/adaptive, on/off): без option результаты сохраняются точно;
+  новые counters не меняют прежние summaries. Старые84tests не переписывать.
+- [ ] Реализовать selector/seam/runner минимально; fresh budget check остаётся
+  в applyHeal, Main/час/оплата не дублируются. Проверить matrix120unique/cross
+  product, main-confirm suffix, shard union/без дублей/те же seeds, validation
+  некорректного shard. Отдельное mutable состояние на каждый trial.
+- [ ] GREEN `node --test specs/1573-spiritual-combat-rework/probes/*.test.mjs`.
+  Это связанный numerical набор, не C# suite. Smoke main/confirm n1,horizon3
+  и небольшие shards; counts/endpoints/metadata/stderr/exit проверить.
+
+### T124.3–4 — измерение, review, сохранение
+
+- [ ] Опубликовать frozen source/WIP перед дорогим прогоном. Основная матрица
+  120×1000; confirmation120×10000, horizon2000. Можно запускать shards параллельно
+  и перераспределять ещё не начатые indices, сохраняя seed/полную выборку.
+  Неполные cells не использовать. Raw `D:\BoeDiagnostics\healing-interruption-t124\20261101-v1`,
+  без byte/record quotas. СтарыйT123raw оставить до полного нового замера.
+- [ ] Parent проверить coverage/params/seeds/sums/exit/stderr и объединение;
+  отчёт `healing-interruption-investigation.md`: median/p95/null/horizon по
+  обоим порядкам, attacks/Recover/Heal, расходы/попытки/успехи/причины отказа,
+  actualHeal/overheal. Сравнить пять политик внутри одинаковых условий;
+  main и confirmation отдельно, не подбирать новый порог по удачному результату.
+- [ ] Independent Astra/high review точного source/docs diff и raw; проверить
+  отрицательные выводы, сохранение пользы Heal и отсутствие переноса на1×2.
+  Исправить подтверждённые находки и адресно проверить. Scoped publication/
+  GitHub readback/restore, issue1573, retention после полного verified замера.
+
+**Оптимизация:** reuse operation.table/healingCalculator, полный immutable key
+уже существует; новые predicates дешёвые, им отдельный кэш не нужен. Fresh self
+state/admission, никакого удержания изменяемого результата решения. Посчитать
+actual formula reuse и wall time. Это probe, productionService–Repository не меняется.
+**Review focus/guards:** стоимость до dice; отсутствие future regen; long phase
+против reaction refresh; default T123 неизменность; shard/seed идентичность.
+
+### Consistency/preflight до реализации
+
+| Задачи/граница | Производитель → потребитель | Проверка |
+|---|---|---|
+|T124.1→2|Spec/plan → selector/guards|Все5политик, literal thresholds, original Heal сохранены|
+|T124.2 внутри|pure view → applyHeal/метрики|Решение до RNG, свежая оплата; opt-in counters, default unchanged|
+|T124.2→3|runner/matrix/seeds → shards/report|120cases, samples/horizon/suffix, union проверяемы|
+|T124.3→4|full raw/frozen SHA → reviewer/publication|Отрицательные результаты не закрываются условием «стало быстрее»|
+|T124.4 внутри|review/verification → retention|Удалять старый raw лишь после полного нового; не game saves|
+
+Bridge equivalent speckit-analyze: все6критериев spec имеют задачи (1/4→2,
+2/3→3,5→2–4,6→4), unmapped0, противоречий/неразрешённых контрактов0.
+Конституция2.1.0, category-only verification, #1573 и no-production соблюдены.
+Plan/tasks phases применены к действующим артефактам; setup не перезаписывает
+исторический план. Optional hooks plan/tasks/analyze прочитаны, автошаблонизация
+не требуется; scoped commits выполняются явно. Разрешение автора снимает вопросы
+о повторном согласовании документа, но не engineering/verification/review.
+
+## T124 — подготовка scope, исторический checkpoint
 
 [Spec v1.76](spec.md) предлагает исследовать выбор момента срыва, сохранив Heal.
 Автор согласился с направлением; точный документ ещё не показан/не утверждён.

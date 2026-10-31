@@ -1,5 +1,21 @@
 # Проверка проекта #1573
 
+## T124 — автономное исполнение, 2026-11-01
+
+После предъявления ebcfb6a21 автор явно отменил ожидание согласования спецификаций
+на текущем этапе планирования/исследований и поручил продолжать до его остановки.
+Исключение внесено в active spec/plan/tasks; не превращается в разрешение менять
+production/Heal или снимать независимое review. Baseline/origin/issue сверены.
+Writing-plans, Spec Kit plan/tasks и bridge consistency применены до source:
+view/причины/фазы, opt-in/defaults,120cases/shards/seeds и literals закреплены.
+Preflight таблица в плане, противоречий нет. Optional extension hooks прочитаны.
+Используется ранее заказанная отдельная копия D:\Code на story-ветке; обычный
+checkout, не linked worktree, вне main; новый checkout не нужен. Unrelated obj
+не трогается. Сохраняется84/84 baseline evidence T123, исходники после него не
+менялись; повтор baseline без новой причины не нужен. Связный source/tests
+владеет один Sol6.1/high; parent интегрирует/измеряет; отдельный Astra/high review.
+T124.1 завершён, T124.2–4 ещё не завершены. Нового измеренного эффекта нет.
+
 ## T124 — проект scope, 2026-11-01
 
 Baseline/origin741944f6d46f6cf9558238379679bf993c6d3d86 и issue1573 сверены.
