@@ -1,3 +1,29 @@
+# T121 Mortal complete-History reconstruction WIP — UNCOMPILED / UNRUN
+
+The strict diagnosis result now participates in complete serialized History and
+persisted request reconstruction. Its primary knowledge row is bound to the exact
+original full prefix and retained request; linked ordinary recovery rows must be
+complete, ordered and uninterleaved, with exact original epoch consumption. An
+operation-local duplicate-preserving index reuses parsed History DATA. It is not
+a cache or authority, and cannot reactivate claims or authorize publication.
+
+The existing actual-owner component fixture now checks complete serialized
+comparison History, exact replay/conflicting purpose, independently changed
+prefix/source/duplicate rows and the inability of a generic result-free diagnose
+row to replay the retained terminal request. No canonical publication receipt is
+fabricated. The zero-due result parser admits only an exact empty stage array
+whose reconstructed resolution has no mechanical change; standalone recovery
+keeps its existing nonempty stage contract. The physical freshness recheck also
+passes its exact issued snapshot to the existing three-argument evidence API.
+
+The source estimate remains 49 cases / eleven methods / nine categories. These
+additional assertions share the existing independent fixture; no new setup or
+source reread was added. All remain UNCOMPILED/UNRUN, with no writer build, test,
+discovery or restore. Live effect/recovery execution, common publication, the two
+pending before-images and C4/outer rollback, guided UI and GM synchronization
+remain unfinished. Current owner/source/claim checks and every existing HOLD are
+retained; no feature task is closed.
+
 # T121 Mortal durable reconstruction WIP — UNCOMPILED / UNRUN
 
 The connected result DATA cut retains the actual original binding/source, exact

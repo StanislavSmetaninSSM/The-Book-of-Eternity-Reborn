@@ -94,7 +94,7 @@ internal sealed partial class MortalWoundTreatmentAcceptedStateAuthority
         if (_diagnosisInput is null || _diagnosisControl is null || _diagnosisOriginalEvidence is null || _diagnosisIssuedSnapshot is null)
             throw new InvalidDataException("The accepted owner has no authenticated original diagnosis input.");
         _diagnosisOriginalEvidence.RequireOwner(_fileSystem, _writeLease, _diagnosisIssuedSnapshot);
-        _diagnosisOriginalEvidence.RequireCurrent(_fileSystem, _writeLease);
+        _diagnosisOriginalEvidence.RequireCurrent(_fileSystem, _writeLease, _diagnosisIssuedSnapshot);
         var currentInput = _fileSystem.ReadFileBytesSync(_writeLease, AcceptedMechanicsPlan.WoundCommandPath);
         if (_diagnosisCommandBytes is null || currentInput is null || !_diagnosisCommandBytes.AsSpan().SequenceEqual(currentInput))
             throw new InvalidDataException("The current diagnosis input differs from its authenticated signed bytes.");

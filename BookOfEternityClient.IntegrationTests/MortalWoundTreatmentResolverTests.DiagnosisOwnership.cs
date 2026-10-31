@@ -192,6 +192,56 @@ public sealed partial class MortalWoundTreatmentResolverTests
         var issues = new List<ValidationIssue>();
         Assert.NotNull(MortalWoundDiagnosisPersistedResult.Parse(JsonSerializer.SerializeToElement(root), "diagnosis.result", issues));
         Assert.Empty(issues);
+        // Complete serialized comparison History is DATA, not a claim that this
+        // component fixture performed a canonical publication.
+        const string summary = "The declared Mortal diagnosis and elapsed recovery are retained for replay.";
+        var coordinates = prepared.Request!.Coordinates;
+        var knowledge = result.KnowledgeAfter;
+        var row = new WoundHistoryTransition(knowledge.LastTransition.TransitionId, knowledge.WoundId,
+            owner.History.NextOrdinal, knowledge.LastTransition.Ordinal, "diagnose", coordinates.Turn,
+            coordinates.EventRef, coordinates.OperationKey,
+            WoundIdentityState.ComputeSemanticFingerprint(result.Original), WoundIdentityState.ComputeSemanticFingerprint(knowledge),
+            result.WorkingFingerprint, coordinates.AttemptId, null, null, null, null,
+            WoundHistoryState.ComputeOutputFingerprint(coordinates.OperationKey, coordinates.EventRef, summary), summary, false, result);
+        var complete = WoundHistoryState.CreateValidated(owner.History.NextOrdinal + 1, owner.History.Transitions.Append(row));
+        Assert.True(complete.IsValid, JsonSerializer.Serialize(complete.Issues));
+        var serializedHistory = WoundHistoryState.SerializeCanonical(complete.State!);
+        var parsedHistory = WoundHistoryState.Parse(serializedHistory, WoundHistoryState.HistoryPath);
+        Assert.True(parsedHistory.IsValid, JsonSerializer.Serialize(parsedHistory.Issues));
+        var probe = new WoundHistoryReplayProbe(row.OperationKey, row.WoundId, row.Kind, row.Turn, row.EventRef,
+            row.BeforeFingerprint, row.AfterFingerprint, row.SourceFingerprint, row.AttemptId, null, null, null, null,
+            row.OutputFingerprint, row.ReadableSummary, row.Terminal, result);
+        Assert.Equal(WoundHistoryReplayDisposition.Exact, parsedHistory.State!.ResolveReplay(probe).Disposition);
+        Assert.Equal(WoundHistoryReplayDisposition.Conflict,
+            parsedHistory.State.ResolveReplay(probe with { Kind = "treat" }).Disposition);
+        Assert.Equal((0L, 0L), parsedHistory.State.GetRecoveryConsumption(knowledge));
+        foreach (var fault in new[] { "prefix", "source", "duplicate", "result_omission" })
+        {
+            var changedHistory = JsonNode.Parse(serializedHistory)!.AsObject();
+            var rows = changedHistory["transitions"]!.AsArray();
+            var diagnosisRow = rows[^1]!.AsObject();
+            switch (fault)
+            {
+                case "prefix":
+                    var first = rows[0]!.AsObject();
+                    first["readableSummary"] = "A different original accepted output.";
+                    first["outputFingerprint"] = WoundHistoryState.ComputeOutputFingerprint(
+                        first["operationKey"]!.GetValue<string>(), first["eventRef"]!.GetValue<string>(), first["readableSummary"]!.GetValue<string>());
+                    break;
+                case "source": diagnosisRow["sourceFingerprint"] = row.BeforeFingerprint; break;
+                case "duplicate": rows.Add(diagnosisRow.DeepClone()); changedHistory["nextOrdinal"] = complete.State!.NextOrdinal + 1; break;
+                case "result_omission": diagnosisRow["transitionResult"] = null; break;
+            }
+            var refused = WoundHistoryState.Parse(changedHistory.ToJsonString(), WoundHistoryState.HistoryPath);
+            if (fault == "result_omission")
+            {
+                // Optional generic diagnose rows cannot reconstruct a retained
+                // terminal request and therefore cannot supply exact replay.
+                Assert.True(refused.IsValid, JsonSerializer.Serialize(refused.Issues));
+                Assert.Equal(WoundHistoryReplayDisposition.Conflict, refused.State!.ResolveReplay(probe).Disposition);
+            }
+            else Assert.False(refused.IsValid);
+        }
         foreach (var fault in new[] { "knowledge", "result", "duration", "control", "cohort", "extra", "resource" })
         {
             var changed = root.DeepClone().AsObject();

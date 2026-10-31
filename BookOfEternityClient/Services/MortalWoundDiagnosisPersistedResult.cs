@@ -178,7 +178,10 @@ internal sealed class MortalWoundDiagnosisPersistedResult : WoundTransitionResul
                 var calculated = MortalWoundRecoveryPlanner.ReconstructAtMinute(source, binding, working, future, consumedRecovery, consumedDeterioration);
                 if (calculated.Resolution is null || !JsonNode.DeepEquals(entry["resolution"], MortalWoundRecoveryPersistedResult.ResolutionJson(calculated.Resolution)))
                     throw new InvalidDataException("Diagnosis ordinary recovery calculation was altered.");
-                var stages = MortalWoundRecoveryPersistedResult.ParseStages(JsonSerializer.SerializeToElement(entry["stages"]), path + $".cohort[{index}].stages", issues);
+                var stageNode = entry["stages"] as JsonArray ?? throw new InvalidDataException("Diagnosis stages must be an exact array.");
+                IReadOnlyList<MortalWoundRecoveryPublishedStage> stages = stageNode.Count == 0
+                    ? Array.Empty<MortalWoundRecoveryPublishedStage>()
+                    : MortalWoundRecoveryPersistedResult.ParseStages(JsonSerializer.SerializeToElement(stageNode), path + $".cohort[{index}].stages", issues);
                 MortalWoundRecoveryPersistedResult.ValidateDiagnosisWorkingStages(binding, working, calculated.Resolution, stages);
                 foreach (var stage in stages)
                     if (!allocated.Add(stage.TransitionId) || !operations.Add(stage.OperationKey)) throw new InvalidDataException("Diagnosis recovery repeated an allocated transition/operation.");

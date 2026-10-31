@@ -95,6 +95,10 @@ internal sealed class MortalWoundTreatmentRequirementEvidenceJsonConverter :
 
 internal static class MortalWoundTreatmentPersistedRequestCatalog
 {
+    private static JsonObject SerializeDiagnosisRequest(MortalWoundTreatmentAttemptRequest request) =>
+        WoundResponseInputComposer.SerializeMortalWoundTreatmentValue(request) as JsonObject ??
+            throw new InvalidDataException("A durable diagnosis request is not a complete object.");
+
     private sealed record PersistedCandidate(
         JsonObject Serialized,
         MortalWoundTreatmentAttemptRequest Request,
@@ -120,6 +124,11 @@ internal static class MortalWoundTreatmentPersistedRequestCatalog
         var candidates = new List<PersistedCandidate>();
         foreach (var transition in history.State!.Transitions)
         {
+            if (transition.TransitionResult is MortalWoundDiagnosisPersistedResult diagnosis)
+            {
+                candidates.Add(new PersistedCandidate(SerializeDiagnosisRequest(diagnosis.Request), diagnosis.Request, "history"));
+                continue;
+            }
             if (transition.TreatmentResult is not { } treatmentResult)
                 continue;
             candidates.Add(new PersistedCandidate(

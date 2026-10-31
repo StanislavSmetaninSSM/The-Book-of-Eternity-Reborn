@@ -35,6 +35,19 @@ internal sealed partial class WoundHistoryState
         long deterioration = 0;
         foreach (var row in rows)
         {
+            if (row.TransitionResult is MortalWoundDiagnosisPersistedResult diagnosis)
+            {
+                var member = diagnosis.Recoveries.SingleOrDefault(value => value.Original.WoundId == wound.WoundId);
+                if (member is not null)
+                {
+                    if (wound.Recovery.RecoveryAnchor is { } epoch && member.Original.Recovery.RecoveryAnchor == epoch)
+                        recovery = checked(member.ConsumedRecovery + (member.Resolution.TransitionIntents.OfType<MortalWoundRecoveryProgressIntent>().Any()
+                            ? member.Resolution.ElapsedCadences : 0));
+                    if (wound.Recovery.DeteriorationAnchor is { } condition && member.Original.Recovery.DeteriorationAnchor == condition)
+                        deterioration = checked(member.ConsumedDeterioration + member.Resolution.ElapsedDeteriorationCadences);
+                }
+                continue;
+            }
             if (row.WoundId != wound.WoundId || row.TransitionResult is not MortalWoundRecoveryPersistedResult result)
                 continue;
             var current = wound.Recovery.RecoveryAnchor;
