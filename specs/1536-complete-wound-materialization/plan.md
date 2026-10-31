@@ -1,3 +1,39 @@
+# T121 C14 fresh preparation verified — runtime UNRUN
+
+Corrected Integration at `a069fae7f2c0eba5a2d3fabb12af5ef185c4566f` exits0 in
+1:46.83 with102 prior warnings. Main/Support/Unit retain their successful fresh
+`4eff2282f50e2bdf0d5a3963eff7af6d68048134` builds described below: their actual
+owning inputs did not change. All four warning code/message multisets match C13.
+The failed first Integration directory remains separate; only integration-c1 is
+selected. Actual MSBuild Compile ownership and all4 PE/PDB pairs /346 changed-source
+bindings match. All27 live artifacts,40 operational-resource copies and4 daemons
+are consistent. Full archive62,976,150 bytes has SHA256
+`733747a7e96cc9e57e81309e06517f63411df4d0c5971d32f96c34ec8b0cd90b`;
+all27 member hashes and full197,294,080-byte gzip EOF/CRC decode are verified.
+Full raw remains outside checkout under the existing diagnosis evidence root.
+
+Official catalog exits0 with1272 categories /13087 methods, no unmapped/stale
+selector and zero executions. Exact full PlanOnly exits0:233 cases /101 methods /
+60 descriptors /57 categories, zero tests. This is an inventory, not233 PASS.
+Primary reparsed48 original raw TRXs and reconciled the retained218 unique PASS
+cases /87 methods /48 descriptors /45 categories against this exact plan. The
+external retained218 proof hash is
+`283999fefb0a617705040cda47057b37a473b54b67f2dc25deae4174fa9378f0`;
+it spans18 historical runtime epochs /24 used runs and excludes the shared-seed
+Engine-original singleton selected fresh. No historical failure/timeout/UNKNOWN
+is counted as PASS or erased.
+
+The exact new runtime partition is post8 (diagnosis1, export lifetime2, ordinary1,
+semantic guards3 and World closure1; five60s owners), then the three browser
+controls separately60s and fresh Engine-original1 at60s. Original console /
+shared-browser / rollback UI3 each retain180s and remain held until the fresh12
+and capture/cleanup evidence are accepted. Independent PREP and an immediate
+source/resource/process fence precede post8. No C14 runtime has yet executed.
+No limits, assertions or captured-event policy are changed; this preparation
+makes no speedup claim. Completed DATA never grants current execution authority.
+Broader parents, physical treatment, eight proof adapters, prior incomplete raw
+and owned roots, earlier UNKNOWN and DFR/Mortal-compat/Windows HOLDs stay open.
+
 # T121 C14 Integration compilation correction — runtime UNRUN
 
 At source `4eff2282f50e2bdf0d5a3963eff7af6d68048134`, fresh Main exits0 /
