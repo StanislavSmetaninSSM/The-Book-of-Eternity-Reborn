@@ -1,3 +1,37 @@
+# T121 C12 console FAIL — missing finalized diagnosis notification dispatch
+
+Console at `9c8e3d3d676582a9ece00b4868566e3cbadc8d28` completed one FAIL in
+47.2731659s, no timeout. ProcessPlayerTurn finished in27.54s but correctly did not
+advance turn42 after post-publication refusal. The exact logged exception is
+"The accepted wound output does not agree with its finalized typed stages" at
+GameEngine.ValidationAndRepair.cs2416; the held publication compensated safely
+to Rearmed. The unchanged turn43 assertion then failed. No UI PASS is claimed.
+Full21-row/20-event passive capture, paired sequences/footer/CRC/hashes, writer
+closing, actual fixture root absence and stable pins are verified. Strict failed
+proof is external in `M2GREENC12-console1`; browser/rollback remain UNRUN/held.
+
+Source-confirmed missing player-result route: WoundPlayerNotification.ComposeAcceptedTurn
+handles spiritual/joint/treatment continuations but not MortalDiagnosisAuthority,
+then falls through to acquisition transition/mutation cardinality checks. Sol and
+Astra independently verified this is the actual missing dispatch. The suspected
+post-publication snapshot omission was an inference from a misleading helper name:
+its existing spiritual-named classifier already handles authenticated Mortal input
+after consumption with full frame/hash/evidence checks. Progression completion
+also already checks published diagnosis T1 without applying time twice. Preserve
+those existing paths; their later end-to-end suffixes remain runtime-unqualified.
+
+Next bounded correction is diagnosis presentation from immutable sealed execution:
+validate the whole final cohort/History/carrier agreement with the existing final
+plan/execution/result readers, then emit escaped truthful success/failure and
+ordinary recovery feedback only for the authorized visible selected target. No
+acquisition narration demand, live admission resurrection, direct-healing claim,
+private cohort disclosure or unconditional empty success. Existing typed common
+bundles can provide the cheap causal proof after lease closure plus strict malformed/
+foreign/incomplete refusal and existing notification regressions, before UI3.
+No code for this correction is applied yet; C12 focused4/native9 remain accepted.
+Earlier FAIL/UNKNOWN/raw/retained-root, broader parents, physical treatment, eight
+spiritual adapters and HOLD limits remain unchanged.
+
 # T121 C12 native9 PASS — UI3 OUTCOME/PREP pending
 
 Runtime `ed0a8a8766ba49b779719118100bc569a560003b` completed9/9 PASS,

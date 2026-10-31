@@ -43,6 +43,16 @@ archive are outside checkout; original failures and all other holds are retained
 
 # T121 diagnosis recommendations — #1536
 
+- [ ] T121-DIAGNOSIS-MORTAL-OUTPUT Bind the complete sealed diagnosis execution
+  to the existing player-notification dispatcher after publication/lease closure.
+  Validate whole cohort/History/mutations before rendering only authorized selected
+  visible output; truthful success/failure and ordinary recovery, escaped console/
+  browser text, no private-member disclosure or direct-healing claim. Reject
+  malformed/incomplete/foreign execution with no notifications. The actual C12
+  console FAIL is causal evidence; existing snapshot/progression dispatch already
+  supports diagnosis and must not be changed on a naming inference. Cheap typed
+  bundle/consumer regressions and original UI3 remain required before acceptance.
+
 - [ ] T121-DIAGNOSIS-MORTAL-ENGINE-ORIGINAL Correct the actual Engine diagnosis
   prepared-original schedule registration through existing ValidationSnapshotFiles,
   retaining distinct earlier rollback bytes/hash and the exact current clock/schedule
