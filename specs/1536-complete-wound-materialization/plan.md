@@ -1,3 +1,24 @@
+# T121 C21 genuine completion controls WIP — UNCOMPILED/UNRUN
+
+Three finite independent native-publication rows are now authored: two item rows
+(success/zero duration; true Fate/elapsed30) and one resource_quantity row with
+nonempty frozen envelopes. Each uses the existing real diagnosis original/owner,
+raw location→item preparation, common publication/progression and Finalized
+transaction. The same current-reader and shared browser predicate run without an
+Engine world/wait. Delivery DATA is not an accepted receipt or a claim of actual
+browser terminal staging. Each fresh predicate reads each dependency once; detached
+negative maps reuse only this test's immutable observed DATA. Canonical bytes and
+complete retained request stay unchanged by comparisons. Cloned witness/version,
+resealed-semantic, original/control/token/generation, cohort/time/current-state,
+consumption and reintroduced-work faults retain strict refusal.
+
+Two natural-responsibility categories preserve60s bounds: item2 and resource1.
+Current source estimate is237 cases /104 methods /63 descriptors /60 categories,
+subject to root official discovery. Existing v1 durable DATA, semantic source
+controls and original browser1/rollback1 are the finite final selection frontier;
+selection sufficiency/full-source audit is still pending. No C21 build or runtime
+has occurred. All failed raw, old PASS lineages, wider parents and HOLDs remain.
+
 # T121 C21 current completion reader WIP — UNCOMPILED/UNRUN
 
 The shared live-Finish/accepted-record predicate now dispatches Mortal diagnosis to

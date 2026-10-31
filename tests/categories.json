@@ -2,6 +2,58 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "excludes": "No Engine world/wait, fabricated accepted receipt or authority, reflection, new cache/transport, historical effect replay, resource-prefix blob, HOLD aggregate or budget increase. This component does not qualify live browser terminal claiming.",
+  "changeHints": [
+    "BookOfEternityClient/Services/MortalWoundDiagnosisCompletion.cs",
+    "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalDiagnosisPublicationData.cs",
+    "BookOfEternityClient/Services/MortalWoundDiagnosisPersistedResult.cs",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.BrowserPlayerInput.cs",
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.DiagnosisCompletion.cs"
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "id": "mortal-diagnosis-browser-completion-items",
+  "responsibility": "T121 C21 two independent actual common-publication item-cost fixtures: success/zero duration and real Fate/elapsed30, selected-not-first private cohort. Genuine original/request/claims/transaction closure precede direct current reader and same shared live-Finish/accepted-record predicate. Exact witness/version/refreezing, current cohort/time/resource/item/effect agreement, consumed work, drift and inert canonical/request DATA are checked. Per-invocation reads remain fresh and exactly once per path; cloned negative DATA reuse no permission. Candidate UNCOMPILED/UNRUN.",
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.PublishedDiagnosisItemCompletionUsesActualClosedWitnessAndRefusesCurrentDrift"
+      ]
+    }
+  ]
+},
+{
+  "excludes": "No Engine world/wait, fabricated accepted receipt or authority, reflection, new cache/transport, historical effect replay, resource-prefix blob, HOLD aggregate or budget increase. This component does not qualify live browser terminal claiming.",
+  "changeHints": [
+    "BookOfEternityClient/Services/MortalWoundDiagnosisCompletion.cs",
+    "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalDiagnosisPublicationData.cs",
+    "BookOfEternityClient/Services/MortalWoundDiagnosisPersistedResult.cs",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.BrowserPlayerInput.cs",
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.DiagnosisCompletion.cs"
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "id": "mortal-diagnosis-browser-completion-resources",
+  "responsibility": "T121 C21 one independent actual common-publication resource_quantity fixture with frozen present-empty skill and item envelopes. Recompose actual publication semantic/identity seed, exact resource spend set/order/IDs/source/policy/full quantity snapshots and canonical current agreement. A fully resealed valid changed semantic must refuse against independently derived real spend identities. No expected identity is learned from candidate History. Candidate UNCOMPILED/UNRUN.",
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.PublishedDiagnosisResourceCompletionBindsResealedSemanticsToActualSpendIdentities"
+      ]
+    }
+  ]
+},
+{
   "id": "mortal-completed-item-postvalidation",
   "responsibility": "T121 C14 one actual diagnosis post-validator row under genuine caller-flow MainAdmission spanning a fresh original-source rebind, production and protected read. No ambient write lease at reader entry; foreign same-root manager has its own acquired child admission. Whole NPC/frame/generation, exact issue multiplicity/tamper refusals and canonical/request/claim inertness remain. The prior no-live-owner failure is preserved; grouped correction UNCOMPILED/UNRUN, exclusive60s unchanged.",
   "excludes": "No new authority, cache, publisher, original re-sign, private reflection, GM wait, budget increase, diagnostic framework, full-suite/HOLD or physical-treatment execution. Actual prior UI timeout remains UNKNOWN.",

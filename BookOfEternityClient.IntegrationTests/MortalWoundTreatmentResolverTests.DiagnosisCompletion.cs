@@ -1,0 +1,189 @@
+using System.Text;
+using System.Text.Json;
+using System.Text.Json.Nodes;
+using BookOfEternityClient.Configuration;
+using BookOfEternityClient.Core;
+using BookOfEternityClient.Models;
+using BookOfEternityClient.Services;
+using Microsoft.Extensions.Logging.Abstractions;
+using Xunit;
+
+namespace BookOfEternityClient.Tests;
+
+public sealed partial class MortalWoundTreatmentResolverTests
+{
+    [Theory]
+    [InlineData(20, 0, false)]
+    [InlineData(1, 30, true)]
+    public Task PublishedDiagnosisItemCompletionUsesActualClosedWitnessAndRefusesCurrentDrift(int natural, int duration, bool fate) =>
+        AssertPublishedDiagnosisCompletionAsync(natural, duration, fate, resourceCost: false);
+
+    [Fact]
+    public Task PublishedDiagnosisResourceCompletionBindsResealedSemanticsToActualSpendIdentities() =>
+        AssertPublishedDiagnosisCompletionAsync(20, 30, false, resourceCost: true);
+
+    private static async Task AssertPublishedDiagnosisCompletionAsync(int natural, int duration, bool fate, bool resourceCost)
+    {
+        await using var fixture = await DiagnosisOwnershipFixture.CreateAsync(natural, signedInput: true,
+            duration: duration, seedFate: fate, twoMembers: true, resourceCost: resourceCost);
+        var fs = fixture.Files;
+        var input = fixture.Authority.ReadDiagnosisOriginalInput();
+        var selected = MortalWoundDiagnosisInputCodec.Read(input);
+        var requestJson = Assert.IsType<string>(await fs.ReadFileAsync(fixture.Lease, LiveTurnPreparationService.TurnRequestPath));
+        var original = JsonSerializer.Deserialize<TurnRequest>(requestJson, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)!;
+        var manifestJson = Assert.IsType<string>(await fs.ReadFileAsync(fixture.Lease, LiveTurnPreparationService.PendingTurnSnapshotManifestPath));
+        var manifest = JsonSerializer.Deserialize<PendingTurnSnapshotManifest>(manifestJson, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)!;
+        var authorityJson = Assert.IsType<string>(await fs.ReadFileAsync(fixture.Lease, PendingTurnSnapshotAuthority.AuthorityPath));
+        var token = fixture.Authority.Binding.SnapshotToken; var generation = fixture.Authority.SessionGeneration;
+        Assert.Equal(token, manifest.ManifestPayloadHash);
+        var observed = PendingTurnSnapshotReader.ReadCurrent(fs, fixture.Lease,
+            new[] { AcceptedMechanicsPlan.WoundCommandPath, ResourceMaterializationContract.HistoryPath });
+        Assert.True(observed.Success, JsonSerializer.Serialize(observed.Issues));
+        Assert.True(JsonNode.DeepEquals(input, JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(
+            observed.Snapshot!.ReadRequiredBytes(AcceptedMechanicsPlan.WoundCommandPath)))));
+        Assert.True(MortalWoundDiagnosisInputCodec.IsBound(input,
+            new(original.SessionId, original.RequestId, original.TurnNumber, original.ProgressionControl!)));
+        var admission = await WoundApplicationService.ResolveMortalDiagnosisInputAsync(fs, fixture.Lease, selected.Frame);
+        var request = admission.Request;
+        var check = Assert.IsType<MortalWoundProcedureCheckAuthority>(request.ModeAuthority);
+        Assert.Equal(fate, check.PreparedCriticalReaction is not null);
+        var originalRequest = WoundResponseInputComposer.SerializeMortalWoundTreatmentValue(request)!.ToJsonString();
+        var validator = new ValidationService(fs, NullLogger<ValidationService>.Instance);
+        Assert.Empty(await validator.ValidateAcceptedTurnRawMortalLocationMaterializationAsync(fixture.Lease));
+        Assert.Empty(await validator.ValidateAcceptedTurnRawMortalItemMaterializationAsync(fixture.Lease));
+        var response = resourceCost ? new GameResponse { RemoveActiveSkills = Array.Empty<string>(), NPCInventoryUpdates = Array.Empty<JsonElement>() } : new GameResponse();
+        var common = await WoundAcceptedTurnPlanner.ComposeMortalDiagnosisPublicationAsync(fs, fixture.Lease, response, admission.Owner, request);
+        Assert.True(common.IsValid, JsonSerializer.Serialize(common.Issues));
+        var publicationAuthority = Assert.IsType<MortalWoundTreatmentResourcePublicationAuthority>(common.Plan!.TreatmentResourcePublicationAuthority);
+        var expectedSemantic = publicationAuthority.SemanticFingerprint;
+        var expectedSeed = publicationAuthority.IdentitySeed;
+        await fixture.ReleaseLeaseAsync();
+        var normalizer = new CanonicalStateNormalizer(fs, NullLogger<CanonicalStateNormalizer>.Instance);
+        var published = await AcceptedTurnCanonicalStateRefresh.NormalizeAndValidateWithPlanAsync(fs, normalizer, validator,
+            new Dictionary<string, string>(StringComparer.Ordinal));
+        var transaction = Assert.IsType<MortalWoundTreatmentResourcePublicationTransaction>(published.TreatmentResourcePublicationTransaction);
+        try
+        {
+            Assert.DoesNotContain(published.Issues, issue => issue.Severity == IssueSeverity.Error);
+            var advanced = await transaction.AdvancePublishedAgreementWithProgressionAsync(fs,
+                new ProgressionScheduleService(fs, NullLogger<ProgressionScheduleService>.Instance), selected.Frame.Progression);
+            Assert.True(advanced.IsValid, JsonSerializer.Serialize(advanced.Issues));
+            var completed = await transaction.CompleteAsync(fs);
+            Assert.True(completed.IsValid, JsonSerializer.Serialize(completed.Issues));
+            Assert.Empty(completed.Issues); Assert.Equal(1, completed.ChangedCount);
+            Assert.Equal(MortalWoundTreatmentPublicationTransactionOutcome.Finalized, completed.Outcome);
+        }
+        finally { await ((IAsyncDisposable)transaction).DisposeAsync(); }
+        await fixture.AcquireLeaseAsync();
+        var before = fixture.CaptureJson();
+        var current = new Dictionary<string, byte[]?>(StringComparer.Ordinal);
+        var counts = new Dictionary<string, int>(StringComparer.Ordinal);
+        async Task<byte[]?> Read(string path)
+        {
+            counts[path] = counts.GetValueOrDefault(path) + 1;
+            var bytes = await fs.ReadFileBytesAsync(fixture.Lease, path);
+            current[path] = bytes?.ToArray(); return bytes;
+        }
+        var exact = await MortalWoundDiagnosisCompletion.RequirePublishedAsync(original, token, generation, selected.Selection, input, Read);
+        Assert.All(counts.Values, count => Assert.Equal(1, count));
+        Assert.Equal(expectedSemantic, exact.ReconstructPublicationSemantic());
+        var finalization = MortalWoundTreatmentResourceComposer.Finalize(exact.Resolution).Finalization!;
+        Assert.Equal(expectedSeed, MortalWoundTreatmentResourcePublicationAuthority.ComputeIdentitySeed(exact.Source.AcceptedStateFingerprint,
+            exact.Request.RequestFingerprint, exact.Resolution.ResultFingerprint, finalization.FinalizationFingerprint, exact.ReconstructPublicationSemantic()));
+        Assert.Equal(2, exact.Recoveries.Length);
+        Assert.NotEqual(exact.Request.Coordinates.WoundId, exact.Recoveries[0].Original.WoundId);
+        Assert.Equal(resourceCost ? "resource_quantity" : "item_quantity", Assert.Single(finalization.Consumptions).Kind);
+
+        // Native original admission above is genuine. This is detached delivery
+        // DATA for the same shared predicate, never a fabricated accepted receipt
+        // or a claim that an Engine terminal/browser phase has executed.
+        var binding = new PendingPlayerActionService.Binding(original.RequestId, generation, original.PlayerAction,
+            "browser-wound-action", selected.Selection.ToJson().ToJsonString(), selected.Selection);
+        var staged = new PendingPlayerActionService.Staged(binding, requestJson, manifestJson, authorityJson,
+            string.Empty, string.Empty, Convert.ToBase64String(Encoding.UTF8.GetBytes(input.ToJsonString())));
+        counts.Clear();
+        await GameEngine.RequireAcceptedSpiritualResultAsync(staged, manifest, Read);
+        Assert.All(counts.Values, count => Assert.Equal(1, count));
+        fixture.AssertJson(before);
+
+        async Task Refuse(string label, Action<Dictionary<string, byte[]?>> fault)
+        {
+            var changed = current.ToDictionary(pair => pair.Key, pair => pair.Value?.ToArray(), StringComparer.Ordinal);
+            fault(changed);
+            var error = await Assert.ThrowsAsync<InvalidDataException>(() => MortalWoundDiagnosisCompletion.RequirePublishedAsync(
+                original, token, generation, selected.Selection, input, path => Task.FromResult(changed[path])));
+            Assert.False(string.IsNullOrWhiteSpace(error.Message), label);
+            fixture.AssertJson(before);
+        }
+        await Assert.ThrowsAsync<InvalidDataException>(() => MortalWoundDiagnosisCompletion.RequirePublishedAsync(
+            original, "foreign_snapshot", generation, selected.Selection, input, path => Task.FromResult(current[path])));
+        await Assert.ThrowsAsync<InvalidDataException>(() => MortalWoundDiagnosisCompletion.RequirePublishedAsync(
+            original, token, "foreign_generation", selected.Selection, input, path => Task.FromResult(current[path])));
+        var foreignControl = JsonSerializer.Deserialize<TurnRequest>(requestJson, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)!;
+        foreignControl.ProgressionControl!.CurrentWorldTimeInMinutes++;
+        await Assert.ThrowsAsync<InvalidDataException>(() => MortalWoundDiagnosisCompletion.RequirePublishedAsync(
+            foreignControl, token, generation, selected.Selection, input, path => Task.FromResult(current[path])));
+        await Refuse("missing result", map => map[WoundHistoryState.HistoryPath] = null);
+        await Refuse("duplicate result", map => Change(map, WoundHistoryState.HistoryPath, root =>
+        {
+            var rows = root["transitions"]!.AsArray(); rows.Add(rows.Single(row => row!["kind"]!.GetValue<string>() == "diagnose")!.DeepClone());
+        }));
+        await Refuse("changed cohort", map => ChangeResult(map, result => result["cohort"]!.AsArray().RemoveAt(0)));
+        await Refuse("changed cohort order", map => ChangeResult(map, result =>
+        {
+            var rows = result["cohort"]!.AsArray(); var first = rows[0]!.DeepClone(); rows.RemoveAt(0); rows.Add(first);
+        }));
+        await Refuse("v1 has no current publication witness", map => ChangeResult(map, result =>
+        { result.Remove("publicationInputs"); result["schemaVersion"] = 1; }));
+        await Refuse("missing v2 witness", map => ChangeResult(map, result => result.Remove("publicationInputs")));
+        await Refuse("mixed version witness", map => ChangeResult(map, result => result["schemaVersion"] = 1));
+        await Refuse("malformed witness", map => ChangeResult(map, result => result["publicationInputs"]!["itemCommands"]!["UpdateInventory"] = "invalid"));
+        await Refuse("current clock drift", map => Change(map, EffectAcceptedTurnInputComposer.WorldTimePath, root => root["currentTimeInMinutes"] = 999));
+        await Refuse("current schedule drift", map => Change(map, ProgressionScheduleService.SchedulePath, root => root["lastUpdatedUtc"] = DateTime.UnixEpoch.ToString("O")));
+        await Refuse("current resource drift", map => Change(map, ResourceMaterializationContract.StatePath,
+            root => root["entries"]!.AsArray()[0]!["current"] = 0));
+        await Refuse("current carrier drift", map => Change(map, WoundCarrierCatalog.PlayerPath,
+            root => root["activeWounds"]!.AsArray()[0]!["display"]!["description"] = "foreign"));
+        await Refuse("reintroduced command", map => map[AcceptedMechanicsPlan.WoundCommandPath] = Encoding.UTF8.GetBytes(input.ToJsonString()));
+        await Refuse("reintroduced pending work", map => map[WoundAcceptedTurnSnapshotContract.PendingResolutionPath] = Encoding.UTF8.GetBytes("{}"));
+        if (resourceCost)
+        {
+            await Refuse("resealed changed semantic", map =>
+            {
+                ChangeResult(map, result => result["publicationInputs"]!["skillCommands"]!.AsObject().Remove("removeActiveSkills"));
+                var parsed = WoundHistoryState.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(map[WoundHistoryState.HistoryPath]!), WoundHistoryState.HistoryPath);
+                Assert.True(parsed.IsValid, JsonSerializer.Serialize(parsed.Issues));
+                var changed = Assert.IsType<MortalWoundDiagnosisPersistedResult>(Assert.Single(parsed.State!.Transitions,
+                    row => row.Kind == "diagnose").TransitionResult);
+                Assert.NotEqual(expectedSemantic, changed.ReconstructPublicationSemantic());
+            });
+            await Refuse("missing spend", map => Change(map, ResourceMaterializationContract.HistoryPath, root =>
+            {
+                var rows = root["entries"]!.AsArray(); rows.Remove(rows.Single(row => row!["originKind"]!.GetValue<string>() == "registered_system_outcome"));
+            }));
+            await Refuse("wrong spend", map => Change(map, ResourceMaterializationContract.HistoryPath, root =>
+                root["entries"]!.AsArray().Single(row => row!["originKind"]!.GetValue<string>() == "registered_system_outcome")!["requestedAmount"] = 2));
+        }
+        else await Refuse("wrong item spend identity", map => Change(map, MortalItemIdentityState.StatePath, root =>
+        {
+            var entry = root["entries"]!.AsArray().Single(row => row!["itemId"]!.GetValue<string>() == "sterile_thread");
+            entry!["transitions"]!.AsArray()[^1]!["authorityId"] = "foreign_item_consumption";
+        }));
+        fixture.AssertJson(before);
+        Assert.Equal(originalRequest, WoundResponseInputComposer.SerializeMortalWoundTreatmentValue(request)!.ToJsonString());
+    }
+
+    private static void Change(Dictionary<string, byte[]?> files, string path, Action<JsonObject> change)
+    {
+        var root = JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(files[path]!))!.AsObject();
+        change(root); files[path] = Encoding.UTF8.GetBytes(root.ToJsonString());
+    }
+
+    private static void ChangeResult(Dictionary<string, byte[]?> files, Action<JsonObject> change) =>
+        Change(files, WoundHistoryState.HistoryPath, root =>
+        {
+            var row = root["transitions"]!.AsArray().Single(value => value!["kind"]!.GetValue<string>() == "diagnose")!;
+            var result = row["transitionResult"]!.AsObject(); change(result);
+            result["resultFingerprint"] = WoundHistoryState.ComputeTransitionResultFingerprint(result);
+        });
+}
