@@ -25,6 +25,29 @@ internal static partial class AfterlifeWoundHealingPlanner
             ["projection"] = data.Program.Projection["naturalRecovery"]!.DeepClone()
         } : throw new InvalidDataException("A diagnosis natural suffix requires its live diagnosis owner.");
 
+        /// <summary>Reproves live diagnosis ownership and exact manifest binding before reading its prepared-command DATA role.</summary>
+        /// <param name="files">The actual filesystem retained by this owner.</param>
+        /// <param name="lease">The same active canonical lease retained by this owner.</param>
+        /// <param name="sessionId">The current validated manifest's session.</param>
+        /// <param name="requestId">The current validated manifest's request.</param>
+        /// <param name="turn">The current validated manifest's turn.</param>
+        /// <param name="manifestHash">The current manifest's declared hash.</param>
+        /// <param name="computedManifestHash">The complete hash recomputed from the actual current manifest, including control.</param>
+        /// <returns>True only for this current diagnosis's exact signed-only command; baseline-present inputs keep normal coverage.</returns>
+        internal bool HasCurrentDiagnosisPreparedCommandRole(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease,
+            string sessionId, string requestId, int turn, string manifestHash, string computedManifestHash)
+        {
+            if (!IsDiagnosis) throw new InvalidDataException("Only an actual diagnosis owner may prove its prepared-command role.");
+            RequireCurrent(files, lease);
+            var binding = _input.Binding;
+            if (sessionId != _snapshot.SessionId || requestId != _snapshot.RequestId || turn != _snapshot.TurnNumber ||
+                sessionId != binding.SessionId || requestId != binding.RequestId || turn != binding.Turn ||
+                binding.SnapshotToken != _snapshot.SnapshotToken || manifestHash != _snapshot.SnapshotToken ||
+                computedManifestHash != _snapshot.SnapshotToken)
+                throw new InvalidDataException("Diagnosis dynamic rollback role differs from its complete current manifest binding.");
+            return _original.HasExactPreparedWoundCommandRole();
+        }
+
         internal static async Task<Continuation> AdmitDiagnosisAsync(FileSystemManager files,
             FileSystemManager.CanonicalWriteLease lease, LiveTurnPendingSnapshotManifest manifest,
             PendingTurnSnapshotObservedReadResult? observedSource = null)

@@ -1100,6 +1100,26 @@ public partial class ValidationService
             var requiredSnapshotPaths =
                 WoundAcceptedTurnSnapshotContract.BuildRequiredPaths(
                     result.Plan.TouchedPaths);
+            if (naturalOwner is { IsDiagnosis: true } diagnosisOwner)
+            {
+                try
+                {
+                    // The common factory already checked this same private
+                    // continuation against its sealed StageBundle. Serialized
+                    // family markers never select the prepared-input exception.
+                    if (!ReferenceEquals(diagnosisOwner, result.Plan.SpiritualHealingContinuation))
+                        throw new InvalidDataException("Diagnosis dynamic rollback coverage requires its actual common-plan owner.");
+                    if (diagnosisOwner.HasCurrentDiagnosisPreparedCommandRole(_fs, writeLease,
+                            manifest.SessionId, manifest.RequestId, manifest.TurnNumber,
+                            manifest.ManifestPayloadHash, ComputeManifestPayloadHash(manifest)))
+                        requiredSnapshotPaths = requiredSnapshotPaths.Where(path => path != AcceptedMechanicsPlan.WoundCommandPath).ToArray();
+                }
+                catch
+                {
+                    AcceptedMechanicsPlanAuthority.InvalidateValidated(_fs, writeLease);
+                    throw;
+                }
+            }
             if (!PendingTurnSnapshotAuthority.HasValidatedRollbackSnapshotCoverage(
                     manifest,
                     static value => value.Files,

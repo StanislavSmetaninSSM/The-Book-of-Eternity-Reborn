@@ -75,6 +75,32 @@ internal static partial class PendingTurnSnapshotReader
                 throw new InvalidOperationException("Original evidence requires its exact owner, lease and issued snapshot.");
         }
 
+        /// <summary>Reads only the exact prepared-command DATA role from this issued evidence's frozen authority bytes.</summary>
+        /// <returns>True for an exact signed member outside both rollback inventories; this grants no current permission.</returns>
+        internal bool HasExactPreparedWoundCommandRole()
+        {
+            const string path = AcceptedMechanicsPlan.WoundCommandPath;
+            var authority = _source.Operations.FirstOrDefault(operation => operation.Role == OriginalSourceRole.DetachedAuthority)?.Bytes;
+            if (authority is null || !PendingTurnSnapshotAuthority.TryReadDetachedAuthorityPayload(
+                    FileSystemManager.DecodeFileBytes(authority), out var payload) || payload is null ||
+                payload.SnapshotHashMode != PendingTurnSnapshotAuthority.ExactSnapshotHashMode ||
+                payload.SessionId != _snapshot.SessionId || payload.RequestId != _snapshot.RequestId ||
+                payload.TurnNumber != _snapshot.TurnNumber || payload.ManifestPayloadHash != _snapshot.SnapshotToken ||
+                payload.Files is null || payload.SnapshotFileHashes is null || payload.RollbackBaselineFiles is null ||
+                payload.RollbackBackups is null || payload.RollbackBackupHashes is null ||
+                !payload.Files.Keys.Contains(path, StringComparer.Ordinal) ||
+                !payload.SnapshotFileHashes.Keys.Contains(path, StringComparer.Ordinal) ||
+                !payload.Files.TryGetValue(path, out var snapshotPath) || !PendingTurnSnapshotAuthority.IsSafeRelativePath(snapshotPath) ||
+                !payload.SnapshotFileHashes.TryGetValue(path, out var hash) || string.IsNullOrWhiteSpace(hash) ||
+                payload.RollbackBaselineFiles.Contains(path, StringComparer.OrdinalIgnoreCase) ||
+                payload.RollbackBackups.Keys.Contains(path, StringComparer.OrdinalIgnoreCase) ||
+                payload.RollbackBackupHashes.Keys.Contains(path, StringComparer.OrdinalIgnoreCase) ||
+                !_snapshot.CoveredLogicalPaths.Contains(path, StringComparer.Ordinal))
+                return false;
+            return string.Equals(hash, PendingTurnSnapshotAuthority.ComputeSnapshotFileHash(payload, _snapshot.ReadRequiredBytes(path)),
+                StringComparison.OrdinalIgnoreCase);
+        }
+
         // Every export is detached data. It cannot mint/rebind evidence after the lease ends.
         internal JsonObject ExportDiagnosticData()
         {

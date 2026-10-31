@@ -1,3 +1,47 @@
+# T121 EX9RED accepted — authenticated dynamic-role GREEN candidate, UNCOMPILED/UNRUN
+
+Independent Astra OUTCOME accepted the exact actual public-validator RED at
+`31fc82f3ee4eab6211abd062b573f64fb921f85e`: six complete cases, five controls PASS,
+only signed_input_only final line 138 FAIL. Its full issue JSON contained exactly
+one wound_materialization_snapshot_before_image_missing at wound_commands.json
+from the dynamic touched-path guard. Healthy raw-location/raw-item setup, actual
+signed snapshot/source prerequisites and every specific refusal/no-mutation oracle
+passed. Category 31.1650973s/60s, wall 39.5762187s; no timeout, skip, duplicate or
+underfill. External proof `EX9RED-red/verified-expected-red.json`, TRX SHA256
+`c1ed143d38012a659674d2105ae19bf9d8621ca884adda9ab7577387db82ae7b`.
+The 00:56:27 UTC closing fence found stable 27 artifacts / 40 resource copies / four
+daemon copies, no owners and 3,896,029,184 bytes free. Root retained the complete
+27-member archive, 62,363,708 stored bytes, full hashes/gzip CRC verified; SHA256
+`500d8c0885fe96a8ee9f7eb5ef2e35125b5e01e659bb6834f3c7f1d7a29d67c7`.
+
+The scoped candidate now checks the actual diagnosis owner against the common
+plan's direct continuation, reproves its current filesystem/lease/request/source,
+and compares its owned input/snapshot binding with both the declared and fully
+recomputed current manifest hash, including control. Its existing original-read
+evidence supplies only a DATA role query from frozen validated authority bytes:
+exact snapshot hash mode and exact signed member/hash, issued session/request/turn/
+token agreement, no rollback baseline and neither rollback backup-map entry.
+Only that authenticated signed-only command is removed from dynamic rollback paths.
+Baseline-present inputs and every other BuildRequiredPaths(TouchedPaths) entry keep
+normal strict coverage. Owner/plan/binding proof failures invalidate the generic
+validated plan before propagating; ordinary coverage failures still invalidate it.
+
+There is no new authority DTO/cache/owner, file read for the DATA query, or per-path
+bundle clone. It reuses the existing frozen read observations and direct plan owner;
+fresh physical ownership/source/request checks remain mandatory at this boundary
+and publication. No global inventory, publisher, Engine, combat C4/cold/DFR or GM
+wire contract changes; no GM update or speedup claim is needed. The six tests are
+unchanged. Next GREEN is those six plus three semantic source guards: nine cases /
+four methods / two categories at their existing 60s budgets. Proposed cheap union
+after success is 144 retained plus nine fresh = 153 distinct, not a fresh 153 run.
+Retained native ten remain dependency-reviewed evidence; UI three stay held.
+
+This candidate is UNCOMPILED/UNRUN pending bounded SOURCE, fresh owning builds,
+current PDB/artifact/catalog/PlanOnly and PREP. Writer ran no build/test; no UI retry
+is admitted here. Full CI membership remains source-estimated 166 cases / 68 methods /
+29 descriptors. Both failed console attempts, original roots and all raw/archive
+evidence remain external. Parent T121/Mortal/eight-adapter work and all holds stay open.
+
 # T121 dynamic snapshot consumer causal scaffold — UNCOMPILED/UNRUN
 
 The complete bounded role audit after the second console timeout identified the
