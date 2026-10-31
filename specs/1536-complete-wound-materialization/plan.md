@@ -1,3 +1,30 @@
+# T121 C12 focused4 PASS — native9 OUTCOME/PREP pending
+
+Runtime `5f5c7c8f7f7669552e6e28f66402e8648379c7f6` completed4/4 PASS,
+four exact methods/two descriptors in58.9196948s, no timeout, skips, duplicates or
+underfill. Actual Engine original/restore/resume took28.2498677s, semantic guards
+8.356918s, each within60s. Full exact prepared/outer images, genuine fresh-lease
+claim recovery, both directions of schedule restoration, tampered outer/signed/
+backup refusals, unchanged request/dice/Fate/resource identities and post-resume
+read-only calculation now complete, followed by final exact outer restore and
+the exact controlled stop. These are full case assertions, not earlier prefixes.
+
+Strict raw TRX/method/ID accounting and full owned/runtime cleanup pass. Passive
+capture has16 original paired events, complete sequences/footer/gzip CRC/hashes,
+closed writer and actual owned root absence. Closing14:24:20Z confirms all27
+artifacts/40 resource copies/four daemons stable, no live managed owners and
+2.138GB free. Owning source is99703ab6; external proof is `M2GREENC12-focused4`.
+The earlier C11 FAIL, C10 UNKNOWN/prefix/root and original causal failures remain
+preserved. No new draw, time recomputation, T1 publication or weakened guard was
+needed by the retry control.
+
+Independent focused4 OUTCOME is pending. Request only subsequent native9 PREP:
+input-role6, outer2 and published-recovery1, exact current three120s descriptors.
+They directly exercise shared rollback export and changed recovery/retry consumers.
+UI3 remains UNRUN/held until that gate and its own PREP. Retained202 remains
+mixed lineage; no fresh218, complete Mortal feature or parent/physical-treatment/
+eight-adapter/HOLD acceptance is claimed.
+
 # T121 C12 builds/discovery complete — focused4 PREP pending
 
 Independent Astra SOURCE accepted `99703ab62991dcfd8eed72777120de024bb3f921`.
