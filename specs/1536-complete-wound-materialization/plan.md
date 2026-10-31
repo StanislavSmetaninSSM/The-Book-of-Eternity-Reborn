@@ -1,3 +1,41 @@
+# T121 C21 preparation verified — focused7 and original UI2 UNRUN
+
+Independent SOURCE/delta SOURCE accepts c461829f and the test-only type correction
+`c891eea80297d5ae13fd588d936ddb22b1e30884`; metadata-only links are accepted at
+`d09e722dc4f7775444cbf775747a8a7bf3bfe88f`. Successful owning builds: Main1:54.25 /
+12 warnings, Support14.91s /23, Unit1:02.59 /26, compiled c461829f; Integration-c1
+1:47.82 /102, compiled c891eea8. All warning code/message multisets equal their
+C19 owner. The initial one-error Integration attempt remains preserved, excluded
+from qualification. No other owner was rebuilt for the test-only qualification.
+
+Actual Compile ownership,4 PE/PDB pairs and355 source bindings match. All27 artifacts,
+40 operational-resource copies and4 daemons are verified. Full external artifact
+archive63,045,958 bytes has SHA256
+`8199b379567e0e46017b6d02edf59c1eb16aa85bb1b95c4431bb016955aa4293`;
+all27 member hashes and full197,488,640-byte gzip EOF/CRC decode match.
+Official catalog-c1 exits0:1275 categories /13090 methods, no unmapped or stale
+selector. First missing-related catalog failure remains preserved separately.
+
+Exact full PlanOnly confirms237 cases /104 methods /63 descriptors /60 categories,
+zero executions. Removing the four superseded durable/semantic rows and retaining
+the independently accepted C20 console row gives228 distinct historical PASS /
+96 methods /57 descriptors /54 categories across22 epochs /32 runs /57 raw TRX.
+Every retained row/test-ID/execution-ID/hash is reread; this is not fresh228 or237.
+External retained proof SHA256
+`5bd6f2a7b9ad132c9c3954627bc2dcfbb1f146adbef34c3d2e9a6970ac2c5743`.
+Retention remains conditional on fresh C21 focused7 and original browser/rollback2.
+
+Exact focused PlanOnly confirms7 cases /6 methods /4 descriptors: item2/60s,
+resource1/60s, durable1/120s, semantic3/60s, zero executions. Independent PREP and
+an immediate clean source/artifact/resource/process/disk fence precede runtime.
+Browser and rollback each retain180s and remain held until focused outcome admission.
+All raw/artifacts/proofs are external under
+/workspace/tboe-linux-evidence-20261025/us5-guided-diagnosis/M2GREENC21-*.
+No C21 runtime has started. Existing failed/timeout data and roots remain untouched.
+No new cache, source/permission reuse, GM wire change, speedup or parent/HOLD closure.
+The next player result after this route's acceptance remains guided physical
+procedure/course/guaranteed treatment; eight adapters and broader qualification remain.
+
 # T121 C21 owning builds complete; catalog relation metadata correction
 
 Integration-c1 at `c891eea80297d5ae13fd588d936ddb22b1e30884` exits0 in1:47.82
