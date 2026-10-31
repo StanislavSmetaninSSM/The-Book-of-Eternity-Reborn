@@ -1,3 +1,16 @@
+# T121 current qualification boundary — Mortal diagnosis accepted
+
+The bounded guided Mortal diagnosis route is accepted on compiled source
+f2f4f5795b88d98ec337d52e3b5289d95df320d8, with final browser/rollback runtime
+02fe627427b48c7389470e3419456440db8a3b0f. Exact237 distinct PASS across reviewed
+historical lineages, source/build/capture proofs and independent Astra/high
+OUTCOME are recorded in the current plan/tasks receipt; no fresh237 aggregate.
+The C21/C22 candidate and UNCOMPILED/UNRUN paragraphs below describe their
+historical design/implementation checkpoints, not the current qualification state.
+This changes no gameplay requirement, GM wire, cost, time or protective budget.
+Physical guided procedure/course/guaranteed execution, the eight spiritual proof
+adapters, FR071/T121/US parents and all earlier broader HOLDs remain open.
+
 # T121 C22 internal diagnosis NPC-tail correction
 
 T121-DIAGNOSIS-MORTAL-NPC-TAIL (#1536) requires runtime normalization to honor

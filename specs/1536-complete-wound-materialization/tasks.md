@@ -43,275 +43,119 @@ archive are outside checkout; original failures and all other holds are retained
 
 # T121 diagnosis recommendations — #1536
 
-- [ ] T121-DIAGNOSIS-MORTAL-NPC-TAIL Close the actual resource-only diagnosis
-  publication failure through the existing genuine procedure-family NPC-tail
-  dispatch. Registry and runtime must honor the same sealed disposition without
-  changing ownership prediction, actual seal/currentness, backup or full NPC root
-  equality guards. Preserve explicit empty response envelopes. Use the existing
-  real resource Fact for nonvacuous diagnosis/Skip/Apply topology premises and
-  actual publication/completion regression; no extra case or budget. Source cause
-  independently confirmed after C21 item2 PASS/resource1 FAIL; remaining4 passed
-  separately at the same epoch. Raw/retention and broader task limits stay in plan.
-  C22 uses the existing actual MortalProcedureContinuation accessor, preserving
-  ordinary fallback and every seal/currentness/backup/full-root guard. The same
-  resource Fact pins exact companion identity/sealed Skip and complete detached
-  Skip-versus-Apply receipt topology. Two costs and explicit empty envelopes stay;
-  no new case/read/cache/GM wire. Candidate UNCOMPILED/UNRUN, pending delta SOURCE
-  and root-owned resource1 then original browser/rollback; no task closure.
+Bounded Mortal diagnosis accepted after independent Astra/high SOURCE, phased
+PREP/OUTCOME and primary verification. Final source f2f4f579, final UI runtime
+02fe6274:237 distinct PASS /104 methods /63 descriptors /60 categories across25
+epochs, not one fresh237 run. The current plan receipt contains full SHAs,
+source/build/capture provenance, exact union and limits. Earlier failed/timeout
+attempts remain historical evidence there; the following15 flags close only
+this bounded route, not parent T121/FR071/US5/#1536 or the eight proof adapters.
 
-- [ ] T121-DIAGNOSIS-MORTAL-BROWSER-COMPLETION Close actual C20 browser final-tail
-  family refusal without bypassing accepted-result verification. Dispatch the
-  already authenticated Mortal diagnosis original through a narrow durable current
-  settlement reader used by both live completion and persisted accepted-record
-  classification. Reuse existing strict result/History, carrier/identity, scheduler,
-  resource/item/effect agreement owners with fresh current reads under the caller's
-  lease. Require exact independent original input/control/token/generation, unique
-  complete result/cohort and actual current after-images, consumed transient inputs
-  and enclosing story/cleanup proof. Never mint reservation/publication authority
-  from persisted DATA or resurrect the closed transaction. Actual browser1 is
-  causal FAIL, not timeout; console1 is independently accepted separately.
-  Add bounded typed complete/missing/duplicate/foreign/original/control/current
-  drift/reintroduced-work controls, selected spiritual dispatch peers and original
-  browser/rollback before coherent OUTCOME. Existing positive lineages are retained
-  unless dependencies change. Canonical/GM-facing capability is unchanged; record
-  the client-owned completion rationale and optimization assessment. C21 retains
-  exact frozen skill/item input roots in a closed versioned result witness;
-  critical/base/semantic/identity DATA use shared pure derivation, terminal result
-  fingerprint and independent original binding. Preserve version1 historical
-  parsing without promoting old/component DATA into publication proof. Actual
-  resource_quantity coverage is required alongside item costs. See current
-  plan receipt; no parent or whole diagnosis acceptance yet.
-  C21 candidate now connects actual frozen-input witness/version2, pure critical/
-  semantic/identity reuse and one strict fresh current settlement reader at both
-  browser completion consumers. Version1 stays historical; no implicit empty
-  witness, resource-prefix blob, live-owner resurrection or historical effect replay.
-  Three real common-publication controls (item success, true Fate, real cumulative
-  resource costs), exact v1 durable consumer and three semantic guards precede
-  original browser/rollback. Source estimate237/104/63/60 is UNCOMPILED/UNRUN and
-  discovery/review dependent. No task flag closes; see current plan for exact scope.
-  Astra SOURCE HOLD3 at64b542cc requires owner↔live-ledger agreement, consumed
-  resource/effect command absence and full uninstantiated definition/owner checking.
-  The grouped candidate reuses existing canonical functions, proves the IsValid-only
-  unresolved-owner counterexample, preserves exact observed source bytes and keeps
-  NPC drafts outside the canonical item role. Same7/6/4 proposal and budgets;
-  correction UNCOMPILED/UNRUN pending bounded delta SOURCE, with no new design gate.
+- [x] T121-DIAGNOSIS-MORTAL-NPC-TAIL Honor the genuine diagnosis companion's
+  existing sealed NPC-tail disposition through MortalProcedureContinuation.
+  Preserve ordinary fallback, ownership prediction, seal/currentness, backup and
+  full-root guards. Same real resource Fact proves diagnosis/Skip/Apply topology,
+  two actual energy costs, explicit empty envelopes and publication/completion.
+  Accepted C22 resource1 plus original browser/rollback; no new case/read/cache.
 
-- [ ] T121-DIAGNOSIS-MORTAL-ITEM-POSTVALIDATION Close the confirmed client-owned
-  medic debit versus outer post-materialization inventory guard using the existing
-  finalized transaction and actual read-owner scopes. Completed copied DATA is
-  issued only for valid Finalized/ChangedCount1/no-issues settlement, exact whole
-  publication and observed successful lease close; suppressed close failure keeps
-  settlement and exports nothing. Exact original/frame/generation, actual parsed
-  root plus fresh physical bytes and unique matching issue count remain required.
-  Scope state is private, consumption and irreversible invalidation are atomic,
-  and repair discards all eligibility. No execution authority survives closure.
-  Initial trade receipts are normalized before sole bootstrap/original. C15 post8
-  is accepted8/8; browser exact instead failed in the wait inspection's idle scope.
-  C16 reads real staged DATA, releases that lease and enters the established nested
-  processing component for all browser producer/validator work. Four separate60s
-  controls preserve positive/no-World, foreign frame/override, parse drift and
-  final-proof assertions; no production guard or terminal-claim behavior changes.
-  C18 independently narrows these component calls to the existing production
-  NPC+World phases with all files and unchanged original/readset/end/issue-vector
-  assertions; full All postvalidation through original UI3 remains mandatory.
-  The four60s bounds are unchanged; candidate UNCOMPILED/UNRUN.
-  C18 now fails at the real World closure: the completed comparison requests current
-  NPC-core bytes but its path is unregistered. C19 registers only that existing
-  constant and its independently reviewed closure assertion/pin, preserving every
-  physical/frame/readset/end guard. Fresh sourceguard4 then browser4, Engine1 and
-  full All UI3 remain required. New production candidate UNCOMPILED/UNRUN.
-  C16 exact timed out UNKNOWN; C17 leaves production untouched, installs no read
-  callback for normal exact/foreign cases, retains it for actual drift faults and
-  reuses the accepted full passive macro capture/closing transport. Four60s bounds
-  remain; cost effect is unproved, and all new C17 controls are UNCOMPILED/UNRUN.
-  C13 console
-  stays TIMEOUT/UNKNOWN with retained root/incomplete capture. Eight current genuine
-  consumer/export/browser rows, existing engine-original1, semantic guards3 and
-  explicit World closure1 are the finite fresh proposal; UI3 follows only after
-  independent SOURCE/build/PREP. Initial C14 owners were compiled, but post8
-  lifetime closed1P/1F/6U and post6 refused the protected reader before other five
-  controls. Both failures remain preserved. The grouped correction adds genuine
-  caller-flow MainAdmission/rebind and the actual same-completion owned close
-  dependency; only this new delta is UNCOMPILED/UNRUN. Old False PASS is historical
-  until rerun, while all source guard4/UI/whole-feature acceptance stays open.
-  Parent/physical-guided/eight-adapter/HOLD work remains open.
+- [x] T121-DIAGNOSIS-MORTAL-BROWSER-COMPLETION Use one strict durable current
+  settlement predicate for actual live Finish and persisted accepted-record reuse.
+  Bind independent original/input/control/token/generation, unique complete result,
+  whole History/carrier/identity/cohort, time/schedule/report, owned resource/item
+  spends, effect/source/owner agreement and consumed work under the existing lease.
+  Closed v2 frozen-input witness and shared pure derivation use terminal result
+  identity; v1 remains historical and grants no current proof/authority. No live
+  owner resurrection, implicit empty witness or historical effect regeneration.
+  Actual item2/resource1, durable1/semantic3 and original browser/rollback pass.
+  The three SOURCE findings (owner agreement, consumed commands, uninstantiated
+  source-definition/owner validation) are fixed and covered in the same controls.
 
-- [ ] T121-DIAGNOSIS-MORTAL-OUTPUT Bind the complete sealed diagnosis execution
-  to the existing player-notification dispatcher after publication/lease closure.
-  Validate whole cohort/History/mutations before rendering only authorized selected
-  visible output; truthful success/failure and ordinary recovery, escaped console/
-  browser text, no private-member disclosure or direct-healing claim. Reject
-  malformed/incomplete/foreign execution with no notifications. The actual C12
-  console FAIL is causal evidence; existing snapshot/progression dispatch already
-  supports diagnosis and must not be changed on a naming inference. Cheap typed
-  bundle/consumer regressions and original UI3 remain required before acceptance.
-  C13 adds two actual common-bundle output rows and rehomes five exact existing
-  ordinary/spiritual/acquisition notification peers. Immutable execution/final/
-  History agreement precedes selected-only escaped text; unchanged zero-due members
-  require no carrier mutation. Snapshot/progression dispatch is unchanged. Candidate
-  UNCOMPILED/UNRUN; source-estimated225/94methods/53descriptors/50categories, subject
-  to official discovery and independent SOURCE/PREP/OUTCOME. No checkbox closes.
+- [x] T121-DIAGNOSIS-MORTAL-ITEM-POSTVALIDATION Export only copied completed DATA
+  after genuine Finalized/ChangedCount1/no-issues whole settlement and observed
+  successful same-owner close. Preserve original/frame/generation, actual parsed
+  root/fresh bytes, exact matching issue and atomic one-shot invalidation; repair
+  discards eligibility and no execution authority survives closure. Genuine post8,
+  four NPC+World browser controls, source closure and original full All UI pass by
+  reviewed lineages. Earlier incomplete captures/timeouts are not relabelled PASS.
 
-- [ ] T121-DIAGNOSIS-MORTAL-ENGINE-ORIGINAL Correct the actual Engine diagnosis
-  prepared-original schedule registration through existing ValidationSnapshotFiles,
-  retaining distinct earlier rollback bytes/hash and the exact current clock/schedule
-  guard. Reconcile the retained retry request with genuinely recovered current
-  reservation objects after owner rebinding, and use authenticated rollback schedule
-  DATA for exact restoration agreement; no new draw/claim or timestamp exemption.
-  Real backup → staging/control → original proof must distinguish signed
-  prepared DATA from rollback DATA and preserve exact rollback/later mutation refusal.
-  Current C10 console is timeout/UNKNOWN with persisted runtime refusal, not PASS;
-  no TRX/final capture, actual owned root retained. Same bounded independent review,
-  fresh affected builds/provenance and original180s UI gates remain required.
-  C11 candidate registers only the prepared schedule in the existing set. One
-  focused real Engine staging Fact uses the existing pre-wait checkpoint, proves
-  authenticated prepared versus rollback bytes/hashes, actual T0/T1 calculation,
-  independent physical schedule/clock refusals and exact original restoration.
-  Source is UNCOMPILED/UNRUN; fresh stage1 plus semantic guards3 precede UI3.
-  Current estimates are 218 cases / 90 methods / 50 descriptors / 48 categories,
-  subject to official discovery. No parent or feature checkbox is closed.
-  C12 continues after the actual final retry-claims refusal: refresh only the
-  retained request reference after exact genuine recovery; preserve authenticated
-  earlier schedule rollback DATA and atomically resume the signed prepared T0
-  schedule with command/pending. Focused Fact must prove fresh-lease identity,
-  restore/resume, altered evidence refusal and recalculation inside the live Engine
-  owner. Existing command-role6, outer2 and published-recovery1 are direct affected
-  consumers. Current candidate is UNCOMPILED/UNRUN; see plan receipts, no closure.
+- [x] T121-DIAGNOSIS-MORTAL-OUTPUT Validate whole execution/cohort/History/mutations
+  before selected authorized escaped output through the existing notification
+  dispatcher. Success/failure and ordinary recovery are truthful; private members
+  are hidden, diagnosis itself does not heal. Malformed/incomplete/foreign results
+  emit nothing. Actual bundle2, five notification peers and original UI qualify;
+  snapshot/progression dispatch is unchanged.
 
-- [ ] T121-DIAGNOSIS-MORTAL [US5] Deliver one complete guided Mortal diagnostic
-  method through known/reachable choice, explicit check/duration/cost, separate
-  confirmation, fresh accepted-world/procedure/Fate/resource ownership, terminal
-  success-or-no-reveal failure, one atomic knowledge/time/resources/History plan,
-  exact no-reroll replay, cleanup and physical rollback. Reuse existing owners;
-  preserve spiritual empty-check behavior and all HOLDs. The bounded existing-owner
-  proposal is in `spiritual-aid-design.md` (2026-10-31 Mortal section). First obtain
-  independent DESIGN, then actual existing-API semantic RED before implementation;
-  finite cheap/native/console/browser and GM coherence gates precede acceptance.
-  DESIGN corrections: migrate all affected current empty-check inputs with no
-  compatibility fallback; preserve only exact immutable historical seals. Reuse a
-  private owner-verified original→knowledge→future-time→ordinary-recovery projection
-  without temporary writes or new accepted-state authority. Retain same-attempt
-  C4 claims before History and use capability-controlled exact restoration; test
-  competing claims and cross-purpose identity collisions, not release-plus-reroll.
-  Astra delta DESIGN accepted4152f330. Actual M1 existing-parser causal RED at
-  56137b2c8 completed two intended semantic failures; the compact accepted receipt
-  and exact raw/archive references remain in plan.md. The coherent implementation
-  candidate now includes typed current-input migration, exact purpose/claims and
-  signed command roles, retained retry/C4/outer images, knowledge-before-ordinary
-  recovery at checked T1, durable History/replay, guided console/browser and GM
-  synchronization. Independent SOURCE, fresh owning builds and accepted cheap
-  controls are recorded by epoch in plan.md; C5 exact PlanOnly is 204 cases /
-  81 methods / 39 descriptors / 37 categories. The latest effect-input correction
-  is UNCOMPILED/UNRUN. Native19/6 and UI3 still require actual qualification;
-  prior compiled/accepted controls are not labelled wholly unrun or replayed.
-  This task stays unchecked; other physical treatment remains recommendation-only.
+- [x] T121-DIAGNOSIS-MORTAL-ENGINE-ORIGINAL Register the actual prepared schedule
+  through existing snapshot files while retaining distinct authenticated earlier
+  rollback bytes/hash. Refresh the exact retained request after genuine owner
+  recovery, atomically resume prepared T0 with command/pending, and keep current
+  clock/schedule/claim guards. Focused Engine original1, input-role/outer/recovery
+  controls and UI prove restore/resume/refusals with no new draw or claim.
 
-- [ ] T121-DIAGNOSIS-MORTAL-PENDING Close the actual native original-pending
-  evidence failure through the existing snapshot producers/observed reader and
-  diagnosis owner. Preserve prior noncombat/combat forms for unrelated reads,
-  require a verified pending observation before diagnosis claims, and retain exact
-  held versus outer images. Independent SOURCE and actual focused18 passed
-  after owning builds; exact producer/presence/absence/copy/drift proofs and
-  artifact epochs are in plan.md. The native route now passes this boundary;
-  broader hold/publication/native/UI acceptance remains open. No signed absence
-  may be fabricated by a fixture.
+- [x] T121-DIAGNOSIS-MORTAL [US5] Deliver the known/reachable guided diagnostic
+  choice, actual check/duration/cost, separate confirmation, fresh original/
+  procedure/Fate/resource authority, success-or-no-reveal terminal outcome,
+  knowledge-before-ordinary-recovery at checked T1, atomic resources/time/History,
+  no-reroll replay, cleanup and physical rollback. Existing owners and exact
+  current-input migration are used; competing claims/cross-purpose collisions
+  reject. Causal M1 RED, phased cheap/native/source/GM and original console/browser/
+  rollback qualify this route. Other physical treatment is still not guided execution.
 
-- [ ] T121-DIAGNOSIS-MORTAL-PENDING-HOLD Correct the actual post-observation
-  native envelope dispatch failure: require an exact seven-field, empty-wave,
-  single diagnosis-purpose request and valid immutable input before History
-  coalescing. Keep ordinary real-wave/joint, typed seal/resource, live claims and
-  both rollback-image boundaries strict. Root/Astra accepted the bounded design;
-  two real normal/Fate request-shape rows and finite ordinary persistence/guards
-  passed focused14 after owning builds, as recorded by epoch in plan.md. Native
-  execution now passes retention/catalog reconstruction; later common/native/UI
-  boundaries remain open. No feature or parent closure follows from this control.
+- [x] T121-DIAGNOSIS-MORTAL-PENDING Require genuine verified original pending
+  observation before claims, preserve unrelated noncombat/combat forms and exact
+  held/outer images. Focused producer/presence/absence/copy/drift and native/UI
+  consumers pass; no fixture fabricates signed absence.
+- [x] T121-DIAGNOSIS-MORTAL-PENDING-HOLD Admit only the exact seven-field,
+  empty-wave single diagnosis-purpose request with valid immutable input before
+  History coalescing. Keep ordinary real-wave/joint, typed seals/resources, live
+  claims and both rollback boundaries strict. Normal/Fate request/catalog controls
+  and real native/UI qualify; diagnosis hold is not the ordinary-treatment template.
+- [x] T121-DIAGNOSIS-MORTAL-EXPLICIT-LEASE Pass the already validated lease through
+  resource/effect/retained reads, keeping retained DATA first and all fresh original/
+  current/claim guards. Ordinary lease, retained source-counts, terminal/refusal and
+  actual diagnosis publication pass; no ambient workaround or new GM contract.
+- [x] T121-DIAGNOSIS-MORTAL-RESPONSE-SHAPE Preserve Undefined-as-absent and reject
+  every defined forbidden value through the existing13-field validator. Typed
+  shape9, resource3 and actual ordinary-procedure native1 qualify the bounded
+  substitution. The separate broader ordinary TIMEOUT60/no-TRX UNKNOWN stays open.
+- [x] T121-DIAGNOSIS-MORTAL-EFFECT-INPUT Admit the genuine diagnosis/ordinary
+  procedure family with exact prepared/input fingerprint, lifecycle/Fate/source/
+  frame/ownership/claim agreement. Null-publication control and real callback/Fate
+  native qualify; the helper alone was not accepted as consumer coverage.
+- [x] T121-DIAGNOSIS-MORTAL-COMMON-CONTEXT Bind both planning and completed-plan
+  present/missing resource checks to the genuine family companion; preserve seals,
+  exclusions and nonzero-duration T0/T1 semantics. Only fresh actual original input
+  is exposed. Constructor/time/drift/bytes/claims/guards and native/UI pass.
+- [x] T121-DIAGNOSIS-MORTAL-NATIVE-FIXTURES Complete real diagnosis result refusal,
+  private acquisition identity/output, valid-stage timestamp and T1 pending/backlog
+  premises. Use distinct private creation events and validate merged source/identity
+  graph before export. All19 original native cases and dependent6 qualify across
+  reviewed epochs; no production guard or protective bound was relaxed.
+- [x] T121-DIAGNOSIS-MORTAL-DYNAMIC-COMPENSATION Capture every actual common touched
+  original, including world_time T0, under the existing lease before take/publication.
+  Preserve exact missing-path images, static rows and atomic complete restore union;
+  refuse uncovered nonterminal receipts. Terminal-only cleanup cannot publish/rearm.
+  Actual-plan cheap controls, strict outer2/recovery and full UI rollback pass.
+- [x] T121-DIAGNOSIS-MORTAL-UI-FIXTURE Prepare current empty item journal before
+  sole bootstrap/original, retain HistoricalOnly quest history and verify real item
+  companions. Pin actual bleeding source and exact old History prefix plus one
+  owner-turn-end health3 application (130→127), preserving every unrelated resource
+  field, cleanup and full original rollback. Console/browser/rollback all qualify
+  in original180s budgets; prior failed roots/results remain preserved externally.
 
-- [ ] T121-DIAGNOSIS-MORTAL-EXPLICIT-LEASE Close the actual raw resource lock
-  failure by threading its already validated lease through resource, effect and
-  retained diagnosis reads. Keep retained DATA first, all original/current/claim
-  guards and wider changed-owner behavior unchanged. Root/Astra accepted this
-  bounded correction and all four C5 builds passed. Both ordinary lease rows
-  passed; diagnosis reached its real callback and exposed the shared Undefined
-  response defect. Four retained DATA/read-count rows passed, three terminal
-  fixture assertions failed on missing original schedule, and guards stayed
-  unrun. Exact failed receipts and grouped correction status are in plan.md;
-  no helper-only closure, ambient workaround or new GM contract is introduced.
-
-- [ ] T121-DIAGNOSIS-MORTAL-RESPONSE-SHAPE Restore shared omission semantics
-  through the existing complete response validator: Undefined is absent, every
-  defined foreign value remains forbidden. Keep ordinary/joint/diagnosis owners
-  and13-field surface unchanged; typed JSON-kind controls and a genuine ordinary
-  consumer precede native retry. Complete only the failing DATA theory's real
-  pre-snapshot scheduler premise, preserving exact B-specific/no-mutation guards.
-  C6 shape9 and corrected resource3 passed after owning builds; actual diagnosis
-  now reaches its next effect-input family gate. Broader ordinary envelope case
-  timed out/attempted UNKNOWN and stays open; accepted bounded substitution is
-  typed shape9 plus required actual ordinary-procedure native1 if it passes.
-  Latest effect-input code is UNCOMPILED/UNRUN; exact epochs remain in plan.md.
-
-- [ ] T121-DIAGNOSIS-MORTAL-EFFECT-INPUT Close the actual common callback's
-  treatment-only type gate using the existing procedure-family wrappers and exact
-  diagnosis prepared/input fingerprint agreement. Preserve ordinary behavior,
-  full lifecycle/Fate/source/frame checks, current ownership and claims. New
-  null-publication component proof does not replace the real callback/Fate native.
-  C7 compiled and its component1 passed; real callback reached the next common
-  context refusal. C6 shape9/resource3 passed; current semantic guards await C8.
-  The broader
-  ordinary response case is TIMEOUT/attempted UNKNOWN and stays explicitly open.
-  Use approved actual ordinary-procedure native coverage, without a broad retry.
-
-- [ ] T121-DIAGNOSIS-MORTAL-COMMON-CONTEXT Close the C7 actual callback
-  constructor refusal and source-confirmed nonzero-duration T0/T1 mismatch. Both
-  planning-context and completed-plan present/missing resource checks must bind
-  the genuine diagnosis-or-ordinary companion, preserving all seals/exclusions.
-  Inspect only the fresh producer's actual original input; cached/invalid results
-  carry none. Typed actual-owner constructor, nonzero-time/drift and byte/claim
-  controls plus unchanged callback/source guards precede native19/6 and UI3.
-  C8 original-context/callback/source guards passed by their recorded epochs.
-  Native19 settled 15 PASS / 4 fixture FAIL across attempts; only the grouped
-  four-case fixture correction is now UNCOMPILED/UNRUN. WithWoundAnchorPlan
-  cannot drop this authority; no fabricated legal anchor or new permission layer.
-
-- [ ] T121-DIAGNOSIS-MORTAL-NATIVE-FIXTURES Correct the four independently
-  confirmed native fixture causes: required diagnosis result refusal, distinct
-  private acquisition identity/output, exact valid-stage scheduler timestamp
-  bookkeeping, and original pending carry with next-control backlog at T1.
-  Preserve all source/privacy/replay/claim suffixes. Retain the 15 passed case
-  identities; four original failed rows have exclusive120s selectors, without
-  new cases or production changes. Integration-only source is UNCOMPILED/UNRUN;
-  exact outcomes/source and fresh selection are in plan.md. Current disjoint
-  native pool is 18 PASS / 1 cohort export FAIL; the remaining fixture correction
-  gives private effect creation events distinct replay IDs before carrier/index
-  construction and validates the complete merged source/identity graph. Only that
-  singleton is UNCOMPILED/UNRUN; passed rows are retained. Parents stay open.
-
-- [ ] T121-DIAGNOSIS-MORTAL-DYNAMIC-COMPENSATION Capture every real common
-  touched original before take/publication, including diagnosis world_time T0.
-  Preserve static rows, same lease, sealed exact missing-path images and atomic
-  completed union for both transaction/error restore; factory refuses missing
-  coverage for nonterminal publication receipts. The existing sealed terminal-only
-  role keeps current command/pending cleanup images and cannot publish/rearm.
-  Existing outer2 are causal failures; actual-plan cheap controls precede their
-  strict rerun and published recovery. Code/tests remain UNCOMPILED/UNRUN; no
-  global inventory/cache/authority or GM contract change. Two focused real-plan
-  Facts cover exact dynamic capture/reuse/refusal and terminal-only cleanup after
-  unrelated clock drift; strict outer/published/ordinary consumers remain required.
-  See current plan epochs.
-
-- [ ] T121-DIAGNOSIS-MORTAL-UI-FIXTURE Close the first actual console staging
-  failure from an unrelated copied sword journal. Seed the current scene's empty
-  item journal before the sole resource bootstrap/original, preserve HistoricalOnly
-  quest history, and check live initial item companion references through the
-  existing typed catalog once. All three real journey assertions/180s bounds and
-  production guards remain unchanged. Fixture-only C10 is UNCOMPILED/UNRUN;
-  browser/rollback and overall Mortal UI remain unqualified. See plan.md epochs.
-  C19 now reaches accepted turn43 and fails its unchanged-resource fixture oracle:
-  the original bleeding effect lawfully applies health3 once at owner-turn-end.
-  C20 pins full source premises and fixed component identities, exact History
-  prefix/one appended tick/full state agreement, and preserves every unrelated
-  resource field plus all cleanup and whole-rollback assertions. Existing output
-  includes complete failed-comparison DATA before disposal. Fixture-only candidate
-  UNCOMPILED/UNRUN; original UI3 and overall acceptance remain open.
+- [ ] T121-PHYSICAL-GUIDED [US2/US5] Connect existing procedure, course milestone
+  and guaranteed physical treatment to the same private target/provider/known-route
+  choices, readable requirements, separate confirmation, exact retained requests,
+  mode-specific reducer, common publication and shared console/browser completion.
+  Reuse current Mortal discovery and owners; preserve ordinary submitted/repair-wave
+  semantics, fresh authority, consent/locality, exact cost/die/Fate and no-reroll/
+  no-double-spend replay. Course reconstructs baseline/next ordinal from History and
+  enforces inclusive canonical-minute windows/ordinary interruptions; no auto-wait,
+  invented time/cost or diagnosis-duration default. Cheap causal/refusal controls
+  precede both-handler mode journeys and common compensation/original rollback.
+  This functional wiring is unimplemented; backend arithmetic/publication exists.
+  Follow existing spec/contracts; independent coherent design/source/selection/
+  outcome and GM synchronization precede acceptance. Other parents/HOLDs stay open.
 
 - [x] T121-DIAGNOSIS-READ Show readable declared conditions of currently known
   diagnostic paths in the existing wound/status cards for console/browser. Reuse

@@ -1,3 +1,81 @@
+# T121 guided Mortal diagnosis — bounded qualification accepted
+
+Issue #1536. Independent Astra/high coherent OUTCOME accepts this functional
+slice after SOURCE, phased PREP, strict primary raw verification and final UI2.
+Final compiled source for all four owners is
+`f2f4f5795b88d98ec337d52e3b5289d95df320d8`; original browser/rollback run at
+`02fe627427b48c7389470e3419456440db8a3b0f` with plan-only delta. Main, Support,
+Unit and Integration freshly build with zero errors and unchanged warning
+code/message multisets (12/23/26/102). Four PE/PDB pairs,356 source bindings,
+27 artifacts,40 operational-resource copies and4 daemon copies agree.
+
+The player can select a known reachable Mortal diagnostic method, inspect its
+actual check/duration/cost, separately confirm, and receive exactly the declared
+success facts or no-reveal terminal failure. Actual procedure/Fate/resources,
+knowledge-before-ordinary-recovery at declared T1, History, retained no-reroll
+replay, ordinary cleanup and complete original rollback use the existing owners.
+Console/shared browser are qualified; this is not DOM/provider/fresh-process or
+all physical treatment. The original console remains the independently accepted
+C20 lineage; it was not repeated after unrelated narrowly reviewed corrections.
+
+New actual UI results at02fe, each within the original180s:
+- browser1:1 PASS, case101.7062392s, category110.0415998s, wall122.1223589s;
+- rollback1:1 PASS, case27.1925790s, category31.9029095s, wall40.0407166s.
+Each has a complete20-event passive capture, original timing/sequence pairs,
+gzip EOF/CRC/footer, completed writer and actual fixture-root absence. Closing
+fences retain all27/40/4 files, no live managed owners and about1.22GB free.
+Browser stored/decoded SHA256:
+`8e083991296b972e070761e1101f8d2bbed01feb8b68750673b9b10ed707697b` /
+`cb288b73a8fd8c5d2730c7caef516c53609d72802adae6360b363996e9283c91`.
+Rollback stored/decoded SHA256:
+`e516b6345b4876ad211cf61697cc3b7ef8c94c3bc85df23fe21ce760a5b4b247` /
+`481179fc3bcbd89be52f7a3c566e3ff2a983d40b55fc137c2fe6937e67478741`.
+
+Exact official PlanOnly and final raw union agree:237 distinct PASS /104 methods /
+63 descriptors /60 categories across25 runtime epochs /37 used runs /63 raw TRX.
+Every accepted raw hash, case/method, unique test/execution ID and actual compiled
+owner lineage is rechecked. This is mixed reviewed qualification, not one fresh237
+run or a full-suite pass. Full external proof is
+`/workspace/tboe-linux-evidence-20261025/us5-guided-diagnosis/M2GREENC22-final237-qualified-union.json`,
+SHA256 `4dbddb3f3305269f81636aa12c76f9bcb657a556b3a1fe1033e4e0e67e0c2f08`.
+Original raw, captures, failures, timeouts and retained roots remain outside Git;
+no old evidence, saves or recovery copy was deleted. Full C22 artifact archive
+SHA256 is `cb38cac43af27d9132963ba813664205793c1ad971703b76ce0af186890bfc24`.
+
+Optimization: reuse existing frozen DATA/pure identities and operation-owned
+current dependency maps, one source read per path per fresh comparison; no current
+lease/permission is cached. C22 reuses the existing sealed companion/disposition
+without extra reads. Source-count negatives and fresh owner/history/bytes checks
+remain. No new cache/transport/quota, speedup, budget increase or GM-authored field
+is claimed. Existing diagnosis guidance/examples/source guards are synchronized;
+C21 witness/current completion and C22 dispatch are intentionally client-owned,
+so they add no GM wire/example requirement. Review found and closed the C21 owner,
+consumed-command and source-definition/owner gaps; the actual NPC-tail discrepancy
+has a causal resource publication regression and final browser/rollback proof.
+
+Only the15 bounded Mortal diagnosis tasks are closed. FR071/T121/US2/US4/US5/US6/
+#1536 parents remain open. The broader ordinary envelope TIMEOUT60/no-TRX UNKNOWN
+is retained; bounded shape9 plus actual ordinary-procedure native1 is the accepted
+substitution for this slice, not a broad ordinary PASS. DFR300.1806894s timeout,
+older Mortal compatibility UNKNOWN, Windows, guardian intermittent and cross-OS
+DATA limits remain unchanged. No new clone/restore is performed or claimed.
+
+Next functional slice is T121-PHYSICAL-GUIDED: connect all three existing physical
+modes (procedure, course milestone, guaranteed) to shared target/provider choice,
+confirmation, exact retained request and Engine publication. The deterministic
+backend and common publisher exist; user execution is not complete. Reuse current
+Mortal target/provider discovery, known-route privacy, ordinary real-wave request
+contract and mode factories. Course retains canonical-minute windows/reconstruction;
+procedure/guaranteed have no declared duration field, so diagnosis time is not
+imported and no time/cost rule is invented. No automatic waiting or second payment.
+
+The eight missing spiritual diagnosis proof adapters are exactly item_quantity,
+resource_quantity, consent, facility, location, quest_state, effect_state and
+environment (quest_state is quest state, not negotiated compensation). Physical
+execution plus these adapters is not an exhaustive epic remainder: broader US3
+source/conflict/lifecycle, US7/recovery/cross-cutting acceptance must be reconciled
+with actual code/evidence; old unchecked parents do not establish absent code.
+
 # T121 C22 resource GREEN independently accepted — original UI2 UNRUN
 
 Runtime `a28d5b650840ae317dbd4017ca36d064eae45291`, all four compiled owners
