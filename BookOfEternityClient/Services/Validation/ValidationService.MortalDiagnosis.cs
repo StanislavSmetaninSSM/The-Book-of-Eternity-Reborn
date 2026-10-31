@@ -51,7 +51,14 @@ public partial class ValidationService
             if (lookup.Status != ValidatedPendingTurnSnapshotStatus.Usable || lookup.Manifest is not { } manifest)
                 throw new InvalidDataException("Diagnosis dynamic coverage lost its validated original frame.");
             var required = WoundAcceptedTurnSnapshotContract.BuildRequiredPaths(plan.TouchedPaths);
-            if (owner.Owner.HasCurrentDiagnosisPreparedCommandRole(_fs, lease, owner.Outcome.Request,
+            var current = owner.Owner.IsLeaseBoundTo(_fs, lease)
+                ? new WoundApplicationService.MortalDiagnosisAdmission(owner.Owner, owner.Outcome.Request)
+                : await ReadRetainedMortalDiagnosisAsync(lease, manifest);
+            if (current.Request.RequestFingerprint != authority.RequestFingerprint ||
+                !ReferenceEquals(current.Owner, owner.Owner) &&
+                !AcceptedTurnAuthorityRegistry.CanReuseMortalDiagnosisPublication(_fs, lease, current.Owner, current.Request, authority))
+                throw new InvalidDataException("Fresh diagnosis admission cannot substitute another retained common plan.");
+            if (current.Owner.HasCurrentDiagnosisPreparedCommandRole(_fs, lease, current.Request,
                     manifest.SessionId, manifest.RequestId, manifest.TurnNumber,
                     manifest.ManifestPayloadHash, ComputeManifestPayloadHash(manifest)))
                 required = required.Where(path => path != AcceptedMechanicsPlan.WoundCommandPath).ToArray();

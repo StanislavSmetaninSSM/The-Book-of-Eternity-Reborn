@@ -98,6 +98,13 @@
       "contracts": [
         "#1536 T121-DIAGNOSIS-MORTAL; truthful numeric time presentation with exact preserved clock DATA"
       ]
+    },
+    {
+      "category": "mortal-diagnosis-published-recovery",
+      "reason": "One required actual published nonterminal diagnosis→fresh ordinary owner at SAME T1, with real transaction compensation/held-image continuity and exact retry first. No canonical clock is patched to manufacture a later journey. Source-authored UNCOMPILED/UNRUN; whole SOURCE precedes all runtime.",
+      "contracts": [
+        "#1536 T121-DIAGNOSIS-MORTAL; diagnosis-owned recovery receipt, actual common publication and exact held C4 claims"
+      ]
     }
   ]
 }

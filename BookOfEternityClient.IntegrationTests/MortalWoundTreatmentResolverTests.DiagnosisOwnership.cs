@@ -442,13 +442,12 @@ public sealed partial class MortalWoundTreatmentResolverTests
     public async Task DiagnosisCommonPlanKeepsHeldAndOuterOriginalPendingImagesDistinct()
     {
         await using var fixture = await DiagnosisOwnershipFixture.CreateAsync(20, signedInput: true, duration: 300);
-        var owner = fixture.Authority;
         var originalPending = await fixture.Files.ReadFileBytesAsync(fixture.Lease, WoundAcceptedTurnSnapshotContract.PendingResolutionPath);
-        var request = MortalWoundTreatmentPlanner.PrepareDiagnosisRequest(owner,
-            new(owner.History, Array.Empty<ValidationIssue>()), owner.CurrentWound,
-            "diagnosis_common_publication", "inspect_explicit_method", fixture.EventRef);
-        Assert.True(request.IsValid, JsonSerializer.Serialize(request.Issues));
-        await owner.RetainDiagnosisRequestAsync(request.Request!);
+        var input = JsonNode.Parse(await fixture.Files.ReadFileAsync(fixture.Lease, AcceptedMechanicsPlan.WoundCommandPath))!.AsObject();
+        var admission = await WoundApplicationService.ResolveMortalDiagnosisInputAsync(fixture.Files, fixture.Lease,
+            MortalWoundDiagnosisInputCodec.Read(input).Frame);
+        var owner = admission.Owner;
+        var request = admission.Request;
         var heldPending = await fixture.Files.ReadFileBytesAsync(fixture.Lease, WoundAcceptedTurnSnapshotContract.PendingResolutionPath);
         Assert.NotNull(heldPending);
         Assert.False(originalPending is not null && originalPending.AsSpan().SequenceEqual(heldPending));
@@ -458,10 +457,21 @@ public sealed partial class MortalWoundTreatmentResolverTests
         var locationIssues = await validator.ValidateAcceptedTurnRawMortalLocationMaterializationAsync(fixture.Lease);
         Assert.Empty(locationIssues);
         Assert.Empty(await validator.ValidateAcceptedTurnRawMortalItemMaterializationAsync(fixture.Lease));
-        var prepared = await WoundAcceptedTurnPlanner.ComposeMortalDiagnosisPublicationAsync(fixture.Files, fixture.Lease,
-            new GameResponse(), owner, request.Request!);
-        Assert.True(prepared.IsValid, JsonSerializer.Serialize(prepared.Issues));
-        var plan = prepared.Plan!;
+        var refusal = await validator.ValidateAcceptedTurnRawResourceMaterializationAsync(fixture.Lease);
+        Assert.Contains(refusal, issue => issue.Code == "mortal_diagnosis_live_owner_unavailable");
+        fixture.AssertJson(heldTree);
+        var raw = await validator.ValidateAcceptedTurnRawResourceMaterializationAsync(fixture.Lease,
+            prepareMortalDiagnosis: async (lease, actual) =>
+            {
+                Assert.Equal(request.RequestFingerprint, actual.Request.RequestFingerprint);
+                var prepared = await WoundAcceptedTurnPlanner.ComposeMortalDiagnosisPublicationAsync(fixture.Files, lease,
+                    new GameResponse(), actual.Owner, actual.Request);
+                return prepared.Issues;
+            });
+        Assert.DoesNotContain(raw, issue => issue.Severity == IssueSeverity.Error);
+        Assert.True(AcceptedMechanicsPlanAuthority.TryPeekValidated(fixture.Files, fixture.Lease, out _, out var validated));
+        Assert.True(validated.Success, JsonSerializer.Serialize(validated.Issues));
+        var plan = validated.Plan!;
         Assert.NotNull(plan.TreatmentResourcePublicationAuthority);
         Assert.Equal("diagnosis", plan.TreatmentResourcePublicationAuthority!.RequestAuthority.Coordinates.Purpose);
         Assert.Equal(heldPending, plan.BeforeImages[WoundAcceptedTurnSnapshotContract.PendingResolutionPath].Bytes);
@@ -473,6 +483,101 @@ public sealed partial class MortalWoundTreatmentResolverTests
         Assert.Equal(owner.CurrentGameMinute, JsonNode.Parse(await fixture.Files.ReadFileAsync(fixture.Lease,
             EffectAcceptedTurnInputComposer.WorldTimePath))!["currentTimeInMinutes"]!.GetValue<long>());
         fixture.AssertJson(heldTree);
+    }
+
+    [Fact]
+    public async Task PublishedDiagnosisCompensatesToHeldClaimsAndFreshOrdinaryOwnerReplaysItsRecovery()
+    {
+        await using var fixture = await DiagnosisOwnershipFixture.CreateAsync(20, signedInput: true, duration: 300);
+        var fs = fixture.Files;
+        var originalInput = JsonNode.Parse(await fs.ReadFileAsync(fixture.Lease, AcceptedMechanicsPlan.WoundCommandPath))!.AsObject();
+        var frame = MortalWoundDiagnosisInputCodec.Read(originalInput).Frame;
+        var admitted = await WoundApplicationService.ResolveMortalDiagnosisInputAsync(fs, fixture.Lease, frame);
+        var check = Assert.IsType<MortalWoundProcedureCheckAuthority>(admitted.Request.ModeAuthority);
+        var heldImage = fixture.CaptureJson();
+        var validator = new ValidationService(fs, NullLogger<ValidationService>.Instance);
+        Assert.Empty(await validator.ValidateAcceptedTurnRawMortalLocationMaterializationAsync(fixture.Lease));
+        Assert.Empty(await validator.ValidateAcceptedTurnRawMortalItemMaterializationAsync(fixture.Lease));
+        var common = await WoundAcceptedTurnPlanner.ComposeMortalDiagnosisPublicationAsync(fs, fixture.Lease,
+            new GameResponse(), admitted.Owner, admitted.Request);
+        Assert.True(common.IsValid, JsonSerializer.Serialize(common.Issues));
+        var plan = common.Plan!;
+        await fixture.ReleaseLeaseAsync();
+        var normalizer = new CanonicalStateNormalizer(fs, NullLogger<CanonicalStateNormalizer>.Instance);
+        var published = await AcceptedTurnCanonicalStateRefresh.NormalizeAndValidateWithPlanAsync(fs, normalizer, validator,
+            new Dictionary<string, string>(StringComparer.Ordinal));
+        var transaction = Assert.IsType<MortalWoundTreatmentResourcePublicationTransaction>(published.TreatmentResourcePublicationTransaction);
+        try
+        {
+            Assert.DoesNotContain(published.Issues, issue => issue.Severity == IssueSeverity.Error);
+            Assert.NotNull(published.MechanicsPlan);
+            var transient = WoundHistoryState.Parse(await fs.ReadFileAsync(WoundHistoryState.HistoryPath), WoundHistoryState.HistoryPath);
+            Assert.True(transient.IsValid, JsonSerializer.Serialize(transient.Issues));
+            var exact = Assert.IsType<MortalWoundDiagnosisPersistedResult>(Assert.Single(transient.State!.Transitions,
+                row => row.TransitionResult is MortalWoundDiagnosisPersistedResult).TransitionResult);
+            Assert.Equal(admitted.Request.RequestFingerprint, exact.Request.RequestFingerprint);
+            var exactClock = exact.ToCanonicalJson()["clock"]!.AsObject();
+            Assert.Equal(300, exactClock["resultingMinute"]!.GetValue<long>() - exactClock["originalMinute"]!.GetValue<long>());
+            var compensation = await transaction.CompensateAsync(fs);
+            Assert.True(compensation.IsValid, JsonSerializer.Serialize(compensation.Issues));
+            Assert.Equal(MortalWoundTreatmentPublicationTransactionOutcome.Rearmed, compensation.Outcome);
+            fixture.AssertJson(heldImage); // Expected held image was captured BEFORE publication.
+        }
+        finally { await ((IAsyncDisposable)transaction).DisposeAsync(); }
+        await fixture.AcquireLeaseAsync();
+        var retried = await WoundApplicationService.ResolveMortalDiagnosisInputAsync(fs, fixture.Lease, frame, requireRetained: true);
+        var exactCheck = Assert.IsType<MortalWoundProcedureCheckAuthority>(retried.Request.ModeAuthority);
+        Assert.Equal(admitted.Request.RequestFingerprint, retried.Request.RequestFingerprint);
+        Assert.Equal(check.SourceIndices, exactCheck.SourceIndices); Assert.Equal(check.SourceRolls, exactCheck.SourceRolls);
+        var retryPlan = await WoundAcceptedTurnPlanner.ComposeMortalDiagnosisPublicationAsync(fs, fixture.Lease,
+            new GameResponse(), retried.Owner, retried.Request);
+        Assert.True(retryPlan.IsValid, JsonSerializer.Serialize(retryPlan.Issues));
+        Assert.Equal(plan.PreparedPlanFingerprint, retryPlan.Plan!.PreparedPlanFingerprint);
+        await fixture.ReleaseLeaseAsync();
+        var accepted = await AcceptedTurnCanonicalStateRefresh.NormalizeAndValidateWithPlanAsync(fs, normalizer, validator,
+            new Dictionary<string, string>(StringComparer.Ordinal));
+        var second = Assert.IsType<MortalWoundTreatmentResourcePublicationTransaction>(accepted.TreatmentResourcePublicationTransaction);
+        try
+        {
+            Assert.DoesNotContain(accepted.Issues, issue => issue.Severity == IssueSeverity.Error);
+            var advanced = await second.AdvancePublishedAgreementWithProgressionAsync(fs,
+                new ProgressionScheduleService(fs, NullLogger<ProgressionScheduleService>.Instance), frame.Progression);
+            Assert.True(advanced.IsValid, JsonSerializer.Serialize(advanced.Issues));
+            var complete = await second.CompleteAsync(fs);
+            Assert.True(complete.IsValid, JsonSerializer.Serialize(complete.Issues));
+            Assert.Equal(MortalWoundTreatmentPublicationTransactionOutcome.Finalized, complete.Outcome);
+        }
+        finally { await ((IAsyncDisposable)second).DisposeAsync(); }
+        var durable = WoundHistoryState.Parse(await fs.ReadFileAsync(WoundHistoryState.HistoryPath), WoundHistoryState.HistoryPath);
+        Assert.True(durable.IsValid, JsonSerializer.Serialize(durable.Issues));
+        var result = Assert.IsType<MortalWoundDiagnosisPersistedResult>(Assert.Single(durable.State!.Transitions,
+            row => row.TransitionResult is MortalWoundDiagnosisPersistedResult).TransitionResult);
+        var member = Assert.Single(result.Recoveries);
+        Assert.NotEmpty(member.Stages);
+        Assert.Equal("active", member.Stages[^1].AfterWound.Lifecycle);
+        var minute = JsonNode.Parse(await fs.ReadFileAsync(EffectAcceptedTurnInputComposer.WorldTimePath))!["currentTimeInMinutes"]!.GetValue<long>();
+        Assert.Equal(result.ToCanonicalJson()["clock"]!["resultingMinute"]!.GetValue<long>(), minute);
+        // A genuine next original is captured from the actual published world.
+        // No canonical clock/wound/source is patched to invent a later journey.
+        var control = await new ProgressionScheduleService(fs, NullLogger<ProgressionScheduleService>.Instance).BuildControlForNextTurnAsync("Mortal World");
+        await new LiveTurnPreparationService(fs).PrepareAsync(new LiveTurnPreparationOptions
+        {
+            SessionId = frame.SessionId, RequestId = "diagnosis_next_ordinary_request", TurnNumber = frame.Turn + 1,
+            CurrentRealm = "Mortal World", ProgressionControl = control, PlayerAction = "Продолжить обычное действие.",
+            PreGeneratedDices1d20 = new[] { 12 }
+        });
+        await fixture.AcquireLeaseAsync();
+        var fresh = MortalWoundTreatmentAcceptedStateAuthority.ExportCurrent(fs, fixture.Lease,
+            MortalWoundDiagnosisInputCodec.Read(originalInput).Context, member.Original.WoundId);
+        Assert.True(fresh.IsValid, JsonSerializer.Serialize(fresh.Issues));
+        var ordinary = fresh.Authority!;
+        Assert.Equal(minute, ordinary.CurrentGameMinute);
+        var beforeRead = fixture.CaptureJson();
+        var recovery = MortalWoundRecoveryPlanner.Plan(fs, fixture.Lease, ordinary.Binding, ordinary.CurrentWound.WoundId);
+        Assert.Equal(MortalWoundRecoveryPlanningDisposition.ExactReplay, recovery.Disposition);
+        Assert.Empty(recovery.Issues); Assert.Null(recovery.Resolution);
+        Assert.Equal(member.Resolution.TickKey, recovery.ReplayReceipt!.TickKey);
+        fixture.AssertJson(beforeRead);
     }
 
     [Fact]
@@ -637,6 +742,9 @@ public sealed partial class MortalWoundTreatmentResolverTests
             Assert.True(parsed.IsValid, JsonSerializer.Serialize(parsed.Issues));
             return Assert.IsType<MortalWoundTreatmentAuthority.Context>(parsed.Context);
         }
+
+        internal Task ReleaseLeaseAsync() => Lease.DisposeAsync().AsTask();
+        internal async Task AcquireLeaseAsync() => Lease = await Files.AcquireCanonicalWriteLeaseAsync();
 
         internal async Task RebindAsync()
         {

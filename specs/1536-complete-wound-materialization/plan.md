@@ -1,3 +1,27 @@
+# T121 Mortal actual publication and next-recovery proof WIP — UNCOMPILED / UNRUN
+
+One new native component authors the actual common publication, strict transient
+History result, transaction compensation to the independently captured held image,
+exact retained span/result retry and final settlement. It then captures a genuine
+next original from the published nonterminal world and asks the real fresh ordinary
+accepted owner for recovery at that SAME T1. Diagnosis-owned LastTickKey must yield
+exact replay without mutation. The later-minute case remains the existing detached
+calculation proof; no canonical clock/source is patched after acceptance to invent
+a later accepted journey. No actual receipt is fabricated.
+
+The existing common-plan row now enters through the actual retained-only resource
+callback and checks callback-absent refusal. Dynamic coverage reuses a live owner
+in the same lease, or fresh-exports/reproves the exact registry handoff when its
+old resolving lease has closed; it cannot treat a detached companion as current.
+The stage-bundle owner accessor remains allocation-light; actual byte/source and
+claim checks remain fresh. No cache or speedup claim.
+
+Current source estimate is 70 cases / seventeen methods / fifteen categories,
+UNCOMPILED/UNRUN. The separate outer-original rollback checkpoint/reconstruction,
+guided Mortal staging/menu, complete native/UI proof and GM/current-input sync are
+still unfinished. No writer build/test/discovery/runtime; whole SOURCE is open.
+No task, adapter, compatibility or other HOLD is closed.
+
 # T121 Mortal numeric clock presentation WIP — UNCOMPILED / UNRUN
 
 The required narrow presentation correction now prefers valid cumulative

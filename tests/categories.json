@@ -2,6 +2,39 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "mortal-diagnosis-published-recovery",
+  "responsibility": "T121 one actual nonterminal diagnosis common publication is compensated through its real transaction to the independently captured held image/claims, then retried with identical procedure span and finalized. A genuinely new ordinary original/current accepted owner at the published T1 must resolve diagnosis-owned LastTickKey as exact replay without writes. The existing component covers later-minute calculation DATA separately. UNCOMPILED/UNRUN WIP.",
+  "excludes": "No fabricated accepted receipt, manual post-acceptance clock/wound patch, later accepted journey claim, Engine/GM wait, broad Mortal compatibility category or outer-original rollback claim. That distinct outer boundary remains required.",
+  "changeHints": [
+    "BookOfEternityClient/Services/WoundHistoryState.MortalRecovery.cs",
+    "BookOfEternityClient/Services/Validation/ValidationService.MortalDiagnosis.cs"
+  ],
+  "related": [
+    {
+      "id": "mortal-diagnosis-common-publication",
+      "when": "The callback admits the real current diagnosis source and held request before this publication."
+    },
+    {
+      "id": "mortal-diagnosis-effect-execution",
+      "when": "Complete ordered durable evidence also retains ordinary same/later-minute DATA semantics."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.PublishedDiagnosisCompensatesToHeldClaimsAndFreshOrdinaryOwnerReplaysItsRecovery"
+      ]
+    }
+  ]
+},
+{
   "id": "mortal-diagnosis-clock-presentation",
   "responsibility": "T121 ten independent parsed-DATA rows exercise the actual status, console and browser world-time formatters. Valid cumulative minutes take precedence over preserved calendar text and nested commands, including explicit zero and counters beyond one day; calendar-only, wrapped and incremental fallbacks stay readable. Existing working-projection rows also render the real diagnosis after-image. UNCOMPILED/UNRUN WIP.",
   "excludes": "No calendar arithmetic, modulo rollover, clock mutation, new time authority/service/cache, file reads, Engine dice hook or accepted-turn publication. Actual diagnosis publication and rollback remain separately required.",
