@@ -1,3 +1,36 @@
+# T121 browser diagnosis failed — detached-purpose audit pending
+
+The actual browser singleton at runtime `3a478794e7cc2e087aee4f1f9a86153e6d2923e1`
+/ compiled source `0b661addfd28134f5056ab688f03688493624b6e` completed one FAIL,
+without timeout: category 18.1653867s/180s, wall 26.8118413s. TRX SHA256
+`cb4640bc36c5b7c1d9d14692c0db9cdcf73caffd005fd428cf82d24fdeded560`.
+The actual exception is InvalidDataException/BrowserRecoveryMessage at
+ReadDetachedSpiritualRequest (GameEngine.BrowserPlayerInput.cs:214), reached through
+ValidateDetachedBrowserBinding and PublishBrowserStaging before any GM response.
+The existing dispatcher handles combat, then otherwise requires an active healing
+request; it has no explicit diagnosis purpose branch. No production fix is made
+by this checkpoint, and no blind retry or limit increase is admitted.
+
+The failed case's complete passive capture was verified: 16 ordered events / eight
+pairs, one message, valid writer/footer/full gzip CRC and stored/decoded hashes,
+with the actual owned root absent under no-follow checks. Stored SHA256
+`ff7fd2d3d2b3d35f1753efdc5cccf23fc0f35ad6c4038684b5f45ebf81f3f01e`;
+decoded SHA256 `1d82aebf822494692f0db2676a88e2a79aa91f7f58668ff7b80c9fdc8c555229`.
+Complete failure capture is not functional PASS. The 01:31:28 UTC closing fence
+found stable 27 artifacts / 40 resource copies / four daemon copies, no live owners
+and 3,805,884,416 bytes free; terminal zombies are not live owners.
+
+The accepted console and 164-case mixed-lineage union remain bounded accepted
+evidence; browser is FAIL and rollback is UNRUN. Both earlier console timeouts,
+incomplete prefixes, retained roots and all raw/archive evidence remain external.
+No task flags, source, tests or catalogue change here. The bounded read-only audit
+must cover detached/staged/accepted/recovery/settlement browser consumers and propose
+an actual typed causal fixture before any diagnosis dispatch implementation. Existing
+hash/path/base64/metadata, active/combat and fresh publication guards must remain;
+no serialized-purpose marker alone grants authority. Further UI admission requires
+its own root/Astra decision. No new diagnostic stack/cache or performance claim;
+Mortal/eight-adapter work and all broader holds remain open.
+
 # T121 spiritual diagnosis console accepted — browser and rollback pending
 
 Independent Astra OUTCOME accepted the actual console singleton at runtime
