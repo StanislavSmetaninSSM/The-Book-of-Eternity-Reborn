@@ -1,5 +1,148 @@
 # План перехода к личной модели духовного боя — #1573
 
+## Исполнение T123 — согласовано 2026-10-31
+
+**Spec:** [v1.75, T123](spec.md), одобрена после показа commit11dbb105f.
+**Цель:** измерить пользу выбора атаки/цели, не ослабляя лечение.
+**Архитектура:** отдельный standalone runner поверх существующих numerical
+actor/Heal/damage функций. Старые модели неизменны. Один исполнитель владеет
+новыми source/tests; parent интегрирует, измеряет и пишет выводы; отдельное
+Astra/high review проверяет полный блок. **Среда:** Windows/Node24.21.0/PowerShell7.6.6.
+Применяются writing-plans, subagent-driven-development/TDD и Spec Kit bridge.
+Этот plan/review — единый ledger; старый .superpowers/sdd/plan принадлежит #1536.
+
+### Зафиксированные настройки пробы
+
+Все actor D130, равные исходные характеристики/HP/MaxDE, кроме явно названных
+бонусов. Начальные HP/ДЭ полные. LevelV instant/long из T119, цена источника.
+`normal` — обычная регенерация всех; `healer28` —28P только у healer;
+`both36` —36P у каждого. Heal%/extraRpp получает только healer; у остальных0/0.
+В зеркальном составе усиления одинаковы у обоих healer. Это чувствительность,
+не утверждённый бюджет экипировки. У каждого своя реакция и эффект.
+
+Новые файлы в probes/: `healing-tactics-model.mjs`, `healing-tactics-model.test.mjs`,
+`healing-tactics-probe.mjs`, `healing-tactics-probe.test.mjs`.
+Model exports: `chooseAttack(view, policy)`, `chooseTarget(actors, actorId, policy)`,
+`choosePatient(actors, healerId)`, `teamDefeated(actors, team)`,
+`createEncounter(options)`, `stepEncounter(encounter, dice)`, `runTrial(options)`.
+Probe exports: `tacticsScenarios(matrix)`, `simulateTactics(options)`;
+CLI `--matrix=duel|support|group|confirm --samples=N` пишет JSONL metadata/cell/complete.
+Названия/интерфейсы можно уточнить без смены scope, записав фактические в ledger.
+
+Политики атак:
+1. `fixed_ordinary/strong/large/suppress`: только названный профиль, иначе Recover.
+2. `greedy`: доступная large, затем strong, ordinary, иначе Recover.
+3. `reserve`: тот же порядок, но после атаки и своего end-regen остаётся16P
+   (8P для возможного срыва и8P для следующей ordinary); иначе Recover.
+4. `suppress_reserve`: сначала suppress при выполнении того же бюджета, если
+   сила подавления меньше50 либо все50marks истекут до начала следующего
+   личного места цели (`expires <= target.started`); иначе физический `reserve`.
+   Повторное50подавление с прежним источником не продлевается без нужды.
+Каждая оплата сейчас; планируемый regen не разрешает занимать ДЭ. Решения
+не получают RNG/будущий выбор/скрытую энергию врага. Профили фикстуры известны.
+Срыв включён отдельным флагом. На видимый Heal один способный враг с реакцией
+и8P выбирается по наибольшей текущей своей ДЭ, tie — положение в очереди;
+остальные сознательно не вмешиваются. Reply guard/counter платит именно caster.
+
+Цели `patient`: healer, затем остальные; `helper`: не-healer, затем healer;
+`switch`: минимальная текущая доляHP, tie — healer, затем очередь. Только доступные
+неcollapsed враги. Это видимые тактики, без знания будущего урона.
+Triage healer: сохранить цель pending; иначе collapsed ally, затем наименьшая
+доляHP среди раненых союзников, tie — сам healer, затем очередь. При fullHP всех
+long/adaptive разрешено начать на себе, как T120; instant без дефицита — Recover.
+`cleanse_safe` замещает своё лечение при50на себе, remaining>1 иHP>25%, как T120.
+`mix50` атакует ordinary, когда у всех союзниковHP>50%, никто неcollapsed и нет
+pending; иначе triage/Heal. Helper очищает союзника с наиболее сильным эффектом
+(tie — triage), иначе в passive Recover, в offensive ordinary/recover.
+Adaptive использует прежний chooseMode по casterHP и известному максимальному
+одиночному урону доступных врагу профилей (B44 для выбора атак, фиксированныйB
+для fixed; в группе наибольший известный профиль). Не считает будущие броски.
+Это прежняя однопороговая эвристика, не оценка суммы всех групповых угроз.
+
+Составы: duel A(attacker)–B(healer); support A–B(healer),C(helper);
+group A(primary),B(ordinary striker)–C(healer),D(helper).
+Mirror: A(healer),B(helper)–C(healer),D(helper), одинаковые capabilities/bonus.
+В группах все дееспособные имеют базовый срыв, но в одном root выбран только один.
+Healer лечит союзников, helper сам не получает искусства лечения. Второй striker
+не получает лечебных искусств. Перед действиями старых cleanse/recover/attack
+проверяются collapsed/Main lock; HP>0 ниже return threshold не запрещает живого
+actor вне распада. Личные пропущенные места сохраняются; team defeat только при
+collapsed всех членов. Не добавлять новые эффекты/барьеры/карту/продуктовыйAI.
+
+### Матрица до измерения
+
+Все перечисленные комбинации, D130, horizon2000; samples1000 в первых трёх
+матрицах. На каждый независимый trial отдельное mutable состояние. Seeds записаны,
+сравнения разных policies не объявляются парными траекториями. Сначала выбор/оплата,
+потом RNG; damage/reaction потоки разделены.
+
+- **duel core:**50/25 ×3harmony ×3mode ×2order ×2reply(guard,counter)
+  ×2defender(heal,cleanse_safe) ×7attackPolicy =504cells.
+  Controls:(0/0,25/25) ×(healer28,both36) ×3mode ×2order ×guard ×heal ×7=168.
+  No-interrupt:50/25 ×(healer28,both36) ×3mode ×2order ×guard ×heal ×7=84.
+  Итого756cells.
+- **support:**50/25 ×(normal,both36) ×3mode ×6order ×3target
+  ×2helperAccess =216. Controls:(0/0,25/25) ×both36 ×instant ×6order
+  ×3target ×2access =72. Primary suppress_reserve, healer heal/guard,
+  helper passive. Итого288cells. В обеих access-ветках одинаковый новый runner;
+  недоступность исключает helper только из attack candidates, не из лечения.
+- **group:**50/25 ×(normal,both36) ×3mode ×24order ×3target
+  ×2defender(passive,offensive/mix50)=864. Controls:(0/0,25/25) ×both36
+  ×instant ×24order ×3target ×offensive=144. Primary suppress_reserve.
+  Mirror:50/25 ×(normal,both36) ×3mode ×24order ×switch ×offensive=144.
+  Во всех reply guard; все permutations. Итого1152cells.
+- **confirm:** независимый seedSuffix, samples10000, заранее выбранные случаи:
+  duel50/25 ×(healer28,both36) ×(instant,adaptive) ×2order ×guard ×heal
+  ×(fixed_suppress,greedy,reserve,suppress_reserve)=32;
+  support50/25 ×both36 ×instant ×6order ×3target ×2access=36;
+  group50/25 ×(normal,both36) ×instant ×24order ×switch ×offensive=48.
+  Итого116cells/1 160 000траекторий; общая плановая выборка3 356 000.
+
+Общий endpoint total — конец всей схватки, censor еслиhorizon. FirstPatientFall
+и firstAnyFall отдельные endpoints; в access-control сравниваются именно они.
+Если patient не падал до победы своей стороны, это competing outcome/no-event,
+не победа атакующего и не факт длительности2000. Отчёт хранит долю достижений,
+условные квантили наблюдённых событий и unconditional rank с null, когда событие
+не достигнуто достаточной долей выборки; отдельно horizon и no-event при конце.
+Для total median/p95=null при недостижении квантили до horizon. Персональные
+действия, расходы, damage/heal/overheal, срывы, смены целей, collapse/revival.
+
+### TDD, проверки и исполнение
+
+- [ ] T123.2 RED: guards на реальную оплату/бюджет/решение до RNG; GREEDY vs reserve
+  дают разные действия на фиксированной низкой ДЭ. Два контрольных состояния
+  сHP72: collapsed запрещён, живой допускается. Смена цели меняет resistance;
+  падение healer не завершает группу; allyHeal возвращает helper без extra Main;
+  pending не переназначается; expiry на skipped slot; один выбранный interrupter
+  тратит свой ресурс; остальные не теряют реакцию. Guards всех endpoint/censor.
+- [ ] GREEN: новый runner поверх принятых функций; существующие файлы probes
+  не менять без воспроизводимого дефекта. Ранние tests проверяют числа fixtures,
+  а не копируют вычисления implementation. Matrix guard проверяет уникальность/
+  полное покрытие/подтверждающую выборку. Дешёвый smoke до длинных измерений.
+- [ ] Запустить `node --test specs/1573-spiritual-combat-rework/probes/*.test.mjs`:
+  ожидается0fail, старые66tests и новые. Это связанный numerical набор, не C# suite.
+  Сохранить WIP/source/checkpoint в GitHub до полной матрицы.
+- [ ] T123.3 Выполнить4матрицы с raw в `D:\BoeDiagnostics\healing-tactics-t123\20261031-v1`;
+  проверить metadata/count/complete/outcomes/exit0/stderr. Сохранить источник и
+  краткий `healing-tactics-investigation.md`; utility T122 сохранить в проверках.
+- [ ] T123.4 Независимый Astra/high whole-block review с фактическим diff/raw;
+  исправить подтверждённые замечания, затем scoped verification/push/readback.
+  Не считать более короткий бой достаточным без сохранённой полезности лечения.
+
+**Оптимизация:** таблицы создаются один раз на measurement operation по полному
+D/B/targetResistance ключу (остальные характеристики равны в явных fixtures),
+healCalculator переиспользуется с полным formula identity. Fresh actors/marks/
+channel/допуск, никакой общей mutable стороны. Raw без квот, не в Git. Старый T122
+raw удалить только после полного проверенного T123 и сохранения краткого сравнения.
+Production/ГМ contracts и категории тестов не меняются; C# tests/build UNRUN.
+**Review focus:** предсказание костей; повторный Main/reaction после revival;
+target-specific protection иpending; сравнимость outcome; достаточно явные
+ограничения слабых heuristics/неравных ролей. Все связаны с guards выше.
+
+Bridge consistency перед кодом:spec A→политики/duel; B→support/group/endpoint;
+сохранённые договоры→reuse+guards; utility→старые guards; honesty→metrics/report;
+публикация/retention/review→T123.3–4. Материального изменения согласованного scope нет.
+
 ## T123 — подготовка следующего исследования, ожидается review scope
 
 2026-10-31, baseline 493cce3df289da5bc0c5a5f0ae29b055fad319e9,
