@@ -2,6 +2,32 @@
   "version": 1,
   "effectMaterializationCoverage": [
 {
+  "contractId": "mortal_diagnosis_execution_v1",
+  "file": "E_CLI_Wound_Materialization.txt",
+  "statePath": "existing wound_commands, pending_wound_resolutions, canonical clock/schedule/resources and wound History",
+  "responseSurface": "turn_request.mortalDiagnosis reference plus ordinary narrative/interface/debug/ready; no direct client-owned mechanical writes",
+  "realms": [
+    "Mortal World"
+  ],
+  "description": "Explicit current physical procedure parameters, retained binary outcome, client-owned T0/duration/T1, complete knowledge and ordinary recovery through one common publication.",
+  "validationKind": "focused-fragment",
+  "focusedFragmentReason": "MortalDiagnosisDocumentationTests feeds the worked method through the actual closed typed parser, whole physical wound and canonical roundtrip; actual owners/native/UI separately prove permission and publication.",
+  "coverageLimit": "No live authority from examples, no spiritual procedural transplant, no all-physical-treatment/DFR/compatibility qualification.",
+  "requiredText": [
+    "mortal_diagnosis_execution_v1",
+    "mortal_procedure_diagnosis",
+    "mortal_diagnosis_input",
+    "mortalDiagnosis",
+    "pending_wound_resolutions",
+    "T0",
+    "T1",
+    "same attempt",
+    "no extra same-turn report",
+    "original absence",
+    "Игровое время"
+  ]
+},
+{
   "contractId": "spiritual_diagnosis_execution_v1",
   "file": "E_CLI_Afterlife_Turns.txt",
   "statePath": "existing wound_commands, signed original sources, wound History and scheduler; no new publisher",

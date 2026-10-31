@@ -126,6 +126,13 @@
       "contracts": [
         "#1536 T121-DIAGNOSIS-MORTAL; current physical diagnosis guidance and preserved private/future filtering"
       ]
+    },
+    {
+      "category": "mortal-diagnosis-documentation",
+      "reason": "Four finite actual guidance/parser/current-example/inventory consumers qualify six guide updates, both daemon directives, explicit physical-check migration and the new worked fragment. No broad docs aggregate or execution permission from examples; current schema and separate spiritual empty-check semantics stay strict. UNCOMPILED/UNRUN.",
+      "contracts": [
+        "#1536 T121-DIAGNOSIS-MORTAL; GM/current-input explicit check/duration/cost, client T0/T1/common publication, ordinary NPC sidecar and retained retry"
+      ]
     }
   ]
 }

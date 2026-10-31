@@ -1301,7 +1301,47 @@ unchanged, and the path reveals the exact new route.
         "visibility": "hidden",
         "requiresKnownFacts": ["route:steady_breathing"],
         "requirements": [],
-        "check": {},
+        "check": {
+          "schemaVersion": 1,
+          "kind": "mortal_procedure_diagnosis",
+          "resolution": {
+            "formulaKey": "mortal_wound_procedure_v1",
+            "difficulty": 15,
+            "rollSource": "accepted_d20",
+            "criticalPolicy": "natural_20_first_natural_1_last",
+            "modifierSource": {
+              "kind": "fixed_zero"
+            }
+          },
+          "outcomes": [
+            {
+              "bandId": "diagnostic_success",
+              "minimumMargin": 0,
+              "maximumMargin": null,
+              "category": "success"
+            },
+            {
+              "bandId": "diagnostic_failure",
+              "minimumMargin": null,
+              "maximumMargin": -1,
+              "category": "failed_attempt"
+            }
+          ],
+          "durationMinutes": 0,
+          "resourcePolicy": {
+            "reserveBeforeResolution": true,
+            "consumeOn": [
+              "success",
+              "failed_attempt"
+            ],
+            "refundOn": [
+              "cancelled",
+              "validation_failed",
+              "rolled_back"
+            ],
+            "mutations": []
+          }
+        },
         "reveals": ["route:ritual_draw_bell_echo"],
         "failurePolicy": "no_reveal"
       }
@@ -1980,7 +2020,7 @@ wound_foreign_detail_v1: после выбора известной духовн
 Карточки `/раны` и статуса показывают читаемые заявленные условия известных
 физических осмотров через тот же переводчик требований, что и лечение. Это
 условия, не проверка наличия, цена или расход. Для духовных путей непрозрачные
-условия остаются общим пояснением без вывода исходного JSON. Сама карточка не исполняет осмотр; духовный способ выбирается и отдельно подтверждается через /лечить по spiritual_diagnosis_execution_v1. Физический процедурный осмотр остаётся отдельным незавершённым путём.
+условия остаются общим пояснением без вывода исходного JSON. Сама карточка не исполняет осмотр; духовный способ выбирается и отдельно подтверждается через /лечить по spiritual_diagnosis_execution_v1. Физический процедурный осмотр следует mortal_diagnosis_execution_v1; прочие физические способы здесь остаются рекомендациями.
 Они не подтверждают наличие ресурсов, помощника или цены и не создают действие;
 скрытый путь становится известным только через уже принятые факты, не через будущую
 возможность осмотра. Неизвестные opaque требования не превращаются в обещание услуги.
@@ -2381,6 +2421,57 @@ Consumed request/report cleanup and exact completed-cycle replay are client-owne
 replay never repeats reveals/recovery or charges. Full private images never enter player
 cards. Failed/uncertain publication keeps its existing whole-turn compensation/rollback.
 
-Mortal diagnosis is a separate later procedural route with explicitly declared method
-check, duration and cost; this does not supply defaults or enable Mortal execution.
+Mortal diagnosis follows separate mortal_diagnosis_execution_v1 with explicitly declared method
+check, duration and cost; spiritual diagnosis supplies no Mortal defaults or authority.
 Read Examples/E_CLI_Afterlife_Turns.txt worked spiritual_diagnosis_execution_v1.
+
+
+mortal_diagnosis_execution_v1 — explicit Mortal procedure, client-owned time and knowledge.
+
+Current physical diagnosis methods require a closed nonempty check of kind
+mortal_procedure_diagnosis/schema1: resolution, two ordered binary outcome bands,
+durationMinutes and resourcePolicy are explicitly authored per method. There is
+no default check, duration or tariff and no legacy empty current physical check.
+The empty spiritual check remains exact and separate; never transplant this check
+or a Mortal procedure into spiritual diagnosis. Other physical treatment remains
+advisory unless its own actual guided owner is available.
+
+The player's /лечить flow reads known reachable methods and their declared check,
+duration and conditional expense, then asks separate confirmation. Read/cancel
+is inert. The client stages mortal_diagnosis_input/schema1 in wound_commands and
+mortalDiagnosis reference DATA in turn_request. The signed input is immutable.
+After the actual final original the existing accepted-world owner resolves and
+retains the exact request/span/rolls/Fate/confirmed expense agreement in
+pending_wound_resolutions. A projection or detached fingerprint grants no authority.
+The same attempt reuses that exact terminal procedure outcome; never reroll it.
+
+GM reads the real retained request and ordinary procedure semantics, supplies a
+truthful narrative_response, ordinary interface_updates dialogueOptions/debug_logs
+and genuine actor reasoning/memory, then ready last with exact actual coordinates
+and filesModified. Self-diagnosis does not invent an NPC decision or relationship
+change. Actual involved helpers use ordinary applicable memory/reasoning owners: declare
+the real provider in Scope/Brain and append its first-person NPCJournals journalEntries
+in game_state/npcs/npc_journals.json under that exact permanent NPC ID. Existing
+append-only and declared-surface checks remain. This needs no npc_core identity,
+skill, location or metadata rewrite; its exact mechanical guard stays intact.
+Never spiritualResidentThoughtJournalUpdates or spiritualShiningPatientMemory.
+Do not author client-owned wound, identity, resource, item, History or clock writes,
+accepted receipts, operation keys or evidence seals, and do not add timeChange or
+setWorldTime for the diagnostic duration.
+
+The one common owner retains signed T0/control/schedule and declared duration,
+computes checked T1, applies only complete declared knowledge on success and none
+on failure, then ordinary due recovery for the complete physical cohort at T1.
+It publishes resources/time/knowledge/recovery/History atomically. No direct
+healing is attributed to the diagnosis itself. Original-control report obligations
+remain ordinary: no extra same-turn report is fabricated for newly elapsed cycles.
+The existing scheduler carries those newly elapsed obligations normally.
+
+C4 compensation returns exact already-held pending bytes and claims. Outer rollback
+separately restores original absence or original bytes. Existing owner continuity
+can restore only the same attempt after fresh original/source/control checks;
+cancellation cannot reactivate it. Replay after cleanup never spends or advances
+time again. Current canonical numeric cumulative time takes presentation precedence:
+Игровое время: 780 мин. Preserved calendar text is not guessed forward, reduced
+modulo a day or rewritten by GM.
+Read Examples/E_CLI_Wound_Materialization.txt worked mortal_diagnosis_execution_v1.

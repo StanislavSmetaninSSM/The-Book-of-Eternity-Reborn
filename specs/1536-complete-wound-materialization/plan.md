@@ -1,3 +1,27 @@
+# T121 Mortal GM and current-input synchronization WIP — UNCOMPILED / UNRUN
+
+Six effective guides and both daemon directive assignments now describe the
+explicit physical Check, immutable signed input, mortalDiagnosis reference and
+real retained pending request, ordinary binary procedure/Fate, client T0/duration/
+T1/knowledge/recovery/common publication and separate held-versus-outer rollback.
+No newly elapsed same-turn report obligation is invented. Actual NPC helper
+Scope/Brain uses its existing first-person npc_journals sidecar, preserving the
+full npc_core identity/skills/location guard and ordinary append-only validators.
+Numeric clock presentation remains cumulative and makes no calendar inference.
+
+The seven identified current physical empty-check fragments are explicitly
+migrated; spiritual empty checks stay exact. Example 0/30 durations and fixed-zero
+check/no-material policy are expressly authored sample parameters, not defaults.
+The worked path and manifest are connected to actual shape/whole-wound/roundtrip
+DATA tests, plus the finite changed ashglass assertion and family inventory.
+
+Source estimate now totals 88 cases / twenty-seven methods / nineteen categories,
+UNCOMPILED/UNRUN. No writer build/test/discovery/runtime. Final controlled actual
+Engine response fixtures, whole affected-consumer selection/static check and
+independent whole SOURCE still precede fresh owning builds and phased qualification.
+No diagnostic infrastructure, cache, tariff, new owner/publisher or speedup claim;
+all parent tasks, physical treatment recommendations, eight adapters and HOLDs stay.
+
 # T121 Mortal guided menu and initial staging WIP — UNCOMPILED / UNRUN
 
 The async /лечить owner now reads the current Mortal canonical menu DATA once per

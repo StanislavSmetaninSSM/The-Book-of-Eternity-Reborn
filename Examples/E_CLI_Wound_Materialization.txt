@@ -449,7 +449,47 @@ stabilization.
               "visibility": "known_to_player",
               "requiresKnownFacts": [],
               "requirements": [],
-              "check": {},
+              "check": {
+                "schemaVersion": 1,
+                "kind": "mortal_procedure_diagnosis",
+                "resolution": {
+                  "formulaKey": "mortal_wound_procedure_v1",
+                  "difficulty": 15,
+                  "rollSource": "accepted_d20",
+                  "criticalPolicy": "natural_20_first_natural_1_last",
+                  "modifierSource": {
+                    "kind": "fixed_zero"
+                  }
+                },
+                "outcomes": [
+                  {
+                    "bandId": "diagnostic_success",
+                    "minimumMargin": 0,
+                    "maximumMargin": null,
+                    "category": "success"
+                  },
+                  {
+                    "bandId": "diagnostic_failure",
+                    "minimumMargin": null,
+                    "maximumMargin": -1,
+                    "category": "failed_attempt"
+                  }
+                ],
+                "durationMinutes": 0,
+                "resourcePolicy": {
+                  "reserveBeforeResolution": true,
+                  "consumeOn": [
+                    "success",
+                    "failed_attempt"
+                  ],
+                  "refundOn": [
+                    "cancelled",
+                    "validation_failed",
+                    "rolled_back"
+                  ],
+                  "mutations": []
+                }
+              },
               "reveals": ["route:ashglass_clean_and_bind"],
               "failurePolicy": "no_reveal"
             },
@@ -459,7 +499,47 @@ stabilization.
               "visibility": "known_to_player",
               "requiresKnownFacts": [],
               "requirements": [],
-              "check": {},
+              "check": {
+                "schemaVersion": 1,
+                "kind": "mortal_procedure_diagnosis",
+                "resolution": {
+                  "formulaKey": "mortal_wound_procedure_v1",
+                  "difficulty": 15,
+                  "rollSource": "accepted_d20",
+                  "criticalPolicy": "natural_20_first_natural_1_last",
+                  "modifierSource": {
+                    "kind": "fixed_zero"
+                  }
+                },
+                "outcomes": [
+                  {
+                    "bandId": "diagnostic_success",
+                    "minimumMargin": 0,
+                    "maximumMargin": null,
+                    "category": "success"
+                  },
+                  {
+                    "bandId": "diagnostic_failure",
+                    "minimumMargin": null,
+                    "maximumMargin": -1,
+                    "category": "failed_attempt"
+                  }
+                ],
+                "durationMinutes": 30,
+                "resourcePolicy": {
+                  "reserveBeforeResolution": true,
+                  "consumeOn": [
+                    "success",
+                    "failed_attempt"
+                  ],
+                  "refundOn": [
+                    "cancelled",
+                    "validation_failed",
+                    "rolled_back"
+                  ],
+                  "mutations": []
+                }
+              },
               "reveals": ["route:ashglass_clean_and_bind"],
               "failurePolicy": "no_reveal"
             }
@@ -1117,7 +1197,47 @@ not a treatment catalog.
         "visibility": "hidden",
         "requiresKnownFacts": ["route:steady_breathing"],
         "requirements": [],
-        "check": {},
+        "check": {
+          "schemaVersion": 1,
+          "kind": "mortal_procedure_diagnosis",
+          "resolution": {
+            "formulaKey": "mortal_wound_procedure_v1",
+            "difficulty": 15,
+            "rollSource": "accepted_d20",
+            "criticalPolicy": "natural_20_first_natural_1_last",
+            "modifierSource": {
+              "kind": "fixed_zero"
+            }
+          },
+          "outcomes": [
+            {
+              "bandId": "diagnostic_success",
+              "minimumMargin": 0,
+              "maximumMargin": null,
+              "category": "success"
+            },
+            {
+              "bandId": "diagnostic_failure",
+              "minimumMargin": null,
+              "maximumMargin": -1,
+              "category": "failed_attempt"
+            }
+          ],
+          "durationMinutes": 0,
+          "resourcePolicy": {
+            "reserveBeforeResolution": true,
+            "consumeOn": [
+              "success",
+              "failed_attempt"
+            ],
+            "refundOn": [
+              "cancelled",
+              "validation_failed",
+              "rolled_back"
+            ],
+            "mutations": []
+          }
+        },
         "reveals": ["route:ritual_draw_bell_echo"],
         "failurePolicy": "no_reveal"
       }
@@ -1288,7 +1408,47 @@ Wound repair transport: every wound_materialization_repair packet requires candi
           "route:clean_and_suture"
         ],
         "requirements": [],
-        "check": {},
+        "check": {
+          "schemaVersion": 1,
+          "kind": "mortal_procedure_diagnosis",
+          "resolution": {
+            "formulaKey": "mortal_wound_procedure_v1",
+            "difficulty": 15,
+            "rollSource": "accepted_d20",
+            "criticalPolicy": "natural_20_first_natural_1_last",
+            "modifierSource": {
+              "kind": "fixed_zero"
+            }
+          },
+          "outcomes": [
+            {
+              "bandId": "diagnostic_success",
+              "minimumMargin": 0,
+              "maximumMargin": null,
+              "category": "success"
+            },
+            {
+              "bandId": "diagnostic_failure",
+              "minimumMargin": null,
+              "maximumMargin": -1,
+              "category": "failed_attempt"
+            }
+          ],
+          "durationMinutes": 0,
+          "resourcePolicy": {
+            "reserveBeforeResolution": true,
+            "consumeOn": [
+              "success",
+              "failed_attempt"
+            ],
+            "refundOn": [
+              "cancelled",
+              "validation_failed",
+              "rolled_back"
+            ],
+            "mutations": []
+          }
+        },
         "reveals": [
           "route:alternative_hidden_route"
         ],
@@ -1450,7 +1610,47 @@ Wound repair transport: every wound_materialization_repair packet requires candi
         "route:clean_and_suture"
       ],
       "requirements": [],
-      "check": {},
+      "check": {
+        "schemaVersion": 1,
+        "kind": "mortal_procedure_diagnosis",
+        "resolution": {
+          "formulaKey": "mortal_wound_procedure_v1",
+          "difficulty": 15,
+          "rollSource": "accepted_d20",
+          "criticalPolicy": "natural_20_first_natural_1_last",
+          "modifierSource": {
+            "kind": "fixed_zero"
+          }
+        },
+        "outcomes": [
+          {
+            "bandId": "diagnostic_success",
+            "minimumMargin": 0,
+            "maximumMargin": null,
+            "category": "success"
+          },
+          {
+            "bandId": "diagnostic_failure",
+            "minimumMargin": null,
+            "maximumMargin": -1,
+            "category": "failed_attempt"
+          }
+        ],
+        "durationMinutes": 0,
+        "resourcePolicy": {
+          "reserveBeforeResolution": true,
+          "consumeOn": [
+            "success",
+            "failed_attempt"
+          ],
+          "refundOn": [
+            "cancelled",
+            "validation_failed",
+            "rolled_back"
+          ],
+          "mutations": []
+        }
+      },
       "reveals": [
         "route:alternative_hidden_route"
       ],
@@ -1615,7 +1815,47 @@ Wound repair transport: every wound_materialization_repair packet requires candi
           "route:clean_and_suture"
         ],
         "requirements": [],
-        "check": {},
+        "check": {
+          "schemaVersion": 1,
+          "kind": "mortal_procedure_diagnosis",
+          "resolution": {
+            "formulaKey": "mortal_wound_procedure_v1",
+            "difficulty": 15,
+            "rollSource": "accepted_d20",
+            "criticalPolicy": "natural_20_first_natural_1_last",
+            "modifierSource": {
+              "kind": "fixed_zero"
+            }
+          },
+          "outcomes": [
+            {
+              "bandId": "diagnostic_success",
+              "minimumMargin": 0,
+              "maximumMargin": null,
+              "category": "success"
+            },
+            {
+              "bandId": "diagnostic_failure",
+              "minimumMargin": null,
+              "maximumMargin": -1,
+              "category": "failed_attempt"
+            }
+          ],
+          "durationMinutes": 0,
+          "resourcePolicy": {
+            "reserveBeforeResolution": true,
+            "consumeOn": [
+              "success",
+              "failed_attempt"
+            ],
+            "refundOn": [
+              "cancelled",
+              "validation_failed",
+              "rolled_back"
+            ],
+            "mutations": []
+          }
+        },
         "reveals": [
           "route:alternative_hidden_route"
         ],
@@ -2655,3 +2895,84 @@ source/documentation guards bind this example marker and its limitations.
 
 
 spiritual_diagnosis_execution_v1: the separate spiritual guided route uses H0-V plus every current requirement, exact empty check, guaranteed complete declared knowledge only, zero diagnostic roll/OD/Feathers/items/cost and one REQUIRED nonempty natural suffix. Read the worked path in E_CLI_Afterlife_Turns.txt. Mortal procedural check/duration/cost are separate and not defaulted. The earlier display-only fragment still creates no action itself.
+
+
+mortal_diagnosis_execution_v1 — worked declared path (explicit sample values, not defaults).
+
+The hidden diagnostic_hidden_route is a separately authored current physical route.
+The method below declares fixed-zero accepted_d20 difficulty15, 30 minutes and no
+material cost. These are this example's parameters, never a global default.
+
+```json
+{
+  "diagnosisPathId": "inspect_explicit_worked",
+  "displayName": "Осмотреть края физической раны",
+  "visibility": "known_to_player",
+  "requiresKnownFacts": [
+    "route:clean_and_suture"
+  ],
+  "requirements": [],
+  "check": {
+    "schemaVersion": 1,
+    "kind": "mortal_procedure_diagnosis",
+    "resolution": {
+      "formulaKey": "mortal_wound_procedure_v1",
+      "difficulty": 15,
+      "rollSource": "accepted_d20",
+      "criticalPolicy": "natural_20_first_natural_1_last",
+      "modifierSource": {
+        "kind": "fixed_zero"
+      }
+    },
+    "outcomes": [
+      {
+        "bandId": "diagnostic_success",
+        "minimumMargin": 0,
+        "maximumMargin": null,
+        "category": "success"
+      },
+      {
+        "bandId": "diagnostic_failure",
+        "minimumMargin": null,
+        "maximumMargin": -1,
+        "category": "failed_attempt"
+      }
+    ],
+    "durationMinutes": 30,
+    "resourcePolicy": {
+      "reserveBeforeResolution": true,
+      "consumeOn": [
+        "success",
+        "failed_attempt"
+      ],
+      "refundOn": [
+        "cancelled",
+        "validation_failed",
+        "rolled_back"
+      ],
+      "mutations": []
+    }
+  },
+  "reveals": [
+    "route:diagnostic_hidden_route"
+  ],
+  "failurePolicy": "no_reveal"
+}
+```
+
+On /лечить the player reads and separately confirms this method. The client stages
+mortal_diagnosis_input and mortalDiagnosis reference DATA, then its actual signed
+original owns the pending_wound_resolutions request. A natural20 succeeds and
+reveals the complete declared route; natural1 fails with no reveal under ordinary
+Fate semantics. The same attempt preserves its exact procedure span/result.
+GM authors truthful narrative_response, ordinary interface_updates dialogueOptions,
+debug_logs and ready last using actual requestId/sessionId/turnNumber/filesModified.
+A genuinely uninvolved NPC stays outside the action; no relationship is invented.
+GM does not write wound/resources/items/History/time, transition seals or receipts.
+The client binds signed T0 plus 30 to T1 and ordinary due recovery in one common
+publication, with no extra same-turn report beyond original-control obligations.
+C4 restores held input; outer rollback restores original absence/bytes. Exact
+retry/replay never rerolls or advances duration twice. Valid numeric current time
+is displayed as Игровое время: 780 мин.; no HH:MM/calendar epoch is inferred.
+The empty spiritual check remains separate and unchanged.
+end_mortal_diagnosis_execution_v1

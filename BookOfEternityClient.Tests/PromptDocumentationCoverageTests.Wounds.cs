@@ -210,7 +210,7 @@ public sealed partial class PromptDocumentationCoverageTests
                 ["visibility"] = "known_to_player",
                 ["requiresKnownFacts"] = new JsonArray(),
                 ["requirements"] = new JsonArray(),
-                ["check"] = new JsonObject(),
+                ["check"] = MortalDiagnosisDocumentationTests.CreateExplicitFreeSampleCheck(index == 0 ? 0 : 30),
                 ["reveals"] = new JsonArray("route:ashglass_clean_and_bind"),
                 ["failurePolicy"] = "no_reveal"
             };

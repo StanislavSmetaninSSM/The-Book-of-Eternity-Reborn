@@ -2,6 +2,49 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "mortal-diagnosis-documentation",
+  "responsibility": "T121 current closed Mortal Check migration and effective GM contract: two new DATA guidance/whole-wound worked tests, one exact migrated ashglass path assertion, and the sole complete example-family inventory method. Six effective guides, both daemon assignments, actual client input/held request/time/retry roles and separate spiritual empty checks are synchronized. Four cases/four methods/two projects, UNCOMPILED/UNRUN.",
+  "excludes": "No broad documentation or Mortal aggregate, live authority from fragments, provider/DOM/DFR/compatibility qualification, client-side default procedure/time/tariff or physical treatment-route enablement.",
+  "changeHints": [
+    "Examples/E_CLI_Wound_Materialization.txt",
+    "OtherGuides/Wound_Materialization_Contract.md",
+    "BookOfEternityClient/game_master_daemon.ps1",
+    "Examples/example_validation_manifest.json"
+  ],
+  "related": [
+    {
+      "id": "mortal-diagnosis-method-causal",
+      "when": "Every current physical authored method has the closed explicit Check; spiritual empty remains exact."
+    },
+    {
+      "id": "mortal-diagnosis-guided-staging",
+      "when": "Readable method parameters are client reference DATA; actual held claims require the accepted-world owner."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.MortalDiagnosisDocumentationTests.CurrentGuidanceManifestAndBothDaemonAssignmentsKeepExplicitMortalPurposeTimeAndRetry",
+        "BookOfEternityClient.Tests.MortalDiagnosisDocumentationTests.WorkedExplicitMethodPassesWholeCurrentMortalContractAndEmptyCheckRefuses",
+        "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.WoundDiagnosisIdentityDocumentation_UsesDistinctCompleteWorkedPaths"
+      ]
+    },
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.ExampleDocumentationValidationTests.CompleteEffectMaterializationManifest_CoversEveryRequiredWorkedFamily"
+      ]
+    }
+  ]
+},
+{
   "id": "mortal-diagnosis-guided-staging",
   "responsibility": "T121 three file-light current canonical menu/confirm/stage rows use the existing independent Mortal seed before its original producer. Valid explicit method shows check/duration/conditional expenses; read/cancel/confirmation are inert and staging writes only its closed input without held claims. Missing actual location and changed wound refuse fresh confirmation/staging without additional mutation. UNCOMPILED/UNRUN WIP.",
   "excludes": "No accepted-world authority from menu DATA, fake pending snapshot, dice/reservation/cost/time before final original, physical treatment execution, full ProcessPlayerTurn/GM wait, new cache or broad Mortal category. Full native/UI/GM qualification remains required.",
