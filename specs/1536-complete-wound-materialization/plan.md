@@ -1,3 +1,27 @@
+# T121 independent native19 PASS by epochs — dependent6 PREP pending
+
+Cohort singleton at `4cbb45b2e518b33ec3dd5cfd85b4c03aa936ab53` completed
+1/1 PASS, wall16.6600254s/category9.4929839s within120s, no timeout, complete
+cleanup and stable pins. Actual product assertions now pass after genuine initial
+graph validation. Strict proof is external in `M2GREENC8C4-cohort1`; independent
+OUTCOME is pending. Root reconciled the complete independent19 current selection:
+19 unique case/test/execution IDs, 11 current methods, all PASS. It combines15
+at afd49/compiled Integration e8eb, durable+valid-guided+elapsed3 at23a68/compiled
+80bb, and cohort1 at4cbb/compiled25ee. Main remains797cc898. This is three
+Integration source epochs, NOT a single fresh19 run. Old failures remain preserved.
+Full case-level provenance is `M2GREENC8C4-native19-qualified-union.json` outside Git.
+
+Next requested PREP is only dependent6: common publication1, genuine Fate1,
+published recovery1, outer retry2 and ordinary-procedure regression1. Exact current
+official plan contains six cases/five methods/five exclusive Integration descriptors,
+each120s, unchanged membership. The ordinary case must pass for the reviewed bounded
+shared-contract substitution; the earlier broad timeout remains UNKNOWN/open.
+These six and all console/browser/rollback singletons remain UNRUN/held until their
+own PREP and outcomes. Existing C8C4 mixed owning provenance remains unchanged;
+no new build is warranted for this plan-only receipt. Full capture remains external.
+No parent/feature/global acceptance, physical-treatment/eight-adapter completion or
+old HOLD closure is claimed.
+
 # T121 private cohort initial graph — exact singleton PREP, UNRUN
 
 Astra SOURCE accepted `25ee4df4f8e12b30ddd39943d0f625e5d23d89c8` for
