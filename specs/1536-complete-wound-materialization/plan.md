@@ -1,3 +1,39 @@
+# T121 diagnosis-family dispatch — fresh builds / exact PREP, runtime UNRUN
+
+Independent Astra/high SOURCE accepted the coherent candidate
+`a3d9966e8496a6940dd896ea819360560d3387b7` for build admission, without
+Important/Critical findings. All four Linux builds at that exact source exit0:
+Main 1:41.94, TestSupport 13.28s, Unit 54.03s and Integration 1:48.19.
+Warning code/message multisets remain the existing 12/23/26/102 baseline.
+Four PE/PDB pairs, 326 actual-Compile source bindings, 27 artifacts, 40 resource
+copies and four daemons match. The complete 27-member owning archive is
+62873628 bytes, SHA256
+`8b4092b2f53dff71ed3d0e01854d8bb56c0eedb0b7a3f517df78aca629cbfdbd`;
+all member hashes and full gzip EOF/CRC over 197027840 decoded bytes are verified.
+
+Official discovery is valid: 1257 categories / 13074 methods, zero executions,
+no unmapped or stale selectors and complete cleanup. Exact official PlanOnly
+confirms 214 cases / 84 methods / 43 descriptors / 41 categories, no duplicates,
+zero executions and complete cleanup. The disjoint current partition is retained181
+(62 methods/24 descriptors), focused5 (5 methods/3 descriptors), independent
+native19, dependent native6 and three separate UI singletons. Retention is by the
+recorded accepted source lineages; this is not one fresh181/214 run.
+
+Only focused5 is proposed for the next independent PREP: effect-input component1,
+previously failed actual callback1 and semantic source guards3, each category60s.
+Native19/6 and console/browser/rollback remain UNRUN and require their later PREP.
+The single-event/null-publication component proves no Fate publication; the
+required real Fate case carries the genuine two-event reversal refusal. The
+required ordinary-procedure native case must pass for the reviewed substitution;
+the broader envelope case remains TIMEOUT / attempted UNKNOWN / open, not PASS.
+
+Full raw/provenance remains external under
+`/workspace/tboe-linux-evidence-20261025/us5-guided-diagnosis/M2GREENC7-*`.
+No raw/binaries enter Git. Existing DATA composition/fingerprints and every fresh
+owner/currentness guard remain in use; no cache, wire or GM rule is introduced.
+No parent or feature completion is claimed. Physical treatment, eight spiritual
+adapters and all previous HOLDs remain open.
+
 # T121 effect-input dispatch — coherent SOURCE freeze, UNCOMPILED / UNRUN
 
 Core/test WIP was published at `3920d0a99a6fcac273d2160bf64dbe3abedfc8fe`.
