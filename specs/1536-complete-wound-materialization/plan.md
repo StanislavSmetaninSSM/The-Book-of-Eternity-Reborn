@@ -1,3 +1,58 @@
+# T121 dynamic originals and terminal role — coherent C9 WIP, UNCOMPILED / UNRUN
+
+Core WIP `692c2a72f61b584fcfc6add67d407e66fa6f04f2` is remotely preserved.
+The complete correction retains the original static capture, then extends that
+SAME operation list after actual read-only treatment preflight and before TryTake/
+normalization/publication. Missing touched paths are read once under the same lease
+and must agree exactly with the common plan's sealed original presence/bytes.
+Read Plan.BeforeImages once, preserve old row objects/bytes without reopening,
+and assign the completed union only after all validation. The same union reaches
+transaction compensation and refresh error restoration; no global inventory change.
+
+Independent Astra resolved the second-caller distinction: full touched coverage is
+required at the factory only for nonterminal PUBLICATION receipts. The existing
+sealed receipt.IsTerminalReleaseOnly is the discriminator, not caller DATA/Boolean.
+Terminal cleanup writes only exact command/pending quarantine rows, retains its
+existing current-image static capture, and cannot publish/capture agreement/rearm.
+It neither captures an unrelated changed clock nor requires sealed T0 to cancel.
+The genuine terminal-only control proves that role, exact request quarantine/live
+claim settlement and unchanged drift/all unrelated bytes. No sibling expansion.
+
+Two real-plan Facts provide the finite cheap proof: dynamic present world_time
+and actually absent touched effect command, complete coverage refusal before writes,
+read-only actual preflight, preserved old rows/no reopening, one physical open for
+each added present source, observed absence without an opened stream, copied bytes,
+stale bytes/presence refusal with no partial result/write/claim change; plus the
+separate terminal-only role above. Faults are detached test mutations restored
+exactly; publication preflight is proved before those faults, not reconstructed
+or retaken afterward. Existing outer2 remains the actual causal publication RED.
+No fake receipt, accepted state, reflection or new authority/cache/diagnostic stack.
+
+Source estimate is 217 cases / 89 methods / 49 descriptors / 47 categories,
+subject to official discovery. Fresh cheap gate is new2 plus semantic guards3:
+five cases/methods in three exclusive60s descriptors. Required strict native
+regressions are outer2 and publishedRecovery1. The prior common-compose PASS does
+not call capture/factory; its source dependency is unchanged. Prior standalone
+Fate behavior is covered again by the required Shield outer row; Fate semantics
+are unchanged. The shared ordinary nonterminal factory gained a new coverage
+check, so the existing ordinary-procedure native1 is proposed as a directly affected
+consumer, at its unchanged budget; no broad earlier timeout is retried. Final
+selection/retention admission belongs to independent SOURCE/PREP. All three UI
+journeys remain held; native/cheap results are by their recorded mixed epochs.
+
+Owner/lifetime/reuse: the current refresh invocation owns the captured list from
+static observation through preflight, dynamic join, take and settlement under one
+active FS lease. Complete dependencies are exact live preflight plan/reference,
+its sealed touched paths/original images, existing static rows, actual presence/
+bytes and sealed transaction role. Preflight is canonical read-only; any newly
+observed source change refuses before take. No permission comes from exported DATA.
+Existing current/receipt/claim/item/source guards remain fresh. Typed counters
+prove physical reuse; no speedup claim. This corrects client compensation only,
+so no GM wire/guide/manifest or gameplay update is required. New source/tests are
+UNCOMPILED/UNRUN until same bounded SOURCE and root-owned four fresh builds,
+discovery/PREP/cheap/native/UI. All raw remains external and earlier UNKNOWN/HOLDs,
+parents, physical treatment and eight adapters remain open.
+
 # T121 dynamic compensation originals — core WIP, UNCOMPILED / UNRUN
 
 Dependent6 at `a045e1f33fe0ea35a5c5d459d12f3eb88269b630` completed 3 PASS

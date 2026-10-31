@@ -300,7 +300,8 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
         ArgumentNullException.ThrowIfNull(binding);
         ArgumentNullException.ThrowIfNull(receipt);
         ArgumentNullException.ThrowIfNull(beforeImages);
-        RequireCompleteBeforeImageCoverage(plan, beforeImages);
+        if (!receipt.IsTerminalReleaseOnly)
+            RequireCompleteBeforeImageCoverage(plan, beforeImages);
 
         var authority = plan.TreatmentResourcePublicationAuthority;
         if (authority is null ||
@@ -331,7 +332,9 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
 
     /// <summary>
     /// Requires original coverage for every path the actual common plan may
-    /// publish or consume. Shared by pre-take capture and this transaction factory;
+    /// publish or consume. Shared by pre-take capture and this transaction factory
+    /// for nonterminal publication receipts. The existing sealed terminal-only
+    /// receipt cannot publish or rearm and retains its current cleanup before-images;
     /// coverage DATA alone grants no live receipt or publication authority.
     /// </summary>
     internal static void RequireCompleteBeforeImageCoverage(AcceptedMechanicsPlan plan,

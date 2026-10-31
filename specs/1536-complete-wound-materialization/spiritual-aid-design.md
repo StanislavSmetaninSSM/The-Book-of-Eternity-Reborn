@@ -1832,3 +1832,25 @@ Validate the complete merged index/carrier and each private canonical source/
 definition through existing typed DATA APIs before initial effect writes. This
 changes neither wound provenance nor production/GM authority; qualification is
 recorded in plan.md and remains UNRUN for the changed cohort singleton.
+
+
+### Complete dynamic publication before-images and terminal-only cleanup
+
+The common refresh first captures its unchanged static normalizer inventory. After
+actual read-only treatment preflight and before taking a nonterminal receipt or
+writing, extend that same captured list with missing real plan.TouchedPaths. Read
+sealed Plan.BeforeImages once; freshly read each missing path under the same lease
+and require exact original presence/bytes. Preserve already captured rows without
+rereading. Publish the completed list only after all checks pass; both the transaction
+and refresh error compensation use it. The factory rejects incomplete touched
+coverage for nonterminal publication receipts. No global inventory expansion or
+late expected-image replacement is permitted.
+
+Existing sealed IsTerminalReleaseOnly identifies the distinct cleanup role.
+Terminal cleanup retains its current static command/pending before-images, never
+requires an unrelated clock to equal T0, and cannot capture published agreement,
+publish or rearm. Only exact request quarantine/claim settlement is allowed. No
+caller Boolean, new owner/authority/cache or generic rollback exception is added.
+This is a client compensation correction; GM fields/rules/manifest stay unchanged.
+Current source, dependency identity/lifetime, meaningful typed counter/refusal proof
+and still-UNRUN qualification are recorded in plan.md.

@@ -154,10 +154,14 @@ archive are outside checkout; original failures and all other holds are retained
   touched original before take/publication, including diagnosis world_time T0.
   Preserve static rows, same lease, sealed exact missing-path images and atomic
   completed union for both transaction/error restore; factory refuses missing
-  coverage. Keep terminal-cleanup role separate without weakening publication.
+  coverage for nonterminal publication receipts. The existing sealed terminal-only
+  role keeps current command/pending cleanup images and cannot publish/rearm.
   Existing outer2 are causal failures; actual-plan cheap controls precede their
   strict rerun and published recovery. Code/tests remain UNCOMPILED/UNRUN; no
-  global inventory/cache/authority or GM contract change. See current plan epochs.
+  global inventory/cache/authority or GM contract change. Two focused real-plan
+  Facts cover exact dynamic capture/reuse/refusal and terminal-only cleanup after
+  unrelated clock drift; strict outer/published/ordinary consumers remain required.
+  See current plan epochs.
 
 - [x] T121-DIAGNOSIS-READ Show readable declared conditions of currently known
   diagnostic paths in the existing wound/status cards for console/browser. Reuse

@@ -2,6 +2,90 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "mortal-diagnosis-dynamic-compensation-capture",
+  "responsibility": "One genuine diagnosis common-plan Fact: actual static capture and read-only preflight, dynamic present clock and actually absent touched effect-command path, exact sealed bytes/presence, old-row identity/no reopening, one physical open per added present source, copied exports, stale bytes/presence refusal with no writes/claim change, and the same full-coverage gate used by nonterminal factory. No take/publication or fabricated receipt. Actual outer2 failure is causal RED; UNCOMPILED/UNRUN.",
+  "excludes": "No generic role Boolean, authority/cache/validator stack, global inventory expansion, future canonical write, weak byte equality, Engine/GM wait, broad replay or HOLD run.",
+  "changeHints": [
+    "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.MortalItems.cs",
+    "BookOfEternityClient/Services/MortalWoundTreatmentResourcePublicationTransaction.cs",
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.DiagnosisCompensationCapture.cs"
+  ],
+  "related": [
+    {
+      "id": "mortal-diagnosis-outer-retry",
+      "when": "The required actual outer2 proves exact held then original compensation with real normal/Fate claims."
+    },
+    {
+      "id": "mortal-diagnosis-published-recovery",
+      "when": "The required published-recovery consumer must pass actual common compensation/publication."
+    },
+    {
+      "id": "mortal-diagnosis-ordinary-procedure-regression",
+      "when": "Existing real ordinary publication directly consumes the shared nonterminal factory coverage guard."
+    },
+    {
+      "id": "wound-read-semantic-source-guards",
+      "when": "Changed production capture/factory source requires semantic guard coverage."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.DiagnosisPublicationCapturePreservesStaticRowsAndProvesEveryDynamicOriginalBeforeTake"
+      ]
+    }
+  ]
+},
+{
+  "id": "mortal-diagnosis-terminal-compensation-role",
+  "responsibility": "One genuine sealed terminal-only take/transaction after unrelated current clock drift: existing current cleanup capture stays static, exact command/pending request quarantine and live claim settlement succeed while drift bytes/all unrelated paths remain exact. CapturePublishedAgreement and rearm refuse this terminal role; no future-clock capture or sealed-T0 requirement is added to cancellation. UNCOMPILED/UNRUN.",
+  "excludes": "No generic role Boolean, authority/cache/validator stack, global inventory expansion, future canonical write, weak byte equality, Engine/GM wait, broad replay or HOLD run.",
+  "changeHints": [
+    "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.MortalItems.cs",
+    "BookOfEternityClient/Services/MortalWoundTreatmentResourcePublicationTransaction.cs",
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.DiagnosisCompensationCapture.cs"
+  ],
+  "related": [
+    {
+      "id": "mortal-diagnosis-outer-retry",
+      "when": "The required actual outer2 proves exact held then original compensation with real normal/Fate claims."
+    },
+    {
+      "id": "mortal-diagnosis-published-recovery",
+      "when": "The required published-recovery consumer must pass actual common compensation/publication."
+    },
+    {
+      "id": "mortal-diagnosis-ordinary-procedure-regression",
+      "when": "Existing real ordinary publication directly consumes the shared nonterminal factory coverage guard."
+    },
+    {
+      "id": "wound-read-semantic-source-guards",
+      "when": "Changed production capture/factory source requires semantic guard coverage."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.DiagnosisTerminalOnlyCleanupPreservesUnrelatedClockDriftWithoutPublicationPermission"
+      ]
+    }
+  ]
+},
+{
   "id": "mortal-diagnosis-guided-valid-staging",
   "responsibility": "One valid guided diagnosis staging Fact replaces the former failed valid theory row. Full Open/cancel/Confirm byte inertness stays intact. Actual Stage must bind the declared method/control, create only its command plus the existing scheduler lastUpdatedUtc refresh, validate that UTC within the real stage interval, preserve every other schedule field and every other JSON byte/path, and create no held claims. Candidate UNCOMPILED/UNRUN.",
   "excludes": "No accepted-world authority from menu DATA, fake pending snapshot, dice/reservation/cost/time before final original, physical treatment execution, full ProcessPlayerTurn/GM wait, new cache or broad Mortal category. Full native/UI/GM qualification remains required.",
