@@ -1774,3 +1774,32 @@ detached reversal within the already-required real typed-Fate native case. The
 historical broader ordinary-envelope timeout remains UNKNOWN/open; approved
 active coverage is typed shape9 plus actual ordinary-procedure native1 if it
 passes. No new case/budget/cache/I/O/GM contract or hidden timeout qualification.
+
+
+### Exact common procedure companion and original diagnosis clock
+
+Both the original PlanningContext and completed Plan bind resource publication to
+one actual mutually exclusive diagnosis-or-ordinary prepared companion. Retain
+exact reference identity, seal/final item-owner checks and all pending, direct,
+anchor and other-family exclusions. Both missing-resource checks include diagnosis.
+WithWoundAnchorPlan reconstructs through the same context constructor and cannot
+drop this resource authority. No legal diagnosis anchor is manufactured for tests.
+
+The live physical diagnosis clock remains signed original T0, including exact
+already-captured bytes. Only checked private effect input and whole clock/schedule/
+report after-images use T1. No future canonical write or original-control re-signing
+is allowed; ordinary, recovery and spiritual comparisons remain unchanged.
+
+Successful fresh diagnosis composition may return its actual original common input
+on the existing result. Invalid/cached results return no input. Input DATA getters
+copy their values; its readonly PlanningContext retains existing operation authority
+references and identity factories. This is inspection, not wholly detached authority
+or renewed permission after lease closure. No source read, reparse, reconstruction,
+cache or parallel result/owner is introduced. Tests use two independent real roots/
+explicit leases for genuine foreign authority, and reuse one actual carrier assembly
+for completed-constructor probes. Live ownership/freshness remains mandatory.
+
+C8 proof and actual historical C7 refusal are recorded in plan.md; this correction
+is UNCOMPILED/UNRUN. Internal binding/inspection changes no GM response field or
+wire contract, so no GM-guide/manifest update is needed. Existing time guidance
+already preserves T0, admitted duration/T1 and ordinary original report obligations.

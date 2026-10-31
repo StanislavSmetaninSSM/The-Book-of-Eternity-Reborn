@@ -80,7 +80,7 @@ internal static partial class WoundAcceptedTurnPlanner
             if (!common.Success || common.Input is null) return MortalWoundTreatmentPublicationResult.Invalid(common.Issues);
             var result = AcceptedMechanicsPlanAuthority.GetOrBuildMortalWoundTreatmentValidated(files, lease, common.Input,
                 bundle, accepted, request, outcome.Resolution, semantic, continuation, reservation);
-            return result.Success && result.Plan is not null ? MortalWoundTreatmentPublicationResult.Valid(result.Plan) :
+            return result.Success && result.Plan is not null ? MortalWoundTreatmentPublicationResult.Valid(result.Plan, common.Input) :
                 MortalWoundTreatmentPublicationResult.Invalid(result.Issues);
         }
         catch (Exception failure) when (failure is not CoordinatedStatePublicationUncertainException &&

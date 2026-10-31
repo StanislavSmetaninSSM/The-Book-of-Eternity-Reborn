@@ -2,6 +2,46 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "mortal-diagnosis-common-context",
+  "responsibility": "One real-owner nonzero-duration component uses the original freshly composed common input/context and genuine foreign resource authority. Both actual constructors accept the exact companion and refuse null/foreign authority; original T0 bytes stay untouched, exact T1 clock/schedule/report and effect time agree, copied exports/cached readback and fresh clock drift preserve bytes/fingerprints/claims. One actual carrier assembly is reused, with no publication. C7 real callback failure is causal RED; candidate UNCOMPILED/UNRUN.",
+  "excludes": "No fabricated anchor, reconstruction of original context from final after-images, reflection, fake receipt/authority, second cache/owner, publication/Engine loop, broader timeout retry or HOLD run.",
+  "changeHints": [
+    "BookOfEternityClient/Services/AcceptedMechanicsPlan.cs",
+    "BookOfEternityClient/Services/AcceptedMechanicsWoundCommonInputComposer.cs",
+    "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalDiagnosisPublication.cs",
+    "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalTreatmentPublication.cs",
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.DiagnosisCommonContext.cs"
+  ],
+  "related": [
+    {
+      "id": "mortal-diagnosis-explicit-lease",
+      "when": "Unchanged failing real callback must pass common construction and retained validation."
+    },
+    {
+      "id": "mortal-diagnosis-common-publication",
+      "when": "Required duration300 native proves actual atomic common publication and both compensation images."
+    },
+    {
+      "id": "wound-read-semantic-source-guards",
+      "when": "Changed production source must preserve semantic inventory."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.DiagnosisCommonConstructorsBindExactResourceAuthorityAndKeepOriginalClockUntilPublication"
+      ]
+    }
+  ]
+},
+{
   "id": "mortal-diagnosis-effect-input-agreement",
   "responsibility": "One real accepted-owner null-publication component: exact private diagnosis/prepared identity, complete canonical one-base-event input and full fingerprint agreement; copied lifecycle/command/frame/source/target/carrier/identity/baseline malformed DATA plus separately real same-fingerprint foreign prepared scope refuse with unchanged bytes/confirmed claims. No typed-Fate/publication/order proof from this single-event component: the unchanged required native Fate case supplies genuine two-event reversal. Actual failed common callback is causal RED. UNCOMPILED/UNRUN.",
   "excludes": "No fake reservation/publication authority, ordinary treatment conversion, type-only success, new cache/I/O, reflection, Engine/GM loop, broad timeout retry or HOLD run.",
@@ -158,7 +198,7 @@
 },
 {
   "id": "mortal-diagnosis-explicit-lease",
-  "responsibility": "One actual async-factory diagnosis-lease Fact: inert no-callback refusal, real common callback under identical lease and retained dynamic validation with exact bytes/claims. C6 passed response shape and failed the registry treatment-only lifecycle gate; this is the actual causal RED. Rerun only this Fact after typed family dispatch. Ordinary lease2 remains passed/rehomed and is not replayed.",
+  "responsibility": "One actual async-factory diagnosis-lease Fact: inert no-callback refusal, real common callback under identical lease and retained dynamic validation with exact bytes/claims. C7 passed effect-input admission and failed common context construction; this is the actual causal RED. Rerun this unchanged Fact after exact procedure-family context/plan and original-T0 correction. Ordinary lease2 remains passed/rehomed and is not replayed.",
   "excludes": "No ambient/lock/loader policy change, fake callback, publication, Engine/GM wait, lease retry, broad GameState/changed-owner refactor, accepted aggregate replay or HOLD run.",
   "changeHints": [
     "BookOfEternityClient/Services/Validation/ValidationService.ResourceMaterialization.cs",

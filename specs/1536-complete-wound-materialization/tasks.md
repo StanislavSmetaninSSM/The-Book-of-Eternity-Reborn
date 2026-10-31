@@ -119,9 +119,21 @@ archive are outside checkout; original failures and all other holds are retained
   diagnosis prepared/input fingerprint agreement. Preserve ordinary behavior,
   full lifecycle/Fate/source/frame checks, current ownership and claims. New
   null-publication component proof does not replace the real callback/Fate native.
-  Code is UNCOMPILED/UNRUN; C6 shape9/resource3/guards3 passed, while the broader
+  C7 compiled and its component1 passed; real callback reached the next common
+  context refusal. C6 shape9/resource3 passed; current semantic guards await C8.
+  The broader
   ordinary response case is TIMEOUT/attempted UNKNOWN and stays explicitly open.
   Use approved actual ordinary-procedure native coverage, without a broad retry.
+
+- [ ] T121-DIAGNOSIS-MORTAL-COMMON-CONTEXT Close the C7 actual callback
+  constructor refusal and source-confirmed nonzero-duration T0/T1 mismatch. Both
+  planning-context and completed-plan present/missing resource checks must bind
+  the genuine diagnosis-or-ordinary companion, preserving all seals/exclusions.
+  Inspect only the fresh producer's actual original input; cached/invalid results
+  carry none. Typed actual-owner constructor, nonzero-time/drift and byte/claim
+  controls plus unchanged callback/source guards precede native19/6 and UI3.
+  C7 component1 passed separately; C8 is UNCOMPILED/UNRUN. WithWoundAnchorPlan
+  cannot drop this authority; no fabricated legal anchor or new permission layer.
 
 - [x] T121-DIAGNOSIS-READ Show readable declared conditions of currently known
   diagnostic paths in the existing wound/status cards for console/browser. Reuse

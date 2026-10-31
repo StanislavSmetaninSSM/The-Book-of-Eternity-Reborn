@@ -139,22 +139,35 @@ internal static partial class WoundAcceptedTurnPlanner
         private MortalWoundTreatmentPublicationResult(
             bool isValid,
             IReadOnlyList<ValidationIssue> issues,
-            AcceptedMechanicsPlan? plan)
+            AcceptedMechanicsPlan? plan,
+            AcceptedMechanicsInput? originalComposedInput = null)
         {
             IsValid = isValid;
             Issues = Array.AsReadOnly(issues.ToArray());
             Plan = plan;
+            OriginalComposedInput = originalComposedInput;
         }
 
         public bool IsValid { get; }
         public IReadOnlyList<ValidationIssue> Issues { get; }
         public AcceptedMechanicsPlan? Plan { get; }
 
+        /// <summary>
+        /// Inspects the original input from successful fresh diagnosis composition.
+        /// Its DATA getters copy their values; its readonly planning context retains
+        /// the existing authority references and identity factories for that operation.
+        /// This does not renew ownership after lease closure. Cached and invalid
+        /// results do not reconstruct or expose an original input.
+        /// </summary>
+        internal AcceptedMechanicsInput? OriginalComposedInput { get; }
+
         internal static MortalWoundTreatmentPublicationResult Valid(
-            AcceptedMechanicsPlan plan) => new(
+            AcceptedMechanicsPlan plan,
+            AcceptedMechanicsInput? originalComposedInput = null) => new(
             true,
             Array.Empty<ValidationIssue>(),
-            plan);
+            plan,
+            originalComposedInput);
 
         internal static MortalWoundTreatmentPublicationResult Invalid(
             IEnumerable<ValidationIssue> issues) => new(

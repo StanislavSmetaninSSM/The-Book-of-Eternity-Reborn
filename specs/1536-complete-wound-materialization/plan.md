@@ -1,3 +1,49 @@
+# T121 common context and original clock — coherent C8 candidate, UNCOMPILED / UNRUN
+
+Core WIP `d28c438a925d692c1e6504e71cf194f5767ca583` was pushed and remote-read
+verified. The full narrow candidate adds one actual-owner Fact, not a new native
+scenario: original fresh common input/context, two independent real roots/explicit
+leases for genuine foreign authority, valid/null/foreign probes at BOTH actual
+constructors, untouched exact original T0 and complete checked T1 clock/schedule/
+report/effect images, copied DATA exports, no readback on cache reuse, and fresh
+physical-clock drift refusal with exact restoration and retained request/claims.
+The existing actual callback Fact remains unchanged as the causal regression.
+
+Independent Astra accepted the narrow original-input inspection design. Only the
+successful fresh diagnosis producer attaches its actual common.Input to the
+existing result. Invalid/cached results expose none. DATA getters copy; the readonly
+context still holds its real authorities/identity factories under the active lease.
+It does not renew permission after closure. Tests do not reconstruct original
+context from final after-images or rebuild/reparse common input. One genuine
+carrier assembly is reused for completed-plan constructor probes. Two real fixture
+owners are necessary to test foreign private authority without fabricating it.
+
+WithWoundAnchorPlan still requires an agreeing real anchor and rebuilds through
+the actual context constructor while dropping the resource argument. The corrected
+missing-authority check therefore refuses this conversion. Source proof and actual
+constructor negatives cover it; no fabricated diagnosis anchor/null-only claim or
+redundant purpose gate is introduced. Both present seals/final item-owner checks,
+other-family exclusions and all fresh guards remain intact.
+
+Source estimate is 215 cases / 85 methods / 44 descriptors / 42 categories,
+subject to official discovery. The next finite cheap gate is five cases / five
+methods / three descriptors: new common-context1, unchanged failed callback1 and
+semantic guards3, each existing 60s budget. C7 component1 PASS is retained only by
+unchanged dependencies, alongside C6 shape9/resource3; it is not replayed here.
+Required native19, dependent native6 and UI3 remain unqualified. The broader
+ordinary envelope timeout remains attempted UNKNOWN/open; the reviewed ordinary
+native1 substitution remains conditional on its actual PASS.
+
+Optimization: reuse the original operation's composed DATA and captured clock
+bytes, direct scalar companion identity and one local carrier assembly. No new
+cache/source read/parse/reconstructed authority or speedup claim. Currentness,
+claim/lease/source and final publication checks stay fresh. This is internal
+binding/inspection, with no GM wire/field/rule change; current T0/duration/T1 and
+original report-obligation guidance already applies, so GM files/manifest need
+no update. All new code/tests are UNCOMPILED/UNRUN; root owns SOURCE admission,
+fresh affected builds, exact PlanOnly/PREP and runtime. Historical C7 failure and
+all earlier raw remain external. No parent/HOLD/adapter/physical-treatment closure.
+
 # T121 common context and original clock — core WIP, UNCOMPILED / UNRUN
 
 C7 focused5 completed 1 PASS / 1 FAIL / 3 UNRUN in 39.0609417s, with no timeout,
