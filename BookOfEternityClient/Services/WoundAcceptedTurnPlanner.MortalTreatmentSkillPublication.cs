@@ -171,10 +171,15 @@ internal static partial class WoundAcceptedTurnPlanner
         object? Authority,
         IReadOnlyList<ValidationIssue> Issues);
 
-    private static TreatmentSkillCommandEnvelopeResult FreezeTreatmentSkillCommands(
+    /// <summary>Validates the complete shared Mortal publication response surface without preparing claims or execution.</summary>
+    /// <param name="response">The actual response whose supported skill/item fields are selected by the existing publishers.</param>
+    /// <param name="ignoreLegacyFateDuplicate">The existing caller-controlled exception for separately handled legacy Fate duplication.</param>
+    /// <returns>Unsupported defined response fields; omitted values issue no diagnostic.</returns>
+    internal static IReadOnlyList<ValidationIssue> ValidateMortalTreatmentResponseShape(
         GameResponse response,
         bool ignoreLegacyFateDuplicate = false)
     {
+        ArgumentNullException.ThrowIfNull(response);
         var issues = new List<ValidationIssue>();
         foreach (var property in response.GetType().GetProperties(
                      System.Reflection.BindingFlags.Instance |
@@ -188,7 +193,8 @@ internal static partial class WoundAcceptedTurnPlanner
                     property.Name,
                     nameof(GameResponse.EffectEventReports),
                     StringComparison.Ordinal)) &&
-                property.GetValue(response) is not null)
+                property.GetValue(response) is { } value &&
+                value is not JsonElement { ValueKind: JsonValueKind.Undefined })
             {
                 issues.Add(PublicationIssue(
                     "treatmentPublication.response." + property.Name,
@@ -197,7 +203,14 @@ internal static partial class WoundAcceptedTurnPlanner
                     property.Name));
             }
         }
+        return issues.AsReadOnly();
+    }
 
+    private static TreatmentSkillCommandEnvelopeResult FreezeTreatmentSkillCommands(
+        GameResponse response,
+        bool ignoreLegacyFateDuplicate = false)
+    {
+        var issues = new List<ValidationIssue>(ValidateMortalTreatmentResponseShape(response, ignoreLegacyFateDuplicate));
         var root = new JsonObject();
         var active = FreezeSkillRows(
             response.ActiveSkillChanges,

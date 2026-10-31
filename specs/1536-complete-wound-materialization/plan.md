@@ -1,3 +1,40 @@
+# T121 shared response shape and complete DATA fixture — WIP, UNCOMPILED / UNRUN
+
+C5 owning builds/discovery/PlanOnly succeeded at the recorded compiled source;
+current runtime HEAD is `898c28fe37e862b81c05c4131e5d4e6ecfe39864`. The focused13
+attempt completed 2 PASS / 1 FAIL / 10 UNRUN in 24.4845942s. Ordinary explicit-lease
+rows passed; diagnosis reached its actual common callback and failed because the
+shared response guard treats boxed JsonElement.Undefined as a defined foreign
+field. Independent10 then completed 4 PASS / 3 FAIL / 3 UNRUN in 31.9540717s.
+Resource A/final-freshness premises passed; its terminal standalone calls failed
+earlier on missing signed progression_schedule coverage. Both attempts had no
+timeout, complete cleanup and stable pins. Strict failed proofs/raw remain external
+in M2GREENC5-focused13 and M2GREENC5-independent10; suffixes remain unproved.
+
+Root/Astra approved the bounded grouped correction. The existing complete shared
+response-surface loop becomes a typed internal API used by the same skill freezer
+for ordinary/joint/diagnosis. Only null or JsonElement.Undefined is omitted;
+ALL defined foreign values, including JSON null, remain unsupported. All13 allowed
+fields and the existing controlled Fate flag remain unchanged. No GameResponse,
+wire, owner, publisher, claim or cache is changed. New typed eight-kind/allowed-Fate
+controls and the existing ordinary value helpers accompany this UNCOMPILED/UNRUN
+source; no new private reflection access is added.
+
+The resource theory alone now creates a real scheduler/control before its sole
+original snapshot and authenticates signed schedule bytes/hash plus activeConflict.
+That original conflict returns no natural owner before cohort/cycle binding, so
+standalone validation can reach the intended resource Core without consuming its
+raw draft. Every existing exact B-specific assertion remains, with terminal no-plan
+and full physical-byte inertness. No production dispatcher/snapshot guard is relaxed
+and no post-snapshot baseline is patched. Final finite selection/API check remains
+pending before one grouped SOURCE; no build/test/runtime or helper RED loop.
+
+Optimization preserves the same one-pass shape validation and retained DATA with
+fresh authority checks, without a cache or speedup claim. This restores existing
+omission semantics and fixture completeness, not a new GM command/rule/output;
+current guides/examples remain valid. Native19/6 and UI3 are held. All parent,
+physical-treatment, eight-adapter and HOLD residuals remain open.
+
 # T121 explicit-lease owning builds and exact selection complete — runtime UNRUN
 
 All four builds at `b0e48e60b8b682b6a1cafc9207e07860765f748e` passed with zero

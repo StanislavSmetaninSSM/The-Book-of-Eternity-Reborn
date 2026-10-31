@@ -64,40 +64,52 @@ archive are outside checkout; original failures and all other holds are retained
   candidate now includes typed current-input migration, exact purpose/claims and
   signed command roles, retained retry/C4/outer images, knowledge-before-ordinary
   recovery at checked T1, durable History/replay, guided console/browser and GM
-  synchronization. Source-estimated finite selection is 168 cases / 62 methods /
-  31 project descriptors / 30 categories. All candidate code and controls remain
-  UNCOMPILED/UNRUN; independent whole SOURCE, fresh owning builds, exact discovery
-  and phased cheap/native/actual UI outcomes still precede bounded acceptance.
+  synchronization. Independent SOURCE, fresh owning builds and accepted cheap
+  controls are recorded by epoch in plan.md; C5 exact PlanOnly is 204 cases /
+  81 methods / 39 descriptors / 37 categories. The new response/fixture correction
+  is UNCOMPILED/UNRUN. Native19/6 and UI3 still require actual qualification;
+  prior compiled/accepted controls are not labelled wholly unrun or replayed.
   This task stays unchecked; other physical treatment remains recommendation-only.
 
 - [ ] T121-DIAGNOSIS-MORTAL-PENDING Close the actual native original-pending
   evidence failure through the existing snapshot producers/observed reader and
   diagnosis owner. Preserve prior noncombat/combat forms for unrelated reads,
   require a verified pending observation before diagnosis claims, and retain exact
-  held versus outer images. Astra bounded DESIGN accepted; core WIP is
-  UNCOMPILED/UNRUN. Four real producer present/absent rows and two prior-shape
-  refusal rows include pending-specific resealed presence/mapping, copied exports
-  and source-drift/counter controls; existing role/rebind proofs are retained.
-  Typed presence and exact existing helper consumers are selected before
-  coherent SOURCE/build/PREP. No signed absence may be fabricated by a fixture.
+  held versus outer images. Independent SOURCE and actual focused18 passed
+  after owning builds; exact producer/presence/absence/copy/drift proofs and
+  artifact epochs are in plan.md. The native route now passes this boundary;
+  broader hold/publication/native/UI acceptance remains open. No signed absence
+  may be fabricated by a fixture.
 
 - [ ] T121-DIAGNOSIS-MORTAL-PENDING-HOLD Correct the actual post-observation
   native envelope dispatch failure: require an exact seven-field, empty-wave,
   single diagnosis-purpose request and valid immutable input before History
   coalescing. Keep ordinary real-wave/joint, typed seal/resource, live claims and
   both rollback-image boundaries strict. Root/Astra accepted the bounded design;
-  two real request-shape rows plus finite ordinary persistence/semantic guards
-  are authored, UNCOMPILED/UNRUN. The actual native 1 FAIL / 24 UNRUN is causal
-  evidence; no feature or parent closure follows from this correction.
+  two real normal/Fate request-shape rows and finite ordinary persistence/guards
+  passed focused14 after owning builds, as recorded by epoch in plan.md. Native
+  execution now passes retention/catalog reconstruction; later common/native/UI
+  boundaries remain open. No feature or parent closure follows from this control.
 
 - [ ] T121-DIAGNOSIS-MORTAL-EXPLICIT-LEASE Close the actual raw resource lock
   failure by threading its already validated lease through resource, effect and
   retained diagnosis reads. Keep retained DATA first, all original/current/claim
   guards and wider changed-owner behavior unchanged. Root/Astra accepted this
-  bounded correction. Three async-factory lease controls plus seven directly
-  affected retained-DATA/read-count cases and three semantic guards are selected,
-  UNCOMPILED/UNRUN. The actual native failure is causal evidence; no helper-only
-  feature closure, ambient lock workaround or new GM contract is introduced.
+  bounded correction and all four C5 builds passed. Both ordinary lease rows
+  passed; diagnosis reached its real callback and exposed the shared Undefined
+  response defect. Four retained DATA/read-count rows passed, three terminal
+  fixture assertions failed on missing original schedule, and guards stayed
+  unrun. Exact failed receipts and grouped correction status are in plan.md;
+  no helper-only closure, ambient workaround or new GM contract is introduced.
+
+- [ ] T121-DIAGNOSIS-MORTAL-RESPONSE-SHAPE Restore shared omission semantics
+  through the existing complete response validator: Undefined is absent, every
+  defined foreign value remains forbidden. Keep ordinary/joint/diagnosis owners
+  and13-field surface unchanged; typed JSON-kind controls and a genuine ordinary
+  consumer precede native retry. Complete only the failing DATA theory's real
+  pre-snapshot scheduler premise, preserving exact B-specific/no-mutation guards.
+  Current grouped correction is UNCOMPILED/UNRUN; earlier accepted epochs and
+  pending native/UI are recorded separately in plan.md.
 
 - [x] T121-DIAGNOSIS-READ Show readable declared conditions of currently known
   diagnostic paths in the existing wound/status cards for console/browser. Reuse

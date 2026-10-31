@@ -1,6 +1,9 @@
 using System.Reflection;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
+using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
@@ -49,7 +52,30 @@ public sealed partial class AfterlifeResourceCutoverTests
             }
         };
         await using (context = await CreateCompleteConflictFrameContextAsync(
-                         hooks, SeedOriginalIntakeBaselinesAsync))
+                         hooks, SeedOriginalIntakeBaselinesAsync,
+                         captureOriginalSnapshot: async original =>
+                         {
+                             // The real standalone dispatcher requires the original
+                             // schedule before it can rule out natural recovery.
+                             // Initialize it before this theory's sole snapshot.
+                             var control = await new ProgressionScheduleService(original.FileSystem,
+                                 NullLogger<ProgressionScheduleService>.Instance).BuildControlForNextTurnAsync("Chaos Sea");
+                             var schedule = Assert.IsType<byte[]>(await original.FileSystem.ReadFileBytesAsync(ProgressionScheduleService.SchedulePath));
+                             await original.CaptureValidatedPendingSnapshotAsync(turn: 42, currentRealm: "Chaos Sea",
+                                 preGeneratedDices1d20: [15, 5, 12, 8], progressionControl: control);
+                             await using var originalLease = await original.FileSystem.AcquireCanonicalWriteLeaseAsync();
+                             var signed = PendingTurnSnapshotReader.ReadCurrent(original.FileSystem, originalLease,
+                                 [ProgressionScheduleService.SchedulePath, AfterlifeSpiritualConflictState.StatePath]);
+                             Assert.True(signed.Success, JsonSerializer.Serialize(signed.Issues));
+                             // The existing reader authenticates the exact signed
+                             // mapping/hash, not merely a copied schedule value.
+                             Assert.Equal(schedule, signed.Snapshot!.ReadRequiredBytes(ProgressionScheduleService.SchedulePath));
+                             var conflict = Assert.IsType<JsonObject>(JsonNode.Parse(FileSystemManager.DecodeFileBytes(
+                                 signed.Snapshot.ReadRequiredBytes(AfterlifeSpiritualConflictState.StatePath))));
+                             Assert.IsType<JsonObject>(conflict["activeConflict"]);
+                             // An original active conflict returns no natural owner
+                             // before cohort/cycle binding and cannot consume this draft.
+                         }))
         {
             await WriteCompleteConflictFrameExchangeAsync(context);
             await WriteOriginalIntakeDraftAsync(context);
@@ -69,10 +95,21 @@ public sealed partial class AfterlifeResourceCutoverTests
                 issue.Code == "spiritual_original_input_changed" && issue.FilePath == changedPath);
             Assert.DoesNotContain(rejected.Issues, issue => issue.Code == earlyFailureCode);
             Assert.Equal(changedPhysical, await context.FileSystem.ReadFileAsync(lease, changedPath));
+            var beforeStandalone = CapturePhysicalJson(context.FileSystem);
             Assert.Contains(await context.Validator.ValidateAcceptedTurnRawResourceMaterializationAsync(lease),
                 issue => issue.FilePath == changedPath &&
                          issue.Code != "spiritual_original_input_changed");
+            Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(context.FileSystem, lease));
+            var afterStandalone = CapturePhysicalJson(context.FileSystem);
+            Assert.Equal(beforeStandalone.Keys.Order(StringComparer.Ordinal), afterStandalone.Keys.Order(StringComparer.Ordinal));
+            foreach (var pair in beforeStandalone) Assert.Equal(pair.Value, afterStandalone[pair.Key]);
         }
+
+        static Dictionary<string, byte[]> CapturePhysicalJson(FileSystemManager files) =>
+            FileSystemManager.EnumerateFilesWithoutFollowingReparsePoints(files.GameSessionPath, "*.json")
+                .Where(path => !Path.GetRelativePath(files.GameSessionPath, path).Replace(Path.DirectorySeparatorChar, '/')
+                    .StartsWith(".boe_runtime", StringComparison.Ordinal))
+                .ToDictionary(static path => path, File.ReadAllBytes, StringComparer.Ordinal);
     }
 
     /// <summary>

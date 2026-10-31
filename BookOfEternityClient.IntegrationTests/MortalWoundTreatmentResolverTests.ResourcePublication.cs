@@ -3816,6 +3816,8 @@ public sealed partial class MortalWoundTreatmentResolverTests(ITestOutputHelper 
                     var value = property.GetValue(response);
                     return property.Name + "=" + (value is null
                         ? "<null>"
+                        : value is JsonElement { ValueKind: JsonValueKind.Undefined }
+                        ? "<undefined>"
                         : JsonSerializer.Serialize(value, property.PropertyType));
                 }));
 
@@ -3830,7 +3832,10 @@ public sealed partial class MortalWoundTreatmentResolverTests(ITestOutputHelper 
             var value = property.GetValue(response);
             if (!TreatmentItemAllowedResponsePropertyNames.Contains(property.Name))
             {
-                Assert.Null(value);
+                if (value is JsonElement element)
+                    Assert.Equal(JsonValueKind.Undefined, element.ValueKind);
+                else
+                    Assert.Null(value);
                 continue;
             }
             Assert.NotNull(value);
@@ -3841,6 +3846,8 @@ public sealed partial class MortalWoundTreatmentResolverTests(ITestOutputHelper 
     private static object CreateNonNullGameResponsePropertyValue(PropertyInfo property)
     {
         var type = property.PropertyType;
+        if (type == typeof(JsonElement))
+            return JsonSerializer.SerializeToElement(new { unsupported = property.Name });
         var nullable = Nullable.GetUnderlyingType(type);
         if (nullable is not null)
         {
