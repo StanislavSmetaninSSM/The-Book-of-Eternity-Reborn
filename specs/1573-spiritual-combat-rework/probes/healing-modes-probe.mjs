@@ -9,9 +9,18 @@ import { actor,begin,end,applyHeal,damage,replaceMain,healingCalculator,healingV
 
 // Immutable inputs shared across this operation, keyed by D and attack kind.
 const tables=new Map([0,130,1000].map(D=>[D,{
-  ordinary:damageTable(profileFor(D),28),suppress:damageTable(profileFor(D),24)
+  ordinary:damageTable(profileFor(D),28),strong:damageTable(profileFor(D),36),large:damageTable(profileFor(D),44),suppress:damageTable(profileFor(D),24)
 }]));
 const calculate=healingCalculator();
+export function attackProfile(strike) {
+  const p={ordinary:{B:28,K:8},strong:{B:36,K:16},large:{B:44,K:24}}[strike];
+  assert.ok(p,'Unknown attack strength');return p;
+}
+export function strikeAttack(a,target,result,strike) {
+  const cost=price(a,attackProfile(strike).K);
+  if(!a.active||a.used||a.collapsed||a.collapsedThisTurn||a.hp<=0||a.energy<cost)return false;
+  a.energy-=cost;a.used=true;damage(target,result.damage);return true;
+}
 export function protectedDamageTable(D,B,extraResistance) {
   const p=profileFor(D),a2=BigInt(Math.min(40+D,2*p.X)),den=200n+3n*a2;
   // Accepted additive resistance, clamped at 90%; no rounding before final HP damage.
@@ -22,6 +31,14 @@ export function protectedDamageTable(D,B,extraResistance) {
     x.quality===3?round(numerator*BigInt(150+2*p.X),denominator*BigInt(100+p.X)):
     round(numerator,denominator*(x.quality===1?2n:1n))}));
 }
+const resistanceTables=new Map();
+function patientDamageTables(D,resistance) {
+  if(!resistance)return tables.get(D);
+  const key=`${D}|${resistance}`;
+  if(!resistanceTables.has(key))resistanceTables.set(key,Object.fromEntries(
+    [['ordinary',28],['strong',36],['large',44],['suppress',24]].map(([kind,B])=>[kind,protectedDamageTable(D,B,resistance)])));
+  return resistanceTables.get(key);
+}
 export function chooseMode(a,mode,maxNextDamage) {
   if(mode!=='adaptive')return mode;
   if(a.pending)return 'long';
@@ -29,7 +46,7 @@ export function chooseMode(a,mode,maxNextDamage) {
 }
 export function simulateModes({D=130,mode='instant',style='ordinary',policy='heal',reply='none',
   harmony='normal',order=[0,1],willDelta=0,healingPercent=0,resistance=0,forceInterruptFailure=false,
-  n=2000,horizon=2000,seedSuffix=''}={}) {
+  n=2000,horizon=2000,seedSuffix='',strike='ordinary'}={}) {
   assert.ok(tables.has(D)&&['old','instant','long','adaptive'].includes(mode));
   assert.ok(['ordinary','interrupt','reserve','suppress','suppress_reserve'].includes(style));
   assert.ok(['heal','cleanse_safe','mix50','noheal'].includes(policy));
@@ -37,18 +54,20 @@ export function simulateModes({D=130,mode='instant',style='ordinary',policy='hea
   assert.deepEqual([...order].sort(),order.length===2?[0,1]:[0,1,2]);
   assert.ok(Number.isInteger(n)&&n>0&&Number.isInteger(horizon)&&horizon>0);
   assert.ok(Number.isInteger(healingPercent)&&resistance>=0&&resistance<=90);
-  const options={D,mode,style,policy,reply,harmony,order,willDelta,healingPercent,resistance,forceInterruptFailure,n,horizon,seedSuffix};
+  attackProfile(strike);assert.ok(strike==='ordinary'||!style.startsWith('suppress'),'Strong suppression is not an approved profile');
+  const options={D,mode,style,policy,reply,harmony,order,willDelta,healingPercent,resistance,forceInterruptFailure,n,horizon,seedSuffix,
+    ...(strike==='ordinary'?{}:{strike})};
   const seed=seedFor(JSON.stringify(options)),randomDamage=rng(seed),randomReaction=rng(seedFor(`reaction|${seed}`));
   const roll=()=>{const k=randomReaction()%400;return[Math.floor(k/20)+1,k%20+1];};
-  const table=tables.get(D),maxNextDamage=Math.max(...table.ordinary.map(x=>x.damage));
+  const table=tables.get(D),maxNextDamage=Math.max(...table[strike].map(x=>x.damage));
   // Prepared once for this cell's immutable patient protection, never inside a trajectory.
-  const patientTable=resistance?{ordinary:protectedDamageTable(D,28,resistance),suppress:protectedDamageTable(D,24,resistance)}:table;
+  const patientTable=patientDamageTables(D,resistance);
   const counts={attacks:0,damageToB:0,suppression:0,healingMains:0,instant:0,old:0,starts:0,finishes:0,
     startAttempts:0,finishAttempts:0,abandoned:0,interruption:0,cancelled:0,cancelledStart:0,cancelledFinish:0,
     guard:0,counterAttempt:0,counterSucceeded:0,noInterruptEnergy:0,noInterruptReaction:0,
     cleanse:0,helperCleanse:0,recoverA:0,recoverB:0,recoverHelper:0,restored:0,defenderAttacks:0,
     healingWith50:0,healingWith25:0,healPaid:0,responsePaid:0,interruptPaid:0};
-  const durations=[],wins=[0,0];let censored=0;
+  const durations=[],wins=[0,0];let censored=0,attackPaid=0;
   for(let trial=0;trial<n;trial++){
     const a=actor(D,'a',{regenP:harmony==='both36'?36:null,willDelta});
     const b=actor(D,'b',{regenP:harmony==='normal'?null:harmony==='healer28'?28:36});b.healingPercent=healingPercent;
@@ -59,12 +78,12 @@ export function simulateModes({D=130,mode='instant',style='ordinary',policy='hea
       for(const id of order){
         const me=actors[id];begin(me);
         if(id===0){
-          const kind=style.startsWith('suppress')?'suppress':'ordinary',cost=kind==='suppress'?a.p.suppressCost:a.p.costs[0];
+          const kind=style.startsWith('suppress')?'suppress':strike,cost=kind==='suppress'?a.p.suppressCost:price(a,attackProfile(strike).K);
           const reserve=style==='reserve'||style==='suppress_reserve';
           const canReserve=Math.min(a.p.max,a.energy-cost+a.regen)>=price(a,8);
           if(a.energy>=cost&&(!reserve||canReserve)){
             const result=patientTable[kind][randomDamage()%400];
-            const before=b.hp;assert.ok(attack(a,b,result,kind));damage(b,0);
+            const before=b.hp;assert.ok(kind==='suppress'?attack(a,b,result,kind):strikeAttack(a,b,result,strike));damage(b,0);attackPaid+=cost;
             counts.attacks++;counts.damageToB+=before-b.hp;if(kind==='suppress')counts.suppression++;
           }else{assert.ok(recover(a));counts.recoverA++;}
         }else if(id===2){
@@ -110,7 +129,7 @@ export function simulateModes({D=130,mode='instant',style='ordinary',policy='hea
     durations.push(rounds);
   }
   durations.sort((a,b)=>a-b);
-  return {...options,seed,meanObserved:durations.reduce((a,b)=>a+b,0)/n,median:durations[Math.ceil(n/2)-1],
+  return {...options,...(strike==='ordinary'?{}:{attackPaid}),seed,meanObserved:durations.reduce((a,b)=>a+b,0)/n,median:durations[Math.ceil(n/2)-1],
     p95:durations[Math.ceil(n*.95)-1],maxObserved:durations[n-1],over8:durations.filter(x=>x>8).length/n,
     censored,winA:wins[0]/n,winB:wins[1]/n,counts,
     actionsPerTrial:Object.fromEntries(Object.entries(counts).map(([k,v])=>[k,v/n]))};
