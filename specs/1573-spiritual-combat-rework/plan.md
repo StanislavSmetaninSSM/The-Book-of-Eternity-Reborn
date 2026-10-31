@@ -18,7 +18,6 @@ unrelated1536/obj не трогать. Нового runtime/GM/C# в задач�
   metadata/потока только если нужно; не копировать общую HP/ДЭ/очередь/endpoint
   машину. Defaults/T123–125 checksum остаются прежними. Новые функции явно
   экспортируются для дешёвых fixtures, без reflection/дорогих игровых объектов.
-- [ ] T128.2a Проверить весь связанный numerical набор (120прежних+новые),
   При необходимости узко расширить `healing-modes-model.mjs`: optional divisor
   для общего исходящегоHoTbudget и точное дробное подавление через прежний
   healingCalculator/cache, сохранив default1 и integer результаты. Не создавать
@@ -47,6 +46,24 @@ Preflight: primitive→integration (личные clock/payment/HP0); integration
 ScopesT127 неизменны; openHoT/R закрыты только явными T128 исследовательскими
 допущениями. Это не окончательная продуктовая спецификация stack/развитияR.
 Ledger остаётся plan/review, без дублирующего Superpowers плана/журнала.
+
+API до GREEN: `healingRules:'periodic-v1'`, `periodicMode:direct|hot|combined`,
+`periodicAttack:ordinary|suppress_always|suppress_needed`, `level:1..5`,
+`effectResistance:0..100`, `cleansePolicy:never|first`, `activeGuard:boolean`.
+Матрица использует R0/25/50/90. Exported primitives: periodicProfiles,
+applyPeriodicHeal, tickPeriodic, applyPeriodicMark, choosePeriodicMain,
+choosePeriodicAttack. Общий healingCalculator получает optional divisor=1 и
+immutable outgoing snapshot; точный ключ включает divisor/snapshot/incoming/
+дробное подавление. operation.table расширяется guardDelta=0, прежние defaults
+не меняются. Runner periodicScenarios/ simulatePeriodic использует T128-v1 seed.
+Дополнительные counters: direct/hotCasts/hotTicks/hotSuppressedTicks/markHits/
+saveAttempts/saves/marksApplied/partialMarks/fullMarks/guardPaid и actualHP/
+overheal/расходы по участникам. Живые HP/платёж/save/допуск не кэшируются.
+
+Checkpoint до реализации: spec/plan/tasks опубликованы в5c810288705fb4cb87379ae446f5e5c971b59a81,
+remote ref совпал, spec прочитан с GitHub по точному SHA. Sol6.1/high owner
+выполнил RED14/14: прежний BigInt не принимает22.5%, новый opt-in/runner ещё
+отсутствуют. GREEN/полная матрица/review пока не выполнены.
 
 ## T127 — профили лечения/подавления и сопротивление, 2026-11-01
 

@@ -1,5 +1,21 @@
 # Проверка проекта #1573
 
+## T128 — численная проверка direct/HoT, 2026-11-01
+
+Автор поручил «проверяй»; точная T127 таблица, без срывов Heal. Spec Kit bridge,
+writing-plans, executing-plans затем subagent-driven-development: один
+Sol6.1/high source/test owner, parent интегрирует и измеряет; независимый
+Astra/high проверит законченный блок. Baseline30084bbe6, опубликованный scope
+5c810288705fb4cb87379ae446f5e5c971b59a81: remoteSHA совпал/spec прочитан сGitHub.
+684cases×(100+1000), horizon2000, политики/допущения и полный coverage заданы
+до результатов. Это исследовательская модель, не production и не принятый баланс.
+API закреплён в plan доGREEN. RED14/14 подтверждает отсутствие нового режима и
+неспособность прежнего BigInt вычислить подавление22.5%. Raw без квот только
+D:\BoeDiagnostics\healing-periodic-t128\20261101-v1. GREEN/полная матрица/review
+ещё не выполнены. Optimization: immutable formula/damage через существующий
+operation, полный key/snapshot/divisor/guard; liveHP/платёж/save/тик свежие.
+Прежняя полная диагностикаT125 сохраняется до проверенного полногоT128.
+
 ## T127 — сила/стоимость и сопротивление эффекту, 2026-11-01
 
 Автор принял основу/шкалуT126; добавил защиту/уклонение, очищение и effect-save.
