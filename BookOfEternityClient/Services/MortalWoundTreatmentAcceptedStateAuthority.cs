@@ -81,6 +81,7 @@ internal sealed partial class MortalWoundTreatmentAcceptedStateAuthority
         throw new InvalidDataException("The diagnosis original root is absent: " + path);
     internal JsonObject ReadDiagnosisOriginalInput() => _diagnosisInput?.DeepClone().AsObject() ??
         throw new InvalidDataException("The diagnosis original input is absent.");
+    internal bool HasOriginalDiagnosisInput => _diagnosisInput is not null;
     internal WoundCarrierCatalogInput ReadDiagnosisOriginalCarriers() => new(
         _diagnosisOriginalRoots?.GetValueOrDefault(WoundCarrierCatalog.PlayerPath)?.DeepClone().AsObject(),
         _diagnosisOriginalRoots?.GetValueOrDefault(WoundCarrierCatalog.NpcPath)?.DeepClone().AsObject(),
@@ -482,7 +483,8 @@ internal sealed partial class MortalWoundTreatmentAcceptedStateAuthority
 
         var pathSelection = BuildPathSelection(context, issues);
         if (diagnosis) pathSelection = new PendingTurnSnapshotPathSelection(
-            pathSelection.RequiredLogicalPaths.Append(AcceptedMechanicsPlan.WoundCommandPath).Append(ProgressionScheduleService.SchedulePath), pathSelection.OptionalLogicalPaths);
+            pathSelection.RequiredLogicalPaths.Append(AcceptedMechanicsPlan.WoundCommandPath).Append(ProgressionScheduleService.SchedulePath),
+            pathSelection.OptionalLogicalPaths.Append(WoundAcceptedTurnSnapshotContract.PendingResolutionPath));
         if (issues.Count != 0)
             return Failure(issues);
 

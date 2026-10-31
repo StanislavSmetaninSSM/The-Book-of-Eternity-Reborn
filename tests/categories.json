@@ -160,7 +160,7 @@
 },
 {
   "id": "mortal-diagnosis-pre-handoff-retention",
-  "responsibility": "T121 one actual signed-input/accepted-owner fixture persists a genuine held request in the existing pending treatment DATA, disposes/reacquires the lease, restores exact claims before a competitor, then proves identical request/span/rolls/resource agreement/result with no History and no additional canonical changes. No fake repair packet or accepted receipt. UNCOMPILED/UNRUN source-authored WIP.",
+  "responsibility": "T121 one actual signed-input/accepted-owner fixture persists a genuine held request in the existing pending treatment DATA, refuses a valid-DATA whitespace rewrite of its exact client-produced held bytes at rebind, restores the actual bytes and exact claims before a competitor, then proves identical request/span/rolls/resource agreement/result with no History and no additional canonical changes. No fake repair packet or accepted receipt. UNCOMPILED/UNRUN source-authored WIP.",
   "excludes": "No Engine/GM wait, future-time/recovery/common publication, actual C4 handoff or finished Mortal route claim; no broad aggregate or old spiritual PASS replay.",
   "changeHints": [
     "BookOfEternityClient/Services/MortalWoundDiagnosisInputCodec.cs",

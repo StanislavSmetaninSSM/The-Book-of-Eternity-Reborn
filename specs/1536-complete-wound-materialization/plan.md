@@ -1,3 +1,24 @@
+# T121 Mortal private retained-input continuity WIP — UNCOMPILED / UNRUN
+
+The existing accepted-turn registry now retains the actual produced diagnosis
+request and exact held pending bytes privately, tied to original input/source and
+session generation. Fresh rebind cannot substitute merely self-consistent parsed
+DATA: even a whitespace rewrite of that held file is refused. The original
+pending presence/absence is selected by the existing signed snapshot reader and
+remains distinct from the held image. First retention must start from that exact
+original image; repeat retention must preserve the already-owned held image.
+
+The existing pre-handoff fixture includes the valid-DATA tamper/refusal before
+restoring exact bytes, rebind and the competing claim. It still proves exact
+request/span/rolls/Fate/resource/result continuity and unchanged canonical state
+after fault restoration. No detached record can allocate or reactivate a claim;
+the existing exact recovery capabilities and current authority remain required.
+
+Estimate remains 52 cases / thirteen methods / eleven categories, UNCOMPILED/
+UNRUN. No writer build/test/discovery/runtime. This is not yet the explicit
+retryable outer-rollback checkpoint or the completed Engine/guided route. Those
+remaining integrations and actual C4/native/UI/GM proof are still required.
+
 # T121 Mortal common procedure-publication WIP — UNCOMPILED / UNRUN
 
 The connected common-plan candidate keeps diagnosis as a distinct private purpose

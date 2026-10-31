@@ -2171,6 +2171,10 @@ internal static partial class AcceptedTurnAuthorityRegistry
                             "detached candidate authority");
                 }
 
+                if (!RetainedDiagnosisCurrentImagesAgree(fileSystem, writeLease, candidate.Authority))
+                    return new(false, new[] { WoundIssue("mortal_diagnosis_retained_hold_changed",
+                        "the exact client-produced held pending and immutable signed command bytes", "changed retained input") }, null);
+
                 if ((_validatedTreatmentPublicationHandoff is not null ||
                      _openTreatmentPublicationReceipt is not null) &&
                     TreatmentPublicationAcceptedStateSemanticallyAgrees(

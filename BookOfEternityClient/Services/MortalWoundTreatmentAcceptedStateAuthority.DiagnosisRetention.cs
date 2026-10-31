@@ -20,6 +20,9 @@ internal sealed partial class MortalWoundTreatmentAcceptedStateAuthority
             throw new InvalidDataException("Only the actual resolving owner may retain its exact live diagnosis claims.");
         var path = WoundAcceptedTurnSnapshotContract.PendingResolutionPath;
         var bytes = await _fileSystem.ReadFileBytesAsync(_writeLease, path);
+        if (!AcceptedTurnAuthorityRegistry.DiagnosisPendingBeforeAgrees(_fileSystem, _writeLease, this,
+                DiagnosisRetentionCapability, request, bytes))
+            throw new InvalidDataException("Diagnosis cannot replace an unowned pending before-image.");
         var root = bytes is null ? new JsonObject
         {
             ["schemaVersion"] = 1, ["sessionId"] = _binding.SessionId, ["requestId"] = _binding.RequestId,
@@ -61,8 +64,17 @@ internal sealed partial class MortalWoundTreatmentAcceptedStateAuthority
             throw new CoordinatedStatePublicationUncertainException(new InvalidDataException("The pending diagnosis hold did not preserve its complete exact after-image."));
         RequireOriginalDiagnosisRequest(request);
         if (!AcceptedTurnAuthorityRegistry.RegisterHeldMortalDiagnosis(_fileSystem, _writeLease, this,
-                DiagnosisRetentionCapability, request))
+                DiagnosisRetentionCapability, request, readback))
             throw new InvalidDataException("Persisted diagnosis could not confirm its original exact private claims.");
+    }
+
+    internal CanonicalBeforeImage ReadDiagnosisOriginalPending()
+    {
+        var snapshot = _diagnosisIssuedSnapshot ?? throw new InvalidDataException("Missing original diagnosis snapshot.");
+        const string path = WoundAcceptedTurnSnapshotContract.PendingResolutionPath;
+        if (snapshot.CoveredLogicalPaths.Contains(path, StringComparer.Ordinal)) return new(true, snapshot.ReadRequiredBytes(path));
+        if (snapshot.AbsentLogicalPaths.Contains(path, StringComparer.Ordinal)) return new(false, null);
+        throw new InvalidDataException("The signed original diagnosis did not prove pending presence or absence.");
     }
 
     internal MortalWoundTreatmentAttemptRequest? ReadHeldDiagnosisRequest(MortalWoundTreatmentAttemptCoordinates coordinates)

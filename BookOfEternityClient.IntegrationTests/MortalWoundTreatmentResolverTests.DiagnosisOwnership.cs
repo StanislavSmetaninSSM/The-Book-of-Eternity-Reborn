@@ -101,6 +101,17 @@ public sealed partial class MortalWoundTreatmentResolverTests
         await fixture.Authority.RetainDiagnosisRequestAsync(request);
         var unchanged = fixture.CaptureJson();
         var outcome = MortalWoundDiagnosisOutcome.Resolve(fixture.Authority, history, request);
+        var pendingPath = WoundAcceptedTurnSnapshotContract.PendingResolutionPath;
+        var exactHeld = await fixture.Files.ReadFileBytesAsync(fixture.Lease, pendingPath);
+        Assert.NotNull(exactHeld);
+        // A whitespace-only rewrite remains valid request DATA, but was not
+        // produced by the actual retained-request owner and cannot replace its
+        // exact held after-image at a new lease admission.
+        await fixture.Files.WriteFileAtomicBytesAsync(fixture.Lease, pendingPath, exactHeld.Concat(new byte[] { 32 }).ToArray());
+        var refused = await fixture.RebindCandidateAsync();
+        Assert.False(refused.IsValid);
+        Assert.Contains(refused.Issues, value => value.Code == "mortal_diagnosis_retained_hold_changed");
+        await fixture.Files.WriteFileAtomicBytesAsync(fixture.Lease, pendingPath, exactHeld);
         await fixture.RebindAsync();
         var competitor = MortalWoundTreatmentPlanner.PrepareProcedureRequest(fixture.Authority, history, fixture.Authority.CurrentWound,
             "competing_after_rebind", "inspect_explicit_method", fixture.EventRef);
@@ -447,11 +458,16 @@ public sealed partial class MortalWoundTreatmentResolverTests
 
         internal async Task RebindAsync()
         {
-            var woundId = Authority.CurrentWound.WoundId;
-            await Lease.DisposeAsync(); Lease = await Files.AcquireCanonicalWriteLeaseAsync();
-            var exported = MortalWoundTreatmentAcceptedStateAuthority.ExportDiagnosisCurrent(Files, Lease, ParseContext(), woundId);
+            var exported = await RebindCandidateAsync();
             Assert.True(exported.IsValid, JsonSerializer.Serialize(exported.Issues));
             Authority = Assert.IsType<MortalWoundTreatmentAcceptedStateAuthority>(exported.Authority);
+        }
+
+        internal async Task<MortalWoundTreatmentAcceptedStateAuthorityResult> RebindCandidateAsync()
+        {
+            var woundId = Authority.CurrentWound.WoundId;
+            await Lease.DisposeAsync(); Lease = await Files.AcquireCanonicalWriteLeaseAsync();
+            return MortalWoundTreatmentAcceptedStateAuthority.ExportDiagnosisCurrent(Files, Lease, ParseContext(), woundId);
         }
 
         internal Dictionary<string, byte[]> CaptureJson() => Directory.EnumerateFiles(Root, "*.json", SearchOption.AllDirectories)
