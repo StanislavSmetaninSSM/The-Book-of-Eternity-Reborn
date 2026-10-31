@@ -1,3 +1,50 @@
+# T121 C13 fresh preparation verified — runtime UNRUN
+
+Corrected source `3a25476674debde692cc0814e1f036f759ad69ea` now has four
+successful fresh owning builds: Main main-c1 1:45.84 /12 warnings; Support
+13.85s /23; Unit54.09s /26; Integration1:59.44 /102, all zero errors.
+Warning code/message multisets match the accepted C12 baseline exactly. The
+failed first Main build stays preserved separately; only main-c1 is selected.
+Four PE/PDB pairs and333 actual changed-source bindings match. All27 owning
+artifacts,40 operational-resource copies and4 daemons agree. Their full archive
+is62,930,077 bytes, SHA256
+`2a00d6c328cdab5a486c657560a4f015a3307f3aff92f263775b1ad84636d7dd`;
+all27 members and full197,181,440-byte gzip EOF/CRC decode match. Raw remains
+outside checkout under `/workspace/tboe-linux-evidence-20261025/us5-guided-diagnosis`.
+
+Official discovery exits0:1266 categories /13081 methods, no stale or unmapped
+selector. Exact PlanOnly exits0:225 cases /94 methods /53 descriptors /
+50 selected categories, zero test executions. The executable phases are output2
+plus semantic guards3 (two60s descriptors), notification peers5 (two120s
+descriptors), then console/browser/rollback separately (each180s). No limit is
+raised. Independent PREP and a fresh source/resource/process fence precede the
+first focused5 runtime; no C13 runtime is yet accepted or attempted.
+
+Primary inspection reparsed all46 retained raw TRXs and reconciled212 unique
+passed cases /84 methods /46 descriptors /44 categories against the exact current
+plan. The external retained212 proof SHA256 is
+`8f500c2907c1840383033c65401624880c9a1fa6ffc6c08cac69c2e0ac93bbfc`:
+accepted202 plus only C12 engine-original1 and native9; guards3 are replaced by
+this fresh gate. It spans18 historical runtime epochs /23 used runs, not a fresh
+212 PASS claim. Failed and incomplete attempts remain distinct and preserved.
+
+Functional remainder is broader than diagnosis acceptance. Guided physical
+healing already has backend procedure/course/guaranteed arithmetic, resource
+agreement, History and common publication, but its guided player selection /
+confirmation and ordinary procedure/course Engine dispatch are missing. This is
+the next coherent functional route after the current Mortal diagnosis acceptance;
+recommendations alone do not complete it. The eight spiritual diagnosis proof
+adapters still missing are exactly item_quantity, resource_quantity, consent,
+facility, location, quest_state, effect_state and environment; quest_state means
+quest state, not a compensation agreement. These are not an exhaustive closure
+of #1536: remaining US3/source/lifecycle and broader parent coverage still need
+reconciliation with implemented code and accepted lineages. Existing supported
+spiritual diagnosis, prior healing routes and retained PASS are not redone.
+DOM/provider/fresh-process, earlier UNKNOWN/timeouts, DFR/Mortal-compat/Windows
+HOLDs and all parent feature tasks stay open. No new GM wire or authoring rule is
+introduced by sealed client-owned notification, and the C13 reuse/authority
+assessment below is unchanged.
+
 # T121 C13 published-stage member correction — compilation pending
 
 First Main build at `9af39d516f89a4793c599e594a96e5287e5b1f52` exits1 in
