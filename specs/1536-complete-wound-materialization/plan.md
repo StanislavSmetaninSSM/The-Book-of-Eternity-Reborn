@@ -1,3 +1,35 @@
+# T121 exact structured-refusal Fact — mixed owning provenance / PREP, UNRUN
+
+Astra accepted the test-only delta at
+`e8eb51d8b367a76c4d98fead047d0bcb5d50c70a` for Integration build admission.
+Fresh Integration exits0 in 2:13.47 with the unchanged 102-warning multiset.
+Main/TestSupport/Unit retain the current successful C8C1 builds at
+`797cc898f7b7b8faf6243d18e99cc3ab496cead6`; their Compile source is unchanged.
+All four PE/PDB identities and 328 actual source bindings match. Of 27 owning
+artifacts only the Integration DLL/PDB changed; other 25 hashes, 40 resource
+copies and four daemons remain exact. This is explicit mixed owning provenance,
+not four newly built projects at one SHA. No stale or Windows binary is used.
+
+Archive: 62879636 bytes, SHA256
+`cab470b58f80a437a03697174af49685eb5b97f395987617ef66e04e08b46f6f`;
+27 member hashes and full gzip EOF/CRC over 197048320 decoded bytes pass.
+Catalog discovery remains valid at 1258 categories / 13075 methods. Exact official
+PlanOnly is 215 cases / 85 methods / 44 descriptors / 42 categories, no duplicates;
+both execute zero tests and complete cleanup. The disjoint phases are retained186
+(67 methods/27 descriptors), corrected Fact1, native19, native6 and three UI
+singletons. Retained186 includes accepted callback1/semantic guards3 on C8C1;
+unchanged successful cases are not replayed for the test-only oracle change.
+
+Only the corrected `mortal-diagnosis-common-context` Fact is proposed for the
+next independent PREP: one method/descriptor at60s. Exact structured clock refusal,
+restoration and all suffix assertions remain UNRUN. Native19/6/UI3 stay held.
+The ordinary broader envelope timeout remains UNKNOWN/open, and ordinary native1
+is still required for the reviewed affected-contract coverage. No fresh186/215
+or feature PASS is claimed. Full external raw/provenance remains under
+`/workspace/tboe-linux-evidence-20261025/us5-guided-diagnosis/M2GREENC8C2-*`.
+No production, game rule, GM guide, cache or lifetime changed in this delta.
+Physical treatment/eight adapters and all prior parent/HOLD residuals remain.
+
 # T121 clock-refusal oracle correction — test-only WIP
 
 At runtime `8ae48e676467ef0d59f8524a164ea2fda514c22a`, compiled
