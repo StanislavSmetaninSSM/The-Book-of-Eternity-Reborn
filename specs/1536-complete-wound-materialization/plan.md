@@ -1,3 +1,22 @@
+# T121 explicit-lease owning builds and exact selection complete — runtime UNRUN
+
+All four builds at `b0e48e60b8b682b6a1cafc9207e07860765f748e` passed with zero
+errors: Main 1:57.58, TestSupport 13.22s, Unit 1:00.84 and Integration 2:06.10.
+Warning code/message multisets match the 12/23/26/102 baseline. Four PE/PDB
+identities, 322 changed-source bindings, 27 artifacts, 40 resource copies and four
+daemons match. All archived members and complete gzip EOF/CRC are verified.
+Full raw remains external under `us5-guided-diagnosis/M2GREENC5-*`.
+
+Official discovery passed 1252 categories / 13071 methods or files, with no test
+execution. Exact PlanOnly confirms 204 cases / 81 methods / 39 descriptors in
+37 categories, no duplicates and complete cleanup. The disjoint partition is
+163 retained cases, focused13, independent native19, dependent native6, then
+console/browser/rollback one each. Focused13 is 8 methods / 3 descriptors /
+3 categories, all 60s. All native memberships remain unchanged at 120s; only
+execution order changes. Independent PREP and all new runtime results are pending.
+The three earlier native failures remain preserved; no current native/UI PASS,
+whole-feature acceptance, speedup, restore or parked qualification is claimed.
+
 # T121 explicit-lease SOURCE accepted — owning builds only
 
 Independent Astra/high accepted the bounded correction at
