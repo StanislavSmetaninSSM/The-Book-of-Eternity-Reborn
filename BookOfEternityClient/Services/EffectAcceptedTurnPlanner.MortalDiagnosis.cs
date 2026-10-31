@@ -28,7 +28,7 @@ internal static partial class EffectAcceptedTurnPlanner
                         WoundIdentityState.ComputeSemanticFingerprint(before), WoundIdentityState.ComputeSemanticFingerprint(after),
                         stage.Kind == "heal", after.LastTransition.Turn, stage.EventRef, stage.OperationKey, before, after);
                 }).ToArray(), StringComparer.Ordinal);
-            _result = MortalWoundDiagnosisPersistedResult.CreateComparisonEvidence(owner.Owner, owner.Outcome, owner.Working, owner.Progression, published, owner.PublicationInputs);
+            _result = MortalWoundDiagnosisPersistedResult.CreateComparisonEvidence(owner.Owner, owner.Outcome, owner.Working, owner.Progression, published, owner);
             Fingerprint = WoundAcceptedTurnFingerprintWriter.Compute(new[]
             {
                 "book_of_eternity.mortal_diagnosis.effect_execution", "1", owner.Fingerprint, _preparation, _result.ResultFingerprint,

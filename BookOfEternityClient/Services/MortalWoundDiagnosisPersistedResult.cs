@@ -56,10 +56,15 @@ internal sealed class MortalWoundDiagnosisPersistedResult : WoundTransitionResul
         MortalWoundDiagnosisOutcome outcome, MortalWoundDiagnosisWorkingProjection working,
         ProgressionScheduleService.FrozenMortalCalculation progression,
         IReadOnlyDictionary<string, IReadOnlyList<MortalWoundRecoveryPublishedStage>> stages,
-        WoundAcceptedTurnPlanner.MortalDiagnosisPublicationWitness? publicationInputs = null)
+        WoundAcceptedTurnPlanner.MortalDiagnosisContinuation? publicationOwner = null)
     {
         working.RequireCurrent(owner);
         outcome.RequireCurrent(owner, new WoundHistoryParseResult(owner.History, Array.Empty<ValidationIssue>()));
+        if (publicationOwner is not null && (!ReferenceEquals(publicationOwner.Owner, owner) ||
+            !ReferenceEquals(publicationOwner.Outcome, outcome) || !ReferenceEquals(publicationOwner.Working, working) ||
+            publicationOwner.Progression.MutationFingerprint != progression.MutationFingerprint))
+            throw new InvalidDataException("Diagnosis result requires the same genuine frozen continuation.");
+        var publicationInputs = publicationOwner?.PublicationInputs;
         if (!stages.Keys.ToHashSet(StringComparer.Ordinal).SetEquals(working.Members.Select(value => value.Original.WoundId)))
             throw new InvalidDataException("Diagnosis recovery evidence must cover the complete admitted original cohort exactly.");
         var finalization = MortalWoundTreatmentResourceComposer.Finalize(outcome.Resolution);

@@ -750,6 +750,14 @@ public sealed partial class MortalWoundTreatmentResolverTests
                 {
                     ["kind"] = "resource_quantity", ["resourceRef"] = "energy", ["quantity"] = 1, ["ownerRole"] = "target"
                 };
+                scenario.Before["treatment"]!["diagnosisPaths"]![0]!["requirements"]!.AsArray().Add(new JsonObject
+                {
+                    ["kind"] = "resource_quantity", ["resourceRef"] = "energy", ["quantity"] = 1, ["ownerRole"] = "target"
+                });
+                scenario.Before["treatment"]!["diagnosisPaths"]![0]!["check"]!["resourcePolicy"]!["mutations"]!.AsArray().Add(new JsonObject
+                {
+                    ["kind"] = "consume_requirement", ["scope"] = "common", ["milestoneOrdinal"] = null, ["requirementIndex"] = 2
+                });
                 scenario = scenario with { History = CreateCurrentWoundHistory(scenario.Before) };
             }
             if (woundLabel is not null)

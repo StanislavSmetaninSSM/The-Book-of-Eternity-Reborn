@@ -126,6 +126,7 @@ internal static class MortalWoundDiagnosisCompletion
         var sourceAuthority = EffectAcceptedTurnInputComposer.BuildCanonicalSourceAuthority(nodes);
         var targetAuthority = EffectAcceptedTurnInputComposer.BuildCanonicalTargetAuthority(effectInput, nodes);
         issues.AddRange(sourceAuthority.Issues); issues.AddRange(targetAuthority.Issues);
+        issues.AddRange(targetAuthority.ValidateNamedCombatantBindings(effectInput));
         ValidationService.ValidateCanonicalEffectBindings(effects, sourceAuthority, targetAuthority, issues);
         if (issues.Count != 0) throw Invalid("Current effect/source/target/index agreement changed.");
         return result;

@@ -65,6 +65,14 @@ archive are outside checkout; original failures and all other holds are retained
   parsing without promoting old/component DATA into publication proof. Actual
   resource_quantity coverage is required alongside item costs. See current
   plan receipt; no parent or whole diagnosis acceptance yet.
+  C21 candidate now connects actual frozen-input witness/version2, pure critical/
+  semantic/identity reuse and one strict fresh current settlement reader at both
+  browser completion consumers. Version1 stays historical; no implicit empty
+  witness, resource-prefix blob, live-owner resurrection or historical effect replay.
+  Three real common-publication controls (item success, true Fate, real cumulative
+  resource costs), exact v1 durable consumer and three semantic guards precede
+  original browser/rollback. Source estimate237/104/63/60 is UNCOMPILED/UNRUN and
+  discovery/review dependent. No task flag closes; see current plan for exact scope.
 
 - [ ] T121-DIAGNOSIS-MORTAL-ITEM-POSTVALIDATION Close the confirmed client-owned
   medic debit versus outer post-materialization inventory guard using the existing

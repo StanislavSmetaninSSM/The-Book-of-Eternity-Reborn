@@ -49,6 +49,59 @@ or rules. Existing diagnosis GM wire/example remains unchanged; review its sourc
 coverage and record this rationale. Wider diagnosis/physical/adapters/parent/HOLD
 work stays open. Root owns builds/runtimes; code is not qualified by DESIGN alone.
 
+
+C21 implementation candidate (UNCOMPILED/UNRUN): the actual continuation captures
+its matching frozen skill projection and item envelope before execution. Version2
+adds only publicationInputs to the existing closed complete result; version1 retains
+its exact historical/component shape. Witness parsing uses the same freezers and
+immutable parsed DATA stays on that result, with no permission or implicit upgrade.
+The existing shared browser predicate dispatches Mortal first, then leaves combat
+and safe spiritual branches unchanged. Actual browser Finish and accepted-record
+reuse call the same predicate. New component delivery DATA makes no live browser
+phase/settled-receipt claim; original browser UI remains required.
+
+Clarified minimum: exact independently derived owned consumption set/order plus
+strict canonical resource arithmetic/unique IDs/execution slots/predecessor chains,
+current ledger/owner agreement and current item/effect/wound agreement suffice.
+Wound History preserves its existing original-prefix/result proof. No extra original
+ResourceHistory blob/staged field, quadratic History copy or historical effect
+regeneration is required. Item-only inert omitted-versus-present-empty future skill
+commands have no independent signed historical authorship commitment. Keep strict
+witness shape/refreezing; bind changed semantic to real resource_quantity identities
+where it has an observable dependency. Do not manufacture a stage/hash/authority
+solely to reject that physically inert representation.
+
+Quantity baselines are retained requirement SuccessWitness.Evidence, joined through
+exact scope/index/claim/coordinate/witness fingerprint. Resource CurrentValue and
+AvailableValue remain distinct, preserving live publisher's equality restriction;
+item Count and AvailableCount remain distinct. Derive expected source/policy and
+mutation IDs via shared existing pure functions, never candidate History identities.
+Fresh current dependencies are read/parsed once per comparison through the caller's
+existing lease/read boundary; no read owner, reservation or cache is reconstructed.
+Existing item/index/companion and effect/source/target/index validators are reused.
+
+Three actual native publication rows cover item success/zero duration, true Fate/
+elapsed30 and two declared same-coordinate energy consumptions with present-empty
+skill/item envelopes. Each has independent world/claims/transaction and real closure.
+Shared/direct predicates get separate fresh reads; per-path counters assert one
+physical callback invocation each. Clone-only negatives reuse that observed DATA,
+not authority, and preserve canonical bytes/request. Version1 history remains valid
+but cannot prove current publication; semantic resealing is tested against real
+resource IDs, including valid canonical wrong-operation-ID drift. Foreign original/
+control/dice/token/generation, witness shape, missing/duplicate/order/wrong spend,
+cohort/time/item/effect/resource drift and reintroduced work are bounded controls.
+
+Fresh proposal: item2/60s, resource1/60s, existing v1 durable1/120s, semantic guards3/
+60s, then original browser1 and rollback1 separately/180s. Source estimate237/104/
+63 descriptors/60 categories awaits official discovery. Existing ordinary/spiritual
+hash formulas and dispatch bodies are unchanged apart from exact pure reuse; their
+old PASS lineages are retained only after final diff review. New v2 producer is
+covered by the genuine publication controls and actual full browser. No blanket
+replay, new GM-authored field, capability, rule, cost/default, timing budget or
+transport is introduced. Client-owned History/completion leaf alone changes;
+existing GM diagnosis wire/example stays synchronized without edits. Parents,
+physical guided treatment, eight adapters and all other HOLD/UNKNOWN work remain.
+
 # T108: safe player aid to the current Guardian
 
 Issue: https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536

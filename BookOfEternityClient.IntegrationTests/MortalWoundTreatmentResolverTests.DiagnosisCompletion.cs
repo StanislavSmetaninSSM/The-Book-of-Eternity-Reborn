@@ -92,7 +92,8 @@ public sealed partial class MortalWoundTreatmentResolverTests
             exact.Request.RequestFingerprint, exact.Resolution.ResultFingerprint, finalization.FinalizationFingerprint, exact.ReconstructPublicationSemantic()));
         Assert.Equal(2, exact.Recoveries.Length);
         Assert.NotEqual(exact.Request.Coordinates.WoundId, exact.Recoveries[0].Original.WoundId);
-        Assert.Equal(resourceCost ? "resource_quantity" : "item_quantity", Assert.Single(finalization.Consumptions).Kind);
+        Assert.Equal(resourceCost ? 2 : 1, finalization.Consumptions.Count);
+        Assert.All(finalization.Consumptions, consumption => Assert.Equal(resourceCost ? "resource_quantity" : "item_quantity", consumption.Kind));
 
         // Native original admission above is genuine. This is detached delivery
         // DATA for the same shared predicate, never a fabricated accepted receipt
@@ -123,6 +124,16 @@ public sealed partial class MortalWoundTreatmentResolverTests
         foreignControl.ProgressionControl!.CurrentWorldTimeInMinutes++;
         await Assert.ThrowsAsync<InvalidDataException>(() => MortalWoundDiagnosisCompletion.RequirePublishedAsync(
             foreignControl, token, generation, selected.Selection, input, path => Task.FromResult(current[path])));
+        var foreignInput = MortalWoundDiagnosisInputCodec.Create(new(original.SessionId, original.RequestId,
+            original.TurnNumber, foreignControl.ProgressionControl), selected.Selection, selected.Context);
+        Assert.True(MortalWoundDiagnosisInputCodec.IsBound(foreignInput, new(original.SessionId, original.RequestId,
+            original.TurnNumber, foreignControl.ProgressionControl)));
+        await Assert.ThrowsAsync<InvalidDataException>(() => MortalWoundDiagnosisCompletion.RequirePublishedAsync(
+            foreignControl, token, generation, selected.Selection, foreignInput, path => Task.FromResult(current[path])));
+        var foreignDice = JsonSerializer.Deserialize<TurnRequest>(requestJson, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)!;
+        foreignDice.PreGeneratedDices1d20[0] = foreignDice.PreGeneratedDices1d20[0] == 20 ? 19 : 20;
+        await Assert.ThrowsAsync<InvalidDataException>(() => MortalWoundDiagnosisCompletion.RequirePublishedAsync(
+            foreignDice, token, generation, selected.Selection, input, path => Task.FromResult(current[path])));
         await Refuse("missing result", map => map[WoundHistoryState.HistoryPath] = null);
         await Refuse("duplicate result", map => Change(map, WoundHistoryState.HistoryPath, root =>
         {
@@ -133,19 +144,33 @@ public sealed partial class MortalWoundTreatmentResolverTests
         {
             var rows = result["cohort"]!.AsArray(); var first = rows[0]!.DeepClone(); rows.RemoveAt(0); rows.Add(first);
         }));
-        await Refuse("v1 has no current publication witness", map => ChangeResult(map, result =>
-        { result.Remove("publicationInputs"); result["schemaVersion"] = 1; }));
+        await Refuse("v1 has no current publication witness", map =>
+        {
+            ChangeResult(map, result => { result.Remove("publicationInputs"); result["schemaVersion"] = 1; });
+            var historical = WoundHistoryState.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(map[WoundHistoryState.HistoryPath]!), WoundHistoryState.HistoryPath);
+            Assert.True(historical.IsValid, JsonSerializer.Serialize(historical.Issues));
+        });
         await Refuse("missing v2 witness", map => ChangeResult(map, result => result.Remove("publicationInputs")));
         await Refuse("mixed version witness", map => ChangeResult(map, result => result["schemaVersion"] = 1));
         await Refuse("malformed witness", map => ChangeResult(map, result => result["publicationInputs"]!["itemCommands"]!["UpdateInventory"] = "invalid"));
+        await Refuse("extra witness fields", map => ChangeResult(map, result => result["publicationInputs"]!["foreign"] = true));
         await Refuse("current clock drift", map => Change(map, EffectAcceptedTurnInputComposer.WorldTimePath, root => root["currentTimeInMinutes"] = 999));
         await Refuse("current schedule drift", map => Change(map, ProgressionScheduleService.SchedulePath, root => root["lastUpdatedUtc"] = DateTime.UnixEpoch.ToString("O")));
         await Refuse("current resource drift", map => Change(map, ResourceMaterializationContract.StatePath,
             root => root["entries"]!.AsArray()[0]!["current"] = 0));
         await Refuse("current carrier drift", map => Change(map, WoundCarrierCatalog.PlayerPath,
             root => root["activeWounds"]!.AsArray()[0]!["display"]!["description"] = "foreign"));
+        await Refuse("current item drift", map => Change(map, NpcCoreChangesContract.NpcCorePath,
+            root => root["NPCsInScene"]!.AsArray()[0]!["inventory"]!.AsArray()[0]!["count"] = 999));
+        await Refuse("current effect drift", map => Change(map, EffectCarrierCatalog.PlayerPath, root =>
+        {
+            var effect = root["activeEffects"]!.AsArray().First(row => row!["components"]!.AsArray()
+                .Any(component => component!["profile"]!.GetValue<string>() == "periodic_damage"));
+            effect!["components"]!.AsArray().First(component => component!["profile"]!.GetValue<string>() == "periodic_damage")!["payload"]!["amount"] = 4;
+        }));
         await Refuse("reintroduced command", map => map[AcceptedMechanicsPlan.WoundCommandPath] = Encoding.UTF8.GetBytes(input.ToJsonString()));
         await Refuse("reintroduced pending work", map => map[WoundAcceptedTurnSnapshotContract.PendingResolutionPath] = Encoding.UTF8.GetBytes("{}"));
+        await Refuse("reintroduced report", map => map[ProgressionScheduleService.ReportPath] = Encoding.UTF8.GetBytes("{}"));
         if (resourceCost)
         {
             await Refuse("resealed changed semantic", map =>
@@ -159,10 +184,31 @@ public sealed partial class MortalWoundTreatmentResolverTests
             });
             await Refuse("missing spend", map => Change(map, ResourceMaterializationContract.HistoryPath, root =>
             {
-                var rows = root["entries"]!.AsArray(); rows.Remove(rows.Single(row => row!["originKind"]!.GetValue<string>() == "registered_system_outcome"));
+                var rows = root["entries"]!.AsArray(); rows.Remove(rows.First(row => row!["originKind"]!.GetValue<string>() == "registered_system_outcome"));
             }));
             await Refuse("wrong spend", map => Change(map, ResourceMaterializationContract.HistoryPath, root =>
-                root["entries"]!.AsArray().Single(row => row!["originKind"]!.GetValue<string>() == "registered_system_outcome")!["requestedAmount"] = 2));
+                root["entries"]!.AsArray().First(row => row!["originKind"]!.GetValue<string>() == "registered_system_outcome")!["requestedAmount"] = 2));
+            await Refuse("duplicate spend", map => Change(map, ResourceMaterializationContract.HistoryPath, root =>
+            {
+                var rows = root["entries"]!.AsArray(); rows.Add(rows.First(row => row!["originKind"]!.GetValue<string>() == "registered_system_outcome")!.DeepClone());
+            }));
+            await Refuse("wrong spend execution order", map => Change(map, ResourceMaterializationContract.HistoryPath, root =>
+            {
+                var rows = root["entries"]!.AsArray().Where(row => row!["originKind"]!.GetValue<string>() == "registered_system_outcome").ToArray();
+                Assert.Equal(2, rows.Length);
+                var first = rows[0]!["executionSequence"]!.GetValue<int>();
+                rows[0]!["executionSequence"] = rows[1]!["executionSequence"]!.DeepClone(); rows[1]!["executionSequence"] = first;
+            }));
+            await Refuse("valid canonical wrong operation identity", map =>
+            {
+                Change(map, ResourceMaterializationContract.HistoryPath, root =>
+                    root["entries"]!.AsArray().First(row => row!["originKind"]!.GetValue<string>() == "registered_system_outcome")!["operationId"] = "resource_operation_" + Guid.NewGuid().ToString("N"));
+                var definitions = ResourceDefinitionCatalog.ParseCanonical(CanonicalJsonUtf8.DecodeOneOptionalBom(map[ResourceMaterializationContract.DefinitionsPath]!), false);
+                var history = ResourceHistoryState.ParseCanonical(CanonicalJsonUtf8.DecodeOneOptionalBom(map[ResourceMaterializationContract.HistoryPath]!), definitions.Catalog!, false);
+                var state = ResourceStateContract.ParseCanonical(CanonicalJsonUtf8.DecodeOneOptionalBom(map[ResourceMaterializationContract.StatePath]!), definitions.Catalog!, false);
+                Assert.True(history.IsValid, JsonSerializer.Serialize(history.Issues)); Assert.True(state.IsValid);
+                Assert.Empty(history.History!.ValidateStateAgreement(state.Ledger!));
+            });
         }
         else await Refuse("wrong item spend identity", map => Change(map, MortalItemIdentityState.StatePath, root =>
         {

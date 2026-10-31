@@ -1,3 +1,57 @@
+# T121 C21 coherent source candidate — UNCOMPILED/UNRUN
+
+Implementation/fixture frontier is complete for independent whole SOURCE, not
+functional acceptance. Same genuine frozen continuation mints a sealed closed v2
+publication-input leaf; v1 historical/component parsing remains exact and receives
+no implicit empty witness. Shared pure critical/base/envelope/seed/item/resource
+identities are used by production and closed comparison, with terminal outcome
+fingerprints only. The shared browser predicate dispatches Mortal without changing
+its spiritual combat/safe-cycle branches, story or cleanup inventories.
+
+One fresh current read joins independent original input/selection/full control/dice/
+token/generation, unique complete result, current wound cohort/identity/History,
+exact clock/schedule/report, consumed work, exact resource/item consumptions and
+canonical resource owner/ordered chains/current ledger/item/effect agreement.
+Original quantity witnesses supply before-values/availability; candidate History
+never supplies expected spend identities. No historical effect replay or extra
+ResourceHistory/staging blob is introduced. Item-only inert empty-envelope variation
+has no independent signed future-response commitment and is not new authority.
+
+Three newly authored independent actual-publication rows occupy two60s categories:
+item success0 + true Fate30, and resource30 with two declared energy consumptions.
+Each real transaction finalizes before direct/shared comparison. Fresh invocation
+callbacks assert one read per dependency; cloned negative DATA tests version/
+refreezing, semantic resealing against real resource IDs, full original/control/
+dice/token/generation, cohort/order, missing/duplicate/wrong spend and execution
+order, valid canonical wrong operation-ID, current item/effect/resource/time drift
+and reintroduced work. Canonical bytes and sealed request remain inert. A v1 clone
+is explicitly valid History DATA yet refuses current completion.
+
+Finite fresh proposal is7 cases /6 methods /4 descriptors: new item2, resource1,
+existing v1 durable1/120s and semantic guards3/60s; then original browser1 and
+rollback1 separately at unchanged180s. Full source estimate237/104/63/60 awaits
+root official discovery. C20 console PASS and other unchanged ordinary/spiritual
+lineages remain conditional on final dependency review, not fresh C21 execution.
+Raw failures/captures/roots, broader ordinary TIMEOUT/UNKNOWN and all HOLDs remain.
+
+Static-only checks: category/selection JSON parse, unchanged existing exact selectors/
+budgets, two new documented category owners, git diff whitespace and all69 existing
+World closure hashes match. No pin literal was changed; new comparison stays under
+the caller's existing lease/read boundary and does not alter World phase closure.
+The complete native producer bootstrap, raw location→item, resource definitions/
+state/History/owner, effect/index/carriers/companions and normal transaction closing
+were source-inspected against every new current dependency. No compiler/runtime
+outcome is inferred: all C21 source/tests remain UNCOMPILED/UNRUN. Root owns all
+four fresh builds, catalog/PDB/PlanOnly/PREP and runtime after Astra SOURCE.
+
+Optimization: one bounded invocation reads/parses current dependency DATA once,
+immutable versioned witness remains on its parsed result, and exact pure formulas
+are reused instead of a copied hash/owner/cache framework. Separate comparisons
+remain fresh; negative DATA is per-test only. No speedup claim. Client-owned
+completion/History representation changes no GM-authored field, rule, default cost
+or guide/example wire. Current task/spec/design record that no-update rationale;
+physical guided treatment, eight adapters, parents and overall qualification stay open.
+
 # T121 C21 genuine completion controls WIP — UNCOMPILED/UNRUN
 
 Three finite independent native-publication rows are now authored: two item rows

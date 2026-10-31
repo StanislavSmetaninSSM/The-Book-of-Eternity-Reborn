@@ -3789,6 +3789,12 @@ cannot be supplied by later correlation input, and makes `none` invalid after re
   The other eight canonical requirement adapters and the Mortal guided procedural
   route remain open; this is not whole FR-071/T121 acceptance and does not lift
   DFR/Mortal-compatibility/Windows holds.
+  The client-owned Mortal browser completion candidate retains exact frozen
+  publication inputs in a closed version2 diagnosis result and freshly verifies
+  full current settlement at both immediate completion and accepted-record reuse.
+  Version1 remains immutable historical/component DATA, never an implicit current
+  publication witness. This internal leaf introduces no GM-authored field, new
+  gameplay rule or execution authority; qualification remains open in plan/tasks.
 
 - **FR-072**: Target selection MUST list Self first and then visible reachable nearby entities; players MUST NOT need to type names or technical identities.
 - **FR-073**: Equal display names MUST be disambiguated with visible context while the selected exact identity remains hidden.
