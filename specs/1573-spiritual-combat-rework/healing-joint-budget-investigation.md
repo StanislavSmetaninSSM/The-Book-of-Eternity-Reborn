@@ -111,13 +111,22 @@ seeds/indices/outcomes/endpoints/личные и общие счётчики/ц�
 |adaptive|planner_always|1948 / —|— / —|491 / 516|
 |adaptive|planner_joint|325 / 326|1324 / 1282|8 / 13|
 
-Первый эффект неоднозначен: против instant planner_joint168–176 лучше
-planner_never188 и large_never206–221; против long planner_joint387–439 хуже
-planner_never320–351. Прежний T124 fixed_large+reserve_large на той же
+Первый эффект неоднозначен. Против instant main median planner_joint168–176,
+planner_never188 и large_never206–221. Однако **оба planner-варианта не сделали
+ни одной попытки срыва в обеих очередях**: на наблюдавшихся состояниях это одно
+и то же поведение, разницу их медиан нельзя приписывать совместному бюджету.
+Улучшение относительно large_never относится к Main-selector. Против long
+planner_joint387–439 хуже planner_never320–351. Прежний T124 fixed_large+reserve_large на той же
 усиленной дуэли давал независимую confirmation median290–298. Этот контроль
 не включён в шесть новых тактик: его исторический результат нужно учитывать,
 не объявляя улучшение относительно Always победой над всеми прежними решениями.
 Сравнение с T124 не является парной выборкой; общие формулы/defaults сохранены.
+
+У всех planner-тактик в healer28 main нет ни strong, ни large: фактический набор
+состоит из ordinary/suppress/Recover. Наличие дорогих кандидатов в алгоритме
+не доказывает, что он использует их. Уже завершённые отдельные confirmation
+ячейки instant тоже имеют0срывов: planner_never179/180, planner_joint181/181;
+это не итоговый verdict ещё не завершённой полной confirmation матрицы.
 
 В unboosted_normal main median всех тактик14–19, без незавершённых; совместное
 планирование не показало перехода к5–8раундам. В fortified_both36 результат
