@@ -1,3 +1,28 @@
+# T121 C14 first runtime: lifetime controller1 FAIL, independent6 admitted
+
+At runtime `3c47c1d91ea5275dccba0ba9e15c8d1d4a778675`, post8 stops after
+lifetime2: exactly1 PASS /1 FAIL /6 UNRUN, no timeout, category32.1029621s/60,
+wall46.2223671s. False/compensated passes. True fails at the controlled close
+counter: expected1, actual0, before its actual Complete result/export assertions.
+Those later facts remain unproved; this does not establish a production defect.
+Primary and independent OUTCOME verified exact raw TRXs/unique IDs, unchanged
+pins, runner cleanup and empty typed-fixture namespace after disposal. No per-case
+root identities or passive capture are invented. External raw is M2GREENC14-post8.
+
+Source confirms the fault hook is attached only by the public ordinary byte-writer;
+CompleteAsync's explicit lease acquisition does not use that path. The fixture
+forwarded the hook correctly but did not inject the intended failure. A narrow
+same-production-close control is being designed; no production bypass, broad
+acquisition-hook change, retry or raised limit has occurred. Keep the original
+failed row and completed False evidence separately.
+
+Independent OUTCOME admits the remaining6 on unchanged code after an immediate
+fresh fence: diagnosis postvalidator1, ordinary postvalidator1, World source
+closure1 and semantic guards3. They are independent of the invalid close-hook
+preparation. Lifetime2, browser3, fresh Engine-original1 and original UI3 remain
+held, and the overall fresh12/current diagnosis are not accepted. All previous
+raw, owned roots, UNKNOWN and broader HOLDs stay untouched.
+
 # T121 C14 fresh preparation verified — runtime UNRUN
 
 Corrected Integration at `a069fae7f2c0eba5a2d3fabb12af5ef185c4566f` exits0 in
