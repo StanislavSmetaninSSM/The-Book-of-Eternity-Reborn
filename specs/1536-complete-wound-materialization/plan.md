@@ -1,3 +1,46 @@
+# T121 Mortal guided diagnosis — bounded DESIGN candidate, implementation UNRUN
+
+The next tracked player milestone is T121-DIAGNOSIS-MORTAL under #1536/FR-071 and
+the author-approved per-method procedure/check/duration/cost rules. The concrete
+existing-owner proposal is appended to spiritual-aid-design.md. This checkpoint
+changes only design/plan/tasks: no production, tests, catalogue, dependency, build,
+discovery or runtime. Independent Astra DESIGN is required before the first causal
+scaffold; no new author approval is requested for already approved gameplay.
+
+Confirmed gaps: actual guided state skips Mortal; the shared path keeps raw Check
+but the Mortal typed definition drops it and canonical writer emits{}; live
+persisted/validator capture explicitly refuses detached diagnosis/alternative
+commands. Existing procedure/check/resource authorities are route-bound, not fresh
+diagnosis permission. Duration is absent from the method and cannot be guessed from
+a GM timeChange field or a wall-clock wait. Detached diagnosis hashes grant no
+accepted-world/check/publication authority.
+
+Chosen direction: distinct Mortal diagnosis subject through the existing accepted
+state exporter, requirement bundle, procedure dice/Fate and reservation owners,
+request/persistence and common publisher. A closed Mortal Check retains explicit
+resolution/binary bands, duration and ordinary resource policy; spiritual empty
+Check stays exact. Reuse ProgressionScheduleService accepted outcome mutation and
+current clock/schedule arithmetic, binding the declared duration to the same atomic
+plan; preserve ordinary physical recovery through its actual cadence/planner owner.
+No fake treatment route, spiritual cycle, parallel issuer/cache/History/publisher.
+
+Initial proposed causal selection is two file-light existing-parser rows/60s,
+proving complete explicit method parameters before the expected current empty-check
+rejection. Further exact bounded contract/procedure/resource/time/replay/native/UI
+selectors are described in the design and will be authored only after DESIGN;
+official discovery, actual owning builds/PDB/artifacts and PREP precede execution.
+No accepted PASS is repeated at this planning stage. Implementation owns one parsed
+method/source set per operation, with full current lease/generation and original
+path/check/policy/control/dependency identity; confirmation, reservations, mutation
+and prepublication/closing remain fresh. No speedup or zero-IO claim.
+
+The accepted spiritual173/read83/Shining110 and their failures/captures remain
+unchanged below. Eight spiritual canonical adapters and all broad parent tasks
+remain open; DFR/Mortal-compatibility/Windows HOLD runtime is outside this design.
+GM contract/CLI/shared guidance, worked success/failure examples, manifest and
+doc/source guards are part of the later coherent implementation, not current
+authored executable examples. No schema or game-rule change is implemented here.
+
 # T121 supported spiritual diagnosis accepted — Mortal and eight adapters remain open
 
 Independent Astra final bounded OUTCOME accepted 173 distinct PASS / 70 methods /

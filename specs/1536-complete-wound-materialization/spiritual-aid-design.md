@@ -1348,3 +1348,196 @@ once; never alias or reparse them at each consumer. Confirmation, current lease,
 source mutation/normalization advancement, prepublication and closing remain fresh.
 A new call, mutation, rollback, retry or owner close ends reuse. No new cache,
 parallel publisher, diagnostic stack, dependency, timer or budget is introduced.
+
+## T121-DIAGNOSIS-MORTAL — existing-owner implementation proposal (2026-10-31)
+
+Source: #1536, open T093/T121 and FR-071; author rules accepted 2026-10-30
+11:48UTC. This is a DESIGN candidate only. Production, tests, schema migrations,
+catalogue and runtime are unchanged. Independent Astra DESIGN must precede the
+first compilable causal scaffold. Accepted spiritual173/read83/Shining110 lineages
+are not replayed or reinterpreted by this proposal; all HOLDs remain.
+
+### Complete player milestone and alternatives
+
+The player chooses one currently reachable, known Mortal diagnostic method, sees
+its explicitly declared check, duration and costs, then confirms separately. Fresh
+world requirements are proved before reserving anything. One retained procedure
+outcome reveals exactly the complete declared facts on success, or none on failure.
+Resources, elapsed time, knowledge and History publish atomically; exact retry
+reuses the terminal attempt and rollback restores the original bytes and claims.
+Read/cancel are inert. Diagnosis adds no treatment/heal operation, no spiritual
+safe cycle and no default price, check, duration or success threshold.
+
+Chosen technical approach: add a distinct diagnosis subject to the existing Mortal
+accepted-world/procedure/request/persistence/common-publication owners. Extract
+shared procedure parameter/band calculations inside those owners where the current
+API accepts only a treatment route. Do not manufacture a procedure healing route
+from a diagnosis path. A separate dice/reservation/publisher system would duplicate
+current claims and atomicity; passing external fingerprints directly to the local
+diagnosis factory would supply no fresh authority. Both alternatives are rejected.
+
+### Exact current gaps and reuse boundaries
+
+| Existing owner / source | Reuse and required addition |
+| --- | --- |
+| `WoundMaterializationContract.ParseTreatment/ReadDiagnosisPath/WriteTreatment` | Shared base path retains raw `Check`; physical/Mortal writing already dispatches to the typed Mortal serializer, while spiritual writing preserves its own path. Keep that realm split. |
+| `MortalWoundTreatmentModel` / `.MemberShapes` / `.Contract` | `MortalWoundDiagnosisPathDefinition` drops Check; `WriteDiagnosisPathCanonical` writes `{}`; `ValidateDiagnosisPath` admits only exact-empty check. Preserve the actual payload in the typed definition and add closed Mortal execution validation. |
+| `WoundPlayerReadService` / `WoundPlayerProjection.Knowledge` / `WoundApplicationService` | Reuse one read context and current-known/private filtering. Actual CreateStateCore currently returns no Mortal choices. Add readable Mortal method/check/duration/cost projection and the same separate guided confirmation. Menu DATA is not execution authority. |
+| `MortalWoundTreatmentAcceptedStateAuthority.ExportCurrent` / requirement bundle | Actual signed original, generation, FS/lease, wound, complete History, current target/provider/location, skills, effects, items and scene proof remain mandatory. Add exact diagnosis-subject/path binding, not caller-provided authority seals. |
+| `MortalWoundProcedureCheckAuthority.Create/MatchesFreshAcceptedState` | Currently route-only. Reuse accepted d20 span, effect-derived mode/modifiers, complication difficulty, exact skill, dice reservation and Fate Shield arbitration with an explicitly diagnosis-bound subject. Keep ordinary treatment behavior unchanged. |
+| `MortalWoundTreatmentPlanner.Requests` / resource and dice registries | Reuse claim/confirm/release/commit ownership and exact retry. Add a closed diagnosis purpose and path coordinates rather than using RouteId as an untyped alias. |
+| `MortalWoundTreatmentPersistence` / `ValidationService.WoundMaterialization` | Live capture currently rejects accepted diagnosis/alternative commands (Persistence:145/2728; validator:1014). Add only the real diagnosis accepted-world adapter; alternative authoring remains independently gated. |
+| `WoundDiagnosisEvidence` / reducer / accepted-transition composer | Existing factory proves detached local integrity only; external hashes are bindings. Keep its knowledge-only delta checks and physical realm guard, and attach actual procedure/requirement ownership at live admission. |
+| Existing accepted-plan/resource/item publication coordinator | Add diagnosis contribution and exact time images to the same coordinated plan. No direct canonical writes, private publisher, fake receipt or diagnosis-owned inventory mutation. |
+
+### Proposed closed method contract and shared consumers
+
+Keep the base diagnosis-path field set and semantic fact ordering. Put all explicit
+Mortal execution parameters inside its existing `check` object, avoiding optional
+top-level fields that would silently change spiritual paths. Proposed exact payload:
+
+- `schemaVersion=1`, `kind=mortal_procedure_diagnosis`;
+- `resolution`: the existing closed `MortalWoundProcedureResolution` fields
+  (`formulaKey`, `difficulty`, `rollSource`, `criticalPolicy`, `modifierSource`);
+- `outcomes`: existing ordered, complete nonoverlapping procedure-band coordinates
+  (`bandId`, `minimumMargin`, `maximumMargin`, `category`), but only explicit
+  `success|failed_attempt`, with no treatment `result` operations. Reuse ordinary
+  critical/Fate selection; success maps to all path reveals, failed_attempt to none.
+  A partial-success category or undeclared threshold is not inferred;
+- `durationMinutes`: an explicitly declared nonnegative integer in the existing
+  incremental-time representation; zero is valid only when authored explicitly;
+- `resourcePolicy`: the existing typed reserve/consume/refund/mutation contract,
+  bound to this path's requirement indices and binary outcomes, never raw item or
+  resource edits. A no-cost method must explicitly declare its empty cost policy.
+
+This is a technical serialization proposal, not new gameplay. Unsupported check
+versions/shapes and missing parameters are unavailable/refused, never defaulted.
+Spiritual guarantee still requires its exact supported empty check; no Mortal
+procedure parameters, roll or duration may enter that route. Existing empty Mortal
+path DATA must never be normalized into a runnable procedure: retain its exact
+non-executable/read-only meaning or reject new execution admission. Immutable
+historical path/result seals cannot be backfilled or silently rewritten.
+
+Audit the actual shared consumers together: base path parser and canonical writer;
+`ParseDiagnosisPathShape` and `WriteDiagnosisPathCanonical`; alternative-route draft
+parsing/writing and accepted-transition recomposition; `MortalWoundTreatmentMemberFingerprint`;
+`WoundDiagnosisEvidence.ComputePathFingerprint`; read-card projection and documentation
+examples. They must preserve the whole check, duration, policy and ordered bands in
+round-trip/seals. Structural reachability fixed point remains separate from current
+known-path choice; a future reachable hidden path is not immediately selectable.
+
+### One operation, retained terminal attempt and accepted-world adapter
+
+Use a mutually exclusive Mortal diagnosis member in the existing guided selection
+carrier and queued binding, with an explicit Mortal purpose/realm and exact owner,
+wound/path fingerprints. The carrier's historical spiritual name grants no realm
+permission. All old spiritual staging/request fallbacks must reject this purpose;
+console, browser detached binding, accepted/recovery/settlement and completion must
+dispatch it explicitly. Never turn a Mortal choice into self-healing or schema9
+spiritual diagnosis. Show only authorized method/wound labels, never private images.
+
+Pre-original intent is detached selection DATA only. The actual Engine snapshot
+signs its exact selected input and ordinary d20 pool. A current accepted-state
+export then proves requirements, issues the existing procedure/resource claims and
+retains the exact terminal request/outcome before publication. A retry/repair cannot
+reserve a new span or roll again. Bind the full session/generation/request/turn,
+signed snapshot and complete control; exact method source and check/policy seals;
+typed actors/locality; actual requirement, item/resource and effect/check evidence.
+Reuse ordinary Fate Shield selection/consumption through its current owner and
+common plan, never a local replacement or fabricated check-result fingerprint.
+
+Add a closed versioned Mortal diagnosis durable result to the existing History
+result family, retaining the exact request and original/knowledge-after images,
+actual check/result and requirement bindings, reservation outcome and clock/policy
+evidence needed for strict replay after cleanup. Reconstruct semantic agreement,
+not merely a self-consistent outer hash. The current small detached diagnosis
+result/factory alone is insufficient to authorize live capture. Success discloses
+the exact complete declared set; failure still produces a terminal History attempt
+with no knowledge or mechanical wound delta. Preserve the old physical guard and
+the independently sealed spiritual result family.
+
+### Duration, ordinary recovery and one common publication
+
+Canonical clock input is `game_state/world/world_time.json`, interpreted through
+`ProgressionScheduleService` with the signed full Mortal control/schedule/report.
+`FileMapping` transports `timeChange|setWorldTime`; those response fields themselves
+grant no diagnosis time authority. The existing owner method is
+`PrepareAcceptedTurnOutcomeMutationAsync`; `CaptureMortalOutcomeInputsAsync` and
+`.MortalJointBasis` provide owned raw inputs and recomposable arithmetic, not a
+standalone permission token. Reuse that calculation/current-input discipline inside
+the ordinary Mortal owner, not the unrelated private joint-repair exception.
+
+The admitted method supplies the exact duration. Compose checked before→after
+world-time and scheduler images once into the same accepted plan as knowledge,
+resource/item/Fate outcomes and History. Reject missing/unresolved clock, overflow,
+changed control, source drift or competing GM time that would charge/advance twice.
+Do not write time before final publication or accept a later report as permission
+to change the method duration. Read/cancel/refusal leaves clock and claims untouched.
+
+Ordinary physical recovery during elapsed time stays with
+`MortalWoundRecoveryPlanner.Plan/PlanRegistered`, the accepted recovery composer,
+cadence math in `MortalWoundRecoveryPersistence.Math` and `MortalWoundRecoveryProgressProgram`.
+Use existing care/anchor/consumed-cadence eligibility and ordinary selected cohort;
+zero newly due intervals means no fabricated recovery row. Diagnosis knowledge is
+applied before any legitimate later recovery of the same wound; preserve separate
+result/row authority and exact final carrier/effect/identity/History agreement.
+There is no required spiritual suffix or invented Mortal recovery progress.
+
+### Finite causal, regression and actual-route gates
+
+1. After independent DESIGN, author a compilable existing-API causal category:
+   two complete Mortal method rows (explicit free/zero-duration and explicit
+   item-cost/nonzero-duration), actual parser/member round-trip with canonical
+   baseline and ordinary procedure-parameter validity proved first. Current exact
+   empty-check rejection is the expected final semantic failure, not a compile or
+   malformed baseline failure. Proposed initial budget60s; production unchanged.
+2. Before GREEN implementation, add meaningful closed-field/omission/null and
+   realm-split tests, exact path/check/policy fingerprint round-trip, current-known
+   versus future/private path, requirements/source drift and old-stage refusal.
+   Then complete request/check/Fate/resource/time/publication/replay together, with
+   success/failure, natural1/20, advantage/disadvantage, exact retry/no reroll,
+   changed same-ordinal control, no-cost/cost/refund, clock overflow/competing time,
+   due/not-due physical recovery, stale/double-spend and publication rollback controls.
+3. Direct existing regressions are selected by actual changed contracts, not the
+   broad 10-minute Mortal categories: exact diagnosis reducer success/failure,
+   immutable path seal and `Reduce_SpiritualWoundCannotUseMortalDiagnosisAuthority`;
+   `SpiritualDiagnosisAdmissionTests.GuaranteedDiagnosisDoesNotIgnoreNonemptyCheck`;
+   member-shape round-trip; `PrepareProcedureRequest_ResolvesOnlyThroughLeaseBoundAcceptedState`;
+   procedure signed dice span, exact retry and released-claim/Fate controls;
+   ordinary resource publication and due-cadence reconstruction only if changed.
+   Put exact selectors into coherent bounded categories during test authoring;
+   actual discovery supplies counts/budgets before runtime, no aggregate replay.
+4. Reuse independent `WoundPlayerReadFixture` for menu/confirm/cancel and the real
+   typed component seed/accepted-world exporter for native procedure/publication.
+   No new reflection, forged snapshots/receipts or full Engine to prove a codec.
+   After cheap GREEN, qualify actual signed native success/failure/rollback and
+   console/shared-browser journeys with retained terminal outcome and complete
+   capture/closing under their existing peer budgets. HOLD compatibility/DFR/Windows
+   and accepted173/83/110 are not runtime selections for this milestone.
+
+### DATA ownership, GM synchronization and review boundary
+
+The existing read context owns one menu operation's parsed wound/path/requirements.
+Pass one typed method and canonical requirement-source set through each admitted
+operation; freeze original versus knowledge-working images once, index immutable
+History once and retain current ownership checks. Full identity includes actual
+FS/lease/generation, original binding/control/wound/path/check/policy, actor/location,
+every requirement/item/resource/effect source and clock/scheduler evidence. Current
+confirmation, dice/Fate/resource reservation, prepublication, readback/closing and
+physical rollback are fresh; mutation, retry, generation change and owner close end
+reuse. No new cache/registry/publisher or speedup claim; cheap source-count controls
+must substantiate any actual read reuse after implementation.
+
+Update the current Mortal wound/procedure GM contract, CLI API/step guidance,
+shared wound/status advice and applicable daemon instructions with the closed
+method check/duration/policy and client-owned terminal result. Add worked success
+and failure examples to `Examples/E_CLI_Wound_Materialization.txt`, exact manifest
+entries and doc/source guards; preserve spiritual guarantee/empty-check guidance.
+GM describes the scene and ordinary world response, not check success, arbitrary
+reveals, rolled dice, resource receipt or a second time advance.
+
+Independent DESIGN must verify the purpose-bound procedure reuse, unchanged
+spiritual/alternative parser boundaries and atomic clock/recovery ownership before
+code. No genuine new author-rule contradiction has been found. Exact new C# member
+names/signatures, final schema spelling and fixtures remain technical implementation
+choices under that review; all implementation, builds and runtime are UNRUN.

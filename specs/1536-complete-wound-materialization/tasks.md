@@ -43,6 +43,17 @@ archive are outside checkout; original failures and all other holds are retained
 
 # T121 diagnosis recommendations — #1536
 
+- [ ] T121-DIAGNOSIS-MORTAL [US5] Deliver one complete guided Mortal diagnostic
+  method through known/reachable choice, explicit check/duration/cost, separate
+  confirmation, fresh accepted-world/procedure/Fate/resource ownership, terminal
+  success-or-no-reveal failure, one atomic knowledge/time/resources/History plan,
+  exact no-reroll replay, cleanup and physical rollback. Reuse existing owners;
+  preserve spiritual empty-check behavior and all HOLDs. The bounded existing-owner
+  proposal is in `spiritual-aid-design.md` (2026-10-31 Mortal section). First obtain
+  independent DESIGN, then actual existing-API semantic RED before implementation;
+  finite cheap/native/console/browser and GM coherence gates precede acceptance.
+  Current checkpoint is design/plan/tasks only; production/tests/builds/runtime UNRUN.
+
 - [x] T121-DIAGNOSIS-READ Show readable declared conditions of currently known
   diagnostic paths in the existing wound/status cards for console/browser. Reuse
   the existing typed requirement projection and one operation-owned physical
