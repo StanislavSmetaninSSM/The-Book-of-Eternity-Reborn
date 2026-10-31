@@ -375,6 +375,10 @@ internal sealed class AcceptedMechanicsWoundStageBundle
     internal WoundAcceptedTurnPlanner.MortalDiagnosisContinuation? MortalDiagnosisContinuation =>
         _preparedPlan.MortalDiagnosisAuthority;
 
+    /// <summary>Reads the actual mutually exclusive diagnosis/ordinary procedure companion without cloning its stage.</summary>
+    internal object? MortalProcedureContinuation =>
+        (object?)_preparedPlan.MortalDiagnosisAuthority ?? _preparedPlan.TreatmentContinuationAuthority;
+
     /// <summary>Reads detached execution DATA using this bundle's own sealed preparation and effect proof.</summary>
     /// <param name="stages">Detached chronological stage DATA on success.</param>
     /// <returns>True only for the exact private spiritual execution; grants no current publication authority.</returns>
@@ -996,7 +1000,7 @@ internal sealed class AcceptedMechanicsPlanningContext
             (_woundStageBundle is null || _woundAnchorPlan is not null ||
              !_treatmentResourcePublicationAuthority.HasValidSeal() ||
              !ReferenceEquals(
-                 _woundStageBundle.PreparedPlan.TreatmentContinuationAuthority,
+                 _woundStageBundle.MortalProcedureContinuation,
                  _treatmentResourcePublicationAuthority.ContinuationAuthority) ||
              (_treatmentResourcePublicationAuthority.FinalItemOwnerAuthority is
                   { } finalItemOwners &&
@@ -1009,7 +1013,7 @@ internal sealed class AcceptedMechanicsPlanningContext
                 "Treatment resource publication authority must bind the exact treatment continuation stages.",
                 nameof(treatmentResourcePublicationAuthority));
         }
-        if (_woundStageBundle?.PreparedPlan.TreatmentContinuationAuthority is not null &&
+        if (_woundStageBundle?.MortalProcedureContinuation is not null &&
             _treatmentResourcePublicationAuthority is null)
         {
             throw new ArgumentException(
@@ -1551,7 +1555,7 @@ internal sealed class AcceptedMechanicsPlan
              _woundPublication?.WoundAnchorPlanFingerprint is not null ||
              !_treatmentResourcePublicationAuthority.HasValidSeal() ||
              !ReferenceEquals(
-                 _woundStageBundle.PreparedPlan.TreatmentContinuationAuthority,
+                 _woundStageBundle.MortalProcedureContinuation,
                  _treatmentResourcePublicationAuthority.ContinuationAuthority) ||
              (_treatmentResourcePublicationAuthority.FinalItemOwnerAuthority is
                   { } finalItemOwners &&
@@ -1564,7 +1568,7 @@ internal sealed class AcceptedMechanicsPlan
                 "Treatment resource publication authority requires the exact completed treatment continuation plan.",
                 nameof(treatmentResourcePublicationAuthority));
         }
-        if (_woundStageBundle?.PreparedPlan.TreatmentContinuationAuthority is not null &&
+        if (_woundStageBundle?.MortalProcedureContinuation is not null &&
             _treatmentResourcePublicationAuthority is null)
         {
             throw new ArgumentException(

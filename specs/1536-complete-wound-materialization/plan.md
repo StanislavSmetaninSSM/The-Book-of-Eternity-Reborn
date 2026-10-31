@@ -1,3 +1,32 @@
+# T121 common context and original clock — core WIP, UNCOMPILED / UNRUN
+
+C7 focused5 completed 1 PASS / 1 FAIL / 3 UNRUN in 39.0609417s, with no timeout,
+complete cleanup and stable pins. The new real-owner component passed in
+11.8153667s. The real callback passed effect-input admission and failed common
+context construction with ArgumentException, wrapped as
+accepted_mechanics_wound_common_input_invalid. Raw remains external in
+M2GREENC7-focused5; closing 10:43:01Z is stable with no owner. Guards3 stay unrun
+until changed-source qualification; prior component/shape/resource lineages remain
+separate, and native/UI are still unqualified.
+
+Source-confirmed cause: PlanningContext compares nonnull resource authority only
+to the ordinary prepared companion, which is null for diagnosis. Completed Plan
+has the same guard and both missing-authority checks omit diagnosis. Root/Astra
+approved correcting all four with the genuine mutually exclusive procedure-family
+companion, preserving seals, final item owners and exclusions. A direct scalar
+bundle accessor avoids cloning the full prepared stage for this identity check;
+WithWoundAnchorPlan's authority-dropping reconstruction remains forbidden.
+
+A second source-confirmed gap affects nonzero duration: the composer compares
+physical T0 to intended T1. Diagnosis now requires its signed working original T0
+and exact already-captured clock bytes; checked T1 stays only in effects/afterimages.
+No future clock is temporarily written and other families keep their comparison.
+Both corrections are saved as core WIP, UNCOMPILED/UNRUN. Actual constructor,
+nonzero-time/drift and reconstruction proof is being completed through typed real
+owner DATA before the same complete narrow SOURCE and root-owned verification.
+No new reflection/cache/authority, exception suppression, build/test/runtime or
+broader diagnostic work. The broader ordinary timeout stays UNKNOWN/open.
+
 # T121 diagnosis-family dispatch — fresh builds / exact PREP, runtime UNRUN
 
 Independent Astra/high SOURCE accepted the coherent candidate
