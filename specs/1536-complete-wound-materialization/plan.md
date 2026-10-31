@@ -1,3 +1,43 @@
+# T121 bare diagnosis hold correction — WIP, UNCOMPILED / UNRUN
+
+The actual `M2GREENC3-native` attempt at `b0a9bf5bbf680f88904b13a73af624edc5f84897`
+completed 1 FAIL / 24 UNRUN in 14.4416903s, without timeout and with complete
+cleanup/stable closing pins. Original pending observation now passes. Retention
+fails before request deserialization: ParsePending requires a nonempty real repair
+wave whenever submittedTreatmentRequests exists, while the diagnosis owner
+intentionally writes a bare hold with two empty repair arrays. This is the
+confirmed production envelope dispatch gap; that run proves no serializer defect.
+Raw, failed output and prior archives remain external and unchanged.
+
+Root/Astra accepted the narrow correction: exactly seven fields, both repair
+arrays empty and one strict diagnosis-purpose request, joined to the valid staged
+input plus root/row/snapshot/fingerprint before History coalescing. Matching History
+cannot excuse a missing or mismatched input. Ordinary submitted treatment and real
+repair-wave/joint guards remain strict. Existing live original/currentness,
+retention, reservation, common publication/C4 and outer rollback owners are intact.
+The catalog reuses each parsed request DATA; it does not parse a request graph
+twice, perform I/O, cache permission or introduce a new owner. Rechecking each
+independent detached envelope is required; no speedup or whole-operation I/O claim.
+
+Two new real prepared-request rows (normal and actual Fate Shield) first assert
+complete serializer→strict parser equality. Exact bare-hold equality and cloned
+input/History-bypass, ordinary/mixed purpose, malformed/nonempty wave, joint and
+coordinate/fingerprint refusals follow. Full canonical bytes and actual claim
+agreements must remain unchanged. Comparison History is explicitly detached DATA,
+not a fabricated accepted receipt. Proposed cheap selection: new2 + existing
+ordinary persistence9 + semantic guards3 = 14 cases / 8 methods / 3 descriptors
+in three 60s categories. Static full selection estimate becomes 194 cases /
+76 methods / 37 descriptors / 35 categories; discovery is authoritative.
+
+All new code and controls remain UNCOMPILED/UNRUN, pending one complete narrow
+independent SOURCE and root-owned fresh affected builds/catalog/PlanOnly/PREP.
+Accepted focused18 and unaffected retained137 are not replayed by this correction.
+Native25 and actual UI3 remain unqualified; guided physical treatment, eight
+unsupported spiritual adapters, parent tasks and all HOLDs remain open. GM impact:
+the same client-owned pending hold is reconstructed correctly; no new GM command,
+output, rule or wire field. Existing guidance forbids authored hold/repair evidence,
+so no prompt/worked-example change is required for this private envelope fix.
+
 # T121 pending-evidence focused18 GREEN — native/UI still unqualified
 
 The exact focused selection at runtime

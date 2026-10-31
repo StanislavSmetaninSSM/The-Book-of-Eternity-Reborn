@@ -153,7 +153,10 @@ internal static class MortalWoundTreatmentPersistedRequestCatalog
                 else _ = MortalWoundDiagnosisInputCodec.Read(diagnosisInput);
             }
             catch (Exception exception) when (exception is InvalidDataException or InvalidOperationException or JsonException)
-            { issues.Add(PersistenceIssue("mortal_wound_diagnosis_input_invalid", "one exact staged original diagnosis input", exception.Message)); }
+            {
+                diagnosisInput = null;
+                issues.Add(PersistenceIssue("mortal_wound_diagnosis_input_invalid", "one exact staged original diagnosis input", exception.Message));
+            }
         }
         else if (commandRoot is { } commandElement)
         {
@@ -201,6 +204,7 @@ internal static class MortalWoundTreatmentPersistedRequestCatalog
         {
             pendingBinding = ParsePending(
                 pendingElement,
+                diagnosisInput,
                 candidates,
                 issues,
                 out pendingHasRepairWave);
@@ -226,7 +230,7 @@ internal static class MortalWoundTreatmentPersistedRequestCatalog
 
         var unique = Coalesce(candidates, issues);
         foreach (var heldDiagnosis in unique.Where(candidate => candidate.Request.Mode == "diagnosis" &&
-            !candidates.Any(origin => origin.Origin == "history" && HasExactLogicalCoordinate(origin, candidate))))
+            !candidates.Any(origin => origin.Origin is "history" or "pending" && HasExactLogicalCoordinate(origin, candidate))))
         {
             try
             {
@@ -266,6 +270,7 @@ internal static class MortalWoundTreatmentPersistedRequestCatalog
 
     private static (string SessionId, string RequestId, string SnapshotToken)? ParsePending(
         JsonElement root,
+        JsonObject? diagnosisInput,
         ICollection<PersistedCandidate> candidates,
         ICollection<ValidationIssue> issues,
         out bool hasRepairWave)
@@ -323,7 +328,19 @@ internal static class MortalWoundTreatmentPersistedRequestCatalog
             out var submitted);
         hasRepairWave = packets.GetArrayLength() != 0 ||
                         receipts.GetArrayLength() != 0;
-        if ((hasSubmitted || hasRepairWave) &&
+        // This private hold is not a repair wave. Its single parsed request is
+        // joined to the validated immutable input below, before History can
+        // coalesce a matching coordinate. The ordinary wave contract stays strict.
+        var diagnosisHold = diagnosisInput is not null && hasSubmitted;
+        if (diagnosisHold &&
+            (seen.Count != 7 || seen.Contains("jointRepairCheckpoint") || seen.Contains("jointInterfacePublication") ||
+             hasRepairWave || submitted.ValueKind != JsonValueKind.Array || submitted.GetArrayLength() != 1))
+        {
+            issues.Add(PersistenceIssue("mortal_wound_treatment_persisted_pending_invalid",
+                "one closed seven-field diagnosis hold with empty repair arrays and one request", path));
+            return binding;
+        }
+        if (!diagnosisHold && (hasSubmitted || hasRepairWave) &&
             (!binding.HasValue ||
              !WoundRepairPacketBuilder.IsValidPersistedRepairWave(
                  packets,
@@ -446,6 +463,21 @@ internal static class MortalWoundTreatmentPersistedRequestCatalog
                     "outer pending coordinates matching the sealed request",
                     rowPath));
                 continue;
+            }
+            if (diagnosisHold || request.Mode == "diagnosis")
+            {
+                try
+                {
+                    if (!diagnosisHold || request.Mode != "diagnosis" || request.Coordinates.Purpose != "diagnosis")
+                        throw new InvalidDataException("A bare diagnosis hold requires its actual diagnosis-purpose request and immutable input.");
+                    MortalWoundDiagnosisInputCodec.RequireRequestMatches(diagnosisInput!, request);
+                }
+                catch (Exception exception) when (exception is InvalidDataException or InvalidOperationException or JsonException)
+                {
+                    issues.Add(PersistenceIssue("mortal_wound_diagnosis_hold_input_mismatch",
+                        "the exact original input and retained diagnosis request", exception.Message));
+                    continue;
+                }
             }
             candidates.Add(new PersistedCandidate(serialized, request, "pending"));
         }

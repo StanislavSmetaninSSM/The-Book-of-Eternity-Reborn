@@ -2,6 +2,70 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "mortal-diagnosis-pending-catalog",
+  "responsibility": "T121 two independent real prepared-request scopes (normal and actual Fate Shield): complete serializer/strict request parser equality precedes the exact bare diagnosis-hold catalog. Input/root/row/snapshot joins happen before History coalescing. Matching-History bypass, ordinary/mixed purpose, malformed/nonempty waves, joint fields and coordinate/fingerprint negatives preserve canonical bytes and actual claims. Comparison History is detached DATA, not publication. UNCOMPILED/UNRUN; the actual common-plan native failure is causal evidence.",
+  "excludes": "No GM wait/Engine turn, fake repair packet or receipt, new authority/cache, relaxed ordinary repair wave, claim reallocation, accepted aggregate replay or physical-treatment implementation.",
+  "changeHints": [
+    "BookOfEternityClient/Services/MortalWoundTreatmentPersistence.cs",
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.DiagnosisPersistence.cs"
+  ],
+  "related": [
+    {
+      "id": "mortal-diagnosis-pre-handoff-retention",
+      "when": "Real retention/rebind consumes the same closed catalog after exact original/pending ownership."
+    },
+    {
+      "id": "mortal-diagnosis-pending-catalog-regressions",
+      "when": "Ordinary submitted treatment still requires its complete real repair wave and strict request/root joins."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.DiagnosisBareHoldRoundTripsExactPreparedRequestWithoutRepairOrClaimMutation"
+      ]
+    }
+  ]
+},
+{
+  "id": "mortal-diagnosis-pending-catalog-regressions",
+  "responsibility": "Nine finite existing ordinary persistence cases across four methods: submitted treatment without a real repair wave refuses, six root-coordinate copies bind each sealed request, ignored computed authority cannot survive roundtrip, and resource hidden witnesses rehydrate before codec return. Existing fixtures are selected unchanged; no historical reflection helper is copied into new tests. UNRUN for this correction.",
+  "excludes": "No broad Mortal persistence/state/authority category, Engine pending-wave qualification, HOLD compatibility/DFR/Windows/performance run or new treatment behavior.",
+  "changeHints": [
+    "BookOfEternityClient/Services/MortalWoundTreatmentPersistence.cs"
+  ],
+  "related": [
+    {
+      "id": "mortal-diagnosis-pending-catalog",
+      "when": "The diagnosis-specific empty-wave form must not widen ordinary persisted treatment."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.PersistedPending_RejectsSubmittedTreatmentWithoutARepairWave",
+        "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.PersistedTreatment_RootBindingMustMatchEverySealedRequest",
+        "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.TreatmentCommand_IgnoredComputedAuthorityFieldCannotSurviveTypedRoundTrip",
+        "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.TreatmentCommand_ResourceClaimHiddenWitnessRehydratesBeforeCodecReturn"
+      ]
+    }
+  ]
+},
+{
   "id": "mortal-diagnosis-pending-observation",
   "responsibility": "Six focused independent rows: both real Live and Engine original producers with pending present/absent, plus prior supported noncombat/combat maps that remain unrelated-reader DATA but refuse diagnosis authority from unobserved absence. The same scopes prove copied exact exports, no added source opens for factual getters, old-evidence manifest/artifact drift, pending-specific fully resealed contradictory presence and one-sided mapping/hash refusal. Present covered bytes do not create a pending owner. UNCOMPILED/UNRUN; actual native common-plan failure is the causal RED.",
   "excludes": "No ProcessPlayerTurn/GM wait, fabricated request/repair/publication receipt, post-accepted baseline patch, inherited optional-mode widening, cache/index/second authority, full Mortal aggregate or HOLD run.",

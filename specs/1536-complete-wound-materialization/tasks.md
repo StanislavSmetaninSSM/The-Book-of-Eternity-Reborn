@@ -81,6 +81,15 @@ archive are outside checkout; original failures and all other holds are retained
   Typed presence and exact existing helper consumers are selected before
   coherent SOURCE/build/PREP. No signed absence may be fabricated by a fixture.
 
+- [ ] T121-DIAGNOSIS-MORTAL-PENDING-HOLD Correct the actual post-observation
+  native envelope dispatch failure: require an exact seven-field, empty-wave,
+  single diagnosis-purpose request and valid immutable input before History
+  coalescing. Keep ordinary real-wave/joint, typed seal/resource, live claims and
+  both rollback-image boundaries strict. Root/Astra accepted the bounded design;
+  two real request-shape rows plus finite ordinary persistence/semantic guards
+  are authored, UNCOMPILED/UNRUN. The actual native 1 FAIL / 24 UNRUN is causal
+  evidence; no feature or parent closure follows from this correction.
+
 - [x] T121-DIAGNOSIS-READ Show readable declared conditions of currently known
   diagnostic paths in the existing wound/status cards for console/browser. Reuse
   the existing typed requirement projection and one operation-owned physical

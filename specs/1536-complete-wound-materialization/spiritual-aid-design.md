@@ -1702,3 +1702,20 @@ controls qualify this correction together with existing input-role/hold/C4/outer
 consumers. The actual native failure is causal RED; code and new controls remain
 UNCOMPILED/UNRUN until coherent SOURCE and parent-owned qualification. This adds
 no GM-authored output or game rule; original/held evidence remains client-owned.
+
+### Bare diagnosis pending hold — accepted envelope correction
+
+The immutable diagnosis selection and its private held request are not a repair
+wave. The catalog admits exactly the existing seven-field pending envelope with
+empty repairPackets/repairReceipts and one complete diagnosis-purpose request.
+Use the existing strict request parser once, then require input/root/row/snapshot/
+fingerprint agreement before adding that candidate or coalescing History. Valid
+matching History cannot authorize a missing or mismatched input. A bare ordinary
+or mixed request, nonempty/malformed wave or joint checkpoint/publication field
+refuses. Ordinary submitted treatment retains the existing real-wave contract.
+
+This is reconstruction DATA in the same catalog, not permission: original source,
+current lease/control, physical retention, exact claims, C4 rearm and outer rollback
+remain under their existing owners. The actual native failure is causal evidence;
+new normal/Fate roundtrip, envelope and refusal controls remain UNCOMPILED/UNRUN.
+No new GM surface, repair shim, authority/cache or source read is introduced.
