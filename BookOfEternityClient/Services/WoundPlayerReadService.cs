@@ -98,7 +98,29 @@ internal static class WoundPlayerReadService
                 var parsed = await CurrentRoot(path, required: false);
                 if (path == EffectCarrierCatalog.SpiritualConflictPath) spiritualConflict = parsed;
             }
-            var effects = await EffectMechanicsSnapshot.LoadAsync(fs, lease);
+            EffectMechanicsSnapshot effects;
+            if (retainMenuInputs)
+            {
+                // The same canonical lease protects these already parsed menu
+                // roots. Reuse their exact DATA for effect scope/carriers rather
+                // than reopening NPC/skill sources within this one read operation.
+                var scopeRoots = new Dictionary<string, JsonNode?>
+                {
+                    ["game_state/player/skills_active.json"] = roots!.GetValueOrDefault("game_state/player/skills_active.json"),
+                    ["game_state/player/skills_passive.json"] = roots!.GetValueOrDefault("game_state/player/skills_passive.json"),
+                    ["game_state/npcs/npc_core.json"] = roots!.GetValueOrDefault("game_state/npcs/npc_core.json")
+                };
+                var scope = EffectRollSkillScopeAuthority.Build(new(scopeRoots, scopeRoots));
+                effects = EffectMechanicsSnapshot.Build(new(new(
+                    await CurrentRoot(EffectCarrierCatalog.PlayerPath, required: false),
+                    await CurrentRoot(EffectCarrierCatalog.NpcPath, required: false),
+                    await CurrentRoot(EffectCarrierCatalog.EnemiesPath, required: false),
+                    await CurrentRoot(EffectCarrierCatalog.AlliesPath, required: false),
+                    await CurrentRoot(EffectCarrierCatalog.AfterlifeProfilesPath, required: false),
+                    await CurrentRoot(EffectCarrierCatalog.SpiritualConflictPath, required: false)),
+                    await CurrentRoot(EffectIdentityState.StatePath, required: false), scope));
+            }
+            else effects = await EffectMechanicsSnapshot.LoadAsync(fs, lease);
             var input = new WoundPlayerProjectionInput(carriers, identities.State!, history.State!, effects,
                 realm, resources.Catalog, names, selfVisible);
             var projection = WoundPlayerProjection.Build(input, catalog);
@@ -128,6 +150,7 @@ internal static class WoundPlayerReadService
         string path, bool required = true, IDictionary<string, CanonicalBeforeImage>? images = null,
         IDictionary<string, JsonObject>? roots = null)
     {
+        if (roots is not null && roots.TryGetValue(path, out var existing)) return existing;
         var bytes = await ReadDisplayBytes(fs, lease, path, images);
         if (bytes is null)
         {

@@ -80,7 +80,11 @@ internal static partial class WoundApplicationService
         return choices.AsReadOnly();
     }
 
-    internal static string ConfirmationFor(SpiritualSelfTreatmentSelection selection) => selection.Diagnosis is not null
+    internal static string ConfirmationFor(SpiritualSelfTreatmentSelection selection) => selection.MortalTreatment is not null
+        ? "Подтвердить выбранное лечение физической раны с указанными условиями и расходами? Будет выполнена одна попытка или текущий этап курса."
+        : selection.MortalDiagnosis is not null
+        ? "Подтвердить осмотр физической раны с указанной проверкой, длительностью и расходами? Сам осмотр не лечит."
+        : selection.Diagnosis is not null
         ? "Подтвердить духовный осмотр и один обычный безопасный цикл? Он раскроет предусмотренные сведения без броска и платы; сам осмотр не лечит."
         : selection.Service is { } service
         ? "Подтвердить лечение " + (service.Quote.Provider.OwnerKind == "resident" ? "у выбранного целителя фракции" : "у Элиары") +

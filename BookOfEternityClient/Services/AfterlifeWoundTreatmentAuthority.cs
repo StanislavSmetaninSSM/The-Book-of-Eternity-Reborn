@@ -64,6 +64,7 @@ internal sealed partial record SpiritualSelfTreatmentSelection(string WoundId, s
     internal SpiritualServiceTreatmentSelection? Service { get; init; }
     internal JsonObject ToJson()
     {
+        if (MortalTreatment is not null) return MortalTreatmentJson();
         if (MortalDiagnosis is not null) return MortalDiagnosisJson();
         if (Diagnosis is not null) return DiagnosisJson();
         if (Service is not null) return ServiceJson();
@@ -139,6 +140,8 @@ internal sealed partial record SpiritualSelfTreatmentSelection(string WoundId, s
             throw new InvalidDataException("Invalid exact spiritual wound selection.");
         var selection = new SpiritualSelfTreatmentSelection(woundId!, fingerprint!);
         if (root.Count == 2) return selection; // Still-produced exact self form.
+        if (root["schemaVersion"] is JsonValue physicalVersion && physicalVersion.TryGetValue<int>(out var physicalSchema) && physicalSchema == 11)
+            return ParseMortalTreatment(selection, root);
         if (root["schemaVersion"] is JsonValue mortalVersion && mortalVersion.TryGetValue<int>(out var mortalSchema) && mortalSchema == 10)
             return ParseMortalDiagnosis(selection, root);
         if (root["schemaVersion"] is JsonValue diagnosisVersion && diagnosisVersion.TryGetValue<int>(out var diagnosisSchema) && diagnosisSchema == 9)

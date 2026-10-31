@@ -87,6 +87,8 @@ internal static partial class WoundApplicationService
                     var typed = MortalWoundTreatmentContract.ParseProjection(wound.Treatment, "mortalDiagnosis.treatment", wound.Owner.Realm,
                         wound.Owner.OwnerKind, wound.Severity.Rank, wound.Complications, wound.Recovery.DeteriorationPolicy);
                     if (!typed.IsValid || typed.Treatment is null) continue;
+                    AddPhysicalTreatmentChoices(choices, context, wound, typed.Treatment, actors, actorPaths,
+                        snapshot, player.Concat(npcs).ToArray(), roots, locationId);
                     var currentFacts = wound.Treatment.KnownRouteIds.Select(id => "route:" + id).Concat(wound.Complications.Where(row => WoundPlayerProjection.Visible(row.Visibility))
                         .Select(row => "complication:" + row.ComplicationId)).ToHashSet(StringComparer.Ordinal);
                     foreach (var method in typed.Treatment.DiagnosisPaths.Where(method => method.Visibility != "gm_only" &&

@@ -588,6 +588,21 @@ internal sealed class MortalWoundTreatmentRequirementAuthorityBundle
         return true;
     }
 
+    /// <summary>
+    /// Classifies detached current menu requirements with the same closed loss
+    /// predicates used by live course interruption; this creates no witness or claim.
+    /// </summary>
+    internal static string ClassifyMenuRequirements(IReadOnlyList<JsonElement> requirements,
+        string sourcePath, MortalWoundRequirementAuthorityResult resolved)
+    {
+        if (resolved.Success) return "Satisfied";
+        var indexes = resolved.ResolvedRequirements.Select(row => row.RequirementIndex).ToHashSet();
+        return IssuesDescribeOnlyMissingRequirements(requirements.Count, sourcePath, indexes, resolved.Issues) &&
+            Enumerable.Range(0, requirements.Count).Where(index => !indexes.Contains(index))
+                .All(index => TryClassifyFailureReason(sourcePath, index, resolved.Issues, out _))
+            ? "Unsatisfied" : "InvalidAuthority";
+    }
+
     private static bool TryClassifyFailureReason(
         string sourcePath,
         int requirementIndex,

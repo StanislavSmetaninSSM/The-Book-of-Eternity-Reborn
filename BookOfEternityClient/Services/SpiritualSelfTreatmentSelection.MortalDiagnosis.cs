@@ -13,7 +13,7 @@ internal sealed partial record SpiritualSelfTreatmentSelection
 
     private JsonObject MortalDiagnosisJson()
     {
-        if (MortalDiagnosis is not { } diagnosis || Diagnosis is not null || Aid is not null || Combat is not null || Service is not null)
+        if (MortalDiagnosis is not { } diagnosis || MortalTreatment is not null || Diagnosis is not null || Aid is not null || Combat is not null || Service is not null)
             throw new InvalidDataException("Mortal diagnosis cannot mix wound execution purposes.");
         var root = new JsonObject
         {

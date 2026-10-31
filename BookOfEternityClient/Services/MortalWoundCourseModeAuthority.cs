@@ -318,7 +318,7 @@ internal sealed class MortalWoundCourseModeAuthority : MortalWoundTreatmentModeA
                 if (!TryReconstructActiveCourse(
                         history.State,
                         before,
-                        coordinates,
+                        coordinates.RouteId,
                         courseRoute,
                         issues,
                         out startAuthority,
@@ -437,10 +437,46 @@ internal sealed class MortalWoundCourseModeAuthority : MortalWoundTreatmentModeA
                 authorityFingerprint));
     }
 
+    /// <summary>
+    /// Describes the existing course window from current canonical DATA using the
+    /// same strict continuation reconstruction as live preparation; reserves nothing.
+    /// </summary>
+    internal static (string Status, int Ordinal, long Due, long Deadline) DescribeCurrentWindow(
+        WoundMaterializationEnvelope before, WoundHistoryState history,
+        MortalWoundCourseRouteDefinition route, long minute)
+    {
+        try
+        {
+            var ordinal = 1;
+            var started = minute;
+            if (before.Care.ActiveCourseId is not null)
+            {
+                var issues = new List<ValidationIssue>();
+                if (!TryReconstructActiveCourse(history, before, route.RouteId, route, issues, out var start, out ordinal))
+                    return ("InvalidAuthority", 0, 0, 0);
+                started = start.StartedAtGameTimeMinutes;
+            }
+            else
+            {
+                var simulation = MortalWoundTreatmentWorkingWoundSimulator.Simulate(before,
+                    route.Milestones.Select(milestone => milestone.DeclaredResult));
+                if (!simulation.IsApplicable || !simulation.Improved)
+                    return ("InvalidAuthority", 0, 0, 0);
+            }
+            if (ordinal < 1 || ordinal > route.Milestones.Length)
+                return ("InvalidAuthority", 0, 0, 0);
+            var due = checked(started + route.Milestones[ordinal - 1].AfterMinutes);
+            var deadline = checked(due + route.Resolution.MaximumGapMinutes);
+            return (minute < due ? "TooEarly" : minute <= deadline ? "Ready" : "DeadlineExceeded", ordinal, due, deadline);
+        }
+        catch (Exception failure) when (failure is InvalidDataException or InvalidOperationException or ArgumentException or OverflowException or JsonException)
+        { return ("InvalidAuthority", 0, 0, 0); }
+    }
+
     private static bool TryReconstructActiveCourse(
         WoundHistoryState history,
         WoundMaterializationEnvelope before,
-        MortalWoundTreatmentAttemptCoordinates coordinates,
+        string routeId,
         MortalWoundCourseRouteDefinition courseRoute,
         ICollection<ValidationIssue> issues,
         out MortalWoundCourseStartAuthority startAuthority,
@@ -563,7 +599,7 @@ internal sealed class MortalWoundCourseModeAuthority : MortalWoundTreatmentModeA
             {
                 var start = mode.CourseStartAuthority;
                 if (!string.Equals(start.CourseId, activeCourseId, StringComparison.Ordinal) ||
-                    !string.Equals(start.RouteId, coordinates.RouteId, StringComparison.Ordinal) ||
+                    !string.Equals(start.RouteId, routeId, StringComparison.Ordinal) ||
                     start.StartingWound.Care.ActiveCourseId is not null ||
                     request.RouteSourceWound.Care.ActiveCourseId is not null ||
                     !string.Equals(
@@ -610,11 +646,11 @@ internal sealed class MortalWoundCourseModeAuthority : MortalWoundTreatmentModeA
             }
         }
 
-        if (!string.Equals(startAuthority.RouteId, coordinates.RouteId,
+        if (!string.Equals(startAuthority.RouteId, routeId,
                 StringComparison.Ordinal) ||
             !string.Equals(
                 startAuthority.RouteFingerprint,
-                MortalWoundTreatmentRouteFingerprint.Compute(before, coordinates.RouteId),
+                MortalWoundTreatmentRouteFingerprint.Compute(before, routeId),
                 StringComparison.Ordinal) ||
             activeRows.Length >= courseRoute.Milestones.Length)
         {

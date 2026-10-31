@@ -154,6 +154,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
             var menuReads = paths.Select((path, index) => new { path, count = reads.ReadCount(path) - counts[index] }).ToArray();
             output.WriteLine(JsonSerializer.Serialize(new { mode, MenuSourceReads = menuReads }));
             Assert.All(menuReads, source => Assert.True(source.count > 0, source.path));
+            Assert.Equal(1, Assert.Single(menuReads, source => source.path == NpcCoreChangesContract.NpcCorePath).count);
             var self = Assert.Single(menu.Targets, target => target.Owner == wound.Owner);
             Assert.Equal(wound.Owner, menu.Targets[0].Owner);
             Assert.True(self.Available);
@@ -166,7 +167,10 @@ public sealed partial class MortalWoundTreatmentResolverTests
             // existing Mortal menu has diagnosis choices only. No new selection
             // codec or production execution is introduced by this test scaffold.
             Assert.True(menu.Choices.Any(choice => choice.Available && choice.Selection.WoundId == wound.WoundId &&
-                choice.Selection.MortalDiagnosis is null && choice.Name.Contains(route.DisplayName, StringComparison.Ordinal)),
+                choice.Selection.MortalTreatment is { } physical && physical.Target == wound.Owner &&
+                physical.Provider == provider.Owner && physical.RouteId == route.RouteId && physical.Mode == mode &&
+                physical.MilestoneOrdinal == (mode == "course" ? 1 : (int?)null) &&
+                physical.ExpectedRouteFingerprint == MortalWoundTreatmentRouteFingerprint.Compute(wound, route.RouteId)),
                 "missing executable physical route after validated mode premises: " + mode);
         }
         finally

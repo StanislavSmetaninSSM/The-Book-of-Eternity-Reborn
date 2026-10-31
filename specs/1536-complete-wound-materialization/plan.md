@@ -1,3 +1,41 @@
+# T121 physical treatment selection/input/menu — source WIP, UNCOMPILED/UNRUN
+
+Implementation continues from accepted causal checkpoint
+3cd39c0cb796fb3a0c4dd41f213bccd6b44fe335. Sol froze the first coherent source
+boundary before registry/persistence work; root inspected the actual17 source
+paths and diff. This checkpoint is NOT SOURCE acceptance or working treatment.
+Closed schema11 physical selection, exact context-bound staged input, shared
+known-route/provider choices for all3 modes and stage-only input are authored.
+Course menu reuses strict History reconstruction and trusted-missing-predicate
+classification; guarantee preview uses the existing outcome-limit predicate.
+No menu preview issues an accepted owner, die, claim or publication authority.
+
+New source files are MortalWoundGuidedTreatmentInputCodec.cs,
+SpiritualSelfTreatmentSelection.MortalTreatment.cs and
+WoundApplicationService.MortalTreatmentMenu.cs; PhysicalGuidedInput.cs adds3 pure
+codec rows in the existing Integration partial. Existing causal3 now asks for
+exact typed route/provider/mode and expectedNPC1. These new assertions and input
+rows are UNRUN; the input rows still require catalog ownership before discovery.
+No build, discovery or runtime has been attempted on this WIP.
+
+Menu optimization candidate reuses the operation-owned parsed roots to build the
+existing effect/skill-scope DATA under the same lease; non-menu LoadAsync remains
+fresh. Owner/key are the current read invocation's exact source paths/bytes plus
+realm; lifetime ends with that menu context, and a later open/confirm/stage starts
+fresh. Read-only choices carry no permission. Causal baseline wasNPC2; expectedNPC1
+and result/failure equivalence are not yet proved. The new retained-menu branch
+also affects spiritual menus, so final impact selection must cover that consumer
+and unchanged fresh action checks. No cache framework or speedup is claimed.
+
+Actual pre-GM signed-original role/export/hold/recovery, retained-only post-GM mode
+execution, common compensation, strict physical current-browser completion, actual
+owner/refusal/UI fixtures, GM guidance/examples/pins and final finite selection
+remain UNIMPLEMENTED or pending. Do not call this a finished menu-only feature or
+start qualification from old binaries. Continue the SAME three-mode execution
+slice after remote verification. Source WIP introduces no new game/economic/time
+rule; course interruption/TooEarly/InvalidAuthority distinctions and all earlier
+HOLDs remain binding. All raw and accepted evidence remain external and untouched.
+
 # T121 physical guided causal3 — independent OUTCOME accepted
 
 Runtime9b0256956049b666c81d2266d5c968663ce1e74c, fresh Integration source

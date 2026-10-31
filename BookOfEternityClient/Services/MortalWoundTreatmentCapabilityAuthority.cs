@@ -670,7 +670,11 @@ internal static class MortalWoundTreatmentCapabilityAuthority
         left.MaximumMechanicalEffectHealLegacies ==
             right.MaximumMechanicalEffectHealLegacies;
 
-    private static bool CoversGuaranteedOutcome(
+    /// <summary>
+    /// Checks detached current capability limits against the complete declared
+    /// outcome. Live preparation still authenticates the exact skill and owner.
+    /// </summary>
+    internal static bool CoversGuaranteedOutcome(
         WoundMaterializationEnvelope wound,
         IReadOnlyList<MortalWoundTreatmentOperation> operations,
         MortalWoundTreatmentCapabilityDefinition capability)
