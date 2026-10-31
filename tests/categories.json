@@ -2,6 +2,39 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "mortal-diagnosis-input-role",
+  "responsibility": "T121 six file-light actual Engine backup/signed-snapshot rows feed the real Mortal diagnosis resolver: signed-input-only and baseline-present positives; missing/tampered signed input, changed current command and missing canonical History baseline refuse before claim retention. Full manifest/hash/control and original bytes are checked, and successful preparation changes only its legitimate held pending row. No ProcessPlayerTurn or GM wait. UNCOMPILED/UNRUN WIP.",
+  "excludes": "No reflection, forged manifest/receipt, marker-only exemption, global coverage removal, canonical publication, C4, Engine UI wait or broad Mortal category. Dynamic common-plan role and completed-reader coverage remain part of the final route.",
+  "changeHints": [
+    "BookOfEternityClient/Services/WoundApplicationService.MortalDiagnosis.cs",
+    "BookOfEternityClient/Services/MortalWoundTreatmentAcceptedStateAuthority.DiagnosisRetention.cs"
+  ],
+  "related": [
+    {
+      "id": "mortal-diagnosis-pre-handoff-retention",
+      "when": "Source admission precedes actual retained claim restoration."
+    },
+    {
+      "id": "mortal-diagnosis-common-publication",
+      "when": "Every canonical source still requires normal before-image coverage in publication."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.MortalDiagnosisRequiresActualSignedInputRoleAndCompleteCanonicalRollback"
+      ]
+    }
+  ]
+},
+{
   "id": "mortal-diagnosis-fate-publication",
   "responsibility": "T121 one actual signed-owner natural1 diagnosis with two genuinely seeded player Fate Shields. It reserves the oldest accepted shield, retains exact die span/rolls/intent across lease rebind and builds the actual common effect publication expiring only that shield while preserving the other. All canonical JSON remains unchanged during preparation. UNCOMPILED/UNRUN WIP.",
   "excludes": "No fake Fate receipt, new dice hook, Engine/GM wait, actual canonical/C4 settlement or broad old Mortal category. Actual publication/retry/rollback coverage remains required in the complete route.",

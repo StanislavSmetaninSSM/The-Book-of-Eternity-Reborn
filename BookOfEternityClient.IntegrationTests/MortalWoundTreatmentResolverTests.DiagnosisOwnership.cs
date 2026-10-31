@@ -380,11 +380,12 @@ public sealed partial class MortalWoundTreatmentResolverTests
         Assert.Equal("player", check.RollActorKind);
         Assert.Equal("player_current", check.RollActorId);
         Assert.Equal(1, check.NaturalRoll);
-        Assert.Equal("effect_fate_shield_older", check.PreparedCriticalReaction!.EffectId);
+        var reaction = Assert.IsType<MortalWoundPreparedCriticalReaction>(check.PreparedCriticalReaction);
+        Assert.Equal("effect_fate_shield_older", reaction.EffectId);
         var outcome = MortalWoundDiagnosisOutcome.Resolve(owner, history, first.Request);
         Assert.Equal("failed_attempt", outcome.Resolution.ResultCategory);
         var intent = Assert.IsType<MortalWoundCriticalReactionIntent>(outcome.Resolution.CriticalReactionIntent);
-        Assert.Equal(check.PreparedCriticalReaction.PreparedReactionFingerprint, intent.PreparedReactionFingerprint);
+        Assert.Equal(reaction.PreparedReactionFingerprint, intent.PreparedReactionFingerprint);
         await owner.RetainDiagnosisRequestAsync(first.Request);
         await fixture.RebindAsync();
         owner = fixture.Authority;
@@ -394,10 +395,10 @@ public sealed partial class MortalWoundTreatmentResolverTests
         var exact = Assert.IsType<MortalWoundProcedureCheckAuthority>(recovered.Request!.ModeAuthority);
         Assert.Equal(check.SourceIndices, exact.SourceIndices); Assert.Equal(check.SourceRolls, exact.SourceRolls);
         Assert.NotNull(exact.PreparedCriticalReaction);
-        Assert.Equal(check.PreparedCriticalReaction.EffectId, exact.PreparedCriticalReaction.EffectId);
-        Assert.Equal(check.PreparedCriticalReaction.TriggerId, exact.PreparedCriticalReaction.TriggerId);
-        Assert.Equal(check.PreparedCriticalReaction.AcceptedEffectFingerprint, exact.PreparedCriticalReaction.AcceptedEffectFingerprint);
-        Assert.Equal(check.PreparedCriticalReaction.PreparedReactionFingerprint, exact.PreparedCriticalReaction.PreparedReactionFingerprint);
+        Assert.Equal(reaction.EffectId, exact.PreparedCriticalReaction.EffectId);
+        Assert.Equal(reaction.TriggerId, exact.PreparedCriticalReaction.TriggerId);
+        Assert.Equal(reaction.AcceptedEffectFingerprint, exact.PreparedCriticalReaction.AcceptedEffectFingerprint);
+        Assert.Equal(reaction.PreparedReactionFingerprint, exact.PreparedCriticalReaction.PreparedReactionFingerprint);
         Assert.Equal(intent.IntentFingerprint,
             MortalWoundDiagnosisOutcome.Resolve(owner, history, recovered.Request).Resolution.CriticalReactionIntent!.IntentFingerprint);
         var unchanged = fixture.CaptureJson();
@@ -415,7 +416,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
         fixture.AssertJson(unchanged);
     }
 
-    private sealed class DiagnosisOwnershipFixture : IAsyncDisposable
+    internal sealed class DiagnosisOwnershipFixture : IAsyncDisposable
     {
         private DiagnosisOwnershipFixture(string root, FileSystemManager files, FileSystemManager.CanonicalWriteLease lease,
             MortalWoundTreatmentAcceptedStateAuthority authority, string eventRef)
@@ -426,7 +427,8 @@ public sealed partial class MortalWoundTreatmentResolverTests
         internal MortalWoundTreatmentAcceptedStateAuthority Authority { get; private set; }
         internal string EventRef { get; }
 
-        internal static async Task<DiagnosisOwnershipFixture> CreateAsync(int? natural = null, bool signedInput = false, int duration = 30, bool seedFate = false)
+        internal static async Task<DiagnosisOwnershipFixture> CreateAsync(int? natural = null, bool signedInput = false, int duration = 30, bool seedFate = false,
+            Func<FileSystemManager, TurnRequest, Task>? originalProducer = null)
         {
             // Initial canonical scenario DATA only. The real live preparation and
             // exporter below issue ownership; these JSON values are not receipts.
@@ -482,14 +484,23 @@ public sealed partial class MortalWoundTreatmentResolverTests
                         control), selected, stagedContext);
                     await files.WriteFileAtomicAsync(AcceptedMechanicsPlan.WoundCommandPath, input.ToJsonString());
                 }
-                await new LiveTurnPreparationService(files).PrepareAsync(new LiveTurnPreparationOptions
+                var dices = scenario.AcceptedState["acceptedDice"]!.AsArray().Select(value => value!.GetValue<int>()).ToArray();
+                if (originalProducer is not null)
+                    await originalProducer(files, new TurnRequest
+                    {
+                        SessionId = scenario.AcceptedState["sessionId"]!.GetValue<string>(),
+                        RequestId = scenario.AcceptedState["requestId"]!.GetValue<string>(),
+                        TurnNumber = scenario.AcceptedState["turn"]!.GetValue<int>(), ProgressionControl = control,
+                        PreGeneratedDices1d20 = dices, PlayerAction = "Осмотреть рану по явно заданному способу."
+                    });
+                else await new LiveTurnPreparationService(files).PrepareAsync(new LiveTurnPreparationOptions
                 {
                     SessionId = scenario.AcceptedState["sessionId"]!.GetValue<string>(),
                     RequestId = scenario.AcceptedState["requestId"]!.GetValue<string>(),
                     TurnNumber = scenario.AcceptedState["turn"]!.GetValue<int>(),
                     ProgressionControl = control,
                     CurrentRealm = "Mortal World", PlayerAction = "Осмотреть рану по отдельно подтверждённому способу.",
-                    PreGeneratedDices1d20 = scenario.AcceptedState["acceptedDice"]!.AsArray().Select(value => value!.GetValue<int>()).ToArray()
+                    PreGeneratedDices1d20 = dices
                 });
                 lease = await files.AcquireCanonicalWriteLeaseAsync();
                 var exported = signedInput

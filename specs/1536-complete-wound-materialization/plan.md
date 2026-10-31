@@ -1,3 +1,29 @@
+# T121 Mortal signed-input role WIP — UNCOMPILED / UNRUN
+
+The actual original-input resolver now checks complete canonical rollback
+coverage before allocating a procedure claim. Only its real accepted owner and
+issued observed evidence can prove the prepared-command role, including full
+manifest-hash/control binding, exact signed/current bytes, exact hash mode and
+absence from both baseline/backup maps. Baseline-present input retains ordinary
+strict coverage. No codec marker alone grants any exception.
+
+Six source-authored rows reuse the existing independent Mortal seed plus the real
+Engine rollback/snapshot producers, without ProcessPlayerTurn/GM wait or reflection.
+They cover both valid roles, missing/tampered original, current-command drift and
+missing canonical History baseline. No field or file is re-signed to fabricate
+permission. Negatives retain every byte; positives may create only the actual
+private held pending row. The existing default native fixture producer is unchanged.
+
+Reducer-rule checks now read private scalar/member DATA without exporting or
+cloning the complete retained baseline for each stage. External detached exports,
+private seals and fresh live source/claim checks remain intact. No cache or speedup
+claim. Current estimate is 59 cases / fifteen methods / thirteen categories,
+UNCOMPILED/UNRUN. No writer build/test/discovery/runtime/restore.
+
+Actual raw effect/resource intake, dynamic touched-path role checks, completed
+readers, retryable outer rollback, guided UI and GM/current-input/clock presentation
+still remain. This WIP is not ready for a feature acceptance or a runtime gate.
+
 # T121 Mortal sealed execution and settlement DATA WIP — UNCOMPILED / UNRUN
 
 The actual sealed effect execution now captures its strict durable diagnosis

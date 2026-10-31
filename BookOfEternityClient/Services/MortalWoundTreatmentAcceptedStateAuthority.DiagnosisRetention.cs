@@ -77,6 +77,36 @@ internal sealed partial class MortalWoundTreatmentAcceptedStateAuthority
         throw new InvalidDataException("The signed original diagnosis did not prove pending presence or absence.");
     }
 
+    internal bool HasCurrentDiagnosisPreparedCommandRole(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease,
+        MortalWoundTreatmentAttemptRequest request, string sessionId, string requestId, int turn,
+        string manifestHash, string computedManifestHash)
+    {
+        var role = HasCurrentDiagnosisInputRole(files, lease, sessionId, requestId, turn, manifestHash, computedManifestHash);
+        RequireOriginalDiagnosisRequest(request);
+        var held = ReadHeldDiagnosisRequest(request.Coordinates);
+        if (held is null || held.RequestFingerprint != request.RequestFingerprint)
+            throw new InvalidDataException("Diagnosis prepared input lost its exact privately held procedure agreement.");
+        return role;
+    }
+
+    internal bool HasCurrentDiagnosisInputRole(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease,
+        string sessionId, string requestId, int turn, string manifestHash, string computedManifestHash)
+    {
+        if (!IsLeaseBoundTo(files, lease) || _diagnosisIssuedSnapshot is null || _diagnosisOriginalEvidence is null ||
+            !HasCurrentAdmissionAuthority() || _diagnosisInput is null || !MortalWoundDiagnosisInputCodec.IsKind(_diagnosisInput) ||
+            _binding.SessionId != sessionId || _binding.RequestId != requestId || _binding.Turn != turn ||
+            _binding.SnapshotToken != manifestHash || manifestHash != computedManifestHash ||
+            _diagnosisIssuedSnapshot.SnapshotToken != manifestHash)
+            throw new InvalidDataException("Diagnosis prepared-command role requires the actual current owner and complete issued manifest binding.");
+        _diagnosisOriginalEvidence.RequireCurrent(files, lease, _diagnosisIssuedSnapshot);
+        var current = files.ReadFileBytesSync(lease, AcceptedMechanicsPlan.WoundCommandPath);
+        if (_diagnosisCommandBytes is null || current is null || !current.AsSpan().SequenceEqual(_diagnosisCommandBytes))
+            throw new InvalidDataException("Diagnosis prepared input differs from its actual authenticated signed bytes.");
+        // Existing evidence proves exact hash mode/member/hash and no baseline
+        // in either backup map. False retains normal strict baseline coverage.
+        return _diagnosisOriginalEvidence.HasExactPreparedWoundCommandRole();
+    }
+
     internal MortalWoundTreatmentAttemptRequest? ReadHeldDiagnosisRequest(MortalWoundTreatmentAttemptCoordinates coordinates)
     {
         var request = AcceptedTurnAuthorityRegistry.ReadHeldMortalDiagnosis(_fileSystem, _writeLease, this, coordinates);

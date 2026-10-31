@@ -34,6 +34,20 @@ internal static partial class WoundApplicationService
             throw new InvalidDataException("Current signed Mortal diagnosis authority was refused: " +
                 string.Join(";", exported.Issues.Select(value => value.Code + ": " + value.Actual)));
         var owner = exported.Authority;
+        var manifestText = await files.ReadFileAsync(lease, LiveTurnPreparationService.PendingTurnSnapshotManifestPath) ??
+            throw new InvalidDataException("The actual Mortal diagnosis manifest is missing.");
+        var manifest = StrictJsonAuthority.Deserialize<LiveTurnPendingSnapshotManifest>(manifestText,
+            new JsonSerializerOptions { PropertyNameCaseInsensitive = true }, "Mortal diagnosis original manifest") ??
+            throw new InvalidDataException("The actual Mortal diagnosis manifest is not an object.");
+        var computedHash = PendingTurnSnapshotAuthority.ComputeManifestPayloadHash(manifest, LiveTurnPreparationService.ManifestHashJsonOptions,
+            value => value.ManifestPayloadHash, (value, hash) => value.ManifestPayloadHash = hash);
+        var preparedRole = owner.HasCurrentDiagnosisInputRole(files, lease, ownedFrame.SessionId, ownedFrame.RequestId, ownedFrame.Turn,
+            manifest.ManifestPayloadHash, computedHash);
+        IReadOnlyCollection<string> required = preparedRole ? WoundAcceptedTurnSnapshotContract.RequiredPaths.Where(path => path != AcceptedMechanicsPlan.WoundCommandPath).ToArray()
+            : WoundAcceptedTurnSnapshotContract.RequiredPaths;
+        if (!PendingTurnSnapshotAuthority.HasValidatedRollbackSnapshotCoverage(manifest, value => value.Files,
+            value => value.SnapshotFileHashes, value => value.RollbackBaselineFiles, required, out var missing))
+            throw new InvalidDataException("Mortal diagnosis has no complete original canonical rollback coverage: " + missing);
         var operation = "mortal_diagnosis_operation_" + MortalWoundDiagnosisInputCodec.Fingerprint(input)["sha256:".Length..];
         var eventRef = owner.Binding.AcceptedEvents.First().EventRef;
         var prepared = MortalWoundTreatmentPlanner.PrepareDiagnosisRequest(owner,

@@ -127,6 +127,11 @@ internal static partial class WoundAcceptedTurnPlanner
             return new(WoundAcceptedTurnData.CloneWound(_before)!, AcceptedStateAuthority, CloneRecoveryResolution(_resolution),
                 input, Array.AsReadOnly(_transitionIds), EventRef, Array.AsReadOnly(_operationKeys), roots, Fingerprint);
         }
+        // Consumed only inside boolean reducer-rule checks below; no retained
+        // mutable baseline reference is exported to their caller.
+        internal RecoveryContinuationView ReadRuleData() => new(WoundAcceptedTurnData.CloneWound(_before)!,
+            AcceptedStateAuthority, CloneRecoveryResolution(_resolution), _input, Array.AsReadOnly(_transitionIds),
+            EventRef, Array.AsReadOnly(_operationKeys), _sourceRoots, Fingerprint);
 
         /// <summary>
         /// Exports detached comparison data while retaining the actual accepted source capability.
@@ -478,7 +483,7 @@ internal static partial class WoundAcceptedTurnPlanner
     internal static bool RecoveryContinuationProvesFullHeal(object? authority,
         WoundMaterializationEnvelope before)
     {
-        if (!TryReadRecoveryContinuation(authority, out var continuation) ||
+        if (!TryReadRecoveryRuleData(authority, out var continuation) ||
             before.WoundId != continuation.Before.WoundId || before.Owner != continuation.Before.Owner ||
             before.Owner.Realm != "mortal_world" || before.Classification.Domain != "physical" ||
             before.Lifecycle != "active" || before.Severity.Rank != 1 ||
@@ -524,7 +529,7 @@ internal static partial class WoundAcceptedTurnPlanner
         object? authority,
         WoundMaterializationEnvelope before)
     {
-        if (!TryReadRecoveryContinuation(authority, out var continuation) ||
+        if (!TryReadRecoveryRuleData(authority, out var continuation) ||
             before.Owner != continuation.Before.Owner || before.WoundId != continuation.Before.WoundId ||
             before.Lifecycle != "active" || before.Classification.Domain != "physical" ||
             before.Owner.Realm != "mortal_world" ||
@@ -541,6 +546,13 @@ internal static partial class WoundAcceptedTurnPlanner
         return parsed.IsValid && parsed.Policy is { ResultKind: MortalWoundDeteriorationResultKind.AddComplication } declared &&
                continuation.Resolution.TransitionIntents.OfType<MortalWoundRecoveryDeteriorationIntent>()
                    .Count(intent => intent.PolicyRef == declared.PolicyRef) == 1;
+    }
+
+    private static bool TryReadRecoveryRuleData(object? authority, out RecoveryContinuationView view)
+    {
+        if (authority is RecoveryContinuationAuthority actual && actual.IsSealed)
+        { view = actual.ReadRuleData(); return true; }
+        view = null!; return false;
     }
 
     /// <summary>
