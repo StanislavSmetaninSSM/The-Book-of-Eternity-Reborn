@@ -1716,7 +1716,20 @@ public partial class GameEngine
             else if (healingSelection?.Aid is null && healingSelection?.Combat is null && healingSelection?.Service is null && healingSelection?.Diagnosis is null)
                 using (_fs.MeasureOperation("PlayerTurn.Stage.BuildProgressionControl"))
                     request.ProgressionControl = await _progressionSchedule.BuildControlForNextTurnAsync();
-            if (healingSelection?.MortalDiagnosis is not null)
+            if (healingSelection?.MortalTreatment is not null)
+            {
+                await using var treatmentLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+                if (!_fs.IsCurrentSessionGeneration(treatmentLease, sessionGeneration))
+                    throw new SessionReplacedException("Physical selection belongs to a replaced session.", sessionGeneration, actualGeneration: null);
+                var staged = await WoundApplicationService.StageMortalTreatmentInputAsync(_fs, treatmentLease,
+                    new(request.SessionId, request.RequestId, request.TurnNumber, request.ProgressionControl!), healingSelection);
+                if (!staged.IsStaged || staged.GmContext is null)
+                    throw new InvalidDataException("Physical treatment staging refused: " + staged.IssueCode);
+                backedUpFiles.ValidationSnapshotFiles.Add(AcceptedMechanicsPlan.WoundCommandPath);
+                backedUpFiles.ValidationSnapshotFiles.Add(ProgressionScheduleService.SchedulePath);
+                request.MortalTreatment = staged.GmContext.DeepClone().AsObject();
+            }
+            else if (healingSelection?.MortalDiagnosis is not null)
             {
                 using var diagnosisTiming = _fs.MeasureOperation("PlayerTurn.Stage.MortalDiagnosisInput");
                 await using var diagnosisLease = await _fs.AcquireCanonicalWriteLeaseAsync();
@@ -1884,6 +1897,12 @@ public partial class GameEngine
             activeSnapshotContext = await LoadValidatedPendingTurnSnapshotContextAsync(activeManifest);
             if (activeSnapshotContext == null)
                 throw new InvalidOperationException("Turn staging failed to create a validated pending snapshot context.");
+            if (healingSelection?.MortalTreatment is not null)
+            {
+                await using var treatmentLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+                _ = await WoundApplicationService.ResolveMortalTreatmentInputAsync(_fs, treatmentLease,
+                    new(request.SessionId, request.RequestId, request.TurnNumber, request.ProgressionControl!));
+            }
             if (healingSelection?.MortalDiagnosis is not null)
             {
                 // The final request/control and original are now authenticated.

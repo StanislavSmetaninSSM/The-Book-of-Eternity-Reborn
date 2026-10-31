@@ -46,6 +46,9 @@ internal static class MortalWoundTreatmentDurableSurfaceQuarantine
             },
             StringComparer.Ordinal);
 
+    private static readonly IReadOnlySet<string> GuidedPendingRowFields =
+        new HashSet<string>(["kind", "inputFingerprint", "operationKey", "attemptId", "requestFingerprint", "request"], StringComparer.Ordinal);
+
     internal static Result RemoveExactRequestRows(
         JsonObject command,
         JsonObject? pending,
@@ -124,10 +127,16 @@ internal static class MortalWoundTreatmentDurableSurfaceQuarantine
         string attemptId,
         string requestFingerprint)
     {
-        if (pending["submittedTreatmentRequests"] is not JsonArray rows)
-            return false;
-
         var changed = false;
+        if (pending["guidedTreatmentRequest"] is JsonObject guided &&
+            IsExactGuidedPendingRow(guided, operationKey, attemptId, requestFingerprint))
+        {
+            pending.Remove("guidedTreatmentRequest");
+            changed = true;
+        }
+        if (pending["submittedTreatmentRequests"] is not JsonArray rows)
+            return changed;
+
         for (var index = rows.Count - 1; index >= 0; index--)
         {
             if (rows[index] is JsonObject row && IsExactPendingRow(
@@ -162,12 +171,23 @@ internal static class MortalWoundTreatmentDurableSurfaceQuarantine
         string operationKey,
         string attemptId,
         string requestFingerprint) =>
+        pending["guidedTreatmentRequest"] is JsonObject guided && IsExactGuidedPendingRow(guided, operationKey, attemptId, requestFingerprint) ||
         pending["submittedTreatmentRequests"] is JsonArray rows &&
         rows.OfType<JsonObject>().Any(row => IsExactPendingRow(
             row,
             operationKey,
             attemptId,
             requestFingerprint));
+
+    private static bool IsExactGuidedPendingRow(JsonObject row, string operationKey, string attemptId, string requestFingerprint) =>
+        HasExactFields(row, GuidedPendingRowFields) && StringEquals(row, "kind", "guided_treatment_hold") &&
+        row["inputFingerprint"] is JsonValue input && input.TryGetValue<string>(out var fingerprint) &&
+        ResourceMaterializationContract.IsAuthorityFingerprint(fingerprint) &&
+        StringEquals(row, "operationKey", operationKey) && StringEquals(row, "attemptId", attemptId) &&
+        StringEquals(row, "requestFingerprint", requestFingerprint) && row["request"] is JsonObject request &&
+        request["mode"] is JsonValue mode && mode.TryGetValue<string>(out var treatmentMode) && treatmentMode is "procedure" or "course" or "guaranteed" &&
+        request["coordinates"] is JsonObject coordinates && StringEquals(coordinates, "purpose", "treatment") &&
+        RequestCoordinatesAgree(request, operationKey, attemptId, requestFingerprint);
 
     private static bool IsExactCommandRow(
         JsonObject row,
@@ -1410,7 +1430,8 @@ internal sealed partial class MortalWoundTreatmentResourcePublicationTransaction
 
         var commandText = DecodeUtf8(command);
         var diagnosis = _receipt.PublicationAuthority.ContinuationAuthority is WoundAcceptedTurnPlanner.MortalDiagnosisContinuation;
-        if (!diagnosis && !ContainsDurableCoordinates(commandText))
+        var guided = _receipt.PublicationAuthority.AcceptedStateAuthority.HasOriginalGuidedTreatmentInput;
+        if (!diagnosis && !guided && !ContainsDurableCoordinates(commandText))
         {
             return false;
         }
@@ -1427,6 +1448,8 @@ internal sealed partial class MortalWoundTreatmentResourcePublicationTransaction
             if (diagnosis)
                 MortalWoundDiagnosisInputCodec.RequireRequestMatches(
                     JsonNode.Parse(commandText)!.AsObject(), _receipt.Request);
+            if (guided)
+                MortalWoundGuidedTreatmentInputCodec.RequireRequestMatches(JsonNode.Parse(commandText)!.AsObject(), _receipt.Request);
             var history = WoundHistoryState.Parse(
                 DecodeUtf8(historyBytes),
                 WoundHistoryState.HistoryPath);
@@ -1500,6 +1523,28 @@ internal sealed partial class MortalWoundTreatmentResourcePublicationTransaction
                 "The exact durable treatment request could not be quarantined from its durable roots.");
         }
 
+        if (_receipt.PublicationAuthority.AcceptedStateAuthority.HasOriginalGuidedTreatmentInput)
+        {
+            // This is the real terminal receipt's captured selection/hold, not
+            // a serialized kind exemption. Restore only its authenticated earlier
+            // images together; a surviving real wave must settle with its owner.
+            MortalWoundGuidedTreatmentInputCodec.RequireRequestMatches(command, _receipt.Request);
+            if (!_receipt.IsTerminalReleaseOnly || !quarantine.PendingChanged || pending is null ||
+                pending["repairPackets"] is not JsonArray { Count: 0 } || pending["repairReceipts"] is not JsonArray { Count: 0 } ||
+                pending.ContainsKey("guidedTreatmentRequest") || pending.ContainsKey("submittedTreatmentRequests") || pending.Count != 6)
+                throw new InvalidDataException("Terminal physical cleanup cannot discard another pending owner or surviving repair wave.");
+            var owner = _receipt.PublicationAuthority.AcceptedStateAuthority;
+            var originalCommand = owner.ReadDiagnosisOriginalCommandBeforeImage();
+            var originalPending = owner.ReadDiagnosisOriginalPending();
+            fileSystem.RequireCommittedLocalPublication(await fileSystem.PublishLocalFilesAsync(writeLease,
+            [
+                new CanonicalLocalFileChange(AcceptedMechanicsPlan.WoundCommandPath, commandBytes, originalCommand.Bytes),
+                new CanonicalLocalFileChange(WoundAcceptedTurnSnapshotContract.PendingResolutionPath, pendingBytes, originalPending.Bytes)
+            ]));
+            if (!await DurableTreatmentAuthorityAbsentAsync(fileSystem, writeLease))
+                throw new InvalidDataException("Terminal physical cleanup retained a durable copy of the cancelled request.");
+            return;
+        }
         if (quarantine.CommandChanged)
         {
             await fileSystem.WriteFileAtomicAsync(

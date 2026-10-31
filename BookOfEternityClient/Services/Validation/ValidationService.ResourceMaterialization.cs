@@ -24,7 +24,8 @@ public partial class ValidationService
             Func<FileSystemManager.CanonicalWriteLease, Task<IReadOnlyList<ValidationIssue>?>>? prepareMortalGuaranteedTreatment = null,
             Func<FileSystemManager.CanonicalWriteLease, Task<GameEngine.MortalJointRepairRawAdmission>>? inspectMortalJointRepair = null,
             bool deferSpiritualSelfTreatmentPublication = false,
-            Func<FileSystemManager.CanonicalWriteLease, WoundApplicationService.MortalDiagnosisAdmission, Task<IReadOnlyList<ValidationIssue>>>? prepareMortalDiagnosis = null)
+            Func<FileSystemManager.CanonicalWriteLease, WoundApplicationService.MortalDiagnosisAdmission, Task<IReadOnlyList<ValidationIssue>>>? prepareMortalDiagnosis = null,
+            Func<FileSystemManager.CanonicalWriteLease, WoundApplicationService.MortalTreatmentAdmission, Task<IReadOnlyList<ValidationIssue>>>? prepareMortalGuidedTreatment = null)
     {
         ArgumentNullException.ThrowIfNull(writeLease);
         _fs.EnsureCanonicalWriteLeaseActive(writeLease);
@@ -52,7 +53,7 @@ public partial class ValidationService
             var issues = await ValidateAcceptedTurnRawResourceMaterializationCoreAsync(
                 writeLease, stageMortalQteDecision: stageMortalQteDecision, sealMortalQteDecision: sealMortalQteDecision,
                 readMortalQteReplay: readMortalQteReplay, prepareMortalGuaranteedTreatment: prepareMortalGuaranteedTreatment,
-                inspectMortalJointRepair: inspectMortalJointRepair, prepareMortalDiagnosis: prepareMortalDiagnosis);
+                inspectMortalJointRepair: inspectMortalJointRepair, prepareMortalDiagnosis: prepareMortalDiagnosis, prepareMortalGuidedTreatment: prepareMortalGuidedTreatment);
             keepCommonHandoff = AcceptedMechanicsPlanAuthority.HasValidated(
                 _fs,
                 writeLease);
@@ -165,7 +166,8 @@ public partial class ValidationService
         }
 
         await ValidateMortalDiagnosisDynamicCoverageAsync(writeLease, peeked.Plan, authority, issues);
-        var diagnosisInvalid = authority.RequestAuthority.Mode == "diagnosis" &&
+        await ValidateGuidedMortalTreatmentDynamicCoverageAsync(writeLease, peeked.Plan, authority, issues);
+        var diagnosisInvalid = (authority.RequestAuthority.Mode == "diagnosis" || authority.AcceptedStateAuthority.HasOriginalGuidedTreatmentInput) &&
             issues.Any(value => value.Severity == IssueSeverity.Error);
         var retainForExactTerminalSettlement =
             authority.RequiresCoordinatedSettlement &&
@@ -209,7 +211,8 @@ public partial class ValidationService
             Func<FileSystemManager.CanonicalWriteLease, Task<IReadOnlyList<ValidationIssue>?>>? prepareMortalGuaranteedTreatment = null,
             Func<FileSystemManager.CanonicalWriteLease, Task<GameEngine.MortalJointRepairRawAdmission>>? inspectMortalJointRepair = null,
             AfterlifeWoundHealingPlanner.Continuation? naturalOwner = null,
-            Func<FileSystemManager.CanonicalWriteLease, WoundApplicationService.MortalDiagnosisAdmission, Task<IReadOnlyList<ValidationIssue>>>? prepareMortalDiagnosis = null)
+            Func<FileSystemManager.CanonicalWriteLease, WoundApplicationService.MortalDiagnosisAdmission, Task<IReadOnlyList<ValidationIssue>>>? prepareMortalDiagnosis = null,
+            Func<FileSystemManager.CanonicalWriteLease, WoundApplicationService.MortalTreatmentAdmission, Task<IReadOnlyList<ValidationIssue>>>? prepareMortalGuidedTreatment = null)
     {
         ArgumentNullException.ThrowIfNull(writeLease);
         _fs.EnsureCanonicalWriteLeaseActive(writeLease);
@@ -543,8 +546,26 @@ public partial class ValidationService
                     return issues;
                 }
             }
+            WoundApplicationService.MortalTreatmentAdmission? guidedTreatment = null;
+            if (IsMortalGuidedTreatmentInput(rawWound))
+            {
+                if (prepareMortalGuidedTreatment is null)
+                {
+                    issues.Add(WoundIssue(AcceptedMechanicsPlan.WoundCommandPath, "mortal_guided_treatment_live_owner_unavailable",
+                        "the actual retained physical preparation callback", "selection DATA alone cannot allocate or publish treatment"));
+                    return issues;
+                }
+                try { guidedTreatment = await ReadRetainedMortalGuidedTreatmentAsync(writeLease, manifest); }
+                catch (Exception failure) when (failure is not CoordinatedStatePublicationUncertainException &&
+                    failure is (InvalidDataException or InvalidOperationException or ArgumentException or JsonException))
+                {
+                    issues.Add(WoundIssue(AcceptedMechanicsPlan.WoundCommandPath, "mortal_guided_treatment_retained_input_invalid",
+                        "the exact original selection and actual pre-GM physical hold", failure.Message));
+                    return issues;
+                }
+            }
             var hasOriginalMortalOccurrence = false;
-            if (diagnosis is not null ||
+            if (diagnosis is not null || guidedTreatment is not null ||
                 (prepareMortalGuaranteedTreatment is not null || inspectMortalJointRepair is not null) && parsedWound?.TreatmentCommands.Count > 0)
             {
                 if (commandJson is not null || effectCommandJson is not null || hasStagedFullPartyResourcePackets ||
@@ -567,7 +588,7 @@ public partial class ValidationService
                 // Reuse the original-bound READ-ONLY wound admission (including rollback,
                 // client-owned baselines and occurrence/receipt/history agreement), not its
                 // later Prepare/effect/Finalize reducer.
-                var admittedWound = await LoadAcceptedTurnRawWoundDraftAsync(manifest, writeLease, rawWound!, issues, diagnosis);
+                var admittedWound = await LoadAcceptedTurnRawWoundDraftAsync(manifest, writeLease, rawWound!, issues, diagnosis, guidedTreatment);
                 if (admittedWound is null)
                 {
                     if (!issues.Any(static issue => issue.Severity == IssueSeverity.Error))
@@ -576,7 +597,7 @@ public partial class ValidationService
                     return issues;
                 }
                 hasOriginalMortalOccurrence = admittedWound.SignedOccurrences.Occurrences.Count != 0;
-                if (hasOriginalMortalOccurrence && (diagnosis is not null || inspectMortalJointRepair is null))
+                if (hasOriginalMortalOccurrence && (diagnosis is not null || guidedTreatment is not null || inspectMortalJointRepair is null))
                     issues.Add(WoundIssue(MortalWoundOccurrenceState.StatePath,
                         "mortal_wound_treatment_ordinary_concurrent_work_unsupported", "no competing unconsumed wound occurrence",
                         "the occurrence/decision owner must handle this original input"));
@@ -639,7 +660,8 @@ public partial class ValidationService
             // This callback joins only after original quartet and current owner admission.
             // Its owner issues the existing treatment common plan under THIS lease;
             // the generic wound/effect pipeline must not reduce that work a second time.
-            var treatmentIssues = diagnosis is not null
+            var treatmentIssues = guidedTreatment is not null ? await prepareMortalGuidedTreatment!(writeLease, guidedTreatment)
+                : diagnosis is not null
                 ? await prepareMortalDiagnosis!(writeLease, diagnosis)
                 : prepareMortalGuaranteedTreatment is null || parsedWound?.TreatmentCommands.Count is not > 0
                     ? null : await prepareMortalGuaranteedTreatment(writeLease);

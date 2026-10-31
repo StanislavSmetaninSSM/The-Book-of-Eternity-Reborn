@@ -81,6 +81,9 @@ public partial class GameEngine
                 deferSpiritualSelfTreatmentPublication: true,
                 prepareMortalDiagnosis: ordinaryUpstreamAccepted && activeSnapshotContext is not null && expectedTurn is not null
                     ? (currentLease, admission) => PrepareOrdinaryMortalDiagnosisAsync(currentLease, activeSnapshotContext, expectedTurn.Value, admission)
+                    : null,
+                prepareMortalGuidedTreatment: ordinaryUpstreamAccepted && activeSnapshotContext is not null && expectedTurn is not null
+                    ? (currentLease, admission) => PrepareOrdinaryMortalGuidedTreatmentAsync(currentLease, activeSnapshotContext, expectedTurn.Value, admission)
                     : null);
             _mortalJointRepairCorrectionReady = jointIntake?.Disposition == MortalJointRepairRawDisposition.Owned &&
                 !issues.Any(issue => issue.Severity == IssueSeverity.Error);

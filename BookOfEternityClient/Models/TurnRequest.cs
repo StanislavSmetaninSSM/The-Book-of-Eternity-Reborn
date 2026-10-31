@@ -49,6 +49,11 @@ public class TurnRequest
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public JsonObject? MortalDiagnosis { get; set; }
 
+    /// <summary>Client-owned projection of the confirmed physical route and exact held-request channel.</summary>
+    [JsonPropertyName("mortalTreatment")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public JsonObject? MortalTreatment { get; set; }
+
     [JsonPropertyName("spiritualHealing")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public JsonObject? SpiritualHealing { get; set; }

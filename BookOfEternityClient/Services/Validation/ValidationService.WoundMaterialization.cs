@@ -184,7 +184,8 @@ public partial class ValidationService
             FileSystemManager.CanonicalWriteLease writeLease,
             string commandJson,
             List<ValidationIssue> issues,
-            WoundApplicationService.MortalDiagnosisAdmission? diagnosis = null)
+            WoundApplicationService.MortalDiagnosisAdmission? diagnosis = null,
+            WoundApplicationService.MortalTreatmentAdmission? guidedTreatment = null)
     {
         ArgumentNullException.ThrowIfNull(manifest);
         ArgumentNullException.ThrowIfNull(writeLease);
@@ -192,7 +193,16 @@ public partial class ValidationService
         ArgumentNullException.ThrowIfNull(issues);
         _fs.EnsureCanonicalWriteLeaseActive(writeLease);
         WoundResponseCommandParsingResult? parsedCommands;
-        if (diagnosis is null) parsedCommands = ParseAcceptedTurnWoundCommands(commandJson, manifest, issues);
+        if (diagnosis is null && guidedTreatment is null) parsedCommands = ParseAcceptedTurnWoundCommands(commandJson, manifest, issues);
+        else if (guidedTreatment is not null)
+        {
+            if (diagnosis is not null) throw new InvalidDataException("Two wound input owners cannot share one operation.");
+            guidedTreatment.Owner.RequireOriginalGuidedTreatmentRequest(guidedTreatment.Request);
+            var input = StrictJsonAuthority.Deserialize<JsonObject>(commandJson.TrimStart('\uFEFF'),
+                new JsonSerializerOptions(), "current physical guided input") ?? throw new InvalidDataException("Missing physical selection.");
+            MortalWoundGuidedTreatmentInputCodec.RequireRequestMatches(input, guidedTreatment.Request);
+            parsedCommands = new(input, Array.Empty<WoundResponseCommandDraft>(), Array.Empty<ValidationIssue>());
+        }
         else
         {
             // Read-only canonical admission only. This primitive never enters
@@ -240,6 +250,10 @@ public partial class ValidationService
         }
 
         IReadOnlyCollection<string> requiredPaths = WoundAcceptedTurnSnapshotContract.RequiredPaths;
+        if (guidedTreatment is not null && guidedTreatment.Owner.HasCurrentGuidedTreatmentPreparedCommandRole(_fs, writeLease,
+            guidedTreatment.Request, manifest.SessionId, manifest.RequestId, manifest.TurnNumber,
+            manifest.ManifestPayloadHash, computedManifestHash))
+            requiredPaths = requiredPaths.Where(path => path != AcceptedMechanicsPlan.WoundCommandPath).ToArray();
         if (diagnosis is not null && diagnosis.Owner.HasCurrentDiagnosisPreparedCommandRole(_fs, writeLease, diagnosis.Request,
                 manifest.SessionId, manifest.RequestId, manifest.TurnNumber, manifest.ManifestPayloadHash, computedManifestHash))
             requiredPaths = requiredPaths.Where(path => path != AcceptedMechanicsPlan.WoundCommandPath).ToArray();

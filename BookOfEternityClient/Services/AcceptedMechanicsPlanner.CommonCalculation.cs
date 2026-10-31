@@ -530,6 +530,13 @@ internal static partial class AcceptedMechanicsPlanner
             { touched.Add(ProgressionScheduleService.ReportPath); consumed.Add(ProgressionScheduleService.ReportPath); }
         }
 
+        if (woundStages?.MortalProcedureContinuation is { } physicalCompanion &&
+            WoundAcceptedTurnPlanner.TryReadMortalProcedurePublication(physicalCompanion, out var physicalPublication) &&
+            physicalPublication.AcceptedStateAuthority.HasOriginalGuidedTreatmentInput)
+        {
+            touched.UnionWith(new[] { WoundAcceptedTurnSnapshotContract.PendingResolutionPath, AcceptedMechanicsPlan.WoundCommandPath });
+            consumed.UnionWith(new[] { WoundAcceptedTurnSnapshotContract.PendingResolutionPath, AcceptedMechanicsPlan.WoundCommandPath });
+        }
         if (isJointRepair)
         {
             touched.Add(WoundAcceptedTurnSnapshotContract.PendingResolutionPath);

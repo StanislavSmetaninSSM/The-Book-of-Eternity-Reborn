@@ -1,3 +1,37 @@
+# T121 physical Engine/common cleanup bridge — WIP UNCOMPILED/UNRUN
+
+Continues saved owner/private-hold d1c481405544e42414d9756a6eec854daff6d6cc.
+Sol froze11 actual source paths before the longer strict current-proof leaf;
+root checked paths/static diff. Engine now authors pre-original physical input
+and resolves/retains only after final request/validated original. Post-GM intake
+reuses the retained request, dispatches the existing3 reducers, binds the actual
+narrative/mechanical envelope and calls the existing common publisher. New source
+entrypoints are GameEngine.MortalGuidedTreatment.cs and
+ValidationService.MortalGuidedTreatment.cs; no second publication engine is added.
+
+Authored common/validation joins bind the actual signed input role and exact
+dynamic rollback coverage. Common planning consumes the guided selection/hold
+atomically; transaction compensation checks the same selection/request/held bytes.
+Terminal-only physical cleanup restores authenticated earlier command and pending
+images together, refusing a surviving unrelated wave. Existing byte/current/receipt
+checks remain in source. These are implementation statements, not verified outcomes.
+TurnRequest now has a client-owned physical projection; GM docs/examples/guards
+must be synchronized in the final coherent cut before qualification.
+
+Detached browser admission recognizes the authenticated physical original. Its
+strict accepted current-settlement BRANCH IS STILL MISSING: no browser/live feature
+acceptance, runtime admission, build or test result is claimed. All product code
+since accepted causal3 remains UNCOMPILED/UNRUN; input/hold source tests still need
+final category ownership. Do not run old binaries against the new code.
+
+Next within the SAME functional slice: frozen actual publication DATA and shared
+pure identities/all-mode finalization/current canonical settlement, then complete
+cheap owner/fault/cold/transfer/current-reader tests and actual console/browser/
+rollback journeys. Also finish menu hoist/spiritual-menu equivalence, XML, GM/docs/
+examples/source inventory pins/catalog/selection, coherent independent SOURCE,
+fresh owning builds/PE-PDB/resource proof and exact PREP. No broader HOLD is lifted,
+no game/time/economic rule is added and all external raw/evidence remains untouched.
+
 # T121 physical owner/private hold — source WIP, UNCOMPILED/UNRUN
 
 Continues saved selection/input/menu0c3eab81ab5978afc1e985ca6014eb9749f95825.
