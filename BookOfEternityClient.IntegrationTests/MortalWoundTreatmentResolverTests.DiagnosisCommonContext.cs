@@ -104,8 +104,16 @@ public sealed partial class MortalWoundTreatmentResolverTests
         try
         {
             await fixture.Files.WriteFileAtomicAsync(fixture.Lease, clockPath, changedClock.ToJsonString());
-            Assert.Throws<InvalidDataException>(() => AcceptedMechanicsWoundCommonInputComposer.ComposeMortalDiagnosisContinuation(
-                fixture.Files, fixture.Lease, bundle));
+            var refused = AcceptedMechanicsWoundCommonInputComposer.ComposeMortalDiagnosisContinuation(
+                fixture.Files, fixture.Lease, bundle);
+            Assert.False(refused.Success);
+            Assert.Null(refused.Input);
+            var clockIssue = Assert.Single(refused.Issues);
+            Assert.Equal("accepted_mechanics_wound_anchor_clock_changed", clockIssue.Code);
+            Assert.Equal(clockPath, clockIssue.FilePath);
+            Assert.Equal(IssueSeverity.Error, clockIssue.Severity);
+            Assert.Equal(originalMinute.ToString(System.Globalization.CultureInfo.InvariantCulture), clockIssue.Expected);
+            Assert.Equal("original canonical clock bytes changed", clockIssue.Actual);
         }
         finally { await fixture.Files.WriteFileAtomicBytesAsync(fixture.Lease, clockPath, originalClock); }
         fixture.AssertJson(before);

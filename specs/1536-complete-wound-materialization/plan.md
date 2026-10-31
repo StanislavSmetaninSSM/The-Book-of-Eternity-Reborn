@@ -1,3 +1,29 @@
+# T121 clock-refusal oracle correction — test-only WIP
+
+At runtime `8ae48e676467ef0d59f8524a164ea2fda514c22a`, compiled
+`797cc898f7b7b8faf6243d18e99cc3ab496cead6`, focused5 completed
+0 PASS / 1 FAIL / 4 UNRUN in 48.5229774s, no timeout and complete cleanup.
+The common-context case reached its line107 drift assertion after its genuine
+common plans, constructor negatives, T0/T1 images, copied exports and cached-result
+prefixes. No exception was thrown; the old assertion discarded the returned
+result, so its contents and later claim assertions were not observed.
+
+Independent remaining4 then passed 4/4, four methods/two descriptors, in
+47.6962900s; exact IDs/TRX hashes, cleanup and pins pass. Astra OUTCOME accepted
+the real callback with retained-validation/claims suffix plus semantic guards3.
+Full external raw/strict proofs remain in `M2GREENC8C1-focused5` and
+`M2GREENC8C1-remaining4`. No full focused5 or feature PASS follows.
+
+Root changes only the failed test's oracle to require the composer's exact
+structured clock refusal: unsuccessful result, null input, one Error with the
+clock path/code, expected original T0 and original-byte-change diagnostic. Existing
+finally restoration and all suffix assertions stay intact. Source already returns
+this structured refusal; it is not an exception contract. The earlier entry-
+currentness characterization was incorrect. Corrected result contents remain
+UNRUN. No production code, method/category membership, budget, cache or GM rule
+changes. Next: narrow delta SOURCE, fresh Integration build only, verify unchanged
+current Main/Support/Unit source/PDB/artifact bindings, then PREP for this one Fact.
+
 # T121 common-context/T0 correction — fresh build and exact PREP, runtime UNRUN
 
 Astra/high coherent SOURCE at `fd3dab8f6d994a565829861a50da4da73759704b`
