@@ -421,6 +421,15 @@ public partial class GameEngine
         finally { await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, lease, false, uncertainty); }
     }
 
+    /// <summary>Captures the actual signed validation original using a producer-owned rollback snapshot.</summary>
+    /// <param name="request">The current typed turn request, authenticated by the existing snapshot producer.</param>
+    /// <param name="rollbackSnapshot">The real pre-turn backup returned by the existing rollback producer.</param>
+    /// <param name="sourceLabel">The existing caller's source label; this label grants no authority.</param>
+    /// <returns>The actual logical-to-snapshot file map after the existing producer completes.</returns>
+    internal Task<Dictionary<string, string>> CaptureOriginalValidationSnapshotAsync(TurnRequest request,
+        RollbackSnapshot rollbackSnapshot, string sourceLabel) =>
+        CreateCanonicalBaselineSnapshotAsync(request, rollbackSnapshot, sourceLabel);
+
     private async Task<Dictionary<string, string>> CreateCanonicalBaselineSnapshotAsync(TurnRequest request,
         RollbackSnapshot? rollbackSnapshot = null,
         string? sourceLabel = null,
@@ -2253,6 +2262,11 @@ public partial class GameEngine
 
         return files;
     }
+
+    /// <summary>Captures the real pre-turn rollback state through its unchanged lease-owning producer.</summary>
+    /// <param name="backupId">The existing rollback member suffix for this capture.</param>
+    /// <returns>The producer's actual rollback DATA; this grants no execution or publication authority.</returns>
+    internal Task<RollbackSnapshot> CaptureOriginalRollbackAsync(string backupId) => CreatePreTurnBackup(backupId);
 
     private async Task<RollbackSnapshot> CreatePreTurnBackup(string backupId)
     {

@@ -2,6 +2,16 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "spiritual-diagnosis-snapshot-role-causal",
+  "responsibility": "T121 file-light real Engine backup, actual diagnosis staging, Explorer rollback overlay and signed snapshot admission. Six rows distinguish signed preparation input from canonical rollback sources: signed-only input must admit, baseline-present input admits, missing/tampered signed input, current input drift and missing canonical source baseline refuse without mutation. Direct typed existing operations replace new reflection use; diagnosis behavior is unchanged for the intended RED.",
+  "excludes": "No ProcessPlayerTurn, GM wait, accepted receipt fabrication, manifest re-signing, publication, UI acceptance, role correction, budget increase or replay of accepted component/native cases. The authentic signed-only row intends one final admission failure until its RED is verified.",
+  "changeHints": ["BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.SpiritualDiagnosisSnapshot.cs", "BookOfEternityClient/Core/GameEngine/GameEngine.PrivateImplementation.cs", "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs", "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs"],
+  "related": [{ "id": "spiritual-diagnosis-console", "when": "The actual console timeout's signed-input role mismatch must be proved and corrected before another UI admission." }],
+  "requirements": { "frontendBuild": false, "exclusive": true },
+  "timeoutMinutes": 1, "expectedSeconds": null,
+  "selectors": [{ "project": "integration", "tests": ["BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PreparedDiagnosisDistinguishesSignedInputFromCanonicalRollbackBaseline"] }]
+},
+{
   "id": "spiritual-diagnosis-graph-knowledge-causal",
   "responsibility": "T121 file-free producer-to-graph-consumer causal proof: actual H5 selected-not-first diagnosis program, one operation-local production graph-source selector, actual graph parser and predecessor binder, complete ordered complication metadata and frozen inputs. The GREEN candidate preserves selected knowledge and unselected/ordinary originals. Existing typed stage DATA also proves the strict persisted scope guard refuses a knowledge downgrade; the accepted EX7RED final metadata failure stays historical.",
   "excludes": "No accepted owner, signed receipt, publication, Engine, fabricated Mortal route, new graph wire shape or guard relaxation. Actual terminal native publication remains separate and required after component GREEN.",

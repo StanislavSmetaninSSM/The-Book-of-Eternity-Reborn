@@ -2211,7 +2211,10 @@ public partial class GameEngine
         }
     }
 
-    private void OverlayExplorerLocalRollbackSnapshot(
+    /// <summary>Combines actual Explorer preparation evidence with the real Engine rollback capture.</summary>
+    /// <param name="targetSnapshot">The existing Engine backup returned by its rollback producer.</param>
+    /// <param name="stagedSnapshot">The existing Explorer rollback snapshot, or null when nothing was staged.</param>
+    internal void OverlayExplorerLocalRollbackSnapshot(
         RollbackSnapshot targetSnapshot,
         ExplorerMode.PendingLocalTurnRollbackSnapshot? stagedSnapshot)
     {

@@ -1,3 +1,56 @@
+# T121 console snapshot-role causal scaffold — UNCOMPILED/UNRUN
+
+At source `c863900ab`, the root verified graph GREEN six and terminal native PASS.
+The next actual console case timed out at its original 180s bound: category
+180.1819963s, wall 188.0967991s, exit 124, zero completed cases/TRX/report. Existing
+capture is an incomplete prefix, not a CRC-complete record. Process/runtime cleanup
+was complete and the 23:55:20 UTC fence found stable pins and no live owners.
+Browser and rollback remain UNRUN/held; no unchanged retry or limit increase occurred.
+
+The retained owned fixture's exact repair request has one client-owned issue:
+spiritual_diagnosis_admission_invalid, Actual "Diagnosis requires its exact signed
+turn and complete rollback baseline." Repair request SHA256 is
+`9279a8b4c44d21496a041cee62bf834d4630729afbee413c0fd4c74b123c7b06`.
+The request's signed bytes/hash and current bytes agree. The Engine correctly keeps
+new preparation input outside the pre-turn rollback baseline, while diagnosis
+admission incorrectly includes that input in canonical-source rollback coverage.
+Existing active treatment and the authenticated Engine preparation classifier
+already distinguish these roles. Independent Astra approved the narrow role
+correction design; production diagnosis admission is deliberately unchanged here.
+
+Original root and all raw remain outside Git. The failed fixture archive is
+48,960 bytes, 76 files / 206,017 source bytes, all member hashes and full gzip CRC
+verified; SHA256 `4cdc14e847c27de143c67fa58dc653b3622956ad3bd015be6185246508d1f9fc`.
+The root remains retained; a terminal zombie is not reported as a live owner.
+
+One new Integration method has six source-estimated rows at 60s: authentic signed
+input without rollback registration intends one final admission FAIL; baseline-
+present input is the positive control; missing signed input, signed-byte tamper,
+current input drift and missing canonical source baseline must refuse. All use
+the existing complete initial diagnosis fixture, actual pre-turn backup, actual
+StageDiagnosisAsync, Explorer overlay and real signed snapshot producer, with
+exact source/request checks and no-mutation assertions. No live turn loop, GM wait,
+accepted-result fabrication, manifest re-signing or new diagnostic machinery.
+Refusal controls retain a baseline-present request so the known role defect cannot
+mask their independent source/input guards.
+
+The existing RollbackSnapshot and Explorer overlay become internal, and two thin
+typed capture entries call the unchanged backup/snapshot producers under existing
+InternalsVisibleTo. The original private wrappers and their source-guard anchors
+stay intact. No string/object dispatcher, new reflection, second owner or admission
+guard change. Historical reflection tests are untouched. Main and Integration need
+fresh owning builds; unchanged Support/Unit continuity must be verified rather
+than assumed. This scaffold is UNCOMPILED/UNRUN pending independent SOURCE and
+fresh artifact/PDB/catalog/exact six-case PlanOnly/PREP. Full CI is source-estimated
+160 cases / 67 methods / 28 descriptors, with discovery authoritative.
+
+Preparation reuses the existing fixture/runtime/snapshot owners and one operation's
+parsed signed DATA. Fresh request/source/control/physical guards remain intact;
+no new cache, source-read claim or speedup claim. No GM contract changed: the
+failure concerns client-owned snapshot roles. Earlier cheap/native passes retain
+only their independently reviewed dependency lineages; UI remains unqualified,
+broader Mortal/adapter tasks and all holds remain open. Writer ran no build/test.
+
 # T121 EX7RED accepted — selector-only GREEN candidate, UNCOMPILED/UNRUN
 
 Independent Astra OUTCOME accepted the actual causal attempt at `3dc220c0d`:

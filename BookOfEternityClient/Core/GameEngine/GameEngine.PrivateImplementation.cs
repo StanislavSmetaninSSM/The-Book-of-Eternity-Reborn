@@ -47,7 +47,8 @@ public partial class GameEngine
         public BookOfEternityClient.Core.BrowserOriginalMainCondition? BrowserOriginalMainCondition { get; set; }
     }
 
-    private sealed class RollbackSnapshot
+    /// <summary>Producer-owned rollback DATA; it does not grant execution or publication authority.</summary>
+    internal sealed class RollbackSnapshot
     {
         public HashSet<string> TechnicalArtifacts { get; set; } = new(StringComparer.OrdinalIgnoreCase);
         public Dictionary<string, string> BackupFiles { get; set; } = new(StringComparer.OrdinalIgnoreCase);

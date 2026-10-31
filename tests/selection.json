@@ -2,6 +2,11 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "spiritual-diagnosis-snapshot-role-causal",
+      "reason": "Test-only causal scaffold for the actual console post-seal refusal: the real Engine signs staged diagnosis input without treating it as a pre-turn canonical rollback source. Run exactly six rows after fresh owning build, artifact/PDB/discovery/PlanOnly and PREP; expect signed-only final FAIL and five baseline/refusal controls PASS. No production role correction or UI retry is included.",
+      "contracts": ["#1536 T121 / FR071; authenticated preparation input versus exact canonical rollback coverage"]
+    },
+    {
       "category": "spiritual-diagnosis-graph-knowledge-causal",
       "reason": "Accepted EX7RED proves the actual lower-graph consumer regresses selected diagnosis knowledge. The selector-only GREEN candidate now uses admitted NaturalMembers once while preserving ordinary originals, parser/binder, frozen inputs and strict scope refusals; retain all three component rows.",
       "contracts": ["#1536 T121; knowledge-first graph metadata, unchanged signed originals and strict natural-stage scope"]
