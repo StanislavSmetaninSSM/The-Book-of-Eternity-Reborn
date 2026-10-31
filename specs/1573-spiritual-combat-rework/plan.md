@@ -51,7 +51,16 @@ Spec Kit bridge/writing-plans/executing-plans/TDD используются в э
 [Итоги](healing-amplification-investigation.md) показывают и полезность лечения,
 и оставшиеся случаи затяжного боя. Матрицы42335ea5d, utility-only fix077bced26
 опубликованы/remoteSHA/source readback подтверждены. Числа T119 неизменны.
-UNRUN: независимое review и финальная публикация.
+Независимый GPT-6 Astra/high review aa2f7e5aa..ab62c6c71 всего8файлов/raw:
+существенных замечаний нет. Повторно66/66guards;960raw cells/utility,
+3confirmation cases×10000 и27damage tables/10800исходов проверены reviewer.
+Единственная неточность prose p951967 исправлена по исходным данным; код не менялся.
+129относительных файловых ссылок (не anchors), четыре accepted contract blobs
+неизменны. Clean remote restore ab62c6c71 совпал по8изменённым файлам.
+После нового полного замера удалены только8точных файлов старого T120 raw,
+2735392байта; текущая диагностика наD:, прежняя проверочная clone-копия не удаляется.
+T122 выполнен как исследование. Финал: scoped commit/push, remoteSHA/blob и
+exact #1573 readback, сохранение исторического tail; production gates открыты.
 
 
 ## Активный план T120/T121: проверка принятых двух режимов
