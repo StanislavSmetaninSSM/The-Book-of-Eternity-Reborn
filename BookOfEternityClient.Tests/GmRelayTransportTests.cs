@@ -14,6 +14,8 @@ public sealed class GmRelayTransportTests
     }
     [Theory]
     [InlineData("paste")]
+    [InlineData("large-prompt")]
+    [InlineData("long-session")]
     [InlineData("once")]
     [InlineData("wrong-reply")]
     [InlineData("stale")]
