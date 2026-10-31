@@ -13,7 +13,7 @@ sys.path.insert(0,sys.argv.pop(1))
 import relay_cli
 original=relay_cli.read_bounded
 queue=Path(sys.argv[sys.argv.index('--queue')+1])
-def read(path,limit=1048576):
+def read(path,limit=16*1024*1024):
     data=original(path,limit)
     if path.name=='pending_turn_snapshot.authority.json' and list(queue.glob('request-*/reply.json')):
         (queue/'before-snapshot').write_text('paused')
@@ -54,11 +54,17 @@ function Resolve-BoeSessionPath { param($RelativePath) Join-Path $env:RELAY_TEST
 function Write-BoeJson { param($RelativePath,$Data,$ExpectedReadWitnesses)
  [IO.File]::WriteAllText((Join-Path $env:RELAY_TEST_SESSION 'child-entered'), 'entered')
  if ($env:RELAY_TEST_HOLD -eq '1') { Start-Sleep -Seconds 2 }
+ if (-not [string]::IsNullOrEmpty($env:RELAY_TEST_FAIL_PATH) -and $RelativePath -eq $env:RELAY_TEST_FAIL_PATH) { throw "Controlled apply failure: $RelativePath" }
+ if ($env:RELAY_TEST_PHYSICAL -eq '1') {
+  $target = Join-Path $env:RELAY_TEST_SESSION $RelativePath
+  [IO.Directory]::CreateDirectory([IO.Path]::GetDirectoryName($target)) | Out-Null
+  [IO.File]::WriteAllText($target, ($Data | ConvertTo-Json -Depth 8 -Compress)) }
  [IO.File]::AppendAllText((Join-Path $env:RELAY_TEST_SESSION 'applied'), 'once') }
 function Complete-BoeTurn { param($FilesModified) }
 function Complete-BoeValidationRepair { param($FilesModified) }
 ''')
 env=dict(os.environ,RELAY_TEST_SESSION=str(session),RELAY_TEST_HOLD='1' if mode=='close-held-child' else '0')
+if mode=='partial-apply':env.update(RELAY_TEST_PHYSICAL='1',RELAY_TEST_FAIL_PATH='output/partial-second.json')
 master,slave=pty.openpty();initial=termios.tcgetattr(slave);p=None;capture=bytearray()
 def pump():
  if select.select([master],[],[],.02)[0]:
@@ -71,55 +77,119 @@ def until(test,label,seconds=5):
   assert time.monotonic()<stop,(label,bytes(capture));pump()
 try:
  entry=[str(wrapper),str(repo/'tools/gm-relay')] if mode in ['close-before-snapshot','started-metadata-failure'] else [str(relay)]
- p=subprocess.Popen(['/usr/bin/python3',*entry,'--session',str(session),'--queue',str(queue),'--model','inert-transport-no-model'],stdin=slave,stdout=slave,stderr=slave,env=env)
+ configured=['--max-paste-bytes','524288','--max-packet-bytes','2097152','--max-consumer-output-bytes','1048576','--max-response-writes','40'] if mode=='long-session' else []
+ p=subprocess.Popen(['/usr/bin/python3',*entry,'--session',str(session),'--queue',str(queue),'--model','inert-transport-no-model',*configured],stdin=slave,stdout=slave,stderr=slave,env=env)
  until(lambda:b'NEUTRAL READY' in capture,'real initial presentation')
- prompt=('real draft Ж🙂 update > \nsecond line '+('x'*9000)).encode()
- os.write(master,b'\x1b[200~'+prompt+b'\x1b[201~')
- until(lambda:prompt.replace(b'\n',b'\r\n') in capture,'exact pasted view');assert not list(queue.glob('request-*')),'Paste alone submitted'
- os.write(master,b'\r');until(lambda:bool(list(queue.glob('request-*/request.json'))),'actual submit')
- q=next(queue.glob('request-*'));until(lambda:(q/'request.json').is_file() and (q/'prompt.txt').is_file() and (q/'game-request.json').is_file(),'complete request publication')
- req=json.loads((q/'request.json').read_text());assert (q/'prompt.txt').read_bytes()==prompt
- assert req['PromptSHA256']==hashlib.sha256(prompt).hexdigest() and req['TurnIdentity']==turn
- if mode=='paste':
-  (queue/'close-request.json').write_text('{}');until(lambda:(queue/'closed.json').exists(),'close idle queue');assert not (session/'applied').exists()
+ if mode=='long-session':
+  for index in range(1,6):
+   identity={'sessionId':'own-test-session','requestId':'own-request-'+str(index),'turnNumber':index}
+   (session/'input/turn_request.json').write_text(json.dumps(identity))
+   (session/'game_state/control/pending_turn_snapshot.json').write_text(json.dumps(identity))
+   repair=index in (2,4)
+   if repair:
+    (session/'game_state/control/validation_repair_request.json').write_text(json.dumps(dict(identity,attempt=1)))
+    prompt=('REPAIR MODE for rejected turn #'+str(index)+' (requestId='+identity['requestId']+', attempt=1). Controlled long-session repair.').encode()
+   else:prompt=('controlled long-session turn '+str(index)).encode()
+   os.write(master,b'\x1b[200~'+prompt+b'\x1b[201~');until(lambda:prompt in capture,'long-session pasted view '+str(index))
+   os.write(master,b'\r');until(lambda:len(list(queue.glob('request-*')))>=index,'long-session submit '+str(index))
+   q=next(queue.glob('request-'+str(index)+'-*'));until(lambda:(q/'request.json').is_file() and (q/'prompt.txt').is_file() and (q/'game-request.json').is_file(),'complete long-session request')
+   req=json.loads((q/'request.json').read_text());assert req['TurnIdentity']==identity and req['Kind']==('repair' if repair else 'turn')
+   assert req['Limits']['PacketBytes']==2*1024*1024 and req['Limits']['ResponseWrites']==40
+   writes=[{'Path':'output/response-'+str(index)+'-'+str(write)+'.json','ExpectedSHA256':'missing','Data':{'turn':index,'write':write}} for write in range(40)]
+   completion=req['Kind'];packet={'Completion':completion,'Writes':writes,'FilesModified':[write['Path'] for write in writes]}
+   packet_bytes=json.dumps(packet).encode();(q/'response.json').write_bytes(packet_bytes)
+   reply={k:req[k] for k in ['QueueId','PromptSHA256','RequestSHA256','TurnRequestSHA256']};reply.update(ResponseSHA256=hashlib.sha256(packet_bytes).hexdigest(),Model='inert-transport-no-model',AgentTask='long-session')
+   (q/'reply.json').write_text(json.dumps(reply));until(lambda:(q/'execution.json').exists(),'long-session execution '+str(index))
+   execution=json.loads((q/'execution.json').read_text());assert execution['Executed'] and execution['ExitCode']==0,execution
+   until(lambda:capture.count(b'NEUTRAL READY')>=index+1,'long-session ready '+str(index))
+  (queue/'close-request.json').write_text('{}');until(lambda:(queue/'closed.json').exists(),'long-session close')
+  assert len(list(queue.glob('request-*')))==5 and (session/'applied').read_text()=='once'*200
+ elif mode=='large-prompt':
+  prompt=('\n'.join('large prompt line '+str(i)+' '+('x'*1800) for i in range(150))).encode()
+  assert len(prompt)>262144 and len(prompt.decode().split('\n'))>120
+  os.write(master,b'\x1b[200~'+prompt+b'\x1b[201~');until(lambda:prompt.replace(b'\n',b'\r\n') in capture,'large pasted view',20);assert not list(queue.glob('request-*'))
+  os.write(master,b'\r');until(lambda:bool(list(queue.glob('request-*/request.json'))),'large prompt submit',10)
+  q=next(queue.glob('request-*'));until(lambda:(q/'request.json').is_file() and (q/'prompt.txt').is_file() and (q/'game-request.json').is_file(),'complete large request')
+  req=json.loads((q/'request.json').read_text());assert (q/'prompt.txt').read_bytes()==prompt and req['Limits']['PasteBytes']==4*1024*1024
+  (queue/'close-request.json').write_text('{}');until(lambda:(queue/'closed.json').exists(),'large prompt close')
+ elif mode=='partial-apply':
+  prompt=b'controlled partial-apply turn'
+  packet={'Completion':'turn','Writes':[{'Path':'output/partial-first.json','ExpectedSHA256':'missing','Data':{'part':'first'}},{'Path':'output/partial-second.json','ExpectedSHA256':'missing','Data':{'part':'second'}}],'FilesModified':['output/partial-first.json','output/partial-second.json']}
+  packet_bytes=json.dumps(packet).encode()
+  def answer(target,header):
+   (target/'response.json').write_bytes(packet_bytes)
+   rep={k:header[k] for k in ['QueueId','PromptSHA256','RequestSHA256','TurnRequestSHA256']};rep.update(ResponseSHA256=hashlib.sha256(packet_bytes).hexdigest(),Model='inert-transport-no-model',AgentTask='partial-apply')
+   (target/'reply.json').write_text(json.dumps(rep))
+  def submit(label,seen):
+   os.write(master,b'\x1b[200~'+prompt+b'\x1b[201~');until(lambda:capture.count(prompt)>=seen,label+' pasted view')
+   os.write(master,b'\r');until(lambda:len(list(queue.glob('request-*')))>=seen,label+' submit')
+   qx=sorted(queue.glob('request-*'))[-1];until(lambda:(qx/'request.json').is_file() and (qx/'prompt.txt').is_file() and (qx/'game-request.json').is_file(),'complete '+label+' request')
+   return qx,json.loads((qx/'request.json').read_text())
+  q,req=submit('partial-apply',1);answer(q,req)
+  until(lambda:(q/'execution.json').exists(),'partial-apply first execution')
+  execution=json.loads((q/'execution.json').read_text());assert execution['Executed'] and execution['ExitCode']!=0,execution
+  until(lambda:b'RELAY ERROR' in capture,'partial-apply error rendered')
+  assert (session/'output/partial-first.json').is_file(),'First write must physically land'
+  assert not (session/'output/partial-second.json').exists(),'Failed write must never land'
+  assert (session/'applied').read_text()=='once'
+  # A retry of the same packet on a fresh request must refuse before any write:
+  # the first target no longer matches the read witness the GM authored against.
+  q2,req2=submit('partial-apply retry',2);answer(q2,req2)
+  until(lambda:(q2/'execution.json').exists(),'partial-apply retry execution')
+  retry=json.loads((q2/'execution.json').read_text());assert retry['Executed'] and retry['ExitCode']!=0,retry
+  until(lambda:(q2/'consumer.log').exists(),'partial-apply retry consumer log')
+  consumer_log=(q2/'consumer.log').read_bytes();assert b'GM read witness changed: output/partial-first.json' in consumer_log,consumer_log
+  assert not (session/'output/partial-second.json').exists(),'Retry must never reach the second write'
+  assert (session/'applied').read_text()=='once','Retry re-applied an already landed write'
+  (queue/'close-request.json').write_text('{}');until(lambda:(queue/'closed.json').exists(),'partial-apply close')
  else:
-  packet={'Completion':'turn','Writes':[{'Path':'output/response.json','ExpectedSHA256':'missing','Data':{'text':'synthetic transport only'}}],'FilesModified':['output/response.json']}
-  packet_bytes=json.dumps(packet).encode();(q/'response.json').write_bytes(packet_bytes)
-  reply={k:req[k] for k in ['QueueId','PromptSHA256','RequestSHA256','TurnRequestSHA256']};reply.update(ResponseSHA256=hashlib.sha256(packet_bytes).hexdigest(),Model='inert-transport-no-model',AgentTask='none')
-  if mode=='wrong-reply':reply['QueueId']='foreign'
-  if mode=='stale':(session/'input/turn_request.json').write_text(json.dumps(dict(turn,requestId='replacement')))
-  (q/'reply.json').write_text(json.dumps(reply))
-  if mode=='close-before-snapshot':
-   until(lambda:(queue/'before-snapshot').exists(),'real last witness read paused')
-   sys.path.insert(0,str(repo/'tools/gm-relay'))
-   from relay_contract import request_close
-   request_close(queue);(queue/'release-read').write_text('release')
-   until(lambda:(queue/'closed.json').exists(),'closed ACK after refused later start')
-   assert not (q/'executing-response.json').exists() and not (q/'started.json').exists() and not (session/'applied').exists(),'Close preceded snapshot but real consumer started'
-  elif mode=='close-held-child':
-   until(lambda:(session/'child-entered').exists(),'actual child entered')
-   sys.path.insert(0,str(repo/'tools/gm-relay'))
-   from relay_contract import request_close
-   request_close(queue)
-   for _ in range(6):pump()
-   assert not (queue/'closed.json').exists(),'Close ACK before held consumer exit'
-   until(lambda:(queue/'closed.json').exists(),'actual child exited/drained');assert (session/'applied').read_text()=='once'
+  prompt=('real draft Ж🙂 update > \nsecond line '+('x'*9000)).encode()
+  os.write(master,b'\x1b[200~'+prompt+b'\x1b[201~')
+  until(lambda:prompt.replace(b'\n',b'\r\n') in capture,'exact pasted view');assert not list(queue.glob('request-*')),'Paste alone submitted'
+  os.write(master,b'\r');until(lambda:bool(list(queue.glob('request-*/request.json'))),'actual submit')
+  q=next(queue.glob('request-*'));until(lambda:(q/'request.json').is_file() and (q/'prompt.txt').is_file() and (q/'game-request.json').is_file(),'complete request publication')
+  req=json.loads((q/'request.json').read_text());assert (q/'prompt.txt').read_bytes()==prompt
+  assert req['PromptSHA256']==hashlib.sha256(prompt).hexdigest() and req['TurnIdentity']==turn
+  if mode=='paste':
+   (queue/'close-request.json').write_text('{}');until(lambda:(queue/'closed.json').exists(),'close idle queue');assert not (session/'applied').exists()
   else:
-   until(lambda:(q/'execution.json').exists(),'response execution/refusal')
-   execution=json.loads((q/'execution.json').read_text())
-   if mode in ['wrong-reply','stale']:assert not execution['Executed'] and not (session/'applied').exists(),execution
+   packet={'Completion':'turn','Writes':[{'Path':'output/response.json','ExpectedSHA256':'missing','Data':{'text':'synthetic transport only'}}],'FilesModified':['output/response.json']}
+   packet_bytes=json.dumps(packet).encode();(q/'response.json').write_bytes(packet_bytes)
+   reply={k:req[k] for k in ['QueueId','PromptSHA256','RequestSHA256','TurnRequestSHA256']};reply.update(ResponseSHA256=hashlib.sha256(packet_bytes).hexdigest(),Model='inert-transport-no-model',AgentTask='none')
+   if mode=='wrong-reply':reply['QueueId']='foreign'
+   if mode=='stale':(session/'input/turn_request.json').write_text(json.dumps(dict(turn,requestId='replacement')))
+   (q/'reply.json').write_text(json.dumps(reply))
+   if mode=='close-before-snapshot':
+    until(lambda:(queue/'before-snapshot').exists(),'real last witness read paused')
+    sys.path.insert(0,str(repo/'tools/gm-relay'))
+    from relay_contract import request_close
+    request_close(queue);(queue/'release-read').write_text('release')
+    until(lambda:(queue/'closed.json').exists(),'closed ACK after refused later start')
+    assert not (q/'executing-response.json').exists() and not (q/'started.json').exists() and not (session/'applied').exists(),'Close preceded snapshot but real consumer started'
+   elif mode=='close-held-child':
+    until(lambda:(session/'child-entered').exists(),'actual child entered')
+    sys.path.insert(0,str(repo/'tools/gm-relay'))
+    from relay_contract import request_close
+    request_close(queue)
+    for _ in range(6):pump()
+    assert not (queue/'closed.json').exists(),'Close ACK before held consumer exit'
+    until(lambda:(queue/'closed.json').exists(),'actual child exited/drained');assert (session/'applied').read_text()=='once'
    else:
-    assert execution['Executed'] and execution['ExitCode']==0,execution
-    if mode=='started-metadata-failure':
-     assert execution['MetadataFailure'] and execution['ChildExited'] and execution['IoDrained'],execution
-     until(lambda:capture.count(b'RELAY ERROR')>=2,'metadata error remains blocked after actual EOF')
-     for _ in range(6):pump()
-     assert capture.rsplit(b'\x1b[2J\x1b[H',1)[-1].startswith(b'RELAY ERROR'),'Metadata error falsely restored readiness'
-    os.write(master,b'\r');pump();assert len(list(queue.glob('request-*')))==1 and (session/'applied').read_text()=='once'
-   (queue/'close-request.json').write_text('{}');until(lambda:(queue/'closed.json').exists(),'close receipt')
-  # A late reply after closure must never execute again.
-  (q/'reply.json').write_text(json.dumps(reply));pump()
- assert json.loads((queue/'closed.json').read_text())['ExecutionDisabled']
+    until(lambda:(q/'execution.json').exists(),'response execution/refusal')
+    execution=json.loads((q/'execution.json').read_text())
+    if mode in ['wrong-reply','stale']:assert not execution['Executed'] and not (session/'applied').exists(),execution
+    else:
+     assert execution['Executed'] and execution['ExitCode']==0,execution
+     if mode=='started-metadata-failure':
+      assert execution['MetadataFailure'] and execution['ChildExited'] and execution['IoDrained'],execution
+      until(lambda:capture.count(b'RELAY ERROR')>=2,'metadata error remains blocked after actual EOF')
+      for _ in range(6):pump()
+      assert capture.rsplit(b'\x1b[2J\x1b[H',1)[-1].startswith(b'RELAY ERROR'),'Metadata error falsely restored readiness'
+     os.write(master,b'\r');pump();assert len(list(queue.glob('request-*')))==1 and (session/'applied').read_text()=='once'
+    (queue/'close-request.json').write_text('{}');until(lambda:(queue/'closed.json').exists(),'close receipt')
+   # A late reply after closure must never execute again.
+   (q/'reply.json').write_text(json.dumps(reply));pump()
+  assert json.loads((queue/'closed.json').read_text())['ExecutionDisabled']
 finally:
  if p is not None:
   p.send_signal(signal.SIGTERM);p.wait(timeout=3);assert p.returncode==0

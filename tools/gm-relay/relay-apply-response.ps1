@@ -4,7 +4,10 @@ $ErrorActionPreference = 'Stop'
 . (Join-Path $SessionPath 'game_state/control/gm_turn_helper.bootstrap.ps1')
 $request = Get-Content -LiteralPath $RequestPath -Raw -Encoding utf8 | ConvertFrom-Json -AsHashtable
 $packet = Get-Content -LiteralPath $ResponsePath -Raw -Encoding utf8 | ConvertFrom-Json -AsHashtable
-if ($packet.Completion -cne $request.Kind -or $packet.Writes.Count -gt 32) { throw 'Response kind/count mismatch.' }
+$maxWrites = 256
+if ($request.Contains('Limits') -and $null -ne $request.Limits -and $request.Limits.Contains('ResponseWrites')) { $maxWrites = [int]$request.Limits['ResponseWrites'] }
+if ($maxWrites -lt 1 -or $maxWrites -gt 4096) { throw "Invalid response write limit: $maxWrites." }
+if ($packet.Completion -cne $request.Kind -or $packet.Writes.Count -gt $maxWrites) { throw "Response kind/count mismatch. Maximum writes: $maxWrites." }
 function Assert-RelayWitnesses {
     foreach ($entry in $request.Witnesses.GetEnumerator()) {
         $path = Join-Path $SessionPath $entry.Key
