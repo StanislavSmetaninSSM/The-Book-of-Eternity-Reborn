@@ -32,7 +32,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
         var requestJson = Assert.IsType<string>(await fs.ReadFileAsync(fixture.Lease, LiveTurnPreparationService.TurnRequestPath));
         var original = JsonSerializer.Deserialize<TurnRequest>(requestJson, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)!;
         var manifestJson = Assert.IsType<string>(await fs.ReadFileAsync(fixture.Lease, LiveTurnPreparationService.PendingTurnSnapshotManifestPath));
-        var manifest = JsonSerializer.Deserialize<PendingTurnSnapshotManifest>(manifestJson, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)!;
+        var manifest = JsonSerializer.Deserialize<GameEngine.PendingTurnSnapshotManifest>(manifestJson, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)!;
         var authorityJson = Assert.IsType<string>(await fs.ReadFileAsync(fixture.Lease, PendingTurnSnapshotAuthority.AuthorityPath));
         var token = fixture.Authority.Binding.SnapshotToken; var generation = fixture.Authority.SessionGeneration;
         Assert.Equal(token, manifest.ManifestPayloadHash);

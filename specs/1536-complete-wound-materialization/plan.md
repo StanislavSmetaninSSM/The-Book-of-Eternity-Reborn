@@ -1,3 +1,22 @@
+# T121 C21 preparation — Integration type-qualification correction WIP
+
+SOURCE/delta SOURCE independently accepts `c461829f281dd2baaf62302137dd6d49120da8b5`.
+Fresh Main exits0 in1:54.25 with12 baseline warnings, Support exits0 in14.91s
+with23, Unit exits0 in1:02.59 with26. Each warning code/message multiset exactly
+matches its C19 owner. Their tracked Compile inputs remain unchanged by this fix.
+
+First fresh Integration ends with one CS0246 in1:51.27 and102 prior warnings:
+DiagnosisCompletion.cs used an unqualified nested PendingTurnSnapshotManifest.
+The correction is solely GameEngine.PendingTurnSnapshotManifest in that test;
+no predicate, assertion, producer, production, selection or budget changes.
+Independent bounded readback and fresh Integration-c1 are required. The failed
+build stays external as M2GREENC21-build-integration; it is not a test RED or PASS.
+Other three owners stay compiled at c461829f with explicit source-equivalence and
+PDB/artifact reproof. All C21 runtime remains UNRUN, including focused7 and UI2;
+no current feature/parent or HOLD is closed. Raw stays outside checkout under
+/workspace/tboe-linux-evidence-20261025/us5-guided-diagnosis. This syntax correction
+adds no repeated source work, cache, authority or GM-facing change.
+
 # T121 C21 grouped SOURCE HOLD3 correction — UNCOMPILED/UNRUN
 
 Astra's final SOURCE at64b542cc held three current-settlement joins; it did not
