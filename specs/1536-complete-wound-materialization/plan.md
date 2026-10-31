@@ -1,3 +1,40 @@
+# T121 spiritual diagnosis console accepted — browser and rollback pending
+
+Independent Astra OUTCOME accepted the actual console singleton at runtime
+`444989f84c18ffb3f82233eca99e6f3f67683d1d`, compiled source
+`0b661addfd28134f5056ab688f03688493624b6e`: one complete PASS,
+30.6471931s/180s, wall 42.2965980s. TRX SHA256
+`811b8f66f77be60cae9620d59afb4741270c642ce0b431c6e256f87422772367`.
+The real controlled route passed cancel/separate confirmation, no diagnostic roll
+or fee, complete declared knowledge, one ordinary natural cycle at turn 43,
+History/exact replay, resource invariants and cleanup. This is accepted console
+behavior, not browser/provider/DOM/fresh-process or whole-parent acceptance.
+
+The complete passive capture has 20 ordered events / ten original pairs and zero
+messages. Writer/footer, full gzip CRC, sequence/pairs and decoded/stored hashes
+were verified; the actual owned root is absent under no-follow checks. Stored SHA256
+`0918ed107af559daa8a4bd6907250658f6fea651ee81d08ef539fd7395931e31`;
+decoded SHA256 `f3a2c58c4faa70e16039242feea9ee3384626429450db64a8980dd05fc31a3e1`.
+
+External `EX9GREEN-verified-console-union.json` reconciles 164 distinct PASS / 66
+methods across ten recorded runtime SHAs, not one fresh 164 run. Only browser and
+rollback remain outside the current 166-case selection. Both earlier console
+180s timeouts, incomplete prefixes, retained original roots and all failed raw
+remain preserved outside Git; they are not relabeled PASS.
+
+The 01:26:26 UTC closing fence found stable 27 artifacts / 40 resource copies / four
+daemon copies, no live owners and 3,809,701,888 bytes free. The same checkout and
+compiled source were used without a new code/build cycle. This plan-only checkpoint
+changes no source/test/catalog/task flag. Astra conditionally admits browser ONLY
+at its original 180s after publication and a fresh root source/resource/ownership
+fence. Complete browser PASS/capture/footer/CRC/decode/hash and physical cleanup
+are required before separate rollback admission; rollback remains held.
+
+Existing operation-local DATA reuse and mandatory fresh source/current/publication
+checks remain; no overall zero-IO or speedup claim. Earlier mixed lineages and all
+archives remain intact. Mortal diagnosis, eight unavailable spiritual requirement
+adapters, broader T121/US4/US5 and all HOLD boundaries remain open.
+
 # T121 EX9GREEN component gate accepted — UI three still unqualified
 
 Independent Astra OUTCOME accepted the actual nine-case GREEN at compiled source
