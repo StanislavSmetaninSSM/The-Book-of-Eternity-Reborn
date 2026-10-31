@@ -5,7 +5,7 @@
 - [x] T129.1 Audit/Spec Kit scope/параметры/план/матрица/API и preflight; c9a6ef424/bd1811065 опубликованы, remoteSHA/spec readback подтверждены.
 - [x] T129.2 TDD opt-in контроля:167/167guards (144прежних+23новых); legacy42/T12810 unchanged;504main/confirm smoke и3shard union. Parent прочитал actualdiff/fixtures/evidence. Подготовка46.070мс/12таблиц,20000lookup12.628мс/0новых.
 - [x] T129.3 Frozen source151341015 опубликован/readback;554400траекторий/1008cells проверены,6exit0/stderr0. Main60.213с,confirm584.705с. Coverage/seeds/costs/HP/control/endpoints/actor sums точны;190430 незавершённых исходов сохранены. Raw безквот толькоD:.
-- [ ] T129.4 Полный отчёт, независимое whole-block review/исправления, verification/publication/readback/restore/retention; честная область выводов.
+- [x] T129.4 Полный отчёт и GPT-6 Astra/high whole-block review завершены без открытых findings; P2 дополнил отчёт наблюдаемыми счётчиками, без новых прогонов. Source неизменен;11старых raw/derived файлов T128/11701768байт удалены после review. Publication/readback/newrestore — итоговый checkpoint issue1573; диапазон выводов ограничен экспериментом, Heal не ослаблен.
 
 ## T128 — проверка T127 в бою, 2026-11-01
 

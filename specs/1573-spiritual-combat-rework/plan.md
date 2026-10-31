@@ -29,7 +29,7 @@ baseline/origin a8bb390e46c412b08bb3d3877dcaf08e974224a8, unrelated1536/obj не
   horizon2000,3shards при необходимости. Rawбезквот D:\BoeDiagnostics\healing-control-t129\20261101-v1.
   Сверить весьcoverage/seeds/endpoints/actorcounts/costs/controls/HP и сохранить
   плохие случаи. Не менять параметры после старта полной матрицы.
-- [ ] T129.4 healing-control-investigation.md: сравнение control/none, эффект
+- [x] T129.4 healing-control-investigation.md: сравнение control/none, эффект
   в дуэли/2v2, полезность Heal, прерывание действий vs подавление чужогоHoT,
   расходы/время/отрицательныехвосты. Independent review, исправления/verification,
   publication/readback/newrestore/issue1573; старыйraw удалить после fullreview.
