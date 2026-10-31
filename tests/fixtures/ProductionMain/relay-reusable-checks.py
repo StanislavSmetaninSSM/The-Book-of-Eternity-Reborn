@@ -62,8 +62,13 @@ else:
         assert (q/'response.json').read_bytes()==packet
         reply=json.loads((q/'reply.json').read_bytes());assert reply['ResponseSHA256']==sha(packet) and reply['AgentTask']=='inert'
     elif mode=='packet-bound':
-        raises(c.RelayMismatch,lambda:c.publish_response(request,b'x'*1048577,adapter_id='inert'))
+        oversized=packet+b' '*request.limits.PacketBytes
+        raises(c.RelayMismatch,lambda:c.publish_response(request,oversized,adapter_id='inert'))
         assert not (q/'response.json').exists()
+    elif mode=='large-packet':
+        large=packet+b' '*(2*1024*1024)
+        c.publish_response(request,large,adapter_id='large-packet')
+        assert json.loads((q/'reply.json').read_bytes())['ResponseSHA256']==sha(large)
     elif mode=='missing-adapter':
         raises(c.RelayMismatch,lambda:c.publish_response(request,packet,adapter_id=''))
         assert not (q/'response.json').exists()
