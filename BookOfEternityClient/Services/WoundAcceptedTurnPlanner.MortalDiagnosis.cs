@@ -45,6 +45,9 @@ internal static partial class WoundAcceptedTurnPlanner
         internal ProgressionScheduleService.FrozenMortalCalculation Progression => CloneProgression(_progression);
         internal string Fingerprint { get; }
         internal MortalDiagnosisPublicationBinding? Publication { get; }
+        /// <summary>
+        /// Copied comparison inputs captured from this continuation's actual frozen publication.
+        /// </summary>
         internal MortalDiagnosisPublicationWitness? PublicationInputs { get; }
         internal WoundAcceptedTurnInput Input => WoundAcceptedTurnData.CloneInput(_input)!;
         internal IReadOnlyDictionary<string, JsonNode?> SourceRoots => CloneRecoverySourceRoots(_roots);

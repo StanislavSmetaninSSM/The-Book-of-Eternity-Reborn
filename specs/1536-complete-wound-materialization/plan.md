@@ -1,3 +1,29 @@
+# T121 C21 current completion reader WIP — UNCOMPILED/UNRUN
+
+The shared live-Finish/accepted-record predicate now dispatches Mortal diagnosis to
+one fresh closed-DATA reader. Exact original selection/control/dice/token/generation,
+unique v2 result, complete wound cohort/History/identity, clock/schedule/report and
+consumed command/pending absence are joined before resource/item/effect agreement.
+Exact consumption identities are independently rederived through the shared functions;
+quantity before-images come from retained typed requirement witnesses, not candidate
+History or deserialized claim availability defaults. Existing canonical validators
+are reused for current item/index/companion and effect/source/target/index agreement.
+Every physical dependency is read once into this invocation's DATA, without a cache
+or live-authority reconstruction. Immutable parsed witness DATA is retained on its
+existing result object instead of re-freezing on every semantic read.
+
+Astra clarifies the resource boundary: exact owned consumption set/order plus strict
+canonical ordered resource chains/current ledger/owner/effect/item agreement is the
+lawful minimum, as in existing combat completion. No resource-prefix blob or historical
+effect replay subsystem is added. Wound History retains its existing original-prefix
+checks; publication-time immutable-history guards are unchanged. Item-only inert
+absent-versus-empty future skill authoring has no independent signed commitment;
+strict representation/refreezing remains, while the resealed-semantic identity
+negative belongs to real resource_quantity. Comparison DATA never proves otherwise
+unobservable historical authorship. Typed actual-publication tests and final finite
+selection are still in progress. No C21 source is compiled or run, and original
+browser/rollback, broader scope/HOLDs and root-owned SOURCE/PREP remain unchanged.
+
 # T121 C21 publication witness/identity WIP — UNCOMPILED/UNRUN
 
 Accepted Astra DESIGN is now connected through the actual frozen publication:

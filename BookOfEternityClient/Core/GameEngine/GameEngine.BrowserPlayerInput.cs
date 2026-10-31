@@ -469,7 +469,11 @@ public partial class GameEngine
         await ValidateBrowserHistoryCoreAsync(staged.HistoryJson,true,read,physicalInventory);
     }
 
-    private static async Task RequireAcceptedSpiritualResultAsync(PendingPlayerActionService.Staged staged,
+    /// <summary>
+    /// Requires the current complete settlement for the authenticated staged wound
+    /// original. Both immediate completion and retained accepted-record readers use this predicate.
+    /// </summary>
+    internal static async Task RequireAcceptedSpiritualResultAsync(PendingPlayerActionService.Staged staged,
         PendingTurnSnapshotManifest manifest, Func<string, Task<byte[]?>> read)
     {
         if (staged.Binding.SpiritualSelfTreatment is null) return;
@@ -478,6 +482,12 @@ public partial class GameEngine
         var request = StrictJsonAuthority.Deserialize<TurnRequest>(staged.RequestJson, JsonOpts, "accepted browser healing request")!;
         var source = StrictJsonAuthority.Deserialize<JsonObject>(CanonicalJsonUtf8.DecodeOneOptionalBom(
             Convert.FromBase64String(staged.SpiritualWoundRequestBytesBase64!)), JsonOpts, "accepted original healing source")!;
+        if (staged.Binding.SpiritualSelfTreatment.MortalDiagnosis is not null)
+        {
+            _ = await MortalWoundDiagnosisCompletion.RequirePublishedAsync(request, manifest.ManifestPayloadHash,
+                staged.Binding.Generation, staged.Binding.SpiritualSelfTreatment, source, read);
+            return;
+        }
         if (SpiritualCombatHealingIntent.IsKind(source))
         {
             if (request.ProgressionControl is null || !await ProgressionScheduleService.IsPublishedSpiritualCombatCoreAsync(

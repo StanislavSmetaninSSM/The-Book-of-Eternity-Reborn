@@ -18,6 +18,7 @@ internal sealed class MortalWoundDiagnosisPersistedResult : WoundTransitionResul
     private readonly JsonObject _root;
     private readonly WoundMaterializationEnvelope _original;
     private readonly WoundMaterializationEnvelope _knowledge;
+    private readonly WoundAcceptedTurnPlanner.MortalDiagnosisPublicationWitness? _publicationInputs;
     private MortalWoundDiagnosisPersistedResult(JsonObject root, WoundAcceptedTurnBinding binding,
         MortalWoundRecoverySourceEvidence source, MortalWoundTreatmentResolution resolution,
         WoundMaterializationEnvelope original, WoundMaterializationEnvelope knowledge,
@@ -26,6 +27,8 @@ internal sealed class MortalWoundDiagnosisPersistedResult : WoundTransitionResul
         _root = root.DeepClone().AsObject(); Binding = binding;
         Source = source with { AcceptedD20EventValues = source.AcceptedD20EventValues.ToImmutableArray() };
         Resolution = resolution; _original = original; _knowledge = knowledge; Recoveries = recoveries;
+        _publicationInputs = root.ContainsKey("publicationInputs")
+            ? WoundAcceptedTurnPlanner.MortalDiagnosisPublicationWitness.Parse(Object(root, "publicationInputs")) : null;
     }
     public override string Kind => "mortal_diagnosis";
     internal string ResultFingerprint => Text(_root, "resultFingerprint");
@@ -44,7 +47,7 @@ internal sealed class MortalWoundDiagnosisPersistedResult : WoundTransitionResul
     /// Historical/component version1 never acquires an implicit empty witness.
     /// </summary>
     internal string ReconstructPublicationSemantic() =>
-        WoundAcceptedTurnPlanner.MortalDiagnosisPublicationWitness.Parse(Object(_root, "publicationInputs"))
+        (_publicationInputs ?? throw new InvalidDataException("Historical/component diagnosis has no publication input witness."))
             .ComputeSemantic(Source.AcceptedStateFingerprint, Request, Resolution, WorkingFingerprint,
                 Text(Object(_root, "clock"), "progressionFingerprint"));
 
@@ -113,7 +116,6 @@ internal sealed class MortalWoundDiagnosisPersistedResult : WoundTransitionResul
             var fields = new[] { "kind", "schemaVersion", "binding", "source", "input", "request", "original", "knowledgeAfter", "terminal",
                 "resourceFinalization", "originalCarriers", "clock", "cohort", "workingFingerprint", "resultFingerprint" };
             Closed(root, version == 2 ? fields.Append("publicationInputs").ToArray() : fields);
-            if (version == 2) _ = WoundAcceptedTurnPlanner.MortalDiagnosisPublicationWitness.Parse(Object(root, "publicationInputs"));
             if (Text(root, "kind") != "mortal_diagnosis" || version is not (1 or 2) ||
                 Text(root, "resultFingerprint") != WoundHistoryState.ComputeTransitionResultFingerprint(root))
                 throw new InvalidDataException("Diagnosis result header or complete fingerprint differs.");
