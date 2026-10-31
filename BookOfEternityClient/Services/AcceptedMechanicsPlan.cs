@@ -372,6 +372,9 @@ internal sealed class AcceptedMechanicsWoundStageBundle
     internal AfterlifeWoundHealingPlanner.Continuation? SpiritualHealingContinuation =>
         _preparedPlan.SpiritualHealingContinuationAuthority as AfterlifeWoundHealingPlanner.Continuation;
 
+    internal WoundAcceptedTurnPlanner.MortalDiagnosisContinuation? MortalDiagnosisContinuation =>
+        _preparedPlan.MortalDiagnosisAuthority;
+
     /// <summary>Reads detached execution DATA using this bundle's own sealed preparation and effect proof.</summary>
     /// <param name="stages">Detached chronological stage DATA on success.</param>
     /// <returns>True only for the exact private spiritual execution; grants no current publication authority.</returns>
@@ -1713,6 +1716,10 @@ internal sealed class AcceptedMechanicsPlan
     // Publication still requires the owner's current lease and original-source proof.
     internal AfterlifeWoundHealingPlanner.Continuation? SpiritualHealingContinuation =>
         _woundStageBundle?.SpiritualHealingContinuation;
+
+    // Read the actual sealed companion without detaching the entire stage bundle.
+    internal WoundAcceptedTurnPlanner.MortalDiagnosisContinuation? MortalDiagnosisContinuation =>
+        _woundStageBundle?.MortalDiagnosisContinuation;
 
     /// <summary>
     /// Gets the ordered owner-sealed live wound proof fingerprint, when present.

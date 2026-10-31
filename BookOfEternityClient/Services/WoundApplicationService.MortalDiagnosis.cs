@@ -13,7 +13,7 @@ internal static partial class WoundApplicationService
     // This resolves and retains one ordinary procedure attempt; menu DATA and
     // caller-supplied seals cannot issue any part of this authority.
     internal static async Task<MortalDiagnosisAdmission> ResolveMortalDiagnosisInputAsync(FileSystemManager files,
-        FileSystemManager.CanonicalWriteLease lease, SpiritualSelfTreatmentStageContext frame)
+        FileSystemManager.CanonicalWriteLease lease, SpiritualSelfTreatmentStageContext frame, bool requireRetained = false)
     {
         var ownedControl = JsonSerializer.SerializeToNode(frame.Progression)?.Deserialize<BookOfEternityClient.Models.ProgressionControl>()
             ?? throw new InvalidDataException("Missing complete Mortal diagnosis control.");
@@ -50,6 +50,13 @@ internal static partial class WoundApplicationService
             throw new InvalidDataException("Mortal diagnosis has no complete original canonical rollback coverage: " + missing);
         var operation = "mortal_diagnosis_operation_" + MortalWoundDiagnosisInputCodec.Fingerprint(input)["sha256:".Length..];
         var eventRef = owner.Binding.AcceptedEvents.First().EventRef;
+        if (requireRetained)
+        {
+            var coordinates = MortalWoundTreatmentAttemptCoordinates.CreateDiagnosisFromAcceptedState(owner,
+                owner.CurrentWound, operation, selected.Selection.MortalDiagnosis!.DiagnosisPathId, eventRef);
+            if (!coordinates.IsValid || coordinates.Coordinates is null || owner.ReadHeldDiagnosisRequest(coordinates.Coordinates) is null)
+                throw new InvalidDataException("Post-GM diagnosis intake requires the exact pre-GM retained procedure attempt.");
+        }
         var prepared = MortalWoundTreatmentPlanner.PrepareDiagnosisRequest(owner,
             new(owner.History, Array.Empty<ValidationIssue>()), owner.CurrentWound, operation,
             selected.Selection.MortalDiagnosis!.DiagnosisPathId, eventRef);

@@ -69,6 +69,14 @@ public sealed partial class GameEngineTurnLifecycleTests
         if (mode == "tampered_signed_input") await fs.WriteFileAtomicAsync(lease, signedPath, "{}");
         if (mode == "current_input_drift") await fs.WriteFileAtomicAsync(lease, AcceptedMechanicsPlan.WoundCommandPath, "{}");
         var unchanged = fixture.CaptureJson();
+        if (mode is "signed_input_only" or "baseline_present")
+        {
+            // A post-GM intake may only reuse the attempt produced before GM.
+            // Missing retention must refuse before taking a new dice/resource claim.
+            await Assert.ThrowsAsync<InvalidDataException>(() => WoundApplicationService.ResolveMortalDiagnosisInputAsync(fs, lease,
+                new(request.SessionId, request.RequestId, request.TurnNumber, request.ProgressionControl!), requireRetained: true));
+            fixture.AssertJson(unchanged);
+        }
         WoundApplicationService.MortalDiagnosisAdmission? admission = null;
         var failure = await Record.ExceptionAsync(async () => admission = await WoundApplicationService.ResolveMortalDiagnosisInputAsync(fs, lease,
             new(request.SessionId, request.RequestId, request.TurnNumber, request.ProgressionControl!)));
@@ -76,6 +84,12 @@ public sealed partial class GameEngineTurnLifecycleTests
         {
             Assert.Null(failure);
             Assert.NotNull(admission);
+            var retained = await WoundApplicationService.ResolveMortalDiagnosisInputAsync(fs, lease,
+                new(request.SessionId, request.RequestId, request.TurnNumber, request.ProgressionControl!), requireRetained: true);
+            Assert.Equal(admission.Request.RequestFingerprint, retained.Request.RequestFingerprint);
+            Assert.Equal(Assert.IsType<MortalWoundProcedureCheckAuthority>(admission.Request.ModeAuthority).SourceIndices,
+                Assert.IsType<MortalWoundProcedureCheckAuthority>(retained.Request.ModeAuthority).SourceIndices);
+            admission = retained;
             var computedHash = PendingTurnSnapshotAuthority.ComputeManifestPayloadHash(manifest, LiveTurnPreparationService.ManifestHashJsonOptions,
                 value => value.ManifestPayloadHash, (value, hash) => value.ManifestPayloadHash = hash);
             Assert.Equal(mode == "signed_input_only", admission.Owner.HasCurrentDiagnosisPreparedCommandRole(fs, lease,

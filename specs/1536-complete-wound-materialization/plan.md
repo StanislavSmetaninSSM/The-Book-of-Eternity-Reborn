@@ -1,3 +1,32 @@
+# T121 Mortal live intake and Engine handoff WIP — UNCOMPILED / UNRUN
+
+The final-original Engine hook now resolves and retains the procedure before GM.
+Post-GM effect and resource intake explicitly require that already-held request;
+they cannot allocate another attempt from selection. Existing six original-role
+rows include missing-retention refusal before mutation and exact retained reuse.
+The strict primitive is excluded from generic treatment execution only after the
+real signed-source owner proves the current frame and private hold.
+
+The existing resource callback now composes diagnosis through the existing common
+publisher, following ordinary raw resource/party/pending, effect/source and
+read-only wound-baseline checks. Static and dynamic canonical rollback coverage
+remain mandatory. Only the actual purpose-bound continuation, complete manifest,
+issued original and current lease/request may classify the command as signed-only;
+baseline-present commands retain strict coverage. A failed dynamic owner check
+invalidates the retained plan. The direct companion accessor avoids cloning a
+whole stage bundle merely to identify its owner. Fresh source and byte checks
+remain required; no cache or speedup claim.
+
+Existing authenticated snapshot DATA classification and detached browser decoding
+have a closed Mortal branch, preserving complete control and exact selected value.
+No consumed current command is required by the post-publication DATA classifier.
+This does not yet make the guided route usable: Mortal menu/staging, retryable
+outer-original rollback, actual published-to-next-recovery/native/C4/UI proof and
+GM/current-input/clock presentation are still unfinished. All code and the source
+estimate of 59 cases / fifteen methods / thirteen categories remain UNCOMPILED and
+UNRUN. No writer build, test, discovery or runtime was performed. Whole SOURCE is
+still open; no parent task, adapter or HOLD is closed.
+
 # T121 Mortal retained-source and replay corrections WIP — UNCOMPILED / UNRUN
 
 The ongoing independent SOURCE read identified three concrete DATA joins. The

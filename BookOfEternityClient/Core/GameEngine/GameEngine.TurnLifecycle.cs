@@ -1871,6 +1871,15 @@ public partial class GameEngine
             activeSnapshotContext = await LoadValidatedPendingTurnSnapshotContextAsync(activeManifest);
             if (activeSnapshotContext == null)
                 throw new InvalidOperationException("Turn staging failed to create a validated pending snapshot context.");
+            if (healingSelection?.MortalDiagnosis is not null)
+            {
+                // The final request/control and original are now authenticated.
+                // Retain the one real procedure before GM; never re-sign selection.
+                using var diagnosisTiming = _fs.MeasureOperation("PlayerTurn.Stage.ResolveMortalDiagnosis");
+                await using var diagnosisLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+                _ = await WoundApplicationService.ResolveMortalDiagnosisInputAsync(_fs, diagnosisLease,
+                    new(request.SessionId, request.RequestId, request.TurnNumber, request.ProgressionControl!));
+            }
         }
         catch (SessionReplacedException)
         {

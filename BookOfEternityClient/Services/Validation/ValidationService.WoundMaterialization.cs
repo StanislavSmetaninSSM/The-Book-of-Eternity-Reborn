@@ -183,17 +183,26 @@ public partial class ValidationService
             ValidationPendingTurnSnapshotManifest manifest,
             FileSystemManager.CanonicalWriteLease writeLease,
             string commandJson,
-            List<ValidationIssue> issues)
+            List<ValidationIssue> issues,
+            WoundApplicationService.MortalDiagnosisAdmission? diagnosis = null)
     {
         ArgumentNullException.ThrowIfNull(manifest);
         ArgumentNullException.ThrowIfNull(writeLease);
         ArgumentNullException.ThrowIfNull(commandJson);
         ArgumentNullException.ThrowIfNull(issues);
         _fs.EnsureCanonicalWriteLeaseActive(writeLease);
-        var parsedCommands = ParseAcceptedTurnWoundCommands(
-            commandJson,
-            manifest,
-            issues);
+        WoundResponseCommandParsingResult? parsedCommands;
+        if (diagnosis is null) parsedCommands = ParseAcceptedTurnWoundCommands(commandJson, manifest, issues);
+        else
+        {
+            // Read-only canonical admission only. This primitive never enters
+            // the generic wound reducer; its actual diagnosis callback owns it.
+            diagnosis.Owner.RequireOriginalDiagnosisRequest(diagnosis.Request);
+            var input = StrictJsonAuthority.Deserialize<JsonObject>(commandJson.TrimStart('\uFEFF'),
+                new JsonSerializerOptions(), "current diagnosis input") ?? throw new InvalidDataException("Missing diagnosis input.");
+            MortalWoundDiagnosisInputCodec.RequireRequestMatches(input, diagnosis.Request);
+            parsedCommands = new(input, Array.Empty<WoundResponseCommandDraft>(), Array.Empty<ValidationIssue>());
+        }
         if (parsedCommands is null || parsedCommands.CommandRoot is null)
             return null;
 
@@ -230,12 +239,16 @@ public partial class ValidationService
             return null;
         }
 
+        IReadOnlyCollection<string> requiredPaths = WoundAcceptedTurnSnapshotContract.RequiredPaths;
+        if (diagnosis is not null && diagnosis.Owner.HasCurrentDiagnosisPreparedCommandRole(_fs, writeLease, diagnosis.Request,
+                manifest.SessionId, manifest.RequestId, manifest.TurnNumber, manifest.ManifestPayloadHash, computedManifestHash))
+            requiredPaths = requiredPaths.Where(path => path != AcceptedMechanicsPlan.WoundCommandPath).ToArray();
         if (!PendingTurnSnapshotAuthority.HasValidatedRollbackSnapshotCoverage(
                 manifest,
                 static value => value.Files,
                 static value => value.SnapshotFileHashes,
                 static value => value.RollbackBaselineFiles,
-                WoundAcceptedTurnSnapshotContract.RequiredPaths,
+                requiredPaths,
                 out var missingSnapshotPath))
         {
             issues.Add(WoundIssue(

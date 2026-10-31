@@ -287,6 +287,23 @@ public partial class ValidationService
             if (combatCommand.Matches(_fs, writeLease, manifest, effective))
                 hasWoundCommand = false;
         }
+        if (hasWoundCommand && IsMortalDiagnosisInput(woundCommandJson))
+        {
+            try
+            {
+                _ = await ReadRetainedMortalDiagnosisAsync(writeLease, manifest);
+                // No generic active/treatment fallback. This intake validates
+                // ordinary effects only; the resource callback owns diagnosis.
+                hasWoundCommand = false;
+            }
+            catch (Exception failure) when (failure is not CoordinatedStatePublicationUncertainException &&
+                failure is (InvalidDataException or InvalidOperationException or ArgumentException or JsonException))
+            {
+                issues.Add(NewEffectIssue(AcceptedMechanicsPlan.WoundCommandPath, "mortal_diagnosis_retained_input_invalid",
+                    "the actual signed input and exact pre-GM retained claims", failure.Message));
+                return;
+            }
+        }
         var rawWoundDraft = hasWoundCommand
             ? await LoadAcceptedTurnRawWoundDraftAsync(
                 manifest,

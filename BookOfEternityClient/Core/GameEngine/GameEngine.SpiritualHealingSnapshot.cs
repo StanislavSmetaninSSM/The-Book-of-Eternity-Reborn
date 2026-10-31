@@ -40,6 +40,15 @@ public partial class GameEngine
                 evidence.RequireCurrent(_fs, lease, snapshot);
                 return combatBound;
             }
+            if (MortalWoundDiagnosisInputCodec.IsKind(request))
+            {
+                // Authenticated original DATA classification also works after
+                // publication consumes the current command. It grants no live claim.
+                var diagnosisBound = MortalWoundDiagnosisInputCodec.IsBound(request,
+                    new(context.SessionId, context.RequestId, context.TurnNumber, context.ProgressionControl));
+                evidence.RequireCurrent(_fs, lease, snapshot);
+                return diagnosisBound;
+            }
             if (SpiritualDiagnosisRequestCodec.IsKind(request))
             {
                 var diagnosisBound = SpiritualDiagnosisRequestCodec.IsBound(request,
