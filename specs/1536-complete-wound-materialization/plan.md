@@ -1,3 +1,29 @@
+# T121 C18 fresh component preparation — runtime UNRUN
+
+Astra SOURCE accepts `0c8cf3fb87c5a3a3c66dc10dd23bccd8810b74b2`.
+Fresh Integration at that source exits0 in1:48.83, zero errors /102 prior warnings
+with the exact C17 code/message multiset. Other owners remain compiled78918350,
+with unchanged source/Compile proof. All4 PE/PDB pairs,347 bindings,27 artifacts,
+40 resource copies and4 daemons match. Complete external archive62,982,839 bytes,
+SHA256 `ed2055bafb0e211626144cdd935df60527f92991096c572cd6ff0d2f131b6eec`,
+passes all27 member hashes and full197,314,560-byte gzip EOF/CRC decode.
+
+Official catalog exits0:1273 categories /13088 methods, no holes. Exact PlanOnly
+exits0:234 cases /102 methods /61 descriptors /58 categories, ZERO executions.
+The unchanged historical226 proof8ff27d23 and its53 raw TRX hashes/94-method counter
+match the current53 retained descriptors; no new226/234 PASS is claimed. Full raw
+is external under M2GREENC18-*; all prior failed/incomplete raw and roots remain.
+
+PREP is requested for four separate NPC-to-World component singletons at60s each:
+exact, foreign, parse drift, final proof. Proposed conditional order requires a
+fresh fence, strict actual result, full original capture pairs/sequences/timestamps,
+gzip/footer/decode/writer closure and actual owned-root absence before each next
+case; any failure/uncertainty freezes the remainder. No source changes between
+cases. Engine-original1 and full All console/shared-browser/rollback UI3 remain
+held and mandatory before diagnosis acceptance. Component scope is explicit;
+production guards/All selection and budgets are unchanged. No speedup, new cache,
+new diagnostic stack, raw/root deletion, feature/parent or wider HOLD closure.
+
 # T121 C18 NPC-to-World component scope — UNCOMPILED / UNRUN
 
 Independent Astra DESIGN accepts the bounded scope correction after C16/C17 cost
