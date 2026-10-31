@@ -63,7 +63,7 @@ interruptSuccess. Curve даёт lambda вHP/цент,value(view,h),immutable pr
 
 ### T125.3–4 — измерения и завершение
 
-- [ ] Scoped WIP/source commit+push/readback до полного прогона/review.
+- [x] Scoped WIP/source commit+push/readback до полного прогона/review.
 - [ ] На frozen SHA main108×1000 и confirm108×10000, horizon2000;3confirm shards
   разрешены. Raw без квот `D:\BoeDiagnostics\healing-joint-t125\20261101-v1`.
   После исходов не менять h/λ/политику. Parent проверяет coverage/seeds/sums/union.
@@ -74,6 +74,12 @@ interruptSuccess. Curve даёт lambda вHP/цент,value(view,h),immutable pr
   адресные проверки. Final publication/readback/restore/issue1573; production
   не реализуется. Retention после полного нового замера штатным способом;
   ранее не выполненная очистка T124.4r остаётся отдельно открытой.
+
+Checkpoint: frozen source0da23b58d9a2c27a52b520c8f52c2d5a1a32bb2d,
+main108000 завершён/проверен,3770horizon,176525.9676мс process,exit0/stderr0.
+Confirmation1080000 выполняется в3shards.120/120guards; source-stage Astra/high
+review без замечаний. [WIP отчёт](healing-joint-budget-investigation.md) сохраняет
+main по очередям и отрицательные случаи. Итоговый verdict/retention ещё впереди.
 
 ### Consistency/preflight
 

@@ -44,6 +44,19 @@ Source-stage независимый Astra/high просмотрел интегр
 пока нет. Это не финальный verdict полных данных. Source публикуется перед
 main108000/confirm1080000, horizon2000. Игровые договоры/utility guards сохранены.
 
+Frozen source0da23b58d9a2c27a52b520c8f52c2d5a1a32bb2d опубликован и прочитан
+сGitHub; modelblob87f4dcdb56857b0dc849b84ee24827209120c340. На нём запущены
+main108000 и3confirmation workers по360000. Main завершёнexit0/stderr0,
+176525.9676мс process/176358.8876runner,3770horizon. Parent выполнил
+verify-measurements.mjs source main:108params/seeds/indices/outcomes/endpoints/
+actor+decision sums/Paid/normalized counts совпали. WIP report сохраняет плохие
+случаи и сравнение с лучшим historical T124 reserve_large, отсутствующим среди
+новых6controls. Confirmation ещё идёт, source/policy не меняются.
+
+Astra/high source-stage review frozen10file diff завершён без замечаний:
+21newguard/120GREEN, интеграция/DP/legacy/keys/clock/payment проверены.
+Final whole-block verdict ожидает полные данные/отчёт. Сырьё без квот наD:.
+
 ## T124 — автономное исполнение, 2026-11-01
 
 После предъявления ebcfb6a21 автор явно отменил ожидание согласования спецификаций

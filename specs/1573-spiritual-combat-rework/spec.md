@@ -9,6 +9,9 @@
 не production/GM/новые правила Heal. [План](plan.md), [задачи](tasks.md).
 Baseline5fae43131f87e541ecc5e601f98893b6b1fbeb4d;
 [T124](healing-interruption-investigation.md) обнаружил несовпадение двух резервов.
+Source/120guards готовы; main108000 проверен, confirmation1080000 ещё идёт.
+[WIP отчёт](healing-joint-budget-investigation.md) не объявляет частичный выигрыш
+решением затяжного самоисцеления; новые параметры по исходам не подбираются.
 
 ### Подход, выбранный исполнителем
 
