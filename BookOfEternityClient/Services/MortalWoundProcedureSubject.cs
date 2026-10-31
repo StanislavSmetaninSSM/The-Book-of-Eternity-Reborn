@@ -31,7 +31,20 @@ internal sealed class MortalWoundProcedureSubject
     {
         if (!accepted.HasCurrentAdmissionAuthority() || !accepted.MatchesCurrentWound(before))
             throw new InvalidDataException("Procedure subject requires its actual current accepted wound owner.");
-        var definition = accepted.TreatmentDefinition;
+        return FromDefinition(before, accepted.TreatmentDefinition, purpose, memberId);
+    }
+
+    internal static MortalWoundProcedureSubject FromDetached(WoundMaterializationEnvelope before, string purpose, string memberId)
+    {
+        var parsed = MortalWoundTreatmentContract.ParseProjection(before.Treatment, "procedure.source.treatment",
+            before.Owner.Realm, before.Owner.OwnerKind, before.Severity.Rank, before.Complications, before.Recovery.DeteriorationPolicy);
+        if (!parsed.IsValid || parsed.Treatment is null) throw new InvalidDataException("The detached method source is not canonical.");
+        return FromDefinition(before, parsed.Treatment, purpose, memberId);
+    }
+
+    private static MortalWoundProcedureSubject FromDefinition(WoundMaterializationEnvelope before,
+        MortalWoundTreatmentDefinition definition, string purpose, string memberId)
+    {
         if (purpose == "diagnosis")
         {
             var method = definition.DiagnosisPaths.SingleOrDefault(value => value.DiagnosisPathId == memberId)

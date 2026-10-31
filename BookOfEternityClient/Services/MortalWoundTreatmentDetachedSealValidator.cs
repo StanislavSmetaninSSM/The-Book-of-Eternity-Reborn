@@ -13,13 +13,15 @@ internal static class MortalWoundTreatmentDetachedSealValidator
         ArgumentNullException.ThrowIfNull(request);
         if (!request.HasMatchingFingerprint()) return "request";
         if (!HasValidCoordinates(request.Coordinates)) return "coordinates";
+        if (request.Mode == "diagnosis" || request.Coordinates.Purpose == "diagnosis")
+            return FindDiagnosisMismatch(request);
         var routeSourceMismatch = FindRouteSourceMismatch(request);
         if (routeSourceMismatch is not null)
             return "route_source." + routeSourceMismatch;
         if (!TryGetRoute(request, out var selectedRoute) || selectedRoute is null)
             return "route_source.route";
         var requirementValidated = false;
-        if (request.Mode is "procedure" or "guaranteed")
+        if (request.Mode is "procedure" or "guaranteed" or "diagnosis")
         {
             if (!HasValidRequirementAuthority(request, selectedRoute))
                 return "requirement_authority";
@@ -86,6 +88,33 @@ internal static class MortalWoundTreatmentDetachedSealValidator
             : "authority_agreement";
     }
 
+    private static string? FindDiagnosisMismatch(MortalWoundTreatmentAttemptRequest request)
+    {
+        try
+        {
+            if (request.Mode != "diagnosis" || request.Coordinates.Purpose != "diagnosis" || request.MilestoneOrdinal is not null)
+                return "diagnosis.purpose";
+            var source = request.RouteSourceWound;
+            var coordinates = request.Coordinates;
+            if (source.WoundId != coordinates.WoundId || source.Owner.Realm != coordinates.Realm ||
+                source.Owner.OwnerKind != coordinates.TargetKind || source.Owner.OwnerId != coordinates.TargetId ||
+                WoundIdentityState.ComputeSemanticFingerprint(source) != request.RouteSourceWoundFingerprint ||
+                request.RouteSourceWoundFingerprint != coordinates.ExpectedBeforeFingerprint) return "diagnosis.original";
+            var subject = MortalWoundProcedureSubject.FromDetached(source, "diagnosis", coordinates.MemberId);
+            if (subject.Fingerprint != request.RequirementAuthority.RouteFingerprint ||
+                subject.Fingerprint != request.ResourceAuthority.RouteFingerprint) return "diagnosis.method";
+            if (!HasValidRequirementMembers(request, subject.TypedRequirements, null)) return "diagnosis.requirements";
+            if (request.ModeAuthority is not MortalWoundProcedureCheckAuthority check ||
+                !HasValidCheckAuthority(check, request, subject.Resolution, subject.TypedRequirements)) return "diagnosis.check";
+            if (!HasValidResourceAuthority(request.ResourceAuthority) || !HasValidResourceAgreement(request, subject))
+                return "diagnosis.resources";
+            return MortalWoundTreatmentPlanner.MatchesRequestAuthorities(request.Mode, coordinates, null,
+                request.ModeAuthority, request.RequirementAuthority, request.ResourceAuthority) ? null : "diagnosis.agreement";
+        }
+        catch (Exception exception) when (exception is ArgumentException or InvalidOperationException or InvalidDataException or JsonException or OverflowException)
+        { return "diagnosis." + exception.GetType().Name; }
+    }
+
     private static bool HasValidCoordinates(MortalWoundTreatmentAttemptCoordinates value)
     {
         if (value.SchemaVersion != 1 ||
@@ -101,7 +130,9 @@ internal static class MortalWoundTreatmentDetachedSealValidator
             !ResourceMaterializationContract.IsExactIdentifier(value.SnapshotToken) ||
             !ResourceMaterializationContract.IsExactIdentifier(value.OperationKey) ||
             !ResourceMaterializationContract.IsExactIdentifier(value.WoundId) ||
-            !ResourceMaterializationContract.IsExactIdentifier(value.RouteId) ||
+            (value.Purpose == "diagnosis"
+                ? value.RouteId.Length != 0 || !ResourceMaterializationContract.IsExactIdentifier(value.DiagnosisPathId)
+                : !ResourceMaterializationContract.IsExactIdentifier(value.RouteId)) ||
             !ResourceMaterializationContract.IsExactIdentifier(value.EventRef) ||
             !ResourceMaterializationContract.IsExactIdentifier(value.EventKind) ||
             !ResourceMaterializationContract.IsExactIdentifier(value.EventAuthorityId) ||
@@ -129,11 +160,12 @@ internal static class MortalWoundTreatmentDetachedSealValidator
             value.TargetKind, value.TargetId, value.LocationId,
             value.ContextFingerprint, value.AcceptedStateFingerprint
         };
-        var attemptId = "wound_treatment_attempt_" + Fingerprint(
-            "book_of_eternity.mortal_wound_treatment.attempt_identity",
+        if (value.Purpose == "diagnosis") semanticFields = semanticFields.Concat(new[] { "diagnosis", value.DiagnosisPathId }).ToArray();
+        var attemptId = (value.Purpose == "diagnosis" ? "wound_diagnosis_attempt_" : "wound_treatment_attempt_") + Fingerprint(
+            "book_of_eternity.mortal_wound_treatment.attempt_identity" + (value.Purpose == "diagnosis" ? ".diagnosis" : ""),
             semanticFields)["sha256:".Length..];
         var coordinatesFingerprint = Fingerprint(
-            "book_of_eternity.mortal_wound_treatment.attempt_coordinates",
+            "book_of_eternity.mortal_wound_treatment.attempt_coordinates" + (value.Purpose == "diagnosis" ? ".diagnosis" : ""),
             semanticFields.Concat(new[] { attemptId }));
         return string.Equals(value.AttemptId, attemptId, StringComparison.Ordinal) &&
                string.Equals(
@@ -256,8 +288,13 @@ internal static class MortalWoundTreatmentDetachedSealValidator
         MortalWoundProcedureCheckAuthority value,
         MortalWoundTreatmentAttemptRequest request,
         MortalWoundProcedureRouteDefinition route)
+    => HasValidCheckAuthority(value, request, route.Resolution, route.Requirements);
+
+    private static bool HasValidCheckAuthority(MortalWoundProcedureCheckAuthority value,
+        MortalWoundTreatmentAttemptRequest request, MortalWoundProcedureResolution resolutionDefinition,
+        IReadOnlyList<MortalWoundTreatmentRequirement> requirements)
     {
-        if (!string.Equals(request.Mode, "procedure", StringComparison.Ordinal) ||
+        if (request.Mode is not ("procedure" or "diagnosis") ||
             request.MilestoneOrdinal is not null ||
             !string.Equals(
                 value.SourcePath,
@@ -277,7 +314,8 @@ internal static class MortalWoundTreatmentDetachedSealValidator
                 StringComparison.Ordinal) ||
             !TryResolveDetachedProcedureModifier(
                 request,
-                route,
+                resolutionDefinition,
+                requirements,
                 out var expectedModifier,
                 out var expectedActorKind,
                 out var expectedActorId,
@@ -330,7 +368,7 @@ internal static class MortalWoundTreatmentDetachedSealValidator
                     sum + complication.TreatmentDifficultyModifier));
             if (value.ComplicationDifficultyModifier != complicationModifier ||
                 value.EffectiveDifficulty != checked(
-                    route.Resolution.Difficulty + complicationModifier))
+                    resolutionDefinition.Difficulty + complicationModifier))
             {
                 return false;
             }
@@ -413,7 +451,8 @@ internal static class MortalWoundTreatmentDetachedSealValidator
 
     private static bool TryResolveDetachedProcedureModifier(
         MortalWoundTreatmentAttemptRequest request,
-        MortalWoundProcedureRouteDefinition route,
+        MortalWoundProcedureResolution resolution,
+        IReadOnlyList<MortalWoundTreatmentRequirement> requirements,
         out int modifier,
         out string? actorKind,
         out string? actorId,
@@ -427,7 +466,7 @@ internal static class MortalWoundTreatmentDetachedSealValidator
         skillProof = null;
         var coordinates = request.Coordinates;
         var bundle = request.RequirementAuthority;
-        if (!string.Equals(bundle.Mode, "procedure", StringComparison.Ordinal) ||
+        if (!string.Equals(bundle.Mode, request.Mode, StringComparison.Ordinal) ||
             !string.Equals(
                 bundle.ContextFingerprint,
                 coordinates.ContextFingerprint,
@@ -458,7 +497,7 @@ internal static class MortalWoundTreatmentDetachedSealValidator
             return false;
         }
 
-        switch (route.Resolution.ModifierSource)
+        switch (resolution.ModifierSource)
         {
             case MortalWoundFixedZeroModifierSource:
                 actorKind = coordinates.ProviderKind;
@@ -467,8 +506,8 @@ internal static class MortalWoundTreatmentDetachedSealValidator
 
             case MortalWoundResolvedSkillTierModifierSource resolved:
                 if (resolved.RequirementIndex < 0 ||
-                    resolved.RequirementIndex >= route.Requirements.Length ||
-                    route.Requirements[resolved.RequirementIndex] is not
+                    resolved.RequirementIndex >= requirements.Count ||
+                    requirements[resolved.RequirementIndex] is not
                         MortalWoundSkillTierRequirement authored)
                 {
                     return false;
@@ -1131,6 +1170,10 @@ internal static class MortalWoundTreatmentDetachedSealValidator
     private static bool HasValidRequirementAuthority(
         MortalWoundTreatmentAttemptRequest request,
         MortalWoundTreatmentRouteDefinition route)
+    => HasValidRequirementMembers(request, route.Requirements, route as MortalWoundCourseRouteDefinition);
+
+    private static bool HasValidRequirementMembers(MortalWoundTreatmentAttemptRequest request,
+        IReadOnlyList<MortalWoundTreatmentRequirement> requirements, MortalWoundCourseRouteDefinition? courseRoute)
     {
         var value = request.RequirementAuthority;
         var coordinates = request.Coordinates;
@@ -1146,7 +1189,7 @@ internal static class MortalWoundTreatmentDetachedSealValidator
                 value.RouteFingerprint,
                 request.ResourceAuthority.RouteFingerprint,
                 StringComparison.Ordinal) ||
-            route.Requirements.Length >
+            requirements.Count >
             WoundMaterializationContract.MaxRequirementsPerTreatmentMember)
         {
             return false;
@@ -1161,14 +1204,14 @@ internal static class MortalWoundTreatmentDetachedSealValidator
             coordinates.ProviderId,
             coordinates.LocationId);
         var aggregate = new Dictionary<string, QuantitySnapshot>(StringComparer.Ordinal);
-        if (request.Mode is "procedure" or "guaranteed")
+        if (request.Mode is "procedure" or "guaranteed" or "diagnosis")
         {
             if (value.Scopes.Count != 1 ||
                 !HasValidRequirementScope(
                     value.Scopes[0],
                     "common",
                     null,
-                    route.Requirements,
+                    requirements,
                     coordinates,
                     context,
                     aggregate))
@@ -1178,7 +1221,7 @@ internal static class MortalWoundTreatmentDetachedSealValidator
         }
         else
         {
-            if (route is not MortalWoundCourseRouteDefinition courseRoute ||
+            if (courseRoute is null ||
                 request.MilestoneOrdinal is not { } ordinal)
             {
                 return false;
@@ -1193,7 +1236,7 @@ internal static class MortalWoundTreatmentDetachedSealValidator
                     value.Scopes[0],
                     "common",
                     null,
-                    route.Requirements,
+                    requirements,
                     coordinates,
                     context,
                     aggregate) ||
@@ -2616,7 +2659,7 @@ internal static class MortalWoundTreatmentDetachedSealValidator
         long AvailableQuantity);
 
     private static bool HasValidResourceAgreement(
-        MortalWoundTreatmentAttemptRequest request)
+        MortalWoundTreatmentAttemptRequest request, MortalWoundProcedureSubject? diagnosis = null)
     {
         var requirement = request.RequirementAuthority;
         var resource = request.ResourceAuthority;
@@ -2627,7 +2670,7 @@ internal static class MortalWoundTreatmentDetachedSealValidator
                 requirement,
                 interruption,
                 out var expected) ||
-            !HasValidResourcePolicy(request, expected))
+            !HasValidResourcePolicy(request, expected, diagnosis))
         {
             return false;
         }
@@ -2687,7 +2730,7 @@ internal static class MortalWoundTreatmentDetachedSealValidator
     {
         interruption = false;
         var bundle = request.RequirementAuthority;
-        if (request.Mode is "procedure" or "guaranteed")
+        if (request.Mode is "procedure" or "guaranteed" or "diagnosis")
         {
             return bundle.Scopes.Count == 1 &&
                    HasExactScopeTopology(bundle.Scopes[0], "common", null) &&
@@ -2936,26 +2979,23 @@ internal static class MortalWoundTreatmentDetachedSealValidator
 
     private static bool HasValidResourcePolicy(
         MortalWoundTreatmentAttemptRequest request,
-        IReadOnlyList<ExpectedResourceClaim> expected)
+        IReadOnlyList<ExpectedResourceClaim> expected, MortalWoundProcedureSubject? diagnosis = null)
     {
         var policy = request.ResourceAuthority.Policy;
-        if (!TryGetRoute(request, out var selectedRoute) || selectedRoute is null)
-        {
-            return false;
-        }
+        MortalWoundTreatmentRouteDefinition? selectedRoute = null;
+        if (diagnosis is null && (!TryGetRoute(request, out selectedRoute) || selectedRoute is null)) return false;
         var courseRoute = selectedRoute as MortalWoundCourseRouteDefinition;
         if ((request.Mode == "course") != (courseRoute is not null) ||
             !string.Equals(
                 MortalWoundTreatmentResourceComposer.ComputePolicyFingerprint(policy),
                 MortalWoundTreatmentResourceComposer.ComputePolicyFingerprint(
-                    selectedRoute.ResourcePolicy),
+                    (diagnosis?.ResourcePolicy ?? selectedRoute!.ResourcePolicy)),
                 StringComparison.Ordinal))
         {
             return false;
         }
-        var allowedConsumeOn = request.Mode == "procedure"
-            ? new[] { "success", "partial_success", "failed_attempt" }
-            : new[] { "success" };
+        var allowedConsumeOn = request.Mode == "diagnosis" ? new[] { "success", "failed_attempt" }
+            : request.Mode == "procedure" ? new[] { "success", "partial_success", "failed_attempt" } : new[] { "success" };
         if (!policy.ReserveBeforeResolution ||
             policy.ConsumeOn.Length > allowedConsumeOn.Length ||
             policy.ConsumeOn.Distinct(StringComparer.Ordinal).Count() !=

@@ -28,6 +28,13 @@
       "contracts": [
         "#1536 T121-DIAGNOSIS-MORTAL / FR071; explicit purpose, same-ID collision, accepted-world and retained request ownership"
       ]
+    },
+    {
+      "category": "mortal-diagnosis-terminal-outcomes",
+      "reason": "T121 two independent actual accepted-world rows exercise natural20 success and natural1 failure, exact retained procedure result, complete declared knowledge only, ordinary resource-policy consumption and same-owner exact retry with all canonical JSON bytes unchanged. The subject is an explicit diagnosis purpose and has no treatment operations. Source-authored before implementation; UNCOMPILED/UNRUN.",
+      "contracts": [
+        "#1536 T121-DIAGNOSIS-MORTAL / FR071; ordinary procedure semantics, retained terminal success/failure and no direct diagnosis healing"
+      ]
     }
   ]
 }

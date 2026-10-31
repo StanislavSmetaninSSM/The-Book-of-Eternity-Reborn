@@ -1,3 +1,32 @@
+# T121 Mortal retained outcome and strict reconstruction WIP — UNCOMPILED / UNRUN
+
+The next connected cut extends the existing detached request codec/seal validator
+with explicit diagnosis subject, complete method/requirement/resource agreement
+and the original procedure die/modifier/effect/Fate evidence checks. Serialized
+reconstruction validates DATA; it never revives accepted-state authority. The
+actual accepted-world fixture now proves a full request round-trip and uses a
+real hidden route as its declared reveal, keeping the complete initial envelope
+canonical after the scenario renames its treatment routes.
+
+A new owner-bound outcome projection selects the retained binary procedure band,
+keeps treatment operations/completion structurally absent and invokes the existing
+physical diagnosis reducer for exact knowledge-only success/failure. Resource
+finalization shares the existing procedure evidence and claim partition. Two
+independent actual-owner rows were authored first for natural20/natural1, complete
+knowledge/no-mechanics, resources, exact same-owner retry and zero canonical writes.
+No new build, discovery or execution has occurred. Current temporary selection is
+source-estimated 38 cases / seven methods / five categories, not qualification.
+
+Actual Engine hook consultation places live resolution after final turn_request
+publication and successful validated pending-snapshot loading, under its canonical
+lease. Signed selection stays immutable. Before publication handoff, the existing
+treatment owner still needs exact diagnosis request/claim retention across lease
+rebind; subsequent C4 must use its existing rearm and exact restoration, never
+release-plus-Reserve. That integration, future-time/full-cohort recovery working
+projection, durable result/History/common publication, guided UI and GM/current
+input migration remain unfinished. No half route is exposed as accepted play.
+Old accepted receipts, HOLDs and broad parent tasks remain unchanged/open.
+
 # T121 Mortal purpose and accepted-owner WIP — UNCOMPILED / UNRUN
 
 The connected request cut adds a closed Mortal diagnosis selection and explicit

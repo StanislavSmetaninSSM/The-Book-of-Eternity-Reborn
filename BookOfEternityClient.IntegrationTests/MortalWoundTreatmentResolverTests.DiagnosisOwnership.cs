@@ -31,6 +31,16 @@ public sealed partial class MortalWoundTreatmentResolverTests
         Assert.Equal("inspect_explicit_method", request.Coordinates.DiagnosisPathId); Assert.Empty(request.Coordinates.RouteId);
         var check = Assert.IsType<MortalWoundProcedureCheckAuthority>(request.ModeAuthority);
         Assert.Equal(new[] { 0 }, check.SourceIndices);
+        var serialized = Assert.IsType<JsonObject>(WoundResponseInputComposer.SerializeMortalWoundTreatmentValue(request));
+        var serializedBefore = serialized.ToJsonString();
+        var issues = new List<ValidationIssue>();
+        Assert.True(MortalWoundTreatmentCommandCodec.TryParseRequest(serialized, "diagnosis.request", issues, out var detached),
+            JsonSerializer.Serialize(issues));
+        Assert.Equal(serializedBefore, serialized.ToJsonString());
+        Assert.Equal(request.RequestFingerprint, detached!.RequestFingerprint);
+        Assert.Equal("diagnosis", detached.Mode);
+        Assert.Equal(request.Coordinates.DiagnosisPathId, detached.Coordinates.DiagnosisPathId);
+        Assert.True(MortalWoundTreatmentDetachedSealValidator.IsValid(detached));
         var retry = MortalWoundTreatmentPlanner.PrepareDiagnosisRequest(owner, history, before,
             "diagnosis_same_operation", "inspect_explicit_method", fixture.EventRef);
         Assert.True(retry.IsValid, JsonSerializer.Serialize(retry.Issues));
@@ -49,6 +59,34 @@ public sealed partial class MortalWoundTreatmentResolverTests
         Assert.DoesNotContain(history.State!.Transitions, transition => transition.Kind == "diagnose");
     }
 
+    [Theory]
+    [InlineData(20, "success")]
+    [InlineData(1, "failed_attempt")]
+    public async Task DiagnosisUsesRetainedProcedureOutcomeAndOnlyDeclaredKnowledge(int natural, string category)
+    {
+        await using var fixture = await DiagnosisOwnershipFixture.CreateAsync(natural);
+        var owner = fixture.Authority; var before = owner.CurrentWound;
+        var history = WoundHistoryState.Parse(await fixture.Files.ReadFileAsync(fixture.Lease, WoundHistoryState.HistoryPath), WoundHistoryState.HistoryPath);
+        var unchanged = fixture.CaptureJson();
+        var request = MortalWoundTreatmentPlanner.PrepareDiagnosisRequest(owner, history, before,
+            "diagnosis_terminal", "inspect_explicit_method", fixture.EventRef);
+        Assert.True(request.IsValid, JsonSerializer.Serialize(request.Issues));
+        var outcome = MortalWoundDiagnosisOutcome.Resolve(owner, history, request.Request!);
+        Assert.Equal(category, outcome.Resolution.ResultCategory);
+        Assert.Equal(natural, Assert.IsType<MortalWoundProcedureCheckAuthority>(request.Request!.ModeAuthority).NaturalRoll);
+        Assert.Equal(category == "success", outcome.KnowledgeAfter.Treatment.KnownRouteIds.Contains("diagnostic_hidden_route"));
+        Assert.Equal(before.Treatment.KnownRouteIds.Count + (category == "success" ? 1 : 0), outcome.KnowledgeAfter.Treatment.KnownRouteIds.Count);
+        var normalized = outcome.KnowledgeAfter with { Treatment = before.Treatment, LastTransition = before.LastTransition };
+        Assert.Equal(WoundMaterializationContract.SerializeCanonical(before), WoundMaterializationContract.SerializeCanonical(normalized));
+        var finalization = MortalWoundTreatmentResourceComposer.Finalize(outcome.Resolution);
+        Assert.True(finalization.IsValid, JsonSerializer.Serialize(finalization.Issues));
+        Assert.Single(finalization.Finalization!.Consumptions);
+        var retry = MortalWoundDiagnosisOutcome.Resolve(owner, history, request.Request!);
+        Assert.Equal(outcome.Resolution.ResultFingerprint, retry.Resolution.ResultFingerprint);
+        Assert.Equal(WoundMaterializationContract.SerializeCanonical(outcome.KnowledgeAfter), WoundMaterializationContract.SerializeCanonical(retry.KnowledgeAfter));
+        fixture.AssertJson(unchanged);
+    }
+
     private sealed class DiagnosisOwnershipFixture : IAsyncDisposable
     {
         private DiagnosisOwnershipFixture(string root, FileSystemManager files, FileSystemManager.CanonicalWriteLease lease,
@@ -60,16 +98,21 @@ public sealed partial class MortalWoundTreatmentResolverTests
         internal MortalWoundTreatmentAcceptedStateAuthority Authority { get; }
         internal string EventRef { get; }
 
-        internal static async Task<DiagnosisOwnershipFixture> CreateAsync()
+        internal static async Task<DiagnosisOwnershipFixture> CreateAsync(int? natural = null)
         {
             // Initial canonical scenario DATA only. The real live preparation and
             // exporter below issue ownership; these JSON values are not receipts.
             var scenario = CreateScenario("procedure_normal_uses_lowest_free_die", "procedure");
+            if (natural is not null) scenario.AcceptedState["acceptedDice"] = new JsonArray(natural.Value, 17, 1, 20);
             var method = WoundContractTestData.CreateMortalDiagnosisPath(true, 30);
             var route = Assert.IsType<JsonObject>(Assert.Single(scenario.Before["treatment"]!["routes"]!.AsArray())).DeepClone().AsObject();
             route["routeId"] = "inspect_explicit_method";
             scenario.Before["treatment"]!["routes"]!.AsArray().Add(route);
             scenario.Before["treatment"]!["knownRouteIds"]!.AsArray().Add("inspect_explicit_method");
+            var hidden = route.DeepClone().AsObject();
+            hidden["routeId"] = "diagnostic_hidden_route"; hidden["visibility"] = "hidden";
+            scenario.Before["treatment"]!["routes"]!.AsArray().Add(hidden);
+            method["reveals"] = new JsonArray("route:diagnostic_hidden_route");
             scenario.Before["treatment"]!["diagnosisPaths"] = new JsonArray(method);
             scenario = scenario with { History = CreateCurrentWoundHistory(scenario.Before), SeedCanonicalWoundEffects = true };
             var root = Path.Combine(Path.GetTempPath(), "boe-mortal-diagnosis-owner-" + Guid.NewGuid().ToString("N"));

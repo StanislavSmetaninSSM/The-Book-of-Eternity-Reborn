@@ -1837,6 +1837,7 @@ internal static class MortalWoundTreatmentCommandCodec
             path,
             issues,
             "procedure",
+            "diagnosis",
             "course",
             "guaranteed");
         var requestFingerprint = ReadFingerprint(
@@ -1900,7 +1901,7 @@ internal static class MortalWoundTreatmentCommandCodec
                 : null;
             MortalWoundTreatmentModeAuthority? modeAuthority = mode switch
             {
-                "procedure" => Deserialize<MortalWoundProcedureCheckAuthority>(
+                "procedure" or "diagnosis" => Deserialize<MortalWoundProcedureCheckAuthority>(
                     modeAuthorityNode),
                 "course" => DeserializeCourseModeAuthority(modeAuthorityNode),
                 "guaranteed" => Deserialize<MortalWoundTreatmentCapabilityProof>(

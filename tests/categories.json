@@ -2,6 +2,35 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "mortal-diagnosis-terminal-outcomes",
+  "responsibility": "T121 two independent actual accepted-world rows exercise natural20 success and natural1 failure, exact retained procedure result, complete declared knowledge only, ordinary resource-policy consumption and same-owner exact retry with all canonical JSON bytes unchanged. The subject is an explicit diagnosis purpose and has no treatment operations. Source-authored before implementation; UNCOMPILED/UNRUN.",
+  "excludes": "No Engine/GM wait, future-clock/recovery/common publication, C4 or cold rebind qualification; no fake receipts or broad Mortal aggregate.",
+  "changeHints": [
+    "BookOfEternityClient/Services/MortalWoundDiagnosisOutcome.cs",
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.DiagnosisOwnership.cs"
+  ],
+  "related": [
+    {
+      "id": "mortal-diagnosis-purpose-ownership",
+      "when": "The actual accepted-world and shared request-claim setup is the prerequisite; these rows select terminal procedure/knowledge outcomes."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.DiagnosisUsesRetainedProcedureOutcomeAndOnlyDeclaredKnowledge"
+      ]
+    }
+  ]
+},
+{
   "id": "mortal-diagnosis-purpose-data",
   "responsibility": "T121 closed Mortal diagnosis selection schema10 and typed participants; exact round-trip, purpose separation and old spiritual staging/request refusal. Eleven independent DATA rows, no live permission.",
   "excludes": "No Engine/GM wait, duration/knowledge/History publication or completed Mortal route claim; UNCOMPILED/UNRUN WIP. Broader old Mortal aggregates and accepted spiritual PASS replay are excluded.",
