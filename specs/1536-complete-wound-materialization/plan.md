@@ -1,3 +1,39 @@
+# T121 common-context/T0 correction — fresh build and exact PREP, runtime UNRUN
+
+Astra/high coherent SOURCE at `fd3dab8f6d994a565829861a50da4da73759704b`
+and lexical compiler delta at `797cc898f7b7b8faf6243d18e99cc3ab496cead6`
+are accepted for build admission. Four corrected-phase Linux builds at the latter
+source exit0: Main 1:47.39, TestSupport 13.12s, Unit 58.17s and Integration
+2:12.04. Warning code/message multisets retain the 12/23/26/102 baseline.
+The failed first Main build remains separately preserved; no C8 runtime ran.
+
+Four PE/PDB identities, 328 actual-Compile source bindings, 27 artifacts, 40 resource
+copies and four daemons match. The 27-member archive is 62879464 bytes, SHA256
+`0bf1c80a6bfa6f4064a65345434df57e425255a3f9fec62a93edacf80adac99f`.
+All member hashes and complete gzip EOF/CRC over 197048320 decoded bytes pass.
+Official catalog discovery: 1258 categories / 13075 methods, zero executions,
+no unmapped/stale selectors and complete cleanup. Exact official PlanOnly:
+215 cases / 85 methods / 44 descriptors / 42 categories, zero executions, no
+duplicates and complete cleanup. The disjoint phases are retained182 (63 methods /
+25 descriptors), focused5 (5 methods / 3 descriptors), independent native19,
+dependent native6, then separate console/browser/rollback singletons.
+
+Next PREP is only focused5: actual duration30 common-context/constructor control1,
+unchanged failed zero-duration callback1, semantic guards3; each category60s.
+The new clock drift test refuses at the existing private currentness boundary;
+it does not separately isolate the new byte-comparison branch. Original-input
+readback inspects the real current operation and retains its existing authority
+references; it grants no authority after lease closure. Constructor negatives
+plus finite source inspection cover the anchor rebuild; no anchor is fabricated.
+Native19/6/UI3 remain UNRUN/held. Ordinary native1 is still required for bounded
+changed-contract coverage; the broader ordinary timeout remains UNKNOWN/open.
+
+Full external provenance/raw: `us5-guided-diagnosis/M2GREENC8C1-*` beneath
+`/workspace/tboe-linux-evidence-20261025`. No raw or binaries enter Git. Existing
+DATA/one carrier assembly are reused, with no added cache, source read or GM rule.
+Accepted results remain separate lineages, not one fresh182/215 run. All parent,
+physical-treatment/eight-adapter residuals and previous HOLDs remain open.
+
 # T121 C8 compiler correction — lexical rename only, WIP
 
 The fresh Main build at `fd3dab8f6d994a565829861a50da4da73759704b` stopped
