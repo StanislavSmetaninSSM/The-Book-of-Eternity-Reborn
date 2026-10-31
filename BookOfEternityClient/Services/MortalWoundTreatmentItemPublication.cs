@@ -75,7 +75,7 @@ internal sealed partial class MortalWoundTreatmentItemPublicationAuthority
         ArgumentException.ThrowIfNullOrWhiteSpace(effectSourceBeforeFingerprint);
         ArgumentException.ThrowIfNullOrWhiteSpace(normalizedEffectSourceFingerprint);
         ArgumentNullException.ThrowIfNull(finalOwnerAuthority);
-        if (!WoundAcceptedTurnPlanner.TryReadTreatmentContinuation(
+        if (!WoundAcceptedTurnPlanner.TryReadMortalProcedurePublication(
                 continuationAuthority,
                 out var continuation) ||
             !ReferenceEquals(continuation.AcceptedStateAuthority, acceptedStateAuthority) ||
@@ -99,7 +99,7 @@ internal sealed partial class MortalWoundTreatmentItemPublicationAuthority
         ResolutionAuthority = resolutionAuthority;
         Finalization = finalization;
         ContinuationFingerprint =
-            WoundAcceptedTurnPlanner.GetTreatmentContinuationFingerprint(
+            WoundAcceptedTurnPlanner.GetMortalProcedureContinuationFingerprint(
                 continuationAuthority);
         PublicationReservationAuthority = publicationReservationAuthority;
         SkillProjectionAuthority = skillProjectionAuthority;

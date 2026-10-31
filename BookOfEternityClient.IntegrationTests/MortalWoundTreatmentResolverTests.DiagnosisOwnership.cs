@@ -309,6 +309,43 @@ public sealed partial class MortalWoundTreatmentResolverTests
         fixture.AssertJson(originals);
     }
 
+    [Fact]
+    public async Task DiagnosisCommonPlanKeepsHeldAndOuterOriginalPendingImagesDistinct()
+    {
+        await using var fixture = await DiagnosisOwnershipFixture.CreateAsync(20, signedInput: true, duration: 300);
+        var owner = fixture.Authority;
+        var originalPending = await fixture.Files.ReadFileBytesAsync(fixture.Lease, WoundAcceptedTurnSnapshotContract.PendingResolutionPath);
+        var request = MortalWoundTreatmentPlanner.PrepareDiagnosisRequest(owner,
+            new(owner.History, Array.Empty<ValidationIssue>()), owner.CurrentWound,
+            "diagnosis_common_publication", "inspect_explicit_method", fixture.EventRef);
+        Assert.True(request.IsValid, JsonSerializer.Serialize(request.Issues));
+        await owner.RetainDiagnosisRequestAsync(request.Request!);
+        var heldPending = await fixture.Files.ReadFileBytesAsync(fixture.Lease, WoundAcceptedTurnSnapshotContract.PendingResolutionPath);
+        Assert.NotNull(heldPending);
+        Assert.False(originalPending is not null && originalPending.AsSpan().SequenceEqual(heldPending));
+        var staged = await fixture.Files.ReadFileBytesAsync(fixture.Lease, AcceptedMechanicsPlan.WoundCommandPath);
+        var heldTree = fixture.CaptureJson();
+        var validator = new ValidationService(fixture.Files, NullLogger<ValidationService>.Instance);
+        var locationIssues = await validator.ValidateAcceptedTurnRawMortalLocationMaterializationAsync(fixture.Lease);
+        Assert.Empty(locationIssues);
+        Assert.Empty(await validator.ValidateAcceptedTurnRawMortalItemMaterializationAsync(fixture.Lease));
+        var prepared = await WoundAcceptedTurnPlanner.ComposeMortalDiagnosisPublicationAsync(fixture.Files, fixture.Lease,
+            new GameResponse(), owner, request.Request!);
+        Assert.True(prepared.IsValid, JsonSerializer.Serialize(prepared.Issues));
+        var plan = prepared.Plan!;
+        Assert.NotNull(plan.TreatmentResourcePublicationAuthority);
+        Assert.Equal("diagnosis", plan.TreatmentResourcePublicationAuthority!.RequestAuthority.Coordinates.Purpose);
+        Assert.Equal(heldPending, plan.BeforeImages[WoundAcceptedTurnSnapshotContract.PendingResolutionPath].Bytes);
+        Assert.Equal(staged, plan.BeforeImages[AcceptedMechanicsPlan.WoundCommandPath].Bytes);
+        Assert.Contains(EffectAcceptedTurnInputComposer.WorldTimePath, plan.TouchedPaths);
+        Assert.Contains(ProgressionScheduleService.SchedulePath, plan.TouchedPaths);
+        Assert.Contains(WoundAcceptedTurnSnapshotContract.PendingResolutionPath, plan.ConsumedPaths);
+        Assert.Contains(AcceptedMechanicsPlan.WoundCommandPath, plan.ConsumedPaths);
+        Assert.Equal(owner.CurrentGameMinute, JsonNode.Parse(await fixture.Files.ReadFileAsync(fixture.Lease,
+            EffectAcceptedTurnInputComposer.WorldTimePath))!["currentTimeInMinutes"]!.GetValue<long>());
+        fixture.AssertJson(heldTree);
+    }
+
     private sealed class DiagnosisOwnershipFixture : IAsyncDisposable
     {
         private DiagnosisOwnershipFixture(string root, FileSystemManager files, FileSystemManager.CanonicalWriteLease lease,

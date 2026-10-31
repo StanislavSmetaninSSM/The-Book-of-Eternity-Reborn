@@ -1020,7 +1020,7 @@ internal static partial class WoundAcceptedTurnPlanner
         afterImages = new Dictionary<string, JsonObject>(StringComparer.Ordinal);
         skillProjectionAuthority = null!;
         fingerprint = string.Empty;
-        if (!TryReadTreatmentContinuation(continuationAuthority, out var continuation) ||
+        if (!TryReadMortalProcedurePublication(continuationAuthority, out var continuation) ||
             !TryReadTreatmentSkillProjectionForEnvelopeSemantics(
                 continuation.SkillProjectionAuthority,
                 reservationAuthority,
@@ -1091,7 +1091,7 @@ internal static partial class WoundAcceptedTurnPlanner
         afterImages = new Dictionary<string, JsonObject>(StringComparer.Ordinal);
         fingerprint = string.Empty;
         ownsNpcTail = false;
-        if (!TryReadTreatmentContinuation(continuationAuthority, out var continuation) ||
+        if (!TryReadMortalProcedurePublication(continuationAuthority, out var continuation) ||
             !TryReadTreatmentSkillProjectionForEnvelopeSemantics(
                 continuation.SkillProjectionAuthority,
                 reservationAuthority,
@@ -1112,7 +1112,7 @@ internal static partial class WoundAcceptedTurnPlanner
         object reservationAuthority,
         AcceptedMechanicsPlan candidate)
     {
-        if (!TryReadTreatmentContinuation(continuationAuthority, out var continuation) ||
+        if (!TryReadMortalProcedurePublication(continuationAuthority, out var continuation) ||
             !TryReadTreatmentSkillProjectionForEnvelopeSemantics(
                 continuation.SkillProjectionAuthority,
                 reservationAuthority,

@@ -392,6 +392,12 @@ internal static partial class AcceptedMechanicsPlanner
                 static pair => pair.Value.DeepClone().AsObject(),
                 StringComparer.Ordinal);
         var woundPublication = carrierComposition.WoundPublication;
+        if (woundStages?.PreparedPlan.MortalDiagnosisAuthority is { } mortalDiagnosis)
+        {
+            try { mortalDiagnosis.RequireComposedClock(ownerCompanionAfterImages); }
+            catch (InvalidDataException failure)
+            { return new(null, Issue("mortal_diagnosis_composition_invalid", "exact diagnosis duration, clock and ordinary progression after-images", failure.Message)); }
+        }
         if (serviceOwner?.IsDiagnosis == true)
         {
             try
@@ -513,6 +519,15 @@ internal static partial class AcceptedMechanicsPlanner
         {
             touched.Add(ProgressionScheduleService.ReportPath);
             consumed.Add(ProgressionScheduleService.ReportPath);
+        }
+        if (woundStages?.PreparedPlan.MortalDiagnosisAuthority is { } diagnosisOwner)
+        {
+            touched.UnionWith(new[] { EffectAcceptedTurnInputComposer.WorldTimePath, ProgressionScheduleService.SchedulePath,
+                WoundAcceptedTurnSnapshotContract.PendingResolutionPath, AcceptedMechanicsPlan.WoundCommandPath });
+            consumed.UnionWith(new[] { WoundAcceptedTurnSnapshotContract.PendingResolutionPath, AcceptedMechanicsPlan.WoundCommandPath });
+            var progression = diagnosisOwner.Progression;
+            if (progression.ReportBefore.Existed && !progression.ReportAfter.Existed)
+            { touched.Add(ProgressionScheduleService.ReportPath); consumed.Add(ProgressionScheduleService.ReportPath); }
         }
 
         if (isJointRepair)

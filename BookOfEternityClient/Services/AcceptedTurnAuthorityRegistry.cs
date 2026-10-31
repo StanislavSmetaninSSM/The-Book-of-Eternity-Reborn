@@ -5136,7 +5136,7 @@ internal static partial class AcceptedTurnAuthorityRegistry
                 }
                 if (_mortalItems.HasValidated)
                     return ItemAuthorityChangedIssue();
-                if (WoundAcceptedTurnPlanner.TryReadTreatmentContinuation(
+                if (WoundAcceptedTurnPlanner.TryReadMortalProcedurePublication(
                         treatmentContinuationAuthority,
                         out var continuation) &&
                     continuation.ItemCommandEnvelope.IsEmpty &&
@@ -5222,7 +5222,7 @@ internal static partial class AcceptedTurnAuthorityRegistry
                 if (!OwnsMortalWoundTreatmentPublicationReservation(
                         treatmentContinuationAuthority,
                         reservationAuthority) ||
-                    !WoundAcceptedTurnPlanner.TryReadTreatmentContinuation(
+                    !WoundAcceptedTurnPlanner.TryReadMortalProcedurePublication(
                         treatmentContinuationAuthority,
                         out var continuation) ||
                     !WoundAcceptedTurnPlanner.TryReadTreatmentSkillProjection(
@@ -6045,7 +6045,7 @@ internal static partial class AcceptedTurnAuthorityRegistry
             ReferenceEquals(
                 _mortalWoundTreatmentPublicationReservation,
                 reservationAuthority) &&
-            WoundAcceptedTurnPlanner.TreatmentContinuationReservationAgrees(
+            WoundAcceptedTurnPlanner.MortalProcedureReservationAgrees(
                 treatmentContinuationAuthority,
                 reservationAuthority,
                 _mortalWoundTreatmentReservedFingerprint);
@@ -6061,7 +6061,7 @@ internal static partial class AcceptedTurnAuthorityRegistry
                     prepared.RecoveryContinuationAuthority is null && reservationAuthority is not null &&
                     ReferenceEquals(prepared.JointRepairContinuationAuthority, jointRepairContinuationAuthority) &&
                     OwnsJointRepairPublicationReservation(jointRepairContinuationAuthority!, reservationAuthority);
-            var preparedAuthority = prepared.TreatmentContinuationAuthority;
+            var preparedAuthority = (object?)prepared.MortalDiagnosisAuthority ?? prepared.TreatmentContinuationAuthority;
             if (prepared.RecoveryContinuationAuthority is not null)
             {
                 return preparedAuthority is null && treatmentContinuationAuthority is null &&

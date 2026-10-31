@@ -2,6 +2,40 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "mortal-diagnosis-common-publication",
+  "responsibility": "T121 one actual signed-original diagnosis owner retains the real pending request, runs the ordinary raw location/item owners, and prepares a purpose-bound common wound/resource/time/History plan. Exact held pending bytes are its publication before-image while original pending absence/bytes remain distinct; command bytes stay immutable and all canonical JSON remains unchanged during preparation. UNCOMPILED/UNRUN WIP.",
+  "excludes": "No fake History receipt, canonical publication, C4 compensation/rearm, outer rollback, Engine/GM wait, broad Mortal aggregate or completed guided route claim. Actual publication and retry/rollback scenarios remain required.",
+  "changeHints": [
+    "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalDiagnosisPublication.cs",
+    "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalProcedurePublication.cs",
+    "BookOfEternityClient/Services/AcceptedMechanicsWoundCommonInputComposer.cs"
+  ],
+  "related": [
+    {
+      "id": "mortal-diagnosis-effect-execution",
+      "when": "Genuine private knowledge/recovery execution must precede a common plan."
+    },
+    {
+      "id": "mortal-diagnosis-pre-handoff-retention",
+      "when": "The actual retained request and claims remain prerequisite; held and signed-original pending images are different."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.DiagnosisCommonPlanKeepsHeldAndOuterOriginalPendingImagesDistinct"
+      ]
+    }
+  ]
+},
+{
   "id": "mortal-diagnosis-effect-execution",
   "responsibility": "T121 two independent actual signed-original owner setups execute an explicit zero or 300-minute diagnosis through the existing wound/effect planner. Knowledge is first; only actually due ordinary recovery follows from the diagnosed working image. Real sealed execution and full final History are checked, with all canonical JSON bytes unchanged. UNCOMPILED/UNRUN WIP.",
   "excludes": "No fabricated receipt, new accepted state, canonical publication, Engine/GM wait, C4, full guided UI or broad Mortal aggregate. Common resource/time/pending publication remains required.",

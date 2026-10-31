@@ -38,6 +38,12 @@ public partial class ValidationService
         ValidateAcceptedTurnRawMortalLocationMaterializationAsync() =>
         ValidateAcceptedTurnRawMortalLocationMaterializationCoreAsync();
 
+    /// <summary>Runs the existing raw location owner under the caller's actual canonical lease.</summary>
+    /// <param name="writeLease">The active lease; no replacement owner or baseline is constructed.</param>
+    /// <returns>The unchanged raw location and accepted-plan issues.</returns>
+    internal Task<IReadOnlyList<ValidationIssue>> ValidateAcceptedTurnRawMortalLocationMaterializationAsync(
+        FileSystemManager.CanonicalWriteLease writeLease) => ValidateAcceptedTurnRawMortalLocationMaterializationCoreAsync(writeLease);
+
     /// <summary>
     /// Shares raw location admission between ordinary validation and private original intake.
     /// </summary>

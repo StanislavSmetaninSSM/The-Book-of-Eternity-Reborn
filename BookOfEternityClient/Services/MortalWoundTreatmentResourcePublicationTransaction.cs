@@ -1346,7 +1346,8 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
         }
 
         var commandText = DecodeUtf8(command);
-        if (!ContainsDurableCoordinates(commandText))
+        var diagnosis = _receipt.PublicationAuthority.ContinuationAuthority is WoundAcceptedTurnPlanner.MortalDiagnosisContinuation;
+        if (!diagnosis && !ContainsDurableCoordinates(commandText))
         {
             return false;
         }
@@ -1360,6 +1361,9 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
         try
         {
             using var commandDocument = JsonDocument.Parse(commandText);
+            if (diagnosis)
+                MortalWoundDiagnosisInputCodec.RequireRequestMatches(
+                    JsonNode.Parse(commandText)!.AsObject(), _receipt.Request);
             var history = WoundHistoryState.Parse(
                 DecodeUtf8(historyBytes),
                 WoundHistoryState.HistoryPath);
@@ -1384,7 +1388,7 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
                    catalog.HeldRequests.Count(RequestAgrees) == 1 &&
                    !catalog.FinalizedRequests.Any(RequestAgrees);
         }
-        catch (JsonException)
+        catch (Exception failure) when (failure is JsonException or InvalidDataException or InvalidOperationException)
         {
             return false;
         }

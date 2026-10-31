@@ -20,16 +20,19 @@ internal static partial class WoundAcceptedTurnPlanner
         private MortalDiagnosisContinuation(MortalWoundTreatmentAcceptedStateAuthority owner,
             MortalWoundDiagnosisOutcome outcome, MortalWoundDiagnosisWorkingProjection working,
             ProgressionScheduleService.FrozenMortalCalculation progression, WoundAcceptedTurnInput input,
-            IReadOnlyDictionary<string, JsonNode?> roots)
+            IReadOnlyDictionary<string, JsonNode?> roots, MortalDiagnosisPublicationBinding? publication)
         {
             Owner = owner; Outcome = outcome; Working = working; _progression = CloneProgression(progression);
+            Publication = publication;
             _input = WoundAcceptedTurnData.CloneInput(input)!;
             _roots = CloneRecoverySourceRoots(roots);
             Fingerprint = WoundAcceptedTurnFingerprintWriter.Compute(new[]
             {
                 "book_of_eternity.mortal_diagnosis.continuation", "1", working.Fingerprint,
                 outcome.Resolution.ResultFingerprint, progression.MutationFingerprint,
-                WoundAcceptedTurnFingerprints.ComputeInput(_input)
+                WoundAcceptedTurnFingerprints.ComputeInput(_input), publication?.SemanticFingerprint,
+                publication?.Finalization.FinalizationFingerprint, publication?.ItemCommands.Fingerprint,
+                publication?.CriticalReaction.Fingerprint
             }.Concat(_roots.OrderBy(pair => pair.Key, StringComparer.Ordinal).SelectMany(pair =>
                 new[] { pair.Key, WoundAcceptedTurnFingerprintWriter.CanonicalJson(pair.Value) })));
             _recoveries = working.Members.Select(member => (object)new RecoveryContinuationAuthority(owner,
@@ -40,6 +43,7 @@ internal static partial class WoundAcceptedTurnPlanner
         internal MortalWoundDiagnosisWorkingProjection Working { get; }
         internal ProgressionScheduleService.FrozenMortalCalculation Progression => CloneProgression(_progression);
         internal string Fingerprint { get; }
+        internal MortalDiagnosisPublicationBinding? Publication { get; }
         internal WoundAcceptedTurnInput Input => WoundAcceptedTurnData.CloneInput(_input)!;
         internal IReadOnlyDictionary<string, JsonNode?> SourceRoots => CloneRecoverySourceRoots(_roots);
         internal ImmutableArray<string> TransitionIds => new[] { MortalWoundDiagnosisOutcome.TransitionId(Outcome.Request) }
@@ -55,6 +59,21 @@ internal static partial class WoundAcceptedTurnPlanner
         }
 
         internal void RequireCurrent() => Working.RequireCurrent(Owner);
+        internal void RequireComposedClock(IReadOnlyDictionary<string, JsonObject> companions)
+        {
+            RequireCurrent();
+            if (!companions.TryGetValue(EffectAcceptedTurnInputComposer.WorldTimePath, out var clock) ||
+                !JsonNode.DeepEquals(clock, Working.ClockAfter) ||
+                !companions.TryGetValue(ProgressionScheduleService.SchedulePath, out var schedule) ||
+                !JsonNode.DeepEquals(schedule, JsonNode.Parse(FileSystemManager.DecodeFileBytes(_progression.ScheduleAfter.Bytes!))))
+                throw new InvalidDataException("Diagnosis common after-images changed T0/duration/T1 or the exact ordinary progression result.");
+            if (_progression.ReportAfter.Bytes is { } report &&
+                (!companions.TryGetValue(ProgressionScheduleService.ReportPath, out var actual) ||
+                 !JsonNode.DeepEquals(actual, JsonNode.Parse(FileSystemManager.DecodeFileBytes(report)))))
+                throw new InvalidDataException("Diagnosis common report differs from its request-bound ordinary progression calculation.");
+            if (_progression.ReportAfter.Bytes is null && companions.ContainsKey(ProgressionScheduleService.ReportPath))
+                throw new InvalidDataException("Diagnosis cannot reintroduce a consumed or originally absent progression report.");
+        }
         internal WoundAcceptedTurnPreparationResult Prepare()
         {
             var inputFingerprint = WoundAcceptedTurnFingerprints.ComputeInput(_input);
@@ -82,10 +101,22 @@ internal static partial class WoundAcceptedTurnPlanner
 
         internal static MortalDiagnosisContinuation Admit(MortalWoundTreatmentAcceptedStateAuthority owner,
             MortalWoundDiagnosisOutcome outcome, MortalWoundDiagnosisWorkingProjection working,
-            ProgressionScheduleService.FrozenMortalCalculation progression)
+            ProgressionScheduleService.FrozenMortalCalculation progression, MortalDiagnosisPublicationBinding? publication = null)
         {
             working.RequireCurrent(owner);
             outcome.RequireCurrent(owner, new(owner.History, Array.Empty<ValidationIssue>()));
+            if (publication is not null)
+            {
+                var finalization = MortalWoundTreatmentResourceComposer.Finalize(outcome.Resolution);
+                if (!finalization.IsValid || finalization.Finalization is null ||
+                    finalization.Finalization.FinalizationFingerprint != publication.Finalization.FinalizationFingerprint ||
+                    string.IsNullOrWhiteSpace(publication.SemanticFingerprint) || publication.ReservationAuthority is null ||
+                    publication.SkillProjectionAuthority is null || publication.ItemCommands is null)
+                    throw new InvalidDataException("Diagnosis publication binding differs from its actual terminal resource result.");
+                if (!publication.CriticalReaction.IsValid || !MortalWoundCriticalReactionPublicationPlanner.HasMatchingFingerprint(
+                    outcome.Request, outcome.Resolution, publication.CriticalReaction.LifecycleEvents, publication.CriticalReaction.Fingerprint!))
+                    throw new InvalidDataException("Diagnosis publication binding changed its exact retained Fate lifecycle decision.");
+            }
             var (input, roots) = owner.ReadDiagnosisPublicationBaselines(outcome.Request);
             var preparedAt = progression.ScheduleAfter.Bytes is { } afterBytes
                 ? JsonNode.Parse(FileSystemManager.DecodeFileBytes(afterBytes))?["lastUpdatedUtc"]?.GetValue<string>() : null;
@@ -108,19 +139,22 @@ internal static partial class WoundAcceptedTurnPlanner
             var catalog = WoundCarrierCatalog.Build(input.PreTurnCarriers);
             var original = WoundCarrierCatalog.Build(owner.ReadDiagnosisOriginalCarriers());
             if (catalog.Issues.Count != 0 || original.Issues.Count != 0 ||
-                !catalog.Occurrences.Select(value => (value.JsonPath, WoundMaterializationContract.SerializeCanonical(value.Wound)))
-                    .SequenceEqual(original.Occurrences.Select(value => (value.JsonPath, WoundMaterializationContract.SerializeCanonical(value.Wound)))) ||
-                input.PreTurnHistory.ToJsonString() != JsonNode.Parse(WoundHistoryState.SerializeCanonical(owner.History))!.ToJsonString())
+                !catalog.Occurrences.Where(value => value.Wound.Owner.Realm == "mortal_world" && value.Wound.Classification.Domain == "physical")
+                    .OrderBy(value => value.JsonPath, StringComparer.Ordinal).Select(value => (value.JsonPath, WoundMaterializationContract.SerializeCanonical(value.Wound)))
+                    .SequenceEqual(original.Occurrences.OrderBy(value => value.JsonPath, StringComparer.Ordinal)
+                        .Select(value => (value.JsonPath, WoundMaterializationContract.SerializeCanonical(value.Wound)))) ||
+                !JsonNode.DeepEquals(input.PreTurnHistory, JsonNode.Parse(WoundHistoryState.SerializeCanonical(owner.History))))
                 throw new InvalidDataException("Diagnosis preparation changed its complete signed original wound cohort or History.");
-            return new(owner, outcome, working, progression, input, roots);
+            return new(owner, outcome, working, progression, input, roots, publication);
         }
     }
 
     internal static WoundAcceptedTurnPreparationResult PrepareMortalDiagnosisContinuation(
         MortalWoundTreatmentAcceptedStateAuthority owner, MortalWoundDiagnosisOutcome outcome,
-        MortalWoundDiagnosisWorkingProjection working, ProgressionScheduleService.FrozenMortalCalculation progression)
+        MortalWoundDiagnosisWorkingProjection working, ProgressionScheduleService.FrozenMortalCalculation progression,
+        MortalDiagnosisPublicationBinding? publication = null)
     {
-        var continuation = MortalDiagnosisContinuation.Admit(owner, outcome, working, progression);
+        var continuation = MortalDiagnosisContinuation.Admit(owner, outcome, working, progression, publication);
         return continuation.Prepare();
     }
 
@@ -130,9 +164,17 @@ internal static partial class WoundAcceptedTurnPlanner
         if (owner is null || !owner.PreparedAgrees(prepared)) throw new InvalidDataException("Diagnosis lost its exact private prepared program.");
         var input = owner.Input;
         var carriers = input.PreTurnEffectCarriers ?? throw new InvalidDataException("Diagnosis requires complete original effect carriers.");
+        IReadOnlyDictionary<string, JsonNode?>? skillRoots = null;
+        if (owner.Publication is { } publication)
+        {
+            if (!TryReadTreatmentSkillProjection(owner, publication.ReservationAuthority, out _, out var afterImages, out _))
+                throw new InvalidDataException("Diagnosis lost its actual ordinary skill projection.");
+            skillRoots = afterImages.ToDictionary(pair => pair.Key, pair => (JsonNode?)pair.Value, StringComparer.Ordinal);
+        }
         return EffectAcceptedTurnInputComposer.Compose(input.Binding.SessionId, input.Binding.SnapshotToken, input.Binding.Turn,
             new JsonObject(), carriers, carriers, input.PreTurnEffectIdentityIndex, owner.SourceRoots,
             currentWorldTime: owner.Working.ResultingMinute, publicationCarrierBaselines: carriers,
-            realm: input.Binding.Realm, preparedWoundPlan: prepared);
+            realm: input.Binding.Realm, preparedWoundPlan: prepared, acceptedSourceRoots: skillRoots,
+            acceptedReportedLifecycleEvents: owner.Publication?.CriticalReaction.LifecycleEvents);
     }
 }

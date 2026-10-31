@@ -76,8 +76,8 @@ internal static class MortalWoundCriticalReactionPublicationPlanner
                     resolution.CriticalReactionIntent.IntentFingerprint);
         }
 
-        if (request.Mode is not "procedure" ||
-            resolution.Mode is not "procedure" ||
+        if (request.Mode is not ("procedure" or "diagnosis") ||
+            resolution.Mode != request.Mode ||
             request.ModeAuthority is not MortalWoundProcedureCheckAuthority procedure ||
             !acceptedState.HasCurrentAdmissionAuthority() ||
             !request.HasMatchingFingerprint() ||

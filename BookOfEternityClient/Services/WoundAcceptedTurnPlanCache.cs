@@ -141,7 +141,7 @@ internal sealed class WoundAcceptedTurnPlanCache
                     throw new ArgumentException("Joint repair is an exclusive cache authority family.");
                 treatmentContinuationFingerprint = treatmentContinuationAuthority is null
                     ? null
-                    : WoundAcceptedTurnPlanner.GetTreatmentContinuationFingerprint(
+                    : WoundAcceptedTurnPlanner.GetMortalProcedureContinuationFingerprint(
                         treatmentContinuationAuthority);
                 recoveryContinuationFingerprint = recoveryContinuationAuthority is null ? null :
                     WoundAcceptedTurnPlanner.GetRecoveryContinuationFingerprint(recoveryContinuationAuthority);
@@ -195,6 +195,8 @@ internal sealed class WoundAcceptedTurnPlanCache
                 result = (jointRepairContinuationAuthority is not null
                     ? WoundAcceptedTurnPlanner.PrepareJointRepairCandidate(
                         WoundAcceptedTurnData.CloneInput(input)!, jointRepairContinuationAuthority)
+                    : treatmentContinuationAuthority is WoundAcceptedTurnPlanner.MortalDiagnosisContinuation diagnosis
+                    ? diagnosis.Prepare()
                     : recoveryContinuationAuthority is not null
                     ? WoundAcceptedTurnPlanner.PrepareRecoveryContinuationCandidate(
                         WoundAcceptedTurnData.CloneInput(input)!, recoveryContinuationAuthority)

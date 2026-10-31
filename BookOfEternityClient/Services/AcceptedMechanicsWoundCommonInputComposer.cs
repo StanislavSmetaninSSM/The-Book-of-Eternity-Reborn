@@ -113,6 +113,17 @@ internal static partial class AcceptedMechanicsWoundCommonInputComposer
             recoveryContinuationAuthority: bundle.PreparedPlan.RecoveryContinuationAuthority);
     }
 
+    internal static AcceptedMechanicsWoundCommonInputCompositionResult ComposeMortalDiagnosisContinuation(
+        FileSystemManager files, FileSystemManager.CanonicalWriteLease lease, AcceptedMechanicsWoundStageBundle bundle)
+    {
+        var owner = bundle.PreparedPlan.MortalDiagnosisAuthority;
+        if (owner?.Publication is null) return Failed(WoundIdentityState.StatePath,
+            "mortal_diagnosis_publication_owner_missing", "one actual reserved diagnosis program", "missing or foreign owner");
+        owner.RequireCurrent();
+        return ComposeCore(files, lease, bundle, null, owner.Working.ResultingMinute, owner,
+            owner.Publication.ReservationAuthority);
+    }
+
     internal static AcceptedMechanicsWoundCommonInputCompositionResult ComposeSpiritualHealingContinuation(
         FileSystemManager files, FileSystemManager.CanonicalWriteLease lease, AcceptedMechanicsWoundStageBundle bundle)
     {
@@ -195,15 +206,15 @@ internal static partial class AcceptedMechanicsWoundCommonInputComposer
         if (treatmentCurrentTimeInMinutes is not null &&
             (treatmentContinuationAuthority is null ||
              !ReferenceEquals(
-                 bundle.PreparedPlan.TreatmentContinuationAuthority,
+                 (object?)bundle.PreparedPlan.MortalDiagnosisAuthority ?? bundle.PreparedPlan.TreatmentContinuationAuthority,
                  treatmentContinuationAuthority) ||
-             !WoundAcceptedTurnPlanner.TreatmentContinuationPreparedAgrees(
+             !WoundAcceptedTurnPlanner.MortalProcedurePreparedAgrees(
                  bundle.PreparedPlan) ||
-             !WoundAcceptedTurnPlanner.TreatmentContinuationFinalPlanAgrees(
+             !WoundAcceptedTurnPlanner.MortalProcedureFinalPlanAgrees(
                  treatmentContinuationAuthority,
                  bundle) ||
              treatmentReservationAuthority is null ||
-             !WoundAcceptedTurnPlanner.TreatmentContinuationReservationAgrees(
+             !WoundAcceptedTurnPlanner.MortalProcedureReservationAgrees(
                  treatmentContinuationAuthority,
                  treatmentReservationAuthority)))
         {
@@ -722,6 +733,8 @@ internal static partial class AcceptedMechanicsWoundCommonInputComposer
                         : "accepted_mortal_wound_treatment_continuation";
             if (spiritualHealingAuthority is not null)
                 woundCommands["authorityKind"] = "accepted_spiritual_self_treatment";
+            if (treatmentContinuationAuthority is WoundAcceptedTurnPlanner.MortalDiagnosisContinuation)
+                woundCommands["authorityKind"] = "accepted_mortal_diagnosis_continuation";
             var definitionRoot = definitions.ToCanonicalRoot();
             var stateRoot = JsonNode.Parse(state.ToCanonicalJson())!.AsObject();
             var historyRoot = JsonNode.Parse(history.ToCanonicalJson())!.AsObject();
@@ -745,6 +758,12 @@ internal static partial class AcceptedMechanicsWoundCommonInputComposer
                 internalInputs["authorityKind"] = "accepted_spiritual_self_treatment";
                 internalInputs["spiritualHealingContinuationFingerprint"] = spiritualHealingAuthority.Fingerprint;
                 internalInputs["spiritualSchedulerMutationFingerprint"] = spiritualHealingAuthority.SchedulerMutation.Fingerprint;
+            }
+            if (treatmentContinuationAuthority is WoundAcceptedTurnPlanner.MortalDiagnosisContinuation diagnosis)
+            {
+                internalInputs["authorityKind"] = "accepted_mortal_diagnosis_continuation";
+                internalInputs["diagnosisContinuationFingerprint"] = diagnosis.Fingerprint;
+                internalInputs["diagnosisProgressionFingerprint"] = diagnosis.Progression.MutationFingerprint;
             }
             if (anchorPlan is not null)
                 internalInputs["woundAnchorPlanFingerprint"] = anchorPlan.Fingerprint;
@@ -788,6 +807,11 @@ internal static partial class AcceptedMechanicsWoundCommonInputComposer
             requiredPaths.UnionWith(treatmentSkillBaselines.Keys);
             if (treatmentCurrentTimeInMinutes is not null)
                 requiredPaths.UnionWith(TreatmentOrdinaryGuardPaths);
+            if (treatmentContinuationAuthority is WoundAcceptedTurnPlanner.MortalDiagnosisContinuation)
+            {
+                requiredPaths.Add(ProgressionScheduleService.SchedulePath);
+                requiredPaths.Add(ProgressionScheduleService.ReportPath);
+            }
             if (treatmentResourcePublicationAuthority is not null)
             {
                 requiredPaths.UnionWith(
@@ -856,6 +880,20 @@ internal static partial class AcceptedMechanicsWoundCommonInputComposer
                     "accepted-mechanics-wound-history-v1",
                     bundle.Input.PreTurnHistory.ToJsonString()));
             var companionImages = treatmentPlanSkillAfterImages.ToDictionary(p => p.Key, p => p.Value, StringComparer.Ordinal);
+            if (treatmentContinuationAuthority is WoundAcceptedTurnPlanner.MortalDiagnosisContinuation diagnosed)
+            {
+                var progression = diagnosed.Progression;
+                var scheduleBefore = CaptureBeforeImage(ProgressionScheduleService.SchedulePath);
+                var reportBefore = CaptureBeforeImage(ProgressionScheduleService.ReportPath);
+                static bool Equal(CanonicalBeforeImage left, CanonicalBeforeImage right) => left.Existed == right.Existed &&
+                    (left.Bytes is null ? right.Bytes is null : right.Bytes is not null && left.Bytes.AsSpan().SequenceEqual(right.Bytes));
+                if (!Equal(scheduleBefore, progression.ScheduleBefore) || !Equal(reportBefore, progression.ReportBefore))
+                    throw new InvalidDataException("Diagnosis schedule/report changed after its verified T1 calculation.");
+                companionImages.Add(EffectAcceptedTurnInputComposer.WorldTimePath, diagnosed.Working.ClockAfter);
+                companionImages.Add(ProgressionScheduleService.SchedulePath, JsonNode.Parse(FileSystemManager.DecodeFileBytes(progression.ScheduleAfter.Bytes!))!.AsObject());
+                if (progression.ReportAfter.Bytes is { } report)
+                    companionImages.Add(ProgressionScheduleService.ReportPath, JsonNode.Parse(FileSystemManager.DecodeFileBytes(report))!.AsObject());
+            }
             if (spiritualHealingAuthority is not null)
                 companionImages.Add(ProgressionScheduleService.SchedulePath,
                     JsonNode.Parse(spiritualHealingAuthority.SchedulerMutation.ScheduleAfterJson)!.AsObject());

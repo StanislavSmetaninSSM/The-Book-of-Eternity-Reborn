@@ -1,3 +1,34 @@
+# T121 Mortal common procedure-publication WIP — UNCOMPILED / UNRUN
+
+The connected common-plan candidate keeps diagnosis as a distinct private purpose
+while reusing the existing procedure reservation/cache, item/resource/Fate
+publication authority and common publisher. A small shared publication DATA view
+recognizes only actual treatment or diagnosis companions; it does not create a
+treatment route/result for diagnosis. Existing ordinary treatment branches and
+fingerprint domains remain. Current source/lease/claim checks stay fresh.
+
+Diagnosis common input carries the verified T1 clock, ordinary schedule/report
+after-images, real knowledge/recovery History and standard declared consumption.
+Common assembly rechecks exact clock/progression images and consumes only its
+actual staged input/held pending row and any truly consumed original report. The
+transaction's durable check retains full command and pending byte comparisons;
+for an actual diagnosis receipt it reconstructs immutable selection plus the
+exact pending request instead of requiring request coordinates inside selection.
+
+One additional actual-owner component row is authored for common preparation,
+real raw location/item admission, immutable staged command and two distinct
+pending before-images. It grants no claim of canonical publication or C4 success.
+The temporary estimate is 52 cases / thirteen methods / eleven categories, all
+UNCOMPILED/UNRUN. No writer build, test, discovery, runtime or restore occurred.
+
+The existing operation-local baselines/read maps and private continuation DATA
+are reused; ordinary resource/item preparation retains its established cache
+owner and fresh checks. No new cache or speedup claim. Remaining code is actual
+Engine hook and source-role integration, exact pre-/post-publication completion,
+C4 rearm plus outer-original rollback retention, guided console/browser and GM/
+current-input synchronization. The current UI still exposes no Mortal execution;
+this partial WIP cannot be treated as a finished player route or qualification.
+
 # T121 Mortal knowledge/recovery execution WIP — UNCOMPILED / UNRUN
 
 The existing wound/effect owners now have an exclusive diagnosis-purpose

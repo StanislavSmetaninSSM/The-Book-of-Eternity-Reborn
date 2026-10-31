@@ -108,7 +108,7 @@ internal sealed class MortalWoundTreatmentResourcePublicationAuthority
     internal string ResultFingerprint => ResolutionAuthority.ResultFingerprint;
     internal string FinalizationFingerprint => Finalization.FinalizationFingerprint;
     internal string ContinuationFingerprint =>
-        WoundAcceptedTurnPlanner.GetTreatmentContinuationFingerprint(
+        WoundAcceptedTurnPlanner.GetMortalProcedureContinuationFingerprint(
             ContinuationAuthority);
     internal string DraftFingerprint => _draft.Fingerprint;
     internal MortalItemNpcTradeTailDisposition NpcTradeDisposition { get; }
@@ -233,19 +233,19 @@ internal sealed class MortalWoundTreatmentResourcePublicationAuthority
         if (RequiresProcedureSettlement &&
             (!string.Equals(
                  RequestAuthority.Mode,
-                 "procedure",
+                 RequestAuthority.Coordinates.Purpose == "diagnosis" ? "diagnosis" : "procedure",
                  StringComparison.Ordinal) ||
              RequestAuthority.ModeAuthority is not MortalWoundProcedureCheckAuthority ||
              !string.Equals(
                  ResolutionAuthority.Mode,
-                 "procedure",
+                 RequestAuthority.Coordinates.Purpose == "diagnosis" ? "diagnosis" : "procedure",
                  StringComparison.Ordinal) ||
              ResolutionAuthority.ModeEvidence is not MortalWoundProcedureModeEvidence))
         {
             return false;
         }
 
-        if (!WoundAcceptedTurnPlanner.TryReadTreatmentContinuation(
+        if (!WoundAcceptedTurnPlanner.TryReadMortalProcedurePublication(
                 ContinuationAuthority,
                 out var continuation) ||
             !ReferenceEquals(continuation.AcceptedStateAuthority, AcceptedStateAuthority) ||
@@ -439,7 +439,7 @@ internal sealed class MortalWoundTreatmentResourcePublicationAuthority
             finalization.FinalizationFingerprint,
             finalizationSeal,
             requestResourceSeal,
-            WoundAcceptedTurnPlanner.GetTreatmentContinuationFingerprint(
+            WoundAcceptedTurnPlanner.GetMortalProcedureContinuationFingerprint(
                 continuationAuthority),
             semanticFingerprint,
             identitySeed,
@@ -1130,7 +1130,7 @@ internal static partial class WoundAcceptedTurnPlanner
         ArgumentNullException.ThrowIfNull(preparedWoundPlan);
         ArgumentException.ThrowIfNullOrWhiteSpace(effectSourceBeforeFingerprint);
         ArgumentNullException.ThrowIfNull(readDocument);
-        if (!TryReadTreatmentContinuation(
+        if (!TryReadMortalProcedurePublication(
                 continuationAuthority,
                 out var continuation) ||
             !ReferenceEquals(
@@ -1346,7 +1346,7 @@ internal static partial class WoundAcceptedTurnPlanner
 
     private static TreatmentItemPublicationBuild BuildTreatmentItemPublication(
         object continuationAuthority,
-        TreatmentContinuationView continuation,
+        MortalProcedurePublicationView continuation,
         MortalWoundTreatmentResourceFinalization finalization,
         MortalItemAcceptedTurnNormalizationSnapshot snapshot,
         IReadOnlyDictionary<string, MortalWoundTreatmentResourceClaim> claims,

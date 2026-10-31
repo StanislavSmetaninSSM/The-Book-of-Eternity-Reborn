@@ -849,20 +849,20 @@ internal static class MortalWoundTreatmentCapabilityAuthority
                     "The candidate plan carries a changed treatment continuation authority.")
                     .Issues;
             }
-            if (route is null ||
-                bundle is null ||
-                !HasCurrentModeAuthority(
+            var purposeAgrees = bundle is not null && (request.Coordinates.Purpose == "diagnosis"
+                ? WoundAcceptedTurnPlanner.MortalDiagnosisPublicationAgrees(continuationAuthority, bundle, acceptedState, request, resolution, semanticFingerprint)
+                : route is not null && HasCurrentModeAuthority(
                     acceptedState,
                     request,
                     route,
-                    bundle) ||
-                !WoundAcceptedTurnPlanner.TreatmentContinuationPublicationAgrees(
+                    bundle) && WoundAcceptedTurnPlanner.TreatmentContinuationPublicationAgrees(
                     continuationAuthority,
                     bundle,
                     acceptedState,
                     request,
                     resolution,
-                    semanticFingerprint) ||
+                    semanticFingerprint));
+            if (!purposeAgrees || bundle is null ||
                 !string.Equals(
                     bundle.Input.Binding.SessionId,
                     acceptedState.Binding.SessionId,
@@ -911,7 +911,7 @@ internal static class MortalWoundTreatmentCapabilityAuthority
                         .Issues;
                 }
             }
-            if (!WoundAcceptedTurnPlanner.TryReadTreatmentContinuation(
+            if (!WoundAcceptedTurnPlanner.TryReadMortalProcedurePublication(
                     continuationAuthority,
                     out var continuation))
             {
