@@ -1,3 +1,42 @@
+# T121 EX10 semantic browser RED and initializer proof accepted — rollback gate pending
+
+Independent Astra OUTCOME accepted the actual combined seven-case result at source
+`15e00ad7d4799e59ef15cec8d57b22e97a6072c6`: six PASS and exactly one intended
+semantic RED, not seven PASS. The actual snapshot-prefix Fact passed in
+8.4732193s/60s; TRX SHA256
+`7963997628b93848fbbd2e615ab47f01215480cf26f245e957365f3d95166c50`.
+Its two independent worlds proved actual initialization of the three missing roots,
+preservation of populated profiles, and exact signed/rollback before-images; the
+separately prepared world preserved all four root bytes. This adds one accepted
+case to the prior 164-case mixed-lineage pool: 165 distinct, not one fresh run.
+
+The six actual browser-binding rows completed in 16.2120454s/60s: five independent
+controls PASS and only lawful diagnosis failed the final Assert.Null at line 166,
+through the unchanged ReadDetachedSpiritualRequest branch at line 214. TRX SHA256
+`f21f36ef67b4e59e9fb10ad0bd19b1c25efafb3d67a4a25b01df7373f3c455a7`.
+Exact identities, chronology, baseline metadata/hash proof, no timeout/skip/duplicate
+or underfill, stable pins and cleanup were verified. The browser six are not counted
+as a completed GREEN category in the 165-case pool. No dispatch correction has been
+made, and the original actual browser FAIL remains retained.
+
+Four fresh owning builds completed with zero errors and baseline warnings
+12/23/26/102. Proofs bind four PE/PDB pairs, 222 source bindings, 27 artifacts,
+40 resource copies and four daemon copies. The verified owning archive is
+62,382,624 bytes; SHA256
+`82b8419053442ca85897e92e36bb75097b4f9bbf37f2c5df5b04e3e3c850d7d2`.
+The 02:07:41 UTC closing fence found stable pins, no live owners and 3,719,864,320
+bytes free. Raw TRX, capture and archive evidence remain outside Git.
+
+Astra conditionally admits ONLY the original corrected console rollback singleton
+at its unchanged 180s after this plan-only checkpoint is published and root confirms
+a fresh source/resource/ownership fence. Complete functional PASS, full capture,
+footer/CRC/hashes and physical cleanup are required before further UI admission.
+The earlier rollback FAIL, browser FAIL and both historical console timeouts remain
+unaltered evidence. C# is frozen at 15e00ad7d; no production edit, task closure or
+browser retry is authorized by this checkpoint. Real snapshot and fresh authority
+checks remain mandatory; operation-local DATA reuse adds no cache or speedup claim.
+Mortal/eight-adapter work and all broader HOLD boundaries remain open.
+
 # T121 grouped browser RED and rollback fixture candidate — UNCOMPILED / UNRUN
 
 The grouped cut adds six rows calling the actual detached browser validator and
