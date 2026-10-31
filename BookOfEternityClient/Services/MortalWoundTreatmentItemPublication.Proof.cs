@@ -145,8 +145,15 @@ internal sealed partial class MortalWoundTreatmentItemPublicationAuthority
                 StringComparison.Ordinal);
 
     internal bool ProvesExactPublishedNpcInventoryContinuityIssue(
-        ValidationIssue issue, JsonObject publishedNpcRoot) =>
-        CaptureExactPublishedNpcInventoryComparison(publishedNpcRoot)?.Proves(issue) == true;
+        ValidationIssue issue, JsonObject publishedNpcRoot)
+    {
+        ArgumentNullException.ThrowIfNull(issue);
+        ArgumentNullException.ThrowIfNull(publishedNpcRoot);
+        if (issue.Severity != IssueSeverity.Error || issue.Code != "npc_existing_inventory_resend_forbidden" ||
+            issue.Section != "NPCInventory" || !TryParseNpcInventoryIssuePath(issue.FilePath, out _, out _))
+            return false;
+        return CaptureExactPublishedNpcInventoryComparison(publishedNpcRoot)?.Proves(issue) == true;
+    }
 
     /// <summary>
     /// Recomposes the genuine complete item transition once and returns immutable

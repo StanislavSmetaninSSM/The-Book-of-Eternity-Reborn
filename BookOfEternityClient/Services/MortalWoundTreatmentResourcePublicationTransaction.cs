@@ -391,6 +391,8 @@ internal sealed partial class MortalWoundTreatmentResourcePublicationTransaction
             !ReferenceEquals(fileSystem, _fileSystem) ||
             Volatile.Read(ref _closed) != 0 ||
             itemAuthority is null ||
+            !issues.Any(static issue => issue.Severity == IssueSeverity.Error &&
+                issue.Code == "npc_existing_inventory_resend_forbidden" && issue.Section == "NPCInventory") ||
             !ReferenceEquals(_plan, _receipt.Plan) ||
             !ReferenceEquals(publicationAuthority, _receipt.PublicationAuthority) ||
             !publicationAuthority!.HasValidSeal() ||

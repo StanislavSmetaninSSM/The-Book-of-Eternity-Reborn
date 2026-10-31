@@ -1,3 +1,23 @@
+# T121 C14 actual-consumer test WIP — UNCOMPILED/UNRUN
+
+The coherent core is saved at `3a16eff4d8b4472018b9b4f550ee5bac5ea81ebd`.
+This next WIP authors seven finite rows: diagnosis actual post-validator1,
+compensated / suppressed-close export2, ordinary procedure actual post-validator1,
+and browser exact / parse-to-World drift / post-comparison final-proof refusal3.
+Browser uses the genuine Engine original/staged operation and its existing
+TerminalWaitStarted checkpoint, with a controlled stop before GM waiting. The
+complete proof/category/source-pin audit is still pending; these are source
+estimates and none has been compiled, discovered or executed by the writer.
+
+Primary independently compared C13's retained original and published whole NPC
+roots: exactly count2→1 plus absent→empty tradeInventoryReceipts. Initial receipts
+normalization before the sole bootstrap/original addresses the lawful default
+without weakening any whole-root cost, compensation or rollback assertion.
+The existing direct proof retains its original null/shape rejection before
+recomposition; the open transaction now reuses one recomposed comparison rather
+than recomposing for each candidate issue. Ineligible issue sets skip that work.
+No new IO, cache or speedup claim is attached to this DATA extraction.
+
 # T121 C14 completed item post-validation — coherent core WIP
 
 C13's original console attempt remains TIMEOUT/UNKNOWN, with the exact retained
