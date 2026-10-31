@@ -1,3 +1,17 @@
+# T121 bare-hold focused14 GREEN — native/UI still pending
+
+At runtime `3dd0ff8618de4f26bae36ecc541311352980d2da`, the exact focused
+selection passed 14/14 cases, 8 methods and 3 descriptors in 37.2308540s. Category
+times were 9.1246694s, 11.6653227s and 4.6359985s, all within original 60s bounds.
+Root verified complete planned/TRX membership, unique IDs, no timeout, full cleanup
+and unchanged source/artifact/resource pins. Both real normal/Fate prepared
+requests passed strict full roundtrip, bare catalog equality, pre-History input
+joins/refusals and canonical/live-claim continuity. Ordinary9 and sourceguards3
+passed. Raw remains in `M2GREENC4-focused14`; closing fence has no live owner.
+Independent OUTCOME/native PREP remains pending. No current native or UI PASS is
+inferred; the prior native failures remain preserved. Next is native25, then the
+three actual UI journeys. All broader residuals and HOLDs remain unchanged.
+
 # T121 bare-hold owning builds and exact selection complete — runtime UNRUN
 
 At `d3cb13df62261e97eba9f1554c5c3419606ad6d2`, Main, TestSupport, Unit and
