@@ -1,3 +1,37 @@
+# T121 C11 fresh builds/discovery — focused4 PREP pending
+
+Independent Astra SOURCE accepted `6dd982639156d914fa5c07890a596a090c7ee65f`.
+Root verified remote/local equality, then four fresh builds at that same source:
+Main2:16.76, Support13.41s, Unit1:15.21, Integration2:10.42, all exit0. Exact
+warning code/message multisets remain12/23/26/102. Four PE/PDB pairs and331
+actual Compile-owned bindings match. All27 artifacts/40 resource copies/four
+daemons agree. External archive62903017bytes, SHA256
+`c29df5fb8b5b4b28df5dc72fbe64d3f63cdba3cf221c1110a3d549be58828a45`,
+passes all member hashes and full gzip EOF/CRC over197120000 decoded bytes.
+
+Official catalog discovery1264/13080 and exact PlanOnly218cases/90methods/
+50descriptors/48 selected categories pass with zero executions/duplicates and
+complete owned cleanup. Disjoint current phases are focused4 (one actual Engine
+original Fact plus semantic guards3, four methods/two60s descriptors), three
+separate console/browser/rollback180s singletons, and retained211 (83methods/
+45descriptors/43categories). The two source-guard and new Integration descriptors
+retain their existing nonexclusive/exclusive declarations; execution is sequential.
+The retained211 proof exactly matches current official method counts/category
+membership:205 previously verified plus C9 capture/terminal2 and native4, with
+old guards excluded. Root independently re-parsed45 raw TRXs/211 unique test and
+execution IDs across16 runtime epochs; SHA256 of the external retained union is
+`90da46374a20d2ec929a571978245d1d89e7c6c2ee31a7f355dae986ae9ae834`.
+This is mixed lineage, not a fresh211 or complete218 run.
+
+All C11 runtime is UNRUN. Request only independent focused4 PREP after remote
+persistence and immediate fresh source/resource fence. The one real control must
+prove prepared-signed versus old rollback bytes, T0/T1 calculation, schedule/clock
+drift refusal and exact restoration before any UI retry. UI3 stays held pending
+that result and its own PREP. The prior C10 timeout/UNKNOWN, incomplete capture
+and remaining owned root stay preserved. Full raw is outside checkout under
+`M2GREENC11-*`; no diagnostics are committed. Other parents, physical guided
+treatment, eight spiritual adapters and earlier HOLDs remain open.
+
 # T121 C11 prepared-original candidate — UNCOMPILED / UNRUN
 
 Task T121-DIAGNOSIS-MORTAL-ENGINE-ORIGINAL continues under the accepted Astra
