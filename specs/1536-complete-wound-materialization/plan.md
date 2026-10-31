@@ -1,3 +1,19 @@
+# T121 pending evidence SOURCE accepted — owning builds only
+
+Independent Astra/high accepted the complete correction at
+`6198f1295547c34d2a21e6e37cf367187153f823`, with no remaining Important/Critical
+finding. Both real producers, selected exact pending DATA, currentness, early
+refusal and held/original rollback boundaries are coherent. No new read, parse,
+cache or permission is introduced by the DATA projection. The proposed focused
+cheap selection is 18 cases / 12 methods / 4 descriptors / 3 categories; official
+discovery remains authoritative. No performance improvement is claimed.
+
+All changed C# remains UNCOMPILED/UNRUN. Next are fresh Main, TestSupport, Unit and
+Integration builds, exact provenance/catalog/PlanOnly and independent PREP before
+runtime. Native 1 FAIL / 24 UNRUN and prior cheap140 lineages remain unchanged;
+native25 and all three actual UI journeys remain unqualified. This is build
+admission, not feature acceptance. Full raw stays outside checkout.
+
 # T121 pending observation coherent candidate — SOURCE freeze, UNCOMPILED / UNRUN
 
 The grouped correction is complete in source. Shared Live/Engine current capture
