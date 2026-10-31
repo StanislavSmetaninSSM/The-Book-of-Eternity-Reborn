@@ -1,3 +1,38 @@
+# T121 Mortal working time/recovery WIP — UNCOMPILED / UNRUN
+
+The same checkout recovered after a brief environment transition; no build/test
+or uncertain publication was repeated. The connected cut retains signed original
+clock/control/schedule and complete active physical cohort DATA in the existing
+accepted owner. Its private-constructor working projection applies the exact
+knowledge result first, derives checked T1 from the admitted duration and calls
+the existing pure recovery calculation with that explicit evaluation minute.
+CurrentWound/CurrentGameMinute remain original; no accepted authority is fabricated.
+
+The existing progression owner now calculates schedule/report after-images from
+verified T1 without writing future clock or changing signed control. Ordinary
+ValidateMortalOutcome uses the original AlreadyPendingBeforeTurn obligations;
+ApplyMortalOutcomeFromInputs computes newly elapsed pending cycles at T1. Thus a
+method does not invent extra same-turn GM report obligations. Newly due wound
+recovery still evaluates at T1. The same rule must appear in the eventual GM/UI
+response preparation. No separate publisher or mutation permission is returned.
+
+Two actual-owner rows cover explicit zero/300-minute input, a real current recovery
+epoch/cadence, knowledge working image, unchanged original time, standard pending
+cycles, detached exports and refusal across owner/lease rebind. The existing seed
+is settled by the real scheduler before its sole signed preparation. Source-owned
+roots and typed cohort are reused within the operation; snapshot/current source,
+lease, claim and final publication checks remain fresh. No speedup is claimed.
+Current temporary estimate is 48 cases / ten methods / eight categories, all
+UNCOMPILED/UNRUN; writer ran no build, discovery or runtime.
+
+Durable result/History, complete effect/recovery execution and common publication,
+C4 rearm/outer rollback, guided console/browser and GM synchronization remain open.
+Pending has two exact images: signed original/outer rollback versus already-held
+common-publication before-image. Neither is excluded from canonical coverage or
+recaptured after failure. Diagnosis-specific transaction compensation must use its
+actual receipt and exact immutable selection + held row + History reconstruction;
+ordinary treatment checks stay intact. No feature/parent task or HOLD is closed.
+
 # T121 Mortal original input and pre-handoff retention WIP — UNCOMPILED / UNRUN
 
 The connected owner cut keeps staged diagnosis input immutable and adds a distinct

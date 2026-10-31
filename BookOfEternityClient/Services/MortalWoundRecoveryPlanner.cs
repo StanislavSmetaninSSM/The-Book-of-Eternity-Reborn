@@ -646,11 +646,22 @@ internal static class MortalWoundRecoveryPlanner
         long consumedRecovery,
         long consumedDeterioration)
     {
+        return ReconstructAtMinute(acceptedState, binding, wound, acceptedState.CurrentGameMinute, consumedRecovery, consumedDeterioration);
+    }
+
+    // Pure comparison math only. A diagnosis owner must independently authenticate
+    // its original cohort, knowledge working image and exact future clock before
+    // using this calculation in the existing common publication.
+    internal static MortalWoundRecoveryPlanningResult ReconstructAtMinute(
+        MortalWoundRecoverySourceEvidence acceptedState, WoundAcceptedTurnBinding binding,
+        WoundMaterializationEnvelope wound, long evaluationMinute, long consumedRecovery, long consumedDeterioration)
+    {
+        if (evaluationMinute < acceptedState.CurrentGameMinute) throw new InvalidDataException("Recovery cannot move before its original clock.");
         var sourcePath = acceptedState.WoundSourcePath;
         var recoveryAnchor = wound.Recovery.RecoveryAnchor
             ?? throw new InvalidDataException("Recovery evidence has no canonical epoch.");
         var recovery = wound.Recovery;
-        var currentMinute = acceptedState.CurrentGameMinute;
+        var currentMinute = evaluationMinute;
         var noNaturalRecovery = string.Equals(
             recovery.Mode,
             "no_natural_recovery",

@@ -2,6 +2,36 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "mortal-diagnosis-working-time",
+  "responsibility": "T121 two actual signed original-owner rows for explicit zero or 300-minute diagnosis: original clock/control/schedule and recovery epoch remain unchanged; knowledge working image precedes existing ordinary recovery math at checked T1, standard schedule calculation leaves newly elapsed cycles pending without inventing same-turn report obligations, detached clock exports cannot mutate the retained image, and a new owner/lease cannot reuse it. UNCOMPILED/UNRUN WIP.",
+  "excludes": "No future physical writes, accepted-state clock/wound rewriting, fabricated authority, publication/History, C4/Engine/GM wait or broad Mortal suite. All durations/cadences are explicit fixture inputs.",
+  "changeHints": [
+    "BookOfEternityClient/Services/MortalWoundDiagnosisWorkingProjection.cs",
+    "BookOfEternityClient/Services/ProgressionScheduleService.MortalDiagnosis.cs",
+    "BookOfEternityClient/Services/MortalWoundRecoveryPlanner.cs"
+  ],
+  "related": [
+    {
+      "id": "mortal-diagnosis-terminal-outcomes",
+      "when": "A current terminal procedure result and exact knowledge-only image must precede projected ordinary recovery."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.DiagnosisWorkingTimeAndRecoveryUseOriginalSourcesWithoutFutureWrites"
+      ]
+    }
+  ]
+},
+{
   "id": "mortal-diagnosis-input-data",
   "responsibility": "T121 seven detached input rows bind full original control and exact typed participant/context coordinates after independent outer resealing, including same-ordinal control drift. These are staged DATA, never admission or publication authority. UNCOMPILED/UNRUN source-authored WIP.",
   "excludes": "No Engine/GM wait, future-time/recovery/common publication, actual C4 handoff or finished Mortal route claim; no broad aggregate or old spiritual PASS replay.",

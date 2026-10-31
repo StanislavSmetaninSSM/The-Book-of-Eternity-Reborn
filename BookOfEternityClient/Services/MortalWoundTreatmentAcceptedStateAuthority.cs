@@ -63,8 +63,25 @@ internal sealed partial class MortalWoundTreatmentAcceptedStateAuthority
     private byte[]? _diagnosisCommandBytes;
     private JsonObject? _diagnosisInput;
     private JsonObject? _diagnosisControl;
+    private WoundCarrierCatalog? _diagnosisOriginalCatalog;
+    private IReadOnlyDictionary<string, JsonObject>? _diagnosisOriginalRoots;
     private PendingTurnSnapshotReader.OriginalReadEvidence? _diagnosisOriginalEvidence;
     private PendingTurnSnapshotReadAuthority? _diagnosisIssuedSnapshot;
+    internal IReadOnlyList<(string Path, WoundMaterializationEnvelope Wound)> ReadDiagnosisOriginalCohort()
+    {
+        if (_diagnosisOriginalCatalog is null) throw new InvalidDataException("The diagnosis owner has no admitted original cohort.");
+        return _diagnosisOriginalCatalog.Occurrences.Where(value => value.Wound.Lifecycle == "active" &&
+            value.Wound.Owner.Realm == "mortal_world" && value.Wound.Classification.Domain == "physical")
+            .Select(value => (value.JsonPath, value.Wound)).ToArray();
+    }
+    internal byte[] ReadDiagnosisOriginalBytes(string path) => _diagnosisIssuedSnapshot?.ReadRequiredBytes(path) ??
+        throw new InvalidDataException("The diagnosis original source is absent: " + path);
+    internal JsonObject ReadDiagnosisOriginalRoot(string path) => _diagnosisOriginalRoots is not null &&
+        _diagnosisOriginalRoots.TryGetValue(path, out var value) ? value.DeepClone().AsObject() :
+        throw new InvalidDataException("The diagnosis original root is absent: " + path);
+    internal JsonObject ReadDiagnosisOriginalControl() => _diagnosisControl?.DeepClone().AsObject() ??
+        throw new InvalidDataException("The diagnosis original control is absent.");
+
     internal void RequireOriginalDiagnosisRequest(MortalWoundTreatmentAttemptRequest request)
     {
         if (_diagnosisInput is null || _diagnosisControl is null || _diagnosisOriginalEvidence is null || _diagnosisIssuedSnapshot is null)
@@ -458,7 +475,7 @@ internal sealed partial class MortalWoundTreatmentAcceptedStateAuthority
 
         var pathSelection = BuildPathSelection(context, issues);
         if (diagnosis) pathSelection = new PendingTurnSnapshotPathSelection(
-            pathSelection.RequiredLogicalPaths.Append(AcceptedMechanicsPlan.WoundCommandPath), pathSelection.OptionalLogicalPaths);
+            pathSelection.RequiredLogicalPaths.Append(AcceptedMechanicsPlan.WoundCommandPath).Append(ProgressionScheduleService.SchedulePath), pathSelection.OptionalLogicalPaths);
         if (issues.Count != 0)
             return Failure(issues);
 
@@ -786,6 +803,8 @@ internal sealed partial class MortalWoundTreatmentAcceptedStateAuthority
             acceptedStateFingerprint);
         if (diagnosis)
         {
+            authority._diagnosisOriginalCatalog = woundCatalog;
+            authority._diagnosisOriginalRoots = new ReadOnlyDictionary<string, JsonObject>(roots);
             authority._diagnosisOriginalEvidence = observed?.Evidence ?? throw new InvalidDataException("Diagnosis original observation proof is missing.");
             authority._diagnosisIssuedSnapshot = signed;
             authority._diagnosisCommandBytes = signed.ReadRequiredBytes(AcceptedMechanicsPlan.WoundCommandPath);

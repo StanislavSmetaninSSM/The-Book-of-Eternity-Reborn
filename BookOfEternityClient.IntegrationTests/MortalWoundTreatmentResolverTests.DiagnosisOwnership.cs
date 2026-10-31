@@ -122,6 +122,50 @@ public sealed partial class MortalWoundTreatmentResolverTests
         fixture.AssertJson(unchanged);
     }
 
+    [Theory]
+    [InlineData(0)]
+    [InlineData(300)]
+    public async Task DiagnosisWorkingTimeAndRecoveryUseOriginalSourcesWithoutFutureWrites(int duration)
+    {
+        await using var fixture = await DiagnosisOwnershipFixture.CreateAsync(20, signedInput: true, duration: duration);
+        var owner = fixture.Authority;
+        var history = WoundHistoryState.Parse(await fixture.Files.ReadFileAsync(fixture.Lease, WoundHistoryState.HistoryPath), WoundHistoryState.HistoryPath);
+        var unchanged = fixture.CaptureJson();
+        var prepared = MortalWoundTreatmentPlanner.PrepareDiagnosisRequest(owner, history, owner.CurrentWound,
+            "diagnosis_working_clock", "inspect_explicit_method", fixture.EventRef);
+        Assert.True(prepared.IsValid, JsonSerializer.Serialize(prepared.Issues));
+        var outcome = MortalWoundDiagnosisOutcome.Resolve(owner, history, prepared.Request!);
+        var working = MortalWoundDiagnosisWorkingProjection.Build(owner, outcome);
+        Assert.Equal(owner.CurrentGameMinute, working.OriginalSource.CurrentGameMinute);
+        Assert.Equal(owner.CurrentGameMinute, working.OriginalMinute);
+        Assert.Equal(checked(owner.CurrentGameMinute + duration), working.ResultingMinute);
+        Assert.Equal(working.ResultingMinute, working.ClockAfter["currentTimeInMinutes"]!.GetValue<long>());
+        var member = Assert.Single(working.Members);
+        Assert.Equal(WoundMaterializationContract.SerializeCanonical(owner.CurrentWound), WoundMaterializationContract.SerializeCanonical(member.Original));
+        Assert.Equal(WoundMaterializationContract.SerializeCanonical(outcome.KnowledgeAfter), WoundMaterializationContract.SerializeCanonical(member.Working));
+        Assert.Equal(working.ResultingMinute, member.Resolution.CurrentTimeInMinutes);
+        Assert.Equal(duration / 10, member.Resolution.ElapsedCadences);
+        Assert.Equal(0, member.Working.Recovery.CurrentStepProgress);
+        var sourceClock = owner.ReadDiagnosisOriginalRoot(EffectAcceptedTurnInputComposer.WorldTimePath);
+        sourceClock["currentTimeInMinutes"] = working.ResultingMinute;
+        Assert.True(JsonNode.DeepEquals(sourceClock, working.ClockAfter));
+        var escaped = working.ClockAfter; escaped["currentTimeInMinutes"] = 1;
+        Assert.Equal(working.ResultingMinute, working.ClockAfter["currentTimeInMinutes"]!.GetValue<long>());
+        var scheduler = new ProgressionScheduleService(fixture.Files, NullLogger<ProgressionScheduleService>.Instance);
+        var calculation = await scheduler.PrepareDiagnosisOutcomeAsync(fixture.Lease, working);
+        var after = JsonNode.Parse(FileSystemManager.DecodeFileBytes(calculation.ScheduleAfter.Bytes!))!.AsObject();
+        Assert.Equal(working.ResultingMinute, after["currentWorldTimeInMinutes"]!.GetValue<int>());
+        var originalControl = working.OriginalControl;
+        Assert.Equal(working.OriginalMinute, originalControl["currentWorldTimeInMinutes"]!.GetValue<int>());
+        Assert.Equal(0, originalControl["worldCyclesAlreadyPendingBeforeTurn"]!.GetValue<int>());
+        var cadence = originalControl["worldCycleMinutes"]!.GetValue<int>();
+        Assert.Equal(duration / cadence, after["pendingWorldCycles"]!.GetValue<int>());
+        Assert.False(calculation.ReportBefore.Existed); Assert.False(calculation.ReportAfter.Existed);
+        fixture.AssertJson(unchanged);
+        await fixture.RebindAsync();
+        Assert.Throws<InvalidDataException>(() => working.RequireCurrent(fixture.Authority));
+    }
+
     private sealed class DiagnosisOwnershipFixture : IAsyncDisposable
     {
         private DiagnosisOwnershipFixture(string root, FileSystemManager files, FileSystemManager.CanonicalWriteLease lease,
@@ -133,13 +177,13 @@ public sealed partial class MortalWoundTreatmentResolverTests
         internal MortalWoundTreatmentAcceptedStateAuthority Authority { get; private set; }
         internal string EventRef { get; }
 
-        internal static async Task<DiagnosisOwnershipFixture> CreateAsync(int? natural = null, bool signedInput = false)
+        internal static async Task<DiagnosisOwnershipFixture> CreateAsync(int? natural = null, bool signedInput = false, int duration = 30)
         {
             // Initial canonical scenario DATA only. The real live preparation and
             // exporter below issue ownership; these JSON values are not receipts.
             var scenario = CreateScenario("procedure_normal_uses_lowest_free_die", "procedure");
             if (natural is not null) scenario.AcceptedState["acceptedDice"] = new JsonArray(natural.Value, 17, 1, 20);
-            var method = WoundContractTestData.CreateMortalDiagnosisPath(true, 30);
+            var method = WoundContractTestData.CreateMortalDiagnosisPath(true, duration);
             var route = Assert.IsType<JsonObject>(Assert.Single(scenario.Before["treatment"]!["routes"]!.AsArray())).DeepClone().AsObject();
             route["routeId"] = "inspect_explicit_method";
             scenario.Before["treatment"]!["routes"]!.AsArray().Add(route);
@@ -149,6 +193,18 @@ public sealed partial class MortalWoundTreatmentResolverTests
             scenario.Before["treatment"]!["routes"]!.AsArray().Add(hidden);
             method["reveals"] = new JsonArray("route:diagnostic_hidden_route");
             scenario.Before["treatment"]!["diagnosisPaths"] = new JsonArray(method);
+            // Explicit current physical recovery epoch, not the older procedure
+            // fixture's read-only clock label or an absent recovery anchor.
+            scenario.Before["recovery"]!["mode"] = "progressive";
+            scenario.Before["recovery"]!["clockKind"] = "world_time.currentTimeInMinutes";
+            scenario.Before["recovery"]!["cadence"] = 10;
+            scenario.Before["recovery"]!["currentStepThreshold"] = 1000;
+            scenario.Before["recovery"]!["blockers"] = new JsonArray();
+            scenario.Before["recovery"]!["recoveryAnchor"] = new JsonObject
+            {
+                ["anchorKind"] = "creation", ["anchorMinute"] = scenario.AcceptedState["worldMinute"]!.DeepClone(),
+                ["anchorTransitionId"] = scenario.Before["lastTransition"]!["transitionId"]!.DeepClone()
+            };
             scenario = scenario with { History = CreateCurrentWoundHistory(scenario.Before), SeedCanonicalWoundEffects = true };
             var root = Path.Combine(Path.GetTempPath(), "boe-mortal-diagnosis-owner-" + Guid.NewGuid().ToString("N"));
             Directory.CreateDirectory(root);
@@ -159,6 +215,8 @@ public sealed partial class MortalWoundTreatmentResolverTests
             {
                 _ = AcceptedStateFixture.SeedCanonicalComponentData(files, scenario, "player", "player_current", WoundCarrierCatalog.PlayerPath);
                 var stagedContext = ParseContext();
+                var control = signedInput ? await new ProgressionScheduleService(files, NullLogger<ProgressionScheduleService>.Instance)
+                    .BuildControlForNextTurnAsync("Mortal World") : new ProgressionControl { CurrentRealm = "Mortal World" };
                 if (signedInput)
                 {
                     var wound = WoundMaterializationContract.Parse(scenario.Before.ToJsonString(), WoundCarrierCatalog.PlayerPath).Wound!;
@@ -170,7 +228,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
                     };
                     var input = MortalWoundDiagnosisInputCodec.Create(new(scenario.AcceptedState["sessionId"]!.GetValue<string>(),
                         scenario.AcceptedState["requestId"]!.GetValue<string>(), scenario.AcceptedState["turn"]!.GetValue<int>(),
-                        new ProgressionControl { CurrentRealm = "Mortal World" }), selected, stagedContext);
+                        control), selected, stagedContext);
                     await files.WriteFileAtomicAsync(AcceptedMechanicsPlan.WoundCommandPath, input.ToJsonString());
                 }
                 await new LiveTurnPreparationService(files).PrepareAsync(new LiveTurnPreparationOptions
@@ -178,6 +236,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
                     SessionId = scenario.AcceptedState["sessionId"]!.GetValue<string>(),
                     RequestId = scenario.AcceptedState["requestId"]!.GetValue<string>(),
                     TurnNumber = scenario.AcceptedState["turn"]!.GetValue<int>(),
+                    ProgressionControl = control,
                     CurrentRealm = "Mortal World", PlayerAction = "Осмотреть рану по отдельно подтверждённому способу.",
                     PreGeneratedDices1d20 = scenario.AcceptedState["acceptedDice"]!.AsArray().Select(value => value!.GetValue<int>()).ToArray()
                 });
