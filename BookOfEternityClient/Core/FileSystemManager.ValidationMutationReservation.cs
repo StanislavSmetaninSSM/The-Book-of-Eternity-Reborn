@@ -19,6 +19,32 @@ public partial class FileSystemManager
     }
 
     /// <summary>
+    /// Attaches an owned close dependency to one genuine physical lease while reserving mutation/reuse invalidation.
+    /// The caller retains an unattached dependency; successful attachment transfers it to the lease exactly once.
+    /// </summary>
+    /// <param name="lease">The same active physical lease owned by the completing operation.</param>
+    /// <param name="ownedContext">Close dependency transferred only after successful attachment.</param>
+    /// <returns>A reservation held through every attempt to dispose that actual lease, then released afterward.</returns>
+    internal IDisposable AttachOwnedLeaseCloseContext(CanonicalWriteLease lease, IDisposable ownedContext)
+    {
+        ArgumentNullException.ThrowIfNull(ownedContext);
+        EnsurePhysicalCanonicalWriteLease(lease);
+        if (lease.ExternalPublicationContext is not null)
+            throw new InvalidOperationException("The canonical lease already has an owning publication context.");
+        var reservation = BeginValidationMutation(lease);
+        try
+        {
+            lease.ExternalPublicationContext = ownedContext;
+            return reservation;
+        }
+        catch
+        {
+            reservation.Dispose();
+            throw;
+        }
+    }
+
+    /// <summary>
     /// Registers a lease-taking mutation before preparation or recovery can begin.
     /// </summary>
     /// <param name="lease">

@@ -16,7 +16,21 @@ public sealed partial class GameEngineTurnLifecycleTests
         await using var context = await CreateProcedureTreatmentPipelineContextAsync(null,
             itemScenario: HeldTreatmentItemScenario.SelectedStack());
         var fs = context.FileSystem;
+        var originalRequest = Assert.IsType<System.Text.Json.Nodes.JsonObject>(
+            WoundResponseInputComposer.SerializeMortalWoundTreatmentValue(context.Request));
+        var beforeOwnerRebind = await CaptureExactTreatmentTransactionBytesAsync(context);
         await context.ReleaseLeaseAsync();
+        using var owner = fs.BeginMainAdmission();
+        await owner.AcquireAsync();
+        await context.AcquireLeaseAsync();
+        // Recover the exact persisted ordinary request/claims under this caller's owner;
+        // do not allocate new dice or treat an async factory's ambient frame as inherited.
+        await RestoreProcedureTreatmentAndComposeSameSemanticPlanAsync(context,
+            includeEnergyResource: true, includeFateShield: false, composePublicationPlan: true);
+        Assert.True(MortalWoundTreatmentCommandCodec.SemanticJsonEquals(originalRequest,
+            Assert.IsType<System.Text.Json.Nodes.JsonObject>(WoundResponseInputComposer.SerializeMortalWoundTreatmentValue(context.Request))));
+        await context.ReleaseLeaseAsync();
+        await AssertExactTreatmentTransactionBytesAsync(context, beforeOwnerRebind);
         var validator = new ValidationService(fs, NullLogger<ValidationService>.Instance);
         var published = await AcceptedTurnCanonicalStateRefresh.NormalizeAndValidateWithPlanAsync(fs,
             new CanonicalStateNormalizer(fs, NullLogger<CanonicalStateNormalizer>.Instance), validator,

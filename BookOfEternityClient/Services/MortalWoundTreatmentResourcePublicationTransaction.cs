@@ -669,19 +669,35 @@ internal sealed partial class MortalWoundTreatmentResourcePublicationTransaction
                         value.Bytes))
             .ToArray();
 
+    internal Task<MortalWoundTreatmentPublicationOperationResult> CompleteAsync(FileSystemManager fileSystem) =>
+        CompleteAsync(fileSystem, ownedLeaseCloseContext: null);
+
+    /// <summary>
+    /// Completes the same publication with an optional dependency owned by its actual acquired lease.
+    /// Null preserves the ordinary completion path; a suppressed close failure never changes finalized settlement.
+    /// </summary>
+    /// <param name="fileSystem">The actual publication filesystem.</param>
+    /// <param name="ownedLeaseCloseContext">
+    /// Optional close dependency. It remains caller-owned until successful attachment, and is then disposed only by the lease.
+    /// </param>
+    /// <returns>The existing settlement result; completed validation DATA requires observed successful closure.</returns>
     internal async Task<MortalWoundTreatmentPublicationOperationResult>
-        CompleteAsync(FileSystemManager fileSystem)
+        CompleteAsync(FileSystemManager fileSystem, IDisposable? ownedLeaseCloseContext)
     {
         ThrowIfPublicationUncertain();
         ArgumentNullException.ThrowIfNull(fileSystem);
         if (_receipt.IsTerminalReleaseOnly)
             return TerminalReleaseOnlyFailure("finalize publication");
+        using var suppression = ownedLeaseCloseContext is null ? null : FileSystemManager.SuppressValidationReuse();
         FileSystemManager.CanonicalWriteLease? writeLease = null;
+        IDisposable? closeReservation = null;
         MortalWoundTreatmentPublicationOperationResult? result = null;
         CompletedItemValidation? completion = null;
         try
         {
             writeLease = await fileSystem.AcquireCanonicalWriteLeaseAsync();
+            if (ownedLeaseCloseContext is not null)
+                closeReservation = fileSystem.AttachOwnedLeaseCloseContext(writeLease, ownedLeaseCloseContext);
             result = ToOperationFailure(AcceptedTurnAuthorityRegistry
                 .ProbeTakenMortalWoundTreatmentPublication(
                     fileSystem,
@@ -709,12 +725,16 @@ internal sealed partial class MortalWoundTreatmentResourcePublicationTransaction
         }
         finally
         {
-            if (writeLease is not null)
+            try
             {
-                var closed = await DisposeLeaseAndObserveAsync(writeLease, result is not null && ClosesReceipt(result));
-                if (closed && completion is not null)
-                    Volatile.Write(ref _completedItemValidation, completion);
+                if (writeLease is not null)
+                {
+                    var closed = await DisposeLeaseAndObserveAsync(writeLease, result is not null && ClosesReceipt(result));
+                    if (closed && completion is not null)
+                        Volatile.Write(ref _completedItemValidation, completion);
+                }
             }
+            finally { closeReservation?.Dispose(); }
         }
     }
 

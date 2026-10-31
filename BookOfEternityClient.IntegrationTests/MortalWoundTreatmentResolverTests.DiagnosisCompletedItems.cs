@@ -14,6 +14,13 @@ public sealed partial class MortalWoundTreatmentResolverTests
     public async Task DiagnosisCompletedItemComparisonUsesActualPostValidatorAndExactWholeFrame()
     {
         await using var fixture = await DiagnosisOwnershipFixture.CreateAsync(20, signedInput: true, duration: 0);
+        var beforeRebind = fixture.CaptureJson();
+        await fixture.ReleaseLeaseAsync();
+        // BeginMainAdmission installs the owner in THIS caller flow before AcquireAsync yields.
+        using var owner = fixture.Files.BeginMainAdmission();
+        await owner.AcquireAsync();
+        await fixture.RebindAsync();
+        fixture.AssertJson(beforeRebind);
         var (transaction, validator, binding, frame, publication) = await PublishDiagnosisForCompletedItemValidationAsync(fixture);
         await using var cleanup = (IAsyncDisposable)transaction;
         Assert.Null(transaction.ReadCompletedItemValidation()); // Published is not finalized.
@@ -77,8 +84,12 @@ public sealed partial class MortalWoundTreatmentResolverTests
         }
         var foreign = new FileSystemManager(fixture.Files.BasePath, NullLogger<FileSystemManager>.Instance);
         var foreignValidator = new ValidationService(foreign, NullLogger<ValidationService>.Instance);
-        using (foreignValidator.UseCompletedTreatmentItemValidationScope(completed))
-            Assert.Contains(await foreignValidator.ValidatePostMaterializedGameStateAsync(), IsCompletedItemInventoryIssue);
+        using (var foreignOwner = foreign.BeginMainAdmission())
+        {
+            await foreignOwner.AcquireAsync();
+            using (foreignValidator.UseCompletedTreatmentItemValidationScope(completed))
+                Assert.Contains(await foreignValidator.ValidatePostMaterializedGameStateAsync(), IsCompletedItemInventoryIssue);
+        }
         fixture.AssertJson(bytes);
         Assert.Equal(claims, await ClaimsAsync());
     }
@@ -88,12 +99,14 @@ public sealed partial class MortalWoundTreatmentResolverTests
     [InlineData(true)]
     public async Task DiagnosisCompletedItemExportRequiresFinalizationAndObservedSuccessfulClose(bool closeFailure)
     {
-        var armed = false; var cuts = 0;
-        var hooks = new FileSystemManagerHooks
-        {
-            OrdinaryWriteLeaseCloseContextFactory = () => armed ? new CompletedItemThrowingClose(() => { cuts++; armed = false; }) : null
-        };
-        await using var fixture = await DiagnosisOwnershipFixture.CreateAsync(20, signedInput: true, duration: 0, hooks: hooks);
+        var cuts = 0;
+        await using var fixture = await DiagnosisOwnershipFixture.CreateAsync(20, signedInput: true, duration: 0);
+        var beforeRebind = fixture.CaptureJson();
+        await fixture.ReleaseLeaseAsync();
+        using var owner = fixture.Files.BeginMainAdmission();
+        await owner.AcquireAsync();
+        await fixture.RebindAsync();
+        fixture.AssertJson(beforeRebind);
         var (transaction, _, _, frame, _) = await PublishDiagnosisForCompletedItemValidationAsync(fixture);
         await using var cleanup = (IAsyncDisposable)transaction;
         Assert.Null(transaction.ReadCompletedItemValidation());
@@ -109,18 +122,37 @@ public sealed partial class MortalWoundTreatmentResolverTests
             new ProgressionScheduleService(fixture.Files, NullLogger<ProgressionScheduleService>.Instance), frame.Progression);
         Assert.True(advanced.IsValid, JsonSerializer.Serialize(advanced.Issues));
         var before = fixture.CaptureJson();
-        armed = true;
-        var completed = await transaction.CompleteAsync(fixture.Files);
-        Assert.Equal(1, cuts);
-        Assert.True(completed.IsValid, JsonSerializer.Serialize(completed.Issues));
+        var rejectedContext = new CompletedItemCountingClose();
+        var existingContext = new CompletedItemCountingClose();
+        await using (var occupied = await fixture.Files.AcquireCanonicalWriteLeaseAsync())
+        {
+            occupied.ExternalPublicationContext = existingContext;
+            Assert.Throws<InvalidOperationException>(() => fixture.Files.AttachOwnedLeaseCloseContext(occupied, rejectedContext));
+            Assert.Same(existingContext, occupied.ExternalPublicationContext);
+            Assert.Equal(0, existingContext.Disposals); Assert.Equal(0, rejectedContext.Disposals);
+            rejectedContext.Dispose(); // Rejection did not transfer caller ownership.
+        }
+        Assert.Equal(1, existingContext.Disposals); Assert.Equal(1, rejectedContext.Disposals);
+        fixture.AssertJson(before);
+        var close = new CompletedItemThrowingClose(() => cuts++);
+        var completed = await transaction.CompleteAsync(fixture.Files, close);
+        Assert.True(completed.IsValid, JsonSerializer.Serialize(completed));
+        Assert.Empty(completed.Issues);
         Assert.Equal(MortalWoundTreatmentPublicationTransactionOutcome.Finalized, completed.Outcome);
         Assert.Equal(1, completed.ChangedCount);
+        Assert.Equal(1, cuts);
         Assert.Null(transaction.ReadCompletedItemValidation());
         fixture.AssertJson(before);
         var replay = await transaction.CompleteAsync(fixture.Files);
         Assert.Equal(MortalWoundTreatmentPublicationTransactionOutcome.TokenReplayed, replay.Outcome);
         Assert.Null(transaction.ReadCompletedItemValidation());
         fixture.AssertJson(before);
+    }
+
+    private sealed class CompletedItemCountingClose : IDisposable
+    {
+        internal int Disposals { get; private set; }
+        public void Dispose() => Disposals++;
     }
 
     private sealed class CompletedItemThrowingClose(Action onClose) : IDisposable

@@ -1,3 +1,50 @@
+# T121 C14 grouped completion dependency and caller-owner WIP
+
+The two preserved actual attempts remain distinct: M2GREENC14-post8 has1 PASS /
+1 FAIL /6 UNRUN (lifetime32.1029621s/60, wall46.2223671s), with False passing and
+True stopping at cuts0 before result assertions; M2GREENC14-post6 has0 PASS /
+1 FAIL /5 UNRUN (diagnosis22.6873121s/60, wall35.6524s), refusing the first protected
+post-validator read because its caller has no live console owner. Both completed
+without timeout, with verified cleanup/pins. Earlier Main/Support/Unit compiled4eff
+and Integrationa069 are real lineages; the new correction here is UNCOMPILED/UNRUN.
+Old False PASS is historical until the affected theory reruns; no other post, source
+guard4 or UI result is promoted. Complete's first actual returned outcome remains
+unobserved, rather than inferred from the missing callback.
+
+The same one-argument CompleteAsync entry delegates to its unchanged default-null
+path. The narrow typed overload can attach an owned IDisposable only to its own
+actual acquired lease. Non-null dependency enters existing reuse suppression
+before acquisition; existing Core mutation reservation and suppression both survive
+all owning disposal attempts, then release. An occupied context refuses without
+transferring or disposing the caller's candidate. Actual lease close alone disposes
+an attached context; suppressed close failure preserves finalized settlement and
+exports no completed comparison. Full result/issue/Finalized/Changed1 assertions
+now precede the actual cut1/data-null/exact-byte/replay assertions. No global hook,
+alternative completion or settlement change is introduced.
+
+Direct diagnosis, lifetime and ordinary fixtures now install/acquire genuine
+MainAdmission in their caller async flow after releasing factory leases. Diagnosis
+uses its existing fresh ExportDiagnosisCurrent rebind; ordinary reconstructs the
+exact persisted request/claims through its existing typed restore/composer. Both
+prove canonical images unchanged before publication; ordinary also compares the
+complete request DATA. The caller owner spans actual producer and post-validator;
+no write lease remains at reader entry. Foreign-manager validation has its own
+acquired child admission over the same root, while completed DATA still refuses
+its foreign filesystem identity. The three browser rows already use real current-
+session participation and Engine main/staged originals; their native foreign DATA
+read uses its exact explicit lease, released before actual World reading. Their
+controlled stop and whole owned-root cleanup remain unchanged.
+
+This coherent core/test WIP is remotely preserved before final source-pin,
+category/selection and finite owner audit. Seven rows and all protective limits
+stay unchanged; no writer build/discovery/test occurred. Root owns the next grouped
+SOURCE/build/PREP. Fresh rebind is required because factory AsyncLocal admission
+is not inherited permission; existing exact request DATA/claims are reused without
+new Reserve/draw. No new source cache, extra gameplay state, post-accepted files,
+speedup claim or GM wire update is introduced. Existing synchronized diagnosis
+prompts/examples remain correct; parents, physical treatment, eight adapters,
+ordinary UNKNOWN and HOLDs remain open, and all old raw/owned roots stay untouched.
+
 # T121 C14 direct post-validator fixture lacks its console owner
 
 The independently admitted remaining6 at runtime
