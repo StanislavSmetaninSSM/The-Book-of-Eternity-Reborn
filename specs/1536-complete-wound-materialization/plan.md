@@ -1,3 +1,36 @@
+# T121 C22 resource GREEN independently accepted — original UI2 UNRUN
+
+Runtime `a28d5b650840ae317dbd4017ca36d064eae45291`, all four compiled owners
+`f2f4f5795b88d98ec337d52e3b5289d95df320d8`, resource singleton exits0 with1 PASS:
+case31.9230960s, category36.881463s/60, wall45.5721991s. Strict raw/TRX/hash/case/
+unique-ID/pin checks and independent OUTCOME accept the result. The actual same
+explicit-empty-envelope/two-energy-spend case now proves sealed Skip and exact
+Skip-versus-Apply NPC topology before completing real publication and every
+current-reader negative. This is the causal correction of C21's production failure.
+Successful fixture/runner disposal and empty native-owner namespace are the cleanup
+scope; no individual root IDs/passive capture were emitted and none is invented.
+
+Fresh closing fence preserves27 artifacts,40 resource copies and4 daemons; no live
+managed owners, about1.23GB free. Full raw stays external in M2GREENC22-resource1;
+older failures/roots remain untouched. Six earlier C21 controls stay accepted by
+reviewed lineage; no fresh7 aggregate or broad feature closure is claimed.
+
+Rereading61 raw TRX yields235 distinct accepted PASS /102 methods /61 descriptors /
+58 categories across24 epochs /35 runs. External accepted proof SHA256
+`f8f599ab22a6b66d333c5f2c1f3e31ba6f3b15b3567ffe3ba9795245f0905b24`.
+Only original browser and rollback remain. Exact UI PlanOnly confirms2 cases /
+2 methods /2 descriptors, each unchanged180s, zero execution. Independent PREP,
+verified remote checkpoint and immediate per-singleton source/resource/process/disk
+fence precede each launch; strict outcome/full capture/cleanup before the next.
+No UI2 runtime has started at this checkpoint.
+
+This one accessor adds no read/parse/cache/permission and preserves all canonical
+publication guards; no performance, GM wire or gameplay-rule claim. Existing
+DFR/Mortal compatibility/Windows and broader task HOLDs remain. After current
+route acceptance, physical procedure/course/guaranteed guided execution (including
+reuse of current Mortal target/provider discovery) is the next functional slice;
+its backend exists and its UI/held-request/Engine wiring is not yet complete.
+
 # T121 C22 fresh owning builds/provenance verified — resource1/UI2 UNRUN
 
 Independent C22 SOURCE accepts `f2f4f5795b88d98ec337d52e3b5289d95df320d8`.
