@@ -607,7 +607,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             ("BookOfEternityClient/Services/Validation/ValidationService.ShiningAbode.cs", "ABA65E181F4A6F04BC92ABC14209D97989F107C732E070244350A6E4F3561E14"),
             ("BookOfEternityClient/Services/Validation/ValidationService.SpiritualWoundSourceAdmission.cs", "2DC59A55A6B9892D5EE817919247B0CDE403309283D70E709D81A2910381ED4E"),
             ("BookOfEternityClient/Services/Validation/ValidationService.ValidationPhases.cs", "F3E3739A31E01CB2872C480B6C9F0160C5D1E32C3A5B270FC3199D7A8EC218A6"),
-            ("BookOfEternityClient/Services/Validation/ValidationService.WorldReadPhase.cs", "C814B47CD4F75500DF650DC485DDAB8E269DC34D69A7F0D9E4DE72EC3E077AE2"),
+            ("BookOfEternityClient/Services/Validation/ValidationService.WorldReadPhase.cs", "05586D48FAF5CF14B7FB07810E681C1B81BF4AA7675E9FDF13ACC01BE2B97D49"),
             ("BookOfEternityClient/Services/ValidationService.cs", "1DBC3F35E142D4F376B1EA4FCDF220D348B80BEE323FAE90E577D4CA5C2E9662"),
             ("BookOfEternityClient/Services/Validation/ValidationService.MetaControlShapeReadPhase.cs", "A0B1AF0D4B06A0D4C74BF31A1CFCA22FE9D902F3D7586B4D9A51888664AB7F93"),
         ];
@@ -617,6 +617,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         var source = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot,
             "BookOfEternityClient/Services/Validation/ValidationService.WorldReadPhase.cs"));
         foreach (var path in WorldCurrentPaths) Assert.Contains('"' + path + '"', source);
+        // This completed-comparison leaf is separate from legacy absent-layout fixture inputs.
+        Assert.Contains("NpcCoreChangesContract.NpcCorePath", source);
         Assert.Contains("RequireFullEndProof", source);
         Assert.Contains("RequireUnchangedReadsAsync", source);
         Assert.Contains("_knownCanonicalFactionIdsCache = previousIds", source);

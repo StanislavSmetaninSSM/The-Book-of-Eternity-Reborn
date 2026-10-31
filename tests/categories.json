@@ -2805,7 +2805,7 @@
     },
     {
       "id": "wound-read-semantic-source-guards",
-      "responsibility": "T121-DIAGNOSIS-READ-GUARDS exact existing ownership inventory consistency, outside-scope legacy token discovery and status/wounds normal-refresh exclusion. Five method-bounded typed client GM request/error label allowances, no broad file exemptions.",
+      "responsibility": "C19 fresh semantic source-input regression because WorldRead production source changes for one registered NPC comparison leaf. Existing three typed source guards/60s owner and all semantics stay; no broad runtime replay or hash bypass. Candidate UNCOMPILED/UNRUN.",
       "excludes": "No production behavior, loose wound compatibility, graph/authority weakening, broad source-test suite or replay of unaffected read DATA.",
       "changeHints": ["BookOfEternityClient.Tests/WoundMaterializationSourceGuardTests.cs", "BookOfEternityClient.Tests/WoundPlayerStatusSourceGuardTests.cs"],
       "related": [{ "id": "wound-status-read-interfaces", "when": "Actual status privacy/no-repair behavior qualifies the source boundary after guard repair." }],
@@ -4064,7 +4064,7 @@
 },
 {
   "id": "spiritual-world-source-closure",
-  "responsibility": "The existing standalone60s World closure Fact. All69 members remain; the grouped C14 follow-up changes only the explicitly reviewed Core ValidationMutationReservation pin for a narrow actual lease-close attachment using the existing mutation guard. Prior approved pin provenance and every existing final-proof/cleanup assertion remain. No broad World runtime or mechanical refresh.",
+  "responsibility": "C19 fresh explicit closure review for the completed-item current NPC-core dependency. Keep the closed RequirePath guard and legacy absent-layout inputs unchanged; review exactly one new constant, its separate source assertion and the corresponding WorldRead file pin. All 69 pins remain checked. Existing single60s owner; candidate UNCOMPILED/UNRUN.",
   "excludes": "No World runtime suite, cache/performance qualification, mechanical rebaseline, DFR/Mortal/Windows or repeat of accepted combat cases.",
   "changeHints": [
     "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.WorldReadPhase.cs"

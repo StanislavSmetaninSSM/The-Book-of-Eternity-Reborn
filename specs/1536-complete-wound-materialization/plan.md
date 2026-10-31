@@ -1,3 +1,40 @@
+# T121 C19 closed current-NPC dependency — production RED preserved; candidate UNCOMPILED
+
+C18 exact at runtime `ccd523b1f366d5131f2ecbae0edcc31a900a5274`, Integration
+compiled0c8cf3fb/other owners78918350, completes 0 PASS /1 FAIL without timeout:
+33.9325776s/60, test27.9408367s. Actual comparison at CompletedTreatmentItemValidation.cs188
+requests NpcCoreChangesContract.NpcCorePath; WorldReadCurrentPaths omits it and
+RequirePath correctly refuses. This is a production dependency registration defect,
+not a fixture budget failure. The same browser consumer runs under full All.
+
+Strict raw plan/TRX/hash/identity/pin readback is complete. Full passive capture has
+34 original paired/sequenced events, complete writer/footer/gzip CRC/decode and
+actual owned-root absence; stored SHA256
+`e1e4fe411a6be62118cf6675c843985c3ae7a1526659ca44ace473ff6dccf4ef`, decoded
+`952998106cd42ec7bf10b2132f571a67b871df489ae4364a9428380c5ac15504`.
+Complete raw/failed-outcome/capture proof stays outside checkout in
+M2GREENC18-browser-exact1. Other browser3/Engine1/UI3 were not launched. C16/C17
+incomplete roots/raw/copies remain untouched; no failed result is promoted.
+
+Independent Astra DESIGN and Sol consumer audit accept the one-leaf correction:
+register only NpcCoreChangesContract.NpcCorePath in the existing closed set. It is
+permission-only, not prefetch. RequirePath and all ownership/frame/readset/end/
+closing/issue-removal checks stay unchanged. The source closure Fact separately
+checks the constant and updates exactly the reviewed WorldRead file pin; legacy
+absent-fixture WorldCurrentPaths stays unchanged. No parallel cache or authority,
+new dependency kind, skipped source check or budget change. Existing comparison
+DATA is reused and its single current NPC image remains freshly verified/tracked;
+this is correctness, with no speedup claim. Client-owned registration adds no GM
+field or rule, so synchronized GM surfaces need no update.
+
+Candidate is UNCOMPILED/UNRUN pending coherent SOURCE. Main changes require four
+fresh managed owning builds/provenance; native sources/package are unchanged.
+Fresh closure1+semantic3 and browser4 precede Engine-original1 and full All UI3,
+all original bounds. Four affected guard rows leave the old226 frontier until
+rerun, so retained222 is historical rather than fresh acceptance. Current full
+selection remains234/102/61/58 pending official discovery. Physical treatment,
+eight adapters, parents and old DFR/Mortal-compat/Windows HOLDs remain open.
+
 # T121 C18 fresh component preparation — runtime UNRUN
 
 Astra SOURCE accepts `0c8cf3fb87c5a3a3c66dc10dd23bccd8810b74b2`.

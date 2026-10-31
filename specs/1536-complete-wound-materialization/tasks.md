@@ -62,6 +62,11 @@ archive are outside checkout; original failures and all other holds are retained
   NPC+World phases with all files and unchanged original/readset/end/issue-vector
   assertions; full All postvalidation through original UI3 remains mandatory.
   The four60s bounds are unchanged; candidate UNCOMPILED/UNRUN.
+  C18 now fails at the real World closure: the completed comparison requests current
+  NPC-core bytes but its path is unregistered. C19 registers only that existing
+  constant and its independently reviewed closure assertion/pin, preserving every
+  physical/frame/readset/end guard. Fresh sourceguard4 then browser4, Engine1 and
+  full All UI3 remain required. New production candidate UNCOMPILED/UNRUN.
   C16 exact timed out UNKNOWN; C17 leaves production untouched, installs no read
   callback for normal exact/foreign cases, retains it for actual drift faults and
   reuses the accepted full passive macro capture/closing transport. Four60s bounds

@@ -253,6 +253,8 @@ public partial class ValidationService
     // Specific source-audited World leaves. New current dependencies must extend
     // this set and its closure test; signed paths come only from the bound image.
     private static readonly HashSet<string> WorldReadCurrentPaths = new(StringComparer.Ordinal) {
+        // Completed-item comparison joins the earlier NPC parse to one current physical image.
+        NpcCoreChangesContract.NpcCorePath,
         "game_state/world/current_location.json", "game_state/world/world_map.json", "game_state/world/world_events.json",
         "game_state/world/rival_soul_arcs.json", "game_state/world/world_flags.json", "game_state/world/world_time.json",
         "game_state/world/weather.json", "game_state/world/progression.json", "game_state/control/progression_report.json",

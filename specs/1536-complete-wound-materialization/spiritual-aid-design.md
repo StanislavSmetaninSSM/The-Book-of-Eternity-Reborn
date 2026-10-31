@@ -2085,3 +2085,21 @@ full-post controls remain separately accepted. Macro names explicitly identify t
 NPC/World scope, so their future duration is not an equal-work speedup comparison
 to C17 All. No new cache/diagnostic stack, limit increase, root deletion or blanket
 acceptance. C18 source is UNCOMPILED/UNRUN pending coherent SOURCE/build/PREP.
+
+
+C19 current NPC leaf registration: C18 exact reaches actual completed-item
+comparison and fails because phase.ReadBytesAsync(NpcCoreChangesContract.NpcCorePath)
+is outside WorldReadCurrentPaths. The same production call is reached under All.
+Register only that existing constant in the closed set; do not relax RequirePath,
+owner/frame/current-byte proof, dynamic Remember, final unchanged reads, physical
+end/close or deferred issue removal. The set is checked only for permission, never
+prefetched; unrelated World consumers gain no read or cache behavior. The closure
+Fact separately asserts this constant and updates only the independently reviewed
+WorldRead file pin. Legacy WorldCurrentPaths also supplies absent-layout fixture
+inputs and stays unchanged. No new current path, service/cache, authority, rule or
+GM wire is invented. Existing private comparison DATA and one fresh physical NPC
+read retain the original dependencies/lifetime; no speedup claim. Sourceguard4 and
+browser4 are fresh on four new managed owning builds before Engine1/full-All UI3.
+The old226 frontier loses four affected guards until rerun: retained222 remains
+historical, and all failed/incomplete raw/roots stay preserved. Candidate is
+UNCOMPILED/UNRUN pending coherent SOURCE/provenance/PREP.
