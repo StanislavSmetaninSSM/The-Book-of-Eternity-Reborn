@@ -1,3 +1,31 @@
+# T121 C15 post8 accepted GREEN — browser/original/UI still pending
+
+Runtime `b4a7630842470cf49e1cc7bd2250112c02fabeeb`, compiled owners all
+`78918350e78be28908aef3c3c1afd180d14b6d12`, exits0 with exactly8 PASS /
+7 methods /5 descriptors, wall2:03.9826850. All60s category bounds hold:
+lifetime2 43.5218831s, diagnosis postvalidator1 28.9619534s, ordinary postvalidator1
+25.9309525s, World closure1 4.6210697s and semantic guards3 6.2263428s.
+Primary strict TRX/hash/membership/unique-ID/pin readback and independent OUTCOME
+accept this block. The actual completed DATA accepts precisely the legitimate
+item debit while no-proof and tampered/foreign/invalidation controls retain
+ordinary refusal; real failed close settles once, exports nothing and cannot
+spend again on replay. Source guards all pass.
+
+The corrected lifetime theory replaces the old standalone False-row result in
+current accounting; earlier failed controls remain preserved, not overwritten.
+Runner cleanup succeeds and the typed diagnosis namespace is empty after actual
+fixture disposal. That is the recorded cleanup scope: individual root IDs,
+ordinary per-root receipts or passive captures were not emitted by these typed
+controls and are not invented. Full raw remains external in M2GREENC15-post8;
+all27 artifacts,40 resource copies and4 daemons stay stable after the run.
+
+Independent PREP admits only browser3 next, each separate60s with immediate fresh
+fence and checked result/cleanup before the next. These genuine Engine-stage
+controls stop before GM waiting and do not establish full UI diagnosis success.
+Fresh Engine-original1 and original console/shared-browser/rollback UI3 remain
+held. No full fresh12/233 or feature/parent completion is claimed; all prior
+raw/roots, physical treatment/adapters and broader HOLDs remain unchanged.
+
 # T121 C15 grouped correction freshly built — runtime UNRUN
 
 Independent SOURCE accepts `78918350e78be28908aef3c3c1afd180d14b6d12`.
