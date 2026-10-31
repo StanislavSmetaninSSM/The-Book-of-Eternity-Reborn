@@ -1597,8 +1597,18 @@ public partial class ExplorerMode
         return root;
     }
 
-    private static void AppendWorldTimeLines(List<string> lines, JsonElement root, string indent)
+    /// <summary>Appends the current world-time presentation from parsed DATA, with authoritative numeric precedence.</summary>
+    /// <param name="lines">Destination console lines.</param>
+    /// <param name="root">Parsed supported world-time shape.</param>
+    /// <param name="indent">Existing display indentation.</param>
+    internal static void AppendWorldTimeLines(List<string> lines, JsonElement root, string indent)
     {
+        if (WorldTimeDisplay.TryReadMinutes(root, out var minutes))
+        {
+            lines.Add($"{indent}[bold white]🕐 Время:[/]");
+            lines.Add($"{indent}  {WorldTimeDisplay.Format(minutes)}");
+            return;
+        }
         if (TryFormatAbsoluteWorldTime(root, out var absolute))
         {
             lines.Add($"{indent}[bold white]🕐 Время:[/]");
@@ -1607,10 +1617,10 @@ public partial class ExplorerMode
         }
 
         if (root.TryGetProperty("setWorldTime", out var setWorldTime) &&
-            TryFormatAbsoluteWorldTime(setWorldTime, out absolute))
+            (WorldTimeDisplay.TryReadMinutes(setWorldTime, out minutes) || TryFormatAbsoluteWorldTime(setWorldTime, out absolute)))
         {
             lines.Add($"{indent}[bold white]🕐 Время:[/]");
-            lines.Add($"{indent}  {Markup.Escape(absolute)}");
+            lines.Add($"{indent}  {Markup.Escape(WorldTimeDisplay.TryReadMinutes(setWorldTime, out minutes) ? WorldTimeDisplay.Format(minutes) : absolute)}");
             return;
         }
 

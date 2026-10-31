@@ -91,6 +91,13 @@
       "contracts": [
         "#1536 T121-DIAGNOSIS-MORTAL / FR071; actual command role, exact full manifest/control and every canonical rollback source"
       ]
+    },
+    {
+      "category": "mortal-diagnosis-clock-presentation",
+      "reason": "Required narrow presentation correction for authoritative cumulative T1. Ten independent DATA shapes and actual working-after-image assertions retain all three consumer fallbacks with no calendar inference, new I/O or permission. Source-authored before behavior, UNCOMPILED/UNRUN; no runtime admission.",
+      "contracts": [
+        "#1536 T121-DIAGNOSIS-MORTAL; truthful numeric time presentation with exact preserved clock DATA"
+      ]
     }
   ]
 }

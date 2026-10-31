@@ -3,6 +3,7 @@ using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Models;
 using BookOfEternityClient.Services;
+using BookOfEternityClient.UI;
 using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
 
@@ -151,6 +152,15 @@ public sealed partial class MortalWoundTreatmentResolverTests
         Assert.Equal(owner.CurrentGameMinute, working.OriginalMinute);
         Assert.Equal(checked(owner.CurrentGameMinute + duration), working.ResultingMinute);
         Assert.Equal(working.ResultingMinute, working.ClockAfter["currentTimeInMinutes"]!.GetValue<long>());
+        Assert.Equal("08:00", working.ClockAfter["timeOfDay"]!.GetValue<string>()); // Preserved DATA, not a recalculated calendar.
+        var displayedClock = working.ClockAfter;
+        var clockElement = JsonSerializer.SerializeToElement(displayedClock);
+        var expectedClock = "Игровое время: " + working.ResultingMinute + " мин.";
+        Assert.Equal(expectedClock, StateManager.FormatWorldTime(clockElement));
+        var consoleClock = new List<string>(); ExplorerMode.AppendWorldTimeLines(consoleClock, clockElement, "");
+        Assert.Contains(consoleClock, line => line.Contains(expectedClock, StringComparison.Ordinal));
+        var browserClock = Assert.Single(ExplorerMortalWorldCommandResultBuilder.BuildWorldTimeItems(displayedClock));
+        Assert.Equal("Игровое время", browserClock.Key); Assert.Equal(working.ResultingMinute + " мин.", browserClock.Value);
         var member = Assert.Single(working.Members);
         Assert.Equal(WoundMaterializationContract.SerializeCanonical(owner.CurrentWound), WoundMaterializationContract.SerializeCanonical(member.Original));
         Assert.Equal(WoundMaterializationContract.SerializeCanonical(outcome.KnowledgeAfter), WoundMaterializationContract.SerializeCanonical(member.Working));
@@ -565,6 +575,9 @@ public sealed partial class MortalWoundTreatmentResolverTests
             try
             {
                 _ = AcceptedStateFixture.SeedCanonicalComponentData(files, scenario, "player", "player_current", WoundCarrierCatalog.PlayerPath);
+                var clock = JsonNode.Parse(await files.ReadFileAsync(EffectAcceptedTurnInputComposer.WorldTimePath))!.AsObject();
+                clock["timeOfDay"] = "08:00";
+                await files.WriteFileAtomicAsync(EffectAcceptedTurnInputComposer.WorldTimePath, clock.ToJsonString());
                 var stagedContext = ParseContext();
                 var control = signedInput ? await new ProgressionScheduleService(files, NullLogger<ProgressionScheduleService>.Instance)
                     .BuildControlForNextTurnAsync("Mortal World") : new ProgressionControl { CurrentRealm = "Mortal World" };

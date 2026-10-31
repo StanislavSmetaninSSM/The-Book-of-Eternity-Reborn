@@ -3028,14 +3028,24 @@ public static class ExplorerMortalWorldCommandResultBuilder
         if (node is not JsonObject root)
             return null;
 
+        if (WorldTimeDisplay.TryReadMinutes(JsonSerializer.SerializeToElement(root), out _)) return root;
         return root["setWorldTime"] as JsonObject ?? root;
     }
 
-    private static List<UiKeyValueItem> BuildWorldTimeItems(JsonObject? source)
+    /// <summary>Builds current time facts without treating a cumulative counter as time of day.</summary>
+    /// <param name="source">Already parsed canonical or wrapped world-time DATA.</param>
+    /// <returns>Detached readable facts with numeric-root precedence.</returns>
+    internal static List<UiKeyValueItem> BuildWorldTimeItems(JsonObject? source)
     {
+        source = UnwrapWorldTimeNode(source);
         var items = new List<UiKeyValueItem>();
         if (source == null)
             return items;
+        if (WorldTimeDisplay.TryReadMinutes(JsonSerializer.SerializeToElement(source), out var minutes))
+        {
+            AddLocationFact(items, "Игровое время", WorldTimeDisplay.FormatMinutes(minutes));
+            return items;
+        }
 
         var year = GetLocationNodeString(source, "year");
         var month = GetLocationNodeString(source, "monthName", "month");
@@ -3049,7 +3059,6 @@ public static class ExplorerMortalWorldCommandResultBuilder
 
         AddLocationFact(items, "Сейчас", absolute);
         AddLocationFact(items, "Прошло за ход", FormatMinutes(GetLocationNodeString(source, "timeChange")));
-        AddLocationFact(items, "Минут от начала суток", GetLocationNodeString(source, "currentTimeInMinutes"));
         return items;
     }
 

@@ -658,14 +658,18 @@ public partial class StateManager
         return Array.Empty<string>();
     }
 
-    private static string FormatWorldTime(JsonElement root)
+    /// <summary>Formats current world-time DATA without inferring a calendar epoch from its cumulative counter.</summary>
+    /// <param name="root">Already parsed canonical or supported command-shaped time DATA.</param>
+    /// <returns>Current readable time, elapsed-time fallback, or an empty string.</returns>
+    internal static string FormatWorldTime(JsonElement root)
     {
+        if (WorldTimeDisplay.TryReadMinutes(root, out var minutes)) return WorldTimeDisplay.Format(minutes);
         if (TryFormatAbsoluteWorldTime(root, out var absolute))
             return absolute;
 
         if (root.TryGetProperty("setWorldTime", out var setWorldTime) &&
-            TryFormatAbsoluteWorldTime(setWorldTime, out absolute))
-            return absolute;
+            (WorldTimeDisplay.TryReadMinutes(setWorldTime, out minutes) || TryFormatAbsoluteWorldTime(setWorldTime, out absolute)))
+            return WorldTimeDisplay.TryReadMinutes(setWorldTime, out minutes) ? WorldTimeDisplay.Format(minutes) : absolute;
 
         if (TryGetIntLike(root, "timeChange", out var deltaMinutes) && deltaMinutes != 0)
             return $"Прошло {deltaMinutes} мин. за ход";

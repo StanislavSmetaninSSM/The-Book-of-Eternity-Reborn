@@ -1,3 +1,22 @@
+# T121 Mortal numeric clock presentation WIP — UNCOMPILED / UNRUN
+
+The required narrow presentation correction now prefers valid cumulative
+currentTimeInMinutes in the existing status, console and browser renderers.
+The readable label is «Игровое время: … мин.». Preserved calendar fields remain
+exact canonical DATA but are not displayed as current time when a numeric value
+exists. Numeric-root precedence includes zero; counters beyond one day never
+imply midnight, an epoch or calendar rollover. Supported calendar-only, wrapped
+and incremental fallbacks remain. Afterlife time ownership is unchanged.
+
+Ten independent parsed-DATA rows cover the actual three consumer functions, and
+the existing 0/300-minute working-projection rows also render their actual mixed
+clock after-images. Tests were authored before behavior. Shared formatting reads
+already parsed DATA only; it adds no service, cache, file read, clock write or
+speedup claim. Current source estimate is 69 cases / sixteen methods / fourteen
+categories, UNCOMPILED/UNRUN; discovery remains authoritative. The complete Mortal
+route, outer retry, actual publication/native/UI and GM/current-input sync are
+still unfinished. No writer builds/tests/runtime, task closure or HOLD change.
+
 # T121 Mortal live intake and Engine handoff WIP — UNCOMPILED / UNRUN
 
 The final-original Engine hook now resolves and retains the procedure before GM.

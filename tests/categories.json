@@ -2,6 +2,37 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "mortal-diagnosis-clock-presentation",
+  "responsibility": "T121 ten independent parsed-DATA rows exercise the actual status, console and browser world-time formatters. Valid cumulative minutes take precedence over preserved calendar text and nested commands, including explicit zero and counters beyond one day; calendar-only, wrapped and incremental fallbacks stay readable. Existing working-projection rows also render the real diagnosis after-image. UNCOMPILED/UNRUN WIP.",
+  "excludes": "No calendar arithmetic, modulo rollover, clock mutation, new time authority/service/cache, file reads, Engine dice hook or accepted-turn publication. Actual diagnosis publication and rollback remain separately required.",
+  "changeHints": [
+    "BookOfEternityClient/Services/WorldTimeDisplay.cs",
+    "BookOfEternityClient/Core/StateManager.cs",
+    "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.PrivateImplementation.cs",
+    "BookOfEternityClient/UI/ExplorerMortalWorldCommandResultBuilder.cs"
+  ],
+  "related": [
+    {
+      "id": "mortal-diagnosis-working-time",
+      "when": "The actual diagnosis private after-image must remain exact while its preserved calendar fields cannot be displayed as the current numeric time."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.MortalDiagnosisClockPresentationTests.ActualClockConsumersPreferCumulativeMinutesWithoutInventingCalendar"
+      ]
+    }
+  ]
+},
+{
   "id": "mortal-diagnosis-input-role",
   "responsibility": "T121 six file-light actual Engine backup/signed-snapshot rows feed the real Mortal diagnosis resolver: signed-input-only and baseline-present positives; missing/tampered signed input, changed current command and missing canonical History baseline refuse before claim retention. Full manifest/hash/control and original bytes are checked, and successful preparation changes only its legitimate held pending row. No ProcessPlayerTurn or GM wait. UNCOMPILED/UNRUN WIP.",
   "excludes": "No reflection, forged manifest/receipt, marker-only exemption, global coverage removal, canonical publication, C4, Engine UI wait or broad Mortal category. Dynamic common-plan role and completed-reader coverage remain part of the final route.",
