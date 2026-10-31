@@ -1,4 +1,4 @@
-# T121 C19 primary GREEN8 — independent OUTCOME pending; Engine/UI held
+# T121 C19 GREEN8 independently accepted — Engine/full-All UI still UNRUN
 
 At runtime `d68c24fdb441e0b01953f8d28f514a265deea91d`, all owners freshly compiled
 `21c3a0560e9d04a1409a736afd4908071f23b79a`, five bounded runs finish with exactly
@@ -22,12 +22,13 @@ The same positive test now accepts exactly the legitimate NPC debit, while
 no-World, genuine foreign frame, changed physical bytes and failed final proof
 retain refusal/withhold results. These are NPC-to-World component proofs, not
 full All UI or terminal-claim acceptance. No equal-work speedup or new aggregate
-qualification is claimed. Independent coherent OUTCOME is pending.
+qualification is claimed. Independent Astra OUTCOME accepts all8 and the stated
+cleanup/provenance limits after raw readback.
 
-Next requested gate is fresh Engine-original1 at60s, then original console,
-shared-browser and rollback UI3 at180s each only after its strict complete result/
-capture/cleanup and a fresh fence. Full All production validation remains mandatory;
-all four are still UNRUN/held here. No source changes/rebuild or replay of successful
+Conditional PREP admits fresh Engine-original1 at60s, then original console,
+shared-browser and rollback UI3 at180s each only after its strict complete PASS,
+capture/cleanup and a fresh fence. Stop on FAIL/UNKNOWN, with no source changes.
+Full All production validation remains mandatory; all four are still UNRUN here. No source changes/rebuild or replay of successful
 unchanged cases is proposed. Physical treatment, eight adapters, wider parents
 and old DFR/Mortal-compat/Windows HOLDs remain open.
 
