@@ -1,3 +1,34 @@
+# T121 C16 exact TIMEOUT — preserved prefix, no further runtime admission
+
+The first exact component at runtime `016f0e203a091726587204bdedab69cdf3bb2683`
+uses Integration compiledc97b50f0 and the three unchanged C15 owners. It reaches
+TIMEOUT60.2499089s within its protective60s lane, wall1:07.9113112; no TRX,
+0 completed cases and incomplete selection. This is UNKNOWN, not PASS or a
+completed FAIL case. Foreign, parse-drift, final-proof, Engine-original1 and UI3
+were not launched. Existing retained226 and its explicit epochs stay unchanged.
+
+Primary verifies unchanged binary/resource pins and runner-owned cleanup/no live
+managed owners. Fixture cleanup is unconfirmed: retained root
+`/tmp/boe-completed-item-browser-ed9a1fc30b064024801884181011660a` has205 files /
+1,066,684 bytes. The complete external copy and original inventory hashes agree;
+original and copy remain untouched. Full incomplete outcome/raw/root copy are in
+M2GREENC16-browser-exact1 outside checkout. NPC item count1, clock1290 and consumed
+command establish common publication progress; they do not prove CompleteAsync
+returned or identify which later validator interval exhausted the bound.
+
+Independent Astra confirms an unnecessary fixture restriction: exact/foreign
+install BeforeCanonicalReadOpenAsync even though they never mutate. Existing
+CanReuseSourceData/SupportsRecoveryDataReuse correctly reject any such hook.
+Next bounded correction omits this hook only for those normal controls; both drift
+controls retain it and their fresh uncached behavior. Production predicates and
+all guards remain unchanged. This finding does not establish the timeout's whole
+cause or any speedup. Reuse existing full passive gzip/OperationTimingAccumulator
+capture, with named publication/progression/completion/raw/no-World/scoped/closing
+intervals to resolve that specific unknown, full events/footer/failure/cleanup and
+no quota or new stack. Coherent SOURCE, fresh owning build and PREP precede any
+new runtime. No budget raise, blind retry, raw/root/save deletion, parent closure
+or revival of the parked performance/DFR/Mortal-compat/Windows routes.
+
 # T121 C16 fresh preparation verified — browser4 runtime UNRUN
 
 Independent Astra SOURCE accepts `c97b50f0db55c795038fdc67181aef943afb6dfc`.
