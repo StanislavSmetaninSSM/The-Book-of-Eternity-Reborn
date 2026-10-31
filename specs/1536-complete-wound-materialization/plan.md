@@ -1,3 +1,30 @@
+# T121 C9 native4 PASS — UI3 OUTCOME/PREP pending
+
+At runtime `8e3cfcd9fef95a44bf3db5346f2169aeb9fd68da`, native4 completed
+4/4 PASS across three methods/descriptors in1:56.1512436, no timeout, skipped
+case, duplicate or underfill. Ordinary publication took35.4668582s, the two
+original outer-retry rows40.1856997s, and published recovery32.5339422s, each
+within the unchanged120s budget. The original natural20/without-shield and
+natural1/with-shield failures are now full causal GREEN, retaining exact held
+and original byte maps, actual outer restore, resumed original attempt, competing
+claim refusal and retry/terminal suffixes. Published recovery and the directly
+affected ordinary nonterminal factory consumer also pass. Strict TRX/method/ID
+accounting, stable owning pins and full cleanup are verified, not inferred from
+the successful prefixes of the earlier failed run.
+
+Closing13:00:37Z confirms no live managed owners, all27 artifacts/40 resource
+copies/four daemons stable and2.382GB free. Source remains457ef806; only plan
+receipts differ. Full external proof is `M2GREENC9-native4`, preserving the
+earlier `M2GREENC8C4-dependent6` failures unchanged. Independent native4 OUTCOME
+is pending; request subsequent PREP for console/browser/rollback separately,
+one genuine controlled Engine case per existing180s category. Read-only complete
+fixture review found no additional preparation gap: initial resources, clock,
+scheduler, afterlife defaults, complete participant journal/response and separate
+diagnosis confirmation are prepared before the original; held/original maps stay
+distinct. Root must verify each complete full passive capture and cleanup.
+UI3 is still UNRUN/held until that acceptance. No whole Mortal/parent/#1536 or
+physical-treatment/eight-adapter/HOLD completion follows from native4 alone.
+
 # T121 C9 cheap5 PASS — native4 OUTCOME/PREP pending
 
 At runtime `00f9358a2daa570f532dd27177302e77c9c22513`, five cases/five methods
