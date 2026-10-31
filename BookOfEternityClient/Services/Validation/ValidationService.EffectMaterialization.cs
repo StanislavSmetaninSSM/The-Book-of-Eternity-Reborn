@@ -255,7 +255,7 @@ public partial class ValidationService
         }
 
         var manifest = validatedManifest ?? lookup!.Manifest!;
-        var requestJson = await _fs.ReadFileAsync("input/turn_request.json");
+        var requestJson = await _fs.ReadFileAsync(writeLease, "input/turn_request.json");
         if (!TryParseResourceTurnRequest(
                 requestJson,
                 manifest.SessionId,
@@ -996,6 +996,7 @@ public partial class ValidationService
     /// <param name="currentInputs">
     /// Retained named draft, or <see langword="null"/> for physical current reads.
     /// </param>
+    /// <param name="writeLease">Existing physical read lease; retained DATA takes precedence.</param>
     /// <returns>
     /// Parsed current source roots keyed by their exact relative paths.
     /// </returns>

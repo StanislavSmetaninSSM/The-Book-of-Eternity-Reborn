@@ -2,6 +2,73 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "mortal-diagnosis-explicit-lease",
+  "responsibility": "Three independent controls use leases acquired inside real async fixture factories. Diagnosis requires exact inert no-callback refusal, then real common preparation under the identical lease and retained dynamic-coverage validation without publication, preserving bytes and exact live requests/claims. Ordinary resource rows require healthy full raw-effect/before-image composition or the existing strict direct-definition mutation refusal. Existing actual native lock failure is causal evidence. UNCOMPILED/UNRUN.",
+  "excludes": "No ambient/lock/loader policy change, fake callback, publication, Engine/GM wait, lease retry, broad GameState/changed-owner refactor, accepted aggregate replay or HOLD run.",
+  "changeHints": [
+    "BookOfEternityClient/Services/Validation/ValidationService.ResourceMaterialization.cs",
+    "BookOfEternityClient/Services/Validation/ValidationService.EffectMaterialization.cs",
+    "BookOfEternityClient/Services/Validation/ValidationService.MortalDiagnosis.cs",
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.DiagnosisLease.cs"
+  ],
+  "related": [
+    {
+      "id": "mortal-diagnosis-common-publication",
+      "when": "Original held-versus-outer native proof must continue through the same explicit-lease API after cheap gates."
+    },
+    {
+      "id": "mortal-diagnosis-retained-data-regressions",
+      "when": "Threading physical ownership must preserve selected retained DATA first and the final actual-source freshness guards."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.DiagnosisRawResourceValidationUsesFactoryLeaseThroughRealCommonAndRetainedAdmission",
+        "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.OrdinaryResourceValidationUsesFactoryLeaseAndKeepsDirectMutationRefusal"
+      ]
+    }
+  ]
+},
+{
+  "id": "mortal-diagnosis-retained-data-regressions",
+  "responsibility": "Seven existing direct affected DATA/source-read cases: three resource/afterlife current-image rows and two effect carrier present/absent rows keep retained A through composition and reject physical B at final freshness; two faction companion rows prove actual companion-open counts rather than rereading B. Existing tests remain unchanged; no reflection helper is copied into new code. UNRUN for this correction.",
+  "excludes": "No broad spiritual-cutover-output aggregate, unrelated changed-owner validation behavior change, new permission/cache, provider/UI/Engine journey, DFR/Windows/Mortal compatibility or performance run.",
+  "changeHints": [
+    "BookOfEternityClient/Services/Validation/ValidationService.ResourceMaterialization.cs",
+    "BookOfEternityClient/Services/Validation/ValidationService.EffectMaterialization.cs"
+  ],
+  "related": [
+    {
+      "id": "mortal-diagnosis-explicit-lease",
+      "when": "Explicit physical ownership must not replace retained current-input DATA or weaken identity/inventory/physical freshness."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualResourceCurrentReadView_RejectsPhysicalChangeAtFinalGuard",
+        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualEffectCurrentReadView_RejectsPhysicalChangeAtFinalGuard",
+        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualSameTurnOwnerReadView_DoesNotReopenFactionCompanionB"
+      ]
+    }
+  ]
+},
+{
   "id": "mortal-diagnosis-pending-catalog",
   "responsibility": "T121 two independent real prepared-request scopes (normal and actual Fate Shield): complete serializer/strict request parser equality precedes the exact bare diagnosis-hold catalog. Input/root/row/snapshot joins happen before History coalescing. Matching-History bypass, ordinary/mixed purpose, malformed/nonempty waves, joint fields and coordinate/fingerprint negatives preserve canonical bytes and actual claims. Comparison History is detached DATA, not publication. UNCOMPILED/UNRUN; the actual common-plan native failure is causal evidence.",
   "excludes": "No GM wait/Engine turn, fake repair packet or receipt, new authority/cache, relaxed ordinary repair wave, claim reallocation, accepted aggregate replay or physical-treatment implementation.",

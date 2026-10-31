@@ -1,3 +1,46 @@
+# T121 explicit-lease correction — coherent SOURCE candidate, UNCOMPILED / UNRUN
+
+Connected WIP was published at `e2bec94eba1ccb411baf3090e7a0f35a28356621`.
+The final narrow source cut carries the already validated lease through resource
+lookup/current/original/continuity/owner/outcome/before-image reads, raw effect
+request/command/index/carrier/source/time reads and diagnosis retained-plan lookup.
+The original loaders and sync authority checks are unchanged. Retained currentInputs
+is always selected before physical reads, including owner-root helpers; identity,
+inventory, signed hashes, physical freshness, mutation refusal and plan/claim guards
+remain mandatory. Wider changed-owner ValidateGameState behavior is outside this
+correction and is not reclassified as safe by the new explicit lease.
+
+Three source-authored controls use actual async-factory leases. The diagnosis Fact
+requires the sole inert no-callback issue, then a real callback's common preparation
+under the identical lease, and retained dynamic coverage with no callback. It keeps
+whole canonical/held bytes, exact request graph/span and live confirmed claim checks.
+Ordinary healthy/drift rows exercise full raw-effect/common before-images or the
+existing strict direct-definition mutation refusal. Seven existing DATA/source-read
+rows preserve resource/afterlife A, effect A/presence and faction-companion read
+counts while physical B still fails the final freshness guard. No private reflection
+access is added; those historical consumers are selected unchanged.
+
+Proposed cheap gate: new3 + retained-DATA7 + semantic sourceguards3 = 13 cases /
+8 methods / 3 descriptors in three 60s categories. Full static selection estimate:
+204 cases / 81 methods / 39 descriptors / 37 categories, pending official discovery.
+No accepted focused18/focused14/retained aggregate is replayed. The prior actual
+native 1 FAIL / 24 UNRUN remains causal RED; native25 and UI3 remain unqualified.
+After cheap controls, proposed root-owned execution order is independent19
+(purpose1, terminal2, pre-handoff1, working2, durable1, effect3, input-role6,
+guided3), then dependent6 (common1, Fate-publication1, published-recovery1,
+outer2, ordinary-procedure1), then separate UI3. This changes order only: the same
+25 native cases and original budgets remain; no native PASS exists to replay.
+All changed C# and new controls are UNCOMPILED/UNRUN until the same complete narrow
+SOURCE and root-owned fresh builds/catalog/PlanOnly/PREP. No runtime was launched.
+
+Optimization: reuse remains the same whole-operation retained DATA and existing
+validated source ownership, with fresh physical reads under the supplied lease.
+No new read, parse, cache or permission layer is added, and no speedup is claimed;
+actual retained-source counters are selected. GM impact is internal lease plumbing,
+not a new rule, request/output field, pending shape or authoring responsibility.
+Existing diagnosis guides/examples remain correct; no GM documentation change is
+required. Parent/physical-treatment/eight-adapter residuals and HOLDs remain open.
+
 # T121 explicit-lease raw validation correction — WIP, UNCOMPILED / UNRUN
 
 The actual `M2GREENC4-native` at `51ea75980365a01871d8b310df65a59f577fe6d0`

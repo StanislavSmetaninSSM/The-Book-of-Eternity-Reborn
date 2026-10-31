@@ -90,6 +90,15 @@ archive are outside checkout; original failures and all other holds are retained
   are authored, UNCOMPILED/UNRUN. The actual native 1 FAIL / 24 UNRUN is causal
   evidence; no feature or parent closure follows from this correction.
 
+- [ ] T121-DIAGNOSIS-MORTAL-EXPLICIT-LEASE Close the actual raw resource lock
+  failure by threading its already validated lease through resource, effect and
+  retained diagnosis reads. Keep retained DATA first, all original/current/claim
+  guards and wider changed-owner behavior unchanged. Root/Astra accepted this
+  bounded correction. Three async-factory lease controls plus seven directly
+  affected retained-DATA/read-count cases and three semantic guards are selected,
+  UNCOMPILED/UNRUN. The actual native failure is causal evidence; no helper-only
+  feature closure, ambient lock workaround or new GM contract is introduced.
+
 - [x] T121-DIAGNOSIS-READ Show readable declared conditions of currently known
   diagnostic paths in the existing wound/status cards for console/browser. Reuse
   the existing typed requirement projection and one operation-owned physical

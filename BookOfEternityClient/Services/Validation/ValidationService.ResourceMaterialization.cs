@@ -1178,6 +1178,7 @@ public partial class ValidationService
     /// <param name="currentInputs">
     /// Retained original view, or <see langword="null"/> for ordinary physical reads.
     /// </param>
+    /// <param name="writeLease">Existing physical read lease; retained DATA takes precedence.</param>
     /// <returns>
     /// Current text, or <see langword="null"/> when the selected image is absent.
     /// </returns>
@@ -1195,6 +1196,7 @@ public partial class ValidationService
     /// <param name="currentInputs">
     /// Retained original view, or <see langword="null"/> for ordinary physical reads.
     /// </param>
+    /// <param name="writeLease">Existing physical read lease; retained DATA takes precedence.</param>
     /// <returns>
     /// Current bytes, or <see langword="null"/> when the selected image is absent.
     /// </returns>
@@ -1379,6 +1381,8 @@ public partial class ValidationService
     /// <param name="currentInputs">
     /// Retained named current owner images, or <see langword="null"/> for physical reads.
     /// </param>
+    /// <param name="naturalOwner">Actual ordinary recovery owner, or null for other families.</param>
+    /// <param name="writeLease">Existing physical read lease; retained DATA takes precedence.</param>
     /// <returns>
     /// Accepted resource owner roots without publication.
     /// </returns>
@@ -1731,6 +1735,7 @@ public partial class ValidationService
     /// <param name="currentInputs">
     /// Named draft view for draft paths, or <see langword="null"/> for physical reads.
     /// </param>
+    /// <param name="writeLease">Existing physical read lease; retained DATA takes precedence.</param>
     /// <returns>
     /// Exact presence and bytes for each distinct requested path.
     /// </returns>
@@ -1786,6 +1791,7 @@ public partial class ValidationService
     /// <param name="currentInputs">
     /// Retained named system-outcome inputs, or <see langword="null"/> for physical reads.
     /// </param>
+    /// <param name="writeLease">Existing physical read lease; retained DATA takes precedence.</param>
     /// <returns>
     /// Prepared outcomes; callers must reject any accompanying validation errors before execution.
     /// </returns>

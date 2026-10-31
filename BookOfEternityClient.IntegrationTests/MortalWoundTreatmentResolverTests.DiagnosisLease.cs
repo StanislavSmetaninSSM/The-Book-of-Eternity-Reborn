@@ -23,6 +23,14 @@ public sealed partial class MortalWoundTreatmentResolverTests
         var check = Assert.IsType<MortalWoundProcedureCheckAuthority>(request.ModeAuthority);
         var exactRequest = Assert.IsType<System.Text.Json.Nodes.JsonObject>(
             WoundResponseInputComposer.SerializeMortalWoundTreatmentValue(request));
+        var outcome = MortalWoundDiagnosisOutcome.Resolve(admission.Owner,
+            new(admission.Owner.History, Array.Empty<ValidationIssue>()), request);
+        var expectedFinalization = MortalWoundTreatmentResourceComposer.Finalize(outcome.Resolution);
+        Assert.True(expectedFinalization.IsValid, JsonSerializer.Serialize(expectedFinalization.Issues));
+        var expected = Assert.IsType<MortalWoundTreatmentResourceFinalization>(expectedFinalization.Finalization);
+        var originalHold = AcceptedTurnAuthorityRegistry.InspectConfirmedMortalWoundTreatmentResourceClaim(files, lease, request, expected);
+        Assert.True(originalHold.IsValid, JsonSerializer.Serialize(originalHold.Issues));
+        Assert.Equal(MortalWoundTreatmentResourceReservationState.ConfirmedHeld, originalHold.State);
         var before = fixture.CaptureJson();
         var validator = new ValidationService(files, NullLogger<ValidationService>.Instance);
         Assert.Empty(await validator.ValidateAcceptedTurnRawMortalLocationMaterializationAsync(lease));
@@ -32,6 +40,10 @@ public sealed partial class MortalWoundTreatmentResolverTests
         Assert.Equal("mortal_diagnosis_live_owner_unavailable", Assert.Single(refused).Code);
         Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(files, lease));
         Assert.True(admission.Owner.HasLiveProcedureReservationAgreement(check));
+        var refusedHold = AcceptedTurnAuthorityRegistry.InspectConfirmedMortalWoundTreatmentResourceClaim(files, lease, request, expected);
+        Assert.True(refusedHold.IsValid, JsonSerializer.Serialize(refusedHold.Issues));
+        Assert.Equal(originalHold.State, refusedHold.State);
+        Assert.Equal(request.RequestFingerprint, refusedHold.RequestFingerprint);
         fixture.AssertJson(before);
 
         var callbacks = 0;
@@ -65,6 +77,9 @@ public sealed partial class MortalWoundTreatmentResolverTests
         Assert.True(admission.Owner.HasLiveProcedureReservationAgreement(check));
         var finalization = MortalWoundTreatmentResourceComposer.Finalize(publication.ResolutionAuthority);
         Assert.True(finalization.IsValid, JsonSerializer.Serialize(finalization.Issues));
+        Assert.True(MortalWoundTreatmentCommandCodec.SemanticJsonEquals(
+            Assert.IsType<System.Text.Json.Nodes.JsonObject>(WoundResponseInputComposer.SerializeMortalWoundTreatmentValue(expected)),
+            Assert.IsType<System.Text.Json.Nodes.JsonObject>(WoundResponseInputComposer.SerializeMortalWoundTreatmentValue(finalization.Finalization))));
         var held = AcceptedTurnAuthorityRegistry.InspectConfirmedMortalWoundTreatmentResourceClaim(files, lease,
             request, Assert.IsType<MortalWoundTreatmentResourceFinalization>(finalization.Finalization));
         Assert.True(held.IsValid, JsonSerializer.Serialize(held.Issues));

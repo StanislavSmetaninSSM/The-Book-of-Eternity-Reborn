@@ -1719,3 +1719,21 @@ current lease/control, physical retention, exact claims, C4 rearm and outer roll
 remain under their existing owners. The actual native failure is causal evidence;
 new normal/Fate roundtrip, envelope and refusal controls remain UNCOMPILED/UNRUN.
 No new GM surface, repair shim, authority/cache or source read is introduced.
+
+### Explicit lease through raw resource/effect admission
+
+The active canonical lease is an explicit dependency of resource Core and raw
+effect validation. It must accompany their current/original reads and retained
+diagnosis dynamic coverage, including the existing loader's sync request/authority
+freshness chain. A lease created in an async factory need not remain ambient in
+its caller. Reuse selected retained currentInputs before any physical read;
+otherwise use the supplied lease, preserving the existing null-lease behavior for
+unrelated callers. Do not change global lock/ambient policy, original loaders,
+owner identity/inventory/hash checks, mutation refusal or claim/publication guards.
+
+Three real factory-lease controls cover inert missing-callback refusal, actual
+common preparation/retained diagnosis, and ordinary composition/drift. Existing
+retained resource/effect and companion read-count consumers remain selected.
+This is internal ownership plumbing: no new GM surface, owner/cache or game rule.
+The actual native failure is causal evidence; the correction remains UNCOMPILED/
+UNRUN until coherent independent SOURCE and parent-owned qualification.

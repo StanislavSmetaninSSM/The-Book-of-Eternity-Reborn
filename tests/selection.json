@@ -2,6 +2,20 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "mortal-diagnosis-explicit-lease",
+      "reason": "Three independent controls use leases acquired inside real async fixture factories. Diagnosis requires exact inert no-callback refusal, then real common preparation under the identical lease and retained dynamic-coverage validation without publication, preserving bytes and exact live requests/claims. Ordinary resource rows require healthy full raw-effect/before-image composition or the existing strict direct-definition mutation refusal. Existing actual native lock failure is causal evidence. UNCOMPILED/UNRUN. Root owns fresh affected builds, exact catalog/PlanOnly and independent PREP before execution.",
+      "contracts": [
+        "#1536 T121-DIAGNOSIS-MORTAL; explicit lease through raw resource/effect/retained diagnosis; DATA-first reuse with unchanged fresh authority and claims"
+      ]
+    },
+    {
+      "category": "mortal-diagnosis-retained-data-regressions",
+      "reason": "Seven existing direct affected DATA/source-read cases: three resource/afterlife current-image rows and two effect carrier present/absent rows keep retained A through composition and reject physical B at final freshness; two faction companion rows prove actual companion-open counts rather than rereading B. Existing tests remain unchanged; no reflection helper is copied into new code. UNRUN for this correction. Root owns fresh affected builds, exact catalog/PlanOnly and independent PREP before execution.",
+      "contracts": [
+        "#1536 T121-DIAGNOSIS-MORTAL; explicit lease through raw resource/effect/retained diagnosis; DATA-first reuse with unchanged fresh authority and claims"
+      ]
+    },
+    {
       "category": "mortal-diagnosis-pending-catalog",
       "reason": "Two real normal/Fate diagnosis request scopes first prove full serializer→strict parser equality, then the bare pending/input join before History coalescing and cloned refusal controls. Actual native common-plan failure remains causal RED. Candidate UNCOMPILED/UNRUN; root owns fresh builds/PlanOnly/PREP/runtime.",
       "contracts": [
