@@ -4,7 +4,7 @@
 
 - [x] T130.1 Принятие направления, read-only audit и canonical scope/plan/consistency; новые параметры не выданы за принятые.
 - [x] T130.2 Подготовлен конкретный проект: типы/сроки/оплаты/разрыв/повторы/передышка и примеры личных ходов; все новые параметры — кандидаты, без новых прогонов и production.
-- [ ] T130.3 Независимое review, исправления, scoped verification/publication/readback/restore и предъявление проекта автору.
+- [x] T130.3 GPT-6 Astra/high whole-block review pass без findings;8 локальных ссылок/diff/scope проверены, только5 Markdown-файлов. Проект предъявляется с кандидатами, без утверждения баланса. Финальные publication/readback/clean restore — checkpoint issue1573.
 
 ## T129 — включить контроль в проверку лечения, 2026-11-01
 

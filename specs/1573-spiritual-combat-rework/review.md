@@ -1,6 +1,6 @@
 # Проверка проекта #1573
 
-## T130 — проект контроля, исходный checkpoint
+## T130 — проект контроля, итоговый checkpoint
 
 Baseline/origin c8236e1049892ceb6adfc152b20da861397c9882 совпали. Автор одобрил
 переход к проектированию видов контроля/сроков/освобождения, не точные новые
@@ -20,6 +20,17 @@ probes и диагностика не изменены; нет основани�
 Optimization: doc-only; будущие immutable определения/формулы через existing
 operation, действующие запреты/платежи/фазы свежие. Independent Astra/high
 whole-block review ещё впереди; исходные параметры не считаются утверждёнными.
+
+WIP32e2df4bae801e11c9bcf4e12926b4db6fdd8356 опубликован, remoteSHA совпал.
+Independent GPT-6 Astra/high проверил весь5-file diff и связанные договоры
+T107/T113/T115/T127/T129: pass, actionable findings нет. Проверены partial/full,
+разрыв/повтор/передышка, HP0 и очередь, реакция/снятие, сохранение лечения и
+источников. Parent подтвердил8 локальных ссылок и doc-only diff/check; probes
+и production не изменены. Измерения/тесты не запускались и не объявляются
+пройденными этим блоком. Маршрутизация: parent проект, Sol6.1/high bounded audit,
+Astra/high independent interaction review; substantive rework не потребовался,
+данных для смены маршрута нет, экономия не заявляется. Финальная публикация,
+GitHub readback и восстановление в новом каталоге фиксируются в issue1573.
 
 ## T129 — контроль, итоговый checkpoint
 
