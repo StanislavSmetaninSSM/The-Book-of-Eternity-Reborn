@@ -30,6 +30,16 @@ Preparation504=46.070мс/12таблиц;20000lookup12.628мс/0новыхвыч
 Independent GPT-6 Astra/high source-review начат; итоговыевыводы после полной
 матрицы иreview. Ниprices, ниHeal, ниAI не подгонять к исходам.
 
+Frozen source15134101524210d122bf152a3fb47328c44bccaf опубликован; remoteSHA
+иGitHub blobreadback совпали. Independent GPT-6 Astra/high source-review:
+безfindings; затем validator/analyze/main ианалитикаотчёта также беззамечаний.
+Все554400траекторий завершены:main60.213с/confirm584.705с,6exit0/stderr0.
+В1008cells провереныполныеparams/seeds/coverage/разныеgroupendpoints,
+акторы/HP/расходы/controlPaid subset/сопротивление.190430horizonсохранены.
+Политики/цены/source не менялись послеfreeze. Отчёт сохраняет иулучшение
+в8fortified_both passivecases, иотрицательныеслучаи; не объявляетвсюсистему
+сломанной из-за трёхпрофилей/двухэвристик. Whole-block reviewотчётавпереди.
+
 ## T128 — численная проверка direct/HoT, 2026-11-01
 
 Автор поручил «проверяй»; точная T127 таблица, без срывов Heal. Spec Kit bridge,

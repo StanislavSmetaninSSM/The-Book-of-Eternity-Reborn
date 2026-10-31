@@ -25,7 +25,7 @@ baseline/origin a8bb390e46c412b08bb3d3877dcaf08e974224a8, unrelated1536/obj не
 - [x] T129.2b Stable quality/damage/healing reuse через существующую operation;
   полные key/D/B/guard/resistance/profile зависимости. Живые ограничения не
   кэшировать. Измерить подготовку/lookup; no newparallelcache/дорогихgamefixtures.
-- [ ] T129.3 Frozen source commit/push/readback; main504×100/confirm504×1000,
+- [x] T129.3 Frozen source commit/push/readback; main504×100/confirm504×1000,
   horizon2000,3shards при необходимости. Rawбезквот D:\BoeDiagnostics\healing-control-t129\20261101-v1.
   Сверить весьcoverage/seeds/endpoints/actorcounts/costs/controls/HP и сохранить
   плохие случаи. Не менять параметры после старта полной матрицы.
