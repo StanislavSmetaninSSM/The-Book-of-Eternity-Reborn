@@ -37,23 +37,37 @@ export function prepareReady(a,mode) {
   cancelChannel(a);a.used=true;a.ready=true;return true;
 }
 
-function healingInputs(a,t,B) {
+function healingInputs(a,t,B,{divisor=1,snapshot}={}) {
+  if(snapshot)return [...snapshot.inputs,t.incomingHealingPercent,strength(t),snapshot.divisor];
   return [B,a.p.D,Math.min(2000+50*a.p.D,Math.max(0,Math.round(a.power*100))),
-    Math.round(a.flatHealing*100),a.healingPercent,t.incomingHealingPercent,strength(t)];
+    Math.round(a.flatHealing*100),a.healingPercent,t.incomingHealingPercent,strength(t),divisor];
 }
-function evaluateHealing([B,D,A100,flat100,outgoing,incoming,suppression]) {
-  // Exact rational evaluation for probe profiles: stats/flat to 0.01, integer percentages.
+function outgoingNumerator([B,D,A100,flat100,outgoing]) {
   let n=BigInt(B)*BigInt(10000+3*A100)*BigInt(50+D)+BigInt(flat100)*5000n;
   if(n<0n)n=0n;
-  n*=BigInt(Math.max(0,100+outgoing))*BigInt(Math.max(0,100+incoming))*BigInt(100-suppression);
-  return round(n,500000000000n);
+  return n*BigInt(Math.round(Math.max(0,100+outgoing)*100));
 }
-export function healingValue(a,t,B) {return evaluateHealing(healingInputs(a,t,B));}
+function evaluateHealing(inputs) {
+  // Exact rational evaluation: stats/flat and percentages to 0.01, one final rounding.
+  const [,,,,,incoming,suppression,divisor]=inputs;
+  assert.ok(Number.isSafeInteger(divisor)&&divisor>0);
+  const n=outgoingNumerator(inputs)*BigInt(Math.round(Math.max(0,100+incoming)*100))*
+    BigInt(Math.round(Math.max(0,100-suppression)*100));
+  return round(n,500000000000000000n*BigInt(divisor));
+}
+/** Immutable outgoing formula inputs: no HP, incoming bonus or suppression is retained. */
+export function healingSnapshot(a,B,{divisor=1}={}) {
+  const inputs=Object.freeze(healingInputs(a,{incomingHealingPercent:0,marks:[]},B,{divisor}).slice(0,5));
+  assert.ok(Number.isSafeInteger(divisor)&&divisor>0);
+  return Object.freeze({inputs,divisor,numerator:outgoingNumerator(inputs),
+    denominator:BigInt(divisor)});
+}
+export function healingValue(a,t,B,options) {return evaluateHealing(healingInputs(a,t,B,options));}
 export function healingCalculator() {
   // Owned by one numerical operation. Full formula identity, no HP/authority cached.
   const values=new Map(),stats={computed:0,hits:0};
-  const calculate=(a,t,B)=>{
-    const input=healingInputs(a,t,B),key=input.join('|');
+  const calculate=(a,t,B,options)=>{
+    const input=healingInputs(a,t,B,options),key=input.join('|');
     if(values.has(key)){stats.hits++;return values.get(key);}
     const value=evaluateHealing(input);values.set(key,value);stats.computed++;return value;
   };

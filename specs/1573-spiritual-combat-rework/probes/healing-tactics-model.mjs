@@ -2,10 +2,11 @@
 import assert from 'node:assert/strict';
 import {rng,seedFor} from './healing-counters.mjs';
 import {price,checkedQuality} from './reaction-model.mjs';
-import {strength,remaining,mark,cleanse,recover} from './suppression-model.mjs';
-import {actor,begin,end,damage,applyHeal,replaceMain,healingCalculator} from './healing-modes-model.mjs';
+import {strength,remaining,mark,cleanse,recover,profileFor} from './suppression-model.mjs';
+import {actor,begin,end,damage,applyHeal,replaceMain,healingCalculator,closeEncounter} from './healing-modes-model.mjs';
 import {protectedDamageTable,chooseMode,strikeAttack} from './healing-modes-probe.mjs';
 import {jointPolicies,createJointBudgetCache,normalizeJointMarks,chooseJointMain,chooseJointReaction} from './healing-joint-budget-model.mjs';
+import {periodicProfiles,applyPeriodicHeal,tickPeriodic,applyPeriodicMark,choosePeriodicMain,choosePeriodicAttack} from './healing-periodic-model.mjs';
 
 export const attackProfiles=Object.freeze(Object.fromEntries(Object.entries({
   ordinary:[28,8],strong:[36,16],large:[44,24],suppress:[24,12]
@@ -32,10 +33,17 @@ export function chooseInterrupt(view,policy) {
 export function createOperation() {
   const tables=new Map(),calculate=healingCalculator(),stats={damageComputed:0,damageHits:0};
   const jointProfiles=new Map();let jointCache;
-  const operation={stats,calculate,table(D,B,resistance){
-    const key=`T123-damage-v1|${D}|${B}|${resistance}`;
+  const operation={stats,calculate,table(D,B,resistance,guardDelta=0){
+    const key=`T123-damage-v1|${D}|${B}|${resistance}|${guardDelta}`;
     if(tables.has(key)){stats.damageHits++;return tables.get(key);}
-    const entries=Object.freeze(protectedDamageTable(D,B,resistance).map(Object.freeze));
+    const base=guardDelta===0?protectedDamageTable(D,B,resistance):operation.table(D,B,resistance).entries;
+    const byQuality=guardDelta===0?null:Object.fromEntries(base.map(row=>[row.quality,row.damage]));
+    const will=profileFor(D).X;
+    const entries=Object.freeze(base.map((row,i)=>{
+      if(guardDelta===0)return Object.freeze(row);
+      const quality=checkedQuality(Math.floor(i/20)+1,i%20+1,will,guardDelta);
+      return Object.freeze({quality,damage:byQuality[quality]});
+    }));
     const data=Object.freeze({entries,max:Math.max(...entries.map(x=>x.damage))});
     tables.set(key,data);stats.damageComputed++;return data;
   },jointFor(self,target){
@@ -117,6 +125,16 @@ export function createEncounter(options={}) {
   const o={D:130,kind:'duel',mode:'instant',harmony:'normal',healingPercent:0,resistance:0,
     attackPolicy:'suppress_reserve',targetPolicy:'patient',helperAccess:true,defender:'passive',
     healerPolicy:'heal',reply:'guard',interrupt:true,mirror:false,horizon:2000,...options};
+  const periodic=o.healingRules==='periodic-v1';
+  assert.ok(o.healingRules===undefined||periodic,'Unknown healing rules');
+  if(periodic){
+    Object.assign(o,{periodicMode:'combined',periodicAttack:'suppress_always',level:5,effectResistance:0,
+      cleansePolicy:'never',activeGuard:false,...options,interrupt:false});
+    assert.ok(['direct','hot','combined'].includes(o.periodicMode)&&['ordinary','suppress_always','suppress_needed'].includes(o.periodicAttack));
+    assert.ok(Number.isInteger(o.level)&&o.level>=1&&o.level<=5&&Number.isFinite(o.effectResistance)&&o.effectResistance>=0&&o.effectResistance<=100);
+    assert.ok(['never','first'].includes(o.cleansePolicy)&&typeof o.activeGuard==='boolean');
+    assert.equal(o.jointPolicy,undefined);assert.equal(o.interruptPolicy,undefined);
+  }
   assert.ok(['duel','support','group'].includes(o.kind)&&['instant','long','adaptive'].includes(o.mode));
   assert.ok(['normal','healer28','both36'].includes(o.harmony)&&attackPolicies.includes(o.attackPolicy));
   assert.ok(['passive','offensive'].includes(o.defender)&&['heal','cleanse_safe'].includes(o.healerPolicy));
@@ -142,10 +160,17 @@ export function createEncounter(options={}) {
     a.attackable=!(o.kind==='support'&&role==='helper'&&!o.helperAccess);
     a.healingPercent=role==='healer'?o.healingPercent:0;a.resistance=role==='healer'?o.resistance:0;
     a.lastTarget=null;
-    a.tables=Object.fromEntries(Object.entries(attackProfiles).map(([kind,p])=>[kind,operation.table(o.D,p.B,a.resistance)]));
+    if(periodic){a.hots=[];a.effectResistance=role==='healer'?o.effectResistance:0;}
+    a.tables=periodic?Object.fromEntries([['ordinary',28],['suppress',periodicProfiles[o.level-1].attackB]].flatMap(([kind,B])=>
+      [0,-5].map(delta=>[`${kind}|${delta}`,operation.table(o.D,B,a.resistance,delta)]))):
+      Object.fromEntries(Object.entries(attackProfiles).map(([kind,p])=>[kind,operation.table(o.D,p.B,a.resistance)]));
     return a;
   });
   const counts=counters();counts.byActor=Object.fromEntries(actors.map(a=>[a.id,counters()]));
+  if(periodic)for(const row of [counts,...Object.values(counts.byActor)])for(const key of [
+    'direct','hotCasts','hotTicks','hotSuppressedTicks','potentialHealing','directRestored','hotRestored','markHits','saveAttempts',
+    'saves','marksApplied','partialMarks','fullMarks','guardPaid','recoverGained','regenGained'
+  ])row[key]=0;
   if(o.interruptPolicy!==undefined){
     const keys=['interruptDecisions',...['inactive','no_reaction','no_energy','policy_never','long_start','reserve','attempt']
       .map(reason=>`interruptDecision_${reason}`)];
@@ -165,7 +190,8 @@ export function createEncounter(options={}) {
 }
 
 function eligibleMain(a){return living(a)&&a.active&&!a.used&&!a.collapsedThisTurn;}
-function doRecover(e,a){if(replaceMain(a,()=>recover(a)))count(e,a,'recover');}
+function doRecover(e,a){const before=a.energy;if(replaceMain(a,()=>recover(a))){count(e,a,'recover');
+  if(e.options.healingRules==='periodic-v1')count(e,a,'recoverGained',a.energy-before);}}
 function doCleanse(e,a,t){
   const hadPending=Boolean(a.pending);
   if(!replaceMain(a,()=>cleanse(a,t)))return false;
@@ -174,6 +200,27 @@ function doCleanse(e,a,t){
 function doAttack(e,a,policy,dice){
   const target=chooseTarget(e.actors,a.id,e.options.targetPolicy);
   if(!target){doRecover(e,a);return;}
+  if(e.options.healingRules==='periodic-v1'){
+    const level=e.options.level,kind=a.role==='primary'?choosePeriodicAttack({target,policy:e.options.periodicAttack,level}):'ordinary';
+    const p=kind==='ordinary'?{B:28,K:8}:{B:periodicProfiles[level-1].attackB,K:periodicProfiles[level-1].attackK};
+    const cost=price(a,p.K);if(a.energy<cost){doRecover(e,a);return;}
+    assert.ok(eligibleMain(a));a.used=true;a.energy-=cost;a.pending=null;
+    let guard=0;
+    if(e.options.activeGuard&&living(target)&&target.inEncounter&&target.reaction>0&&target.energy>=price(target,4)){
+      guard=-5;target.energy-=price(target,4);target.reaction=0;count(e,target,'guard');count(e,target,'guardPaid',price(target,4));
+    }
+    const table=target.tables[`${kind}|${guard}`],outcome=table.entries[dice.damage()];
+    assert.ok(outcome,'Damage dice index must be 0..399');const before=target.hp;
+    damage(target,outcome.damage);
+    if(kind==='suppress'&&outcome.quality>0){
+      count(e,a,'markHits');count(e,a,'saveAttempts');const save=dice.save();
+      if(save<target.effectResistance)count(e,a,'saves');
+      if(applyPeriodicMark(target,a.id,outcome.quality,{level,save,effectResistance:target.effectResistance})){
+        count(e,a,'marksApplied');count(e,a,outcome.quality===1?'partialMarks':'fullMarks');
+      }
+    }
+    count(e,a,'attacks');count(e,a,kind);count(e,a,'attackPaid',cost);count(e,a,'damage',before-target.hp);return;
+  }
   let kind;
   if(e.options.jointPolicy!==undefined&&a.role==='primary'){
     kind=chooseJointMain(e.jointCurve,{canAct:eligibleMain(a),energy:a.energy,
@@ -219,6 +266,22 @@ function chooseInterrupter(e,source,mode,phase){
 }
 function doHeal(e,a,dice){
   const o=e.options,hadPending=Boolean(a.pending);
+  if(o.healingRules==='periodic-v1'){
+    const target=choosePatient(e.actors,a.id)??a;
+    const action=choosePeriodicMain({self:a,target,mode:o.periodicMode,cleansePolicy:o.cleansePolicy,offensive:o.defender==='offensive'});
+    if(action==='cleanse'){if(!doCleanse(e,a,target))doRecover(e,a);return;}
+    if(action==='attack'){doAttack(e,a,'fixed_ordinary',dice);return;}
+    if(action==='recover'){doRecover(e,a);return;}
+    const out=applyPeriodicHeal(a,target,{mode:action,level:o.level,calculate:e.operation.calculate,revive:true});
+    if(!out.accepted){doRecover(e,a);return;}
+    count(e,a,'healingMains');count(e,a,'healPaid',out.paid);count(e,a,action==='direct'?'direct':'hotCasts');
+    if(action==='direct'){
+      count(e,a,'restored',out.restored);count(e,a,'directRestored',out.restored);count(e,a,'potentialHealing',out.potential);
+      count(e,a,'overheal',out.potential-out.restored);if(target.id!==a.id)count(e,a,'allyHeals');
+      if(out.revived)count(e,target,'revivals');
+    }
+    return;
+  }
   if(o.healerPolicy==='cleanse_safe'&&strength(a)===50&&remaining(a)>1&&a.hp>a.maxHp/4&&doCleanse(e,a,a))return;
   if(o.defender==='offensive'&&!a.pending&&e.actors.filter(t=>t.team===a.team).every(t=>living(t)&&t.hp>t.maxHp/2)){
     doAttack(e,a,'fixed_ordinary',dice);return;
@@ -251,12 +314,14 @@ function doHeal(e,a,dice){
   delete a.receipts[`${a.id}:${a.started}`];
 }
 function finish(e,kind){
+  if(e.options.healingRules==='periodic-v1')for(const a of e.actors){a.hots=[];a.marks=[];closeEncounter(a);}
   e.done=true;e.endpoints.total={time:e.round,kind};
   for(const key of ['firstPatientFall','firstAnyFall'])if(!e.endpoints[key])e.endpoints[key]={time:e.round,kind:kind==='horizon'?'horizon':'no-event'};
 }
 /** Exact absorbing-state optimization: there is no available target, healer, effect, or future random action. */
 export function fastForwardIdle(e) {
   const o=e.options;
+  if(o.healingRules==='periodic-v1')return false;
   if(e.done||e.cursor!==0||o.kind!=='support'||o.helperAccess||o.defender!=='passive'||o.trace||o.fastForward===false)return false;
   const [primary,healer,helper]=e.actors;
   if(!healer.collapsed||!living(primary)||!living(helper)||e.actors.some(a=>a.pending||a.marks.length)||
@@ -286,7 +351,17 @@ export function stepEncounter(e,dice) {
       if(e.options.defender==='offensive')doAttack(e,a,'fixed_ordinary',dice);else doRecover(e,a);
     }
   }else doAttack(e,a,a.role==='striker'?'fixed_ordinary':e.options.attackPolicy,dice);
-  end(a);
+  if(e.options.healingRules==='periodic-v1'&&!teamDefeated(e.actors,0)&&!teamDefeated(e.actors,1)){
+    for(const tick of tickPeriodic(a,e.operation.calculate)){
+      const source=e.actors.find(t=>t.id===tick.source);assert.ok(source);
+      if(!tick.applied){count(e,source,'hotSuppressedTicks');continue;}
+      count(e,source,'hotTicks');count(e,source,'potentialHealing',tick.potential);count(e,source,'restored',tick.restored);
+      count(e,source,'hotRestored',tick.restored);count(e,source,'overheal',tick.potential-tick.restored);
+      if(source.id!==a.id)count(e,source,'allyHeals');if(tick.revived)count(e,a,'revivals');
+    }
+  }
+  const beforeEnd=a.energy;end(a);
+  if(e.options.healingRules==='periodic-v1')count(e,a,'regenGained',a.energy-beforeEnd);
   for(let i=0;i<e.actors.length;i++){
     const t=e.actors[i];assert.ok(t.energy>=0&&t.energy<=t.p.max);
     if(!prior[i]&&t.collapsed){
@@ -305,8 +380,9 @@ export function stepEncounter(e,dice) {
 
 export function runTrial(options={}) {
   const {seed=seedFor('T123-trial'),dice,setup,...rest}=options;
-  const randomDamage=rng(seed),randomReaction=rng(seedFor(`reaction|${seed}`));
-  const rolls=dice??{damage:()=>randomDamage()%400,reaction:()=>{const k=randomReaction()%400;return[Math.floor(k/20)+1,k%20+1];}};
+  const randomDamage=rng(seed),randomReaction=rng(seedFor(`reaction|${seed}`)),randomSave=rng(seedFor(`effect-save|${seed}`));
+  const rolls=dice??{damage:()=>randomDamage()%400,save:()=>randomSave()%10000/100,
+    reaction:()=>{const k=randomReaction()%400;return[Math.floor(k/20)+1,k%20+1];}};
   const e=createEncounter(rest);setup?.(e);
   while(!e.done){if(!fastForwardIdle(e))stepEncounter(e,rolls);}
   return {seed,winner:e.winner,endpoints:e.endpoints,counts:e.counts};

@@ -16,6 +16,15 @@ D:\BoeDiagnostics\healing-periodic-t128\20261101-v1. GREEN/полная матр
 operation, полный key/snapshot/divisor/guard; liveHP/платёж/save/тик свежие.
 Прежняя полная диагностикаT125 сохраняется до проверенного полногоT128.
 
+Source freeze:143/143 numerical guards,0fail/skip/cancel,4061.435мс Node24.21.0.
+23новых включают utility direct/HoT/ally, fractional22.5%, independent save/
+crit/absorbed hit/justcollapsed target, next3ends/strongest/expiry, lifecycle,
+HP0 authority/no extraMain/reaction/regen, fresh payment/actualHP и conservation.
+Legacy42n3h20 checksum1e11934e9e7e958e11fed7fd8331c8f9117fad88640767cc0777180603756d7c
+не изменён. Main/confirm684n1h3,3shard union точны; parent actualdiff прочитан.
+Preparation684encounters44.769мс/16computations;20000reuse12.130мс/0новых.
+Полный замер/review ещё впереди, отрицательные исходы не отбрасывать.
+
 ## T127 — сила/стоимость и сопротивление эффекту, 2026-11-01
 
 Автор принял основу/шкалуT126; добавил защиту/уклонение, очищение и effect-save.

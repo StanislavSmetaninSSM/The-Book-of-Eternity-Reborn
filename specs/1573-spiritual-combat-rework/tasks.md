@@ -2,8 +2,8 @@
 
 ## T128 — проверка T127 в бою, 2026-11-01
 
-- [ ] T128.1 Зафиксировать разрешение автора,684cases/допущения/план/API и consistency до source, опубликовать.
-- [ ] T128.2 TDD новой численной модели через общий путь, guards/utility/legacy/checksum/smoke/reuse; независимые дешёвые fixtures.
+- [x] T128.1 Разрешение/684cases/допущения/план/API и consistency закреплены;5c8102887/e48f0e94c опубликованы, remoteSHA/spec readback подтверждены.
+- [x] T128.2 RED→GREEN143/143 (120прежних+23новых), legacy42 checksum неизменен;684+684smoke n1h3/3shard exact union, utility/resource/effect guards и operation reuse проверены. Parent прочитал actualdiff/fixtures/evidence.
 - [ ] T128.3 Frozen source,752400main/confirm траекторий, полные данные/счётчики/расходы; диагностика без квот толькоD:.
 - [ ] T128.4 Отчёт, whole-block review, исправления/verification, публикация/readback/restore и разрешённая retention; честный вывод о полезности/длительности.
 

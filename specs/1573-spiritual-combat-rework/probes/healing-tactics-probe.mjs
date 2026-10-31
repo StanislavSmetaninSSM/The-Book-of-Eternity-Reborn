@@ -62,14 +62,17 @@ function mergeCounts(to,from){
   }
 }
 export function simulateTactics(options={}) {
-  const {n=1000,horizon=2000,operation=createOperation(),...cell}=options;
+  const {n=1000,horizon=2000,operation=createOperation(),seedVersion='T123-v1',...cell}=options;
   assert.ok(Number.isInteger(n)&&n>0&&Number.isInteger(horizon)&&horizon>0);
-  const seed=seedFor(JSON.stringify({version:'T123-v1',...cell,n,horizon}));
+  const seed=seedFor(JSON.stringify({version:seedVersion,...cell,n,horizon}));
   const roster=createEncounter({...cell,horizon,operation}).actors.map(a=>({id:a.id,team:a.team,role:a.role,HP:a.maxHp,
     maxDE:a.p.max/100,regenDE:a.regen/100,healingPercent:a.healingPercent,resistance:a.resistance,
     attackable:a.attackable,canHeal:a.role==='healer',canCleanse:['healer','helper'].includes(a.role),
-    canInterrupt:cell.interrupt!==false,reaction:1,ordinaryAttack:true,
-    mainAttackPolicy:a.role==='primary'?(cell.jointPolicy!==undefined?'joint_pressure_v1':cell.attackPolicy??'suppress_reserve'):'fixed_ordinary'}));
+    canInterrupt:cell.interrupt!==false&&cell.healingRules!=='periodic-v1',reaction:1,ordinaryAttack:true,
+    ...(cell.healingRules==='periodic-v1'?{effectResistance:a.effectResistance,healingRules:cell.healingRules,
+      healingMode:cell.periodicMode,level:cell.level,activeGuard:cell.activeGuard,cleansePolicy:cell.cleansePolicy}:{}),
+    mainAttackPolicy:a.role==='primary'?(cell.healingRules==='periodic-v1'?cell.periodicAttack:
+      cell.jointPolicy!==undefined?'joint_pressure_v1':cell.attackPolicy??'suppress_reserve'):'fixed_ordinary'}));
   const endpoints={total:[],firstPatientFall:[],firstAnyFall:[]},counts={},outcomes={team0:0,team1:0,horizon:0};
   for(let trial=0;trial<n;trial++){
     const result=runTrial({...cell,horizon,operation,seed:seedFor(`${seed}|trial|${trial}`)});

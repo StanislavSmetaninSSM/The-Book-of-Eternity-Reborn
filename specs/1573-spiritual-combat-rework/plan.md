@@ -9,9 +9,9 @@ Writing-plans/Spec Kit plan/tasks/analyze-equivalent + subagent-driven-developme
 Astra/high review целого блока. Existing D:checkout на story-ветке сохраняется;
 unrelated1536/obj не трогать. Нового runtime/GM/C# в задаче нет.
 
-- [ ] T128.1 Перед source опубликовать spec/plan/tasks с684cases/правилами,
+- [x] T128.1 Перед source опубликовать spec/plan/tasks с684cases/правилами,
   выполнить consistency/preflight. Закрепить API численной реализации.
-- [ ] T128.2 RED→GREEN primitives+integration+runner. Предпочесть opt-in в
+- [x] T128.2 RED→GREEN primitives+integration+runner. Предпочесть opt-in в
   `healing-tactics-model.mjs` с новой моделью `healing-periodic-model.mjs`,
   `healing-periodic-model.test.mjs`; runner `healing-periodic-probe.mjs` и
   `healing-periodic-probe.test.mjs`. Узко изменить tactics-probe для новой
@@ -22,12 +22,12 @@ unrelated1536/obj не трогать. Нового runtime/GM/C# в задач�
   для общего исходящегоHoTbudget и точное дробное подавление через прежний
   healingCalculator/cache, сохранив default1 и integer результаты. Не создавать
   отдельную конкурирующую формулу/кэш. API source-owner фиксирует до GREEN.
-- [ ] T128.2a Проверить весь связанный numerical набор (120прежних+новые),
+- [x] T128.2a Проверить весь связанный numerical набор (120прежних+новые),
   smoke684main/684confirm n1h3,3shard union; exact profile/дробь22.5, payment до
   RNG, miss=>noSave,crit=>save,guard beforedice, source snapshot/flat×1,
   next3targetends/expiry/skip,weakforeign source/refresh/no duplicate ticks,
   revival без Main/regen, battle-end cleanup и отдельные utility-примеры.
-- [ ] T128.2b Existing operation cache владеет immutable damage/formula data.
+- [x] T128.2b Existing operation cache владеет immutable damage/formula data.
   Key включает все параметры, в том числе guard delta, art level, fractional
   suppression, outgoing snapshot/incoming modifiers. Не кэшировать liveHP/
   допуска/остатоктиков/save. Измерить подготовку и повторное использование.
@@ -63,7 +63,21 @@ overheal/расходы по участникам. Живые HP/платёж/sa
 Checkpoint до реализации: spec/plan/tasks опубликованы в5c810288705fb4cb87379ae446f5e5c971b59a81,
 remote ref совпал, spec прочитан с GitHub по точному SHA. Sol6.1/high owner
 выполнил RED14/14: прежний BigInt не принимает22.5%, новый opt-in/runner ещё
-отсутствуют. GREEN/полная матрица/review пока не выполнены.
+отсутствуют. GREEN/полная матрица/review на том checkpoint ещё не выполнены.
+
+Source freeze T128:7source/test файлов, общий opt-in вместо копии машины.
+`node --test specs/1573-spiritual-combat-rework/probes/*.test.mjs`:
+143/143 (120прежних+23новых),0fail/skip/cancel,4061.435мс Node24.21.0.
+Legacy42cases n3h20 deepEqual и SHA256
+1e11934e9e7e958e11fed7fd8331c8f9117fad88640767cc0777180603756d7c сохранены.
+Main/confirm684+684 n1h3 и3shard union точны; весь набор только numerical,
+не project-wide suite. Parent прочитал actualdiff/guards/evidence. Исправлены
+выявленные до замера несовпадения expires<=started+1/metadata/idle skip;
+две utility-фикстуры поправлены по явному226HPудару и изоляции helper.
+684encounter preparation44.769мс/16damagecomputations,20000lookup12.130мс,
+новыхcomputations0. Пять n1/h2000 cheapcases0.631–15.140мс не являются матрицей.
+Следующий шаг: сохранить sourceWIP, запустить main и independent review,
+затем confirm всех684cells. Параметры/политики во время замера не менять.
 
 ## T127 — профили лечения/подавления и сопротивление, 2026-11-01
 
