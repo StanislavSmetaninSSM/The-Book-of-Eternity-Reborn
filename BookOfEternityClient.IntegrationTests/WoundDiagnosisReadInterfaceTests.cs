@@ -77,13 +77,20 @@ public sealed class WoundDiagnosisReadInterfaceTests(ITestOutputHelper output)
         Assert.All(browserReads, row => Assert.Equal(command == "/статус" &&
             row.Key == ResourceMaterializationContract.DefinitionsPath ? 2L : 1L, row.Value));
         Assert.All(mutations, path => Assert.Equal(LocalUiSessionLockService.LockPath, path));
-        foreach (var text in new[] { Render(console), JsonSerializer.Serialize(browser,
-                     new JsonSerializerOptions { Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping }) })
+        var consoleText = Render(console);
+        output.WriteLine("Raw console " + command + " (width 240):\n" + consoleText);
+        foreach (var (text, isConsole) in new[] { (consoleText, true), (JsonSerializer.Serialize(browser,
+                     new JsonSerializerOptions { Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping }), false) })
         {
             Assert.Contains("Осторожный осмотр", text); Assert.Contains("17 ед.", text);
             Assert.Contains("не подтверждают наличие", text);
             Assert.Contains("/лечить", text); Assert.Contains("длительности", text); Assert.Contains("расходам", text);
-            Assert.Contains("Карточка сама не исполняет действие", text);
+            // The console may insert only box-frame glyphs and whitespace into
+            // this complete sentence. Browser wording stays an exact raw match;
+            // every other assertion below/above still inspects original text.
+            var sentence = isConsole ? new string(text.Where(character => character is < '\u2500' or > '\u257f').ToArray()) : text;
+            if (isConsole) sentence = string.Join(" ", sentence.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries));
+            Assert.Contains("Карточка сама не исполняет действие", sentence);
             Assert.DoesNotContain("diagnosis_interface_private", text);
             Assert.DoesNotContain("clean_and_suture", text);
         }

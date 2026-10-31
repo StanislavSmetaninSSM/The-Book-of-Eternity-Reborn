@@ -1,3 +1,42 @@
+# T121 final cheap read-oracle candidate — UNCOMPILED / UNRUN
+
+At adfa31055 the affected five-case rerun completed four PASS and one FAIL in
+22.6755614s, with full cleanup. /раны and all three status-domain cases passed
+including their suffix checks. The /статус read-counter case alone failed on the
+new full inertness sentence in rendered console. Formatting/wrapping is a source
+hypothesis, not yet proven by the elided failure text. Independently, the eighteen
+remaining Unit cases completed 18/18 PASS with strict proof and closing fence in
+`M2GREENC1-independent18/verified-outcome.json` and
+`M2GREENC1-after-independent18-source-fence.json`. Raw outcomes stay external.
+
+The sole C# change preserves width 240 and records the complete original console
+render before assertions. Only that console sentence comparison removes Unicode
+box-drawing frame characters and folds whitespace; it still requires every word
+in exact order. No letters, punctuation, ellipses or other content are removed.
+Browser sentence matching and all other conditions/privacy/counter/no-write/
+no-prompt assertions remain exact raw-text checks. Actual rerun output must prove
+the formatting difference; no production normalization or text change is made.
+
+The former five-case category is split into existing read-interface2 and status3,
+both retaining 60s limits. No test, method or case is added: full selection stays
+168 cases / 62 methods, now 32 project descriptors / 31 categories. Only read2 needs
+a fresh run after reviewed Integration-only compilation and current PREP; status3,
+independent18 and initial117 unaffected PASS are not replayed. Their original
+117+4+18 receipts stay historical; the earlier /раны row is superseded by the
+changed shared method's fresh two-row result in the final accepted-ID union.
+No fresh 140 or feature acceptance is claimed. All broader bounds/HOLDs remain.
+
+After diagnosis qualification, guided physical treatment is a real separate
+T121/US5 gap under existing rules: procedure/course/guaranteed backends and owners
+exist, while the current Mortal menu enables only diagnosis. Treatment still
+needs typed selection, separate confirmation, staging/dispatch and terminal result
+through both console and browser. The eight spiritual adapters remain
+item_quantity, resource_quantity, consent, facility, location, quest_state,
+effect_state and environment; quest_state means quest state, not negotiated
+compensation. These are not the exhaustive #1536 residual: US3, broader parents
+and final qualification/HOLDs remain open. No such feature is implemented here.
+No writer build, test, restore or runtime; original failures remain preserved.
+
 # T121 M2 cheap partial failure — stale card-text oracle correction, UNRUN
 
 Actual `M2GREEN-cheap` completed 122 cases: 117 PASS and five FAIL, with eighteen

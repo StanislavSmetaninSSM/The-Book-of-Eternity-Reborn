@@ -142,12 +142,11 @@
 },
 {
   "id": "mortal-diagnosis-read-interface-regressions",
-  "responsibility": "The exact two existing real read handlers and hidden/foreign/unknown status projection consume migrated physical Check while preserving no-write/privacy/read-count contracts and accurate diagnostic guidance. Finite existing methods only; source-authored selection UNRUN, discovery and independent whole SOURCE settle membership/admission.",
-  "excludes": "No broad Mortal 10–15 minute aggregate, complete suite, DFR/Windows/compatibility qualification, historical reflection fixture copied into new tests or new game rule.",
+  "responsibility": "Two rows of the existing real /раны and /статус handlers qualify complete declared physical diagnosis conditions and canonical no-write/no-prompt/read-count/privacy behavior through console and shared browser. Preserve complete raw console render at width 240; only the new full inertness sentence comparison removes frame glyphs/folds whitespace, while browser and all other assertions stay raw. No assumption that wrapping is proven before actual output. Existing 60s limit; no new test/method/case.",
+  "excludes": "The three already-qualified status-domain privacy rows have their separate category. No production text normalization/truncation, reduced words/order, privacy omission, broad Mortal aggregate or HOLD run.",
   "changeHints": [
-    "BookOfEternityClient/Services/MortalWoundTreatmentContract.DiagnosisCheck.cs",
-    "BookOfEternityClient/Services/WoundHistoryState.MortalDiagnosis.cs",
-    "BookOfEternityClient/Services/WoundApplicationService.MortalDiagnosisMenu.cs"
+    "BookOfEternityClient.IntegrationTests/WoundDiagnosisReadInterfaceTests.cs",
+    "BookOfEternityClient/Services/WoundPlayerProjection.Knowledge.cs"
   ],
   "related": [
     {
@@ -165,7 +164,35 @@
     {
       "project": "integration",
       "tests": [
-        "BookOfEternityClient.Tests.WoundDiagnosisReadInterfaceTests.KnownDiagnosticConditionsAreReadableAndInertThroughBothHandlers",
+        "BookOfEternityClient.Tests.WoundDiagnosisReadInterfaceTests.KnownDiagnosticConditionsAreReadableAndInertThroughBothHandlers"
+      ]
+    }
+  ]
+},
+{
+  "id": "mortal-diagnosis-status-interface-regressions",
+  "responsibility": "Three existing Mortal/Chaos/Shining status rows preserve domain-correct diagnostic guidance, exact null PrimaryAction and recursive hidden/foreign/unknown disclosure refusal through actual console/browser reads. Split from the two read-counter handler rows without adding cases/methods or changing the existing 60s budget. Actual three PASS at adfa remain their source lineage; unchanged code is not replayed for a read-counter sentence fix.",
+  "excludes": "The separate read-interface category owns the two read-counter handler rows. No execution/availability permission from a status recommendation, production change, repeated unchanged case or broad Mortal/HOLD aggregate.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/WoundPlayerStatusTests.cs",
+    "BookOfEternityClient/Services/WoundPlayerProjection.Knowledge.cs"
+  ],
+  "related": [
+    {
+      "id": "mortal-diagnosis-method-guards",
+      "when": "Current explicit method shape and shared realm/purpose refusal remain strict."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
         "BookOfEternityClient.Tests.WoundPlayerStatusTests.Status_HiddenWoundsForeignOwnersAndUnknownRoutesAreOmittedRecursively"
       ]
     }
