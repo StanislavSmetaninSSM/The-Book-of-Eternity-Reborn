@@ -85,6 +85,13 @@ source-owner RED→GREEN,144/144/4101мс,legacy42checksum сохранён. П�
 main39f317f7e (684×100,61.830с) помеченsuperseded для корректныхHP/counters.
 Баланс/политики не изменены; повторmain и весьconfirm на исправленномSHA.
 
+Frozen c36c9ee6e6462d9a4cd43f498f6ace628fc38a02 опубликован/readback;
+reviewer подтвердил закрытиеP2. Main684×100 завершён62.015с,3exit0/stderr0;
+coverage/params/seeds/outcomes/costs/HP/counters проверены,18726horizon.
+Winner/endpoint результаты совпали с первымmain; correctedHP учтены новым
+прогоном. Confirm684×1000 выполняется с теми же правилами. Подготовлен
+[отчёт](healing-periodic-investigation.md), пока с явно незавершённымconfirm.
+
 ## T127 — профили лечения/подавления и сопротивление, 2026-11-01
 
 Writing-plans + Spec Kit bridge: active spec/plan/tasks; baseline/origin
