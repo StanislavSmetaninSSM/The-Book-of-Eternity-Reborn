@@ -1,5 +1,24 @@
 # Проверка проекта #1573
 
+## T127 — сила/стоимость и сопротивление эффекту, 2026-11-01
+
+Автор принял основу/шкалуT126; добавил защиту/уклонение, очищение и effect-save.
+Baseline/origin4785a71c500b8fa071edebdef79bebd5a9f8a4c6 совпали. Brainstorming,
+writing-plans/Spec Kit bridge используют canonical1573; scope docs+арифметика.
+Sol6.1/high audit с Serena отделил damageR/free defense/active+5 от ещё не
+заданного общего post-hit proc. Parent прочёл actual defense/resistance/формулы;
+T127 не придумывает врождённый процент и не отменяет save на naturalcrit.
+Таблица записана до расчёта. `node D:\BoeDiagnostics\healing-profiles-t127\calculate.mjs`
+exit0:25D/tier cases,75profile evaluations,74formula cross-check. Целые примеры
+сверены с unchanged healingValue/profile; новая дробь22.5 проверена отдельно:
+прежний helper её не поддерживает, поддержка нового runner пока не реализована.
+energy-risk.json: self-HoT+3direct за4Main,223.2ДЭ/55.8среднее; при+50%Heal
+324потенциальныхHP/возможность. Это риск, не измеренная длительность боя.
+Все диагностические результаты толькоD:, без квот. Оптимизация: вычисления
+малые; использованы прежние immutable formula exports, новый кэш не нужен.
+Production/source/runner/C#/frontend/MonteCarlo не менялись/не запускались.
+Независимое review законченного проекта и арифметики ещё впереди.
+
 ## T126 — пересмотр концепции Heal, 2026-11-01
 
 Baseline/origin d9c4b6b877247ce8a7a70da6bb5aa72026d19540 совпали; tracked1573.

@@ -1,5 +1,35 @@
 # План перехода к личной модели духовного боя — #1573
 
+## T127 — профили лечения/подавления и сопротивление, 2026-11-01
+
+Writing-plans + Spec Kit bridge: active spec/plan/tasks; baseline/origin
+4785a71c500b8fa071edebdef79bebd5a9f8a4c6 совпали. Goal — конкретный проект
+силы/стоимости с честной защитой/save/очищением. Это bounded расчёт/документы,
+не runtime/полная симуляция. Автор принял основуT126/шкалу; новые числа — кандидат.
+Architecture — общие HP/damage/ДЭ и effect pipeline, отдельный точный gate метки.
+Tech — существующий Node/PowerShell и точная арифметика без зависимостей.
+
+- [x] T127.1 Read-only Sol6.1/high audit: damageR не effectR, обычная защита
+  бесплатна, активная+5/4P; универсальный post-hit proc отсутствует. Parent
+  прочёл фактические договоры/исходящие формулы. Сохранить различие в spec.
+- [x] T127.2 Зафиксировать таблицу до расчёта; проверить15профилей наD130 и
+  масштабированиеD0/50/130/1000/10000 (арифметика не даёт рангового допуска),
+  flat/округление/послебонусное подавление, вероятность при R0/25/50/90.
+  Малый одноразовый helper/raw толькоD:\BoeDiagnostics\healing-profiles-t127;
+  использовать прежние formula exports для cross-check, не изменять runner.
+- [ ] T127.3 Записать проверенные значения/ограничения, согласовать статусы
+  T126/исторических профилей. Independent Astra/high review точного doc diff
+  и расчётов; scope/link/diff check, GitHub persistence/readback/новый restore.
+
+Review focus: hit vs absorbedHP, naturalcrit+save,partial22.5%,flat×1,HoT не
+channel; R источники открыты, no invented innate. Optimization:15профилей и
+несколько точных подстановок не требуют нового кэша. Прежние immutable formula
+таблицы использовать повторно; живые targetHP/метки/сохранённые кости не кэшировать
+как разрешение. Полных боёв/таймерной оптимизации в этом блоке нет.
+Bridge consistency: три требования автора→T127spec→T127.1–3; старые Heal
+interruption/probe не переносятся, accepted damage/HP/ДЭ сохранены; blockers0
+для арифметики, открытые R/HoTконтракты блокируют объявление полного баланса.
+
 ## T126 — концептуальная замена Heal, 2026-11-01
 
 Baseline/origin d9c4b6b877247ce8a7a70da6bb5aa72026d19540 проверены; issue1573.
