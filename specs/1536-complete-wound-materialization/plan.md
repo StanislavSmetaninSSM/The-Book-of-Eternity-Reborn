@@ -1,3 +1,45 @@
+# T121 C16 browser component ownership and finite isolation — UNCOMPILED / UNRUN
+
+The original C15 exact control is1 FAIL /no timeout, category56.5371064s/60
+(test51.8869351s), before its foreign-post/positive-post suffixes. Strict external
+M2GREENC15-browser-exact1 TRX SHA256 is
+`0af149efde5325590b60f6e8c761f30777fca1920fca10a44fac25b2ae1effc1`.
+The actual source call at line117 is BeginWorldValidationRead, which correctly
+returns null: TerminalWaitStarted executes in InspectOriginalBrowserWaitAsync's
+idle original scope, not a Processing owner. This is a fixture phase error, not
+product RED or evidence for weakening the reader. C15 post8 remains accepted8/8;
+remaining browser/original/UI cases stay unqualified and all old raw is retained.
+
+Astra accepts the established typed component pattern. The four controls now read
+the actual current staged proof with ReadStaged under its real lease, require its
+staged phase and exact request/manifest/action/full-seal joins, then release that
+lease before installing the genuine nested original and BeginProcessing. That
+scope spans all producer/publication/post-validator work under the existing live
+Engine/main/current-session owner. No invented staged value, new owner framework,
+production code, terminal claim or UI acceptance is introduced. Whole images and
+every original assertion remain; scope/lease/root cleanup remains fully owned.
+
+The positive/no-World/production-actual-frame row is separate from the independent
+genuine foreign original/override row. Explicit current/foreign Matches assertions,
+physical NPC equality, end proof, complete raw-versus-completed issue ordering and
+whole-image equality move intact to the latter. It skips the positive body; the
+positive skips foreign fixture construction. Parse-drift and final-proof controls
+retain their assertions under the same corrected processing scope. All four are
+separate60s categories; no limit increase, speedup or unmeasured cost claim. Fresh
+independent roots and original/current authority are necessary per test; the shared
+existing fixture helper reuses preparation logic without retaining live permission
+or adding cache/state/reads across cases.
+
+Current full source estimate is234 cases /102 methods /61 descriptors /58 categories,
+pending official discovery/PlanOnly. Four browser controls are fresh, followed by
+original Engine-original1 and original UI3 only after conditional PREP. All production,
+source pins, previously accepted post8 and historical218 bodies remain unchanged;
+no old PASS aggregate is repeated or claimed fresh. This candidate is test/catalog/
+canonical metadata only and UNCOMPILED/UNRUN. Static JSON/ownership/diff inspection
+is writer work; root alone owns fresh Integration build/discovery/PREP/runtime.
+No source guard refresh, GM wire update, task closure, physical treatment, adapters,
+new diagnostic stack or HOLD work is added.
+
 # T121 C15 browser exact control FAILED — no timeout, subsequent runs held
 
 At runtime `3495a877b022865acf02d3ef64b740a9aa9f6edf`, compiled owners all

@@ -15,6 +15,9 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
     public Task BrowserCompletedItemComparisonUsesActualFrameAndWorldProof() => RunCompletedItemsBrowserAsync("exact");
 
     [Fact]
+    public Task BrowserCompletedItemComparisonRefusesGenuineForeignOriginalAndOverride() => RunCompletedItemsBrowserAsync("foreign");
+
+    [Fact]
     public Task BrowserCompletedItemComparisonRefusesDriftBetweenParseAndWorld() => RunCompletedItemsBrowserAsync("between_parse_and_world");
 
     [Fact]
@@ -62,14 +65,30 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                     Assert.Equal(1, ++checkpoints);
                     TurnRequest turn;
                     GameEngine.PendingTurnSnapshotManifest manifest;
+                    PendingPlayerActionService.Staged staged;
                     var validator = new ValidationService(files, NullLogger<ValidationService>.Instance);
                     await using (var lease = await files.AcquireCanonicalWriteLeaseAsync())
                     {
-                        turn = JsonSerializer.Deserialize<TurnRequest>(Assert.IsType<string>(await files.ReadFileAsync(lease,
-                            LiveTurnPreparationService.TurnRequestPath)), SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)!;
-                        manifest = JsonSerializer.Deserialize<GameEngine.PendingTurnSnapshotManifest>(Assert.IsType<string>(await files.ReadFileAsync(lease,
-                            LiveTurnPreparationService.PendingTurnSnapshotManifestPath)), SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)!;
+                        var requestJson = Assert.IsType<string>(await files.ReadFileAsync(lease, LiveTurnPreparationService.TurnRequestPath));
+                        var manifestJson = Assert.IsType<string>(await files.ReadFileAsync(lease, LiveTurnPreparationService.PendingTurnSnapshotManifestPath));
+                        turn = JsonSerializer.Deserialize<TurnRequest>(requestJson, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)!;
+                        manifest = JsonSerializer.Deserialize<GameEngine.PendingTurnSnapshotManifest>(manifestJson, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)!;
                         Assert.NotNull(manifest.BrowserOriginalMainCondition);
+                        var pending = Assert.IsType<PendingPlayerActionService.State>(await PendingPlayerActionService.ReadAsync(files, lease));
+                        Assert.Equal("staged", pending.Phase);
+                        staged = PendingPlayerActionService.ReadStaged(pending);
+                        Assert.Equal(requestJson, staged.RequestJson); Assert.Equal(manifestJson, staged.ManifestJson);
+                        Assert.Equal(turn.RequestId, staged.Binding.ActionId);
+                        Assert.Equal(manifest.ManifestPayloadHash, GameEngine.ValidateDetachedBrowserBinding(staged).ManifestPayloadHash);
+                    }
+                    // The actual wait callback is an idle inspection, not terminal processing.
+                    // Reuse the admitted component pattern under the same live owner and exact real staged DATA.
+                    using var processing = files.BeginBrowserOriginalOperation(staged.Binding, staged);
+                    files.BeginBrowserOriginalProcessing(staged);
+                    await using (var lease = await files.AcquireCanonicalWriteLeaseAsync())
+                    {
+                        var pending = Assert.IsType<PendingPlayerActionService.State>(await PendingPlayerActionService.ReadAsync(files, lease));
+                        Assert.Equal("staged", pending.Phase); Assert.Equal(staged.Json, pending.Json);
                         var admitted = await WoundApplicationService.ResolveMortalDiagnosisInputAsync(files, lease,
                             new(turn.SessionId, turn.RequestId, turn.TurnNumber, turn.ProgressionControl!), requireRetained: true);
                         Assert.Empty(await validator.ValidateAcceptedTurnRawMortalLocationMaterializationAsync(lease));
@@ -95,14 +114,8 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                     publishedNpc = exactPublishedNpc;
                     var before = CaptureMortalDiagnosisImages(files);
                     using var original = validator.UsePrevalidatedPendingTurnSnapshotScope(manifest);
-                    var raw = await validator.ValidatePostMaterializedGameStateAsync();
-                    var exact = Assert.Single(raw, MortalWoundTreatmentResolverTests.IsCompletedItemInventoryIssue);
-                    if (fault == "exact")
+                    if (fault == "foreign")
                     {
-                        // No World phase means no authenticated World comparison; the raw issue survives.
-                        using (validator.UseCompletedTreatmentItemValidationScope(completed))
-                            Assert.Contains(await validator.ValidateGameStateAsync(new GameStateValidationSelection(GameStateValidationPhase.NpcStateFiles)),
-                                MortalWoundTreatmentResolverTests.IsCompletedItemInventoryIssue);
                         await using var foreign = await MortalWoundTreatmentResolverTests.DiagnosisOwnershipFixture.CreateAsync(20,
                             signedInput: true, duration: 0);
                         var foreignManifest = JsonSerializer.Deserialize<GameEngine.PendingTurnSnapshotManifest>(Assert.IsType<string>(
@@ -134,6 +147,17 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                             Assert.Equal(JsonSerializer.Serialize(foreignRaw), JsonSerializer.Serialize(foreignActual));
                             Assert.Equal(publishedNpc, await files.ReadFileBytesAsync(NpcCoreChangesContract.NpcCorePath));
                         }
+                        AssertMortalDiagnosisImages(before, files);
+                        throw stop;
+                    }
+                    var raw = await validator.ValidatePostMaterializedGameStateAsync();
+                    var exact = Assert.Single(raw, MortalWoundTreatmentResolverTests.IsCompletedItemInventoryIssue);
+                    if (fault == "exact")
+                    {
+                        // Without World selection the actual guard remains, even inside a real processing component.
+                        using (validator.UseCompletedTreatmentItemValidationScope(completed))
+                            Assert.Contains(await validator.ValidateGameStateAsync(new GameStateValidationSelection(GameStateValidationPhase.NpcStateFiles)),
+                                MortalWoundTreatmentResolverTests.IsCompletedItemInventoryIssue);
                     }
                     using (scope = validator.UseCompletedTreatmentItemValidationScope(completed))
                     {

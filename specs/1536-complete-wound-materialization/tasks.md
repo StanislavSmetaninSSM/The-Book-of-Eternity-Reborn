@@ -52,8 +52,14 @@ archive are outside checkout; original failures and all other holds are retained
   root plus fresh physical bytes and unique matching issue count remain required.
   Scope state is private, consumption and irreversible invalidation are atomic,
   and repair discards all eligibility. No execution authority survives closure.
-  Initial trade receipts are normalized before sole bootstrap/original. C13 console
-  stays TIMEOUT/UNKNOWN with retained root/incomplete capture. Seven new genuine
+  Initial trade receipts are normalized before sole bootstrap/original. C15 post8
+  is accepted8/8; browser exact instead failed in the wait inspection's idle scope.
+  C16 reads real staged DATA, releases that lease and enters the established nested
+  processing component for all browser producer/validator work. Four separate60s
+  controls preserve positive/no-World, foreign frame/override, parse drift and
+  final-proof assertions; no production guard or terminal-claim behavior changes.
+  C13 console
+  stays TIMEOUT/UNKNOWN with retained root/incomplete capture. Eight current genuine
   consumer/export/browser rows, existing engine-original1, semantic guards3 and
   explicit World closure1 are the finite fresh proposal; UI3 follows only after
   independent SOURCE/build/PREP. Initial C14 owners were compiled, but post8

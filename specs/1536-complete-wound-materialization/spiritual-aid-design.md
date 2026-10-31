@@ -2007,3 +2007,38 @@ raw and historical False PASS stay separate; new code/controls remain UNCOMPILED
 UNRUN pending whole SOURCE/root verification. Rebind's fresh source proof is
 necessary ownership, while exact request DATA is reused; no cache or speedup claim.
 No command/schema/GM wire/game-rule change or new authored output is introduced.
+
+
+C16 browser component correction: TerminalWaitStarted runs inside
+InspectOriginalBrowserWaitAsync's short idle original scope. Its genuine Staged
+value does not imply Processing=true; BeginWorldValidationRead correctly returns
+null there. Actual Engine finalization later calls ClaimBrowserTerminalAsync and
+BeginBrowserOriginalProcessing before its post-publication validation. No production
+wait/read guard is changed, and the component does not claim that terminal claim.
+
+All four browser controls read the actual current pending State under a real
+lease, require phase staged, obtain ReadStaged DATA and bind exact request/manifest
+bytes, action/request identity and detached full seal. After releasing that lease,
+they install a nested BeginBrowserOriginalOperation from this actual staged value
+and call the existing BeginBrowserOriginalProcessing pattern already used by the
+admitted World fixture. This scope owns the whole producer/publication/validator
+body under the same live main/current-session operation; no physical lease remains
+at World reader entry. Nested and native foreign scopes close before the controlled
+stop unwinds the Engine and its owned fixture. No invented fields, re-sign, terminal
+signal, repair or canonical state addition establishes authority.
+
+The earlier exact control consumed51.8869351s before foreign/positive suffixes, so
+its incomplete prefix cannot qualify the original60s body or justify a raised
+budget. Preserve positive/no-World plus production actual-frame acceptance in one
+singleton; move every explicit current/foreign Matches assertion and complete
+foreign override/issue-order/whole-image proof to an independent singleton. Parse
+and final-proof drift remain separate singletons. All four bounds stay60s. Both
+positive and foreign reuse the same existing real staged fixture helper; foreign
+avoids repeating the positive/no-World/current-post body, and positive avoids
+foreign fixture construction. Separate test roots/requests/owners are required for
+independent authority lifetimes, so live scope/data is never cached across tests.
+This is source-based isolation, with no speedup or unmeasured total-cost claim.
+Current full source estimate234 cases /102 methods /61 descriptors /58 categories
+is pending root discovery. Accepted post8 and historical218 remain separate;
+Engine-original1/UI3 and all broader tasks/HOLDs remain open. Internal component
+ownership only changes test preparation; synchronized GM surfaces need no update.
