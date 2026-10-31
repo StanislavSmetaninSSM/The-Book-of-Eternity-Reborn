@@ -1,3 +1,39 @@
+# T121 C10 console UNKNOWN — deterministic prepared-original mismatch identified
+
+Console at `f0886ee76a9c86b661c51856c243ffd8b6ce2b00` reached its unchanged
+180s category limit (180.0258169s, total3:08.9157985). There is no TRX, completed
+case or final capture report; the outcome is UNKNOWN, not PASS or a completed
+test failure. Browser/rollback remain UNRUN and held. Process/runner cleanup and
+all27 artifacts/40 resource copies/four daemons are stable, but the actual owned
+fixture directory remains; its own closing is unconfirmed. Preserve that root.
+
+The existing13-row incomplete gzip prefix localizes the cause without new timers:
+preparation0.969s, read/cancel/confirm0.884s, GM response1.812s ending at10.681s,
+then one raw-state refusal and an unhandled repair wait. The persisted repair
+request reports mortal_diagnosis_publication_invalid because the exact current
+schedule differs from the diagnosis original. It is retained externally with SHA256
+`8fe9957dd8af8c82bbadf702ea53f18c042cf26f8f26c3b3aa4550d0f8a52f32`.
+Live/signed/rollback clock bytes agree. Signed schedule equals the rollback image;
+live schedule differs only at lastUpdatedUtc20.2585848Z versus24.6138688Z.
+These are client preparation writes, not a GM timeChange or measured general
+performance failure. The original item-journal defect no longer blocks staging.
+
+Independent Astra confirmed the production boundary: the Mortal diagnosis branch
+registers only its command in ValidationSnapshotFiles, whereas the existing spiritual
+branch also registers the prepared schedule. Original capture consequently selects
+the older rollback schedule. The smallest correction is to register the prepared
+schedule in that SAME existing set before original capture, preserving the earlier
+rollback bytes/hash. Do not weaken exact schedule/clock equality, ignore timestamps,
+move the original after GM response or introduce late rebasing. Finite real
+backup/staging/original proof and affected UI acceptance are still required.
+
+All raw is under `M2GREENC10-console1` outside checkout. The incomplete prefix is
+not a replacement capture. Root additionally preserved all214 remaining fixture
+files in a320215byte archive, verified every member/hash and full gzip EOF/CRC,
+and left the owned root unchanged. No deletion or raw upload occurred. Accepted
+mixed-lineage214, native causal correction, physical-treatment/adapters/parents
+and earlier HOLDs keep their exact boundaries; there is no full feature acceptance.
+
 # T121 C10 fixture compiled — corrected UI3 PREP pending
 
 Independent Astra SOURCE accepted `8cb3eff4e100cefc70b7f4809aa7d9c887c1bfe3`.

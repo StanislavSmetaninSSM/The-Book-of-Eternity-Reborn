@@ -43,6 +43,15 @@ archive are outside checkout; original failures and all other holds are retained
 
 # T121 diagnosis recommendations — #1536
 
+- [ ] T121-DIAGNOSIS-MORTAL-ENGINE-ORIGINAL Correct the actual Engine diagnosis
+  prepared-original schedule registration through existing ValidationSnapshotFiles,
+  retaining distinct earlier rollback bytes/hash and the exact current clock/schedule
+  guard. Real backup → staging/control → original proof must distinguish signed
+  prepared DATA from rollback DATA and preserve exact rollback/later mutation refusal.
+  Current C10 console is timeout/UNKNOWN with persisted runtime refusal, not PASS;
+  no TRX/final capture, actual owned root retained. Same bounded independent review,
+  fresh affected builds/provenance and original180s UI gates remain required.
+
 - [ ] T121-DIAGNOSIS-MORTAL [US5] Deliver one complete guided Mortal diagnostic
   method through known/reachable choice, explicit check/duration/cost, separate
   confirmation, fresh accepted-world/procedure/Fate/resource ownership, terminal
