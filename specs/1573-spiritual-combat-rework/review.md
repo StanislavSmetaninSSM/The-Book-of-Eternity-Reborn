@@ -1,5 +1,27 @@
 # Проверка проекта #1573
 
+## T124 — проект scope, 2026-11-01
+
+Baseline/origin741944f6d46f6cf9558238379679bf993c6d3d86 и issue1573 сверены.
+Автор ответил «хорошо» на предложение изучить момент срыва; это согласие с
+направлением, не с ещё не показанной spec v1.76. Brainstorming и
+spec-kit-superpowers-bridge применены к существующей feature1573. Нового
+дублирующего spec/плана нет; пишется только проект scope, execution gate закрыт.
+
+Первый PathsOnly с одним SPECIFY_FEATURE обнаружил pin наfeature532; source не
+менялся. После явного process-local SPECIFY_FEATURE_DIRECTORY=specs/1573-spiritual-combat-rework
+PathsOnly подтвердил нужные spec/plan/tasks. Shared .specify/feature.json не менялся.
+Serena ready, local override csharp/typescript/python; symbolic access к реальным
+JS chooseInterrupter/doHeal/stepEncounter/applyHeal успешен. Source-аудит выявил
+точную точку выбора до ApplyHeal и end-регенерацию, важную для резерва.
+
+Предлагаются Always/Never, резерв16P/24P и пропуск начала long с резервом24P;
+fixed_large/suppress_reserve остаются прежними. Матрица120cases×(1000+10000)
+записана до исполнения; ни результатов T124, ни новых tests/runtime/build нет.
+Принятые игровые договоры и T123raw сохранены. Для новых простых предикатов кэш
+не нужен; immutable formula tables переиспользуются в прежней operation, mutable
+ресурс/допуск свежие. Отдельный reviewer проверит scope/границы и сохранённые договоры.
+
 ## T123 — исполнение после одобрения, 2026-10-31
 
 Автор одобрил точный документ11dbb105f ответом «да». Baseline/origin/issue сверены,

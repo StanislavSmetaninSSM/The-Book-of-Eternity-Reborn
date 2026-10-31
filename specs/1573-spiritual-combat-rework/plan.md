@@ -1,5 +1,27 @@
 # План перехода к личной модели духовного боя — #1573
 
+## T124 — подготовка scope, 2026-11-01
+
+[Spec v1.76](spec.md) предлагает исследовать выбор момента срыва, сохранив Heal.
+Автор согласился с направлением; точный документ ещё не показан/не утверждён.
+Сейчас только source-аудит, запись scope и независимое review документации.
+Не запускать новую пробу и не менять numerical source/tests до T124.0a.
+После согласия — superpowers:writing-plans и соответствующие Spec Kit plan/tasks,
+затем bridge consistency, TDD, один владелец связного блока и отдельный reviewer.
+Текущий раздел не выдаётся за завершённый execution plan.
+
+Source seams проверены через Serena: chooseInterrupter, doHeal, applyHeal,
+stepEncounter. Свежий выбор реакции должен видеть текущуюДЭ и фазу до броска;
+фактический расход остаётся в applyHeal/interruption. End-регенерацию нельзя
+добавлять к резерву для начала следующего личного Main. Default T123 не меняется.
+Reuse DATA — существующие operation.table/healingCalculator; новый кэш простых
+предикатов не нужен. Runtime Service–Repository не затронут.
+
+Bridge consistency scope: пять политик/личная оплата/фазы→T124.1–2;
+120cells main+confirmation/честные хвосты/отрицательный результат→T124.3;
+сохранённые Heal/utility→T124.2–4; independent review/публикация/retention→T124.4.
+T124.0–0a закрывают gate до кода. Старые production-задачи не получают разрешения.
+
 ## Исполнение T123 — согласовано 2026-10-31
 
 **Spec:** [v1.75, T123](spec.md), одобрена после показа commit11dbb105f.
