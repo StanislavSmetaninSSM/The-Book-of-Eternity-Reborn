@@ -39,10 +39,21 @@ internal sealed class MortalWoundDiagnosisPersistedResult : WoundTransitionResul
     internal ImmutableArray<MortalWoundDiagnosisPersistedRecovery> Recoveries { get; }
     internal override JsonObject ToCanonicalJson() => _root.DeepClone().AsObject();
 
+    /// <summary>
+    /// Rederives current-publication comparison identity only for a version2 result.
+    /// Historical/component version1 never acquires an implicit empty witness.
+    /// </summary>
+    internal string ReconstructPublicationSemantic() =>
+        WoundAcceptedTurnPlanner.MortalDiagnosisPublicationWitness.Parse(Object(_root, "publicationInputs"))
+            .ComputeSemantic(Source.AcceptedStateFingerprint, Request, Resolution, WorkingFingerprint,
+                Text(Object(_root, "clock"), "progressionFingerprint"));
+
+
     internal static MortalWoundDiagnosisPersistedResult CreateComparisonEvidence(MortalWoundTreatmentAcceptedStateAuthority owner,
         MortalWoundDiagnosisOutcome outcome, MortalWoundDiagnosisWorkingProjection working,
         ProgressionScheduleService.FrozenMortalCalculation progression,
-        IReadOnlyDictionary<string, IReadOnlyList<MortalWoundRecoveryPublishedStage>> stages)
+        IReadOnlyDictionary<string, IReadOnlyList<MortalWoundRecoveryPublishedStage>> stages,
+        WoundAcceptedTurnPlanner.MortalDiagnosisPublicationWitness? publicationInputs = null)
     {
         working.RequireCurrent(owner);
         outcome.RequireCurrent(owner, new WoundHistoryParseResult(owner.History, Array.Empty<ValidationIssue>()));
@@ -53,7 +64,7 @@ internal sealed class MortalWoundDiagnosisPersistedResult : WoundTransitionResul
         var carriers = owner.ReadDiagnosisOriginalCarriers();
         var root = new JsonObject
         {
-            ["kind"] = "mortal_diagnosis", ["schemaVersion"] = 1, ["workingFingerprint"] = working.Fingerprint,
+            ["kind"] = "mortal_diagnosis", ["schemaVersion"] = publicationInputs is null ? 1 : 2, ["workingFingerprint"] = working.Fingerprint,
             ["binding"] = MortalWoundRecoveryPersistedResult.BindingJson(owner.Binding),
             ["source"] = JsonSerializer.SerializeToNode(working.OriginalSource, Options),
             ["input"] = owner.ReadDiagnosisOriginalInput(),
@@ -84,6 +95,7 @@ internal sealed class MortalWoundDiagnosisPersistedResult : WoundTransitionResul
                 ["stages"] = new JsonArray(stages[value.Original.WoundId].Select(stage => (JsonNode?)MortalWoundRecoveryPersistedResult.StageJson(stage)).ToArray())
             }).ToArray())
         };
+        if (publicationInputs is not null) root["publicationInputs"] = publicationInputs.ToCanonicalJson();
         root["resultFingerprint"] = WoundHistoryState.ComputeTransitionResultFingerprint(root);
         var issues = new List<ValidationIssue>();
         return Parse(JsonSerializer.SerializeToElement(root), "diagnosis.result", issues) ??
@@ -97,9 +109,12 @@ internal sealed class MortalWoundDiagnosisPersistedResult : WoundTransitionResul
             if (!MortalWoundTreatmentCommandCodec.HasNoDuplicateProperties(element, path, issues))
                 throw new InvalidDataException("Duplicate diagnosis result fields.");
             var root = JsonNode.Parse(element.GetRawText())?.AsObject() ?? throw new InvalidDataException("Diagnosis result is not an object.");
-            Closed(root, "kind", "schemaVersion", "binding", "source", "input", "request", "original", "knowledgeAfter", "terminal",
-                "resourceFinalization", "originalCarriers", "clock", "cohort", "workingFingerprint", "resultFingerprint");
-            if (Text(root, "kind") != "mortal_diagnosis" || Integer(root, "schemaVersion") != 1 ||
+            var version = Integer(root, "schemaVersion");
+            var fields = new[] { "kind", "schemaVersion", "binding", "source", "input", "request", "original", "knowledgeAfter", "terminal",
+                "resourceFinalization", "originalCarriers", "clock", "cohort", "workingFingerprint", "resultFingerprint" };
+            Closed(root, version == 2 ? fields.Append("publicationInputs").ToArray() : fields);
+            if (version == 2) _ = WoundAcceptedTurnPlanner.MortalDiagnosisPublicationWitness.Parse(Object(root, "publicationInputs"));
+            if (Text(root, "kind") != "mortal_diagnosis" || version is not (1 or 2) ||
                 Text(root, "resultFingerprint") != WoundHistoryState.ComputeTransitionResultFingerprint(root))
                 throw new InvalidDataException("Diagnosis result header or complete fingerprint differs.");
             var start = issues.Count;

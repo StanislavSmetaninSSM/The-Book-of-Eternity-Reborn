@@ -208,6 +208,18 @@ internal sealed class MortalWoundTreatmentResourcePublicationAuthority
             recomposedNormalizedFingerprint,
             StringComparison.Ordinal);
 
+    /// <summary>
+    /// Rederives deterministic comparison identities from the sealed terminal inputs.
+    /// The returned hash is DATA and cannot reserve or publish an operation.
+    /// </summary>
+    internal static string ComputeIdentitySeed(string acceptedFingerprint, string requestFingerprint,
+        string terminalFingerprint, string finalizationFingerprint, string semanticFingerprint) =>
+        WoundAcceptedTurnFingerprintWriter.Compute(new string?[]
+        {
+            "book_of_eternity.mortal_wound_treatment.resource_publication_identity", "1", acceptedFingerprint,
+            requestFingerprint, terminalFingerprint, finalizationFingerprint, semanticFingerprint
+        });
+
     internal AcceptedMechanicsIdentityFactory CreateIdentityFactory() =>
         new TreatmentPublicationIdentityFactory(IdentitySeed);
 
@@ -1206,16 +1218,9 @@ internal static partial class WoundAcceptedTurnPlanner
         var expected = new List<
             MortalWoundTreatmentResourcePublicationDraft.ExpectedTransition>();
         var issues = new List<ValidationIssue>();
-        var identitySeed = WoundAcceptedTurnFingerprintWriter.Compute(new string?[]
-        {
-            "book_of_eternity.mortal_wound_treatment.resource_publication_identity",
-            "1",
-            continuation.AcceptedStateFingerprint,
-            continuation.RequestAuthority.RequestFingerprint,
-            continuation.Resolution.ResultFingerprint,
-            finalization.FinalizationFingerprint,
-            continuation.SemanticFingerprint
-        });
+        var identitySeed = MortalWoundTreatmentResourcePublicationAuthority.ComputeIdentitySeed(
+            continuation.AcceptedStateFingerprint, continuation.RequestAuthority.RequestFingerprint,
+            continuation.Resolution.ResultFingerprint, finalization.FinalizationFingerprint, continuation.SemanticFingerprint);
         var claims = continuation.RequestAuthority.ResourceAuthority.Claims
             .ToDictionary(static value => value.ClaimFingerprint, StringComparer.Ordinal);
         MortalWoundTreatmentItemPublicationAuthority? itemPublicationAuthority = null;
@@ -1490,7 +1495,10 @@ internal static partial class WoundAcceptedTurnPlanner
             claim.ClaimFingerprint,
             StringComparison.Ordinal);
 
-    private static string CreateEventRef(
+    /// <summary>
+    /// Rederives one consumption event from publication semantics and its exact finalization ordinal.
+    /// </summary>
+    internal static string CreateEventRef(
         string semanticFingerprint,
         string finalizationFingerprint,
         int ordinal)

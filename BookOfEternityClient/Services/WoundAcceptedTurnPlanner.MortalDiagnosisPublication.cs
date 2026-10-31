@@ -41,12 +41,8 @@ internal static partial class WoundAcceptedTurnPlanner
             if (shell.Finalization is null || shell.Issues.Count != 0) return MortalWoundTreatmentPublicationResult.Invalid(shell.Issues);
             var critical = MortalWoundCriticalReactionPublicationPlanner.Compose(accepted, request, outcome.Resolution);
             if (!critical.IsValid) return MortalWoundTreatmentPublicationResult.Invalid(critical.Issues);
-            var baseFingerprint = WoundAcceptedTurnFingerprintWriter.Compute(new[]
-            {
-                "book_of_eternity.mortal_diagnosis.publication", "1", accepted.AcceptedStateFingerprint,
-                request.RequestFingerprint, outcome.Resolution.ResultFingerprint, working.Fingerprint,
-                progression.MutationFingerprint, critical.Fingerprint
-            });
+            var baseFingerprint = ComputeMortalDiagnosisPublicationBaseFingerprint(accepted.AcceptedStateFingerprint,
+                request, outcome.Resolution, working.Fingerprint, progression.MutationFingerprint, critical.Fingerprint!);
             var semantic = ComputeTreatmentPublicationEnvelopeFingerprint(baseFingerprint, skill.Envelope, items.Envelope);
             var reserved = AcceptedTurnAuthorityRegistry.ReserveMortalWoundTreatmentPublication(files, lease, accepted, semantic);
             if (reserved.Status != MortalWoundTreatmentPublicationReservationStatus.Reserved || reserved.Authority is null)

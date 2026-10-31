@@ -24,6 +24,7 @@ internal static partial class WoundAcceptedTurnPlanner
         {
             Owner = owner; Outcome = outcome; Working = working; _progression = CloneProgression(progression);
             Publication = publication;
+            PublicationInputs = publication is null ? null : MortalDiagnosisPublicationWitness.Capture(publication);
             _input = WoundAcceptedTurnData.CloneInput(input)!;
             _roots = CloneRecoverySourceRoots(roots);
             Fingerprint = WoundAcceptedTurnFingerprintWriter.Compute(new[]
@@ -44,6 +45,7 @@ internal static partial class WoundAcceptedTurnPlanner
         internal ProgressionScheduleService.FrozenMortalCalculation Progression => CloneProgression(_progression);
         internal string Fingerprint { get; }
         internal MortalDiagnosisPublicationBinding? Publication { get; }
+        internal MortalDiagnosisPublicationWitness? PublicationInputs { get; }
         internal WoundAcceptedTurnInput Input => WoundAcceptedTurnData.CloneInput(_input)!;
         internal IReadOnlyDictionary<string, JsonNode?> SourceRoots => CloneRecoverySourceRoots(_roots);
         internal ImmutableArray<string> TransitionIds => new[] { MortalWoundDiagnosisOutcome.TransitionId(Outcome.Request) }

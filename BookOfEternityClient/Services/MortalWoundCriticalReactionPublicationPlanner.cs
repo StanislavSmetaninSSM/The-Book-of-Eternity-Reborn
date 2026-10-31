@@ -123,6 +123,20 @@ internal static class MortalWoundCriticalReactionPublicationPlanner
         return Valid(request, resolution, actual, lifecycleEvent);
     }
 
+    /// <summary>
+    /// Reconstructs only the closed lifecycle DATA already sealed by a retained
+    /// procedure request and terminal resolution, without restoring live authority.
+    /// </summary>
+    internal static MortalWoundCriticalReactionPublicationResult RecomposeDetached(
+        MortalWoundTreatmentAttemptRequest request, MortalWoundTreatmentResolution resolution)
+    {
+        if (!MortalWoundTreatmentDetachedSealValidator.IsValid(request) ||
+            request.RequestFingerprint != resolution.RequestFingerprint)
+            throw new InvalidDataException("Critical comparison requires the exact sealed request and terminal resolution.");
+        var intent = resolution.CriticalReactionIntent;
+        return Valid(request, resolution, intent, intent is null ? null : CreateLifecycleEvent(intent));
+    }
+
     internal static bool HasMatchingFingerprint(
         MortalWoundTreatmentAttemptRequest request,
         MortalWoundTreatmentResolution resolution,

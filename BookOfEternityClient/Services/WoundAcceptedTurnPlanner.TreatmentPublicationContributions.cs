@@ -5,6 +5,38 @@ namespace BookOfEternityClient.Services;
 
 internal static partial class WoundAcceptedTurnPlanner
 {
+    /// <summary>
+    /// Rederives the exact item consumption command from its sealed finalization, without item authority.
+    /// </summary>
+    internal static MortalItemConsumptionCommand CreateTreatmentItemConsumptionCommand(string acceptedFingerprint,
+        string requestFingerprint, string terminalFingerprint, string finalizationFingerprint, int ordinal,
+        MortalWoundTreatmentResourceConsumptionIntent consumption)
+    {
+        var fingerprint = WoundAcceptedTurnFingerprintWriter.Compute(new string?[]
+        {
+            "book_of_eternity.mortal_wound_treatment.item_consumption_command", "1", acceptedFingerprint,
+            requestFingerprint, terminalFingerprint, finalizationFingerprint, ordinal.ToString("D4", CultureInfo.InvariantCulture),
+            consumption.AuthorityRef, consumption.Quantity.ToString(CultureInfo.InvariantCulture),
+            consumption.ClaimFingerprint, consumption.IntentFingerprint
+        });
+        return new(ordinal + 1, consumption.AuthorityRef, checked((int)consumption.Quantity), consumption.ClaimFingerprint,
+            "mitrn_" + fingerprint["sha256:".Length..], "mortal_wound_treatment",
+            "treatment_item_" + fingerprint["sha256:".Length..("sha256:".Length + 24)]);
+    }
+
+    /// <summary>
+    /// Rederives the exact registered resource source from immutable terminal inputs and quantities.
+    /// </summary>
+    internal static string ComputeTreatmentResourceConsumptionSourceFingerprint(string acceptedFingerprint,
+        string requestFingerprint, string terminalFingerprint, string finalizationFingerprint, string intentFingerprint,
+        string eventRef, ResourceCoordinate coordinate, decimal before, decimal after) =>
+        WoundAcceptedTurnFingerprintWriter.Compute(new string?[]
+        {
+            "book_of_eternity.mortal_wound_treatment.resource_publication_source", "1", acceptedFingerprint,
+            requestFingerprint, terminalFingerprint, finalizationFingerprint, intentFingerprint, eventRef, Describe(coordinate),
+            before.ToString(CultureInfo.InvariantCulture), after.ToString(CultureInfo.InvariantCulture)
+        });
+
     // Detached calculations grant no continuation, hold, item-slot or publication
     // authority. The old homogeneous and new joint issuers authenticate separately.
     private sealed record TreatmentRegisteredResourceContribution(
@@ -120,21 +152,9 @@ internal static partial class WoundAcceptedTurnPlanner
                 semanticFingerprint,
                 finalization.FinalizationFingerprint,
                 ordinal);
-            var sourceFingerprint = WoundAcceptedTurnFingerprintWriter.Compute(
-                new string?[]
-                {
-                    "book_of_eternity.mortal_wound_treatment.resource_publication_source",
-                    "1",
-                    acceptedStateFingerprint,
-                    requestFingerprint,
-                    resultFingerprint,
-                    finalization.FinalizationFingerprint,
-                    consumption.IntentFingerprint,
-                    eventRef,
-                    Describe(coordinate),
-                    before.ToString(CultureInfo.InvariantCulture),
-                    after.ToString(CultureInfo.InvariantCulture)
-                });
+            var sourceFingerprint = ComputeTreatmentResourceConsumptionSourceFingerprint(acceptedStateFingerprint,
+                requestFingerprint, resultFingerprint, finalization.FinalizationFingerprint, consumption.IntentFingerprint,
+                eventRef, coordinate, before, after);
             var source = new ResourceMutationSourceExport(
                 "registered_system_outcome",
                 eventRef,
@@ -231,30 +251,8 @@ internal static partial class WoundAcceptedTurnPlanner
                 return ItemContributionUnsupported(
                     "item finalization does not match one exact held claim");
             }
-            var commandFingerprint = WoundAcceptedTurnFingerprintWriter.Compute(
-                new string?[]
-                {
-                    "book_of_eternity.mortal_wound_treatment.item_consumption_command",
-                    "1",
-                    acceptedStateFingerprint,
-                    requestFingerprint,
-                    resultFingerprint,
-                    finalization.FinalizationFingerprint,
-                    row.Index.ToString("D4", CultureInfo.InvariantCulture),
-                    row.Consumption.AuthorityRef,
-                    row.Consumption.Quantity.ToString(CultureInfo.InvariantCulture),
-                    row.Consumption.ClaimFingerprint,
-                    row.Consumption.IntentFingerprint
-                });
-            commands.Add(new MortalItemConsumptionCommand(
-                row.Index + 1,
-                row.Consumption.AuthorityRef,
-                checked((int)row.Consumption.Quantity),
-                row.Consumption.ClaimFingerprint,
-                "mitrn_" + commandFingerprint["sha256:".Length..],
-                "mortal_wound_treatment",
-                "treatment_item_" +
-                commandFingerprint["sha256:".Length..("sha256:".Length + 24)]));
+            commands.Add(CreateTreatmentItemConsumptionCommand(acceptedStateFingerprint, requestFingerprint,
+                resultFingerprint, finalization.FinalizationFingerprint, row.Index, row.Consumption));
         }
 
         var identity = MortalItemIdentityState.Parse(

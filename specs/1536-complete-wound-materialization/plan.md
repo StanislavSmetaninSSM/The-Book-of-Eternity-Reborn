@@ -1,3 +1,23 @@
+# T121 C21 publication witness/identity WIP — UNCOMPILED/UNRUN
+
+Accepted Astra DESIGN is now connected through the actual frozen publication:
+continuation-owned copied skill CommandRoot and seven nullable item inputs produce
+closed diagnosis result version2. Component/historical version1 remains exact and
+is never supplied an invented empty publication witness. Parsing reuses existing
+envelope freezers; critical lifecycle DATA is purely reconstructed from the retained
+request/terminal result. The shared base/envelope/resource identity-seed/item-command/
+resource-source functions preserve existing hash domains and exact input order.
+No outer durable result fingerprint feeds publication semantics, so the dependency
+remains acyclic. No live owner/claim/receipt is carried in the witness.
+
+This is an intermediate source checkpoint only. Strict fresh current completion
+reader, browser dispatch, typed genuine-publication controls and final affected
+selection remain in progress under T121-DIAGNOSIS-MORTAL-BROWSER-COMPLETION.
+All C21 C# is UNCOMPILED/UNRUN; root owns SOURCE/build/catalog/PREP/runtime after
+complete freeze. C20 browser causal failure, separate console PASS and all raw/
+HOLDs remain preserved. No feature or parent acceptance, GM rule/wire change,
+new cache, cost default, diagnostic transport or speedup claim is made.
+
 # T121 C20 console PASS; actual browser completion-family FAIL
 
 At runtime `319b75b9a2c91e6f36e4940dc3c5a2fdf55a678c`, Integration compiled

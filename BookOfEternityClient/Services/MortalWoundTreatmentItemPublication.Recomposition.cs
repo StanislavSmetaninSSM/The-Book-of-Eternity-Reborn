@@ -6,16 +6,9 @@ namespace BookOfEternityClient.Services;
 internal sealed partial class MortalWoundTreatmentItemPublicationAuthority
 {
     private string ComputeIdentitySeed(string semanticFingerprint) =>
-        WoundAcceptedTurnFingerprintWriter.Compute(new string?[]
-        {
-            "book_of_eternity.mortal_wound_treatment.resource_publication_identity",
-            "1",
-            AcceptedStateAuthority.AcceptedStateFingerprint,
-            RequestAuthority.RequestFingerprint,
-            ResolutionAuthority.ResultFingerprint,
-            Finalization.FinalizationFingerprint,
-            semanticFingerprint
-        });
+        MortalWoundTreatmentResourcePublicationAuthority.ComputeIdentitySeed(
+            AcceptedStateAuthority.AcceptedStateFingerprint, RequestAuthority.RequestFingerprint,
+            ResolutionAuthority.ResultFingerprint, Finalization.FinalizationFingerprint, semanticFingerprint);
 
     private bool TryRecompose(
         out IReadOnlyDictionary<string, JsonObject> skillAfterImages,
@@ -167,40 +160,10 @@ internal sealed partial class MortalWoundTreatmentItemPublicationAuthority
             {
                 return false;
             }
-            var fingerprint = WoundAcceptedTurnFingerprintWriter.Compute(
-                new string?[]
-                {
-                    "book_of_eternity.mortal_wound_treatment.item_consumption_command",
-                    "1",
-                    AcceptedStateAuthority.AcceptedStateFingerprint,
-                    RequestAuthority.RequestFingerprint,
-                    ResolutionAuthority.ResultFingerprint,
-                    Finalization.FinalizationFingerprint,
-                    row.Index.ToString("D4", CultureInfo.InvariantCulture),
-                    consumption.AuthorityRef,
-                    consumption.Quantity.ToString(CultureInfo.InvariantCulture),
-                    consumption.ClaimFingerprint,
-                    consumption.IntentFingerprint
-                });
-            var command = _consumptionInput.Commands[index];
-            if (command.FinalizationOrdinal != row.Index + 1 ||
-                !string.Equals(command.ItemId, consumption.AuthorityRef,
-                    StringComparison.Ordinal) ||
-                command.Quantity != consumption.Quantity ||
-                !string.Equals(command.ClaimFingerprint,
-                    consumption.ClaimFingerprint, StringComparison.Ordinal) ||
-                !string.Equals(command.TransitionId,
-                    "mitrn_" + fingerprint["sha256:".Length..],
-                    StringComparison.Ordinal) ||
-                !string.Equals(command.AuthorityKind,
-                    "mortal_wound_treatment", StringComparison.Ordinal) ||
-                !string.Equals(command.AuthorityId,
-                    "treatment_item_" +
-                    fingerprint["sha256:".Length..("sha256:".Length + 24)],
-                    StringComparison.Ordinal))
-            {
-                return false;
-            }
+            var expectedCommand = WoundAcceptedTurnPlanner.CreateTreatmentItemConsumptionCommand(
+                AcceptedStateAuthority.AcceptedStateFingerprint, RequestAuthority.RequestFingerprint,
+                ResolutionAuthority.ResultFingerprint, Finalization.FinalizationFingerprint, row.Index, consumption);
+            if (_consumptionInput.Commands[index] != expectedCommand) return false;
         }
         return true;
     }
