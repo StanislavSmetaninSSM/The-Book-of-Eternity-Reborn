@@ -1,5 +1,23 @@
 # Проверка проекта #1573
 
+## T133 — определение искусства и личное владение
+
+Baseline/origin fe5245392231e7ee6596180d322c14bb6240d855 сверены; #1573 и #1534
+прочитаны с GitHub. Два read-only Sol6.1/high аудита: mortal Rules и духовные
+договоры/память. Parent прочитал ключевые исходники, TrainingService символами
+Serena (ready, локально csharp/typescript/python; C# bodies доступны).
+Отмечены: отсутствие общего untrained penalty, личный active mastery без mortal
+потолка, разные player/NPC начисления, рекомендательный3M против fallback100M,
+реальный локальный progress без auto-level. T133 не переносит эти числа молча.
+
+Brainstorming + Spec Kit bridge + writing-plans использованы для подготовки
+предложения внутри existing spec/plan/tasks/combat-system-proposal. Consistency:
+свободные действия/формулы/память сохранены; новые mastery/grant рекомендации
+явно кандидаты. Нет production/Rules/probes изменений, тестов, сборок или новой
+матрицы. Оптимизация: новая runtime операция отсутствует; будущий stable DATA
+reuse следует existing service, fresh owner/resources/effects не заменяются.
+Independent whole-block review, ссылки/diff и публикация ещё впереди.
+
 ## T131 — аудит исходных правил, checkpoint
 
 2026-11-01. Baseline e8e01f6465eaf57c51c536140743421595d4bb3c; checkout/origin
