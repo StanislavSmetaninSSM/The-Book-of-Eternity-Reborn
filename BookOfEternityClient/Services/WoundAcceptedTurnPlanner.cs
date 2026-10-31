@@ -1425,7 +1425,11 @@ internal static partial class WoundAcceptedTurnPlannerCore
         return BuildFinalWoundCore(compilation.Before, compilation.FinalScalars, complications, batch.SourceExport.Definitions, rows);
     }
 
-    private static FinalWoundResult BuildFinalWoundCore(WoundMaterializationEnvelope before, WoundFinalAssemblyScalars scalars,
+    /// <summary>
+    /// Assembles canonical wound DATA from independently validated finalized root
+    /// identities and scalars; this does not create a batch or publication permit.
+    /// </summary>
+    internal static FinalWoundResult BuildFinalWoundCore(WoundMaterializationEnvelope before, WoundFinalAssemblyScalars scalars,
         IReadOnlyList<WoundComplication> complicationRows, IReadOnlyList<WoundEffectSourceDefinition> sourceDefinitions,
         IReadOnlyList<WoundFinalRootAssemblyRow> roots)
     {

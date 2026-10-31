@@ -8,7 +8,7 @@ namespace BookOfEternityClient.Services;
 /// Shared fresh canonical settlement comparison for guided Mortal procedures.
 /// Its copied DATA lasts one caller-owned read operation and grants no permission.
 /// </summary>
-internal static class MortalWoundTreatmentCompletion
+internal static partial class MortalWoundTreatmentCompletion
 {
     private static readonly string[] ItemCompanions =
     ["game_state/inventory/item_bonds.json", "game_state/inventory/item_text_updates.json",
@@ -45,10 +45,15 @@ internal static class MortalWoundTreatmentCompletion
     }
 
     /// <summary>
+    /// Retains validated current effect DATA inside this one comparison operation.
+    /// </summary>
+    internal sealed record CurrentCanonicalAgreement(EffectCarrierCatalog Effects, EffectIdentityState EffectIndex);
+
+    /// <summary>
     /// Requires exact owned consumptions and complete current canonical agreement,
     /// allowing only valid ordinary successor chains, without restoring authority.
     /// </summary>
-    internal static async Task RequireCanonicalSettlementAsync(Dictionary<string, byte[]?> bytes,
+    internal static async Task<CurrentCanonicalAgreement> RequireCanonicalSettlementAsync(Dictionary<string, byte[]?> bytes,
         Dictionary<string, JsonNode?> nodes, MortalWoundTreatmentAttemptRequest request, string terminalResultFingerprint,
         int turn, MortalWoundTreatmentResourceFinalization finalization, string semantic)
     {
@@ -97,6 +102,7 @@ internal static class MortalWoundTreatmentCompletion
         issues.AddRange(targetAuthority.ValidateNamedCombatantBindings(effectInput));
         ValidationService.ValidateCanonicalEffectBindings(effects, sourceAuthority, targetAuthority, issues);
         if (issues.Count != 0) throw Invalid("Current effect/source/target/index agreement changed.");
+        return new(effects, effectIndex.State);
     }
 
     private static MortalWoundTreatmentRequirementSuccessWitness QuantityWitness(MortalWoundTreatmentAttemptRequest request,

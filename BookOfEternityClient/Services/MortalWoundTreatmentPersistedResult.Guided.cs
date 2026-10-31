@@ -14,6 +14,17 @@ internal sealed partial class MortalWoundTreatmentPersistedResult
         MortalWoundTreatmentResourceFinalization Finalization, string SemanticFingerprint,
         string BindingFingerprint, string SourcePath, long CurrentMinute);
 
+    /// <summary>
+    /// Copies the actual signed prepared schedule, retained solely to compare
+    /// ordinary progression after cleanup against its independent original hash.
+    /// </summary>
+    internal byte[] ReadGuidedOriginalScheduleBytes() => Convert.FromBase64String(
+        RequiredText(_canonicalResult, "originalScheduleBase64"));
+
+    /// <summary>
+    /// Distinguishes actual guided publication comparison DATA from historical
+    /// terminal receipts, which never receive an implicit empty witness.
+    /// </summary>
     internal bool HasGuidedPublicationWitness => _canonicalResult["schemaVersion"]?.GetValue<int>() == 2;
 
     /// <summary>
@@ -35,6 +46,7 @@ internal sealed partial class MortalWoundTreatmentPersistedResult
             ["bindingFingerprint"] = owner.BindingFingerprint,
             ["sourcePath"] = owner.WoundSourcePath,
             ["currentMinute"] = owner.CurrentGameMinute,
+            ["originalScheduleBase64"] = Convert.ToBase64String(owner.ReadDiagnosisOriginalBytes(ProgressionScheduleService.SchedulePath)),
             ["publicationInputs"] = inputs.ToCanonicalJson()
         };
         root["resultFingerprint"] = WoundHistoryState.ComputeTransitionResultFingerprint(root);
@@ -85,7 +97,7 @@ internal sealed partial class MortalWoundTreatmentPersistedResult
                 throw new InvalidDataException("Duplicate guided result fields.");
             var root = JsonNode.Parse(element.GetRawText())?.AsObject() ?? throw new InvalidDataException("Missing guided result.");
             var names = new[] { "kind", "schemaVersion", "terminal", "bindingFingerprint", "sourcePath",
-                "currentMinute", "publicationInputs", "resultFingerprint" };
+                "currentMinute", "originalScheduleBase64", "publicationInputs", "resultFingerprint" };
             if (root.Count != names.Length || names.Any(name => !root.ContainsKey(name)) ||
                 RequiredText(root, "kind") != "treat" || root["schemaVersion"]!.GetValue<int>() != 2 ||
                 root["terminal"] is not JsonObject terminal || terminal.ContainsKey("schemaVersion") ||
@@ -94,6 +106,10 @@ internal sealed partial class MortalWoundTreatmentPersistedResult
                 root["currentMinute"]!.GetValue<long>() < 0 || string.IsNullOrWhiteSpace(RequiredText(root, "sourcePath")) ||
                 RequiredText(root, "resultFingerprint") != WoundHistoryState.ComputeTransitionResultFingerprint(root))
                 throw new InvalidDataException("Unknown, incomplete or changed guided result fields/seal.");
+            var schedule = Convert.FromBase64String(RequiredText(root, "originalScheduleBase64"));
+            if (Convert.ToBase64String(schedule) != RequiredText(root, "originalScheduleBase64") ||
+                JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(schedule)) is not JsonObject)
+                throw new InvalidDataException("Guided original schedule is not exact canonical Base64 JSON DATA.");
             var start = issues.Count;
             var historical = Parse(JsonSerializer.SerializeToElement(terminal), path + ".terminal", issues);
             if (historical is null || issues.Count != start) return null;
@@ -103,7 +119,7 @@ internal sealed partial class MortalWoundTreatmentPersistedResult
             return result;
         }
         catch (Exception failure) when (failure is InvalidDataException or InvalidOperationException or
-                                       ArgumentException or JsonException or OverflowException)
+                                       ArgumentException or JsonException or OverflowException or FormatException)
         {
             issues.Add(new ValidationIssue(path, IssueSeverity.Error,
                 "The complete guided treatment publication DATA is invalid.",

@@ -1,3 +1,44 @@
+# T121 physical browser/current predicate connected — WIP UNCOMPILED/UNRUN
+
+Continues saved frozen/current DATA d703f723ebffa4ed5a541b135a4767c4ce268ad7.
+Sol froze8 source paths; root checked actual paths/static diff. Both browser
+completion consumers now enter the same physical predicate, using exact staged
+selection/control/token/generation/dice and guided v2 publication witness, canonical
+cost/item/effect/owner checks, complete History/current identity and consumed-work
+absence. Existing diagnosis canonical validator is shared once per read operation.
+No registry, reservation or accepted application result is reconstructed by this DATA.
+
+New Completion.Guided.cs and Completion.Wounds.cs use the existing pure final-wound
+assembly. Expected new root events derive from the original selected transition;
+exact durable create/source/target/definition/materialization/ownership and current
+carrier/index joins yield actual allocated IDs. Unchanged roots retain OriginalEffectId.
+Missing/ambiguous/extra/foreign mappings reject. The already validated effect catalog/
+index is reused rather than reread. These source assertions remain runtime UNPROVED.
+
+The guided witness now carries only one small authenticated prepared-original
+schedule image from the existing owner DATA, with no new physical read. Browser
+checks its exact bytes against the independently authenticated manifest hash before
+using the unchanged frozen sanitizer/ordinary outcome calculation. Complete correlated
+schedule candidates preserve every gameplay field; only lastUpdatedUtc follows the
+existing round-trip UTC capture policy, not a claimed exact historical timestamp.
+Independent Astra source clarification confirms sanitizer does NOT recompute elapsed
+pending. Original pending0 finishes pending0 in both lawful optional-report branches;
+positive pending retains required-report/marker rules. No independent counter
+allowances, inferred report, new report-disposition witness or duration is introduced.
+The separate joint frozen-progression family remains unchanged.
+
+New ProgressionScheduleService.MortalTreatmentCompletion.cs contains that bounded
+DATA comparison; live publication and action authority stay with existing owners.
+No build/test/discovery or full SOURCE acceptance ran. All physical product changes
+from0c3 onward remain UNCOMPILED/UNRUN; accepted diagnosis and causal evidence retain
+their prior explicit epochs, not current-head qualification.
+
+Next: finite actual publication/current-tamper/fault/cold/transfer and real console/
+browser/course/rollback fixtures; menu route-hoist and affected spiritual equivalence;
+GM guidance/worked examples/XML/source inventory pins/catalog/selection. Then one
+coherent independent SOURCE and fresh owning builds/exact PREP precede runtime.
+All raw, retained roots and broader HOLDs remain unchanged outside checkout/GitHub.
+
 # T121 physical frozen/current DATA — WIP UNCOMPILED/UNRUN
 
 Continues Engine/common bridge68e504c73dd1232d2a0809f71f4f8c8b1efe2b14.

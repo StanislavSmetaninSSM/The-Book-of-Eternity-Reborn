@@ -1714,7 +1714,11 @@ internal static partial class MortalWoundTreatmentOutcomePublicationPlanner
         return new(severity, care, recovery, metadata.Treatment, metadata.LastTransition, working.Scalars.SlotBudget);
     }
 
-    private static WoundDeclaredTransitionOutcome CreateDeclaredOutcome(
+    /// <summary>
+    /// Projects the existing closed outcome facts from an independently assembled
+    /// final wound for detached transition comparison.
+    /// </summary>
+    internal static WoundDeclaredTransitionOutcome CreateDeclaredOutcome(
         WoundMaterializationEnvelope after, MortalWoundTreatmentSelectedGraphCompilation? selectedGraph) => new(
         after.Severity.Rank,
         after.Care.State,

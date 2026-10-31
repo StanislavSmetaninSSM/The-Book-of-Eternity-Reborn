@@ -490,6 +490,15 @@ public partial class GameEngine
         var request = StrictJsonAuthority.Deserialize<TurnRequest>(staged.RequestJson, JsonOpts, "accepted browser healing request")!;
         var source = StrictJsonAuthority.Deserialize<JsonObject>(CanonicalJsonUtf8.DecodeOneOptionalBom(
             Convert.FromBase64String(staged.SpiritualWoundRequestBytesBase64!)), JsonOpts, "accepted original healing source")!;
+        if (staged.Binding.SpiritualSelfTreatment.MortalTreatment is not null)
+        {
+            if (!manifest.Files.ContainsKey(ProgressionScheduleService.SchedulePath) ||
+                !manifest.SnapshotFileHashes.TryGetValue(ProgressionScheduleService.SchedulePath, out var originalScheduleHash))
+                throw new InvalidDataException(BrowserRecoveryMessage);
+            _ = await MortalWoundTreatmentCompletion.RequirePublishedAsync(request, manifest.ManifestPayloadHash,
+                staged.Binding.Generation, staged.Binding.SpiritualSelfTreatment, source, originalScheduleHash, read);
+            return;
+        }
         if (staged.Binding.SpiritualSelfTreatment.MortalDiagnosis is not null)
         {
             _ = await MortalWoundDiagnosisCompletion.RequirePublishedAsync(request, manifest.ManifestPayloadHash,
