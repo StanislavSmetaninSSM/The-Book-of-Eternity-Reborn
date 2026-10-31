@@ -1,3 +1,32 @@
+# T121 four fixture corrections — owning provenance / exact PREP, UNRUN
+
+Astra coherent SOURCE accepted `80bb1d9f8c54c79e63f33591ad35051c69d81fe4`
+for Integration-only build admission. Fresh Integration exits0 in 1:42.04 with
+unchanged 102 warnings. Unchanged Main/Support/Unit retain successful C8C1 source
+`797cc898f7b7b8faf6243d18e99cc3ab496cead6`. All four PE/PDB pairs and
+328 actual source bindings match; only Integration DLL/PDB changed among the
+27 artifacts. Forty resource copies and four daemons remain exact.
+Archive62879755 bytes, SHA256
+`a0fe42f9df5cb18566f9a7dc2c3b93f252439848fc05a3991a3486b43ae50a23`;
+all27 member hashes/full gzip EOFCRC over197058560 decoded bytes pass.
+
+Official discovery:1261 categories/13077 methods, zero test executions, no stale
+or unmapped selectors. Exact official PlanOnly:215 cases/87 methods/47 descriptors/
+45 categories, no duplicate methods, zero executions and complete cleanup.
+Disjoint phases: retained202 (75 methods/35 descriptors), corrected4 (4 methods/
+4 descriptors), dependent native6 and three separate UI singletons. Retention uses
+the accepted epochs, including15 native PASS at afd49; no fresh202/215 claim.
+
+Next requested independent PREP is only corrected4: durable DATA, private cohort,
+valid guided staging and elapsed300 scheduling. Each remains120s. The new Facts
+replace the two previously FAILED theory rows; passed negative/zero identities
+and semantics are retained. Their strict suffixes and corrected oracles are UNRUN.
+Dependent6/Fate/ordinary and UI3 remain held; broader ordinary TIMEOUT stays
+UNKNOWN/open. Full raw/provenance is external in
+`/workspace/tboe-linux-evidence-20261025/us5-guided-diagnosis/M2GREENC8C3-*`.
+No production/game rule/cache/GM contract changed. All parent, physical-treatment,
+eight-adapter and previous HOLD residuals remain open.
+
 # T121 independent native19 — fixture-only correction WIP, UNCOMPILED / UNRUN
 
 Root reconciled 19 distinct case IDs / 9 methods across four unchanged-source
