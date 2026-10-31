@@ -20,7 +20,10 @@ production code, terminal claim or UI acceptance is introduced. Whole images and
 every original assertion remain; scope/lease/root cleanup remains fully owned.
 
 The positive/no-World/production-actual-frame row is separate from the independent
-genuine foreign original/override row. Explicit current/foreign Matches assertions,
+genuine foreign original/override row. The independent foreign baseline explicitly
+requires its unique inventory guard before whole-vector equality, so the moved
+refusal proof cannot pass on an empty or unrelated issue vector; no additional
+read or validation call is added. Explicit current/foreign Matches assertions,
 physical NPC equality, end proof, complete raw-versus-completed issue ordering and
 whole-image equality move intact to the latter. It skips the positive body; the
 positive skips foreign fixture construction. Parse-drift and final-proof controls

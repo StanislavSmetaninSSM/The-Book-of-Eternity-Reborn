@@ -140,6 +140,7 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                         using (validator.UsePrevalidatedPendingTurnSnapshotScope(foreignManifest))
                         {
                             var foreignRaw = await validator.ValidatePostMaterializedGameStateAsync();
+                            Assert.Single(foreignRaw, MortalWoundTreatmentResolverTests.IsCompletedItemInventoryIssue);
                             using var foreignScope = validator.UseCompletedTreatmentItemValidationScope(completed);
                             var foreignActual = await validator.ValidatePostMaterializedGameStateAsync();
                             Assert.True(foreignScope.Observed);
