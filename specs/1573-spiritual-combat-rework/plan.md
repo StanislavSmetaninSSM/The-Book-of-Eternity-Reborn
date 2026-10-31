@@ -111,20 +111,20 @@ collapsed всех членов. Не добавлять новые эффект
 
 ### TDD, проверки и исполнение
 
-- [ ] T123.2 RED: guards на реальную оплату/бюджет/решение до RNG; GREEDY vs reserve
+- [x] T123.2 RED: guards на реальную оплату/бюджет/решение до RNG; GREEDY vs reserve
   дают разные действия на фиксированной низкой ДЭ. Два контрольных состояния
   сHP72: collapsed запрещён, живой допускается. Смена цели меняет resistance;
   падение healer не завершает группу; allyHeal возвращает helper без extra Main;
   pending не переназначается; expiry на skipped slot; один выбранный interrupter
   тратит свой ресурс; остальные не теряют реакцию. Guards всех endpoint/censor.
-- [ ] GREEN: новый runner поверх принятых функций; существующие файлы probes
+- [x] GREEN: новый runner поверх принятых функций; существующие файлы probes
   не менять без воспроизводимого дефекта. Ранние tests проверяют числа fixtures,
   а не копируют вычисления implementation. Matrix guard проверяет уникальность/
   полное покрытие/подтверждающую выборку. Дешёвый smoke до длинных измерений.
-- [ ] Запустить `node --test specs/1573-spiritual-combat-rework/probes/*.test.mjs`:
+- [x] Запустить `node --test specs/1573-spiritual-combat-rework/probes/*.test.mjs`:
   ожидается0fail, старые66tests и новые. Это связанный numerical набор, не C# suite.
   Сохранить WIP/source/checkpoint в GitHub до полной матрицы.
-- [ ] T123.3 Выполнить4матрицы с raw в `D:\BoeDiagnostics\healing-tactics-t123\20261031-v1`;
+- [x] T123.3 Выполнить4матрицы с raw в `D:\BoeDiagnostics\healing-tactics-t123\20261031-v1`;
   проверить metadata/count/complete/outcomes/exit0/stderr. Сохранить источник и
   краткий `healing-tactics-investigation.md`; utility T122 сохранить в проверках.
 - [ ] T123.4 Независимый Astra/high whole-block review с фактическим diff/raw;
@@ -170,6 +170,13 @@ seed и численный результат не зависят от shard. Э
 worker, exact index coverage без дублей, metadata/params/seed/count/outcomes.
 Исходный process exit-1 — намеренная остановка для распределения, не сбой теста;
 финальный отчёт не должен утверждать, что он завершился exit0.
+
+T123.3 завершён: source c5bd379b6,84/84guards,2312cells/3 356 000траекторий.
+Все три confirmation workers exit0; исходные0–14 и результаты15–115 объединены,
+точные параметры/seeds/coverage/outcomes/endpoints проверены по генератору.
+Отчёт [healing-tactics-investigation.md](healing-tactics-investigation.md)
+сохраняет неудачу reserve при дефицитеДЭ и затяжной helper-focus. T123.4 ещё открыт:
+финальное review, retention, публикация/readback. Production-gates не менялись.
 
 ## T123 — подготовка следующего исследования, ожидается review scope
 
