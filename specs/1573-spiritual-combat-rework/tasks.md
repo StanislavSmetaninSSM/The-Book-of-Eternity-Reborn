@@ -4,7 +4,7 @@
 
 - [x] T133.1 Два Sol6.1/high source audit и parent C#/Rules проверка: freeform/definition/mastery, практика в TrainingService, память/ранги/материализация. Scope/plan/consistency записаны; numerical gates открыты.
 - [x] T133.2 В существующем combat-system-proposal.md подготовлено предложение с вариантами/примерами, статусами и следующими количественными вопросами; без нового каталога/цен/прогонов. Согласование новых чисел не подменено одобрением направления.
-- [ ] T133.3 Independent whole-block review, ссылки/diff/публикация/readback/clean restore; показать конкретное предложение автору, не назвать новые правила принятыми.
+- [x] T133.3 Independent Astra/high whole-block review: pass без findings;20 ссылок/anchors/diff/scope проверены. WIP6d273f2fc опубликован;5 GitHub blob SHA совпали с source и новым чистым sparse restore. Финальный checkpoint/readback — issue1573; автору предъявляется предложение, а не принятое правило.
 
 ## T132 — вернуться к общей системе
 
