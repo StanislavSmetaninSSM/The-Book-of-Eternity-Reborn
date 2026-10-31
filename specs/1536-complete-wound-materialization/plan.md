@@ -1,3 +1,28 @@
+# T121 C12 native9 PASS — UI3 OUTCOME/PREP pending
+
+Runtime `ed0a8a8766ba49b779719118100bc569a560003b` completed9/9 PASS,
+three exact methods/descriptors in1:49.5524984, no timeout, skips, duplicate IDs or
+underfill. Input-role6 took18.7984273s, outer2 48.0781631s, published recovery1
+33.3893887s, each within its unchanged120s budget. The affected shared command/
+schedule export, native single-image role, exact normal/Fate retry and published
+recovery consumers now pass after the complete real Engine original control.
+Strict raw TRX/method/ID counts, owning pins and full owned/runtime cleanup pass.
+
+Closing14:28:53Z verifies all27 artifacts/40 resource copies/four daemons stable,
+no live managed owners and2.134GB free. Source remains99703ab6; full external
+proof is `M2GREENC12-native9`. Earlier failed/UNKNOWN attempts stay preserved.
+Current bounded coverage is202 retained plus13 fresh C12 PASS across explicit
+source epochs; only UI3 remains unqualified within the218-case Mortal selection.
+This is neither a fresh215 aggregate nor whole wound materialization acceptance.
+
+Request independent native9 OUTCOME and subsequent PREP for console/browser/
+rollback separately, each one existing exclusive180s case with full passive gzip
+capture and closing verification. Seed fixes and all initial/GM-response/source
+assertions remain unchanged since reviewed C10; current C12 roles now qualify
+the actual Engine and retry prerequisites. UI3 is still UNRUN/held until that
+acceptance, not implied by native9. Keep every physical-treatment/eight-adapter/
+parent/DOM/provider/fresh-process/HOLD boundary and all external raw/root retention.
+
 # T121 C12 focused4 PASS — native9 OUTCOME/PREP pending
 
 Runtime `5f5c7c8f7f7669552e6e28f66402e8648379c7f6` completed4/4 PASS,
