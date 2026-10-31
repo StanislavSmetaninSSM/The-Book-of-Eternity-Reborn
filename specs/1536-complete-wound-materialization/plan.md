@@ -1,3 +1,26 @@
+# T121 corrected common-context Fact PASS — native19 PREP pending
+
+At runtime `0e2f9ca3d801120ce210278fea26e8e5ad5801ba`, with the explicit
+C8C2 mixed owning provenance above, the corrected common-context Fact completed
+1/1 PASS, one method/descriptor, wall45.0954298s (category36.0278691s within60s).
+Root verified exact planned/TRX identity, full cleanup, no timeout/duplicates and
+stable binary/resource/source pins. The structured clock refusal and all restoration/
+claim suffix assertions now actually passed. Strict proof/full raw are external
+in `M2GREENC8C2-focused1`; independent OUTCOME remains the next review action.
+Accepted callback1/semantic guards3 stay on C8C1, with earlier component/shape/
+resource and other successful cases retained by their explicit source lineages.
+This is not one fresh combined run, and earlier failed/UNKNOWN evidence remains.
+
+Next requested PREP is only the original independent native19 partition: purpose
+ownership, terminal outcomes, pre-handoff retention, working time, durable DATA,
+effect execution, input roles and guided staging. Official plan confirms 19 cases /
+9 methods / 8 exclusive Integration descriptors, each120s, unchanged membership.
+These cases are UNRUN; dependent6 (including real Fate/ordinary publication),
+console/browser/rollback remain held. No native or interface PASS is claimed.
+Existing source/PDB/artifacts and full diagnostic capture remain required; no
+additional build is needed for plan-only receipts. The broader ordinary timeout,
+all parent/physical-treatment/eight-adapter residuals and previous HOLDs stay open.
+
 # T121 exact structured-refusal Fact — mixed owning provenance / PREP, UNRUN
 
 Astra accepted the test-only delta at
