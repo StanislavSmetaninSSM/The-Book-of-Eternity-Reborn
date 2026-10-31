@@ -51,7 +51,7 @@ internal static partial class SpiritualSelfTreatmentRequestCodec
     internal static bool IsBound(JsonObject root, SpiritualSelfTreatmentStageContext context,
         SpiritualSelfTreatmentSelection selection, string realm, int ordinal)
     {
-        if (selection.Diagnosis is not null) return false;
+        if (selection.Diagnosis is not null || selection.MortalDiagnosis is not null) return false;
         if (!Closed(root, "schemaVersion", "kind", "sessionId", "requestId", "turn", "attempt", "requestFingerprint") ||
             Int(root["schemaVersion"]) != 2 || Text(root["kind"]) != Kind || ordinal < 1 ||
             realm is not ("chaos_sea" or "shining_abode") ||

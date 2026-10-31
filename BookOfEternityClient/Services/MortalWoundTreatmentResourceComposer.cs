@@ -669,6 +669,40 @@ internal static partial class MortalWoundTreatmentResourceComposer
         requirementAuthority,
         modeAuthority);
 
+    internal static MortalWoundTreatmentResourcePreparationResult PrepareDiagnosis(
+        MortalWoundTreatmentAcceptedStateAuthority acceptedState,
+        MortalWoundTreatmentAttemptCoordinates coordinates,
+        WoundMaterializationEnvelope before,
+        MortalWoundTreatmentRequirementAuthorityBundle requirementAuthority,
+        MortalWoundProcedureCheckAuthority modeAuthority)
+    {
+        var issues = new List<ValidationIssue>();
+        try
+        {
+            var subject = MortalWoundProcedureSubject.FromAccepted(acceptedState, before, "diagnosis", coordinates.MemberId);
+            if (coordinates.Purpose != "diagnosis" || !coordinates.MatchesAcceptedState(acceptedState) ||
+                !modeAuthority.MatchesFreshDiagnosis(acceptedState, coordinates, before, requirementAuthority) ||
+                requirementAuthority.Mode != "diagnosis" || requirementAuthority.RouteFingerprint != subject.Fingerprint ||
+                requirementAuthority.Scopes.Count != 1 || requirementAuthority.CourseId is not null ||
+                requirementAuthority.CourseMilestoneOrdinal is not null || requirementAuthority.CourseCoordinateFingerprint is not null ||
+                requirementAuthority.CourseRequirementStatus is not null || requirementAuthority.InterruptionReason is not null ||
+                !TryValidateScope(requirementAuthority.Scopes[0], "common", null, subject.TypedRequirements, issues) ||
+                !TryValidateMemberPolicy(subject.ResourcePolicy, "diagnosis", subject.TypedRequirements, issues))
+            {
+                AddIssue(issues, "mortal_wound_diagnosis_resource_authority_invalid",
+                    "the current purpose-bound diagnosis check, requirements and resource policy", "stale or mismatched authority");
+                return MortalWoundTreatmentResourcePreparationResult.Invalid(issues);
+            }
+            return ReservePreparedResources("diagnosis", acceptedState, coordinates, requirementAuthority,
+                modeAuthority, subject.Fingerprint, subject.ResourcePolicy, issues);
+        }
+        catch (Exception exception) when (exception is ArgumentException or InvalidOperationException or InvalidDataException or JsonException)
+        {
+            AddIssue(issues, "mortal_wound_diagnosis_resource_authority_invalid", "one current diagnosis resource owner", exception.Message);
+            return MortalWoundTreatmentResourcePreparationResult.Invalid(issues);
+        }
+    }
+
     internal static MortalWoundTreatmentResourcePreparationResult PrepareCourse(
         MortalWoundTreatmentAcceptedStateAuthority acceptedState,
         MortalWoundTreatmentAttemptCoordinates coordinates,
@@ -1323,6 +1357,17 @@ internal static partial class MortalWoundTreatmentResourceComposer
             return MortalWoundTreatmentResourcePreparationResult.Invalid(issues);
         }
 
+        return ReservePreparedResources(mode, acceptedState, coordinates, requirementAuthority, modeAuthority,
+            routeFingerprint!, route!.ResourcePolicy, issues);
+    }
+
+    private static MortalWoundTreatmentResourcePreparationResult ReservePreparedResources(
+        string mode, MortalWoundTreatmentAcceptedStateAuthority acceptedState,
+        MortalWoundTreatmentAttemptCoordinates coordinates,
+        MortalWoundTreatmentRequirementAuthorityBundle requirementAuthority,
+        MortalWoundTreatmentModeAuthority modeAuthority, string routeFingerprint,
+        MortalWoundTreatmentResourcePolicy policy, List<ValidationIssue> issues)
+    {
         IReadOnlyList<MortalWoundTreatmentResourceClaim>? claims;
         if (requirementAuthority.InterruptionReason is not null)
         {
@@ -1337,15 +1382,15 @@ internal static partial class MortalWoundTreatmentResourceComposer
             ? MortalWoundTreatmentResourceReservationAuthority.CreateNotRequired(
                 AuthorityMintCapability,
                 coordinates,
-                routeFingerprint!,
+                routeFingerprint,
                 requirementAuthority,
-                route!.ResourcePolicy)
+                policy)
             : MortalWoundTreatmentResourceReservationAuthority.CreateHeld(
                 AuthorityMintCapability,
                 coordinates,
-                routeFingerprint!,
+                routeFingerprint,
                 requirementAuthority,
-                route!.ResourcePolicy,
+                policy,
                 claims);
         var reservation = acceptedState.ReserveTreatmentResources(
             ResourceReservationCapability,
@@ -1918,6 +1963,22 @@ internal static partial class MortalWoundTreatmentResourceComposer
             mutation.MilestoneOrdinal?.ToString(CultureInfo.InvariantCulture) ?? "null",
             mutation.RequirementIndex.ToString(CultureInfo.InvariantCulture));
         return selectorKeys.Add(key);
+    }
+
+    private static bool TryValidateMemberPolicy(MortalWoundTreatmentResourcePolicy policy, string mode,
+        IReadOnlyList<MortalWoundTreatmentRequirement> requirements, ICollection<ValidationIssue> issues)
+    {
+        var keys = new HashSet<int>();
+        var valid = mode == "diagnosis" && policy.ReserveBeforeResolution &&
+            policy.ConsumeOn.Length <= 2 && policy.ConsumeOn.Distinct(StringComparer.Ordinal).Count() == policy.ConsumeOn.Length &&
+            policy.ConsumeOn.All(value => value is "success" or "failed_attempt") &&
+            policy.RefundOn.SequenceEqual(new[] { "cancelled", "validation_failed", "rolled_back" }) &&
+            policy.Mutations.Length <= 64 && policy.Mutations.All(value => value.Kind == "consume_requirement" &&
+                value.Scope == "common" && value.MilestoneOrdinal is null && value.RequirementIndex >= 0 &&
+                value.RequirementIndex < requirements.Count &&
+                requirements[value.RequirementIndex].Kind is "item_quantity" or "resource_quantity" && keys.Add(value.RequirementIndex));
+        if (!valid) AddIssue(issues, "mortal_wound_diagnosis_resource_policy_invalid", "one exact current diagnosis policy", ComputePolicyFingerprint(policy));
+        return valid;
     }
 
     internal static string ComputePolicyFingerprint(

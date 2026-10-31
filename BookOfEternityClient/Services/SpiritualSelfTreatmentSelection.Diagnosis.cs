@@ -10,12 +10,12 @@ internal sealed partial record SpiritualSelfTreatmentSelection
 
     internal void RequireTreatmentPurpose()
     {
-        if (Diagnosis is not null) throw new InvalidDataException("Diagnosis requires its own execution boundary.");
+        if (Diagnosis is not null || MortalDiagnosis is not null) throw new InvalidDataException("Diagnosis requires its own execution boundary.");
     }
 
     private JsonObject DiagnosisJson()
     {
-        if (Diagnosis is not { } diagnosis || Aid is not null || Combat is not null || Service is not null)
+        if (Diagnosis is not { } diagnosis || MortalDiagnosis is not null || Aid is not null || Combat is not null || Service is not null)
             throw new InvalidDataException("Diagnosis cannot mix with treatment families.");
         var root = new JsonObject { ["schemaVersion"] = 9, ["mode"] = "diagnose", ["woundId"] = WoundId,
             ["expectedWoundFingerprint"] = ExpectedWoundFingerprint, ["target"] = SpiritualHealingRequestProjection.OwnerJson(diagnosis.Target),

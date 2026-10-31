@@ -15,25 +15,44 @@ internal sealed partial class MortalWoundProcedureCheckAuthority
         ArgumentNullException.ThrowIfNull(before);
         ArgumentNullException.ThrowIfNull(requirementAuthority);
 
+        if (coordinates.Purpose != "treatment" ||
+            acceptedState.TreatmentDefinition.Routes.SingleOrDefault(value => value.RouteId == coordinates.RouteId) is not
+                MortalWoundProcedureRouteDefinition current || !current.Equals(route)) return false;
+        return MatchesFreshSubject(acceptedState, coordinates, before, requirementAuthority);
+    }
+
+    internal bool MatchesFreshDiagnosis(
+        MortalWoundTreatmentAcceptedStateAuthority acceptedState,
+        MortalWoundTreatmentAttemptCoordinates coordinates,
+        WoundMaterializationEnvelope before,
+        MortalWoundTreatmentRequirementAuthorityBundle requirementAuthority) =>
+        coordinates.Purpose == "diagnosis" && MatchesFreshSubject(acceptedState, coordinates, before, requirementAuthority);
+
+    private bool MatchesFreshSubject(
+        MortalWoundTreatmentAcceptedStateAuthority acceptedState,
+        MortalWoundTreatmentAttemptCoordinates coordinates,
+        WoundMaterializationEnvelope before,
+        MortalWoundTreatmentRequirementAuthorityBundle requirementAuthority)
+    {
         try
         {
-            var routeFingerprint = MortalWoundTreatmentRouteFingerprint.Compute(
-                before,
-                coordinates.RouteId);
+            if (!coordinates.MatchesAcceptedState(acceptedState)) return false;
+            var subject = MortalWoundProcedureSubject.FromAccepted(acceptedState, before, coordinates.Purpose, coordinates.MemberId);
+            var routeFingerprint = subject.Fingerprint;
             if (!string.Equals(
                     SourcePath,
                     LiveTurnPreparationService.TurnRequestPath,
                     StringComparison.Ordinal) ||
                 !TryValidateRequirementAuthority(
                     coordinates,
-                    route,
+                    subject,
                     requirementAuthority,
                     routeFingerprint,
                     out var commonScope) ||
                 commonScope is null ||
                 !TryResolveModifier(
                     coordinates,
-                    route,
+                    subject,
                     commonScope,
                     out var expectedModifier,
                     out var expectedActorKind,
@@ -102,7 +121,7 @@ internal sealed partial class MortalWoundProcedureCheckAuthority
                     sum + complication.TreatmentDifficultyModifier));
             if (ComplicationDifficultyModifier != complicationModifier ||
                 EffectiveDifficulty != checked(
-                    route.Resolution.Difficulty + complicationModifier) ||
+                    subject.Resolution.Difficulty + complicationModifier) ||
                 !string.Equals(
                     RequirementAuthorityFingerprint,
                     requirementAuthority.AuthorityFingerprint,
@@ -154,7 +173,7 @@ internal sealed partial class MortalWoundProcedureCheckAuthority
         catch (Exception exception) when (exception is ArgumentException or
                                            InvalidOperationException or
                                            OverflowException or
-                                           System.Text.Json.JsonException)
+                                           System.Text.Json.JsonException or System.IO.InvalidDataException)
         {
             return false;
         }

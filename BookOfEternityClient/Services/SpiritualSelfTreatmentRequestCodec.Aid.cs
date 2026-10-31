@@ -14,7 +14,7 @@ internal static partial class SpiritualSelfTreatmentRequestCodec
     internal static bool IsReceiveAidHeader(JsonObject root) => IsAidHeader(root) && Int(root["schemaVersion"]) is 4 or 6;
     internal static bool IsActiveKind(JsonObject root) => Text(root["kind"]) is Kind or AidKind;
     internal static bool IsBoundActive(JsonObject root, SpiritualSelfTreatmentStageContext context,
-        SpiritualSelfTreatmentSelection selection, string realm, int ordinal) => selection.Diagnosis is null && (selection.Service is not null
+        SpiritualSelfTreatmentSelection selection, string realm, int ordinal) => selection.Diagnosis is null && selection.MortalDiagnosis is null && (selection.Service is not null
         ? IsBoundService(root, context, selection, realm, ordinal) : selection.Aid is null
             ? IsBound(root, context, selection, realm, ordinal) : IsBoundAid(root, context, selection, realm, ordinal));
 

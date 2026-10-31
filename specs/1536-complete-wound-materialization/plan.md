@@ -1,3 +1,35 @@
+# T121 Mortal purpose and accepted-owner WIP — UNCOMPILED / UNRUN
+
+The connected request cut adds a closed Mortal diagnosis selection and explicit
+purpose in attempt coordinates. Old treatment coordinates retain their existing
+serialized shape and hash domains; diagnosis has its own method fingerprint and
+seals while sharing the operation-key collision boundary. Old spiritual request/
+combat factories refuse the new purpose rather than falling through to healing.
+
+Requirements resolve through the existing canonical accepted-state snapshot and
+witness factory. Diagnosis check preparation shares ordinary difficulty, roll
+modifier, contiguous die span and Fate reservation owners; resource preparation
+uses the same live claim registry and quantity witnesses. The new typed fixture
+uses actual LiveTurnPreparation and the current accepted-world exporter without
+historical reflection. It covers separately valid same-ID treatment, exact retry,
+cross-purpose collision and a competing disjoint span before any publication.
+These authored tests and production changes have not been compiled or executed.
+
+Current selection is source-estimated 36 cases / six methods / four categories:
+parser2, strict contract22, purpose DATA11 and actual ownership1. This is temporary
+WIP selection, not the complete feature gate. The operation-private subject holds
+one detached current method; no new cache, authority registry, publisher or dice
+stack is introduced. Actual lease/current source/claim checks remain mandatory.
+
+Next work is the retained terminal outcome, checked future-time and ordinary
+recovery working projection, durable History/common publication, fresh staging,
+completion/replay/rollback, guided console/browser route and GM/current-input
+migration. Prepared command roles must be authenticated through the actual signed
+snapshot and purpose-bound live owner; markers cannot replace canonical rollback
+coverage, and consumed commands are not required current after publication.
+The accepted design/M1RED and older accepted lineages remain historical evidence;
+this WIP closes no task or gameplay milestone. All HOLDs remain open.
+
 # T121 Mortal typed-contract implementation WIP — UNCOMPILED / UNRUN
 
 The first connected code cut adds a typed complete Mortal Check, canonical writing

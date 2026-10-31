@@ -244,9 +244,41 @@ internal sealed partial class MortalWoundProcedureCheckAuthority :
                 exception.GetType().Name);
         }
 
+        return CreateFromSubject(coordinates, MortalWoundProcedureSubject.FromAccepted(
+            acceptedState, before, "treatment", route.RouteId), before, requirementAuthority, acceptedState);
+    }
+
+    internal static MortalWoundProcedureCheckAuthorityResult CreateForDiagnosis(
+        MortalWoundTreatmentAttemptCoordinates coordinates,
+        WoundMaterializationEnvelope before,
+        MortalWoundTreatmentRequirementAuthorityBundle requirementAuthority,
+        MortalWoundTreatmentAcceptedStateAuthority acceptedState)
+    {
+        try
+        {
+            if (coordinates.Purpose != "diagnosis" || !coordinates.MatchesAcceptedState(acceptedState))
+                throw new InvalidDataException("Diagnosis check coordinates do not belong to the current accepted owner.");
+            var subject = MortalWoundProcedureSubject.FromAccepted(acceptedState, before, "diagnosis", coordinates.MemberId);
+            return CreateFromSubject(coordinates, subject, before, requirementAuthority, acceptedState);
+        }
+        catch (Exception exception) when (exception is ArgumentException or InvalidOperationException or InvalidDataException or JsonException)
+        {
+            return Invalid("diagnosisAttempt.check", "mortal_wound_diagnosis_check_authority_invalid",
+                "one actual current diagnosis method and accepted owner", exception.Message);
+        }
+    }
+
+    private static MortalWoundProcedureCheckAuthorityResult CreateFromSubject(
+        MortalWoundTreatmentAttemptCoordinates coordinates,
+        MortalWoundProcedureSubject subject,
+        WoundMaterializationEnvelope before,
+        MortalWoundTreatmentRequirementAuthorityBundle requirementAuthority,
+        MortalWoundTreatmentAcceptedStateAuthority acceptedState)
+    {
+        var routeFingerprint = subject.Fingerprint;
         if (!TryValidateRequirementAuthority(
                 coordinates,
-                route,
+                subject,
                 requirementAuthority,
                 routeFingerprint,
                 out var commonScope))
@@ -260,7 +292,7 @@ internal sealed partial class MortalWoundProcedureCheckAuthority :
 
         if (!TryResolveModifier(
                 coordinates,
-                route,
+                subject,
                 commonScope!,
                 out var modifier,
                 out var rollActorKind,
@@ -271,7 +303,7 @@ internal sealed partial class MortalWoundProcedureCheckAuthority :
                 "treatmentAttempt.procedureCheck.modifierSource",
                 "mortal_wound_treatment_procedure_modifier_source_invalid",
                 "fixed zero/provider or one exact satisfied skill-tier binding",
-                route.Resolution.ModifierSource.Kind);
+                subject.Resolution.ModifierSource.Kind);
         }
 
         int complicationDifficultyModifier;
@@ -286,7 +318,7 @@ internal sealed partial class MortalWoundProcedureCheckAuthority :
                 .Aggregate(0, static (sum, complication) => checked(
                     sum + complication.TreatmentDifficultyModifier));
             effectiveDifficulty = checked(
-                route.Resolution.Difficulty + complicationDifficultyModifier);
+                subject.Resolution.Difficulty + complicationDifficultyModifier);
         }
         catch (OverflowException)
         {
@@ -552,13 +584,13 @@ internal sealed partial class MortalWoundProcedureCheckAuthority :
 
     private static bool TryValidateRequirementAuthority(
         MortalWoundTreatmentAttemptCoordinates coordinates,
-        MortalWoundProcedureRouteDefinition route,
+        MortalWoundProcedureSubject subject,
         MortalWoundTreatmentRequirementAuthorityBundle requirementAuthority,
         string routeFingerprint,
         out MortalWoundTreatmentRequirementScopeAuthority? commonScope)
     {
         commonScope = null;
-        if (!string.Equals(requirementAuthority.Mode, "procedure", StringComparison.Ordinal) ||
+        if (!string.Equals(requirementAuthority.Mode, subject.Purpose == "diagnosis" ? "diagnosis" : "procedure", StringComparison.Ordinal) ||
             !string.Equals(
                 requirementAuthority.ContextFingerprint,
                 coordinates.ContextFingerprint,
@@ -589,7 +621,7 @@ internal sealed partial class MortalWoundProcedureCheckAuthority :
             !string.Equals(scopes[0].Status, "Satisfied", StringComparison.Ordinal) ||
             scopes[0].CourseMilestoneOrdinal is not null ||
             scopes[0].FailureWitnesses.Count != 0 ||
-            scopes[0].Bindings.Count != route.Requirements.Length)
+            scopes[0].Bindings.Count != subject.TypedRequirements.Length)
         {
             return false;
         }
@@ -598,7 +630,7 @@ internal sealed partial class MortalWoundProcedureCheckAuthority :
             .Select(static binding => binding.RequirementIndex)
             .OrderBy(static index => index)
             .ToArray();
-        if (!indices.SequenceEqual(Enumerable.Range(0, route.Requirements.Length)))
+        if (!indices.SequenceEqual(Enumerable.Range(0, subject.TypedRequirements.Length)))
             return false;
 
         commonScope = scopes[0];
@@ -607,7 +639,7 @@ internal sealed partial class MortalWoundProcedureCheckAuthority :
 
     private static bool TryResolveModifier(
         MortalWoundTreatmentAttemptCoordinates coordinates,
-        MortalWoundProcedureRouteDefinition route,
+        MortalWoundProcedureSubject subject,
         MortalWoundTreatmentRequirementScopeAuthority commonScope,
         out int modifier,
         out string? rollActorKind,
@@ -618,7 +650,7 @@ internal sealed partial class MortalWoundProcedureCheckAuthority :
         rollActorKind = null;
         rollActorId = null;
         rollSkillId = null;
-        switch (route.Resolution.ModifierSource)
+        switch (subject.Resolution.ModifierSource)
         {
             case MortalWoundFixedZeroModifierSource:
                 rollActorKind = coordinates.ProviderKind;
@@ -628,8 +660,8 @@ internal sealed partial class MortalWoundProcedureCheckAuthority :
             case MortalWoundResolvedSkillTierModifierSource resolved:
             {
                 if (resolved.RequirementIndex < 0 ||
-                    resolved.RequirementIndex >= route.Requirements.Length ||
-                    route.Requirements[resolved.RequirementIndex] is not
+                    resolved.RequirementIndex >= subject.TypedRequirements.Length ||
+                    subject.TypedRequirements[resolved.RequirementIndex] is not
                         MortalWoundSkillTierRequirement routeRequirement)
                 {
                     return false;

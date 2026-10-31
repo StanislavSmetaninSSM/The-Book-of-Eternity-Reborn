@@ -103,9 +103,9 @@ internal sealed partial class MortalWoundTreatmentAttemptRequest
                 coordinates.ExpectedBeforeFingerprint,
                 StringComparison.Ordinal) ||
             !string.Equals(
-                MortalWoundTreatmentRouteFingerprint.Compute(
-                    detachedSource,
-                    coordinates.RouteId),
+                coordinates.Purpose == "diagnosis"
+                    ? WoundDiagnosisEvidence.ComputePathFingerprint(detachedSource, coordinates.MemberId)
+                    : MortalWoundTreatmentRouteFingerprint.Compute(detachedSource, coordinates.RouteId),
                 requirementAuthority.RouteFingerprint,
                 StringComparison.Ordinal))
         {
@@ -204,7 +204,7 @@ internal sealed partial class MortalWoundTreatmentAttemptRequest
         MortalWoundProcedureCheckAuthority procedureAuthority)
     {
         ArgumentNullException.ThrowIfNull(procedureAuthority);
-        if (!string.Equals(Mode, "procedure", StringComparison.Ordinal) ||
+        if (Mode is not ("procedure" or "diagnosis") ||
             ModeAuthority is not MortalWoundProcedureCheckAuthority detached ||
             !string.Equals(
                 detached.AuthorityFingerprint,
@@ -405,6 +405,39 @@ internal static partial class MortalWoundTreatmentPlanner
                 resourceResult);
         }
         return sealedResult;
+    }
+
+    internal static MortalWoundTreatmentAttemptRequestResult PrepareDiagnosisRequest(
+        MortalWoundTreatmentAcceptedStateAuthority? acceptedState,
+        WoundHistoryParseResult? history, WoundMaterializationEnvelope? before,
+        string? operationKey, string? diagnosisPathId, string? eventRef)
+    {
+        if (acceptedState is null || before is null || history is null || !history.IsValid ||
+            !acceptedState.MatchesCompleteHistory(history))
+            return InvalidRequest("mortal_wound_diagnosis_request_source_invalid",
+                "the complete current accepted wound and History", "missing, stale or foreign source");
+        var coordinateResult = MortalWoundTreatmentAttemptCoordinates.CreateDiagnosisFromAcceptedState(
+            acceptedState, before, operationKey, diagnosisPathId, eventRef);
+        if (!coordinateResult.IsValid || coordinateResult.Coordinates is null)
+            return MortalWoundTreatmentAttemptRequestResult.Invalid(coordinateResult.Issues);
+        var coordinates = coordinateResult.Coordinates;
+        var requirements = MortalWoundTreatmentRequirementAuthorityBundle.CreateForDiagnosis(acceptedState, coordinates, before);
+        if (!requirements.IsValid || requirements.Authority is null)
+            return MortalWoundTreatmentAttemptRequestResult.Invalid(requirements.Issues);
+        var check = MortalWoundProcedureCheckAuthority.CreateForDiagnosis(coordinates, before, requirements.Authority, acceptedState);
+        if (!check.IsValid || check.Authority is null)
+            return MortalWoundTreatmentAttemptRequestResult.Invalid(check.Issues);
+        var resources = MortalWoundTreatmentResourceComposer.PrepareDiagnosis(acceptedState, coordinates, before,
+            requirements.Authority, check.Authority);
+        if (!resources.IsValid || resources.Authority is null)
+        {
+            check.Authority.RollbackNewProvisionalReservations(acceptedState);
+            return MortalWoundTreatmentAttemptRequestResult.Invalid(resources.Issues);
+        }
+        var result = SealRequest("diagnosis", coordinates, null, before, check.Authority, requirements.Authority,
+            resources.Authority, new MortalWoundTreatmentProvisionalClaimCleanup(acceptedState, check.Authority, resources));
+        if (!result.IsValid) MortalWoundTreatmentResourceComposer.RollbackNewProcedureAndResources(check.Authority, resources);
+        return result;
     }
 
     internal static MortalWoundTreatmentAttemptRequestResult PrepareCourseMilestoneRequest(
@@ -667,7 +700,8 @@ internal static partial class MortalWoundTreatmentPlanner
         MortalWoundTreatmentRequirementAuthorityBundle requirementAuthority,
         MortalWoundTreatmentResourceReservationAuthority resourceAuthority)
     {
-        var common = string.Equals(requirementAuthority.Mode, mode, StringComparison.Ordinal) &&
+        var common = (mode == "diagnosis" ? coordinates.Purpose == "diagnosis" : coordinates.Purpose == "treatment") &&
+                     string.Equals(requirementAuthority.Mode, mode, StringComparison.Ordinal) &&
                      string.Equals(
                          requirementAuthority.ContextFingerprint,
                          coordinates.ContextFingerprint,
@@ -697,7 +731,7 @@ internal static partial class MortalWoundTreatmentPlanner
 
         return modeAuthority switch
         {
-            MortalWoundProcedureCheckAuthority procedure when mode == "procedure" =>
+            MortalWoundProcedureCheckAuthority procedure when mode is "procedure" or "diagnosis" =>
                 milestoneOrdinal is null &&
                 requirementAuthority.CourseId is null &&
                 requirementAuthority.CourseMilestoneOrdinal is null &&

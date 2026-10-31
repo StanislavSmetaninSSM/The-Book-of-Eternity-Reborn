@@ -2634,7 +2634,7 @@ internal static partial class AcceptedTurnAuthorityRegistry
                         "stale, foreign, or mismatched authority");
                 }
 
-                if (string.Equals(mode, "procedure", StringComparison.Ordinal) &&
+                if (mode is "procedure" or "diagnosis" &&
                     (modeAuthority is not MortalWoundProcedureCheckAuthority procedure ||
                      !procedure.HasLiveReservationAgreement(
                          ProcedureReservationLiveCheckCapability,

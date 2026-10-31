@@ -65,6 +65,45 @@ internal sealed class MortalWoundTreatmentRequirementAuthorityBundle
         WoundMaterializationEnvelope? before) =>
         CreateForNonCourse("procedure", acceptedState, coordinates, before);
 
+    internal static MortalWoundTreatmentRequirementAuthorityBundleResult CreateForDiagnosis(
+        MortalWoundTreatmentAcceptedStateAuthority? acceptedState,
+        MortalWoundTreatmentAttemptCoordinates? coordinates,
+        WoundMaterializationEnvelope? before)
+    {
+        var issues = new List<ValidationIssue>();
+        if (acceptedState is null || coordinates is null || before is null ||
+            coordinates.Purpose != "diagnosis" || !coordinates.MatchesAcceptedState(acceptedState) ||
+            !acceptedState.MatchesCurrentWound(before))
+        {
+            AddIssue(issues, "diagnosisAttempt.requirements", "mortal_wound_diagnosis_requirement_authority_invalid",
+                "one current purpose-bound accepted diagnosis owner", "missing, stale or foreign authority");
+            return InvalidNonCourse(issues);
+        }
+        try
+        {
+            var subject = MortalWoundProcedureSubject.FromAccepted(acceptedState, before, "diagnosis", coordinates.MemberId);
+            var context = acceptedState.RequirementContext;
+            var snapshot = acceptedState.RequirementSnapshot;
+            var resolved = MortalWoundTreatmentAuthority.ResolveRequirementMembers(subject.Requirements,
+                subject.SourcePath, context, snapshot);
+            if (!resolved.Success) return MortalWoundTreatmentRequirementAuthorityBundleResultInvalid(resolved.Issues);
+            if (!TryBuildMemberScope("common", null, subject.Requirements, subject.SourcePath, context, snapshot,
+                resolved, false, new Dictionary<string, long>(StringComparer.Ordinal), issues, out var scope))
+                return InvalidNonCourse(issues);
+            return new(true, Array.Empty<ValidationIssue>(), Create("diagnosis", coordinates, subject.Fingerprint,
+                null, null, null, null, null, new[] { scope! }));
+        }
+        catch (Exception exception) when (exception is ArgumentException or InvalidOperationException or JsonException or InvalidDataException)
+        {
+            AddIssue(issues, "diagnosisAttempt.requirements", "mortal_wound_diagnosis_requirement_authority_invalid",
+                "one exact current known diagnosis method", exception.Message);
+            return InvalidNonCourse(issues);
+        }
+    }
+
+    private static MortalWoundTreatmentRequirementAuthorityBundleResult MortalWoundTreatmentRequirementAuthorityBundleResultInvalid(
+        IReadOnlyList<ValidationIssue> issues) => new(false, Freeze(issues), null);
+
     internal static MortalWoundTreatmentRequirementAuthorityBundleResult CreateForGuaranteed(
         MortalWoundTreatmentAcceptedStateAuthority? acceptedState,
         MortalWoundTreatmentAttemptCoordinates? coordinates,
@@ -405,6 +444,21 @@ internal sealed class MortalWoundTreatmentRequirementAuthorityBundle
         IDictionary<string, long> aggregateQuantities,
         ICollection<ValidationIssue> issues,
         out MortalWoundTreatmentRequirementScopeAuthority? authority)
+    => TryBuildMemberScope(scope, milestoneOrdinal, route.Requirements, route.SourcePath,
+            context, snapshot, result, allowTrustedAbsence, aggregateQuantities, issues, out authority);
+
+    private static bool TryBuildMemberScope(
+        string scope,
+        int? milestoneOrdinal,
+        IReadOnlyList<JsonElement> requirements,
+        string sourcePath,
+        MortalWoundTreatmentAuthority.Context context,
+        MortalWoundTreatmentAuthority.Snapshot snapshot,
+        MortalWoundRequirementAuthorityResult result,
+        bool allowTrustedAbsence,
+        IDictionary<string, long> aggregateQuantities,
+        ICollection<ValidationIssue> issues,
+        out MortalWoundTreatmentRequirementScopeAuthority? authority)
     {
         authority = null;
         var rows = result.ResolvedRequirements.ToDictionary(
@@ -412,15 +466,15 @@ internal sealed class MortalWoundTreatmentRequirementAuthorityBundle
         var bindings = new List<MortalWoundTreatmentRequirementBinding>();
         var failures = new List<MortalWoundTreatmentRequirementFailureWitness>();
         var cumulative = new Dictionary<string, long>(StringComparer.Ordinal);
-        if (!IssuesDescribeOnlyMissingRequirements(route, rows.Keys, result.Issues))
+        if (!IssuesDescribeOnlyMissingRequirements(requirements.Count, sourcePath, rows.Keys, result.Issues))
         {
             foreach (var issue in result.Issues)
                 issues.Add(issue);
             return false;
         }
-        for (var index = 0; index < route.Requirements.Count; index++)
+        for (var index = 0; index < requirements.Count; index++)
         {
-            var requirement = route.Requirements[index];
+            var requirement = requirements[index];
             if (rows.TryGetValue(index, out var row))
             {
                 if (!MortalWoundTreatmentRequirementWitnessFactory.TryCreateSuccess(
@@ -522,7 +576,7 @@ internal sealed class MortalWoundTreatmentRequirementAuthorityBundle
             failures.Add(failure);
         }
 
-        if (bindings.Count + failures.Count != route.Requirements.Count)
+        if (bindings.Count + failures.Count != requirements.Count)
             return false;
         var status = failures.Count == 0 ? "Satisfied" : "Unsatisfied";
         authority = MortalWoundTreatmentRequirementScopeAuthority.Create(
@@ -564,14 +618,15 @@ internal sealed class MortalWoundTreatmentRequirementAuthorityBundle
     }
 
     private static bool IssuesDescribeOnlyMissingRequirements(
-        WoundTreatmentRoute route,
+        int requirementCount,
+        string sourcePath,
         IEnumerable<int> resolvedIndexes,
         IReadOnlyList<ValidationIssue> issues)
     {
         var resolved = resolvedIndexes.ToHashSet();
-        var root = string.IsNullOrEmpty(route.SourcePath)
+        var root = string.IsNullOrEmpty(sourcePath)
             ? "wound.treatment.routes[0].requirements"
-            : route.SourcePath + ".requirements";
+            : sourcePath + ".requirements";
         foreach (var issue in issues)
         {
             if (ClassifyFailureReason(issue.Code) is null ||
@@ -579,7 +634,7 @@ internal sealed class MortalWoundTreatmentRequirementAuthorityBundle
             {
                 return false;
             }
-            var matches = Enumerable.Range(0, route.Requirements.Count)
+            var matches = Enumerable.Range(0, requirementCount)
                 .Where(index =>
                 {
                     var path = $"{root}[{index}]";

@@ -14,6 +14,20 @@
       "contracts": [
         "#1536 T121-DIAGNOSIS-MORTAL; strict current schema, exact dependency indices and spiritual empty-check separation"
       ]
+    },
+    {
+      "category": "mortal-diagnosis-purpose-data",
+      "reason": "T121 closed Mortal diagnosis selection schema10 and typed participants; exact round-trip, purpose separation and old spiritual staging/request refusal. Eleven independent DATA rows, no live permission. Tests authored before the corresponding implementation; no runtime/build admission. Whole coherent route and final affected selection still pending.",
+      "contracts": [
+        "#1536 T121-DIAGNOSIS-MORTAL / FR071; explicit purpose, same-ID collision, accepted-world and retained request ownership"
+      ]
+    },
+    {
+      "category": "mortal-diagnosis-purpose-ownership",
+      "reason": "T121 one actual signed accepted-world fixture exercises diagnosis check/resource/dice ownership, exact same-operation retry, a separately valid same-ID treatment collision and disjoint competing allocation. Initial typed scenario DATA is followed by real LiveTurnPreparation and the direct current-state exporter; no reflection or fabricated receipt. Tests authored before the corresponding implementation; no runtime/build admission. Whole coherent route and final affected selection still pending.",
+      "contracts": [
+        "#1536 T121-DIAGNOSIS-MORTAL / FR071; explicit purpose, same-ID collision, accepted-world and retained request ownership"
+      ]
     }
   ]
 }

@@ -2,6 +2,62 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "mortal-diagnosis-purpose-data",
+  "responsibility": "T121 closed Mortal diagnosis selection schema10 and typed participants; exact round-trip, purpose separation and old spiritual staging/request refusal. Eleven independent DATA rows, no live permission.",
+  "excludes": "No Engine/GM wait, duration/knowledge/History publication or completed Mortal route claim; UNCOMPILED/UNRUN WIP. Broader old Mortal aggregates and accepted spiritual PASS replay are excluded.",
+  "changeHints": [
+    "BookOfEternityClient/Services/MortalWoundProcedureSubject.cs"
+  ],
+  "related": [
+    {
+      "id": "mortal-diagnosis-method-guards",
+      "when": "The explicit current method contract is the prerequisite; these tests add purpose and actual owner boundaries."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.MortalWoundDiagnosisSelectionTests.*"
+      ]
+    }
+  ]
+},
+{
+  "id": "mortal-diagnosis-purpose-ownership",
+  "responsibility": "T121 one actual signed accepted-world fixture exercises diagnosis check/resource/dice ownership, exact same-operation retry, a separately valid same-ID treatment collision and disjoint competing allocation. Initial typed scenario DATA is followed by real LiveTurnPreparation and the direct current-state exporter; no reflection or fabricated receipt.",
+  "excludes": "No Engine/GM wait, duration/knowledge/History publication or completed Mortal route claim; UNCOMPILED/UNRUN WIP. Broader old Mortal aggregates and accepted spiritual PASS replay are excluded.",
+  "changeHints": [
+    "BookOfEternityClient/Services/MortalWoundProcedureSubject.cs"
+  ],
+  "related": [
+    {
+      "id": "mortal-diagnosis-method-guards",
+      "when": "The explicit current method contract is the prerequisite; these tests add purpose and actual owner boundaries."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.DiagnosisPurposeRetainsActualAcceptedClaimsAndRejectsSameIdTreatmentCollision"
+      ]
+    }
+  ]
+},
+{
   "id": "mortal-diagnosis-method-guards",
   "responsibility": "T121 strict current Mortal diagnosis Check guards: twenty file-free malformed/semantic closure rows and two independent realm rows refusing a complete Mortal check as a spiritual guarantee. Current empty checks reject; typed policy/quantity/modifier/band ownership and no input mutation remain exact. Source-authored before implementation; no runtime claim.",
   "excludes": "No accepted-world authority, procedure execution or reservations, clock publication, Engine, GM wait, reflection, legacy current-input fallback or unrelated accepted PASS replay.",

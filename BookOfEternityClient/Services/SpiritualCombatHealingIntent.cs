@@ -22,6 +22,7 @@ internal sealed class SpiritualCombatHealingIntent
         SpiritualSelfTreatmentSelection selection, int healingTier, JsonObject control,
         IReadOnlyList<AfterlifeWoundTreatmentAuthority.SourceFile> sources)
     {
+        selection.RequireTreatmentPurpose();
         var combat = selection.Combat ?? throw new InvalidDataException("Combat intent requires a combat selection.");
         if (selection.Aid is not null) throw new InvalidDataException("Combat intent cannot contain safe aid.");
         var root = new JsonObject
@@ -78,7 +79,7 @@ internal sealed class SpiritualCombatHealingIntent
     };
 
     internal bool IsBound(SpiritualSelfTreatmentStageContext context, SpiritualSelfTreatmentSelection selection) =>
-        Matches(context.SessionId, context.RequestId, context.Turn) && selection.Combat is not null &&
+        Matches(context.SessionId, context.RequestId, context.Turn) && selection.MortalDiagnosis is null && selection.Diagnosis is null && selection.Combat is not null &&
         selection.Aid is null && Selection == selection && JsonNode.DeepEquals(_root["progressionControl"],
             JsonSerializer.SerializeToNode(context.Progression));
 
