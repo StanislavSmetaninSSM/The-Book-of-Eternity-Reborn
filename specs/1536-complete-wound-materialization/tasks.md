@@ -144,7 +144,11 @@ archive are outside checkout; original failures and all other holds are retained
   Preserve all source/privacy/replay/claim suffixes. Retain the 15 passed case
   identities; four original failed rows have exclusive120s selectors, without
   new cases or production changes. Integration-only source is UNCOMPILED/UNRUN;
-  exact outcomes/source and fresh selection are in plan.md. Parents stay open.
+  exact outcomes/source and fresh selection are in plan.md. Current disjoint
+  native pool is 18 PASS / 1 cohort export FAIL; the remaining fixture correction
+  gives private effect creation events distinct replay IDs before carrier/index
+  construction and validates the complete merged source/identity graph. Only that
+  singleton is UNCOMPILED/UNRUN; passed rows are retained. Parents stay open.
 
 - [x] T121-DIAGNOSIS-READ Show readable declared conditions of currently known
   diagnostic paths in the existing wound/status cards for console/browser. Reuse

@@ -1,3 +1,45 @@
+# T121 private-cohort effect graph — fixture-only WIP, UNCOMPILED / UNRUN
+
+At runtime `23a68c0f568e5f2e97ff9e66e6ee34a583754a9b`, corrected4 completed
+2 PASS (durable and valid guided staging), 1 FAIL (private cohort export) and
+1 UNRUN (elapsed300), without timeout, with complete cleanup and stable pins.
+The independent elapsed300 singleton then completed 1/1 PASS in 14.05s; closing
+11:56:49Z found no owners and stable pins. Raw remains external in
+`M2GREENC8C3-corrected4` and `M2GREENC8C3-elapsed1`.
+The disjoint current independent-native pool is 18 PASS / 1 FAIL across the
+recorded afd49/23a attempts, not a fresh19 PASS run. The earlier15 identities and
+new durable/guided/elapsed suffixes are retained by their actual epochs; only the
+private cohort remains for a fresh 120s singleton. Dependent6 and UI3 stay held.
+
+The private History seed now validates. Export's remaining deterministic failure
+is an effect-index duplicate replay event: the existing effect helper derives
+createdEventRef as wound.Origin.EventRef plus a per-wound effect ordinal. The
+shared acquisition event is lawful, but two different effects cannot reuse that
+creation replay identity. This correction keeps both wounds' acquisition event
+unchanged and assigns a distinct private EFFECT creation event in generated
+chronology before adding it to either carrier or index. Unique effect/definition/
+last-transition IDs and wound/source/lifetime/links remain unchanged. Index event,
+turn and transition still derive directly from the actual generated effect.
+
+Before either initial effect write, reuse already assembled DATA to parse the
+complete merged EffectIdentityState, build its EffectCarrierCatalog and run the
+existing ValidateEffectCarrierIndexAgreement. Reuse the assembled wound catalog
+with BuildCanonicalWoundSourceAuthority, then resolve each private root and run
+existing ValidateCanonicalSourceDefinitionAgreement. These typed source DATA
+checks cover full carrier/index chronology and declared source definitions without
+new live authority, I/O, reparse loops, cache, validator or harness. No index-only
+patch, shared/global helper, production guard or post-snapshot mutation is added.
+
+Catalog/selection keep the same singleton and 120s budget; full source estimate
+remains 215 cases / 87 methods / 47 descriptors / 45 categories, official discovery
+authoritative. Only Integration source needs a fresh build; the other three owners
+and all unrelated PASS selectors retain their recorded bindings. Static checks
+are not runtime qualification. All changed fixture assertions are UNCOMPILED/UNRUN
+until the same narrow independent SOURCE and root-owned Integration/PREP/runtime.
+No GM contract changed: this fixes initial fixture identities only, so no GM guide/
+manifest update is needed. No speedup, task closure or parent/adapter/HOLD change
+is claimed; the broader ordinary timeout remains attempted UNKNOWN/open.
+
 # T121 four fixture corrections — owning provenance / exact PREP, UNRUN
 
 Astra coherent SOURCE accepted `80bb1d9f8c54c79e63f33591ad35051c69d81fe4`

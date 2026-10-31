@@ -1823,3 +1823,12 @@ must check exact path/field/UTC bounds, not ignore timestamp or metadata globall
 Current tests/qualification are in plan.md. These corrections are fixture-only,
 with no production/cache/owner or GM wire change. Existing ordinary scheduling and
 no-extra-same-turn-report guidance remains correct; no GM/manifest update is needed.
+
+
+Private fixture effects require distinct creation replay events even when their
+wounds share a lawful acquisition event. Generate the private effect event before
+carrier/index construction; derive the index chronology from that generated effect.
+Validate the complete merged index/carrier and each private canonical source/
+definition through existing typed DATA APIs before initial effect writes. This
+changes neither wound provenance nor production/GM authority; qualification is
+recorded in plan.md and remains UNRUN for the changed cohort singleton.

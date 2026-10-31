@@ -118,6 +118,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
         Rebind(copy); copy["display"]!["visibility"] = "gm_only"; copy["display"]!["name"] = "ПРИВАТНАЯ_РАНА";
         var wound = WoundMaterializationContract.Parse(copy.ToJsonString(), "private.original");
         Assert.True(wound.IsValid, JsonSerializer.Serialize(wound.Issues));
+        var privateWound = Assert.IsType<WoundMaterializationEnvelope>(wound.Wound);
         var carrier = JsonNode.Parse(Assert.IsType<string>(await files.ReadFileAsync(WoundCarrierCatalog.PlayerPath)))!.AsObject();
         carrier["activeWounds"]!.AsArray().Insert(0, copy);
         await files.WriteFileAtomicAsync(WoundCarrierCatalog.PlayerPath, carrier.ToJsonString());
@@ -139,8 +140,14 @@ public sealed partial class MortalWoundTreatmentResolverTests
         await files.WriteFileAtomicAsync(WoundHistoryState.HistoryPath, history.ToJsonString());
         var effects = CreateCanonicalWoundEffects(copy).ToArray();
         var effectCarrier = JsonNode.Parse(Assert.IsType<string>(await files.ReadFileAsync(EffectCarrierCatalog.PlayerPath)))!.AsObject();
-        foreach (var effect in effects) effectCarrier["activeEffects"]!.AsArray().Add(effect.DeepClone());
-        await files.WriteFileAtomicAsync(EffectCarrierCatalog.PlayerPath, effectCarrier.ToJsonString());
+        foreach (var effect in effects)
+        {
+            // One wound acquisition may create several effects. Their replay
+            // event identities are distinct even when the wound event is shared.
+            var chronology = effect["chronology"]!.AsObject();
+            chronology["createdEventRef"] = chronology["createdEventRef"]!.GetValue<string>() + ":private";
+            effectCarrier["activeEffects"]!.AsArray().Add(effect.DeepClone());
+        }
         var indexRoot = JsonNode.Parse(Assert.IsType<string>(await files.ReadFileAsync(EffectIdentityState.StatePath)))!.AsObject();
         var added = EffectMaterializationTestFixture.CreateIdentityIndex(effects)["entries"]!.AsArray();
         for (var index = 0; index < added.Count; index++)
@@ -152,6 +159,30 @@ public sealed partial class MortalWoundTreatmentResolverTests
             entry["transitions"]![0]!["turn"] = chronology["createdAtTurn"]!.DeepClone();
             indexRoot["entries"]!.AsArray().Add(entry);
         }
+
+        // Validate the complete initial graph from the already assembled DATA,
+        // before either effect root is written or any original is prepared.
+        var effectIndex = EffectIdentityState.Parse(JsonSerializer.SerializeToElement(indexRoot), EffectIdentityState.StatePath);
+        Assert.True(effectIndex.State is not null, JsonSerializer.Serialize(effectIndex.Issues));
+        Assert.Empty(effectIndex.Issues);
+        var effectCatalog = EffectCarrierCatalog.Build(new(effectCarrier, null, null, null, null, null));
+        Assert.Empty(effectCatalog.Issues);
+        var agreementIssues = new List<ValidationIssue>();
+        ValidationService.ValidateEffectCarrierIndexAgreement(effectCatalog, effectIndex.State!, agreementIssues);
+        var woundCatalog = WoundCarrierCatalog.Build(new(carrier, null, null, null, null));
+        Assert.Empty(woundCatalog.Issues);
+        var sourceCatalog = EffectAcceptedTurnInputComposer.BuildCanonicalWoundSourceAuthority(woundCatalog);
+        Assert.Empty(sourceCatalog.Issues);
+        foreach (var binding in privateWound.Consequences.OwnedEffectSources.RootBindings)
+        {
+            Assert.True(effectCatalog.TryResolveOne(binding.EffectId, out var occurrence));
+            var source = sourceCatalog.ResolveCanonicalBinding(new(privateWound.Owner.Realm, "wound", privateWound.WoundId,
+                binding.DefinitionKey), "player");
+            Assert.True(source.Success, JsonSerializer.Serialize(source.Issues));
+            ValidationService.ValidateCanonicalSourceDefinitionAgreement(occurrence, source.Source!, sourceCatalog, agreementIssues);
+        }
+        Assert.Empty(agreementIssues);
+        await files.WriteFileAtomicAsync(EffectCarrierCatalog.PlayerPath, effectCarrier.ToJsonString());
         await files.WriteFileAtomicAsync(EffectIdentityState.StatePath, indexRoot.ToJsonString());
         foreach (var pair in new Dictionary<string, JsonObject>
         {
