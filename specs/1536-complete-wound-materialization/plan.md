@@ -1,3 +1,39 @@
+# T121 C16 fresh preparation verified — browser4 runtime UNRUN
+
+Independent Astra SOURCE accepts `c97b50f0db55c795038fdc67181aef943afb6dfc`.
+Fresh Integration at that exact source exits0 in1:56.62 with102 prior warnings;
+its warning code/message multiset equals C15. Main/Support/Unit retain compiled
+`78918350e78be28908aef3c3c1afd180d14b6d12`: the entire source delta has only one
+Integration test partial plus catalog/spec metadata, no changed production,
+shared source, project or build property. Actual Compile ownership, all4 PE/PDB
+pairs and347 source bindings agree. All27 artifacts,40 operational resource copies
+and4 daemons match. The complete62,981,059-byte archive has SHA256
+`dfb4217270c490c14ae2aac5c6ba0b0c726c69a95a20f3353f0e55fff72f7730`;
+all27 member hashes and full197,304,320-byte gzip EOF/CRC decode are verified.
+Full raw remains external under M2GREENC16-* in the diagnosis evidence root.
+
+Official discovery exits0:1273 categories /13088 methods, no holes. Exact full
+PlanOnly exits0:234 cases /102 methods /61 descriptors /58 categories, ZERO tests.
+Primary retained membership rechecks53 raw TRX hashes/IDs/methods and joins earlier
+218 plus accepted C15 post8, yielding226 distinct PASS /94 methods /53 descriptors /
+50 categories across19 runtime epochs /25 used runs. This is not a fresh226/234
+run. Its external proof SHA256 is
+`8ff27d23b7c3ce342635fef35f53a89c94bd822a82ddc85a2ad4efad4c3b817e`.
+Original failures/timeouts and incomplete captures remain preserved and excluded.
+
+Only four new browser component singletons are proposed next, separately60s:
+exact, genuine foreign frame, parse drift, final proof. Immediate fresh resource/
+source/process fence and independent PREP precede the first; each actual result
+and cleanup is checked before the next, stopping on failure or uncertainty.
+Fresh Engine-original1 at60s and original console/shared-browser/rollback UI3
+at180s remain held. Foreign proves that a genuine foreign frame cannot suppress
+an emitted inventory guard; it does not prove every foreign snapshot field is
+usable in the current root. Actual Engine terminal claiming and user UI success
+remain separate integration boundaries. No limits/assertions/fresh authority are
+weakened, no speedup is claimed, no old raw/root/save is removed and no new cache,
+diagnostic stack or GM wire is added. Physical treatment, eight canonical adapters,
+wider parents and all earlier HOLDs remain open.
+
 # T121 C16 browser component ownership and finite isolation — UNCOMPILED / UNRUN
 
 The original C15 exact control is1 FAIL /no timeout, category56.5371064s/60
