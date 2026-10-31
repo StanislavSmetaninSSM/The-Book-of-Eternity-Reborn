@@ -1,3 +1,40 @@
+# T121 browser diagnosis dispatch GREEN candidate — UNCOMPILED / UNRUN
+
+The sole production correction adds an explicit diagnosis branch after the existing
+signed-original path/hash/base64/metadata checks and strict JSON decoding. It requires
+SpiritualDiagnosisRequestCodec.IsBound against the full session/request/turn/control
+context and exact ReadSelection equality with the queued typed selection. Combat and
+active dispatch, original authentication, recovery/settlement and fresh publication
+checks are unchanged. This is an internal client dispatch correction: no GM wire,
+rule, output field or authored schema changes, so GM guides/examples/manifest need
+no update. No task checkbox is closed.
+
+Accepted EX10RED remains causal evidence: prefix one PASS, browser five controls
+PASS and only lawful diagnosis final FAIL at source 15e00ad7d. The same unchanged
+browser six plus semantic source guards three are the next cheap GREEN selection,
+each category at 60s. Prefix one is retained without replay. This candidate has not
+been built, discovered or run; SOURCE and fresh owning build/PDB/artifact/PlanOnly/
+PREP are required before root's runtime. Original browser qualification stays held.
+
+The corrected original console rollback at runtime
+`c25ba429d21d7aa40fd4ce93732773e946e5a2f6` / compiled source
+`15e00ad7d4799e59ef15cec8d57b22e97a6072c6` completed one actual PASS,
+21.9801696s/180s, wall 29.0899158s; independent Astra OUTCOME accepted. TRX SHA256
+`865ebd4fd4925802417f927d58da6fe6afde07b95d6d6a2ca876acd1ac4d2099`.
+The full capture has 20 ordered events / ten pairs and one message, verified
+footer/CRC and owned-root absence. The 02:12:59.948639 UTC closing fence found
+stable 27 artifacts / 40 resource copies / four daemon copies, no live owners and
+approximately 3.714 GB free. Independent retention review permits the unchanged
+console, rollback, native and unaffected cheap lineages: the accepted mixed pool
+is now 166, not a fresh aggregate run or final feature acceptance. The complete
+173-case selection remains a future qualification target. Both earlier UI FAILs and
+the two console timeouts remain preserved outside Git, without PASS relabeling.
+
+Optimization: this change adds no source IO, owner, cache or publisher; the existing
+closed request codec and typed scalar-record comparison stay operation-local. It
+makes no latency/speedup claim and substitutes no DATA for current authority. All
+broader T121, Mortal/eight-adapter and HOLD boundaries remain open.
+
 # T121 EX10 semantic browser RED and initializer proof accepted — rollback gate pending
 
 Independent Astra OUTCOME accepted the actual combined seven-case result at source

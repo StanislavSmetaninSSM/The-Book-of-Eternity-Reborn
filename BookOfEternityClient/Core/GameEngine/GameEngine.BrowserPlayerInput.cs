@@ -200,6 +200,14 @@ public partial class GameEngine
             throw new InvalidDataException(BrowserRecoveryMessage);
         var source = StrictJsonAuthority.Deserialize<JsonObject>(CanonicalJsonUtf8.DecodeOneOptionalBom(bytes),
             JsonOpts, "original spiritual wound source") ?? throw new InvalidDataException(BrowserRecoveryMessage);
+        if (selection.Diagnosis is not null)
+        {
+            if (!SpiritualDiagnosisRequestCodec.IsBound(source,
+                    new(manifest.SessionId, manifest.RequestId, manifest.TurnNumber, request.ProgressionControl)) ||
+                SpiritualDiagnosisRequestCodec.ReadSelection(source) != selection)
+                throw new InvalidDataException(BrowserRecoveryMessage);
+            return source;
+        }
         if (selection.Combat is not null)
         {
             var intent = SpiritualCombatHealingIntent.Parse(source);

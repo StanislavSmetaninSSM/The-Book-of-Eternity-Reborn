@@ -3,8 +3,8 @@
     "categories": [
 {
   "id": "spiritual-diagnosis-browser-binding-causal",
-  "responsibility": "T121 file-light actual detached browser original validation with a real queue generation, backup, spiritual staging or typed combat comparison DATA, Explorer overlay and signed snapshot. Six independent rows cover lawful full guided diagnosis selection (the sole intended RED), separately admitted mismatched selection, same-ordinal full-control mismatch, signed byte tamper, and unchanged active/combat siblings. All outer metadata/hash baselines and no-mutation assertions precede the final purpose oracle.",
-  "excludes": "No ProcessPlayerTurn, GM wait, publication, accepted receipt or live combat authority claim, forged/re-signed manifest, reflection, browser dispatch correction, limit increase, broad old UI replay or new diagnostic stack.",
+  "responsibility": "T121 file-light actual detached browser original validation with a real queue generation, backup, spiritual staging or typed combat comparison DATA, Explorer overlay and signed snapshot. Six unchanged rows cover lawful full guided diagnosis, separately admitted mismatched selection, same-ordinal full-control mismatch, signed byte tamper, and unchanged active/combat siblings. Accepted EX10RED proved only the lawful diagnosis final refusal. The GREEN candidate requires strict full-context diagnosis binding and exact queued selection equality after all existing authenticated-original checks; outer metadata/hash and no-mutation oracles remain unchanged.",
+  "excludes": "No ProcessPlayerTurn, GM wait, publication, accepted receipt or live combat authority claim, forged/re-signed manifest, reflection, relaxed metadata/hash/path/control or active/combat guards, limit increase, broad old UI replay or new diagnostic stack.",
   "changeHints": [
     "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.BrowserDiagnosisBinding.cs",
     "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
