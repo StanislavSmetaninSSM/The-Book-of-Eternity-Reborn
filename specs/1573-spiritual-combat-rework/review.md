@@ -1,5 +1,18 @@
 # Проверка проекта #1573
 
+## T129 — контроль, исходный checkpoint
+
+Автор потребовал дополнить уравнение контролем; нельзя обобщать отсутствие
+контроля вT128 на полноценную боевую систему. Baseline/origin a8bb390e46c412b08bb3d3877dcaf08e974224a8
+совпали. Brainstorming/Spec Kit bridge/writing-plans используютcanonical1573;
+согласования отменены автором ранее. Sol6.1/high read-only audit подтвердил
+личныеclock/regen/реакции/HoT, отсутствие утверждённых цен новогоCC. Legacy
+Оковы и side-wideproduction не переносить. Serena три языка ready, реальная
+символика проверена. T129 параметры/политики/288cases явно экспериментальны.
+Новаяпроверка — численныйscope, неproduction. Source/tests/fullmatrix UNRUN.
+Optimization: reuse existingoperation immutableformula/quality; livecontrol/
+permission/resources свежие. T128raw сохраняется до нового полногоreview.
+
 ## T128 — численная проверка direct/HoT, 2026-11-01
 
 Автор поручил «проверяй»; точная T127 таблица, без срывов Heal. Spec Kit bridge,

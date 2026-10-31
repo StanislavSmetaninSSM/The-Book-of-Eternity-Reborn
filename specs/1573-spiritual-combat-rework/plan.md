@@ -1,5 +1,45 @@
 # План перехода к личной модели духовного боя — #1573
 
+## T129 — численная проверка контроля, 2026-11-01
+
+Goal: дополнить ограниченный T128 контрольными искусствами, не ослабляя Heal.
+Brainstorming + Spec Kit bridge/writing-plans/plan/tasks/analyze-equivalent;
+автор отменил дополнительные согласования. Existing отдельный D:checkout,
+baseline/origin a8bb390e46c412b08bb3d3877dcaf08e974224a8, unrelated1536/obj не трогать.
+Один coherent Sol6.1/high source-owner, parent документы/измерения/интеграция,
+независимый Astra/high reviewer. Новый runtime/GM/C# не входит.
+
+- [ ] T129.1 Sol6.1/high read-only audit принятых control/clock/reaction договоров;
+  записать scope/параметры/матрицу/границы, опубликовать до source. Серверы
+  Serena csharp/typescript/python ready; реальные JS/C#/Python symbols проверены.
+- [ ] T129.2 RED→GREEN узкий opt-in поверх periodic-v1 и общей encounter-машины.
+  Создать probes/healing-control-model.mjs/.test.mjs и healing-control-probe.mjs/
+  .test.mjs; узкие изменения healing-tactics-model.mjs, healing-tactics-probe.mjs,
+  при необходимости periodic-model.mjs для fresh admission. Не копировать HP/
+  ДЭ/clock/endpoints и не возвращать Heal interruption. API закрепить доGREEN.
+- [ ] T129.2a Проверить связанные numerical guards (144прежних+новые), legacy42
+  и bounded periodic baseline; smoke288main/confirm +3shard union. Fixtures:
+  source/art/target, forbiddencast/allowedbreak, stunMain/reaction vs freecheck,
+  dueHoT/regen/refresh, applysave/crit/partial, цены доRNG, escape consumesMain,
+  allyrelease/no extraMain, independentcontrols/expiry/exit/finaltick.
+- [ ] T129.2b Stable quality/damage/healing reuse через существующую operation;
+  полные key/D/B/guard/resistance/profile зависимости. Живые ограничения не
+  кэшировать. Измерить подготовку/lookup; no newparallelcache/дорогихgamefixtures.
+- [ ] T129.3 Frozen source commit/push/readback; main288×100/confirm288×1000,
+  horizon2000,3shards при необходимости. Rawбезквот D:\BoeDiagnostics\healing-control-t129\20261101-v1.
+  Сверить весьcoverage/seeds/endpoints/actorcounts/costs/controls/HP и сохранить
+  плохие случаи. Не менять параметры после старта полной матрицы.
+- [ ] T129.4 healing-control-investigation.md: сравнение control/none, эффект
+  в дуэли/2v2, полезность Heal, прерывание действий vs подавление чужогоHoT,
+  расходы/время/отрицательныехвосты. Independent review, исправления/verification,
+  publication/readback/newrestore/issue1573; старыйraw удалить после fullreview.
+
+Preflight: request→T129spec→T129.1–4; accepted personalstate/ordinaryregen/
+autonomousHoT/ownclock/freecheck сохраняются. Цены/сроки/save/разрыв обозначены
+экспериментальными, не принятыми правилами игры. 192+32+64=288cases,
+288×1100=316800. Не импортировать старый side-widecontrol и фиксированные
+действия. Ledger вplan/review, бездублирующего Superpowers плана.
+
 ## T128 — выполнение численной проверки, 2026-11-01
 
 Goal: проверить точныйT127 в бою и сохранить полезность Heal. Spec — T128/T127

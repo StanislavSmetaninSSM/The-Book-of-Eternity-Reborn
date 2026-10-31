@@ -1,5 +1,12 @@
 # Задачи #1573 — полный духовный бой
 
+## T129 — включить контроль в проверку лечения, 2026-11-01
+
+- [ ] T129.1 Audit/Spec Kit scope/параметры/план/матрица/API и preflight, публикация до реализации.
+- [ ] T129.2 TDD opt-in контроля в общей numerical-машине; cheap fixtures/legacy/smoke/reuse/адресность.
+- [ ] T129.3 Frozen source/316800траекторий, полный coverage/costs/HP/control/outcomes; диагностика безквот толькоD:.
+- [ ] T129.4 Полный отчёт, независимое whole-block review/исправления, verification/publication/readback/restore/retention; честная область выводов.
+
 ## T128 — проверка T127 в бою, 2026-11-01
 
 - [x] T128.1 Разрешение/684cases/допущения/план/API и consistency закреплены;5c8102887/e48f0e94c опубликованы, remoteSHA/spec readback подтверждены.
