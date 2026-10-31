@@ -2,6 +2,11 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "spiritual-diagnosis-dynamic-snapshot-causal",
+      "reason": "The second console attempt exposed the downstream common validator's unconditional rollback requirement for a genuine signed-only preparation request. Run only this new six-row actual-public-validator RED after fresh Integration/artifacts/PDB/catalog/exact PlanOnly/PREP; expect one final signed-only zero-errors failure and five specific baseline/refusal controls PASS. Production and the accepted direct-owner six tests remain unchanged; no UI retry is admitted.",
+      "contracts": ["#1536 T121 / FR071; actual common dynamic coverage, private owner authority and exact canonical/input roles"]
+    },
+    {
       "category": "spiritual-diagnosis-snapshot-role-causal",
       "reason": "Accepted EX8RED proves the real Engine's signed preparation input was incorrectly required in the canonical rollback baseline. The one-line GREEN candidate retains all DiagnosisSourcePaths coverage and exact signed/current request checks. Recheck the same six component rows after fresh builds/PDB/artifacts/discovery/PlanOnly/PREP; UI remains a separate conditional gate.",
       "contracts": ["#1536 T121 / FR071; authenticated preparation input versus exact canonical rollback coverage"]

@@ -1,3 +1,47 @@
+# T121 dynamic snapshot consumer causal scaffold — UNCOMPILED/UNRUN
+
+The complete bounded role audit after the second console timeout identified the
+remaining production seam at ValidationService.ResourceMaterialization.cs: the
+actual diagnosis owner enters the ordinary common composer, whose successful plan
+unconditionally checks BuildRequiredPaths(TouchedPaths), including the staged
+command. Active treatment follows its existing direct planning entry; ordinary
+natural has no command. Engine pre/post-publication already authenticate the separate
+prepared-input role. Interface admission, publication/current ownership, consumed
+input/durable diagnosis-plus-natural replay checks remain strict; no other confirmed
+diagnosis role defect was found in this route. Unrelated combat C4/cold/DFR stays out
+of scope. Astra approved a future exact live-owner/plan/signed-only role correction,
+with baseline-present and every other dynamic canonical path still fully checked.
+No such semantic correction is implemented in this checkpoint.
+
+One new Integration method has six source-estimated rows / one descriptor / 60s.
+It reuses the complete native diagnosis fixture, existing typed real backup,
+staging, Explorer overlay and signed snapshot producers, then the public
+PrepareSpiritualSelfTreatmentPublicationAsync path. Authentic signed-only input
+intends the sole final zero-errors FAIL; baseline-present succeeds. Current command
+drift, missing canonical History baseline, noncommand signed-only interface output
+and baseline-present physical backup tamper must refuse with specific codes/paths.
+The interface-output control must reach the exact dynamic coverage diagnostic,
+not an unrelated admission failure. Earlier direct-owner six tests are unchanged.
+
+The actual raw-location then raw-item owners are prepared and checked separately
+before post-seal current/backup byte faults. Source-role faults are created by the
+real signed snapshot producer, never by re-signing or editing its manifest. Exact
+source/control/role prerequisites precede the public consumer. Complete canonical,
+resource, output and retained snapshot/backup bytes must stay unchanged; any issued
+unpublished owner is closed and invalidated in finally. No turn loop, GM wait,
+publication, forged accepted receipt, reflection or new preparation framework.
+
+Only this Integration test, its category/selection and the current plan changed.
+Main/Support/Unit behavior and APIs remain at compiled 30bc; fresh Integration and
+current source/PDB/artifact continuity, catalogue and exact six-case PlanOnly/PREP
+are pending. All new C# is UNCOMPILED/UNRUN; writer ran no build/test. Full CI is
+source-estimated 166 cases / 68 methods / 29 descriptors. This does not replay the
+accepted 147 cheap / ten native component lineages, qualify UI or close a task.
+Existing owner/fixture DATA is reused inside each independent operation; current
+authority stays fresh, no cache/IO optimization or speedup is claimed. There is no
+GM wire change. Both console failures, retained original roots/archives and all raw
+remain external; browser/rollback and all broader holds remain held.
+
 # T121 second console timeout — dynamic snapshot-role audit pending
 
 The actual EX8GREEN console attempt at checkpoint `24bc40482` / compiled source

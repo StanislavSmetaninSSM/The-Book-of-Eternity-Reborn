@@ -2,6 +2,16 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "spiritual-diagnosis-dynamic-snapshot-causal",
+  "responsibility": "T121 actual public diagnosis preparation through ordinary raw-location and raw-item owners into the complete common resource/wound validator. Six real Engine snapshot rows cover signed-only preparation input, baseline-present success, current request drift, missing canonical History baseline, missing noncommand dynamic output baseline and physical rollback-backup tamper. Specific refusal codes/paths and no publication/mutation are asserted; signed-only input intends the sole final zero-errors RED.",
+  "excludes": "No production role exception, ProcessPlayerTurn, GM wait, full publication, UI acceptance, fabricated receipt/authority, manifest re-signing, reflection, new diagnostic stack, limit increase or replay of the unchanged direct-owner six-case category.",
+  "changeHints": ["BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.SpiritualDiagnosisDynamicSnapshot.cs", "BookOfEternityClient/Services/Validation/ValidationService.ResourceMaterialization.cs"],
+  "related": [{ "id": "spiritual-diagnosis-snapshot-role-causal", "when": "Existing direct-owner signed input and source guards stay independently qualified; this category reaches the downstream common validator." }, { "id": "spiritual-diagnosis-console", "when": "The original console remains held until the real dynamic validation boundary is causally proved and corrected." }],
+  "requirements": { "frontendBuild": false, "exclusive": true },
+  "timeoutMinutes": 1, "expectedSeconds": null,
+  "selectors": [{ "project": "integration", "tests": ["BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DiagnosisPublicPreparationPreservesExactDynamicRollbackRoles"] }]
+},
+{
   "id": "spiritual-diagnosis-snapshot-role-causal",
   "responsibility": "T121 file-light real Engine backup, actual diagnosis staging, Explorer rollback overlay and signed snapshot admission. Six unchanged rows distinguish signed preparation input from canonical rollback sources: signed-only and baseline-present input admit; missing/tampered signed input, current input drift and missing canonical source baseline refuse without mutation. Accepted EX8RED proved the signed-only final failure; the GREEN candidate corrects only that rollback role while retaining all signed/current request guards.",
   "excludes": "No ProcessPlayerTurn, GM wait, accepted receipt fabrication, manifest re-signing, publication, UI acceptance, broader coverage exception, budget increase or replay of accepted unrelated component/native cases. The actual original console/browser/rollback cases remain separate and required after component GREEN.",
