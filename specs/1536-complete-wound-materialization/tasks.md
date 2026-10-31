@@ -70,6 +70,15 @@ archive are outside checkout; original failures and all other holds are retained
   and phased cheap/native/actual UI outcomes still precede bounded acceptance.
   This task stays unchecked; other physical treatment remains recommendation-only.
 
+- [ ] T121-DIAGNOSIS-MORTAL-PENDING Close the actual native original-pending
+  evidence failure through the existing snapshot producers/observed reader and
+  diagnosis owner. Preserve prior noncombat/combat forms for unrelated reads,
+  require a verified pending observation before diagnosis claims, and retain exact
+  held versus outer images. Astra bounded DESIGN accepted; core WIP is
+  UNCOMPILED/UNRUN. Four real producer present/absent rows and two prior-shape
+  refusal rows plus existing source-drift/coverage/role/rebind controls precede
+  coherent SOURCE/build/PREP. No signed absence may be fabricated by a fixture.
+
 - [x] T121-DIAGNOSIS-READ Show readable declared conditions of currently known
   diagnostic paths in the existing wound/status cards for console/browser. Reuse
   the existing typed requirement projection and one operation-owned physical

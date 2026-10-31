@@ -90,11 +90,9 @@ internal sealed partial class MortalWoundTreatmentAcceptedStateAuthority
 
     internal CanonicalBeforeImage ReadDiagnosisOriginalPending()
     {
-        var snapshot = _diagnosisIssuedSnapshot ?? throw new InvalidDataException("Missing original diagnosis snapshot.");
-        const string path = WoundAcceptedTurnSnapshotContract.PendingResolutionPath;
-        if (snapshot.CoveredLogicalPaths.Contains(path, StringComparer.Ordinal)) return new(true, snapshot.ReadRequiredBytes(path));
-        if (snapshot.AbsentLogicalPaths.Contains(path, StringComparer.Ordinal)) return new(false, null);
-        throw new InvalidDataException("The signed original diagnosis did not prove pending presence or absence.");
+        var image = _diagnosisOriginalPending ??
+            throw new InvalidDataException("The signed original diagnosis did not prove pending presence or absence.");
+        return new(image.Existed, image.Bytes);
     }
 
     internal bool HasCurrentDiagnosisPreparedCommandRole(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease,

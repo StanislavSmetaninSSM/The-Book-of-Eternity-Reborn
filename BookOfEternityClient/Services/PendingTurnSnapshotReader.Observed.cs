@@ -75,6 +75,10 @@ internal static partial class PendingTurnSnapshotReader
                 throw new InvalidOperationException("Original evidence requires its exact owner, lease and issued snapshot.");
         }
 
+        /// <summary>Returns a copied pending-resolution original image, or null when this issued read did not prove one. DATA only; current authority and retention remain separate.</summary>
+        internal CanonicalBeforeImage? ReadPendingResolutionOriginal() => _source.PendingResolutionOriginal is { } image
+            ? new CanonicalBeforeImage(image.Existed, image.Bytes) : null;
+
         /// <summary>Reads only the exact prepared-command DATA role from this issued evidence's frozen authority bytes.</summary>
         /// <returns>True for an exact signed member outside both rollback inventories; this grants no current permission.</returns>
         internal bool HasExactPreparedWoundCommandRole()
@@ -210,6 +214,7 @@ internal static partial class PendingTurnSnapshotReader
         private Exception? _fault;
         private LocalSessionGenerationSnapshot? _generation;
         private FrozenOriginalSource? _closed;
+        private CanonicalBeforeImage? _pendingResolutionOriginal;
         private LiveTurnPendingSnapshotManifest? _rollbackManifest;
         private IReadOnlyList<KeyValuePair<string, string>>? _rollbackRows;
         private int _rollbackOrdinal;
@@ -307,6 +312,26 @@ internal static partial class PendingTurnSnapshotReader
             _operations.Add(operation);
         }
 
+        internal void CapturePendingResolutionObservation(LiveTurnPendingSnapshotManifest manifest,
+            IReadOnlyDictionary<string, byte[]> verifiedSelectedBytes)
+        {
+            EnsureCapturing();
+            const string path = WoundAcceptedTurnSnapshotContract.PendingResolutionPath;
+            _pendingResolutionOriginal = null;
+            if (manifest.OriginalPathPresenceV1 is null ||
+                !manifest.OriginalPathPresenceV1.TryGetValue(path, out var present)) return;
+            var fileRows = manifest.Files.Where(row => string.Equals(row.Key, path, StringComparison.OrdinalIgnoreCase)).ToArray();
+            var hashRows = manifest.SnapshotFileHashes.Where(row => string.Equals(row.Key, path, StringComparison.OrdinalIgnoreCase)).ToArray();
+            if (present)
+            {
+                if (fileRows.Length == 1 && hashRows.Length == 1 && fileRows[0].Key == path && hashRows[0].Key == path &&
+                    verifiedSelectedBytes.TryGetValue(path, out var bytes))
+                    _pendingResolutionOriginal = new(true, bytes);
+            }
+            else if (fileRows.Length == 0 && hashRows.Length == 0)
+                _pendingResolutionOriginal = new(false, null);
+        }
+
         internal bool CloseAndRecheck(List<ValidationIssue> issues)
         {
             EnsureCapturing();
@@ -324,7 +349,7 @@ internal static partial class PendingTurnSnapshotReader
                 _state = OriginalSourceState.Failed;
                 return false;
             }
-            var closure = new FrozenOriginalSource(files, lease, _generation, _operations);
+            var closure = new FrozenOriginalSource(files, lease, _generation, _operations, _pendingResolutionOriginal);
             try
             {
                 if (!closure.Recheck(issues)) { _state = OriginalSourceState.Failed; return false; }
@@ -363,14 +388,17 @@ internal static partial class PendingTurnSnapshotReader
         internal readonly string GenerationId;
         internal readonly byte[] GenerationBytes;
         internal readonly IReadOnlyList<OriginalSourceOperation> Operations;
+        internal readonly CanonicalBeforeImage? PendingResolutionOriginal;
 
         internal FrozenOriginalSource(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease,
-            LocalSessionGenerationSnapshot generation, IEnumerable<OriginalSourceOperation> operations)
+            LocalSessionGenerationSnapshot generation, IEnumerable<OriginalSourceOperation> operations,
+            CanonicalBeforeImage? pendingResolutionOriginal)
         {
             Files = files; Lease = lease;
             GenerationId = generation.Binding.Id!;
             GenerationBytes = generation.Bytes!.ToArray();
             Operations = Array.AsReadOnly(operations.Select(operation => operation.Copy()).ToArray());
+            PendingResolutionOriginal = pendingResolutionOriginal is { } image ? new(image.Existed, image.Bytes) : null;
         }
 
         internal bool Recheck(List<ValidationIssue> issues)

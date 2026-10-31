@@ -1,3 +1,43 @@
+# T121 original pending observation correction WIP — UNCOMPILED / UNRUN
+
+The first native phase at runtime `ca01bdf0a24d28b6998b7497f77ebd08f5aee675`
+completed one FAIL / twenty-four UNRUN in 18.0043246s, with no timeout and full
+cleanup. DiagnosisCommonPlanKeepsHeldAndOuterOriginalPendingImagesDistinct failed
+because the signed original did not prove pending_wound_resolutions presence or
+absence. Raw `M2GREENC2-native` and its stable failure-closing fence remain
+external. The separately accepted cheap 140 / 45-method mixed lineage is retained;
+no native publication or UI result is inferred from it.
+
+Independent Astra accepted the bounded technical correction: both real producers
+share a current presence inventory that now includes pending. Prior noncombat and
+combat forms remain supported for unrelated reads, but cannot authorize diagnosis
+from an unobserved pending image. The inherited optional-root mode is unchanged.
+Inside ReadCurrentCore, after existing manifest/authority/presence and selected-byte
+verification and before CloseAndRecheck, the existing original read session captures
+only a narrow immutable pending before-image. Present requires its exact selected
+verified bytes and agreeing signed presence/mapping/hash; absent requires explicit
+signed false with no mapping/hash. Missing proof remains unobserved. The same
+frozen session/evidence owns the DATA and exports copies, with no getter reparse,
+extra source read, selector, cache or authority. Diagnosis export requires that
+proof before issuing usable authority or preparing claims; ordinary retention and
+RequireCurrent remain strict. Current code is UNCOMPILED/UNRUN.
+
+Owner and lifetime are the actual original read session/issued snapshot and its
+exact filesystem lease/generation. Full authenticated manifest/control, selected
+artifact bytes/hashes and current physical observations remain dependencies;
+CloseAndRecheck and later RequireCurrent are unchanged. No speedup claim. The
+next coherent cut adds four real Live/Engine present/absent rows, two deliberately
+prior-shaped signed-DATA diagnosis refusals before claims, exact copied exports,
+source-drift/refusal and existing actual read-counter evidence. Six input-role,
+hold/rebind/C4/outer proofs remain; the real failed native is the causal RED.
+No extra expensive baseline or accepted cheap-case replay is requested.
+
+The protocol is client-owned original evidence, not a new GM output, game rule,
+price, duration or action. Current GM guidance already reserves original/pending
+and held-versus-outer before-images to the client; final impact/fixture/selection
+readback remains pending. No writer build/test/runtime or unrelated physical
+feature implementation. All task/adapter/HOLD boundaries remain unchanged.
+
 # T121 Mortal 140 cheap cases complete by lineage — ownership and actual UI UNRUN
 
 The changed read-handler method at source

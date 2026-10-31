@@ -1671,3 +1671,33 @@ All remain UNCOMPILED/UNRUN. The finite selection/source estimates and historica
 causal RED are in the current plan. The same ongoing whole SOURCE, fresh builds,
 exact discovery and phased outcomes must qualify this candidate. No parent or
 broader treatment/adapter/HOLD scope is closed by this status note.
+
+
+### Original pending observation correction — accepted bounded technical design
+
+The actual first native diagnosis failed because both shared producers omitted
+pending_wound_resolutions from originalPathPresenceV1, and ordinary optional
+selection intentionally does not export an absent optional image. This is a
+production evidence gap, not permission to seed or rewrite signed absence.
+
+Current producers add that path to the shared closed inventory. Preserve the
+immediately prior noncombat and combat forms for unrelated readers; diagnosis
+must refuse their unobserved pending image before usable authority/claims. Do not
+apply observed-optional enforcement to the complete inherited optional-root set.
+
+The existing ReadCurrentCore captures a narrow immutable pending observation only
+after authenticated manifest/authority/presence and selected-byte verification,
+before CloseAndRecheck. The same OriginalSourceReadSession/FrozenOriginalSource/
+evidence retains it. Present requires exact selected authenticated bytes and
+agreeing presence/mapping/hash; absent requires signed false and no conflicting
+mapping/hash. Missing observation is not absence. Copied DATA exports do not
+parse raw manifest/authority again or issue permission. Existing original/control/
+physical source checks and live pending/held retention remain mandatory. No new
+owner, registry, selector, cache, publisher or extra source read is introduced.
+
+Four real producer present/absent proofs, prior noncombat/combat diagnosis
+refusals, copied exports, actual source counters and targeted contradiction/drift
+controls qualify this correction together with existing input-role/hold/C4/outer
+consumers. The actual native failure is causal RED; code and new controls remain
+UNCOMPILED/UNRUN until coherent SOURCE and parent-owned qualification. This adds
+no GM-authored output or game rule; original/held evidence remains client-owned.

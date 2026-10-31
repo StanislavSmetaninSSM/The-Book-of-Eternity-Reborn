@@ -45,8 +45,15 @@ internal static class PendingTurnSnapshotPathPresenceV1
             .Concat([MortalWoundOccurrenceState.StatePath, MortalWoundOpportunityReceiptState.StatePath])
             .ToArray());
 
-    private static readonly ReadOnlyCollection<string> ClosedLogicalPaths =
+    private static readonly ReadOnlyCollection<string> BeforeDiagnosisClosedLogicalPaths =
         Array.AsReadOnly(BeforeCompletionClosedLogicalPaths.Concat([MortalQteDecisionPublication.StatePath]).ToArray());
+
+    private static readonly ReadOnlyCollection<string> BeforeDiagnosisCombatClosedLogicalPaths =
+        Array.AsReadOnly(BeforeDiagnosisClosedLogicalPaths.Concat(AfterlifeWoundTreatmentAuthority.CombatSourcePaths)
+            .Distinct(StringComparer.Ordinal).ToArray());
+
+    private static readonly ReadOnlyCollection<string> ClosedLogicalPaths =
+        Array.AsReadOnly(BeforeDiagnosisClosedLogicalPaths.Concat([WoundAcceptedTurnSnapshotContract.PendingResolutionPath]).ToArray());
 
     // Two currently produced observation forms. A combat projection selects the
     // extra closed read set before capture; this grants no combat permission.
@@ -56,6 +63,10 @@ internal static class PendingTurnSnapshotPathPresenceV1
 
     internal static IReadOnlyList<string> LogicalPaths => ClosedLogicalPaths;
     internal static IReadOnlyList<string> CombatLogicalPaths => CombatClosedLogicalPaths;
+    // Earlier authenticated forms remain readable for unrelated work; neither
+    // form proves an unobserved original pending-resolution image for diagnosis.
+    internal static IReadOnlyList<string> BeforeDiagnosisLogicalPaths => BeforeDiagnosisClosedLogicalPaths;
+    internal static IReadOnlyList<string> BeforeDiagnosisCombatLogicalPaths => BeforeDiagnosisCombatClosedLogicalPaths;
     internal static bool HasCombatProjection(JsonObject? projection) =>
         projection?["mode"] is JsonValue value && value.TryGetValue<string>(out var mode) && mode == "combat_self";
     internal static IReadOnlyList<string> GetLogicalPaths(bool includeCombatSources) =>
@@ -397,6 +408,9 @@ internal static partial class PendingTurnSnapshotReader
         if (issues.Count != 0)
             return Failure(issues);
 
+        // Project only this narrow DATA fact from the already verified manifest
+        // and selected bytes. No second read/parse or generic optional widening.
+        sourceSession?.CapturePendingResolutionObservation(manifest, bytesByPath);
         if (sourceSession is not null && !sourceSession.CloseAndRecheck(issues))
             return Failure(issues);
 
@@ -556,10 +570,14 @@ internal static partial class PendingTurnSnapshotReader
             .ToHashSet(StringComparer.Ordinal);
         var beforeCompletion = PendingTurnSnapshotPathPresenceV1.BeforeCompletionLogicalPaths
             .ToHashSet(StringComparer.Ordinal);
+        var beforeDiagnosis = PendingTurnSnapshotPathPresenceV1.BeforeDiagnosisLogicalPaths.ToHashSet(StringComparer.Ordinal);
+        var beforeDiagnosisCombat = PendingTurnSnapshotPathPresenceV1.BeforeDiagnosisCombatLogicalPaths.ToHashSet(StringComparer.Ordinal);
         var actual = manifest.OriginalPathPresenceV1.Keys
             .ToHashSet(StringComparer.Ordinal);
         if (!((manifest.OriginalPathPresenceV1.Count == expected.Count && actual.SetEquals(expected)) ||
               (manifest.OriginalPathPresenceV1.Count == combat.Count && actual.SetEquals(combat)) ||
+              (manifest.OriginalPathPresenceV1.Count == beforeDiagnosis.Count && actual.SetEquals(beforeDiagnosis)) ||
+              (manifest.OriginalPathPresenceV1.Count == beforeDiagnosisCombat.Count && actual.SetEquals(beforeDiagnosisCombat)) ||
               (manifest.OriginalPathPresenceV1.Count == beforeCompletion.Count && actual.SetEquals(beforeCompletion)) ||
               (manifest.OriginalPathPresenceV1.Count == beforeMortal.Count && actual.SetEquals(beforeMortal)) ||
               (manifest.OriginalPathPresenceV1.Count == previous.Count && actual.SetEquals(previous)) ||

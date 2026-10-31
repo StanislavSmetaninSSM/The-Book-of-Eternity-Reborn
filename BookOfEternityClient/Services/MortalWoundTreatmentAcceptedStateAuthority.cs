@@ -67,6 +67,7 @@ internal sealed partial class MortalWoundTreatmentAcceptedStateAuthority
     private IReadOnlyDictionary<string, JsonObject>? _diagnosisOriginalRoots;
     private PendingTurnSnapshotReader.OriginalReadEvidence? _diagnosisOriginalEvidence;
     private PendingTurnSnapshotReadAuthority? _diagnosisIssuedSnapshot;
+    private CanonicalBeforeImage? _diagnosisOriginalPending;
     internal IReadOnlyList<(string Path, WoundMaterializationEnvelope Wound)> ReadDiagnosisOriginalCohort()
     {
         if (_diagnosisOriginalCatalog is null) throw new InvalidDataException("The diagnosis owner has no admitted original cohort.");
@@ -494,6 +495,16 @@ internal sealed partial class MortalWoundTreatmentAcceptedStateAuthority
         if (!snapshotRead.Success || snapshotRead.Snapshot is null)
             return Failure(snapshotRead.Issues);
         var signed = snapshotRead.Snapshot;
+        CanonicalBeforeImage? diagnosisOriginalPending = null;
+        if (diagnosis)
+        {
+            observed!.Evidence!.RequireOwner(fileSystem, writeLease, signed);
+            diagnosisOriginalPending = observed.Evidence.ReadPendingResolutionOriginal();
+            if (diagnosisOriginalPending is null)
+                return Failure([Issue(WoundAcceptedTurnSnapshotContract.PendingResolutionPath,
+                    "mortal_diagnosis_original_pending_unobserved", "exact signed original pending presence or absence",
+                    "the current diagnosis cannot use an unobserved pending image")]);
+        }
         var requiredPaths = signed.CoveredLogicalPaths;
         ValidateTargetCarrierCoverage(context, requiredPaths, issues);
         if (issues.Count != 0)
@@ -816,6 +827,7 @@ internal sealed partial class MortalWoundTreatmentAcceptedStateAuthority
             authority._diagnosisOriginalRoots = new ReadOnlyDictionary<string, JsonObject>(roots);
             authority._diagnosisOriginalEvidence = observed?.Evidence ?? throw new InvalidDataException("Diagnosis original observation proof is missing.");
             authority._diagnosisIssuedSnapshot = signed;
+            authority._diagnosisOriginalPending = diagnosisOriginalPending;
             authority._diagnosisCommandBytes = signed.ReadRequiredBytes(AcceptedMechanicsPlan.WoundCommandPath);
             authority._diagnosisInput = JsonNode.Parse(Decode(authority._diagnosisCommandBytes))?.AsObject()
                 ?? throw new InvalidDataException("Missing signed Mortal diagnosis selection input.");
