@@ -58,11 +58,17 @@ archive are outside checkout; original failures and all other holds are retained
   without temporary writes or new accepted-state authority. Retain same-attempt
   C4 claims before History and use capability-controlled exact restoration; test
   competing claims and cross-purpose identity collisions, not release-plus-reroll.
-  Astra delta DESIGN accepted4152f330; only a two-row existing-parser causal
-  scaffold is authored, category mortal-diagnosis-method-causal/60s. Canonical and
-  ordinary procedure/policy/shared-parser prerequisites precede the intended final
-  exact-empty Check refusal. Fresh Unit build/discovery/PREP/actual RED are pending;
-  all production/live authority and feature acceptance remain UNRUN/open.
+  Astra delta DESIGN accepted4152f330. Actual M1 existing-parser causal RED at
+  56137b2c8 completed two intended semantic failures; the compact accepted receipt
+  and exact raw/archive references remain in plan.md. The coherent implementation
+  candidate now includes typed current-input migration, exact purpose/claims and
+  signed command roles, retained retry/C4/outer images, knowledge-before-ordinary
+  recovery at checked T1, durable History/replay, guided console/browser and GM
+  synchronization. Source-estimated finite selection is 168 cases / 62 methods /
+  31 project descriptors / 30 categories. All candidate code and controls remain
+  UNCOMPILED/UNRUN; independent whole SOURCE, fresh owning builds, exact discovery
+  and phased cheap/native/actual UI outcomes still precede bounded acceptance.
+  This task stays unchecked; other physical treatment remains recommendation-only.
 
 - [x] T121-DIAGNOSIS-READ Show readable declared conditions of currently known
   diagnostic paths in the existing wound/status cards for console/browser. Reuse

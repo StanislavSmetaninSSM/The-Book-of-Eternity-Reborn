@@ -1,3 +1,46 @@
+# T121 Mortal coherent candidate — SOURCE freeze, UNCOMPILED / UNRUN
+
+The saved implementation now connects explicit current Mortal method parsing,
+real accepted original/check/Fate/resource ownership, immutable input and retained
+pre-History claims, checked T0 + declared duration = T1, knowledge-first complete
+ordinary recovery, strict durable History/replay, one common publisher, held C4
+compensation and separate original outer rollback. Guided console/shared browser
+choices show only declared parameters; read/cancel are inert and confirmation,
+staging and publication preserve fresh source/owner/claim boundaries. Eight
+spiritual requirement adapters and other physical treatment execution remain open.
+
+Three actual Engine fixtures retain real signed Engine dice, one initial resource
+bootstrap, truthful ordinary response/medic Scope/Brain/first-person sidecar,
+complete controlled publication-cut images and passive gzip capture through
+closing. Expected bands explicitly require normal mode, modifier3/difficulty15
+and no complication modifier before using the actual die. The happy oracle checks
+sterile_thread2→1 plus exactly one current-turn consume identity transition and
+one typed final consumption; all other NPC core/item fields remain exact. Replay
+must leave the complete canonical image unchanged. No provider or DOM claim.
+
+Finite source membership is estimated at 168 cases / 62 methods / 31 project
+descriptors / 30 categories, with no duplicate selected method. This includes
+exact directly affected current-parser/alternative/recovery/spiritual-purpose,
+read/status, NPC journal and one ordinary procedure retry consumer, plus the three
+semantic source guards. No old 10–15 minute Mortal aggregate or full suite is
+selected. Official discovery/PlanOnly remains authoritative. Static JSON syntax,
+changed-file whitespace, declared source selector membership and semantic inventory
+anchors/scopes were checked; those are not C# build/test or runtime evidence.
+
+All candidate code/fixtures remain UNCOMPILED/UNRUN. The same ongoing independent
+whole SOURCE review must finish before parent-owned fresh owning builds and phased
+cheap/native/UI qualification. Historical M1 causal RED and accepted spiritual/
+Shining/read lineages remain separate. No task checkbox/parent/issue is closed.
+No writer build, test, restore, discovery or Engine run; no raw/binaries in Git.
+
+Reuse stays operation-owned DATA: canonical menu roots/parsed definitions and
+private working/result/cohort exports are reused once where stable; confirmation,
+claim restoration, original manifest/control/physical reads and common publication
+retain mandatory freshness. No new cache/registry/publisher/dice/diagnostic stack,
+no speedup or measured source-read claim. Six GM guides, both daemon directives,
+all identified current physical empty-check inputs, worked example/manifest and
+finite source/docs controls are synchronized; spiritual empty checks remain exact.
+
 # T121 Mortal controlled actual Engine fixtures WIP — UNCOMPILED / UNRUN
 
 Three independent console, shared-browser and publication-cut journeys now use

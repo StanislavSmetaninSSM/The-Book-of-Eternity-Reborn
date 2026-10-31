@@ -1648,3 +1648,26 @@ RED and subsequent implementation handoff. No genuine new author-rule contradict
 has been found. Exact new C# member
 names/signatures, final schema spelling and fixtures remain technical implementation
 choices under that review; all implementation, builds and runtime are UNRUN.
+
+
+### Mortal implementation candidate status — 2026-10-31, not qualification
+
+The existing owners now have one coherent source candidate for the approved
+Mortal route: strict typed current Check and purpose, actual original/retained
+claim admission, private T0→knowledge→T1→whole ordinary recovery, durable result
+and History, common publication, exact held-versus-original compensation/retry,
+guided console/shared browser and effective GM/current-input synchronization.
+The actual ordinary report obligations stay tied to signed original control;
+newly elapsed diagnosis time creates no additional same-turn report requirement.
+Numeric clock presentation is cumulative, with no calendar arithmetic.
+
+Independent source-authored controls include full inner/outer resealed dice/clock
+joins, two-member selected-second/private cohort, genuinely published diagnosis
+followed by a fresh ordinary recovery owner at the same T1, actual Shield and
+pre-History/C4/outer retry claims, signed-command roles and three controlled real
+Engine journeys. The latter use the involved medic's ordinary append-only journal
+sidecar and preserve exact identity/skills/location; no NPC metadata exception.
+All remain UNCOMPILED/UNRUN. The finite selection/source estimates and historical
+causal RED are in the current plan. The same ongoing whole SOURCE, fresh builds,
+exact discovery and phased outcomes must qualify this candidate. No parent or
+broader treatment/adapter/HOLD scope is closed by this status note.

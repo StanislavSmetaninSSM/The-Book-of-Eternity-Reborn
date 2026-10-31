@@ -2,6 +2,238 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "mortal-diagnosis-current-path-regressions",
+  "responsibility": "Current physical path migration through typed whole-wound reduction, exact known-path availability and complete path seals; shared local diagnosis shape/writers/requirements and graph removal remain strict. Finite existing methods only; source-authored selection UNRUN, discovery and independent whole SOURCE settle membership/admission.",
+  "excludes": "No broad Mortal 10–15 minute aggregate, complete suite, DFR/Windows/compatibility qualification, historical reflection fixture copied into new tests or new game rule.",
+  "changeHints": [
+    "BookOfEternityClient/Services/MortalWoundTreatmentContract.DiagnosisCheck.cs",
+    "BookOfEternityClient/Services/WoundHistoryState.MortalDiagnosis.cs",
+    "BookOfEternityClient/Services/WoundApplicationService.MortalDiagnosisMenu.cs"
+  ],
+  "related": [
+    {
+      "id": "mortal-diagnosis-method-guards",
+      "when": "Current explicit method shape and shared realm/purpose refusal remain strict."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.MortalWoundDiagnosisTransitionTests.Reduce_EmitsOnlyCarrierTerminalAttemptAndSealedNonterminalHistory",
+        "BookOfEternityClient.Tests.MortalWoundDiagnosisTransitionTests.Reduce_UsesExactCurrentlyKnownPathAvailability",
+        "BookOfEternityClient.Tests.MortalWoundDiagnosisTransitionTests.Factory_PathSealBindsCompleteAuthoredContent",
+        "BookOfEternityClient.Tests.MortalWoundDiagnosisTransitionTests.Reduce_SpiritualWoundCannotUseMortalDiagnosisAuthority",
+        "BookOfEternityClient.Tests.MortalWoundTreatmentMemberShapeTests.Diagnosis_CompleteDetachedRoundTripPreservesExternalFactsAndOrder",
+        "BookOfEternityClient.Tests.MortalWoundTreatmentMemberShapeTests.Diagnosis_RejectsEveryMissingMemberAndFactOverflow",
+        "BookOfEternityClient.Tests.MortalWoundTreatmentMemberShapeTests.Diagnosis_RejectsOriginalNestedDuplicateProperties",
+        "BookOfEternityClient.Tests.MortalWoundTreatmentMemberShapeTests.Members_ShareAllRegisteredRequirementsAndCanonicalWriters",
+        "BookOfEternityClient.Tests.MortalWoundTreatmentMemberShapeTests.Members_CanonicalWritersMatchFullTreatmentSerialization",
+        "BookOfEternityClient.Tests.MortalWoundTreatmentContractTests.ParseProjection_ProducesDetachedTypedProcedureWithoutCachingItOnRawRoute",
+        "BookOfEternityClient.Tests.MortalWoundTreatmentWorkingGraphProjectionTests.GraphProjection_RemovalPreservesCanonicalDiagnosisValidation"
+      ]
+    }
+  ]
+},
+{
+  "id": "mortal-diagnosis-alternative-regressions",
+  "responsibility": "Migrated current authored alternative paths keep exact current Check, detached field/seal/privacy and repair boundaries; no empty current-input fallback or live authority from alternative DATA. Finite existing methods only; source-authored selection UNRUN, discovery and independent whole SOURCE settle membership/admission.",
+  "excludes": "No broad Mortal 10–15 minute aggregate, complete suite, DFR/Windows/compatibility qualification, historical reflection fixture copied into new tests or new game rule.",
+  "changeHints": [
+    "BookOfEternityClient/Services/MortalWoundTreatmentContract.DiagnosisCheck.cs",
+    "BookOfEternityClient/Services/WoundHistoryState.MortalDiagnosis.cs",
+    "BookOfEternityClient/Services/WoundApplicationService.MortalDiagnosisMenu.cs"
+  ],
+  "related": [
+    {
+      "id": "mortal-diagnosis-method-guards",
+      "when": "Current explicit method shape and shared realm/purpose refusal remain strict."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.MortalWoundAlternativeTransitionTests.Reduce_AppendsCompleteSettingSpecificOptionAndOnlyNonterminalHistory",
+        "BookOfEternityClient.Tests.MortalWoundAlternativeTransitionTests.Factory_FullLocalSealsIncludeDisplayButExcludeParserSourceLocations",
+        "BookOfEternityClient.Tests.WoundAlternativeTreatmentResponseTests.Author_FactoryBackedVisibleAndHiddenMembersDetachAndRoundTrip",
+        "BookOfEternityClient.Tests.WoundAlternativeTreatmentResponseTests.Author_HiddenRouteRejectsWrongRevealAndGmOnlyPath",
+        "BookOfEternityClient.Tests.WoundAlternativeTreatmentRepairTests.RawDiagnosisDiagnostics_KeepOriginalArrayIndicesAcrossPhases"
+      ]
+    }
+  ]
+},
+{
+  "id": "mortal-diagnosis-ordinary-recovery-regressions",
+  "responsibility": "The extended History reader still reconstructs ordinary recovery original prefixes, exact same-minute receipts, outer coordinates and epoch allocation after intervening treatment. No compatibility journey or manufactured accepted state. Finite existing methods only; source-authored selection UNRUN, discovery and independent whole SOURCE settle membership/admission.",
+  "excludes": "No broad Mortal 10–15 minute aggregate, complete suite, DFR/Windows/compatibility qualification, historical reflection fixture copied into new tests or new game rule.",
+  "changeHints": [
+    "BookOfEternityClient/Services/MortalWoundTreatmentContract.DiagnosisCheck.cs",
+    "BookOfEternityClient/Services/WoundHistoryState.MortalDiagnosis.cs",
+    "BookOfEternityClient/Services/WoundApplicationService.MortalDiagnosisMenu.cs"
+  ],
+  "related": [
+    {
+      "id": "mortal-diagnosis-method-guards",
+      "when": "Current explicit method shape and shared realm/purpose refusal remain strict."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.MortalWoundRecoveryPersistenceTests.Codec_RoundTripsDetachedEvidenceAndRejectsNestedDuplicateProperties",
+        "BookOfEternityClient.Tests.MortalWoundRecoveryPersistenceTests.History_ReconstructsTheOriginalPrefixAndReturnsTheOriginalSameMinuteReceipt",
+        "BookOfEternityClient.Tests.MortalWoundRecoveryPersistenceTests.History_RejectsOuterRowCoordinatesThatDisagreeWithTheDurableResult",
+        "BookOfEternityClient.Tests.MortalWoundRecoveryPersistenceTests.History_RequiresExactEpochAllocationEvidenceAfterInterveningTreatment"
+      ]
+    }
+  ]
+},
+{
+  "id": "mortal-diagnosis-spiritual-purpose-regressions",
+  "responsibility": "Shared selection/parser/reducer boundaries preserve real spiritual knowledge-only reduction, exact empty spiritual check and refusal of mixed independently closed aid/combat/service variants. No broad accepted spiritual replay. Finite existing methods only; source-authored selection UNRUN, discovery and independent whole SOURCE settle membership/admission.",
+  "excludes": "No broad Mortal 10–15 minute aggregate, complete suite, DFR/Windows/compatibility qualification, historical reflection fixture copied into new tests or new game rule.",
+  "changeHints": [
+    "BookOfEternityClient/Services/MortalWoundTreatmentContract.DiagnosisCheck.cs",
+    "BookOfEternityClient/Services/WoundHistoryState.MortalDiagnosis.cs",
+    "BookOfEternityClient/Services/WoundApplicationService.MortalDiagnosisMenu.cs"
+  ],
+  "related": [
+    {
+      "id": "mortal-diagnosis-method-guards",
+      "when": "Current explicit method shape and shared realm/purpose refusal remain strict."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.SpiritualDiagnosisReductionTests.ExactAdmittedSpiritualRequestReducesOnlyItsCompleteDeclaredKnowledge",
+        "BookOfEternityClient.Tests.SpiritualDiagnosisAdmissionTests.GuaranteedDiagnosisDoesNotIgnoreNonemptyCheck",
+        "BookOfEternityClient.Tests.SpiritualDiagnosisAdmissionTests.IndependentlyClosedTreatmentVariantCannotMixWithDiagnosis"
+      ]
+    }
+  ]
+},
+{
+  "id": "mortal-diagnosis-read-interface-regressions",
+  "responsibility": "The exact two existing real read handlers and hidden/foreign/unknown status projection consume migrated physical Check while preserving no-write/privacy/read-count contracts and accurate diagnostic guidance. Finite existing methods only; source-authored selection UNRUN, discovery and independent whole SOURCE settle membership/admission.",
+  "excludes": "No broad Mortal 10–15 minute aggregate, complete suite, DFR/Windows/compatibility qualification, historical reflection fixture copied into new tests or new game rule.",
+  "changeHints": [
+    "BookOfEternityClient/Services/MortalWoundTreatmentContract.DiagnosisCheck.cs",
+    "BookOfEternityClient/Services/WoundHistoryState.MortalDiagnosis.cs",
+    "BookOfEternityClient/Services/WoundApplicationService.MortalDiagnosisMenu.cs"
+  ],
+  "related": [
+    {
+      "id": "mortal-diagnosis-method-guards",
+      "when": "Current explicit method shape and shared realm/purpose refusal remain strict."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.WoundDiagnosisReadInterfaceTests.KnownDiagnosticConditionsAreReadableAndInertThroughBothHandlers",
+        "BookOfEternityClient.Tests.WoundPlayerStatusTests.Status_HiddenWoundsForeignOwnersAndUnknownRoutesAreOmittedRecursively"
+      ]
+    }
+  ]
+},
+{
+  "id": "mortal-diagnosis-ordinary-procedure-regression",
+  "responsibility": "One existing actual ordinary procedure exact-retry consumer qualifies the unchanged non-diagnosis branch across real resource/item/Fate/dice/History compensation and retry. Its original broad aggregate is not selected; this is an affected contract, not the Mortal compatibility HOLD. Finite existing methods only; source-authored selection UNRUN, discovery and independent whole SOURCE settle membership/admission.",
+  "excludes": "No broad Mortal 10–15 minute aggregate, complete suite, DFR/Windows/compatibility qualification, historical reflection fixture copied into new tests or new game rule.",
+  "changeHints": [
+    "BookOfEternityClient/Services/MortalWoundTreatmentContract.DiagnosisCheck.cs",
+    "BookOfEternityClient/Services/WoundHistoryState.MortalDiagnosis.cs",
+    "BookOfEternityClient/Services/WoundApplicationService.MortalDiagnosisMenu.cs"
+  ],
+  "related": [
+    {
+      "id": "mortal-diagnosis-method-guards",
+      "when": "Current explicit method shape and shared realm/purpose refusal remain strict."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ProcedureExactRetry_DoesNotDuplicateDiceFateResourceOrHistory"
+      ]
+    }
+  ]
+},
+{
+  "id": "mortal-diagnosis-npc-journal-regressions",
+  "responsibility": "Three existing typed relevant-NPC snapshot validators preserve actual append-only first-person sidecar admission, refusal of no append and refusal of rewriting old thought. This is the current real helper response contract; npc_core metadata guards are unchanged. Finite existing methods only; source-authored selection UNRUN, discovery and independent whole SOURCE settle membership/admission.",
+  "excludes": "No broad Mortal 10–15 minute aggregate, complete suite, DFR/Windows/compatibility qualification, historical reflection fixture copied into new tests or new game rule.",
+  "changeHints": [
+    "BookOfEternityClient/Services/MortalWoundTreatmentContract.DiagnosisCheck.cs",
+    "BookOfEternityClient/Services/WoundHistoryState.MortalDiagnosis.cs",
+    "BookOfEternityClient/Services/WoundApplicationService.MortalDiagnosisMenu.cs"
+  ],
+  "related": [
+    {
+      "id": "mortal-diagnosis-method-guards",
+      "when": "Current explicit method shape and shared realm/purpose refusal remain strict."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.GuardianSystemRegressionTests.AcceptedTurnReasoning_MortalNpcDecisionAcceptsNewThoughtJournalEntry",
+        "BookOfEternityClient.Tests.GuardianSystemRegressionTests.AcceptedTurnReasoning_MortalNpcDecisionRejectsUnchangedThoughtJournal",
+        "BookOfEternityClient.Tests.GuardianSystemRegressionTests.AcceptedTurnReasoning_MortalNpcDecisionRejectsEditingOldEntryEvenWhenNewEntryIsAdded"
+      ]
+    }
+  ]
+},
+{
   "id": "mortal-diagnosis-console",
   "responsibility": "T121 one independent complete Mortal Engine journey: actual console target/provider/method cancellation and confirmation. Complete initial template plus the existing typed physical seed before one resource bootstrap; actual signed Engine die determines the expected binary procedure outcome. Involved medic uses genuine append-only npc_journals with full Scope/Brain, while npc_core remains exact. Client knowledge/time/ordinary recovery/History/resources, strict replay and cleanup retain complete passive gzip/timing capture. Source-authored UNCOMPILED/UNRUN; original 180-second peer bound.",
   "excludes": "No replacement Engine dice, fake accepted-world authority/receipt, post-accepted seed patches, calendar arithmetic, direct diagnosis healing, broad Mortal/HOLD aggregate, provider experiment or second publisher.",

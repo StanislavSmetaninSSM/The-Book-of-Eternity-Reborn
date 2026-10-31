@@ -72,6 +72,7 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
             using (timings.Measure("MortalDiagnosis.FixturePreparation"))
                 original = await SeedMortalDiagnosisJourneyAsync(files);
             var coreBefore = Assert.IsType<byte[]>(await files.ReadFileBytesAsync("game_state/npcs/npc_core.json"));
+            var itemIdentityBefore = Assert.IsType<string>(await files.ReadFileAsync(MortalItemIdentityState.StatePath));
             var journalsBefore = Assert.IsType<byte[]>(await files.ReadFileBytesAsync("game_state/npcs/npc_journals.json"));
             var healthBefore = Assert.IsType<string>(await files.ReadFileAsync(ResourceMaterializationContract.StatePath));
             var console = new TestExplorerConsole();
@@ -194,6 +195,8 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                     Assert.Equal(heldRequest!.RequestFingerprint, result.Request.RequestFingerprint);
                     Assert.Equal(WoundMaterializationContract.SerializeCanonical(original), WoundMaterializationContract.SerializeCanonical(result.Original));
                     var actualCheck = Assert.IsType<MortalWoundProcedureCheckAuthority>(heldRequest.ModeAuthority);
+                    Assert.Equal("normal", actualCheck.RollMode); Assert.Equal(3, actualCheck.Modifier);
+                    Assert.Equal(15, actualCheck.EffectiveDifficulty); Assert.Equal(0, actualCheck.ComplicationDifficultyModifier);
                     // Independent expected band from the actual signed Engine die, never a replaced die or an extra draw.
                     var success = actualCheck.NaturalRoll == 20 || actualCheck.NaturalRoll != 1 && actualCheck.NaturalRoll + 3 >= 15;
                     Assert.Equal(success ? "success" : "failed_attempt", result.Resolution.ResultCategory);
@@ -210,7 +213,9 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                     var replayBefore = CaptureMortalDiagnosisImages(files);
                     Assert.Equal(WoundHistoryReplayDisposition.Exact, history.ResolveReplay(probe).Disposition);
                     AssertMortalDiagnosisImages(replayBefore, files);
-                    Assert.Equal(coreBefore, await files.ReadFileBytesAsync("game_state/npcs/npc_core.json"));
+                    AssertMortalDiagnosisSingleDeclaredCost(coreBefore, itemIdentityBefore, result,
+                        Assert.IsType<string>(await files.ReadFileAsync("game_state/npcs/npc_core.json")),
+                        Assert.IsType<string>(await files.ReadFileAsync(MortalItemIdentityState.StatePath)));
                     var journals = JsonNode.Parse((await files.ReadFileAsync("game_state/npcs/npc_journals.json"))!)!.AsObject();
                     var journal = Assert.Single(journals["NPCJournals"]!.AsArray(), value => value!["npcId"]!.GetValue<string>() == "field_medic_01");
                     Assert.Single(journal!["journalEntries"]!.AsArray());
@@ -232,6 +237,34 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
             }
             if (bodyFailure is not null) ExceptionDispatchInfo.Capture(bodyFailure).Throw();
         }
+    }
+
+    private static void AssertMortalDiagnosisSingleDeclaredCost(byte[] originalCore, string originalIndex,
+        MortalWoundDiagnosisPersistedResult result, string currentCore, string currentIndex)
+    {
+        var finalized = MortalWoundTreatmentResourceComposer.Finalize(result.Resolution);
+        Assert.True(finalized.IsValid, JsonSerializer.Serialize(finalized.Issues));
+        var consumption = Assert.Single(finalized.Finalization!.Consumptions);
+        Assert.Equal("item_quantity", consumption.Kind); Assert.Equal("sterile_thread", consumption.AuthorityRef);
+        Assert.Equal("npc", consumption.OwnerKind); Assert.Equal("field_medic_01", consumption.OwnerId);
+        Assert.Equal(1, consumption.Quantity); Assert.Equal(result.Request.RequestFingerprint, finalized.Finalization.RequestFingerprint);
+        var expectedCore = JsonNode.Parse(FileSystemManager.DecodeFileBytes(originalCore))!.AsObject();
+        var provider = Assert.Single(expectedCore["NPCsInScene"]!.AsArray());
+        var item = Assert.Single(provider!["inventory"]!.AsArray(), row => row!["itemId"]!.GetValue<string>() == "sterile_thread");
+        Assert.Equal(2, item!["count"]!.GetValue<int>()); item["count"] = 1;
+        // Exactly the declared item count changes. Identity, location, skills and
+        // every other actor/item property retain their full canonical values.
+        Assert.True(JsonNode.DeepEquals(expectedCore, JsonNode.Parse(currentCore)));
+        var before = MortalItemIdentityState.Parse(originalIndex); var after = MortalItemIdentityState.Parse(currentIndex);
+        Assert.Empty(before.Issues); Assert.Empty(after.Issues);
+        var previous = before.EntriesByItemId["sterile_thread"]["transitions"]!.AsArray();
+        var transitions = after.EntriesByItemId["sterile_thread"]["transitions"]!.AsArray();
+        Assert.Equal(previous.Count + 1, transitions.Count);
+        for (var index = 0; index < previous.Count; index++) Assert.True(JsonNode.DeepEquals(previous[index], transitions[index]));
+        var spent = transitions[^1]!.AsObject(); Assert.Equal("consume", spent["kind"]!.GetValue<string>());
+        Assert.Equal(result.Binding.Turn, spent["turn"]!.GetValue<int>());
+        Assert.Equal(2, spent["quantityBefore"]!.GetValue<int>()); Assert.Equal(1, spent["quantityAfter"]!.GetValue<int>());
+        Assert.Equal("mortal_wound_treatment", spent["authorityKind"]!.GetValue<string>());
     }
 
     private static Dictionary<string, byte[]?> CaptureMortalDiagnosisImages(FileSystemManager files) =>

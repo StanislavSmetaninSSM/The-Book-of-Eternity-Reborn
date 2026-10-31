@@ -28,6 +28,11 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
         var original = MortalWoundTreatmentResolverTests.SeedGuidedDiagnosisInitialWorld(files, beforeResourceBootstrap: current =>
         {
             void Write(string path, JsonNode value) => File.WriteAllText(current.ResolvePath(path), value.ToJsonString());
+            var npc = JsonNode.Parse(File.ReadAllText(current.ResolvePath("game_state/npcs/npc_core.json")))!.AsObject();
+            var medic = Assert.Single(npc["NPCsInScene"]!.AsArray());
+            Assert.Equal("field_medic_01", medic!["NPCId"]!.GetValue<string>());
+            medic["name"] = "Field medic";
+            Write("game_state/npcs/npc_core.json", npc);
             Write("game_state/meta/soul_state.json", fullSoul);
             Write(EffectAcceptedTurnInputComposer.WorldTimePath, fullClock);
             Write("game_state/misc/characteristics.json", new JsonObject(Characteristics.All.Select(name =>
@@ -80,7 +85,7 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
         await files.WriteFileAtomicAsync(lease, "game_state/npcs/npc_journals.json", journals.ToJsonString());
         await Write("output/narrative_response.json", new
         {
-            response = "Я даю полевому медику спокойно осмотреть рану выбранным способом. Он осторожно объясняет наблюдение; сведения, расходы и время определяет сохранённая клиентом процедура, а не обещание исцеления.", timestamp
+            response = "Я даю полевому медику спокойно осмотреть рану. Он осторожно раздвигает её края стерильной нитью, всматривается и объясняет, что смог заметить. Осмотр занимает полчаса; медик не обещает, что от него рана заживёт быстрее.", timestamp
         });
         await Write("output/interface_updates.json", new { dialogueOptions = Array.Empty<object>(), timestamp });
         await Write("output/debug_logs.json", new
