@@ -1,3 +1,15 @@
+# T121 bare diagnosis-hold SOURCE accepted — builds only
+
+Independent Astra/high accepted the complete narrow correction at
+`05076256a1de30582551ef418d0b48b9f8e823fd`, with no Important/Critical finding.
+The bare-only runtime boundary, pre-History input/row/root joins, strict ordinary
+waves, real normal/Fate request roundtrip and refusal scopes are coherent. No
+supported diagnosis-request-in-repair-wave dependency was found. The proposed
+cheap selection is 14 cases / 8 methods / 3 descriptors / 3 categories, all 60s;
+official discovery remains authoritative. DATA reuse adds no source read or cache.
+All new C# remains UNCOMPILED/UNRUN. Fresh affected builds and current PREP precede
+any test. The preserved native 1 FAIL / 24 UNRUN and all UI limits remain open.
+
 # T121 bare diagnosis hold correction — WIP, UNCOMPILED / UNRUN
 
 The actual `M2GREENC3-native` attempt at `b0a9bf5bbf680f88904b13a73af624edc5f84897`
