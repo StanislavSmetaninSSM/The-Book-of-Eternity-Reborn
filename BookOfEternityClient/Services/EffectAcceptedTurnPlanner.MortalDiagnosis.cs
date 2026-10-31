@@ -10,6 +10,7 @@ internal static partial class EffectAcceptedTurnPlanner
         private readonly WoundAcceptedTurnPlanner.MortalDiagnosisContinuation _owner;
         private readonly string _preparation;
         private readonly WoundExecutedBoundary[] _stages;
+        private readonly MortalWoundDiagnosisPersistedResult _result;
         private string? _payload;
         internal MortalDiagnosisExecutionProof(WoundAcceptedTurnPlanner.MortalDiagnosisContinuation owner,
             WoundPreparedAcceptedTurnPlan prepared, IReadOnlyList<WoundExecutedBoundary> stages)
@@ -18,9 +19,19 @@ internal static partial class EffectAcceptedTurnPlanner
             _stages = stages.Select(stage => stage.DetachedCopy()).ToArray();
             if (!_stages.Select(stage => stage.TransitionId).SequenceEqual(owner.TransitionIds, StringComparer.Ordinal))
                 throw new InvalidDataException("Diagnosis execution omitted or changed its ordered allocated boundaries.");
+            var grouped = _stages.Skip(1).ToLookup(stage => stage.Before.WoundId, StringComparer.Ordinal);
+            var published = owner.Working.Members.ToDictionary(member => member.Original.WoundId, member =>
+                (IReadOnlyList<MortalWoundRecoveryPublishedStage>)grouped[member.Original.WoundId].Select(stage =>
+                {
+                    var before = stage.Before; var after = stage.After;
+                    return new MortalWoundRecoveryPublishedStage(stage.TransitionId, stage.Kind,
+                        WoundIdentityState.ComputeSemanticFingerprint(before), WoundIdentityState.ComputeSemanticFingerprint(after),
+                        stage.Kind == "heal", after.LastTransition.Turn, stage.EventRef, stage.OperationKey, before, after);
+                }).ToArray(), StringComparer.Ordinal);
+            _result = MortalWoundDiagnosisPersistedResult.CreateComparisonEvidence(owner.Owner, owner.Outcome, owner.Working, owner.Progression, published);
             Fingerprint = WoundAcceptedTurnFingerprintWriter.Compute(new[]
             {
-                "book_of_eternity.mortal_diagnosis.effect_execution", "1", owner.Fingerprint, _preparation,
+                "book_of_eternity.mortal_diagnosis.effect_execution", "1", owner.Fingerprint, _preparation, _result.ResultFingerprint,
                 JsonSerializer.Serialize(_stages.Select(stage => new
                 {
                     Before = WoundMaterializationContract.SerializeCanonical(stage.Before),
@@ -41,6 +52,7 @@ internal static partial class EffectAcceptedTurnPlanner
             prepared.WoundPreparationFingerprint == _preparation && ReferenceEquals(plan.MortalDiagnosisExecutionAuthority, this) &&
             _payload is not null && _payload == WoundAcceptedTurnFingerprints.ComputeAcceptedEffectPlanPayload(plan);
         internal IReadOnlyList<WoundExecutedBoundary> Read() => _stages.Select(stage => stage.DetachedCopy()).ToArray();
+        internal MortalWoundDiagnosisPersistedResult Result => _result;
     }
 
     internal static string? GetMortalDiagnosisExecutionFingerprint(EffectAcceptedTurnPlan plan) =>
@@ -53,6 +65,10 @@ internal static partial class EffectAcceptedTurnPlanner
         if (plan.MortalDiagnosisExecutionAuthority is not MortalDiagnosisExecutionProof proof || !proof.Agrees(prepared, plan)) return false;
         stages = proof.Read(); return stages.Count != 0;
     }
+
+    internal static MortalWoundDiagnosisPersistedResult ReadMortalDiagnosisExecutedResult(WoundPreparedAcceptedTurnPlan prepared,
+        EffectAcceptedTurnPlan plan) => plan.MortalDiagnosisExecutionAuthority is MortalDiagnosisExecutionProof proof && proof.Agrees(prepared, plan)
+        ? proof.Result : throw new InvalidDataException("Diagnosis durable result requires its exact actual sealed execution.");
 
     private static EffectAcceptedTurnPlanningResult BuildMortalDiagnosis(EffectAcceptedTurnInput input,
         WoundPreparedAcceptedTurnPlan prepared, EffectIdentityFactory identityFactory)

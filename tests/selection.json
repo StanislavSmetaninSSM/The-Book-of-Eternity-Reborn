@@ -77,6 +77,13 @@
       "contracts": [
         "#1536 T121-DIAGNOSIS-MORTAL / FR071; one common publisher, exact procedure claims and two distinct pending before-images"
       ]
+    },
+    {
+      "category": "mortal-diagnosis-fate-publication",
+      "reason": "T121 one actual signed-owner natural1 diagnosis with two genuinely seeded player Fate Shields. It reserves the oldest accepted shield, retains exact die span/rolls/intent across lease rebind and builds the actual common effect publication expiring only that shield while preserving the other. All canonical JSON remains unchanged during preparation. UNCOMPILED/UNRUN WIP.",
+      "contracts": [
+        "#1536 T121-DIAGNOSIS-MORTAL / FR071; ordinary natural1/Fate, retained exact claim and actual purpose-bound lifecycle publication"
+      ]
     }
   ]
 }

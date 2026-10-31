@@ -318,6 +318,16 @@ public sealed partial class MortalWoundTreatmentResolverTests
         Assert.Single(complete.State!.Transitions, value => value.TransitionResult is MortalWoundDiagnosisPersistedResult);
         Assert.Equal(owner.History.Transitions.Count + stages.Count, complete.State.Transitions.Count);
         fixture.AssertJson(originals);
+        await fixture.RebindAsync();
+        // Frozen actual execution remains comparable historical DATA after its
+        // resolving lease closes. It cannot execute again under that stale lease.
+        var replayed = WoundAcceptedTurnPlanner.Finalize(prepared.Plan!, effects);
+        Assert.True(replayed.Success, JsonSerializer.Serialize(replayed.Issues));
+        Assert.Equal(final.Plan!.WoundFinalPlanFingerprint, replayed.Plan!.WoundFinalPlanFingerprint);
+        var refusedExecution = WoundEffectBatchPlanner.Build(prepared.Plan!, effectInput, new EffectIdentityFactory());
+        Assert.False(refusedExecution.Success);
+        Assert.Contains(refusedExecution.Issues, value => value.Code == "mortal_diagnosis_execution_invalid");
+        fixture.AssertJson(originals);
     }
 
     [Fact]
@@ -357,6 +367,54 @@ public sealed partial class MortalWoundTreatmentResolverTests
         fixture.AssertJson(heldTree);
     }
 
+    [Fact]
+    public async Task DiagnosisRetainsOldestActualFateShieldAndPublishesOnlyItsDeclaredReaction()
+    {
+        await using var fixture = await DiagnosisOwnershipFixture.CreateAsync(1, signedInput: true, duration: 0, seedFate: true);
+        var owner = fixture.Authority;
+        var history = new WoundHistoryParseResult(owner.History, Array.Empty<ValidationIssue>());
+        var first = MortalWoundTreatmentPlanner.PrepareDiagnosisRequest(owner, history, owner.CurrentWound,
+            "diagnosis_actual_fate", "inspect_explicit_method", fixture.EventRef);
+        Assert.True(first.IsValid, JsonSerializer.Serialize(first.Issues));
+        var check = Assert.IsType<MortalWoundProcedureCheckAuthority>(first.Request!.ModeAuthority);
+        Assert.Equal("player", check.RollActorKind);
+        Assert.Equal("player_current", check.RollActorId);
+        Assert.Equal(1, check.NaturalRoll);
+        Assert.Equal("effect_fate_shield_older", check.PreparedCriticalReaction!.EffectId);
+        var outcome = MortalWoundDiagnosisOutcome.Resolve(owner, history, first.Request);
+        Assert.Equal("failed_attempt", outcome.Resolution.ResultCategory);
+        var intent = Assert.IsType<MortalWoundCriticalReactionIntent>(outcome.Resolution.CriticalReactionIntent);
+        Assert.Equal(check.PreparedCriticalReaction.PreparedReactionFingerprint, intent.PreparedReactionFingerprint);
+        await owner.RetainDiagnosisRequestAsync(first.Request);
+        await fixture.RebindAsync();
+        owner = fixture.Authority;
+        var recovered = MortalWoundTreatmentPlanner.PrepareDiagnosisRequest(owner, history, owner.CurrentWound,
+            "diagnosis_actual_fate", "inspect_explicit_method", fixture.EventRef);
+        Assert.True(recovered.IsValid, JsonSerializer.Serialize(recovered.Issues));
+        var exact = Assert.IsType<MortalWoundProcedureCheckAuthority>(recovered.Request!.ModeAuthority);
+        Assert.Equal(check.SourceIndices, exact.SourceIndices); Assert.Equal(check.SourceRolls, exact.SourceRolls);
+        Assert.NotNull(exact.PreparedCriticalReaction);
+        Assert.Equal(check.PreparedCriticalReaction.EffectId, exact.PreparedCriticalReaction.EffectId);
+        Assert.Equal(check.PreparedCriticalReaction.TriggerId, exact.PreparedCriticalReaction.TriggerId);
+        Assert.Equal(check.PreparedCriticalReaction.AcceptedEffectFingerprint, exact.PreparedCriticalReaction.AcceptedEffectFingerprint);
+        Assert.Equal(check.PreparedCriticalReaction.PreparedReactionFingerprint, exact.PreparedCriticalReaction.PreparedReactionFingerprint);
+        Assert.Equal(intent.IntentFingerprint,
+            MortalWoundDiagnosisOutcome.Resolve(owner, history, recovered.Request).Resolution.CriticalReactionIntent!.IntentFingerprint);
+        var unchanged = fixture.CaptureJson();
+        var validator = new ValidationService(fixture.Files, NullLogger<ValidationService>.Instance);
+        Assert.Empty(await validator.ValidateAcceptedTurnRawMortalLocationMaterializationAsync(fixture.Lease));
+        Assert.Empty(await validator.ValidateAcceptedTurnRawMortalItemMaterializationAsync(fixture.Lease));
+        var common = await WoundAcceptedTurnPlanner.ComposeMortalDiagnosisPublicationAsync(fixture.Files, fixture.Lease,
+            new GameResponse(), owner, recovered.Request);
+        Assert.True(common.IsValid, JsonSerializer.Serialize(common.Issues));
+        var identities = EffectIdentityState.Parse(common.Plan!.EffectPlan!.IdentityIndexAfterImage.ToJsonString(), EffectIdentityState.StatePath);
+        Assert.NotNull(identities.State);
+        Assert.Empty(identities.Issues);
+        Assert.Equal("expired", Assert.Single(identities.State!.Entries, row => row.EffectId == "effect_fate_shield_older").State);
+        Assert.Equal("active", Assert.Single(identities.State.Entries, row => row.EffectId == "effect_fate_shield_newer").State);
+        fixture.AssertJson(unchanged);
+    }
+
     private sealed class DiagnosisOwnershipFixture : IAsyncDisposable
     {
         private DiagnosisOwnershipFixture(string root, FileSystemManager files, FileSystemManager.CanonicalWriteLease lease,
@@ -368,13 +426,15 @@ public sealed partial class MortalWoundTreatmentResolverTests
         internal MortalWoundTreatmentAcceptedStateAuthority Authority { get; private set; }
         internal string EventRef { get; }
 
-        internal static async Task<DiagnosisOwnershipFixture> CreateAsync(int? natural = null, bool signedInput = false, int duration = 30)
+        internal static async Task<DiagnosisOwnershipFixture> CreateAsync(int? natural = null, bool signedInput = false, int duration = 30, bool seedFate = false)
         {
             // Initial canonical scenario DATA only. The real live preparation and
             // exporter below issue ownership; these JSON values are not receipts.
             var scenario = CreateScenario("procedure_normal_uses_lowest_free_die", "procedure");
+            if (seedFate) scenario = scenario with { SeedFateEffectId = "effect_fate_shield_older" };
             if (natural is not null) scenario.AcceptedState["acceptedDice"] = new JsonArray(natural.Value, 17, 1, 20);
             var method = WoundContractTestData.CreateMortalDiagnosisPath(true, duration);
+            if (seedFate) method["requirements"]![1]!["actorRole"] = "target";
             var route = Assert.IsType<JsonObject>(Assert.Single(scenario.Before["treatment"]!["routes"]!.AsArray())).DeepClone().AsObject();
             route["routeId"] = "inspect_explicit_method";
             scenario.Before["treatment"]!["routes"]!.AsArray().Add(route);

@@ -12,6 +12,11 @@ internal static partial class AcceptedTurnAuthorityRegistry
         MortalWoundTreatmentAcceptedStateAuthority accepted, object capability, MortalWoundTreatmentAttemptRequest request, byte[]? before) =>
         GetState(files, lease).DiagnosisPendingBeforeAgrees(files, lease, accepted, capability, request, before);
 
+    internal static bool CanReuseMortalDiagnosisPublication(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease,
+        MortalWoundTreatmentAcceptedStateAuthority accepted, MortalWoundTreatmentAttemptRequest request,
+        MortalWoundTreatmentResourcePublicationAuthority publication) =>
+        GetState(files, lease).CanReuseMortalDiagnosisPublication(files, lease, accepted, request, publication);
+
     internal static MortalWoundTreatmentAttemptRequest? ReadHeldMortalDiagnosis(FileSystemManager files,
         FileSystemManager.CanonicalWriteLease lease, MortalWoundTreatmentAcceptedStateAuthority accepted,
         MortalWoundTreatmentAttemptCoordinates coordinates) =>
@@ -41,6 +46,26 @@ internal static partial class AcceptedTurnAuthorityRegistry
                 owner.ReadDiagnosisOriginalBytes(AcceptedMechanicsPlan.WoundCommandPath).AsSpan().SequenceEqual(OriginalCommandBytes);
         }
         private RetainedMortalDiagnosis? _retainedMortalDiagnosis;
+
+        internal bool CanReuseMortalDiagnosisPublication(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease,
+            MortalWoundTreatmentAcceptedStateAuthority accepted, MortalWoundTreatmentAttemptRequest request,
+            MortalWoundTreatmentResourcePublicationAuthority publication)
+        {
+            lock (_gate)
+            {
+                var handoff = _validatedTreatmentPublicationHandoff;
+                return handoff is not null && ReferenceEquals(handoff.PublicationAuthority, publication) &&
+                    ReferenceEquals(_mortalWoundTreatmentAcceptedState, accepted) && accepted.IsLeaseBoundTo(files, lease) &&
+                    CurrentTreatmentPublicationAcceptedStateAgrees(accepted) && CurrentTreatmentPublicationAcceptedStateAgrees(publication.AcceptedStateAuthority) &&
+                    publication.ContinuationAuthority is WoundAcceptedTurnPlanner.MortalDiagnosisContinuation &&
+                    publication.RequestAuthority.Mode == "diagnosis" && request.Mode == "diagnosis" &&
+                    publication.AcceptedStateAuthority.AcceptedStateFingerprint == accepted.AcceptedStateFingerprint &&
+                    publication.RequestFingerprint == request.RequestFingerprint && request.Coordinates.MatchesAcceptedState(accepted) &&
+                    RetainedDiagnosisCurrentImagesAgree(files, lease, accepted) &&
+                    ProcedurePublicationClaimsAgree(publication, handoff.ProcedureClaimProof) &&
+                    _treatmentResources.ProbeConfirmed(TreatmentResourceRegistryCapability, request, publication.Finalization).IsValid;
+            }
+        }
 
         internal bool DiagnosisPendingBeforeAgrees(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease,
             MortalWoundTreatmentAcceptedStateAuthority accepted, object capability, MortalWoundTreatmentAttemptRequest request, byte[]? before)

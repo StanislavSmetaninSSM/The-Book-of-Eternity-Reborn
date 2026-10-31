@@ -499,6 +499,8 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
         ArgumentNullException.ThrowIfNull(control);
         if (_receipt.IsTerminalReleaseOnly)
             return TerminalReleaseOnlyFailure("advance progression publication");
+        var diagnosis = _receipt.PublicationAuthority.ContinuationAuthority as WoundAcceptedTurnPlanner.MortalDiagnosisContinuation;
+        var diagnosisControl = diagnosis is null ? null : JsonSerializer.SerializeToNode(control);
         FileSystemManager.CanonicalWriteLease? writeLease = null;
         MortalWoundTreatmentPublicationOperationResult? result = null;
         var ownsAdvance = false;
@@ -526,6 +528,19 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
                 return PublishedAgreementChangedFailure();
             }
             ownsAdvance = true;
+
+            if (diagnosis is not null)
+            {
+                var published = Volatile.Read(ref _publishedAgreement) ?? throw new InvalidDataException("Missing diagnosis published agreement.");
+                diagnosis.RequirePublishedProgressionData(diagnosisControl!, published);
+                // The common transaction already committed T1 and its ordinary
+                // schedule/report images atomically with knowledge/resources.
+                // Authenticate that exact settled state; do not run time again.
+                advanced = true;
+                result = new(true, Array.Empty<ValidationIssue>(), 1,
+                    MortalWoundTreatmentPublicationTransactionOutcome.PublishedAgreementAdvanced);
+                return result;
+            }
 
             var mutation = await progressionSchedule
                 .PrepareAcceptedTurnOutcomeMutationAsync(writeLease, control);

@@ -2,6 +2,39 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "mortal-diagnosis-fate-publication",
+  "responsibility": "T121 one actual signed-owner natural1 diagnosis with two genuinely seeded player Fate Shields. It reserves the oldest accepted shield, retains exact die span/rolls/intent across lease rebind and builds the actual common effect publication expiring only that shield while preserving the other. All canonical JSON remains unchanged during preparation. UNCOMPILED/UNRUN WIP.",
+  "excludes": "No fake Fate receipt, new dice hook, Engine/GM wait, actual canonical/C4 settlement or broad old Mortal category. Actual publication/retry/rollback coverage remains required in the complete route.",
+  "changeHints": [
+    "BookOfEternityClient/Services/MortalWoundCriticalReactionPublicationPlanner.cs",
+    "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalDiagnosisPublication.cs"
+  ],
+  "related": [
+    {
+      "id": "mortal-diagnosis-common-publication",
+      "when": "The diagnosis-purpose common resource/item/effect authority is the same publication owner."
+    },
+    {
+      "id": "mortal-diagnosis-pre-handoff-retention",
+      "when": "The exact retained private claim agreement must survive rebind before further allocations."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.DiagnosisRetainsOldestActualFateShieldAndPublishesOnlyItsDeclaredReaction"
+      ]
+    }
+  ]
+},
+{
   "id": "mortal-diagnosis-common-publication",
   "responsibility": "T121 one actual signed-original diagnosis owner retains the real pending request, runs the ordinary raw location/item owners, and prepares a purpose-bound common wound/resource/time/History plan. Exact held pending bytes are its publication before-image while original pending absence/bytes remain distinct; command bytes stay immutable and all canonical JSON remains unchanged during preparation. UNCOMPILED/UNRUN WIP.",
   "excludes": "No fake History receipt, canonical publication, C4 compensation/rearm, outer rollback, Engine/GM wait, broad Mortal aggregate or completed guided route claim. Actual publication and retry/rollback scenarios remain required.",

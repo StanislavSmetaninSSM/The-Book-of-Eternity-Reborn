@@ -14,7 +14,6 @@ internal static partial class WoundAcceptedTurnPlannerCore
             if (owner is null || !owner.PreparedAgrees(prepared) ||
                 !EffectAcceptedTurnPlanner.TryReadMortalDiagnosisExecution(prepared, accepted.EffectPlan, out var execution))
                 throw new InvalidDataException("Missing actual diagnosis preparation or sealed execution.");
-            owner.RequireCurrent();
             var baseline = prepared.BaselineAuthority;
             var history = WoundHistoryState.Parse(baseline.PreTurnHistory.ToJsonString(), WoundHistoryState.HistoryPath);
             if (!history.IsValid) return new(null, history.Issues);
@@ -24,13 +23,7 @@ internal static partial class WoundAcceptedTurnPlannerCore
                 WoundMaterializationContract.SerializeCanonical(knowledge.After) != WoundMaterializationContract.SerializeCanonical(owner.Outcome.KnowledgeAfter))
                 throw new InvalidDataException("Diagnosis knowledge execution differs from the complete retained procedure result.");
             var grouped = execution.Skip(1).ToLookup(stage => stage.Before.WoundId, StringComparer.Ordinal);
-            var published = owner.Working.Members.ToDictionary(member => member.Original.WoundId, member =>
-                (IReadOnlyList<MortalWoundRecoveryPublishedStage>)grouped[member.Original.WoundId].Select(stage =>
-                    new MortalWoundRecoveryPublishedStage(stage.TransitionId, stage.Kind,
-                        WoundIdentityState.ComputeSemanticFingerprint(stage.Before), WoundIdentityState.ComputeSemanticFingerprint(stage.After),
-                        stage.Kind == "heal", stage.After.LastTransition.Turn, stage.EventRef, stage.OperationKey, stage.Before, stage.After)).ToArray(), StringComparer.Ordinal);
-            var result = MortalWoundDiagnosisPersistedResult.CreateComparisonEvidence(owner.Owner, owner.Outcome,
-                owner.Working, owner.Progression, published);
+            var result = EffectAcceptedTurnPlanner.ReadMortalDiagnosisExecutedResult(prepared, accepted.EffectPlan);
             var rows = new List<WoundHistoryTransition>();
             var intents = new List<WoundTransitionIntent>();
             var memberByWound = owner.Working.Members.ToDictionary(member => member.Original.WoundId, StringComparer.Ordinal);

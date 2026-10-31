@@ -61,7 +61,6 @@ internal static partial class WoundAcceptedTurnPlanner
         internal void RequireCurrent() => Working.RequireCurrent(Owner);
         internal void RequireComposedClock(IReadOnlyDictionary<string, JsonObject> companions)
         {
-            RequireCurrent();
             if (!companions.TryGetValue(EffectAcceptedTurnInputComposer.WorldTimePath, out var clock) ||
                 !JsonNode.DeepEquals(clock, Working.ClockAfter) ||
                 !companions.TryGetValue(ProgressionScheduleService.SchedulePath, out var schedule) ||
@@ -73,6 +72,24 @@ internal static partial class WoundAcceptedTurnPlanner
                 throw new InvalidDataException("Diagnosis common report differs from its request-bound ordinary progression calculation.");
             if (_progression.ReportAfter.Bytes is null && companions.ContainsKey(ProgressionScheduleService.ReportPath))
                 throw new InvalidDataException("Diagnosis cannot reintroduce a consumed or originally absent progression report.");
+        }
+        internal void RequirePublishedProgressionData(JsonNode originalControl,
+            IReadOnlyList<MortalWoundTreatmentPublicationBeforeImage> published)
+        {
+            if (!JsonNode.DeepEquals(originalControl, Working.OriginalControl))
+                throw new InvalidDataException("Diagnosis completion control differs from its complete signed original.");
+            JsonNode? Read(string path)
+            {
+                var image = published.SingleOrDefault(value => value.Path == path) ??
+                    throw new InvalidDataException("Diagnosis published agreement omitted " + path);
+                return image.Bytes is { } bytes ? JsonNode.Parse(FileSystemManager.DecodeFileBytes(bytes)) : null;
+            }
+            if (!JsonNode.DeepEquals(Read(EffectAcceptedTurnInputComposer.WorldTimePath), Working.ClockAfter) ||
+                !JsonNode.DeepEquals(Read(ProgressionScheduleService.SchedulePath),
+                    JsonNode.Parse(FileSystemManager.DecodeFileBytes(_progression.ScheduleAfter.Bytes!))) ||
+                !JsonNode.DeepEquals(Read(ProgressionScheduleService.ReportPath), _progression.ReportAfter.Bytes is { } report
+                    ? JsonNode.Parse(FileSystemManager.DecodeFileBytes(report)) : null))
+                throw new InvalidDataException("Diagnosis completion cannot advance duration or ordinary progression a second time.");
         }
         internal WoundAcceptedTurnPreparationResult Prepare()
         {

@@ -1,3 +1,30 @@
+# T121 Mortal sealed execution and settlement DATA WIP — UNCOMPILED / UNRUN
+
+The actual sealed effect execution now captures its strict durable diagnosis
+result while the resolving owner/lease is live. Final-plan reconstruction reuses
+that immutable DATA after the lease closes; it does not pretend the old lease is
+current. Existing registry lineage, exact held inputs/claims and publication
+before-images still gate live reuse. The execution component rows check both
+stable final DATA replay and refusal to execute under a stale resolving lease.
+
+The existing transaction's progression step has a closed diagnosis branch:
+after its actual live receipt and freshly checked published-byte agreement, it
+authenticates original control plus the already committed T1/schedule/report DATA.
+It cannot apply declared duration or ordinary progression a second time. This
+adds no I/O; it reuses the same just-checked published agreement. Ordinary treatment
+still runs its original progression step.
+
+A new actual-owner Shield row is authored for natural1 with two canonical seeded
+Shields. It proves oldest selection, exact span/roll/intent across rebind and the
+actual common effect plan expiring only that Shield. Actual C4 settlement remains
+UNRUN and is still required. The temporary estimate is 53 cases / fourteen
+methods / twelve categories, all UNCOMPILED/UNRUN; no writer build/test/discovery.
+
+The first actual-original request resolver is present but is not yet connected
+to the Engine/guided route. Complete static/dynamic signed-command role intake,
+retryable outer-original rollback retention, completion/shared UI and GM/current
+input synchronization remain. No feature or parent task is closed.
+
 # T121 Mortal private retained-input continuity WIP — UNCOMPILED / UNRUN
 
 The existing accepted-turn registry now retains the actual produced diagnosis

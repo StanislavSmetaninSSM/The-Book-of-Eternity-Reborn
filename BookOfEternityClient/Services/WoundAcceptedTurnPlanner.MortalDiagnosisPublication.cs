@@ -18,10 +18,9 @@ internal static partial class WoundAcceptedTurnPlanner
                 throw new InvalidDataException("Diagnosis publication requires its actual original owner, lease and purpose.");
             if (AcceptedMechanicsPlanAuthority.TryPeekValidated(files, lease, out _, out var cached) && cached.Success &&
                 cached.Plan?.TreatmentResourcePublicationAuthority is { } existing &&
-                ReferenceEquals(existing.AcceptedStateAuthority, accepted) && ReferenceEquals(existing.RequestAuthority, request) &&
-                existing.ContinuationAuthority is MortalDiagnosisContinuation prior && prior.Publication is not null)
+                existing.ContinuationAuthority is MortalDiagnosisContinuation prior && prior.Publication is not null &&
+                AcceptedTurnAuthorityRegistry.CanReuseMortalDiagnosisPublication(files, lease, accepted, request, existing))
             {
-                prior.RequireCurrent();
                 if (!existing.HasValidSeal()) throw new InvalidDataException("The retained diagnosis common publication seal changed.");
                 return MortalWoundTreatmentPublicationResult.Valid(cached.Plan);
             }
