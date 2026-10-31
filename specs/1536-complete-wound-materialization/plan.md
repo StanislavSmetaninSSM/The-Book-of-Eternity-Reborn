@@ -1,3 +1,20 @@
+# T121 Mortal complete private cohort proof WIP — UNCOMPILED / UNRUN
+
+The existing independent fixture has an optional second physical wound seeded
+before its sole original preparation, with complete distinct wound/effect identity
+and History. A single new control explicitly selects the second catalog member:
+only that wound receives knowledge, both receive their real due ordinary recovery,
+and full ordered durable rows, source paths, carrier mutations, identity and
+History agree. Private-member omission/reordering is refused after working/result/
+primary-source seals are recomputed. Valid public wound projections before and
+after omit the private wound name. No accepted source is patched or manufactured.
+
+The existing effect-execution category now owns three cases / two methods under
+its unchanged 120-second budget. Total source estimate is 73 cases / nineteen
+methods / sixteen categories, not discovered or executed. No writer build/test/
+runtime. Complete guided staging/UI and GM/current-input sync remain unfinished;
+whole SOURCE and all actual qualification stay open. No parent/HOLD changes.
+
 # T121 Mortal outer-original retry continuity WIP — UNCOMPILED / UNRUN
 
 The existing registry's private produced-request record now owns the explicit
