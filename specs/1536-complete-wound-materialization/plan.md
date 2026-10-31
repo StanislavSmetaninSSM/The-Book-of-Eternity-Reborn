@@ -1,3 +1,25 @@
+# T121 C14 Integration compilation correction — runtime UNRUN
+
+At source `4eff2282f50e2bdf0d5a3963eff7af6d68048134`, fresh Main exits0 /
+2:01.47 /12 prior warnings, Support exits0 /13.01s /23, and Unit exits0 /
+1:22.01 /26. Their warning code/message multisets exactly match C13. Integration
+exits1 in2:11.40 with one CS0234 and102 prior warnings: the new browser control
+qualifies PhysicalLoadTransactionOperations under IO, while its actual declaration
+is Core/LoadTransactionOperations.cs in BookOfEternityClient.Core. Root corrects
+only that namespace segment. The existing constructor, hook, assertions, test rows,
+production and all69 source pins remain unchanged. This is preparation failure,
+not gameplay RED or a runtime result; no C14 test has executed.
+
+The failed Integration build stays in external M2GREENC14-build-integration.
+After narrow independent delta review and remote readback, retry only the owning
+Integration project into M2GREENC14-build-integration-c1. The erroneous file was
+not compiled by the other three already successful owners; their exact inputs
+remain unchanged and their fresh results are retained. Recheck project source
+ownership and all4 PE/PDB bindings before NoBuild admission; never select the
+failed default Integration directory. Actual compiled-source ownership will be
+reported separately, not as four builds at one later SHA. All earlier C13
+UNKNOWN/raw/root retention, unqualified UI3 and broader HOLDs remain in force.
+
 # T121 C14 SOURCE accepted — static follow-up, builds UNRUN
 
 Astra accepted whole SOURCE at frozen `59074c8408c82c74eac7ecd9bf37a76cf79d48da`.

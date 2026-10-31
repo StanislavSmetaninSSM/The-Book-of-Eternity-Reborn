@@ -48,7 +48,7 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
         try
         {
             files = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance,
-                BookOfEternityClient.IO.PhysicalLoadTransactionOperations.Instance, hooks);
+                BookOfEternityClient.Core.PhysicalLoadTransactionOperations.Instance, hooks);
             await SeedMortalDiagnosisJourneyAsync(files);
             runtime = GameEngineTurnLifecycleTests.CreateGameEngineRuntime(files, configureSettings: settings =>
             {
