@@ -726,6 +726,41 @@ public sealed partial class MortalWoundTreatmentResolverTests
         return Assert.IsType<WoundMaterializationEnvelope>(parsed.Wound);
     }
 
+    /// <summary>
+    /// Supplies complete initial physical treatment DATA before the caller's one
+    /// resource bootstrap/original. Existing route costs and course windows remain
+    /// authored values; no attempt, receipt or accepted authority is created.
+    /// </summary>
+    internal static WoundMaterializationEnvelope SeedGuidedPhysicalInitialWorld(FileSystemManager files,
+        string mode, Action<FileSystemManager> beforeResourceBootstrap)
+    {
+        var scenario = mode switch
+        {
+            "procedure" => CreateScenario("procedure_normal_uses_lowest_free_die", mode),
+            "course" => CreateScalarCoursePublicationScenario(),
+            "guaranteed" => CreateScenario("guaranteed_current_capability_proof_stabilizes", mode),
+            _ => throw new ArgumentOutOfRangeException(nameof(mode))
+        };
+        const int initialMinute = 1260;
+        scenario.AcceptedState["worldMinute"] = initialMinute;
+        // Current recovery coordinates are initial fixture declarations. Keep the
+        // existing authored long cadence, so ordinary accepted waits do not invent
+        // treatment duration or a second mechanical course transition.
+        scenario.Before["recovery"]!["clockKind"] = "world_time.currentTimeInMinutes";
+        scenario.Before["recovery"]!["recoveryAnchor"] = new JsonObject
+        {
+            ["anchorKind"] = "creation", ["anchorMinute"] = initialMinute,
+            ["anchorTransitionId"] = scenario.Before["lastTransition"]!["transitionId"]!.DeepClone()
+        };
+        scenario = scenario with { WorldMinute = initialMinute,
+            History = CreateCurrentWoundHistory(scenario.Before), SeedCanonicalWoundEffects = true };
+        _ = AcceptedStateFixture.SeedCanonicalComponentData(files, scenario, "player", "player_current",
+            WoundCarrierCatalog.PlayerPath, beforeResourceBootstrap);
+        var parsed = WoundMaterializationContract.Parse(scenario.Before.ToJsonString(), "physicalJourney.initial");
+        Assert.True(parsed.IsValid, DescribeIssues(parsed.Issues));
+        return parsed.Wound!;
+    }
+
     internal sealed class DiagnosisOwnershipFixture : IAsyncDisposable
     {
         private DiagnosisOwnershipFixture(string root, FileSystemManager files, FileSystemManager.CanonicalWriteLease lease,

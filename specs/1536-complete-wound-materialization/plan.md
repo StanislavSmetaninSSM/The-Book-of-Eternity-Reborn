@@ -1,3 +1,33 @@
+# T121 physical console/browser/course/rollback fixtures — WIP UNCOMPILED/UNRUN
+
+Continues saved publication-fixturef30a443159866a925ca00d5d1d8635fa93d6257a.
+Sol froze4 fixture paths; root checked actual paths/static diff. New
+ExplorerWoundSelfTreatmentTests.MortalTreatment.cs and MortalTreatmentHelpers.cs
+reuse the accepted complete Mortal diagnosis Engine template/seed/response and
+full passive capture. The diagnosis default preparation is factored unchanged;
+physical route/effect/identity/History data is seeded before its sole bootstrap/
+original through the existing typed fixture, not patched after acceptance.
+
+Source estimate9 cases, NOT discovery/runtime: console procedure/guaranteed2,
+browser2, console course1, browser course1, actual publication-cut rollback3.
+Course follows authored current windows, actual ordinary accepted waits/timeChange/
+report/cleanup, then fresh menu and separate confirmation at every milestone.
+No new duration, auto-wait or post-accepted file edit is introduced. Authored
+assertions bind actual signed dice, retained-only exact retry, complete wound/
+History, declared item count/transition vector, final cleanup and whole held/
+original compensation. Existing full gzip/logger transport has no new quota.
+All these assertions and complete capture/cleanup remain runtime UNPROVED.
+
+No build, discovery or runtime has run on physical product source. UI category
+ownership is still pending the final coherent catalog/selection cut. Cold/fault/
+spiritual freshness/equivalence, GM/docs/examples/XML/source pins and final source
+review also remain open. Existing diagnosis/C22 and causal P1 lineages keep their
+explicit old versions; they are not current-head qualification. No raw/save/
+retained-root removal, broader HOLD run, merge or issue closure occurred.
+
+Next: finish bounded remaining proof/doc/catalog work, then whole independent
+SOURCE and fresh owning builds/provenance/exact PREP before actual qualification.
+
 # T121 physical actual-publication fixture source — WIP UNCOMPILED/UNRUN
 
 Continues current-predicate1f4dbc7ad52adce6d08a47d5c217c84305a4d86e.

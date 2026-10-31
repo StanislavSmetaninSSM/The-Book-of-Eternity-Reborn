@@ -11,7 +11,12 @@ namespace BookOfEternityClient.Tests;
 
 public sealed partial class ExplorerWoundSelfTreatmentTests
 {
-    private static async Task<WoundMaterializationEnvelope> SeedMortalDiagnosisJourneyAsync(FileSystemManager files)
+    private static Task<WoundMaterializationEnvelope> SeedMortalDiagnosisJourneyAsync(FileSystemManager files) =>
+        SeedMortalWoundJourneyAsync(files, (current, prepare) =>
+            MortalWoundTreatmentResolverTests.SeedGuidedDiagnosisInitialWorld(current, prepare));
+
+    private static async Task<WoundMaterializationEnvelope> SeedMortalWoundJourneyAsync(FileSystemManager files,
+        Func<FileSystemManager, Action<FileSystemManager>, WoundMaterializationEnvelope> seed)
     {
         files.EnsureDirectoryStructure();
         // The ordinary complete Engine template is copied once. Component DATA
@@ -25,7 +30,7 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
         fullSoul["currentRealm"] = "Mortal World"; fullSoul["currentIncarnation"] = 1;
         var fullClock = JsonNode.Parse((await files.ReadFileAsync(EffectAcceptedTurnInputComposer.WorldTimePath))!)!.AsObject();
         fullClock["currentTimeInMinutes"] = 1260;
-        var original = MortalWoundTreatmentResolverTests.SeedGuidedDiagnosisInitialWorld(files, beforeResourceBootstrap: current =>
+        var original = seed(files, current =>
         {
             void Write(string path, JsonNode value) => File.WriteAllText(current.ResolvePath(path), value.ToJsonString());
             var npc = JsonNode.Parse(File.ReadAllText(current.ResolvePath("game_state/npcs/npc_core.json")))!.AsObject();
