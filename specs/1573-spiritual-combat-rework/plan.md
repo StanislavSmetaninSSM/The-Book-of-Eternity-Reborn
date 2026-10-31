@@ -35,7 +35,7 @@ unrelated1536/obj не трогать. Нового runtime/GM/C# в задач�
   confirm684×1000 (оба допускают3shards), horizon2000. Raw без квот
   D:\BoeDiagnostics\healing-periodic-t128\20261101-v1. Сверить всё coverage/
   sums/расходы/endpoints/union и fixtures; не менять параметры по исходам.
-- [ ] T128.4 `healing-periodic-investigation.md` с полным результатом и
+- [x] T128.4 `healing-periodic-investigation.md` с полным результатом и
   ограничениями; независимый whole-block Astra/high review, исправления/
   verification, GitHub/readback/freshrestore/issue1573. Старый полный raw
   удалить только после нового полного замера/review штатным способом;
@@ -98,6 +98,15 @@ full-verification.json проверяет1368cells/752400траекторий. M
 содержит полные срезы/отрицательныйрезультат/пользулечения/actualHP/costs.
 Astra/high адресно закрылP2 и не нашёлfindings вmain-отчёте; итоговый review
 полногоconfirm/отчёта впереди. Следующийкандидат сильныхатак не реализуется.
+
+T128 завершён: whole-block GPT-6 Astra/high review до1290b773b — pass,
+ревьюер независимо сверил1368cells. Parent171ссылок/diff/scope12files;
+source unchangedc36. Все12файлов1290b773b прочитаны сGitHub и проверены по
+blob вновомremote-restore-reviewed-20261101. После review штатно удалены
+9rawT125+3supersededmainT128,8778472байта; текущийполныйзамер/компактные
+свидетельства сохранены. ЗаблокированныеранееT123 пути не тронуты.
+Финальный commit/readback/newrestore — issue1573; результат исследования
+отрицательный дляустраненияstall, не изменяет принятыеусловия честнойзащиты.
 
 ## T127 — профили лечения/подавления и сопротивление, 2026-11-01
 

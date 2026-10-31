@@ -3,9 +3,9 @@
 ## T128 — проверка T127 в бою, 2026-11-01
 
 - [x] T128.1 Разрешение/684cases/допущения/план/API и consistency закреплены;5c8102887/e48f0e94c опубликованы, remoteSHA/spec readback подтверждены.
-- [x] T128.2 RED→GREEN143/143 (120прежних+23новых), legacy42 checksum неизменен;684+684smoke n1h3/3shard exact union, utility/resource/effect guards и operation reuse проверены. Parent прочитал actualdiff/fixtures/evidence.
+- [x] T128.2 RED→GREEN144/144 (120прежних+24новых после reviewP2), legacy42 checksum неизменен;684+684smoke n1h3/3shard exact union, utility/resource/effect guards и operation reuse проверены. Parent прочитал actualdiff/fixtures/evidence.
 - [x] T128.3 Frozen sourcec36c9ee6e опубликован/readback;752400main/confirm траекторий,1368cells,6exit0/stderr0; всеparams/seeds/coverage/endpoints/HP/costs проверены. Main62.015с,confirm583.483с. Raw без квот толькоD:, отрицательные исходы сохранены.
-- [ ] T128.4 Отчёт, whole-block review, исправления/verification, публикация/readback/restore и разрешённая retention; честный вывод о полезности/длительности.
+- [x] T128.4 Полный отчёт/независимое Astra/high review без незакрытых findings; P2 исправлен/проверен, отрицательный балансный результат сохранён.171ссылка/scope проверены;12файлов1290b773b прочитаны сGitHub/восстановлены вновомкаталоге.12старыхraw/8778472байта удалены. ФинальныйcheckpointSHA/readback/restore — issue1573.
 
 ## T127 — силы/цены и effect-resistance, 2026-11-01
 
