@@ -1,3 +1,40 @@
+# T121 second console timeout — dynamic snapshot-role audit pending
+
+The actual EX8GREEN console attempt at checkpoint `24bc40482` / compiled source
+`30bc856d9` ended once at its original bound: category 180.1911062s/180s, wall
+3:07.2300335, exit 124, zero completed cases/TRX/report. Capture is an incomplete
+prefix, not a complete footer/CRC proof. The earlier admission role correction was
+passed; the retained post-seal repair request now reports exactly
+wound_materialization_snapshot_before_image_missing at wound_commands.json,
+requiring signed rollback evidence for every dynamically touched wound-plan path.
+Repair request SHA256 is
+`272f05b8014dd340ef1b7e16ad7d9469924fb71e82ae32741cc1692adbc6315b`.
+
+Root/Astra verified owned process/runtime cleanup and the 00:40:07 UTC closing
+fence: stable 27 artifacts / 40 resource copies / four daemon copies, no live owners,
+about 3.970 GB free. The original owned fixture remains retained. Its complete
+external archive has 76 files / 206,068 source bytes, 49,006 stored bytes, all member
+hashes and full gzip EOF/CRC verified; SHA256
+`de1fd84667e05da02bd89ef442f24f275082adb61f2eaa16c94adbdb92337afd`.
+All failed raw and both console attempts remain outside Git.
+
+The accepted nine-case component GREEN and reviewed 157-case mixed-lineage union
+below remain bounded component/native evidence, not UI acceptance. Actual UI is
+zero completed PASS; browser and rollback remain UNRUN. No further UI attempt is
+admitted, no unchanged retry or limit increase occurs, and no task is closed.
+
+The complete prepared-command role audit/design is pending: the dynamic common
+validator unconditionally includes the staged command in rollback coverage, while
+existing Engine pre/post-publication checks authenticate its separate preparation
+role. A correction must use the actual live owner, exact plan/manifest binding and
+uncontradicted signed-only role, keep strict baseline-present behavior and every
+other dynamic path guard, then prove the real validator through bounded causal
+controls before another UI admission. No serialized-kind exemption or guard removal
+is authorized here. This checkpoint changes only the plan; C#/tests/categories,
+compiled source and fresh source/ownership checks remain unchanged. Existing saved
+issues and source DATA are reused for diagnosis; no new diagnostic stack/cache or
+performance claim. Broader tasks and all holds remain open.
+
 # T121 EX8GREEN component gate accepted — UI still pending
 
 Independent Astra OUTCOME accepted the actual nine-case GREEN at compiled source
