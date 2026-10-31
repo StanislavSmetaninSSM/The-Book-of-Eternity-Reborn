@@ -1,3 +1,33 @@
+# T121 C14 direct post-validator fixture lacks its console owner
+
+The independently admitted remaining6 at runtime
+`b33d221bff54e8087cdc840f6dbe55a7bac688f2` stops after diagnosis postvalidator1:
+0 PASS /1 FAIL /5 UNRUN, no timeout, category22.6873121s/60 and wall35.6524191s.
+The actual reader refuses "Pending snapshot validation has no live console owner"
+at its first raw validation call. The prior assertions reached valid Finalized
+completion and non-null completed DATA export; this prefix is not a test PASS,
+and no scoped comparison result returned. Raw/unique TRX/pins/cleanup are verified
+outside checkout in M2GREENC14-post6; typed-owner namespace is empty after disposal.
+
+The Core guard is correct. The direct fixture needs the existing caller-flow
+BeginMainAdmission plus AcquireAsync pattern, spanning genuine producer and
+post-validation without an ambient write lease at reader entry. Ordinary direct
+consumer setup is audited together; browser cases retain their real Engine owner.
+Do not create a fake admission, relax the guard or add state after an accepted turn.
+No further runtime is launched until these complete preparation fixes are grouped.
+
+Independent DESIGN also accepts a minimal typed owned close dependency on the
+same CompleteAsync operation to replace the inapplicable ordinary-writer hook.
+For non-null dependency only, existing validation-reuse suppression begins before
+acquisition and an existing mutation reservation remains active through actual
+owning close; reject an occupied context, transfer only after attachment and leave
+unattached disposal to the caller. Default-null settlement/permissions stay exact.
+Suppressed close failure preserves Finalized state and exports nothing; result
+assertions precede callback-count assertions. This is design, not implemented or
+qualified yet. Both failed raw attempts, historical False PASS and all outstanding
+controls/UI3/parents/HOLDs remain distinct and open. Source and full fixture review
+will precede one coherent fresh build, with no budget or diagnostic-policy change.
+
 # T121 C14 first runtime: lifetime controller1 FAIL, independent6 admitted
 
 At runtime `3c47c1d91ea5275dccba0ba9e15c8d1d4a778675`, post8 stops after
