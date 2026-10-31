@@ -177,6 +177,14 @@ int main(int argc, char **argv) {
         close(gate[1]); char c; ssize_t n;
         do { n = read(gate[0], &c, 1); } while (n < 0 && errno == EINTR);
         close(gate[0]); if (n != 1) _exit(125);
+        /* A harness that backgrounds the guardian (CI, nohup, '&' from a
+         * non-interactive shell) hands down SIGINT/SIGQUIT as SIG_IGN, and an
+         * ignored disposition survives exec: the game tree would then observe
+         * Ctrl+C as a no-op (pwsh and .NET respect an inherited ignore), so the
+         * daemon's ordinary foreground stop can never fire. The fixture
+         * contract is a real foreground terminal; restore default interrupt
+         * semantics for the whole driver tree before exec. */
+        signal(SIGINT, SIG_DFL); signal(SIGQUIT, SIG_DFL);
         execv(argv[3], &argv[3]); _exit(127);
     }
     close(gate[0]);

@@ -38,7 +38,7 @@ def main():
                 output(dict(Request=header, Prompt=request.prompt.decode('utf8'),
                             GameRequest=request.game_request.decode('utf8')))
             else:
-                publish_response(request, read_bounded(args.packet), adapter_id=args.adapter)
+                publish_response(request, read_bounded(args.packet, limit=request.limits.PacketBytes, label='Response packet'), adapter_id=args.adapter)
                 output(dict(Published=True, Executed=False, Accepted=False))
         return 0
     except (RelayError, OSError, UnicodeError) as ex:

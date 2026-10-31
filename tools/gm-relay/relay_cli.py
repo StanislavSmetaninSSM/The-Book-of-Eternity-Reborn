@@ -5,19 +5,23 @@ This process and its fixed helper child are owned by the original M1 terminal.
 """
 import argparse,hashlib,json,os,signal,subprocess,sys,time,uuid
 from pathlib import Path
-from relay_contract import atomic_write_once, execution_gate, RelayGateUnavailable
+from relay_contract import RelayLimits, atomic_write_once, execution_gate, RelayGateUnavailable, read_bounded as read_contract_bounded
 from relay_platform import Terminal, poll_child_output
 def sha(data):return hashlib.sha256(data).hexdigest()
 def write_once(path,data):
     atomic_write_once(path,data)
 def save(path,value):write_once(path,(json.dumps(value,ensure_ascii=False,indent=2)+'\n').encode())
-def read_bounded(path,limit=1048576):
-    with path.open('rb') as f:data=f.read(limit+1)
-    if len(data)>limit:raise ValueError('Bounded response/input exceeded')
-    return data
+def read_bounded(path,limit):
+    return read_contract_bounded(path,limit=limit)
 def main():
+    defaults=RelayLimits()
     parser=argparse.ArgumentParser();parser.add_argument('--session',required=True);parser.add_argument('--queue',required=True);parser.add_argument('--model',default='gpt-6.1-sol')
-    args=parser.parse_args();session=Path(args.session).resolve();queue=Path(args.queue).resolve();queue.mkdir(exist_ok=True)
+    parser.add_argument('--max-paste-bytes',type=int,default=defaults.PasteBytes)
+    parser.add_argument('--max-packet-bytes',type=int,default=defaults.PacketBytes)
+    parser.add_argument('--max-consumer-output-bytes',type=int,default=defaults.ConsumerOutputBytes)
+    parser.add_argument('--max-response-writes',type=int,default=defaults.ResponseWrites)
+    args=parser.parse_args();limits=RelayLimits(args.max_paste_bytes,args.max_packet_bytes,args.max_consumer_output_bytes,args.max_response_writes)
+    session=Path(args.session).resolve();queue=Path(args.queue).resolve();queue.mkdir(exist_ok=True)
     if any(queue.iterdir()):raise ValueError('Relay requires its original fresh queue; no replay')
     terminal=Terminal(sys.stdin.fileno(),sys.stdout.fileno())
     stop=False;closing=False;active=None;child=None;output=bytearray();draft=bytearray();paste=None;escape=bytearray();ordinal=0;metadata_error=None
@@ -37,17 +41,16 @@ def main():
         text=bytes(draft).decode('utf8');kind='repair' if text.startswith('REPAIR MODE for rejected turn #') else 'turn'
         source='game_state/control/validation_repair_request.json' if kind=='repair' else 'input/turn_request.json'
         paths=[source,'input/turn_request.json','game_state/control/pending_turn_snapshot.json','game_state/control/pending_turn_snapshot.authority.json']
-        witnesses={p:sha(read_bounded(session/p)) for p in dict.fromkeys(paths)}
-        turn=json.loads(read_bounded(session/'input/turn_request.json'));pending=json.loads(read_bounded(session/'game_state/control/pending_turn_snapshot.json'))
+        witnesses={p:sha(read_bounded(session/p,limits.PacketBytes)) for p in dict.fromkeys(paths)}
+        turn=json.loads(read_bounded(session/'input/turn_request.json',limits.PacketBytes));pending=json.loads(read_bounded(session/'game_state/control/pending_turn_snapshot.json',limits.PacketBytes))
         identity={k:turn[k] for k in ['sessionId','requestId','turnNumber']}
         if any(pending.get(k)!=v for k,v in identity.items()):raise ValueError('Current pending identity mismatch')
         ordinal+=1
-        if ordinal>3:raise ValueError('Bounded relay submissions exceeded; never retry')
         active=queue/('request-'+str(ordinal)+'-'+uuid.uuid4().hex);active.mkdir()
         save(active/'request.json',dict(QueueId=active.name,Kind=kind,Model=args.model,SessionPath=str(session),RequestPath=source,
             PromptSHA256=sha(bytes(draft)),RequestSHA256=witnesses[source],TurnRequestSHA256=witnesses['input/turn_request.json'],
-            TurnIdentity=identity,Witnesses=witnesses,OriginalRelayPid=os.getpid(),SubmittedMonotonic=time.monotonic()))
-        write_once(active/'prompt.txt',bytes(draft));write_once(active/'game-request.json',read_bounded(session/source))
+            TurnIdentity=identity,Witnesses=witnesses,Limits=limits.to_json(),OriginalRelayPid=os.getpid(),SubmittedMonotonic=time.monotonic()))
+        write_once(active/'prompt.txt',bytes(draft));write_once(active/'game-request.json',read_bounded(session/source,limits.PacketBytes))
         draft.clear();render('NEUTRAL WORKING')
     try:
         render()
@@ -57,7 +60,7 @@ def main():
                 part=poll_child_output(child.stdout)
                 if part is not None:
                     output.extend(part)
-                    if len(output)>1048576:raise ValueError('Response child output bound exceeded')
+                    if len(output)>limits.ConsumerOutputBytes:raise ValueError(f'Response child output exceeded {limits.ConsumerOutputBytes} bytes')
                     if not part and child.poll() is not None:
                         child.stdout.close();code=child.returncode;child=None
                         write_once(active/'consumer.log',bytes(output))
@@ -73,13 +76,13 @@ def main():
                 break
             if active is not None and child is None and (active/'reply.json').exists():
                 try:
-                    req=json.loads(read_bounded(active/'request.json'));reply=json.loads(read_bounded(active/'reply.json'));packet=read_bounded(active/'response.json')
+                    req=json.loads(read_bounded(active/'request.json',limits.PacketBytes));reply=json.loads(read_bounded(active/'reply.json',limits.PacketBytes));packet=read_bounded(active/'response.json',limits.PacketBytes)
                     for key in ['QueueId','PromptSHA256','RequestSHA256','TurnRequestSHA256']:
                         if reply.get(key)!=req[key]:raise ValueError('Response identity mismatch: '+key)
                     if reply.get('Model')!=args.model or not reply.get('AgentTask'):raise ValueError('Response model/task mismatch')
                     if reply.get('ResponseSHA256')!=sha(packet):raise ValueError('Response bytes mismatch')
                     for path,witness in req['Witnesses'].items():
-                        if not (session/path).is_file() or sha(read_bounded(session/path))!=witness:raise ValueError('Original request/pending changed')
+                        if not (session/path).is_file() or sha(read_bounded(session/path,limits.PacketBytes))!=witness:raise ValueError('Original request/pending changed')
                     # Shared API close and this reservation serialize on the same stable inode.
                     # Release after snapshot: an already-authorized original child may settle.
                     with execution_gate(queue):
@@ -111,9 +114,9 @@ def main():
                     if paste.endswith(b'\x1b[201~'):
                         draft.extend(paste[:-6]);paste=None
                         text=bytes(draft).decode('utf8')
-                        if len(text)>65000 or len(text.split('\n'))>120 or any(ord(c)<32 and c!='\n' for c in text):raise ValueError('Unsupported neutral draft shape')
+                        if any(ord(c)<32 and c!='\n' for c in text):raise ValueError('Unsupported neutral draft control character')
                         render(text=bytes(draft))
-                    elif len(paste)>262144:raise ValueError('Paste byte bound exceeded')
+                    elif len(paste)>limits.PasteBytes:raise ValueError(f'Paste exceeded {limits.PasteBytes} bytes')
                 elif escape:
                     escape.append(b)
                     if escape==b'\x1b[200~':escape.clear();paste=bytearray()

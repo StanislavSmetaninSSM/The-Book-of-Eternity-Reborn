@@ -10,7 +10,15 @@ import tempfile
 import time
 from types import MappingProxyType
 
-LIMIT = 1048576
+DEFAULT_PACKET_BYTES = 16 * 1024 * 1024
+DEFAULT_PASTE_BYTES = 4 * 1024 * 1024
+DEFAULT_CONSUMER_OUTPUT_BYTES = 4 * 1024 * 1024
+DEFAULT_RESPONSE_WRITES = 256
+MAX_CONFIGURED_BYTES = 256 * 1024 * 1024
+MAX_RESPONSE_WRITES = 4096
+HEADER_BYTES = 1024 * 1024
+# Backward-compatible name for older local adapters.
+LIMIT = DEFAULT_PACKET_BYTES
 
 
 class RelayError(Exception):
@@ -35,6 +43,54 @@ class RelayAnswered(RelayError):
 
 class RelayGateUnavailable(RelayMismatch):
     """Close/start serialization is unconfirmed; no execution or ACK is permitted."""
+
+
+@dataclass(frozen=True)
+class RelayLimits:
+    """Configured local resource bounds retained with each request."""
+
+    PasteBytes: int = DEFAULT_PASTE_BYTES
+    PacketBytes: int = DEFAULT_PACKET_BYTES
+    ConsumerOutputBytes: int = DEFAULT_CONSUMER_OUTPUT_BYTES
+    ResponseWrites: int = DEFAULT_RESPONSE_WRITES
+
+    def __post_init__(self):
+        byte_limits = (
+            ('PasteBytes', self.PasteBytes),
+            ('PacketBytes', self.PacketBytes),
+            ('ConsumerOutputBytes', self.ConsumerOutputBytes),
+        )
+        for name, value in byte_limits:
+            if isinstance(value, bool) or not isinstance(value, int) or value < 1 or value > MAX_CONFIGURED_BYTES:
+                raise ValueError(f'{name} must be an integer from 1 through {MAX_CONFIGURED_BYTES}')
+        if (isinstance(self.ResponseWrites, bool) or not isinstance(self.ResponseWrites, int) or
+                self.ResponseWrites < 1 or self.ResponseWrites > MAX_RESPONSE_WRITES):
+            raise ValueError(f'ResponseWrites must be an integer from 1 through {MAX_RESPONSE_WRITES}')
+
+    def to_json(self):
+        return {
+            'PasteBytes': self.PasteBytes,
+            'PacketBytes': self.PacketBytes,
+            'ConsumerOutputBytes': self.ConsumerOutputBytes,
+            'ResponseWrites': self.ResponseWrites,
+        }
+
+    @classmethod
+    def from_json(cls, value):
+        if value is None:
+            return cls()
+        if not isinstance(value, dict):
+            raise RelayMismatch('Request limits must be a JSON object')
+        defaults = cls()
+        try:
+            return cls(
+                PasteBytes=value.get('PasteBytes', defaults.PasteBytes),
+                PacketBytes=value.get('PacketBytes', defaults.PacketBytes),
+                ConsumerOutputBytes=value.get('ConsumerOutputBytes', defaults.ConsumerOutputBytes),
+                ResponseWrites=value.get('ResponseWrites', defaults.ResponseWrites),
+            )
+        except (TypeError, ValueError) as ex:
+            raise RelayMismatch('Invalid request resource limits') from ex
 
 
 @contextmanager
@@ -86,14 +142,14 @@ def sha(data):
     return hashlib.sha256(data).hexdigest()
 
 
-def read_bounded(path, *, pending=False):
+def read_bounded(path, *, pending=False, limit=DEFAULT_PACKET_BYTES, label='Packet/input'):
     try:
         with Path(path).open('rb') as stream:
-            data = stream.read(LIMIT + 1)
+            data = stream.read(limit + 1)
     except FileNotFoundError as ex:
         raise (RelayPending if pending else RelayMismatch)('Required file missing: ' + Path(path).name) from ex
-    if len(data) > LIMIT:
-        raise RelayMismatch('Packet/input exceeded 1048576 bytes')
+    if len(data) > limit:
+        raise RelayMismatch(f'{label} exceeded {limit} bytes')
     return data
 
 
@@ -141,6 +197,7 @@ class RelayRequest:
     game_request: bytes
     model: str
     turn_identity: object
+    limits: RelayLimits
 
 
 def read_request(queue: Path, request_dir: Path) -> RelayRequest:
@@ -148,10 +205,11 @@ def read_request(queue: Path, request_dir: Path) -> RelayRequest:
     if directory.parent != queue or not directory.name.startswith('request-'):
         raise RelayMismatch('Request is not in its original queue')
     _open(queue)
-    header_bytes = read_bounded(directory / 'request.json', pending=True)
+    header_bytes = read_bounded(directory / 'request.json', pending=True, limit=HEADER_BYTES, label='Request header')
     header = _object(header_bytes)
-    prompt = read_bounded(directory / 'prompt.txt', pending=True)
-    game_request = read_bounded(directory / 'game-request.json', pending=True)
+    limits = RelayLimits.from_json(header.get('Limits'))
+    prompt = read_bounded(directory / 'prompt.txt', pending=True, limit=limits.PasteBytes, label='Prompt')
+    game_request = read_bounded(directory / 'game-request.json', pending=True, limit=limits.PacketBytes, label='Game request')
     kind = header.get('Kind')
     source = 'input/turn_request.json' if kind == 'turn' else 'game_state/control/validation_repair_request.json'
     expected_paths = {source, 'input/turn_request.json', 'game_state/control/pending_turn_snapshot.json',
@@ -174,7 +232,7 @@ def read_request(queue: Path, request_dir: Path) -> RelayRequest:
         raise RelayMismatch('Original session path must be absolute')
     originals = {}
     for path, witness in witnesses.items():
-        originals[path] = read_bounded(session / path)
+        originals[path] = read_bounded(session / path, limit=limits.PacketBytes, label='Witness input')
         if sha(originals[path]) != witness:
             raise RelayMismatch('Original request/pending changed: ' + path)
     turn = _object(originals['input/turn_request.json'])
@@ -183,7 +241,7 @@ def read_request(queue: Path, request_dir: Path) -> RelayRequest:
     if (not isinstance(identity, dict) or set(identity) != {'sessionId', 'requestId', 'turnNumber'} or
             any(turn.get(key) != value or pending.get(key) != value for key, value in identity.items())):
         raise RelayMismatch('Original turn/pending identity mismatch')
-    return RelayRequest(queue, directory, header_bytes, prompt, game_request, model, MappingProxyType(identity))
+    return RelayRequest(queue, directory, header_bytes, prompt, game_request, model, MappingProxyType(identity), limits)
 
 
 def publish_response(request: RelayRequest, packet: bytes, *, adapter_id: str):
@@ -192,8 +250,8 @@ def publish_response(request: RelayRequest, packet: bytes, *, adapter_id: str):
     if (directory / 'response.json').exists() or (directory / 'reply.json').exists():
         raise RelayAnswered('Original response already published or unresolved')
     _open(request.queue)
-    if not isinstance(packet, bytes) or len(packet) > LIMIT:
-        raise RelayMismatch('Response must be bounded exact bytes')
+    if not isinstance(packet, bytes) or len(packet) > request.limits.PacketBytes:
+        raise RelayMismatch(f'Response packet exceeded {request.limits.PacketBytes} bytes')
     _object(packet)
     if not isinstance(adapter_id, str) or not adapter_id.strip() or len(adapter_id) > 256:
         raise RelayMismatch('Required bounded adapter identity')
