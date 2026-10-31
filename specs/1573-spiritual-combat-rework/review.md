@@ -49,6 +49,17 @@ support иconfirm продолжаются. Group source reuse:8damage computati
 long1HP против двух instant0 за одинаковые86.4ДЭ; +50% instant возвращает103-порог
 за1Main/43.2ДЭ. Это отдельные допустимые последовательности, не win-rate эффект.
 
+Support завершён exit0:288cells/288000траекторий,709.259с,stderr0; parent проверил
+indices/count/outcome/endpoint sums. Total horizon158841, включая конструктивную
+невозможность победы над недоступным helper. Данные/ограничения в
+[текущем отчёте](healing-tactics-investigation.md); duel/confirm продолжаются.
+Дешёвый дополнительный контроль одинаковых критов/3очередей: firstPatientFall5
+в обеих access-ветках, protected total horizon30, accessible total9. Согласованные
+числа Heal не менялись. Astra/high независимо сверил весь завершённый group/raw
+и utility с WIP37468ea: все таблицы/диапазоны/счётчики совпали, существенных
+замечаний нет; финальный review остаётся открыт. Расходы Paid в raw — centiDE,
+в таблицах отчёта переведены вДЭ. Исходники измерения по-прежнему c5bd379b6.
+
 ## T123 — проект исследования, 2026-10-31
 
 Baseline 493cce3df289da5bc0c5a5f0ae29b055fad319e9 совпал с origin;
