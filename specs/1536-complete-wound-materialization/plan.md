@@ -1,3 +1,17 @@
+# T121 C13 published-stage member correction — compilation pending
+
+First Main build at `9af39d516f89a4793c599e594a96e5287e5b1f52` exits1 in
+1:51.07: three CS1061 errors in the new output helper. The sealed persisted
+recovery stage declares BeforeWound/AfterWound, whereas actual execution boundary
+uses Before/After. Root corrects only the three persisted-stage member accesses,
+preserving all canonical equality/final-carrier checks. This is a compile defect,
+not causal gameplay RED or qualification. The failed build log is preserved
+externally at `M2GREENC13-build-main`; no Support/Unit/Integration build or C13
+test ran. Retry uses a new main-c1 directory after the narrow independent delta
+review and remote persistence. Old binaries are not selected for C13 runtime.
+All remaining C13 source/tests, output2/guards3/peer5/UI3 selection and boundaries
+are unchanged; corrected code remains uncompiled/unrun until verified.
+
 # T121 C13 sealed diagnosis output candidate — UNCOMPILED / UNRUN
 
 The C12 console at9c8e3d3d (owning code99703ab6) completed FAIL in47.2731659s,

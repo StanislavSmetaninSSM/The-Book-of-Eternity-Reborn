@@ -46,7 +46,7 @@ internal sealed partial record WoundPlayerNotification
                 var actual = execution[index + 1];
                 if (actual.TransitionId != expected.TransitionId || actual.Kind != expected.Kind ||
                     actual.OperationKey != expected.OperationKey || actual.EventRef != expected.EventRef ||
-                    Canonical(actual.Before) != Canonical(expected.Before) || Canonical(actual.After) != Canonical(expected.After))
+                    Canonical(actual.Before) != Canonical(expected.BeforeWound) || Canonical(actual.After) != Canonical(expected.AfterWound))
                     return DiagnosisBindingFailure("diagnosis recovery sequence differs from complete sealed History");
             }
 
@@ -58,7 +58,7 @@ internal sealed partial record WoundPlayerNotification
             {
                 var before = member.Original;
                 var working = member.Working;
-                var after = member.Stages.IsEmpty ? working : member.Stages[^1].After;
+                var after = member.Stages.IsEmpty ? working : member.Stages[^1].AfterWound;
                 var selected = before.WoundId == original.WoundId;
                 var expectedWorking = selected ? knowledge : before;
                 var beforeCanonical = Canonical(before);
