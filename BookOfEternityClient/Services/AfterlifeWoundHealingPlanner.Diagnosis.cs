@@ -40,7 +40,7 @@ internal static partial class AfterlifeWoundHealingPlanner
                 PendingTurnSnapshotAuthority.ComputeManifestPayloadHash(manifest, LiveTurnPreparationService.ManifestHashJsonOptions,
                     static m => m.ManifestPayloadHash, static (m, hash) => m.ManifestPayloadHash = hash) != snapshot.SnapshotToken ||
                 !PendingTurnSnapshotAuthority.HasValidatedRollbackSnapshotCoverage(manifest, m => m.Files, m => m.SnapshotFileHashes,
-                    m => m.RollbackBaselineFiles, paths.Append(AcceptedMechanicsPlan.WoundCommandPath).ToArray(), out _))
+                    m => m.RollbackBaselineFiles, paths, out _))
                 throw new InvalidDataException("Diagnosis requires its exact signed turn and complete rollback baseline.");
             evidence.RequireCurrent(files, lease, snapshot);
             var sources = ReadSignedSources(snapshot, paths);

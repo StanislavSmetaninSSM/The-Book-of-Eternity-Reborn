@@ -1,3 +1,43 @@
+# T121 EX8RED accepted — snapshot-role GREEN candidate, UNCOMPILED/UNRUN
+
+Independent Astra OUTCOME accepted the exact causal attempt at
+`70fab7ea5e6a78a6352c4dd1178ec8939b16ae6b`: six complete cases, five independent
+controls PASS and only signed_input_only FAIL at final Assert.Null line 121, with
+the intended rollback-baseline message at AdmitDiagnosis line 44. Actual typed
+backup/staging/snapshot, signed bytes/control, source coverage and no-mutation
+prerequisites passed. Category 14.3001357s/60s, wall 22.8845785s; no timeout, skip,
+duplicate or underfill. External proof is `EX8RED-red/verified-expected-red.json`;
+TRX SHA256 `90f648f12daae18d773311a373e7a15e59752de174ecc69bc08373bbbc8fb6d8`.
+The 00:20:14 UTC closing fence found no owners, stable 27 artifacts / 40 resource
+copies / four daemon copies and about 4.056 GB free. The root retained the complete
+27-member EX8RED archive, 62,360,821 stored bytes, SHA256
+`39b730ace52026ff0a5f1322c14d0cc7f6d9ed1582942d771042f5cf3f01edb7`.
+
+The only semantic change now requires rollback coverage for DiagnosisSourcePaths,
+without appending the staged request. The request still requires its exact validated
+snapshot member/hash, session/request/turn, full control and manifest binding,
+strict codec/IsExact agreement, observed freshness and current byte equality. Every
+canonical source retains its existing coverage and physical guards. This matches
+the existing distinction between signed preparation input and canonical originals;
+no blanket exception, alternate owner or fabricated authority is added.
+
+The same six tests are unchanged. Next GREEN is exactly those six plus the three
+existing semantic source guards: nine cases / four methods / two categories, each
+at its existing 60s budget. Earlier baseline-present native lineages remain subject
+to bounded delta SOURCE; no blanket replay or new runtime acceptance is claimed.
+After verified GREEN, the original console, browser and rollback cases each still
+require separate conditional PREP and complete capture at their original 180s
+bounds. The console timeout remains historical; browser and rollback remain UNRUN.
+
+This candidate is UNCOMPILED/UNRUN pending independent SOURCE, fresh owning builds
+and current artifact/PDB/catalog/exact PlanOnly/PREP. The writer ran no build/test.
+No GM update is needed: snapshot-role ownership is client-internal and the existing
+diagnosis/ordinary-recovery wire contract is unchanged. Operation-local parsed DATA
+reuse, original source evidence and fresh permission/publication checks remain;
+no new IO/cache, source-read reduction or speedup is claimed. Full CI membership
+remains source-estimated 160 cases / 67 methods / 28 descriptors. Raw, failed fixture
+and prior archives stay external; broader Mortal/adapter tasks and all holds stay open.
+
 # T121 console snapshot-role causal scaffold — UNCOMPILED/UNRUN
 
 At source `c863900ab`, the root verified graph GREEN six and terminal native PASS.

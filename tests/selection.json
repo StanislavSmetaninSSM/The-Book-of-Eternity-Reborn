@@ -3,7 +3,7 @@
   "selections": [
     {
       "category": "spiritual-diagnosis-snapshot-role-causal",
-      "reason": "Test-only causal scaffold for the actual console post-seal refusal: the real Engine signs staged diagnosis input without treating it as a pre-turn canonical rollback source. Run exactly six rows after fresh owning build, artifact/PDB/discovery/PlanOnly and PREP; expect signed-only final FAIL and five baseline/refusal controls PASS. No production role correction or UI retry is included.",
+      "reason": "Accepted EX8RED proves the real Engine's signed preparation input was incorrectly required in the canonical rollback baseline. The one-line GREEN candidate retains all DiagnosisSourcePaths coverage and exact signed/current request checks. Recheck the same six component rows after fresh builds/PDB/artifacts/discovery/PlanOnly/PREP; UI remains a separate conditional gate.",
       "contracts": ["#1536 T121 / FR071; authenticated preparation input versus exact canonical rollback coverage"]
     },
     {
@@ -77,7 +77,7 @@
     },
     {
       "category": "wound-read-semantic-source-guards",
-      "reason": "The graph-source selector changes the existing inventoried AdmitGraphs body. Recheck exact semantic anchors and outside-scope discovery against current production; preserve parser-call and descriptive-label ownership, with no exemptions or guard weakening.",
+      "reason": "Recheck the current production ownership inventory and outside-scope discovery after the diagnosis snapshot-role correction. All exact canonical-source coverage, parser-call and descriptive-label ownership remain; no exemptions or semantic guard weakening.",
       "contracts": [
         "#1536 T121; strict canonical reader ownership and status/wound read boundary"
       ]
