@@ -73,6 +73,29 @@ interruptPaid=attempts×2880, actionsPerTrial и exact union3shards.
 не объявлено решением затяжных боёв; преимущество ожидания finish из main
 не подтвердилось. Финальный coherent-block review ожидается; rawT123 сохранён.
 
+Итоговое независимое GPT-6 Astra/high review ebcfb6a21..76f84b9e завершено:
+существенных замечаний нет. Проверены60confirmation строк обеих очередей,
+10ресурсных строк,240cells/1320000/62589censor, exact shard union, phase/reason/
+payment/reuse/process evidence и6критериев scope. Receiving-code-review:
+parent независимо пересчитал66.5851→66.59 и16.5148→16.51; исправлены две P3
+неточности округления. Source/tests неизменны; оснований повторять полный прогон нет.
+Parent сверил156relative links (без anchors),6неизменённых accepted/report files,
+4frozen blobs и9файлов76f84b9e в existing clean sparse restore fetched from GitHub.
+Полный отчёт fetched through connector, blob040f16f104eeac857dfb11e3b315dfffe3abf7c4.
+Финальные SHA/readback/restore после публикации статусов — issue1573.
+
+Попытка очистки21owned файла старого T123raw/17425474байта отклонена automatic
+approval review: «blocked by policy», подробнее причина не сообщена. Команда
+не исполнилась; файлы сохранены, обходное повторное удаление не применяется.
+Т124.4r остаётся открытым; это локальная retention-задача. Новое измерение полно,
+неизменные тесты/source, rawT124 и sibling restore не затронуты.
+
+Checkpoint стратегии: один Sol6.1/high владел4source/test файлами, parent нашёл
+одну substantive регрессию revival reaction на интеграции и проверил RED→GREEN.
+Независимый Astra/high подтвердил coherent block; его финальные поправки — только
+2округления (раньше1условие статистики). Доказательств экономии времени/стоимости
+от иной маршрутизации нет; менять модельный workflow по этому блоку оснований нет.
+
 ## T124 — проект scope, 2026-11-01
 
 Baseline/origin741944f6d46f6cf9558238379679bf993c6d3d86 и issue1573 сверены.

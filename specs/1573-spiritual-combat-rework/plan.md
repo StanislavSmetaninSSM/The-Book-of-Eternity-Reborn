@@ -87,10 +87,11 @@ Source frozen для дальнейшего замера; подробности
   обоим порядкам, attacks/Recover/Heal, расходы/попытки/успехи/причины отказа,
   actualHeal/overheal. Сравнить пять политик внутри одинаковых условий;
   main и confirmation отдельно, не подбирать новый порог по удачному результату.
-- [ ] Independent Astra/high review точного source/docs diff и raw; проверить
+- [x] Independent Astra/high review точного source/docs diff и raw; проверить
   отрицательные выводы, сохранение пользы Heal и отсутствие переноса на1×2.
   Исправить подтверждённые находки и адресно проверить. Scoped publication/
-  GitHub readback/restore, issue1573, retention после полного verified замера.
+  GitHub readback/restore, issue1573. Retention после полного verified замера
+  выделен в T124.4r: удаление21старого файла отклонено automatic policy, файлы сохранены.
 
 **Оптимизация:** reuse operation.table/healingCalculator, полный immutable key
 уже существует; новые predicates дешёвые, им отдельный кэш не нужен. Fresh self
@@ -105,7 +106,12 @@ Sourcebb2048a26 неизменен;240cells/1320000траекторий,62589hor
 4процесса exit0/stderr0. Main wall299.673с, confirmation3shards wall873.063с.
 Проверены все seeds/params/indices/sums/оплата/reasons/union; full-verification.json
 наD:. Полный [отчёт](healing-interruption-investigation.md) готов к итоговому
-независимому review. Замедление в трудных случаях осталось; Heal не менялся.
+независимому review; оно завершено без существенных замечаний. Две P3 ошибки
+округления исправлены/пересчитаны parent. Замедление в трудных случаях осталось;
+Heal не менялся.156ссылок/accepted contracts/frozen blobs проверены;9файлов
+76f84b9e восстановлены из GitHub в существующем чистом sparse checkout.
+Очистка21старого raw/17425474байта заблокирована automatic review (без подробной
+причины), не выполнена. Финальная публикация/readback/restore — issue1573.
 
 ### Consistency/preflight до реализации
 
