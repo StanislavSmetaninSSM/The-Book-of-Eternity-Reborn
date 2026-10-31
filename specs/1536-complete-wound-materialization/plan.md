@@ -1,3 +1,44 @@
+# T121 EX10 browser binding GREEN accepted — original browser gate pending
+
+Independent Astra OUTCOME accepted the actual nine-case GREEN at runtime and
+compiled source `ab4cd7276fbd871723e79f4016109015c37ef9a0`: browser binding six
+PASS in 14.5280975s/60s, semantic source guards three PASS in 4.6940219s/60s,
+wall 34.9680695s. Exact selection, complete identities, no timeout/skip/duplicate/
+underfill, stable pins and owned cleanup were verified. TRX SHA256: browser binding
+`7fbbbe6b46f04e60666b754445b1f8897dd654f392efb44433ec9699a524c39e`;
+source guards `c249d2a748ca01a8a6da2ad7f69039c6438bd07db9f1c989d62c9fd5ba909586`.
+The unchanged authentic six-row fixture now admits lawful diagnosis and preserves
+the independent alternate-selection, full-control, signed-byte and active/combat
+boundaries. This component PASS is not the actual browser Engine outcome.
+
+The strict accepted union reconciles 172 distinct PASS / 69 methods across 13
+recorded runtime SHAs, not one fresh 172 run. The full exact plan is 173 cases /
+70 methods / 31 descriptors: only the original browser singleton remains outside
+the accepted union. Prefix one and the independently accepted corrected rollback,
+console, native and unaffected cheap lineages are retained without blind replay;
+the current source guards supersede their earlier lineage. No task checkbox closes.
+
+All four fresh owning builds completed with zero errors and baseline warnings
+12/23/26/102. Proofs bind four PE/PDB pairs, 223 source bindings, 27 artifacts,
+40 resource copies and four daemon copies. The verified owning archive is
+62,382,986 bytes; SHA256
+`9428672cd040a5dc9a5544495570eaa92e13e6ac933dec3302a2f6d2493b0882`.
+The 02:25:20 UTC closing fence found stable pins, no live owners and approximately
+3.633 GB free. Raw TRX, captures and archive evidence remain outside Git.
+
+Astra conditionally admits ONLY the original browser singleton at its unchanged
+180s after this plan-only checkpoint, exact browser PlanOnly and a fresh stable
+source/resource/ownership fence. Browser after this fix is UNRUN. Complete functional
+PASS, full capture/footer/CRC/hashes and physical owned-root absence are required
+before final bounded acceptance. The original browser FAIL, rollback FAIL and both
+console timeouts remain historical evidence; none is relabeled PASS. C#/tests/
+catalogue stay frozen at ab4cd, with no build or source repeat from this checkpoint.
+
+Operation-local typed DATA and existing closed codecs add no source IO, new cache
+or publisher; fresh ownership/source/publication checks remain mandatory. No
+speedup or overall zero-IO claim. Mortal/eight-adapter work, broad T121/US4/US5/
+#1536 and every HOLD boundary remain open.
+
 # T121 browser diagnosis dispatch GREEN candidate — UNCOMPILED / UNRUN
 
 The sole production correction adds an explicit diagnosis branch after the existing
