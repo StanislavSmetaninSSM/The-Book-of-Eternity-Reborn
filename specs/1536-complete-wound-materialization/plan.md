@@ -1,3 +1,34 @@
+# T121 response/fixture correction — fresh builds and exact PREP packet, runtime UNRUN
+
+Independent Astra/high coherent SOURCE accepted
+`e05a193cb3597142b857247b0f2911b50719a024` for build admission, with no
+Important/Critical findings. Root built that exact source on Linux: Main 1:44.62,
+TestSupport 14.69s, Unit 56.15s and Integration 1:50.95, all exit0/zero errors.
+Warning code/message multisets match the existing 12/23/26/102 baseline.
+Four PE/PDB identities, 325 changed-source bindings, 27 artifacts, 40 operational
+resource copies and four daemons match. The successful PDB result was copied
+byte-identically to the preflight's expected filename after an initial filename
+mismatch; no checker, build or test was repeated for that correction.
+
+Official discovery: 1256 categories / 13073 methods, zero executions, no unmapped
+or stale selectors. Exact PlanOnly: 214 cases / 84 methods / 43 descriptors /
+41 categories, no duplicate methods, zero executions and complete cleanup.
+The disjoint selection is retained169 (59 methods/22 descriptors), fresh focused17
+(8 methods/5 descriptors), independent native19, dependent native6 and three
+separate console/browser/rollback singletons. Passing C5 ordinary2 and
+effect/companion4 remain explicit retained lineages; no fresh169 claim is made.
+Only the five reviewed 60-second focused categories are proposed for next PREP.
+Native19/6 and UI3 remain held until their prerequisites and independent PREP.
+
+Full external evidence is under
+`/workspace/tboe-linux-evidence-20261025/us5-guided-diagnosis/M2GREENC6-*`.
+The 27-member owning archive is 62868482 bytes, SHA256
+`364290b1681fd7a21609314c4a9d0aa4436a115bca64882ab999035fc1bc21af`;
+all members match and full gzip EOF/CRC decoding covers 197017600 bytes.
+No raw evidence or binaries enter Git. The established optimization/GM no-update
+assessment remains valid. No runtime PASS or parent/helper completion is claimed;
+physical-treatment execution, eight spiritual adapters and all prior HOLDs remain.
+
 # T121 response/fixture correction — coherent SOURCE freeze, UNCOMPILED / UNRUN
 
 Connected source WIP is remotely preserved at
