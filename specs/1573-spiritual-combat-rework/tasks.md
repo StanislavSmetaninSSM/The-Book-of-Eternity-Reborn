@@ -4,7 +4,7 @@
 
 - [x] T131.1 Read-only аудит Rules и духовных spec/probes; parent сверил основные формулы и C# authority. Scope/plan/consistency записаны, новые механики исключены.
 - [x] T131.2 В существующем mortal-combat-comparison.md зафиксированы формулы и отличия; отделены принятые решения от кандидатов и проб, отозваны T130 grace/no-refresh. Новых механик/прогонов нет.
-- [ ] T131.3 Independent whole-block review, ссылки/diff/source verification, публикация/readback/новое чистое восстановление и итог пользователю без новых предложений механик.
+- [x] T131.3 Independent Astra/high whole-block review pass без P1/P2;50 новых ссылок/diff/check и source unchanged подтверждены. WIP032cab0f1 опубликован,6 GitHub blob SHA совпали с source и новым чистым sparse restore. Финальный checkpoint/readback — issue1573; новых механик/измерений нет.
 
 ## T130 — проект видов контроля и освобождения
 
