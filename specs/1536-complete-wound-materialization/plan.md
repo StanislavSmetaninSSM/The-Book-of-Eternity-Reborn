@@ -1,3 +1,39 @@
+# T121 C15 browser exact control FAILED — no timeout, subsequent runs held
+
+At runtime `3495a877b022865acf02d3ef64b740a9aa9f6edf`, compiled owners all
+`78918350e78be28908aef3c3c1afd180d14b6d12`, the first separately admitted
+`mortal-browser-completed-item-exact` finishes with 0 PASS / 1 FAIL, no timeout,
+56.5371064s within its unchanged 60s bound (test 51.8869351s; wall1:03.5162231).
+The actual Engine pre-wait fixture reaches successful completed-DATA issuance,
+but its explicit World-reader assertion receives null at CompletedItemsBrowser.cs117;
+outer controlled-stop identity consequently fails. This is not a comparison PASS.
+The production World issuer requires a processing original; wait inspection and
+terminal processing are distinct phases. Independent causal review is pending,
+including the remaining two controls' same phase premise; no guard is relaxed.
+
+Primary raw summary/TRX/hash/exact1 membership readback, unchanged binary pins,
+runner cleanup and a fresh post-run source/resource/process fence are verified.
+Fixture cleanup evidence is successful finally plus an empty completed-item-browser
+namespace, not invented individual root receipts or passive capture. Full raw is
+external in M2GREENC15-browser-exact1 under the diagnosis evidence root. Remaining
+browser2, fresh Engine-original1 and UI3 are UNRUN/held; accepted post8 is unchanged.
+The next step is a minimal coherent fixture/phase correction with independent
+review, affected fresh build and exact PREP before any retry. No limits, assertions,
+source/final proof, original authority, retained raw/root or broader HOLD changes.
+Optimization: retain existing completed DATA and genuine World read owner; this
+failure is a phase eligibility issue, not evidence for a new cache or speedup.
+
+Functional remainder remains broader than diagnosis: existing procedure, course
+milestone and guaranteed-treatment backends already own requests, resources,
+History and replay/rollback. Their guided physical-treatment choice/confirmation
+and full procedure/course Engine dispatch are still missing, so recommendations
+do not complete the feature. After diagnosis acceptance this is the next coherent
+user route, covering all three modes under the existing rules. The eight missing
+spiritual diagnosis proof adapters are exactly item_quantity, resource_quantity,
+consent, facility, location, quest_state, effect_state and environment. quest_state
+means quest state, not negotiated compensation. These are not an exhaustive final
+backlog: wider source/lifecycle/parent qualification and prior HOLDs remain open.
+
 # T121 C15 post8 accepted GREEN — browser/original/UI still pending
 
 Runtime `b4a7630842470cf49e1cc7bd2250112c02fabeeb`, compiled owners all
