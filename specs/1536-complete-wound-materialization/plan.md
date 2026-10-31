@@ -1,3 +1,21 @@
+# T121 pending-evidence focused18 GREEN — native/UI still unqualified
+
+The exact focused selection at runtime
+`f0058f25b90c9e0922884ce405076ce7dca7f29f` completed 18/18 PASS: 12 methods,
+4 descriptors and 3 categories, in 42.7626844s. Root verified exact planned/TRX
+membership, unique IDs, no timeout, full cleanup and unchanged source/artifact/
+resource pins. Category times were 7.9028598s, 14.2873425s and 5.6387297s, within
+the original 60s bounds. Both actual producers' pending presence/absence, copied
+DATA with zero additional source opens, prior-form refusal, resealed contradiction/
+asymmetric coverage and original-source drift controls passed. Raw remains in
+`M2GREENC3-focused18`; closing source fence is stable with no live managed owner.
+
+Independent focused OUTCOME/native PREP remain pending. The earlier native
+1 FAIL / 24 UNRUN is preserved; no current native or actual UI result is inferred
+from these controls. Next is exactly the already planned native25, then three
+separate UI journeys. The retained137 stay on their original lineages; no broad
+accepted aggregate, parked qualification or new feature was run.
+
 # T121 pending-evidence owning builds and exact selection complete — runtime UNRUN
 
 All four managed builds at `e3c9ad36458bb2b7f700f1995b9c8aa560a48714` passed:
