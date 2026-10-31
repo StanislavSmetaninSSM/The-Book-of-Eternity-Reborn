@@ -1,3 +1,34 @@
+# T121 C14 completed item post-validation — coherent core WIP
+
+C13's original console attempt remains TIMEOUT/UNKNOWN, with the exact retained
+repair issue and incomplete capture described below. Source confirms a missing
+completed-publication join: the real item debit is proved inside the live
+transaction but ordinary later post-materialization validation repeats the
+pre-turn inventory guard without that proof. A separate lawful initial-default
+normalization adds `tradeInventoryReceipts: []`; the journey seed now creates it
+before its sole resource bootstrap and original snapshot.
+
+Independent Astra DESIGN accepts a private, non-deserializable completed DATA
+comparison from the existing transaction only after genuine Finalized/valid/
+ChangedCount1 settlement, exact published agreement and observed successful lease
+closure. A suppressed close failure keeps Finalized settlement and exports
+nothing. Engine consumes this DATA once and invalidates it before repair. Console
+uses its existing pending-snapshot physical lease; browser uses the existing
+tracked World read phase, before its final unchanged-read proof. Both bind the
+actual parsed complete NPC root plus fresh whole physical bytes to the same
+validated original frame and session generation. Only one uniquely proved issue
+can be removed; all other errors and final proof/close refusals remain.
+
+This checkpoint saves production and initial preparation WIP as UNCOMPILED/UNRUN.
+Finite genuine post-validator tests, source-pin review and exact affected category
+selection remain in progress; no runtime or new UI admission has occurred. Root
+alone owns builds/discovery/runtime. Existing raw, retained roots and all HOLDs
+remain untouched. No GM wire/schema/gameplay change: this is client-owned
+completed comparison, with no new publication permission. Reuse computes the
+existing item comparison once; the one fresh NPC byte read binds current physical
+state to the same invocation and is covered by its existing final proofs. No
+cache, extra reader/lease or speedup claim is introduced.
+
 # T121 C13 console TIMEOUT — post-materialization NPC item continuity
 
 Actual console at `5082ea7d1ba6cdebb6ad0679ada7e61337132676`, compiled owners

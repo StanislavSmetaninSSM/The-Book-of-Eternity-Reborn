@@ -59,6 +59,9 @@ public partial class GameEngine
     private ValidationService.GuardianMusingsPublicationCapture.GuardianMusingsCompletedValidation?
         _acceptedTurnGuardianMusingsValidation;
 
+    private MortalWoundTreatmentResourcePublicationTransaction.CompletedItemValidation?
+        _acceptedTurnCompletedTreatmentItems;
+
     private sealed class CompensatedTreatmentPublicationException : Exception
     {
         internal CompensatedTreatmentPublicationException(
@@ -584,6 +587,7 @@ public partial class GameEngine
         _acceptedTurnSpiritualOutput = null;
         _acceptedTurnSpiritualConflictValidation = null;
         _acceptedTurnGuardianMusingsValidation = null;
+        _acceptedTurnCompletedTreatmentItems = null;
         var finalizedTreatmentReplayQuarantineFailure =
             await TryQuarantineFinalizedTreatmentReplayAsync(expectedTurn);
         if (finalizedTreatmentReplayQuarantineFailure.HasValue)
@@ -1293,6 +1297,7 @@ public partial class GameEngine
                     return MapTreatmentPublicationSettlementToDisposition(
                         settlement);
                 }
+                _acceptedTurnCompletedTreatmentItems = treatmentResourcePublicationTransaction.ReadCompletedItemValidation();
                 _acceptedTurnWoundNotifications = canonicalRefresh.WoundNotifications
                     .Select(static value => value with
                     {
@@ -2347,6 +2352,8 @@ public partial class GameEngine
         using var completedConflictScope = _validator.UseCompletedSpiritualConflictValidationScope(spiritualValidation);
         var guardianMusings = Interlocked.Exchange(ref _acceptedTurnGuardianMusingsValidation, null);
         using var guardianMusingsScope = _validator.UseCompletedGuardianMusingsValidationScope(guardianMusings);
+        var completedItems = Interlocked.Exchange(ref _acceptedTurnCompletedTreatmentItems, null);
+        using var completedItemsScope = _validator.UseCompletedTreatmentItemValidationScope(completedItems);
         var accepted = await ValidateCurrentGameStateOrShowErrorsAsync(
             PostAcceptedMaterializedStateValidationSource,
             rollbackSnapshot,
@@ -2356,6 +2363,7 @@ public partial class GameEngine
             {
                 originalBrowserSnapshotScope?.Dispose();
                 guardianMusingsScope.Invalidate();
+                completedItemsScope.Invalidate();
                 return Task.CompletedTask;
             },
             guardianMusingsForRepair: guardianMusings);

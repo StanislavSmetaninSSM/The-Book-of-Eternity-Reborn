@@ -32,6 +32,7 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
             var medic = Assert.Single(npc["NPCsInScene"]!.AsArray());
             Assert.Equal("field_medic_01", medic!["NPCId"]!.GetValue<string>());
             medic["name"] = "Field medic";
+            NpcTradeRequestState.NormalizeNpcTradeReceiptsShape(medic.AsObject());
             Write("game_state/npcs/npc_core.json", npc);
             Write("game_state/meta/soul_state.json", fullSoul);
             Write(EffectAcceptedTurnInputComposer.WorldTimePath, fullClock);

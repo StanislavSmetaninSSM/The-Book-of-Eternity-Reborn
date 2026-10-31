@@ -221,6 +221,7 @@ public partial class GameEngine
         _acceptedTurnSpiritualOutput = null;
         _acceptedTurnSpiritualConflictValidation = null;
         _acceptedTurnGuardianMusingsValidation = null;
+        _acceptedTurnCompletedTreatmentItems = null;
         _pendingImagePrompt = null;
         _pendingMemoryLegacyAwaitingConsumption = false;
         _mainMenuSessionWarning = null;

@@ -103,6 +103,7 @@ public partial class ValidationService
             invocation.Active = true;
             invocation.RequireCurrent();
             issues = await validate();
+            await CompareCompletedTreatmentItemsAsync(invocation, issues);
             invocation.RequireCurrent();
             invocation.Evidence.RequireSame(CapturePendingSnapshotEvidence(invocation.Physical));
             invocation.RequireCurrent();

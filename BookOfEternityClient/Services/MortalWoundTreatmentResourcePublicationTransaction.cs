@@ -235,7 +235,7 @@ internal static class MortalWoundTreatmentDurableSurfaceQuarantine
         string.Equals(actual, expected, StringComparison.Ordinal);
 }
 
-internal sealed class MortalWoundTreatmentResourcePublicationTransaction
+internal sealed partial class MortalWoundTreatmentResourcePublicationTransaction
     : IAsyncDisposable
 {
     private const string TokenMismatchCode =
@@ -439,13 +439,14 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
             return issues;
         }
 
+        var comparison = itemAuthority.CaptureExactPublishedNpcInventoryComparison(publishedNpcRoot);
+        if (comparison is null) return issues;
+
         var matchingIndex = -1;
         var matchingCount = 0;
         for (var index = 0; index < issues.Count; index++)
         {
-            if (!itemAuthority.ProvesExactPublishedNpcInventoryContinuityIssue(
-                    issues[index],
-                    publishedNpcRoot))
+            if (!comparison.Proves(issues[index]))
             {
                 continue;
             }
@@ -674,6 +675,7 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
             return TerminalReleaseOnlyFailure("finalize publication");
         FileSystemManager.CanonicalWriteLease? writeLease = null;
         MortalWoundTreatmentPublicationOperationResult? result = null;
+        CompletedItemValidation? completion = null;
         try
         {
             writeLease = await fileSystem.AcquireCanonicalWriteLeaseAsync();
@@ -697,15 +699,18 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
                     writeLease,
                     _receipt);
             ObserveClosure(result);
+            if (result.IsValid && result.Issues.Count == 0 && result.ChangedCount == 1 &&
+                result.Outcome == MortalWoundTreatmentPublicationTransactionOutcome.Finalized)
+                completion = CaptureCompletedItemValidation(fileSystem, writeLease);
             return result;
         }
         finally
         {
             if (writeLease is not null)
             {
-                await DisposeLeaseAsync(
-                    writeLease,
-                    result is not null && ClosesReceipt(result));
+                var closed = await DisposeLeaseAndObserveAsync(writeLease, result is not null && ClosesReceipt(result));
+                if (closed && completion is not null)
+                    Volatile.Write(ref _completedItemValidation, completion);
             }
         }
     }
@@ -1733,20 +1738,19 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
             Interlocked.Exchange(ref _closed, 1);
     }
 
-    private async Task DisposeLeaseAsync(
-        FileSystemManager.CanonicalWriteLease writeLease,
-        bool suppressFailure)
+    private async Task DisposeLeaseAsync(FileSystemManager.CanonicalWriteLease writeLease, bool suppressFailure) =>
+        _ = await DisposeLeaseAndObserveAsync(writeLease, suppressFailure);
+
+    private async Task<bool> DisposeLeaseAndObserveAsync(FileSystemManager.CanonicalWriteLease writeLease, bool suppressFailure)
     {
-        try
-        {
-            await writeLease.DisposeAsync();
-        }
+        try { await writeLease.DisposeAsync(); return true; }
         catch (Exception closingFailure) when (suppressFailure || Volatile.Read(ref _publicationUncertainty) is not null)
         {
             if (Volatile.Read(ref _publicationUncertainty) is { } uncertainty)
                 uncertainty.SourceException.Data["TreatmentPublicationLeaseCloseFailure"] = closingFailure;
-            // A confirmed publication outcome or uncertainty is already retained. A lock-handle close
-            // failure must not turn an exact resource commit into a second spend.
+            // Keep the established finalized settlement, but expose no completed
+            // validation DATA unless the actual physical close returned.
+            return false;
         }
     }
 }

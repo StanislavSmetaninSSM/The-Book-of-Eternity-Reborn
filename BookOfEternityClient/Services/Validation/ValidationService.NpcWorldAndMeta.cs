@@ -5041,6 +5041,7 @@ public partial class ValidationService
         bool skipManifestedCompanionSourceValidation = false,
         bool validateCurrentMaterializationPersonality = false)
     {
+        ObserveCompletedTreatmentNpcRoot(root, contextPrefix);
         var tradeSignaturesByNpc = new Dictionary<string, (string Context, string? TradeStateSignature, string? TradeInventorySignature, string? BuybackInventorySignature)>(StringComparer.OrdinalIgnoreCase);
         var sameTurnLocationInitialIds = CollectSameTurnLocationInitialIds(root);
         var knownPermanentLocationIds = ReadKnownPermanentLocationIdsSync();

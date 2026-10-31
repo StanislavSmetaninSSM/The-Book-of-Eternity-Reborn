@@ -170,6 +170,8 @@ public partial class ValidationService
         var isolated = false;
         Exception? primary = null;
         var localIssues = new List<ValidationIssue>();
+        var completedItemIssueIndex = -1;
+        var priorIssueCount = issues.Count;
         try
         {
             physical = _fs.BeginWorldValidationRead();
@@ -196,6 +198,8 @@ public partial class ValidationService
             await ValidateWorldQuestCombatFactionStateFilesCore(localIssues);
             phase.RequireCurrent();
             phase.ReadFailure?.Throw();
+            completedItemIssueIndex = await CompareCompletedTreatmentItemsAsync(phase,
+                issues.Concat(localIssues).ToArray());
             physical.RequireFullEndProof();
 #if DEBUG
             using (_fs.BrowserDiagnosticLogical("WorldQuestCombatFactionStateFiles/fresh-readset", null))
@@ -238,6 +242,11 @@ public partial class ValidationService
         physical!.RequireOwnerAfterClose();
         if (phase.Invalidated || !ReferenceEquals(phase.Manifest, _prevalidatedPendingTurnSnapshotOverride))
             throw new IOException("Original World validation snapshot context changed before issue publication.");
+        if (completedItemIssueIndex >= 0)
+        {
+            if (completedItemIssueIndex < priorIssueCount) issues.RemoveAt(completedItemIssueIndex);
+            else localIssues.RemoveAt(completedItemIssueIndex - priorIssueCount);
+        }
         issues.AddRange(localIssues);
     }
 
