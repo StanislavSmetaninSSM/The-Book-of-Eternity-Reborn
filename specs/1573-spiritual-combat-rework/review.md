@@ -25,6 +25,23 @@ Legacy42n3h20 checksum1e11934e9e7e958e11fed7fd8331c8f9117fad88640767cc0777180603
 Preparation684encounters44.769мс/16computations;20000reuse12.130мс/0новых.
 Полный замер/review ещё впереди, отрицательные исходы не отбрасывать.
 
+Первый source39f317f7e опубликован/readback; main684×100 завершён за61.830с,
+exit0/stderr0, полная validation parameters/seeds/coverage/costs/endpoints прошла.
+Independent GPT-6 Astra/high нашёл одинP2: teamDefeated gate отменял уже
+наступивший конечныйHoT победителя, вопреки T112:184–188. Parent подтвердил
+договор; RED→GREEN исправление поручено source-owner. Победитель/длительность
+дуэлей не меняются, но offensive HP/counters требуют нового замера. Поэтому
+первый main помечен superseded, сохранён локально с префиксом39f317f7e;
+confirm пока не запускался. Баланс/политики не подстраиваются по результатам.
+Других source findings reviewer не нашёл; целый отчёт/данные проверит после
+исправления. Исследовательское уточнение final-turn записано прямо вspec.
+
+P2 исправлен source-owner: текущая конечная граница разрешается доoutcome,
+будущие возможности не начинаются. Regression RED800≠924; GREEN924HP/1tick/
+124HP, обычнаяregen, прежнийwinner/round, enemy.started не сдвигается.
+Related144/144,4101мс,0fail/skip/cancel,legacy42deepEqual/checksum сохранены.
+Parent actualdiff/evidence проверены; повторmain/confirm пойдут на новомSHA.
+
 ## T127 — сила/стоимость и сопротивление эффекту, 2026-11-01
 
 Автор принял основу/шкалуT126; добавил защиту/уклонение, очищение и effect-save.

@@ -96,6 +96,16 @@ test('a useful HoT frees a later Main for an offensive attack',()=>{
   assert.equal(e.counts.byActor.B.attacks,1);assert.equal(e.counts.byActor.B.healingMains,1);
   assert.equal(e.counts.byActor.B.hotTicks,1);assert.equal(e.counts.byActor.B.hotRestored,124);assert.equal(e.actors[0].hp,804);
 });
+test('winning personal turn resolves its due HoT before battle cleanup without starting another actor turn',()=>{
+  const e=createEncounter({...options,periodicAttack:'ordinary',defender:'offensive',order:[1,0]}),[enemy,h]=e.actors;
+  h.hp=800;stepEncounter(e,miss);stepEncounter(e,miss);enemy.hp=1;
+  const enemyStarted=enemy.started,healerEnergy=h.energy;
+  stepEncounter(e,{...miss,damage:()=>15*20+9});
+  assert.equal(e.done,true);assert.equal(e.winner,1);assert.equal(e.round,2);
+  assert.equal(h.hp,924);assert.equal(e.counts.byActor.B.hotTicks,1);assert.equal(e.counts.byActor.B.hotRestored,124);
+  assert.equal(h.energy,healerEnergy-price(h,8)+h.regen);assert.equal(enemy.started,enemyStarted);
+  assert.equal(h.hots.length,0);assert.equal(stepEncounter(e,crit),false);assert.equal(enemy.started,enemyStarted);
+});
 test('cleansing consumes one paid Main before healing, without immunity or free HP',()=>{
   const e=createEncounter({...options,cleansePolicy:'first',order:[1,0]}),t=e.actors[1];t.hp=200;
   t.marks=[{amount:90,expires:2}];stepEncounter(e,miss);

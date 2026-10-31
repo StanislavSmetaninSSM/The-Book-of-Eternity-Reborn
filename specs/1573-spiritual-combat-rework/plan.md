@@ -79,6 +79,12 @@ Main/confirm684+684 n1h3 и3shard union точны; весь набор толь
 Следующий шаг: сохранить sourceWIP, запустить main и independent review,
 затем confirm всех684cells. Параметры/политики во время замера не менять.
 
+Review поправка перед confirm: Astra/high нашёл отменённый dueHoT конца
+победного хода; T112 требует его разрешить. Parent подтвердил договор,
+source-owner RED→GREEN,144/144/4101мс,legacy42checksum сохранён. Первый
+main39f317f7e (684×100,61.830с) помеченsuperseded для корректныхHP/counters.
+Баланс/политики не изменены; повторmain и весьconfirm на исправленномSHA.
+
 ## T127 — профили лечения/подавления и сопротивление, 2026-11-01
 
 Writing-plans + Spec Kit bridge: active spec/plan/tasks; baseline/origin

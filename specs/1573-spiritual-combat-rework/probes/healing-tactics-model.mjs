@@ -351,7 +351,8 @@ export function stepEncounter(e,dice) {
       if(e.options.defender==='offensive')doAttack(e,a,'fixed_ordinary',dice);else doRecover(e,a);
     }
   }else doAttack(e,a,a.role==='striker'?'fixed_ordinary':e.options.attackPolicy,dice);
-  if(e.options.healingRules==='periodic-v1'&&!teamDefeated(e.actors,0)&&!teamDefeated(e.actors,1)){
+  // Complete this already-started opportunity before deciding the battle; no future actor begins after finish.
+  if(e.options.healingRules==='periodic-v1'){
     for(const tick of tickPeriodic(a,e.operation.calculate)){
       const source=e.actors.find(t=>t.id===tick.source);assert.ok(source);
       if(!tick.applied){count(e,source,'hotSuppressedTicks');continue;}
