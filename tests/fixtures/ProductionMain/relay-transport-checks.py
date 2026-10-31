@@ -77,7 +77,8 @@ try:
  os.write(master,b'\x1b[200~'+prompt+b'\x1b[201~')
  until(lambda:prompt.replace(b'\n',b'\r\n') in capture,'exact pasted view');assert not list(queue.glob('request-*')),'Paste alone submitted'
  os.write(master,b'\r');until(lambda:bool(list(queue.glob('request-*/request.json'))),'actual submit')
- q=next(queue.glob('request-*'));req=json.loads((q/'request.json').read_text());assert (q/'prompt.txt').read_bytes()==prompt
+ q=next(queue.glob('request-*'));until(lambda:(q/'request.json').is_file() and (q/'prompt.txt').is_file() and (q/'game-request.json').is_file(),'complete request publication')
+ req=json.loads((q/'request.json').read_text());assert (q/'prompt.txt').read_bytes()==prompt
  assert req['PromptSHA256']==hashlib.sha256(prompt).hexdigest() and req['TurnIdentity']==turn
  if mode=='paste':
   (queue/'close-request.json').write_text('{}');until(lambda:(queue/'closed.json').exists(),'close idle queue');assert not (session/'applied').exists()
