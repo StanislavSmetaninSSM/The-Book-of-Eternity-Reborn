@@ -1,3 +1,44 @@
+# T121 Mortal UI initial companions — C10 fixture WIP, UNCOMPILED / UNRUN
+
+The first actual console journey at runtime
+`d3893c9396eb6e6f63871765abed30af7d6cb9d4` completed FAIL in 17.634s,
+without timeout, before send/GM response. Root verified full capture, removed
+owned root and stable pins. External raw is `M2GREENC9-console1`. Staging
+validation reported item_journal_unknown_item_reference and two orphan companion
+references at initial item journal row 0. Browser and rollback remain held; no UI
+case is qualified. The prior retained205 proof and accepted current component/native
+lineages stay separate; no successful-prefix or fresh whole-feature claim.
+
+Confirmed fixture cause: the complete ordinary template's inventory/identity are
+replaced by the diagnosis scene's actual medic/items, but its item journal still
+references item_ancient_sword. The bounded shared journey seed now writes the
+existing empty entries shape for game_state/npcs/item_journals.json inside its
+existing initial callback, BEFORE the sole resource bootstrap/original. It changes
+no accepted state, production guard, global template or GM response/assertion.
+
+Finite companion audit: item_bonds, item_text_updates, recipes, NPC inventory
+commands and vehicles are absent from the copied template. The replaced inventory
+and item index drop the sword together. Existing quest-history reward rows name
+other items but explicitly declare HistoricalOnly; the accepted typed catalog
+excludes those historical rows, which remain byte-for-byte unchanged. Reuse the
+already assembled NPC/journal DATA, read remaining current carrier/companion roots
+once, build ONE existing MortalItemCarrierCatalog before bootstrap, then use its
+same DATA to require no catalog issues and one exact carrier for every live
+companion reference. No repeated full validator, new framework, authority/cache,
+extra Engine setup or standalone test case is introduced.
+
+Only the existing three console/browser/rollback journeys share this changed
+initial seed; method IDs, category membership, 180s limits and full selection
+217 cases / 89 methods / 49 descriptors / 47 categories are unchanged. Only
+Integration source needs a fresh build; Main/Support/Unit source is unchanged.
+All existing read/cancel/confirm, exact item/resource expense, signed procedure,
+knowledge/time/recovery, History/replay, byte rollback, cleanup/capture assertions
+remain intact. No prior accepted PASS is proposed for replay without dependency.
+This fixture-only correction is UNCOMPILED/UNRUN until the same bounded independent
+SOURCE and root-owned Integration/PREP/serial UI qualification. No GM wire/rule/
+manifest update is needed. Raw remains external, broader ordinary TIMEOUT remains
+UNKNOWN/open, and parent/physical-treatment/eight-adapter/HOLD scope stays open.
+
 # T121 C9 native4 PASS — UI3 OUTCOME/PREP pending
 
 At runtime `8e3cfcd9fef95a44bf3db5346f2169aeb9fd68da`, native4 completed

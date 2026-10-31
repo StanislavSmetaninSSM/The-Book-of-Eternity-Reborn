@@ -163,6 +163,14 @@ archive are outside checkout; original failures and all other holds are retained
   unrelated clock drift; strict outer/published/ordinary consumers remain required.
   See current plan epochs.
 
+- [ ] T121-DIAGNOSIS-MORTAL-UI-FIXTURE Close the first actual console staging
+  failure from an unrelated copied sword journal. Seed the current scene's empty
+  item journal before the sole resource bootstrap/original, preserve HistoricalOnly
+  quest history, and check live initial item companion references through the
+  existing typed catalog once. All three real journey assertions/180s bounds and
+  production guards remain unchanged. Fixture-only C10 is UNCOMPILED/UNRUN;
+  browser/rollback and overall Mortal UI remain unqualified. See plan.md epochs.
+
 - [x] T121-DIAGNOSIS-READ Show readable declared conditions of currently known
   diagnostic paths in the existing wound/status cards for console/browser. Reuse
   the existing typed requirement projection and one operation-owned physical

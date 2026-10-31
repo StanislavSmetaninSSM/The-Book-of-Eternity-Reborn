@@ -38,6 +38,33 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
             Write("game_state/misc/characteristics.json", new JsonObject(Characteristics.All.Select(name =>
                 new KeyValuePair<string, JsonNode?>(name, JsonValue.Create(10)))));
             Write("game_state/player/experience.json", new JsonObject { ["level"] = 1, ["experience"] = 0, ["experienceForNextLevel"] = 100 });
+            // The component scene replaces the template inventory. Its unrelated
+            // sword journal must not survive into this scene's sole bootstrap.
+            const string itemJournalPath = "game_state/npcs/item_journals.json";
+            var itemJournal = new JsonObject { ["entries"] = new JsonArray() };
+            Write(itemJournalPath, itemJournal);
+            JsonObject? ReadInitialRoot(string path)
+            {
+                var fullPath = current.ResolvePath(path);
+                return File.Exists(fullPath) ? JsonNode.Parse(File.ReadAllText(fullPath))!.AsObject() : null;
+            }
+            var companions = new Dictionary<string, JsonObject>(StringComparer.Ordinal) { [itemJournalPath] = itemJournal };
+            foreach (var path in new[] { "game_state/inventory/item_bonds.json", "game_state/inventory/item_text_updates.json",
+                         "game_state/inventory/recipes.json", "game_state/quests/quest_history.json" })
+                if (ReadInitialRoot(path) is { } root) companions.Add(path, root);
+            var items = MortalItemCarrierCatalog.Build(new(ReadInitialRoot(InventoryEquipmentService.ItemsPath), npc,
+                ReadInitialRoot("game_state/npcs/npc_inventory.json"), ReadInitialRoot(StorageTransportMoveService.CurrentLocationPath),
+                ReadInitialRoot(StorageTransportMoveService.VehiclesPath), companions,
+                ReadInitialRoot(MortalLocationStorageContentsState.StatePath)));
+            Assert.Empty(items.Issues);
+            // The existing catalog excludes explicitly HistoricalOnly quest
+            // rewards; preserve that history and resolve every remaining live ref.
+            foreach (var reference in items.ByCompanionReference)
+            {
+                Assert.True(items.ByItemId.TryGetValue(reference.Key, out var matches),
+                    "Initial diagnosis companion has no exact item carrier: " + reference.Key);
+                Assert.Single(matches!);
+            }
         });
         await files.WriteFileAtomicAsync("game_state/core/game_settings.json", "{\"qteEventsEnabled\":false}");
         await files.WriteFileAtomicAsync("game_state/npcs/npc_journals.json", "{\"NPCJournals\":[]}");
