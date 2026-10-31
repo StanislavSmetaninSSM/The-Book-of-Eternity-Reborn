@@ -1,3 +1,26 @@
+# T121 pending-evidence owning builds and exact selection complete — runtime UNRUN
+
+All four managed builds at `e3c9ad36458bb2b7f700f1995b9c8aa560a48714` passed:
+Main 2:03.98, TestSupport 15.24s, Unit 2:08.20, Integration 1:47.27; zero errors.
+Warning multisets match the preceding baseline (12/23/26/102), with no new warning.
+All four PE/PDB identities, 320 changed-source bindings, 27 owning artifacts,
+40 operational-resource copies and four daemons are verified. The complete
+27-member owning archive has matching member hashes and full gzip EOF/CRC.
+Full raw evidence remains external under `us5-guided-diagnosis/M2GREENC3-*`.
+
+Official catalog discovery passed 1248 categories / 13068 methods or files, with
+zero tests executed. Exact PlanOnly passed 183 cases / 71 methods / 35 descriptors
+in 33 categories, without duplicates and with complete cleanup. The partition is
+137 retained cases, 18 focused cases, native25, then console/browser/rollback one
+each. The focused18 includes the six new proof rows, nine directly affected
+presence/helper consumers and three changed-source guards. No accepted aggregate
+is replayed. Independent PREP and every new runtime result remain pending.
+
+This preparation does not resolve the preserved native 1 FAIL / 24 UNRUN or
+qualify the three actual UI journeys. Source admission, DATA reuse/freshness and
+all broader residuals remain as recorded; no new cache or speedup claim, raw
+upload, timeout change, restore or parked qualification run was performed.
+
 # T121 pending evidence SOURCE accepted — owning builds only
 
 Independent Astra/high accepted the complete correction at
