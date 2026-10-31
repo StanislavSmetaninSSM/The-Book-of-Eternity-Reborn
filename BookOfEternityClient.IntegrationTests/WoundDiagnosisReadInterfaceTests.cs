@@ -81,7 +81,9 @@ public sealed class WoundDiagnosisReadInterfaceTests(ITestOutputHelper output)
                      new JsonSerializerOptions { Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping }) })
         {
             Assert.Contains("Осторожный осмотр", text); Assert.Contains("17 ед.", text);
-            Assert.Contains("не подтверждают наличие", text); Assert.Contains("пока недоступно", text);
+            Assert.Contains("не подтверждают наличие", text);
+            Assert.Contains("/лечить", text); Assert.Contains("длительности", text); Assert.Contains("расходам", text);
+            Assert.Contains("Карточка сама не исполняет действие", text);
             Assert.DoesNotContain("diagnosis_interface_private", text);
             Assert.DoesNotContain("clean_and_suture", text);
         }

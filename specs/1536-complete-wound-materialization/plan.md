@@ -1,3 +1,34 @@
+# T121 M2 cheap partial failure — stale card-text oracle correction, UNRUN
+
+Actual `M2GREEN-cheap` completed 122 cases: 117 PASS and five FAIL, with eighteen
+cheap cases UNRUN, no timeout and complete cleanup. Both actual read-handler rows
+and all three hidden/foreign/unknown status rows failed on the historical text
+“пока недоступно”. Preceding whole-canonical/inertness/read-count assertions ran;
+the private-ID/recursive-privacy and PrimaryAction suffix assertions after those
+failures remain UNRUN. No privacy PASS is inferred from an earlier assertion.
+Original raw output remains external and unchanged. No owning/native/UI result is
+claimed from this partial cheap run.
+
+The existing ProjectDiagnosis contract correctly directs physical explicitly
+declared procedures to separately confirmed /лечить, and spiritual inspection
+there only when every current condition is proven; the card itself executes
+nothing. Two Integration fixture methods now assert that domain-specific policy,
+explicit duration/cost wording for physical methods, the conditional spiritual
+wording and non-executing card. All original resource17/read-count/no-write/
+no-prompt and following private-ID/recursive-disclosure/PrimaryAction-null checks
+are preserved. Production, fixture inputs and availability rules are unchanged.
+
+The remaining eighteen UNRUN rows were source-audited: spiritual-purpose7 retains
+actual empty-check/reduction and mixed-family refusals; recommendation8 already
+expects /лечить and explicit physical duration/cost guidance; semantic guards3
+have no stale card-policy assertion. No other established correction was found.
+This is source assessment, not their execution or acceptance. Next is exactly the
+five affected rows plus these eighteen, after same-reviewer delta SOURCE, fresh
+Integration-only compilation and current artifact/PDB/Plan/PREP. The 117 unaffected
+PASS are retained only under that reviewed source continuity; no blanket replay.
+All four prior successful build epochs and failed raw remain; all broader bounds,
+HOLDs and task checkboxes stay unchanged. No writer build/test/restore/runtime.
+
 # T121 Mortal owning builds and exact discovery complete — runtime UNRUN
 
 At source `023179795b2dc1f32d85a15deac88c673d92436f`, all four required managed

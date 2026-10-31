@@ -106,7 +106,10 @@ public sealed class WoundPlayerStatusTests(ITestOutputHelper output)
         var diagnosis = Assert.Single(card.Cards);
         Assert.Equal("Осмотр раны", diagnosis.Title);
         Assert.Equal("Известное обследование (рекомендация)", diagnosis.Subtitle);
-        Assert.Contains("пока недоступно", diagnosis.Summary);
+        Assert.Contains("не подтверждают наличие", diagnosis.Summary);
+        Assert.Contains("отдельно подтверждается через /лечить", diagnosis.Summary);
+        Assert.Contains(realm == "mortal_world" ? "проверке, длительности и расходам" : "если все текущие условия доказаны", diagnosis.Summary);
+        Assert.Contains("Карточка сама не исполняет действие", diagnosis.Summary);
         Assert.Null(diagnosis.PrimaryAction);
         foreach (var text in new[] { result.Console, Text(Status(result.Browser)) })
         {
