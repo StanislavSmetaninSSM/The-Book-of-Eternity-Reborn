@@ -535,7 +535,7 @@ internal sealed class MortalWoundTreatmentRequirementAuthorityBundle
 
             if (!allowTrustedAbsence ||
                 !TryClassifyFailureReason(
-                    route,
+                    sourcePath,
                     index,
                     result.Issues,
                     out var lossReason))
@@ -589,15 +589,15 @@ internal sealed class MortalWoundTreatmentRequirementAuthorityBundle
     }
 
     private static bool TryClassifyFailureReason(
-        WoundTreatmentRoute route,
+        string sourcePath,
         int requirementIndex,
         IReadOnlyList<ValidationIssue> issues,
         out string? lossReason)
     {
         lossReason = null;
-        var root = string.IsNullOrEmpty(route.SourcePath)
+        var root = string.IsNullOrEmpty(sourcePath)
             ? "wound.treatment.routes[0].requirements"
-            : route.SourcePath + ".requirements";
+            : sourcePath + ".requirements";
         var path = $"{root}[{requirementIndex}]";
         var relevant = issues.Where(issue =>
                 !string.IsNullOrEmpty(issue.FilePath) &&

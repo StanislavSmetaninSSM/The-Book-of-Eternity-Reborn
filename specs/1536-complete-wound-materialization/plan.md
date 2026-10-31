@@ -1,3 +1,27 @@
+# T121 M2 first Main build failed — narrow compiler correction, UNRUN
+
+The first fresh Main build at source
+`0377987fe0acc0de4689729a8edd7eb3244aeb78` failed with exit 1, two compiler
+errors and twelve baseline warnings. Dotnet elapsed 1:48.54, from
+2026-10-31 06:50:39.650716 to 06:52:28.582785 UTC. Full failed output is retained
+outside checkout in `M2GREEN-build-main/build.log`. No Support, Unit, Integration
+build or test/runtime started; this is a compile failure, not causal RED or
+feature qualification.
+
+The grouped correction only renames the diagnosis-specific deterioration-anchor
+pattern to avoid shadowing the ordinary recovery local, and passes the already
+owned semantic member SourcePath to the shared missing-requirement classifier.
+The latter now takes that string directly; identical requirement path fallback,
+ordered issue filtering, loss-reason classification and witness checks remain.
+Ordinary routes still supply their original SourcePath through the same wrapper;
+diagnosis supplies its actual method path, without a forged treatment route.
+No predicate, check, authority, lifetime, cache, I/O, schema or budget change.
+
+The correction is UNCOMPILED/UNRUN. Same independent reviewer delta read and a
+new parent-owned Main build directory must precede the remaining build chain.
+All other candidate source and selected membership are frozen; previous failed
+output and accepted historical lineages remain. No writer build/test/restore.
+
 # T121 Mortal whole SOURCE accepted — build admission only
 
 Independent Astra/high reviewed the complete coherent

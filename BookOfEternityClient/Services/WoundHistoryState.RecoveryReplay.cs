@@ -43,7 +43,7 @@ internal sealed partial class WoundHistoryState
                     if (wound.Recovery.RecoveryAnchor is { } epoch && member.Original.Recovery.RecoveryAnchor == epoch)
                         recovery = checked(member.ConsumedRecovery + (member.Resolution.TransitionIntents.OfType<MortalWoundRecoveryProgressIntent>().Any()
                             ? member.Resolution.ElapsedCadences : 0));
-                    if (wound.Recovery.DeteriorationAnchor is { } condition && member.Original.Recovery.DeteriorationAnchor == condition)
+                    if (wound.Recovery.DeteriorationAnchor is { } diagnosisCondition && member.Original.Recovery.DeteriorationAnchor == diagnosisCondition)
                         deterioration = checked(member.ConsumedDeterioration + member.Resolution.ElapsedDeteriorationCadences);
                 }
                 continue;
