@@ -1,9 +1,10 @@
 # Maintained developer GM relay
 
-Source/task: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553),
-T043-RELAY-REUSABLE-CONTRACT. This folder is shared, maintained code: preserve it
-during packaging/cleanup. It provides a small persistent terminal transport and
-local worker boundary for tests and future **separately authorized** API adapters.
+Source/tasks: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553)
+and [#1559](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1559).
+This folder is shared, maintained code: preserve it during packaging/cleanup. It
+provides a persistent terminal transport and local worker boundary for real game
+sessions and tests with a **separately authorized** AI adapter.
 It contains no model client, credentials, network request or provider integration.
 It cannot proxy a forbidden endpoint or qualify arbitrary APIs.
 
@@ -20,13 +21,31 @@ file-lock gate; WSL is not required. Redirected stdin/stdout are not a terminal.
 The controlled Windows qualification and remaining boundaries are recorded in
 [the Windows plan](../../specs/1553-portable-local-storage/relay-windows-plan.md).
 
-Use a disposable **new game/session**, a new empty queue directory, and the
-existing ordinary owned-terminal launcher/settings. Do not create a second
-launcher or borrow an old run's JSON/PID as authority. Example configured CLI:
+Use the current game session supplied by the game's ordinary owned-terminal
+launcher and a new empty queue directory for each relay process. Do not create a
+second launcher or borrow an old run's JSON/PID as authority. Example configured
+CLI:
 
 ```text
-/usr/bin/python3 '/absolute/relay/relay_cli.py' --session '/absolute/new game/game_session' --queue '/absolute/new empty queue' --model 'your-test-model-label'
+/usr/bin/python3 '/absolute/relay/relay_cli.py' --session '/absolute/current game/game_session' --queue '/absolute/new empty queue' --model 'your-model-label'
 ```
+
+For long-running games the relay has no lifetime submission counter. Ordinary
+turns and validation-repair submissions may continue until the queue is closed or
+the original run stops. Resource bounds remain explicit and configurable:
+
+```text
+--max-paste-bytes 4194304
+--max-packet-bytes 16777216
+--max-consumer-output-bytes 4194304
+--max-response-writes 256
+```
+
+The byte limits may be raised up to 268435456 bytes; response writes may be
+raised up to 4096. These are local resource guards against unbounded memory,
+terminal and process-output retention. They are not gameplay limits. The relay
+writes the effective values into every `request.json` under `Limits`, and the
+worker/consumer use that retained contract for the matching response.
 
 Set `GmCliLaunchCommand` to that command, `GmBridgeShellWorkingDirectory` to the
 same session, and `GmCliInputProfile` to the exact object in `input-profile.json`.
@@ -46,14 +65,18 @@ Windows ConPTY maps incoming LF to console CR. Inside bracketed paste only, the
 relay maps that CR back to LF; CR outside paste retains its submit meaning.
 The console reader uses Unicode APIs, a bounded queue and its original retained
 thread handle for cancellation/join before restoring both console modes.
-Bounds:65000characters,120lines,262144pastebytes,3actual submissions per relay,
-1MiB per request/packet/consumer output,32writes per packet. Start with a fresh
-queue; existing content refuses startup and is never replayed.
+There are no separate prompt character/line limits and no three-submission
+session limit. Prompt size is bounded by the configured paste byte limit; request,
+prompt, response and witness files use the configured packet byte limit; consumer
+stdout/stderr uses the configured output limit; packet writes use the configured
+write count. Start with a fresh queue; existing content refuses startup and is
+never replayed.
 
 ## External worker: exact request and one response
 
 After actual terminal submit, the relay creates `request-N-UUID/` with
-`request.json`, exact `prompt.txt` and exact `game-request.json`. Do not treat
+`request.json`, exact `prompt.txt` and exact `game-request.json`. The header
+also retains the effective `Limits` for this request. Do not treat
 the first file or directory appearance as a complete request. The worker API
 checks all three, hashes and original turn/pending witnesses. A worker must
 receive the actual prompt and read the current game instructions/context before
@@ -123,7 +146,8 @@ Response and reply use atomic same-directory no-overwrite publication. Only the
 writer's own temporary file is removed. A response without reply is an unresolved
 winner: never overwrite, salvage, re-submit or issue another model request for
 it. Publication is **not** execution/acceptance. The relay rechecks witnesses,
-takes an immutable executing snapshot and starts only the one fixed child.
+uses the retained request limits, takes an immutable executing snapshot and starts
+only the one fixed child.
 `execution.json` distinguishes refusal from actual consumer exit/I-O; a zero
 exit is still not proof that the game's acceptance/history pipeline accepted a
 turn. Check those game outcomes independently. If `started.json` publication fails
@@ -167,7 +191,10 @@ accepted r3 artifacts are retained byte-for-byte.
 Accepted r3 at `dc1724afe66a9c0f07942e23e33c2af07aed8293` proved one genuinely
 generated/applied action and original cleanup. Reusable extraction uses controlled
 synthetic packets through real production Bridge/pipe and fixed game helper;
-it is not another live model run or Codex/OpenCode compatibility claim. Narrow
+it is not another live model run or Codex/OpenCode compatibility claim. The
+focused relay coverage includes a five-request ordinary/repair long-session
+scenario, a larger-than-legacy prompt, packets larger than the former 1 MiB
+bound, identity/close/recovery failures, and the fixed consumer. Narrow
 categories: `gm-relay-reusable-contract`, `gm-relay-reusable-main`, and directly
 affected `gm-relay-transport`/`gm-relay-repair`. Native Windows is post-merge;
 systemd S2/S3/real manager and future provider adapters remain separate.
