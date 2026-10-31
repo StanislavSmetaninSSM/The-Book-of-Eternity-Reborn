@@ -1,5 +1,53 @@
 # План перехода к личной модели духовного боя — #1573
 
+## T128 — выполнение численной проверки, 2026-11-01
+
+Goal: проверить точныйT127 в бою и сохранить полезность Heal. Spec — T128/T127
+выше; автор разрешил проверку и отменил лишние согласования. Baseline30084bbe6.
+Writing-plans/Spec Kit plan/tasks/analyze-equivalent + subagent-driven-development:
+один Sol6.1/high source/test owner, parent измеряет/интегрирует, отдельный
+Astra/high review целого блока. Existing D:checkout на story-ветке сохраняется;
+unrelated1536/obj не трогать. Нового runtime/GM/C# в задаче нет.
+
+- [ ] T128.1 Перед source опубликовать spec/plan/tasks с684cases/правилами,
+  выполнить consistency/preflight. Закрепить API численной реализации.
+- [ ] T128.2 RED→GREEN primitives+integration+runner. Предпочесть opt-in в
+  `healing-tactics-model.mjs` с новой моделью `healing-periodic-model.mjs`,
+  `healing-periodic-model.test.mjs`; runner `healing-periodic-probe.mjs` и
+  `healing-periodic-probe.test.mjs`. Узко изменить tactics-probe для новой
+  metadata/потока только если нужно; не копировать общую HP/ДЭ/очередь/endpoint
+  машину. Defaults/T123–125 checksum остаются прежними. Новые функции явно
+  экспортируются для дешёвых fixtures, без reflection/дорогих игровых объектов.
+- [ ] T128.2a Проверить весь связанный numerical набор (120прежних+новые),
+  При необходимости узко расширить `healing-modes-model.mjs`: optional divisor
+  для общего исходящегоHoTbudget и точное дробное подавление через прежний
+  healingCalculator/cache, сохранив default1 и integer результаты. Не создавать
+  отдельную конкурирующую формулу/кэш. API source-owner фиксирует до GREEN.
+- [ ] T128.2a Проверить весь связанный numerical набор (120прежних+новые),
+  smoke684main/684confirm n1h3,3shard union; exact profile/дробь22.5, payment до
+  RNG, miss=>noSave,crit=>save,guard beforedice, source snapshot/flat×1,
+  next3targetends/expiry/skip,weakforeign source/refresh/no duplicate ticks,
+  revival без Main/regen, battle-end cleanup и отдельные utility-примеры.
+- [ ] T128.2b Existing operation cache владеет immutable damage/formula data.
+  Key включает все параметры, в том числе guard delta, art level, fractional
+  suppression, outgoing snapshot/incoming modifiers. Не кэшировать liveHP/
+  допуска/остатоктиков/save. Измерить подготовку и повторное использование.
+- [ ] T128.3 Frozen source commit/push/readback перед main684×100 и
+  confirm684×1000 (оба допускают3shards), horizon2000. Raw без квот
+  D:\BoeDiagnostics\healing-periodic-t128\20261101-v1. Сверить всё coverage/
+  sums/расходы/endpoints/union и fixtures; не менять параметры по исходам.
+- [ ] T128.4 `healing-periodic-investigation.md` с полным результатом и
+  ограничениями; независимый whole-block Astra/high review, исправления/
+  verification, GitHub/readback/freshrestore/issue1573. Старый полный raw
+  удалить только после нового полного замера/review штатным способом;
+  ранее отклонённые T123 пути не трогать. Прямо различать probe и production.
+
+Preflight: primitive→integration (личные clock/payment/HP0); integration→runner
+(counts/исходы); runner→report (684×1100,seed/shard); report→review/retention.
+ScopesT127 неизменны; openHoT/R закрыты только явными T128 исследовательскими
+допущениями. Это не окончательная продуктовая спецификация stack/развитияR.
+Ledger остаётся plan/review, без дублирующего Superpowers плана/журнала.
+
 ## T127 — профили лечения/подавления и сопротивление, 2026-11-01
 
 Writing-plans + Spec Kit bridge: active spec/plan/tasks; baseline/origin
