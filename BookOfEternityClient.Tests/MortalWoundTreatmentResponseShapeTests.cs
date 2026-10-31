@@ -31,7 +31,14 @@ public sealed class MortalWoundTreatmentResponseShapeTests
         var issues = WoundAcceptedTurnPlanner.ValidateMortalTreatmentResponseShape(response);
 
         if (kind == JsonValueKind.Undefined)
+        {
             Assert.Empty(issues);
+            var omitted = Assert.IsType<GameResponse>(JsonSerializer.Deserialize<GameResponse>("{}"));
+            Assert.Equal(JsonValueKind.Undefined, omitted.SpiritualShiningPatientMemory.ValueKind);
+            Assert.Empty(WoundAcceptedTurnPlanner.ValidateMortalTreatmentResponseShape(omitted));
+            Assert.False(Assert.IsType<JsonObject>(JsonSerializer.SerializeToNode(omitted)).ContainsKey("spiritualShiningPatientMemory"));
+            Assert.Equal(original, JsonSerializer.Serialize(omitted));
+        }
         else
         {
             var issue = Assert.Single(issues);

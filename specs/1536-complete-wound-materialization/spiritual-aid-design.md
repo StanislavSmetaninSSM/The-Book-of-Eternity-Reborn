@@ -1737,3 +1737,21 @@ retained resource/effect and companion read-count consumers remain selected.
 This is internal ownership plumbing: no new GM surface, owner/cache or game rule.
 The actual native failure is causal evidence; the correction remains UNCOMPILED/
 UNRUN until coherent independent SOURCE and parent-owned qualification.
+
+### Shared response omission and complete retained-DATA fixture
+
+The existing complete Mortal response-surface check is shared by ordinary, joint
+and diagnosis publication. Only null and JsonElement.Undefined mean omitted;
+every defined foreign JsonElement kind, including explicit null, remains forbidden.
+Keep the same13 supported skill/item fields and caller-controlled legacy Fate
+exception. A typed internal entry point reuses that full validator for cheap
+independent controls; no second validator, model/wire change or permission layer.
+
+The retained-resource drift theory's standalone dispatcher requires signed original
+schedule coverage. Prepare real scheduler/control only in that theory's existing
+pre-snapshot callback, authenticate exact signed schedule bytes/hash and assert
+original activeConflict. That conflict makes natural preparation return no owner
+before cohort/cycle binding, preserving raw-resource routing and all exact
+changedPath/final-freshness/no-mutation assertions. No post-snapshot patch or
+production guard exception is permitted. Qualification remains in plan.md; new
+source is UNCOMPILED/UNRUN and all native/UI/parent residuals remain open.

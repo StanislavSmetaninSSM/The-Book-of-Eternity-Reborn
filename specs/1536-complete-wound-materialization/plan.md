@@ -1,3 +1,48 @@
+# T121 response/fixture correction — coherent SOURCE freeze, UNCOMPILED / UNRUN
+
+Connected source WIP is remotely preserved at
+`0db7f4988aef46fbb3495e2a9d0727616aaad646`. The same complete shared
+response-surface validator now treats only null and JsonElement.Undefined as
+omitted. It is reused by the existing ordinary, joint and diagnosis skill freezer;
+all13 allowed fields, exact legacy Fate flag and all seven defined foreign JSON
+kinds remain strict, including explicit null. New Unit theory8 includes constructed
+AND deserialized omission in its Undefined row; the typed allowed/Fate Fact adds
+one case. No reflection is added to new tests; existing ordinary value helpers
+handle Undefined distinctly and create a genuinely defined negative value.
+
+Only the three-row resource theory gains real scheduler/control preparation in
+its existing captureOriginalSnapshot callback, before its sole signed original.
+The actual reader proves schedule mapping/hash/bytes and signed activeConflict.
+Source ordering is explicit: PrepareNaturalSourceData returns null for that
+original conflict before cohort/cycle binding; AdmitNatural returns no owner;
+the validator then reaches raw resource Core. The raw draft is not consumed by a
+new natural owner. Original retained-A/final B-drift premises and exact terminal
+changedPath refusal all remain, with no validated plan/full physical-byte mutation.
+No production dispatcher exception or post-snapshot source patch is introduced.
+
+Finite proposed fresh gate: response-shape9 + existing ordinary allowed13-field
+consumer1 + real diagnosis callback/retained Fact1 + corrected resource3 + semantic
+guards3 = 17 cases / 8 methods / 5 descriptors / 5 categories, each 60s. Catalog
+splits only rehome passed ordinary lease2 and effect/companion4 without repeating
+them. Full static selection estimate is 214 cases / 84 methods / 43 descriptors /
+41 categories; official discovery is authoritative. Earlier accepted lineages and
+both C5 failed receipts remain separate. Native19 then dependent6, followed by UI3,
+still require PREP and actual outcomes under their unchanged budgets.
+
+All new C#/controls remain UNCOMPILED/UNRUN pending the same grouped independent
+SOURCE, fresh owning builds, exact catalog/PlanOnly and root-owned runtime. JSON,
+source method membership and whitespace checks are static only. No test/build or
+new baseline RED was run by the writer. No helper/parent checkbox is closed.
+
+Optimization: the shared loop inspects each applicable property value once;
+no parallel validator, I/O, cache or live authority is introduced. Required source
+freshness, claims and complete publication remain unchanged. The fixture's extra
+scheduler work is proper independent pre-snapshot preparation, not a speedup.
+GM impact is none: current foreign fields were already forbidden and omission was
+already omitted on the wire; no command/output/rule changes. Existing guides and
+worked examples remain correct. Physical treatment, eight adapters, all parent
+residuals and HOLDs remain open.
+
 # T121 shared response shape and complete DATA fixture — WIP, UNCOMPILED / UNRUN
 
 C5 owning builds/discovery/PlanOnly succeeded at the recorded compiled source;

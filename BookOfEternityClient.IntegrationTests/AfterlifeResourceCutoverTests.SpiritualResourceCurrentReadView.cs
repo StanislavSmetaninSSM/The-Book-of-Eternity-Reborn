@@ -67,11 +67,12 @@ public sealed partial class AfterlifeResourceCutoverTests
                              var signed = PendingTurnSnapshotReader.ReadCurrent(original.FileSystem, originalLease,
                                  [ProgressionScheduleService.SchedulePath, AfterlifeSpiritualConflictState.StatePath]);
                              Assert.True(signed.Success, JsonSerializer.Serialize(signed.Issues));
+                             var snapshot = Assert.IsType<PendingTurnSnapshotReadAuthority>(signed.Snapshot);
                              // The existing reader authenticates the exact signed
                              // mapping/hash, not merely a copied schedule value.
-                             Assert.Equal(schedule, signed.Snapshot!.ReadRequiredBytes(ProgressionScheduleService.SchedulePath));
+                             Assert.Equal(schedule, snapshot.ReadRequiredBytes(ProgressionScheduleService.SchedulePath));
                              var conflict = Assert.IsType<JsonObject>(JsonNode.Parse(FileSystemManager.DecodeFileBytes(
-                                 signed.Snapshot.ReadRequiredBytes(AfterlifeSpiritualConflictState.StatePath))));
+                                 snapshot.ReadRequiredBytes(AfterlifeSpiritualConflictState.StatePath))));
                              Assert.IsType<JsonObject>(conflict["activeConflict"]);
                              // An original active conflict returns no natural owner
                              // before cohort/cycle binding and cannot consume this draft.
