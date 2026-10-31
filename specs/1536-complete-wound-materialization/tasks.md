@@ -58,6 +58,10 @@ archive are outside checkout; original failures and all other holds are retained
   processing component for all browser producer/validator work. Four separate60s
   controls preserve positive/no-World, foreign frame/override, parse drift and
   final-proof assertions; no production guard or terminal-claim behavior changes.
+  C16 exact timed out UNKNOWN; C17 leaves production untouched, installs no read
+  callback for normal exact/foreign cases, retains it for actual drift faults and
+  reuses the accepted full passive macro capture/closing transport. Four60s bounds
+  remain; cost effect is unproved, and all new C17 controls are UNCOMPILED/UNRUN.
   C13 console
   stays TIMEOUT/UNKNOWN with retained root/incomplete capture. Eight current genuine
   consumer/export/browser rows, existing engine-original1, semantic guards3 and

@@ -1,8 +1,53 @@
+# T121 C17 browser hook eligibility and bounded passive capture — UNCOMPILED / UNRUN
+
+C16 exact is TIMEOUT/UNKNOWN at60.2499089s/60, zero completed and no TRX.
+Retained bytes prove actual publication prefix: medic thread1, clock1290, consumed
+wound command/pending and diagnosis/recover History atturn43, last common output
+18:11:20.9. They do not prove Complete returned, exported DATA, or identify which
+post-validation interval exhausted the bound. The205-file /1,066,684-byte retained
+root and exact raw/inventory remain untouched outside checkout; no failure/PASS
+or fixture disposal is invented. Other browser3/original1/UI3 remain held.
+
+Source confirms a real fixture preparation error: a non-null no-op
+BeforeCanonicalReadOpenAsync disables CanReuseSourceData and
+SupportsRecoveryDataReuse even while unarmed. C17 sets that callback to null for
+exact/foreign only, removing that unnecessary fixture-wide restriction while
+keeping all existing freshness, ownership, input identity and mutation proofs.
+The checkpoint still runs through InvokeRecoveryValidationCallbackAsync /
+ForceFreshRecoveryValidation, which suspends the previous source operation and
+freshens the prior recovery context. That boundary remains unchanged; null callback
+establishes conditional predicate eligibility, not actual inner DATA reuse or cost.
+Both drift controls retain their mutating callback and required fresh diagnostic
+route. No production predicate, cache implementation or protective60s bound changes;
+this source fact does not prove the entire timeout cause or a speedup.
+
+The existing LifecyclePassiveTimingDiagnostics gzip/ObserveRecorded transport and
+OperationTimingAccumulator window record named macro intervals for preparation,
+read-staged/processing/common publication, progression, Complete, raw/noWorld/
+scoped and foreign work as reached, plus audio/root closing. No FS timing hook or
+arbitrary timing observer is installed, so there is no FS leaf-event expansion.
+All original macro events/timestamps and actual messages remain; no quota or new
+format/stack is added. The standard external-root guard, writer/failure/footer,
+full gzip completion and actual owned-root absence follow the accepted UI pattern.
+Closing attempts preserve the original failure and report actual cleanup failure;
+a kill may still leave an incomplete prefix and unconfirmed root, not success.
+
+All assertions, controlled stop, four independent60s owners and current full
+source estimate234/102/61/58 remain unchanged pending official discovery. Production,
+pins, accepted post8 and historical retained226 lineages stay unchanged. The new
+candidate is test/catalog/canonical metadata only and UNCOMPILED/UNRUN; static
+JSON/selector/diff/API checks alone are writer work. Root owns SOURCE admission,
+fresh Integration build/PREP and any specifically admitted runtime. No old PASS
+aggregate, new UI or broader parent/physical treatment/adapters/HOLD work is released.
+No GM authored field, rule or wire behavior changes, so synchronized GM surfaces
+need no update. Passive diagnostic collection is outside Git; all old raw/roots,
+archives and saves are preserved.
+
 # T121 C16 exact TIMEOUT — preserved prefix, no further runtime admission
 
 The first exact component at runtime `016f0e203a091726587204bdedab69cdf3bb2683`
 uses Integration compiledc97b50f0 and the three unchanged C15 owners. It reaches
-TIMEOUT60.2499089s within its protective60s lane, wall1:07.9113112; no TRX,
+TIMEOUT60.2499089s at its protective60s bound, wall1:07.9113112; no TRX,
 0 completed cases and incomplete selection. This is UNKNOWN, not PASS or a
 completed FAIL case. Foreign, parse-drift, final-proof, Engine-original1 and UI3
 were not launched. Existing retained226 and its explicit epochs stay unchanged.

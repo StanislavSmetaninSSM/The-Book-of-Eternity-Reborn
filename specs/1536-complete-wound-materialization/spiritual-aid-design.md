@@ -2042,3 +2042,28 @@ Current full source estimate234 cases /102 methods /61 descriptors /58 categorie
 is pending root discovery. Accepted post8 and historical218 remain separate;
 Engine-original1/UI3 and all broader tasks/HOLDs remain open. Internal component
 ownership only changes test preparation; synchronized GM surfaces need no update.
+
+
+C17 bounded fixture/default-route correction: callback presence, not its armed
+branch, controls the existing CanReuseSourceData and SupportsRecoveryDataReuse
+predicates. Exact and foreign do not mutate reads, so their BeforeCanonicalReadOpenAsync
+must be null. This removes one unnecessary restriction, not the existing
+InvokeRecoveryValidationCallbackAsync / ForceFreshRecoveryValidation boundary
+that suspends an earlier source operation and freshens recovery validation.
+Actual inner DATA reuse/cost remains unproved. The two actual drift controls
+retain the callback and its deliberately fresh/uncached route. No production predicate, default cache, authority or identity/
+mutation/source-final proof changes. The retained C16 published prefix cannot show
+whether Complete returned or locate the later expensive call; it is not a speedup
+baseline or justification for a larger limit.
+
+Use the already accepted LifecyclePassiveTimingDiagnostics gzip/ObserveRecorded
+transport with OperationTimingAccumulator macro scopes only. Preparation, genuine
+processing/common publication, progression agreement, Complete, raw/noWorld/scoped
+and foreign validation boundaries identify that specific unresolved interval.
+Preserve every original recorded macro event/timestamp, message and closing/error
+footer, with actual owned-root cleanup proof and external storage. Do not attach
+OperationTimingObserver or FS PassiveOperationTimings: FS leaf-event expansion is
+not needed to answer this question. No new stack, quota, source permission or timing
+claim is created. Normal assertions/control stop, all four60s categories and234/
+102/61/58 source estimate remain; C17 is UNCOMPILED/UNRUN until root qualification.
+This is internal fixture/capture behavior, so no GM wire/example update is needed.
