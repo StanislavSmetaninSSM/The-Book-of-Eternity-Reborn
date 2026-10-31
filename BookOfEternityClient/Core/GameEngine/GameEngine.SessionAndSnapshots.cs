@@ -425,10 +425,11 @@ public partial class GameEngine
     /// <param name="request">The current typed turn request, authenticated by the existing snapshot producer.</param>
     /// <param name="rollbackSnapshot">The real pre-turn backup returned by the existing rollback producer.</param>
     /// <param name="sourceLabel">The existing caller's source label; this label grants no authority.</param>
+    /// <param name="browserAction">The actual queued browser binding, or null for an ordinary non-browser original.</param>
     /// <returns>The actual logical-to-snapshot file map after the existing producer completes.</returns>
     internal Task<Dictionary<string, string>> CaptureOriginalValidationSnapshotAsync(TurnRequest request,
-        RollbackSnapshot rollbackSnapshot, string sourceLabel) =>
-        CreateCanonicalBaselineSnapshotAsync(request, rollbackSnapshot, sourceLabel);
+        RollbackSnapshot rollbackSnapshot, string sourceLabel, PendingPlayerActionService.Binding? browserAction = null) =>
+        CreateCanonicalBaselineSnapshotAsync(request, rollbackSnapshot, sourceLabel, browserAction);
 
     private async Task<Dictionary<string, string>> CreateCanonicalBaselineSnapshotAsync(TurnRequest request,
         RollbackSnapshot? rollbackSnapshot = null,

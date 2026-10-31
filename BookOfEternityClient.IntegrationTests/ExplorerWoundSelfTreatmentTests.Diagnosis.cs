@@ -67,7 +67,8 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
             {
                 fixture = await HealingFixture.CreateAsync(2, 0, 20, stageRequest: false, hooks: hooks,
                     realm: browser ? "Shining Abode" : "Chaos Sea", allocatedRootForDiagnostics: Allocated,
-                    beforeResourceBootstrap: AfterlifeSpiritualNaturalRecoveryTests.SeedDiagnosisBeforeBootstrapAsync);
+                    beforeResourceBootstrap: failPublication ? SeedDiagnosisRollbackBeforeBootstrapAsync :
+                        AfterlifeSpiritualNaturalRecoveryTests.SeedDiagnosisBeforeBootstrapAsync);
             }
             finally { preparation?.Dispose(); preparation = null; }
             Exception? fixtureFailure = null;

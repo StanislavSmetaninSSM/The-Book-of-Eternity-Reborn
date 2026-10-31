@@ -1,6 +1,20 @@
 {
   "schemaVersion": 1,
   "selections": [
+{
+  "category": "spiritual-diagnosis-browser-binding-causal",
+  "reason": "Test-only grouped cut after the actual complete browser FAIL. First execute the six actual detached-validator rows with the original diagnosis dispatch unchanged: only lawful diagnosis must reach its final intended failure; five independently valid fault/sibling controls must PASS. Fresh SOURCE/build/artifact/PDB/discovery/PlanOnly/PREP remain required. No UI admission or blanket retained-case replay.",
+  "contracts": [
+    "#1536 T121 / FR071; full typed browser purpose, exact selection/control and signed original bytes"
+  ]
+},
+{
+  "category": "spiritual-diagnosis-snapshot-initialization-fixture",
+  "reason": "Prove the actual initializer/rollback baseline mismatch and the rollback-only initial-world correction using two independent file-light worlds before rerunning the original whole-turn rollback. Preserve all four canonical paths, signed snapshot and physical backup hashes; fixture preparation only, no production rollback change.",
+  "contracts": [
+    "#1536 T121; ordinary snapshot initialization and exact whole-turn rollback fixture baseline"
+  ]
+},
     {
       "category": "spiritual-diagnosis-dynamic-snapshot-causal",
       "reason": "Accepted EX9RED proves the exact downstream common-validator role failure. The GREEN candidate exempts only this actual live diagnosis plan owner's authenticated signed-only command, with full current manifest/control binding and fresh source/request proof. Recheck the same six actual-public-validator rows after fresh owning builds/artifacts/PDB/catalog/PlanOnly/PREP; retain specific canonical/dynamic/baseline-backup refusals. UI remains held.",

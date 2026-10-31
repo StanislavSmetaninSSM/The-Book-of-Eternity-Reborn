@@ -2,6 +2,66 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "spiritual-diagnosis-browser-binding-causal",
+  "responsibility": "T121 file-light actual detached browser original validation with a real queue generation, backup, spiritual staging or typed combat comparison DATA, Explorer overlay and signed snapshot. Six independent rows cover lawful full guided diagnosis selection (the sole intended RED), separately admitted mismatched selection, same-ordinal full-control mismatch, signed byte tamper, and unchanged active/combat siblings. All outer metadata/hash baselines and no-mutation assertions precede the final purpose oracle.",
+  "excludes": "No ProcessPlayerTurn, GM wait, publication, accepted receipt or live combat authority claim, forged/re-signed manifest, reflection, browser dispatch correction, limit increase, broad old UI replay or new diagnostic stack.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.BrowserDiagnosisBinding.cs",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.BrowserPlayerInput.cs"
+  ],
+  "related": [
+    {
+      "id": "spiritual-diagnosis-browser",
+      "when": "The real browser FAIL identifies the missing detached diagnosis purpose. Component RED/GREEN does not replace the original browser singleton."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DetachedBrowserOriginalBindsExactDiagnosisPurposeAndPreservesHealingSiblings"
+      ]
+    }
+  ]
+},
+{
+  "id": "spiritual-diagnosis-snapshot-initialization-fixture",
+  "responsibility": "T121 one actual snapshot-prefix Fact with two independent complete initial worlds. The unprepared world proves exact three absent roots become default signed/rollback images while populated profiles remain exact; the separately prepared world uses the rollback-only pre-bootstrap callback and proves all four root bytes remain unchanged with matching signed members, rollback backups and hashes.",
+  "excludes": "No second capture on the initialized first fixture as a no-op substitute; no ProcessPlayerTurn, GM wait, publication, rollback guard change, post-accepted file seeding, omitted tracked paths, fabricated authority or complete UI PASS claim.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/ExplorerWoundSelfTreatmentTests.DiagnosisInitialization.cs",
+    "BookOfEternityClient.IntegrationTests/ExplorerWoundSelfTreatmentTests.Diagnosis.cs",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs"
+  ],
+  "related": [
+    {
+      "id": "spiritual-diagnosis-rollback",
+      "when": "The independent real rollback FAIL compared pre-initialization absence with the Engine actual initialized rollback baseline. Keep its whole-before and C4 assertions after correcting initial fixture preparation."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.DiagnosisSnapshotPrefixCreatesOnlyMissingDefaultsAndPreservesPreparedRollbackImages"
+      ]
+    }
+  ]
+},
+{
   "id": "spiritual-diagnosis-dynamic-snapshot-causal",
   "responsibility": "T121 actual public diagnosis preparation through ordinary raw-location and raw-item owners into the complete common resource/wound validator. Six unchanged Engine snapshot rows cover signed-only preparation input, baseline-present success, current request drift, missing canonical History baseline, missing noncommand dynamic output baseline and physical rollback-backup tamper. Accepted EX9RED proved the sole final signed-only failure; the GREEN candidate requires its actual current plan owner and exact frozen signed-only role while retaining every specific refusal and no-mutation oracle.",
   "excludes": "No ProcessPlayerTurn, GM wait, full publication, UI acceptance, fabricated receipt/authority, manifest re-signing, reflection, new diagnostic stack, broad canonical-path exception, limit increase or replay of the unchanged direct-owner six-case category.",

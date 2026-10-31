@@ -1,3 +1,48 @@
+# T121 grouped browser RED and rollback fixture candidate — UNCOMPILED / UNRUN
+
+The grouped cut adds six rows calling the actual detached browser validator and
+one snapshot-prefix Fact with two independent fixture scopes. Source estimate:
+seven new cases / two methods / two Integration descriptors, each category at its
+existing 60s class of budget. Retaining the prior full selection gives an estimate
+of 173 cases / 70 methods / 31 descriptors; official discovery is authoritative.
+No build, discovery or runtime has been performed for this cut.
+
+Browser production dispatch remains unchanged until observed RED. The expected
+component outcome is one final lawful-diagnosis failure and five passing controls:
+separately admitted alternate selection, independently valid changed full control
+with unchanged realm/ordinal, signed-byte tamper, and valid active/combat detached
+siblings. The actual guided menu supplies complete diagnosis selections; exact
+nested typed value equality and JSON round-trip are asserted. Real queue, staging,
+backup, Explorer overlay and signed snapshot owners supply original DATA. The only
+production API delta forwards an optional typed browser binding to the already
+existing snapshot producer; default-null behavior is unchanged. No reflection,
+fake accepted receipt, re-signing, ProcessPlayerTurn or GM wait is introduced.
+
+The rollback-only journey callback wraps existing diagnosis initial seeding and
+creates only missing conflict, chronicle and global-flags defaults before the sole
+resource bootstrap. Existing populated profiles remain byte-for-byte unchanged;
+ordinary successful console/browser preparation is untouched. The new prefix Fact
+first proves actual Engine initialization from exactly those three missing roots,
+then uses a separate prepared world to prove all four canonical root bytes are a
+no-op with exact signed members, rollback before-images and physical backup hashes.
+The original final whole-root/C4 equality assertions remain intact. No production
+rollback or coverage guard is changed, and no accepted-turn file is inserted.
+
+The accepted console and 164 distinct mixed-lineage PASS remain historical,
+conditionally retained evidence. Browser and rollback are the two complete actual
+FAIL cases documented below, with complete failed captures; neither is reclassified
+as PASS. The new seven cases and original browser/rollback qualification are UNRUN
+for this candidate; no task flag or broader parent is closed. Main is sole runner;
+independent SOURCE and fresh owning build/PDB/artifact/PlanOnly/PREP are required.
+
+Optimization: independent mutable fixtures own their whole operation; detached
+sources are reused within each comparison, while actual stage/snapshot ownership
+and fresh source checks remain real. Two prefix worlds are required to distinguish
+initialization from an independently prepared no-op. There is no new cache, no
+claimed speedup, and no overall zero-IO claim. No GM wire, schema or authored game
+rule changes in this test/fixture cut, so guides/examples/manifest need no update.
+All raw evidence stays outside Git; Mortal/eight-adapter work and HOLDs remain open.
+
 # T121 diagnosis rollback failed — grouped fixture and browser audit pending
 
 The independent console rollback singleton at runtime
