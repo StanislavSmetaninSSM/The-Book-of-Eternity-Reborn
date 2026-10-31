@@ -1,3 +1,43 @@
+# T121 C19 Engine-original accepted; console fixture resource oracle FAIL
+
+Engine-original1 at runtime `4ecdbe58f273552b18c1123c19daffa21730ed03`, all owners
+compiled21c3a056, passes24.1095117s/60 with complete16-event capture/CRC/writer
+closure and actual root absence. Independent Astra OUTCOME accepts this distinct
+stage. Earlier C19 sourceguard/browser8 remain accepted; no replay is proposed.
+
+Console at that same runtime completes1 FAIL/no timeout,46.8923907s/180,
+test39.7850753s. Assertions191–221 pass: accepted turn43, retained signed check and
+truthful conditional knowledge, clock1290, recovery3 cadences, full agreement,
+exact replay, single declared NPC cost and one journal entry. Whole ResourceState
+equality with its pre-turn image fails at222. Cleanup224+ is not reached;
+browser/rollback were not launched. Complete20-event capture has stored SHA256
+`78e1c50c0d0fd7f277abf5a99b9aab87efb36ee18b7e3fb6f4e63bad6d0f1180`, decoded
+`5b1f969e7f5713099e799f41f41ef23fdb7aa4e32bc70dae46fce881b80d3f1a`, full footer/
+CRC/writer closure and actual root absence. Strict raw TRX/hash/identity/pin failed
+receipt is external in M2GREENC19-console1. Actual resource before/after values
+were not emitted and the fixture root was disposed; those values are unavailable,
+not reconstructed. A complete failed capture does not qualify the UI route.
+
+Independent source audit confirms a fixture oracle conflict: its original wound
+explicitly has periodic_damage health3/bleeding, deterministic owner_turn_end.
+Diagnosis preserves that ordinary effect activation. Three recovery cadences are
+separate, not the damage multiplier. Retained C17 common state independently shows
+130→127 plus exactly three chronology changes and one matching damage3 transition;
+that witness is not the deleted console after-image. No production defect or new
+game rule is inferred from the missing actual values. Final browser cleanup's
+null oracle is correct: accepted/settled receipts are validated then removed by
+the classifier. All five cleanup assertions and rollback equality stay.
+
+Astra DESIGN accepts a fixture-only strict whole-state/History correction: original
+prefix exact, one source-bound damage3 transition/full snapshots, canonical state
+agreement, expected full ledger changing only health and three verified chronology
+fields, every other coordinate/property preserved. Existing output captures full
+expected/current DATA on failure before disposal. No new framework/permission,
+source check relaxation, suppressed ordinary effect or quota. C20 implementation
+is pending; SOURCE/fresh Integration/provenance/PREP precede UI3. Accepted guard8
+and Engine1 keep their explicit lineages if their code/dependencies remain equal.
+Full All UI3/parents/physical treatment/eight adapters and old HOLDs stay open.
+
 # T121 C19 GREEN8 independently accepted — Engine/full-All UI still UNRUN
 
 At runtime `d68c24fdb441e0b01953f8d28f514a265deea91d`, all owners freshly compiled
