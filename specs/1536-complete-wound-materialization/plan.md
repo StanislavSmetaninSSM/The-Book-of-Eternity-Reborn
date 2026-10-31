@@ -1,4 +1,4 @@
-# T121-PHYSICAL-GUIDED implementation plan — design proposed
+# T121-PHYSICAL-GUIDED implementation plan — design accepted, causal next
 
 Issue #1536; spec US2/US5, FR060–064/067–074 and the new bounded section in
 spiritual-aid-design.md. Goal: execute all3 existing physical treatment modes
@@ -14,9 +14,13 @@ crash between durable write and claim confirmation; real repair versus new priva
 hold; course timing/ordinal/restart and no repeated cost/draw. Each is included in
 the finite causal/typed/real mode controls below. No author rule is missing.
 
-- [ ] DESIGN: independently review the finite new pre-GM hold role against the
-  current ordinary nonempty-wave contract; source map is confirmed by Sol, not a
-  substitute for this owner/persistence review. No production change before RED.
+- [x] DESIGN: independent Astra/high accepts the finite new pre-GM hold role with
+  four source-verified clarifications now in the design: recovery before History/
+  allocation, explicit write-confirm/transfer failure states, active-course trusted
+  interruption rather than blanket availability, and genuine new-root/fresh-registry
+  recovery with current ownership and separate signed images. Ordinary no-wave
+  submission remains forbidden. No author decision or product code change; causal
+  three-mode existing-API menu RED precedes implementation.
 - [ ] CAUSAL: add one3-row existing-API menu theory in the current typed Mortal
   integration fixture, with valid procedure/course/guaranteed known routes and
   current actors/requirements. Snapshot whole-tree bytes and draw/source counters,
@@ -40,7 +44,8 @@ the finite causal/typed/real mode controls below. No author rule is missing.
   six-argument common publication; preserve unrelated ordinary/diagnosis dispatch.
   Synchronize applicable Mortal GM docs, prompt entrypoint, worked example and guards.
 - [ ] VERIFY: cheap typed parse/copy/mode/source/privacy/stale/foreign/no-wave/
-  cancellation/uncertain-confirm/recovery and real source/die/resource count proofs;
+  cancellation/write-readback-confirm cuts/real-wave transfer/cold reconstruction/
+  active-course interruption and real source/die/resource count proofs;
   targeted affected ordinary/diagnosis consumers selected from the complete diff,
   without repeating unchanged PASS. Independent coherent SOURCE includes selection,
   optimization and full fixture preparation; fresh owning builds/PE-PDB/source pins,

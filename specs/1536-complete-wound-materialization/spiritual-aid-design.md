@@ -1,7 +1,8 @@
 # T121-PHYSICAL-GUIDED — existing three-mode execution design
 
 Issue #1536; canonical US2 scenarios2–5, US5 and FR060–064/067–074.
-Status: proposed implementation design, no physical code/test changes or runtime.
+Status: independent Astra/high DESIGN accepted with the four finite clarifications
+below; no physical code/test changes or runtime.
 Mortal diagnosis qualification is accepted separately below. The player result is
 known target → physical wound → known route/provider → current requirements and
 costs → separate confirmation → one actual mode-specific attempt/result. Cover
@@ -46,20 +47,32 @@ the semantic distinctions and refusal requirements here are mandatory.
    prepared original. Use the actual final request/control, never caller-signed
    snapshots or temporary replacement state.
 3. After the final request and validated original exist, fresh ExportCurrent
-   authenticates source/history and exact mode. Recover an already retained exact
-   request first. Otherwise call existing PrepareProcedureRequest,
+   authenticates source/history and exact mode. Authenticate the staged selection/
+   original and validate the full held request mode/source/coordinates BEFORE both
+   History coalescing and any Prepare* allocation. Then use the existing recovery
+   coordinator; it rejects recovery after new reservations. Exact guided/command/
+   real-wave copies coalesce, divergent or mixed ownership rejects. Only when no
+   matching retained request exists call existing PrepareProcedureRequest,
    PrepareCourseMilestoneRequest or PrepareGuaranteedRequest. Only those factories
    may choose actual dice/Fate/mode/resource claims and seal the complete request.
    Write/read back the new owned guided hold under that lease, then confirm the
    same claims through the existing lifecycle registry. A raw selection/row or
    caller hash cannot confirm, restore, resolve or authorize publication.
-4. Pre-commit failure releases provisional claims through existing cleanup. After
-   an uncertain write/readback/confirmation, keep evidence/holds and fail closed;
+4. Known pre-commit failure releases provisional claims through existing cleanup
+   only after proving no durable copy survives. Once a hold may exist, ordinary
+   exception cleanup cannot release it. Successful readback followed by failed
+   confirmation remains blocked until exact recovery or coordinated removal/
+   restoration settles it. After an uncertain write/readback/confirmation, keep
+   evidence/holds and fail closed;
    never release a possibly durable claim to allow a second draw/spend. Exact
    retained retry reconstructs the same request; foreign/duplicate/confusable/
    mode/source/original/generation changes conflict before History coalescing.
-   Fresh owner recovery uses the existing parsed request/registry reconstruction,
-   not a second claim registry or a reconstructed live authority from History.
+   Cold recovery must use genuine durable bytes, fresh registries and a new filesystem
+   root as FR063 requires. Reauthenticate the original and acquire a CURRENT owner;
+   copied DATA carries no old lease or process-local capability. Use the existing
+   parsed request/registry reconstruction, not a second claim registry or live
+   authority reconstructed from History. Preserve distinct prepared-original, held
+   and outer-rollback images, including signed pending presence/absence.
 5. GM supplies ordinary narrative and supported mechanical outputs. Document the
    client-owned selection/attempt and mode outcome; GM does not invent a die,
    resource claim, authority seal or repair wave. After GM, recover the same request
@@ -67,7 +80,8 @@ the semantic distinctions and refusal requirements here are mandatory.
    envelope, then use the existing six-argument ComposeMortalWoundTreatmentPublication.
    Ordinary real submitted/repair-wave storage retains all current constraints.
    If a real repair is necessary, transfer/coalesce only the same complete request
-   through the actual existing wave, retaining exact claims; no synthetic wave or
+   through the actual existing wave, retaining exact claims. Partial command/wave
+   transfer must never delete the sole durable copy first; no synthetic wave or
    alternate publication pipeline. Unrelated mixed/joint work remains rejected by
    its existing owner rules, never silently ignored by this guided dispatch.
 6. Preserve ordinary time/resource/effect progression, complete History, notification,
@@ -85,7 +99,11 @@ Procedure retains predeclared bands, legal-result simulation, natural20/1, actua
 skill/effect roll authority and oldest eligible Fate handling. Course retains the
 sealed starting baseline, exact next ordinal reconstructed from History, active
 course exclusivity, inclusive canonical-minute due/deadline, TooEarly refusal and
-ordinary classified interruption. Each milestone is separately confirmed; no
+ordinary classified interruption. First-course Unsatisfied rejects, while trusted
+Unsatisfied on an already active course must remain an actionable declared interruption.
+The menu cannot reuse diagnosis's blanket all-requirements-satisfied availability gate.
+Keep TooEarly, deadline, trustworthy Unsatisfied and InvalidAuthority distinct;
+never allocate claims to preview them. Each milestone is separately confirmed; no
 background waiting or new dose. Guaranteed uses the exact selected current player/
 NPC skill capability/severity/operation proof and final composed-source recheck.
 All modes preserve the severity-I final heal gate and exact foreign target/provider
