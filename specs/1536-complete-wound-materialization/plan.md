@@ -1,3 +1,61 @@
+# T121 C12 retry claims and both schedule roles — UNCOMPILED / UNRUN
+
+C11 focused4 at source6dd9826 executed one new staging Fact and failed only at
+its final outer restore: 0 PASS / 1 FAIL / 3 UNRUN, no timeout, category16.6143s /
+60 seconds and wall30.5997s. All preceding exact sentinel, prepared-versus-rollback
+role, real working T0/T1, independent clock/schedule drift and retained identity
+assertions passed; the whole Fact did not. Independent guards3 then passed on the
+unchanged source. The complete16-event capture/CRC and root-absent closing remain
+external in M2GREENC11-focused4. The confirmed runtime refusal is causal RED; no
+new heavy RED run is required. Preserve every older failure, raw and owned root.
+
+Astra accepted one coherent technical correction. Genuine fresh-lease recovery
+must find exactly one diagnosis request matching the retained full coordinates,
+fingerprint/source, dice span, Fate and resource agreement and verify its live
+claims before replacing only the retained private request reference. Existing
+original owner DATA, captured bytes and rollback phase stay unchanged. Missing,
+ambiguous or foreign recovery fails; no old reservation object is reactivated and
+no new Reserve/draw occurs.
+
+The existing original reader exports copied command and schedule outer images
+from one authenticated frozen envelope and its already captured rollback artifact
+observations. Native single-image schedule is lawful only with authenticated
+baseline and both rollback maps absent; asymmetric maps, missing baseline or
+changed artifact refuse before usable diagnosis admission. Exact outer restoration
+uses the earlier schedule bytes. Existing atomic resume restores command, held
+pending AND exact signed prepared T0 schedule, under the same generation and fresh
+source/claim fences, with full readback before phase0. No control rebuild, T1 write,
+timestamp exemption, new authority/cache/publisher or late rebasing is introduced.
+
+The existing focused Fact now closes its inspection lease, restores while the real
+Engine operation is still live, proves exact whole original equality, rejects
+separate altered outer schedule/signed schedule/rollback artifact without consuming
+the checkpoint, resumes, proves exact request/dice/Fate/resource identity and a
+successful read-only T0/T1 calculation, then restores exactly again before the
+controlled sentinel. One existing passive capture records the complete case and
+closing; source remains UNCOMPILED/UNRUN and no runtime is started by the writer.
+
+Affected selection proposal: stage1, semantic guards3, existing command-role6,
+outer2 and published-recovery1 (13 cases) before separate original UI3 at unchanged
+180-second bounds. Command-role6 directly consumes the refactored frozen export;
+outer2/published1 covers the changed retry path and native single-image shape.
+All existing budgets/membership stay exact. Filter those nine historical native
+cases from retained211:202 retained plus13 fresh and UI3 still totals218. Full
+source estimate stays218 cases /90 methods /50 descriptors /48 categories, subject
+to official discovery and independent selection review; this is not fresh218 PASS.
+C11 guards are superseded once C12 source changes. Parents/physical treatment/eight
+adapters/HOLDs and the earlier ordinary timeout UNKNOWN remain open.
+
+Reuse assessment: existing successful registry recovery supplies actual live
+requests; closed original images are copied once per issued diagnosis owner and
+reused through its private retry lifetime. Source dependence is the exact FS/root
+revision/generation, manifest/request/full-control binding, signed members, original
+rollback maps/hashes/bytes and exact claim agreements. Existing fresh original and
+current physical checks remain mandatory. No extra per-path authority parse or
+new cache is added; no speedup or global no-I/O claim is made. This is internal
+client retry/compensation enforcement; GM response fields, rules, economics,
+examples and wire manifest stay unchanged, so no GM update is required.
+
 # T121 C11 focused original FAIL — retry rebind/rollback joins under grouped design
 
 Focused4 at `544a62fd8769c1ba0d58ff1b23fafdb27e6dc332` completed one FAIL and

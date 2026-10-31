@@ -34,6 +34,8 @@ internal static partial class AcceptedTurnAuthorityRegistry
                 Request = request; HeldBytes = held.ToArray();
                 OriginalCommandBytes = owner.ReadDiagnosisOriginalBytes(AcceptedMechanicsPlan.WoundCommandPath);
                 OriginalCommandBeforeImage = owner.ReadDiagnosisOriginalCommandBeforeImage();
+                OriginalScheduleBeforeImage = owner.ReadDiagnosisOriginalScheduleBeforeImage();
+                PreparedScheduleBytes = owner.ReadDiagnosisOriginalBytes(ProgressionScheduleService.SchedulePath);
                 var original = owner.ReadDiagnosisOriginalPending();
                 OriginalPending = new(original.Existed, original.Bytes?.ToArray());
             }
@@ -42,7 +44,9 @@ internal static partial class AcceptedTurnAuthorityRegistry
             internal int OuterRollbackPhase { get; set; }
             internal string AcceptedFingerprint { get; }
             internal string SessionGeneration { get; }
-            internal MortalWoundTreatmentAttemptRequest Request { get; }
+            internal MortalWoundTreatmentAttemptRequest Request { get; set; }
+            internal CanonicalBeforeImage OriginalScheduleBeforeImage { get; }
+            internal byte[] PreparedScheduleBytes { get; }
             internal byte[] HeldBytes { get; }
             internal byte[] OriginalCommandBytes { get; }
             internal CanonicalBeforeImage OriginalPending { get; }
@@ -51,6 +55,40 @@ internal static partial class AcceptedTurnAuthorityRegistry
                 owner.ReadDiagnosisOriginalBytes(AcceptedMechanicsPlan.WoundCommandPath).AsSpan().SequenceEqual(OriginalCommandBytes);
         }
         private RetainedMortalDiagnosis? _retainedMortalDiagnosis;
+
+        // Only the existing successful recovery path may replace this private
+        // request reference. Immutable original DATA and rollback phase survive;
+        // old reservation objects are never made live again.
+        private bool RebindRetainedDiagnosisAfterRecovery(MortalWoundTreatmentAcceptedStateAuthority accepted)
+        {
+            if (_retainedMortalDiagnosis is not { } retained) return true;
+            if (!retained.Matches(accepted) || !retained.Request.Coordinates.MatchesAcceptedState(accepted) ||
+                retained.Request.ModeAuthority is not MortalWoundProcedureCheckAuthority originalCheck)
+                return false;
+            var recovered = _recoveredHeldTreatmentRequests.Where(request =>
+                request.Coordinates.OperationKey == retained.Request.Coordinates.OperationKey).ToArray();
+            if (recovered.Length != 1) return false;
+            var current = recovered[0];
+            if (current.Mode != "diagnosis" || current.Coordinates.Purpose != "diagnosis" ||
+                !current.Coordinates.MatchesAcceptedState(accepted) ||
+                current.Coordinates.CoordinatesFingerprint != retained.Request.Coordinates.CoordinatesFingerprint ||
+                current.RequestFingerprint != retained.Request.RequestFingerprint ||
+                current.RouteSourceWoundFingerprint != retained.Request.RouteSourceWoundFingerprint ||
+                current.RequirementAuthority.AuthorityFingerprint != retained.Request.RequirementAuthority.AuthorityFingerprint ||
+                current.ResourceAuthority.AuthorityFingerprint != retained.Request.ResourceAuthority.AuthorityFingerprint ||
+                !MortalWoundTreatmentDetachedSealValidator.IsValid(current) ||
+                current.ModeAuthority is not MortalWoundProcedureCheckAuthority currentCheck ||
+                currentCheck.AuthorityFingerprint != originalCheck.AuthorityFingerprint ||
+                currentCheck.AcceptedStateFingerprint != originalCheck.AcceptedStateFingerprint ||
+                !currentCheck.SourceIndices.SequenceEqual(originalCheck.SourceIndices) ||
+                !currentCheck.SourceRolls.SequenceEqual(originalCheck.SourceRolls) ||
+                currentCheck.PreparedCriticalReaction?.PreparedReactionFingerprint != originalCheck.PreparedCriticalReaction?.PreparedReactionFingerprint ||
+                !currentCheck.HasLiveReservationAgreement(ProcedureReservationLiveCheckCapability, _procedureDice, _criticalReactions) ||
+                !_treatmentResources.ConfirmPersisted(TreatmentResourceRegistryCapability, new[] { current }).IsValid)
+                return false;
+            retained.Request = current;
+            return true;
+        }
 
         internal bool CanReuseMortalDiagnosisPublication(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease,
             MortalWoundTreatmentAcceptedStateAuthority accepted, MortalWoundTreatmentAttemptRequest request,

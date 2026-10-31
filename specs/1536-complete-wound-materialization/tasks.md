@@ -61,6 +61,13 @@ archive are outside checkout; original failures and all other holds are retained
   Source is UNCOMPILED/UNRUN; fresh stage1 plus semantic guards3 precede UI3.
   Current estimates are 218 cases / 90 methods / 50 descriptors / 48 categories,
   subject to official discovery. No parent or feature checkbox is closed.
+  C12 continues after the actual final retry-claims refusal: refresh only the
+  retained request reference after exact genuine recovery; preserve authenticated
+  earlier schedule rollback DATA and atomically resume the signed prepared T0
+  schedule with command/pending. Focused Fact must prove fresh-lease identity,
+  restore/resume, altered evidence refusal and recalculation inside the live Engine
+  owner. Existing command-role6, outer2 and published-recovery1 are direct affected
+  consumers. Current candidate is UNCOMPILED/UNRUN; see plan receipts, no closure.
 
 - [ ] T121-DIAGNOSIS-MORTAL [US5] Deliver one complete guided Mortal diagnostic
   method through known/reachable choice, explicit check/duration/cost, separate

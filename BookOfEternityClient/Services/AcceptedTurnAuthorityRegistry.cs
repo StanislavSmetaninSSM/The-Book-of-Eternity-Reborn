@@ -2208,17 +2208,18 @@ internal static partial class AcceptedTurnAuthorityRegistry
                     new WoundHistoryParseResult(
                         candidate.Authority.History,
                         Array.Empty<ValidationIssue>()));
-                if (!recovery.IsValid)
+                var diagnosisRecoveryAgrees = recovery.IsValid && RebindRetainedDiagnosisAfterRecovery(candidate.Authority);
+                if (!diagnosisRecoveryAgrees)
                 {
                     _procedureDice.InvalidateAll();
                     _criticalReactions.InvalidateAll();
                     _treatmentResources.InvalidateAll();
                     ResetProcedureClaimRecovery();
                     _mortalWoundTreatmentAcceptedState = null;
-                    return new MortalWoundTreatmentAcceptedStateAuthorityResult(
-                        false,
-                        recovery.Issues,
-                        null);
+                    return recovery.IsValid
+                        ? MortalWoundTreatmentAcceptedStateAuthority.RegistryCandidateBindingFailure(
+                            "recovered diagnosis differs from its retained exact request, span, Fate or confirmed resource agreement")
+                        : new MortalWoundTreatmentAcceptedStateAuthorityResult(false, recovery.Issues, null);
                 }
                 return AcceptedTurnAuthorityRegistry.Detach(candidate);
             }

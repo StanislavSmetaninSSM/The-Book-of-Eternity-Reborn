@@ -68,9 +68,11 @@ internal sealed partial class MortalWoundTreatmentAcceptedStateAuthority
             throw new InvalidDataException("Persisted diagnosis could not confirm its original exact private claims.");
     }
 
-    internal CanonicalBeforeImage ReadDiagnosisOriginalCommandBeforeImage() =>
-        _diagnosisOriginalEvidence?.ReadWoundCommandRollbackImage() ??
-        throw new InvalidDataException("Missing authenticated original command rollback image.");
+    internal CanonicalBeforeImage ReadDiagnosisOriginalCommandBeforeImage() => _diagnosisOriginalCommandBeforeImage is { } image
+        ? new(image.Existed, image.Bytes) : throw new InvalidDataException("Missing authenticated original command rollback image.");
+
+    internal CanonicalBeforeImage ReadDiagnosisOriginalScheduleBeforeImage() => _diagnosisOriginalScheduleBeforeImage is { } image
+        ? new(image.Existed, image.Bytes) : throw new InvalidDataException("Missing authenticated original schedule rollback image.");
 
     // Compare retained original DATA under the caller's actual new lease. This
     // does not reactivate the old lease or issue execution/publication authority.
@@ -82,7 +84,9 @@ internal sealed partial class MortalWoundTreatmentAcceptedStateAuthority
         foreach (var path in _diagnosisIssuedSnapshot.CoveredLogicalPaths.Where(path => !excluded.Contains(path, StringComparer.Ordinal)))
         {
             var current = files.ReadFileBytesSync(lease, path);
-            if (current is null || !current.AsSpan().SequenceEqual(_diagnosisIssuedSnapshot.ReadRequiredBytes(path))) return false;
+            var expected = path == ProgressionScheduleService.SchedulePath
+                ? ReadDiagnosisOriginalScheduleBeforeImage().Bytes : _diagnosisIssuedSnapshot.ReadRequiredBytes(path);
+            if (current is null || expected is null || !current.AsSpan().SequenceEqual(expected)) return false;
         }
         return _diagnosisIssuedSnapshot.AbsentLogicalPaths.Where(path => !excluded.Contains(path, StringComparer.Ordinal))
             .All(path => files.ReadFileBytesSync(lease, path) is null);

@@ -56,7 +56,8 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
             Dictionary<string, byte[]?>? original = null;
             string? generation = null;
             var checkpoints = 0;
-            var runtime = GameEngineTurnLifecycleTests.CreateGameEngineRuntime(files,
+            GameEngineTestRuntime runtime = null!;
+            runtime = GameEngineTurnLifecycleTests.CreateGameEngineRuntime(files,
                 configureSettings: settings =>
                 {
                     settings.GmBridgeAutoStart = false; settings.MusicEnabled = false;
@@ -70,7 +71,13 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                         if (checkpoint != SessionFinalizationCheckpoint.TerminalWaitStarted) return;
                         Assert.Equal(1, ++checkpoints);
                         using var inspection = timings.Measure("MortalDiagnosisOriginal.PreparedOriginalAndDriftGuards");
-                        await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+                        SpiritualSelfTreatmentStageContext? retryFrame = null;
+                        MortalWoundTreatmentAttemptRequest? checkpointRequest = null;
+                        string? signedSchedulePath = null;
+                        byte[]? signedScheduleBytes = null;
+                        byte[]? outerScheduleBytes = null;
+                        await using (var lease = await files.AcquireCanonicalWriteLeaseAsync())
+                        {
                         generation = files.GetOrCreateSessionGeneration(lease);
                         var turn = Assert.IsType<TurnRequest>(JsonSerializer.Deserialize<TurnRequest>(
                             Assert.IsType<string>(await files.ReadFileAsync(lease, LiveTurnPreparationService.TurnRequestPath)),
@@ -128,8 +135,13 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                             var bytes = Assert.IsType<byte[]>(await files.ReadFileBytesAsync(lease, pair.Value));
                             Assert.Equal(PendingTurnSnapshotAuthority.ComputeSha256(bytes), rollback.BackupHashes[pair.Key], ignoreCase: true);
                         }
-                        var frame = new SpiritualSelfTreatmentStageContext(turn.SessionId, turn.RequestId, turn.TurnNumber, turn.ProgressionControl!);
+                        var frame = retryFrame = new SpiritualSelfTreatmentStageContext(turn.SessionId, turn.RequestId, turn.TurnNumber, turn.ProgressionControl!);
                         var admission = await WoundApplicationService.ResolveMortalDiagnosisInputAsync(files, lease, frame, requireRetained: true);
+                        checkpointRequest = admission.Request;
+                        signedSchedulePath = payload.Files[schedulePath];
+                        signedScheduleBytes = signedSchedule;
+                        outerScheduleBytes = rollbackSchedule;
+                        Assert.Equal(rollbackSchedule, admission.Owner.ReadDiagnosisOriginalScheduleBeforeImage().Bytes);
                         var retainedCheck = Assert.IsType<MortalWoundProcedureCheckAuthority>(admission.Request.ModeAuthority);
                         var outcome = MortalWoundDiagnosisOutcome.Resolve(admission.Owner,
                             new(admission.Owner.History, Array.Empty<ValidationIssue>()), admission.Request);
@@ -168,6 +180,65 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                         AssertMortalDiagnosisImages(unchanged, files);
                         Assert.Equal(rollbackSchedule, await files.ReadFileBytesAsync(lease, payload.RollbackBackups[schedulePath]));
                         Assert.Equal(signedSchedule, await files.ReadFileBytesAsync(lease, payload.Files[schedulePath]));
+                        }
+                        // Close the inspection lease, retaining the actual live
+                        // ProcessPlayerTurn owner until restore/resume settles.
+                        Assert.NotNull(rollback); Assert.NotNull(generation); Assert.NotNull(original);
+                        Assert.NotNull(retryFrame); Assert.NotNull(checkpointRequest);
+                        Assert.NotNull(signedSchedulePath); Assert.NotNull(signedScheduleBytes); Assert.NotNull(outerScheduleBytes);
+                        using (timings.Measure("MortalDiagnosisOriginal.ExactOuterRestore"))
+                            await runtime.Engine.RestoreOriginalForRepairAsync(rollback, generation);
+                        AssertMortalDiagnosisImages(original, files);
+                        await using (var lease = await files.AcquireCanonicalWriteLeaseAsync())
+                        {
+                            Assert.True(AcceptedTurnAuthorityRegistry.HasMortalDiagnosisOuterRollbackCheckpoint(files, lease));
+                            // Each fault changes actual owned evidence, then restores
+                            // its independently captured bytes. No envelope is forged.
+                            foreach (var fault in new[]
+                            {
+                                (Path: ProgressionScheduleService.SchedulePath, Bytes: outerScheduleBytes),
+                                (Path: signedSchedulePath, Bytes: signedScheduleBytes),
+                                (Path: rollback.BackupFiles[ProgressionScheduleService.SchedulePath], Bytes: outerScheduleBytes)
+                            })
+                            {
+                                var changed = JsonNode.Parse(FileSystemManager.DecodeFileBytes(fault.Bytes))!.AsObject();
+                                changed["lastUpdatedUtc"] = DateTimeOffset.Parse(changed["lastUpdatedUtc"]!.GetValue<string>()).AddSeconds(2).ToString("o");
+                                try
+                                {
+                                    await files.WriteFileAtomicAsync(lease, fault.Path, changed.ToJsonString());
+                                    await Assert.ThrowsAsync<InvalidDataException>(() => AcceptedTurnAuthorityRegistry.ResumeMortalDiagnosisAfterOuterRollbackAsync(files, lease, retryFrame));
+                                    Assert.True(AcceptedTurnAuthorityRegistry.HasMortalDiagnosisOuterRollbackCheckpoint(files, lease));
+                                    Assert.Null(await files.ReadFileBytesAsync(lease, AcceptedMechanicsPlan.WoundCommandPath));
+                                    Assert.Null(await files.ReadFileBytesAsync(lease, WoundAcceptedTurnSnapshotContract.PendingResolutionPath));
+                                }
+                                finally { await files.WriteFileAtomicBytesAsync(lease, fault.Path, fault.Bytes); }
+                                AssertMortalDiagnosisImages(original, files);
+                            }
+                            await AcceptedTurnAuthorityRegistry.ResumeMortalDiagnosisAfterOuterRollbackAsync(files, lease, retryFrame);
+                            Assert.False(AcceptedTurnAuthorityRegistry.HasMortalDiagnosisOuterRollbackCheckpoint(files, lease));
+                            Assert.Equal(signedScheduleBytes, await files.ReadFileBytesAsync(lease, ProgressionScheduleService.SchedulePath));
+                            var resumed = await WoundApplicationService.ResolveMortalDiagnosisInputAsync(files, lease, retryFrame, requireRetained: true);
+                            Assert.Equal(checkpointRequest.RequestFingerprint, resumed.Request.RequestFingerprint);
+                            Assert.Equal(checkpointRequest.Coordinates.CoordinatesFingerprint, resumed.Request.Coordinates.CoordinatesFingerprint);
+                            Assert.Equal(checkpointRequest.ResourceAuthority.AuthorityFingerprint, resumed.Request.ResourceAuthority.AuthorityFingerprint);
+                            var originalCheck = Assert.IsType<MortalWoundProcedureCheckAuthority>(checkpointRequest.ModeAuthority);
+                            var resumedCheck = Assert.IsType<MortalWoundProcedureCheckAuthority>(resumed.Request.ModeAuthority);
+                            Assert.Equal(originalCheck.AuthorityFingerprint, resumedCheck.AuthorityFingerprint);
+                            Assert.Equal(originalCheck.SourceIndices.ToArray(), resumedCheck.SourceIndices.ToArray());
+                            Assert.Equal(originalCheck.SourceRolls.ToArray(), resumedCheck.SourceRolls.ToArray());
+                            Assert.Equal(originalCheck.PreparedCriticalReaction?.PreparedReactionFingerprint, resumedCheck.PreparedCriticalReaction?.PreparedReactionFingerprint);
+                            var resumedOutcome = MortalWoundDiagnosisOutcome.Resolve(resumed.Owner,
+                                new(resumed.Owner.History, Array.Empty<ValidationIssue>()), resumed.Request);
+                            var resumedWorking = MortalWoundDiagnosisWorkingProjection.Build(resumed.Owner, resumedOutcome);
+                            var resumedBefore = CaptureMortalDiagnosisImages(files);
+                            var calculation = await new ProgressionScheduleService(files, NullLogger<ProgressionScheduleService>.Instance)
+                                .PrepareDiagnosisOutcomeAsync(lease, resumedWorking);
+                            Assert.Equal(signedScheduleBytes, calculation.ScheduleBefore.Bytes);
+                            Assert.Equal(1260, resumedWorking.OriginalMinute); Assert.Equal(1290, resumedWorking.ResultingMinute);
+                            AssertMortalDiagnosisImages(resumedBefore, files);
+                        }
+                        await runtime.Engine.RestoreOriginalForRepairAsync(rollback, generation);
+                        AssertMortalDiagnosisImages(original, files);
                         throw stop;
                     }
                 });
@@ -197,10 +268,8 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                 Assert.Equal(1, checkpoints);
                 Assert.NotNull(rollback);
                 Assert.NotNull(generation);
-                // The callback's await-using lease and the actual staging owner
-                // have closed before the existing restore owner reacquires one.
-                using (timings.Measure("MortalDiagnosisOriginal.ExactOuterRestore"))
-                    await runtime.Engine.RestoreOriginalForRepairAsync(rollback, generation);
+                // Exact restoration completed inside the live Engine operation,
+                // after each inspection lease closed and before controlled stop.
                 AssertMortalDiagnosisImages(original, files);
                 Assert.Equal(42, runtime.GameLoop.TurnNumber);
             }

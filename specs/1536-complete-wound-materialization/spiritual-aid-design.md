@@ -1877,3 +1877,31 @@ hook lease closes. Existing passive capture is reused. A path registration adds
 no read/parse/cache/owner; actual source/claim freshness is retained. GM wire,
 response fields, rules and examples stay unchanged. Current source and still-open
 qualification are recorded in plan.md and T121-DIAGNOSIS-MORTAL-ENGINE-ORIGINAL.
+
+
+### C12 exact recovered claims and bidirectional prepared/outer schedule roles
+
+After the existing genuine accepted-owner recovery completes, match exactly one
+recovered held diagnosis against the retained complete coordinates, request/source
+fingerprints, dice span, Fate and resource agreement. Verify current reservations
+and confirmed resources before changing only the retained request reference. Keep
+its original owner DATA/images and phase; reject missing/ambiguous/foreign recovery.
+Never make old reservation objects live or reserve a different span.
+
+Export copied command and schedule outer images together from one frozen validated
+authority envelope and already captured rollback-artifact observations. An actual
+Engine original has distinct earlier rollback schedule bytes; native single-image
+preparation uses signed schedule only when authenticated baseline exists and BOTH
+rollback maps omit it. Asymmetric maps, missing baseline and hash/artifact mismatch
+refuse. Retain these images once in the existing diagnosis owner; no per-path JSON
+reparse, fresh IO or authority/cache is introduced by exporting DATA.
+
+Outer completion compares canonical schedule against that authenticated earlier
+image. Resume verifies original evidence/generation/claims and atomically publishes
+outer schedule to its exact signed prepared T0 image alongside command/pending,
+then reads back all three before clearing phase2. It does not rebuild control or
+write future T1. Keep the real Engine operation live across restore/resume; close
+inspection leases before the existing restore owner acquires its lease. Existing
+strict byte, source, claim, negative and whole-original assertions remain. GM wire,
+authored fields, rules and examples do not change. Current qualification is only
+in plan.md; the C12 candidate is UNCOMPILED/UNRUN.

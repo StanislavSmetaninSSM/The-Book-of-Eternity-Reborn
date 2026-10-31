@@ -68,6 +68,8 @@ internal sealed partial class MortalWoundTreatmentAcceptedStateAuthority
     private PendingTurnSnapshotReader.OriginalReadEvidence? _diagnosisOriginalEvidence;
     private PendingTurnSnapshotReadAuthority? _diagnosisIssuedSnapshot;
     private CanonicalBeforeImage? _diagnosisOriginalPending;
+    private CanonicalBeforeImage? _diagnosisOriginalCommandBeforeImage;
+    private CanonicalBeforeImage? _diagnosisOriginalScheduleBeforeImage;
     internal IReadOnlyList<(string Path, WoundMaterializationEnvelope Wound)> ReadDiagnosisOriginalCohort()
     {
         if (_diagnosisOriginalCatalog is null) throw new InvalidDataException("The diagnosis owner has no admitted original cohort.");
@@ -496,6 +498,8 @@ internal sealed partial class MortalWoundTreatmentAcceptedStateAuthority
             return Failure(snapshotRead.Issues);
         var signed = snapshotRead.Snapshot;
         CanonicalBeforeImage? diagnosisOriginalPending = null;
+        CanonicalBeforeImage? diagnosisOriginalCommand = null;
+        CanonicalBeforeImage? diagnosisOriginalSchedule = null;
         if (diagnosis)
         {
             var originalEvidence = observed?.Evidence ?? throw new InvalidDataException("Diagnosis original observation proof is missing.");
@@ -505,6 +509,17 @@ internal sealed partial class MortalWoundTreatmentAcceptedStateAuthority
                 return Failure([Issue(WoundAcceptedTurnSnapshotContract.PendingResolutionPath,
                     "mortal_diagnosis_original_pending_unobserved", "exact signed original pending presence or absence",
                     "the current diagnosis cannot use an unobserved pending image")]);
+            try
+            {
+                var rollbackImages = originalEvidence.ReadDiagnosisRollbackImages();
+                diagnosisOriginalCommand = rollbackImages.Command;
+                diagnosisOriginalSchedule = rollbackImages.Schedule;
+            }
+            catch (InvalidDataException failure)
+            {
+                return Failure([Issue(ProgressionScheduleService.SchedulePath,
+                    "mortal_diagnosis_original_rollback_invalid", "exact authenticated command and schedule rollback images", failure.Message)]);
+            }
         }
         var requiredPaths = signed.CoveredLogicalPaths;
         ValidateTargetCarrierCoverage(context, requiredPaths, issues);
@@ -829,6 +844,8 @@ internal sealed partial class MortalWoundTreatmentAcceptedStateAuthority
             authority._diagnosisOriginalEvidence = observed?.Evidence ?? throw new InvalidDataException("Diagnosis original observation proof is missing.");
             authority._diagnosisIssuedSnapshot = signed;
             authority._diagnosisOriginalPending = diagnosisOriginalPending;
+            authority._diagnosisOriginalCommandBeforeImage = diagnosisOriginalCommand;
+            authority._diagnosisOriginalScheduleBeforeImage = diagnosisOriginalSchedule;
             authority._diagnosisCommandBytes = signed.ReadRequiredBytes(AcceptedMechanicsPlan.WoundCommandPath);
             authority._diagnosisInput = JsonNode.Parse(Decode(authority._diagnosisCommandBytes))?.AsObject()
                 ?? throw new InvalidDataException("Missing signed Mortal diagnosis selection input.");
