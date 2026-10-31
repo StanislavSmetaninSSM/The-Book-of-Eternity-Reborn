@@ -3,12 +3,14 @@
     "categories": [
 {
   "id": "mortal-physical-guided-menu-causal",
-  "responsibility": "T121-PHYSICAL-GUIDED causal menu theory: three independent initial canonical procedure/course/guaranteed roots, complete History/effect graph and sole resource bootstrap; typed current wound/known route/actors/context/requirements, first course due/window/dose and actual guaranteed skill capability premises. Real shared OpenAsync must expose Self and the current provider without changing any JSON byte. Passive source counters describe the actual menu operation. Final exact-wound non-diagnosis route-label choice assertion is the intended existing-API RED, with a unique mode-specific failure message. Initial existing-API RED precedes product implementation; later GREEN retains all premises and exact typed route/provider/mode. Three cases/one method; runtime/source epochs are recorded in the canonical plan.",
-  "excludes": "No GameEngine, old reflection fixture factory, accepted-state/request/claim/receipt minting, staged/GM response, publication, course continuation or cold recovery, new counter/cache framework, full-suite/HOLD replay or increased bound. Display-name uniqueness is temporary scaffolding until a typed physical selection exists; this does not prove full execution.",
+  "responsibility": "T121-PHYSICAL-GUIDED accepted initial causal RED and candidate typed GREEN for three independent procedure/course/guaranteed menus: complete canonical source/known-route/current actor/context/requirement/capability/course-window premises, real Self/provider presence, whole-JSON inertness and passive source-read counts. Exact typed target/provider/route/mode/milestone choices replace the initial display-name symptom. Current provider-independent route applicability/window/History computations are reused only inside this immutable menu operation; next open is fresh. UNCOMPILED/UNRUN GREEN candidate; actual RED remains in canonical receipts.",
+  "excludes": "No Engine, reflection factory, accepted-state or claim/receipt minting, GM response, final publication, cold recovery or full feature acceptance; menu choices do not bypass final current admission.",
   "changeHints": [
     "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.PhysicalGuidedMenu.cs",
     "BookOfEternityClient/Services/WoundApplicationService.cs",
-    "BookOfEternityClient/Services/WoundApplicationService.MortalDiagnosisMenu.cs"
+    "BookOfEternityClient/Services/WoundApplicationService.MortalDiagnosisMenu.cs",
+    "BookOfEternityClient/Services/WoundApplicationService.MortalTreatmentMenu.cs",
+    "BookOfEternityClient/Services/WoundPlayerReadService.cs"
   ],
   "related": [
     {
@@ -31,6 +33,105 @@
       "project": "integration",
       "tests": [
         "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.GuidedPhysicalMenuOffersExecutableKnownRouteAfterCanonicalPremises"
+      ]
+    }
+  ]
+},
+{
+  "id": "mortal-physical-guided-input",
+  "responsibility": "T121-PHYSICAL-GUIDED closed three-mode selection/input DATA: exact purpose, provider/target/route/milestone, full original control, extra/mixed fields and canonical roundtrip; three independent rows. Native original/claims/publication are separate owners. UNCOMPILED/UNRUN candidate.",
+  "excludes": "No reflection, fabricated authority, filesystem publication, Engine, dice/Fate settlement or UI qualification.",
+  "changeHints": [
+    "BookOfEternityClient/Services/MortalWoundGuidedTreatmentInputCodec.cs",
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.PhysicalGuidedInput.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.GuidedPhysicalSelectionInputIsClosedPurposeAndFullControlBound"
+      ]
+    }
+  ]
+},
+{
+  "id": "mortal-physical-guided-hold",
+  "responsibility": "T121-PHYSICAL-GUIDED actual native original and private held-request ownership for procedure/course/guaranteed: fresh-lease exact reconstruction, live mode/claims, closed pre-GM guided hold, immutable selection and direct typed ordinary no-wave builder/catalog refusal. Three independent roots; no repair packet fabricated. UNCOMPILED/UNRUN candidate.",
+  "excludes": "No final common publication, cold registry generation/root transfer, Engine/browser terminal claim, old reflective no-wave fixture or broader Mortal aggregates.",
+  "changeHints": [
+    "BookOfEternityClient/Services/MortalWoundTreatmentAcceptedStateAuthority.GuidedRetention.cs",
+    "BookOfEternityClient/Services/MortalWoundTreatmentPersistence.cs",
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.PhysicalGuidedHold.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.GuidedPhysicalHoldRebindsExactModeAndKeepsOrdinaryNoWaveContract"
+      ]
+    }
+  ]
+},
+{
+  "id": "mortal-physical-guided-publication",
+  "responsibility": "T121-PHYSICAL-GUIDED genuine native common publication across all three existing modes, real progression/transaction close, actual frozen v2 comparison versus historical receipt, exact current resource/item/effect/wound/History and original schedule joins, cloned missing/tampered/foreign/reintroduced-work refusals, and the shared browser Finish/classifier predicate. Three independent fixtures; native120s protective bound, no timing/speedup claim. UNCOMPILED/UNRUN candidate.",
+  "excludes": "No full Engine world, fabricated accepted browser receipt, complete live browser admission/terminal phase, course continuation, cold/transfer recovery, raw artifact replay or unchanged diagnosis aggregate.",
+  "changeHints": [
+    "BookOfEternityClient/Services/MortalWoundTreatmentCompletion.Guided.cs",
+    "BookOfEternityClient/Services/MortalWoundTreatmentCompletion.Wounds.cs",
+    "BookOfEternityClient/Services/ProgressionScheduleService.MortalTreatmentCompletion.cs",
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.PhysicalGuidedCompletion.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.GuidedPhysicalPublicationCompletesThroughActualFrozenAndCurrentSettlement"
+      ]
+    }
+  ]
+},
+{
+  "id": "mortal-physical-guided-publication-fate",
+  "responsibility": "T121-PHYSICAL-GUIDED one independent actual-owner procedure/Fate publication with real retained natural1 and Shield reaction, native common transaction/progression close and exact post-close current comparison; same typed DATA refusal contract as the three-mode publication control. UNCOMPILED/UNRUN candidate.",
+  "excludes": "No synthetic critical envelope, die override after original, fake reservation, accepted browser receipt or full UI journey.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.PhysicalGuidedCompletion.cs",
+    "BookOfEternityClient/Services/MortalWoundCriticalReactionPublicationPlanner.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.GuidedPhysicalFatePublicationKeepsItsActualReactionAndCurrentSettlement"
       ]
     }
   ]

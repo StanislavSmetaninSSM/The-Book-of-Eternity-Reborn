@@ -746,18 +746,21 @@ public sealed partial class MortalWoundTreatmentResolverTests
             var scenario = CreateDiagnosisInitialScenario(natural, duration, seedFate);
             if (physicalMode is not null)
             {
-                if (!signedInput || resourceCost || seedFate) throw new ArgumentException("Physical fixture requires its own exact signed scenario.");
+                if (!signedInput || resourceCost && physicalMode != "guaranteed" || seedFate && physicalMode != "procedure")
+                    throw new ArgumentException("Physical fixture requires its exact supported signed scenario.");
                 scenario = physicalMode switch
                 {
-                    "procedure" => CreateScenario("procedure_normal_uses_lowest_free_die", physicalMode),
+                    "procedure" => CreateScenario(seedFate ? "procedure_player_natural_one_reserves_oldest_fate_shield" :
+                        "procedure_normal_uses_lowest_free_die", physicalMode),
                     "course" => CreateScalarCoursePublicationScenario(),
-                    "guaranteed" => CreateScenario("guaranteed_current_capability_proof_stabilizes", physicalMode),
+                    "guaranteed" => resourceCost ? CreateGuaranteedResourcePublicationScenario(new[] { 1, 1 }, new[] { 0, 1 }) :
+                        CreateScenario("guaranteed_current_capability_proof_stabilizes", physicalMode),
                     _ => throw new ArgumentOutOfRangeException(nameof(physicalMode))
                 };
                 if (natural is not null) scenario.AcceptedState["acceptedDice"] = new JsonArray(natural.Value, 17, 1, 20);
                 scenario = scenario with { History = CreateCurrentWoundHistory(scenario.Before), SeedCanonicalWoundEffects = true };
             }
-            if (resourceCost)
+            if (resourceCost && physicalMode is null)
             {
                 scenario.Before["treatment"]!["diagnosisPaths"]![0]!["requirements"]![0] = new JsonObject
                 {
@@ -794,6 +797,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
                 var stagedContext = ParseContext();
                 var control = signedInput ? await new ProgressionScheduleService(files, NullLogger<ProgressionScheduleService>.Instance)
                     .BuildControlForNextTurnAsync("Mortal World") : new ProgressionControl { CurrentRealm = "Mortal World" };
+                JsonObject? physicalGmContext = null;
                 if (signedInput)
                 {
                     var wound = WoundMaterializationContract.Parse(scenario.Before.ToJsonString(), WoundCarrierCatalog.PlayerPath).Wound!;
@@ -810,6 +814,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
                         control);
                     var input = physicalMode is null ? MortalWoundDiagnosisInputCodec.Create(frame, selected, stagedContext)
                         : MortalWoundGuidedTreatmentInputCodec.Create(frame, selected, stagedContext);
+                    if (physicalMode is not null) physicalGmContext = MortalWoundGuidedTreatmentInputCodec.CreateGmContext(input);
                     await files.WriteFileAtomicAsync(AcceptedMechanicsPlan.WoundCommandPath, input.ToJsonString());
                 }
                 var dices = scenario.AcceptedState["acceptedDice"]!.AsArray().Select(value => value!.GetValue<int>()).ToArray();
@@ -819,7 +824,8 @@ public sealed partial class MortalWoundTreatmentResolverTests
                         SessionId = scenario.AcceptedState["sessionId"]!.GetValue<string>(),
                         RequestId = scenario.AcceptedState["requestId"]!.GetValue<string>(),
                         TurnNumber = scenario.AcceptedState["turn"]!.GetValue<int>(), ProgressionControl = control,
-                        PreGeneratedDices1d20 = dices, PlayerAction = "Осмотреть рану по явно заданному способу."
+                        PreGeneratedDices1d20 = dices, PlayerAction = "Осмотреть рану по явно заданному способу.",
+                        MortalTreatment = physicalGmContext?.DeepClone().AsObject()
                     });
                 else await new LiveTurnPreparationService(files).PrepareAsync(new LiveTurnPreparationOptions
                 {
@@ -828,7 +834,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
                     TurnNumber = scenario.AcceptedState["turn"]!.GetValue<int>(),
                     ProgressionControl = control,
                     CurrentRealm = "Mortal World", PlayerAction = "Осмотреть рану по отдельно подтверждённому способу.",
-                    PreGeneratedDices1d20 = dices
+                    PreGeneratedDices1d20 = dices, MortalTreatment = physicalGmContext
                 });
                 lease = await files.AcquireCanonicalWriteLeaseAsync();
                 var exported = physicalMode is not null

@@ -21,12 +21,7 @@ internal static partial class MortalWoundTreatmentCompletion
         var staged = MortalWoundGuidedTreatmentInputCodec.Read(input);
         if (selection.MortalTreatment is null || staged.Selection != selection ||
             !MortalWoundGuidedTreatmentInputCodec.IsBound(input, frame) ||
-            !JsonNode.DeepEquals(original.MortalTreatment, new JsonObject
-            {
-                ["kind"] = MortalWoundGuidedTreatmentInputCodec.Kind, ["schemaVersion"] = 1,
-                ["selection"] = selection.ToJson(), ["inputFingerprint"] = MortalWoundGuidedTreatmentInputCodec.Fingerprint(input),
-                ["heldRequestPath"] = WoundAcceptedTurnSnapshotContract.PendingResolutionPath
-            }))
+            !JsonNode.DeepEquals(original.MortalTreatment, MortalWoundGuidedTreatmentInputCodec.CreateGmContext(input)))
             throw Invalid("Physical selection or full independent original context changed.");
         var (bytes, nodes) = await ReadCurrentAsync(read);
         string? Text(string path) => bytes[path] is { } value ? CanonicalJsonUtf8.DecodeOneOptionalBom(value) : null;

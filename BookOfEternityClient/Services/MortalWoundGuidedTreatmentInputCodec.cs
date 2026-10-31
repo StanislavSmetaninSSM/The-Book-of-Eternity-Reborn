@@ -9,8 +9,28 @@ namespace BookOfEternityClient.Services;
 internal static class MortalWoundGuidedTreatmentInputCodec
 {
     internal const string Kind = "mortal_guided_treatment_input";
+    /// <summary>
+    /// Recognizes only the DATA kind; callers must still authenticate its original and full binding.
+    /// </summary>
     internal static bool IsKind(JsonObject? value) => value?["kind"] is JsonValue kind && kind.TryGetValue<string>(out var text) && text == Kind;
 
+    /// <summary>
+    /// Produces the client-owned GM hint from the exact staged input. This copied
+    /// DATA conveys no draw, cost reservation, result or publication authority.
+    /// </summary>
+    internal static JsonObject CreateGmContext(JsonObject input)
+    {
+        var parsed = Read(input);
+        return new JsonObject
+        {
+            ["kind"] = Kind, ["schemaVersion"] = 1, ["selection"] = parsed.Selection.ToJson(),
+            ["inputFingerprint"] = Fingerprint(input), ["heldRequestPath"] = WoundAcceptedTurnSnapshotContract.PendingResolutionPath
+        };
+    }
+
+    /// <summary>
+    /// Creates the closed immutable selection input before the actual original is produced.
+    /// </summary>
     internal static JsonObject Create(SpiritualSelfTreatmentStageContext frame, SpiritualSelfTreatmentSelection selection,
         MortalWoundTreatmentAuthority.Context context)
     {
@@ -25,6 +45,9 @@ internal static class MortalWoundGuidedTreatmentInputCodec
         return result;
     }
 
+    /// <summary>
+    /// Reads the complete closed selection, participant context and control without granting authority.
+    /// </summary>
     internal static (SpiritualSelfTreatmentStageContext Frame, SpiritualSelfTreatmentSelection Selection,
         MortalWoundTreatmentAuthority.Context Context) Read(JsonObject input)
     {
@@ -50,6 +73,9 @@ internal static class MortalWoundGuidedTreatmentInputCodec
         return (new(Text(input, "sessionId"), Text(input, "requestId"), turn, control), selection, parsed.Context);
     }
 
+    /// <summary>
+    /// Compares the full control and request coordinates of an independently authenticated original.
+    /// </summary>
     internal static bool IsBound(JsonObject input, SpiritualSelfTreatmentStageContext frame)
     {
         try
@@ -62,6 +88,9 @@ internal static class MortalWoundGuidedTreatmentInputCodec
         catch (Exception exception) when (exception is InvalidDataException or InvalidOperationException or ArgumentException or JsonException) { return false; }
     }
 
+    /// <summary>
+    /// Requires exact purpose, mode, participants and selected source agreement with a complete request.
+    /// </summary>
     internal static void RequireRequestMatches(JsonObject input, MortalWoundTreatmentAttemptRequest request)
     {
         var data = Read(input); var selected = data.Selection.MortalTreatment!; var coordinates = request.Coordinates;
@@ -76,6 +105,9 @@ internal static class MortalWoundGuidedTreatmentInputCodec
             throw new InvalidDataException("Retained guided treatment request differs from its original selected method, participants or frame.");
     }
 
+    /// <summary>
+    /// Requires the exact input and complete current accepted owner from the existing original reader.
+    /// </summary>
     internal static void RequireMatches(JsonObject input, MortalWoundTreatmentAcceptedStateAuthority owner,
         MortalWoundTreatmentAttemptRequest request, JsonObject originalControl)
     {
@@ -92,14 +124,23 @@ internal static class MortalWoundGuidedTreatmentInputCodec
             throw new InvalidDataException("The actual signed guided treatment input differs from this accepted request, original control or participants.");
     }
 
+    /// <summary>
+    /// Computes the stable canonical participant context identity for selection comparison.
+    /// </summary>
     internal static string ContextFingerprint(MortalWoundTreatmentAuthority.Context context) =>
         WoundAcceptedTurnFingerprintWriter.Compute(new[] { Kind + ".context", "1", WoundAcceptedTurnFingerprintWriter.CanonicalJson(ContextJson(context)) });
+    /// <summary>
+    /// Copies the closed participant context without exposing a live permission.
+    /// </summary>
     internal static JsonObject ContextJson(MortalWoundTreatmentAuthority.Context context) => new()
     {
         ["schemaVersion"] = context.SchemaVersion, ["realm"] = context.Realm, ["targetKind"] = context.TargetKind,
         ["targetId"] = context.TargetId, ["providerKind"] = context.ProviderKind, ["providerId"] = context.ProviderId,
         ["currentLocationId"] = context.CurrentLocationId
     };
+    /// <summary>
+    /// Computes the full input DATA identity while excluding only its own fingerprint field.
+    /// </summary>
     internal static string Fingerprint(JsonObject input)
     {
         var payload = input.DeepClone().AsObject(); payload.Remove("inputFingerprint");

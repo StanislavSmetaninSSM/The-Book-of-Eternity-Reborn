@@ -1,3 +1,38 @@
+# T121 physical actual-publication fixture source — WIP UNCOMPILED/UNRUN
+
+Continues current-predicate1f4dbc7ad52adce6d08a47d5c217c84305a4d86e.
+Sol froze9 paths; root checked actual path/static diff. New PhysicalGuidedCompletion.cs
+contains actual-publication theory3 and separate real-Fate Fact1, with cloned
+version/witness/original-schedule/hash/work/current/root/spend/foreign refusals and
+per-operation source-read assertions. These are authored tests, not observed PASS.
+
+The genuine LiveTurnPreparation producer gains only an optional copied physical
+hint, default null unchanged. Nonnull data is checked against the actual closed
+staged input/full frame BEFORE its sole original is signed; the fixture supplies
+actual Stage GmContext and tests caller-mutation isolation. No post-original edit,
+re-sign, generic arbitrary-fields escape hatch or relaxed completion check. The
+unchanged diagnosis default has an explicit absent-physical-hint assertion.
+
+Provider-independent route simulation, guarantee simulation and course window/
+History calculation now run once per route in the existing menu invocation.
+Provider-specific requirements/capability/fresh authority remain separate. Current
+milestone dose and policy are readable before confirmation. NPC2 baseline versus
+expectedNPC1 and effect/skill/freshness equivalence remain UNRUN; no speedup claim.
+
+Catalog ownership is authored for input3, hold3, publication3 and Fate1 plus directly
+affected diagnosis-current/spiritual-menu peers. New publication3 has the existing
+native-kind120s protective bound; Fate1/input3/hold3 each60s. No old bound changes
+and no discovery/runtime count is claimed. Current selection remains provisional
+until all remaining changed contracts/consumers are reviewed together.
+
+Actual cold/transfer/fault controls, real3mode console/browser/course wait/replay/
+rollback journeys, spiritual fresh/equivalence, GM/docs/worked examples/source pins
+and final selection are STILL PENDING. No build, discovery or runtime has run on
+physical product source; all Source WIP remains UNCOMPILED/UNRUN. Static JSON IDs/
+selection shape and diff whitespace checks pass only. Whole independent SOURCE,
+fresh owning builds/provenance/exact PREP and actual results precede acceptance.
+All previous raw, saves, retained roots, accepted lineages and HOLDs stay untouched.
+
 # T121 physical browser/current predicate connected — WIP UNCOMPILED/UNRUN
 
 Continues saved frozen/current DATA d703f723ebffa4ed5a541b135a4767c4ce268ad7.

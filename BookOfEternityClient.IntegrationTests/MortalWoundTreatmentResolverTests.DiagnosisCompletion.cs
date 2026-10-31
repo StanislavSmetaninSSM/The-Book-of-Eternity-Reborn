@@ -31,6 +31,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
         var selected = MortalWoundDiagnosisInputCodec.Read(input);
         var requestJson = Assert.IsType<string>(await fs.ReadFileAsync(fixture.Lease, LiveTurnPreparationService.TurnRequestPath));
         var original = JsonSerializer.Deserialize<TurnRequest>(requestJson, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)!;
+        Assert.Null(original.MortalTreatment); // Existing native producer default remains absent.
         var manifestJson = Assert.IsType<string>(await fs.ReadFileAsync(fixture.Lease, LiveTurnPreparationService.PendingTurnSnapshotManifestPath));
         var manifest = JsonSerializer.Deserialize<GameEngine.PendingTurnSnapshotManifest>(manifestJson, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)!;
         var authorityJson = Assert.IsType<string>(await fs.ReadFileAsync(fixture.Lease, PendingTurnSnapshotAuthority.AuthorityPath));

@@ -129,8 +129,24 @@ internal sealed class LiveTurnPreparationService
                 ExpectedResponse = "process the live-test player action through the normal GM turn contract"
             },
             ProgressionControl = preparedProgression ?? new ProgressionControl { CurrentRealm = currentRealm },
+            MortalTreatment = options.MortalTreatment?.DeepClone().AsObject(),
             SystemReminder = "Prepared by the live-test prepare-turn helper. Use this request as an ordinary player turn and keep all writes inside the game session contract."
         };
+        if (request.MortalTreatment is not null)
+        {
+            var stagedText = await _fs.ReadFileAsync(writeLease, AcceptedMechanicsPlan.WoundCommandPath)
+                ?? throw new InvalidDataException("Guided physical preparation requires its actual staged input.");
+            using var stagedDocument = JsonDocument.Parse(stagedText);
+            var inputIssues = new List<ValidationIssue>();
+            if (!MortalWoundTreatmentCommandCodec.HasNoDuplicateProperties(stagedDocument.RootElement,
+                    AcceptedMechanicsPlan.WoundCommandPath, inputIssues))
+                throw new InvalidDataException("Guided physical preparation has duplicate input fields.");
+            var stagedInput = JsonNode.Parse(stagedDocument.RootElement.GetRawText())!.AsObject();
+            if (!MortalWoundGuidedTreatmentInputCodec.IsBound(stagedInput,
+                    new(request.SessionId, request.RequestId, request.TurnNumber, request.ProgressionControl!)) ||
+                !JsonNode.DeepEquals(request.MortalTreatment, MortalWoundGuidedTreatmentInputCodec.CreateGmContext(stagedInput)))
+                throw new InvalidDataException("Guided physical hint differs from its actual closed selection/original control.");
+        }
         request.AfterlifeSpiritualConflictPreview = await new AfterlifeSpiritualConflictTurnPreviewService(_fs)
             .BuildAsync(
                 writeLease,
@@ -423,6 +439,11 @@ internal sealed class LiveTurnPreparationOptions
     public string? CurrentRealm { get; init; }
     /// <summary>Already prepared scheduler DATA; accepted consumers must independently authenticate its source.</summary>
     public ProgressionControl? ProgressionControl { get; init; }
+    /// <summary>
+    /// Already staged client-owned physical treatment hint, copied before the
+    /// original is signed; accepted consumers independently verify its full input.
+    /// </summary>
+    public JsonObject? MortalTreatment { get; init; }
     public string? Timestamp { get; init; }
 }
 
