@@ -54,11 +54,17 @@ function Resolve-BoeSessionPath { param($RelativePath) Join-Path $env:RELAY_TEST
 function Write-BoeJson { param($RelativePath,$Data,$ExpectedReadWitnesses)
  [IO.File]::WriteAllText((Join-Path $env:RELAY_TEST_SESSION 'child-entered'), 'entered')
  if ($env:RELAY_TEST_HOLD -eq '1') { Start-Sleep -Seconds 2 }
+ if (-not [string]::IsNullOrEmpty($env:RELAY_TEST_FAIL_PATH) -and $RelativePath -eq $env:RELAY_TEST_FAIL_PATH) { throw "Controlled apply failure: $RelativePath" }
+ if ($env:RELAY_TEST_PHYSICAL -eq '1') {
+  $target = Join-Path $env:RELAY_TEST_SESSION $RelativePath
+  [IO.Directory]::CreateDirectory([IO.Path]::GetDirectoryName($target)) | Out-Null
+  [IO.File]::WriteAllText($target, ($Data | ConvertTo-Json -Depth 8 -Compress)) }
  [IO.File]::AppendAllText((Join-Path $env:RELAY_TEST_SESSION 'applied'), 'once') }
 function Complete-BoeTurn { param($FilesModified) }
 function Complete-BoeValidationRepair { param($FilesModified) }
 ''')
 env=dict(os.environ,RELAY_TEST_SESSION=str(session),RELAY_TEST_HOLD='1' if mode=='close-held-child' else '0')
+if mode=='partial-apply':env.update(RELAY_TEST_PHYSICAL='1',RELAY_TEST_FAIL_PATH='output/partial-second.json')
 master,slave=pty.openpty();initial=termios.tcgetattr(slave);p=None;capture=bytearray()
 def pump():
  if select.select([master],[],[],.02)[0]:
@@ -106,6 +112,36 @@ try:
   q=next(queue.glob('request-*'));until(lambda:(q/'request.json').is_file() and (q/'prompt.txt').is_file() and (q/'game-request.json').is_file(),'complete large request')
   req=json.loads((q/'request.json').read_text());assert (q/'prompt.txt').read_bytes()==prompt and req['Limits']['PasteBytes']==4*1024*1024
   (queue/'close-request.json').write_text('{}');until(lambda:(queue/'closed.json').exists(),'large prompt close')
+ elif mode=='partial-apply':
+  prompt=b'controlled partial-apply turn'
+  packet={'Completion':'turn','Writes':[{'Path':'output/partial-first.json','ExpectedSHA256':'missing','Data':{'part':'first'}},{'Path':'output/partial-second.json','ExpectedSHA256':'missing','Data':{'part':'second'}}],'FilesModified':['output/partial-first.json','output/partial-second.json']}
+  packet_bytes=json.dumps(packet).encode()
+  def answer(target,header):
+   (target/'response.json').write_bytes(packet_bytes)
+   rep={k:header[k] for k in ['QueueId','PromptSHA256','RequestSHA256','TurnRequestSHA256']};rep.update(ResponseSHA256=hashlib.sha256(packet_bytes).hexdigest(),Model='inert-transport-no-model',AgentTask='partial-apply')
+   (target/'reply.json').write_text(json.dumps(rep))
+  def submit(label,seen):
+   os.write(master,b'\x1b[200~'+prompt+b'\x1b[201~');until(lambda:capture.count(prompt)>=seen,label+' pasted view')
+   os.write(master,b'\r');until(lambda:len(list(queue.glob('request-*')))>=seen,label+' submit')
+   qx=sorted(queue.glob('request-*'))[-1];until(lambda:(qx/'request.json').is_file() and (qx/'prompt.txt').is_file() and (qx/'game-request.json').is_file(),'complete '+label+' request')
+   return qx,json.loads((qx/'request.json').read_text())
+  q,req=submit('partial-apply',1);answer(q,req)
+  until(lambda:(q/'execution.json').exists(),'partial-apply first execution')
+  execution=json.loads((q/'execution.json').read_text());assert execution['Executed'] and execution['ExitCode']!=0,execution
+  until(lambda:b'RELAY ERROR' in capture,'partial-apply error rendered')
+  assert (session/'output/partial-first.json').is_file(),'First write must physically land'
+  assert not (session/'output/partial-second.json').exists(),'Failed write must never land'
+  assert (session/'applied').read_text()=='once'
+  # A retry of the same packet on a fresh request must refuse before any write:
+  # the first target no longer matches the read witness the GM authored against.
+  q2,req2=submit('partial-apply retry',2);answer(q2,req2)
+  until(lambda:(q2/'execution.json').exists(),'partial-apply retry execution')
+  retry=json.loads((q2/'execution.json').read_text());assert retry['Executed'] and retry['ExitCode']!=0,retry
+  until(lambda:(q2/'consumer.log').exists(),'partial-apply retry consumer log')
+  consumer_log=(q2/'consumer.log').read_bytes();assert b'GM read witness changed: output/partial-first.json' in consumer_log,consumer_log
+  assert not (session/'output/partial-second.json').exists(),'Retry must never reach the second write'
+  assert (session/'applied').read_text()=='once','Retry re-applied an already landed write'
+  (queue/'close-request.json').write_text('{}');until(lambda:(queue/'closed.json').exists(),'partial-apply close')
  else:
   prompt=('real draft Ж🙂 update > \nsecond line '+('x'*9000)).encode()
   os.write(master,b'\x1b[200~'+prompt+b'\x1b[201~')

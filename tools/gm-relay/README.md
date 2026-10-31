@@ -2,6 +2,8 @@
 
 Source/tasks: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553)
 and [#1559](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1559).
+Native Windows qualification:
+[#1578](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1578).
 This folder is shared, maintained code: preserve it during packaging/cleanup. It
 provides a persistent terminal transport and local worker boundary for real game
 sessions and tests with a **separately authorized** AI adapter.
@@ -194,7 +196,11 @@ synthetic packets through real production Bridge/pipe and fixed game helper;
 it is not another live model run or Codex/OpenCode compatibility claim. The
 focused relay coverage includes a five-request ordinary/repair long-session
 scenario, a larger-than-legacy prompt, packets larger than the former 1 MiB
-bound, identity/close/recovery failures, and the fixed consumer. Narrow
+bound, identity/close/recovery failures, a partial-apply retry refusal (a
+consumer failure after a physically landed first write makes the same packet
+refuse on retry at the read-witness pre-pass, before any further write), and
+the fixed consumer. Narrow
 categories: `gm-relay-reusable-contract`, `gm-relay-reusable-main`, and directly
-affected `gm-relay-transport`/`gm-relay-repair`. Native Windows is post-merge;
+affected `gm-relay-transport`/`gm-relay-repair`. Native Windows qualification is
+tracked in [#1578](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1578);
 systemd S2/S3/real manager and future provider adapters remain separate.
