@@ -60,7 +60,7 @@ internal sealed class MortalWoundDiagnosisPersistedResult : WoundTransitionResul
             ["request"] = WoundResponseInputComposer.SerializeMortalWoundTreatmentValue(outcome.Request),
             ["original"] = JsonNode.Parse(WoundMaterializationContract.SerializeCanonical(outcome.Request.RouteSourceWound)),
             ["knowledgeAfter"] = JsonNode.Parse(WoundMaterializationContract.SerializeCanonical(outcome.KnowledgeAfter)),
-            ["terminal"] = Terminal(outcome.Resolution),
+            ["terminal"] = CreateTerminalProjection(outcome.Resolution),
             ["resourceFinalization"] = WoundResponseInputComposer.SerializeMortalWoundTreatmentValue(finalization.Finalization),
             ["originalCarriers"] = new JsonObject
             {
@@ -118,10 +118,14 @@ internal sealed class MortalWoundDiagnosisPersistedResult : WoundTransitionResul
                 coordinates.AcceptedStateFingerprint != source.AcceptedStateFingerprint || coordinates.ExpectedBeforeFingerprint != source.WoundFingerprint ||
                 WoundMaterializationContract.SerializeCanonical(original) != WoundMaterializationContract.SerializeCanonical(request.RouteSourceWound))
                 throw new InvalidDataException("Diagnosis request differs from its original source or binding.");
+            if (request.ModeAuthority is not MortalWoundProcedureCheckAuthority check || check.SourceIndices.Count != check.SourceRolls.Count ||
+                check.SourceIndices.Where((index, offset) => index < 0 || index >= source.AcceptedD20EventValues.Count ||
+                    source.AcceptedD20EventValues[index] != check.SourceRolls[offset]).Any())
+                throw new InvalidDataException("Diagnosis procedure indices/values differ from the retained accepted d20 pool.");
             var input = Object(root, "input");
             MortalWoundDiagnosisInputCodec.RequireRequestMatches(input, request);
             var resolution = MortalWoundDiagnosisOutcome.ReconstructResolution(request);
-            if (!JsonNode.DeepEquals(Object(root, "terminal"), Terminal(resolution))) throw new InvalidDataException("Terminal diagnosis band/check/result was changed.");
+            if (!JsonNode.DeepEquals(Object(root, "terminal"), CreateTerminalProjection(resolution))) throw new InvalidDataException("Terminal diagnosis band/check/result was changed.");
             var knowledge = Wound(Object(root, "knowledgeAfter"), path + ".knowledgeAfter");
             var expectedKnowledge = MortalWoundDiagnosisOutcome.ReconstructKnowledge(resolution);
             if (WoundMaterializationContract.SerializeCanonical(knowledge) != WoundMaterializationContract.SerializeCanonical(expectedKnowledge))
@@ -139,6 +143,9 @@ internal sealed class MortalWoundDiagnosisPersistedResult : WoundTransitionResul
                 throw new InvalidDataException("Diagnosis clock differs from original time plus the declared method duration.");
             var originalClock = Bytes(clock, "originalBase64") ?? throw new InvalidDataException("Missing original clock bytes.");
             var clockAfter = JsonNode.Parse(BookOfEternityClient.Core.FileSystemManager.DecodeFileBytes(originalClock))!.AsObject();
+            if (clockAfter["currentTimeInMinutes"] is not JsonValue originalMinute || !originalMinute.TryGetValue<long>(out var retainedMinute) ||
+                retainedMinute != source.CurrentGameMinute)
+                throw new InvalidDataException("Diagnosis original clock differs from its retained source minute.");
             clockAfter["currentTimeInMinutes"] = future;
             if (!JsonNode.DeepEquals(clockAfter, Object(clock, "after"))) throw new InvalidDataException("Diagnosis changed unrelated clock fields or charged time twice.");
             var scheduleBefore = Bytes(clock, "scheduleBeforeBase64") ?? throw new InvalidDataException("Missing original schedule bytes.");
@@ -205,7 +212,7 @@ internal sealed class MortalWoundDiagnosisPersistedResult : WoundTransitionResul
         }
     }
 
-    private static JsonObject Terminal(MortalWoundTreatmentResolution resolution) => new()
+    internal static JsonObject CreateTerminalProjection(MortalWoundTreatmentResolution resolution) => new()
     {
         ["category"] = resolution.ResultCategory, ["selectedOutcomeIndex"] = resolution.SelectedOutcomeIndex,
         ["modeEvidence"] = WoundResponseInputComposer.SerializeMortalWoundTreatmentValue(resolution.ModeEvidence),

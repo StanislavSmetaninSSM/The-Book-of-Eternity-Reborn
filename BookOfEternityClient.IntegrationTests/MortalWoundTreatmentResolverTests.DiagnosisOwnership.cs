@@ -274,6 +274,82 @@ public sealed partial class MortalWoundTreatmentResolverTests
             Assert.Null(MortalWoundDiagnosisPersistedResult.Parse(JsonSerializer.SerializeToElement(changed), "diagnosis.result", failure));
             Assert.Contains(failure, value => value.Code == "mortal_wound_diagnosis_result_invalid");
         }
+        foreach (var fault in new[] { "die_index", "die_value", "original_clock" })
+        {
+            var changed = root.DeepClone().AsObject();
+            if (fault == "original_clock")
+            {
+                var clock = changed["clock"]!.AsObject();
+                var originalClock = JsonNode.Parse(FileSystemManager.DecodeFileBytes(Convert.FromBase64String(clock["originalBase64"]!.GetValue<string>())))!.AsObject();
+                originalClock["currentTimeInMinutes"] = owner.CurrentGameMinute + 1;
+                clock["originalBase64"] = Convert.ToBase64String(FileSystemManager.EncodeUtf8WithPreamble(originalClock.ToJsonString()));
+                changed["input"]!["control"]!["currentWorldTimeInMinutes"] = owner.CurrentGameMinute + 1;
+                changed["input"]!["inputFingerprint"] = MortalWoundDiagnosisInputCodec.Fingerprint(changed["input"]!.AsObject());
+                var schedule = JsonNode.Parse(FileSystemManager.DecodeFileBytes(Convert.FromBase64String(clock["scheduleBeforeBase64"]!.GetValue<string>())))!.AsObject();
+                schedule["currentWorldTimeInMinutes"] = owner.CurrentGameMinute + 1;
+                var scheduleBefore = FileSystemManager.EncodeUtf8WithPreamble(schedule.ToJsonString());
+                clock["scheduleBeforeBase64"] = Convert.ToBase64String(scheduleBefore);
+                var preparedAt = JsonNode.Parse(FileSystemManager.DecodeFileBytes(Convert.FromBase64String(clock["scheduleAfterBase64"]!.GetValue<string>())))!["lastUpdatedUtc"]!.GetValue<string>();
+                var progression = ProgressionScheduleService.ReconstructDiagnosisOutcomeData(changed["input"]!["control"]!.AsObject(),
+                    scheduleBefore, Convert.FromBase64String(clock["originalBase64"]!.GetValue<string>()), null,
+                    owner.Binding.SessionId, owner.Binding.RequestId, owner.Binding.Turn, 0, preparedAt);
+                clock["scheduleAfterBase64"] = Convert.ToBase64String(progression.ScheduleAfter.Bytes!);
+                clock["progressionFingerprint"] = progression.MutationFingerprint;
+            }
+            else
+            {
+                var requestJson = changed["request"]!.AsObject();
+                var procedure = ReadJsonObject(requestJson, "ModeAuthority");
+                if (fault == "die_index")
+                {
+                    procedure[FindJsonPropertyName(procedure, "SourceIndices")]![0] = result.Source.AcceptedD20EventValues.Count;
+                    procedure[FindJsonPropertyName(procedure, "SelectedSourceIndex")] = result.Source.AcceptedD20EventValues.Count;
+                }
+                else
+                {
+                    procedure[FindJsonPropertyName(procedure, "SourceRolls")]![0] = 19;
+                    procedure[FindJsonPropertyName(procedure, "NaturalRoll")] = 19;
+                }
+                // Existing pure JSON fingerprint helpers: no reflection, live
+                // source/claim factory or forged accepted receipt participates.
+                ResealDetachedProcedureAuthorityAndRequest(requestJson);
+            }
+            var changedRequest = ParseFreshAuthorityRequest(changed["request"]!.AsObject());
+            var terminal = MortalWoundDiagnosisOutcome.ReconstructResolution(changedRequest);
+            var changedKnowledge = MortalWoundDiagnosisOutcome.ReconstructKnowledge(terminal);
+            changed["knowledgeAfter"] = JsonNode.Parse(WoundMaterializationContract.SerializeCanonical(changedKnowledge));
+            changed["terminal"] = MortalWoundDiagnosisPersistedResult.CreateTerminalProjection(terminal);
+            var finalized = MortalWoundTreatmentResourceComposer.Finalize(terminal);
+            Assert.True(finalized.IsValid, JsonSerializer.Serialize(finalized.Issues));
+            changed["resourceFinalization"] = WoundResponseInputComposer.SerializeMortalWoundTreatmentValue(finalized.Finalization!);
+            var members = working.Members.Select(member =>
+            {
+                var current = member.Original.WoundId == changedKnowledge.WoundId ? changedKnowledge : member.Original;
+                var recovery = MortalWoundRecoveryPlanner.ReconstructAtMinute(result.Source, result.Binding, current,
+                    working.ResultingMinute, member.ConsumedRecovery, member.ConsumedDeterioration);
+                Assert.NotNull(recovery.Resolution);
+                return new MortalWoundDiagnosisRecoveryMember(member.OriginalSourcePath, member.Original, current,
+                    member.ConsumedRecovery, member.ConsumedDeterioration, recovery.Resolution!);
+            }).ToArray();
+            for (var index = 0; index < members.Length; index++)
+                changed["cohort"]![index]!["resolution"] = MortalWoundRecoveryPersistedResult.ResolutionJson(members[index].Resolution);
+            var clockData = changed["clock"]!.AsObject();
+            var scheduleData = JsonNode.Parse(FileSystemManager.DecodeFileBytes(Convert.FromBase64String(clockData["scheduleBeforeBase64"]!.GetValue<string>())))!.AsObject();
+            changed["workingFingerprint"] = MortalWoundDiagnosisWorkingProjection.ComputeComparisonFingerprint(changedRequest,
+                terminal, result.Source.AcceptedStateFingerprint, working.OriginalMinute, working.ResultingMinute,
+                changed["input"]!["control"]!.AsObject(), scheduleData, clockData["after"]!.AsObject(), members);
+            changed["resultFingerprint"] = WoundHistoryState.ComputeTransitionResultFingerprint(changed);
+            var changedHistory = JsonNode.Parse(serializedHistory)!.AsObject();
+            var changedRow = changedHistory["transitions"]!.AsArray()[^1]!.AsObject();
+            changedRow["transitionId"] = changedKnowledge.LastTransition.TransitionId;
+            changedRow["afterFingerprint"] = WoundIdentityState.ComputeSemanticFingerprint(changedKnowledge);
+            changedRow["sourceFingerprint"] = changed["workingFingerprint"]!.DeepClone();
+            changedRow["transitionResult"] = changed;
+            var refused = WoundHistoryState.Parse(changedHistory.ToJsonString(), WoundHistoryState.HistoryPath);
+            Assert.False(refused.IsValid);
+            Assert.Contains(refused.Issues, value => value.Code == "mortal_wound_diagnosis_result_invalid" &&
+                value.Actual?.Contains(fault == "original_clock" ? "original clock differs from its retained source minute" : "retained accepted d20 pool", StringComparison.Ordinal) == true);
+        }
         Assert.True(JsonNode.DeepEquals(root, result.ToCanonicalJson()));
         fixture.AssertJson(unchanged);
     }
@@ -317,6 +393,28 @@ public sealed partial class MortalWoundTreatmentResolverTests
         Assert.True(complete.IsValid, JsonSerializer.Serialize(complete.Issues));
         Assert.Single(complete.State!.Transitions, value => value.TransitionResult is MortalWoundDiagnosisPersistedResult);
         Assert.Equal(owner.History.Transitions.Count + stages.Count, complete.State.Transitions.Count);
+        if (duration != 0)
+        {
+            var finalWound = stages[^1].After;
+            Assert.Equal("active", finalWound.Lifecycle);
+            Assert.True(complete.State.TryResolveRecoveryReplay(finalWound, working.ResultingMinute, out var receipt, out var replayIssues));
+            Assert.Empty(replayIssues);
+            var retained = Assert.IsType<MortalWoundDiagnosisPersistedResult>(Assert.Single(complete.State.Transitions,
+                value => value.TransitionResult is MortalWoundDiagnosisPersistedResult).TransitionResult);
+            var member = Assert.Single(retained.Recoveries, value => value.Original.WoundId == finalWound.WoundId);
+            Assert.Equal(MortalWoundRecoveryPersistedResult.CreateReceipt(member.Resolution, finalWound.WoundId), receipt);
+            Assert.False(complete.State.TryResolveRecoveryReplay(finalWound, working.ResultingMinute + 10, out _, out var laterIssues));
+            Assert.Empty(laterIssues);
+            var consumed = complete.State.GetRecoveryConsumption(finalWound);
+            Assert.Equal(duration / 10, consumed.Recovery);
+            var following = MortalWoundRecoveryPlanner.ReconstructAtMinute(retained.Source, retained.Binding, finalWound,
+                working.ResultingMinute + 10, consumed.Recovery, consumed.Deterioration);
+            Assert.NotNull(following.Resolution);
+            Assert.Equal(1, following.Resolution!.ElapsedCadences);
+            var changedWound = finalWound with { Recovery = finalWound.Recovery with { CurrentStepProgress = finalWound.Recovery.CurrentStepProgress + 1 } };
+            Assert.False(complete.State.TryResolveRecoveryReplay(changedWound, working.ResultingMinute, out _, out var changedIssues));
+            Assert.Contains(changedIssues, value => value.Code == "wound_history_recovery_replay_source_mismatch");
+        }
         fixture.AssertJson(originals);
         await fixture.RebindAsync();
         // Frozen actual execution remains comparable historical DATA after its

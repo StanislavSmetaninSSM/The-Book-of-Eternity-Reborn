@@ -103,7 +103,7 @@
 },
 {
   "id": "mortal-diagnosis-effect-execution",
-  "responsibility": "T121 two independent actual signed-original owner setups execute an explicit zero or 300-minute diagnosis through the existing wound/effect planner. Knowledge is first; only actually due ordinary recovery follows from the diagnosed working image. Real sealed execution and full final History are checked, with all canonical JSON bytes unchanged. UNCOMPILED/UNRUN WIP.",
+  "responsibility": "T121 two independent actual signed-original owner setups execute an explicit zero or 300-minute diagnosis through the existing wound/effect planner. Knowledge is first; only actually due ordinary recovery follows from the diagnosed working image. Real sealed execution and full final History are checked, including diagnosis-owned same/later-minute ordinary replay DATA, cadence consumption and unrecorded source drift, with all canonical JSON bytes unchanged. UNCOMPILED/UNRUN WIP.",
   "excludes": "No fabricated receipt, new accepted state, canonical publication, Engine/GM wait, C4, full guided UI or broad Mortal aggregate. Common resource/time/pending publication remains required.",
   "changeHints": [
     "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalDiagnosis.cs",
@@ -137,7 +137,7 @@
 },
 {
   "id": "mortal-diagnosis-durable-data",
-  "responsibility": "T121 one actual original-owner setup produces strictly detached comparison result DATA at explicit zero duration. The codec retains original/knowledge images, exact held request/procedure/resources, full control/schedule/clock and complete original physical cohort; seven independently outer-resealed copies must reject knowledge regression, altered result/duration/control, cohort omission, foreign terminal operations and resource-trigger drift. This does not fabricate execution or publication receipts. UNCOMPILED/UNRUN WIP.",
+  "responsibility": "T121 one actual original-owner setup produces strictly detached comparison result DATA at explicit zero duration. The codec retains original/knowledge images, exact held request/procedure/resources, full control/schedule/clock and complete original physical cohort; seven outer-resealed semantic controls plus three fully inner/outer/History-resealed accepted-die and original-clock controls refuse detached inconsistencies; terminal, knowledge, resource, cohort and working dependencies are recomputed before the specific retained-source join is asserted. This does not fabricate execution or publication receipts. UNCOMPILED/UNRUN WIP.",
   "excludes": "No canonical publication/Engine/GM wait, fake accepted receipt, permission from serialized seals, broad Mortal aggregate or accepted spiritual replay. Actual native/UI and linked History completion remain required later.",
   "changeHints": [
     "BookOfEternityClient/Services/MortalWoundDiagnosisPersistedResult.cs",

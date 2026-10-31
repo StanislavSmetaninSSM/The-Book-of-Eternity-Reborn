@@ -1,3 +1,28 @@
+# T121 Mortal retained-source and replay corrections WIP — UNCOMPILED / UNRUN
+
+The ongoing independent SOURCE read identified three concrete DATA joins. The
+strict result parser now binds every retained procedure index/value to the
+retained accepted d20 pool, and the original clock numeric to its retained source
+minute before ordinary control/schedule reconstruction. The existing component
+fixture authors fully inner/outer/History-resealed negatives, recomputing request,
+terminal, knowledge, resources, cohort and working dependencies rather than
+testing only an obsolete outer seal. Refusal is asserted at the specific join.
+
+The existing ordinary replay reader now recognizes exact recovery evidence owned
+by a diagnosis primary, including another cohort member's linked stages. The
+same receipt reconstruction and same-minute/later-accepted-transition/source
+rules remain. Complete typed diagnosis History also checks group agreement before
+constructing a state. Actual execution component DATA covers same/later-minute
+lookup, exact consumed cadence and unrecorded same-minute source drift. It does
+not replace the still-required actual published nonterminal diagnosis-to-next-
+ordinary-owner proof in the native/C4 slice.
+
+These corrections add no test rows/setup, cache, I/O or game rule. Estimate remains
+59 cases / fifteen methods / thirteen categories, all UNCOMPILED/UNRUN. No writer
+build/test/discovery/runtime. Ongoing whole SOURCE remains open; Engine/raw intake,
+dynamic command role, outer retry, completed guided route and GM/current-input/
+clock presentation are still unfinished.
+
 # T121 Mortal signed-input role WIP — UNCOMPILED / UNRUN
 
 The actual original-input resolver now checks complete canonical rollback

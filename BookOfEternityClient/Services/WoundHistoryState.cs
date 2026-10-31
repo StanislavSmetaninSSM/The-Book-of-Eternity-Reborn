@@ -294,6 +294,8 @@ internal sealed partial class WoundHistoryState
 
         if (issues.Count == 0)
             ValidateState(nextOrdinal, candidates, HistoryPath, issues);
+        if (issues.Count == 0)
+            ValidateMortalDiagnosisReplayAgreement(candidates, HistoryPath, issues);
         return issues.Count == 0
             ? new WoundHistoryParseResult(
                 new WoundHistoryState(nextOrdinal, candidates),

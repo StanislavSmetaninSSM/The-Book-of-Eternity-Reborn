@@ -690,7 +690,7 @@ internal sealed class MortalWoundRecoveryPersistedResult : WoundTransitionResult
     /// <returns>
     /// The deterministic original receipt with its recomputed receipt fingerprint.
     /// </returns>
-    private static MortalWoundRecoveryReceipt CreateReceipt(MortalWoundRecoveryResolution resolution, string woundId) => new(
+    internal static MortalWoundRecoveryReceipt CreateReceipt(MortalWoundRecoveryResolution resolution, string woundId) => new(
         resolution.AuthorityFingerprint, Hash("book_of_eternity.mortal_wound.recovery_receipt",
             resolution.AuthorityFingerprint, resolution.TickKey, woundId), resolution.TickKey, woundId);
 
