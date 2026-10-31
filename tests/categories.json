@@ -2,6 +2,40 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "mortal-physical-guided-menu-causal",
+  "responsibility": "T121-PHYSICAL-GUIDED causal menu theory: three independent initial canonical procedure/course/guaranteed roots, complete History/effect graph and sole resource bootstrap; typed current wound/known route/actors/context/requirements, first course due/window/dose and actual guaranteed skill capability premises. Real shared OpenAsync must expose Self and the current provider without changing any JSON byte. Passive source counters describe the actual menu operation. Final exact-wound non-diagnosis route-label choice assertion is the intended existing-API RED, with a unique mode-specific failure message. Initial existing-API RED precedes product implementation; later GREEN retains all premises and exact typed route/provider/mode. Three cases/one method; runtime/source epochs are recorded in the canonical plan.",
+  "excludes": "No GameEngine, old reflection fixture factory, accepted-state/request/claim/receipt minting, staged/GM response, publication, course continuation or cold recovery, new counter/cache framework, full-suite/HOLD replay or increased bound. Display-name uniqueness is temporary scaffolding until a typed physical selection exists; this does not prove full execution.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.PhysicalGuidedMenu.cs",
+    "BookOfEternityClient/Services/WoundApplicationService.cs",
+    "BookOfEternityClient/Services/WoundApplicationService.MortalDiagnosisMenu.cs"
+  ],
+  "related": [
+    {
+      "id": "mortal-diagnosis-guided-valid-staging",
+      "when": "Reconsider only if later product changes alter the shared menu/confirmation/staging source; unchanged diagnosis PASS is not replayed for this test-only scaffold."
+    },
+    {
+      "id": "mortal-diagnosis-guided-staging",
+      "when": "Existing stale-source/confirmation peers become affected if the later shared product menu changes; they are not part of this causal3 execution."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.GuidedPhysicalMenuOffersExecutableKnownRouteAfterCanonicalPremises"
+      ]
+    }
+  ]
+},
+{
   "excludes": "No Engine world/wait, fabricated accepted receipt or authority, reflection, new cache/transport, historical effect replay, resource-prefix blob, HOLD aggregate or budget increase. This component does not qualify live browser terminal claiming.",
   "changeHints": [
     "BookOfEternityClient/Services/MortalWoundDiagnosisCompletion.cs",

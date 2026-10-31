@@ -1,3 +1,32 @@
+# T121 physical guided menu causal scaffold — WIP UNCOMPILED/UNRUN
+
+Accepted diagnosis checkpoint6a8794f7e5dc33c46d0ba54285afc5c8a302ae33 is unchanged.
+Independent Astra/high DESIGN and its four finite clarifications are accepted on
+039e224643f90f357e7cf0fd7d0ceea18318755c. Sol authored one typed3-row theory;
+root inspected actual source and corrected the callback's unconditional overwrite
+of the seeded medic BEFORE any build/runtime. Missing companions only are added.
+
+Procedure/course/guaranteed each use a new root, direct initial canonical component
+seeding, complete wound/effect/identity/History and one resource bootstrap, with no
+Engine/reflected fixture factory/original/accepted owner/reservation. Strict known
+route/realm/current actors/requirements and course clock/dose or actual guarantee
+skill premises, actual menu Self-first/current provider, byte-inert whole JSON and
+passive current-read deltas precede the sole intended missing-executable-choice
+failure. Its explicit message includes the selected mode. The temporary display
+label predicate is safe only because route/diagnosis names are proved distinct;
+implementation must strengthen it to typed exact route/provider/mode identity.
+
+Only mortal-physical-guided-menu-causal is selected: source estimate3 cases /
+1 method /1 descriptor, exclusive60s, pending official discovery/PlanOnly/PREP.
+The previous diagnosis selection is retained in Git/accepted receipts, not active
+CI instructions to repeat237 cases. All old catalog owners/membership/bounds stay.
+No product/GM/authority/schema change. Independent SOURCE is next, then a fresh
+Integration-only build; other three owners retain exact unchanged C22 sourcef2f4
+and must match current source/artifact/PDB/resource proof. Existing external
+helpers add only P1RED phase/mapping; no new runner/diagnostic framework. Raw stays
+outside checkout in us5-guided-diagnosis/P1RED-*; current free space about1.21GB.
+No physical RED/GREEN or functional execution is claimed yet.
+
 # T121-PHYSICAL-GUIDED implementation plan — design accepted, causal next
 
 Issue #1536; spec US2/US5, FR060–064/067–074 and the new bounded section in
