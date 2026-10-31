@@ -1,3 +1,26 @@
+# T121 C9 cheap5 PASS — native4 OUTCOME/PREP pending
+
+At runtime `00f9358a2daa570f532dd27177302e77c9c22513`, five cases/five methods
+completed PASS in56.0410053s with no timeout, skips, duplicate IDs or underfill.
+The new dynamic capture and terminal-role descriptors took19.3801899s and
+19.5338968s; the three semantic guards took4.85166s, each within60s. The two
+Integration categories are exclusive; the existing Unit guard category is
+nonexclusive. This bounded run executed them sequentially. Strict TRX/method/ID
+accounting and complete owned/runtime cleanup pass. Closing12:57:07Z verifies
+all27 artifacts,40 resource copies/four daemons stable, no live managed owners
+and2.386GB free. Owning source remains457ef806; raw/strict proof are external
+in `M2GREENC9-cheap5`, with earlier failures retained.
+
+The new real-plan checks prove exact dynamic present/absent originals, physical
+read reuse and fail-closed coverage without changing claims; genuine terminal
+cleanup preserves unrelated drift and refuses publication/rearm. This is not yet
+the original causal outer rollback GREEN. Request combined independent cheap5
+OUTCOME and PREP for only native4: the two original outer rows, actual published
+recovery and shared ordinary publication. Three unchanged120s descriptors,
+exact current PlanOnly membership, same C9 binaries and immediate fresh fence.
+Console/browser/rollback UI3 remains held. No parent, physical treatment, eight
+adapters or historical UNKNOWN/HOLD result is closed by this cheap gate.
+
 # T121 C9 source/build/discovery accepted — cheap5 PREP pending, runtime UNRUN
 
 Independent Astra/high SOURCE accepted the complete correction at
@@ -64,7 +87,8 @@ No fake receipt, accepted state, reflection or new authority/cache/diagnostic st
 
 Source estimate is 217 cases / 89 methods / 49 descriptors / 47 categories,
 subject to official discovery. Fresh cheap gate is new2 plus semantic guards3:
-five cases/methods in three exclusive60s descriptors. Required strict native
+five cases/methods in three60s descriptors (two exclusive Integration categories
+and the existing nonexclusive Unit guards). Required strict native
 regressions are outer2 and publishedRecovery1. The prior common-compose PASS does
 not call capture/factory; its source dependency is unchanged. Prior standalone
 Fate behavior is covered again by the required Shield outer row; Fate semantics
