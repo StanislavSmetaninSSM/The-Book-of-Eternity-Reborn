@@ -8,10 +8,17 @@
 согласования отменены автором ранее. Sol6.1/high read-only audit подтвердил
 личныеclock/regen/реакции/HoT, отсутствие утверждённых цен новогоCC. Legacy
 Оковы и side-wideproduction не переносить. Serena три языка ready, реальная
-символика проверена. T129 параметры/политики/288cases явно экспериментальны.
+символика проверена. T129 параметры/политики/504cases явно экспериментальны.
 Новаяпроверка — численныйscope, неproduction. Source/tests/fullmatrix UNRUN.
 Optimization: reuse existingoperation immutableformula/quality; livecontrol/
 permission/resources свежие. T128raw сохраняется до нового полногоreview.
+
+До полнойматрицы уточнены API и existinggroup roster поactualSerena symbols,
+безизменения старого составаactors. Добавлена window-политика (HP≤65% либо
+missingHP/noHoT), чтобы отделитьполезностьCC отспамабезуронногоконтроля по
+здоровойцели;7tactics/504cases/554400траекторий. Числа/срокиCC неизменны,
+полных исходов ещёнет. RED16/16; начальныйGREEN12/13 выявилошибочныйfixture
+бросок18вместо19 для naturalcritF62; исправляетсяожидание, неформула.
 
 ## T128 — численная проверка direct/HoT, 2026-11-01
 

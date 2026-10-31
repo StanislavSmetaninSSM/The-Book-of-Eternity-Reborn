@@ -64,28 +64,34 @@ Main/8P на такое же освобождение союзника от seal
 
 ### Политики и матрица до результатов
 
-Контроль использует только primary. Если выбранный профиль не none и цель
+Контроль использует только primary. pressure: если профиль не none и цель
 сейчас свободна от этой семьи — контролирующее применение; пока контроль
 действует — suppress V, если полной метки нет или она истечёт на ближайшей
 возможности, иначе ordinary B28/8P. None использует тот же выбор подавляющей/
 обычной атаки без контролирующего применения, чтобы сравнение не меняло AI атаки.
+Вторая политика window выбирает контроль свободной цели только при HP≤65%
+максимума либо при дефицитеHP и отсутствии действующегоHoT. В остальных
+случаях та же атака с подавлением/обычная. Это проверяет момент применения,
+а не заставляет seal бесконечно заменять урон по совершенно здоровой цели.
 Недоступное по ДЭ выбранное действие заменяется Recover, будущие ресурсы не
 занимаются. Выбор не читает будущие кости или скрытую энергию врага. Не называем
 эвристику оптимальной; время применения само по себе влияет на результат.
 Целитель combined/cleansing-first использует прежние приоритеты T128, когда
 контроль не ограничивает действие. HoT не удаляется и не выключается контролем.
 
-Основной срез:3build(normal/fortified_healer/fortified_both) ×4profile(none/seal/
-stun/stun_long) ×R0/25 ×guard off/on ×2orders ×passive/offensive =192cases.
-R50/90 стресс: fortified_healer/fortified_both ×4profile ×R50/90 ×2orders,
-guard on/passive =32. Группы2v2: normal/fortified_both ×4profile ×helperControlRelease
-off/on ×4orders =64, R25/guard on/offensive. Роли [primary,healer,helper,striker],
-стороны [0,1,1,0]; очереди [0,3,2,1],[0,2,1,3],[1,2,0,3],[2,1,0,3]. Helper
+Семь тактик: none/pressure один baseline, seal/stun/stun_long каждая с
+pressure/window. Основной срез:3build(normal/fortified_healer/fortified_both)
+×7tactics ×R0/25 ×guard off/on ×2orders ×passive/offensive =336cases.
+R50/90 стресс: fortified_healer/fortified_both ×7tactics ×R50/90 ×2orders,
+guard on/passive =56. Группы2v2: normal/fortified_both ×7tactics ×helperControlRelease
+off/on ×4orders =112, R25/guard on/offensive. Существующие роли
+[primary,striker,healer,helper], стороны [0,0,1,1]; очереди
+[0,1,3,2],[0,3,2,1],[2,3,0,1],[3,2,0,1]. Helper
 при включённом release сначала освобождает контролируемого союзника, затем
 исполняет прежние cleanse/attack/Recover правила. Дополнительных ходов нет.
 
-Всего288cases; main100 и независимый confirm1000 на каждый, horizon2000:
-316800траекторий. Все D130/уровеньV, полные ресурсы; усиления/Гармония какT128,
+Всего504cases; main100 и независимый confirm1000 на каждый, horizon2000:
+554400траекторий. Все D130/уровеньV, полные ресурсы; усиления/Гармония какT128,
 асимметричную стоимость сборок не выдавать за равную. Отдельные потоки damage,
 control-save и break; seed полных параметров/n/horizon/версии, без shard/time.
 Контроль адресный; сравнить очередь, самостоятельный и союзный выход, долю

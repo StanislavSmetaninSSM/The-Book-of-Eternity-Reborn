@@ -18,14 +18,14 @@ baseline/origin a8bb390e46c412b08bb3d3877dcaf08e974224a8, unrelated1536/obj не
   при необходимости periodic-model.mjs для fresh admission. Не копировать HP/
   ДЭ/clock/endpoints и не возвращать Heal interruption. API закрепить доGREEN.
 - [ ] T129.2a Проверить связанные numerical guards (144прежних+новые), legacy42
-  и bounded periodic baseline; smoke288main/confirm +3shard union. Fixtures:
+  и bounded periodic baseline; smoke504main/confirm +3shard union. Fixtures:
   source/art/target, forbiddencast/allowedbreak, stunMain/reaction vs freecheck,
   dueHoT/regen/refresh, applysave/crit/partial, цены доRNG, escape consumesMain,
   allyrelease/no extraMain, independentcontrols/expiry/exit/finaltick.
 - [ ] T129.2b Stable quality/damage/healing reuse через существующую operation;
   полные key/D/B/guard/resistance/profile зависимости. Живые ограничения не
   кэшировать. Измерить подготовку/lookup; no newparallelcache/дорогихgamefixtures.
-- [ ] T129.3 Frozen source commit/push/readback; main288×100/confirm288×1000,
+- [ ] T129.3 Frozen source commit/push/readback; main504×100/confirm504×1000,
   horizon2000,3shards при необходимости. Rawбезквот D:\BoeDiagnostics\healing-control-t129\20261101-v1.
   Сверить весьcoverage/seeds/endpoints/actorcounts/costs/controls/HP и сохранить
   плохие случаи. Не менять параметры после старта полной матрицы.
@@ -36,9 +36,30 @@ baseline/origin a8bb390e46c412b08bb3d3877dcaf08e974224a8, unrelated1536/obj не
 
 Preflight: request→T129spec→T129.1–4; accepted personalstate/ordinaryregen/
 autonomousHoT/ownclock/freecheck сохраняются. Цены/сроки/save/разрыв обозначены
-экспериментальными, не принятыми правилами игры. 192+32+64=288cases,
-288×1100=316800. Не импортировать старый side-widecontrol и фиксированные
+экспериментальными, не принятыми правилами игры. 336+56+112=504cases,
+504×1100=554400. Не импортировать старый side-widecontrol и фиксированные
 действия. Ledger вplan/review, бездублирующего Superpowers плана.
+
+API доGREEN: `controlRules:'control-v1'`, `controlProfile:none|seal|stun|stun_long`,
+`helperControlRelease:boolean`; periodic-v1/combined/cleanse-first и общий
+periodicAttack:suppress_needed. Exact actor.controls; exports controlProfiles,
+controlFamily, controlsFor, blocksControl, applyControl, expireControls,
+breakControl, chooseControlMain. Existing group roster [primary,striker,healer,
+helper]/[0,0,1,1] сохраняется; specочереди исправлены по actualcreateEncounter
+до source. Helper с seal использует selfbreak, allyrelease только безCC.
+Дополнительно controlPolicy:pressure|window; условияwindow зафиксированы вspec
+до полнойматрицы, не выбраны по результатам. Тестировать ровно65%/полныйHP/
+HoTactive, безскрытойинформации. Baseline none идёт одинраз сpressure.
+Control snapshot хранит исходный M_Воли; breakdelta — свежийM освобождающего
+минус snapshot. Третийаргумент checkedQuality есть Благоволение, не Воля;
+не менять критпорог при ином Will. Полные фикстуры имеют равныеX/D.
+Counters: controlCasts/Paid/Hits/SaveAttempts/Saves/controlsApplied,
+controlBlockedMains/GuardDenials,
+controlBreakAttempts/Succeeded/Paid/allyControlBreaks, aggregate/byActor.
+Stable таблицы через existingoperation, fresh ограничения/платежи/rolls.
+controlPaid входит вattackPaid и не складываетсяс ним повторно;
+controlBreakPaid — отдельныйрасход. allyControlBreaks считаетоплаченные
+попыткисоюзнойпомощи; успехи отражаютсяcontrolBreakSucceeded поactor.
 
 ## T128 — выполнение численной проверки, 2026-11-01
 
