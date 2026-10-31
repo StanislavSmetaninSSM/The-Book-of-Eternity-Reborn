@@ -1688,8 +1688,9 @@ apply observed-optional enforcement to the complete inherited optional-root set.
 The existing ReadCurrentCore captures a narrow immutable pending observation only
 after authenticated manifest/authority/presence and selected-byte verification,
 before CloseAndRecheck. The same OriginalSourceReadSession/FrozenOriginalSource/
-evidence retains it. Present requires exact selected authenticated bytes and
-agreeing presence/mapping/hash; absent requires signed false and no conflicting
+evidence retains it. Present requires exact selected authenticated bytes/mapping/hash and agreement
+with any supplied presence bit; its omission does not erase exact positive
+coverage. Absent requires signed false and no conflicting
 mapping/hash. Missing observation is not absence. Copied DATA exports do not
 parse raw manifest/authority again or issue permission. Existing original/control/
 physical source checks and live pending/held retention remain mandatory. No new

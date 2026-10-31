@@ -2,6 +2,82 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "mortal-diagnosis-pending-observation",
+  "responsibility": "Six focused independent rows: both real Live and Engine original producers with pending present/absent, plus prior supported noncombat/combat maps that remain unrelated-reader DATA but refuse diagnosis authority from unobserved absence. The same scopes prove copied exact exports, no added source opens for factual getters, old-evidence manifest/artifact drift, pending-specific fully resealed contradictory presence and one-sided mapping/hash refusal. Present covered bytes do not create a pending owner. UNCOMPILED/UNRUN; actual native common-plan failure is the causal RED.",
+  "excludes": "No ProcessPlayerTurn/GM wait, fabricated request/repair/publication receipt, post-accepted baseline patch, inherited optional-mode widening, cache/index/second authority, full Mortal aggregate or HOLD run.",
+  "changeHints": [
+    "BookOfEternityClient/Services/PendingTurnSnapshotReader.cs",
+    "BookOfEternityClient/Services/PendingTurnSnapshotReader.Observed.cs",
+    "BookOfEternityClient/Services/MortalWoundTreatmentAcceptedStateAuthority.cs"
+  ],
+  "related": [
+    {
+      "id": "mortal-diagnosis-input-role",
+      "when": "Existing six actual input-role rows retain full frame/current-command/source evidence."
+    },
+    {
+      "id": "mortal-diagnosis-pre-handoff-retention",
+      "when": "Exact original before-image never grants permission to replace unowned current pending or alter retained claims."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.PendingTurnSnapshotPresenceIntegrationTests.OriginalPendingViewUsesBothRealProducersExactImagesCopiesAndFreshSource",
+        "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.PriorPendingObservationShapeRemainsUnrelatedDataButCannotIssueDiagnosisAuthority"
+      ]
+    }
+  ]
+},
+{
+  "id": "mortal-diagnosis-pending-presence-regressions",
+  "responsibility": "Nine directly affected existing presence/helper cases: two typed contract factories preserve current 23, prior 22 noncombat/combat and older supported sets; five existing signed-DATA reader rows construct their historical maps without the new pending bit; the sole direct helper consumer exercises default signing plus strict fresh/reserved signed-absence behavior in two rows. No broad authority/read-set aggregate. UNCOMPILED/UNRUN.",
+  "excludes": "No broad authority/compatibility/DFR suite, new reflection access, accepted receipt or claim from historical DATA, observed enforcement for unrelated optional roots, game rule or protocol authored by GM.",
+  "changeHints": [
+    "BookOfEternityClient.Tests/PendingTurnSnapshotPresenceContractTests.cs",
+    "BookOfEternityClient.IntegrationTests/PendingTurnSnapshotPresenceIntegrationTests.cs",
+    "BookOfEternityClient.TestSupport/PendingTurnSnapshotTestAuthority.cs"
+  ],
+  "related": [
+    {
+      "id": "mortal-diagnosis-pending-observation",
+      "when": "The narrow frozen original pending view must preserve exact supported reader evidence and fail missing diagnosis observation."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.PendingTurnSnapshotPresenceContractTests.ClosedObservationContract_PreservesLegacySetsAndEmitsCurrentTwentyOnePaths",
+        "BookOfEternityClient.Tests.PendingTurnSnapshotPresenceContractTests.Create_DerivesExactPresenceAndRejectsUntrustworthyCoverage",
+        "BookOfEternityClient.Tests.ReservedValidationReadSetTests.StrictSignedAbsenceMatchesTheFreshOriginalReader"
+      ]
+    },
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.PendingTurnSnapshotPresenceIntegrationTests.LegacyPresenceMap_OrdinaryReadSucceedsButMissingSpiritualObservationFails",
+        "BookOfEternityClient.Tests.PendingTurnSnapshotPresenceIntegrationTests.PriorNineteenPresence_OrdinaryReadCannotAuthorizeUnobservedMortalAbsence",
+        "BookOfEternityClient.Tests.PendingTurnSnapshotPresenceIntegrationTests.PreviousPresenceMap_ReceiptRequiresCoverageOrSignedObservation",
+        "BookOfEternityClient.Tests.PendingTurnSnapshotPresenceIntegrationTests.PriorTwentyOnePresence_OrdinaryReadCannotAuthorizeUnobservedCompletionMarkerAbsence"
+      ]
+    }
+  ]
+},
+{
   "id": "mortal-diagnosis-current-path-regressions",
   "responsibility": "Current physical path migration through typed whole-wound reduction, exact known-path availability and complete path seals; shared local diagnosis shape/writers/requirements and graph removal remain strict. Finite existing methods only; source-authored selection UNRUN, discovery and independent whole SOURCE settle membership/admission.",
   "excludes": "No broad Mortal 10–15 minute aggregate, complete suite, DFR/Windows/compatibility qualification, historical reflection fixture copied into new tests or new game rule.",

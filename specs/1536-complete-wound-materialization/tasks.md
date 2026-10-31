@@ -76,7 +76,9 @@ archive are outside checkout; original failures and all other holds are retained
   require a verified pending observation before diagnosis claims, and retain exact
   held versus outer images. Astra bounded DESIGN accepted; core WIP is
   UNCOMPILED/UNRUN. Four real producer present/absent rows and two prior-shape
-  refusal rows plus existing source-drift/coverage/role/rebind controls precede
+  refusal rows include pending-specific resealed presence/mapping, copied exports
+  and source-drift/counter controls; existing role/rebind proofs are retained.
+  Typed presence and exact existing helper consumers are selected before
   coherent SOURCE/build/PREP. No signed absence may be fabricated by a fixture.
 
 - [x] T121-DIAGNOSIS-READ Show readable declared conditions of currently known

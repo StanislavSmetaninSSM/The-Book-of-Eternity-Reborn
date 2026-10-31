@@ -1,3 +1,55 @@
+# T121 pending observation coherent candidate — SOURCE freeze, UNCOMPILED / UNRUN
+
+The grouped correction is complete in source. Shared Live/Engine current capture
+observes pending in the 23-path default set and corresponding combat form; exact
+prior 22-path noncombat/combat and older supported sets remain readable for
+unrelated work. The existing selected-key validation gates the narrow capture,
+so dictionary lookups suffice without full manifest scans. Present comes from
+exact verified selected bytes/mapping/hash and any supplied presence must agree;
+absence requires explicit authenticated false. Missing absence stays unobserved.
+The image is captured in the same original session after verification and before
+CloseAndRecheck, copied through its frozen evidence, and required by diagnosis
+export before usable authority/claims. The projection/getter adds no source read/parse; the producer necessarily observes
+the new pending path. This is not a whole-operation no-I/O or speedup claim.
+
+Six new focused rows use two methods: four actual producer present/absent scopes
+and two prior-shape diagnosis refusals. Coverage is direct: present scopes also
+prove old-map exact byte exports, copied arrays, no extra getter source opens,
+old-manifest/selected-artifact RequireCurrent refusal and fully resealed pending
+false-versus-covered contradiction. Absent scopes prove explicit false, raw
+manifest drift and resealed files-only/hashes-only coverage rejection. Negative
+reads issue no evidence. Prior-map rows return no diagnosis owner before Prepare
+and leave canonical bytes unchanged. The existing actual role6, hold/rebind,
+C4 and outer checks remain; healthy role rows assert original pending absence,
+and hold/rebind explicitly refuses an unowned current pending image unchanged.
+
+The two directly affected contract methods use typed factory APIs; historical
+reader fixtures remove the new bit only when constructing their explicit older
+signed DATA. Nine existing cases are selected separately, including the sole direct signing-helper
+consumer's two strict fresh/reserved absence rows. The existing
+signed-DATA writer gains only an optional real write lease, with unchanged default
+call behavior; no new authority or test signing framework. All code/controls are
+UNCOMPILED/UNRUN. Existing native failure is causal RED; no expensive RED repeat.
+
+Static full selection is now estimated 183 cases / 71 methods / 35 project
+descriptors / 33 categories. New focused 6 + affected presence 9 + semantic guards 3
+form the proposed cheap 18 (twelve methods / four project descriptors / three
+categories), pending official discovery and independent PREP. Prior accepted
+cheap 140 is not replayed: only its affected guard3 is superseded; the reviewed
+unchanged remainder stays a separate lineage. The original native 25 and actual
+UI 3 remain required and unqualified; no extra native baseline setup is added.
+
+GM impact: this is automatically produced client-owned original evidence, not a
+new GM command/output, permission, fee, duration, memory surface or game rule. The
+six current diagnosis guides already forbid authoring original/pending evidence
+and distinguish held versus outer images, so their instructions/worked procedure
+remain correct. Historical spiritual receipt sections describe their older map
+stage; no new manual value is requested. No prompt/example change is required
+for this private reader correction. Fresh control, original physical observation,
+manifest/hash, exact claim/held image, common publication and closing checks stay.
+No cache/index, second owner/publisher, speedup claim or writer build/test/runtime.
+The same independent complete SOURCE must precede all fresh owning builds.
+
 # T121 pending observation controls WIP — UNCOMPILED / UNRUN
 
 Six focused rows are authored: Live and real Engine producers each with original
