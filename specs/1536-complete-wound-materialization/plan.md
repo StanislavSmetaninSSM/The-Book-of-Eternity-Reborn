@@ -1,3 +1,33 @@
+# T121 C15 grouped correction freshly built — runtime UNRUN
+
+Independent SOURCE accepts `78918350e78be28908aef3c3c1afd180d14b6d12`.
+All four new owning builds use that exact SHA and exit0: Main1:57.22 /12 prior
+warnings, Support15.91s /23, Unit56.81s /26, Integration2:05.02 /102. Each warning
+code/message multiset matches its preceding successful owner. Actual Compile
+ownership,4 PE/PDB pairs and347 source bindings match; all27 artifacts,40 resource
+copies and4 daemons agree. Full archive62,980,249 bytes has SHA256
+`fb03c5e98fb1af05653bc532b9da9b7fdc9f69bb37ce8a98af33c0d38103ee60`;
+all27 member hashes and full197,304,320-byte gzip EOF/CRC decode are verified.
+Full raw/package remain outside checkout under M2GREENC15-* in the diagnosis root.
+
+Official catalog exits0 with1272 categories /13087 methods, no stale/unmapped
+selector. Exact full PlanOnly exits0 with233 cases /101 methods /60 descriptors /
+57 categories and zero executions. The unchanged exact partition is post8 in
+five60s owners, browser3 separately60s, fresh Engine-original1 at60s and original
+UI3 separately180s, plus historical retained218. Current method counts and all48
+retained raw TRX hashes reconcile exactly to the existing external218 proof
+`283999fefb0a617705040cda47057b37a473b54b67f2dc25deae4174fa9378f0`.
+This remains18 historical epochs /24 used runs, not a fresh218 or233 PASS.
+
+Independent PREP and a new live source/resource/process fence precede C15 post8.
+The old False1 and failed close-controller/owner attempts stay separate; the
+corrected shared setup must execute afresh. No C15 test or UI scenario has yet run.
+Completed-DATA proof, actual owner, no-ambient-lease, exact rebind/claims/bytes,
+occupied-context transfer and full close suppression requirements are unchanged.
+Neither limits nor assertions are relaxed, no speedup is claimed and no older
+raw/root/save is deleted. Physical guided treatment, eight adapters, wider
+parents and all prior UNKNOWN/DFR/Mortal-compat/Windows boundaries remain open.
+
 # T121 C14 grouped completion dependency and caller-owner SOURCE candidate
 
 The two preserved actual attempts remain distinct: M2GREENC14-post8 has1 PASS /
