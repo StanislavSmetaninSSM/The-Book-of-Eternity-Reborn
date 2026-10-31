@@ -1,3 +1,16 @@
+# T121 explicit-lease SOURCE accepted — owning builds only
+
+Independent Astra/high accepted the bounded correction at
+`6bfe2f91a24c02fd73cff238fdf2623a634a5816`, with no Important/Critical finding.
+The same explicit lease reaches the identified resource/effect/diagnosis reads;
+retained DATA stays first and existing source, authority, mutation and claim
+checks remain. No global lock/ambient change or new cache is introduced.
+The authored focused13 controls and native19→6→UI3 dependency order are sufficient;
+all native category memberships and 120s limits remain unchanged. This is build
+admission only. All new C# is UNCOMPILED/UNRUN; current native and UI stay held.
+Fresh owning builds, provenance/catalog/PlanOnly and PREP precede runtime.
+The internal no-GM-update rationale and wider changed-owner boundary remain.
+
 # T121 explicit-lease correction — coherent SOURCE candidate, UNCOMPILED / UNRUN
 
 Connected WIP was published at `e2bec94eba1ccb411baf3090e7a0f35a28356621`.
