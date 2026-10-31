@@ -43,6 +43,24 @@ archive are outside checkout; original failures and all other holds are retained
 
 # T121 diagnosis recommendations — #1536
 
+- [ ] T121-DIAGNOSIS-MORTAL-BROWSER-COMPLETION Close actual C20 browser final-tail
+  family refusal without bypassing accepted-result verification. Dispatch the
+  already authenticated Mortal diagnosis original through a narrow durable current
+  settlement reader used by both live completion and persisted accepted-record
+  classification. Reuse existing strict result/History, carrier/identity, scheduler,
+  resource/item/effect agreement owners with fresh current reads under the caller's
+  lease. Require exact independent original input/control/token/generation, unique
+  complete result/cohort and actual current after-images, consumed transient inputs
+  and enclosing story/cleanup proof. Never mint reservation/publication authority
+  from persisted DATA or resurrect the closed transaction. Actual browser1 is
+  causal FAIL, not timeout; console1 is independently accepted separately.
+  Add bounded typed complete/missing/duplicate/foreign/original/control/current
+  drift/reintroduced-work controls, selected spiritual dispatch peers and original
+  browser/rollback before coherent OUTCOME. Existing positive lineages are retained
+  unless dependencies change. Canonical/GM-facing capability is unchanged; record
+  the client-owned completion rationale and optimization assessment. See current
+  plan receipt; no parent or whole diagnosis acceptance yet.
+
 - [ ] T121-DIAGNOSIS-MORTAL-ITEM-POSTVALIDATION Close the confirmed client-owned
   medic debit versus outer post-materialization inventory guard using the existing
   finalized transaction and actual read-owner scopes. Completed copied DATA is
