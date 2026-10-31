@@ -1,3 +1,36 @@
+# T121 diagnosis rollback failed — grouped fixture and browser audit pending
+
+The independent console rollback singleton at runtime
+`f507ea406d934826ad41dd2f723605718b458023` / compiled source
+`0b661addfd28134f5056ab688f03688493624b6e` completed one FAIL without timeout:
+37.1279774s/180s, wall 48.0975891s. TRX SHA256
+`974fc2deeadbc26338169b90faf15e683ec48e29a4b8e6d36471a5863a5afe68`.
+The final whole-before-image assertion at Diagnosis.cs:205 found changed
+`afterlife_spiritual_conflict_state.json`. Earlier actual publication cut History,
+exact diagnosis/natural pair and binding, scheduler/agreement, compensation root
+byte equality and restored turn number 42 assertions passed. Those intermediate
+proofs do not make the complete rollback case PASS. Its source cause remains under
+bounded fixture-initialization review; no production or test correction is made here.
+
+The complete failed capture has 20 ordered events / ten pairs and one message,
+verified writer/footer/full gzip CRC, stored and decoded hashes, and owned-root
+absence. Stored SHA256
+`01caaa36c9dd65037d0b8b81991602952943dc60e47c499fbe07237241e29b36`;
+decoded SHA256 `ed81ea3cca02f0b4a4c10ff5f746ffe66a472209f7f8ce9e6022e242eba124e1`.
+The 01:39:47 UTC closing fence found stable artifacts/resources/daemons, no live
+owners and approximately 3.802 GB free. Full failed capture is not functional PASS.
+
+The accepted console and 164-case mixed-lineage union remain retained; browser
+and rollback are complete FAIL, not UNRUN. Both earlier console timeouts and all
+failed raw/captures remain preserved outside Git. Further UI admission is held.
+The grouped next review covers the four ordinary afterlife snapshot initializers
+against the fixture's whole-before image, plus the already identified missing
+strict browser diagnosis-purpose branch and its real typed causal scaffold.
+This checkpoint changes only this plan: no source, tests, catalogue or task flags.
+All fresh authority, exact rollback and complete-capture guards remain mandatory;
+no new diagnostic stack, limit increase or performance claim. Mortal/eight-adapter
+work and all broader holds remain open.
+
 # T121 browser diagnosis failed — detached-purpose audit pending
 
 The actual browser singleton at runtime `3a478794e7cc2e087aee4f1f9a86153e6d2923e1`
