@@ -20,6 +20,22 @@ D130 normal26.4ДЭ/ход, Recover дополнительно57.6, срыв28.8
 Это объясняет необходимость ресурсных пауз, но не заменяет измерения длительности.
 Scope/согласованные игровые цены не менялись. T122 raw остаётся целым наD:.
 
+T123.2 выполнен. Четыре новых файла прошли observed RED→GREEN: нет modules;
+оплата атаки после RNG (исправлено до броска); absorbing-state; unresisted
+adaptive threshold/реальные профили врагов; first-fall actor attribution;
+cleanse tie в пользу healer. Две ошибочные первоначальные fixture-ожидаемости
+revival исправлены по принятой формуле/действительному очищению, не изменением правил.
+Source frozen после финального прогона:84/84 tests,0fail/skip/cancel,332.6216мс,
+exit0, stderr0. Команда `node --test specs/1573-spiritual-combat-rework/probes/*.test.mjs`.
+Parent прочитал полный итог tests.txt и проверил smoke JSONL: metadata+288cells+
+complete,288траекторий, все indices/outcome sums,stderr0. Smoke CLI
+`node specs/1573-spiritual-combat-rework/probes/healing-tactics-probe.mjs --matrix=support --samples=1 --horizon=3`.
+Raw проверки в D:\BoeDiagnostics\healing-tactics-t123\20261031-v1, не в Git.
+Все13старых probe-файлов совпали с11dbb105f, diff-check чистый; C# runtime не менялся.
+WIP2562aca30 был опубликован до завершения модели; его SHA подтверждён origin.
+Следующий checkpoint фиксирует GREEN source перед четырьмя длинными матрицами.
+T123.3/4 остаются открыты; пока нет новых балансных выводов и финального review.
+
 ## T123 — проект исследования, 2026-10-31
 
 Baseline 493cce3df289da5bc0c5a5f0ae29b055fad319e9 совпал с origin;

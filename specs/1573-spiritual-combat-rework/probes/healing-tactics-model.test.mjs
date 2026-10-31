@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {chooseAttack,chooseTarget,choosePatient,teamDefeated,createEncounter,stepEncounter,runTrial,createOperation} from './healing-tactics-model.mjs';
+import {chooseAttack,chooseTarget,choosePatient,teamDefeated,createEncounter,stepEncounter,runTrial,createOperation,fastForwardIdle} from './healing-tactics-model.mjs';
 import {actor,begin,end,damage,applyHeal} from './healing-modes-model.mjs';
 import {price} from './reaction-model.mjs';
 import {mark} from './suppression-model.mjs';
@@ -13,6 +13,7 @@ test('attack choice is pure, pays now and reserves 16P after known capped regene
   const v={self:a,target:t},copy=structuredClone(v);
   assert.equal(chooseAttack(v,'greedy'),'large');
   assert.equal(chooseAttack(v,'reserve'),'strong');
+  assert.deepEqual(v,copy);
   a.energy=price(a,8)-1;a.regen=price(a,36);
   assert.equal(chooseAttack(v,'reserve'),'recover');
   a.energy=price(a,12);a.regen=price(a,16);
@@ -97,4 +98,52 @@ test('inaccessible support and accessible patient-only control share first-fall 
   const options={kind:'support',attackPolicy:'fixed_large',targetPolicy:'patient',horizon:8,interrupt:false,seed:42};
   const a=runTrial({...options,helperAccess:false}),b=runTrial({...options,helperAccess:true});
   assert.deepEqual(a.endpoints.firstPatientFall,b.endpoints.firstPatientFall);
+});
+test('exact passive inaccessible-helper absorbing state advances clocks and counters to horizon, never victory',()=>{
+  for(const order of [[0,1,2],[2,0,1],[1,2,0]]){
+    const options={kind:'support',helperAccess:false,order,horizon:7,interrupt:false};
+    const a=createEncounter(options),b=createEncounter(options);
+    for(const e of [a,b]){
+      damage(e.actors[1],e.actors[1].hp);e.endpoints.firstPatientFall={time:1,kind:'event'};
+      e.endpoints.firstAnyFall={time:1,kind:'event'};e.round=1;
+    }
+    while(!a.done)stepEncounter(a,miss);
+    assert.equal(fastForwardIdle(b),true);
+    assert.deepEqual(b.actors,a.actors);assert.deepEqual(b.counts,a.counts);assert.deepEqual(b.endpoints,a.endpoints);
+    assert.equal(b.winner,null);assert.equal(b.endpoints.total.kind,'horizon');
+    for(const mutate of [e=>e.actors[0].energy--,e=>mark(e.actors[2],'A',2),e=>e.actors[1].collapsed=false,
+      e=>e.options.helperAccess=true,e=>e.options.defender='offensive',e=>e.options.trace=()=>{},
+      e=>e.actors[0].pending={target:'A'},e=>e.cursor=1]){
+      const e=createEncounter(options);damage(e.actors[1],e.actors[1].hp);mutate(e);assert.equal(fastForwardIdle(e),false);
+    }
+  }
+});
+test('interrupter eligibility ignores collapsed positive HP and cannot borrow future energy',()=>{
+  const e=createEncounter({kind:'group',order:[2,0,1,3],mode:'instant'}),[a,b,h]=e.actors;
+  damage(a,a.hp);a.hp=1;a.energy=a.p.max;b.energy=price(b,8)-1;b.regen=price(b,36);h.hp=400;
+  stepEncounter(e,{damage:()=>{throw Error('no attack');},reaction:()=>{throw Error('no funded reaction');}});
+  assert.equal(e.counts.interruptions,0);assert.equal(a.reaction,1);assert.equal(b.energy,price(b,8)-1);
+});
+test('long healing pays full 24P upfront and 0P on next Main, effects age on skipped slots',()=>{
+  const e=createEncounter({kind:'support',mode:'long',order:[1,2,0],interrupt:false}),[,h,b]=e.actors;
+  b.hp=100;const initial=h.energy;stepEncounter(e,miss);
+  assert.equal(e.counts.healPaid,price(h,24));assert.equal(h.energy,initial-price(h,24)+h.regen);
+  assert.equal(h.pending.target,'C');stepEncounter(e,miss);stepEncounter(e,miss);stepEncounter(e,miss);
+  assert.equal(e.counts.healingMains,2);assert.equal(e.counts.healPaid,price(h,24));assert.equal(e.counts.finishes,1);
+  const f=createEncounter({kind:'support',order:[2,0,1],interrupt:false});damage(f.actors[2],f.actors[2].hp);mark(f.actors[2],'A',2);
+  stepEncounter(f,miss);assert.equal(f.actors[2].marks.length,1);
+  stepEncounter(f,miss);stepEncounter(f,miss);stepEncounter(f,miss);assert.equal(f.actors[2].marks.length,0);
+});
+test('adaptive preserves unresisted known-damage threshold, with actual ordinary mirror and striker profiles',()=>{
+  const mirror=createEncounter({kind:'group',mirror:true,defender:'offensive',mode:'adaptive',order:[0,1,2,3],interrupt:false});
+  mirror.actors[0].hp=400;stepEncounter(mirror,miss);assert.equal(mirror.counts.starts,1);
+  const reinforced=createEncounter({mode:'adaptive',attackPolicy:'fixed_ordinary',resistance:25,order:[1,0],interrupt:false});
+  reinforced.actors[1].hp=300;stepEncounter(reinforced,miss);assert.equal(reinforced.counts.instant,1);
+  const group=createEncounter({kind:'group',mode:'adaptive',attackPolicy:'fixed_suppress',order:[2,0,1,3],interrupt:false});
+  group.actors[2].hp=350;stepEncounter(group,miss);assert.equal(group.counts.instant,1);
+});
+test('helper cleanse ties follow healer triage ahead of helper self',()=>{
+  const e=createEncounter({kind:'support',order:[2,0,1],interrupt:false}),[,h,b]=e.actors;
+  h.hp=b.hp=500;mark(h,'A',2);mark(b,'A',2);stepEncounter(e,miss);
+  assert.equal(h.marks.length,0);assert.equal(b.marks.length,1);assert.equal(e.counts.byActor.C.cleanse,1);
 });

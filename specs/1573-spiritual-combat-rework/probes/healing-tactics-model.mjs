@@ -127,8 +127,10 @@ function doHeal(e,a,dice){
   if(o.defender==='offensive'&&!a.pending&&e.actors.filter(t=>t.team===a.team).every(t=>living(t)&&t.hp>t.maxHp/2)){
     doAttack(e,a,'fixed_ordinary',dice);return;
   }
-  const enemyKinds=o.attackPolicy.startsWith('fixed_')?[o.attackPolicy.slice(6)]:['large'];
-  const maxNextDamage=Math.max(...enemyKinds.map(k=>a.tables[k].max));
+  // Preserve T120's unresisted known-profile threshold, rather than forecasting a future hit or policy choice.
+  const enemyKinds=e.actors.filter(t=>t.team!==a.team).map(t=>t.role==='primary'?
+    o.attackPolicy.startsWith('fixed_')?o.attackPolicy.slice(6):'large':'ordinary');
+  const maxNextDamage=Math.max(...enemyKinds.map(k=>e.operation.table(o.D,attackProfiles[k].B,0).max));
   const mode=chooseMode(a,o.mode,maxNextDamage),patient=choosePatient(e.actors,a.id)??(mode==='long'?a:null);
   const finish=mode==='long'&&hadPending,cost=price(a,finish?0:mode==='long'?24:12);
   if(!patient||a.energy<cost){doRecover(e,a);if(hadPending)count(e,a,'abandoned');return;}
@@ -155,6 +157,22 @@ function finish(e,kind){
   e.done=true;e.endpoints.total={time:e.round,kind};
   for(const key of ['firstPatientFall','firstAnyFall'])if(!e.endpoints[key])e.endpoints[key]={time:e.round,kind:kind==='horizon'?'horizon':'no-event'};
 }
+/** Exact absorbing-state optimization: there is no available target, healer, effect, or future random action. */
+export function fastForwardIdle(e) {
+  const o=e.options;
+  if(e.done||e.cursor!==0||o.kind!=='support'||o.helperAccess||o.defender!=='passive'||o.trace||o.fastForward===false)return false;
+  const [primary,healer,helper]=e.actors;
+  if(!healer.collapsed||!living(primary)||!living(helper)||e.actors.some(a=>a.pending||a.marks.length)||
+    primary.energy!==primary.p.max||helper.energy!==helper.p.max)return false;
+  const opportunities=o.horizon-e.round;if(opportunities<=0)return false;
+  for(const a of e.actors){
+    a.started+=opportunities;a.active=false;a.ready=false;a.collapsedThisTurn=a.collapsed;
+    a.used=!a.collapsed;
+    if(a.collapsed)count(e,a,'skipped',opportunities);
+    else{a.reaction=1;count(e,a,'recover',opportunities);}
+  }
+  e.round=o.horizon;finish(e,'horizon');return true;
+}
 
 /** Advance one personal opportunity, including a collapsed participant's skipped clock boundary. */
 export function stepEncounter(e,dice) {
@@ -166,7 +184,7 @@ export function stepEncounter(e,dice) {
   else if(a.role==='healer')doHeal(e,a,dice);
   else if(a.role==='helper'){
     const allies=e.actors.filter(t=>t.team===a.team&&t.marks.length).sort((x,y)=>strength(y)-strength(x)||
-      Number(y.collapsed)-Number(x.collapsed)||fraction(x,y)||Number(y.id===a.id)-Number(x.id===a.id)||queue(x,y));
+      Number(y.collapsed)-Number(x.collapsed)||fraction(x,y)||Number(y.role==='healer')-Number(x.role==='healer')||queue(x,y));
     if(!allies[0]||!doCleanse(e,a,allies[0])){
       if(e.options.defender==='offensive')doAttack(e,a,'fixed_ordinary',dice);else doRecover(e,a);
     }
@@ -175,8 +193,8 @@ export function stepEncounter(e,dice) {
   for(let i=0;i<e.actors.length;i++){
     const t=e.actors[i];assert.ok(t.energy>=0&&t.energy<=t.p.max);
     if(!prior[i]&&t.collapsed){
-      count(e,t,'collapses');if(!e.endpoints.firstAnyFall)e.endpoints.firstAnyFall={time:e.round,kind:'event'};
-      if(t.id===e.patientId&&!e.endpoints.firstPatientFall)e.endpoints.firstPatientFall={time:e.round,kind:'event'};
+      count(e,t,'collapses');if(!e.endpoints.firstAnyFall)e.endpoints.firstAnyFall={time:e.round,kind:'event',actorId:t.id};
+      if(t.id===e.patientId&&!e.endpoints.firstPatientFall)e.endpoints.firstPatientFall={time:e.round,kind:'event',actorId:t.id};
     }
   }
   if(teamDefeated(e.actors,0)||teamDefeated(e.actors,1)){
@@ -193,6 +211,6 @@ export function runTrial(options={}) {
   const randomDamage=rng(seed),randomReaction=rng(seedFor(`reaction|${seed}`));
   const rolls=dice??{damage:()=>randomDamage()%400,reaction:()=>{const k=randomReaction()%400;return[Math.floor(k/20)+1,k%20+1];}};
   const e=createEncounter(rest);setup?.(e);
-  while(!e.done)stepEncounter(e,rolls);
+  while(!e.done){if(!fastForwardIdle(e))stepEncounter(e,rolls);}
   return {seed,winner:e.winner,endpoints:e.endpoints,counts:e.counts};
 }

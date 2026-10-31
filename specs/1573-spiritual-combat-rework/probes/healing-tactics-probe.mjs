@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {pathToFileURL} from 'node:url';
 import {resolve} from 'node:path';
 import {seedFor} from './healing-counters.mjs';
-import {attackPolicies,createOperation,runTrial} from './healing-tactics-model.mjs';
+import {attackPolicies,createOperation,createEncounter,runTrial} from './healing-tactics-model.mjs';
 
 function permutations(values){return values.length?values.flatMap((v,i)=>permutations(values.filter((_,j)=>j!==i)).map(t=>[v,...t])):[[]];}
 const orders={duel:permutations([0,1]),support:permutations([0,1,2]),group:permutations([0,1,2,3])};
@@ -49,10 +49,11 @@ const quantile=(sorted,q)=>sorted.length?sorted[Math.ceil(sorted.length*q)-1]:nu
 /** Unconditional ranks require the event in enough trials; competing outcomes never become horizon times. */
 export function summarizeEndpoint(values) {
   const observed=values.filter(x=>x.kind==='event').map(x=>x.time).sort((a,b)=>a-b);
+  const countsByActor={};for(const value of values)if(value.kind==='event'&&value.actorId)countsByActor[value.actorId]=(countsByActor[value.actorId]??0)+1;
   const rank=q=>observed.length>=Math.ceil(values.length*q)?observed[Math.ceil(values.length*q)-1]:null;
   return {achieved:observed.length,fraction:observed.length/values.length,horizon:values.filter(x=>x.kind==='horizon').length,
     noEvent:values.filter(x=>x.kind==='no-event').length,median:rank(.5),p95:rank(.95),
-    conditionalMedian:quantile(observed,.5),conditionalP95:quantile(observed,.95)};
+    conditionalMedian:quantile(observed,.5),conditionalP95:quantile(observed,.95),countsByActor};
 }
 function mergeCounts(to,from){
   for(const [key,value] of Object.entries(from)){
@@ -64,6 +65,11 @@ export function simulateTactics(options={}) {
   const {n=1000,horizon=2000,operation=createOperation(),...cell}=options;
   assert.ok(Number.isInteger(n)&&n>0&&Number.isInteger(horizon)&&horizon>0);
   const seed=seedFor(JSON.stringify({version:'T123-v1',...cell,n,horizon}));
+  const roster=createEncounter({...cell,horizon,operation}).actors.map(a=>({id:a.id,team:a.team,role:a.role,HP:a.maxHp,
+    maxDE:a.p.max/100,regenDE:a.regen/100,healingPercent:a.healingPercent,resistance:a.resistance,
+    attackable:a.attackable,canHeal:a.role==='healer',canCleanse:['healer','helper'].includes(a.role),
+    canInterrupt:cell.interrupt!==false,reaction:1,ordinaryAttack:true,
+    mainAttackPolicy:a.role==='primary'?(cell.attackPolicy??'suppress_reserve'):'fixed_ordinary'}));
   const endpoints={total:[],firstPatientFall:[],firstAnyFall:[]},counts={},outcomes={team0:0,team1:0,horizon:0};
   for(let trial=0;trial<n;trial++){
     const result=runTrial({...cell,horizon,operation,seed:seedFor(`${seed}|trial|${trial}`)});
@@ -74,7 +80,7 @@ export function simulateTactics(options={}) {
   const actionsPerTrial={};mergeCounts(actionsPerTrial,counts);
   for(const key of Object.keys(actionsPerTrial))if(typeof actionsPerTrial[key]==='number')actionsPerTrial[key]/=n;
   else for(const a of Object.values(actionsPerTrial[key]))for(const k of Object.keys(a))a[k]/=n;
-  return {...cell,n,horizon,seed,trials:n,outcomes,endpoints:Object.fromEntries(Object.entries(endpoints).map(([k,v])=>[k,summarizeEndpoint(v)])),
+  return {...cell,n,horizon,seed,trials:n,roster,outcomes,endpoints:Object.fromEntries(Object.entries(endpoints).map(([k,v])=>[k,summarizeEndpoint(v)])),
     counts,actionsPerTrial};
 }
 

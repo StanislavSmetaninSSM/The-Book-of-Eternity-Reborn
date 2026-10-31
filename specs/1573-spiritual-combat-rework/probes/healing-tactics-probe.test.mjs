@@ -18,9 +18,10 @@ test('preregistered matrix counts, all permutations, policies, access controls a
   assert.equal((756+288+1152)*1000+116*10000,3356000);
 });
 test('endpoint quantiles retain competing no-event outcomes and horizon censoring',()=>{
-  const summary=summarizeEndpoint([{time:2,kind:'event'},{time:3,kind:'no-event'},{time:5,kind:'horizon'},{time:4,kind:'event'}]);
+  const summary=summarizeEndpoint([{time:2,kind:'event',actorId:'B'},{time:3,kind:'no-event'},{time:5,kind:'horizon'},{time:4,kind:'event',actorId:'C'}]);
   assert.equal(summary.achieved,2);assert.equal(summary.horizon,1);assert.equal(summary.noEvent,1);
   assert.equal(summary.median,4);assert.equal(summary.p95,null);assert.equal(summary.conditionalMedian,2);
+  assert.deepEqual(summary.countsByActor,{B:1,C:1});
 });
 test('simulation replays seeds deterministically with complete per-person accounting and censored quantiles',()=>{
   const options={kind:'group',mode:'adaptive',n:5,horizon:2,seedSuffix:'cheap'};

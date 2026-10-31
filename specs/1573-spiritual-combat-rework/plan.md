@@ -53,10 +53,12 @@ long/adaptive разрешено начать на себе, как T120; instan
 `cleanse_safe` замещает своё лечение при50на себе, remaining>1 иHP>25%, как T120.
 `mix50` атакует ordinary, когда у всех союзниковHP>50%, никто неcollapsed и нет
 pending; иначе triage/Heal. Helper очищает союзника с наиболее сильным эффектом
-(tie — triage), иначе в passive Recover, в offensive ordinary/recover.
-Adaptive использует прежний chooseMode по casterHP и известному максимальному
-одиночному урону доступных врагу профилей (B44 для выбора атак, фиксированныйB
-для fixed; в группе наибольший известный профиль). Не считает будущие броски.
+(tie: collapsed, меньшая доляHP, healer, очередь), иначе в passive Recover,
+в offensive ordinary/recover. Adaptive использует прежний chooseMode по casterHP
+и известному максимальному одиночному урону БЕЗ дополнительного сопротивления,
+как T120: B44 для primary с выбором атак, фиксированныйB для fixed; в группе
+наибольший известный профиль фактических врагов, у healer/helper/striker только
+ordinary. Не считает будущие броски.
 Это прежняя однопороговая эвристика, не оценка суммы всех групповых угроз.
 
 Составы: duel A(attacker)–B(healer); support A–B(healer),C(helper);
@@ -142,6 +144,21 @@ target-specific protection иpending; сравнимость outcome; доста
 Bridge consistency перед кодом:spec A→политики/duel; B→support/group/endpoint;
 сохранённые договоры→reuse+guards; utility→старые guards; honesty→metrics/report;
 публикация/retention/review→T123.3–4. Материального изменения согласованного scope нет.
+
+Ruling T123.2: равные cleanse-кандидаты разрешаются в пользу healer после
+collapsed/долиHP, а не самого helper; это уточняет описанное triage. Adaptive
+сохраняет прежний unresisted threshold и использует реальные профили врагов:
+mirror не получает воображаемую large-угрозу. Оба случая закрепляются guards.
+Ruling оптимизации: в passive support после распада healer, при недоступном helper,
+полнойДЭ живых, отсутствии marks/pending и на границе раунда дальнейшие события
+детерминированно состоят только из Recover/skipped. Можно точно агрегировать
+оставшиеся личные часы и счётчики до horizon; это censor, никогда не победа.
+Эквивалентность полному циклу проверяется на actors/counts/endpoints и трёх очередях;
+при trace-hook shortcut выключается, чтобы не пропускать диагностические события.
+Квоты записей/байтов нет. Вне доказанного absorbing-state расчёт идёт полностью.
+Unique(actorId,started) используется один раз за пробу, retry отсутствует; поэтому
+результат applyHeal можно убрать из probe actor.receipts после чтения. Старый
+идемпотентный API/его tests не меняются; это не политика runtime-истории игры.
 
 ## T123 — подготовка следующего исследования, ожидается review scope
 
