@@ -1,3 +1,38 @@
+# T121 EX8GREEN component gate accepted — UI still pending
+
+Independent Astra OUTCOME accepted the actual nine-case GREEN at compiled source
+`30bc856d98f447e34e427e1bb1dcf68233521640`: snapshot roles six PASS
+(14.7267507s/60s), semantic source guards three PASS (5.0350322s/60s), wall
+32.8527400s. Exact identities/counts, no timeout/skip/duplicate/underfill, owned
+cleanup and current pins were verified. TRX SHA256: roles
+`9ece65c3def521f1331e305ed577bbf8fca70d5d2c86ea28c18174f7a85e7084`;
+guards `11e4fec6a644cdcbd1770050045fa8ca83d49f2c60eb76250cfefc123a48de4f`.
+
+The root reconciled actual identities in external
+`EX8GREEN-verified-cheap-union.json`: 147 distinct cheap PASS / 57 methods,
+138 retained plus nine fresh. `EX8GREEN-verified-pre-ui-union.json` adds ten native
+cases across seven explicit retained method lineages: 157 distinct PASS / 64
+methods. This is a reviewed mixed-epoch union, not one fresh 147 or 157 run. The
+official full plan is 160 cases / 67 methods / 28 descriptors; exactly UI three
+remain outside the accepted union. Earlier failures and the original console
+180.1819963s timeout remain preserved; browser and rollback are UNRUN.
+
+All four fresh owning builds completed with zero errors and baseline warnings
+12/23/26/102. Current proofs bind four PE/PDB pairs, 218 source bindings, 27
+artifacts, 40 resource copies and four daemon copies. The complete 27-member
+EX8GREEN archive is 62,361,208 bytes, all member hashes/full gzip EOF/CRC verified,
+SHA256 `654bea8fa9e2395cb99c4dddf61ecaa536ed953841d72b88bd051f1132a48586`.
+The 00:33:01 UTC closing fence found no owners and 3,974,139,904 bytes free.
+
+This checkpoint changes only the plan. Source/builds stay at 30bc; no accepted
+case is replayed and no task is closed. After publication and a fresh root source/
+resource/ownership fence, only one original console case is conditionally admitted
+at 180s. Complete functional PASS, full capture/footer/decode/hash proof and physical
+cleanup are required before considering browser or rollback. Existing operation-local
+DATA reuse and fresh signed/current source/publication checks remain unchanged;
+no new cache, IO or speedup claim. All raw/archive evidence remains outside Git.
+Broader T121/Mortal/eight-adapter work and all holds remain open.
+
 # T121 EX8RED accepted — snapshot-role GREEN candidate, UNCOMPILED/UNRUN
 
 Independent Astra OUTCOME accepted the exact causal attempt at
