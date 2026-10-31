@@ -1,3 +1,15 @@
+# T121 C8 compiler correction — lexical rename only, WIP
+
+The fresh Main build at `fd3dab8f6d994a565829861a50da4da73759704b` stopped
+with one CS0136 at common composer line377 after 1:31.04; its 12 prior warnings
+remain. TestSupport, Unit and Integration were not started; no C8 tests ran.
+Full failed output is retained externally in `M2GREENC8-build-main`.
+Root renamed only the introduced T0-block local from diagnosis to
+`diagnosisClockOwner` to avoid the enclosing pattern-variable name. No predicate,
+assertion, source read, lifetime, cache or GM contract changed. This WIP requires
+narrow independent delta SOURCE before the corrected fresh builds. No previous
+successful project build is repeated; all three dependent C8 builds remain UNRUN.
+
 # T121 common context and original clock — coherent C8 candidate, UNCOMPILED / UNRUN
 
 Core WIP `d28c438a925d692c1e6504e71cf194f5767ca583` was pushed and remote-read

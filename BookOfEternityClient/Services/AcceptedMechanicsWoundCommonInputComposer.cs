@@ -374,17 +374,17 @@ internal static partial class AcceptedMechanicsWoundCommonInputComposer
             var worldTimeJson = Read(EffectAcceptedTurnInputComposer.WorldTimePath);
             var currentTime = EffectAcceptedTurnInputComposer.ReadCanonicalWorldTime(
                 worldTimeJson);
-            var diagnosis = treatmentContinuationAuthority as WoundAcceptedTurnPlanner.MortalDiagnosisContinuation;
-            var expectedCurrentTime = diagnosis?.Working.OriginalMinute ?? anchorPlan?.CurrentTimeInMinutes ??
+            var diagnosisClockOwner = treatmentContinuationAuthority as WoundAcceptedTurnPlanner.MortalDiagnosisContinuation;
+            var expectedCurrentTime = diagnosisClockOwner?.Working.OriginalMinute ?? anchorPlan?.CurrentTimeInMinutes ??
                 treatmentCurrentTimeInMinutes ?? recoveryCurrentTimeInMinutes!.Value;
             var diagnosisClockChanged = false;
-            if (diagnosis is not null)
+            if (diagnosisClockOwner is not null)
             {
                 // T1 belongs only to the private working/effect/after-image
                 // projection. The live common before-image must remain exact T0.
                 var actualClock = beforeImages[EffectAcceptedTurnInputComposer.WorldTimePath].Bytes;
                 diagnosisClockChanged = actualClock is null || !actualClock.AsSpan().SequenceEqual(
-                    diagnosis.Working.ReadOriginalBytes(EffectAcceptedTurnInputComposer.WorldTimePath));
+                    diagnosisClockOwner.Working.ReadOriginalBytes(EffectAcceptedTurnInputComposer.WorldTimePath));
             }
             if (currentTime != expectedCurrentTime || diagnosisClockChanged)
             {
