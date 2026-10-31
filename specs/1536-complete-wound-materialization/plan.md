@@ -1,3 +1,25 @@
+# T121 Mortal whole SOURCE accepted — build admission only
+
+Independent Astra/high reviewed the complete coherent
+`f80eedf27d446c113c1a9457252bee27411fc1ed` →
+`5cce4a1757b584703751316c170f4e249235b9c8` change and accepted SOURCE with no
+remaining Important/Critical finding. The primary inspected the corrected pool,
+original-clock and diagnosis-owned recovery joins and verified the frozen remote
+SHA/clean tree. The final integrated review covers actual Engine fixtures,
+held-versus-original rollback, existing NPC journal ownership, GM/current-input
+synchronization, operation-local DATA reuse and the finite affected selection.
+
+This admits fresh owning builds only, not PREP or runtime qualification. All new
+C# and controls remain UNCOMPILED/UNRUN; source membership 168/62/31/30 is still an
+estimate pending official discovery/PlanOnly. No old HOLD or accepted spiritual/
+component case is released for repetition. The same Linux environment has no live
+managed owner and 3.49 GB available before the first build; full output remains
+outside checkout in the existing us5-guided-diagnosis evidence directory. Next:
+fresh Main/Support/Unit/Integration, exact artifact/PDB/resource verification,
+catalog/PlanOnly, independent PREP and phased cheap/native/actual UI qualification.
+No performance gain, full-suite result, clean restore or parent-task closure is
+claimed. This receipt is a compact human checkpoint; no raw evidence is in Git.
+
 # T121 Mortal coherent candidate — SOURCE freeze, UNCOMPILED / UNRUN
 
 The saved implementation now connects explicit current Mortal method parsing,
