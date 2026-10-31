@@ -1,3 +1,76 @@
+# T121 supported spiritual diagnosis accepted — Mortal and eight adapters remain open
+
+Independent Astra final bounded OUTCOME accepted 173 distinct PASS / 70 methods /
+31 planned descriptors across 14 recorded runtime SHAs. This is a reconciled mixed
+lineage, not one fresh 173 run. Final production source is
+`ab4cd7276fbd871723e79f4016109015c37ef9a0`; all later changes are canonical
+metadata only. Earlier unchanged cheap/native/console consumers retain their exact
+reviewed source epochs. No previous FAIL or timeout is relabeled PASS.
+
+The three original controlled Engine routes passed at their unchanged 180s bounds:
+
+| Route | Runtime / compiled source | Category / wall |
+| --- | --- | --- |
+| Console | 444989f84 / 0b661add | 30.6471931s / 42.2965980s |
+| Physical rollback | c25ba429d / 15e00ad7d | 21.9801696s / 29.0899158s |
+| Shared browser | 2c42561b2 / ab4cd7276 | 59.8190578s / 68.3682126s |
+
+TRX SHA256: console
+`811b8f66f77be60cae9620d59afb4741270c642ce0b431c6e256f87422772367`;
+rollback `865ebd4fd4925802417f927d58da6fe6afde07b95d6d6a2ca876acd1ac4d2099`;
+browser `e73cf54097df58664d1aa9159de304dc2ecbadf2d0ab8d596f47e2cc53a794d8`.
+Each full capture has 20 ordered events / ten original pairs; message counts are
+zero / one / zero respectively. All three were independently decoded and rehashed
+again in external `EX10GREEN-final-capture-revalidation.json`: writer/footer, full
+gzip CRC, stored/decoded hashes and physical owned-root absence were verified.
+Final browser stored SHA256
+`fd981a787c7389ea9c0b8822456754ced57c59a393b97aa236cb5d8436d14211`;
+decoded `9c183b340b21ee1a681437aed24869dd21d5195bc38d1cdf69f1130bf3345dc7`.
+Actual assertions cover inert read/cancel, separate confirmation, no diagnostic
+draw/fee, complete declared knowledge before one ordinary natural cycle, exact
+History/replay and cleanup, plus transient diagnosis/natural publication and full
+physical compensation/whole-turn restoration. Browser means the shared handler
+queue and Engine route; it does not qualify DOM, provider or a fresh process.
+
+Current build/provenance proofs remain four successful owning builds, zero errors,
+baseline warnings 12/23/26/102, four PE/PDB pairs / 223 source bindings, 27 artifacts,
+40 resource copies and four daemon copies. The complete owning archive is
+62,382,986 bytes; SHA256
+`9428672cd040a5dc9a5544495570eaa92e13e6ac933dec3302a2f6d2493b0882`.
+The 02:28:35.363580 UTC closing fence found stable pins, no live owners and
+3,627,913,216 bytes free; terminal zombies are not live owners. Raw captures/TRX,
+failed roots and archives remain outside Git. No build or runtime is repeated for
+this metadata checkpoint, and no new checkout/restore is claimed.
+
+Only T121-DIAGNOSIS-SPIRITUAL-ADMISSION/PUBLICATION/COMPLETION/GM close, bounded to
+the current source_capability, skill_tier and current-player provider proofs.
+Every declared requirement must still be proved: item_quantity, resource_quantity,
+consent, facility, location, quest_state, effect_state and environment remain
+unavailable, never silently ignored. Their canonical-adapter task stays open,
+as do broad T093/FR071/T121, US4/US5/#1536 and every DFR/Mortal-compatibility/Windows
+HOLD. Accepted diagnosis-read83 and Shining-patient110 remain separate lineages.
+
+The next independent player milestone is Mortal guided diagnosis through the
+existing wound request/check/procedure/discovery/common-publication owners:
+choose a currently reachable method, show its explicit check/duration/cost, confirm
+separately, retain the terminal attempt, publish exactly its declared success facts
+or no facts on failure, preserve cancellation/read inertia, cleanup/replay and
+physical rollback. The typed Mortal path must retain its declared parameters;
+no default check, price or duration, fake spiritual route or diagnosis-side healing
+is authorized. This checkpoint starts no new implementation or runtime.
+
+Optimization: existing operation-local source/parsed DATA and owned original versus
+knowledge-working images are reused; cohort/result indexing and graph admission
+avoid repeated whole-image clones. Fresh confirmation, physical source, current
+lease, prepublication and closing checks remain mandatory. Independent prefix and
+binding fixtures replace unrelated Engine/GM waits only for their component claims.
+There is no new cache/publisher/diagnostic stack or measured speedup claim. Six GM
+guides, two daemon entrypoints, worked example/manifest and source/doc guards were
+qualified within this slice. The final browser dispatch and initializer-fixture
+corrections changed only internal client routing/initial test DATA, so they required
+no additional GM wire/schema/example update. All prior receipts below are historical
+staged evidence and preserve their then-current UNRUN/FAIL boundaries.
+
 # T121 EX10 browser binding GREEN accepted — original browser gate pending
 
 Independent Astra OUTCOME accepted the actual nine-case GREEN at runtime and

@@ -1137,8 +1137,19 @@ builds and gates repeat. The same full gzip capture and 180s Engine budget stay.
 ## T121-DIAGNOSIS-SPIRITUAL — guided execution design (2026-10-30)
 
 Source: #1536, T093/T121 and FR071, including the author decision accepted
-2026-10-30 11:48UTC. This is the next bounded functional slice after accepted
-T108. It does not close Mortal procedural diagnosis, T121, US4/US5 or #1536.
+2026-10-30 11:48UTC. The bounded supported-three-kind route after T108 was
+independently accepted 2026-10-31: 173 distinct PASS / 70 methods / 31 planned
+descriptors across 14 runtime SHAs, not one fresh aggregate. Final production
+source is `ab4cd7276fbd871723e79f4016109015c37ef9a0`; the plan retains each
+earlier unchanged consumer's reviewed lineage and all failed attempts. Real
+console, shared browser and physical rollback passed with complete revalidated
+captures. Current source_capability, skill_tier and current-player provider
+requirements have explicit proof; item_quantity, resource_quantity, consent,
+facility, location, quest_state, effect_state and environment remain unavailable
+until their canonical adapters qualify. This closes only the four bounded
+spiritual admission/publication/completion/GM tasks, not those adapters, Mortal
+procedural diagnosis, T093/FR071/T121, US4/US5 or #1536. The rules and owner design
+below remain the governing contract, not a claim that every adapter is implemented.
 
 ### Player result and chosen owner
 
@@ -1151,7 +1162,8 @@ healing. It consumes one ordinary safe cycle, retaining ordinary natural recover
 and other world progression. Opening known detail and cancellation remain inert.
 Missing/invalid art authority is not H0; unknown requirements never mean satisfied.
 Read the current art directly: do not apply the healing tier>=wound-rank gate to
-diagnosis or reject rankV merely because it is outside ordinary recovery.
+diagnosis. Healing tier V is valid with an ordinary severity I–IV wound; it is not
+a severity-V wound or an exception to the required ordinary recovery suffix.
 
 Chosen approach: extend the existing guided selection, spiritual staging and
 AfterlifeWoundHealingPlanner.Continuation with an explicit diagnosis purpose.

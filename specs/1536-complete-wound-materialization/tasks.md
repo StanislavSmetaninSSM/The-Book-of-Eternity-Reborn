@@ -52,15 +52,16 @@ archive are outside checkout; original failures and all other holds are retained
   independent SOURCE/PREP/OUTCOME are required before acceptance.
   Accepted2026-10-30:83distinct/48methods across17b15/4e505/763a6 (8+57+18),
   not one fresh83; all raw hashes/21cleanup roots/actual source1/2 verified,
-  Sol XHigh SOURCE/PREP/OUTCOME accepted. Actual diagnosis execution remains open.
+  Sol XHigh SOURCE/PREP/OUTCOME accepted. This read-only block alone is not
+  execution; the later bounded spiritual qualification is recorded below.
 - [x] T093-DIAGNOSIS-RULES Author accepted the recommended rules2026-10-30
   11:48UTC: Mortal methods declare their own procedure check/duration/costs;
   spiritual safe diagnosis requires Healing>=0 plus every current path condition,
   guarantees declared reveals, one ordinary safe cycle/no OD/Feathers/items,
   no direct healing but ordinary natural recovery retained; read/cancel inert.
   No new economic/check default. This removes only the author-decision hold.
-- [ ] T121-DIAGNOSIS-EXECUTION / FR071 Implement the above canonical decision
-  after the current coherent Shining-patient treatment slice, through existing
+- [ ] T121-DIAGNOSIS-EXECUTION / FR071 Complete the above canonical decision
+  beyond the bounded spiritual route accepted below, through existing
   request/check/procedure/discovery/publication owners and shared guided handlers;
   retain exact current authority, complete declared success/failure and terminal
   retry-safe attempt. T093-ASSESSMENT/read cards are not execution. Other holds stay.
@@ -76,41 +77,58 @@ archive are outside checkout; original failures and all other holds are retained
   missing diagnostic-choice failures, not setup errors. Source 2 rows / 1 method / 60s;
   Accepted EX1: dc0c2e9, two intended line71 failures, all preconditions passed;
   12.5344436s/60s, no timeout, independent Astra OUTCOME accepted. Production
-  unchanged at RED; next admission block is not yet qualified.
-- [ ] T121-DIAGNOSIS-SPIRITUAL-ADMISSION [US5] Add meaningful requirement/source/
+  unchanged at that historical RED; subsequent bounded qualification follows below.
+- [x] T121-DIAGNOSIS-SPIRITUAL-ADMISSION [US5] Add meaningful requirement/source/
   stale/privacy/cost/draw tests, then typed diagnosis selection/request and current
   requirement adapter in `Services/WoundApplicationService.cs`,
   `Services/AfterlifeWoundTreatmentAuthority.Diagnosis.cs` and existing pending/
   snapshot/Continuation consumers. Every declared condition must have exact proof.
+  Accepted only for the current source_capability, skill_tier and current-player
+  provider proofs; all other declared shapes remain unavailable, not satisfied.
 - [ ] T121-DIAGNOSIS-SPIRITUAL-CANONICAL-ADAPTERS [US5] Before whole requirement-catalogue acceptance (the usable supported-three-kind route may qualify separately),
   supply exact realm-owned proofs for currently unavailable item_quantity,
   resource_quantity, consent, facility, location, quest_state, effect_state and
   environment requirements through the existing read-set/context owner and
   `Services/SpiritualDiagnosisSourceData.cs`. Do not infer locality from an arbitrary
   profile field, reserve costs, invent Mortal snapshots or skip a declaration.
-  Current first block supports only capability/tier/current-player provider DATA.
-  Current coherent execution WIP has source tests, closed diagnosis/natural results,
-  same-owner common publication/completion, representative native/UI/C4 fixtures and
-  GM sync authored. All new execution C# remains UNCOMPILED/UNRUN until whole SOURCE,
-  fresh owning builds and phased qualification. This note completes no task.
-- [ ] T121-DIAGNOSIS-SPIRITUAL-PUBLICATION [US5] Add closed durable diagnosis and
+  The supported-three-kind execution route is accepted separately below; this
+  unchecked task retains the eight missing canonical proof adapters. No detached
+  DATA, menu availability or previous acceptance replaces fresh source authority.
+- [x] T121-DIAGNOSIS-SPIRITUAL-PUBLICATION [US5] Add closed durable diagnosis and
   full-cohort nonempty suffix tests, then integrate knowledge-only diagnosis and
   real recovery with `Services/WoundAcceptedTurnPlannerCore.SpiritualHealing.cs`,
   `Services/WoundHistoryState.TransitionResults.cs` and the existing common writer.
   Cover Healing tier V with a valid I–IV wound, multiple wounds, selected not first,
   no-heal progress, terminal removal, empty/omitted/extra/reordered suffix refusal,
   wrong original/binding and duplicate/fingerprint.
-- [ ] T121-DIAGNOSIS-SPIRITUAL-COMPLETION [US5] Extend actual completed-cycle readers,
+- [x] T121-DIAGNOSIS-SPIRITUAL-COMPLETION [US5] Extend actual completed-cycle readers,
   retained request/replay and shared handlers in existing
   `Services/ProgressionScheduleService.SpiritualReplay.cs`,
   `Core/GameEngine/GameEngine.TurnLifecycle.cs` and console/browser wound flows;
   test cleanup, exact/conflicting repeat, no spend/draw, one cycle and physical
   rollback before bounded real UI; never reconstruct authority from player DATA.
-- [ ] T121-DIAGNOSIS-SPIRITUAL-GM [US5] Synchronize the six active guides, applicable
+- [x] T121-DIAGNOSIS-SPIRITUAL-GM [US5] Synchronize the six active guides, applicable
   daemon entrypoints, `Examples/E_CLI_Wound_Materialization.txt`, worked manifest
   and doc/source guards with exact client-owned diagnosis and ordinary recovery.
   Run coherence analysis, independent SOURCE and affected cheap/native/UI gates;
   preserve accepted110/read83/HOLD lineages and do not close parent T121/US4/US5.
+
+Bounded spiritual execution accepted 2026-10-31 after independent whole SOURCE,
+phased PREP/OUTCOME and primary raw identity/hash/capture verification: 173 distinct
+PASS / 70 methods / 31 planned descriptors across 14 runtime SHAs, not one fresh
+173 run. Final production source is `ab4cd7276fbd871723e79f4016109015c37ef9a0`;
+earlier unchanged consumers retain their explicit reviewed lineages. Console,
+shared browser and physical rollback all passed with complete captures redecoded
+and rehashed; read/cancel, exact confirmation, knowledge-only diagnosis followed by
+one ordinary natural cycle, zero diagnostic draw/fee, History/replay and cleanup
+were qualified. Earlier failures/timeouts remain historical, not relabeled PASS.
+See the current plan checkpoint for exact UI sources, TRX and retained archive.
+Only the four bounded spiritual subtasks above close. Eight canonical adapters,
+Mortal procedural diagnosis, T093/FR071/T121, US4/US5/#1536 and all HOLDs stay open.
+The next player milestone is the existing-owner Mortal guided diagnosis route,
+retaining explicit per-method check/duration/cost and terminal no-reroll failure;
+no default tariff, check or duration is authorized.
+
 - [x] T121-DIAGNOSIS-READ-GUARDS Repair the two pre-existing source-guard drifts
   exposed by the affected status selection: independently audit seven descriptive
   `woundName` occurrences in five existing client-owned projection/error methods,

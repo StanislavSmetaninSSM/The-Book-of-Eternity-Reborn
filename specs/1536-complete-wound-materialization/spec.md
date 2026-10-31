@@ -3783,8 +3783,12 @@ cannot be supplied by later correlation input, and makes `none` invalid after re
   safe cycle, with no OD, Feathers or items. Diagnosis itself does not heal; ordinary
   natural recovery for that cycle remains enabled. Reading known facts/cancel uses
   no attempt, resources or time. Failed Mortal diagnosis reveals nothing and the
-  retained attempt cannot be rerolled. Execution still requires its own implementation
-  and acceptance; this decision does not lift DFR/Mortal-compatibility/Windows holds.
+  retained attempt cannot be rerolled. Bounded spiritual execution with current
+  source_capability, skill_tier and current-player provider proofs was independently
+  accepted 2026-10-31 (173 distinct PASS across reviewed lineages; see plan/tasks).
+  The other eight canonical requirement adapters and the Mortal guided procedural
+  route remain open; this is not whole FR-071/T121 acceptance and does not lift
+  DFR/Mortal-compatibility/Windows holds.
 
 - **FR-072**: Target selection MUST list Self first and then visible reachable nearby entities; players MUST NOT need to type names or technical identities.
 - **FR-073**: Equal display names MUST be disambiguated with visible context while the selected exact identity remains hidden.
