@@ -6,7 +6,7 @@
 - [x] T124.0a После показа v1.76 автор явно отменил ожидание отдельного согласования на текущем этапе планирования/исследований и поручил работать самостоятельно; T124 разрешён без нового вопроса, production не входит.
 - [x] T124.1 Writing-plans + Spec Kit bridge plan/tasks: API/view, приоритет причин отказа, unchanged defaults, матрица/seed, guards/TDD и consistency записаны до реализации.
 - [x] T124.2 RED→GREEN: пять opt-in политик/runner/shards;99/99numerical tests (84прежних+15новых),exit0,stderr0. Default12cases checksum сохранён. Parent прочитал diff/evidence и проверил smoke main/confirm120cells и shards60+60. Реакция после revival сохраняется отдельно от недоступного Main; новые reasons не меняют legacy output.
-- [ ] T124.3 Опубликовать WIP/source, выполнить заранее заданные main/confirmation матрицы; сохранить длительности, цензурирование, действия, ресурс, причины пропуска/пользу лечения, включая отрицательные результаты. Raw без квот наD:.
+- [x] T124.3 Frozen sourcebb2048a26 опубликован до полного замера;240cells/1 320 000траекторий завершены,62589horizon. Полные params/seeds/indices/sums/расходы и3-shard union проверены,4процесса exit0/stderr0. Отчёт сохраняет main/confirmation отдельно, отрицательные случаи/пользу Heal; raw без квот наD:.
 - [ ] T124.4 Независимый whole-block review, адресные исправления/проверки, публикация/readback/restore; прежний raw заменять только после полного проверенного нового замера. Production/новое ослабление Heal в scope не входят.
 
 ## T123 — выбор атак и доступная поддержка, 2026-10-31

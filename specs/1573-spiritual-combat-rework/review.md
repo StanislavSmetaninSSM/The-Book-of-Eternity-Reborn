@@ -62,6 +62,17 @@ mainсрез/честные ограничения, включая взаимо�
 включая наблюдаемую часть censored боёв. Parent внёс уточнение, source/raw
 не менялись; финальный review ожидает confirmation.
 
+T124.3 завершён: все120000 main и1200000 confirmation,240cells,
+62589horizon (5700/56889),4процесса exit0/stderr0; sourcebb2048a26 неизменен.
+Parent сверил матрицу/seedFor/indices/outcome+endpoint/actor+reason sums,
+interruptPaid=attempts×2880, actionsPerTrial и exact union3shards.
+Сохранены confirm.jsonl/full-verification.json наD:. Confirmation wall873063мс;
+отдельные process873023.4353/849385.5654/818750.1992мс не суммируются как wall.
+Отчёт содержит обе очереди всех confirmation cases, отдельный main-срез,
+ресурс/фазы/Heal/overheal и пределы вывода. Снижение long до290–298раундов
+не объявлено решением затяжных боёв; преимущество ожидания finish из main
+не подтвердилось. Финальный coherent-block review ожидается; rawT123 сохранён.
+
 ## T124 — проект scope, 2026-11-01
 
 Baseline/origin741944f6d46f6cf9558238379679bf993c6d3d86 и issue1573 сверены.

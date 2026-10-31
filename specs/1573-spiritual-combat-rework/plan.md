@@ -77,12 +77,12 @@ Main/confirm smoke120cells каждый и2main-shards по60 прошли; defa
 но не сохранённую реакцию после revival; лишний conjunct удалён по RED→GREEN.
 Source frozen для дальнейшего замера; подробности/хеши в review и raw наD:.
 
-- [ ] Опубликовать frozen source/WIP перед дорогим прогоном. Основная матрица
+- [x] Опубликовать frozen source/WIP перед дорогим прогоном. Основная матрица
   120×1000; confirmation120×10000, horizon2000. Можно запускать shards параллельно
   и перераспределять ещё не начатые indices, сохраняя seed/полную выборку.
   Неполные cells не использовать. Raw `D:\BoeDiagnostics\healing-interruption-t124\20261101-v1`,
   без byte/record quotas. СтарыйT123raw оставить до полного нового замера.
-- [ ] Parent проверить coverage/params/seeds/sums/exit/stderr и объединение;
+- [x] Parent проверить coverage/params/seeds/sums/exit/stderr и объединение;
   отчёт `healing-interruption-investigation.md`: median/p95/null/horizon по
   обоим порядкам, attacks/Recover/Heal, расходы/попытки/успехи/причины отказа,
   actualHeal/overheal. Сравнить пять политик внутри одинаковых условий;
@@ -98,6 +98,14 @@ state/admission, никакого удержания изменяемого ре
 actual formula reuse и wall time. Это probe, productionService–Repository не меняется.
 **Review focus/guards:** стоимость до dice; отсутствие future regen; long phase
 против reaction refresh; default T123 неизменность; shard/seed идентичность.
+
+### Полный замер — checkpoint
+
+Sourcebb2048a26 неизменен;240cells/1320000траекторий,62589horizon,
+4процесса exit0/stderr0. Main wall299.673с, confirmation3shards wall873.063с.
+Проверены все seeds/params/indices/sums/оплата/reasons/union; full-verification.json
+наD:. Полный [отчёт](healing-interruption-investigation.md) готов к итоговому
+независимому review. Замедление в трудных случаях осталось; Heal не менялся.
 
 ### Consistency/preflight до реализации
 
