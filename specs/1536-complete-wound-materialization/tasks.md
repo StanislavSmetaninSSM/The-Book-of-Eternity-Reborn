@@ -252,6 +252,13 @@ archive are outside checkout; original failures and all other holds are retained
   existing typed catalog once. All three real journey assertions/180s bounds and
   production guards remain unchanged. Fixture-only C10 is UNCOMPILED/UNRUN;
   browser/rollback and overall Mortal UI remain unqualified. See plan.md epochs.
+  C19 now reaches accepted turn43 and fails its unchanged-resource fixture oracle:
+  the original bleeding effect lawfully applies health3 once at owner-turn-end.
+  C20 pins full source premises and fixed component identities, exact History
+  prefix/one appended tick/full state agreement, and preserves every unrelated
+  resource field plus all cleanup and whole-rollback assertions. Existing output
+  includes complete failed-comparison DATA before disposal. Fixture-only candidate
+  UNCOMPILED/UNRUN; original UI3 and overall acceptance remain open.
 
 - [x] T121-DIAGNOSIS-READ Show readable declared conditions of currently known
   diagnostic paths in the existing wound/status cards for console/browser. Reuse

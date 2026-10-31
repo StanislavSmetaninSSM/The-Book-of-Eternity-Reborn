@@ -74,7 +74,7 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
             var coreBefore = Assert.IsType<byte[]>(await files.ReadFileBytesAsync("game_state/npcs/npc_core.json"));
             var itemIdentityBefore = Assert.IsType<string>(await files.ReadFileAsync(MortalItemIdentityState.StatePath));
             var journalsBefore = Assert.IsType<byte[]>(await files.ReadFileBytesAsync("game_state/npcs/npc_journals.json"));
-            var healthBefore = Assert.IsType<string>(await files.ReadFileAsync(ResourceMaterializationContract.StatePath));
+            var resourcesBefore = await CaptureMortalDiagnosisResourcesAsync(files, original);
             var console = new TestExplorerConsole();
             var diagnostics = new GameEngineTurnLifecycleTests.SpiritualLifecycleTestLogger(capture);
             var input = repairInput = new RepairPlayerInput(diagnostics);
@@ -219,7 +219,9 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                     var journals = JsonNode.Parse((await files.ReadFileAsync("game_state/npcs/npc_journals.json"))!)!.AsObject();
                     var journal = Assert.Single(journals["NPCJournals"]!.AsArray(), value => value!["npcId"]!.GetValue<string>() == "field_medic_01");
                     Assert.Single(journal!["journalEntries"]!.AsArray());
-                    Assert.True(JsonNode.DeepEquals(JsonNode.Parse(healthBefore), JsonNode.Parse((await files.ReadFileAsync(ResourceMaterializationContract.StatePath))!)));
+                    AssertMortalDiagnosisOrdinaryResourceTick(resourcesBefore,
+                        await files.ReadFileAsync(ResourceMaterializationContract.StatePath),
+                        await files.ReadFileAsync(ResourceMaterializationContract.HistoryPath), result.Binding.Turn);
                 }
                 foreach (var path in new[] { AcceptedMechanicsPlan.WoundCommandPath, WoundAcceptedTurnSnapshotContract.PendingResolutionPath,
                     LiveTurnPreparationService.PendingTurnSnapshotManifestPath, ProgressionScheduleService.ReportPath, PendingPlayerActionService.PendingPath })

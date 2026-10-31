@@ -2103,3 +2103,35 @@ browser4 are fresh on four new managed owning builds before Engine1/full-All UI3
 The old226 frontier loses four affected guards until rerun: retained222 remains
 historical, and all failed/incomplete raw/roots stay preserved. Candidate is
 UNCOMPILED/UNRUN pending coherent SOURCE/provenance/PREP.
+
+
+C20 UI resource oracle correction (Astra DESIGN accepted, implementation UNCOMPILED/
+UNRUN): diagnosis preserves the original wound's ordinary deterministic bleeding
+activation. Capture original resource state/History/definitions and source effect
+once before processing; require health130/max130. Pin the full periodic_damage
+component (component_001, priority100, health3, bleeding, registered_resource_floor)
+and owner_turn_end trigger (on_owner_turn_end, priority100, component_001 only,
+consumeUses=false, deterministic), both exactly equal to their wound definition.
+Pin mortal_world/player/player_current, effect_wound_test_bleeding, active source-
+bound wound linkage and createdAtTurn42; at turn43 ResolvePendingEffectAuthority
+must return permanent/effect_wound_test_bleeding. Resource health definition inputs
+are version1, resource_definition_builtin_health_v1 and its builtin seal. These
+are all inputs to EffectAcceptedTurnPlanner.CreatePeriodicSourceId (8194),
+CreatePeriodicSourceFingerprint (8233) and AppendPendingEffectReplayIdentity (8373);
+the full fixed source id/fingerprint is independently pinned, not read from current
+History or reconstructed by a copied hash algorithm. The existing pure lifecycle
+identity method binds turn_43:lifecycle:owner_turn_end:player_current and trigger.
+Require one appended EffectTrigger/Damage/Applied3 transition with exact coordinate,
+source/policy fingerprints, complete before/after snapshots and unchanged History
+prefix. ResourceHistoryState.ValidateStateAgreement must succeed. Clone the entire
+original state and change only health127 plus lastTransitionId/lastEventRef/
+lastTransitionTurn from that independently checked row. Other coordinates,
+capacity/lifecycle/creation fields remain exact; no three-cadence damage multiplier,
+extra diagnosis fee or direct healing is allowed. Rollback keeps original bytes.
+All five cleanup null assertions remain: the browser classifier validates and
+removes its accepted/settled receipt. Failure output uses the existing helper for
+complete before/expected/actual state/History and original effect before disposal.
+No production API, permission/cache, diagnostic transport or GM wire change.
+Original UI3 alone requalifies this fixture delta; other accepted consumers and
+Engine-original shared helper bodies remain unchanged. Actual C19 numeric output
+was not retained and is not claimed from the component/old-console witnesses.

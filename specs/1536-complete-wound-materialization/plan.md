@@ -1,3 +1,40 @@
+# T121 C20 whole resource/History oracle — WIP UNCOMPILED/UNRUN
+
+Independent Astra DESIGN accepts the bounded fixture-only correction to the C19
+console failure below. The three existing UI methods, 180-second bounds and
+234 cases / 102 methods / 61 descriptors / 58 categories source estimate remain
+unchanged; official discovery/provenance and actual UI3 are still required.
+No production or shared seed/response/capture/replay helper changes are made.
+
+The UI captures original state, History, definitions and the bleeding effect once
+before processing. Explicit premises pin the original health130/max130, complete
+health3 bleeding component/owner-turn-end trigger, permanent effect identity,
+player coordinate and builtin resource definition version/id/seal. Expected source
+and policy fingerprints are fixed fixture identities, not learned from the current
+result. Existing pure replay/event identity methods bind the exact turn43 event.
+The result must preserve every original History row and append only one ordinary
+Damage/Applied3 tick with complete before/after snapshots and state agreement.
+Expected whole state changes only health127 and the three verified last-transition
+chronology fields; every other field/coordinate remains exact. Three ordinary
+recovery cadences do not multiply this once-per-owner-turn effect.
+
+Existing test output emits complete before/expected/actual state and History plus
+original source effect on failure before fixture disposal. Actual C19 numeric
+images remain unavailable; retained C16/C17/common and old C13 console witnesses
+support the fixed identities, not a claim about the deleted C19 after-image.
+All five cleanup null checks and rollback whole-original equality remain strict.
+Only Integration source changes: fresh Integration and independent SOURCE/PREP
+precede original console, browser and rollback UI3; accepted C19 guard/browser8
+and Engine-original1 dependencies stay unchanged. No accepted PASS replay is
+proposed. Raw captures/roots, broader ordinary TIMEOUT/UNKNOWN and all HOLDs remain.
+
+Reuse is local test DATA: each captured root is read/parsed once for this journey,
+then reused for full comparisons. The final state/History are freshly read once;
+no cache, owner/permission reuse, new diagnostic transport or speedup claim.
+This corrects a fixture expectation for existing ordinary mechanics; GM wire,
+examples, production source pins and game rules are unchanged. Parents, physical
+guided treatment, eight requirement adapters and overall qualification stay open.
+
 # T121 C19 Engine-original accepted; console fixture resource oracle FAIL
 
 Engine-original1 at runtime `4ecdbe58f273552b18c1123c19daffa21730ed03`, all owners
