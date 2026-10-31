@@ -38,6 +38,14 @@ mutable self/допуск свежие. Решение attempt и фактиче
 guard проверяет отсутствие расхода/костей. В штатной матрице такой hook отсутствует.
 Frozen source публикуется до полного замера; T124.3–4 открыты.
 
+bb2048a260fefe9e052e5ba548e728f1dfea7fcb опубликован; originSHA/modelblob
+f2bca3563219f01495f574e1692021e58748af48 прочитаны. На этой версии запущены
+main120×1000 и3confirmation shards по40×10000, horizon2000. Все stdout/stderr/
+process records только в текущем D:raw. Полных результатов пока нет.
+[Отчёт WIP](healing-interruption-investigation.md). Отдельный GPT-6 Astra/high
+review_t124_full получил exact diff/evidence/договоры и начинает source-review;
+итоговый verdict будет после полных данных/отчёта. Повторного approval не ждём.
+
 ## T124 — проект scope, 2026-11-01
 
 Baseline/origin741944f6d46f6cf9558238379679bf993c6d3d86 и issue1573 сверены.
