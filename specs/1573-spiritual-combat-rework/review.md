@@ -5,7 +5,7 @@
 Автор одобрил точный документ11dbb105f ответом «да». Baseline/origin/issue сверены,
 canonical план с политиками и матрицей опубликован81d6c97e6, remote SHA и plan
 прочитаны через GitHub. PathsOnly1573/bridge consistency выполнены до кода.
-T123.1–3 завершены; итоговое независимое review и публикация находятся в работе.
+T123.1–4 завершены; итоговая публикация/readback описаны в конце текущего раздела.
 
 Один GPT-6.1 Sol/high implement_t123_probe владеет четырьмя новыми numerical
 source/test файлами; parent владеет планом, измерением, отчётом и интеграцией.
@@ -92,6 +92,38 @@ support/общие endpoints, усиления, Recover fractions, расход�
 подавления; greedy/reserve→large относится кboth36, неhealer28. Parent проверил
 принятую арифметику и добавил условия. Финальные support/group confirmation
 и общее заключение передаются тому же reviewer без повторения source-review.
+
+Whole-block GPT-6 Astra/high review завершён: independently verified все4матрицы,
+точные параметры/seeds/coverage/counts/endpoint sums, composite deepEqual полным
+частям0–14 иshards15–115; числа support60000/строка иgroup240000/строка совпали.
+Последнее уточнение принято: вывод2×2 формулируется как завершение доhorizon2000,
+а median12–15 относится кoffensive patient/switch, неhelper-focus18–28.
+Содержательных замечаний к модели/числам/сохранённым договорам не осталось.
+
+Parent scoped verification:143relative file links существуют (anchors не проверены),
+13старых probe-файлов и5принятых договоров совпадают с11dbb105f. Полныйdiff содержит
+ровно9файлов задачи, никакихraw; diff-check успешен.84/84guards sourcec5bd379b6
+не повторялись после одних текстовых уточнений. После полного нового замера/
+проверки удалены ровно9ownedT122raw-файлов,1579245байт; currentraw17425474байта
+сохранён без квот. Исторический T122report/source остаётся доступен в Git.
+
+Оценка рабочего процесса: один Sol6.1/high владел связной моделью/tests,
+parent — замером/отчётом; независимый Astra/high подтвердил числа и уточнил
+3границы формулировок. После frozen source не потребовалось менять модель или
+повторять3356000траекторий. Это наблюдение данного блока, не оценка экономии
+токенов; раздельного расхода моделей нет. Маршрутизацию и независимый review сохраняем.
+Следующий шаг — обсуждение оставшихся low-DE/1×2случаев по отчёту; новые правила
+или production реализация не разрешены этим исследованием. C#/UI/build UNRUN.
+
+Публикация:84602b700399a807cc8172573b8cc0fb3de3fb58 подтверждён origin и GitHub
+report-blob9a7124be3438beeb1d69b7f25a4a826d2a41c4cc. В новый пустой каталог
+D:\BoeDiagnostics\healing-tactics-t123\remote-restore-20261031 выполнены git init,
+remote fetch --depth=1 --filter=blob:none из GitHub и sparse checkout feature/docs.
+HEAD84602b7, checkoutclean; фактическое содержимое9изменённых файлов и4guidance
+сверено с точнымcommit. Это восстановление выбранных исходников/документов,
+не полный checkout/сборка/прогон. Итоговый checkpoint меняет только проверенные
+текстовые уточнения и статусы; его SHA/blob readback и повторная сверка в этом
+restore checkout фиксируются в issue1573 и итоговом сообщении после push.
 
 ## T123 — проект исследования, 2026-10-31
 

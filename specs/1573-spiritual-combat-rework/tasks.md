@@ -7,7 +7,7 @@
 - [x] T123.1 Политики/матрица/triage/endpoints/дешёвые guards и TDD-порядок зафиксированы в plan.md через Spec Kit bridge + writing-plans; выполнена consistency-сверка со scope.
 - [x] T123.2 TDD: четыре новых numerical файла;84/84guards (66прежних+18новых),0fail. Оплата до RNG, личные состояния/порог/возврат, pending/expiry, actual-target resistance, endpoint/competing outcomes и matrix coverage проверены. Parent проверил evidence/288-cell smoke и неизменность13прежних probe-файлов; full matrix/review ниже.
 - [x] T123.3 WIP/source опубликованы до прогона; все2312cells/3 356 000траекторий завершены. Точные параметры/seeds/индексы и суммы outcomes/endpoints проверены; отрицательные результаты и польза лечения сохранены в healing-tactics-investigation.md, raw без квот наD:.
-- [ ] T123.4 Независимое review модели/проверок/выводов; устранить доказанные ошибки, выполнить scoped verification, публикацию/readback и только после полного замера заменить старый raw. Отрицательные результаты сохранить.
+- [x] T123.4 Независимое GPT-6 Astra/high review полного блока завершено; численные результаты и составной raw подтверждены,3уточнения текста исправлены без изменения модели. Scoped verification выполнена, WIP/полный отчёт опубликованы и прочитаны с GitHub; удалены9старых raw после нового полного замера. Финальные SHA/readback/restore — plan/review/issue1573. Отрицательные результаты сохранены.
 
 ## T122 — усиления, контрмеры и полезность лечения, 2026-10-31
 

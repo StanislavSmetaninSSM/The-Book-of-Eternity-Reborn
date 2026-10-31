@@ -127,7 +127,7 @@ collapsed всех членов. Не добавлять новые эффект
 - [x] T123.3 Выполнить4матрицы с raw в `D:\BoeDiagnostics\healing-tactics-t123\20261031-v1`;
   проверить metadata/count/complete/outcomes/exit0/stderr. Сохранить источник и
   краткий `healing-tactics-investigation.md`; utility T122 сохранить в проверках.
-- [ ] T123.4 Независимый Astra/high whole-block review с фактическим diff/raw;
+- [x] T123.4 Независимый Astra/high whole-block review с фактическим diff/raw;
   исправить подтверждённые замечания, затем scoped verification/push/readback.
   Не считать более короткий бой достаточным без сохранённой полезности лечения.
 
@@ -175,8 +175,13 @@ T123.3 завершён: source c5bd379b6,84/84guards,2312cells/3 356 000тра�
 Все три confirmation workers exit0; исходные0–14 и результаты15–115 объединены,
 точные параметры/seeds/coverage/outcomes/endpoints проверены по генератору.
 Отчёт [healing-tactics-investigation.md](healing-tactics-investigation.md)
-сохраняет неудачу reserve при дефицитеДЭ и затяжной helper-focus. T123.4 ещё открыт:
-финальное review, retention, публикация/readback. Production-gates не менялись.
+сохраняет неудачу reserve при дефицитеДЭ и затяжной helper-focus. T123.4: whole-block
+GPT-6 Astra/high review завершён; уточнены3формулировки без изменения модели.
+Удалены9старых T122raw-файлов (1579245байт), currentraw сохранён. Проверены143
+относительные файловые ссылки (без anchors),13неизменённых старых probe-файлов,
+5сохранённых игровых договоров и scoped diff9файлов. Source c5bd379b6, полный
+отчёт опубликован84602b700; итоговый checkpoint, remote readback и restore —
+в журнале ниже/issue1573. Production-gates не менялись.
 
 ## T123 — подготовка следующего исследования, ожидается review scope
 
