@@ -1,3 +1,37 @@
+# T121 M1 explicit-method semantic RED accepted — Mortal implementation pending
+
+Independent Astra OUTCOME accepted the actual M1RED at source
+`56137b2c806b9f4f626c515a102efc0c4ba85760`: two executed, two intended semantic
+FAIL, zero PASS. Free/zero-duration and item-cost/30-minute rows reached only the
+final IsValid assertion at line100; each had exactly six unknown method.check
+fields under the existing exact-empty contract. All canonical baseline, ordinary
+procedure/policy/shared-parser and immutable-input prerequisites passed. Category
+8.5828777s/60s, wall16.1673862s; TRX SHA256
+`01a55a5746f360418d9fcf8b5ba566cb5aaaf7bf87ba363d4064cbe40b021aca`.
+Exact identities, no timeout/skip/duplicate/underfill, cleanup and pins were verified
+in external `M1RED-red/verified-expected-red.json`. This is causal RED acceptance,
+not two PASS, live authority or a completed guided Mortal diagnosis.
+
+Fresh Unit build completed with zero errors, 26 baseline warnings in1:04.06;
+unchanged Main/Support/Integration retain their compiled ab4cd source continuity.
+Proofs bind four PE/PDB pairs, 224 source bindings, 27 artifacts,40 resource copies
+and four daemon copies. Discovery-only catalogue is valid1218/13042; exact PlanOnly
+is one Unit descriptor / one method / two cases / zero executions. The complete
+owning archive is62,384,197 bytes; SHA256
+`5fa61191d222945aa8e2f7f381a3093798baedb71030608bcaabef47af99456c`.
+The03:04:04.324281 UTC closing fence found stable pins, no live owners and
+3,546,660,864 bytes free. All raw TRX/proofs/archives remain outside Git.
+
+The next authorized block is coherent Mortal implementation under accepted DESIGN
+4152f330: strict current-input migration, explicit diagnosis purpose, fresh accepted
+world/procedure/resource ownership, verified future-time/recovery projection and
+exact C4 retry claims through existing owners, shared guided UI and GM coherence.
+Meaningful refusal/closure tests precede their implementation. No default rule,
+fake healing route, parallel cache/registry/publisher or diagnostic project is
+authorized. Main owns fresh builds/runtime only after whole SOURCE; no old PASS is
+replayed by this plan-only receipt. Broad T093/FR071/T121, eight spiritual adapters,
+Mortal milestone and all HOLDs remain open until their own actual qualification.
+
 # T121 Mortal explicit-method parser causal scaffold — UNCOMPILED / UNRUN
 
 The next tracked player milestone is T121-DIAGNOSIS-MORTAL under #1536/FR-071 and
