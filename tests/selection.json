@@ -35,6 +35,20 @@
       "contracts": [
         "#1536 T121-DIAGNOSIS-MORTAL / FR071; ordinary procedure semantics, retained terminal success/failure and no direct diagnosis healing"
       ]
+    },
+    {
+      "category": "mortal-diagnosis-input-data",
+      "reason": "T121 seven detached input rows bind full original control and exact typed participant/context coordinates after independent outer resealing, including same-ordinal control drift. These are staged DATA, never admission or publication authority. UNCOMPILED/UNRUN source-authored WIP.",
+      "contracts": [
+        "#1536 T121-DIAGNOSIS-MORTAL; full signed original input/control and exact pre-handoff request/claim restoration"
+      ]
+    },
+    {
+      "category": "mortal-diagnosis-pre-handoff-retention",
+      "reason": "T121 one actual signed-input/accepted-owner fixture persists a genuine held request in the existing pending treatment DATA, disposes/reacquires the lease, restores exact claims before a competitor, then proves identical request/span/rolls/resource agreement/result with no History and no additional canonical changes. No fake repair packet or accepted receipt. UNCOMPILED/UNRUN source-authored WIP.",
+      "contracts": [
+        "#1536 T121-DIAGNOSIS-MORTAL; full signed original input/control and exact pre-handoff request/claim restoration"
+      ]
     }
   ]
 }

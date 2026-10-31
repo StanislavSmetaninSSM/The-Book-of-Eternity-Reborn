@@ -1,3 +1,37 @@
+# T121 Mortal original input and pre-handoff retention WIP — UNCOMPILED / UNRUN
+
+The connected owner cut keeps staged diagnosis input immutable and adds a distinct
+original admission entry to the existing Mortal accepted-state exporter. It uses
+one actual observed signed-source read, retains its issued evidence/full original
+control, checks selected typed participants/wound/path/context and re-proves exact
+current command bytes before live use. Ordinary ExportCurrent keeps its prior path.
+A marker, detached selection or external seal grants no admission or role exception.
+
+Before publication handoff, the actual resolving owner can retain its exact produced
+request through existing pending submitted-request DATA, with empty real repair
+arrays rather than invented repair packets. Coordinated exact write/readback and
+current-original checks precede confirmation of the private live claim agreement.
+The existing recovered-request arrays retain that request; rebind uses actual
+signed-original admission and capability-controlled exact dice/Fate/resource
+restoration before a competing allocation. The signed selection is never replaced.
+One new actual-owner fixture was authored first for this lease-rebind boundary;
+seven file-free input rows bind full control and typed context after outer reseal.
+
+Current temporary source estimate is 46 cases / nine methods / seven categories.
+All new code/tests remain UNCOMPILED/UNRUN; no discovery/runtime is implied. Actual
+Engine staging still must be connected only after final turn_request publication
+and successful validated original loading. Dynamic command-role coverage and cold/
+post-publication completion must use that purpose-bound owner and actual role,
+while retaining every canonical baseline guard and permitting consumed input only
+through durable completion evidence. No blanket kind exception has been added.
+
+Future-clock/full-cohort ordinary recovery, durable result/History/common publisher,
+C4 handoff/rearm, guided menu/confirm/browser and GM/current-input migration remain
+unfinished. Operation DATA reuses the existing accepted snapshot and claim owners;
+no parallel registry, cache, publisher or temporary future-state writes. Fresh
+original/lease/source/claim checks remain mandatory. All accepted receipts and
+HOLDs remain historical; no feature or parent task is closed.
+
 # T121 Mortal retained outcome and strict reconstruction WIP — UNCOMPILED / UNRUN
 
 The next connected cut extends the existing detached request codec/seal validator

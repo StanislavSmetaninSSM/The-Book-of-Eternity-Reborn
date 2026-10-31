@@ -411,7 +411,8 @@ internal static partial class PendingTurnSnapshotReader
                 manifest.PreGeneratedDices1d20,
                 bytesByPath,
                 absentLogicalPaths,
-                manifest.Files.Keys),
+                manifest.Files.Keys,
+                manifest.ProgressionControl is null ? null : JsonSerializer.SerializeToNode(manifest.ProgressionControl)?.AsObject()),
             Array.Empty<ValidationIssue>());
     }
 
@@ -975,6 +976,10 @@ internal static partial class PendingTurnSnapshotReader
 
 internal sealed class PendingTurnSnapshotReadAuthority
 {
+    private readonly string? _originalControl;
+    /// <summary>Exports full validated original control DATA without granting current permission.</summary>
+    internal JsonObject? ReadOriginalControl() => _originalControl is null ? null : JsonNode.Parse(_originalControl)!.AsObject();
+
     private readonly ReadOnlyDictionary<string, byte[]> _bytesByPath;
     private readonly ReadOnlyCollection<int> _acceptedD20EventValues;
     private readonly ReadOnlyCollection<string> _coveredLogicalPaths;
@@ -1020,8 +1025,10 @@ internal sealed class PendingTurnSnapshotReadAuthority
         IReadOnlyList<int>? acceptedD20EventValues,
         IReadOnlyDictionary<string, byte[]> bytesByPath,
         IReadOnlyList<string> absentLogicalPaths,
-        IEnumerable<string>? declaredOriginalLogicalPaths = null)
+        IEnumerable<string>? declaredOriginalLogicalPaths = null,
+        JsonObject? originalControl = null)
     {
+        _originalControl = originalControl?.ToJsonString();
         SessionId = sessionId;
         RequestId = requestId;
         SnapshotToken = snapshotToken;

@@ -20,7 +20,7 @@ internal sealed record MortalWoundTreatmentAcceptedStateAuthorityResult(
 /// attempt. Every persisted value is reconstructed from the active signed pending-turn
 /// snapshot before the registry is consulted.
 /// </summary>
-internal sealed class MortalWoundTreatmentAcceptedStateAuthority
+internal sealed partial class MortalWoundTreatmentAcceptedStateAuthority
 {
     private static readonly object PersistedProcedureClaimRecoveryCapability = new();
     private static readonly ConditionalWeakTable<
@@ -59,6 +59,23 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
     .Concat(CanonicalResourceOwnerAuthorityComposer.SourceAuthorityPaths)
     .Distinct(StringComparer.Ordinal)
     .ToArray();
+
+    private byte[]? _diagnosisCommandBytes;
+    private JsonObject? _diagnosisInput;
+    private JsonObject? _diagnosisControl;
+    private PendingTurnSnapshotReader.OriginalReadEvidence? _diagnosisOriginalEvidence;
+    private PendingTurnSnapshotReadAuthority? _diagnosisIssuedSnapshot;
+    internal void RequireOriginalDiagnosisRequest(MortalWoundTreatmentAttemptRequest request)
+    {
+        if (_diagnosisInput is null || _diagnosisControl is null || _diagnosisOriginalEvidence is null || _diagnosisIssuedSnapshot is null)
+            throw new InvalidDataException("The accepted owner has no authenticated original diagnosis input.");
+        _diagnosisOriginalEvidence.RequireOwner(_fileSystem, _writeLease, _diagnosisIssuedSnapshot);
+        _diagnosisOriginalEvidence.RequireCurrent(_fileSystem, _writeLease);
+        var currentInput = _fileSystem.ReadFileBytesSync(_writeLease, AcceptedMechanicsPlan.WoundCommandPath);
+        if (_diagnosisCommandBytes is null || currentInput is null || !_diagnosisCommandBytes.AsSpan().SequenceEqual(currentInput))
+            throw new InvalidDataException("The current diagnosis input differs from its authenticated signed bytes.");
+        MortalWoundDiagnosisInputCodec.RequireMatches(_diagnosisInput, this, request, _diagnosisControl);
+    }
 
     private readonly FileSystemManager _fileSystem;
     private readonly FileSystemManager.CanonicalWriteLease _writeLease;
@@ -317,11 +334,23 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
         }
     }
 
+    internal static MortalWoundTreatmentAcceptedStateAuthorityResult ExportDiagnosisCurrent(
+        FileSystemManager fileSystem, FileSystemManager.CanonicalWriteLease writeLease,
+        MortalWoundTreatmentAuthority.Context context, string woundId) =>
+        ExportAndBind(fileSystem, writeLease, context, woundId, true);
+
     internal static MortalWoundTreatmentAcceptedStateAuthorityResult ExportCurrent(
         FileSystemManager fileSystem,
         FileSystemManager.CanonicalWriteLease writeLease,
         MortalWoundTreatmentAuthority.Context context,
         string woundId)
+    {
+        return ExportAndBind(fileSystem, writeLease, context, woundId, false);
+    }
+
+    private static MortalWoundTreatmentAcceptedStateAuthorityResult ExportAndBind(
+        FileSystemManager fileSystem, FileSystemManager.CanonicalWriteLease writeLease,
+        MortalWoundTreatmentAuthority.Context context, string woundId, bool diagnosis)
     {
         ArgumentNullException.ThrowIfNull(fileSystem);
         ArgumentNullException.ThrowIfNull(writeLease);
@@ -331,7 +360,7 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
         MortalWoundTreatmentAcceptedStateAuthorityResult candidate;
         try
         {
-            candidate = ExportCurrentCore(fileSystem, writeLease, context, woundId);
+            candidate = ExportCurrentCore(fileSystem, writeLease, context, woundId, diagnosis);
         }
         catch (Exception exception) when (exception is InvalidOperationException or
                                            ObjectDisposedException or
@@ -395,7 +424,7 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
         FileSystemManager fileSystem,
         FileSystemManager.CanonicalWriteLease writeLease,
         MortalWoundTreatmentAuthority.Context context,
-        string woundId)
+        string woundId, bool diagnosis)
     {
         fileSystem.EnsureCanonicalWriteLeaseActive(writeLease);
         var issues = new List<ValidationIssue>();
@@ -428,13 +457,14 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
         }
 
         var pathSelection = BuildPathSelection(context, issues);
+        if (diagnosis) pathSelection = new PendingTurnSnapshotPathSelection(
+            pathSelection.RequiredLogicalPaths.Append(AcceptedMechanicsPlan.WoundCommandPath), pathSelection.OptionalLogicalPaths);
         if (issues.Count != 0)
             return Failure(issues);
 
-        var snapshotRead = PendingTurnSnapshotReader.ReadCurrent(
-            fileSystem,
-            writeLease,
-            pathSelection);
+        var observed = diagnosis ? PendingTurnSnapshotReader.ReadObservedCurrent(fileSystem, writeLease, pathSelection) : null;
+        var snapshotRead = observed is null ? PendingTurnSnapshotReader.ReadCurrent(fileSystem, writeLease, pathSelection)
+            : new PendingTurnSnapshotReadResult(observed.Success, observed.Snapshot, observed.Issues);
         if (!snapshotRead.Success || snapshotRead.Snapshot is null)
             return Failure(snapshotRead.Issues);
         var signed = snapshotRead.Snapshot;
@@ -754,6 +784,24 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
             skillSourceFingerprint,
             requirementSnapshotFingerprint,
             acceptedStateFingerprint);
+        if (diagnosis)
+        {
+            authority._diagnosisOriginalEvidence = observed?.Evidence ?? throw new InvalidDataException("Diagnosis original observation proof is missing.");
+            authority._diagnosisIssuedSnapshot = signed;
+            authority._diagnosisCommandBytes = signed.ReadRequiredBytes(AcceptedMechanicsPlan.WoundCommandPath);
+            authority._diagnosisInput = JsonNode.Parse(Decode(authority._diagnosisCommandBytes))?.AsObject()
+                ?? throw new InvalidDataException("Missing signed Mortal diagnosis selection input.");
+            authority._diagnosisControl = signed.ReadOriginalControl()
+                ?? throw new InvalidDataException("Missing full original Mortal diagnosis control.");
+            var input = MortalWoundDiagnosisInputCodec.Read(authority._diagnosisInput);
+            if (input.Frame.SessionId != signed.SessionId || input.Frame.RequestId != signed.RequestId || input.Frame.Turn != signed.TurnNumber ||
+                input.Selection.WoundId != authority.CurrentWound.WoundId || input.Selection.ExpectedWoundFingerprint != authority.WoundFingerprint ||
+                input.Selection.MortalDiagnosis!.Target != authority.CurrentWound.Owner ||
+                input.Selection.MortalDiagnosis.ExpectedDiagnosisPathFingerprint != WoundDiagnosisEvidence.ComputePathFingerprint(authority.CurrentWound, input.Selection.MortalDiagnosis.DiagnosisPathId) ||
+                MortalWoundDiagnosisInputCodec.ContextFingerprint(input.Context) != MortalWoundDiagnosisInputCodec.ContextFingerprint(context) ||
+                WoundAcceptedTurnFingerprintWriter.CanonicalJson(authority._diagnosisControl) != WoundAcceptedTurnFingerprintWriter.CanonicalJson(authority._diagnosisInput["control"]))
+                throw new InvalidDataException("Signed diagnosis input does not match the complete actual original owner.");
+        }
         return new MortalWoundTreatmentAcceptedStateAuthorityResult(
             true,
             Array.Empty<ValidationIssue>(),

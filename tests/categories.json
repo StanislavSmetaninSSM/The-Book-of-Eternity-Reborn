@@ -2,6 +2,64 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "mortal-diagnosis-input-data",
+  "responsibility": "T121 seven detached input rows bind full original control and exact typed participant/context coordinates after independent outer resealing, including same-ordinal control drift. These are staged DATA, never admission or publication authority. UNCOMPILED/UNRUN source-authored WIP.",
+  "excludes": "No Engine/GM wait, future-time/recovery/common publication, actual C4 handoff or finished Mortal route claim; no broad aggregate or old spiritual PASS replay.",
+  "changeHints": [
+    "BookOfEternityClient/Services/MortalWoundDiagnosisInputCodec.cs",
+    "BookOfEternityClient/Services/MortalWoundTreatmentAcceptedStateAuthority.DiagnosisRetention.cs"
+  ],
+  "related": [
+    {
+      "id": "mortal-diagnosis-purpose-ownership",
+      "when": "Closed purpose and actual accepted-world ownership remain required; retained detached DATA never grants live permission."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.MortalWoundDiagnosisInputTests.*"
+      ]
+    }
+  ]
+},
+{
+  "id": "mortal-diagnosis-pre-handoff-retention",
+  "responsibility": "T121 one actual signed-input/accepted-owner fixture persists a genuine held request in the existing pending treatment DATA, disposes/reacquires the lease, restores exact claims before a competitor, then proves identical request/span/rolls/resource agreement/result with no History and no additional canonical changes. No fake repair packet or accepted receipt. UNCOMPILED/UNRUN source-authored WIP.",
+  "excludes": "No Engine/GM wait, future-time/recovery/common publication, actual C4 handoff or finished Mortal route claim; no broad aggregate or old spiritual PASS replay.",
+  "changeHints": [
+    "BookOfEternityClient/Services/MortalWoundDiagnosisInputCodec.cs",
+    "BookOfEternityClient/Services/MortalWoundTreatmentAcceptedStateAuthority.DiagnosisRetention.cs"
+  ],
+  "related": [
+    {
+      "id": "mortal-diagnosis-purpose-ownership",
+      "when": "Closed purpose and actual accepted-world ownership remain required; retained detached DATA never grants live permission."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.DiagnosisHoldRebindRestoresExactSpanBeforeACompetingClaimWithoutHistory"
+      ]
+    }
+  ]
+},
+{
   "id": "mortal-diagnosis-terminal-outcomes",
   "responsibility": "T121 two independent actual accepted-world rows exercise natural20 success and natural1 failure, exact retained procedure result, complete declared knowledge only, ordinary resource-policy consumption and same-owner exact retry with all canonical JSON bytes unchanged. The subject is an explicit diagnosis purpose and has no treatment operations. Source-authored before implementation; UNCOMPILED/UNRUN.",
   "excludes": "No Engine/GM wait, future-clock/recovery/common publication, C4 or cold rebind qualification; no fake receipts or broad Mortal aggregate.",

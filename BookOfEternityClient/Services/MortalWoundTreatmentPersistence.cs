@@ -131,7 +131,22 @@ internal static class MortalWoundTreatmentPersistedRequestCatalog
         (string SessionId, string RequestId, string SnapshotToken)? pendingBinding = null;
         var pendingHasRepairWave = false;
 
-        if (commandRoot is { } commandElement)
+        JsonObject? diagnosisInput = null;
+        if (commandRoot is { } possibleDiagnosis && possibleDiagnosis.ValueKind == JsonValueKind.Object &&
+            possibleDiagnosis.TryGetProperty("kind", out var inputKind) && inputKind.ValueKind == JsonValueKind.String &&
+            inputKind.GetString() == MortalWoundDiagnosisInputCodec.Kind)
+        {
+            try
+            {
+                diagnosisInput = JsonNode.Parse(possibleDiagnosis.GetRawText())!.AsObject();
+                if (!MortalWoundTreatmentCommandCodec.HasNoDuplicateProperties(possibleDiagnosis, AcceptedMechanicsPlan.WoundCommandPath, issues))
+                    diagnosisInput = null;
+                else _ = MortalWoundDiagnosisInputCodec.Read(diagnosisInput);
+            }
+            catch (Exception exception) when (exception is InvalidDataException or InvalidOperationException or JsonException)
+            { issues.Add(PersistenceIssue("mortal_wound_diagnosis_input_invalid", "one exact staged original diagnosis input", exception.Message)); }
+        }
+        else if (commandRoot is { } commandElement)
         {
             var parsed = WoundResponseInputComposer.ParseCommandRoot(commandElement);
             if (!parsed.Success)
@@ -201,6 +216,18 @@ internal static class MortalWoundTreatmentPersistedRequestCatalog
         }
 
         var unique = Coalesce(candidates, issues);
+        foreach (var heldDiagnosis in unique.Where(candidate => candidate.Request.Mode == "diagnosis" &&
+            !candidates.Any(origin => origin.Origin == "history" && HasExactLogicalCoordinate(origin, candidate))))
+        {
+            try
+            {
+                if (diagnosisInput is null) throw new InvalidDataException("A held diagnosis request requires its unchanged actual original selection input.");
+                MortalWoundDiagnosisInputCodec.RequireRequestMatches(diagnosisInput, heldDiagnosis.Request);
+            }
+            catch (Exception exception) when (exception is InvalidDataException or InvalidOperationException or JsonException)
+            { issues.Add(PersistenceIssue("mortal_wound_diagnosis_hold_input_mismatch", "the exact original input and retained request", exception.Message)); }
+        }
+
         if (issues.Count != 0)
         {
             return new MortalWoundTreatmentPersistedRequestCatalogResult(

@@ -2501,7 +2501,9 @@ internal static partial class AcceptedTurnAuthorityRegistry
                                 request.Coordinates.RouteId,
                                 StringComparison.Ordinal))
                             .ToArray();
-                        mismatch ??= routes.Length == 1
+                        mismatch ??= request.Mode == "diagnosis"
+                            ? MortalWoundTreatmentFreshAuthorityValidator.FindDiagnosisMismatch(request, history, acceptedState.CurrentWound, acceptedState)
+                            : routes.Length == 1
                             ? MortalWoundTreatmentFreshAuthorityValidator.FindMismatch(
                                 request,
                                 history,

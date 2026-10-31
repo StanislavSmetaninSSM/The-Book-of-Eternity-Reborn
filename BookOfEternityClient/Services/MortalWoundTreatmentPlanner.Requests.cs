@@ -421,6 +421,15 @@ internal static partial class MortalWoundTreatmentPlanner
         if (!coordinateResult.IsValid || coordinateResult.Coordinates is null)
             return MortalWoundTreatmentAttemptRequestResult.Invalid(coordinateResult.Issues);
         var coordinates = coordinateResult.Coordinates;
+        try
+        {
+            var held = acceptedState.ReadHeldDiagnosisRequest(coordinates);
+            if (held is not null) return MortalWoundTreatmentAttemptRequestResult.Valid(held);
+        }
+        catch (InvalidDataException exception)
+        {
+            return InvalidRequest("mortal_wound_diagnosis_request_retention_mismatch", "the exact retained diagnosis request and private claims", exception.Message);
+        }
         var requirements = MortalWoundTreatmentRequirementAuthorityBundle.CreateForDiagnosis(acceptedState, coordinates, before);
         if (!requirements.IsValid || requirements.Authority is null)
             return MortalWoundTreatmentAttemptRequestResult.Invalid(requirements.Issues);

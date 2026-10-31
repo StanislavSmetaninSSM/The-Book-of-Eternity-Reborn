@@ -87,6 +87,41 @@ public sealed partial class MortalWoundTreatmentResolverTests
         fixture.AssertJson(unchanged);
     }
 
+    [Fact]
+    public async Task DiagnosisHoldRebindRestoresExactSpanBeforeACompetingClaimWithoutHistory()
+    {
+        await using var fixture = await DiagnosisOwnershipFixture.CreateAsync(signedInput: true);
+        var before = fixture.Authority.CurrentWound;
+        var history = WoundHistoryState.Parse(await fixture.Files.ReadFileAsync(fixture.Lease, WoundHistoryState.HistoryPath), WoundHistoryState.HistoryPath);
+        var result = MortalWoundTreatmentPlanner.PrepareDiagnosisRequest(fixture.Authority, history, before,
+            "diagnosis_retained_operation", "inspect_explicit_method", fixture.EventRef);
+        Assert.True(result.IsValid, JsonSerializer.Serialize(result.Issues));
+        var request = result.Request!;
+        var check = Assert.IsType<MortalWoundProcedureCheckAuthority>(request.ModeAuthority);
+        await fixture.Authority.RetainDiagnosisRequestAsync(request);
+        var unchanged = fixture.CaptureJson();
+        var outcome = MortalWoundDiagnosisOutcome.Resolve(fixture.Authority, history, request);
+        await fixture.RebindAsync();
+        var competitor = MortalWoundTreatmentPlanner.PrepareProcedureRequest(fixture.Authority, history, fixture.Authority.CurrentWound,
+            "competing_after_rebind", "inspect_explicit_method", fixture.EventRef);
+        Assert.True(competitor.IsValid, JsonSerializer.Serialize(competitor.Issues));
+        var competing = Assert.IsType<MortalWoundProcedureCheckAuthority>(competitor.Request!.ModeAuthority);
+        Assert.Equal(new[] { 1 }, competing.SourceIndices);
+        var recovered = MortalWoundTreatmentPlanner.PrepareDiagnosisRequest(fixture.Authority, history, fixture.Authority.CurrentWound,
+            "diagnosis_retained_operation", "inspect_explicit_method", fixture.EventRef);
+        Assert.True(recovered.IsValid, JsonSerializer.Serialize(recovered.Issues));
+        var exact = recovered.Request!;
+        var restored = Assert.IsType<MortalWoundProcedureCheckAuthority>(exact.ModeAuthority);
+        Assert.Equal(request.RequestFingerprint, exact.RequestFingerprint);
+        Assert.Equal(check.SourceIndices, restored.SourceIndices); Assert.Equal(check.SourceRolls, restored.SourceRolls);
+        Assert.Equal(request.ResourceAuthority.AuthorityFingerprint, exact.ResourceAuthority.AuthorityFingerprint);
+        Assert.Equal(request.ResourceAuthority.ReservationId, exact.ResourceAuthority.ReservationId);
+        Assert.Empty(restored.SourceIndices.Intersect(competing.SourceIndices));
+        Assert.Equal(outcome.Resolution.ResultFingerprint, MortalWoundDiagnosisOutcome.Resolve(fixture.Authority, history, exact).Resolution.ResultFingerprint);
+        Assert.DoesNotContain(history.State!.Transitions, value => value.Kind == "diagnose");
+        fixture.AssertJson(unchanged);
+    }
+
     private sealed class DiagnosisOwnershipFixture : IAsyncDisposable
     {
         private DiagnosisOwnershipFixture(string root, FileSystemManager files, FileSystemManager.CanonicalWriteLease lease,
@@ -94,11 +129,11 @@ public sealed partial class MortalWoundTreatmentResolverTests
         { Root = root; Files = files; Lease = lease; Authority = authority; EventRef = eventRef; }
         private string Root { get; }
         internal FileSystemManager Files { get; }
-        internal FileSystemManager.CanonicalWriteLease Lease { get; }
-        internal MortalWoundTreatmentAcceptedStateAuthority Authority { get; }
+        internal FileSystemManager.CanonicalWriteLease Lease { get; private set; }
+        internal MortalWoundTreatmentAcceptedStateAuthority Authority { get; private set; }
         internal string EventRef { get; }
 
-        internal static async Task<DiagnosisOwnershipFixture> CreateAsync(int? natural = null)
+        internal static async Task<DiagnosisOwnershipFixture> CreateAsync(int? natural = null, bool signedInput = false)
         {
             // Initial canonical scenario DATA only. The real live preparation and
             // exporter below issue ownership; these JSON values are not receipts.
@@ -123,6 +158,21 @@ public sealed partial class MortalWoundTreatmentResolverTests
             try
             {
                 _ = AcceptedStateFixture.SeedCanonicalComponentData(files, scenario, "player", "player_current", WoundCarrierCatalog.PlayerPath);
+                var stagedContext = ParseContext();
+                if (signedInput)
+                {
+                    var wound = WoundMaterializationContract.Parse(scenario.Before.ToJsonString(), WoundCarrierCatalog.PlayerPath).Wound!;
+                    var selected = new SpiritualSelfTreatmentSelection(wound.WoundId, WoundIdentityState.ComputeSemanticFingerprint(wound))
+                    {
+                        MortalDiagnosis = new(wound.Owner, new("mortal_world", "npc", "field_medic_01", WoundCarrierCatalog.NpcPath),
+                            "inspect_explicit_method", WoundDiagnosisEvidence.ComputePathFingerprint(wound, "inspect_explicit_method"),
+                            MortalWoundDiagnosisInputCodec.ContextFingerprint(stagedContext))
+                    };
+                    var input = MortalWoundDiagnosisInputCodec.Create(new(scenario.AcceptedState["sessionId"]!.GetValue<string>(),
+                        scenario.AcceptedState["requestId"]!.GetValue<string>(), scenario.AcceptedState["turn"]!.GetValue<int>(),
+                        new ProgressionControl { CurrentRealm = "Mortal World" }), selected, stagedContext);
+                    await files.WriteFileAtomicAsync(AcceptedMechanicsPlan.WoundCommandPath, input.ToJsonString());
+                }
                 await new LiveTurnPreparationService(files).PrepareAsync(new LiveTurnPreparationOptions
                 {
                     SessionId = scenario.AcceptedState["sessionId"]!.GetValue<string>(),
@@ -132,14 +182,9 @@ public sealed partial class MortalWoundTreatmentResolverTests
                     PreGeneratedDices1d20 = scenario.AcceptedState["acceptedDice"]!.AsArray().Select(value => value!.GetValue<int>()).ToArray()
                 });
                 lease = await files.AcquireCanonicalWriteLeaseAsync();
-                var context = MortalWoundTreatmentAuthority.ParseContext(new JsonObject
-                {
-                    ["schemaVersion"] = 1, ["realm"] = "mortal_world", ["targetKind"] = "player", ["targetId"] = "player_current",
-                    ["providerKind"] = "npc", ["providerId"] = "field_medic_01", ["currentLocationId"] = "loc_field_clinic_001"
-                }.ToJsonString(), "diagnosis.context");
-                Assert.True(context.IsValid, JsonSerializer.Serialize(context.Issues));
-                var exported = MortalWoundTreatmentAcceptedStateAuthority.ExportCurrent(files, lease,
-                    Assert.IsType<MortalWoundTreatmentAuthority.Context>(context.Context), scenario.Before["woundId"]!.GetValue<string>());
+                var exported = signedInput
+                    ? MortalWoundTreatmentAcceptedStateAuthority.ExportDiagnosisCurrent(files, lease, stagedContext, scenario.Before["woundId"]!.GetValue<string>())
+                    : MortalWoundTreatmentAcceptedStateAuthority.ExportCurrent(files, lease, stagedContext, scenario.Before["woundId"]!.GetValue<string>());
                 Assert.True(exported.IsValid, JsonSerializer.Serialize(exported.Issues));
                 return new(root, files, lease, Assert.IsType<MortalWoundTreatmentAcceptedStateAuthority>(exported.Authority), scenario.EventRef);
             }
@@ -148,6 +193,26 @@ public sealed partial class MortalWoundTreatmentResolverTests
                 if (lease is not null) await lease.DisposeAsync();
                 Directory.Delete(root, true); throw;
             }
+        }
+
+        private static MortalWoundTreatmentAuthority.Context ParseContext()
+        {
+            var parsed = MortalWoundTreatmentAuthority.ParseContext(new JsonObject
+            {
+                ["schemaVersion"] = 1, ["realm"] = "mortal_world", ["targetKind"] = "player", ["targetId"] = "player_current",
+                ["providerKind"] = "npc", ["providerId"] = "field_medic_01", ["currentLocationId"] = "loc_field_clinic_001"
+            }.ToJsonString(), "diagnosis.context");
+            Assert.True(parsed.IsValid, JsonSerializer.Serialize(parsed.Issues));
+            return Assert.IsType<MortalWoundTreatmentAuthority.Context>(parsed.Context);
+        }
+
+        internal async Task RebindAsync()
+        {
+            var woundId = Authority.CurrentWound.WoundId;
+            await Lease.DisposeAsync(); Lease = await Files.AcquireCanonicalWriteLeaseAsync();
+            var exported = MortalWoundTreatmentAcceptedStateAuthority.ExportDiagnosisCurrent(Files, Lease, ParseContext(), woundId);
+            Assert.True(exported.IsValid, JsonSerializer.Serialize(exported.Issues));
+            Authority = Assert.IsType<MortalWoundTreatmentAcceptedStateAuthority>(exported.Authority);
         }
 
         internal Dictionary<string, byte[]> CaptureJson() => Directory.EnumerateFiles(Root, "*.json", SearchOption.AllDirectories)
