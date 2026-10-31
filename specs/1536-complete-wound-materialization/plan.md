@@ -1,3 +1,36 @@
+# T121 C10 fixture compiled — corrected UI3 PREP pending
+
+Independent Astra SOURCE accepted `8cb3eff4e100cefc70b7f4809aa7d9c887c1bfe3`.
+Fresh Integration exits0 in2:12.94 with exactly the previous102 warning code/
+message multiset. Main/Support/Unit retain unchanged successful C9 source457ef806;
+their current source has no implementation delta. Four PE/PDB pairs/330 actual
+Compile-owned bindings match. Only Integration DLL/PDB changed among27 artifacts;
+40 resource copies/four daemons remain exact. External archive62891364bytes,
+SHA256 `b1cdaa12a071eb17dbc82fcd5d6db7ee9d0ca29cba5b89d395a4ab20160d25b4`,
+27 member hashes and full gzip EOF/CRC over197099520 decoded bytes pass.
+
+Fresh official UI PlanOnly confirms console/browser/rollback exactly3cases/
+3methods/3exclusive descriptors, each180s, zero executions or duplicates and
+complete cleanup. Full catalog1263/13079 and full217/89/49/47 inventory retain
+the C9 discovery lineage: no test method, selector, category, project or budget
+changed, only the shared private initial-scene seed. Already accepted205 retained
+plus C9 cheap5/native4 are214 PASS by mixed epochs, not a fresh aggregate. Only
+corrected UI3 is UNRUN. Request independent PREP after remote persistence/fence;
+run separate singletons and require full capture/owned cleanup before continuing.
+Raw is external in `M2GREENC10-*`; the C9 console failure and full capture remain.
+
+The next agreed functional result after Mortal diagnosis remains guided physical
+treatment (T121–T125 over US2), beyond recommendations. All three procedure/course/
+guaranteed resolvers, requirement/resource ownership, History and common publisher
+exist. The shared menu/selection/staged intent still lacks treatment routing, and
+the ordinary Engine adapter is explicitly guaranteed-only: procedure/course need
+genuine accepted-owner dispatch, then shared console/browser result/replay/rollback.
+Course start/continuation/interruption follow existing windows/ordinals, with
+separate confirmation; no automatic waiting, borrowed diagnosis duration or new
+prices/checks. This is remaining functionality, not a completed UI binding. The
+eight spiritual diagnosis adapters and wider reconciliation/qualification also
+remain open; this list does not close US4/US5/US6/#1536 or historical HOLDs.
+
 # T121 Mortal UI initial companions — C10 fixture WIP, UNCOMPILED / UNRUN
 
 The first actual console journey at runtime
