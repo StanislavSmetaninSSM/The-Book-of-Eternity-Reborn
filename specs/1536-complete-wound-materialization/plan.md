@@ -1,3 +1,45 @@
+# T121 C11 prepared-original candidate — UNCOMPILED / UNRUN
+
+Task T121-DIAGNOSIS-MORTAL-ENGINE-ORIGINAL continues under the accepted Astra
+bounded design. The C10 console timeout remains UNKNOWN: no completed case/TRX
+or final capture. Its exact retained runtime refusal is the causal RED; no further
+180-second RED attempt is needed. All retained roots/raw and earlier receipts stay
+outside Git and unchanged.
+
+The only production delta registers SchedulePath beside the diagnosis command in
+existing ValidationSnapshotFiles before the real original producer. The prepared
+schedule becomes signed source while the earlier rollback bytes/hash remain intact.
+The exact schedule/clock guard, full signed control, claim ownership, manifests,
+common publisher and earlier rollback timing are unchanged.
+
+One new Integration Fact uses the real Engine queue/staging and existing
+TerminalWaitStarted hook, before its wait task. It authenticates actual emitted
+payload/backup maps, proves prepared signed bytes versus distinct old rollback
+bytes, exercises retained diagnosis and real T0/T1 calculation, separately changes
+current schedule/clock and requires the existing exact refusal, restores fault
+bytes in finally, then stops via an exact controlled cancellation. The hook lease
+closes before existing same-generation RestoreOriginalForRepairAsync; complete
+pre-turn canonical equality remains mandatory. Existing passive capture includes
+all timing rows and closing, with no quota or new diagnostic format.
+
+Fresh focused selection is stage1 plus existing semantic source guards3, both at
+60 seconds. Only after SOURCE/build/discovery/PREP and this gate may the original
+console/browser/rollback3 run separately at unchanged 180-second bounds. Retain
+accepted214 except the fresh superseding guards3 (211 retained); new focused4
+would yield 215 before UI3. Current full source estimate is 218 cases / 90 methods /
+50 descriptors / 48 categories, subject to official discovery. This is not a fresh
+218 PASS claim. C9 native4 stays accepted at its existing boundary. Parent Mortal,
+physical guided treatment, eight unavailable adapters, US3/#1536 and HOLDs remain
+open; no checkbox is closed here.
+
+Optimization: the existing rollback set stores a path, with no added production
+read, parse, cache or owner. Test inspection reuses one authenticated payload,
+actual retained outcome/working DATA and its captured byte maps under one lease.
+Fresh current source/claim checks and exact compensation remain mandatory. No
+latency or global no-I/O claim is made. GM fields, economics, authored responses,
+examples and manifest contract do not change: this is enforcement of the existing
+client prepared-original role, so no GM wire update is required.
+
 # T121 C10 console UNKNOWN — deterministic prepared-original mismatch identified
 
 Console at `f0886ee76a9c86b661c51856c243ffd8b6ce2b00` reached its unchanged

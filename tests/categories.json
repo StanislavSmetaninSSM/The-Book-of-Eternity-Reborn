@@ -2,6 +2,47 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "mortal-diagnosis-engine-prepared-original",
+  "responsibility": "T121 one genuine Engine staging Fact through the actual guided console queue and TerminalWaitStarted before the wait task: authenticate emitted original/rollback maps and hashes; signed prepared schedule equals current while the earlier rollback bytes remain distinct; actual retained diagnosis working T0/T1 progression is read-only; independent schedule/clock drift still refuses; controlled sentinel closes the hook lease before exact same-generation outer restore. Full canonical byte equality and existing passive capture/closing are retained. C10 runtime refusal is causal RED; C11 candidate UNCOMPILED/UNRUN.",
+  "excludes": "No GM response/wait/publication, forged authority/receipt, invented backup paths/hashes, private reflection, new API/cache/validator/diagnostic stack, ignored timestamps, late rebasing, broad accepted-case replay or HOLD work.",
+  "changeHints": [
+    "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+    "BookOfEternityClient.IntegrationTests/ExplorerWoundSelfTreatmentTests.MortalDiagnosisOriginal.cs"
+  ],
+  "related": [
+    {
+      "id": "wound-read-semantic-source-guards",
+      "when": "The single Engine production registration changes the prepared-original source boundary."
+    },
+    {
+      "id": "mortal-diagnosis-console",
+      "when": "After focused stage1 and guards3 qualify, original console UI must complete under its unchanged 180-second budget."
+    },
+    {
+      "id": "mortal-diagnosis-browser",
+      "when": "Shared staging role changes require the original independent browser UI after the focused gate."
+    },
+    {
+      "id": "mortal-diagnosis-rollback",
+      "when": "The original UI rollback must still prove held compensation and earlier whole-turn restoration."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.MortalDiagnosisEngineOriginalKeepsPreparedScheduleSeparateFromExactRollback"
+      ]
+    }
+  ]
+},
+{
   "id": "mortal-diagnosis-dynamic-compensation-capture",
   "responsibility": "One genuine diagnosis common-plan Fact: actual static capture and read-only preflight, dynamic present clock and actually absent touched effect-command path, exact sealed bytes/presence, old-row identity/no reopening, one physical open per added present source, copied exports, stale bytes/presence refusal with no writes/claim change, and the same full-coverage gate used by nonterminal factory. No take/publication or fabricated receipt. Actual outer2 failure is causal RED; UNCOMPILED/UNRUN.",
   "excludes": "No generic role Boolean, authority/cache/validator stack, global inventory expansion, future canonical write, weak byte equality, Engine/GM wait, broad replay or HOLD run.",

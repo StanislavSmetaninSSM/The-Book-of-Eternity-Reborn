@@ -51,6 +51,13 @@ archive are outside checkout; original failures and all other holds are retained
   Current C10 console is timeout/UNKNOWN with persisted runtime refusal, not PASS;
   no TRX/final capture, actual owned root retained. Same bounded independent review,
   fresh affected builds/provenance and original180s UI gates remain required.
+  C11 candidate registers only the prepared schedule in the existing set. One
+  focused real Engine staging Fact uses the existing pre-wait checkpoint, proves
+  authenticated prepared versus rollback bytes/hashes, actual T0/T1 calculation,
+  independent physical schedule/clock refusals and exact original restoration.
+  Source is UNCOMPILED/UNRUN; fresh stage1 plus semantic guards3 precede UI3.
+  Current estimates are 218 cases / 90 methods / 50 descriptors / 48 categories,
+  subject to official discovery. No parent or feature checkbox is closed.
 
 - [ ] T121-DIAGNOSIS-MORTAL [US5] Deliver one complete guided Mortal diagnostic
   method through known/reachable choice, explicit check/duration/cost, separate

@@ -1726,6 +1726,7 @@ public partial class GameEngine
                     new(request.SessionId, request.RequestId, request.TurnNumber, request.ProgressionControl!), healingSelection);
                 if (!staged.IsStaged || staged.GmContext is null) throw new InvalidDataException("Mortal diagnosis staging was refused: " + staged.IssueCode);
                 backedUpFiles.ValidationSnapshotFiles.Add(AcceptedMechanicsPlan.WoundCommandPath);
+                backedUpFiles.ValidationSnapshotFiles.Add(ProgressionScheduleService.SchedulePath);
                 request.MortalDiagnosis = staged.GmContext.DeepClone().AsObject();
             }
             else if (healingSelection is not null)

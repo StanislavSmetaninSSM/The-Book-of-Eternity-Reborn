@@ -1854,3 +1854,26 @@ caller Boolean, new owner/authority/cache or generic rollback exception is added
 This is a client compensation correction; GM fields/rules/manifest stay unchanged.
 Current source, dependency identity/lifetime, meaningful typed counter/refusal proof
 and still-UNRUN qualification are recorded in plan.md.
+
+
+### Mortal Engine prepared schedule versus earlier rollback original — C11
+
+The actual Engine captures pre-turn rollback before building fresh control and
+staging diagnosis. Both existing control preparation calls may refresh the
+canonical scheduler lastUpdatedUtc. Before the unchanged original producer runs,
+register the prepared schedule in the same ValidationSnapshotFiles set as the
+staged diagnosis command, matching the existing spiritual preparation role.
+SnapshotFileOrRollbackBackupIfPresentAsync then signs current prepared schedule
+bytes; rollback maps/hashes still reference exact earlier bytes. World time stays
+T0, full signed control stays unchanged and PrepareDiagnosisOutcomeAsync must
+continue to reject any later physical schedule/clock difference exactly.
+
+This is a client source-role correction, not permission to ignore timestamps,
+rebase after GM, change the scheduler or weaken original coverage. The real Engine
+pre-wait checkpoint provides finite typed proof without GM waiting: authenticated
+prepared/rollback distinction, real retained working T0/T1, independent current
+schedule/clock refusals and exact same-generation original restoration after the
+hook lease closes. Existing passive capture is reused. A path registration adds
+no read/parse/cache/owner; actual source/claim freshness is retained. GM wire,
+response fields, rules and examples stay unchanged. Current source and still-open
+qualification are recorded in plan.md and T121-DIAGNOSIS-MORTAL-ENGINE-ORIGINAL.
