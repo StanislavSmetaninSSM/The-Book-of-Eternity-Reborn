@@ -1,3 +1,36 @@
+# T121 C19 primary GREEN8 — independent OUTCOME pending; Engine/UI held
+
+At runtime `d68c24fdb441e0b01953f8d28f514a265deea91d`, all owners freshly compiled
+`21c3a0560e9d04a1409a736afd4908071f23b79a`, five bounded runs finish with exactly
+8 PASS /8 methods /6 descriptors. Sourceguard4 passes: closure1 6.7489732s and
+semantic3 4.8421063s, wall23.3842676s. Browser singletons pass in admitted order:
+exact37.5741751s, foreign34.5823559s, parse41.8905156s, final31.2262713s, each
+below unchanged60s. Strict raw TRX/hash/membership/unique IDs, stable pins and
+runner cleanup are verified, with a fresh fence between every stage.
+
+All four browser captures have complete original event pairs/sequences/timestamps,
+full gzip/footer/CRC/decode, writer closure and four unique physically absent
+owned roots:34+36+32+32=134 events. Foreign native fixture cleanup is successful
+await-using disposal plus an empty diagnosis-owner namespace; its individual root
+ID was not emitted. Source guards do not emit per-root captures/IDs; no such
+proof is invented. External primary proof SHA256 is
+`3a5b64960a7c6da0f9207b0c25a640e4ac087e52f677fbae0b3bb82d577c3de3`,
+M2GREENC19-primary-guard-browser8.json. Full raw stays external in five C19 run
+directories; C18 production RED and C16/C17 incomplete roots remain untouched.
+
+The same positive test now accepts exactly the legitimate NPC debit, while
+no-World, genuine foreign frame, changed physical bytes and failed final proof
+retain refusal/withhold results. These are NPC-to-World component proofs, not
+full All UI or terminal-claim acceptance. No equal-work speedup or new aggregate
+qualification is claimed. Independent coherent OUTCOME is pending.
+
+Next requested gate is fresh Engine-original1 at60s, then original console,
+shared-browser and rollback UI3 at180s each only after its strict complete result/
+capture/cleanup and a fresh fence. Full All production validation remains mandatory;
+all four are still UNRUN/held here. No source changes/rebuild or replay of successful
+unchanged cases is proposed. Physical treatment, eight adapters, wider parents
+and old DFR/Mortal-compat/Windows HOLDs remain open.
+
 # T121 C19 four fresh owning builds verified — sourceguard/browser runtime UNRUN
 
 Independent Astra SOURCE accepts `21c3a0560e9d04a1409a736afd4908071f23b79a`,
