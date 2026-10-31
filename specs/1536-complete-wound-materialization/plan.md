@@ -1,3 +1,37 @@
+# T121 C20 fresh fixture build verified — original UI3 UNRUN
+
+Independent Astra SOURCE accepts `4b542575b72cc77b7dd836580517a5ac65a2416c`.
+Fresh Integration exits0 in2:49.92 with102 warnings; the warning code/message
+multiset matches C19 exactly. Main, Support and Unit remain compiled at
+`21c3a0560e9d04a1409a736afd4908071f23b79a`; unchanged Compile inputs, matching
+PE/PDB/source hashes and identical dependency copies justify reuse. Four PE/PDB
+pairs and348 changed-source bindings match. All27 artifacts,40 operational-resource
+copies and4 daemon copies are verified. External archive62,989,492 bytes has SHA256
+`bc9a135fe447a8b234daf586da4f1f73e266098d54a7dbf1dd299645fc6c43b2`;
+all27 members and full197,335,040-byte gzip EOF/CRC decode agree.
+
+Official catalog discovery exits0. Exact full PlanOnly confirms234 cases /
+102 methods /61 descriptors /58 categories, zero executions. Re-reading58 actual
+raw TRX reconciles231 retained distinct PASS /99 methods /58 descriptors /
+55 categories across21 explicit runtime epochs and31 used runs. This includes
+accepted C19 guard/browser8 and Engine-original1; it is not a fresh231 PASS.
+External retained proof SHA256
+`c24c3b20b6c220fedcd201442c51fb9fb6ddb29768b8a8c4525b4bf27c123f96`.
+Only the three original console/shared-browser/rollback methods remain fresh:
+each gets its unchanged180-second bound, independent PREP and an immediate source,
+resource, binary and owned-process fence; result and complete capture/cleanup must
+be verified before the next. No actual UI run has started at this checkpoint.
+
+The corrected oracle reuses once-captured original test DATA and existing pure
+identity methods; final state and History are freshly read. No production cache,
+authority reuse, GM wire change, diagnostic quota or speedup is claimed. Earlier
+failed/timeout evidence and owned roots remain untouched. Raw and the full artifact
+archive stay outside checkout in
+`/workspace/tboe-linux-evidence-20261025/us5-guided-diagnosis/M2GREENC20-*`.
+Physical guided treatment, eight canonical requirement adapters, broader parents
+and all existing qualification HOLDs remain open. After diagnosis acceptance the
+next player result is guided physical treatment across the three existing modes.
+
 # T121 C20 whole resource/History oracle — WIP UNCOMPILED/UNRUN
 
 Independent Astra DESIGN accepts the bounded fixture-only correction to the C19
