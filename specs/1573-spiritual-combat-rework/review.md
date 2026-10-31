@@ -46,6 +46,16 @@ process records только в текущем D:raw. Полных резуль�
 review_t124_full получил exact diff/evidence/договоры и начинает source-review;
 итоговый verdict будет после полных данных/отчёта. Повторного approval не ждём.
 
+Source-stage Astra/high проверил exactdiff/shared Heal/clocks/seed/cache и
+99test evidence: содержательных замечаний нет, финальный verdict открыт.
+Main завершёнexit0/stderr0:120cells/120000,5700horizon,299673.0247мс process,
+299441.7135мс runner. Parent сверил всеparams/seedFor/indices/outcome+endpoint
+sums и opt-in reasons/расходы. Reuse8damage/42741695hits,6Heal/47381234hits.
+Confirmation продолжает исходные3shards, source неизменен. В WIPreport внесён
+mainсрез/честные ограничения, включая взаимодействие attack-reserve16P с
+номинальным reaction-reserve24P. Это аналитическое объяснение существующих
+порогов, не новая эвристика/прогон/перенастройка. T124.3–4 остаются открыты.
+
 ## T124 — проект scope, 2026-11-01
 
 Baseline/origin741944f6d46f6cf9558238379679bf993c6d3d86 и issue1573 сверены.
