@@ -1,3 +1,31 @@
+# T121 C17 fresh build and exact diagnostic preparation — runtime UNRUN
+
+Independent Astra SOURCE accepts `a3b5806995b976396b81da055508aab94cd84464`.
+Fresh Integration at that source exits0 in1:54.57, zero errors and102 prior warnings
+with the exact C16 code/message multiset. Main/Support/Unit remain compiled78918350
+with full unchanged-source/Compile ownership proof. All4 PE/PDB pairs,347 source
+bindings,27 artifacts,40 resource copies and4 daemons match. The complete external
+62,982,844-byte archive SHA256 is
+`8e4bb31b380764cced0b189060df6335c0617c176a8bca65d0f85a5f3183a67c`;
+all27 members and full197,314,560-byte gzip EOF/CRC decode are verified.
+
+Official discovery exits0 with1273 categories /13088 methods, no holes. Exact
+PlanOnly exits0 with234 cases /102 methods /61 descriptors /58 categories, ZERO
+executions. The retained226 proof8ff27d23 remains unchanged: all53 raw TRX hashes
+and its94-method counter match the current53 retained descriptors. Those19 epochs /
+25 runs are historical acceptance, not a new226/234 PASS. Full raw/provenance stay
+outside checkout under M2GREENC17-*; C16 root/raw/copy remain preserved.
+
+Only exact1 is proposed after independent PREP and a fresh live fence, at the
+unchanged60s bound with full passive macro capture. Check actual result, complete
+original event pairs/sequences, gzip/footer/decode and owned root cleanup before
+any next action; timeout/incomplete capture remains UNKNOWN. Other browser3,
+Engine-original1 and UI3 stay held. Actual inner DATA reuse, timing cost and the
+complete earlier timeout cause remain unproved. No FS leaf observers, authority/
+source/readset relaxation, limit increase, new cache/stack or old raw deletion.
+This is the same bounded fixture correction, with no GM wire or game-rule change;
+physical treatment, eight proof adapters and wider parents/HOLDs remain open.
+
 # T121 C17 browser hook eligibility and bounded passive capture — UNCOMPILED / UNRUN
 
 C16 exact is TIMEOUT/UNKNOWN at60.2499089s/60, zero completed and no TRX.
