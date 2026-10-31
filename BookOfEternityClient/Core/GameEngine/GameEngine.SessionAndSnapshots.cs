@@ -2430,6 +2430,13 @@ public partial class GameEngine
         await RefreshRuntimeStateAfterExactRollbackAsync();
     }
 
+    /// <summary>Restores a retryable original through the real Engine rollback owner, preserving only privately owned attempt continuity.</summary>
+    /// <param name="snapshot">The actual validated pre-turn rollback capture.</param>
+    /// <param name="sessionGeneration">The physical session generation owning this original.</param>
+    /// <returns>Completion after exact original rollback and the existing runtime refresh.</returns>
+    internal Task RestoreOriginalForRepairAsync(RollbackSnapshot snapshot, string sessionGeneration) =>
+        RestorePreTurnBaselineForRepairSessionAsync(snapshot, sessionGeneration);
+
     private async Task RestorePreTurnBaselineForRepairSessionAsync(
         RollbackSnapshot snapshot,
         string expectedSessionGeneration,
@@ -2449,7 +2456,11 @@ public partial class GameEngine
             try
             {
                 ThrowIfRepairSessionReplaced(writeLease, expectedSessionGeneration);
+                var diagnosisRetry = AcceptedTurnAuthorityRegistry.PrepareMortalDiagnosisOuterRollback(_fs, writeLease);
+                if (diagnosisRetry && pendingResolutionRepairCheckpoint is not null)
+                    throw new InvalidDataException("Diagnosis retry cannot share an unrelated resource repair checkpoint.");
                 await RestorePreTurnBackupAsync(writeLease, snapshot);
+                if (diagnosisRetry) AcceptedTurnAuthorityRegistry.CompleteMortalDiagnosisOuterRollback(_fs, writeLease);
                 if (pendingResolutionRepairCheckpoint != null)
                 {
                     await _fs.WriteFileAtomicBytesAsync(

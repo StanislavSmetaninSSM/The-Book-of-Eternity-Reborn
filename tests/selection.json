@@ -105,6 +105,13 @@
       "contracts": [
         "#1536 T121-DIAGNOSIS-MORTAL; diagnosis-owned recovery receipt, actual common publication and exact held C4 claims"
       ]
+    },
+    {
+      "category": "mortal-diagnosis-outer-retry",
+      "reason": "Actual held C4 versus outer-original byte/absence distinction, request/span/Fate/confirmed reservation continuity before competitor, wrong-control refusal and terminal non-reactivation. Two independent actual snapshot/native-publication rows reuse the existing fixture and owner; no GM wait. UNCOMPILED/UNRUN, no runtime admission before whole SOURCE.",
+      "contracts": [
+        "#1536 T121-DIAGNOSIS-MORTAL; retained terminal outcome across C4 and outer rollback, exact restoration without Reserve"
+      ]
     }
   ]
 }

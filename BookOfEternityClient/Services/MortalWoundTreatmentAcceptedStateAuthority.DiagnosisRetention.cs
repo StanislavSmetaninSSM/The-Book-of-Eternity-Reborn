@@ -68,6 +68,26 @@ internal sealed partial class MortalWoundTreatmentAcceptedStateAuthority
             throw new InvalidDataException("Persisted diagnosis could not confirm its original exact private claims.");
     }
 
+    internal CanonicalBeforeImage ReadDiagnosisOriginalCommandBeforeImage() =>
+        _diagnosisOriginalEvidence?.ReadWoundCommandRollbackImage() ??
+        throw new InvalidDataException("Missing authenticated original command rollback image.");
+
+    // Compare retained original DATA under the caller's actual new lease. This
+    // does not reactivate the old lease or issue execution/publication authority.
+    internal bool DiagnosisOriginalCanonicalImagesAgree(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease)
+    {
+        if (!ReferenceEquals(files, _fileSystem) || _diagnosisIssuedSnapshot is null ||
+            !files.IsCurrentSessionGeneration(lease, SessionGeneration)) return false;
+        var excluded = new[] { AcceptedMechanicsPlan.WoundCommandPath, WoundAcceptedTurnSnapshotContract.PendingResolutionPath };
+        foreach (var path in _diagnosisIssuedSnapshot.CoveredLogicalPaths.Where(path => !excluded.Contains(path, StringComparer.Ordinal)))
+        {
+            var current = files.ReadFileBytesSync(lease, path);
+            if (current is null || !current.AsSpan().SequenceEqual(_diagnosisIssuedSnapshot.ReadRequiredBytes(path))) return false;
+        }
+        return _diagnosisIssuedSnapshot.AbsentLogicalPaths.Where(path => !excluded.Contains(path, StringComparer.Ordinal))
+            .All(path => files.ReadFileBytesSync(lease, path) is null);
+    }
+
     internal CanonicalBeforeImage ReadDiagnosisOriginalPending()
     {
         var snapshot = _diagnosisIssuedSnapshot ?? throw new InvalidDataException("Missing original diagnosis snapshot.");

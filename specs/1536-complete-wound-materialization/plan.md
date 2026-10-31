@@ -1,3 +1,32 @@
+# T121 Mortal outer-original retry continuity WIP — UNCOMPILED / UNRUN
+
+The existing registry's private produced-request record now owns the explicit
+retry phases. Before retryable outer rollback it requires the exact live held
+input, confirmed claims and genuine original; an open common receipt must first
+compensate/rearm. After the actual Engine restore it verifies the separate original
+command/pending before-images and all selected canonical source bytes. Full
+original absence/bytes remain restored; no expected map is recaptured afterward.
+
+Only explicit retry reentry can restore the already-owned exact command/held bytes
+through the existing trusted-local byte publisher. It rechecks actual original,
+complete control, generation, current canonical images and exact private claims,
+without Reserve, draw or a second registry/publisher. One observed-original DATA
+read is reused inside that operation; its physical observations and claims stay
+fresh at publication fences. Terminal receipt settlement clears retry continuity.
+
+Two source-authored actual Engine snapshot/native publication rows cover ordinary
+natural20 and player natural1 with canonical oldest Shield. Four legitimate
+missing defaults are seeded before the one original capture. Separate expected
+held and original images precede publication/rollback; wrong-control refusal,
+exact request/span/Fate/resources/result before a competing index1 claim and
+terminal non-reactivation are asserted. No GM wait or forged receipt. These are
+UNCOMPILED/UNRUN test programs, not actual qualification evidence.
+
+Current estimate is 72 cases / eighteen methods / sixteen categories. No writer
+build, discovery, test or runtime. Whole SOURCE remains open; guided Mortal
+menu/staging/Engine UI and GM/current-input migration are still unfinished. All
+historical receipts, broader parent tasks, eight adapters and HOLDs remain.
+
 # T121 Mortal actual publication and next-recovery proof WIP — UNCOMPILED / UNRUN
 
 One new native component authors the actual common publication, strict transient

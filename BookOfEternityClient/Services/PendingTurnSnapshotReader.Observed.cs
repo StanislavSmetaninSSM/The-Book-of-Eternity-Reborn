@@ -101,6 +101,34 @@ internal static partial class PendingTurnSnapshotReader
                 StringComparison.OrdinalIgnoreCase);
         }
 
+        // DATA from this already validated frozen rollback envelope. This is
+        // distinct from the signed prepared command, and grants no retry permission.
+        internal CanonicalBeforeImage ReadWoundCommandRollbackImage()
+        {
+            const string path = AcceptedMechanicsPlan.WoundCommandPath;
+            var bytes = _source.Operations.FirstOrDefault(value => value.Role == OriginalSourceRole.DetachedAuthority)?.Bytes;
+            if (bytes is null || !PendingTurnSnapshotAuthority.TryReadDetachedAuthorityPayload(
+                    FileSystemManager.DecodeFileBytes(bytes), out var payload) || payload is null ||
+                payload.ManifestPayloadHash != _snapshot.SnapshotToken)
+                throw new InvalidDataException("Missing frozen original rollback command envelope.");
+            if (HasExactPreparedWoundCommandRole()) return new(false, null);
+            if (!payload.RollbackBaselineFiles.Contains(path, StringComparer.Ordinal))
+                throw new InvalidDataException("Original command has no authenticated rollback baseline.");
+            // The official native preparation has a single original snapshot
+            // image and no separate rollback map. A real Engine backup, when
+            // present, is the distinct earlier image and must be used exactly.
+            if (!payload.RollbackBackups.ContainsKey(path) && !payload.RollbackBackupHashes.ContainsKey(path))
+                return new(true, _snapshot.ReadRequiredBytes(path));
+            if (!payload.RollbackBackups.TryGetValue(path, out var artifact) ||
+                !payload.RollbackBackupHashes.TryGetValue(path, out var expected))
+                throw new InvalidDataException("Original command baseline has contradictory rollback coordinates.");
+            var original = _source.Operations.FirstOrDefault(value => value.Role == OriginalSourceRole.RollbackArtifact &&
+                value.LogicalPath == path && value.Path == artifact)?.Bytes;
+            if (original is null || !string.Equals(PendingTurnSnapshotAuthority.ComputeRollbackBackupHash(payload, original), expected, StringComparison.OrdinalIgnoreCase))
+                throw new InvalidDataException("Original command rollback artifact differs from its signed hash.");
+            return new(true, original.ToArray());
+        }
+
         // Every export is detached data. It cannot mint/rebind evidence after the lease ends.
         internal JsonObject ExportDiagnosticData()
         {

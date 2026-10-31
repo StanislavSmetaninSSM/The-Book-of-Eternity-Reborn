@@ -2,6 +2,39 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "mortal-diagnosis-outer-retry",
+  "responsibility": "T121 two independent actual Engine original/snapshot plus native common-publication rows cover natural20 and player natural1 with canonical oldest Fate Shield. Real C4 compensation restores a separately captured held image; actual Engine outer rollback restores the independently captured original bytes/absence. Existing registry continuity then restores only exact owned inputs/claims before a competing claim, with wrong-control and terminal non-reactivation refusals. UNCOMPILED/UNRUN WIP.",
+  "excludes": "No ProcessPlayerTurn/GM wait, fabricated receipt/manifest, reflection, post-failure before-map replacement, reroll/Reserve during restoration, second registry/publisher, provider/DFR/compatibility qualification or budget increase.",
+  "changeHints": [
+    "BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.MortalDiagnosisRetry.cs",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs"
+  ],
+  "related": [
+    {
+      "id": "mortal-diagnosis-published-recovery",
+      "when": "The real common transaction must first restore its held before-image and exact claims."
+    },
+    {
+      "id": "mortal-diagnosis-input-role",
+      "when": "Original signed input and original canonical absence/bytes remain distinct throughout retry."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.MortalDiagnosisOuterRollbackRetainsExactAttemptBeforeCompetingClaim"
+      ]
+    }
+  ]
+},
+{
   "id": "mortal-diagnosis-published-recovery",
   "responsibility": "T121 one actual nonterminal diagnosis common publication is compensated through its real transaction to the independently captured held image/claims, then retried with identical procedure span and finalized. A genuinely new ordinary original/current accepted owner at the published T1 must resolve diagnosis-owned LastTickKey as exact replay without writes. The existing component covers later-minute calculation DATA separately. UNCOMPILED/UNRUN WIP.",
   "excludes": "No fabricated accepted receipt, manual post-acceptance clock/wound patch, later accepted journey claim, Engine/GM wait, broad Mortal compatibility category or outer-original rollback claim. That distinct outer boundary remains required.",

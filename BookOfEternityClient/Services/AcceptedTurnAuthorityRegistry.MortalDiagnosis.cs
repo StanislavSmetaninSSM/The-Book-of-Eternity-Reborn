@@ -29,12 +29,17 @@ internal static partial class AcceptedTurnAuthorityRegistry
             internal RetainedMortalDiagnosis(MortalWoundTreatmentAcceptedStateAuthority owner,
                 MortalWoundTreatmentAttemptRequest request, byte[] held)
             {
+                Owner = owner;
                 AcceptedFingerprint = owner.AcceptedStateFingerprint; SessionGeneration = owner.SessionGeneration;
                 Request = request; HeldBytes = held.ToArray();
                 OriginalCommandBytes = owner.ReadDiagnosisOriginalBytes(AcceptedMechanicsPlan.WoundCommandPath);
+                OriginalCommandBeforeImage = owner.ReadDiagnosisOriginalCommandBeforeImage();
                 var original = owner.ReadDiagnosisOriginalPending();
                 OriginalPending = new(original.Existed, original.Bytes?.ToArray());
             }
+            internal MortalWoundTreatmentAcceptedStateAuthority Owner { get; }
+            internal CanonicalBeforeImage OriginalCommandBeforeImage { get; }
+            internal int OuterRollbackPhase { get; set; }
             internal string AcceptedFingerprint { get; }
             internal string SessionGeneration { get; }
             internal MortalWoundTreatmentAttemptRequest Request { get; }

@@ -5814,6 +5814,8 @@ internal static partial class AcceptedTurnAuthorityRegistry
             MortalWoundTreatmentPublicationTakeReceipt receipt)
         {
             CloseOpenTreatmentPublicationReceipt(receipt);
+            if (_retainedMortalDiagnosis?.Request.RequestFingerprint == receipt.Request.RequestFingerprint)
+                _retainedMortalDiagnosis = null; // Terminal settlement never authorizes an outer retry.
             _mortalItems.InvalidateValidated();
             if (_validatedTreatmentPublicationHandoff is { } handoff &&
                 ReferenceEquals(handoff.PublicationAuthority, receipt.PublicationAuthority) &&

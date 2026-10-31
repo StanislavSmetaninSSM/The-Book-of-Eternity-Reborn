@@ -157,6 +157,7 @@ public partial class ValidationService
     {
         ArgumentNullException.ThrowIfNull(writeLease);
         _fs.EnsureCanonicalWriteLeaseActive(writeLease);
+        await ResumeOwnedMortalDiagnosisRetryAsync(writeLease);
         EffectAcceptedTurnPlanAuthority.InvalidateValidated(_fs, writeLease);
         if (currentInputs is not null &&
             (validatedManifest is null ||

@@ -28,6 +28,7 @@ public partial class ValidationService
     {
         ArgumentNullException.ThrowIfNull(writeLease);
         _fs.EnsureCanonicalWriteLeaseActive(writeLease);
+        await ResumeOwnedMortalDiagnosisRetryAsync(writeLease);
         var spiritualPublication = await TryPrepareSpiritualC4PublicationAsync(writeLease);
         if (spiritualPublication is not null)
             return spiritualPublication;

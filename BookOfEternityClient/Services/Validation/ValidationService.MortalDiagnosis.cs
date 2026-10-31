@@ -20,6 +20,19 @@ public partial class ValidationService
         catch (Exception failure) when (failure is JsonException or InvalidDataException) { return false; }
     }
 
+    private async Task ResumeOwnedMortalDiagnosisRetryAsync(FileSystemManager.CanonicalWriteLease lease)
+    {
+        if (!AcceptedTurnAuthorityRegistry.HasMortalDiagnosisOuterRollbackCheckpoint(_fs, lease)) return;
+        var text = await _fs.ReadFileAsync(lease, LiveTurnPreparationService.TurnRequestPath) ??
+            throw new InvalidDataException("Diagnosis retry has no actual final request.");
+        var request = StrictJsonAuthority.Deserialize<TurnRequest>(text.TrimStart('\uFEFF'),
+            new JsonSerializerOptions { PropertyNameCaseInsensitive = true }, "diagnosis retry request") ??
+            throw new InvalidDataException("Diagnosis retry request is not an object.");
+        if (request.ProgressionControl is null) throw new InvalidDataException("Diagnosis retry lost its complete original control.");
+        await AcceptedTurnAuthorityRegistry.ResumeMortalDiagnosisAfterOuterRollbackAsync(_fs, lease,
+            new(request.SessionId, request.RequestId, request.TurnNumber, request.ProgressionControl));
+    }
+
     private async Task<WoundApplicationService.MortalDiagnosisAdmission> ReadRetainedMortalDiagnosisAsync(
         FileSystemManager.CanonicalWriteLease lease, ValidationPendingTurnSnapshotManifest manifest)
     {
