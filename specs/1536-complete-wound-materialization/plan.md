@@ -1,3 +1,37 @@
+# T121 C9 source/build/discovery accepted — cheap5 PREP pending, runtime UNRUN
+
+Independent Astra/high SOURCE accepted the complete correction at
+`457ef8064d9fcdfe547a50d4e7d754fd99944223`, with no remaining Important/Critical
+finding. Root verified HEAD and remote equality and a clean tree before four fresh
+owning builds. All four compile that same source and exit0: Main1:42.19,
+Support16.96s, Unit1:01.83 and Integration1:42.35. Warning code/message multisets
+remain exactly the previous12/23/26/102; no new warning is accepted. Four PE/PDB
+pairs and330 actual Compile-owned source bindings match. All27 artifacts,
+40 operational-resource copies and four daemons agree. The external artifact
+archive is62890403bytes, SHA256
+`b8849206ed5df5fd0b49c054bedae37e88f4edfc2dcb2ae78dc00246c6a9bc75`;
+all member hashes and full gzip EOF/CRC over197089280 decoded bytes pass.
+
+Official catalog discovery is1263 categories/13079 methods, no executions.
+Exact full PlanOnly is217 cases/89 methods/49 descriptors/47 selected categories,
+zero executions or duplicates and complete owned cleanup. The disjoint current
+map is retained205 (78 methods/40 descriptors), cheap5 (new capture/terminal2 plus
+semantic guards3, three60s descriptors), native4 (outer2, published-recovery1,
+ordinary-publication1, three120s descriptors), then console/browser/rollback1
+each in its existing180s descriptor. Retained205 is reviewed historical lineage,
+not a fresh aggregate. The unchanged composition-only and standalone Fate passes
+retain their exact boundaries; the Shield outer row still must pass.
+
+All C9 runtime remains UNRUN; the original compensation failure is not yet fixed
+by qualification. Request only independent PREP for cheap5 after this receipt's
+remote persistence and fresh source/resource fence. Native4 and UI3 stay held
+until preceding gates and their own PREP. Full evidence and phased selection are
+outside checkout under `us5-guided-diagnosis/M2GREENC9-*`. No raw is committed.
+Owner/lifetime, sealed-original versus terminal-current roles, fresh authority
+checks and no-GM-update rationale are unchanged from the coherent block below.
+Physical-treatment execution, eight spiritual requirement adapters, all parent
+acceptance and previous UNKNOWN/HOLD results remain open.
+
 # T121 dynamic originals and terminal role — coherent C9 WIP, UNCOMPILED / UNRUN
 
 Core WIP `692c2a72f61b584fcfc6add67d407e66fa6f04f2` is remotely preserved.
