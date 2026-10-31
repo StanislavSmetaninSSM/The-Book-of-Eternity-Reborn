@@ -3820,8 +3820,9 @@ internal static partial class AcceptedTurnAuthorityRegistry
                         "stale or cancelled treatment publication reservation");
                 }
                 if (treatmentContinuationAuthority is not null &&
-                    !WoundAcceptedTurnPlanner.TreatmentContinuationEffectInputAgrees(
+                    !WoundAcceptedTurnPlanner.MortalProcedureEffectInputAgrees(
                         treatmentContinuationAuthority,
+                        prepared,
                         input))
                 {
                     return FailedWoundEffect(

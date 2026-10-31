@@ -76,9 +76,7 @@ internal static partial class EffectAcceptedTurnPlanner
         try
         {
             var owner = prepared.MortalDiagnosisAuthority;
-            if (owner is null || !owner.PreparedAgrees(prepared) ||
-                WoundAcceptedTurnFingerprints.ComputeEffectInput(prepared, input) != WoundAcceptedTurnFingerprints.ComputeEffectInput(
-                    prepared, WoundAcceptedTurnPlanner.ComposeMortalDiagnosisEffectInput(prepared)))
+            if (owner is null || !WoundAcceptedTurnPlanner.MortalProcedureEffectInputAgrees(owner, prepared, input))
                 throw new InvalidDataException("Diagnosis effect handoff differs from its exact private working program.");
             owner.RequireCurrent();
             return BuildCore(input, WoundAcceptedTurnFingerprints.ComputeEffectInput(prepared, input), identityFactory,

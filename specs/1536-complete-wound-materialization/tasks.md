@@ -111,6 +111,15 @@ archive are outside checkout; original failures and all other holds are retained
   Current grouped correction is UNCOMPILED/UNRUN; earlier accepted epochs and
   pending native/UI are recorded separately in plan.md.
 
+- [ ] T121-DIAGNOSIS-MORTAL-EFFECT-INPUT Close the actual common callback's
+  treatment-only type gate using the existing procedure-family wrappers and exact
+  diagnosis prepared/input fingerprint agreement. Preserve ordinary behavior,
+  full lifecycle/Fate/source/frame checks, current ownership and claims. New
+  null-publication component proof does not replace the real callback/Fate native.
+  Code is UNCOMPILED/UNRUN; C6 shape9/resource3/guards3 passed, while the broader
+  ordinary response case is TIMEOUT/attempted UNKNOWN and stays explicitly open.
+  Use approved actual ordinary-procedure native coverage, without a broad retry.
+
 - [x] T121-DIAGNOSIS-READ Show readable declared conditions of currently known
   diagnostic paths in the existing wound/status cards for console/browser. Reuse
   the existing typed requirement projection and one operation-owned physical

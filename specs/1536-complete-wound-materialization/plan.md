@@ -1,3 +1,45 @@
+# T121 diagnosis effect-input family dispatch — WIP, UNCOMPILED / UNRUN
+
+The actual C6 focused17 attempt completed 1 FAIL / 16 UNRUN in 25.2818407s,
+without timeout and with complete cleanup/stable pins. Diagnosis now passes the
+response shape and reaches the real common callback, but registry effect admission
+sends every private continuation to the treatment-only lifecycle predicate. Its
+type gate rejects MortalDiagnosisContinuation before looking at any event. This is
+the confirmed production dispatch omission, not evidence of an invalid Fate array.
+
+The first independent16 attempt timed out its ordinary response-envelope case at
+60.0709534s (wall72.4397161s), with zero reported completion/no TRX: that attempt is
+UNKNOWN and remains open. It is not a cheap singleton and is not retried or given
+a larger budget. The separately admitted independent15 completed 15/15 PASS /
+6 methods / 3 descriptors in 44.3365262s; Astra accepted shape9/resource3/guards3,
+with complete cleanup and stable pins at 10:18:09Z. Full raw/proofs remain external.
+The approved bounded ordinary coverage is typed shape9 plus the still-required
+real ordinary-procedure native1 if it passes; the broader timeout is not hidden.
+
+Root/Astra approved one procedure-family effect-input predicate beside the existing
+prepared/final/publication wrappers. Diagnosis requires the exact private prepared
+owner, PreparedAgrees and the full existing Compose/ComputeEffectInput equality;
+ordinary treatment uses its unchanged predicate. Registry and BuildMortalDiagnosis
+reuse the same agreement. Actual currentness, reservation, claims and strict full
+lifecycle/source/frame/carrier dependencies remain; invalid DATA refuses without
+publishing. No authority conversion, type-only success, cache or I/O is added.
+
+A new real-owner null-publication component Fact is authored before the correction:
+normal positive, canonical base EventInput, copied lifecycle/command/frame/source/
+target/carrier/identity/baseline mutations and separately real foreign-prepared
+scope, with inert bytes/confirmed claims. It is NOT a typed Fate/publication proof;
+the real callback Fact and mandatory Fate-publication native case remain required.
+The finite adjacent common route was checked: reservation, prepared-cache replay,
+effect dispatch, finalization, common provenance, capability and item registration
+already select diagnosis explicitly; no other missing sibling gate is confirmed.
+
+This coherent core/test WIP is UNCOMPILED/UNRUN. Final finite selection/docs/source
+freeze follows before the same independent SOURCE and root-owned qualification.
+No writer builds/tests or new RED loop; no native/UI retry. Pure expected DATA is
+reconstructed once per predicate invocation at two independently callable guards;
+no permission is memoized or speedup claimed. Existing GM output contract is
+unchanged. Broader treatment/adapters/parent scopes and HOLDs remain open.
+
 # T121 response/fixture correction — fresh builds and exact PREP packet, runtime UNRUN
 
 Independent Astra/high coherent SOURCE accepted

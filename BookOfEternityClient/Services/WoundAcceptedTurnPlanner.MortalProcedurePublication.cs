@@ -46,6 +46,32 @@ internal static partial class WoundAcceptedTurnPlanner
     internal static bool MortalProcedurePreparedAgrees(WoundPreparedAcceptedTurnPlan prepared) =>
         prepared.MortalDiagnosisAuthority is { } diagnosis ? diagnosis.PreparedAgrees(prepared) : TreatmentContinuationPreparedAgrees(prepared);
 
+    /// <summary>Checks the complete effect input against its exact private procedure-family preparation.</summary>
+    /// <param name="authority">The actual diagnosis or ordinary treatment continuation, never a serialized marker.</param>
+    /// <param name="prepared">The prepared stage owned by that continuation.</param>
+    /// <param name="input">The complete proposed effect input, including canonical lifecycle and typed Fate events.</param>
+    /// <returns>Whether the immutable input agrees; actual reservation/currentness checks remain with the existing owners.</returns>
+    internal static bool MortalProcedureEffectInputAgrees(object authority, WoundPreparedAcceptedTurnPlan prepared,
+        EffectAcceptedTurnInput input)
+    {
+        if (authority is not MortalDiagnosisContinuation diagnosis)
+            return TreatmentContinuationEffectInputAgrees(authority, input);
+        try
+        {
+            if (!ReferenceEquals(prepared.MortalDiagnosisAuthority, diagnosis) || !diagnosis.PreparedAgrees(prepared))
+                return false;
+            var expected = ComposeMortalDiagnosisEffectInput(prepared);
+            return WoundAcceptedTurnFingerprints.ComputeEffectInput(prepared, input) ==
+                WoundAcceptedTurnFingerprints.ComputeEffectInput(prepared, expected);
+        }
+        catch (Exception failure) when (failure is not CoordinatedStatePublicationUncertainException &&
+            failure is (InvalidDataException or InvalidOperationException or ArgumentException or System.Text.Json.JsonException or
+                OverflowException or NullReferenceException))
+        {
+            return false;
+        }
+    }
+
     internal static bool MortalProcedureFinalPlanAgrees(object authority, AcceptedMechanicsWoundStageBundle bundle) =>
         authority is MortalDiagnosisContinuation diagnosis
             ? ReferenceEquals(bundle.PreparedPlan.MortalDiagnosisAuthority, diagnosis) && diagnosis.PreparedAgrees(bundle.PreparedPlan) &&
