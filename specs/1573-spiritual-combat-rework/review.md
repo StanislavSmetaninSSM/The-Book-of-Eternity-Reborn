@@ -1,5 +1,24 @@
 # Проверка проекта #1573
 
+## T125 — исходный checkpoint, 2026-11-01
+
+User прямо поручил совместный бюджет атаки/срыва без допсогласований.
+Baseline/origin5fae43131f87e541ecc5e601f98893b6b1fbeb4d совпали, issue1573 открыт.
+Применены brainstorming, bridge, writing-plans и scoped Spec Kit plan/tasks/
+analyze-equivalent. PathsOnly выбрал1573, shared pin532 не тронут. Serena ready,
+local csharp/typescript/python, реальные JS symbols прочитаны. AGENTS/workflow1.7/
+constitution2.1.0/testing/performance сохранены; existing D:checkout по воле автора.
+Unrelated1536/obj не трогается. Нового runtime/GM контракта нет.
+
+Sol6.1/high owner предложил h3/expected pressure, parent независимо подтвердил
+λ=ordinaryMean/(ordinaryCost+RecoverGain). Один immutable forecast cache на
+operation, fresh mutable admission. Preflight/6критериев в плане, противоречий0.
+99/99предыдущих guards — baseline evidence, не новый GREEN. Перед реализацией
+публикуются документы; финальное whole-block review будет отдельным Astra/high.
+Первая составная shell-команда записи и публикации была отклонена automatic
+review с «blocked by policy», без подробной причины. Она не выполнилась;
+документы записаны отдельным штатным apply_patch, публикация проверяется отдельно.
+
 ## T124 — автономное исполнение, 2026-11-01
 
 После предъявления ebcfb6a21 автор явно отменил ожидание согласования спецификаций

@@ -1,5 +1,80 @@
 # План перехода к личной модели духовного боя — #1573
 
+## Исполнение T125 — 2026-11-01
+
+**Goal:** проверить совместный выбор Main/реакции без ослабления Heal.
+**Spec:** [T125](spec.md), автор разрешил автономное исполнение.
+**Architecture:** opt-in planner над общей машиной; immutable прогнозы в operation,
+live admission свежий. **Tech:** Windows/Node24.21.0/PowerShell7.6.6, без зависимостей.
+Writing-plans + Spec Kit plan/tasks через bridge; ledger — plan/review.md.
+Один Sol6.1/high владеет source/tests, parent измеряет/интегрирует; независимый
+Astra/high проверяет interacting clocks/ресурсы/целый блок. Existing D:checkout
+на story-ветке, не новый worktree; unrelated1536/obj не трогается.
+
+### T125.1–2 — source и RED→GREEN
+
+- [x] Source-аудит chooseAttack/doAttack/chooseInterrupter/stepEncounter;
+  baseline/origin5fae43131 совпали, issue1573 открыт; h3/λ закреплены до source.
+- [ ] Создать `probes/healing-joint-budget-model.mjs`: immutable forecast curves,
+  pure Main/reaction selectors. Сигнатуры записать в ledger до GREEN. Внутренний
+  key(h,energy,mark amount/countdown,mode/phase); outer key — version/h/λ,
+  MaxDE/regen/Recover/цены, damage-quality distributions/resistance, Heal values
+  при0/25/50, reaction odds/guard/forecast. Не кэшировать live permission.
+- [ ] В `healing-tactics-model.mjs` добавить duel-only `jointPolicy`
+  ('never','always','joint'), observation/seams в doAttack/chooseInterrupter/doHeal,
+  operation-owned подготовку. Reject совместно с interruptPolicy. Legacy schema/
+  defaults unchanged. Новая metadata-compatible attackPolicy=fixed_large задаёт
+  прежнему chooseMode максимальный возможный удар44, не будущий выбор planner.
+  Opt-in roster явно сообщает planner; узкая правка healing-tactics-probe.mjs
+  разрешена для этого поля. Mode записать до applyHeal, в том числе при срыве.
+- [ ] Создать `probes/healing-joint-budget.test.mjs`: RED λ=85.7825/86.4HP/ДЭ,
+  разные terminal energy при одинаковом Recover; ручные бюджетные примеры пяти
+  Main, skip/attempt/ties, равенство цены и нехватка1цента, отсутствие RNG/hidden
+  energy/future guard, pure input. Fresh payment/reaction после мутации состояния,
+  revival reaction без восстановления Main; обе очереди и current-HP cap.
+- [ ] Проверить forecast transitions против общей модели: stronger-mark renewal,
+  weak-under-strong, expiry до/после target.begin/end, long start success/cancel/
+  finish, initial instant/last observed mode. Фактические действия не заменять
+  прогнозом. Legacy checksum до/после и прежние utility guards сохранить.
+- [ ] Создать `healing-joint-budget-probe.mjs`/`.test.mjs`, переиспользовать
+  simulateTactics.108cases из spec, seedSuffix T125-main-v1/T125-confirm-v1,
+  прежний seed pipeline; shards index%count, metadata/cell/complete/timers/reuse.
+- [ ] GREEN `node --test specs/1573-spiritual-combat-rework/probes/*.test.mjs`
+  (99прежних + новые связанные guards), без C# build/fullsuite. Smoke108main/
+  108confirm n1,h3 + shard union. Parent читает actual diff/output/evidence.
+- [ ] Измерить cold preparation и repeated lookup, complete-key separation/
+  operation ownership. Не вычислять глубокий прогноз повторно каждый ход;
+  при дорогой подготовке сначала named timings, не повышение лимита.
+
+### T125.3–4 — измерения и завершение
+
+- [ ] Scoped WIP/source commit+push/readback до полного прогона/review.
+- [ ] На frozen SHA main108×1000 и confirm108×10000, horizon2000;3confirm shards
+  разрешены. Raw без квот `D:\BoeDiagnostics\healing-joint-t125\20261101-v1`.
+  После исходов не менять h/λ/политику. Parent проверяет coverage/seeds/sums/union.
+- [ ] `healing-joint-budget-investigation.md`: обе очереди и main/confirm отдельно,
+  сравнение6тактик/профилей, actions/Recover/расходы/reasons/actualHeal/overheal,
+  стоимость подготовки/reuse, ограничения прогноза и плохие хвосты.
+- [ ] Whole-block Astra/high review actual diff/contracts/raw, исправления и
+  адресные проверки. Final publication/readback/restore/issue1573; production
+  не реализуется. Retention после полного нового замера штатным способом;
+  ранее не выполненная очистка T124.4r остаётся отдельно открытой.
+
+### Consistency/preflight
+
+| Производитель → потребитель | Проверяемый договор | Итог |
+|---|---|---|
+|T125.1→2|h3/λ/visible state → guards|Literal tests, без будущей оплаты|
+|T125.2 внутри|curve→selector→общая машина|DATA не заменяют fresh admission|
+|T125.2→3|runner108/seeds/shards→raw|108×11000=1188000, контролы неизменны|
+|T125.3→4|frozen source/raw→report/review|Все очереди, negative/censor сохранены|
+|T125.4 внутри|verification→publication/retention|No raw inGit, штатная очистка|
+
+Bridge-equivalent speckit-analyze:6критериев покрыты (1/2→2,3→2–3,4/5→3,6→4),
+unmapped0/неразрешённых противоречий0. Spec/plan/tasks обновлены без перезаписи
+истории шаблоном. Optional plan/tasks/analyze hooks прочитаны; scoped commits
+выполняются явно. Конституция2.1.0/категорийные проверки сохранены.
+
 ## Исполнение T124 — 2026-11-01
 
 **Spec:** [v1.76/T124](spec.md); автор отменил отдельное ожидание review документа

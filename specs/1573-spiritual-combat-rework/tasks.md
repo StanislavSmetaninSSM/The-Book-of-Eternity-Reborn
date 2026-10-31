@@ -1,5 +1,13 @@
 # Задачи #1573 — полный духовный бой
 
+## T125 — совместный бюджет атаки и срыва, 2026-11-01
+
+- [x] T125.0 Прямое разрешение автономной проверки; brainstorming/bridge переиспользуют #1573. Read-only design, три подхода/h3/λ/границы выбраны исполнителем до source.
+- [x] T125.1 Writing-plans + Spec Kit plan/tasks/consistency: зависимости,108cases×11000, прогнозы/guards/оптимизация записаны до реализации.
+- [ ] T125.2 Opt-in planner/seams/runner через RED→GREEN; legacy/default/Heal utility, immutable cache/fresh admission, дешёвые timings/smoke.
+- [ ] T125.3 Опубликовать frozen source, выполнить1188000main/confirmation траекторий, проверить данные и записать эффект/негативные случаи отдельно по очередям и контролям.
+- [ ] T125.4 Whole-block review, исправления/verification, GitHub publication/readback/restore/issue; raw local-only и штатная retention после нового полного замера.
+
 ## T124 — выбор момента срыва при дефиците ДЭ, 2026-11-01
 
 - [x] T124.0 Точный scope v1.76 подготовлен; независимый GPT-6.1 Sol/xhigh review diff741944f6..0a168c8b без замечаний. Документ сохранён в GitHub и готов к предъявлению; final SHA/readback — plan/review/issue1573. Согласие с направлением не заменяет утверждение написанного документа.
