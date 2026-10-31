@@ -1,3 +1,33 @@
+# T121 Mortal owning builds and exact discovery complete — runtime UNRUN
+
+At source `023179795b2dc1f32d85a15deac88c673d92436f`, all four required managed
+projects have successful fresh owning builds: Main 1:57.26 / 12 warnings,
+TestSupport 20.00s / 23, Unit 1:14.58 / 26, Integration 2:24.40 / 102; zero errors
+and no new warning in the Integration baseline comparison. The first three own
+source `5ca66981af12df032046e1adcbd7c987a3de3092`; exact per-project C# continuity
+to current Integration-only compiler corrections was verified. Original failed
+builds remain external. Independent Astra/high accepted the narrow source fixes.
+
+All four PE/PDB identities, 315 changed-source bindings, 27 owning artifacts,
+ten operational resources in forty copies and four daemon copies are verified.
+The existing PDB checker now uses actual MSBuild Compile membership, including
+linked TestSupport input; its narrow correction was independently reviewed.
+The complete 27-member owning archive was fully decoded with matching hashes
+and gzip EOF/CRC. No code or assertion was removed to make provenance pass.
+
+Official catalog discovery passed: 1245 categories / 13066 methods or files,
+zero tests executed. Exact PlanOnly passed: 168 cases / 62 methods / 31 project
+descriptors / 30 categories, no duplicates, clean source and complete cleanup.
+Finite phased selection is 140 cheap cases, 25 ownership/publication cases, then
+one actual console, browser and rollback case each. Independent PREP and every
+new runtime result remain pending; these receipts are not feature acceptance.
+
+Full evidence is outside checkout under `us5-guided-diagnosis/M2GREEN-*`.
+Existing operation-local DATA reuse/fresh authority boundaries remain; no new
+cache or performance gain is claimed. All earlier HOLDs, eight adapters, other
+physical treatment execution and parent-task limits remain. No restore repeated,
+raw uploaded, timeout increased, old accepted case replayed or task closed.
+
 # T121 first Integration build failed — grouped fixture API correction, UNRUN
 
 At source `5ca66981af12df032046e1adcbd7c987a3de3092`, fresh Main, Support
