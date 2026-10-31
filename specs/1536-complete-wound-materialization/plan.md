@@ -1,3 +1,37 @@
+# T121 Mortal cheap140 complete by lineage — ownership and actual UI UNRUN
+
+The changed read-handler method at source
+`b7ff8ac955045aeb90f25b3b0919fa16b981c5a3` passed both /раны and /статус cases,
+including exact browser policy, source counters, canonical inertness and privacy
+suffixes. Complete raw console output proves the previous failure was formatting:
+Spectre placed box borders and a newline between “Карточка” and “сама”. No policy
+word was missing; only the console sentence comparison tolerates those frames and
+whitespace. Raw output and all original failed runs remain external.
+
+Root reconciled the exact cheap membership: 140 distinct PASS / 45 methods,
+from 117 at `90cf6e5428e71db0e5e146cc7f402a1b540aa5e9`, 21 at
+`adfa310556c11e286f4ef7f8c4a82940ab84c657` (independent18 plus status3), and two
+at b7ff8ac9. The earlier /раны pass is superseded, not double-counted. This is
+not a fresh140 run. Strict TRX/method/selection, cleanup and unchanged owning-pin
+proofs are in `M2GREENC2-cheap140-union.json` and the original run directories.
+Independent final cheap OUTCOME and native PREP remain pending.
+
+The last Integration build passed in 1:58.42 with zero errors and the same102
+baseline warnings. Four PE/PDB identities,315 source bindings,27 artifacts,
+40 resource copies and four daemons match; all27 owning archive members and full
+gzip EOF/CRC are verified. Catalog discovery passed1246 categories/13066 methods
+or files, with zero tests executed. The read2/status3 category split preserves
+the complete selector multiset; native/UI categories are unchanged. No other
+project rebuild or accepted-case replay was needed.
+
+Next is exactly25 existing-owner/publication cases and then three separate180s
+console/browser/rollback journeys, after their prescribed preparation/reviews.
+All those runtime cases remain UNRUN. No entire feature, FR071, parent story or
+#1536 closure is claimed; the physical-guided/eight-adapter/US3/final residuals
+below remain. Existing operation-local DATA reuse and fresh source/authority
+checks are retained, with no new cache or measured speedup claim. No raw/binary
+upload, restore, timeout change or parked qualification was performed.
+
 # T121 final cheap read-oracle candidate — UNCOMPILED / UNRUN
 
 At adfa31055 the affected five-case rerun completed four PASS and one FAIL in
