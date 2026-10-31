@@ -129,7 +129,13 @@ public sealed partial class MortalWoundTreatmentResolverTests
         var history = JsonNode.Parse(Assert.IsType<string>(await files.ReadFileAsync(WoundHistoryState.HistoryPath)))!.AsObject();
         var privateRow = Assert.IsType<JsonObject>(Assert.Single(CreateCurrentWoundHistory(copy)["transitions"]!.AsArray())).DeepClone().AsObject();
         privateRow["ordinal"] = history["nextOrdinal"]!.GetValue<int>(); privateRow["operationKey"] = "operation_private_diagnosis_initial";
+        privateRow["attemptId"] = "attempt_private_diagnosis_initial";
+        privateRow["outputFingerprint"] = WoundHistoryState.ComputeOutputFingerprint(
+            privateRow["operationKey"]!.GetValue<string>(), privateRow["eventRef"]!.GetValue<string>(),
+            privateRow["readableSummary"]!.GetValue<string>());
         history["transitions"]!.AsArray().Add(privateRow); history["nextOrdinal"] = history["nextOrdinal"]!.GetValue<int>() + 1;
+        var completeHistory = WoundHistoryState.Parse(history.ToJsonString(), WoundHistoryState.HistoryPath);
+        Assert.True(completeHistory.IsValid, JsonSerializer.Serialize(completeHistory.Issues));
         await files.WriteFileAtomicAsync(WoundHistoryState.HistoryPath, history.ToJsonString());
         var effects = CreateCanonicalWoundEffects(copy).ToArray();
         var effectCarrier = JsonNode.Parse(Assert.IsType<string>(await files.ReadFileAsync(EffectCarrierCatalog.PlayerPath)))!.AsObject();

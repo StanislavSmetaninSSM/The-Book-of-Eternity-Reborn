@@ -1659,6 +1659,9 @@ and History, common publication, exact held-versus-original compensation/retry,
 guided console/shared browser and effective GM/current-input synchronization.
 The actual ordinary report obligations stay tied to signed original control;
 newly elapsed diagnosis time creates no additional same-turn report requirement.
+Ordinary accepted settlement preserves original pending carry/simulation markers;
+the next control build calculates newly due cycles from canonical T1 and those
+markers. Elapsed wound recovery still runs in the diagnosis working projection.
 Numeric clock presentation is cumulative, with no calendar arithmetic.
 
 Independent source-authored controls include full inner/outer resealed dice/clock
@@ -1803,3 +1806,20 @@ C8 proof and actual historical C7 refusal are recorded in plan.md; this correcti
 is UNCOMPILED/UNRUN. Internal binding/inspection changes no GM response field or
 wire contract, so no GM-guide/manifest update is needed. Existing time guidance
 already preserves T0, admitted duration/T1 and ordinary original report obligations.
+
+
+### Native fixture integrity clarification
+
+The existing closed diagnose History result is required even for generic diagnosis;
+complete Mortal request/result retention is never optional. Initial private cohort
+seeding must use unique nonnull attempt/operation identities and matching output
+fingerprints, with complete History validated before the original is signed.
+Shared acquisition events may describe several wounds; no new uniqueness rule is
+introduced. Actual guided Stage may refresh the existing scheduler's lastUpdatedUtc
+while rebuilding fresh control; this does not permit any other schedule/game-state
+change. Reading, cancellation and confirmation remain fully inert. Fixture proof
+must check exact path/field/UTC bounds, not ignore timestamp or metadata globally.
+
+Current tests/qualification are in plan.md. These corrections are fixture-only,
+with no production/cache/owner or GM wire change. Existing ordinary scheduling and
+no-extra-same-turn-report guidance remains correct; no GM/manifest update is needed.

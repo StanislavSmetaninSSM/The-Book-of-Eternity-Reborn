@@ -145,8 +145,14 @@ public sealed partial class MortalWoundTreatmentResolverTests
 
     [Theory]
     [InlineData(0)]
-    [InlineData(300)]
-    public async Task DiagnosisWorkingTimeAndRecoveryUseOriginalSourcesWithoutFutureWrites(int duration)
+    public Task DiagnosisWorkingTimeAndRecoveryUseOriginalSourcesWithoutFutureWrites(int duration) =>
+        VerifyDiagnosisWorkingTimeAndRecoveryAsync(duration);
+
+    [Fact]
+    public Task DiagnosisElapsedTimePreservesOriginalCycleCarryUntilNextControlBuild() =>
+        VerifyDiagnosisWorkingTimeAndRecoveryAsync(300);
+
+    private static async Task VerifyDiagnosisWorkingTimeAndRecoveryAsync(int duration)
     {
         await using var fixture = await DiagnosisOwnershipFixture.CreateAsync(20, signedInput: true, duration: duration);
         var owner = fixture.Authority;
@@ -189,7 +195,28 @@ public sealed partial class MortalWoundTreatmentResolverTests
         Assert.Equal(working.OriginalMinute, originalControl["currentWorldTimeInMinutes"]!.GetValue<int>());
         Assert.Equal(0, originalControl["worldCyclesAlreadyPendingBeforeTurn"]!.GetValue<int>());
         var cadence = originalControl["worldCycleMinutes"]!.GetValue<int>();
-        Assert.Equal(duration / cadence, after["pendingWorldCycles"]!.GetValue<int>());
+        if (duration == 0) Assert.Equal(duration / cadence, after["pendingWorldCycles"]!.GetValue<int>());
+        else
+        {
+            var originalSchedule = working.OriginalSchedule;
+            Assert.Equal(originalSchedule["pendingWorldCycles"]!.GetValue<int>(), after["pendingWorldCycles"]!.GetValue<int>());
+            Assert.Equal(originalSchedule["pendingFactionCycles"]!.GetValue<int>(), after["pendingFactionCycles"]!.GetValue<int>());
+            foreach (var field in new[] { "lastWorldSimulationTimeInMinutes", "lastFactionSimulationTimeInMinutes" })
+            {
+                Assert.Equal(originalControl[field]!.GetValue<int>(), after[field]!.GetValue<int>());
+                Assert.Equal(originalSchedule[field]!.GetValue<int>(), after[field]!.GetValue<int>());
+            }
+            // Ordinary settlement carries original obligations; the next control
+            // build derives newly due work from T1 and these preserved markers.
+            var nextWorldBacklog = (working.ResultingMinute - after["lastWorldSimulationTimeInMinutes"]!.GetValue<int>()) / cadence;
+            Assert.Equal(duration / cadence, nextWorldBacklog);
+            Assert.Equal(0, after["pendingWorldCycles"]!.GetValue<int>());
+            Assert.Equal(0, after["pendingFactionCycles"]!.GetValue<int>());
+            var expectedSchedule = originalSchedule.DeepClone().AsObject();
+            expectedSchedule["currentWorldTimeInMinutes"] = working.ResultingMinute;
+            expectedSchedule["lastUpdatedUtc"] = after["lastUpdatedUtc"]!.DeepClone();
+            Assert.True(JsonNode.DeepEquals(expectedSchedule, after));
+        }
         Assert.False(calculation.ReportBefore.Existed); Assert.False(calculation.ReportAfter.Existed);
         fixture.AssertJson(unchanged);
         await fixture.RebindAsync();
@@ -265,10 +292,10 @@ public sealed partial class MortalWoundTreatmentResolverTests
             var refused = WoundHistoryState.Parse(changedHistory.ToJsonString(), WoundHistoryState.HistoryPath);
             if (fault == "result_omission")
             {
-                // Optional generic diagnose rows cannot reconstruct a retained
-                // terminal request and therefore cannot supply exact replay.
-                Assert.True(refused.IsValid, JsonSerializer.Serialize(refused.Issues));
-                Assert.Equal(WoundHistoryReplayDisposition.Conflict, refused.State!.ResolveReplay(probe).Disposition);
+                Assert.False(refused.IsValid);
+                Assert.Contains(refused.Issues, issue => issue.Severity == IssueSeverity.Error &&
+                    issue.Code == "wound_history_missing_field" && issue.FilePath ==
+                    WoundHistoryState.HistoryPath + $".transitions[{rows.Count - 1}].transitionResult");
             }
             else Assert.False(refused.IsValid);
         }

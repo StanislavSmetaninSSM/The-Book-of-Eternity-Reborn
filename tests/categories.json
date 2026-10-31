@@ -2,6 +2,104 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "mortal-diagnosis-guided-valid-staging",
+  "responsibility": "One valid guided diagnosis staging Fact replaces the former failed valid theory row. Full Open/cancel/Confirm byte inertness stays intact. Actual Stage must bind the declared method/control, create only its command plus the existing scheduler lastUpdatedUtc refresh, validate that UTC within the real stage interval, preserve every other schedule field and every other JSON byte/path, and create no held claims. Candidate UNCOMPILED/UNRUN.",
+  "excludes": "No accepted-world authority from menu DATA, fake pending snapshot, dice/reservation/cost/time before final original, physical treatment execution, full ProcessPlayerTurn/GM wait, new cache or broad Mortal category. Full native/UI/GM qualification remains required.",
+  "changeHints": [
+    "BookOfEternityClient/Services/WoundApplicationService.MortalDiagnosisMenu.cs",
+    "BookOfEternityClient/Services/WoundPlayerReadService.cs",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs"
+  ],
+  "related": [
+    {
+      "id": "mortal-diagnosis-input-role",
+      "when": "Only the final signed original may produce and retain the procedure afterward."
+    },
+    {
+      "id": "wound-diagnosis-recommendations",
+      "when": "Physical diagnosis guidance now names its actual declared-procedure command, while other physical treatment remains recommendations only."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.GuidedMortalDiagnosisStagesDeclaredInputWithOnlySchedulerBookkeeping"
+      ]
+    }
+  ]
+},
+{
+  "id": "mortal-diagnosis-working-time-elapsed",
+  "responsibility": "One explicit300-minute actual-owner working projection Fact replaces the former failed duration300 theory row. T0 sources remain physical/unchanged, knowledge precedes thirty ordinary wound cadences, T1 is private, no report is invented, ordinary pending world/faction carry and simulation markers remain original, and newly due backlog is visible through T1 minus preserved markers for the next control build. Retain stale-owner/byte assertions. Candidate UNCOMPILED/UNRUN.",
+  "excludes": "No future physical writes, accepted-state clock/wound rewriting, fabricated authority, publication/History, C4/Engine/GM wait or broad Mortal suite. All durations/cadences are explicit fixture inputs.",
+  "changeHints": [
+    "BookOfEternityClient/Services/MortalWoundDiagnosisWorkingProjection.cs",
+    "BookOfEternityClient/Services/ProgressionScheduleService.MortalDiagnosis.cs",
+    "BookOfEternityClient/Services/MortalWoundRecoveryPlanner.cs"
+  ],
+  "related": [
+    {
+      "id": "mortal-diagnosis-terminal-outcomes",
+      "when": "A current terminal procedure result and exact knowledge-only image must precede projected ordinary recovery."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.DiagnosisElapsedTimePreservesOriginalCycleCarryUntilNextControlBuild"
+      ]
+    }
+  ]
+},
+{
+  "id": "mortal-diagnosis-private-cohort",
+  "responsibility": "One selected-second/private two-member cohort Fact: pre-original private acquisition row has unique attempt/operation and agreeing output fingerprint; complete History validates before write. Existing real owner/effect execution proves selected knowledge only, ordinary recovery for both members, strict ordered complete History/carrier agreement, resealed omission/reorder refusal, privacy and source immutability. Candidate fixture-only correction UNCOMPILED/UNRUN.",
+  "excludes": "No fabricated receipt, new accepted state, canonical publication, Engine/GM wait, C4, full guided UI or broad Mortal aggregate. Common resource/time/pending publication remains required.",
+  "changeHints": [
+    "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalDiagnosis.cs",
+    "BookOfEternityClient/Services/EffectAcceptedTurnPlanner.MortalDiagnosis.cs",
+    "BookOfEternityClient/Services/WoundAcceptedTurnPlannerCore.MortalDiagnosis.cs"
+  ],
+  "related": [
+    {
+      "id": "mortal-diagnosis-working-time",
+      "when": "The actual original owner and verified T1 working projection are prerequisites."
+    },
+    {
+      "id": "mortal-diagnosis-durable-data",
+      "when": "The complete executed cohort must reconstruct through the strict durable result and History codecs."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.DiagnosisSelectedSecondKeepsCompletePrivateCohortRecoveryAndOrderedHistory"
+      ]
+    }
+  ]
+},
+{
   "id": "mortal-diagnosis-common-context",
   "responsibility": "One real-owner nonzero-duration component uses the original freshly composed common input/context and genuine foreign resource authority. Both actual constructors accept the exact companion and refuse null/foreign authority; original T0 bytes stay untouched, exact T1 clock/schedule/report and effect time agree, copied exports/cached readback and fresh clock drift preserve bytes/fingerprints/claims. One actual carrier assembly is reused, with no publication. C7 real callback failure is causal RED; candidate UNCOMPILED/UNRUN.",
   "excludes": "No fabricated anchor, reconstruction of original context from final after-images, reflection, fake receipt/authority, second cache/owner, publication/Engine loop, broader timeout retry or HOLD run.",
@@ -803,7 +901,7 @@
 },
 {
   "id": "mortal-diagnosis-guided-staging",
-  "responsibility": "T121 three file-light current canonical menu/confirm/stage rows use the existing independent Mortal seed before its original producer. Valid explicit method shows check/duration/conditional expenses; read/cancel/confirmation are inert and staging writes only its closed input without held claims. Missing actual location and changed wound refuse fresh confirmation/staging without additional mutation. UNCOMPILED/UNRUN WIP.",
+  "responsibility": "Two retained negative current-source guided rows (missing location and changed wound) preserve full read/cancel/confirmation inertness and refuse fresh confirmation/staging without further mutation. Both passed at afd49; valid staging is separately owned so these unchanged PASS rows need no replay.",
   "excludes": "No accepted-world authority from menu DATA, fake pending snapshot, dice/reservation/cost/time before final original, physical treatment execution, full ProcessPlayerTurn/GM wait, new cache or broad Mortal category. Full native/UI/GM qualification remains required.",
   "changeHints": [
     "BookOfEternityClient/Services/WoundApplicationService.MortalDiagnosisMenu.cs",
@@ -1034,7 +1132,7 @@
 },
 {
   "id": "mortal-diagnosis-effect-execution",
-  "responsibility": "T121 two independent actual signed-original owner setups execute an explicit zero or 300-minute diagnosis through the existing wound/effect planner. Knowledge is first; only actually due ordinary recovery follows from the diagnosed working image. Real sealed execution and full final History are checked, including diagnosis-owned same/later-minute ordinary replay DATA, cadence consumption and unrecorded source drift, with all canonical JSON bytes unchanged. UNCOMPILED/UNRUN WIP.",
+  "responsibility": "Two retained actual signed-original effect rows execute zero/300-minute diagnosis: knowledge first, due ordinary recovery, real sealed final History, same/later-minute replay DATA, cadence consumption and drift with unchanged bytes. Both passed at afd49. Selected-second/private cohort is separately owned; no replay absent changed dependencies.",
   "excludes": "No fabricated receipt, new accepted state, canonical publication, Engine/GM wait, C4, full guided UI or broad Mortal aggregate. Common resource/time/pending publication remains required.",
   "changeHints": [
     "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalDiagnosis.cs",
@@ -1061,8 +1159,7 @@
     {
       "project": "integration",
       "tests": [
-        "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.DiagnosisExecutesKnowledgeBeforeOnlyActuallyDueRecoveryInExistingEffectOwner",
-        "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.DiagnosisSelectedSecondKeepsCompletePrivateCohortRecoveryAndOrderedHistory"
+        "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.DiagnosisExecutesKnowledgeBeforeOnlyActuallyDueRecoveryInExistingEffectOwner"
       ]
     }
   ]
@@ -1099,7 +1196,7 @@
 },
 {
   "id": "mortal-diagnosis-working-time",
-  "responsibility": "T121 two actual signed original-owner rows for explicit zero or 300-minute diagnosis: original clock/control/schedule and recovery epoch remain unchanged; knowledge working image precedes existing ordinary recovery math at checked T1, standard schedule calculation leaves newly elapsed cycles pending without inventing same-turn report obligations, detached clock exports cannot mutate the retained image, and a new owner/lease cannot reuse it. UNCOMPILED/UNRUN WIP.",
+  "responsibility": "The retained zero-duration actual signed-original owner row proves knowledge-only working DATA, unchanged clock/recovery/cycle carry/report and source bytes plus stale-owner refusal. Its identity/semantics remain; the explicit300-minute correction is separately owned to avoid replaying this PASS.",
   "excludes": "No future physical writes, accepted-state clock/wound rewriting, fabricated authority, publication/History, C4/Engine/GM wait or broad Mortal suite. All durations/cadences are explicit fixture inputs.",
   "changeHints": [
     "BookOfEternityClient/Services/MortalWoundDiagnosisWorkingProjection.cs",

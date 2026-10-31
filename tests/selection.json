@@ -2,6 +2,27 @@
   "schemaVersion": 1,
   "selections": [
 {
+    "category": "mortal-diagnosis-guided-valid-staging",
+    "reason": "One valid guided diagnosis staging Fact replaces the former failed valid theory row. Full Open/cancel/Confirm byte inertness stays intact. Actual Stage must bind the declared method/control, create only its command plus the existing scheduler lastUpdatedUtc refresh, validate that UTC within the real stage interval, preserve every other schedule field and every other JSON byte/path, and create no held claims. Candidate UNCOMPILED/UNRUN.",
+    "contracts": [
+        "#1536 T093 / FR071 / T121; fixture-only exact diagnosis History/acquisition/staging/original-scheduler contract; no production or gameplay change"
+    ]
+},
+{
+    "category": "mortal-diagnosis-working-time-elapsed",
+    "reason": "One explicit300-minute actual-owner working projection Fact replaces the former failed duration300 theory row. T0 sources remain physical/unchanged, knowledge precedes thirty ordinary wound cadences, T1 is private, no report is invented, ordinary pending world/faction carry and simulation markers remain original, and newly due backlog is visible through T1 minus preserved markers for the next control build. Retain stale-owner/byte assertions. Candidate UNCOMPILED/UNRUN.",
+    "contracts": [
+        "#1536 T093 / FR071 / T121; fixture-only exact diagnosis History/acquisition/staging/original-scheduler contract; no production or gameplay change"
+    ]
+},
+{
+    "category": "mortal-diagnosis-private-cohort",
+    "reason": "One selected-second/private two-member cohort Fact: pre-original private acquisition row has unique attempt/operation and agreeing output fingerprint; complete History validates before write. Existing real owner/effect execution proves selected knowledge only, ordinary recovery for both members, strict ordered complete History/carrier agreement, resealed omission/reorder refusal, privacy and source immutability. Candidate fixture-only correction UNCOMPILED/UNRUN.",
+    "contracts": [
+        "#1536 T093 / FR071 / T121; fixture-only exact diagnosis History/acquisition/staging/original-scheduler contract; no production or gameplay change"
+    ]
+},
+{
     "category": "mortal-diagnosis-common-context",
     "reason": "C8 new one-Fact actual constructor/nonzero-duration control: genuine original common input and foreign resource authority, exact T0/T1 boundary, both null/foreign constructor refusals, copied exports/cached readback and fresh drift with inert bytes/claims. Keep the existing failed real callback and semantic guards as the finite cheap gate; no C7 component/C6 shape9/resource3 replay absent dependency. UNCOMPILED/UNRUN.",
     "contracts": [
@@ -115,21 +136,21 @@
     },
     {
       "category": "mortal-diagnosis-working-time",
-      "reason": "T121 two actual signed original-owner rows for explicit zero or 300-minute diagnosis: original clock/control/schedule and recovery epoch remain unchanged; knowledge working image precedes existing ordinary recovery math at checked T1, standard schedule calculation leaves newly elapsed cycles pending without inventing same-turn report obligations, detached clock exports cannot mutate the retained image, and a new owner/lease cannot reuse it. UNCOMPILED/UNRUN WIP.",
+      "reason": "Retain the unchanged original zero-duration row identity/PASS at afd49. The failed300-minute row is replaced by its separate elapsed-time Fact/category; no extra case or new rule.",
       "contracts": [
         "#1536 T121-DIAGNOSIS-MORTAL / FR071; signed T0 and admitted duration, knowledge-before-recovery, ordinary report/pending-cycle semantics and no future writes"
       ]
     },
     {
       "category": "mortal-diagnosis-durable-data",
-      "reason": "T121 one actual original-owner setup produces strictly detached comparison result DATA at explicit zero duration. The codec retains original/knowledge images, exact held request/procedure/resources, full control/schedule/clock and complete original physical cohort; seven outer-resealed semantic controls plus three fully inner/outer/History-resealed accepted-die and original-clock controls refuse detached inconsistencies; terminal, knowledge, resource, cohort and working dependencies are recomputed before the specific retained-source join is asserted. This does not fabricate execution or publication receipts. UNCOMPILED/UNRUN WIP.",
+      "reason": "Rerun only the failed durable Fact: missing/null diagnose result must refuse with exact wound_history_missing_field Error/path, preserving strict generic/durable codecs, real positive History/replay and every later resealed negative/source/claim suffix. Fixture-only correction, UNCOMPILED/UNRUN.",
       "contracts": [
         "#1536 T121-DIAGNOSIS-MORTAL; strict durable comparison, original/knowledge separation, complete cohort and no mechanical/clock/result forgery"
       ]
     },
     {
       "category": "mortal-diagnosis-effect-execution",
-      "reason": "T121 two independent actual signed-original owner setups execute an explicit zero or 300-minute diagnosis through the existing wound/effect planner. Knowledge is first; only actually due ordinary recovery follows from the diagnosed working image. Real sealed execution and full final History are checked, including diagnosis-owned same/later-minute ordinary replay DATA, cadence consumption and unrecorded source drift, with all canonical JSON bytes unchanged. UNCOMPILED/UNRUN WIP. One additional two-member/selected-second fixture proves knowledge only on the selected wound, actual ordinary recovery for both, complete ordered History/carrier/identity/source agreement, fully resealed private-member omission/reorder refusals and absence of the private wound name from the valid public projection. No additional world or harness; still UNCOMPILED/UNRUN.",
+      "reason": "Retain both unchanged zero/300-minute effect execution PASS rows at afd49. Move the existing failed private-cohort Fact to its exclusive category for its pre-original acquisition identity correction.",
       "contracts": [
         "#1536 T121-DIAGNOSIS-MORTAL / FR071; genuine knowledge-first execution, complete original cohort, same effect workspace and strict History"
       ]
@@ -178,7 +199,7 @@
     },
     {
       "category": "mortal-diagnosis-guided-staging",
-      "reason": "Actual guided Mortal diagnosis menu/fresh confirmation/initial staging plus no-claim/inertness and canonical-source drift refusals. Reuses operation-local read DATA and existing exact requirement readers; no invented accepted snapshot. Source-authored three rows, UNCOMPILED/UNRUN; full SOURCE still precedes qualification.",
+      "reason": "Retain the two unchanged missing-location/changed-wound PASS identities at afd49. Valid staging is now a separate Fact/category with the exact scheduler timestamp oracle; no replay of these negative rows.",
       "contracts": [
         "#1536 T121-DIAGNOSIS-MORTAL / FR071; declared procedure, fresh canonical context and separate confirmation"
       ]

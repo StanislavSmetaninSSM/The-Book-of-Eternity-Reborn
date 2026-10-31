@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
@@ -9,10 +10,16 @@ namespace BookOfEternityClient.Tests;
 public sealed partial class MortalWoundTreatmentResolverTests
 {
     [Theory]
-    [InlineData("valid")]
     [InlineData("missing_location")]
     [InlineData("changed_wound")]
-    public async Task GuidedMortalDiagnosisReadsCancelConfirmsAndStagesOnlyFreshDeclaredMethod(string mode)
+    public Task GuidedMortalDiagnosisReadsCancelConfirmsAndStagesOnlyFreshDeclaredMethod(string mode) =>
+        VerifyGuidedMortalDiagnosisStagingAsync(mode);
+
+    [Fact]
+    public Task GuidedMortalDiagnosisStagesDeclaredInputWithOnlySchedulerBookkeeping() =>
+        VerifyGuidedMortalDiagnosisStagingAsync("valid");
+
+    private static async Task VerifyGuidedMortalDiagnosisStagingAsync(string mode)
     {
         await using var fixture = await DiagnosisOwnershipFixture.CreateAsync(20, signedInput: true, duration: 30,
             originalProducer: async (files, request) =>
@@ -50,8 +57,10 @@ public sealed partial class MortalWoundTreatmentResolverTests
                     var faultImage = CaptureDiagnosisMenuJson(files);
                     if (mode != "valid") await Assert.ThrowsAsync<InvalidDataException>(() =>
                         WoundApplicationService.ConfirmAsync(files, lease, menu, choice.Value));
+                    var stageStartedUtc = DateTime.UtcNow;
                     var staged = await WoundApplicationService.StageMortalDiagnosisInputAsync(files, lease,
                         new(request.SessionId, request.RequestId, request.TurnNumber, request.ProgressionControl!), confirmed);
+                    var stageFinishedUtc = DateTime.UtcNow;
                     Assert.Equal(mode == "valid", staged.IsStaged);
                     Assert.Null(await files.ReadFileBytesAsync(lease, WoundAcceptedTurnSnapshotContract.PendingResolutionPath));
                     if (mode == "valid")
@@ -64,7 +73,27 @@ public sealed partial class MortalWoundTreatmentResolverTests
                         Assert.Equal(30, staged.GmContext["durationMinutes"]!.GetValue<int>());
                         var after = CaptureDiagnosisMenuJson(files); after.Remove(files.ResolvePath(AcceptedMechanicsPlan.WoundCommandPath));
                         Assert.Equal(original.Keys.Order(StringComparer.Ordinal), after.Keys.Order(StringComparer.Ordinal));
-                        foreach (var pair in original) Assert.Equal(pair.Value, after[pair.Key]);
+                        foreach (var pair in original)
+                        {
+                            if (pair.Key == files.ResolvePath(ProgressionScheduleService.SchedulePath))
+                            {
+                                var beforeSchedule = JsonNode.Parse(FileSystemManager.DecodeFileBytes(pair.Value))!.AsObject();
+                                var afterSchedule = JsonNode.Parse(FileSystemManager.DecodeFileBytes(after[pair.Key]))!.AsObject();
+                                Assert.True(DateTime.TryParseExact(beforeSchedule["lastUpdatedUtc"]!.GetValue<string>(), "O",
+                                    CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind, out var previousUtc));
+                                Assert.Equal(DateTimeKind.Utc, previousUtc.Kind);
+                                Assert.True(DateTime.TryParseExact(afterSchedule["lastUpdatedUtc"]!.GetValue<string>(), "O",
+                                    CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind, out var updatedUtc));
+                                Assert.Equal(DateTimeKind.Utc, updatedUtc.Kind);
+                                Assert.InRange(updatedUtc, stageStartedUtc, stageFinishedUtc);
+                                Assert.True(updatedUtc >= previousUtc);
+                                afterSchedule["lastUpdatedUtc"] = beforeSchedule["lastUpdatedUtc"]!.DeepClone();
+                                Assert.True(JsonNode.DeepEquals(beforeSchedule, afterSchedule),
+                                    "Staging changed schedule fields beyond lastUpdatedUtc.");
+                            }
+                            else Assert.True(pair.Value.AsSpan().SequenceEqual(after[pair.Key]),
+                                "Unexpected staging mutation: " + Path.GetRelativePath(files.GameSessionPath, pair.Key));
+                        }
                     }
                     else { AssertDiagnosisMenuJson(faultImage, files); await files.WriteFileAtomicBytesAsync(lease, changedPath, before); }
                     // Complete the independent fixture's initial preparation only.

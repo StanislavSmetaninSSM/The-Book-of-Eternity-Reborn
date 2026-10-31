@@ -132,8 +132,19 @@ archive are outside checkout; original failures and all other holds are retained
   Inspect only the fresh producer's actual original input; cached/invalid results
   carry none. Typed actual-owner constructor, nonzero-time/drift and byte/claim
   controls plus unchanged callback/source guards precede native19/6 and UI3.
-  C7 component1 passed separately; C8 is UNCOMPILED/UNRUN. WithWoundAnchorPlan
+  C8 original-context/callback/source guards passed by their recorded epochs.
+  Native19 settled 15 PASS / 4 fixture FAIL across attempts; only the grouped
+  four-case fixture correction is now UNCOMPILED/UNRUN. WithWoundAnchorPlan
   cannot drop this authority; no fabricated legal anchor or new permission layer.
+
+- [ ] T121-DIAGNOSIS-MORTAL-NATIVE-FIXTURES Correct the four independently
+  confirmed native fixture causes: required diagnosis result refusal, distinct
+  private acquisition identity/output, exact valid-stage scheduler timestamp
+  bookkeeping, and original pending carry with next-control backlog at T1.
+  Preserve all source/privacy/replay/claim suffixes. Retain the 15 passed case
+  identities; four original failed rows have exclusive120s selectors, without
+  new cases or production changes. Integration-only source is UNCOMPILED/UNRUN;
+  exact outcomes/source and fresh selection are in plan.md. Parents stay open.
 
 - [x] T121-DIAGNOSIS-READ Show readable declared conditions of currently known
   diagnostic paths in the existing wound/status cards for console/browser. Reuse

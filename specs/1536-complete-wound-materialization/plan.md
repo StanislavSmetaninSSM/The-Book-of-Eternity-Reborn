@@ -1,3 +1,61 @@
+# T121 independent native19 — fixture-only correction WIP, UNCOMPILED / UNRUN
+
+Root reconciled 19 distinct case IDs / 9 methods across four unchanged-source
+attempts at `afd49bddbd3f640d498b57d6bede171b4ac3756f`: 15 PASS / 4 FAIL,
+not one fresh19 run. All attempts completed without timeout, with full owned
+cleanup and stable pins. Exact union is external in
+`M2GREENC8C2-native19-union.json`; raw/strict outcomes remain in
+`M2GREENC8C2-native19`, `-native18`, `-native15` and `-native12`.
+Their respective completed outcomes were 0P/1F/18U (22.3846s), 2P/1F/15U
+(19.897s), 2P/1F/12U (20.180s), and 11P/1F/0U (74.005s).
+No failed whole case or unrun suffix is counted as PASS. Earlier cheap/common
+and all accepted component lineages remain distinct; dependent6 and UI3 stay held.
+
+Independent root/Astra source review established four fixture-oracle/preparation
+causes, with no production/game-rule defect:
+
+- Every diagnose History row requires a closed result. The omission branch now
+  requires invalid parse plus exact missing-field Error at that row's result path,
+  preserving genuine History/replay and every later resealed-negative assertion.
+- The private second wound inherited the shared builder's attempt_test_001. Its
+  initial row now has a unique attempt and operation, with output fingerprint
+  recomputed from that operation/event/summary; complete merged History validates
+  before the initial write. Existing distinct wound/transition/effect identities
+  and chronology stay intact. A shared acquisition event is lawful; no gratuitous
+  event rebinding or accepted-snapshot patch is introduced.
+- Actual valid Stage rebuilds ordinary control, whose existing scheduler refreshes
+  only lastUpdatedUtc here. The valid-row oracle permits only that field on the
+  exact schedule path, proves valid UTC within the actual Stage interval, restores
+  only it on a detached comparison, and checks complete schedule equality. Every
+  other JSON path/byte remains exact with path context. Open/cancel/Confirm and
+  both negative-stage byte inertness remain unchanged; no metadata blanket skip.
+- Ordinary settlement carries original pending world/faction counts and simulation
+  markers. Newly due work is derived on the next control build from T1 minus those
+  markers; the current pending count is not duration/cadence. The elapsed300 row
+  proves T1, thirty wound cadences, exact original carry/markers and absent report,
+  plus retained-marker backlog and all unchanged remaining schedule DATA. No
+  temporary future write, fictitious current pending1 or new report is created.
+
+The passed negative2 and zero-duration row retain their original method identities
+and assertion semantics. Failed valid-stage/elapsed300 rows become separate Facts;
+the existing cohort Fact gets its own exclusive category. This replaces rows and
+adds no case/functionality or budget. Full source estimate: 215 cases / 87 methods /
+47 descriptors / 45 categories, official discovery authoritative. Fresh selection
+is only durable1, cohort1, valid-stage1 and elapsed3001: four cases/methods/categories,
+all original120s bounds. The unchanged 15 PASS identities are retained, not replayed.
+Only Integration source needs a fresh build; Main/Support/Unit source is unchanged.
+No affected production source means no new semantic-guard replay is requested.
+
+Optimization: share each existing test's preparation/assertion body when splitting
+failed rows, reuse captured before/after maps and actual scheduler DATA, and keep
+real original/owner/claim suffixes. No added cache, authority, source read, timing
+framework or speedup claim. Existing GM guidance already forbids a newly invented
+same-turn report and follows ordinary scheduling; precise next-control wording is
+clarified in the canonical design, with no GM wire/manifest update required.
+All corrections are UNCOMPILED/UNRUN until the same bounded independent SOURCE
+and root-owned Integration/discovery/PREP/runtime. No task/parent closure, raw Git
+upload, ordinary-timeout qualification, physical-treatment/adapters or HOLD work.
+
 # T121 corrected common-context Fact PASS — native19 PREP pending
 
 At runtime `0e2f9ca3d801120ce210278fea26e8e5ad5801ba`, with the explicit
