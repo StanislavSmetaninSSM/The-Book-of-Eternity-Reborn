@@ -57,6 +57,19 @@ Astra/high source-stage review frozen10file diff завершён без зам�
 21newguard/120GREEN, интеграция/DP/legacy/keys/clock/payment проверены.
 Final whole-block verdict ожидает полные данные/отчёт. Сырьё без квот наD:.
 
+T125.3 завершён:216cells/1188000trials/41779horizon. Main108000/3770horizon,
+confirm1080000/38009horizon. Все4процесса exit0/stderr0; confirm wall960622мс.
+Parent verify-measurements сверил exact params/seeds/indices/outcomes/endpoints,
+личные/общие суммы, Paid/нормализацию, union3shards и readback confirm.jsonl.
+Свидетельство full-verification.json наD:. Frozen source не изменялся.
+Итог отрицательный: healer28 long407/407 против315/317 у той же Main-политики
+без реакций; instant0срывов, поэтому выигрыш относится к Main-selector.
+Детерминированный анализ h3 выявил неучтённое pending на границе прогноза:
+cast/finish V3−200/−400 приH200; это механизм, не количественная атрибуция
+замедления. Parent независимо повторил oracle λ0/.1; одна первоначальная
+assert.strictEqual(0,−0) в разовом анализе заменена математическим равенством,
+модель/её guards не менялись. Полный отчёт передаётся на независимое review.
+
 ## T124 — автономное исполнение, 2026-11-01
 
 После предъявления ebcfb6a21 автор явно отменил ожидание согласования спецификаций

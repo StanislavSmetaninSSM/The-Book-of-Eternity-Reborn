@@ -5,7 +5,7 @@
 - [x] T125.0 Прямое разрешение автономной проверки; brainstorming/bridge переиспользуют #1573. Read-only design, три подхода/h3/λ/границы выбраны исполнителем до source.
 - [x] T125.1 Writing-plans + Spec Kit plan/tasks/consistency: зависимости,108cases×11000, прогнозы/guards/оптимизация записаны до реализации.
 - [x] T125.2 RED→GREEN:120/120numerical guards (99старых+21новых),exit0/stderr0; legacy42case checksum сохранён. Parent прочёл source/diff/evidence, проверил108main/108confirm smoke и54+54union/params/seeds. Coldprep88.35мс,20000lookup61.93мс; profile/3096states reused.
-- [ ] T125.3 Опубликовать frozen source, выполнить1188000main/confirmation траекторий, проверить данные и записать эффект/негативные случаи отдельно по очередям и контролям.
+- [x] T125.3 Frozen source опубликован;216cells/1188000траекторий завершены,41779horizon. Params/seeds/coverage/sums/payments/shard union/readback проверены. Отчёт сохраняет оба порядка, плохие хвосты и отрицательный результат Joint; Heal/source после freeze неизменны.
 - [ ] T125.4 Whole-block review, исправления/verification, GitHub publication/readback/restore/issue; raw local-only и штатная retention после нового полного замера.
 
 ## T124 — выбор момента срыва при дефиците ДЭ, 2026-11-01

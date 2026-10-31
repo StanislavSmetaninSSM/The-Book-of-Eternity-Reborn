@@ -64,10 +64,10 @@ interruptSuccess. Curve даёт lambda вHP/цент,value(view,h),immutable pr
 ### T125.3–4 — измерения и завершение
 
 - [x] Scoped WIP/source commit+push/readback до полного прогона/review.
-- [ ] На frozen SHA main108×1000 и confirm108×10000, horizon2000;3confirm shards
+- [x] На frozen SHA main108×1000 и confirm108×10000, horizon2000;3confirm shards
   разрешены. Raw без квот `D:\BoeDiagnostics\healing-joint-t125\20261101-v1`.
   После исходов не менять h/λ/политику. Parent проверяет coverage/seeds/sums/union.
-- [ ] `healing-joint-budget-investigation.md`: обе очереди и main/confirm отдельно,
+- [x] `healing-joint-budget-investigation.md`: обе очереди и main/confirm отдельно,
   сравнение6тактик/профилей, actions/Recover/расходы/reasons/actualHeal/overheal,
   стоимость подготовки/reuse, ограничения прогноза и плохие хвосты.
 - [ ] Whole-block Astra/high review actual diff/contracts/raw, исправления и
@@ -77,9 +77,11 @@ interruptSuccess. Curve даёт lambda вHP/цент,value(view,h),immutable pr
 
 Checkpoint: frozen source0da23b58d9a2c27a52b520c8f52c2d5a1a32bb2d,
 main108000 завершён/проверен,3770horizon,176525.9676мс process,exit0/stderr0.
-Confirmation1080000 выполняется в3shards.120/120guards; source-stage Astra/high
-review без замечаний. [WIP отчёт](healing-joint-budget-investigation.md) сохраняет
-main по очередям и отрицательные случаи. Итоговый verdict/retention ещё впереди.
+Confirmation1080000 завершена:38009horizon; wall960622мс для3shards,
+всеexit0/stderr0. Parent проверил216cells/1188000trials/41779horizon и union/readback.
+120/120guards; source-stage Astra/high review без замечаний.
+[Отчёт](healing-joint-budget-investigation.md) сохраняет обе выборки по очередям
+и отрицательный результат Joint. Итоговый verdict/retention ещё впереди.
 
 ### Consistency/preflight
 
