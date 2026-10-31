@@ -58,7 +58,12 @@ archive are outside checkout; original failures and all other holds are retained
   drift/reintroduced-work controls, selected spiritual dispatch peers and original
   browser/rollback before coherent OUTCOME. Existing positive lineages are retained
   unless dependencies change. Canonical/GM-facing capability is unchanged; record
-  the client-owned completion rationale and optimization assessment. See current
+  the client-owned completion rationale and optimization assessment. C21 retains
+  exact frozen skill/item input roots in a closed versioned result witness;
+  critical/base/semantic/identity DATA use shared pure derivation, terminal result
+  fingerprint and independent original binding. Preserve version1 historical
+  parsing without promoting old/component DATA into publication proof. Actual
+  resource_quantity coverage is required alongside item costs. See current
   plan receipt; no parent or whole diagnosis acceptance yet.
 
 - [ ] T121-DIAGNOSIS-MORTAL-ITEM-POSTVALIDATION Close the confirmed client-owned

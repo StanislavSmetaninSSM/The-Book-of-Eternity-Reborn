@@ -1,3 +1,54 @@
+# T121 Mortal diagnosis browser completion — C21 bounded design
+
+The C20 actual browser tail proves a missing family dispatch after otherwise
+admitted Mortal diagnosis. Both live completion and persisted accepted-record
+validation must call the same strict current-result predicate. Detached original
+admission already recognizes Mortal diagnosis and remains unchanged.
+
+Independent Astra DESIGN accepts a versioned publication-input witness in the
+existing diagnosis result: exact frozen skill CommandRoot and exact seven-field
+item envelope, preserving omission/null/empty/order. Capture from the actual
+frozen publication before execution, copy into that same continuation's result,
+include in the complete result seal and enforce closed versioned parsing. Keep
+version1's exact historical/component parser; never invent empty envelopes or
+upgrade an old result into current publication proof. Completion requires the new
+publication witness, while prior immutable History keeps its historical meaning.
+
+Re-freeze through the existing envelope parsers. Share existing pure helpers to
+recompose critical lifecycle DATA/fingerprint from retained request/resolution;
+then diagnosis base/envelope semantic, resource identity seed and exact resource
+and item consumption identities. Do not retain a critical live receipt, reservation,
+owner or full plan. Use the terminal Resolution.ResultFingerprint in these formulas,
+never the outer persisted result seal: semantic -> stage IDs -> durable seal stays
+acyclic. Never learn the expected event identity from candidate current History.
+
+Under the caller's existing lease, freshly bind the complete result to independently
+authenticated original input/selection/control/token/generation; verify unique result,
+whole History/carrier/identity/cohort agreement, clock/schedule/report and consumed
+inputs. Join exact expected item/resource consumptions to actual canonical ordered
+History/current state, allowing only separately validated ordinary effect changes.
+Reuse current effect/item/resource agreement owners. Generic validity, a matching
+identity alone or an intended typed result is insufficient proof of publication.
+No live planner may run against fabricated before-images or reconstructed authority.
+
+Finite typed common-publication controls cover actual resource_quantity and item
+costs, both consumers, empty/nonempty envelopes, Fate, witness/version/semantic
+resealing, missing/duplicate/foreign result/original, spend and current-state drift
+and reintroduced work. Use DiagnosisOwnershipFixture without Engine waiting;
+retain unchanged spiritual cores and select actual dispatch peers from the final
+diff. Original browser and rollback remain required after SOURCE/build/PREP.
+C20 actual browser failure is causal evidence; console PASS remains a separate
+accepted lineage, not current-whole-feature acceptance after changed dependencies.
+
+Optimization: reuse already frozen semantic DATA and pure identity functions; each
+fresh source is read/parsed once within this bounded comparison operation. Mutable
+current after-images and lease/owner closing checks cannot reuse a prior operation.
+No new cache/transport/framework, quota, timing change or speedup claim. The witness
+and check are client-owned completion/history mechanics, not new GM-authored fields
+or rules. Existing diagnosis GM wire/example remains unchanged; review its source
+coverage and record this rationale. Wider diagnosis/physical/adapters/parent/HOLD
+work stays open. Root owns builds/runtimes; code is not qualified by DESIGN alone.
+
 # T108: safe player aid to the current Guardian
 
 Issue: https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536
