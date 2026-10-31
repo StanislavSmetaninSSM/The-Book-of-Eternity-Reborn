@@ -17,7 +17,7 @@ Tech — существующий Node/PowerShell и точная арифмет
   flat/округление/послебонусное подавление, вероятность при R0/25/50/90.
   Малый одноразовый helper/raw толькоD:\BoeDiagnostics\healing-profiles-t127;
   использовать прежние formula exports для cross-check, не изменять runner.
-- [ ] T127.3 Записать проверенные значения/ограничения, согласовать статусы
+- [x] T127.3 Записать проверенные значения/ограничения, согласовать статусы
   T126/исторических профилей. Independent Astra/high review точного doc diff
   и расчётов; scope/link/diff check, GitHub persistence/readback/новый restore.
 
@@ -29,6 +29,15 @@ channel; R источники открыты, no invented innate. Optimization:1
 Bridge consistency: три требования автора→T127spec→T127.1–3; старые Heal
 interruption/probe не переносятся, accepted damage/HP/ДЭ сохранены; blockers0
 для арифметики, открытые R/HoTконтракты блокируют объявление полного баланса.
+
+Checkpoint T127: WIP d097fcc07935fe72d95606b982aa50b8534cd18b опубликован,
+originSHA совпал. Independent GPT-6 Astra/high review4785a71c..d097fcc0:
+без замечаний; независимо воспроизведены числа/flat/22.5%/R/риск высокогоregen.
+Parent188ссылок/doc-only/diff проверены. Финальные SHA/readback/новый sparse
+restore отмечаются в issue1573. Цена/сила — проект; полноценный баланс не доказан.
+Одноразовый арифметический helper хранится наD:, формулы/профили/полезные результаты
+записаны в spec и воспроизводимы без этого helper. Предыдущий полный T125raw
+сохраняется: арифметикаT127 не является новым полным боевым замером.
 
 ## T126 — концептуальная замена Heal, 2026-11-01
 

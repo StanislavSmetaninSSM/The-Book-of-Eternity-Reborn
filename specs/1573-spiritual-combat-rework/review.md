@@ -17,7 +17,17 @@ energy-risk.json: self-HoT+3direct за4Main,223.2ДЭ/55.8среднее; пр�
 Все диагностические результаты толькоD:, без квот. Оптимизация: вычисления
 малые; использованы прежние immutable formula exports, новый кэш не нужен.
 Production/source/runner/C#/frontend/MonteCarlo не менялись/не запускались.
-Независимое review законченного проекта и арифметики ещё впереди.
+WIP d097fcc07935fe72d95606b982aa50b8534cd18b опубликован; originSHA совпал.
+Независимое GPT-6 Astra/high review4785a71c..d097fcc0 завершено без замечаний:
+7документов/helper/обаJSON, независимые числа D130/90%/+50%/flat/22.5%/400исходов
+и223.2ДЭ/1296potentialHP. Защита/save даже приcrit/очищение и различие поглощения
+HP от предотвращённого hit проверены. Rисточники иHoTstack/lifecycle/HP0 честно
+открыты; готовность баланса не заявлена. Parent188ссылок/diff/doc-only проверены.
+Свежий sparse restore создан изGitHub в новом пустом
+D:\BoeDiagnostics\healing-profiles-t127\remote-restore-20261101; финальныйSHA/
+содержимое/readback — issue1573. Старый T125raw не удаляется: нового полного
+боевого замера нет. Routing остаётся Sol-аудит + parent-проект + Astra-review;
+измеренных заявлений об экономии работы нет.
 
 ## T126 — пересмотр концепции Heal, 2026-11-01
 
