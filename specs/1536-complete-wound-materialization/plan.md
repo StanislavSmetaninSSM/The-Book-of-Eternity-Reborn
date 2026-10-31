@@ -1,3 +1,22 @@
+# T121 bare-hold owning builds and exact selection complete — runtime UNRUN
+
+At `d3cb13df62261e97eba9f1554c5c3419606ad6d2`, Main, TestSupport, Unit and
+Integration builds passed with zero errors in 2:31.19, 15.12s, 1:07.71 and 2:17.49.
+Warning code/message multisets remain the preceding 12/23/26/102 baseline.
+Four PE/PDB identities, 321 changed-source bindings, 27 artifacts, 40 resource
+copies and four daemons match. All 27 archived members and full gzip EOF/CRC
+were verified; raw remains outside checkout under `M2GREENC4-*`.
+
+Official catalog discovery passed 1250 categories / 13069 methods or files,
+without tests. PlanOnly confirms 194 cases / 76 methods / 37 descriptors in
+35 categories, no duplicates, zero executions and complete cleanup. The disjoint
+partition is 152 retained cases, focused14 (new2 + ordinary9 + sourceguards3),
+native25, then three UI singletons. Focused14 is 8 methods / 3 descriptors /
+3 categories with original 60s limits. Independent PREP and all current runtime
+results remain pending; the previous native 1 FAIL / 24 UNRUN is preserved.
+No old accepted aggregate, HOLD, restore or new feature was run. Existing DATA
+reuse and fresh authority boundaries remain; no cache or speedup claim is added.
+
 # T121 bare diagnosis-hold SOURCE accepted — builds only
 
 Independent Astra/high accepted the complete narrow correction at
