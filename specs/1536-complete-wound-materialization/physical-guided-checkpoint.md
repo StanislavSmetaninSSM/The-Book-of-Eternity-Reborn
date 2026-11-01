@@ -1,3 +1,28 @@
+# C7 actual common membership refusal; subsequent launches resource-blocked
+
+Runtime5cf3b512e2850829db0a8c3251e2b3ce2851dc2c / Integration69fdca680:
+current-legacy passes initial canonical graph, typed capability-three/default-one
+premises, signed actual request and reducer. Real common composition then refuses
+accepted_mechanics_wound_final_effect_membership_invalid for a newly created
+prefix wound application. Category65.9929185/120s,wall72.7084649s;1FAIL/0PASS,
+current-removal/joint2UNRUN, no timeout, stable pins, complete cleanup. No new
+complete PASS. External P3GREENC7-current3/verified-partial-failure.json retains
+exact TRX/IDs/error. The generic final membership consumer handles ordered recovery/
+spiritual-healing stages, but terminal treatment falls into an all-creations-active
+loop even when its sealed later heal retired a prefix creation. This is a concrete
+production integration gap, not the earlier fixture or capability failure.
+
+The launch fence passed at688168960B with the unchanged687865856B reserve. After
+full output, observed free686170112B blocks ALL further build/runtime starts.
+The original combined closing fence exits1 on reserve and is preserved as failed.
+Separate complete closing proof rechecks27 artifacts/410 source bindings/10resources,
+40 copies/four daemons, exact checkpoint-only source delta and no live managed
+owners(49 old zombies); cleanup is complete and eligibleForAnotherStart=false.
+External closing-integrity-resource-block.json is not a combined-fence PASS.
+No reserve/budget is lowered and no raw/saves/recovery are removed. Independent
+read-only design/source work may continue; fresh build/test admission remains pending.
+All previously accepted lineages and other HOLDs retain their explicit limits.
+
 # C7 fixtures compiled — runtime PREP pending
 
 Fresh Integration source69fdca68080cb724df0f599b2f68a63b29a8f401 exits0
