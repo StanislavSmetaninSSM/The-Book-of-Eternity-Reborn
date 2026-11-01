@@ -1,4 +1,39 @@
-# C12 functional browser-mode acceptance — DESIGN accepted; source UNRUN
+# C12 browser modes — fresh preparation verified; final PREP pending
+
+Linux source 390907d4d376e70ec99d49653ec2b9fe22b54c19. Independent Astra/high
+SOURCE and PREP-foundation reviews accept the exact nine-path change, unchanged
+shared journey, restored C10 production semantics, and retained C11 causal RED.
+Four fresh owning builds exit 0: Main 145.014729s, Support 15.508859s,
+Integration 161.015670s, Unit 82.539094s. Warning code/message multisets equal
+baseline 12/23/102/26 (24/46/204/52 logged). Actual four PE/PDB identities,
+412 source bindings, 27 artifacts, ten resources in 40 copies and four daemons
+match. Reviewed ended-owner standard obj/ref duplicates alone were retired;
+all current bins and Main/Support dependency refs remain. Prior C11 compiled
+32-member evidence is fully recoverable from its verified external archive.
+
+Official C12 discovery reports 1296 categories / 13111 methods, no stale or
+unmapped selector and zero execution. Exact P3GREENC12-browser2-plan exits 0:
+2 cases / 2 methods / 2 exclusive Integration descriptors, zero execution,
+180s each. Only BrowserPhysicalProcedureUsesTheActualConfirmedModeAndSettlement
+and BrowserPhysicalGuaranteedUsesTheActualConfirmedModeAndSettlement are selected.
+PlanOnly's zero completed cases are expected and are not a runtime PASS.
+Catalogue and plan generic logs are fully decoded/hash-verified gzip with frozen
+recovery manifests; every other raw/result/capture is retained outside checkout.
+
+Next: independent final PREP, immediate fresh source/artifact/resource/owner/space
+fence, then separate procedure and guaranteed browser singleton invocations.
+Each needs actual complete TRX, full capture, root cleanup and OUTCOME review.
+Combined maximum is 360s plus separate runner overhead, versus old grouped 180s;
+this is explicitly changed allocation, not speedup or old grouped PASS. No native,
+console, course or rollback admission follows automatically. The retained console
+2 PASS and old grouped browser 2 UNKNOWN keep their original versions/status.
+No gameplay/GM contract changed; no prompt/example update or new cache applies.
+All raw is external under /workspace/tboe-linux-evidence-20261025/
+us5-guided-diagnosis/P3GREENC12-*. Last fresh fence has no active managed owner,
+all pins stable and 882954240 free bytes above unchanged 687865856-byte reserve.
+DFR/Mortal compatibility/Windows and the broader feature's open gates remain HOLD.
+
+# C12 functional browser-mode acceptance — SOURCE and builds accepted; runtime UNRUN
 
 Goal: finish actual queued browser procedure and guaranteed treatment acceptance.
 Replace only their old two-row Theory wrapper by two named Facts calling the same
@@ -26,9 +61,9 @@ unproven optimization chain; the advanced native cost remains an explicit open
 qualification result, not a claim of completion.
 
 Finite plan under T121-PHYSICAL-GUIDED-BROWSER-MODES:
-- [ ] Source review proves exact source restoration/shared journey equality and
+- [x] Source review proves exact source restoration/shared journey equality and
   exactly2cases2descriptors with explicit180+180 allocation/catalogue alignment.
-- [ ] Preserve current compiled32 evidence; four fresh owning builds/warnings,
+- [x] Preserve current compiled32 evidence; four fresh owning builds/warnings,
   actualPEPDB/bindings/artifacts/resources and exact discovery/PlanOnly/fences.
 - [ ] Independent PREP then separate complete browser procedure/guaranteed runs,
   each strict TRX/full-capture/cleanup OUTCOME, no other automatic admission.
