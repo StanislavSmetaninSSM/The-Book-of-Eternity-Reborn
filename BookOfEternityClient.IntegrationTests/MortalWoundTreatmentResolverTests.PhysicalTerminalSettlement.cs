@@ -150,6 +150,29 @@ public sealed partial class MortalWoundTreatmentResolverTests
         Assert.Empty(surviving.Issues);
         var legacySources = source.SourceAuthority.SnapshotSameTurnLegacyEntries();
         var actualApplications = accepted.ApplicationResults;
+        var routingRoots = source.WoundApplicationRootEffectBindings;
+        var expectedRoutingRefs = source.SourceAuthority.SnapshotWoundGroupAuthorities()
+            .SelectMany(group => group.ApplicationRootLineage).Select(row => row.ApplicationRef)
+            .Where(value => value is not null).Select(value => value!);
+        Assert.Equal(expectedRoutingRefs.Order(StringComparer.Ordinal), routingRoots.Select(row => row.ApplicationRef).Order(StringComparer.Ordinal));
+        var excludedRefs = legacyBatches.SelectMany(batch => batch.RootApplications)
+            .Concat(terminal.TreatmentBatch?.RootApplications ?? Array.Empty<WoundRootEffectApplication>())
+            .Select(row => row.ApplicationRef).ToHashSet(StringComparer.Ordinal);
+        Assert.DoesNotContain(routingRoots, row => excludedRefs.Contains(row.ApplicationRef));
+        var routingIdentity = EffectIdentityState.Parse(JsonSerializer.SerializeToElement(source.IdentityIndexAfterImage), EffectIdentityState.StatePath);
+        Assert.Empty(routingIdentity.Issues);
+        Assert.True(WoundReactionLineageAuthority.Build(source.SourceAuthority, routingIdentity.State!, surviving, routingRoots).Success);
+        var excluded = new WoundApplicationRootEffectBinding("unknown_wound_root", stages.SelectMany(stage => stage.Terminations).First().EffectId);
+        foreach (var (label, roots) in new (string, IReadOnlyList<WoundApplicationRootEffectBinding>)[]
+        {
+            ("unknown routing alias", routingRoots.Append(excluded).ToArray()),
+            ("duplicate routing alias", routingRoots.Concat(new[] { excluded, excluded }).ToArray()),
+            ("foreign routing identity", routingRoots.Append(excluded with { EffectId = "foreign_effect" }).ToArray())
+        })
+        {
+            var refused = WoundReactionLineageAuthority.Build(source.SourceAuthority, routingIdentity.State!, surviving, roots);
+            Assert.False(refused.Success, label); Assert.NotEmpty(refused.Issues);
+        }
         Assert.Equal(legacyBatches.Sum(batch => batch.SourceExport.Definitions.Count),
             legacySources.Count);
         foreach (var batch in legacyBatches)
@@ -203,6 +226,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
         {
             var resealed = WoundEffectBatchAcceptedPlan.Create(prepared, effectInput, source,
                 applications, terminations);
+            Assert.Throws<InvalidDataException>(() => MortalWoundHealLegacyPlanner.Finalize(terminal.Legacies, prepared, resealed));
             var refused = WoundAcceptedTurnPlannerCore.Finalize(prepared, new(resealed, Array.Empty<ValidationIssue>()));
             Assert.False(refused.Success, label); Assert.NotEmpty(refused.Issues);
         }

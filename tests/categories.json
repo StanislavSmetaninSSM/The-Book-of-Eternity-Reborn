@@ -2,6 +2,32 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "mortal-physical-terminal-independent-root",
+  "responsibility": "T121-PHYSICAL-GUIDED one actual guaranteed remove_then_heal native publication with cosmetic plus independent mechanical legacy. Same original shared causal body: complete canonical codec/shape/semantic refusals, exact preparation, actual common publication, linked History and current wound routing versus sealed allocation proof. Isolated from the three accepted simple rows; UNCOMPILED/UNRUN correction.",
+  "excludes": "No new case or feature, private reflection, fake root ownership, weakened lineage/source/slot guard, or cost/speedup claim. Exclusive 60-second protective bound is lower than the former 120-second category; previous failed row took 6.14 seconds, without predicting new runtime. Current3 and UI remain unadmitted.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.PhysicalTerminalHeal.cs",
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.PhysicalTerminalSettlement.cs",
+    "BookOfEternityClient/Services/EffectAcceptedTurnPlanner.MortalTreatmentTerminal.cs",
+    "BookOfEternityClient/Services/MortalWoundHealLegacyPlanner.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.IndependentTerminalLegacyUsesActualTreatmentPublication"
+      ]
+    }
+  ]
+},
+{
   "id": "mortal-physical-terminal-current-legacy",
   "responsibility": "T121-PHYSICAL-GUIDED terminal correction. One actual IV-to-I aggregate3 followed by a separate heal, cosmetic plus two namespace-independent mechanical legacies, real resource spends, transaction/progression close, shared browser current predicate and sealed output. Exact batch/result topology and well-formed retired mappings/current primary drift refuse. A real primary releases an ordinary owner-turn-end child; lawful different bounded child parameters pass, while canonical-valid forbidden/ambiguous/unrooted lineage and invalid child materialization refuse. Actual plan-constructor/payload tamper refuses after an honest copied payload positive. This is no historical deleted-component replay proof. Authored UNCOMPILED/UNRUN.",
   "excludes": "No private reflection, fabricated authority/receipt/recovery tick, Engine turn, broad replay/performance/HOLD or cost/speedup claim. Native120s is a protective bound.",
@@ -106,8 +132,8 @@
 },
 {
   "id": "mortal-physical-guided-terminal-heal-causal",
-  "responsibility": "T121-PHYSICAL-GUIDED SOURCE-HOLD terminal heal. Four independent genuine native original/held/request/mode rows: procedure, one canonically completed course milestone, guaranteed heal, and existing guaranteed remove_then_heal initial DATA. Complete parsed active severity-I wound/History/effects, authenticated owner, exact retained purpose/mode/claims, production resolver intents and existing simulator applicability plus raw location/item validation precede the actual common-publication TERMINAL_HEAL_CAUSAL success assertion and exact linked executed-stage checks. These accepted causal RED rows are GREEN controls, currently UNCOMPILED/UNRUN.",
-  "excludes": "No expected-rejection oracle, hidden heal option, Engine/wait, fake owner/receipt/History/tick or private reflection. This four-row native control proves actual publication and sealed stages; independent current/legacy/real UI/rollback controls remain required for whole qualification. Full course UI remains three separately confirmed milestones and real waits.",
+  "responsibility": "T121-PHYSICAL-GUIDED three simple genuine native terminal mode rows: procedure, one completed course milestone and guaranteed. These three complete cases passed at runtime 6efe7e156ac2ed1ee231ec443f444fbaa96c69e5 / compiled ebfb65dd17120ca17a2f83a6c1260a38359da24e and are retained by lineage while the independent nonempty legacy failure is isolated. Exact original prefix, linked executed stages, source roles, copied payload and strict tamper assertions remain.",
+  "excludes": "No repeat of these three accepted cases merely for reporting. The independent guaranteed remove_then_heal row moved to mortal-physical-terminal-independent-root with the same shared body; full current/joint/UI/course/rollback qualification remains separate. Existing 120-second bound unchanged.",
   "changeHints": [
     "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.PhysicalTerminalHeal.cs",
     "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.DiagnosisOwnership.cs",

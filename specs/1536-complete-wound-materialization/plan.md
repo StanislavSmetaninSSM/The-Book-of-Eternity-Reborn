@@ -1,3 +1,48 @@
+# T121 independent allocation/current routing correction — UNCOMPILED/UNRUN
+
+Bounded correction on 901720fd0b446b3a9ac403cb7cc51c8918237194. Retained simple 3
+PASS are runtime 6efe7e156ac2ed1ee231ec443f444fbaa96c69e5 / compiled
+ebfb65dd17120ca17a2f83a6c1260a38359da24e, external P3GREENC4-terminal4.
+Their no-legacy/no-created-prefix production branch is unchanged; they are not
+rerun or relabelled fresh. The independent nonempty row remains the actual failure.
+
+WoundApplicationRootEffectBindings again means current same-turn wound routing
+aliases. Exact private legacy preparation and ValidateWoundApplicationExecution
+still precede allocation capture, but independent wound_legacy results are kept
+only in the existing complete private executed stages/results, not wound aliases.
+After actual terminal healing, only each selected prefix root's unique exact
+application/effect pair is retired from routing, after agreeing with its actual
+source/target/carrier and one actual terminal result. Duplicate, unknown or foreign
+rows cannot be silently cleared; genuine joint acquisition aliases remain. The
+lineage validator, active-wound source/slot/ownership checks, generic canonical
+non-wound reaction routing, allocator and final source object are unchanged.
+
+Legacy finalization compares the complete accepted application/termination vector
+against existing sealed TryReadMortalTreatmentExecution stages, then keeps exact
+allocation IDs, chronology, source/target/carrier/materialization and order joins.
+It no longer borrows the routing-only alias map as independent allocation proof.
+No new witness, schema, owner, API or permission is introduced. The first lineage
+build and downstream resource/dependency/draft routing consumers therefore share
+the same current alias contract; terminal accepted results already derive from
+the sealed stages, and current/browser/output proof keeps its existing full joins.
+
+Existing removal/current/joint controls check exact current membership, independent
+and retired exclusion, preserved joint acquisition, direct unknown/duplicate/
+foreign routing refusal, and missing/foreign/reordered complete allocation refusal.
+The full original History, source roles, descendants, costs/Fate, byte/claim and
+payload checks remain. Existing local copied views are reused; no cache, new source
+sweep, historical replay or measured speedup claim is added.
+
+Only test ownership changes: the old theory keeps its same three false/simple rows
+and 120-second bound. Its former guaranteed,true row becomes one named Fact delegating to
+the same private async body, owned solely by mortal-physical-terminal-independent-root
+(exclusive Integration, 60 seconds; prior failed row 6.14 seconds, not a runtime prediction). This
+isolates the remaining failure without repeating PASS or increasing a bound. Total
+physical scope remains 49 cases; source estimate is now 28 methods / 26 descriptors / 25 categories,
+pending official fresh catalog/PlanOnly. Proposed next runtime is only this singleton;
+current 3 / UI / HOLDs remain unadmitted. JSON/selector and whitespace checks only; all new
+code is UNCOMPILED/UNRUN. Root owns persistence, SOURCE, builds and admission.
+
 # T121 terminal4 — three complete PASS; independent legacy root binding open
 
 Runtime 6efe7e156ac2ed1ee231ec443f444fbaa96c69e5 / compiled source

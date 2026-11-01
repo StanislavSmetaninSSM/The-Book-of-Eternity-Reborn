@@ -87,10 +87,31 @@ public sealed partial class JointBundleComponentTests
         Assert.Equal(2, terminal.Legacies.EffectOperationBatches.Count);
         var acquisitionRefs = prepared.EffectOperationBatches[0].RootApplications.Select(row => row.ApplicationRef).ToHashSet(StringComparer.Ordinal);
         Assert.NotEmpty(acquisitionRefs);
+        var routingRoots = effectPlan.WoundApplicationRootEffectBindings;
+        Assert.Equal(acquisitionRefs.Order(StringComparer.Ordinal), routingRoots.Select(row => row.ApplicationRef).Order(StringComparer.Ordinal));
+        Assert.DoesNotContain(routingRoots, row => terminal.Legacies.EffectOperationBatches.SelectMany(batch => batch.RootApplications)
+            .Concat(terminal.TreatmentBatch?.RootApplications ?? Array.Empty<WoundRootEffectApplication>())
+            .Any(root => root.ApplicationRef == row.ApplicationRef));
+        var effectIdentity = EffectIdentityState.Parse(JsonSerializer.SerializeToElement(effectPlan.IdentityIndexAfterImage), EffectIdentityState.StatePath);
+        Assert.Empty(effectIdentity.Issues);
+        var effects = EffectCarrierCatalog.Build(effectPlan.ResourceTriggerCarriers); Assert.Empty(effects.Issues);
+        Assert.True(WoundReactionLineageAuthority.Build(effectPlan.SourceAuthority, effectIdentity.State!, effects, routingRoots).Success);
+        var firstRoot = Assert.Single(routingRoots);
+        foreach (var (label, roots) in new (string, IReadOnlyList<WoundApplicationRootEffectBinding>)[]
+        {
+            ("unknown joint alias", routingRoots.Append(firstRoot with { ApplicationRef = "unknown_wound_root" }).ToArray()),
+            ("duplicate joint alias", routingRoots.Append(firstRoot).ToArray()),
+            ("foreign joint allocation", new[] { firstRoot with { EffectId = "foreign_effect" } })
+        })
+        {
+            var refused = WoundReactionLineageAuthority.Build(effectPlan.SourceAuthority, effectIdentity.State!, effects, roots);
+            Assert.False(refused.Success, label); Assert.NotEmpty(refused.Issues);
+        }
         var withoutAcquisition = applications.Where(row => !acquisitionRefs.Contains(row.ApplicationRef)).ToArray();
         Assert.Equal(applications.Count - acquisitionRefs.Count, withoutAcquisition.Length);
         var incomplete = WoundEffectBatchAcceptedPlan.Create(prepared, effectInput, effectPlan,
             withoutAcquisition, accepted.TerminationResults);
+        Assert.Throws<InvalidDataException>(() => MortalWoundHealLegacyPlanner.Finalize(terminal.Legacies, prepared, incomplete));
         var rejected = WoundAcceptedTurnPlannerCore.Finalize(prepared, new(incomplete, Array.Empty<ValidationIssue>()));
         Assert.False(rejected.Success);
         Assert.Contains(rejected.Issues, issue => issue.Code == "mortal_treatment_execution_invalid");

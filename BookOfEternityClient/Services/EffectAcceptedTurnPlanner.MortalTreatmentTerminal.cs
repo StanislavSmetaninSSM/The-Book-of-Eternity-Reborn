@@ -179,6 +179,28 @@ internal static partial class EffectAcceptedTurnPlanner
         var healing = MortalWoundTreatmentOutcomePublicationPlanner.ReduceTerminalHeal(beforeHeal, heal, declarations, turn);
         issues.AddRange(healing.Issues);
         if (!healing.IsValid || healing.ProposedAfter is null) return null;
+        // Retire only actual newly allocated roots of this healed treatment.
+        // Joint acquisition aliases and any unexplained aliases remain subject
+        // to the unchanged complete current-wound lineage guard.
+        foreach (var root in prefixBatch?.RootApplications ?? Array.Empty<WoundRootEffectApplication>())
+        {
+            var applications = prefixApplications.Where(row => row.ApplicationRef == root.ApplicationRef).ToArray();
+            var aliases = rootBindings.Where(row => row.ApplicationRef == root.ApplicationRef).ToArray();
+            if (applications.Length != 1 || aliases.Length != 1 ||
+                applications[0].SourceKey != root.ExpectedSourceKey ||
+                applications[0].TargetKey != root.ExpectedTargetKey ||
+                applications[0].CarrierCoordinate != root.ExpectedCarrierCoordinate ||
+                aliases[0].EffectId != applications[0].EffectId ||
+                facts.Terminations.Count(row => row.EffectId == applications[0].EffectId &&
+                    row.Disposition == "expired" && row.SourceKey == applications[0].SourceKey &&
+                    row.TargetKey == applications[0].TargetKey && row.CarrierCoordinate == applications[0].CarrierCoordinate) != 1)
+            {
+                AddWoundBatchIssue(issues, "treatment.terminal", "mortal_treatment_terminal_root_retirement_invalid",
+                    "one exact allocated alias and actual terminal result per selected prefix root", root.ApplicationRef);
+                return null;
+            }
+            rootBindings.Remove(aliases[0]);
+        }
         finalSourceAuthority = input.SourceAuthority.WithoutHealedWoundSource(beforeHeal.Owner.Realm, beforeHeal.WoundId);
         issues.AddRange(finalSourceAuthority.Issues);
         if (issues.Count != 0) return null;

@@ -4449,10 +4449,13 @@ internal static partial class EffectAcceptedTurnPlanner
             {
                 ValidateWoundApplicationExecution(request, execution, issues);
                 treatmentApplications?.Add(CaptureTreatmentApplication(request, execution));
-                woundApplicationRootEffectBindings.Add(
-                    new WoundApplicationRootEffectBinding(
-                        request.Root.ApplicationRef,
-                        execution.EffectId));
+                // Independent legacy allocations remain in the private executed
+                // result vector; they are not aliases of an active wound group.
+                if (request.SourceExport.Kind != "wound_legacy")
+                    woundApplicationRootEffectBindings.Add(
+                        new WoundApplicationRootEffectBinding(
+                            request.Root.ApplicationRef,
+                            execution.EffectId));
             }
             usedSources.Add(request.Application.Source);
             usedTargets.Add(request.Application.Target);

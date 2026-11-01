@@ -17,8 +17,14 @@ public sealed partial class MortalWoundTreatmentResolverTests
     [InlineData("procedure", false)]
     [InlineData("course", false)]
     [InlineData("guaranteed", false)]
-    [InlineData("guaranteed", true)]
-    public async Task LegalTerminalHealReachesActualTreatmentPublication(string mode, bool removeThenHeal)
+    public Task LegalTerminalHealReachesActualTreatmentPublication(string mode, bool removeThenHeal) =>
+        AssertLegalTerminalPublicationAsync(mode, removeThenHeal);
+
+    [Fact]
+    public Task IndependentTerminalLegacyUsesActualTreatmentPublication() =>
+        AssertLegalTerminalPublicationAsync("guaranteed", removeThenHeal: true);
+
+    private async Task AssertLegalTerminalPublicationAsync(string mode, bool removeThenHeal)
     {
         await using var fixture = await DiagnosisOwnershipFixture.CreateAsync(20, signedInput: true, physicalMode: mode,
             preparePhysicalWound: wound => PrepareTerminalPhysicalWound(wound, mode, removeThenHeal));

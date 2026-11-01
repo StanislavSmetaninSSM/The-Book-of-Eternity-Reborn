@@ -260,16 +260,24 @@ internal static class MortalWoundHealLegacyPlanner
         WoundEffectBatchAcceptedPlan accepted)
     {
         var plan = accepted.EffectPlan;
+        var input = accepted.EffectInput;
+        var applications = accepted.ApplicationResults;
+        var terminations = accepted.TerminationResults;
+        if (!EffectAcceptedTurnPlanner.TryReadMortalTreatmentExecution(prepared, plan, out var stages))
+            throw Invalid("Legacy finalization requires the actual private treatment execution.");
+        var executed = stages.SelectMany(stage => stage.Applications).ToArray();
+        var executedTerminations = stages.SelectMany(stage => stage.Terminations).ToArray();
         if (accepted.WoundPreparationFingerprint != prepared.WoundPreparationFingerprint ||
             accepted.EffectInputFingerprint != plan.InputFingerprint ||
             accepted.EffectAcceptedTurnPlanFingerprint != WoundAcceptedTurnFingerprints.ComputeEffectPlan(prepared,
-                accepted.EffectInput, plan, accepted.ApplicationResults, accepted.TerminationResults))
+                input, plan, applications, terminations) ||
+            accepted.EffectAcceptedTurnPlanFingerprint != WoundAcceptedTurnFingerprints.ComputeEffectPlan(prepared,
+                input, plan, executed, executedTerminations))
             throw Invalid("Legacy finalization requires the actual matching sealed effect plan.");
         var expected = preparation.EffectOperationBatches;
-        var actual = accepted.ApplicationResults.Where(row => row.SourceKey.Kind == "wound_legacy").ToArray();
+        var actual = applications.Where(row => row.SourceKey.Kind == "wound_legacy").ToArray();
         if (actual.Length != expected.Sum(batch => batch.RootApplications.Count))
             throw Invalid("Missing or extra allocated legacy application result.");
-        var mapping = plan.WoundApplicationRootEffectBindings;
         var groups = new List<MortalWoundHealLegacyApplicationGroup>(); var cursor = 0;
         foreach (var batch in expected)
         {
@@ -284,7 +292,7 @@ internal static class MortalWoundHealLegacyPlanner
                         root.MechanicsOrdinal, root.OperationOrdinal, root.OperationKind) ||
                     row.Materialization.ComponentCount != root.ExpectedComponentCount ||
                     row.Materialization.MaterializationFingerprint != root.ExpectedMaterializationFingerprint ||
-                    mapping.Count(value => value.ApplicationRef == row.ApplicationRef && value.EffectId == row.EffectId) != 1 ||
+                    executed.Count(value => value.ApplicationRef == row.ApplicationRef && value.EffectId == row.EffectId) != 1 ||
                     !plan.AllocatedEffectIds.Contains(row.EffectId, StringComparer.Ordinal) ||
                     !plan.AllocatedTransitionIds.Contains(row.CreateTransitionId, StringComparer.Ordinal))
                     throw Invalid("Foreign, reordered or incomplete accepted legacy allocation.");
