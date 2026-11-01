@@ -5,7 +5,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
-public sealed class MortalSkillReferenceAuthorityTests : IDisposable
+public sealed partial class MortalSkillReferenceAuthorityTests : IDisposable
 {
     private readonly string _tempRoot;
     private readonly FileSystemManager _fs;
