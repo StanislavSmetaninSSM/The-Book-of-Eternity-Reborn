@@ -1,3 +1,36 @@
+# T121 terminal contour reassessment — 0 PASS / 4 FAIL retained
+
+Runtime a3edbd7cfa935d506485cee5e0fddfaf3dc106b1 / compiled source
+ad9709dfacaa035f69bdc4d1cdd7ab092747f9d0: P3GREENC2-terminal4 completes all
+four rows, 0 PASS / 4 FAIL, category 29.7468992 / 120 seconds, wall 36.0090105.
+No timeout, underfill, changed binary or cleanup failure. Strict proof and full
+TRX remain external at P3GREENC2-terminal4/verified-terminal-failure.json.
+
+The three simple modes now pass the corrected dispatch but fail the later strict
+item/resource join: effect source before-authority did not recompose exactly.
+Independent Astra and Sol source traces confirm terminal BuildCore incorrectly
+supplies the retired final-source fingerprint where ordinary publication expects
+the original admitted fingerprint. Existing final SourceAuthority, historical
+SourceBindings and complete execution/payload/ledger seals already represent the
+other role. Preserve those final semantics and all before→normalized comparisons;
+spiritual healing retains its distinct normalization order. No guard relaxation
+or extra witness is justified. Full contour review precedes implementation.
+
+The remove row returns from every direct typed preparation/assertion and reaches
+the same final publication assertion, still with InvalidOperationException. The
+later continuation/effect/initial-ledger throw remains unlocalized. Both reviewers
+recommend the existing invocation-scoped first-chance observation around only that
+actual Compose call, full exception/message/stack through test output and guaranteed
+unsubscribe; no new production hook/API/error disclosure or diagnostic framework.
+No new retry or removal fix is claimed. Current3, UI9 and prior HOLDs remain held.
+
+Space preparation removed only eight reproducible standard obj DLL/PDB duplicates,
+89,685,168 bytes, after fresh path/device/inode/owner/hash checks against the retained
+bin and full verified P3GREENC2 archive, with no live managed process. Every bin hash
+still matches; raw, saves, recovery, assets and tracked sources were untouched.
+External frozen manifest and deletion proof retain the exact scope; free space
+rose from 693,714,944 to 783,417,344 bytes. The reserve was not lowered.
+
 # T121 terminal dispatch candidate — compiled; terminal4 PREP pending
 
 2026-11-01: independent Astra/high SOURCE accepts the five-file delta compiled at
