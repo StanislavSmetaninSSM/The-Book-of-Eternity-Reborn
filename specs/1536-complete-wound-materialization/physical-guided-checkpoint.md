@@ -1,3 +1,41 @@
+# C14 reviewed clock candidate — fresh builds; controls14 runtime UNRUN
+
+Independent Astra/high SOURCE accepts b36df4f7620359f37484b7594ed33b85abaff113,
+including the corrected ordinary/afterlife boundary, finite ownership faults,
+shared rollback inventory and synchronized Mortal GM contract/worked example.
+Four fresh Main/Support/Integration/Unit owning builds all exit0 in
+110.285549/13.815918/120.181133/67.078567 seconds. Warning multisets exactly
+match baseline12/23/102/26 (24/46/204/52 logged occurrences); no new warning.
+Four actual PE/PDB pairs,418 source bindings,27 artifacts,ten resources in40
+copies and four daemons agree. All four compiled owners are b36df4f, not the old
+mixed source. Only ended exact standard obj and ref duplicates were retired;
+current binaries and Main/Support dependency refs remain. Actual previous mixed32
+and all raw evidence are preserved in the independently verified archive below.
+
+Official catalogue discovery passes:1300 categories/13118 methods, no unmapped
+or stale selector, zero tests. Exact controls PlanOnly passes:14 cases/10 methods/
+6 descriptors/5 categories, exclusive owning Integration/Unit selections, zero
+execution. Cases: ownership5, plain-afterlife exclusion2, causal clock1,
+documentation3 (Unit2+Integration1), original committed rollback3 (Theory2+Fact1).
+Existing category bounds60/60/60/60/180 seconds are unchanged. Old three-case
+Mortal compatibility HOLD is not selected or relabelled. This is not runtime PASS.
+
+External proofs: P3GREENC14GREEN-build-*, pdb-bindings/artifact-preflight,
+catalog, controls-plan and final-prep-source-fence under the existing external
+us5-guided-diagnosis root. Fence18:47:24 UTC: all pins stable, no active owner,
+753537024 free bytes above unchanged687865856 start reserve. Analysis-only linear
+full-capture readback was independently reviewed; it preserves full decoded
+messages/events, original PID/ticks/pairs, every aggregate, root/closing and
+assembly links. No collector, quota or loss applies. One closed-log helper lacked
+this phase allowlist: its first call stopped before mutation, not policy denial;
+the single phase addition awaits review, original logs still present.
+
+Next independent PREP, immediate fresh source/resource fence, one exact14-case
+runtime, strict primary TRX/full capture/cleanup and OUTCOME. Only then consider
+full course in the existing180s budget. No full-course retry, old PASS repetition,
+new cache, speedup claim or DFR/Mortal compatibility/Windows HOLD release follows
+from compilation. New clock intake remains unqualified until actual GREEN.
+
 # C14 final SOURCE delta — afterlife exclusion before clock parsing
 
 Independent review found one additional WIP regression: parsing a stale Mortal
