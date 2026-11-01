@@ -1,3 +1,34 @@
+# C8 real console treatment — 2/2 PASS; legacy timeout stays UNKNOWN
+
+Runtime7f38f7345d0e032339165af50dcbd012da1f5d27 / compiledalld70c38a:
+P3GREENC8-console2 completes both procedure/guaranteed cases,1descriptor,
+category89.9839199/180s,wall98.2618424s. Cases38.0608261/46.1356685s.
+Zero failures/skips/timeout/underfill/duplicateIDs, stable pins, complete cleanup.
+Actual handler/cancel/separate confirm, original/retained draw, real Engine/common
+publication, time/resources/items, healed wound/History, no-reroll replay and final
+cleanup assertions all complete. This is console handler qualification, not DOM,
+provider or fresh-process acceptance; course/browser/rollback remain unadmitted.
+
+Both original full passive gzip captures have exactly12events(6complete named
+scopes) each. Full byte decode/EOFCRC, stored+decoded hashes/lengths, original
+pairs/sequences, writer/footer closure and no-follow actual fixture-root absence
+are verified at P3GREENC8-console2/verified-full-captures.json alongside strict
+TRX proofverified-outcome.json. Procedure Journey37825.704277ms and confirmed
+process35303.548463ms; guaranteed Journey45951.816002ms/process45374.043485ms.
+GM response and closing are nested scopes, not additive independent costs.
+Closing27artifacts/10resources40copies/fourdaemons stable; no live managed owner,
+51zombies,free690327552B above unchanged687865856B reserve. Exactly7 C8 complete
+PASS now(earlierguard/recovery5+console2), not a fresh whole50 or sum of historical
+lineages. Earlier current-legacy TIMEOUT/UNKNOWN and removal/jointUNRUN are retained.
+
+Read-only cost assessment finds finite repeated plan detachment/replay/fingerprint
+work in the complex native fixture, but duration/timeout location is not proved.
+No production optimization, assertion removal, timing-stack addition or retry is
+admitted from that hypothesis. Next independent OUTCOME/cost/selection review may
+release bounded browser/rollback or course evidence separately. Source remains
+frozen and full diagnostics/unchanged budgets/launch reserve remain mandatory.
+No additional uncompressed raw retirement beyond authorized11 has occurred.
+
 # C8 current legacy — category timeout / UNKNOWN, no TRX
 
 Runtimee75e2516b27cb99e7310b2ee1a7c3616d5e4f55c / compiledd70c38a:
