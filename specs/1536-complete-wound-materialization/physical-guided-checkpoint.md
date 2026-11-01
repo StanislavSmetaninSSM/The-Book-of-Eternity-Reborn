@@ -1,3 +1,40 @@
+# C14 original preparation corrected — Integration rebuilt;14 runtime UNRUN
+
+Independent Astra/high SOURCE accepts cfbae21aacbbe8a42098b2f43f7e3c9e403be614:
+the existing standalone fixture preparation now signs actual scheduler/control
+and authenticates its exact schedule plus active conflict before the current
+test action. No production guard/assertion/budget changes. Fresh Integration-only
+build exits0 in126.943046s, baseline102 warnings/204 logged occurrences unchanged.
+Main/Support/Unit retain their unchanged fresh b36df4f owning builds. Four actual
+PE/PDB pairs,418 source bindings,27 artifacts,10resources/40copies and4daemons
+match. Only ended exact obj/ref duplicates retired; current bin and dependency
+refs stay. Previous Integration4 preserved:11002005B, SHA
+cc36abc8ff65804f0937f0f4dbe3ac0d7652818a4e0afecb387e8df4e5e66f61,
+fullEOF/CRC decoded38973440B and all four member hashes, independently approved.
+
+Current exact PlanOnly again passes14cases/10methods/6descriptors/5categories,
+zero execution. Complete catalogue1300/13118 is retained from b36df4f: catalogue,
+test signatures/attributes/selectors are unchanged; only the existing method's
+initial producer body/imports differ. This bounded inventory reuse requires PREP
+confirmation, not another successful full discovery without an affected reason.
+The previous two fixture failures and12UNRUN remain distinct, no clock GREEN.
+
+To preserve the unchanged reserve and complete future output, six older closed
+plain runner/dotnet-test logs from live-n-T586 and two dfr-prefix attempts were
+replaced by fully decoded/hash-verified gzip copies under existing autonomous
+closed-log authorization. All six exact byte images remain recoverable; their
+closed summaries/exit/owned cleanup, frozen identity and original/archive hashes
+are in P3GREENC14FIX1-six-historical-closed-logs-format-manifest.json (SHA
+33da89324d8c66b71bd099e3a81dc2917ca57ef0209f2ee167736b473ba6d5ea).
+66582637 original bytes→21905579 archived bytes; no capture/TRX/JSON/saves/recovery/
+binary or unique evidence was removed. Two newly ended generic logs were also
+fully recoverably archived. Free792186880B after cleanup, reserve687865856 intact.
+These are format substitutions, not retirement/replacement of older measurements.
+
+Next independent current PREP/fresh fence and one exact controls14 invocation;
+then classify all completed cases/full captures/cleanup before course admission.
+All existing broader HOLDs and original failed/partial measurements remain open.
+
 # C14 controls first attempt — fixture2 FAIL, remaining12 UNRUN
 
 Runtime1c871c9baf13ea2917511f0c1ad6bb738bdd6b11 / all compiled ownersb36df4f.
