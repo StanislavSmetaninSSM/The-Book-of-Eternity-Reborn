@@ -1,3 +1,35 @@
+# C14 finite runtime —6 PASS,1 reader failure,7 UNRUN
+
+Runtime544b5863d3b0d6e6ca04e52091cdeb22f771543a, compiled Integrationcfbae21,
+other three ownersb36df4f. Exact admitted14 stops after7 complete cases: afterlife2
+PASS, malformed/null command control1 PASS, publication before-write/known-after-
+commit/foreign-clock controls3 PASS; sourceguard1 FAIL,7remainingUNRUN. No timeout,
+wall55.9385199s; category10.1510467/60 and29.642078/60. No causal clock GREEN,
+complete14 or full course is claimed. Primary TRX/IDs/selection/closing proof is
+P3GREENC14FIX1-controls14/verified-partial-outcome.json.
+
+The source guard first correctly rejects original drift, then deleting the signed
+selected original triggers IOException after a nested gm-main-owner.lock acquire.
+PendingTurnSnapshotReader.cs388 uses an unleased public sync read despite its
+explicit held lease; a missing file takes the public quiescence fallback and
+tries to acquire the same main ownership again. This is an actual negative-path
+reader defect, not clock arithmetic, fixture setup, policy refusal or harness
+timeout. Independent Astra DESIGN accepts consistent existing held-lease reads
+through the default core/context/callback, preserving all validation/ordering and
+sourceSession branches. Existing fresh-authority boundary is required so those
+explicit reads cannot substitute provisional SourceDataOperation DATA.
+
+All five native captures, including the failing case, are complete and verified
+by the accepted linear readback:1107806 timing events,60336700 stored bytes,
+557106669 decoded bytes, all original message/sequence/PID/tick pairs and every
+aggregate, EOF/CRC/hashes/footer, actual assemblies, closing and root absence.
+The primary test error is separate from diagnostic completeness. All raw and
+prior failures stay external. Next bounded default-reader lease/freshness fix,
+cheap explicit-no-ambient/primed-source/default-vs-observed controls, SOURCE,
+fresh affected builds/plan/PREP and causal sourceguard GREEN. Shared reader impact
+justifies revisiting affected prior6 PASS; no broad69/perf/HOLD retry is admitted.
+No clock-source guard will be weakened to hide missing original evidence.
+
 # C14 original preparation corrected — Integration rebuilt;14 runtime UNRUN
 
 Independent Astra/high SOURCE accepts cfbae21aacbbe8a42098b2f43f7e3c9e403be614:
