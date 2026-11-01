@@ -65,6 +65,56 @@ public sealed class WoundMaterializationSourceGuardTests
     private static readonly InventoryEntry[] Inventory =
     {
         new(
+            "mortal-guided-menu-and-staging",
+            InventoryCategory.PlayerReadOnlyProjection,
+            "BookOfEternityClient/Services/WoundApplicationService.MortalTreatmentMenu.cs",
+            "AddPhysicalTreatmentChoices(", "DescribeCurrentWindow(", "StageMortalTreatmentInputAsync(", "CreateExactGuardWrite"),
+        new(
+            "mortal-guided-input-closed-purpose",
+            InventoryCategory.AcceptedMechanicsIntegrationSeam,
+            "BookOfEternityClient/Services/MortalWoundGuidedTreatmentInputCodec.cs",
+            "mortal_guided_treatment_input", "CreateGmContext(", "RequireRequestMatches(", "RequireMatches("),
+        new(
+            "mortal-guided-original-and-retention",
+            InventoryCategory.AcceptedMechanicsIntegrationSeam,
+            "BookOfEternityClient/Services/MortalWoundTreatmentAcceptedStateAuthority.GuidedRetention.cs",
+            "RequireUnheldGuidedPendingImage(", "RetainGuidedTreatmentRequestAsync(", "guidedTreatmentRequest", "RegisterHeldMortalDiagnosis"),
+        new(
+            "mortal-guided-actual-mode-entry",
+            InventoryCategory.AcceptedMechanicsIntegrationSeam,
+            "BookOfEternityClient/Services/WoundApplicationService.MortalTreatment.cs",
+            "ResolveMortalTreatmentInputAsync(", "requireRetained", "PrepareProcedureRequest", "PrepareCourseMilestoneRequest", "PrepareGuaranteedRequest"),
+        new(
+            "mortal-guided-engine-actual-scene",
+            InventoryCategory.AcceptedMechanicsIntegrationSeam,
+            "BookOfEternityClient/Core/GameEngine/GameEngine.MortalGuidedTreatment.cs",
+            "PrepareOrdinaryMortalGuidedTreatmentAsync(", "require", "ReadOrdinaryTreatmentRoot", "ComposeMortalWoundTreatmentPublication"),
+        new(
+            "mortal-guided-dynamic-input-role",
+            InventoryCategory.AcceptedMechanicsIntegrationSeam,
+            "BookOfEternityClient/Services/Validation/ValidationService.MortalGuidedTreatment.cs",
+            "ReadRetainedMortalGuidedTreatmentAsync(", "HasCurrentGuidedTreatmentPreparedCommandRole", "InvalidateValidated"),
+        new(
+            "mortal-guided-frozen-result-data",
+            InventoryCategory.AcceptedMechanicsIntegrationSeam,
+            "BookOfEternityClient/Services/MortalWoundTreatmentPersistedResult.Guided.cs",
+            "CreateGuided(", "ReconstructGuidedPublication(", "originalScheduleBase64", "ComputeTransitionResultFingerprint"),
+        new(
+            "mortal-guided-current-settlement",
+            InventoryCategory.AcceptedMechanicsIntegrationSeam,
+            "BookOfEternityClient/Services/MortalWoundTreatmentCompletion.Guided.cs",
+            "RequirePublishedAsync(", "MatchesAcceptedBinding", "ReconstructFinalWound", "signedOriginalScheduleHash"),
+        new(
+            "mortal-guided-final-root-data",
+            InventoryCategory.AcceptedMechanicsIntegrationSeam,
+            "BookOfEternityClient/Services/MortalWoundTreatmentCompletion.Wounds.cs",
+            "BuildFinalWoundCore", "WoundEffectOperationEventRef.Create", "WoundEffectMaterializationFingerprint.Compute"),
+        new(
+            "mortal-guided-ordinary-schedule-completion",
+            InventoryCategory.AcceptedMechanicsIntegrationSeam,
+            "BookOfEternityClient/Services/ProgressionScheduleService.MortalTreatmentCompletion.cs",
+            "RequirePublishedMortalTreatmentOutcome(", "ApplyMortalOutcomeFromInputs", "SanitizeFrozenSchedule", "reportRequired"),
+        new(
             "spiritual-safe-healing-graph-request-label",
             InventoryCategory.AcceptedMechanicsIntegrationSeam,
             "BookOfEternityClient/Services/AfterlifeWoundHealingPlanner.cs",

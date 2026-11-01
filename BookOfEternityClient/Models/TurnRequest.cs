@@ -50,6 +50,10 @@ public class TurnRequest
     public JsonObject? MortalDiagnosis { get; set; }
 
     /// <summary>Client-owned projection of the confirmed physical route and exact held-request channel.</summary>
+    /// <summary>
+    /// Carries the client-owned guided physical selection hint; only the actual
+    /// staged original and existing accepted owner may issue an attempt.
+    /// </summary>
     [JsonPropertyName("mortalTreatment")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public JsonObject? MortalTreatment { get; set; }

@@ -2,6 +2,230 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "mortal-physical-guided-hold-faults",
+  "responsibility": "T121-PHYSICAL-GUIDED two independent actual hold publication faults: before durable member publication proves unchanged source and releases only provisional claims; committed readback failure preserves the full hold and reconstructs exact real claims under a fresh owner. Missing retained-only admission and repeated retry stay inert. UNCOMPILED/UNRUN.",
+  "excludes": "No fabricated pending DTO/authority, publication result, new fault framework or broad repair/cold/DFR run.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.PhysicalGuidedHoldFaults.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.GuidedPhysicalHoldFaultSettlesOnlyProvenAbsenceOrRecoversExactDurableClaims"
+      ]
+    }
+  ]
+},
+{
+  "id": "mortal-physical-guided-cold",
+  "responsibility": "T121-PHYSICAL-GUIDED three independent real native-host fresh-process/new-root held request reconstructions, with byte-exact task-owned canonical/original/held files and original generation metadata. Actual new MainAdmission/lease, no preallocated claims, exact serialized procedure/course/guaranteed mode request and unchanged canonical bytes. Existing public native host entry/child guard reused. UNCOMPILED/UNRUN.",
+  "excludes": "No user save, arbitrary generation re-sign/rewrite, old reflective Engine helper, final publication, synthetic repair wave or general save/DFR qualification.",
+  "changeHints": [
+    "BookOfEternityClient.TestSupport/NativeHostScenarioDriver.cs",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.PhysicalGuidedCold.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuidedPhysicalHeldRequestReconstructsInActualFreshProcessAndNewRoot"
+      ]
+    }
+  ]
+},
+{
+  "id": "mortal-physical-guided-menu-data",
+  "responsibility": "T121-PHYSICAL-GUIDED affected spiritual menu peer: two independent Chaos/Shining current filesystem reads prove retained effect/skill catalog and exact menu choice equivalence to the fresh existing reader, one actual NPC source read in the retained operation, inert bytes, next-open skill mutation and invalid UTF8 refusal. DATA lifetime is one operation; no speedup claim. UNCOMPILED/UNRUN.",
+  "excludes": "No accepted source/draw/grant/cycle, shared mutable fixture, live publication, broad spiritual aggregate, new cache or counter framework.",
+  "changeHints": [
+    "BookOfEternityClient/Services/WoundPlayerReadService.cs",
+    "BookOfEternityClient.IntegrationTests/WoundMenuDataReadTests.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.WoundMenuDataReadTests.RetainedMenuEffectAndSkillDataMatchesFreshReaderAndNextOpenIsFresh"
+      ]
+    }
+  ]
+},
+{
+  "id": "mortal-physical-guided-documentation",
+  "responsibility": "T121-PHYSICAL-GUIDED synchronized current client-guided three-mode GM surfaces, both daemon assignments, strictly parsed read-only worked selections and exact worked-family manifest entry. Examples confer no authority. UNCOMPILED/UNRUN.",
+  "excludes": "No live accepted authority/publication, complete documentation matrix or invented check/duration/price.",
+  "changeHints": [
+    "BookOfEternityClient.Tests/PhysicalGuidedDocumentationTests.cs",
+    "Examples/E_CLI_Wound_Materialization.txt",
+    "Examples/example_validation_manifest.json",
+    "TaskGuides/CLI_Step_Main.txt",
+    "OtherGuides/Wound_Materialization_Contract.md",
+    "BookOfEternityClient/game_master_daemon.ps1"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.PhysicalGuidedDocumentationTests.WorkedSelectionsAndGmSurfacesKeepAllThreeModeOwnersAndSeparateCourseAttempts"
+      ]
+    },
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.ExampleDocumentationValidationTests.CompleteEffectMaterializationManifest_CoversEveryRequiredWorkedFamily"
+      ]
+    }
+  ]
+},
+{
+  "id": "mortal-physical-guided-console",
+  "responsibility": "Real complete initial Mortal Engine world before sole bootstrap/original; actual signed dice/mode and retained request, source recheck, actual GM narrative and NPC journal, common settlement, exact declared item count/identity vector, replay and cleanup with existing full passive capture. Two independent console procedure/guaranteed journeys. UNCOMPILED/UNRUN.",
+  "excludes": "No browser terminal claim, course auto-wait, forced dice, post-accepted fixture edit or broad diagnosis replay.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/ExplorerWoundSelfTreatmentTests.MortalTreatment.cs",
+    "BookOfEternityClient.IntegrationTests/ExplorerWoundSelfTreatmentTests.MortalTreatmentHelpers.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 3,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.ConsolePhysicalTreatmentUsesTheActualConfirmedModeAndSettlement"
+      ]
+    }
+  ]
+},
+{
+  "id": "mortal-physical-guided-browser",
+  "responsibility": "Real complete initial Mortal Engine world before sole bootstrap/original; actual signed dice/mode and retained request, source recheck, actual GM narrative and NPC journal, common settlement, exact declared item count/identity vector, replay and cleanup with existing full passive capture. Two independent actual browser queued/staged/accepted/classifier journeys exercise both strict physical completion consumers. UNCOMPILED/UNRUN.",
+  "excludes": "No component-only claim of browser acceptance, forged accepted receipt, forced dice or broad browser aggregate.",
+  "changeHints": [
+    "BookOfEternityClient/Core/GameEngine/GameEngine.BrowserPlayerInput.cs",
+    "BookOfEternityClient.IntegrationTests/ExplorerWoundSelfTreatmentTests.MortalTreatment.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 3,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.BrowserPhysicalTreatmentUsesTheActualConfirmedModeAndSettlement"
+      ]
+    }
+  ]
+},
+{
+  "id": "mortal-physical-guided-course-console",
+  "responsibility": "Real complete initial Mortal Engine world before sole bootstrap/original; actual signed dice/mode and retained request, source recheck, actual GM narrative and NPC journal, common settlement, exact declared item count/identity vector, replay and cleanup with existing full passive capture. One console complete three-milestone course journey; TooEarly is inert, actual ordinary accepted wait/timeChange/report and cleanup advance authored windows, then newly opened current menu and separate confirmation. One fixture, protective180s; cost not yet measured. UNCOMPILED/UNRUN.",
+  "excludes": "No manual post-accepted clock patch, automatic milestone confirmation, copied future original, invented duration or course arithmetic framework.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/ExplorerWoundSelfTreatmentTests.MortalTreatment.cs",
+    "BookOfEternityClient.IntegrationTests/ExplorerWoundSelfTreatmentTests.MortalTreatmentHelpers.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 3,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.ConsolePhysicalCourseSeparatelyConfirmsEveryMilestoneAfterAcceptedWaits"
+      ]
+    }
+  ]
+},
+{
+  "id": "mortal-physical-guided-course-browser",
+  "responsibility": "Real complete initial Mortal Engine world before sole bootstrap/original; actual signed dice/mode and retained request, source recheck, actual GM narrative and NPC journal, common settlement, exact declared item count/identity vector, replay and cleanup with existing full passive capture. One browser complete three-milestone course journey; TooEarly is inert, actual ordinary accepted wait/timeChange/report and cleanup advance authored windows, then newly opened current menu and separate confirmation. One fixture, protective180s; cost not yet measured. UNCOMPILED/UNRUN.",
+  "excludes": "No manual post-accepted clock patch, automatic milestone confirmation, copied future original, invented duration or course arithmetic framework.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/ExplorerWoundSelfTreatmentTests.MortalTreatment.cs",
+    "BookOfEternityClient.IntegrationTests/ExplorerWoundSelfTreatmentTests.MortalTreatmentHelpers.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 3,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.BrowserPhysicalCourseSeparatelyConfirmsEveryMilestoneAfterAcceptedWaits"
+      ]
+    }
+  ]
+},
+{
+  "id": "mortal-physical-guided-rollback",
+  "responsibility": "Real complete initial Mortal Engine world before sole bootstrap/original; actual signed dice/mode and retained request, source recheck, actual GM narrative and NPC journal, common settlement, exact declared item count/identity vector, replay and cleanup with existing full passive capture. Three independent actual publication cuts after input consumption, exact pre-publication held compensation and separate full original equality/turn refusal for procedure/course/guaranteed. UNCOMPILED/UNRUN.",
+  "excludes": "No weakened byte map, accepted-after-failure flag, arbitrary fake write hook, new rollback owner or broad rollback/DFR run.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/ExplorerWoundSelfTreatmentTests.MortalTreatment.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 3,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.PhysicalTreatmentPublicationCutRestoresHeldAndWholeOriginalImages"
+      ]
+    }
+  ]
+},
+{
   "id": "mortal-physical-guided-menu-causal",
   "responsibility": "T121-PHYSICAL-GUIDED accepted initial causal RED and candidate typed GREEN for three independent procedure/course/guaranteed menus: complete canonical source/known-route/current actor/context/requirement/capability/course-window premises, real Self/provider presence, whole-JSON inertness and passive source-read counts. Exact typed target/provider/route/mode/milestone choices replace the initial display-name symptom. Current provider-independent route applicability/window/History computations are reused only inside this immutable menu operation; next open is fresh. UNCOMPILED/UNRUN GREEN candidate; actual RED remains in canonical receipts.",
   "excludes": "No Engine, reflection factory, accepted-state or claim/receipt minting, GM response, final publication, cold recovery or full feature acceptance; menu choices do not bypass final current admission.",

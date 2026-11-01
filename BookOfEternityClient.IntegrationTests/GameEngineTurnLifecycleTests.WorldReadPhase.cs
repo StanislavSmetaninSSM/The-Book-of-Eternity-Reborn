@@ -540,6 +540,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         // Whole-file pins deliberately require review even for unrelated edits
         // in these shared files; they do not claim an exact method count.
         (string Path, string Hash)[] pins = [
+            // New direct retained-guided branch of the reviewed raw resource owner.
+            ("BookOfEternityClient/Services/Validation/ValidationService.MortalGuidedTreatment.cs", "7C152DDF5AF6FE47F1339CF20684EB7C4A1F9160201311102C68B862C1C44E06"),
             ("BookOfEternityClient/Services/MortalWoundTreatmentItemPublication.Proof.cs", "29E2C704558DC8316BA3F6D20B4BF3C4ACBF23B5FD33B8543406EC69A781CB98"),
             ("BookOfEternityClient/Services/MortalWoundTreatmentResourcePublicationTransaction.CompletedItemValidation.cs", "2623DC441C1233F233FF5CC4E883EF906FC75CFA981D1AB0BE9D4FEDDD993FE5"),
             ("BookOfEternityClient/Services/Validation/ValidationService.CompletedTreatmentItemValidation.cs", "3FF3E79A861E597BE1D0E746FC72E2973D7A2179973799065A8C895FDEB54BC1"),
@@ -601,7 +603,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             ("BookOfEternityClient/Services/Validation/ValidationService.PrivateImplementation.cs", "54222A4E3EDE3574E4A489C88F8C085A015408DDEE4C6F9531ECF87D0D5AF907"),
             ("BookOfEternityClient/Services/Validation/ValidationService.QuestsAndSoulState.cs", "D7AE9436B054878818C36759A60D1FFB44C9375EC6A58C88FAA73101BA67BB60"),
             ("BookOfEternityClient/Services/Validation/ValidationService.QuestsRivalsFactionsAndWorld.cs", "96042BF2E790C80932810689D5DC0EE2F13ED567C2BE47487EFFA05C6730C0A0"),
-            ("BookOfEternityClient/Services/Validation/ValidationService.ResourceMaterialization.cs", "08719E5C20B13B2AB2E13EDFF9471D05C1280B2CF90BC4A09D9336BC2D8A0A6D"),
+            ("BookOfEternityClient/Services/Validation/ValidationService.ResourceMaterialization.cs", "5820B1C3E61013705C0994F0B2581B491FB02F48577C17536866EEF964707FD6"),
             ("BookOfEternityClient/Services/Validation/ValidationService.RivalThreads.cs", "87DD3F1326CB0EBC5D4935DE145F15266FB30E0177064B8E36960C0A6A0A7576"),
             ("BookOfEternityClient/Services/Validation/ValidationService.SameTurnOwnerReadView.cs", "A8E0669C2BB1C692C2E9FA7481D78F2102267503BC31061974874DA9A4551971"),
             ("BookOfEternityClient/Services/Validation/ValidationService.ShiningAbode.cs", "ABA65E181F4A6F04BC92ABC14209D97989F107C732E070244350A6E4F3561E14"),

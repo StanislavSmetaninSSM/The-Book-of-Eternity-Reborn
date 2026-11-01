@@ -153,9 +153,13 @@ this bounded route, not parent T121/FR071/US5/#1536 or the eight proof adapters.
   enforces inclusive canonical-minute windows/ordinary interruptions; no auto-wait,
   invented time/cost or diagnosis-duration default. Cheap causal/refusal controls
   precede both-handler mode journeys and common compensation/original rollback.
-  This functional wiring is unimplemented; backend arithmetic/publication exists.
-  Follow existing spec/contracts; independent coherent design/source/selection/
-  outcome and GM synchronization precede acceptance. Other parents/HOLDs stay open.
+  Coherent end-to-end source and typed native/actual console/browser/course/rollback
+  fixtures plus GM guidance are now authored, still UNCOMPILED/UNRUN. Whole SOURCE,
+  fresh all-four builds/discovery/exact PREP and verified outcomes remain required.
+  Current finite proposed selection is source-estimated 40 cases / 22 methods /
+  20 descriptors / 19 categories; see the current plan for ownership, correlated
+  schedule proof, no supported guided wave producer, bounds and retained lineages.
+  No checkbox or feature acceptance follows from authored assertions. Other parents/HOLDs stay open.
   Causal prerequisite accepted separately: SOURCE/compiled Integration9b06fa9,
   runtime9b0256956; three actual intended final missing-choice failures/zero PASS,
   category6.6824986s/60. Complete premises, actual Self/provider menu, byte inertness,

@@ -7,6 +7,10 @@ namespace BookOfEternityClient.Services;
 
 internal static partial class WoundApplicationService
 {
+    /// <summary>
+    /// Holds the actual lease-bound existing owner and its exact retained request;
+    /// it is not deserializable admission or permission from detached DATA.
+    /// </summary>
     internal sealed record MortalTreatmentAdmission(MortalWoundTreatmentAcceptedStateAuthority Owner,
         MortalWoundTreatmentAttemptRequest Request);
 

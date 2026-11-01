@@ -2,13 +2,19 @@ using System.Text.Json.Nodes;
 
 namespace BookOfEternityClient.Services;
 
+/// <summary>
+/// Closed physical selection DATA; later original and current-owner checks must
+/// independently prove target, provider, mode and complete source requirements.
+/// </summary>
 internal sealed record MortalWoundGuidedTreatmentSelection(WoundOwnerCoordinate Target,
     WoundOwnerCoordinate Provider, string RouteId, string Mode, int? MilestoneOrdinal,
     string ExpectedRouteFingerprint, string ExpectedContextFingerprint);
 
 internal sealed partial record SpiritualSelfTreatmentSelection
 {
-    /// <summary>Reads the closed physical selection DATA; it grants no attempt or publication authority.</summary>
+    /// <summary>
+    /// Reads closed physical selection DATA without granting attempt or publication authority.
+    /// </summary>
     internal MortalWoundGuidedTreatmentSelection? MortalTreatment { get; init; }
 
     private JsonObject MortalTreatmentJson()

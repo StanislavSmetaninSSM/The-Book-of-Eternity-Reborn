@@ -2,12 +2,48 @@
 
 Issue #1536; canonical US2 scenarios2–5, US5 and FR060–064/067–074.
 Status: independent Astra/high DESIGN accepted with the four finite clarifications
-below; no physical code/test changes or runtime.
+below. Coherent physical source/typed native and actual UI fixtures/GM guidance are
+authored but UNCOMPILED/UNRUN; whole SOURCE and all runtime outcomes remain open.
 Mortal diagnosis qualification is accepted separately below. The player result is
 known target → physical wound → known route/provider → current requirements and
 costs → separate confirmation → one actual mode-specific attempt/result. Cover
 procedure, course milestone and guaranteed, using the existing resolver/publication
 owners, not another calculator or display-only treatment recommendation.
+
+## Current implementation and bounded completion proof
+
+The candidate now uses the existing private accepted/registry owner and a closed
+guidedTreatmentRequest member, never the ordinary submitted empty-wave shortcut.
+Immutable input is retained through common publication. Current browser settlement
+is a separate DATA leaf shared by live Finish and accepted-record reuse; it revives
+no owner. The actual continuation mints v2 frozen skill/item comparison inputs,
+source binding/path/minute and the small signed prepared schedule image. Its exact
+hash must match the independently authenticated original. Historical v1 remains
+unchanged and cannot provide current publication proof.
+
+Shared pure declared-operation/deterioration/preparation/finalization formulas
+reconstruct all existing modes. Final current root identities are joined to their
+independently derived apply event and exact durable source/target/materialization,
+then BuildFinalWoundCore assembles the complete wound. Random effect IDs are not
+resource-seeded. Exact owned resource/item consumption plus strict canonical current
+chains/owners/effects are the boundary; no original resource History blob or
+historical effect regeneration is needed. The full ordinary schedule comparison
+uses the authenticated original and unchanged correlated reducer branches; only
+its actual round-trip UTC capture timestamp is nondeterministic. No extra report,
+new treatment duration or candidate-baseline inference is introduced.
+
+Cold/new-root/process and failure fixtures use existing native host/owners. All
+UI course milestones follow actual ordinary accepted waits and cleanup, then new
+confirmation. The supported guided mode path produces no WoundRepairContext/draft,
+so it has no genuine WoundRepairPacket transfer producer; raw output repair retains
+the same hold. No invented wave or unused transfer API is supplied. Ordinary real
+submitted/wave rules and the direct typed no-wave refusal remain exact.
+
+Menu/effect/skill reuse belongs to one read operation with complete roots and the
+same lease. Provider-independent route/window work is hoisted; provider-specific
+requirements and all current admission/generation/final guards remain fresh.
+Authored finite selection/counter/GM/UI/source proof is still UNCOMPILED/UNRUN.
+See current plan for exact proposed cases/bounds and unchanged parent/HOLD limits.
 
 ## Approach and existing gap
 

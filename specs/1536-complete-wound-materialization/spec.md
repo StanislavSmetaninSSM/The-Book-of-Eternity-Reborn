@@ -1,3 +1,14 @@
+## Current T121 physical guided source candidate (not feature acceptance)
+
+The accepted existing three-mode guided route is now authored end to end with typed
+input/hold/mode/common/current-browser owners, real console/browser/course/rollback
+fixtures and synchronized GM surfaces. It remains UNCOMPILED/UNRUN pending whole
+independent SOURCE, fresh owning builds and exact finite qualification. The proposed
+selection is source-estimated 40 cases / 22 methods / 20 descriptors / 19 categories;
+actual discovery and results control acceptance. No new duration, fee, auto-wait,
+repair-wave shortcut or detached DATA authority is introduced. Parent/adapter/HOLD
+requirements and previous accepted source lineages remain explicit in the plan.
+
 # T121 current qualification boundary — Mortal diagnosis accepted
 
 The bounded guided Mortal diagnosis route is accepted on compiled source

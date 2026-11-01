@@ -1,3 +1,118 @@
+# T121 physical guided candidate — coherent source, UNCOMPILED/UNRUN
+
+Issue #1536 / US2 scenarios 2–5 / US5 / FR060–074. This is the full authored
+procedure/course-milestone/guaranteed execution candidate on top of saved UI WIP
+78a202ec48b0a35a66f2c5131e7a3e77c909027a. Independent DESIGN and the exact three
+initial missing-choice REDs remain accepted; no physical product build, discovery,
+GREEN, native/UI result or feature acceptance has occurred. All assertions below
+are source, not observed outcomes. Parent tasks and HOLDs remain open.
+
+The finite proposed selection is source-estimated 40 distinct cases / 22 methods /
+20 project descriptors / 19 categories. Official discovery/PlanOnly is authoritative.
+It includes typed input3, initial-menu3, hold3, actual publication3 + real Fate1,
+pre-member/committed-readback hold faults2, genuine new-root/fresh-process held
+reconstruction3, retained spiritual-menu/fresh reader/effect-skill equivalence2,
+GM/worked-selection/manifest2, actual console2/browser2, full separately confirmed
+course console1/browser1 and publication-cut rollback3. Directly changed peers
+are C21 diagnosis item2/resource1, spiritual diagnosis menu2, semantic guards3 and
+World source-closure1. The old 237-case accepted diagnosis lineage is not replayed
+or represented as current-head qualification. No old timeout/HOLD is hidden.
+
+Implementation ownership: immutable closed selection is staged before the real
+original, then the existing accepted-state/registry owner prepares and durably
+holds one exact request before GM. Existing mode reducers, full response envelope,
+common planner/publisher and settlement are reused. The ordinary submitted family
+still needs a genuine nonempty repair wave; the private guided hold is distinct.
+Both browser Finish and accepted-record classifier use the same fresh canonical
+settlement predicate. Its v2 copied witness preserves exact frozen skill/item
+inputs and the one small original prepared schedule image, authenticated against
+the independent original hash; v1 remains historical DATA with no implicit witness.
+All-mode finalization/intents/preparation use shared pure calculators, not a new
+live owner. Random effect allocations are recovered from exact durable create/
+source/target/carrier/materialization joins and assembled by BuildFinalWoundCore,
+not derived from resource identities or candidate after-wound. Ordinary canonical
+resource chains/current owners and exact owned consumption identities are checked;
+no full resource History blob or historical effect replay subsystem was added.
+
+Ordinary progression retains the actual original control and authenticated full
+prepared schedule, then derives correlated complete legal after-image candidates
+through unchanged sanitization/outcome reducers. It creates no report obligation,
+duration or independent per-counter allowance. Newly elapsed work stays in the
+ordinary clock/markers until its existing next-turn control. Only lastUpdatedUtc
+is nondeterministic capture DATA: its existing exact round-trip UTC policy is
+checked; every other schedule field is compared. No gameplay field is exempted.
+
+Fixture preparation: complete successful Mortal template/companion preparation is
+reused before one bootstrap/original; the diagnosis default callback body remains
+unchanged. Physical recovery uses current initial anchor coordinates and its
+existing authored long cadence. Course windows/doses remain authored values;
+actual ordinary accepted waits/timeChange/report/cleanup precede a fresh menu and
+separate confirmation at every milestone. No post-accepted file patch, forced
+Engine die, copied future original or synthetic receipt is used. Cold copies only
+the task-owned durable session and exact generation metadata into a different
+root and invokes the existing public native child-host boundary; fresh Main/lease
+and retained-only recovery must establish real authority. It is not user-save/
+archive-format or general DFR qualification. All nine UI bodies reuse full passive
+gzip capture/closing with no quotas; actual costs and cleanup remain UNPROVED.
+
+Transfer reachability is deliberately bounded. PrepareOrdinaryMortalGuidedTreatmentAsync
+accepts only the private retained request and existing mode outcome, not GM wound
+candidates; its refusal/publication issues have no WoundRepairContext. The guided
+raw intake contributes no construct-wound draft. WoundRepairPacketBuilder.Build
+requires a real repair context, so this supported guided branch has no genuine
+WoundRepairPacket producer to transfer. Ordinary raw output repair retains its
+hold. StateDistributor's ordinary command writer is not repurposed to replace the
+signed selection. No unused guided transfer API, fabricated packet or transfer PASS
+claim was added. Direct typed no-wave proof and original ordinary wave validation
+remain; unrelated acquisition/joint repair families keep their owners and limits.
+
+Optimization assessment: menu owner already parsed the same three skill/NPC roots;
+retained effect/skill DATA now reuses those values under the same lease and ends
+with that read operation. Pure route band/guarantee simulation and course History/
+window reconstruction run once per wound/route outside the provider loop; provider
+requirements/capability remain fresh. Confirm, staging, original admission, next
+open/turn and final current reads remain mandatory. Current completion reads each
+closed dependency once and reuses its validated effect catalog/index for root
+allocation comparison. Small pure strict parser/recomposition checks remain to
+validate distinct untrusted input graphs; no static or parallel cache was added.
+The authored counters/equivalence/failure controls are UNRUN. No speedup is claimed.
+
+GM synchronization: mortal_guided_treatment_execution_v1 now appears in API/main
+prompt/ordinary and afterlife cross-reference guides, CLI/Guardian rules, BOTH daemon
+assignments, a worked read-only three-selection example and validation manifest.
+GM reads actual retained mode/check/Fate/cost and writes ordinary scene/reasoning/
+participant journals/required report/ready. It never authors the selection/hold/
+receipt/canonical cost or an empty repair wave. No new game rule or economy exists.
+Source inventory now owns the new leaves. World closure pin proposal is exactly
+ResourceMaterialization's reviewed guided callback delta plus its new direct
+ValidationService.MortalGuidedTreatment dependency; all other pins stay unchanged.
+Static JSON/selector uniqueness, XML, exact 70 pin equality and diff checks only
+are recorded below by the author; these are not test/discovery results.
+
+Actual author static checks for this frozen source candidate: categories/selection/
+example manifest JSON parse; category IDs and selected method identities are unique;
+all selected explicit methods resolve to one source declaration. InlineData/Fact
+source accounting is 40 cases / 22 methods / 20 project descriptors / 19 categories,
+not official discovery. Guardian XML parses, the single worked JSON array contains
+three selections, all six GM surfaces and both daemon assignments contain the
+required contract terms. All ten new source-inventory paths/anchors resolve.
+All 70 normalized World source pins equal their actual source bytes. The only old
+literal changed is ResourceMaterialization, from
+08719E5C20B13B2AB2E13EDFF9471D05C1280B2CF90BC4A09D9336BC2D8A0A6D to
+5820B1C3E61013705C0994F0B2581B491FB02F48577C17536866EEF964707FD6;
+the added MortalGuidedTreatment dependency is
+7C152DDF5AF6FE47F1339CF20684EB7C4A1F9160201311102C68B862C1C44E06.
+These two explicit source/pin deltas still require independent review. Diff
+whitespace checks pass. No C# compiler, test, catalog discovery or runtime ran.
+
+Next: root publishes this WIP and verifies remote; one independent whole SOURCE
+must inspect complete production/fixture/GM/selection and pin deltas. Root then
+owns fresh all-four builds/provenance/catalog/PlanOnly/exact PREP, finite controls
+before original UI and independently verified outcomes. No task flags, parent
+T121/T093/FR071/US3/#1536, eight adapters, Mortal compatibility, DFR/Windows or
+final broad qualification are closed here. Raw, old failures/timeouts, saves,
+owned retained roots, archives and prior accepted evidence remain untouched.
+
 # T121 physical console/browser/course/rollback fixtures — WIP UNCOMPILED/UNRUN
 
 Continues saved publication-fixturef30a443159866a925ca00d5d1d8635fa93d6257a.

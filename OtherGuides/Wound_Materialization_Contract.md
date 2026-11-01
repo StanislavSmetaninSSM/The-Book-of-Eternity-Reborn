@@ -2433,8 +2433,8 @@ mortal_procedure_diagnosis/schema1: resolution, two ordered binary outcome bands
 durationMinutes and resourcePolicy are explicitly authored per method. There is
 no default check, duration or tariff and no legacy empty current physical check.
 The empty spiritual check remains exact and separate; never transplant this check
-or a Mortal procedure into spiritual diagnosis. Other physical treatment remains
-advisory unless its own actual guided owner is available.
+or a Mortal procedure into spiritual diagnosis. Known physical procedure/course/guaranteed routes use the separate
+mortal_guided_treatment_execution_v1 owner; unimplemented routes remain advisory.
 
 The player's /лечить flow reads known reachable methods and their declared check,
 duration and conditional expense, then asks separate confirmation. Read/cancel
@@ -2475,3 +2475,60 @@ time again. Current canonical numeric cumulative time takes presentation precede
 Игровое время: 780 мин. Preserved calendar text is not guessed forward, reduced
 modulo a day or rewritten by GM.
 Read Examples/E_CLI_Wound_Materialization.txt worked mortal_diagnosis_execution_v1.
+
+
+mortal_guided_treatment_execution_v1 — existing three-mode physical treatment.
+
+The Mortal /лечить flow now executes a CURRENT known reachable physical route:
+procedure, course milestone or guaranteed. It displays the exact target/provider,
+current requirements, selected milestone dose/window and conditional resource
+policy before separate confirmation. Read/cancel is inert. The client stages
+mortal_guided_treatment_input/schema1 and turn_request.mortalTreatment reference
+DATA before the genuine original. The signed selection is immutable; it is not a
+request, die, receipt or permission to publish. Spiritual and diagnosis purposes
+remain distinct; no spiritual empty-check, duration or fee fallback applies.
+
+After the actual final original, the existing accepted-world owner prepares the
+selected mode once, then durably retains its complete exact guidedTreatmentRequest
+in pending_wound_resolutions BEFORE GM. Procedure uses the actual accepted d20
+span and ordinary natural20/natural1/Fate semantics. Course uses the current
+canonical-minute window and next ordinal reconstructed from complete History.
+TooEarly is not an attempt; active-course trusted Unsatisfied or a missed deadline
+uses the declared interruption, while InvalidAuthority fails closed. Guaranteed
+requires the exact current declared capability and outcome limits. There is no
+new default price, procedure duration or automatic wait. Each course milestone
+requires a NEW confirmation after an ordinary accepted wait/action and cleanup.
+
+GM reads the actual client-owned mode/held request and supplies the genuine scene,
+ordinary narrative_response, interface_updates, debug_logs and ready last, plus
+only genuinely required ordinary DATA. Use the ACTUAL original progressionControl
+for progressionProcessingReport obligations; never add a report merely for elapsed
+time. Participating NPCs require truthful Scope/Brain and append-only first-person
+npc_journals; this does not authorize npc_core metadata or relationship changes.
+Do not write wound_commands, pending_wound_resolutions, canonical wound/resource/
+item/effect/identity/History, a client receipt or a new die to implement the result.
+Do not charge a material again in NPCInventoryUpdates: the client owns exact cost.
+Ordinary supported skill/item/effect response envelopes keep their existing closed
+validators. Empty or unsupported fields are not an alternate grant of authority.
+
+The post-GM owner recovers ONLY the same held request, runs its existing mode
+reducer, binds the actual scene/envelope and publishes through ONE common owner.
+The private guided hold is NOT submittedTreatmentRequests: the ordinary submitted
+family still requires a genuine nonempty repair wave. Do not fabricate a wave or
+replace the immutable selection with an ordinary accepted-transition command.
+Ordinary raw output repair retains the same hold; no new guided transfer API or
+wave producer is introduced. Any real supported ordinary wave keeps its original
+complete-request/receipt/binding contract and cannot delete the sole durable copy.
+
+Client-owned treat History retains a closed guided publication v2 witness: the
+actual frozen comparison inputs and small authenticated original prepared schedule,
+not a live reservation or permission. Historical/component v1 receipts remain
+readable but never become current guided publication proof. Both immediate browser
+completion and accepted-record reuse require independently authenticated original
+selection/control/token/generation plus complete fresh current wound/effect/item/
+resource/History/schedule settlement and exact once-only consumption. No closed
+owner is resurrected. Consumed work must remain absent; replay never draws/spends
+again. C4 restores exact held images/claims; outer rollback separately restores
+original absence/bytes, with the existing strict schedule role transition.
+
+Read Examples/E_CLI_Wound_Materialization.txt worked mortal_guided_treatment_execution_v1.
