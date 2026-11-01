@@ -1,3 +1,30 @@
+# Canonical causal16 GREEN — primary evidence verified, OUTCOME pending
+
+Runtime f79ca2ed05d263e0f5af95c7a9b75dc19249d33e / Unit+Main+Support source
+c576861ea767643be7c01097fa888ac8705f6c52, Integration f79: all 16 cases PASS,
+eight actual source kinds in both realms. Availability and subsequent closed proof,
+real request and required-natural program assertions all complete. One descriptor,
+16/16 selected/executed, no timeout/skip/underfill, category 6.9133048/60 seconds,
+wall 16.0563082 seconds, runner/summary exit0 and managed/runtime cleanup true.
+TRX SHA b9e50d764a89978dfc445935a58aa00121cd5d6bcc71d90388e6139519ebf5dc.
+Closing fence keeps all 27 pins, 44 resource copies and four daemon copies stable,
+no live managed owner; free 785108992 bytes above unchanged start reserve.
+Independent OUTCOME pending. This is DATA/admission, not signed feature acceptance.
+
+All four PE/PDB pairs and 426 source bindings pass. Main/Support/Unit retain their
+fresh c576 outputs; Integration-only f79 lint rebuild exits0 with exact baseline
+102 unique /204 logged warnings. Catalogue discovery valid:1309 categories,
+13133 methods,0 unmapped/stale,0 executions. Exact PlanOnly has141 cases across12
+descriptors/11 finite categories,0 executions. No broad or old successful test rerun.
+
+Before runtime, a minimal actual .NET8 probe confirms a test-only BOM defect in
+PendingTurnSnapshotReaderTests.DiagnosisObservation.cs: raw JsonNode.Parse(byte[])
+rejects 0xEF, while the fixture writer emits a BOM. Observation3 remains UNRUN/held;
+the existing canonical decoder correction is not yet applied. Next accept causal16
+OUTCOME and prepare the independent119 cheap controls; then group fixture fixes and
+one fresh Unit build, preserving accepted results without needless repetition.
+Native2/console rollback1 still UNRUN pending their dependent cheap gates/PREP.
+
 # Canonical four-project build — zero errors, one Integration lint correction pending
 
 All four managed projects build from c576861ea767643be7c01097fa888ac8705f6c52
