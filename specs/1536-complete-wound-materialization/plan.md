@@ -1,3 +1,27 @@
+# T121 terminal dispatch candidate — compiled; terminal4 PREP pending
+
+2026-11-01: independent Astra/high SOURCE accepts the five-file delta compiled at
+ad9709dfacaa035f69bdc4d1cdd7ab092747f9d0. Fresh Main/Support/Integration/Unit
+builds all exit 0 in 97.075 / 12.495 / 99.340 / 52.761 seconds; warning multisets
+remain baseline 12 / 23 / 102 / 26. Actual four PE/PDB pairs, 410 source bindings,
+27 owning artifacts, 10 resources with 40 copies and four daemon copies match.
+The 63,410,701-byte external artifact archive fully decodes through EOF/CRC and
+all 27 member hashes agree; SHA256
+df703e4941dd0a82229680f853630b26940370a91b61ce023b136ef54ede230c.
+
+Fresh exact PlanOnly selects only the four terminal causal rows / one method /
+one descriptor in the existing 120-second category, zero execution. The prior
+full catalog remains applicable: no method, attribute, category or selector delta.
+P3GREENC2 helper hash/diff proof changes only explicit phase/build mapping, with
+all existing integrity, process and space fences retained. RAW remains fully
+external under /workspace/tboe-linux-evidence-20261025/us5-guided-diagnosis.
+
+The next step is independent PREP and one terminal4 run with a new immediate
+fence. No GREEN or causal preparation result exists for this source yet. The
+separate removal exception, terminal/current3/UI9 acceptance, broader regression
+and all earlier HOLDs remain open. No clean restore or broader feature closure
+is claimed; the author's no-new-clone instruction remains in force.
+
 # T121 terminal dispatch and legacy prerequisite — UNCOMPILED/UNRUN
 
 Bounded correction on 11d6555d21545a459685fbdda257e1a44ae9f467; no writer build,
