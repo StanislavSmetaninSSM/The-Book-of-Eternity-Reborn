@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-01
 
-**Status**: Part 1 review corrections proposed — revision 1 awaiting user specification approval
+**Status**: Part 1 review correction revision 1 approved by the user on 2026-11-01; implementation in progress
 
 **Input**: User description: "[Harness/RLM] Enforce complete Mortal skill and mastery materialization — one canonical skill schema with active/passive profiles, validated constructors and deltas, fail-closed handling of duplicate, Unicode/case-confusable, stale, cross-owner, and orphaned skill references, governed companions, and bounded repair packets."
 
@@ -123,4 +123,4 @@ As the local validation-repair harness, I want every skill reference identity er
 
 Предлагается восстановить уже заявленные гарантии части 1 и добавить проверки воспроизведённых случаев. Изменение общих правил идентичности для всех потребителей и откат разбиения большого файла не требуются: первое расширяет область воздействия, второе не устраняет зависимость проверок от размещения методов. Детали реализации остаются за исполнителем в рамках этих контрактов.
 
-Открытых продуктовых вопросов нет. Эта редакция ещё не одобрена пользователем. До одобрения выполняется только подготовка спецификации; затем обновляются `plan.md` и `tasks.md`, проводится анализ согласованности, RED/GREEN и независимое ревью. Слияние PR не входит в запрос на исправления.
+Открытых продуктовых вопросов нет. Пользователь одобрил редакцию 1 ответом «Одобряю, выполняй исправления» 2026-11-01. Далее обновляются `plan.md` и `tasks.md`, проводится анализ согласованности, RED/GREEN и независимое ревью. Слияние PR не входит в запрос на исправления.

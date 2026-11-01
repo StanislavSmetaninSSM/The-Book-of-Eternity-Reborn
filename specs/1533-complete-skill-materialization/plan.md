@@ -1,107 +1,47 @@
-# Implementation Plan: Complete Mortal Skill and Mastery Materialization
+# Implementation Plan: #1533 / PR #1579 review corrections
 
-**Branch**: `1533-complete-skill-materialization` | **Date**: 2026-11-01 | **Spec**: [spec.md](spec.md)
-**Input**: Feature specification from `/specs/1533-complete-skill-materialization/spec.md`
+**Branch**: `1533-complete-skill-materialization` | **Date**: 2026-11-01
+**Issue**: https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1533
+**Spec**: [spec.md](spec.md), correction revision 1 approved by user on 2026-11-01.
 
-## Summary
+## Scope and engineering method
 
-### Current checkpoint — 2026-11-01, PR #1579 review corrections (WIP)
+Correct the five findings against `673c531710ec3acf5132369f42a43f1a7ce8c13c` without extending part 1. One primary developer owns identity validation, repair, tests and integration; a bounded independent implementation task updates source-file guards. A separate Astra High reviewer examines the complete final diff, contracts and test selection. Use Superpowers writing-plans / executing-plans, systematic debugging, TDD, independent review and verification. This file and tasks.md are the canonical execution ledger.
 
-- Source issue: #1533; branch: `1533-complete-skill-materialization`; reviewed implementation: `673c531710ec3acf5132369f42a43f1a7ce8c13c`.
-- The user requested fixes for all five confirmed review findings. The specification now includes correction revision 1 and awaits explicit user approval under the user's AGENTS.md workflow. No production or test sources have been changed for this correction block.
-- Existing design text below describes the reviewed implementation, not an approved correction plan. After approval, update this plan and `tasks.md` through Spec Kit phases and run consistency analysis before implementation.
-- Review evidence on Windows: both test projects built with XML documentation enabled; `MortalSkillReferenceAuthorityTests` passed 19/19; the new skill repair integration test passed 1/1. `validation-pipeline` stopped after 61 executed cases (56 passed, 5 failed); 228 were planned and the category was incomplete. All five failing source guards passed against base-commit source files using unchanged test binaries/test sources. Owned-tree cleanup succeeded.
-- The five findings are: Unicode double-reporting routes identity repairs to a training packet; case-insensitive input sets lose canonical ambiguity and exact coverage; repair corrections collapse by section path; partial-file relocation breaks source guards; new tests lack category ownership and current selection.
-- No implementation verification or independent correction review has run yet. Next action: obtain user approval of `spec.md` correction revision 1, then plan the fixes and execute regression tests before code changes.
+## Technical context and constitution check
 
-Part 1 closes the identity gap between the strict skill composition layer and the case-insensitive mastery validation layer. One new internal authority class, `MortalSkillReferenceAuthority`, indexes canonical skill names by exact (ordinal) name and by the shared confusable key (`MortalLocationIdentityState.BuildConfusableKey`). An additive validation layer classifies every mastery-surface skill reference through that authority and fails closed on confusable-only references with three new issue codes, while the legacy validators keep their unknown/missing codes as backstops. A bounded `mortal_skill_reference_identity_repair` harness packet teaches the GM the rename-only fix.
+C# / .NET 8 target, current SDK compiler, xUnit, file-backed JSON. Existing Spec Kit scaffolding and issue #1533 reused. No schema migration, player UI or actor identity change. Keep shared parser defaults, actor dictionaries, same-turn retained reads, pre-turn detection and progression fields. Only the identity layer requests ordinal skill-name sets. The unknown/missing backstops remain; remove only a precisely matching legacy issue when a confusable classification replaces it. Independent invalid fields and other references remain errors. All verification uses impact-selected categories; no full-suite or aggregate run.
 
-## Technical Context
+## Design and interfaces
 
-**Language/Version**: C# / .NET 8
-**Primary Dependencies**: `System.Text.Json`; existing `MortalLocationIdentityState.BuildConfusableKey` normalization
-**Storage**: JSON canonical state files under `game_state/`
-**Testing**: xUnit (`BookOfEternityClient.Tests`, `BookOfEternityClient.IntegrationTests`); temp-root `FileSystemManager` + `ValidationService` harness
-**Target Platform**: Windows/Linux console client
-**Project Type**: single console client + test projects
-**Constraints**: fail closed; never silently retarget; repair hints in Russian; issue codes snake_case; no save migration (Pre-Alpha)
-**Scale/Scope**: 1 new authority class, 1 additive validation layer (3 checks), 3 new issue codes, 1 new repair packet kind, unit + integration tests
+1. Add optional `StringComparer? skillNameComparer = null` to the four name parsers and current-player-name reader in ValidationService.AcceptedTurnAndInkFeathers.cs. Default remains OrdinalIgnoreCase, including all existing consumers; exact identity calls pass Ordinal. Document all changed signatures. Actor dictionaries retain OrdinalIgnoreCase.
+2. In ValidationService.SkillReferenceIdentity.cs preserve exact canonical names and indexed mastery references. Keep pre-turn/new-skill comparison case-insensitive. Classify confusable coverage against canonical skill sets before proposing a target; ambiguous matches have no literal target. Replace only the same-path unknown issue, or same actor/section/skill missing-initialization issue. Initialization issues point at the real mastery entry's `.skillName`, expected is the canonical name (or explicitly unresolved on ambiguity), actual is the actual reference. Exact coverage wins regardless of entry order.
+3. In GameEngine.SkillReferenceIdentityRepair.cs preserve distinct correction coordinates, include repair hints and avoid treating descriptive ambiguity text as a literal name. In ambiguous cases the GM must stop rather than guess. Mixed truly unknown references continue through their original packet. Retain progression and actor fields.
+4. Update source guards to read the complete ordered ValidationAndRepair partial family for methods moved by the original PR. Do not concatenate unrelated partials into a method body or weaken assertions. Guard families and any integration source-inspection cases are included in verification.
+5. Register all new tests in a focused mortal-skill-reference-identity category. Add a bounded moved-source-guards category for the affected tests instead of running unrelated domains. Update tests/selection.json with reasons for identity, validation-pipeline and source guards. Run discovery audit and inspect exact category plans.
+6. Rules/Block_7.txt already requires exact names. Add a bounded GM worked example for the repaired contract, including multi-NPC corrections and ambiguity refusal, register it in the example manifest if it has an executable fixture, and add a documentation coverage assertion. No afterlife contract change.
 
-## Constitution Check
+## TDD steps and expected observations
 
-- Test-first: RED tests for all three new codes and the authority classification precede implementation; initial run fails, wiring turns them green.
-- Fail closed: confusable references are rejected, never silently bound.
-- No dead controls / no doc drift: new codes route to a repair packet; rules already require exact `skillName` strings (Block_7 rule 7.7), so no GM-prompt contract change is needed in this part.
+- T011: Add phase-level tests in MortalSkillReferenceAuthorityTests.cs for Unicode versus unknown mixed payloads, canonical ambiguity/exact names, and player/NPC active/passive coverage order. Add repair tests for actual validator output, repeated actor/skill coordinates and ambiguity in GameEngineTurnLifecycleTests.SkillReferenceIdentity.cs. Before fixes: failures reproduce the review.
+- T012: Preserve ordinal names and suppress only precisely replaced legacy codes; rerun identity tests, expected all green.
+- T013: Correct packet coordinates/retention and ambiguity instructions; actual validator -> request tests green, including unrelated progression fields unchanged.
+- T014: Update all source guards for the partial split, retaining their assertions. Original five failures already RED at reviewed SHA; affected guards all green afterward.
+- T015: Register category owners and current selection, verify discovery and plans. No orphan new tests; all new scenarios selected.
+- T016: Synchronize contract/research/data-model/quickstart and add GM example/coverage. Inspect XML comments in the entire diff and build with GenerateDocumentationFile=true.
+- T017: Commit/push WIP before long tests and review. Run selected categories once after integration; inspect completion, failures, skips and owned cleanup. Independently review the coherent block and address validated findings, rerunning only affected checks.
+- T018: Update task evidence, push to PR, verify remote SHA and restore changed sources from GitHub into a new empty directory. Report results and limitations; do not merge.
 
-## Project Structure
+## Consistency analysis (Spec Kit analyze, pre-implementation)
 
-### Documentation (this feature)
+2026-11-01: correction criteria 1 -> T011/T012/T013; 2/3 -> T011/T012; 4 -> T011/T013; 5 -> T014; 6 -> T015; 7 -> T016/T017/T018. Preserved contracts map to parser-default regressions, indexed actor tests, progression assertions and source guards. No scope or contract changes from approved correction revision 1. Old claims of byte-identical legacy behavior/no Unicode double-reporting were disproved by review and are superseded here. No unresolved HIGH/CRITICAL planning inconsistency. Source-guard work can run independently of identity code; catalog edits remain with the parent.
 
-```text
-specs/1533-complete-skill-materialization/
-├── spec.md
-├── plan.md
-├── research.md
-├── data-model.md
-├── contracts/
-│   └── skill-reference-identity.md
-├── quickstart.md
-├── tasks.md
-└── checklists/
-    └── requirements.md
-```
+## Review focus
 
-### Source Code (repo root)
+Same-turn retained current reads; ordinal canonical ambiguity survives parsing; Unicode replacement cannot drop another issue; two NPCs or multiple skills never collapse by path; exact coverage is order-independent; ambiguous repair never offers a literal target; source guards still verify method-local ordering; selection includes all changed contracts. Later parts T101-T107 remain deferred.
 
-```text
-BookOfEternityClient/
-├── Services/
-│   ├── MortalSkillReferenceAuthority.cs            # NEW: exact/confusable/unknown classifier
-│   ├── MortalLocationIdentityState.cs              # REUSED: BuildConfusableKey
-│   └── Validation/
-│       ├── ValidationService.SkillReferenceIdentity.cs   # NEW: additive identity layer (3 checks)
-│       └── ValidationService.ValidationPhases.cs         # EDIT (8 KB): dispatch the new layer
-└── Core/GameEngine/
-    ├── GameEngine.SkillReferenceIdentityRepair.cs  # NEW: packet predicate + builder
-    ├── GameEngine.ValidationAndRepair.cs           # EDIT: 5-line dispatch into packet list
-    └── GameEngine.ValidationAndRepair.Part02..Part18.cs  # NOTE: pre-existing 480 KB partial split
-        # into per-member part files (transport limit of the file-push channel); byte-identical
-        # member sequence, no code change.
+## Checkpoint / evidence
 
-BookOfEternityClient.Tests/
-└── MortalSkillReferenceAuthorityTests.cs           # NEW: unit + phase-driven integration tests
-
-BookOfEternityClient.IntegrationTests/
-└── GameEngineTurnLifecycleTests.SkillReferenceIdentity.cs # NEW partial: repair packet test
-```
-
-The legacy validators (`ValidatePlayerSkillMasteryCore`,
-`ValidatePlayerActiveSkillMasteryInitializationAsync`,
-`ValidateNpcSkillMasteryInitializationAsync`) stay byte-identical: their
-case-insensitive matching remains as the backstop that still emits the legacy
-unknown/missing codes, while the additive layer emits only the new confusable
-codes. This keeps the diff out of the monolithic partial files and consolidates
-the whole identity contour in one file.
-
-## Phase 0: Research
-
-See [research.md](research.md). Key decisions: reuse `BuildConfusableKey` (single normalization authority, already used by the strict composition path); classification instead of bare boolean so repair hints can name the canonical target; ambiguity (multiple exact-distinct names per confusable key) fails closed without a named target; actor-keyed NPC dictionaries stay case-insensitive because actor identity is a separate contour.
-
-## Phase 1: Design & Contracts
-
-See [data-model.md](data-model.md), [contracts/skill-reference-identity.md](contracts/skill-reference-identity.md), [quickstart.md](quickstart.md).
-
-### Wiring design
-
-1. `ValidationService.SkillReferenceIdentity.cs` (new partial) implements `ValidateSkillReferenceIdentityAsync(phases, issues)` with three checks:
-   - Player mastery reference (under `PlayerStateFiles`): rebuilds the same known-active-skills set as `ValidatePlayerSkillMastery` (current + pre-turn − removals), classifies each `skillMasteryChanges[].skillName`, emits `skill_mastery_confusable_reference` only on Confusable. Exact passes silently; Unknown is left to the legacy `skill_mastery_unknown_active_skill` — no double reporting.
-   - Player initialization (under `SkillContractConsistency`): same pre/post diff as the legacy validator; emits `player_active_skill_mastery_initialization_confusable` only when a new skill is covered solely by a confusable mastery entry.
-   - NPC initialization (under `SkillContractConsistency`, active + passive sections): emits `npc_skill_mastery_initialization_confusable` per NPC actor under the same rule.
-2. `ValidationService.ValidationPhases.cs` gains one dispatch call for the new layer.
-3. `GameEngine.SkillReferenceIdentityRepair.cs` (new partial) hosts `IsMortalSkillReferenceIdentityRepairIssue` and `BuildMortalSkillReferenceIdentityRepairPacket`; `GameEngine.ValidationAndRepair.cs` gains a 5-line dispatch (collect + emit) into the harness packet list.
-
-### Explicitly unchanged
-
-- `ParsePlayerSkillNames` / `ParsePlayerSkillMasteryNames` / `ParseNpcSkillChangesByActor` / `ParseNpcSkillMasteryByActor` keep returning `OrdinalIgnoreCase` sets and all their existing consumers are untouched; the additive layer reuses them read-only.
-- NPC actor identity keys (`BuildNpcIdentityKey`) stay as-is.
-- Pre-turn/new-skill diffing semantics stay case-insensitive (rename detection is a later contour).
+- User approved the exact specification revision at commit `14014224584cab3ec3b3a10f6632ebbe607d91f8`. Remote SHA verified; clean GitHub restore matched spec SHA256 AAED1E1147C54738D2FC0053B4A38B0B41596390D99835A1CC9CD9AB6B48D8E3 before approval status metadata update.
+- Reviewed SHA 673c5317 Windows: test projects built with XML docs; new tests 19/19 + 1/1 passed; validation-pipeline 56 passed / 5 failed of 61 executed (228 planned, stopped). Five source guards pass against base source using identical test code. Runtime probes reproduced ambiguity loss, duplicate Unicode packets, order dependence and two NPC issues -> one correction.
+- Implementation status: pending T011. Independent correction review: not yet run. Next: add regression tests and observe RED.

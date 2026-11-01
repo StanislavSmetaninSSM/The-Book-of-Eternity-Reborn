@@ -16,6 +16,19 @@
 - [X] T009 Integration test: repair request emits exactly one bounded identity packet with rename-only rules
 - [X] T010 Run focused tests, then the full `BookOfEternityClient.Tests` + `BookOfEternityClient.IntegrationTests` suites for regressions
 
+## PR #1579 review corrections (approved revision 1, issue #1533)
+
+- [ ] T011 [RED] Capture review regressions in BookOfEternityClient.Tests/MortalSkillReferenceAuthorityTests.cs and BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.SkillReferenceIdentity.cs.
+- [ ] T012 [US1] Preserve ordinal canonical names and precise legacy-issue replacement in BookOfEternityClient/Services/Validation/ValidationService.SkillReferenceIdentity.cs and parser helpers.
+- [ ] T013 [US3] Preserve indexed actor/skill corrections and unresolved ambiguity in BookOfEternityClient/Core/GameEngine/GameEngine.SkillReferenceIdentityRepair.cs.
+- [ ] T014 [P] Update all affected partial-file source guards in BookOfEternityClient.Tests and BookOfEternityClient.IntegrationTests without weakening assertions.
+- [ ] T015 Register test category owners and current impact selection in tests/categories.json and tests/selection.json; run discovery and category planning.
+- [ ] T016 Synchronize specs/1533-complete-skill-materialization contracts/research/quickstart, GM worked example and XML API documentation.
+- [ ] T017 Run selected categories and independent whole-block review; record actual results in specs/1533-complete-skill-materialization/plan.md.
+- [ ] T018 Publish corrections, verify remote SHA and clean GitHub restore; reconcile evidence in specs/1533-complete-skill-materialization/tasks.md and plan.md.
+
+Dependencies: T011 -> T012/T013; T014 is independently implementable; T012-T014 -> T015/T016 -> T017 -> T018. Parent owns integration and catalog edits. Later issue contours remain deferred.
+
 ## Later parts (issue #1533 contours, not in this branch)
 
 - [ ] T101 Canonical skill schema consolidation: single active/passive profile validator shared by constructor and delta paths (player + NPC), including `activeEffectDefinitions`, `structuredBonuses`, rarity/type/group enums
