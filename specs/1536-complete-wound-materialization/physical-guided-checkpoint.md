@@ -1,3 +1,36 @@
+# C14 causal menu premises — built; remaining7 PREP pending
+
+Independent Astra/high SOURCE accepts102dcf7f524c41dbbf70c8fd4efa77e10b855671,
+including exact initializer extraction, causal-only pre-original readiness,
+unchanged producer/final oracles and retention of reader19/native7 results.
+Fresh Integration-only build exits0 in126.536934s, baseline102 warnings/204logged
+unchanged. Main/Support/Unit retain fresh unchanged d3be1948. Four actual PE/PDB
+pairs,420 source bindings,27 artifacts,10resources/40copies and4daemons agree.
+Only exact ended obj/ref duplicates retired; current bin/dependency refs stay.
+Previous actual Integration4 preserved:11003326B archive SHA
+d49cb49fd6ad1d20d02799c2262851a9a597c36bd2b5f74a976668d75e80a3e7,
+fullEOF/CRC decoded38983680B/all4member hashes; independently verified.
+
+Current exact PlanOnly passes7cases/6methods/4descriptors: causal1 +docs3 +portable
+rollback3, existing60/60/180s category bounds, zero execution. Complete catalogue
+1301/13121 is reused: no test signature, attribute, selector or member addition;
+only private helper/body and the causal category's responsibility text changed.
+Independent PREP must confirm this bounded reuse. Reader19 and unchanged native7
+stay accepted on their explicit prior versions; no repeated passing selection.
+
+Standing recoverable-log authorization supplied necessary reserve:40 old closed
+plain logs from20ended runs replaced by full verified gzip,74855366→8367021B,
+manifest SHAdcacec74dd13fbdd617a5101f2bf9e2030736293fafb3a2f56f14b9f8664c758;
+independent full restoration/closure proof accepted. No capture/TRX/JSON/saves/
+recovery/bin/unique evidence removed and no old measurement retired. Current plan
+log also remains fully recoverable gzip. Fresh PREP fence19:54:17 UTC has allpins
+stable, no live owner and738820096 freeB > unchanged687865856 reserve. Raw/proofs
+remain external under P3GREENC14MENU-* and their manifest-listed old run paths.
+
+Next independent PREP/current fence/one remaining7 runtime and strict full
+capture/primary TRX/cleanup/OUTCOME. No whole causal GREEN or full course result
+is claimed by compilation. Full course and broader HOLDs remain unadmitted.
+
 # C14 clock14 attempt —7 PASS, final menu fixture FAIL,6 UNRUN
 
 Runtime4a71e70a766d31f2856c14b874c796bc02e4112d / all compiled ownersd3be1948.
