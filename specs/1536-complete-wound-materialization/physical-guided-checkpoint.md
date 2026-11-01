@@ -1,8 +1,33 @@
+# C10 built and exact discovery complete — runtime UNRUN
+
+Independent Astra/high SOURCE accepts ab740e306eec8e2e211f4fa61f3018268568d242:
+exactly the two approved ambient-context deletions; all other411 source bindings,
+game assertions, coarse/CommonMembership/Intrinsic filesystem timing, transport,
+exception closure, fresh integrity/authority and120s bound remain unchanged.
+Accepted C9 capture3 proof at9eaad89e is retained without repeated execution.
+
+Fresh affected Integration build atab740e306 exits0 in164.415310s with102baseline
+warnings (204logged occurrences, exact multiset). Main/Support/Unit retain their
+unchanged C8d70 source/builds; the exact global7path proof and four PE/PDB pairs/
+412bindings/27artifacts/10resources40copies/fourdaemons agree. Standard obj2 and
+ref2 retired only after ended successful owner, exact duplication/identity proof,
+no active owner and preservation of all27 bins/MainSupport refs. C9 Integration4
+archive retains actual full-internal version bytes; no unique binary was lost.
+
+C10 exact PlanOnly selects only the current-legacy Fact,1method/1case/1descriptor,
+unchanged120s, zeroexecution. Its closed generic log is now a full-verified gzip
+with restoration manifest; all TRX/JSON/captures/fixture roots remain. Latest
+observed free1031176192B; launchreserve687865856B remains unchanged.
+External evidence P3GREENC10-* contains build/warnings/helper/retirement/source/
+PEPDB/artifact/PlanOnly proofs. Independent final PREP and immediate fence are
+pending before one comparison. Lower volume or native completion is not promised;
+C9 UNKNOWN is not replaced, and no production speedup/cache/feature PASS is claimed.
+
 # C10 bounded observation plan — DESIGN accepted; source UNCOMPILED / UNRUN
 
 Goal: locate the same current-legacy native work with the existing coarse phases,
 without enabling the two new broad ambient contexts around InitialCompose and
-TerminalAssertions. C9full internal source/results remain pinned above and its
+TerminalAssertions. C9full internal source/results remain pinned below and its
 actual Integration4 outputs are preserved in a full EOFCRC-verified archive
 P3GREENC9-preserved-integration-before-C10.tar.gz. The240328257B partial capture
 remains explicitly incomplete, never a replacement for complete evidence.
@@ -23,8 +48,8 @@ by performance.md155–158 after preserving the full diagnostic version/results.
 GM/player contracts are unchanged; no prompt/example synchronization applies.
 
 Finite steps under existing T121-PHYSICAL-GUIDED-NATIVE-TIMING:
-- [ ] Remove exactly the two ambient contexts and review the source/metadata diff.
-- [ ] Fresh Integration build, baseline warnings, PE/PDB/source/artifact/resource
+- [x] Remove exactly the two ambient contexts and review the source/metadata diff.
+- [x] Fresh Integration build, baseline warnings, PE/PDB/source/artifact/resource
   proof and exact legacy-one discovery/PlanOnly; retain unchanged C9 cheap3 proof.
 - [ ] Independent PREP/fresh reserve fence, one120s current-legacy comparison,
   strict TRX/capture/cleanup readback and independent OUTCOME before any next run.
