@@ -76,7 +76,10 @@ public sealed partial class MortalWoundTreatmentResolverTests
         Assert.Single(bundle.FinalPlan.CarrierContributions.SelectMany(row => row.Mutations), row =>
             row.Operation == "delete" && row.WoundId == terminal.Request.Coordinates.WoundId && row.AfterWound is null);
         var legacyBatches = terminal.Legacies.EffectOperationBatches;
-        Assert.Equal(variant == "reduce_legacy" ? 2 : 0, legacyBatches.Count);
+        var declaredHeal = Assert.IsType<MortalWoundHealOperation>(terminal.Resolution.DeclaredResult[^1]);
+        var mechanicalDrafts = declaredHeal.Legacies.OfType<MortalWoundMechanicalEffectLegacyDraft>().ToArray();
+        Assert.Equal(variant == "reduce_legacy" ? 2 : variant == "remove" ? 1 : 0, mechanicalDrafts.Length);
+        Assert.Equal(mechanicalDrafts.Length, legacyBatches.Count);
         var groups = MortalWoundHealLegacyPlanner.Finalize(terminal.Legacies, bundle.PreparedPlan, bundle.EffectBatchPlan);
         Assert.Equal(legacyBatches.Select(row => row.PreparedWoundId), groups.Select(row => row.LegacyId));
         if (variant == "reduce_legacy")
@@ -109,14 +112,16 @@ public sealed partial class MortalWoundTreatmentResolverTests
         effects[0]!["display"]!["description"] = "changed actual effect payload";
         Assert.Throws<InvalidDataException>(() => CopyTerminalEffectPayload(source, changedImages));
         var actualApplications = accepted.ApplicationResults;
-        Assert.True(actualApplications.Count >= 2);
-        foreach (var (label, applications) in new (string, IReadOnlyList<EffectAcceptedApplicationResult>)[]
+        Assert.NotEmpty(actualApplications);
+        var mapFaults = new List<(string Label, IReadOnlyList<EffectAcceptedApplicationResult> Applications)>
         {
             ("omitted actual application", actualApplications.Skip(1).ToArray()),
-            ("reordered actual applications", actualApplications.Reverse().ToArray()),
             ("foreign allocation", actualApplications.Select((row, index) => index == 0
                 ? row with { EffectId = "foreign_effect" } : row).ToArray())
-        })
+        };
+        if (actualApplications.Count > 1)
+            mapFaults.Add(("reordered actual applications", actualApplications.Reverse().ToArray()));
+        foreach (var (label, applications) in mapFaults)
         {
             var resealed = WoundEffectBatchAcceptedPlan.Create(bundle.PreparedPlan, accepted.EffectInput, accepted.EffectPlan,
                 applications, accepted.TerminationResults);
@@ -125,17 +130,24 @@ public sealed partial class MortalWoundTreatmentResolverTests
         }
         var prepared = bundle.PreparedPlan;
         var prefix = prepared.EffectOperationBatches.Take(prepared.EffectOperationBatches.Count - legacyBatches.Count).ToArray();
-        var merged = ResealRemovalBatch(legacyBatches[0], applications:
-            legacyBatches.SelectMany(row => row.RootApplications).ToArray());
-        foreach (var (label, batches) in new (string, IReadOnlyList<WoundEffectOperationBatch>)[]
+        var batchFaults = new List<(string Label, IReadOnlyList<WoundEffectOperationBatch> Batches)>
         {
-            ("omitted", prefix.Concat(legacyBatches.Take(1)).ToArray()),
-            ("reordered", prefix.Concat(legacyBatches.Reverse()).ToArray()),
-            ("merged", prefix.Append(merged).ToArray()),
-            ("split", prefix.Concat(legacyBatches).Append(legacyBatches[0]).ToArray()),
+            ("omitted", prefix.Concat(legacyBatches.Skip(1)).ToArray()),
             ("foreign", prefix.Append(ResealRemovalBatch(legacyBatches[0], export:
-                ForeignTerminalLegacySource(legacyBatches[0].SourceExport))).Append(legacyBatches[1]).ToArray())
-        })
+                ForeignTerminalLegacySource(legacyBatches[0].SourceExport))).Concat(legacyBatches.Skip(1)).ToArray())
+        };
+        if (variant == "reduce_legacy")
+        {
+            Assert.Equal(2, legacyBatches.Count);
+            Assert.NotEqual(legacyBatches[0].PreparedWoundId, legacyBatches[1].PreparedWoundId);
+            var merged = ResealRemovalBatch(legacyBatches[0], applications:
+                legacyBatches.SelectMany(row => row.RootApplications).ToArray());
+            batchFaults.Add(("reordered", prefix.Concat(legacyBatches.Reverse()).ToArray()));
+            batchFaults.Add(("merged", prefix.Append(merged).ToArray()));
+            batchFaults.Add(("split", prefix.Concat(legacyBatches).Append(legacyBatches[0]).ToArray()));
+        }
+        else Assert.Single(legacyBatches);
+        foreach (var (label, batches) in batchFaults)
         {
             var changed = ResealRemovalPrepared(prepared, batches, prepared.TreatmentContinuationAuthority!);
             var refused = WoundAcceptedTurnPlanCache.ValidatePreparedResult(bundle.Input,

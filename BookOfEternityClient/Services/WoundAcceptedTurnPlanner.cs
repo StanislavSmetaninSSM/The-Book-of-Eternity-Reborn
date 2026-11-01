@@ -770,7 +770,7 @@ internal static partial class WoundAcceptedTurnPlannerCore
                     stages.SelectMany(stage => stage.Terminations).ToArray()))
                 return FailedFinal("mortal_treatment_execution_invalid", "Terminal treatment lost its complete owned execution.",
                     "one exact sealed treat/heal chain", "foreign or changed execution");
-            recoveryContinuation = true;
+            applications = accepted.ApplicationResults;
             return null;
         }
 

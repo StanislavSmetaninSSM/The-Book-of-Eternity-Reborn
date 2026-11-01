@@ -1,5 +1,7 @@
 using System.Collections.Immutable;
+using System.Text.Json;
 using System.Text.Json.Nodes;
+using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Models;
 using BookOfEternityClient.Services;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -62,6 +64,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
         Assert.Empty(await validator.ValidateAcceptedTurnRawMortalLocationMaterializationAsync(fixture.Lease));
         Assert.Empty(await validator.ValidateAcceptedTurnRawMortalItemMaterializationAsync(fixture.Lease));
         var held = fixture.CaptureJson();
+        if (removeThenHeal) AssertTerminalLegacyPreparationPrerequisite(fixture, admitted.Owner, request, resolution, held);
         var composed = WoundAcceptedTurnPlanner.ComposeMortalWoundTreatmentPublication(files, fixture.Lease,
             new GameResponse(), admitted.Owner, request, resolution);
         fixture.AssertJson(held);
@@ -69,6 +72,123 @@ public sealed partial class MortalWoundTreatmentResolverTests
             "TERMINAL_HEAL_CAUSAL: the actual publication rejected a legal, retained terminal heal after native mode/source/claim premises. " +
             DescribeIssues(composed.Issues));
         AssertTerminalPublicationStages(composed.Plan!, removeThenHeal ? "remove" : "simple");
+    }
+
+    private static void AssertTerminalLegacyPreparationPrerequisite(DiagnosisOwnershipFixture fixture,
+        MortalWoundTreatmentAcceptedStateAuthority owner, MortalWoundTreatmentAttemptRequest request,
+        MortalWoundTreatmentResolution resolution, Dictionary<string, byte[]> captured)
+    {
+        var files = fixture.Files;
+        Assert.True(owner.HasCurrentAdmissionAuthority());
+        Assert.Same(request, owner.ReadHeldGuidedTreatmentRequest(request.Coordinates));
+        var requestBefore = WoundResponseInputComposer.SerializeMortalWoundTreatmentValue(request)!.ToJsonString();
+        var finalization = MortalWoundTreatmentResourceComposer.Finalize(resolution);
+        Assert.True(finalization.IsValid, DescribeIssues(finalization.Issues));
+        var claimBefore = AcceptedTurnAuthorityRegistry.InspectConfirmedMortalWoundTreatmentResourceClaim(
+            files, fixture.Lease, request, finalization.Finalization!);
+        Assert.True(claimBefore.IsValid, DescribeIssues(claimBefore.Issues));
+        Assert.Equal(MortalWoundTreatmentResourceReservationState.ConfirmedHeld, claimBefore.State);
+        var manifest = JsonSerializer.Deserialize<LiveTurnPendingSnapshotManifest>(CanonicalJsonUtf8.DecodeOneOptionalBom(
+            captured[files.ResolvePath(LiveTurnPreparationService.PendingTurnSnapshotManifestPath)]),
+            SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)!;
+        Assert.Equal(owner.Binding.SessionId, manifest.SessionId); Assert.Equal(owner.Binding.RequestId, manifest.RequestId);
+        Assert.Equal(owner.Binding.Turn, manifest.TurnNumber); Assert.Equal(owner.Binding.SnapshotToken, manifest.ManifestPayloadHash);
+        Assert.Equal(owner.Binding.SnapshotToken, PendingTurnSnapshotAuthority.ComputeManifestPayloadHash(manifest,
+            LiveTurnPreparationService.ManifestHashJsonOptions, value => value.ManifestPayloadHash,
+            (value, hash) => value.ManifestPayloadHash = hash));
+        var required = new HashSet<string>(StringComparer.Ordinal)
+        {
+            WoundCarrierCatalog.PlayerPath, WoundIdentityState.StatePath, WoundHistoryState.HistoryPath,
+            EffectCarrierCatalog.PlayerPath, EffectIdentityState.StatePath, EffectAcceptedTurnInputComposer.WorldTimePath
+        };
+        var paths = new[]
+        {
+            WoundCarrierCatalog.PlayerPath, WoundCarrierCatalog.NpcPath, WoundCarrierCatalog.EnemiesPath,
+            WoundCarrierCatalog.AlliesPath, WoundCarrierCatalog.AfterlifeProfilesPath,
+            WoundIdentityState.StatePath, WoundHistoryState.HistoryPath,
+            EffectCarrierCatalog.PlayerPath, EffectCarrierCatalog.NpcPath, EffectCarrierCatalog.EnemiesPath,
+            EffectCarrierCatalog.AlliesPath, EffectCarrierCatalog.AfterlifeProfilesPath, EffectCarrierCatalog.SpiritualConflictPath,
+            EffectIdentityState.StatePath, EffectAcceptedTurnInputComposer.WorldTimePath
+        }.Distinct(StringComparer.Ordinal).ToArray();
+        // One-shot parsed fixture input DATA from the actual frozen originals.
+        // Decode overlapping wound/effect carriers once; the map owns no authority.
+        var original = new Dictionary<string, JsonObject?>(StringComparer.Ordinal);
+        foreach (var path in paths)
+        {
+            if (!manifest.Files.TryGetValue(path, out var snapshotPath))
+            {
+                Assert.DoesNotContain(path, required); Assert.False(manifest.SnapshotFileHashes.ContainsKey(path), path);
+                if (manifest.OriginalPathPresenceV1?.TryGetValue(path, out var present) == true) Assert.False(present, path);
+                Assert.False(captured.ContainsKey(files.ResolvePath(path)), path);
+                original.Add(path, null); continue;
+            }
+            var bytes = owner.ReadDiagnosisOriginalBytes(path);
+            Assert.Equal(bytes, captured[files.ResolvePath(snapshotPath)]);
+            Assert.Equal(bytes, captured[files.ResolvePath(path)]);
+            original.Add(path, JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(bytes))!.AsObject());
+        }
+        JsonObject? Read(string path, bool mustExist = false)
+        {
+            var root = original[path];
+            if (mustExist) Assert.NotNull(root);
+            return root;
+        }
+        var carriers = new WoundCarrierCatalogInput(Read(WoundCarrierCatalog.PlayerPath, true), Read(WoundCarrierCatalog.NpcPath),
+            Read(WoundCarrierCatalog.EnemiesPath), Read(WoundCarrierCatalog.AlliesPath), Read(WoundCarrierCatalog.AfterlifeProfilesPath));
+        var woundIdentity = Read(WoundIdentityState.StatePath, true)!; var woundHistory = Read(WoundHistoryState.HistoryPath, true)!;
+        var effects = new EffectCarrierCatalogInput(Read(EffectCarrierCatalog.PlayerPath, true), Read(EffectCarrierCatalog.NpcPath),
+            Read(EffectCarrierCatalog.EnemiesPath), Read(EffectCarrierCatalog.AlliesPath), Read(EffectCarrierCatalog.AfterlifeProfilesPath),
+            Read(EffectCarrierCatalog.SpiritualConflictPath));
+        var effectIdentity = Read(EffectIdentityState.StatePath, true)!;
+        var catalog = WoundCarrierCatalog.Build(carriers); Assert.Empty(catalog.Issues);
+        var identities = WoundIdentityState.Parse(woundIdentity.ToJsonString(), WoundIdentityState.StatePath);
+        var history = WoundHistoryState.Parse(woundHistory.ToJsonString(), WoundHistoryState.HistoryPath);
+        Assert.True(identities.IsValid, DescribeIssues(identities.Issues)); Assert.True(history.IsValid, DescribeIssues(history.Issues));
+        Assert.Empty(history.State!.ValidateAgreement(identities.State!, catalog));
+        Assert.Equal(WoundMaterializationContract.SerializeCanonical(request.RouteSourceWound),
+            WoundMaterializationContract.SerializeCanonical(Assert.Single(catalog.Occurrences, row => row.WoundId == request.Coordinates.WoundId).Wound));
+        var effectCatalog = EffectCarrierCatalog.Build(effects); Assert.Empty(effectCatalog.Issues);
+        var effectIndex = EffectIdentityState.Parse(JsonSerializer.SerializeToElement(effectIdentity), EffectIdentityState.StatePath);
+        Assert.Empty(effectIndex.Issues); var agreement = new List<ValidationIssue>();
+        ValidationService.ValidateEffectCarrierIndexAgreement(effectCatalog, effectIndex.State!, agreement); Assert.Empty(agreement);
+        Assert.Equal(owner.CurrentGameMinute, Read(EffectAcceptedTurnInputComposer.WorldTimePath, true)!["currentTimeInMinutes"]!.GetValue<long>());
+        var input = new WoundAcceptedTurnInput(owner.Binding, [], [], carriers, woundIdentity, woundHistory, effects, effectIdentity);
+        var outcome = MortalWoundTreatmentOutcomePublicationPlanner.Prepare(owner, request, resolution, owner.CurrentGameMinute);
+        Assert.True(outcome.IsValid, DescribeIssues(outcome.Issues));
+        var preparation = outcome.Preparation!;
+        var materialization = MortalWoundTreatmentSeverityRematerializationPlanner.Prepare(input, preparation,
+            request.RequestFingerprint, resolution.ResolutionAuthorityFingerprint, resolution.ResultFingerprint,
+            request.Coordinates.AttemptId, request.Coordinates.OperationKey, request.Coordinates.ExpectedBeforeFingerprint);
+        Assert.True(materialization.IsValid, DescribeIssues(materialization.Issues));
+        var prefix = materialization.Batch is null ? Array.Empty<WoundEffectOperationBatch>() : new[] { materialization.Batch };
+        var legacy = MortalWoundHealLegacyPlanner.Prepare(request, resolution, owner.Binding,
+            WoundAcceptedTurnFingerprints.ComputeInput(input), owner.CurrentGameMinute, prefix);
+        var declared = Assert.IsType<MortalWoundHealOperation>(resolution.DeclaredResult[^1]);
+        Assert.Equal(new[] { "cosmetic", "mechanical_effect" }, declared.Legacies.Select(row => row.Kind));
+        Assert.Equal(declared.Legacies.Select(row => row.LocalLegacyRef), legacy.LegacyDraftBindings.Select(row => row.LocalLegacyRef));
+        var mechanical = Assert.IsType<MortalWoundMechanicalEffectLegacyDraft>(declared.Legacies[1]);
+        Assert.Single(mechanical.EffectDraft.Definitions); var application = Assert.Single(mechanical.EffectDraft.Applications);
+        Assert.Equal("{}", application.Parameters.GetRawText());
+        var batch = Assert.Single(legacy.EffectOperationBatches); var rootApplication = Assert.Single(batch.RootApplications);
+        Assert.Equal("wound_legacy", batch.SourceExport.Kind); Assert.False(batch.SourceExport.Materializable);
+        Assert.Equal(legacy.LegacyDraftBindings[1].LegacyId, batch.PreparedWoundId);
+        Assert.Equal(mechanical.LocalLegacyRef + "/" + application.ApplicationRef, rootApplication.ApplicationRef);
+        Assert.Equal(batch.SourceExport.Owner, request.RouteSourceWound.Owner);
+        Assert.True(WoundEffectCarrierAdapter.TryCreateTargetKey(request.RouteSourceWound.Owner, out var target));
+        Assert.Equal(target, rootApplication.ExpectedTargetKey); Assert.Equal(batch.PreparedWoundId, rootApplication.ExpectedSourceKey.SourceId);
+        var definition = Assert.Single(batch.SourceExport.Definitions);
+        Assert.Equal("action_control", definition.Definition["components"]![0]!["profile"]!.GetValue<string>());
+        Assert.Equal("source_bound", definition.Definition["lifetime"]!["mode"]!.GetValue<string>());
+        Assert.True(WoundEffectCarrierAdapter.TryCreateCarrierCoordinate(request.RouteSourceWound.Owner, target,
+            definition.Definition, out var coordinate)); Assert.Equal(coordinate, rootApplication.ExpectedCarrierCoordinate);
+        MortalWoundHealLegacyPlanner.RequireExactBatches(legacy, legacy.EffectOperationBatches);
+        MortalWoundHealLegacyPlanner.RequireDisjointCoordinates(prefix.Concat(legacy.EffectOperationBatches).ToArray(), preparation.ReadTerminalHealIntent());
+        Assert.Same(request, owner.ReadHeldGuidedTreatmentRequest(request.Coordinates));
+        Assert.Equal(requestBefore, WoundResponseInputComposer.SerializeMortalWoundTreatmentValue(request)!.ToJsonString());
+        var claimAfter = AcceptedTurnAuthorityRegistry.InspectConfirmedMortalWoundTreatmentResourceClaim(
+            files, fixture.Lease, request, finalization.Finalization!);
+        Assert.True(claimAfter.IsValid, DescribeIssues(claimAfter.Issues)); Assert.Equal(claimBefore.State, claimAfter.State);
+        fixture.AssertJson(captured);
     }
 
     private static void PrepareTerminalPhysicalWound(JsonObject wound, string mode, bool removeThenHeal)

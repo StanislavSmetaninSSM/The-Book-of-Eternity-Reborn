@@ -33,6 +33,16 @@ public sealed partial class JointBundleComponentTests
         Assert.Equal(rows[1].WoundTransitionOrdinal + 1, rows[2].WoundTransitionOrdinal);
         Assert.Equal(rows[0].Ordinal + 1, rows[1].Ordinal); Assert.Equal(rows[1].Ordinal + 1, rows[2].Ordinal);
         Assert.Equal(2, terminal.Legacies.EffectOperationBatches.Count);
+        var accepted = bundle.EffectBatchPlan;
+        var acquisitionRefs = bundle.PreparedPlan.EffectOperationBatches[0].RootApplications.Select(row => row.ApplicationRef).ToHashSet(StringComparer.Ordinal);
+        Assert.NotEmpty(acquisitionRefs);
+        var withoutAcquisition = accepted.ApplicationResults.Where(row => !acquisitionRefs.Contains(row.ApplicationRef)).ToArray();
+        Assert.Equal(accepted.ApplicationResults.Count - acquisitionRefs.Count, withoutAcquisition.Length);
+        var incomplete = WoundEffectBatchAcceptedPlan.Create(bundle.PreparedPlan, accepted.EffectInput, accepted.EffectPlan,
+            withoutAcquisition, accepted.TerminationResults);
+        var rejected = WoundAcceptedTurnPlannerCore.Finalize(bundle.PreparedPlan, new(incomplete, Array.Empty<ValidationIssue>()));
+        Assert.False(rejected.Success);
+        Assert.Contains(rejected.Issues, issue => issue.Code == "mortal_treatment_execution_invalid");
         var output = WoundPlayerNotification.ComposeAcceptedTurn(bundle, TreatmentNarration + " " + AcquisitionNarration);
         Assert.True(output.Success, JsonSerializer.Serialize(output.Issues));
         Assert.Contains(output.Notifications, row => row.Text.PlainText.StartsWith("Исцелена рана:", StringComparison.Ordinal));

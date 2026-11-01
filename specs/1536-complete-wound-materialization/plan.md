@@ -1,3 +1,43 @@
+# T121 terminal dispatch and legacy prerequisite — UNCOMPILED/UNRUN
+
+Bounded correction on 11d6555d21545a459685fbdda257e1a44ae9f467; no writer build,
+test, discovery or runtime. P3GREENC1-native13 remains the actual 6 PASS / 4 FAIL /
+3 UNRUN proof, with no timeout and complete cleanup. Its original raw and strict
+partial-failure report remain external; none of the four terminal rows is GREEN.
+
+The terminal handoff retains its exact private execution, payload and complete
+application/termination-map seal checks. It now exports the complete accepted
+application vector without setting the recovery dispatch flag. Existing final
+composition therefore chooses the genuine joint contribution first, or the
+standalone treatment contribution; the cache caller still retains joint admission.
+The real joint Fact now independently refuses a publicly resealed map omitting
+the acquisition applications, while retaining the full original positive bundle.
+
+Only the existing remove_then_heal causal row gains a typed prerequisite through
+the actual outcome, severity-rematerialization and legacy preparation leaves in
+production order. It uses the same admitted request/resolution, owner/frame/minute,
+authenticated originals and already captured manifest/artifacts/current bytes.
+It validates the complete wound/effect carrier and identity/History inputs, exact
+cosmetic-plus-mechanical declaration, namespace/source/target/carrier and batch
+coordinates; whole bytes and confirmed claims must remain unchanged. Each distinct
+required original path is eagerly decoded once into local one-shot parsed fixture
+input DATA, including shared wound/effect carriers. This map is neither a lazy
+memo/cache API nor authority: manifest binding and independent original/artifact/
+current byte equality remain mandatory. No new source sweep, owner, reservation,
+allocation, publication, framework or speedup claim is introduced.
+
+The separate remove InvalidOperationException is not claimed fixed. A real leaf
+exception now escapes this prerequisite with its actual stack; if the leaves pass,
+the later continuation/execution exception remains unresolved. The publication
+suffix preserves actual one-mechanical-batch copy, complete-map, omission and
+foreign-source checks for removal. Reorder/merge/split topology checks remain on
+the genuine two-batch reduce_legacy fixture, without a vacuous singleton reversal
+or indexing an absent second batch. Both current terminal Facts and the joint Fact
+retain their original current/closure/output assertions; no category, row count,
+budget, GM wire or gameplay contract changes. Source whitespace checks only are
+performed here. Root owns persistence, independent delta SOURCE and qualification;
+the proposed first affected runtime is terminal4, with current3 and UI still held.
+
 # T121 terminal execution — actual refusal retained; correction pending
 
 On source/runtime 03ef5727542aac04b94f9e953f2341429d99d980, fresh Integration
