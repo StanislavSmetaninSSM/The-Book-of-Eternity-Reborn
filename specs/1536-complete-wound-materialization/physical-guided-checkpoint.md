@@ -1,3 +1,25 @@
+# Canonical causal16 — built, discovered and exactly planned; runtime UNRUN
+
+Accepted coherent SOURCE/correction and operational review preceded one fresh
+Unit-only build fromd115e9cf102d34129481e3aa978cde0f95f7eba4: exit0 in70.622648s,
+26 unique /52 logged warnings exactly match baseline. Main/Support retainRDRd3,
+Integration retainsBROWSERb4. Actual4PE/PDB pairs/421source bindings/27artifact
+pins/10resources/40copies/4daemons agree; exact ended obj/ref duplicates retired,
+current bin/dependency refs preserved and old Unit4 archive remains verified.
+
+Fresh catalogue validation exits0:1302categories/13122methods,0unmapped/stale,
+zero test execution. Exact PlanOnly exits0 in6.5130353s:16cases/1method/1Unit
+spiritual-diagnosis-canonical-causal descriptor, unchanged60s. Only these new
+causal inputs are selected; no old passing case or build is repeated. Both ended
+generic logs remain fully recoverable verified gzip with external manifests.
+
+Fresh21:35:05UTC fence has allpins/resources stable, no live managed owner and
+748703744free bytes above unchanged687865856start reserve. Independent PREP must
+admit one expected-RED runtime; actual failure must be the final missing diagnosis
+availability after every canonical-source/identity/history/H0/inertness premise.
+No16result, feature GREEN, signed/native/UI qualification or new production code
+is claimed here. Raw remains external underus5-guided-diagnosis/A1RED-*.
+
 # Canonical diagnosis causal16 — coherent SOURCE accepted, build pending
 
 Independent Astra/high reviewed all eight source setups and exact16-row/one-method
