@@ -1,3 +1,25 @@
+# Canonical Unit-only correction built — exact four-case PREP next
+
+Independent Sol/xhigh accepts the two fixture lines, finite purpose-category split
+and five external C2 phase mappings. Unit source6d81da656947a0020563112a32817062d81cabe8
+build exits0, exact baseline26unique/52logged warnings; Main/Support c576 and
+Integration f79 remain unchanged. All4PE/PDB pairs,426 source bindings,27 artifacts,
+44 resource copies and four daemons verify. Ended reproducible obj/ref copies were
+matched to retained bins before retirement. Previous Unit4 evidence is preserved
+with fullEOF/CRC/member hashes in4404323B, SHA
+1a0829100932eb2f241c22fb4d41fda3b2ce1dacc726bfbf5a0850081079753a.
+
+Catalogue discovery and exact PlanOnly exit0 without execution. The intended narrow
+selection is purpose guard1 plus observation3, two descriptors/two categories,60s
+each. Runtime remains UNRUN pending independent PREP and immediate fresh fence.
+Remaining71 OUTCOME is now independently accepted with exact primary TRXs, pins,
+cleanup and selection; causal16/admission47 retain their original versions. No
+successful repetition is needed. Native2/console rollback1 remain dependent UNRUN.
+The existing full streaming capture verifier is adapted only to the actual canonical
+rollback case/root and macro display; independent Sol accepts its full unchanged
+EOF/CRC/hash/event/pair/tick/aggregate/cleanup guards. No collector/format change,
+quota, timeout increase, product/cache edit or broader HOLD release.
+
 # Canonical remaining71 PASS — two Unit fixture corrections WIP
 
 Runtime d3714547b0bd8f62aa7e450e7fe812732328d429:71/71PASS across six complete
