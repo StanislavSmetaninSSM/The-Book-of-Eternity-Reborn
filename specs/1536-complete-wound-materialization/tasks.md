@@ -150,13 +150,14 @@ this bounded route, not parent T121/FR071/US5/#1536 or the eight proof adapters.
   and full RED evidence. This closes only that assessment, not optimization or
   native/feature qualification. Selected-graph reuse remains unimplemented.
 
-- [ ] T121-PHYSICAL-GUIDED-BROWSER-MODES [US2/US5] Qualify the same complete
-  procedure and guaranteed browser journeys through separate semantic singletons,
-  preserving all original state/hooks/assertions/capture/cleanup. Each180s; total
-  maximum360s plus runner overhead replaces former grouped180s allocation.
-  Old group stays UNKNOWN; no speedup or prior PASS. Exact discovery/PlanOnly,
-  fresh owners/source bindings and independent SOURCE/PREP/OUTCOME required.
-  C12 source UNCOMPILED/UNRUN; do not split assertions or raise failed singleton.
+- [x] T121-PHYSICAL-GUIDED-BROWSER-MODES [US2/US5] Same complete procedure
+  and guaranteed browser journeys accepted as two semantic singletons with unchanged
+  body/hooks/assertions/capture/cleanup. Each 180s; combined maximum 360s plus runner
+  overhead replaces former grouped 180s. Actual 1 PASS each at runtimes bbb47929
+  and b59f7991 / all four compiled source 390907; independent Astra/high SOURCE,
+  PREP and OUTCOME, primary TRX/full original captures/cleanup verified. Old group
+  stays UNKNOWN; no speedup, DOM/provider/fresh-process or whole-feature claim.
+  No assertion splitting or failed-singleton limit increase.
 
 - [ ] T121-PHYSICAL-GUIDED-NATIVE-TIMING [US2/US5] Test-only opt-in capture for
   current terminal legacy/removal, using existing passive recorder/gzip transport,

@@ -1,4 +1,41 @@
-# C12 guaranteed browser — complete 1 PASS; final OUTCOME pending
+# C12 browser modes accepted — next complete console course and rollback
+
+Independent Astra/high OUTCOME accepts both actual browser cases: procedure at
+runtime bbb47929b62113f317467b2a2bcea3a8ffe617ac, guaranteed at
+b59f7991244274adf249e657f6f2a76ffbb93d94; both use all four compiled source
+390907d4d376e70ec99d49653ec2b9fe22b54c19. Each has complete primary TRX,
+full original passive capture and actual fixture cleanup. These are two separate
+PASS results, not the old grouped result or a fresh whole-feature qualification.
+Task/catalogue descriptions now reflect only this bounded acceptance; selectors,
+budgets, requirements and executable sources are unchanged.
+
+Next finite work remains under T121-PHYSICAL-GUIDED: existing full console course
+first, then conditional publication-cut rollback. Independent selection review
+finds no dependency on the unresolved rich current-legacy/removal/joint fixtures;
+these simple mode journeys still enforce their own current common-settlement guards.
+Course must complete three separately confirmed milestones and two real ordinary
+accepted waits, reconstructing current windows/History without post-accepted file
+patches. Rollback covers first publication cuts for three modes, exact held-state
+compensation and separately exact whole-original restoration with no accepted turn.
+
+P3GREENC12-course-rollback4-plan exits 0: exactly 4 cases / 2 methods / 2 exclusive
+Integration descriptors, zero execution; course 1 case / 180s, rollback 3 cases /
+180s. Existing successful cases are excluded. Current four builds/PDB/source and
+full catalogue remain applicable: no compiled code, selector or budget changed.
+Only checkpoint/task status and the two browser responsibility descriptions change.
+
+Finite continuation:
+- [ ] Independent PREP and immediate source/artifact/resource/owner/space fence;
+  run only complete console course at its existing 180s bound, preserve all output.
+- [ ] Strict case/TRX/full-capture/cleanup OUTCOME; failure/timeout is not PASS.
+- [ ] Conditional separate rollback PREP/fence/run at existing 180s, then OUTCOME.
+Browser course has not been admitted; its five-turn cost is unmeasured. Do not
+infer fit from earlier browser timings, raise a failed bound or split assertions.
+No native retry, repeated console/browser PASS, new diagnostic stack or cache is
+part of this continuation. No mechanics/GM payload changed, so no GM update applies.
+All broader HOLDs, native UNKNOWN and whole feature's open obligations remain.
+
+# C12 guaranteed browser — complete 1 PASS; OUTCOME accepted
 
 Runtime b59f7991244274adf249e657f6f2a76ffbb93d94 / all four compiled source
 390907d4d376e70ec99d49653ec2b9fe22b54c19. After accepted independent procedure
@@ -21,8 +58,7 @@ TRX/JSON/capture and all unique evidence remain external. Post-run fence at
 16:34:12 UTC: no active managed owner, all 27 artifacts/resources/daemons stable,
 881848320 free bytes, unchanged reserve 687865856 bytes.
 
-Procedure's independent OUTCOME is accepted; guaranteed/final combined OUTCOME
-is pending. Two separate runtime revisions differ only in this checkpoint; same
+Independent Astra/high OUTCOME accepts both separately completed browser cases. Two separate runtime revisions differ only in this checkpoint; same
 compiled code and two complete cases, not the original grouped run. Old grouped
 2 UNKNOWN remains. No console rerun, native admission, course or rollback run.
 Next after review: exact preparation for the existing complete console course
@@ -126,7 +162,7 @@ Finite plan under T121-PHYSICAL-GUIDED-BROWSER-MODES:
   exactly2cases2descriptors with explicit180+180 allocation/catalogue alignment.
 - [x] Preserve current compiled32 evidence; four fresh owning builds/warnings,
   actualPEPDB/bindings/artifacts/resources and exact discovery/PlanOnly/fences.
-- [ ] Independent PREP then separate complete browser procedure/guaranteed runs,
+- [x] Independent PREP then separate complete browser procedure/guaranteed runs,
   each strict TRX/full-capture/cleanup OUTCOME, no other automatic admission.
 GM/player mechanics are unchanged; no prompt/example update applies. All unique
 raw/saves/recovery stay external/retained and all broader HOLDs remain open.
