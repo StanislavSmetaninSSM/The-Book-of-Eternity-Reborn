@@ -1,3 +1,23 @@
+# Canonical remaining71 PASS — two Unit fixture corrections WIP
+
+Runtime d3714547b0bd8f62aa7e450e7fe812732328d429:71/71PASS across six complete
+descriptors/five categories, wall44.7738866s, every category below unchanged60s.
+No skip/timeout/underfill, exit0, cleanuptrue; pins,44 resource copies and four
+daemons unchanged, no live owner. Independent OUTCOME pending. Together with the
+retained causal16 and admission47 this is134 distinct PASS across stated versions,
+not a fresh134 or accepted canonical diagnosis execution.
+
+Only two Unit fixture lines now change: exact expected generalized purpose refusal,
+and existing strict one-optional-BOM decoder around actual snapshot bytes before
+unchanged full JSON equality. Zero-draw/canonical/pending byte assertions remain.
+The purpose singleton has a finite category split from admission47 so confirmation
+can execute only this case and observation3. No production/cache/guard/budget change;
+these trivial test assertions need no new reuse. Independent narrow SOURCE and one
+fresh Unit-only build required; other three accepted owners are unchanged. Before
+replacement preserve the current Unit4 binary/config evidence, then verify all
+PE/PDB/source/resources and exact four-case PlanOnly/PREP. Native2/console rollback1
+remain UNRUN pending dependent cheap gates. No broader HOLD is released.
+
 # Canonical admission controls — partial OUTCOME accepted, pending cases retained
 
 Independent Astra/high accepts causal16 OUTCOME and the subsequent partial

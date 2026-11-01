@@ -23,7 +23,7 @@ public sealed class SpiritualSelfTreatmentRequestTests
         var draws = 0;
         var error = await Assert.ThrowsAsync<InvalidDataException>(() => AfterlifeWoundTreatmentAuthority.StageSelfTreatmentAsync(
             f.Files, lease, f.Context, diagnosis, _ => { draws++; return [20]; }));
-        Assert.Equal("Diagnosis requires its own execution boundary.", error.Message);
+        Assert.Equal("This purpose requires its own execution boundary.", error.Message);
         Assert.Equal(0, draws); Assert.Equal(before, f.CanonicalBytes());
         Assert.Equal(retained, await f.Files.ReadFileBytesAsync(lease, AcceptedMechanicsPlan.WoundCommandPath));
     }

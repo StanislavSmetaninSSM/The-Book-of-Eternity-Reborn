@@ -44,7 +44,7 @@ public sealed partial class PendingTurnSnapshotReaderTests
         observed.Evidence!.RequireCurrent(_fs, held, observed.Snapshot!);
         if (kind == "resource_quantity") Assert.Contains("game_state/inventory/item_bonds.json", observed.Snapshot!.AbsentLogicalPaths);
         else Assert.Equal(context.CurrentMenuRoots[SpiritualDiagnosisCanonicalSources.QuestsPath].ToJsonString(),
-            JsonNode.Parse(observed.Snapshot!.ReadRequiredBytes(SpiritualDiagnosisCanonicalSources.QuestsPath))!.ToJsonString());
+            JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(observed.Snapshot!.ReadRequiredBytes(SpiritualDiagnosisCanonicalSources.QuestsPath)))!.ToJsonString());
         var unknown = paths.Append("game_state/unregistered_diagnosis_permission.json").ToArray();
         Assert.False(PendingTurnSnapshotReader.ReadObservedCurrent(_fs, held,
             PendingTurnSnapshotPathSelection.CreateWithObservedOptionalPaths([AcceptedMechanicsPlan.WoundCommandPath], unknown)).Success);
