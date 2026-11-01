@@ -1,3 +1,43 @@
+# C14 non-retiring reader candidate — built; reader19/clock14 runtime UNRUN
+
+Independent Astra/high SOURCE accepts d3be1948e50ebbaccc9fe088501bbccdf52fb68b.
+The default reader keeps its actual explicit lease and uses the existing
+non-retiring cache bypass, preserving all pending dependencies. Observed source
+branches and validation/hash/presence/failure ordering remain unchanged.
+Four fresh Main/Support/Integration/Unit builds exit0 in
+134.009042/15.089804/127.829664/65.766417 seconds. Warning multisets exactly
+match baseline12/23/102/26 (24/46/204/52 logged occurrences); no new warning.
+Four actual PE/PDB pairs,420 source bindings,27 artifacts,10resources/40copies
+and four daemons agree. Only verified ended obj/ref duplicates retired; current
+bin evidence and Main/Support dependency refs stay. All four compiled ownersd3be.
+
+Official complete inventory passes1301categories/13121methods, zero stale or
+unmapped selectors and zero execution. Actual exact plans: reader19 is19cases/
+7methods/1Unit descriptor/60s; controls14 is14cases/10methods/6descriptors/
+5categories with existing60/60/60/60/180s bounds. Both are PlanOnly, zero execution.
+The former must pass before admitting the latter in this same source epoch.
+Prior6PASS/1readerFAIL/7UNRUN remain a separate old runtime; shared reader impact
+justifies this finite recheck, not any broad69/perf/compatibility/HOLD rerun.
+
+Previous actual mixed32 preserved and independently read back before overwrite:
+63545522B, SHA96339a4bcf63dd5d4737766b10a40bba160d6b50c8dfb5664126224297a6d3cd,
+fullEOF/CRC decoded198912000B, exact32 member hashes and correct b36/cf provenance.
+Under existing autonomous closed-log authorization,60 additional old plain logs
+from30 completed runs were losslessly replaced by verified gzip, preserving
+115390193 original bytes in13865468 bytes. Frozen identity/closure/hash/restoration
+manifest SHA42267908baf545e3763b5401259d81bae42c45448116031ee5e906a77dc0d301;
+independent readback accepted. No capture/TRX/JSON/save/recovery/current binary or
+unique evidence removed, no older measurement retired. Four newly closed generic
+logs similarly retain full recoverable gzip. Raw/proofs all remain external in
+us5-guided-diagnosis/P3GREENC14RDR-* and the old run roots named by the manifest.
+
+Fresh closing PREP fence19:29:47 UTC: all pins/resources/daemons stable, no live
+managed owner,764297216 free bytes > unchanged687865856 start reserve. Next
+independent PREP and immediate fence for one reader19; only on its full accepted
+outcome and a new unchanged fence may controls14 run. Full course and broader
+HOLDs remain unadmitted. No new runtime PASS, speedup, DOM/provider/fresh-process
+or whole-feature completion follows from these builds and plans.
+
 # C14 reader freshness review correction — WIP UNCOMPILED / UNRUN
 
 Independent SOURCE found the first fresh-scope choice unsafe: ForceFreshRecovery-
