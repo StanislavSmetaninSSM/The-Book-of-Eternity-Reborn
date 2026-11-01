@@ -1,4 +1,15 @@
-# T121 physical SOURCE HOLD — causal scaffold build corrections, runtime UNRUN
+# T121 physical SOURCE HOLD — causal proof pending after fixture failure
+
+Actual callback attempt P2REDC1-callback-red on5c180f039 completed2 FAIL/0 PASS,
+no skip/timeout, wall14.0300627s. Both failed at the initial full-root Snapshot
+while the test held its own canonical-write.lock, before callback activation or
+either decisive assertion. This is a fixture IOException, not causal RED or a
+production result. Terminal4 remains UNRUN. Raw/TRX and the unchanged closing
+27-artifact/resource/daemon fence are retained; no managed owner remains. The
+test-only correction scopes each actual source read under its own lease and takes
+all complete snapshots after disposal, preserving every path and assertion.
+Fresh affected Integration/provenance/PlanOnly/PREP and corrected callback2 are
+required before terminal4. Both functional defects and feature HOLD remain open.
 
 P2REDC1 preparation is now complete on built source
 cf127d94a78782d761b12149cdb7b44a7f5d8ab4 and metadata d5aeab48a:

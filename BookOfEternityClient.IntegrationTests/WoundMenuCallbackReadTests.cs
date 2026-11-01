@@ -39,17 +39,23 @@ public sealed class WoundMenuCallbackReadTests(ITestOutputHelper output)
                 return Task.CompletedTask;
             });
         files = fixture.Files;
-        await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
-        await files.WriteFileAtomicAsync(lease, activePath,
-            "{\"activeSkillChanges\":[{\"skillId\":\"callback_skill\",\"skillName\":\"До callback\",\"lifecycle\":\"active\",\"active\":true}]}");
-        await files.WriteFileAtomicAsync(lease, passivePath, "{}");
-        await files.WriteFileAtomicAsync(lease, EffectCarrierCatalog.PlayerPath, "{\"schemaVersion\":1,\"activeEffects\":[]}");
-        var original = await EffectMechanicsSnapshot.LoadAsync(files, lease);
-        Assert.True(original.IsAccepted);
-        Assert.Contains("До callback", original.SkillScopeAuthority.CreateGmCatalog().ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        await using (var lease = await files.AcquireCanonicalWriteLeaseAsync())
+        {
+            await files.WriteFileAtomicAsync(lease, activePath,
+                "{\"activeSkillChanges\":[{\"skillId\":\"callback_skill\",\"skillName\":\"До callback\",\"lifecycle\":\"active\",\"active\":true}]}");
+            await files.WriteFileAtomicAsync(lease, passivePath, "{}");
+            await files.WriteFileAtomicAsync(lease, EffectCarrierCatalog.PlayerPath, "{\"schemaVersion\":1,\"activeEffects\":[]}");
+            var original = await EffectMechanicsSnapshot.LoadAsync(files, lease);
+            Assert.True(original.IsAccepted);
+            Assert.Contains("До callback", original.SkillScopeAuthority.CreateGmCatalog().ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        }
+        // The existing full-root snapshot includes the private lock file. Read
+        // it only after releasing this fixture's lease; never omit that image.
         var before = fixture.Snapshot(); var mutations = fixture.MutationCalls;
         armed = true;
-        var actual = await WoundPlayerReadService.LoadContextAsync(files, lease, retainMenuInputs: true);
+        WoundPlayerReadContext? actual;
+        await using (var lease = await files.AcquireCanonicalWriteLeaseAsync())
+            actual = await WoundPlayerReadService.LoadContextAsync(files, lease, retainMenuInputs: true);
         Assert.Equal(1, changes); Assert.False(armed);
         Assert.Equal(changedBytes, File.ReadAllBytes(files.ResolvePath(changedPath)));
         var expectedPrefix = Path.GetRelativePath(fixture.Root, files.ResolvePath(changedPath)).Replace('\\', '/') + ":";
@@ -61,7 +67,9 @@ public sealed class WoundMenuCallbackReadTests(ITestOutputHelper output)
         Assert.Equal(mutations, fixture.MutationCalls);
 
         // The unchanged pre-shortcut reader is the independent current-source oracle.
-        var fresh = await EffectMechanicsSnapshot.LoadAsync(files, lease);
+        EffectMechanicsSnapshot fresh;
+        await using (var lease = await files.AcquireCanonicalWriteLeaseAsync())
+            fresh = await EffectMechanicsSnapshot.LoadAsync(files, lease);
         Assert.Equal(after, fixture.Snapshot());
         if (fault == "skill_name")
         {
