@@ -1,3 +1,24 @@
+# C14 reader19 —19 PASS; OUTCOME pending before clock14
+
+Runtime2023bbdb515da59b57ab78d46efbb48165f65444 / all compiled ownersd3be1948.
+After independent PREP and fresh unchanged fence, reader19 completes19PASS/
+0FAIL/0skip,19cases/7methods/1descriptor, no timeout/underfill or duplicate IDs.
+Category8.7277618/60s,wall16.4900401s. Genuine explicit lease with suppressed
+ambient flow accepts valid bytes and refuses missing manifest/authority/original/
+current context without nested acquisition. Actual declared DATA priming and
+passive source/hit counts pass; selected drift and unrelated A drift still make
+the owning operation reject, while valid narrow B remains independently readable.
+Detached bytes and observed/default failure-priority controls also pass.
+
+Primary TRX SHA28c40f01604fdb76998c382804b6ca071cf6248a247dc5d2b8ed31fddc91ef53;
+external P3GREENC14RDR-reader19/verified-outcome.json records exact completed IDs/
+selection/cleanup. Closing fence19:32:56 UTC: all27pins/resources/daemons stable,
+no active owner,762146816 free bytes > unchanged687865856 reserve. Full raw is
+outside checkout; no new native full-capture qualification is claimed by Unit19.
+Independent OUTCOME remains pending. Controls14 PREP is conditional on its
+acceptance plus immediate unchanged fence; controls14/causal clock/full course
+have not yet rerun on this source. Prior6PASS/1readerFAIL/7UNRUN remain historical.
+
 # C14 non-retiring reader candidate — built; reader19/clock14 runtime UNRUN
 
 Independent Astra/high SOURCE accepts d3be1948e50ebbaccc9fe088501bbccdf52fb68b.
