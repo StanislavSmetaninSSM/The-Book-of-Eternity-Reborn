@@ -194,11 +194,16 @@ internal static partial class PendingTurnSnapshotReader
         if (sourceSession is not null && !sourceSession.Begin(issues))
             return Failure(issues);
 
+        // Default reader authority is physical, never provisional operation DATA.
+        // The supplied lease already owns quiescence even without ambient flow.
+        // Observed sessions retain their separately verified transport/lifetime.
+        using var fresh = sourceSession is null ? fs.ForceFreshRecoveryValidation() : null;
+
         LiveTurnPendingSnapshotManifest? manifest;
         try
         {
             var manifestJson = sourceSession is null
-                ? fs.ReadFileSync(LiveTurnPreparationService.PendingTurnSnapshotManifestPath)
+                ? fs.ReadFileSync(lease, LiveTurnPreparationService.PendingTurnSnapshotManifestPath)
                 : sourceSession.ReadManifestText();
             if (string.IsNullOrWhiteSpace(manifestJson) || HasDuplicateJsonProperties(manifestJson))
             {
@@ -231,7 +236,7 @@ internal static partial class PendingTurnSnapshotReader
             return Failure(issues);
 
         var authorityJson = sourceSession is null
-            ? fs.ReadFileSync(PendingTurnSnapshotAuthority.AuthorityPath)
+            ? fs.ReadFileSync(lease, PendingTurnSnapshotAuthority.AuthorityPath)
             : sourceSession.ReadDetachedAuthorityText();
         if (!PendingTurnSnapshotAuthority.TryValidateManifestForReaderAuthority(
                 manifest,
@@ -249,7 +254,7 @@ internal static partial class PendingTurnSnapshotReader
                 static value => value.SourceLabel,
                 static value => value.RollbackBackups,
                 sourceSession is null
-                    ? fs.ReadFileBytesSync
+                    ? path => fs.ReadFileBytesSync(lease, path)
                     : path => sourceSession.ReadRollbackBytesFromAuthorityCallback(manifest, path),
                 out var payload,
                 out var authorityFailure) ||
@@ -281,7 +286,7 @@ internal static partial class PendingTurnSnapshotReader
         }
 
         var contextReads = CurrentContextSources
-            .Select(source => ReadCurrentContext(fs, source, sourceSession))
+            .Select(source => ReadCurrentContext(fs, lease, source, sourceSession))
             .ToArray();
         var invalidContext = contextReads.FirstOrDefault(
             read => read.Status == PendingTurnSnapshotContextStatus.Invalid);
@@ -386,7 +391,7 @@ internal static partial class PendingTurnSnapshotReader
             }
 
             var bytes = sourceSession is null
-                ? fs.ReadFileBytesSync(snapshotPath)
+                ? fs.ReadFileBytesSync(lease, snapshotPath)
                 : sourceSession.ReadSelectedOriginalBytes(logicalPath, snapshotPath);
             if (bytes is null ||
                 !string.Equals(
@@ -773,17 +778,18 @@ internal static partial class PendingTurnSnapshotReader
 
     private static PendingTurnSnapshotContextRead ReadCurrentContext(
         FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease lease,
         PendingTurnSnapshotContextSource source,
         OriginalSourceReadSession? sourceSession)
     {
-        if (!(sourceSession is null ? fs.FileExists(source.Path) : sourceSession.ProbeCurrentContext(source)))
+        if (!(sourceSession is null ? fs.FileExists(lease, source.Path) : sourceSession.ProbeCurrentContext(source)))
             return new PendingTurnSnapshotContextRead(
                 source.Path,
                 PendingTurnSnapshotContextStatus.Missing,
                 null);
 
         var json = sourceSession is null
-            ? fs.ReadFileSync(source.Path)
+            ? fs.ReadFileSync(lease, source.Path)
             : sourceSession.ReadCurrentContextText(source);
         if (string.IsNullOrWhiteSpace(json))
             return new PendingTurnSnapshotContextRead(

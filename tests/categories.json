@@ -2,6 +2,35 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "mortal-ordinary-clock-reader-lease-controls",
+  "responsibility": "C14 missing-original reader correction: seven new tiny typed default-reader cases retain the actual explicit lease without ambient flow for valid/missing manifest/authority/selected original/context, and prove genuine declared DATA hits cannot mask later physical drift/absence. Existing detached bytes, unsigned/stale failure boundaries, observed explicit-lease and default failure-priority controls preserve shared reader semantics. Expected18 cases/6 methods, Unit only; unchanged validation/hash/presence/order and observed transport.",
+  "excludes": "No new source/cache/observation stack, fake accepted receipt, time rule, native whole world, full authority suite,69components,course,DFR/Mortal compatibility/Windows or raised budget. The actual native source-guard failure remains causal evidence and is qualified separately in existing controls14.",
+  "changeHints": [
+    "BookOfEternityClient/Services/PendingTurnSnapshotReader.cs",
+    "BookOfEternityClient.Tests/PendingTurnSnapshotReaderTests.ExplicitLease.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_UsesHeldLeaseWithoutAmbientContextForMissingSources",
+        "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsPhysicalDriftDespitePrimedDeclaredSourceData",
+        "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_ReturnsDetachedBytesOnEveryAccess",
+        "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsEveryUnsignedMissingOrStaleBoundaryWithoutWriting",
+        "BookOfEternityClient.Tests.PendingTurnObservedOriginalReaderConformanceTests.ReadObservedCurrent_UsesTheExplicitLeaseWithoutAmbientExecutionContext",
+        "BookOfEternityClient.Tests.PendingTurnObservedOriginalReaderConformanceTests.ReadObservedCurrent_PreservesDefaultFailurePriorityAndEagerContexts"
+      ]
+    }
+  ]
+},
+{
   "id": "mortal-ordinary-clock-afterlife-exclusion",
   "responsibility": "C14 directly affected plain afterlife shared raw-resource entry, using existing complete spiritual-conflict fixture: malformed and non-object stale Mortal world clock must remain byte-inert and unparsed while the actual ordinary afterlife common plan is still built without errors. Two cases/one Theory; specialized natural/C4 bypass is covered separately.",
   "excludes": "No afterlife gameplay change, fake ordinary clock result, native lineage or full lifecycle/DFR/Windows qualification. Existing original fixture and common planner only; no new diagnostic stack or cache.",

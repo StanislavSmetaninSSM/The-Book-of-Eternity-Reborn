@@ -161,6 +161,12 @@ this bounded route, not parent T121/FR071/US5/#1536 or the eight proof adapters.
   menu-only fallback, parallel clock service or new game rule. Independent DESIGN,
   causal RED/GREEN, GM/example synchronization and affected consumer review before
   one complete course retry; all broader HOLDs remain.
+  C14's genuine missing-original control exposed a nested public-reader lease
+  acquisition. Repair the existing default reader with its supplied lease and
+  existing fresh-authority scope; preserve observed transport and all authority/
+  hash/presence/order. Finite no-ambient and primed-DATA controls precede native
+  sourceguard GREEN; this is part of the same clock source-integrity obligation.
+
   C14 first scaffold uses the existing shared raw-resource validator and genuine
   unsigned/non-diagnosis native original; only one 60s causal case is proposed.
   No production implementation or runtime admission follows from source authoring.

@@ -9,7 +9,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
-public sealed class PendingTurnSnapshotReaderTests : IDisposable
+public sealed partial class PendingTurnSnapshotReaderTests : IDisposable
 {
     [Theory]
     [InlineData(false)]

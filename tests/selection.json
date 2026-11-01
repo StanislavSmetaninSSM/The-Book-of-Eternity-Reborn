@@ -2,6 +2,13 @@
   "schemaVersion": 1,
   "selections": [
 {
+  "category": "mortal-ordinary-clock-reader-lease-controls",
+  "reason": "Native C14 sourceguard reproduced nested main-owner reacquisition on missing signed original because a lease-bound reader used public sync reads. Preserve the existing explicit lease and use existing fresh-authority boundary; finite default/observed/primed-DATA controls before the affected native14. No passing case repeated without actual shared-reader impact.",
+  "contracts": [
+    "#1536 / T121-PHYSICAL-GUIDED-ORDINARY-CLOCK; fresh physical original read under actual retained lease"
+  ]
+},
+{
   "category": "mortal-ordinary-clock-afterlife-exclusion",
   "reason": "Final SOURCE review identified the excluded plain-afterlife path could parse malformed stale Mortal clock before checking realm. Guard now precedes parsing; this existing complete original fixture proves actual shared intake still produces its afterlife plan and leaves stale clock bytes untouched.",
   "contracts": [

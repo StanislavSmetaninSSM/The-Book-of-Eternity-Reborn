@@ -1,3 +1,34 @@
+# C14 reader lease/freshness correction — WIP UNCOMPILED / UNRUN
+
+Following the genuine missing-original failure and independent Astra DESIGN,
+the existing default reader now consistently passes its actual held lease to
+manifest/authority/current-context/selected-original/rollback-artifact physical
+reads. No existence-precheck workaround or nested acquisition is introduced.
+The existing ForceFreshRecoveryValidation scope retires provisional source and
+recovery DATA only for the default authority-bearing protocol; observed-session
+branches, their transport/lifetime, parse/hash/presence checks and failure order
+remain unchanged. No new cache/API/presence schema or game/GM rule applies.
+
+Seven new small typed rows prove valid and missing sources without ambient
+execution-context flow, and real existing declared source hits followed by raw
+physical drift/absence. Passive source counters/timing DATA (no callback) require
+that the priming actually hits; fresh reader must still refuse changed bytes.
+Together with existing detached/default/observed/priority controls, the proposed
+Unit category is18 cases/6methods, protective60s; actual discovery/PlanOnly pending.
+Then the shared-reader change justifies rechecking the affected controls14; no
+other unchanged accepted case, broad69, course or HOLD is automatically admitted.
+The native sourceguard failure is retained causal evidence; no redundant RED run.
+
+Optimization: existing whole-operation DATA owner remains outside the fresh
+reader protocol; existing fresh scope invalidates it at the actual authority
+boundary. Key/namespace/lease/source checks remain physical there. Integrity
+cannot reuse provisional bytes as permission; this is not a measured speedup.
+GM/example update not needed for this internal reader repair: the already updated
+ordinary wait emission/client publication/recovery contract is unchanged.
+Next coherent SOURCE (including busy/source-lifetime and finite selection),
+preserve actual needed binaries, fresh affected builds and exact current plans/
+PREP before any runtime. All new source/tests remain UNCOMPILED/UNRUN.
+
 # C14 finite runtime —6 PASS,1 reader failure,7 UNRUN
 
 Runtime544b5863d3b0d6e6ca04e52091cdeb22f771543a, compiled Integrationcfbae21,
