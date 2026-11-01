@@ -1,4 +1,9 @@
-# C9 native terminal timing WIP — source only / UNCOMPILED / UNRUN
+# C9 native terminal timing — SOURCE accepted / UNCOMPILED / UNRUN
+
+Independent Astra/high SOURCE accepted code27d92160693165e58ffd01116f7d520aa1b7db68;
+the earlier P2 below is resolved. Root checked the actual diff, JSON and whitespace,
+then pushed and verified the exact remote SHA. No C9 build, discovery, PlanOnly or
+runtime has executed, and no cost/speedup or whole-feature acceptance is claimed.
 
 Test-only implementation follows the accepted bounded DESIGN on clean e53c2177.
 Only current terminal legacy/removal opt in; all other physical/diagnosis fixture
@@ -27,8 +32,8 @@ attempts actual transaction disposal exactly once, records a close failure and
 attaches it to the body exception when both fail, then rethrows the original via
 ExceptionDispatchInfo. Filters restrict this preservation to capture opt-in;
 noninstrumented peers retain their original exception semantics. Assertions and
-production transaction code are unchanged. Delta SOURCE remains pending; all C9
-build/discovery/runtime results remain UNCOMPILED/UNRUN.
+production transaction code are unchanged. Delta SOURCE is accepted at the code
+SHA above; all C9 build/discovery/runtime results remain UNCOMPILED/UNRUN.
 
 Optimization assessment: instrumentation passes only original timing scalars; it
 does not retain or reuse game DATA or change cache eligibility. Static repeated
@@ -39,8 +44,9 @@ Existing shining-faction-service-capture-wiring3 is added to selection at unchan
 Source-estimated inventory53cases/32methods/28descriptors/27categories is UNRUN
 pending official fresh discovery/PlanOnly; this is not an all-category launch plan.
 
-No build/test/runtime/Git or evidence-retirement action was performed by this writer. SOURCE,
-owning builds, discovery/PREP and capture gate are pending; no retry is admitted.
+The source writer performed no build/test/runtime/Git or evidence retirement.
+Root published the WIP and independent SOURCE is accepted; owning builds,
+discovery/PREP and capture gate remain pending. No retry is admitted.
 Root separately observed686301184B below unchanged687865856B start reserve by
 1564672B. Six new closed logs are independently gzip-verified; their originals
 remain untouched pending separate author approval. External manifest
