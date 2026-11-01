@@ -1,3 +1,30 @@
+# Console course accepted — browser singleton PREP accepted, runtime UNRUN
+
+Independent Astra/high OUTCOME accepts the complete console course at runtime
+`494049134a78995bef996c72946dea2212ca23c5`: primary TRX, exact one-case selection,
+all 28 original events / 14 pairs, sequence/PID/ticks and operation aggregates,
+zero-message counters, actual assembly hashes, complete closing and actual root
+absence were independently checked. The three milestones, two accepted waits,
+separate current-menu confirmations, costs, wound, History and replay all remain
+in the executed test. The prior result receipt is accurate and remotely saved at
+`0460d6c5946f74654aafba3b8a50778e004b3a91`.
+
+The same independent review accepts exactly one next shared browser-handler/queue
+course: `BrowserPhysicalCourseSeparatelyConfirmsEveryMilestoneAfterAcceptedWaits`,
+1 Fact / 1 exclusive Integration descriptor / unchanged 180 seconds. Current exact
+PlanOnly passes with zero execution in 7.0245377 seconds. Existing qualified binary
+owners, original course oracles and reviewed COURSE helpers remain unchanged;
+no rebuild or repeated PASS. Immediate fresh source/resource/owner/reserve fence
+is still required before this actual runtime. Browser course remains UNRUN here.
+
+The two ended generic plain logs (console runtime and browser plan) were replaced
+only by full EOF/CRC/hash-verified recoverable gzip, independently checked. Their
+manifests are external; every capture/TRX/JSON/save/root/archive/bin is retained.
+The 20:20:57 UTC fence has unchanged 27 artifacts, resources and daemons, no active
+owner, and 715907072 free bytes above the unchanged 687865856-byte start reserve.
+Browser DOM/provider/fresh-process, rollback3, whole feature and all prior HOLDs
+remain open. No other runtime is admitted by this bounded PREP.
+
 # Full console course — 1 PASS, independent OUTCOME pending
 
 Runtime `494049134a78995bef996c72946dea2212ca23c5`; actual Main/Support/Unit
