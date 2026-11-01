@@ -1,3 +1,23 @@
+# Canonical admission controls — partial OUTCOME accepted, pending cases retained
+
+Independent Astra/high accepts causal16 OUTCOME and the subsequent partial
+admission48 result at runtime c80a531154373b892c5f8b4287f2f4a9cf8aaf34:
+47 PASS,1 FAIL, remaining71 UNRUN after fail-fast. No timeout/skip; cleanup true,
+pre/post pins identical. Admission TRX SHA
+1909bd2af4d25574afed42bf76ef249a81cd2064e101d862a5cdb83fbd00e2f0.
+The single failure expects the former diagnosis-specific exception text; the current
+generalized purpose guard correctly refuses before source reads/dice. Later zero-draw /
+byte invariance assertions were not reached, so this case remains FAIL until its
+minimal fixture correction and separate confirming execution. Production is unchanged.
+
+Next execute only remaining71 across five categories/six descriptors, admitted by
+independent PREP against the saved exact all-plan with unchanged60s bounds and a
+fresh source/artifact/resource/owner/reserve fence. Preserve causal16 and admission47
+provenance; no passing repeats. Then group the exact-message and already confirmed
+BOM-decoder fixture corrections for one Unit-only build and narrow verification.
+Native2/console rollback1 remain UNRUN pending dependent cheap gates/PREP. Canonical
+adapter feature acceptance and all broader HOLDs remain open.
+
 # Canonical causal16 GREEN — primary evidence verified, OUTCOME pending
 
 Runtime f79ca2ed05d263e0f5af95c7a9b75dc19249d33e / Unit+Main+Support source
