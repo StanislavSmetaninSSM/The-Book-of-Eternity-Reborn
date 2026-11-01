@@ -1,3 +1,28 @@
+# C13 corrected writer — complete 2 GREEN; OUTCOME pending
+
+Runtime 234fe38a49ba425d4fc0585f18e929ea01d5e807 / compiled Integration
+47aa6358d962e3985a21dba8d15020d8083a5b9a, other owners unchanged C12 source390907.
+After independent PREP, P3GREENC13GREEN-causal2 completes 2/2 PASS / 1 descriptor,
+no timeout/underfill, category 6.5005702s/60s, wall 14.7592488s. Primary TRX
+SHA-256 693bed36349c08de7c05307221adf8d45f4d8b99ad7b48a6d354ad3dd033ca08;
+unique IDs/executions, exact both pending-before-turn rows, stable pins and cleanup
+verified. Actual public interface validator accepts without mutating any captured
+artifact; command-only timeChange480 resolves from2880 to3360. Exact ready paths,
+original-only report obligations, unrelated NPC bytes, no wound command and actual
+cheap-root absence pass. Full source/diagnostic output remains external in
+verified-outcome.json / verified-writer-artifacts.json and original TRX.
+
+Only the ended generic log is replaced by full verified recoverable gzip. Post-run
+fence has no active managed owner, all27/resources/daemons stable and 851763200
+free bytes before log retirement. Both older RED rows and all original course
+partial/evidence remain preserved. No measured performance improvement is claimed.
+Independent OUTCOME pending. This proves the fixture artifact channel only; full
+course remains UNKNOWN and must not be retried until numeric accepted-clock
+publication/next-menu/once-only delta is proved and corrected through its owner.
+No production clock fix has been applied, no manual clock patch or budget change.
+Next: accept bounded writer outcome, then cheap real ordinary-clock causal control
+and minimal existing-owner correction. Other PASS/UNKNOWN/UNRUN/HOLDs stay exact.
+
 # C13 corrected wait writer built — exact GREEN PREP pending
 
 Independent Astra/high SOURCE accepts 47aa6358d962e3985a21dba8d15020d8083a5b9a.
