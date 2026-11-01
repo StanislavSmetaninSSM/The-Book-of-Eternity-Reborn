@@ -1,4 +1,6 @@
+using System.Collections.Concurrent;
 using System.Collections.Immutable;
+using System.Runtime.ExceptionServices;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Configuration;
@@ -65,12 +67,32 @@ public sealed partial class MortalWoundTreatmentResolverTests
         Assert.Empty(await validator.ValidateAcceptedTurnRawMortalItemMaterializationAsync(fixture.Lease));
         var held = fixture.CaptureJson();
         if (removeThenHeal) AssertTerminalLegacyPreparationPrerequisite(fixture, admitted.Owner, request, resolution, held);
-        var composed = WoundAcceptedTurnPlanner.ComposeMortalWoundTreatmentPublication(files, fixture.Lease,
-            new GameResponse(), admitted.Owner, request, resolution);
+        var observedExceptions = new ConcurrentQueue<string>();
+        var invocation = new AsyncLocal<object?>(); var marker = new object();
+        void Observe(object? sender, FirstChanceExceptionEventArgs args)
+        {
+            if (ReferenceEquals(invocation.Value, marker) && args.Exception is InvalidOperationException)
+                observedExceptions.Enqueue(args.Exception.ToString());
+        }
+        WoundAcceptedTurnPlanner.MortalWoundTreatmentPublicationResult composed;
+        var previous = invocation.Value;
+        if (removeThenHeal) AppDomain.CurrentDomain.FirstChanceException += Observe;
+        try
+        {
+            if (removeThenHeal) invocation.Value = marker;
+            composed = WoundAcceptedTurnPlanner.ComposeMortalWoundTreatmentPublication(files, fixture.Lease,
+                new GameResponse(), admitted.Owner, request, resolution);
+        }
+        finally
+        {
+            if (removeThenHeal) AppDomain.CurrentDomain.FirstChanceException -= Observe;
+            invocation.Value = previous;
+        }
+        foreach (var exception in observedExceptions) output.WriteLine("REMOVE_PUBLICATION_FIRST_CHANCE: " + exception);
         fixture.AssertJson(held);
         Assert.True(composed.IsValid,
             "TERMINAL_HEAL_CAUSAL: the actual publication rejected a legal, retained terminal heal after native mode/source/claim premises. " +
-            DescribeIssues(composed.Issues));
+            DescribeIssues(composed.Issues) + Environment.NewLine + string.Join(Environment.NewLine, observedExceptions));
         AssertTerminalPublicationStages(composed.Plan!, removeThenHeal ? "remove" : "simple");
     }
 

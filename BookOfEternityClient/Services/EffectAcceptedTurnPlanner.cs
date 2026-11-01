@@ -4520,7 +4520,7 @@ internal static partial class EffectAcceptedTurnPlanner
         var completedPlan = new EffectAcceptedTurnPlan(
                 fingerprint,
                 carrierAuthorityFingerprint,
-                healingProof is not null || treatmentProof is not null
+                healingProof is not null
                     ? finalSourceAuthority.CanonicalFingerprint : input.SourceAuthority.CanonicalFingerprint,
                 targetAuthority.CanonicalFingerprint,
                 combatantIds,

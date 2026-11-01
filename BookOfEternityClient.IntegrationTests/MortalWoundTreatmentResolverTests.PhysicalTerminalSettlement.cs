@@ -82,6 +82,46 @@ public sealed partial class MortalWoundTreatmentResolverTests
         Assert.Equal(mechanicalDrafts.Length, legacyBatches.Count);
         var groups = MortalWoundHealLegacyPlanner.Finalize(terminal.Legacies, bundle.PreparedPlan, bundle.EffectBatchPlan);
         Assert.Equal(legacyBatches.Select(row => row.PreparedWoundId), groups.Select(row => row.LegacyId));
+        var accepted = bundle.EffectBatchPlan;
+        var source = accepted.EffectPlan;
+        var admittedSources = accepted.EffectInput.SourceAuthority;
+        var wound = terminal.Outcome.Before;
+        Assert.Single(admittedSources.SnapshotWoundGroupAuthorities(), row =>
+            row.Key.Realm == wound.Owner.Realm && row.Key.Kind == "wound" && row.Key.SourceId == wound.WoundId);
+        Assert.Equal(admittedSources.CanonicalFingerprint, source.SourceAuthorityFingerprint);
+        var retiredSources = admittedSources.WithoutHealedWoundSource(wound.Owner.Realm, wound.WoundId);
+        Assert.Empty(retiredSources.Issues);
+        Assert.Equal(retiredSources.CanonicalFingerprint, source.SourceAuthority.CanonicalFingerprint);
+        Assert.NotEqual(source.SourceAuthorityFingerprint, source.SourceAuthority.CanonicalFingerprint);
+        Assert.DoesNotContain(source.SourceAuthority.SnapshotWoundGroupAuthorities(), row =>
+            row.Key.Realm == wound.Owner.Realm && row.Key.Kind == "wound" && row.Key.SourceId == wound.WoundId);
+        var honestCopy = CopyTerminalEffectPayload(source, source.CarrierAfterImages);
+        Assert.True(EffectAcceptedTurnPlanner.TryReadMortalTreatmentExecution(bundle.PreparedPlan, honestCopy, out _));
+        var beforeRoleFailure = Assert.Throws<InvalidDataException>(() => CopyTerminalEffectPayload(source,
+            source.CarrierAfterImages, sourceFingerprint: source.SourceAuthority.CanonicalFingerprint));
+        Assert.Equal("Lifecycle evidence belongs to a different effect result.", beforeRoleFailure.Message);
+        var finalRoleFailure = Assert.Throws<InvalidDataException>(() => CopyTerminalEffectPayload(source,
+            source.CarrierAfterImages, finalSources: admittedSources));
+        Assert.Equal("Lifecycle evidence belongs to a different effect result.", finalRoleFailure.Message);
+        var surviving = EffectCarrierCatalog.Build(source.ResourceTriggerCarriers);
+        Assert.Empty(surviving.Issues);
+        var legacySources = source.SourceAuthority.SnapshotSameTurnLegacyEntries();
+        var actualApplications = accepted.ApplicationResults;
+        Assert.Equal(legacyBatches.Sum(batch => batch.SourceExport.Definitions.Count),
+            legacySources.Count);
+        foreach (var batch in legacyBatches)
+        foreach (var root in batch.RootApplications)
+        {
+            var allocation = Assert.Single(actualApplications, row => row.ApplicationRef == root.ApplicationRef);
+            Assert.True(surviving.TryResolveOne(allocation.EffectId, out var occurrence));
+            Assert.Equal(root.ExpectedCarrierCoordinate, occurrence.Coordinate);
+            Assert.Equal(root.ExpectedMaterializationFingerprint, WoundEffectMaterializationFingerprint.Compute(
+                root.ExpectedSourceKey, EffectMaterializationContract.SchemaVersion, root.Parameters,
+                occurrence.Effect["components"]!.AsArray()));
+            var definition = Assert.Single(batch.SourceExport.Definitions, row => row.DefinitionKey == root.DefinitionKey);
+            var binding = Assert.Single(legacySources, row => row.Key == root.ExpectedSourceKey);
+            Assert.True(JsonNode.DeepEquals(definition.Definition, binding.Definition));
+        }
         if (variant == "reduce_legacy")
         {
             Assert.Contains(stages[0].Applications, row => row.SourceKey.Kind == "wound");
@@ -102,16 +142,11 @@ public sealed partial class MortalWoundTreatmentResolverTests
             Assert.Single(batch.RootApplications);
         });
         if (legacyBatches.Count == 0) return;
-        var accepted = bundle.EffectBatchPlan;
-        var source = accepted.EffectPlan;
-        var honestCopy = CopyTerminalEffectPayload(source, source.CarrierAfterImages);
-        Assert.True(EffectAcceptedTurnPlanner.TryReadMortalTreatmentExecution(bundle.PreparedPlan, honestCopy, out _));
         var changedImages = source.CarrierAfterImages.ToDictionary(pair => pair.Key, pair => pair.Value.DeepClone().AsObject(), StringComparer.Ordinal);
         var effects = changedImages[EffectCarrierCatalog.PlayerPath]["activeEffects"]!.AsArray();
         Assert.NotEmpty(effects);
         effects[0]!["display"]!["description"] = "changed actual effect payload";
         Assert.Throws<InvalidDataException>(() => CopyTerminalEffectPayload(source, changedImages));
-        var actualApplications = accepted.ApplicationResults;
         Assert.NotEmpty(actualApplications);
         var mapFaults = new List<(string Label, IReadOnlyList<EffectAcceptedApplicationResult> Applications)>
         {
@@ -161,11 +196,12 @@ public sealed partial class MortalWoundTreatmentResolverTests
     }
 
     private static EffectAcceptedTurnPlan CopyTerminalEffectPayload(EffectAcceptedTurnPlan source,
-        IReadOnlyDictionary<string, JsonObject> images) => new(source.InputFingerprint,
-        source.CarrierAuthorityFingerprint, source.SourceAuthorityFingerprint, source.TargetAuthorityFingerprint,
+        IReadOnlyDictionary<string, JsonObject> images, string? sourceFingerprint = null,
+        EffectSourceAuthority? finalSources = null) => new(source.InputFingerprint,
+        source.CarrierAuthorityFingerprint, sourceFingerprint ?? source.SourceAuthorityFingerprint, source.TargetAuthorityFingerprint,
         source.AllocatedCombatantIds, source.AllocatedEffectIds, source.AllocatedTransitionIds, source.Sources,
         source.Targets, source.SourceBindings, source.DeferredReactions, source.ReactionExpansionCount,
-        source.ReactionExpansionUsage, source.ActiveEffects, source.ResourceTriggerCarriers, source.SourceAuthority,
+        source.ReactionExpansionUsage, source.ActiveEffects, source.ResourceTriggerCarriers, finalSources ?? source.SourceAuthority,
         source.TargetAuthority, source.EventInput, source.CarrierBeforeImages, images, source.IdentityIndexBeforeImage,
         source.IdentityIndexAfterImage, source.TouchedPaths, source.DeletedPaths, source.AcceptedCarrierBaselines,
         woundApplicationRootEffectBindings: source.WoundApplicationRootEffectBindings,

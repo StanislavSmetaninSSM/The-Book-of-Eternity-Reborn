@@ -1,3 +1,41 @@
+# T121 terminal source roles and bounded exception observation — UNCOMPILED/UNRUN
+
+Bounded source correction on 3a5c92652d4f6510291b9ae361c27b9d9070b879; no writer
+build, test, discovery, runtime or Git publication. P3GREENC2-terminal4 remains
+the actual 0 PASS / 4 FAIL, no-timeout result described below. Its passing remove
+preparation prefix proves only those prerequisites, not terminal publication.
+
+Terminal ordinary treatment now keeps the original admitted source fingerprint
+in the publication-before field. Spiritual healing keeps its existing final-source
+fingerprint rule. The final SourceAuthority object, historical used SourceBindings,
+retirement projection, lineage/reactions, actual allocation, lifecycle ledger and
+private execution/payload seals remain unchanged. Existing item/resource
+before-to-normalized recomposition guards remain exact; no new witness or authority
+is introduced. This resolves the identified source-role mismatch, not yet a runtime
+GREEN claim. Current/removal and joint paths share this same effect-plan boundary;
+the genuine joint contribution/admission and complete application map stay intact.
+
+The existing terminal helper checks both roles against original admitted and exact
+retired source DATA, requires healed wound-source absence, accepts an honest sealed
+copy, and refuses a separately changed before fingerprint or final source object
+through the existing lifecycle payload binding. Surviving legacy source/definition,
+allocation/carrier and fully parameter-bound component materialization comparisons
+remain exact. Copied application/source DATA is reused within that helper; there
+is no new cache, physical read, owner, allocation or speedup claim.
+
+Only remove_then_heal installs the established invocation-scoped first-chance
+observer around the unchanged synchronous Compose call. An AsyncLocal marker
+excludes foreign invocations; a concurrent collection retains full
+InvalidOperationException message/throw-stack DATA, finally always removes the
+observer and restores the marker, and existing test output emits it afterward.
+The final causal publication assertion is preserved and includes that evidence.
+No production diagnostic API, public error message change, reflection, record
+quota, new preparation or guessed removal correction is added. That later throw
+remains unresolved until actual observation. No row/category/count/budget or GM
+contract changes; terminal4 is the proposed first affected runtime, current3/UI
+remain held. Source whitespace/member checks only precede root persistence and
+independent delta SOURCE; all code in this checkpoint is UNCOMPILED/UNRUN.
+
 # T121 terminal contour reassessment — 0 PASS / 4 FAIL retained
 
 Runtime a3edbd7cfa935d506485cee5e0fddfaf3dc106b1 / compiled source
