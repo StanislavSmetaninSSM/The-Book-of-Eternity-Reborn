@@ -1,3 +1,14 @@
+# Canonical diagnosis adapters — source matrix / DESIGN proposal saved
+
+No new gameplay code yet. Existing owners are identified for resource quantities,
+accepted effects, exact local scope, Soul Quests and player Soul Relics. Three
+setting/consent kinds require an explicit review of canonical afterlife placement;
+the plan marks this unresolved rather than inventing a store or interpreting aid
+agreements as arbitrary consent. Proposed proof/lifetime/invalidation and causal
+selection are in the existing canonical plan. All eight adapters remain unchecked.
+Next independent DESIGN, then implement source-backed agreed behavior. Current
+accepted physical frontier and all browser/DFR/Mortal/Windows boundaries persist.
+
 # Bounded physical course frontier accepted; independent diagnosis adapters next
 
 Independent Astra/high verifies the phase interpretation and precise source-contract

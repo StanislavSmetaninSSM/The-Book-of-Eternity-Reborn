@@ -1,3 +1,50 @@
+# Proposed next implementation: canonical spiritual diagnosis requirements
+
+Tracked task: T121-DIAGNOSIS-SPIRITUAL-CANONICAL-ADAPTERS / #1536. DESIGN proposal,
+not implemented or accepted. Player result: a known spiritual diagnostic method
+can be offered and separately confirmed when every declared current condition is
+proved; unmet/stale/private/foreign evidence cannot grant it. Diagnosis remains
+free, knowledge-only, one safe cycle with ordinary natural recovery, no new tariff.
+
+| Requirement | Candidate existing canonical owner / reuse |
+| --- | --- |
+| item_quantity | Exact current player-soul `soulRelics.stored/equipped` in soul_state; existing SoulRelic contract. One unique relic ID is one owned item, no name/legacy alias or fabricated count. Other actor ownership needs an actual existing carrier, never the player's relics. |
+| resource_quantity | Existing definitions/state/history/current owner authority, with exact afterlife actor resourceOwnerBindings; preserve owner capabilities, lifecycle and availability. Reuse existing resource parsers/composer once; no Ink Feathers or new ledger. |
+| consent | Existing location-owned typed setting/consent mechanism needs explicit afterlife adaptation. Never reinterpret a healing aid/compensation record as arbitrary consentRef or infer consent from a label. Exact placement/authority remains a DESIGN question. |
+| facility | Reuse typed setting-scene facility grammar on the actual realm-owned current locality, not a fabricated Mortal location. Afterlife canonical placement is a DESIGN question; no new parallel store. |
+| location | LocalInteractionScopeService and ShiningCurrentHallContract / actual Chaos Abode. Exact locationRef, realm, current player/target membership; no arbitrary profile location field. |
+| quest_state | Existing `game_state/quests/soul_quests.json` / UpdateSoulQuests, exact questId/status. A soul quest is not an aid agreement or compensation obligation. |
+| effect_state | Existing accepted EffectMechanicsSnapshot/identity/carriers, exact realm/typed target/effect/state; absence or unrelated/retired effect is not a fabricated positive. |
+| environment | Reuse existing typed setting-scene environment grammar on the actual realm-owned locality. Canonical afterlife placement remains a DESIGN question, never narrative text as authority. |
+
+Pure operation-owned requirement DATA should be built once from the existing
+read-set/context's actual roots and images. Admission performs no extra IO; each
+kind emits a closed ordered proof bound to the exact declaration, typed owner,
+mechanical evidence and complete source-dependency fingerprints. Retain the current
+three-kind proof schema/semantics. Add new kind-specific closed shapes rather than
+loosen unknown-field validation. Fresh confirmation/staging/original/publication
+must reconstruct the same proofs from their own actual owner, never UI DATA.
+
+Read only required extra canonical sources by selected/visible requirement kinds;
+retain supported-three-kind source identity and costs when no new kind applies.
+Extend actual diagnosis source inventory and all original/current checks together.
+Reuse parsed roots within one existing operation; full key is realm, exact owner/
+path/wound/declaration and complete source identities, lifetime ends on operation
+close/mutation/error. No live permission, source verdict or lease cache. Keep fresh
+opening/closing authority, current ownership, source/history and publication checks.
+
+Before code, independent DESIGN must validate the owner matrix, particularly whether
+three setting/consent cases can reuse existing realm containers without inventing a
+store or unapproved game rule. If not, identify the precise missing contract and
+continue independent source-backed cases. No speculative new field or Mortal
+snapshot. Cheap causal tests must cover positive actual sources, missing/duplicate/
+confusable/foreign owner/realm, changed quantities/status/consent/locality/effect,
+new-open/stale-confirm, detached proof mutation and unknown fields, inert reads,
+privacy, no spending/draw and real source-read/composition counters. Then coherent
+SOURCE, fresh affected builds, exact bounded categories and addressed native/shared
+UI/rollback acceptance. GM docs/examples/registry/semantic guards update with the
+actual source contract. No full suite or old DFR/Mortal/Windows/performance restart.
+
 # Current functional frontier after bounded browser localization
 
 Issue #1536: complete console physical course1 and atomic publication rollback3
