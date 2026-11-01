@@ -201,14 +201,139 @@ public sealed class AcceptedTurnNarrativePayloadValidationTests : IDisposable
             string.Equals(issue.FilePath, "game_state/player/skill_mastery.json", StringComparison.OrdinalIgnoreCase));
     }
 
-    private Task WriteKnownPassiveSkillAsync(string skillId, string skillName)
+    [Fact]
+    public async Task ValidateAcceptedTurnNarrativePayloadAsync_RejectsSkillClaimWhenMasteryDeltaTargetsOnlyADifferentSkill()
     {
-        return _fs.WriteFileAtomicAsync("game_state/player/skills_passive.json", $$"""
+        await WriteKnownPassiveSkillsAsync(
+            ("skill_life_001_seal_reading", "Чтение печатей"),
+            ("skill_life_002_knife_fight", "Ножевой бой"));
+        await _fs.WriteFileAtomicAsync("game_state/player/skill_mastery.json", """
         {
-          "passiveSkillChanges": [
+          "skillMasteryChanges": [
             {
-              "skillId": "{{skillId}}",
-              "skillName": "{{skillName}}",
+              "skillName": "Ножевой бой",
+              "newMasteryLevel": 2
+            }
+          ]
+        }
+        """);
+        await WriteTurnCompleteAsync(
+            "output/narrative_response.json",
+            "output/debug_logs.json",
+            "game_state/player/skill_mastery.json");
+        await _fs.WriteFileAtomicAsync("output/narrative_response.json", """
+        {
+          "response": "Твоя подготовка в чтении печатей помогает заметить смещённую свидетельскую зарубку.",
+          "timestamp": "2026-11-02T08:00:00Z"
+        }
+        """);
+
+        var issues = await _validator.ValidateAcceptedTurnNarrativePayloadAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "accepted_turn_skill_claim_missing_state_delta", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(issue.FilePath, "game_state/player/skill_mastery.json", StringComparison.OrdinalIgnoreCase) &&
+            issue.Actual != null &&
+            issue.Actual.Contains("Ножевой бой", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public async Task ValidateAcceptedTurnNarrativePayloadAsync_RejectsSkillClaimWhenMasteryDeltaReferencesSkillConfusably()
+    {
+        await WriteKnownPassiveSkillsAsync(("skill_life_001_seal_reading", "Чтение печатей"));
+        await _fs.WriteFileAtomicAsync("game_state/player/skill_mastery.json", """
+        {
+          "skillMasteryChanges": [
+            {
+              "skillName": "чтение печатей",
+              "newMasteryLevel": 2
+            }
+          ]
+        }
+        """);
+        await WriteTurnCompleteAsync(
+            "output/narrative_response.json",
+            "output/debug_logs.json",
+            "game_state/player/skill_mastery.json");
+        await _fs.WriteFileAtomicAsync("output/narrative_response.json", """
+        {
+          "response": "Твоя подготовка в чтении печатей помогает заметить смещённую свидетельскую зарубку.",
+          "timestamp": "2026-11-02T08:05:00Z"
+        }
+        """);
+
+        var issues = await _validator.ValidateAcceptedTurnNarrativePayloadAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "accepted_turn_skill_claim_missing_state_delta", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(issue.FilePath, "game_state/player/skill_mastery.json", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateAcceptedTurnNarrativePayloadAsync_AllowsSkillClaimWhenMasteryDeltaTargetsClaimedSkillExactly()
+    {
+        await WriteKnownPassiveSkillsAsync(("skill_life_001_seal_reading", "Чтение печатей"));
+        await _fs.WriteFileAtomicAsync("game_state/player/skill_mastery.json", """
+        {
+          "skillMasteryChanges": [
+            {
+              "skillName": "Чтение печатей",
+              "newMasteryLevel": 2
+            }
+          ]
+        }
+        """);
+        await WriteTurnCompleteAsync(
+            "output/narrative_response.json",
+            "output/debug_logs.json",
+            "game_state/player/skill_mastery.json");
+        await _fs.WriteFileAtomicAsync("output/narrative_response.json", """
+        {
+          "response": "Твоя подготовка в чтении печатей помогает заметить смещённую свидетельскую зарубку.",
+          "timestamp": "2026-11-02T08:10:00Z"
+        }
+        """);
+
+        var issues = await _validator.ValidateAcceptedTurnNarrativePayloadAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "accepted_turn_skill_claim_missing_state_delta", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateAcceptedTurnNarrativePayloadAsync_AllowsSkillClaimWhenClaimedSkillIsNewThisTurn()
+    {
+        const string preTurnPassiveSkillsJson = """
+        {
+          "passiveSkillChanges": [],
+          "removePassiveSkills": []
+        }
+        """;
+        await WriteKnownPassiveSkillsAsync(("skill_life_001_seal_reading", "Чтение печатей"));
+        await WriteValidatedSnapshotManifestAsync(("game_state/player/skills_passive.json", preTurnPassiveSkillsJson));
+        await WriteTurnCompleteAsync(
+            "output/narrative_response.json",
+            "output/debug_logs.json",
+            "game_state/player/skills_passive.json");
+        await _fs.WriteFileAtomicAsync("output/narrative_response.json", """
+        {
+          "response": "Твоя подготовка в чтении печатей помогает заметить смещённую свидетельскую зарубку.",
+          "timestamp": "2026-11-02T08:15:00Z"
+        }
+        """);
+
+        var issues = await _validator.ValidateAcceptedTurnNarrativePayloadAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "accepted_turn_skill_claim_missing_state_delta", StringComparison.OrdinalIgnoreCase));
+    }
+
+    private Task WriteKnownPassiveSkillsAsync(params (string SkillId, string SkillName)[] skills)
+    {
+        var entries = string.Join(",\n    ", skills.Select(skill => $$"""
+            {
+              "skillId": "{{skill.SkillId}}",
+              "skillName": "{{skill.SkillName}}",
               "skillDescription": "Тестовый навык.",
               "rarity": "Common",
               "type": "KnowledgeBased",
@@ -219,10 +344,20 @@ public sealed class AcceptedTurnNarrativePayloadValidationTests : IDisposable
               "currentMasteryProgress": 0,
               "masteryProgressNeeded": 100
             }
+            """));
+        return _fs.WriteFileAtomicAsync("game_state/player/skills_passive.json", $$"""
+        {
+          "passiveSkillChanges": [
+            {{entries}}
           ],
           "removePassiveSkills": []
         }
         """);
+    }
+
+    private Task WriteKnownPassiveSkillAsync(string skillId, string skillName)
+    {
+        return WriteKnownPassiveSkillsAsync((skillId, skillName));
     }
 
     private Task WriteActiveQuestAsync(string questId, string title, int lastUpdatedTurn)
