@@ -1,3 +1,36 @@
+# T121 nested legacy codec and History-prefix findings — correction pending
+
+Runtime ec34f8250f070a6537375a9dc97ef93d4185e80e / source
+6cf8a19493de4335ab5ca2ad784eada40b36d105: terminal4 completes 0 PASS / 4 FAIL,
+64.3147627 / 120 seconds, wall 70.4521291; no timeout/underfill, full cleanup and
+stable binaries. Complete evidence remains external at
+P3GREENC3-terminal4/verified-terminal-failure.json. No case is relabelled PASS.
+
+Three simple modes now successfully compose the complete common publication.
+Their later fixture assertion incorrectly compares current-turn History with only
+treat/heal, including a genuine original create. Preserve the whole original prefix
+and require exactly two appended standalone rows or three joint rows, with global
+and per-wound ordinals, coordinates, links and full final agreement. Do not erase,
+redate or filter away original History. Source-role/tamper checks after this assertion
+have not yet executed.
+
+The remove observation localizes the real exception to
+MortalWoundTreatmentPersistedResult.Create, TreatmentReplay.cs:43: strict
+reconstruction rejects treatmentResult.declaredResult[1]. Both reviewers confirm
+a two-sided nested legacy codec gap: generic abstract-element serialization omits
+mechanical effectDraft, and strict operation deserialization cannot instantiate
+nonempty abstract legacy entries. Empty legacies bypass both defects.
+
+Independent Astra DESIGN accepts a local closed-kind converter following the
+existing requirement-evidence converter pattern, in persistence writing and strict
+operation options only. Preserve complete concrete payload/kind, Disallow,
+duplicate/request-selected outcome/fingerprint checks and canonical roundtrip;
+no new type tag/schema/fallback. HasMatchingDeclaredResult must compare the complete
+mechanical payload. Existing genuine rows gain independent full-payload and strict
+roundtrip/refusal proofs before common publication, with bytes/claims unchanged;
+no new world/category or separate RED run is required. Current3/UI and all other
+HOLDs remain open. No implementation/build/retry follows from this finding alone.
+
 # T121 source-role correction — compiled; terminal4 PREP pending
 
 All four selected owners freshly compile source
