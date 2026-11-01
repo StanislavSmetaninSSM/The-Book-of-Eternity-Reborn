@@ -1,3 +1,22 @@
+# T121 physical GREEN — cheap accepted, bounded native attempt failed
+
+Runtime 587e803d2c28b61754fb352289fb90cfba9d7e26: cheap18 completes 18/18 PASS,
+11 methods / 9 descriptors, wall 53.2399973 seconds. All category limits, unique
+IDs, stable binaries/resources and owned cleanup are verified. Each procedure/
+course/guaranteed menu reads wounds/NPC/clock/location once; NPC was two reads in
+the accepted initial causal baseline. Both arbitrary-callback freshness controls
+pass. This proves source-count reduction, not a general wall-time speedup.
+
+Conditionally admitted native22 stops fail-fast: 10 PASS, 1 FAIL, 11 UNRUN,
+wall 117.3308116 seconds, no timeout. Item2/resource1 diagnosis peers, cold3 and
+hold3 pass; after-commit hold fault passes. The before-commit hold-fault row
+fails PhysicalGuidedHoldFaults.cs:48 because expected exception is null. The
+injector boundary/target is under read-only investigation; no product or fixture
+cause is asserted yet. Remaining publication/terminal/joint and all UI stay held.
+Strict partial proof and all original TRX remain in external P3GREEN-native22;
+closing proves stable 27 artifacts/resources/daemons, no live owner and
+838,942,720 free bytes. No rerun, assertion/guard relaxation or new PASS follows.
+
 # T121 physical guided correction — compiled; GREEN admission pending
 
 2026-11-01: independent Astra/high whole SOURCE/fixture/selection review and
