@@ -1,3 +1,29 @@
+# Canonical spiritual diagnosis adapters — bounded qualification accepted
+
+Issue#1536/T121-DIAGNOSIS-SPIRITUAL-CANONICAL-ADAPTERS is complete in its addressed
+scope. A known method can now use all eight exact realm-owned requirement sources,
+with inert viewing/cancel, fresh confirmation/source authority, no diagnostic fee
+or draw, one natural cycle, exact common publication/History and rollback. The141
+distinct PASS belong to seven explicit runtime groups, not one fresh run; native
+resource/effect2 and canonical console rollback1 are accepted, not an all-eight
+native/UI matrix. See current physical-guided-checkpoint.md for source/binary/TRX /
+full capture provenance, corrected fixture failures and independent reviews.
+
+Next unresolved player-facing qualification is the complete browser physical course
+(and its linked terminal/native frontier). Retained original/instrumented browser
+and C9/C10 native UNKNOWN remain honest outcomes. First bound any cause-driven
+correction to actual existing timers/source ownership; no blind runtime retry,
+removed browser guards, larger limit or revived generic DFR/performance chain.
+Existing task checkboxes require evidence reconciliation, not reimplementation of
+accepted healing/services/cards. Source/runtime privacy, examples, scale and atomic
+failure acceptance remain subject to their actual addressed contracts under T149–159.
+
+The existing Saref metadata-only follow-up is already tracked as
+[#1571](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1571),
+verified read-only2026-11-01; do not create a duplicate or implement its independent
+memory runtime inside this wound task. Historical M01 survival remains bounded;
+E01 is unqualified. No whole T148/FR071/T121/US5/#1536 or DFR/Mortal/Windows closure.
+
 # Canonical adapter implementation admitted after causal16 RED
 
 Independent Astra/high accepts all16 intended final availability failures at

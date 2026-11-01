@@ -327,15 +327,20 @@ this bounded route, not parent T121/FR071/US5/#1536 or the eight proof adapters.
   snapshot/Continuation consumers. Every declared condition must have exact proof.
   Accepted only for the current source_capability, skill_tier and current-player
   provider proofs; all other declared shapes remain unavailable, not satisfied.
-- [ ] T121-DIAGNOSIS-SPIRITUAL-CANONICAL-ADAPTERS [US5] Before whole requirement-catalogue acceptance (the usable supported-three-kind route may qualify separately),
+- [x] T121-DIAGNOSIS-SPIRITUAL-CANONICAL-ADAPTERS [US5] Before whole requirement-catalogue acceptance (the usable supported-three-kind route may qualify separately),
   supply exact realm-owned proofs for currently unavailable item_quantity,
   resource_quantity, consent, facility, location, quest_state, effect_state and
   environment requirements through the existing read-set/context owner and
   `Services/SpiritualDiagnosisSourceData.cs`. Do not infer locality from an arbitrary
   profile field, reserve costs, invent Mortal snapshots or skip a declaration.
   The supported-three-kind execution route is accepted separately below; this
-  unchecked task retains the eight missing canonical proof adapters. No detached
-  DATA, menu availability or previous acceptance replaces fresh source authority.
+  eight canonical proof adapters now pass independent bounded qualification:
+  16 causal +47 retained admission +71 controls +4 corrected Unit +2 native +1
+  console rollback =141 distinct PASS across seven explicit runtime groups.
+  Exact source/primary-TRX/capture provenance is in physical-guided-checkpoint.md;
+  independent Astra/high SOURCE/PREP/OUTCOME and Sol/xhigh narrow reviews accepted.
+  This is not all-eight native/UI or whole FR071/T121/US5/#1536 acceptance.
+  No detached DATA, menu availability or previous acceptance replaces fresh source authority.
 - [x] T121-DIAGNOSIS-SPIRITUAL-PUBLICATION [US5] Add closed durable diagnosis and
   full-cohort nonempty suffix tests, then integrate knowledge-only diagnosis and
   real recovery with `Services/WoundAcceptedTurnPlannerCore.SpiritualHealing.cs`,

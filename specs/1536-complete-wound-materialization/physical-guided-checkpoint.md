@@ -1,3 +1,67 @@
+# Canonical spiritual diagnosis adapters — independently accepted bounded result
+
+All eight exact canonical requirement kinds are connected: item_quantity,
+resource_quantity, consent, facility, location, quest_state, effect_state and
+environment (Soul Quest is not an agreement). Operation-owned detached DATA and
+closed ordered proofs retain actual realm/actor/locality/source dependencies;
+view/cancel remain inert, confirmation/current/original/publication authority fresh.
+GM guides, scene schema, worked example, registry/manifest/source guards are aligned.
+No new tariff, consumption permission, parallel cache or diagnostic stack.
+
+Root and independent Astra/high accept141 distinct PASS across seven runtime groups:
+
+| Group | PASS | Actual runtime source | Compiled changed owner |
+| --- | ---: | --- | --- |
+| Eight sources ×two realms causal |16|f79ca2ed05d263e0f5af95c7a9b75dc19249d33e|Unit c576861ea767643be7c01097fa888ac8705f6c52|
+| Admission retained successful cases |47|c80a531154373b892c5f8b4287f2f4a9cf8aaf34|Unit c576861ea767643be7c01097fa888ac8705f6c52|
+| Source/privacy/stable-tier/GM/Mortal controls |71|d3714547b0bd8f62aa7e450e7fe812732328d429|Unit c576 /Integration f79|
+| Exact purpose and signed resource/quest observation |4|ce37ccb2fc8874a8a54e40b67829b8b9195bb01d|Unit6d81da656947a0020563112a32817062d81cabe8|
+| Resource no-fee/refusal/publication |1|e6ecd3c3652e4c90226694304c7d4d6c01efef64|Integratione14b07f4d433661f75f1c67b83d7ef8c3ea35bd7|
+| Qualifying effect terminal natural removal |1|e6ecd3c3652e4c90226694304c7d4d6c01efef64|Integratione14b07f4d433661f75f1c67b83d7ef8c3ea35bd7|
+| Canonical console fresh/stale confirm and atomic rollback |1|e70510c4fb871430cb9ada11cd301be266719bc4|Integration38eb79d3cf4d3cea4948b017d812f50291a73ec7|
+
+This is not one fresh141 or an all-eight native/UI matrix. Main/Support retain fresh
+c576 outputs. Latest Unit/Integration builds exit0, exact26/102 unique baseline
+warnings; Main12/Support23 baseline warnings. All4PE/PDB pairs,426 source bindings,
+27 artifacts,44 resource copies/four daemons verify. Catalogue valid1310categories /
+13133methods,zero unmapped/stale; all executed selections match their exact plans.
+No successful group is repeated without impact. No skip/timeout underlies accepted
+PASS; original text/BOM/unsupported-fee/observer fixture findings remain preserved.
+
+Native resource26.0213885/120s proves fee rejection with unchanged signed/canonical
+bytes/no surviving authority, exact ready/absence restoration, then one free real
+publication with unchanged full resource definitions/ledger/History. Native effect
+25.769966/120s admits its actual active effect, completes terminal natural healing /
+removal, and retains exact original/knowledge/natural History and replay. Both prove
+exact common output/delete/forgery refusal and actual same-plan image-build count1.
+Operation-owned resource parsing/composition and original three-kind fast-path reuse
+have real source-work/invalidation controls; no wall-time speedup or lawful changed
+player resource quantity is claimed. No DATA cache substitutes for fresh authority.
+
+Console24.2972319/180s,wall31.0084686,primary TRX
+de082ee6f970d0fa9388387e7649307647da10f83c8b4d8d08e4e29eaf68314f:
+all held/cut History/linked natural/whole-turn rollback assertions pass. Full capture
+3221stored/17172decodedB,20originaltimingevents+1message,stored SHA
+c5682c28d3abc023caac044caa474d391fd796abff0aa5e4af78458fee3b7747;
+EOF/CRC/footer/hashes/pairs/ticks/sequences/aggregates and actual fixture cleanup
+independently verified. Final closing fence has no live owner and715235328freeB,
+above unchanged687865856start reserve. All prior incomplete physical captures stay.
+
+Raw: /workspace/tboe-linux-evidence-20261025/us5-guided-diagnosis/.
+Exact external A2GREENC4-accepted141-union.json SHA
+6e43fe7e9a7581df3f0196e1520939fd90e83d60353b8c5383f09203fea8f32d
+binds every unique name/testId/executionId, primary SHA and source/owner lineage.
+Astra/high accepts source/corrections/PREP/each OUTCOME/union; Sol/xhigh accepts
+narrow fixture/mapping/decoder corrections. Final canonical text synchronization
+requires its bounded review; this does not request more runtime.
+
+Limits: no new DOM/provider/fresh-process, original physical browser-course or
+C9/C10 native UNKNOWN replacement, broad DFR/Mortal compatibility/Windows PASS,
+whole FR071/T121/US5/#1536 closure, first-guardian or cross-OS DATA resolution.
+No new clone/restore, merge, force-push, branch/issue deletion or raw upload.
+Continue the unresolved physical browser-course/native functional acceptance under
+its exact canonical requirements, preserving current holds and already accepted code.
+
 # Canonical console observer SOURCE/build complete — one confirming case next
 
 Independent Astra/high accepts38eb79d3cf4d3cea4948b017d812f50291a73ec7;

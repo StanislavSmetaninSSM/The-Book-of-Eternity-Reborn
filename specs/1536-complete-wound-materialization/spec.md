@@ -1,8 +1,12 @@
 # Canonical spiritual diagnosis requirement sources — technical design, 2026-11-01
 
-Tracked T121-DIAGNOSIS-SPIRITUAL-CANONICAL-ADAPTERS, issue #1536. Proposed source
-representation within the approved requirement catalogue, pending independent
-DESIGN. No new price, consumption, access rule or diagnostic outcome.
+Tracked T121-DIAGNOSIS-SPIRITUAL-CANONICAL-ADAPTERS, issue #1536. Implemented source
+representation within the approved requirement catalogue; independent DESIGN,
+SOURCE and bounded141-distinct-case qualification accepted2026-11-01. Exact scope
+and mixed-source provenance are in physical-guided-checkpoint.md. This proves the
+eight DATA adapters and addressed signed/publication/console rollback consumers,
+not every native/UI combination or whole FR071. No new price, consumption, access
+rule or diagnostic outcome.
 
 For consent/facility/environment, use optional `customStates[]` inside the exact
 current canonical location object: the uniquely resolved `guardians[].abode` in
@@ -3887,9 +3891,10 @@ cannot be supplied by later correlation input, and makes `none` invalid after re
   retained attempt cannot be rerolled. Bounded spiritual execution with current
   source_capability, skill_tier and current-player provider proofs was independently
   accepted 2026-10-31 (173 distinct PASS across reviewed lineages; see plan/tasks).
-  The other eight canonical requirement adapters and the Mortal guided procedural
-  route remain open; this is not whole FR-071/T121 acceptance and does not lift
-  DFR/Mortal-compatibility/Windows holds.
+  The eight canonical requirement adapters now have the bounded qualification
+  recorded in physical-guided-checkpoint.md (141 distinct PASS across explicit
+  lineages, not one fresh run or an all-eight native/UI matrix). Whole FR-071/T121
+  acceptance and DFR/Mortal-compatibility/Windows holds remain open.
   The client-owned Mortal browser completion candidate retains exact frozen
   publication inputs in a closed version2 diagnosis result and freshly verifies
   full current settlement at both immediate completion and accepted-record reuse.
