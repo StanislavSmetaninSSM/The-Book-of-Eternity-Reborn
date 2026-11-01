@@ -1,3 +1,13 @@
+# Instrumented browser course — independent PREP accepted
+
+Astra/high independently accepts exactly one existing browser-course Fact, one
+exclusive Integration descriptor, unchanged 180 seconds, using current b4db33c2f
+Integration and retained RDR d3be1948 other owners. Build/warnings, PE/PDB/source,
+resources, exact zero-execution plan and storage proofs accepted. Immediate fresh
+current fence required before runtime. Unknown intrinsic timing overhead and prior
+UNKNOWN remain explicit; no other runtime, optimization or HOLD release admitted.
+Runtime is still UNRUN at this checkpoint.
+
 # Browser phase timing — built and exact singleton planned; PREP pending
 
 Fresh Integration-only build from `b4db33c2fd34c1d0c60e6b502de1cf8b18923019`
