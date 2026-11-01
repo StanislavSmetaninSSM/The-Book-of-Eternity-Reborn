@@ -1,5 +1,12 @@
 # T121 coherent callback/terminal correction — SOURCE candidate, UNCOMPILED/UNRUN
 
+P3GREEN first complete managed pass onada6769f4 exits0 for all four owners:
+Main-c1 in109.08s/12 warnings, Support12.51s/23, Unit57.20s/26 and
+Integration105.98s/103. Only new warning is xUnit2030 on a filtered NotEmpty
+assertion. The test now uses the equivalent Contains(predicate); no premise or
+assertion strength changes. Fresh Integration-c1 and updated provenance remain
+pending, with the other three source-equivalent owners retained. No runtime ran.
+
 First fresh P3GREEN Main build onac3016aac failed in101.39s with one CS0122:
 the new legacy preparation reads the existing private MaxHealLegacies constant.
 The canonical value remains8; only internal visibility and its XML summary change

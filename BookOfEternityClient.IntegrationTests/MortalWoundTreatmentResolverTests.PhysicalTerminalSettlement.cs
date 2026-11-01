@@ -81,7 +81,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
         Assert.Equal(legacyBatches.Select(row => row.PreparedWoundId), groups.Select(row => row.LegacyId));
         if (variant == "reduce_legacy")
         {
-            Assert.NotEmpty(stages[0].Applications.Where(row => row.SourceKey.Kind == "wound"));
+            Assert.Contains(stages[0].Applications, row => row.SourceKey.Kind == "wound");
             var identity = EffectIdentityState.Parse(JsonSerializer.SerializeToElement(bundle.EffectBatchPlan.EffectPlan.IdentityIndexAfterImage),
                 EffectIdentityState.StatePath);
             Assert.Empty(identity.Issues);
