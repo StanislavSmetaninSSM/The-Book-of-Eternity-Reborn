@@ -1,3 +1,38 @@
+# C14 genuine ordinary clock — exact causal RED; OUTCOME pending
+
+Runtime a3dc3686fccd16099a34a6e05bae8340b895d45b / compiled Integration
+4c0b88dc5f7e63c64bded67f62b4840a9447a613, other owners C12 source390907.
+After independent PREP, P3GREENC14RED-causal1 completes exactly1 expected FAIL,
+zero PASS, 1/1 case/descriptor, no timeout/underfill; category8.738687s/60s,
+wall17.5543173s, actual case3.5893603s. It reaches only the intended missing
+numeric-clock Assert.True atOrdinaryClock.cs90. Actual raw-intake diagnostics
+are EMPTY; genuine original/control/delta/calendar/private admission and complete
+unrelated-source/original-byte premises passed. Original1260 + command480 should
+be1740, but current clock remains command-only. Later progression/menu assertions
+are unreached GREEN obligations. No game or course PASS is claimed.
+
+Primary TRX SHA-256
+e461b95efc3ec065e521f92f8c564856e31c3c48ef8a8a4b5d8fdc1b90b7b451;
+strict verified-causal-red.json records exact method/IDs/observation/selection.
+Full native capture is8342300B, decoded76444300B,152302 consecutive timing events
+and one complete diagnostic message. Stored SHA-256
+74ba162e7645df057533b7d487a9ea964cb9e1f337d793a1edd3e872b4a002d2;
+decoded87a309ba97f7fc0a0e32f786c4d8333940e64e93ec243ba2c5f91b10aaf327f2.
+Streaming linear readback verifies full EOF/CRC, original PID/timestamps/tick
+pairs, every operation's counts/totals/maxima, closed writer/footer, no late/open
+scope and actual root absence. No event cap/truncation or new collector applies.
+Existing native fixture setup1865.045488ms and raw intake964.633629ms are named
+inclusive intervals, not a sum or a general speedup claim.
+
+All pins/resources/daemons and runner cleanup verified; closing fence17:50:13 UTC
+has no active owner and825778176 free bytes before generic-log retirement. Only
+that ended generic log is fully recoverable gzip; original TRX/capture/JSON and
+all prior course/RED evidence remain external and untouched. Independent OUTCOME
+pending. Next after acceptance: minimal shared pre-intake clock implementation
+with fresh original/source guards, exact rollback coverage and finite negatives/
+GM synchronization, then fresh affected builds/GREEN before any full course retry.
+No production clock change or new runtime admission follows from this RED.
+
 # C14 genuine clock scaffold built — exact causal1 PREP pending
 
 Independent Astra/high SOURCE accepts4c0b88dc5f7e63c64bded67f62b4840a9447a613:
