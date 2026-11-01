@@ -1,4 +1,35 @@
-# C12 browser procedure — complete 1 PASS; OUTCOME pending
+# C12 guaranteed browser — complete 1 PASS; final OUTCOME pending
+
+Runtime b59f7991244274adf249e657f6f2a76ffbb93d94 / all four compiled source
+390907d4d376e70ec99d49653ec2b9fe22b54c19. After accepted independent procedure
+OUTCOME and conditional guaranteed PREP, immediate fresh fence passed. Separate
+P3GREENC12-browser-guaranteed1 completes 1/1 case and descriptor, 1 PASS, no
+underfill/timeout, category 148.1683785s/180s, wall 157.9641652s. Primary TRX
+SHA-256 068be2b5fd0f456e2c6f165aec3c30a0a9f016d39a778db6fc6ed5c4044d78c3,
+exact method, unique IDs, stable pins and runner cleanup verified. The complete
+unchanged journey proves current guaranteed capability, no new procedure roll,
+cancellation/separate confirmation, common terminal heal, exact items/time/History,
+current completion and retry-safe replay. This is shared browser queue/handler,
+not DOM/provider/fresh-process qualification.
+
+Full passive gzip has 12 original consecutive events / six matching scopes,
+valid stored/decoded hashes and lengths, EOF/CRC/footer, closed writer, no open or
+late scopes, and actual owned-root absence. Journey 141881.047868ms and confirmed
+attempt 138935.152470ms are inclusive, not summed or claimed as a speedup.
+Only the closed generic log was replaced by fully verified recoverable gzip;
+TRX/JSON/capture and all unique evidence remain external. Post-run fence at
+16:34:12 UTC: no active managed owner, all 27 artifacts/resources/daemons stable,
+881848320 free bytes, unchanged reserve 687865856 bytes.
+
+Procedure's independent OUTCOME is accepted; guaranteed/final combined OUTCOME
+is pending. Two separate runtime revisions differ only in this checkpoint; same
+compiled code and two complete cases, not the original grouped run. Old grouped
+2 UNKNOWN remains. No console rerun, native admission, course or rollback run.
+Next after review: exact preparation for the existing complete console course
+and publication-cut rollback controls; browser course needs its own admission.
+The full physical feature, eight adapters and all broader HOLDs stay open.
+
+# C12 browser procedure — complete 1 PASS; OUTCOME accepted
 
 Runtime bbb47929b62113f317467b2a2bcea3a8ffe617ac / all four compiled source
 390907d4d376e70ec99d49653ec2b9fe22b54c19. Independent final Astra/high PREP
@@ -22,7 +53,8 @@ Generic log alone is recoverable gzip under its frozen per-run manifest; all
 TRX/JSON/capture and unique evidence remain external. Post-run fence 16:29:37 UTC
 has no active managed owner, 27 pins/resources/daemons stable, 882241536 free bytes.
 
-Independent OUTCOME is pending. Guaranteed singleton is UNRUN; old grouped browser
+Independent Astra/high OUTCOME accepts the procedure. At this earlier receipt,
+guaranteed singleton was UNRUN; old grouped browser
 UNKNOWN, retained console PASS, advanced native UNKNOWN, course/rollback UNRUN
 and broader HOLDs remain unchanged. No speedup or full physical-feature claim.
 Next: bounded OUTCOME/conditional guaranteed PREP, then immediate fresh fence.
