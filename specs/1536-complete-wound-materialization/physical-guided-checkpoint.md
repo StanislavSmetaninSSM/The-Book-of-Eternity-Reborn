@@ -1,3 +1,43 @@
+# C14 remaining7 —7 PASS; final OUTCOME pending
+
+Runtime29a55ce581ba940d296cf706c155d5e0a9725c01 / compiled Integration102dcf7f,
+Main/Support/Unitd3be1948. After independent PREP/current unchanged fence,
+remaining7 completes7PASS/0FAIL/0skip,7cases/6methods/4descriptors, no timeout,
+underfill or duplicate IDs. Causal37.7944903/60s (actualcase8.2139440s), docs
+10.095422/60s, portable committed rollback97.2739513/180s; wall209.9383038s.
+The actual original/clock/repeated intake/progression/repeated controls/next-menu
+roundtrip now passes in full, including initial pre-original menu/JSON-inertness.
+Both spiritual original C4 and Mortal recovery later-write exact rollback/retry
+controls pass. This does not relabel the older three-case Mortal compatibility
+HOLD, full Engine course, browser DOM/provider/fresh-process or whole epic.
+
+Primary causal TRX SHAa77be5686b4e567145e02459941e470e5dbf3d89376b2a4c9a70fa4d2e6130b4;
+all four primary TRXs/unique IDs/actual selection/cleanup are in external
+P3GREENC14MENU-remaining7/verified-outcome.json. Its complete native capture is
+16846824B, decoded153885334B,304854 timing events+1full message, storedSHA
+ef1d3b9f53aee4b1d66da8a3537abb9aae924987e68c1f97099d4e1c859264c1,
+decodedSHAa7393257936a3429216b18cfdddd1d6b427cc3c9db5544398bd80b81c81103c8.
+Full EOF/CRC/hashes, original PID/tick/sequence pairs/every operation aggregate,
+closed writer/footer, no late/open scope and actual root absence are verified.
+Named inclusive sections: setup4138.148296ms, raw1223.938512ms, repeat319.459825ms,
+progression57.745264ms,nextmenu145.515801ms,closing2.219065ms. Do not sum overlapping
+intervals or claim speedup against the earlier setup/different incomplete work.
+Closing fence19:59:52 UTC: all27pins/resources/daemons stable,noowner,716959744B free.
+
+C14 frontier is33 distinct PASS across explicit runtimes: reader19 at2023bbdb,
+unchanged native7 at4a71e70a, remaining7 at29a55ce5; not one fresh33. All production
+Main instances ared3be1948; Integration differs only by reviewed causal readiness
+fixture. Old failures/partials/raw remain preserved. Final independent OUTCOME
+pending; only then mark bounded clock task accepted and prepare one full course.
+
+Read-only audit of retained original full-course failure root confirms that the
+actual first ordinary wait is within this clock correction's domain: turn44,
+Mortal World, no diagnosis/treatment/spiritual hints, no original/current wound
+command or pending resolution, full five-field original clock and control both
+1260. No retained save/root was modified. This is eligibility evidence, not a
+new accepted course or permission to reuse old binaries. Full course still needs
+current exact plan/resource/PREP and original180s bound; no blind retry.
+
 # C14 causal menu premises — built; remaining7 PREP pending
 
 Independent Astra/high SOURCE accepts102dcf7f524c41dbbf70c8fd4efa77e10b855671,
