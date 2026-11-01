@@ -1,3 +1,29 @@
+# T121 legacy codec candidate — compiled; terminal4 PREP pending
+
+Independent Astra/high SOURCE accepts ebfb65dd17120ca17a2f83a6c1260a38359da24e.
+Fresh Main/Support/Integration/Unit builds all exit 0 in 89.354 / 10.637 /
+105.044 / 48.336 seconds. Warning multisets remain baseline 12 / 23 / 102 / 26.
+Actual four PE/PDB pairs, 410 source bindings, 27 artifact hashes, 10 resources
+with 40 copies and four daemon copies match current source. No runtime ran.
+
+Fresh P3GREENC4-terminal4-plan selects the exact four cases / one method /
+one descriptor, unchanged 120-second category, zero execution and complete cleanup.
+Method/attribute/category membership remains the retained full catalog's scope.
+All current binary outputs and full raw remain preserved. Independent resource
+review confirms that an extra binary archive per edit is not normative: additional
+export deferred; no archive/EOFCRC proof for this epoch. Every older archive is
+untouched. The current export-status record explicitly reports the deferral.
+
+After each ended successful owner, exactly its two standard obj DLL/PDB duplicates
+were retired under fresh file identity/hash/bin checks and no-active-owner proof;
+all eight current bin files remain byte-identical. Restore inputs, raw, saves,
+recovery and other intermediates were untouched. The unchanged 656 MiB start
+reserve passed before each build, and was restored before each subsequent step.
+Per-owner frozen manifests/retirement proofs and all diagnostics are outside Git
+in /workspace/tboe-linux-evidence-20261025/us5-guided-diagnosis/P3GREENC4-*.
+Next: independent PREP, immediate unchanged fence and one terminal4 attempt.
+Current3, UI9, broader regression and all prior HOLDs remain unadmitted.
+
 # T121 nested legacy codec and whole History oracle — UNCOMPILED/UNRUN
 
 Bounded correction on 7fe722454b9a3e0414dcfd3aecb7ad24ee3b4849. The actual C3
