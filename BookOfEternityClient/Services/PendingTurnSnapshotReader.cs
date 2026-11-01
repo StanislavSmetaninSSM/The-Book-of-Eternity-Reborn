@@ -197,7 +197,9 @@ internal static partial class PendingTurnSnapshotReader
         // Default reader authority is physical, never provisional operation DATA.
         // The supplied lease already owns quiescence even without ambient flow.
         // Observed sessions retain their separately verified transport/lifetime.
-        using var fresh = sourceSession is null ? fs.ForceFreshRecoveryValidation() : null;
+        // Bypass provisional reads without retiring the surrounding owner's
+        // pending dependencies; a narrow valid snapshot cannot settle them.
+        using var fresh = sourceSession is null ? FileSystemManager.SuppressValidationReuse() : null;
 
         LiveTurnPendingSnapshotManifest? manifest;
         try

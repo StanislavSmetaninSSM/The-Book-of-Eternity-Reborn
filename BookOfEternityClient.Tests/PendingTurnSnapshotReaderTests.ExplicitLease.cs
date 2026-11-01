@@ -91,7 +91,44 @@ public sealed partial class PendingTurnSnapshotReaderTests
             Assert.Contains(result.Issues, issue => issue.Code == "pending_turn_snapshot_reader_bytes_mismatch");
             Assert.Equal(hits, window.CaptureNamedCounts("LeaseDataHit.Reuse").Completed);
             if (!remove) Assert.True(counters.ReadCount(snapshotPath) > 1);
-            await owner!.CompleteAsync();
+            await Assert.ThrowsAsync<InvalidDataException>(owner!.CompleteAsync);
+        }
+        AssertTreeEqual(before, SnapshotTree());
+    }
+
+    [Fact]
+    public async Task ReadCurrent_CannotRetireUnrelatedPendingSourceDrift()
+    {
+        const string unrelated = "ordinary-reader-unrelated.txt";
+        await _fs.WriteFileAtomicAsync(unrelated, "original");
+        await _fs.WriteFileAtomicAsync(RequiredPath, "{\"schemaVersion\":1,\"occurrences\":[]}");
+        await PrepareAsync();
+        var before = SnapshotTree();
+        var counters = new CanonicalReadActivityAccumulator();
+        var timings = new OperationTimingAccumulator();
+        var files = new FileSystemManager(_root, NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance, new FileSystemManagerHooks
+            { PassiveCanonicalReads = counters, PassiveOperationTimings = timings });
+        await using (var lease = await files.AcquireCanonicalWriteLeaseAsync())
+        {
+            files.GetOrCreateSessionGeneration(lease);
+            using var window = timings.StartWindow();
+            using var owner = files.BeginSourceDataOperationIfNeeded();
+            Assert.NotNull(owner);
+            Assert.Equal("original", files.ReadFileSync(lease, unrelated));
+            Assert.Equal("original", files.ReadFileSync(lease, unrelated));
+            Assert.Equal(1, counters.ReadCount(unrelated));
+            Assert.True(window.CaptureNamedCounts("LeaseDataHit.Reuse").Completed > 0);
+            var changed = FileSystemManager.EncodeUtf8WithPreamble("modified");
+            var physical = files.ResolvePath(unrelated);
+            File.WriteAllBytes(physical, changed);
+            before[Path.GetRelativePath(_root, physical).Replace('\\', '/')] = changed;
+            var result = PendingTurnSnapshotReader.ReadCurrent(files, lease, [RequiredPath]);
+            Assert.True(result.Success, Describe(result.Issues));
+            Assert.NotNull(result.Snapshot);
+            // A successful narrow reader does not discharge another consumer's
+            // still-pending original DATA or authorize an effect from it.
+            await Assert.ThrowsAsync<InvalidDataException>(() => owner!.VerifyAsync(lease));
         }
         AssertTreeEqual(before, SnapshotTree());
     }

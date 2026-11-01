@@ -1,3 +1,22 @@
+# C14 reader freshness review correction — WIP UNCOMPILED / UNRUN
+
+Independent SOURCE found the first fresh-scope choice unsafe: ForceFreshRecovery-
+Validation retires the surrounding whole-operation touched/key set before it has
+settled an unrelated consumed source. It is replaced before any compilation/run
+with existing non-retiring SuppressValidationReuse, active whenever the source/
+validation owner can supply cached DATA. This bypasses physical reader cache
+selection without dropping the owner's pending dependency/failure obligation.
+No new suppression/cache framework or source-session behavior is introduced.
+
+The two selected-drift rows now require the still-owning source operation to fail
+on completion; a new primed unrelated-source row requires valid narrow snapshot
+read B followed by owner.VerifyAsync rejecting changed A. Real passive source
+counts and hits prove the priming; current files remain unchanged by the reader.
+Proposed cheap category is now19 cases/7methods (8new), all UNCOMPILED/UNRUN.
+This supersedes the earlier WIP description of retiring surrounding DATA. The
+accepted native missing-original failure and all6PASS/7UNRUN remain unchanged.
+Next final bounded SOURCE, preservation/builds/exact discovery/PlanOnly/PREP.
+
 # C14 reader lease/freshness correction — WIP UNCOMPILED / UNRUN
 
 Following the genuine missing-original failure and independent Astra DESIGN,
