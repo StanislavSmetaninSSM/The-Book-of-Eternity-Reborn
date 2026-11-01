@@ -1,3 +1,23 @@
+# C6 fixture correction built — current3 PREP pending
+
+SOURCE133e1eead79291fb359da3ad2f3d49c7273b2c7a accepted independently.
+Fresh Integration exits0 in105.174s; warnings remain102 baseline. Other three
+owners remain the unchanged C5 a958b520 builds, not newly rebuilt. Four actual
+PE/PDB pairs,410 source bindings,27 artifacts,10 resources/40 copies/four daemons
+agree. Exact fresh current3 PlanOnly selects3 cases/methods/descriptors, no tests,
+original120s per category. Membership is unchanged; C5 official catalogue/full49
+and UI9 PlanOnly are retained inventory evidence, not fresh C6 runtime results.
+
+After ended/no-live-owner and fresh identity/hash checks, the four exact Integration
+standard obj DLL/PDB plus own refint/ref compiler outputs were retired. Runtime bin
+is preserved; reference DLL pair equality does not mean equality to runtime DLLs.
+Main/Support dependency references and all27 currentbin hashes remain intact.
+External manifests/proofs are in P3GREENC6-build-integration; free695422976B after
+retirement. No raw/saves/recovery/restore inputs were touched; export stays deferred.
+Independent PREP plus immediate unchanged656MiB reserve/source/owner fence precedes
+one current3 invocation. There has been no C6 runtime. Independent1/simple3 remain
+accepted by unaffected lineages; no repeat is proposed. UI9 and broader HOLDs stay.
+
 # C6 reaction fixture correction — UNCOMPILED/UNRUN
 
 Bounded fixture-only correction on 9386b339fae06ad911740aa1735d081a26eded9a.
