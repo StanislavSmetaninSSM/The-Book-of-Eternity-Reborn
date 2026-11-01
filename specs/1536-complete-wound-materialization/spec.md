@@ -1,3 +1,17 @@
+## Current physical qualification: ordinary course-clock continuation open
+
+Latest bounded evidence is in [physical-guided-checkpoint.md](physical-guided-checkpoint.md).
+Separate actual browser procedure/guaranteed journeys are accepted (two PASS on
+compiled390907); the wait-response artifact correction has two accepted GREEN
+on compiledIntegration47aa6358. These do not qualify the whole physical feature.
+The full console course remains UNKNOWN: first wait exposed a misplaced fixture
+field, now corrected; ordinary accepted timeChange still lacks numeric canonical
+clock publication required by FR-062/FR-065 and the next treatment menu. This
+technical integration gap is T121-PHYSICAL-GUIDED-ORDINARY-CLOCK, not a new game
+rule, auto-wait, calendar origin or authorization to patch accepted fixture state.
+The historical candidate/UNCOMPILED paragraphs below retain their original dates
+and are superseded for current status only by the exact versioned checkpoint.
+
 ## Current T121 physical guided source candidate (not feature acceptance)
 
 The initial three-mode candidate compiled and independent SOURCE identified the

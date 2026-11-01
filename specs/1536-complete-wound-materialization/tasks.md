@@ -150,15 +150,27 @@ this bounded route, not parent T121/FR071/US5/#1536 or the eight proof adapters.
   and full RED evidence. This closes only that assessment, not optimization or
   native/feature qualification. Selected-graph reuse remains unimplemented.
 
-- [ ] T121-PHYSICAL-GUIDED-COURSE-WAIT [US2/US5] Correct only the existing
-  controlled GM wait fixture's misplaced timeChange after actual course timeout
-  at 2f52db50. Use the ordinary world_time command and ready declaration, never a
-  post-accepted clock patch. First two minimal actual-writer rows prove the exact
-  interface-validator rejection, then GREEN verifies command-only clock resolution,
-  immutable unrelated bytes and original-control-only report obligations. No
-  production guard/time rule/cost/budget change; accepted nonwait PASS retained.
-  Fresh owning Integration build, independent review and course/rollback admission
-  remain separate. Raw and interrupted original fixture stay external/retained.
+- [ ] T121-PHYSICAL-GUIDED-ORDINARY-CLOCK [US2/US3/US5] Make the existing
+  ordinary accepted wait leave one authoritative numeric canonical minute for
+  subsequent recovery/treatment, consuming the declared timeChange exactly once.
+  C13's valid command currently updates the progression ledger but not the clock
+  required by the next menu/accepted-state owner. First a cheap actual ordinary
+  roundtrip must prove the gap; use the existing accepted source/publication owner,
+  preserve original control/source/realm/baseline guards, atomic rollback and
+  calendar metadata without inventing a calendar epoch. No fixture clock patch,
+  menu-only fallback, parallel clock service or new game rule. Independent DESIGN,
+  causal RED/GREEN, GM/example synchronization and affected consumer review before
+  one complete course retry; all broader HOLDs remain.
+
+- [x] T121-PHYSICAL-GUIDED-COURSE-WAIT [US2/US5] Corrected only the controlled
+  GM wait fixture's misplaced timeChange after course timeout at2f52db50. The
+  actual writer now uses ordinary command-only world_time and declares that path
+  before ready; no post-accepted clock patch or production guard change. Two exact
+  causal RED at5557d983 precede two GREEN at234fe38a / compiledIntegration47aa6358;
+  independent Astra/high SOURCE/PREP/OUTCOME, original-control report branches,
+  byte/NPC invariance, resolver3360 and cleanup accepted. This closes only fixture
+  artifact emission, not full course or ordinary accepted numeric clock. The
+  concrete remaining integration gap is tracked immediately above.
 
 - [x] T121-PHYSICAL-GUIDED-BROWSER-MODES [US2/US5] Same complete procedure
   and guaranteed browser journeys accepted as two semantic singletons with unchanged

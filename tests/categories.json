@@ -3,7 +3,7 @@
     "categories": [
 {
   "id": "mortal-physical-guided-wait-response",
-  "responsibility": "T121-PHYSICAL-GUIDED-COURSE-WAIT: two minimal direct actual controlled-GM writer rows, with and without original pending world/faction report obligations. Existing public interface validator must accept closed output without mutation; ordinary world_time command alone resolves elapsed minutes and is declared in ready; unrelated NPC bytes stay unchanged. No Engine or accepted-state authority is fabricated. Scaffold RED/GREEN and runtime remain UNRUN.",
+  "responsibility": "T121-PHYSICAL-GUIDED-COURSE-WAIT: two minimal direct actual controlled-GM writer rows, with and without original pending world/faction report obligations. Existing public interface validator must accept closed output without mutation; ordinary world_time command alone resolves elapsed minutes and is declared in ready; unrelated NPC bytes stay unchanged. No Engine or accepted-state authority is fabricated. Accepted two exact causal RED then two GREEN at runtime234fe38a / compiledIntegration47aa6358, independent SOURCE/PREP/OUTCOME. Fixture artifact channel only; actual accepted-clock continuation and whole course remain open.",
   "excludes": "No production change, post-accepted clock patch, added time rule, receipt/claim minting, full world, cache/diagnostic framework, repeated accepted console/browser journey or higher timeout. This is fixture-artifact qualification, not complete course acceptance.",
   "changeHints": [
     "BookOfEternityClient.IntegrationTests/ExplorerWoundSelfTreatmentTests.MortalWaitResponse.cs",

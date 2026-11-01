@@ -1,3 +1,40 @@
+# C13 writer accepted — C14 ordinary clock integration DESIGN pending
+
+Independent Astra/high OUTCOME accepts runtime234fe38a / compiledIntegration47aa:
+two complete writer GREEN, exact primary TRX/output/clock-command/report/byte/NPC/
+cleanup proofs. C13 closes fixture emission only. Two accepted browser journeys,
+retained console PASS, current-native UNKNOWN and full-course UNKNOWN keep their
+exact lineages. No full course, rollback or browser course has been retried.
+
+T121-PHYSICAL-GUIDED-ORDINARY-CLOCK now tracks the actual functional dependency:
+a normal accepted wait must leave numeric canonical time readable by next menu
+and recovery, consume its delta once, preserve source/authority/history/rollback,
+and retain calendar metadata without inventing a calendar epoch. The source
+trace confirms schedule/report-only publication and no numeric clock conversion.
+
+Bounded design review must select the existing actual accepted source/publication
+point. A menu-only scheduler fallback would duplicate clock authority and leave
+other consumers inconsistent; an absolute fixture rewrite would hide the supported
+ordinary-command gap. Reuse the existing accepted pipeline and original/control
+DATA instead. Placement is not yet approved: publishing only at the final scheduler
+step may be too late for wound/recovery validation. Review exact call order and
+original-source availability before assigning a code change or running the course.
+No new clock service, persistent cache, snapshot rewrite or relaxed guard applies.
+
+Finite next proof is a cheap real ordinary-acceptance roundtrip at1260+480=1740
+(or matching fixture2880+480=3360), asserting numeric source, next-menu readability
+and no repeated delta. Needed negatives cover current/original drift, duplicate
+commit, afterlife exclusion, mixed/invalid/overflow time and unavailable baseline.
+Use existing typed fixtures/owners; no synthetic accepted receipt. After DESIGN,
+record exact methods/impact selection here, then causal RED, minimal owner fix,
+GM/example synchronization, SOURCE/build/GREEN and one unchanged180s course retry.
+No production change or new game rule is implemented by this status/design block.
+
+Optimization: clock parsing/arithmetic is small; reuse already owned parsed DATA
+within that one operation, with exact source guards at publication. No new cache
+or cross-operation authority is justified. Raw and unique old evidence remain
+external; no further deletion or broad perf/DFR/Mortal-compat/Windows run is involved.
+
 # C13 corrected writer — complete 2 GREEN; OUTCOME pending
 
 Runtime 234fe38a49ba425d4fc0585f18e929ea01d5e807 / compiled Integration
