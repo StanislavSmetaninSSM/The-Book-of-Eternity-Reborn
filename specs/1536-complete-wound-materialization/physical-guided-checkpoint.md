@@ -1,3 +1,32 @@
+# C11 scaffold built — exact causal1 PREP pending, runtime UNRUN
+
+Independent Astra/high SOURCE accepts48539ba7099fcce9626e6612870ec3456c0b1d71:
+actual passive-only assembly counter, dormant candidate and genuine rankI terminal
+causal control. Removing marker/stub reproduces prior production source hashes;
+normal eligibility remains joint-exclusive, no ordinary retained copy is enabled.
+Caller scan is lexical assurance outside copy measurements, reinforced by actual
+independent callsite review. No prototype/native run or speedup claim follows.
+
+Four fresh owning builds at48539ba7 all exit0: Main160.876356s, Support26.495980s,
+Integration179.146151s, Unit96.914624s. Warning multisets exactly baseline12/23/102/26
+(logged24/46/204/52). Independent review verifies four actual PE/PDB identities,
+414 bound sources,27 artifacts,10resources40copies/fourdaemons, and ended-owner
+standard2/ref1,1,2,2 retirement proofs with all bins/dependency refs retained.
+Prior C10/C8 actual32 managed outputs remain in full EOFCRC-verified archive.
+
+Official discovery1296categories/13111methods adds exactly one Fact, zero
+unmapped/stale and zeroexecution. Exact PlanOnly selects only new causal Fact,
+1case/1method/1descriptor, exclusive Integration60s, zeroexecution. Closed generic
+catalogue/plan logs are full-verified gzip with recovery manifests; all other
+raw/captures/TRX/JSON/saves/recovery remain. Latest observed free949895168B;
+unchanged startreserve687865856B and immediate fresh checks remain mandatory.
+
+All raw P3GREENC11-* stays external. Expected causal RED is still UNRUN: only an
+actual assembly-count failure after complete terminal/equality/isolation/windows
+can qualify it; compile/setup/timeout is not that RED. Final independent PREP
+pending. Existing whole-file Meta pin was already stale before C11 and remains
+HOLD, never silently updated or claimed covered. Other UNKNOWN/UNRUN/HOLDs stay.
+
 # C11 terminal private-copy causal scaffold — DESIGN accepted; not wired
 
 Tracked subtask T121-PHYSICAL-GUIDED-TERMINAL-COPY addresses measured repeated
@@ -21,7 +50,7 @@ all three observations and fresh preparation/effect/handoff before the intention
 zero-assembly oracle. A compile/setup timeout is not causal RED. Setup cost is UNRUN.
 
 Finite plan:
-- [ ] Publish/review only the counter, dormant candidate and causal test/category.
+- [x] Publish/review only the counter, dormant candidate and causal test/category.
 - [ ] Four fresh owning builds, exact discovery/PlanOnly/resource/PREP, one bounded
   causal RED showing actual assembly/replay rather than an empty or renamed wrapper.
 - [ ] Implement conservative shared terminal admission for the component candidate:
