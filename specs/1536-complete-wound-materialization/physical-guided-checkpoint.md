@@ -1,3 +1,19 @@
+# C5 current settlement preparation — 1 FAIL / 2 UNRUN
+
+Runtime69e3c385448a7f6ffd297f8b7ca28093854a7ae9, compileda958b520:
+current-legacy fails before original/publication in CreateCurrentWoundHistory.
+The authored event_reaction payload retains a composite definitionKey and an
+unsupported maxExpansion field; exact failure paths are payload.definitionKey
+and payload.maxExpansion. Category5.0869583/120s, wall11.5811569s; no timeout,
+unique actual case, stable pins, complete cleanup. Current-removal and joint
+were not executed. Strict proof: external P3GREENC5-current3/verified-partial-failure.json.
+This is a fixture-schema preparation failure, not a claimed product failure or
+PASS. Independent1 remains accepted separately. No repeat before bounded cause
+and complete remaining fixture preparation review. UI9 exact PlanOnly is complete
+(9 cases /5 methods /5 descriptors, zero execution); UI runtime is still UNRUN.
+Closing: no live owner, stable27 artifacts/resources, free688529408B. Reserve is
+unchanged; new work must pass its own resource gate. No raw/saves/recovery removed.
+
 # C5 independent terminal legacy — 1 PASS; current3 PREP pending
 
 Runtime da95d7e7f221ac49621d37e70e09cd92e8529ce7 / compiled source
