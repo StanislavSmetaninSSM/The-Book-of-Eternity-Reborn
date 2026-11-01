@@ -4635,7 +4635,7 @@
 },
 {
   "id": "spiritual-world-source-closure",
-  "responsibility": "C19 fresh explicit closure review for the completed-item current NPC-core dependency. Keep the closed RequirePath guard and legacy absent-layout inputs unchanged; review exactly one new constant, its separate source assertion and the corresponding WorldRead file pin. All 69 pins remain checked. Existing single60s owner; candidate UNCOMPILED/UNRUN.",
+      "responsibility": "Review the closed current World source graph, including the completed-item NPC-core dependency and callback-sensitive source DATA reuse eligibility. Keep the closed RequirePath guard and existing absent-layout inputs unchanged. All 70 normalized source pins require semantic review. Existing single 60s owner; current physical correction remains UNCOMPILED/UNRUN pending fresh builds and qualification.",
   "excludes": "No World runtime suite, cache/performance qualification, mechanical rebaseline, DFR/Mortal/Windows or repeat of accepted combat cases.",
   "changeHints": [
     "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.WorldReadPhase.cs"

@@ -61,7 +61,7 @@ internal static class MortalWoundHealLegacyPlanner
     /// <param name="resolution">The same resolved mode outcome and immutable terminal intent.</param>
     /// <param name="binding">The treatment's original accepted frame and event vector.</param>
     /// <param name="preparedInputFingerprint">The exact private preparation's input fingerprint.</param>
-    /// <param name="currentMinute">The admitted original canonical minute.</param>
+    /// <param name="currentGameMinute">The admitted original canonical minute.</param>
     /// <param name="precedingBatches">The actual prefix batches whose coordinates remain disjoint.</param>
     /// <returns>Copied ordered declarations and unallocated mechanical batches.</returns>
     internal static MortalWoundHealLegacyPreparation Prepare(MortalWoundTreatmentAttemptRequest request,

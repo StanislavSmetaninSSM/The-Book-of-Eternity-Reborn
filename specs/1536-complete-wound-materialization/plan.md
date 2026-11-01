@@ -1,5 +1,13 @@
 # T121 coherent callback/terminal correction — SOURCE candidate, UNCOMPILED/UNRUN
 
+Whole independent Astra/high SOURCE/fixture/selection review of13a8838f2→ab75efb9c
+found no additional material functional/authority defect. Its one compiler blocker
+is corrected by removing static from two predicates that capture kind; predicates,
+ordering/copy policy and ownership semantics are unchanged. The XML parameter name
+and stale World catalog69/C19 description are also corrected. Narrow readback is
+pending before fresh all-four builds. This is source review only; no new build,
+runtime, GREEN, speedup or physical feature acceptance follows.
+
 Continues e1dd7fc6fb450d8d688fd267f78ec801c6d3b824. Both accepted SOURCE-HOLD
 corrections now have connected production, typed/native/current/joint/UI fixtures,
 GM/example/manifest guards and finite selection. This is authored behavior only:

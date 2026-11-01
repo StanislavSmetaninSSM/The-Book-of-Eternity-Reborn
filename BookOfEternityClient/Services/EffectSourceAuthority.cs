@@ -440,7 +440,7 @@ internal sealed class EffectSourceAuthority
 
     private IReadOnlyList<EffectSourceAuthorityEntry> SnapshotSameTurnEntries(string kind) =>
         _entries.Values
-            .Where(static entry =>
+            .Where(entry =>
                 entry.SameTurn &&
                 string.Equals(entry.Key.Kind, kind, StringComparison.Ordinal))
             .OrderBy(static entry => entry.Key.Realm, StringComparer.Ordinal)
@@ -470,7 +470,7 @@ internal sealed class EffectSourceAuthority
 
     private IReadOnlyList<EffectSourceExport> SnapshotSameTurnOwnerExports(string kind) =>
         _ownerExports
-            .Where(static export =>
+            .Where(export =>
                 export.SameTurn &&
                 string.Equals(export.Kind, kind, StringComparison.Ordinal))
             .OrderBy(static export => export.Realm, StringComparer.Ordinal)
