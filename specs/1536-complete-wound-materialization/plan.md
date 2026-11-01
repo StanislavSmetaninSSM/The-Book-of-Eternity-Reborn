@@ -1,3 +1,28 @@
+# T121 source-role correction — compiled; terminal4 PREP pending
+
+All four selected owners freshly compile source
+6cf8a19493de4335ab5ca2ad784eada40b36d105 after independent Astra/high SOURCE:
+Main/Support/Integration/Unit exit 0 in 94.685 / 12.384 / 100.526 / 57.507 seconds.
+Warning multisets remain baseline 12 / 23 / 102 / 26. Four actual PE/PDB pairs,
+410 source bindings, 27 artifacts, 10 resources with 40 copies and four daemons
+match. The 63,413,430-byte external archive fully decodes through gzip EOF/CRC,
+all member hashes agree; SHA256
+e9057842ac30ff1eb13832ad1d6f53602606d52132552bf074d1854ffd289213.
+
+P3GREENC3-terminal4-plan freshly selects exactly four cases / one method /
+one descriptor in the unchanged 120-second category, with zero execution.
+Method/attribute/category membership is unchanged from the retained full catalog.
+External helper phase mappings and every source/artifact/resource/process/disk
+fence remain exact. No physical runtime result exists on this source yet.
+
+After verifying the complete new archive and no active managed owner, exactly the
+same eight freshly recreated standard obj DLL/PDB duplicates were retired under
+new device/inode/owner/hash checks: 89,689,784 bytes. Current bin hashes, restore
+inputs, raw, saves, recovery and tracked sources remain intact. The external frozen
+manifest/deletion proof records actual free space 625,799,168→715,509,760 bytes.
+PlanOnly then completed cleanly; independent PREP and a new immediate fence precede
+one terminal4 attempt. Current3, UI9, broader regression and old HOLDs stay open.
+
 # T121 terminal source roles and bounded exception observation — UNCOMPILED/UNRUN
 
 Bounded source correction on 3a5c92652d4f6510291b9ae361c27b9d9070b879; no writer
