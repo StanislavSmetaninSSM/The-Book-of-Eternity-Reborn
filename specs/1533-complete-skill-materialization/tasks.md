@@ -32,10 +32,10 @@ Dependencies: T011 -> T012/T013; T014 is independently implementable; T012-T014 
 ## Part 2 — T107 prose-claimed skill ↔ per-skill state delta coupling (branch `1533-prose-state-delta-coupling`)
 
 - [X] T107-A Spec/plan/tasks revision for per-skill authority-backed coupling (this section)
-- [ ] T107-B [RED] Coupling tests: mastery delta targeting only a different known skill, confusable mastery reference as the only delta, stale unchanged mastery file; positive controls: exact mastery delta, claimed skill newly created this turn
-- [ ] T107-C [GREEN] Per-skill coupling in `ValidateAcceptedTurnProseStateDeltasAsync` through `MortalSkillReferenceAuthority`, reusing `ReadMasteryIdentityReferences`; enriched `actual` naming the delta's real targets
-- [ ] T107-D GM-facing doc sync for the narrowed coupling semantics, tests/selection.json update, catalog validation
-- [ ] T107-E Bounded category runs, independent review, checkpoint and remote SHA verification
+- [X] T107-B [RED] Coupling tests: mastery delta targeting only a different known skill, confusable mastery reference as the only delta, stale unchanged mastery file; positive controls: exact mastery delta, claimed skill newly created this turn
+- [X] T107-C [GREEN] Per-skill coupling in `ValidateAcceptedTurnProseStateDeltasAsync` through `MortalSkillReferenceAuthority`, reusing `ReadMasteryIdentityReferences`; enriched `actual` naming the delta's real targets
+- [X] T107-D GM-facing doc sync for the narrowed coupling semantics, tests/selection.json update, catalog validation
+- [X] T107-E Bounded category runs, independent review, checkpoint and remote SHA verification
 
 Dependencies: T107-A -> T107-B -> T107-C -> T107-D -> T107-E. Parent owns integration and catalog edits.
 
@@ -47,11 +47,11 @@ Dependencies: T107-A -> T107-B -> T107-C -> T107-D -> T107-E. Parent owns integr
 - [ ] T104 Cross-owner reference detection (mastery pointing at another actor's skill)
 - [ ] T105 Governed companions: characteristics, effects, combat actions materialization for companion entities
 - [ ] T106 GM prompt/worked-example sweep for exact-`skillName` discipline beyond Block_7 rule 7.7, with documentation coverage guards
-- [ ] T107 Prose-claimed skill change ↔ state delta coupling audit (`HasSkillMasteryChanges` path) under the new authority — in progress as Part 2 above (T107-A..T107-E)
+- [X] T107 Prose-claimed skill change ↔ state delta coupling audit (`HasSkillMasteryChanges` path) under the new authority — completed as Part 2 above (T107-A..T107-E); evidence in plan.md part-2 ledger
 
 ## Notes
 
 - Codes introduced in part 1: `skill_mastery_confusable_reference`, `player_active_skill_mastery_initialization_confusable`, `npc_skill_mastery_initialization_confusable`; repair kind `mortal_skill_reference_identity_repair`.
 - Existing codes `skill_mastery_unknown_active_skill`, `player_active_skill_missing_mastery_initialization`, `npc_skill_missing_mastery_initialization` are unchanged.
 
-Correction completion evidence: implementation SHA 8ac29afd; 299 unique selected cases Passed across bounded selected runs, catalog discovery valid, independent Astra High finding resolved, 28 changed source blobs recovered from a clean GitHub clone. Exact commands, partial-run failures and recovery limits are recorded in plan.md. T101-T107 remain unchecked.
+Correction completion evidence: implementation SHA 8ac29afd; 299 unique selected cases Passed across bounded selected runs, catalog discovery valid, independent Astra High finding resolved, 28 changed source blobs recovered from a clean GitHub clone. Exact commands, partial-run failures and recovery limits are recorded in plan.md. T101-T106 remain unchecked; T107 completed in Part 2 (see ledger above).

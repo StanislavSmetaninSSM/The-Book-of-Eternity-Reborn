@@ -338,7 +338,8 @@ public partial class ValidationService
     }
 
     /// <summary>
-    /// Maps exact mastery entry names to their serialized entry payloads.
+    /// Maps exact mastery entry names to their parsed entry payloads so later
+    /// comparisons ignore purely lexical serialization drift.
     /// </summary>
     /// <param name="json">
     /// The mastery payload; <see langword="null"/>, empty or malformed input yields no entries.
@@ -347,35 +348,37 @@ public partial class ValidationService
     /// The mastery array to inspect.
     /// </param>
     /// <returns>
-    /// The first serialized entry per exact trimmed name, or <see langword="null"/> when
+    /// The first parsed entry per exact trimmed name, or <see langword="null"/> when
     /// no usable payload exists.
     /// </returns>
-    private static IReadOnlyDictionary<string, string>? ReadMasteryEntriesByExactName(string? json, string section)
+    private static IReadOnlyDictionary<string, JsonNode>? ReadMasteryEntriesByExactName(string? json, string section)
     {
         if (string.IsNullOrWhiteSpace(json))
             return null;
 
         try
         {
-            using var doc = JsonDocument.Parse(json);
-            if (doc.RootElement.ValueKind != JsonValueKind.Object ||
-                !doc.RootElement.TryGetProperty(section, out var entries) ||
-                entries.ValueKind != JsonValueKind.Array)
+            if (JsonNode.Parse(json) is not JsonObject root ||
+                root[section] is not JsonArray entries)
             {
                 return null;
             }
 
-            var result = new Dictionary<string, string>(StringComparer.Ordinal);
-            foreach (var entry in entries.EnumerateArray())
+            var result = new Dictionary<string, JsonNode>(StringComparer.Ordinal);
+            foreach (var entry in entries)
             {
-                if (entry.ValueKind != JsonValueKind.Object)
+                if (entry is not JsonObject entryObject ||
+                    entryObject["skillName"] is not JsonValue nameValue ||
+                    nameValue.GetValueKind() != JsonValueKind.String)
+                {
                     continue;
+                }
 
-                var name = GetFirstNonEmptyString(entry, "skillName");
+                var name = nameValue.GetValue<string>();
                 if (string.IsNullOrWhiteSpace(name))
                     continue;
 
-                result.TryAdd(name.Trim(), entry.GetRawText());
+                result.TryAdd(name.Trim(), entryObject);
             }
 
             return result;
@@ -383,6 +386,12 @@ public partial class ValidationService
         catch (JsonException)
         {
             // Structural diagnostics are owned by the existing contract validators.
+            return null;
+        }
+        catch (InvalidOperationException)
+        {
+            // Duplicate keys or other node-tree violations degrade to the weaker
+            // filesModified evidence instead of crashing the audit.
             return null;
         }
     }
@@ -447,15 +456,16 @@ public partial class ValidationService
     private sealed record AcceptedTurnSkillDeltaContext(
         bool MasteryFileChanged,
         IReadOnlyList<(string SkillName, string? Actor, int Index)> MasteryReferences,
-        IReadOnlyDictionary<string, string>? CurrentEntries,
-        IReadOnlyDictionary<string, string>? PreTurnEntries,
+        IReadOnlyDictionary<string, JsonNode>? CurrentEntries,
+        IReadOnlyDictionary<string, JsonNode>? PreTurnEntries,
         HashSet<string> NewSkillNames,
         MortalSkillReferenceAuthority CanonicalSkills)
     {
         /// <summary>
         /// Returns true only when the turn contains a delta bound to the claimed skill itself.
-        /// A carried-over entry that is byte-identical to its validated pre-turn snapshot
-        /// never satisfies the claim.
+        /// A carried-over entry that is structurally identical to its validated pre-turn
+        /// snapshot never satisfies the claim, while purely lexical serialization drift
+        /// (reordered keys, whitespace) does not count as a change.
         /// </summary>
         public bool SatisfiesSkillClaim(string claimedSkillName)
         {
@@ -481,7 +491,7 @@ public partial class ValidationService
 
                 if (CurrentEntries != null &&
                     CurrentEntries.TryGetValue(claimedSkillName, out var currentEntry) &&
-                    !string.Equals(currentEntry, preTurnEntry, StringComparison.Ordinal))
+                    !JsonNode.DeepEquals(currentEntry, preTurnEntry))
                 {
                     return true;
                 }
@@ -500,7 +510,7 @@ public partial class ValidationService
                 var changedTargets = CurrentEntries
                     .Where(pair =>
                         !PreTurnEntries.TryGetValue(pair.Key, out var preTurnEntry) ||
-                        !string.Equals(preTurnEntry, pair.Value, StringComparison.Ordinal))
+                        !JsonNode.DeepEquals(preTurnEntry, pair.Value))
                     .Select(pair => pair.Key)
                     .OrderBy(name => name, StringComparer.OrdinalIgnoreCase)
                     .ToList();
