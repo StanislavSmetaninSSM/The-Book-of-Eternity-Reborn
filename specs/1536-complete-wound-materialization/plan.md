@@ -1,3 +1,6 @@
+Current physical-guided continuation: [physical-guided-checkpoint.md](physical-guided-checkpoint.md).
+The dated entries below retain their historical status and evidence.
+
 # T121 independent allocation/current routing correction — UNCOMPILED/UNRUN
 
 Bounded correction on 901720fd0b446b3a9ac403cb7cc51c8918237194. Retained simple 3
