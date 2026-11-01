@@ -20,7 +20,22 @@ production интеграция использует existing stable DATA servic
 Остатки/crit-retention, занятие+3, общий3m, exact-once primary-action award и
 событийное развитие NPC отмечены как рекомендации. T133 memory/Mask100%/rank
 сохранены; урок имеет заранее известный gain/time/price, но новый тариф не
-выдан за существующий код. Independent whole-block review/публикация впереди.
+выдан за существующий код.
+
+WIPf18152c0e375b4469b9ec47ff058bad604e71e06 опубликован, remote SHA совпал.
+Independent GPT-6 Astra/high проверил весь5-file diff, первичные Rules/C#,
+арифметический скрипт/результат и связанные договоры: pass, P1/P2 нет.
+Необязательное P3 принято: перед примерами явно указаны выполненный допуск,
+сохранение отложенных наград и отдельный перевод I–V без общего нового rank-cap.
+Эта оговорка не меняет числа и не требует повторения уже пройденной арифметики.
+
+Parent проверил14 добавленных ссылок/anchors и diff/check. Все5 GitHub blobs
+совпали с source и новым чистым sparse clone
+D:\BoeDiagnostics\spiritual-mastery-t134\remote-restore-20261101;5 обязательных
+инструкций присутствуют. Финальный checkpoint/readback/restore и свидетельство
+фиксируются в issue1573. Только документы; runtime/Rules/probes не изменены.
+Маршрутизация: два Sol6.1/high bounded audit, parent design/arithmetic, отдельный
+Astra/high review. Существенных переделок нет; экономия не измерялась.
 
 ## T133 — определение искусства и личное владение
 

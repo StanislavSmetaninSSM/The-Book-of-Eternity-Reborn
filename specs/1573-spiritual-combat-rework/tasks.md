@@ -4,7 +4,7 @@
 
 - [x] T134.1 Прямое принятие T133 записано; source audit mortal/TrainingService/clock и проверка B выполнены. Новые коэффициенты/темп не объявлены принятыми; scope/plan/consistency заданы.
 - [x] T134.2 Кандидат4%/3m/исходы/обучение записан с отличиями/lifetime/открытыми тарифами. Exact-fraction arithmetic:8 уровней/2 duration/B28/6 порогов/7 переходов/50 closed-form cases — pass; данные толькоD:. Никаких боевых прогонов/production.
-- [ ] T134.3 Independent whole-block review, ссылки/diff/publication/readback/clean restore; предъявить числа автору как предложение.
+- [x] T134.3 Independent Astra/high review pass без P1/P2; уточнение P3 о допуске примеров внесено.14 новых ссылок/diff проверены;WIPf18152c0e опубликован,5 GitHub blob SHA совпали с source и новым clean sparse restore. Финальный checkpoint/readback — issue1573; новые числа предъявляются как кандидат.
 
 ## T133 — ценность изученной техники и личное мастерство
 
