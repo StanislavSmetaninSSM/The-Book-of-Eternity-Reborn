@@ -1,5 +1,19 @@
 # T121 physical SOURCE HOLD — causal scaffold build corrections, runtime UNRUN
 
+P2REDC1 preparation is now complete on built source
+cf127d94a78782d761b12149cdb7b44a7f5d8ab4 and metadata d5aeab48a:
+all four builds exit0 with unchanged12/23/26/102 warning multisets;4 actual
+PE/PDB pairs and387 changed-source bindings;27 stable artifacts;10 operational
+resource files/40 copies and4 daemon copies. The63,262,866-byte external archive
+has27 exact members,198,144,000 decoded bytes and verified complete gzip EOF/CRC;
+SHA256 c916d1b9b7ac461b1a6e5967c98f557bf795b5ce17c9efad0568fa109e67c6ab.
+Official catalog retry-c1 passes1291 categories/13106 methods/files,0 executed.
+Official PlanOnly and strict proof confirm only callback2/60s and terminal4/120s,
+2 methods/2 Integration descriptors/6 cases,0 executed. Raw is external under
+us5-guided-diagnosis/P2REDC1-*; earlier failed attempts are retained. Runtime PREP,
+both actual expected-RED invocations and every product fix remain pending. There
+is no feature PASS, performance claim or change to any parent/HOLD qualification.
+
 Fresh warning-clean owning pass oncf127d94a completed with exit0 for all four
 projects: Main98.99s/12 warnings, Support12.14s/23, Unit70.60s/26 and
 Integration273.26s/102. Every code/message warning multiset matches C19. Actual
