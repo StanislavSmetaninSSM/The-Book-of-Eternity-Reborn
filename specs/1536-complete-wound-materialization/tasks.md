@@ -194,19 +194,23 @@ this bounded route, not parent T121/FR071/US5/#1536 or the eight proof adapters.
   stays UNKNOWN; no speedup, DOM/provider/fresh-process or whole-feature claim.
   No assertion splitting or failed-singleton limit increase.
 
-- [ ] T121-PHYSICAL-GUIDED-BROWSER-TIMING [US2/US5] Localize the actual
-  browser-course first-attempt 110.668-second cost (console 28.619) through the
-  existing sealed passive accumulator and already authored Engine phase timers.
-  Browser-only `PassiveOperationTimings` hookup, same complete uncapped gzip,
-  original events/timestamps, assertion set and 180-second bound; no arbitrary
-  observer, capped browser profile, parallel collector, new cache or product rule.
-  Intrinsic synchronous timings also activate: extra capture cost is unknown and
-  must remain explicit. Accepted DESIGN checks existing reuse gates and keeps
-  `PassiveCanonicalReads` null. Preserve Integration artifacts before fresh owning
-  build; exact discovery reuse/PlanOnly, storage and independent SOURCE/PREP before
-  at most one instrumented diagnostic journey. Prior complete console course and
-  rollback3 remain separate accepted/pending-OUTCOME lineages, not repeats. No
-  original timeout cause, browser PASS or production optimization is inferred.
+- [x] T121-PHYSICAL-GUIDED-BROWSER-TIMING [US2/US5] Bounded existing-recorder
+  phase localization accepted, not browser-course qualification. Exactly one
+  browser-only passive hook, reviewed Integration build b4db33c2f, original 180s
+  diagnostic runtime 251031dc9 TIMEOUT/UNKNOWN. Complete generated prefix retained:
+  15432376 timing rows / 838794938 stored bytes. First attempt 115.982s, finalization
+  102.264s; sequential GameState checks 25.103s and 25.686s, no additive nested-time
+  or original-causality claim. Analysis-only message/EOF defects were corrected and
+  reviewed before the sole linear fold. Independent OUTCOME/phase assessment
+  accepts the facts and keeps browser DATA guards intact: GameStateDataReads and
+  MainRunFence independently exclude browser source reuse; implicit hits also
+  precede pending-publication recovery. A safe extension requires an explicit
+  browser-original/physical lease/generation/recovery/source/history contract,
+  not an exit byte fence or removed guard. No retry or new optimization admitted.
+  Console full course1 and publication rollback3 accepted on explicit earlier
+  runtimes; original and instrumented browser UNKNOWN/root/capture remain preserved.
+  Continue independent canonical diagnosis adapters while browser qualification
+  remains open; no parent/feature/HOLD closure.
 
 - [ ] T121-PHYSICAL-GUIDED-NATIVE-TIMING [US2/US5] Test-only opt-in capture for
   current terminal legacy/removal, using existing passive recorder/gzip transport,

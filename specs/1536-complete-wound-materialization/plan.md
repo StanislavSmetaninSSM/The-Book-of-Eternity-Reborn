@@ -1,32 +1,31 @@
-# Current bounded browser-course localization
+# Current functional frontier after bounded browser localization
 
-Tracked task: T121-PHYSICAL-GUIDED-BROWSER-TIMING, issue #1536. Independent
-Astra/high DESIGN accepts one browser-only passive timing hookup in the existing
-physical Engine fixture. The retained actual course proves first attempt 110.668s
-and first wait 10.296s before timeout in the second attempt; console first attempt
-was 28.619s and its complete course passes. The unresolved question is which
-existing Engine phase contains this difference. Disabled timers cannot be recovered
-from the prefix, so no subsystem cause or repair loop is currently established.
+Issue #1536: complete console physical course1 and atomic publication rollback3
+are independently accepted on explicit runtime/binary lineages. Browser procedure
+and guaranteed singletons retain earlier accepted shared-handler qualification;
+complete browser course remains UNKNOWN (original and instrumented timeouts).
+No current DOM/provider/fresh-process or full feature acceptance is claimed.
 
-Use the same `OperationTimingAccumulator`, active window and existing full passive
-gzip writer; add only `PassiveOperationTimings = browser ? timings : null` to its
-existing FileSystemManager hooks. Keep original events/timestamps, every gameplay
-oracle, current ownership/integrity checks and the 180-second bound. This enables
-intrinsic synchronous timings too; their extra cost/volume is unknown. Existing
-unchanged recorder/transport proofs plus direct wiring review are appropriate;
-no assignment-mirroring test or new diagnostic system. No new cache: this is
-observation, existing source/admission/ordinary DATA reuse stays eligible, and
-`PassiveCanonicalReads` remains null. No GM-authored contract changes, so existing
-GM guidance/examples remain correct without a new command or prompt update.
+T121-PHYSICAL-GUIDED-BROWSER-TIMING closes only the accepted phase localization:
+first instrumented attempt 115.982s, finalization 102.264s, sequential GameState
+checks 25.103s and 25.686s. Full generated prefix, retained roots and all proofs are
+external. Nested phases are not additive and instrumentation cost is not isolated.
+A one-line DATA guard removal is unsafe: GameStateDataReads.cs30 and MainRunFence.cs535
+both exclude browser originals; source hits precede pending-publication recovery.
+Any future reuse extension needs explicit original tuple/history, exact physical
+lease/generation, recovery, mutation and before-consumption source checks. No new
+browser retry, optimization or generic performance chain is admitted here.
 
-Preserve the actual Integration102dcf7f artifacts, recover prudent storage through
-fully verified recoverable closed-log substitution, review the coherent delta,
-then build Integration only. Retain unchanged other owners, verify PE/PDB/source/
-resources, exact current PlanOnly and independent PREP. One instrumented journey
-may localize phase cost; its cost includes instrumentation and cannot retrospectively
-prove the original cause or justify a production change without evidence. Retain
-old UNKNOWN/root and complete console/rollback results; no budget/guard reduction,
-full-suite/performance detour, broad HOLD release or whole-feature closure.
+Next already-tracked independent player capability is
+T121-DIAGNOSIS-SPIRITUAL-CANONICAL-ADAPTERS: prove the eight registered item/resource/
+consent/facility/location/quest/effect/environment requirements from their real
+realm-owned canonical sources. Existing three-kind spiritual diagnosis remains
+accepted. First map actual source owners and closed durable proof bindings, then
+independent DESIGN, cheap causal/refusal/source counters, implementation, fresh
+owning builds and addressed qualification. Do not fabricate Mortal snapshots,
+infer locality from arbitrary profiles, invent a parallel store or ignore a
+requirement. No new economic/game rule, DFR/Mortal-compatibility/Windows release
+or whole-feature completion is implied by this next functional task.
 
 Current physical-guided continuation: [physical-guided-checkpoint.md](physical-guided-checkpoint.md).
 T121-PHYSICAL-GUIDED-ORDINARY-CLOCK is accepted in its bounded33-distinct scope

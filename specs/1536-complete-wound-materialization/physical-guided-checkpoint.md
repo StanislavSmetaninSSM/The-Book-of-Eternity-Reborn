@@ -1,3 +1,21 @@
+# Bounded physical course frontier accepted; independent diagnosis adapters next
+
+Independent Astra/high verifies the phase interpretation and precise source-contract
+blocker. T121-PHYSICAL-GUIDED-BROWSER-TIMING closes only localization, never a browser
+PASS. Both original and instrumented full browser course remain UNKNOWN and retained.
+The two browser DATA exclusions and pre-hit pending-publication recovery boundary
+stay unchanged; no guard removal, retry, new collector or generic optimization chain.
+Current category descriptions now accurately distinguish accepted console1/rollback3
+and open browser course; selectors, membership, requirements and budgets are unchanged.
+No successful build or test is repeated for this status reconciliation.
+
+The next independent functional task is the already registered eight canonical
+spiritual-diagnosis requirement adapters. Source owner/proof mapping and DESIGN
+come before implementation; current three-kind route, every fresh source/permission
+check, inert reading/cancel and safe-cycle semantics remain. This does not lift any
+old HOLD or imply US3/US5/#1536 completion. All current outputs, full/incomplete raw,
+retained roots, manifests and verified archives stay external and preserved.
+
 # Browser timing prefix — phase localized; no retry or product change
 
 One reviewed linear readback of the retained instrumented capture completes:
