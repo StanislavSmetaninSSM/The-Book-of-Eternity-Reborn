@@ -1,3 +1,32 @@
+# Canonical adapter implementation admitted after causal16 RED
+
+Independent Astra/high accepts all16 intended final availability failures at
+runtime6c6a2cf81 / Unitd115e9cf1. No setup/timeout failures, source/archive hashes and
+all16 IDs/pairs/line51 verified. Production remains unchanged at this boundary.
+Implement the accepted eight-kind source/closed proof/realm scene design, not a
+new diagnostic or generic performance mechanism.
+
+Functional lifetime detail: condition evidence is freshly proved at the actual
+pre-diagnosis boundary. Required ordinary natural recovery may remove a qualifying
+wound effect; ordinary resource income may change quantities. Final requirements
+must not be blindly re-admitted against after-images or incomplete original fallback
+roots. Retain current target/locality/tier and physical/source/original fences.
+
+Use the existing authority chain: CompletedOrdinaryMechanicsReduction (private
+CompletedOrdinaryIssuanceKey), AssembleCompletedAcceptedReduction and validated
+AcceptedMechanicsPlan. Route a diagnosis-specific post-validation candidateAdmission
+callback through GetOrBuildCommonWoundValidated. Bind its actual validated plan to
+the same live diagnosis owner, prepared source frame and completed execution cursor,
+retaining the complete immutable output projection and prepared fingerprint.
+CalculatedCommonArtifacts or an arbitrary dictionary alone is DATA, not a witness.
+At RequireServicePublication pass the actual taken validated plan plus writes;
+recompute/check its fingerprint and exact output/absence agreement for complete
+resource definitions/state/history/owner authority, effect identity/carriers, wound
+identity/History/carriers and companions. Reuse computed results; no second common
+calculation, new witness framework, changed-field exemption or cached permission.
+Add cheap lawful-income/terminal-effect-removal and forged/stale-output controls
+before addressed native/UI. Existing three-kind source identities remain stable.
+
 # Finite afterlife scene adaptation — DESIGN delta pending
 
 The independent owner-mapping review confirms that existing locality containers

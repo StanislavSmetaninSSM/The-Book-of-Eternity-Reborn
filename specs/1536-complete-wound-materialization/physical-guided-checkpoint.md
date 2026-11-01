@@ -1,3 +1,13 @@
+# Canonical causal16 RED accepted — implementation next
+
+Independent Astra/high OUTCOME accepts primary TRX/hashes/all16 unique kind/realm
+pairs, final line51 only, complete selection and cleanup/stable pins. This is RED,
+not16PASS. The finite scene/source design is accepted for implementation.
+The existing validated-plan callback/issuance chain resolves the separate natural
+recovery lifetime constraint; exact integration and cheap refusal/transition
+controls are recorded at the top of plan.md. No production implementation, new
+build/runtime or feature completion yet. Proceed with the same existing owners.
+
 # Canonical diagnosis causal16 — all16 intended final RED; OUTCOME pending
 
 After independent PREP and immediate current fence, runtime6c6a2cf8125cadc5038f5f7ec65d7e79810373fd /
