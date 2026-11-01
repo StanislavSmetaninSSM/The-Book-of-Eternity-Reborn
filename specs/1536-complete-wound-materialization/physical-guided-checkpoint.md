@@ -1,3 +1,33 @@
+# C13 corrected wait writer built — exact GREEN PREP pending
+
+Independent Astra/high SOURCE accepts 47aa6358d962e3985a21dba8d15020d8083a5b9a.
+Fresh Integration build exits 0 in 137.408534s with baseline 102 warnings / 204
+logged code-message occurrences. Main/Support/Unit reuse unchanged C12 source390907
+builds. Actual four PE/PDB identities, 413 source bindings, 27 artifacts, ten
+resources in 40 copies and four daemons match. Reviewed ended Integration obj/ref
+duplicates alone retired; all bins, dependency refs and prior verified RED archive
+remain. Production code and the causal Theory itself are unchanged.
+
+P3GREENC13GREEN-causal2-plan exits 0: same 2 cases / 1 method / 1 exclusive
+Integration descriptor / 60s, zero execution. Full catalogue discovery1297/13112
+retains its actual c55f source: catalogue, selection and test attributes are byte
+unchanged, so that passing discovery is not repeated; fresh exact PlanOnly uses
+current compiled code. Plan log is fully recoverable gzip; all other raw retained.
+Last source fence has no active managed owner, all pins stable, 854106112 free
+bytes above unchanged 687865856 reserve. Only this artifact GREEN awaits PREP.
+
+Independent bounded consumer tracing confirms a separate ordinary-time integration
+gap before any full course retry: ProgressionScheduleService accepted mutation
+publishes schedule/report only; cleanup/state refresh does not turn the command
+into a numeric currentTimeInMinutes. Next treatment menu and accepted-state clock
+checks require that numeric source. Thus this cheap GREEN can prove only correct
+GM command emission and resolver3360, not accepted course continuation or once-only
+consumption. After GREEN, add a bounded real ordinary-acceptance roundtrip proving
+numeric clock, next-menu readability and no repeated delta, then correct the
+existing owner through independent design/source/causal review. No new game-time
+rule, post-accepted fixture patch, limit increase, broad perf/DFR or native retry.
+All current PASS/UNKNOWN/UNRUN/HOLD distinctions remain.
+
 # C13 wait-channel correction — SOURCE pending; UNCOMPILED / UNRUN
 
 Independent Astra/high OUTCOME accepts the exact two-row causal RED above, not
