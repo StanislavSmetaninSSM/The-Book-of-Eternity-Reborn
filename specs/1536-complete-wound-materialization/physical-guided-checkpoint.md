@@ -1,3 +1,24 @@
+# C5 independent terminal legacy — 1 PASS; current3 PREP pending
+
+Runtime da95d7e7f221ac49621d37e70e09cd92e8529ce7 / compiled source
+a958b520fe5839c590f2621443e27de89fc18e50: one exact independent-root Fact
+passes, category39.441707/60s, wall45.2958020s. Planned/completed1, unique IDs,
+zero failures/skips/timeouts/underfill, stable pins and complete cleanup. Its full
+actual common publication, independent cosmetic/mechanical codec/refusals, linked
+History, removed wound and final identity/carrier/source roles pass. This is a
+complete native case; UI/current3 qualification is not implied. External strict
+proof: P3GREENC5-independent1/verified-outcome.json; fresh closing fence shows
+27 artifacts/resources stable, no live owner, 49 old zombies and694386688 freeB.
+The previous failure remains untouched. Frontier is now37 distinct PASS across
+explicit lineages, not one fresh37.
+
+Exact P3GREENC5-current3-plan selects current-legacy, current-removal and joint:
+3 cases /3 methods /3 descriptors, zero execution, each original120s bound.
+Next requires independent OUTCOME/PREP and immediate unchanged start fence.
+UI9 and broader holds remain UNRUN/unadmitted. The entries below describe the
+initial preparation state; this latest receipt supersedes their UNRUN wording
+only for the one completed independent-root case.
+
 # Physical guided treatment — current checkpoint (#1536)
 
 This is the current compact continuation receipt for T121-PHYSICAL-GUIDED,
