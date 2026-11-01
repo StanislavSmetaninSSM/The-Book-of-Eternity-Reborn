@@ -37,6 +37,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
         await using var fixture = await DiagnosisOwnershipFixture.CreateAsync(fate ? 1 : 20, signedInput: true,
             physicalMode: mode, seedFate: fate, resourceCost: resourceCost,
             preparePhysicalWound: terminalVariant is null ? null : wound => PrepareTerminalSettlementWound(wound, terminalVariant),
+            beforeResourceBootstrap: terminalVariant == "reduce_legacy" ? PrepareThreeStepTerminalProvider : null,
             originalProducer: async (files, preparedRequest) =>
             {
                 var actualHint = Assert.IsType<JsonObject>(preparedRequest.MortalTreatment);

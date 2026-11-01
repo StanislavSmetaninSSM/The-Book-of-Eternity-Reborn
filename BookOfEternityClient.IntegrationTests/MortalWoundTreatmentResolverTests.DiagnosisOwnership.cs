@@ -784,7 +784,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
         internal static async Task<DiagnosisOwnershipFixture> CreateAsync(int? natural = null, bool signedInput = false, int duration = 30, bool seedFate = false,
             Func<FileSystemManager, TurnRequest, Task>? originalProducer = null, bool twoMembers = false, bool exportDiagnosis = true,
             FileSystemManagerHooks? hooks = null, string? woundLabel = null, bool resourceCost = false, string? physicalMode = null,
-            Action<JsonObject>? preparePhysicalWound = null)
+            Action<JsonObject>? preparePhysicalWound = null, Action<FileSystemManager>? beforeResourceBootstrap = null)
         {
             // Initial canonical scenario DATA only. The real live preparation and
             // exporter below issue ownership; these JSON values are not receipts.
@@ -835,7 +835,8 @@ public sealed partial class MortalWoundTreatmentResolverTests
             FileSystemManager.CanonicalWriteLease? lease = null;
             try
             {
-                _ = AcceptedStateFixture.SeedCanonicalComponentData(files, scenario, "player", "player_current", WoundCarrierCatalog.PlayerPath);
+                _ = AcceptedStateFixture.SeedCanonicalComponentData(files, scenario, "player", "player_current", WoundCarrierCatalog.PlayerPath,
+                    beforeResourceBootstrap);
                 if (twoMembers) await SeedDiagnosisPrivateMemberAsync(files, scenario.Before);
                 var clock = JsonNode.Parse(Assert.IsType<string>(await files.ReadFileAsync(EffectAcceptedTurnInputComposer.WorldTimePath)))!.AsObject();
                 clock["timeOfDay"] = "08:00";

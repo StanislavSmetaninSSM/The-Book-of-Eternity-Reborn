@@ -31,7 +31,8 @@ public sealed partial class MortalWoundTreatmentResolverTests
         var targetId = scenario.AcceptedState["targetId"]!.GetValue<string>();
         var targetCarrierPath = WoundCarrierCatalog.PlayerPath;
         _ = AcceptedStateFixture.SeedCanonicalComponentData(
-            fileSystem, scenario, targetKind, targetId, targetCarrierPath);
+            fileSystem, scenario, targetKind, targetId, targetCarrierPath,
+            terminalTreatment ? PrepareThreeStepTerminalProvider : null);
     }
 
     private sealed partial class AcceptedStateFixture

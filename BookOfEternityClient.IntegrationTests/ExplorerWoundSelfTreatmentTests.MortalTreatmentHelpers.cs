@@ -21,7 +21,7 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
         var selected = menu.IsTargetSelection ? menu.ForTarget(Assert.Single(menu.Targets, target => target.Owner.OwnerKind == "player")) : menu;
         var choice = Assert.Single(selected.Choices, candidate => candidate.Available && candidate.Selection.MortalTreatment?.Mode == mode &&
             candidate.Selection.MortalTreatment.Provider.OwnerId == "field_medic_01");
-        Assert.Contains("Условия", choice.Reason); Assert.Contains("расход", choice.Reason, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Общие условия:", choice.Reason); Assert.Contains("расход", choice.Reason, StringComparison.OrdinalIgnoreCase);
         if (mode == "course") { Assert.Contains("Условия этого этапа", choice.Reason); Assert.Contains("окно включительно", choice.Reason); }
         AssertMortalDiagnosisImages(before, files);
         if (browser)

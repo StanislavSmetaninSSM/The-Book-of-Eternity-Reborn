@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
 using Xunit;
 
@@ -7,6 +8,67 @@ namespace BookOfEternityClient.Tests;
 
 public sealed partial class MortalWoundTreatmentResolverTests
 {
+    /// <summary>
+    /// Declares only the two terminal-IV fixtures' exact initial provider limit,
+    /// before the existing resource bootstrap and either authenticated original.
+    /// Typed source/program DATA verifies coverage without creating authority.
+    /// </summary>
+    private static void PrepareThreeStepTerminalProvider(FileSystemManager files)
+    {
+        var npcPath = files.ResolvePath(NpcCoreChangesContract.NpcCorePath);
+        var root = JsonNode.Parse(File.ReadAllText(npcPath))!.AsObject();
+        var medic = Assert.Single(root["NPCsInScene"]!.AsArray().OfType<JsonObject>(),
+            row => row["NPCId"]!.GetValue<string>() == "field_medic_01");
+        Assert.Equal("loc_field_clinic_001", medic["currentLocationId"]!.GetValue<string>());
+        var skill = Assert.Single(medic["activeSkills"]!.AsArray().OfType<JsonObject>(),
+            row => row["skillId"]!.GetValue<string>() == "skill_guaranteed_care_01");
+        Assert.Equal(3, skill["currentMasteryLevel"]!.GetValue<int>());
+        var capability = Assert.Single(skill["mortalWoundTreatmentCapabilities"]!.AsArray().OfType<JsonObject>(),
+            row => row["capabilityRef"]!.GetValue<string>() == "exact_materialized_healing_source");
+        var limits = capability["operationLimits"]!.AsObject();
+        Assert.Equal(1, limits["maximumSeverityReductionSteps"]!.GetValue<int>());
+        limits["maximumSeverityReductionSteps"] = 3;
+        var woundRoot = JsonNode.Parse(File.ReadAllText(files.ResolvePath(WoundCarrierCatalog.PlayerPath)))!.AsObject();
+        var parsed = WoundMaterializationContract.Parse(Assert.Single(woundRoot["activeWounds"]!.AsArray())!.ToJsonString(), "terminal.initial");
+        Assert.True(parsed.IsValid, DescribeIssues(parsed.Issues));
+        var wound = parsed.Wound!; Assert.Equal(4, wound.Severity.Rank);
+        Assert.Equal("mortal_world", wound.Owner.Realm); Assert.Equal("player", wound.Owner.OwnerKind);
+        var treatment = MortalWoundTreatmentContract.ParseProjection(wound.Treatment, "terminal.treatment", wound.Owner.Realm,
+            wound.Owner.OwnerKind, wound.Severity.Rank, wound.Complications, wound.Recovery.DeteriorationPolicy);
+        Assert.True(treatment.IsValid, DescribeIssues(treatment.Issues));
+        var route = Assert.IsType<MortalWoundGuaranteedRouteDefinition>(Assert.Single(treatment.Treatment!.Routes));
+        Assert.Equal("provider", route.Resolution.ActorRole);
+        Assert.Equal("exact_materialized_healing_source", route.Resolution.CapabilityRef);
+        Assert.Equal("success", route.Outcome.Category); Assert.Equal(3, route.Outcome.DeclaredResult.Length);
+        Assert.Equal(new[] { 1, 2 }, route.Outcome.DeclaredResult.OfType<MortalWoundReduceSeverityOperation>().Select(row => row.Steps));
+        var heal = Assert.IsType<MortalWoundHealOperation>(route.Outcome.DeclaredResult[^1]);
+        Assert.Single(heal.Legacies.OfType<MortalWoundCosmeticLegacyDraft>());
+        Assert.Equal(2, heal.Legacies.OfType<MortalWoundMechanicalEffectLegacyDraft>().Count());
+        MortalWoundTreatmentCapabilityDefinition ReadCapability(JsonObject actor)
+        {
+            var catalog = MortalWoundTreatmentCapabilityContract.ParseActorCatalog("npc", "field_medic_01",
+                actor, NpcCoreChangesContract.NpcCorePath, actor, NpcCoreChangesContract.NpcCorePath);
+            Assert.True(catalog.IsValid, DescribeIssues(catalog.Issues));
+            var source = Assert.Single(catalog.Sources, row => row.SkillId == "skill_guaranteed_care_01");
+            Assert.Equal("npc", source.OwnerKind); Assert.Equal("field_medic_01", source.OwnerId);
+            Assert.Equal("active", source.SkillKind); Assert.True(source.Active); Assert.Equal("active", source.Lifecycle);
+            return Assert.Single(source.Capabilities, row => row.CapabilityRef == route.Resolution.CapabilityRef);
+        }
+        var actual = ReadCapability(medic);
+        Assert.Equal("physical", actual.WoundDomain); Assert.Equal(1, actual.MinimumSeverityRank); Assert.Equal(4, actual.MaximumSeverityRank);
+        Assert.Equal(3, actual.OperationLimits.MaximumSeverityReductionSteps); Assert.True(actual.OperationLimits.MayHealAtSeverityI);
+        Assert.True(MortalWoundTreatmentCapabilityAuthority.CoversGuaranteedOutcome(wound, route.Outcome.DeclaredResult, actual));
+        var lower = medic.DeepClone().AsObject();
+        lower["activeSkills"]!.AsArray().OfType<JsonObject>().Single(row => row["skillId"]!.GetValue<string>() == "skill_guaranteed_care_01")
+            ["mortalWoundTreatmentCapabilities"]!.AsArray().OfType<JsonObject>().Single(row => row["capabilityRef"]!.GetValue<string>() == route.Resolution.CapabilityRef)
+            ["operationLimits"]!["maximumSeverityReductionSteps"] = 1;
+        var lowerCapability = ReadCapability(lower);
+        Assert.Equal(1, lowerCapability.OperationLimits.MaximumSeverityReductionSteps);
+        Assert.False(MortalWoundTreatmentCapabilityAuthority.CoversGuaranteedOutcome(wound, route.Outcome.DeclaredResult, lowerCapability));
+        Assert.Equal(3, limits["maximumSeverityReductionSteps"]!.GetValue<int>());
+        File.WriteAllText(npcPath, root.ToJsonString());
+    }
+
     private static void PrepareTerminalSettlementWound(JsonObject wound, string variant)
     {
         if (variant == "remove")

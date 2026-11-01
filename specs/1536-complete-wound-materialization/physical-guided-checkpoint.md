@@ -1,3 +1,38 @@
+# C7 scoped initial capability and rendered label — UNCOMPILED/UNRUN
+
+Fixture-only correction on a7d4d2527907aab401db8f3b23fce7b267250f6b. The actual
+C6 current result below remains 1 FAIL / 2 UNRUN; console remains 2 FAIL before
+confirmation. Neither failed prefix is a treatment-execution or full-cost PASS.
+
+Only current reduce_legacy and terminal joint seeds opt in through the existing
+SeedCanonicalComponentData.beforeResourceBootstrap callback. The async fixture
+forwards an optional callback with null default; no later original/current image
+is patched. Actual initial field_medic_01 / skill_guaranteed_care_01 retains its
+exact capabilityRef, physical domain, ranks 1–4, active source, mastery 3, heal and
+legacy limits. Its explicit aggregate reduction limit is declared as 3 for the
+authored IV→III→I→heal outcome; generic CreateTreatmentSkill remains at 1.
+Both seeds verify the full typed actual source/outcome coverage, including one
+cosmetic/two mechanical legacies, then reject cloned default-limit-1 DATA against
+the same outcome. The callback writes only that initial provider declaration,
+before resource bootstrap and either authenticated original. Removal, all UI seeds
+and unrelated fixtures retain their prior default. No production rule, capability
+inference, authority, claim allocation, cost or time behavior changes.
+
+The shared UI helper now requires exact rendered Общие условия: instead of the
+incorrect uppercase substring. Cost, course-dose/window, cancellation, separate
+confirmation and whole-image inertness checks are retained. The analogous course
+Условия этого этапа, окно включительно and Ещё рано literals match the production
+menu, and existing browser answer keys match the actual prompt/write APIs. This
+finite readback does not qualify unreached UI suffixes or other runtime behavior.
+
+Initial NPC/wound roots and parsed outcome DATA are read once and reused for the
+positive and detached lower-limit negative; no cache, diagnostic transport, new
+world, counter or speedup claim. Case/category/budget/GM contracts stay unchanged.
+Accepted independent 1 / simple 3 retain their original lineage, with no repeat.
+All code here is UNCOMPILED/UNRUN; only source/member and whitespace checks were
+performed. Root owns persistence, independent SOURCE, fresh owning build/PREP and
+runtime. Raw, saves, outputs, archives, recovery and all HOLDs remain untouched.
+
 # C6 console first prefix — 2 FAIL; no treatment execution yet
 
 Runtime08bcdca300d5e8e19ce2a67db16e33f640d206ca / Integration133e1eead:
