@@ -1,3 +1,47 @@
+# C14 ordinary-clock causal scaffold — UNCOMPILED / UNRUN
+
+Independent Astra/high accepts the preceding five metadata changes and recommends
+the existing ValidateAcceptedTurnRawResourceMaterializationAsync(lease) core after
+physical continuity/resource-command checks, before owner/source/wound planning.
+This is shared by Engine and direct native callers; final scheduler and normalizer
+core/preflight are too late. Production placement remains conditional on the real
+baseline. Existing shared AcceptedTurnOutcomeMutation must remain unchanged.
+
+Necessary implementation guards are recorded before code: fresh physical original/
+authority/current request/control/realm (never cached lookup override alone), original
+numeric/control agreement, checked existing Int32 range, preserved validated full
+calendar, no mixed/invalid command, no specialized diagnosis/guided/completed path,
+exact current/source guards and operation-owned compensation on known failure.
+WorldTimePath is absent from intermediate NormalizerRollbackTrackedFiles, so exact
+rollback coverage must be explicit. No new clock service/cache/game rule applies.
+
+The first new native Fact calls the existing raw-resource validator, not a new stub
+or missing API. It reuses DiagnosisOwnershipFixture without signed treatment or
+diagnosis input. That fixture's generic component clock has incomplete calendar;
+only this test's original-producer callback supplies complete declared calendar
+DATA BEFORE the sole genuine LiveTurnPreparationService original, keeping its
+actual numeric source. No post-original/post-accepted fixture edit is used to
+invent time. The actual GM command under the live lease is timeChange480.
+
+Before the intended numeric-clock oracle: original/control/private admission,
+unchanged original bytes/control, complete unrelated JSON images and returned
+intake diagnostics are captured. A setup, unrelated refusal or timeout is not
+causal RED. Numeric value/calendar, no command, repeat intake, actual progression
+publication, repeated next controls and actual next-menu readability are GREEN-only
+obligations after that oracle; this does not claim a complete Engine course.
+Existing passive accumulator/gzip/native fixture lifetime records the full stream
+without broad ambient contexts, arbitrary observers, quotas or a new transport.
+
+Finite scaffold plan:
+- [ ] Coherent SOURCE/fixture/selection/helper review; preserve current Integration4.
+- [ ] Fresh Integration-only build (other owners unchanged), bindings/resources,
+  discovery/exact PlanOnly/PREP; one case in an exclusive 60s category.
+- [ ] Classify the actual baseline and cost from primary TRX/full capture/cleanup.
+Only then choose the smallest owned implementation and finite negatives/docs/
+regressions. No production source, rollback inventory, budget or old PASS changed.
+Optimization: reuse existing fixture/recorder/source owners; no Engine setup or
+new cache. Original/current source guards remain fresh; raw stays external.
+
 # C13 writer accepted — C14 ordinary clock integration DESIGN pending
 
 Independent Astra/high OUTCOME accepts runtime234fe38a / compiledIntegration47aa:

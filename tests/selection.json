@@ -2,6 +2,13 @@
   "schemaVersion": 1,
   "selections": [
 {
+  "category": "mortal-ordinary-clock-preintake-causal",
+  "reason": "Expose the confirmed ordinary accepted-clock gap through the existing real native original and shared raw-resource entry before changing production. Require exact original/control/delta and unrelated-source premises; expected missing numeric-clock failure alone is causal RED. Later progression/menu assertions are GREEN-only. Full existing capture, no repeated accepted UI/native rows.",
+  "contracts": [
+    "#1536 / FR062 / FR065 / US2 / US3 / US5 / T121-PHYSICAL-GUIDED-ORDINARY-CLOCK; current numeric time and retry-safe ordinary wait"
+  ]
+},
+{
   "category": "mortal-physical-guided-wait-response",
   "reason": "Actual full course stopped in validation repair because its controlled wait wrote timeChange into interface_updates. Prove that exact writer rejection cheaply, then correct only the ordinary-wait artifact channel and verify current clock/report/file declaration before a bounded full-course retry. No accepted nonwait PASS is selected.",
   "contracts": [
