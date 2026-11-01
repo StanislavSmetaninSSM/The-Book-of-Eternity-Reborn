@@ -1,3 +1,24 @@
+# C14 final SOURCE delta — afterlife exclusion before clock parsing
+
+Independent review found one additional WIP regression: parsing a stale Mortal
+clock before current-realm exclusion could reject an unrelated plain afterlife
+intake. The current realm is now checked first; its one captured soul image is
+reused as DATA and freshly compared at publication/retain. Two existing-fixture
+original afterlife controls require actual ordinary common-plan construction
+with malformed/non-object stale Mortal clock left byte-identical. No afterlife
+GM rule changed. All candidate code remains UNCOMPILED/UNRUN.
+
+Corrected exact selection expectations (to verify by actual PlanOnly): causal1,
+ownership5, afterlife exclusion2, physical guided docs3 (2 Unit +1 Integration),
+original committed rollback3 (one2-row Theory +1Fact). Earlier shorthand2 for
+the latter categories was method count, not completed cases; no result is claimed.
+The five helper phase deltas and actual mixed32 archive have independent approval.
+Archive63488020B SHA c1e12c33ebf223dd554a953453f13bdbb45ec2f1f6bab18c4d383683c0a71e8e,
+fullEOF/CRC decoded198778880B, all32 member hashes and exact mixed build provenance.
+No active managed owner; free762880000B after archive, reserve unchanged687865856.
+Next final delta SOURCE, four fresh affected owners, bindings/catalog/exact plan/
+PREP, then finite controls/causal GREEN before any full course retry.
+
 # C14 ordinary clock candidate — coherent SOURCE review pending
 
 Production WIP3b7d38ac4759f72c9406f326a02bcdbc64ffe57e is remotely verified.

@@ -21,6 +21,11 @@ public partial class ValidationService
         {
             _fs.EnsureCanonicalWriteLeaseActive(lease);
             _fs.VerifyCurrentSessionOperation(lease);
+            const string soulPath = "game_state/meta/soul_state.json";
+            var soulBytes = await _fs.ReadFileBytesAsync(lease, soulPath);
+            if (soulBytes is null) return null;
+            var soul = ReadOrdinaryClockObject(soulBytes, "ordinary clock soul");
+            if (!RealmSemantics.IsMortalRealm(soul["currentRealm"]?.GetValue<string>())) return null;
             var before = await _fs.ReadFileBytesAsync(lease, OrdinaryClockPath);
             if (before is null) return null;
             var command = ReadOrdinaryClockObject(before, OrdinaryClockPath);
@@ -34,13 +39,11 @@ public partial class ValidationService
             var guards = new List<(string Path, CanonicalBeforeImage Image)>();
             foreach (var path in paths)
             {
-                var bytes = await _fs.ReadFileBytesAsync(lease, path);
+                var bytes = path == soulPath ? soulBytes : await _fs.ReadFileBytesAsync(lease, path);
                 guards.Add((path, new(bytes is not null, bytes)));
             }
             byte[] Required(string path) => guards.Single(row => row.Path == path).Image.Bytes
                 ?? throw new InvalidDataException("Ordinary clock source is absent: " + path);
-            var soul = ReadOrdinaryClockObject(Required("game_state/meta/soul_state.json"), "ordinary clock soul");
-            if (!RealmSemantics.IsMortalRealm(soul["currentRealm"]?.GetValue<string>())) return null;
             var request = ReadOrdinaryClockObject(Required(LiveTurnPreparationService.TurnRequestPath), "ordinary clock request");
             if (request["mortalDiagnosis"] is not null || request["mortalTreatment"] is not null ||
                 request["spiritualHealing"] is not null ||

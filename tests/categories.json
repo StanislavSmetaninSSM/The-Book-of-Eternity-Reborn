@@ -2,6 +2,30 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "mortal-ordinary-clock-afterlife-exclusion",
+  "responsibility": "C14 directly affected plain afterlife shared raw-resource entry, using existing complete spiritual-conflict fixture: malformed and non-object stale Mortal world clock must remain byte-inert and unparsed while the actual ordinary afterlife common plan is still built without errors. Two cases/one Theory; specialized natural/C4 bypass is covered separately.",
+  "excludes": "No afterlife gameplay change, fake ordinary clock result, native lineage or full lifecycle/DFR/Windows qualification. Existing original fixture and common planner only; no new diagnostic stack or cache.",
+  "changeHints": [
+    "BookOfEternityClient/Services/Validation/ValidationService.OrdinaryMortalClock.cs",
+    "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.OrdinaryClockExclusion.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OrdinaryAfterlifeAdmissionDoesNotParseOrPublishStaleMortalClock"
+      ]
+    }
+  ]
+},
+{
   "id": "mortal-ordinary-clock-ownership-controls",
   "responsibility": "T121-PHYSICAL-GUIDED-ORDINARY-CLOCK finite existing-native guard controls: malformed/duplicate/mixed/overflow commands and null no-delta compatibility; signed original/current control/request/authority corruption with exact inertness; injected before-publication and known-after-commit failures with exact restoration/retry, and foreign-clock drift with uncertain disposition/no overwrite. Five cases in three methods, per-test owned fixture, existing full passive gzip and cleanup. New code UNCOMPILED/UNRUN.",
   "excludes": "No fake authority/receipt, broad clock service/cache/presence protocol, calendar inference, new GM rule, full Engine course, DOM/provider/fresh-process, old DFR/Mortal compatibility/Windows HOLD or increased budget. Faults use existing test dependency hooks, never diagnostic observer mutation.",
