@@ -1,3 +1,25 @@
+# Canonical native2 GREEN — source authority survives lawful natural lifetime
+
+Both native singletons run on e6ecd3c3652e4c90226694304c7d4d6c01efef64, compiled
+Integration e14, Unit6d81, Main/Support c576. Resource1 PASS26.0213885/120s,
+TRX8b0130be41b05d938203028366bf253eefc92e9d04bc3a0b49a55e51be212810;
+independent Astra/high OUTCOME accepted. Effect1 PASS25.769966/120s,
+TRXbd174b81ff973606de84b7a6cfe443c878b5b1ba8ad0039f9235848f8c22150a;
+independent OUTCOME pending. Both exact1/1 descriptors complete, zero skip/timeout /
+underfill, exit0, cleanuptrue and all27/44/4 pins/resources/daemons unchanged.
+
+Resource probe proves no fee, no mutation or surviving authority on rejection,
+exact ready/command restoration, then free knowledge/natural publication with full
+unchanged definitions/ledger/History. Effect proof admits an actual active required
+effect, completes terminal natural healing/removal, preserves original diagnosis /
+knowledge/natural History and completed replay. Both keep exact common-output,
+foreign/missing/forged/delete guards and actual same-plan image-build counter1.
+No general player quantity-change, speedup or wider runtime qualification is claimed.
+Together with prior138, this is140 distinct PASS on the explicit lineages, not one
+fresh140. Console canonical resource confirmation/rollback1 remains UNRUN until
+native2 OUTCOME/PREP and a fresh fence, original180s/full capture. Old physical
+browser/native UNKNOWN and DFR/Mortal/Windows HOLDs remain separately open.
+
 # Canonical free-resource correction SOURCE/build accepted — runtime PREP next
 
 Independent Astra/high accepts the actual e14b07f4d433661f75f1c67b83d7ef8c3ea35bd7
