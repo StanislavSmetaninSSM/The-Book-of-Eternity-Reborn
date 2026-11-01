@@ -12,6 +12,39 @@ public sealed class SpiritualDiagnosisDocumentationTests
     private const string Marker = "spiritual_diagnosis_execution_v1";
 
     [Fact]
+    public void CanonicalConditionsExampleUsesClosedGrammarAndExactRealmContainers()
+    {
+        const string marker = "spiritual_diagnosis_canonical_requirements_v1";
+        foreach (var file in new[] { "OtherGuides/Wound_Materialization_Contract.md", "OtherGuides/Afterlife_Contract_Matrix.md",
+            "CLI_API_Specification.md", "Rules/Block_CLI_Operations.txt", "Rules/Block_32_Guardians.txt", "TaskGuides/CLI_Step_Main.txt" })
+        {
+            var guidance = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, file));
+            var section = guidance[guidance.IndexOf(marker + " — exact", StringComparison.Ordinal)..];
+            foreach (var token in new[] { "item_quantity", "resource_quantity", "consent", "facility", "location", "quest_state", "effect_state", "environment",
+                "guardians[].abode.customStates[]", "halls[].customStates[]", "withdrawn", "validated common outputs", "Soul Quest" }) Assert.Contains(token, section);
+        }
+        var text = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "Examples/E_CLI_Afterlife_Turns.txt"));
+        var start = text.IndexOf(marker + " — worked", StringComparison.Ordinal); Assert.True(start >= 0);
+        var end = text.IndexOf("end_" + marker, start, StringComparison.Ordinal); Assert.True(end > start);
+        var match = Assert.Single(Regex.Matches(text[start..end], "```json\\s*([\\s\\S]*?)```", RegexOptions.CultureInvariant).Cast<Match>());
+        var data = JsonNode.Parse(match.Groups[1].Value)!.AsObject();
+        var declarations = data["requirements"]!.AsArray().Select(row => System.Text.Json.JsonSerializer.SerializeToElement(row)).ToArray();
+        var parsed = MortalWoundTreatmentContract.ParseRequirementProjection(declarations, "worked.requirements");
+        Assert.True(parsed.IsValid); Assert.Equal(8, parsed.Requirements.Length);
+        Assert.Equal(8, parsed.Requirements.Select(row => row.Kind).Distinct(StringComparer.Ordinal).Count());
+        var scene = SpiritualDiagnosisSceneAuthorityContract.Parse(System.Text.Json.JsonSerializer.SerializeToElement(data["customStates"]), "worked.customStates");
+        Assert.True(scene.IsValid); Assert.Single(scene.Facilities); Assert.Single(scene.Environments); Assert.Single(scene.Consents);
+        foreach (var shining in new[] { false, true })
+        {
+            var container = new JsonObject { ["customStates"] = data["customStates"]!.DeepClone() };
+            var root = shining ? new JsonObject { ["halls"] = new JsonArray(container) }
+                : new JsonObject { ["guardians"] = new JsonArray(new JsonObject { ["abode"] = container }) };
+            Assert.Empty(SpiritualDiagnosisSceneAuthorityContract.ValidateContainers(System.Text.Json.JsonSerializer.SerializeToElement(root), "worked", shining));
+        }
+        Assert.Equal(2, AfterlifeContractRegistry.All.Count(row => row.Owner == "spiritual_diagnosis_scene_schema1"));
+    }
+
+    [Fact]
     public void EffectiveGuidanceAndBothDaemonDirectivesKeepDistinctGuaranteedDiagnosisAndRequiredNaturalSuffix()
     {
         foreach (var file in new[] { "OtherGuides/Wound_Materialization_Contract.md", "OtherGuides/Afterlife_Contract_Matrix.md",

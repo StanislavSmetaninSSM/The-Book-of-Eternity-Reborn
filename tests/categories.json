@@ -2,6 +2,104 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "spiritual-diagnosis-canonical-controls",
+  "responsibility": "T121 canonical adapter refusal/ownership/lifetime DATA:16 changed-source/detached-proof and actual resource composer-source call controls,16 ambiguous/foreign canonical inputs,8 closed scene/validator/dialect isolation cases.40 cases/3 methods; genuine source-backed availability premise precedes every refusal.",
+  "excludes": "No complete suite, external provider/DOM/fresh-process, DFR/Mortal compatibility/Windows HOLD or whole #1536 acceptance. No raised timeout or omitted source/authority guard.",
+  "changeHints": [
+    "BookOfEternityClient/Services/SpiritualDiagnosisCanonicalSources.cs",
+    "BookOfEternityClient/Services/AfterlifeWoundHealingPlanner.Diagnosis.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.SpiritualDiagnosisCanonicalRequirementTests.ChangedCanonicalEvidenceRefusesNewAdmissionAndKeepsDetachedProof",
+        "BookOfEternityClient.Tests.SpiritualDiagnosisCanonicalRequirementTests.AmbiguousOrForeignCanonicalIdentityNeverSuppliesRequirement",
+        "BookOfEternityClient.Tests.SpiritualDiagnosisCanonicalRequirementTests.RecognizedSceneRowsRejectMalformedOrAmbiguousAuthority"
+      ]
+    }
+  ]
+},
+{
+  "id": "spiritual-diagnosis-mortal-scene-regressions",
+  "responsibility": "Addressed existing Mortal reserved scene grammar consumers: aliases, exact/normalized IDs, distinct environments and confusable collisions. The new pure spiritual dialect must preserve the Mortal path.",
+  "excludes": "No complete suite, external provider/DOM/fresh-process, DFR/Mortal compatibility/Windows HOLD or whole #1536 acceptance. No raised timeout or omitted source/authority guard.",
+  "changeHints": [
+    "BookOfEternityClient/Services/SpiritualDiagnosisCanonicalSources.cs",
+    "BookOfEternityClient/Services/AfterlifeWoundHealingPlanner.Diagnosis.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.MortalLocationMaterializationContractTests.TreatmentSceneContract_*"
+      ]
+    }
+  ]
+},
+{
+  "id": "spiritual-diagnosis-canonical-resource-native",
+  "responsibility": "One signed canonical resource-condition diagnosis permits a separately declared ordinary cost, binds exact completed common outputs and refuses arbitrary binding/forged or omitted publication images, then verifies knowledge/natural History and completed replay.",
+  "excludes": "No complete suite, external provider/DOM/fresh-process, DFR/Mortal compatibility/Windows HOLD or whole #1536 acceptance. No raised timeout or omitted source/authority guard.",
+  "changeHints": [
+    "BookOfEternityClient/Services/SpiritualDiagnosisCanonicalSources.cs",
+    "BookOfEternityClient/Services/AfterlifeWoundHealingPlanner.Diagnosis.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.AfterlifeSpiritualNaturalRecoveryTests.CanonicalResourceConditionAllowsIndependentOrdinaryCostAndExactPublication"
+      ]
+    }
+  ]
+},
+{
+  "id": "spiritual-diagnosis-canonical-effect-native",
+  "responsibility": "One signed canonical active-effect condition diagnosis followed by actual terminal natural healing/removal, exact validated common publication/refusals, durable original and completed replay. The removed qualifying effect must not be required again after lawful recovery.",
+  "excludes": "No complete suite, external provider/DOM/fresh-process, DFR/Mortal compatibility/Windows HOLD or whole #1536 acceptance. No raised timeout or omitted source/authority guard.",
+  "changeHints": [
+    "BookOfEternityClient/Services/SpiritualDiagnosisCanonicalSources.cs",
+    "BookOfEternityClient/Services/AfterlifeWoundHealingPlanner.Diagnosis.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.AfterlifeSpiritualNaturalRecoveryTests.CanonicalEffectConditionAllowsTerminalNaturalRemovalAndExactPublication"
+      ]
+    }
+  ]
+},
+{
   "id": "mortal-ordinary-clock-reader-lease-controls",
   "responsibility": "C14 missing-original reader correction: eight new tiny typed default-reader cases retain the actual explicit lease without ambient flow for valid/missing manifest/authority/selected original/context, and prove genuine declared DATA hits cannot mask later physical drift/absence. Existing detached bytes, unsigned/stale failure boundaries, observed explicit-lease and default failure-priority controls preserve shared reader semantics. Expected19 cases/7 methods, Unit only; unchanged validation/hash/presence/order and observed transport.",
   "excludes": "No new source/cache/observation stack, fake accepted receipt, time rule, native whole world, full authority suite,69components,course,DFR/Mortal compatibility/Windows or raised budget. The actual native source-guard failure remains causal evidence and is qualified separately in existing controls14.",
@@ -2820,7 +2918,7 @@
 },
 {
   "id": "spiritual-diagnosis-canonical-causal",
-  "responsibility": "T121-DIAGNOSIS-SPIRITUAL-CANONICAL-ADAPTERS existing-API causal scaffold: eight registered requirement kinds in both actual spiritual realms, coherent detached wound/identity/History/H0, actual unique Soul Relic, real resource bootstrap quartet/owner agreement, exact current realm locality and typed proposed scene rows, canonical Soul Quest and accepted wound-owned effects. Original menu remains inert; expected baseline fails only final declared diagnostic availability. 16 cases / 1 method. No future parser/API or fabricated Mortal snapshot. UNCOMPILED/UNRUN; source/fixture review and exact discovery/PlanOnly/PREP precede RED.",
+  "responsibility": "T121 eight declared canonical diagnosis kinds in both spiritual realms: real source/identity/History/H0 and inertness premises precede availability, closed proof validation and the real request/knowledge/required-natural program.16 cases/1 method. Baseline16 final RED independently accepted on6c6a2cf81; GREEN on the implementation is still UNRUN.",
   "excludes": "No signed staging/publication/execution authority, native/Engine/DOM/provider/fresh-process claim, feature GREEN, invented source container, resource consumption/draw/cycle, or repeated accepted spiritual three-kind suite.",
   "changeHints": [
     "BookOfEternityClient.Tests/SpiritualDiagnosisCanonicalRequirementTests.cs",

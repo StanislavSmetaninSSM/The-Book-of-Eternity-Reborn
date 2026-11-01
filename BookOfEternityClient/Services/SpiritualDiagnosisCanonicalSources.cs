@@ -18,6 +18,8 @@ internal sealed class SpiritualDiagnosisCanonicalSources
     private readonly ResourceOwnerAuthority? _resourceOwners;
     private readonly LocalInteractionScope? _scope;
     private readonly MortalWoundTreatmentSceneAuthorityResult? _scene;
+    internal int ResourceOwnerCompositions { get; private set; }
+    internal int ResourceOwnerSourceReads { get; private set; }
 
     internal static bool IsCanonicalKind(string kind) => kind is "item_quantity" or "resource_quantity" or
         "consent" or "facility" or "location" or "quest_state" or "effect_state" or "environment";
@@ -61,6 +63,10 @@ internal sealed class SpiritualDiagnosisCanonicalSources
         _roots = owned;
         _fingerprints = owned.ToDictionary(pair => pair.Key, pair => NodeFingerprint(pair.Value), StringComparer.Ordinal);
         _effects = effects;
+        if (_effects is null && declared.Contains("effect_state"))
+            _effects = EffectMechanicsSnapshot.Build(new(new(Root(EffectCarrierCatalog.PlayerPath), Root(EffectCarrierCatalog.NpcPath),
+                Root(EffectCarrierCatalog.EnemiesPath), Root(EffectCarrierCatalog.AlliesPath), Root(EffectCarrierCatalog.AfterlifeProfilesPath),
+                Root(EffectCarrierCatalog.SpiritualConflictPath)), Root(EffectIdentityState.StatePath)));
         if (declared.Contains("resource_quantity"))
         {
             try
@@ -76,8 +82,9 @@ internal sealed class SpiritualDiagnosisCanonicalSources
                         // The existing composer receives completed in-memory reads only. It must
                         // complete synchronously; this API never blocks on filesystem/remote IO.
                         var documents = owned.ToDictionary(pair => pair.Key, pair => pair.Value?.ToJsonString(), StringComparer.Ordinal);
+                        ResourceOwnerCompositions++;
                         var operation = CanonicalResourceOwnerAuthorityComposer.ComposeAsync(catalog,
-                            path => Task.FromResult(documents.GetValueOrDefault(path)), ledger, log,
+                            path => { ResourceOwnerSourceReads++; return Task.FromResult(documents.GetValueOrDefault(path)); }, ledger, log,
                             CanonicalResourceOwnerAuthorityPurpose.ExistingSessionValidation);
                         if (!operation.IsCompletedSuccessfully) throw new InvalidOperationException("Canonical DATA composition performed asynchronous work.");
                         var authority = operation.GetAwaiter().GetResult();
@@ -148,9 +155,10 @@ internal sealed class SpiritualDiagnosisCanonicalSources
                         ["resourceStateFingerprint"] = _resources.Fingerprint, ["resourceHistoryFingerprint"] = _resourceHistory.Fingerprint,
                         ["ownerAuthorityFingerprint"] = _resourceOwners.Fingerprint };
                 case MortalWoundQuestStateRequirement quest:
-                    if (Root(QuestsPath)?["quests"] is not JsonArray quests || !ExactUniqueRows(quests, "questId")) return null;
+                    if (Root(QuestsPath) is not { } questRoot || !ExactProperties(questRoot, "quests") ||
+                        questRoot["quests"] is not JsonArray quests || !ExactUniqueRows(quests, "questId")) return null;
                     var found = quests.OfType<JsonObject>().SingleOrDefault(row => Text(row["questId"]) == quest.QuestRef);
-                    if (found is null || Text(found["status"]) != quest.RequiredState || quest.RequiredState is not ("active" or "completed" or "failed" or "abandoned") ||
+                    if (found is null || !ExactProperties(found, "questId", "status", "objectives", "progress", "rewards") || Text(found["status"]) != quest.RequiredState || quest.RequiredState is not ("active" or "completed" or "failed" or "abandoned") ||
                         found["objectives"] is not JsonArray || found["progress"] is not JsonObject || found["rewards"] is not JsonObject ||
                         !new[] { "guardianId", "title", "description" }.All(name => Text(found[name]) is { Length: > 0 })) return null;
                     return new() { ["questRef"] = quest.QuestRef, ["state"] = quest.RequiredState };
@@ -222,6 +230,9 @@ internal sealed class SpiritualDiagnosisCanonicalSources
             !ExactId(navigation["currentGuardianId"], out var guardianId) || !ExactId(navigation["currentAbodeId"], out var abodeId) ||
             Text(guardians["activeGuardianId"]) is { } active && active != guardianId) return null;
         var guardian = rows.OfType<JsonObject>().SingleOrDefault(row => Text(row["guardianId"]) == guardianId);
+        if (guardians["activeGuardian"] is JsonObject activeGuardian &&
+            (!ExactProperties(activeGuardian, "guardianId") || Text(activeGuardian["guardianId"]) != guardianId ||
+             activeGuardian.ContainsKey("id") || activeGuardian.ContainsKey("actorId"))) return null;
         if (guardian?["abode"] is not JsonObject abode || !ExactProperties(guardian, "guardianId", "abode") ||
             !ExactProperties(abode, "abodeId", "customStates") || Text(abode["abodeId"]) != abodeId) return null;
         var resolved = LocalInteractionScopeService.ResolveChaosSeaScope(guardians, Root(GuardianAbodeResidentState.StatePath), []);

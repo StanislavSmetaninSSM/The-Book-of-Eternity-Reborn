@@ -154,9 +154,11 @@ internal static partial class AfterlifeWoundHealingPlanner
             SpiritualTreatmentParticipation.RequireSameProjectedShiningPatientAdmission(_expectedShiningPatientAfterImageAdmission, admission);
         }
 
-        internal void RequireServicePublication(IReadOnlyDictionary<string, JsonObject> writes)
+        internal void RequireServicePublication(IReadOnlyDictionary<string, JsonObject> writes,
+            AcceptedMechanicsPlan? plan = null, IReadOnlyCollection<string>? deletes = null)
         {
             RequireDiagnosisComposedImages(writes);
+            RequireCanonicalDiagnosisPublication(plan, writes, deletes);
             if (!HasWalletContribution && _expectedNegotiatedAfterImageAdmissionFingerprint is null && !HasShiningPatientAdmission) return;
             if (!HasWalletContribution)
             {

@@ -238,6 +238,11 @@ public partial class CanonicalStateNormalizer
                 writes,
                 ResourceMaterializationContract.HistoryPath,
                 plan.HistoryAfterImage);
+            JsonObject resourceOwnerAfterImage;
+            if (spiritualHealing?.HasCanonicalDiagnosisRequirements == true)
+                resourceOwnerAfterImage = spiritualHealing.DiagnosisResourceOwnerAfterImage(plan);
+            else
+            {
             var definitions = ResourceDefinitionCatalog.ParseCanonical(
                 plan.DefinitionAfterImage.ToJsonString(),
                 allowMissingPristine: false);
@@ -258,15 +263,13 @@ public partial class CanonicalStateNormalizer
                 throw new InvalidDataException(
                     "Accepted mechanics cannot compose canonical resource owner authority from invalid after-images.");
             }
-            AddTreatmentResourceWriteIfChanged(
-                plan,
-                writes,
-                CanonicalResourceOwnerAuthorityComposer.AuthorityPath,
-                JsonNode.Parse(
+            resourceOwnerAfterImage = JsonNode.Parse(
                     CanonicalResourceOwnerAuthorityComposer.CreateCanonicalAuthorityJson(
                         plan.OwnerAuthority,
                         state,
-                        history))!.AsObject());
+                        history))!.AsObject();
+            }
+            AddTreatmentResourceWriteIfChanged(plan, writes, CanonicalResourceOwnerAuthorityComposer.AuthorityPath, resourceOwnerAfterImage);
             writes[EffectAcceptedTurnPlan.IdentityIndexPath] = plan.EffectIdentityAfterImage;
             foreach (var pair in plan.OwnerCompanionAfterImages)
                 writes[pair.Key] = pair.Value;
@@ -304,7 +307,7 @@ public partial class CanonicalStateNormalizer
         if (spiritualHealing is not null)
         {
             spiritualHealing.RequireCurrent(_fs, _writeLease);
-            spiritualHealing.RequireServicePublication(writes);
+            spiritualHealing.RequireServicePublication(writes, plan, deletePaths);
             spiritualHealing.Scheduler.ClaimSpiritualTreatmentMutation(_writeLease, spiritualHealing.SchedulerMutation);
             var changes = new List<CanonicalLocalFileChange>();
             foreach (var pair in writes.OrderBy(p => p.Key, StringComparer.Ordinal))

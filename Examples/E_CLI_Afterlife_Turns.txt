@@ -14438,3 +14438,88 @@ result image is a player card, consent grant, new source authority or fake Morta
 This example is detached source/knowledge DATA, not signed live or provider acceptance.
 Mortal check/duration/cost remain explicitly method-defined and later execution work.
 end_spiritual_diagnosis_execution_v1
+
+spiritual_diagnosis_canonical_requirements_v1 — worked canonical conditions
+The requirements array belongs to one known spiritual diagnosisPaths entry with check={}.
+Place customStates only in the actual exact current guardians[].abode or halls[] object;
+the fragment itself supplies no relic, quest, resource, effect, locality or live permission.
+Each referenced canonical source must independently exist and agree before confirmation.
+```json
+{
+  "requirements": [
+    {
+      "kind": "item_quantity",
+      "itemRef": "sr_utility_diagnosis_1672531200000",
+      "quantity": 1,
+      "ownerRole": "provider"
+    },
+    {
+      "kind": "resource_quantity",
+      "resourceRef": "spiritual_action_points",
+      "quantity": 1,
+      "ownerRole": "provider"
+    },
+    {
+      "kind": "consent",
+      "consentRef": "consent_current",
+      "providerRef": "player_soul",
+      "targetRef": "player_soul"
+    },
+    {
+      "kind": "facility",
+      "facilityRef": "facility_current"
+    },
+    {
+      "kind": "location",
+      "locationRef": "diagnosis_locality_current",
+      "targetRole": "target"
+    },
+    {
+      "kind": "quest_state",
+      "questRef": "soulquest_guardian_diagnosis_1672531200000",
+      "requiredState": "active"
+    },
+    {
+      "kind": "effect_state",
+      "effectRef": "effect_spiritual_roll",
+      "requiredState": "active",
+      "targetRole": "target"
+    },
+    {
+      "kind": "environment",
+      "environmentRef": "environment_current",
+      "requiredState": "safe"
+    }
+  ],
+  "customStates": [
+    {
+      "kind": "spiritual_diagnosis_facility",
+      "schemaVersion": 1,
+      "facilityId": "facility_current",
+      "displayName": "Место осмотра",
+      "available": true
+    },
+    {
+      "kind": "spiritual_diagnosis_environment",
+      "schemaVersion": 1,
+      "environmentId": "environment_current",
+      "displayName": "Спокойная среда",
+      "state": "safe"
+    },
+    {
+      "kind": "spiritual_diagnosis_consent",
+      "schemaVersion": 1,
+      "consentRef": "consent_current",
+      "displayName": "Согласие на осмотр",
+      "providerKind": "player_soul",
+      "providerId": "player_soul",
+      "targetKind": "player_soul",
+      "targetId": "player_soul",
+      "status": "granted"
+    }
+  ]
+}
+```
+Missing/withdrawn evidence makes the method unavailable; no payment or new consent is
+inferred. One knowledge step and the required normal safe natural suffix remain.
+end_spiritual_diagnosis_canonical_requirements_v1

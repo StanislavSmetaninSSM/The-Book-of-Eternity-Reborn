@@ -31,6 +31,7 @@ internal sealed class SpiritualDiagnosisSourceData
     private readonly string _profileFingerprint;
     private readonly string _soulFingerprint;
     private readonly SpiritualDiagnosisCanonicalSources _canonical;
+    internal (int Compositions, int SourceReads) CanonicalResourceWork => (_canonical.ResourceOwnerCompositions, _canonical.ResourceOwnerSourceReads);
 
     internal SpiritualDiagnosisSourceData(WoundPlayerReadContext context) : this((context ?? throw new ArgumentNullException(nameof(context))).Catalog,
         context.Input.Carriers.AfterlifeProfiles, context.Soul, context.Input.Realm, context.Input.SelfVisible,
@@ -41,8 +42,12 @@ internal sealed class SpiritualDiagnosisSourceData
     // Reuses the actual source owner's already parsed roots; no display catalog,
     // extra read or fabricated resource/Mortal context is required by admission.
     internal SpiritualDiagnosisSourceData(WoundCarrierCatalog catalog, JsonObject? profiles, JsonObject soul,
+        string realm, bool selfVisible, bool conflict) : this(catalog, profiles, soul, realm, selfVisible, conflict, null, null)
+    { }
+
+    internal SpiritualDiagnosisSourceData(WoundCarrierCatalog catalog, JsonObject? profiles, JsonObject soul,
         string realm, bool selfVisible, bool conflict,
-        IReadOnlyDictionary<string, JsonObject?>? roots = null, EffectMechanicsSnapshot? effects = null)
+        IReadOnlyDictionary<string, JsonObject?>? roots, EffectMechanicsSnapshot? effects = null)
     {
         ArgumentNullException.ThrowIfNull(catalog); ArgumentNullException.ThrowIfNull(soul);
         _profiles = profiles?.DeepClone().AsObject(); _soul = soul.DeepClone().AsObject();
@@ -79,7 +84,8 @@ internal sealed class SpiritualDiagnosisSourceData
         var actualRoots = (roots ?? new Dictionary<string, JsonObject?>()).ToDictionary(pair => pair.Key, pair => pair.Value, StringComparer.Ordinal);
         actualRoots[WoundCarrierCatalog.AfterlifeProfilesPath] = _profiles;
         actualRoots[SpiritualDiagnosisCanonicalSources.SoulPath] = _soul;
-        _canonical = new(realm, _wounds.SelectMany(row => VisibleCanonicalKinds(row.Wound)), actualRoots, effects);
+        _canonical = new(realm, _wounds.Where(row => Profile(row.Wound.Owner) is { } profile && AfterlifeProfileVisibility.IsVisibleToPlayer(profile))
+            .SelectMany(row => VisibleCanonicalKinds(row.Wound)), actualRoots, effects);
     }
 
     internal static IEnumerable<string> VisibleCanonicalKinds(WoundMaterializationEnvelope wound) =>

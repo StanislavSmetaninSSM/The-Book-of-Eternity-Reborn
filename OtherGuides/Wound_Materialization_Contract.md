@@ -2379,11 +2379,11 @@ In Chaos Sea and Shining Abode, /лечить offers a distinct diagnose purpose
 currently visible reachable wound and one current reachable declared diagnosis path.
 Healing >=0 (through V) and EVERY declared requirement must be proved from current
 canonical sources. Present H0 is valid; missing art, source or mirror is not H0.
-Current supported requirements: source_capability and skill_tier for standard spiritual
-Healing/Stabilization with the declared actor role, and provider=player_soul. The other
-eight registered requirement kinds are unavailable until their real canonical adapter
-exists. Do not invent an item, resource, consent, facility, location, quest, effect or
-environment store, infer permission from a label, or ignore a requirement. The current
+Supported requirements retain source_capability and skill_tier for standard spiritual
+Healing/Stabilization with the declared actor role, and provider=player_soul, plus the
+eight source-backed kinds in spiritual_diagnosis_canonical_requirements_v1 below.
+Every declaration needs its exact current realm-owned evidence; missing, ambiguous,
+withdrawn or foreign evidence makes the method unavailable. No label is permission. The current
 spiritual check is exactly {}; nonempty/unknown check is unsupported, not a hidden roll.
 
 Read/cancel remain inert. A fresh separately confirmed diagnostic choice stages the
@@ -2424,6 +2424,39 @@ cards. Failed/uncertain publication keeps its existing whole-turn compensation/r
 Mortal diagnosis follows separate mortal_diagnosis_execution_v1 with explicitly declared method
 check, duration and cost; spiritual diagnosis supplies no Mortal defaults or authority.
 Read Examples/E_CLI_Afterlife_Turns.txt worked spiritual_diagnosis_execution_v1.
+
+spiritual_diagnosis_canonical_requirements_v1 — exact current source proofs.
+item_quantity uses a unique complete Soul Relic in soul_state.soulRelics.stored/equipped;
+one unique relic ID means one item. No name, reward stub, legacy alias or invented count.
+resource_quantity uses exact afterlife actor resourceOwnerBindings and the existing
+canonical definitions/state/history/derived owner authority. Active capability and
+sufficient current amount are required; this condition does not spend or reserve it.
+quest_state uses game_state/quests/soul_quests.json quests[].questId/status. A Soul Quest
+is not an aid agreement or a compensation obligation. effect_state uses the actual
+accepted effect identity/carrier, realm and typed target; absence is not positive proof.
+location uses the exact current Chaos Abode or Shining currentHallId and real membership,
+never a profile label. facility, environment and consent use the closed schemaVersion1
+rows spiritual_diagnosis_facility, spiritual_diagnosis_environment and
+spiritual_diagnosis_consent in actual guardians[].abode.customStates[] or halls[].customStates[].
+Facility fields: kind,schemaVersion,facilityId,displayName,available(boolean).
+Environment fields: kind,schemaVersion,environmentId,displayName,state(exact setting ID).
+Consent fields: kind,schemaVersion,consentRef,displayName,providerKind,providerId,
+targetKind,targetId,status(granted|withdrawn). Actor kinds are player_soul,guardian,
+resident,radiant_actor,afterlife_actor; player_soul ID is exactly player_soul.
+No aliases, unknown fields, duplicate/confusable IDs or kind/key aliases. Realm,
+location and membership come from the actual current container, never row-authored
+fields. Unavailable facilities and withdrawn consent are valid negative evidence.
+Aid/service/compensation never supplies arbitrary diagnostic consent. Other custom
+setting rows grant no authority. Full proofs/source dependencies remain private DATA.
+Confirmation, staging, signed original/current source and publication recheck the
+actual owner. Diagnosis remains zero-cost knowledge first, then the REQUIRED natural
+suffix. Lawful ordinary resource changes and terminal healing may alter required
+source values after admission; the exact validated common outputs, not re-admission
+against a removed effect, bind final publication. Fresh guards remain mandatory.
+See the worked spiritual_diagnosis_canonical_requirements_v1 fragment in
+Examples/E_CLI_Afterlife_Turns.txt. Runtime qualification remains a separate gate.
+end_spiritual_diagnosis_canonical_requirements_v1
+
 
 
 mortal_diagnosis_execution_v1 — explicit Mortal procedure, client-owned time and knowledge.

@@ -166,7 +166,15 @@ internal static partial class WoundApplicationService
         async Task<JsonObject?> Root(string path)
         {
             if (readHere.Contains(path) || fs.CanReuseCurrentSourceData && menuImages.ContainsKey(path))
-                return menuRoots.GetValueOrDefault(path);
+            {
+                if (menuRoots.TryGetValue(path, out var existing)) return existing;
+                if (menuImages[path].Bytes is not { } retained) return null;
+                var parsedRetained = StrictJsonAuthority.Deserialize<JsonObject>(CanonicalJsonUtf8.DecodeOneOptionalBom(retained),
+                    new JsonSerializerOptions(), path);
+                if (parsedRetained is not null) menuRoots[path] = parsedRetained;
+                readHere.Add(path);
+                return parsedRetained;
+            }
             var bytes = await fs.ReadFileBytesAsync(lease, path);
             var parsed = bytes is null ? null : StrictJsonAuthority.Deserialize<JsonObject>(CanonicalJsonUtf8.DecodeOneOptionalBom(bytes),
                 new JsonSerializerOptions(), path);
@@ -187,7 +195,23 @@ internal static partial class WoundApplicationService
                 failure is JsonException or InvalidDataException or InvalidOperationException or ArgumentException or OverflowException)
             { /* A malformed roster cannot admit a resident; a radiant head has separate dependencies. */ }
             var shining = context.Input.Realm == "shining_abode" ? await Root(ShiningAbodeState.StatePath) : null;
+            if (context.Input.Realm == "shining_abode")
+            {
+                using var computationContext = fs.EnterOperationTimingContext();
+                try
+                {
+                context = context with { ShiningPatients = SpiritualTreatmentParticipation.ReadShiningPatientAdmissions(
+                    shining, context.Input.Carriers.AfterlifeProfiles!, residents) };
+                }
+                catch (Exception failure) when (failure is JsonException or InvalidDataException or InvalidOperationException or ArgumentException)
+                { /* An unreadable foreign roster cannot grant that target or disable the independent self path. */ }
+            }
+            var reachable = new HashSet<WoundOwnerCoordinate> { new(context.Input.Realm, "player_soul", "player_soul", WoundCarrierCatalog.AfterlifeProfilesPath) };
+            try { reachable.UnionWith(WoundTargetSelectionService.Build(context, guardians, residents).Where(target => target.Available).Select(target => target.Owner)); }
+            catch (Exception failure) when (failure is JsonException or InvalidDataException or InvalidOperationException or ArgumentException)
+            { /* The independent self path still gets its own strict admission. */ }
             var requirementKinds = context.Catalog.Occurrences.Where(row => row.Wound.Owner.Realm == context.Input.Realm)
+                .Where(row => reachable.Contains(row.Wound.Owner))
                 .SelectMany(row => SpiritualDiagnosisSourceData.VisibleCanonicalKinds(row.Wound)).Distinct(StringComparer.Ordinal).ToArray();
             foreach (var path in SpiritualDiagnosisCanonicalSources.Paths(context.Input.Realm, requirementKinds)) await Root(path);
             context = context with { CurrentMenuRoots = menuRoots, CurrentMenuImages = menuImages };
@@ -196,12 +220,6 @@ internal static partial class WoundApplicationService
             // Construct Self once, after its actual realm source has been read.
             // Other treatment choices keep their existing independent admission.
             self = CreateStateCore(generation, context, diagnosisSource);
-            if (context.Input.Realm == "shining_abode")
-            {
-                using var computationContext = fs.EnterOperationTimingContext();
-                context = context with { ShiningPatients = SpiritualTreatmentParticipation.ReadShiningPatientAdmissions(
-                    shining, context.Input.Carriers.AfterlifeProfiles!, residents) };
-            }
             return new(await BuildStateFromLocalityAsync(fs, lease, generation, context, self, guardians, residents, shining, diagnosisSource), context);
         }
         catch (Exception failure) when (failure is not CoordinatedStatePublicationUncertainException &&

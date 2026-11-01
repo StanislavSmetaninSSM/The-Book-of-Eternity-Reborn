@@ -20,10 +20,18 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
     [Fact]
     public Task HealingTierVDiagnosisRetainsOriginalAfterTerminalRecovery() => RunDiagnosisNativeAsync("Chaos Sea", 5, 3);
 
-    private static async Task RunDiagnosisNativeAsync(string realm, int tier, int initialProgress)
+    [Fact]
+    public Task CanonicalResourceConditionAllowsIndependentOrdinaryCostAndExactPublication() =>
+        RunDiagnosisNativeAsync("Chaos Sea", 0, 0, "resource_quantity");
+
+    [Fact]
+    public Task CanonicalEffectConditionAllowsTerminalNaturalRemovalAndExactPublication() =>
+        RunDiagnosisNativeAsync("Chaos Sea", 5, 3, "effect_state");
+
+    private static async Task RunDiagnosisNativeAsync(string realm, int tier, int initialProgress, string? canonicalKind = null)
     {
         await using var fixture = await HealingFixture.CreateAsync(2, tier, 20, stageRequest: false, realm: realm,
-            initialProgress: initialProgress, beforeResourceBootstrap: SeedDiagnosisBeforeBootstrapAsync);
+            initialProgress: initialProgress, beforeResourceBootstrap: (files, profiles) => SeedDiagnosisBeforeBootstrapCoreAsync(files, profiles, canonicalKind));
         var files = fixture.Files;
         var before = Assert.Single((await fixture.ReadWoundsAsync()).Occurrences).Wound;
         Assert.Equal(2, before.Severity.Rank);
@@ -54,6 +62,16 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
                 LiveTurnPreparationService.TurnRequestPath))!, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)!;
             await ExplorerWoundSelfTreatmentTests.WriteNativeCompletionAsync(files, lease, turn,
                 AuthorNaturalGraphs(before, projection["destinationGraphs"]!.AsArray()), narrative: "Я внимательно осматриваю духовную рану. Раскрылись предусмотренные способом сведения; мир продолжил безопасный цикл.");
+            if (canonicalKind == "resource_quantity")
+                await files.WriteFileAtomicAsync(lease, ResourceMaterializationContract.CommandPath, new JsonObject
+                {
+                    ["resourceChanges"] = new JsonArray(new JsonObject
+                    {
+                        ["operation"] = "spend", ["target"] = new JsonObject { ["kind"] = "afterlife_actor", ["targetId"] = "player_soul" },
+                        ["resourceKey"] = "spiritual_action_points", ["amount"] = 1, ["source"] = new JsonObject { ["kind"] = "action_cost" },
+                        ["eventRef"] = "turn_43:resource:1", ["reason"] = "Отдельное обычное безопасное действие: это не цена духовного осмотра."
+                    })
+                }.ToJsonString());
             Assert.DoesNotContain(await validator.ValidateAcceptedTurnRawMortalLocationMaterializationAsync(), i => i.Severity == IssueSeverity.Error);
             Assert.DoesNotContain(await validator.ValidateAcceptedTurnRawMortalItemMaterializationAsync(lease), i => i.Severity == IssueSeverity.Error);
             var preparation = await validator.PrepareSpiritualSelfTreatmentPublicationAsync(lease);
@@ -66,6 +84,30 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
             foreach (var pair in plan.EffectCarrierAfterImages) writes[pair.Key] = pair.Value.DeepClone().AsObject();
             foreach (var pair in plan.WoundCarrierAfterImages) writes[pair.Key] = pair.Value.DeepClone().AsObject();
             owner.RequireDiagnosisComposedImages(writes);
+            if (canonicalKind is not null)
+            {
+                Assert.True(owner.HasCanonicalDiagnosisRequirements);
+                Assert.Throws<InvalidDataException>(() => owner.BindValidatedDiagnosisPlan(plan, new object()));
+                Assert.Throws<InvalidDataException>(() => owner.RequireServicePublication(writes));
+                writes[ResourceMaterializationContract.DefinitionsPath] = plan.DefinitionAfterImage;
+                writes[ResourceMaterializationContract.StatePath] = plan.StateAfterImage;
+                writes[ResourceMaterializationContract.HistoryPath] = plan.HistoryAfterImage;
+                writes[CanonicalResourceOwnerAuthorityComposer.AuthorityPath] = owner.DiagnosisResourceOwnerAfterImage(plan);
+                writes[EffectIdentityState.StatePath] = plan.EffectIdentityAfterImage;
+                writes[WoundIdentityState.StatePath] = plan.WoundIdentityAfterImage!;
+                writes[WoundHistoryState.HistoryPath] = plan.WoundHistoryAfterImage!;
+                foreach (var pair in plan.PendingAfterImages) if (pair.Value is not null) writes[pair.Key] = pair.Value;
+                var deletes = plan.ConsumedPaths.Concat(plan.PendingAfterImages.Where(pair => pair.Value is null).Select(pair => pair.Key)).Distinct(StringComparer.Ordinal).ToArray();
+                owner.RequireServicePublication(writes, plan, deletes);
+                var forged = writes.ToDictionary(pair => pair.Key, pair => pair.Value.DeepClone().AsObject(), StringComparer.Ordinal);
+                forged[ResourceMaterializationContract.StatePath]["forged"] = true;
+                Assert.Throws<InvalidDataException>(() => owner.RequireServicePublication(forged, plan, deletes));
+                var omitted = new Dictionary<string, JsonObject>(writes, StringComparer.Ordinal); omitted.Remove(WoundHistoryState.HistoryPath);
+                Assert.Throws<InvalidDataException>(() => owner.RequireServicePublication(omitted, plan, deletes));
+                if (canonicalKind == "effect_state")
+                    Assert.DoesNotContain(writes[WoundCarrierCatalog.AfterlifeProfilesPath]["profiles"]!.AsArray().OfType<JsonObject>()
+                        .SelectMany(profile => profile["activeEffects"]!.AsArray().OfType<JsonObject>()), effect => effect["effectId"]!.GetValue<string>() == "effect_spiritual_roll");
+            }
             var invalid = writes.ToDictionary(p => p.Key, p => p.Value.DeepClone().AsObject(), StringComparer.Ordinal);
             var player = invalid[WoundCarrierCatalog.AfterlifeProfilesPath]["profiles"]!.AsArray().OfType<JsonObject>()
                 .Single(p => p["actorType"]?.GetValue<string>() == "player_soul");
@@ -180,7 +222,10 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
         }
     }
 
-    internal static async Task SeedDiagnosisBeforeBootstrapAsync(FileSystemManager files, JsonObject profiles)
+    internal static Task SeedDiagnosisBeforeBootstrapAsync(FileSystemManager files, JsonObject profiles) =>
+        SeedDiagnosisBeforeBootstrapCoreAsync(files, profiles, null);
+
+    private static async Task SeedDiagnosisBeforeBootstrapCoreAsync(FileSystemManager files, JsonObject profiles, string? canonicalKind)
     {
         var profile = profiles["profiles"]!.AsArray().OfType<JsonObject>().Single(p => p["actorType"]?.GetValue<string>() == "player_soul");
         var node = Assert.IsType<JsonObject>(Assert.Single(profile["activeWounds"]!.AsArray())).DeepClone().AsObject();
@@ -194,6 +239,10 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
             { ["kind"] = "source_capability", ["capabilityRef"] = "spiritual_healing", ["actorRole"] = "provider" }),
             ["check"] = new JsonObject(), ["reveals"] = new JsonArray("complication:native_hidden"), ["failurePolicy"] = "no_reveal"
         });
+        if (canonicalKind is not null)
+            node["treatment"]!["diagnosisPaths"]![0]!["requirements"]!.AsArray().Add(canonicalKind == "resource_quantity"
+                ? new JsonObject { ["kind"] = canonicalKind, ["resourceRef"] = "spiritual_action_points", ["quantity"] = 1, ["ownerRole"] = "provider" }
+                : new JsonObject { ["kind"] = canonicalKind, ["effectRef"] = "effect_spiritual_roll", ["requiredState"] = "active", ["targetRole"] = "target" });
         Assert.True(AfterlifeEntityProfileState.TryNormalizeEffectRealm(profile["realm"]!.GetValue<string>(), out var realm));
         var seed = WoundPlayerProjectionTestData.InputInRealm(realm, node);
         profile["activeWounds"] = seed.Carriers.AfterlifeProfiles!["profiles"]![0]!["activeWounds"]!.DeepClone();

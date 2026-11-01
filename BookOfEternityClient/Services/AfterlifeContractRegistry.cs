@@ -34,6 +34,8 @@ public static class AfterlifeContractRegistry
 {
     private static readonly AfterlifeContractSurface[] Surfaces =
     {
+        new("game_state/meta/guardians.json", "spiritual_diagnosis_scene_schema1", "Chaos Sea", "GM-authored exact spiritual_diagnosis_facility/environment/consent schema1 rows inside actual guardians[].abode.customStates; metadata grants no current diagnosis permission", false),
+        new(ShiningAbodeState.StatePath, "spiritual_diagnosis_scene_schema1", "Shining Abode", "GM-authored exact spiritual_diagnosis_facility/environment/consent schema1 rows inside actual halls[].customStates; currentHallId and fresh owner determine locality", false),
         new(AcceptedMechanicsPlan.WoundCommandPath, "spiritual_self_treatment_request_v2", "Chaos Sea|Shining Abode", "private client-owned spiritual_diagnosis_request schema1 with selection9/knowledge-first REQUIRED natural suffix, retained self-v2, explicit Guardian-aid-v3..v6 or safe co-located Chaos/Shining Elyara or exact public Shining faction resident service-v7 quote/payment/control/draw request; no GM writes", true, true),
         new(SpiritualWoundCaptureCheckpointState.StatePath, "spiritual_wound_capture_checkpoint", "Chaos Sea|Shining Abode", "private client-owned original capture checkpoint; no GM writes", true, true),
         new(SpiritualWoundDecisionPendingState.StatePath, "spiritual_wound_decisions", "Chaos Sea|Shining Abode", "private client-owned unfinished decision evidence; no GM writes", true, true),

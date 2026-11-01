@@ -1,3 +1,23 @@
+# Canonical source/execution closure and addressed controls WIP — SOURCE pending
+
+The connected implementation now includes declaration-derived current/original /
+persisted dependency sets, all eight closed proof kinds, exact realm-owned scene
+validation and GM guidance/examples/registry. The existing common validation callback
+binds the actual completed plan to the same live diagnosis owner; publication requires
+that same plan/fingerprint and complete relevant output/absence agreement. Resource
+owner output DATA is reused by the normalizer after fresh owner/plan checks, avoiding
+a second parse/composition there. Original/current/physical/history guards remain.
+
+New controls cover16 changed-source/detached-proof/source-work cases,16 ambiguous /
+foreign inputs and8 malformed scene cases. Existing causal16 now additionally checks
+actual request and required-natural program DATA after its availability oracle.
+Two separate native singleton fixtures target lawful independent ordinary resource
+cost and terminal natural removal of a qualifying effect, plus forged/missing common
+output refusal and completed replay. New C# and all new outcomes remain UNCOMPILED /
+UNRUN pending coherent independent SOURCE, preserved binaries, sufficient reserve,
+fresh four-project build, discovery, exact PlanOnly and PREP. No production or feature
+PASS is implied. The retained physical/browser and other HOLD boundaries stand.
+
 # Canonical eight-source implementation WIP — uncompiled/unreviewed
 
 After accepted causal16 RED, source code now connects the eight declarations to

@@ -20,6 +20,8 @@ internal sealed record MortalWoundTreatmentPublicationReservation(
 
 internal static partial class AcceptedTurnAuthorityRegistry
 {
+    private static readonly object DiagnosisValidatedCommonCapability = new();
+    internal static bool IsDiagnosisValidatedCommonCapability(object capability) => ReferenceEquals(capability, DiagnosisValidatedCommonCapability);
     private static readonly ConditionalWeakTable<
         CanonicalRootIdentity,
         RootAuthoritySlot> RootSlots = new();
@@ -3135,7 +3137,10 @@ internal static partial class AcceptedTurnAuthorityRegistry
                 }
                 try
                 {
-                    var result = _commonPlan.GetOrBuildValidated(input);
+                    var diagnosis = input.PlanningContext?.WoundStageBundle?.PreparedPlan.SpiritualHealingContinuationAuthority as AfterlifeWoundHealingPlanner.Continuation;
+                    var result = _commonPlan.GetOrBuildValidated(input, diagnosis?.HasCanonicalDiagnosisRequirements == true
+                        ? plan => diagnosis.BindValidatedDiagnosisPlan(plan, DiagnosisValidatedCommonCapability)
+                        : null);
                     ClearValidatedTreatmentPublicationCore();
                     return result;
                 }
@@ -3200,7 +3205,10 @@ internal static partial class AcceptedTurnAuthorityRegistry
 
                 try
                 {
-                    var result = _commonPlan.GetOrBuildValidated(input);
+                    var diagnosis = bundle.PreparedPlan.SpiritualHealingContinuationAuthority as AfterlifeWoundHealingPlanner.Continuation;
+                    var result = _commonPlan.GetOrBuildValidated(input, diagnosis?.HasCanonicalDiagnosisRequirements == true
+                        ? plan => diagnosis.BindValidatedDiagnosisPlan(plan, DiagnosisValidatedCommonCapability)
+                        : null);
                     ClearValidatedTreatmentPublicationCore();
                     return result;
                 }

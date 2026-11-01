@@ -49,6 +49,15 @@ public sealed class SpiritualDiagnosisCanonicalRequirementTests
         // The baseline must reach only this missing-adapter oracle after all
         // source/identity/history/realm and read-only premises above are valid.
         Assert.True(choice.Available, $"The exact current {kind} source must satisfy its declared diagnosis condition: {choice.Reason}");
+        var admission = Assert.IsType<SpiritualDiagnosisAdmission>(new SpiritualDiagnosisSourceData(context).Admit(wound, "diagnose_tissue").Data);
+        SpiritualDiagnosisRequirementBindings.Validate(admission);
+        var turn = new SpiritualSelfTreatmentStageContext("session_canonical_diagnosis", "request_canonical_diagnosis", 43,
+            new BookOfEternityClient.Models.ProgressionControl { CurrentRealm = context.Soul["currentRealm"]!.GetValue<string>(), NextChaosSeaTurnOrdinal = 1 });
+        var request = SpiritualDiagnosisRequestCodec.Create(turn, admission.Selection, admission);
+        Assert.True(SpiritualDiagnosisRequestCodec.IsExact(request, turn, admission.Selection, admission));
+        var program = SpiritualDiagnosisProgram.Build(turn, request, admission, [new(wound, 0)]);
+        Assert.Equal("known_to_player", Assert.Single(program.KnowledgeAfter.Complications).Visibility);
+        Assert.Single(program.NaturalStages);
     }
 
     private static async Task<WoundPlayerReadContext> ContextAsync(string realm, string kind)
@@ -106,6 +115,126 @@ public sealed class SpiritualDiagnosisCanonicalRequirementTests
             CurrentMenuImages = roots.ToDictionary(pair => pair.Key,
                 pair => new CanonicalBeforeImage(true, Encoding.UTF8.GetBytes(pair.Value.ToJsonString())), StringComparer.Ordinal)
         };
+    }
+
+    [Theory]
+    [InlineData("chaos_sea", "item_quantity")][InlineData("shining_abode", "item_quantity")]
+    [InlineData("chaos_sea", "resource_quantity")][InlineData("shining_abode", "resource_quantity")]
+    [InlineData("chaos_sea", "consent")][InlineData("shining_abode", "consent")]
+    [InlineData("chaos_sea", "facility")][InlineData("shining_abode", "facility")]
+    [InlineData("chaos_sea", "location")][InlineData("shining_abode", "location")]
+    [InlineData("chaos_sea", "quest_state")][InlineData("shining_abode", "quest_state")]
+    [InlineData("chaos_sea", "effect_state")][InlineData("shining_abode", "effect_state")]
+    [InlineData("chaos_sea", "environment")][InlineData("shining_abode", "environment")]
+    public async Task ChangedCanonicalEvidenceRefusesNewAdmissionAndKeepsDetachedProof(string realm, string kind)
+    {
+        var context = await ContextAsync(realm, kind);
+        var wound = Assert.Single(context.Catalog.Occurrences).Wound;
+        var source = new SpiritualDiagnosisSourceData(context);
+        var original = Assert.IsType<SpiritualDiagnosisAdmission>(source.Admit(wound, "diagnose_tissue").Data);
+        SpiritualDiagnosisRequirementBindings.Validate(original);
+        var frozen = original.RequirementBindings.ToJsonString();
+        var export = original.RequirementBindings;
+        export[0]!["evidence"]!["unrecognized"] = true;
+        Assert.Equal(frozen, original.RequirementBindings.ToJsonString());
+        Assert.Throws<InvalidDataException>(() => SpiritualDiagnosisRequirementBindings.Validate(original with { RequirementBindings = export }));
+        var work = source.CanonicalResourceWork;
+        if (kind == "resource_quantity") { Assert.Equal(1, work.Compositions); Assert.True(work.SourceReads > 0); }
+        else Assert.Equal((0, 0), work);
+
+        var roots = context.CurrentMenuRoots.ToDictionary(pair => pair.Key, pair => pair.Value, StringComparer.Ordinal);
+        if (kind == "item_quantity") context.Soul["soulRelics"]!["stored"]!.AsArray().Clear();
+        else if (kind == "resource_quantity") roots.Remove(CanonicalResourceOwnerAuthorityComposer.AuthorityPath);
+        else if (kind == "quest_state") roots[SpiritualDiagnosisCanonicalSources.QuestsPath]["quests"]!.AsArray().Clear();
+        else if (kind == "effect_state")
+        {
+            var profile = roots[WoundCarrierCatalog.AfterlifeProfilesPath]["profiles"]![0]!;
+            var effect = profile["activeEffects"]!.AsArray().OfType<JsonObject>().Single(row => row["effectId"]!.GetValue<string>() == "effect_spiritual_roll");
+            effect["state"] = "suppressed";
+            var actual = EffectMechanicsSnapshot.Build(new(new(null, null, null, null,
+                roots[WoundCarrierCatalog.AfterlifeProfilesPath], null), roots[EffectIdentityState.StatePath]));
+            context = context with { Input = context.Input with { Effects = actual } };
+        }
+        else
+        {
+            var container = realm == "chaos_sea" ? roots[SpiritualDiagnosisCanonicalSources.GuardiansPath]["guardians"]![0]!["abode"]!
+                : roots[ShiningAbodeState.StatePath]["halls"]![0]!;
+            if (kind == "location")
+            {
+                if (realm == "chaos_sea") roots[SpiritualDiagnosisCanonicalSources.GuardiansPath]["chaosSeaNavigation"]!["currentAbodeId"] = "different_locality";
+                else roots[ShiningAbodeState.StatePath]["currentHallId"] = "different_locality";
+            }
+            else if (kind == "facility") container["customStates"]![0]!["available"] = false;
+            else if (kind == "consent") container["customStates"]![0]!["status"] = "withdrawn";
+            else container["customStates"]![0]!["state"] = "danger";
+        }
+        context = context with { CurrentMenuRoots = roots };
+        Assert.Null(new SpiritualDiagnosisSourceData(context).Admit(wound, "diagnose_tissue").Data);
+        Assert.Equal(frozen, Assert.IsType<SpiritualDiagnosisAdmission>(source.Admit(wound, "diagnose_tissue").Data).RequirementBindings.ToJsonString());
+        Assert.Equal(work, source.CanonicalResourceWork); // Actual composer/source callbacks do not repeat inside Admit.
+    }
+
+    [Theory]
+    [InlineData("duplicate")][InlineData("confusable")][InlineData("alias")][InlineData("unknown")]
+    [InlineData("version")][InlineData("actor")][InlineData("player_id")][InlineData("kind_alias")]
+    public void RecognizedSceneRowsRejectMalformedOrAmbiguousAuthority(string fault)
+    {
+        var row = new JsonObject { ["kind"] = "spiritual_diagnosis_consent", ["schemaVersion"] = 1,
+            ["consentRef"] = "consent_current", ["displayName"] = "Согласие на осмотр", ["providerKind"] = "player_soul", ["providerId"] = "player_soul",
+            ["targetKind"] = "player_soul", ["targetId"] = "player_soul", ["status"] = "granted" };
+        var rows = new JsonArray(row);
+        if (fault == "duplicate") rows.Add(row.DeepClone());
+        else if (fault == "confusable") { var other = row.DeepClone(); other["consentRef"] = "CONSENT_CURRENT"; rows.Add(other); }
+        else if (fault == "alias") row["ConsentRef"] = "consent_current";
+        else if (fault == "unknown") row["permission"] = true;
+        else if (fault == "version") row["schemaVersion"] = "1";
+        else if (fault == "actor") row["targetKind"] = "npc";
+        else if (fault == "player_id") row["providerId"] = "other_player";
+        else row["kind"] = "SPIRITUAL_DIAGNOSIS_CONSENT";
+        Assert.False(SpiritualDiagnosisSceneAuthorityContract.Parse(System.Text.Json.JsonSerializer.SerializeToElement(rows), "current.customStates").IsValid);
+        // Mortal grammar never reinterprets the spiritual reserved kinds as a Mortal grant.
+        Assert.Empty(MortalWoundTreatmentSceneAuthorityContract.Parse(System.Text.Json.JsonSerializer.SerializeToElement(rows), "mortal.customStates").Consents);
+        var container = new JsonObject { ["customStates"] = rows.DeepClone() };
+        var root = new JsonObject { ["halls"] = new JsonArray(container) };
+        Assert.NotEmpty(SpiritualDiagnosisSceneAuthorityContract.ValidateContainers(System.Text.Json.JsonSerializer.SerializeToElement(root), "current", shining: true));
+    }
+
+    [Theory]
+    [InlineData("chaos_sea", "item_quantity")][InlineData("shining_abode", "item_quantity")]
+    [InlineData("chaos_sea", "resource_quantity")][InlineData("shining_abode", "resource_quantity")]
+    [InlineData("chaos_sea", "consent")][InlineData("shining_abode", "consent")]
+    [InlineData("chaos_sea", "facility")][InlineData("shining_abode", "facility")]
+    [InlineData("chaos_sea", "location")][InlineData("shining_abode", "location")]
+    [InlineData("chaos_sea", "quest_state")][InlineData("shining_abode", "quest_state")]
+    [InlineData("chaos_sea", "effect_state")][InlineData("shining_abode", "effect_state")]
+    [InlineData("chaos_sea", "environment")][InlineData("shining_abode", "environment")]
+    public async Task AmbiguousOrForeignCanonicalIdentityNeverSuppliesRequirement(string realm, string kind)
+    {
+        var context = await ContextAsync(realm, kind);
+        var wound = Assert.Single(context.Catalog.Occurrences).Wound;
+        Assert.NotNull(new SpiritualDiagnosisSourceData(context).Admit(wound, "diagnose_tissue").Data);
+        if (kind == "item_quantity")
+        { var rows = context.Soul["soulRelics"]!["stored"]!.AsArray(); rows.Add(rows[0]!.DeepClone()); }
+        else if (kind == "quest_state")
+        { var rows = context.CurrentMenuRoots[SpiritualDiagnosisCanonicalSources.QuestsPath]["quests"]!.AsArray(); var other = rows[0]!.DeepClone(); other["questId"] = QuestId.ToUpperInvariant(); rows.Add(other); }
+        else if (kind == "resource_quantity")
+            context.Input.Carriers.AfterlifeProfiles!["profiles"]![0]![AfterlifeEntityProfileState.ResourceOwnerBindingsProperty]![0]!["realm"] = "mortal_world";
+        else if (kind == "effect_state")
+        {
+            context.Input.Carriers.AfterlifeProfiles!["profiles"]![0]!["activeEffects"]![0]!["target"]!["targetId"] = "foreign_actor";
+            var mechanics = EffectMechanicsSnapshot.Build(new(new(null, null, null, null, context.Input.Carriers.AfterlifeProfiles, null), context.CurrentMenuRoots[EffectIdentityState.StatePath]));
+            context = context with { Input = context.Input with { Effects = mechanics } };
+        }
+        else
+        {
+            var root = context.CurrentMenuRoots[realm == "chaos_sea" ? SpiritualDiagnosisCanonicalSources.GuardiansPath : ShiningAbodeState.StatePath];
+            var container = realm == "chaos_sea" ? root["guardians"]![0]!["abode"]! : root["halls"]![0]!;
+            if (kind == "location")
+            { if (realm == "chaos_sea") root["chaosSeaNavigation"]!["CurrentAbodeId"] = LocationId; else root["CurrentHallId"] = LocationId; }
+            else if (kind == "consent") container["customStates"]![0]!["targetId"] = "foreign_actor";
+            else { var rows = container["customStates"]!.AsArray(); rows.Add(rows[0]!.DeepClone()); }
+        }
+        Assert.Null(new SpiritualDiagnosisSourceData(context).Admit(wound, "diagnose_tissue").Data);
     }
 
     private static async Task<WoundPlayerReadContext> AddResourcesAsync(WoundPlayerReadContext context,

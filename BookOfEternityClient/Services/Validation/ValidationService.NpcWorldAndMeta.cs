@@ -8390,6 +8390,7 @@ public partial class ValidationService
 
     private void ValidateMetaMiscContract(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
     {
+        issues.AddRange(SpiritualDiagnosisSceneAuthorityContract.ValidateContainers(root, contextPrefix, shining: false));
         ValidateSoulStateRealmContract(root, contextPrefix, issues);
         ValidateMetaStateUpdates(root, contextPrefix, issues);
         ValidateAfterlifeArchiveData(root, contextPrefix, issues);
