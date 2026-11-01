@@ -245,14 +245,15 @@ public partial class ValidationService
         var noProgressRationaleText = await ReadAcceptedTurnNoProgressRationaleTextAsync();
 
         var knownSkillNames = await ReadCurrentKnownPlayerSkillNamesAsync();
-        if (knownSkillNames.Count > 0)
+        var claimedSkillNames = knownSkillNames
+            .Where(name => ContainsSkillUseClaim(playerFacingText, name))
+            .OrderBy(name => name, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+        if (claimedSkillNames.Count > 0)
         {
             var skillDeltaContext = await ReadAcceptedTurnSkillDeltaContextAsync(filesModified, knownSkillNames);
-            foreach (var skillName in knownSkillNames.OrderBy(name => name, StringComparer.OrdinalIgnoreCase))
+            foreach (var skillName in claimedSkillNames)
             {
-                if (!ContainsSkillUseClaim(playerFacingText, skillName))
-                    continue;
-
                 if (skillDeltaContext.SatisfiesSkillClaim(skillName) ||
                     HasNoProgressRationale(noProgressRationaleText, "skill", skillName))
                     continue;
@@ -264,7 +265,7 @@ public partial class ValidationService
                     code: "accepted_turn_skill_claim_missing_state_delta",
                     section: "ProseStateDelta",
                     expected: "skill mastery/progression delta targeting the claimed skill by its exact canonical name, a new-skill delta for the claimed skill, or explicit no-progress rationale in gm_thoughts_markdown",
-                    actual: skillDeltaContext.DescribeActualForMissingClaim(),
+                    actual: skillDeltaContext.DescribeActualForMissingClaim(skillName),
                     repairHint: $"Если '{skillName}' реально помог, добавь узкое изменение mastery/progression именно для '{skillName}' в game_state/player/skill_mastery.json; поле skillName должно точно совпадать с каноническим именем навыка. Если прогресса быть не должно, добавь в output/debug_logs.json.gm_thoughts_markdown секцию 'Prose State Delta Rationale' с именем навыка и причиной отсутствия прогресса."));
             }
         }
@@ -313,10 +314,13 @@ public partial class ValidationService
         IReadOnlyCollection<string> knownSkillNames)
     {
         const string masteryPath = "game_state/player/skill_mastery.json";
-        var masteryReferences = ReadMasteryIdentityReferences(
-            await _fs.ReadFileAsync(masteryPath),
-            "skillMasteryChanges");
+        var masteryJson = await _fs.ReadFileAsync(masteryPath);
+        var masteryReferences = ReadMasteryIdentityReferences(masteryJson, "skillMasteryChanges");
         var masteryFileChanged = await HasAcceptedTurnStateDeltaAsync(filesModified, masteryPath);
+        var currentEntries = ReadMasteryEntriesByExactName(masteryJson, "skillMasteryChanges");
+        var preTurnEntries = ReadMasteryEntriesByExactName(
+            await ReadValidatedCurrentPreTurnTrackedFileAsync(masteryPath),
+            "skillMasteryChanges");
 
         var newSkillNames = new HashSet<string>(StringComparer.Ordinal);
         await CollectNewSkillNamesThisTurnAsync(
@@ -327,8 +331,60 @@ public partial class ValidationService
         return new AcceptedTurnSkillDeltaContext(
             masteryFileChanged,
             masteryReferences,
+            currentEntries,
+            preTurnEntries,
             newSkillNames,
             MortalSkillReferenceAuthority.Build(knownSkillNames));
+    }
+
+    /// <summary>
+    /// Maps exact mastery entry names to their serialized entry payloads.
+    /// </summary>
+    /// <param name="json">
+    /// The mastery payload; <see langword="null"/>, empty or malformed input yields no entries.
+    /// </param>
+    /// <param name="section">
+    /// The mastery array to inspect.
+    /// </param>
+    /// <returns>
+    /// The first serialized entry per exact trimmed name, or <see langword="null"/> when
+    /// no usable payload exists.
+    /// </returns>
+    private static IReadOnlyDictionary<string, string>? ReadMasteryEntriesByExactName(string? json, string section)
+    {
+        if (string.IsNullOrWhiteSpace(json))
+            return null;
+
+        try
+        {
+            using var doc = JsonDocument.Parse(json);
+            if (doc.RootElement.ValueKind != JsonValueKind.Object ||
+                !doc.RootElement.TryGetProperty(section, out var entries) ||
+                entries.ValueKind != JsonValueKind.Array)
+            {
+                return null;
+            }
+
+            var result = new Dictionary<string, string>(StringComparer.Ordinal);
+            foreach (var entry in entries.EnumerateArray())
+            {
+                if (entry.ValueKind != JsonValueKind.Object)
+                    continue;
+
+                var name = GetFirstNonEmptyString(entry, "skillName");
+                if (string.IsNullOrWhiteSpace(name))
+                    continue;
+
+                result.TryAdd(name.Trim(), entry.GetRawText());
+            }
+
+            return result;
+        }
+        catch (JsonException)
+        {
+            // Structural diagnostics are owned by the existing contract validators.
+            return null;
+        }
     }
 
     /// <summary>
@@ -375,6 +431,13 @@ public partial class ValidationService
     /// <param name="MasteryReferences">
     /// Exact-spelling mastery entry names with their array coordinates.
     /// </param>
+    /// <param name="CurrentEntries">
+    /// The current mastery entries by exact name, or <see langword="null"/> when unreadable.
+    /// </param>
+    /// <param name="PreTurnEntries">
+    /// The validated pre-turn mastery entries by exact name, or <see langword="null"/> when
+    /// no pre-turn snapshot evidence exists and only the weaker filesModified evidence applies.
+    /// </param>
     /// <param name="NewSkillNames">
     /// Skills first materialized this turn.
     /// </param>
@@ -384,11 +447,15 @@ public partial class ValidationService
     private sealed record AcceptedTurnSkillDeltaContext(
         bool MasteryFileChanged,
         IReadOnlyList<(string SkillName, string? Actor, int Index)> MasteryReferences,
+        IReadOnlyDictionary<string, string>? CurrentEntries,
+        IReadOnlyDictionary<string, string>? PreTurnEntries,
         HashSet<string> NewSkillNames,
         MortalSkillReferenceAuthority CanonicalSkills)
     {
         /// <summary>
         /// Returns true only when the turn contains a delta bound to the claimed skill itself.
+        /// A carried-over entry that is byte-identical to its validated pre-turn snapshot
+        /// never satisfies the claim.
         /// </summary>
         public bool SatisfiesSkillClaim(string claimedSkillName)
         {
@@ -400,8 +467,21 @@ public partial class ValidationService
 
             foreach (var reference in MasteryReferences)
             {
-                if (CanonicalSkills.Classify(reference.SkillName).Kind == MortalSkillReferenceMatchKind.Exact &&
-                    string.Equals(reference.SkillName.Trim(), claimedSkillName, StringComparison.Ordinal))
+                if (CanonicalSkills.Classify(reference.SkillName).Kind != MortalSkillReferenceMatchKind.Exact ||
+                    !string.Equals(reference.SkillName.Trim(), claimedSkillName, StringComparison.Ordinal))
+                {
+                    continue;
+                }
+
+                if (PreTurnEntries == null)
+                    return true;
+
+                if (!PreTurnEntries.TryGetValue(claimedSkillName, out var preTurnEntry))
+                    return true;
+
+                if (CurrentEntries != null &&
+                    CurrentEntries.TryGetValue(claimedSkillName, out var currentEntry) &&
+                    !string.Equals(currentEntry, preTurnEntry, StringComparison.Ordinal))
                 {
                     return true;
                 }
@@ -413,8 +493,25 @@ public partial class ValidationService
         /// <summary>
         /// Describes the delta's real targets so the repair stays narrow.
         /// </summary>
-        public string DescribeActualForMissingClaim()
+        public string DescribeActualForMissingClaim(string claimedSkillName)
         {
+            if (MasteryFileChanged && PreTurnEntries != null && CurrentEntries != null)
+            {
+                var changedTargets = CurrentEntries
+                    .Where(pair =>
+                        !PreTurnEntries.TryGetValue(pair.Key, out var preTurnEntry) ||
+                        !string.Equals(preTurnEntry, pair.Value, StringComparison.Ordinal))
+                    .Select(pair => pair.Key)
+                    .OrderBy(name => name, StringComparer.OrdinalIgnoreCase)
+                    .ToList();
+                if (PreTurnEntries.ContainsKey(claimedSkillName) &&
+                    !changedTargets.Contains(claimedSkillName, StringComparer.Ordinal))
+                {
+                    return "skill claim found in narrative/interface text; the mastery entry for the claimed skill is carried over unchanged; this turn's mastery changes target only: " +
+                           (changedTargets.Count > 0 ? string.Join(", ", changedTargets) : "none");
+                }
+            }
+
             var targets = MasteryReferences
                 .Select(reference => reference.SkillName)
                 .Distinct(StringComparer.Ordinal)

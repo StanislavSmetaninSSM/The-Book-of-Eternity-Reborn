@@ -328,6 +328,105 @@ public sealed class AcceptedTurnNarrativePayloadValidationTests : IDisposable
             string.Equals(issue.Code, "accepted_turn_skill_claim_missing_state_delta", StringComparison.OrdinalIgnoreCase));
     }
 
+    [Fact]
+    public async Task ValidateAcceptedTurnNarrativePayloadAsync_RejectsSkillClaimWhenMasteryEntryIsCarriedOverUnchanged()
+    {
+        await WriteKnownPassiveSkillsAsync(
+            ("skill_life_001_seal_reading", "Чтение печатей"),
+            ("skill_life_002_knife_fight", "Ножевой бой"));
+        const string preTurnMasteryJson = """
+        {
+          "skillMasteryChanges": [
+            {
+              "skillName": "Чтение печатей",
+              "newMasteryLevel": 1
+            },
+            {
+              "skillName": "Ножевой бой",
+              "newMasteryLevel": 1
+            }
+          ]
+        }
+        """;
+        await _fs.WriteFileAtomicAsync("game_state/player/skill_mastery.json", """
+        {
+          "skillMasteryChanges": [
+            {
+              "skillName": "Чтение печатей",
+              "newMasteryLevel": 1
+            },
+            {
+              "skillName": "Ножевой бой",
+              "newMasteryLevel": 2
+            }
+          ]
+        }
+        """);
+        await WriteValidatedSnapshotManifestAsync(("game_state/player/skill_mastery.json", preTurnMasteryJson));
+        await WriteTurnCompleteAsync("output/narrative_response.json", "output/debug_logs.json");
+        await _fs.WriteFileAtomicAsync("output/narrative_response.json", """
+        {
+          "response": "Твоя подготовка в чтении печатей помогает заметить смещённую свидетельскую зарубку.",
+          "timestamp": "2026-11-02T08:20:00Z"
+        }
+        """);
+
+        var issues = await _validator.ValidateAcceptedTurnNarrativePayloadAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "accepted_turn_skill_claim_missing_state_delta", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(issue.FilePath, "game_state/player/skill_mastery.json", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateAcceptedTurnNarrativePayloadAsync_AllowsSkillClaimWhenClaimedMasteryEntryChangedThisTurn()
+    {
+        await WriteKnownPassiveSkillsAsync(
+            ("skill_life_001_seal_reading", "Чтение печатей"),
+            ("skill_life_002_knife_fight", "Ножевой бой"));
+        const string preTurnMasteryJson = """
+        {
+          "skillMasteryChanges": [
+            {
+              "skillName": "Чтение печатей",
+              "newMasteryLevel": 1
+            },
+            {
+              "skillName": "Ножевой бой",
+              "newMasteryLevel": 1
+            }
+          ]
+        }
+        """;
+        await _fs.WriteFileAtomicAsync("game_state/player/skill_mastery.json", """
+        {
+          "skillMasteryChanges": [
+            {
+              "skillName": "Чтение печатей",
+              "newMasteryLevel": 2
+            },
+            {
+              "skillName": "Ножевой бой",
+              "newMasteryLevel": 2
+            }
+          ]
+        }
+        """);
+        await WriteValidatedSnapshotManifestAsync(("game_state/player/skill_mastery.json", preTurnMasteryJson));
+        await WriteTurnCompleteAsync("output/narrative_response.json", "output/debug_logs.json");
+        await _fs.WriteFileAtomicAsync("output/narrative_response.json", """
+        {
+          "response": "Твоя подготовка в чтении печатей помогает заметить смещённую свидетельскую зарубку.",
+          "timestamp": "2026-11-02T08:25:00Z"
+        }
+        """);
+
+        var issues = await _validator.ValidateAcceptedTurnNarrativePayloadAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "accepted_turn_skill_claim_missing_state_delta", StringComparison.OrdinalIgnoreCase));
+    }
+
     private Task WriteKnownPassiveSkillsAsync(params (string SkillId, string SkillName)[] skills)
     {
         var entries = string.Join(",\n    ", skills.Select(skill => $$"""
