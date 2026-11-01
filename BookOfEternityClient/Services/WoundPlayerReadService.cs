@@ -99,7 +99,7 @@ internal static class WoundPlayerReadService
                 if (path == EffectCarrierCatalog.SpiritualConflictPath) spiritualConflict = parsed;
             }
             EffectMechanicsSnapshot effects;
-            if (retainMenuInputs)
+            if (retainMenuInputs && fs.CanReuseCurrentSourceData)
             {
                 // The same canonical lease protects these already parsed menu
                 // roots. Reuse their exact DATA for effect scope/carriers rather

@@ -132,6 +132,13 @@ public partial class FileSystemManager
     internal enum ValidationSnapshotFamily { OrdinarySync, OrdinaryAsync, ProtectedSync, ProtectedAsync }
 
     /// <summary>
+    /// Reports whether this operation may reuse already parsed current source DATA.
+    /// Arbitrary source callbacks and an active fresh-read suppression retain the
+    /// existing uncached reader contract. This grants no source or write authority.
+    /// </summary>
+    internal bool CanReuseCurrentSourceData => ValidationReuseSuppression.Value == 0 && CanReuseSourceData;
+
+    /// <summary>
     /// Determines whether arbitrary source callbacks require the unchanged uncached reader route.
     /// </summary>
     private bool CanReuseSourceData =>

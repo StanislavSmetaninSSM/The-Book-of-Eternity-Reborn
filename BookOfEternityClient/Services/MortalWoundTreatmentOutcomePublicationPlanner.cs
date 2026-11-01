@@ -163,6 +163,20 @@ internal sealed class MortalWoundTreatmentOutcomePreparation
 
     internal string GetTreatmentEventRef() => _treatmentEventRef;
 
+    /// <summary>
+    /// Identifies the exact terminal operation already covered by the retained
+    /// request/result and ordered intent seals. The treatment stage remains active
+    /// until its separate ordinary heal boundary is actually executed.
+    /// </summary>
+    internal bool PreparesTerminalHeal => _intentSeals.Length != 0 && _intentSeals[^1].Kind == "heal";
+
+    /// <summary>
+    /// Returns the immutable request-derived heal coordinates and legacy seeds.
+    /// This detached intent grants no permission to execute or allocate effects.
+    /// </summary>
+    internal MortalWoundHealOutcomeIntent? ReadTerminalHealIntent() =>
+        PreparesTerminalHeal ? _selectedResolution?.OutcomeIntents[^1] as MortalWoundHealOutcomeIntent : null;
+
     internal WoundMaterializationEnvelope GetPreparedCarrierImage() =>
         _selectedResolution is null ? ProvisionalAfter : Before;
 
@@ -523,7 +537,7 @@ internal static partial class MortalWoundTreatmentOutcomePublicationPlanner
         "book_of_eternity.mortal_wound_treatment.outcome_publication";
 
     internal static bool UsesSelectedGraph(MortalWoundTreatmentOutcomeIntent intent) =>
-        intent is MortalWoundAddComplicationOutcomeIntent or MortalWoundApplyDeteriorationOutcomeIntent;
+        intent is MortalWoundAddComplicationOutcomeIntent or MortalWoundApplyDeteriorationOutcomeIntent or MortalWoundHealOutcomeIntent;
 
     internal static bool RequiresEffectBatch(MortalWoundTreatmentOutcomePreparation preparation) =>
         preparation.SeverityReduction is not null || preparation.GetOrderedRemovalIds().Length != 0 ||
@@ -644,7 +658,8 @@ internal static partial class MortalWoundTreatmentOutcomePublicationPlanner
                         binding.DefinitionReferenceBindings[j].NamespacedRef,
                         componentsPrefix + $".consequenceDefinitions[{j}].definition.components"));
             }
-            if ((additions.Count == 0 && policies.Count == 0) ||
+            if ((additions.Count == 0 && policies.Count == 0 &&
+                 !resolution.OutcomeIntents.Any(static intent => intent is MortalWoundHealOutcomeIntent)) ||
                 !ExactAndConfusableUnique(additions.Select(row => row.Binding.ComplicationId)) ||
                 !ExactAndConfusableUnique(additions.SelectMany(row => row.Binding.Roots).Select(row => row.OperationKey)))
                 throw new InvalidOperationException("Missing or colliding selected additions.");
@@ -1010,7 +1025,7 @@ internal static partial class MortalWoundTreatmentOutcomePublicationPlanner
             after = parsed.Wound;
         }
 
-        var declaredOutcome = CreateDeclaredOutcome(after, selectedGraph);
+        var declaredOutcome = CreateDeclaredOutcome(after, selectedGraph, preparation.PreparesTerminalHeal);
         var fingerprint = ComputePublicationFingerprint(
             preparation,
             after,
@@ -1549,6 +1564,17 @@ internal static partial class MortalWoundTreatmentOutcomePublicationPlanner
     private static bool HasSupportedGrammar(
         MortalWoundTreatmentResolution resolution, IReadOnlyList<MortalWoundTreatmentOutcomeIntent> intents)
     {
+        // The closed request, selected canonical outcome and every intent seal
+        // are checked before this dispatch. Preserve that complete grammar rather
+        // than introducing a narrower mode/category rule for terminal programs.
+        // CompileSelectedGraph subsequently applies all prefix operations in order
+        // and proves that the terminal heal is applicable at severity I.
+        if (intents.Any(static intent => intent is MortalWoundHealOutcomeIntent))
+            return intents.Count is >= 1 and <= MortalWoundTreatmentContract.MaxOutcomeOperations &&
+                intents.Count == resolution.DeclaredResult.Count &&
+                intents[^1] is MortalWoundHealOutcomeIntent &&
+                resolution.DeclaredResult[^1] is MortalWoundHealOperation &&
+                intents.Count(static intent => intent is MortalWoundHealOutcomeIntent) == 1;
         var mode = resolution.Mode;
         var interruption = resolution.Interruption;
         var courseDisposition = resolution.CourseDisposition;
@@ -1719,11 +1745,12 @@ internal static partial class MortalWoundTreatmentOutcomePublicationPlanner
     /// final wound for detached transition comparison.
     /// </summary>
     internal static WoundDeclaredTransitionOutcome CreateDeclaredOutcome(
-        WoundMaterializationEnvelope after, MortalWoundTreatmentSelectedGraphCompilation? selectedGraph) => new(
+        WoundMaterializationEnvelope after, MortalWoundTreatmentSelectedGraphCompilation? selectedGraph,
+        bool preparesTerminalHeal = false) => new(
         after.Severity.Rank,
         after.Care.State,
         after.Recovery.CurrentStepProgress,
-        Heals: false,
+        Heals: preparesTerminalHeal,
         TerminalAttempt: true,
         AllowsWorsening: selectedGraph?.AllowsWorsening == true,
         after.Complications.Select(static value => value.ComplicationId).ToArray(),

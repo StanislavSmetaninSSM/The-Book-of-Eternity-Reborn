@@ -1,3 +1,49 @@
+# T121 two-defect correction — first source WIP, UNCOMPILED/UNRUN
+
+Accepted causal evidence: callback2 final CALLBACK_CAUSAL failures6.9016s/60 and
+native terminal4 final TERMINAL_HEAL_CAUSAL failures11.8085s/120 on runtimeb078,
+with complete native premises/pins/cleanup independently accepted. The older own-
+lock callback fixture failure is separate, not causal. Full provenance remains in
+the root receipts below. No current GREEN or physical feature acceptance exists.
+
+First product ownership block: the new retained menu snapshot shortcut now consults
+one narrow internal projection of existing CanReuseSourceData plus current reuse
+suppression. The callback list is not copied; pre-existing menu image retention and
+the exact EffectMechanicsSnapshot.LoadAsync fallback stay unchanged. Eligibility
+belongs to the active read operation, with fresh original/current/source guards.
+Existing no-hook/equality/count/next-open and the two real callback controls remain
+required; no cache, extra source owner or speedup claim is added.
+
+Terminal outcome preparation now dispatches canonically selected heal programs to
+the existing ordered working-graph simulator/compilation, retaining its existing
+request/resolution/intent seals. This supports sequential reductions (including the
+canonical aggregate3 only with final heal) before a separate actual heal boundary,
+without the old scalar aggregate2 projection restriction. At most one final heal is
+accepted here after strict canonical selection; no new success-only mode rule is
+introduced. The exact retained terminal intent/child/legacy seeds are comparison
+DATA only. Declared treatment outcome now signals Heals for reducer follow-up; its
+primary treatment after-image remains active. The detached current reconstruction
+uses the same signal. No effect identity or secondary owner has been invented.
+
+This is NOT the whole correction. Actual terminal effect execution, exact ordered
+linked treat/heal finalization and terminal identity/carrier/output/current proof
+remain unconnected. The real legacy preparation/finalization leaf must honor FR064:
+<=8 total legacies; one ordered independent wound_legacy/legacyId batch per selected
+mechanical legacy (1–5 definitions/applications), none for cosmetics, existing sole
+FX allocator, exact/confusable local uniqueness and per-legacy namespaces. Durable
+legacy publication waits for the accepted result map/effect-plan seal; missing,
+extra/reordered/merged/split allocations must refuse. Immutable typed intents are
+consumed without raw route reparse or identity reallocation. Required additional
+proof includes IV→I aggregate3 plus final heal, multiple mechanical legacy namespace/
+order, terminal browser, three-milestone ordinary waits and rollback. Cost/Fate are
+still one original attempt, with strict replay/C4 and ordinary real-wave contract.
+
+No build/discovery/test/commit/push occurred. Source inventory/pins, GM examples and
+finite final selection are pending the complete semantic correction; no pin literal
+is refreshed at this intermediate checkpoint. Root may persist this coherent WIP
+before returning the sole writer for effect/legacy/finalization work. Existing HOLDs,
+raw/saves/retained roots and parents remain unchanged.
+
 # T121 physical SOURCE HOLD — six causal REDs accepted, product fixes pending
 
 Independent Astra/high OUTCOME accepts exactly6 genuine final-assertion failures,

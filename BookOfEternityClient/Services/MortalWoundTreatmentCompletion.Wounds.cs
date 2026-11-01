@@ -69,7 +69,7 @@ internal static partial class MortalWoundTreatmentCompletion
             new WoundTreatmentEvidence(resolution.ResolutionAuthorityFingerprint,
                 WoundIdentityState.ComputeSemanticFingerprint(before), WoundIdentityState.ComputeSemanticFingerprint(assembled),
                 coordinates.RouteId, coordinates.AttemptId,
-                MortalWoundTreatmentOutcomePublicationPlanner.CreateDeclaredOutcome(assembled, selected))));
+                MortalWoundTreatmentOutcomePublicationPlanner.CreateDeclaredOutcome(assembled, selected, preparation.PreparesTerminalHeal))));
         if (!reduction.IsValid || reduction.ProposedAfter is null)
             throw Invalid("The final treatment transition does not agree with its declared mode outcome.");
         return reduction.ProposedAfter;
