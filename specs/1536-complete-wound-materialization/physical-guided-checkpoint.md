@@ -1,3 +1,20 @@
+# Canonical console observer SOURCE/build complete — one confirming case next
+
+Independent Astra/high accepts38eb79d3cf4d3cea4948b017d812f50291a73ec7;
+Sol/xhigh accepts five C4 helper mappings and prior Integration4 preservation.
+Fresh Integration-only build exits0 with exact102unique/204logged baseline warnings.
+All4PE/PDB pairs,426source bindings,27artifacts,44resource copies/fourdaemons match;
+Unit6d81 and Main/Supportc576 remain unchanged. Prior Integratione14 evidence is
+preserved11008005B SHAa70285760348ad069fd106a6cbac7efc770cb55970ada05e1003d20bf65c5a0e,
+fullEOF/CRC/4member hashes. Ended reproducible obj/ref duplicates matched retained
+bins before retirement; no raw/saves/recovery/current-bin removal.
+
+Fresh catalogue valid1310/13133,zero unmapped/stale/execution. Console-only exact
+PlanOnly exits0: one descriptor/one case,180s; no runtime yet. Independent PREP and
+immediate fresh fence remain required. The exact byte equality at the corrected
+observation boundary is still UNPROVEN until that runtime; prior140 PASS and the
+complete failed console capture retain their own provenance. No broader HOLD lift.
+
 # Canonical console rollback FAIL — existing boundary observer correction WIP
 
 Runtime05c01dee19989bc05f840e35513b8118aff77222 / Integratione14: console1
