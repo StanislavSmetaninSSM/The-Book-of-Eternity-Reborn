@@ -1,3 +1,46 @@
+# C8 SOURCE accepted; builds and qualification still blocked
+
+Independent Astra/high SOURCE accepts code238a441984f8788e48eb661d98c028be73fd1f7b
+without material findings. Root review corrected the initially incomplete payload
+negative control: constructor tampering now follows an honest staged copier/private
+execution positive; genuine completed copies use the proof-preserving API. No new
+completion authority was exposed. The common terminal correction is SOURCE accepted,
+not compiled or runtime-qualified. All four owning projects need fresh builds and
+provenance before current3, spiritual overflow1 and guards4; UI cost/acceptance follow.
+No new full restore was attempted, per the instruction against new clone/restore.
+
+Last successful builds remain Main/Support/Unit at
+ a958b520fe5839c590f2621443e27de89fc18e50 and Integration at
+69fdca68080cb724df0f599b2f68a63b29a8f401. These binaries do not verify C8.
+Recent complete accepted independent1 is runtime
+da95d7e7f221ac49621d37e70e09cd92e8529ce7 / sourcea958b520,39.441707/60s.
+The last current3 remains1FAIL/2UNRUN at actual common membership; console2 remains
+an earlier2FAIL menu-prefix result, with seven other UI rows unrun. No source
+review or static test assertion is counted as PASS. Historical37-distinct frontier
+and the separate eight adapters/other epic remainder remain explicit, not a fresh
+whole-feature result. DFR/Mortal/Windows and other existing HOLDs stay in effect.
+
+Disk decision is pending the author. Fresh observed free bytes at this receipt:
+682602496 < unchanged687865856 launch reserve. No build/runtime is admitted.
+All safe ended-owner intermediate retirement is proved outside checkout. The Node
+cache cleanup produced no observed free-space increase. Unique raw evidence,
+TRX/JSON/capture, saves, recovery and current binaries remain preserved.
+
+Concrete lossless-format proposal: exactly11 ended generic dotnet-test.log files
+from C5/C6/C7, enumerated (no wildcard retirement) in external
+/workspace/tboe-linux-evidence-20261025/us5-guided-diagnosis/P3GREENC8-closed-log-format-manifest.json.
+Manifest SHA256 ded9a92b1c2b8baf0d1819a441c0762996fe3502a72b69e6510c4eb3fe0799a6.
+Originals total24421934B; gzip copies2759140B; hypothetical logical saving21662794B.
+Both root and independent reviewer verify all original identities/hashes and full
+EOF/CRC/byte-for-byte decode. ALL ORIGINALS STILL EXIST. Removing only these verified
+uncompressed copies would retain every failure, timestamp and discovery byte in
+lossless gzip, with original path/length/SHA mapping and gzip -dc restoration.
+Actual reclaimed space remains unproved. The qualification readers use summary/
+plan/TRX; literal .log consumers require decompression from that mapping. This is
+not a new full replacement measurement, so original retirement remains PENDING
+explicit authorization under the user's raw-retention constraint. No source,
+binary, capture, archive, TRX, JSON, save or recovery deletion is proposed.
+
 # C8 ordered common membership correction — UNCOMPILED / UNRUN
 
 Tracked T121-PHYSICAL-GUIDED terminal correction, based on e43259925 and the actual
