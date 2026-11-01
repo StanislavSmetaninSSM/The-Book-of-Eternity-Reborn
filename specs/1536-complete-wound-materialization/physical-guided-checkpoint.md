@@ -1,3 +1,43 @@
+# C9 instrumented native outcome — TIMEOUT / UNKNOWN; phase localized
+
+Runtimef89c0b120eba1fdd7eec0419207367c6d576dab3 / Integrationcompiled7fc64f7f:
+current-legacy1 times out120.21925/120s,wall127.3620891s. Summary124/wrapper1,
+no TRX, zero completed cases/descriptors: UNKNOWN. Runner processes are closed;
+actual interrupted fixture53files remain, not claimed disposed. No retry occurred.
+
+The unique240328257B gzip partial capture and initial registered-root/assembly
+receipt are retained externally. Full streaming read reaches4428488 complete
+original records/2268187509 decoded prefix bytes, then EOFError; no report/footer
+or complete EOFCRC proof exists. Readable prefix has no sequence gaps/pair faults,
+with12open scopes at its end. Full capture version/code and all available original
+bytes remain preserved; this incomplete result never replaces complete evidence.
+
+Original macro boundaries: FixtureSetup3108.748299ms, Admission1770.215293ms;
+InitialCompose begins at5004.5397ms and remains open through114902.2319ms.
+TerminalAssertions/Normalize/Transaction/CurrentSettlement were not reached in the
+readable instrumented prefix. Twenty bundle constructors and19detached copies
+complete;22prepared and22final replay validations complete, with additional open
+ones. This localizes repeated work; it does not prove the original C8 phase/cost.
+Last consumer counters record20754.957759ms build/serialization and18647.587774ms
+write work. Concurrent producer/drain and nested inclusive timings overlap; do not
+sum them or subtract them to invent an uninstrumented runtime or causal speedup.
+
+All raw and strict receipts remain at P3GREENC9-native1, including
+verified-timeout-unknown.json, native-prefix-readback.json and retained-root
+inventory. Closing27artifacts/10resources40copies/fourdaemons stable, no live
+managed owner,55ended zombies. Unique partial capture/root are untouched.
+
+Authorized lossless replacement of221 exact earlier ended generic logs restores
+headroom:646269508originalB, netfreeincrease571600896B. Frozen manifestSHA
+84e42fba9945f6bb863aac6fac2716a55c2263120cfdd4a5e7bfc9583559d0e4 binds
+all per-run original identities/hashes and full gzip EOFCRC recovery proofs.
+Only generic original logs retired; TRX/JSON/captures/saves/recovery/current bins
+retained. Latest closing free1044471808B; unchanged launch reserve687865856B.
+No broader runtime, production optimization/cache, speedup or feature PASS follows.
+Next bounded DESIGN must separate newly enabled internal timing cost from native
+work using existing recorder/scopes; no new diagnostic stack or assertion/budget
+change. Removal/joint/UI and broader HOLDs retain their prior unresolved results.
+
 # C9 capture gate — 3/3 PASS; one instrumented native PREP pending
 
 Runtime9eaad89e2d34444ce5183b6187892cb968aa82a2 / Integration compiled7fc64f7f:
