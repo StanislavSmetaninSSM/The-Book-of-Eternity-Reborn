@@ -1,3 +1,22 @@
+# Canonical free-resource correction SOURCE/build accepted — runtime PREP next
+
+Independent Astra/high accepts the actual e14b07f4d433661f75f1c67b83d7ef8c3ea35bd7
+fixture correction; independent Sol/xhigh accepts five C3 phase mappings and saved
+Integration4 evidence. One fresh Integration-only build exits0, exact baseline
+102unique/204logged warnings. Main/Support c576 and Unit6d81 stay unchanged. All4
+PE/PDB pairs,426 source bindings,27 artifacts,44 resource copies and four daemons
+verify. Saved prior Integration4 is11006741B, SHA
+040ea05a5b294fd613d79ed43b0778750619a11f3fb2e8eee8fc63177cee993a,
+fullEOF/CRC/4member hashes,decoded38993920B. Ended obj/ref duplicates matched before
+retirement; current bins/raw/saves/recovery untouched.
+
+Discovery and exact three-singleton PlanOnly exit0 with zero executions; resource1
+now names the actual no-fee/refusal proof. Budgets remain resource120/effect120 /
+console rollback180 seconds. Runtime all3 remains UNRUN on this candidate pending
+independent PREP/fresh fence, with console after accepted native2 OUTCOME. Original
+unsupported-fee FAIL and prior138 distinct PASS are retained, not relabelled or
+repeated. Production, authority guards and every broader HOLD remain unchanged.
+
 # Canonical resource native FAIL classified — fixture correction WIP
 
 Actual runtime e57cb94fc87cef4e513b9392c9106190d45a6753, unchanged Integration f79:
