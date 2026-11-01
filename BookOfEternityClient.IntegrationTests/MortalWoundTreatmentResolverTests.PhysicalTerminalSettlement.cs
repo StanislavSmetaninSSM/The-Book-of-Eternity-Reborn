@@ -41,15 +41,17 @@ public sealed partial class MortalWoundTreatmentResolverTests
         const string childKey = "terminal_child_restore";
         var parent = EffectMaterializationTestFixture.CreateDefinition("event_reaction");
         parent["definitionKey"] = parentKey;
+        parent["stacking"]!["stackKey"] = parentKey;
         parent["lifetime"] = CreateSourceBoundActionControlDefinition("unused")["lifetime"]!.DeepClone();
         parent["links"] = new JsonArray();
         var payload = parent["components"]![0]!["payload"]!.AsObject();
         payload["eventType"] = "owner_turn_end"; payload["resultKind"] = "apply_definition";
         payload["definitionKey"] = childKey; payload["parameters"] = new JsonObject { ["amount"] = 7 };
-        payload["maxExpansion"] = 1;
+        payload["maxExpansion"] = 2;
         parent["triggers"]![0]!["eventType"] = "owner_turn_end";
         var child = EffectMaterializationTestFixture.CreateDefinition("periodic_restore");
         child["definitionKey"] = childKey;
+        child["stacking"]!["stackKey"] = childKey;
         child["lifetime"] = parent["lifetime"]!.DeepClone(); child["triggers"] = new JsonArray(); child["links"] = new JsonArray();
         draft["definitions"]![0]!["definition"] = parent;
         draft["definitions"]!.AsArray().Add(new JsonObject { ["definitionRef"] = "child_definition", ["definition"] = child });

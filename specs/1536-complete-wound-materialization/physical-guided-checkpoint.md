@@ -1,10 +1,46 @@
+# C6 reaction fixture correction — UNCOMPILED/UNRUN
+
+Bounded fixture-only correction on 9386b339fae06ad911740aa1735d081a26eded9a.
+AddTerminalLegacyReaction inherited stackKey=bleeding / policy=stack from both
+generic definition builders. EffectReactionContract.ValidateDownstreamDefinition
+requires distinct source/downstream stack coordinates or explicit replace on a
+shared coordinate; the diagnostic terminal_child_restore/bleeding/stack describes
+this conflict, not a composite authored definitionKey. The same source graph also
+requires expansion >= 2 for the reaction plus its reachable leaf. maxExpansion is
+a recognized field whose value 1 was invalid, not an unsupported/unknown field.
+
+The initial fixture now declares distinct parent/child stack keys and maxExpansion 2.
+The real owner_turn_end trigger, canonical apply_definition route, source-bound
+lifetimes, downstream amount 7 / bounds 1–10, all other definition policies and actual
+descendant/current-materialization refusals remain unchanged. No production guard,
+method/case/category/budget or GM contract changes. There is no new fixture world,
+owner, authority, cache, counter framework or measured speedup claim.
+
+Finite caller/preparation audit: current-legacy and the genuine joint seed share
+this one helper before CreateCurrentWoundHistory, bootstrap and either original.
+Current-removal uses the already accepted guaranteed remove/heal DATA with its
+independent action-control legacy and no reaction edge. All nine physical UI rows
+use SeedGuidedPhysicalInitialWorld, whose terminal outcomes have empty legacies;
+they do not call this reaction helper. Their ordinary source/wound definitions and
+full initial History are still validated by the existing canonical preparation guards.
+No post-original or post-accepted bytes are patched. This is source preparation
+readback only, not runtime qualification of current 3 or UI 9.
+
+The failed C5 proof below remains unchanged. Accepted independent 1 at compiled
+a958b520fe5839c590f2621443e27de89fc18e50 / runtime
+da95d7e7f221ac49621d37e70e09cd92e8529ce7 is unaffected and is not replayed.
+Only source/diff checks performed by the writer; both paths remain UNCOMPILED/UNRUN
+until root persistence, independent SOURCE and owning build/PREP. All raw, current
+outputs, saves, archives, recovery and existing HOLDs remain untouched.
+
 # C5 current settlement preparation — 1 FAIL / 2 UNRUN
 
 Runtime69e3c385448a7f6ffd297f8b7ca28093854a7ae9, compileda958b520:
 current-legacy fails before original/publication in CreateCurrentWoundHistory.
-The authored event_reaction payload retains a composite definitionKey and an
-unsupported maxExpansion field; exact failure paths are payload.definitionKey
-and payload.maxExpansion. Category5.0869583/120s, wall11.5811569s; no timeout,
+The authored event_reaction/child definitions share a non-replace stack coordinate
+and declare an insufficient expansion value1; exact failure paths are
+payload.definitionKey and payload.maxExpansion. Category5.0869583/120s,
+wall11.5811569s; no timeout,
 unique actual case, stable pins, complete cleanup. Current-removal and joint
 were not executed. Strict proof: external P3GREENC5-current3/verified-partial-failure.json.
 This is a fixture-schema preparation failure, not a claimed product failure or
