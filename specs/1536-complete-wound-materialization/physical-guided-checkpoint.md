@@ -1,3 +1,28 @@
+# C8 current legacy — category timeout / UNKNOWN, no TRX
+
+Runtimee75e2516b27cb99e7310b2ee1a7c3616d5e4f55c / compiledd70c38a:
+first current-legacy category times out at120.2022102/120s;wall127.8526810s.
+No TRX or completed-case result exists: first case UNKNOWN, removal/joint2UNRUN,
+zero PASS. Summary exit124, wrapper exit1, owned child exit137; the generic lane
+11-minute text is retained but does not describe the actual category budget.
+No repeat or budget increase is admitted. Earlier fresh5PASS stays separate.
+
+Post-pins equal pre-pins; runner owned-tree/runtime cleanup true. Fresh closing
+rechecks27artifacts/10resources40copies/fourdaemons, no live managed owner,
+51old/ended zombies,free692387840B above unchanged687865856B reserve.
+Raw P3GREENC8-current3/verified-timeout-unknown.json and all logs remain complete
+for this observed prefix, not a completed positive measurement. No old raw is
+replaced or removed. One surviving candidate fixture root in the invocation's
+creation window is inventoried read-only at surviving-fixture-inventory.json:
+/tmp/boe-mortal-diagnosis-owner-358e5dd957b4474aa82a19ce8105c9b7 (53files).
+Its wound History still shows only create and clockT0; this does not establish
+which in-memory substage completed or any publication PASS. The root is preserved.
+
+Next: bounded causal/cost assessment using existing named-timer mechanisms, with
+no blind retry or parallel diagnostic framework. Independent UI/other-case scope
+may be assessed separately; current3 and whole physical acceptance stay open.
+No new build/runtime has been admitted. DFR/Mortal/Windows and other HOLDs remain.
+
 # C8 first shared-consumer gate — 5/5 PASS
 
 Runtime211ca03b6ff72003639963f86370b64d689e888d / all4 compiled
