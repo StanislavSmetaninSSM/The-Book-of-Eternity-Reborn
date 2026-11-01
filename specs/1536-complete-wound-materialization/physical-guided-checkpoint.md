@@ -1,3 +1,34 @@
+# Browser course — timeout / UNKNOWN; console course remains accepted
+
+Actual runtime `40eb4d66536f883fa7609df08f5b0102963bae27`, same qualified mixed
+binary owners (Main/Support/Unit d3be1948, Integration 102dcf7f). After independent
+console OUTCOME/browser PREP and immediate unchanged fence, one exact browser
+course exceeded its original 180-second category budget at 180.2188051 seconds;
+runner wall 191.1703857 seconds, summary exit124 / wrapper exit1. No primary TRX,
+0 completed cases, no browser PASS or gameplay FAIL attribution. Managed-tree/
+runtime process cleanup succeeded; fixture cleanup did not complete and its
+root is retained unchanged. The runner's generic lane footer says 8 minutes,
+but the actual descriptor and CategoryResults enforce the original 3 minutes.
+
+Full generated prefix remains external in `P3GREENC14COURSE-browser1`: 1536 stored
+bytes, SHA-256 `aa5a4b49bf0fe12562a2a74da07aca8061156263018107f634373df3ff9cef7e`,
+14 complete timing events, incomplete gzip/no report/footer. It proves first
+confirmed attempt END at 110.668285659 seconds, first ordinary wait END at
+10.295985196 seconds, then second confirmed attempt BEGIN and GM-response END.
+The last attempt is open; no completed three-stage result is inferred. Console
+same first attempt was 28.619470418 seconds; this difference is real, its cause
+is not yet established. Do not sum overlapping intervals or blame a subsystem
+without evidence, change budgets, or blindly repeat the browser case.
+
+Retained root `/tmp/boe-mortal-physical-journey-50455239d973497bbb61b16229211972`
+has 220 files / 1126656 logical bytes; external frozen file/hash inventory is
+`timeout-prefix-retained-root-proof.json`. Unique prefix, root/save, TRX/JSON and
+all earlier evidence remain intact. Console complete three-stage course remains
+independently accepted separately. Next bounded read-only localization through
+existing named timings/consumers and independent review; publication-cut controls
+remain an independent pending functional qualification, not a browser PASS.
+All broader HOLDs and DOM/provider/fresh-process limits remain unchanged.
+
 # Console course accepted — browser singleton PREP accepted, runtime UNRUN
 
 Independent Astra/high OUTCOME accepts the complete console course at runtime
