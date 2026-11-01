@@ -118,6 +118,7 @@ internal sealed class EffectAcceptedTurnPlan
     internal object? MortalRecoveryExecutionAuthority { get; }
     internal object? SpiritualHealingExecutionAuthority { get; }
     internal object? MortalDiagnosisExecutionAuthority { get; }
+    internal object? MortalTreatmentExecutionAuthority { get; }
 
     /// <summary>
     /// Freezes one effect execution result and retains any private continuation proof.
@@ -255,12 +256,14 @@ internal sealed class EffectAcceptedTurnPlan
         EffectLifecycleExecutionLedger? lifecycleExecutionLedger = null,
         object? lifecycleLedgerIssuer = null,
         object? spiritualHealingExecutionAuthority = null,
-        object? mortalDiagnosisExecutionAuthority = null)
+        object? mortalDiagnosisExecutionAuthority = null,
+        object? mortalTreatmentExecutionAuthority = null)
     {
         InputFingerprint = inputFingerprint;
         MortalRecoveryExecutionAuthority = mortalRecoveryExecutionAuthority;
         SpiritualHealingExecutionAuthority = spiritualHealingExecutionAuthority;
         MortalDiagnosisExecutionAuthority = mortalDiagnosisExecutionAuthority;
+        MortalTreatmentExecutionAuthority = mortalTreatmentExecutionAuthority;
         SkillScopeAuthority = skillScopeAuthority;
         CarrierAuthorityFingerprint = carrierAuthorityFingerprint;
         SourceAuthorityFingerprint = sourceAuthorityFingerprint;
@@ -520,7 +523,8 @@ internal sealed class EffectAcceptedTurnPlan
             source.MortalRecoveryExecutionAuthority,
             source.LifecycleExecutionLedger,
             spiritualHealingExecutionAuthority: source.SpiritualHealingExecutionAuthority,
-            mortalDiagnosisExecutionAuthority: source.MortalDiagnosisExecutionAuthority);
+            mortalDiagnosisExecutionAuthority: source.MortalDiagnosisExecutionAuthority,
+            mortalTreatmentExecutionAuthority: source.MortalTreatmentExecutionAuthority);
     }
 
     private static ReadOnlyCollection<T> ReadOnly<T>(IReadOnlyList<T> values) =>

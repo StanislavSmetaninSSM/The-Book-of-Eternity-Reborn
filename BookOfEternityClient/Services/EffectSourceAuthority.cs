@@ -419,6 +419,20 @@ internal sealed class EffectSourceAuthority
     internal IReadOnlyList<EffectSourceAuthorityEntry> SnapshotSameTurnWoundEntries() => SnapshotSameTurnEntries("wound");
 
     /// <summary>
+    /// Removes only the exact source group of an actually healed wound from the
+    /// unpublished final source DATA. Independent legacy exports remain separate.
+    /// The private execution proof, not this projection, authorizes finalization.
+    /// </summary>
+    internal EffectSourceAuthority WithoutHealedWoundSource(string realm, string woundId)
+    {
+        bool Keep(EffectSourceExport row) => row.Realm != realm || row.Kind != "wound" || row.SourceId != woundId;
+        return Build(new EffectSourceAuthorityInput(_ownerExports.Where(row => !row.SameTurn && Keep(row)).ToArray(),
+            _ownerExports.Where(row => row.SameTurn && Keep(row)).ToArray(), _grantedApplicationAuthorities,
+            WoundGroups: _woundGroups.Values.Where(row => row.Key.Realm != realm || row.Key.Kind != "wound" ||
+                row.Key.SourceId != woundId).ToArray()));
+    }
+
+    /// <summary>
     /// Copies only independent same-turn legacy entries for comparison against
     /// the actual private treatment preparation; it grants no application authority.
     /// </summary>

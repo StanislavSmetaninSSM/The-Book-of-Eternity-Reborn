@@ -88,7 +88,8 @@ internal static class MortalWoundHealLegacyPlanner
             if (seed.LegacyOrdinal != ordinal || seed.LocalLegacyRef != legacy.LocalLegacyRef || seed.Kind != legacy.Kind ||
                 !aliases.Add(MortalLocationIdentityState.BuildConfusableKey(legacy.LocalLegacyRef)))
                 throw Invalid("Legacy order or exact/confusable local namespace changed.");
-            declarations.Add(new(seed.LegacyId, legacy.Kind, legacy is MortalWoundMechanicalEffectLegacyDraft ? "effect" : null,
+            declarations.Add(new(seed.LegacyId, legacy is MortalWoundMechanicalEffectLegacyDraft ? "independent_mechanical" : "cosmetic",
+                legacy is MortalWoundMechanicalEffectLegacyDraft ? "effect" : null,
                 request.Coordinates.WoundId, legacy.ReadableSummary));
             if (legacy is MortalWoundCosmeticLegacyDraft) continue;
             if (legacy is not MortalWoundMechanicalEffectLegacyDraft mechanical ||

@@ -10,9 +10,12 @@ internal static partial class EffectAcceptedTurnPlanner
     private sealed record WoundBoundaryEffectCoordinates(string LogicalKey, int StageOrdinal,
         string EventRef, string OperationKey, string AuthorityFingerprint,
         string TransitionKind, string ReadableSummary, IReadOnlyList<WoundAcceptedEventAuthority> Events,
-        bool IsMortalRecovery)
+        bool IsMortalRecovery, bool IsMortalTreatment = false)
     {
-        internal string Coordinate(string kind, string local) => IsMortalRecovery
+        internal string Coordinate(string kind, string local) => IsMortalTreatment
+            ? "mortal_treatment_" + kind + "_" + WoundAcceptedTurnFingerprintWriter.Compute(new[]
+                { "mortal_treatment_terminal", LogicalKey, StageOrdinal.ToString(System.Globalization.CultureInfo.InvariantCulture), kind, local })["sha256:".Length..]
+            : IsMortalRecovery
             ? RecoveryCoordinate(kind, LogicalKey, StageOrdinal, local)
             : SpiritualWoundRecoveryPlanner.Coordinate(kind, LogicalKey, local, StageOrdinal);
     }

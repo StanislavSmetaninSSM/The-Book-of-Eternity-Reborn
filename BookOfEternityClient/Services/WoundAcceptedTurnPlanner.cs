@@ -210,6 +210,16 @@ internal static class WoundEffectBatchPlanner
                 WoundEffectBatchAcceptedPlan.Create(prepared, composedInput, effectPlan, applications, terminations),
                 Array.Empty<ValidationIssue>());
         }
+        if (WoundAcceptedTurnPlanner.TryReadTreatmentContinuation(prepared.TreatmentContinuationAuthority, out var terminalTreatment) &&
+            terminalTreatment.OutcomePreparation.PreparesTerminalHeal)
+        {
+            if (!EffectAcceptedTurnPlanner.TryReadMortalTreatmentExecution(prepared, effectPlan, out var executed))
+                return WoundAcceptedTurnPlannerCore.FailedEffectBatch("mortal_treatment_execution_invalid",
+                    "Treatment lost its actual terminal execution proof.", "one complete sealed treat/heal execution", "foreign or changed execution");
+            return new(WoundEffectBatchAcceptedPlan.Create(prepared, composedInput, effectPlan,
+                executed.SelectMany(stage => stage.Applications).ToArray(), executed.SelectMany(stage => stage.Terminations).ToArray()),
+                Array.Empty<ValidationIssue>());
+        }
         var derived = WoundAcceptedTurnPlannerCore.DeriveEffectResults(
             prepared,
             effectPlan);
@@ -749,6 +759,16 @@ internal static partial class WoundAcceptedTurnPlannerCore
 
         if (prepared.RecoveryContinuationAuthority is not null)
         {
+            recoveryContinuation = true;
+            return null;
+        }
+
+        if (WoundAcceptedTurnPlanner.TryReadTreatmentContinuation(prepared.TreatmentContinuationAuthority, out var terminalTreatment) &&
+            terminalTreatment.OutcomePreparation.PreparesTerminalHeal)
+        {
+            if (!EffectAcceptedTurnPlanner.TryReadMortalTreatmentExecution(prepared, accepted.EffectPlan, out _))
+                return FailedFinal("mortal_treatment_execution_invalid", "Terminal treatment lost its complete owned execution.",
+                    "one exact sealed treat/heal chain", "foreign or changed execution");
             recoveryContinuation = true;
             return null;
         }

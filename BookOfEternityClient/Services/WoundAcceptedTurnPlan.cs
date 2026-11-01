@@ -2695,6 +2695,11 @@ internal static partial class WoundAcceptedTurnFingerprints
             fields.Add("mortal_diagnosis_execution");
             fields.Add(diagnosisExecution);
         }
+        if (EffectAcceptedTurnPlanner.GetMortalTreatmentExecutionFingerprint(plan) is { } treatmentExecution)
+        {
+            fields.Add("mortal_treatment_execution");
+            fields.Add(treatmentExecution);
+        }
         AppendOrdered(fields, plan.AllocatedCombatantIds, includeCount: true);
         AppendOrdered(fields, plan.AllocatedEffectIds, includeCount: true);
         AppendOrdered(fields, plan.AllocatedTransitionIds, includeCount: true);

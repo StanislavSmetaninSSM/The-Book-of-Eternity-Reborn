@@ -4185,7 +4185,9 @@ internal static partial class EffectAcceptedTurnPlanner
             effectInputFingerprint,
             identityFactory,
             operations.Applications,
-            operations.Terminations);
+            operations.Terminations,
+            mortalTreatmentPrepared: WoundAcceptedTurnPlanner.TryReadTreatmentContinuation(prepared.TreatmentContinuationAuthority,
+                out var treatment) && treatment.OutcomePreparation.PreparesTerminalHeal ? prepared : null);
     }
 
     private static EffectAcceptedTurnPlanningResult BuildCore(
@@ -4196,7 +4198,8 @@ internal static partial class EffectAcceptedTurnPlanner
         IReadOnlyList<WoundTerminalRequest> woundTerminations,
         WoundPreparedAcceptedTurnPlan? recoveryPrepared = null,
         WoundPreparedAcceptedTurnPlan? spiritualHealingPrepared = null,
-        WoundPreparedAcceptedTurnPlan? mortalDiagnosisPrepared = null)
+        WoundPreparedAcceptedTurnPlan? mortalDiagnosisPrepared = null,
+        WoundPreparedAcceptedTurnPlan? mortalTreatmentPrepared = null)
     {
         ArgumentNullException.ThrowIfNull(input);
         ArgumentNullException.ThrowIfNull(identityFactory);
@@ -4314,6 +4317,8 @@ internal static partial class EffectAcceptedTurnPlanner
         if (issues.Count > 0)
             return Failed(issues);
 
+        var treatmentTerminations = mortalTreatmentPrepared is null ? null : CaptureTreatmentTerminations(woundTerminations, identityRoot);
+        var treatmentApplications = mortalTreatmentPrepared is null ? null : new List<EffectAcceptedApplicationResult>();
         var boundLifecyclePass = ApplyDueLifecycleEvents(
             input.EventInput,
             input.SourceAuthority,
@@ -4429,6 +4434,7 @@ internal static partial class EffectAcceptedTurnPlanner
             else if (execution != null)
             {
                 ValidateWoundApplicationExecution(request, execution, issues);
+                treatmentApplications?.Add(CaptureTreatmentApplication(request, execution));
                 woundApplicationRootEffectBindings.Add(
                     new WoundApplicationRootEffectBinding(
                         request.Root.ApplicationRef,
@@ -4440,6 +4446,14 @@ internal static partial class EffectAcceptedTurnPlanner
         if (issues.Count > 0)
             return Failed(issues);
 
+        MortalTreatmentExecutionProof? treatmentProof = null;
+        if (mortalTreatmentPrepared is not null)
+        {
+            treatmentProof = ExecuteMortalTreatmentTerminal(input, mortalTreatmentPrepared, workspace, identityRoot,
+                identityFactory, turn, effectIds, transitionIds, activeEffects, processedEventRefs, usedSources, usedTargets,
+                woundApplicationRootEffectBindings, treatmentApplications!, treatmentTerminations!, issues, out finalSourceAuthority);
+            if (treatmentProof is null || issues.Count != 0) return Failed(issues);
+        }
         var reactionIdentityState = ParseIdentity(identityRoot.ReadSnapshot());
         issues.AddRange(reactionIdentityState.Issues);
         var reactionCarrierCatalog = EffectCarrierCatalog.Build(workspace.ToInput());
@@ -4528,10 +4542,12 @@ internal static partial class EffectAcceptedTurnPlanner
                     input, fingerprint, carrierAuthorityFingerprint, targetAuthority, boundLifecyclePass),
                 lifecycleLedgerIssuer: LifecycleLedgerIssuer,
                 spiritualHealingExecutionAuthority: healingProof,
-                mortalDiagnosisExecutionAuthority: diagnosisProof);
+                mortalDiagnosisExecutionAuthority: diagnosisProof,
+                mortalTreatmentExecutionAuthority: treatmentProof);
         recoveryProof?.Seal(completedPlan);
         healingProof?.Seal(completedPlan);
         diagnosisProof?.Seal(completedPlan);
+        treatmentProof?.Seal(completedPlan);
         return new EffectAcceptedTurnPlanningResult(
             completedPlan,
             Array.Empty<ValidationIssue>());

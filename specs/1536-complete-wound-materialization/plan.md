@@ -1,3 +1,40 @@
+# T121 actual terminal effect execution — WIP UNCOMPILED/UNRUN
+
+Continues 69d2f19b55265029ba082295f38abde7ac7f5be8. The existing effect workspace
+now captures actual validated prefix/legacy application results and prefix terminal
+writes, reduces the primary treatment, and executes its separate heal boundary
+through ExecuteWoundBoundaryEffects(terminalHeal:true). This uses the same sole
+identity allocator/workspace and immutable treatment continuation, not a recovery
+request, owner or tick. Treatment-specific derived boundary coordinates remain
+separate from the original prefix and private legacy event inventory.
+
+The unpublished healed snapshot preserves the exact executed severity-I graph,
+last attempt and declared legacy provenance, clears the active course, and records
+the exact request-derived child heal transition. The existing reducer validates
+both primary/follow-up facts and ordinary WoundHealingEvidence. Mechanical draft
+kind maps to the reducer's existing independent_mechanical declaration kind.
+Only that actual healed wound's active source group is removed; independent legacy
+sources stay separate. Existing ordinary reaction/lifecycle/resource execution
+continues on the actual post-heal workspace, so removed wound roots do not tick as
+active current effects.
+
+A private immutable treatment execution proof retains both actual ordered stages,
+creation/termination facts and reducer intents. It is bound to the same private
+continuation, complete prepared fingerprint and full effect payload; detached copies
+retain only that original comparison proof. Creation evidence is captured after
+existing full execution validation, before a later heal can retire a just-created
+root. There is no inference that such retired roots remain active. The actual effect
+batch reader authenticates and flattens this proof, preserving the existing strict
+frame/input/result checks. Explicit structured failures cover incomplete terminal
+preparation/reduction. No accepted output or usable permission comes from DATA alone.
+
+This ownership block is not yet a final terminal publication: linked History/identity/
+carrier finalization, accepted legacy-group commit, fresh post-cleanup current proof,
+output/browser and typed/UI/rollback controls remain next. No GREEN, compiler,
+discovery, runtime or pin refresh has occurred. Existing six causal outcomes and all
+old raw/saves/recovery/HOLDs remain unchanged. Diff whitespace checks pass. Root owns
+WIP persistence before the same writer continues the coherent finalizer block.
+
 # T121 private legacy source/application handoff — WIP UNCOMPILED/UNRUN
 
 Continues ce54b265879deeed13917c576142acab361d81cb. Actual treatment composition

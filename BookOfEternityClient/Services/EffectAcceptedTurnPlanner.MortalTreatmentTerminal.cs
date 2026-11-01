@@ -1,0 +1,198 @@
+using System.Globalization;
+using System.Text.Json;
+using System.Text.Json.Nodes;
+
+namespace BookOfEternityClient.Services;
+
+/// <summary>
+/// One actually executed treatment/heal boundary. No recovery tick or admission
+/// is fabricated; every image and effect result belongs to the existing workspace.
+/// </summary>
+internal sealed record MortalTreatmentExecutedBoundary(WoundMaterializationEnvelope Before,
+    WoundMaterializationEnvelope After, string OperationKey, string EventRef,
+    IReadOnlyList<EffectAcceptedApplicationResult> Applications,
+    IReadOnlyList<EffectAcceptedTerminationResult> Terminations, IReadOnlyList<WoundTransitionIntent> Intents)
+{
+    internal MortalTreatmentExecutedBoundary DetachedCopy() => new(WoundAcceptedTurnData.CloneWound(Before)!,
+        WoundAcceptedTurnData.CloneWound(After)!, OperationKey, EventRef,
+        Applications.Select(WoundAcceptedTurnData.CloneApplicationResult).ToArray(),
+        Terminations.Select(WoundAcceptedTurnData.CloneTerminationResult).ToArray(),
+        Intents.Select(WoundAcceptedTurnData.CloneTransitionIntent).ToArray());
+}
+
+internal static partial class EffectAcceptedTurnPlanner
+{
+    private sealed class MortalTreatmentExecutionProof
+    {
+        private readonly object _continuation;
+        private readonly string _preparedFingerprint;
+        private readonly MortalTreatmentExecutedBoundary[] _stages;
+        private string? _payloadFingerprint;
+
+        internal MortalTreatmentExecutionProof(WoundPreparedAcceptedTurnPlan prepared,
+            IReadOnlyList<MortalTreatmentExecutedBoundary> stages)
+        {
+            _continuation = prepared.TreatmentContinuationAuthority!;
+            _preparedFingerprint = prepared.WoundPreparationFingerprint;
+            _stages = stages.Select(row => row.DetachedCopy()).ToArray();
+            Fingerprint = ComputeFingerprint();
+        }
+        internal string Fingerprint { get; }
+        internal void Seal(EffectAcceptedTurnPlan plan)
+        {
+            if (_payloadFingerprint is not null || !ReferenceEquals(plan.MortalTreatmentExecutionAuthority, this))
+                throw new InvalidOperationException("Treatment execution can be sealed only by its actual owner.");
+            _payloadFingerprint = WoundAcceptedTurnFingerprints.ComputeAcceptedEffectPlanPayload(plan);
+        }
+        internal bool Agrees(WoundPreparedAcceptedTurnPlan prepared, EffectAcceptedTurnPlan plan) =>
+            ReferenceEquals(_continuation, prepared.TreatmentContinuationAuthority) &&
+            ReferenceEquals(plan.MortalTreatmentExecutionAuthority, this) &&
+            prepared.WoundPreparationFingerprint == _preparedFingerprint &&
+            WoundAcceptedTurnPlanner.TreatmentContinuationPreparedAgrees(prepared) &&
+            _stages.Length == 2 && Fingerprint == ComputeFingerprint() && _payloadFingerprint is not null &&
+            _payloadFingerprint == WoundAcceptedTurnFingerprints.ComputeAcceptedEffectPlanPayload(plan);
+        internal IReadOnlyList<MortalTreatmentExecutedBoundary> Read() => _stages.Select(row => row.DetachedCopy()).ToArray();
+        private string ComputeFingerprint()
+        {
+            var fields = new List<string?> { "book_of_eternity.mortal_wound.treatment_execution", "1",
+                WoundAcceptedTurnPlanner.GetTreatmentContinuationFingerprint(_continuation), _preparedFingerprint };
+            foreach (var stage in _stages)
+            {
+                fields.Add(WoundMaterializationContract.SerializeCanonical(stage.Before));
+                fields.Add(WoundMaterializationContract.SerializeCanonical(stage.After));
+                fields.Add(stage.OperationKey); fields.Add(stage.EventRef);
+                foreach (var row in stage.Applications)
+                {
+                    fields.Add(JsonSerializer.Serialize(row));
+                    fields.Add(row.Materialization.ComponentCount.ToString(CultureInfo.InvariantCulture));
+                    fields.Add(row.Materialization.MaterializationFingerprint);
+                    fields.Add(JsonSerializer.Serialize(row.Materialization.SlotBindings));
+                }
+                fields.Add(JsonSerializer.Serialize(stage.Terminations));
+                foreach (var intent in stage.Intents) fields.Add(JsonSerializer.Serialize(intent, intent.GetType()));
+            }
+            return WoundAcceptedTurnFingerprintWriter.Compute(fields);
+        }
+    }
+
+    /// <summary>
+    /// Reads detached facts only when the exact private treatment, prepared stage
+    /// and complete effect payload still match their original execution seal.
+    /// </summary>
+    internal static bool TryReadMortalTreatmentExecution(WoundPreparedAcceptedTurnPlan prepared,
+        EffectAcceptedTurnPlan plan, out IReadOnlyList<MortalTreatmentExecutedBoundary> stages)
+    {
+        stages = Array.Empty<MortalTreatmentExecutedBoundary>();
+        if (plan.MortalTreatmentExecutionAuthority is not MortalTreatmentExecutionProof proof || !proof.Agrees(prepared, plan)) return false;
+        stages = proof.Read(); return true;
+    }
+
+    /// <summary>
+    /// Supplies immutable execution DATA to the complete effect payload fingerprint.
+    /// </summary>
+    internal static string? GetMortalTreatmentExecutionFingerprint(EffectAcceptedTurnPlan plan) =>
+        (plan.MortalTreatmentExecutionAuthority as MortalTreatmentExecutionProof)?.Fingerprint;
+
+    private static EffectAcceptedApplicationResult CaptureTreatmentApplication(WoundApplicationRequest request,
+        ApplicationExecutionFacts actual) => new(request.Root.ApplicationRef, actual.Disposition, actual.EffectId,
+        actual.TransitionId, actual.CreatedEventRef!, actual.CausalEventRef, actual.Source, actual.Target,
+        actual.CarrierCoordinate, new WoundEffectMaterializationAgreement(request.Root.SlotBindings,
+            request.Root.ExpectedComponentCount, request.Root.ExpectedMaterializationFingerprint));
+
+    private static IReadOnlyList<EffectAcceptedTerminationResult> CaptureTreatmentTerminations(
+        IReadOnlyList<WoundTerminalRequest> requests, EffectIdentityHistoryOwner identityRoot)
+    {
+        var parsed = ParseIdentity(identityRoot.ReadSnapshot());
+        if (parsed.State is null || parsed.Issues.Count != 0) throw new InvalidDataException("Treatment prefix identity is invalid.");
+        return requests.Select(request =>
+        {
+            var op = request.Operation;
+            if (!parsed.State.TryGetEntry(op.EffectId, out var entry)) throw new InvalidDataException("Treatment prefix terminal identity disappeared.");
+            var rows = entry.Transitions.Where(row => row.EventRef == op.OperationRef).ToArray();
+            if (entry.State != "expired" || rows.Length != 1 || rows[0].Kind != "expire")
+                throw new InvalidDataException("Treatment prefix terminal result differs from its actual operation.");
+            return new EffectAcceptedTerminationResult(op.OperationRef, "expired", op.EffectId, rows[0].TransitionId,
+                rows[0].EventRef, op.CausalEventRef, op.ExpectedSourceKey, op.ExpectedTargetKey, op.ExpectedCarrierCoordinate);
+        }).ToArray();
+    }
+
+    private static MortalTreatmentExecutionProof? ExecuteMortalTreatmentTerminal(EffectAcceptedTurnInput input,
+        WoundPreparedAcceptedTurnPlan prepared, CarrierWorkspace workspace, EffectIdentityHistoryOwner identityRoot,
+        EffectIdentityFactory identityFactory, int turn, List<string> effectIds, List<string> transitionIds,
+        List<JsonObject> activeEffects, HashSet<string> processedEvents, List<EffectSourceAuthorityEntry> usedSources,
+        List<EffectTargetKey> usedTargets, List<WoundApplicationRootEffectBinding> rootBindings,
+        IReadOnlyList<EffectAcceptedApplicationResult> prefixApplications,
+        IReadOnlyList<EffectAcceptedTerminationResult> prefixTerminations, List<ValidationIssue> issues,
+        out EffectSourceAuthority finalSourceAuthority)
+    {
+        finalSourceAuthority = input.SourceAuthority;
+        if (!WoundAcceptedTurnPlanner.TryReadTreatmentContinuation(prepared.TreatmentContinuationAuthority, out var continuation) ||
+            !WoundAcceptedTurnPlanner.TreatmentContinuationPreparedAgrees(prepared) ||
+            continuation.OutcomePreparation.ReadTerminalHealIntent() is not { } heal || continuation.LegacyPreparation is null)
+            throw new InvalidDataException("Terminal treatment lost its exact private continuation.");
+        var prefixBatch = MortalWoundTreatmentOutcomePublicationPlanner.RequiresEffectBatch(continuation.OutcomePreparation)
+            ? prepared.EffectOperationBatches[0] : null;
+        var refs = (prefixBatch?.RootApplications ?? Array.Empty<WoundRootEffectApplication>())
+            .Select(row => row.ApplicationRef).ToHashSet(StringComparer.Ordinal);
+        var publication = MortalWoundTreatmentOutcomePublicationPlanner.Finalize(continuation.OutcomePreparation,
+            continuation.Resolution, prefixBatch, prefixApplications.Where(row => refs.Contains(row.ApplicationRef))
+                .ToDictionary(row => row.ApplicationRef, StringComparer.Ordinal));
+        if (!publication.IsValid || publication.After is null || publication.DeclaredOutcome is null)
+        {
+            issues.AddRange(publication.Issues);
+            if (issues.Count == 0) AddWoundBatchIssue(issues, "treatment.terminal", "mortal_treatment_terminal_preparation_invalid",
+                "one exact finalized active treatment image", "incomplete treatment publication");
+            return null;
+        }
+        var coordinates = continuation.RequestAuthority.Coordinates;
+        var treat = WoundTransitionReducer.Reduce(new WoundTransitionRequest("treat", continuation.TransitionId,
+            coordinates.OperationKey, coordinates.EventRef, turn, continuation.Before, publication.After,
+            new WoundTreatmentEvidence(continuation.Resolution.ResolutionAuthorityFingerprint,
+                WoundIdentityState.ComputeSemanticFingerprint(continuation.Before), WoundIdentityState.ComputeSemanticFingerprint(publication.After),
+                coordinates.RouteId, coordinates.AttemptId, publication.DeclaredOutcome)));
+        issues.AddRange(treat.Issues);
+        if (!treat.IsValid || treat.ProposedAfter is not { } beforeHeal ||
+            treat.Intents.OfType<WoundFollowUpHealIntent>().Count() != 1 || beforeHeal.Severity.Rank != 1)
+        {
+            if (issues.Count == 0) AddWoundBatchIssue(issues, "treatment.terminal", "mortal_treatment_terminal_reduction_invalid",
+                "one active severity-I primary transition with exactly one follow-up heal", "missing or changed treatment reduction");
+            return null;
+        }
+        var graph = MortalWoundTreatmentWorkingGraphProjection.FromCanonical(beforeHeal) ??
+            throw new InvalidDataException("Terminal treatment graph cannot be projected.");
+        var facts = ExecuteWoundBoundaryEffects(input, beforeHeal, graph.Graph, graph.Scalars.SlotBudget,
+            new(heal.HealChildCoordinates.OperationKey, 1, coordinates.EventRef, heal.HealChildCoordinates.OperationKey,
+                heal.IntentFingerprint, "heal", "Mortal wound treatment healing", prepared.Binding.AcceptedEvents,
+                IsMortalRecovery: false, IsMortalTreatment: true), changedSeverity: false, terminalHeal: true,
+            workspace, identityRoot, identityFactory, turn, effectIds, transitionIds, activeEffects, processedEvents,
+            usedSources, usedTargets, rootBindings, issues);
+        if (facts is null || issues.Count != 0) return null;
+        var declarations = continuation.LegacyPreparation.Declarations;
+        var after = beforeHeal with
+        {
+            Lifecycle = "healed", Care = beforeHeal.Care with { State = "healed", ActiveCourseId = null },
+            Relations = beforeHeal.Relations with
+            {
+                LegacyRefs = beforeHeal.Relations.LegacyRefs.Concat(declarations.Where(row => row.Kind == "cosmetic").Select(row => row.LegacyId)).ToArray(),
+                IndependentEffectRefs = beforeHeal.Relations.IndependentEffectRefs.Concat(declarations.Where(row => row.Kind == "independent_mechanical").Select(row => row.LegacyId)).ToArray()
+            },
+            LastTransition = new(heal.HealChildCoordinates.TransitionId, checked(beforeHeal.LastTransition.Ordinal + 1), turn, "heal")
+        };
+        var healing = WoundTransitionReducer.Reduce(new WoundTransitionRequest("heal", after.LastTransition.TransitionId,
+            heal.HealChildCoordinates.OperationKey, heal.HealChildCoordinates.EventRef, turn, beforeHeal, after,
+            new WoundHealingEvidence(heal.IntentFingerprint, WoundIdentityState.ComputeSemanticFingerprint(beforeHeal),
+                WoundIdentityState.ComputeSemanticFingerprint(after), heal.PreparationFingerprint, null, declarations)));
+        issues.AddRange(healing.Issues);
+        if (!healing.IsValid || healing.ProposedAfter is null) return null;
+        finalSourceAuthority = input.SourceAuthority.WithoutHealedWoundSource(beforeHeal.Owner.Realm, beforeHeal.WoundId);
+        issues.AddRange(finalSourceAuthority.Issues);
+        if (issues.Count != 0) return null;
+        return new(prepared, new[]
+        {
+            new MortalTreatmentExecutedBoundary(continuation.Before, beforeHeal, coordinates.OperationKey, coordinates.EventRef,
+                prefixApplications, prefixTerminations, treat.Intents),
+            new MortalTreatmentExecutedBoundary(beforeHeal, healing.ProposedAfter, heal.HealChildCoordinates.OperationKey,
+                heal.HealChildCoordinates.EventRef, facts.Applications, facts.Terminations, healing.Intents)
+        });
+    }
+}
