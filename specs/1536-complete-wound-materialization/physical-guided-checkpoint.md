@@ -1,3 +1,27 @@
+# C13 wait-channel correction — SOURCE pending; UNCOMPILED / UNRUN
+
+Independent Astra/high OUTCOME accepts the exact two-row causal RED above, not
+course/gameplay PASS. The unchanged RED Integration epoch is preserved externally
+as four actual artifacts in a full member/hash/length/EOF-CRC verified archive,
+10982232 bytes / SHA-256
+46aa52d085fbd67a63f61d726e8ae8326d3919e559c5a7f02b201f091177c180.
+Current binaries, original RED TRX and interrupted course evidence remain.
+
+Only the existing controlled GM writer's wait branch now writes command-only
+{timeChange: elapsed} to WorldTimePath during the live response, declares that
+path in ready.filesModified and keeps interface_updates closed. No absolute
+currentTimeInMinutes/setWorldTime, manual after-acceptance clock edit, recovery
+change, new rule, extra report or production guard change is introduced. Nonwait
+writer behavior, all journey assertions and the two-row regression are unchanged.
+This is a fixture-channel correction, not proof of whole accepted clock/course
+completion. Full-course admission still needs the actual ordinary-time/scheduler/
+next-menu contract, fresh build/GREEN and independent PREP.
+
+Next: SOURCE review of this exact wait-only delta, fresh Integration-only build,
+actual PE/PDB/source/resource bindings and exact two-row GREEN. No repeat of
+accepted procedure/guaranteed console/browser cases. No new expensive setup or
+cache applies; all broader UNKNOWN/UNRUN/HOLD states remain open.
+
 # C13 wait writer — exact causal two-row RED completed; OUTCOME pending
 
 Runtime 5557d983bf968205e0580a8bfc5bbc5f7c8df219 / compiled Integration

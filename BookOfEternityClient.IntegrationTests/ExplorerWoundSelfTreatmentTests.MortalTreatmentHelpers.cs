@@ -138,8 +138,14 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
             ? "Я позволяю полевому медику выполнить согласованный этап лечения. Он работает осторожно, использует необходимые материалы и заканчивает, объяснив пределы сделанного."
             : "Я спокойно отдыхаю в клинике и жду следующего согласованного этапа лечения.", timestamp });
         var updates = new JsonObject { ["dialogueOptions"] = new JsonArray(), ["timestamp"] = timestamp };
-        if (waitMinutes is { } elapsed) updates["timeChange"] = elapsed;
         await files.WriteFileAtomicAsync(lease, "output/interface_updates.json", updates.ToJsonString());
+        if (waitMinutes is { } elapsed)
+        {
+            // Ordinary GM command in this live response, never a post-accepted
+            // clock patch or an absolute value that would override the delta.
+            await Write(EffectAcceptedTurnInputComposer.WorldTimePath, new { timeChange = elapsed });
+            modified.Add(EffectAcceptedTurnInputComposer.WorldTimePath);
+        }
         var reasoning = waitMinutes is null ? """
             ## NPC Scope
             - Mode: Scene-local
