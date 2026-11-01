@@ -293,20 +293,38 @@ public partial class ValidationService
         MortalSkillReferenceAuthority canonicalNames, string path, string arrayName, string section, string? actor)
     {
         var coverage = MortalSkillReferenceAuthority.Build(references.Select(reference => reference.SkillName));
-        if (coverage.Classify(skillName).Kind != MortalSkillReferenceMatchKind.Confusable)
+        if (coverage.Classify(skillName).Kind == MortalSkillReferenceMatchKind.Exact)
             return;
 
         var legacyCode = actor == null
             ? "player_active_skill_missing_mastery_initialization" : "npc_skill_missing_mastery_initialization";
         var legacyExpected = actor == null
             ? $"skillMasteryChanges contains {skillName}" : $"{arrayName} contains {actor} + {skillName}";
-        issues.RemoveAll(issue => issue.Code == legacyCode && issue.FilePath == (actor == null ? path : $"{path}.{arrayName}") &&
+        var legacyPath = actor == null ? path : $"{path}.{arrayName}";
+        bool IsThisMissingInitialization(ValidationIssue issue) => issue.Code == legacyCode && issue.FilePath == legacyPath &&
             issue.Expected == legacyExpected && issue.Section == section &&
-            string.Equals(issue.Actor, actor, StringComparison.OrdinalIgnoreCase));
+            string.Equals(issue.Actor, actor, StringComparison.OrdinalIgnoreCase);
 
         var key = MortalLocationIdentityState.BuildConfusableKey(skillName);
-        foreach (var reference in references.Where(reference =>
-                     MortalLocationIdentityState.BuildConfusableKey(reference.SkillName) == key))
+        var candidates = references.Where(reference =>
+            MortalLocationIdentityState.BuildConfusableKey(reference.SkillName) == key &&
+            canonicalNames.Classify(reference.SkillName).Kind == MortalSkillReferenceMatchKind.Confusable).ToArray();
+        if (candidates.Length == 0)
+        {
+            // Exact references to another canonical skill cannot initialize this one.
+            // Legacy case-insensitive sets can hide this missing initialization.
+            if (!issues.Any(IsThisMissingInitialization))
+            {
+                issues.Add(new ValidationIssue(legacyPath, IssueSeverity.Error,
+                    $"Новый skill '{skillName}' должен иметь собственную mastery initialization в {arrayName}",
+                    code: legacyCode, actor: actor, section: section,
+                    expected: legacyExpected, actual: "matching mastery entry is missing",
+                    repairHint: $"Добавь отдельную initialization запись для '{skillName}' в {arrayName}. Не меняй существующие точные ссылки других навыков."));
+            }
+            return;
+        }
+        issues.RemoveAll(issue => IsThisMissingInitialization(issue));
+        foreach (var reference in candidates)
         {
             var match = canonicalNames.Classify(reference.SkillName);
             var target = match.Kind == MortalSkillReferenceMatchKind.Confusable && !match.IsAmbiguous

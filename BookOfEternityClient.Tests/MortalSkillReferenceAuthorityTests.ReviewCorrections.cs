@@ -156,4 +156,64 @@ public sealed partial class MortalSkillReferenceAuthorityTests
         Assert.Contains("newCurrentMasteryProgress", example, StringComparison.Ordinal);
         Assert.Contains("Complete-BoeValidationRepair", example, StringComparison.Ordinal);
     }
+    /// <summary>
+    /// Keeps an exact sibling reference valid while requiring the uncovered player's initialization.
+    /// </summary>
+    /// <param name="uncoveredName">
+    /// The distinct canonical name sharing the exact sibling's confusable key.
+    /// </param>
+    [Theory]
+    [InlineData("FIREBALL")]
+    [InlineData("Firеball")]
+    public async Task SkillContractConsistency_ExactPlayerSibling_KeepsMissingInitialization(string uncoveredName)
+    {
+        await WriteActiveSkillsAsync("Fireball", uncoveredName);
+        await WritePlayerMasteryAsync("Fireball");
+        var issues = await _validator.ValidateGameStateAsync(GameStateValidationPhase.SkillContractConsistency);
+        Assert.DoesNotContain(issues, i => i.Code == "player_active_skill_mastery_initialization_confusable");
+        var missing = Assert.Single(issues, i => i.Code == "player_active_skill_missing_mastery_initialization");
+        Assert.Equal("skillMasteryChanges contains " + uncoveredName, missing.Expected);
+    }
+
+    /// <summary>
+    /// Never retargets exact NPC mastery to initialize a different confusable skill.
+    /// </summary>
+    /// <param name="uncoveredName">
+    /// The distinct canonical skill that still requires initialization.
+    /// </param>
+    /// <param name="passive">
+    /// Whether the actor's passive mastery section is selected.
+    /// </param>
+    [Theory]
+    [InlineData("FIREBALL", false)]
+    [InlineData("Firеball", false)]
+    [InlineData("FIREBALL", true)]
+    [InlineData("Firеball", true)]
+    public async Task SkillContractConsistency_ExactNpcSibling_KeepsMissingInitialization(string uncoveredName, bool passive)
+    {
+        var skills = passive ? "NPCPassiveSkillChanges" : "NPCActiveSkillChanges";
+        var mastery = passive ? "NPCPassiveSkillMasteryChanges" : "NPCSkillMasteryChanges";
+        await _fs.WriteFileAtomicAsync("game_state/npcs/npc_skills.json", JsonSerializer.Serialize(new Dictionary<string, object>
+        {
+            [skills] = new[] { new { NPCName = "Trainer A", skillChanges = new[] { new { skillName = "Fireball" }, new { skillName = uncoveredName } } } },
+            [mastery] = new[] { new { NPCName = "Trainer A", skillName = "Fireball" } }
+        }));
+        var issues = await _validator.ValidateGameStateAsync(GameStateValidationPhase.SkillContractConsistency);
+        Assert.DoesNotContain(issues, i => i.Code == "npc_skill_mastery_initialization_confusable");
+        var missing = Assert.Single(issues, i => i.Code == "npc_skill_missing_mastery_initialization");
+        Assert.Equal(mastery + " contains name:Trainer A + " + uncoveredName, missing.Expected);
+        Assert.Equal("name:Trainer A", missing.Actor);
+        Assert.Equal(passive ? "Skills.Passive" : "Skills.Active", missing.Section);
+    }
+    /// <summary>
+    /// Accepts complete exact initialization for both distinct canonical siblings.
+    /// </summary>
+    [Fact]
+    public async Task SkillContractConsistency_BothExactPlayerSiblings_AcceptsBothInitializations()
+    {
+        await WriteActiveSkillsAsync("Fireball", "FIREBALL");
+        await WritePlayerMasteryAsync("Fireball", "FIREBALL");
+        var issues = await _validator.ValidateGameStateAsync(GameStateValidationPhase.PlayerStateFiles | GameStateValidationPhase.SkillContractConsistency);
+        Assert.DoesNotContain(issues, i => i.Code is "skill_mastery_confusable_reference" or "player_active_skill_mastery_initialization_confusable" or "player_active_skill_missing_mastery_initialization");
+    }
 }
