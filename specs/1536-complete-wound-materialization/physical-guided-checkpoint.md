@@ -1,3 +1,40 @@
+# C10 native comparison — TIMEOUT / UNKNOWN; Compose completes in102.734s
+
+Runtime43b262af2950b64195ee2f60c445fc88b5783c33 / compiledIntegrationab740e306:
+current-legacy1 times out120.1064997/120s,wall129.5280599s. Summary124/wrapper1;
+no TRX, zero completed case/descriptor: UNKNOWN. Runner owner/process cleanup is
+complete, actual interrupted fixture53files remain. No next native/UI run admitted.
+
+The separately labelled observation retains all actually generated direct/intrinsic
+filesystem timing events, full writer and assertions; only C9's two new ambient
+contexts are absent. Its13959682B gzip partial remains unmodified; no report/footer
+or full EOFCRC exists. Complete readable prefix251623events/127159884decodedB
+ends in EOFError, without sequence/pair faults. Setup4086.254005ms,
+Admission3518.051871ms, InitialCompose102733.963940ms; TerminalAssertions begins
+at110528.1048ms and remains open at the readable prefix end. The nested common
+membership phase and normalization/publication are not seen in that prefix.
+
+Thus reduced observation did not finish the same protected case. Both C9 and C10
+results remain distinct UNKNOWN; this is no measured production speedup and does
+not attribute all cost by subtraction. Last C10 consumer counters show3075.787947ms
+serialization and1559.804049ms writes, concurrent with producer; inclusive and
+observer timings must not be summed/subtracted to invent unobserved work.
+
+All raw/strict timeout/prefix/retained-root proofs remain external P3GREENC10-native1;
+C9full diagnostic source, actual Integration4 archive and240328257B partial remain.
+Fresh closing27artifacts/10resources40copies/4daemons stable, no live managed owner,
+57ended zombies, free1016811520B above unchanged687865856B launch reserve.
+The closed generic log alone was losslessly replaced with recovery manifest;
+no unique capture/result/save/recovery/binary retired.
+
+Next is a bounded read-only assessment of repeated private bundle copying/final
+replay within InitialCompose, using the existing sealed-copy mechanism and cheap
+causal/source-count proofs before any production change. No new diagnostic stack,
+unsafe cache, dropped fresh guard, limit change or blind retry. T609/DFR/Mortal/
+Windows and other unresolved feature/qualification HOLDs remain parked separately.
+Independent C10 OUTCOME interpretation is pending; functional native acceptance
+and removal/joint/UI stay open. C8 console2 and guard5 PASS are not repeated.
+
 # C10 built and exact discovery complete — runtime UNRUN
 
 Independent Astra/high SOURCE accepts ab740e306eec8e2e211f4fa61f3018268568d242:
