@@ -24,7 +24,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
             ["providerKind"] = "npc", ["providerId"] = "field_medic_01", ["currentLocationId"] = "loc_field_clinic_001"
         }.ToJsonString(), "guidedInput.context");
         var context = Assert.IsType<MortalWoundTreatmentAuthority.Context>(contextResult.Context);
-        var control = new ProgressionControl { CurrentRealm = "Mortal World", CurrentWorldTimeInMinutes = source.WorldMinute };
+        var control = new ProgressionControl { CurrentRealm = "Mortal World", CurrentWorldTimeInMinutes = checked((int)source.WorldMinute) };
         var frame = new SpiritualSelfTreatmentStageContext("session_guided_data", "request_guided_data", 42, control);
         var selection = new SpiritualSelfTreatmentSelection(wound.WoundId, WoundIdentityState.ComputeSemanticFingerprint(wound))
         { MortalTreatment = new(wound.Owner, new("mortal_world", "npc", "field_medic_01", WoundCarrierCatalog.NpcPath),
@@ -37,7 +37,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
         Assert.True(MortalWoundGuidedTreatmentInputCodec.IsBound(input, frame));
         Assert.False(MortalWoundDiagnosisInputCodec.IsBound(input, frame));
         Assert.False(MortalWoundGuidedTreatmentInputCodec.IsBound(input, frame with { RequestId = "foreign_request" }));
-        var changedControl = new ProgressionControl { CurrentRealm = "Mortal World", CurrentWorldTimeInMinutes = checked(source.WorldMinute + 1) };
+        var changedControl = new ProgressionControl { CurrentRealm = "Mortal World", CurrentWorldTimeInMinutes = checked((int)(source.WorldMinute + 1)) };
         Assert.False(MortalWoundGuidedTreatmentInputCodec.IsBound(input, frame with { Progression = changedControl }));
         var extra = input.DeepClone().AsObject(); extra["extra"] = true;
         extra["inputFingerprint"] = MortalWoundGuidedTreatmentInputCodec.Fingerprint(extra);

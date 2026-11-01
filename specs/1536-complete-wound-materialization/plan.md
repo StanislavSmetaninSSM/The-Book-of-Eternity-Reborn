@@ -1,4 +1,15 @@
-# T121 physical SOURCE HOLD — six-row causal scaffold, UNCOMPILED/UNRUN
+# T121 physical SOURCE HOLD — causal scaffold build corrections, runtime UNRUN
+
+First managed pass on4d2907793: Main-c1 exit0/13 warnings in118.91s;
+Support exit0/23 in13.73s; Unit exit0/26 in57.99s; Integration exit1/103
+warnings and two CS0266 errors in100.62s. Main has one new nullable warning;
+Integration has two long-to-int fixture assignments and one analyzer false
+positive on the required public native-child entrypoint. The grouped correction
+adds an explicit nonnull guard in the already logically nonnull diagnosis branch,
+checked fixture coordinate conversions, and a method-scoped xUnit1013 annotation
+only for that public non-test host method. No test assertions, discovery ownership,
+host visibility/protocol or either known product defect is changed. All raw first
+attempts remain external; fresh owning build/provenance/discovery/PREP is pending.
 
 The first fresh Main compile on1d255299b failed with CS0051 before any test:
 the new witness factory exposed a private envelope type through an internal

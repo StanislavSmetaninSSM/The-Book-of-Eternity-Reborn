@@ -207,6 +207,7 @@ public partial class ValidationService
         {
             // Read-only canonical admission only. This primitive never enters
             // the generic wound reducer; its actual diagnosis callback owns it.
+            ArgumentNullException.ThrowIfNull(diagnosis);
             diagnosis.Owner.RequireOriginalDiagnosisRequest(diagnosis.Request);
             var input = StrictJsonAuthority.Deserialize<JsonObject>(commandJson.TrimStart('\uFEFF'),
                 new JsonSerializerOptions(), "current diagnosis input") ?? throw new InvalidDataException("Missing diagnosis input.");

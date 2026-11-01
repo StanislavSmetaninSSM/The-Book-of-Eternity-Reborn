@@ -78,6 +78,7 @@ public sealed partial class GameEngineTurnLifecycleTests
     /// Existing native-host public entrypoint. The child starts with fresh static
     /// registries and acquires the actual MainAdmission/current lease itself.
     /// </summary>
+#pragma warning disable xUnit1013 // Required public child-host entrypoint, not a discovered test; preserve the existing host protocol.
     public static async Task WriteMortalGuidedTreatmentColdProbeAsync(string root, string output, int scenario, string contextPath)
     {
         var context = JsonNode.Parse(await File.ReadAllTextAsync(contextPath))!.AsObject();
@@ -113,6 +114,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             request = serialized, failure = failure?.ToString() }));
         if (failure is not null) System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(failure).Throw();
     }
+#pragma warning restore xUnit1013
 
     private static Dictionary<string, byte[]> CaptureGuidedColdCanonical(FileSystemManager files) =>
         Directory.EnumerateFiles(files.GameSessionPath, "*", new EnumerationOptions
