@@ -163,8 +163,9 @@ this bounded route, not parent T121/FR071/US5/#1536 or the eight proof adapters.
   Six causal rows total are not feature qualification; see current plan for actual
   source/binary/raw bindings and retained noncausal C1 fixture failures. Both
   product corrections are authored through real joint terminal execution and linked
-  finalization; required typed/UI/fault/legacy proof, GM/pins, coherent review and
-  GREEN remain pending. See current plan; no WIP checkpoint is feature acceptance.
+  finalization; typed current/legacy/joint controls and terminal UI fixtures are
+  authored but uncompiled. Remaining lineage/live-payload controls, GM/pins,
+  coherent review and GREEN remain pending. See current plan; no WIP checkpoint is feature acceptance.
 
 - [ ] T121-PHYSICAL-GUIDED [US2/US5] Connect existing procedure, course milestone
   and guaranteed physical treatment to the same private target/provider/known-route

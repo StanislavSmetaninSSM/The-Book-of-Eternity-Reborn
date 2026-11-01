@@ -153,10 +153,13 @@ public sealed partial class JointBundleComponentTests
         /// <summary>
         /// Seeds small typed data and initializes the normal schedule, issuer services and current generation.
         /// </summary>
+        /// <param name="terminalTreatment">
+        /// Selects terminal initial DATA before normal bootstrap and original production; default preparation is unchanged.
+        /// </param>
         /// <returns>
         /// A task completing when this fixture owns its participating canonical lease.
         /// </returns>
-        internal async Task InitializeAsync()
+        internal async Task InitializeAsync(bool terminalTreatment = false)
         {
             using var total = Files.MeasureOperation("JointBundleFixture.Initialize");
             try
@@ -164,7 +167,7 @@ public sealed partial class JointBundleComponentTests
                 using (Files.MeasureOperation("JointBundleFixture.SeedCanonicalData"))
                 {
                     Files.EnsureDirectoryStructure();
-                    MortalWoundTreatmentResolverTests.SeedMinimalJointComponentData(Files);
+                    MortalWoundTreatmentResolverTests.SeedMinimalJointComponentData(Files, terminalTreatment);
                 }
                 using (Files.MeasureOperation("JointBundleFixture.BuildProgressionControl"))
                     _progression = await new ProgressionScheduleService(Files, NullLogger<ProgressionScheduleService>.Instance)

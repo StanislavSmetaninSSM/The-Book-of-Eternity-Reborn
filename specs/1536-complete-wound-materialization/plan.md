@@ -1,3 +1,54 @@
+# T121 typed terminal settlement and real UI fixtures — WIP UNCOMPILED/UNRUN
+
+Continues 355ade04dd5cdb7f7d62c9ae0f00c95fb7f85abb. Two additional typed actual-
+publication Facts use the existing genuine native original/hold/common transaction,
+progression and closed current reader: (1) IV→I aggregate3 followed by separate heal,
+cosmetic plus two independent mechanical legacies with the same local application/
+definition spellings in distinct namespaces, real resource costs; (2) the canonical
+remove_then_heal program. Both preserve full immutable input/witness/time/item/
+resource/current agreement and delivery through the actual shared Finish/classifier
+predicate, no fabricated accepted receipt. Counts still require one physical source
+read per path in each successful current operation; cloned DATA refusals perform no
+physical reads/writes or new admission and preserve canonical bytes/claims.
+
+The reduction case asserts actual create/rematerialize→retire chronology, exact
+linked History and terminal deletion, ordered legacy batches and real effect-ID map.
+Resealed missing/reordered/merged/split/foreign batch/result maps refuse. Adding these
+controls exposed an authored handoff omission: the terminal finalizer checked the
+private effect payload but did not compare supplied application/termination maps
+against the sealed executed vector. It now joins the complete existing effect-plan
+seal to that vector; no stage/source/payload check is waived. Current cloned faults
+cover missing/reordered/foreign linked History, healed identity, well-formed retired
+source/target/owner mapping, retirement/order/parent drift, primary legacy material-
+ization and foreign independent source. These are authored controls, not outcomes.
+
+A third new Fact uses the existing genuine installed-wave joint fixture, actual
+QTE acquisition/preparation/reservations and same stage/final/output owners. Its
+initial terminal DATA is supplied before bootstrap/original; no guided wave producer
+or fake settlement is added. It requires CREATE→treat→heal, distinct acquisition and
+selected wounds, exact global/per-wound ordinals, independent legacy groups, output
+and unchanged physical images. Existing six accepted causal rows remain GREEN
+controls; terminal4 now checks the real sealed stages after its original decisive
+publication assertion. No accepted RED is rerun during authoring.
+
+Real UI preparation now keeps the canonical final heal in the existing three-
+milestone course with two ordinary accepted waits and separate confirmations. The
+existing procedure/guaranteed success program reaches I then heals; failed procedure
+bands remain unchanged. Deterministic guaranteed browser and rollback assert the
+linked terminal stage/removal. Course rollback still targets its first accepted
+milestone; no claim of terminal course rollback is made. Same complete base/bootstrap/
+GM response/capture/cleanup and protective180s bounds remain, pending root PREP.
+
+Current partial selection adds three independently owned120s native categories:
+9 source-estimated cases /5 methods /5 descriptors /5 categories including the six
+causal controls. This is NOT the final whole-cut selection/discovery or a budget/
+speedup claim. Tests and production handoff delta are UNCOMPILED/UNRUN; JSON parses,
+unique new category IDs and diff whitespace check pass. Still required: lawful
+ordinary legacy descendant with different parameters plus forbidden/out-of-bounds/
+ambiguous/unexplained lineage and live-payload controls; GM/examples/manifest/source
+inventory and reviewed pins; final full finite selection and independent SOURCE.
+Root owns persistence/build/runtime. No raw/saves/recovery/HOLD/parent changes.
+
 # T121 real joint terminal stages — WIP UNCOMPILED/UNRUN
 
 Continues 701ee37faa53a361936d0c7856c58fb3f2488b01. The reachable installed-wave

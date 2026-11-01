@@ -764,7 +764,10 @@ internal static partial class WoundAcceptedTurnPlannerCore
 
         if (WoundAcceptedTurnPlanner.TryReadTerminalTreatment(prepared, out _))
         {
-            if (!EffectAcceptedTurnPlanner.TryReadMortalTreatmentExecution(prepared, accepted.EffectPlan, out _))
+            if (!EffectAcceptedTurnPlanner.TryReadMortalTreatmentExecution(prepared, accepted.EffectPlan, out var stages) ||
+                accepted.EffectAcceptedTurnPlanFingerprint != WoundAcceptedTurnFingerprints.ComputeEffectPlan(prepared,
+                    accepted.EffectInput, accepted.EffectPlan, stages.SelectMany(stage => stage.Applications).ToArray(),
+                    stages.SelectMany(stage => stage.Terminations).ToArray()))
                 return FailedFinal("mortal_treatment_execution_invalid", "Terminal treatment lost its complete owned execution.",
                     "one exact sealed treat/heal chain", "foreign or changed execution");
             recoveryContinuation = true;

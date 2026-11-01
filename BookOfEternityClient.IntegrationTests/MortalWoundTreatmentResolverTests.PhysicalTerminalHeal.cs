@@ -68,6 +68,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
         Assert.True(composed.IsValid,
             "TERMINAL_HEAL_CAUSAL: the actual publication rejected a legal, retained terminal heal after native mode/source/claim premises. " +
             DescribeIssues(composed.Issues));
+        AssertTerminalPublicationStages(composed.Plan!, removeThenHeal ? "remove" : "simple");
     }
 
     private static void PrepareTerminalPhysicalWound(JsonObject wound, string mode, bool removeThenHeal)

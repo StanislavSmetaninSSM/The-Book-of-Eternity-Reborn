@@ -741,6 +741,15 @@ public sealed partial class MortalWoundTreatmentResolverTests
             "guaranteed" => CreateScenario("guaranteed_current_capability_proof_stabilizes", mode),
             _ => throw new ArgumentOutOfRangeException(nameof(mode))
         };
+        // These real journeys now finish the canonical terminal program. The course
+        // retains all three independently confirmed milestones and ordinary waits.
+        var outcomes = scenario.Before["treatment"]!["routes"]![0]!["outcomes"]!.AsArray();
+        if (mode == "course")
+            outcomes[2]!["result"] = new JsonArray(new JsonObject { ["kind"] = "heal", ["legacies"] = new JsonArray() });
+        else
+            outcomes[0]!["result"] = new JsonArray(
+                new JsonObject { ["kind"] = "reduce_severity", ["steps"] = 1 },
+                new JsonObject { ["kind"] = "heal", ["legacies"] = new JsonArray() });
         const int initialMinute = 1260;
         scenario.AcceptedState["worldMinute"] = initialMinute;
         // Current recovery coordinates are initial fixture declarations. Keep the

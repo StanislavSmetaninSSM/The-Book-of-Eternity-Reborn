@@ -3,16 +3,37 @@
   "selections": [
     {
       "category": "mortal-physical-guided-callback-causal",
-      "reason": "Only new callback2 causal rows. Existing snapshot fallback must see an arbitrary mid-read valid skill change or reject a now-invalid effect source. Product frozen7fab; exact final symptom is expected, not yet observed.",
+      "reason": "Accepted causal RED is retained; this same exact method is now required as GREEN after the grouped product correction. No new runtime has occurred. Two arbitrary callback mutations must use the existing fresh fallback.",
       "contracts": [
-        "#1536 / US2 / US5 / T121-PHYSICAL-GUIDED / SOURCE-HOLD two confirmed defects; causal scaffold only"
+        "#1536 / US2 / US5 / T121-PHYSICAL-GUIDED / grouped callback+terminal correction; SOURCE and GREEN pending"
       ]
     },
     {
       "category": "mortal-physical-guided-terminal-heal-causal",
-      "reason": "Only new native terminal4 causal rows after full original/mode/owner/claim/simulator premises. Expect final actual-publication success assertion to fail until legal heal is implemented coherently. Existing initial menu RED is retained and not rerun.",
+      "reason": "Accepted causal RED is retained; this same exact method is now required as GREEN after the grouped product correction. No new runtime has occurred. All four genuine terminal mode programs must reach actual publication and sealed linked stage proof.",
       "contracts": [
-        "#1536 / US2 / US5 / T121-PHYSICAL-GUIDED / SOURCE-HOLD two confirmed defects; causal scaffold only"
+        "#1536 / US2 / US5 / T121-PHYSICAL-GUIDED / grouped callback+terminal correction; SOURCE and GREEN pending"
+      ]
+    },
+    {
+      "category": "mortal-physical-terminal-current-legacy",
+      "reason": "T121-PHYSICAL-GUIDED terminal correction. One actual IV-to-I aggregate3 followed by a separate heal, cosmetic plus two namespace-independent mechanical legacies, real resource spends, transaction/progression close, shared browser current predicate and sealed output. Exact batch/result topology and well-formed retired mappings/current primary drift refuse. This is no historical deleted-component replay proof. Authored UNCOMPILED/UNRUN.",
+      "contracts": [
+        "#1536 / FR064 / T121-PHYSICAL-GUIDED-TERMINAL-HEAL"
+      ]
+    },
+    {
+      "category": "mortal-physical-terminal-current-removal",
+      "reason": "T121-PHYSICAL-GUIDED terminal correction. One genuine remove_then_heal settlement through complete transaction/progression close and both shared completion consumers; linked History, healed identity/absence, foreign mappings and transient-work refusals stay exact. Authored UNCOMPILED/UNRUN.",
+      "contracts": [
+        "#1536 / FR064 / T121-PHYSICAL-GUIDED-TERMINAL-HEAL"
+      ]
+    },
+    {
+      "category": "mortal-physical-terminal-joint",
+      "reason": "T121-PHYSICAL-GUIDED terminal correction. One genuine installed ordinary repair wave and private joint owner: acquisition then treatment/heal, disjoint mechanical legacy groups, actual shared effect execution, complete final identity/carrier/History and privacy-filtered output; no guided wave producer. Authored UNCOMPILED/UNRUN.",
+      "contracts": [
+        "#1536 / FR064 / T121-PHYSICAL-GUIDED-TERMINAL-HEAL"
       ]
     }
   ]

@@ -147,6 +147,12 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                         var cutHistory = ReadMortalDiagnosisHistory(atCut![WoundHistoryState.HistoryPath]);
                         Assert.Equal(held!.RequestFingerprint, Assert.Single(cutHistory.Transitions, entry => entry.Kind == "treat").TreatmentResult!.Request.RequestFingerprint);
                         AssertMortalDiagnosisAgreement(atCut, cutHistory);
+                        if (mode == "guaranteed")
+                        {
+                            var terminal = Assert.Single(cutHistory.Transitions, entry => entry.Kind == "heal");
+                            Assert.True(terminal.Terminal);
+                            Assert.Equal(held.RequestFingerprint, cutHistory.Transitions.Single(entry => entry.Kind == "treat").SourceFingerprint);
+                        }
                         Assert.Equal(beforeTurn, runtime.GameLoop.TurnNumber); AssertMortalDiagnosisImages(originalImages, files);
                         break;
                     }
@@ -165,6 +171,15 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                     Assert.Equal(mode, result.Receipt.Mode);
                     await AssertPhysicalDeclaredItemsExactlyOnceAsync(files, beforeItems, result, current.Finalization);
                     AssertPhysicalCleanup(files);
+                    if (current.Preparation.PreparesTerminalHeal)
+                    {
+                        var healed = Assert.Single(history.Transitions, entry => entry.Kind == "heal" && entry.Turn == actualTurn.TurnNumber);
+                        Assert.Equal(row.AfterFingerprint, healed.BeforeFingerprint);
+                        Assert.Equal(row.Ordinal + 1, healed.Ordinal);
+                        Assert.True(healed.Terminal);
+                        Assert.DoesNotContain(JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(images[WoundCarrierCatalog.PlayerPath]!))!
+                            ["activeWounds"]!.AsArray().OfType<JsonObject>(), wound => wound["woundId"]!.GetValue<string>() == initial.WoundId);
+                    }
                     if (mode != "course") break;
                     milestone++;
                     Assert.Equal(milestone, result.Receipt.CourseMilestoneOrdinal);

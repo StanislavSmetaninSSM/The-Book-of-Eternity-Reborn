@@ -2,6 +2,78 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "mortal-physical-terminal-current-legacy",
+  "responsibility": "T121-PHYSICAL-GUIDED terminal correction. One actual IV-to-I aggregate3 followed by a separate heal, cosmetic plus two namespace-independent mechanical legacies, real resource spends, transaction/progression close, shared browser current predicate and sealed output. Exact batch/result topology and well-formed retired mappings/current primary drift refuse. This is no historical deleted-component replay proof. Authored UNCOMPILED/UNRUN.",
+  "excludes": "No private reflection, fabricated authority/receipt/recovery tick, Engine turn, broad replay/performance/HOLD or cost/speedup claim. Native120s is a protective bound.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.PhysicalTerminalSettlement.cs",
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.PhysicalGuidedCompletion.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.GuidedTerminalReductionAndIndependentLegaciesKeepClosedCurrentSettlement"
+      ]
+    }
+  ]
+},
+{
+  "id": "mortal-physical-terminal-current-removal",
+  "responsibility": "T121-PHYSICAL-GUIDED terminal correction. One genuine remove_then_heal settlement through complete transaction/progression close and both shared completion consumers; linked History, healed identity/absence, foreign mappings and transient-work refusals stay exact. Authored UNCOMPILED/UNRUN.",
+  "excludes": "No private reflection, fabricated authority/receipt/recovery tick, Engine turn, broad replay/performance/HOLD or cost/speedup claim. Native120s is a protective bound.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.PhysicalTerminalSettlement.cs",
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.PhysicalGuidedCompletion.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.GuidedTerminalComplicationRemovalKeepsClosedCurrentSettlement"
+      ]
+    }
+  ]
+},
+{
+  "id": "mortal-physical-terminal-joint",
+  "responsibility": "T121-PHYSICAL-GUIDED terminal correction. One genuine installed ordinary repair wave and private joint owner: acquisition then treatment/heal, disjoint mechanical legacy groups, actual shared effect execution, complete final identity/carrier/History and privacy-filtered output; no guided wave producer. Authored UNCOMPILED/UNRUN.",
+  "excludes": "No private reflection, fabricated authority/receipt/recovery tick, Engine turn, broad replay/performance/HOLD or cost/speedup claim. Native120s is a protective bound.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.TerminalTreatment.cs",
+    "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.JointBundleComponentTests.GenuineJointTerminalTreatmentKeepsAcquisitionAndLinkedHealStages"
+      ]
+    }
+  ]
+},
+{
   "id": "mortal-physical-guided-callback-causal",
   "responsibility": "T121-PHYSICAL-GUIDED SOURCE-HOLD callback-sensitive retained menu DATA. Two real reader rows mutate an already read active-skill or effect source from the existing arbitrary BeforeCanonicalReadOpenAsync callback. The unchanged EffectMechanicsSnapshot.LoadAsync independently proves fresh valid skill DATA or rejection of invalid effect DATA; exact whole-image changes are limited to the one callback target, with no canonical mutation. Final CALLBACK_CAUSAL assertion is the intended RED. UNCOMPILED/UNRUN.",
   "excludes": "No product change, passive-capture equivalence claim, new hook framework/cache, Engine, runtime observation or replay of accepted initial menu RED. Existing no-hook/fresh-next-open controls remain for later GREEN.",

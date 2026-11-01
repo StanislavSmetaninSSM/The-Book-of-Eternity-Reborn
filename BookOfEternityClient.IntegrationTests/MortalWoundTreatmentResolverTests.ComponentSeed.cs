@@ -14,10 +14,14 @@ public sealed partial class MortalWoundTreatmentResolverTests
     /// <param name="fileSystem">
     /// The fresh fixture filesystem, prepared before its participating lease and runtime factories are entered.
     /// </param>
-    internal static void SeedMinimalJointComponentData(FileSystemManager fileSystem)
+    /// <param name="terminalTreatment">
+    /// Selects the terminal fixture's initial typed program before bootstrap and either genuine original.
+    /// </param>
+    internal static void SeedMinimalJointComponentData(FileSystemManager fileSystem, bool terminalTreatment = false)
     {
         ArgumentNullException.ThrowIfNull(fileSystem);
         var scenario = CreateScenario("guaranteed_current_capability_proof_stabilizes", "guaranteed");
+        if (terminalTreatment) PrepareTerminalSettlementWound(scenario.Before, "reduce_legacy");
         scenario = scenario with
         {
             History = CreateCurrentWoundHistory(scenario.Before),

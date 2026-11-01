@@ -23,11 +23,20 @@ public sealed partial class MortalWoundTreatmentResolverTests
     public Task GuidedPhysicalFatePublicationKeepsItsActualReactionAndCurrentSettlement() =>
         AssertGuidedPhysicalCompletionAsync("procedure", fate: true);
 
-    private static async Task AssertGuidedPhysicalCompletionAsync(string mode, bool fate)
+    [Fact]
+    public Task GuidedTerminalReductionAndIndependentLegaciesKeepClosedCurrentSettlement() =>
+        AssertGuidedPhysicalCompletionAsync("guaranteed", fate: false, terminalVariant: "reduce_legacy");
+
+    [Fact]
+    public Task GuidedTerminalComplicationRemovalKeepsClosedCurrentSettlement() =>
+        AssertGuidedPhysicalCompletionAsync("guaranteed", fate: false, terminalVariant: "remove");
+
+    private static async Task AssertGuidedPhysicalCompletionAsync(string mode, bool fate, string? terminalVariant = null)
     {
-        var resourceCost = mode == "guaranteed";
+        var resourceCost = mode == "guaranteed" && terminalVariant != "remove";
         await using var fixture = await DiagnosisOwnershipFixture.CreateAsync(fate ? 1 : 20, signedInput: true,
             physicalMode: mode, seedFate: fate, resourceCost: resourceCost,
+            preparePhysicalWound: terminalVariant is null ? null : wound => PrepareTerminalSettlementWound(wound, terminalVariant),
             originalProducer: async (files, preparedRequest) =>
             {
                 var actualHint = Assert.IsType<JsonObject>(preparedRequest.MortalTreatment);
@@ -82,6 +91,8 @@ public sealed partial class MortalWoundTreatmentResolverTests
         var publication = Assert.IsType<MortalWoundTreatmentResourcePublicationAuthority>(composed.Plan!.TreatmentResourcePublicationAuthority);
         var semantic = publication.SemanticFingerprint;
         var identitySeed = publication.IdentitySeed;
+        var plan = composed.Plan;
+        if (terminalVariant is not null) AssertTerminalPublicationStages(plan, terminalVariant);
         await fixture.ReleaseLeaseAsync();
         var normalized = await AcceptedTurnCanonicalStateRefresh.NormalizeAndValidateWithPlanAsync(fs,
             new CanonicalStateNormalizer(fs, NullLogger<CanonicalStateNormalizer>.Instance), validator,
@@ -99,6 +110,13 @@ public sealed partial class MortalWoundTreatmentResolverTests
             Assert.Equal(MortalWoundTreatmentPublicationTransactionOutcome.Finalized, completed.Outcome);
         }
         finally { await ((IAsyncDisposable)transaction).DisposeAsync(); }
+        if (terminalVariant is not null)
+        {
+            var output = GameEngine.BindAcceptedWoundOutput(plan!, "Лекарь завершает назначенную процедуру.");
+            Assert.True(output.Success, DescribeIssues(output.Issues));
+            Assert.Contains(output.Notifications, notice => notice.Text.PlainText.StartsWith("Исцелена рана:", StringComparison.Ordinal));
+            Assert.All(output.Notifications, notice => Assert.Equal("/раны", notice.DetailCommand));
+        }
         await fixture.AcquireLeaseAsync();
         var unchanged = fixture.CaptureJson();
         var current = new Dictionary<string, byte[]?>(StringComparer.Ordinal);
@@ -120,7 +138,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
         Assert.Equal(serializedRequest, WoundResponseInputComposer.SerializeMortalWoundTreatmentValue(result.Request)!.ToJsonString());
         Assert.Equal(observed.Snapshot.ReadRequiredBytes(ProgressionScheduleService.SchedulePath), result.ReadGuidedOriginalScheduleBytes());
         if (resourceCost) Assert.Equal(2, exact.Finalization.Consumptions.Count);
-        if (mode == "procedure" && !fate) Assert.NotNull(exact.Preparation.SeverityReduction);
+        if (mode == "procedure" && !fate && terminalVariant is null) Assert.NotNull(exact.Preparation.SeverityReduction);
 
         // Detached delivery to the actual shared Finish/classifier predicate;
         // this is not a fabricated accepted browser receipt or a terminal claim.
@@ -168,9 +186,11 @@ public sealed partial class MortalWoundTreatmentResolverTests
             value => value["chaosSeaCycleEquivalentHours"] = 999));
         await Refuse("current item drift", map => Change(map, NpcCoreChangesContract.NpcCorePath,
             value => value["NPCsInScene"]!.AsArray()[0]!["inventory"]!.AsArray()[0]!["count"] = 999));
-        await Refuse("current wound drift", map => Change(map, WoundCarrierCatalog.PlayerPath,
-            value => value["activeWounds"]!.AsArray()[0]!["display"]!["description"] =
-                value["activeWounds"]!.AsArray()[0]!["display"]!["description"]!.GetValue<string>() + " foreign"));
+        if (terminalVariant is null)
+            await Refuse("current wound drift", map => Change(map, WoundCarrierCatalog.PlayerPath,
+                value => value["activeWounds"]!.AsArray()[0]!["display"]!["description"] =
+                    value["activeWounds"]!.AsArray()[0]!["display"]!["description"]!.GetValue<string>() + " foreign"));
+        else await AssertTerminalSettlementFaultsAsync(current, result, Refuse);
         foreach (var path in new[] { AcceptedMechanicsPlan.WoundCommandPath, WoundAcceptedTurnSnapshotContract.PendingResolutionPath,
                      ResourceMaterializationContract.CommandPath, EffectAcceptedTurnPlan.CommandPath, ProgressionScheduleService.ReportPath })
             await Refuse("reintroduced work " + path, map => map[path] = Encoding.UTF8.GetBytes("{}"));
