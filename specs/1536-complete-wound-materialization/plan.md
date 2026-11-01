@@ -1,3 +1,32 @@
+# T121 terminal legacy preparation leaf — source WIP, UNCOMPILED/UNRUN
+
+Continues eecd70ac1f0242a9c40efba22b3b900f1489d75c. The new bounded
+MortalWoundHealLegacyPlanner consumes the existing strict request/resolution and
+immutable terminal heal intent. It prepares exactly one independent non-public
+wound_legacy/legacyId WoundEffectOperationBatch per mechanical legacy, no batch for
+cosmetics, and no effect ID. Exact/confusable top-level references and each typed
+seed's per-legacy definition/application namespaces are checked; equal local draft
+spellings in different independent source namespaces stay lawful. Declared limits
+remain eight total legacies and one–five definitions/applications per mechanical
+legacy. The copied preparation owns no live admission or allocation authority.
+
+The leaf rejects missing/extra/reordered/merged/split supplied batches before any
+allocation. Its finalization gate compares the actual prepared/effect fingerprints,
+complete ordered legacy-only result inventory, source/target/carrier/materialization,
+derived create events, exact actual root bindings and allocated effect/transition
+IDs. Only the existing effect allocator's real created_new_identity results can
+produce detached final groups; effect IDs are never calculated from resource seeds.
+Declarations remain pending DATA until the real sealed effect stage is matched.
+
+This leaf is not yet wired to treatment preparation/effect execution/finalization;
+no terminal legacy has been published or qualified. Next is private continuation
+attachment, exact source registration and actual application through existing
+#1535 operations, then terminal boundary/linked History/identity/carrier/current/
+output, typed namespace/topology/allocation faults and UI/rollback. Existing six
+causal REDs remain the baseline; no rerun/GREEN/build/discovery occurred. This
+checkpoint deliberately refreshes no source pins or runtime evidence. Root owns
+all persistence and verification; raw/saves/recovery/HOLDs remain untouched.
+
 # T121 two-defect correction — first source WIP, UNCOMPILED/UNRUN
 
 Accepted causal evidence: callback2 final CALLBACK_CAUSAL failures6.9016s/60 and
