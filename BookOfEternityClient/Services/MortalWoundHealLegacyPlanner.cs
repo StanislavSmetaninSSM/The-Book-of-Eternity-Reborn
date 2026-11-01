@@ -241,7 +241,8 @@ internal static class MortalWoundHealLegacyPlanner
         var plan = accepted.EffectPlan;
         if (accepted.WoundPreparationFingerprint != prepared.WoundPreparationFingerprint ||
             accepted.EffectInputFingerprint != plan.InputFingerprint ||
-            accepted.EffectAcceptedTurnPlanFingerprint != WoundAcceptedTurnFingerprints.ComputeAcceptedEffectPlanPayload(plan))
+            accepted.EffectAcceptedTurnPlanFingerprint != WoundAcceptedTurnFingerprints.ComputeEffectPlan(prepared,
+                accepted.EffectInput, plan, accepted.ApplicationResults, accepted.TerminationResults))
             throw Invalid("Legacy finalization requires the actual matching sealed effect plan.");
         var expected = preparation.EffectOperationBatches;
         var actual = accepted.ApplicationResults.Where(row => row.SourceKey.Kind == "wound_legacy").ToArray();

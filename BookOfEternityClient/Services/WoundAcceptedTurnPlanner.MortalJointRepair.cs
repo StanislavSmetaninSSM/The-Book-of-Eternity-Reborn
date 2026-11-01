@@ -85,6 +85,10 @@ internal static partial class WoundAcceptedTurnPlanner
             _treatmentInput = WoundAcceptedTurnData.CloneInput(treatmentInput)!;
             Accepted = accepted; Request = request; Resolution = resolution; Finalization = finalization;
             _outcome = outcome.DetachedCopy(); _treatmentBatch = rematerialization.Batch;
+            LegacyPreparation = _outcome.PreparesTerminalHeal
+                ? MortalWoundHealLegacyPlanner.Prepare(request, resolution, _treatmentInput.Binding,
+                    WoundAcceptedTurnFingerprints.ComputeInput(_treatmentInput), accepted.CurrentGameMinute,
+                    _treatmentBatch is null ? Array.Empty<WoundEffectOperationBatch>() : new[] { _treatmentBatch }) : null;
             _semanticData = new(_outcome, resolution);
             Rematerialization = rematerialization.Authority;
             _stageReplayEligible = _treatmentBatch is null && Rematerialization is null &&
@@ -104,6 +108,7 @@ internal static partial class WoundAcceptedTurnPlanner
         internal MortalWoundTreatmentResolution Resolution { get; }
         internal MortalWoundTreatmentResourceFinalization Finalization { get; }
         internal MortalWoundTreatmentRematerializationAuthority? Rematerialization { get; }
+        internal MortalWoundHealLegacyPreparation? LegacyPreparation { get; }
         internal WoundAcceptedTurnInput AcquisitionInput => WoundAcceptedTurnData.CloneInput(_acquisitionInput)!;
         /// <summary>
         /// Gets a detached command view reconstructed from its exact immutable serialization.
@@ -259,7 +264,8 @@ internal static partial class WoundAcceptedTurnPlanner
             {
                 Accepted.AcceptedStateFingerprint,
                 Request.RequestFingerprint, Resolution.ResultFingerprint, Resolution.ResolutionAuthorityFingerprint,
-                Finalization.FinalizationFingerprint, _outcome.Fingerprint, Rematerialization?.AuthoritySeal
+                Finalization.FinalizationFingerprint, _outcome.Fingerprint, Rematerialization?.AuthoritySeal,
+                LegacyPreparation?.PreparationFingerprint
             });
             fingerprintData = JointPrivateFingerprintData.Capture(prefix, beforeImages);
             fingerprintData.AppendBeforeFields(fields);
@@ -281,7 +287,8 @@ internal static partial class WoundAcceptedTurnPlanner
             {
                 Accepted.AcceptedStateFingerprint,
                 Request.RequestFingerprint, Resolution.ResultFingerprint, Resolution.ResolutionAuthorityFingerprint,
-                Finalization.FinalizationFingerprint, _outcome.Fingerprint, Rematerialization?.AuthoritySeal
+                Finalization.FinalizationFingerprint, _outcome.Fingerprint, Rematerialization?.AuthoritySeal,
+                LegacyPreparation?.PreparationFingerprint
             });
             _fingerprintData.AppendBeforeFields(fields);
             return WoundAcceptedTurnFingerprintWriter.Compute(fields);
@@ -525,7 +532,8 @@ internal static partial class WoundAcceptedTurnPlanner
     internal sealed record JointRepairFinalView(
         MortalWoundTreatmentOutcomePreparation Outcome, MortalWoundTreatmentResolution Resolution,
         MortalWoundTreatmentPersistedResult PersistedResult, WoundEffectOperationBatch? TreatmentBatch,
-        MortalWoundTreatmentSemanticData SemanticData, ValidationOperation? Operation);
+        MortalWoundTreatmentSemanticData SemanticData, ValidationOperation? Operation,
+        MortalWoundHealLegacyPreparation? LegacyPreparation);
 
     internal static bool TryReadJointRepairFinal(WoundPreparedAcceptedTurnPlan prepared,
         out JointRepairFinalView view)
@@ -535,7 +543,7 @@ internal static partial class WoundAcceptedTurnPlanner
             !TryReadJointRepair(prepared.JointRepairContinuationAuthority, out var joint)) return false;
         view = new(joint.Outcome, joint.Resolution,
             MortalWoundTreatmentPersistedResult.Create(joint.Resolution), joint.TreatmentBatch,
-            joint.SemanticData, joint.StageReplayOperation);
+            joint.SemanticData, joint.StageReplayOperation, joint.LegacyPreparation);
         return true;
     }
 
@@ -556,7 +564,7 @@ internal static partial class WoundAcceptedTurnPlanner
         WoundPreparedAcceptedTurnPlan prepared, WoundEffectOperationBatch batch)
     {
         var joint = ReadJointRepairBatchOwner(prepared, batch);
-        return batch.PreparedWoundId == joint.Outcome.Before.WoundId
+        return batch.SourceExport.Kind == "wound_legacy" || batch.PreparedWoundId == joint.Outcome.Before.WoundId
             ? joint.TreatmentInput.Binding : joint.AcquisitionInput.Binding;
     }
 
@@ -571,7 +579,7 @@ internal static partial class WoundAcceptedTurnPlanner
         WoundPreparedAcceptedTurnPlan prepared, WoundEffectOperationBatch batch)
     {
         var joint = ReadJointRepairBatchOwner(prepared, batch);
-        return WoundAcceptedTurnFingerprints.ComputeInput(batch.PreparedWoundId == joint.Outcome.Before.WoundId
+        return WoundAcceptedTurnFingerprints.ComputeInput(batch.SourceExport.Kind == "wound_legacy" || batch.PreparedWoundId == joint.Outcome.Before.WoundId
             ? joint.TreatmentInput : joint.AcquisitionInput);
     }
 
@@ -660,13 +668,20 @@ internal static partial class WoundAcceptedTurnPlanner
             return JointPreparationFailure("prepared_invalid", "The joint contribution requires exactly one validated acquisition.").Issues;
         if (!JointPreparationBaselineAgrees(joint, out var before, out var transition))
             return JointPreparationFailure("baseline_invalid", "The independently selected existing treatment wound/history changed.").Issues;
-        var applications = joint.TreatmentBatch?.RootApplications.Select(row => row.ApplicationRef).ToArray() ?? [];
-        if (!JointExactUnique(woundIds.Append(before.WoundId)) || !JointExactUnique(transitionIds.Append(transition)) ||
+        var legacyBatches = joint.LegacyPreparation?.EffectOperationBatches ?? Array.Empty<WoundEffectOperationBatch>();
+        var applications = (joint.TreatmentBatch?.RootApplications ?? Array.Empty<WoundRootEffectApplication>())
+            .Concat(legacyBatches.SelectMany(batch => batch.RootApplications)).Select(row => row.ApplicationRef).ToArray();
+        var selectedTransitions = joint.Outcome.ReadTerminalHealIntent() is { } heal
+            ? new[] { transition, heal.HealChildCoordinates.TransitionId } : new[] { transition };
+        if (!JointExactUnique(woundIds.Append(before.WoundId)) || !JointExactUnique(transitionIds.Concat(selectedTransitions)) ||
             !JointExactUnique(applicationRefs.Concat(applications)))
             return JointPreparationFailure("allocation_collision", "Joint allocation collides with the derived treatment identities.").Issues;
-        woundIds.Add(before.WoundId); transitionIds.Add(transition); applicationRefs.AddRange(applications);
+        woundIds.Add(before.WoundId); transitionIds.AddRange(selectedTransitions); applicationRefs.AddRange(applications);
         wounds.Add(joint.Outcome.GetPreparedCarrierImage());
         if (joint.TreatmentBatch is { } batch) batches.Add(batch);
+        batches.AddRange(legacyBatches);
+        if (joint.LegacyPreparation is not null)
+            MortalWoundHealLegacyPlanner.RequireDisjointCoordinates(batches, joint.Outcome.ReadTerminalHealIntent());
         return Array.Empty<ValidationIssue>();
     }
     /// <summary>Preserves the original candidate's private seal and actual-input admission order.</summary>
@@ -733,8 +748,9 @@ internal static partial class WoundAcceptedTurnPlanner
         using var operationTiming = FileSystemManager.MeasureCurrentOperation("JointPreparation.PreparedAgrees");
         if (!TryReadJointRepair(prepared.JointRepairContinuationAuthority, out var joint) ||
             prepared.TreatmentContinuationAuthority is not null || prepared.RecoveryContinuationAuthority is not null || prepared.DraftBefore is not null ||
-            prepared.PreparedWounds.Count != 2 || prepared.AllocatedWoundIds.Count != 2 || prepared.AllocatedTransitionIds.Count != 2 ||
-            prepared.EffectOperationBatches.Count != (joint.TreatmentBatch is null ? 1 : 2) ||
+            prepared.PreparedWounds.Count != 2 || prepared.AllocatedWoundIds.Count != 2 ||
+            prepared.AllocatedTransitionIds.Count != (joint.Outcome.PreparesTerminalHeal ? 3 : 2) ||
+            prepared.EffectOperationBatches.Count != (joint.TreatmentBatch is null ? 1 : 2) + (joint.LegacyPreparation?.EffectOperationBatches.Count ?? 0) ||
             prepared.BindingFingerprint != WoundAcceptedTurnFingerprints.ComputeBinding(joint.AcquisitionInput.Binding) ||
             prepared.InputFingerprint != WoundAcceptedTurnFingerprints.ComputeInput(joint.AcquisitionInput)) return false;
         var acquisition = prepared.EffectOperationBatches[0];
@@ -752,6 +768,20 @@ internal static partial class WoundAcceptedTurnPlanner
             WoundAcceptedTurnFingerprints.ComputeSourceExport(prepared.EffectOperationBatches[1]) == expected.SourceExportFingerprint &&
             prepared.EffectOperationBatches[1].TransitionAuthority.AuthoritySeal == expected.TransitionAuthority.AuthoritySeal;
         if (!batchAgrees) return false;
+        if (joint.Outcome.PreparesTerminalHeal != (joint.LegacyPreparation is not null) ||
+            joint.Outcome.ReadTerminalHealIntent() is { } heal && prepared.AllocatedTransitionIds[2] != heal.HealChildCoordinates.TransitionId)
+            return false;
+        if (joint.LegacyPreparation is { } legacies)
+        {
+            try
+            {
+                MortalWoundHealLegacyPlanner.RequireExactBatches(legacies,
+                    prepared.EffectOperationBatches.Skip(joint.TreatmentBatch is null ? 1 : 2).ToArray());
+                MortalWoundHealLegacyPlanner.RequireDisjointCoordinates(prepared.EffectOperationBatches,
+                    joint.Outcome.ReadTerminalHealIntent());
+            }
+            catch (InvalidDataException) { return false; }
+        }
         // Recompute the complete private contribution graph, not just caller-supplied
         // hashes. The deterministic preparation replay also rechecks companion authorities.
         var expectedFingerprint = joint.ReadPreparationFingerprint();

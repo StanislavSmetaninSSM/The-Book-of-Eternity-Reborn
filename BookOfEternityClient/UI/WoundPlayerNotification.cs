@@ -309,7 +309,8 @@ internal sealed partial record WoundPlayerNotification(
             !WoundAcceptedTurnPlanner.TryReadJointRepairFinal(bundle.PreparedPlan, out var joint))
             return new(Array.Empty<WoundPlayerNotification>(), [AcceptedTurnBindingIssue("joint final owner", "refused")]);
         var creates = bundle.Input.Transitions.Where(row => row.Kind == "create").ToArray();
-        var batches = bundle.PreparedPlan.EffectOperationBatches.Where(row => row.PreparedWoundId != joint.Outcome.Before.WoundId).ToArray();
+        var batches = bundle.PreparedPlan.EffectOperationBatches.Where(row => row.SourceExport.Kind == "wound" &&
+            row.TransitionAuthority.TransitionKind == "create" && row.PreparedWoundId != joint.Outcome.Before.WoundId).ToArray();
         var additions = mutations.Where(row => row.Operation == "add" && row.BeforeWound is null).ToArray();
         if (creates.Length != 1 || batches.Length != 1 || additions.Length != 1 || additions[0].AfterWound is not { } wound ||
             creates[0].LocalWoundRef != batches[0].LocalWoundRef || batches[0].PreparedWoundId != wound.WoundId ||
@@ -318,9 +319,16 @@ internal sealed partial record WoundPlayerNotification(
         var claim = new WoundAcquisitionNarrationClaim(creates[0].LocalWoundRef, batches[0].SourceExport.CausalEventRef,
             wound.Classification.Domain, wound.Display.Name, wound.Severity.Rank, wound.Display.AcquisitionNarration);
         var output = Compose(new WoundAcquisitionOutputRequest(creates[0].LocalWoundRef, wound, claim, scene));
-        return output.Success && output.Notification is { } notification
-            ? new([notification], output.Issues)
-            : new(Array.Empty<WoundPlayerNotification>(), output.Issues);
+        if (!output.Success || output.Notification is not { } notification)
+            return new(Array.Empty<WoundPlayerNotification>(), output.Issues);
+        if (!joint.Outcome.PreparesTerminalHeal) return new([notification], output.Issues);
+        var deletions = mutations.Where(row => row.WoundId == joint.Outcome.Before.WoundId).ToArray();
+        if (mutations.Count != 2 || deletions.Length != 1 ||
+            !WoundAcceptedTurnPlanner.TryReadTerminalTreatment(bundle.PreparedPlan, out var terminal))
+            return TreatmentContinuationBindingFailure("joint terminal mutation inventory differs");
+        var healing = ComposeTerminalTreatmentNotifications(bundle, terminal, deletions[0]);
+        return healing.Success ? new(new[] { notification }.Concat(healing.Notifications).ToArray(), healing.Issues)
+            : healing;
     }
 
     internal static WoundAcceptedTurnOutputBindingResult
@@ -393,7 +401,7 @@ internal sealed partial record WoundPlayerNotification(
         }
 
         if (continuation.OutcomePreparation.PreparesTerminalHeal)
-            return ComposeAcceptedTerminalTreatment(bundle, continuation, mutations[0]);
+            return ComposeAcceptedTerminalTreatment(bundle, mutations[0]);
         if (prepared.EffectOperationBatches.Count !=
             (MortalWoundTreatmentOutcomePublicationPlanner.RequiresEffectBatch(continuation.OutcomePreparation) ? 1 : 0))
             return TreatmentContinuationBindingFailure("changed treatment batch count");

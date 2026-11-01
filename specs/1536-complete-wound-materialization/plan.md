@@ -1,3 +1,39 @@
+# T121 real joint terminal stages — WIP UNCOMPILED/UNRUN
+
+Continues 701ee37faa53a361936d0c7856c58fb3f2488b01. The reachable installed-wave
+joint preparation now retains the same request-derived terminal/legacy preparation,
+seals it in its existing private continuation, and appends the exact child transition
+and independent legacy batches. Acquisition, treatment prefix, heal and all legacy
+coordinates are checked together before publication. No guided repair-wave producer,
+second owner or allocator is introduced; ordinary real-wave admission is unchanged.
+
+The shared actual executor now authenticates either existing private family and uses
+that treatment's original accepted-event vector. Its sealed whole prefix includes
+the actual acquisition applications. Legacy source/batch provenance uses the separate
+treatment binding, not the acquisition binding. Both finalizers consume one shared
+closed executed-stage contribution. Joint History remains CREATE → treat → heal;
+global insertion ordinals include acquisition while wound ordinals remain the exact
+executed values. Canonical assembly writes one original→final deletion and healed
+identity for the selected wound, alongside the independent acquired wound. Full
+History/carrier/identity agreement remains mandatory. The scalar-only contribution
+refusal remains a guard against losing a follow-up; terminal joint reduction now
+uses the real executed contribution instead. Joint output authenticates its complete
+final graph once before selecting acquisition and privacy-filtered terminal text.
+
+Static closure also corrected the authored legacy finalizer's fingerprint-domain
+join: the accepted effect-batch seal is recomputed with ComputeEffectPlan and its
+complete results, rather than compared with the distinct effect-payload digest.
+Neither seal is weakened. No build, discovery, runtime or GREEN occurred; whitespace
+checks passed. Required typed terminal/legacy/current/fault tests, real terminal
+browser/course/replay/rollback, GM/examples and final semantic pins/selection remain.
+
+Optimization: execution and immutable stage DATA stay in the existing prepared
+continuation/effect proof for this operation; complete family/preparation/payload
+checks still run at each admission. One shared contribution reduction replaces
+standalone duplicate assembly and is reused by joint finalization. No file I/O,
+cache, historical component replay, permission resurrection or speedup claim was
+added. Parent/adapter/HOLD status, raw/saves/recovery and budgets are unchanged.
+
 # T121 terminal current/browser comparison — WIP UNCOMPILED/UNRUN
 
 Continues 98c5beb5fbdf767cd0486b9da8ebf58532f5a16a. The SAME current predicate used

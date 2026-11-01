@@ -323,7 +323,7 @@ internal static partial class WoundAcceptedTurnPlannerCore
         int originalNextOrdinal)
     {
         if (acquisition.Transitions.Count != 1 || acquisition.HistoryRows.Count != 1 ||
-            treatment.Transitions.Count != 1 || treatment.HistoryRows.Count != 1)
+            treatment.Transitions.Count != 1 || treatment.HistoryRows.Count is < 1 or > 2)
             return FailedContributions("wound_plan_joint_contribution_set_invalid",
                 "Joint repair requires one independently reduced CREATE and one treatment.",
                 "one typed contribution from each owner", "missing or repeated contribution");
@@ -331,13 +331,15 @@ internal static partial class WoundAcceptedTurnPlannerCore
         var treat = treatment.Transitions[0];
         var createRow = acquisition.HistoryRows[0];
         var treatRow = treatment.HistoryRows[0];
+        var terminal = treatment.HistoryRows.Count == 2;
+        var finalRow = treatment.HistoryRows[^1];
         if (create.Before is not null || createRow.Kind != "create" ||
             create.After.LastTransition.Kind != "create" || treat.Before is null ||
-            treatRow.Kind != "treat" || treat.After.LastTransition.Kind != "treat" ||
+            treatRow.Kind != "treat" || treat.After.LastTransition.Kind != (terminal ? "heal" : "treat") ||
             create.After.WoundId == treat.After.WoundId ||
             createRow.TransitionId == treatRow.TransitionId ||
             createRow.TransitionId != create.After.LastTransition.TransitionId ||
-            treatRow.TransitionId != treat.After.LastTransition.TransitionId ||
+            finalRow.TransitionId != treat.After.LastTransition.TransitionId ||
             createRow.Ordinal != originalNextOrdinal || treatRow.Ordinal != checked(originalNextOrdinal + 1) ||
             createRow.Turn != treatRow.Turn || createRow.WoundId != create.After.WoundId ||
             treatRow.WoundId != treat.After.WoundId || treatRow.TreatmentResult is null ||
@@ -347,6 +349,16 @@ internal static partial class WoundAcceptedTurnPlannerCore
             return FailedContributions("wound_plan_joint_contribution_set_invalid",
                 "Joint repair must preserve distinct player wounds and acquisition-then-treatment history.",
                 "exact independent typed transitions and consecutive original ordinals", "changed contribution graph");
+        if (terminal && (finalRow.Kind != "heal" || !finalRow.Terminal ||
+            finalRow.Ordinal != checked(originalNextOrdinal + 2) || finalRow.WoundId != treatRow.WoundId ||
+            finalRow.Turn != treatRow.Turn || finalRow.BeforeFingerprint != treatRow.AfterFingerprint ||
+            finalRow.AfterFingerprint != WoundIdentityState.ComputeSemanticFingerprint(treat.After) ||
+            finalRow.WoundTransitionOrdinal != checked(treatRow.WoundTransitionOrdinal + 1) ||
+            finalRow.TransitionId == treatRow.TransitionId || finalRow.TransitionId == createRow.TransitionId ||
+            finalRow.TreatmentResult is not null || treat.After.Lifecycle != "healed" || treat.After.Care.State != "healed"))
+            return FailedContributions("wound_plan_joint_contribution_set_invalid",
+                "Joint healing must consume its exact linked terminal stage after treatment.",
+                "one ordered treat/heal chain with unchanged wound ordinals", "changed terminal contribution");
         return new(new WoundTransitionContributions(
             acquisition.Transitions.Concat(treatment.Transitions).ToArray(),
             acquisition.Intents.Concat(treatment.Intents).ToArray(),

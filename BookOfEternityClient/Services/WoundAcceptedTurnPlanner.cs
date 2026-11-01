@@ -210,8 +210,7 @@ internal static class WoundEffectBatchPlanner
                 WoundEffectBatchAcceptedPlan.Create(prepared, composedInput, effectPlan, applications, terminations),
                 Array.Empty<ValidationIssue>());
         }
-        if (WoundAcceptedTurnPlanner.TryReadTreatmentContinuation(prepared.TreatmentContinuationAuthority, out var terminalTreatment) &&
-            terminalTreatment.OutcomePreparation.PreparesTerminalHeal)
+        if (WoundAcceptedTurnPlanner.TryReadTerminalTreatment(prepared, out _))
         {
             if (!EffectAcceptedTurnPlanner.TryReadMortalTreatmentExecution(prepared, effectPlan, out var executed))
                 return WoundAcceptedTurnPlannerCore.FailedEffectBatch("mortal_treatment_execution_invalid",
@@ -763,8 +762,7 @@ internal static partial class WoundAcceptedTurnPlannerCore
             return null;
         }
 
-        if (WoundAcceptedTurnPlanner.TryReadTreatmentContinuation(prepared.TreatmentContinuationAuthority, out var terminalTreatment) &&
-            terminalTreatment.OutcomePreparation.PreparesTerminalHeal)
+        if (WoundAcceptedTurnPlanner.TryReadTerminalTreatment(prepared, out _))
         {
             if (!EffectAcceptedTurnPlanner.TryReadMortalTreatmentExecution(prepared, accepted.EffectPlan, out _))
                 return FailedFinal("mortal_treatment_execution_invalid", "Terminal treatment lost its complete owned execution.",
@@ -1555,10 +1553,10 @@ internal static partial class WoundAcceptedTurnPlannerCore
                 owner,
                 ComputeWoundCollectionFingerprint(baseline, owner),
                 group.Select(static transition => new WoundCarrierMutation(
-                    transition.Before is null ? "add" : "update",
+                    transition.Before is null ? "add" : transition.After.Lifecycle == "healed" ? "delete" : "update",
                     transition.After.WoundId,
                     transition.Before,
-                    transition.After)).ToArray()));
+                    transition.After.Lifecycle == "healed" ? null : transition.After)).ToArray()));
         }
         return result;
     }
@@ -1594,11 +1592,11 @@ internal static partial class WoundAcceptedTurnPlannerCore
                 ["ownerId"] = wound.Owner.OwnerId,
                 ["carrierPath"] = wound.Owner.CarrierPath,
                 ["domain"] = wound.Classification.Domain,
-                ["status"] = "active",
+                ["status"] = wound.Lifecycle == "healed" ? "healed" : "active",
                 ["createdAtTurn"] = wound.Origin.CreatedAtTurn,
                 ["createdEventRef"] = wound.Origin.EventRef,
                 ["lastTransitionOrdinal"] = wound.LastTransition.Ordinal,
-                ["terminalTransitionId"] = null,
+                ["terminalTransitionId"] = wound.Lifecycle == "healed" ? wound.LastTransition.TransitionId : null,
                 ["semanticFingerprint"] = WoundIdentityState.ComputeSemanticFingerprint(wound)
             };
             if (transition.Before is null)
@@ -1678,7 +1676,8 @@ internal static partial class WoundAcceptedTurnPlannerCore
                 throw new InvalidOperationException(
                     "The sealed wound before-image is absent or ambiguous.");
             }
-            collection[matches[0].index] = afterNode;
+            if (wound.Lifecycle == "healed") collection.RemoveAt(matches[0].index);
+            else collection[matches[0].index] = afterNode;
         }
         return result;
     }

@@ -858,6 +858,12 @@ internal static partial class WoundAcceptedTurnPlanner
         out MortalWoundHealLegacyPreparation? legacy)
     {
         legacy = null;
+        if (prepared.JointRepairContinuationAuthority is not null)
+        {
+            if (!TryReadTerminalTreatment(prepared, out var terminal)) return false;
+            legacy = terminal.Legacies;
+            return true;
+        }
         if (!TryReadTreatmentContinuation(prepared.TreatmentContinuationAuthority, out var continuation) ||
             !TreatmentContinuationPreparedAgrees(prepared) || continuation.LegacyPreparation is null) return false;
         legacy = continuation.LegacyPreparation;

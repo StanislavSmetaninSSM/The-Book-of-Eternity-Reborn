@@ -4198,8 +4198,7 @@ internal static partial class EffectAcceptedTurnPlanner
             identityFactory,
             operations.Applications,
             operations.Terminations,
-            mortalTreatmentPrepared: WoundAcceptedTurnPlanner.TryReadTreatmentContinuation(prepared.TreatmentContinuationAuthority,
-                out var treatment) && treatment.OutcomePreparation.PreparesTerminalHeal ? prepared : null);
+            mortalTreatmentPrepared: WoundAcceptedTurnPlanner.TryReadTerminalTreatment(prepared, out _) ? prepared : null);
     }
 
     private static EffectAcceptedTurnPlanningResult BuildCore(

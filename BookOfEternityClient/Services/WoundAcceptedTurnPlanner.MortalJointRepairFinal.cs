@@ -93,10 +93,16 @@ internal static partial class WoundAcceptedTurnPlannerCore
         if (acquisition.Value is not { } acquired) return new(null, acquisition.Issues);
         var treatmentRefs = (joint.TreatmentBatch?.RootApplications ?? Array.Empty<WoundRootEffectApplication>())
             .Select(row => row.ApplicationRef).ToHashSet(StringComparer.Ordinal);
-        var treatment = ReduceTreatmentContribution(joint.Outcome, joint.Resolution, joint.Outcome.TransitionId,
-            joint.PersistedResult, joint.TreatmentBatch,
-            applications.Where(row => treatmentRefs.Contains(row.ApplicationRef)).ToArray(),
-            before, checked(history.NextOrdinal + acquired.HistoryRows.Count));
+        var treatment = joint.Outcome.PreparesTerminalHeal
+            ? WoundAcceptedTurnPlanner.TryReadTerminalTreatment(prepared, out var terminal)
+                ? ReduceTerminalTreatmentContribution(prepared, accepted, terminal,
+                    checked(history.NextOrdinal + acquired.HistoryRows.Count))
+                : FailedContributions("wound_plan_terminal_execution_required", "Joint treatment lost its actual terminal owner.",
+                    "one complete private execution", "missing")
+            : ReduceTreatmentContribution(joint.Outcome, joint.Resolution, joint.Outcome.TransitionId,
+                joint.PersistedResult, joint.TreatmentBatch,
+                applications.Where(row => treatmentRefs.Contains(row.ApplicationRef)).ToArray(),
+                before, checked(history.NextOrdinal + acquired.HistoryRows.Count));
         if (treatment.Value is not { } treated) return new(null, treatment.Issues);
         var union = CombineJointRepairContributions(acquired, treated, history.NextOrdinal);
         if (union.Value is not { } contributions) return new(null, union.Issues);

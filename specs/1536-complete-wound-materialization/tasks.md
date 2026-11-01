@@ -150,7 +150,8 @@ this bounded route, not parent T121/FR071/US5/#1536 or the eight proof adapters.
   counts and fresh next-open/failure controls; no duplicated hook policy or cache.
   Causal prerequisite accepted independently on runtimeb0781594:2 intended final
   failures/0PASS in6.9016412s/60, after complete byte/fresh-oracle premises.
-  The source fallback correction and GREEN remain pending.
+  The source fallback correction is authored; coherent SOURCE and GREEN remain
+  pending.
 - [ ] T121-PHYSICAL-GUIDED-TERMINAL-HEAL [US2/US5] Close SOURCE-HOLD legal terminal
   heal through the same request/continuation/common publication, linked healed
   History/terminal identity, canonical effect/carrier removal/declared legacies,
@@ -161,7 +162,9 @@ this bounded route, not parent T121/FR071/US5/#1536 or the eight proof adapters.
   0PASS in11.8084897s/120 after complete owner/mode/claim/simulator premises.
   Six causal rows total are not feature qualification; see current plan for actual
   source/binary/raw bindings and retained noncausal C1 fixture failures. Both
-  product corrections, their coherent review and GREEN remain pending.
+  product corrections are authored through real joint terminal execution and linked
+  finalization; required typed/UI/fault/legacy proof, GM/pins, coherent review and
+  GREEN remain pending. See current plan; no WIP checkpoint is feature acceptance.
 
 - [ ] T121-PHYSICAL-GUIDED [US2/US5] Connect existing procedure, course milestone
   and guaranteed physical treatment to the same private target/provider/known-route
