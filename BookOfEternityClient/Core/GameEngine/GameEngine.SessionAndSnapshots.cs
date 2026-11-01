@@ -581,8 +581,8 @@ public partial class GameEngine
                     snapshotFiles.Add(file);
             }
         }
-        var observeCombatSources = PendingTurnSnapshotPathPresenceV1.HasCombatProjection(request.SpiritualHealing);
-        snapshotFiles.UnionWith(PendingTurnSnapshotPathPresenceV1.GetLogicalPaths(observeCombatSources));
+        var observationPaths = await PendingTurnSnapshotPathPresenceV1.SelectObservationAsync(_fs, writeLease, request);
+        snapshotFiles.UnionWith(observationPaths);
 
         inventoryTiming?.Dispose();
         using var membersTiming = _fs.MeasureOperation("OriginalSnapshot.CaptureMembers");
@@ -599,7 +599,7 @@ public partial class GameEngine
         membersTiming?.Dispose();
         using var manifestTiming = _fs.MeasureOperation("OriginalSnapshot.BuildManifest");
         var originalPathPresenceV1 =
-            PendingTurnSnapshotPathPresenceV1.CreateForCombatObservation(files, snapshotHashes, observeCombatSources);
+            PendingTurnSnapshotPathPresenceV1.CreateForObservation(files, snapshotHashes, observationPaths);
 
         var manifest = new PendingTurnSnapshotManifest
         {

@@ -14,9 +14,16 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
 {
     // Initial world preparation for the rollback journey only. Snapshot creation
     // normally commits these defaults before taking its effective rollback image.
-    internal static async Task SeedDiagnosisRollbackBeforeBootstrapAsync(FileSystemManager files, JsonObject profiles)
+    internal static Task SeedDiagnosisRollbackBeforeBootstrapAsync(FileSystemManager files, JsonObject profiles) =>
+        SeedDiagnosisRollbackCoreAsync(files, profiles, false);
+
+    private static Task SeedCanonicalDiagnosisRollbackBeforeBootstrapAsync(FileSystemManager files, JsonObject profiles) =>
+        SeedDiagnosisRollbackCoreAsync(files, profiles, true);
+
+    private static async Task SeedDiagnosisRollbackCoreAsync(FileSystemManager files, JsonObject profiles, bool canonicalResource)
     {
-        await AfterlifeSpiritualNaturalRecoveryTests.SeedDiagnosisBeforeBootstrapAsync(files, profiles);
+        if (canonicalResource) await AfterlifeSpiritualNaturalRecoveryTests.SeedResourceDiagnosisBeforeBootstrapAsync(files, profiles);
+        else await AfterlifeSpiritualNaturalRecoveryTests.SeedDiagnosisBeforeBootstrapAsync(files, profiles);
         await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
         var profileBytes = await files.ReadFileBytesAsync(lease, AfterlifeEntityProfileState.StatePath);
         Assert.NotNull(profileBytes);

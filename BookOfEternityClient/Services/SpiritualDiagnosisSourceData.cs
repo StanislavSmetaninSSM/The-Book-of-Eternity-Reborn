@@ -47,7 +47,7 @@ internal sealed class SpiritualDiagnosisSourceData
 
     internal SpiritualDiagnosisSourceData(WoundCarrierCatalog catalog, JsonObject? profiles, JsonObject soul,
         string realm, bool selfVisible, bool conflict,
-        IReadOnlyDictionary<string, JsonObject?>? roots, EffectMechanicsSnapshot? effects = null)
+        IReadOnlyDictionary<string, JsonObject?>? roots, EffectMechanicsSnapshot? effects = null, bool prepareCanonicalSources = true)
     {
         ArgumentNullException.ThrowIfNull(catalog); ArgumentNullException.ThrowIfNull(soul);
         _profiles = profiles?.DeepClone().AsObject(); _soul = soul.DeepClone().AsObject();
@@ -84,8 +84,26 @@ internal sealed class SpiritualDiagnosisSourceData
         var actualRoots = (roots ?? new Dictionary<string, JsonObject?>()).ToDictionary(pair => pair.Key, pair => pair.Value, StringComparer.Ordinal);
         actualRoots[WoundCarrierCatalog.AfterlifeProfilesPath] = _profiles;
         actualRoots[SpiritualDiagnosisCanonicalSources.SoulPath] = _soul;
-        _canonical = new(realm, _wounds.Where(row => Profile(row.Wound.Owner) is { } profile && AfterlifeProfileVisibility.IsVisibleToPlayer(profile))
-            .SelectMany(row => VisibleCanonicalKinds(row.Wound)), actualRoots, effects);
+        _canonical = new(realm, prepareCanonicalSources ? _wounds.Where(row => Profile(row.Wound.Owner) is { } profile && AfterlifeProfileVisibility.IsVisibleToPlayer(profile))
+            .SelectMany(row => VisibleCanonicalKinds(row.Wound)) : [], actualRoots, effects);
+    }
+
+    // Final composed stable facts use the same three-kind implementation, without
+    // recalculating resource/effect admission after lawful natural changes.
+    internal static JsonArray ReadStableRequirementBindings(WoundCarrierCatalog catalog, JsonObject profiles, JsonObject soul,
+        string realm, WoundMaterializationEnvelope wound, string pathId)
+    {
+        var source = new SpiritualDiagnosisSourceData(catalog, profiles, soul, realm, true, false, null, null, false);
+        var data = source._wounds.Single(row => row.Wound.WoundId == wound.WoundId && row.Wound.Owner == wound.Owner);
+        var path = data.Paths.Single(row => row.Path.DiagnosisPathId == pathId);
+        if (!path.Requirements.IsValid) throw new InvalidDataException("Invalid stable diagnosis requirements.");
+        var provider = new WoundOwnerCoordinate(realm, "player_soul", "player_soul", WoundCarrierCatalog.AfterlifeProfilesPath);
+        var player = source.Profile(provider) ?? throw new InvalidDataException("Missing stable diagnosis provider.");
+        var target = source.Profile(wound.Owner) ?? throw new InvalidDataException("Missing stable diagnosis target.");
+        foreach (var requirement in path.Requirements.Requirements.Where(requirement => !SpiritualDiagnosisCanonicalSources.IsCanonicalKind(requirement.Kind)))
+            if (!source.Satisfied(requirement, provider, player, wound.Owner, target)) throw new InvalidDataException("Stable diagnosis requirement changed.");
+        return source.BuildRequirementBindings(path, provider, player, wound.Owner, target,
+            new JsonObject?[path.Requirements.Requirements.Length], stableOnly: true);
     }
 
     internal static IEnumerable<string> VisibleCanonicalKinds(WoundMaterializationEnvelope wound) =>
@@ -176,12 +194,13 @@ internal sealed class SpiritualDiagnosisSourceData
     }
 
     private JsonArray BuildRequirementBindings(PathData path, WoundOwnerCoordinate playerOwner, JsonObject player,
-        WoundOwnerCoordinate targetOwner, JsonObject target, IReadOnlyList<JsonObject?> proofs)
+        WoundOwnerCoordinate targetOwner, JsonObject target, IReadOnlyList<JsonObject?> proofs, bool stableOnly = false)
     {
         var rows = new JsonArray();
         for (var index = 0; index < path.Requirements.Requirements.Length; index++)
         {
             var requirement = path.Requirements.Requirements[index];
+            if (stableOnly && SpiritualDiagnosisCanonicalSources.IsCanonicalKind(requirement.Kind)) continue;
             if (proofs[index] is { } evidence)
             {
                 var actorRole = requirement switch

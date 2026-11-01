@@ -5066,3 +5066,14 @@ sole bootstrap/original, preserving complete cost and rollback equality. C13 UI
 remains TIMEOUT/UNKNOWN and all new C14 controls UNCOMPILED/UNRUN pending SOURCE and
 root-owned qualification; parent tasks, physical guided treatment and eight adapters
 remain open.
+# Canonical diagnosis source observation hint
+
+For the eight source-backed spiritual diagnosis kinds, the existing client-owned
+diagnosis projection may include `canonicalRequirementSources=true`. This boolean
+only selects fresh source observation. Both actual snapshot producers reconstruct
+the complete closed presence/absence set from the bound staged request and real
+selected profile/path; the boolean, detached proof and UI never grant permission.
+The supported-three-kind projection and observation form remain unchanged. The
+native preparation helper may carry the actual staged spiritual context, just as
+it carries staged Mortal context. Current/original reader and publication checks
+remain independent. This is source-lifetime plumbing, without a new game rule.

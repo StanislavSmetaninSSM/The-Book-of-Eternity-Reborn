@@ -60,7 +60,7 @@ public sealed class SpiritualDiagnosisCanonicalRequirementTests
         Assert.Single(program.NaturalStages);
     }
 
-    private static async Task<WoundPlayerReadContext> ContextAsync(string realm, string kind)
+    internal static async Task<WoundPlayerReadContext> ContextAsync(string realm, string kind)
     {
         var context = SpiritualDiagnosisAdmissionTests.Context(realm, Requirement(kind));
         var arts = AfterlifeSpiritualConflictState.CreateDefaultArtTiers();
@@ -235,6 +235,59 @@ public sealed class SpiritualDiagnosisCanonicalRequirementTests
             else { var rows = container["customStates"]!.AsArray(); rows.Add(rows[0]!.DeepClone()); }
         }
         Assert.Null(new SpiritualDiagnosisSourceData(context).Admit(wound, "diagnose_tissue").Data);
+    }
+
+    [Fact]
+    public async Task CurrentShiningRosterSuppliesResidentMembershipAndConfusableContainerNeverGrants()
+    {
+        var context = await ContextAsync("shining_abode", "facility");
+        var profiles = context.Input.Carriers.AfterlifeProfiles!;
+        var resident = profiles["profiles"]![0]!.DeepClone().AsObject();
+        resident["actorType"] = "resident"; resident["actorId"] = "resident_diagnosis"; resident["activeWounds"] = new JsonArray();
+        resident.Remove(AfterlifeEntityProfileState.ResourceOwnerBindingsProperty);
+        profiles["profiles"]!.AsArray().Add(resident);
+        var roots = context.CurrentMenuRoots.ToDictionary(pair => pair.Key, pair => (JsonObject?)pair.Value, StringComparer.Ordinal);
+        roots[GuardianAbodeResidentState.StatePath] = new JsonObject { ["entries"] = new JsonArray(new JsonObject
+            { ["residentId"] = "resident_diagnosis", ["isPresent"] = true, ["hallId"] = LocationId }) };
+        var shining = roots[ShiningAbodeState.StatePath]!;
+        Assert.Contains("resident_diagnosis", ShiningCurrentHallContract.RequireCurrentScope(shining, roots[GuardianAbodeResidentState.StatePath]).LocalActorIds);
+        var provider = new WoundOwnerCoordinate("shining_abode", "player_soul", "player_soul", WoundCarrierCatalog.AfterlifeProfilesPath);
+        var target = new WoundOwnerCoordinate("shining_abode", "resident", "resident_diagnosis", WoundCarrierCatalog.AfterlifeProfilesPath);
+        var requirement = new MortalWoundFacilityRequirement("facility_current");
+        Assert.NotNull(new SpiritualDiagnosisCanonicalSources("shining_abode", ["facility"], roots, null).Prove(requirement, provider, target));
+        var hall = shining["halls"]![0]!;
+        hall["CustomStates"] = hall["customStates"]!.DeepClone();
+        Assert.Null(new SpiritualDiagnosisCanonicalSources("shining_abode", ["facility"], roots, null).Prove(requirement, provider, target));
+        Assert.NotEmpty(SpiritualDiagnosisSceneAuthorityContract.ValidateContainers(System.Text.Json.JsonSerializer.SerializeToElement(shining), "current", true));
+    }
+
+    [Theory]
+    [InlineData("source_capability", "provider")][InlineData("source_capability", "target")]
+    [InlineData("skill_tier", "provider")][InlineData("skill_tier", "target")]
+    public async Task MixedCanonicalPathKeepsEveryStableStabilizationGuard(string kind, string role)
+    {
+        var context = await ContextAsync("shining_abode", "facility");
+        var node = JsonNode.Parse(WoundMaterializationContract.SerializeCanonical(Assert.Single(context.Catalog.Occurrences).Wound))!.AsObject();
+        var requirement = new JsonObject { ["kind"] = kind, ["capabilityRef"] = "spiritual_stabilization", ["actorRole"] = role };
+        if (kind == "skill_tier") requirement["minimumTier"] = 2;
+        node["treatment"]!["diagnosisPaths"]![0]!["requirements"]!.AsArray().Add(requirement);
+        var input = WoundPlayerProjectionTestData.InputInRealm("shining_abode", node);
+        input.Carriers.AfterlifeProfiles!["profiles"]![0]!["standardArts"] = context.Input.Carriers.AfterlifeProfiles!["profiles"]![0]!["standardArts"]!.DeepClone();
+        input.Carriers.AfterlifeProfiles!["profiles"]![0]!["standardArts"]!["spiritual_stabilization"] = 2;
+        context.Soul["afterlifeCombatProfile"]!["artTiers"]!["spiritual_stabilization"] = 2;
+        var catalog = WoundCarrierCatalog.Build(input.Carriers); Assert.Empty(catalog.Issues);
+        var roots = context.CurrentMenuRoots.ToDictionary(pair => pair.Key, pair => pair.Value, StringComparer.Ordinal);
+        roots[WoundCarrierCatalog.AfterlifeProfilesPath] = input.Carriers.AfterlifeProfiles;
+        context = context with { Input = input, Catalog = catalog, CurrentMenuRoots = roots };
+        var wound = Assert.Single(catalog.Occurrences).Wound;
+        Assert.NotNull(new SpiritualDiagnosisSourceData(context).Admit(wound, "diagnose_tissue").Data);
+        var stable = SpiritualDiagnosisSourceData.ReadStableRequirementBindings(catalog, input.Carriers.AfterlifeProfiles, context.Soul,
+            "shining_abode", wound, "diagnose_tissue");
+        Assert.Equal(2, Assert.Single(stable)!["tier"]!.GetValue<int>());
+        input.Carriers.AfterlifeProfiles["profiles"]![0]!["standardArts"]!.AsObject().Remove("spiritual_stabilization");
+        context.Soul["afterlifeCombatProfile"]!["artTiers"]!.AsObject().Remove("spiritual_stabilization");
+        Assert.Throws<InvalidDataException>(() => SpiritualDiagnosisSourceData.ReadStableRequirementBindings(catalog,
+            input.Carriers.AfterlifeProfiles, context.Soul, "shining_abode", wound, "diagnose_tissue"));
     }
 
     private static async Task<WoundPlayerReadContext> AddResourcesAsync(WoundPlayerReadContext context,

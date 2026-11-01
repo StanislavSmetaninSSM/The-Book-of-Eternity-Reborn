@@ -32,6 +32,9 @@ internal sealed class SpiritualDiagnosisProgram
             ["woundLabel"] = _before.Display.Name, ["destinationGraphs"] = recovery["destinationGraphs"]!.DeepClone(),
             ["naturalRecovery"] = recovery
         };
+        if (_before.Treatment.DiagnosisPaths.Single(path => path.DiagnosisPathId == _request["diagnosis"]!["diagnosisPathId"]!.GetValue<string>())
+            .Requirements.Any(row => SpiritualDiagnosisCanonicalSources.IsCanonicalKind(row.GetProperty("kind").GetString()!)))
+            _projection[PendingTurnSnapshotPathPresenceV1.CanonicalDiagnosisHint] = true;
     }
 
     internal WoundMaterializationEnvelope KnowledgeBefore => WoundAcceptedTurnData.CloneWound(_before)!;

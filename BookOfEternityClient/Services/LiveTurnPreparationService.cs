@@ -130,6 +130,7 @@ internal sealed class LiveTurnPreparationService
             },
             ProgressionControl = preparedProgression ?? new ProgressionControl { CurrentRealm = currentRealm },
             MortalTreatment = options.MortalTreatment?.DeepClone().AsObject(),
+            SpiritualHealing = options.SpiritualHealing?.DeepClone().AsObject(),
             SystemReminder = "Prepared by the live-test prepare-turn helper. Use this request as an ordinary player turn and keep all writes inside the game session contract."
         };
         if (request.MortalTreatment is not null)
@@ -168,13 +169,13 @@ internal sealed class LiveTurnPreparationService
         var snapshotFiles = new HashSet<string>(
             rollbackBaselineFiles,
             StringComparer.OrdinalIgnoreCase);
-        var observeCombatSources = PendingTurnSnapshotPathPresenceV1.HasCombatProjection(request.SpiritualHealing);
-        snapshotFiles.UnionWith(PendingTurnSnapshotPathPresenceV1.GetLogicalPaths(observeCombatSources));
+        var observationPaths = await PendingTurnSnapshotPathPresenceV1.SelectObservationAsync(_fs, writeLease, request);
+        snapshotFiles.UnionWith(observationPaths);
 
         foreach (var file in snapshotFiles.OrderBy(path => path, StringComparer.OrdinalIgnoreCase))
             await SnapshotFileIfPresentAsync(writeLease, file, files, snapshotHashes);
         var originalPathPresenceV1 =
-            PendingTurnSnapshotPathPresenceV1.CreateForCombatObservation(files, snapshotHashes, observeCombatSources);
+            PendingTurnSnapshotPathPresenceV1.CreateForObservation(files, snapshotHashes, observationPaths);
 
         var manifest = new LiveTurnPendingSnapshotManifest
         {
@@ -444,6 +445,8 @@ internal sealed class LiveTurnPreparationOptions
     /// original is signed; accepted consumers independently verify its full input.
     /// </summary>
     public JsonObject? MortalTreatment { get; init; }
+    /// <summary>Actual staged spiritual context DATA; canonical observation hints recheck its bound request and selected source.</summary>
+    public JsonObject? SpiritualHealing { get; init; }
     public string? Timestamp { get; init; }
 }
 

@@ -1955,6 +1955,10 @@ location and membership come from the actual current container, never row-author
 fields. Unavailable facilities and withdrawn consent are valid negative evidence.
 Aid/service/compensation never supplies arbitrary diagnostic consent. Other custom
 setting rows grant no authority. Full proofs/source dependencies remain private DATA.
+The client may add canonicalRequirementSources=true to its existing diagnosis context.
+It only selects fresh bound-source observation; the GM never authors this hint. Both
+snapshot producers derive the exact closed presence/absence family from the actual
+staged request and selected canonical profile/path. The hint is never permission.
 Confirmation, staging, signed original/current source and publication recheck the
 actual owner. Diagnosis remains zero-cost knowledge first, then the REQUIRED natural
 suffix. Lawful ordinary resource changes and terminal healing may alter required

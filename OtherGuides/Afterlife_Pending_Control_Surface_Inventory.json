@@ -2,6 +2,40 @@
   "schema": "afterlife_pending_control_surface_inventory_v1",
   "purpose": "Machine-readable inventory for Chaos Sea / Shining Abode pending, control, and meta lifecycle surfaces. This file is the audit baseline for issue #510; issue #511 migrates this data into runtime registry code.",
   "surfaces": [
+{
+  "path": "game_state/meta/guardians.json",
+  "surfaceType": "realm_owned_setting_diagnosis_sources",
+  "owner": "spiritual_diagnosis_scene_schema1",
+  "realm": "Chaos Sea",
+  "authority": "GM-authored closed schemaVersion1 spiritual_diagnosis_facility/environment/consent rows in actual guardians[].abode.customStates[]. Canonical location and actor membership remain independently checked.",
+  "privateMechanics": false,
+  "emptyWrapperSemantics": "Missing source grants nothing; unrelated custom setting rows grant no diagnostic permission.",
+  "malformedBehavior": "Recognized malformed, duplicate/confusable or alias rows are rejected. No arbitrary realm/location row fields.",
+  "blockerBehavior": "Unavailable facility and withdrawn consent are valid negative evidence. Aid/compensation is not diagnostic consent.",
+  "closureSurface": "Separately confirmed diagnosis uses the existing client-owned request, required natural suffix and exact validated common publication.",
+  "docAnchors": [
+    "OtherGuides/Afterlife_Contract_Matrix.md#spiritual_diagnosis_canonical_requirements_v1",
+    "Examples/E_CLI_Afterlife_Turns.txt#spiritual_diagnosis_canonical_requirements_v1"
+  ],
+  "notes": "Rows and closed source proofs are DATA, never a cached live permission."
+},
+{
+  "path": "game_state/meta/shining_abode_state.json",
+  "surfaceType": "realm_owned_setting_diagnosis_sources",
+  "owner": "spiritual_diagnosis_scene_schema1",
+  "realm": "Shining Abode",
+  "authority": "GM-authored closed schemaVersion1 spiritual_diagnosis_facility/environment/consent rows in actual halls[].customStates[]. Canonical location and actor membership remain independently checked.",
+  "privateMechanics": false,
+  "emptyWrapperSemantics": "Missing source grants nothing; unrelated custom setting rows grant no diagnostic permission.",
+  "malformedBehavior": "Recognized malformed, duplicate/confusable or alias rows are rejected. No arbitrary realm/location row fields.",
+  "blockerBehavior": "Unavailable facility and withdrawn consent are valid negative evidence. Aid/compensation is not diagnostic consent.",
+  "closureSurface": "Separately confirmed diagnosis uses the existing client-owned request, required natural suffix and exact validated common publication.",
+  "docAnchors": [
+    "OtherGuides/Afterlife_Contract_Matrix.md#spiritual_diagnosis_canonical_requirements_v1",
+    "Examples/E_CLI_Afterlife_Turns.txt#spiritual_diagnosis_canonical_requirements_v1"
+  ],
+  "notes": "Rows and closed source proofs are DATA, never a cached live permission."
+},
     {
       "path": "game_state/wounds/wound_commands.json",
       "surfaceType": "private_mechanics_retained_request",

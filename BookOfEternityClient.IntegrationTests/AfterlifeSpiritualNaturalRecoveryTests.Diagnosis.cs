@@ -33,6 +33,13 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
         await using var fixture = await HealingFixture.CreateAsync(2, tier, 20, stageRequest: false, realm: realm,
             initialProgress: initialProgress, beforeResourceBootstrap: (files, profiles) => SeedDiagnosisBeforeBootstrapCoreAsync(files, profiles, canonicalKind));
         var files = fixture.Files;
+        ResourceDefinitionCatalog? resourceDefinitions = null; ResourceStateLedger? resourceBefore = null; ResourceHistoryState? resourceHistoryBefore = null;
+        if (canonicalKind == "resource_quantity")
+        {
+            resourceDefinitions = ResourceDefinitionCatalog.ParseCanonical(await files.ReadFileAsync(ResourceMaterializationContract.DefinitionsPath), false).Catalog!;
+            resourceBefore = ResourceStateContract.ParseCanonical(await files.ReadFileAsync(ResourceMaterializationContract.StatePath), resourceDefinitions, false).Ledger!;
+            resourceHistoryBefore = ResourceHistoryState.ParseCanonical(await files.ReadFileAsync(ResourceMaterializationContract.HistoryPath), resourceDefinitions, false).History!;
+        }
         var before = Assert.Single((await fixture.ReadWoundsAsync()).Occurrences).Wound;
         Assert.Equal(2, before.Severity.Rank);
         Assert.Equal("hidden", Assert.Single(before.Complications).Visibility);
@@ -53,15 +60,14 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
         await new LiveTurnPreparationService(files).PrepareAsync(new LiveTurnPreparationOptions
         {
             SessionId = "session_spiritual_healing", RequestId = "request_spiritual_healing", TurnNumber = 43,
-            CurrentRealm = realm, ProgressionControl = control, PlayerAction = WoundApplicationService.DiagnosisActionText
+            CurrentRealm = realm, ProgressionControl = control, PlayerAction = WoundApplicationService.DiagnosisActionText,
+            SpiritualHealing = canonicalKind is null ? null : projection
         });
         var validator = new ValidationService(files, NullLogger<ValidationService>.Instance);
         await using (var lease = await files.AcquireCanonicalWriteLeaseAsync())
         {
             var turn = JsonSerializer.Deserialize<TurnRequest>((await files.ReadFileAsync(lease,
                 LiveTurnPreparationService.TurnRequestPath))!, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)!;
-            await ExplorerWoundSelfTreatmentTests.WriteNativeCompletionAsync(files, lease, turn,
-                AuthorNaturalGraphs(before, projection["destinationGraphs"]!.AsArray()), narrative: "Я внимательно осматриваю духовную рану. Раскрылись предусмотренные способом сведения; мир продолжил безопасный цикл.");
             if (canonicalKind == "resource_quantity")
                 await files.WriteFileAtomicAsync(lease, ResourceMaterializationContract.CommandPath, new JsonObject
                 {
@@ -72,6 +78,9 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
                         ["eventRef"] = "turn_43:resource:1", ["reason"] = "Отдельное обычное безопасное действие: это не цена духовного осмотра."
                     })
                 }.ToJsonString());
+            await ExplorerWoundSelfTreatmentTests.WriteNativeCompletionAsync(files, lease, turn,
+                AuthorNaturalGraphs(before, projection["destinationGraphs"]!.AsArray()), narrative: "Я внимательно осматриваю духовную рану. Раскрылись предусмотренные способом сведения; мир продолжил безопасный цикл.",
+                additionalModifiedFiles: canonicalKind == "resource_quantity" ? [ResourceMaterializationContract.CommandPath] : null);
             Assert.DoesNotContain(await validator.ValidateAcceptedTurnRawMortalLocationMaterializationAsync(), i => i.Severity == IssueSeverity.Error);
             Assert.DoesNotContain(await validator.ValidateAcceptedTurnRawMortalItemMaterializationAsync(lease), i => i.Severity == IssueSeverity.Error);
             var preparation = await validator.PrepareSpiritualSelfTreatmentPublicationAsync(lease);
@@ -99,6 +108,16 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
                 foreach (var pair in plan.PendingAfterImages) if (pair.Value is not null) writes[pair.Key] = pair.Value;
                 var deletes = plan.ConsumedPaths.Concat(plan.PendingAfterImages.Where(pair => pair.Value is null).Select(pair => pair.Key)).Distinct(StringComparer.Ordinal).ToArray();
                 owner.RequireServicePublication(writes, plan, deletes);
+                Assert.Equal(1, owner.DiagnosisCommonImageBuilds);
+                _ = owner.DiagnosisResourceOwnerAfterImage(plan);
+                owner.RequireServicePublication(writes, plan, deletes);
+                Assert.Equal(1, owner.DiagnosisCommonImageBuilds);
+                Assert.Throws<InvalidDataException>(() => owner.RequireServicePublication(writes, plan,
+                    deletes.Where(path => path != AcceptedMechanicsPlan.WoundCommandPath).ToArray()));
+                Assert.Throws<InvalidDataException>(() => owner.RequireServicePublication(writes, plan,
+                    deletes.Append("game_state/foreign_delete.json").ToArray()));
+                var foreignWrite = new Dictionary<string, JsonObject>(writes, StringComparer.Ordinal) { ["game_state/foreign_write.json"] = new() };
+                Assert.Throws<InvalidDataException>(() => owner.RequireServicePublication(foreignWrite, plan, deletes));
                 var forged = writes.ToDictionary(pair => pair.Key, pair => pair.Value.DeepClone().AsObject(), StringComparer.Ordinal);
                 forged[ResourceMaterializationContract.StatePath]["forged"] = true;
                 Assert.Throws<InvalidDataException>(() => owner.RequireServicePublication(forged, plan, deletes));
@@ -160,6 +179,25 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
         }
         Assert.Null(await files.ReadFileBytesAsync(AcceptedMechanicsPlan.WoundCommandPath));
         Assert.Null(await files.ReadFileBytesAsync(ProgressionScheduleService.ReportPath));
+        if (canonicalKind == "resource_quantity")
+        {
+            var after = ResourceStateContract.ParseCanonical(await files.ReadFileAsync(ResourceMaterializationContract.StatePath), resourceDefinitions!, false).Ledger!;
+            var historyAfter = ResourceHistoryState.ParseCanonical(await files.ReadFileAsync(ResourceMaterializationContract.HistoryPath), resourceDefinitions!, false).History!;
+            Assert.Empty(historyAfter.ValidateStateAgreement(after));
+            var cost = Assert.Single(historyAfter.Transitions.Where(row => !resourceHistoryBefore!.Transitions.Any(old => old.TransitionId == row.TransitionId)));
+            Assert.Equal(ResourceTransitionOperation.Spend, cost.Operation); Assert.Equal("turn_43:resource:1", cost.EventRef);
+            Assert.Equal(1m, cost.RequestedAmount); Assert.Equal(1m, cost.AppliedAmount);
+            Assert.Equal(ResourceMutationPhase.DirectCost, cost.Phase);
+            Assert.Equal("spiritual_action_points", cost.Coordinate.ResourceKey);
+            Assert.Equal("player_soul", cost.Coordinate.ResourceOwnerId);
+            Assert.True(resourceBefore!.TryResolveExact(cost.Coordinate, out var source));
+            Assert.True(after.TryResolveExact(cost.Coordinate, out var final));
+            Assert.Equal(source!.Current - 1m, final!.Current);
+            Assert.Equal(resourceBefore.Entries.Count, after.Entries.Count);
+            foreach (var previous in resourceBefore.Entries.Where(entry => entry.Coordinate != cost.Coordinate))
+            { Assert.True(after.TryResolveExact(previous.Coordinate, out var unchanged)); Assert.Equal(previous, unchanged); }
+            Assert.Null(await files.ReadFileBytesAsync(ResourceMaterializationContract.CommandPath));
+        }
         var settled = fixture.CaptureMutationRoots();
         await using (var lease = await files.AcquireCanonicalWriteLeaseAsync())
             Assert.True(await scheduler.IsPublishedSpiritualCycleAsync(control, lease,
@@ -224,6 +262,9 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
 
     internal static Task SeedDiagnosisBeforeBootstrapAsync(FileSystemManager files, JsonObject profiles) =>
         SeedDiagnosisBeforeBootstrapCoreAsync(files, profiles, null);
+
+    internal static Task SeedResourceDiagnosisBeforeBootstrapAsync(FileSystemManager files, JsonObject profiles) =>
+        SeedDiagnosisBeforeBootstrapCoreAsync(files, profiles, "resource_quantity");
 
     private static async Task SeedDiagnosisBeforeBootstrapCoreAsync(FileSystemManager files, JsonObject profiles, string? canonicalKind)
     {

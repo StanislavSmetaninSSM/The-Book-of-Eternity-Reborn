@@ -17,15 +17,16 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
     [Fact] public Task ConsoleDiagnosisConfirmsKnowledgeAndOneOrdinaryCycle() => RunDiagnosisJourneyAsync(false);
     [Fact] public Task BrowserDiagnosisConfirmsKnowledgeAndOneOrdinaryCycle() => RunDiagnosisJourneyAsync(true);
     [Fact] public Task DiagnosisCommonPublicationFailureRestoresWholeTurn() => RunDiagnosisJourneyAsync(false, true);
+    [Fact] public Task CanonicalResourceDiagnosisRefusesStaleConfirmAndRollbackRestoresExpandedSources() => RunDiagnosisJourneyAsync(false, true, true);
 
-    private async Task RunDiagnosisJourneyAsync(bool browser, bool failPublication = false)
+    private async Task RunDiagnosisJourneyAsync(bool browser, bool failPublication = false, bool canonicalResource = false)
     {
         var diagnosticRoot = Path.GetFullPath(TestDiagnosticPaths.Root);
         var repo = Path.GetFullPath(TestRepoPaths.RepoRoot).TrimEnd(Path.DirectorySeparatorChar);
         var comparison = OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
         if (diagnosticRoot.Equals(repo, comparison) || diagnosticRoot.StartsWith(repo + Path.DirectorySeparatorChar, comparison))
             throw new InvalidDataException("Diagnosis capture requires a diagnostic root outside checkout.");
-        var capture = new LifecyclePassiveTimingDiagnostics("SpiritualDiagnosis-" + (failPublication ? "rollback" : browser ? "browser" : "console"), output, gzipRecords: true);
+        var capture = new LifecyclePassiveTimingDiagnostics("SpiritualDiagnosis-" + (canonicalResource ? "canonical-resource-rollback" : failPublication ? "rollback" : browser ? "browser" : "console"), output, gzipRecords: true);
         var timings = new OperationTimingAccumulator(); var window = timings.StartWindow(captureEvents: true);
         Exception? primary = null; IDisposable? journey = null; IDisposable? preparation = null;
         try { await CoreAsync(); }
@@ -35,6 +36,7 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
 
         async Task CoreAsync()
         {
+            var extraSourcePaths = canonicalResource ? SpiritualDiagnosisCanonicalSources.Paths(browser ? "shining_abode" : "chaos_sea", ["resource_quantity"]) : [];
             FileSystemManager? owned = null; var armed = false; var cuts = 0;
             Dictionary<string, byte[]?>? compensationExpected = null; Dictionary<string, byte[]?>? compensationActual = null;
             byte[]? historyAtCut = null; Dictionary<string, byte[]?>? publishedAtCut = null;
@@ -67,7 +69,7 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
             {
                 fixture = await HealingFixture.CreateAsync(2, 0, 20, stageRequest: false, hooks: hooks,
                     realm: browser ? "Shining Abode" : "Chaos Sea", allocatedRootForDiagnostics: Allocated,
-                    beforeResourceBootstrap: failPublication ? SeedDiagnosisRollbackBeforeBootstrapAsync :
+                    beforeResourceBootstrap: canonicalResource ? SeedCanonicalDiagnosisRollbackBeforeBootstrapAsync : failPublication ? SeedDiagnosisRollbackBeforeBootstrapAsync :
                         AfterlifeSpiritualNaturalRecoveryTests.SeedDiagnosisBeforeBootstrapAsync);
             }
             finally { preparation?.Dispose(); preparation = null; }
@@ -114,7 +116,7 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                             await WriteNativeCompletionAsync(files, lease, turn,
                                 AfterlifeSpiritualNaturalRecoveryTests.AuthorNaturalGraphs(original, turn.SpiritualHealing["destinationGraphs"]!.AsArray()), narrative: "Я осматриваю духовную рану по выбранному способу. Сведения раскрывает клиент; мир продолжает один обычный безопасный цикл без платы и броска осмотра.");
                             compensationExpected = fixture.CaptureMutationRoots(CanonicalStateNormalizer.NormalizerRollbackTrackedFiles.Concat(
-                                new[] { AcceptedMechanicsPlan.WoundCommandPath, ProgressionScheduleService.ReportPath }));
+                                new[] { AcceptedMechanicsPlan.WoundCommandPath, ProgressionScheduleService.ReportPath }).Concat(extraSourcePaths));
                             responded = true; armed = failPublication;
                         }
                     });
@@ -126,13 +128,29 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                     using (timings.Measure("SpiritualDiagnosis.Refresh")) await runtime.StateManager.RefreshGameStateAsync();
                     if (failPublication)
                         await new ProgressionScheduleService(files, Microsoft.Extensions.Logging.Abstractions.NullLogger<ProgressionScheduleService>.Instance).EnsureInitializedAsync();
-                    var before = fixture.CaptureMutationRoots(CanonicalStateNormalizer.NormalizerRollbackTrackedFiles);
+                    var before = fixture.CaptureMutationRoots(CanonicalStateNormalizer.NormalizerRollbackTrackedFiles.Concat(extraSourcePaths));
                     string? action = null; PendingPlayerActionService.Binding? queued = null;
                     using (timings.Measure("SpiritualDiagnosis.ReadCancelConfirm"))
                     {
                         var opened = await WoundApplicationService.OpenAsync(files, "/лечить", treatment: true);
                         var state = Assert.IsType<WoundCommandState>(opened.WoundCommandState);
                         var choice = Assert.Single(state.Choices, c => c.Available && c.Selection.Diagnosis is not null);
+                        if (canonicalResource)
+                        {
+                            await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+                            var path = CanonicalResourceOwnerAuthorityComposer.AuthorityPath;
+                            var originalAuthority = Assert.IsType<byte[]>(await files.ReadFileBytesAsync(lease, path));
+                            await files.WriteFileAtomicAsync(lease, path, "{}");
+                            var stale = fixture.CaptureMutationRoots(extraSourcePaths);
+                            await Assert.ThrowsAsync<InvalidDataException>(() => WoundApplicationService.ConfirmAsync(files, lease, state, choice.Value));
+                            fixture.AssertMutationRootsUnchanged(stale);
+                            var invalidAuthority = Assert.IsType<byte[]>(await files.ReadFileBytesAsync(lease, path));
+                            files.RequireCommittedLocalPublication(await files.PublishLocalFilesAsync(lease,
+                                new[] { new CanonicalLocalFileChange(path, invalidAuthority, originalAuthority) }));
+                            Assert.Equal(originalAuthority, await files.ReadFileBytesAsync(lease, path));
+                            Assert.Equal(choice.Selection, await WoundApplicationService.ConfirmAsync(files, lease, state, choice.Value));
+                            fixture.AssertMutationRootsUnchanged(before);
+                        }
                         if (browser)
                         {
                             var service = CreateCommands(files);

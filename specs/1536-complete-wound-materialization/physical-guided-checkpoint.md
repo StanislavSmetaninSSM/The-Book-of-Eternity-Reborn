@@ -1,3 +1,34 @@
+# Canonical SOURCE correction WIP — six findings, still uncompiled/unrun
+
+Independent Astra/high declines SOURCE17abadc66 on six concrete defects: missing
+authenticated source/absence producer-reader integration; incomplete exact write /
+required-delete closure including typed owner outputs; absent separate Shining
+resident roster; confusable hall customStates admission; mixed-path stabilization
+guards; and insufficient ordinary-cost/ready metadata assertions. Same-plan callback
+work also repeated unnecessarily. These are implementation findings, not test PASS.
+
+Corrections now use one finite diagnosis observation selector at both real snapshot
+producers and a coherent reader whitelist/form. Only new canonical paths add a
+client-owned boolean hint; actual kinds come from freshly bound staged request and
+selected profile/path. Old-three-kind projection/form/read fast path remains.
+Publication retains exact produced paths, required deletes, legitimate unchanged
+omissions and existing typed owner-transition application. Stable old-three-kind
+facts remain independently checked after natural changes. Same-plan immutable
+image reuse follows fresh owner/cursor/fingerprint checks. New controls exercise
+real signed resource absence/quest coverage, unchanged old fast path, resident /
+container/mixed tiers and one expanded-source console confirmation/rollback journey.
+All corrections require delta SOURCE and fresh builds/runtime; no issue/task closure.
+
+Independent Sol/xhigh accepts the five external A2GREEN helper phase mappings:
+four fresh owners, unchanged reserve/strict warning/owner/cleanup guards. Current
+71 binary/resource paths are preserved as23 deduplicated members in a28456335-byte
+archive, SHA9d2500872e4cb67a79c2b9a5d6501bd9497a4d694985d49a97a9877a5eec9702,
+decoded92375040bytes with fullEOF/CRC/member hashes. Reviewed recoverable closed-log
+substitution ADAPTERS1/2 replaces120 closed plaintext log files; no measurement is deleted:
+108079441 original bytes are preserved in12078376 gzip bytes with manifests and
+full readback. Free space after archive remains809582592B above687865856start reserve.
+All evidence stays outside checkout. No managed build or runtime is currently running.
+
 # Canonical source/execution closure and addressed controls WIP — SOURCE pending
 
 The connected implementation now includes declaration-derived current/original /

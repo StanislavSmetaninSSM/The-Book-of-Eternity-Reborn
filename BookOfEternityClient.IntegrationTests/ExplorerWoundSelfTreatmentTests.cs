@@ -813,7 +813,7 @@ public sealed partial class ExplorerWoundSelfTreatmentTests(ITestOutputHelper ou
     }
 
     internal static async Task WriteNativeCompletionAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease,
-        TurnRequest request, JsonArray? healingGraphs = null, string? narrative = null)
+        TurnRequest request, JsonArray? healingGraphs = null, string? narrative = null, IReadOnlyCollection<string>? additionalModifiedFiles = null)
     {
         var timestamp = DateTime.UtcNow.ToString("o");
         async Task Write(string path, object value) => await files.WriteFileAtomicAsync(lease, path,
@@ -846,7 +846,8 @@ public sealed partial class ExplorerWoundSelfTreatmentTests(ITestOutputHelper ou
         }});
         await Write("ready/turn_complete.json", new { sessionId = request.SessionId, requestId = request.RequestId,
             turnNumber = request.TurnNumber, timestamp, status = "success", filesModified = new[]
-            { "output/narrative_response.json", "output/interface_updates.json", "output/debug_logs.json", ProgressionScheduleService.ReportPath } });
+            { "output/narrative_response.json", "output/interface_updates.json", "output/debug_logs.json", ProgressionScheduleService.ReportPath }
+                .Concat(additionalModifiedFiles ?? []).Distinct(StringComparer.Ordinal).ToArray() });
     }
 
     private sealed class NoPlayerInput(GameEngineTurnLifecycleTests.SpiritualLifecycleTestLogger diagnostics) : IConsoleInputSource

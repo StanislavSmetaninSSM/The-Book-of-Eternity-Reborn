@@ -2,8 +2,90 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "spiritual-diagnosis-canonical-observation",
+  "responsibility": "Three actual source/signed snapshot DATA controls: new resource companion absence and SoulQuest coverage through real native preparation/observed reader, unknown or incomplete family refusal; unchanged old three-kind projection and zero new observation IO, mismatched bound request refusal.",
+  "excludes": "No whole-game acceptance, browser/DOM/provider/fresh-process, runtime publication, retired HOLD or aggregate suite.",
+  "changeHints": [
+    "BookOfEternityClient/Services/PendingTurnSnapshotReader.DiagnosisObservation.cs",
+    "BookOfEternityClient/Services/LiveTurnPreparationService.cs",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.CanonicalDiagnosisCapturesActualSelectedSourceAndAuthenticatedAbsence",
+        "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.OldThreeKindProjectionKeepsOriginalFormWithoutAnyNewSourceRead"
+      ]
+    }
+  ]
+},
+{
+  "id": "spiritual-diagnosis-canonical-rollback",
+  "responsibility": "One console/Engine canonical resource-condition journey: initial real bootstrap, inert read/cancel, stale current owner-source confirmation refusal and exact restoration before a new valid confirmation, signed expanded original presence, one injected common publication cut after consumed request, full held/whole-turn rollback including every additional source/absence. Existing complete passive capture and original180s bound.",
+  "excludes": "No accepted successful treatment from a compensated turn; no DOM/provider/fresh-process, all-eight UI/foreign-target qualification, DFR/Mortal compatibility/Windows or raised limit.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/ExplorerWoundSelfTreatmentTests.Diagnosis.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 3,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.CanonicalResourceDiagnosisRefusesStaleConfirmAndRollbackRestoresExpandedSources"
+      ]
+    }
+  ]
+},
+{
+  "id": "spiritual-diagnosis-canonical-registry-guidance",
+  "responsibility": "Four directly affected afterlife registry/GM source inventory and worked-family manifest checks. Pure source/metadata validation only.",
+  "excludes": "No all-documentation or runtime matrix; no game/provider/DOM acceptance.",
+  "changeHints": [
+    "OtherGuides/Afterlife_Pending_Control_Surface_Inventory.json",
+    "BookOfEternityClient/Services/AfterlifeContractRegistry.cs",
+    "Examples/example_validation_manifest.json"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.AfterlifeContractRegistryTests.RegistryPathsMatchMachineReadableInventory",
+        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifePendingControlSurfaceInventoryIsMachineReadable",
+        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifeWorkedExamplesHaveRuntimeScenarioOrExplicitCoverageExemption"
+      ]
+    },
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.ExampleDocumentationValidationTests.CompleteEffectMaterializationManifest_CoversEveryRequiredWorkedFamily"
+      ]
+    }
+  ]
+},
+{
   "id": "spiritual-diagnosis-canonical-controls",
-  "responsibility": "T121 canonical adapter refusal/ownership/lifetime DATA:16 changed-source/detached-proof and actual resource composer-source call controls,16 ambiguous/foreign canonical inputs,8 closed scene/validator/dialect isolation cases.40 cases/3 methods; genuine source-backed availability premise precedes every refusal.",
+  "responsibility": "T121 canonical adapter refusal/ownership/lifetime DATA:16 changed-source/detached-proof and actual resource composer-source call controls,16 ambiguous/foreign canonical inputs,8 closed scene/validator/dialect isolation cases.45 cases/5 methods, additionally current Shining roster/confusable container and mixed stabilization guards; genuine source-backed availability premise precedes every refusal.",
   "excludes": "No complete suite, external provider/DOM/fresh-process, DFR/Mortal compatibility/Windows HOLD or whole #1536 acceptance. No raised timeout or omitted source/authority guard.",
   "changeHints": [
     "BookOfEternityClient/Services/SpiritualDiagnosisCanonicalSources.cs",
@@ -22,7 +104,9 @@
       "tests": [
         "BookOfEternityClient.Tests.SpiritualDiagnosisCanonicalRequirementTests.ChangedCanonicalEvidenceRefusesNewAdmissionAndKeepsDetachedProof",
         "BookOfEternityClient.Tests.SpiritualDiagnosisCanonicalRequirementTests.AmbiguousOrForeignCanonicalIdentityNeverSuppliesRequirement",
-        "BookOfEternityClient.Tests.SpiritualDiagnosisCanonicalRequirementTests.RecognizedSceneRowsRejectMalformedOrAmbiguousAuthority"
+        "BookOfEternityClient.Tests.SpiritualDiagnosisCanonicalRequirementTests.RecognizedSceneRowsRejectMalformedOrAmbiguousAuthority",
+        "BookOfEternityClient.Tests.SpiritualDiagnosisCanonicalRequirementTests.CurrentShiningRosterSuppliesResidentMembershipAndConfusableContainerNeverGrants",
+        "BookOfEternityClient.Tests.SpiritualDiagnosisCanonicalRequirementTests.MixedCanonicalPathKeepsEveryStableStabilizationGuard"
       ]
     }
   ]

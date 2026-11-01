@@ -131,10 +131,15 @@ internal static partial class AfterlifeWoundHealingPlanner
         }
 
         private string? _expectedDiagnosisPermissionFingerprint;
+        private string? _expectedDiagnosisStableRequirements;
         private int? _expectedDiagnosisHealingTier;
         private AcceptedMechanicsPlan? _validatedDiagnosisPlan;
         private string? _validatedDiagnosisPlanFingerprint;
         private IReadOnlyDictionary<string, JsonObject?>? _validatedDiagnosisImages;
+        private IReadOnlyDictionary<string, JsonObject?>? _validatedDiagnosisPublicationBaselines;
+        private IReadOnlySet<string>? _validatedDiagnosisWritePaths;
+        private IReadOnlySet<string>? _validatedDiagnosisDeletePaths;
+        internal int DiagnosisCommonImageBuilds { get; private set; }
         internal bool HasCanonicalDiagnosisRequirements => _diagnosis?.Candidate.Admission.RequirementBindings.OfType<JsonObject>()
             .Any(row => row["kind"] is JsonValue kind && kind.TryGetValue<string>(out var text) && SpiritualDiagnosisCanonicalSources.IsCanonicalKind(text)) == true;
         private IReadOnlyDictionary<string, JsonObject?>? _diagnosisLocalityRoots;
@@ -175,6 +180,9 @@ internal static partial class AfterlifeWoundHealingPlanner
             // projection and composed after-images; wound recovery and ordinary income
             // legitimately alter the encompassing profile/soul roots in this operation.
             var facts = admitted.RequirementBindings;
+            _expectedDiagnosisStableRequirements ??= StableDiagnosisFingerprint(new JsonArray(facts.OfType<JsonObject>()
+                .Where(row => !SpiritualDiagnosisCanonicalSources.IsCanonicalKind(row["kind"]!.GetValue<string>()))
+                .Select(row => (JsonNode)row.DeepClone()).ToArray()));
             foreach (var row in facts.OfType<JsonObject>())
                 foreach (var dependency in row["sourceDependencies"]!.AsArray().OfType<JsonObject>()) dependency.Remove("fingerprint");
             return WoundAcceptedTurnFingerprintWriter.Compute(new[] { "spiritual_diagnosis.projected_permission", "1",
@@ -222,6 +230,10 @@ internal static partial class AfterlifeWoundHealingPlanner
                     tier != _expectedDiagnosisHealingTier || projectedSoul["afterlifeCombatProfile"]?["artTiers"]?["spiritual_healing"]?.GetValue<int>() != tier ||
                     !AfterlifeEntityProfileState.TryNormalizeEffectRealm(projectedSoul["currentRealm"]?.GetValue<string>(), out var realm) || realm != _diagnosis!.Candidate.Realm)
                     throw new InvalidDataException("Diagnosis composed source tier differs from its admitted ordinary source.");
+                var stable = SpiritualDiagnosisSourceData.ReadStableRequirementBindings(_diagnosis!.Candidate.Catalog, projected, projectedSoul,
+                    _diagnosis.Candidate.Realm, _diagnosis.Candidate.Admission.Wound, _diagnosis.Candidate.Admission.Selection.Diagnosis!.DiagnosisPathId);
+                if (StableDiagnosisFingerprint(stable) != _expectedDiagnosisStableRequirements)
+                    throw new InvalidDataException("Diagnosis composed capability/provider/stabilization requirements changed.");
                 // Quantities and qualifying wound effects may lawfully change during
                 // the natural suffix. Exact common outputs are checked after validation.
                 return;
@@ -233,6 +245,14 @@ internal static partial class AfterlifeWoundHealingPlanner
                 throw new InvalidDataException("Diagnosis composed target/locality/requirements differ from the actual trusted projection.");
         }
 
+        private static string StableDiagnosisFingerprint(JsonArray rows)
+        {
+            foreach (var row in rows.OfType<JsonObject>())
+                foreach (var dependency in row["sourceDependencies"]!.AsArray().OfType<JsonObject>()) dependency.Remove("fingerprint");
+            return WoundAcceptedTurnFingerprintWriter.Compute(new[] { "spiritual_diagnosis.stable_requirements", "1",
+                WoundAcceptedTurnFingerprintWriter.CanonicalJson(rows) });
+        }
+
         internal IReadOnlyList<ValidationIssue> BindValidatedDiagnosisPlan(AcceptedMechanicsPlan plan, object capability)
         {
             if (!AcceptedTurnAuthorityRegistry.IsDiagnosisValidatedCommonCapability(capability))
@@ -242,6 +262,13 @@ internal static partial class AfterlifeWoundHealingPlanner
                 _executed.Count != _stages.Count || _expectedDiagnosisPermissionFingerprint is null ||
                 plan.AwaitsPendingResolution || plan.PreparedPlanFingerprint != AcceptedMechanicsPlanFingerprints.ComputePrepared(plan))
                 throw new InvalidDataException("Diagnosis requires its exact completed, validated common plan and source owner.");
+            if (_validatedDiagnosisPlan is not null)
+            {
+                if (!ReferenceEquals(_validatedDiagnosisPlan, plan) || _validatedDiagnosisPlanFingerprint != plan.PreparedPlanFingerprint)
+                    throw new InvalidDataException("The live diagnosis common binding changed.");
+                return []; // Same immutable DATA after all fresh owner/cursor/fingerprint checks.
+            }
+            DiagnosisCommonImageBuilds++;
             var images = (_diagnosisLocalityRoots ?? throw new InvalidDataException("Missing current source images."))
                 .ToDictionary(pair => pair.Key, pair => pair.Value?.DeepClone().AsObject(), StringComparer.Ordinal);
             images[ResourceMaterializationContract.DefinitionsPath] = plan.DefinitionAfterImage;
@@ -261,12 +288,47 @@ internal static partial class AfterlifeWoundHealingPlanner
             foreach (var pair in plan.WoundCarrierAfterImages) images[pair.Key] = pair.Value;
             images[WoundIdentityState.StatePath] = plan.WoundIdentityAfterImage ?? throw new InvalidDataException("Missing common wound identity.");
             images[WoundHistoryState.HistoryPath] = plan.WoundHistoryAfterImage ?? throw new InvalidDataException("Missing common wound History.");
+            var writePaths = new HashSet<string>(plan.OwnerCompanionAfterImages.Keys.Concat(plan.EffectCarrierAfterImages.Keys)
+                .Concat(plan.WoundCarrierAfterImages.Keys).Concat(new[] { ResourceMaterializationContract.DefinitionsPath,
+                    ResourceMaterializationContract.StatePath, ResourceMaterializationContract.HistoryPath,
+                    CanonicalResourceOwnerAuthorityComposer.AuthorityPath, EffectIdentityState.StatePath,
+                    WoundIdentityState.StatePath, WoundHistoryState.HistoryPath }), StringComparer.Ordinal);
+            var currentSources = _sources.ToDictionary(pair => pair.Key, pair => pair.Value, StringComparer.Ordinal);
+            foreach (var group in plan.OwnerTransitions.GroupBy(transition => transition.Path, StringComparer.Ordinal))
+            {
+                if (!writePaths.Add(group.Key)) throw new InvalidDataException("Diagnosis common plan has competing whole-root/typed owner outputs.");
+                if (!currentSources.TryGetValue(group.Key, out var baseline))
+                {
+                    if (!plan.BeforeImages.ContainsKey(group.Key)) throw new InvalidDataException("Typed owner output lacks its validated source binding.");
+                    var bytes = _files.ReadFileBytesSync(_lease, group.Key);
+                    baseline = new(bytes is not null, bytes); currentSources[group.Key] = baseline;
+                }
+                if (baseline.Bytes is not { } original) throw new InvalidDataException("Typed owner output lost its actual current root.");
+                var root = StrictJsonAuthority.Deserialize<JsonObject>(CanonicalJsonUtf8.DecodeOneOptionalBom(original), new JsonSerializerOptions(), group.Key)!;
+                foreach (var transition in group.OrderBy(transition => transition.OwnerRef, StringComparer.Ordinal))
+                    CanonicalStateNormalizer.ApplyOwnerTransition(root, transition);
+                images[group.Key] = root;
+            }
             foreach (var pair in plan.PendingAfterImages) images[pair.Key] = pair.Value;
+            writePaths.UnionWith(plan.PendingAfterImages.Where(pair => pair.Value is not null).Select(pair => pair.Key));
+            var deletePaths = plan.ConsumedPaths.Concat(plan.PendingAfterImages.Where(pair => pair.Value is null).Select(pair => pair.Key)).ToHashSet(StringComparer.Ordinal);
+            if (writePaths.Overlaps(deletePaths)) throw new InvalidDataException("Diagnosis common plan has competing write/delete outputs.");
             foreach (var path in plan.ConsumedPaths) images[path] = null;
-            if (_validatedDiagnosisPlan is not null && (!ReferenceEquals(_validatedDiagnosisPlan, plan) || _validatedDiagnosisPlanFingerprint != plan.PreparedPlanFingerprint))
-                throw new InvalidDataException("The live diagnosis common binding changed.");
+            var beforeImages = plan.BeforeImages;
+            var baselines = new Dictionary<string, JsonObject?>(StringComparer.Ordinal);
+            foreach (var path in writePaths)
+            {
+                var before = currentSources.GetValueOrDefault(path) ?? beforeImages.GetValueOrDefault(path)
+                    ?? throw new InvalidDataException("Diagnosis common output has no actual bound baseline: " + path);
+                baselines[path] = before.Bytes is not { } bytes ? null :
+                    StrictJsonAuthority.Deserialize<JsonObject>(CanonicalJsonUtf8.DecodeOneOptionalBom(bytes), new JsonSerializerOptions(), path);
+            }
+            _sources = currentSources;
+            RequireExecutionCurrent();
             _validatedDiagnosisPlan = plan; _validatedDiagnosisPlanFingerprint = plan.PreparedPlanFingerprint;
             _validatedDiagnosisImages = images;
+            _validatedDiagnosisPublicationBaselines = baselines;
+            _validatedDiagnosisWritePaths = writePaths; _validatedDiagnosisDeletePaths = deletePaths;
             return [];
         }
 
@@ -291,19 +353,20 @@ internal static partial class AfterlifeWoundHealingPlanner
             if (!HasCanonicalDiagnosisRequirements) return;
             if (plan is null || deletes is null) throw new InvalidDataException("Diagnosis publication lost its actual validated plan/deletion set.");
             RequireValidatedDiagnosisPlan(plan);
-            foreach (var pair in _validatedDiagnosisImages!)
+            var deleted = deletes.ToHashSet(StringComparer.Ordinal);
+            if (deleted.Count != deletes.Count || !_validatedDiagnosisDeletePaths!.SetEquals(deleted) ||
+                writes.Keys.Any(path => !_validatedDiagnosisWritePaths!.Contains(path) || deleted.Contains(path)))
+                throw new InvalidDataException("Diagnosis publication has an extra write/delete or omits a required consumed path.");
+            foreach (var path in _validatedDiagnosisWritePaths!)
             {
-                if (writes.TryGetValue(pair.Key, out var proposed))
+                var expected = _validatedDiagnosisImages![path];
+                if (writes.TryGetValue(path, out var proposed))
                 {
-                    if (pair.Value is null || deletes.Contains(pair.Key) || !JsonNode.DeepEquals(proposed, pair.Value))
-                        throw new InvalidDataException("Diagnosis publication output differs from its validated common image: " + pair.Key);
+                    if (expected is null || !JsonNode.DeepEquals(proposed, expected))
+                        throw new InvalidDataException("Diagnosis publication output differs from its validated common image: " + path);
                 }
-                else if (deletes.Contains(pair.Key))
-                {
-                    if (pair.Value is not null) throw new InvalidDataException("Diagnosis unexpectedly deletes a retained common source: " + pair.Key);
-                }
-                else if (!JsonNode.DeepEquals(pair.Value, _diagnosisLocalityRoots!.GetValueOrDefault(pair.Key)))
-                    throw new InvalidDataException("Diagnosis omits a changed common output: " + pair.Key);
+                else if (!JsonNode.DeepEquals(expected, _validatedDiagnosisPublicationBaselines![path]))
+                    throw new InvalidDataException("Diagnosis omits a changed common output: " + path);
             }
         }
 

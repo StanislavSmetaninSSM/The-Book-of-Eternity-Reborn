@@ -219,9 +219,9 @@ internal sealed class SpiritualDiagnosisCanonicalSources
             var shining = Root(ShiningAbodeState.StatePath);
             if (shining is null || !ExactProperties(shining, "currentHallId", "halls") ||
                 shining["halls"] is not JsonArray halls || !ExactUniqueRows(halls, "hallId")) return null;
-            var scope = ShiningCurrentHallContract.RequireCurrentScope(shining);
+            var scope = ShiningCurrentHallContract.RequireCurrentScope(shining, Root(GuardianAbodeResidentState.StatePath));
             var hall = halls.OfType<JsonObject>().SingleOrDefault(row => Text(row["hallId"]) == scope.LocationId);
-            return scope.IsResolved && hall is not null ? (scope, hall) : null;
+            return scope.IsResolved && hall is not null && ExactProperties(hall, "hallId", "customStates") ? (scope, hall) : null;
         }
         var guardians = Root(GuardiansPath);
         if (_realm != "chaos_sea" || guardians is null || !ExactProperties(guardians, "guardians", "chaosSeaNavigation", "activeGuardianId") ||

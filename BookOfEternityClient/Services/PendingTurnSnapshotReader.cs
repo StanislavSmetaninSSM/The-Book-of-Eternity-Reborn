@@ -6,7 +6,7 @@ using BookOfEternityClient.Core;
 
 namespace BookOfEternityClient.Services;
 
-internal static class PendingTurnSnapshotPathPresenceV1
+internal static partial class PendingTurnSnapshotPathPresenceV1
 {
     private static readonly ReadOnlyCollection<string> LegacyClosedLogicalPaths =
         Array.AsReadOnly(new[]
@@ -61,6 +61,10 @@ internal static class PendingTurnSnapshotPathPresenceV1
         Array.AsReadOnly(ClosedLogicalPaths.Concat(AfterlifeWoundTreatmentAuthority.CombatSourcePaths)
             .Distinct(StringComparer.Ordinal).ToArray());
 
+    private static readonly IReadOnlyList<IReadOnlyList<string>> CanonicalDiagnosisForms = BuildCanonicalDiagnosisForms();
+    internal static IReadOnlyList<string> ObservedLogicalPaths { get; } = Array.AsReadOnly(CombatClosedLogicalPaths
+        .Concat(CanonicalDiagnosisForms.SelectMany(paths => paths)).Distinct(StringComparer.Ordinal).ToArray());
+
     internal static IReadOnlyList<string> LogicalPaths => ClosedLogicalPaths;
     internal static IReadOnlyList<string> CombatLogicalPaths => CombatClosedLogicalPaths;
     // Earlier authenticated forms remain readable for unrelated work; neither
@@ -94,7 +98,20 @@ internal static class PendingTurnSnapshotPathPresenceV1
     internal static Dictionary<string, bool> CreateForCombatObservation(
         IReadOnlyDictionary<string, string> files,
         IReadOnlyDictionary<string, string> snapshotFileHashes,
-        bool includeCombatSources)
+        bool includeCombatSources) => CreateForPaths(files, snapshotFileHashes, GetLogicalPaths(includeCombatSources));
+
+    internal static Dictionary<string, bool> CreateForObservation(
+        IReadOnlyDictionary<string, string> files, IReadOnlyDictionary<string, string> snapshotFileHashes,
+        IReadOnlyList<string> paths)
+    {
+        var keys = paths.ToHashSet(StringComparer.Ordinal);
+        if (keys.Count != paths.Count || !(keys.SetEquals(LogicalPaths) || keys.SetEquals(CombatLogicalPaths) || IsCanonicalDiagnosisForm(keys)))
+            throw new InvalidDataException("Unknown original source observation family.");
+        return CreateForPaths(files, snapshotFileHashes, paths);
+    }
+
+    private static Dictionary<string, bool> CreateForPaths(IReadOnlyDictionary<string, string> files,
+        IReadOnlyDictionary<string, string> snapshotFileHashes, IReadOnlyList<string> paths)
     {
         ArgumentNullException.ThrowIfNull(files);
         ArgumentNullException.ThrowIfNull(snapshotFileHashes);
@@ -110,7 +127,7 @@ internal static class PendingTurnSnapshotPathPresenceV1
         }
 
         var result = new Dictionary<string, bool>(StringComparer.Ordinal);
-        foreach (var logicalPath in GetLogicalPaths(includeCombatSources))
+        foreach (var logicalPath in paths)
         {
             var fileRows = files
                 .Where(pair => string.Equals(pair.Key, logicalPath, StringComparison.Ordinal))
@@ -493,7 +510,7 @@ internal static partial class PendingTurnSnapshotReader
         }
         if (requireSignedAbsenceForMissingOptionalPaths)
         {
-            var observed = PendingTurnSnapshotPathPresenceV1.CombatLogicalPaths
+            var observed = PendingTurnSnapshotPathPresenceV1.ObservedLogicalPaths
                 .ToHashSet(StringComparer.Ordinal);
             foreach (var path in result.Where(optional.Contains))
             {
@@ -590,7 +607,8 @@ internal static partial class PendingTurnSnapshotReader
               (manifest.OriginalPathPresenceV1.Count == beforeCompletion.Count && actual.SetEquals(beforeCompletion)) ||
               (manifest.OriginalPathPresenceV1.Count == beforeMortal.Count && actual.SetEquals(beforeMortal)) ||
               (manifest.OriginalPathPresenceV1.Count == previous.Count && actual.SetEquals(previous)) ||
-              (manifest.OriginalPathPresenceV1.Count == legacy.Count && actual.SetEquals(legacy))))
+              (manifest.OriginalPathPresenceV1.Count == legacy.Count && actual.SetEquals(legacy)) ||
+              PendingTurnSnapshotPathPresenceV1.IsCanonicalDiagnosisForm(actual)))
         {
             Add(
                 issues,
