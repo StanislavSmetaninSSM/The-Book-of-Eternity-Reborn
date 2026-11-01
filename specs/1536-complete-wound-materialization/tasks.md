@@ -333,7 +333,7 @@ this bounded route, not parent T121/FR071/US5/#1536 or the eight proof adapters.
   environment requirements through the existing read-set/context owner and
   `Services/SpiritualDiagnosisSourceData.cs`. Do not infer locality from an arbitrary
   profile field, reserve costs, invent Mortal snapshots or skip a declaration.
-  The supported-three-kind execution route is accepted separately below; this
+  The supported-three-kind execution route is accepted separately below. The
   eight canonical proof adapters now pass independent bounded qualification:
   16 causal +47 retained admission +71 controls +4 corrected Unit +2 native +1
   console rollback =141 distinct PASS across seven explicit runtime groups.
