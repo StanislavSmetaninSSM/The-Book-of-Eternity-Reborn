@@ -1,3 +1,25 @@
+# C14 controls first attempt — fixture2 FAIL, remaining12 UNRUN
+
+Runtime1c871c9baf13ea2917511f0c1ad6bb738bdd6b11 / all compiled ownersb36df4f.
+Independent PREP and fresh unchanged fence admitted the exact14 once. Runner
+stopped after the first category:2 complete FAIL/0PASS,12UNRUN, no timeout,
+category8.8203354/60s,wall25.0032448s. Both failures are the same earlier
+pending_turn_snapshot_reader_coverage_missing for signed progression_schedule,
+not clock parsing/publication. The original default conflict fixture predates
+standalone natural-cycle dispatch and omitted this source. No native clock
+capture/body or later category ran; no clock GREEN or completed14 is claimed.
+Primary TRX/unique IDs/error and complete owned cleanup are strictly recorded
+in P3GREENC14GREEN-controls14/verified-fixture-failure.json; all original evidence
+remains. No production guard, assertion or budget is weakened.
+
+The test-only correction uses the existing SpiritualResourceCurrentReadView
+standalone preparation pattern: actual scheduler/control before the sole original,
+then authenticated exact schedule bytes and original active-conflict proof before
+any current exchange/stale clock. Complete initial setup is reviewed together;
+no post-accepted file insertion or fake receipt. Main/Support/Unit production
+sources remain unchanged. Next bounded delta SOURCE, preserve actual Integration4,
+fresh Integration-only build and exact current plan/PREP; no passing case to repeat.
+
 # C14 reviewed clock candidate — fresh builds; controls14 runtime UNRUN
 
 Independent Astra/high SOURCE accepts b36df4f7620359f37484b7594ed33b85abaff113,
