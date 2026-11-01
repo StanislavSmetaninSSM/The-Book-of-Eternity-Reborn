@@ -1,3 +1,34 @@
+# C14 genuine clock scaffold built — exact causal1 PREP pending
+
+Independent Astra/high SOURCE accepts4c0b88dc5f7e63c64bded67f62b4840a9447a613:
+initial calendar completion precedes the genuine original; clock-only ReadCurrent
+retains original control; actual existing raw-resource entry and all RED/GREEN
+boundaries are typed and explicit. Six helper phase-only changes are independently
+verified. No production code, shared mutation schema or rollback inventory changed.
+
+Fresh Integration build exits0 in146.460967s, 0 errors / baseline102 warnings
+(204 logged code/message occurrences). Main/Support/Unit retain unchanged C12
+source390907 builds. Four actual PE/PDB identities,414 source bindings,27artifacts,
+ten resources in40copies and four daemons match. Ended standard obj/ref2+2 alone
+retired; all current bins/dependency refs remain. Prior accepted C13GREEN
+Integration4 preserved in full verified archive10981966B, SHA-256
+bccb3bcf11407d5c26e8e7325c8bcc7fa0147dc8d4fab1bf0f67df6832c1c430.
+
+Official discovery1298categories/13113methods has no stale/unmapped selectors and
+zero execution. P3GREENC14RED-causal1-plan exits0: exactly1case/1method/1exclusive
+Integration descriptor/60s, zero execution. Catalogue and plan generic logs are
+fully decoded/hash-verified recoverable gzip; every other raw/result is retained.
+The last fresh fence has no active managed owner, stable27/resources/daemons and
+836546560 free bytes above unchanged687865856 reserve. Full capture uses the
+existing passive/native path without broad ambient contexts or any record quota.
+
+Next: independent PREP, immediate fence and only this one baseline. Classify actual
+raw-admission diagnostics and full capture/cleanup before calling it causal RED.
+An unrelated refusal, setup failure or timeout is not that RED. The expected
+numeric-clock oracle precedes all GREEN-only repeat/progression/menu assertions.
+No full course/browser/native family/rollback retry or production implementation
+is admitted by this build; existing PASS/UNKNOWN/UNRUN/HOLDs stay unchanged.
+
 # C14 ordinary-clock causal scaffold — UNCOMPILED / UNRUN
 
 Independent Astra/high accepts the preceding five metadata changes and recommends
@@ -33,7 +64,7 @@ Existing passive accumulator/gzip/native fixture lifetime records the full strea
 without broad ambient contexts, arbitrary observers, quotas or a new transport.
 
 Finite scaffold plan:
-- [ ] Coherent SOURCE/fixture/selection/helper review; preserve current Integration4.
+- [x] Coherent SOURCE/fixture/selection/helper review; preserve current Integration4.
 - [ ] Fresh Integration-only build (other owners unchanged), bindings/resources,
   discovery/exact PlanOnly/PREP; one case in an exclusive 60s category.
 - [ ] Classify the actual baseline and cost from primary TRX/full capture/cleanup.
