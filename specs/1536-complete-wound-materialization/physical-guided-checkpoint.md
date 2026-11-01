@@ -1,3 +1,32 @@
+# C12 browser procedure — complete 1 PASS; OUTCOME pending
+
+Runtime bbb47929b62113f317467b2a2bcea3a8ffe617ac / all four compiled source
+390907d4d376e70ec99d49653ec2b9fe22b54c19. Independent final Astra/high PREP
+admitted only separate procedure first, then guaranteed after procedure OUTCOME
+and a new immediate fence; each exclusive Integration singleton keeps 180s.
+
+P3GREENC12-browser-procedure1 completes 1/1 case and descriptor, 1 PASS,
+no timeout/underfill, category 135.8573635s/180s, wall 143.3315179s. Strict primary
+TRX SHA-256 125fdd6db0b915bb014882f8bd86f52c76dbe4f6f647f95f4f72d465f5caa068;
+unique test/execution IDs, exact planned method, stable owning binaries and runner
+cleanup verified. The unchanged complete shared journey asserts cancellation,
+separate confirmation, actual signed procedure roll/retained request, common
+publication, exact items/time/History, current completion, replay and cleanup.
+
+Full original passive gzip verifies stored and decoded hashes/lengths, EOF/CRC,
+12 consecutive events / six exact original pairs, no open scopes/late events,
+closed writer/footer and actual owned-root absence. Journey 128585.980586ms,
+ProcessConfirmedAttempt 124714.081118ms; inclusive scopes are not added. This is
+actual shared browser queue/handler acceptance, not DOM/provider/fresh-process.
+Generic log alone is recoverable gzip under its frozen per-run manifest; all
+TRX/JSON/capture and unique evidence remain external. Post-run fence 16:29:37 UTC
+has no active managed owner, 27 pins/resources/daemons stable, 882241536 free bytes.
+
+Independent OUTCOME is pending. Guaranteed singleton is UNRUN; old grouped browser
+UNKNOWN, retained console PASS, advanced native UNKNOWN, course/rollback UNRUN
+and broader HOLDs remain unchanged. No speedup or full physical-feature claim.
+Next: bounded OUTCOME/conditional guaranteed PREP, then immediate fresh fence.
+
 # C12 browser modes — fresh preparation verified; final PREP pending
 
 Linux source 390907d4d376e70ec99d49653ec2b9fe22b54c19. Independent Astra/high
