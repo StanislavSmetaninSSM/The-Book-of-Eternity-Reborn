@@ -34,17 +34,6 @@ internal static partial class WoundAcceptedTurnPlanner
         }
 
         /// <summary>
-        /// Copies the actual private continuation's frozen envelopes. These are
-        /// deterministic comparison inputs, never a publication permission.
-        /// </summary>
-        internal static MortalDiagnosisPublicationWitness CaptureFrozen(TreatmentSkillCommandEnvelope skills,
-            MortalTreatmentItemCommandEnvelope items) => Parse(new JsonObject
-            {
-                ["schemaVersion"] = 1, ["skillCommands"] = skills.CommandRoot.DeepClone(),
-                ["itemCommands"] = items.ToWitnessRoot()
-            });
-
-        /// <summary>
         /// Rederives ordinary physical publication semantics from the shared
         /// original binding and pure outcome preparation calculation.
         /// </summary>
@@ -99,6 +88,18 @@ internal static partial class WoundAcceptedTurnPlanner
                 acceptedFingerprint, request, resolution, workingFingerprint, progressionFingerprint, critical.Fingerprint!), _skills, _items);
         }
     }
+
+    /// <summary>
+    /// Copies the actual private continuation's frozen envelopes without exposing
+    /// their private type. These comparison inputs grant no publication permission.
+    /// </summary>
+    private static MortalDiagnosisPublicationWitness CaptureFrozenTreatmentPublicationInputs(
+        TreatmentSkillCommandEnvelope skills, MortalTreatmentItemCommandEnvelope items) =>
+        MortalDiagnosisPublicationWitness.Parse(new JsonObject
+        {
+            ["schemaVersion"] = 1, ["skillCommands"] = skills.CommandRoot.DeepClone(),
+            ["itemCommands"] = items.ToWitnessRoot()
+        });
 
     private static string ComputeMortalDiagnosisPublicationBaseFingerprint(string acceptedFingerprint,
         MortalWoundTreatmentAttemptRequest request, MortalWoundTreatmentResolution resolution,

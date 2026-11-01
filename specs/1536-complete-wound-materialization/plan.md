@@ -1,5 +1,11 @@
 # T121 physical SOURCE HOLD — six-row causal scaffold, UNCOMPILED/UNRUN
 
+The first fresh Main compile on1d255299b failed with CS0051 before any test:
+the new witness factory exposed a private envelope type through an internal
+method. Its identical DATA-copy/Parse body is moved to the outer planner as a
+private factory, retaining the envelope's privacy and all parser/fingerprint work.
+The failed build remains external P2RED-build-main; all tests remain UNRUN.
+
 Delta SOURCE found one scaffold coordinate mismatch before compilation: importing
 the existing remove-then-heal wound changed its route ID while the enclosing
 scenario retained its original coordinate. The test now preserves the original

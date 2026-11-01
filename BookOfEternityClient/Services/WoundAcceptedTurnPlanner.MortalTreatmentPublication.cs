@@ -575,7 +575,7 @@ internal static partial class WoundAcceptedTurnPlanner
         }
         var persisted = acceptedState.HasOriginalGuidedTreatmentInput
             ? MortalWoundTreatmentPersistedResult.CreateGuided(resolution, acceptedState,
-                MortalDiagnosisPublicationWitness.CaptureFrozen(skillProjection.CommandEnvelope, itemCommandEnvelope))
+                CaptureFrozenTreatmentPublicationInputs(skillProjection.CommandEnvelope, itemCommandEnvelope))
             : MortalWoundTreatmentPersistedResult.Create(resolution);
         var fingerprint = ComputeTreatmentContinuationFingerprint(
             before,
