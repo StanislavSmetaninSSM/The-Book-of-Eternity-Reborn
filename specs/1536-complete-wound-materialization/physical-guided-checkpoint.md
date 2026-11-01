@@ -1,3 +1,17 @@
+# C6 current settlement — capability refusal, 1 FAIL / 2 UNRUN
+
+Runtimedfc20507b3c83e4794ac16e7ba56acbba8a1407e / Integration133e1eead:
+the reaction graph now passes initial canonical History preparation. The actual
+retained physical allocation refuses mortal_wound_treatment_capability_source_missing
+before publication. Category6.494355/120s,wall13.6021652s; no timeout, unique actual
+case, stable pins and complete cleanup. Current-removal/joint remain UNRUN; zero
+new PASS. External P3GREENC6-current3/verified-partial-failure.json preserves TRX.
+The bounded next investigation must reconcile the entire altered severity-IV
+current-legacy fixture with its genuine guaranteed provider capability, outcome
+range and full initial admission, rather than repeat the failed run after a lone
+field guess. Do not weaken production capability or authority. Independent1 and
+simple3 remain accepted by their unaffected lineages; UI9/HOLDs stay unadmitted.
+
 # C6 fixture correction built — current3 PREP pending
 
 SOURCE133e1eead79291fb359da3ad2f3d49c7273b2c7a accepted independently.
