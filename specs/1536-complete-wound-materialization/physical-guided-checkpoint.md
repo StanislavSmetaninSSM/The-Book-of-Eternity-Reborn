@@ -1,3 +1,22 @@
+# Physical publication-cut rollback3 — PREP accepted, runtime UNRUN
+
+Independent Astra/high accepts one existing `mortal-physical-guided-rollback`
+category: procedure/course/guaranteed, 3 cases / 1 exclusive Integration descriptor,
+unchanged 180 seconds. Exact current PlanOnly is zero-execution; qualified mixed
+binary owners, cut/compensation/whole-original oracles and COURSE helpers remain
+unchanged. Course cut is its first genuine milestone and needs no wait. The fresh
+20:28:09 UTC fence proves all artifacts/resources stable, no live managed owner,
+and 715083776 free bytes above the unchanged start reserve. Immediate current
+fence required after this checkpoint. No passing selection/build is repeated.
+
+Browser-course evidence and retained inventory were independently verified as
+UNKNOWN, with no basis for a repair-loop attribution. Existing passive hook wiring
+could expose disabled Engine phase timers, but also adds nested intrinsic timing
+cost; no implementation or new diagnostic runtime has been admitted yet. Neither
+that investigation nor browser acceptance is required for these independent cuts.
+All raw/captures/saves/unique evidence remain external and retained; only closed
+plain generic logs were substituted by fully verified recoverable gzip.
+
 # Browser course — timeout / UNKNOWN; console course remains accepted
 
 Actual runtime `40eb4d66536f883fa7609df08f5b0102963bae27`, same qualified mixed
