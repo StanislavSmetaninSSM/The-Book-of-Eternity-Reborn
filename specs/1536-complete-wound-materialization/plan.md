@@ -1,3 +1,32 @@
+# T121 terminal4 — three complete PASS; independent legacy root binding open
+
+Runtime 6efe7e156ac2ed1ee231ec443f444fbaa96c69e5 / compiled source
+ebfb65dd17120ca17a2f83a6c1260a38359da24e: P3GREENC4-terminal4 completes
+3 PASS / 1 FAIL, category 56.7411355 / 120 seconds, wall 62.7522554. All four
+rows execute, no timeout/underfill, stable binaries and complete cleanup. Strict
+proof/TRX remain external at P3GREENC4-terminal4/verified-partial-outcome.json.
+
+Procedure, course and guaranteed simple terminal heals pass their complete native
+cases, including independent canonical empty-codec roundtrip, full original History
+prefix, exact linked treat/heal append, final identity/carrier agreement and both
+source-role honest-copy/tamper refusals. This is native/common-plan qualification,
+not a UI journey or whole physical feature acceptance.
+
+The remove row passes its nonempty cosmetic/mechanical codec, malformed/semantic
+refusals, unchanged bytes/claims and direct preparation prefix. Its actual effect
+planner now returns effect_reaction_wound_root_binding_invalid at
+ effect.reactions.woundRootBindings for t061_mechanical/t061_legacy_application.
+The codec is no longer the failure; this is a concrete independent-legacy binding
+boundary, with no swallowed exception. Exact existing source/root/slot/lineage and
+sealed independent-legacy obligations are under bounded Sol/Astra review before
+any patch. No wound-owned-root guard may be weakened or bypassed.
+
+Prior frontier plus these three gives 36 distinct PASS across explicit versions,
+not a fresh36 run. The remaining terminal row, current3, UI9 and all broader HOLDs
+stay open. No automatic repeat of passed rows. Additional binary export remains
+explicitly deferred; current bin, full raw and old archives are preserved. Closing
+shows no live managed owner, 49 old zombies and 699,449,344 free bytes.
+
 # T121 legacy codec candidate — compiled; terminal4 PREP pending
 
 Independent Astra/high SOURCE accepts ebfb65dd17120ca17a2f83a6c1260a38359da24e.
