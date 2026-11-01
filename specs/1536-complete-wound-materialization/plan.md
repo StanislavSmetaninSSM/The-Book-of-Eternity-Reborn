@@ -1,3 +1,50 @@
+# T121 nested legacy codec and whole History oracle — UNCOMPILED/UNRUN
+
+Bounded correction on 7fe722454b9a3e0414dcfd3aecb7ad24ee3b4849. The actual C3
+terminal4 result below remains 0 PASS / 4 FAIL with no timeout/full cleanup. Its
+three valid Compose results are prefix evidence only; no complete case is GREEN.
+The observed removal exception identifies strict persisted-result reconstruction,
+not a speculative continuation, allocation or effect-execution failure.
+
+The existing persistence writer and strict operation reader now register one
+closed-kind legacy converter following the requirement-evidence pattern. Only
+cosmetic and mechanical_effect concrete DTOs are supported, with complete required
+kind/reference/summary and mechanical effectDraft; strict UnmappedMemberHandling
+still rejects extra fields. Concrete type/kind mismatch rejects. No $type, schema,
+fallback, gameplay grammar or authority is introduced. Full mechanical definitions,
+applications, parameters and order now survive serialization, including the
+existing HasMatchingDeclaredResult comparison. Duplicate checks, selected original
+request declarations and receipt/result fingerprints remain mandatory.
+
+Before the same actual publication, all four existing genuine causal rows compare
+the entire emitted declaredResult against the independent canonical wound-route
+writer. They then require strict Create/Parse/canonical-reserialization equality
+and exact request/receipt fingerprints, covering empty and nonempty heals. The
+nonempty row refuses cloned missing/extra/unknown/type-conflicting legacy fields,
+missing mechanical draft, changed complete parameters/definitions and reordered
+declarations; semantic payload changes must reach the existing selected-result
+semantics refusal. Complete physical bytes and exact held request/confirmed claims
+remain unchanged. The current invocation-scoped exception observer remains for
+honest later failures. No new world, owner, category, case, budget or separate RED
+pipeline is added; the actual Create exception is the causal evidence.
+
+Standalone/current and genuine joint History helpers preserve every original row
+without turn filtering, require exactly two or three appended rows, check global
+NextOrdinal and per-wound ordinals, accepted coordinates and executed fingerprints,
+and validate complete final History/identity/carrier agreement using only detached
+copies and the existing typed mutation applier. The joint acquisition suffix and
+its omission refusal remain intact. Known remaining current/legacy suffixes target
+the actual final linked rows and unique v2 treat result; no additional confirmed
+assumption correction is required. Each changed helper/Fact captures the existing
+detached Input, PreparedPlan, EffectBatchPlan and FinalPlan views once, then reuses
+those local DATA views and their effect input/plan through all assertions instead
+of repeatedly deep-cloning the whole bundle inside loops. PreTurnCarriers remains
+its separately detached mutation target. No owner, cache/API or validation is
+introduced or removed, and no measured speedup is claimed. No GM, count,
+budget, category or unrelated pin change. All changes remain UNCOMPILED/UNRUN;
+writer verification is limited to source/member and diff-whitespace checks. Root
+owns persistence, independent SOURCE, owning builds and finite runtime admission.
+
 # T121 nested legacy codec and History-prefix findings — correction pending
 
 Runtime ec34f8250f070a6537375a9dc97ef93d4185e80e / source

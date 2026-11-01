@@ -67,6 +67,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
         Assert.Empty(await validator.ValidateAcceptedTurnRawMortalItemMaterializationAsync(fixture.Lease));
         var held = fixture.CaptureJson();
         if (removeThenHeal) AssertTerminalLegacyPreparationPrerequisite(fixture, admitted.Owner, request, resolution, held);
+        AssertTerminalPersistedResultRoundTrip(fixture, admitted.Owner, request, resolution, held);
         var observedExceptions = new ConcurrentQueue<string>();
         var invocation = new AsyncLocal<object?>(); var marker = new object();
         void Observe(object? sender, FirstChanceExceptionEventArgs args)
@@ -94,6 +95,78 @@ public sealed partial class MortalWoundTreatmentResolverTests
             "TERMINAL_HEAL_CAUSAL: the actual publication rejected a legal, retained terminal heal after native mode/source/claim premises. " +
             DescribeIssues(composed.Issues) + Environment.NewLine + string.Join(Environment.NewLine, observedExceptions));
         AssertTerminalPublicationStages(composed.Plan!, removeThenHeal ? "remove" : "simple");
+    }
+
+    private static void AssertTerminalPersistedResultRoundTrip(DiagnosisOwnershipFixture fixture,
+        MortalWoundTreatmentAcceptedStateAuthority owner, MortalWoundTreatmentAttemptRequest request,
+        MortalWoundTreatmentResolution resolution, Dictionary<string, byte[]> captured)
+    {
+        var receipt = MortalWoundTreatmentReceipt.Create(resolution);
+        var finalization = MortalWoundTreatmentResourceComposer.Finalize(resolution);
+        Assert.True(finalization.IsValid, DescribeIssues(finalization.Issues));
+        var claims = AcceptedTurnAuthorityRegistry.InspectConfirmedMortalWoundTreatmentResourceClaim(
+            fixture.Files, fixture.Lease, request, finalization.Finalization!);
+        Assert.True(claims.IsValid, DescribeIssues(claims.Issues));
+        Assert.Equal(MortalWoundTreatmentResourceReservationState.ConfirmedHeld, claims.State);
+        var serialized = WoundResponseInputComposer.ComposeMortalWoundTreatmentPersistedResult(request, receipt);
+        // The canonical route writer is independent of the persistence serializer.
+        // Compare the entire ordered payload, including definitions and parameters.
+        var canonical = JsonNode.Parse(WoundMaterializationContract.SerializeCanonical(request.RouteSourceWound))!.AsObject();
+        var route = Assert.Single(canonical["treatment"]!["routes"]!.AsArray().OfType<JsonObject>(),
+            row => row["routeId"]!.GetValue<string>() == request.Coordinates.RouteId);
+        Assert.False(receipt.Interruption);
+        var outcomes = route["outcomes"]!.AsArray();
+        var expected = request.Mode == "course"
+            ? Assert.Single(outcomes.OfType<JsonObject>(), row => row["ordinal"]!.GetValue<int>() == request.MilestoneOrdinal)["result"]
+            : outcomes[Assert.IsType<int>(receipt.SelectedOutcomeIndex)]!["result"];
+        Assert.True(JsonNode.DeepEquals(expected, serialized["declaredResult"]));
+        var persisted = MortalWoundTreatmentPersistedResult.Create(resolution);
+        Assert.True(JsonNode.DeepEquals(serialized, persisted.ToCanonicalJson()));
+        var issues = new List<ValidationIssue>();
+        var reparsed = MortalWoundTreatmentPersistedResult.Parse(JsonSerializer.SerializeToElement(serialized), "codec.result", issues);
+        Assert.Empty(issues); Assert.NotNull(reparsed);
+        Assert.True(JsonNode.DeepEquals(serialized, reparsed.ToCanonicalJson()));
+        Assert.Equal(request.RequestFingerprint, reparsed.Request.RequestFingerprint);
+        Assert.Equal(receipt.ReceiptFingerprint, reparsed.Receipt.ReceiptFingerprint);
+        Assert.True(JsonNode.DeepEquals(serialized["requestAuthority"], reparsed.SerializeRequest()));
+        var heal = serialized["declaredResult"]!.AsArray()[^1]!.AsObject();
+        var legacies = heal["legacies"]!.AsArray();
+        if (legacies.Count > 0)
+        {
+            Assert.Equal(new[] { "cosmetic", "mechanical_effect" }, legacies.Select(row => row!["kind"]!.GetValue<string>()));
+            void Refuse(string label, Action<JsonArray> fault, bool semantic = false)
+            {
+                var changed = serialized.DeepClone().AsObject();
+                fault(changed["declaredResult"]!.AsArray()[^1]!["legacies"]!.AsArray());
+                var rejectedIssues = new List<ValidationIssue>();
+                var rejected = MortalWoundTreatmentPersistedResult.Parse(JsonSerializer.SerializeToElement(changed), "codec.result", rejectedIssues);
+                Assert.True(rejected is null, label); Assert.NotEmpty(rejectedIssues);
+                if (semantic) Assert.Contains(rejectedIssues, issue => issue.Code == "mortal_wound_treatment_persisted_result_semantics_mismatch");
+            }
+            Refuse("missing legacy reference", rows => rows[0]!.AsObject().Remove("localLegacyRef"));
+            Refuse("missing legacy kind", rows => rows[0]!.AsObject().Remove("kind"));
+            Refuse("extra legacy field", rows => rows[0]!["foreign"] = true);
+            Refuse("unknown legacy kind", rows => rows[0]!["kind"] = "foreign");
+            Refuse("cosmetic cannot carry mechanical payload", rows => rows[0]!["effectDraft"] = rows[1]!["effectDraft"]!.DeepClone());
+            Refuse("missing mechanical draft", rows => rows[1]!.AsObject().Remove("effectDraft"));
+            Refuse("extra mechanical field", rows => rows[1]!["foreign"] = true);
+            Refuse("changed full parameters", rows => rows[1]!["effectDraft"]!["applications"]![0]!["parameters"]!["foreign"] = 7, semantic: true);
+            Refuse("changed full definition", rows => rows[1]!["effectDraft"]!["definitions"]![0]!["definition"]!["display"]!["description"] = "foreign", semantic: true);
+            Refuse("changed legacy order", rows =>
+            {
+                var first = rows[0]!.DeepClone(); var second = rows[1]!.DeepClone(); rows[0] = second; rows[1] = first;
+            }, semantic: true);
+            var typedHeal = Assert.IsType<MortalWoundHealOperation>(receipt.DeclaredResult[^1]);
+            var cosmetic = Assert.IsType<MortalWoundCosmeticLegacyDraft>(typedHeal.Legacies[0]);
+            Assert.Throws<JsonException>(() => WoundResponseInputComposer.SerializeMortalWoundTreatmentValue(
+                new MortalWoundHealOperation(typedHeal.Legacies.SetItem(0, cosmetic with { Kind = "mechanical_effect" }))));
+        }
+        else Assert.Empty(Assert.IsType<MortalWoundHealOperation>(reparsed.Receipt.DeclaredResult[^1]).Legacies);
+        Assert.Same(request, owner.ReadHeldGuidedTreatmentRequest(request.Coordinates));
+        var after = AcceptedTurnAuthorityRegistry.InspectConfirmedMortalWoundTreatmentResourceClaim(
+            fixture.Files, fixture.Lease, request, finalization.Finalization!);
+        Assert.True(after.IsValid, DescribeIssues(after.Issues)); Assert.Equal(claims.State, after.State);
+        fixture.AssertJson(captured);
     }
 
     private static void AssertTerminalLegacyPreparationPrerequisite(DiagnosisOwnershipFixture fixture,

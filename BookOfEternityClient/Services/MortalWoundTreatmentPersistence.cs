@@ -93,6 +93,54 @@ internal sealed class MortalWoundTreatmentRequirementEvidenceJsonConverter :
         JsonSerializer.Serialize(writer, value, value.GetType(), options);
 }
 
+/// <summary>
+/// Preserves the complete two-kind legacy payload in persisted treatment DATA.
+/// It supplies no new discriminator or authority; the enclosing strict codec
+/// still validates duplicates, selected declarations and all request/result seals.
+/// </summary>
+internal sealed class MortalWoundHealLegacyDraftJsonConverter : JsonConverter<MortalWoundHealLegacyDraft>
+{
+    /// <summary>
+    /// Reads one existing kind through its strict concrete DTO representation.
+    /// </summary>
+    public override MortalWoundHealLegacyDraft Read(ref Utf8JsonReader reader,
+        Type typeToConvert, JsonSerializerOptions options)
+    {
+        using var document = JsonDocument.ParseValue(ref reader);
+        var root = document.RootElement;
+        if (root.ValueKind != JsonValueKind.Object ||
+            !root.TryGetProperty("kind", out var kindElement) || kindElement.ValueKind != JsonValueKind.String ||
+            !root.TryGetProperty("localLegacyRef", out var reference) || reference.ValueKind != JsonValueKind.String ||
+            !root.TryGetProperty("readableSummary", out var summary) || summary.ValueKind != JsonValueKind.String)
+            throw new JsonException("A legacy requires its exact kind, reference and readable summary.");
+        var kind = kindElement.GetString();
+        if (kind == "mechanical_effect" &&
+            (!root.TryGetProperty("effectDraft", out var draft) || draft.ValueKind != JsonValueKind.Object))
+            throw new JsonException("A mechanical legacy requires its complete effect draft.");
+        MortalWoundHealLegacyDraft? value = kind switch
+        {
+            "cosmetic" => JsonSerializer.Deserialize<MortalWoundCosmeticLegacyDraft>(root.GetRawText(), options),
+            "mechanical_effect" => JsonSerializer.Deserialize<MortalWoundMechanicalEffectLegacyDraft>(root.GetRawText(), options),
+            _ => throw new JsonException("Unknown treatment legacy kind.")
+        };
+        if (value is null || value.Kind != kind ||
+            value is MortalWoundMechanicalEffectLegacyDraft { EffectDraft: null })
+            throw new JsonException("Treatment legacy type and kind disagree.");
+        return value;
+    }
+
+    /// <summary>
+    /// Writes the complete concrete payload without inventing type metadata.
+    /// </summary>
+    public override void Write(Utf8JsonWriter writer, MortalWoundHealLegacyDraft value, JsonSerializerOptions options)
+    {
+        if (value is not MortalWoundCosmeticLegacyDraft { Kind: "cosmetic" } and
+            not MortalWoundMechanicalEffectLegacyDraft { Kind: "mechanical_effect", EffectDraft: not null })
+            throw new JsonException("Unknown or mismatched treatment legacy type.");
+        JsonSerializer.Serialize(writer, value, value.GetType(), options);
+    }
+}
+
 internal static class MortalWoundTreatmentPersistedRequestCatalog
 {
     private static JsonObject SerializeDiagnosisRequest(MortalWoundTreatmentAttemptRequest request) =>
@@ -702,7 +750,8 @@ internal static class MortalWoundTreatmentCommandCodec
     {
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
         PropertyNameCaseInsensitive = false,
-        UnmappedMemberHandling = JsonUnmappedMemberHandling.Disallow
+        UnmappedMemberHandling = JsonUnmappedMemberHandling.Disallow,
+        Converters = { new MortalWoundHealLegacyDraftJsonConverter() }
     };
     private static readonly JsonSerializerOptions RequestJsonOptions = CreateRequestJsonOptions();
 
@@ -2656,7 +2705,8 @@ internal static partial class WoundResponseInputComposer
 
     private static readonly JsonSerializerOptions TreatmentPersistenceJsonOptions = new()
     {
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        Converters = { new MortalWoundHealLegacyDraftJsonConverter() }
     };
 
     internal static JsonObject ComposeMortalWoundTreatmentCommandRoot(

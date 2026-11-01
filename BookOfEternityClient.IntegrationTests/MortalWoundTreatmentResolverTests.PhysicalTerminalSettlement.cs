@@ -58,9 +58,14 @@ public sealed partial class MortalWoundTreatmentResolverTests
     private static void AssertTerminalPublicationStages(AcceptedMechanicsPlan plan, string variant)
     {
         var bundle = Assert.IsType<AcceptedMechanicsWoundStageBundle>(plan.WoundStageBundle);
-        Assert.True(WoundAcceptedTurnPlanner.TryReadTerminalTreatment(bundle.PreparedPlan, out var terminal));
-        Assert.True(EffectAcceptedTurnPlanner.TryReadMortalTreatmentExecution(bundle.PreparedPlan,
-            bundle.EffectBatchPlan.EffectPlan, out var stages));
+        var input = bundle.Input; var prepared = bundle.PreparedPlan;
+        var accepted = bundle.EffectBatchPlan; var finalPlan = bundle.FinalPlan;
+        var frame = input.Binding; var source = accepted.EffectPlan; var effectInput = accepted.EffectInput;
+        var terminations = accepted.TerminationResults; var preparedBatches = prepared.EffectOperationBatches;
+        var contributions = finalPlan.CarrierContributions; var afterImages = source.CarrierAfterImages;
+        Assert.True(WoundAcceptedTurnPlanner.TryReadTerminalTreatment(prepared, out var terminal));
+        Assert.True(EffectAcceptedTurnPlanner.TryReadMortalTreatmentExecution(prepared,
+            source, out var stages));
         Assert.Equal(2, stages.Count);
         Assert.Equal(variant == "reduce_legacy" ? 4 : 1, stages[0].Before.Severity.Rank);
         Assert.Equal(1, stages[0].After.Severity.Rank);
@@ -68,23 +73,61 @@ public sealed partial class MortalWoundTreatmentResolverTests
         Assert.Equal(stages[0].After.LastTransition.Ordinal + 1, stages[1].After.LastTransition.Ordinal);
         Assert.Equal(WoundMaterializationContract.SerializeCanonical(stages[0].After),
             WoundMaterializationContract.SerializeCanonical(stages[1].Before));
-        var history = WoundHistoryState.Parse(bundle.FinalPlan.HistoryAfterImage.ToJsonString(), WoundHistoryState.HistoryPath);
+        var originalRoot = input.PreTurnHistory;
+        var finalRoot = finalPlan.HistoryAfterImage;
+        var original = WoundHistoryState.Parse(originalRoot.ToJsonString(), WoundHistoryState.HistoryPath);
+        Assert.True(original.IsValid, DescribeIssues(original.Issues));
+        var history = WoundHistoryState.Parse(finalRoot.ToJsonString(), WoundHistoryState.HistoryPath);
         Assert.True(history.IsValid, DescribeIssues(history.Issues));
-        var rows = history.State!.Transitions.Where(row => row.Turn == bundle.Input.Binding.Turn).ToArray();
+        var originalRows = originalRoot["transitions"]!.AsArray();
+        var finalRows = finalRoot["transitions"]!.AsArray();
+        Assert.Equal(originalRows.Count + 2, finalRows.Count);
+        for (var index = 0; index < originalRows.Count; index++)
+            Assert.True(JsonNode.DeepEquals(originalRows[index], finalRows[index]), "original History prefix row " + index);
+        var rows = history.State!.Transitions.Skip(originalRows.Count).ToArray();
         Assert.Equal(new[] { "treat", "heal" }, rows.Select(row => row.Kind));
+        Assert.Equal(original.State!.NextOrdinal + 2, history.State.NextOrdinal);
+        var healIntent = Assert.IsType<MortalWoundHealOutcomeIntent>(terminal.Resolution.OutcomeIntents[^1]);
+        for (var index = 0; index < rows.Length; index++)
+        {
+            var row = rows[index]; var stage = stages[index];
+            Assert.Equal(original.State.NextOrdinal + index, row.Ordinal);
+            Assert.Equal(terminal.Outcome.Before.LastTransition.Ordinal + index + 1, row.WoundTransitionOrdinal);
+            Assert.Equal(frame.Turn, row.Turn); Assert.Equal(terminal.Request.Coordinates.WoundId, row.WoundId);
+            Assert.Equal(stage.After.LastTransition.TransitionId, row.TransitionId);
+            Assert.Equal(stage.OperationKey, row.OperationKey); Assert.Equal(stage.EventRef, row.EventRef);
+            Assert.Equal(WoundIdentityState.ComputeSemanticFingerprint(stage.Before), row.BeforeFingerprint);
+            Assert.Equal(WoundIdentityState.ComputeSemanticFingerprint(stage.After), row.AfterFingerprint);
+            Assert.Equal(terminal.Request.RequestFingerprint, row.SourceFingerprint); Assert.Equal(index == 1, row.Terminal);
+        }
+        Assert.Equal(terminal.Request.Coordinates.OperationKey, rows[0].OperationKey);
+        Assert.Equal(terminal.Request.Coordinates.EventRef, rows[0].EventRef);
+        Assert.Equal(healIntent.HealChildCoordinates.OperationKey, rows[1].OperationKey);
+        Assert.Equal(healIntent.HealChildCoordinates.EventRef, rows[1].EventRef);
         Assert.Equal(rows[0].AfterFingerprint, rows[1].BeforeFingerprint);
-        Assert.Single(bundle.FinalPlan.CarrierContributions.SelectMany(row => row.Mutations), row =>
+        var finalCarriers = input.PreTurnCarriers;
+        foreach (var contribution in contributions)
+        {
+            var collection = WoundCarrierCollectionAuthority.Resolve(finalCarriers, contribution.Owner);
+            foreach (var mutation in contribution.Mutations)
+                Assert.Null(AcceptedMechanicsCarrierAssembler.ApplyMutation(collection, contribution.Owner, mutation));
+        }
+        var finalCatalog = WoundCarrierCatalog.Build(finalCarriers); Assert.Empty(finalCatalog.Issues);
+        var finalIdentity = WoundIdentityState.Parse(finalPlan.IdentityIndexAfterImage.ToJsonString(), WoundIdentityState.StatePath);
+        Assert.True(finalIdentity.IsValid, DescribeIssues(finalIdentity.Issues));
+        Assert.Empty(history.State.ValidateAgreement(finalIdentity.State!, finalCatalog));
+        Assert.True(finalIdentity.State!.TryGetEntry(terminal.Request.Coordinates.WoundId, out var healed));
+        Assert.Equal("healed", healed.Status); Assert.Equal(rows[1].TransitionId, healed.TerminalTransitionId);
+        Assert.Single(contributions.SelectMany(row => row.Mutations), row =>
             row.Operation == "delete" && row.WoundId == terminal.Request.Coordinates.WoundId && row.AfterWound is null);
         var legacyBatches = terminal.Legacies.EffectOperationBatches;
         var declaredHeal = Assert.IsType<MortalWoundHealOperation>(terminal.Resolution.DeclaredResult[^1]);
         var mechanicalDrafts = declaredHeal.Legacies.OfType<MortalWoundMechanicalEffectLegacyDraft>().ToArray();
         Assert.Equal(variant == "reduce_legacy" ? 2 : variant == "remove" ? 1 : 0, mechanicalDrafts.Length);
         Assert.Equal(mechanicalDrafts.Length, legacyBatches.Count);
-        var groups = MortalWoundHealLegacyPlanner.Finalize(terminal.Legacies, bundle.PreparedPlan, bundle.EffectBatchPlan);
+        var groups = MortalWoundHealLegacyPlanner.Finalize(terminal.Legacies, prepared, accepted);
         Assert.Equal(legacyBatches.Select(row => row.PreparedWoundId), groups.Select(row => row.LegacyId));
-        var accepted = bundle.EffectBatchPlan;
-        var source = accepted.EffectPlan;
-        var admittedSources = accepted.EffectInput.SourceAuthority;
+        var admittedSources = effectInput.SourceAuthority;
         var wound = terminal.Outcome.Before;
         Assert.Single(admittedSources.SnapshotWoundGroupAuthorities(), row =>
             row.Key.Realm == wound.Owner.Realm && row.Key.Kind == "wound" && row.Key.SourceId == wound.WoundId);
@@ -95,13 +138,13 @@ public sealed partial class MortalWoundTreatmentResolverTests
         Assert.NotEqual(source.SourceAuthorityFingerprint, source.SourceAuthority.CanonicalFingerprint);
         Assert.DoesNotContain(source.SourceAuthority.SnapshotWoundGroupAuthorities(), row =>
             row.Key.Realm == wound.Owner.Realm && row.Key.Kind == "wound" && row.Key.SourceId == wound.WoundId);
-        var honestCopy = CopyTerminalEffectPayload(source, source.CarrierAfterImages);
-        Assert.True(EffectAcceptedTurnPlanner.TryReadMortalTreatmentExecution(bundle.PreparedPlan, honestCopy, out _));
+        var honestCopy = CopyTerminalEffectPayload(source, afterImages);
+        Assert.True(EffectAcceptedTurnPlanner.TryReadMortalTreatmentExecution(prepared, honestCopy, out _));
         var beforeRoleFailure = Assert.Throws<InvalidDataException>(() => CopyTerminalEffectPayload(source,
-            source.CarrierAfterImages, sourceFingerprint: source.SourceAuthority.CanonicalFingerprint));
+            afterImages, sourceFingerprint: source.SourceAuthority.CanonicalFingerprint));
         Assert.Equal("Lifecycle evidence belongs to a different effect result.", beforeRoleFailure.Message);
         var finalRoleFailure = Assert.Throws<InvalidDataException>(() => CopyTerminalEffectPayload(source,
-            source.CarrierAfterImages, finalSources: admittedSources));
+            afterImages, finalSources: admittedSources));
         Assert.Equal("Lifecycle evidence belongs to a different effect result.", finalRoleFailure.Message);
         var surviving = EffectCarrierCatalog.Build(source.ResourceTriggerCarriers);
         Assert.Empty(surviving.Issues);
@@ -125,7 +168,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
         if (variant == "reduce_legacy")
         {
             Assert.Contains(stages[0].Applications, row => row.SourceKey.Kind == "wound");
-            var identity = EffectIdentityState.Parse(JsonSerializer.SerializeToElement(bundle.EffectBatchPlan.EffectPlan.IdentityIndexAfterImage),
+            var identity = EffectIdentityState.Parse(JsonSerializer.SerializeToElement(source.IdentityIndexAfterImage),
                 EffectIdentityState.StatePath);
             Assert.Empty(identity.Issues);
             foreach (var application in stages[0].Applications.Where(row => row.SourceKey.Kind == "wound"))
@@ -142,7 +185,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
             Assert.Single(batch.RootApplications);
         });
         if (legacyBatches.Count == 0) return;
-        var changedImages = source.CarrierAfterImages.ToDictionary(pair => pair.Key, pair => pair.Value.DeepClone().AsObject(), StringComparer.Ordinal);
+        var changedImages = afterImages.ToDictionary(pair => pair.Key, pair => pair.Value.DeepClone().AsObject(), StringComparer.Ordinal);
         var effects = changedImages[EffectCarrierCatalog.PlayerPath]["activeEffects"]!.AsArray();
         Assert.NotEmpty(effects);
         effects[0]!["display"]!["description"] = "changed actual effect payload";
@@ -158,13 +201,12 @@ public sealed partial class MortalWoundTreatmentResolverTests
             mapFaults.Add(("reordered actual applications", actualApplications.Reverse().ToArray()));
         foreach (var (label, applications) in mapFaults)
         {
-            var resealed = WoundEffectBatchAcceptedPlan.Create(bundle.PreparedPlan, accepted.EffectInput, accepted.EffectPlan,
-                applications, accepted.TerminationResults);
-            var refused = WoundAcceptedTurnPlannerCore.Finalize(bundle.PreparedPlan, new(resealed, Array.Empty<ValidationIssue>()));
+            var resealed = WoundEffectBatchAcceptedPlan.Create(prepared, effectInput, source,
+                applications, terminations);
+            var refused = WoundAcceptedTurnPlannerCore.Finalize(prepared, new(resealed, Array.Empty<ValidationIssue>()));
             Assert.False(refused.Success, label); Assert.NotEmpty(refused.Issues);
         }
-        var prepared = bundle.PreparedPlan;
-        var prefix = prepared.EffectOperationBatches.Take(prepared.EffectOperationBatches.Count - legacyBatches.Count).ToArray();
+        var prefix = preparedBatches.Take(preparedBatches.Count - legacyBatches.Count).ToArray();
         var batchFaults = new List<(string Label, IReadOnlyList<WoundEffectOperationBatch> Batches)>
         {
             ("omitted", prefix.Concat(legacyBatches.Skip(1)).ToArray()),
@@ -185,8 +227,8 @@ public sealed partial class MortalWoundTreatmentResolverTests
         foreach (var (label, batches) in batchFaults)
         {
             var changed = ResealRemovalPrepared(prepared, batches, prepared.TreatmentContinuationAuthority!);
-            var refused = WoundAcceptedTurnPlanCache.ValidatePreparedResult(bundle.Input,
-                WoundAcceptedTurnFingerprints.ComputeInput(bundle.Input), new(changed, Array.Empty<ValidationIssue>()));
+            var refused = WoundAcceptedTurnPlanCache.ValidatePreparedResult(input,
+                WoundAcceptedTurnFingerprints.ComputeInput(input), new(changed, Array.Empty<ValidationIssue>()));
             Assert.False(refused.Success, label); Assert.NotEmpty(refused.Issues);
         }
         var originalDefinition = legacyBatches[0].SourceExport.Definitions[0].Definition.ToJsonString();
