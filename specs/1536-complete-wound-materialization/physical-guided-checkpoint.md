@@ -1,3 +1,63 @@
+# C8 ordered common membership correction — UNCOMPILED / UNRUN
+
+Tracked T121-PHYSICAL-GUIDED terminal correction, based on e43259925 and the actual
+C7 current-legacy failure below. Source now admits terminal treatment through its
+own sealed staged execution, not the recovery family or the generic all-active
+loop. It reads that private execution once, checks completed base/final ancestry
+and the entire flattened result vectors, and joins each application to one actual
+prepared root (source/target/carrier, slots/materialization and PriorRootEffectId).
+Selected wound prefix, independent legacy and joint acquisition remain distinct.
+The shared pure comparison retains exact allocated create/terminal transitions,
+create-before-retire, unchanged full terminal identities and absence from every
+current map; survivors retain canonical current membership/materialization checks.
+Recovery/spiritual extraction and their predecessor rules remain genuine and
+unchanged; no recovery owner/stage, witness, allocator or authority is invented.
+
+The two existing settlement Facts now reuse actual completed common Compose and
+its genuine detached copy, reject staged-without-completion, and first prove an honest staged lifecycle copy/private-execution read. Source/
+target (canonical parsed DATA), missing/changed retirement, resurrection and
+materialization payload changes then refuse against that SAME staged lifecycle
+seal. The fixture copier has no completed-boundary proof; completed positives use
+DetachedCopyOf only. These are staged constructor/payload refusals, not fabricated completion proofs
+or claims of reaching an inaccessible later branch. Existing current-reader
+well-formed mapping/lineage/materialization negatives remain. The existing joint
+Fact uses its real bound common owner and original complete stages through common
+composition, including acquisition membership, exact original History prefix and
+linked suffix, copy/refusals, omitted alias and missing acquisition-row checks.
+Canonical bytes/claims keep their existing operation-bound assertions; no second
+world or publication was added. Added common/joint suffix cost is UNMEASURED.
+
+Finite proposed fresh selection: current-legacy/current-removal/joint (3 existing
+Facts, unchanged120s each), spiritual-natural-recovery-overflow (one existing typed
+Fact, unchanged120s) and the already selected semantic/source guards. The recovery
+peer exercises genuine multi-generation and terminal common membership. The old
+reflective Mortal boundary methods/HOLD aggregates are excluded; diagnosis published
+recovery is an exact-replay reader, not claimed a fresh common-membership proof.
+No case was added: full selected source estimate becomes50cases/29methods/
+27descriptors/26categories only because one existing affected peer is selected.
+Official discovery/PlanOnly and independent SOURCE/PREP remain root-owned. Simple3
+and independent1 earlier PASS lineages are retained only by reviewed scope, with no
+fresh PASS claim or automatic replay. All UI9 and current3 completion remain open.
+
+Optimization: existing detached bundle views are captured once per family/helper;
+prepared root pairs, ordered vectors and catalogs are one-shot operation DATA.
+The full key is the genuine prepared/effect/complete payloads plus accepted turn,
+canonical staged/final catalogs/identities and sealed family references. Lifetime
+ends with this pure comparison; no shared cache, file read/parse contour, owner,
+lease or permission is introduced. Each invocation still verifies complete seals,
+ancestry, vector order and current canonical maps; changed DATA cannot retain the
+lifecycle proof. The typed controls reuse the same completed plan/fixture and do
+not sweep sources again. No source-read reduction or speedup is claimed. No GM
+wire/game rule changes: existing accepted terminal program and examples stay exact.
+No source-pin literal is changed; unrelated stale Meta literals remain untouched.
+
+Static-only checks: JSON parse/selected-owner resolution and git diff --check.
+No build, discovery or runtime was started by the writer. ALL starts remain HELD:
+last observed686170112B < unchanged687865856B reserve; the failed combined fence
+and separate integrity proof remain external. No storage action is proposed or
+performed by this source block; root alone owns a separately reviewed storage
+proposal. Raw/saves/recovery/binaries and all prior HOLDs remain untouched.
+
 # C7 actual common membership refusal; subsequent launches resource-blocked
 
 Runtime5cf3b512e2850829db0a8c3251e2b3ce2851dc2c / Integration69fdca680:

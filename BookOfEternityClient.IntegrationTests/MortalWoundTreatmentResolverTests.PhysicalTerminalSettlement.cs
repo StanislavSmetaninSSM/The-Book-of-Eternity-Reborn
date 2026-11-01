@@ -125,6 +125,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
         var input = bundle.Input; var prepared = bundle.PreparedPlan;
         var accepted = bundle.EffectBatchPlan; var finalPlan = bundle.FinalPlan;
         var frame = input.Binding; var source = accepted.EffectPlan; var effectInput = accepted.EffectInput;
+        AssertTerminalCommonMembership(plan, bundle);
         var terminations = accepted.TerminationResults; var preparedBatches = prepared.EffectOperationBatches;
         var contributions = finalPlan.CarrierContributions; var afterImages = source.CarrierAfterImages;
         Assert.True(WoundAcceptedTurnPlanner.TryReadTerminalTreatment(prepared, out var terminal));
@@ -325,15 +326,92 @@ public sealed partial class MortalWoundTreatmentResolverTests
         Assert.Equal(originalDefinition, terminal.Legacies.EffectOperationBatches[0].SourceExport.Definitions[0].Definition.ToJsonString());
     }
 
+    /// <summary>
+    /// Exercises the real common carrier consumer with its genuine completed plan,
+    /// copied completion proof and sealed-payload refusals, without another preparation.
+    /// </summary>
+    /// <param name="plan">Actual common plan produced by the existing owner.</param>
+    /// <param name="bundle">The same plan's genuine original wound stages.</param>
+    internal static void AssertTerminalCommonMembership(AcceptedMechanicsPlan plan,
+        AcceptedMechanicsWoundStageBundle bundle)
+    {
+        var completed = Assert.IsType<EffectAcceptedTurnPlan>(plan.EffectPlan);
+        var accepted = bundle.EffectBatchPlan; var staged = accepted.EffectPlan;
+        var owners = plan.OwnerCompanionAfterImages;
+        var fingerprint = WoundAcceptedTurnFingerprints.ComputeAcceptedEffectPlanPayload(completed);
+        Assert.True(completed.IsAcceptedBoundaryComplete);
+        var positive = AcceptedMechanicsCarrierAssembler.Compose(completed, owners, bundle);
+        Assert.True(positive.Success, DescribeIssues(positive.Issues));
+        var copy = EffectAcceptedTurnPlan.DetachedCopyOf(completed);
+        var copied = AcceptedMechanicsCarrierAssembler.Compose(copy, owners, bundle);
+        Assert.True(copied.Success, DescribeIssues(copied.Issues));
+        Assert.Equal(fingerprint, WoundAcceptedTurnFingerprints.ComputeAcceptedEffectPlanPayload(copy));
+        Assert.False(staged.IsAcceptedBoundaryComplete);
+        var missingCompletion = AcceptedMechanicsCarrierAssembler.Compose(staged, owners, bundle);
+        Assert.False(missingCompletion.Success);
+        Assert.Contains(missingCompletion.Issues, issue => issue.Code == "accepted_mechanics_wound_final_effect_membership_invalid");
+
+        // The fixture copier has no completion proof. Establish its honest staged
+        // lifecycle positive before constructor faults; completed copies above use
+        // the existing proof-preserving API. No later common join is claimed here.
+        var prepared = bundle.PreparedPlan;
+        var stagedImages = staged.CarrierAfterImages;
+        var stagedCopy = CopyTerminalEffectPayload(staged, stagedImages);
+        Assert.False(stagedCopy.IsAcceptedBoundaryComplete);
+        Assert.True(EffectAcceptedTurnPlanner.TryReadMortalTreatmentExecution(prepared, stagedCopy, out _));
+        var stagedFingerprint = WoundAcceptedTurnFingerprints.ComputeAcceptedEffectPlanPayload(staged);
+        Assert.Equal(stagedFingerprint, WoundAcceptedTurnFingerprints.ComputeAcceptedEffectPlanPayload(stagedCopy));
+        var originalIndex = staged.IdentityIndexAfterImage;
+        var retired = Assert.Single(accepted.TerminationResults.Take(1));
+        foreach (var fault in new[] { "source", "target", "terminal_event", "omitted_retirement", "resurrection" })
+        {
+            var index = originalIndex.DeepClone().AsObject();
+            var entry = Assert.Single(index["entries"]!.AsArray().OfType<JsonObject>(), row =>
+                row["effectId"]!.GetValue<string>() == retired.EffectId);
+            if (fault == "source")
+            {
+                entry["source"]!["sourceId"] = "foreign_wound";
+                entry["stackCoordinate"]!["sourceId"] = "foreign_wound";
+            }
+            if (fault == "target")
+            {
+                entry["target"]!["targetId"] = "foreign_target";
+                entry["stackCoordinate"]!["targetId"] = "foreign_target";
+                entry["owner"]!["ownerId"] = "foreign_target";
+            }
+            var transitions = entry["transitions"]!.AsArray();
+            if (fault == "terminal_event") transitions[^1]!["eventRef"] = "foreign_terminal_event";
+            if (fault == "omitted_retirement") transitions.RemoveAt(transitions.Count - 1);
+            if (fault == "resurrection") entry["state"] = "active";
+            if (fault is "source" or "target")
+                Assert.Empty(EffectIdentityState.Parse(JsonSerializer.SerializeToElement(index), EffectIdentityState.StatePath).Issues);
+            var failure = Assert.Throws<InvalidDataException>(() => CopyTerminalEffectPayload(staged,
+                stagedImages, identityAfter: index));
+            Assert.Equal("Lifecycle evidence belongs to a different effect result.", failure.Message);
+        }
+        var images = stagedImages.ToDictionary(pair => pair.Key,
+            pair => pair.Value.DeepClone().AsObject(), StringComparer.Ordinal);
+        var current = images.Values.SelectMany(root => root["activeEffects"] is JsonArray effects
+            ? effects.OfType<JsonObject>() : Enumerable.Empty<JsonObject>()).FirstOrDefault();
+        if (current is not null)
+        {
+            current["components"]![0]!["priority"] = 99;
+            Assert.Throws<InvalidDataException>(() => CopyTerminalEffectPayload(staged, images));
+        }
+        Assert.Equal(fingerprint, WoundAcceptedTurnFingerprints.ComputeAcceptedEffectPlanPayload(completed));
+        Assert.Equal(stagedFingerprint, WoundAcceptedTurnFingerprints.ComputeAcceptedEffectPlanPayload(staged));
+        Assert.True(JsonNode.DeepEquals(originalIndex, staged.IdentityIndexAfterImage));
+    }
+
     private static EffectAcceptedTurnPlan CopyTerminalEffectPayload(EffectAcceptedTurnPlan source,
         IReadOnlyDictionary<string, JsonObject> images, string? sourceFingerprint = null,
-        EffectSourceAuthority? finalSources = null) => new(source.InputFingerprint,
+        EffectSourceAuthority? finalSources = null, JsonObject? identityAfter = null) => new(source.InputFingerprint,
         source.CarrierAuthorityFingerprint, sourceFingerprint ?? source.SourceAuthorityFingerprint, source.TargetAuthorityFingerprint,
         source.AllocatedCombatantIds, source.AllocatedEffectIds, source.AllocatedTransitionIds, source.Sources,
         source.Targets, source.SourceBindings, source.DeferredReactions, source.ReactionExpansionCount,
         source.ReactionExpansionUsage, source.ActiveEffects, source.ResourceTriggerCarriers, finalSources ?? source.SourceAuthority,
         source.TargetAuthority, source.EventInput, source.CarrierBeforeImages, images, source.IdentityIndexBeforeImage,
-        source.IdentityIndexAfterImage, source.TouchedPaths, source.DeletedPaths, source.AcceptedCarrierBaselines,
+        identityAfter ?? source.IdentityIndexAfterImage, source.TouchedPaths, source.DeletedPaths, source.AcceptedCarrierBaselines,
         woundApplicationRootEffectBindings: source.WoundApplicationRootEffectBindings,
         skillScopeAuthority: source.SkillScopeAuthority, mortalRecoveryExecutionAuthority: source.MortalRecoveryExecutionAuthority,
         lifecycleExecutionLedger: source.LifecycleExecutionLedger,

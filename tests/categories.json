@@ -29,11 +29,12 @@
 },
 {
   "id": "mortal-physical-terminal-current-legacy",
-  "responsibility": "T121-PHYSICAL-GUIDED terminal correction. One actual IV-to-I aggregate3 followed by a separate heal, cosmetic plus two namespace-independent mechanical legacies, real resource spends, transaction/progression close, shared browser current predicate and sealed output. Exact batch/result topology and well-formed retired mappings/current primary drift refuse. A real primary releases an ordinary owner-turn-end child; lawful different bounded child parameters pass, while canonical-valid forbidden/ambiguous/unrooted lineage and invalid child materialization refuse. Actual plan-constructor/payload tamper refuses after an honest copied payload positive. This is no historical deleted-component replay proof. Authored UNCOMPILED/UNRUN.",
+  "responsibility": "T121-PHYSICAL-GUIDED terminal correction. One actual IV-to-I aggregate3 followed by a separate heal, cosmetic plus two namespace-independent mechanical legacies, real resource spends, transaction/progression close, shared browser current predicate and sealed output. Exact batch/result topology and well-formed retired mappings/current primary drift refuse. A real primary releases an ordinary owner-turn-end child; lawful different bounded child parameters pass, while canonical-valid forbidden/ambiguous/unrooted lineage and invalid child materialization refuse. Actual plan-constructor/payload tamper refuses after an honest copied payload positive. This is no historical deleted-component replay proof. Authored UNCOMPILED/UNRUN. C8 candidate also exercises the actual common carrier Compose with genuine completed and detached-copy proofs; staged-without-completion refuses; identity/materialization payload faults refuse against the staged lifecycle seal after its honest copy/private-execution positive. The shared ordered membership validates create-before-retire, independent surviving legacy and complete result vectors.",
   "excludes": "No private reflection, fabricated authority/receipt/recovery tick, Engine turn, broad replay/performance/HOLD or cost/speedup claim. Native120s is a protective bound.",
   "changeHints": [
     "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.PhysicalTerminalSettlement.cs",
-    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.PhysicalGuidedCompletion.cs"
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.PhysicalGuidedCompletion.cs",
+    "BookOfEternityClient/Services/AcceptedMechanicsCarrierAssembler.MortalTreatment.cs"
   ],
   "related": [],
   "requirements": {
@@ -53,11 +54,12 @@
 },
 {
   "id": "mortal-physical-terminal-current-removal",
-  "responsibility": "T121-PHYSICAL-GUIDED terminal correction. One genuine remove_then_heal settlement through complete transaction/progression close and both shared completion consumers; linked History, healed identity/absence, foreign mappings and transient-work refusals stay exact. Authored UNCOMPILED/UNRUN.",
+  "responsibility": "T121-PHYSICAL-GUIDED terminal correction. One genuine remove_then_heal settlement through complete transaction/progression close and both shared completion consumers; linked History, healed identity/absence, foreign mappings and transient-work refusals stay exact. Authored UNCOMPILED/UNRUN. C8 candidate includes the same actual completed common Compose/copy and independently positive staged-lifecycle payload controls before settlement, with no invented active selected wound.",
   "excludes": "No private reflection, fabricated authority/receipt/recovery tick, Engine turn, broad replay/performance/HOLD or cost/speedup claim. Native120s is a protective bound.",
   "changeHints": [
     "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.PhysicalTerminalSettlement.cs",
-    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.PhysicalGuidedCompletion.cs"
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.PhysicalGuidedCompletion.cs",
+    "BookOfEternityClient/Services/AcceptedMechanicsCarrierAssembler.MortalTreatment.cs"
   ],
   "related": [],
   "requirements": {
@@ -77,11 +79,12 @@
 },
 {
   "id": "mortal-physical-terminal-joint",
-  "responsibility": "T121-PHYSICAL-GUIDED terminal correction. One genuine installed ordinary repair wave and private joint owner: acquisition then treatment/heal, disjoint mechanical legacy groups, actual shared effect execution, complete final identity/carrier/History and privacy-filtered output; no guided wave producer. Authored UNCOMPILED/UNRUN.",
+  "responsibility": "T121-PHYSICAL-GUIDED terminal correction. One genuine installed ordinary repair wave and private joint owner: acquisition then treatment/heal, disjoint mechanical legacy groups, actual shared effect execution, complete final identity/carrier/History and privacy-filtered output; no guided wave producer. Authored UNCOMPILED/UNRUN. C8 candidate now continues the same genuine bound joint owner through actual common composition, preserving acquisition current-root membership and complete terminal stages. Includes completed copy/missing-completion controls and honest staged-copy-anchored lifecycle payload controls and omitted joint alias refusal; no second fixture or guided wave.",
   "excludes": "No private reflection, fabricated authority/receipt/recovery tick, Engine turn, broad replay/performance/HOLD or cost/speedup claim. Native120s is a protective bound.",
   "changeHints": [
     "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.TerminalTreatment.cs",
-    "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.cs"
+    "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.cs",
+    "BookOfEternityClient/Services/AcceptedMechanicsCarrierAssembler.MortalTreatment.cs"
   ],
   "related": [],
   "requirements": {

@@ -14,12 +14,25 @@ public sealed partial class JointBundleComponentTests
         await using var fixture = new Fixture(_output, nameof(GenuineJointTerminalTreatmentKeepsAcquisitionAndLinkedHealStages),
             passiveTimingEvents: true, gzipRecords: true);
         await fixture.InitializeAsync(terminalTreatment: true);
-        var bundle = await fixture.PrepareJointStagesAsync();
+        var bound = await fixture.PrepareBoundJointAsync();
+        var bytes = await fixture.CaptureCandidateInvocationBeforeImagesAsync();
+        AcceptedMechanicsPlanningResult common;
+        using (var source = fixture.Files.BeginSourceDataOperationIfNeeded())
+        {
+            Assert.NotNull(source);
+            using var recovery = fixture.Files.BeginRecoveryValidation(fixture.Lease);
+            common = await WoundAcceptedTurnPlanner.CreateJointRepairCommonPlanFromBoundForComponentAsync(
+                fixture.Files, fixture.Lease, bound);
+            Assert.True(common.Success, JsonSerializer.Serialize(common.Issues));
+            await source.CompleteAsync();
+        }
+        var plan = Assert.IsType<AcceptedMechanicsPlan>(common.Plan);
+        var bundle = Assert.IsType<AcceptedMechanicsWoundStageBundle>(plan.WoundStageBundle);
+        MortalWoundTreatmentResolverTests.AssertTerminalCommonMembership(plan, bundle);
         var input = bundle.Input; var prepared = bundle.PreparedPlan;
         var accepted = bundle.EffectBatchPlan; var finalPlan = bundle.FinalPlan;
         var frame = input.Binding; var effectPlan = accepted.EffectPlan; var effectInput = accepted.EffectInput;
         var applications = accepted.ApplicationResults;
-        var bytes = await fixture.CaptureCandidateInvocationBeforeImagesAsync();
         Assert.NotNull(prepared.JointRepairContinuationAuthority);
         Assert.Null(prepared.TreatmentContinuationAuthority);
         Assert.True(WoundAcceptedTurnPlanner.JointRepairFinalPlanAgrees(bundle));
@@ -99,6 +112,7 @@ public sealed partial class JointBundleComponentTests
         var firstRoot = Assert.Single(routingRoots);
         foreach (var (label, roots) in new (string, IReadOnlyList<WoundApplicationRootEffectBinding>)[]
         {
+            ("omitted joint alias", Array.Empty<WoundApplicationRootEffectBinding>()),
             ("unknown joint alias", routingRoots.Append(firstRoot with { ApplicationRef = "unknown_wound_root" }).ToArray()),
             ("duplicate joint alias", routingRoots.Append(firstRoot).ToArray()),
             ("foreign joint allocation", new[] { firstRoot with { EffectId = "foreign_effect" } })

@@ -1226,7 +1226,10 @@ internal static partial class AcceptedMechanicsCarrierAssembler
         EffectAcceptedTurnPlan finalEffectPlan,
         AcceptedMechanicsWoundStageBundle woundStages)
     {
-        var stagedEffectPlan = woundStages.EffectBatchPlan.EffectPlan;
+        var accepted = woundStages.EffectBatchPlan;
+        var prepared = woundStages.PreparedPlan;
+        var stagedEffectPlan = accepted.EffectPlan;
+        var terminalTreatment = WoundAcceptedTurnPlanner.TryReadTerminalTreatment(prepared, out var terminal);
         if (!FinalEffectAuthorityAgrees(stagedEffectPlan, finalEffectPlan))
         {
             return Issue(
@@ -1244,10 +1247,9 @@ internal static partial class AcceptedMechanicsCarrierAssembler
             CreateEffectCarrierInput(finalEffectPlan.CarrierAfterImages));
         EffectIdentityParseResult? stagedIdentityParse = null;
         EffectIdentityParseResult? identityParse = null;
-        if (woundStages.PreparedPlan.RecoveryContinuationAuthority is not null ||
-            woundStages.PreparedPlan.SpiritualHealingContinuationAuthority is not null ||
-            woundStages.EffectBatchPlan.ApplicationResults.Count != 0 ||
-            woundStages.EffectBatchPlan.TerminationResults.Count != 0)
+        if (prepared.RecoveryContinuationAuthority is not null ||
+            prepared.SpiritualHealingContinuationAuthority is not null || terminalTreatment ||
+            accepted.ApplicationResults.Count != 0 || accepted.TerminationResults.Count != 0)
         {
             using var stagedDocument = JsonDocument.Parse(
                 stagedEffectPlan.IdentityIndexAfterImage.ToJsonString());
@@ -1285,11 +1287,14 @@ internal static partial class AcceptedMechanicsCarrierAssembler
                         .Select(static issue => issue.Code ?? issue.FilePath)));
         }
 
-        if (woundStages.PreparedPlan.RecoveryContinuationAuthority is not null ||
-            woundStages.PreparedPlan.SpiritualHealingContinuationAuthority is not null)
-            return ValidateMortalRecoveryEffectMembership(finalEffectPlan, woundStages,
-                stagedCatalog, finalRuntimeCatalog, finalPublicationCatalog,
+        if (prepared.RecoveryContinuationAuthority is not null || prepared.SpiritualHealingContinuationAuthority is not null)
+            return ValidateMortalRecoveryEffectMembership(finalEffectPlan, prepared, accepted, stagedEffectPlan,
+                woundStages.Input.Binding.Turn, stagedCatalog, finalRuntimeCatalog, finalPublicationCatalog,
                 stagedIdentityParse!.State!, identityParse!.State!);
+
+        if (terminalTreatment)
+            return ValidateTerminalTreatmentEffectMembership(finalEffectPlan, woundStages.FinalPlan, prepared, accepted, stagedEffectPlan,
+                woundStages.Input.Binding.Turn, terminal, stagedCatalog, finalRuntimeCatalog, finalPublicationCatalog, stagedIdentityParse!.State!, identityParse!.State!);
 
         foreach (var result in woundStages.EffectBatchPlan.ApplicationResults)
         {
