@@ -37,20 +37,28 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
         async Task CoreAsync()
         {
             var extraSourcePaths = canonicalResource ? SpiritualDiagnosisCanonicalSources.Paths(browser ? "shining_abode" : "chaos_sea", ["resource_quantity"]) : [];
-            FileSystemManager? owned = null; var armed = false; var cuts = 0;
+            FileSystemManager? owned = null; var armed = false; var cuts = 0; var compensationCaptures = 0;
             Dictionary<string, byte[]?>? compensationExpected = null; Dictionary<string, byte[]?>? compensationActual = null;
             byte[]? historyAtCut = null; Dictionary<string, byte[]?>? publishedAtCut = null;
             var hooks = new FileSystemManagerHooks
             {
                 LocalPublicationObserver = !failPublication ? null : (phase, _) =>
                 {
+                    // Automatic trusted rollback has finished before this next intent;
+                    // no member of the following publication has been applied yet.
+                    if (canonicalResource && cuts == 1 && compensationActual is null && phase == TrustedLocalPublicationPhase.IntentStaged)
+                    {
+                        compensationActual = compensationExpected!.Keys.ToDictionary(path => path,
+                            path => File.Exists(owned!.ResolvePath(path)) ? File.ReadAllBytes(owned.ResolvePath(path)) : null, StringComparer.Ordinal);
+                        compensationCaptures++;
+                    }
                     if (!armed || phase != TrustedLocalPublicationPhase.MemberPublished || File.Exists(owned!.ResolvePath(AcceptedMechanicsPlan.WoundCommandPath))) return;
                     armed = false; cuts++; historyAtCut = File.ReadAllBytes(owned.ResolvePath(WoundHistoryState.HistoryPath));
                     publishedAtCut = WoundAcceptedTurnSnapshotContract.CarrierPaths.Concat(new[] { WoundIdentityState.StatePath, ProgressionScheduleService.SchedulePath })
                         .ToDictionary(p => p, p => File.Exists(owned.ResolvePath(p)) ? File.ReadAllBytes(owned.ResolvePath(p)) : null, StringComparer.Ordinal);
                     throw new InvalidOperationException("Diagnosis common publication cut after exact request consumption.");
                 },
-                BeforeCanonicalReadOpenAsync = !failPublication ? null : path =>
+                BeforeCanonicalReadOpenAsync = !failPublication || canonicalResource ? null : path =>
                 {
                     if (cuts == 1 && compensationActual is null && path == CanonicalStateNormalizer.NormalizerRollbackTrackedFiles[0])
                         compensationActual = compensationExpected!.Keys.ToDictionary(p => p,
@@ -199,7 +207,11 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                     Assert.True(responded); Assert.NotNull(turn); Assert.NotNull(retained);
                     if (failPublication)
                     {
-                        Assert.Equal(1, cuts); Assert.NotNull(compensationExpected); Assert.NotNull(compensationActual); Assert.NotNull(historyAtCut);
+                        Assert.Equal(1, cuts);
+                        Assert.NotNull(compensationExpected);
+                        Assert.NotNull(compensationActual);
+                        Assert.NotNull(historyAtCut);
+                        if (canonicalResource) Assert.Equal(1, compensationCaptures);
                         foreach (var pair in compensationExpected!) Assert.Equal(pair.Value, compensationActual![pair.Key]);
                         var cutHistory = WoundHistoryState.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(historyAtCut!), WoundHistoryState.HistoryPath);
                         Assert.True(cutHistory.IsValid); Assert.NotNull(publishedAtCut);

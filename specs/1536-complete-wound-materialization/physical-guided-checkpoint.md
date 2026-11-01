@@ -1,3 +1,30 @@
+# Canonical console rollback FAIL — existing boundary observer correction WIP
+
+Runtime05c01dee19989bc05f840e35513b8118aff77222 / Integratione14: console1
+FAIL30.3247751/180s, no timeout, exact completed primary TRX SHA
+59ac804da37802598bc1132b6d87e674617652bd7b476b9cdb0fb80cdfac721f.
+The actual request-consumption fault cut occurred, but the path-specific read hook
+never filled compensationActual. Later held/outer rollback assertions did not run;
+this is not accepted rollback. Independent Astra/high confirms the observation gap,
+not a proven product compensation defect. Do not generalize it to all trusted-local
+reads: the existing-file path does call the read hook; absence returns earlier.
+
+Full diagnostic capture is independently byte-checked despite the test FAIL:
+3286 stored bytes /17175 decoded bytes,20 original timing events+1 message, exact
+EOF/CRC/footer/hashes/pairs/ticks/aggregates/assembly pins and actual root cleanup.
+Stored SHA c163c989d9168d6b3811695dd9726ce8822f36fff74ecd8814f44684862efc60.
+This complete capture proves diagnostic integrity only. Native2 OUTCOME is accepted;
+140 previous distinct PASS retain their own versions and are not repeated.
+
+The canonical-only fixture correction reuses its existing LocalPublicationObserver:
+capture protected bytes once on the first following IntentStaged after the cut.
+Automatic trusted inner Recover has finished; the following transaction has not
+applied a member. This is not claimed to follow all later normalizer compensation.
+Keep exact held-image equality, cut History/linked natural result, original fault
+and whole-turn restoration assertions. Old three-kind peers retain their old hook.
+No new production API/collector/cache, skipped guard or larger limit. Narrow SOURCE,
+one fresh Integration-only build and console-only exact PREP remain required.
+
 # Canonical native2 GREEN — source authority survives lawful natural lifetime
 
 Both native singletons run on e6ecd3c3652e4c90226694304c7d4d6c01efef64, compiled
