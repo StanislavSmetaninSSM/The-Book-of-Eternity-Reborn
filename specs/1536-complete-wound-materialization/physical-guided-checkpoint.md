@@ -1,3 +1,26 @@
+# C14 ordinary clock candidate — coherent SOURCE review pending
+
+Production WIP3b7d38ac4759f72c9406f326a02bcdbc64ffe57e is remotely verified.
+Finite tests now cover malformed/duplicate/mixed/overflow commands and null,
+original bytes/absence/current request/control/detached authority drift,
+before-publication failure, known post-commit error with exact restore/retry,
+and foreign-clock preservation with uncertainty. Five new native cases in three
+methods reuse one owned initial original per test and existing passive gzip.
+The accepted causal Fact reuses its exact extracted initial producer; its body
+and intended oracles are unchanged. No synthetic/post-accepted clock patch.
+
+GM contract and existing worked course example now distinguish GM delta emission
+from client numeric publication; one cheap doc guard is added. This is a Mortal
+ordinary-wait correction, no afterlife GM wire change. Existing two-method
+portable-original-committed-rollback is selected because the shared rollback
+inventory/baseline filter changes; it is NOT the old Mortal compatibility HOLD.
+All new code remains UNCOMPILED/UNRUN. Final SOURCE/fixture/selection review and
+current actual binary preservation precede fresh four-owner builds. New runtime
+requires actual bindings/resources/catalog/exact PlanOnly/PREP and immediate
+unchanged reserve. Full course/rollback journeys stay unadmitted until GREEN.
+Optimization remains private operation DATA plus fresh mutation/retain guards,
+no new cache or measured speedup. Full raw external; old results unchanged.
+
 # C14 ordinary clock publication — WIP, UNCOMPILED / UNRUN
 
 Independent Astra/high accepts the exact native causal RED recorded below.

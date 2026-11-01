@@ -3075,6 +3075,17 @@ acceptance and cleanup, reopen current state and separately confirm the next
 milestone. Trusted current missing conditions on an active course or a missed
 window produces only the declared interruption; InvalidAuthority is refused.
 Do not patch the canonical clock, auto-confirm a later milestone or invent time.
+Ordinary course-wait clock publication: emit `{"timeChange":480}` only in
+`game_state/world/world_time.json`, list that file in ready.filesModified and
+keep interface_updates free of timeChange. For a signed original numeric1260,
+the client publishes numeric1740 before ordinary effect/wound intake, retains
+validated original calendar labels and removes the command. This does not infer
+a calendar epoch or authorize GM to patch accepted time. The client rejects
+mixed/invalid/overflowing deltas and stale original/current control; known later
+intake failure restores the exact command bytes. Unknown publication or foreign
+clock drift requires recovery, never a speculative retry. Diagnosis, guided
+execution, deferred captures and completed replay keep their existing owners.
+
 
 Guaranteed: the client's current capability proof must cover the declared exact
 outcome. Narrate that actual held result and ordinary participants. Do not invent

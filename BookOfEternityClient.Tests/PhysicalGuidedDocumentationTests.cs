@@ -10,6 +10,19 @@ namespace BookOfEternityClient.Tests;
 public sealed class PhysicalGuidedDocumentationTests
 {
     [Fact]
+    public void OrdinaryCourseWaitDocumentsClientPublicationAndRecoveryBoundary()
+    {
+        foreach (var path in new[] { "OtherGuides/Wound_Materialization_Contract.md", "Examples/E_CLI_Wound_Materialization.txt" })
+        {
+            var text = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, path));
+            foreach (var term in new[] { "Ordinary course-wait clock publication", "{\"timeChange\":480}",
+                         "game_state/world/world_time.json", "ready.filesModified", "numeric1260", "numeric1740",
+                         "calendar", "interface_updates", "overflow", "foreign", "recovery", "deferred captures" })
+                Assert.Contains(term, text, StringComparison.Ordinal);
+        }
+    }
+
+    [Fact]
     public void WorkedSelectionsAndGmSurfacesKeepAllThreeModeOwnersAndSeparateCourseAttempts()
     {
         const string marker = "mortal_guided_treatment_execution_v1";

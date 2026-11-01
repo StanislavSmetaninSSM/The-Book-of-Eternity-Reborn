@@ -30,24 +30,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
             fixture = await DiagnosisOwnershipFixture.CreateAsync(signedInput: false, exportDiagnosis: false,
                 hooks: new FileSystemManagerHooks { PassiveOperationTimings = timings },
                 timingCapture: capture, timingWindow: window,
-                originalProducer: async (files, prepared) =>
-                {
-                    // Complete initial fixture DATA before the sole genuine original.
-                    // Calendar labels are declared here, never inferred from minutes.
-                    var seeded = JsonNode.Parse(Assert.IsType<string>(await files.ReadFileAsync(
-                        EffectAcceptedTurnInputComposer.WorldTimePath)))!.AsObject();
-                    var clock = new JsonObject { ["year"] = 1, ["monthName"] = "Fixture month", ["dayOfMonth"] = 1,
-                        ["timeOfDay"] = "08:00", ["currentTimeInMinutes"] = seeded["currentTimeInMinutes"]!.DeepClone() };
-                    await files.WriteFileAtomicAsync(EffectAcceptedTurnInputComposer.WorldTimePath, clock.ToJsonString());
-                    var control = await new ProgressionScheduleService(files, NullLogger<ProgressionScheduleService>.Instance)
-                        .BuildControlForNextTurnAsync("Mortal World");
-                    await new LiveTurnPreparationService(files).PrepareAsync(new LiveTurnPreparationOptions
-                    {
-                        SessionId = prepared.SessionId, RequestId = prepared.RequestId, TurnNumber = prepared.TurnNumber,
-                        CurrentRealm = "Mortal World", PlayerAction = "Спокойно подождать в клинике.",
-                        ProgressionControl = control, PreGeneratedDices1d20 = prepared.PreGeneratedDices1d20
-                    });
-                });
+                originalProducer: ProduceOrdinaryClockOriginalAsync);
             var fs = fixture.Files;
             Assert.True(fixture.Authority.HasCurrentAdmissionAuthority());
             Assert.False(fixture.Authority.HasOriginalMortalPreparedInput);
@@ -126,4 +109,24 @@ public sealed partial class MortalWoundTreatmentResolverTests
         }
         if (primary is not null) ExceptionDispatchInfo.Capture(primary).Throw();
     }
+    private static async Task ProduceOrdinaryClockOriginalAsync(FileSystemManager files, TurnRequest prepared)
+    {
+        // Complete initial fixture DATA before the sole genuine original.
+        // Calendar labels are declared here, never inferred from minutes.
+        var seeded = JsonNode.Parse(Assert.IsType<string>(await files.ReadFileAsync(
+            EffectAcceptedTurnInputComposer.WorldTimePath)))!.AsObject();
+        var clock = new JsonObject { ["year"] = 1, ["monthName"] = "Fixture month", ["dayOfMonth"] = 1,
+            ["timeOfDay"] = "08:00", ["currentTimeInMinutes"] = seeded["currentTimeInMinutes"]!.DeepClone() };
+        await files.WriteFileAtomicAsync(EffectAcceptedTurnInputComposer.WorldTimePath, clock.ToJsonString());
+        var control = await new ProgressionScheduleService(files, NullLogger<ProgressionScheduleService>.Instance)
+            .BuildControlForNextTurnAsync("Mortal World");
+        await new LiveTurnPreparationService(files).PrepareAsync(new LiveTurnPreparationOptions
+        {
+            SessionId = prepared.SessionId, RequestId = prepared.RequestId, TurnNumber = prepared.TurnNumber,
+            CurrentRealm = "Mortal World", PlayerAction = "Спокойно подождать в клинике.",
+            ProgressionControl = control, PreGeneratedDices1d20 = prepared.PreGeneratedDices1d20
+        });
+
+    }
+
 }

@@ -2479,6 +2479,20 @@ Read Examples/E_CLI_Wound_Materialization.txt worked mortal_diagnosis_execution_
 
 mortal_guided_treatment_execution_v1 — existing three-mode physical treatment.
 
+Ordinary course-wait clock publication uses the existing shared raw-resource
+intake. GM emits `{"timeChange":480}` in `game_state/world/world_time.json` and
+declares that file in ready.filesModified, never interface_updates. With signed
+original numeric1260 the client publishes numeric1740 before ordinary effect/
+wound intake, preserving validated original calendar labels without inventing
+an epoch. No automatic wait or future milestone confirmation follows. Fresh
+physical original, current request/control/realm and exact source bytes must
+agree; mixed/invalid/overflowing commands fail. Known later intake refusal/error
+restores exact owned command bytes and invalidates dependent plan authority.
+Unknown publication or foreign clock drift requires recovery without speculative
+compensation. Null is no incremental delta. Diagnosis, guided treatment, QTE,
+deferred captures and completed replay retain their existing clock ownership.
+
+
 The Mortal /лечить flow now executes a CURRENT known reachable physical route:
 procedure, course milestone or guaranteed. It displays the exact target/provider,
 current requirements, selected milestone dose/window and conditional resource

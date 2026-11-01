@@ -2,6 +2,34 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "mortal-ordinary-clock-ownership-controls",
+  "responsibility": "T121-PHYSICAL-GUIDED-ORDINARY-CLOCK finite existing-native guard controls: malformed/duplicate/mixed/overflow commands and null no-delta compatibility; signed original/current control/request/authority corruption with exact inertness; injected before-publication and known-after-commit failures with exact restoration/retry, and foreign-clock drift with uncertain disposition/no overwrite. Five cases in three methods, per-test owned fixture, existing full passive gzip and cleanup. New code UNCOMPILED/UNRUN.",
+  "excludes": "No fake authority/receipt, broad clock service/cache/presence protocol, calendar inference, new GM rule, full Engine course, DOM/provider/fresh-process, old DFR/Mortal compatibility/Windows HOLD or increased budget. Faults use existing test dependency hooks, never diagnostic observer mutation.",
+  "changeHints": [
+    "BookOfEternityClient/Services/Validation/ValidationService.OrdinaryMortalClock.cs",
+    "BookOfEternityClient/Services/Validation/ValidationService.ResourceMaterialization.cs",
+    "BookOfEternityClient/Services/CanonicalStateNormalizer.cs",
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.OrdinaryClockGuards.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.OrdinaryClockRejectsMalformedAndCompetingCommandsWithoutMutation",
+        "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.OrdinaryClockRejectsChangedOriginalOrCurrentAuthorityWithoutMutation",
+        "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.OrdinaryClockPublicationFailurePreservesExactOwnership"
+      ]
+    }
+  ]
+},
+{
   "id": "mortal-ordinary-clock-preintake-causal",
   "responsibility": "T121-PHYSICAL-GUIDED-ORDINARY-CLOCK first genuine ordinary original/pre-intake clock control. Existing native fixture has a complete declared calendar before its sole real original, no diagnosis/treatment input, actual raw-resource intake and original/control/unrelated-source checks before the intended missing numeric-clock oracle. After GREEN, existing progression publication, repeated controls and real next menu prove no second delta and readable canonical time. Full existing passive gzip transport and actual fixture cleanup; new body UNCOMPILED/UNRUN.",
   "excludes": "No synthetic snapshot/receipt/accepted plan, Engine world, menu-only clock fallback, manual post-accepted clock patch, invented calendar epoch, new cache/diagnostic stack or increased budget. This native source/clock roundtrip does not qualify the full Engine course, DOM/provider/fresh process or older HOLDs. Unrelated intake failure/setup/timeout is not causal RED.",
@@ -308,7 +336,8 @@
     {
       "project": "unit",
       "tests": [
-        "BookOfEternityClient.Tests.PhysicalGuidedDocumentationTests.WorkedSelectionsAndGmSurfacesKeepAllThreeModeOwnersAndSeparateCourseAttempts"
+        "BookOfEternityClient.Tests.PhysicalGuidedDocumentationTests.WorkedSelectionsAndGmSurfacesKeepAllThreeModeOwnersAndSeparateCourseAttempts",
+        "BookOfEternityClient.Tests.PhysicalGuidedDocumentationTests.OrdinaryCourseWaitDocumentsClientPublicationAndRecoveryBoundary"
       ]
     },
     {
