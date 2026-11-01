@@ -1,3 +1,34 @@
+# Full console course — 1 PASS, independent OUTCOME pending
+
+Runtime `494049134a78995bef996c72946dea2212ca23c5`; actual Main/Support/Unit
+remain compiled from `d3be1948e50ebbaccc9fe088501bbccdf52fb68b`, Integration from
+`102dcf7f524c41dbbf70c8fd4efa77e10b855671`. Accepted independent metadata/helper/
+PREP and the immediate unchanged source/resource/owner/reserve fence preceded
+exactly one full console course. No build or previously passing case was repeated.
+
+`ConsolePhysicalCourseSeparatelyConfirmsEveryMilestoneAfterAcceptedWaits` passes
+1 case / 1 method / 1 exclusive descriptor, 0 failed/skipped/underfilled/duplicate
+results. Category 156.5860411 / 180 seconds, wall 164.2433656 seconds. The actual
+Engine journey verifies three separately confirmed treatment milestones, both
+ordinary accepted waits, TooEarly inertness, newly opened current menus, unchanged
+wound bytes during waits, exact declared item costs, persistent course identity,
+terminal wound result, History, exact replay and ordinary owned cleanup. This is
+a complete console course, not an extrapolation from the clock component tests.
+
+Primary TRX SHA-256 `fe88dfba4d7ea00740b040abfcffbd577f2d933c15b08fe7b6063e047a6b9cbd`.
+Full passive capture has 28 original timing events, complete pairs/sequences,
+closed writer/footer and exact EOF/CRC/decoded proof. Stored SHA-256
+`31465df1996d3b972f6c20fb8c0e91555b7d8b9bf38677ca4af67e4a5f3034f8`;
+decoded SHA-256 `94ae28a10571b37b6098810291bf992b5e686a9ad623ee4c21fd8196048f19ab`.
+The actual owned fixture root is absent; closing fence 20:19:53 UTC confirms all
+27 artifacts, resources and daemons unchanged, no active managed owner, and
+714608640 free bytes above the unchanged 687865856-byte start reserve.
+Raw remains outside checkout under `us5-guided-diagnosis/P3GREENC14COURSE-console1`.
+Old timeout/prefix/root remain preserved and are not relabeled PASS. No speedup
+claim, broader HOLD release, browser-course/rollback or whole-feature acceptance.
+Independent OUTCOME pending; next exact browser-course plan/PREP and one original
+180-second journey, followed by the remaining functional publication-cut controls.
+
 # Full console course — exact current preparation, runtime UNRUN
 
 C14 closure/status is remotely saved atb0b0d8e0433f3e787b5e0f3d7a3088701095d64e.
