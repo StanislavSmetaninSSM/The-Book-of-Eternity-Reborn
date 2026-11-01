@@ -1,3 +1,32 @@
+# Instrumented browser course — timeout / UNKNOWN; captured prefix retained
+
+Runtime `251031dc9650351e52dfe430deb577e5cd2f9908`, actual Integration b4db33c2f
+and unchanged other RDR d3be1948 owners. After independent PREP/current fence,
+the one instrumented browser course reaches its original category timeout at
+180.123566 / 180 seconds, runner wall 189.6645368 seconds. Summary exit124 /
+wrapper1, no primary TRX, 0 completed cases. Managed-tree/runtime cleanup succeeds;
+fixture completion does not: retained root has 220 files / 1126642 logical bytes.
+Frozen hash inventory is external. No browser PASS, completed gameplay FAIL or
+retrospective cause/latency claim follows from this instrumented result.
+
+All generated capture bytes remain external, 838794938 stored bytes, no report /
+complete footer proof. Prefix analysis is pending. A late growth burst exceeded
+the prudent storage estimate: free space fell to 225021952 bytes after timeout,
+below the nominal base reserve. The timeout, not ENOSPC, is the recorded stopping
+condition; no collection quota or truncation was introduced. No further runtime
+or build is admitted from this state. The original start guard was unchanged;
+future capture admission must account for this newly measured storage cost.
+
+Under standing authorization, only archived closed plain logs were replaced by
+full verified gzip using the unchanged reviewed helper. Eleven additional bounded
+batches / 660 files have closure, identity, complete decode, length and SHA proofs;
+all manifests/archives remain external. No unique capture/TRX/JSON/save/recovery/
+bin or old measurement was removed. Free space restored to 762777600 bytes above
+the unchanged 687865856-byte start reserve. Both browser UNKNOWN roots/prefixes
+remain intact, as do accepted complete console/rollback results. Next read-only
+linear analysis of this existing prefix and independent outcome/phase assessment;
+no blind retry, new diagnostic collector or production optimization is admitted.
+
 # Instrumented browser course — independent PREP accepted
 
 Astra/high independently accepts exactly one existing browser-course Fact, one
