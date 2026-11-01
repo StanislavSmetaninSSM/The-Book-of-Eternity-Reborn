@@ -12,7 +12,10 @@
     "BookOfEternityClient/Core/FileSystemManager.ValidationReadSet.cs"
   ],
   "related": [
-    "mortal-physical-guided-menu-data"
+    {
+      "id": "mortal-physical-guided-menu-data",
+      "when": "Compare retained no-hook menu DATA and next-open freshness after correcting callback-sensitive reuse."
+    }
   ],
   "requirements": {
     "frontendBuild": false,
@@ -40,7 +43,10 @@
     "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalTreatmentPublication.cs"
   ],
   "related": [
-    "mortal-physical-guided-publication"
+    {
+      "id": "mortal-physical-guided-publication",
+      "when": "Qualify existing scalar settlement alongside the corrected canonical terminal-heal publication."
+    }
   ],
   "requirements": {
     "frontendBuild": false,

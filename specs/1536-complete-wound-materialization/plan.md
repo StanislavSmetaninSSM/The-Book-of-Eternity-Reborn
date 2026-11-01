@@ -1,5 +1,14 @@
 # T121 physical SOURCE HOLD — causal scaffold build corrections, runtime UNRUN
 
+Fresh warning-clean owning pass oncf127d94a completed with exit0 for all four
+projects: Main98.99s/12 warnings, Support12.14s/23, Unit70.60s/26 and
+Integration273.26s/102. Every code/message warning multiset matches C19. Actual
+PE/PDB4 and387 changed-source bindings pass. Catalog validation stopped before
+discovery because the two new related links were strings rather than the required
+id/when objects. Only those links and this receipt are corrected; source/artifact
+bindings remain unchanged and no C# rebuild is justified. The failed catalog raw
+is retained; official discovery/PlanOnly/PREP and all six runtime cases are pending.
+
 First managed pass on4d2907793: Main-c1 exit0/13 warnings in118.91s;
 Support exit0/23 in13.73s; Unit exit0/26 in57.99s; Integration exit1/103
 warnings and two CS0266 errors in100.62s. Main has one new nullable warning;
