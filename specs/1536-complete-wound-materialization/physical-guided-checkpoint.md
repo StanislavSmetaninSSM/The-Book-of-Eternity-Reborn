@@ -1,3 +1,22 @@
+# Canonical purpose/observation4 GREEN — native/publication acceptance next
+
+Runtime ce37ccb2fc8874a8a54e40b67829b8b9195bb01d, Unit compiled6d81, other owners
+unchanged:4/4PASS, two complete descriptors. Actual authenticated resource absence,
+SoulQuest snapshot/decode and old-form fast path pass; corrected purpose refusal
+now reaches every zero-draw/canonical-byte/retained-request assertion. Categories
+6.8165565/60s and5.4384767/60s, wall20.1617844s,exit0, no skip/timeout/underfill;
+cleanuptrue,27pins/44resources/4daemons stable, no owner. Independent OUTCOME pending.
+Retained causal16/admission47/remaining71 plus these4 are138 distinct PASS across
+explicit lineages, not one fresh138. The original text-only FAIL stays preserved.
+
+Current exact remaining PlanOnly exits0 with three descriptors/three cases and
+zero execution: canonical resource native1/120s, terminal-effect native1/120s and
+expanded-source console confirmation/rollback1/180s. Require dependent OUTCOME,
+independent PREP and immediate fresh owner/artifact/resource/reserve fences before
+one sequential execution. No production change, new diagnostics or successful
+repeat is proposed. Canonical feature/task acceptance and all broader HOLDs remain
+open until their own evidence. All raw, archives and primary TRX stay outside Git.
+
 # Canonical Unit-only correction built — exact four-case PREP next
 
 Independent Sol/xhigh accepts the two fixture lines, finite purpose-category split
