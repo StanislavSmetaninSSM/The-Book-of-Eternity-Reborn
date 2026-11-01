@@ -1,3 +1,39 @@
+# C12 console course — timeout / UNKNOWN; concrete wait fixture rejection
+
+Runtime 2f52db50968c7eb9811a2e0d8f18eab326ea135c / all four compiled source
+390907d4d376e70ec99d49653ec2b9fe22b54c19. P3GREENC12-course-console1 times out
+180.125405s/180s, wall 188.7609288s; summary 124 / wrapper 1, no TRX and zero
+completed cases/descriptors. UNKNOWN, not a failed completed test or course PASS.
+Runner processes ended/cleanup complete; interrupted fixture remains preserved.
+
+Existing full readable timing prefix shows first confirmed treatment returned in
+34345.596541ms, then the first OrdinaryAcceptedWait begins and its controlled GM
+response returns; no wait end exists. Actual retained validation_repair_request
+on turn 44 rejects interface_updates.json.timeChange with
+interface_updates_unknown_field. The writer puts the 480-minute normal wait in
+an unsupported output field and marks responded, so no repair is supplied. This
+is an observed fixture-contract rejection, not evidence of slow course arithmetic
+or a production validator defect. The old timeout remains unchanged.
+
+Partial gzip 1327 bytes / SHA-256
+74a79e83bd61d0588b2b0306ae8c19106d8d95acfa594bdb176e11e8ff84cb37
+has ten readable timing events and EOFError; no full footer/report/cleanup proof.
+Its root /tmp/boe-mortal-physical-journey-7d640718a9344493a8f3b0d94f9d26dd,
+complete file inventory/hashes, actual repair request and original records remain
+external and unmodified. verified-partial-readback.json records the exact prefix
+and retained images. Only its ended generic log has a fully recoverable gzip copy.
+
+Next bounded fixture correction: use the existing ordinary world_time timeChange
+command during the controlled GM response (and declare its path in ready), never
+patch time after acceptance. Keep the interface output closed and original-control
+report obligations unchanged. First add a minimal direct actual-writer regression
+for no-pending versus already-pending reports, with the existing public interface
+validator and frozen clock resolver; prove the specific rejection before correcting
+only the wait branch. No production guard, time rule, assertion or limit changes.
+Independent SOURCE/PREP/OUTCOME and fresh owning build remain required. Browser
+2 PASS stays accepted and will not be repeated for this wait-only fixture change.
+Rollback/browser course are still UNRUN; advanced native UNKNOWN and all HOLDs stay.
+
 # C12 browser modes accepted — next complete console course and rollback
 
 Independent Astra/high OUTCOME accepts both actual browser cases: procedure at
