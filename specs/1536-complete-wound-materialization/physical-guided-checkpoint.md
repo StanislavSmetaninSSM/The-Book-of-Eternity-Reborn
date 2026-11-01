@@ -1,3 +1,32 @@
+# C13 causal scaffold built — exact two-row RED PREP pending
+
+Independent Astra/high SOURCE accepts c55f00857dbd6db04b0f1159c64dbc169a805c7c,
+its minimal two-row writer test, category/selection and six bounded helper phase
+adaptations. Writer is still unchanged. Fresh Integration build exits 0 in
+159.496386s, 0 errors / baseline 102 warnings (204 logged, exact code/message
+multiset). Main/Support/Unit retain their C12 source 390907 builds; their project
+sources are unchanged, not newly built here. Four actual PE/PDB identities,
+413 source bindings, 27 artifacts, ten resources in 40 copies and four daemons
+match. Ended-owner standard obj/ref duplicates alone retired with manifests;
+all current bins/dependency refs and prior four-member C12 archive remain.
+
+Official discovery: 1297 categories / 13112 methods, no stale/unmapped selectors,
+zero execution. P3GREENC13RED-causal2-plan exits 0: only the new wait writer
+Theory, exactly 2 cases / 1 method / 1 exclusive Integration descriptor / 60s,
+zero execution and complete runner cleanup. Catalogue/plan generic logs are
+fully recoverable verified gzip; every other result/raw/unique artifact remains.
+The new cheap fixture-root prefix is initially empty. Last fence has no active
+managed owner and all pins stable; free space 866418688 bytes above unchanged
+687865856-byte start reserve.
+
+Next: independent PREP, immediate fresh fence and only this causal two-row run.
+Acceptance requires both cases to reach the intended Assert.Empty interface
+oracle after writer completion, exact observed unknown-field issue, immutable
+output/NPC bytes and original-report premises; setup, timeout or cleanup failure
+is not the required RED. Corrected clock/ready assertions remain after that oracle.
+No full course/browser/native/rollback retry or gameplay PASS follows from build.
+All old results, partials and HOLDs remain exact and separate.
+
 # C13 wait-response causal scaffold — UNCOMPILED / UNRUN
 
 Independent Astra/high accepts C12 course as timeout/UNKNOWN with an actual
