@@ -1,3 +1,24 @@
+# C7 fixtures compiled — runtime PREP pending
+
+Fresh Integration source69fdca68080cb724df0f599b2f68a63b29a8f401 exits0
+in104.438031s; warning multiset remains102. Other three owner builds remain C5
+sourcea958b520. Actual4 PE/PDB pairs/410 source bindings/27 artifacts/10 resources,
+40 copies/four daemons agree. Astra SOURCE accepts the grouped fixture change;
+C6 current3/C5 UI9 exact discovery descriptors are retained under reviewed unchanged
+test/InlineData/selector/category/budget membership, not claimed fresh C7 discovery.
+No runtime has executed at C7. Current3 and corrected console2 need fresh PREP.
+
+Approved ended-owner standard obj and own refint/ref outputs were retired under
+fresh identity/hash checks, preserving allbin and Main/Support reference inputs.
+External P3GREENC7-build-integration proofs show free688529408B after retirement.
+The exact540 regenerable Node compile-cache files were removed under an independent
+resource review, but observed free space did not rise; no saving is claimed.
+Source/proofs remain external in P3GREENC7-*. Raw/saves/recovery are untouched,
+additional binary export is deferred, and the656MiB start reserve is unchanged.
+The next fresh preparation/start fence must pass; no reserve reduction or assumed
+space recovery is permitted. A later insufficient reserve blocks further launches,
+not an excuse to omit output or declare unrun tests passed.
+
 # C7 scoped initial capability and rendered label — UNCOMPILED/UNRUN
 
 Fixture-only correction on a7d4d2527907aab401db8f3b23fce7b267250f6b. The actual
