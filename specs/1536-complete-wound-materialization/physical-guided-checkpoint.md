@@ -1,3 +1,38 @@
+# Browser timing prefix — phase localized; no retry or product change
+
+One reviewed linear readback of the retained instrumented capture completes:
+838794938 stored bytes, SHA-256
+`30b32863d1016b0c201d509aa52c9aff54439953f067cf00ea8f7b9380a3e9e4`;
+15432376 complete timing rows / 7974990180 readable decoded bytes, 0 messages,
+0 sequence gaps or pair faults. Gzip ends with EOFError, no report/footer; no full
+capture or PASS. Raw and the 231053-byte analysis remain external. Analysis-only
+message classification/normal-exhaustion defects were found by independent review,
+corrected and reviewed before the sole fold; collection itself never changed.
+
+Instrumented first attempt completes in 115.982112285 seconds; its Finalize.Total
+is 102.264281731 seconds. AcceptedValidation.Total is 50.749372310 seconds, with
+ResourceAndTreatment 10.575050656 and RefreshCanonicalState 5.867500012 seconds.
+Two sequential completed GameState checks in that finalization take 25.102825759
+and 25.686159331 seconds. These are phase observations with instrumentation cost,
+not original speedup or proof of one subsystem causing the old 110.668 seconds.
+Do not sum nested inclusive intervals. First ordinary wait completes in 10.008631
+seconds. The second attempt remains open in accepted validation / GameState.
+
+Source inspection finds ReadGameStateDataAsync intentionally falls back when
+HasBrowserOriginalOperation is true; 21 fallback scopes / 45.183930 inclusive
+seconds appear across the retained prefix. Other eligibility conditions may also
+apply; this is a concrete reuse/lifetime candidate, not a demonstrated safe fix.
+Do not remove that browser guard, current owner/authority/source/history checks,
+change limits or resume parked generic performance work. Next bounded independent
+phase assessment and smallest existing-service causal/design proof if justified;
+otherwise keep the explicit browser qualification limit and advance independent
+agreed functionality. Complete console course and rollback3 stay accepted separately.
+
+The 20:46:28 closing fence confirms all 27 pins/resources/daemons stable, no managed
+owner and 762687488 free bytes after verified storage recovery. An optional attempt
+to inspect the analysis process's `/proc/639180/fd/0` progress was denied Permission
+Error; it was not retried or bypassed and did not block the completed fold.
+
 # Instrumented browser course — timeout / UNKNOWN; captured prefix retained
 
 Runtime `251031dc9650351e52dfe430deb577e5cd2f9908`, actual Integration b4db33c2f
