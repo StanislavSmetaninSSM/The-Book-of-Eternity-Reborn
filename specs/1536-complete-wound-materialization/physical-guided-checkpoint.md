@@ -1,3 +1,21 @@
+# C14 ordinary clock accepted — next full console course
+
+Independent Astra/high final OUTCOME accepts remaining7 and complete native
+capture at runtime29a55ce5/Integration102dcf7f, with retained reader19@2023bbdb
+and native7@4a71e70a. T121-PHYSICAL-GUIDED-ORDINARY-CLOCK closes only this
+33-distinct bounded dependency, not a single fresh33, whole course, physical
+feature or epic. All production Main instances ared3be1948. Canonical spec/task/
+plan status now reflects this accepted state; no game rule or executable source
+changes in this status update. Earlier errors/UNKNOWN/raw remain preserved.
+
+Next one console complete three-milestone course, using current qualified bins
+and C13 ordinary GM wait channel, existing180s category. Retained original turn44
+eligibility is confirmed read-only as below. Current exact PlanOnly/resource/PREP
+must precede runtime; old course root/raw will not be overwritten or deleted.
+Browser course and remaining rollback journeys follow by dependency; all other
+HOLDs/Windows and DOM/provider/fresh-process limits stay explicit. No unchanged
+passing case or build is repeated solely for this status change.
+
 # C14 remaining7 —7 PASS; final OUTCOME pending
 
 Runtime29a55ce581ba940d296cf706c155d5e0a9725c01 / compiled Integration102dcf7f,

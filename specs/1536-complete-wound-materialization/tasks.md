@@ -150,12 +150,12 @@ this bounded route, not parent T121/FR071/US5/#1536 or the eight proof adapters.
   and full RED evidence. This closes only that assessment, not optimization or
   native/feature qualification. Selected-graph reuse remains unimplemented.
 
-- [ ] T121-PHYSICAL-GUIDED-ORDINARY-CLOCK [US2/US3/US5] Make the existing
+- [x] T121-PHYSICAL-GUIDED-ORDINARY-CLOCK [US2/US3/US5] Make the existing
   ordinary accepted wait leave one authoritative numeric canonical minute for
   subsequent recovery/treatment, consuming the declared timeChange exactly once.
-  C13's valid command currently updates the progression ledger but not the clock
-  required by the next menu/accepted-state owner. First a cheap actual ordinary
-  roundtrip must prove the gap; use the existing accepted source/publication owner,
+  Observed C13 gap: the valid command updated the progression ledger without
+  the clock required by the next menu/accepted-state owner. The actual ordinary
+  roundtrip reproduced and corrected the gap; use the existing accepted source/publication owner,
   preserve original control/source/realm/baseline guards, atomic rollback and
   calendar metadata without inventing a calendar epoch. No fixture clock patch,
   menu-only fallback, parallel clock service or new game rule. Independent DESIGN,
@@ -167,9 +167,13 @@ this bounded route, not parent T121/FR071/US5/#1536 or the eight proof adapters.
   hash/presence/order. Finite no-ambient and primed-DATA controls precede native
   sourceguard GREEN; this is part of the same clock source-integrity obligation.
 
-  C14 first scaffold uses the existing shared raw-resource validator and genuine
-  unsigned/non-diagnosis native original; only one 60s causal case is proposed.
-  No production implementation or runtime admission follows from source authoring.
+  Accepted C14: independent DESIGN/SOURCE/PREP/OUTCOME and33 distinct PASS on
+  three explicit runtimes, not one fresh33. Actual numeric publication/repeat/
+  progression/menu, missing-original held lease, pending DATA obligations,
+  malformed/source/publication failures, GM docs and affected rollback pass.
+  Details and source/provenance are in physical-guided-checkpoint.md. This closes
+  only the ordinary-clock dependency; full console/browser courses and feature
+  acceptance remain open.
 
 - [x] T121-PHYSICAL-GUIDED-COURSE-WAIT [US2/US5] Corrected only the controlled
   GM wait fixture's misplaced timeChange after course timeout at2f52db50. The

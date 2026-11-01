@@ -1,8 +1,10 @@
 Current physical-guided continuation: [physical-guided-checkpoint.md](physical-guided-checkpoint.md).
-Current next functional dependency: T121-PHYSICAL-GUIDED-ORDINARY-CLOCK; valid
-ordinary wait must publish its canonical numeric minute exactly once before the
-next treatment/recovery. C13 fixture GREEN is accepted separately; full course
-retry is not admitted pending the real accepted-clock roundtrip and owner fix.
+T121-PHYSICAL-GUIDED-ORDINARY-CLOCK is accepted in its bounded33-distinct scope
+with explicit source/runtime provenance; this is not one fresh33 or full feature.
+Next functional qualification: one complete console three-milestone course after
+normal accepted waits and cleanup, current exact plan/resource/PREP and existing
+180s bound. Then remaining browser-course/rollback journeys by their dependencies.
+All broader DFR/Mortal compatibility/Windows and feature acceptance HOLDs remain.
 The dated entries below retain their historical status and evidence.
 
 # T121 independent allocation/current routing correction — UNCOMPILED/UNRUN
