@@ -59,7 +59,7 @@ internal static class MortalWoundHealLegacyPlanner
     /// </summary>
     internal static MortalWoundHealLegacyPreparation Prepare(MortalWoundTreatmentAttemptRequest request,
         MortalWoundTreatmentResolution resolution, WoundAcceptedTurnBinding binding, string preparedInputFingerprint,
-        long currentGameMinute)
+        long currentGameMinute, IReadOnlyList<WoundEffectOperationBatch> precedingBatches)
     {
         if (!MortalWoundTreatmentDetachedSealValidator.IsValid(request) ||
             resolution.RequestFingerprint != request.RequestFingerprint ||
@@ -77,6 +77,8 @@ internal static class MortalWoundHealLegacyPlanner
             throw Invalid("Terminal legacy owner has no canonical effect target.");
         var accepted = binding.AcceptedEvents.Single(row => row.EventRef == request.Coordinates.EventRef);
         var aliases = new HashSet<string>(StringComparer.Ordinal);
+        var firstMechanicsOrdinal = checked(precedingBatches.SelectMany(batch => batch.RootApplications)
+            .Select(row => row.MechanicsOrdinal).DefaultIfEmpty(0).Max() + 1);
         var batches = new List<WoundEffectOperationBatch>();
         var declarations = new List<WoundLegacyDeclaration>();
         for (var ordinal = 0; ordinal < declared.Legacies.Length; ordinal++)
@@ -123,7 +125,7 @@ internal static class MortalWoundHealLegacyPlanner
                     !WoundEffectCarrierAdapter.TryCreateCarrierCoordinate(owner, target, body, out var coordinate))
                     throw Invalid("Mechanical legacy has no canonical component/carrier mapping.");
                 var key = new EffectSourceKey(owner.Realm, "wound_legacy", seed.LegacyId, definition.DefinitionKey);
-                roots.Add(new(reference.NamespacedRef, checked(heal.OperationOrdinal + ordinal + 2), index + 1,
+                roots.Add(new(reference.NamespacedRef, checked(firstMechanicsOrdinal + ordinal), index + 1,
                     "apply", seed.LegacyId + "_application_" + index.ToString(CultureInfo.InvariantCulture), definition.DefinitionKey,
                     new(target.Kind, target.TargetId, null), target,
                     new(key.Realm, key.Kind, null, legacy.LocalLegacyRef, key.DefinitionKey), key, parameters,
@@ -148,7 +150,48 @@ internal static class MortalWoundHealLegacyPlanner
             batches.Add(new(legacy.LocalLegacyRef, seed.LegacyId, export, roots, provisional.TerminalOperations,
                 provisional.RootLineageAuthority, WoundAcceptedTurnFingerprints.ComputeSourceExport(provisional), transition));
         }
+        RequireDisjointCoordinates(precedingBatches.Concat(batches).ToArray(), heal);
         return new(request.RequestFingerprint, heal.IntentFingerprint, heal.LegacySeedBindings, declarations, batches);
+    }
+
+    /// <summary>
+    /// Rejects exact or confusable operation/application/event collisions across
+    /// every supplied prefix or joint batch and the terminal child before publication.
+    /// Legacy mechanics ordinals follow the actual preceding batch inventory.
+    /// </summary>
+    internal static void RequireDisjointCoordinates(IReadOnlyList<WoundEffectOperationBatch> batches,
+        MortalWoundHealOutcomeIntent? heal)
+    {
+        var applications = new HashSet<string>(StringComparer.Ordinal);
+        var operations = new HashSet<string>(StringComparer.Ordinal);
+        var events = new HashSet<string>(StringComparer.Ordinal);
+        static void Add(HashSet<string> set, string value)
+        {
+            if (!ResourceMaterializationContract.IsExactIdentifier(value) ||
+                !set.Add(MortalLocationIdentityState.BuildConfusableKey(value)))
+                throw Invalid("Colliding terminal/prefix/legacy operation coordinates.");
+        }
+        if (heal is not null)
+        {
+            Add(operations, heal.HealChildCoordinates.OperationKey);
+            Add(events, heal.HealChildCoordinates.EventRef);
+            Add(events, heal.HealChildCoordinates.CausalEventRef);
+        }
+        foreach (var batch in batches)
+        {
+            foreach (var root in batch.RootApplications)
+            {
+                Add(applications, root.ApplicationRef); Add(operations, root.OperationKey);
+                Add(events, WoundEffectOperationEventRef.Create(root.CausalEventRef,
+                    root.MechanicsOrdinal, root.OperationOrdinal, root.OperationKind));
+            }
+            foreach (var terminal in batch.TerminalOperations)
+            {
+                Add(operations, terminal.OperationKey);
+                Add(events, WoundEffectOperationEventRef.Create(terminal.CausalEventRef,
+                    terminal.MechanicsOrdinal, terminal.OperationOrdinal, terminal.OperationKind));
+            }
+        }
     }
 
     /// <summary>

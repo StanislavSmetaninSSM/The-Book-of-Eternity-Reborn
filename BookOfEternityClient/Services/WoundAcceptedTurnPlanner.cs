@@ -3296,7 +3296,8 @@ internal static partial class WoundAcceptedTurnPlannerCore
         ArgumentNullException.ThrowIfNull(authority);
 
         if (authority.Issues.Count != 0 ||
-            ValidatePreparedAuthority(prepared).Count != 0)
+            ValidatePreparedAuthority(prepared).Count != 0 ||
+            !TreatmentLegacySourcesAgree(prepared, authority))
         {
             return false;
         }
@@ -3309,6 +3310,7 @@ internal static partial class WoundAcceptedTurnPlannerCore
         foreach (var batch in prepared.EffectOperationBatches)
         {
             var export = batch.SourceExport;
+            if (export.Kind == "wound_legacy") continue;
             if (!string.Equals(export.Kind, "wound", StringComparison.Ordinal) ||
                 export.Materializable ||
                 !string.Equals(

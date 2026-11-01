@@ -1,3 +1,40 @@
+# T121 private legacy source/application handoff — WIP UNCOMPILED/UNRUN
+
+Continues ce54b265879deeed13917c576142acab361d81cb. Actual treatment composition
+now captures the typed legacy preparation on its EXISTING private continuation
+before the prepared/effect stages. The private continuation fingerprint includes
+that preparation fingerprint; prepared agreement binds its complete ordered batch
+suffix and the exact request-derived treat/heal transition coordinates. Prefix
+rematerialization keeps its existing seal and source/target/definition checks.
+No legacy ID is added to the wound identity inventory as a pretend active wound.
+
+Prepared source composition admits independent non-public wound_legacy exports
+only from that exact private preparation and keeps them outside active-wound root
+groups. Complete same-turn legacy owner AND definition sets are compared, including
+empty/foreign extra owners, through copied views of the existing source authority.
+The old wound-source comparison remains intact for its original kind. Arbitrary
+caller-supplied legacy exports remain forbidden.
+
+The actual effect owner now routes those exact private applications into its
+existing ApplyApplication/ValidateWoundApplicationExecution path and sole identity
+allocator. No second allocator or publisher is added. The handoff compares complete
+source/definition/target/carrier/parameters/materialization and original accepted
+cause; it enforces namespace and full prefix/joint inventory collision sets.
+Legacy mechanics ordinals follow the actual preceding root inventory instead of
+assuming a fixed prefix count. Pure disjoint-coordinate checks include terminal
+child operations/events and all supplied prefix/legacy apply/termination events;
+normal actual execution keeps its existing collision inventory and validation.
+
+This is source wiring, NOT a published terminal result or GREEN. Actual terminal
+boundary, ordered final wound History/identity/carrier/legacy declaration commit,
+current canonical legacy reconstruction after cleanup, v2/browser/output and the
+new typed namespace/stage/allocation/cold/replay/rollback proofs remain next. The
+shared joint contribution requires its own real private legacy preparation where
+reachable, never a manufactured guided repair wave. No test/build/discovery or
+source-pin refresh occurred; all six genuine causal REDs remain retained. Diff
+whitespace checks pass. Root alone persists and verifies; existing raw/reserve/
+saves/recovery/HOLDs are unchanged.
+
 # T121 terminal legacy preparation leaf — source WIP, UNCOMPILED/UNRUN
 
 Continues eecd70ac1f0242a9c40efba22b3b900f1489d75c. The new bounded

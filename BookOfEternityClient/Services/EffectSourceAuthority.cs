@@ -416,11 +416,19 @@ internal sealed class EffectSourceAuthority
             StringComparison.Ordinal);
     }
 
-    internal IReadOnlyList<EffectSourceAuthorityEntry> SnapshotSameTurnWoundEntries() =>
+    internal IReadOnlyList<EffectSourceAuthorityEntry> SnapshotSameTurnWoundEntries() => SnapshotSameTurnEntries("wound");
+
+    /// <summary>
+    /// Copies only independent same-turn legacy entries for comparison against
+    /// the actual private treatment preparation; it grants no application authority.
+    /// </summary>
+    internal IReadOnlyList<EffectSourceAuthorityEntry> SnapshotSameTurnLegacyEntries() => SnapshotSameTurnEntries("wound_legacy");
+
+    private IReadOnlyList<EffectSourceAuthorityEntry> SnapshotSameTurnEntries(string kind) =>
         _entries.Values
             .Where(static entry =>
                 entry.SameTurn &&
-                string.Equals(entry.Key.Kind, "wound", StringComparison.Ordinal))
+                string.Equals(entry.Key.Kind, kind, StringComparison.Ordinal))
             .OrderBy(static entry => entry.Key.Realm, StringComparer.Ordinal)
             .ThenBy(static entry => entry.Key.SourceId, StringComparer.Ordinal)
             .ThenBy(static entry => entry.Key.DefinitionKey, StringComparer.Ordinal)
@@ -439,11 +447,18 @@ internal sealed class EffectSourceAuthority
                 entry.RequiredApplicationAuthority))
             .ToArray();
 
-    internal IReadOnlyList<EffectSourceExport> SnapshotSameTurnWoundGroups() =>
+    internal IReadOnlyList<EffectSourceExport> SnapshotSameTurnWoundGroups() => SnapshotSameTurnOwnerExports("wound");
+
+    /// <summary>
+    /// Includes empty unexpected legacy owners in exact private source comparisons.
+    /// </summary>
+    internal IReadOnlyList<EffectSourceExport> SnapshotSameTurnLegacyOwners() => SnapshotSameTurnOwnerExports("wound_legacy");
+
+    private IReadOnlyList<EffectSourceExport> SnapshotSameTurnOwnerExports(string kind) =>
         _ownerExports
             .Where(static export =>
                 export.SameTurn &&
-                string.Equals(export.Kind, "wound", StringComparison.Ordinal))
+                string.Equals(export.Kind, kind, StringComparison.Ordinal))
             .OrderBy(static export => export.Realm, StringComparer.Ordinal)
             .ThenBy(static export => export.SourceId, StringComparer.Ordinal)
             .ThenBy(static export => export.SourceRef, StringComparer.Ordinal)

@@ -1919,9 +1919,19 @@ internal static class EffectAcceptedTurnInputComposer
             prepared.EffectOperationBatches.Count);
         var groups = new List<WoundSourceGroupAuthority>(
             prepared.EffectOperationBatches.Count);
+        WoundAcceptedTurnPlanner.TryReadTreatmentLegacyPreparation(prepared, out var privateLegacies);
         foreach (var batch in prepared.EffectOperationBatches)
         {
             var source = batch.SourceExport;
+            if (source.Kind == "wound_legacy" && (privateLegacies is null ||
+                !privateLegacies.EffectOperationBatches.Any(expected => expected.PreparedWoundId == batch.PreparedWoundId &&
+                    expected.SourceExportFingerprint == batch.SourceExportFingerprint)))
+            {
+                issues.Add(WoundCompositionIssue("effect_source_wound_legacy_preparation_missing",
+                    "An independent legacy source requires its exact private treatment preparation.",
+                    "one exact prepared legacy batch", batch.PreparedWoundId));
+                continue;
+            }
             if (!WoundEffectCarrierAdapter.TryCreateTargetKey(
                     source.Owner,
                     out var target))
@@ -1958,6 +1968,8 @@ internal static class EffectAcceptedTurnInputComposer
                 {
                     "active"
                 }));
+            // A legacy is an independent source, never a live wound root group.
+            if (source.Kind == "wound_legacy") continue;
             groups.Add(new WoundSourceGroupAuthority(
                 new EffectIdentitySourceGroup(
                     source.Realm,

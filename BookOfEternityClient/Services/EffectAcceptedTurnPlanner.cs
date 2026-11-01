@@ -2446,6 +2446,12 @@ internal static partial class EffectAcceptedTurnPlanner
                             ["eventRef"] = value.EventRef, ["kind"] = value.Kind, ["authorityId"] = value.AuthorityId
                         }).ToArray()), issues);
             }
+            if (batch.SourceExport.Kind == "wound_legacy")
+            {
+                PrepareTreatmentLegacyApplications(input, prepared, batch, path, batchEvents,
+                    applicationRefs, applicationAliases, createdEvents, createdEventAliases, applications, issues);
+                continue;
+            }
             PrepareWoundBatchApplications(
                 input,
                 prepared,
