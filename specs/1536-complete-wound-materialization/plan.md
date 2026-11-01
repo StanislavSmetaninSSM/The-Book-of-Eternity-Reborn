@@ -1,3 +1,29 @@
+# T121 terminal execution — actual refusal retained; correction pending
+
+On source/runtime 03ef5727542aac04b94f9e953f2341429d99d980, fresh Integration
+build passes (110.94 seconds, baseline 102 warnings); four PE/PDB pairs, 410
+bindings, 27 artifacts, 40 resource copies and full archive/CRC proof pass.
+Independent Astra SOURCE/PREP admits only the exact remaining13, within unchanged
+60/120-second bounds. The fault correction is confirmed by both actual rows.
+
+P3GREENC1-native13 stops 6 PASS / 4 FAIL / 3 UNRUN in 107.8908747 seconds,
+no timeout, stable binaries and complete cleanup. Three ordinary publications and
+Fate pass. All four terminal causal rows reach their legal native premises but
+refuse actual publication: three reduce/heal modes are misdispatched to recovery
+finalization; remove_then_heal reports a separate InvalidOperationException still
+under source investigation. ValidateFinalizationHandoff sets the recovery dispatch
+flag for a validated terminal execution, while Finalize sends that flag to the
+recovery reducer. The terminal and genuine joint family must retain all handoff
+checks and reach their own reducer; no guard or private proof may be bypassed.
+
+Original failed TRX and strict partial proof remain outside checkout in
+P3GREENC1-native13/verified-partial-failure.json. Current frontier is 33 distinct
+PASS across reviewed versions, not one fresh33; terminal4 and remaining native3 /
+UI9 are not accepted. SOURCE investigation is bounded to both terminal causes and
+remaining consumers before another run. Closing proves no active managed owner,
+27 stable artifacts/resources/daemons and 767,381,504 free bytes. No runtime retry,
+new general diagnostics, timeout change or broader HOLD release has occurred.
+
 # T121 native hold fault — fixture-only correction, UNCOMPILED/UNRUN
 
 Base8fc860a0d25d46e07f64a4e4bcd3c362448ac150 (plan-only after runtime587e803d2).
