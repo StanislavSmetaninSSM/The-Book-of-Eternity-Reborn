@@ -1,3 +1,15 @@
+# Canonical corrected SOURCE accepted — four fresh builds next
+
+Independent Astra/high accepts correction17abadc66..2cc9ff51c8313512d1295b0e31e37a058a488d63:
+all six concrete findings closed in source, same-plan DATA reuse/actual work counter
+and finite addressed selection accepted. The earlier cost-burden caveat is withdrawn:
+this independent generic action_cost/DirectCost without DerivedAmount preserves1,
+not the separate spiritual-conflict burden. Runtime assertions must still prove it.
+Four fresh managed builds, discovery and exact PlanOnly are admitted; C# remains
+UNCOMPILED and every new GREEN/native/UI/rollback runtime remains UNRUN until PREP.
+The prebuild fence confirms remote2cc9ff51c, clean tree, no managed owner,71 preserved
+binary/resource paths unchanged and807788544freeB above687865856start reserve.
+
 # Canonical SOURCE correction WIP — six findings, still uncompiled/unrun
 
 Independent Astra/high declines SOURCE17abadc66 on six concrete defects: missing
