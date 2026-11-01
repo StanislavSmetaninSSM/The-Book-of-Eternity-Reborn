@@ -1,3 +1,37 @@
+# C14 clock14 attempt —7 PASS, final menu fixture FAIL,6 UNRUN
+
+Runtime4a71e70a766d31f2856c14b874c796bc02e4112d / all compiled ownersd3be1948.
+After accepted reader19 OUTCOME and immediate unchanged fence, actual afterlife2
+and ownership5 all PASS, including every source corruption and exact failed-write/
+postcommit compensation/foreign-drift control. Causal1 reaches numeric1740 from
+original1260+480 with empty issues, preserved calendar and original/unrelated
+bytes, no command/double delta, repeated raw admission, actual progression apply
+and repeated next controls1740. It then FAILs only the final public /лечить menu
+WoundCommandState IsType(null). Whole causal case remains FAIL, not GREEN; docs/
+rollback6 remain UNRUN. No timeout: category9.3447551/60,20.5695817/60,10.7208746/60;
+wall58.2732592. No full-course admission or whole14 PASS is claimed.
+
+The native component fixture lacks the non-target display carrier roots required
+by WoundPlayerReadService. Its complete accepted-state graph supports calculation,
+not the broader five-carrier public projection. Existing accepted PhysicalGuided-
+Menu initializer supplies exactly those missing roots before resource bootstrap.
+Independent bounded design confirms the remaining identity/history/effect/skill/
+provider/location/item/resource initial graph is already supplied. Test-only WIP
+extracts that exact missing-only initializer, applies it only to causal1, and
+adds available-projection/accepted-effects/public-menu/JSON-inertness readiness
+BEFORE the unchanged sole original producer. The final postwait menu and clock
+assertions stay unchanged. No production guard or fixture byte is patched after
+acceptance; seven PASS fixtures keep their unchanged producer and preparation.
+
+All six captures are full and verified:1415542 timing events,77530038 stored
+bytes,712134097 decoded bytes, original sequences/PID/tick pairs/all aggregates,
+EOF/CRC/hashes/footer, actual assemblies and root closing/absence. Primary strict
+TRX/IDs/observations/cleanup are in P3GREENC14RDR-controls14/verified-partial-outcome.
+json. Their clock and partial assertions do not convert the final FAIL to PASS.
+Next test-only delta SOURCE, preserve actual Integration4, fresh Integration build
+and exact causal1 plus remaining6 plan/PREP. Retain reader19 and seven unchanged
+native controls; no new Main rebuild or successful case repeat without impact.
+
 # C14 reader19 —19 PASS; OUTCOME pending before clock14
 
 Runtime2023bbdb515da59b57ab78d46efbb48165f65444 / all compiled ownersd3be1948.

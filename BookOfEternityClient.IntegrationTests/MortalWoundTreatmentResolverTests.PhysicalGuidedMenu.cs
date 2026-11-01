@@ -36,18 +36,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
         {
             files.EnsureDirectoryStructure();
             _ = AcceptedStateFixture.SeedCanonicalComponentData(files, scenario, "player", "player_current",
-                WoundCarrierCatalog.PlayerPath, initial =>
-                {
-                    foreach (var (path, value) in new (string, JsonObject)[]
-                    {
-                        (WoundCarrierCatalog.NpcPath, new() { ["schemaVersion"] = 1, ["entries"] = new JsonArray() }),
-                        (WoundCarrierCatalog.EnemiesPath, new() { ["enemiesData"] = new JsonArray() }),
-                        (WoundCarrierCatalog.AlliesPath, new() { ["alliesData"] = new JsonArray() }),
-                        (WoundCarrierCatalog.AfterlifeProfilesPath, AfterlifeEntityProfileState.CreateDefaultRoot())
-                    })
-                        if (!File.Exists(initial.ResolvePath(path)))
-                            File.WriteAllText(initial.ResolvePath(path), value.ToJsonString());
-                });
+                WoundCarrierCatalog.PlayerPath, SeedMortalMenuDisplayCarriers);
 
             WoundMaterializationEnvelope wound;
             MortalWoundTreatmentRouteDefinition route;
@@ -179,4 +168,18 @@ public sealed partial class MortalWoundTreatmentResolverTests
             Assert.False(Directory.Exists(root));
         }
     }
+    private static void SeedMortalMenuDisplayCarriers(FileSystemManager initial)
+    {
+        foreach (var (path, value) in new (string, JsonObject)[]
+        {
+            (WoundCarrierCatalog.NpcPath, new() { ["schemaVersion"] = 1, ["entries"] = new JsonArray() }),
+            (WoundCarrierCatalog.EnemiesPath, new() { ["enemiesData"] = new JsonArray() }),
+            (WoundCarrierCatalog.AlliesPath, new() { ["alliesData"] = new JsonArray() }),
+            (WoundCarrierCatalog.AfterlifeProfilesPath, AfterlifeEntityProfileState.CreateDefaultRoot())
+        })
+            if (!File.Exists(initial.ResolvePath(path)))
+                File.WriteAllText(initial.ResolvePath(path), value.ToJsonString());
+
+    }
+
 }

@@ -30,7 +30,8 @@ public sealed partial class MortalWoundTreatmentResolverTests
             fixture = await DiagnosisOwnershipFixture.CreateAsync(signedInput: false, exportDiagnosis: false,
                 hooks: new FileSystemManagerHooks { PassiveOperationTimings = timings },
                 timingCapture: capture, timingWindow: window,
-                originalProducer: ProduceOrdinaryClockOriginalAsync);
+                beforeResourceBootstrap: SeedMortalMenuDisplayCarriers,
+                originalProducer: ProduceReadableOrdinaryClockOriginalAsync);
             var fs = fixture.Files;
             Assert.True(fixture.Authority.HasCurrentAdmissionAuthority());
             Assert.False(fixture.Authority.HasOriginalMortalPreparedInput);
@@ -109,6 +110,23 @@ public sealed partial class MortalWoundTreatmentResolverTests
         }
         if (primary is not null) ExceptionDispatchInfo.Capture(primary).Throw();
     }
+    private static async Task ProduceReadableOrdinaryClockOriginalAsync(FileSystemManager files, TurnRequest prepared)
+    {
+        var before = CaptureDiagnosisMenuJson(files);
+        await using (var lease = await files.AcquireCanonicalWriteLeaseAsync())
+        {
+            var context = await WoundPlayerReadService.LoadContextAsync(files, lease, retainMenuInputs: true);
+            Assert.NotNull(context);
+            Assert.True(context.Projection.IsAvailable);
+            Assert.True(context.Input.Effects.IsAccepted);
+        }
+        // Public OpenAsync acquires its own lease. This readiness proof is
+        // initial DATA only, before the sole real original or any clock command.
+        Assert.IsType<WoundCommandState>((await WoundApplicationService.OpenAsync(files, "/лечить", treatment: true)).WoundCommandState);
+        AssertDiagnosisMenuJson(before, files);
+        await ProduceOrdinaryClockOriginalAsync(files, prepared);
+    }
+
     private static async Task ProduceOrdinaryClockOriginalAsync(FileSystemManager files, TurnRequest prepared)
     {
         // Complete initial fixture DATA before the sole genuine original.
