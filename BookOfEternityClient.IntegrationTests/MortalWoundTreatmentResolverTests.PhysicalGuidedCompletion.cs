@@ -161,6 +161,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
             var transaction = Assert.IsType<MortalWoundTreatmentResourcePublicationTransaction>(normalized.TreatmentResourcePublicationTransaction);
             using (timings?.Measure("NativePhysical.Transaction"))
             {
+                Exception? transactionPrimary = null;
                 try
                 {
                     Assert.DoesNotContain(normalized.Issues, issue => issue.Severity == IssueSeverity.Error);
@@ -172,7 +173,18 @@ public sealed partial class MortalWoundTreatmentResolverTests
                     Assert.Empty(completed.Issues); Assert.Equal(1, completed.ChangedCount);
                     Assert.Equal(MortalWoundTreatmentPublicationTransactionOutcome.Finalized, completed.Outcome);
                 }
-                finally { await ((IAsyncDisposable)transaction).DisposeAsync(); }
+                catch (Exception error) when (capture is not null) { transactionPrimary = error; }
+                finally
+                {
+                    try { await ((IAsyncDisposable)transaction).DisposeAsync(); }
+                    catch (Exception error) when (capture is not null)
+                    {
+                        capture.RecordClosingFailure(error, "native-physical-transaction-close");
+                        if (transactionPrimary is null) transactionPrimary = error;
+                        else transactionPrimary.Data["NativePhysical.TransactionClosingFailure"] = error;
+                    }
+                }
+                if (transactionPrimary is not null) ExceptionDispatchInfo.Capture(transactionPrimary).Throw();
             }
             using var settlementTiming = timings?.Measure("NativePhysical.CurrentSettlement");
             if (terminalVariant is not null)

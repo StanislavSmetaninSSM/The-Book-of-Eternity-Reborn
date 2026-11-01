@@ -20,6 +20,16 @@ scopes. No automatic capture disposal, authority export, new transport or callba
 is added. Existing assertions, aliases, full fresh integrity/source/owner fences,
 NullLoggers, mutation/refusal cases and120s native bounds remain unchanged.
 
+Independent SOURCE on c23b8fd9 found a P2 in the instrumented transaction close:
+the old bare finally could mask a body/assert/Advance/Complete failure if actual
+disposal also failed. The test-only correction retains the first exception,
+attempts actual transaction disposal exactly once, records a close failure and
+attaches it to the body exception when both fail, then rethrows the original via
+ExceptionDispatchInfo. Filters restrict this preservation to capture opt-in;
+noninstrumented peers retain their original exception semantics. Assertions and
+production transaction code are unchanged. Delta SOURCE remains pending; all C9
+build/discovery/runtime results remain UNCOMPILED/UNRUN.
+
 Optimization assessment: instrumentation passes only original timing scalars; it
 does not retain or reuse game DATA or change cache eligibility. Static repeated
 copies/replays remain hypotheses about cost; no optimization/partition/speedup
