@@ -774,7 +774,8 @@ public sealed partial class MortalWoundTreatmentResolverTests
 
         internal static async Task<DiagnosisOwnershipFixture> CreateAsync(int? natural = null, bool signedInput = false, int duration = 30, bool seedFate = false,
             Func<FileSystemManager, TurnRequest, Task>? originalProducer = null, bool twoMembers = false, bool exportDiagnosis = true,
-            FileSystemManagerHooks? hooks = null, string? woundLabel = null, bool resourceCost = false, string? physicalMode = null)
+            FileSystemManagerHooks? hooks = null, string? woundLabel = null, bool resourceCost = false, string? physicalMode = null,
+            Action<JsonObject>? preparePhysicalWound = null)
         {
             // Initial canonical scenario DATA only. The real live preparation and
             // exporter below issue ownership; these JSON values are not receipts.
@@ -792,6 +793,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
                         CreateScenario("guaranteed_current_capability_proof_stabilizes", physicalMode),
                     _ => throw new ArgumentOutOfRangeException(nameof(physicalMode))
                 };
+                preparePhysicalWound?.Invoke(scenario.Before);
                 if (natural is not null) scenario.AcceptedState["acceptedDice"] = new JsonArray(natural.Value, 17, 1, 20);
                 scenario = scenario with { History = CreateCurrentWoundHistory(scenario.Before), SeedCanonicalWoundEffects = true };
             }

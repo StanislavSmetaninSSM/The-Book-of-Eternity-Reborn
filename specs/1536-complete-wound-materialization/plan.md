@@ -1,3 +1,46 @@
+# T121 physical SOURCE HOLD — six-row causal scaffold, UNCOMPILED/UNRUN
+
+Frozen implementation 7fab6130db72f7a05e2b202e90bbec6fd00d9318 received independent
+whole SOURCE HOLD for exactly two confirmed defects. First, retained menu effect/
+skill construction ignores the existing callback-sensitive CanReuseSourceData
+contract: an arbitrary mid-read callback can change a source already parsed by the
+menu, while the unchanged EffectMechanicsSnapshot.LoadAsync would reread it.
+Second, canonical terminal heal is supported by the simulator/request grammar but
+rejected by actual treatment outcome publication. Adjacent terminal continuation,
+healed History/effect/carrier/legacy allocation, notification and fresh current
+browser joins must be closed coherently after causal proof; hiding heal is excluded.
+The other reviewed ownership and ordinary nonempty-wave contracts remain unchanged.
+
+This cut changes TESTS/catalog/selection/current task metadata only. Two callback
+rows use the existing typed read fixture and arbitrary FS callback, not passive
+capture or a new framework. One changes a previously read skill name; the other
+invalidates a previously read effect JSON. The unchanged fresh snapshot reader is
+the current-source oracle. Complete bytes are unchanged except the exact callback
+target; canonical mutation counters do not increase. Intended final failures have
+unique CALLBACK_CAUSAL messages (stale/unavailable skill or accepted invalid effect).
+
+Four native rows use the existing physical DiagnosisOwnershipFixture and only a
+new optional initial-wound callback before its sole bootstrap/original. Legal
+procedure/course/guaranteed terminal heal and existing pure remove_then_heal DATA
+must pass complete source/owner/current held request/mode/d20-resource/typed intent,
+simulator applicability and raw location/item prerequisites. The decisive final
+TERMINAL_HEAL_CAUSAL assertion requires real ComposeMortalWoundTreatmentPublication
+success; it never treats rejection as expected success. One completed course
+milestone is canonical (1–32), a causal unit only; full UI course stays three
+separately confirmed milestones with ordinary accepted waits. No fake tick/receipt,
+post-original mutation, reflection resolver, new authority or product fix is added.
+
+Exact proposed selection is source-estimated 6 distinct cases / 2 methods /
+2 Integration descriptors / 2 categories: callback2 at60s and terminal4 at120s
+(the existing native publication protective bound, no limit raised). No cost claim
+or runtime outcome exists. Initial accepted menu3 RED is not replayed. Next root
+persists this scaffold, delta SOURCE/build/discovery/PlanOnly/PREP and actual RED;
+only accepted causal outcomes release the grouped product fix. Parent and HOLD
+flags stay open; no old237/whole40 aggregate is selected. Raw stays external.
+Author static checks only: category/selection JSON parses with unique IDs and
+explicit method ownership; InlineData source accounting is exactly6/2/2/2.
+Diff whitespace check passes. No compiler, discovery or runtime was invoked.
+
 # T121 physical guided candidate — coherent source, UNCOMPILED/UNRUN
 
 Issue #1536 / US2 scenarios 2–5 / US5 / FR060–074. This is the full authored

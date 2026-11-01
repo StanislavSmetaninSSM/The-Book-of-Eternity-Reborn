@@ -2,6 +2,62 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "mortal-physical-guided-callback-causal",
+  "responsibility": "T121-PHYSICAL-GUIDED SOURCE-HOLD callback-sensitive retained menu DATA. Two real reader rows mutate an already read active-skill or effect source from the existing arbitrary BeforeCanonicalReadOpenAsync callback. The unchanged EffectMechanicsSnapshot.LoadAsync independently proves fresh valid skill DATA or rejection of invalid effect DATA; exact whole-image changes are limited to the one callback target, with no canonical mutation. Final CALLBACK_CAUSAL assertion is the intended RED. UNCOMPILED/UNRUN.",
+  "excludes": "No product change, passive-capture equivalence claim, new hook framework/cache, Engine, runtime observation or replay of accepted initial menu RED. Existing no-hook/fresh-next-open controls remain for later GREEN.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/WoundMenuCallbackReadTests.cs",
+    "BookOfEternityClient.IntegrationTests/WoundPlayerReadServiceTests.cs",
+    "BookOfEternityClient/Services/WoundPlayerReadService.cs",
+    "BookOfEternityClient/Core/FileSystemManager.ValidationReadSet.cs"
+  ],
+  "related": [
+    "mortal-physical-guided-menu-data"
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.WoundMenuCallbackReadTests.MenuRetainedDataHonorsChangesFromAnArbitraryMidReadCallback"
+      ]
+    }
+  ]
+},
+{
+  "id": "mortal-physical-guided-terminal-heal-causal",
+  "responsibility": "T121-PHYSICAL-GUIDED SOURCE-HOLD terminal heal. Four independent genuine native original/held/request/mode rows: procedure, one canonically completed course milestone, guaranteed heal, and existing guaranteed remove_then_heal initial DATA. Complete parsed active severity-I wound/History/effects, authenticated owner, exact retained purpose/mode/claims, production resolver intents and existing simulator applicability plus raw location/item validation precede the final actual common-publication TERMINAL_HEAL_CAUSAL success assertion. UNCOMPILED/UNRUN.",
+  "excludes": "No expected-rejection oracle, hidden heal option, Engine/wait, fake owner/receipt/History/tick or private reflection. This scaffold does not yet qualify healed History/legacy/effect/carrier/browser/output/rollback settlement; those remain required in the grouped fix. Full course UI remains three separately confirmed milestones and real waits.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.PhysicalTerminalHeal.cs",
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.DiagnosisOwnership.cs",
+    "BookOfEternityClient/Services/MortalWoundTreatmentOutcomePublicationPlanner.cs",
+    "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalTreatmentPublication.cs"
+  ],
+  "related": [
+    "mortal-physical-guided-publication"
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.LegalTerminalHealReachesActualTreatmentPublication"
+      ]
+    }
+  ]
+},
+{
   "id": "mortal-physical-guided-hold-faults",
   "responsibility": "T121-PHYSICAL-GUIDED two independent actual hold publication faults: before durable member publication proves unchanged source and releases only provisional claims; committed readback failure preserves the full hold and reconstructs exact real claims under a fresh owner. Missing retained-only admission and repeated retry stay inert. UNCOMPILED/UNRUN.",
   "excludes": "No fabricated pending DTO/authority, publication result, new fault framework or broad repair/cold/DFR run.",

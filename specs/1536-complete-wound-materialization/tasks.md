@@ -143,6 +143,19 @@ this bounded route, not parent T121/FR071/US5/#1536 or the eight proof adapters.
   field, cleanup and full original rollback. Console/browser/rollback all qualify
   in original180s budgets; prior failed roots/results remain preserved externally.
 
+- [ ] T121-PHYSICAL-GUIDED-READ-CALLBACK [US2/US5] Close SOURCE-HOLD callback
+  freshness defect in the new retained menu shortcut using the existing source-read
+  eligibility/fallback contract. First qualify new typed callback2 causal scaffold;
+  product stays frozen until actual expected RED. Preserve no-hook/equality/read
+  counts and fresh next-open/failure controls; no duplicated hook policy or cache.
+- [ ] T121-PHYSICAL-GUIDED-TERMINAL-HEAL [US2/US5] Close SOURCE-HOLD legal terminal
+  heal through the same request/continuation/common publication, linked healed
+  History/terminal identity, canonical effect/carrier removal/declared legacies,
+  output/current browser/cost/Fate/replay/rollback. First qualify native terminal4
+  causal scaffold (all three modes plus existing remove_then_heal); no expected
+  rejection, hidden option, fake recovery tick or new game rule. Both new scaffolds
+  are UNCOMPILED/UNRUN; see current plan for exact6/2/2/2 and protective bounds.
+
 - [ ] T121-PHYSICAL-GUIDED [US2/US5] Connect existing procedure, course milestone
   and guaranteed physical treatment to the same private target/provider/known-route
   choices, readable requirements, separate confirmation, exact retained requests,
