@@ -1,3 +1,38 @@
+# C9 fresh preparation complete — runtime UNRUN
+
+Fresh affected Integration build at7fc64f7f041340c5be7fc3ffaae9bdfb5be0edc6
+exits0 in140.466857s,102 baseline warnings (exact code/message multiset).
+Actual global seven-path delta from C8d70c38a contains only three Integration C#
+files plus four metadata paths; Main/Support/Unit and build configuration are
+unchanged and retain their successful C8 outputs. Four actual PE/PDB pairs,
+412 changed-source bindings,27 artifacts,10 operational resources/40 copies and
+four daemon copies match. Prior C8 Integration4 outputs were preserved first in
+an independently verified exact-member lossless archive; no current bin retired.
+
+Official catalogue discovery:1295categories/13110methods, zero unmapped/stale,
+zero test execution. Exact PlanOnly selects4cases/4methods/2descriptors: existing
+capture-wiring3 at60s and current-legacy1 at120s. Runtime must use separate calls:
+cheap3 first, then only conditionally admitted legacy1 after OUTCOME/PREP; catalog
+ordering is not the requested argument order. Both remain runtime UNRUN.
+
+Author-approved exact6 generic original logs were freshly identity/hash/EOFCRC
+verified and retired with all gzip retained; actual release17084416B. Further
+closed generic logs may use the same full-verification format replacement without
+new questions. Catalogue and PlanOnly original logs are now verified gzip copies,
+with recovery manifests and retirement receipts; every TRX/JSON/capture/save/
+recovery/current bin stays retained. After successful ended Integration build,
+only its exact standard obj2 and reference2 were retired with reviewed proofs;
+all27 bins and Main/Support reference inputs remain. Unchanged start reserve is
+687865856B. Latest observed free689508352B; every new launch needs a fresh fence.
+
+All proofs remain external under the existing raw root, P3GREENC9-*; archive is
+P3GREENC8-preserved-integration-before-C9.tar.gz with its exact-member manifest.
+Independent helper/storage PREP accepted; final runtime PREP is pending. No new
+speedup/cost or gameplay acceptance claim. Prior console2+guard5 PASS retain C8
+lineages; native/browser UNKNOWN and all dependent UNRUN/HOLD results remain.
+Optimization: existing passive recorder/window/gzip transport and unchanged DATA
+reuse, fresh guards/assertions and budgets; no production change/new cache.
+
 # C9 native terminal timing — SOURCE accepted / UNCOMPILED / UNRUN
 
 Independent Astra/high SOURCE accepted code27d92160693165e58ffd01116f7d520aa1b7db68;
