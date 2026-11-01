@@ -948,6 +948,8 @@ internal static partial class WoundAcceptedTurnPlanner
                 return false;
             }
 
+            if (continuation.OutcomePreparation.PreparesTerminalHeal)
+                return WoundAcceptedTurnPlannerCore.TerminalTreatmentFinalPlanAgrees(bundle);
             var batch = !MortalWoundTreatmentOutcomePublicationPlanner.RequiresEffectBatch(
                 continuation.OutcomePreparation)
                 ? null

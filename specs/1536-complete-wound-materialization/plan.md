@@ -1,3 +1,36 @@
+# T121 linked terminal finalization — WIP UNCOMPILED/UNRUN
+
+Continues c17f6eadee712f21f84815c94abc6466473c0032. Standalone terminal treatment
+now finalizes ONLY from its actual private two-stage execution and original complete
+baseline. Independent legacy groups must pass the accepted effect-plan/result-map
+seal and exact declared order BEFORE any durable History/legacy declaration is
+assembled. Every reducer History intent is compared with its actual before/after
+fingerprints, child coordinates, kind, turn, terminal bit and attempt/tick role.
+The sealed snapshots are not changed during final assembly.
+
+Global History ordinals use original History.NextOrdinal + stage index; wound
+ordinals use the exact executed After.LastTransition.Ordinal and are separately
+checked against the original wound ordinal. Only primary treat carries the existing
+closed persisted result, course/attempt coordinates; child heal is linked, terminal,
+without a second attempt or fake recovery tick. Full appended History is serialized
+and parsed before publication. Existing pure terminal identity/carrier helpers
+preserve unrelated roots, mark the exact final identity healed and delete exactly
+the original selected active wound. Complete History/identity/carrier agreement and
+final contour fingerprint are then required. Common-bundle agreement reconstructs
+that exact contour from private actual execution, including copied result DATA.
+
+The old scalar-only contribution helper now explicitly refuses a terminal program
+instead of silently dropping its follow-up. Its real joint caller still requires
+actual closed-stage integration; it is not claimed accepted or replaced with a
+fake guided packet/wave. This is a temporary explicit fail-closed boundary within
+the same ongoing coherent correction, not permission to hide lawful terminal heal.
+Current/browser/output joins, canonical independent legacy source reconstruction,
+shared joint completion, typed tamper/namespace/cost/Fate/replay/rollback tests and
+real terminal browser/three-milestone course still remain next. No Source/GREEN or
+feature acceptance follows from this WIP; no compiler/discovery/runtime/pin refresh
+occurred. Diff whitespace checks pass. Root owns persistence and all verification;
+all old raw/saves/recovery/parents/HOLDs remain unchanged.
+
 # T121 actual terminal effect execution — WIP UNCOMPILED/UNRUN
 
 Continues 69d2f19b55265029ba082295f38abde7ac7f5be8. The existing effect workspace

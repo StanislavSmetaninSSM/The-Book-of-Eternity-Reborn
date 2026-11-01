@@ -177,6 +177,10 @@ internal static partial class WoundAcceptedTurnPlannerCore
         Action<string>? setStage = null)
     {
         setStage?.Invoke("transition_reduction");
+        if (outcomePreparation.PreparesTerminalHeal)
+            return new(null, new[] { NewIssue("wound_plan_terminal_execution_required",
+                "A terminal treatment contribution must consume its actual ordered treat/heal execution.",
+                "sealed linked terminal stages", "scalar-only contribution") });
         var coordinates = resolution.Coordinates;
         var applicationByRef = new Dictionary<
             string,

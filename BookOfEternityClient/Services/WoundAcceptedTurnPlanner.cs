@@ -1217,6 +1217,9 @@ internal static partial class WoundAcceptedTurnPlannerCore
             WoundEffectBatchAcceptedPlan accepted,
             IReadOnlyList<EffectAcceptedApplicationResult> applications)
     {
+        if (WoundAcceptedTurnPlanner.TryReadTreatmentContinuation(prepared.TreatmentContinuationAuthority, out var terminal) &&
+            terminal.OutcomePreparation.PreparesTerminalHeal)
+            return ComposeTerminalTreatmentFinalPlan(prepared, accepted);
         var stage = "authority_seal";
         try
         {
