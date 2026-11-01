@@ -194,6 +194,20 @@ this bounded route, not parent T121/FR071/US5/#1536 or the eight proof adapters.
   stays UNKNOWN; no speedup, DOM/provider/fresh-process or whole-feature claim.
   No assertion splitting or failed-singleton limit increase.
 
+- [ ] T121-PHYSICAL-GUIDED-BROWSER-TIMING [US2/US5] Localize the actual
+  browser-course first-attempt 110.668-second cost (console 28.619) through the
+  existing sealed passive accumulator and already authored Engine phase timers.
+  Browser-only `PassiveOperationTimings` hookup, same complete uncapped gzip,
+  original events/timestamps, assertion set and 180-second bound; no arbitrary
+  observer, capped browser profile, parallel collector, new cache or product rule.
+  Intrinsic synchronous timings also activate: extra capture cost is unknown and
+  must remain explicit. Accepted DESIGN checks existing reuse gates and keeps
+  `PassiveCanonicalReads` null. Preserve Integration artifacts before fresh owning
+  build; exact discovery reuse/PlanOnly, storage and independent SOURCE/PREP before
+  at most one instrumented diagnostic journey. Prior complete console course and
+  rollback3 remain separate accepted/pending-OUTCOME lineages, not repeats. No
+  original timeout cause, browser PASS or production optimization is inferred.
+
 - [ ] T121-PHYSICAL-GUIDED-NATIVE-TIMING [US2/US5] Test-only opt-in capture for
   current terminal legacy/removal, using existing passive recorder/gzip transport,
   eight coarse scopes plus nested common membership and actual-root-before-event

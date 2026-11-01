@@ -64,6 +64,7 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
             Dictionary<string, byte[]?>? heldBefore = null, compensation = null, atCut = null;
             var hooks = new FileSystemManagerHooks
             {
+                PassiveOperationTimings = browser ? timings : null,
                 LocalPublicationObserver = !failPublication ? null : (phase, _) =>
                 {
                     if (!armed || phase != TrustedLocalPublicationPhase.MemberPublished ||

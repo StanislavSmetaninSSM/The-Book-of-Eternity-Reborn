@@ -1,3 +1,28 @@
+# Publication-cut rollback3 — 3 PASS; minimal browser timing WIP
+
+Runtime `3d422b59bc085fdb54583716273b7dfac005a0af`, unchanged mixed qualified
+owners. Exact original-budget category completes 3 PASS / 1 method / 1 exclusive
+Integration descriptor in 86.6806018 / 180 seconds; wall 96.0270196 seconds. No
+failure, skip, underfill or duplicate IDs. Genuine procedure/course/guaranteed
+publication cuts after selection consumption verify exact held compensation,
+linked History/terminal identity and unchanged turn plus full original restoration.
+Primary TRX SHA-256 `cc5feb4678b80f3e0c6a04761a8b2322b0397e52859fdea784283ffad494c955`.
+Each of three complete captures has 12 original events + 1 full message, verified
+EOF/CRC/hash/pairs/sequences/closed footer and actual root absence. Closing fence
+20:30:44 UTC has all pins/resources/daemons stable, no active managed owner and
+712900608 free bytes. External raw: `P3GREENC14COURSE-rollback3`. Independent
+OUTCOME pending; this does not close the browser course or whole physical feature.
+
+Accepted bounded DESIGN for the unresolved browser-course cost is now tracked in
+tasks/plan. Test-only WIP adds one existing sealed passive accumulator hookup only
+when browser=true; no product, GM, cache, callback, assertion, budget or console/
+rollback execution change. Existing intrinsic synchronous timings also activate;
+volume/overhead remain unmeasured. No assignment-mirroring test is added; existing
+recorder/transport proofs remain on their actual earlier versions. Current new
+C# is UNCOMPILED, SOURCE/PREP and any instrumented runtime pending. Preserve current
+Integration artifacts and obtain prudent storage before build/full capture. No
+repeat of accepted console/clock/rollback controls solely for this observation.
+
 # Physical publication-cut rollback3 — PREP accepted, runtime UNRUN
 
 Independent Astra/high accepts one existing `mortal-physical-guided-rollback`

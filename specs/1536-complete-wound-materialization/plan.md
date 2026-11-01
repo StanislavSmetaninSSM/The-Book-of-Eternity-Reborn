@@ -1,3 +1,33 @@
+# Current bounded browser-course localization
+
+Tracked task: T121-PHYSICAL-GUIDED-BROWSER-TIMING, issue #1536. Independent
+Astra/high DESIGN accepts one browser-only passive timing hookup in the existing
+physical Engine fixture. The retained actual course proves first attempt 110.668s
+and first wait 10.296s before timeout in the second attempt; console first attempt
+was 28.619s and its complete course passes. The unresolved question is which
+existing Engine phase contains this difference. Disabled timers cannot be recovered
+from the prefix, so no subsystem cause or repair loop is currently established.
+
+Use the same `OperationTimingAccumulator`, active window and existing full passive
+gzip writer; add only `PassiveOperationTimings = browser ? timings : null` to its
+existing FileSystemManager hooks. Keep original events/timestamps, every gameplay
+oracle, current ownership/integrity checks and the 180-second bound. This enables
+intrinsic synchronous timings too; their extra cost/volume is unknown. Existing
+unchanged recorder/transport proofs plus direct wiring review are appropriate;
+no assignment-mirroring test or new diagnostic system. No new cache: this is
+observation, existing source/admission/ordinary DATA reuse stays eligible, and
+`PassiveCanonicalReads` remains null. No GM-authored contract changes, so existing
+GM guidance/examples remain correct without a new command or prompt update.
+
+Preserve the actual Integration102dcf7f artifacts, recover prudent storage through
+fully verified recoverable closed-log substitution, review the coherent delta,
+then build Integration only. Retain unchanged other owners, verify PE/PDB/source/
+resources, exact current PlanOnly and independent PREP. One instrumented journey
+may localize phase cost; its cost includes instrumentation and cannot retrospectively
+prove the original cause or justify a production change without evidence. Retain
+old UNKNOWN/root and complete console/rollback results; no budget/guard reduction,
+full-suite/performance detour, broad HOLD release or whole-feature closure.
+
 Current physical-guided continuation: [physical-guided-checkpoint.md](physical-guided-checkpoint.md).
 T121-PHYSICAL-GUIDED-ORDINARY-CLOCK is accepted in its bounded33-distinct scope
 with explicit source/runtime provenance; this is not one fresh33 or full feature.
