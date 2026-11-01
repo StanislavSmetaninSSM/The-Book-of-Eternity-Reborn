@@ -1,5 +1,15 @@
 # T121 physical SOURCE HOLD — causal proof pending after fixture failure
 
+P2REDC2 fresh Integration on49f69c819 exits0 in122.13s with the unchanged102
+warning multiset. Main/Support/Unit remain the source-equivalent cf127d94a owners
+from P2REDC1; all4 PE/PDB pairs,387 current source bindings and27 artifacts pass.
+Operational10 files/40 copies and4 daemons agree. The63,262,533-byte archive has
+27 exact members/198,144,000 decoded bytes/full gzip EOF/CRC, SHA256
+c1aae25cc2b2d96d27dc15848f82299c2d33661176971f88a8c5bd398ed9bbf2.
+Fresh official catalog1291/13106 and exact PlanOnly6 cases/2 methods/2 descriptors
+pass with0 executed. A second PREP and the corrected callback2 remain pending;
+terminal4 still UNRUN. Neither product defect is fixed or causally reproduced yet.
+
 Actual callback attempt P2REDC1-callback-red on5c180f039 completed2 FAIL/0 PASS,
 no skip/timeout, wall14.0300627s. Both failed at the initial full-root Snapshot
 while the test held its own canonical-write.lock, before callback activation or
