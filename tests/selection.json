@@ -2,29 +2,29 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "console-explorer",
+      "reason": "T107 per-skill prose-claim coupling reworked inside ValidateAcceptedTurnProseStateDeltasAsync; the AcceptedTurnNarrativePayloadValidationTests wildcard in this category owns the new RED/GREEN coupling cases and the existing narrative-audit regressions.",
+      "contracts": [
+        "#1533 part 2 (T107)",
+        "#1479",
+        "accepted_turn_skill_claim_missing_state_delta"
+      ]
+    },
+    {
       "category": "mortal-skill-reference-identity",
-      "reason": "PR #1579 identity authority, Unicode/unknown distinction, ordinal ambiguity, player/NPC initialization and multi-entry repair regressions.",
+      "reason": "The coupling audit now binds deltas through MortalSkillReferenceAuthority and reuses ReadMasteryIdentityReferences; confirm the part-1 identity behavior is unchanged by the new consumer.",
       "contracts": [
         "#1533",
-        "specs/1533-complete-skill-materialization/spec.md correction revision 1"
+        "MortalSkillReferenceAuthority",
+        "ValidationService.SkillReferenceIdentity"
       ]
     },
     {
-      "category": "validation-pipeline",
-      "reason": "Additive phase diagnostics replace only the same reference legacy code while preserving validation phase and file selection behavior.",
+      "category": "documentation-examples",
+      "reason": "Launcher GM-facing prose/state-delta rule lines updated for per-skill targeting; prompt/documentation coverage guards must confirm the synchronized wording.",
       "contracts": [
-        "#1533",
-        "ValidationService.ValidationPhases",
-        "legacy unknown/missing diagnosis"
-      ]
-    },
-    {
-      "category": "validation-repair-partial-source-guards",
-      "reason": "The original PR relocates ValidationAndRepair methods; preserve every affected source guard assertion and Roslyn method semantic model.",
-      "contracts": [
-        "#1533",
-        "#1579 partial split",
-        "unchanged repair/rollback guard invariants"
+        "#1533 part 2 (T107)",
+        "CLI_Launch_Script prose state delta rule"
       ]
     }
   ]

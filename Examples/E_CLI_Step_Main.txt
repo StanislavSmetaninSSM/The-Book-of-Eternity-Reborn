@@ -339,8 +339,10 @@ Example gm_thoughts_markdown:
 
 Prose State Delta Rationale / связь прозы и состояния:
 - Если player-facing response говорит, что известный навык помог, сработал или
-  раскрыл деталь, accepted turn должен записать это в канон: например
-  `skillMasteryChanges`, `activeSkillChanges` или `passiveSkillChanges`.
+  раскрыл деталь, accepted turn должен записать дельту именно этого навыка в
+  канон: запись `skillMasteryChanges`, чьё `skillName` точно равно каноническому
+  имени навыка, или новый навык в `activeSkillChanges`/`passiveSkillChanges` этого
+  хода. Дельта, меняющая только другой навык, не закрывает это требование.
 - Если response говорит, что по активному квесту найдена новая зацепка,
   accepted turn должен обновить `detailsLog`, objective/status,
   `lastUpdatedTurn`, `quest_history.json` или `plot_outline.json`.
