@@ -1,3 +1,28 @@
+# Browser phase timing — built and exact singleton planned; PREP pending
+
+Fresh Integration-only build from `b4db33c2fd34c1d0c60e6b502de1cf8b18923019`
+exits 0 in 125.914138 seconds. Existing 102-warning / 204 logged code-message
+multiset is identical. Main/Support/Unit retain unchanged RDR d3be1948. Actual
+four PE/PDB pairs, 420 source bindings, 27 artifact pins, 10 resources / 40 copies
+and four daemons all match. Only exact ended obj DLL/PDB and duplicate ref outputs
+were retired after verification; current bin and dependency refs remain intact.
+Preserved actual previous Integration102dcf7f archive remains fully recoverable.
+
+Complete catalogue 1301 categories / 13121 methods is reused because the only
+executable delta is one existing hook assignment: no test signature, attribute,
+selector, member or project changes. Current exact PlanOnly exits 0 with zero
+execution: browser full course Fact, one exclusive Integration descriptor, one
+case/method, unchanged 180 seconds; plan wall 8.5285231 seconds. Its ended generic
+plain log is replaced by exact verified gzip, manifest SHA-256
+`0725d7fb125a7094922066181f50ab6a0228f38b321b9f168d2645cc2da40c13`.
+
+Fresh 20:38:10 UTC fence has unchanged pins/resources/daemons, no live managed
+owner and 1065955328 free bytes, above the unchanged start reserve. Independent
+PREP must evaluate one instrumented diagnostic journey; its extra intrinsic timing
+cost remains unknown and there is no original performance/cause or browser PASS
+claim. Immediate current fence is required after the checkpoint before runtime.
+All earlier UNKNOWN/root, full console/rollback and wider HOLD boundaries remain.
+
 # Browser phase timing — SOURCE and build preparation accepted
 
 Independent Astra/high accepts rollback3 OUTCOME and the exact one-line browser-only
