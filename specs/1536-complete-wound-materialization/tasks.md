@@ -152,6 +152,9 @@ this bounded route, not parent T121/FR071/US5/#1536 or the eight proof adapters.
   at their unchanged60s bound. WIP source only; SOURCE, fresh owning builds,
   discovery/PlanOnly/PREP and all new runtime remain UNRUN. No native/UI retry,
   optimization, partition or speedup is admitted; see physical-guided-checkpoint.md.
+  C9 full-internal run is timeout/UNKNOWN with retained prefix; C10 removes only
+  the two broad ambient contexts after accepted DESIGN, retaining coarse/intrinsic
+  timing, full generated events and all assertions. SOURCE/build/comparison pending.
 
 - [ ] T121-PHYSICAL-GUIDED-READ-CALLBACK [US2/US5] Close SOURCE-HOLD callback
   freshness defect in the new retained menu shortcut using the existing source-read

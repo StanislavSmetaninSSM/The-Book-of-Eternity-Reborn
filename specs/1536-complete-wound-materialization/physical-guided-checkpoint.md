@@ -1,3 +1,37 @@
+# C10 bounded observation plan — DESIGN accepted; source UNCOMPILED / UNRUN
+
+Goal: locate the same current-legacy native work with the existing coarse phases,
+without enabling the two new broad ambient contexts around InitialCompose and
+TerminalAssertions. C9full internal source/results remain pinned above and its
+actual Integration4 outputs are preserved in a full EOFCRC-verified archive
+P3GREENC9-preserved-integration-before-C10.tar.gz. The240328257B partial capture
+remains explicitly incomplete, never a replacement for complete evidence.
+
+Independent Astra/high DESIGN accepts removing exactly those two test-only
+EnterOperationTimingContext lines. Eight direct coarse scopes plus CommonMembership,
+existing intrinsic filesystem contexts/passive hooks, null observer, same window,
+all original events actually produced, timestamps, full gzip drain/closing and
+all gameplay assertions/120s remain. No filter, quota, truncation, new transport,
+DATA reuse/authority change, production cache or semantic guard is introduced.
+Do not call this absence of all internal events:218214 original events already
+precede InitialCompose; lower volume and completion are not promised.
+
+Alternatives assessed: repeating unchanged full-internal C9 adds no cause;
+production retained-bundle/replay reuse is broader and needs its own immutable
+DATA/fresh-guard proof. Choose only the two-line observation adjustment permitted
+by performance.md155–158 after preserving the full diagnostic version/results.
+GM/player contracts are unchanged; no prompt/example synchronization applies.
+
+Finite steps under existing T121-PHYSICAL-GUIDED-NATIVE-TIMING:
+- [ ] Remove exactly the two ambient contexts and review the source/metadata diff.
+- [ ] Fresh Integration build, baseline warnings, PE/PDB/source/artifact/resource
+  proof and exact legacy-one discovery/PlanOnly; retain unchanged C9 cheap3 proof.
+- [ ] Independent PREP/fresh reserve fence, one120s current-legacy comparison,
+  strict TRX/capture/cleanup readback and independent OUTCOME before any next run.
+Ruling: use this existing compact canonical checkpoint for the plan/ledger;
+no duplicate planning tree, raw inside checkout or unrelated full suite.
+No game/cache speedup is claimed; all prior UNKNOWN/UNRUN/HOLDs remain.
+
 # C9 instrumented native outcome — TIMEOUT / UNKNOWN; phase localized
 
 Runtimef89c0b120eba1fdd7eec0419207367c6d576dab3 / Integrationcompiled7fc64f7f:

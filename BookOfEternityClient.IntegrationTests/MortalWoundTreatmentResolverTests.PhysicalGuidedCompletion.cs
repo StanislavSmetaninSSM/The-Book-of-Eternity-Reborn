@@ -137,7 +137,6 @@ public sealed partial class MortalWoundTreatmentResolverTests
             WoundAcceptedTurnPlanner.MortalWoundTreatmentPublicationResult composed;
             using (timings?.Measure("NativePhysical.InitialCompose"))
             {
-                using var context = timings is null ? null : fs.EnterOperationTimingContext();
                 composed = WoundAcceptedTurnPlanner.ComposeMortalWoundTreatmentPublication(fs, fixture.Lease,
                     response, admission.Owner, request, resolution);
             }
@@ -149,7 +148,6 @@ public sealed partial class MortalWoundTreatmentResolverTests
             if (terminalVariant is not null)
                 using (timings?.Measure("NativePhysical.TerminalAssertions"))
                 {
-                    using var context = fs.EnterOperationTimingContext();
                     AssertTerminalPublicationStages(plan, terminalVariant, timings);
                 }
             using var normalizeTiming = timings?.Measure("NativePhysical.Normalize");
