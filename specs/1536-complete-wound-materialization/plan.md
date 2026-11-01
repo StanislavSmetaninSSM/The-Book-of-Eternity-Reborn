@@ -1,5 +1,11 @@
 # T121 physical SOURCE HOLD — six-row causal scaffold, UNCOMPILED/UNRUN
 
+Delta SOURCE found one scaffold coordinate mismatch before compilation: importing
+the existing remove-then-heal wound changed its route ID while the enclosing
+scenario retained its original coordinate. The test now preserves the original
+route ID and known-route list before History/bootstrap/original construction.
+This test-only correction and its narrow readback do not fix either product defect.
+
 Frozen implementation 7fab6130db72f7a05e2b202e90bbec6fd00d9318 received independent
 whole SOURCE HOLD for exactly two confirmed defects. First, retained menu effect/
 skill construction ignores the existing callback-sensitive CanReuseSourceData

@@ -75,7 +75,11 @@ public sealed partial class MortalWoundTreatmentResolverTests
         if (removeThenHeal)
         {
             // Reuse only the existing pure initial DATA builder, never its old reflection resolver.
+            var routeId = wound["treatment"]!["routes"]![0]!["routeId"]!.DeepClone();
+            var knownRouteIds = wound["treatment"]!["knownRouteIds"]!.DeepClone();
             var existing = CreateOutcomeIntentScenario(GuaranteedHealCase()).Before.DeepClone().AsObject();
+            existing["treatment"]!["routes"]![0]!["routeId"] = routeId;
+            existing["treatment"]!["knownRouteIds"] = knownRouteIds;
             wound.Clear(); foreach (var pair in existing) wound[pair.Key] = pair.Value?.DeepClone();
             return;
         }
