@@ -1,3 +1,36 @@
+# C8 browser category timeout — both UNKNOWN; rollback3 UNRUN
+
+Runtime6b1b265a9560346555660e1f0760ad5439a55278 / compiledall d70c38a:
+browser2/rollback3 invocation stops in browser category at180.2643411/180s,
+wall188.9259917s. No TRX or completed descriptor/case exists; both browser case
+results UNKNOWN, rollback3UNRUN. No successful case is inferred from a closed
+capture and no category budget is increased. Existing console2PASS and guard5PASS
+remain separate complete evidence, not whole-feature acceptance.
+
+Guaranteed-browser capture is complete:12 original events/6 named scopes, full
+EOFCRC/stored+decodedSHA/length/pairs/sequences/footer/writer and actualrootabsence
+verified. Its Journey137651.495488ms/process135028.519310ms are observed costs,
+not a completed test PASS. Procedure-browser capture has no report/footer proof;
+partial bytes and its actualroot remain retained. Exact inventory/status is in
+external P3GREENC8-browser-rollback5/verified-timeout-unknown.json. All original
+logs and partial/full captures remain; no additional raw retirement beyond11.
+
+Runner processes are closed; this does not mean the interrupted procedure fixture
+was disposed. Closing hashes27artifacts/10resources40copies/fourdaemons stable,
+no live managed owner,53endedzombies,free688304128B above unchanged687865856B
+reserve. No more UI or legacy retry is admitted. Only about438272B remains above
+that start threshold, so any new build/preparation needs a fresh space assessment.
+
+Independent DESIGN accepts a minimal test-only native timing plan for3unresolved
+questions (initial Compose returns? assertion/normalization/transaction cost?
+current/tamper suffix reached?). Existing passive accumulator/gzip writer only,
+8 coarse scopes+nested common-membership; typed fixture opt-in limited to current
+terminal variants, actual private root bound/armed before firstevent, setup under
+rootcleanup protection, original exception preserved, completion after fixture
+resources. ThreadStatic context only synchronous, no observer callback or new
+cache/authority; no partition/optimization claim from static clone counts. No
+implementation or retry has yet occurred; all budgets, freshguards and HOLDs stay.
+
 # C8 real console treatment — 2/2 PASS; legacy timeout stays UNKNOWN
 
 Runtime7f38f7345d0e032339165af50dcbd012da1f5d27 / compiledalld70c38a:
