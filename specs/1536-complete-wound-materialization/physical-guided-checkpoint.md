@@ -1,3 +1,40 @@
+# C12 functional browser-mode acceptance — DESIGN accepted; source UNRUN
+
+Goal: finish actual queued browser procedure and guaranteed treatment acceptance.
+Replace only their old two-row Theory wrapper by two named Facts calling the same
+RunMortalTreatmentJourneyAsync(mode,true,false); complete shared body, helpers,
+hooks, fresh guards, inputs, cancellation/confirmation, publication, items/time/
+History/replay, passive full captures and actual cleanup stay byte-for-byte.
+No console/course/rollback/complex-native case is changed or repeated by this step.
+
+Independent Astra/high DESIGN accepts semantic category decomposition under
+AGENTS90–93/104–106 and testing158–171. Procedure/dice and guaranteed capability
+are distinct existing contracts. Each singleton keeps180s, but combined maximum
+is360s plus separate-runner overhead rather than old grouped180s. This is changed
+budget allocation, not unchanged total budget or speedup. The old grouped timeout
+and both UNKNOWN results remain; no previous accepted PASS is being repeated.
+If a singleton times out, retain UNKNOWN/investigate, no automatic further budget
+increase or assertion fragmentation. DOM/provider/fresh-process remain unproved.
+
+The rejected assembly-only scaffold is retired: its new dormant entry/counter,
+new causal Fact/category and pure helper exposure only. Three earlier C# files
+reproduce exactab740 C10 bytes; no gameplay assertion/previous fixture is removed.
+Full48539source, all4compiled provenance and accepted causal RED/TRX/raw/cost
+findings remain preserved. No cache/prototype was wired; selected-graph handoff
+has not been implemented or measured in the expensive consumer. This avoids an
+unproven optimization chain; the advanced native cost remains an explicit open
+qualification result, not a claim of completion.
+
+Finite plan under T121-PHYSICAL-GUIDED-BROWSER-MODES:
+- [ ] Source review proves exact source restoration/shared journey equality and
+  exactly2cases2descriptors with explicit180+180 allocation/catalogue alignment.
+- [ ] Preserve current compiled32 evidence; four fresh owning builds/warnings,
+  actualPEPDB/bindings/artifacts/resources and exact discovery/PlanOnly/fences.
+- [ ] Independent PREP then separate complete browser procedure/guaranteed runs,
+  each strict TRX/full-capture/cleanup OUTCOME, no other automatic admission.
+GM/player mechanics are unchanged; no prompt/example update applies. All unique
+raw/saves/recovery stay external/retained and all broader HOLDs remain open.
+
 # C11 causal RED accepted — assembly-only optimization NOT ADOPTED
 
 Runtime9c2475b608ee6add06ac1dc23f2cdc337baf5951 / all4compiled48539ba7:

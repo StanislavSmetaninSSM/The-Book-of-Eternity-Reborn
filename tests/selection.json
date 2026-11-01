@@ -1,13 +1,7 @@
 {
   "schemaVersion": 1,
   "selections": [
-{
-  "category": "mortal-terminal-private-copy-causal",
-  "reason": "C11 test-first causal source-cost control. Dormant candidate delegates unchanged normal copy, so expected RED must show actual assembly work after genuine terminal/equality/isolation and all three measurements. Aggregate-only existing passive windows avoid broad whole-Compose instrumentation. Prototype and production retained-copy wiring are not enabled; owning builds/discovery/PlanOnly/PREP/runtime UNRUN.",
-  "contracts": [
-    "#1536 / T121-PHYSICAL-GUIDED-TERMINAL-COPY; fresh guards, private-source retained DATA and measured assembly work before production eligibility"
-  ]
-},
+
     {
       "category": "shining-faction-service-capture-wiring",
       "reason": "Existing three cheap real-file capture controls are the prerequisite for the test-only native terminal instrumentation: original gzip BEGIN must persist while its actual body remains blocked, pre-binding events must refuse completeness, and existing full-message/closing accounting stays intact. No new test body, world, native retry or transport is added. Unchanged60s category; new source/build/discovery/PREP and runtime remain UNRUN.",
@@ -114,12 +108,19 @@
       ]
     },
     {
-      "category": "mortal-physical-guided-browser",
-      "reason": "Actual queued/staged browser procedure/guaranteed plus both current accepted-result consumers; detached component proof cannot replace it. UNCOMPILED/UNRUN; preserve existing protective bounds and previous raw/accepted lineages.",
-      "contracts": [
-        "#1536 / US2 / US5 / FR060–074 / T121-PHYSICAL-GUIDED; coherent callback freshness and legal terminal-heal correction"
-      ]
-    },
+  "category": "mortal-physical-guided-browser-procedure",
+  "reason": "T121-PHYSICAL-GUIDED browser procedure singleton. Actual procedure dice/mode evidence and retained draw. Same complete existing independent queued/staged/accepted/classifier Engine journey, source recheck, cancellation/separate confirmation, common settlement, exact items/identity/time/History/replay, full passive original capture and cleanup. The former two-case180s category is UNKNOWN; this one-case180s budget is unchanged individually, while two separate categories total360s plus runner overhead. No speedup or previous grouped PASS claim. UNCOMPILED/UNRUN.",
+  "contracts": [
+    "#1536 / US2 / US5 / FR060–074 / T121-PHYSICAL-GUIDED; coherent callback freshness and legal terminal-heal correction"
+  ]
+},
+{
+  "category": "mortal-physical-guided-browser-guaranteed",
+  "reason": "T121-PHYSICAL-GUIDED browser guaranteed singleton. Actual guaranteed current materialized capability and no new procedure roll. Same complete existing independent queued/staged/accepted/classifier Engine journey, source recheck, cancellation/separate confirmation, common settlement, exact items/identity/time/History/replay, full passive original capture and cleanup. The former two-case180s category is UNKNOWN; this one-case180s budget is unchanged individually, while two separate categories total360s plus runner overhead. No speedup or previous grouped PASS claim. UNCOMPILED/UNRUN.",
+  "contracts": [
+    "#1536 / US2 / US5 / FR060–074 / T121-PHYSICAL-GUIDED; coherent callback freshness and legal terminal-heal correction"
+  ]
+},
     {
       "category": "mortal-physical-guided-course-console",
       "reason": "Complete console course, real ordinary waits and current windows/report, separate per-milestone confirmations and exact once-only doses. UNCOMPILED/UNRUN; preserve existing protective bounds and previous raw/accepted lineages.",

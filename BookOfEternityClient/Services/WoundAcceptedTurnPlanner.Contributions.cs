@@ -265,7 +265,6 @@ internal static partial class WoundAcceptedTurnPlannerCore
         WoundOperationBeforeData operationBefore, WoundHistoryState historyBefore,
         WoundTransitionContributions contribution)
     {
-        using var assemblyTiming = BookOfEternityClient.Core.FileSystemManager.MeasureCurrentPassiveOperation("WoundPlanner.AssembleWoundContributions");
         var finalTransitions = contribution.Transitions;
         var intents = contribution.Intents;
         var historyRows = contribution.HistoryRows;

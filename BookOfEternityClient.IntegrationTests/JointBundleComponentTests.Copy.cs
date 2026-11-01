@@ -7,12 +7,6 @@ namespace BookOfEternityClient.Tests;
 
 public sealed partial class JointBundleComponentTests
 {
-    /// <summary>Reuses the existing complete detached DATA view for another genuine bundle-copy control.</summary>
-    internal static string ReadDetachedBundleForCopyControl(AcceptedMechanicsWoundStageBundle bundle) => Fixture.ReadBundleView(bundle);
-
-    /// <summary>Reuses returned-DATA mutation checks without exposing fixture ownership or retained graphs.</summary>
-    internal static void MutateDetachedBundleForCopyControl(AcceptedMechanicsWoundStageBundle bundle) => Fixture.MutateReturnedBundleData(bundle);
-
     /// <summary>
     /// Runs retained joint-copy contracts after stable common setup shares source DATA; all copy and refusal controls remain fresh.
     /// </summary>
@@ -233,7 +227,7 @@ public sealed partial class JointBundleComponentTests
         /// <returns>
         /// A deterministic data view that changes if a covered graph, allocation, map or stored seal changes.
         /// </returns>
-        internal static string ReadBundleView(AcceptedMechanicsWoundStageBundle bundle)
+        private static string ReadBundleView(AcceptedMechanicsWoundStageBundle bundle)
         {
             var input = bundle.Input;
             var prepared = bundle.PreparedPlan;
@@ -265,7 +259,7 @@ public sealed partial class JointBundleComponentTests
         /// <param name="bundle">
         /// The actual bundle whose detached views are deliberately changed.
         /// </param>
-        internal static void MutateReturnedBundleData(AcceptedMechanicsWoundStageBundle bundle)
+        private static void MutateReturnedBundleData(AcceptedMechanicsWoundStageBundle bundle)
         {
             bundle.Input.PreTurnIdentityIndex["returned_mutation"] = true;
             bundle.Input.PreTurnHistory["returned_mutation"] = true;

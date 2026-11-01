@@ -19,10 +19,10 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
     [InlineData("procedure")]
     [InlineData("guaranteed")]
     public Task ConsolePhysicalTreatmentUsesTheActualConfirmedModeAndSettlement(string mode) => RunMortalTreatmentJourneyAsync(mode, false, false);
-    [Theory]
-    [InlineData("procedure")]
-    [InlineData("guaranteed")]
-    public Task BrowserPhysicalTreatmentUsesTheActualConfirmedModeAndSettlement(string mode) => RunMortalTreatmentJourneyAsync(mode, true, false);
+    [Fact]
+    public Task BrowserPhysicalProcedureUsesTheActualConfirmedModeAndSettlement() => RunMortalTreatmentJourneyAsync("procedure", true, false);
+    [Fact]
+    public Task BrowserPhysicalGuaranteedUsesTheActualConfirmedModeAndSettlement() => RunMortalTreatmentJourneyAsync("guaranteed", true, false);
     [Fact] public Task ConsolePhysicalCourseSeparatelyConfirmsEveryMilestoneAfterAcceptedWaits() => RunMortalTreatmentJourneyAsync("course", false, false);
     [Fact] public Task BrowserPhysicalCourseSeparatelyConfirmsEveryMilestoneAfterAcceptedWaits() => RunMortalTreatmentJourneyAsync("course", true, false);
     [Theory]

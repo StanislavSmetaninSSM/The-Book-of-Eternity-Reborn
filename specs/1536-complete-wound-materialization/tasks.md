@@ -143,14 +143,20 @@ this bounded route, not parent T121/FR071/US5/#1536 or the eight proof adapters.
   field, cleanup and full original rollback. Console/browser/rollback all qualify
   in original180s budgets; prior failed roots/results remain preserved externally.
 
-- [ ] T121-PHYSICAL-GUIDED-TERMINAL-COPY [US2/US5] Prove saved final assembly
-  in standalone terminal private bundle copies using the existing retained-source
-  mechanism. First dormant component candidate, actual passive assembly counter,
-  genuine small rankI heal and causal RED/GREEN/equal-work DATA/cost controls.
-  Preserve all fresh admission/execution/legacy/History guards and detachment;
-  initial/public/unqualified copies remain full replay. Production eligibility
-  stays unchanged until worthwhile benefit/refusal parity and independent review.
-  C11 scaffold UNCOMPILED/UNRUN; see physical-guided-checkpoint.md.
+- [x] T121-PHYSICAL-GUIDED-TERMINAL-COPY [US2/US5] Assembly-only candidate
+  assessed, NOT ADOPTED: genuine causal RED shows actual assembly1.7–2.5ms against
+  copies549–826ms. No prototype or production wire. Experimental stub/counter/
+  oracle/pure helper exposure retired from current tree, preserved in48539source
+  and full RED evidence. This closes only that assessment, not optimization or
+  native/feature qualification. Selected-graph reuse remains unimplemented.
+
+- [ ] T121-PHYSICAL-GUIDED-BROWSER-MODES [US2/US5] Qualify the same complete
+  procedure and guaranteed browser journeys through separate semantic singletons,
+  preserving all original state/hooks/assertions/capture/cleanup. Each180s; total
+  maximum360s plus runner overhead replaces former grouped180s allocation.
+  Old group stays UNKNOWN; no speedup or prior PASS. Exact discovery/PlanOnly,
+  fresh owners/source bindings and independent SOURCE/PREP/OUTCOME required.
+  C12 source UNCOMPILED/UNRUN; do not split assertions or raise failed singleton.
 
 - [ ] T121-PHYSICAL-GUIDED-NATIVE-TIMING [US2/US5] Test-only opt-in capture for
   current terminal legacy/removal, using existing passive recorder/gzip transport,

@@ -1,32 +1,7 @@
 {
     "schemaVersion": 1,
     "categories": [
-{
-  "id": "mortal-terminal-private-copy-causal",
-  "responsibility": "#1536 T121-PHYSICAL-GUIDED-TERMINAL-COPY. One genuine small standalone rank-I terminal heal with empty legacies, real signed owner/resolver/publication, dormant candidate unreachable from production callers, actual passive assembly source counter and aggregate-only full-constructor/direct-copy/copy-of-copy observations. Complete DATA equality/isolation and fresh preparation/effect/handoff precede intentional zero-assembly oracle. Initial scaffold expected causal RED, not a feature PASS; actual setup cost UNRUN.",
-  "excludes": "No rich current-legacy world, GameEngine/UI/recovery/DFR, fabricated authority, reflection, arbitrary observer callback, event quota, new cache/transport or production retained-copy eligibility. No native retry until benefit and independent review.",
-  "changeHints": [
-    "BookOfEternityClient/Services/AcceptedMechanicsPlan.cs",
-    "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.Contributions.cs",
-    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.TerminalCopyCost.cs",
-    "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.Copy.cs"
-  ],
-  "related": [],
-  "requirements": {
-    "frontendBuild": false,
-    "exclusive": true
-  },
-  "timeoutMinutes": 1,
-  "expectedSeconds": null,
-  "selectors": [
-    {
-      "project": "integration",
-      "tests": [
-        "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.StandaloneTerminalCopyCandidateRetainsGuardsWithoutReassemblingFinalGraphs"
-      ]
-    }
-  ]
-},
+
 {
   "id": "mortal-physical-terminal-independent-root",
   "responsibility": "T121-PHYSICAL-GUIDED one actual guaranteed remove_then_heal native publication with cosmetic plus independent mechanical legacy. Same original shared causal body: complete canonical codec/shape/semantic refusals, exact preparation, actual common publication, linked History and current wound routing versus sealed allocation proof. Isolated from the three accepted simple rows; UNCOMPILED/UNRUN correction.",
@@ -320,9 +295,9 @@
   ]
 },
 {
-  "id": "mortal-physical-guided-browser",
-  "responsibility": "Real complete initial Mortal Engine world before sole bootstrap/original; actual signed dice/mode and retained request, source recheck, actual GM narrative and NPC journal, common settlement, exact declared item count/identity vector, replay and cleanup with existing full passive capture. Two independent actual browser queued/staged/accepted/classifier journeys exercise both strict physical completion consumers. UNCOMPILED/UNRUN.",
-  "excludes": "No component-only claim of browser acceptance, forged accepted receipt, forced dice or broad browser aggregate.",
+  "id": "mortal-physical-guided-browser-procedure",
+  "responsibility": "T121-PHYSICAL-GUIDED browser procedure singleton. Actual procedure dice/mode evidence and retained draw. Same complete existing independent queued/staged/accepted/classifier Engine journey, source recheck, cancellation/separate confirmation, common settlement, exact items/identity/time/History/replay, full passive original capture and cleanup. The former two-case180s category is UNKNOWN; this one-case180s budget is unchanged individually, while two separate categories total360s plus runner overhead. No speedup or previous grouped PASS claim. UNCOMPILED/UNRUN.",
+  "excludes": "No component-only claim of browser acceptance, forged accepted receipt, forced dice or broad browser aggregate. No assertion splitting/omission, budget increase within the case, accepted console rerun, DOM/provider/fresh-process claim or new production mechanic.",
   "changeHints": [
     "BookOfEternityClient/Core/GameEngine/GameEngine.BrowserPlayerInput.cs",
     "BookOfEternityClient.IntegrationTests/ExplorerWoundSelfTreatmentTests.MortalTreatment.cs"
@@ -338,7 +313,31 @@
     {
       "project": "integration",
       "tests": [
-        "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.BrowserPhysicalTreatmentUsesTheActualConfirmedModeAndSettlement"
+        "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.BrowserPhysicalProcedureUsesTheActualConfirmedModeAndSettlement"
+      ]
+    }
+  ]
+},
+{
+  "id": "mortal-physical-guided-browser-guaranteed",
+  "responsibility": "T121-PHYSICAL-GUIDED browser guaranteed singleton. Actual guaranteed current materialized capability and no new procedure roll. Same complete existing independent queued/staged/accepted/classifier Engine journey, source recheck, cancellation/separate confirmation, common settlement, exact items/identity/time/History/replay, full passive original capture and cleanup. The former two-case180s category is UNKNOWN; this one-case180s budget is unchanged individually, while two separate categories total360s plus runner overhead. No speedup or previous grouped PASS claim. UNCOMPILED/UNRUN.",
+  "excludes": "No component-only claim of browser acceptance, forged accepted receipt, forced dice or broad browser aggregate. No assertion splitting/omission, budget increase within the case, accepted console rerun, DOM/provider/fresh-process claim or new production mechanic.",
+  "changeHints": [
+    "BookOfEternityClient/Core/GameEngine/GameEngine.BrowserPlayerInput.cs",
+    "BookOfEternityClient.IntegrationTests/ExplorerWoundSelfTreatmentTests.MortalTreatment.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 3,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.BrowserPhysicalGuaranteedUsesTheActualConfirmedModeAndSettlement"
       ]
     }
   ]
