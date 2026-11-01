@@ -1,3 +1,4 @@
+using System.Runtime.ExceptionServices;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
@@ -773,8 +774,9 @@ public sealed partial class MortalWoundTreatmentResolverTests
     internal sealed class DiagnosisOwnershipFixture : IAsyncDisposable
     {
         private DiagnosisOwnershipFixture(string root, FileSystemManager files, FileSystemManager.CanonicalWriteLease lease,
-            MortalWoundTreatmentAcceptedStateAuthority authority, string eventRef)
-        { Root = root; Files = files; Lease = lease; Authority = authority; EventRef = eventRef; }
+            MortalWoundTreatmentAcceptedStateAuthority authority, string eventRef, LifecyclePassiveTimingDiagnostics? timingCapture = null)
+        { Root = root; Files = files; Lease = lease; Authority = authority; EventRef = eventRef; _timingCapture = timingCapture; }
+        private readonly LifecyclePassiveTimingDiagnostics? _timingCapture;
         private string Root { get; }
         internal FileSystemManager Files { get; }
         internal FileSystemManager.CanonicalWriteLease Lease { get; private set; }
@@ -784,8 +786,13 @@ public sealed partial class MortalWoundTreatmentResolverTests
         internal static async Task<DiagnosisOwnershipFixture> CreateAsync(int? natural = null, bool signedInput = false, int duration = 30, bool seedFate = false,
             Func<FileSystemManager, TurnRequest, Task>? originalProducer = null, bool twoMembers = false, bool exportDiagnosis = true,
             FileSystemManagerHooks? hooks = null, string? woundLabel = null, bool resourceCost = false, string? physicalMode = null,
-            Action<JsonObject>? preparePhysicalWound = null, Action<FileSystemManager>? beforeResourceBootstrap = null)
+            Action<JsonObject>? preparePhysicalWound = null, Action<FileSystemManager>? beforeResourceBootstrap = null,
+            LifecyclePassiveTimingDiagnostics? timingCapture = null, OperationTimingAccumulator.Window? timingWindow = null)
         {
+            if ((timingCapture is null) != (timingWindow is null) ||
+                timingCapture is not null && (hooks?.PassiveOperationTimings is not { } recorder ||
+                    hooks?.OperationTimingObserver is not null || !timingWindow!.IsActiveFor(recorder)))
+                throw new ArgumentException("Native timing requires paired capture/window and the same passive recorder without an observer.");
             // Initial canonical scenario DATA only. The real live preparation and
             // exporter below issue ownership; these JSON values are not receipts.
             var scenario = CreateDiagnosisInitialScenario(natural, duration, seedFate);
@@ -829,12 +836,21 @@ public sealed partial class MortalWoundTreatmentResolverTests
             }
             var root = Path.Combine(Path.GetTempPath(), "boe-mortal-diagnosis-owner-" + Guid.NewGuid().ToString("N"));
             Directory.CreateDirectory(root);
-            var files = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance,
-                PhysicalLoadTransactionOperations.Instance, hooks);
-            files.EnsureDirectoryStructure();
             FileSystemManager.CanonicalWriteLease? lease = null;
+            var timingArmed = false;
             try
             {
+                if (timingCapture is not null)
+                {
+                    timingCapture.BindFixtureRoot(root);
+                    timingCapture.Arm(timingWindow!);
+                    timingArmed = true;
+                }
+                // The initial pure scenario above predates actual-root binding.
+                using var setupTiming = timingCapture is null ? null : hooks!.PassiveOperationTimings!.Measure("NativePhysical.FixtureSetup");
+                var files = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance,
+                    PhysicalLoadTransactionOperations.Instance, hooks);
+                files.EnsureDirectoryStructure();
                 _ = AcceptedStateFixture.SeedCanonicalComponentData(files, scenario, "player", "player_current", WoundCarrierCatalog.PlayerPath,
                     beforeResourceBootstrap);
                 if (twoMembers) await SeedDiagnosisPrivateMemberAsync(files, scenario.Before);
@@ -890,12 +906,24 @@ public sealed partial class MortalWoundTreatmentResolverTests
                     ? MortalWoundTreatmentAcceptedStateAuthority.ExportDiagnosisCurrent(files, lease, stagedContext, scenario.Before["woundId"]!.GetValue<string>())
                     : MortalWoundTreatmentAcceptedStateAuthority.ExportCurrent(files, lease, stagedContext, scenario.Before["woundId"]!.GetValue<string>());
                 Assert.True(exported.IsValid, JsonSerializer.Serialize(exported.Issues));
-                return new(root, files, lease, Assert.IsType<MortalWoundTreatmentAcceptedStateAuthority>(exported.Authority), scenario.EventRef);
+                return new(root, files, lease, Assert.IsType<MortalWoundTreatmentAcceptedStateAuthority>(exported.Authority), scenario.EventRef, timingCapture);
             }
-            catch
+            catch (Exception primary)
             {
-                if (lease is not null) await lease.DisposeAsync();
-                Directory.Delete(root, true); throw;
+                using var closingTiming = timingArmed ? hooks!.PassiveOperationTimings!.Measure("NativePhysical.FixtureClosing") : null;
+                try { if (lease is not null) await lease.DisposeAsync(); }
+                catch (Exception error)
+                {
+                    primary.Data["NativePhysical.FactoryLeaseClosingFailure"] = error;
+                    timingCapture?.RecordClosingFailure(error, "native-physical-factory-lease-close");
+                }
+                try { Directory.Delete(root, true); }
+                catch (Exception error)
+                {
+                    primary.Data["NativePhysical.FactoryRootClosingFailure"] = error;
+                    timingCapture?.RecordClosingFailure(error, "native-physical-factory-root-close");
+                }
+                throw;
             }
         }
 
@@ -939,8 +967,14 @@ public sealed partial class MortalWoundTreatmentResolverTests
         }
         public async ValueTask DisposeAsync()
         {
-            await Lease.DisposeAsync();
-            Directory.Delete(Root, true);
+            Exception? primary = null;
+            try { await Lease.DisposeAsync(); }
+            catch (Exception error)
+            { primary = error; _timingCapture?.RecordClosingFailure(error, "native-physical-fixture-lease-close"); }
+            try { Directory.Delete(Root, true); }
+            catch (Exception error)
+            { primary ??= error; _timingCapture?.RecordClosingFailure(error, "native-physical-fixture-root-close"); }
+            if (primary is not null) ExceptionDispatchInfo.Capture(primary).Throw();
         }
     }
 }

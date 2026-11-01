@@ -143,6 +143,16 @@ this bounded route, not parent T121/FR071/US5/#1536 or the eight proof adapters.
   field, cleanup and full original rollback. Console/browser/rollback all qualify
   in original180s budgets; prior failed roots/results remain preserved externally.
 
+- [ ] T121-PHYSICAL-GUIDED-NATIVE-TIMING [US2/US5] Test-only opt-in capture for
+  current terminal legacy/removal, using existing passive recorder/gzip transport,
+  eight coarse scopes plus nested common membership and actual-root-before-event
+  binding. Preserve all original assertions, default-null fixture peers, synchronous
+  ThreadStatic contexts and actual resource closing before capture completion.
+  Existing three cheap blocked-BEGIN/prebinding/full-message controls are selected
+  at their unchanged60s bound. WIP source only; SOURCE, fresh owning builds,
+  discovery/PlanOnly/PREP and all new runtime remain UNRUN. No native/UI retry,
+  optimization, partition or speedup is admitted; see physical-guided-checkpoint.md.
+
 - [ ] T121-PHYSICAL-GUIDED-READ-CALLBACK [US2/US5] Close SOURCE-HOLD callback
   freshness defect in the new retained menu shortcut using the existing source-read
   eligibility/fallback contract. Accepted callback2 causal RED is retained as the

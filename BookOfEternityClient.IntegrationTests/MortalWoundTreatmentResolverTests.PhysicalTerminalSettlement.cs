@@ -119,13 +119,15 @@ public sealed partial class MortalWoundTreatmentResolverTests
         draft["definitions"]!.AsArray().Add(new JsonObject { ["definitionRef"] = "child_definition", ["definition"] = child });
     }
 
-    private static void AssertTerminalPublicationStages(AcceptedMechanicsPlan plan, string variant)
+    private static void AssertTerminalPublicationStages(AcceptedMechanicsPlan plan, string variant,
+        OperationTimingAccumulator? nativeTimings = null)
     {
         var bundle = Assert.IsType<AcceptedMechanicsWoundStageBundle>(plan.WoundStageBundle);
         var input = bundle.Input; var prepared = bundle.PreparedPlan;
         var accepted = bundle.EffectBatchPlan; var finalPlan = bundle.FinalPlan;
         var frame = input.Binding; var source = accepted.EffectPlan; var effectInput = accepted.EffectInput;
-        AssertTerminalCommonMembership(plan, bundle);
+        using (nativeTimings?.Measure("NativePhysical.CommonMembership"))
+            AssertTerminalCommonMembership(plan, bundle);
         var terminations = accepted.TerminationResults; var preparedBatches = prepared.EffectOperationBatches;
         var contributions = finalPlan.CarrierContributions; var afterImages = source.CarrierAfterImages;
         Assert.True(WoundAcceptedTurnPlanner.TryReadTerminalTreatment(prepared, out var terminal));

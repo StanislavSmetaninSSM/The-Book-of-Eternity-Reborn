@@ -1,3 +1,45 @@
+# C9 native terminal timing WIP — source only / UNCOMPILED / UNRUN
+
+Test-only implementation follows the accepted bounded DESIGN on clean e53c2177.
+Only current terminal legacy/removal opt in; all other physical/diagnosis fixture
+calls retain null/default timing. Existing passive accumulator/window and full gzip
+LifecyclePassiveTimingDiagnostics capture bind the private actual root before the
+first event. Eight coarse NativePhysical scopes locate setup, admission, initial
+Compose, terminal assertions, normalization, transaction, current settlement and
+closing; one nested CommonMembership scope separates the added common helper.
+Pre-root pure scenario construction is outside FixtureSetup. Existing internal
+WoundBundle/WoundPlanCache timings inherit only synchronous lexical contexts;
+OperationTimingObserver stays null and no context crosses an await.
+Nested inclusive intervals must not be added as independent costs.
+
+Binding/arming/FSM construction/directory setup are inside owned-root cleanup.
+Factory failure retains the original exception, independently attempts lease/root
+closing and records actual closing failures. Normal fixture closing also attempts
+both resources; capture completion follows all functional/transaction/fixture
+scopes. No automatic capture disposal, authority export, new transport or callback
+is added. Existing assertions, aliases, full fresh integrity/source/owner fences,
+NullLoggers, mutation/refusal cases and120s native bounds remain unchanged.
+
+Optimization assessment: instrumentation passes only original timing scalars; it
+does not retain or reuse game DATA or change cache eligibility. Static repeated
+copies/replays remain hypotheses about cost; no optimization/partition/speedup
+claim. GM/player contracts are unchanged, so no GM prompt/example update applies.
+Existing shining-faction-service-capture-wiring3 is added to selection at unchanged
+60s: blocked gzip BEGIN, original message and prebind refusal. No new test body.
+Source-estimated inventory53cases/32methods/28descriptors/27categories is UNRUN
+pending official fresh discovery/PlanOnly; this is not an all-category launch plan.
+
+No build/test/runtime/Git or evidence-retirement action was performed by this writer. SOURCE,
+owning builds, discovery/PREP and capture gate are pending; no retry is admitted.
+Root separately observed686301184B below unchanged687865856B start reserve by
+1564672B. Six new closed logs are independently gzip-verified; their originals
+remain untouched pending separate author approval. External manifest
+P3GREENC9-six-closed-log-format-manifest.json SHA256
+5cd9a1d62abb317eff440441b9c4be5cc60c481634832d7f77950350fcc3e87c records
+17084416 allocatedB potential release. This does not authorize deletion or launch.
+Original native legacy UNKNOWN/removal+jointUNRUN, console2PASS, browser2UNKNOWN,
+rollback3UNRUN and independent course/broader HOLDs retain their exact lineages.
+
 # C8 browser category timeout — both UNKNOWN; rollback3 UNRUN
 
 Runtime6b1b265a9560346555660e1f0760ad5439a55278 / compiledall d70c38a:
