@@ -1,3 +1,31 @@
+# Browser phase timing — SOURCE and build preparation accepted
+
+Independent Astra/high accepts rollback3 OUTCOME and the exact one-line browser-only
+passive hook at `7f36e289cfb2364019e983efdb54db4123dacc60`. Existing recorder/transport
+proofs and direct wiring review suffice; no product or console/rollback assertion
+changed. The new code is still UNCOMPILED and no instrumented runtime is admitted.
+
+Operational review accepts all six phase-helper deltas, unchanged owner restrictions,
+source/resource/pin fences and reserve. Actual Integration102dcf7f four artifacts
+are preserved in a full EOF/CRC/member-verified 11004086-byte archive, SHA-256
+`47546c31234f6cbc0f934e55c2e32edd020446599f163f8e5d9087cbd53c416a`, decoded
+38983680 bytes. The runtimeconfig has the unchanged prior RDR hash; other members
+match the actual MENU proof. All current output files remain in place before build.
+
+Under the standing recoverable-cleanup authorization, four bounded batches replaced
+240 old closed plain logs by independently verified gzip: 412525516 original bytes
+remain exactly recoverable in 46188556 bytes. Every closure/exit/hash proof and
+manifest is retained externally. No capture/TRX/JSON/save/recovery/bin or unique
+result was removed, no old measurement retired. Free space is 1066819584 bytes;
+this is prudent headroom, not a guarantee of future capture completeness. No
+quota/truncation or reduction of the unchanged 687865856-byte start reserve.
+
+Next fresh Integration-only build, exact unchanged warning baseline, current
+PE/PDB/source/resource bindings and exact browser singleton PlanOnly, then PREP.
+Main/Support/Unit remain unchanged RDR d3be1948. Prior console/rollback/clock PASS
+are retained on their actual lineages, not repeated. Browser course remains
+UNKNOWN; no production optimization or whole-feature/HOLD closure is inferred.
+
 # Publication-cut rollback3 — 3 PASS; minimal browser timing WIP
 
 Runtime `3d422b59bc085fdb54583716273b7dfac005a0af`, unchanged mixed qualified
