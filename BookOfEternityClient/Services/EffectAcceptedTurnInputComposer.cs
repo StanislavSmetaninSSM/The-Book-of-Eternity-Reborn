@@ -3,7 +3,7 @@ using System.Text.Json.Nodes;
 
 namespace BookOfEternityClient.Services;
 
-internal static class EffectAcceptedTurnInputComposer
+internal static partial class EffectAcceptedTurnInputComposer
 {
     internal const string WorldTimePath = "game_state/world/world_time.json";
 
@@ -28,6 +28,8 @@ internal static class EffectAcceptedTurnInputComposer
         "game_state/player/skills_passive.json",
         "game_state/inventory/items.json",
         PlayerWoundsPath,
+        WoundHistoryState.HistoryPath,
+        WoundIdentityState.StatePath,
         WoundCarrierCatalog.NpcPath,
         "game_state/quests/regular_quests.json",
         "game_state/quests/soul_quests.json",
@@ -1682,7 +1684,8 @@ internal static class EffectAcceptedTurnInputComposer
             !roots.ContainsKey(WoundCarrierCatalog.NpcPath) &&
             !roots.ContainsKey(WoundCarrierCatalog.EnemiesPath) &&
             !roots.ContainsKey(WoundCarrierCatalog.AlliesPath) &&
-            !roots.ContainsKey(WoundCarrierCatalog.AfterlifeProfilesPath))
+            !roots.ContainsKey(WoundCarrierCatalog.AfterlifeProfilesPath) &&
+            !roots.ContainsKey(WoundHistoryState.HistoryPath))
             return CanonicalWoundSourceComposition.Empty;
 
         var catalog = WoundCarrierCatalog.Build(new WoundCarrierCatalogInput(
@@ -1691,7 +1694,10 @@ internal static class EffectAcceptedTurnInputComposer
             ReadRoot(roots, WoundCarrierCatalog.EnemiesPath),
             ReadRoot(roots, WoundCarrierCatalog.AlliesPath),
             ReadRoot(roots, WoundCarrierCatalog.AfterlifeProfilesPath)));
-        return CollectCanonicalWoundSources(catalog, sameTurn);
+        var wounds = CollectCanonicalWoundSources(catalog, sameTurn);
+        var legacies = CollectCanonicalTreatmentLegacySources(roots, catalog, sameTurn);
+        return new CanonicalWoundSourceComposition(wounds.Exports.Concat(legacies.Exports).ToArray(), wounds.Groups,
+            wounds.Issues.Concat(legacies.Issues).ToArray());
     }
 
     /// <summary>Reuses the already parsed canonical wound catalog for source-only checks.</summary>

@@ -80,7 +80,7 @@ internal static class MortalWoundHealLegacyPlanner
         var firstMechanicsOrdinal = checked(precedingBatches.SelectMany(batch => batch.RootApplications)
             .Select(row => row.MechanicsOrdinal).DefaultIfEmpty(0).Max() + 1);
         var batches = new List<WoundEffectOperationBatch>();
-        var declarations = new List<WoundLegacyDeclaration>();
+        var declarations = MortalWoundTreatmentOutcomePublicationPlanner.CreateTerminalDeclarations(heal, declared, request.Coordinates.WoundId);
         for (var ordinal = 0; ordinal < declared.Legacies.Length; ordinal++)
         {
             var legacy = declared.Legacies[ordinal];
@@ -88,9 +88,6 @@ internal static class MortalWoundHealLegacyPlanner
             if (seed.LegacyOrdinal != ordinal || seed.LocalLegacyRef != legacy.LocalLegacyRef || seed.Kind != legacy.Kind ||
                 !aliases.Add(MortalLocationIdentityState.BuildConfusableKey(legacy.LocalLegacyRef)))
                 throw Invalid("Legacy order or exact/confusable local namespace changed.");
-            declarations.Add(new(seed.LegacyId, legacy is MortalWoundMechanicalEffectLegacyDraft ? "independent_mechanical" : "cosmetic",
-                legacy is MortalWoundMechanicalEffectLegacyDraft ? "effect" : null,
-                request.Coordinates.WoundId, legacy.ReadableSummary));
             if (legacy is MortalWoundCosmeticLegacyDraft) continue;
             if (legacy is not MortalWoundMechanicalEffectLegacyDraft mechanical ||
                 mechanical.EffectDraft.Definitions.Length is < 1 or > 5 ||

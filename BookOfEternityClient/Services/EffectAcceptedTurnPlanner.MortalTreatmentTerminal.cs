@@ -168,20 +168,7 @@ internal static partial class EffectAcceptedTurnPlanner
             usedSources, usedTargets, rootBindings, issues);
         if (facts is null || issues.Count != 0) return null;
         var declarations = continuation.LegacyPreparation.Declarations;
-        var after = beforeHeal with
-        {
-            Lifecycle = "healed", Care = beforeHeal.Care with { State = "healed", ActiveCourseId = null },
-            Relations = beforeHeal.Relations with
-            {
-                LegacyRefs = beforeHeal.Relations.LegacyRefs.Concat(declarations.Where(row => row.Kind == "cosmetic").Select(row => row.LegacyId)).ToArray(),
-                IndependentEffectRefs = beforeHeal.Relations.IndependentEffectRefs.Concat(declarations.Where(row => row.Kind == "independent_mechanical").Select(row => row.LegacyId)).ToArray()
-            },
-            LastTransition = new(heal.HealChildCoordinates.TransitionId, checked(beforeHeal.LastTransition.Ordinal + 1), turn, "heal")
-        };
-        var healing = WoundTransitionReducer.Reduce(new WoundTransitionRequest("heal", after.LastTransition.TransitionId,
-            heal.HealChildCoordinates.OperationKey, heal.HealChildCoordinates.EventRef, turn, beforeHeal, after,
-            new WoundHealingEvidence(heal.IntentFingerprint, WoundIdentityState.ComputeSemanticFingerprint(beforeHeal),
-                WoundIdentityState.ComputeSemanticFingerprint(after), heal.PreparationFingerprint, null, declarations)));
+        var healing = MortalWoundTreatmentOutcomePublicationPlanner.ReduceTerminalHeal(beforeHeal, heal, declarations, turn);
         issues.AddRange(healing.Issues);
         if (!healing.IsValid || healing.ProposedAfter is null) return null;
         finalSourceAuthority = input.SourceAuthority.WithoutHealedWoundSource(beforeHeal.Owner.Realm, beforeHeal.WoundId);

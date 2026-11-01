@@ -1,3 +1,42 @@
+# T121 durable legacy source and sealed output — WIP UNCOMPILED/UNRUN
+
+Continues 166a95ecd3a130bf3c2b31b31b16399532fe4b54. Current canonical legacy
+sources now reconstruct after active-wound removal from the strictly parsed full
+History request/receipt, exact deterministic child heal row and current wound
+History/identity/carrier agreement. Mechanical definitions come only from retained
+typed drafts, not candidate current effects. Cosmetic rows grant no effect source;
+mechanical wound_legacy/legacyId exports remain independent and non-materializable,
+so historical DATA cannot grant new generic/GM application permission. Missing,
+ambiguous, mismatched or duplicate terminal provenance refuses registration.
+
+Canonical source dependency inventory now explicitly includes wound History and
+identity. The existing current-settlement read vector already includes both and
+deduplicates paths; no additional reader owner/cache is introduced. General source
+consumers must freshly cover these dependencies; final closure/pins/selection will
+review this actual source impact. Complete History parsing is one pure source-map
+operation, not a stored parallel cache or per-legacy filesystem read.
+
+Actual and detached terminal construction now share one pure reducer-backed heal
+image/declaration projection over immutable typed intents. Terminal notification
+binds the complete common final contour and actual sealed two-stage execution,
+requires exact selected deletion/original before-image, then emits escaped visible
+healing/declared-legacy text and /раны. No acquisition narration, private IDs or
+live permission is manufactured. Existing nonterminal notification now uses the
+same RequiresEffectBatch predicate as its actual planner instead of assuming only
+a scalar severity projection can own a batch.
+
+Astra's bounded tombstone decision is accepted: no extra retired-component payload,
+digest, full History blob or speculative v2 field. The next current proof will
+derive exact creation/termination events and one-to-one ordered identities from
+request/intents/selected graph, require complete owner/source/target/stack/chronology,
+terminal state and zero carrier occurrences, then join both stage fingerprints and
+healed identity. Surviving legacy effects keep full current materialization checks.
+Actual component execution remains mandatory in the sealed live/common/output
+proof; no historical component replay is claimed. This current/browser join is
+still pending, alongside real joint-stage closure and typed/UI/replay/rollback proof.
+No build/discovery/runtime/GREEN or pin refresh occurred. Diff whitespace checks
+pass. Root owns persistence; old raw/saves/recovery/parents/HOLDs stay unchanged.
+
 # T121 linked terminal finalization — WIP UNCOMPILED/UNRUN
 
 Continues c17f6eadee712f21f84815c94abc6466473c0032. Standalone terminal treatment

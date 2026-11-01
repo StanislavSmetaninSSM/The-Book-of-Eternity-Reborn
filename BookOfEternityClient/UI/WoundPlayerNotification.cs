@@ -384,8 +384,6 @@ internal sealed partial record WoundPlayerNotification(
                 out var continuation) ||
             !WoundAcceptedTurnPlanner.TreatmentContinuationPreparedAgrees(prepared) ||
             input.Transitions.Count != 0 ||
-            prepared.EffectOperationBatches.Count !=
-                (continuation.OutcomePreparation.SeverityReduction is null ? 0 : 1) ||
             mutations.Count != 1)
         {
             return TreatmentContinuationBindingFailure(
@@ -393,6 +391,12 @@ internal sealed partial record WoundPlayerNotification(
                 $"batches={prepared.EffectOperationBatches.Count}," +
                 $"mutations={mutations.Count}");
         }
+
+        if (continuation.OutcomePreparation.PreparesTerminalHeal)
+            return ComposeAcceptedTerminalTreatment(bundle, continuation, mutations[0]);
+        if (prepared.EffectOperationBatches.Count !=
+            (MortalWoundTreatmentOutcomePublicationPlanner.RequiresEffectBatch(continuation.OutcomePreparation) ? 1 : 0))
+            return TreatmentContinuationBindingFailure("changed treatment batch count");
 
         var applicationByRef = new Dictionary<
             string,
@@ -405,7 +409,7 @@ internal sealed partial record WoundPlayerNotification(
                     "duplicate accepted applicationRef");
             }
         }
-        var batch = continuation.OutcomePreparation.SeverityReduction is null
+        var batch = !MortalWoundTreatmentOutcomePublicationPlanner.RequiresEffectBatch(continuation.OutcomePreparation)
             ? null
             : prepared.EffectOperationBatches[0];
         var publication = MortalWoundTreatmentOutcomePublicationPlanner.Finalize(
