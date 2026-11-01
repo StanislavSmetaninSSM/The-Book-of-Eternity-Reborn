@@ -1,3 +1,14 @@
+# Eight canonical diagnosis adapters — finite source contract proposed
+
+Independent mapping review accepts the direction and identifies exact owner /
+lifetime / deterministic dependency requirements. It confirms that an explicit
+schema adaptation inside existing realm-owned locality objects is a technical
+choice within the tracked task, without new economic or consent rules. Three
+closed spiritual_diagnosis_* row schemas and the exact current container are now
+proposed in canonical spec/plan for final DESIGN delta review. No gameplay code,
+new store, fixture result or adapter acceptance yet. Other source mappings use
+existing Soul Relics, resource authority, local scope, Soul Quests and effects.
+
 # Canonical diagnosis adapters — source matrix / DESIGN proposal saved
 
 No new gameplay code yet. Existing owners are identified for resource quantities,

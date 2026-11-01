@@ -1,3 +1,52 @@
+# Canonical spiritual diagnosis requirement sources — technical design, 2026-11-01
+
+Tracked T121-DIAGNOSIS-SPIRITUAL-CANONICAL-ADAPTERS, issue #1536. Proposed source
+representation within the approved requirement catalogue, pending independent
+DESIGN. No new price, consumption, access rule or diagnostic outcome.
+
+For consent/facility/environment, use optional `customStates[]` inside the exact
+current canonical location object: the uniquely resolved `guardians[].abode` in
+Chaos Sea or `halls[]` selected by exact `currentHallId` in Shining Abode. No new
+state file or arbitrary profile-location field. The realm, location and actor
+membership are reconstructed from existing owners; they are not GM-authored row
+fields. Missing rows grant nothing; malformed recognized rows never become facts.
+
+Closed schemaVersion=1 rows reuse the existing setting-scene grammar:
+
+- `spiritual_diagnosis_facility`: exactly kind, schemaVersion, facilityId,
+  displayName, available (boolean).
+- `spiritual_diagnosis_environment`: exactly kind, schemaVersion, environmentId,
+  displayName, state (exact setting-specific identifier).
+- `spiritual_diagnosis_consent`: exactly kind, schemaVersion, consentRef,
+  displayName, providerKind, providerId, targetKind, targetId, status
+  (`granted` or `withdrawn`). Actor kinds are the actual afterlife wound owner
+  kinds: player_soul, guardian, resident, radiant_actor or afterlife_actor;
+  player_soul must have the exact player_soul ID. Admission separately proves
+  current exact owner identity, realm and co-presence for both actors and matches
+  the requirement's exact reference/provider/target. An aid grant, service offer,
+  compensation agreement, hall name or narrative never substitutes for this row.
+
+IDs and recognized keys reject aliases, duplicates and case/Unicode-confusable
+collisions within kind. Unrecognized setting data grants no diagnosis authority.
+Unavailable facilities and withdrawn consents remain valid negative evidence.
+The Mortal reserved kinds/actor set and all existing Mortal semantics stay intact;
+reuse the pure parser core through an explicit afterlife dialect, not a fake
+Mortal context/snapshot or duplicated authority system. Validators, GM guidance,
+worked examples, registry/source guards must accompany the actual adaptation.
+
+Other proofs use actual existing source owners: unique exact player Soul Relics
+from soul_state (one relic ID is one item; no reward stub/name/legacy alias/foreign
+ownership), afterlife resource bindings plus validated resource quartet, canonical
+soul_quests exact questId/status, accepted effect mechanics/identity/lifecycle,
+and exact current LocalInteractionScope. The locality service's permissive lookup
+alone does not prove exact unambiguous identity. No requirement grants spending
+or healing. Every new proof binds its ordered declaration, actual realm/owner/
+locality, mechanical facts and complete positive/absence source dependencies.
+Existing three-kind source inventory and proof schema remain unchanged when no
+extra kind is declared. Fresh menu/confirmation/original/current/publication reads
+must each derive the same deterministic required source set from admitted actual
+declarations; stored paths and UI DATA never select arbitrary source files.
+
 ## Current physical qualification: ordinary clock accepted; full course open
 
 Latest bounded evidence is in [physical-guided-checkpoint.md](physical-guided-checkpoint.md).

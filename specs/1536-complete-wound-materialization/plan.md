@@ -1,3 +1,13 @@
+# Finite afterlife scene adaptation — DESIGN delta pending
+
+The independent owner-mapping review confirms that existing locality containers
+can host a technical adaptation without another author decision about game rules.
+The exact three closed row schemas, actor kinds, unique current container and
+fresh proof requirements are now proposed at the top of spec.md. This is a new
+afterlife schema adaptation, not a claim that the field already exists. Reuse the
+existing pure setting-scene parser through an explicit dialect; preserve all
+Mortal reserved-kind behavior. No implementation before this finite delta review.
+
 # Proposed next implementation: canonical spiritual diagnosis requirements
 
 Tracked task: T121-DIAGNOSIS-SPIRITUAL-CANONICAL-ADAPTERS / #1536. DESIGN proposal,
@@ -10,12 +20,12 @@ free, knowledge-only, one safe cycle with ordinary natural recovery, no new tari
 | --- | --- |
 | item_quantity | Exact current player-soul `soulRelics.stored/equipped` in soul_state; existing SoulRelic contract. One unique relic ID is one owned item, no name/legacy alias or fabricated count. Other actor ownership needs an actual existing carrier, never the player's relics. |
 | resource_quantity | Existing definitions/state/history/current owner authority, with exact afterlife actor resourceOwnerBindings; preserve owner capabilities, lifecycle and availability. Reuse existing resource parsers/composer once; no Ink Feathers or new ledger. |
-| consent | Existing location-owned typed setting/consent mechanism needs explicit afterlife adaptation. Never reinterpret a healing aid/compensation record as arbitrary consentRef or infer consent from a label. Exact placement/authority remains a DESIGN question. |
-| facility | Reuse typed setting-scene facility grammar on the actual realm-owned current locality, not a fabricated Mortal location. Afterlife canonical placement is a DESIGN question; no new parallel store. |
+| consent | Proposed explicit spiritual_diagnosis_consent schema1 in actual current guardians[].abode.customStates or halls[].customStates; exact afterlife actor coordinates/reference and granted status, no aid/compensation alias. |
+| facility | Proposed spiritual_diagnosis_facility schema1 in the same actual current realm-owned locality customStates; exact facilityId and available boolean, no new store. |
 | location | LocalInteractionScopeService and ShiningCurrentHallContract / actual Chaos Abode. Exact locationRef, realm, current player/target membership; no arbitrary profile location field. |
 | quest_state | Existing `game_state/quests/soul_quests.json` / UpdateSoulQuests, exact questId/status. A soul quest is not an aid agreement or compensation obligation. |
 | effect_state | Existing accepted EffectMechanicsSnapshot/identity/carriers, exact realm/typed target/effect/state; absence or unrelated/retired effect is not a fabricated positive. |
-| environment | Reuse existing typed setting-scene environment grammar on the actual realm-owned locality. Canonical afterlife placement remains a DESIGN question, never narrative text as authority. |
+| environment | Proposed spiritual_diagnosis_environment schema1 in that exact current locality customStates; exact ID/state, never narrative authority. |
 
 Pure operation-owned requirement DATA should be built once from the existing
 read-set/context's actual roots and images. Admission performs no extra IO; each
