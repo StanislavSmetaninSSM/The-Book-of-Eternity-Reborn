@@ -16,14 +16,17 @@
 
 The same applies to a Cyrillic/Greek homoglyph such as `Firеball` (Cyrillic `е`) and to NPC sections of `game_state/npcs/npc_skills.json`.
 
-## Verify in 2 minutes
+## Bounded verification
 
-```bash
-DOTNET_ROOT=/usr/share/dotnet dotnet test BookOfEternityClient.Tests \
-  --filter "FullyQualifiedName~MortalSkillReferenceAuthorityTests"
-DOTNET_ROOT=/usr/share/dotnet dotnet test BookOfEternityClient.IntegrationTests \
-  --filter "FullyQualifiedName~SkillReferenceIdentity"
+Use PowerShell 7 from the repository root:
+
+```powershell
+./scripts/test-csharp.ps1 -Category mortal-skill-reference-identity -PlanOnly
+./scripts/test-csharp.ps1 -SelectionFile tests/selection.json
+./scripts/test-csharp.ps1 -ValidateCatalog
 ```
+
+The first command inspects membership; the second runs only current reviewed impact categories. The audit discovers ownership without executing the complete suite. Inspect summary.json for complete planned execution and owned cleanup. The catalog owns budgets; do not use historical full-suite commands.
 
 ## Manual scenario
 
@@ -36,3 +39,5 @@ DOTNET_ROOT=/usr/share/dotnet dotnet test BookOfEternityClient.IntegrationTests 
 ## Repair flow
 
 Any of the three new codes routes into one `mortal_skill_reference_identity_repair` harness packet inside `game_state/control/validation_repair_request.json`. The packet lists the exact file and field to rename and the canonical name to write. Rename-only: deleting mastery data is explicitly forbidden by the packet.
+
+See Examples/E_CLI_Skill_Reference_Identity_Repair.txt for GM repair examples, including multiple NPC entries and unresolved canonical ambiguity.

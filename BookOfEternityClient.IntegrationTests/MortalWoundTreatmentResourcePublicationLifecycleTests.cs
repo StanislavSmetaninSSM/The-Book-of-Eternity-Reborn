@@ -5873,16 +5873,18 @@ public sealed partial class GameEngineTurnLifecycleTests
             new CSharpCompilationOptions(
                 OutputKind.DynamicallyLinkedLibrary,
                 nullableContextOptions: NullableContextOptions.Enable));
-        var root = tree.GetRoot();
-        var method = Assert.Single(root.DescendantNodes()
-            .OfType<MethodDeclarationSyntax>(),
+        var methodTrees = ValidationAndRepairSource.GetPaths(absolutePath)
+            .Select(path => sourceTrees.Single(candidate => string.Equals(
+                candidate.FilePath, path, StringComparison.OrdinalIgnoreCase)));
+        var method = Assert.Single(methodTrees.SelectMany(candidate => candidate.GetRoot()
+            .DescendantNodes().OfType<MethodDeclarationSyntax>()),
             method => string.Equals(
                 method.Identifier.ValueText,
                 methodName,
                 StringComparison.Ordinal));
         return new SourceMethodAnalysis(
             method,
-            compilation.GetSemanticModel(tree, ignoreAccessibility: false));
+            compilation.GetSemanticModel(method.SyntaxTree, ignoreAccessibility: false));
     }
 
     private static bool IsGameEngineSourceGuardPath(string absolutePath)

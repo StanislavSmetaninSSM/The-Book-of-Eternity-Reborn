@@ -34,5 +34,6 @@
 - [X] NPC ownership, pre-turn semantics, progression values and unrelated helper consumers are explicitly preserved.
 - [X] Multiple repairs, order independence, relocated source guards and category membership are covered.
 - [X] Verification follows the current category-only governance; assertions cannot be weakened.
-- [ ] User approval of this exact specification revision is pending.
-- [ ] Implementation plan, correction tasks, consistency analysis and implementation remain pending approval.
+- [X] User approved correction revision 1 on 2026-11-01.
+- [X] Implementation plan and T011-T018 correction tasks updated; pre-implementation consistency analysis recorded in plan.md.
+- [ ] Implementation, complete selected verification and independent review are pending.

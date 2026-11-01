@@ -6,7 +6,7 @@ public sealed class GameEngineSourceGuardTests
 {
     private static string ReadGameEnginePartialSource(string fileName)
     {
-        return File.ReadAllText(Path.Combine(
+        return ValidationAndRepairSource.Read(Path.Combine(
             TestRepoPaths.RepoRoot,
             "BookOfEternityClient",
             "Core",

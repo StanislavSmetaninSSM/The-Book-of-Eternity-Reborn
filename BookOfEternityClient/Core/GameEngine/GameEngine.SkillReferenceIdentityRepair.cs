@@ -4,6 +4,15 @@ namespace BookOfEternityClient.Core;
 
 public partial class GameEngine
 {
+    /// <summary>
+    /// Determines whether a diagnostic belongs to skill-reference identity repair.
+    /// </summary>
+    /// <param name="issue">
+    /// The diagnostic to classify.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> for one of the three identity codes; otherwise <see langword="false"/>.
+    /// </returns>
     private static bool IsMortalSkillReferenceIdentityRepairIssue(ValidationIssue issue)
     {
         var code = issue.Code ?? string.Empty;
@@ -12,6 +21,15 @@ public partial class GameEngine
                string.Equals(code, "npc_skill_mastery_initialization_confusable", StringComparison.OrdinalIgnoreCase);
     }
 
+    /// <summary>
+    /// Reduces a skill-reference field coordinate to its containing file.
+    /// </summary>
+    /// <param name="path">
+    /// The diagnostic file or field coordinate to normalize.
+    /// </param>
+    /// <returns>
+    /// The containing known skill file, or the normally normalized path.
+    /// </returns>
     private static string NormalizeSkillReferenceRepairTargetPath(string path)
     {
         var normalized = NormalizeRepairTargetPath(path);
@@ -29,6 +47,15 @@ public partial class GameEngine
         return normalized;
     }
 
+    /// <summary>
+    /// Builds bounded non-destructive instructions for all supplied identity diagnostics.
+    /// </summary>
+    /// <param name="referenceIdentityErrors">
+    /// The identity errors, retaining every actor and skill correction.
+    /// </param>
+    /// <returns>
+    /// A packet preserving distinct corrections and refusing ambiguous rename targets.
+    /// </returns>
     private static ValidationRepairHarnessPacket BuildMortalSkillReferenceIdentityRepairPacket(
         IReadOnlyList<ValidationIssue> referenceIdentityErrors)
     {
@@ -54,9 +81,13 @@ public partial class GameEngine
             .OrderBy(actor => actor, StringComparer.OrdinalIgnoreCase)
             .ToList();
         var exactFieldCorrections = referenceIdentityErrors
-            .Select(BuildExactFieldCorrection)
+            .Select(issue =>
+            {
+                var correction = BuildExactFieldCorrection(issue);
+                correction.RepairHint = issue.RepairHint;
+                return correction;
+            })
             .Where(correction => !string.IsNullOrWhiteSpace(correction.Path))
-            .DistinctBy(correction => correction.Path, StringComparer.OrdinalIgnoreCase)
             .OrderBy(correction => correction.Path, StringComparer.OrdinalIgnoreCase)
             .ToList();
 
@@ -78,14 +109,14 @@ public partial class GameEngine
             SafeCorrectionRules = new List<string>
             {
                 "The only allowed edit is rewriting the offending skillName to the exact canonical name from exactFieldCorrections; preserve masteryLevel, progress, and every other field byte-for-byte.",
-                "If several distinct canonical skills share the same normalized form, pick the exact name that the owning actor actually has in canonical state; never guess.",
+                "If expected describes several distinct canonical names, stop: there is no uniquely proven rename target. The descriptive expected text is not a literal skillName; never guess or rewrite to that text.",
                 "Keep mastery entries for all other skills untouched; do not reformat or reorder the file."
             },
             Steps = new List<string>
             {
                 "Open validation_repair_request.json and read exactFieldCorrections for every skill reference identity issue.",
                 "Open the target file and the canonical skill source (skills_active.json or npc_skills.json) side by side.",
-                "Rewrite each offending skillName to the exact canonical name listed as expected, character-for-character including case.",
+                "For an unambiguous correction only, rewrite the indexed offending skillName to the exact canonical name listed as expected, character-for-character including case. Read repairHint for actor and ambiguity context.",
                 "For initialization codes, verify the renamed entry now covers the new skill; if the confusable entry belonged to a different real skill, instead add a new mastery initialization entry under the exact new skill name.",
                 "After repairs are complete, call Complete-BoeValidationRepair as the last action, or create validation_repair_ready.json with exact metadata from the current validation_repair_request.json."
             },

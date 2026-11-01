@@ -371,7 +371,7 @@ public sealed class ValidationSourceGuardTests
 
         Assert.All(sources, path =>
         {
-            var source = File.ReadAllText(path);
+            var source = ValidationAndRepairSource.Read(path);
             Assert.Contains("canonicalPath", source, StringComparison.Ordinal);
             Assert.Contains("values", source, StringComparison.Ordinal);
             Assert.DoesNotContain("valid or resolvable merchantProfile", source, StringComparison.OrdinalIgnoreCase);

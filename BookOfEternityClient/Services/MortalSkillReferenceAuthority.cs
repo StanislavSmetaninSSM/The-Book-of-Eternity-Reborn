@@ -1,5 +1,8 @@
 namespace BookOfEternityClient.Services;
 
+/// <summary>
+/// Describes whether a reference identifies an exact, confusable or unknown skill name.
+/// </summary>
 internal enum MortalSkillReferenceMatchKind
 {
     Exact,
@@ -7,8 +10,23 @@ internal enum MortalSkillReferenceMatchKind
     Unknown
 }
 
+/// <summary>
+/// Carries an identity classification without binding or modifying a skill reference.
+/// </summary>
 internal readonly struct MortalSkillReferenceMatch
 {
+    /// <summary>
+    /// Creates the result of a skill-reference identity lookup.
+    /// </summary>
+    /// <param name="kind">
+    /// The reference classification.
+    /// </param>
+    /// <param name="canonicalName">
+    /// The unique confusable target, or <see langword="null"/> when no target is provided.
+    /// </param>
+    /// <param name="isAmbiguous">
+    /// Whether several canonical names share the non-exact reference's confusable key.
+    /// </param>
     public MortalSkillReferenceMatch(
         MortalSkillReferenceMatchKind kind,
         string? canonicalName,
@@ -19,10 +37,19 @@ internal readonly struct MortalSkillReferenceMatch
         IsAmbiguous = isAmbiguous;
     }
 
+    /// <summary>
+    /// Gets the reference classification.
+    /// </summary>
     public MortalSkillReferenceMatchKind Kind { get; }
 
+    /// <summary>
+    /// Gets the unique confusable target, or <see langword="null"/> for exact, unknown or ambiguous results.
+    /// </summary>
     public string? CanonicalName { get; }
 
+    /// <summary>
+    /// Gets whether several exact-distinct names match this non-exact reference.
+    /// </summary>
     public bool IsAmbiguous { get; }
 }
 
@@ -48,8 +75,20 @@ internal sealed class MortalSkillReferenceAuthority
         _confusableIndex = confusableIndex;
     }
 
+    /// <summary>
+    /// Gets the number of distinct trimmed ordinal canonical names.
+    /// </summary>
     public int Count => _exactNames.Count;
 
+    /// <summary>
+    /// Indexes canonical skill names without collapsing case or confusable distinctions.
+    /// </summary>
+    /// <param name="canonicalNames">
+    /// The non-null sequence of names; null and whitespace entries are ignored and names are trimmed.
+    /// </param>
+    /// <returns>
+    /// An authority preserving each distinct ordinal name and its shared confusable key.
+    /// </returns>
     public static MortalSkillReferenceAuthority Build(IEnumerable<string?> canonicalNames)
     {
         ArgumentNullException.ThrowIfNull(canonicalNames);
@@ -78,6 +117,15 @@ internal sealed class MortalSkillReferenceAuthority
         return new MortalSkillReferenceAuthority(exactNames, confusableIndex);
     }
 
+    /// <summary>
+    /// Classifies a trimmed reference without selecting a target for an ambiguous key.
+    /// </summary>
+    /// <param name="reference">
+    /// The reference to classify; <see langword="null"/> or whitespace is unknown.
+    /// </param>
+    /// <returns>
+    /// An exact or unknown result without a target, or a confusable result with a target only when unique.
+    /// </returns>
     public MortalSkillReferenceMatch Classify(string? reference)
     {
         if (string.IsNullOrWhiteSpace(reference))

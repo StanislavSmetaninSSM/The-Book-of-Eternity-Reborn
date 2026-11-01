@@ -143,4 +143,17 @@ public sealed partial class MortalSkillReferenceAuthorityTests
         Assert.Equal(new[] { "Fireball", "Fireball", "Whirlwind" }, issues.Select(i => i.Expected).OrderBy(n => n, StringComparer.Ordinal));
         Assert.Equal(2, issues.Count(i => i.Actor == "name:Trainer A"));
     }
+    /// <summary>
+    /// Keeps the GM example explicit about actor coordinates, progression and unresolved ambiguity.
+    /// </summary>
+    [Fact]
+    public void SkillIdentityRepairWorkedExample_CoversBoundedMultiActorAndAmbiguousRepairs()
+    {
+        var example = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "Examples", "E_CLI_Skill_Reference_Identity_Repair.txt"));
+        Assert.Contains("NPCSkillMasteryChanges[0].skillName -> Whirlwind", example, StringComparison.Ordinal);
+        Assert.Contains("NPCSkillMasteryChanges[1].skillName -> Fireball", example, StringComparison.Ordinal);
+        Assert.Contains("Stop; do not guess a target", example, StringComparison.Ordinal);
+        Assert.Contains("newCurrentMasteryProgress", example, StringComparison.Ordinal);
+        Assert.Contains("Complete-BoeValidationRepair", example, StringComparison.Ordinal);
+    }
 }

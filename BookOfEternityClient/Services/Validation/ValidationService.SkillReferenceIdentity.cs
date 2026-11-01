@@ -5,12 +5,14 @@ namespace BookOfEternityClient.Services;
 public partial class ValidationService
 {
     /// <summary>
-    /// Fail-closed identity layer for skill references on mastery surfaces (spec
-    /// specs/1533-complete-skill-materialization). The legacy validators keep their
-    /// case-insensitive semantics and legacy codes; this layer adds exact-name
-    /// classification via MortalSkillReferenceAuthority and rejects case-variant or
-    /// Unicode-confusable references that the legacy layer would silently accept.
+    /// Adds exact skill-reference validation and replaces only matching legacy diagnoses.
     /// </summary>
+    /// <param name="phases">
+    /// The selected phases controlling reference and initialization validation.
+    /// </param>
+    /// <param name="issues">
+    /// The diagnostics collected by the selected validation phases.
+    /// </param>
     private async Task ValidateSkillReferenceIdentityAsync(
         GameStateValidationPhase phases,
         List<ValidationIssue> issues)
@@ -34,6 +36,15 @@ public partial class ValidationService
         }
     }
 
+    /// <summary>
+    /// Rejects confusable player mastery references against retained canonical names.
+    /// </summary>
+    /// <param name="issues">
+    /// The diagnostics to extend and replace only for the same mastery reference.
+    /// </param>
+    /// <returns>
+    /// A task that completes after the selected references are checked.
+    /// </returns>
     private async Task ValidatePlayerMasterySkillReferenceIdentityAsync(List<ValidationIssue> issues)
     {
         const string masteryPath = "game_state/player/skill_mastery.json";
@@ -64,10 +75,10 @@ public partial class ValidationService
                 return;
             }
 
-            var knownActiveSkills = ReadCurrentPlayerActiveSkillNamesSync();
+            var knownActiveSkills = ReadCurrentPlayerActiveSkillNamesSync(StringComparer.Ordinal);
             knownActiveSkills.UnionWith(ParsePlayerSkillNames(
                 ReadPreTurnTrackedFileSync("game_state/player/skills_active.json"),
-                "activeSkillChanges"));
+                "activeSkillChanges", StringComparer.Ordinal));
             if (doc.RootElement.TryGetProperty("removeActiveSkills", out var removeActiveSkills) &&
                 removeActiveSkills.ValueKind == JsonValueKind.Array)
             {
@@ -76,7 +87,8 @@ public partial class ValidationService
                     if (removedSkill.ValueKind == JsonValueKind.String &&
                         !string.IsNullOrWhiteSpace(removedSkill.GetString()))
                     {
-                        knownActiveSkills.Remove(removedSkill.GetString()!);
+                        knownActiveSkills.RemoveWhere(name => string.Equals(
+                            name, removedSkill.GetString(), StringComparison.OrdinalIgnoreCase));
                     }
                 }
             }
@@ -101,6 +113,8 @@ public partial class ValidationService
                 if (match.Kind != MortalSkillReferenceMatchKind.Confusable)
                     continue;
 
+                issues.RemoveAll(issue => issue.Code == "skill_mastery_unknown_active_skill" &&
+                    string.Equals(issue.FilePath, $"{itemContext}.skillName", StringComparison.Ordinal));
                 issues.Add(new ValidationIssue(
                     $"{itemContext}.skillName",
                     IssueSeverity.Error,
@@ -118,6 +132,15 @@ public partial class ValidationService
         }
     }
 
+    /// <summary>
+    /// Checks exact mastery coverage for newly introduced player skills.
+    /// </summary>
+    /// <param name="issues">
+    /// The diagnostics to extend with indexed initialization corrections.
+    /// </param>
+    /// <returns>
+    /// A task that completes after the selected references are checked.
+    /// </returns>
     private async Task ValidatePlayerActiveSkillInitializationIdentityAsync(List<ValidationIssue> issues)
     {
         const string skillPath = "game_state/player/skills_active.json";
@@ -128,30 +151,38 @@ public partial class ValidationService
         var masteryJson = await _fs.ReadFileAsync(masteryPath);
 
         var preSkills = ParsePlayerSkillNames(preSkillJson, "activeSkillChanges");
-        var postSkills = ParsePlayerSkillNames(postSkillJson, "activeSkillChanges");
+        var postSkills = ParsePlayerSkillNames(postSkillJson, "activeSkillChanges", StringComparer.Ordinal);
         if (postSkills.Count == 0)
             return;
 
-        var masteryReferences = MortalSkillReferenceAuthority.Build(
-            ParsePlayerSkillMasteryNames(masteryJson));
+        var masteryReferences = ReadMasteryIdentityReferences(masteryJson, "skillMasteryChanges");
+        var canonicalNames = MortalSkillReferenceAuthority.Build(postSkills.Concat(
+            ParsePlayerSkillNames(preSkillJson, "activeSkillChanges", StringComparer.Ordinal)));
         foreach (var newSkill in postSkills.Where(skill => !preSkills.Contains(skill)).OrderBy(skill => skill, StringComparer.OrdinalIgnoreCase))
         {
-            var match = masteryReferences.Classify(newSkill);
-            if (match.Kind != MortalSkillReferenceMatchKind.Confusable)
-                continue;
-
-            issues.Add(new ValidationIssue(
-                masteryPath,
-                IssueSeverity.Error,
-                $"Новый active skill '{newSkill}' покрыт mastery initialization только под confusable именем, а не под exact canonical skillName",
-                code: "player_active_skill_mastery_initialization_confusable",
-                section: "Skills.Active",
-                expected: $"skillMasteryChanges contains exact {newSkill}",
-                actual: "only a case-variant or Unicode-confusable mastery entry exists",
-                repairHint: $"Перепиши skillName соответствующей записи в game_state/player/skill_mastery.json -> skillMasteryChanges посимвольно на '{newSkill}'. Не удаляй mastery запись — initialization обязателен для нового навыка."));
+            ReportConfusableInitialization(issues, newSkill, masteryReferences, canonicalNames,
+                masteryPath, "skillMasteryChanges", "Skills.Active", actor: null);
         }
     }
 
+    /// <summary>
+    /// Checks exact mastery coverage for newly introduced skills of each NPC.
+    /// </summary>
+    /// <param name="issues">
+    /// The diagnostics to extend with actor-specific initialization corrections.
+    /// </param>
+    /// <param name="skillChangesSection">
+    /// The active or passive skill-change array.
+    /// </param>
+    /// <param name="masterySection">
+    /// The corresponding mastery array.
+    /// </param>
+    /// <param name="section">
+    /// The diagnostic active or passive section.
+    /// </param>
+    /// <returns>
+    /// A task that completes after the selected references are checked.
+    /// </returns>
     private async Task ValidateNpcSkillInitializationIdentityAsync(
         List<ValidationIssue> issues,
         string skillChangesSection,
@@ -164,35 +195,132 @@ public partial class ValidationService
         var postJson = await _fs.ReadFileAsync(npcSkillsPath);
 
         var preSkillsByNpc = ParseNpcSkillChangesByActor(preJson, skillChangesSection);
-        var postSkillsByNpc = ParseNpcSkillChangesByActor(postJson, skillChangesSection);
+        var postSkillsByNpc = ParseNpcSkillChangesByActor(postJson, skillChangesSection, StringComparer.Ordinal);
         if (postSkillsByNpc.Count == 0)
             return;
 
-        var masteryByNpc = ParseNpcSkillMasteryByActor(postJson, masterySection);
+        var preExactSkillsByNpc = ParseNpcSkillChangesByActor(preJson, skillChangesSection, StringComparer.Ordinal);
+        var masteryReferences = ReadMasteryIdentityReferences(postJson, masterySection);
         foreach (var (npcKey, skillNames) in postSkillsByNpc)
         {
             preSkillsByNpc.TryGetValue(npcKey, out var preSkillNames);
-            masteryByNpc.TryGetValue(npcKey, out var masterySkillNames);
-            var masteryReferences = MortalSkillReferenceAuthority.Build(
-                masterySkillNames ?? (IEnumerable<string>)Array.Empty<string>());
+            preExactSkillsByNpc.TryGetValue(npcKey, out var preExactSkills);
+            var canonicalNames = MortalSkillReferenceAuthority.Build(skillNames.Concat(
+                preExactSkills ?? (IEnumerable<string>)Array.Empty<string>()));
+            var actorReferences = masteryReferences.Where(reference => string.Equals(
+                reference.Actor, npcKey, StringComparison.OrdinalIgnoreCase)).ToArray();
 
             foreach (var skillName in skillNames.Where(skill => preSkillNames == null || !preSkillNames.Contains(skill)))
             {
-                var match = masteryReferences.Classify(skillName);
-                if (match.Kind != MortalSkillReferenceMatchKind.Confusable)
-                    continue;
-
-                issues.Add(new ValidationIssue(
-                    $"{npcSkillsPath}.{masterySection}",
-                    IssueSeverity.Error,
-                    $"Новый NPC skill '{skillName}' для {npcKey} покрыт mastery initialization только под confusable именем, а не под exact canonical skillName",
-                    code: "npc_skill_mastery_initialization_confusable",
-                    actor: npcKey,
-                    section: section,
-                    expected: $"{masterySection} contains {npcKey} + exact {skillName}",
-                    actual: "only a case-variant or Unicode-confusable mastery entry exists",
-                    repairHint: $"Перепиши skillName соответствующей записи в {masterySection} для {npcKey} посимвольно на '{skillName}'. Не удаляй mastery запись — initialization обязателен для нового NPC skill."));
+                ReportConfusableInitialization(issues, skillName, actorReferences, canonicalNames,
+                    npcSkillsPath, masterySection, section, npcKey);
             }
+        }
+    }
+
+    /// <summary>
+    /// Reads mastery references without collapsing exact names or array coordinates.
+    /// </summary>
+    /// <param name="json">
+    /// The mastery payload; <see langword="null"/>, empty or malformed input yields no references.
+    /// </param>
+    /// <param name="section">
+    /// The mastery array to inspect.
+    /// </param>
+    /// <returns>
+    /// Valid named references with their existing actor key and original array index.
+    /// </returns>
+    private static IReadOnlyList<(string SkillName, string? Actor, int Index)> ReadMasteryIdentityReferences(
+        string? json, string section)
+    {
+        var result = new List<(string, string?, int)>();
+        if (string.IsNullOrWhiteSpace(json))
+            return result;
+        try
+        {
+            using var doc = JsonDocument.Parse(json);
+            if (doc.RootElement.ValueKind != JsonValueKind.Object ||
+                !doc.RootElement.TryGetProperty(section, out var entries) || entries.ValueKind != JsonValueKind.Array)
+                return result;
+            var index = 0;
+            foreach (var entry in entries.EnumerateArray())
+            {
+                var entryIndex = index++;
+                if (entry.ValueKind != JsonValueKind.Object)
+                    continue;
+                var name = GetFirstNonEmptyString(entry, "skillName");
+                if (!string.IsNullOrWhiteSpace(name))
+                    result.Add((name, BuildNpcIdentityKey(entry), entryIndex));
+            }
+        }
+        catch (JsonException)
+        {
+            // Structural diagnostics are owned by the existing contract validators.
+        }
+        return result;
+    }
+
+    /// <summary>
+    /// Reports indexed confusable-only coverage without choosing an ambiguous target.
+    /// </summary>
+    /// <param name="issues">
+    /// The diagnostics to update, replacing only this skill's legacy missing issue.
+    /// </param>
+    /// <param name="skillName">
+    /// The new canonical skill requiring initialization.
+    /// </param>
+    /// <param name="references">
+    /// The owning actor's mastery references and physical array coordinates.
+    /// </param>
+    /// <param name="canonicalNames">
+    /// The actor's exact canonical skill authority.
+    /// </param>
+    /// <param name="path">
+    /// The mastery file's relative path.
+    /// </param>
+    /// <param name="arrayName">
+    /// The mastery array containing the references.
+    /// </param>
+    /// <param name="section">
+    /// The active or passive diagnostic section.
+    /// </param>
+    /// <param name="actor">
+    /// The existing NPC key, or <see langword="null"/> for the player.
+    /// </param>
+    private static void ReportConfusableInitialization(
+        List<ValidationIssue> issues, string skillName,
+        IReadOnlyList<(string SkillName, string? Actor, int Index)> references,
+        MortalSkillReferenceAuthority canonicalNames, string path, string arrayName, string section, string? actor)
+    {
+        var coverage = MortalSkillReferenceAuthority.Build(references.Select(reference => reference.SkillName));
+        if (coverage.Classify(skillName).Kind != MortalSkillReferenceMatchKind.Confusable)
+            return;
+
+        var legacyCode = actor == null
+            ? "player_active_skill_missing_mastery_initialization" : "npc_skill_missing_mastery_initialization";
+        var legacyExpected = actor == null
+            ? $"skillMasteryChanges contains {skillName}" : $"{arrayName} contains {actor} + {skillName}";
+        issues.RemoveAll(issue => issue.Code == legacyCode && issue.FilePath == (actor == null ? path : $"{path}.{arrayName}") &&
+            issue.Expected == legacyExpected && issue.Section == section &&
+            string.Equals(issue.Actor, actor, StringComparison.OrdinalIgnoreCase));
+
+        var key = MortalLocationIdentityState.BuildConfusableKey(skillName);
+        foreach (var reference in references.Where(reference =>
+                     MortalLocationIdentityState.BuildConfusableKey(reference.SkillName) == key))
+        {
+            var match = canonicalNames.Classify(reference.SkillName);
+            var target = match.Kind == MortalSkillReferenceMatchKind.Confusable && !match.IsAmbiguous
+                ? match.CanonicalName : null;
+            issues.Add(new ValidationIssue(
+                $"{path}.{arrayName}[{reference.Index}].skillName", IssueSeverity.Error,
+                $"Новый skill '{skillName}' покрыт mastery initialization только под confusable именем",
+                code: actor == null ? "player_active_skill_mastery_initialization_confusable" : "npc_skill_mastery_initialization_confusable",
+                actor: actor, section: section,
+                expected: target ?? "exact canonical skillName of the owning actor (several distinct skills share this normalized form)",
+                actual: reference.SkillName,
+                repairHint: target == null
+                    ? "Несколько canonical skills имеют одну normalized форму. Останови ремонт: не выбирай имя и не меняй mastery, пока неоднозначность не разрешена."
+                    : $"Перепиши только skillName этой записи посимвольно на '{target}'. Не удаляй запись и не меняй progression поля."));
         }
     }
 }
