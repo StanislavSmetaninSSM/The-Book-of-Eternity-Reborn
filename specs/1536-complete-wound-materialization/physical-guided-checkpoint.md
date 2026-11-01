@@ -1,3 +1,33 @@
+# C8 four fresh builds and exact discovery complete; runtime PREP pending
+
+Fresh compiled source d70c38a146d1dcd965bee96cc4c662ec5e64f3fb (code238a4419)
+for Main/Support/Integration/Unit: all exit0, durations131.225541/18.190797/
+142.486920/75.820589 seconds. Warning multisets equal baseline12/23/102/26.
+All four PE/PDB pairs and412 changed-source bindings match;27 artifact hashes,
+10 operational resources/40 copies/four daemons agree. No C8 test has executed.
+
+Official catalogue validates1295 categories/13110 methods, zero unmapped/stale.
+Fresh full PlanOnly confirms50 cases/29 methods/27 descriptors/26 categories and
+zero execution. Its exact first-gate subset is guards4 + spiritual overflow1:
+5 cases/5 methods/3 descriptors, budgets60/60/120s by existing categories. Only
+that bounded subset is proposed for independent PREP; current3/UI remain unadmitted.
+The full plan is inventory evidence and does not request rerunning all50 cases.
+
+Approved standard obj duplicates and owner reference outputs were retired only
+after successful owner end, exact fresh identity/hash checks and no live owner.
+Main/Support dependency refs and all27 current bins remain; proof scopes are
+1/1/2/2 reference outputs plus2 standard obj per owner. No additional raw was
+retired after the authorized11. Extra binary archive is explicitly DEFERRED,
+with no C8 archive/EOF/CRC claim; current bins and all old archives are retained.
+Raw/proofs: existing /workspace/tboe-linux-evidence-20261025/us5-guided-diagnosis/
+P3GREENC8-* (builds, retirement, PDB, preflight, catalog, full-plan and export status).
+
+Optimization remains immutable operation DATA reuse with all fresh seals and
+source/owner fences; no new cache, reduced checks or speedup claim. Immediate
+unchanged687865856-byte start reserve and independent PREP precede runtime.
+Historical PASS, incomplete/failed attempts and all broader HOLDs retain their
+recorded versions and limits. This checkpoint is build/discovery evidence only.
+
 # C8 authorized log retirement executed; launch reserve restored
 
 Author explicitly approved the exact11-manifest uncompressed log retirement on
