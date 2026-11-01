@@ -54,7 +54,10 @@ BookOfEternityClient/
 │       └── ValidationService.ValidationPhases.cs         # EDIT (8 KB): dispatch the new layer
 └── Core/GameEngine/
     ├── GameEngine.SkillReferenceIdentityRepair.cs  # NEW: packet predicate + builder
-    └── GameEngine.ValidationAndRepair.cs           # EDIT: 5-line dispatch into packet list
+    ├── GameEngine.ValidationAndRepair.cs           # EDIT: 5-line dispatch into packet list
+    └── GameEngine.ValidationAndRepair.Part02..Part18.cs  # NOTE: pre-existing 480 KB partial split
+        # into per-member part files (transport limit of the file-push channel); byte-identical
+        # member sequence, no code change.
 
 BookOfEternityClient.Tests/
 └── MortalSkillReferenceAuthorityTests.cs           # NEW: unit + phase-driven integration tests
