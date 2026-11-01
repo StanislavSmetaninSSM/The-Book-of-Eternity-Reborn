@@ -86,6 +86,11 @@ public partial class ValidationService
             await ValidateNpcStateFiles(issues);
         if (phases.Includes(GameStateValidationPhase.SkillContractConsistency))
             await ValidateSkillContractConsistencyAsync(issues);
+        if (phases.Includes(GameStateValidationPhase.SkillContractConsistency) ||
+            phases.Includes(GameStateValidationPhase.PlayerStateFiles))
+        {
+            await ValidateSkillReferenceIdentityAsync(phases, issues);
+        }
         if (phases.Includes(GameStateValidationPhase.TrainingShowcases))
             await ValidateTrainingShowcasesAsync(issues);
         if (phases.Includes(GameStateValidationPhase.WorldQuestCombatFactionStateFiles))

@@ -3205,9 +3205,24 @@ public partial class ValidationService
         }
     }
 
-    private static HashSet<string> ParsePlayerSkillNames(string? json, string arrayName)
+    /// <summary>
+    /// Parses player skill names with an optional identity comparison.
+    /// </summary>
+    /// <param name="json">
+    /// The skill payload; <see langword="null"/>, empty or malformed input yields an empty set.
+    /// </param>
+    /// <param name="arrayName">
+    /// The skill array to read.
+    /// </param>
+    /// <param name="skillNameComparer">
+    /// The skill-name comparer; <see langword="null"/> preserves case-insensitive matching.
+    /// </param>
+    /// <returns>
+    /// The parsed names, preserving the requested skill-name comparison.
+    /// </returns>
+    private static HashSet<string> ParsePlayerSkillNames(string? json, string arrayName, StringComparer? skillNameComparer = null)
     {
-        var result = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var result = new HashSet<string>(skillNameComparer ?? StringComparer.OrdinalIgnoreCase);
         if (string.IsNullOrWhiteSpace(json))
             return result;
 
@@ -3259,14 +3274,23 @@ public partial class ValidationService
         return result;
     }
 
-    private HashSet<string> ReadCurrentPlayerActiveSkillNamesSync()
+    /// <summary>
+    /// Reads active skill names from retained same-turn input or the current file.
+    /// </summary>
+    /// <param name="skillNameComparer">
+    /// The skill-name comparer; <see langword="null"/> preserves case-insensitive matching.
+    /// </param>
+    /// <returns>
+    /// The parsed names, preserving the requested skill-name comparison.
+    /// </returns>
+    private HashSet<string> ReadCurrentPlayerActiveSkillNamesSync(StringComparer? skillNameComparer = null)
     {
         if (_sameTurnOwnerInputs is { } retainedInputs)
         {
             var retainedJson = retainedInputs.ReadText("game_state/player/skills_active.json");
             return string.IsNullOrWhiteSpace(retainedJson)
-                ? new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-                : ParsePlayerSkillNames(retainedJson, "activeSkillChanges");
+                ? new HashSet<string>(skillNameComparer ?? StringComparer.OrdinalIgnoreCase)
+                : ParsePlayerSkillNames(retainedJson, "activeSkillChanges", skillNameComparer);
         }
 
         try
@@ -3274,17 +3298,32 @@ public partial class ValidationService
             var json = _fs.ReadFileSync(
                 "game_state/player/skills_active.json");
             if (string.IsNullOrWhiteSpace(json))
-                return new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                return new HashSet<string>(skillNameComparer ?? StringComparer.OrdinalIgnoreCase);
 
-            return ParsePlayerSkillNames(json, "activeSkillChanges");
+            return ParsePlayerSkillNames(json, "activeSkillChanges", skillNameComparer);
         }
         catch
         {
-            return new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            return new HashSet<string>(skillNameComparer ?? StringComparer.OrdinalIgnoreCase);
         }
     }
 
-    private static Dictionary<string, HashSet<string>> ParseNpcSkillChangesByActor(string? json, string sectionName)
+    /// <summary>
+    /// Parses NPC skill names without changing actor-key comparison.
+    /// </summary>
+    /// <param name="json">
+    /// The NPC skill payload; <see langword="null"/>, empty or malformed input yields an empty map.
+    /// </param>
+    /// <param name="sectionName">
+    /// The active or passive skill-change section to read.
+    /// </param>
+    /// <param name="skillNameComparer">
+    /// The skill-name comparer; <see langword="null"/> preserves case-insensitive matching.
+    /// </param>
+    /// <returns>
+    /// The parsed names, preserving the requested skill-name comparison.
+    /// </returns>
+    private static Dictionary<string, HashSet<string>> ParseNpcSkillChangesByActor(string? json, string sectionName, StringComparer? skillNameComparer = null)
     {
         var result = new Dictionary<string, HashSet<string>>(StringComparer.OrdinalIgnoreCase);
         if (string.IsNullOrWhiteSpace(json))
@@ -3308,7 +3347,7 @@ public partial class ValidationService
 
                 if (!result.TryGetValue(actorKey, out var skillNames))
                 {
-                    skillNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                    skillNames = new HashSet<string>(skillNameComparer ?? StringComparer.OrdinalIgnoreCase);
                     result[actorKey] = skillNames;
                 }
 
