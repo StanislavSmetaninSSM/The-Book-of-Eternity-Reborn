@@ -1,3 +1,31 @@
+# Full console course — exact current preparation, runtime UNRUN
+
+C14 closure/status is remotely saved atb0b0d8e0433f3e787b5e0f3d7a3088701095d64e.
+Qualification-only COURSE phase retains Main/Support/Unitd3be1948 and Integration
+102dcf7f; no executable source changed and no successful build was repeated.
+Fresh actual four PE/PDB pairs,420 source bindings,27artifacts,10resources/40copies
+and4daemons match. Current exact PlanOnly passes1case/1method/1exclusiveIntegration
+descriptor: ConsolePhysicalCourseSeparatelyConfirmsEveryMilestoneAfterAcceptedWaits,
+existing180s category, zero execution. Complete catalogue1301/13121 remains
+unchanged; no selector/attribute/test membership changes. Three existing helpers
+only add this phase/mixed-owner mapping; independent delta/PREP pending.
+
+Whole preparation evidence reuses the reviewed complete Engine fixture and C13
+controlled response, actual new33-distinct clock gates and read-only retained
+first-wait original eligibility. Old root remains221files/900395logical bytes,
+unchanged and preserved; no new root/save or result is synthesized. Current
+original must still be produced normally; old fixture data/binaries are not reused.
+Full current capture and cleanup remain mandatory, no event/byte cap or budget
+increase. The fresh fence20:10:16 UTC has allpins stable, no live managed owner
+and716697600 freeB > unchanged687865856 reserve. The completed plan's plain log
+is fully recoverable gzip; no raw/capture/TRX/JSON/save/recovery/bin removed.
+
+Next independent status/helper/PREP, immediate unchanged fence and one genuine
+console-course runtime. Its pass must prove all3 separate confirmations, both
+ordinary waits/normal cleanup/current menus, exact declared costs, final result/
+History and replay. Browser course/remaining rollback cases and whole-feature
+acceptance stay open; old course UNKNOWN and all broader HOLDs remain preserved.
+
 # C14 ordinary clock accepted — next full console course
 
 Independent Astra/high final OUTCOME accepts remaining7 and complete native
