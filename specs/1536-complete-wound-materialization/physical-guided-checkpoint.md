@@ -1,3 +1,31 @@
+# C9 capture gate — 3/3 PASS; one instrumented native PREP pending
+
+Runtime9eaad89e2d34444ce5183b6187892cb968aa82a2 / Integration compiled7fc64f7f:
+shining-faction-service-capture-wiring completes exactly3Facts/3PASS/1descriptor,
+8.6253075/60s,wall20.6934210. Independent Astra/high OUTCOME verifies primary
+TRX/unique IDs/no errors or skips, stable pins and complete owned cleanup.
+All three actual gzip captures fully decode with exact hashes/length/rows and
+EOFCRC: two positives retain complete2/2 timing events, and the intended prebind
+negative correctly refuses timing completeness while retaining all original output.
+Actual roots are absent. This is the capture prerequisite, not native game PASS.
+
+To restore headroom,12 exact earlier ended physical generic logs were replaced by
+lossless gzip after independent scope review and fresh frozen identity/hash checks.
+All per-run full decoding/EOFCRC recovery manifests and proofs remain external;
+aggregate P3GREENC9-prior-closed-physical-log-retirement-proof.json binds frozen
+manifestf4a3581dea71ecc90f21b452df6f5f15aa355e40329f357139460ff37a2a539f.
+Net free-space increase24993792B; observed free714067968B. All27 binaries,
+TRX/JSON/captures/saves/recovery remain retained. No repeated approval is needed
+for authorized equivalent ended-log replacements; no unique evidence is removed.
+
+Next is only one instrumented current-legacy Fact in its unchanged120s category,
+after independent final PREP and an immediate fresh687865856B reserve fence.
+Eight coarse scopes/nested membership and existing internal timers answer which
+native phase consumed its previous unknown prefix. Full passive capture remains
+required; a killed/incomplete capture or lost TRX is UNKNOWN. No native retry,
+removal/joint/browser/rollback PASS, optimization or speedup is claimed here.
+All previous HOLDs and bounded C8 console2+guard5 lineages remain unchanged.
+
 # C9 fresh preparation complete — runtime UNRUN
 
 Fresh affected Integration build at7fc64f7f041340c5be7fc3ffaae9bdfb5be0edc6
