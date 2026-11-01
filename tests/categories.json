@@ -1,6 +1,30 @@
 {
     "schemaVersion": 1,
     "categories": [
+{
+  "id": "mortal-physical-guided-wait-response",
+  "responsibility": "T121-PHYSICAL-GUIDED-COURSE-WAIT: two minimal direct actual controlled-GM writer rows, with and without original pending world/faction report obligations. Existing public interface validator must accept closed output without mutation; ordinary world_time command alone resolves elapsed minutes and is declared in ready; unrelated NPC bytes stay unchanged. No Engine or accepted-state authority is fabricated. Scaffold RED/GREEN and runtime remain UNRUN.",
+  "excludes": "No production change, post-accepted clock patch, added time rule, receipt/claim minting, full world, cache/diagnostic framework, repeated accepted console/browser journey or higher timeout. This is fixture-artifact qualification, not complete course acceptance.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/ExplorerWoundSelfTreatmentTests.MortalWaitResponse.cs",
+    "BookOfEternityClient.IntegrationTests/ExplorerWoundSelfTreatmentTests.MortalTreatmentHelpers.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.PhysicalCourseWaitResponseUsesOrdinaryClockAndOriginalReportObligations"
+      ]
+    }
+  ]
+},
 
 {
   "id": "mortal-physical-terminal-independent-root",

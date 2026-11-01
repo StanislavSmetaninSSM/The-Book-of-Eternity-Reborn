@@ -1,6 +1,13 @@
 {
   "schemaVersion": 1,
   "selections": [
+{
+  "category": "mortal-physical-guided-wait-response",
+  "reason": "Actual full course stopped in validation repair because its controlled wait wrote timeChange into interface_updates. Prove that exact writer rejection cheaply, then correct only the ordinary-wait artifact channel and verify current clock/report/file declaration before a bounded full-course retry. No accepted nonwait PASS is selected.",
+  "contracts": [
+    "#1536 / US2 / US5 / T121-PHYSICAL-GUIDED-COURSE-WAIT; ordinary wait GM artifact channel and original progression-control obligations"
+  ]
+},
 
     {
       "category": "shining-faction-service-capture-wiring",

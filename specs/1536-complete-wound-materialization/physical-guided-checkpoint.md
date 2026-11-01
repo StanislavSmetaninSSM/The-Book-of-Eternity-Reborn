@@ -1,3 +1,32 @@
+# C13 wait-response causal scaffold — UNCOMPILED / UNRUN
+
+Independent Astra/high accepts C12 course as timeout/UNKNOWN with an actual
+fixture rejection, and the minimal wait-channel correction/test design. The new
+tracked T121-PHYSICAL-GUIDED-COURSE-WAIT adds two minimal actual writer rows,
+without Engine/world/resource bootstrap or production authority. Writer remains
+unchanged for RED. Existing public interface validator, byte-inertness, exact
+original-control report obligations and unrelated NPC bytes precede the intended
+closed-interface RED oracle. Corrected command-only clock and exact ready-path
+assertions follow it, so they are GREEN obligations, not alleged RED premises.
+The cheap new category is exclusive Integration / 2 cases / 60s; SOURCE/build/
+discovery/PlanOnly/PREP/runtime are pending. No complete course retry yet.
+
+Optimization assessment: the test writes one small response and parses each
+needed artifact once per independent row; no expensive world creation, repeated
+source reconstruction or reusable cross-operation DATA is introduced. No cache
+is appropriate for this small fixture correction. Fresh publication/authority/
+History/report guards and all original journey assertions stay unchanged.
+No new game/GM contract: existing canonical documents already put normal wait
+in timeChange, mapped to world_time, with original-control report obligations.
+
+C12 Integration's four actual compiled artifacts are preserved before any rebuild:
+full member/hash/length/EOF-CRC verified external archive 10977099 bytes,
+SHA-256 cd88b15a01a817f170f2b8f185225cf800e187384b525f20b09655b6e6ae679c.
+All original bin files, older archives, raw and interrupted course root remain.
+C12 two browser PASS remains accepted with exact versions; no repeat applies.
+Next: coherent SOURCE review, fresh Integration-only scaffold build and exact
+causal2 preparation. Main/Support/Unit production sources are unchanged at390907.
+
 # C12 console course — timeout / UNKNOWN; concrete wait fixture rejection
 
 Runtime 2f52db50968c7eb9811a2e0d8f18eab326ea135c / all four compiled source

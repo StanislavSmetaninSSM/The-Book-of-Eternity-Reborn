@@ -150,6 +150,16 @@ this bounded route, not parent T121/FR071/US5/#1536 or the eight proof adapters.
   and full RED evidence. This closes only that assessment, not optimization or
   native/feature qualification. Selected-graph reuse remains unimplemented.
 
+- [ ] T121-PHYSICAL-GUIDED-COURSE-WAIT [US2/US5] Correct only the existing
+  controlled GM wait fixture's misplaced timeChange after actual course timeout
+  at 2f52db50. Use the ordinary world_time command and ready declaration, never a
+  post-accepted clock patch. First two minimal actual-writer rows prove the exact
+  interface-validator rejection, then GREEN verifies command-only clock resolution,
+  immutable unrelated bytes and original-control-only report obligations. No
+  production guard/time rule/cost/budget change; accepted nonwait PASS retained.
+  Fresh owning Integration build, independent review and course/rollback admission
+  remain separate. Raw and interrupted original fixture stay external/retained.
+
 - [x] T121-PHYSICAL-GUIDED-BROWSER-MODES [US2/US5] Same complete procedure
   and guaranteed browser journeys accepted as two semantic singletons with unchanged
   body/hooks/assertions/capture/cleanup. Each 180s; combined maximum 360s plus runner
