@@ -1,3 +1,35 @@
+# T121 physical guided correction — compiled; GREEN admission pending
+
+2026-11-01: independent Astra/high whole SOURCE/fixture/selection review and
+compiler/analyzer-only readbacks are accepted. Runtime remains UNRUN. Earlier
+UNCOMPILED paragraphs below are historical checkpoints, not the current build state.
+
+All four selected owners build successfully on Linux. Main/Support/Unit compiled
+ada6769f419ac27acff4117aa7b0c87d02b25217; Integration-c1 compiled
+b274b465942d52235e60d7d6468259a8d4415c46 in 106.99 seconds. Warning multisets
+match the retained baseline: 12/23/26/102. Four actual PE/PDB pairs and 410 changed
+source bindings match; the three retained owners have no compiled-source delta.
+27 owning artifacts, 10 operational resources with 40 copies and four daemons
+are checked. The full 63,403,807-byte external archive decodes through gzip EOF/CRC
+and all 27 member hashes match; SHA256
+ecb25820f529a5353e7f81705620599451512c1ff2e102798d207283295f94fa.
+
+Official catalog discovery: 1,294 categories / 13,109 methods/files, no unmapped or
+stale selectors. Exact full PlanOnly: 49 cases / 27 methods / 25 descriptors /
+24 categories, zero executed. RAW remains outside checkout at
+/workspace/tboe-linux-evidence-20261025/us5-guided-diagnosis/P3GREEN-*.
+Existing preflight helpers select the explicit successful Main-c1/Integration-c1;
+external before/after hash/diff proofs retain the original failed/warning attempts.
+Fresh fence confirms 27 stable artifacts, resources/daemons, 846,966,784 free bytes,
+no live managed owner and 49 old zombies. No raw, archive or generated proof is staged.
+
+Next: independent PREP for the reviewed 18 cheap controls, then the 22 bounded
+hold/native/current/joint/cold/direct-diagnosis peers. UI nine remain separately
+held pending those outcomes; course admission additionally uses measured first-UI
+cost under unchanged 180-second bounds. Callback/source-count GREEN and terminal
+publication remain unproved. No speedup, physical feature acceptance, parent task
+closure, Meta aggregate, DOM/provider or previously held route follows from builds.
+
 # T121 coherent callback/terminal correction — SOURCE candidate, UNCOMPILED/UNRUN
 
 P3GREEN first complete managed pass onada6769f4 exits0 for all four owners:
