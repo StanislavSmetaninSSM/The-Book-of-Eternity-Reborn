@@ -184,7 +184,7 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
             var after = ResourceStateContract.ParseCanonical(await files.ReadFileAsync(ResourceMaterializationContract.StatePath), resourceDefinitions!, false).Ledger!;
             var historyAfter = ResourceHistoryState.ParseCanonical(await files.ReadFileAsync(ResourceMaterializationContract.HistoryPath), resourceDefinitions!, false).History!;
             Assert.Empty(historyAfter.ValidateStateAgreement(after));
-            var cost = Assert.Single(historyAfter.Transitions.Where(row => !resourceHistoryBefore!.Transitions.Any(old => old.TransitionId == row.TransitionId)));
+            var cost = Assert.Single(historyAfter.Transitions, row => !resourceHistoryBefore!.Transitions.Any(old => old.TransitionId == row.TransitionId));
             Assert.Equal(ResourceTransitionOperation.Spend, cost.Operation); Assert.Equal("turn_43:resource:1", cost.EventRef);
             Assert.Equal(1m, cost.RequestedAmount); Assert.Equal(1m, cost.AppliedAmount);
             Assert.Equal(ResourceMutationPhase.DirectCost, cost.Phase);

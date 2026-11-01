@@ -1,3 +1,19 @@
+# Canonical four-project build — zero errors, one Integration lint correction pending
+
+All four managed projects build from c576861ea767643be7c01097fa888ac8705f6c52
+with exit0. Main12/24logged, Support23/46 and Unit26/52 exactly match their warning
+baseline multisets. Integration has103/206 vs102/204: the sole new xUnit2031 is
+Assert.Single(Where(...)) in the new ordinary-cost history assertion. Its correction
+uses the same predicate overload; no guard/assertion meaning changes. Only Integration
+needs a fresh warning-clean build after narrow review. No runtime or feature GREEN.
+
+Ended obj/ref duplicates were verified against retained current bins before retirement.
+The first new Integration4 outputs are also preserved with fullEOF/CRC/member hashes
+in11090785bytes, SHA7220b5817721e9961e41017ef6d2c12fb8d1814f0cd121ae02d88a94719f2fd2,
+decoded38993920bytes. Earlier full bin/resource archive remains untouched. Next narrow
+lint/phase review, Integration-only build, all4PE/PDB/source/resource bindings, exact
+catalogue/PlanOnly and independent PREP before cheap runtime. Other HOLDs remain.
+
 # Canonical corrected SOURCE accepted — four fresh builds next
 
 Independent Astra/high accepts correction17abadc66..2cc9ff51c8313512d1295b0e31e37a058a488d63:
