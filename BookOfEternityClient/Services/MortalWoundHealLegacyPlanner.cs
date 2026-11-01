@@ -95,42 +95,8 @@ internal static class MortalWoundHealLegacyPlanner
                 seed.DefinitionReferenceBindings.Count != mechanical.EffectDraft.Definitions.Length ||
                 seed.ApplicationReferenceBindings.Count != mechanical.EffectDraft.Applications.Length)
                 throw Invalid("Mechanical legacy requires its own complete bounded definition/application batch.");
-            var definitions = new List<WoundEffectSourceDefinition>();
-            var definitionsByRef = new Dictionary<string, WoundEffectSourceDefinition>(StringComparer.Ordinal);
-            for (var index = 0; index < mechanical.EffectDraft.Definitions.Length; index++)
-            {
-                var draft = mechanical.EffectDraft.Definitions[index];
-                var reference = seed.DefinitionReferenceBindings[index];
-                if (reference.LocalRef != draft.DefinitionRef || reference.NamespacedRef != legacy.LocalLegacyRef + "/" + draft.DefinitionRef)
-                    throw Invalid("Mechanical legacy definition namespace changed.");
-                var body = JsonNode.Parse(draft.Definition.GetRawText())!.AsObject();
-                var definition = new WoundEffectSourceDefinition(body["definitionKey"]!.GetValue<string>(), body);
-                if (!definitionsByRef.TryAdd(draft.DefinitionRef, definition)) throw Invalid("Duplicate legacy definition reference.");
-                definitions.Add(definition);
-            }
-            var roots = new List<WoundRootEffectApplication>();
-            for (var index = 0; index < mechanical.EffectDraft.Applications.Length; index++)
-            {
-                var application = mechanical.EffectDraft.Applications[index];
-                var reference = seed.ApplicationReferenceBindings[index];
-                if (reference.LocalRef != application.ApplicationRef ||
-                    reference.NamespacedRef != legacy.LocalLegacyRef + "/" + application.ApplicationRef ||
-                    !definitionsByRef.TryGetValue(application.DefinitionRef, out var definition))
-                    throw Invalid("Mechanical legacy application namespace or definition changed.");
-                var body = definition.Definition;
-                var parameters = JsonNode.Parse(application.Parameters.GetRawText())!.AsObject();
-                if (body["components"] is not JsonArray components ||
-                    !WoundEffectCarrierAdapter.TryCreateCarrierCoordinate(owner, target, body, out var coordinate))
-                    throw Invalid("Mechanical legacy has no canonical component/carrier mapping.");
-                var key = new EffectSourceKey(owner.Realm, "wound_legacy", seed.LegacyId, definition.DefinitionKey);
-                roots.Add(new(reference.NamespacedRef, checked(firstMechanicsOrdinal + ordinal), index + 1,
-                    "apply", seed.LegacyId + "_application_" + index.ToString(CultureInfo.InvariantCulture), definition.DefinitionKey,
-                    new(target.Kind, target.TargetId, null), target,
-                    new(key.Realm, key.Kind, null, legacy.LocalLegacyRef, key.DefinitionKey), key, parameters,
-                    Array.Empty<WoundEffectSlotAgreement>(), components.Count,
-                    WoundEffectMaterializationFingerprint.Compute(key, body["schemaVersion"]!.GetValue<int>(), parameters, components),
-                    WoundRootOwnershipDomain.BaseWound, request.Coordinates.EventRef, coordinate));
-            }
+            var (definitions, roots) = DescribeMechanicalApplications(mechanical, seed, owner,
+                request.Coordinates.EventRef, checked(firstMechanicsOrdinal + ordinal));
             var export = new WoundEffectSourceExport(1, "wound_legacy", seed.LegacyId, legacy.LocalLegacyRef,
                 "active", false, owner.Realm, owner, request.Coordinates.EventRef, accepted.SemanticFingerprint,
                 heal.HealChildCoordinates.OperationKey, heal.IntentFingerprint, definitions);
@@ -150,6 +116,61 @@ internal static class MortalWoundHealLegacyPlanner
         }
         RequireDisjointCoordinates(precedingBatches.Concat(batches).ToArray(), heal);
         return new(request.RequestFingerprint, heal.IntentFingerprint, heal.LegacySeedBindings, declarations, batches);
+    }
+
+    /// <summary>
+    /// Derives closed application comparison DATA through the same typed namespace,
+    /// identity and parameter functions used by the actual preparation. No prepared
+    /// fingerprint, live owner, allocation, route JSON parse or IO is manufactured.
+    /// </summary>
+    internal static (IReadOnlyList<WoundEffectSourceDefinition> Definitions, IReadOnlyList<WoundRootEffectApplication> Roots)
+        DescribeMechanicalApplications(MortalWoundMechanicalEffectLegacyDraft mechanical, MortalWoundTreatmentLegacySeedBinding seed,
+            WoundOwnerCoordinate owner, string causalEventRef, int mechanicsOrdinal)
+    {
+        if (!WoundEffectCarrierAdapter.TryCreateTargetKey(owner, out var target) || mechanicsOrdinal <= 0 ||
+            mechanical.EffectDraft.Definitions.Length is < 1 or > 5 || mechanical.EffectDraft.Applications.Length is < 1 or > 5 ||
+            seed.Kind != mechanical.Kind || seed.LocalLegacyRef != mechanical.LocalLegacyRef ||
+            seed.DefinitionReferenceBindings.Count != mechanical.EffectDraft.Definitions.Length ||
+            seed.ApplicationReferenceBindings.Count != mechanical.EffectDraft.Applications.Length)
+            throw Invalid("Mechanical legacy comparison inputs are incomplete or foreign.");
+        var definitions = new List<WoundEffectSourceDefinition>();
+        var definitionsByRef = new Dictionary<string, WoundEffectSourceDefinition>(StringComparer.Ordinal);
+        for (var index = 0; index < mechanical.EffectDraft.Definitions.Length; index++)
+        {
+            var draft = mechanical.EffectDraft.Definitions[index];
+            var reference = seed.DefinitionReferenceBindings[index];
+            if (reference.LocalRef != draft.DefinitionRef || reference.NamespacedRef != mechanical.LocalLegacyRef + "/" + draft.DefinitionRef)
+                throw Invalid("Mechanical legacy definition namespace changed.");
+            var body = JsonNode.Parse(draft.Definition.GetRawText())!.AsObject();
+            var definition = new WoundEffectSourceDefinition(body["definitionKey"]!.GetValue<string>(), body);
+            if (!definitionsByRef.TryAdd(draft.DefinitionRef, definition)) throw Invalid("Duplicate legacy definition reference.");
+            definitions.Add(definition);
+        }
+        var roots = new List<WoundRootEffectApplication>();
+        for (var index = 0; index < mechanical.EffectDraft.Applications.Length; index++)
+        {
+            var application = mechanical.EffectDraft.Applications[index];
+            var reference = seed.ApplicationReferenceBindings[index];
+            if (reference.LocalRef != application.ApplicationRef ||
+                reference.NamespacedRef != mechanical.LocalLegacyRef + "/" + application.ApplicationRef ||
+                !definitionsByRef.TryGetValue(application.DefinitionRef, out var definition))
+                throw Invalid("Mechanical legacy application namespace or definition changed.");
+            var body = definition.Definition;
+            var parameters = JsonNode.Parse(application.Parameters.GetRawText())!.AsObject();
+            if (body["components"] is not JsonArray components ||
+                !WoundEffectCarrierAdapter.TryCreateCarrierCoordinate(owner, target, body, out var coordinate))
+                throw Invalid("Mechanical legacy has no canonical component/carrier mapping.");
+            var key = new EffectSourceKey(owner.Realm, "wound_legacy", seed.LegacyId, definition.DefinitionKey);
+            roots.Add(new(reference.NamespacedRef, mechanicsOrdinal, index + 1,
+                "apply", seed.LegacyId + "_application_" + index.ToString(CultureInfo.InvariantCulture), definition.DefinitionKey,
+                new(target.Kind, target.TargetId, null), target,
+                new(key.Realm, key.Kind, null, mechanical.LocalLegacyRef, key.DefinitionKey), key, parameters,
+                Array.Empty<WoundEffectSlotAgreement>(), components.Count,
+                WoundEffectMaterializationFingerprint.Compute(key, body["schemaVersion"]!.GetValue<int>(), parameters,
+                    EffectAcceptedTurnPlanner.MaterializeTypedComponents(body, parameters)),
+                WoundRootOwnershipDomain.BaseWound, causalEventRef, coordinate));
+        }
+        return (definitions, roots);
     }
 
     /// <summary>

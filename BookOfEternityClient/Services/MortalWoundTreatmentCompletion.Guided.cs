@@ -66,7 +66,9 @@ internal static partial class MortalWoundTreatmentCompletion
         var expected = ReconstructFinalWound(comparison, current);
         var occurrences = carriers.Occurrences.Where(value => value.WoundId == coordinates.WoundId).ToArray();
         var terminal = matching[0];
-        if (occurrences.Length != 1 || WoundMaterializationContract.SerializeCanonical(occurrences[0].Wound) !=
+        if (comparison.Preparation.PreparesTerminalHeal)
+            RequireTerminalTreatmentSettlement(comparison, expected, history, terminal, identity.State!, carriers, current);
+        else if (occurrences.Length != 1 || WoundMaterializationContract.SerializeCanonical(occurrences[0].Wound) !=
                 WoundMaterializationContract.SerializeCanonical(expected) ||
             history.Transitions.Last(row => row.WoundId == coordinates.WoundId) != terminal ||
             terminal.TransitionId != expected.LastTransition.TransitionId ||

@@ -2134,6 +2134,24 @@ internal static class WoundEffectLineagePlanner
     private const int MaxIssues = 20;
 
     /// <summary>
+    /// Describes canonical definition domains for an immutable comparison graph.
+    /// This reuses the live planner's domain rules without granting lineage or
+    /// retirement authority or treating a historical effect as currently active.
+    /// </summary>
+    internal static IReadOnlyDictionary<string, WoundEffectIdentityLineageDefinition> DescribeDefinitionDomains(
+        WoundMaterializationEnvelope wound)
+    {
+        var issues = new List<ValidationIssue>();
+        var definitions = wound.Consequences.OwnedEffectSources.DefinitionFacts.ToDictionary(row => row.DefinitionKey, StringComparer.Ordinal);
+        var roots = wound.Consequences.OwnedEffectSources.RootBindings.ToDictionary(row => row.EffectId, StringComparer.Ordinal);
+        var rootDomains = BuildRootDomains(wound, roots, issues);
+        var domains = BuildDefinitionDomains(wound, roots, rootDomains, definitions, issues);
+        if (issues.Count != 0) throw new InvalidDataException("The terminal comparison graph has invalid definition ownership.");
+        return domains.ToDictionary(row => row.Key, row => new WoundEffectIdentityLineageDefinition(row.Key,
+            definitions[row.Key].ApplyDefinitionTargets.ToHashSet(StringComparer.Ordinal), row.Value), StringComparer.Ordinal);
+    }
+
+    /// <summary>
     /// Resolves current wound lineage and validates terminal history without restoring retired effects to current ownership.
     /// </summary>
     /// <param name="wound">

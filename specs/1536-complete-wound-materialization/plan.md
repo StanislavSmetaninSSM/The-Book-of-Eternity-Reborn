@@ -1,3 +1,48 @@
+# T121 terminal current/browser comparison — WIP UNCOMPILED/UNRUN
+
+Continues 98c5beb5fbdf767cd0486b9da8ebf58532f5a16a. The SAME current predicate used
+by browser Finish and accepted-record reuse now has an explicit terminal branch.
+It reconstructs the primary treatment with exact request-derived creation mapping,
+then the shared reducer's healed snapshot/legacy declarations. It requires both
+linked History fingerprints/coordinates, separate global and wound ordinals, exact
+healed identity, final History position and complete active-carrier absence.
+
+Retired wound roots are not accepted by merely dropping an active-state check.
+The complete comparison uses the existing indexed identity/group/child data and
+pure lineage analyzer, shared definition-domain rules and expected owner/carrier/
+stack mapping. Exact independently derived prefix-create/prefix-expire/heal-expire
+sets are joined to one-to-one IDs and sorted operation ordinals; new created-then-
+retired roots require their exact two-transition chain and generation parent.
+Lawful earlier identity prefixes remain under the complete existing canonical/
+lineage checks. Missing/extra/foreign/ambiguous/cyclic related identities, altered
+program ownership/order/chronology, active state or any carrier resurrection refuse.
+The same generation-parent join also corrects the old nonterminal current helper's
+incorrect assumption that all rematerialized roots have zero source-effect parents.
+
+Actual preparation and current comparison now share the existing typed component
+parameter binder and one mechanical-application DATA projection; parameterized
+legacies no longer compare a bound live result with an unbound expectation. There
+is no new allocator/cache or fake prepared-input authority. All primary legacy
+allocation/events/source/target/owner/stack coordinates are independently derived;
+surviving primary effects require the exact declared bound materialization.
+
+Astra's accepted primary/descendant distinction is preserved. Every member of an
+independent legacy source group must be accounted for by complete rooted lineage;
+no unexplained/foreign/ambiguous/cyclic members or forbidden edges. Ordinary
+successors use the already mandatory fresh canonical source-definition/component/
+parameter-bound/lifetime/stacking/trigger/removal/link and carrier/index/target
+agreement. Their current parameters are not compared to a primary envelope or
+claimed to reproduce historical reactions. Retired component payloads are not
+retrospectively replayed; actual full live execution/payload proof remains required
+before publication. No new v2 field/blob/digest or full History witness was added.
+
+This remains authored source only. Actual joint-stage closure, targeted primary/
+descendant/tombstone/live-payload negatives, aggregate3 and multi-mechanical proofs,
+real terminal browser/three-milestone wait/replay/rollback, GM/examples/guards and
+final semantic pin/finite selection work remain. No build/discovery/runtime/GREEN
+or pin refresh occurred. Diff whitespace checks pass. Root owns WIP persistence;
+all old raw/saves/recovery/parents/HOLDs and protective limits remain unchanged.
+
 # T121 durable legacy source and sealed output — WIP UNCOMPILED/UNRUN
 
 Continues 166a95ecd3a130bf3c2b31b31b16399532fe4b54. Current canonical legacy

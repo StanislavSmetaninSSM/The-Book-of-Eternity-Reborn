@@ -37,7 +37,8 @@ internal static partial class MortalWoundTreatmentCompletion
                     allocatedOrdinal++;
                     var definition = definitions.Single(value => value.DefinitionKey == root.DefinitionKey).Definition;
                     id = RequireAllocatedRoot(before, root.DefinitionKey, definition, allocatedOrdinal,
-                        comparison.Resolution.Coordinates.EventRef, comparison.Resolution.Coordinates.Turn, current);
+                        comparison.Resolution.Coordinates.EventRef, comparison.Resolution.Coordinates.Turn, current,
+                        root.OriginalEffectId, preparation.PreparesTerminalHeal);
                 }
                 if (string.IsNullOrWhiteSpace(id)) throw Invalid("A finalized root lost its original or durable allocation identity.");
                 rows.Add(new(id, root.DefinitionKey, root.OwnershipDomain, root.Slots));
@@ -76,7 +77,8 @@ internal static partial class MortalWoundTreatmentCompletion
     }
 
     private static string RequireAllocatedRoot(WoundMaterializationEnvelope before, string definitionKey,
-        JsonObject definition, int ordinal, string causalEvent, int turn, CurrentCanonicalAgreement current)
+        JsonObject definition, int ordinal, string causalEvent, int turn, CurrentCanonicalAgreement current,
+        string? priorEffectId, bool retired)
     {
         var creationEvent = WoundEffectOperationEventRef.Create(causalEvent, 1, ordinal, "apply");
         if (!WoundEffectCarrierAdapter.TryCreateTargetKey(before.Owner, out var target) ||
@@ -87,12 +89,24 @@ internal static partial class MortalWoundTreatmentCompletion
         if (matches.Length != 1) throw Invalid("The selected root's exact durable allocation is missing or ambiguous.");
         var entry = matches[0];
         var creation = entry.Transitions.Single(row => row.Kind == "create" && row.EventRef == creationEvent);
-        if (entry.Realm != before.Owner.Realm || entry.State != "active" ||
+        RequireIdentityCoordinates(before.Owner, "wound", before.WoundId, definitionKey, definition, entry);
+        if (entry.Realm != before.Owner.Realm ||
             entry.Source["kind"]?.GetValue<string>() != "wound" || entry.Source["sourceId"]?.GetValue<string>() != before.WoundId ||
             entry.Source["definitionKey"]?.GetValue<string>() != definitionKey ||
             entry.Target["kind"]?.GetValue<string>() != target.Kind || entry.Target["targetId"]?.GetValue<string>() != target.TargetId ||
-            creation.SourceEffectIds.Count != 0 || !creation.ResultEffectIds.SequenceEqual(new[] { entry.EffectId }, StringComparer.Ordinal) ||
-            creation.ReceiptId is not null || !current.Effects.TryResolveOne(entry.EffectId, out var occurrence) || occurrence.Coordinate != carrier ||
+            !creation.SourceEffectIds.SequenceEqual(priorEffectId is null ? Array.Empty<string>() : new[] { priorEffectId }, StringComparer.Ordinal) ||
+            !creation.ResultEffectIds.SequenceEqual(new[] { entry.EffectId }, StringComparer.Ordinal) || creation.ReceiptId is not null)
+            throw Invalid("The durable root allocation is foreign to its selected generation.");
+        if (retired)
+        {
+            // The caller must subsequently verify the complete terminal program,
+            // ordered retirements, both History joins and healed identity. This
+            // intermediate image alone is not a completed-current-result proof.
+            if (entry.State != "expired" || current.Effects.Occurrences.Any(row => row.EffectId == entry.EffectId))
+                throw Invalid("A terminal selected allocation was resurrected or lost its terminal state.");
+            return entry.EffectId;
+        }
+        if (entry.State != "active" || !current.Effects.TryResolveOne(entry.EffectId, out var occurrence) || occurrence.Coordinate != carrier ||
             occurrence.Effect["chronology"] is not JsonObject chronology || chronology["createdEventRef"]?.GetValue<string>() != creationEvent ||
             chronology["causalEventRef"]?.GetValue<string>() != causalEvent || chronology["createdAtTurn"]?.GetValue<int>() != turn ||
             occurrence.Effect["components"] is not JsonArray actualComponents || definition["components"] is not JsonArray expectedComponents)

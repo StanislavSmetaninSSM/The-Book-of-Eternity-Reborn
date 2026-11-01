@@ -3692,7 +3692,7 @@ internal static partial class EffectAcceptedTurnPlanner
         string path,
         List<ValidationIssue> issues)
     {
-        if (source.Definition["components"] is not JsonArray components)
+        if (source.Definition["components"] is not JsonArray)
         {
             AddWoundBatchIssue(
                 issues,
@@ -3702,8 +3702,7 @@ internal static partial class EffectAcceptedTurnPlanner
                 Describe(source.Definition["components"]));
             return;
         }
-        var materialized = components.DeepClone().AsArray();
-        BindParameters(materialized, parameters);
+        var materialized = MaterializeTypedComponents(source.Definition, parameters);
         var fingerprint = WoundEffectMaterializationFingerprint.Compute(
             source.Key,
             EffectMaterializationContract.SchemaVersion,
@@ -3722,6 +3721,19 @@ internal static partial class EffectAcceptedTurnPlanner
                 "exact component count and materialization fingerprint recomputed from canonical source and parameters",
                 $"{root.ExpectedComponentCount}/{root.ExpectedMaterializationFingerprint}");
         }
+    }
+
+    /// <summary>
+    /// Reuses the ordinary component parameter binder for closed typed publication
+    /// and detached current comparison DATA. It performs no allocation or IO.
+    /// </summary>
+    internal static JsonArray MaterializeTypedComponents(JsonObject definition, JsonObject parameters)
+    {
+        if (definition["components"] is not JsonArray components)
+            throw new InvalidDataException("A typed effect definition requires canonical components.");
+        var materialized = components.DeepClone().AsArray();
+        BindParameters(materialized, parameters);
+        return materialized;
     }
 
     private static bool TryMapWoundOwnerTarget(
