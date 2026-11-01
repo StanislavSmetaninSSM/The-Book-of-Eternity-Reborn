@@ -5,6 +5,15 @@
 
 ## Summary
 
+### Current checkpoint — 2026-11-01, PR #1579 review corrections (WIP)
+
+- Source issue: #1533; branch: `1533-complete-skill-materialization`; reviewed implementation: `673c531710ec3acf5132369f42a43f1a7ce8c13c`.
+- The user requested fixes for all five confirmed review findings. The specification now includes correction revision 1 and awaits explicit user approval under the user's AGENTS.md workflow. No production or test sources have been changed for this correction block.
+- Existing design text below describes the reviewed implementation, not an approved correction plan. After approval, update this plan and `tasks.md` through Spec Kit phases and run consistency analysis before implementation.
+- Review evidence on Windows: both test projects built with XML documentation enabled; `MortalSkillReferenceAuthorityTests` passed 19/19; the new skill repair integration test passed 1/1. `validation-pipeline` stopped after 61 executed cases (56 passed, 5 failed); 228 were planned and the category was incomplete. All five failing source guards passed against base-commit source files using unchanged test binaries/test sources. Owned-tree cleanup succeeded.
+- The five findings are: Unicode double-reporting routes identity repairs to a training packet; case-insensitive input sets lose canonical ambiguity and exact coverage; repair corrections collapse by section path; partial-file relocation breaks source guards; new tests lack category ownership and current selection.
+- No implementation verification or independent correction review has run yet. Next action: obtain user approval of `spec.md` correction revision 1, then plan the fixes and execute regression tests before code changes.
+
 Part 1 closes the identity gap between the strict skill composition layer and the case-insensitive mastery validation layer. One new internal authority class, `MortalSkillReferenceAuthority`, indexes canonical skill names by exact (ordinal) name and by the shared confusable key (`MortalLocationIdentityState.BuildConfusableKey`). An additive validation layer classifies every mastery-surface skill reference through that authority and fails closed on confusable-only references with three new issue codes, while the legacy validators keep their unknown/missing codes as backstops. A bounded `mortal_skill_reference_identity_repair` harness packet teaches the GM the rename-only fix.
 
 ## Technical Context

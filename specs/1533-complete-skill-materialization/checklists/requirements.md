@@ -26,3 +26,13 @@
 - [X] User stories are independently testable
 - [X] Repair story prevents destructive guidance for an identity-only fix
 - [X] Save compatibility statement present (Pre-Alpha, none required)
+
+## PR #1579 review correction specification — revision 1
+
+- [X] All five review findings have observable acceptance criteria.
+- [X] Exact, confusable, ambiguous and unknown references are distinguished; mixed payloads retain independent errors.
+- [X] NPC ownership, pre-turn semantics, progression values and unrelated helper consumers are explicitly preserved.
+- [X] Multiple repairs, order independence, relocated source guards and category membership are covered.
+- [X] Verification follows the current category-only governance; assertions cannot be weakened.
+- [ ] User approval of this exact specification revision is pending.
+- [ ] Implementation plan, correction tasks, consistency analysis and implementation remain pending approval.

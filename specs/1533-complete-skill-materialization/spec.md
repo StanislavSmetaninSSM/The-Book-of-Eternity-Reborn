@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-01
 
-**Status**: In progress — part 1 (skill reference identity authority) implemented
+**Status**: Part 1 review corrections proposed — revision 1 awaiting user specification approval
 
 **Input**: User description: "[Harness/RLM] Enforce complete Mortal skill and mastery materialization — one canonical skill schema with active/passive profiles, validated constructors and deltas, fail-closed handling of duplicate, Unicode/case-confusable, stale, cross-owner, and orphaned skill references, governed companions, and bounded repair packets."
 
@@ -88,4 +88,39 @@ As the local validation-repair harness, I want every skill reference identity er
 - **SC-001**: A mastery entry differing from the canonical skill name only by case or homoglyphs is rejected in 100% of player, NPC-active, and NPC-passive paths (was: accepted).
 - **SC-002**: Exact references and unknown references keep their previous accept/reject behavior (no regression in existing codes).
 - **SC-003**: Each new rejection carries a repair hint naming the exact canonical name and routes to one bounded repair packet.
-- **SC-004**: The full existing test suite passes without modification of unrelated expectations.
+- **SC-004**: All impact-selected verification categories complete successfully without weakening unrelated expectations. Discovery verifies category ownership of the new tests. Selection follows the current category-only policy in `AGENTS.md`, `docs/testing.md`, and the constitution; no full-suite execution is required or allowed.
+
+## Исправления ревью PR #1579 — редакция 1 (2026-11-01)
+
+**Запрос**: исправить пять подтверждённых замечаний независимого ревью к commit `673c531710ec3acf5132369f42a43f1a7ce8c13c` в существующем PR [#1579](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/pull/1579), связанном с issue #1533.
+
+### Результат и границы
+
+Ссылки mastery проверяются по точным именам без потери различий регистра. Ошибка похожего имени получает однозначное и безопасное руководство по исправлению. Пакет ремонта сохраняет все отдельные исправления. Перенос методов между partial-файлами сохраняет смысл существующих проверок, а новые тесты исполняются штатным механизмом категорий.
+
+Это исправление части 1. Последующие части T101–T107, миграция сохранений, изменение схемы навыков, переименование канонических навыков и изменение акторной идентичности NPC остаются за пределами блока. Проверка не исправляет игровые файлы автоматически и не выбирает навык при неоднозначности.
+
+### Сохраняемые контракты
+
+- Точное имя принимается; полностью неизвестное имя сохраняет прежний код unknown, отсутствие initialization — прежний код missing.
+- Одна и та же confusable-ссылка не объявляется одновременно неизвестной. Независимые ошибки полей и действительно неизвестные ссылки в том же файле продолжают сообщаться.
+- Акторные ключи NPC, существующие потребители общих parse helpers, определение нового навыка относительно pre-turn snapshot, same-turn authority и rollback сохраняют своё назначение.
+- Mastery levels, progress и остальные поля не меняются при исправлении имени. При отсутствии единственного доказуемого имени ремонт остаётся заблокированным; произвольное переназначение запрещено.
+- Разбиение GameEngine на partial-файлы допустимо. Существующие assertions сохраняются; удаление или ослабление теста ради зелёного результата запрещено.
+- Новые и изменённые API получают XML-документацию по пользовательскому правилу. Проверки выполняются по категориям с обязательным независимым ревью законченного блока.
+
+### Критерии приёмки исправлений
+
+1. При каноническом `Fireball` ссылки `fireball` и `Firеball` (кириллическая `е`) отклоняются как confusable. Одна ссылка не создаёт дополнительную unknown-ошибку или пакет эволюции навыка. Действительно неизвестная ссылка в том же payload сохраняет прежнюю диагностику.
+2. При канонических `Fireball` и `FIREBALL` неточное `fireball` отклоняется без выбора цели; точные `Fireball` и `FIREBALL` не объявляются ошибочными ссылками. Сценарии проверяются через реальные validation phases, а не только изолированный classifier.
+3. Если initialization содержит точное имя и похожее имя, наличие точного покрытия определяется независимо от порядка записей. Это проверяется для игрока и NPC, включая active/passive NPC sections. Это не разрешает некорректные ссылки на других поверхностях.
+4. Несколько ошибок одного NPC, разных NPC или игрока в одной секции сохраняются в repair-пакете как отдельные адресуемые исправления. Коррекция однозначно указывает актор/навык или индекс записи; неоднозначная ссылка не получает выдуманного имени для подстановки.
+5. Пять регрессий `ValidationRepairRequestTests` / `ValidationSourceGuardTests`, найденных ревью, устранены. Остальные проверки, читающие перенесённые методы, учитывают все соответствующие partial-файлы и сохраняют проверку прежних инвариантов.
+6. Все 20 исходных новых тестов и добавленные регрессионные тесты имеют владельцев в `tests/categories.json`. Текущий `tests/selection.json` описывает именно исправления #1533 и затронутые проверки. Инвентаризация не обнаруживает новых бесхозных тестов; план выбранных категорий включает новые сценарии.
+7. Выбранные категории завершаются полностью без failures/skips и с успешной очисткой. Зафиксированы команды, проверенный SHA и результаты. Независимый ревьюер проверяет исправления и достаточность selection до завершения блока.
+
+### Обоснование подхода и статус
+
+Предлагается восстановить уже заявленные гарантии части 1 и добавить проверки воспроизведённых случаев. Изменение общих правил идентичности для всех потребителей и откат разбиения большого файла не требуются: первое расширяет область воздействия, второе не устраняет зависимость проверок от размещения методов. Детали реализации остаются за исполнителем в рамках этих контрактов.
+
+Открытых продуктовых вопросов нет. Эта редакция ещё не одобрена пользователем. До одобрения выполняется только подготовка спецификации; затем обновляются `plan.md` и `tasks.md`, проводится анализ согласованности, RED/GREEN и независимое ревью. Слияние PR не входит в запрос на исправления.
