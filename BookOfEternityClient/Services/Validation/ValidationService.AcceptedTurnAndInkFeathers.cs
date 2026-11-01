@@ -245,28 +245,28 @@ public partial class ValidationService
         var noProgressRationaleText = await ReadAcceptedTurnNoProgressRationaleTextAsync();
 
         var knownSkillNames = await ReadCurrentKnownPlayerSkillNamesAsync();
-        foreach (var skillName in knownSkillNames.OrderBy(name => name, StringComparer.OrdinalIgnoreCase))
+        if (knownSkillNames.Count > 0)
         {
-            if (!ContainsSkillUseClaim(playerFacingText, skillName))
-                continue;
+            var skillDeltaContext = await ReadAcceptedTurnSkillDeltaContextAsync(filesModified, knownSkillNames);
+            foreach (var skillName in knownSkillNames.OrderBy(name => name, StringComparer.OrdinalIgnoreCase))
+            {
+                if (!ContainsSkillUseClaim(playerFacingText, skillName))
+                    continue;
 
-            var hasDelta = await HasAcceptedTurnStateDeltaAsync(
-                filesModified,
-                "game_state/player/skill_mastery.json",
-                "game_state/player/skills_active.json",
-                "game_state/player/skills_passive.json");
-            if (hasDelta || HasNoProgressRationale(noProgressRationaleText, "skill", skillName))
-                continue;
+                if (skillDeltaContext.SatisfiesSkillClaim(skillName) ||
+                    HasNoProgressRationale(noProgressRationaleText, "skill", skillName))
+                    continue;
 
-            issues.Add(new ValidationIssue(
-                "game_state/player/skill_mastery.json",
-                IssueSeverity.Error,
-                $"Player-facing prose says known skill '{skillName}' affected the scene, but accepted state has no matching skill delta or no-progress rationale.",
-                code: "accepted_turn_skill_claim_missing_state_delta",
-                section: "ProseStateDelta",
-                expected: "skill mastery/progression delta, skill state delta, or explicit no-progress rationale in gm_thoughts_markdown",
-                actual: "skill claim found in narrative/interface text; skill state unchanged",
-                repairHint: $"Если '{skillName}' реально помог, добавь узкое изменение mastery/progression в game_state/player/skill_mastery.json или соответствующий skill state delta. Если прогресса быть не должно, добавь в output/debug_logs.json.gm_thoughts_markdown секцию 'Prose State Delta Rationale' с именем навыка и причиной отсутствия прогресса."));
+                issues.Add(new ValidationIssue(
+                    "game_state/player/skill_mastery.json",
+                    IssueSeverity.Error,
+                    $"Player-facing prose says known skill '{skillName}' affected the scene, but accepted state has no matching skill delta or no-progress rationale.",
+                    code: "accepted_turn_skill_claim_missing_state_delta",
+                    section: "ProseStateDelta",
+                    expected: "skill mastery/progression delta targeting the claimed skill by its exact canonical name, a new-skill delta for the claimed skill, or explicit no-progress rationale in gm_thoughts_markdown",
+                    actual: skillDeltaContext.DescribeActualForMissingClaim(),
+                    repairHint: $"Если '{skillName}' реально помог, добавь узкое изменение mastery/progression именно для '{skillName}' в game_state/player/skill_mastery.json; поле skillName должно точно совпадать с каноническим именем навыка. Если прогресса быть не должно, добавь в output/debug_logs.json.gm_thoughts_markdown секцию 'Prose State Delta Rationale' с именем навыка и причиной отсутствия прогресса."));
+            }
         }
 
         var activeQuests = await ReadCurrentActiveRegularQuestIdentitiesAsync();
@@ -292,6 +292,147 @@ public partial class ValidationService
                 expected: "regular quest/log/objective delta, quest history delta, plot outline delta, or explicit no-progress rationale in gm_thoughts_markdown",
                 actual: "quest clue claim found in narrative/interface text; quest state unchanged",
                 repairHint: $"Если зацепка по квесту '{quest.Title}' действительно найдена, допиши regular_quests.json: detailsLog/newDetailsLogEntry, objective/status, lastUpdatedTurn или quest_history. Если это только атмосферная фраза без прогресса, добавь в output/debug_logs.json.gm_thoughts_markdown секцию 'Prose State Delta Rationale' с названием квеста и причиной отсутствия state delta."));
+        }
+    }
+
+    /// <summary>
+    /// Reads the accepted turn's player skill deltas once so every prose skill claim
+    /// is coupled to a delta targeting that exact canonical skill.
+    /// </summary>
+    /// <param name="filesModified">
+    /// The accepted turn's reported file modifications used as fallback change evidence.
+    /// </param>
+    /// <param name="knownSkillNames">
+    /// The player's current canonical skill names preserving exact spelling.
+    /// </param>
+    /// <returns>
+    /// The immutable per-turn skill delta context for claim coupling.
+    /// </returns>
+    private async Task<AcceptedTurnSkillDeltaContext> ReadAcceptedTurnSkillDeltaContextAsync(
+        IReadOnlyCollection<string> filesModified,
+        IReadOnlyCollection<string> knownSkillNames)
+    {
+        const string masteryPath = "game_state/player/skill_mastery.json";
+        var masteryReferences = ReadMasteryIdentityReferences(
+            await _fs.ReadFileAsync(masteryPath),
+            "skillMasteryChanges");
+        var masteryFileChanged = await HasAcceptedTurnStateDeltaAsync(filesModified, masteryPath);
+
+        var newSkillNames = new HashSet<string>(StringComparer.Ordinal);
+        await CollectNewSkillNamesThisTurnAsync(
+            "game_state/player/skills_active.json", "activeSkillChanges", newSkillNames);
+        await CollectNewSkillNamesThisTurnAsync(
+            "game_state/player/skills_passive.json", "passiveSkillChanges", newSkillNames);
+
+        return new AcceptedTurnSkillDeltaContext(
+            masteryFileChanged,
+            masteryReferences,
+            newSkillNames,
+            MortalSkillReferenceAuthority.Build(knownSkillNames));
+    }
+
+    /// <summary>
+    /// Adds skills first appearing in the accepted turn's post-turn file compared with
+    /// its validated pre-turn snapshot.
+    /// </summary>
+    /// <param name="path">
+    /// The player skill file to compare.
+    /// </param>
+    /// <param name="arrayName">
+    /// The skill changes array inside the file.
+    /// </param>
+    /// <param name="newSkillNames">
+    /// The accumulating set of exact new-skill names; unchanged without pre-turn evidence.
+    /// </param>
+    private async Task CollectNewSkillNamesThisTurnAsync(
+        string path,
+        string arrayName,
+        HashSet<string> newSkillNames)
+    {
+        var preTurnJson = await ReadValidatedCurrentPreTurnTrackedFileAsync(path);
+        if (preTurnJson == null)
+            return;
+
+        var currentJson = await _fs.ReadFileAsync(path) ?? string.Empty;
+        if (string.Equals(currentJson, preTurnJson, StringComparison.Ordinal))
+            return;
+
+        var preTurnNames = ParsePlayerSkillNames(preTurnJson, arrayName);
+        foreach (var name in ParsePlayerSkillNames(currentJson, arrayName))
+        {
+            if (!preTurnNames.Contains(name))
+                newSkillNames.Add(name);
+        }
+    }
+
+    /// <summary>
+    /// Couples prose skill claims to the accepted turn's actual per-skill deltas
+    /// through the exact-name skill reference authority.
+    /// </summary>
+    /// <param name="MasteryFileChanged">
+    /// Whether the mastery file carries this turn's change evidence.
+    /// </param>
+    /// <param name="MasteryReferences">
+    /// Exact-spelling mastery entry names with their array coordinates.
+    /// </param>
+    /// <param name="NewSkillNames">
+    /// Skills first materialized this turn.
+    /// </param>
+    /// <param name="CanonicalSkills">
+    /// The fail-closed authority over the player's canonical skill names.
+    /// </param>
+    private sealed record AcceptedTurnSkillDeltaContext(
+        bool MasteryFileChanged,
+        IReadOnlyList<(string SkillName, string? Actor, int Index)> MasteryReferences,
+        HashSet<string> NewSkillNames,
+        MortalSkillReferenceAuthority CanonicalSkills)
+    {
+        /// <summary>
+        /// Returns true only when the turn contains a delta bound to the claimed skill itself.
+        /// </summary>
+        public bool SatisfiesSkillClaim(string claimedSkillName)
+        {
+            if (NewSkillNames.Contains(claimedSkillName))
+                return true;
+
+            if (!MasteryFileChanged)
+                return false;
+
+            foreach (var reference in MasteryReferences)
+            {
+                if (CanonicalSkills.Classify(reference.SkillName).Kind == MortalSkillReferenceMatchKind.Exact &&
+                    string.Equals(reference.SkillName.Trim(), claimedSkillName, StringComparison.Ordinal))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Describes the delta's real targets so the repair stays narrow.
+        /// </summary>
+        public string DescribeActualForMissingClaim()
+        {
+            var targets = MasteryReferences
+                .Select(reference => reference.SkillName)
+                .Distinct(StringComparer.Ordinal)
+                .OrderBy(name => name, StringComparer.OrdinalIgnoreCase)
+                .ToList();
+            if (MasteryFileChanged && targets.Count > 0)
+            {
+                return "skill claim found in narrative/interface text; this turn's mastery delta targets only: " +
+                       string.Join(", ", targets);
+            }
+
+            if (NewSkillNames.Count > 0)
+            {
+                return "skill claim found in narrative/interface text; this turn adds only new skills: " +
+                       string.Join(", ", NewSkillNames.OrderBy(name => name, StringComparer.OrdinalIgnoreCase));
+            }
+
+            return "skill claim found in narrative/interface text; skill state unchanged";
         }
     }
 
