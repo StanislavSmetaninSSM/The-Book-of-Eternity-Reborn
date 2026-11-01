@@ -1,3 +1,29 @@
+# Canonical diagnosis causal16 — all16 intended final RED; OUTCOME pending
+
+After independent PREP and immediate current fence, runtime6c6a2cf8125cadc5038f5f7ec65d7e79810373fd /
+compiled Unitd115e9cf102d34129481e3aa978cde0f95f7eba4 executes all16 unique cases:
+8 kinds ×2 realms,1 method/1 nonexclusive Unit descriptor. All16 FAIL only the
+intended final choice.Available assertion at line51, custom missing-condition
+message. Every bootstrap/mechanics/canonical source/identity/History/H0/read-inertness
+premise passes. Category6.3224977/60s,wall14.2179832s, no timeout/skip/underfill/
+duplicate IDs. Summary/runner exit1 is expected test failure, not PASS; category
+Completed=false reflects that exit, while all16 planned cases/descriptors complete.
+
+Primary TRX SHA40545c38589d04ce8c632e38c8ea2a230759aa8f9e63b5f06affc2afa0457b3b;
+external verified-causal-red.json records exact case pairs, unique IDs, final stacks
+and stable owning pins. Managed process cleanup succeeds; fresh closing fence
+21:42:35UTC has stable27artifacts/resources/daemons, no live owner,746467328freeB.
+No new production code, feature GREEN or native/UI/publication acceptance. Independent
+OUTCOME pending before implementation; no failed-case rerun solely for this report.
+
+Separate functional lifetime review identifies a required constraint: newly checked
+conditions are proved at actual pre-diagnosis admission; lawful natural recovery may
+remove a required wound effect and ordinary income may change resource values.
+Final publication must bind complete lawful common resource/effect outputs and all
+fresh owner/source checks, rather than re-admit against incomplete original fallbacks
+or demand that a healed effect remain active. The exact existing common-result binding
+is the next bounded DESIGN detail; no guard omission or arbitrary field exemption.
+
 # Canonical causal16 — built, discovered and exactly planned; runtime UNRUN
 
 Accepted coherent SOURCE/correction and operational review preceded one fresh
