@@ -1,3 +1,22 @@
+# C8 first shared-consumer gate — 5/5 PASS
+
+Runtime211ca03b6ff72003639963f86370b64d689e888d / all4 compiled
+ d70c38a146d1dcd965bee96cc4c662ec5e64f3fb: P3GREENC8-cheap5 completes5
+cases/5methods/3descriptors, zero failures/skips/timeout/underfill/duplicates.
+Category spiritual-natural-recovery-overflow31.9967215/120s; World closure
+6.4333891/60s; semantic source guards5.4571377/60s. Whole wall57.7098705s.
+The genuine spiritual multi-generation/terminal recovery peer passes the shared
+ordered-membership extraction. This does not qualify the pending Mortal current3.
+
+Root strict TRX/count/unique-ID/pin/cleanup verification is external at
+P3GREENC8-cheap5/verified-outcome.json. Fresh closing verifies27artifacts,10resources/
+40copies/fourdaemons; no live managed owner,49oldzombies,free694382592B above the
+unchanged687865856B reserve. New C8 complete results are exactly these5 cases;
+historical distinct PASS is not added arithmetically or relabelled fresh.
+Next requires independent OUTCOME/PREP and immediate unchanged fence for only
+current-legacy/current-removal/genuine-joint3, each original120s bound. UI9 and
+broader HOLDs remain unadmitted. No further logs beyond approved11 are retired.
+
 # C8 four fresh builds and exact discovery complete; runtime PREP pending
 
 Fresh compiled source d70c38a146d1dcd965bee96cc4c662ec5e64f3fb (code238a4419)
