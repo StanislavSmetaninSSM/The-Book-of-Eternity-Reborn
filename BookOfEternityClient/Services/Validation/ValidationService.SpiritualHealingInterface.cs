@@ -91,9 +91,13 @@ public partial class ValidationService
                     var context = new SpiritualSelfTreatmentStageContext(snapshot.SessionId, snapshot.RequestId, snapshot.TurnNumber, frame.ProgressionControl);
                     if (!SpiritualDiagnosisRequestCodec.IsBound(request, context))
                         throw new InvalidDataException("Diagnosis interface differs from its complete original request/control.");
+                    var selection = SpiritualDiagnosisRequestCodec.ReadSelection(request);
+                    var originalProfiles = StrictJsonAuthority.Deserialize<JsonObject>(CanonicalJsonUtf8.DecodeOneOptionalBom(
+                        snapshot.ReadRequiredBytes(WoundCarrierCatalog.AfterlifeProfilesPath)), new JsonSerializerOptions(), "diagnosis original profiles");
                     var sources = AfterlifeWoundHealingPlanner.Continuation.ReadSignedSources(snapshot,
-                        AfterlifeWoundTreatmentAuthority.DiagnosisSourcePaths(diagnosisRealm));
-                    var candidate = AfterlifeWoundTreatmentAuthority.PrepareDiagnosisCandidate(SpiritualDiagnosisRequestCodec.ReadSelection(request), sources, context.Turn);
+                        AfterlifeWoundTreatmentAuthority.DiagnosisSourcePaths(diagnosisRealm,
+                            AfterlifeWoundTreatmentAuthority.DiagnosisRequirementKinds(originalProfiles, selection)));
+                    var candidate = AfterlifeWoundTreatmentAuthority.PrepareDiagnosisCandidate(selection, sources, context.Turn);
                     diagnosisProgram = AfterlifeWoundTreatmentAuthority.BindPreparedDiagnosisSource(context, candidate, sources, request).Program;
                     if (hasResidentMemory || hasRadiantMemory)
                         throw new InvalidDataException("Diagnosis cannot use patient-participation protected memory responses.");

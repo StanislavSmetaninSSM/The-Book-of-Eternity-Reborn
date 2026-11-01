@@ -156,15 +156,23 @@ internal static partial class WoundApplicationService
             var mortal = await BuildMortalDiagnosisMenuAsync(fs, lease, generation, context);
             return new(mortal.State, mortal.Context);
         }
-        var diagnosisSource = PrepareDiagnosisSource(context);
+        SpiritualDiagnosisSourceData? diagnosisSource = null;
         if (!context.Input.SelfVisible || context.Input.Realm is not ("chaos_sea" or "shining_abode") || context.SpiritualConflict?["activeConflict"] is not null)
             return new(CreateStateCore(generation, context, diagnosisSource), context);
         WoundCommandState? self = null;
+        var menuRoots = context.CurrentMenuRoots.ToDictionary(pair => pair.Key, pair => pair.Value, StringComparer.Ordinal);
+        var menuImages = context.CurrentMenuImages.ToDictionary(pair => pair.Key, pair => pair.Value, StringComparer.Ordinal);
+        var readHere = new HashSet<string>(StringComparer.Ordinal);
         async Task<JsonObject?> Root(string path)
         {
+            if (readHere.Contains(path) || fs.CanReuseCurrentSourceData && menuImages.ContainsKey(path))
+                return menuRoots.GetValueOrDefault(path);
             var bytes = await fs.ReadFileBytesAsync(lease, path);
-            return bytes is null ? null : StrictJsonAuthority.Deserialize<JsonObject>(CanonicalJsonUtf8.DecodeOneOptionalBom(bytes),
+            var parsed = bytes is null ? null : StrictJsonAuthority.Deserialize<JsonObject>(CanonicalJsonUtf8.DecodeOneOptionalBom(bytes),
                 new JsonSerializerOptions(), path);
+            menuImages[path] = new(bytes is not null, bytes); readHere.Add(path);
+            if (parsed is null) menuRoots.Remove(path); else menuRoots[path] = parsed;
+            return parsed;
         }
         try
         {
@@ -179,8 +187,12 @@ internal static partial class WoundApplicationService
                 failure is JsonException or InvalidDataException or InvalidOperationException or ArgumentException or OverflowException)
             { /* A malformed roster cannot admit a resident; a radiant head has separate dependencies. */ }
             var shining = context.Input.Realm == "shining_abode" ? await Root(ShiningAbodeState.StatePath) : null;
-            if (!AfterlifeWoundTreatmentAuthority.HasCurrentDiagnosisRealmSource(context.Input.Realm, shining))
-                diagnosisSource = null;
+            var requirementKinds = context.Catalog.Occurrences.Where(row => row.Wound.Owner.Realm == context.Input.Realm)
+                .SelectMany(row => SpiritualDiagnosisSourceData.VisibleCanonicalKinds(row.Wound)).Distinct(StringComparer.Ordinal).ToArray();
+            foreach (var path in SpiritualDiagnosisCanonicalSources.Paths(context.Input.Realm, requirementKinds)) await Root(path);
+            context = context with { CurrentMenuRoots = menuRoots, CurrentMenuImages = menuImages };
+            if (AfterlifeWoundTreatmentAuthority.HasCurrentDiagnosisRealmSource(context.Input.Realm, shining))
+                diagnosisSource = PrepareDiagnosisSource(context);
             // Construct Self once, after its actual realm source has been read.
             // Other treatment choices keep their existing independent admission.
             self = CreateStateCore(generation, context, diagnosisSource);

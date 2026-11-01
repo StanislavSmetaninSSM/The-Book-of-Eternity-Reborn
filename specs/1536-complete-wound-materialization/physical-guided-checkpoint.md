@@ -1,3 +1,19 @@
+# Canonical eight-source implementation WIP — uncompiled/unreviewed
+
+After accepted causal16 RED, source code now connects the eight declarations to
+operation-owned actual canonical DATA, exact current scene dialect, closed ordered
+historical evidence and declaration-derived source/absence inventories. The menu
+retains/reuses its read-set under the existing owner; admission performs no IO.
+Resource proof reuses the actual definitions/state/history/owner composer once,
+not Ink Feathers or a fabricated Mortal context. Existing three-kind proof shapes
+and their no-extra-source inventory are retained.
+
+This is an intermediate implementation, not SOURCE/GREEN/feature acceptance.
+New C# is uncompiled. The validated common-plan lifetime/publication binding,
+negative/freshness/source-count tests, GM schema/docs/examples/guards and addressed
+fresh builds/runtime remain pending. No old successful runtime is repeated and
+the two full browser-course UNKNOWN results and other HOLDs remain unchanged.
+
 # Canonical causal16 RED accepted — implementation next
 
 Independent Astra/high OUTCOME accepts primary TRX/hashes/all16 unique kind/realm

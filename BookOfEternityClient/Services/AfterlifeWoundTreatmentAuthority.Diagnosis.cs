@@ -21,6 +21,28 @@ internal static partial class AfterlifeWoundTreatmentAuthority
         realm == "chaos_sea" ? AidLocalityPaths : new[] { GuardianAbodeResidentState.StatePath })
         .Distinct(StringComparer.Ordinal).ToArray());
 
+    internal static IReadOnlyList<string> DiagnosisSourcePaths(string realm, IEnumerable<string> kinds) =>
+        Array.AsReadOnly(DiagnosisSourcePaths(realm).Concat(SpiritualDiagnosisCanonicalSources.Paths(realm, kinds))
+            .Distinct(StringComparer.Ordinal).ToArray());
+
+    // Selection of a whitelisted read set only. The full catalog/identity/History,
+    // exact request and requirement proofs are still admitted independently below.
+    internal static IReadOnlyList<string> DiagnosisRequirementKinds(JsonObject? profiles, SpiritualSelfTreatmentSelection selection)
+    {
+        var chosen = selection.Diagnosis ?? throw new InvalidDataException("Missing diagnosis purpose.");
+        var owners = (profiles?["profiles"] as JsonArray)?.OfType<JsonObject>()
+            .Where(profile => WoundCarrierCollectionAuthority.AfterlifeProfileMatches(profile, chosen.Target)).ToArray();
+        var wounds = owners is { Length: 1 } ? (owners[0]["activeWounds"] as JsonArray)?.OfType<JsonObject>()
+            .Where(wound => String(wound["woundId"]) == selection.WoundId).ToArray() : null;
+        var paths = wounds is { Length: 1 } ? (wounds[0]["treatment"]?["diagnosisPaths"] as JsonArray)?.OfType<JsonObject>()
+            .Where(path => String(path["diagnosisPathId"]) == chosen.DiagnosisPathId).ToArray() : null;
+        if (paths is not { Length: 1 } || paths[0]["requirements"] is not JsonArray requirements)
+            throw new InvalidDataException("Diagnosis selected original path is absent or ambiguous.");
+        return Array.AsReadOnly(requirements.OfType<JsonObject>().Select(row => String(row["kind"]))
+            .Where(kind => kind is not null && SpiritualDiagnosisCanonicalSources.IsCanonicalKind(kind)).Cast<string>()
+            .Distinct(StringComparer.Ordinal).ToArray());
+    }
+
     // Parsed current realm DATA only; callers retain their own fresh source/lease guards.
     internal static bool HasCurrentDiagnosisRealmSource(string realm, JsonObject? shining) =>
         realm == "chaos_sea" || realm == "shining_abode" && shining is not null &&
@@ -72,7 +94,8 @@ internal static partial class AfterlifeWoundTreatmentAuthority
             ?? throw new InvalidDataException("Diagnosis wound is absent from its exact target.");
         if (WoundIdentityState.ComputeSemanticFingerprint(wound) != selection.ExpectedWoundFingerprint)
             throw new InvalidDataException("The selected diagnosis wound changed.");
-        var admission = new SpiritualDiagnosisSourceData(catalog, carriers.AfterlifeProfiles, soul, realm, true, false)
+        var admission = new SpiritualDiagnosisSourceData(catalog, carriers.AfterlifeProfiles, soul, realm, true, false,
+            sources.ToDictionary(source => source.Path, source => source.Root, StringComparer.Ordinal), mechanics)
             .Admit(wound, chosen.DiagnosisPathId, target).Data
             ?? throw new InvalidDataException("Every current diagnosis requirement/check/path must be proved.");
         if (admission.Selection != selection) throw new InvalidDataException("The retained diagnosis path changed.");
@@ -159,6 +182,9 @@ internal static partial class AfterlifeWoundTreatmentAuthority
         var chosen = selection.Diagnosis ?? throw new InvalidDataException("Missing diagnosis purpose.");
         var sources = new List<SourceFile>();
         foreach (var path in DiagnosisSourcePaths(chosen.Target.Realm)) sources.Add(await ReadSourceAsync(files, lease, path));
+        var kinds = DiagnosisRequirementKinds(sources.Single(source => source.Path == WoundCarrierCatalog.AfterlifeProfilesPath).Root, selection);
+        foreach (var path in DiagnosisSourcePaths(chosen.Target.Realm, kinds).Except(sources.Select(source => source.Path), StringComparer.Ordinal))
+            sources.Add(await ReadSourceAsync(files, lease, path));
         return sources;
     }
 

@@ -111,7 +111,9 @@ internal sealed class SpiritualDiagnosisPersistedResult : WoundTransitionResult
             }).ToArray();
             var program = SpiritualDiagnosisProgram.Build(context, request, admission, cohort);
             var sourceRows = root["originalSources"]!.AsArray();
-            var expectedPaths = AfterlifeWoundTreatmentAuthority.DiagnosisSourcePaths(realm);
+            var expectedPaths = AfterlifeWoundTreatmentAuthority.DiagnosisSourcePaths(realm,
+                original.Treatment.DiagnosisPaths.Single(p => p.DiagnosisPathId == selection.Diagnosis!.DiagnosisPathId).Requirements
+                    .Select(requirement => requirement.GetProperty("kind").GetString()!));
             if (sourceRows.Count != expectedPaths.Count) throw new InvalidDataException("Diagnosis original dependency set differs.");
             var stamps = sourceRows.Select((node, index) =>
             {

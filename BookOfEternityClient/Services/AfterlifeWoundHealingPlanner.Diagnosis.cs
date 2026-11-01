@@ -8,9 +8,23 @@ namespace BookOfEternityClient.Services;
 internal static partial class AfterlifeWoundHealingPlanner
 {
     internal static PendingTurnSnapshotObservedReadResult ReadOriginalDiagnosisSource(FileSystemManager files,
-        FileSystemManager.CanonicalWriteLease lease, string realm) => PendingTurnSnapshotReader.ReadObservedCurrent(files, lease,
-            new PendingTurnSnapshotPathSelection([AcceptedMechanicsPlan.WoundCommandPath],
-                AfterlifeWoundTreatmentAuthority.DiagnosisSourcePaths(realm).ToArray()));
+        FileSystemManager.CanonicalWriteLease lease, string realm)
+    {
+        var baseline = AfterlifeWoundTreatmentAuthority.DiagnosisSourcePaths(realm);
+        var observed = PendingTurnSnapshotReader.ReadObservedCurrent(files, lease,
+            new PendingTurnSnapshotPathSelection([AcceptedMechanicsPlan.WoundCommandPath], baseline));
+        if (!observed.Success || observed.Snapshot is not { } snapshot) return observed;
+        var request = StrictJsonAuthority.Deserialize<JsonObject>(CanonicalJsonUtf8.DecodeOneOptionalBom(
+            snapshot.ReadRequiredBytes(AcceptedMechanicsPlan.WoundCommandPath)), new JsonSerializerOptions(), "diagnosis original selector")!;
+        var profiles = StrictJsonAuthority.Deserialize<JsonObject>(CanonicalJsonUtf8.DecodeOneOptionalBom(
+            snapshot.ReadRequiredBytes(WoundCarrierCatalog.AfterlifeProfilesPath)), new JsonSerializerOptions(), "diagnosis original profiles");
+        var paths = AfterlifeWoundTreatmentAuthority.DiagnosisSourcePaths(realm,
+            AfterlifeWoundTreatmentAuthority.DiagnosisRequirementKinds(profiles, SpiritualDiagnosisRequestCodec.ReadSelection(request)));
+        if (paths.SequenceEqual(baseline, StringComparer.Ordinal)) return observed;
+        observed.Evidence!.RequireCurrent(files, lease, snapshot);
+        return PendingTurnSnapshotReader.ReadObservedCurrent(files, lease,
+            PendingTurnSnapshotPathSelection.CreateWithObservedOptionalPaths([AcceptedMechanicsPlan.WoundCommandPath], paths));
+    }
 
     internal sealed partial class Continuation
     {
@@ -55,8 +69,14 @@ internal static partial class AfterlifeWoundHealingPlanner
             var realm = manifest.ProgressionControl?.CurrentRealm;
             if (!AfterlifeEntityProfileState.TryNormalizeEffectRealm(realm, out var normalized) || normalized is not ("chaos_sea" or "shining_abode"))
                 throw new InvalidDataException("Diagnosis requires its actual spiritual control realm.");
-            var paths = AfterlifeWoundTreatmentAuthority.DiagnosisSourcePaths(normalized);
             var observed = observedSource ?? ReadOriginalDiagnosisSource(files, lease, normalized);
+            var selectedSnapshot = observed.Snapshot ?? throw new InvalidDataException("Missing diagnosis original source.");
+            var selectedRequest = StrictJsonAuthority.Deserialize<JsonObject>(CanonicalJsonUtf8.DecodeOneOptionalBom(
+                selectedSnapshot.ReadRequiredBytes(AcceptedMechanicsPlan.WoundCommandPath)), new JsonSerializerOptions(), "diagnosis original selector")!;
+            var selectedProfiles = StrictJsonAuthority.Deserialize<JsonObject>(CanonicalJsonUtf8.DecodeOneOptionalBom(
+                selectedSnapshot.ReadRequiredBytes(WoundCarrierCatalog.AfterlifeProfilesPath)), new JsonSerializerOptions(), "diagnosis original profiles");
+            var paths = AfterlifeWoundTreatmentAuthority.DiagnosisSourcePaths(normalized,
+                AfterlifeWoundTreatmentAuthority.DiagnosisRequirementKinds(selectedProfiles, SpiritualDiagnosisRequestCodec.ReadSelection(selectedRequest)));
             if (!observed.Success || observed.Snapshot is not { } snapshot || observed.Evidence is not { } evidence ||
                 snapshot.SessionId != manifest.SessionId || snapshot.RequestId != manifest.RequestId || snapshot.TurnNumber != manifest.TurnNumber ||
                 snapshot.SnapshotToken != manifest.ManifestPayloadHash || manifest.ProgressionControl is null ||

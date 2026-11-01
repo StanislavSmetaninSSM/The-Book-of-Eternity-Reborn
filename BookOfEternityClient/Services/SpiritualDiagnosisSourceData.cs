@@ -30,16 +30,19 @@ internal sealed class SpiritualDiagnosisSourceData
     private readonly string _sourceFingerprint;
     private readonly string _profileFingerprint;
     private readonly string _soulFingerprint;
+    private readonly SpiritualDiagnosisCanonicalSources _canonical;
 
     internal SpiritualDiagnosisSourceData(WoundPlayerReadContext context) : this((context ?? throw new ArgumentNullException(nameof(context))).Catalog,
         context.Input.Carriers.AfterlifeProfiles, context.Soul, context.Input.Realm, context.Input.SelfVisible,
-        context.SpiritualConflict?["activeConflict"] is not null)
+        context.SpiritualConflict?["activeConflict"] is not null,
+        context.CurrentMenuRoots.ToDictionary(pair => pair.Key, pair => (JsonObject?)pair.Value, StringComparer.Ordinal), context.Input.Effects)
     { }
 
     // Reuses the actual source owner's already parsed roots; no display catalog,
     // extra read or fabricated resource/Mortal context is required by admission.
     internal SpiritualDiagnosisSourceData(WoundCarrierCatalog catalog, JsonObject? profiles, JsonObject soul,
-        string realm, bool selfVisible, bool conflict)
+        string realm, bool selfVisible, bool conflict,
+        IReadOnlyDictionary<string, JsonObject?>? roots = null, EffectMechanicsSnapshot? effects = null)
     {
         ArgumentNullException.ThrowIfNull(catalog); ArgumentNullException.ThrowIfNull(soul);
         _profiles = profiles?.DeepClone().AsObject(); _soul = soul.DeepClone().AsObject();
@@ -73,7 +76,21 @@ internal sealed class SpiritualDiagnosisSourceData
                     .Concat(wound.Complications.Where(c => WoundPlayerProjection.Visible(c.Visibility)).Select(c => "complication:" + c.ComplicationId))
                     .ToHashSet(StringComparer.Ordinal));
         }).ToArray();
+        var actualRoots = (roots ?? new Dictionary<string, JsonObject?>()).ToDictionary(pair => pair.Key, pair => pair.Value, StringComparer.Ordinal);
+        actualRoots[WoundCarrierCatalog.AfterlifeProfilesPath] = _profiles;
+        actualRoots[SpiritualDiagnosisCanonicalSources.SoulPath] = _soul;
+        _canonical = new(realm, _wounds.SelectMany(row => VisibleCanonicalKinds(row.Wound)), actualRoots, effects);
     }
+
+    internal static IEnumerable<string> VisibleCanonicalKinds(WoundMaterializationEnvelope wound) =>
+        wound.Lifecycle == "active" && wound.Classification.Domain == "spiritual" && WoundPlayerProjection.Visible(wound.Display.Visibility)
+        ? wound.Treatment.DiagnosisPaths.Where(path => path.Visibility != "gm_only" &&
+            (path.Visibility != "hidden" || path.RequiresKnownFacts.Count != 0) && path.RequiresKnownFacts.All(fact =>
+                fact.StartsWith("route:", StringComparison.Ordinal) ? wound.Treatment.KnownRouteIds.Contains(fact[6..], StringComparer.Ordinal) :
+                fact.StartsWith("complication:", StringComparison.Ordinal) && wound.Complications.Any(c => c.ComplicationId == fact[13..] && WoundPlayerProjection.Visible(c.Visibility))))
+            .SelectMany(path => path.Requirements).Where(row => row.ValueKind == JsonValueKind.Object && row.TryGetProperty("kind", out var kind) && kind.ValueKind == JsonValueKind.String)
+            .Select(row => row.GetProperty("kind").GetString()!).Where(SpiritualDiagnosisCanonicalSources.IsCanonicalKind)
+        : [];
 
     internal SpiritualDiagnosisAdmissionResult Admit(WoundMaterializationEnvelope requested, string pathId,
         WoundTargetChoice? currentTarget = null)
@@ -98,14 +115,25 @@ internal sealed class SpiritualDiagnosisSourceData
         if (path.Check.ValueKind != JsonValueKind.Object || path.Check.EnumerateObject().Any()) return Refuse("check_unsupported");
         if (!parsed.Requirements.IsValid) return Refuse("requirements_invalid");
         if (path.Reveals.Count == 0 || !path.Reveals.All(fact => ResolvesFact(wound, fact))) return Refuse("path_unavailable");
-        foreach (var requirement in parsed.Requirements.Requirements)
-            if (!Satisfied(requirement, self, player, wound.Owner, target)) return Refuse("requirement_unavailable");
+        var proofs = new JsonObject?[parsed.Requirements.Requirements.Length];
+        for (var index = 0; index < proofs.Length; index++)
+        {
+            var requirement = parsed.Requirements.Requirements[index];
+            if (SpiritualDiagnosisCanonicalSources.IsCanonicalKind(requirement.Kind))
+            {
+                proofs[index] = _canonical.Prove(requirement, self, wound.Owner);
+                if (proofs[index] is null) return Refuse("requirement_unavailable");
+            }
+            else if (!Satisfied(requirement, self, player, wound.Owner, target)) return Refuse("requirement_unavailable");
+        }
         var selection = new SpiritualSelfTreatmentSelection(wound.WoundId, data.Fingerprint)
         { Diagnosis = new(wound.Owner, path.DiagnosisPathId, parsed.Fingerprint) };
+        var sourceFingerprint = proofs.Any(proof => proof is not null) ? WoundAcceptedTurnFingerprintWriter.Compute(new[]
+            { "spiritual_diagnosis.extended_menu_sources", "1", _sourceFingerprint, _canonical.Fingerprint }) : _sourceFingerprint;
         return new(new(selection, wound, tier, parsed.Fingerprint, parsed.RequirementFingerprint,
-            WoundAcceptedTurnFingerprintWriter.Compute(new[] { "spiritual_diagnosis.admission", "1", _sourceFingerprint,
+            WoundAcceptedTurnFingerprintWriter.Compute(new[] { "spiritual_diagnosis.admission", "1", sourceFingerprint,
                 data.Fingerprint, parsed.Fingerprint, parsed.RequirementFingerprint, currentTarget?.BindingFingerprint ?? "self" }))
-            { RequirementBindings = BuildRequirementBindings(parsed, self, player, wound.Owner, target) }, null);
+            { RequirementBindings = BuildRequirementBindings(parsed, self, player, wound.Owner, target, proofs) }, null);
     }
 
     internal SpiritualSelfTreatmentSelection? DescribeSelection(WoundMaterializationEnvelope requested, string pathId)
@@ -142,12 +170,22 @@ internal sealed class SpiritualDiagnosisSourceData
     }
 
     private JsonArray BuildRequirementBindings(PathData path, WoundOwnerCoordinate playerOwner, JsonObject player,
-        WoundOwnerCoordinate targetOwner, JsonObject target)
+        WoundOwnerCoordinate targetOwner, JsonObject target, IReadOnlyList<JsonObject?> proofs)
     {
         var rows = new JsonArray();
         for (var index = 0; index < path.Requirements.Requirements.Length; index++)
         {
             var requirement = path.Requirements.Requirements[index];
+            if (proofs[index] is { } evidence)
+            {
+                var actorRole = requirement switch
+                { MortalWoundItemQuantityRequirement r => r.OwnerRole, MortalWoundResourceQuantityRequirement r => r.OwnerRole,
+                    MortalWoundLocationRequirement r => r.TargetRole, MortalWoundEffectStateRequirement r => r.TargetRole, _ => "provider" };
+                rows.Add(new JsonObject { ["ordinal"] = index, ["statementFingerprint"] = path.StatementFingerprints[index],
+                    ["kind"] = requirement.Kind, ["actor"] = SpiritualHealingRequestProjection.OwnerJson(actorRole == "provider" ? playerOwner : targetOwner),
+                    ["evidence"] = evidence.DeepClone(), ["sourceDependencies"] = _canonical.Dependencies(requirement.Kind) });
+                continue;
+            }
             var role = requirement switch { MortalWoundSourceCapabilityRequirement c => c.ActorRole,
                 MortalWoundSkillTierRequirement s => s.ActorRole, _ => "provider" };
             var owner = role == "provider" ? playerOwner : targetOwner;

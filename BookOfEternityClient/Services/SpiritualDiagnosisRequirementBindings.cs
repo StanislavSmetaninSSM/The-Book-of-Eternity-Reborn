@@ -3,7 +3,7 @@ using System.Text.Json.Nodes;
 
 namespace BookOfEternityClient.Services;
 
-/// <summary>Closed historical proof DATA for the three supported requirements; never current authority.</summary>
+/// <summary>Closed historical requirement proof DATA; never current authority.</summary>
 internal static class SpiritualDiagnosisRequirementBindings
 {
     internal static string Fingerprint(JsonArray rows) => WoundAcceptedTurnFingerprintWriter.Compute(new[]
@@ -29,12 +29,19 @@ internal static class SpiritualDiagnosisRequirementBindings
             for (var index = 0; index < rows.Count; index++)
             {
                 var row = rows[index]!.AsObject();
-                Closed(row, "ordinal", "statementFingerprint", "kind", "actor", "capabilityRef", "tier", "mirrorTier", "sourceDependencies");
                 var statement = path.Requirements[index];
                 var kind = statement.GetProperty("kind").GetString();
                 if (row["ordinal"]!.GetValue<int>() != index || row["statementFingerprint"]!.GetValue<string>() != StatementFingerprint(statement) ||
-                    row["kind"]!.GetValue<string>() != kind || kind is not ("source_capability" or "skill_tier" or "provider"))
+                    row["kind"]!.GetValue<string>() != kind)
                     throw new InvalidDataException("Diagnosis requirement proof differs from its exact declaration/order.");
+                if (kind is not null && SpiritualDiagnosisCanonicalSources.IsCanonicalKind(kind))
+                {
+                    ValidateCanonical(row, parsed.Requirements[index], admission);
+                    continue;
+                }
+                Closed(row, "ordinal", "statementFingerprint", "kind", "actor", "capabilityRef", "tier", "mirrorTier", "sourceDependencies");
+                if (kind is not ("source_capability" or "skill_tier" or "provider"))
+                    throw new InvalidDataException("Unknown diagnosis proof kind.");
                 var role = kind == "provider" ? "provider" : statement.GetProperty("actorRole").GetString();
                 var actor = role == "provider" ? new WoundOwnerCoordinate(admission.Wound.Owner.Realm, "player_soul", "player_soul", WoundCarrierCatalog.AfterlifeProfilesPath)
                     : admission.Wound.Owner;
@@ -72,6 +79,73 @@ internal static class SpiritualDiagnosisRequirementBindings
         catch (Exception failure) when (failure is not InvalidDataException && failure is
             (InvalidOperationException or ArgumentException or JsonException or KeyNotFoundException or NullReferenceException or FormatException))
         { throw new InvalidDataException("Malformed closed diagnosis requirement proof.", failure); }
+    }
+
+    private static void ValidateCanonical(JsonObject row, MortalWoundTreatmentRequirement requirement, SpiritualDiagnosisAdmission admission)
+    {
+        Closed(row, "ordinal", "statementFingerprint", "kind", "actor", "evidence", "sourceDependencies");
+        var provider = new WoundOwnerCoordinate(admission.Wound.Owner.Realm, "player_soul", "player_soul", WoundCarrierCatalog.AfterlifeProfilesPath);
+        var role = requirement switch { MortalWoundItemQuantityRequirement r => r.OwnerRole, MortalWoundResourceQuantityRequirement r => r.OwnerRole,
+            MortalWoundLocationRequirement r => r.TargetRole, MortalWoundEffectStateRequirement r => r.TargetRole, _ => "provider" };
+        var actor = role == "provider" ? provider : admission.Wound.Owner;
+        void Require(bool condition) { if (!condition) throw new InvalidDataException("Diagnosis canonical proof differs from its exact requirement/evidence shape."); }
+        Require(JsonNode.DeepEquals(row["actor"], SpiritualHealingRequestProjection.OwnerJson(actor)));
+        var evidence = row["evidence"]!.AsObject();
+        string Text(string key) => evidence[key]!.GetValue<string>();
+        switch (requirement)
+        {
+            case MortalWoundItemQuantityRequirement item:
+                Closed(evidence, "itemRef", "quantity", "availableQuantity");
+                Require(actor.OwnerKind == "player_soul" && actor.OwnerId == "player_soul" && Text("itemRef") == item.ItemRef &&
+                    item.Quantity == 1 && evidence["quantity"]!.GetValue<int>() == 1 && evidence["availableQuantity"]!.GetValue<int>() == 1);
+                break;
+            case MortalWoundResourceQuantityRequirement resource:
+                Closed(evidence, "resourceRef", "quantity", "resourceOwnerId", "current", "maximum", "resourceStateFingerprint", "resourceHistoryFingerprint", "ownerAuthorityFingerprint");
+                Require(Text("resourceRef") == resource.ResourceRef && evidence["quantity"]!.GetValue<int>() == resource.Quantity &&
+                    ResourceMaterializationContract.IsExactIdentifier(Text("resourceOwnerId")) &&
+                    evidence["current"]!.GetValue<decimal>() >= resource.Quantity && evidence["maximum"]!.GetValue<decimal>() >= evidence["current"]!.GetValue<decimal>() &&
+                    new[] { "resourceStateFingerprint", "resourceHistoryFingerprint", "ownerAuthorityFingerprint" }.All(key => ResourceMaterializationContract.IsAuthorityFingerprint(Text(key))));
+                break;
+            case MortalWoundConsentRequirement consent:
+                Closed(evidence, "consentRef", "provider", "target", "locationId", "status");
+                Require(Text("consentRef") == consent.ConsentRef && Text("status") == "granted" && consent.ProviderRef == provider.OwnerId && consent.TargetRef == admission.Wound.Owner.OwnerId &&
+                    JsonNode.DeepEquals(evidence["provider"], SpiritualHealingRequestProjection.OwnerJson(provider)) &&
+                    JsonNode.DeepEquals(evidence["target"], SpiritualHealingRequestProjection.OwnerJson(admission.Wound.Owner)));
+                Require(ResourceMaterializationContract.IsExactIdentifier(Text("locationId")));
+                break;
+            case MortalWoundFacilityRequirement facility:
+                Closed(evidence, "facilityRef", "locationId", "available");
+                Require(Text("facilityRef") == facility.FacilityRef && evidence["available"]!.GetValue<bool>() && ResourceMaterializationContract.IsExactIdentifier(Text("locationId")));
+                break;
+            case MortalWoundLocationRequirement location:
+                Closed(evidence, "locationRef", "locationId", "actor");
+                Require(Text("locationRef") == location.LocationRef && Text("locationId") == location.LocationRef &&
+                    JsonNode.DeepEquals(evidence["actor"], SpiritualHealingRequestProjection.OwnerJson(actor)));
+                break;
+            case MortalWoundQuestStateRequirement quest:
+                Closed(evidence, "questRef", "state"); Require(Text("questRef") == quest.QuestRef && Text("state") == quest.RequiredState &&
+                    quest.RequiredState is "active" or "completed" or "failed" or "abandoned");
+                break;
+            case MortalWoundEffectStateRequirement effect:
+                Closed(evidence, "effectRef", "state", "actor", "effectFingerprint");
+                Require(Text("effectRef") == effect.EffectRef && Text("state") == effect.RequiredState &&
+                    JsonNode.DeepEquals(evidence["actor"], SpiritualHealingRequestProjection.OwnerJson(actor)) &&
+                    ResourceMaterializationContract.IsAuthorityFingerprint(Text("effectFingerprint")));
+                break;
+            case MortalWoundEnvironmentRequirement environment:
+                Closed(evidence, "environmentRef", "state", "locationId"); Require(Text("environmentRef") == environment.EnvironmentRef &&
+                    Text("state") == environment.RequiredState && ResourceMaterializationContract.IsExactIdentifier(Text("locationId")));
+                break;
+            default: throw new InvalidDataException("Unknown canonical diagnosis proof.");
+        }
+        var expectedPaths = SpiritualDiagnosisCanonicalSources.Paths(admission.Wound.Owner.Realm, new[] { requirement.Kind });
+        var dependencies = row["sourceDependencies"]!.AsArray();
+        Require(dependencies.Count == expectedPaths.Count);
+        for (var index = 0; index < dependencies.Count; index++)
+        {
+            var dependency = dependencies[index]!.AsObject(); Closed(dependency, "path", "fingerprint");
+            Require(dependency["path"]!.GetValue<string>() == expectedPaths[index] && ResourceMaterializationContract.IsAuthorityFingerprint(dependency["fingerprint"]!.GetValue<string>()));
+        }
     }
 
     private static void Closed(JsonObject row, params string[] fields)
