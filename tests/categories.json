@@ -2819,6 +2819,31 @@
   "selectors": [{ "project": "unit", "tests": ["BookOfEternityClient.Tests.SpiritualDiagnosisReductionTests.ExactAdmittedSpiritualRequestReducesOnlyItsCompleteDeclaredKnowledge"] }]
 },
 {
+  "id": "spiritual-diagnosis-canonical-causal",
+  "responsibility": "T121-DIAGNOSIS-SPIRITUAL-CANONICAL-ADAPTERS existing-API causal scaffold: eight registered requirement kinds in both actual spiritual realms, coherent detached wound/identity/History/H0, actual unique Soul Relic, real resource bootstrap quartet/owner agreement, exact current realm locality and typed proposed scene rows, canonical Soul Quest and accepted wound-owned effects. Original menu remains inert; expected baseline fails only final declared diagnostic availability. 16 cases / 1 method. No future parser/API or fabricated Mortal snapshot. UNCOMPILED/UNRUN; source/fixture review and exact discovery/PlanOnly/PREP precede RED.",
+  "excludes": "No signed staging/publication/execution authority, native/Engine/DOM/provider/fresh-process claim, feature GREEN, invented source container, resource consumption/draw/cycle, or repeated accepted spiritual three-kind suite.",
+  "changeHints": [
+    "BookOfEternityClient.Tests/SpiritualDiagnosisCanonicalRequirementTests.cs",
+    "BookOfEternityClient/Services/SpiritualDiagnosisSourceData.cs",
+    "BookOfEternityClient/Services/SpiritualDiagnosisRequirementBindings.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.SpiritualDiagnosisCanonicalRequirementTests.RealCanonicalRequirementMakesOnlyTheDeclaredDiagnosisAvailable"
+      ]
+    }
+  ]
+},
+{
   "id": "spiritual-diagnosis-admission",
   "responsibility": "T121 spiritual diagnosis ADMISSION WIP: closed eleven-kind requirement DATA grammar, exact empty check, three supported coherent-context proofs (standard-art capability/tier and current-player provider), eight registered shapes fail unavailable without actual canonical source; schema9 selection/schema1 request, target filtering, detached export/invalidation and actual old self-stage purpose refusal. Not execution authority. Includes full-control binding with same-ordinal drift and two-wound labels/purpose-accurate unavailable presentation; source47 new class rows plus one actual old-stage guard, no execution.",
   "excludes": "No actual diagnosis staging/accepted turn, cycle/publication/completion/replay/rollback, new canonical proof for missing adapters, full Engine, Mortal procedural diagnosis or repeated accepted110/read83.",

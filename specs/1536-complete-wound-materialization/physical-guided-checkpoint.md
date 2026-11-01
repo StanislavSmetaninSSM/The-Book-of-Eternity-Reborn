@@ -1,3 +1,20 @@
+# Canonical diagnosis adapters — existing-API causal scaffold WIP
+
+Independent Astra/high accepts finite DESIGN at71884b1a: exact realm-owned scene
+schemas, five existing source-owner mappings, deterministic source dependencies,
+closed ordered proofs and fresh lifecycle checks. No author question is needed
+for this technical representation; no new access/economic/consent rule is added.
+
+New Unit-only scaffold uses existing CreateState/SpiritualDiagnosisSourceData APIs:
+16 cases, eight kinds in both realms. Actual typed bootstrap quartet/owner agreement,
+accepted wound effects, unique complete Soul Relic, Soul Quest, exact locality and
+proposed closed scene rows precede the final missing-availability oracle. Reads
+must leave every input root unchanged. This is DATA/menu causality, not signed
+execution or native/feature acceptance. Production code is unchanged. New C# is
+UNCOMPILED; coherent fixture/SOURCE, fresh Unit build, discovery/exact PlanOnly and
+independent PREP are required before one expected RED selection. Other successful
+cases/builds are retained, not repeated. No new browser/performance runtime.
+
 # Eight canonical diagnosis adapters — finite source contract proposed
 
 Independent mapping review accepts the direction and identifies exact owner /
