@@ -1,3 +1,21 @@
+# Canonical diagnosis causal16 — coherent SOURCE accepted, build pending
+
+Independent Astra/high reviewed all eight source setups and exact16-row/one-method
+Unit selection. The sole concrete finding was the effect identity transition's
+missing creation eventRef; it now copies the actual effect chronology as in the
+existing fixture, preserving mechanics validation. All resource bootstrap/owner,
+quest/relic, exact locality and scene prerequisites remain strict. SOURCE accepts
+the scaffold plus that line once frozen here. Causal RED still requires all16 to
+reach the final missing-availability oracle; setup/compile/timeout is not RED.
+
+Actual previous RDR d3be1948 Unit four outputs are preserved in a full EOF/CRC/
+member-verified 4388432-byte archive, SHA-256
+e1b774ca45879d0940719ebd7b8a3535f4b04d5ea016b5b64cb044f1a231edc1,
+decoded13926400 bytes. Runtimeconfig is the actual unchanged owner output captured
+here; other members also match existing pins. Six helpers only add the A1RED
+Unit-only phase/current mixed-owner mapping; operational review pending. Current
+outputs remain in place. No new build/runtime or production change yet.
+
 # Canonical diagnosis adapters — existing-API causal scaffold WIP
 
 Independent Astra/high accepts finite DESIGN at71884b1a: exact realm-owned scene

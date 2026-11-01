@@ -164,6 +164,7 @@ public sealed class SpiritualDiagnosisCanonicalRequirementTests
         {
             entry["owner"]!["carrierPath"] = EffectCarrierCatalog.AfterlifeProfilesPath;
             entry["transitions"]![0]!["transitionId"] = effects.Single(e => e["effectId"]!.GetValue<string>() == entry["effectId"]!.GetValue<string>())["chronology"]!["lastTransitionId"]!.DeepClone();
+            entry["transitions"]![0]!["eventRef"] = effects.Single(e => e["effectId"]!.GetValue<string>() == entry["effectId"]!.GetValue<string>())["chronology"]!["createdEventRef"]!.DeepClone();
         }
         roots[EffectIdentityState.StatePath] = index;
         var mechanics = EffectMechanicsSnapshot.Build(new(new(null, null, null, null, roots[WoundCarrierCatalog.AfterlifeProfilesPath], null), index));
