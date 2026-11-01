@@ -21,7 +21,7 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
     public Task HealingTierVDiagnosisRetainsOriginalAfterTerminalRecovery() => RunDiagnosisNativeAsync("Chaos Sea", 5, 3);
 
     [Fact]
-    public Task CanonicalResourceConditionAllowsIndependentOrdinaryCostAndExactPublication() =>
+    public Task CanonicalResourceConditionRejectsChargesAndPublishesWithoutSpending() =>
         RunDiagnosisNativeAsync("Chaos Sea", 0, 0, "resource_quantity");
 
     [Fact]
@@ -68,19 +68,51 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
         {
             var turn = JsonSerializer.Deserialize<TurnRequest>((await files.ReadFileAsync(lease,
                 LiveTurnPreparationService.TurnRequestPath))!, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)!;
+            await ExplorerWoundSelfTreatmentTests.WriteNativeCompletionAsync(files, lease, turn,
+                AuthorNaturalGraphs(before, projection["destinationGraphs"]!.AsArray()), narrative: "Я внимательно осматриваю духовную рану. Раскрылись предусмотренные способом сведения; мир продолжил безопасный цикл.");
             if (canonicalKind == "resource_quantity")
+            {
+                const string readyPath = "ready/turn_complete.json";
+                Assert.Null(await files.ReadFileBytesAsync(lease, ResourceMaterializationContract.CommandPath));
+                var freeReady = Assert.IsType<byte[]>(await files.ReadFileBytesAsync(lease, readyPath));
+                var manifest = await fixture.ReadManifestAsync(lease);
+                var protectedPaths = manifest.Files.Values.Concat(manifest.RollbackBackups.Values)
+                    .Concat(AfterlifeWoundTreatmentAuthority.DiagnosisSourcePaths("chaos_sea", [canonicalKind]))
+                    .Append(LiveTurnPreparationService.PendingTurnSnapshotManifestPath)
+                    .Append(LiveTurnPreparationService.TurnRequestPath)
+                    .Where(path => path != readyPath && path != ResourceMaterializationContract.CommandPath);
+                var protectedBefore = fixture.CaptureMutationRoots(protectedPaths);
+                Assert.All(manifest.Files.Values, path => Assert.NotNull(protectedBefore[path]));
                 await files.WriteFileAtomicAsync(lease, ResourceMaterializationContract.CommandPath, new JsonObject
                 {
                     ["resourceChanges"] = new JsonArray(new JsonObject
                     {
                         ["operation"] = "spend", ["target"] = new JsonObject { ["kind"] = "afterlife_actor", ["targetId"] = "player_soul" },
                         ["resourceKey"] = "spiritual_action_points", ["amount"] = 1, ["source"] = new JsonObject { ["kind"] = "action_cost" },
-                        ["eventRef"] = "turn_43:resource:1", ["reason"] = "Отдельное обычное безопасное действие: это не цена духовного осмотра."
+                        ["eventRef"] = "turn_43:resource:1", ["reason"] = "Недопустимая плата за бесплатный духовный осмотр."
                     })
                 }.ToJsonString());
-            await ExplorerWoundSelfTreatmentTests.WriteNativeCompletionAsync(files, lease, turn,
-                AuthorNaturalGraphs(before, projection["destinationGraphs"]!.AsArray()), narrative: "Я внимательно осматриваю духовную рану. Раскрылись предусмотренные способом сведения; мир продолжил безопасный цикл.",
-                additionalModifiedFiles: canonicalKind == "resource_quantity" ? [ResourceMaterializationContract.CommandPath] : null);
+                var chargedReady = JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(freeReady))!.AsObject();
+                chargedReady["filesModified"]!.AsArray().Add(ResourceMaterializationContract.CommandPath);
+                await files.WriteFileAtomicAsync(lease, readyPath, chargedReady.ToJsonString());
+                var refused = await validator.PrepareSpiritualSelfTreatmentPublicationAsync(lease);
+                var error = Assert.Single(refused, issue => issue.Severity == IssueSeverity.Error);
+                Assert.Equal("spiritual_diagnosis_cost_forbidden", error.Code);
+                Assert.Equal(ResourceMaterializationContract.CommandPath, error.FilePath);
+                fixture.AssertMutationRootsUnchanged(protectedBefore);
+                Assert.False(AcceptedMechanicsPlanAuthority.TryPeekValidated(files, lease, out _, out _));
+                Assert.False(AcceptedTurnAuthorityRegistry.TryPeekEffectValidated(files, lease, out _));
+                Assert.False(AcceptedTurnAuthorityRegistry.TryPeekWoundPrepared(files, lease, out _));
+                Assert.False(AcceptedTurnAuthorityRegistry.TryPeekWoundFinal(files, lease, out _));
+                Assert.False(AcceptedTurnAuthorityRegistry.HasOpenSpiritualSelfTreatment(files, lease));
+                Assert.False(AcceptedTurnAuthorityRegistry.HasOpenSpiritualSelfTreatment(files, lease, natural: true));
+                // Correct only the rejected GM fee proposal; no accepted result or original is replaced.
+                files.DeleteFile(lease, ResourceMaterializationContract.CommandPath);
+                await files.WriteFileAtomicBytesAsync(lease, readyPath, freeReady);
+                Assert.Null(await files.ReadFileBytesAsync(lease, ResourceMaterializationContract.CommandPath));
+                Assert.Equal(freeReady, await files.ReadFileBytesAsync(lease, readyPath));
+                fixture.AssertMutationRootsUnchanged(protectedBefore);
+            }
             Assert.DoesNotContain(await validator.ValidateAcceptedTurnRawMortalLocationMaterializationAsync(), i => i.Severity == IssueSeverity.Error);
             Assert.DoesNotContain(await validator.ValidateAcceptedTurnRawMortalItemMaterializationAsync(lease), i => i.Severity == IssueSeverity.Error);
             var preparation = await validator.PrepareSpiritualSelfTreatmentPublicationAsync(lease);
@@ -184,18 +216,11 @@ public sealed partial class AfterlifeSpiritualNaturalRecoveryTests
             var after = ResourceStateContract.ParseCanonical(await files.ReadFileAsync(ResourceMaterializationContract.StatePath), resourceDefinitions!, false).Ledger!;
             var historyAfter = ResourceHistoryState.ParseCanonical(await files.ReadFileAsync(ResourceMaterializationContract.HistoryPath), resourceDefinitions!, false).History!;
             Assert.Empty(historyAfter.ValidateStateAgreement(after));
-            var cost = Assert.Single(historyAfter.Transitions, row => !resourceHistoryBefore!.Transitions.Any(old => old.TransitionId == row.TransitionId));
-            Assert.Equal(ResourceTransitionOperation.Spend, cost.Operation); Assert.Equal("turn_43:resource:1", cost.EventRef);
-            Assert.Equal(1m, cost.RequestedAmount); Assert.Equal(1m, cost.AppliedAmount);
-            Assert.Equal(ResourceMutationPhase.DirectCost, cost.Phase);
-            Assert.Equal("spiritual_action_points", cost.Coordinate.ResourceKey);
-            Assert.Equal("player_soul", cost.Coordinate.ResourceOwnerId);
-            Assert.True(resourceBefore!.TryResolveExact(cost.Coordinate, out var source));
-            Assert.True(after.TryResolveExact(cost.Coordinate, out var final));
-            Assert.Equal(source!.Current - 1m, final!.Current);
-            Assert.Equal(resourceBefore.Entries.Count, after.Entries.Count);
-            foreach (var previous in resourceBefore.Entries.Where(entry => entry.Coordinate != cost.Coordinate))
-            { Assert.True(after.TryResolveExact(previous.Coordinate, out var unchanged)); Assert.Equal(previous, unchanged); }
+            Assert.Equal(resourceBefore!.ToCanonicalJson(), after.ToCanonicalJson());
+            Assert.Equal(resourceHistoryBefore!.ToCanonicalJson(), historyAfter.ToCanonicalJson());
+            var definitionsAfter = ResourceDefinitionCatalog.ParseCanonical(
+                await files.ReadFileAsync(ResourceMaterializationContract.DefinitionsPath), false).Catalog!;
+            Assert.Equal(resourceDefinitions!.ToCanonicalJson(), definitionsAfter.ToCanonicalJson());
             Assert.Null(await files.ReadFileBytesAsync(ResourceMaterializationContract.CommandPath));
         }
         var settled = fixture.CaptureMutationRoots();

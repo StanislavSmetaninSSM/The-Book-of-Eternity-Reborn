@@ -166,7 +166,7 @@
 },
 {
   "id": "spiritual-diagnosis-canonical-resource-native",
-  "responsibility": "One signed canonical resource-condition diagnosis permits a separately declared ordinary cost, binds exact completed common outputs and refuses arbitrary binding/forged or omitted publication images, then verifies knowledge/natural History and completed replay.",
+  "responsibility": "One signed canonical resource-condition diagnosis rejects an authored fee without canonical/original mutation or surviving authority, restores exact fee absence/ready bytes, then publishes free knowledge/natural recovery with unchanged complete resource ledger/History/definitions. Retains exact common-output binding, arbitrary/forged/omitted output/delete refusals and completed replay.",
   "excludes": "No complete suite, external provider/DOM/fresh-process, DFR/Mortal compatibility/Windows HOLD or whole #1536 acceptance. No raised timeout or omitted source/authority guard.",
   "changeHints": [
     "BookOfEternityClient/Services/SpiritualDiagnosisCanonicalSources.cs",
@@ -183,7 +183,7 @@
     {
       "project": "integration",
       "tests": [
-        "BookOfEternityClient.Tests.AfterlifeSpiritualNaturalRecoveryTests.CanonicalResourceConditionAllowsIndependentOrdinaryCostAndExactPublication"
+        "BookOfEternityClient.Tests.AfterlifeSpiritualNaturalRecoveryTests.CanonicalResourceConditionRejectsChargesAndPublishesWithoutSpending"
       ]
     }
   ]

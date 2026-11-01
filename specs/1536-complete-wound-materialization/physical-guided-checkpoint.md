@@ -1,3 +1,28 @@
+# Canonical resource native FAIL classified — fixture correction WIP
+
+Actual runtime e57cb94fc87cef4e513b9392c9106190d45a6753, unchanged Integration f79:
+resource-native1 FAIL7.6805938/120s (no timeout), complete primary TRX SHA
+3a9e4481927f3215b76214e97a14fd4daf5ff3900978363fc2129124b49411ee.
+Preparation stops at spiritual_diagnosis_cost_forbidden; publication and subsequent
+assertions did not run. Independent Astra/high confirms an unsupported fixture
+command: FR071 allows no OD/Feathers/items, and an explanatory reason cannot grant
+an independent action. Previous SOURCE acceptance missed that earlier admission
+guard; generic amount arithmetic was conditional, not admission evidence. No
+production defect or diagnostic timeout is claimed. All138 prior PASS stay retained.
+
+The corrected native fixture explicitly probes one forbidden fee: preserve exact
+canonical/signed original images and valid ready bytes, require the exact refusal,
+unchanged protected roots and no common/effect/wound/open spiritual authority; restore
+only authored fee absence/ready bytes under the held lease before one real free
+preparation/publication. Complete resource definitions/ledger/History must remain
+unchanged, all previous exact common output/delete/forgery/replay assertions stay.
+No player quantity-change benefit is proved; non-player automatic currency income
+cannot stand in for unified player AP. No new economic or resource producer rule.
+Only Integration test/catalog/selection/checkpoint change; no production/cache edit,
+new collector or budget increase. Narrow delta SOURCE, preserved Integration4,
+one fresh Integration-only build, exact discovery/PlanOnly/PREP are required.
+Effect1 and console1 remain UNRUN/held. All broader HOLDs remain unchanged.
+
 # Canonical purpose/observation4 GREEN — native/publication acceptance next
 
 Runtime ce37ccb2fc8874a8a54e40b67829b8b9195bb01d, Unit compiled6d81, other owners
