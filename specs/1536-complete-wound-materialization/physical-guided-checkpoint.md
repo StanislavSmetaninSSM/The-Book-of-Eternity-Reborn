@@ -52,8 +52,11 @@ Exact external A2GREENC4-accepted141-union.json SHA
 6e43fe7e9a7581df3f0196e1520939fd90e83d60353b8c5383f09203fea8f32d
 binds every unique name/testId/executionId, primary SHA and source/owner lineage.
 Astra/high accepts source/corrections/PREP/each OUTCOME/union; Sol/xhigh accepts
-narrow fixture/mapping/decoder corrections. Final canonical text synchronization
-requires its bounded review; this does not request more runtime.
+narrow fixture/mapping/decoder corrections. Independent Sol/xhigh accepts final
+canonical text atf064244c67e55113847fd1802b2db412253487d3 with no findings;
+this does not request more runtime. Final metadata fence confirms the exact four
+text-only paths, all426 source bindings/27pins/44resource copies/fourdaemons,
+no live managed owner and711430144freeB; code/binary provenance above is unchanged.
 
 Limits: no new DOM/provider/fresh-process, original physical browser-course or
 C9/C10 native UNKNOWN replacement, broad DFR/Mortal compatibility/Windows PASS,
