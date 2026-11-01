@@ -1,3 +1,23 @@
+# C6 console first prefix — 2 FAIL; no treatment execution yet
+
+Runtime08bcdca300d5e8e19ce2a67db16e33f640d206ca / Integration133e1eead:
+both procedure/guaranteed rows fail at SelectPhysicalJourneyActionAsync line24,
+which searches uppercase Условия case-sensitively. The real production reason
+already renders Общие условия: plus projected conditions/cost; this is an oracle
+label mismatch, not missing player information. Neither row reached confirmation
+or Engine processing. Category7.0802433/180s,wall13.4489198s,2FAIL/0PASS,
+no timeout/skips/underfill/duplicate IDs; stable pins and complete cleanup.
+
+Both complete failed-prefix captures were independently decoded to EOF/CRC, with
+stored/decoded hashes, original timing pairs/sequences, closed footer/writer and
+absent actual fixture roots. These prefixes do not measure full UI processing or
+admit browser/course/rollback cost. External P3GREENC6-console2/verified-partial-failure.json
+retains exact errors/TRX and per-capture proofs. Closing free689037312B,no live
+owner; raw remains untouched. Next coherent fixture correction combines the two
+explicit capability-three seeds and the exact rendered condition-label assertion,
+with all semantic/confirmation/inertness assertions retained. No product change or
+further runtime is admitted by this checkpoint. Current3 and all UI9 remain open.
+
 # C6 current settlement — capability refusal, 1 FAIL / 2 UNRUN
 
 Runtimedfc20507b3c83e4794ac16e7ba56acbba8a1407e / Integration133e1eead:
