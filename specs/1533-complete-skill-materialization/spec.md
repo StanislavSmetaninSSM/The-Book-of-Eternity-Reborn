@@ -124,3 +124,32 @@ As the local validation-repair harness, I want every skill reference identity er
 Предлагается восстановить уже заявленные гарантии части 1 и добавить проверки воспроизведённых случаев. Изменение общих правил идентичности для всех потребителей и откат разбиения большого файла не требуются: первое расширяет область воздействия, второе не устраняет зависимость проверок от размещения методов. Детали реализации остаются за исполнителем в рамках этих контрактов.
 
 Открытых продуктовых вопросов нет. Пользователь одобрил редакцию 1 ответом «Одобряю, выполняй исправления» 2026-11-01. Далее обновляются `plan.md` и `tasks.md`, проводится анализ согласованности, RED/GREEN и независимое ревью. Слияние PR не входит в запрос на исправления.
+
+## Part 2 Slice — Prose-Claimed Skill ↔ Per-Skill State Delta Coupling (T107 / #1479)
+
+**Branch**: `1533-prose-state-delta-coupling` | **Created**: 2026-11-02 | **Status**: in implementation
+
+Part 2 delivers contour T107 end-to-end: **a prose-claimed skill use/advancement is coupled to a state delta for that exact skill, classified through the part-1 `MortalSkillReferenceAuthority`**. Issue [#1479](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1479) (reopened 2026-11-01) is the source evidence: prose says `Чтение печатей` helped, while `skillMasteryChanges` stays empty.
+
+### Gap corrected by this part
+
+The existing audit `ValidateAcceptedTurnProseStateDeltasAsync` already detects a skill-use claim without any state delta — but the delta check is **file-level**: any change to `skill_mastery.json` / `skills_active.json` / `skills_passive.json` satisfies a claim about *any* known skill. A mastery delta that advances only skill B silently satisfies a prose claim about skill A, and a confusable mastery reference counts as a valid delta without identity classification.
+
+### Functional requirements
+
+- **FR-101**: A prose skill-use claim for canonical player skill X is satisfied only by one of: (a) a current-turn `skillMasteryChanges[]` entry whose `skillName` classifies as **Exact** binding to X under `MortalSkillReferenceAuthority` built from the player's canonical active+passive skill names, together with file-change evidence (pre-turn snapshot difference or `filesModified`); (b) X first appearing as a **new** skill in this turn's `skills_active.json` / `skills_passive.json` (post-turn name set minus pre-turn name set); (c) the unchanged explicit no-progress rationale escape hatch.
+- **FR-102**: Confusable or ambiguous mastery references never satisfy a claim; their identity diagnosis stays with the part-1 layer (`skill_mastery_confusable_reference`), no double-reporting of the same root cause under the coupling code when an exact delta for the claimed skill exists elsewhere.
+- **FR-103**: The issue code `accepted_turn_skill_claim_missing_state_delta` is retained; its `actual` names the delta's real target skills (or the absence of a delta), so the GM repair stays narrow. Quest-clue audit, combat-signal `HasSkillMasteryChanges` boolean semantics, and all legacy codes are unchanged.
+- **FR-104**: NPC prose claims remain out of scope — no NPC prose-claim detection surface exists today; recorded here as an explicit no-update rationale, not an omission.
+
+### Acceptance scenarios
+
+1. **Given** known skills `Чтение печатей` and `Ножевой бой`, **When** prose claims `Чтение печатей` helped and the turn's only mastery entry targets `Ножевой бой`, **Then** validation fails with `accepted_turn_skill_claim_missing_state_delta` naming `Ножевой бой` as the actual delta target.
+2. **Given** known skill `Чтение печатей`, **When** prose claims it and the only mastery entry references a case-variant `чтение печатей`, **Then** the coupling audit does not count it as a satisfying delta (fail closed); identity diagnosis remains with the part-1 code.
+3. **Given** the same claim, **When** the mastery entry names `Чтение печатей` exactly and the file changed this turn, **Then** no coupling issue is raised.
+4. **Given** prose claims a skill that is **created** this turn in `skills_passive.json`, **Then** no coupling issue is raised for it.
+5. **Given** a stale `skill_mastery.json` identical to the pre-turn snapshot (entries carried over, not rewritten), **When** prose claims a skill listed there, **Then** the claim is not satisfied by the stale entries.
+
+### Out of scope for part 2
+
+T101–T106, quest-side per-objective coupling beyond the existing file-level check, NPC prose claims, save migration, and any change to claim-detection heuristics (`ContainsSkillUseClaim` markers stay as-is).

@@ -70,3 +70,26 @@ Commands/evidence:
 Verification result directories (relative to the implementation checkout): `TestResults/test-categories/20261101-221843-441-9512-02e88728a6bd4b34924b46545957c87e-categories`, `20261101-222232-742-30384-eb7fb63302784cc497cbe228bef54ae4-categories`, and inventory `20261101-221920-750-732-123d27f87fb54baebce28430d5fa096c-categories`. Local output archive contains raw TRX/logs. This checkpoint preserves the substantive evidence in GitHub text.
 
 Status: correction code verified and independently reviewed; final checkpoint publication and remote-ref verification follow this documentation commit. No open correction finding, no discarded behavior requirement, no deferred reviewer minor. No migration or later skill lifecycle contour is claimed complete. No measured cost savings are claimed; the observed one reviewer correction supports retaining independent review.
+
+## Part 2 plan — T107 prose↔delta coupling (2026-11-02, branch `1533-prose-state-delta-coupling`)
+
+**Base**: `7d978bdfaf616bc8487ed89b406a42068fca561d` (merge of PR #1579 into main), verified via `git ls-remote` after publishing the task branch. Work follows the same constitution: TDD, bounded categories, independent review by a separate agent that did not implement the block. User instruction 2026-11-02: push checkpoints freely, do not merge. Reviewer model/effort mapping to this environment is recorded in the final checkpoint; the configured reviewer is a separate fresh-context agent, not the implementer.
+
+### Design
+
+1. Rework only the skill-claim branch of `ValidateAcceptedTurnProseStateDeltasAsync` (ValidationService.AcceptedTurnAndInkFeathers.cs). Quest-clue branch, claim-detection heuristics, rationale escape hatch and codes stay unchanged.
+2. Read the current mastery payload once per audit; reuse `ReadMasteryIdentityReferences(json, "skillMasteryChanges")` from the part-1 partial for exact-spelling indexed names (no second parse, no new JSON reader).
+3. Build `MortalSkillReferenceAuthority` from the player's canonical exact skill names (active + passive, current and pre-turn retained reads, ordinal) — the same name source the part-1 player mastery identity check uses.
+4. Claim for X satisfied iff an Exact-bound-to-X mastery entry exists with file-change evidence (existing `HasAcceptedTurnStateDeltaAsync` semantics), or X is newly present in post-turn skill name sets vs pre-turn snapshot. Confusable/ambiguous references never satisfy; they keep their part-1 diagnosis.
+5. Issue `actual` lists the delta's real targets so repair stays narrow; code/filePath/severity unchanged.
+
+### TDD steps and expected observations
+
+- T107-B: add coupling tests to `AcceptedTurnNarrativePayloadValidationTests.cs` (already owned by the `console-explorer` class wildcard; no new category needed, selection reasons updated). Expected RED: wrong-target delta and confusable-only delta currently pass the file-level check.
+- T107-C: implement per-skill coupling; identity and narrative-audit tests green; no part-1 behavior change.
+- T107-D: sync the two launcher-script lines describing the codes with the narrowed semantics; update tests/selection.json; run ValidateCatalog.
+- T107-E: run selected categories, independent review, checkpoint with SHA verification.
+
+### Checkpoint ledger (part 2)
+
+- 2026-11-02: branch `1533-prose-state-delta-coupling` created from verified base `7d978bdfaf616bc8487ed89b406a42068fca561d` and published; remote SHA matches base. Spec/plan/tasks revision 2 recorded (this text). No product code changed yet. Next: T107-B RED tests.
