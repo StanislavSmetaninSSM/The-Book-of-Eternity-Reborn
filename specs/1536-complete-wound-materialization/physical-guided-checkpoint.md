@@ -1,3 +1,30 @@
+# C8 authorized log retirement executed; launch reserve restored
+
+Author explicitly approved the exact11-manifest uncompressed log retirement on
+2026-11-01. Same environment and clean147e86e57 remote were read back first;
+no active managed owner or uncertain prior deletion was found. All11 original
+identities still matched the frozen manifest. Original/gzip hashes, lengths and
+full EOF/CRC/byte equality were freshly checked before each exact unlink and
+retained gzip decoded again afterward. Exactly11 originals are absent; all their
+bytes remain recoverable through the unchanged manifest path/hash mapping.
+
+Actual free space rose from682549248 to707031040 bytes (+24481792 allocatedB).
+The unchanged687865856-byte start reserve is restored. All27 retained binaries
+remain unchanged. No other raw, TRX, JSON, capture, save, recovery, archive or
+source was retired. This approval covers only those11 files, not future logs.
+Fresh preflight/retirement proofs remain external:
+P3GREENC8-authorized-11-log-fresh-preflight.json and
+P3GREENC8-authorized-11-log-retirement-proof.json under the existing raw root.
+
+Source238a441984f8788e48eb661d98c028be73fd1f7b remains independently accepted,
+but C8 is still UNCOMPILED/UNRUN. Next: fresh Main/Support/Integration/Unit owners,
+actual PE/PDB/source/artifact/resource proof and exact discovery/PlanOnly, then
+independent PREP for guards4/spiritual overflow1, current3 and subsequent UI cost/
+acceptance. Prior PASS is not repeated without an affected dependency. Original
+budgets, no-new-clone/restore and all existing HOLDs remain. Optimization remains
+the reviewed reuse of immutable operation DATA without new cache or source reads;
+this storage action makes no product speedup claim.
+
 # C8 SOURCE accepted; builds and qualification still blocked
 
 Independent Astra/high SOURCE accepts code238a441984f8788e48eb661d98c028be73fd1f7b
