@@ -1,3 +1,37 @@
+# C11 causal RED accepted — assembly-only optimization NOT ADOPTED
+
+Runtime9c2475b608ee6add06ac1dc23f2cdc337baf5951 / all4compiled48539ba7:
+exact1Fact completes1FAIL (expected0/actual1 atTerminalCopyCost.cs65), no timeout,
+case35.7233127s/category46.4859709/60s/wall58.2579488s. Primary TRX, unique IDs,
+all3closed observations, earlier genuine-terminal/DATA equality/isolation/fresh
+preparation/effect/handoff assertions, stable pins and owned cleanup independently
+accepted. This is causal RED, never gameplay PASS. Full raw, TRX and strict
+verified-causal-red.json remain external; generic log is recoverable gzip.
+
+Full-constructor/direct-candidate/copy-of-copy observations826.265818/710.047388/
+548.656521ms each execute one final replay/actual assembly. Actual assembly costs
+only1.731209/2.475439/2.084732ms in this small workload. That does not justify the
+conservative assembly-only prototype. No prototype implementation or production
+wiring proceeds; the component entry still delegates unchanged normal copying.
+Differences between these repeated unchanged paths are not a measured speedup.
+
+Each observation records118 actual selected-graph compilations,48AgreesWith and
+70retained recompositions. No complete key trace proves all inputs identical.
+Bounded source review confirms compilation includes fresh admission/private-policy
+checks plus graph construction; no selected-graph domain cache is already wired.
+Request/output fingerprint alone is insufficient to bypass those checks. Existing
+cache architecture may be used only after full key/dependency/owner/isolation proof.
+A local agreed-graph handoff in one Finalize call is a possible narrower design,
+but its contribution to this actual expensive consumer remains unmeasured; no
+new micro-optimization or native retry is admitted merely from that observation.
+
+C9/C10 native UNKNOWN, browser UNKNOWN and dependent native/UI/feature HOLDs stay.
+Closing27artifacts/resources/daemons stable, no live owner,57old zombies,
+free949456896B above unchanged687865856B reserve. All unique captures, retained
+fixtures, saves/recovery and compiled evidence remain. T609/DFR/Mortalcompat/
+Windows stay parked. Further work must target a concrete functional result or
+measured material cost, without a new diagnostic framework or weaker guards.
+
 # C11 scaffold built — exact causal1 PREP pending, runtime UNRUN
 
 Independent Astra/high SOURCE accepts48539ba7099fcce9626e6612870ec3456c0b1d71:
