@@ -1,5 +1,26 @@
 # План перехода к личной модели духовного боя — #1573
 
+## T134 — план численного предложения о мастерстве
+
+Baseline/origin847bc7f922276289087e3088e822d9691e1bd807; [scope](spec.md).
+Применяются brainstorming/Spec Kit bridge/writing-plans к существующей feature.
+T133 принимается явно; новый T134 остаётся кандидатом до обсуждения чисел.
+
+1. Два read-only Sol6.1/high audit: mortal scaling/outcomes/AoE и реальное
+   обучение/clock/costs. Parent сверяет принятый B/мастерство/исторические границы.
+2. Записать формулы, пороги и начисления в существующий combat-system-proposal;
+   отдельным bounded arithmetic check проверить таблицы и остатки без RNG/боевой
+   матрицы. Результат арифметики — локально D:, краткий итог в документах.
+3. Independent Astra/high review всего doc-only блока: отсутствие двойного
+   scaling/awards, честный baseline, crit/Favor, границы времени/цены/памяти/NPC;
+   ссылки/diff, публикация/readback/новое clean restore, предъявление кандидата.
+
+Consistency: запрос→T134spec→T134.1–3. Уровень героя/формулы HP/ДЭ не меняются.
+Сохранённый B нельзя молча трактовать как исходную базу без mastery: указать
+опорный уровень при будущей нормализации. Mastery начисляется после действия.
+Оптимизация: doc-only и малая арифметика, нового runtime/дорогого пути нет;
+production reuse и свежая проверка authority остаются по existing service policy.
+
 ## T133 — план подготовки договора искусств, 2026-11-01
 
 Goal: [scope T133](spec.md), результат в [существующем проекте](combat-system-proposal.md#t133-arts).

@@ -1,5 +1,11 @@
 # Задачи #1573 — полный духовный бой
 
+## T134 — принять T133 и определить численный рост
+
+- [x] T134.1 Прямое принятие T133 записано; source audit mortal/TrainingService/clock и проверка B выполнены. Новые коэффициенты/темп не объявлены принятыми; scope/plan/consistency заданы.
+- [x] T134.2 Кандидат4%/3m/исходы/обучение записан с отличиями/lifetime/открытыми тарифами. Exact-fraction arithmetic:8 уровней/2 duration/B28/6 порогов/7 переходов/50 closed-form cases — pass; данные толькоD:. Никаких боевых прогонов/production.
+- [ ] T134.3 Independent whole-block review, ссылки/diff/publication/readback/clean restore; предъявить числа автору как предложение.
+
 ## T133 — ценность изученной техники и личное мастерство
 
 - [x] T133.1 Два Sol6.1/high source audit и parent C#/Rules проверка: freeform/definition/mastery, практика в TrainingService, память/ранги/материализация. Scope/plan/consistency записаны; numerical gates открыты.

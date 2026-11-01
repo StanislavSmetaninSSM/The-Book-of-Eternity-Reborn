@@ -1,5 +1,27 @@
 # Проверка проекта #1573
 
+## T134 — принятие основы и численный кандидат мастерства
+
+Baseline/origin847bc7f922276289087e3088e822d9691e1bd807 совпали. T133 принят
+прямым ответом автора; T134 числа остаются предложением. Два Sol6.1/high audit
+подтвердили mortal4m%,3/6/9/12 advisory, crit-reset, AoE primary/general check,
+отсутствие общей длительности урока и fallback100m в TrainingService.
+Parent сохраняет духовный B-путь:4m% внутри B, не второй множитель итогового
+урона; явный reference-level нужен при нормализации ранее эффективных профилей.
+
+Brainstorming/Spec Kit bridge/writing-plans работают с existing artifacts.
+Scope/plan/tasks/consistency были записаны до арифметической проверки. На D:
+в spiritual-mastery-t134 выполнен arithmetic-check.py:8 уровней,2 duration,
+B28 reference,6 порогов,7 явных переходов и50 сверок с замкнутой суммой;pass.
+Это не тесты production и не бой: новых C#/Rules/probes/сборок/матриц нет.
+Новый runtime не проектировался; tiny arithmetic не требует cache, будущая
+production интеграция использует existing stable DATA service/fresh authority.
+
+Остатки/crit-retention, занятие+3, общий3m, exact-once primary-action award и
+событийное развитие NPC отмечены как рекомендации. T133 memory/Mask100%/rank
+сохранены; урок имеет заранее известный gain/time/price, но новый тариф не
+выдан за существующий код. Independent whole-block review/публикация впереди.
+
 ## T133 — определение искусства и личное владение
 
 Baseline/origin fe5245392231e7ee6596180d322c14bb6240d855 сверены; #1573 и #1534
