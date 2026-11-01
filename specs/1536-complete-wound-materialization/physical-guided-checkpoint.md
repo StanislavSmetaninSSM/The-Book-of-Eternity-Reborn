@@ -1,3 +1,30 @@
+# C13 wait writer — exact causal two-row RED completed; OUTCOME pending
+
+Runtime 5557d983bf968205e0580a8bfc5bbc5f7c8df219 / compiled Integration
+c55f00857dbd6db04b0f1159c64dbc169a805c7c, other owners C12 source390907.
+After accepted independent PREP, P3GREENC13RED-causal2 completes exactly two
+expected FAIL / zero PASS, 2/2 cases and 1/1 descriptor, no timeout/underfill.
+Category 8.734817s/60s, wall 19.6656476s; per-case 0.6642232s and 0.1447053s.
+Both fail only Assert.Empty(issues), MortalWaitResponse.cs line100, with exact
+interface_updates_unknown_field / timeChange. Complete earlier writer/ready/
+original report/NPC/byte-inertness premises pass. Corrected clock assertions below
+that oracle remain unreached. This is causal RED, not gameplay acceptance.
+
+Primary TRX SHA-256
+34911f7b9d4a776a44a3e22a29d8dd4c3b843276fffe1b149dd5131c06cec5ec,
+unique IDs, both pending-before-turn values, actual interface timeChange480 /
+clock2880, incomplete old ready declaration, unchanged owning pins and runner
+cleanup independently checkable in external verified-causal-red.json. Actual new
+cheap fixture prefix is empty after both finally blocks. Closed generic log alone
+is fully recoverable gzip; complete TRX/output/JSON, old course partial/root and
+all unique evidence remain external. Closing fence has no active managed owner,
+all27/resources/daemons stable, 864092160 bytes before generic-log retirement.
+
+Next after independent OUTCOME: preserve this Integration binary epoch, correct
+only the controlled GM wait channel, independent SOURCE, fresh Integration build
+and same two-row GREEN. No course retry before GREEN/PREP, no nonwait PASS repeat,
+no production guard, clock rule, new cache, assertion or budget change.
+
 # C13 causal scaffold built — exact two-row RED PREP pending
 
 Independent Astra/high SOURCE accepts c55f00857dbd6db04b0f1159c64dbc169a805c7c,
