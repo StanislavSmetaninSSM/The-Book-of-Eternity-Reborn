@@ -2138,6 +2138,8 @@ internal static class WoundEffectLineagePlanner
     /// This reuses the live planner's domain rules without granting lineage or
     /// retirement authority or treating a historical effect as currently active.
     /// </summary>
+    /// <param name="wound">The validated immutable wound graph whose exact root domains are retained.</param>
+    /// <returns>Detached definition-domain DATA; malformed or ambiguous ownership is refused.</returns>
     internal static IReadOnlyDictionary<string, WoundEffectIdentityLineageDefinition> DescribeDefinitionDomains(
         WoundMaterializationEnvelope wound)
     {

@@ -65,6 +65,71 @@ public sealed class WoundMaterializationSourceGuardTests
     private static readonly InventoryEntry[] Inventory =
     {
         new(
+            "mortal-menu-callback-source-eligibility",
+            InventoryCategory.PlayerReadOnlyProjection,
+            "BookOfEternityClient/Core/FileSystemManager.ValidationReadSet.cs",
+            "CanReuseCurrentSourceData", "ValidationReuseSuppression.Value == 0", "CanReuseSourceData"),
+        new(
+            "mortal-terminal-private-family",
+            InventoryCategory.AcceptedMechanicsIntegrationSeam,
+            "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalTerminalTreatment.cs",
+            "TryReadTerminalTreatment(", "JointRepairPreparedAgrees(", "TreatmentContinuationPreparedAgrees("),
+        new(
+            "mortal-terminal-legacy-preparation",
+            InventoryCategory.AcceptedMechanicsIntegrationSeam,
+            "BookOfEternityClient/Services/MortalWoundHealLegacyPlanner.cs",
+            "DescribeMechanicalApplications(", "RequireDisjointCoordinates(", "RequireExactBatches(", "ComputeEffectPlan("),
+        new(
+            "mortal-terminal-legacy-source",
+            InventoryCategory.AcceptedMechanicsIntegrationSeam,
+            "BookOfEternityClient/Services/EffectAcceptedTurnInputComposer.MortalTreatmentLegacy.cs",
+            "WoundHistoryState.Parse(", "MortalWoundHealChildCoordinates.Create(", "SourceFingerprint != request.RequestFingerprint"),
+        new(
+            "mortal-terminal-private-legacy-source-set",
+            InventoryCategory.AcceptedMechanicsIntegrationSeam,
+            "BookOfEternityClient/Services/WoundAcceptedTurnPlannerCore.MortalTreatmentLegacy.cs",
+            "SnapshotSameTurnLegacyEntries(", "SnapshotSameTurnLegacyOwners(", "RequireExactBatches("),
+        new(
+            "mortal-terminal-legacy-application",
+            InventoryCategory.AcceptedMechanicsIntegrationSeam,
+            "BookOfEternityClient/Services/EffectAcceptedTurnPlanner.MortalTreatmentLegacy.cs",
+            "PrepareTreatmentLegacyApplications(", "ValidateWoundMaterializationExpectation(", "AcceptedContinuation: true"),
+        new(
+            "mortal-terminal-actual-execution",
+            InventoryCategory.AcceptedMechanicsIntegrationSeam,
+            "BookOfEternityClient/Services/EffectAcceptedTurnPlanner.MortalTreatmentTerminal.cs",
+            "ExecuteMortalTreatmentTerminal(", "TryReadMortalTreatmentExecution(", "terminalHeal: true", "ComputeAcceptedEffectPlanPayload("),
+        new(
+            "mortal-terminal-linked-contribution",
+            InventoryCategory.AcceptedMechanicsIntegrationSeam,
+            "BookOfEternityClient/Services/WoundAcceptedTurnPlannerCore.MortalTreatmentContributions.cs",
+            "ReduceTerminalTreatmentContribution(", "historyOrdinal + index", "stage.After.LastTransition.Ordinal"),
+        new(
+            "mortal-terminal-final-contour",
+            InventoryCategory.AcceptedMechanicsIntegrationSeam,
+            "BookOfEternityClient/Services/WoundAcceptedTurnPlannerCore.MortalTreatmentTerminal.cs",
+            "ComposeTerminalTreatmentFinalPlan(", "AssembleWoundContributions(", "TerminalTreatmentFinalPlanAgrees("),
+        new(
+            "mortal-terminal-shared-reducer",
+            InventoryCategory.AcceptedMechanicsIntegrationSeam,
+            "BookOfEternityClient/Services/MortalWoundTreatmentOutcomePublicationPlanner.Terminal.cs",
+            "CreateTerminalDeclarations(", "ReduceTerminalHeal(", "WoundHealingEvidence"),
+        new(
+            "mortal-terminal-current-tombstones",
+            InventoryCategory.AcceptedMechanicsIntegrationSeam,
+            "BookOfEternityClient/Services/MortalWoundTreatmentCompletion.Terminal.cs",
+            "RequireTerminalTreatmentSettlement(", "RequireTerminalWoundEffects(", "RequireIdentityCoordinates(", "WoundEffectIdentityLineageAnalyzer.Analyze("),
+        new(
+            "mortal-terminal-current-legacies",
+            InventoryCategory.AcceptedMechanicsIntegrationSeam,
+            "BookOfEternityClient/Services/MortalWoundTreatmentCompletion.TerminalLegacies.cs",
+            "RequireTerminalLegacyEffects(", "DescribeMechanicalApplications(", "WoundEffectIdentityLineageAnalyzer.Analyze(", "ExpectedMaterializationFingerprint"),
+        new(
+            "mortal-terminal-sealed-output",
+            InventoryCategory.PlayerReadOnlyProjection,
+            "BookOfEternityClient/UI/WoundPlayerNotification.MortalTreatment.cs",
+            "ComposeAcceptedTerminalTreatment(", "ComposeTerminalTreatmentNotifications(", "TryReadMortalTreatmentExecution(", "Visibility"),
+        new(
             "mortal-guided-menu-and-staging",
             InventoryCategory.PlayerReadOnlyProjection,
             "BookOfEternityClient/Services/WoundApplicationService.MortalTreatmentMenu.cs",

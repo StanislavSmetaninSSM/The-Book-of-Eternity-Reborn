@@ -190,7 +190,13 @@ public sealed partial class MortalWoundTreatmentResolverTests
             await Refuse("current wound drift", map => Change(map, WoundCarrierCatalog.PlayerPath,
                 value => value["activeWounds"]!.AsArray()[0]!["display"]!["description"] =
                     value["activeWounds"]!.AsArray()[0]!["display"]!["description"]!.GetValue<string>() + " foreign"));
-        else await AssertTerminalSettlementFaultsAsync(current, result, Refuse);
+        else await AssertTerminalSettlementFaultsAsync(current, result, Refuse, async map =>
+        {
+            var valid = await MortalWoundTreatmentCompletion.RequirePublishedAsync(original, token, generation,
+                selected.Selection, input, scheduleHash, path => Task.FromResult(map[path]));
+            Assert.Equal(result.Request.RequestFingerprint, valid.Request.RequestFingerprint);
+            fixture.AssertJson(unchanged);
+        });
         foreach (var path in new[] { AcceptedMechanicsPlan.WoundCommandPath, WoundAcceptedTurnSnapshotContract.PendingResolutionPath,
                      ResourceMaterializationContract.CommandPath, EffectAcceptedTurnPlan.CommandPath, ProgressionScheduleService.ReportPath })
             await Refuse("reintroduced work " + path, map => map[path] = Encoding.UTF8.GetBytes("{}"));

@@ -3089,4 +3089,79 @@ is allowed. Raw output repair keeps the same held request. Client v2 comparison
 witness and authenticated original schedule are historical DATA, not permission;
 v1 receipts cannot stand in for current publication. Consumed request cleanup,
 exact replay, held-image C4 and separate whole-original rollback remain client-owned.
+
+mortal_guided_terminal_heal_v1 — worked declared route DATA, not a GM command.
+Premises: an actual known physical severityIV wound, valid current provider capability
+covering this complete declared program, and a new separate player confirmation.
+The explicitly authored policy below has no item/resource mutations; other methods
+keep their own exact declared costs. This is not a default price or duration.
+
+```json
+{
+  "routeId": "guided_terminal_worked",
+  "displayName": "Закрыть рану после полного лечения",
+  "visibility": "known_to_player",
+  "mode": "guaranteed",
+  "requirements": [
+    {
+      "kind": "source_capability",
+      "capabilityRef": "exact_materialized_healing_source",
+      "actorRole": "provider"
+    }
+  ],
+  "resourcePolicy": {
+    "reserveBeforeResolution": true,
+    "consumeOn": [
+      "success"
+    ],
+    "refundOn": [
+      "cancelled",
+      "validation_failed",
+      "rolled_back"
+    ],
+    "mutations": []
+  },
+  "resolution": {
+    "capabilityRef": "exact_materialized_healing_source",
+    "actorRole": "provider"
+  },
+  "outcomes": [
+    {
+      "category": "success",
+      "result": [
+        {
+          "kind": "reduce_severity",
+          "steps": 1
+        },
+        {
+          "kind": "reduce_severity",
+          "steps": 2
+        },
+        {
+          "kind": "heal",
+          "legacies": [
+            {
+              "localLegacyRef": "pale_scar",
+              "kind": "cosmetic",
+              "readableSummary": "Тонкий светлый рубец."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "interruption": null
+}
+```
+The retained real request resolves the ordered reductions to workingI, then the
+same owner executes the separate final heal. GM narrative: «Лекарь завершает
+лечение. Края раны сомкнулись; на коже остаётся тонкий светлый рубец.» Use the
+ordinary required Scope/Brain/journal/ready outputs for the actual medic. Client
+writes treat→heal, removes the active wound and its owned effects, and retains the
+cosmetic declaration without creating an effect batch. A mechanical declaration
+instead uses exactly one independent wound_legacy/legacyId source/batch per legacy,
+1–5 declared definitions/applications and actual allocated effects. Never invent a
+legacy ID or write those client-owned results. The same v2/current/replay/rollback
+checks apply; the completed course uses three separately confirmed milestones and
+ordinary accepted waits, not this illustrative one-attempt guaranteed route.
 end_mortal_guided_treatment_execution_v1

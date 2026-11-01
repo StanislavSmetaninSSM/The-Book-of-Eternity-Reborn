@@ -1,17 +1,16 @@
 ## Current T121 physical guided source candidate (not feature acceptance)
 
-The three-mode guided candidate is authored with typed input/hold/mode/common/
-current-browser owners, console/browser/course/rollback fixtures and GM guidance.
-It compiles, but independent SOURCE holds two defects: callback-sensitive menu
-freshness and complete terminal-heal publication. Six genuine causal failures are
-independently accepted on runtime b078159473a69b7c9c47d02ed943e2cf7cdd6793;
-zero PASS and no feature acceptance follow. The initial40-case selection was not
-executed; the grouped fix and reviewed finite GREEN selection remain required,
-including linked healed History, terminal identity, effect/carrier removal,
-declared legacies and current output/browser/rollback proof. No new duration, fee,
-auto-wait, repair-wave shortcut, recovery owner/tick or detached DATA authority is
-introduced. Parent/adapter/HOLD requirements and accepted historical source
-lineages remain explicit in the plan.
+The initial three-mode candidate compiled and independent SOURCE identified the
+callback freshness and complete terminal-heal defects. Their six genuine causal
+failures are independently accepted on runtime b078159473a69b7c9c47d02ed943e2cf7cdd6793.
+The grouped correction is now coherently authored, UNCOMPILED/UNRUN, with strict
+actual execution/legacy/History/identity/carrier/current/browser/output/joint/UI
+proof controls and synchronized GM examples. Source-estimated finite GREEN proposal:
+49 cases /27 methods /25 descriptors /24 categories; official discovery, whole
+SOURCE/PREP and actual outcomes remain open. No feature acceptance, new rules,
+duration, fee, auto-wait, guided repair wave, recovery owner/tick or detached DATA
+authority follows. The old unrelated Meta pin boundary and all parent/adapter/HOLD
+statuses remain explicit in the current plan.
 
 # T121 current qualification boundary — Mortal diagnosis accepted
 

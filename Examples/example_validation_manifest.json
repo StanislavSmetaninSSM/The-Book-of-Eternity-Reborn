@@ -27,7 +27,10 @@
     "ordinary wait",
     "genuine nonempty repair",
     "v1 receipts",
-    "v2 comparison"
+    "v2 comparison",
+    "mortal_guided_terminal_heal_v1",
+    "treat→heal",
+    "one independent wound_legacy/legacyId source/batch per legacy"
   ]
 },
 {

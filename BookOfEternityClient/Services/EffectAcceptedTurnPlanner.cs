@@ -3727,6 +3727,9 @@ internal static partial class EffectAcceptedTurnPlanner
     /// Reuses the ordinary component parameter binder for closed typed publication
     /// and detached current comparison DATA. It performs no allocation or IO.
     /// </summary>
+    /// <param name="definition">The already validated source definition to copy.</param>
+    /// <param name="parameters">The existing closed canonical parameter projection.</param>
+    /// <returns>A detached component array bound by the ordinary materializer.</returns>
     internal static JsonArray MaterializeTypedComponents(JsonObject definition, JsonObject parameters)
     {
         if (definition["components"] is not JsonArray components)
@@ -4517,7 +4520,8 @@ internal static partial class EffectAcceptedTurnPlanner
         var completedPlan = new EffectAcceptedTurnPlan(
                 fingerprint,
                 carrierAuthorityFingerprint,
-                healingProof is not null ? finalSourceAuthority.CanonicalFingerprint : input.SourceAuthority.CanonicalFingerprint,
+                healingProof is not null || treatmentProof is not null
+                    ? finalSourceAuthority.CanonicalFingerprint : input.SourceAuthority.CanonicalFingerprint,
                 targetAuthority.CanonicalFingerprint,
                 combatantIds,
                 identityRoot.AllocatedEffectIds,

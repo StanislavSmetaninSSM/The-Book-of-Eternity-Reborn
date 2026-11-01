@@ -83,6 +83,10 @@ internal static partial class EffectAcceptedTurnPlanner
     /// Reads detached facts only when the exact private treatment, prepared stage
     /// and complete effect payload still match their original execution seal.
     /// </summary>
+    /// <param name="prepared">The same actual private standalone or joint preparation.</param>
+    /// <param name="plan">The completed effect payload carrying the private execution proof.</param>
+    /// <param name="stages">Receives copied snapshots and results only on exact complete agreement.</param>
+    /// <returns>Whether both private family and immutable payload seals still agree.</returns>
     internal static bool TryReadMortalTreatmentExecution(WoundPreparedAcceptedTurnPlan prepared,
         EffectAcceptedTurnPlan plan, out IReadOnlyList<MortalTreatmentExecutedBoundary> stages)
     {
@@ -94,6 +98,8 @@ internal static partial class EffectAcceptedTurnPlanner
     /// <summary>
     /// Supplies immutable execution DATA to the complete effect payload fingerprint.
     /// </summary>
+    /// <param name="plan">The existing effect plan, without acquiring or reactivating any owner.</param>
+    /// <returns>The retained comparison fingerprint, or null for another effect family.</returns>
     internal static string? GetMortalTreatmentExecutionFingerprint(EffectAcceptedTurnPlan plan) =>
         (plan.MortalTreatmentExecutionAuthority as MortalTreatmentExecutionProof)?.Fingerprint;
 

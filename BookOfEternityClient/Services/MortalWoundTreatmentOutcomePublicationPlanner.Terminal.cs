@@ -6,6 +6,10 @@ internal static partial class MortalWoundTreatmentOutcomePublicationPlanner
     /// Projects existing typed immutable legacy seeds into the reducer's closed
     /// declaration protocol. This is DATA shared by actual and detached stages.
     /// </summary>
+    /// <param name="heal">The immutable request-derived heal intent and ordered seeds.</param>
+    /// <param name="declared">The same declared heal program retained by the resolution.</param>
+    /// <param name="woundId">The exact original selected wound identifier.</param>
+    /// <returns>Detached ordered reducer declarations, without allocating identities.</returns>
     internal static IReadOnlyList<WoundLegacyDeclaration> CreateTerminalDeclarations(MortalWoundHealOutcomeIntent heal,
         MortalWoundHealOperation declared, string woundId)
     {
@@ -25,6 +29,11 @@ internal static partial class MortalWoundTreatmentOutcomePublicationPlanner
     /// Applies the existing heal reducer to an exact active primary treatment
     /// snapshot. No effect allocation, recovery tick, live permission or IO occurs.
     /// </summary>
+    /// <param name="before">The actual or independently reconstructed active treatment snapshot.</param>
+    /// <param name="heal">Its immutable final child coordinates and preparation fingerprint.</param>
+    /// <param name="declarations">The complete ordered verified declaration DATA.</param>
+    /// <param name="turn">The original positive accepted turn.</param>
+    /// <returns>The ordinary reducer result, preserving every validation issue and linked ordinal.</returns>
     internal static WoundTransitionReductionResult ReduceTerminalHeal(WoundMaterializationEnvelope before,
         MortalWoundHealOutcomeIntent heal, IReadOnlyList<WoundLegacyDeclaration> declarations, int turn)
     {

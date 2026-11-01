@@ -47,6 +47,8 @@ internal static partial class WoundAcceptedTurnPlannerCore
     /// Checks the complete terminal contour against the exact private executed
     /// snapshots before output/publication accepts an otherwise well-formed bundle.
     /// </summary>
+    /// <param name="bundle">The immutable actual prepared, effect and final stages.</param>
+    /// <returns>Whether the complete original-to-terminal contour and final seal agree.</returns>
     internal static bool TerminalTreatmentFinalPlanAgrees(AcceptedMechanicsWoundStageBundle bundle)
     {
         var rebuilt = ComposeTerminalTreatmentFinalPlan(bundle.PreparedPlan, bundle.EffectBatchPlan);

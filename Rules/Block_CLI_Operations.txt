@@ -2038,4 +2038,19 @@ owner is resurrected. Consumed work must remain absent; replay never draws/spend
 again. C4 restores exact held images/claims; outer rollback separately restores
 original absence/bytes, with the existing strict schedule role transition.
 
+mortal_guided_terminal_heal_v1 — canonical terminal program, same existing owner.
+Keep all declared mode/category rules. Total severity reduction is at most2 without
+heal, or at most3 solely to reach working severityI before one separate FINAL heal.
+At most one heal and at most8 total legacy rows are allowed. The client publishes
+linked treat→heal History, terminal identity and active-carrier/owned-root removal;
+this is not a recovery tick or permission for a second charge. Cosmetic legacies
+create no effect batch. Each mechanical legacy owns one separate ordered batch of
+1–5 definitions/applications through the existing sole effect-ID allocator. Missing,
+extra, merged, split or reordered batches fail closed. Exact/confusable local refs
+are unique inside each legacy namespace; distinct legacies may reuse local spellings.
+The client retains the actual verified allocations and complete sealed execution.
+GM narrates the selected declared result and readable aftermath; never writes
+legacy IDs, effects, History, a new result/witness or a replacement request. Current
+comparison DATA is not live authority and does not replay deleted components.
+
 Read Examples/E_CLI_Wound_Materialization.txt worked mortal_guided_treatment_execution_v1.

@@ -57,6 +57,13 @@ internal static class MortalWoundHealLegacyPlanner
     /// All identities/reference namespaces come from the retained typed heal intent;
     /// no route JSON is reparsed and no effect ID is allocated.
     /// </summary>
+    /// <param name="request">The actual strictly validated treatment request.</param>
+    /// <param name="resolution">The same resolved mode outcome and immutable terminal intent.</param>
+    /// <param name="binding">The treatment's original accepted frame and event vector.</param>
+    /// <param name="preparedInputFingerprint">The exact private preparation's input fingerprint.</param>
+    /// <param name="currentMinute">The admitted original canonical minute.</param>
+    /// <param name="precedingBatches">The actual prefix batches whose coordinates remain disjoint.</param>
+    /// <returns>Copied ordered declarations and unallocated mechanical batches.</returns>
     internal static MortalWoundHealLegacyPreparation Prepare(MortalWoundTreatmentAttemptRequest request,
         MortalWoundTreatmentResolution resolution, WoundAcceptedTurnBinding binding, string preparedInputFingerprint,
         long currentGameMinute, IReadOnlyList<WoundEffectOperationBatch> precedingBatches)
@@ -123,6 +130,12 @@ internal static class MortalWoundHealLegacyPlanner
     /// identity and parameter functions used by the actual preparation. No prepared
     /// fingerprint, live owner, allocation, route JSON parse or IO is manufactured.
     /// </summary>
+    /// <param name="mechanical">The closed typed declaration, without route JSON reparsing.</param>
+    /// <param name="seed">Its exact immutable namespace and identity seed bindings.</param>
+    /// <param name="owner">The original wound owner used for the canonical target/carrier.</param>
+    /// <param name="causalEventRef">The independently admitted treatment event.</param>
+    /// <param name="mechanicsOrdinal">The ordered application position after the treatment prefix.</param>
+    /// <returns>Detached source definitions and roots with bound materialization expectations.</returns>
     internal static (IReadOnlyList<WoundEffectSourceDefinition> Definitions, IReadOnlyList<WoundRootEffectApplication> Roots)
         DescribeMechanicalApplications(MortalWoundMechanicalEffectLegacyDraft mechanical, MortalWoundTreatmentLegacySeedBinding seed,
             WoundOwnerCoordinate owner, string causalEventRef, int mechanicsOrdinal)
@@ -178,6 +191,8 @@ internal static class MortalWoundHealLegacyPlanner
     /// every supplied prefix or joint batch and the terminal child before publication.
     /// Legacy mechanics ordinals follow the actual preceding batch inventory.
     /// </summary>
+    /// <param name="batches">The complete ordered acquisition/treatment/legacy vector.</param>
+    /// <param name="heal">The exact terminal child, or null for a nonterminal program.</param>
     internal static void RequireDisjointCoordinates(IReadOnlyList<WoundEffectOperationBatch> batches,
         MortalWoundHealOutcomeIntent? heal)
     {
@@ -217,6 +232,8 @@ internal static class MortalWoundHealLegacyPlanner
     /// Requires exact batch topology before allocation; missing, extra, reordered,
     /// merged or split batches cannot be treated as the selected legacy program.
     /// </summary>
+    /// <param name="preparation">The existing immutable private legacy preparation.</param>
+    /// <param name="supplied">The complete proposed independent legacy suffix.</param>
     internal static void RequireExactBatches(MortalWoundHealLegacyPreparation preparation,
         IReadOnlyList<WoundEffectOperationBatch> supplied)
     {
@@ -234,6 +251,10 @@ internal static class MortalWoundHealLegacyPlanner
     /// Verifies the real accepted effect-plan seal and exact ordered allocated
     /// legacy result map before any durable legacy declaration is published.
     /// </summary>
+    /// <param name="preparation">The immutable declarations and originally prepared batch topology.</param>
+    /// <param name="prepared">The same complete standalone or joint preparation.</param>
+    /// <param name="accepted">The actual accepted effect payload and ordered result map.</param>
+    /// <returns>Verified actual allocation groups; no effect identity is generated.</returns>
     internal static IReadOnlyList<MortalWoundHealLegacyApplicationGroup> Finalize(
         MortalWoundHealLegacyPreparation preparation, WoundPreparedAcceptedTurnPlan prepared,
         WoundEffectBatchAcceptedPlan accepted)

@@ -3,7 +3,10 @@
 Issue #1536; canonical US2 scenarios2–5, US5 and FR060–064/067–074.
 Status: independent Astra/high DESIGN accepted with the four finite clarifications
 below. Coherent physical source/typed native and actual UI fixtures/GM guidance are
-authored but UNCOMPILED/UNRUN; whole SOURCE and all runtime outcomes remain open.
+authored; the initial compiled candidate's callback/terminal-heal SOURCE-HOLD now
+has a coherent correction, UNCOMPILED/UNRUN. Whole SOURCE/fixture/selection review
+and GREEN remain open. The final finite source proposal is49/27/25/24; see current
+plan for actual causal evidence, old Meta pin exclusion and unchanged holds.
 Mortal diagnosis qualification is accepted separately below. The player result is
 known target → physical wound → known route/provider → current requirements and
 costs → separate confirmation → one actual mode-specific attempt/result. Cover

@@ -1,3 +1,88 @@
+# T121 coherent callback/terminal correction — SOURCE candidate, UNCOMPILED/UNRUN
+
+Continues e1dd7fc6fb450d8d688fd267f78ec801c6d3b824. Both accepted SOURCE-HOLD
+corrections now have connected production, typed/native/current/joint/UI fixtures,
+GM/example/manifest guards and finite selection. This is authored behavior only:
+independent whole SOURCE/fixture/selection review, fresh four owning builds,
+discovery/PlanOnly/PREP and actual GREEN remain mandatory. Accepted causal6 REDs
+on runtime b0781594 remain unchanged evidence, not new PASS or feature acceptance.
+
+Terminal proof reuses the same actual request/continuation/reservations/allocator
+and common publisher. Aggregate3 exists only to reach I before separate final heal;
+ordered independent legacy batches, actual effect allocations/execution, linked
+History, healed identity/removal, v2/current/browser/output/replay/cost/rollback are
+connected for standalone and real installed-wave joint consumers. Historical v1
+schema/meaning remains; no new v2 blob, synthetic recovery owner/tick, guided wave
+producer or historical deleted-component replay was introduced. The final effect
+plan now also retains the actual retired final source-authority fingerprint, using
+the existing terminal spiritual pattern rather than the pre-retirement authority.
+
+The existing reduction/legacy Fact now includes an actual primary owner-turn-end
+apply_definition reaction and a genuine ordinary child with bounded amount7. The
+post-close current predicate accepts current bounded amount8 as DATA, without a
+claim of historical child-parameter reproduction. Invalid amount11 refuses; the
+forbidden-edge, ambiguous-parent and unrooted-member clones first prove the full
+current canonical resource/item/effect/owner/source/target/index agreement, then
+must fail the terminal lineage join. Foreign mapping and stack faults retain strict
+identity-parser prerequisites and coherent source/target/owner coordinates. Actual
+primary materialization remains bound to declared parameters. A copied original
+live effect payload is accepted; changing its body with the retained genuine
+execution ledger must refuse at the existing typed constructor. No reflection or
+new invalid-state/diagnostic framework is used.
+
+All existing three-mode/native/fault/cold/menu/fresh-spiritual controls remain in
+the final impact proposal, including exact ordinary no-wave guards and the genuine
+joint consumer. The actual UI9 use complete initial world/definitions/owners/
+companions before bootstrap/original. The original physical cadence is86400 minutes,
+so the canonical480/960-minute course waits preserve the wound between separately
+confirmed milestones; the third milestone now actually heals. Deterministic
+guaranteed browser and rollback pin terminal cleanup/removal. Full captures,
+strict raw/held/original byte roles, actual dice, cost, replay and five cleanup
+assertions remain. No test budget increased; course5-turn admission still depends
+on root's measured first UI preparation, with its existing180s protective bound.
+
+GM surfaces now share mortal_guided_terminal_heal_v1 guidance: same client owner,
+canonical mode/category grammar and ordered reductions/heal/legacies, no second
+charge or GM result/effect/History/witness writes. The worked existing family adds
+a complete typed guaranteed IV→I3+heal cosmetic route with explicit no-mutation
+policy and honest premises; it introduces no default price/duration or wire field.
+The documentation guard parses both selections and terminal route through existing
+typed codecs. Six prompt/contract surfaces, both daemon assignments and the manifest
+are synchronized; spiritual mechanics and the eight missing adapters are unchanged.
+
+Final source estimate:49 distinct cases /27 methods /25 descriptors /24 categories.
+Official discovery is authoritative. Existing initial40 were not run; accepted
+callback2+terminal4 are GREEN controls and three targeted terminal Facts are new.
+Direct diagnosis current item2/resource1 and spiritual menu2 are selected because
+shared current/source/menu consumers changed, not for aggregate reporting. No old
+237, Candidate, DFR, Mortal compatibility, Windows or performance/HOLD run is added.
+
+Static JSON/category references, XML and both worked JSON shapes parse; diff
+whitespace checks pass. Thirteen explicit semantic inventory owners cover the new
+leaves/eligibility seam. The selected World closure table has70/70 matching LF
+pins. Exactly one central eligibility literal changes in each existing World/Meta
+pin owner: old BE4672598C9DCCACE5B140E71BEDBC0ECD6FCC860095784BC8346628454FD980
+→554772A72DF1E086DB458E7A666C4DE50957BEA422FBE5009BA8909B1F49B718.
+These are proposals for semantic SOURCE review, not automatic hash approval.
+The broader Meta method at base e1dd7fc6 has20 unrelated pre-existing stale literals
+among107 entries; their source bodies/literals are preserved, all outside this
+physical diff since3cd39c0c. That method stays unqualified/excluded; the exact World
+guard independently covers the changed shared eligibility body. No pin-history
+audit, blind refresh or Meta PASS is claimed.
+
+Optimization: original typed intents, source definitions, actual accepted maps and
+component parameter binding are reused through the existing prepared/effect/source/
+semantic DATA owners. Complete keys remain actual private companion identity,
+request/resolution/prepared/input/payload seals, original frame/generation and
+canonical dependencies; DATA lives only in that operation or sealed durable result.
+No cross-turn cache or permission derives from it. Current operations read each
+closed path once; cloned negative/positive DATA controls perform no physical reads
+or writes. Family/current/claim/source/freshness checks remain at their real owner
+boundaries. Separate canonical preconditions on distinct fault images intentionally
+revalidate those changed DATA; no speedup is claimed without actual measurements.
+Root owns all persistence/build/discovery/runtime. All parent/adapter/HOLD statuses,
+raw roots, archives, saves/recovery and protective limits remain unchanged.
+
 # T121 typed terminal settlement and real UI fixtures — WIP UNCOMPILED/UNRUN
 
 Continues 355ade04dd5cdb7f7d62c9ae0f00c95fb7f85abb. Two additional typed actual-
