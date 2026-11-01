@@ -1,13 +1,17 @@
 ## Current T121 physical guided source candidate (not feature acceptance)
 
-The accepted existing three-mode guided route is now authored end to end with typed
-input/hold/mode/common/current-browser owners, real console/browser/course/rollback
-fixtures and synchronized GM surfaces. It remains UNCOMPILED/UNRUN pending whole
-independent SOURCE, fresh owning builds and exact finite qualification. The proposed
-selection is source-estimated 40 cases / 22 methods / 20 descriptors / 19 categories;
-actual discovery and results control acceptance. No new duration, fee, auto-wait,
-repair-wave shortcut or detached DATA authority is introduced. Parent/adapter/HOLD
-requirements and previous accepted source lineages remain explicit in the plan.
+The three-mode guided candidate is authored with typed input/hold/mode/common/
+current-browser owners, console/browser/course/rollback fixtures and GM guidance.
+It compiles, but independent SOURCE holds two defects: callback-sensitive menu
+freshness and complete terminal-heal publication. Six genuine causal failures are
+independently accepted on runtime b078159473a69b7c9c47d02ed943e2cf7cdd6793;
+zero PASS and no feature acceptance follow. The initial40-case selection was not
+executed; the grouped fix and reviewed finite GREEN selection remain required,
+including linked healed History, terminal identity, effect/carrier removal,
+declared legacies and current output/browser/rollback proof. No new duration, fee,
+auto-wait, repair-wave shortcut, recovery owner/tick or detached DATA authority is
+introduced. Parent/adapter/HOLD requirements and accepted historical source
+lineages remain explicit in the plan.
 
 # T121 current qualification boundary — Mortal diagnosis accepted
 

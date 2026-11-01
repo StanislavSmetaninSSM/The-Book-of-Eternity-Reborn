@@ -148,13 +148,20 @@ this bounded route, not parent T121/FR071/US5/#1536 or the eight proof adapters.
   eligibility/fallback contract. First qualify new typed callback2 causal scaffold;
   product stays frozen until actual expected RED. Preserve no-hook/equality/read
   counts and fresh next-open/failure controls; no duplicated hook policy or cache.
+  Causal prerequisite accepted independently on runtimeb0781594:2 intended final
+  failures/0PASS in6.9016412s/60, after complete byte/fresh-oracle premises.
+  The source fallback correction and GREEN remain pending.
 - [ ] T121-PHYSICAL-GUIDED-TERMINAL-HEAL [US2/US5] Close SOURCE-HOLD legal terminal
   heal through the same request/continuation/common publication, linked healed
   History/terminal identity, canonical effect/carrier removal/declared legacies,
   output/current browser/cost/Fate/replay/rollback. First qualify native terminal4
   causal scaffold (all three modes plus existing remove_then_heal); no expected
-  rejection, hidden option, fake recovery tick or new game rule. Both new scaffolds
-  are UNCOMPILED/UNRUN; see current plan for exact6/2/2/2 and protective bounds.
+  rejection, hidden option, fake recovery tick or new game rule. Native4 causal
+  prerequisite accepted independently on runtimeb0781594:4 intended final failures/
+  0PASS in11.8084897s/120 after complete owner/mode/claim/simulator premises.
+  Six causal rows total are not feature qualification; see current plan for actual
+  source/binary/raw bindings and retained noncausal C1 fixture failures. Both
+  product corrections, their coherent review and GREEN remain pending.
 
 - [ ] T121-PHYSICAL-GUIDED [US2/US5] Connect existing procedure, course milestone
   and guaranteed physical treatment to the same private target/provider/known-route
@@ -167,11 +174,13 @@ this bounded route, not parent T121/FR071/US5/#1536 or the eight proof adapters.
   invented time/cost or diagnosis-duration default. Cheap causal/refusal controls
   precede both-handler mode journeys and common compensation/original rollback.
   Coherent end-to-end source and typed native/actual console/browser/course/rollback
-  fixtures plus GM guidance are now authored, still UNCOMPILED/UNRUN. Whole SOURCE,
-  fresh all-four builds/discovery/exact PREP and verified outcomes remain required.
-  Current finite proposed selection is source-estimated 40 cases / 22 methods /
-  20 descriptors / 19 categories; see the current plan for ownership, correlated
-  schedule proof, no supported guided wave producer, bounds and retained lineages.
+  fixtures plus GM guidance are authored and compile, but whole SOURCE holds the
+  callback freshness and terminal-heal defects above. Initial40-case selection was
+  not executed; six separate causal rows now establish these defects. The final
+  finite GREEN selection must include their corrected/current/legacy/terminal UI
+  consumers and be reviewed after the grouped fix. See the current plan for
+  ownership, correlated schedule proof, no supported guided wave producer, bounds
+  and retained lineages. No broader physical execution acceptance exists yet.
   No checkbox or feature acceptance follows from authored assertions. Other parents/HOLDs stay open.
   Causal prerequisite accepted separately: SOURCE/compiled Integration9b06fa9,
   runtime9b0256956; three actual intended final missing-choice failures/zero PASS,

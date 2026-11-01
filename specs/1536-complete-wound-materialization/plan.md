@@ -1,4 +1,25 @@
-# T121 physical SOURCE HOLD — causal proof pending after fixture failure
+# T121 physical SOURCE HOLD — six causal REDs accepted, product fixes pending
+
+Independent Astra/high OUTCOME accepts exactly6 genuine final-assertion failures,
+zero PASS, from runtime b078159473a69b7c9c47d02ed943e2cf7cdd6793. Integration
+source49f69c819 and the source-equivalent Main/Support/Unit cf127d94a are bound by
+the actual4 PE/PDB/387-source/27-artifact proof. Callback2 fails only at the stale
+skill/accepted-invalid-effect assertions after complete byte/counter/fresh-oracle
+premises:6.9016412s/60, wall14.2634645s, TRX SHA256
+1ad17c7d578f6879881c17f39a31e958514091e23666acfd5cb43b7bf5cee88b.
+Terminal4 (procedure/course/guaranteed/remove_then_heal) reaches actual publication
+after all native owner/mode/claim/roll/simulator/raw-source premises, then fails
+only at TERMINAL_HEAL_CAUSAL with the unsupported grammar's resolution_seal/outcome
+axes:11.8084897s/120, wall19.1679937s, TRX SHA256
+11ec77c1547989239805375aaeda174c4f9dac5a58201f6114b800fb5a03eaba.
+Raw and strict proofs remain in external us5-guided-diagnosis/P2REDC2-callback-red
+and P2REDC2-terminal-red. Complete counts/unique IDs/no skip/timeout/underfill,
+stable pins and closing27/40/4 fences are verified; fixture namespaces equal their
+before-images (not invented individual-root receipts). No managed owner remains.
+Earlier C1 fixture failures remain separate and noncausal. The grouped callback
+fallback and real terminal-heal/legacy/History/current/output/rollback corrections
+may now proceed. Existing source ownership is reused; no speedup or feature PASS,
+cache authority, fake recovery owner/tick, new economy or broader HOLD run follows.
 
 P2REDC2 fresh Integration on49f69c819 exits0 in122.13s with the unchanged102
 warning multiset. Main/Support/Unit remain the source-equivalent cf127d94a owners
