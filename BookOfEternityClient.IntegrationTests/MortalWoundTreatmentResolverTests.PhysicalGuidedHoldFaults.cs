@@ -14,16 +14,30 @@ public sealed partial class MortalWoundTreatmentResolverTests
     public async Task GuidedPhysicalHoldFaultSettlesOnlyProvenAbsenceOrRecoversExactDurableClaims(bool afterCommit)
     {
         var armed = false; var committed = false; var cuts = 0;
+        var mutationTargets = new List<string>();
+        var membersBeforeCut = 0;
+        TrustedLocalPublicationPhase? cutPhase = null;
+        InvalidOperationException? injectedFailure = null;
         var hooks = new FileSystemManagerHooks
         {
+            BeforeCanonicalMutationBoundaryAsync = afterCommit ? null : path =>
+            {
+                if (armed) mutationTargets.Add(path);
+                return Task.CompletedTask;
+            },
             LocalPublicationObserver = (phase, _) =>
             {
                 if (!armed) return;
                 if (afterCommit && phase == TrustedLocalPublicationPhase.CleanupComplete) committed = true;
-                if (!afterCommit && phase == TrustedLocalPublicationPhase.IntentPublished)
+                if (!afterCommit && phase == TrustedLocalPublicationPhase.MemberPublished) membersBeforeCut++;
+                if (!afterCommit && phase == TrustedLocalPublicationPhase.IntentPublished &&
+                    mutationTargets.LastOrDefault() == WoundAcceptedTurnSnapshotContract.PendingResolutionPath)
                 {
-                    armed = false; cuts++;
-                    throw new IOException("Controlled guided hold failure before member publication.");
+                    armed = false; cuts++; cutPhase = phase;
+                    // A one-shot IOException is deliberately retried after proven
+                    // rollback. This row requires a non-transient publication cut.
+                    injectedFailure = new InvalidOperationException("Controlled guided hold failure before member publication.");
+                    throw injectedFailure;
                 }
             },
             BeforeCanonicalReadOpenAsync = path =>
@@ -45,7 +59,20 @@ public sealed partial class MortalWoundTreatmentResolverTests
         fixture.AssertJson(before); // Missing hold refuses before any new allocation.
         armed = true;
         var failure = await Record.ExceptionAsync(() => WoundApplicationService.ResolveMortalTreatmentInputAsync(fixture.Files, fixture.Lease, frame));
-        Assert.NotNull(failure); Assert.Contains("Controlled guided hold", failure!.ToString()); Assert.Equal(1, cuts);
+        if (afterCommit)
+        {
+            Assert.NotNull(failure); Assert.Contains("Controlled guided hold", failure!.ToString()); Assert.Equal(1, cuts);
+        }
+        else
+        {
+            Assert.Equal(WoundAcceptedTurnSnapshotContract.PendingResolutionPath, Assert.Single(mutationTargets));
+            Assert.Equal(TrustedLocalPublicationPhase.IntentPublished, cutPhase);
+            Assert.NotNull(injectedFailure); Assert.Equal(1, cuts); Assert.Equal(0, membersBeforeCut);
+            // The coordinated writer reports a proved rollback as false; the
+            // owning retention boundary emits its existing exact refusal.
+            var refusal = Assert.IsType<InvalidDataException>(failure);
+            Assert.Equal("Physical pending before-image changed before retention.", refusal.Message);
+        }
         MortalWoundTreatmentAttemptRequest? durable = null;
         if (afterCommit)
         {

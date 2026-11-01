@@ -1,3 +1,34 @@
+# T121 native hold fault — fixture-only correction, UNCOMPILED/UNRUN
+
+Base8fc860a0d25d46e07f64a4e4bcd3c362448ac150 (plan-only after runtime587e803d2).
+P3GREEN cheap18 is accepted separately. Native22 actual fail-fast result is10PASS/
+1FAIL/11UNRUN, no timeout/full cleanup; original proof remains external at
+P3GREEN-native22/verified-partial-failure.json. False hold-fault failed at NotNull;
+its TRX contains no cut counter/StdOut, so cuts==0 was never observed. True
+post-commit readback fault passed; no result is replaced or reclassified.
+
+Source establishes a fixture error: the False callback disarms itself and throws
+one IOException at IntentPublished. Trusted-local publication proves rollback,
+then its existing transient-access loop retries the same unchanged request after
+that one-shot injector is disarmed. A successful retry returns no exception.
+This is supported production behavior, not lost compensation or claim authority.
+Both guided retention and accepted diagnosis retention use the same coordinated
+writer, whose proven RolledBack outcome returns false rather than propagating the
+callback exception. The owning guided retention therefore emits its existing
+exact InvalidDataException: Physical pending before-image changed before retention.
+
+Only the False fixture branch now records its real canonical mutation target and
+cut phase, requires exactly the pending path/IntentPublished/one cut/no published
+member, and injects a non-transient InvalidOperationException at that same phase.
+It asserts the exact resulting owner refusal. The True hook/exception contract,
+original absence/full-byte checks, fresh-lease exact request/die/claim restoration
+and inert repeated admission remain. No production/category/budget/test count
+changes, general instrumentation API, new reads/authority/cache or speedup claim.
+The additional existing mutation hook is null for True; False already has an
+arbitrary read hook and promises no source-DATA reuse. Root owns persistence,
+independent delta SOURCE, fresh Integration and actual affected qualification.
+No writer build/test/runtime/commit occurred; diff whitespace check passes.
+
 # T121 physical GREEN — cheap accepted, bounded native attempt failed
 
 Runtime 587e803d2c28b61754fb352289fb90cfba9d7e26: cheap18 completes 18/18 PASS,
