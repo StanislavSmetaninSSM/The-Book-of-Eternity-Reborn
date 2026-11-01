@@ -270,8 +270,8 @@ public partial class GameEngine
         return (issue.Code ?? string.Empty).ToLowerInvariant() switch
         {
             "actor_materialization_missing" => $"{actor} / materialization",
-            "actor_materialization_section_missing" => $"{actor} / {issue.Section ?? \"required section\"}",
-            "actor_materialization_section_empty_surface_invalid" => $"{actor} / {issue.Section ?? \"required section\"} canonical empty surface",
+            "actor_materialization_section_missing" => $"{actor} / {issue.Section ?? "required section"}",
+            "actor_materialization_section_empty_surface_invalid" => $"{actor} / {issue.Section ?? "required section"} canonical empty surface",
             "actor_materialization_afterlife_missing_appearance" => $"{actor} / appearanceDescription",
             "actor_materialization_afterlife_missing_profile_summary" => $"{actor} / profileSummary",
             "actor_materialization_afterlife_missing_personality" => $"{actor} / personalityProfile.archetype",
