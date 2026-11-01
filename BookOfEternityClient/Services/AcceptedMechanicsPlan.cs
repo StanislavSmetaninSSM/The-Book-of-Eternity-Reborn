@@ -692,6 +692,10 @@ internal sealed class AcceptedMechanicsWoundStageBundle
     }
 
 
+    /// <summary>Runs the dormant terminal-copy cost candidate through the unchanged normal route.</summary>
+    /// <returns>A normal detached copy; production callers never use this component entry.</returns>
+    internal AcceptedMechanicsWoundStageBundle DetachedTerminalCopyCandidateForComponent() => DetachedCopy();
+
     /// <summary>
     /// Damages only the private final-history DATA for a synchronous refusal control.
     /// The returned scope removes its fresh marker without exporting the graph or changing any seal.

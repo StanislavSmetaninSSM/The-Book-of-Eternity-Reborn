@@ -143,6 +143,15 @@ this bounded route, not parent T121/FR071/US5/#1536 or the eight proof adapters.
   field, cleanup and full original rollback. Console/browser/rollback all qualify
   in original180s budgets; prior failed roots/results remain preserved externally.
 
+- [ ] T121-PHYSICAL-GUIDED-TERMINAL-COPY [US2/US5] Prove saved final assembly
+  in standalone terminal private bundle copies using the existing retained-source
+  mechanism. First dormant component candidate, actual passive assembly counter,
+  genuine small rankI heal and causal RED/GREEN/equal-work DATA/cost controls.
+  Preserve all fresh admission/execution/legacy/History guards and detachment;
+  initial/public/unqualified copies remain full replay. Production eligibility
+  stays unchanged until worthwhile benefit/refusal parity and independent review.
+  C11 scaffold UNCOMPILED/UNRUN; see physical-guided-checkpoint.md.
+
 - [ ] T121-PHYSICAL-GUIDED-NATIVE-TIMING [US2/US5] Test-only opt-in capture for
   current terminal legacy/removal, using existing passive recorder/gzip transport,
   eight coarse scopes plus nested common membership and actual-root-before-event

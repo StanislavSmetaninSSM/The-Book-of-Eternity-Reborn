@@ -2,6 +2,32 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "mortal-terminal-private-copy-causal",
+  "responsibility": "#1536 T121-PHYSICAL-GUIDED-TERMINAL-COPY. One genuine small standalone rank-I terminal heal with empty legacies, real signed owner/resolver/publication, dormant candidate unreachable from production callers, actual passive assembly source counter and aggregate-only full-constructor/direct-copy/copy-of-copy observations. Complete DATA equality/isolation and fresh preparation/effect/handoff precede intentional zero-assembly oracle. Initial scaffold expected causal RED, not a feature PASS; actual setup cost UNRUN.",
+  "excludes": "No rich current-legacy world, GameEngine/UI/recovery/DFR, fabricated authority, reflection, arbitrary observer callback, event quota, new cache/transport or production retained-copy eligibility. No native retry until benefit and independent review.",
+  "changeHints": [
+    "BookOfEternityClient/Services/AcceptedMechanicsPlan.cs",
+    "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.Contributions.cs",
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.TerminalCopyCost.cs",
+    "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.Copy.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.StandaloneTerminalCopyCandidateRetainsGuardsWithoutReassemblingFinalGraphs"
+      ]
+    }
+  ]
+},
+{
   "id": "mortal-physical-terminal-independent-root",
   "responsibility": "T121-PHYSICAL-GUIDED one actual guaranteed remove_then_heal native publication with cosmetic plus independent mechanical legacy. Same original shared causal body: complete canonical codec/shape/semantic refusals, exact preparation, actual common publication, linked History and current wound routing versus sealed allocation proof. Isolated from the three accepted simple rows; UNCOMPILED/UNRUN correction.",
   "excludes": "No new case or feature, private reflection, fake root ownership, weakened lineage/source/slot guard, or cost/speedup claim. Exclusive 60-second protective bound is lower than the former 120-second category; previous failed row took 6.14 seconds, without predicting new runtime. Current3 and UI remain unadmitted.",

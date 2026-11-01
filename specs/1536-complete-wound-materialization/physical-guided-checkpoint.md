@@ -1,3 +1,41 @@
+# C11 terminal private-copy causal scaffold — DESIGN accepted; not wired
+
+Tracked subtask T121-PHYSICAL-GUIDED-TERMINAL-COPY addresses measured repeated
+terminal bundle copying during the102.734s Compose. Existing joint retained-copy
+architecture is the reference; widening its eligibility alone is forbidden.
+Owner/key: one genuinely constructed source bundle and its private sealed input,
+prepared/effect/final graphs, exact companions and complete recomputed fingerprints.
+Lifetime is that object/copy operation, no static store/TTL/dictionary/new cache.
+Returned mutable DATA remains independently detached. Current companion/admission
+and full graph/history seals remain fresh; no cached publication permission.
+
+Independent Astra/high DESIGN accepts a dormant component candidate first.
+Initial scaffold delegates the candidate to unchanged normal DetachedCopy; no
+production eligibility/cache behavior changes. Add one passive-only timer at the
+actual AssembleWoundContributions implementation, never an arbitrary observer.
+Use existing genuine diagnosis fixture with pre-ownership rankI terminal-heal
+callback/empty legacies, actual resolver/publication and pure bundle test helpers.
+Aggregate-only windows measure full-constructor reference/direct candidate/copy
+of copy outside setup. Assert true terminal state, complete DATA equality/isolation,
+all three observations and fresh preparation/effect/handoff before the intentional
+zero-assembly oracle. A compile/setup timeout is not causal RED. Setup cost is UNRUN.
+
+Finite plan:
+- [ ] Publish/review only the counter, dormant candidate and causal test/category.
+- [ ] Four fresh owning builds, exact discovery/PlanOnly/resource/PREP, one bounded
+  causal RED showing actual assembly/replay rather than an empty or renamed wrapper.
+- [ ] Implement conservative shared terminal admission for the component candidate:
+  continuation→exact original baseline→whole existing contribution checks remain
+  fresh; only stable final assembly may be reused. Initial/public/unqualified
+  constructors and production DetachedCopy stay full replay. SOURCE then cheap
+  GREEN/equal-work counters/cost, isolation and complete refusal-parity controls.
+- [ ] Only after worthwhile measured benefit/correctness and independent review,
+  consider production wiring, affected regressions and native/UI admission.
+If assembly savings are negligible, keep it unwired and do not launch native.
+T609/fullDFR and other parked routes remain separate; no promise of speedup.
+GM rules/state/payloads are unchanged by a dormant internal test entry and timer;
+no prompt/example update applies. Full C9/C10 evidence and all current bins remain.
+
 # C10 native comparison — TIMEOUT / UNKNOWN; Compose completes in102.734s
 
 Runtime43b262af2950b64195ee2f60c445fc88b5783c33 / compiledIntegrationab740e306:
