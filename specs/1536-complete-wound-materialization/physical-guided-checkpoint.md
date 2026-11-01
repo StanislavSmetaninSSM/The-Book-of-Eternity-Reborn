@@ -1,3 +1,34 @@
+# C14 ordinary clock publication — WIP, UNCOMPILED / UNRUN
+
+Independent Astra/high accepts the exact native causal RED recorded below.
+The initial production implementation now joins the shared raw-resource entry
+only after specialized/QTE classification, before ordinary effect/wound intake.
+It derives checked Int32 minutes from the authenticated physical original and
+current delta, preserves its validated calendar, and retains only on the two
+ordinary successful exits. Known later refusal/error compensates only the exact
+owned clock after-image; uncertain publication/foreign drift fails closed.
+CanonicalAccumulatedFiles now includes the clock so both normalizer rollback
+and Engine baseline loading retain its original bytes. The shared progression
+mutation schema and specialized/capture clocks are unchanged.
+
+Focused independent inspection found and corrected three WIP defects before
+compilation: unsupported optional-presence selection for WoundCommandPath,
+timeChange:null regression, and an unclassified invalidation failure during
+compensation. Original command absence now uses the existing detached complete
+manifest/rollback inventory, with exact current guards; no presence protocol
+extension. Delta-null remains the existing no-delta contract. Further tests,
+GM/example synchronization and final coherent SOURCE review remain pending.
+This is remote preservation only, not production qualification or course admission.
+
+Optimization: one private operation-scoped original/before/after DATA owner;
+existing source, coordinated publication and authority invalidation services.
+Fresh original/request/control/current/source checks remain at mutation and retain
+boundaries. No new cache, source sweep, diagnostic stack or speedup claim.
+Raw stays outside checkout; unchanged start reserve687865856 bytes. No old
+PASS/UNKNOWN/UNRUN/HOLD is relabelled. Next: finite malformed/source/rollback
+controls and docs, final review, preserve actual current bins, fresh affected
+builds/exact discovery/PlanOnly/PREP, then causal GREEN before full course.
+
 # C14 genuine ordinary clock — exact causal RED; OUTCOME pending
 
 Runtime a3dc3686fccd16099a34a6e05bae8340b895d45b / compiled Integration

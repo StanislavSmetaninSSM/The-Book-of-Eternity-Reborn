@@ -691,6 +691,16 @@ public partial class ValidationService
             if (issues.Any(static issue => issue.Severity == IssueSeverity.Error)) return issues;
         }
         var mortalReplay = readMortalQteReplay?.Invoke();
+        // Plain ordinary waiting must publish numeric time before effect/wound
+        // intake. Deferred captures and specialized owners retain their own clock.
+        var ordinaryClock = !completedMortalReplay && !isTerminalReceiptReplay &&
+            mortalReplay is null && mortalCapture is null && spiritualCapture is null &&
+            currentInputs is null && naturalOwner is null
+            ? await PrepareOrdinaryMortalClockAsync(writeLease, manifest, issues) : null;
+        Exception? ordinaryClockPrimary = null;
+        try
+        {
+        if (issues.Any(static issue => issue.Severity == IssueSeverity.Error)) return issues;
         var woundHandoffSink = new AcceptedTurnWoundHandoffSink();
         if (mortalReplay is not null)
         {
@@ -791,7 +801,10 @@ public partial class ValidationService
             ownerComposition.OwnerTransitions.Count == 0 &&
             !acceptedItemOwners.Any(static owner => owner.SameTurn) &&
             woundHandoff is null && mortalReceipt is null && spiritualCapture == null && mortalCapture == null)
+        {
+            if (ordinaryClock is not null) await ordinaryClock.RetainAsync();
             return issues;
+        }
 
         var requestJson = await _fs.ReadFileAsync(writeLease, "input/turn_request.json");
         if (!TryParseResourceTurnRequest(
@@ -1188,7 +1201,21 @@ public partial class ValidationService
                     IssueCategory.ClientOwnedSurface));
             }
         }
+        if (ordinaryClock is not null && result.Success &&
+            !issues.Any(static issue => issue.Severity == IssueSeverity.Error))
+            await ordinaryClock.RetainAsync();
         return issues;
+        }
+        catch (Exception error)
+        {
+            ordinaryClockPrimary = error;
+            if (error is CoordinatedStatePublicationUncertainException) ordinaryClock?.PreserveUncertain();
+            throw;
+        }
+        finally
+        {
+            if (ordinaryClock is not null) await ordinaryClock.CloseAsync(ordinaryClockPrimary);
+        }
     }
 
     /// <summary>

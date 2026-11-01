@@ -49,6 +49,7 @@ public partial class CanonicalStateNormalizer
 
     public static readonly string[] CanonicalAccumulatedFiles =
     {
+        EffectAcceptedTurnInputComposer.WorldTimePath,
         "game_state/meta/soul_state.json",
         "game_state/meta/guardians.json",
         ShiningAbodeState.StatePath,
