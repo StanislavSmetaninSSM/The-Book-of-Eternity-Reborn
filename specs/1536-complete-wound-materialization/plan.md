@@ -1,5 +1,12 @@
 # T121 coherent callback/terminal correction — SOURCE candidate, UNCOMPILED/UNRUN
 
+First fresh P3GREEN Main build onac3016aac failed in101.39s with one CS0122:
+the new legacy preparation reads the existing private MaxHealLegacies constant.
+The canonical value remains8; only internal visibility and its XML summary change
+so both parser and planner share the same bound. The warning code/message multiset
+matches baseline (12 warnings). Support/Unit/Integration and runtime have not started. The failed
+raw build is preserved; narrow compiler-only readback precedes the next Main build.
+
 Whole independent Astra/high SOURCE/fixture/selection review of13a8838f2→ab75efb9c
 found no additional material functional/authority defect. Its one compiler blocker
 is corrected by removing static from two predicates that capture kind; predicates,

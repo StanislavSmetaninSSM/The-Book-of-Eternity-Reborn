@@ -16,7 +16,8 @@ internal static partial class MortalWoundTreatmentContract
     private const int MaxCourseMilestones = WoundMaterializationContract.MaxTreatmentOutcomeMembers;
     private const int MaxResourceSelectors = 64;
     internal const int MaxOutcomeOperations = 8;
-    private const int MaxHealLegacies = 8;
+    /// <summary>Maximum aggregate legacy rows in one declared terminal heal.</summary>
+    internal const int MaxHealLegacies = 8;
 
     private static readonly IReadOnlySet<string> MortalRouteVisibilities = Set(
         "public", "known_to_player", "hidden");
