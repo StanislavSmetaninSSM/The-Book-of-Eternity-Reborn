@@ -1,3 +1,22 @@
+# T149 remaining inventory PASS — final bounded OUTCOME pending
+
+Independent schema delta/PREP accepts exact singleton runtime
+ef2c7623a7cd556c49e0780f23c25fd7100cb1d7 after corrected catalog validation:
+1,324 categories / 13,151 methods, no unmapped/stale selector. The singleton
+completes 1/1 descriptor/method/case in 8.2239244s, exit 0, no timeout, skip,
+duplicate or underfill; process cleanup and explicit fixture absence pass.
+Primary R5-inventory1 summary SHA256:
+a7fb3b7e134cc41fd49fa83ac4ebe8deb70e08a03db4e8fb7cfd258963217be0;
+TRX SHA256:
+4ecb43ae5cc5efd1a4f180928e75f8cbe8ec236bbd34ad43988dad8e0326b8d2.
+
+The bounded T149 evidence is now 11 distinct PASS on two reviewed versions:
+typed Integration 9 and Unit confinement 1 at f21ec22c, corrected inventory 1 at
+ef2c7623. It is not one fresh eleven-case run. Main/Support/Bridge/CrashHost /
+Integration retain source 9dc61ba9f; Unit is built at eaec6901f, with only the
+reviewed anchor literal changing. Final bounded OUTCOME is pending. Parent T149,
+all other source surfaces, R2 browser UNKNOWN and broader HOLDs remain open.
+
 # T149 Unit built; catalog link schema correction before discovery
 
 Delta SOURCE accepts restored unselected root ownership and the exact singleton

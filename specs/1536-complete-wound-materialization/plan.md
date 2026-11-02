@@ -1,3 +1,18 @@
+# T149 addressed evidence complete — final OUTCOME pending
+
+Remaining inventory runtime ef2c7623a7cd556c49e0780f23c25fd7100cb1d7 passes 1/1
+in 8.2239244s, complete/no timeout/cleanup and fixture absence proven. Together
+with retained R4 typed9 + confinement1 this gives 11 distinct PASS across two
+reviewed runtimes, not a fresh aggregate. Corrected catalog validation passes
+1,324 categories / 13,151 methods with no unmapped/stale selectors. Final bounded
+OUTCOME remains pending; parent T149 and all other HOLDs are unchanged.
+
+Next independent functional result is T152 safe wound-acquisition notification:
+source review identifies interior C0 controls surviving the current notification
+projection. Reuse the existing WoundPlayerProjection.Text policy, after original
+claim/identity validation, with cheap typed causal proof; do not invent a blanket
+bidi/confusable policy or emit terminal escape sequences during tests.
+
 # T149 Unit built; finish corrected catalog and singleton plan
 
 Fresh Unit-only build at eaec6901fb02d49ec956856dd705a9293c9939d7 succeeds

@@ -48,6 +48,20 @@
   is authored; only that failed Unit method is selected for confirmation after
   independent review and fresh Unit build. Parent and bounded acceptance remain
   open until that result is reviewed; no overall fresh 11 PASS is claimed.
+  Remaining inventory runtime ef2c7623a7cd556c49e0780f23c25fd7100cb1d7 passes
+  1/1 with full result/cleanup proof. Bounded evidence is 11 distinct PASS across
+  R4/R5 versions, not one fresh aggregate; final OUTCOME remains pending.
+
+- [ ] T152-NOTIFICATION-CONTROLS [US1/US5] Apply the already existing wound
+  projection text policy to accepted acquisition notification and narration:
+  interior ESC/backspace must not survive in player-facing PlainText or encoded
+  console/browser projections. Preserve raw claim/identity binding and canonical
+  DATA, accepted lineage and existing markup/privacy behavior. First obtain cheap
+  typed Parse/Claim/Compose causal RED with safe case labels (never emit terminal
+  control sequences), reuse existing WoundPlayerProjection.Text rather than a new
+  policy/framework, then independent review, fresh affected builds and addressed
+  GREEN. Preserve the existing newline/tab/Unicode policy; no blanket bidi rule,
+  GameEngine/performance stack or broad completed-set replay is introduced.
   Authored scaffold WIP: actual typed PlayerStateFiles with exact canonical-path
   selection, three methods/nine source rows (arrays2 causal, scalar/null5 preserving,
   genuine catalog-valid canonical2), one exact60s category. Existing minimal
