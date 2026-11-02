@@ -25,6 +25,9 @@
   relative exclusion correction WIP passes read-only5,530-input enumeration;
   SOURCE accepted; new PREP required, desktop/mobile UI remain UNRUN. No accepted PASS
   rerun or production change; raw retained outside checkout.
+  F5 reaches History then completed fixture FAIL14.630026s: page H1/panel H4
+  locator ambiguity, not an observed product focus defect. Full trace/cleanup
+  preserved; level1-only selector correction WIP, new desktop SOURCE/PREP pending.
 
 - [x] T150-GM-TERMINAL-GUIDANCE [US2/US7] Reconcile the stale guide/example
   terminal heal/legacy claims, both manifest RequiredText entries and coverageLimit,

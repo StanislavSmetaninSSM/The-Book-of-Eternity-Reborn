@@ -1,3 +1,22 @@
+# T118 actual-App desktop — retained locator failure, correction WIP
+
+F5 on402596fc6007801a56fecf0f99e572e4320e97d0 reaches the real App History
+response, then completes FAIL in14.630026s without timeout. Its heading focus
+locator matches both the valid page H1 and panel H4. Focus failure of the product
+is not established; the selector itself is ambiguous. Completed request records,
+three screenshots and the complete143-member CRC-valid trace remain outside
+checkout in actual-shell-readonly/F5-desktop-case and its envelope. Source and
+all pinned dependencies are unchanged; no violations/page errors, all owners
+closed, no active process remains. The whole desktop case is not qualified.
+
+Correction scopes all three intended actual-mode page-heading focus checks to
+level1; earlier controlled-host mode and every behavioral assertion remain.
+Remaining History text/action, active-back and final scene selectors were checked
+against their actual components; no further source mismatch was found. SOURCE
+and fresh desktop PREP remain pending, mobile UNRUN. Types/production/configs
+are unchanged: retain accepted F3 compile-only1 and F2 build on explicit lineages,
+no unrelated PASS rerun. Prior F4 early pin error and all UNKNOWN/HOLD are retained.
+
 # T118 actual-App preparation correction WIP — first DOM attempt did not start
 
 F3 compile-contract1 is accepted on source210c45de0893feb79fa9a497244e1f545ac68dfe:
