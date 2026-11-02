@@ -2,10 +2,10 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "wounds-legacy-discovery-retirement",
-      "reason": "Only failed discovery guard after exact alias retirement; retain D1 actual canonical9 and ownership1 PASS. Fresh Unit required; unchanged Main/Integration are source-equivalent. Protective60s unchanged.",
+      "category": "wounds-combatant-legacy-raw-response",
+      "reason": "Initial causal raw7 only before production legacy wound-effect correction. QTE scaffold compiles/discovers but stays UNRUN; old accepted controls are not repeated.",
       "contracts": [
-        "#1536 existing T071/T149 no loose aliases / semantic inventory / explicit resurrection ban"
+        "#1536 existing T071/T149 FR-013 FR-099 retired wound-linked effect admission"
       ]
     }
   ]

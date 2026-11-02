@@ -1,3 +1,37 @@
+# Existing T071/T149: legacy combat wound-effect raw causal scaffold WIP
+
+Base45638298ac220de18edee424643873871fa53c7f remote checked; prior parser retirement
+accepted10+1 distinct groups,7 immutable GitHub changed-file blobs matched. External
+proof50418641b61d6310671ae4427fad14d5d098e6a7712aeb226b006ed1a884df9f; bounded
+readback only, not full restore. Current source gap independently confirmed by Sol:
+public ValidateResponse reaches legacy WoundReference/sourceWoundId admission and
+stale999 hints. DTO/map preserve nested data, but late canonical effects already
+reject the carrier: no publication bypass claim. Current GM direct-cutover rule
+already forbids nonempty direct combat carriers and magic durations.
+
+Test-only new raw7: type4 across both sides/collections, source-property string/null2,
+absence/current neighboring raw1. Real FS generation, complete raw actor/effect
+controls, typed empty combat effect carriers and exact actual source/JSON bytes
+precede each Error oracle. No fake accepted owner or substituted validator verdict.
+One genuine existing signed-QTE nested peer reuses typed helper/production serializer;
+its optional expected path/code args preserve existing root-player/NPC assertions.
+Extra current empty battle sources are seeded before first snapshot and protected.
+Initial selection raw7/60s only; QTE1 compiles/discovers but runtime UNRUN/180s.
+
+No production change yet, all new C# UNCOMPILED. Next independent scaffold SOURCE,
+archive current Integration own artifacts, fresh Integration/proofs/catalog/exact
+Plan/PREP causal raw7; only after actual RED minimal wound-only refusal/enum/hint
+cutover with meaningful inventory and GM negative example/manifest reconciliation.
+Review all already-known fixture/doc dependencies together, not serial runtime finds.
+Existing effect_legacy_rejection_v1 is the sole explicitly negative legacy-example
+section; use it, not new positive legacy snippets elsewhere. Existing canonical
+late-refusal peer can be selected narrowly after relevant changes.
+Optimization: existing minimal per-test context/source reads, no full world or new
+cache/framework; tiny fresh parsing/guards need no cache or authority exception.
+No general combat/aggression/defeat/QTE orchestration, new game rule or task IDs.
+Parents and all previous UNKNOWN/HOLD remain; raw only outside checkout under
+/workspace/tboe-linux-evidence-20261102/combatant-legacy-wound-response.
+
 # Existing T071/T149: dead player parser and retired-alias ban accepted
 
 Independent Sol/xhigh SOURCE, PREP and primary OUTCOME accept this bounded
