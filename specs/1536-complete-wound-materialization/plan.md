@@ -1,3 +1,38 @@
+# Joint terminal anchors: causal proof accepted; minimal correction authored
+
+T121-PHYSICAL-JOINT-TERMINAL-ANCHOR / T152-NOTIFICATION-CONTROLS / #1536.
+Independent Astra SOURCE/PREP/OUTCOME accepts the actual causal2 on runtime
+b18e77224237e228c02d8eb16f1cc5893a95adb4: nonterminal PASS, terminal FAIL only
+at final anchors.Success (line137), all preceding genuine authority/clock/replay/
+History/source-image premises and all7 constructor-refusal controls completed.
+Wall68.1536476s, both cases complete, no timeout or leftover owners/fixture roots.
+Terminal allocation assertions remain UNREACHED until GREEN. Two full captures
+have independently verified hashes, EOF/CRC, strict UTF-8 and complete closing.
+
+The minimal production correction is authored, UNCOMPILED/UNRUN: retain full
+joint final replay and fresh owner/source/clock gates, require exact canonical old
+Before, then accept old delete/AfterNull only through this same sealed terminal
+view. Nonterminal still requires update and exact treatment transition. Only the
+new physical CREATE receives initial anchors. No reducer, source owner, timing,
+game rule, publication interface or GM-authored contract changes.
+
+Finite GREEN selection is anchor2 + original failed full terminal1 + locally
+corrected worsening1, three Integration descriptors/four cases at unchanged
+120/120/60s. Nine previously accepted output PASS remain on their recorded two
+versions; neither new compilation nor causal RED closes T152 or its parent.
+Both local worsening route inputs were compiled in the causal build but that
+scenario remains UNRUN after the fixture correction. No broader HOLD replay.
+
+Optimization: reuse existing full joint/terminal reducers and semantic DATA;
+no second reducer, new cache, arbitrary callback or additional filesystem read.
+The additional terminal-view admission and exact small Before comparison preserve
+integrity. Fresh current-owner/source/clock checks remain mandatory. This is a
+correctness fix; no speedup is claimed. Existing stage-only proof avoids unrelated
+common preparation, while the full terminal peer still qualifies its real suffix.
+GM no-update: existing accepted terminal treatment/History/anchor semantics are
+restored without changing authored wire, prompt, price, procedure or output.
+Next coherent SOURCE, fresh affected owner graph/pins/Plan/PREP and addressed GREEN.
+
 # Joint terminal canonical anchors — bounded causal scaffold WIP
 
 2026-11-02 UTC, T121-PHYSICAL-JOINT-TERMINAL-ANCHOR / #1536, clean base

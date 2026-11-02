@@ -81,14 +81,16 @@
   output. Independent bounded DESIGN, cheap typed terminal/foreign-union refusal
   proof and SOURCE precede fresh builds/addressed qualification; no generic delete
   fallback, fabricated authority, increased budget or unrelated perf/HOLD work.
-  Sol/Astra DESIGN accepted for scaffold only. Test-only WIP now uses unchanged
-  genuine stage-only prefix for terminal/nonterminal theory2, with exact seven
-  detached copy checks before the final actual anchor oracle and unchanged sources.
-  One new120s descriptor selected, cost UNMEASURED; exact allocation assertions
-  remain UNREACHED at old terminal failure. Production remains unchanged/unadmitted.
-  Worsening's two local treatment templates are corrected; its assertions/global
-  helper and original unselected60s owner stay intact. SOURCE/build/Plan/PREP/RED
-  remain pending; no writer commit/push or runtime. Full terminal peer stays separate.
+  Sol/Astra DESIGN and independent SOURCE/PREP/causal OUTCOME accepted. Runtime
+  b18e77224 completes2/2: nonterminal PASS and terminal final-oracle RED, all7
+  constructor refusals and original source/bundle images proven. Full captures and
+  owned cleanup verify; terminal allocation oracles remain UNREACHED until GREEN.
+  Minimal same-sealed-terminal delete/exact-Before production correction is now
+  authored, UNCOMPILED/UNRUN; full replay/current owner/source/clock remain intact.
+  Worsening's two local treatment templates are freshly compiled, scenario UNRUN
+  after correction; assertions/global helper remain. Next coherent SOURCE/fresh
+  owning builds/Plan/PREP then anchor2 + full terminal1 + worsening1 at unchanged
+  120/120/60s; accepted output9/HOLDs are not replayed or closed automatically.
 
 # T108 Shining patient treatment — #1536
 

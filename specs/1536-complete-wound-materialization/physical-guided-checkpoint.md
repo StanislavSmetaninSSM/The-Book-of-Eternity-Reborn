@@ -1,3 +1,49 @@
+# Joint terminal causal2 accepted; production correction WIP
+
+Actual runtime b18e77224237e228c02d8eb16f1cc5893a95adb4, source build same SHA
+for fresh Integration only (73.1872027s,107 warnings/0 errors). Its warning multiset
+matches the previous same-environment Integration build; no changed-file warning.
+Other five owners remain unchanged at894c9fb719e393a914ccbb601fbcbdc8d433325f.
+Six PE/PDB pairs and436 current source bindings,75 managed artifacts,1,236 resource
+copies/12 native copies verify. Catalog1,328/13,154 valid, no unmapped/stale;
+PlanOnly one theory/two cases/120s. Seven changed files were freshly read back at
+immutable remote b18e77224 and match commit/checkout; this is a bounded readback,
+not a new full-tree restore. Proof SHA256:
+2f94b1a6656838f6738426d8fc0a2b8da56e541fe822c3ce7d5d426c671f87b8.
+
+Independent Astra SOURCE/PREP/OUTCOME accepts actual causal2: nonterminal PASS
+13.0197822s, terminal final anchors.Success FAIL46.6857568s, wall68.1536476s,
+exit1, both complete/no timeout/duplicate/underfill. Terminal failure is the exact
+changed-union code at line137 after all authority/clock/union/Before/heal-child
+History and source/bundle nonmutation premises. All7 independently resealed
+copies refuse at bundle constructor/finalPlan; they do not reach anchor API.
+Nonterminal allocation oracles PASS; terminal allocation oracles remain UNREACHED.
+Summary SHA2567ec4d43d2b51a147991ad266a451ae7abe6680153a9c4748bf3aa7bd8eec6476;
+TRX SHA256b50847675ce5852ea87d5c379b0cea4fe22373015de60f4c4bb288b02593730d.
+
+Both complete captures have full EOF/CRC, strict UTF-8, stored/decoded hashes,
+all attempted rows and closed timing/diagnostic receipts independently verified.
+Nonterminal:47,741,612 stored/456,046,165 decoded bytes/902,817 rows.
+Terminal:48,191,662 stored/461,943,975 decoded bytes/915,425 rows.
+Both actual registered fixture roots are absent; no new private TMP root or live
+owner remains. Primary raw is external under notification-controls/A1-red2;
+causal-capture-verification SHA256:
+5b766ce118d452a2455036efd04d2832e80d4a21fab5977db5c53c0df5b26183.
+Latest75 binaries are losslessly archived before production rebuilding:
+A1-managed-before-terminal-correction.tar.gz,102,619,887B, SHA256
+ec064bddc72160fb2757c03b0717f3feb296ca289f827ef63b351c3106555020;
+all member lengths/hashes and full gzip EOF/CRC verified, no deletion.
+
+Admitted minimal production correction is now authored but UNCOMPILED/UNRUN.
+Exact old canonical Before and same sealed terminal view distinguish rightful
+delete/AfterNull from preserved nonterminal update. Full final replay/current
+owner/source/clock and single new-CREATE allocation remain. Existing reducer/DATA
+is reused; no new cache/read/diagnostic mechanism or performance claim. GM contract
+is unchanged. Next SOURCE and fresh affected builds, exact four-case Plan/PREP,
+then anchor2/full terminal1/worsening1 at original120/120/60s. Nine output PASS
+retain their earlier mixed-version lineage. T121/T152, R2 UNKNOWN and all broader
+HOLDs remain open; neither causal RED nor compilation is feature acceptance.
+
 # Joint terminal anchor causal scaffold — source-only WIP, not production fix
 
 2026-11-02 UTC, basef04bffaeb736d295bdec60c157dc4fdab3668af7. Parent delivered

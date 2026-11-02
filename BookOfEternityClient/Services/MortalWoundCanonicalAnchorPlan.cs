@@ -297,18 +297,25 @@ internal sealed class MortalWoundCanonicalAnchorPlan
                     "the current joint owner's exact canonical minute", "missing, malformed or changed clock");
             var mutations = bundle.FinalPlan.CarrierContributions.SelectMany(row => row.Mutations).ToArray();
             var acquisitions = mutations.Where(row => row.Operation == "add" && row.BeforeWound is null).ToArray();
-            var treatments = mutations.Where(row => row.Operation == "update" && row.BeforeWound is not null &&
+            var treatments = mutations.Where(row => row.BeforeWound is not null &&
                 row.WoundId == joint.Outcome.Before.WoundId).ToArray();
             if (mutations.Length != 2 || acquisitions.Length != 1 || treatments.Length != 1 ||
                 acquisitions[0].AfterWound is not { } after || after.Classification.Domain != "physical" ||
                 after.LastTransition.Kind != "create" || after.WoundId != prepared.AllocatedWoundIds[0] ||
                 after.LastTransition.TransitionId != prepared.AllocatedTransitionIds[0] ||
                 after.Recovery.RecoveryAnchor is not null || after.Recovery.DeteriorationAnchor is not null ||
-                treatments[0].AfterWound?.LastTransition.TransitionId != joint.Outcome.TransitionId)
+                WoundMaterializationContract.SerializeCanonical(treatments[0].BeforeWound!) !=
+                    WoundMaterializationContract.SerializeCanonical(joint.Outcome.Before) ||
+                (joint.Outcome.PreparesTerminalHeal
+                    ? treatments[0].Operation != "delete" || treatments[0].AfterWound is not null ||
+                      !WoundAcceptedTurnPlanner.TryReadTerminalTreatment(prepared, out var terminal) ||
+                      !ReferenceEquals(terminal.Continuation, prepared.JointRepairContinuationAuthority)
+                    : treatments[0].Operation != "update" ||
+                      treatments[0].AfterWound?.LastTransition.TransitionId != joint.Outcome.TransitionId))
                 return Failed(WoundIdentityState.StatePath, "accepted_mechanics_joint_anchor_contribution_invalid",
                     "the owner's new physical CREATE plus its exact independently reduced old-wound treatment", "changed union");
-            // Typed final replay above validates treatment's reducer-derived anchors;
-            // only the new acquisition receives initial creation/condition anchors.
+            // Full typed replay authenticates the old wound's update or terminal
+            // treat/heal deletion. Only the new acquisition receives initial anchors.
             return new(new MortalWoundCanonicalAnchorPlan(bundle.BundleFingerprint, currentTime.Value,
                 [CreateInitialAllocation(after, currentTime.Value)]), Array.Empty<ValidationIssue>());
         }
