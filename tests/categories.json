@@ -2,6 +2,32 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "wounds-spiritual-strain-maneuver-failure-entry",
+  "responsibility": "#1536 T081-D causal entry only: real signed maneuver/setback vs guard ordinary2/4claims/soleIII, valid narration/III strain-maneuver selection must request exact owned strain correction A; other-side policy refusal/canonical7/no-common-plan guards. Full durable source/C4/next-turn/heal historical route remains separate and unimplemented.",
+  "excludes": "No fake source/authority, caller preimage, general maneuver/matrix/QTE/ACTIVE change, author4rule choices, old5/20/C4 rerun or HOLD. Late first-A policy guards are UNREACHED until genuine consumer GREEN; this entry alone does not qualify failed maneuver end-to-end.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualStrainManeuverFailure.cs",
+    "BookOfEternityClient/Services/Validation/ValidationService.SpiritualStrainDependency.cs",
+    "BookOfEternityClient/Services/SpiritualWoundSourceWitness.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualStrainBurden_PlayerManeuverSetbackRequestsOnlyOwnedStrainCorrection"
+      ]
+    }
+  ]
+},
+{
   "id": "wounds-spiritual-strain-maneuver-success",
   "responsibility": "#1536 T081-D one real III strain/maneuver choice followed by exact player maneuver/success against lawful guard: ordinary two exchanges/signed dice/one sourceIII, direct private completion with one decision/no artificial none, cold validator reopening, exact strains/position/costs and canonical nonmutation. Actual c954 causal proved integration_required after lawful selection; earlier d9 narration preparation FAIL is separate. GREEN must directly complete and cold-reopen the unchanged ordinary maneuver.",
   "excludes": "No tactical matrix changes: opposing pressure is invalid for successful maneuver. No general QTE/combat/ACTIVE, new author rules, partial_success/opposition/failure-family extension, old accepted sets rerun, canonical publication/Engine/UI/fresh OS or HOLD retry.",

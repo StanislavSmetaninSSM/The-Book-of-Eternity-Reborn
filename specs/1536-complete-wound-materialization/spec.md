@@ -3687,6 +3687,49 @@ standard noncombat/healing art.
 Duplicate profile/operation coordinates within one wound are invalid. These
 are consequence primitives, not a catalog of complete spiritual wounds.
 
+#### Planned bounded failed-maneuver strain proof (T081-D)
+
+This technical extension implements the existing failed-operation +1 rule; it adds
+no game rule. The first route is one newly materialized III strain/maneuver root,
+direct-root last player maneuver/setback and genuine signed opposed dice. It is
+not implemented or qualified by the successful-maneuver result.
+
+The existing client-owned spiritual source witness MAY carry a closed optional
+`strainPreimage` object with exactly `version=1`, `ordinaryExchangeJsonBase64`,
+`parentSourceId`, `parentWoundJsonBase64`, `effectId`, and `componentId`. The existing
+source fingerprint covers it. The client MUST obtain the full ordinary exchange
+through the existing independent source-free probe before selection, and issue
+the proof only under current owner/ordinal, selected root, actual mechanically
+available contribution and stack1 checks. Caller JSON, subtracting a step, a
+creation fingerprint alone or a currently found effect MUST NOT grant authority.
+
+The parent MUST be the unique earlier materialize III decision of the same conflict
+instance and original session/request/snapshot/turn, with an earlier exchange.
+This first route excludes retrauma and guarantee-satisfied parents. The retained
+full parent envelope, including owned definitions/root bindings/slots, MUST match
+its exact first create History transition, wound/turn/event/transition/owner/realm
+and canonical after fingerprint. The existing opportunity-authority linkage MUST
+be used; History.SourceFingerprint is not the source-witness fingerprint.
+
+One shared pure comparison verifier MUST check closed shapes/strict UTF-8, full
+parent graph and component agreement, one applicable strain/maneuver magnitude1,
+and the exact sole actual delta `min(broken, ordinary + 1)` in player strain. Pure
+comparison DATA never authorizes a lane, source, publication or historical claim.
+Only the maneuver lane check receives the proved ordinary after-image; actual
+strain/dice/cost/chronology/harm/source math/final echo remain actual.
+
+The existing owner-issued live/C3 path, sealed completed-mechanics C4 path and
+validated signed-baseline historical path MUST all bind that same proof. History
+requires the exact matching accepted receipt and actual exchange, independently
+joined with History; mutable current receipt JSON and generic historical exemptions
+are forbidden. Healing/removal of the active effect MUST NOT invalidate genuine
+past evidence or let the current catalog replace retained evidence.
+
+Acceptance requires actual C2 to C4, a subsequent signed turn, and historical
+revalidation after real healing removes the strain root, plus foreign/late parent,
+changed preimage/definition/creation hash, moved exchange and caller-only receipt
+refusals without side effects. Live-only success does not complete this route.
+
 #### Spiritual conflict and injury
 
 - **FR-029**: Every spiritual conflict MUST fix one danger mode at start, and any escalation MUST be explicit and accepted before its higher cap applies.

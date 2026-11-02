@@ -1,3 +1,49 @@
+# T081-D failed maneuver durable comparison — design and causal scaffold WIP
+
+Test-only causal entry is now written, C# UNCOMPILED/runtime UNRUN. It uses
+existing independent signed5/15/4/12 fixture DATA, maneuver/setback vs guard with
+costs3/2 and unchanged ordinary strain/control/lost position. Full ordinary
+source2/claims4/soleIII and exact acquisition narration precede real III choice.
+Expected RED is only missing consumer after selection; late exact A policy and
+other-side/canonical/no-authority guards UNREACHED then. First A alone will not
+close the connected C4/history route. One new Integration Fact/60s only.
+No production/GM capability change; GM sync belongs to the actual implementation.
+Policy baseline is freshly read after C2 phase transition, not reused from the
+prior mutable draft epoch. Other setup uses existing stable signed-template DATA
+and detached roots. No new cache/source capability or speedup claim. Raw will be
+/workspace/tboe-linux-evidence-20261102/spiritual-strain-maneuver-failure.
+
+Accepted checkpoint6d3c6ad173af69a04c15e20c2bca066c64f5d772/source79d keeps the
+five successful-operation and affected guard PASS separate. Immutable GitHub
+readback10 verified, proof9482fb0c793f6bf0d6ee76d7cf5436f7a26d17fa8095bed745a3fcab4105db58.
+No current runtime/build owners or local code changes at this boundary.
+
+Astra/high bounded DESIGN confirmed a finite wound-only implementation: existing
+source witness optional strainPreimage6fields, full parent envelope anchored to
+existing create History fingerprint (includes definitions), one shared pure DATA
+verifier, and separate owner-only live/C3, sealedC4 and authenticated signed-baseline
+historical adapters. No parallel ledger/cache, current-catalog substitute, caller
+JSON authority, ordinary-by-subtraction or general maneuver/QTE rule change.
+Exact new scope is one new III strain/maneuver root before last player setback.
+Actual source math retains opposition guard tier/resilience and signed +8 margin;
+no zero rule or fake none. All unsupported combinations and author4/HOLD remain.
+
+Finite tracked T081-D steps, not completion claims:
+- [ ] Test-only actual ordinary maneuver/setback vs guard, real III selection and
+      intended missing-consumer causal; preserve acquisition narration.
+- [ ] Cheap pure preimage/graph/History joins and forgery/refusal fixtures, no source
+      capability from DATA. Define complete key/lifetime/remaining fresh checks.
+- [ ] Minimal live/C3/retained witness/completed C4/historical adapters using the
+      existing source/receipt/history owners and services.
+- [ ] Actual C2→C4, next signed turn and real healing/root removal then historical
+      revalidation; exact negatives and regression selection/review.
+- [ ] GM guide/worked example/manifest/guards, fresh affected builds, independent
+      review and remote checkpoint before acceptance.
+
+Production code remains UNWRITTEN and new runtime UNRUN; technical contract recorded
+in spec.md. No old successful selection will be repeated without changed impact.
+Full diagnostics stay outside checkout; no new broad performance/HOLD run.
+
 # T081-D successful maneuver strain no-op accepted — 2026-11-02
 
 Source/build/runtime 79d16f95360f8dfb5e59c594ae3cc5ddf2e4f77a: five unique
