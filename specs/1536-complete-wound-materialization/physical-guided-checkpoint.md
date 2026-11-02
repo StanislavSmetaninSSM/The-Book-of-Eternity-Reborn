@@ -1,10 +1,28 @@
+# Wound-only raw NPC correction SOURCE accepted — fresh builds next
+
+Independent Astra/high accepts 679e3ff557f570ab57f43dde84fb8824fd9082aa plus
+this explicitly reviewed single Lifecycle pin update. The two-line allowed-key
+removal has no new reads or changed non-wound policy. Nine pre-existing World
+source-pin mismatches remain explicit and unmodified; the full World guard is
+not claimed PASS or waived. No generic source/cache qualification is added.
+Nonblocking wording corrected: withdrawn proposal concerned a post-defeat /
+repeated-aggression restriction, not the existing mandatory patient consent.
+
+The whole wound-only production/inventory/fixture/selection block is SOURCE
+accepted: exact legacy response refusal, canonical legacy priority and valid
+metadata/current NPC behavior. GREEN11 admission still requires fresh affected
+Main/Unit/Integration, used dependency/resource/native/PDB bindings, exact catalog/
+Plan and separate PREP. All previous budgets and raw retention remain. No T088,
+aggression/general QTE/ACTIVE implementation or old HOLD runtime is authorized.
+New production/guards and the single pin are UNCOMPILED/UNRUN; no GREEN claimed.
+
 # Current owner scope: wounds only — supersedes broad remainder audit, 2026-11-02
 
 Owner narrowed this task at11:00UTC to wounds: acquisition/state, treatment,
 diagnosis, directly related recovery, display and necessary validation/persistence.
 General aggression/defeat rules, general ordinary/QTE orchestration and standalone
 systems are outside current implementation. T088's author question is withdrawn;
-its proposed consent rule is NOT accepted and must NOT be implemented. No answer
+its proposed post-defeat/repeated-aggression restriction is NOT accepted and must NOT be implemented. No answer
 is required. Historical T088/ACTIVE/F1/T197 tasks stay open outside this scope,
 not falsely complete. A broad ACTIVE/F1 route is not a mandatory wound dependency
 without an actual direct source/consumer requirement being established first.
