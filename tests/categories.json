@@ -43,9 +43,7 @@
     "BookOfEternityClient.Tests/WoundMaterializationSourceGuardTests.cs",
     "BookOfEternityClient/Services/PendingTurnSnapshotReader.cs"
   ],
-  "related": [
-    "wounds-canonical-player-carrier-root"
-  ],
+  "related": [],
   "requirements": {
     "frontendBuild": false,
     "exclusive": false,

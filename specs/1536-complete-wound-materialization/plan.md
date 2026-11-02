@@ -1,3 +1,14 @@
+# T149 Unit built; finish corrected catalog and singleton plan
+
+Fresh Unit-only build at eaec6901fb02d49ec956856dd705a9293c9939d7 succeeds
+(26 warnings / 0 errors), current six PE/PDB and 433 source bindings pass.
+The initial catalog/Plan commands execute no discovery or tests because the new
+optional related link violates the existing id/when object schema. Removing that
+unnecessary link makes the actual reader accept 1,324 categories; selectors and
+restored Integration ownership are unchanged. No C# delta or rebuild is needed.
+Corrected full catalog validation, exact singleton PlanOnly and PREP remain next.
+Primary failed evidence is retained; ten prior PASS and all HOLDs remain separate.
+
 # T149 partial acceptance; restore catalog ownership before singleton
 
 Independent review accepts Integration9 + Unit confinement1 and the partial-class

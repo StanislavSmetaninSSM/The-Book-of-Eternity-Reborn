@@ -1,3 +1,22 @@
+# T149 Unit built; catalog link schema correction before discovery
+
+Delta SOURCE accepts restored unselected root ownership and the exact singleton
+leaf on eaec6901fb02d49ec956856dd705a9293c9939d7. Fresh Unit-only build at that
+source exits 0 in 34.65 seconds, unchanged 26 warnings / 0 errors. Five other
+owner outputs remain R4; current six PE/PDB pairs and 433 source bindings match,
+as do 75 artifacts, 1,236 resource copies and 12 native copies. R5 artifact proof
+SHA256 64b32f5039a8421fac907c13b00a4f1b3bd173bad6504f7498a9a33787e2ab02.
+
+The first R5 catalog/Plan commands stop in Read-TestCategoryCatalog before
+discovery, result-directory allocation or test execution: the new optional
+related link was a string, but the existing schema requires an id/when object.
+This metadata defect was missed by the preceding static review. The unnecessary
+link is now removed (explicit empty related array), preserving all selectors and
+ownership. The actual catalog reader accepts all 1,324 categories. No C# source
+changed, so no repeated Unit build is needed. Primary failed logs remain external
+in R5-catalog/R5-plan; fresh corrected catalog and exact PlanOnly are next, then
+independent PREP. Singleton runtime is still UNRUN; prior ten PASS are unchanged.
+
 # T149 partial OUTCOME accepted; catalog ownership correction WIP
 
 Independent Astra/high accepts R4 Integration9 + Unit confinement1 PASS and the
