@@ -1,3 +1,38 @@
+# Existing T071/T149: unreachable player loose parser retirement WIP
+
+Accepted predecessor5416e381453395600be761e2a0dfddee862fa57c has fresh16 PASS on
+9d4b03cf runtime, independent receipt consistency and10 immutable changed-file
+GitHub blobs matched. External bounded readback proof SHA256
+776f46c73aeca9f69d28073fc4ec685b8ea736b488ab3e15780429f73e56faff; not full restore.
+Sol read-only caller/Compile assessment found no supported noncanonical caller:
+ValidatePlayerStateFiles has10 literal paths, only exact canonical wounds literal
+enters the wound validator; raw dispatcher is already removed. The generic loose
+branches and their sole ValidateWoundObject are now unreachable. Remove those
+obsolete woundName/generatedEffects/healingState aliases; preserve the exact
+current object/root/catalog behavior and issue order in a canonical-only private
+helper. This is refactor/characterization, not missing-behavior causal RED.
+
+Only player validation and semantic source inventory change; retarget existing
+canonical path allowances, remove5 obsolete alias scopes, keep combat WoundReference
+scopes with their next real method boundary. No broad combat/QTE rule, cache,
+canonical write, extra source read, changed GM capability or new task IDs. Current
+GM direct-cutover contract already forbids these aliases; no prompt/example update.
+New code UNCOMPILED/SOURCE pending. Existing category wounds-canonical-player-carrier-root
+selects9 Integration JSON-kind/current-carrier rows +2 Unit ownership/discovery
+controls, unchanged60s per descriptor. Raw/QTE16 unchanged and not repeated.
+Source/persistence/fresh-authority checks and every UNKNOWN/HOLD stay intact.
+Optimization: remove dead code; existing parsed root/strict catalog path unchanged,
+no new IO/cache/lifetime/permission or speedup claim. Fewer source inventory entries,
+no added rereads/framework. Next SOURCE, affected builds and exact11 PREP/runtime.
+Raw root /workspace/tboe-linux-evidence-20261102/player-loose-parser-retirement.
+
+Separate T081-C3-R2B/T107 source/design reconciliation: current afterlife producers
+exist, but literal same-signed safe bundle plus combat conflicts with approved
+safe-cycle/no-cycle separation. Do NOT add naturalOwner to capture merely for the
+old checkbox. Genuine combat healing is live chronological; next legal journey is
+published safe healing/recovery then a NEW signed combat turn with restored baseline.
+No new game rule/author question; source/evidence map in progress, parent stays open.
+
 # Existing T149/T071: exact legacy player/NPC wound input accepted — 2026-11-02
 
 The current scope is wounds only. General defeat/aggression, withdrawn T088 rule,

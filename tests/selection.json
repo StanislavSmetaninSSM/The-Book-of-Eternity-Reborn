@@ -2,38 +2,10 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "wounds-player-legacy-raw-response",
-      "reason": "Regress actual admission4/classification2/control1 after exact-presence correction; original60s.",
+      "category": "wounds-canonical-player-carrier-root",
+      "reason": "Existing T071/T149 pure retirement of now-unreachable loose player parser after raw refusal: preserve all9 actual current canonical root cases and2 changed semantic inventory guards. No new behavior/causal RED claim, no unchanged raw/QTE/HOLD replay.",
       "contracts": [
-        "#1536 existing T149/T071 FR-013 FR-099 wound-only exact legacy response refusal"
-      ]
-    },
-    {
-      "category": "wounds-player-legacy-qte-offer",
-      "reason": "New genuine signed ordinary-offer player wound peer, strict baseline/source bytes; original180s.",
-      "contracts": [
-        "#1536 existing T149/T071 FR-013 FR-099 wound-only exact legacy response refusal"
-      ]
-    },
-    {
-      "category": "wounds-npc-legacy-raw-response",
-      "reason": "Existing NPC raw5 are affected by reuse/generalization of the same exact-presence refusal; original60s.",
-      "contracts": [
-        "#1536 existing T149/T071 FR-013 FR-099 wound-only exact legacy response refusal"
-      ]
-    },
-    {
-      "category": "wounds-npc-legacy-qte-offer",
-      "reason": "Existing NPC peer is affected by shared typed fixture helper and common refusal; original180s.",
-      "contracts": [
-        "#1536 existing T149/T071 FR-013 FR-099 wound-only exact legacy response refusal"
-      ]
-    },
-    {
-      "category": "wounds-npc-canonical-retirement-source-guards",
-      "reason": "Two semantic inventory/closed-projection guards changed for the existing player and NPC refusal owners; original60s.",
-      "contracts": [
-        "#1536 existing T149/T071 FR-013 FR-099 wound-only exact legacy response refusal"
+        "#1536 existing T071/T149 FR-013 FR-099 exact canonical player carrier / no legacy fallback"
       ]
     }
   ]

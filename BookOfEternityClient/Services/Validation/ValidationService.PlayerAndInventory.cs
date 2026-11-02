@@ -3606,7 +3606,7 @@ public partial class ValidationService
                     "game_state/player/wounds.json",
                     StringComparison.OrdinalIgnoreCase))
             {
-                ValidateWoundsContainer(doc.RootElement, filePath, issues);
+                ValidateCanonicalPlayerWoundCarrier(doc.RootElement, issues);
                 return;
             }
 
@@ -7267,63 +7267,26 @@ public partial class ValidationService
         }
     }
 
-    private void ValidateWoundsContainer(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
+    /// <summary>Validates the exact canonical player carrier selected by the ordinary player-state file phase.</summary>
+    /// <param name="root">Already parsed root from the fixed canonical player wound path.</param>
+    /// <param name="issues">Current validation findings; strict catalog order is preserved.</param>
+    private static void ValidateCanonicalPlayerWoundCarrier(JsonElement root, List<ValidationIssue> issues)
     {
-        if (string.Equals(
-                contextPrefix,
-                WoundCarrierCatalog.PlayerPath,
-                StringComparison.Ordinal))
-        {
-            if (root.ValueKind != JsonValueKind.Object)
-            {
-                issues.Add(new ValidationIssue(contextPrefix, IssueSeverity.Error,
-                    "Канонический файл ран должен быть объектом",
-                    code: "wound_carrier_invalid_root"));
-                return;
-            }
-
-            var playerWounds = JsonNode.Parse(root.GetRawText())!.AsObject();
-            issues.AddRange(WoundCarrierCatalog.Build(new WoundCarrierCatalogInput(
-                playerWounds,
-                null,
-                null,
-                null,
-                null)).Issues);
-            return;
-        }
-
-        if (root.ValueKind == JsonValueKind.Array)
-        {
-            ValidateArrayItems(root, contextPrefix, issues, ValidateWoundObject);
-            return;
-        }
-
         if (root.ValueKind != JsonValueKind.Object)
         {
-            issues.Add(new ValidationIssue(contextPrefix, IssueSeverity.Error,
-                "Раны должны быть объектом или массивом"));
+            issues.Add(new ValidationIssue(WoundCarrierCatalog.PlayerPath, IssueSeverity.Error,
+                "Канонический файл ран должен быть объектом",
+                code: "wound_carrier_invalid_root"));
             return;
         }
 
-        if (HasAnyNonEmptyString(root, "woundName", "name"))
-        {
-            ValidateWoundObject(root, contextPrefix, issues);
-            return;
-        }
-
-        var validatedAny = false;
-        foreach (var prop in root.EnumerateObject())
-        {
-            if (prop.Value.ValueKind != JsonValueKind.Array) continue;
-            validatedAny = true;
-            ValidateArrayItems(prop.Value, $"{contextPrefix}.{prop.Name}", issues, ValidateWoundObject);
-        }
-
-        if (!validatedAny)
-        {
-            issues.Add(new ValidationIssue(contextPrefix, IssueSeverity.Warning,
-                "Файл/поле ран не содержит массивов ран"));
-        }
+        var playerWounds = JsonNode.Parse(root.GetRawText())!.AsObject();
+        issues.AddRange(WoundCarrierCatalog.Build(new WoundCarrierCatalogInput(
+            playerWounds,
+            null,
+            null,
+            null,
+            null)).Issues);
     }
 
     private void ValidateCustomStatesContainer(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
@@ -7816,31 +7779,6 @@ public partial class ValidationService
                     actual: duration.ToString(),
                     repairHint: "Для persistent wound-linked effect ставь duration = 999, пока связанная рана активна."));
             }
-        }
-    }
-
-    private void ValidateWoundObject(JsonElement item, string context, List<ValidationIssue> issues)
-    {
-        if (!RequireObject(item, context, issues))
-            return;
-
-        ValidateActiveEffectDefinitionsIfPresent(
-            item,
-            context,
-            "mortal_world",
-            issues);
-
-        RequireAnyString(item, context, issues, "woundName", "name");
-        ValidateOptionalString(item, context, issues, "severity");
-        ValidateOptionalString(item, context, issues, "descriptionOfEffects");
-        ValidateOptionalString(item, context, issues, "description");
-
-        if (item.TryGetProperty("generatedEffects", out var generatedEffects))
-            RequireArrayOfObjects(generatedEffects, $"{context}.generatedEffects", issues);
-        if (item.TryGetProperty("healingState", out var healingState) && healingState.ValueKind != JsonValueKind.Object)
-        {
-            issues.Add(new ValidationIssue($"{context}.healingState", IssueSeverity.Error,
-                "Поле должно быть объектом"));
         }
     }
 
