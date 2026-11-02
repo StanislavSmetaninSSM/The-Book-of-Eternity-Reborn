@@ -1,3 +1,36 @@
+# T149 canonical-first correction WIP — SOURCE and GREEN pending
+
+Independent Astra/high accepts the exact causal RED9 on runtime
+603c45e82112e58ee4a838152c443fdc55343635: array failures 2 / preserving PASS 7,
+all rows complete, immutable input premises and explicit fixture absence proven.
+The following minimal production correction now exists but is UNCOMPILED/UNRUN.
+
+ValidateWoundsContainer dispatches the exact canonical PlayerPath first. Every
+non-object root receives an Error on that root with the existing diagnostic code
+wound_carrier_invalid_root. Objects enter the identical existing catalog Build
+body. Generic noncanonical arrays, object handling and the playerWoundChanges
+caller remain unchanged; no accepted-turn publication bypass is claimed repaired.
+The existing source inventory now explicitly owns this strict canonical seam;
+its legitimate loose-caller allowances are retained, not mechanically removed.
+
+Finite GREEN selection is the unchanged typed Integration 9 plus two existing
+Unit semantic inventory/legacy-confinement methods: 11 cases / 5 methods / two
+project descriptors in the same 60-second category. The Unit methods are needed
+because their shared inventory changed. Existing pure catalog object validation
+is unchanged; no whole suite or old browser36 replay is selected. Fresh affected
+Main/Support/Unit/Integration outputs and actual build-only dependencies are needed
+before NoBuild, then source/PDB/resource pins, exact discovery/PlanOnly and PREP.
+
+Optimization: one cheap root dispatch precedes the existing fresh read/parse and
+catalog result consumption. It adds no read, parse, cache, lifetime or shared DATA;
+strict object parsing and all fresh ownership/integrity checks remain unchanged.
+No new speedup or source-count claim. GM no-update: the accepted closed schema-v1
+contract already rejects legacy player roots; this adds early enforcement without
+new authored fields, rules, costs, cycle, response, pending or output contracts.
+R3 managed archive and primary RED evidence remain external and unchanged.
+Next independent SOURCE; runtime acceptance and parent T149 stay open. All R1/R2
+and broader HOLD limits remain as recorded, with no new browser retry.
+
 # T149 causal RED9 complete — independent OUTCOME pending
 
 Actual clean runtime 603c45e82112e58ee4a838152c443fdc55343635, compiled Integration

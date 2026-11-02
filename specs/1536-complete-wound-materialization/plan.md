@@ -1,3 +1,17 @@
+# T149 canonical-first correction WIP — SOURCE pending
+
+Independent causal RED9 OUTCOME is accepted. The minimal correction moves the
+exact canonical PlayerPath branch before generic fallback, rejects every
+non-object root with existing wound_carrier_invalid_root Error, and preserves the
+identical strict catalog object body plus all noncanonical callers. The source
+inventory explicitly owns that canonical seam; legitimate loose-caller scopes
+remain. Source selection is typed Integration 9 plus two existing Unit inventory /
+legacy-confinement methods, 11 cases / 5 methods / two descriptors at the same
+60-second category budget. Production and changed Unit source are UNCOMPILED;
+no GREEN is claimed. Next independent SOURCE, fresh affected owner build graph,
+current source/artifact/resource proofs, exact PlanOnly/PREP and addressed GREEN.
+Optimization and GM no-update reasoning are in physical-guided-checkpoint.md.
+
 # T149 causal RED9 complete — OUTCOME pending
 
 Exact runtime 603c45e82112e58ee4a838152c443fdc55343635 completes 9/9 cases:

@@ -237,6 +237,13 @@ public sealed class WoundMaterializationSourceGuardTests
             "AcceptedMechanicsPlan.WoundCommandPath",
             "WriteAcceptedWoundCommandAsync("),
         new(
+            "canonical-player-wound-carrier-validation",
+            InventoryCategory.AcceptedMechanicsIntegrationSeam,
+            "BookOfEternityClient/Services/Validation/ValidationService.PlayerAndInventory.cs",
+            "private void ValidateWoundsContainer(",
+            "WoundCarrierCatalog.PlayerPath", "wound_carrier_invalid_root",
+            "issues.AddRange(WoundCarrierCatalog.Build(new WoundCarrierCatalogInput("),
+        new(
             "player-loose-wound-validation",
             InventoryCategory.LegacyLooseWoundSurface,
             "BookOfEternityClient/Services/Validation/ValidationService.PlayerAndInventory.cs",

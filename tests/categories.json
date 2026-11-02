@@ -3,8 +3,8 @@
     "categories": [
 {
   "id": "wounds-canonical-player-carrier-root",
-  "responsibility": "T149-CANONICAL-PLAYER-CARRIER / #1536: actual PlayerStateFiles with exact canonical player-file selection. Two causal bare-array rows (empty and populated loose legacy wound) require a real root Error after setup/byte-invariance premises; five scalar/null rows preserve existing generic refusals; two genuine independently catalog-valid empty/populated canonical carriers remain accepted. No proposed-code-only RED; all nine cases own independent current filesystem/validator/generation state.",
-  "excludes": "No production fix or legacy-allowance change in this scaffold. No NPC/effect/raw response alias retirement, accepted-turn publication bypass claim, whole T149 closure, old accepted-set replay, browser/DFR/Mortal/Windows/performance/native run or new diagnostic framework. Existing pure catalog malformed-object/unknown-field controls remain owned separately.",
+  "responsibility": "T149-CANONICAL-PLAYER-CARRIER / #1536: actual selected PlayerStateFiles must reject bare arrays and scalar/null roots while preserving independently catalog-valid empty/populated canonical carriers and exact source bytes. Nine typed Integration rows plus the two existing Unit semantic inventory/legacy-confinement guards cover the canonical-first correction and still-live noncanonical allowances.",
+  "excludes": "No NPC/effect/raw response alias retirement, accepted-turn publication bypass claim, whole T149 closure, prior accepted-set replay, browser/DFR/Mortal/Windows/performance/native run or new diagnostic framework. Existing strict catalog object parsing is unchanged; pure catalog malformed-object controls remain separately owned.",
   "changeHints": [
     "BookOfEternityClient/Services/Validation/ValidationService.PlayerAndInventory.cs",
     "BookOfEternityClient.IntegrationTests/WoundCanonicalPlayerCarrierValidationTests.cs"
@@ -24,6 +24,13 @@
         "BookOfEternityClient.Tests.WoundCanonicalPlayerCarrierValidationTests.PlayerStateFiles_RejectsBareArrayAtCanonicalPlayerPath",
         "BookOfEternityClient.Tests.WoundCanonicalPlayerCarrierValidationTests.PlayerStateFiles_PreservesScalarAndNullRootRefusal",
         "BookOfEternityClient.Tests.WoundCanonicalPlayerCarrierValidationTests.PlayerStateFiles_AcceptsCanonicalEmptyAndPopulatedCarrier"
+      ]
+    },
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.WoundMaterializationSourceGuardTests.WoundOwnershipInventory_ResolvesEveryDeclaredFileAndSemanticAnchor",
+        "BookOfEternityClient.Tests.WoundMaterializationSourceGuardTests.ProductionLegacyWoundOccurrences_AreConfinedToInventoriedSemanticScopes"
       ]
     }
   ]

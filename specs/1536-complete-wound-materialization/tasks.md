@@ -36,6 +36,12 @@
   independent design/source review, fresh affected builds and addressed GREEN
   precede acceptance. No new save compatibility, accepted-turn bypass claim,
   whole T149 closure, full browser retry or deferred HOLD release is implied.
+  Exact causal RED9 is independently accepted (arrays 2 FAIL / controls 7 PASS,
+  no timeout/underfill and fixture cleanup proven). Canonical-first production
+  dispatch and explicit source-inventory seam are now authored, UNCOMPILED/UNRUN.
+  Current GREEN selection: Integration 9 + existing Unit semantic guards 2,
+  11 cases / 5 methods / two descriptors, unchanged category 60s. Independent
+  SOURCE, fresh affected builds and GREEN acceptance remain required.
   Authored scaffold WIP: actual typed PlayerStateFiles with exact canonical-path
   selection, three methods/nine source rows (arrays2 causal, scalar/null5 preserving,
   genuine catalog-valid canonical2), one exact60s category. Existing minimal

@@ -7273,6 +7273,29 @@ public partial class ValidationService
 
     private void ValidateWoundsContainer(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
     {
+        if (string.Equals(
+                contextPrefix,
+                WoundCarrierCatalog.PlayerPath,
+                StringComparison.Ordinal))
+        {
+            if (root.ValueKind != JsonValueKind.Object)
+            {
+                issues.Add(new ValidationIssue(contextPrefix, IssueSeverity.Error,
+                    "Канонический файл ран должен быть объектом",
+                    code: "wound_carrier_invalid_root"));
+                return;
+            }
+
+            var playerWounds = JsonNode.Parse(root.GetRawText())!.AsObject();
+            issues.AddRange(WoundCarrierCatalog.Build(new WoundCarrierCatalogInput(
+                playerWounds,
+                null,
+                null,
+                null,
+                null)).Issues);
+            return;
+        }
+
         if (root.ValueKind == JsonValueKind.Array)
         {
             ValidateArrayItems(root, contextPrefix, issues, ValidateWoundObject);
@@ -7283,21 +7306,6 @@ public partial class ValidationService
         {
             issues.Add(new ValidationIssue(contextPrefix, IssueSeverity.Error,
                 "Раны должны быть объектом или массивом"));
-            return;
-        }
-
-        if (string.Equals(
-                contextPrefix,
-                WoundCarrierCatalog.PlayerPath,
-                StringComparison.Ordinal))
-        {
-            var playerWounds = JsonNode.Parse(root.GetRawText())!.AsObject();
-            issues.AddRange(WoundCarrierCatalog.Build(new WoundCarrierCatalogInput(
-                playerWounds,
-                null,
-                null,
-                null,
-                null)).Issues);
             return;
         }
 
