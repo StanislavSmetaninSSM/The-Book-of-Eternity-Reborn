@@ -2,6 +2,31 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "mortal-physical-joint-terminal-anchor-causal",
+  "responsibility": "T121-PHYSICAL-JOINT-TERMINAL-ANCHOR / #1536: one typed theory, two independent genuine terminal/nonterminal joint stage-only fixtures. Existing PrepareJointStagesAsync stops before allocation/common binding. Full replay, real current owner/clock, exact two-mutation CREATE+old-before, terminal heal-child History/tombstone and independent resealed extra/missing union, foreign-before and terminal-History copies precede actual CreateJointRepair acceptance. Constructor refusal is reported honestly if anchor API is unreachable. Require unchanged source images and exactly one new-CREATE allocation; terminal final acceptance is intended causal RED, nonterminal is preserving control. Cost UNMEASURED; root PREP must assess fit.",
+  "excludes": "No production anchor patch or new preparation/authority/cache API. No fabricated terminal flag/generic delete, changed owner/source/clock/reducer/final guards, terminal allocation to old wound, full common publication/Engine/native/HOLD cycle or new diagnostic stack. Full terminal output peer remains separate mandatory 120s after correction. Nine accepted output PASS are not replayed. Repaired worsening fixture remains under its existing unselected 60s owner until its separate addressed retry.",
+  "changeHints": [
+    "BookOfEternityClient/Services/MortalWoundCanonicalAnchorPlan.cs",
+    "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.TerminalAnchors.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.JointBundleComponentTests.JointCanonicalAnchorsRequireExactSealedUnionAndAllocateOnlyNewCreate"
+      ]
+    }
+  ]
+},
+{
   "id": "wounds-notification-controls-causal",
   "responsibility": "T152-NOTIFICATION-CONTROLS / #1536: four actual Parse/Claim/Compose C0 rows and one fixed-golden LF/tab/Unicode preserving row. After accepted causal RED, verify the existing Text policy is applied after exact raw binding to notification/narration plain/console/browser projections without mutating canonical input.",
   "excludes": "No new Unicode/bidi rule, canonical/claim rewrite, terminal control execution, broad Engine/native/HOLD run or raw diagnostic framework. Shared accepted output peers have separate finite owners.",

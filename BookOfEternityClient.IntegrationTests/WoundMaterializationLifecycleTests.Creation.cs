@@ -479,9 +479,9 @@ public sealed partial class WoundMaterializationLifecycleTests
         var creationAuthority = await CreateAuthorityAsync(
             context,
             maximumSeverityRank: 2);
-        var creationResponse = Response(Decision(
-            "materialize",
-            CreatePhysicalProposal(severity: "II", includeMechanicalRoot: true)));
+        var creationProposal = CreatePhysicalProposal(severity: "II", includeMechanicalRoot: true);
+        creationProposal["treatment"] = WoundContractTestData.CreateActiveWound()["treatment"]!.DeepClone();
+        var creationResponse = Response(Decision("materialize", creationProposal));
         var creation = WoundResponseInputComposer.Compose(
             creationAuthority.Binding,
             new[] { creationAuthority.Opportunity },
@@ -515,9 +515,9 @@ public sealed partial class WoundMaterializationLifecycleTests
             worseningTarget: new WoundOpportunityWorseningTargetEvidence(
                 woundBefore,
                 "retrauma"));
-        var worseningResponse = Response(Decision(
-            "materialize",
-            CreatePhysicalProposal(severity: "III", includeMechanicalRoot: true)));
+        var worseningProposal = CreatePhysicalProposal(severity: "III", includeMechanicalRoot: true);
+        worseningProposal["treatment"] = WoundContractTestData.CreateActiveWound()["treatment"]!.DeepClone();
+        var worseningResponse = Response(Decision("materialize", worseningProposal));
 
         var worsening = WoundResponseInputComposer.Compose(
             worseningAuthority.Binding,

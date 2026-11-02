@@ -1,3 +1,86 @@
+# Joint terminal canonical anchors — bounded causal scaffold WIP
+
+2026-11-02 UTC, T121-PHYSICAL-JOINT-TERMINAL-ANCHOR / #1536, clean base
+f04bffaeb736d295bdec60c157dc4fdab3668af7. Sol bounded DESIGN and independent
+Astra DESIGN are accepted for this causal scaffold only; production correction
+still requires actual causal proof and a separate admission. No production file,
+reducer, source/clock guard, preparation API or global fixture helper changes.
+No commit/push/build/runtime is performed by this writer; root preserves the WIP.
+
+Current accepted output frontier: nine distinct PASS across two runtimes, not one
+fresh aggregate. N2 runtime8b5dd57f9ef483a76b778788ebeb148aad6d8845 has diagnosis2
+PASS and a distinct terminal-anchor FAIL before Project; summary SHA256
+dde904a4d98be3e5d84b20f4dd374b437085553491e33dc3fea7679e045765d5.
+Remaining8 atf04bffaeb736d295bdec60c157dc4fdab3668af7 all complete in32.0404094s,
+exit1:7PASS/1worsening-fixture FAIL, no timeout/underfill, cleanup true. Summary SHA
+217b31f89805b51368c222353d40472b852376505cd9b1e4ac9bde11ad6b5cd3;
+causal5 TRX98f7b921e6dece8e7608ea2f40be4bd2afe56be5064d4f07eb7bdc26d6dafdf6;
+worsening TRXd10d1017cbc777a6acca9356d484cce0a474bb97f943a4310e925d12290593de.
+Root checked all primary rows/hashes/cleanup; Astra accepts this partial OUTCOME.
+The two failures remain distinct: terminal update-only union versus a worsening
+fixture's obsolete empty treatment payload. T152 stays open; passing9 are retained.
+Full raw stays external in notification-controls/N2-green11 and N2-remaining8.
+
+Minimal future production contract (not implemented): retain complete
+JointRepairFinalPlanAgrees/Finalize/reducer, real owner/source and exact current
+clock. Require exactly new physical CREATE + old mutation with exact canonical
+Before. Nonterminal keeps update/non-null After and original treatment transition.
+Terminal requires existing sealed PreparesTerminalHeal plus TryReadTerminalTreatment
+from that same joint preparation and only delete/AfterNull. Existing full replay
+already binds treat→heal-child IDs/operation/event/turn/ordinals/fingerprints,
+terminal History/tombstone and carrier removal. No generic delete or fabricated
+terminal flag; only the new CREATE receives initial anchors. Reuse those existing
+proofs rather than duplicate the reducer or add source reads/cache.
+
+New Integration partial has one bool theory/two independently owned cases using
+unchanged Fixture.InitializeAsync(terminalTreatment) and PrepareJointStagesAsync.
+The existing issuer host creates genuine corrected repair/owner/effect/final stages;
+stage-only preparation returns BEFORE anchors/common resource/progression suffix.
+No new preparation entry, reflection, fake authority or diagnostic stack. Full
+replay, real current owner/clock, exact union/old-before and terminal execution /
+heal-child History/tombstone premises precede independent resealed extra-union,
+missing-old, foreign valid before-image and (terminal only) changed valid heal-
+History copies. Constructor refusal is labelled as constructor, never as an
+executed allocator. If a copy constructs, the actual anchor allocator must refuse.
+No detached graph changes the genuine source or bundle; existing full before-image
+capture proves original sources unchanged after controls and actual allocation.
+
+Intended terminal RED is only the final real CreateJointRepair acceptance oracle;
+nonterminal should already PASS. Allocation assertions below that oracle require
+exactly one new-CREATE allocation and no old-wound allocation. They are explicitly
+UNREACHED on the old terminal refusal and cannot be claimed until GREEN. Three
+refusal copies per case plus terminal heal-History copy are seven checks inside
+two source rows, not seven extra discovered cases. New finite leaf selects only
+this theory at the existing120s per-descriptor bound; cost UNMEASURED, and root PREP
+must assess fit. Full terminal output peer remains separately mandatory120s after
+correction. Current selection excludes already accepted9 and the other failed peer.
+
+Existing worsening peer correction changes ONLY its two local create/worsen
+proposal.treatment values to deep clones from the existing complete
+WoundContractTestData.CreateActiveWound template. Entire setup was inspected:
+severityII→III within supplied event caps, current original43/history/wound identity,
+physical location/effect source graph and requires-stabilization recovery remain;
+template declares complete reachable known procedure, ordered bands, resource /
+skill requirements and policy. No complication reference from outside the proposal
+is introduced. Existing exact notifications, effect replacement, History and
+identity assertions and global CreatePhysicalProposal helper remain unchanged.
+Its unchanged exact60s category is unselected for this first anchor causal run;
+its separate failed-peer retry remains required, not accepted by this source edit.
+
+Optimization: existing stage-only prefix avoids unrelated common binding; each
+case owns fresh mutable state and cleanup. Pure detached copy/fingerprint work is
+bounded and supplies no authority/cache. No performance saving or timing is claimed.
+GM no-update: this is a client-owned anchor representation bug within already
+accepted terminal treatment/History contracts; no authored schema, cost, rule,
+output or prompt/example changes. R1/T149 acceptance, R2 UNKNOWN and every other
+HOLD are unchanged. Scaffold C# UNCOMPILED; builds/discovery/PlanOnly/runtime UNRUN.
+Next: coherent SOURCE review → root persistence/fresh Integration-only build /
+exact PlanOnly/PREP/causal2. No production patch before that admitted proof.
+Static/source metadata only: git diff --check and exact two-substitution comparison
+pass; actual catalog reader/current selection schema accept1,328 categories and
+one theory/2 source rows/120s/related[]. All prior category entries and preparation
+API remain unchanged. This does not establish discovery, runtime or actual cost.
+
 # T152 partial runtime; independent remaining8 and terminal anchor closure
 
 N2 runtime 8b5dd57f9ef483a76b778788ebeb148aad6d8845 completes diagnosis2 PASS,

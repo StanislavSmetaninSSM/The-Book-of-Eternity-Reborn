@@ -1,3 +1,45 @@
+# Joint terminal anchor causal scaffold — source-only WIP, not production fix
+
+2026-11-02 UTC, basef04bffaeb736d295bdec60c157dc4fdab3668af7. Parent delivered
+Sol/Astra DESIGN acceptance for the bounded scaffold. New partial uses unchanged
+genuine PrepareJointStagesAsync before anchors: two independent terminal/nonterminal
+cases with existing issuer/lease/stage ownership. Replay/current owner/clock /
+exact union/old-before/terminal execution and History precede seven independent
+resealed copy checks, honest first-refusing-boundary labels and original source /
+bundle nonmutation. Final actual anchor acceptance is the intended terminal RED;
+exact one CREATE/no old allocation assertions are UNREACHED until success.
+
+One new exact Integration theory/2 source rows/one120s descriptor is selected;
+cost UNMEASURED and fit belongs to PREP. No production, preparation API, reducer,
+clock/source guard or new diagnostics/cache changes. Full terminal output peer
+remains mandatory separately after correction. Existing worsening test changes
+only its two local treatment payloads to current complete template; every prior
+assertion/global helper is unchanged. Its original60s exact owner remains
+unselected pending its separate addressed retry. C# UNCOMPILED; writer performs
+no build/discovery/PlanOnly/runtime or commit/push; root persists/reviews first.
+
+Astra accepted current partial output evidence: nine distinct PASS across N2
+8b5dd57f9ef483a76b778788ebeb148aad6d8845 (diagnosis2) and remaining8 runtime
+f04bffaeb736d295bdec60c157dc4fdab3668af7 (7PASS/1worsening fixtureFAIL,
+all8 executed32.0404094s, exit1, no timeout/underfill, cleanup true). Distinct
+terminal-anchor failure at N2 and worsening fixture failure remain open; T152
+is not accepted. Remaining8 summary SHA256
+217b31f89805b51368c222353d40472b852376505cd9b1e4ac9bde11ad6b5cd3;
+causal5 TRX98f7b921e6dece8e7608ea2f40be4bd2afe56be5064d4f07eb7bdc26d6dafdf6;
+worsening TRXd10d1017cbc777a6acca9356d484cce0a474bb97f943a4310e925d12290593de.
+Root verified primary identities; all raw stays external in notification-controls /
+N2-green11 and N2-remaining8. Passing9 are not selected again; historical8UNRUN
+wording below is superseded by these exact outcomes. R2 UNKNOWN and HOLDs remain.
+
+Minimal future contract/fixture audit/optimization/GM no-update rationale are at
+plan top. Next coherent SOURCE, root's Integration-only build/exact plan/PREP and
+causal2, then separately admitted minimal production correction and final peers.
+Writer checks: git diff --check exit0; actual Read-TestCategoryCatalog and current
+selection-schema reader exit0 (1,328 categories, exact new theory1/2 source rows /
+120s/related[]). Static comparison proves old category entries, all worsening
+assertions/global helper and unchanged stage preparation API; production diff is
+empty. These metadata/source checks are not compilation, discovery or runtime.
+
 # T152 N2 partial outcome — diagnosis2 PASS, terminal anchor FAIL, remaining8 UNRUN
 
 Actual runtime 8b5dd57f9ef483a76b778788ebeb148aad6d8845 executes two descriptors /

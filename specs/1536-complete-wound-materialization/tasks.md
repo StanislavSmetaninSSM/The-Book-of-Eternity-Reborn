@@ -50,12 +50,27 @@
   GameEngine/performance stack or broad completed-set replay is introduced.
   Exact causal5 OUTCOME accepted: four final safe-projection oracle FAIL after
   all raw binding/nonmutation premises plus one LF/tab/Unicode PASS. Minimal
-  shared Project/Text production change is authored, UNCOMPILED/UNRUN. Finite
-  intended GREEN is new5 + actual shared output peers6, not a broad aggregate;
-  independent SOURCE, fresh affected builds and addressed acceptance remain.
-  N2 partial: diagnosis2 PASS, terminal1 FAIL before Project at update-only joint
-  anchor union, remaining8 UNRUN; complete capture and fixture removal verified.
-  Continue independent8 without diagnosis replay; dependent terminal closure below.
+  shared Project/Text correction has accepted SOURCE and all six owning builds
+  at894c9fb719e393a914ccbb601fbcbdc8d433325f. Partial runtime qualification is
+  nine distinct PASS and two different failures on two runtime versions; this
+  is not a fresh aggregate or complete T152 acceptance.
+  Astra partial OUTCOME accepts9 distinct PASS across N2diagnosis2 and later
+  remaining7; all remaining8 executed (7PASS/1worsening fixtureFAIL). Terminal1
+  FAIL before Project at update-only anchor union and worsening1 obsolete local
+  treatment fixture FAIL are distinct. Terminal full capture/fixture removal
+  are verified; worsening has complete failed TRX/runner and verified cleanup,
+  with no new full passive-capture claim. Passing9 are not replayed; T152 stays
+  open pending the two addressed closures.
+
+  Historical original T152 scaffold receipt (superseded by current outcomes):
+  Source-only scaffold authored: existing pure Unit Parse/Claim/Compose, four
+  field{name,narration} x code{27,8} causal rows plus one LF/tab/Unicode positive.
+  Raw admission/binding/nonmutation premises precede safe-label final output oracle;
+  HTML-decoded browser output is checked too. One new exact60s leaf owns only the
+  two new methods/five rows; all prior category owners remain unchanged/unselected.
+  Metadata reader/selection schema check PASS; C# UNCOMPILED, builds/discovery /
+  PlanOnly/runtime UNRUN. Independent SOURCE and root's actual RED remain pending;
+  no WoundPlayerNotification production correction has been made.
 
 - [ ] T121-PHYSICAL-JOINT-TERMINAL-ANCHOR [US2/US7] Complete existing genuine
   joint acquisition + terminal treatment canonical anchor allocation. Reuse the
@@ -66,14 +81,14 @@
   output. Independent bounded DESIGN, cheap typed terminal/foreign-union refusal
   proof and SOURCE precede fresh builds/addressed qualification; no generic delete
   fallback, fabricated authority, increased budget or unrelated perf/HOLD work.
-  Source-only scaffold authored: existing pure Unit Parse/Claim/Compose, four
-  field{name,narration} x code{27,8} causal rows plus one LF/tab/Unicode positive.
-  Raw admission/binding/nonmutation premises precede safe-label final output oracle;
-  HTML-decoded browser output is checked too. One new exact60s leaf owns only the
-  two new methods/five rows; all prior category owners remain unchanged/unselected.
-  Metadata reader/selection schema check PASS; C# UNCOMPILED, builds/discovery /
-  PlanOnly/runtime UNRUN. Independent SOURCE and root's actual RED remain pending;
-  no WoundPlayerNotification production correction has been made.
+  Sol/Astra DESIGN accepted for scaffold only. Test-only WIP now uses unchanged
+  genuine stage-only prefix for terminal/nonterminal theory2, with exact seven
+  detached copy checks before the final actual anchor oracle and unchanged sources.
+  One new120s descriptor selected, cost UNMEASURED; exact allocation assertions
+  remain UNREACHED at old terminal failure. Production remains unchanged/unadmitted.
+  Worsening's two local treatment templates are corrected; its assertions/global
+  helper and original unselected60s owner stay intact. SOURCE/build/Plan/PREP/RED
+  remain pending; no writer commit/push or runtime. Full terminal peer stays separate.
 
 # T108 Shining patient treatment — #1536
 
