@@ -21,6 +21,20 @@
       "contracts": [
         "T121-PHYSICAL-GUIDED-BROWSER-READ-RESERVATION / #1536 / FR060–064 / FR067–074"
       ]
+    },
+    {
+      "category": "browser-source-read-reservation-borrow-api",
+      "reason": "Cover the changed actual borrow API lifetime/manager/original/overlap/close boundaries with four typed cases, independent per-case state; existing Meta drift separately verifies exception release.",
+      "contracts": [
+        "#1536 / T121-PHYSICAL-GUIDED-BROWSER-READ-RESERVATION / FR060–064 / FR067–074"
+      ]
+    },
+    {
+      "category": "browser-source-read-reservation-owned-peers",
+      "reason": "Run only the three existing exact owned Meta/World peer methods affected by borrow/dispose plumbing: 12 source rows; preserve original exception, cancellation, admission and release behavior without whole-class or hash-table replay.",
+      "contracts": [
+        "#1536 / T121-PHYSICAL-GUIDED-BROWSER-READ-RESERVATION / FR060–064 / FR067–074"
+      ]
     }
   ]
 }

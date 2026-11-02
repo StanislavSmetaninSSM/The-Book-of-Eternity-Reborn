@@ -1,3 +1,31 @@
+# Browser source scaffold — coherent SOURCE correction WIP
+
+Initial bf33 SOURCE was NOT accepted. Independent Astra found the always-installed
+mutable after-read hook disabled future production eligibility; its other findings
+required counting owner-after-close and finite controls for actual borrow/dispose.
+All three are addressed in source only: causal mode installs only passive canonical
+read/physical counters and requires eligible current-source reuse; mutable callback
+exists solely for Meta drift. Scope observation includes opening/end/Dispose and
+RequireOwnerAfterClose. Production eligibility/ordinary DATA guards stay unchanged.
+
+Current finite source selection: CrossReferences2 + MetaMisc2 + Meta readset drift1
++ typed borrow API4 + three exact existing owned peer methods×4=12, total21 source
+cases/five finite categories (four60s, legacy peers180s). The existing owned-peer
+protective budget is preserved; the full browser180s contract is unchanged.
+Typed API cases compare actual owned/borrowed Meta work,
+refuse second borrow/premature outer close then release and close normally, and
+refuse same-root foreign manager/different processing/disposed original borrowing.
+Drift1 retains exact inner exception/readset refusal and outer release/currentness.
+No blanket historical pin changes, outer production wrapper/debt or remaining
+later safety cases. Corrected delta SOURCE is pending; C# UNCOMPILED and every
+build/discovery/catalog/PlanOnly/RED/GREEN/runtime remains UNRUN by instruction.
+Static source/diff/JSON/finite selector checks do not replace those gates.
+
+Prior coherent source7f461b3658d865099c59ee1ea66ddbcbc1b107e0 was pushed/ls-remote
+verified and its10 changed files freshly downloaded via GitHub blob API with exact
+blob-SHA/byte equality in /tmp/boe-browser-source-restore-7f461b365. No full checkout
+or execution claim. Parent owns final independent SOURCE/integration and runtime.
+
 # Browser source read reservation scaffold WIP — SOURCE pending
 
 Base af1389065f8aede25abf3ae72875e1c19a3cb58d, tracked

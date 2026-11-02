@@ -2,6 +2,60 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "browser-source-read-reservation-borrow-api",
+  "responsibility": "T121-PHYSICAL-GUIDED-BROWSER-READ-RESERVATION: four independently owned typed API cases (one lifecycle Fact plus three foreign/retired original rows). Actual normal Meta-owned scope and outer-borrowed Meta issues agree; second borrow and outer close during borrow refuse, followed by actual release, full proof and successful close. Same-root foreign manager, different actual processing original and disposed original cannot borrow. Existing drift singleton proves inner failure release. C# UNCOMPILED/runtime UNRUN.",
+  "excludes": "No new owner/framework, production outer wrapper/debt, other later safety matrix, broad source-pin repin, accepted141 replay or browser/native/Windows/parent acceptance.",
+  "changeHints": [
+    "BookOfEternityClient/Core/FileSystemManager.WorldValidationRead.cs",
+    "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
+    "BookOfEternityClient.IntegrationTests/BrowserGameStateReadReservationTests.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.BrowserGameStateReadReservationTests.BorrowUsesExistingScopeAndRefusesOverlapAndPrematureOuterClose",
+        "BookOfEternityClient.Tests.BrowserGameStateReadReservationTests.BorrowRefusesForeignOrRetiredOriginal"
+      ]
+    }
+  ]
+},
+{
+  "id": "browser-source-read-reservation-owned-peers",
+  "responsibility": "T121-PHYSICAL-GUIDED-BROWSER-READ-RESERVATION: exactly three existing owned-scope peer methods, four source rows each (12 cases). Meta immediate original read/cancel/close failure and combined-primary preservation; Meta and World retained physical sibling/prior borrow/failed opening/already-running response release only their own state. Required impact controls for changed borrow/dispose plumbing; source selectors fixed, discovery/runtime UNRUN.",
+  "excludes": "No entire World/Meta classes, broad historical hash tables or blanket repin, new reflection preparation, general compatibility suite, accepted141 or full browser-course retry.",
+  "changeHints": [
+    "BookOfEternityClient/Core/FileSystemManager.WorldValidationRead.cs",
+    "BookOfEternityClient/Services/Validation/ValidationService.MetaControlShapeReadPhase.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 3,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.MetaControlShapes_AsyncFailureIsImmediateOriginalAndDoesNotPublish",
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.MetaControlShapes_OriginalAdmissionOpeningAndResponseBranchesReleaseOnlyOwnState",
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.WorldReadPhase_ExistingAdmissionAndOpeningBranchesReleaseOnlyOwnState"
+      ]
+    }
+  ]
+},
+{
   "id": "browser-source-read-reservation-causal-crossrefs",
   "responsibility": "T121-PHYSICAL-GUIDED-BROWSER-READ-RESERVATION / #1536 / FR060–064 / FR067–074: 2 source cases for complete CrossReferences. Actual PrepareQueued/writer, typed engine staging producers, participating expected-session/browser original and processing, produced-manifest DATA only, real World physical authority. Compare control-first/subject-first same full phase with manual reservation against unoptimized production; exact ordered issues/DATA/absence/canonical-original bytes and fresh source work precede only final physical-admission-work causal oracle, including opening/end/close. C# UNCOMPILED/runtime UNRUN; no causal RED claimed.",
   "excludes": "No outer automatic source-phase reservation/debt optimization, new DATA cache, old reflection staging/full-proof helpers, native/browser-course retry, accepted141 replay, other late-journal/owner/overlap safety cases, DOM/provider/fresh-process/Windows or parent/HOLD acceptance.",

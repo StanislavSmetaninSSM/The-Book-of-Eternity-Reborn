@@ -52,8 +52,6 @@ public sealed class BrowserGameStateReadReservationTests(ITestOutputHelper outpu
             else
             {
                 // Both arms must execute the nested flexible/strict pair AND its fresh end comparison.
-                Assert.True(subject.MetaAttempts >= 2);
-                Assert.Equal(subject.MetaAttempts, control.MetaAttempts);
                 Assert.True(subject.SourceReads.Count(path => path == Fixture.MetaPath) >= 3);
                 Assert.Contains("game_state/meta/soul_state.json", subject.SourceReads);
             }
@@ -68,7 +66,7 @@ public sealed class BrowserGameStateReadReservationTests(ITestOutputHelper outpu
     [Fact]
     public async Task MetaCurrentReadsetStillRefusesDriftUnderOuterReservation()
     {
-        await using var fixture = await Fixture.CreateAsync();
+        await using var fixture = await Fixture.CreateAsync(mutableMetaReadset: true);
         await fixture.WithOriginalAsync(async manifest =>
         {
             var before = fixture.Tree();
@@ -114,7 +112,92 @@ public sealed class BrowserGameStateReadReservationTests(ITestOutputHelper outpu
         });
     }
 
-    private sealed record Observation(string OrderedIssues, string[] SourceReads, int MetaAttempts, int PhysicalVerifications);
+    [Fact]
+    public async Task BorrowUsesExistingScopeAndRefusesOverlapAndPrematureOuterClose()
+    {
+        await using var fixture = await Fixture.CreateAsync();
+        await fixture.WithOriginalAsync(async manifest =>
+        {
+            var before = fixture.Tree();
+            var validator = new ValidationService(fixture.Files, NullLogger<ValidationService>.Instance);
+            using var snapshot = validator.UsePrevalidatedPendingTurnSnapshotScope(manifest);
+            // The normal inner path owns and closes its own physical reservation.
+            var ownedIssues = await validator.ValidateGameStateAsync(GameStateValidationPhase.MetaMiscStateFiles);
+            Assert.Null(fixture.Files.BorrowWorldValidationRead());
+            var outer = Assert.IsType<FileSystemManager.WorldValidationReadScope>(fixture.Files.BeginWorldValidationRead());
+            try
+            {
+                await outer.OpenAsync();
+                var borrow = Assert.IsType<FileSystemManager.WorldValidationReadScope>(fixture.Files.BorrowWorldValidationRead());
+                Assert.Same(outer, borrow);
+                try
+                {
+                    Assert.Throws<InvalidDataException>(() => fixture.Files.BorrowWorldValidationRead());
+                    await Assert.ThrowsAsync<InvalidOperationException>(() => outer.DisposeAsync().AsTask());
+                    Assert.True(outer.Lease!.IsActive);
+                    outer.RequireCurrent();
+                }
+                finally { borrow.ReleaseMetaBorrow(); }
+                // Actual nested Meta success must borrow/release without closing the outer lease.
+                var borrowedIssues = await validator.ValidateGameStateAsync(GameStateValidationPhase.MetaMiscStateFiles);
+                Assert.Equal(JsonSerializer.Serialize(ownedIssues), JsonSerializer.Serialize(borrowedIssues));
+                Assert.True(outer.Lease!.IsActive);
+                outer.RequireCurrent();
+                outer.RequireFullEndProof();
+            }
+            finally { await outer.DisposeAsync(); }
+            outer.RequireOwnerAfterClose();
+            Assert.Null(fixture.Files.BorrowWorldValidationRead());
+            Assert.Equal(before, fixture.Tree());
+        });
+    }
+
+    [Theory]
+    [InlineData("same-root-foreign-manager")]
+    [InlineData("different-live-original")]
+    [InlineData("disposed-original")]
+    public async Task BorrowRefusesForeignOrRetiredOriginal(string boundary)
+    {
+        await using var fixture = await Fixture.CreateAsync();
+        await fixture.WithOriginalAsync(async _ =>
+        {
+            var before = fixture.Tree();
+            var outer = Assert.IsType<FileSystemManager.WorldValidationReadScope>(fixture.Files.BeginWorldValidationRead());
+            try
+            {
+                await outer.OpenAsync();
+                if (boundary == "same-root-foreign-manager")
+                {
+                    var foreign = new FileSystemManager(fixture.Files.BasePath, NullLogger<FileSystemManager>.Instance);
+                    Assert.Throws<InvalidDataException>(() => foreign.BorrowWorldValidationRead());
+                }
+                else if (boundary == "different-live-original")
+                {
+                    using (fixture.BeginAnotherActualOriginal())
+                        Assert.Throws<InvalidDataException>(() => fixture.Files.BorrowWorldValidationRead());
+                }
+                else
+                {
+                    fixture.Original.Dispose();
+                    Assert.Null(fixture.Files.BorrowWorldValidationRead());
+                    Assert.Throws<InvalidDataException>(() => outer.RequireCurrent());
+                }
+                if (boundary != "disposed-original")
+                {
+                    outer.RequireCurrent();
+                    outer.RequireFullEndProof();
+                }
+            }
+            finally { await outer.DisposeAsync(); }
+            if (boundary == "disposed-original")
+                Assert.Throws<InvalidDataException>(() => outer.RequireOwnerAfterClose());
+            else outer.RequireOwnerAfterClose();
+            Assert.True(outer.Closed);
+            Assert.Equal(before, fixture.Tree());
+        });
+    }
+
+    private sealed record Observation(string OrderedIssues, string[] SourceReads, int PhysicalVerifications);
 
     private sealed class Fixture : IAsyncDisposable
     {
@@ -127,9 +210,10 @@ public sealed class BrowserGameStateReadReservationTests(ITestOutputHelper outpu
         internal Action<int>? AfterMetaRead;
         internal FileSystemManager Files { get; }
         internal GameEngineTestRuntime Runtime { get; private set; } = null!;
+        internal FileSystemManager.BrowserOriginalOperationScope Original { get; private set; } = null!;
         private PendingPlayerActionService.Staged _staged = null!;
 
-        private Fixture()
+        private Fixture(bool mutableMetaReadset)
         {
             Files = new FileSystemManager(_root, NullLogger<FileSystemManager>.Instance,
                 PhysicalLoadTransactionOperations.Instance, new FileSystemManagerHooks
@@ -137,7 +221,8 @@ public sealed class BrowserGameStateReadReservationTests(ITestOutputHelper outpu
                     BrowserOriginalAdmissionTimingObserver = (stage, _) =>
                     { if (_armed && stage == "physical-verification") _physicalVerifications++; },
                     CanonicalReadActivityObserver = path => { if (_armed) _reads.Add(path); },
-                    AfterCanonicalReadAttemptAsync = path =>
+                    // A mutable callback disables production reuse eligibility. Install it ONLY for drift.
+                    AfterCanonicalReadAttemptAsync = !mutableMetaReadset ? null : path =>
                     {
                         if (_armed && path == MetaPath)
                         {
@@ -147,11 +232,12 @@ public sealed class BrowserGameStateReadReservationTests(ITestOutputHelper outpu
                         return Task.CompletedTask;
                     }
                 });
+            Assert.Equal(!mutableMetaReadset, Files.CanReuseCurrentSourceData);
         }
 
-        internal static async Task<Fixture> CreateAsync()
+        internal static async Task<Fixture> CreateAsync(bool mutableMetaReadset = false)
         {
-            var fixture = new Fixture();
+            var fixture = new Fixture(mutableMetaReadset);
             try { await fixture.PrepareAsync(); return fixture; }
             catch { await fixture.DisposeAsync(); throw; }
         }
@@ -188,6 +274,7 @@ public sealed class BrowserGameStateReadReservationTests(ITestOutputHelper outpu
             SessionOperationContext.RunParticipatingExpectedSessionAsync(Files, _staged.Binding.Generation, async () =>
             {
                 using var original = Files.BeginBrowserOriginalOperation(_staged.Binding, _staged);
+                Original = original;
                 Files.BeginBrowserOriginalProcessing(_staged);
                 // Produced manifest is DATA only. Both arms authenticate with the actual original/World scope.
                 var manifest = JsonSerializer.Deserialize<GameEngine.PendingTurnSnapshotManifest>(
@@ -212,6 +299,13 @@ public sealed class BrowserGameStateReadReservationTests(ITestOutputHelper outpu
                 await body(manifest);
                 return true;
             });
+
+        internal FileSystemManager.BrowserOriginalOperationScope BeginAnotherActualOriginal()
+        {
+            var original = Files.BeginBrowserOriginalOperation(_staged.Binding, _staged);
+            Files.BeginBrowserOriginalProcessing(_staged);
+            return original;
+        }
 
         internal async Task<Observation> ValidateAsync(GameEngine.PendingTurnSnapshotManifest manifest,
             GameStateValidationPhase phase, bool reserved)
@@ -249,7 +343,7 @@ public sealed class BrowserGameStateReadReservationTests(ITestOutputHelper outpu
             }
             Assert.Equal(before, Tree());
             return new Observation(JsonSerializer.Serialize(issues), _reads.OrderBy(p => p, StringComparer.Ordinal).ToArray(),
-                MetaAttempts, _physicalVerifications);
+                _physicalVerifications);
         }
 
         internal void Arm() { _reads.Clear(); MetaAttempts = _physicalVerifications = 0; _armed = true; }

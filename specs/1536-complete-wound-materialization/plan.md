@@ -4,7 +4,7 @@ Tracked T121-PHYSICAL-GUIDED-BROWSER-READ-RESERVATION / issue#1536, branch
 1536-linux-qualification-20261025; scaffold base af1389065f8aede25abf3ae72875e1c19a3cb58d.
 Root/Astra accepted DESIGN including nested Meta closure preservation. This WIP adds
 only typed actual browser staging, an exclusive borrow of the existing Main-access
-World reservation for nested Meta, and five independent Integration source cases.
+World reservation for nested Meta, and the finite Integration scaffold/impact controls.
 The outer production source-phase reservation/debt optimization is NOT implemented.
 
 Four authored causal rows (CrossReferences2/MetaMisc2, both execution orders) use
@@ -14,12 +14,23 @@ canonical/original byte invariance and preserved Meta final readset precede the
 final physical-verification-work oracle. Counters include scope opening/end/close;
 no universal count or stopwatch saving is assumed. The fifth row mutates a current
 Meta path after its flexible/strict captures and requires the exact fresh readset
-refusal while the outer owner remains active. No reflection/manifest fabrication.
+refusal while the outer owner remains active. Causal rows install only passive
+canonical-read/physical observers; the mutable after-read hook exists solely in
+the drift fixture mode, with typed eligibility premises. No new reflection/manifest
+fabrication. Four additional typed API cases cover owned-versus-borrow success,
+overlap/premature outer close and foreign/retired original refusal; exactly three
+existing owned Meta/World peer methods contribute12 source rows. Total:9 new +12
+existing =21 source cases across five finite categories, not yet discovered.
+Causal/API categories retain60s; exact owned peers preserve their existing180s
+protective budget. Full browser180s is unchanged.
 
+Initial SOURCE bf33 was NOT accepted: mutable-hook eligibility, complete counter
+window and finite borrow/owned-peer impact controls required correction. The
+coherent source delta is written and awaits narrow independent delta SOURCE.
 C# UNCOMPILED; build/discovery/catalog audit/PlanOnly/causal RED/runtime UNRUN by
 explicit scaffold instruction. Static diff/JSON/source checks only; these do not
 prove compilation or intended RED. Next: independent coherent SOURCE, then root's
-fresh affected owning builds, full inventory discovery and exact2+2+1/60s PREP.
+fresh affected owning builds, full inventory discovery and exact21-case/five-category PREP.
 Remaining later safety controls, production wrapper/debt and browser180s retry
 remain unwritten/unadmitted. No accepted141/9e590 replay or other HOLD release.
 Optimization assessment: no new cache/source snapshot; fresh bytes and physical

@@ -11,7 +11,10 @@
   if benefit/correctness are proved. Original browser180s/full capture and all
   assertions remain; no blind retry, new DATA cache, quota or parent/HOLD closure.
   Typed staging/Meta borrow and causal-crossrefs2/causal-meta2/meta-readset-drift1
-  are authored WIP: C# UNCOMPILED, build/discovery/PlanOnly/causal RED/runtime UNRUN.
+  plus typed borrow API4 and exact owned-peer12 are authored WIP (21 source cases).
+  Initial SOURCE findings are corrected in a pending narrow delta review; causal
+  observers are passive, mutable hook is drift-only, and owner-after-close is counted.
+  C# UNCOMPILED, build/discovery/PlanOnly/causal RED/runtime UNRUN.
   Outer production wrapper/debt and remaining later safety cases remain UNWRITTEN.
 
 # T108 Shining patient treatment — #1536
