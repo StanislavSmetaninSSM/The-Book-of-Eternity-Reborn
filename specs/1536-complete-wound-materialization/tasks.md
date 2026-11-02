@@ -1,21 +1,17 @@
 - [ ] T121-PHYSICAL-GUIDED-BROWSER-READ-RESERVATION [US2/US5] Complete the existing
-  full browser physical-course acceptance by first proving the smallest lawful
-  repeated-admission correction in CrossReferences/MetaMisc. Reuse the actual
-  WorldValidationReadScope; keep fresh source reads and existing ordinary cache
-  exclusions. Current design in plan.md is independently accepted; scaffold SOURCE is pending.
-  Preserve nested MetaControlShapeReadPhase full readset through an explicitly
-  borrowed actual outer physical scope; never accept its scalar fallback as equal
-  work. First typed real browser staging, Meta closure control and equal-work
-  four-case causal proof; then nine late-journal/original/owner/mutation/closing /
-  exact Meta readset controls and production wrapper only
-  if benefit/correctness are proved. Original browser180s/full capture and all
-  assertions remain; no blind retry, new DATA cache, quota or parent/HOLD closure.
-  Typed staging/Meta borrow and causal-crossrefs2/causal-meta2/meta-readset-drift1
-  plus typed borrow API4 and exact owned-peer12 are authored WIP (21 source cases).
-  Initial SOURCE findings are corrected in a pending narrow delta review; causal
-  observers are passive, mutable hook is drift-only, and owner-after-close is counted.
-  C# UNCOMPILED, build/discovery/PlanOnly/causal RED/runtime UNRUN.
-  Outer production wrapper/debt and remaining later safety cases remain UNWRITTEN.
+  browser physical-course acceptance using only the accepted existing World
+  reservation design in plan.md. Scaffold9d021ae82 SOURCE and causal4 RED OUTCOME
+  are accepted historical evidence; guards17=14PASS/3 stale-stack fixture FAIL.
+  Recovery at f9138c817bb06b5a20c5737d0b39b3160be608e7 reconstructs the lost
+  uncommitted minimal fix; old raw/binaries/toolchain are unavailable.
+  Preserve fresh sources, nested Meta full readset, all original/authority/History
+  and ordinary DATA exclusions. Implement closed phase dispatch, actual selector,
+  validation-instance reservation/cache isolation, both-root fresh publication-debt
+  refusal and exception-preserving close before issue publication. Add finite typed
+  safety variants and the reviewed exact legacy stack-oracle correction (all4 rows).
+  Current source is UNCOMPILED/UNRUN; owning builds/discovery/PREP/GREEN belong to
+  root in the new environment. Broader141/DFR/Mortal/Windows/native work is not
+  repeated automatically; browser180s admission and parent/HOLD closure stay open.
 
 # T108 Shining patient treatment — #1536
 

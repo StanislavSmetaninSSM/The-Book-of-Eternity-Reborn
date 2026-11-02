@@ -1,3 +1,27 @@
+# Recovered environment frontier — 2026-11-02, WIP
+
+Canonical recovery/next action is at the top of plan.md. Remote base
+f9138c817bb06b5a20c5737d0b39b3160be608e7 was confirmed before this edit; complete
+31290-file source tree is materialized in the new isolated task worktree.
+Previous uncommitted fix/raw/binaries/archives/toolchain/helpers are unavailable.
+New external raw root /workspace/tboe-linux-evidence-20261102; nothing below
+claims old raw was recovered or reverified in this environment.
+
+Astra/high accepted the historical causal4 OUTCOME after f913 push: only final
+oracle4FAIL, complete correctness/readset/owner premises,196/5 CrossReferences and
+309/6 Meta physical checks, source10/10, both orders, no timeout/underfill, cleanup
+true. Guards17 retain14PASS/3 fixtureFAIL (borrow4+drift1 PASS, owned12=9/3).
+The narrowly approved legacy fix asserts ReadWorldValidationTextAsync's actual
+async frame and preserves every other assertion; all4 rows require fresh rerun.
+Historical four builds/PDB4/430bindings/27artifacts/44resources and exact warning
+multisets remain prior-environment receipts only. The following pending/UNRUN
+paragraphs describe their earlier point in time and are superseded by this entry.
+
+Current reconstruction is C# UNCOMPILED and all builds/discovery/catalog/PlanOnly /
+runtime UNRUN by explicit instruction. This bounded WIP first reconciles recovery;
+next source-only implementation/tests/catalog delta goes to independent Astra/high
+SOURCE before root's fresh owning builds/PREP/GREEN. No full browser or deep suite.
+
 # B1RED causal4 — intended final-oracle RED; independent OUTCOME pending
 
 Both exact causal leaf runs completed on runtime

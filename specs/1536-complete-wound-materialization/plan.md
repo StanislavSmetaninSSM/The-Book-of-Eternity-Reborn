@@ -1,42 +1,51 @@
-# Browser physical source read reservation — scaffold WIP, UNCOMPILED/UNRUN
+# Browser source read reservation — recovered implementation frontier, WIP
 
-Tracked T121-PHYSICAL-GUIDED-BROWSER-READ-RESERVATION / issue#1536, branch
-1536-linux-qualification-20261025; scaffold base af1389065f8aede25abf3ae72875e1c19a3cb58d.
-Root/Astra accepted DESIGN including nested Meta closure preservation. This WIP adds
-only typed actual browser staging, an exclusive borrow of the existing Main-access
-World reservation for nested Meta, and the finite Integration scaffold/impact controls.
-The outer production source-phase reservation/debt optimization is NOT implemented.
+2026-11-02 UTC, tracked T121-PHYSICAL-GUIDED-BROWSER-READ-RESERVATION / #1536.
+Branch1536-linux-qualification-20261025 was read directly from GitHub at
+f9138c817bb06b5a20c5737d0b39b3160be608e7 before this recovery edit. New isolated
+checkout /workspace/tboe-linux-qualification-20261025 contains the31290-file tree;
+the previous original checkout remains unchanged. Scaffold source9d021ae82930099a1a77bf6ae9ad6ff18ade322d
+and independent Astra/high SOURCE survive in Git. The former uncommitted wrapper
+fix does not; reconstruct only the accepted design below. No old binaries/raw /
+archives/toolchain/helpers were recovered. New raw destination is
+/workspace/tboe-linux-evidence-20261102 outside Git; old paths below are historical.
 
-Four authored causal rows (CrossReferences2/MetaMisc2, both execution orders) use
-separate per-arm validation services for cache isolation over the same genuine
-original. Actual complete phase work, ordered issues, present/absent source DATA,
-canonical/original byte invariance and preserved Meta final readset precede the
-final physical-verification-work oracle. Counters include scope opening/end/close;
-no universal count or stopwatch saving is assumed. The fifth row mutates a current
-Meta path after its flexible/strict captures and requires the exact fresh readset
-refusal while the outer owner remains active. Causal rows install only passive
-canonical-read/physical observers; the mutable after-read hook exists solely in
-the drift fixture mode, with typed eligibility premises. No new reflection/manifest
-fabrication. Four additional typed API cases cover owned-versus-borrow success,
-overlap/premature outer close and foreign/retired original refusal; exactly three
-existing owned Meta/World peer methods contribute12 source rows. Total:9 new +12
-existing =21 source cases across five finite categories, not yet discovered.
-Causal/API categories retain60s; exact owned peers preserve their existing180s
-protective budget. Full browser180s is unchanged.
+Historical accepted evidence (verified by root before losing that environment):
+four owning builds exit0; compiler warnings12/23/26/102 (logged24/46/52/204,
+not unique counts); four PE/PDB pairs,430 source bindings,27 artifacts/44 resources.
+Guards17 executed:14PASS/3 stale-stack fixture FAIL, no timeout, cleanup true.
+Borrow4 plus drift1 PASS; owned12=9PASS/3FAIL. Independent Astra/high reviewed
+primary exception evidence and accepts only the stack assertion substitution
+ReadWorldValidationTextAsync for the non-async Core Task-forwarder; all other
+assertions stay and all four exact legacy exception rows must rerun.
 
-Initial SOURCE bf33 was NOT accepted: mutable-hook eligibility, complete counter
-window and finite borrow/owned-peer impact controls required correction. The
-coherent source delta is written and awaits narrow independent delta SOURCE.
-C# UNCOMPILED; build/discovery/catalog audit/PlanOnly/causal RED/runtime UNRUN by
-explicit scaffold instruction. Static diff/JSON/source checks only; these do not
-prove compilation or intended RED. Next: independent coherent SOURCE, then root's
-fresh affected owning builds, full inventory discovery and exact21-case/five-category PREP.
-Remaining later safety controls, production wrapper/debt and browser180s retry
-remain unwritten/unadmitted. No accepted141/9e590 replay or other HOLD release.
-Optimization assessment: no new cache/source snapshot; fresh bytes and physical
-opening/full-end/current-owner fences remain. Existing Meta readset lifetime stays
-inside one actual phase; an inner borrow acquires/disposes no physical owner.
-GM no-update: internal read/test preparation changes no authored/gameplay contract.
+Causal4 OUTCOME on runtimee24536df4e59835fc7cc2104cf79bbd66ab1e398 / compiled9d021ae82
+was independently accepted by Astra/high after f913 publication. Both control
+orders reach only the final missing-reservation oracle: CrossReferences196/5,
+Meta309/6 physical checks; fresh source reads10/10 per arm. Every earlier ordered
+issue/DATA/absence/tree/inner readset/owner premise passes. No timeout, underfill
+or cleanup failure. TRX SHA cross4ea7896c5ea74f44fd6125cba51363bd17a4d8fcdfae40da91144e328dab5cd5,
+metaacf6d23733bb1f58b4679670ab1a9ab7675682014ff50b69cc8f2fcd2558f734.
+These are accepted HISTORICAL counters, not fresh evidence in the new environment.
+
+Current block: reconstruct minimal closed CrossReferences/Meta dispatcher, actual
+World selector/reservation, complete cache isolation and full-end→both-root debt
+refusal→close→owner-after-close→append flow; preserve nested Meta full readset.
+Author typed finite safety controls before production changes, update manual
+causal debt closure and separate exact legacy4 from unchanged historical8 peers.
+No arbitrary callback framework, new cache, DATA guard removal, recovery/deletion,
+reflection, budget increase or GM contract change. Owner/input/lifetime/freshness
+are exactly those in the accepted design below; all actual source bytes stay fresh.
+GM no-update remains justified only for this internal reading scope.
+
+Current reconstruction C# UNCOMPILED; builds/restore/discovery/PlanOnly/catalog /
+all runtime UNRUN by explicit delegation. Root owns fresh toolchain/native bootstrap,
+GREEN/PREP and subsequent admission. No deep141 replay or blind browser retry.
+Next: source-only implementation/tests/catalog consistency and independent coherent
+Astra/high SOURCE; then root's fresh affected builds/discovery/exact PREP and GREEN.
+All accepted141/9e590 and broader DFR/Mortal/Windows/browser/native HOLDs retain scope.
+
+# Historical scaffold design and preparation
 
 Recovered disk reserve: lossless closed-log substitution preserves14405493B in
 1615482gzipB for36 files from18 ended runs; full decode/EOF/CRC/hash and closing
