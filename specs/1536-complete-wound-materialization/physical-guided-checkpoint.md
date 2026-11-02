@@ -1,3 +1,52 @@
+# T118-ACTUAL-SHELL-READONLY accepted — bounded final receipt
+
+Independent Astra DESIGN/SOURCE/PREP/OUTCOME accepts only this leaf. Production
+App/ShellProvider now has a qualified read-only route from Continue through Help,
+active wounds, known healed History, active-back and local scene-back, using
+controlled typed HTTP responses. Russian Wounds→Раны mapping is the only production
+change. No authored GM capability/wire/rules changed; GM no-update is intentional.
+
+Separate accepted lineages, not one fresh aggregate:
+- SSR label1 PASS at f0965ecb8e31abc16a765d0a9eb5b29205a20148; unchanged causal
+  test15.806159ms / wrapper2.711535s, after actual F1 heading-only RED.
+- Compile-only1 at210c45de0893feb79fa9a497244e1f545ac68dfe, adapter1.1175553s /
+  wrapper2.916980s; not a runtime Fact. Exact source frontend inventory49 files,
+  no missing/stale owner, catalog metadata1,333. Compiler inputs unchanged later.
+- DOM desktop1440×1000 F8 PASS16.261767s and mobile390×844 F9 PASS11.562581s,
+  both runtime4a79f72335e4f77f6b6ddcd6d0ee3377c08e16f6 and unchanged60s bounds.
+  Each process0/driver.exit0/report.pass,30 completed GET and3 exact read-only POST,
+ 5,683 unchanged source/dependency/public/config pins,6 reviewed PNG, no page errors,
+  violations or horizontal overflow. Keyboard/focus, literal markup, hidden rawJson
+  refusal and local final Back are proved on reached screens. Narrow cards use
+  normal vertical scrolling; a full card in one mobile viewport is not claimed.
+
+Both cases have complete CRC-valid traces (desktop163/mobile369 members), closed
+browser/context, terminated owned Vite group and no active owner. All12 original
+PNGs were independently reviewed and show readable content/no blank dossier.
+F4 early path FAIL/F5 locator FAIL remain; F6/F7 are only observed automated
+protocol PASS with rendered qualification withheld. Their evidence is preserved.
+
+Full local diagnostics, never GitHub:
+/workspace/tboe-linux-evidence-20261102/actual-shell-readonly.
+F8 report4fd56010a69ae870fc148c1383bbb176d74ae742df4cf982d530d8cb74ff90c4;
+trace1e6746fd881569342a03d19d8be73e7e5b480485139101b76742a596e83a3d23.
+F9 reportd625bc351cf0fcd0c028235f3f1f45a0239002a4ac0fc2127501eb3da07b5de0;
+trace245e5e5b9bc92fd73ec7390468b7bd6b0a03f52db93ad371cc955da8f9107d7c.
+F3 summary0433de17b337d47e3fe166c7f880c960c3c72482802d15122ab6d03894271df9.
+Fresh F2 production build/typecheck exits0/4.909546s,113 hashed outputs; production
+inputs remain identical. Test config adds only JSON resolution; test types are
+separately established by F3. No unnecessary managed/SSR28/old DOM13 rerun.
+
+Optimization uses existing immutable public templates with independent case DTOs
+and existing Vite dependency reuse; fresh mutable DOM/finite-animation checks
+cannot be cached. No service/cache/diagnostic framework was added, no speedup is
+claimed, and no budget/animation setting was changed. Raw, saves and recovery were
+not deleted. Backend authority, packaged/native fallback hosting, live GM/provider,
+canonical nonmutation and save/fresh-process qualification are outside this proof.
+Parent T118/T151/T158/#1536, A5/R2 UNKNOWN, DFR/Mortal compatibility/Windows and all
+other HOLDs remain open. Next bounded actual-code retirement is T149 legacy NPC
+effect-carrier allowance; source acceptance is observed, publication bypass is not.
+
 # T118 actual-App — accepted finite-animation design, SOURCE WIP
 
 Independent Astra accepts F7 protocol PASS with rendered qualification withheld,

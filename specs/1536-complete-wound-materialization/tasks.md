@@ -1,40 +1,12 @@
-- [ ] T118-ACTUAL-SHELL-READONLY [US5] Complete the real App/ShellProvider
-  read-only menu → wounds → History → active → scene boundary (T118/T158/FR-075).
-  First bounded label correction accepted by independent Astra: actual F1 causal
-  heading-only RED at1e13e67d and unchanged singleton GREEN1/1 at
-  f0965ecb8e31abc16a765d0a9eb5b29205a20148, 2.711535s wrapper/15.806159ms test,
-  complete selection/no timeout/source unchanged/cleanup true. Production changes
-  only GROUP_LABELS.Wounds = Раны; no icon/routing/gameplay change. Actual-App
-  scaffold now proceeds only under accepted Astra DESIGN: fresh pure typed packet
-  factory, exact compile-only entry and existing-driver --actual-shell desktop|mobile.
-  Each separate60s actual index/App/ShellProvider attempt owns Vite5177/browser /
-  context/HTTP state/external full diagnostics. Exact GET6 and read-only POST3 with
-  completed-refresh barriers, strict static/HTTP allowlist and current reserve plus
-  headroom; no backend/proxy/provider side effects are claimed. Current test-only
-  source is UNRUN/UNTYPECHECKED. Exact wound-actual-shell-types selects one compile
-  record, not a runtime Fact. Static driver AST/JSON/source checks and diff --check
-  pass; old main/record/SSR/host files stay unchanged. Test tsconfig changes only
-  resolveJsonModule for new fixture JSON imports; no observed compile failure.
-  Root SOURCE/compile/PREP precede all DOM. Existing
-  SSR1/28 and controlled DOM13 retain separate accepted lineages without rerun.
-  Full current receipt and external evidence paths are at the start of plan and
-  physical-guided-checkpoint. No GM contract or useful cache change. Parents,
-  A5/R2 UNKNOWN, terminal/T152 and all wider HOLDs remain open.
-  F3 compile-only1 accepted on210c45de (not runtime); first F4 desktop attempt
-  fails before Vite/browser at pin path enumeration in0.435556s. One repository-
-  relative exclusion correction WIP passes read-only5,530-input enumeration;
-  SOURCE accepted; new PREP required, desktop/mobile UI remain UNRUN. No accepted PASS
-  rerun or production change; raw retained outside checkout.
-  F5 reaches History then completed fixture FAIL14.630026s: page H1/panel H4
-  locator ambiguity, not an observed product focus defect. Full trace/cleanup
-  preserved; level1-only selector correction WIP, new desktop SOURCE/PREP pending.
-  F6 automated protocol PASS11.662682s is NOT accepted rendered qualification:
-  root PNG/trace inspection shows active screen opacity0 during transition.
-  Fresh content-owner opacity/filter oracles WIP; no production/settings/budget
-  change. Desktop acceptance withheld/mobile UNRUN until reviewed full outcome.
-  F7 automated PASS14.328742s remains visually unaccepted: active-back dossier
-  has its own finite entrance animation. Whole-content finite-animation DESIGN accepted;
-  SOURCE/PREP pending, no new attempt admitted, mobile UNRUN.
+- [x] T118-ACTUAL-SHELL-READONLY [US5] Real App/ShellProvider read-only route
+  Continue→Help→active wounds→known History→active→scene accepted. Independent
+  Astra DESIGN/SOURCE/PREP/OUTCOME: labelSSR1 atf096, compile-only1 at210c (not Fact),
+  desktop16.261767s/mobile11.562581s at4a79f72335e4f77f6b6ddcd6d0ee3377c08e16f6,
+  separate60s attempts, each30GET/3POST,6 reviewed PNG/valid complete trace/source
+  invariance/owned cleanup. One production Russian label; no GM contract change.
+  Full final receipt and retained failures are in physical-guided-checkpoint.
+  Frontend DOM/emissions with controlled HTTP only; no backend/packaged/provider/
+  saves proof. Parents T118/T151/T158/#1536, A5/R2 and all wider HOLDs remain open.
 
 - [x] T150-GM-TERMINAL-GUIDANCE [US2/US7] Reconcile the stale guide/example
   terminal heal/legacy claims, both manifest RequiredText entries and coverageLimit,

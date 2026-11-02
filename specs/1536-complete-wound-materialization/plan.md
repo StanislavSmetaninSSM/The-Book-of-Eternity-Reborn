@@ -1,3 +1,15 @@
+# T118 actual-App read-only leaf accepted; next T149 canonical NPC carrier
+
+See the current physical-guided-checkpoint receipt for exact source lineages and
+full evidence. Astra accepts label SSR1, compile-only1 (not Fact), and two actual
+App/ShellProvider DOM cases at4a79f723: desktop16.261767s, mobile11.562581s, each
+60s, complete HTTP/captures/cleanup and all12 PNG reviewed. Controlled HTTP is not
+backend/packaged/provider/save proof. Only Wounds→Раны changes production.
+T118-ACTUAL-SHELL-READONLY alone closes; parents/UNKNOWN/HOLD stay open. Prior
+failed/visually unaccepted attempts remain explicit below. No unchanged PASS rerun.
+Next source-confirmed retirement: T149 canonical npc_effects legacy NPCWoundChanges
+allowance; independent bounded design pending, no publication bypass claimed.
+
 # T118 actual-App — accepted finite-animation design, SOURCE WIP
 
 Independent Astra accepts F7 protocol PASS with rendered qualification withheld,

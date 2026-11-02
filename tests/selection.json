@@ -2,6 +2,13 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "wound-help-menu-causal",
+      "reason": "Current complete T118 actual-shell leaf includes the one-entry production Help label. Retain its exact regression owner in CI selection; accepted SSR1 on f096 with identical current inputs, so no redundant local rerun. Actual DOM2 on4a and compile-only1 on210c are recorded separately; no broad frontend aggregate.",
+      "contracts": [
+        "#1536 / T118-ACTUAL-SHELL-READONLY / FR-075 / truthful Russian default wounds heading"
+      ]
+    },
+    {
       "category": "wound-actual-shell-types",
       "reason": "Compile only the new actual-App pure typed packet factory and JSON import chain using the existing adapter/config (resolveJsonModule only). One compile-contract record, not runtime Fact or DOM PASS. Existing accepted production build/SSR1/28/controlled DOM13 remain unselected. Whole SOURCE and separate resource/PREP must precede each owned actual-shell desktop/mobile60s attempt; no backend/provider or heavy HOLD retry.",
       "contracts": [
