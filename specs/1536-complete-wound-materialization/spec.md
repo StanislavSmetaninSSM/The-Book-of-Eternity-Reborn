@@ -3649,6 +3649,17 @@ Version-1 spiritual wound consequences use exactly these closed profiles/axes:
 | `spiritual_counter_burden` | `counterPayoff` for one declared operation | reduce one payoff step/slot at I-IV |
 | `spiritual_art_restriction` | availability of one declared standard combat art | unavailable at I-II; restrict at III; forbid at IV |
 
+**Current owner decision, 2026-11-02:** `spiritual_control_burden`,
+`spiritual_counter_burden` and partial `spiritual_art_restriction` (`restrict`) at III
+are deferred until the spiritual combat revision. Do not implement their missing
+runtime meanings now; retain their schema identifiers and follow-up questions.
+They are not completed and are excluded from the current wound acceptance blockers.
+This does not defer the separate strain consumer or IV `forbid`. For voluntary
+non-contested no-roll harm, `harmfulMargin` is an explicit GM choice retained in the
+existing authoritative result/source contract, with normal validation, no automatic
+zero and no new formula. That admission implementation remains open. See
+[resolved author decisions](author-decisions-20261102.md).
+
 These exact eight identifiers are first-class registered #1535 component profiles,
 not aliases for `afterlife_combat_condition`. Each is deterministic and declares only
 the `profile_specific` merge reducer. Their common component payload is the

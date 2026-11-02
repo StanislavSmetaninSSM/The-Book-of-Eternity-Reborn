@@ -14,7 +14,11 @@ public partial class ValidationService
     /// <param name="issues">
     /// Mutable diagnostic destination.
     /// </param>
-    internal static void ValidateRetainedSpiritualExchangeRules(JsonObject exchange, List<ValidationIssue> issues)
+    /// <param name="ordinaryManeuverAfter">
+    /// Intrinsic comparison DATA for this witness only; never original, publication or historical authority.
+    /// </param>
+    internal static void ValidateRetainedSpiritualExchangeRules(JsonObject exchange, List<ValidationIssue> issues,
+        JsonObject? ordinaryManeuverAfter = null)
     {
         const string context = "retainedSource.exchange";
         var before = exchange["before"] as JsonObject ?? throw new FormatException("Before snapshot required.");
@@ -31,7 +35,8 @@ public partial class ValidationService
         ValidateSpiritualArtOperationRules(exchange, before, after,
             AfterlifeSpiritualConflictState.GetNodeString(exchange["operationType"]),
             AfterlifeSpiritualConflictState.GetNodeString(exchange["outcome"]), context, issues,
-            isCurrentExchange: true, requiresCurrentMatchupAudit: true, effectivePosition: effectivePosition);
+            isCurrentExchange: true, requiresCurrentMatchupAudit: true, effectivePosition: effectivePosition,
+            ordinaryManeuverAfter: ordinaryManeuverAfter);
         var dice = exchange["diceAudit"] as JsonObject ?? throw new FormatException("Dice audit required.");
         var lightModifier = SourceOfLightCapstoneState.SumLightIncarnatePlayerModifiers(dice);
         if (lightModifier != 0)

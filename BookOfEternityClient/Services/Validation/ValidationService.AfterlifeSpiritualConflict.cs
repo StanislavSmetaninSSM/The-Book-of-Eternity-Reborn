@@ -3995,7 +3995,8 @@ public partial class ValidationService
         List<ValidationIssue> issues,
         bool isCurrentExchange,
         bool requiresCurrentMatchupAudit,
-        int? effectivePosition)
+        int? effectivePosition,
+        JsonObject? ordinaryManeuverAfter = null)
     {
         if (string.IsNullOrWhiteSpace(operationType))
             return;
@@ -4040,7 +4041,7 @@ public partial class ValidationService
             ValidateCounterMatchupRule(exchange, before, after, outcome, context, issues);
 
         if (ConflictTokenEquals(operationType, "maneuver"))
-            ValidateManeuverRule(before, after, outcome, context, issues);
+            ValidateManeuverRule(before, ordinaryManeuverAfter ?? after, outcome, context, issues);
 
         if (ConflictTokenEquals(operationType, "binding", "force_binding") &&
             IsSuccessfulArtOutcome(outcome) &&

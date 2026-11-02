@@ -1,3 +1,30 @@
+# Author answers applied — 2026-11-02 20:53 UTC
+
+The four questions are resolved: explicit GM discretion for voluntary no-roll
+harmfulMargin (no default0/new formula, retain/validate authoritative choice);
+control_burden, counter_burden and III restrict are author-deferred, NOT implemented
+or completed and NOT current wound blockers. Their questions belong to the future
+spiritual combat revision; registered identifiers stay. IV forbid and the separate
+strain consumer continue. All existing runtime UNKNOWN/HOLD remain unchanged.
+See resolved author-decisions-20261102.md and formula contract; no-roll admission
+implementation/qualification remains OPEN, not an unanswered author question.
+
+A single authorized GitHub #1536 follow-up comment is prepared, publication pending.
+No issues are closed. Historical pending wording below is superseded by this
+current decision, not a new permission to implement the three deferred consumers.
+
+Current intrinsic-core WIP (UNCOMPILED/UNRUN): closed comparison DATA reader and
+existing witness parser accept the six planned fields, using the existing exact
+strain comparator/full parent parser; only the retained intrinsic maneuver lane
+receives detached ordinary after. No live/C3/C4/historical owner adapters or parent
+History joins exist yet, and raw comparison DATA grants no capability. Original
+live maneuver validation still receives actual after and rejects unsupported harm.
+D1B true DATA RED on d174 passed all premises then refused the closed field at the
+subject (0.1578666s); independent OUTCOME accepted. Prior D1 canonicalization fixture
+FAIL stays separate. Next add negative DATA controls, SOURCE review and fresh
+affected builds before any core GREEN claim; complete the whole connected route.
+Raw /workspace/tboe-linux-evidence-20261102/spiritual-strain-preimage-data.
+
 # T081-D retained strain preimage DATA — causal tests WIP
 
 D1 on 8c127c3b7e463f48d42d828df6bb66579b6d01dc is a fixture FAIL, NOT causal

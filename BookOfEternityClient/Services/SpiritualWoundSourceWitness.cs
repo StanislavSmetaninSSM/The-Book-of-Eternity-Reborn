@@ -89,7 +89,8 @@ internal static class SpiritualWoundSourceWitness
     internal static SpiritualWoundCalculation Validate(JsonObject source)
     {
         ArgumentNullException.ThrowIfNull(source);
-        Closed(source, source["guaranteedSeverityRank"] is null ? Fields : Fields + " guaranteePreimage");
+        Closed(source, (source["guaranteedSeverityRank"] is null ? Fields : Fields + " guaranteePreimage") +
+            (source.ContainsKey("strainPreimage") ? " strainPreimage" : ""));
         var digest = Hash(source, "source", "sourceId", "sourceFingerprint");
         Require(Fingerprint(source["sourceFingerprint"]) == digest &&
             Text(source["sourceId"]) == "spiritual_source_" + digest[7..], "Source digest or identity differs.");
@@ -124,7 +125,8 @@ internal static class SpiritualWoundSourceWitness
         ValidationService.ValidateRetainedSpiritualExchangeShape(exchange, "retainedSource.exchange", issues);
         ValidationService.ValidateSpiritualWoundSourceActionShape(exchange, "retainedSource.exchange", issues);
         ValidationService.ValidateRetainedSpiritualDiceAudit(exchange, evidence, issues);
-        ValidationService.ValidateRetainedSpiritualExchangeRules(exchange, issues);
+        var strain = source.ContainsKey("strainPreimage") ? SpiritualStrainPreimageData.ReadIntrinsic(source, exchange) : null;
+        ValidationService.ValidateRetainedSpiritualExchangeRules(exchange, issues, strain?.ReadOrdinaryAfter(exchange));
         Require(!issues.Any(issue => issue.Severity == IssueSeverity.Error), "Invalid retained exchange payload.");
         var sourceOperation = side == "opposition" ? exchange["operationType"] :
             exchange["matchupAudit"]?["oppositionOperation"] ??

@@ -698,6 +698,19 @@ under `spiritual_wound_special_action_costs_v1` in
 `OtherGuides/Afterlife_Combat_Terminology_Glossary.md`, with GM-authored fragments
 in `Examples/E_CLI_Afterlife_Turns.txt`. Other unresolved profiles are unchanged.
 
+## Author decisions of 2026-11-02
+
+For voluntary non-contested spiritual harm without an opposed roll, the GM explicitly
+chooses harmfulMargin. The client must retain that choice under the authoritative
+source/result contract and validate it normally; do not invent opposed dice or use
+automatic zero. This producer/admission route is not yet connected: do not treat
+these rules as permission to edit client-owned receipts or fabricate authority.
+
+Control burden, counter burden and partial art restriction at III are deferred by
+the author until spiritual combat is revised. They are not implemented, not marked
+complete and not current wound blockers. Do not substitute a guessed transformation.
+The separate strain consumer and IV art prohibition are not canceled.
+
 ## spiritual_wound_strain_result_v1
 
 `spiritual_strain_burden` adds exactly one strain step to the affected actor's

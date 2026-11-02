@@ -48,7 +48,13 @@ Raw formula band:
 The final maximum is the minimum of raw band, destination-strain cap, danger-mode cap,
 and source cap. `harmfulMargin` is the sealed harmful margin before any normalized
 critical-success display adjustment. Natural 1/20 do not raise the maximum. All audit
-inputs are client-computed or copied from validated conflict authority.
+inputs are client-computed or copied from validated conflict authority. For genuinely
+voluntary non-contested spiritual harm without an opposed roll, the author decision
+of 2026-11-02 is explicit GM discretion for `harmfulMargin`: retain the GM's chosen
+value in the authoritative source/result contract and validate its typed data and
+original context. Never infer zero, fabricate opposed dice or introduce a new
+formula. Other formula terms, eligibility, consent and all caps remain unchanged.
+This no-roll admission path still requires implementation and qualification.
 
 The user-approved source rule (2026-09-08) is no additional ordinary-action cap:
 the source term is neutral IV unless an exact pre-materialized canonical source

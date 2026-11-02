@@ -1,87 +1,57 @@
-# Wound-only author decisions — pending, 2026-11-02
+# Wound-only author decisions — resolved, 2026-11-02
 
-This is a decision request, not an approved amendment. No option below is
-implemented or accepted. The parent conversation will relay the questions;
-do not submit duplicate questions from task-local UI. It supersedes treating the
-old planning word "ambiguity" as proof that every consumer needs a new rule.
+Author answers received on 2026-11-02 at 20:53 UTC supersede the earlier pending
+questions and the unapproved zero proposal. They change the current completion
+scope, not the status of already qualified or unqualified runtime evidence.
 
-## 1. Harmful margin without a contested roll
+## 1. Voluntary spiritual harm without a contested roll — accepted rule
 
-Current rule: "`harmfulMargin` is the sealed harmful margin before any normalized
-critical-success display adjustment" ([contract](contracts/afterlife-spiritual-wounds-and-healing.md#wound-opportunity-formula), line49).
-The ordinary checker legally waives dice audit for explicit voluntary non-contest
-(`ValidationService.AfterlifeSpiritualConflict.cs:5824`); it supplies no replacement
-number. Source witness currently reconstructs margin from validated side totals.
+Author: «Усмотрение ГМа». For genuinely voluntary non-contested spiritual harm
+without an opposed roll, the GM explicitly chooses `harmfulMargin`. The client
+must retain that explicit decision in the existing authoritative source/result
+contract and validate its allowed typed data and original context normally.
+There is no automatic zero and no new formula. Zero is not a fallback; any value
+must be the GM's explicit decision. Rolled harm still derives its sealed margin
+from validated original dice before normalized critical display. All owner, actor,
+realm, consent, source, strain, envelope and severity-cap checks remain required.
 
-Game difference: artIII/resilienceI and clear→strained contribute4 before margin.
-Margin0 gives pressure4/no wound; margin4 gives pressure8/maximumI. Neither the
-voluntary flag nor the strain transition determines that choice.
+This rule is decided; its no-roll producer/admission implementation and qualification
+remain pending. Do not manufacture an opposed audit or declare this path qualified.
+See [formula contract](contracts/afterlife-spiritual-wounds-and-healing.md#wound-opportunity-formula).
 
-**Минимальный вопрос:** какое значение или вычисление `harmfulMargin` применять
-к добровольно принятому духовному вреду без встречного броска?
-**Предложение:**0, сохраняя остальные слагаемые и все caps; это только предложение,
-ответа пока нет. Не создавать бросок или фиктивный opposed audit.
+## 2. Control burden — deferred by author
 
-## 2. One adverse control step
+Do not implement `spiritual_control_burden` now. When the spiritual combat system
+is revised, decide whether one adverse step strengthens incoming control or
+reduces escape, and how same-rank narrowing of restrictions is affected.
 
-Current rule: "`controlState` resistance for one binding family" and
-"one adverse step at II-IV" (`spec.md:3646`). Ordinary control already has
-none→hindered→bound→locked; "Same-level narrowing of opposition
-`restrictedOperations` counts as weakened `controlState`"
-(`OtherGuides/Afterlife_Combat_Terminology_Glossary.md:280`).
+## 3. Counter burden — deferred by author
 
-Game difference: strengthening incoming hindered→bound is different from reducing
-the wounded actor's successful escape bound→hindered back to unchanged bound.
-A successful narrowing with no rank change has no unique numeric rank to undo.
-The table defines magnitude, not which of those transformations the wound owns.
+Do not implement `spiritual_counter_burden` now. Revisit which payoff axis/slot
+is reduced when several exist, what one descriptive step means, and the result
+when the wound removes the sole payoff.
 
-**Минимальный вопрос:** что именно делает шаг control burden — усиливает входящие
-оковы, уменьшает результат собственного выхода или другое; как он влияет на
-успешное сужение ограничений без изменения ранга?
+## 4. Art restriction at severity III — deferred by author
 
-## 3. One counter-payoff step
+Do not implement partial `spiritual_art_restriction` / `restrict` at III now.
+Revisit the exact admission condition distinguishing partial restriction at III
+from `forbid` at IV. This deferral does not cancel the separate IV prohibition.
 
-Current rule: "reduce one payoff step/slot at I-IV" (`spec.md:3649`).
-The existing `HasCounterPayoff` reader accepts position gain, opposing strain,
-control payoff, or a meaningful `counterPayoff` object
-(`ValidationService.AfterlifeSpiritualConflict.cs:5030–5076`). It does not define
-one common step or a priority among these axes.
+The author deferred 2–4 because the spiritual combat system will change substantially.
+They are NOT implemented or completed, and are NOT blockers for the current wound
+work. Keep the registered schema identifiers; do not invent or silently enable
+missing runtime meanings. Record their follow-up in GitHub issue #1536.
 
-Game difference: counter with +1 position and +1 opposing strain can lose one
-selected gain or a step on both axes. If its only gain disappears, keeping a
-successful/countered outcome contradicts the ordinary measurable-payoff premise
-unless the wound rule defines the resulting outcome. Descriptive payoff also needs
-a declared meaning of "one step"; a string is not a numerical decrement.
+## Follow-up comment in #1536
 
-**Минимальный вопрос:** что считать одной ступенью counter payoff и какой выигрыш
-уменьшать при нескольких/описательных результатах; каким становится исход, если
-рана убрала последний выигрыш?
+Status: draft, publication not yet confirmed. One authorized comment will list all
+three deferred questions; no issue closure, merge or extra game rule is authorized.
 
-## 4. Restricted art at severity III
+## Strain consumer and other boundaries
 
-Current rule: "restrict at III; forbid at IV" (`spec.md:3650`); the payload union
-is exactly `restrict|forbid` (`contracts/wound-effects-and-atomicity.md:523`).
-It specifies no admission predicate for `restrict`. Ordinary `restrictedOperations`
-belongs to opposing control and is not a wound rule by itself.
-
-Game difference: requiring preparation, limiting frequency, and allowing only some
-outcomes admit different actions. III cannot silently become the full IV prohibition
-or a new resource price.
-
-**Минимальный вопрос:** какое точное условие допуска отличает ограниченное
-применение искусства приIII от полного запрета приIV?
-
-## Not an additional author question: strain burden
-
-The current rule is already "one extra strain step on one declared failed
-non-safety operation", "capped at `broken`" (`spec.md:3647`). For example, an
-ordinary strained→fractured result becomes strained→overwhelmed; broken stays
-broken. Implementing the actual ordinary no-wound baseline, operation/side-specific
-failure predicate and exactly-once projection is technical work. A universal
-`!IsSuccessfulArtOutcome` test is wrong: `countered` is a counter payoff outcome,
-but failed binding. Do not ask again about +1, broken, protected safety operations,
-position/B2–B5 or existing source caps.
-
-No question above authorizes general aggression, defeat, start, repeated-conflict,
-QTE or ACTIVE/F1 changes. Withdrawn T088 remains withdrawn. Independent wound
-display/privacy work can continue while these four decisions are pending.
+The author did not cancel the separate strain consumer. Its existing +1 on an exact
+declared failed non-safety operation, capped at broken, remains the rule. Existing
+owner/source/C3/C4/history proofs, privacy, atomicity and qualified scope remain
+mandatory; no general combat/QTE/ACTIVE/F1 change is included. Existing runtime
+UNKNOWN/HOLD and postponed Windows results are unchanged. There are no unanswered
+author questions among these four; technical implementation can continue.
