@@ -1,5 +1,13 @@
 # T081-D actual weakening fixture — source WIP / UNCOMPILED / UNRUN
 
+SOURCE review caught a pre-build test compile defect: ResourceHistoryState.ToCanonicalJson
+returns text. The cheap count now uses existing typed Transitions.Count, with no
+serialization/reparse. No compiler/test has run on this WIP; this is not causal RED.
+The independent route audit confirmed appended overall ordinal3 is turn-local0,
+8/8→2/3→0/1 costs and position-adjusted opposed19vs7 (separate healing25vs16),
+explicit guard component_003/I graph with pruned trigger IDs. Final delta verdict
+pending; new cheap3 + actual1 suffice, no unchanged G4/cache-matrix rerun required.
+
 Base accepted checkpoint6d465cec55a770fa68c0b5bbbe639bdc1635d459, runtime2bf6f7b.
 Astra/high accepted all remaining3 OUTCOME and bounded next DESIGN. New code changes
 only Integration fixture inputs/coverage, catalog and checkpoint: optional capacity

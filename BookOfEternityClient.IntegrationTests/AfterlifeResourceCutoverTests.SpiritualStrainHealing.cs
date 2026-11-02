@@ -22,7 +22,7 @@ public sealed partial class AfterlifeResourceCutoverTests
         Assert.Equal(2, state.Entries.Count);
         Assert.All(state.Entries, entry => { Assert.Equal((decimal)maximum, entry.Current); Assert.Equal((decimal)maximum, entry.Maximum); });
         Assert.Empty(history.ValidateStateAgreement(state));
-        Assert.Equal(2, history.ToCanonicalJson()["entries"]!.AsArray().Count);
+        Assert.Equal(2, history.Transitions.Count);
     }
 
     [Fact]
