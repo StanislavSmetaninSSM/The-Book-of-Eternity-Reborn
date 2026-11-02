@@ -1,3 +1,13 @@
+# Discovery correction category metadata reviewed and read successfully
+
+Independent Sol SOURCE found the new related link used a string instead of the
+catalog's required id/when object. Corrected only that metadata before any new
+build/runtime. Actual Read-TestCategoryCatalog in scripts/testing/TestCategoryCatalog.psm1
+succeeds with1344 categories (metadata only, not discovery or test execution).
+Unit correction unchanged; no production code changed sincea7b2a6e4. New SOURCE
+delta verification and fresh Unit/runtime remain pending; no failed game result
+is hidden by the metadata correction.
+
 # Player parser retirement D1 partial outcome; explicit retired-alias guard correction WIP
 
 Runtime/source a7b2a6e493c60939eb072064ad12a2fc0c423543 completed11/11: Integration

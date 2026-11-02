@@ -9,7 +9,10 @@
     "BookOfEternityClient.Tests/WoundMaterializationSourceGuardTests.cs"
   ],
   "related": [
-    "wounds-canonical-player-carrier-root"
+    {
+      "id": "wounds-canonical-player-carrier-root",
+      "when": "Canonical player carrier or shared inventory responsibility changes."
+    }
   ],
   "requirements": {
     "frontendBuild": false,
