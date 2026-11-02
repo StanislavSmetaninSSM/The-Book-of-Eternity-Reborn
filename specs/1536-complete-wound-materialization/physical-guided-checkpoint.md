@@ -1,4 +1,37 @@
-# Recovery SOURCE accepted — fresh managed builds next
+# R1 owning builds — Integration fixture accessibility correction WIP
+
+2026-11-02 UTC, base87339cf53eb0fa4722b4216afdfc42abea7f5701 was confirmed
+against the full remote task-branch SHA before this bounded edit. Independent
+Astra/high SOURCE1a581b206 remains accepted; no production code changes here.
+
+Root's fresh XML/native-package build graph on87339cf53eb0fa4722b4216afdfc42abea7f5701:
+Main, TestSupport, GMBridge, PortableStorageCrashHost and Unit all exit0. Compiler
+warning counts are respectively81/23/14/0/26. Main includes69 existing XML warnings
+exposed by GenerateDocumentationFile; these are not new runtime defects. The five
+successful owning outputs are retained and are not rebuilt for this fixture edit.
+Integration exits1 after4.54s with exactly4CS0051 errors,0warnings. No C# runtime,
+discovery, catalogue, PlanOnly or tests have executed. This compilation failure
+is not a functional RED. Primary external log:
+/workspace/tboe-linux-evidence-20261102/browser-read-recovery/R1-build-integration/build.log,
+SHA25631d167a63ca4ef6d374952bfc44b8ea539c37f03def51a362f0032f0da690c86.
+
+The four public automatic theory methods exposed internal GameStateValidationPhase
+in their public signatures (original lines331/382/417/456). Fixture-only correction
+uses public bool meta with explicit local typed mapping false→CrossReferences /
+true→MetaMiscStateFiles. All twelve affected input rows retain the same phase and
+secondary bool, order, method names, assertions, counters, premises and budgets.
+Other public API signatures in this single fixture file use public framework /
+xUnit types or primitive bool/string; no other occurrence of this issue found.
+Production enum visibility and all production files remain unchanged. Category /
+selection metadata is unchanged because names and36 source rows are unchanged.
+
+Current correction is source-only UNCOMPILED/UNRUN; writer ran no compile, restore,
+discovery or runtime. Static diff and source-row/signature/body equivalence checks
+are separate evidence only. Next: narrow independent Astra delta SOURCE, then root's
+fresh Integration-onlyC1, preserving the five successful owner outputs. Existing
+PDB/resource/catalogue/PREP/GREEN and full browser admission gates remain open.
+
+# Recovery SOURCE accepted — earlier pre-build frontier
 
 2026-11-02: independent Astra/high accepts reconstructed SOURCE
 1a581b206bb928cbab34802d274551edd5cc8121 againstc3a3eee2a9eed60089c0b5333bdd3d0e6201698c.

@@ -324,12 +324,13 @@ public sealed class BrowserGameStateReadReservationTests(ITestOutputHelper outpu
     }
 
     [Theory]
-    [InlineData(GameStateValidationPhase.CrossReferences, false)]
-    [InlineData(GameStateValidationPhase.CrossReferences, true)]
-    [InlineData(GameStateValidationPhase.MetaMiscStateFiles, false)]
-    [InlineData(GameStateValidationPhase.MetaMiscStateFiles, true)]
-    public async Task AutomaticPhaseRefusesInstanceReentryAndOverlap(GameStateValidationPhase phase, bool overlap)
+    [InlineData(false, false)]
+    [InlineData(false, true)]
+    [InlineData(true, false)]
+    [InlineData(true, true)]
+    public async Task AutomaticPhaseRefusesInstanceReentryAndOverlap(bool meta, bool overlap)
     {
+        var phase = meta ? GameStateValidationPhase.MetaMiscStateFiles : GameStateValidationPhase.CrossReferences;
         await using var fixture = await Fixture.CreateAsync(admissionScheduling: true);
         await fixture.WithOriginalAsync(async manifest =>
         {
@@ -377,10 +378,11 @@ public sealed class BrowserGameStateReadReservationTests(ITestOutputHelper outpu
     }
 
     [Theory]
-    [InlineData(GameStateValidationPhase.CrossReferences)]
-    [InlineData(GameStateValidationPhase.MetaMiscStateFiles)]
-    public async Task AutomaticSnapshotWithdrawalInvalidatesSourceReservation(GameStateValidationPhase phase)
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task AutomaticSnapshotWithdrawalInvalidatesSourceReservation(bool meta)
     {
+        var phase = meta ? GameStateValidationPhase.MetaMiscStateFiles : GameStateValidationPhase.CrossReferences;
         await using var fixture = await Fixture.CreateAsync(admissionScheduling: true);
         await fixture.WithOriginalAsync(async manifest =>
         {
@@ -412,10 +414,11 @@ public sealed class BrowserGameStateReadReservationTests(ITestOutputHelper outpu
     }
 
     [Theory]
-    [InlineData(GameStateValidationPhase.CrossReferences)]
-    [InlineData(GameStateValidationPhase.MetaMiscStateFiles)]
-    public async Task AutomaticPhaseObservesChangedCurrentSourcesOnNextCall(GameStateValidationPhase phase)
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task AutomaticPhaseObservesChangedCurrentSourcesOnNextCall(bool meta)
     {
+        var phase = meta ? GameStateValidationPhase.MetaMiscStateFiles : GameStateValidationPhase.CrossReferences;
         await using var fixture = await Fixture.CreateAsync();
         await fixture.WithOriginalAsync(async manifest =>
         {
@@ -449,12 +452,13 @@ public sealed class BrowserGameStateReadReservationTests(ITestOutputHelper outpu
     }
 
     [Theory]
-    [InlineData(GameStateValidationPhase.CrossReferences, false)]
-    [InlineData(GameStateValidationPhase.CrossReferences, true)]
-    [InlineData(GameStateValidationPhase.MetaMiscStateFiles, false)]
-    [InlineData(GameStateValidationPhase.MetaMiscStateFiles, true)]
-    public async Task AutomaticOpeningFailureKeepsPrimaryClosesAndNextPhaseReadsFresh(GameStateValidationPhase phase, bool cancel)
+    [InlineData(false, false)]
+    [InlineData(false, true)]
+    [InlineData(true, false)]
+    [InlineData(true, true)]
+    public async Task AutomaticOpeningFailureKeepsPrimaryClosesAndNextPhaseReadsFresh(bool meta, bool cancel)
     {
+        var phase = meta ? GameStateValidationPhase.MetaMiscStateFiles : GameStateValidationPhase.CrossReferences;
         await using var fixture = await Fixture.CreateAsync(admissionScheduling: true);
         await fixture.WithOriginalAsync(async manifest =>
         {
