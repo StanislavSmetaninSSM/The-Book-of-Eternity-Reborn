@@ -1,3 +1,12 @@
+# Player raw scaffold SOURCE correction — runtime UNRUN
+
+Independent Astra/high found the new fixture seeded NPC-style entries in the
+player effect carrier. Corrected to current activeEffects[] and added the existing
+typed EffectMaterializationContract.ValidateCarrier(Player) prerequisite before
+write. No production change, test-oracle relaxation or new helper/framework; this
+pre-build fixture finding is not a product failure or causal RED. New source must
+be freshly built; previously accepted NPC outcomes stay separate.
+
 # Existing T149/T071: player legacy raw input causal scaffold WIP — 2026-11-02
 
 Base c7e8b5cbff9f2c194902472a1e473d890b81f189 is remote-verified; NPC narrow

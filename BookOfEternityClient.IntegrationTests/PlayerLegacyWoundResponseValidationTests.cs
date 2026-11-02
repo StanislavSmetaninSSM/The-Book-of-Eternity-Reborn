@@ -12,7 +12,7 @@ public sealed class PlayerLegacyWoundResponseValidationTests
     private const string LegacyPath = "response.playerWoundChanges";
     private const string LegacyCode = "wound_materialization_legacy_response_unsupported";
     private const string EffectsPath = "game_state/player/effects.json";
-    private const string Effects = "{\"schemaVersion\":1,\"entries\":[]}";
+    private const string Effects = "{\"schemaVersion\":1,\"activeEffects\":[]}";
 
     /// <summary>Loose arrays and objects must cause an actual admission Error, independently of its code.</summary>
     [Theory]
@@ -75,6 +75,8 @@ public sealed class PlayerLegacyWoundResponseValidationTests
     /// <summary>Seeds an independently validated current player carrier; no authority or validator result is substituted.</summary>
     private static async Task<string> SeedCurrentCarriersAsync(ResourceMaterializationTestContext context)
     {
+        using var effects = JsonDocument.Parse(Effects);
+        Assert.Empty(EffectMaterializationContract.ValidateCarrier(effects.RootElement, EffectsPath, EffectCarrierKind.Player));
         var carrier = WoundContractTestData.CreatePlayerCarrier();
         Assert.Empty(WoundCarrierCatalog.Build(new WoundCarrierCatalogInput(carrier, null, null, null, null)).Issues);
         var wounds = carrier.ToJsonString();
