@@ -1,5 +1,18 @@
 # Проверка проекта #1573
 
+## T144 — враждебное рассеивание
+
+Baseline/origin870684745960046cd4588f3e6a5d254ba8d290ca совпали; issue1573 прочитана.
+T143 принят. Scope/spec/plan/tasks и предварительный consistency записаны
+до арифметики. Sol6.1/high read-only audit проверяет hostile dispel и соседние
+контракты, аудит завершён; parent прочитал точный mortal buff-dispel example,
+личную реакцию, барьер и смену максимума ДЭ. Проверены дробная арифметика
+цен/мастерства,3 исхода с/без реакции, HoT/max примеры,25 новых ссылок и
+8-doc scope/diff/check. Свидетельство D:\BoeDiagnostics\hostile-dispel-t144\verification.json.
+Independent review и публикация ещё выполняются; баланса/частоты побед эти
+фиксированные исходы не доказывают.
+Runtime/Rules не меняются, нового кэша/дорогого вычислительного пути нет.
+
 ## T143 — очищение
 
 Baseline/origin8a60bb0e4cb53f4013544af2378dd29ce1595cf0 совпали; issue1573 прочитана.

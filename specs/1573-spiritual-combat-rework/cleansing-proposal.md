@@ -1,8 +1,9 @@
 # Очищение: снимаемые состояния, проверка и цена
 
 2026-11-02, T143, [#1573](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1573).
-**Новый кандидат; не принят и не реализован.** Формула сопротивлений T142 уже
-принята. [Spec](spec.md), [plan](plan.md), [tasks](tasks.md), [review](review.md).
+**Правила и цены приняты автором в T144; не реализованы.**
+Враждебное снятие положительных эффектов — отдельный
+[новый проект](hostile-dispel-proposal.md), не автоматическое расширение очищения. [Spec](spec.md), [plan](plan.md), [tasks](tasks.md), [review](review.md).
 
 ## 1. Основания и выбранная рекомендация
 

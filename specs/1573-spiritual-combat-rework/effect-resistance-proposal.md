@@ -3,7 +3,8 @@
 2026-11-02, T142, [#1573](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1573).
 **Формула и показанные правила приняты автором в T143; не реализованы.**
 Цены самих защитных источников/иммунитетов этим не определены.
-Следующий отдельный кандидат — [правила очищения](cleansing-proposal.md).
+[Правила очищения](cleansing-proposal.md) приняты в T144; отдельный новый
+кандидат — [враждебное рассеивание](hostile-dispel-proposal.md).
 [Spec](spec.md), [plan](plan.md), [tasks](tasks.md), [review](review.md).
 
 ## 1. Основание в смертной системе

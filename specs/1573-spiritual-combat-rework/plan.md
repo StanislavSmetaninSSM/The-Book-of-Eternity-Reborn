@@ -1,5 +1,29 @@
 # План перехода к личной модели духовного боя — #1573
 
+## T144 — враждебное рассеивание, документальное проектирование
+
+Baseline/origin870684745960046cd4588f3e6a5d254ba8d290ca совпали; issue1573 прочитана.
+[Spec](spec.md), [tasks](tasks.md), [проект](hostile-dispel-proposal.md).
+Brainstorming + Spec Kit bridge + writing-plans, текущая feature/8 Markdown.
+Предварительный consistency: T144spec→T144.1–3, только проект/арифметика.
+
+1. Записать принятие T143 и обновить указатели. Один Sol6.1/high read-only
+   аудит hostile-removal/barrier/reactions; parent сверяет accepted T141–143,
+   mortal dispel example, max/current и личную активную защиту.
+2. Кандидат цены/снятия/проверки против S и защиты получателя, никаких новых
+   вторичных save. Точные примеры D50, исход с/без+5реакции, group costs,
+   исчезновение остатка барьера, будущий HoT и clamp max/current. Links/scope.
+3. WIP/push до отдельного Astra/high whole-block review; corrections,
+   remote/API/source bytes/new clean restore, issue readback; предъявить.
+
+Review focus: реакция не суммирует две Воли и не меняет S; барьер не получает
+урон/перенос; снятый buff не удаляет постоянный источник; group-owned effects
+не sweep по стороне; multicheck и costs заранее; сохранение опорных cleansing
+цен без ложного утверждения mortal тарифа/полного баланса.
+Оптимизация: новых runtime путей/кэшей нет. Будущие определения/проекции через
+существующий сервис по identity/revision; после снятия свежие ресурсы/право/
+зависимые эффекты. Не повторять source-чтение на каждый компонент проверки.
+
 ## T143 — очищение, исследование и численный проект
 
 Baseline/origin8a60bb0e4cb53f4013544af2378dd29ce1595cf0 совпали; issue1573 прочитана.

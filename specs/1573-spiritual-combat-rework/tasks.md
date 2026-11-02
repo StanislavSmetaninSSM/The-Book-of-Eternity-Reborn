@@ -1,5 +1,11 @@
 # Задачи #1573 — полный духовный бой
 
+## T144 — рассеивание положительных эффектов противника
+
+- [x] T144.1 Принятие T143, source audit/parent сверка, scope/spec/plan/consistency до расчётов.
+- [x] T144.2 Кандидат hostile-dispel-proposal.md, точные цены/бонусы/3 исхода/HoT/max примеры проверены;25 новых ссылок и8-doc diff/check прошли. Actor/effect/barrier/HoT/max/reaction контракты сверены.
+- [ ] T144.3 Independent Astra/high whole-block review; публикация/remote/API/new restore/readback; показать кандидатом без production/Rules/probes.
+
 ## T143 — очищение
 
 - [x] T143.1 Принятие T142, mortal/removal/wound audit, scope/spec/plan/consistency до арифметики.
