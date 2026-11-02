@@ -2,6 +2,33 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "wounds-spiritual-strain-c2-selection",
+  "responsibility": "#1536 T081-D: one real signed rank-III C2 materialization with exactly one applicable pressure strain slot; requires bounded next player pressure/setback after.playerSideStrain correction from proved ordinary overwhelmed to broken. Preserves actual canonical bytes/no common plan, unrelated result fields and premature final echo refusal. Current expected causal RED must be missing consumer after genuine III offer/selection, not preparation.",
+  "excludes": "No new harmfulMargin/control/counter/art-III rule, no reflection/caller-authority, no general combat/QTE/ACTIVE/F1, no full consumer/terminal/publication/Engine/cold acceptance or HOLD retry. Baseline Fact is not repeated as a separate selection.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualStrainSelection.cs",
+    "BookOfEternityClient/Services/Validation/ValidationService.SpiritualWoundMechanics.cs",
+    "BookOfEternityClient/Services/Validation/ValidationService.SpiritualC2SavedDecisionDraft.cs",
+    "BookOfEternityClient/Services/SpiritualWoundDependentDraftPolicy.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualStrainBurden_RealThirdDegreeSelectionRequiresExactlyOneOwnedStrainCorrection"
+      ]
+    }
+  ]
+},
+{
   "id": "wounds-spiritual-strain-baseline",
   "responsibility": "Existing T081-D / #1536 spiritual_strain_burden preparation: exactly one real signed ordinary-source Fact proves player pressure/setback baseline with lost position and unchanged overwhelmed strain, first actual player harmful source cappedIII, unique signed dice claims and unchanged canonical source/resource bytes. This is ordinary-baseline preparation, NOT a new burden consumer or admitted C2 wound offer. Any failure must be classified before a future causal consumer test.",
   "excludes": "No strain insertion/correction, arithmetic-only fake authority, reflection, invented margin/control/counter/restrict rules, cold/publication/Engine/DFR/Mortal compatibility/Windows/HOLD retry. No prior accepted source test replay.",

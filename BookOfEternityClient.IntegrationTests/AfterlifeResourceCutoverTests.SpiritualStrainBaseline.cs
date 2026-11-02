@@ -12,33 +12,7 @@ public sealed partial class AfterlifeResourceCutoverTests
     {
         await using var context = await CreateCompleteConflictFrameContextAsync(
             seedOriginalInputs: SeedOriginalIntakeBaselinesAsync, signedDice: [5, 15, 4, 12]);
-        await WriteCompleteConflictFrameExchangeAsync(context);
-        var candidate = await ReadProjectedSourceContinuationCandidateAsync(context);
-        var active = candidate["activeConflict"]!.AsObject();
-        var first = active["exchangeLog"]![0]!.AsObject();
-        first["outcome"] = "setback";
-        first["after"]!["playerSideStrain"] = "overwhelmed";
-        first["after"]!["oppositionSideStrain"] = "clear";
-        SetDice(first, 5, 15);
-        first["incomingAction"] = IncomingPressure();
-        active["playerSideStrain"] = "overwhelmed";
-        active["oppositionSideStrain"] = "clear";
-        await context.WriteExactJsonAsync(AfterlifeSpiritualConflictState.StatePath, candidate.ToJsonString());
-
-        await WriteSourceContinuationAppendAsync(context, duplicateDice: false);
-        candidate = await ReadProjectedSourceContinuationCandidateAsync(context);
-        active = candidate["activeConflict"]!.AsObject();
-        var second = active["exchangeLog"]![1]!.AsObject();
-        Assert.Equal("contested", second["before"]!["conflictPosition"]!.GetValue<string>());
-        second["outcome"] = "setback";
-        second["after"] = second["before"]!.DeepClone();
-        second["after"]!["conflictPosition"] = "opposition_advantaged";
-        second["incomingAction"] = IncomingPressure();
-        SetDice(second, 4, 12);
-        active["playerSideStrain"] = "overwhelmed";
-        active["oppositionSideStrain"] = "clear";
-        active["conflictPosition"] = "opposition_advantaged";
-        await context.WriteExactJsonAsync(AfterlifeSpiritualConflictState.StatePath, candidate.ToJsonString());
+        await WriteSpiritualStrainBaselineDraftAsync(context);
 
         await using var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
         var paths = new[] { AfterlifeSpiritualConflictState.StatePath, AfterlifeEntityProfileState.StatePath,
@@ -68,6 +42,38 @@ public sealed partial class AfterlifeResourceCutoverTests
         for (var i = 0; i < paths.Length; i++)
             Assert.Equal(images[i], await context.FileSystem.ReadFileBytesAsync(lease, paths[i]));
         Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(context.FileSystem, lease));
+    }
+
+    /// <summary>Writes the already proved two-exchange ordinary draft into an independent signed fixture.</summary>
+    private static async Task WriteSpiritualStrainBaselineDraftAsync(ResourceMaterializationTestContext context)
+    {
+        await WriteCompleteConflictFrameExchangeAsync(context);
+        var candidate = await ReadProjectedSourceContinuationCandidateAsync(context);
+        var active = candidate["activeConflict"]!.AsObject();
+        var first = active["exchangeLog"]![0]!.AsObject();
+        first["outcome"] = "setback";
+        first["after"]!["playerSideStrain"] = "overwhelmed";
+        first["after"]!["oppositionSideStrain"] = "clear";
+        SetDice(first, 5, 15);
+        first["incomingAction"] = IncomingPressure();
+        active["playerSideStrain"] = "overwhelmed";
+        active["oppositionSideStrain"] = "clear";
+        await context.WriteExactJsonAsync(AfterlifeSpiritualConflictState.StatePath, candidate.ToJsonString());
+
+        await WriteSourceContinuationAppendAsync(context, duplicateDice: false);
+        candidate = await ReadProjectedSourceContinuationCandidateAsync(context);
+        active = candidate["activeConflict"]!.AsObject();
+        var second = active["exchangeLog"]![1]!.AsObject();
+        Assert.Equal("contested", second["before"]!["conflictPosition"]!.GetValue<string>());
+        second["outcome"] = "setback";
+        second["after"] = second["before"]!.DeepClone();
+        second["after"]!["conflictPosition"] = "opposition_advantaged";
+        second["incomingAction"] = IncomingPressure();
+        SetDice(second, 4, 12);
+        active["playerSideStrain"] = "overwhelmed";
+        active["oppositionSideStrain"] = "clear";
+        active["conflictPosition"] = "opposition_advantaged";
+        await context.WriteExactJsonAsync(AfterlifeSpiritualConflictState.StatePath, candidate.ToJsonString());
 
         static JsonObject IncomingPressure() => new()
         {

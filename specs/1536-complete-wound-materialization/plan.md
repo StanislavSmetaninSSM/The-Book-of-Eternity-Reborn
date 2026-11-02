@@ -1,3 +1,31 @@
+# T081-D strain C2 selection: causal scaffold WIP
+
+Accepted baseline/source-cap preparation58a5 remains separate1PASS; current test-only
+extraction reuses its exact raw draft builder with independent signed roots. New exact
+Fact requires real C2 first pair/III offer and a3-slot wound: one strain/pressure,
+one roll/maneuver and one cost/guard(+2), so only strain changes the next pressure.
+Canonical resources/wounds/effects/History/profiles and no-common-plan are checked.
+Expected causal RED is unsupported consumer after actual III proposal, not fixture
+or compiler failure. Exact1Fact/1case60s, no separate baseline rerun. Later dependent
+field/policy controls remain UNREACHED until that selection can proceed.
+No production changed; new C# UNCOMPILED/runtime UNRUN, SOURCE pending.
+
+Astra/high narrow design assessment: retain owner-rederived ordinary last pressure/
+setback comparison immediately before materialization, reprove via existing discarded
+ordinary/source/resource probe and rederive on cold selection replay. Binding proof
+stays binding-only. Exact current actor/ordinal/contribution provenance authorizes
+only min(broken, ordinaryAfter+1), not caller subtraction. Correction A is only the
+exchange strain; terminal echo B requires actual A plus full source/resource proof.
+Corrected strain can create a new real source: do not suppress its C2 offer. Unknown
+profile/combination remains fail-closed. No new cache; existing selection/scoped
+owners and comparison DATA lifetime. No production implementation accepted yet.
+
+Next SOURCE, preserve current Integration5, fresh Integration using unchangedMain816/
+SupportECE, artifact/PDB/catalog/Plan/PREP then one bounded causal case. All raw at
+/workspace/tboe-linux-evidence-20261102/spiritual-strain-burden. No GM-update for
+this test-only scaffold; future consumer rule guidance will be synchronized. All
+four author decisions, parent tasks, UNKNOWN/HOLD and wounds-only scope unchanged.
+
 # T081-D strain burden: ordinary signed baseline accepted — 2026-11-02
 
 Source/runtime58a5c0904f96bb17d7838df906bc62c7efacb1e9: exactly1 Integration
