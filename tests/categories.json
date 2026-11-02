@@ -2,8 +2,35 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "wounds-spiritual-strain-guidance",
+  "responsibility": "#1536 T081-D one directly affected existing parsed strain comparison/manifest/guide Fact after exact player pressure/success no-op guidance. Real consumer source/C2 authority is separate.",
+  "excludes": "No unmodified comparison boundary theory rerun, whole profile, Engine/UI/fresh process, new author decision or HOLD qualification.",
+  "changeHints": [
+    "OtherGuides/Wound_Materialization_Contract.md",
+    "Examples/E_CLI_Afterlife_Turns.txt",
+    "Examples/example_validation_manifest.json",
+    "BookOfEternityClient.Tests/SpiritualStrainComparisonTests.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.SpiritualStrainComparisonTests.WorkedStrainExampleKeepsSeparateOwnedExchangeAndFinalEcho"
+      ]
+    }
+  ]
+},
+{
   "id": "wounds-spiritual-strain-pressure-success",
-  "responsibility": "#1536 T081-D exact player pressure/success is not a failed operation: real ordinary two-exchange signed sourceIII/player then sourceI/opposition, actual III wound choice must advance unchanged ordinary player strain without dependent strain correction; guardian offerI/none and candidate/canonical no-mutation predicates. Expected causal RED only integration_required after lawful III submission.",
+  "responsibility": "#1536 T081-D exact player pressure/success is not a failed operation: real ordinary two-exchange signed sourceIII/player then sourceI/opposition, actual III wound choice must advance unchanged ordinary player strain without dependent strain correction; guardian offerI/none and candidate/canonical no-mutation predicates. Causal3ec proved integration_required after lawful III submission; GREEN must keep the ordinary result without dependent A/B.",
   "excludes": "No partial_success/countered/universal failure predicate, other actor/operation/carrier semantics or pending author rules. No previous private20/C4two rerun, Engine/UI/freshOS/wholeprofile or HOLD qualification.",
   "changeHints": [
     "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualStrainSuccess.cs",
@@ -90,7 +117,7 @@
   "expectedSeconds": null,
   "related": [],
   "id": "wounds-spiritual-strain-comparison",
-  "responsibility": "#1536 T081-D exact strain-step comparison DATA: five independent full strain boundaries including broken saturation, detached-copy and sibling refusal; one parsed GM worked comparison/manifest/guide Fact. Actual III C2 authority is separate.",
+  "responsibility": "#1536 T081-D exact strain-step comparison DATA: five independent full strain boundaries including broken saturation, detached-copy and sibling refusal. Parsed GM worked comparison/guide is in the separate guidance leaf; actual III C2 authority is separate.",
   "changeHints": [
     "BookOfEternityClient/Services/Validation/ValidationService.SpiritualStrainDependency.cs",
     "BookOfEternityClient.Tests/SpiritualStrainComparisonTests.cs",
@@ -100,7 +127,7 @@
     {
       "project": "unit",
       "tests": [
-        "BookOfEternityClient.Tests.SpiritualStrainComparisonTests.*"
+        "BookOfEternityClient.Tests.SpiritualStrainComparisonTests.OwnedComparisonDataPermitsOneStepAndPreservesEverySibling"
       ]
     }
   ]

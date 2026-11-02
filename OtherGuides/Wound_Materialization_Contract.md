@@ -708,6 +708,13 @@ one newly selected applicable burden on the last player `pressure/setback` excha
 with genuine opposed dice and unchanged ordinary player strain. Other failure
 families, replacement carriers and unproved combinations remain unavailable.
 
+The exact current player `pressure/success` route preserves the ordinary result:
+this failed-operation-only burden adds no strain, so no dependent A/B correction
+is requested. Author the normal signed successful pressure, including its real
+opposition strain payoff, costs and final echo. The client still validates the
+current actor/effect, ordinary dice, chronology and any resulting wound source.
+This does not authorize other sides, operations, `partial_success` or `countered`.
+
 The saved choice first requests only the exact exchange `after.playerSideStrain`
 correction A. Preserve outcome, before, dice, actor, position loss, costs, other
 strain and the final root echo. After the client proves actual A, a separate B

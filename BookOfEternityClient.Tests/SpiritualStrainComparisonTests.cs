@@ -29,6 +29,10 @@ public sealed class SpiritualStrainComparisonTests
         var guide = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "OtherGuides/Wound_Materialization_Contract.md"));
         Assert.Contains("one newly selected applicable burden", guide);
         Assert.Contains("ordinary harmful-source formula", guide);
+        Assert.Contains("The exact current player `pressure/success` route preserves the ordinary result", guide);
+        Assert.Contains("Successful pressure needs no strain correction", example[start..end]);
+        Assert.Contains("ordinary signed 12/4, margin8", example[start..end]);
+        Assert.Contains("do not send A or B", example[start..end]);
     }
 
     [Theory]

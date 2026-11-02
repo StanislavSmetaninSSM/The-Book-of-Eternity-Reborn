@@ -2,10 +2,31 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "wounds-spiritual-strain-pressure-success",
-      "reason": "One genuine III pressure wound with successful next player pressure must not receive the failure-only strain modifier; guard-only intended RED after full ordinary source proof. Later ordinary candidate controls UNREACHED until GREEN.",
+      "category": "wounds-spiritual-strain-guidance",
+      "reason": "Changed exact successful pressure GM guidance and parsed existing worked-example guard; unmodified five comparison DATA cases excluded.",
       "contracts": [
-        "#1536 T081-D spec3647 failed non-safety operation only / actual current contribution and ordinary source validation"
+        "#1536 T081-D spec3647 failed-operation-only strain / current effect authority and ordinary source integrity"
+      ]
+    },
+    {
+      "category": "mortal-terminal-guidance-manifest-regression",
+      "reason": "Existing exact complete manifest inventory guard directly affected by changed strain required text; no Mortal runtime selected.",
+      "contracts": [
+        "#1536 T081-D spec3647 failed-operation-only strain / current effect authority and ordinary source integrity"
+      ]
+    },
+    {
+      "category": "wounds-spiritual-strain-pressure-success",
+      "reason": "Actual current III pressure burden must preserve ordinary signed player success and next sourceI/none; causal3ec reproduced missing consumer.",
+      "contracts": [
+        "#1536 T081-D spec3647 failed-operation-only strain / current effect authority and ordinary source integrity"
+      ]
+    },
+    {
+      "category": "wounds-spiritual-strain-c2-selection",
+      "reason": "Existing directly affected failed pressure peer must still require exact A/B, fresh rederivation, saturation/other-side/sibling refusals and ordinary sourceII/none.",
+      "contracts": [
+        "#1536 T081-D spec3647 failed-operation-only strain / current effect authority and ordinary source integrity"
       ]
     }
   ]

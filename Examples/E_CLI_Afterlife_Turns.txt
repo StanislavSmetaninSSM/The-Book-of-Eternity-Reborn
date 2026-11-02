@@ -14552,6 +14552,13 @@ echo, change the other side or rewrite signed dice/outcome/costs. The real new
 overwhelmed→broken source has harmful margin8 and pressure14/maxII in this example;
 it may issue its own optional offer, which can be explicitly declined. It is not
 suppressed by the earlier III choice. Reopening never compounds the +1 step.
+Successful pressure needs no strain correction: with the same real III wound,
+the exact next player pressure/success uses its ordinary signed 12/4, margin8,
+before player overwhelmed/opposition clear and after player overwhelmed/opposition
+strained. Preserve that ordinary result and final echo; do not send A or B.
+The actual opposition harmful source still receives its own optional I offer,
+which may be explicitly declined. All ordinary source checks remain mandatory.
+This successful example does not authorize partial_success/countered or other sides.
 Private completion is not accepted-turn publication. Other consumer combinations
 and missing dice-free harmfulMargin rules are not authorized by this fragment.
 end_spiritual_wound_strain_result_v1

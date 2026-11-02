@@ -1,35 +1,31 @@
-# T081-D exact player pressure/success causal scaffold WIP
+# T081-D exact player pressure/success implementation WIP
 
-Basef36c370765002a34255987bfc1137fb6d8f2e17f accepted C4publication+rollback
-(two newPASS sourcec32/Mainbc7); seven changedGitHubfiles fully matched immutable
-ref, boundedreadback e4bdf8df9fdd42b908c1a68bf8e39f74143aa83a4bca7bceed9db36c85b243b7.
-Prior private20 and both C4 cases are not selected again. Root/current processes
-closed, four author decisions/HOLD unchanged.
+Causal source3ecf8cae6277dbe392c714f98ce7f2cd248b7fca: fresh Integration
+exit0/107 unchanged warnings/68.855787475s, actual unchanged Mainbc7/SupportECE,
+25artifacts/412 resource copies/native4/3PDB383bindings. Discovery1357/13185
+and exact1Fact60s PlanOnly; Sol SOURCE/PREP accepted. One actual causal FAIL
+in4.117225s, no timeout: only spiritual_wound_profile_integration_required at
+exchange1 after full signed sourceIII+I proof and lawful real III submission.
+Late candidate assertions UNREACHED. Post hashes/cleanup/clean tree verified.
+Raw /workspace/tboe-linux-evidence-20261102/spiritual-strain-success; post proof
+f2a38ac4fe93c93f1dbb0648e4d6e559eb789889409f512ea5b08f487cc58687.
 
-Astra DESIGN accepts exact PLAYER pressure/success no-op under the already stated
-failed-operation-only strain rule. Only the current authenticated player contribution
-may be skipped; other effects, signed dice/costs/chronology/source/echo remain normal.
-No universal !failure, opposition/partial_success/countered or new game rule.
+Minimal implementation follows Astra DESIGN: only authenticated current player
+strain contribution, exact pressure and success, skips this contribution's failed-
+operation modifier. It never skips other contributions or ordinary dice/cost/
+chronology/source/final echo checks. No general !failure or other side/operation.
+Guide/worked example/manifest/existing parsed guard synchronized; no Mortal or
+launcher protocol change because this is the existing registered spiritual profile.
+New C# UNCOMPILED/runtimeGREEN UNRUN. Whole SOURCE pending, then fresh Main/Unit/
+Integration; exact guidance1+manifest1 before success1 and affected setback1.
+Old private20/C4two not otherwise repeated; these are a directly affected peer,
+not retagging old PASS. Parent profile/#1536/Engine/UI/freshprocess remain OPEN.
 
-Current TEST-ONLY scaffold: freshsigned5/15/12/4, first true playerIII harm, second
-ordinary pressure/success unchangedplayeroverwhelmed and opposition clear→strained.
-Ordinary session must validate2 exchanges/4uniqueclaims/sourcecapsIII+I BEFORE real
-III selection. The same legal3slot proposal builder is extracted without semantic
-change for independent fresh DATA; no returned owner or shared mutable fixture.
-Expected causal RED is only unsupportedconsumer after III; later guardianI offer/
-none/completedcandidate and seven canonical nonmutation assertions UNREACHED then.
-One exact IntegrationFact/60s; no production changes yet, C#UNCOMPILED/runtimeUNRUN.
-
-Next whole SOURCE, preserve previous Integration5, fresh Integration with actual
-unchanged Mainbc7/SupportECE/resources/native/PDB, actualdiscovery/Plan/PREP and
-one causal. Only after proven RED: minimal current player/pressure/success branch,
-GM guide/example sync, freshaffectedbuilds and newpositive+affectedsetback peer.
-Optimization: existing immutable preparedtemplate with fullsigned input key and
-independent roots; existing typed source/C2 services, no newcache or authority.
-No extra ordinary comparison for no-op success. No speedup claim. GMno-update for
-this test-only scaffold; implementation must update existing guidance. Full raw at
-/workspace/tboe-linux-evidence-20261102/spiritual-strain-success, neverGit.
-All wholeprofile/parents/#1536/Engine/UI/freshOS/oldUNKNOWN/HOLD remain OPEN; wounds only.
+Optimization: no extra source reconstruction or comparison for a zero modifier;
+existing current owned context, projector and ordinary readers remain authoritative.
+No new cache/key/lifetime/authority; existing full signed-template reuse/copies and
+fresh owner/source/effect boundaries unchanged. No speedup claimed. Four author
+decisions and all old UNKNOWN/HOLD unchanged; wounds only.
 
 # Current accepted wound result: strain C2→common C4 publication/rollback
 
