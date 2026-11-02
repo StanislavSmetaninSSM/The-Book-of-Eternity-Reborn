@@ -1,3 +1,14 @@
+- [ ] T121-PHYSICAL-GUIDED-BROWSER-READ-RESERVATION [US2/US5] Complete the existing
+  full browser physical-course acceptance by first proving the smallest lawful
+  repeated-admission correction in CrossReferences/MetaMisc. Reuse the actual
+  WorldValidationReadScope; keep fresh source reads and existing ordinary cache
+  exclusions. Current design in plan.md is WIP pending independent DESIGN.
+  First typed real browser staging and equal-work four-case causal proof; then
+  late-journal/original/owner/mutation/closing controls and production wrapper only
+  if benefit/correctness are proved. Original browser180s/full capture and all
+  assertions remain; no blind retry, new DATA cache, quota or parent/HOLD closure.
+  All new C# and runtime are UNWRITTEN/UNRUN at this planning checkpoint.
+
 # T108 Shining patient treatment — #1536
 
 - [x] T108-SHINING-PATIENT Complete player→visible conscious consenting current

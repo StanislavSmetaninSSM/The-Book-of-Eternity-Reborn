@@ -1,3 +1,108 @@
+# Browser physical course: bounded read-reservation design WIP
+
+Tracked T121-PHYSICAL-GUIDED-BROWSER-READ-RESERVATION / issue#1536.
+Goal: finish the actual three-milestone browser course after normal accepted waits,
+separate confirmations and cleanup, in the existing180s/full-capture contract.
+This technical design is pending independent DESIGN; no new code/runtime is admitted.
+The accepted canonical-adapter baseline is9e590fb6c11c33880019dfde69054f7994f4db0b.
+Stack: existing .NET8/C#/PowerShell category runner and current native package.
+Spec: spec.md physical treatment/FR060–064/067–074 and existing spiritual-aid-design.md.
+
+## Established question and approaches
+
+The retained browser prefix measures first attempt115.982s, Finalize102.264s and
+sequential GameState25.103/25.686s. It remains incomplete/UNKNOWN. Aggregates from
+its231053-byte readback (not a new8GB scan) show CrossReferences13.908s/8 and
+MetaMisc12.095s/7, GameStateData.Fallback45.184s/21. These nested/all-prefix intervals
+are not additive savings, nor proof of the complete timeout cause.
+
+Executor's selected minimal hypothesis: reuse the EXISTING read reservation for
+exactly CrossReferences and MetaMisc, retaining every actual fresh source read.
+Missing public reads otherwise reacquire quiescence and repeat physical original
+admissions. A real ambient WorldValidationReadScope can avoid those acquisitions.
+Existing-file reads need not acquire a lease; benefit must be measured by actual
+physical-verification/admission counters, including opening/end/close work.
+
+Alternative full SourceDataOperation/browser adapter is deferred: it requires a
+new typed version/view/debt contract and is unnecessary before reservation-only
+benefit is known. Removing browser exclusions or specializing post-materialized
+validation is outside this change. No validation verdict/permission/source snapshot
+cache is introduced. Existing MainRunFence/SourceDataOperation guards stay intact.
+
+## Existing owner and exact lifetime
+
+Owner: FileSystemManager.WorldValidationReadScope, actual processing browser
+original, Main access and PublicationReadQuiescence lease. Full identity remains
+root/manager, exact pending+request+manifest+authority+History/staged original,
+generation and bytes, actual processing phase/owner/reservation. One selected phase
+opens/closes its own scope; nothing survives into the next phase or attempt.
+Current source bytes/absence and namespace are still read by original readers.
+Full original physical end proof, owner checks and exception/close order remain.
+
+One confirmed gap in a naive wrapper: ambient readers skip pending-publication
+recovery checks, while original end proof alone is not universal unrelated journal
+proof. A fresh debt check must refuse/retain new journal evidence before phase
+results escape; recovery is never run inside the read reservation. Opening debt
+uses the existing actual acquisition/recovery protocol. No new baseline is inferred.
+
+## Proposed bounded interfaces and flow
+
+- GameEngine.StageBrowserOriginalForValidationAsync(Binding, TurnRequest, bool
+  withRollback), internal component preparation only: call actual
+  ClaimBrowserPreparationAsync → CreatePreTurnBackup when requested →
+  CreateCanonicalBaselineSnapshotAsync with the browser binding → PublishBrowserStagingAsync.
+  Require the real participating expected-session owner/original operation. Return
+  its genuine Staged record; never fabricate manifest/authority or use reflection.
+  Runtime fixture uses existing CreateGameEngineRuntime and typed GameLoop.SetSession.
+- ValidationService.RunReusableGameStateSourcePhaseAsync(GameStateValidationPhase,
+  List<ValidationIssue>), private closed CrossReferences/MetaMisc dispatch. Ordinary,
+  unsupported held/draft and completed Guardian-comparison routes remain original.
+  Extend existing validation-instance reservation for these actual browser phases;
+  retain override/reentry/overlap guards. Explicitly isolate/restore existing faction
+  IDs/names and Guardian policy/project-tracker context caches per supported phase.
+- FileSystemManager.BeginGameStateSourceReadReservation(), internal selector of
+  the EXISTING World scope, preserving mutable-hook/fresh-only eligibility.
+  Add WorldValidationReadScope.RequireNoPublicationDebt() with read-only current
+  evidence detection and fail-closed retention; no mutation/recovery/cleanup there.
+- Supported path: OpenAsync → RequireCurrent → actual original validator into local
+  ordered issues → debt/original full end proof → close → RequireOwnerAfterClose →
+  append ordered issues. Every failure closes owned resources and preserves the
+  primary exception. Unsupported context retains the existing fresh fallback.
+
+## Finite proof and acceptance
+
+First scaffold only typed preparation plus tests: real queued binding, genuine
+staging, RunParticipatingExpectedSessionAsync, BeginBrowserOriginalOperation /
+BeginProcessing and direct World scope APIs. The old PrepareBrowserInputStagingAsync
+and InvokeHeldOriginalFullProof helpers use reflection and are not reused.
+
+Four causal cases: two selected phases × control-first/subject-first. Compare the
+actual typed ValidateGameStateAsync(phase) against the same work with an independent
+manual World reservation. Require equal ordered findings/DATA/absence, unchanged
+canonical/original bytes, and fewer actual physical admissions including scope
+opening/end/close; keep fresh source acquisitions, not only a stopwatch. Baseline
+must fail only its final missing-reservation/work oracle before wrapper changes.
+
+Then eight addressed safety cases: late trusted/legacy journal, original bytes,
+staged History/owner drift, canonical mutation, reentry/overlap, current-source
+change still freshly observed, and exception-close/next-phase freshness. Preserve
+existing hook/held fallback and ordinary behavior with affected category controls.
+Exact selectors/counts/budgets follow discovery/PlanOnly and independent selection.
+No new collector; existing BrowserOriginalAdmissionTimingObserver and source-read
+observation count real work, all output stays external and uncapped.
+
+Independent DESIGN → scaffold SOURCE/fresh affected builds/exact PREP/causal RED →
+minimal wrapper/debt correction and safety tests → coherent SOURCE/fresh owning
+builds/cheap GREEN/cost proof → decision on one unchanged full browser-course run.
+No original browser retry before that actual admission; no time-limit increase.
+If no meaningful benefit is measured, stop this implementation hypothesis rather
+than claim a speedup or weaken the functional acceptance. Existing C9/C10 native,
+DFR/Mortal compatibility/Windows and other parent HOLDs remain separate.
+
+GM rationale: internal read reservation/test preparation changes no authored game
+contract; no new prompt/schema/example is intended. Reassess if actual scope changes.
+All old captures, saves, recovery inputs and accepted141 provenance are retained.
+
 # Canonical spiritual diagnosis adapters — bounded qualification accepted
 
 Issue#1536/T121-DIAGNOSIS-SPIRITUAL-CANONICAL-ADAPTERS is complete in its addressed
