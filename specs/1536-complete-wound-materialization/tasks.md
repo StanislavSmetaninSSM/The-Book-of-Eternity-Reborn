@@ -1,21 +1,15 @@
-- [ ] T118-ACTUAL-SHELL-READONLY [US5] Extend the existing production App /
-  ShellProvider read-only menu-to-wounds/History/back boundary (parent T118/T158,
-  FR-075, #1536). Independent Astra DESIGN accepts only the first cheap causal
-  scaffold now: one SSR HelpView case with a fresh typed public coverage row,
-  actual handlerKind Wounds and advanced mode false. Prove command row/label and
-  /раны are rendered before requiring category heading Раны and no Wounds leak.
-  One expected RED; the final absence assertion may be UNREACHED. Production
-  mapping, App/driver scaffold, install/build/runtime remain untouched by writer.
-  One exact Vitest file/category/60s selects only the new case; previous SSR28,
-  compile-only host and controlled DOM13 at d4ec5008 retain their accepted lineage.
-  Reuse existing pure Shell helper and public contract templates, independent DTO
-  copies and one row; no expensive setup, cache or diagnostic mechanism. Source
-  causal scaffold is now frozen at 1e13e67d: actual singleton RED accepted by Astra
-  at the exact heading oracle only (Wounds versus Раны), no timeout/cleanup true.
-  Same unchanged test regresses the one-entry production label correction;
-  correction SOURCE/Plan/PREP/GREEN pending, no App/DOM admission.
-  This does not qualify actual App/keyboard/HTTP/backend/provider behavior or
-  admit production changes. T118/T158 parents, A5/R2 UNKNOWN and all HOLDs remain.
+- [ ] T118-ACTUAL-SHELL-READONLY [US5] Complete the real App/ShellProvider
+  read-only menu → wounds → History → active → scene boundary (T118/T158/FR-075).
+  First bounded label correction accepted by independent Astra: actual F1 causal
+  heading-only RED at1e13e67d and unchanged singleton GREEN1/1 at
+  f0965ecb8e31abc16a765d0a9eb5b29205a20148, 2.711535s wrapper/15.806159ms test,
+  complete selection/no timeout/source unchanged/cleanup true. Production changes
+  only GROUP_LABELS.Wounds = Раны; no icon/routing/gameplay change. Actual-App
+  scaffold/typed contract/SOURCE/PREP/desktop+mobile DOM remain pending. Existing
+  SSR1/28 and controlled DOM13 retain separate accepted lineages without rerun.
+  Full current receipt and external evidence paths are at the start of plan and
+  physical-guided-checkpoint. No GM contract or useful cache change. Parents,
+  A5/R2 UNKNOWN, terminal/T152 and all wider HOLDs remain open.
 
 - [x] T150-GM-TERMINAL-GUIDANCE [US2/US7] Reconcile the stale guide/example
   terminal heal/legacy claims, both manifest RequiredText entries and coverageLimit,

@@ -1,4 +1,37 @@
-# T118 actual-shell read-only: admitted cheap SSR causal scaffold only
+# T118 actual-shell read-only — Russian Help label accepted, App pending
+
+2026-11-02 UTC, #1536 / T118-ACTUAL-SHELL-READONLY / FR-075. Independent Astra
+DESIGN/SOURCE/PREP/OUTCOME accepts the bounded HelpView label correction on
+f0965ecb8e31abc16a765d0a9eb5b29205a20148: actual F2 singleton1/1 PASS,
+15.806159ms test / 2.711535s wrapper, complete1/1 descriptor, exit0, no timeout,
+duplicate or underfill, source unchanged and owned/runtime cleanup true. Both
+final Russian heading/no-Wounds oracles pass after the original premises.
+Earlier F1 at1e13e67d9bd11a8c1049f3fb9a7bb04d2734de64 is one causal FAIL at
+line42, Wounds versus Раны; final absence oracle was UNREACHED. Failed Vitest
+produces no successful adapter TRX, so its summary underfill is retained honestly.
+
+One production entry GROUP_LABELS.Wounds = Раны fixes the default menu; icons,
+routing, permission and gameplay remain unchanged. No cache benefits this trivial
+constant lookup; existing grouping and independent fresh DTO preparation remain.
+No GM-authored contract changes, so GM documentation requires no update. Ordinary
+fresh npm build includes production typecheck and exits0 in4.909546s with113
+hashed outputs and retained existing large-chunk warning; this is not test-type,
+packaged host or actual-App DOM proof. Locked npm ci preserves package/lock bytes.
+
+Full raw remains outside checkout:
+/workspace/tboe-linux-evidence-20261102/actual-shell-readonly.
+F2-green1 summary SHAd464c22ddd471745dfc6fe8b0776111d4d184e09fcdbbae43818a051227799c6;
+Vitest96fb7c5c0702e8b03ce54981be6980d3288c27dadcdbb403390735cf81531271;
+TRXb57cde15ddfdd8cfd529510ca937f1d5d5a5c7c7309f6c39148e2387a8273825.
+F1 catalog discovery valid1,332/13,155; exact F2 Plan SHA
+93da6ab0f9679f895665535666314059410ce9655cc26040e23119adbbd4bfee.
+Next is the separately reviewed test-only actual App/ShellProvider read-only
+scaffold, fresh typed packet contract and SOURCE/PREP before desktop/mobile DOM.
+No repeat of SSR1/28 or controlled DOM13. T118-ACTUAL-SHELL-READONLY, its parents,
+A5/R2 UNKNOWN, T152 terminal and all broader HOLDs remain open. Vite index is not
+packaged hosting/backend/canonical nonmutation/provider/save freshness proof.
+
+# Historical T118 actual-shell scaffold, before accepted F1/F2
 
 2026-11-02 UTC, base 4ea94038a72d5fad4ac0556423138f700b379d0c, #1536 /
 T118-ACTUAL-SHELL-READONLY / parent T118/T158 / FR-075. Independent Astra DESIGN
@@ -48663,7 +48696,7 @@ T331/T332 separate Astra/high binding accepted4b28a32bd without findings: actual
 
 T333 atcompiled778/metadata6987d79c7:1completedFAIL12:14.9518693, runner12:39.0648148. Actualerror System.ArgumentException JSONscalar length169321202; no serialized resumer nativejoin/primaryfailure/gameverdict.14available rawfiles/CRC/hash retainedZIP372C62B4B338E635571E549F0A29FB862882E894B40E78A0D59E70B25E2B1F94; producer52380exit73/EOF/join, bothownrootsremoved/absent,4DLL/copies/seedunchanged. Full resumer outputNOTRETAINED: ReadToEnd→SaveOutputs insideownroot→inlineJsonSerializerthrows→settledrootcleanup removes transientcopies; save success/actual resumerexit and initialwaiterrorUNKNOWN. Do not relabel as observed600timeout. NewcleanupentryDATA ZIP697049bytes/D2ACF9B8B958F7800E1335B35C0C873E928792C82ADABF5707C57286EB329740 structurally verifies221files1503472bytes/62dirs, parentNonceRunSeed/3buildmatch, noauthority; nativeidentity/eventmissing, nofullcapturequalification. T334-inspection.json preserves sourcefailuremap andlimits; oldfailedcapture report immutable. T333 acceptance remains unmet, no originalretry.
 
-# T118 actual-shell read-only: accepted heading RED, minimal label correction WIP
+# Historical T118 accepted heading RED, before F2 GREEN
 
 2026-11-02 UTC. Clean remote/source 1e13e67d9bd11a8c1049f3fb9a7bb04d2734de64
 produced one real Vitest FAIL at woundHelpMenuCausal.test.tsx:42: received Wounds

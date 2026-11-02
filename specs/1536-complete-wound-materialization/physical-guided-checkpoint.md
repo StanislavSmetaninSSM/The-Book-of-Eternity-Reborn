@@ -1,3 +1,36 @@
+# T118 actual-shell read-only — Russian Help label accepted, App pending
+
+2026-11-02 UTC, #1536 / T118-ACTUAL-SHELL-READONLY / FR-075. Independent Astra
+DESIGN/SOURCE/PREP/OUTCOME accepts the bounded HelpView label correction on
+f0965ecb8e31abc16a765d0a9eb5b29205a20148: actual F2 singleton1/1 PASS,
+15.806159ms test / 2.711535s wrapper, complete1/1 descriptor, exit0, no timeout,
+duplicate or underfill, source unchanged and owned/runtime cleanup true. Both
+final Russian heading/no-Wounds oracles pass after the original premises.
+Earlier F1 at1e13e67d9bd11a8c1049f3fb9a7bb04d2734de64 is one causal FAIL at
+line42, Wounds versus Раны; final absence oracle was UNREACHED. Failed Vitest
+produces no successful adapter TRX, so its summary underfill is retained honestly.
+
+One production entry GROUP_LABELS.Wounds = Раны fixes the default menu; icons,
+routing, permission and gameplay remain unchanged. No cache benefits this trivial
+constant lookup; existing grouping and independent fresh DTO preparation remain.
+No GM-authored contract changes, so GM documentation requires no update. Ordinary
+fresh npm build includes production typecheck and exits0 in4.909546s with113
+hashed outputs and retained existing large-chunk warning; this is not test-type,
+packaged host or actual-App DOM proof. Locked npm ci preserves package/lock bytes.
+
+Full raw remains outside checkout:
+/workspace/tboe-linux-evidence-20261102/actual-shell-readonly.
+F2-green1 summary SHAd464c22ddd471745dfc6fe8b0776111d4d184e09fcdbbae43818a051227799c6;
+Vitest96fb7c5c0702e8b03ce54981be6980d3288c27dadcdbb403390735cf81531271;
+TRXb57cde15ddfdd8cfd529510ca937f1d5d5a5c7c7309f6c39148e2387a8273825.
+F1 catalog discovery valid1,332/13,155; exact F2 Plan SHA
+93da6ab0f9679f895665535666314059410ce9655cc26040e23119adbbd4bfee.
+Next is the separately reviewed test-only actual App/ShellProvider read-only
+scaffold, fresh typed packet contract and SOURCE/PREP before desktop/mobile DOM.
+No repeat of SSR1/28 or controlled DOM13. T118-ACTUAL-SHELL-READONLY, its parents,
+A5/R2 UNKNOWN, T152 terminal and all broader HOLDs remain open. Vite index is not
+packaged hosting/backend/canonical nonmutation/provider/save freshness proof.
+
 # T150-GM-TERMINAL-GUIDANCE accepted — final bounded receipt
 
 Source/build/runtime ece672d746af3ed19a51c148aad28e3b0cad830f; independent Astra
