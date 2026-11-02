@@ -13,7 +13,7 @@ public sealed partial class AfterlifeResourceCutoverTests
         var raw = await ReadProjectedSourceContinuationCandidateAsync(context);
         var active = raw["activeConflict"]!;
         var second = active["exchangeLog"]![1]!;
-        second["turnNumber"] = 42;
+        second["exchangeAtTurn"] = 42;
         second["operationType"] = "maneuver";
         second["incomingAction"]!["operationType"] = "guard";
         second["incomingAction"]!["summary"] = "Хранитель сохраняет защиту, пока душа неудачно меняет позицию.";
@@ -98,7 +98,7 @@ public sealed partial class AfterlifeResourceCutoverTests
         await context.WriteExactJsonAsync(AfterlifeSpiritualConflictState.StatePath, changed.ToJsonString());
         Assert.Contains(await ValidatePublishedConflictPhaseAsync(context), issue => issue.Severity == IssueSeverity.Error);
         changed = summary.DeepClone().AsObject();
-        changed["activeConflict"]!["exchangeLog"]![1]!["turnNumber"] = 43;
+        changed["activeConflict"]!["exchangeLog"]![1]!["exchangeAtTurn"] = 43;
         await context.WriteExactJsonAsync(AfterlifeSpiritualConflictState.StatePath, changed.ToJsonString());
         Assert.Contains(await ValidatePublishedConflictPhaseAsync(context), issue => issue.Severity == IssueSeverity.Error);
         await context.WriteExactJsonAsync(AfterlifeSpiritualConflictState.StatePath, root.ToJsonString());

@@ -15,6 +15,12 @@ current decision, not a new permission to implement the three deferred consumers
 
 # T081-D connected route tests/docs — frozen WIP, runtime UNRUN
 
+Astra final SOURCE found a fixture-only marker error before any build/runtime:
+HasPriorTurnMarker recognizes exchangeAtTurn, not turnNumber. The raw preselection
+fixture now sets exchangeAtTurn42, and its refusal mutates that marker to43.
+Production marker policy/assertions are not broadened. No failed runtime is being
+reclassified; all current code remains uncompiled/unrun.
+
 Cohesive test delta now includes reused real C2 helper with maneuver option and
 ordinary turn42 marker before first selection, full cold A/B + common C4 + signed
 next-turn scenario, typed History8 and GM guide/worked example/manifest/guard sync.
