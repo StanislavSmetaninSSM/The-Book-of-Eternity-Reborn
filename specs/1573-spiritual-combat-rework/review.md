@@ -12,8 +12,20 @@ Parent сверил общий materialization contract и T141/T142. Scope/spec
 mastery-бонусов,4 исхода и цену двух снятий;19 новых локальных ссылок
 и7-doc diff/check прошли. Свидетельство D:\BoeDiagnostics\cleansing-t143\verification.json.
 Это арифметика примеров, не измерение частоты успеха/полного баланса.
-Independent review и публикация ещё выполняются.
+Независимый GPT-6 Astra/high review7-файлового блока8a60bb0..dd28711
+завершён: PASS без P1/P2/P3 замечаний. Проверены связанные T141/T142,
+materialization/wound-effect и исходные требования, не только summary.
 Новый кэш не нужен: никакого runtime вычислительного пути не добавлено.
+
+WIPdd28711617362bc124dd0ccf599a3e72f317d2b7 опубликован обычным push;
+remote SHA,7 API blobs/байты source совпали с новым чистым sparse restore
+D:\BoeDiagnostics\cleansing-t143\remote-restore-20261102. Все19 новых ссылок
+и5 обязательных инструкций восстановлены. Финальный SHA/readback — issue1573
+и локальный verification.json. Source tracked clean после commit; recovery obj
+не изменён. Raw диагностика не загружалась в Git. Маршрутизация: один bounded
+Sol6.1/high source audit, parent проект/проверки, отдельный Astra/high review;
+существенных review-исправлений не потребовалось. Не заявляем измеренную
+экономию работы/боевой баланс или готовность runtime по этой проверке.
 
 ## T142 — сопротивление состояниям
 
