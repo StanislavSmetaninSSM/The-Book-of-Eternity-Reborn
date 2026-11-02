@@ -1,3 +1,28 @@
+# Existing T149/T071: player legacy raw input causal scaffold WIP — 2026-11-02
+
+Base c7e8b5cbff9f2c194902472a1e473d890b81f189 is remote-verified; NPC narrow
+receipt correction independently accepted,12 immutable changed-file GitHub blobs
+matched (bounded readback, not full restore). External proof SHA256
+6eee4ef5fa568388c9fb4804ae449188b22f6fd82f011a8084a14532e39c1ade.
+Wounds-only next result: reject exact retired playerWoundChanges before raw
+admission/typed projection, preserve woundDecisions and current adjacent commands.
+No publication bypass is claimed. Sol independent read-only trace confirms four
+loose array/object forms lack an Error; null/scalar already have generic Error.
+Test-only scaffold7 plus genuine signed QTE peer1; initial selection raw7 only.
+No production changes yet, all new tests UNRUN. Existing QTE helper is reused for
+both exact wound fields with per-test state, full baseline and source byte checks;
+shared-helper NPC peer will regress only after relevant changes. Canonical player
+validation remains unchanged; parent T149/T071 stay open. No new task IDs/rules.
+Optimization: existing minimal real-FS generation/context and parsed input; tiny
+fresh validation has no worthwhile cache. No extra world, callback, cached permit,
+new diagnostic stack or weakened checks. Current GM contract already demands
+woundDecisions and no legacy command; review will confirm no-update rationale.
+Plan: independent scaffold SOURCE; archive owned current Integration artifacts;
+fresh Integration build/proofs, exact discovery/PlanOnly/PREP raw7 causal; minimal
+shared existing legacy refusal after actual RED, semantic source/inventory review,
+affected builds and addressed GREEN/QTE/NPC peers. Existing UNKNOWN/HOLD unchanged.
+Raw root /workspace/tboe-linux-evidence-20261102/player-legacy-response; no raw in Git.
+
 # Existing T149: narrow NPC wound-input refusal accepted, 2026-11-02
 
 Current task is wounds only. General QTE/ordinary orchestration, defeat/aggression,

@@ -2,24 +2,10 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "wounds-npc-legacy-raw-response",
-      "reason": "Regress all five accepted causal/classification/preserving rows after dedicated wound-only refusal; previous60s.",
+      "category": "wounds-player-legacy-raw-response",
+      "reason": "Test-only causal admission/classification7 before production correction. QTE scaffold is compiled/discovered but not executed yet. Prior accepted NPC PASS retained.",
       "contracts": [
-        "#1536 / existing T149 / FR-013 / FR-099 / wound-only raw NPC input and canonical carrier refusal"
-      ]
-    },
-    {
-      "category": "wounds-npc-legacy-qte-offer",
-      "reason": "Correct only fixture serialization to the exact existing production SharedJsonOptions (omit optional null scoreModel/scoreDeltas), keeping strict genuine baseline and every wound refusal/byte assertion; previous180s. Current guards2 PASS retained, no repeat.",
-      "contracts": [
-        "#1536 / existing T149 / FR-013 / FR-099 / wound-only raw NPC input and canonical carrier refusal"
-      ]
-    },
-    {
-      "category": "wounds-npc-legacy-state-priority",
-      "reason": "Preserve canonical legacy-only/mixed error priority and legal metadata with exact existing bytes; previous60s.",
-      "contracts": [
-        "#1536 / existing T149 / FR-013 / FR-099 / wound-only raw NPC input and canonical carrier refusal"
+        "#1536 existing T149/T071 FR-013 FR-099 exact retired player wound response field"
       ]
     }
   ]
