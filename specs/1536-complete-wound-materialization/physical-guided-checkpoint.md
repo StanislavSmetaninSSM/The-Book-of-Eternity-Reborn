@@ -1,3 +1,43 @@
+# T150-GM-TERMINAL-GUIDANCE accepted — final bounded receipt
+
+Source/build/runtime ece672d746af3ed19a51c148aad28e3b0cad830f; independent Astra
+SOURCE/PREP/final OUTCOME accepted. Actual T2-green4:4/4 unique PASS,3/3 descriptors,
+18.8036975s wall,exit0,no timeout/underfill/duplicates. Physical1 takes0.1667134s,
+manifest1 Integration0.1663605s, Prompt2 Unit0.1496357/0.0012817s. Owned process /
+runtime cleanup true, no active owner/new TMP or joint fixture. Summary SHA256:
+b435ccddc480a347eb6b410ad4f64d87476631f864944080c8c446a74e1e42f8;
+Physical TRXe38f43ab7b353866a8239566fe9db688553277ea5c0d5f66530491ac9687ccdb;
+manifest TRX7b14f6efba925eeae2195f8591bdacf31d4a5aeb9d47064dbc7701920397bd47;
+Prompt TRXd737d7a37844b6fc28749bf40246d7f9d140622518cfe146bd76ebcc713d903f.
+Primary output is outside checkout in
+/workspace/tboe-linux-evidence-20261102/gm-terminal-guidance/T2-green4.
+
+All six fresh owning builds exit0 at this source; warnings81/23/14/0/26/107
+retain file/code/message multiset after allowing line/column shifts. Six PE/PDB /
+437 source bindings,75 managed artifacts,206 resource inputs/1,236 copies and12
+native copies verify. Exactly3 declared GM inputs changed; all18 copies are fresh.
+Artifact/resource proof SHA256:
+ddcc051e8c7d5fa2a7ef8fc6c2623964c8c8ae9fc7341bf8fb1a68a55f907986;
+PDBf3f50df4a60c0267376b28e8aa0d8d95fa6420d6eb09c0f783a748a48b0b4c2a.
+Catalog1,331/13,154 valid/no stale or unmapped; exact Plan3 descriptors/4Facts /
+60/60/60s. Nine changed source/config/docs files fetched at immutable remote match
+commit and checkout, bounded readback proof SHA256:
+23ed972e8dafd4cc93dfb4d60848f34a09ae86197a93026fc1c87f4b4e58a25d.
+This is not a new full-tree restore. Previous75 binary cohort is retained in
+T1-managed-before-guidance-correction.tar.gz with complete member/EOF/CRC proof;
+no old raw, test DATA, recovery or user saves deleted.
+
+Accepted correction covers the two stale claims in guide/example, two manifest
+RequiredText entries plus its coverageLimit, and both Prompt guards. All authored
+fenced blocks unchanged; sealed terminal heal/independent legacy and typed death
+handoff/later direct-death consumer are correctly separated. No gameplay/schema /
+production change; family-local pure coverage is not runtime proof. Existing
+loaded text/validators are reused without new reads/cache/Engine. Only this T150
+leaf is closed; parent T150/#1536 stays open. A5 terminal/R2 browser remain UNKNOWN,
+no new run admitted; all retained output10/anchor2/control3 lineages and other
+DFR/Mortal compatibility/Windows/HOLD boundaries remain. Current checkpoint delta
+is documentation only, so unchanged compiled C# must not be rebuilt merely for it.
+
 # T150 coherent guidance correction WIP: accepted T1 RED, GREEN unrun
 
 2026-11-02 UTC, base 7d44af679c6eacab1d41774ce3884a4b7192b560, #1536 /

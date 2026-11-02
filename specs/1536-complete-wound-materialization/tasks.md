@@ -1,26 +1,14 @@
-- [ ] T150-GM-TERMINAL-GUIDANCE [US2/US7] Reconcile stale terminal heal/legacy
-  capability claims with the existing sealed terminal worked example and current
-  typed contract (parent T150, FR-086/087, #1536). Independent Astra accepts actual
-  T1 RED at 7d44af679: one Fact FAIL only at its first new stale-claim refusal
-  after all typed terminal/manifest/mode/roundtrip premises; second UNREACHED.
-  Coherent correction is admitted for both guide/example claims, both manifest
-  RequiredText entries and the family-local coverage limit, plus both affected
-  Prompt guards. Existing sealed heal/independent legacy is distinct from T069's
-  typed death_contour handoff and the later direct death-outcome consumer outside
-  this executor. Preserve JSON examples, all mechanics and prior negative checks.
-  Physical causal assertions remain unchanged. Exact GREEN selection is four
-  existing Facts: Physical1 + Prompt2 + manifest1, three 60s leaves; old owners
-  unchanged/unselected. Reuse local document DATA; no Engine, new cache or schema.
-  Source correction is UNCOMPILED/UNRUN. Actual metadata reader exits 0: 1,331
-  categories, three exact leaves/four source Facts/60s each. Static inverse checks
-  preserve worked JSON, Physical Fact, all prior Prompt negatives/old owners;
-  git diff --check passes. Root's coherent SOURCE, six fresh owning builds and
-  guidance resource-copy proof, then exact Plan/PREP/GREEN remain.
-  Parent T150 stays open. A5 independently accepted TIMEOUT/UNKNOWN at runtime
-  c9c9103b6c06cbe806cbab8eb4d7faeb5a31aa57 (compiled Integration 9383e6e7),
-  120.0346224/120s, no TRX; incomplete prefix and 135-entry root retained. This
-  admits no further terminal retry. Output10, anchor2 and controls3 retain separate
-  accepted lineages; T121/T152, R2 UNKNOWN and every broader HOLD remain open.
+- [x] T150-GM-TERMINAL-GUIDANCE [US2/US7] Reconcile the stale guide/example
+  terminal heal/legacy claims, both manifest RequiredText entries and coverageLimit,
+  and both affected Prompt guards with the existing sealed contract. Preserve
+  typed death_contour handoff, later separate direct-death consumer and all authored
+  JSON/fenced blocks. Independent SOURCE/PREP/OUTCOME accepts causal1 at7d44af679
+  and GREEN4 at ece672d746af3ed19a51c148aad28e3b0cad830f: Physical1+Prompt2 Unit,
+  manifest1 Integration, 3/3descriptors/4 uniquePASS in18.8036975s, unchanged60s
+  leaf bounds. Six fresh owners/resource copies/pins/catalog/cleanup verified;
+  exact evidence is in physical-guided-checkpoint. No new rules/cache/Engine.
+  Parent T150/#1536 remains open; A5 terminal and R2 browser UNKNOWN have no new
+  retry admission. Retained output10/anchor2/control3 lineages and every HOLD remain.
 
 - [ ] T121-PHYSICAL-GUIDED-BROWSER-READ-RESERVATION [US2/US5] Complete the existing
   browser physical-course acceptance using only the accepted existing World

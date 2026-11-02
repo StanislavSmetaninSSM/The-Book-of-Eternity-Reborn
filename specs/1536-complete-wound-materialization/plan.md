@@ -1,3 +1,35 @@
+# T150 GM terminal guidance leaf accepted
+
+Independent Astra SOURCE/PREP/final OUTCOME accepts only
+T150-GM-TERMINAL-GUIDANCE on source/runtime
+ece672d746af3ed19a51c148aad28e3b0cad830f. Actual GREEN is4/4 unique PASS,
+3/3 descriptors,18.8036975s, exit0; no timeout/underfill/duplicate or new owned root.
+Physical1 and Prompt2 Unit plus manifest1 Integration execute the exact reviewed
+60/60/60s selection. The earlier causal1 failed only its first new stale-claim
+oracle; its second assertion was UNREACHED. Both actual outcomes are preserved.
+
+Guide/example and the two manifest entries now agree with the existing sealed
+terminal heal/independent legacy contract while preserving typed death_contour
+handoff and the later separate direct-death consumer. All25 example/13 guide
+fenced blocks, schema and gameplay remain unchanged. Pure family-local coverage
+is not described as runtime terminal proof. Both affected Prompt guards prevent
+return of either obsolete claim. GM-facing source and its runtime copies agree.
+
+Six fresh builds exit0 at the same source; current75 artifacts/six PE/PDB/437
+bindings/206 resource inputs/1,236 copies/12 native copies verify. Exactly3 resource
+inputs changed and all18 corresponding copies are fresh. Catalog valid1,331 /
+13,154; current exact Plan and full external result records verify. Nine changed
+source/config/docs files were freshly downloaded at the immutable remote and
+match commit/checkout: bounded readback, not a full-tree restore. Optimization
+reuses loaded text and existing validators; no cache, extra Engine or new rules.
+
+This final checkpoint changes only findings/tasks/plan; compiled/runtime source
+remains ece672d7. Parent T150/#1536 stay open. A5 terminal and R2 browser remain
+UNKNOWN, no retry admitted; output10/anchor2/control3 retain separate earlier
+lineages, not a fresh combined aggregate. DFR/Mortal compatibility/Windows and all
+other HOLDs remain. Next choose a genuinely unqualified independent functional
+boundary from canonical evidence; do not repeat completed sets or reopen HOLDs.
+
 # T150 coherent guidance correction WIP, after accepted causal RED
 
 2026-11-02 UTC, base 7d44af679c6eacab1d41774ce3884a4b7192b560, #1536 /
