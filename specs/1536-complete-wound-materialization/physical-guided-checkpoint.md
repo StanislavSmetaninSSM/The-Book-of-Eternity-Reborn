@@ -1,3 +1,38 @@
+# T152 display text boundary — accepted bounded qualification, 2026-11-02
+
+Source/runtime eb879e2deb6eadeda91eb61a463a28ebbb4d8aa3. Independent Sol/xhigh
+SOURCE, PREP and OUTCOME accepted; root parsed the actual summary and all TRX rows.
+Exact wounds-display-text-boundary / NoBuild / Parallelism 1: one method,
+one descriptor, four unique PASS, no skip/timeout/duplicate/underfill, exit 0,
+wrapper 9.222979 s. Both display.name and display.acquisitionNarration retain the
+complete 2000-character text; 2001 characters produce one exact field/code refusal
+and no envelope. The serializable caller fixture stays unchanged; this is not
+borrowed-memory, canonical-storage, rendering or publication evidence.
+
+Current behavior was already implemented. No production fix, new limit or causal
+RED is claimed. Fresh Unit build: exit 0 / 31.850959 s / baseline 26 warnings,
+exact warning multiset unchanged. Thirty used managed outputs, 206 resource inputs /
+412 copies and four native copies match. Three PE/PDB owners and 348 current source
+bindings verified; only Unit was freshly built. Main is compiled at 5950b74a and
+Support/CrashHost at ece672d7, with unchanged actual source/dependency identities.
+Catalog discovery: 1,338 categories / 13,163 methods-files; no tests executed.
+Plan: one descriptor / one method / four rows / unchanged 60 s. Cleanup passed,
+no new TMP roots or active owners. Pure tiny typed fixture/parsing work adds no
+source IO; a cache/shared setup has no useful expensive reuse. GM no-update:
+existing authored text contract and game behavior are unchanged.
+
+Full raw: /workspace/tboe-linux-evidence-20261102/display-text-boundary/B1-green4.
+Summary SHA256 8f4c1825aec9939cc26b2e544267bc5d06c55eb353dba4c4e7cb0d4a8e371b74;
+TRX a8b45047ba7734e45d1a68cca85ea54bccb51003a04e7029a17a4eb4b4f6ea81.
+Artifact proof 719b0bea12b716402ffc34ec2dfc8b26f9e362e00112cf7a007ef5aa8681ea0f;
+PDB proof 4628df4b123896da3d343fded1ad1effda39014ad023e3cfbc877e0fd88ce046.
+Only T152-DISPLAY-TEXT-BOUNDARY closes. T149's twenty passes remain on separate
+5950b74a runtime; these are not one fresh twenty-four-case run. Parents T149/T152,
+R2 browser/A5 terminal UNKNOWN and all DFR/Mortal/Windows HOLDs remain open.
+Parent requested a full remaining-work audit before further implementation; no
+new tasks or heavy/HOLD runs start during that audit. The independently found raw
+NPC-response allowance is assessed, not implemented or runtime-qualified yet.
+
 # T152 display text boundary — qualification WIP, 2026-11-02
 
 Tracked T152-DISPLAY-TEXT-BOUNDARY / FR-076 / data-model 7.3. Bounded read-only

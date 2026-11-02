@@ -3,7 +3,7 @@
     "categories": [
 {
   "id": "wounds-display-text-boundary",
-  "responsibility": "T152-DISPLAY-TEXT-BOUNDARY / FR-076 / #1536: exactly four independent typed parser rows, two display fields name/acquisitionNarration at the existing 2000/2001-character boundary. Genuine envelope baseline, full accepted text, exact isolated field refusal and unchanged input JSON. Existing History/transition-summary bounds do not cover these fields. Pure small fixtures, no IO/cache/shared mutable setup. Expected baseline qualification PASS, not a missing-behavior causal RED; runtime UNRUN.",
+  "responsibility": "T152-DISPLAY-TEXT-BOUNDARY / FR-076 / #1536: exactly four independent typed parser rows, two display fields name/acquisitionNarration at the existing 2000/2001-character boundary. Genuine envelope baseline, full accepted text, exact isolated field refusal and unchanged input JSON. Existing History/transition-summary bounds do not cover these fields. Pure small fixtures, no IO/cache/shared mutable setup. Qualified existing behavior on eb879e2deb6eadeda91eb61a463a28ebbb4d8aa3: four unique PASS / one descriptor / wrapper 9.222979 s, no skip/timeout/duplicate/underfill and complete cleanup. This is not a missing-behavior causal RED or speedup.",
   "excludes": "No new limit, production/UI behavior, renderer/Engine/GM/provider/save qualification, broad contract category replay or T152/A5/R2/DFR/Mortal/Windows HOLD closure.",
   "changeHints": [
     "BookOfEternityClient.Tests/WoundMaterializationContractTests.cs",

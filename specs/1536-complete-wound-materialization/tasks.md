@@ -1,15 +1,13 @@
-- [ ] T152-DISPLAY-TEXT-BOUNDARY [US1/US5] Qualify the existing bounded
-  untrusted text admission for display.name and display.acquisitionNarration
-  (FR-076 / data-model section 7.3 / #1536). No new gameplay limit: actual parser
-  already uses MaxReadableTextLength = 2000. Four independent typed rows cover
-  two fields at 2000/2001 with genuine current envelopes, exact field refusals,
-  full accepted text and source nonmutation. Existing History/transition-summary
-  bounds do not cover these display fields. No production change unless a real
-  defect is observed; baseline PASS is qualification, not an invented causal RED.
-  One exact Unit leaf / 60 s; fresh Unit build with unchanged dependency/source
-  proof, discovery/Plan and independent review before runtime. UNCOMPILED/UNRUN.
-  Pure small fixture/parsing work has no source IO; new cache/shared setup would
-  add ownership cost without useful reuse. No renderer/whole T152/HOLD closure.
+- [x] T152-DISPLAY-TEXT-BOUNDARY [US1/US5] Qualify existing display.name /
+  acquisitionNarration 2000/2001 admission (FR-076 / data-model 7.3 / #1536).
+  Independent Sol/xhigh SOURCE/PREP/OUTCOME accepted runtime
+  eb879e2deb6eadeda91eb61a463a28ebbb4d8aa3: four unique PASS, one descriptor,
+  no skip/timeout/duplicate/underfill, wrapper 9.222979 s; all cleanup verified.
+  Full accepted text and one exact field/code refusal per oversized field;
+  serializable fixture invariance, not canonical-storage/rendering proof.
+  Fresh Unit only, baseline warnings and current used output/source bindings
+  verified; no production fix/new limit/cache or fabricated RED. Complete receipts
+  in physical-guided-checkpoint. Parent T152 / all UNKNOWN/HOLDs stay open.
 
 - [x] T149-NPC-CANONICAL-WOUND-RETIREMENT [US1/US7] Retire top-level
   NPCWoundChanges and exact entries[i].wounds from the canonical NPC effect
