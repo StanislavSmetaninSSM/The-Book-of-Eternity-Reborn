@@ -1,48 +1,37 @@
-# T081-D exact maneuver/success causal scaffold WIP
+# T081-D exact maneuver/success implementation WIP
 
-M1 on d9dc7fc1c06e004130ef5dfd75e882ead02f4bc2 is a preparation FAIL,
-NOT causal RED: ordinary two exchanges/four claims/sole III and real offer passed,
-but submission stopped on two wound_acquisition_narration_missing issues before
-the consumer. The scene omitted the existing proposal's exact acquisition sentence.
-Actual test 3.6472458s, no timeout; post hashes/cleanup/clean source verified.
-Post proof 26b8841595b8b94482d23995c17e0113a0652aead38bf2979b63c3c795e0a1cf.
-Corrected TEST-ONLY scene includes that exact sentence followed by the maneuver
-narrative. No assertion or production guard changes. Corrected C# UNCOMPILED,
-next runtime UNRUN; consumer and all late controls remain UNREACHED.
+Accepted pressure4 remains on source88fd/checkpoint7806; do not count it as a
+new run or whole profile. Corrected causal source c954c24226fb3442a1a39078c2d815d3bff6505e
+proved one FAIL in3.9905717s, only integration_required at exchange1 after
+lawful maneuver/guard ordinary2/4claims/soleIII and actual narrated III selection.
+Sol causal OUTCOME accepted. Late direct-completion/cold/candidate controls
+UNREACHED then. Earlier d9 narration preparation FAIL remains separate.
+Post proof 6a96b9a4b3e2b2981461e9ab5702f6aa563f56738c4b8d0b911c233d02912285.
 
-Accepted pressure no-op checkpoint 7806d0a211e6b173c0d7e13f740ca08e3581109a
-(source88fd, four PASS2+1+1) is preserved. Twelve changed files fully recovered
-from immutable GitHub bytes; bounded readback proof
-efd44d6ace6219183dd52f3eec7918c3a9929989b4d9e25b55cdf39e08b72424.
-This is not a complete clone/restore. No accepted selection repeated.
+Minimal implementation follows Astra DESIGN: the existing current-player exact
+success contribution branch uses only the closed operation set pressure|maneuver.
+No general !failure, other-side rule, matrix or ordinary validation change. All
+other contributions, current ownership/effect identity, signed dice/cost/chronology/
+source/final echo remain normal. Guide/worked example/manifest synchronize exact
+maneuver against guard, cost3/2, unchanged strains and direct completion without
+fictitious source/none. Existing parsed guard consumes changed required text.
+No new response fields/transport/owner or Mortal/launcher entrypoint change;
+existing matrix links and registered-profile guide remain authoritative.
 
-Astra DESIGN accepts exact player maneuver/success no-op under the same failed-
-operation-only rule. Lawful opponent is guard; pressure is a direct matrix counter
-and must never be made legal for this fixture. Existing matrix/ordinary mechanics
-are unchanged. This TEST-ONLY scaffold uses fresh signed5/15/12/4, first genuine
-player III source, then maneuver success/unchanged strains/improved position.
-Full player maneuver cost3 (3→0) and opposition guard cost2 (3→1), matchup/dice/
-control/echo are authored before ordinary source validation. One ordinary source
-III and four unique dice claims must pass before actual C2 III materialization.
-Legal three slots: strain/maneuver, roll/counter and cost/guard (the latter two
-not executed by the player afterward). No shared mutable fixture/new authority.
+Current C# UNCOMPILED, GREEN UNRUN. Next whole SOURCE, fresh Main/Unit/Integration,
+artifact/resource/PDB/selected discovery/Plan/PREP. Exact cheap guidance1+manifest1
+before new maneuver1, affected pressure success1 and failed pressure1, each60s.
+Five cases guard the changed success predicate and GM contract; no old20/C4 broad
+rerun or retagging. Current fixtures reuse existing signed prepared DATA with
+independent mutable roots; ordinary and cold revalidation are tested lifecycle
+boundaries, not avoidable duplicate setup. No new cache, IO or extra ordinary
+comparison for zero modifier; no speedup claim. Prior actual Main/Unit88fd and
+Integrationc954 own15 preserved with member/hash/gzip EOF/CRC proof, no deletion.
 
-Expected causal RED only integration_required after actual selected III; direct
-completed_unpublished without second source/none, cold reopening, exact candidate
-position/strains/costs and canonical7/no-common-plan controls UNREACHED until GREEN.
-One exact new Integration Fact/60s. Production/GM resources unchanged; corrected C# UNCOMPILED,
-next runtime UNRUN. Next independent delta SOURCE, preserve current Integration5, fresh
-Integration against actual unchanged Main88fd/Support, artifact/resource/PDB proof,
-discovery/exactPlan/PREP and one causal. No fabricated baseline or copied receipt.
-
-Optimization: existing full signed-input prepared DATA service and detached roots,
-current source/C2 readers and owners; ordinary validation is part of this test and
-reopening is the asserted lifecycle. No new cache, key, source probe or performance
-claim. Implementation must synchronize existing GM guide/example/guard, preserving
-current integrity/authority checks. Full raw will be outside checkout at
-/workspace/tboe-linux-evidence-20261102/spiritual-strain-maneuver-success.
-Four author decisions/old UNKNOWN/HOLD unchanged. Wounds only; no wholeprofile,
-Engine/UI/fresh-process or parent #1536 completion claim.
+Full raw outside checkout: /workspace/tboe-linux-evidence-20261102/spiritual-strain-maneuver-success.
+Four author decisions remain unanswered; no harmfulMargin=0 or new control/counter/
+artIII rule. All old UNKNOWN/HOLD and whole profile/Engine/UI/fresh-process/#1536
+parents remain OPEN. Wounds only.
 
 # T081-D player pressure/success strain no-op accepted — 2026-11-02
 

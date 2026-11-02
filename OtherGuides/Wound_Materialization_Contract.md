@@ -713,7 +713,14 @@ this failed-operation-only burden adds no strain, so no dependent A/B correction
 is requested. Author the normal signed successful pressure, including its real
 opposition strain payoff, costs and final echo. The client still validates the
 current actor/effect, ordinary dice, chronology and any resulting wound source.
-This does not authorize other sides, operations, `partial_success` or `countered`.
+The exact current player `maneuver/success` route likewise preserves its ordinary
+result against a lawful opposing `guard`: unchanged strains, improved position,
+ordinary player maneuver cost 3 and opposition guard cost 2 at tier 0. Do not turn
+an opposing `pressure` into a legal successful maneuver; it remains a direct matrix
+counter. With no new harmful source, finish the one original III choice directly,
+without inventing an extra offer or `none`. Cold reopening preserves that result.
+These two exact routes do not authorize other sides, operations, `partial_success`
+or `countered`.
 
 The saved choice first requests only the exact exchange `after.playerSideStrain`
 correction A. Preserve outcome, before, dice, actor, position loss, costs, other

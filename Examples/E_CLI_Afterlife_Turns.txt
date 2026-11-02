@@ -14558,7 +14558,16 @@ before player overwhelmed/opposition clear and after player overwhelmed/oppositi
 strained. Preserve that ordinary result and final echo; do not send A or B.
 The actual opposition harmful source still receives its own optional I offer,
 which may be explicitly declined. All ordinary source checks remain mandatory.
-This successful example does not authorize partial_success/countered or other sides.
+Successful maneuver against guard needs no strain correction: choose a real III
+strain/maneuver slot, with the other slots roll/counter and cost/guard. The next
+player maneuver/success has signed 12/4, margin8, player cost3 (3->0), opposition
+guard cost2 (3->1), position contested->player_advantaged, and unchanged player
+overwhelmed/opposition clear. Incoming action and matchup both declare guard;
+pressure would be an illegal direct counter here. Only the player strain/maneuver
+slot applies: the player's cost/guard slot does not increase the opponent's cost.
+One original III source/choice finishes directly; do not invent another source or
+none. Keep the ordinary result on cold reopening, with no A/B or canonical writes.
+These successful examples do not authorize partial_success/countered or other sides.
 Private completion is not accepted-turn publication. Other consumer combinations
 and missing dice-free harmfulMargin rules are not authorized by this fragment.
 end_spiritual_wound_strain_result_v1

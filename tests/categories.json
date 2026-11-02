@@ -3,7 +3,7 @@
     "categories": [
 {
   "id": "wounds-spiritual-strain-maneuver-success",
-  "responsibility": "#1536 T081-D one real III strain/maneuver choice followed by exact player maneuver/success against lawful guard: ordinary two exchanges/signed dice/one sourceIII, direct private completion with one decision/no artificial none, cold validator reopening, exact strains/position/costs and canonical nonmutation. Expected causal RED only integration_required after lawful selection.",
+  "responsibility": "#1536 T081-D one real III strain/maneuver choice followed by exact player maneuver/success against lawful guard: ordinary two exchanges/signed dice/one sourceIII, direct private completion with one decision/no artificial none, cold validator reopening, exact strains/position/costs and canonical nonmutation. Actual c954 causal proved integration_required after lawful selection; earlier d9 narration preparation FAIL is separate. GREEN must directly complete and cold-reopen the unchanged ordinary maneuver.",
   "excludes": "No tactical matrix changes: opposing pressure is invalid for successful maneuver. No general QTE/combat/ACTIVE, new author rules, partial_success/opposition/failure-family extension, old accepted sets rerun, canonical publication/Engine/UI/fresh OS or HOLD retry.",
   "changeHints": [
     "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualStrainManeuver.cs",
@@ -28,7 +28,7 @@
 },
 {
   "id": "wounds-spiritual-strain-guidance",
-  "responsibility": "#1536 T081-D one directly affected existing parsed strain comparison/manifest/guide Fact after exact player pressure/success no-op guidance. Real consumer source/C2 authority is separate.",
+  "responsibility": "#1536 T081-D one directly affected existing parsed strain comparison/manifest/guide Fact after exact player pressure/success and maneuver/success against guard no-op guidance. Real consumer source/C2 authority is separate.",
   "excludes": "No unmodified comparison boundary theory rerun, whole profile, Engine/UI/fresh process, new author decision or HOLD qualification.",
   "changeHints": [
     "OtherGuides/Wound_Materialization_Contract.md",
