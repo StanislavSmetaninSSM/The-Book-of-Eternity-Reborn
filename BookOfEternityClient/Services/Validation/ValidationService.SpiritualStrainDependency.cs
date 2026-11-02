@@ -63,6 +63,7 @@ public partial class ValidationService
             FileSystemManager.CanonicalWriteLease lease, SpiritualWoundCaptureCheckpointState checkpoint)
         {
             if (!_source.TryReadInitialActiveExchangeInventory(out var conflictId, out var ids) ||
+                conflictId is null ||
                 _closedExchangeEvidence.Count + 1 != ids.Length || _coldProposedInputs is not null) return null;
             var original = _source.ReadMechanicsConflict(this);
             if (original["activeConflict"] is not JsonObject conflict ||

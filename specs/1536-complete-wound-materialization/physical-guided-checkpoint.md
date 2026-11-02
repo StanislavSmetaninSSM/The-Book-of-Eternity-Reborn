@@ -1,3 +1,13 @@
+# Strain warning-clean correction — owning builds still pending
+
+Main52467532a5532051807290f0aeed3e3a43054f4d compiled exit0/64.827821297s,
+but82 warnings include one new CS8604: nullable conflictId output entering the
+private original-comparison record. The current narrow guard rejects null explicitly
+after the existing inventory check; no permission or game rule is inferred.
+Source delta review and fresh Main build required before Unit/Integration and
+runtime. Their first builds/runs have not started. Original causal9a7 RED and
+baseline58a PASS remain separate; all parent/author/UNKNOWN/HOLD unchanged.
+
 # Strain build correction WIP — no runtime claim
 
 First Main build at1bb12f7b22f94a3cc34ae2dc43b33aeca5b54a64 failed CS0103
