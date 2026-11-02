@@ -1,31 +1,54 @@
-# T081-D exact player pressure/success implementation WIP
+# T081-D player pressure/success strain no-op accepted — 2026-11-02
 
-Causal source3ecf8cae6277dbe392c714f98ce7f2cd248b7fca: fresh Integration
-exit0/107 unchanged warnings/68.855787475s, actual unchanged Mainbc7/SupportECE,
-25artifacts/412 resource copies/native4/3PDB383bindings. Discovery1357/13185
-and exact1Fact60s PlanOnly; Sol SOURCE/PREP accepted. One actual causal FAIL
-in4.117225s, no timeout: only spiritual_wound_profile_integration_required at
-exchange1 after full signed sourceIII+I proof and lawful real III submission.
-Late candidate assertions UNREACHED. Post hashes/cleanup/clean tree verified.
-Raw /workspace/tboe-linux-evidence-20261102/spiritual-strain-success; post proof
-f2a38ac4fe93c93f1dbb0648e4d6e559eb789889409f512ea5b08f487cc58687.
+Source/build/runtime: 88fd5c6187d2109841bfa83d16463ac97414fb23. Four unique
+PASS in three exact leaf runs (2 + 1 + 1), not an aggregate or previous20 + 4.
+One new success case and three directly affected existing guidance/manifest/setback
+checks. Astra/high DESIGN and Sol/xhigh SOURCE, PREP, causal and GREEN OUTCOME
+accepted. Production change is four lines in the current contribution consumer.
 
-Minimal implementation follows Astra DESIGN: only authenticated current player
-strain contribution, exact pressure and success, skips this contribution's failed-
-operation modifier. It never skips other contributions or ordinary dice/cost/
-chronology/source/final echo checks. No general !failure or other side/operation.
-Guide/worked example/manifest/existing parsed guard synchronized; no Mortal or
-launcher protocol change because this is the existing registered spiritual profile.
-New C# UNCOMPILED/runtimeGREEN UNRUN. Whole SOURCE pending, then fresh Main/Unit/
-Integration; exact guidance1+manifest1 before success1 and affected setback1.
-Old private20/C4two not otherwise repeated; these are a directly affected peer,
-not retagging old PASS. Parent profile/#1536/Engine/UI/freshprocess remain OPEN.
+A real selected III wound no longer blocks the player's exact pressure/success:
+the authenticated matching contribution adds no failure-only strain modifier.
+Ordinary signed dice/cost/chronology/actor/effect/source/final echo remain required;
+other contributions are still checked. Actual source I/opposition offer and none,
+completed candidate, ordinary player overwhelmed and seven canonical nonmutation
+checks pass. No common-plan/publication capability is created by private completion.
+The directly affected setback peer retains +1, separate A/B, cold rederivation,
+other-side/understep/premature-echo refusals, source II/none and no compounding.
 
-Optimization: no extra source reconstruction or comparison for a zero modifier;
-existing current owned context, projector and ordinary readers remain authoritative.
-No new cache/key/lifetime/authority; existing full signed-template reuse/copies and
-fresh owner/source/effect boundaries unchanged. No speedup claimed. Four author
-decisions and all old UNKNOWN/HOLD unchanged; wounds only.
+TRX durations: new success 8.6021414s; setback 34.6753180s; parsed GM guard
+0.2369651s; manifest inventory 0.1893396s. Each descriptor remains 60s. No timeout,
+skip, duplicate or underfill; complete counts, owned cleanup and no new TMP roots.
+Fresh Main/Unit/Integration exit0: 66.274723368s / 35.288982898s / 70.526159810s;
+warning multisets unchanged 81/26/107. Unchanged Support/hosts are verified
+dependencies, not new builds. Actual 45 artifacts, 206 resource inputs/618 copies,
+native6, four PE/PDB pairs/470 bindings verified before/after all three runs.
+Only guide/example/manifest inputs and nine copies changed. Catalog discovery
+1358 categories/13185 methods; no tests executed by discovery.
+
+Causal source 3ecf8cae6277dbe392c714f98ce7f2cd248b7fca had one complete FAIL
+in 4.117225s: only integration_required after lawful ordinary source III+I and
+actual III selection. Later candidate controls were UNREACHED then, reached now.
+No compile/setup failure was called causal RED; limits were not changed.
+
+Full local raw: /workspace/tboe-linux-evidence-20261102/spiritual-strain-success.
+Artifact proof efc23b656ebf86d2d4577a0e750f31255bef9864f0be61c08f8ac96d8cd08014;
+PDB proof 6f1f3e723a103275ce88c6251a83626c6413de07a696347a979f42d2a658cbfd;
+disjoint4 proof 9ed75b4d7ce8ae89e49dab47ab3f78399a478d06a05e5d7424e7f7b96a8a8274.
+Original outputs15 preserved with full member/hash/gzip EOF/CRC proof; no deletion.
+Optimization: existing current context/projector and full signed-template reuse;
+no new cache, IO or ordinary reconstruction for zero modifier. Fresh authority
+fences and detached mutable roots preserved. No measured speedup claim.
+GM guide/worked example/manifest/parsed guard synchronized; no Mortal/launcher
+protocol change. No raw, TRX, diagnostic JSON, archives or binaries in Git.
+
+Next wound-only step: exact player maneuver/success no-op with strain/maneuver.
+Astra DESIGN accepts a lawful opposing guard; pressure would be a matrix counter
+and must NOT be used or made legal. Ordinary proof must show one original III
+source, maneuver cost3, opposing guard cost2 (3→1), unchanged strains, improved
+position and direct private completion without a fictitious none. Code/runtime
+for this next case are UNWRITTEN/UNRUN. Other outcomes/sides and whole profile stay
+OPEN. Four author decisions, old UNKNOWN/HOLD, Engine/UI/fresh-process and #1536
+parents are unchanged; accepted private20 and C4two remain separate versions.
 
 # Current accepted wound result: strain C2→common C4 publication/rollback
 
