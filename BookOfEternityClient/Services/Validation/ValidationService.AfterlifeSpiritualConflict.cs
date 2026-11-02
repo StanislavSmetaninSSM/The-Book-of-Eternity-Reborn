@@ -105,6 +105,10 @@ public partial class ValidationService
         /// Gets exact detached causal comparisons after common publication, or <see langword="null"/> on ordinary and live-owner paths.
         /// </summary>
         internal SpiritualOriginalTurnCapture.SpiritualCompletedConflictValidation? CompletedConflictValidation { get; init; }
+
+        /// <summary>Gets only the authenticated baseline ledger after its complete parent History agreement was checked.</summary>
+        internal SpiritualWoundOpportunityReceiptState? HistoricalStrainReceipt { get; init; }
+        internal string? HistoricalStrainRealm { get; init; }
     }
 
     private sealed class PreTurnConflictPayloadTracker
@@ -168,6 +172,11 @@ public partial class ValidationService
         private static bool IsOptionalSummaryText(JsonNode? node) =>
             node is null || node is JsonValue value && value.TryGetValue<string>(out _);
     }
+
+    /// <summary>Reuses the existing exact/optional top-level historical-summary comparison; supplies no ownership.</summary>
+    internal static bool MatchesRetainedSpiritualHistoryExchange(JsonObject accepted, JsonObject current,
+        bool allowHistoricalSummaryDrift) =>
+        new PreTurnConflictPayloadTracker(new[] { accepted }).TryConsume(current, allowHistoricalSummaryDrift);
 
     private sealed class AfterlifeConflictRewardContext
     {
@@ -2452,7 +2461,9 @@ public partial class ValidationService
                 issues,
                 isCurrentExchange,
                 requiresCurrentMatchupAudit,
-                effectivePosition);
+                effectivePosition,
+                ReadSpiritualValidationOrdinaryManeuverAfter(actionCostAuthority, activeConflict, exchange,
+                    isCurrentExchange, isPreTurnExchange && HasPriorTurnMarker(exchange, diceContext)));
             ValidateOwnedGuardTempoGrant(exchange, after, operationType, outcome, context, issues,
                 (isCurrentExchange && actionCostAuthority.CompletedConflictValidation is { } completed
                         ? completed.Read(activeConflict, exchange).PlayerTempoDenied

@@ -753,11 +753,13 @@ public partial class ValidationService
             var retrauma = ResolveRetrauma(explicitTarget, targetKey, out var retraumaWoundJson);
             if (!prepareSource)
                 return;
+            var strain = affectedSide == "player" ? _mechanicsContext?.ReadOwnedStrainCorrection(conflict, exchange) : null;
+            var strainPreimage = strain is not null && strain.IsCorrected(exchange) ? strain.RetainedPreimageJson : null;
             _sources.Add(new PreparedSpiritualSource(
                 coordinate, ExactString(conflict["conflictId"])!, ExactString(exchange["exchangeId"])!,
                 affectedSide, actorKey, targetKey, operation,
                 source?.ToJsonString(), exchange.ToJsonString(), calculation,
-                envelope.GuaranteedSeverityRank, retrauma, retraumaWoundJson));
+                envelope.GuaranteedSeverityRank, retrauma, retraumaWoundJson, strainPreimage));
         }
 
         private void IndexProfiles(List<ValidationIssue> issues)
@@ -1145,6 +1147,7 @@ public partial class ValidationService
     /// <param name="RetraumaWoundJson">
     /// Canonical historical target facts, or null without re-trauma; these facts require fresh target validation before use.
     /// </param>
+    /// <param name="StrainPreimageJson">Exact comparison produced by the current owned C2 selection, never caller-provided permission.</param>
     internal sealed record PreparedSpiritualSource(
         string Coordinate,
         string ConflictId,
@@ -1158,7 +1161,8 @@ public partial class ValidationService
         SpiritualWoundCalculation Calculation,
         int? GuaranteedSeverityRank,
         string? RetraumaWoundId,
-        string? RetraumaWoundJson = null);
+        string? RetraumaWoundJson = null,
+        string? StrainPreimageJson = null);
 
     internal static void ValidateSpiritualWoundSourceActionShape(
         JsonObject exchange, string context, List<ValidationIssue> issues)

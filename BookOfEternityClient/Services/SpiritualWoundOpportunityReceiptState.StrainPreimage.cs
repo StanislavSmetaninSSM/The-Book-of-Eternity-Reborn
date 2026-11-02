@@ -6,7 +6,7 @@ namespace BookOfEternityClient.Services;
 internal sealed partial class SpiritualWoundOpportunityReceiptState
 {
     /// <summary>Retains immutable parsed comparison DATA and the exact parent transition identity for later History proof.</summary>
-    private sealed record RetainedStrainParent(string ConflictId, string ExchangeId, string InstanceId,
+    private sealed record RetainedStrainParent(int GlobalOrdinal, string ConflictId, string ExchangeId, string InstanceId,
         int Turn, string CreationTransitionId, SpiritualStrainPreimageData Data);
 
     /// <summary>Joins already parsed DATA to one earlier materialize-III parent, without granting original or History authority.</summary>
@@ -58,9 +58,68 @@ internal sealed partial class SpiritualWoundOpportunityReceiptState
                     ? "spiritual_standard_art" : "spiritual_art") &&
                 data.ParentWound.Origin.SourceId == Text(parent["appliedArtId"]),
                 "Strain parent envelope source and opportunity differ from the creation decision.");
-            result.Add(new(Text(witness["conflictId"]), Text(witness["exchangeId"]), Text(row["instanceId"]),
+            result.Add(new((int)Integer(row["ordinal"]), Text(witness["conflictId"]), Text(witness["exchangeId"]), Text(row["instanceId"]),
                 (int)Integer(evidence["turn"]), data.ParentWound.LastTransition.TransitionId, data));
         }
         return result.ToArray();
+    }
+
+    /// <summary>Checks each immutable full parent envelope against its exact first-create History after-image.</summary>
+    internal bool HasExactStrainHistory(WoundHistoryState history)
+    {
+        ArgumentNullException.ThrowIfNull(history);
+        foreach (var parent in _strainParents)
+        {
+            var wound = parent.Data.ParentWound;
+            if (!history.TryResolveExactTransition(parent.CreationTransitionId, out var creation) || creation is null ||
+                creation.Kind != "create" || creation.WoundTransitionOrdinal != 1 || creation.Terminal ||
+                creation.WoundId != wound.WoundId || creation.Turn != parent.Turn ||
+                creation.EventRef != wound.Origin.EventRef ||
+                creation.AfterFingerprint != parent.Data.ParentSemanticFingerprint)
+                return false;
+        }
+        return true;
+    }
+
+    /// <summary>Requires each newly appended parent to equal the actual owner-sealed insertion and its completed History.</summary>
+    internal bool HasCurrentStrainInsertions(int firstNewSourceOrdinal, SpiritualLiveWoundCompletion? live)
+    {
+        var current = _strainParents.Where(row => row.GlobalOrdinal >= firstNewSourceOrdinal).ToArray();
+        if (current.Length == 0) return true;
+        if (live is null) return false;
+        var history = WoundHistoryState.Parse(live.FinalState.History.ToJsonString(), WoundHistoryState.HistoryPath);
+        if (!history.IsValid || history.State is null || !HasExactStrainHistory(history.State)) return false;
+        // Read each detached insertion envelope once, preserving the sealed completion's ownership rules.
+        var creations = live.Insertions.Where(row => !row.IsCombatHealing).Select(row => row.Wound)
+            .Where(wound => wound.LastTransition.Kind == "create" && wound.LastTransition.Ordinal == 1)
+            .Select(wound => (Wound: wound, Fingerprint: WoundIdentityState.ComputeSemanticFingerprint(wound))).ToArray();
+        return current.All(parent => creations.Count(row => row.Wound.WoundId == parent.Data.ParentWound.WoundId &&
+            row.Wound.LastTransition.TransitionId == parent.CreationTransitionId &&
+            row.Fingerprint == parent.Data.ParentSemanticFingerprint) == 1);
+    }
+
+    /// <summary>
+    /// Reads historical comparison DATA only for the unique open instance and exact accepted actual exchange.
+    /// The caller must independently authenticate this ledger and its matching History before invoking it.
+    /// </summary>
+    internal JsonObject? ReadRetainedStrainOrdinaryAfter(string realm, string conflictId, JsonObject actual,
+        bool allowHistoricalSummaryDrift)
+    {
+        var exchangeId = AfterlifeSpiritualConflictState.GetNodeString(actual["exchangeId"]);
+        if (exchangeId is null) return null;
+        var closed = _root["closures"]!.AsArray().Select(row => Text(row!["instanceId"])).ToHashSet(StringComparer.Ordinal);
+        var instances = _root["instances"]!.AsArray().OfType<JsonObject>().Where(row =>
+            Text(row["realm"]) == realm && Text(row["displayConflictId"]) == conflictId &&
+            !closed.Contains(Text(row["instanceId"]))).ToArray();
+        if (instances.Length != 1) return null;
+        var instanceId = Text(instances[0]["instanceId"]);
+        var candidates = _strainParents.Where(parent => parent.InstanceId == instanceId &&
+            parent.ConflictId == conflictId && parent.ExchangeId == exchangeId).ToArray();
+        if (candidates.Length != 1) return null;
+        var data = candidates[0].Data;
+        var accepted = data.ReadActualExchange();
+        if (!ValidationService.MatchesRetainedSpiritualHistoryExchange(accepted, actual, allowHistoricalSummaryDrift))
+            return null;
+        return data.ReadOrdinaryAfter(accepted);
     }
 }

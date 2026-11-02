@@ -348,6 +348,8 @@ public partial class ValidationService
                 witness["guaranteePreimage"] = SpiritualWoundSourceWitness.CaptureGuaranteePreimage(
                     source.ExchangeJson, source.OriginalSpecialArtJson ??
                         throw new FormatException("An original guaranteed source requires its prepared special art."));
+            if (source.StrainPreimageJson is not null)
+                witness["strainPreimage"] = SpiritualWoundStateJson.Parse(source.StrainPreimageJson);
             var fingerprint = SpiritualWoundStateJson.Hash(witness, "source", "sourceId", "sourceFingerprint");
             witness["sourceFingerprint"] = fingerprint;
             witness["sourceId"] = "spiritual_source_" + fingerprint[7..];

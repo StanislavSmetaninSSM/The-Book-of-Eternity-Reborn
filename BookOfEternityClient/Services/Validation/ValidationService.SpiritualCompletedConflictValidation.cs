@@ -90,9 +90,11 @@ public partial class ValidationService
     /// <param name="EffectivePositionRank">
     /// Admitted causal starting rank; absent only when the exchange has no position snapshot.
     /// </param>
+    /// <param name="OrdinaryManeuverAfterJson">Detached ordinary after DATA for the exact owned strain correction, otherwise absent.</param>
     internal sealed record SpiritualAdmittedExchangeMechanics(string ConflictId, int Ordinal,
         string ExchangeJson, string PlayerSideJson, string OppositionSideJson,
-        long PlayerBurden, long OppositionBurden, bool PlayerTempoDenied, int? EffectivePositionRank);
+        long PlayerBurden, long OppositionBurden, bool PlayerTempoDenied, int? EffectivePositionRank,
+        string? OrdinaryManeuverAfterJson = null);
 
     internal sealed partial class SpiritualWoundSourceSession
     {
@@ -125,6 +127,9 @@ public partial class ValidationService
         /// </param>
         private void RetainAdmittedExchangeMechanics(JsonObject conflict, JsonObject exchange)
         {
+            var strain = _mechanicsContext?.ReadOwnedStrainCorrection(conflict, exchange);
+            var ordinary = strain is { RetainedPreimageJson: not null } && strain.IsCorrected(exchange)
+                ? strain.ReadOrdinaryAfter().ToJsonString() : null;
             _admittedExchangeMechanics.Add(new(
                 ExactString(conflict["conflictId"])!, _checkedExchanges.Count,
                 exchange.ToJsonString(), conflict["playerSide"]!.ToJsonString(),
@@ -132,7 +137,7 @@ public partial class ValidationService
                 ReadCurrentActionCostBurden(_mechanicsContext, conflict, exchange, "player"),
                 ReadCurrentActionCostBurden(_mechanicsContext, conflict, exchange, "opposition"),
                 HasCurrentPlayerTempoBurden(_mechanicsContext, conflict, exchange),
-                ReadCurrentEffectivePosition(_mechanicsContext, conflict, exchange)));
+                ReadCurrentEffectivePosition(_mechanicsContext, conflict, exchange), ordinary));
         }
     }
 

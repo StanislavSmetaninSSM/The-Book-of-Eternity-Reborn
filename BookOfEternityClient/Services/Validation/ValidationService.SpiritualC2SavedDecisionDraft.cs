@@ -482,6 +482,9 @@ public partial class ValidationService
             var sourceOrdinal = packet["cursor"]!["nextSourceOrdinal"]!.GetValue<int>();
             var waveOrdinal = packet["cursor"]!["waveOrdinal"]!.GetValue<int>();
             var sourceRow = packet["sources"]![sourceOrdinal]!.AsObject();
+            if (strainOriginal is not null && wound is not null)
+                strainOriginal = BindStrainParentComparison(strainOriginal, wound,
+                    sourceRow["sourceId"]!.GetValue<string>());
             var staged = new JsonObject
             {
                 ["opportunityRef"] = opportunityRef,

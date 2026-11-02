@@ -253,6 +253,8 @@ public partial class CanonicalStateNormalizer
                 await ReadCanonicalFileAsync(WoundHistoryState.HistoryPath), WoundHistoryState.HistoryPath);
             if (history.State is null || history.Issues.Count != 0)
                 throw new InvalidDataException("Spiritual publication has no valid wound history.");
+            if (!parsed.State!.HasExactStrainHistory(history.State))
+                throw new InvalidDataException("Spiritual strain parent differs from its full first-create history image.");
             foreach (var row in materializations)
             {
                 if (!history.State.TryResolveExactTransition(row["transitionId"]!.GetValue<string>(), out var transition) ||

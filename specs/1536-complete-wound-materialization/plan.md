@@ -13,6 +13,38 @@ The single authorized [GitHub #1536 follow-up comment](https://github.com/Stanis
 No issues are closed. Historical pending wording below is superseded by this
 current decision, not a new permission to implement the three deferred consumers.
 
+# T081-D connected failed-maneuver route — uncompiled WIP
+
+Continued after accepted parent41, not a completed gameplay claim. Current WIP
+connects pre-selection ordinary maneuver/setback and actual parent creation to
+C2-owned comparison metadata; retains one immutable ordinary comparator instead
+of reparsing it on each ownership read. Exact current actor/root/component/stack/
+resource epoch checks remain fresh. Private source witness carries the six-field
+comparison from the owned selection, and sealed C4 records detached ordinary-after
+DATA only after successful actual source admission. Ordinary maneuver comparison
+is selected only from live owned mechanics, exact sealed publication, or matching
+signed pre-turn ledger/History, never a caller-provided permission.
+
+C3 checks newly appended parent facts against actual owner-sealed insertion and
+completed History; publication and signed-origin validation check full first-create
+History.AfterFingerprint. Parsed parent canonical fingerprint is computed once
+from immutable full envelope DATA and reused, while History/source ownership is
+independently checked. No new cache/framework or current permission is retained.
+Historical frame reads the two extra signed roots only when its baseline contains
+a maneuver strain delta, via existing authenticated snapshot reader once each.
+It reuses the existing exact/top-level optional-summary historical comparator and
+requires the same unique open instance. Candidate images cannot replace baseline
+receipt/History. Malformed shapes retain ordinary refusal, not a new fallback.
+
+All new C# UNCOMPILED/UNRUN, SOURCE pending. Full cold/next-turn/healed history,
+changed-parent/source/definition/ordinal/foreign owner refusals and actual C4 must
+be qualified before any acceptance. Existing real first-A RED5a and parentE1RED5
+remain causal evidence; no blind original rerun has occurred. Next finish cohesive
+route tests, GM docs/worked example/guards and complex independent SOURCE review,
+then fresh affected builds and selected cheap guards before actual runtime. No
+HOLD/old UNKNOWN or author-deferred consumer is enabled by this WIP. No-roll GM
+choice producer remains separate OPEN. Accepted code/runtime remainsb1a3 and41.
+
 # T081-D retained parent relation — accepted41, connected owner route next
 
 Runtime/build source b1a3a42b6c72e6940cbf043f3b97c3c4e619ed7e; independent Sol6.1/

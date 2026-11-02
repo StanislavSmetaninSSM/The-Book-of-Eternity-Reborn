@@ -47,7 +47,9 @@ public partial class ValidationService
             int? snapshotTurnNumber,
             int[]? snapshotDice,
             SpiritualConflictFileImage difficultySettings,
-            SpiritualConflictFileImage? turnRequest)
+            SpiritualConflictFileImage? turnRequest,
+            SpiritualWoundOpportunityReceiptState? historicalStrainReceipt,
+            bool historicalStrainCaptureInvalid)
         {
             ArgumentNullException.ThrowIfNull(candidate);
             ArgumentNullException.ThrowIfNull(candidate.Conflict);
@@ -62,6 +64,8 @@ public partial class ValidationService
             _snapshotDice = snapshotDice?.ToArray();
             DifficultySettings = difficultySettings;
             TurnRequest = turnRequest;
+            HistoricalStrainReceipt = historicalStrainReceipt;
+            HistoricalStrainCaptureInvalid = historicalStrainCaptureInvalid;
         }
 
         internal SpiritualConflictCandidateImages Candidate { get; }
@@ -71,11 +75,13 @@ public partial class ValidationService
         internal int[]? SnapshotDice => _snapshotDice?.ToArray();
         internal SpiritualConflictFileImage DifficultySettings { get; }
         internal SpiritualConflictFileImage? TurnRequest { get; }
+        internal SpiritualWoundOpportunityReceiptState? HistoricalStrainReceipt { get; }
+        internal bool HistoricalStrainCaptureInvalid { get; }
 
         internal SpiritualConflictValidationFrame WithCandidateImages(
             SpiritualConflictCandidateImages candidate) =>
             new(candidate, Baseline, HasValidatedSnapshot, SnapshotTurnNumber,
-                _snapshotDice, DifficultySettings, TurnRequest);
+                _snapshotDice, DifficultySettings, TurnRequest, HistoricalStrainReceipt, HistoricalStrainCaptureInvalid);
 
         // No public/internal constructor accepts a claimed validated flag.
         // Only the existing authenticated lookup selects signed context here.
@@ -113,6 +119,8 @@ public partial class ValidationService
                 : await owner.ReadSpiritualConflictFileImageAsync("input/turn_request.json");
 
             SpiritualConflictBaselineImages baseline;
+            SpiritualWoundOpportunityReceiptState? historicalStrainReceipt = null;
+            var historicalStrainCaptureInvalid = false;
             if (manifest is null)
             {
                 baseline = new(null, null, null, null, null, null, false);
@@ -132,7 +140,8 @@ public partial class ValidationService
                 string? preDefinitions = null;
                 string? preState = null;
                 var resourceAcquisitionFailed = false;
-                if (TryParseJsonObject(preConflict)?["activeConflict"] is JsonObject)
+                var preConflictRoot = TryParseJsonObject(preConflict);
+                if (preConflictRoot?["activeConflict"] is JsonObject)
                 {
                     // This is the same narrow exception boundary as the old
                     // ResolvePreTurnActiveConflictControlContextAsync resource reads.
@@ -152,11 +161,29 @@ public partial class ValidationService
                 }
                 baseline = new(preConflict, preSoul, preShining, preProfiles,
                     preDefinitions, preState, resourceAcquisitionFailed);
+                if (preConflictRoot?["activeConflict"]?["exchangeLog"] is JsonArray oldExchanges &&
+                    oldExchanges.OfType<JsonObject>().Any(exchange =>
+                        ConflictTokenEquals(AfterlifeSpiritualConflictState.GetNodeString(exchange["operationType"]), "maneuver") &&
+                        exchange["before"] is JsonObject before && exchange["after"] is JsonObject after &&
+                        !JsonNode.DeepEquals(before["playerSideStrain"], after["playerSideStrain"])))
+                {
+                    // Only the signed historical maneuver contour needs these two inputs. Read once through
+                    // the existing authenticated snapshot service; candidate JSON cannot supply either image.
+                    var receipts = SpiritualWoundOpportunityReceiptState.Parse(
+                        await owner.ReadValidatedPendingTurnSnapshotFileAsync(manifest,
+                            SpiritualWoundOpportunityReceiptState.StatePath), SpiritualWoundOpportunityReceiptState.StatePath);
+                    var history = WoundHistoryState.Parse(
+                        await owner.ReadValidatedPendingTurnSnapshotFileAsync(manifest,
+                            WoundHistoryState.HistoryPath), WoundHistoryState.HistoryPath);
+                    historicalStrainCaptureInvalid = !receipts.IsValid || receipts.State is null ||
+                        !history.IsValid || history.State is null || !receipts.State.HasExactStrainHistory(history.State);
+                    if (!historicalStrainCaptureInvalid) historicalStrainReceipt = receipts.State;
+                }
             }
 
             return new SpiritualConflictValidationFrame(
                 new(conflict, soul, shining, profiles), baseline, hasSnapshot,
-                turn, dice, settings, request);
+                turn, dice, settings, request, historicalStrainReceipt, historicalStrainCaptureInvalid);
         }
     }
 
@@ -322,7 +349,12 @@ public partial class ValidationService
             ReadPlayerSpecialArts(profiles),
             ReadSpecialArtsByOwner(profiles),
             ReadEntityStandardArtTiers(profiles),
-            ReadConflictActorArtTierSnapshots(TryParseJsonObject(conflict)));
+            ReadConflictActorArtTierSnapshots(TryParseJsonObject(conflict)))
+        {
+            HistoricalStrainReceipt = frame.HistoricalStrainReceipt,
+            HistoricalStrainRealm = frame.HistoricalStrainReceipt is null ? null :
+                ReadSpiritualConflictRealm(frame.Baseline.Soul, rejectWhitespace: true)
+        };
     }
 
     private static AfterlifeConflictRewardContext CreateSpiritualConflictRewardContext(
@@ -509,6 +541,9 @@ public partial class ValidationService
         }
 
         var gateContext = CreateSpiritualConflictGateContext(frame);
+        if (frame.HistoricalStrainCaptureInvalid)
+            issues.Add(SourceIssue(SpiritualWoundOpportunityReceiptState.StatePath,
+                "spiritual_wound_strain_parent_history_mismatch", "the signed ledger and exact first-create parent History"));
         var diceContext = CreateSpiritualConflictDiceContext(frame);
         var actionCostAuthority = CreateSpiritualConflictActionCostContext(frame) with
         {

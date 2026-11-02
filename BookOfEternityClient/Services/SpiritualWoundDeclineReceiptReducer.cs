@@ -78,6 +78,7 @@ internal static partial class SpiritualWoundDeclineReceiptReducer
             var before = parsed.State;
             var root = SpiritualWoundStateJson.Parse(
                 SpiritualWoundOpportunityReceiptState.SerializeCanonical(before));
+            var firstNewSourceOrdinal = (int)SpiritualWoundStateJson.Integer(root["nextSourceOrdinal"]);
             var resolved = SpiritualWoundFirstOfferInstanceResolver.Resolve(
                 signed.Receipt, signed.Conflict,
                 SpiritualWoundStateJson.Text(packet["realm"]),
@@ -222,6 +223,8 @@ internal static partial class SpiritualWoundDeclineReceiptReducer
                 SpiritualWoundOpportunityReceiptState.StatePath);
             if (!candidate.IsValid || candidate.State is null)
                 return new(null, candidate.Issues);
+            if (!candidate.State.HasCurrentStrainInsertions(firstNewSourceOrdinal, liveWounds))
+                return Fail("spiritual_c3_strain_parent_insertion_mismatch");
             var append = SpiritualWoundOpportunityReceiptState.PlanAppend(before, candidate.State);
             return append.Disposition == "appended" && append.After is not null
                 ? Complete(signed, liveWounds,

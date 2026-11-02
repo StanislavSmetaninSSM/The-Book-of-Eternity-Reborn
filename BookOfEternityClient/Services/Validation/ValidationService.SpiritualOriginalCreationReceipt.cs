@@ -73,6 +73,12 @@ public partial class ValidationService
             }
             var history = WoundHistoryState.Parse(baseline.WoundHistory!.ToJsonString(),
                 WoundHistoryState.HistoryPath).State!;
+            if (receipts is not null && !receipts.HasExactStrainHistory(history))
+            {
+                issues.Add(SourceIssue(SpiritualWoundOpportunityReceiptState.StatePath,
+                    "spiritual_wound_strain_parent_history_mismatch", "the exact full first-create parent after-image"));
+                return issues;
+            }
             foreach (var entry in originalIdentities)
             {
                 var creation = history.Transitions.SingleOrDefault(transition =>

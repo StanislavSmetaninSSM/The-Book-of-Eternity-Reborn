@@ -17,6 +17,7 @@ internal sealed class SpiritualStrainPreimageData
     {
         ParentSourceId = parentSourceId;
         ParentWound = parent;
+        ParentSemanticFingerprint = WoundIdentityState.ComputeSemanticFingerprint(parent);
         EffectId = effectId;
         ComponentId = componentId;
         _ordinary = ordinary;
@@ -25,6 +26,7 @@ internal sealed class SpiritualStrainPreimageData
 
     internal string ParentSourceId { get; }
     internal WoundMaterializationEnvelope ParentWound { get; }
+    internal string ParentSemanticFingerprint { get; }
     internal string EffectId { get; }
     internal string ComponentId { get; }
 
@@ -98,6 +100,9 @@ internal sealed class SpiritualStrainPreimageData
         Require(JsonNode.DeepEquals(_actual, actual), "Strain comparison belongs to another actual exchange.");
         return _ordinary["after"]!.DeepClone().AsObject();
     }
+
+    /// <summary>Detaches the exact accepted actual DATA for an independently authenticated historical comparison.</summary>
+    internal JsonObject ReadActualExchange() => _actual.DeepClone().AsObject();
 
     private static JsonObject ReadObject(JsonNode? encoded) => Parse(DecodeUtf8JsonText(DecodeJsonObjectBytes(encoded)));
     private static bool IsToken(JsonNode? node, string token) => node is JsonValue value &&
