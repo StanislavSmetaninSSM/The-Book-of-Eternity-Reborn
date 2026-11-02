@@ -37,7 +37,7 @@ Preserve the unrelated persisted feature pin; set per-command `SPECIFY_FEATURE_D
 
 Completed: remote branch/base verification, approved scope, native setup-plan. Initial partial-clone sparse restore failed to load some blobs and was stopped; exact-SHA GitHub API reads supplied only required workflow files. Never stage the incomplete index; publish explicit new paths against the base tree.
 
-At the initial checkpoint, native task setup/analysis and skill copy/checks were pending; evidence below supersedes that initial state. Current gate: independent review. No acceptance, game tests, full checkout or Kimi execution is claimed.
+At the initial checkpoint, native task setup/analysis and skill copy/checks were pending; evidence below supersedes that initial state. Current status: independently reviewed source block; required GitHub code-owner approval remains pending. No acceptance, game tests, full checkout or Kimi execution is claimed.
 
 
 ### Pre-publication evidence
@@ -56,3 +56,10 @@ At the initial checkpoint, native task setup/analysis and skill copy/checks were
 - Skill blob identities: SKILL.md 8484226c005a8bd45d45fcb140235e715647aa76; agents/openai.yaml 2270b3155377c93625ec03af6b990c039c4138d6. These source files remain unchanged in this checkpoint update.
 - Recovery destination was a newly created task scratch directory. An initial direct command for the long governance document exceeded Windows process-command length; the same fresh GitHub responses were decoded through a temporary manifest, then all 12 files were reverified. This is bounded API source recovery only: no full clone, clean Git checkout, game build or runtime test was performed or claimed.
 - T005/T006 complete for the WIP source SHA above. This follow-up only records evidence and task state. T007 independent review remains pending; next step is the parent's separate whole-block reviewer. Required GitHub code-owner approval, any PR, merge and issue closure are still pending. No review/model success is inferred from this executor report.
+
+### Independent review checkpoint — 2026-11-03
+
+- Separate reviewer context: review_book_skill_copy, actual model gpt-6.1-sol with xhigh reasoning, dispatched by the parent. Reviewed exact base 6ef42415ef2d16d4b54a62da380e87da71913ae2 through head 2bff6c16ea200d22a2ce90f6ddb672540bbe8007, including the original issue, canonical artifacts, exact eight additions and verification evidence.
+- Parent reported verdict: approved; Critical 0, Important 0, Minor 0. The reviewer confirmed preserved source contracts, 12/12 recovery/hash evidence and no applicable game-test category. No findings require correction. T007 is complete for that reviewed block.
+- This final checkpoint changes only plan.md and tasks.md to record review and task state. Skill source and earlier validation/recovery remain unchanged; no additional runtime checks or full recovery repeated without a changed source or unresolved risk. The parent retains final acceptance responsibility.
+- Required protected GitHub code-owner approval remains pending. No PR, merge, protection change or issue closure was performed. All seven tasks in this bounded repository contribution are complete; this is independent source review, not protected-branch integration approval.

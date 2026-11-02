@@ -17,7 +17,7 @@ Spec: [spec.md](spec.md). Plan/checkpoint: [plan.md](plan.md).
 
 - [x] T005 [US2] Publish explicit changed paths plus WIP `specs/1587-neutral-methodology-bridge/plan.md` checkpoint; verify full remote branch SHA before long review.
 - [x] T006 [US2] Recover listed changed/governance files by exact SHA from GitHub into a fresh directory; verify contents and record limited scope in `specs/1587-neutral-methodology-bridge/plan.md`.
-- [ ] T007 [US2] Parent obtains separate independent review of the exact diff and verification selection, resolves validated findings and records acceptance evidence in `specs/1587-neutral-methodology-bridge/plan.md`.
+- [x] T007 [US2] Parent obtains separate independent review of the exact diff and verification selection, resolves validated findings and records acceptance evidence in `specs/1587-neutral-methodology-bridge/plan.md`.
 
 ## Dependencies and independent checks
 
