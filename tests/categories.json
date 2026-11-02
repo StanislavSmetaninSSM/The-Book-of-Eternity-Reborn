@@ -3,7 +3,7 @@
     "categories": [
 {
   "id": "wounds-spiritual-strain-parent-receipt",
-  "responsibility": "#1536 T081-D parent receipt join: five cheap independent DATA cases first require a valid two-source ledger/intrinsic comparison, then reject rehashed foreign source or declined/different wound/transition/rank parent. This precedes ownership/History adapters and does not grant authority.",
+  "responsibility": "#1536 T081-D parent receipt join: seven cheap independent DATA cases first require a valid two-source ledger/intrinsic comparison, then reject rehashed foreign source or declined/different wound/transition/rank/original request/origin source parent. This precedes ownership/History adapters and does not grant authority.",
   "excludes": "No reflection, live owners, caller preimage issuance, fake original snapshots, C2/C3/C4 or full historical qualification, generalcombat, broad oldPASS/HOLD reruns. History AfterFingerprint/firstcreation and actual source owners remain required.",
   "changeHints": [
     "BookOfEternityClient.Tests/SpiritualStrainReceiptJoinTests.cs",

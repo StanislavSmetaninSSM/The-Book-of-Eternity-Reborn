@@ -35,7 +35,9 @@ copy/append; a temporary index over the existing decision bijection is DATA, not
 cache/authority registry. One parse owns the facts, no extra parent-envelope parse
 or cross-operation reuse. Fresh owner/History permissions are still absent.
 
-Next SOURCE/build/catalog/Plan/PREP and cheap39 (newparent5+affectedintrinsic13+
+Source review added two exact controls (different child original request with
+consistent binding and changed retained parent origin source); earlier causal5
+remains separate. Next SOURCE/build/catalog/Plan/PREP and cheap41 (parent7+affectedintrinsic13+
 existingwitness21, budgets unchanged1/1/2minutes). Repeated13/21 are now justified
 by changed shared witness/receipt validation. History.AfterFingerprint and actual
 C2/C3/C4/signed-history adapter work remains OPEN; no fullroute or new game rule

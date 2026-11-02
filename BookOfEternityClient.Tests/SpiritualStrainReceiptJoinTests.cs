@@ -1,3 +1,4 @@
+using System.Text;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Services;
 using Xunit;
@@ -13,6 +14,8 @@ public sealed class SpiritualStrainReceiptJoinTests
     [InlineData("different-wound")]
     [InlineData("different-transition")]
     [InlineData("different-rank")]
+    [InlineData("different-original")]
+    [InlineData("different-origin-source")]
     public void ReceiptRefusesUnprovedParentAfterIntrinsicAndBaselinePass(string change)
     {
         var root = CreateLedger();
@@ -35,6 +38,21 @@ public sealed class SpiritualStrainReceiptJoinTests
             case "different-wound": parent["woundId"] = "another-wound"; break;
             case "different-transition": parent["transitionId"] = "another-transition"; break;
             case "different-rank": parent["selectedSeverityRank"] = 2; break;
+            case "different-original":
+                var child = root["sources"]![1]!["witness"]!;
+                child["turnEvidence"]!["requestId"] = "another-request";
+                root["decisions"]![1]!["binding"]!["requestId"] = "another-request";
+                SealSourceAndDecision(root, 1);
+                break;
+            case "different-origin-source":
+                var changed = root["sources"]![1]!["witness"]!;
+                var encoded = changed["strainPreimage"]!["parentWoundJsonBase64"]!.GetValue<string>();
+                var wound = JsonNode.Parse(Convert.FromBase64String(encoded))!;
+                wound["origin"]!["sourceId"] = "another:source";
+                changed["strainPreimage"]!["parentWoundJsonBase64"] =
+                    Convert.ToBase64String(Encoding.UTF8.GetBytes(wound.ToJsonString()));
+                SealSourceAndDecision(root, 1);
+                break;
             default: throw new ArgumentOutOfRangeException(nameof(change));
         }
         parent["decisionFingerprint"] = SpiritualWoundStateJson.Hash(parent, "decision", "decisionFingerprint");
