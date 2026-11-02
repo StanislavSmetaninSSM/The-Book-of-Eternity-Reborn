@@ -274,7 +274,8 @@ public sealed partial class EffectMaterializationValidationTests
             .ValidateAcceptedTurnRawResourceMaterializationAsync();
 
         Assert.Contains(issues, issue =>
-            issue.Code == "accepted_mechanics_effect_owner_delta_invalid");
+            issue.Code == "effect_materialization_legacy_carrier_unsupported" &&
+            issue.FilePath == EffectMaterializationTestContext.NpcEffectsPath);
         Assert.False(await AcceptedMechanicsAuthorityTestProbe.HasCommonAsync(
             context.FileSystem));
         var root = (await context.ReadJsonAsync(

@@ -8,6 +8,41 @@ namespace BookOfEternityClient.Tests;
 
 public sealed class EffectMaterializationContractTests
 {
+    [Fact]
+    public void ValidateCarrier_CanonicalNpcWoundRetirementKeepsErrorOrder()
+    {
+        using var document = JsonDocument.Parse("""
+            {"schemaVersion":1,"schemaVersion":1,"entries":[null,{"NPCId":"npc_missing"},{"NPCId":"npc_same","activeEffects":[]},{"NPCId":"npc_same","activeEffects":[]}]}
+            """);
+        var before = document.RootElement.GetRawText();
+        var issues = EffectMaterializationContract.ValidateCarrier(
+            document.RootElement, EffectCarrierCatalog.NpcPath, EffectCarrierKind.Npc);
+
+        Assert.Equal(new[]
+        {
+            (EffectCarrierCatalog.NpcPath + ".schemaVersion", "effect_materialization_duplicate_property"),
+            (EffectCarrierCatalog.NpcPath + ".entries[0]", "effect_materialization_legacy_carrier_unsupported"),
+            (EffectCarrierCatalog.NpcPath + ".entries[1]", "effect_materialization_legacy_carrier_unsupported"),
+            (EffectCarrierCatalog.NpcPath + ".entries[3].NPCId", "effect_materialization_invalid_field")
+        }, issues.Select(issue => (issue.FilePath, issue.Code)));
+        Assert.Equal(before, document.RootElement.GetRawText());
+
+        using var legacyDocument = JsonDocument.Parse("""
+            {"schemaVersion":1,"schemaVersion":1,"entries":[{"NPCId":123,"activeEffects":"invalid","wounds":null},{"NPCId":"npc_missing"}]}
+            """);
+        var legacyBefore = legacyDocument.RootElement.GetRawText();
+        var legacyIssues = EffectMaterializationContract.ValidateCarrier(
+            legacyDocument.RootElement, EffectCarrierCatalog.NpcPath, EffectCarrierKind.Npc);
+        Assert.Equal(legacyBefore, legacyDocument.RootElement.GetRawText());
+        // Classification/order control: unlike the eleven acceptance rows, baseline already rejects this malformed input.
+        Assert.Equal(new[]
+        {
+            (EffectCarrierCatalog.NpcPath + ".schemaVersion", "effect_materialization_duplicate_property"),
+            (EffectCarrierCatalog.NpcPath + ".entries[0]", "effect_materialization_legacy_carrier_unsupported"),
+            (EffectCarrierCatalog.NpcPath + ".entries[1]", "effect_materialization_legacy_carrier_unsupported")
+        }, legacyIssues.Select(issue => (issue.FilePath, issue.Code)));
+    }
+
     private static readonly string[] RequiredRootFields =
     {
         "schemaVersion",

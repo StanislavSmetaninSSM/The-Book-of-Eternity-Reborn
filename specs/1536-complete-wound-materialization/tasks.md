@@ -1,3 +1,24 @@
+- [ ] T149-NPC-CANONICAL-WOUND-RETIREMENT [US1/US7] Retire the two known
+  unsupported wound allowances in canonical npc_effects.json (FR-013/T149,
+  #1536). Accepted Astra DESIGN: any top-level NPCWoundChanges presence is a root
+  legacy error; exact entries[i].wounds presence is that entry's legacy error
+  before its ID/effects validation. Preserve duplicate-first/nonlegacy error
+  order, legal adjacent metadata and source/owner freshness; no blanket unknown,
+  casefold or recursive bans. First test-only scaffold:16 Unit source rows,
+  expected12 FAIL (11 missing-refusal +1 error-order) and4 preserving PASS, actual results UNRUN.
+  Migrate/rename two obsolete Unit positives to legal non-wound metadata, preserve
+  meaningful old owner membership, select one exact60s causal leaf. Prepare two
+  known Integration fixture/oracle corrections coherently but leave unselected
+  until post-RED GREEN. No production/sourceguard retirement before accepted
+  actual RED. All inputs remain immutable; allocation-zero assertions follow
+  the required error oracle and may be UNREACHED on baseline. Source UNCOMPILED;
+  static source count/owner/helper and diff --check pass; actual metadata reader
+  exits0 with1,334 categories/one Unit8-method60s leaf (not discovery). Root owns
+  persistence/SOURCE/owning builds/exact Plan/PREP. Existing late
+  Integration refusal disproves any automatic publication-bypass claim. No new
+  cache/read/Engine/reflection or game rule. T118 accepted lineages, parent T149,
+  A5/R2 UNKNOWN, T148/#1571 and all wider HOLDs remain unchanged.
+
 - [x] T118-ACTUAL-SHELL-READONLY [US5] Real App/ShellProvider read-only route
   Continue→Help→active wounds→known History→active→scene accepted. Independent
   Astra DESIGN/SOURCE/PREP/OUTCOME: labelSSR1 atf096, compile-only1 at210c (not Fact),

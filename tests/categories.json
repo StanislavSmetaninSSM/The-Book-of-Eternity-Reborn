@@ -2,6 +2,40 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "wounds-npc-canonical-retirement-causal",
+  "responsibility": "T149-NPC-CANONICAL-WOUND-RETIREMENT / FR-013 / #1536: exactly16 Unit source rows/8 methods. Root legacy-only/mixed x empty/nonempty4, genuine current empty/populated2, duplicate/nonlegacy/nested precedence1, actual planner root2+nested1 with genuine base plans/all-input snapshots/allocation counters, nested presence values4, migrated legal-metadata Catalog/Planner positives2. Expected baseline11 real missing-refusal FAIL plus1 classification/order FAIL and4 preserving PASS, not observed results. Error-order input already refuses generically; it is not acceptance causality. Zero-allocation and failed-plan oracles may be UNREACHED after a missing required error. Cost UNMEASURED.",
+  "excludes": "Test-only causal scaffold: no production validator/planner/sourceguard retirement before accepted actual RED. No blanket unknown/casefold/recursive ban, reflection/Engine/new cache/reads, publication-bypass claim, old accepted-set replay or A5/R2/T148/Saref/DFR/Mortal/Windows HOLD. Both prepared Integration fixture/oracle changes remain unselected until post-RED GREEN. Existing owner memberships survive meaningful fixture renames.",
+  "changeHints": [
+    "BookOfEternityClient.Tests/EffectCarrierCatalogTests.cs",
+    "BookOfEternityClient.Tests/EffectMaterializationContractTests.cs",
+    "BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.NpcCarrierRetirement.cs",
+    "BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.EffectCarrierCatalogTests.Build_CanonicalNpcCarrierRejectsTopLevelWoundChanges",
+        "BookOfEternityClient.Tests.EffectCarrierCatalogTests.Build_CanonicalNpcCarrierKeepsCurrentSchema",
+        "BookOfEternityClient.Tests.EffectCarrierCatalogTests.Build_CanonicalNpcCarrierRejectsKnownNestedWounds",
+        "BookOfEternityClient.Tests.EffectCarrierCatalogTests.Build_NpcScanPreservesLegalAdjacentMetadata",
+        "BookOfEternityClient.Tests.EffectMaterializationContractTests.ValidateCarrier_CanonicalNpcWoundRetirementKeepsErrorOrder",
+        "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.Build_CanonicalNpcWoundCommandsRefuseBeforeAllocation",
+        "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.Build_CanonicalNpcNestedWoundsRefuseBeforeAllocation",
+        "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.Build_NpcApplyPreservesLegalAdjacentMetadata"
+      ]
+    }
+  ]
+},
+{
   "id": "wound-actual-shell-types",
   "responsibility": "T118-ACTUAL-SHELL-READONLY / #1536: one compile-only exact contract for the new pure typed actual-App packet factory, existing six public DTO templates, raw active/History replies and real Wounds coverage helper. Existing player-facing test config gains only resolveJsonModule for this newly imported JSON chain. This adapter record is not a runtime Fact or DOM proof; separate SOURCE/PREP precedes either 60s manual actual-shell viewport attempt.",
   "excludes": "No SSR1/28/old DOM13 or unrelated standalone rerun, production build/source change, alternate host/ShellContext or diagnostic framework, backend/canonical/provider/GM/save/fresh-process/packaged-host qualification, A5/R2 or broader HOLD retry.",
@@ -27212,7 +27246,7 @@
                         "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.Build_DuplicateAcceptedEventCommandsFailBeforeIdentityAllocation",
                         "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.Build_EventReactionCreatesOnlyPureTerminalCandidates",
                         "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.Build_LegacyRootRouteIsExplicitlyRejectedWithoutAllocation",
-                        "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.Build_NpcApplyPreservesAdjacentNpcState",
+                        "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.Build_NpcApplyPreservesLegalAdjacentMetadata",
                         "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.Build_PlayerApplyAllowsRegisteredNonCombatCategory",
                         "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.Build_ReceiptsOnlyRootTreatsAbsentEffectChangesAsEmpty",
                         "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.Build_SameTurnLifecycleTransitionEventRefRebindsAllocatedEffectIdentity",

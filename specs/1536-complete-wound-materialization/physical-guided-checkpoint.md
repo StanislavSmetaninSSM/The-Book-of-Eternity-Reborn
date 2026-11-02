@@ -1,3 +1,42 @@
+# T149 NPC canonical wound retirement: coherent test-only scaffold WIP
+
+2026-11-02 UTC, base ea9c44ee1e5f5694e4240d134bbc0b909503f6f6, #1536 /
+T149-NPC-CANONICAL-WOUND-RETIREMENT. Astra DESIGN delta accepts retirement of
+both known unsupported allowances: any top-level NPCWoundChanges is root legacy
+error; exact entries[i].wounds presence is entry legacy error before its ID/effects.
+Duplicate-first/current nonlegacy ordering, legal metadata, source/owner guards
+remain; no blanket unknown/casefold/recursive ban. Production and semantic
+sourceguard inventory are UNCHANGED until accepted actual causal RED.
+
+Selected one exact60s Unit leaf:8 methods/16 source rows. Root4 + current2 +
+order1 + planner root2/nested1 + nested values4 + legal metadata positives2.
+Expected baseline12 FAIL/4 PASS:11 genuine missing-refusal failures plus one
+classification/order failure on already-malformed input, not acceptance causality.
+Order case first proves unchanged nonlegacy errors, then duplicate-first/nested
+precedence. No actual result is claimed. Planner rows first prove genuine base
+plans, fresh-cache misses, actual allocations and unchanged complete inputs;
+required error precedes failed-plan/zero-allocation oracles, which can be UNREACHED.
+No reflection/Engine/new prep API; original CreateInput/NpcRoot/Effect helpers stay.
+
+Both old Unit positives are honestly renamed and preserve legal non-wound metadata.
+Old owner memberships survive exact selector renames. Known Integration source
+impact is prepared now but UNSELECTED/UNRUN until post-RED GREEN: normalizer's
+published mixed-root positive now uses legal metadata; legacy payload refusal
+expects earlier carrier error while no-common/original-byte assertions remain.
+These two Integration source bindings are changed/UNCOMPILED; retained binaries
+are historical, not current proof. Root owns coherent SOURCE/owning compilation /
+current catalog/Plan/PREP before selected Unit RED, and later Integration execution.
+Root archived75 managed outputs externally before future overwrite; no deletion.
+
+Static count/owner/helper/inverse checks and git diff --check pass. Actual catalog /
+selection metadata reader exits0:1,334 categories, exact Unit8-method leaf/60s;
+this is not discovery. Primary metadata/static logs are external under
+/workspace/tboe-linux-evidence-20261102/npc-canonical-retirement/N1-scaffold/.
+C# UNCOMPILED; builds/discovery/Plan/PREP/runtime UNRUN, cost UNMEASURED. Fresh
+trivial JSON enumeration needs no production cache/new reads; no speedup claim.
+Existing late Integration refusal is preserved, so no publication bypass is claimed.
+Parent T149, accepted T118/T150, A5/R2 UNKNOWN, T148/#1571 and all HOLDs unchanged.
+
 # T118-ACTUAL-SHELL-READONLY accepted — bounded final receipt
 
 Independent Astra DESIGN/SOURCE/PREP/OUTCOME accepts only this leaf. Production

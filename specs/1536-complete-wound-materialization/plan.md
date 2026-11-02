@@ -1,3 +1,41 @@
+# T149 canonical NPC wound retirement: test-only causal scaffold WIP
+
+2026-11-02 UTC, base ea9c44ee1e5f5694e4240d134bbc0b909503f6f6, #1536 /
+T149-NPC-CANONICAL-WOUND-RETIREMENT. Independent Astra DESIGN delta accepts
+retiring both known unsupported carrier allowances: top-level NPCWoundChanges
+at any value/presence rejects at the canonical root; exact entries[i].wounds
+presence rejects that entry before its ID/effects. Canonical wounds have their
+separate npc_wounds.json authority (current data-model/FR-013/T149); old #1535
+preserve-wounds fixtures are not a compatibility exception. Keep duplicate
+checks first, all nonlegacy per-entry/error ordering, legal metadata and actual
+source/owner guards. No blanket unknown-field, casefold or recursive metadata ban.
+
+First bounded source is tests only. Proposed16 Unit rows: root4, genuine current2,
+nonlegacy error order1, planner root2+nested1, nested values4, migrated legal
+metadata Catalog/Planner positives2. Expected baseline12 FAIL (11 true missing-refusal +1 classification/order) and4
+preserving PASS, not observed results. The order row first preserves original
+nonlegacy errors, then requires duplicate-first/nested-entry precedence; its
+second input is already rejected on baseline and is not acceptance causality. Each planner row first proves genuine
+base input success with the existing typed helpers/fresh planner cache; captures
+all subject inputs and actual allocation counters. Required root/entry error is
+first normative oracle; failed-plan/zero-allocation assertions can be UNREACHED
+on baseline. No reflection/whole Engine or new prep API/cache. Trivial fresh JSON
+needs no production cache or new source read; existing immutable DATA and local
+per-case copies are enough, no speedup claim.
+
+Known Integration impact is prepared in the same source block, unselected until
+post-RED GREEN: CanonicalStateNormalizer Apply_NpcPreservesAdjacentWoundState
+must instead preserve legal non-wound metadata; existing legacy payload refusal
+must expect the earlier carrier error while keeping no-common/bytes assertions.
+Production validator/planner and semantic sourceguard inventory stay unchanged
+until real RED acceptance. Root archives old managed owners before replacement,
+then owns coherent SOURCE/builds/catalog/exact Plan/PREP/RED. Parent T149 remains
+open; no publication bypass or full #1536 acceptance follows. Actual source is
+UNCOMPILED/UNRUN. Static count/owner/helper/inverse and diff --check pass; actual
+metadata reader exits0 (1,334 categories, one exact Unit8-method60s leaf), not
+discovery. Integration changed source is uncompiled/unselected, retained binaries
+are historical. T118 accepted receipts and all A5/R2/other HOLDs stay intact.
+
 # T118 actual-App read-only leaf accepted; next T149 canonical NPC carrier
 
 See the current physical-guided-checkpoint receipt for exact source lineages and
