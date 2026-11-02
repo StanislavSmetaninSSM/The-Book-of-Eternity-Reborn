@@ -26,7 +26,49 @@ verified and its10 changed files freshly downloaded via GitHub blob API with exa
 blob-SHA/byte equality in /tmp/boe-browser-source-restore-7f461b365. No full checkout
 or execution claim. Parent owns final independent SOURCE/integration and runtime.
 
-# Browser source read reservation scaffold WIP — SOURCE pending
+# B1RED scaffold preparation — built; runtime UNRUN
+
+2026-11-02 UTC, same Linux checkout/branch. Independent Astra/high delta SOURCE
+accepts9d021ae82930099a1a77bf6ae9ad6ff18ade322d after the mutable-hook fixture,
+owner-after-close observation window and bounded borrow lifecycle selection were
+corrected. Root checked the actual diff and remote SHA; the writer's exact10-file
+blob readback is limited source recovery, not a new full checkout qualification.
+
+All four fresh managed owning builds on that exact source exit0: Main123.580s,
+Support16.413s, Unit63.603s, Integration123.683s. Commands use the existing
+dotnet build --no-restore -m:1 -p:UseSharedCompilation=false -nr:false
+-p:BuildProjectReferences=false path. Warning code/message multisets exactly match
+their baseline:12/23/26/102 unique (24/46/52/204 logged), no additions.
+All4 PE/PDB pairs and430 changed-source bindings verify;27 artifacts,11 resource
+files/44 copies and4 daemon copies are current. External preflight SHA
+10710d5d54570b756133b5d121fdcf53be4503133d5b0445811075fe107b998f;
+PDB proof SHA ba61dfa29801bfefcea8765d5db4f36e7cf3e3c187f63a067f72b29838a9e6da.
+
+ValidateCatalog exit0:1315 categories/13138 methods, no unmapped/stale selectors.
+Exact five-category PlanOnly exit0:5 descriptors/8 methods/21 cases, zero executed.
+Breakdown: causal CrossReferences2/Meta2, drift1, typed borrow API4 and only the
+three addressed existing owned-peer methods12. Four category budgets60s; owned
+peers180s. Plan SHA07441a1a1e44f91ed332c2e5f13235ac59c33e5870408a12fb36fcb81aad1a84.
+All source/artifact/resource fences and owned cleanup remain valid; free711737344B
+at the post-plan fence, above the unchanged687865856B start reserve.
+
+Storage: separately reviewed lossless substitutions RESERVE2/RESERVE3 preserve all
+bytes of38 ended plain logs in verified gzip, with manifests before unlink and
+post-operation archive-hash/original-absence checks. RESERVE3:20910838→2340823B,
+manifest SHAde47af634018e3a7e4cd9ccbb4c4fd63991a1dba46cb8b4fe862c3e039e3999a.
+No TRX/JSON/capture/save/recovery/current-bin evidence was removed. Only proven
+reproducible ended obj duplicates/reference outputs were retired; Main/Support
+reference inputs remain. The full pre-build managed archive remains preserved.
+
+Next gate: independent PREP for the exact21 cases. Execute the17 non-causal
+preservation/owned controls separately from the two2-case causal categories;
+expected RED is only each final missing-reservation work oracle, never compilation,
+setup, data/readset/ordered-issue drift or timeout. Causal/runtime are UNRUN.
+No measured benefit, outer automatic wrapper/debt implementation, full browser
+retry, native timeout resolution or parent/HOLD closure is claimed. Full raw is
+outside checkout under us5-guided-diagnosis/B1RED-*; no generated output is in Git.
+
+# Browser source read reservation scaffold WIP — original source preparation
 
 Base af1389065f8aede25abf3ae72875e1c19a3cb58d, tracked
 T121-PHYSICAL-GUIDED-BROWSER-READ-RESERVATION / issue#1536. Accepted DESIGN is in
