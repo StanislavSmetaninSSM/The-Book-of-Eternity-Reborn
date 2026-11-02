@@ -4,7 +4,7 @@
 
 - [x] T136.1 Sol6.1/high read-only audit и parent сверили E/R/источники/clock, TrainingService/стоимость, память и старые325/300. Scope/plan/consistency записаны; новые числа не приняты.
 - [x] T136.2 В существующем проекте записан кандидат2ч/10П, self4ч/20П, Mask2ч/10П и скидки8/6; варианты и пределы выводов явны.210 арифметических assertions,16 добавленных ссылок и diff/check прошли; малая диагностика толькоD:. Runtime/Rules/probes не менялись.
-- [ ] T136.3 Независимый Sol6.1/xhigh review всего блока; ссылки/diff/публикация/readback/clean restore. Предъявить письменное предложение автору; implementation и T135.M остаются открытыми.
+- [x] T136.3 Независимый GPT-6.1 Sol/xhigh review b12de6cc0 — pass без P1/P2; арифметика и16 ссылок воспроизведены. WIP remote SHA и пять GitHub blobs совпали с новым clean sparse restore; финальный checkpoint/readback — issue1573. Предложение предъявляется автору, новые тарифы не приняты; implementation и T135.M открыты.
 
 ## T135 — принятие T134 и сохранение прогресса в смертном мире
 

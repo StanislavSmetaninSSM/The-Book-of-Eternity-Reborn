@@ -25,7 +25,21 @@ Python arithmetic.py в D:\BoeDiagnostics\training-economy-t136 проверил
 Это не игровые тесты и не доказательство баланса. Изменены только пять
 документов feature; C#/Rules/probes/сценарии не менялись, C# сборок и боевых
 прогонов нет. Нового runtime-пути нет; дешёвая арифметика не требует кэша.
-Независимый review ожидается; публикация/readback записываются ниже/в issue.
+Независимый GPT-6.1 Sol/xhigh review всего diff42affb5e7…b12de6cc0ca981e1a6c6879c35f88c6044dec79a:
+pass, P1/P2 нет. Ревьюер самостоятельно воспроизвёл210 assertions и16 ссылок,
+проверил источники и непринятый статус новых цен. Исправлений не потребовалось.
+
+WIPb12de6cc0 опубликован, remote SHA совпал; пять GitHub blob SHA совпали с
+source и новым чистым sparse clone
+D:\BoeDiagnostics\training-economy-t136\remote-restore-20261102.
+Восстановлены feature, первичные Rules/TrainingService/price policy, старый
+Mask spec и пять обязательных инструкций. Новых runtime-проверок это не доказывает.
+Финальный checkpoint и повторный readback/restore записываются в issue1573;
+малое свидетельство — D:\BoeDiagnostics\training-economy-t136\verification.json.
+Основной worktree остаётся D:\Code\DW10-worktrees\boe-mastery-planning\The-Book-of-Eternity-Reborn-crash5-windows-20261019.
+Посторонний recovery obj не включён в Git и не удалялся. Маршрутизация:
+один bounded Sol6.1/high audit и отдельный Sol6.1/xhigh review; существенных
+переделок нет, экономия времени/стоимости не измерялась.
 
 ## T135 — принятие и общее правило прогресса
 
