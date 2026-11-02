@@ -2,6 +2,31 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "wounds-spiritual-strain-preimage-data",
+  "responsibility": "#1536 T081-D one cheap typed intrinsic DATA contract case: independently valid parent harmful source III, parsed complete three-slot parent graph and ordinary signed failed maneuver precede expected retained strain-preimage acceptance/calculationII without mutation. Pure DATA cannot authorize live source, C4 or history. Expected causal RED is only missing closed optional witness field after all fixture premises pass.",
+  "excludes": "No reflection, fake live source/approved history, current-owner or historical authority from fingerprints/JSON, C2/C4/Engine/world setup, broad old PASS or HOLD rerun. Complete cross-record/History join and real route remain unimplemented and separately required.",
+  "changeHints": [
+    "BookOfEternityClient.Tests/SpiritualStrainPreimageDataTests.cs",
+    "BookOfEternityClient/Services/SpiritualWoundSourceWitness.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.SpiritualStrainPreimageDataTests.IntrinsicWitnessRetainsOrdinaryManeuverAndParentGraphWithoutMutation"
+      ]
+    }
+  ]
+},
+{
   "id": "wounds-spiritual-strain-maneuver-failure-entry",
   "responsibility": "#1536 T081-D causal entry only: real signed maneuver/setback vs guard ordinary2/4claims/soleIII, valid narration/III strain-maneuver selection must request exact owned strain correction A; other-side policy refusal/canonical7/no-common-plan guards. Full durable source/C4/next-turn/heal historical route remains separate and unimplemented.",
   "excludes": "No fake source/authority, caller preimage, general maneuver/matrix/QTE/ACTIVE change, author4rule choices, old5/20/C4 rerun or HOLD. Late first-A policy guards are UNREACHED until genuine consumer GREEN; this entry alone does not qualify failed maneuver end-to-end.",

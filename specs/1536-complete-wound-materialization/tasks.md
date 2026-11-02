@@ -1,3 +1,32 @@
+# T081-D retained strain preimage DATA — causal tests WIP
+
+Current preserved source5a027b8fc325e176451d28a926d80d4de98065fc has accepted
+DESIGN (Astra closure) and a genuine real failed-maneuver first-A causal. Actual
+F1 Integration build exit0/107 unchanged warnings/73.625272646s; unchanged Main79d/
+Support. Artifact25/resource412/native4/3PDB385bindings verified; discovery1360/
+13187 and exact1Fact60s Plan/PREP. One complete FAIL4.0479101s at real III submission:
+only integration_required after ordinary2/claims4/soleIII/narration, not fixture
+failure. First-A late controls remain UNREACHED. Sol causal OUTCOME accepted.
+Post proof fa658dc63523a16d771a096a386bb7abcc0524f1ab9fbaf6fe178ba79079aa8d;
+raw /workspace/tboe-linux-evidence-20261102/spiritual-strain-maneuver-failure.
+Full hashes/owned cleanup/newTMP[]/no active owners/clean source checked.
+
+Next new TEST-ONLY Unit Fact is written, C# UNCOMPILED/runtime UNRUN: typed pure
+DATA fixture validates actual parent-source arithmeticIII, complete three-slot
+parent envelope and ordinary failed-maneuver shape/dice/lane before expecting the
+existing intrinsic SourceWitness.Validate API to accept the closed preimage and
+calculateII without mutation. Current parser lacks this field. A fixture/compile
+failure will not be called causal. No source/capability/accepted-history claim is
+made by pure composition or hashes. No reflection/new cache/shared mutable state.
+One exact Unit case60s; no repeat of previous accepted5/20/C4 or real entry case.
+
+Production remains unchanged; full durable core/live/C3/sealedC4/history integration
+and actual next-turn/heal acceptance are pending. Existing parent parser/definition
+factory/shared source DATA helper are reused; tiny independent fixture work is
+not worth caching. Fresh current-owner/source/history guards remain mandatory.
+No new GM capability, so GM implementation sync remains part of the whole route.
+All four author decisions and old UNKNOWN/HOLD/wounds-only limits unchanged.
+
 # T081-D failed maneuver durable comparison — design and causal scaffold WIP
 
 Final Astra DESIGN review requires preserving the existing historical comparator:
@@ -36,7 +65,7 @@ Actual source math retains opposition guard tier/resilience and signed +8 margin
 no zero rule or fake none. All unsupported combinations and author4/HOLD remain.
 
 Finite tracked T081-D steps, not completion claims:
-- [ ] Test-only actual ordinary maneuver/setback vs guard, real III selection and
+- [x] Test-only actual ordinary maneuver/setback vs guard, real III selection and
       intended missing-consumer causal; preserve acquisition narration.
 - [ ] Cheap pure preimage/graph/History joins and forgery/refusal fixtures, no source
       capability from DATA. Define complete key/lifetime/remaining fresh checks.
