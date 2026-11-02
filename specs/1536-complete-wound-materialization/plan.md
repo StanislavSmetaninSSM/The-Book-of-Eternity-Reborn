@@ -1,3 +1,26 @@
+# T118 actual-App preparation correction WIP — first DOM attempt did not start
+
+F3 compile-contract1 is accepted on source210c45de0893feb79fa9a497244e1f545ac68dfe:
+complete1/1, adapter1.1175553s / wrapper2.916980s, exit0, no timeout/source drift,
+cleanup true. This is compile-only, not a runtime Fact. Summary SHA256:
+0433de17b337d47e3fe166c7f880c960c3c72482802d15122ab6d03894271df9.
+F4 desktop attempt fails in0.435556s during source-pin preparation: relative_to
+frontend rejects the repository-level tests/categories.json. Vite/Chromium and
+all UI steps are UNRUN; no requests/trace/driver-exit receipt was produced. No
+policy denial or timeout occurred; no active owners remain. Full original output
+is retained outside checkout at actual-shell-readonly/F4-desktop-envelope and
+F4-desktop-case beneath /workspace/tboe-linux-evidence-20261102.
+
+Correction changes only that exclusion-path calculation to repository-relative.
+Read-only enumeration now covers5,530 actual inputs including catalog/selection,
+retaining the same .vite/.vite-temp exclusions; no browser was launched by this
+proof. Independent Astra accepts the causal failure and one-line SOURCE fix;
+new PREP and an explicit desktop attempt remain pending. Types,
+factories, configs, category membership and production are unchanged, so accepted
+F3 compile and F2 production-build evidence remain on their stated lineages;
+no unchanged successful checks are repeated. Mobile is UNRUN; all broader HOLDs
+and label-only acceptance remain unchanged.
+
 # T118 actual-App test-only scaffold WIP, DOM not run
 
 2026-11-02 UTC, base 76ed2b7d91367409c8cb1740ad18d3b1708bc088, #1536 /

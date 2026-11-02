@@ -12,7 +12,7 @@ if a.actual_shell:
  report.update(part='actual-shell-'+a.actual_shell,scope='Ordinary Vite index/main/StrictMode/App/ShellProvider DOM and controlled HTTP emissions only; not backend authority, canonical nonmutation, GM/provider, saves/fresh-process or packaged hosting',reserveBytes=687865856,headroomBytes=2908000000)
  frontend=r/'BookOfEternityClient.WebFrontend'
  for source in [frontend/'index.html',frontend/'package.json',frontend/'package-lock.json',frontend/'vite.config.ts',r/'tests/categories.json',r/'tests/selection.json',*frontend.glob('tsconfig*.json'),*(frontend/'public').rglob('*'),*(frontend/'node_modules').rglob('*')]:
-  if source.is_file() and not any(part in {'.vite','.vite-temp'} for part in source.relative_to(frontend).parts):
+  if source.is_file() and not any(part in {'.vite','.vite-temp'} for part in source.relative_to(r).parts):
    pins[str(source.relative_to(r))]=hashlib.file_digest(source.open('rb'),'sha256').hexdigest()
  report['dependencyCacheExclusions']=['node_modules/.vite','node_modules/.vite-temp']
  (d/'source-pins.json').write_text(json.dumps(pins,indent=2));(d/'report.json').write_text(json.dumps(report,indent=2))

@@ -20,6 +20,11 @@
   Full current receipt and external evidence paths are at the start of plan and
   physical-guided-checkpoint. No GM contract or useful cache change. Parents,
   A5/R2 UNKNOWN, terminal/T152 and all wider HOLDs remain open.
+  F3 compile-only1 accepted on210c45de (not runtime); first F4 desktop attempt
+  fails before Vite/browser at pin path enumeration in0.435556s. One repository-
+  relative exclusion correction WIP passes read-only5,530-input enumeration;
+  SOURCE accepted; new PREP required, desktop/mobile UI remain UNRUN. No accepted PASS
+  rerun or production change; raw retained outside checkout.
 
 - [x] T150-GM-TERMINAL-GUIDANCE [US2/US7] Reconcile the stale guide/example
   terminal heal/legacy claims, both manifest RequiredText entries and coverageLimit,
