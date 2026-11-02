@@ -53,6 +53,13 @@ Dependencies: T107-A -> T107-B -> T107-C -> T107-D -> T107-E. Parent owns integr
 - [X] T107-L GM-facing doc sync (exact-canonical-casing discipline sentence on all four surfaces); spec FR-101 + acceptance scenarios 9–10
 - [X] T107-M Bounded verification, independent review resolution (verdict RESOLVED, no new defects), commit+push, reviewer reply on PR #1583
 
+### Part 2 proactive adversarial round (self-hosted, before external re-review)
+
+- [X] T107-N [ADVERSARIAL] Independent reviewer tasked to BREAK the change with executable probes (not to confirm fixes) found 3 confirmed defects: passive progression accepted field removal/rename (fail-open), `actual` misreported deleted mastery file/entry as "unchanged", whitespace-padded canonical name defeated all satisfaction paths (Trim on one side only); plus 2 unverified suspicions recorded as non-blocking notes
+- [X] T107-O [RED] Five probe-driven tests: progression-field removal rejected, field rename rejected, deleted mastery file described honestly, removed mastery entry described honestly, padded canonical name accepted with clean delta. RED confirmed: exactly 5 failures
+- [X] T107-P [GREEN] `HasPassiveProgressionDelta` counts only fields still present in the current entry; `DescribeActualForMissingClaim` reports deleted mastery file and removed mastery entry explicitly; `ParsePlayerSkillNames` trims names consistently. Class 31/31
+- [X] T107-Q Bounded verification, spec/tasks/plan sync, resolution review (RESOLVED, no new defects; two non-blocking notes: passive-side deletion diagnostics gap, field-added-with-zero thin fail-open), commit+push, PR note
+
 ## Later parts (issue #1533 contours, not in this branch)
 
 - [ ] T101 Canonical skill schema consolidation: single active/passive profile validator shared by constructor and delta paths (player + NPC), including `activeEffectDefinitions`, `structuredBonuses`, rarity/type/group enums

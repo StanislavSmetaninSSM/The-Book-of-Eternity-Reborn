@@ -640,14 +640,18 @@ public partial class ValidationService
 
         /// <summary>
         /// True when progression fields of a passive entry changed; cosmetic edits
-        /// (description, bonuses wording) do not count as progression.
+        /// (description, bonuses wording) do not count as progression, and neither does a
+        /// field absent from the current entry (dropped or mis-cased during the GM's rewrite).
         /// </summary>
         private static bool HasPassiveProgressionDelta(JsonNode currentEntry, JsonNode preTurnEntry)
         {
             foreach (var field in PassiveProgressionFields)
             {
-                if (!JsonNode.DeepEquals(currentEntry[field], preTurnEntry[field]))
+                if (currentEntry[field] is JsonNode currentValue &&
+                    !JsonNode.DeepEquals(currentValue, preTurnEntry[field]))
+                {
                     return true;
+                }
             }
 
             return false;
@@ -668,6 +672,11 @@ public partial class ValidationService
                 return "skill claim found in narrative/interface text; the validated pre-turn passive skill snapshot is unreadable (structural violation), so change evidence cannot be established";
             }
 
+            if (MasteryFileChanged && CurrentMastery.State == SkillEntriesReadState.Missing)
+            {
+                return "skill claim found in narrative/interface text; the current mastery file is missing after the turn, so no mastery delta can be verified";
+            }
+
             if (MasteryFileChanged &&
                 PreTurnMastery.State == SkillEntriesReadState.Ok &&
                 CurrentMastery.State == SkillEntriesReadState.Ok)
@@ -682,6 +691,12 @@ public partial class ValidationService
                 if (PreTurnMastery.Entries!.ContainsKey(claimedSkillName) &&
                     !changedTargets.Contains(claimedSkillName, StringComparer.Ordinal))
                 {
+                    if (!CurrentMastery.Entries!.ContainsKey(claimedSkillName))
+                    {
+                        return "skill claim found in narrative/interface text; the mastery entry for the claimed skill was removed this turn; this turn's mastery changes target only: " +
+                               (changedTargets.Count > 0 ? string.Join(", ", changedTargets) : "none");
+                    }
+
                     return "skill claim found in narrative/interface text; the mastery entry for the claimed skill is carried over unchanged; this turn's mastery changes target only: " +
                            (changedTargets.Count > 0 ? string.Join(", ", changedTargets) : "none");
                 }
@@ -3715,7 +3730,7 @@ public partial class ValidationService
             {
                 var skillName = GetFirstNonEmptyString(item, "skillName");
                 if (!string.IsNullOrWhiteSpace(skillName))
-                    result.Add(skillName);
+                    result.Add(skillName.Trim());
             }
         }
         catch
