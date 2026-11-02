@@ -1,5 +1,14 @@
 # Browser physical course: bounded read-reservation design WIP
 
+Independent Astra/high DESIGN found one material coupling before code: outer Meta
+scope would erase inner readset closure. The explicit borrowed-scope correction
+below awaits narrow delta DESIGN; no scaffold/runtime is admitted yet.
+Recovered disk reserve: lossless closed-log substitution preserves14405493B in
+1615482gzipB for36 files from18 ended runs; full decode/EOF/CRC/hash and closing
+proofs verified. Free space became721432576B. Manifest SHA
+20ada2173d95d4fcb046e9ea79529e8a667e82b2078417d89761cae1bd837abe;
+all outputs/manifests remain external, no raw measurement/save/recovery/bin deleted.
+
 Tracked T121-PHYSICAL-GUIDED-BROWSER-READ-RESERVATION / issue#1536.
 Goal: finish the actual three-milestone browser course after normal accepted waits,
 separate confirmations and cleanup, in the existing180s/full-capture contract.
@@ -62,30 +71,50 @@ uses the existing actual acquisition/recovery protocol. No new baseline is infer
   IDs/names and Guardian policy/project-tracker context caches per supported phase.
 - FileSystemManager.BeginGameStateSourceReadReservation(), internal selector of
   the EXISTING World scope, preserving mutable-hook/fresh-only eligibility.
-  Add WorldValidationReadScope.RequireNoPublicationDebt() with read-only current
-  evidence detection and fail-closed retention; no mutation/recovery/cleanup there.
+  Add WorldValidationReadScope.RequireNoPublicationDebt() with read-only detection
+  of BOTH existing publication roots and fail-closed retention. No recovery or
+  evidence deletion occurs in this reservation. Check after work/full original
+  end proof, while the held lease still exists and before ordered issues escape.
+- Preserve the existing nested MetaControlShapeReadPhase. It currently falls back
+  if an outer scope makes BeginWorldValidationRead return null; that would omit
+  RequireUnchangedReadsAsync and is NOT equivalent work. Add a narrow actual-scope
+  borrow accessor through the existing Main access/read reservation. Require the
+  same manager/root/original and live physical lease; the reference grants no new
+  authority. The inner Meta phase borrows without acquisition/disposal, preserves
+  its full original proof, exact current readset/final comparison, cache isolation
+  and all existing guards. An owned inner scope retains its original lifecycle;
+  a borrowed inner scope checks current owner and leaves closing to the outer.
+  Ordinary SourceDataOperation/recovery-version exclusions are unchanged.
 - Supported path: OpenAsync → RequireCurrent → actual original validator into local
-  ordered issues → debt/original full end proof → close → RequireOwnerAfterClose →
-  append ordered issues. Every failure closes owned resources and preserves the
+  ordered issues → original full end proof → fresh debt refusal → close →
+  RequireOwnerAfterClose → append ordered issues. Every failure closes owned resources and preserves the
   primary exception. Unsupported context retains the existing fresh fallback.
 
 ## Finite proof and acceptance
 
-First scaffold only typed preparation plus tests: real queued binding, genuine
-staging, RunParticipatingExpectedSessionAsync, BeginBrowserOriginalOperation /
-BeginProcessing and direct World scope APIs. The old PrepareBrowserInputStagingAsync
-and InvokeHeldOriginalFullProof helpers use reflection and are not reused.
+First scaffold includes only typed preparation, the Meta borrow/closure preservation
+needed by the independent control, and tests; the outer production optimization is
+still absent at causal RED. Use real queued binding/genuine staging,
+RunParticipatingExpectedSessionAsync, BeginBrowserOriginalOperation/BeginProcessing,
+actual produced-manifest DATA in the existing validator override and direct World
+scope/full-proof APIs. A parsed manifest never becomes authority; real scope/frame
+checks still authenticate it. The old PrepareBrowserInputStagingAsync and
+InvokeHeldOriginalFullProof helpers use reflection and are not reused.
 
 Four causal cases: two selected phases × control-first/subject-first. Compare the
 actual typed ValidateGameStateAsync(phase) against the same work with an independent
 manual World reservation. Require equal ordered findings/DATA/absence, unchanged
 canonical/original bytes, and fewer actual physical admissions including scope
-opening/end/close; keep fresh source acquisitions, not only a stopwatch. Baseline
-must fail only its final missing-reservation/work oracle before wrapper changes.
+opening/end/close AND the preserved Meta inner readset/full comparison. Both control
+orders isolate/restore the same service cache fields. Keep fresh source acquisitions,
+not only a stopwatch. Baseline must fail only its final missing-reservation/work
+oracle after every correctness/readset premise, before outer wrapper changes.
 
-Then eight addressed safety cases: late trusted/legacy journal, original bytes,
+Then nine addressed safety cases: late trusted/legacy journal, original bytes,
 staged History/owner drift, canonical mutation, reentry/overlap, current-source
-change still freshly observed, and exception-close/next-phase freshness. Preserve
+change still freshly observed, exception-close/next-phase freshness, and an exact
+MetaControlShapeCurrentPaths drift under the outer reservation. That Meta drift
+must preserve the existing readset refusal; a scalar fallback is not success. Preserve
 existing hook/held fallback and ordinary behavior with affected category controls.
 Exact selectors/counts/budgets follow discovery/PlanOnly and independent selection.
 No new collector; existing BrowserOriginalAdmissionTimingObserver and source-read

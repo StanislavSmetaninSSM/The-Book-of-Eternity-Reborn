@@ -3,8 +3,11 @@
   repeated-admission correction in CrossReferences/MetaMisc. Reuse the actual
   WorldValidationReadScope; keep fresh source reads and existing ordinary cache
   exclusions. Current design in plan.md is WIP pending independent DESIGN.
-  First typed real browser staging and equal-work four-case causal proof; then
-  late-journal/original/owner/mutation/closing controls and production wrapper only
+  Preserve nested MetaControlShapeReadPhase full readset through an explicitly
+  borrowed actual outer physical scope; never accept its scalar fallback as equal
+  work. First typed real browser staging, Meta closure control and equal-work
+  four-case causal proof; then nine late-journal/original/owner/mutation/closing /
+  exact Meta readset controls and production wrapper only
   if benefit/correctness are proved. Original browser180s/full capture and all
   assertions remain; no blind retry, new DATA cache, quota or parent/HOLD closure.
   All new C# and runtime are UNWRITTEN/UNRUN at this planning checkpoint.
