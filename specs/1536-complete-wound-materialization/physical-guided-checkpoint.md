@@ -1,31 +1,3 @@
-# Browser source scaffold — coherent SOURCE correction WIP
-
-Initial bf33 SOURCE was NOT accepted. Independent Astra found the always-installed
-mutable after-read hook disabled future production eligibility; its other findings
-required counting owner-after-close and finite controls for actual borrow/dispose.
-All three are addressed in source only: causal mode installs only passive canonical
-read/physical counters and requires eligible current-source reuse; mutable callback
-exists solely for Meta drift. Scope observation includes opening/end/Dispose and
-RequireOwnerAfterClose. Production eligibility/ordinary DATA guards stay unchanged.
-
-Current finite source selection: CrossReferences2 + MetaMisc2 + Meta readset drift1
-+ typed borrow API4 + three exact existing owned peer methods×4=12, total21 source
-cases/five finite categories (four60s, legacy peers180s). The existing owned-peer
-protective budget is preserved; the full browser180s contract is unchanged.
-Typed API cases compare actual owned/borrowed Meta work,
-refuse second borrow/premature outer close then release and close normally, and
-refuse same-root foreign manager/different processing/disposed original borrowing.
-Drift1 retains exact inner exception/readset refusal and outer release/currentness.
-No blanket historical pin changes, outer production wrapper/debt or remaining
-later safety cases. Corrected delta SOURCE is pending; C# UNCOMPILED and every
-build/discovery/catalog/PlanOnly/RED/GREEN/runtime remains UNRUN by instruction.
-Static source/diff/JSON/finite selector checks do not replace those gates.
-
-Prior coherent source7f461b3658d865099c59ee1ea66ddbcbc1b107e0 was pushed/ls-remote
-verified and its10 changed files freshly downloaded via GitHub blob API with exact
-blob-SHA/byte equality in /tmp/boe-browser-source-restore-7f461b365. No full checkout
-or execution claim. Parent owns final independent SOURCE/integration and runtime.
-
 # B1RED scaffold preparation — built; runtime UNRUN
 
 2026-11-02 UTC, same Linux checkout/branch. Independent Astra/high delta SOURCE
@@ -67,6 +39,34 @@ setup, data/readset/ordered-issue drift or timeout. Causal/runtime are UNRUN.
 No measured benefit, outer automatic wrapper/debt implementation, full browser
 retry, native timeout resolution or parent/HOLD closure is claimed. Full raw is
 outside checkout under us5-guided-diagnosis/B1RED-*; no generated output is in Git.
+
+# Historical scaffold correction — superseded by B1RED preparation
+
+Initial bf33 SOURCE was NOT accepted. Independent Astra found the always-installed
+mutable after-read hook disabled future production eligibility; its other findings
+required counting owner-after-close and finite controls for actual borrow/dispose.
+All three are addressed in source only: causal mode installs only passive canonical
+read/physical counters and requires eligible current-source reuse; mutable callback
+exists solely for Meta drift. Scope observation includes opening/end/Dispose and
+RequireOwnerAfterClose. Production eligibility/ordinary DATA guards stay unchanged.
+
+Current finite source selection: CrossReferences2 + MetaMisc2 + Meta readset drift1
++ typed borrow API4 + three exact existing owned peer methods×4=12, total21 source
+cases/five finite categories (four60s, legacy peers180s). The existing owned-peer
+protective budget is preserved; the full browser180s contract is unchanged.
+Typed API cases compare actual owned/borrowed Meta work,
+refuse second borrow/premature outer close then release and close normally, and
+refuse same-root foreign manager/different processing/disposed original borrowing.
+Drift1 retains exact inner exception/readset refusal and outer release/currentness.
+No blanket historical pin changes, outer production wrapper/debt or remaining
+later safety cases. Corrected delta SOURCE is pending; C# UNCOMPILED and every
+build/discovery/catalog/PlanOnly/RED/GREEN/runtime remains UNRUN by instruction.
+Static source/diff/JSON/finite selector checks do not replace those gates.
+
+Prior coherent source7f461b3658d865099c59ee1ea66ddbcbc1b107e0 was pushed/ls-remote
+verified and its10 changed files freshly downloaded via GitHub blob API with exact
+blob-SHA/byte equality in /tmp/boe-browser-source-restore-7f461b365. No full checkout
+or execution claim. Parent owns final independent SOURCE/integration and runtime.
 
 # Browser source read reservation scaffold WIP — original source preparation
 
