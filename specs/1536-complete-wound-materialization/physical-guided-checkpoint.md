@@ -13,6 +13,46 @@ The single authorized [GitHub #1536 follow-up comment](https://github.com/Stanis
 No issues are closed. Historical pending wording below is superseded by this
 current decision, not a new permission to implement the three deferred consumers.
 
+# T081-D connected route prerequisites — accepted versioned72; actual4 UNRUN
+
+Compiled production and Integration source dbefd92b8219ff5064989dd32373718af556c259;
+corrected Unit source592036233a1d7806f2d58b1888e84debff0dbc73. Complex Astra/high
+SOURCE accepted; independent Sol/xhigh delta SOURCE/PREP/OUTCOME accepted. Actual
+G1 yielded44PASS/8fixtureFAIL/20UNRUN; the one approved private fixture line adds
+the existing nonexistent-before fingerprint, with production/assertions/attributes/
+membership/resources unchanged. Fresh Unit36.548113s/exit0/26baseline; no unnecessary
+Main/Integration rebuild. G2 remaining28PASS: History8/parent7/intrinsic13, three
+complete descriptors, no skip/timeout/duplicate/underfill. Category4.0567377/
+4.2228876/3.2467234s; wrapper17.639279259s.44earlierPASS +28currentPASS have verified
+disjoint semantic case names covering approved72 exactly. This is a two-version
+union, NOT a fresh72 run. The8fixtureFAIL and initial20UNRUN remain historical;
+actual maneuver plus affected pressure/publication/rollback4 are still UNRUN.
+
+G2 summary9fcff588342a6cfab97b5020b07d4f8a51c5125a65e9a62c5d1e333a0205d7cb;
+post10a3c88d034101e92fe76e05fdb364f61a81287c60d1dae35602dc70c0db20ab;
+uniond222160c69d2282e492a77d7aaa5a15f8d9574bd535fa5923766b164eddab1e2.
+Current artifact4b318ad8b54b3c0d801f19891cc72ca456002d10c4e51213a005829452fd2a4f;
+PDB287dbc0cfd2b60917478a250e1c926deb467cfdfae1f4db350054745de39c026;
+45managed artifacts/618resource copies/native6/4PE/PDB488source bindings verified
+and stable after run. Source recovery4changed files GitHub immutable-ref byte-exact,
+proofd273759a0579a94fdd1ca9c67dddb9108fa11f5767b6fb07275c4de97defd1eb; remaining
+26source proof unchanged except reviewed fixture line. These are bounded readbacks,
+not full clean checkout or raw restoration. Owned/runtimecleanup true,newTMP[],
+no active owners, clean frozen source. Raw full TRX/logs and all failed/passing
+attempts retained outside Git at /workspace/tboe-linux-evidence-20261102/spiritual-strain-preimage-data.
+
+Optimization/source impact: only one private Unit History fixture body changed;
+Main/Integration/current resource sources are byte-identical to dbefd. Comparison
+and full-parent fingerprint remain immutable DATA per existing owner/frame; no
+cache/authority/integrity fence was removed and no speedup is claimed. UI/provider/
+fresh-process, actual gameplay healing/root removal, no-roll GM-choice producer,
+full strain consumer and old UNKNOWN/HOLD remain OPEN; author3deferred effects are
+not completion blockers. Next exact singleton plans/resource/PREP, then one real
+maneuver C2/C3/History/C4/signed-next-turn in existing180s budget. Only after its
+outcome proceed to affected pressure C2/publication/rollback controls; no blind
+retry or limit increase. Current checkpoint delta is docs only, so reuse the exact
+compiled code with checked delta rather than rebuild for this result text.
+
 # T081-D G1 prerequisite run —44PASS/8fixtureFAIL/20UNRUN, narrow correction WIP
 
 Source/build dbefd92b8219ff5064989dd32373718af556c259 has accepted complex Astra/high
