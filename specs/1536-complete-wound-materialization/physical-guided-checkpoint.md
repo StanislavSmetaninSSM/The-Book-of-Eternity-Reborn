@@ -13,35 +13,50 @@ The single authorized [GitHub #1536 follow-up comment](https://github.com/Stanis
 No issues are closed. Historical pending wording below is superseded by this
 current decision, not a new permission to implement the three deferred consumers.
 
-# T081-D parent receipt relation — implementation WIP after causal5
+# T081-D retained parent relation — accepted41, connected owner route next
 
-E1 on fc6ccaf2d0368cec4f37f81b2d0ce07f7dc08be2 independently accepted as genuine
-causal RED:5cases passed full two-source baseline then Assert.False at line43
-(ExpectedFalse/ActualTrue). Later null-state/nonmutation assertions UNREACHED.
-Fresh Unit exit0/26baseline/37.973767s; unchanged Main/Integration70322. Verified
-45artifacts/618resources/native6/4PDB478bindings, exact5/60s Plan, discovery-only
-catalog. Runtime wrapper10.824058426s/category4.3118196s, complete5FAIL without
-skip/timeout/duplicate/underfill; owned/runtimecleanup/newTMP[]/noowners/clean frozen
-source/posthashes checked. Post48be9b85fa9830a1fe459ead9384fc5675b7c49e9f3f27b41e2546cc24c52bec;
-summary79dfcf85ba6595b70c4f0a84bf1ea7f85775320d22f317bfef9a4bae10160422.
-Raw /workspace/tboe-linux-evidence-20261102/spiritual-strain-preimage-data/E1-causal5.
-This proves the missing parent relation, not an actual current-owner bypass.
+Runtime/build source b1a3a42b6c72e6940cbf043f3b97c3c4e619ed7e; independent Sol6.1/
+xhigh SOURCE, PREP and OUTCOME accepted. Exact official E2-green41: parent7PASS,
+intrinsic13PASS, existing witness21PASS; three complete descriptors/41cases, no
+skip/timeout/duplicate/underfill. Budgets unchanged60/60/120s; actual categories
+3.2126556/3.2165646/3.0433419s, wrapper15.940724278s, summarywall14.4084206s.
+Parent negatives now also reach null-state and unchanged-input assertions. The
+repeated13+21 are affected controls, not extra unique coverage to add to prior34.
 
-Current uncompiled implementation reuses the already parsed intrinsic comparison
-from witness validation and checks an exact earlier materializeIII creation in the
-same instance/original context: parent source/order/affected actor, wound/transition/
-rank and origin source/event/opportunity. Its parsed facts survive detached ledger
-copy/append; a temporary index over the existing decision bijection is DATA, not a
-cache/authority registry. One parse owns the facts, no extra parent-envelope parse
-or cross-operation reuse. Fresh owner/History permissions are still absent.
+Fresh Main/Unit/Integration0errors, exact baseline warning multisets81/26/107;
+build65.197239/35.786218/72.309782s.45artifacts/618resource copies/native6,
+4PE/PDB480source bindings; post hashes unchanged, owned/runtimecleanup complete,
+newTMP[], no active owners, clean frozen source. Discovery1362categories/13191
+methods executes no tests. Artifactproof0568e6c122fb39681d3fc2d8034c1080ed912b844a5ad1866df39a2f2f9ebc28;
+PDB544f74464c37dbe8c447b9552b876805ab4f86285477b3266146922373122528;
+Planbe488b2ff442413380db5f503aa480db29ca1e1d3ec3edb9cb287c84a1edeab4;
+summarycdf1833e6e913c373607bae76c55b228f8c40f1520516ed27930831227b6b98c;
+post2e7067c785ac62016e61a8a5fe5564d98539d6f3ab04ea70cb868f5570d9c799.
+Raw /workspace/tboe-linux-evidence-20261102/spiritual-strain-preimage-data/E2-green41;
+all earlier causal/build evidence retained outside Git. No raw/binaries staged.
+Independent GitHub immutable-ref10changed-file readback matched every byte/blob;
+proofa1bc89812b73130cd8ed7cffdd06d5768eaf69cc149db17fa517e38e99a9bd0b.
+This is limited changed-source readback, not full clone/clean-checkout/raw recovery.
 
-Source review added two exact controls (different child original request with
-consistent binding and changed retained parent origin source); earlier causal5
-remains separate. Next SOURCE/build/catalog/Plan/PREP and cheap41 (parent7+affectedintrinsic13+
-existingwitness21, budgets unchanged1/1/2minutes). Repeated13/21 are now justified
-by changed shared witness/receipt validation. History.AfterFingerprint and actual
-C2/C3/C4/signed-history adapter work remains OPEN; no fullroute or new game rule
-claimed. Author answers, published comment and prior runtime UNKNOWN/HOLD unchanged.
+Parent relation checks same instance, original context, earlier source/exchange,
+affected actor, actual materializeIII/nonretrauma, exact wound/transition/rank and
+origin source/event/opportunity. Witness validation returns already parsed DATA
+once; parsed ledger privately retains it and carries it across detached append.
+A temporary decision-bijection index has parse-local lifetime; it is no cache or
+permission. No fresh owner/authority fence removed and no speedup claimed. This is
+client-owned receipt DATA only, with no new GM-authored field, rule or command;
+existing GM strain example/instructions stay unchanged. No additional prompt or
+worked example is needed for this internal relation check; actual capability
+wiring will recheck the GM surfaces separately.
+
+History.AfterFingerprint/first-create and actual source ownership remain unproved
+by this block. No live C2/C3/C4/signed-history adapter exists yet; failed maneuver
+full route is OPEN. Next connect actual pre-selection ordinary evidence and full
+parent snapshot through existing capture/receipt/History owners and sealedC4,
+then validate next-turn and healed-history behavior with required refusal checks.
+Author no-roll GM-choice producer/qualification remains OPEN. Control/counter/III
+restrict are author-deferred, not completed/not blockers. IV forbid and strain
+remain. Old browser-course/terminal/DFR/Mortal/Windows UNKNOWN/HOLD unchanged.
 
 # T081-D intrinsic retained comparison DATA — accepted bounded gate
 
