@@ -1,4 +1,34 @@
-# Recovered environment frontier — 2026-11-02, WIP
+# Recovery SOURCE accepted — fresh managed builds next
+
+2026-11-02: independent Astra/high accepts reconstructed SOURCE
+1a581b206bb928cbab34802d274551edd5cc8121 againstc3a3eee2a9eed60089c0b5333bdd3d0e6201698c.
+It verified the three production files, complete lifetime/debt/exception/cache
+contract, unchanged reader fallbacks and historical8 impact, and exact11 categories /
+16 methods/36 source rows. No substantive finding; no runtime or browser admission.
+Receipt75a4e687ecd088b4885563a5e4ada99558f36165 changes only the checkpoint.
+
+Root restored the same official hash-verified SDK10.0.402, .NET/ASP.NET8.0.32 and
+PowerShell7.6.8 privately under /workspace/tboe-toolchain-20261102. Native package
+was freshly compiled from unchanged native source atc3a3eee2a: four linux-x64 ELF
+assets and source/binary hashes match; package manifest SHA
+9f9679b77a4480ad842d4cece21d84f8f1d63c9d0fb9b57bea59b5c4a9aed457,
+minimum glibc2.38. This is a build/ELF proof, not native runtime qualification.
+
+Initial dependency restore stopped before project work at NuGet-Migrations mutex
+creation. The installed runtime's documented user-scoped IPC location needed an
+owned0700 XDG_RUNTIME_DIR; task-local configuration fixed this without changing
+HOME, global mutex scope, security checks or the project. Both selected restores
+then exit0. Full bootstrap/raw remains outside checkout under the new evidence root.
+No C# compilation, discovery, tests or browser retry has run in this environment.
+
+Next fresh build graph: Main, TestSupport, GMBridge and PortableStorageCrashHost
+(the two latter are real Unit-project dependencies), then Unit and Integration.
+Build each required owner once in dependency order, with the fresh native package;
+preserve all XML/compiler diagnostics except the documented missing-member1591
+noise. Then actual PE/PDB/source/resource/native pins, catalogue, exact PlanOnly,
+independent PREP and addressed36-row GREEN. Old broad runs are not restarted.
+
+# Recovered environment frontier — earlier WIP
 
 Canonical recovery/next action is at the top of plan.md. Remote base
 f9138c817bb06b5a20c5737d0b39b3160be608e7 was confirmed before this edit; complete
