@@ -4991,22 +4991,28 @@ public partial class ValidationService
                normalizedPath.Equals("lore/current_world/world_directives.json", StringComparison.OrdinalIgnoreCase);
     }
 
-    private static void RejectLegacyNpcWoundResponseIfPresent(
+    /// <summary>Rejects an exact retired wound response property before raw input can be admitted or projected.</summary>
+    /// <param name="root">Already parsed current response object; no additional read or retained state is introduced.</param>
+    /// <param name="contextPrefix">Current response path used for a precise refusal.</param>
+    /// <param name="issues">Current validation operation's findings.</param>
+    /// <param name="propertyName">Client-owned exact retired player or NPC property name.</param>
+    private static void RejectLegacyWoundResponseIfPresent(
         JsonElement root,
         string contextPrefix,
-        List<ValidationIssue> issues)
+        List<ValidationIssue> issues,
+        string propertyName)
     {
-        if (!root.TryGetProperty(LegacyNpcWoundResponseProperty, out _))
+        if (!root.TryGetProperty(propertyName, out _))
             return;
 
         issues.Add(new ValidationIssue(
-            contextPrefix + "." + LegacyNpcWoundResponseProperty,
+            contextPrefix + "." + propertyName,
             IssueSeverity.Error,
-            "Устаревшая команда ран NPC не поддерживается",
+            "Устаревшая команда ран не поддерживается",
             code: "wound_materialization_legacy_response_unsupported",
             section: "WoundMaterialization",
             expected: "woundDecisions[] bound to current accepted wound opportunities",
-            actual: "legacy NPC wound route present",
+            actual: "legacy wound route present",
             repairHint: "Удали устаревшую команду. Для ран используй woundDecisions[] с текущей возможностью и общую принятую публикацию; не записывай канонические носители напрямую."));
     }
 
@@ -5051,7 +5057,7 @@ public partial class ValidationService
             contextPrefix,
             issues,
             "NPCEffectChanges");
-        RejectLegacyNpcWoundResponseIfPresent(root, contextPrefix, issues);
+        RejectLegacyWoundResponseIfPresent(root, contextPrefix, issues, LegacyNpcWoundResponseProperty);
         ValidateNpcIdentityOnlyArray(root, contextPrefix, issues, "NPCPersonalityTraitChanges");
         ValidateNpcActivityUpdates(root, contextPrefix, issues);
         ValidateCompleteNpcActivities(root, contextPrefix, issues);

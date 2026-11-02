@@ -1,3 +1,43 @@
+# Existing T149/T071: causal player raw defect fixed in source, runtime GREEN UNRUN
+
+Source8f30bf1824808af707c2f25f961e0ad43d3072d4 actual P1-red7 is independently
+accepted:7/7 complete,6 expected FAIL/1 PASS, no timeout/duplicates/underfill,
+both cleanup flags true, newTMP roots[], clean tree. Arrays2/named object lack any
+issue; empty object gives only Warning:4 real admission failures at line67 after
+valid canonical/lawful/byte premises. Null/scalar2 reach existing Error/single/path/
+severity and fail only Code=null at71; RepairHint UNREACHED. Current control PASS.
+Wrapper13.349420s/runner11.965594s. Summary SHA256
+9c4ce1aee5e4fe5f1ad7d7c964be00e012f3abfb0da2c54f2bfaf47716d4b138;
+TRX04e388f21cc7d0f367a8e844e80f84945782ae9654f1de80627218fbcbf8089e.
+Full capture /workspace/tboe-linux-evidence-20261102/player-legacy-response/P1-red7.
+Fresh Integration76.155930s exit0,107 unchanged warning multiset;25 used managed,
+206inputs412resourcecopies/native4;3PEPDB366bindings, Main190/SupportECE unchanged.
+Catalog1343/13173 discovery-only; exact Plan raw7/3methods1descriptor60s admitted
+by independent PREP. Builds/discovery are not qualification.
+
+Minimal production delta: reuse the existing exact-property-presence refusal for
+both retired player/NPC commands. Replace only player raw dispatch; remove its
+now-unreachable private loose dispatcher. Preserve canonical validation branches,
+current woundDecisions, source/authority/freshness and all general QTE behavior.
+Same dedicated code/private Actual/current wound repair, no payload disclosure.
+Inventory now owns the player refusal explicitly and checks old dispatch absence
+using its already-read source image; no mechanical source-pin rebasing. Existing
+nine World pin mismatches remain open; player source was already one of those.
+Active Rules/TaskGuides/OtherGuides/Examples have no exact retired response tokens;
+current worked wound guide already requires offered woundDecisions. No new GM
+field/capability or afterlife matrix behavior: no prompt/example update required.
+Optimization: already parsed root, one tiny exact property probe, no new IO/cache,
+no retained mutable data/authority, all fresh boundaries intact. Current managed
+own15 before rebuild archived losslessly and gzip EOF/CRC verified (27,602,871B,
+SHAa3659d14536b8b9eb5f0950c7e271a04f45d726a6bcf5a9dae36b2fd28176bb8),
+no deletion. Raw and source/proof archives stay external.
+
+SOURCE pending; C# correction UNCOMPILED. Next fresh Main/Unit/Integration builds,
+current artifact/source proof, discovery/exactPlan/PREP addressed16: player raw7,
+playerQTE1, NPC raw5/NPCQTE1 (shared-helper dependencies), changed semanticguards2.
+No unchanged canonical/state3/App20/fullworld replay, publication-bypass claim,
+new game rule or broad QTE/ACTIVE/T088 work. Existing UNKNOWN/HOLD/parents stay open.
+
 # Player raw scaffold SOURCE correction — runtime UNRUN
 
 Independent Astra/high found the new fixture seeded NPC-style entries in the

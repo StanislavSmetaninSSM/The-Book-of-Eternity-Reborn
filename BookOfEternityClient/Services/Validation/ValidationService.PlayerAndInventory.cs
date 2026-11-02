@@ -12,6 +12,8 @@ using Microsoft.Extensions.Logging;
 namespace BookOfEternityClient.Services;
 public partial class ValidationService
 {
+    private const string LegacyPlayerWoundResponseProperty = "playerWoundChanges";
+
     private const string LegacyItemResourcePath = "game_state/inventory/item_resources.json";
 
     private static readonly Regex InventoryMechanicalSummaryNumericRegex = new(
@@ -3704,7 +3706,7 @@ public partial class ValidationService
             contextPrefix,
             issues,
             "playerActiveEffectsChanges");
-        ValidateWoundsProperty(root, contextPrefix, issues, "playerWoundChanges");
+        RejectLegacyWoundResponseIfPresent(root, contextPrefix, issues, LegacyPlayerWoundResponseProperty);
         ValidateCustomStatesProperty(root, contextPrefix, issues, "customStateChanges");
         ValidateStealthProperty(root, contextPrefix, issues, "playerStealthStateChange");
         ValidateEffortTracker(root, contextPrefix, issues);
@@ -7190,12 +7192,6 @@ public partial class ValidationService
     {
         if (root.TryGetProperty(propName, out var value))
             ValidateEffectsContainer(value, $"{contextPrefix}.{propName}", issues);
-    }
-
-    private void ValidateWoundsProperty(JsonElement root, string contextPrefix, List<ValidationIssue> issues, string propName)
-    {
-        if (root.TryGetProperty(propName, out var value))
-            ValidateWoundsContainer(value, $"{contextPrefix}.{propName}", issues);
     }
 
     private void ValidateCustomStatesProperty(JsonElement root, string contextPrefix, List<ValidationIssue> issues, string propName)

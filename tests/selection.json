@@ -3,9 +3,37 @@
   "selections": [
     {
       "category": "wounds-player-legacy-raw-response",
-      "reason": "Test-only causal admission/classification7 before production correction. QTE scaffold is compiled/discovered but not executed yet. Prior accepted NPC PASS retained.",
+      "reason": "Regress actual admission4/classification2/control1 after exact-presence correction; original60s.",
       "contracts": [
-        "#1536 existing T149/T071 FR-013 FR-099 exact retired player wound response field"
+        "#1536 existing T149/T071 FR-013 FR-099 wound-only exact legacy response refusal"
+      ]
+    },
+    {
+      "category": "wounds-player-legacy-qte-offer",
+      "reason": "New genuine signed ordinary-offer player wound peer, strict baseline/source bytes; original180s.",
+      "contracts": [
+        "#1536 existing T149/T071 FR-013 FR-099 wound-only exact legacy response refusal"
+      ]
+    },
+    {
+      "category": "wounds-npc-legacy-raw-response",
+      "reason": "Existing NPC raw5 are affected by reuse/generalization of the same exact-presence refusal; original60s.",
+      "contracts": [
+        "#1536 existing T149/T071 FR-013 FR-099 wound-only exact legacy response refusal"
+      ]
+    },
+    {
+      "category": "wounds-npc-legacy-qte-offer",
+      "reason": "Existing NPC peer is affected by shared typed fixture helper and common refusal; original180s.",
+      "contracts": [
+        "#1536 existing T149/T071 FR-013 FR-099 wound-only exact legacy response refusal"
+      ]
+    },
+    {
+      "category": "wounds-npc-canonical-retirement-source-guards",
+      "reason": "Two semantic inventory/closed-projection guards changed for the existing player and NPC refusal owners; original60s.",
+      "contracts": [
+        "#1536 existing T149/T071 FR-013 FR-099 wound-only exact legacy response refusal"
       ]
     }
   ]
