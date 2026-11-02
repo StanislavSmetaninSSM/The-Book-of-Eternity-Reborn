@@ -16,7 +16,8 @@ mutable state. Positive checks actual matching authority/plan and all canonical
 after-images, independent III/strain/receipt semantics, foreign and consumed-owner
 refusal. Rollback uses existing CurrentCommittedPublicationWitness and real receipt
 readback fault after committed resource/receipt, original exception identity and
-complete signed before-image/absence/generation/journal restoration.
+complete signed file before-image/absence restoration plus the witness
+pre-publication generation/journal restoration (no OS-crash claim).
 
 Current change is test/catalog/selection/checkpoint only; new C# UNCOMPILED and
 both cases UNRUN. Expected qualification PASS, not an assumed consumer RED. If the

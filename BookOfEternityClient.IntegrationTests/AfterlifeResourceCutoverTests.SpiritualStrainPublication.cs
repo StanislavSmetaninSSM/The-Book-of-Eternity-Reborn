@@ -41,6 +41,7 @@ public sealed partial class AfterlifeResourceCutoverTests
             Assert.True(JsonNode.DeepEquals(pair.Value, await context.ReadJsonAsync(pair.Key)), pair.Key);
         foreach (var (path, value) in new[]
         {
+            (ResourceMaterializationContract.DefinitionsPath, expected.DefinitionAfterImage),
             (ResourceMaterializationContract.StatePath, expected.StateAfterImage),
             (ResourceMaterializationContract.HistoryPath, expected.HistoryAfterImage),
             (WoundIdentityState.StatePath, expected.WoundIdentityAfterImage),
