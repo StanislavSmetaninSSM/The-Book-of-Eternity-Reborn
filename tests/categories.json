@@ -2,6 +2,33 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "wounds-notification-controls-causal",
+  "responsibility": "T152-NOTIFICATION-CONTROLS / #1536: pure actual wound Parse/Claim/Compose. Four causal rows mutate genuine JSON name/narration x numeric ESC27/backspace8 before parsing, prove admitted raw control, exact successful raw binding and immutable root/wound/claim, then require forbidden-control absence in returned plain/console/browser (also decoded HTML) player projections. Safe field/code case labels and projection-only failure labels never print C0. One fixed-text LF/tab/Unicode preserving positive. Source-only scaffold; no production correction or terminal/browser execution.",
+  "excludes": "No blanket bidi/format/confusable policy, canonical text rewrite, weakened raw claim binding, GameEngine/world/diagnostic fixture, new cache or framework. No old owner/category removal or accepted-set replay, T149 parent closure, R2 browser retry, native/DFR/Mortal/Windows/performance qualification or whole T152 acceptance.",
+  "changeHints": [
+    "BookOfEternityClient/UI/WoundPlayerNotification.cs",
+    "BookOfEternityClient/Services/WoundPlayerProjection.cs",
+    "BookOfEternityClient.Tests/WoundAcquisitionOutputTests.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.WoundAcquisitionOutputTests.Compose_RemovesForbiddenControlsOnlyFromPlayerProjections",
+        "BookOfEternityClient.Tests.WoundAcquisitionOutputTests.Compose_PreservesAllowedLineBreakTabAndUnicodeInPlayerProjections"
+      ]
+    }
+  ]
+},
+{
   "id": "wounds-canonical-player-carrier-root",
   "responsibility": "T149-CANONICAL-PLAYER-CARRIER / #1536: actual selected PlayerStateFiles must reject bare arrays and scalar/null roots while preserving independently catalog-valid empty/populated canonical carriers and exact source bytes. Nine typed Integration rows plus the two existing Unit semantic inventory/legacy-confinement guards cover the canonical-first correction and still-live noncanonical allowances.",
   "excludes": "No NPC/effect/raw response alias retirement, accepted-turn publication bypass claim, whole T149 closure, prior accepted-set replay, browser/DFR/Mortal/Windows/performance/native run or new diagnostic framework. Existing strict catalog object parsing is unchanged; pure catalog malformed-object controls remain separately owned.",

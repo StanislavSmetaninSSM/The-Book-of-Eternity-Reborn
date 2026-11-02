@@ -48,6 +48,14 @@
   policy/framework, then independent review, fresh affected builds and addressed
   GREEN. Preserve the existing newline/tab/Unicode policy; no blanket bidi rule,
   GameEngine/performance stack or broad completed-set replay is introduced.
+  Source-only scaffold authored: existing pure Unit Parse/Claim/Compose, four
+  field{name,narration} x code{27,8} causal rows plus one LF/tab/Unicode positive.
+  Raw admission/binding/nonmutation premises precede safe-label final output oracle;
+  HTML-decoded browser output is checked too. One new exact60s leaf owns only the
+  two new methods/five rows; all prior category owners remain unchanged/unselected.
+  Metadata reader/selection schema check PASS; C# UNCOMPILED, builds/discovery /
+  PlanOnly/runtime UNRUN. Independent SOURCE and root's actual RED remain pending;
+  no WoundPlayerNotification production correction has been made.
 
 # T108 Shining patient treatment — #1536
 

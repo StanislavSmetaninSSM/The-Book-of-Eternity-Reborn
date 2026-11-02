@@ -1,3 +1,67 @@
+# T152 notification controls — causal scaffold WIP, no production fix
+
+2026-11-02 UTC, T152-NOTIFICATION-CONTROLS / parent T152 / #1536. Clean local
+and full remote task-branch SHA were confirmed at
+96a0caec0a31345bff38f5d8727f6cc45bbe2762 before this bounded source-only block.
+Bounded T149 remains accepted (11 distinct PASS/two versions); parent T149/T152,
+R2 browser TIMEOUT/UNKNOWN and all other HOLDs remain open. This delegation
+explicitly authorizes ordinary current-branch WIP persistence; it revives no
+canceled action, new branch, merge or retry.
+
+Current source finding: WoundMaterializationContract.TryReadText accepts interior
+controls in display.name/acquisitionNarration; WoundPlayerNotification validates
+raw claim/name/event/domain/severity/text, then Project retains raw PlainText and
+only performs markup/HTML encoding. GameEngine.SessionAndSnapshots sends that
+PlainText to GameResponse.WoundNotifications; GameInterface's actual renderer
+only Markup.Escape's the string. WoundPlayerProjection.Text already owns the
+existing control-removal policy (preserve LF/tab/Unicode); no new policy is needed.
+This remains a source hypothesis until the actual parsed-input causal rows run.
+
+The pure Unit fixture extends existing WoundAcquisitionOutputTests using its
+unchanged private Parse/Claim helpers and genuine WoundContractTestData. Four
+safe-label rows: JSON display.name versus acquisitionNarration x numeric27/8.
+Mutation precedes the actual parser. Parse-valid, actual admitted raw control,
+exact raw claim and successful Compose/no issues, plus unchanged JSON root,
+serialized canonical wound and claim precede the final player-projection oracle.
+Returned notification/narration plain/console/browser strings are checked; decoded
+HTML is additionally inspected so entity encoding cannot hide a forbidden control.
+Only fixed safe projection labels can appear in causal failure output; no actual
+C0 value is placed in test names or diagnostics and no terminal/browser is run.
+
+One preserving positive uses genuine parsed interior LF/tab/Cyrillic/emoji with
+fixed independently written expected notification/narration text, checking all
+three representations without calling the production text function for expected
+values. Expected intended outcome is4 causal final-oracle RED /1 positive PASS;
+parse/constructor/binding/setup failure overturns this causal premise and does not
+admit a production patch. No actual RED, execution or acceptance is claimed now.
+
+Parent-directed minimal design for AFTER real RED: inside WoundPlayerNotification.Project,
+after all exact raw binding checks, call existing WoundPlayerProjection.Text once
+for each projected string, then derive PlainText/Markup.Escape/HtmlEncoder from
+that one safe text. Do not rewrite canonical wound/claim/scene data or relax any
+binding. No blanket bidi/format/confusable rule, language/game mechanic or separate
+sanitizer/cache framework is introduced. GM no-update: safe client rendering under
+FR076 changes no authored field, rule, schema, output authority or instruction.
+
+Selection: new exact60s leaf wounds-notification-controls-causal owns only these
+two new methods/five source rows. Every pre-existing category/selector remains
+unchanged and unselected; the previous accepted inventory singleton is replaced
+only in the current selection. Compile owner is the existing Unit default item;
+WoundContractTestData remains in its existing TestSupport owner. No project/link /
+fixture/production source changes. Optimization: one actual pure parse per row,
+small immutable snapshots only for proof of nonmutation; no world/filesystem,
+shared mutable setup or cache. New timing/source costs are UNMEASURED.
+
+Actual Read-TestCategoryCatalog metadata reader accepts1,325 categories; current
+selection schema is accepted by Get-TestCategoryCiMatrix, exact leaf methods2 /
+budget60s/related[] confirmed. Initial pwsh startup stopped before module/catalog
+work at read-only /home/agent cache; retry uses root's existing task-local XDG paths
+and exits0. This metadata-only check performs no discovery or tests.
+C# UNCOMPILED; all builds/restore/discovery/catalog inventory/PlanOnly/runtime UNRUN
+by writer instruction. Next: independent bounded design/SOURCE → root Unit build /
+PDB/catalog inventory/exact PlanOnly/PREP/real RED. Production remains untouched
+until root accepts that causal evidence and admits the minimal fix.
+
 # T149 bounded correction accepted — proceed to safe notifications
 
 Independent final OUTCOME accepts only T149-CANONICAL-PLAYER-CARRIER, with eleven

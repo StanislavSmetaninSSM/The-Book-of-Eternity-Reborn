@@ -1,3 +1,40 @@
+# T152 notification controls — five-row causal scaffold WIP
+
+2026-11-02 UTC, confirmed base/remote96a0caec0a31345bff38f5d8727f6cc45bbe2762.
+Tracked T152-NOTIFICATION-CONTROLS, parent T152 remains open. Only existing
+WoundAcquisitionOutputTests, finite category/current selection and canonical
+plan/tasks/checkpoint change. Production WoundPlayerNotification and all other
+runtime source remain untouched; accepted T149/R1 and R2 UNKNOWN are preserved.
+
+Four genuine pre-Parse JSON rows (field name/narration x safe numeric code27/8)
+prove raw admission, exact Claim/Compose success/no issues and unchanged raw root,
+canonical wound and claim before checking all player projections for forbidden
+controls. Browser is also decoded independently. One genuine LF/tab/Unicode
+positive compares fixed expected text across plain/console/browser. Safe case /
+failure labels never print the C0 payload and no terminal/browser executes it.
+Expected4RED/1PASS is only a proposal: parse/binding/setup rejection is not the
+intended RED and would block the proposed production correction.
+
+The next minimal design reuses WoundPlayerProjection.Text once per projection
+AFTER original binding, then markup/HTML encodes the safe text. No canonical rewrite,
+new cache/sanitizer/language/bidi policy, GM schema/mechanic or broader test replay.
+Compile/fixture ownership, concrete consumer trace and optimization/GM rationale
+are in the current plan. New exact60s leaf owns only new2 methods/5 source rows;
+all pre-existing category entries and owners stay unchanged and unselected.
+
+Actual Read-TestCategoryCatalog plus Get-TestCategoryCiMatrix metadata-only check
+exit0:1,325 categories, selection schema valid, leaf methods2/budget60s/related0.
+First pwsh process exit134 before module/catalog work because its default cache
+was under read-only /home/agent; retry uses root's already prepared task-local XDG
+data/cache/config/runtime paths without changing HOME. No build/discovery/test ran.
+C# UNCOMPILED; owning Unit build/PDB/catalog inventory/PlanOnly/PREP/runtime are
+UNRUN by writer instruction. Next independent SOURCE then root's real causal RED;
+no production patch or acceptance before those gates.
+Static writer audit: git diff --check exit0; new methods2/source rows4+1=5 and
+numeric-only C0 case inputs checked; source contains no literal forbidden C0.
+All pre-existing test/helper bodies and category entries remain unchanged; no
+production diff. These source/metadata checks are not C# build, discovery or RED.
+
 # T149 canonical player-carrier correction accepted
 
 Independent Astra/high final OUTCOME accepts T149-CANONICAL-PLAYER-CARRIER:
