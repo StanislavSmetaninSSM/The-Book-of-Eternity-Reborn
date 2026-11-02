@@ -33,8 +33,8 @@
   Fresh content-owner opacity/filter oracles WIP; no production/settings/budget
   change. Desktop acceptance withheld/mobile UNRUN until reviewed full outcome.
   F7 automated PASS14.328742s remains visually unaccepted: active-back dossier
-  has its own finite entrance animation. Stop per-widget retries; whole-content
-  readiness DESIGN pending, no new attempt admitted, mobile UNRUN.
+  has its own finite entrance animation. Whole-content finite-animation DESIGN accepted;
+  SOURCE/PREP pending, no new attempt admitted, mobile UNRUN.
 
 - [x] T150-GM-TERMINAL-GUIDANCE [US2/US7] Reconcile the stale guide/example
   terminal heal/legacy claims, both manifest RequiredText entries and coverageLimit,

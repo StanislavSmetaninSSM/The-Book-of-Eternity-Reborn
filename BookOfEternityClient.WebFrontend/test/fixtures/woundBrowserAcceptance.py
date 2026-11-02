@@ -174,6 +174,18 @@ async def actual_shell():
   await expect(content).to_have_count(1)
   await expect(content).to_have_css('opacity','1')
   await expect(content).to_have_css('filter','blur(0px)')
+  await page.wait_for_function("""() => {
+    const content = document.querySelector('.content-area');
+    return content !== null && content.getAnimations({subtree: true}).every(animation => {
+      const effect = animation.effect;
+      return effect !== null && (effect.getComputedTiming().iterations === Infinity ||
+        (!animation.pending && animation.playState === 'finished'));
+    });
+  }""",timeout=5000)
+  if label in {'active','active-back'}:
+   await expect(page.get_by_text('Боль <b>не становится разметкой</b>.',exact=True)).to_be_visible()
+   assert await page.locator('.wound-command-view b').count()==0
+   await expect(page.get_by_text('Требуется лечение',exact=True)).to_be_visible()
   body=await page.locator('body').inner_text()
   assert not any(value in body for value in ['ACTUAL_SHELL_PRIVATE_SENTINEL','hidden_route','opaque-'])
   assert await page.evaluate('document.documentElement.scrollWidth <= innerWidth')

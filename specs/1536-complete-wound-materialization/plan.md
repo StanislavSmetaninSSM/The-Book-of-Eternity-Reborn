@@ -1,3 +1,17 @@
+# T118 actual-App — accepted finite-animation design, SOURCE WIP
+
+Independent Astra accepts F7 protocol PASS with rendered qualification withheld,
+and the bounded whole-content design: after the existing outer guard, poll a
+fresh subtree getAnimations list until every finite animation is finished and
+not pending; exclude only infinite decorative loops. Preserve5000ms assertion /
+60s runtime bounds; no forced finish, sleep, settings or production change.
+Both active and active-back now require the actual literal-markup content and
+no rendered b element. A new explicit Требуется лечение fact assertion applies
+to both; it was not present in the original first-active assertions. This is a
+current-path readiness guard, not a universal detector of JS animations. Source
+is authored; frozen SOURCE/new desktop PREP and all-six-PNG review remain pending.
+F3 types/F2 build and all wider HOLDs remain; mobile stays UNRUN. No runtime started.
+
 # T118 actual-App — whole animation readiness reassessment, no new runtime
 
 F7 automated protocol PASS on a5b0a628749fcd7115922c1318fdea2efe79f422 takes
