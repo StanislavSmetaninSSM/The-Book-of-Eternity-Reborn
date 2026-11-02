@@ -3,7 +3,7 @@
     "categories": [
 {
   "id": "wounds-player-legacy-raw-response",
-  "responsibility": "Existing T149/T071 FR-013 FR-099: seven real-FS public raw rows. Four legacy array/object forms need an actual Error (causal admission); null/scalar already refuse shapes and need dedicated classification; lawful absence/current appearance control remains valid. Genuine canonical player carrier plus exact raw/carrier/effect bytes preserved. Small per-test existing ResourceMaterializationTestContext; no cache or full-world setup. Runtime UNRUN; protective60s fixed before first execution.",
+  "responsibility": "Existing T149/T071 FR-013 FR-099: seven real-FS public raw rows. Four legacy array/object forms need an actual Error (causal admission); null/scalar already refuse shapes and need dedicated classification; lawful absence/current appearance control remains valid. Genuine canonical player carrier plus exact raw/carrier/effect bytes preserved. Small per-test existing ResourceMaterializationTestContext; no cache or full-world setup. Qualified P2 on 9d4b03cf87c88939ca5708547dc21ca00a86df9e: seven unique PASS, category wall4.415308s; protective60s unchanged. Prior causal P1 had admission4/classification2 FAIL and lawful control1 PASS.",
   "excludes": "No Engine/publication-bypass, general QTE mechanics, live GM/provider/save, canonical carrier reimplementation or HOLD closure. Raw admission and immutable source bytes only; no unknown-field/casefold ban.",
   "changeHints": [
     "BookOfEternityClient.IntegrationTests/PlayerLegacyWoundResponseValidationTests.cs",
@@ -31,7 +31,7 @@
 },
 {
   "id": "wounds-player-legacy-qte-offer",
-  "responsibility": "Existing T149/T071: one genuine signed ordinary-offer peer using the same existing typed helper, production serialization profile and strict baseline as the accepted NPC peer. Mutates only exact playerWoundChanges, checks prefixed Error and original JSON/request/manifest/authority/current source bytes. Every test owns state and generation; no cached authority or general QTE change. UNRUN; protective180s inherited from the same consumer preparation.",
+  "responsibility": "Existing T149/T071: one genuine signed ordinary-offer peer using the same existing typed helper, production serialization profile and strict baseline as the accepted NPC peer. Mutates only exact playerWoundChanges, checks prefixed Error and original JSON/request/manifest/authority/current source bytes. Every test owns state and generation; no cached authority or general QTE change. Qualified P2 on 9d4b03cf87c88939ca5708547dc21ca00a86df9e: one PASS, category wall4.6225387s; protective180s unchanged. This is a wound-field admission peer, not general QTE/publication qualification.",
   "excludes": "No Engine/publication-bypass, general QTE mechanics, live GM/provider/save, canonical carrier reimplementation or HOLD closure. Raw admission and immutable source bytes only; no unknown-field/casefold ban.",
   "changeHints": [
     "BookOfEternityClient.IntegrationTests/PlayerLegacyWoundResponseValidationTests.cs",
@@ -161,7 +161,7 @@
 },
 {
   "id": "wounds-npc-canonical-retirement-source-guards",
-  "responsibility": "Two changed semantic ownership/discovery guards for canonical NPC wound retirement and exact raw NPC wound refusal. Replace obsolete migration allowances with the real refusal constant/call and existing canonical validation dispatch; preserve old closed carrier checks. Reuse already-read operation-local strings, no extra IO or arbitrary fingerprints. Wound-only scope, not general QTE/defeat rules.",
+  "responsibility": "Two changed semantic ownership/discovery guards for canonical NPC wound retirement and exact raw player/NPC wound refusal; addressed P2 two PASS on9d4b03cf,3.850263s. Replace obsolete migration allowances with the real refusal constant/call and existing canonical validation dispatch; preserve old closed carrier checks. Reuse already-read operation-local images for the added closure assertions; existing inventory reads retain their ordinary per-entry validation, no new cache or arbitrary fingerprints. Wound-only scope, not general QTE/defeat rules.",
   "excludes": "No broad effects/full suite, unchanged App/T150/runtime replay, new gameplay/schema/cache/limits, publication-bypass assertion or closure of other T149 aliases/UNKNOWN/HOLD.",
   "changeHints": [
     "BookOfEternityClient.Tests/WoundMaterializationSourceGuardTests.cs",

@@ -1,3 +1,69 @@
+# Existing T149/T071: exact legacy player/NPC wound input accepted — 2026-11-02
+
+The current scope is wounds only. General defeat/aggression, withdrawn T088 rule,
+QTE/ordinary-turn orchestration and ACTIVE/F1 remain outside this implementation;
+their project tasks are not marked complete. Wound acquisition/state/treatment/
+diagnosis/recovery/display, persistence and necessary integrity checks stay in scope.
+
+Independent Astra/high SOURCE, PREP and primary OUTCOME accept runtime/source
+9d4b03cf87c88939ca5708547dc21ca00a86df9e. Actual addressed16 unique PASS in ONE
+fresh group: player raw7, player genuine-QTE peer1, affected NPC raw5/NPC-QTE1,
+semantic inventory/closed-projection guards2. Five of five descriptors/10methods/
+16cases complete, exit0, no timeout/skip/duplicate/underfill. NoBuild/Parallelism1,
+original60/180/60/180/60s budgets. Wrapper32.913938s/runner31.571298s. This does not
+relabel old NPC20/state3/App or other historical results as a fresh broader run.
+All actual refusal, dedicated classification, lawful adjacent response, exact
+submitted JSON, canonical bytes and signed source/authority assertions reached.
+Both cleanup flags true, newTMP roots[], no active managed owners, clean runtime tree.
+
+The actual P1 causal6FAIL/1PASS is retained separately on8f30bf18: admission4 lack
+Error (empty object has Warning only); null/scalar2 already refuse shape but lacked
+dedicated Code. Valid canonical effects fixture corrected before that build after
+independent SOURCE finding; this fixture finding is not a product failure. Full
+raw/summary/TRX/build/source evidence remains outside checkout in
+/workspace/tboe-linux-evidence-20261102/player-legacy-response.
+
+Production reuses the existing exact-presence refusal, now shared by the two
+client-owned retired property names. Only player raw dispatch changed; its sole
+unused loose dispatcher is removed. Canonical carrier branches and production QTE
+are untouched. No general unknown-field/casefold ban, fallback, automatic game
+rule, direct writer or publication-bypass claim. Existing woundDecisions/source/
+permissions/current authorization remain authoritative. Inventory owns both
+refusal seams meaningfully; no mechanical source-pin rebasing, World9 stays open.
+GM no-update rationale independently accepted: active guides/examples already use
+offered woundDecisions, no exact retired field remains in active GM content; this
+adds no authored capability/field and changes no afterlife matrix behavior.
+Optimization: reuse parsed root and already-read source images for added assertions;
+one tiny property probe, no new production IO/cache/key/lifetime or authority
+exception. Source inventory keeps ordinary per-entry reads; no speedup claim.
+
+Fresh builds on9d4b03cf: Main72.869832s/Unit37.088738s/Integration70.462221s all exit0,
+warning multisets81/26/107 match prior.45 used managed outputs,206 resource inputs/
+618copies/native6;4PEPDB448sourcebindings. SupportECE source-equivalent dependency
+is not a fourth fresh build; unselected packaged hosts are not qualified. Complete
+catalog1343/13173 is discovery-only. P2artifact SHA256
+5526eeff5dc725ead5d6d07fee693eaf05c8fc8391cf435a52fdfd5e4b7c46cb;
+P2PDB6e70f6cd04f7348745f39fb98741a23a6f25a289ec09350e1abdfb4979575dee.
+Summary74a43ed93dacba24e6e8aa381a04eff37b7632a9408a12d13bf25664cf1ac4fd;
+guardsTRX6a03ae045cf53680667ce051e789bbc2197945b9b2d09e9c529e901f37195dad;
+NPCQTEbbfea4d31b9aa0af6391580d5b4a447695a5a4bc0bb014f57a1bd6a2b800c4fd;
+NPCrawe087447c63a886645ff62a125675014a3c336b17202a668fd9f1ecbf3ce7e3fd;
+playerQTEe11d5a7ccffea51710394e9ed87d14359b05426984771ce60c792f674caa4668;
+playerrawa0fc07762256dc40e1c63146d74e0aaadd7503fa5c27f8ab02a63d15eca273ad.
+Root independently verified all16 unique TRX rows and completed ownership cleanup.
+Current pre-rebuild own15 artifacts are losslessly archived/CRC/member-verified;
+no raw, saves, recovery or unique evidence deleted, no diagnostic output in Git.
+
+T149/T071 and whole1536 stay open. Next direct wound step is source reconciliation
+of existing T081-C3-R2B/T107 lawful initial healing/recovery stage plus live spiritual
+wound insertion: afterlife producers now exist, so do not repeat the obsolete
+September no-producer assumption or fabricate a stage. Sol bounded read-only
+assessment is in progress. Other wound-specific remaining cells/examples/privacy/
+rollback/index/scale still need exact reconciliation. Full physical browser R2 and
+joint terminal A5 remain UNKNOWN; DFR/Mortal/Windows HOLDs do not auto resume. No
+merge/force-push/branch deletion/issue closure. Receipt SHA/ref/bounded source readback
+is verified separately; test source stays9d4b03cf, not a later documentary commit.
+
 # Existing T149/T071: causal player raw defect fixed in source, runtime GREEN UNRUN
 
 Source8f30bf1824808af707c2f25f961e0ad43d3072d4 actual P1-red7 is independently

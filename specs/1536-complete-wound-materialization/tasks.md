@@ -1,3 +1,14 @@
+# Current wound-only execution update — 2026-11-02
+
+Existing T149/T071 exact retired player/NPC raw wound-input refusal now has
+independent SOURCE/PREP/OUTCOME acceptance:16 unique PASS in one addressed group
+on9d4b03cf87c88939ca5708547dc21ca00a86df9e. This adds no new task ID and does not
+close those broader parent tasks. Exact evidence and old causal results are in
+plan.md/physical-guided-checkpoint.md. Next direct wound reconciliation is existing
+T081-C3-R2B/T107 initial healing/recovery plus live insertion; current source
+assessment only. General T088/aggression/defeat/QTE/ACTIVE/F1 are outside current
+execution scope, not complete. R2/A5 UNKNOWN and DFR/Mortal/Windows HOLD stay open.
+
 # Current execution scope — wounds only (2026-11-02)
 
 Existing T149 raw NPC wound-input correction accepted: C2 guards2 PASS on190c6427,
