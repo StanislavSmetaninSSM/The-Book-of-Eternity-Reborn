@@ -1,5 +1,13 @@
 # T149 canonical player-carrier causal scaffold — source-only WIP
 
+Frozen scaffold source75f8a92c425f48b161c67b3ffaeb3ffec161b04f was pushed and
+full remote SHA confirmed. All six changed files were freshly downloaded by exact
+commit from GitHub into new /tmp/boe-t149-scaffold-source-restore-75f8a92c4;
+each matches its Git blob SHA and bytes. This is recovery of those six source /
+metadata/checkpoint files only, not a full clone, compilation, discovery, RED or
+old raw recovery. No implementation edit followed the freeze; this receipt is
+checkpoint-only. Independent coherent design/SOURCE and root verification remain.
+
 2026-11-02 UTC, base/confirmed remote1969e53ae1a276f9bbcf99b326fc54383d1fbd9b.
 Tracked T149-CANONICAL-PLAYER-CARRIER; parent T149 remains unchecked. Canonical
 minimal design, exact two-caller trace, fixture/Compile ownership, optimization
