@@ -1,3 +1,19 @@
+- [ ] T118-ACTUAL-SHELL-READONLY [US5] Extend the existing production App /
+  ShellProvider read-only menu-to-wounds/History/back boundary (parent T118/T158,
+  FR-075, #1536). Independent Astra DESIGN accepts only the first cheap causal
+  scaffold now: one SSR HelpView case with a fresh typed public coverage row,
+  actual handlerKind Wounds and advanced mode false. Prove command row/label and
+  /раны are rendered before requiring category heading Раны and no Wounds leak.
+  One expected RED; the final absence assertion may be UNREACHED. Production
+  mapping, App/driver scaffold, install/build/runtime remain untouched by writer.
+  One exact Vitest file/category/60s selects only the new case; previous SSR28,
+  compile-only host and controlled DOM13 at d4ec5008 retain their accepted lineage.
+  Reuse existing pure Shell helper and public contract templates, independent DTO
+  copies and one row; no expensive setup, cache or diagnostic mechanism. Source
+  is UNRUN/UNTYPECHECKED. Root owns persistence/SOURCE/guards/Plan/PREP/actual RED.
+  This does not qualify actual App/keyboard/HTTP/backend/provider behavior or
+  admit production changes. T118/T158 parents, A5/R2 UNKNOWN and all HOLDs remain.
+
 - [x] T150-GM-TERMINAL-GUIDANCE [US2/US7] Reconcile the stale guide/example
   terminal heal/legacy claims, both manifest RequiredText entries and coverageLimit,
   and both affected Prompt guards with the existing sealed contract. Preserve

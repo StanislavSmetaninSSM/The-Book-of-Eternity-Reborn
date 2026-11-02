@@ -1,3 +1,28 @@
+# T118 actual-shell read-only: admitted cheap SSR causal scaffold only
+
+2026-11-02 UTC, base 4ea94038a72d5fad4ac0556423138f700b379d0c, #1536 /
+T118-ACTUAL-SHELL-READONLY / parent T118/T158 / FR-075. Independent Astra DESIGN
+admits one new SSR HelpView test before any App/driver or production change.
+Production coverage derives handlerKind Wounds from the actual wounds descriptor;
+HelpView groups by that value and falls back to the raw key without a Russian
+GROUP_LABELS entry. Use the existing pure Shell helper and fresh typed public
+coverage DATA with advanced mode false. Command-row rendering and /раны must pass
+before the final exact category-heading Раны and no-Wounds oracle. Expected result
+is one causal RED; later assertions can be UNREACHED, not extra observed failures.
+
+One exact frontend Vitest leaf/file/one case/60s protective bound; root owns
+SOURCE, existing-adapter guards/Plan/PREP and real RED. No writer npm/install,
+build/typecheck/test/commit; scaffold UNRUN/UNTYPECHECKED and cost UNMEASURED.
+Optimization: one row and independent copies of existing immutable public DTO
+templates, no expensive fixture or cache benefit. Reusable pure coverage helper
+may later supply the actual-App packet factory without test-to-test imports.
+No gameplay/schema/GM capability changes; no GM guidance update is needed for
+this test-only presentation proof. Production mapping and old SSR28/typecheck /
+controlled DOM13 remain untouched; no passing-set replay. The future actual-App
+read-only journey is not yet scaffolded or qualified, and SSR proves no event,
+keyboard, HTTP, backend, canonical nonmutation or provider behavior. T150 accepted
+4/4 remains separate; A5/R2 UNKNOWN and all wider HOLDs retain their boundaries.
+
 # T150 GM terminal guidance leaf accepted
 
 Independent Astra SOURCE/PREP/final OUTCOME accepts only
