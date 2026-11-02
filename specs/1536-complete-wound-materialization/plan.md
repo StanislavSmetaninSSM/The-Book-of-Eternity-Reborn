@@ -1,3 +1,14 @@
+# T152 causal RED5 proven — OUTCOME pending
+
+Actual frozen runtime fea2b14e120408e94ecba2ed8ebee212981fd39e completes four
+causal final-control-oracle FAIL plus one LF/tab/Unicode PASS, all five rows,
+7.4290193s, no timeout/underfill and cleanup proven. Parse/raw binding/success /
+nonmutation premises all pass. Fresh Unit/source/PDB/catalog/exact Plan5 proofs
+are recorded in physical-guided-checkpoint.md. Production remains unchanged.
+After independent OUTCOME, reuse the existing Text policy in shared Project and
+select finite output peers for every affected contour, including both Mortal
+partials and spiritual output; no blanket Engine/HOLD or browser retry.
+
 # T152 notification controls — causal scaffold WIP, no production fix
 
 2026-11-02 UTC, T152-NOTIFICATION-CONTROLS / parent T152 / #1536. Clean local

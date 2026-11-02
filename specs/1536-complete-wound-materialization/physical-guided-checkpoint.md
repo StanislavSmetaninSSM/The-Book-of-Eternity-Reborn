@@ -1,3 +1,38 @@
+# T152 causal RED5 complete — OUTCOME pending
+
+Independent DESIGN/SOURCE/PREP accepts exact scaffold runtime
+fea2b14e120408e94ecba2ed8ebee212981fd39e. Fresh Unit build exits 0 in 34.70s,
+26 warnings / 0 errors, no changed-test warning. Five other R4 owners remain
+unchanged. Current six PE/PDB pairs / 434 source bindings, 75 artifacts, 1,236
+resource copies and 12 native copies pass. Fresh full catalog is valid:
+1,325 categories / 13,153 methods, no unmapped/stale selector. Exact PlanOnly:
+one Unit descriptor / two methods / five cases / 60s, zero execution.
+
+N1-red5 completes all five rows in 7.4290193s, exit 1: exactly four intended
+final-oracle FAIL and one LF/tab/Unicode PASS, no timeout/skip/duplicate/underfill.
+Every Parse/raw-control admission, exact Claim, Compose success/no issues and
+root/canonical wound/claim nonmutation premise passes before the four failures.
+Name rows retain C0 in notification plain/console/browser-decoded projections;
+narration rows retain it in the corresponding narration projections. Failure
+messages contain only fixed safe labels. No terminal/browser renderer is executed.
+Process cleanup succeeds; no new resource-fixture root remains. Production is
+unchanged. This establishes the actual projection defect, not a parser/setup error.
+
+Primary raw: /workspace/tboe-linux-evidence-20261102/notification-controls/N1-red5.
+Summary SHA256 d9673090d75cc22dbeed7b34380fa84a6e4414d162adc5efc60561db9aa2e378;
+TRX SHA256 c10bf6ff60df22772175c4eaae3b25ccc0e0b0f6e12e2332262119c538355b73.
+Build/pins/catalog/plan are in sibling N1-* directories/files. Plan SHA256:
+1095d6c8be37d5b3cdeadf1e7a4577a6170a340d5cd391159e9cb92e05944c11.
+N1 artifact proof SHA256:
+0fd9c3b73d4ec7918dd355f9b56a6c0a00f7966d87159b105db91550e715c6cf.
+
+Next independent causal OUTCOME, then the accepted minimal shared Project fix.
+Impact includes acquisition/worsening, spiritual healing/combat, Mortal diagnosis
+and terminal treatment partials; address existing output peers before GREEN
+admission, without replaying broader Engine/HOLD aggregates. No canonical/claim
+rewrite or new text/Unicode policy is permitted. T149/R1 acceptance, R2 UNKNOWN
+and all other HOLDs remain unchanged.
+
 # T152 notification controls — five-row causal scaffold WIP
 
 2026-11-02 UTC, confirmed base/remote96a0caec0a31345bff38f5d8727f6cc45bbe2762.
