@@ -13,7 +13,17 @@ Block7:27–46 содержит отдельные effectType/targetType; Block1
 Арифметика смешанного примера65 проверена через exact fractions;10 новых локальных
 ссылок/anchors и git diff --check прошли. Только5 Markdown-файлов; C#/боевые
 тесты не нужны и не запускались. Свидетельство D:\BoeDiagnostics\impact-types-t139\verification.json.
-Независимое ревью впереди; новый кэш для документации не нужен.
+Независимый GPT-6.1 Sol/xhigh review b67b2ee..b82a51a — pass без замечаний.
+Ревьюер прочитал все5 файлов diff и связанные первичные/духовные договоры,
+подтвердил пример65 и diff/check. Это routine уточнение уже принятой типизации,
+не новая сложная архитектура; parent владел блоком, отдельный reviewer проверил
+результат. Новый кэш для документации не нужен, runtime не добавлен.
+
+WIP b82a51a6c3dfec3b8981fd765e3423e05a8b7c5a опубликован; remote SHA и5 API
+blobs/байты совпали с новым чистым sparse clone
+D:\BoeDiagnostics\impact-types-t139\remote-restore-20261102; пять обязательных
+инструкций на месте. Финальный SHA/readback — issue1573 и verification.json.
+Посторонний recovery obj не тронут; диагностика не загружена в Git.
 
 ## T138 — генерация искусств
 
