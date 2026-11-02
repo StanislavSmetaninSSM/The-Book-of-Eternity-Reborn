@@ -21,8 +21,9 @@ is unchanged; no whole suite or old browser36 replay is selected. Fresh affected
 Main/Support/Unit/Integration outputs and actual build-only dependencies are needed
 before NoBuild, then source/PDB/resource pins, exact discovery/PlanOnly and PREP.
 
-Optimization: one cheap root dispatch precedes the existing fresh read/parse and
-catalog result consumption. It adds no read, parse, cache, lifetime or shared DATA;
+Optimization: the existing fresh source read and JsonDocument parse are unchanged;
+a cheap root dispatch precedes only catalog conversion/validation. It adds no
+read, parse, cache, lifetime or shared DATA;
 strict object parsing and all fresh ownership/integrity checks remain unchanged.
 No new speedup or source-count claim. GM no-update: the accepted closed schema-v1
 contract already rejects legacy player roots; this adds early enforcement without
