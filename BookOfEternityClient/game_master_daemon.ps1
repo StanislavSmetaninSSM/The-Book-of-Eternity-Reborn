@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Game Master Daemon — мост между C# клиентом и CLI-агентом геймастера.
 
