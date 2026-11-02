@@ -3757,7 +3757,7 @@ public partial class ValidationService
             {
                 var skillName = GetFirstNonEmptyString(item, "skillName");
                 if (!string.IsNullOrWhiteSpace(skillName))
-                    result.Add(skillName);
+                    result.Add(skillName.Trim());
             }
         }
         catch
@@ -4031,9 +4031,15 @@ public partial class ValidationService
     /// Reads one file's payload from the validated pending-turn snapshot, verifying the
     /// snapshot hash against the manifest before returning any content.
     /// </summary>
-    /// <param name="manifest">The validated pending-turn snapshot manifest.</param>
-    /// <param name="relativePath">The tracked file whose snapshot payload to read.</param>
-    /// <param name="writeLease">An optional canonical write lease for the read.</param>
+    /// <param name="manifest">
+    /// The validated pending-turn snapshot manifest.
+    /// </param>
+    /// <param name="relativePath">
+    /// The tracked file whose snapshot payload to read.
+    /// </param>
+    /// <param name="writeLease">
+    /// An optional canonical write lease for the read.
+    /// </param>
     /// <param name="treatBlankAsMissing">
     /// When <see langword="true"/> (default), blank/whitespace payloads collapse to
     /// <see langword="null"/> (absent evidence); pass <see langword="false"/> where the

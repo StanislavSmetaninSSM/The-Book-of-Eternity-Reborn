@@ -60,6 +60,11 @@ Dependencies: T107-A -> T107-B -> T107-C -> T107-D -> T107-E. Parent owns integr
 - [X] T107-P [GREEN] `HasPassiveProgressionDelta` counts only fields still present in the current entry; `DescribeActualForMissingClaim` reports deleted mastery file and removed mastery entry explicitly; `ParsePlayerSkillNames` trims names consistently. Class 31/31
 - [X] T107-Q Bounded verification, spec/tasks/plan sync, resolution review (RESOLVED, no new defects; two non-blocking notes: passive-side deletion diagnostics gap, field-added-with-zero thin fail-open), commit+push, PR note
 
+### Part 2 external review round 3 (PR #1583, `e374204e`)
+
+- [X] T107-R [RED+GREEN] External reviewer (Codex) reported one P2 on `e374204e`: the D3 trim fix was applied only to `ParsePlayerSkillNames`, while `ParsePlayerSkillMasteryNames` kept untrimmed names, so a new active skill and its mastery reference padded with the same trailing whitespace produced a false `player_active_skill_missing_mastery_initialization` (the prose check passed). RED test `SkillContractConsistency_PaddedNewSkillAndMastery_DoNotProduceFalseMissingInitialization` failed exactly on the finding (1/1 fail), then GREEN after trimming mastery-side names too; NPC-side parsers verified symmetric (both untrimmed, only compared against each other — untouched). Editorial: three single-line XML `<param>` blocks on `ReadValidatedPendingTurnSnapshotFileAsync` reformatted to the file's multi-line style
+- [X] T107-S Bounded verification (padded test 1/1; class 40/40; narrative + doc-guard 32/32; mortal-skill-reference-identity 44/44; console-explorer 277 planned accounted; documentation-examples 171/172 with pre-existing failures only), resolution review by the independent reviewer — verdict RESOLVED WITH NOTES (no new defects; one pre-existing P3 note: NPC-side asymmetric padding still yields a false missing-initialization error, follow-up candidate outside this PR), commit+push, reviewer reply on PR #1583
+
 ## Later parts (issue #1533 contours, not in this branch)
 
 - [ ] T101 Canonical skill schema consolidation: single active/passive profile validator shared by constructor and delta paths (player + NPC), including `activeEffectDefinitions`, `structuredBonuses`, rarity/type/group enums

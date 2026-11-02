@@ -55,6 +55,20 @@ public sealed partial class MortalSkillReferenceAuthorityTests
     }
 
     /// <summary>
+    /// Applies the same whitespace handling to skill names and mastery references:
+    /// a new skill and its mastery entry padded identically must not produce a false
+    /// missing-initialization error.
+    /// </summary>
+    [Fact]
+    public async Task SkillContractConsistency_PaddedNewSkillAndMastery_DoNotProduceFalseMissingInitialization()
+    {
+        await WriteActiveSkillsAsync("Fireball ");
+        await WritePlayerMasteryAsync("Fireball ");
+        var issues = await _validator.ValidateGameStateAsync(GameStateValidationPhase.SkillContractConsistency);
+        Assert.DoesNotContain(issues, i => i.Code == "player_active_skill_missing_mastery_initialization");
+    }
+
+    /// <summary>
     /// Keeps truly missing initialization while replacing confusable-only coverage.
     /// </summary>
     [Fact]
