@@ -10,7 +10,10 @@
   compile-only host and controlled DOM13 at d4ec5008 retain their accepted lineage.
   Reuse existing pure Shell helper and public contract templates, independent DTO
   copies and one row; no expensive setup, cache or diagnostic mechanism. Source
-  is UNRUN/UNTYPECHECKED. Root owns persistence/SOURCE/guards/Plan/PREP/actual RED.
+  causal scaffold is now frozen at 1e13e67d: actual singleton RED accepted by Astra
+  at the exact heading oracle only (Wounds versus Раны), no timeout/cleanup true.
+  Same unchanged test regresses the one-entry production label correction;
+  correction SOURCE/Plan/PREP/GREEN pending, no App/DOM admission.
   This does not qualify actual App/keyboard/HTTP/backend/provider behavior or
   admit production changes. T118/T158 parents, A5/R2 UNKNOWN and all HOLDs remain.
 

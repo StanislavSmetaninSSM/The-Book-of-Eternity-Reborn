@@ -48662,3 +48662,24 @@ T331 actualgenerator atcompiled778/metadata693645183:1PASS189.520408s(source4218
 T331/T332 separate Astra/high binding accepted4b28a32bd without findings: actualgenerator/data/source1784recipes/4DLL+copies/history/parser/269exactrecoveryblobs verified. T332-binding-review.json. Onlyone existingseededcut0 released after decisionpersistence;820shared/600child/15mincategory/originalassertions/uncappeddiagnostics retained. No retry/othercuts/fullfive/Linux. Git-only recovery remains distinct from producing-source formatting and declared-dir local readiness. T333UNRUN atacceptance.
 
 T333 atcompiled778/metadata6987d79c7:1completedFAIL12:14.9518693, runner12:39.0648148. Actualerror System.ArgumentException JSONscalar length169321202; no serialized resumer nativejoin/primaryfailure/gameverdict.14available rawfiles/CRC/hash retainedZIP372C62B4B338E635571E549F0A29FB862882E894B40E78A0D59E70B25E2B1F94; producer52380exit73/EOF/join, bothownrootsremoved/absent,4DLL/copies/seedunchanged. Full resumer outputNOTRETAINED: ReadToEnd→SaveOutputs insideownroot→inlineJsonSerializerthrows→settledrootcleanup removes transientcopies; save success/actual resumerexit and initialwaiterrorUNKNOWN. Do not relabel as observed600timeout. NewcleanupentryDATA ZIP697049bytes/D2ACF9B8B958F7800E1335B35C0C873E928792C82ADABF5707C57286EB329740 structurally verifies221files1503472bytes/62dirs, parentNonceRunSeed/3buildmatch, noauthority; nativeidentity/eventmissing, nofullcapturequalification. T334-inspection.json preserves sourcefailuremap andlimits; oldfailedcapture report immutable. T333 acceptance remains unmet, no originalretry.
+
+# T118 actual-shell read-only: accepted heading RED, minimal label correction WIP
+
+2026-11-02 UTC. Clean remote/source 1e13e67d9bd11a8c1049f3fb9a7bb04d2734de64
+produced one real Vitest FAIL at woundHelpMenuCausal.test.tsx:42: received Wounds
+instead of Раны. Typed default row, rendered command/aliases and actual consumer
+nonmutation premises passed; final absence oracle was UNREACHED. Wrapper wall
+2.580426s, no timeout, source unchanged and owned/runtime cleanup true. Existing
+adapter publishes no successful report on a Vitest failure, so runner summary
+has zero completed/underfill; primary JSON proves one completed causal failure,
+not PASS or a completed TRX. Astra independently accepts the actual causal RED.
+
+Only production correction is GROUP_LABELS.Wounds = Раны; no icon, routing, API,
+permission, gameplay or authored GM contract change. Singleton regression and
+60s remain; old SSR28/DOM13 remain unselected. No cache is useful for a trivial
+constant label lookup; existing useMemo/grouping and fresh DTO copies remain.
+Root SOURCE, frozen Plan/PREP and actual GREEN remain pending. App/DOM is still
+UNRUN and not admitted by this correction. T118/T158/T151 parents, A5/R2 UNKNOWN
+and wider HOLDs remain open. Full F1 raw/Plan/catalog/npm records live outside
+checkout at /workspace/tboe-linux-evidence-20261102/actual-shell-readonly;
+F1 Vitest SHA47e682b5d5210fc72c4299fdeaf46a99460a18489acd6345f6c3dec365895a1e.

@@ -20,6 +20,7 @@ const GROUP_ICONS: Record<string, string> = {
 };
 
 const GROUP_LABELS: Record<string, string> = {
+  Wounds: 'Раны',
   UniversalMeta: 'Персонаж и душа',
   MortalWorld: 'Мир смертных',
   ChaosSea: 'Море Хаоса',
