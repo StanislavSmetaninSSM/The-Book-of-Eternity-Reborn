@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Services;
 using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
@@ -23,12 +24,12 @@ public sealed partial class QteSceneServiceTests
         await BindOrdinaryQteSnapshotSourceAsync(_fs);
         var offer = BuildUnscoredBranchChoiceOffer();
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        await _fs.WriteFileAtomicAsync(QteSceneService.QteOfferPath, JsonSerializer.Serialize(offer));
+        await _fs.WriteFileAtomicAsync(QteSceneService.QteOfferPath, JsonSerializer.Serialize(offer, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
         Assert.Empty(await validator.ValidateAcceptedTurnQteOfferAsync());
 
         var fragment = Assert.IsType<JsonObject>(Assert.Single(offer.TerminalOutcomes).ResponseFragment);
         fragment["NPCWoundChanges"] = new JsonArray(new JsonObject { ["NPCId"] = "npc_guard", ["wounds"] = new JsonArray() });
-        var rawOffer = JsonSerializer.Serialize(offer);
+        var rawOffer = JsonSerializer.Serialize(offer, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed);
         await _fs.WriteFileAtomicAsync(QteSceneService.QteOfferPath, rawOffer);
         var protectedPaths = new[]
         {
@@ -41,7 +42,7 @@ public sealed partial class QteSceneServiceTests
         var issues = await validator.ValidateAcceptedTurnQteOfferAsync();
 
         Assert.Equal(rawOffer, await _fs.ReadFileAsync(QteSceneService.QteOfferPath));
-        Assert.Equal(rawOffer, JsonSerializer.Serialize(offer));
+        Assert.Equal(rawOffer, JsonSerializer.Serialize(offer, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
         foreach (var (path, bytes) in before) Assert.Equal(bytes, await _fs.ReadFileBytesAsync(path));
         var issue = Assert.Single(issues);
         Assert.Equal(QteSceneService.QteOfferPath + ".terminalOutcomes[0].responseFragment.response.NPCWoundChanges", issue.FilePath);

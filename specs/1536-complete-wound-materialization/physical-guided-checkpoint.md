@@ -1,3 +1,33 @@
+# Wound-input C2 partial result; fixture serializer correction WIP
+
+Runtime/source190c6427192f28689b4f77dcd6c0b9eced10eab1 completes only3 of11:
+source guards2 PASS, QTE1 FAIL at its strict baseline, raw5/state3 UNRUN. Runner
+stops as configured; no timeout/skip/duplicate, cleanup complete/newTMP roots[].
+Wrapper18.243494s, runner16.906197s. Summary
+f739a0b7b428eee7ce5a60574098104fdce0f4850f9f41c70540429b47d43257;
+guards TRX248a362b33a85959c49432b580c4dff9c591bb6aeeee1b6e165269d4e9f57dab;
+QTE TRXa2db34c4af02be87eafcec37060fd538548778103055056ea15ac8ae0d9855d0.
+No wound refusal/publication oracle was reached in QTE; this is not a product RED
+or a partial GREEN11. All original raw stays in npc-legacy-response/C2-green11.
+
+Cause verified in production: QteSceneService.JsonOpts is the existing
+SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed, whose WhenWritingNull omits absent
+scoreModel/scoreDeltas. The fixture used default Serialize(offer), emitting both
+as JSON null; raw validation correctly refuses them. Minimal test-only correction
+uses the exact production profile at all three serialization sites. No field is
+removed after acceptance, no validator/assertion/limit/source/signature is relaxed.
+New serializer/cache framework is not added. Shared options are only read; per-test
+source/root/offer ownership stays independent. General QTE mechanics are unchanged.
+
+After independent partial OUTCOME and delta SOURCE: fresh Integration only,
+unchanged Main/Unit/Support source/output proof, exact Plan/PREP remaining9
+(raw5/QTE1/state3). Do not repeat accepted unchanged Unit guards2. Each current
+wound-input case still must complete with actual primary results. Original
+60/180/60s bounds remain. New fixture correction is UNCOMPILED/UNRUN; whole
+World-source guard and all historical UNKNOWN/HOLD stay explicitly open.
+Current task remains wounds only; withdrawn T088/aggression and broad ACTIVE/F1
+are outside this work, not completed. No new game rule or live GM/save test.
+
 # Wound-only raw NPC correction SOURCE accepted — fresh builds next
 
 Independent Astra/high accepts 679e3ff557f570ab57f43dde84fb8824fd9082aa plus
