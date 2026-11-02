@@ -51,9 +51,10 @@ public partial class ValidationService
         /// <param name="BindingOriginal">
         /// Privately rederived pre-selection legality comparison, or <see langword="null"/> when no last-binding refinement applies.
         /// </param>
+        /// <param name="StrainOriginal">Privately reproved ordinary last-pressure comparison and the actual selected wound roots.</param>
         private sealed record C2SelectedDecision(JsonObject PacketRoot, JsonObject Staged,
             AcceptedMechanicsPlanner.SpiritualExchangeInterval Interval, byte[]? CommandBytes,
-            OriginalBindingComparison? BindingOriginal);
+            OriginalBindingComparison? BindingOriginal, OriginalStrainComparison? StrainOriginal = null);
 
         private C2SelectedDecision? _c2SelectedDecision;
         private bool _c2SelectionVerified;
@@ -378,6 +379,7 @@ public partial class ValidationService
             string opportunityRef;
             byte[]? selectedCommandBytes = null;
             OriginalBindingComparison? bindingOriginal = null;
+            OriginalStrainComparison? strainOriginal = null;
             WoundMaterializationEnvelope? wound = null;
             byte[]? woundDraft = null;
             string? projectedNarrative = null;
@@ -439,7 +441,16 @@ public partial class ValidationService
                         return DecisionDraftFailure("spiritual_c2_dependent_narrative_invalid");
                 }
                 if (decisionKind == "materialize")
+                {
                     bindingOriginal = await ReadOriginalBindingComparisonAsync(lease, priorCheckpoint);
+                    // This is only a cheap request filter; actual materialization and owned projection prove applicability.
+                    if (decisionRoot["proposal"]?["consequenceDefinitions"] is JsonArray definitions &&
+                        definitions.OfType<JsonObject>().Any(definition =>
+                            definition["definition"]?["components"] is JsonArray components &&
+                            components.OfType<JsonObject>().Any(component =>
+                                component["profile"]?.GetValue<string>() == "spiritual_strain_burden")))
+                        strainOriginal = await ReadOriginalStrainComparisonAsync(lease, priorCheckpoint);
+                }
                 // All old allocations were replayed before a new decision can append.
                 if (append)
                     _allocations.Journal.EnableAppendAfterReplay();
@@ -448,6 +459,11 @@ public partial class ValidationService
                 if (applied.Issues.Count != 0)
                     return new(null, null, applied.Issues);
                 wound = applied.Wound;
+                if (strainOriginal is not null)
+                    strainOriginal = wound is { Severity.Rank: >= 3, Owner.OwnerKind: "player_soul" }
+                        ? strainOriginal with { WoundId = wound.WoundId, Realm = wound.Owner.Realm,
+                            ActorId = wound.Owner.OwnerId, RootEffects = wound.Consequences.OwnedEffectSources.RootBindings.ToArray() }
+                        : null;
                 if (decisionKind == "none" && wound is not null ||
                     decisionKind == "materialize" && wound is null)
                     return DecisionDraftFailure("spiritual_c2_decision_result_mismatch");
@@ -495,7 +511,7 @@ public partial class ValidationService
                 nextOrdinal++;
             packet["cursor"]!["nextSourceOrdinal"] = nextOrdinal;
 
-            _c2SelectedDecision = new(packetRoot, staged, next.Interval, selectedCommandBytes, bindingOriginal);
+            _c2SelectedDecision = new(packetRoot, staged, next.Interval, selectedCommandBytes, bindingOriginal, strainOriginal);
             if (selectionOnly)
                 return new(null, null, []);
             return await ContinueC2SelectedDecisionCoreAsync(lease, priorPending,
@@ -702,7 +718,8 @@ public partial class ValidationService
             IReadOnlyList<ValidationIssue> issues) =>
             issues.Count != 0 && issues.All(issue =>
                 issue.FilePath.StartsWith("activeConflict.exchangeLog[", StringComparison.Ordinal) &&
-                (PositionDependencyIndex(issue) is not null || BindingDependencyIndex(issue) is not null || issue.Code switch
+                (PositionDependencyIndex(issue) is not null || BindingDependencyIndex(issue) is not null ||
+                 StrainDependencyIndex(issue) is not null || issue.Code switch
                 {
                     "afterlife_conflict_wound_force_cost_audit_missing" or
                     "afterlife_conflict_wound_force_cost_audit_obsolete" =>

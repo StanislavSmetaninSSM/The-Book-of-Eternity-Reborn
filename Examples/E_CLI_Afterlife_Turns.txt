@@ -14523,3 +14523,35 @@ Each referenced canonical source must independently exist and agree before confi
 Missing/withdrawn evidence makes the method unavailable; no payment or new consent is
 inferred. One knowledge step and the required normal safe natural suffix remain.
 end_spiritual_diagnosis_canonical_requirements_v1
+
+
+spiritual_wound_strain_result_v1 — worked comparison fragment
+
+Preconditions are real signed ordinary exchanges, not values supplied by this
+fragment: hostile original first pressure/setback has margin10 and clear→overwhelmed,
+pressure20/maxIII. A genuine III C2 choice installs one strain/pressure slot; its
+other two slots target different operations. The next signed pressure/setback has
+margin-8, ordinary unchanged overwhelmed and a position loss. Its source dice,
+audit, costs3→0 and all other data remain those already validated by the client.
+These JSON objects are comparison illustrations, not new GameResponse fields or
+a substitute for the full current request/command and legal three-slot proposal.
+
+```json
+{
+  "before": {"playerSideStrain":"overwhelmed","oppositionSideStrain":"clear","conflictPosition":"contested"},
+  "ordinaryAfter": {"playerSideStrain":"overwhelmed","oppositionSideStrain":"clear","conflictPosition":"opposition_advantaged"},
+  "correctedAfterA": {"playerSideStrain":"broken","oppositionSideStrain":"clear","conflictPosition":"opposition_advantaged"},
+  "finalEchoB": {"playerSideStrain":"broken"}
+}
+```
+
+A changes only the issued exchange after.playerSideStrain; keep the original root
+echo overwhelmed. B is issued only after actual A passes full source/resource
+validation, and changes only the final playerSideStrain echo. Never send premature
+echo, change the other side or rewrite signed dice/outcome/costs. The real new
+overwhelmed→broken source has harmful margin8 and pressure14/maxII in this example;
+it may issue its own optional offer, which can be explicitly declined. It is not
+suppressed by the earlier III choice. Reopening never compounds the +1 step.
+Private completion is not accepted-turn publication. Other consumer combinations
+and missing dice-free harmfulMargin rules are not authorized by this fragment.
+end_spiritual_wound_strain_result_v1

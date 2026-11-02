@@ -84,6 +84,11 @@ internal static partial class AcceptedMechanicsPlanner
             /// Gets immutable contributions after filtering accepted use exhaustion.
             /// </summary>
             internal IReadOnlyList<SpiritualWoundConflictContribution> Contributions { get; }
+
+            /// <summary>Reads only a rederived comparison owned by this exact current source/resource epoch.</summary>
+            internal ValidationService.SpiritualStrainDraftCorrection? ReadOwnedStrainCorrection(
+                JsonObject conflict, JsonObject exchange) => IsCurrent
+                ? _capture.ReadOwnedStrainCorrection(this, conflict, exchange) : null;
             /// <summary>
             /// Gets whether the original owners, exchange ordinal and routing epoch remain current.
             /// </summary>

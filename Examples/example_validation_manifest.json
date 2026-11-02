@@ -2,6 +2,28 @@
   "version": 1,
   "effectMaterializationCoverage": [
 {
+    "contractId": "spiritual_wound_strain_result_v1",
+    "file": "E_CLI_Afterlife_Turns.txt",
+    "statePath": "existing original signed pressure/setback and private C2 dependent draft",
+    "responseSurface": "separate exact exchange-strain A and final-strain-echo B, existing continuation protocol",
+    "realms": [
+        "Chaos Sea",
+        "Shining Abode"
+    ],
+    "description": "One extra III strain step from independently proved ordinary result, cap broken, with ordinary new-source opportunity and no retry compounding.",
+    "validationKind": "focused-fragment",
+    "focusedFragmentReason": "SpiritualStrainComparisonTests parses the actual comparison fragment through the production bounded comparison DATA type; real C2 integration owns source/materialization/continuation authority.",
+    "coverageLimit": "Comparison/GM guidance only; not a standalone GameResponse, full consumer family, accepted publication, general combat or missing author-rule approval.",
+    "requiredText": [
+        "spiritual_wound_strain_result_v1 — worked",
+        "correctedAfterA",
+        "finalEchoB",
+        "pressure14/maxII",
+        "Reopening never compounds",
+        "end_spiritual_wound_strain_result_v1"
+    ]
+},
+{
   "contractId": "mortal_guided_treatment_execution_v1",
   "file": "E_CLI_Wound_Materialization.txt",
   "statePath": "client-owned immutable guided input/held request and ordinary canonical treatment settlement",

@@ -68,6 +68,14 @@ public partial class ValidationService
                 }
                 if (contribution.Profile == "spiritual_position_burden")
                     continue; // The position consumer validates the exact current actor and operation.
+                if (contribution.Profile == "spiritual_strain_burden" && side == "player" &&
+                    _mechanicsContext.ReadOwnedStrainCorrection(conflict, exchange) is { } strain)
+                {
+                    if (!strain.IsCorrected(exchange))
+                        issues.Add(SourceIssue(coordinate + ".after.playerSideStrain",
+                            "spiritual_wound_strain_correction_required", strain.ExpectedStrain));
+                    continue;
+                }
                 if (contribution.Profile != "spiritual_roll_hindrance")
                 {
                     issues.Add(SourceIssue(coordinate, "spiritual_wound_profile_integration_required",

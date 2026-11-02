@@ -698,6 +698,27 @@ under `spiritual_wound_special_action_costs_v1` in
 `OtherGuides/Afterlife_Combat_Terminology_Glossary.md`, with GM-authored fragments
 in `Examples/E_CLI_Afterlife_Turns.txt`. Other unresolved profiles are unchanged.
 
+## spiritual_wound_strain_result_v1
+
+`spiritual_strain_burden` adds exactly one strain step to the affected actor's
+declared failed non-safety operation at III-IV, capped at `broken`. The ordinary
+result must be independently proved; do not infer it by subtracting from a proposed
+corrected result or inventing a dice-free margin. The current bounded C2 route is
+one newly selected applicable burden on the last player `pressure/setback` exchange
+with genuine opposed dice and unchanged ordinary player strain. Other failure
+families, replacement carriers and unproved combinations remain unavailable.
+
+The saved choice first requests only the exact exchange `after.playerSideStrain`
+correction A. Preserve outcome, before, dice, actor, position loss, costs, other
+strain and the final root echo. After the client proves actual A, a separate B
+request permits the exact final `playerSideStrain` echo. Follow each current
+`dependentDraftFields`; no pointer is permission to alter its siblings. Reopening
+or retrying rederives the same ordinary comparison and never adds another step.
+The resulting strain increase still uses the ordinary harmful-source formula and
+may issue a separate optional wound offer. Do not silently discard that offer or
+publish a private C2 draft. Worked comparison: `Examples/E_CLI_Afterlife_Turns.txt`,
+`spiritual_wound_strain_result_v1`.
+
 ## spiritual_wound_position_v1
 
 `spiritual_position_burden` changes the effective starting position of the matching

@@ -297,6 +297,19 @@ public partial class ValidationService
         {
             var corrections = new List<SpiritualPositionDraftCorrection>();
             var bindings = new List<SpiritualBindingDraftCorrection>();
+            var strains = new List<SpiritualStrainDraftCorrection>();
+            foreach (var index in issues.Select(StrainDependencyIndex).Where(index => index.HasValue)
+                         .Select(index => index!.Value).Distinct())
+            {
+                if (mechanics is null || !mechanics.IsCurrent ||
+                    original["activeConflict"] is not JsonObject strainConflict ||
+                    strainConflict["exchangeLog"] is not JsonArray strainPrior ||
+                    index != strainPrior.Count + _closedExchangeEvidence.Count ||
+                    AfterlifeSpiritualConflictState.ResolveRawExchange(original, baseline, index) is not { } rawStrain ||
+                    mechanics.ReadOwnedStrainCorrection(strainConflict, rawStrain.Exchange) is not { } strain ||
+                    strain.Pointer != rawStrain.Pointer) return null;
+                strains.Add(strain);
+            }
             foreach (var index in issues.Select(issue => PositionDependencyIndex(issue) ?? BindingDependencyIndex(issue)).Where(index => index.HasValue)
                          .Select(index => index!.Value).Distinct())
             {
@@ -317,7 +330,7 @@ public partial class ValidationService
                 if (CreateBindingCorrection(raw.Exchange, raw.Pointer, rank.Value, correction) is { } binding)
                     bindings.Add(binding);
             }
-            return SpiritualWoundDependentDraftPolicy.Create(original, baseline, issues, frontier, corrections, bindings);
+            return SpiritualWoundDependentDraftPolicy.Create(original, baseline, issues, frontier, corrections, bindings, strains);
         }
     }
 }

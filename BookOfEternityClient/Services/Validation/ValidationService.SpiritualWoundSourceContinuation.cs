@@ -395,7 +395,8 @@ public partial class ValidationService
             var final = JsonNode.Parse(frontier.StateJson)!.AsObject();
             foreach (var key in new[] { "playerSideStrain", "oppositionSideStrain" })
                 if (!JsonNode.DeepEquals(final[key], active[key]))
-                    throw new InvalidOperationException("final strain differs from appended checked exchange");
+                    issues.Add(SourceIssue("activeConflict." + key,
+                        "spiritual_source_final_strain_mismatch", "last checked exchange strain"));
             ValidateFinalActiveControlStateMatchesExchangeSnapshots(active,
                 frontier.ControlJson is null ? null : JsonNode.Parse(frontier.ControlJson),
                 "activeConflict", issues, requiredForCurrentTurn: true);

@@ -1,6 +1,8 @@
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Services;
+using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
@@ -84,5 +86,74 @@ public sealed partial class AfterlifeResourceCutoverTests
         corrected = baseline.DeepClone().AsObject();
         corrected["activeConflict"]!["playerSideStrain"] = "broken";
         Assert.False(policy.Allows(corrected));
+
+        restoredSession.Dispose();
+        var validator = new ValidationService(context.FileSystem, NullLogger<ValidationService>.Instance);
+        var issued = await validator.ReadSpiritualWoundContinuationAsync(lease);
+        Assert.Equal("dependent_draft", issued.Disposition);
+        var a = Assert.IsType<SpiritualWoundContinuationRequest>(issued.Request);
+        var responseA = CreateSpiritualStagedEmptyResponse(a);
+        corrected = baseline.DeepClone().AsObject();
+        corrected["activeConflict"]!["exchangeLog"]![1]!["after"]!["playerSideStrain"] = "broken";
+        await context.FileSystem.WriteFileAtomicBytesAsync(lease, AfterlifeSpiritualConflictState.StatePath,
+            Encoding.UTF8.GetBytes(corrected.ToJsonString()));
+        var evaluatedA = await validator.EvaluateSpiritualWoundContinuationDraftAsync(lease, a, responseA);
+        Assert.True(evaluatedA.Disposition == ValidationService.SpiritualWoundContinuationDisposition.Advanced,
+            evaluatedA.Disposition + ": " + string.Join("\n", evaluatedA.Issues));
+        var committedA = await validator.CommitSpiritualWoundDependentProgressAsync(lease, a, responseA);
+        Assert.Equal("committed", committedA.Disposition);
+        var b = Assert.IsType<SpiritualWoundContinuationRequest>(committedA.NextRequest);
+        Assert.Equal("/activeConflict/playerSideStrain", Assert.Single(b.DependentDraftFields).JsonPointer);
+        Assert.NotEqual(a.ContinuationId, b.ContinuationId);
+
+        var cold = new ValidationService(context.FileSystem, NullLogger<ValidationService>.Instance);
+        var recovered = await cold.ReadSpiritualWoundContinuationAsync(lease);
+        Assert.Equal(JsonSerializer.Serialize(b), JsonSerializer.Serialize(recovered.Request));
+        Assert.Equal(JsonSerializer.Serialize(a), JsonSerializer.Serialize(recovered.AcceptedRequest));
+        var responseB = CreateSpiritualStagedEmptyResponse(b);
+        var beforeRejected = await context.FileSystem.ReadFileBytesAsync(lease, SpiritualWoundCaptureCheckpointState.StatePath);
+        var damagedA = corrected.DeepClone().AsObject();
+        damagedA["activeConflict"]!["exchangeLog"]![1]!["after"]!["playerSideStrain"] = "overwhelmed";
+        damagedA["activeConflict"]!["playerSideStrain"] = "broken";
+        Assert.NotEmpty(await cold.ValidateSpiritualWoundContinuationDraftAsync(lease, b, responseB,
+            new Dictionary<string, byte[]?> { [AfterlifeSpiritualConflictState.StatePath] =
+                Encoding.UTF8.GetBytes(damagedA.ToJsonString()) }));
+        Assert.Equal(beforeRejected, await context.FileSystem.ReadFileBytesAsync(lease, SpiritualWoundCaptureCheckpointState.StatePath));
+        corrected["activeConflict"]!["playerSideStrain"] = "broken";
+        await context.FileSystem.WriteFileAtomicBytesAsync(lease, AfterlifeSpiritualConflictState.StatePath,
+            Encoding.UTF8.GetBytes(corrected.ToJsonString()));
+        var evaluatedB = await cold.EvaluateSpiritualWoundContinuationDraftAsync(lease, b, responseB);
+        Assert.True(evaluatedB.Disposition == ValidationService.SpiritualWoundContinuationDisposition.Resolved,
+            evaluatedB.Disposition + ": " + string.Join("\n", evaluatedB.Issues));
+        var ready = await cold.OpenC2PrivateSessionAsync(lease);
+        Assert.Equal("dependent_continuation", ready.Disposition);
+        using var readySession = Assert.IsType<ValidationService.SpiritualC2PrivateSession>(ready.Session);
+        var next = await readySession.ResumeDependentContinuationAsync(lease);
+        AssertNoConflictFrameErrors(next.Issues);
+        Assert.Equal("offer", next.Disposition); // Extra strain is a real new harmful source, not silently discarded.
+        using var nextSession = Assert.IsType<ValidationService.SpiritualC2PrivateSession>(next.Session);
+        Assert.Equal(2, nextSession.Offer!.MaximumSeverityRank); // Actual margin8 + broken destination6.
+        var declined = await nextSession.SubmitDecisionAsync(lease, JsonSerializer.SerializeToElement(new
+            { opportunityRef = nextSession.Offer.OpportunityRef, decision = "none" }), null);
+        using var declinedSession = declined.Session;
+        AssertNoConflictFrameErrors(declined.Issues);
+        Assert.Equal("completed_unpublished", declined.Disposition);
+        declinedSession?.Dispose();
+        var reopened = await new ValidationService(context.FileSystem, NullLogger<ValidationService>.Instance)
+            .OpenC2PrivateSessionAsync(lease);
+        using var reopenedSession = reopened.Session;
+        AssertNoConflictFrameErrors(reopened.Issues);
+        Assert.Equal("completed_unpublished", reopened.Disposition);
+        var packet = JsonNode.Parse((await context.FileSystem.ReadFileBytesAsync(lease,
+            SpiritualWoundDecisionPendingState.StatePath))!)!["pending"]!;
+        Assert.Equal(2, packet["sources"]!.AsArray().Count);
+        var choices = packet["stagedDecisions"]!.AsArray();
+        Assert.Equal(2, choices.Count);
+        Assert.Equal("materialize", choices[0]!["decision"]!.GetValue<string>());
+        Assert.Equal(3, choices[0]!["selectedSeverityRank"]!.GetValue<int>());
+        Assert.Equal("none", choices[1]!["decision"]!.GetValue<string>());
+        foreach (var (path, bytes) in preserved)
+            Assert.Equal(bytes, await context.FileSystem.ReadFileBytesAsync(lease, path));
+        Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(context.FileSystem, lease));
     }
 }

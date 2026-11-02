@@ -2,9 +2,60 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "excludes": "No source/publication/Engine authority from comparison DATA, general combat/QTE, new author-rule choice, broad suite or HOLD retry.",
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "related": [],
+  "id": "wounds-spiritual-strain-comparison",
+  "responsibility": "#1536 T081-D exact strain-step comparison DATA: five independent full strain boundaries including broken saturation, detached-copy and sibling refusal; one parsed GM worked comparison/manifest/guide Fact. Actual III C2 authority is separate.",
+  "changeHints": [
+    "BookOfEternityClient/Services/Validation/ValidationService.SpiritualStrainDependency.cs",
+    "BookOfEternityClient.Tests/SpiritualStrainComparisonTests.cs",
+    "Examples/E_CLI_Afterlife_Turns.txt"
+  ],
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.SpiritualStrainComparisonTests.*"
+      ]
+    }
+  ]
+},
+{
+  "excludes": "No source/publication/Engine authority from comparison DATA, general combat/QTE, new author-rule choice, broad suite or HOLD retry.",
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "related": [],
+  "id": "wounds-spiritual-strain-policy-regressions",
+  "responsibility": "#1536 T081-D changed dependent-policy optional strain groups must preserve existing ordinary cost leaf closure and six force-audit structure/foreign-sibling controls. Exact two methods/seven cases; no unrelated old PASS repeated.",
+  "changeHints": [
+    "BookOfEternityClient/Services/SpiritualWoundDependentDraftPolicy.cs"
+  ],
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.SpiritualWoundDependentDraftPolicyTests.CostMismatch_IncludesOnlyProvenArithmeticClosure",
+        "BookOfEternityClient.Tests.SpiritualWoundDependentDraftPolicyTests.MissingForceAudit_PermitsOnlyPrescribedLeaves"
+      ]
+    }
+  ]
+},
+{
   "id": "wounds-spiritual-strain-c2-selection",
-  "responsibility": "#1536 T081-D: one real signed rank-III C2 materialization with exactly one applicable pressure strain slot; requires bounded next player pressure/setback after.playerSideStrain correction from proved ordinary overwhelmed to broken. Preserves actual canonical bytes/no common plan, unrelated result fields and premature final echo refusal. Current expected causal RED must be missing consumer after genuine III offer/selection, not preparation.",
-  "excludes": "No new harmfulMargin/control/counter/art-III rule, no reflection/caller-authority, no general combat/QTE/ACTIVE/F1, no full consumer/terminal/publication/Engine/cold acceptance or HOLD retry. Baseline Fact is not repeated as a separate selection.",
+  "responsibility": "#1536 T081-D: one real signed rank-III C2 selection, exactly one applicable pressure strain slot, closed exchange A and separately proved final echo B, cold-rederived progress, real new source/optional none and reopened unpublished completion. Canonical byte/no-common-plan and other-side/understep/premature-echo controls. Separate historical RED9a7 reached missing consumer after actual III submission; later controls were unreachable then.",
+  "excludes": "No new harmfulMargin/control/counter/art-III rule, reflection/caller authority, general combat/QTE/ACTIVE/F1 or HOLD retry. Bounded direct-root last player pressure/setback only; no full strain-family/accepted-turn/Engine/UI/packaged-host qualification. No separate baseline Fact replay.",
   "changeHints": [
     "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualStrainSelection.cs",
     "BookOfEternityClient/Services/Validation/ValidationService.SpiritualWoundMechanics.cs",

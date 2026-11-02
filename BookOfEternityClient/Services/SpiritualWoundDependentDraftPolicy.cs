@@ -18,7 +18,9 @@ internal sealed class SpiritualWoundDependentDraftPolicy
     private readonly JsonObject _baseline;
     private readonly IReadOnlyList<ValidationService.SpiritualPositionDraftCorrection> _positions;
     private readonly IReadOnlyList<ValidationService.SpiritualBindingDraftCorrection> _bindings;
+    private readonly IReadOnlyList<ValidationService.SpiritualStrainDraftCorrection> _strains;
     private readonly SpiritualBindingTerminalControlCorrection? _terminalControl;
+    private readonly SpiritualStrainTerminalEchoCorrection? _terminalStrain;
     private readonly HashSet<string> _pointers;
     private readonly IReadOnlyList<(string Pointer, bool Adding)> _forceAudits;
 
@@ -43,18 +45,24 @@ internal sealed class SpiritualWoundDependentDraftPolicy
     /// <param name="terminalControl">
     /// Separate final echo of an actually validated binding, or <see langword="null"/> before that boundary.
     /// </param>
+    /// <param name="strains">Exact strain groups backed by independently proved ordinary exchange DATA.</param>
+    /// <param name="terminalStrain">Separate final player strain echo after actual correction admission.</param>
     private SpiritualWoundDependentDraftPolicy(JsonObject baseline, HashSet<string> pointers,
         IReadOnlyList<(string Pointer, bool Adding)> forceAudits,
         IReadOnlyList<ValidationService.SpiritualPositionDraftCorrection> positions,
         IReadOnlyList<ValidationService.SpiritualBindingDraftCorrection> bindings,
-        SpiritualBindingTerminalControlCorrection? terminalControl = null)
+        SpiritualBindingTerminalControlCorrection? terminalControl = null,
+        IReadOnlyList<ValidationService.SpiritualStrainDraftCorrection>? strains = null,
+        SpiritualStrainTerminalEchoCorrection? terminalStrain = null)
     {
         _baseline = baseline.DeepClone().AsObject();
         _pointers = pointers;
         _forceAudits = forceAudits;
         _positions = positions;
         _bindings = bindings;
+        _strains = strains ?? [];
         _terminalControl = terminalControl;
+        _terminalStrain = terminalStrain;
         Fields = Array.AsReadOnly(pointers.OrderBy(value => value, StringComparer.Ordinal)
             .Select(pointer => new SpiritualWoundContinuationField
             {
@@ -72,10 +80,16 @@ internal sealed class SpiritualWoundDependentDraftPolicy
     /// </summary>
     internal bool RequiresActualBindingResult => _bindings.Count != 0;
 
+    /// <summary>Requires an actual authored result before any later echo permission.</summary>
+    internal bool RequiresActualResult => RequiresActualBindingResult || _strains.Count != 0;
+
     /// <summary>
     /// Gets whether only the independently proved terminal echo remains to be corrected.
     /// </summary>
     internal bool IsTerminalControl => _terminalControl is not null;
+
+    /// <summary>Gets whether this policy is only a separately proved final echo.</summary>
+    internal bool IsTerminalEcho => IsTerminalControl || _terminalStrain is not null;
 
     /// <summary>
     /// Unites independently proved frontier permissions over the same immutable raw baseline.
@@ -88,18 +102,22 @@ internal sealed class SpiritualWoundDependentDraftPolicy
     /// </returns>
     internal SpiritualWoundDependentDraftPolicy Merge(SpiritualWoundDependentDraftPolicy next)
     {
-        if (_terminalControl is not null || next._terminalControl is not null)
+        if (IsTerminalEcho || next.IsTerminalEcho)
             throw new InvalidOperationException("Terminal control cannot merge with exchange correction fields.");
         if (!JsonNode.DeepEquals(_baseline, next._baseline))
             throw new InvalidOperationException("Dependent policies require the same committed raw baseline.");
         var positions = _positions.Concat(next._positions).ToArray();
         var bindings = _bindings.Concat(next._bindings).ToArray();
+        var strains = _strains.Concat(next._strains).ToArray();
         if (positions.Select(position => position.Pointer).Distinct(StringComparer.Ordinal).Count() != positions.Length)
             throw new InvalidOperationException("A position frontier cannot be diagnosed twice.");
         if (bindings.Select(binding => binding.Pointer).Distinct(StringComparer.Ordinal).Count() != bindings.Length)
             throw new InvalidOperationException("A binding result frontier cannot be diagnosed twice.");
+        if (strains.Select(strain => strain.Pointer).Distinct(StringComparer.Ordinal).Count() != strains.Length)
+            throw new InvalidOperationException("A strain result frontier cannot be diagnosed twice.");
         return new(_baseline, _pointers.Union(next._pointers, StringComparer.Ordinal)
-            .ToHashSet(StringComparer.Ordinal), _forceAudits.Concat(next._forceAudits).Distinct().ToArray(), positions, bindings);
+            .ToHashSet(StringComparer.Ordinal), _forceAudits.Concat(next._forceAudits).Distinct().ToArray(), positions, bindings,
+            strains: strains);
     }
 
     /// <summary>
@@ -154,24 +172,36 @@ internal sealed class SpiritualWoundDependentDraftPolicy
     /// <param name="bindings">
     /// Separately proved last-binding result groups, or <see langword="null"/> when no result permission exists.
     /// </param>
+    /// <param name="strains">Separately proved last-pressure strain groups, or no new strain permissions.</param>
     /// <returns>
     /// A comparison policy, or <see langword="null"/> when a diagnostic lacks a proved bounded correction.
     /// </returns>
     internal static SpiritualWoundDependentDraftPolicy? Create(JsonObject original, JsonObject baseline,
         IReadOnlyList<ValidationIssue> issues, AfterlifeConflictActionPointProjection? frontier,
         IReadOnlyList<ValidationService.SpiritualPositionDraftCorrection>? positions = null,
-        IReadOnlyList<ValidationService.SpiritualBindingDraftCorrection>? bindings = null)
+        IReadOnlyList<ValidationService.SpiritualBindingDraftCorrection>? bindings = null,
+        IReadOnlyList<ValidationService.SpiritualStrainDraftCorrection>? strains = null)
     {
         var pointers = new HashSet<string>(StringComparer.Ordinal);
         var forceAudits = new List<(string Pointer, bool Adding)>();
         positions ??= [];
         bindings ??= [];
+        strains ??= [];
         foreach (var correction in positions)
             foreach (var pointer in correction.Fields) pointers.Add(pointer);
         foreach (var binding in bindings)
             foreach (var pointer in binding.Fields) pointers.Add(pointer);
+        foreach (var strain in strains)
+            foreach (var pointer in strain.Fields) pointers.Add(pointer);
         foreach (var issue in issues)
         {
+            if (ValidationService.StrainDependencyIndex(issue) is { } strainIndex)
+            {
+                var rawStrain = AfterlifeSpiritualConflictState.ResolveRawExchange(original, baseline, strainIndex);
+                if (rawStrain is not { } resolvedStrain || !strains.Any(strain => strain.Pointer == resolvedStrain.Pointer))
+                    return null;
+                continue;
+            }
             if (ValidationService.BindingDependencyIndex(issue) is { } bindingIndex)
             {
                 var rawBinding = AfterlifeSpiritualConflictState.ResolveRawExchange(original, baseline, bindingIndex);
@@ -211,7 +241,7 @@ internal sealed class SpiritualWoundDependentDraftPolicy
             var actualBefore = side == "player" ? frontier.Player.Current : frontier.Opposition.Current;
             if (before != actualBefore) pointers.Add(pointer + "/before");
         }
-        return new(baseline, pointers, forceAudits, positions.ToArray(), bindings.ToArray());
+        return new(baseline, pointers, forceAudits, positions.ToArray(), bindings.ToArray(), strains: strains.ToArray());
     }
 
     /// <summary>
@@ -229,7 +259,9 @@ internal sealed class SpiritualWoundDependentDraftPolicy
         if (!SameExcept(_baseline, candidate, "") ||
             _positions.Any(position => !position.Allows(ReadNode(candidate, position.Pointer))) ||
             _bindings.Any(binding => !binding.Allows(ReadNode(candidate, binding.Pointer))) ||
-            _terminalControl is not null && !_terminalControl.Allows(candidate)) return false;
+            _strains.Any(strain => !strain.Allows(ReadNode(candidate, strain.Pointer))) ||
+            _terminalControl is not null && !_terminalControl.Allows(candidate) ||
+            _terminalStrain is not null && !_terminalStrain.Allows(candidate)) return false;
         foreach (var (pointer, adding) in _forceAudits)
         {
             var prior = ReadNode(_baseline, pointer);
@@ -260,7 +292,7 @@ internal sealed class SpiritualWoundDependentDraftPolicy
     internal bool TryApplyPositionCorrections(JsonObject candidate)
     {
         // Choosing no_effect or blocked belongs to the actual GM response, never a diagnostic replay.
-        if (_bindings.Count != 0) return false;
+        if (RequiresActualResult) return false;
         foreach (var correction in _positions)
             if (ReadNode(candidate, correction.Pointer) is not JsonObject audit || !correction.TryApply(audit)) return false;
         return true;
@@ -297,6 +329,27 @@ internal sealed class SpiritualWoundDependentDraftPolicy
         if (!terminal.TryApply(copy)) return false;
         projected = copy;
         successor = new(candidate, new HashSet<string>(StringComparer.Ordinal) { carrier.Pointer }, [], [], [], terminal);
+        return true;
+    }
+
+    /// <summary>Proposes only the final strain echo of actual correction A; complete source/resource admission is still required.</summary>
+    internal bool TryProjectStrainTerminalEcho(JsonObject candidate, out JsonObject? projected,
+        out SpiritualWoundDependentDraftPolicy? successor)
+    {
+        projected = null;
+        successor = null;
+        if (_strains.Count != 1 || !Allows(candidate) ||
+            ReadNode(candidate, _strains[0].Pointer) is not JsonObject exchange ||
+            !_strains[0].IsCorrected(exchange) || exchange["after"] is not JsonObject after ||
+            candidate.ContainsKey(AfterlifeSpiritualConflictState.ResponseField) ||
+            candidate["activeConflict"] is not JsonObject active) return false;
+        var terminal = new SpiritualStrainTerminalEchoCorrection(active, after);
+        if (terminal.Allows(candidate, correctedOnly: true)) return false;
+        var copy = candidate.DeepClone().AsObject();
+        if (!terminal.TryApply(copy)) return false;
+        projected = copy;
+        successor = new(candidate, new HashSet<string>(StringComparer.Ordinal)
+            { SpiritualStrainTerminalEchoCorrection.Pointer }, [], [], [], terminalStrain: terminal);
         return true;
     }
 

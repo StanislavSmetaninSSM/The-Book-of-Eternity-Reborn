@@ -1,3 +1,43 @@
+# T081-D strain consumer bounded implementation WIP — causal RED accepted
+
+Independent Sol accepted source/runtime9a7bd7441439431257c11e0ab5e516b91e8e2689:
+1 actual causal FAIL at selection disposition line64, after genuine III offer/legal
+3 slots, seven unchanged canonical images and no-common-plan. Only diagnostic
+spiritual_wound_profile_integration_required at exchangeLog[1]; no prep failure,
+timeout/skip/dup/underfill, cleanup true/newTMP[], wrapper14.635433029s/category8.2771797s.
+Summarya37b605268c9ba9e64b8b76587419c4bff130f7ea2b8c303e33d5a4bd427a33a;
+TRXd5696b236359bde52ba22d0c6c12d30100a5e9378af79155d26094ac70ecdd4b;
+postproof5bac16f253be59a7a4622e2481ec6b1d2e1b763177e1abe4539040936cdbdafe.
+25artifacts/412copies/native4/369bindings unchanged. Later policy checks UNREACHED.
+
+Current production WIP uses existing C2 selection/scoped owners: one direct-root
+last player pressure/setback ordinary comparison is freshly proved BEFORE actual
+materialization through the shared discarded source/resource probe, then retained
+only as private DATA and rederived on cold saved-choice replay. Exact new wound
+source/root/actor/ordinal/current context and single applicable contribution are
+required. Only one after.playerSideStrain step to min(broken,ordinary+1); unproved
+profiles/combinations/side/carrier remain fail-closed. No universal failure rule.
+A must actually validate before separate B echo permission; actual corrected source
+and witness/offer are retained, not suppressed. Existing binding authority stays
+separate. Typed final-strain diagnostic aligns continuation with initial admission;
+no generic error bypass. New C# UNCOMPILED, SOURCE/runtime pending, not accepted.
+
+New Unit comparison5+GMexample1; changed-policy cost/force7 and binding DATA4;
+new real III C2 A/B/cold/new-source/none1 (60s) and affected actual mixed-binding
+A/B control1 (existing300s). Proposed19 distinct cases, exact catalog/Plan required.
+Baseline1 not separately replayed; its writer extraction is source-equivalent.
+Three fresh affected builds Main/Unit/Integration after whole SOURCE; unchanged
+Support/Bridge/CrashHost inputs will be verified, not rebuilt without cause.
+
+GM contract, worked comparison and focused manifest updated; no new wire fields
+or author decisions. Optimization: existing immutable prepared template, source/
+resource/journal/service owners and scoped DATA; requested-profile prefilter avoids
+ordinary probes when no strain is requested. Fresh ordinary probe/replay is required
+for source/resource authority, not replaceable by cached permission. No new cache,
+reflection, IO stack or speedup claim. Full raw outside checkout at
+/workspace/tboe-linux-evidence-20261102/spiritual-strain-burden; no raw uploads/deletes.
+All four author decisions, parents and existing UNKNOWN/HOLD remain open; wound-only.
+
 # T081-D strain C2 selection: causal scaffold WIP
 
 Accepted baseline/source-cap preparation58a5 remains separate1PASS; current test-only
