@@ -4,7 +4,7 @@
 
 - [x] T141.1 Сверить два bounded source audit и принятые контракты; записать scope/spec/plan/consistency до арифметической проверки.
 - [x] T141.2 Подготовить control-and-barrier-budgets.md, обновить вход концепции; расчёты и18 новых ссылок, шестидокументный diff/check проверены. Новые числа остаются кандидатами.
-- [ ] T141.3 Независимый Astra/high review целого блока, устранение замечаний, remote/readback/new clean restore и предъявление результатов; без production/Rules/probes.
+- [x] T141.3 Независимый GPT-6 Astra/high review c555e20..9686650: P3 единицы mortal-примера исправлена и закрыта focused review, PASS без открытых замечаний. WIP remote/API/6blobs/байты/new clean restore проверены; финальный checkpoint/readback — issue1573 и verification.json. Предложение предъявляется без production/Rules/probes.
 
 ## T140 — обновлённая концепция искусств
 
