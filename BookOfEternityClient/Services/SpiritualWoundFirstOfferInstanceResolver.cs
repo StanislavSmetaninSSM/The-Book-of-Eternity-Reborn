@@ -1,4 +1,3 @@
-using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 
@@ -64,13 +63,13 @@ internal static class SpiritualWoundFirstOfferInstanceResolver
             return Fail("spiritual_first_offer_signed_origin_invalid");
         try
         {
-            var original = SpiritualWoundStateJson.Parse(Encoding.UTF8.GetString(conflict.Bytes));
+            var original = SpiritualWoundStateJson.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(conflict.Bytes));
             var active = original["activeConflict"] as JsonObject;
             var display = active?["conflictId"]?.GetValue<string>();
             if (string.IsNullOrWhiteSpace(display) || display != display.Trim())
                 return Fail("spiritual_first_offer_active_conflict_required");
             var rootJson = receipt.Existed
-                ? Encoding.UTF8.GetString(receipt.Bytes!)
+                ? CanonicalJsonUtf8.DecodeOneOptionalBom(receipt.Bytes!)
                 : """
                   {"schemaVersion":1,"nextInstanceOrdinal":1,"nextClosureOrdinal":1,
                    "nextSourceOrdinal":1,"nextDecisionOrdinal":1,"instances":[],
@@ -132,7 +131,7 @@ internal static class SpiritualWoundFirstOfferInstanceResolver
             return new(row["instanceId"]!.GetValue<string>(), row, []);
         }
         catch (Exception error) when (error is JsonException or FormatException or
-            InvalidOperationException or OverflowException)
+            InvalidOperationException or OverflowException or InvalidDataException)
         {
             return Fail("spiritual_first_offer_signed_origin_invalid");
         }

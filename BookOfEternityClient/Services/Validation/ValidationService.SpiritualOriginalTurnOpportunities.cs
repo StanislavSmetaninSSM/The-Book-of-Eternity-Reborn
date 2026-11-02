@@ -365,7 +365,7 @@ public partial class ValidationService
             if (issues.Count != 0 || resolved.InstanceId == null || !signed.Receipt.Existed)
                 return null;
             var parsed = SpiritualWoundOpportunityReceiptState.Parse(
-                new UTF8Encoding(false, true).GetString(signed.Receipt.Bytes!),
+                CanonicalJsonUtf8.DecodeOneOptionalBom(signed.Receipt.Bytes!),
                 SpiritualWoundOpportunityReceiptState.StatePath);
             issues.AddRange(parsed.Issues);
             if (issues.Count != 0 || parsed.State == null)

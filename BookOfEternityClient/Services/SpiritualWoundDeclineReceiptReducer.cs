@@ -70,7 +70,7 @@ internal static partial class SpiritualWoundDeclineReceiptReducer
                 return Fail("spiritual_c3_decline_signed_snapshot_changed");
             var parsed = SpiritualWoundOpportunityReceiptState.Parse(
                 signed.Receipt.Existed
-                    ? new UTF8Encoding(false, true).GetString(signed.Receipt.Bytes!)
+                    ? CanonicalJsonUtf8.DecodeOneOptionalBom(signed.Receipt.Bytes!)
                     : EmptyReceipt,
                 SpiritualWoundOpportunityReceiptState.StatePath);
             if (!parsed.IsValid || parsed.State is null)

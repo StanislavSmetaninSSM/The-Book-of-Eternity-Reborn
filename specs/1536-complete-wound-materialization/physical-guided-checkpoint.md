@@ -1,3 +1,41 @@
+# T081-D signed-byte correction — genuine cheap RED accepted; production fix WIP
+
+At70253ea1cd0ae021025dade2b77df40d613fc95c, fresh Unit37.716811s/exit0/26baseline,
+45/618/6 and4PE/PDB494bindings verified. Catalog1368/13202 valid; exact official
+H3-causal12 completed12:7PASS/5FAIL, category3.2505363s/wrapper9.561332177s. All
+three published-BOM inputs failed reuse; both invalidUTF8 inputs incorrectly passed
+resolver after successful valid/replacement-decoded prerequisites. DoubleBOM2,
+identity3 (including same request42at43) and sharedcodec2 passed. No fixture failure,
+exception leak, timeout/skip/duplicate/underfill. Sol/xhigh accepted causal OUTCOME.
+Post67cb790e81dacd0174a0d14a80d231f13e2371677e72ca0429c3d450ba3c9dee;
+summary5d66c77299003546d82f4e96bc29e4201671c5ac70cc75cd08c0593d3f4eeaf6.
+All posthashes stable/cleanuptrue/noTMP/owners. Full H2actualFAIL and H3RED retained
+outside checkout at /workspace/tboe-linux-evidence-20261102/spiritual-strain-preimage-data.
+Seven source readback proof6300de9d935ca9bccdefb0f2a63aa9f9c54c63cd8c1cf0d1d66b7776fe96bd59.
+
+Astra/high DESIGN accepted the bounded six signed-byte reads across five production
+consumers: existing CanonicalJsonUtf8.DecodeOneOptionalBom, fail-closed catches for
+InvalidDataException in creation reader/resolver/source-only reducer; ordinary C3
+already catches it, prior-wound lookup uses immediately validated immutable images.
+No raw byte/hash rewrite, permissive parser or ledger/request guard change. The
+separate fixture bug now uses one unique healing43 request constant consistently
+for staging/snapshot/published proof and a distinct readonly44 request. Unchanged
+first-create/sources/decisions/expired-root/result/spend assertions remain required.
+Production diff15insertions/15deletions plus checkpoint is UNCOMPILED/UNRUN. Next
+whole delta SOURCE, fresh Main/Unit/Integration, exact cheap12GREEN, then separate
+PREP for one actual180s. H2cheap3 methods/helpers unchanged; no justified repeat of
+old G4/state/cache suite. Old actualFAIL is not erased or accepted by a cheap GREEN.
+
+Optimization/GM: reuse existing strict decoder, no cache/new framework, extra source
+read or JSON parse. Existing repeated parsing in prior-wound lookup is unchanged;
+this narrow byte compatibility fix adds no duplicate work and makes no speedup
+claim. Immutable before-image bytes, original fingerprints, source/lease/currentness
+and History checks remain fresh. This is client-owned decoding of the format the
+current writer emits, not a GM payload/command/rule change; guide/example/manifest
+remain valid and no GM update is needed. Original explicit harmfulMargin producer
+is still open; author deferrals and all older UNKNOWN/HOLD remain unchanged. Actual
+weakening/root retirement and whole #1536 are not yet qualified.
+
 # T081-D actual weakening — H2 actual1 FAIL; byte-boundary causal scaffold WIP
 
 Scaffold review found the receipt malformed-byte negative initially failed on an

@@ -39,6 +39,7 @@ public sealed partial class AfterlifeResourceCutoverTests
     [Fact]
     public async Task SpiritualStrainBurden_ActualCombatWeakeningRetiresRootsAndKeepsSignedHistory()
     {
+        const string healingRequestId = "request_strain_healing_43";
         await using var context = await CreateCompleteConflictFrameContextAsync(
             seedOriginalInputs: SeedStrainHealingOriginalAsync, signedDice: [5, 15, 4, 12],
             playerCurrent: 8m, oppositionCurrent: 8m, spiritFocusTier: 2, oppositionMaximum: 8m);
@@ -65,7 +66,7 @@ public sealed partial class AfterlifeResourceCutoverTests
         await using (var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync())
         {
             var staged = await AfterlifeWoundTreatmentAuthority.StagePlayerCombatTurnAsync(context.FileSystem, lease, scheduler,
-                "session_resource_materialization", "request_resource_materialization", 43, selected);
+                "session_resource_materialization", healingRequestId, 43, selected);
             Assert.True(staged.Stage.IsStaged, staged.Stage.IssueCode);
             control = Assert.IsType<ProgressionControl>(staged.Control);
             projection = Assert.IsType<JsonObject>(staged.Stage.GmContext);
@@ -75,7 +76,7 @@ public sealed partial class AfterlifeResourceCutoverTests
         var request = Assert.Single(projection["possibleDestinationGraphs"]!.AsArray(), row => row!["severityRank"]!.GetValue<int>() == 1)!;
         var authored = AuthorStrainHealingGraph(before, request["stageRef"]!.GetValue<string>());
         await context.CaptureValidatedPendingSnapshotAsync(turn: 43, currentRealm: "Chaos Sea",
-            preGeneratedDices1d20: [19, 5, 12, 8], progressionControl: control, spiritualHealing: projection);
+            preGeneratedDices1d20: [19, 5, 12, 8], requestId: healingRequestId, progressionControl: control, spiritualHealing: projection);
         var snapshotToken = (await context.ReadJsonAsync(LiveTurnPreparationService.PendingTurnSnapshotManifestPath))!["manifestPayloadHash"]!.GetValue<string>();
         var worldBefore = await context.FileSystem.ReadFileBytesAsync(EffectAcceptedTurnInputComposer.WorldTimePath);
         var scheduleBefore = await context.FileSystem.ReadFileBytesAsync(ProgressionScheduleService.SchedulePath);
@@ -156,12 +157,13 @@ public sealed partial class AfterlifeResourceCutoverTests
         Assert.Equal(scheduleBefore, await context.FileSystem.ReadFileBytesAsync(ProgressionScheduleService.SchedulePath));
         await using (var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync())
             Assert.True(await ProgressionScheduleService.IsPublishedSpiritualCombatCoreAsync(control,
-                "session_resource_materialization", "request_resource_materialization", 43,
+                "session_resource_materialization", healingRequestId, 43,
                 path => context.FileSystem.ReadFileBytesAsync(lease, path), snapshotToken, intent));
         foreach (var path in new[] { SpiritualWoundCaptureCheckpointState.StatePath,
                      SpiritualWoundDecisionPendingState.StatePath, AcceptedMechanicsPlan.WoundCommandPath })
             Assert.Null(await context.FileSystem.ReadFileBytesAsync(path));
-        await context.CaptureValidatedPendingSnapshotAsync(turn: 44, currentRealm: "Chaos Sea", preGeneratedDices1d20: [15, 5, 12, 8]);
+        await context.CaptureValidatedPendingSnapshotAsync(turn: 44, currentRealm: "Chaos Sea",
+            preGeneratedDices1d20: [15, 5, 12, 8], requestId: "request_strain_history_44");
         AssertNoConflictFrameErrors(await ValidatePublishedConflictPhaseAsync(context));
     }
 

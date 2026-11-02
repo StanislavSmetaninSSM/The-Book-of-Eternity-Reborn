@@ -1,4 +1,3 @@
-using System.Text;
 using BookOfEternityClient.Core;
 
 namespace BookOfEternityClient.Services;
@@ -57,8 +56,8 @@ public partial class ValidationService
             if (signedReceipt.Existed)
             {
                 string receiptJson;
-                try { receiptJson = new UTF8Encoding(false, true).GetString(signedReceipt.Bytes!); }
-                catch (DecoderFallbackException)
+                try { receiptJson = CanonicalJsonUtf8.DecodeOneOptionalBom(signedReceipt.Bytes!); }
+                catch (InvalidDataException)
                 {
                     issues.Add(SourceIssue(SpiritualWoundOpportunityReceiptState.StatePath,
                         "spiritual_wound_receipt_invalid_state", "a valid UTF-8 spiritual wound receipt history"));

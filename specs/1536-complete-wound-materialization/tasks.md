@@ -1,3 +1,11 @@
+# T081-D signed-byte fix — current WIP
+
+- [x] Cheap causal12 at70253ea:7PASS/5 genuineFAIL, independent OUTCOME accepted; failed native H2 remains separately recorded.
+- [x] Apply existing decoder at six signed reads plus fail-closed catches; unique fixture request43/44 IDs; UNCOMPILED/UNRUN.
+- [ ] Whole delta SOURCE and fresh Main/Unit/Integration, exact cheap12GREEN.
+- [ ] Separate PREP and one actual weakening/root-retirement case in180s; close full capture and independent OUTCOME.
+- [ ] Accepted current checkpoint; no broader strain/terminal/UI/HOLD completion claim.
+
 # T081-D current — H2 actual FAIL, signed-byte causal tests WIP
 
 - [x] Fresh H2 Integration and cheap3 accepted; preserve full actual1FAIL/cleanup/hashclose and independent OUTCOME.
