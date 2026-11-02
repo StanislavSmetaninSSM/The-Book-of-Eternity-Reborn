@@ -132,9 +132,11 @@ public sealed partial class AfterlifeResourceCutoverTests
         Assert.DoesNotContain(after.Consequences.OwnedEffectSources.Definitions,
             definition => definition.GetProperty("components").EnumerateArray().Any(component =>
                 component.GetProperty("profile").GetString() == "spiritual_strain_burden"));
-        var identity = EffectIdentityState.Parse((await context.ReadJsonAsync(EffectAcceptedTurnPlan.IdentityIndexPath))!.ToJsonString(), EffectAcceptedTurnPlan.IdentityIndexPath);
-        Assert.True(identity.IsValid, string.Join("\n", identity.Issues));
-        Assert.All(oldRoots, id => Assert.Equal("expired", Assert.Single(identity.State!.Entries, row => row.EffectId == id).State));
+        using var identityDocument = JsonDocument.Parse((await context.ReadJsonAsync(EffectAcceptedTurnPlan.IdentityIndexPath))!.ToJsonString());
+        var identity = EffectIdentityState.Parse(identityDocument.RootElement, EffectAcceptedTurnPlan.IdentityIndexPath);
+        Assert.Empty(identity.Issues);
+        var identityState = Assert.IsType<EffectIdentityState>(identity.State);
+        Assert.All(oldRoots, id => Assert.Equal("expired", Assert.Single(identityState.Entries, row => row.EffectId == id).State));
         var history = WoundHistoryState.Parse((await context.ReadJsonAsync(WoundHistoryState.HistoryPath))!.ToJsonString(), WoundHistoryState.HistoryPath);
         Assert.True(history.IsValid, string.Join("\n", history.Issues));
         var historyState = Assert.IsType<WoundHistoryState>(history.State);

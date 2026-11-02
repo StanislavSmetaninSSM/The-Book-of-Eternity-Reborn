@@ -1,5 +1,13 @@
 # T081-D actual weakening fixture — source WIP / UNCOMPILED / UNRUN
 
+Fresh H1 Integration on6adbff436b92a5b7dd8e64c0a340916775efda52 failed compilation
+in59.799097s with2 test-only API errors at135/136: EffectIdentityState.Parse requires
+JsonElement, and its result exposes State/Issues rather than IsValid. Corrected to
+a scoped JsonDocument, Assert.Empty(Issues) and typed non-null State, keeping exact
+expired-root assertions. No tests launched, no product failure/causal RED claim.
+Failed build log and old artifact archive retained outside checkout. Delta SOURCE
+and fresh Integration required; all new cheap3/actual1 remain UNRUN.
+
 SOURCE review caught a pre-build test compile defect: ResourceHistoryState.ToCanonicalJson
 returns text. The cheap count now uses existing typed Transitions.Count, with no
 serialization/reparse. No compiler/test has run on this WIP; this is not causal RED.
