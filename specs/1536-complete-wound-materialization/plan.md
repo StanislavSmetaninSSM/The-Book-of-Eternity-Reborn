@@ -1,3 +1,72 @@
+# T149 canonical player carrier — causal scaffold WIP, no production fix
+
+2026-11-02 UTC; tracked T149-CANONICAL-PLAYER-CARRIER / parent T149 / #1536.
+Clean local HEAD and full remote branch1536-linux-qualification-20261025 were
+confirmed at1969e53ae1a276f9bbcf99b326fc54383d1fbd9b before this source-only block.
+Independent Astra/high R2 OUTCOME accepts its exact TIMEOUT/UNKNOWN receipt;
+no browser retry, acceptance or change to retained primary values follows.
+
+Smallest caller trace: ValidatePlayerStateFiles (PlayerAndInventory.cs:64) supplies
+fixed game_state/player/wounds.json → ValidatePlayerFile:3607 →
+ValidateWoundsContainer:7274. Its bare-array early return precedes the strict
+canonical-player branch and calls loose ValidateWoundObject:7818, which accepts
+woundName/name, optional severity, generatedEffects/healingState. The other real
+caller is ValidateWoundsProperty for playerWoundChanges; this block does not
+retire that alias, NPC/effect validation or its still-live inventory allowances.
+No full accepted-turn publication bypass is claimed: catalog/read/publication
+layers already have separate strict schema/identity/history authority.
+
+Authored Integration fixture WoundCanonicalPlayerCarrierValidationTests uses the
+existing ResourceMaterializationTestContext (real Files/Validator/generation,
+no GameEngine/snapshot/world) and existing WoundContractTestData. Compile ownership:
+ResourceMaterializationTestContext and the new test are Integration default items;
+WoundContractTestData is already linked exactly once into TestSupport and referenced
+by Integration, so no helper copy, new link or project change is introduced.
+The real ValidateGameStateAsync receives GameStateValidationSelection with
+PlayerStateFiles and only the exact canonical player path. No test-only validator,
+reflection or fabricated source/authority supplies a verdict.
+
+Finite source selection: one exact60s category, three methods/nine rows. Empty and
+nonempty bare legacy arrays are the two intended causal RED rows; actual Error on
+the exact canonical root is the oracle, after genuine input and unchanged-byte
+premises. No new diagnostic code/message is demanded. Scalar/null rows (null,
+number, string, true, false) preserve the existing generic root refusal and may
+already PASS. Genuine empty/populated strict carriers are independently validated
+by the existing catalog, then passed through the same actual phase with unchanged
+source bytes. Positive controls need not fail. Failed compile/setup, child errors,
+timeout or incomplete rows do not constitute the intended causal RED.
+
+Existing WoundCarrierCatalogTests.Build_RejectsMalformedAndLegacyPlayerAndNpcRoots
+covers wrong owner/activeWounds kind and legacy wrappers; its
+Build_MalformedStrictRootsStillParseEveryNonEmptyCanonicalWoundArray covers unknown
+player-root fields, malformed entries and fail-closed lookup. Those controls and
+the catalog remain unchanged; no broad mortal-wounds-effects replay is required
+for this test-only scaffold. The old accepted browser36 selection is replaced by
+the new finite category, with reasons; R1 acceptance and R2 UNKNOWN remain intact.
+
+Proposed fix only AFTER accepted causal RED: dispatch the fixed canonical player
+path before generic array/object fallback; refuse non-object roots and use the
+existing catalog for objects. A stable existing wound_carrier_invalid_root code
+may identify that refusal, but it is not the causal oracle. Preserve generic
+noncanonical callers and all strict object validation; add a meaningful guard for
+the canonical dispatch rather than mechanically deleting legitimate allowances.
+No production or existing legacy guard changes are present in this scaffold.
+
+Optimization: target file is selected once through the existing fresh reader, then
+validated by the existing catalog; independent before/after byte reads are test
+premises. Fresh per-case filesystem/generation owns its lifetime and cleanup; no
+cache, shared mutable fixture or diagnostic framework is added. New timings/source
+counts are UNMEASURED. GM no-update: accepted closed schema-v1/no legacy migration
+is already documented in OtherGuides/Wound_Materialization_Contract.md:17–18.
+This scaffold changes no runtime rule or authored/output field; the proposed fix
+retires unsupported raw-root admission under that existing contract.
+
+C# UNCOMPILED; writer builds/restore/discovery/catalog/PlanOnly/runtime UNRUN by
+instruction. Static source/diff/JSON/selectors/row checks only. Next: independent
+bounded design+SOURCE review, root's fresh affected owning build/exact PlanOnly /
+PREP/real RED. Only root may admit the minimal production correction and GREEN.
+Parent T149 and all browser/native/DFR/Mortal/Windows HOLDs remain open.
+
 # Browser source read reservation accepted; full course still UNKNOWN
 
 Independent Astra/high accepts R1 GREEN36. Separately admitted browser runtime
@@ -9,7 +78,7 @@ one closed treatment attempt, one ordinary accepted wait and an unclosed second
 confirmed attempt; no new instrumentation, complete-capture or whole-cause claim.
 See physical-guided-checkpoint.md for primary identities and exact limits.
 
-R2 independent OUTCOME is pending. Do not blind-retry or raise the budget. Continue
+Independent Astra/high accepts R2 OUTCOME as TIMEOUT/UNKNOWN on1969e53ae1a276f9bbcf99b326fc54383d1fbd9b. Do not blind-retry or raise the budget. Continue
 independent canonical T149 functional work: the current PlayerStateFiles legacy
 array branch can bypass strict player-carrier validation. Confirm via typed causal
 RED and bounded design/source review; keep old accepted/HOLD lineages separate.

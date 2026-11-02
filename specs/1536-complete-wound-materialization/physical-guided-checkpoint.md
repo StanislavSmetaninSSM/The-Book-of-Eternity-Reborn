@@ -1,3 +1,35 @@
+# T149 canonical player-carrier causal scaffold — source-only WIP
+
+2026-11-02 UTC, base/confirmed remote1969e53ae1a276f9bbcf99b326fc54383d1fbd9b.
+Tracked T149-CANONICAL-PLAYER-CARRIER; parent T149 remains unchecked. Canonical
+minimal design, exact two-caller trace, fixture/Compile ownership, optimization
+and GM no-update rationale are at the top of plan.md. No production implementation
+or existing source-guard allowance changes occur in this scaffold.
+
+One new Integration test file uses existing ResourceMaterializationTestContext and
+TestSupport-owned WoundContractTestData. Three exact methods/nine authored rows:
+actual PlayerStateFiles canonical-path selection must refuse bare arrays2;
+scalar/null5 preserve generic root Error; genuine catalog-valid empty/populated
+carriers2 stay accepted. Every row checks source bytes unchanged after the actual
+validator. The causal oracle is a real Error on the canonical root, not a new
+code/message. Only those two missing-refusal rows are expected to be causal RED;
+setup/compile/underfill/timeout or child-error failures are not accepted evidence.
+One exact60s category/current selection owns the scaffold; no old accepted set
+or broad catalog category is replayed. Existing malformed-object/unknown-field
+catalog controls remain unchanged. All later ownership/publication fences remain.
+
+R2 OUTCOME has now been independently accepted by Astra/high as TIMEOUT/UNKNOWN;
+the primary runtime/source/budget/prefix/cleanup values below are unchanged.
+No browser retry or broader HOLD release. Current scaffold is C# UNCOMPILED and
+all builds/restore/discovery/catalog/PlanOnly/runtime are UNRUN by instruction.
+Next is independent bounded design/SOURCE, then root's fresh owning build/exact
+PlanOnly/PREP/causal RED before any production fix authorization.
+Writer static checks: git diff --check exit0; catalog/selection JSON parse with
+unique IDs and exact three selectors; source count2+5+2=9; public test parameters
+are primitive; one actual typed phase call in the private helper. Production and
+existing legacy guard diffs are empty. These checks prove source consistency only,
+not compilation, discovery, intended RED or runtime acceptance.
+
 # R1 accepted; R2 full browser course TIMEOUT / UNKNOWN
 
 Independent Astra/high accepts all primary R1 GREEN36 results and their exact
@@ -35,7 +67,9 @@ Retained-root inventory SHA256:
 441565711035e40f285217e602e170958faa21bfb5bbfe163fc5c8067b002254.
 Existing-timer prefix fold and its full output remain external. No old raw, saves,
 recovery or unique evidence was deleted; free space remains about 27.0 GB.
-Independent R2 OUTCOME is pending. Accepted R1 remains separate. Broader native,
+Independent Astra/high accepts R2 OUTCOME as TIMEOUT/UNKNOWN against
+1969e53ae1a276f9bbcf99b326fc54383d1fbd9b; no full-course acceptance or retry.
+Accepted R1 remains separate. Broader native,
 C9/C10, DFR/Mortal/Windows HOLDs and #1536 acceptance remain open.
 
 Next independent functional correction is T149 canonical player-carrier

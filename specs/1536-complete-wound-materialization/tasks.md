@@ -21,19 +21,27 @@
   Independent R1 OUTCOME is accepted. Separate full browser runtime
   11ca0dc310b47f4bacc2fd9825dcc9603f45ed6e times out at 180.1041994/180s,
   zero completed TRX/cases; complete available prefix and retained fixture root
-  remain external. R2 OUTCOME pending; full browser qualification stays UNKNOWN.
+  remain external. Independent Astra/high accepts R2 OUTCOME as TIMEOUT/UNKNOWN;
+  full browser qualification stays UNKNOWN and no retry is admitted.
   Broader141/DFR/Mortal/Windows/native work is not
   repeated automatically; browser180s admission and parent/HOLD closure stay open.
 
 - [ ] T149-CANONICAL-PLAYER-CARRIER [US1/US7] Close the concrete PlayerStateFiles
   bare legacy-array bypass before strict player carrier dispatch. Obtain typed
-  current-source RED (including empty/nonempty arrays and non-object roots),
+  current-source causal RED for empty/nonempty bare arrays; preserve generic
+  scalar/null refusal without requiring a new diagnostic code,
   preserve valid canonical empty/populated carriers and immutable source bytes,
   retire only the substantiated loose route/allowance, and retain fresh read and
   common publication authority. Inspect all callers and meaningful source guards;
   independent design/source review, fresh affected builds and addressed GREEN
   precede acceptance. No new save compatibility, accepted-turn bypass claim,
   whole T149 closure, full browser retry or deferred HOLD release is implied.
+  Authored scaffold WIP: actual typed PlayerStateFiles with exact canonical-path
+  selection, three methods/nine source rows (arrays2 causal, scalar/null5 preserving,
+  genuine catalog-valid canonical2), one exact60s category. Existing minimal
+  filesystem/validator/generation fixture and TestSupport-owned wound data are reused;
+  file bytes are checked before/after. Production and legacy guard are unchanged.
+  Design/SOURCE/build/discovery/PlanOnly/PREP/RED remain pending; C# UNCOMPILED/UNRUN.
 
 # T108 Shining patient treatment — #1536
 
