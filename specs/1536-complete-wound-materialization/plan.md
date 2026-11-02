@@ -1,37 +1,62 @@
-# T081-D exact maneuver/success implementation WIP
+# T081-D successful maneuver strain no-op accepted — 2026-11-02
 
-Accepted pressure4 remains on source88fd/checkpoint7806; do not count it as a
-new run or whole profile. Corrected causal source c954c24226fb3442a1a39078c2d815d3bff6505e
-proved one FAIL in3.9905717s, only integration_required at exchange1 after
-lawful maneuver/guard ordinary2/4claims/soleIII and actual narrated III selection.
-Sol causal OUTCOME accepted. Late direct-completion/cold/candidate controls
-UNREACHED then. Earlier d9 narration preparation FAIL remains separate.
-Post proof 6a96b9a4b3e2b2981461e9ab5702f6aa563f56738c4b8d0b911c233d02912285.
+Source/build/runtime 79d16f95360f8dfb5e59c594ae3cc5ddf2e4f77a: five unique
+PASS in four bounded runs (2 + 1 + 1 + 1), not one aggregate or a sum with old
+pressure4/private20/C4two. Astra/high DESIGN; Sol/xhigh SOURCE, PREP, causal and
+GREEN OUTCOME accepted. Production delta adds maneuver to the existing exact
+player pressure|maneuver success contribution predicate. No ordinary matrix,
+other contribution, current actor/effect/ownership, dice/cost/source check changes.
 
-Minimal implementation follows Astra DESIGN: the existing current-player exact
-success contribution branch uses only the closed operation set pressure|maneuver.
-No general !failure, other-side rule, matrix or ordinary validation change. All
-other contributions, current ownership/effect identity, signed dice/cost/chronology/
-source/final echo remain normal. Guide/worked example/manifest synchronize exact
-maneuver against guard, cost3/2, unchanged strains and direct completion without
-fictitious source/none. Existing parsed guard consumes changed required text.
-No new response fields/transport/owner or Mortal/launcher entrypoint change;
-existing matrix links and registered-profile guide remain authoritative.
+Real III strain/maneuver choice now finishes directly after lawful maneuver vs
+guard: one original source/one materialize decision, no fictitious second source
+or none, unchanged player overwhelmed/opposition clear and control, improved
+position, player cost3/opposition guard cost2. Same-process cold validator reopening
+preserves completed candidate; canonical7 unchanged and no publication authority.
+Affected pressure success retains sourceI/none; failed pressure retains +1, separate
+A/B, cold rederivation and other-side/understep/premature-echo refusals/sourceII.
+This does not qualify other failures, sides, carriers, Engine/UI or fresh process.
 
-Current C# UNCOMPILED, GREEN UNRUN. Next whole SOURCE, fresh Main/Unit/Integration,
-artifact/resource/PDB/selected discovery/Plan/PREP. Exact cheap guidance1+manifest1
-before new maneuver1, affected pressure success1 and failed pressure1, each60s.
-Five cases guard the changed success predicate and GM contract; no old20/C4 broad
-rerun or retagging. Current fixtures reuse existing signed prepared DATA with
-independent mutable roots; ordinary and cold revalidation are tested lifecycle
-boundaries, not avoidable duplicate setup. No new cache, IO or extra ordinary
-comparison for zero modifier; no speedup claim. Prior actual Main/Unit88fd and
-Integrationc954 own15 preserved with member/hash/gzip EOF/CRC proof, no deletion.
+Exact TRX seconds: maneuver8.1474882, pressure8.3929952, setback33.1383809,
+manifest0.1618832 and parsed GM guard0.2863001. Each descriptor60s; no timeout,
+skip, duplicate or underfill. Complete planned/executed counts and owned cleanup;
+no new TMP roots or active owners. Fresh Main/Unit/Integration exit0 in
+65.969176195 / 35.618303158 / 70.171665556 seconds, unchanged warning multisets
+81/26/107. Support/hosts are unchanged verified dependencies, not new builds.
+45 artifacts, 206 resource inputs/618 copies, native6, four PE/PDB pairs and
+471 source bindings checked before/after all runs. Only guide/example/manifest
+and nine copies changed. Actual catalog discovery1359/13186 executed no tests.
 
-Full raw outside checkout: /workspace/tboe-linux-evidence-20261102/spiritual-strain-maneuver-success.
-Four author decisions remain unanswered; no harmfulMargin=0 or new control/counter/
-artIII rule. All old UNKNOWN/HOLD and whole profile/Engine/UI/fresh-process/#1536
-parents remain OPEN. Wounds only.
+The first d9 run is a preparation FAIL (3.6472458s, missing exact acquisition
+narration), not causal RED. Corrected c954 run is genuine causal FAIL3.9905717s:
+only integration_required after full ordinary source/III/narration admission;
+late completion/cold/candidate controls were UNREACHED then and reached now.
+Production guards/assertions/budgets were not relaxed for either result.
+
+Full raw: /workspace/tboe-linux-evidence-20261102/spiritual-strain-maneuver-success.
+Artifact proof6ee383428579030350d16e08adb8cbd80765f120ea881b922e8d8143af196c4f;
+PDB proofb5d18e6238d6f9d6f6f0767e8ff47820379d5014b807097acd00bd181d48d06b;
+disjoint5 proof05397d331eb8047ad975edd1d994f94734bf1f2b35a5d35ab17cd544f19d3e97.
+Previous actual Main/Unit88fd and Integrationc954 own15 archived with complete
+member/hash/gzip EOF/CRC proof; no raw, saves, recovery or outputs deleted.
+No raw/TRX/diagnostic JSON/archives/binaries in Git. Optimization: existing owned
+context/projector and full signed-template DATA reuse with detached roots; no new
+cache, IO or ordinary reconstruction for zero modifier. Fresh fences preserved.
+No speedup claimed. GM guide/worked example/manifest/parsed guard synchronized.
+
+Next connected wound-only slice: exact failed maneuver +1 through live C2, actual
+harmful witness, common C4 and next-turn historical validation. Astra read-only
+DESIGN found a real technical dependency: existing receipts retain actual exchange
+but not the proved ordinary preimage; C2 checkpoint is removed after publication.
+Use a closed optional comparison in the existing source witness/receipt and sealed
+completed-mechanics path, authenticated matching accepted baseline for history.
+Only maneuver lane may see proved ordinary after; chronology/harm math/echo see
+actual corrected result. No caller JSON, subtracting one, current-effect substitute
+or blanket historical exemption. Final representation/design, code and runtime
+remain OPEN; a private live PASS alone will not close this route. Existing
+PrepareHarm uses opposition guard tier and signed harmful margin+8 in the candidate
+case, not maneuver tier or invented zero; its actual new-source result remains
+UNRUN. This is no new author rule or general QTE/ACTIVE work. Four author decisions,
+all old UNKNOWN/HOLD, whole profile and #1536 parents remain OPEN.
 
 # T081-D player pressure/success strain no-op accepted — 2026-11-02
 
