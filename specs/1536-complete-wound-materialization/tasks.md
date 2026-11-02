@@ -1,27 +1,14 @@
-- [ ] T149-NPC-CANONICAL-WOUND-RETIREMENT [US1/US7] Retire the two known
-  unsupported wound allowances in canonical npc_effects.json (FR-013/T149,
-  #1536). Accepted Astra DESIGN: any top-level NPCWoundChanges presence is a root
-  legacy error; exact entries[i].wounds presence is that entry's legacy error
-  before its ID/effects validation. Preserve duplicate-first/nonlegacy error
-  order, legal adjacent metadata and source/owner freshness; no blanket unknown,
-  casefold or recursive bans. First test-only scaffold:16 Unit source rows,
-  expected12 FAIL (11 missing-refusal +1 error-order) and4 preserving PASS, actual results UNRUN.
-  Migrate/rename two obsolete Unit positives to legal non-wound metadata, preserve
-  meaningful old owner membership, select one exact60s causal leaf. Prepare two
-  known Integration fixture/oracle corrections coherently but leave unselected
-  until post-RED GREEN. No production/sourceguard retirement before accepted
-  actual RED. All inputs remain immutable; allocation-zero assertions follow
-  the required error oracle and may be UNREACHED on baseline. Source UNCOMPILED;
-  static source count/owner/helper and diff --check pass; actual metadata reader
-  exits0 with1,334 categories/one Unit8-method60s leaf (not discovery). Root owns
-  persistence/SOURCE/owning builds/exact Plan/PREP. Existing late
-  Integration refusal disproves any automatic publication-bypass claim. No new
-  cache/read/Engine/reflection or game rule. T118 accepted lineages, parent T149,
-  A5/R2 UNKNOWN, T148/#1571 and all wider HOLDs remain unchanged.
-  Actual N2 RED accepted: 12 expected FAIL / 4 PASS, 16/16 complete in 9.719289 s,
-  genuine planner allocations 1/1 each; not publication bypass. Minimal production
-  and semantic inventory correction WIP; fresh Main/Unit/Integration and exact
-  GREEN 20 / independent review remain, no parent/HOLD closure.
+- [x] T149-NPC-CANONICAL-WOUND-RETIREMENT [US1/US7] Retire top-level
+  NPCWoundChanges and exact entries[i].wounds from the canonical NPC effect
+  carrier (FR-013 / #1536). Independent Astra/high DESIGN/SOURCE/PREP/OUTCOME
+  accepted. Causal RED at 602e0f46: 12 expected FAIL / 4 preserving PASS.
+  Runtime 5950b74a95eeee1252247dbf20f6265df9f25a5d: 20 unique PASS, four complete
+  descriptors, no skip/timeout/duplicate/underfill; wrapper 30.176542 s.
+  Failed-plan/zero-allocation, nonmutation/error order/current metadata and both
+  real-IO publication/refusal peers pass. Fresh Main/Unit/Integration; exact
+  warning baselines, used artifacts/resources/native/PDB bindings verified.
+  Complete receipts and external hashes in physical-guided-checkpoint. No former
+  publication-bypass or speedup claim; parent T149, T152 and every HOLD stay open.
 
 - [x] T118-ACTUAL-SHELL-READONLY [US5] Real App/ShellProvider read-only route
   Continue→Help→active wounds→known History→active→scene accepted. Independent

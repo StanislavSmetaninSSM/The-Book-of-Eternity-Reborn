@@ -1,3 +1,60 @@
+# T149 NPC canonical wound retirement — accepted bounded leaf, 2026-11-02
+
+Runtime/source: 5950b74a95eeee1252247dbf20f6265df9f25a5d, Linux x64.
+Independent Astra/high DESIGN, SOURCE, PREP and actual OUTCOME accepted. Root
+inspected the full diff and all four TRX. Only T149-NPC-CANONICAL-WOUND-RETIREMENT
+is closed: top-level NPCWoundChanges and exact entries[i].wounds cannot enter the
+canonical NPC effect carrier. Current NPC wounds remain in npc_wounds.json.
+
+N2 causal RED at 602e0f46: 16 complete, 12 expected FAIL / 4 preserving PASS;
+three actual planner controls allocated one effect and one transition each.
+N3 GREEN: 20 unique PASS, 4/4 descriptors and 20/20 cases complete, no skip,
+timeout, duplicate or underfill; wrapper 30.176542 s, runner 28.946354 s, exit 0.
+Exact selection: wounds-npc-canonical-retirement-causal (16),
+wounds-npc-canonical-retirement-source-guards (2),
+wounds-npc-canonical-retirement-publication (1), and
+wounds-npc-canonical-retirement-early-refusal (1), Parallelism 1 / NoBuild.
+Unit leaves keep 60 s; both Integration leaves keep their preselected 180 s.
+Previously UNREACHED failed-plan/zero-allocation assertions now pass, together
+with actual input immutability, error order, pristine/current schema and legal
+metadata. Both real-IO consumers pass: successful publication and early refusal
+with absent common authority plus exact carrier existence/byte preservation.
+This proves early refusal, not a former publication bypass or an elapsed speedup.
+
+Fresh Main / Unit / Integration builds exit 0 in 58.006287 / 32.952835 / 66.401339 s;
+warning multisets match the former builds: 81 / 26 / 107. Verified used artifacts:
+45 managed outputs, 206 resource inputs / 618 copies, 6 native copies, four code
+owners' PE/PDB identities and 444 current source bindings. Support/Bridge/CrashHost
+are unchanged dependencies, not fresh builds; old unused host copies are excluded.
+Full catalog discovery: 1,337 categories / 13,162 methods-files, no tests executed.
+Exact Plan: four descriptors / twelve methods / twenty cases. External verifier
+initially omitted the existing CrashHost directory mapping; its failure and source
+are retained, mapping corrected, complete proof passed without rebuilding/rerunning.
+
+Optimization: the existing full-carrier planner key includes all relevant fields,
+presence and null values; owner/lifetime/invalidation and fresh guards unchanged.
+No new cache or IO. Source guards reuse their already-read operation-local images;
+negative Integration byte proof deliberately performs fresh before/after reads.
+GM no-update is independently accepted: direct schema-v1 cutover and separate
+npc_wounds examples already specify this contract. No new authored/game rule.
+
+Full raw: /workspace/tboe-linux-evidence-20261102/npc-canonical-retirement/N3-green20.
+Summary SHA256: 0dc911653a15f4143c36b6f99285600d648394d544518444c1a04927cfccca67.
+Artifact proof: 6882d26ff1a864dc49489ee5f07a1f9d3b29a4e83f1b6d84f26764d020ac1de6.
+PDB proof: ddd433e7d05f1d3377e6bea83c9ab664fd2a30d7fecc45c701524a78f3d3d35c.
+All four TRX hashes are in the external root-trx-integrity-proof.json. Owned/runtime
+cleanup passed, no new TMP roots or active owners; no diagnostic data was deleted.
+Immutable remote readback of all nine WIP files matched full bytes/git blobs:
+proof 4d643ffd9f65d1f5bd9e9468be4e7d83b79edffd911d97f38167e182b002b4d5;
+this is bounded readback, not a full clean restore. Final receipt commit is read
+from Git history and its remote SHA is checked separately.
+
+Parent T149, T152, A5 terminal / R2 browser UNKNOWN, DFR/Mortal/Windows HOLDs,
+Saref #1571 and the overall #1536 remain open. No accepted unrelated set repeated.
+Next independent residual qualification is the existing oversized display-text
+admission boundary (T152 / FR-076); inspect actual prior ownership before adding
+only missing cheap typed coverage, without a new rule or performance project.
+
 # T149 NPC canonical wound retirement — accepted causal result, production WIP
 
 Actual N2 at 602e0f46addb39b2147b088fe8ad1857031b2d24 completes 16/16 in 9.719289 s:
