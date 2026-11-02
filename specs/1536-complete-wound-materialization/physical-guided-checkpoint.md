@@ -1,3 +1,72 @@
+# Existing T149: narrow NPC wound-input refusal accepted, 2026-11-02
+
+Current task is wounds only. General QTE/ordinary orchestration, defeat/aggression,
+T088's withdrawn proposal, ACTIVE/F1 and independent Saref memory are outside this
+implementation; their project tasks are not marked complete. Patient consent and
+all current wound source/permission checks remain mandatory. No new game rule.
+
+Independent Astra/high DESIGN/source-assessment, SOURCE, PREP and primary OUTCOME
+accept the narrow fix. Exact old NPCWoundChanges now produces a dedicated raw
+legacy Error for every value shape; it cannot masquerade as a valid NPC command
+or receive an obsolete array-repair hint. Current NPC rename/absence stays valid.
+Only wound-input dispatch changed: general QTE code is unchanged. Its genuine
+signed ordinary offer peer now refuses that wound field before typed projection.
+Canonical NPC legacy-only/mixed retains the strict carrier error; metadata and
+actual carrier bytes remain intact. Intentional legacy token is constrained to
+a meaningful refusal owner; obsolete migration/structured allowances are removed.
+
+Evidence is not one fresh11 run:
+- C1 causal at b7c68a8b58d122be5f9d9e899f01ef3bf27b413e:4 expected FAIL/1 PASS,
+  complete5, arrays2 actualissues=[] and two distinct null/scalar classifications.
+- C2 at190c6427192f28689b4f77dcd6c0b9eced10eab1: changed semantic Unit guards2
+  PASS; QTE fixture baseline1 FAIL; raw5/state3 UNRUN. Original failure is retained.
+- C3 atb36547e001020b794f7823ed33442380152f8c5b: remaining9 unique PASS,
+  3/3 descriptors/6methods/9cases complete, exit0, wrapper19.457888s /
+  runner18.230666s. Exact categories wounds-npc-legacy-qte-offer1,
+  wounds-npc-legacy-raw-response5, wounds-npc-legacy-state-priority3;
+  NoBuild/Parallelism1, original180/60/60s. No skip/timeout/duplicate/underfill.
+Together11 distinct PASS across two GREEN groups, no whole T149/#1536 closure.
+All strict QTE baseline/current/request/manifest/authority/offer byte and raw
+refusal assertions are reached; source guard/data priority are independently
+confirmed. These are admission/read-only checks, not a publication-bypass proof.
+
+C2 builds source190: Main63.376760s/Unit35.386800s/Integration74.507839s exit0,
+warning multisets81/26/107 unchanged;45 used outputs/206inputs618resourcecopies/
+native6,4PEPDB/447sourcebindings. C3 fixture-only Integration72.601722s exit0,
+baseline107warnings;25usedoutputs/206inputs412copies/native4,3PEPDB365bindings.
+Main/Unit retain190, SupportECE; only Integration is fresh inC3. Exact discovery
+1341categories/13169methods-files has no runtime. All bound hashes rechecked.
+
+The only failed follow-up was fixture authoring: default typed serialization
+emitted optional null scoreModel/scoreDeltas. The fixture now uses the SAME
+SharedJsonOptions profile as production at all three sites; strict guards,
+source/binder, assertions and budgets stay. No production scoring change.
+Optimization: existing parsed root and operation-local source strings reused;
+no new IO/cache/lifetime/key or fresh-permission exception. Private repair Actual
+contains no submitted payload. Current guides already specify woundDecisions and
+direct cutover, so no new authored field/example is required for this refusal.
+One Lifecycle pin was semantically reviewed and updated; nine pre-existing World
+pin mismatches stay unmodified/open, no full World-source closure PASS claimed.
+
+Full raw: /workspace/tboe-linux-evidence-20261102/npc-legacy-response.
+C3summary422071af5fba0236cf0330b387feab0c6a98ef67366b8028e8a371a8e2e7032e;
+QTEtrx3e34b062d9c72c018d07e0e636a2e980cd2b0f284c058cad73f5b04225a77966;
+rawtrx1d7f84c00fde38a2b591c5ce13ae4e2260d6c7ca22988ff4039e9b1297b8b457;
+statetrx76c4387d0a962b91adb2912e03d153d246fb49834f9894061c20dbf46ac937ab.
+C3artifactfba023c6ebcae7cd31f0ec10990b3fe088e891a9894bf9a1892ad7edcfeff0cc;
+PDB3506f4917534a751f3431452c160993e2b6ecb8278d5584cf9d76b0c1f73fd1a.
+Both cleanup flags true, no new TMP roots/active owners, tree clean after runtime.
+Raw and prior own-artifact archives remain outside Git; no unique data deleted.
+
+Remaining wound-only work: raw playerWoundChanges source-admission debt confirmed
+by read-only trace (not runtime yet); remaining direct spiritual-wound combinations;
+full physical browser/course and joint wound terminal UNKNOWN, plus wound-specific
+examples/privacy/replay/rollback/index/bounds and final scenario reconciliation.
+No general QTE/ACTIVE/defeat task is inferred as a dependency. R2/A5 and historical
+DFR/Mortal/Windows HOLDs stay honest and are not automatically resumed. No merge,
+force-push, branch deletion or issue closure. Final receipt commit/ref/readback is
+checked separately; runtime source remains b36547e, not a later documentary SHA.
+
 # Wound-input C2 partial result; fixture serializer correction WIP
 
 Runtime/source190c6427192f28689b4f77dcd6c0b9eced10eab1 completes only3 of11:

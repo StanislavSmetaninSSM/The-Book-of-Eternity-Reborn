@@ -1,3 +1,16 @@
+# Current execution scope — wounds only (2026-11-02)
+
+Existing T149 raw NPC wound-input correction accepted: C2 guards2 PASS on190c6427,
+C3 raw5/QTE1/state3 PASS onb36547e;11 distinct on two explicitly separate groups,
+not one fresh11. Complete primary/build/review/cleanup receipt is in current
+physical-guided-checkpoint. No new task IDs or parent checkbox closure. Raw player
+wound-input retirement remains under existing T149/T071, source-confirmed only.
+General defeat/aggression/T088, ACTIVE/F1 and independent systems are outside this
+current task, not completed. Withdrawn rule question requires no answer and grants
+no gameplay change. QTE/NPC changes are only narrow wound-data admission. All
+current wound acquisition/treatment/diagnosis/recovery/display/atomicity requirements
+and explicit UNKNOWN/HOLD remain; no unrelated whole-project completion claimed.
+
 - [x] T152-DISPLAY-TEXT-BOUNDARY [US1/US5] Qualify existing display.name /
   acquisitionNarration 2000/2001 admission (FR-076 / data-model 7.3 / #1536).
   Independent Sol/xhigh SOURCE/PREP/OUTCOME accepted runtime
