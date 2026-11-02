@@ -1,3 +1,41 @@
+# T081-D strain C4 common-publication qualification WIP
+
+Accepted private20 remains onbc7/source checkpointbd54; do not repeat that selection.
+Astra/high DESIGN accepts a test-only next slice through existing C4 owners, no new
+production mechanism: independently signed III -> A/B -> sourceII/none preparation
+then actual ValidateAcceptedTurnRawResourceMaterializationAsync and common
+NormalizeAndValidateWithPlanAsync. One positive and one committed-readback rollback
+case, each its own exact leaf180s. This is a new broader workload/budget aligned
+with existing portable-original-committed-rollback3min, not an increase of private60.
+Actual discovery/Plan/PREP and whole SOURCE are required before runtime.
+
+Existing private Fact body extracted unchanged into typed helper accepting one
+fixture; lease/session owners are disposed inside. New tests reuse this SOURCE
+sequence on their own fresh signed roots, never copied completed checkpoints or
+mutable state. Positive checks actual matching authority/plan and all canonical
+after-images, independent III/strain/receipt semantics, foreign and consumed-owner
+refusal. Rollback uses existing CurrentCommittedPublicationWitness and real receipt
+readback fault after committed resource/receipt, original exception identity and
+complete signed before-image/absence/generation/journal restoration.
+
+Current change is test/catalog/selection/checkpoint only; new C# UNCOMPILED and
+both cases UNRUN. Expected qualification PASS, not an assumed consumer RED. If the
+real C4 owner rejects this result, preserve the first actual failure and diagnose
+within wound scope; do not relax source/history/authority checks. Fresh Integration
+only after review, with unchanged Mainbc7/SupportECE actual dependencies and all
+resource/native/PDB bindings checked; no gratuitous Main/Unit or private20 rerun.
+
+Optimization: existing immutable full-key template and existing source/resource/
+journal/publication services; independent mutable roots. Fresh C2 completion is
+necessary authority for each publication, not reusable from an earlier fixture.
+Deliberate rollback read-hook retains the normal fresh fallback; no false passive
+observer/cache claim. No new cache or speedup claim. GM no-update: test-only
+qualification of existing common C4, same wire/proposal/route; accepted strain
+guide/example and manifest unchanged. Raw entirely outside checkout in
+/workspace/tboe-linux-evidence-20261102/spiritual-strain-publication.
+Four author decisions, parent/#1536/whole-strain/Engine/UI/fresh-process limits and
+all old UNKNOWN/HOLD unchanged. General combat/QTE/ACTIVE/F1 remains outside scope.
+
 # Current accepted wound result: bounded III strain C2 consumer
 
 Code/build/runtime bc7c5217bc49fc1afc38655d609dc1a55116fc28:20 unique PASS,

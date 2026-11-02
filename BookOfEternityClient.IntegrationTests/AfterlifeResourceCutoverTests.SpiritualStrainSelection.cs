@@ -15,6 +15,12 @@ public sealed partial class AfterlifeResourceCutoverTests
     {
         await using var context = await CreateCompleteConflictFrameContextAsync(
             seedOriginalInputs: SeedOriginalIntakeBaselinesAsync, signedDice: [5, 15, 4, 12]);
+        await CompleteSpiritualStrainC2Async(context);
+    }
+
+    /// <summary>Completes the real private strain journey in this fixture; no owner or lease escapes this helper.</summary>
+    private static async Task CompleteSpiritualStrainC2Async(ResourceMaterializationTestContext context)
+    {
         await WriteSpiritualStrainBaselineDraftAsync(context);
         const string scene = "Чужое давление надломило волю души.";
         await context.WriteExactJsonAsync(ProjectionNarrativePath,

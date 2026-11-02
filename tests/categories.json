@@ -2,6 +2,58 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "wounds-spiritual-strain-publication",
+  "responsibility": "#1536 T081-D Actual III C2 result through existing common C4: exact retained authority/plan, foreign-owner refusal, canonical wound/effect/resource/History/receipt after-images and independent strain/severity/source semantics, consumed private controls, single-use refusal without writes. One independently signed fixture and real C2 completion; old private Fact not selected.",
+  "excludes": "No new production owner/cache/writer or game rules, no general combat/QTE/ACTIVE/F1, Engine/UI/live provider/fresh OS process, whole strain family or HOLD retry. Existing accepted private20 is preparation lineage, not a new rerun selection.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualStrainPublication.cs",
+    "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualStrainSelection.cs",
+    "BookOfEternityClient/Services/Validation/ValidationService.SpiritualC4Publication.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 3,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualStrainBurden_CompletedChoicePublishesThroughCurrentCommonOwner"
+      ]
+    }
+  ]
+},
+{
+  "id": "wounds-spiritual-strain-publication-rollback",
+  "responsibility": "#1536 T081-D Actual III C2 -> common C4 committed resource/receipt readback fault through existing observer/witness; original exception, all signed before-images/absence/generation/journal restored, no remaining authority. Deliberate read hook retains fresh fallback; no passive-observer claim. One independently signed fixture and real C2 completion; old private Fact not selected.",
+  "excludes": "No new production owner/cache/writer or game rules, no general combat/QTE/ACTIVE/F1, Engine/UI/live provider/fresh OS process, whole strain family or HOLD retry. Existing accepted private20 is preparation lineage, not a new rerun selection.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualStrainPublication.cs",
+    "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualStrainSelection.cs",
+    "BookOfEternityClient/Services/Validation/ValidationService.SpiritualC4Publication.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 3,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualStrainBurden_CommonPublicationReadbackFailureRestoresSignedWoundState"
+      ]
+    }
+  ]
+},
+{
   "excludes": "No source/publication/Engine authority from comparison DATA, general combat/QTE, new author-rule choice, broad suite or HOLD retry.",
   "requirements": {
     "frontendBuild": false,
