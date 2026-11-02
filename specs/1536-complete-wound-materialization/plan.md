@@ -1,3 +1,39 @@
+# T081-D exact maneuver/success causal scaffold WIP
+
+Accepted pressure no-op checkpoint 7806d0a211e6b173c0d7e13f740ca08e3581109a
+(source88fd, four PASS2+1+1) is preserved. Twelve changed files fully recovered
+from immutable GitHub bytes; bounded readback proof
+efd44d6ace6219183dd52f3eec7918c3a9929989b4d9e25b55cdf39e08b72424.
+This is not a complete clone/restore. No accepted selection repeated.
+
+Astra DESIGN accepts exact player maneuver/success no-op under the same failed-
+operation-only rule. Lawful opponent is guard; pressure is a direct matrix counter
+and must never be made legal for this fixture. Existing matrix/ordinary mechanics
+are unchanged. This TEST-ONLY scaffold uses fresh signed5/15/12/4, first genuine
+player III source, then maneuver success/unchanged strains/improved position.
+Full player maneuver cost3 (3→0) and opposition guard cost2 (3→1), matchup/dice/
+control/echo are authored before ordinary source validation. One ordinary source
+III and four unique dice claims must pass before actual C2 III materialization.
+Legal three slots: strain/maneuver, roll/counter and cost/guard (the latter two
+not executed by the player afterward). No shared mutable fixture/new authority.
+
+Expected causal RED only integration_required after actual selected III; direct
+completed_unpublished without second source/none, cold reopening, exact candidate
+position/strains/costs and canonical7/no-common-plan controls UNREACHED until GREEN.
+One exact new Integration Fact/60s. Production/GM resources unchanged; C# UNCOMPILED,
+runtime UNRUN. Next independent SOURCE, preserve current Integration5, fresh
+Integration against actual unchanged Main88fd/Support, artifact/resource/PDB proof,
+discovery/exactPlan/PREP and one causal. No fabricated baseline or copied receipt.
+
+Optimization: existing full signed-input prepared DATA service and detached roots,
+current source/C2 readers and owners; ordinary validation is part of this test and
+reopening is the asserted lifecycle. No new cache, key, source probe or performance
+claim. Implementation must synchronize existing GM guide/example/guard, preserving
+current integrity/authority checks. Full raw will be outside checkout at
+/workspace/tboe-linux-evidence-20261102/spiritual-strain-maneuver-success.
+Four author decisions/old UNKNOWN/HOLD unchanged. Wounds only; no wholeprofile,
+Engine/UI/fresh-process or parent #1536 completion claim.
+
 # T081-D player pressure/success strain no-op accepted — 2026-11-02
 
 Source/build/runtime: 88fd5c6187d2109841bfa83d16463ac97414fb23. Four unique
