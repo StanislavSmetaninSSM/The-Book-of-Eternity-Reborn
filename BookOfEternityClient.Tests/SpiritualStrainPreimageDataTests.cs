@@ -89,7 +89,8 @@ public sealed class SpiritualStrainPreimageDataTests
         Assert.True(JsonNode.DeepEquals(ordinary["after"], retained.ReadOrdinaryAfter(actual)));
     }
 
-    private static (JsonObject Source, JsonObject ParentSource, JsonObject ParentWound, JsonObject Ordinary) CreateData()
+    /// <summary>Creates independent intrinsic DATA for typed parent-receipt controls without live authority.</summary>
+    internal static (JsonObject Source, JsonObject ParentSource, JsonObject ParentWound, JsonObject Ordinary) CreateData()
     {
         var parent = SpiritualWoundSourceWitnessTests.Source();
         var first = JsonNode.Parse(Decode(parent["exchangeJsonBase64"]!))!.AsObject();

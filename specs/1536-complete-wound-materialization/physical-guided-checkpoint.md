@@ -13,6 +13,19 @@ The single authorized [GitHub #1536 follow-up comment](https://github.com/Stanis
 No issues are closed. Historical pending wording below is superseded by this
 current decision, not a new permission to implement the three deferred consumers.
 
+# T081-D genuine strain owner/History connection — parent join tests WIP
+
+Next connected route starts with5typed parent-receipt causal cases. Independent
+full two-source ledger must parse before each changed parent (foreign valid-shaped
+sourceId, declined decision, different wound/transition/rank). Only test DATA and
+catalog/selection changed; production parent join is not implemented. New C# is
+UNCOMPILED/UNRUN. Current intrinsic34 remains accepted at70322, not rerun without
+relevant change. Source owner/C2 issuance, parent first-create History, sealedC4,
+signed next-turn/healed-history checks remain OPEN. No new game/diagnostic system.
+Factory output is fresh per case and uses existing typed DATA factory; one small
+in-memory ledger needs no cache and grants no permission. Parent IDs/fingerprints
+must not substitute for source ownership or History.AfterFingerprint proof.
+
 # T081-D intrinsic retained comparison DATA — accepted bounded gate
 
 Built/runtime source: 70322ab17e4a3e8224b161de2556b1cc0abee06d. Independent

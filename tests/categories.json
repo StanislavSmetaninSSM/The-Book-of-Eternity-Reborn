@@ -2,6 +2,31 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "wounds-spiritual-strain-parent-receipt",
+  "responsibility": "#1536 T081-D parent receipt join: five cheap independent DATA cases first require a valid two-source ledger/intrinsic comparison, then reject rehashed foreign source or declined/different wound/transition/rank parent. This precedes ownership/History adapters and does not grant authority.",
+  "excludes": "No reflection, live owners, caller preimage issuance, fake original snapshots, C2/C3/C4 or full historical qualification, generalcombat, broad oldPASS/HOLD reruns. History AfterFingerprint/firstcreation and actual source owners remain required.",
+  "changeHints": [
+    "BookOfEternityClient.Tests/SpiritualStrainReceiptJoinTests.cs",
+    "BookOfEternityClient/Services/SpiritualWoundOpportunityReceiptState.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.SpiritualStrainReceiptJoinTests.ReceiptRefusesUnprovedParentAfterIntrinsicAndBaselinePass"
+      ]
+    }
+  ]
+},
+{
   "id": "wounds-spiritual-strain-preimage-data",
   "responsibility": "#1536 T081-D intrinsic retained comparison DATA: valid parent source/complete graph and ordinary signed maneuver, exact +1 calculationII, eleven rehashed malformed/foreign/changed-preimage refusals and detached-copy/exact-actual binding (13 cases/3 methods). DATA cannot authorize source, C4 or history. Prior genuine closed-field RED retained separately.",
   "excludes": "No reflection, fake live source/approved history, current-owner or historical authority from fingerprints/JSON, C2/C4/Engine/world setup, broad old PASS or HOLD rerun. Complete cross-record/History join and real route remain unimplemented and separately required.",
