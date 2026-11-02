@@ -1,4 +1,30 @@
-# B1RED guards — 14 PASS / 3 FAIL; causal4 UNRUN
+# B1RED causal4 — intended final-oracle RED; independent OUTCOME pending
+
+Both exact causal leaf runs completed on runtime
+e24536df4e59835fc7cc2104cf79bbd66ab1e398 / compiled
+9d021ae82930099a1a77bf6ae9ad6ff18ade322d with no source changes between them.
+All4 planned cases execute and fail only the final missing-reservation work
+oracle at BrowserGameStateReadReservationTests.cs:61. Every preceding ordered
+issue/DATA/absence/current-original byte/readset/physical-owner premise succeeds.
+No timeout; complete selection and both owned/runtime cleanup pass in each run.
+
+| Selected phase | Both control orders: subject/control physical verifications | Source reads in each arm |
+| --- | --- | --- |
+| CrossReferences |196/5|10/10|
+| MetaMisc |309/6|10/10|
+
+Counts include opening/full-end/Dispose/owner-after-close. These independent small
+fixtures show repeated-admission work, not elapsed speedup or full-course PASS.
+Primary external TRX: B1RED-causal-cross2 SHA
+4ea7896c5ea74f44fd6125cba51363bd17a4d8fcdfae40da91144e328dab5cd5;
+B1RED-causal-meta2 SHAacf6d23733bb1f58b4679670ab1a9ab7675682014ff50b69cc8f2fcd2558f734.
+Post-run27 artifacts/44 resource copies/four daemons remain stable, no owners;
+free703504384B. Earlier guards remain14 PASS/3 stale-stack fixture FAIL, not17PASS.
+Independent OUTCOME/next implementation admission is pending. The exact legacy
+async-boundary assertion still needs its reviewed correction and four-row rerun.
+No outer automatic reservation/debt wrapper or full browser retry has begun.
+
+# B1RED guards — 14 PASS / 3 FAIL; earlier causal frontier
 
 Actual runtime65ac18d1cadbddedb5d44b8c1b41042083f0af3b, compiled source9d021ae82:
 all17 planned guards executed,14 PASS/3 FAIL, no timeout,43.6025559s wall;
