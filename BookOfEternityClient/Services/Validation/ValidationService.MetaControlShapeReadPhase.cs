@@ -59,13 +59,16 @@ public partial class ValidationService
             _metaControlShapeReadPhase = phase;
         }
         FileSystemManager.WorldValidationReadScope? physical = null;
+        var borrowed = false;
         Exception? primary = null;
         var localIssues = new List<ValidationIssue>();
         try
         {
             // Reuse the existing exact original-owner/access/physical lease issuer.
             // No authority PASS cache or signed/draft read widening.
-            physical = _fs.BeginWorldValidationRead();
+            physical = _fs.BorrowWorldValidationRead();
+            borrowed = physical != null;
+            physical ??= _fs.BeginWorldValidationRead();
             if (physical == null)
             {
                 lock (_worldReadGate) _metaControlShapeReadPhase = null;
@@ -74,7 +77,7 @@ public partial class ValidationService
                 return;
             }
             phase.Physical = physical;
-            await physical.OpenAsync();
+            if (!borrowed) await physical.OpenAsync();
             lock (_worldReadGate) phase.Active = true;
             phase.RequireCurrent();
             // Pure callback closure: no cache/context isolation or reset here.
@@ -93,7 +96,11 @@ public partial class ValidationService
         finally
         {
             lock (_worldReadGate) phase.Active = false;
-            try { if (physical != null) await physical.DisposeAsync(); }
+            try
+            {
+                if (borrowed) physical!.ReleaseMetaBorrow();
+                else if (physical != null) await physical.DisposeAsync();
+            }
             catch (Exception close)
             {
                 if (primary == null) primary = close;
@@ -102,7 +109,8 @@ public partial class ValidationService
             finally { lock (_worldReadGate) _metaControlShapeReadPhase = null; }
         }
         if (primary != null) ExceptionDispatchInfo.Capture(primary).Throw();
-        physical!.RequireOwnerAfterClose();
+        if (borrowed) physical!.RequireCurrent();
+        else physical!.RequireOwnerAfterClose();
         RequireWorldCacheAccess();
         if (phase.Invalidated || !ReferenceEquals(phase.Manifest, _prevalidatedPendingTurnSnapshotOverride))
             throw new IOException("Original Meta shape snapshot changed before issue publication.");

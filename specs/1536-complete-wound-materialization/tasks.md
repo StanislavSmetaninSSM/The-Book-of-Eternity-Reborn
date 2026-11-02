@@ -2,7 +2,7 @@
   full browser physical-course acceptance by first proving the smallest lawful
   repeated-admission correction in CrossReferences/MetaMisc. Reuse the actual
   WorldValidationReadScope; keep fresh source reads and existing ordinary cache
-  exclusions. Current design in plan.md is WIP pending independent DESIGN.
+  exclusions. Current design in plan.md is independently accepted; scaffold SOURCE is pending.
   Preserve nested MetaControlShapeReadPhase full readset through an explicitly
   borrowed actual outer physical scope; never accept its scalar fallback as equal
   work. First typed real browser staging, Meta closure control and equal-work
@@ -10,7 +10,9 @@
   exact Meta readset controls and production wrapper only
   if benefit/correctness are proved. Original browser180s/full capture and all
   assertions remain; no blind retry, new DATA cache, quota or parent/HOLD closure.
-  All new C# and runtime are UNWRITTEN/UNRUN at this planning checkpoint.
+  Typed staging/Meta borrow and causal-crossrefs2/causal-meta2/meta-readset-drift1
+  are authored WIP: C# UNCOMPILED, build/discovery/PlanOnly/causal RED/runtime UNRUN.
+  Outer production wrapper/debt and nine later safety cases remain UNWRITTEN.
 
 # T108 Shining patient treatment — #1536
 

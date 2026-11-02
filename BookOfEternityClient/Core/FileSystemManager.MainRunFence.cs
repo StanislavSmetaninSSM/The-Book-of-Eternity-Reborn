@@ -228,6 +228,18 @@ public partial class FileSystemManager
             var access = _worldReservedAccess;
             access?.ReleaseWorldRead(scope, () => _worldReservedAccess = null);
         }
+        /// <summary>Borrows only this actual access's ready browser World reservation for nested Meta work.</summary>
+        /// <param name="original">The same live browser original; DATA cannot identify a reservation.</param>
+        /// <returns>The exclusively borrowed scope, or null when no World reservation exists.</returns>
+        internal WorldValidationReadScope? BorrowWorldRead(BrowserOriginalOperationScope original)
+        {
+            if (_closed || Closing || BoundClosing || MetadataOnly || _access == null)
+                throw BrowserOriginalMainCondition.Invalid();
+            var ancestors = new HashSet<MainAdmission>();
+            for (var p = MainAdmissions.Value; p != null; p = p.Parent) ancestors.Add(p);
+            if (!ancestors.Contains(this)) throw BrowserOriginalMainCondition.Invalid();
+            return _access.BorrowWorldRead(this, _files, original, ancestors);
+        }
         /// <summary>
         /// Refuses a conflicting borrower of the reserved access.
         /// </summary>
@@ -607,6 +619,31 @@ public partial class FileSystemManager
                 if (!ReferenceEquals(_worldRead, scope)) return;
                 markReleased();
                 _worldRead = null;
+            }
+        }
+        /// <summary>Checks exact reservation, manager, active physical frame and ancestry before one nested borrow.</summary>
+        /// <param name="entry">Actual current Main access frame.</param>
+        /// <param name="files">Original manager; a same-root foreign manager is not interchangeable.</param>
+        /// <param name="original">Actual processing original already bound to the reservation.</param>
+        /// <param name="ancestors">Calling ancestry; unrelated or parallel borrowers refuse.</param>
+        /// <returns>The existing scope with one Meta borrow, or null outside a World reservation.</returns>
+        internal WorldValidationReadScope? BorrowWorldRead(MainAdmission entry, FileSystemManager files,
+            BrowserOriginalOperationScope original, HashSet<MainAdmission> ancestors)
+        {
+            lock (_state)
+            {
+                if (_worldRead == null) return null;
+                if (_worldRead is not WorldValidationReadScope scope ||
+                    _frozen || _references == 0 || owner.Closed || !_admissions.Contains(entry) ||
+                    _mutations.Count != 0 || _physicalClosing.Count != 0 ||
+                    scope.Lease is not { IsActive: true } lease ||
+                    !ReferenceEquals(lease.Owner, files) || lease.Purpose != CanonicalWritePurpose.PublicationReadQuiescence ||
+                    lease.MainAdmission is not { PhysicalScope: true } physical || !_admissions.Contains(physical) ||
+                    _admissions.Any(p => p.Closed || p.Closing || p.BoundClosing || p.MetadataOnly ||
+                        !ancestors.Contains(p) && !ReferenceEquals(p, physical)))
+                    throw BrowserOriginalMainCondition.Invalid();
+                scope.BorrowMeta(files, original);
+                return scope;
             }
         }
         /// <summary>

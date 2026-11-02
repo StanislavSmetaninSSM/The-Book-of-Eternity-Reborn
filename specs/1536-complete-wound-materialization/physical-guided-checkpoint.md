@@ -1,3 +1,34 @@
+# Browser source read reservation scaffold WIP — SOURCE pending
+
+Base af1389065f8aede25abf3ae72875e1c19a3cb58d, tracked
+T121-PHYSICAL-GUIDED-BROWSER-READ-RESERVATION / issue#1536. Accepted DESIGN is in
+plan.md. Typed actual browser staging calls the existing participating owner,
+claim/backup/snapshot/publish producers. Narrow Main-access lookup borrows only
+the same manager/original's current ready World reservation; foreign/parallel/
+closing use refuses. Nested Meta retains current/full-end/fresh readset proofs
+and leaves physical closing to its outer issuer. Ordinary recovery/source DATA
+eligibility and the outer production phase wrapper remain unchanged.
+
+Independent per-case Integration fixture authors CrossReferences2 + MetaMisc2
+(control order reversed) + exact Meta readset drift1; three finite60s categories
+and current selection own these5 source cases. Complete issues/DATA/absence/byte
+premises and fresh physical/source counters precede the final intended causal
+oracle. No actual RED, measured saving or functional/browser acceptance is claimed.
+
+C# UNCOMPILED; all builds/discovery/catalog/PlanOnly/runtime UNRUN by instruction.
+Only static source/diff/JSON checks are permitted before coherent independent
+SOURCE. Root owns subsequent reserve/artifact preservation and verification.
+No raw/save/recovery/bin evidence touched; external raw remains
+/workspace/tboe-linux-evidence-20261025/us5-guided-diagnosis/.
+No new cache/collector, quota, ordinary guard exception or GM-authored contract.
+Accepted141/9e590 and every prior DFR/Mortal/Windows/native/browser UNKNOWN stay.
+Static verification: git diff --check and JSON/category-ID/exact selector/source-row
+checks pass (2+2+1 authored). These are not C# discovery or execution evidence.
+Ruling: use the explicitly selected clean task checkout as sole writer; no new
+worktree or duplicate plan/ledger. Existing plan/checkpoint are the durable ledger.
+The direct no-build/no-runtime instruction defers the TDD execution gate to root;
+the new causal tests were authored before component/borrow implementation.
+
 # Canonical spiritual diagnosis adapters — independently accepted bounded result
 
 All eight exact canonical requirement kinds are connected: item_quantity,

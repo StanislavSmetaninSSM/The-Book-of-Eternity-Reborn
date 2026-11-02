@@ -2,6 +2,87 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "browser-source-read-reservation-causal-crossrefs",
+  "responsibility": "T121-PHYSICAL-GUIDED-BROWSER-READ-RESERVATION / #1536 / FR060–064 / FR067–074: 2 source cases for complete CrossReferences. Actual PrepareQueued/writer, typed engine staging producers, participating expected-session/browser original and processing, produced-manifest DATA only, real World physical authority. Compare control-first/subject-first same full phase with manual reservation against unoptimized production; exact ordered issues/DATA/absence/canonical-original bytes and fresh source work precede only final physical-admission-work causal oracle, including opening/end/close. C# UNCOMPILED/runtime UNRUN; no causal RED claimed.",
+  "excludes": "No outer automatic source-phase reservation/debt optimization, new DATA cache, old reflection staging/full-proof helpers, native/browser-course retry, accepted141 replay, nine later safety cases, DOM/provider/fresh-process/Windows or parent/HOLD acceptance.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/BrowserGameStateReadReservationTests.cs",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.BrowserValidationOriginal.cs",
+    "BookOfEternityClient/Core/FileSystemManager.WorldValidationRead.cs",
+    "BookOfEternityClient/Services/Validation/ValidationService.MetaControlShapeReadPhase.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.BrowserGameStateReadReservationTests.CrossReferencesRequiresOnePhaseReadReservation"
+      ]
+    }
+  ]
+},
+{
+  "id": "browser-source-read-reservation-causal-meta",
+  "responsibility": "T121-PHYSICAL-GUIDED-BROWSER-READ-RESERVATION / #1536 / FR060–064 / FR067–074: 2 source cases for complete MetaMisc including preserved nested MetaControlShapeCurrentPaths full readset. Actual PrepareQueued/writer, typed engine staging producers, participating expected-session/browser original and processing, produced-manifest DATA only, real World physical authority. Compare control-first/subject-first same full phase with manual reservation against unoptimized production; exact ordered issues/DATA/absence/canonical-original bytes and fresh source work precede only final physical-admission-work causal oracle, including opening/end/close. C# UNCOMPILED/runtime UNRUN; no causal RED claimed.",
+  "excludes": "No outer automatic source-phase reservation/debt optimization, new DATA cache, old reflection staging/full-proof helpers, native/browser-course retry, accepted141 replay, nine later safety cases, DOM/provider/fresh-process/Windows or parent/HOLD acceptance.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/BrowserGameStateReadReservationTests.cs",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.BrowserValidationOriginal.cs",
+    "BookOfEternityClient/Core/FileSystemManager.WorldValidationRead.cs",
+    "BookOfEternityClient/Services/Validation/ValidationService.MetaControlShapeReadPhase.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.BrowserGameStateReadReservationTests.MetaMiscRequiresOnePhaseReadReservation"
+      ]
+    }
+  ]
+},
+{
+  "id": "browser-source-read-reservation-meta-readset-drift",
+  "responsibility": "T121-PHYSICAL-GUIDED-BROWSER-READ-RESERVATION / #1536 / FR060–064 / FR067–074: 1 source cases for one actual current-path drift under the real outer reservation; exact inner RequireUnchangedReadsAsync refusal. Actual PrepareQueued/writer, typed engine staging producers, participating expected-session/browser original and processing, produced-manifest DATA only, real World physical authority. Mutation follows both original flexible/strict captures; no issue list may escape, exact final readset failure, outer lease remains owned/current, original bytes restored before full end proof and closure. C# UNCOMPILED/runtime UNRUN; no causal RED claimed.",
+  "excludes": "No outer automatic source-phase reservation/debt optimization, new DATA cache, old reflection staging/full-proof helpers, native/browser-course retry, accepted141 replay, nine later safety cases, DOM/provider/fresh-process/Windows or parent/HOLD acceptance.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/BrowserGameStateReadReservationTests.cs",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.BrowserValidationOriginal.cs",
+    "BookOfEternityClient/Core/FileSystemManager.WorldValidationRead.cs",
+    "BookOfEternityClient/Services/Validation/ValidationService.MetaControlShapeReadPhase.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.BrowserGameStateReadReservationTests.MetaCurrentReadsetStillRefusesDriftUnderOuterReservation"
+      ]
+    }
+  ]
+},
+{
   "id": "spiritual-diagnosis-treatment-purpose-guard",
   "responsibility": "One actual old self-treatment stage refusal for diagnosis purpose before any additional draw or write; exact current exception, zero draws, canonical byte invariance and retained pending request. Separate from the47 accepted admission DATA cases.",
   "excludes": "No actual diagnosis execution/publication, new requirement source admission, Engine, old successful admission rerun or aggregate suite.",

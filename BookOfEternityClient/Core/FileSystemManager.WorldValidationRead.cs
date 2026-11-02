@@ -38,6 +38,31 @@ public partial class FileSystemManager
         catch { owner.ReleaseWorldRead(scope); throw; }
     }
 
+    /// <summary>Borrows the current actual World reservation without opening a lease or granting another owner.</summary>
+    /// <returns>A ready exclusive nested Meta borrow, or null outside an existing World reservation.</returns>
+    internal WorldValidationReadScope? BorrowWorldValidationRead()
+    {
+        var original = CurrentBrowserOriginalScope();
+        if (original is not { Processing: true, Cleanup: false, Staged: not null }) return null;
+        if (!ReferenceEquals(original._files, this)) throw BrowserOriginalMainCondition.Invalid();
+        var owner = MainAdmissions.Value;
+        for (var p = owner; p != null; p = p.Parent)
+            if (p.Closed && p.OwnsRemote && p.RootIdentity == CanonicalRootAuthorityIdentity)
+                throw GmSessionRunPersistence.Invalid();
+        while (owner != null && (owner.Closed || owner.RootIdentity != CanonicalRootAuthorityIdentity || !owner.Acquired))
+            owner = owner.Parent;
+        original.ValidateOwner(owner);
+        var scope = owner!.BorrowWorldRead(original);
+        try
+        {
+            if (scope != null && !ReferenceEquals(CompactAmbientCanonicalLeaseHead(), scope.Lease!.AmbientRegistration))
+                throw BrowserOriginalMainCondition.Invalid();
+            scope?.RequireCurrent();
+            return scope;
+        }
+        catch { scope?.ReleaseMetaBorrow(); throw; }
+    }
+
     private void RequireNoWorldValidationMutation()
     {
         var current = MainAdmissions.Value;
@@ -145,6 +170,31 @@ public partial class FileSystemManager
         /// <inheritdoc />
         internal override bool Closed => _closed;
         private bool _closed;
+        private readonly object _borrowGate = new();
+        private bool _metaBorrowed, _closing;
+
+        /// <summary>Claims one nested Meta user of this exact ready physical scope; no new authority is created.</summary>
+        /// <param name="manager">The issuing manager.</param>
+        /// <param name="expectedOriginal">The identical processing browser original.</param>
+        internal void BorrowMeta(FileSystemManager manager, BrowserOriginalOperationScope expectedOriginal)
+        {
+            lock (_borrowGate)
+            {
+                if (!ReferenceEquals(files, manager) || !ReferenceEquals(original, expectedOriginal) ||
+                    _opening || _closed || _closing || _metaBorrowed || Lease is not { IsActive: true })
+                    throw BrowserOriginalMainCondition.Invalid();
+                _metaBorrowed = true;
+            }
+        }
+        /// <summary>Releases only the nested use; the outer issuer retains ownership and physical closing.</summary>
+        internal void ReleaseMetaBorrow()
+        {
+            lock (_borrowGate)
+            {
+                if (!_metaBorrowed) throw new InvalidOperationException("No nested Meta World borrow is active.");
+                _metaBorrowed = false;
+            }
+        }
         /// <summary>
         /// Finishes the original recovery acquisition before admitting browser validation reads.
         /// </summary>
@@ -159,7 +209,7 @@ public partial class FileSystemManager
         }
         internal void RequireCurrent()
         {
-            if (_closed || owner.Closed || owner.Closing || owner.BoundClosing ||
+            if (_closed || _closing || owner.Closed || owner.Closing || owner.BoundClosing ||
                 !ReferenceEquals(original, files.CurrentBrowserOriginalScope()) || original.Cleanup ||
                 original.Staged == null || !original.Processing) throw BrowserOriginalMainCondition.Invalid();
             if (Lease != null) files.EnsureValidCanonicalWriteLease(Lease);
@@ -179,7 +229,13 @@ public partial class FileSystemManager
         /// <inheritdoc />
         public async ValueTask DisposeAsync()
         {
-            if (_closed) return;
+            lock (_borrowGate)
+            {
+                if (_closed) return;
+                if (_closing || _metaBorrowed)
+                    throw new InvalidOperationException("World scope cannot close during a nested Meta borrow or another close.");
+                _closing = true;
+            }
             try
             {
                 if (Lease != null) await Lease.DisposeAsync();

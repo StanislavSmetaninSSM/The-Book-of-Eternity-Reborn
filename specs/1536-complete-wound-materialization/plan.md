@@ -1,8 +1,32 @@
-# Browser physical course: bounded read-reservation design WIP
+# Browser physical source read reservation — scaffold WIP, UNCOMPILED/UNRUN
 
-Independent Astra/high DESIGN found one material coupling before code: outer Meta
-scope would erase inner readset closure. The explicit borrowed-scope correction
-below awaits narrow delta DESIGN; no scaffold/runtime is admitted yet.
+Tracked T121-PHYSICAL-GUIDED-BROWSER-READ-RESERVATION / issue#1536, branch
+1536-linux-qualification-20261025; scaffold base af1389065f8aede25abf3ae72875e1c19a3cb58d.
+Root/Astra accepted DESIGN including nested Meta closure preservation. This WIP adds
+only typed actual browser staging, an exclusive borrow of the existing Main-access
+World reservation for nested Meta, and five independent Integration source cases.
+The outer production source-phase reservation/debt optimization is NOT implemented.
+
+Four authored causal rows (CrossReferences2/MetaMisc2, both execution orders) use
+separate per-arm validation services for cache isolation over the same genuine
+original. Actual complete phase work, ordered issues, present/absent source DATA,
+canonical/original byte invariance and preserved Meta final readset precede the
+final physical-verification-work oracle. Counters include scope opening/end/close;
+no universal count or stopwatch saving is assumed. The fifth row mutates a current
+Meta path after its flexible/strict captures and requires the exact fresh readset
+refusal while the outer owner remains active. No reflection/manifest fabrication.
+
+C# UNCOMPILED; build/discovery/catalog audit/PlanOnly/causal RED/runtime UNRUN by
+explicit scaffold instruction. Static diff/JSON/source checks only; these do not
+prove compilation or intended RED. Next: independent coherent SOURCE, then root's
+fresh affected owning builds, full inventory discovery and exact2+2+1/60s PREP.
+Nine later safety controls, production wrapper/debt and browser180s retry remain
+unwritten/unadmitted. No accepted141/9e590 replay or other HOLD release.
+Optimization assessment: no new cache/source snapshot; fresh bytes and physical
+opening/full-end/current-owner fences remain. Existing Meta readset lifetime stays
+inside one actual phase; an inner borrow acquires/disposes no physical owner.
+GM no-update: internal read/test preparation changes no authored/gameplay contract.
+
 Recovered disk reserve: lossless closed-log substitution preserves14405493B in
 1615482gzipB for36 files from18 ended runs; full decode/EOF/CRC/hash and closing
 proofs verified. Free space became721432576B. Manifest SHA
@@ -12,7 +36,7 @@ all outputs/manifests remain external, no raw measurement/save/recovery/bin dele
 Tracked T121-PHYSICAL-GUIDED-BROWSER-READ-RESERVATION / issue#1536.
 Goal: finish the actual three-milestone browser course after normal accepted waits,
 separate confirmations and cleanup, in the existing180s/full-capture contract.
-This technical design is pending independent DESIGN; no new code/runtime is admitted.
+DESIGN is accepted; the scaffold above remains WIP pending independent SOURCE and fresh verification.
 The accepted canonical-adapter baseline is9e590fb6c11c33880019dfde69054f7994f4db0b.
 Stack: existing .NET8/C#/PowerShell category runner and current native package.
 Spec: spec.md physical treatment/FR060–064/067–074 and existing spiritual-aid-design.md.
