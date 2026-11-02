@@ -1,3 +1,29 @@
+# T152 safe projection built and exactly planned — GREEN pending
+
+Independent Astra/high SOURCE accepts 894c9fb719e393a914ccbb601fbcbdc8d433325f.
+All six required owners freshly build at that source, exit 0; warnings remain
+81/23/14/0/26/107. Actual six PE/PDB identities and 434 source bindings match;
+all 75 managed artifacts/transitive copies, 206 resource inputs / 1,236 copies
+and 12 native copies pass current verification. The six changed source/docs
+files were freshly downloaded from GitHub and independently checked by writer
+and root; limited six-file readback proof SHA256:
+38cc0d9829cb46f632fe45f0f9e4e1158926c68f0f4751c95b2419dd1fb6143c.
+N2 artifact proof SHA256:
+9bd2481857bc1f9e215ec94a8811bca4c024327595453bd7f54ab0a126842ec1.
+
+Fresh catalog validation passes: 1,327 categories / 13,153 methods, no unmapped
+or stale selector. Exact PlanOnly passes with 5 categories / 6 descriptors /
+7 methods / 11 cases, zero execution and complete owned cleanup. Diagnosis2 /
+causal5 / worsening1 retain60s; terminal-joint1 and shared-projection2 retain120s.
+Plan SHA256:
+e4066cd48554dd2914e412f266429d5a57d502a862f95c28fd4ed1f9154bf80d.
+Primary N2-build-*, N2-pdb-proof, N2-catalog and N2-plan remain outside checkout
+under /workspace/tboe-linux-evidence-20261102/notification-controls. No passing
+runtime or whole-T152 claim follows from compilation/discovery. Next independent
+PREP and one addressed GREEN11 with full existing peer capture and owned cleanup.
+The 75-artifact pre-build archive and all previous raw remain intact. R2 UNKNOWN,
+T149/R1 acceptance and every other HOLD retain their stated boundaries.
+
 # T152 shared safe projection authored — SOURCE/GREEN pending
 
 Independent Astra/high accepts exact N1 causal OUTCOME (four final-oracle failures,

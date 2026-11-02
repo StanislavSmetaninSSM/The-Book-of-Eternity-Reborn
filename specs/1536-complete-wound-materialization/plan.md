@@ -1,3 +1,14 @@
+# T152 safe projection built/planned — PREP/GREEN pending
+
+Independent SOURCE accepts 894c9fb719e393a914ccbb601fbcbdc8d433325f. Six fresh
+owning builds exit 0 with unchanged warning counts; actual six PE/PDB pairs,
+434 source bindings, 75 artifacts and all resource/native copies pass. Six-file
+remote readback is checked. Fresh catalog valid (1,327 / 13,153, no unmapped/stale)
+and exact PlanOnly confirms 5 categories / 6 descriptors / 7 methods / 11 cases,
+unchanged60/120s and runtime0. Primary evidence is in the checkpoint. Next one
+independently admitted addressed GREEN11 with full peer capture and cleanup;
+no browser/HOLD retry or parent acceptance.
+
 # T152 shared safe projection WIP — SOURCE pending
 
 Accepted causal RED5 permits the minimal common Project change: reuse existing
