@@ -1,3 +1,33 @@
+# Existing T150: complete mechanical legacy example correction WIP
+
+Primary M1 causal onf6313d7b15da32cd7cec1107338d63e16f9935d6 completed exactly1 FAIL
+at PhysicalGuidedDocumentationTests.cs:87 (missing typed mechanical legacy row),
+after all existing valid-route/mode/cosmetic premises. No timeout/skip/dup/underfill,
+both cleanup true/newTMP[], clean; all30 artifacts/412copies/native4/349bindings
+unchanged. Wrapper10.709948087s. Three future cloned refusal controls UNREACHED.
+Summary7b10de363758306bc5a56110edef7830b0017dc46632d4143636d104e0c9f6d2;
+TRX68b37669a5942c361733e44f4a3700b05554681506063ff63637e3c3993a24a5;
+primary integrityb6db5518bc15cc5bd34520292d10ead9096deccc3fc87ca2cb1a0c91747bc48e.
+Independent Sol/xhigh causal OUTCOME accepted. This is a real authored-example gap, not a
+healing production failure or the earlier metadata preparation typo.
+
+Minimal correction adds one full mechanical_effect legacy to the SAME terminal
+route, preserving cosmetic pale_scar and the two-fence/three-selection family.
+One complete current #1535 action_control definition, one local application,
+closed empty parameters and empty source links; independent client allocation/source
+and complete provider capability remain explicit. No default heal consequence,
+price/duration rule, new mechanic/API/entrypoint or source/permission exception.
+Manifest points to the full authored branch. Current guides already link this exact
+terminal family; no parallel format or new prompt command. Test assertions unchanged.
+Optimization: existing complete definition language reused, one stable example read/
+parse and independent mutation copies; no production IO/cache or speedup claim.
+Next SOURCE, preserve causal binary, fresh resource-owning Main/Unit, exact Plan/
+PREP one Fact60s GREEN, independent OUTCOME/receipt/remote verification. Current
+new example/resource inputs UNBUILT and typed GREEN UNRUN. Full raw at
+/workspace/tboe-linux-evidence-20261102/terminal-mechanical-legacy-documentation.
+Every parent, R2/A5 UNKNOWN, DFR/Mortal/Windows/World9/other HOLD remains open;
+no general aggression/defeat/conflict/QTE work. Independent memory remains #1571.
+
 # Existing T150 mechanical legacy worked example: causal scaffold WIP
 
 Base2cbe1526471ef8f0105e91260bc400209d7e9af3 is remote verified; seven changed files

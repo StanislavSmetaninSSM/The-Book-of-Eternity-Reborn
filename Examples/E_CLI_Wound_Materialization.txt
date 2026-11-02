@@ -3106,8 +3106,9 @@ v1 receipts cannot stand in for current publication. Consumed request cleanup,
 exact replay, held-image C4 and separate whole-original rollback remain client-owned.
 
 mortal_guided_terminal_heal_v1 — worked declared route DATA, not a GM command.
-Premises: an actual known physical severityIV wound, valid current provider capability
-covering this complete declared program, and a new separate player confirmation.
+Premises: an actual known player physical severityIV wound, valid current provider
+capability covering this complete declared program, including both legacy branches,
+and a new separate player confirmation.
 The explicitly authored policy below has no item/resource mutations; other methods
 keep their own exact declared costs. This is not a default price or duration.
 
@@ -3159,6 +3160,80 @@ keep their own exact declared costs. This is not a default price or duration.
               "localLegacyRef": "pale_scar",
               "kind": "cosmetic",
               "readableSummary": "Тонкий светлый рубец."
+            },
+            {
+              "localLegacyRef": "residual_tremor",
+              "kind": "mechanical_effect",
+              "readableSummary": "После заживления дрожь руки ограничивает использование предметов.",
+              "effectDraft": {
+                "schemaVersion": 1,
+                "definitions": [
+                  {
+                    "definitionRef": "tremor_definition_local",
+                    "definition": {
+                      "schemaVersion": 1,
+                      "definitionKey": "residual_hand_tremor",
+                      "display": {
+                        "name": "Остаточная дрожь руки",
+                        "description": "После закрытия раны дрожь руки ограничивает использование предметов.",
+                        "category": "debuff",
+                        "visibility": "visible"
+                      },
+                      "allowedRealms": [
+                        "mortal_world"
+                      ],
+                      "allowedTargetKinds": [
+                        "player"
+                      ],
+                      "components": [
+                        {
+                          "componentId": "residual_grip_control",
+                          "profile": "action_control",
+                          "priority": 100,
+                          "payload": {
+                            "action": "use_item",
+                            "operation": "restrict"
+                          }
+                        }
+                      ],
+                      "parameterBounds": {},
+                      "stacking": {
+                        "stackKey": "legacy_residual_hand_tremor",
+                        "policy": "independent",
+                        "maxStacks": 1,
+                        "atMaximum": "no_change",
+                        "refreshMode": null,
+                        "mergeRule": null
+                      },
+                      "lifetime": {
+                        "mode": "source_bound",
+                        "activePredicate": "active",
+                        "onSourceLoss": "expire"
+                      },
+                      "triggers": [],
+                      "removal": {
+                        "dispelCategories": [
+                          "physical_restoration"
+                        ],
+                        "cureKinds": [
+                          "wound_treatment"
+                        ],
+                        "onSourceLoss": "expire",
+                        "onConditionLoss": null,
+                        "manualAuthorities": []
+                      },
+                      "links": []
+                    }
+                  }
+                ],
+                "applications": [
+                  {
+                    "applicationRef": "tremor_application_local",
+                    "definitionRef": "tremor_definition_local",
+                    "parameters": {}
+                  }
+                ]
+              }
             }
           ]
         }
@@ -3170,13 +3245,18 @@ keep their own exact declared costs. This is not a default price or duration.
 ```
 The retained real request resolves the ordered reductions to workingI, then the
 same owner executes the separate final heal. GM narrative: «Лекарь завершает
-лечение. Края раны сомкнулись; на коже остаётся тонкий светлый рубец.» Use the
-ordinary required Scope/Brain/journal/ready outputs for the actual medic. Client
-writes treat→heal, removes the active wound and its owned effects, and retains the
-cosmetic declaration without creating an effect batch. A mechanical declaration
-instead uses exactly one independent wound_legacy/legacyId source/batch per legacy,
-1–5 declared definitions/applications and actual allocated effects. Never invent a
-legacy ID or write those client-owned results. The same v2/current/replay/rollback
+лечение. Края раны сомкнулись; на коже остаётся тонкий светлый рубец. Дрожь руки
+пока ограничивает использование предметов.» Use the ordinary required
+Scope/Brain/journal/ready outputs for the actual medic. Client writes treat→heal,
+removes the active wound and its owned effects, and retains the cosmetic declaration
+without assigning it an effect batch. The declared mechanical legacy uses exactly
+one independent wound_legacy/legacyId source/batch per legacy, 1–5 complete declared
+definitions/applications and actual allocated effects. Its definition has links=[];
+only response-local refs appear in the draft. The client derives its source link and
+allocates permanent IDs; this fragment supplies neither live capability nor authority
+to publish. These two declared consequences illustrate this provider program, not
+default consequences of every heal. Never invent a legacy ID or write those
+client-owned results. The same v2/current/replay/rollback
 checks apply; the completed course uses three separately confirmed milestones and
 ordinary accepted waits, not this illustrative one-attempt guaranteed route.
 end_mortal_guided_treatment_execution_v1
