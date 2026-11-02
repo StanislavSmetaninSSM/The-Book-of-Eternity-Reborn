@@ -25,10 +25,15 @@ actual catalog/Plan/PREP and one causal2/60s. After accepted RED only, minimal c
 Mortal target-kind→effect-owner mapping, preserving every other filter, source/owner/
 definition binding and hidden-complication exclusion. Fresh affected Main/Unit,
 exact GREEN2 plus player-preservation2, independent review/receipt/remote checkpoint.
+SOURCE caught an escaped-Cyrillic negative assertion before any build/run;
+changed it to direct typed Facts absence, so privacy controls are non-vacuous.
 No new authored GM/API/game rule; new C# UNCOMPILED, causal runtime UNRUN,
 production unchanged. Full raw external at
 /workspace/tboe-linux-evidence-20261102/mortal-foreign-wound-effect-projection.
-Optimization: current parsed catalog/typed images reused per independent fixture;
+Optimization: current parsed catalog is passed through the existing prepared-catalog
+Build argument per scenario: only the detached effect input changes, while exact
+wound carriers/history/identity remain stable within this one case. No catalog
+rebuild is needed for each effect variant. Typed images reused per independent fixture;
 actual effect snapshots rebuilt only for isolated changed inputs, no new live reads
 or cache/lifetime/publication exception, no speedup claim. Broad privacy tests not
 repeated where unchanged afterlife branch remains literal-equivalent.

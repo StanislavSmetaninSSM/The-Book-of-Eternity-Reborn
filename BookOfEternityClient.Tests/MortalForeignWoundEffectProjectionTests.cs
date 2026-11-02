@@ -47,8 +47,8 @@ public sealed class MortalForeignWoundEffectProjectionTests
             }
             var rejected = WoundPlayerProjection.ProjectKnownTarget(Context(changed), target);
             Assert.True(rejected.IsAvailable);
-            Assert.Single(rejected.Active);
-            Assert.DoesNotContain(visibleEffect, JsonSerializer.Serialize(rejected));
+            Assert.DoesNotContain(Assert.Single(rejected.Active).Facts,
+                fact => fact.Label == "Последствие" && fact.Value == visibleEffect);
         }
 
         var context = Context(effect);
@@ -85,7 +85,7 @@ public sealed class MortalForeignWoundEffectProjectionTests
             var snapshot = EffectMechanicsSnapshot.Build(new(roots, EffectMaterializationTestFixture.CreateIdentityIndex(current)));
             Assert.True(snapshot.IsAccepted, string.Join(";", snapshot.Issues));
             var currentInput = input with { Effects = snapshot };
-            var projection = WoundPlayerProjection.Build(currentInput);
+            var projection = WoundPlayerProjection.Build(currentInput, catalog);
             Assert.True(projection.IsAvailable);
             return new(currentInput, catalog, new JsonObject(), null, projection) { MortalTargets = [target] };
         }
