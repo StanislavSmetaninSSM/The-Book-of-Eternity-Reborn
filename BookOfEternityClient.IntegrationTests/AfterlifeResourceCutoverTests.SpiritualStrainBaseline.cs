@@ -32,12 +32,12 @@ public sealed partial class AfterlifeResourceCutoverTests
         Assert.Equal("contested", second["before"]!["conflictPosition"]!.GetValue<string>());
         second["outcome"] = "setback";
         second["after"] = second["before"]!.DeepClone();
-        second["after"]!["conflictPosition"] = "opposition_advantage";
+        second["after"]!["conflictPosition"] = "opposition_advantaged";
         second["incomingAction"] = IncomingPressure();
         SetDice(second, 4, 12);
         active["playerSideStrain"] = "overwhelmed";
         active["oppositionSideStrain"] = "clear";
-        active["conflictPosition"] = "opposition_advantage";
+        active["conflictPosition"] = "opposition_advantaged";
         await context.WriteExactJsonAsync(AfterlifeSpiritualConflictState.StatePath, candidate.ToJsonString());
 
         await using var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
@@ -64,7 +64,7 @@ public sealed partial class AfterlifeResourceCutoverTests
         Assert.Equal("setback", checkedSecond["outcome"]!.GetValue<string>());
         Assert.Equal("overwhelmed", checkedSecond["before"]!["playerSideStrain"]!.GetValue<string>());
         Assert.Equal("overwhelmed", checkedSecond["after"]!["playerSideStrain"]!.GetValue<string>());
-        Assert.Equal("opposition_advantage", checkedSecond["after"]!["conflictPosition"]!.GetValue<string>());
+        Assert.Equal("opposition_advantaged", checkedSecond["after"]!["conflictPosition"]!.GetValue<string>());
         for (var i = 0; i < paths.Length; i++)
             Assert.Equal(images[i], await context.FileSystem.ReadFileBytesAsync(lease, paths[i]));
         Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(context.FileSystem, lease));

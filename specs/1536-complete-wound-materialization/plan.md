@@ -12,7 +12,7 @@ actual complete original-intake frame, original tier-zero profiles/mirrored soul
 real signed dice5/15/4/12; no authority mutation after signing. GM candidate first
 pressure setback gives player overwhelmed/actual margin10, expected pressure20 and
 destination capIII. Second exact pressure/setback keeps overwhelmed, loses contested
-position to opposition_advantage and retains real incoming pressure/dice/cost audits.
+position to opposition_advantaged and retains real incoming pressure/dice/cost audits.
 Actual BeginSpiritualWoundSourceSessionAsync must validate BOTH exchanges, claim
 four unique signed dice and expose exactly one owned prepared source cappedIII.
 Profiles/conflict/resources/history bytes and no-common-plan flag are checked.
@@ -28,6 +28,9 @@ ReadC2NextSourceAsync or PrivateSession adapter; never legacy OriginalCaptureFie
 The binding-only comparison remains binding-only. A later adjacent pressure baseline
 comparison/strain correction needs its own causal proof and independent review.
 
+SOURCE caught an unsupported guessed position token before build/runtime; all
+three test literals now use the actual closed opposition_advantaged enum. This
+is preparation correction, not a production failure or consumer RED.
 Current new Integration C# UNCOMPILED, baseline runtime UNRUN, production unchanged.
 Exact1 Fact/60s category only; next SOURCE, preserve prior Integration own outputs,
 fresh Integration (current Main816/SupportECE verified source-equivalent), current
