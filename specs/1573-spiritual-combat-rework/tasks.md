@@ -4,7 +4,7 @@
 
 - [x] T140.1 Три bounded Sol6.1/high source audit и parent reconciliation завершены. Перечень охвата/границы и приоритет поздних решений записаны; старые I–V, refill/Heal interrupt не выданы за текущий договор.
 - [x] T140.2 Единая сводка создана, вход исторического proposal обновлён;30 новых ссылок,8 производных чисел курса и M1/diff/check прошли. Только6 Markdown-файлов, без новых механик/production.
-- [ ] T140.3 Независимый Astra/high review целого блока, исправления, публикация/readback/new clean restore и предъявление автору. T001/T135.M остаются открытыми.
+- [x] T140.3 Независимый GPT-6 Astra/high review c4098c4..975ae68 — pass без замечаний. Parent30 ссылок/6docs/diff и WIP remote/API/6blobs/байты/new clean restore проверены; финальный checkpoint/readback — issue1573. Концепция предъявляется без новых утверждённых правил/runtime; T001/T135.M открыты.
 
 ## T139 — тип воздействия и соответствующее сопротивление
 
