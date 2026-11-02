@@ -1,3 +1,12 @@
+# T081-D current — H2 actual FAIL, signed-byte causal tests WIP
+
+- [x] Fresh H2 Integration and cheap3 accepted; preserve full actual1FAIL/cleanup/hashclose and independent OUTCOME.
+- [x] Trace published UTF8 BOM signed-reader defect before healing append; separate duplicate-request fixture defect.
+- [x] Write seven new typed first-offer byte-boundary cases plus three existing controls (ten); UNCOMPILED/UNRUN, production unchanged.
+- [ ] Scaffold review/fresh Unit/exactPlanOnly and genuine cheap causal RED.
+- [ ] Minimal existing-decoder closure with fail-closed guards plus unique fixture request IDs, SOURCE/build/cheapGREEN.
+- [ ] Separately admitted actual weakening180s and independent outcome/checkpoint; root retirement still UNRUN.
+
 # T081-D actual healing follow-up — current WIP
 
 - [x] Independent Astra/high DESIGN of lawful initial8AP/healingIII and existing owner route.

@@ -1,3 +1,43 @@
+# T081-D actual weakening — H2 actual1 FAIL; byte-boundary causal scaffold WIP
+
+H2 sourcec377cd8c2abf3f2e43d3f6ba8e3763f4dca2b35e fresh Integration0/107baseline,
+4PE/PDB492bindings; cheap3 accepted PASS. ActualH2-healing1 completed1FAIL in
+37.4027720s TRX/40.8061659s category/46.906321182s wrapper, no timeout/skip/underfill.
+First real C2/C4 creation and Stage43/snapshot/advance succeeded; line100 first
+healing CommitC2FirstTransport fails signed original creation receipt parsing,
+BEFORE healing ledger append. No healing C4/root retirement/result/signed44 reached.
+Astra/high independently accepted failed OUTCOME;45/618/6/492 posthashes stable,
+cleanuptrue,newTMP[],noowners,cleansource. Full raw H2-healing1 retained outside
+checkout under /workspace/tboe-linux-evidence-20261102/spiritual-strain-preimage-data.
+Post9f19bd1d39fb2b6e70b4040844f287ee177797f9d415b81f9fa2bb09e4028feb;
+summary8cf56c92a7f9cc941d2caca1daa01b36a2f8ede3f228ced9187828228ff7bcc1.
+
+Independent source trace: common C4 writes UTF8 BOM via WriteCanonicalFileAtomicAsync
+and EncodeUtf8WithPreamble. The signed creation reader's strict UTF8.GetString keeps
+U+FEFF; strict string JSON parser rejects it. Ordinary ReadJsonAsync strips BOM, so
+prior assertions succeed. Raw post-C4 bytes were not retained after owned cleanup;
+this is a deterministic writer/reader diagnosis consistent with exact failure,
+requiring a cheap actual-consumer RED before production correction. A separate
+fixture defect reuses request42's ID for healing43: resolver/append correctly reject
+reuse. Assign unique IDs consistently to stage43/snapshot43/published proof and44;
+never loosen request/ledger coherence. Neither correction has been applied yet.
+
+New cheap scaffold adds seven cases to the existing three first-offer DATA controls:
+published BOM at receipt/conflict/both must reuse exact instance, malformedUTF8 and
+doubleBOM at either boundary must return refusal, immutable byte fingerprints stay.
+New category ten cases/5methods/60s; tests UNCOMPILED/UNRUN, production unchanged.
+Next independent scaffold/selection review, fresh Unit only and exact causal10 RED;
+then existing CanonicalJsonUtf8.DecodeOneOptionalBom at signed wound receipt/conflict
+consumers (creation reader, resolver, C3/source-only reducers, prior-wound lookup),
+preserving fail-closed exceptions, strict parser/raw hash/currentness/ownership and
+History guards. No new parser/cache/diagnostic stack, byte rewriting or game rule.
+Decoder is cheap existing one-pass work, adds no filesystem read or JSON parse and
+no caching/speedup claim. Existing immutable owner/readset DATA retained. Then fix
+request IDs, whole SOURCE/fresh affected builds/cheapGREEN and separately admitted
+one actual180s repeat. Prior G4 accepted29/H2cheap3 keep their source lineages;
+new helper code and whole weakening route remain unqualified. Old UNKNOWN/HOLD,
+no-roll producer and author deferrals retain their distinct status.
+
 # T081-D actual weakening fixture — source WIP / UNCOMPILED / UNRUN
 
 Fresh H1 Integration on6adbff436b92a5b7dd8e64c0a340916775efda52 failed compilation

@@ -2,6 +2,17 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "wounds-spiritual-signed-json-boundary",
+  "responsibility": "#1536 T081-D ten cheap first-offer signed DATA cases: three published-BOM receipt/conflict/both inputs, four strict invalid-UTF8/double-BOM refusals without decoder exception leakage, and existing signed-absence/already-accepted/confusable identity controls. No mutable filesystem or live authority.",
+  "excludes": "No permissive string parser, byte/hash rewrite, live owner or full spiritual-wounds-state suite. Real multi-turn healing remains a separately admitted native case.",
+  "changeHints": ["BookOfEternityClient/Services/SpiritualWoundFirstOfferInstanceResolver.cs", "BookOfEternityClient.Tests/SpiritualWoundFirstOfferInstanceResolverTests.cs"],
+  "related": [],
+  "requirements": { "frontendBuild": false, "exclusive": false, "ciRunner": "ubuntu-24.04" },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [{ "project": "unit", "tests": ["BookOfEternityClient.Tests.SpiritualWoundFirstOfferInstanceResolverTests.*"] }]
+},
+{
   "id": "wounds-spiritual-strain-healing-fixture",
   "responsibility": "#1536 T081-D three cheap typed fixture cases: ordinary6 and legal8 AP formula/history agree, nondefault focus/capacity cannot borrow the existing six-point prepared template. No files, world, lease or publication.",
   "excludes": "No gameplay healing acceptance, live owner or broad fixture-cache matrix. Existing defaults remain unchanged; custom capacity variant is uncached.",

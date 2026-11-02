@@ -2,6 +2,11 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "wounds-spiritual-signed-json-boundary",
+      "reason": "Cheap causal byte-boundary RED/GREEN before correcting signed receipt readers used by actual next-turn healing; preserves strict malformed-byte and identity refusals.",
+      "contracts": ["#1536 T081-D published UTF8 BOM at signed wound receipt/conflict boundaries, immutable raw identity"]
+    },
+    {
       "category": "wounds-spiritual-strain-healing-fixture",
       "reason": "New cheap capacity/history and prepared-template exclusion3 before genuine two-turn healing route.",
       "contracts": ["#1536 T081-D lawful initial resource capacity and fixture DATA isolation"]
