@@ -1,3 +1,40 @@
+# US3 T081-E: dice-free wound math decision pending — 2026-11-02
+
+Accepted source/artifact checkpoint33a6ed48e53234bd846d818f7d7057ea4b249413 is
+remote verified; eight changed immutable GitHub files matched complete bytes/blob
+identities, external M2-final-remote-source-readback-proof.json SHA
+dfaf2f29db48587285e73f0c3532b41ce8894969953c1519fbc0836e5a12f90f
+under /workspace/tboe-linux-evidence-20261102/terminal-mechanical-legacy-documentation.
+This is bounded changed-file recovery, not full restore or runtime replay.
+
+Independent Astra/high exact design assessment narrows the initial 'production gap'
+classification: this is an explicitly deferred actual-source authority boundary,
+not a demonstrated defect in current fail-closed pending behavior. Current code:
+Validation/ValidationService.SpiritualWoundSourceAdmission.cs:731–739 leaves lawful
+voluntary incoming harm without diceAudit as AppliedSourceBinding; SourceWitness
+requires actual validated totals/selected dice and independently recomputes margin.
+The accepted general checker permits explicit voluntary non-contest without audit;
+it does NOT supply a numeric harmfulMargin. Contract afterlife-spiritual-wounds-
+and-healing:28–65 and original B1 design:141 require actual sealed inputs and forbid
+invented opposed margin/calculation/die claims. No approved replacement value or
+calculation for this dice-free branch was found. Tier, paid cost, strain delta or
+voluntary flag alone do not establish that missing wound-math input.
+
+One author question submitted asynchronously, ANSWER PENDING: for already accepted
+voluntary harmful strain without contested roll, should harmfulMargin be0 or some
+other explicit value/computation?0 is proposed only, NOT accepted or implemented;
+other tiers/strain/caps stay unchanged. This question concerns maximum wound severity,
+not withdrawn T088/repeated conflict, aggression, defeat or general QTE behavior.
+No new rule, source/witness exception, build or runtime was introduced here.
+
+Nonstandard/passive/champion actual source binding is a separate unfinished cell:
+no universal mapping from effect magnitude/coordination/cost to appliedArtTier or
+margin is approved; the proposed dice-free0 would not automatically solve it.
+Dependent E changes remain held for the exact needed contract; continue independent
+T081-D eight-profile consumer/evidence mapping, no existing PASS rerun or general
+system implementation. R2/A5 UNKNOWN, all older HOLD and parent tasks remain open.
+The full current accepted T150 and wounds-only remaining receipts follow below.
+
 # Existing T150 mechanical legacy authored example accepted — 2026-11-02
 
 Independent Sol/xhigh SOURCE, PREP, causal OUTCOME and GREEN OUTCOME accepted.

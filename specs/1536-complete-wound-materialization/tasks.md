@@ -1,3 +1,13 @@
+# Current direct-wound dependency: E math answer pending
+
+Independent design found no approved harmfulMargin for accepted voluntary harmful
+strain without contested roll. Author question submitted;0 is proposed only, not
+accepted or implemented. Preserve current AppliedSourceBinding pending/source-witness
+checks; no general conflict rule change. Nonstandard/passive/champion source binding
+is separate. Continue finite independent T081-D eight-profile/receipt mapping.
+Details, exact anchors, accepted T150 lineages and remaining map are at the top of
+physical-guided-checkpoint.md. All parents and previous UNKNOWN/HOLD stay open.
+
 # Current wounds-only execution: mechanical legacy example accepted
 
 Existing T150 authored mechanical legacy artifact gap accepted by independent
