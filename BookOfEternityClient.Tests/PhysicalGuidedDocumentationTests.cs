@@ -78,5 +78,42 @@ public sealed class PhysicalGuidedDocumentationTests
             example, StringComparison.Ordinal);
         Assert.DoesNotContain("The direct treatment `heal`, explicit death and legacy producers remain pending implementation",
             example, StringComparison.Ordinal);
+
+        // FR-086: the worked route must exercise the contracted mechanical branch,
+        // rather than mention it only in prose after a cosmetic-only example.
+        var heal = Assert.IsType<MortalWoundHealOperation>(guaranteed.Outcome.DeclaredResult[^1]);
+        var cosmetic = Assert.Single(heal.Legacies.OfType<MortalWoundCosmeticLegacyDraft>());
+        Assert.Equal("pale_scar", cosmetic.LocalLegacyRef);
+        var mechanical = Assert.Single(heal.Legacies.OfType<MortalWoundMechanicalEffectLegacyDraft>());
+        Assert.Equal("residual_tremor", mechanical.LocalLegacyRef);
+        Assert.Equal(1, mechanical.EffectDraft.SchemaVersion);
+        var definition = Assert.Single(mechanical.EffectDraft.Definitions);
+        Assert.Equal("tremor_definition_local", definition.DefinitionRef);
+        Assert.Equal("residual_hand_tremor", definition.Definition.GetProperty("definitionKey").GetString());
+        Assert.Empty(definition.Definition.GetProperty("links").EnumerateArray());
+        var application = Assert.Single(mechanical.EffectDraft.Applications);
+        Assert.Equal("tremor_application_local", application.ApplicationRef);
+        Assert.Equal("tremor_definition_local", application.DefinitionRef);
+        Assert.Empty(application.Parameters.EnumerateObject());
+
+        var workedRoute = JsonNode.Parse(blocks[1].Groups[1].Value)!.AsObject();
+        var originalRoute = workedRoute.ToJsonString();
+        Refuse(legacy => legacy["legacyId"] = "copied_client_id", ".legacyId");
+        Refuse(legacy => legacy.Remove("effectDraft"), ".effectDraft");
+        Refuse(legacy => legacy["effectDraft"]!["applications"]![0]!["definitionRef"] = "foreign_definition",
+            ".effectDraft.applications[0].definitionRef");
+        Assert.Equal(originalRoute, workedRoute.ToJsonString());
+
+        void Refuse(Action<JsonObject> mutateLegacy, string suffix)
+        {
+            var changed = workedRoute.DeepClone().AsObject();
+            var legacy = changed["outcomes"]![0]!["result"]![2]!["legacies"]![1]!.AsObject();
+            mutateLegacy(legacy);
+            var refused = MortalWoundTreatmentContract.ParseRouteShape(
+                JsonSerializer.SerializeToElement(changed), "workedTerminal");
+            Assert.False(refused.IsValid);
+            Assert.Contains(refused.Issues, issue => issue.FilePath ==
+                "workedTerminal.outcomes[0].result[2].legacies[1]" + suffix);
+        }
     }
 }

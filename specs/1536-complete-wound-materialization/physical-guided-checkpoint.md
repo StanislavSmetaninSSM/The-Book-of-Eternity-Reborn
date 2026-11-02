@@ -1,3 +1,42 @@
+# Existing T150 mechanical legacy worked example: causal scaffold WIP
+
+Base2cbe1526471ef8f0105e91260bc400209d7e9af3 is remote verified; seven changed files
+matched immutable GitHub bytes (bounded recovery, not full restore), external proof
+06f6d11dad99bb625b52621d0597b06a07d658a051434b1d23140439dd0d9b1c.
+S1 accepted6 remain on runtimeb1e; not repeated for this next documentation block.
+
+Goal: give GM one complete lawful mechanical_effect heal legacy draft under existing
+T150/FR-086/087 and contracts/mortal-wound-treatment.md:383–392. Production parser,
+planner, terminal History-backed source and effect owner already exist. Cosmetic
+pale_scar stays. Missing artifact is authored mechanical branch, not a new game rule.
+Approach: extend the existing terminal route with one additional local mechanical
+legacy and full closed definition/application DATA. Keep the two-fence family and
+all three mode examples; no parallel format or copied permanent IDs/source links.
+A separate duplicate full route was rejected as needless example divergence.
+
+Finite plan (native inline execution; existing task/location, no new task IDs):
+- [ ] SOURCE review this scaffold, preserve previous binaries, fresh Unit only.
+- [ ] Exact discovery/Plan/PREP, run the existing one-Fact category60s once. Expected
+  causal RED: actual valid route/cosmetic/three-mode premises pass, mechanical typed
+  row absent. Unknown-field/ref controls remain UNREACHED until the branch exists.
+- [ ] Add complete mechanical draft to the same worked family; preserve cosmetic,
+  clarify illustrative full provider capability and current client allocation. Update
+  this family's manifest description/requiredText. No API/entrypoint/game rule change.
+- [ ] SOURCE, fresh resource-owning Main/Unit, exact Plan/PREP and same one-Fact GREEN:
+  actual closed parser accepts full draft and refuses copied legacyId, missing draft,
+  external definitionRef; original example remains byte-equivalent after cloned tests.
+- [ ] Independent OUTCOME, compact receipt, exact staged paths, commit/push/remote SHA
+  and bounded recovery. No full terminal/browser/old PASS or HOLD repeat.
+
+Optimization: existing loaded example/manifest and parsed typed route reused within
+this independent test; three detached mutation copies are required to preserve the
+original. No production IO/cache/lifetime changes or new speedup claim. Raw remains
+/workspace/tboe-linux-evidence-20261102/terminal-mechanical-legacy-documentation.
+Current change: Unit guard/category/selection only; example and manifest unchanged,
+new C# UNCOMPILED, causal runtime UNRUN, SOURCE pending. Parent T150/#1536 and all
+R2/A5/DFR/Mortal/Windows/World9/other UNKNOWN/HOLD remain. Independent memory #1571
+is outside this wound implementation; no general aggression/conflict/QTE work.
+
 # Existing T149 source cutover accepted; wounds-only remaining map — 2026-11-02
 
 Independent Sol/xhigh SOURCE, PREP and OUTCOME accept source/runtime
