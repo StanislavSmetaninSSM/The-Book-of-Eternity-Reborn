@@ -1,3 +1,43 @@
+# T081-D strain burden: ordinary baseline/source-cap preparation WIP
+
+Base905002e40f0f73cdbe53a89acf55372972ed1d9d is remote verified and9 changed
+immutable GitHub files matched full bytes, bounded recovery proof
+ e647b770825c922554b5bfd8121f0ec1c8c39acd7fd6c8c89100d01bf10cd2ed
+under /workspace/tboe-linux-evidence-20261102/mortal-foreign-wound-effect-projection.
+Accepted formatter GREEN4 remains on816, not repeated for this new independent work.
+Author packet4 questions pending, no0 or new control/counter/restrict rule chosen.
+
+Next technical step under the already defined strain +1/broken rule is test-only:
+actual complete original-intake frame, original tier-zero profiles/mirrored soul and
+real signed dice5/15/4/12; no authority mutation after signing. GM candidate first
+pressure setback gives player overwhelmed/actual margin10, expected pressure20 and
+destination capIII. Second exact pressure/setback keeps overwhelmed, loses contested
+position to opposition_advantage and retains real incoming pressure/dice/cost audits.
+Actual BeginSpiritualWoundSourceSessionAsync must validate BOTH exchanges, claim
+four unique signed dice and expose exactly one owned prepared source cappedIII.
+Profiles/conflict/resources/history bytes and no-common-plan flag are checked.
+No reflection or new production test getter; existing typed API and immutable
+prepared-fixture mechanism are reused with independent working state.
+
+This baseline is a candidate until actual SOURCE/build/Plan/PREP/run succeeds.
+Expected PASS proves only ordinary baseline and source calculation headroom, NOT
+an admitted wound opportunity, III selection, C2 correction, new consumer, cold or
+publication. Test must not report a prep failure as causal RED. First actual C2 pair
+and later source/selection use existing typed CommitSpiritualContinuationDraftFirstPairAsync,
+ReadC2NextSourceAsync or PrivateSession adapter; never legacy OriginalCaptureField.
+The binding-only comparison remains binding-only. A later adjacent pressure baseline
+comparison/strain correction needs its own causal proof and independent review.
+
+Current new Integration C# UNCOMPILED, baseline runtime UNRUN, production unchanged.
+Exact1 Fact/60s category only; next SOURCE, preserve prior Integration own outputs,
+fresh Integration (current Main816/SupportECE verified source-equivalent), current
+artifact/PDB/catalog/Plan/PREP then one baseline1. Full raw external at
+/workspace/tboe-linux-evidence-20261102/spiritual-strain-burden.
+Optimization: existing full-key immutable prepared template and actual source owners,
+no new cache or caller evidence; independent roots, original authority/fresh checks
+retained. No speedup claim. GM no-update for this test-only preparation; no new rule
+or authored schema. All parent/UNKNOWN/HOLD/wounds-only limits remain.
+
 # Current independent result: Mortal known-wound consequence fix accepted
 
 GREEN source/runtime81606617ea9f8d41385e82c21c7a37bf15a1d81c:4 unique Unit PASS

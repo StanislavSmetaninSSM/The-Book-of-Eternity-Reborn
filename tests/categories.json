@@ -2,6 +2,32 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "wounds-spiritual-strain-baseline",
+  "responsibility": "Existing T081-D / #1536 spiritual_strain_burden preparation: exactly one real signed ordinary-source Fact proves player pressure/setback baseline with lost position and unchanged overwhelmed strain, first actual player harmful source cappedIII, unique signed dice claims and unchanged canonical source/resource bytes. This is ordinary-baseline preparation, NOT a new burden consumer or admitted C2 wound offer. Any failure must be classified before a future causal consumer test.",
+  "excludes": "No strain insertion/correction, arithmetic-only fake authority, reflection, invented margin/control/counter/restrict rules, cold/publication/Engine/DFR/Mortal compatibility/Windows/HOLD retry. No prior accepted source test replay.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualStrainBaseline.cs",
+    "BookOfEternityClient/Services/Validation/ValidationService.SpiritualWoundSourceAdmission.cs",
+    "BookOfEternityClient/Services/Validation/ValidationService.SpiritualBindingDependency.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualStrainBurden_PressureSetbackBaselineHasRealSourceAndHeadroom"
+      ]
+    }
+  ]
+},
+{
   "id": "wounds-mortal-foreign-effect-projection",
   "responsibility": "T119/T121/T151 / FR-075/076 / #1536: two independent NPC/combatant rows use real wound history/identity/catalog and accepted effect snapshot, preserve hidden/foreign owner/source/definition controls and original JSON DATA, then require the lawful visible consequence. Target matching is formatter input, not permission. Expected causal RED is missing consequence after all premises; later stale-binding/privacy controls UNREACHED until GREEN.",
   "excludes": "Pure formatter Unit DATA only; no menu/consent/current-filesystem/publication authority or Engine/native/browser proof. No new game rules, source-math choices, general combat/QTE/ACTIVE/F1, performance or HOLD retry.",
