@@ -4,7 +4,7 @@
 
 - [x] T142.1 Принятие T141 записано; mortal source audit и parent сверка, scope/spec/plan/consistency до арифметики.
 - [x] T142.2 Новый профиль сопротивлений, примеры/точная арифметика, 25 новых локальных ссылок и7-doc diff/check проверены;12 численных примеров и дедупликация свойства. Новые решения явно кандидатные.
-- [ ] T142.3 Independent Astra/high whole-block review, исправления/публикация/readback/new clean restore; представление без production/Rules/probes.
+- [x] T142.3 Independent GPT-6 Astra/high review ad260de..b530033 — PASS без замечаний. WIP remote/API/7blobs/source bytes/25links/new clean restore проверены; финальный checkpoint/readback — issue1573 и verification.json. Новая формула предъявляется кандидатом, без production/Rules/probes.
 
 ## T141 — численные профили контроля и барьеров
 

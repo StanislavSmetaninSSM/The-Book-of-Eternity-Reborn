@@ -12,8 +12,20 @@ consistency записаны до арифметики. Parent проверил1
 точными дробями, однократность механического свойства через два экспорта,
 25 новых ссылок и7-doc scope/diff/check. Локально:
 D:\BoeDiagnostics\effect-resistance-t142\verification.json. Это не проверка
-боевого баланса/runtime; независимый review и публикация ещё выполняются.
+боевого баланса/runtime. Независимый GPT-6 Astra/high review всего7-файлового
+блока ad260de..b530033 завершён: PASS без P1/P2/P3 замечаний. Parent сохранил
+пределы доказательств: цены/наличие всех источников и runtime не проверены.
 Новых runtime-кэшей/дорогих операций нет; T001/T135.M остаются открыты.
+
+WIPb530033eaf61bdaff21b6c609b2c8a2db2a18add опубликован обычным push;
+remote SHA,7 API blobs/байты source совпали с новым чистым sparse restore
+D:\BoeDiagnostics\effect-resistance-t142\remote-restore-20261102.
+25 новых ссылок и5 обязательных инструкций восстановлены. Финальный
+checkpoint/readback — issue1573 и локальный verification.json. Source tracked
+clean после commit; посторонний recovery obj не изменён. Raw диагностики в Git нет.
+Маршрутизация: один bounded Sol6.1/high source audit, parent проект/проверки,
+отдельный Astra/high whole-block review. Существенных исправлений не потребовалось;
+измеренной экономии/полного игрового баланса этот проход не доказывает.
 
 ## T141 — контроль и барьеры
 
