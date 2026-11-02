@@ -1,3 +1,34 @@
+# T149 NPC canonical wound retirement — accepted causal result, production WIP
+
+Actual N2 at 602e0f46addb39b2147b088fe8ad1857031b2d24 completes 16/16 in 9.719289 s:
+12 expected FAIL / 4 PASS, no timeout/dup/underfill, full cleanup/no new roots.
+Eight catalog cases miss the root/entry error; three planner cases miss it after
+genuine controls and actually allocate 1 effect / 1 transition each. Later zero
+assertions were UNREACHED. Separate priority failure follows passed original
+nonlegacy ordering; it is not an acceptance/bypass proof. Astra accepts OUTCOME.
+TRX 8b392733d41893667d473e23739de1ca9607b56d3f28461307e5e5a2711031dd;
+summary 79863ffc7e0c439d86afbd91c2ed1d7dda4da12224a3e9f9d988654e9eb1e1c9.
+
+Production draft now closes non-metadata root fields to schemaVersion/entries,
+refuses exact nested wounds presence before that entry ID/effect checks and drops
+only the legacy TryLocate normalization. Duplicate-first/nonlegacy order, pristine
+null creation, metadata and fresh authority/history checks stay. Two source
+inventory allowances become strict integration seams with real anchors and
+operation-local no-old-alias assertions; remaining legacy owners are not hidden.
+Existing planner cache key already deep-clones every NPC carrier property, so
+newly relevant presence/null values remain dependencies; owner/lifetime unchanged.
+No new cache/IO, migration or game rule. GM no-update is reviewed: current direct
+cutover guide and worked NPC examples already use the separate npc_wounds carrier.
+
+Fresh Main/Unit/Integration builds, dependency/resource/native/PDB bindings and
+coherent full discovery/Plan/PREP precede GREEN 20: Unit 16 + source guards 2 + two
+independent Integration peers. Unit bounds 60 s; each real-IO Integration leaf 180 s,
+chosen before runtime and below former broad 10/15-minute owners. Negative peer
+retains original no-common/semantic checks and adds exact carrier existence/bytes.
+Production/guard/integration changes are UNCOMPILED/UNRUN. No App/HOLD rerun.
+Full raw remains outside checkout in npc-canonical-retirement under
+/workspace/tboe-linux-evidence-20261102; source/build/review lineages remain explicit.
+
 # T149 NPC carrier causal preparation — warning-only correction WIP
 
 First fresh Unit build at5cc6dcd5 exits0 in36.066402s; baseline26 warnings plus

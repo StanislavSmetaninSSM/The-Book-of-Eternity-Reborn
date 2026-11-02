@@ -2,9 +2,86 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "wounds-npc-canonical-retirement-source-guards",
+  "responsibility": "Two current source guards: semantic ownership anchors and confinement after removing the two retired legacy allowances. Require canonical NPC shape/pristine-null path, exact nested refusal and no NPCWoundChanges in these two retired owners. Reuse operation-local source strings, no extra source reads or arbitrary fingerprint refresh.",
+  "excludes": "No broad effects/full suite, unchanged App/T150/runtime replay, new gameplay/schema/cache/limits, publication-bypass assertion or closure of other T149 aliases/UNKNOWN/HOLD.",
+  "changeHints": [
+    "BookOfEternityClient.Tests/WoundMaterializationSourceGuardTests.cs",
+    "BookOfEternityClient/Services/EffectMaterializationContract.cs",
+    "BookOfEternityClient/Services/EffectAcceptedTurnPlanner.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.WoundMaterializationSourceGuardTests.WoundOwnershipInventory_ResolvesEveryDeclaredFileAndSemanticAnchor",
+        "BookOfEternityClient.Tests.WoundMaterializationSourceGuardTests.ProductionLegacyWoundOccurrences_AreConfinedToInventoriedSemanticScopes"
+      ]
+    }
+  ]
+},
+{
+  "id": "wounds-npc-canonical-retirement-publication",
+  "responsibility": "One genuine normalizer publication peer with current schema and legal metadata instead of the retired wound command surface. Preserve active effect resolution/publication, target identity, _ metadata and timestamp assertions. Independent per-test context, no shared mutable setup. Protective 180 s chosen before runtime for full real-IO snapshot/normalization/cleanup; below former 10-minute broad owner, no result-driven increase.",
+  "excludes": "No broad effects/full suite, unchanged App/T150/runtime replay, new gameplay/schema/cache/limits, publication-bypass assertion or closure of other T149 aliases/UNKNOWN/HOLD.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/CanonicalStateNormalizerTests.Effects.cs",
+    "BookOfEternityClient/Services/EffectMaterializationContract.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 3,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.CanonicalStateNormalizerEffectTests.Apply_NpcPreservesLegalAdjacentMetadata"
+      ]
+    }
+  ]
+},
+{
+  "id": "wounds-npc-canonical-retirement-early-refusal",
+  "responsibility": "One real accepted-turn validation peer: legacy NPC carrier refused at existing canonical carrier error before allocation/publication. Preserve no-common authority, original semantic assertions and add exact existing-file bytes equality. Protective 180 s chosen before runtime for genuine snapshot/source/validation/cleanup; below former 15-minute broad owner, no result-driven increase.",
+  "excludes": "No broad effects/full suite, unchanged App/T150/runtime replay, new gameplay/schema/cache/limits, publication-bypass assertion or closure of other T149 aliases/UNKNOWN/HOLD.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/EffectMaterializationValidationTests.Wounds.cs",
+    "BookOfEternityClient/Services/EffectMaterializationContract.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 3,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.EffectMaterializationValidationTests.EffectApply_LegacyNpcWoundPayloadIsRejectedBeforePublication"
+      ]
+    }
+  ]
+},
+{
   "id": "wounds-npc-canonical-retirement-causal",
-  "responsibility": "T149-NPC-CANONICAL-WOUND-RETIREMENT / FR-013 / #1536: exactly16 Unit source rows/8 methods. Root legacy-only/mixed x empty/nonempty4, genuine current empty/populated2, duplicate/nonlegacy/nested precedence1, actual planner root2+nested1 with genuine base plans/all-input snapshots/allocation counters, nested presence values4, migrated legal-metadata Catalog/Planner positives2. Expected baseline11 real missing-refusal FAIL plus1 classification/order FAIL and4 preserving PASS, not observed results. Error-order input already refuses generically; it is not acceptance causality. Zero-allocation and failed-plan oracles may be UNREACHED after a missing required error. Cost UNMEASURED.",
-  "excludes": "Test-only causal scaffold: no production validator/planner/sourceguard retirement before accepted actual RED. No blanket unknown/casefold/recursive ban, reflection/Engine/new cache/reads, publication-bypass claim, old accepted-set replay or A5/R2/T148/Saref/DFR/Mortal/Windows HOLD. Both prepared Integration fixture/oracle changes remain unselected until post-RED GREEN. Existing owner memberships survive meaningful fixture renames.",
+  "responsibility": "T149-NPC-CANONICAL-WOUND-RETIREMENT / FR-013 / #1536: unchanged 16 Unit rows / 8 methods regress the accepted N2 RED: 11 actual missing-refusal failures, one distinct error-priority failure and four preserving passes. Genuine source/target plans and input images precede root/entry error and zero-allocation assertions. GREEN must complete all 16, including previously unreached assertions; unchanged 60 s. N2 cost 9.719289 s wrapper is not a speedup measurement; GREEN unrun.",
+  "excludes": "No blanket unknown/casefold/recursive ban, migration/new cache/IO, reflection/Engine, publication-bypass claim, old accepted-set or App replay, A5/R2/T148/Saref/DFR/Mortal/Windows HOLD. Source/integration peers have separate exact owners; parent T149 remains open.",
   "changeHints": [
     "BookOfEternityClient.Tests/EffectCarrierCatalogTests.cs",
     "BookOfEternityClient.Tests/EffectMaterializationContractTests.cs",

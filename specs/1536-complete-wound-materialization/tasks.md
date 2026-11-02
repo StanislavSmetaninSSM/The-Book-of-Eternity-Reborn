@@ -18,6 +18,10 @@
   Integration refusal disproves any automatic publication-bypass claim. No new
   cache/read/Engine/reflection or game rule. T118 accepted lineages, parent T149,
   A5/R2 UNKNOWN, T148/#1571 and all wider HOLDs remain unchanged.
+  Actual N2 RED accepted: 12 expected FAIL / 4 PASS, 16/16 complete in 9.719289 s,
+  genuine planner allocations 1/1 each; not publication bypass. Minimal production
+  and semantic inventory correction WIP; fresh Main/Unit/Integration and exact
+  GREEN 20 / independent review remain, no parent/HOLD closure.
 
 - [x] T118-ACTUAL-SHELL-READONLY [US5] Real App/ShellProvider read-only route
   Continue→Help→active wounds→known History→active→scene accepted. Independent

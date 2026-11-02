@@ -9084,12 +9084,6 @@ internal static partial class EffectAcceptedTurnPlanner
                         ["schemaVersion"] = EffectMaterializationContract.SchemaVersion,
                         ["entries"] = new JsonArray()
                     };
-                    if (_npcs["entries"] == null &&
-                        _npcs["NPCWoundChanges"] is JsonArray)
-                    {
-                        _npcs["schemaVersion"] = EffectMaterializationContract.SchemaVersion;
-                        _npcs["entries"] = new JsonArray();
-                    }
                     if (_npcs["entries"] is not JsonArray entries)
                         return InvalidCarrier(issues, EffectCarrierCatalog.NpcPath, _npcs, out slot);
                     var matches = entries.OfType<JsonObject>()

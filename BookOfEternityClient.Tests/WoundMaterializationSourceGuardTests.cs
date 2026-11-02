@@ -313,19 +313,20 @@ public sealed class WoundMaterializationSourceGuardTests
             "\"effect_source_wound_link_missing\"",
             "\"effect_source_wound_source_bound_mismatch\""),
         new(
-            "npc-effect-planner-wound-command-fallback",
-            InventoryCategory.LegacyLooseWoundSurface,
+            "npc-effect-planner-canonical-carrier-only",
+            InventoryCategory.AcceptedMechanicsIntegrationSeam,
             "BookOfEternityClient/Services/EffectAcceptedTurnPlanner.cs",
             "internal bool TryLocate(",
-            "_npcs[\"NPCWoundChanges\"] is JsonArray",
-            "_npcs[\"entries\"] = new JsonArray();"),
+            "_npcs ??= new JsonObject",
+            "if (_npcs[\"entries\"] is not JsonArray entries)"),
         new(
-            "npc-effect-contract-wound-command-acceptance",
-            InventoryCategory.LegacyLooseWoundSurface,
+            "npc-effect-contract-canonical-shape",
+            InventoryCategory.AcceptedMechanicsIntegrationSeam,
             "BookOfEternityClient/Services/EffectMaterializationContract.cs",
             "private static void ValidateNpcCarrier(",
-            "Set(\"schemaVersion\", \"entries\", \"NPCWoundChanges\")",
-            "adjacent-only NPCWoundChanges command surface"),
+            "visibleFields.SetEquals(Set(\"schemaVersion\", \"entries\"))",
+            "entry.TryGetProperty(\"wounds\", out _)",
+            "without legacy wounds"),
         new(
             "player-wound-readonly-status-reader",
             InventoryCategory.PlayerReadOnlyProjection,
@@ -574,8 +575,6 @@ public sealed class WoundMaterializationSourceGuardTests
         Scope("composer-player-wound-path-symbol", "canonical-wound-effect-source-composition", "PlayerWoundsPath", "internal const string PlayerWoundsPath", "internal static readonly string[] SameTurnOwnerAuthorityPaths"),
         Scope("composer-source-wound-authority", "canonical-wound-effect-source-composition", "PlayerWoundsPath", "internal static readonly string[] SourceAuthorityPaths", "private static readonly SourceDescriptor[] SkillSourceDescriptors"),
         Scope("composer-healed-fallback", "generic-source-wound-healed-fallback", "isHealed", "case \"wound\":", "case \"fate_card\":"),
-        Scope("planner-npc-wound-fallback", "npc-effect-planner-wound-command-fallback", "NPCWoundChanges", "internal bool TryLocate(", "internal EffectCarrierCatalogInput ToInput("),
-        Scope("effect-contract-npc-wound-command", "npc-effect-contract-wound-command-acceptance", "NPCWoundChanges", "private static void ValidateNpcCarrier(", "private static void ValidateEmbeddedCarrier("),
 
 
         Scope("accepted-npc-effect-carrier-path", "accepted-effect-carrier-catalog", "game_state/npcs/npc_effects.json", "internal const string NpcPath", "internal const string EnemiesPath"),
@@ -596,6 +595,8 @@ public sealed class WoundMaterializationSourceGuardTests
         Assert.Contains(Inventory, static entry => entry.Category == InventoryCategory.PlayerReadOnlyProjection);
 
         var entriesById = Inventory.ToDictionary(static entry => entry.Id, StringComparer.Ordinal);
+        var npcContractSource = string.Empty;
+        var npcPlannerSource = string.Empty;
         foreach (var entry in Inventory.OrderBy(static item => item.Id, StringComparer.Ordinal))
         {
             Assert.Equal(entry.RelativePath, NormalizeRelativePath(entry.RelativePath));
@@ -605,6 +606,8 @@ public sealed class WoundMaterializationSourceGuardTests
                 $"{entry.Category} '{entry.Id}' must remain owned by '{entry.RelativePath}'.");
 
             var source = File.ReadAllText(absolutePath);
+            if (entry.Id == "npc-effect-contract-canonical-shape") npcContractSource = source;
+            if (entry.Id == "npc-effect-planner-canonical-carrier-only") npcPlannerSource = source;
             foreach (var anchor in entry.RequiredAnchors)
             {
                 Assert.True(
@@ -635,6 +638,11 @@ public sealed class WoundMaterializationSourceGuardTests
                 $"{owner.Category} '{owner.Id}' cannot bound discovery token '{allowance.Token}' " +
                 $"between '{allowance.StartAnchor}' and '{allowance.EndAnchor}' in '{owner.RelativePath}'.");
         }
+        // Reuse these already-read, operation-local immutable source images.
+        Assert.NotEmpty(npcContractSource);
+        Assert.NotEmpty(npcPlannerSource);
+        Assert.DoesNotContain("NPCWoundChanges", npcContractSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("NPCWoundChanges", npcPlannerSource, StringComparison.Ordinal);
     }
 
     [Fact]
