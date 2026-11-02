@@ -3,8 +3,8 @@
     "categories": [
 {
   "id": "wounds-notification-controls-causal",
-  "responsibility": "T152-NOTIFICATION-CONTROLS / #1536: pure actual wound Parse/Claim/Compose. Four causal rows mutate genuine JSON name/narration x numeric ESC27/backspace8 before parsing, prove admitted raw control, exact successful raw binding and immutable root/wound/claim, then require forbidden-control absence in returned plain/console/browser (also decoded HTML) player projections. Safe field/code case labels and projection-only failure labels never print C0. One fixed-text LF/tab/Unicode preserving positive. Source-only scaffold; no production correction or terminal/browser execution.",
-  "excludes": "No blanket bidi/format/confusable policy, canonical text rewrite, weakened raw claim binding, GameEngine/world/diagnostic fixture, new cache or framework. No old owner/category removal or accepted-set replay, T149 parent closure, R2 browser retry, native/DFR/Mortal/Windows/performance qualification or whole T152 acceptance.",
+  "responsibility": "T152-NOTIFICATION-CONTROLS / #1536: four actual Parse/Claim/Compose C0 rows and one fixed-golden LF/tab/Unicode preserving row. After accepted causal RED, verify the existing Text policy is applied after exact raw binding to notification/narration plain/console/browser projections without mutating canonical input.",
+  "excludes": "No new Unicode/bidi rule, canonical/claim rewrite, terminal control execution, broad Engine/native/HOLD run or raw diagnostic framework. Shared accepted output peers have separate finite owners.",
   "changeHints": [
     "BookOfEternityClient/UI/WoundPlayerNotification.cs",
     "BookOfEternityClient/Services/WoundPlayerProjection.cs",
@@ -24,6 +24,61 @@
       "tests": [
         "BookOfEternityClient.Tests.WoundAcquisitionOutputTests.Compose_RemovesForbiddenControlsOnlyFromPlayerProjections",
         "BookOfEternityClient.Tests.WoundAcquisitionOutputTests.Compose_PreservesAllowedLineBreakTabAndUnicodeInPlayerProjections"
+      ]
+    }
+  ]
+},
+{
+  "excludes": "No broad aggregate, new fixture, copied authority, performance/DFR/Mortal/Windows HOLD or DOM/provider/fresh-process qualification. Existing category owners remain intact.",
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "expectedSeconds": null,
+  "id": "wounds-notification-shared-projection",
+  "responsibility": "T152 shared Project regression: exact existing spiritual publication-owner output1 and acquisition markup escaping1, both actual projection callers. Ordinary treatment empty-output3 are not selected because they never invoke Project and their binding branches are unchanged.",
+  "changeHints": [
+    "BookOfEternityClient/UI/WoundPlayerNotification.cs"
+  ],
+  "timeoutMinutes": 2,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.AfterlifeWoundHealingPublicationOwnerTests.DeferredRoutingLeavesNoExecutablePlanAndPublicationUsesItsOwnLease"
+      ]
+    },
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.WoundAcquisitionOutputTests.Compose_EscapesUntrustedConsoleAndBrowserMarkup"
+      ]
+    }
+  ]
+},
+{
+  "excludes": "No broad aggregate, new fixture, copied authority, performance/DFR/Mortal/Windows HOLD or DOM/provider/fresh-process qualification. Existing category owners remain intact.",
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "expectedSeconds": null,
+  "id": "wounds-notification-worsening-projection",
+  "responsibility": "T152 shared Project regression: one genuine existing typed create/worsen publication with exact notification PlainText before and after publication; preserve identity/effect/History and source-owner semantics. This is an exact leaf; the broad wildcard lifecycle owner remains unselected.",
+  "changeHints": [
+    "BookOfEternityClient/UI/WoundPlayerNotification.cs",
+    "BookOfEternityClient.IntegrationTests/WoundMaterializationLifecycleTests.Creation.cs"
+  ],
+  "timeoutMinutes": 1,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.WoundMaterializationLifecycleTests.ExistingWound_WorseningReusesIdentityReplacesEffectsAndAppendsHistory"
       ]
     }
   ]

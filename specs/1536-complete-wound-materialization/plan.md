@@ -1,3 +1,17 @@
+# T152 shared safe projection WIP — SOURCE pending
+
+Accepted causal RED5 permits the minimal common Project change: reuse existing
+WoundPlayerProjection.Text once after raw binding, then produce all three safe
+representations. No other production or test body changes. New5 + finite actual
+output peers6 are selected: spiritual-owner1, acquisition-escaping1, diagnosis2,
+terminal-joint1 and worsening1. Existing empty-output treatment3 are excluded
+because Project is not called; no heavy lifecycle/HOLD replay. Exact discovery
+is pending; source estimate 11 cases / 7 methods / 6 descriptors, existing60/120s
+bounds. Terminal summary-loop execution is covered but separate per-summary
+assertions are not claimed. Code is UNCOMPILED; next independent SOURCE, fresh
+affected builds/pins/Plan/PREP/GREEN. See checkpoint for complete impact/retention /
+optimization and GM no-update reasoning.
+
 # T152 causal RED5 proven — OUTCOME pending
 
 Actual frozen runtime fea2b14e120408e94ecba2ed8ebee212981fd39e completes four

@@ -1,3 +1,44 @@
+# T152 shared safe projection authored — SOURCE/GREEN pending
+
+Independent Astra/high accepts exact N1 causal OUTCOME (four final-oracle failures,
+one preserving PASS, all raw binding and nonmutation premises). The minimal
+production delta now changes only WoundPlayerNotification.Project: call existing
+WoundPlayerProjection.Text once and derive plain, escaped console and encoded
+browser values from that same safe string. All caller admission, original claim,
+canonical wound/scene DATA, visibility and authority logic remain unchanged.
+This code is UNCOMPILED and GREEN is not claimed.
+
+Root and an independent Sol read-only impact review traced the common helper
+through acquisition/worsening, live spiritual combat, spiritual healing, Mortal
+diagnosis/recovery and terminal treatment/legacy-summary output. Finite selection
+is new causal/preserving5 plus actual shared-Project peers6: spiritual-owner1,
+acquisition-escaping1, diagnosis2, terminal-joint1 and worsening1. Source estimate
+is 11 cases / 7 methods / 6 project descriptors across five categories; exact
+discovery remains pending. Existing 60/120-second bounds are preserved. Ordinary
+treatment3 from the broader old peer category are not selected: they assert empty
+notifications and never call Project. Their caller/binding code is unchanged.
+
+The terminal peer uses a genuine joint owner and reduce_legacy setup with two
+legacy effect batches; its output checks success, healed prefix and /раны. It
+executes the legacy-summary loop, but has no separate per-summary text/count/
+escaping assertion, so none is claimed. Other live-spiritual/combat templates use
+the same helper and represented name/progress inputs; no heavy lifecycle/HOLD
+replay is justified by this pure presentation delta. Old category owners remain;
+new exact leaves only avoid unneeded broad/wildcard cases. Actual catalog reader
+and CI selection metadata validation pass before publication.
+
+Optimization: one existing bounded text-policy pass per projection value, reused
+by all three representations. No I/O, parse, cache, permission, mutable shared
+fixture or new sanitization policy is added. Raw equality checks still precede
+projection. GM no-update: FR076 already requires safe rendering; author schema,
+game rules, timing/cost, request/response authority and narrative ownership are
+unchanged. New 75-artifact lossless archive before rebuilding is verified through
+full gzip EOF/CRC and all member bytes: 102,618,589B SHA256
+d9cdb6e38928b6d8ae31e0a2437b93ba61c12ef7868163b554e8d229d5b549a0.
+Archive/proof are external under notification-controls. Next independent SOURCE,
+fresh affected owner graph/pins/exact Plan/PREP and addressed GREEN. Parent T152,
+accepted T149/R1, R2 UNKNOWN and broader HOLDs retain their stated scope.
+
 # T152 causal RED5 complete — OUTCOME pending
 
 Independent DESIGN/SOURCE/PREP accepts exact scaffold runtime

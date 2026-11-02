@@ -569,10 +569,11 @@ internal sealed partial record WoundPlayerNotification(
             Array.Empty<ValidationIssue>());
     }
 
-    private static WoundPlayerTextProjection Project(string value) => new(
-        value,
-        Markup.Escape(value),
-        HtmlEncoder.Default.Encode(value));
+    private static WoundPlayerTextProjection Project(string value)
+    {
+        var text = WoundPlayerProjection.Text(value);
+        return new(text, Markup.Escape(text), HtmlEncoder.Default.Encode(text));
+    }
 
     private static void AddAcceptedTurnBindingIssue(
         ICollection<ValidationIssue> issues,

@@ -48,6 +48,11 @@
   policy/framework, then independent review, fresh affected builds and addressed
   GREEN. Preserve the existing newline/tab/Unicode policy; no blanket bidi rule,
   GameEngine/performance stack or broad completed-set replay is introduced.
+  Exact causal5 OUTCOME accepted: four final safe-projection oracle FAIL after
+  all raw binding/nonmutation premises plus one LF/tab/Unicode PASS. Minimal
+  shared Project/Text production change is authored, UNCOMPILED/UNRUN. Finite
+  intended GREEN is new5 + actual shared output peers6, not a broad aggregate;
+  independent SOURCE, fresh affected builds and addressed acceptance remain.
   Source-only scaffold authored: existing pure Unit Parse/Claim/Compose, four
   field{name,narration} x code{27,8} causal rows plus one LF/tab/Unicode positive.
   Raw admission/binding/nonmutation premises precede safe-label final output oracle;
