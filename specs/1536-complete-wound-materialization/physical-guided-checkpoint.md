@@ -1,3 +1,23 @@
+# T149 causal RED9 complete — independent OUTCOME pending
+
+Actual clean runtime 603c45e82112e58ee4a838152c443fdc55343635, compiled Integration
+0235df8fceadc875b03fb86d1a923c3b00bac796 with unchanged five other owners.
+After independent PREP, exact category wounds-canonical-player-carrier-root
+completes all 9 cases / 3 methods / 1 descriptor in 9.3483924 seconds, exit 1:
+7 PASS / 2 intended FAIL, no timeout, skip, duplicate or underfill. Both bare-array
+rows fail only the final line-28 Assert.Contains(root Error): actual issues are
+empty. All earlier input/shape/byte invariance premises pass. Scalar/null 5 and
+genuine canonical 2 controls PASS. This is a real missing-refusal RED, not a newly
+invented diagnostic-code failure. Production remains unchanged.
+
+Owned-tree/runtime cleanup both succeed. Explicit private-temp prefix inventories
+are empty before and after; no new boe-resource-materialization-* root remains.
+Primary external attempt: R3-red9 under the current browser-read-recovery raw root.
+Summary SHA256 f258b50e037e522c0a866c9301f284dd784e9d11125069e316e1e9089d77930c;
+TRX SHA256 32118b7715af8e875091dd3b59f48d86fd65e1c3790d008280342f30621f1d60.
+Independent OUTCOME must accept these exact failures before the minimal canonical
+dispatch correction. GREEN and parent T149 remain open; no browser or HOLD retry.
+
 # T149 scaffold built and exactly planned — RED runtime pending
 
 Independent Astra/high accepts bounded DESIGN and scaffold SOURCE

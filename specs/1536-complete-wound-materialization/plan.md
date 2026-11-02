@@ -1,3 +1,13 @@
+# T149 causal RED9 complete — OUTCOME pending
+
+Exact runtime 603c45e82112e58ee4a838152c443fdc55343635 completes 9/9 cases:
+arrays 2 fail only the final required root-Error assertion, actual issues empty;
+scalar/null 5 and genuine canonical 2 controls PASS. Wall 9.3483924 seconds,
+exit 1, no timeout/skip/underfill; process cleanup and explicit fixture absence
+checks pass. Primary identities are in physical-guided-checkpoint.md. Production
+is unchanged. After independent OUTCOME, apply only the accepted canonical-path
+dispatch fix; preserve generic noncanonical callers and existing strict catalog.
+
 # T149 scaffold built and exactly planned — RED pending
 
 Independent Astra/high DESIGN/SOURCE accepts the bounded nine-row scaffold.
