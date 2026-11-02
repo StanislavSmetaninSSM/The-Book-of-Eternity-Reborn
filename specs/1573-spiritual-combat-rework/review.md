@@ -1,5 +1,19 @@
 # Проверка проекта #1573
 
+## T141 — контроль и барьеры
+
+Baseline/origin c555e201847f2f5eff0f5da4ce57393b09179a7e совпали. Scope/spec/plan/tasks
+и предварительный consistency записаны до арифметики. Два Sol6.1/high read-only
+аудита завершены: mortal не задаёт универсальную цену контроля и конечного
+HP-барьера; source-defined semantics переносятся, числа требуют новой калибровки.
+Parent сопоставил Rules7/12/13/17, принятые damage/threshold/barrier/mastery.
+Parent проверил точную дробную арифметику D50/мастерства/синергииR/цены целей,
+18 новых локальных ссылок и шестидокументный diff/check. Свидетельство:
+D:\BoeDiagnostics\control-barrier-t141\verification.json. Это не battle matrix
+и не проверка финального баланса. Independent review/публикация ещё выполняются.
+Код/GM Rules не меняются, новые
+кэши не нужны; текущие эффект/ресурс/право применения не заменяются старым snapshot.
+
 ## T140 — актуальная концепция искусств
 
 2026-11-02. Baseline/origin c4098c4b39abd32619521ee026bcbdb9a69b8ea0 совпали.
