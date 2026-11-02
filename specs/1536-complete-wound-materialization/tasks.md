@@ -12,9 +12,14 @@
   Coherent wrapper/debt+typed safety source is authored WIP: causal4+borrow4+drift1
   +new safety23+legacy4 =36 source rows/16 methods/11 finite categories. Explicit
   legacy4 owner selects the reviewed assertion repair; unchanged8 peers retain
-  historical lineage without rerun. Independent coherent Astra/high SOURCE pending.
-  Current source is UNCOMPILED/UNRUN; owning builds/discovery/PREP/GREEN belong to
-  root in the new environment. Broader141/DFR/Mortal/Windows/native work is not
+  historical lineage without rerun. Independent coherent Astra/high SOURCE, narrow
+  compile correction SOURCE and fresh PREP are accepted. All six owning builds,
+  source/PDB/resource/native-copy proofs and catalog/discovery pass. Actual runtime
+  49e521205b5a84dcc6bd2ae3accd1a5a1839fcd9 gives 36/36 PASS in 64.7598949s,
+  complete selection and cleanup. Causal physical counts are 5/5 CrossReferences,
+  6/6 Meta, source reads 10/10 in both orders; no elapsed speedup is claimed.
+  Independent OUTCOME and full browser singleton qualification remain pending.
+  Broader141/DFR/Mortal/Windows/native work is not
   repeated automatically; browser180s admission and parent/HOLD closure stay open.
 
 # T108 Shining patient treatment — #1536

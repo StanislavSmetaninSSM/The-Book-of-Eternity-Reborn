@@ -1,3 +1,18 @@
+# Browser source read reservation — fresh GREEN36, OUTCOME pending
+
+Actual runtime 49e521205b5a84dcc6bd2ae3accd1a5a1839fcd9 completes all selected
+36 cases / 16 methods / 11 descriptors in 64.7598949 seconds, exit 0, no skip,
+timeout, duplicate or underfill; owned-tree/runtime cleanup both succeed.
+Independent PREP accepted; independent OUTCOME remains pending. Actual causal
+physical counts are CrossReferences 5/5 and Meta 6/6 automatic/manual, both orders,
+with equal 10/10 source reads and complete result/readset/bytes/owner premises.
+No elapsed speedup or full browser PASS follows from this bounded measurement.
+Primary evidence and SHA256 identities are in physical-guided-checkpoint.md.
+
+Next: independent OUTCOME and separate exact singleton PlanOnly/resource/PREP for
+one unchanged browser course at 180 seconds with full passive capture. Historical
+browser/native UNKNOWN, DFR/Mortal/Windows HOLDs and parent task status remain.
+
 # Browser source read reservation — fresh build/discovery frontier
 
 Current recovery source is afe5f4374a41b6d0962771121c2170fbfdeb6254.

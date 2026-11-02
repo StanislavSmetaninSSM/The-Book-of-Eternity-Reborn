@@ -1,3 +1,36 @@
+# R1 GREEN36 complete — independent OUTCOME pending
+
+2026-11-02 UTC, actual clean runtime
+49e521205b5a84dcc6bd2ae3accd1a5a1839fcd9; source/build cohort is unchanged from
+the verified frontier below. Independent Astra/high PREP accepted exactly this
+36-case selection and the guarded existing-runner launch. The fresh sequential
+run exits 0 in 64.7598949 seconds: 11/11 descriptors, 16 methods, 36/36 PASS,
+no skip, timeout, duplicate or underfill. Both owned-tree and runtime cleanup
+succeed. Actual attempt R1-green36 started 02:37:21.922 UTC and ended
+02:38:28.204 UTC; no source change or repeated prior-environment test occurred.
+
+Exact case groups: causal 4, borrow 4, existing Meta readset drift 1, new safety
+23 (failure/close 5, freshness 2, instance 6, late debt 2, original/owner 4,
+mutation/fallback 4), legacy exception 4. Every group has its own complete TRX.
+The four causal cases retain equal ordered findings, source DATA/absence, bytes,
+full nested Meta readset and original/owner premises in both control orders.
+Actual automatic/manual physical counts are 5/5 for CrossReferences and 6/6 for
+Meta, with all 10/10 actual source reads in each pair. This closes the previously
+accepted missing-reservation RED (historically 196/5 and 309/6); it establishes
+bounded physical-work parity, not a stopwatch speedup or full browser result.
+
+Primary raw directory:
+/workspace/tboe-linux-evidence-20261102/browser-read-recovery/R1-green36.
+Complete summary SHA256:
+6e8ea5751ec7d26e77656519dce8dd945d51dfa9cd39332d3f34e49eb2716e55.
+Causal CrossReferences TRX SHA256:
+d9d61c286219ca0a1ea2a3a03a8a10550c6f5211a819a706fb2c84d941f83cf4;
+causal Meta TRX SHA256:
+27ba439144e6eebdcee3bcb2bc737dae4c767d8a50f195549b7fa599b305166f.
+All full raw remains outside Git. No old capture or unique evidence was removed.
+Independent OUTCOME and separate one-case browser PlanOnly/resource/PREP are next;
+the original full browser course is still UNKNOWN, and broader HOLDs remain.
+
 # R1 fresh build/discovery frontier — runtime pending
 
 2026-11-02 UTC. Remote task branch and clean local HEAD were checked at
