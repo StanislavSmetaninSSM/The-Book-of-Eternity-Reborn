@@ -1,3 +1,53 @@
+# Existing T071/T149: legacy combat wound-effect correction SOURCE WIP
+
+Actual W1 causal is independently accepted on557da6971d60d5b842a8ab3f9c071a6af4f2d046:
+7/7 complete,6 actual missing-Error FAIL/1 controlPASS, all6 issues=[] at line82.
+Lawful controls, exact lowercase wire/side/collection dispatch premises, typed empty
+carriers and byte checks reached first; code/hint checks UNREACHED. No timeout/
+dup/underfill, cleanup true/newTMP[], clean. Wrapper12.606729s/runner11.2587599s.
+Summaryd599516af073d6fc6064edf7c0f47e634d551edcac5cb4bbf1a6c5e79e805089;
+TRX6f727ae0986783703a6757239bb2e8f9314ef84897c8bca44309ebbce6dbb799.
+Full raw /workspace/tboe-linux-evidence-20261102/combatant-legacy-wound-response/W1-red7.
+W1 fresh Integration68.530141s exit0/107 exact prior warnings,25copied artifacts/
+206inputs412copies/native4,3PEPDB367bindings; Maina7/SupportECE unchanged, not3fresh.
+Catalog1346/13177 discovery-only; exactraw7/60s admitted by independent PREP.
+Earlier Pascal-case fixture finding was corrected before build; both side and all4
+collection dispatch checks now prevent vacuous ignored-field RED.
+
+Minimal production delta: only the legacy combat effect fallback refuses old wound
+type (same prior case-insensitive semantics) or exact legacy source property, including
+null; private Actual, precise effectType/source-property path and wound-specific
+repair. Common primitive checks and every non-wound branch retain order. Canonical
+active_effect branch and late canonical validation are unchanged. Remove the old
+whitelist entry, target/duration special cases, optional legacy source parser and
+stale999 repair advice; preserve all other effect types/duration rules/sourceSkill.
+No direct writer, wound lookup bypass, new rule or general combat/QTE orchestration.
+No publication bypass is claimed: late canonical refusal already exists.
+
+Semantic inventory now owns the exact legacy constants/refusal and enum retirement,
+retains the global three-alias ban and checks enum exclusion using already-read DATA.
+One previously MATCHING PrivateImplementation pin changes only for this reviewed
+one-entry enum removal: old54222A4E... ->437F96F7... . The exact old9 World mismatch
+paths stay unchanged, no broad mechanical rebase or World qualification. External
+W2-source-pin-delta-proof SHA256bf2a6c9129889615d230dc824af2f4bca50459e15cbaffdb7b7179bc4584c57c.
+
+GM synchronization: existing effect guide explains early wound refusal and client-
+derived effects; sole negative effect_legacy_rejection_v1 worked section includes
+complete invalid combat wound input and correction rationale. Manifest preserves
+focused-fragment scope (not production-valid example execution) with exact new
+negative teaching text. Positive legacy-route scanner scope stays strict. No new
+authored capability/afterlife matrix or prompt entrypoint; current direct cutover
+already forbids nonempty combat carriers. No new task IDs.
+
+C# correction UNCOMPILED/SOURCE pending. Planned addressed14: raw7, newQTE1 plus
+existingNPC/playerQTE2 after shared-fixture change, semanticguards2, exactdocs2.
+Original60/180s bounds, no old root raw cases or general aggregate. Optimization:
+reuse parsed element/required type, one tiny presence check, no new IO/cache/key/
+lifetime or authority exception; source tests reuse retained images for assertions.
+All fresh source/permission/history checks remain. Next SOURCE, preserve prior
+owned artifacts, fresh Main/Unit/Integration and changed-resource copies, exact
+catalog/Plan/PREP14 then runtime. All prior UNKNOWN/HOLD and parents stay open.
+
 # Combat wound-effect scaffold SOURCE wire-key correction, runtime UNRUN
 
 Independent Sol review caught Pascal DTO property names instead of exact lowercase

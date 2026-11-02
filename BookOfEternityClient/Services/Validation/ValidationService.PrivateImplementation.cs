@@ -404,7 +404,6 @@ public partial class ValidationService
     {
         "Damage",
         "DamageOverTime",
-        "WoundReference",
         "Heal",
         "HealOverTime",
         "Buff",

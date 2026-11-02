@@ -986,11 +986,11 @@
       "statePath": "game_state/effects/effect_commands.json",
       "responseSurface": "explicitly invalid pre-v1 response",
       "realms": ["Mortal World"],
-      "description": "A clearly labeled negative example proves aliases, prose mechanics, and duration sentinels are rejected without migration.",
+      "description": "A clearly labeled negative example covers aliases, prose mechanics, duration sentinels and direct legacy combat wound links, all rejected without migration.",
       "validationKind": "focused-fragment",
       "focusedFragmentReason": "This is intentionally invalid input retained as a negative teaching example, not a production-valid response.",
-      "coverageLimit": "Syntax and explicit rejection rationale; exact diagnostic codes are covered by effect planner/validation tests.",
-      "requiredText": ["effect_legacy_rejection_v1", "INVALID", "no runtime migration"]
+      "coverageLimit": "Syntax and explicit rejection rationale only; the exact early wound-effect diagnostic is covered by addressed raw/QTE validation tests, not execution of this invalid example.",
+      "requiredText": ["effect_legacy_rejection_v1", "INVALID", "no runtime migration", "wound_materialization_legacy_effect_unsupported", "client derives wound-owned effects"]
     },
     {
       "contractId": "shining_faction_service_v7",

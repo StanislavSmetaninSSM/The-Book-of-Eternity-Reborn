@@ -3,9 +3,44 @@
   "selections": [
     {
       "category": "wounds-combatant-legacy-raw-response",
-      "reason": "Initial causal raw7 only before production legacy wound-effect correction. QTE scaffold compiles/discovers but stays UNRUN; old accepted controls are not repeated.",
+      "reason": "Regress the exact six causal missing-Error cases and preserving control after wound-only refusal; original60s.",
       "contracts": [
-        "#1536 existing T071/T149 FR-013 FR-099 retired wound-linked effect admission"
+        "#1536 existing T071/T149 FR-013 FR-099 direct legacy wound-effect refusal / no new combat rule"
+      ]
+    },
+    {
+      "category": "wounds-combatant-legacy-qte-offer",
+      "reason": "New actual signed ordinary-offer nested wound-effect peer; original180s.",
+      "contracts": [
+        "#1536 existing T071/T149 FR-013 FR-099 direct legacy wound-effect refusal / no new combat rule"
+      ]
+    },
+    {
+      "category": "wounds-npc-legacy-qte-offer",
+      "reason": "Existing NPC peer changed by shared fixture suffix/code parameters and extra protected battle baselines; original180s.",
+      "contracts": [
+        "#1536 existing T071/T149 FR-013 FR-099 direct legacy wound-effect refusal / no new combat rule"
+      ]
+    },
+    {
+      "category": "wounds-player-legacy-qte-offer",
+      "reason": "Existing player peer changed by the same shared fixture preparation; original180s.",
+      "contracts": [
+        "#1536 existing T071/T149 FR-013 FR-099 direct legacy wound-effect refusal / no new combat rule"
+      ]
+    },
+    {
+      "category": "wounds-npc-canonical-retirement-source-guards",
+      "reason": "Two semantic ownership/closed projection/discovery guards updated for direct combat wound refusal and enum retirement; original60s.",
+      "contracts": [
+        "#1536 existing T071/T149 FR-013 FR-099 direct legacy wound-effect refusal / no new combat rule"
+      ]
+    },
+    {
+      "category": "wounds-legacy-effect-documentation",
+      "reason": "Two existing exact Unit/Integration documentation guards for negative example/required manifest/positive-only routes; original60s each.",
+      "contracts": [
+        "#1536 existing T071/T149 FR-013 FR-099 direct legacy wound-effect refusal / no new combat rule"
       ]
     }
   ]

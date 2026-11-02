@@ -2,6 +2,38 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "wounds-legacy-effect-documentation",
+  "responsibility": "Existing T071/T149: current wound-effect refusal guidance, sole explicitly negative legacy worked example, required manifest family/text consistency, and absence of legacy routes in positive rules/examples. Two existing narrowly selected guards, one Unit and one Integration, no new gameplay assertions. Full invalid JSON example is syntax/teaching scope, not production-valid execution. Protective60s per descriptor.",
+  "excludes": "No general documentation aggregate, positive legacy syntax, full example runtime, Engine/native/provider/gameplay or parent/HOLD qualification.",
+  "changeHints": [
+    "OtherGuides/Effect_Materialization_Contract.md",
+    "Examples/E_CLI_Effect_Materialization.txt",
+    "Examples/example_validation_manifest.json"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.CompleteEffectMaterialization_ActiveRulesAndExamplesContainNoPositiveLegacyRoutes"
+      ]
+    },
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.ExampleDocumentationValidationTests.CompleteEffectMaterializationManifest_CoversEveryRequiredWorkedFamily"
+      ]
+    }
+  ]
+},
+{
   "id": "wounds-combatant-legacy-raw-response",
   "responsibility": "Existing T071/T149: raw7. Four exact wire enemiesData/alliesData x activeBuffs/activeDebuffs legacy wound-reference type admission cases (including existing case-insensitive behavior); two old sourceWoundId property cases on neighboring non-wound raw forms (string/null); one complete absence/neighbor control. Genuine raw controls, both exact side/collection dispatch prerequisites via old required-field/scalar errors, and typed empty combat-carrier checks before actual Error oracle, exact submitted JSON/source bytes. Existing minimal per-test real-FS generation context; no cache/world setup. Test-only scaffold, runtime UNRUN; protective60s.",
   "excludes": "No general combat/QTE rules, owner creation, publication-bypass proof, canonical carrier migration, Engine/provider/save or HOLD closure. Neighbor raw syntax acceptance does not authorize canonical publication.",

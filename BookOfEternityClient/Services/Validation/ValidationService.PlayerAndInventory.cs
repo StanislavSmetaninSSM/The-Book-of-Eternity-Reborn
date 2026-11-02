@@ -14,6 +14,9 @@ public partial class ValidationService
 {
     private const string LegacyPlayerWoundResponseProperty = "playerWoundChanges";
 
+    private const string LegacyCombatantWoundEffectType = "WoundReference";
+    private const string LegacyCombatantWoundSourceProperty = "sourceWoundId";
+
     private const string LegacyItemResourcePath = "game_state/inventory/item_resources.json";
 
     private static readonly Regex InventoryMechanicalSummaryNumericRegex = new(
@@ -7683,6 +7686,8 @@ public partial class ValidationService
         var effectType = RequireString(effect, context, issues, "effectType");
         ValidatePercentageStringField(effect, context, issues, "value", requirePositive: false);
         RequireString(effect, context, issues, "description");
+        if (RejectLegacyCombatantWoundEffect(effect, context, issues, effectType))
+            return;
 
         if (!string.IsNullOrWhiteSpace(effectType) && !AllowedCombatantActiveEffectTypes.Contains(effectType))
         {
@@ -7694,30 +7699,12 @@ public partial class ValidationService
                 section: "Combat",
                 expected: string.Join(" | ", AllowedCombatantActiveEffectTypes),
                 actual: effectType,
-                repairHint: "Используй activeBuffs/activeDebuffs effectType только из Combat Effect contract, включая WoundReference для wound-linked effect."));
+                repairHint: "Используй activeBuffs/activeDebuffs effectType только из действующего Combat Effect contract; механику ран создаёт клиент из принятых данных раны."));
         }
 
-        var isWoundReference = string.Equals(effectType, "WoundReference", StringComparison.OrdinalIgnoreCase);
-        if (isWoundReference)
-        {
-            if (effect.TryGetProperty("targetType", out var woundTargetType) && woundTargetType.ValueKind != JsonValueKind.Null)
-            {
-                if (woundTargetType.ValueKind != JsonValueKind.String || string.IsNullOrWhiteSpace(woundTargetType.GetString()))
-                {
-                    issues.Add(new ValidationIssue(
-                        $"{context}.targetType",
-                        IssueSeverity.Error,
-                        "WoundReference effect targetType должен быть null/omitted или непустой строкой"));
-                }
-            }
-        }
-        else
-        {
-            RequireString(effect, context, issues, "targetType");
-        }
+        RequireString(effect, context, issues, "targetType");
 
         var requiresDuration =
-            isWoundReference ||
             string.Equals(effectType, "DamageOverTime", StringComparison.OrdinalIgnoreCase) ||
             string.Equals(effectType, "HealOverTime", StringComparison.OrdinalIgnoreCase) ||
             string.Equals(effectType, "Buff", StringComparison.OrdinalIgnoreCase) ||
@@ -7746,40 +7733,31 @@ public partial class ValidationService
         if (effect.TryGetProperty("sourceSkill", out var sourceSkill) && sourceSkill.ValueKind != JsonValueKind.Null)
             RequireString(effect, context, issues, "sourceSkill");
 
-        if (effect.TryGetProperty("sourceWoundId", out var sourceWoundId) && sourceWoundId.ValueKind != JsonValueKind.Null)
-            RequireString(effect, context, issues, "sourceWoundId");
+    }
 
-        if (string.Equals(effectType, "WoundReference", StringComparison.OrdinalIgnoreCase))
-        {
-            if (!HasAnyNonEmptyString(effect, "sourceWoundId"))
-            {
-                issues.Add(new ValidationIssue(
-                    $"{context}.sourceWoundId",
-                    IssueSeverity.Error,
-                    "WoundReference effect должен содержать sourceWoundId",
-                    code: "combatant_effect_missing_source_wound",
-                    section: "Combat",
-                    expected: "sourceWoundId for WoundReference effect",
-                    actual: "missing sourceWoundId",
-                    repairHint: "Для activeBuffs/activeDebuffs с effectType=WoundReference передай sourceWoundId связанной раны."));
-            }
+    /// <summary>Rejects only the retired combat wound-effect type or exact legacy source property in raw input.</summary>
+    /// <param name="effect">Already parsed legacy-format effect object, not a canonical active-effect envelope.</param>
+    /// <param name="context">Exact current effect row path.</param>
+    /// <param name="issues">Current operation's validation findings.</param>
+    /// <param name="effectType">The existing required-string check's result; no second parse or retained DATA.</param>
+    /// <returns>True when the unsupported wound route was refused and its obsolete shape checks must stop.</returns>
+    private static bool RejectLegacyCombatantWoundEffect(JsonElement effect, string context,
+        List<ValidationIssue> issues, string? effectType)
+    {
+        var legacyType = string.Equals(effectType, LegacyCombatantWoundEffectType, StringComparison.OrdinalIgnoreCase);
+        if (!legacyType && !effect.TryGetProperty(LegacyCombatantWoundSourceProperty, out _))
+            return false;
 
-            if (effect.TryGetProperty("duration", out var durationNode) &&
-                durationNode.ValueKind == JsonValueKind.Number &&
-                durationNode.TryGetInt32(out var duration) &&
-                duration != 999)
-            {
-                issues.Add(new ValidationIssue(
-                    $"{context}.duration",
-                    IssueSeverity.Error,
-                    "WoundReference effect должен иметь duration = 999",
-                    code: "combatant_effect_invalid_wound_reference_duration",
-                    section: "Combat",
-                    expected: "999",
-                    actual: duration.ToString(),
-                    repairHint: "Для persistent wound-linked effect ставь duration = 999, пока связанная рана активна."));
-            }
-        }
+        issues.Add(new ValidationIssue(
+            context + "." + (legacyType ? "effectType" : LegacyCombatantWoundSourceProperty),
+            IssueSeverity.Error,
+            "Устаревшая прямая связь боевого эффекта с раной не поддерживается",
+            code: "wound_materialization_legacy_effect_unsupported",
+            section: "WoundMaterialization",
+            expected: "client-owned effects derived from accepted canonical wounds",
+            actual: "legacy combat wound-effect route present",
+            repairHint: "Удали устаревшую ссылку: связанные эффекты ран создаёт клиент из принятых данных раны. Для получения раны ответь на текущую возможность через woundDecisions[]; не записывай канонические носители напрямую."));
+        return true;
     }
 
     private void ValidateCustomStateObject(JsonElement item, string context, List<ValidationIssue> issues)

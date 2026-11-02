@@ -251,13 +251,15 @@ public sealed class WoundMaterializationSourceGuardTests
             "private const string LegacyPlayerWoundResponseProperty = \"playerWoundChanges\";",
             "RejectLegacyWoundResponseIfPresent(root, contextPrefix, issues, LegacyPlayerWoundResponseProperty);"),
         new(
-            "combatant-wound-reference-validation",
-            InventoryCategory.LegacyLooseWoundSurface,
+            "combatant-legacy-wound-effect-refusal",
+            InventoryCategory.AcceptedMechanicsIntegrationSeam,
             "BookOfEternityClient/Services/Validation/ValidationService.PlayerAndInventory.cs",
-            "private void ValidateCombatantActiveEffectObject(",
-            "var isWoundReference = string.Equals(effectType, \"WoundReference\"",
-            "effect.TryGetProperty(\"sourceWoundId\"",
-            "duration != 999"),
+            "private const string LegacyCombatantWoundEffectType = \"WoundReference\";",
+            "private const string LegacyCombatantWoundSourceProperty = \"sourceWoundId\";",
+            "RejectLegacyCombatantWoundEffect(effect, context, issues, effectType)",
+            "private static bool RejectLegacyCombatantWoundEffect(",
+            "effect.TryGetProperty(LegacyCombatantWoundSourceProperty, out _)",
+            "\"wound_materialization_legacy_effect_unsupported\""),
         new(
             "npc-legacy-wound-response-refusal",
             InventoryCategory.AcceptedMechanicsIntegrationSeam,
@@ -276,11 +278,10 @@ public sealed class WoundMaterializationSourceGuardTests
             "await ValidateNpcFile(\"game_state/npcs/npc_effects.json\"",
             "\"schemaVersion\", \"entries\""),
         new(
-            "combatant-wound-reference-type-authority",
-            InventoryCategory.LegacyLooseWoundSurface,
+            "combatant-wound-type-retirement",
+            InventoryCategory.AcceptedMechanicsIntegrationSeam,
             "BookOfEternityClient/Services/Validation/ValidationService.PrivateImplementation.cs",
-            "private static readonly HashSet<string> AllowedCombatantActiveEffectTypes",
-            "\"WoundReference\""),
+            "private static readonly HashSet<string> AllowedCombatantActiveEffectTypes"),
         new(
             "canonical-wound-effect-source-composition",
             InventoryCategory.AcceptedMechanicsIntegrationSeam,
@@ -550,12 +551,12 @@ public sealed class WoundMaterializationSourceGuardTests
         Scope("player-validation-state-path", "canonical-player-wound-carrier-validation", "game_state/player/wounds.json", "private async Task ValidatePlayerStateFiles(", "private async Task ValidatePlayerContractFile("),
         Scope("player-validation-file-path", "canonical-player-wound-carrier-validation", "game_state/player/wounds.json", "private async Task ValidatePlayerFile(", "private void ValidatePlayerContract("),
         Scope("player-legacy-wound-refusal-property", "player-legacy-wound-response-refusal", "playerWoundChanges", "private const string LegacyPlayerWoundResponseProperty", "private static readonly Regex InventoryMechanicalSummaryNumericRegex"),
-        Scope("combatant-wound-reference", "combatant-wound-reference-validation", "WoundReference", "private void ValidateCombatantActiveEffectObject(", "private void ValidateCustomStateObject("),
-        Scope("combatant-source-wound-id", "combatant-wound-reference-validation", "sourceWoundId", "private void ValidateCombatantActiveEffectObject(", "private void ValidateCustomStateObject("),
+
+        Scope("combatant-legacy-wound-type-refusal", "combatant-legacy-wound-effect-refusal", "WoundReference", "private const string LegacyCombatantWoundEffectType", "private const string LegacyItemResourcePath"),
+        Scope("combatant-legacy-wound-source-refusal", "combatant-legacy-wound-effect-refusal", "sourceWoundId", "private const string LegacyCombatantWoundEffectType", "private const string LegacyItemResourcePath"),
 
         Scope("npc-legacy-wound-refusal-property", "npc-legacy-wound-response-refusal", "NPCWoundChanges", "private const string LegacyNpcWoundResponseProperty", "private static readonly HashSet<string> NpcStructuredSingleActorSections"),
         Scope("npc-state-file-path", "npc-canonical-effect-state-validation", "game_state/npcs/npc_effects.json", "private async Task ValidateNpcStateFiles(", "private async Task ValidateWorldQuestCombatFactionStateFiles("),
-        Scope("combatant-wound-type-enum", "combatant-wound-reference-type-authority", "WoundReference", "private static readonly HashSet<string> AllowedCombatantActiveEffectTypes", "private static readonly HashSet<string> AllowedVehicleTypes"),
 
         Scope("composer-player-wound-path", "canonical-wound-effect-source-composition", "game_state/player/wounds.json", "internal const string PlayerWoundsPath", "internal static readonly string[] SameTurnOwnerAuthorityPaths"),
         Scope("composer-player-wound-path-symbol", "canonical-wound-effect-source-composition", "PlayerWoundsPath", "internal const string PlayerWoundsPath", "internal static readonly string[] SameTurnOwnerAuthorityPaths"),
@@ -586,6 +587,7 @@ public sealed class WoundMaterializationSourceGuardTests
         var npcLifecycleSource = string.Empty;
         var npcResponseSource = string.Empty;
         var playerResponseSource = string.Empty;
+        var combatantTypeSource = string.Empty;
         foreach (var entry in Inventory.OrderBy(static item => item.Id, StringComparer.Ordinal))
         {
             Assert.Equal(entry.RelativePath, NormalizeRelativePath(entry.RelativePath));
@@ -600,6 +602,7 @@ public sealed class WoundMaterializationSourceGuardTests
             if (entry.Id == "npc-canonical-effect-state-validation") npcLifecycleSource = source;
             if (entry.Id == "npc-legacy-wound-response-refusal") npcResponseSource = source;
             if (entry.Id == "player-legacy-wound-response-refusal") playerResponseSource = source;
+            if (entry.Id == "combatant-wound-type-retirement") combatantTypeSource = source;
             foreach (var anchor in entry.RequiredAnchors)
             {
                 Assert.True(
@@ -638,6 +641,10 @@ public sealed class WoundMaterializationSourceGuardTests
         Assert.NotEmpty(npcLifecycleSource);
         Assert.NotEmpty(npcResponseSource);
         Assert.NotEmpty(playerResponseSource);
+        Assert.NotEmpty(combatantTypeSource);
+        Assert.DoesNotContain("\"WoundReference\"", combatantTypeSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("duration != 999", playerResponseSource, StringComparison.Ordinal);
+
         Assert.DoesNotContain("ValidateWoundsProperty(", playerResponseSource, StringComparison.Ordinal);
         Assert.DoesNotContain("ValidateWoundsContainer(", playerResponseSource, StringComparison.Ordinal);
         Assert.DoesNotContain("private void ValidateWoundObject(", playerResponseSource, StringComparison.Ordinal);
