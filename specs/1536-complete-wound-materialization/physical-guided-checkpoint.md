@@ -1,3 +1,26 @@
+# T152 display text boundary — qualification WIP, 2026-11-02
+
+Tracked T152-DISPLAY-TEXT-BOUNDARY / FR-076 / data-model 7.3. Bounded read-only
+reconciliation found no new proven missing player-visible capability; unclosed
+parent boxes do not justify reimplementing accepted treatment/provider/diagnosis
+flows. A separate specific coverage gap remains: the actual display name and
+acquisition narration parser use the existing 2000-character limit without exact
+2000/2001 tests. Existing History and transition-summary bounds are different fields.
+
+Four independent typed rows use WoundContractTestData and the actual parser,
+prove a genuine baseline, preserve complete accepted text, require one exact
+field/code refusal above the boundary and keep source JSON unchanged. No new
+limit/production/rendering rule, reflection or Engine. This is qualification of
+existing behavior; expected baseline PASS is not a causal RED claim. Source and
+metadata are UNCOMPILED/UNRUN, independent SOURCE pending. Exact Unit leaf is
+wounds-display-text-boundary, four rows / one method / 60 s. Fresh Unit only;
+unchanged Main/Support/Bridge/CrashHost source and real dependency copies must be
+verified before NoBuild. Pure small parsing/factory work has zero source IO;
+cache/shared mutable state adds cost without meaningful stable expensive reuse.
+GM no-update: no authored contract or game behavior changes. T149 accepted on
+runtime 5950b74a, receipt a47f59cc; no repetition. Whole T152 and every HOLD stay open.
+Raw will remain under /workspace/tboe-linux-evidence-20261102/display-text-boundary.
+
 # T149 NPC canonical wound retirement — accepted bounded leaf, 2026-11-02
 
 Runtime/source: 5950b74a95eeee1252247dbf20f6265df9f25a5d, Linux x64.

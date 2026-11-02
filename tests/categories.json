@@ -2,6 +2,31 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "wounds-display-text-boundary",
+  "responsibility": "T152-DISPLAY-TEXT-BOUNDARY / FR-076 / #1536: exactly four independent typed parser rows, two display fields name/acquisitionNarration at the existing 2000/2001-character boundary. Genuine envelope baseline, full accepted text, exact isolated field refusal and unchanged input JSON. Existing History/transition-summary bounds do not cover these fields. Pure small fixtures, no IO/cache/shared mutable setup. Expected baseline qualification PASS, not a missing-behavior causal RED; runtime UNRUN.",
+  "excludes": "No new limit, production/UI behavior, renderer/Engine/GM/provider/save qualification, broad contract category replay or T152/A5/R2/DFR/Mortal/Windows HOLD closure.",
+  "changeHints": [
+    "BookOfEternityClient.Tests/WoundMaterializationContractTests.cs",
+    "BookOfEternityClient/Services/WoundMaterializationContract.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.WoundMaterializationContractTests.Parse_DisplayTextPreservesBoundaryAndRejectsOversizedField"
+      ]
+    }
+  ]
+},
+{
   "id": "wounds-npc-canonical-retirement-source-guards",
   "responsibility": "Two current source guards: semantic ownership anchors and confinement after removing the two retired legacy allowances. Require canonical NPC shape/pristine-null path, exact nested refusal and no NPCWoundChanges in these two retired owners. Reuse operation-local source strings, no extra source reads or arbitrary fingerprint refresh.",
   "excludes": "No broad effects/full suite, unchanged App/T150/runtime replay, new gameplay/schema/cache/limits, publication-bypass assertion or closure of other T149 aliases/UNKNOWN/HOLD.",

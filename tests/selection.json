@@ -2,31 +2,10 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "wounds-npc-canonical-retirement-causal",
-      "reason": "Regress all16 accepted causal/source-priority/current/metadata rows after the minimal root/entry validator correction; original60s and all genuine premises/zero-allocation/input-image oracles preserved.",
+      "category": "wounds-display-text-boundary",
+      "reason": "Missing exact display admission boundary coverage only; current code already bounds text. Four genuine typed rows, no old PASS/HOLD replay and no speculative production change.",
       "contracts": [
-        "#1536 / T149-NPC-CANONICAL-WOUND-RETIREMENT / FR-013 / separate named-NPC wound authority and unchanged valid effect carriers"
-      ]
-    },
-    {
-      "category": "wounds-npc-canonical-retirement-source-guards",
-      "reason": "Verify meaningful current strict ownership and removal of exactly two retired discovery allowances, not mechanical pins or a broader unrelated cutover.",
-      "contracts": [
-        "#1536 / T149-NPC-CANONICAL-WOUND-RETIREMENT / FR-013 / separate named-NPC wound authority and unchanged valid effect carriers"
-      ]
-    },
-    {
-      "category": "wounds-npc-canonical-retirement-publication",
-      "reason": "Addressed normalizer consumer publishes a valid NPC effect while preserving legal metadata; fresh Integration source required, former binaries do not qualify it. Protective180s before first run.",
-      "contracts": [
-        "#1536 / T149-NPC-CANONICAL-WOUND-RETIREMENT / FR-013 / separate named-NPC wound authority and unchanged valid effect carriers"
-      ]
-    },
-    {
-      "category": "wounds-npc-canonical-retirement-early-refusal",
-      "reason": "Addressed former late-refusal consumer must now report the early carrier error, keep common authority absent and preserve exact carrier existence/bytes. Fresh Integration source required; protective180s before first run.",
-      "contracts": [
-        "#1536 / T149-NPC-CANONICAL-WOUND-RETIREMENT / FR-013 / separate named-NPC wound authority and unchanged valid effect carriers"
+        "#1536 / T152-DISPLAY-TEXT-BOUNDARY / FR-076 / bounded untrusted display text"
       ]
     }
   ]

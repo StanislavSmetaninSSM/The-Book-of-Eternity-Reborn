@@ -9,6 +9,46 @@ public sealed class WoundMaterializationContractTests
 {
     private const string Path = "wound";
 
+    [Theory]
+    [InlineData("name", 2000, true)]
+    [InlineData("name", 2001, false)]
+    [InlineData("acquisitionNarration", 2000, true)]
+    [InlineData("acquisitionNarration", 2001, false)]
+    public void Parse_DisplayTextPreservesBoundaryAndRejectsOversizedField(
+        string field,
+        int length,
+        bool accepted)
+    {
+        var wound = WoundContractTestData.CreateActiveWound();
+        var baseline = Parse(wound);
+        Assert.True(baseline.IsValid, DescribeIssues(baseline));
+
+        var text = new string('я', length);
+        wound["display"]![field] = text;
+        var original = wound.ToJsonString();
+
+        var result = Parse(wound);
+
+        Assert.Equal(original, wound.ToJsonString());
+        if (accepted)
+        {
+            Assert.True(result.IsValid, DescribeIssues(result));
+            Assert.Empty(result.Issues);
+            var envelope = Assert.IsType<WoundMaterializationEnvelope>(result.Wound);
+            Assert.Equal(text, field == "name"
+                ? envelope.Display.Name
+                : envelope.Display.AcquisitionNarration);
+        }
+        else
+        {
+            Assert.False(result.IsValid);
+            Assert.Null(result.Wound);
+            var issue = Assert.Single(result.Issues);
+            Assert.Equal(Path + ".display." + field, issue.FilePath);
+            Assert.Equal("wound_materialization_invalid_field", issue.Code);
+        }
+    }
+
     [Fact]
     public void Parse_CompleteFinalVersionOnePhysicalActiveWound_ReturnsTypedEnvelope()
     {

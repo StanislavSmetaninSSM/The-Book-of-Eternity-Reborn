@@ -1,3 +1,16 @@
+- [ ] T152-DISPLAY-TEXT-BOUNDARY [US1/US5] Qualify the existing bounded
+  untrusted text admission for display.name and display.acquisitionNarration
+  (FR-076 / data-model section 7.3 / #1536). No new gameplay limit: actual parser
+  already uses MaxReadableTextLength = 2000. Four independent typed rows cover
+  two fields at 2000/2001 with genuine current envelopes, exact field refusals,
+  full accepted text and source nonmutation. Existing History/transition-summary
+  bounds do not cover these display fields. No production change unless a real
+  defect is observed; baseline PASS is qualification, not an invented causal RED.
+  One exact Unit leaf / 60 s; fresh Unit build with unchanged dependency/source
+  proof, discovery/Plan and independent review before runtime. UNCOMPILED/UNRUN.
+  Pure small fixture/parsing work has no source IO; new cache/shared setup would
+  add ownership cost without useful reuse. No renderer/whole T152/HOLD closure.
+
 - [x] T149-NPC-CANONICAL-WOUND-RETIREMENT [US1/US7] Retire top-level
   NPCWoundChanges and exact entries[i].wounds from the canonical NPC effect
   carrier (FR-013 / #1536). Independent Astra/high DESIGN/SOURCE/PREP/OUTCOME
