@@ -1,3 +1,50 @@
+# R1 accepted; R2 full browser course TIMEOUT / UNKNOWN
+
+Independent Astra/high accepts all primary R1 GREEN36 results and their exact
+selection on runtime 49e521205b5a84dcc6bd2ae3accd1a5a1839fcd9. Its separate
+PREP admits one unchanged browser course on clean runtime
+11ca0dc310b47f4bacc2fd9825dcc9603f45ed6e, using the same compiled source cohort.
+No timer, collector, assertion, ordinary wait, separate confirmation or 180-second
+budget changed. Fresh launch proofs and full output are external.
+
+R2-browser-course exits 124: actual category 180.1041994 / 180 seconds, wrapper
+185.7070208 seconds. One planned descriptor/case, zero completed TRX/cases;
+therefore UNKNOWN, not a completed gameplay FAIL or PASS. Managed-tree/runtime
+cleanup succeeds, but fixture cleanup is unproven: the actual registered root
+remains, with 280 inventoried entries and 1,056,557 regular-file bytes. The runner's
+generic final message mentions its eight-minute outer ceiling; the primary
+CategoryResults records the actual three-minute category timeout above.
+
+Full available compressed prefix: 1,244,545,158 bytes, SHA256
+8068ec18b9aa157de788b05eb784aabbc54283ec400f0c07750fe06e19a25f55.
+No report/footer/CRC/full-capture qualification exists; decoder EOF is false.
+Read-only folding of existing macro timers observes 12,161,411,897 decoded prefix
+bytes / 23,667,403 complete newline rows. It performs no new recording and is not
+universal row validation. First ProcessConfirmedAttempt closes at 76.787321877s,
+then OrdinaryAcceptedWait closes at 8.757262515s; a second separately confirmed
+attempt begins at event elapsed 88.4498424s and has no observed closing event.
+Nine closed CrossReferences intervals total 1.778202006s; nine Meta intervals
+total 2.263180197s. These nested inclusive intervals are not added to journey
+duration, and differing historical prefixes/environments do not prove a universal
+elapsed saving or the full timeout cause. No new browser retry is admitted.
+
+Primary new evidence root:
+/workspace/tboe-linux-evidence-20261102/browser-read-recovery/R2-browser-course.
+Summary SHA256: 45295815b7ba06780da69bf8b7e9965e23657fc548f19047283216836f5546d4.
+Retained-root inventory SHA256:
+441565711035e40f285217e602e170958faa21bfb5bbfe163fc5c8067b002254.
+Existing-timer prefix fold and its full output remain external. No old raw, saves,
+recovery or unique evidence was deleted; free space remains about 27.0 GB.
+Independent R2 OUTCOME is pending. Accepted R1 remains separate. Broader native,
+C9/C10, DFR/Mortal/Windows HOLDs and #1536 acceptance remain open.
+
+Next independent functional correction is T149 canonical player-carrier
+validation: verify the observed bare legacy-array early return before the strict
+carrier branch, obtain a real typed PlayerStateFiles RED, then retire that bypass
+without changing accepted-turn integrity or introducing save compatibility.
+Existing raw timers suffice for this bounded R2 localization; no further
+diagnostic framework or performance experiment is prerequisite to T149.
+
 # R1 GREEN36 complete — independent OUTCOME pending
 
 2026-11-02 UTC, actual clean runtime

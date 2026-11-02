@@ -1,3 +1,19 @@
+# Browser source read reservation accepted; full course still UNKNOWN
+
+Independent Astra/high accepts R1 GREEN36. Separately admitted browser runtime
+11ca0dc310b47f4bacc2fd9825dcc9603f45ed6e times out at 180.1041994 / 180s,
+exit124, zero completed TRX/cases. Process cleanup succeeds; actual fixture root
+and complete available 1,244,545,158-byte compressed prefix are preserved outside
+Git. No full report/footer proof or browser PASS. Existing timer prefix observes
+one closed treatment attempt, one ordinary accepted wait and an unclosed second
+confirmed attempt; no new instrumentation, complete-capture or whole-cause claim.
+See physical-guided-checkpoint.md for primary identities and exact limits.
+
+R2 independent OUTCOME is pending. Do not blind-retry or raise the budget. Continue
+independent canonical T149 functional work: the current PlayerStateFiles legacy
+array branch can bypass strict player-carrier validation. Confirm via typed causal
+RED and bounded design/source review; keep old accepted/HOLD lineages separate.
+
 # Browser source read reservation — fresh GREEN36, OUTCOME pending
 
 Actual runtime 49e521205b5a84dcc6bd2ae3accd1a5a1839fcd9 completes all selected

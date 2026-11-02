@@ -18,9 +18,22 @@
   49e521205b5a84dcc6bd2ae3accd1a5a1839fcd9 gives 36/36 PASS in 64.7598949s,
   complete selection and cleanup. Causal physical counts are 5/5 CrossReferences,
   6/6 Meta, source reads 10/10 in both orders; no elapsed speedup is claimed.
-  Independent OUTCOME and full browser singleton qualification remain pending.
+  Independent R1 OUTCOME is accepted. Separate full browser runtime
+  11ca0dc310b47f4bacc2fd9825dcc9603f45ed6e times out at 180.1041994/180s,
+  zero completed TRX/cases; complete available prefix and retained fixture root
+  remain external. R2 OUTCOME pending; full browser qualification stays UNKNOWN.
   Broader141/DFR/Mortal/Windows/native work is not
   repeated automatically; browser180s admission and parent/HOLD closure stay open.
+
+- [ ] T149-CANONICAL-PLAYER-CARRIER [US1/US7] Close the concrete PlayerStateFiles
+  bare legacy-array bypass before strict player carrier dispatch. Obtain typed
+  current-source RED (including empty/nonempty arrays and non-object roots),
+  preserve valid canonical empty/populated carriers and immutable source bytes,
+  retire only the substantiated loose route/allowance, and retain fresh read and
+  common publication authority. Inspect all callers and meaningful source guards;
+  independent design/source review, fresh affected builds and addressed GREEN
+  precede acceptance. No new save compatibility, accepted-turn bypass claim,
+  whole T149 closure, full browser retry or deferred HOLD release is implied.
 
 # T108 Shining patient treatment — #1536
 
