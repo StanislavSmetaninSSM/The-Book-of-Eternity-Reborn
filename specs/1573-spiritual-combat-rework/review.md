@@ -1,5 +1,20 @@
 # Проверка проекта #1573
 
+## T142 — сопротивление состояниям
+
+Baseline/origin ad260de82e5b61a3354f4c9c33faf9e729e23049 совпали; issue1573 прочитана.
+Явное принятие показанных T141 чисел/цен записано; новая система status-resistance
+ещё проектируется. Один Sol6.1/high read-only source audit завершён: mortal
+имеет source-owned control/check/stacking, но не универсальную процентную
+формулу защиты от состояний. Parent отдельно сверил Rules5/14 и принятые
+spiritual damageR/control/type договоры. Scope/plan/tasks/предварительный
+consistency записаны до арифметики. Parent проверил12 численных примеров
+точными дробями, однократность механического свойства через два экспорта,
+25 новых ссылок и7-doc scope/diff/check. Локально:
+D:\BoeDiagnostics\effect-resistance-t142\verification.json. Это не проверка
+боевого баланса/runtime; независимый review и публикация ещё выполняются.
+Новых runtime-кэшей/дорогих операций нет; T001/T135.M остаются открыты.
+
 ## T141 — контроль и барьеры
 
 Baseline/origin c555e201847f2f5eff0f5da4ce57393b09179a7e совпали. Scope/spec/plan/tasks
