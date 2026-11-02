@@ -120,6 +120,7 @@ public sealed class SpiritualStrainHistoryDataTests
         create["turn"] = wound.LastTransition.Turn;
         create["eventRef"] = wound.Origin.EventRef;
         create["attemptId"] = null;
+        create["beforeFingerprint"] = WoundHistoryState.ComputeNonexistentBeforeFingerprint(wound.WoundId);
         create["afterFingerprint"] = WoundIdentityState.ComputeSemanticFingerprint(wound);
         create["sourceFingerprint"] = "sha256:" + new string('a', 64);
         return WoundContractTestData.CreateHistory(create);

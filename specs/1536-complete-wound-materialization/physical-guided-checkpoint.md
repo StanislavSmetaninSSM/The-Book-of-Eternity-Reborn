@@ -13,6 +13,45 @@ The single authorized [GitHub #1536 follow-up comment](https://github.com/Stanis
 No issues are closed. Historical pending wording below is superseded by this
 current decision, not a new permission to implement the three deferred consumers.
 
+# T081-D G1 prerequisite run —44PASS/8fixtureFAIL/20UNRUN, narrow correction WIP
+
+Source/build dbefd92b8219ff5064989dd32373718af556c259 has accepted complex Astra/high
+SOURCE after the exchangeAtTurn fixture correction. Fresh Main/Unit/Integration
+exit0/exact81/26/107previous warnings;45artifacts/618resource copies/native6 and
+4PE/PDB488source bindings verified;26immutable GitHub changed files read back exact.
+No new native package code/Support/Bridge/CrashHost source change. Discovery1365/
+13196 executes no tests; exact cheap72Plan SHA d8cf5e5042a2889ce761c9707fbeb357c63f086d044cd71e5be942dff24a171f.
+
+One admitted official G1-cheap72 completed52cases:44PASS (manifest1,witness21,
+comparator5,guidance1,historical16),8FAIL in HistoryData baseline, remaining
+parent7+intrinsic13=20UNRUN. Not timeout/skip/duplicate; whole selection incomplete
+because runner stopped at failed descriptor. Owned/runtimecleanup true,newTMP[],
+no active owners,clean frozen source/posthashes stable. Full evidence outside Git:
+/workspace/tboe-linux-evidence-20261102/spiritual-strain-preimage-data/G1-cheap72.
+Failure post1137495b4937bc2e909683f1b146a792a8109427dc893c392fa482e7780cab9c;
+summaryf4083c381fbd514454873273f4aa135ddc7fd83c676756d062cbf3e0bcc7e556.
+
+All8 failures occur before HasExactStrainHistory at test History helper105: the
+new fixture reused command-oriented CreateTransition whose beforeFingerprint is
+null. Canonical persisted creation History requires the wound-specific sealed
+nonexistence fingerprint (WoundHistoryState.ComputeNonexistentBeforeFingerprint,
+existing WoundHistoryStateTests.Transition1043); nextOrdinal issue is secondary to
+filtering the invalid row. This is fixture FAIL, not causal RED or production owner
+failure. Whole new fixture checked for hashes/IDs/ordinals/turn/terminal and chain
+rules; synthetic heal requires no typed result and keeps exact before/after chain.
+The only C# correction sets beforeFingerprint using that existing function. No
+production/assertion/limit change. Corrected Unit C# UNCOMPILED/runtime UNRUN.
+
+Next delta review/fresh Unit only (Main/Integration/dbefd code and operational
+resources unchanged), exact remaining28 (History8 plus unrun parent7/intrinsic13).
+Do not rerun44 without relevant change; preserve their dbefd provenance. A genuine
+72distinct union across versions needs checked disjoint case identities and source
+impact proof, not an invented fresh72 summary. Actual maneuver and affected
+pressure/publication/rollback4 remain UNRUN until cheap union OUTCOME and separate
+PREP. Actual gameplay healing/root removal, no-roll producer and full consumer
+remain OPEN. Author3deferrals and all prior UNKNOWN/HOLD unchanged. No raw/binary
+commit or old measurement deletion. GitHub is source/checkpoint only.
+
 # T081-D connected route tests/docs — frozen WIP, runtime UNRUN
 
 Astra final SOURCE found a fixture-only marker error before any build/runtime:
