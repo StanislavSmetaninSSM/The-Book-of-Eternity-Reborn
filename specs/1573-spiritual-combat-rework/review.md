@@ -11,9 +11,23 @@ mortal тарифа нет. Parent сверил current/permanent, HP/DE/Favor, 
 контракту damage-and-innate-resistance: используется permanent I.
 
 Точные дробные вычисления примеров/цен D0/50/210, G1/10/25 и четырёх Main,
-25 добавленных локальных ссылок и7-doc scope/diff/check прошли. Свидетельство:
+25 первоначальных локальных ссылок и7-doc scope/diff/check прошли. Свидетельство:
 D:\BoeDiagnostics\positive-buffs-t145\verification.json. Independent Astra/high
-review ещё не выполнен; сначала сохраняется WIP. Никакой runtime/Rules/production
+review f472dc3..7272c06 завершён. Один P3: в конце принятого T144 осталась
+старая фраза о согласовании; исправлена вместе с формулировкой реакции.
+Focused review корректировок — PASS, новых замечаний нет. Риск большей
+выгоды stat-баффа через opposed M/margin-криты до C явно добавлен в проект.
+Полный бой/равная полезность тарифов не доказаны.
+
+WIP7272c06261d1d1d629d28d8d4b871f028dce3249 опубликован обычным push;
+remote SHA,7 API blobs и raw Git object hashes проверены; checkout-байты
+совпадают с новым clean sparse restore D:\BoeDiagnostics\positive-buffs-t145\remote-restore-20261102.
+25 исходных ссылок/5 обязательных инструкций восстановлены. Финальный
+checkpoint/SHA/readback — issue1573 и verification.json. CRLF checkout
+сравнивается отдельно от нормализованных Git blob bytes. Raw диагностики
+в Git нет, посторонний recovery obj не менялся.
+Один Sol6.1/high source audit, parent проект/арифметика, отдельный Astra/high
+review и focused closure; измеренная экономия работы не заявляется. Никакой runtime/Rules/production
 или боевой симуляции; арифметика не доказывает баланс/частоту побед.
 Оптимизация: новых runtime путей/кэшей нет; будущий выбор вкладов использует
 устойчивые определения/снимки через existing service, инвалидацию по смене
