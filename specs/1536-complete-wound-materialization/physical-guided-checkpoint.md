@@ -1,3 +1,39 @@
+# T149 raw NPC response refusal — test-only WIP, 2026-11-02
+
+Existing T149 / FR-013 / FR-099 continues from e927e1d6. No new task or author
+rule: exact NPCWoundChanges presence is retired. Production and semantic source
+guards stay unchanged until independent SOURCE, fresh owning build and actual RED.
+The public ValidateResponse path currently accepts empty and identity-valid arrays;
+null/scalar already refuse shape, so their dedicated legacy classification is a
+separate oracle, not missing-admission evidence. Proposed refusal is Error at
+response.NPCWoundChanges, code wound_materialization_legacy_response_unsupported,
+without an effectChanges repair hint. Genuine absence/current-NPC controls precede
+target oracles. Raw JSON and existing canonical carrier bytes are checked directly.
+
+Prepare five raw Integration rows in three exact methods, selected alone at 60 s.
+Prepare but leave unselected: one public accepted-QTE-offer peer (180 s), reusing
+LiveTurnPreparationService, the existing ordinary signed-source binder and a valid
+typed offer; and three canonical NPC state rows (60 s) covering legacy-only/mixed
+strict-carrier priority and legal metadata. Keep the existing unsupported-root and
+personality tests unchanged. No publication-bypass, Engine, live GM or save proof.
+Each row owns mutable real-FS state; tiny raw parsing adds no worthwhile cache.
+QTE preparation is fresh once per test and retains actual source/owner checks.
+All new C# is UNCOMPILED/UNRUN; protective bounds are not measured costs. Root owns
+build/discovery/Plan/PREP/runtime and persistence. GM-facing update impact is assessed
+with the later reviewed refusal; this scaffold changes no authored/runtime contract.
+Accepted T14920/B1 four, R2/A5 UNKNOWN, all HOLDs and pending T088 semantics remain.
+
+Scaffold now owns wounds-npc-legacy-raw-response (5 rows / 3 methods / 60 s),
+wounds-npc-legacy-qte-offer (1 / 1 / 180 s) and
+wounds-npc-legacy-state-priority (3 / 2 / 60 s). Only the first is selected.
+Existing qte-rules/npc-social-trade wildcard owners and all earlier selectors stay
+unchanged and unselected. Source expectation for raw5: two missing-admission FAIL,
+two classification FAIL, one control PASS; these are not executed results.
+Metadata-only Read-TestCategoryCatalog and Get-TestCategoryCiMatrix exit 0:
+1,341 categories and exactly one selected Linux category. External primary log:
+/workspace/tboe-linux-evidence-20261102/npc-legacy-response/scaffold/metadata-reader.log.
+No build, discovery, Plan, test, commit or push was performed by the scaffold writer.
+
 # Reconciliation accepted; T088 author semantics pending; continue existing T149
 
 2026-11-02: independent Astra/high and Sol/xhigh accept consistency of the whole

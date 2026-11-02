@@ -2,10 +2,10 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "wounds-display-text-boundary",
-      "reason": "Missing exact display admission boundary coverage only; current code already bounds text. Four genuine typed rows, no old PASS/HOLD replay and no speculative production change.",
+      "category": "wounds-npc-legacy-raw-response",
+      "reason": "Initial test-only T149 evidence: execute exactly two missing-admission array rows, two separate legacy classification rows and one lawful absence/current-NPC control. QTE/state peers are prepared but intentionally unselected until reviewed later GREEN impact. No previous accepted set replay.",
       "contracts": [
-        "#1536 / T152-DISPLAY-TEXT-BOUNDARY / FR-076 / bounded untrusted display text"
+        "#1536 / existing T149 / FR-013 / FR-099 / exact raw NPCWoundChanges retirement before typed projection"
       ]
     }
   ]

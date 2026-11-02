@@ -2,6 +2,85 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "wounds-npc-legacy-raw-response",
+  "responsibility": "Five independent real-FS public ValidateResponse rows / existing T149 FR-013 FR-099: exact NPCWoundChanges empty and identity-valid array admission refusals (two causal cases), null/scalar dedicated legacy classification (two existing shape refusals, not admission causality), and one lawful absence/current NPC rename control. Every target has genuine controls first, exact raw JSON and seeded NPC core/effect/wound byte preservation. Tiny fresh parsing has no worthwhile cache; per-test mutable ResourceMaterializationTestContext.",
+  "excludes": "No Engine, publication-bypass, full canonical nonmutation, live GM/provider/user save or HOLD qualification; no production/sourceguard change, accepted T14920/B1/App replay, unknown-field/casefold ban or author-rule change.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/NpcLegacyWoundResponseValidationTests.cs",
+    "BookOfEternityClient/Services/Validation/ValidationService.NpcWorldAndMeta.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.NpcLegacyWoundResponseValidationTests.ValidateResponse_RejectsLegacyWoundArraysBeforeAdmission",
+        "BookOfEternityClient.Tests.NpcLegacyWoundResponseValidationTests.ValidateResponse_ClassifiesLegacyNullAndScalarWithoutArrayRepair",
+        "BookOfEternityClient.Tests.NpcLegacyWoundResponseValidationTests.ValidateResponse_AcceptsAbsentWoundsAndCurrentNpcRenameWithoutMutation"
+      ]
+    }
+  ]
+},
+{
+  "id": "wounds-npc-legacy-qte-offer",
+  "responsibility": "One public ValidateAcceptedTurnQteOfferAsync consumer peer / existing T149 FR-013 FR-099. Genuine fresh LiveTurnPreparationService snapshot plus the existing ordinary signed-source binder and typed unscored offer; full accepted baseline before exact terminal responseFragment legacy mutation. Preserve offer JSON and actual request/manifest/authority/current source bytes. Fresh preparation once per independent fixture, no cache or forged/prevalidated authority. Prepared UNCOMPILED/UNRUN and unselected during initial raw causal5. Protective 180 seconds fixed before first execution, actual cost unmeasured.",
+  "excludes": "No Engine, publication-bypass, full canonical nonmutation, live GM/provider/user save or HOLD qualification; no production/sourceguard change, accepted T14920/B1/App replay, unknown-field/casefold ban or author-rule change.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/QteSceneServiceTests.LegacyNpcWoundResponse.cs",
+    "BookOfEternityClient/Services/Validation/ValidationService.PlayerAndInventory.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 3,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.QteSceneServiceTests.ValidateAcceptedTurnQteOfferAsync_RejectsLegacyNpcWoundsInGenuineOrdinaryOffer"
+      ]
+    }
+  ]
+},
+{
+  "id": "wounds-npc-legacy-state-priority",
+  "responsibility": "Three canonical NPC state rows / existing T149 FR-013 FR-099: legacy-only and mixed roots retain exact sole strict-carrier Error, plus genuine legal adjacent metadata acceptance; original file bytes preserved. Existing typed NpcStateFiles selection narrows to npc_effects.json and each test owns its copied BaseSession context. Existing unsupported-root/personality methods unchanged. Prepared UNCOMPILED/UNRUN and unselected during initial raw causal5. Protective 60 seconds fixed before first execution, actual cost unmeasured; fresh bounded validation, no cache.",
+  "excludes": "No Engine, publication-bypass, full canonical nonmutation, live GM/provider/user save or HOLD qualification; no production/sourceguard change, accepted T14920/B1/App replay, unknown-field/casefold ban or author-rule change.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/NpcStateFileValidationTests.cs",
+    "BookOfEternityClient/Services/Validation/ValidationService.LifecycleControlAndStateFiles.cs",
+    "BookOfEternityClient/Services/Validation/ValidationService.NpcWorldAndMeta.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.NpcStateFileValidationTests.ValidateGameStateAsync_NpcLegacyWoundsKeepStrictCarrierErrorPriority",
+        "BookOfEternityClient.Tests.NpcStateFileValidationTests.ValidateGameStateAsync_NpcEffectCarrierPreservesLegalMetadataBytes"
+      ]
+    }
+  ]
+},
+{
   "id": "wounds-display-text-boundary",
   "responsibility": "T152-DISPLAY-TEXT-BOUNDARY / FR-076 / #1536: exactly four independent typed parser rows, two display fields name/acquisitionNarration at the existing 2000/2001-character boundary. Genuine envelope baseline, full accepted text, exact isolated field refusal and unchanged input JSON. Existing History/transition-summary bounds do not cover these fields. Pure small fixtures, no IO/cache/shared mutable setup. Qualified existing behavior on eb879e2deb6eadeda91eb61a463a28ebbb4d8aa3: four unique PASS / one descriptor / wrapper 9.222979 s, no skip/timeout/duplicate/underfill and complete cleanup. This is not a missing-behavior causal RED or speedup.",
   "excludes": "No new limit, production/UI behavior, renderer/Engine/GM/provider/save qualification, broad contract category replay or T152/A5/R2/DFR/Mortal/Windows HOLD closure.",

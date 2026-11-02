@@ -54,6 +54,46 @@ public sealed class NpcStateFileValidationTests : IDisposable
             issue.FilePath.Contains("game_state/npcs/npc_personality.json", StringComparison.OrdinalIgnoreCase));
     }
 
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task ValidateGameStateAsync_NpcLegacyWoundsKeepStrictCarrierErrorPriority(bool mixed)
+    {
+        const string path = "game_state/npcs/npc_effects.json";
+        var selection = new GameStateValidationSelection(GameStateValidationPhase.NpcStateFiles, [path]);
+        await _fs.WriteFileAtomicAsync(path, "{\"schemaVersion\":1,\"entries\":[],\"_note\":\"retained\"}");
+        Assert.Empty(await _validator.ValidateGameStateAsync(selection));
+        var raw = mixed
+            ? "{\"schemaVersion\":1,\"entries\":[],\"NPCWoundChanges\":[{\"NPCId\":\"npc_guard\",\"wounds\":[]}]}"
+            : "{\"NPCWoundChanges\":[{\"NPCId\":\"npc_guard\",\"wounds\":[]}]}";
+        await _fs.WriteFileAtomicAsync(path, raw);
+        var bytes = await _fs.ReadFileBytesAsync(path);
+
+        var issues = await _validator.ValidateGameStateAsync(selection);
+
+        Assert.Equal(bytes, await _fs.ReadFileBytesAsync(path));
+        var issue = Assert.Single(issues);
+        Assert.Equal(path, issue.FilePath);
+        Assert.Equal(IssueSeverity.Error, issue.Severity);
+        Assert.Equal("effect_materialization_legacy_carrier_unsupported", issue.Code);
+        Assert.DoesNotContain("effectChanges", issue.RepairHint ?? string.Empty, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_NpcEffectCarrierPreservesLegalMetadataBytes()
+    {
+        const string path = "game_state/npcs/npc_effects.json";
+        const string raw = "{\"schemaVersion\":1,\"entries\":[{\"NPCId\":\"npc_guard\",\"activeEffects\":[],\"disposition\":\"watchful\"}],\"_note\":\"retained\"}";
+        await _fs.WriteFileAtomicAsync(path, raw);
+        var bytes = await _fs.ReadFileBytesAsync(path);
+
+        var issues = await _validator.ValidateGameStateAsync(new GameStateValidationSelection(
+            GameStateValidationPhase.NpcStateFiles, [path]));
+
+        Assert.Equal(bytes, await _fs.ReadFileBytesAsync(path));
+        Assert.Empty(issues);
+    }
+
     private static bool IsFlexibleTopLevelKeyIssue(ValidationIssue issue) =>
         string.Equals(issue.Code, "flexible_state_unknown_top_level_key", StringComparison.OrdinalIgnoreCase) ||
         string.Equals(issue.Code, "missing_allowed_top_level_key", StringComparison.OrdinalIgnoreCase) ||
