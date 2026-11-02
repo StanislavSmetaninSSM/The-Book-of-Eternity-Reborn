@@ -1,3 +1,41 @@
+# Player parser retirement D1 partial outcome; explicit retired-alias guard correction WIP
+
+Runtime/source a7b2a6e493c60939eb072064ad12a2fc0c423543 completed11/11: Integration
+canonical9 PASS, ownership1 PASS, discovery1 FAIL. No timeout/duplicates/underfill,
+both cleanup true/newTMP[], clean tree. Wrapper18.403626s/runner17.108056s.
+Independent Sol/xhigh partial OUTCOME accepts this exact result, not fullGREEN11.
+Summary5c43b995b6bb36eb442b976ea8e5d770335a14a68a1a24470e28e3cc34c90aba;
+integrationTRX2acee379bb46529bb16af7047bb1458b17e686ae8892f83d4ba30bd157cce797;
+UnitTRX83a8eafde2ee49a8ac5a9a92a122622d6d737700d7a271013857d136e87100b0.
+Full primary /workspace/tboe-linux-evidence-20261102/player-loose-parser-retirement/D1-green11.
+
+The guard still required positive production hits for deliberately removed aliases.
+It failed first at descriptionOfEffects; later checks were not reached. Root source
+inventory examined ALL remaining tokens: exactly descriptionOfEffects/generatedEffects/
+healingState are now0; all other retained tokens have current hits. Independent
+review confirms this missed fixture requirement and minimal correction: retire3
+positive tokens but explicitly forbid resurrection using the SAME already-read
+source map. No lost negative coverage, allowance, extra IO/cache or product change.
+Fresh Unit and exact discovery1/60s will address only this correction; prior10PASS
+remain separate. New source correction UNCOMPILED/SOURCE pending. No new task IDs,
+no broader run, no causal-product-failure or speedup claim. Original D1 failure kept.
+
+D1 builds Main66.600565s/Unit34.659216s/Integration74.364620s exit0, baseline81/26/107
+warnings exact-multiset match.45used/206inputs618copies/native6,4PEPDB448bindings.
+Artifact930d29f434154835ad07090f73eb7d8388daf2876ce1b5963b236610404bae42;
+PDB396c3084d17118b7061fce94a4c338432a436148f96c07633c1b3ce85915de52.
+An external verifier baseline-path typo was corrected before this proof/PDB/PREP;
+no game test ran in that failed verification command. No runtime/limit relaxed.
+
+Wounds-only continuation remains: reachable WoundReference/sourceWoundId raw
+legacy effect admission is independently source-confirmed; later strict canonical
+validation already refuses it, so no publication-bypass claim. Its stale999 hints
+need a separate causal correction. Next after current discovery acceptance.
+Existing T081-R2B/T107 journey needs a real separate conflict-start publication
+before the next signed harmful source; no suitable existing publisher seam found
+yet. Safe/no-cycle rules stay, no general conflict system implemented for the test.
+Parents/World9/R2/A5/DFR/Mortal/Windows remain open with prior boundaries.
+
 # Existing T071/T149: unreachable player loose parser retirement WIP
 
 Accepted predecessor5416e381453395600be761e2a0dfddee862fa57c has fresh16 PASS on

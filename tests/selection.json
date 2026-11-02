@@ -2,10 +2,10 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "wounds-canonical-player-carrier-root",
-      "reason": "Existing T071/T149 pure retirement of now-unreachable loose player parser after raw refusal: preserve all9 actual current canonical root cases and2 changed semantic inventory guards. No new behavior/causal RED claim, no unchanged raw/QTE/HOLD replay.",
+      "category": "wounds-legacy-discovery-retirement",
+      "reason": "Only failed discovery guard after exact alias retirement; retain D1 actual canonical9 and ownership1 PASS. Fresh Unit required; unchanged Main/Integration are source-equivalent. Protective60s unchanged.",
       "contracts": [
-        "#1536 existing T071/T149 FR-013 FR-099 exact canonical player carrier / no legacy fallback"
+        "#1536 existing T071/T149 no loose aliases / semantic inventory / explicit resurrection ban"
       ]
     }
   ]

@@ -531,12 +531,9 @@ public sealed class WoundMaterializationSourceGuardTests
         "NPCWoundChanges",
         "WoundReference",
         "sourceWoundId",
-        "generatedEffects",
         "game_state/player/wounds.json",
         "game_state/npcs/npc_effects.json",
         "woundName",
-        "healingState",
-        "descriptionOfEffects",
         "isHealed",
         "PlayerWoundsPath"
     };
@@ -700,6 +697,15 @@ public sealed class WoundMaterializationSourceGuardTests
                 StringComparer.Ordinal);
         var matchedAllowances = new HashSet<string>(StringComparer.Ordinal);
         var violations = new List<string>();
+
+        // Retired aliases have no remaining semantic owner. Keep resurrection
+        // forbidden using this same current source image, without a second read.
+        foreach (var token in new[] { "descriptionOfEffects", "generatedEffects", "healingState" })
+        {
+            foreach (var (relativePath, source) in sources)
+                Assert.True(!source.Contains(token, StringComparison.Ordinal),
+                    $"Retired wound alias '{token}' returned in production file '{relativePath}'.");
+        }
 
         foreach (var token in DiscoveryTokens.OrderBy(static value => value, StringComparer.Ordinal))
         {

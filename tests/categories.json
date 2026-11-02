@@ -2,6 +2,32 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "wounds-legacy-discovery-retirement",
+  "responsibility": "Existing T071/T149: the one production discovery guard after deliberate dead-player-parser retirement. Three fully retired aliases descriptionOfEffects/generatedEffects/healingState are explicitly absent; remaining live legacy tokens stay confined to exact inventoried scopes. Uses the same already-read source map, no extra IO/cache or mechanical fingerprints. Initial D1 failure is inventory fixture, not product behavior. Exact corrective runtime UNRUN, protective60s.",
+  "excludes": "No C# gameplay, canonical9/ownership1 rerun, raw/QTE/admission, rendering, native host, source-pin baseline or UNKNOWN/HOLD closure. Does not weaken retired-token resurrection coverage.",
+  "changeHints": [
+    "BookOfEternityClient.Tests/WoundMaterializationSourceGuardTests.cs"
+  ],
+  "related": [
+    "wounds-canonical-player-carrier-root"
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.WoundMaterializationSourceGuardTests.ProductionLegacyWoundOccurrences_AreConfinedToInventoriedSemanticScopes"
+      ]
+    }
+  ]
+},
+{
   "id": "wounds-player-legacy-raw-response",
   "responsibility": "Existing T149/T071 FR-013 FR-099: seven real-FS public raw rows. Four legacy array/object forms need an actual Error (causal admission); null/scalar already refuse shapes and need dedicated classification; lawful absence/current appearance control remains valid. Genuine canonical player carrier plus exact raw/carrier/effect bytes preserved. Small per-test existing ResourceMaterializationTestContext; no cache or full-world setup. Qualified P2 on 9d4b03cf87c88939ca5708547dc21ca00a86df9e: seven unique PASS, category wall4.415308s; protective60s unchanged. Prior causal P1 had admission4/classification2 FAIL and lawful control1 PASS.",
   "excludes": "No Engine/publication-bypass, general QTE mechanics, live GM/provider/save, canonical carrier reimplementation or HOLD closure. Raw admission and immutable source bytes only; no unknown-field/casefold ban.",
