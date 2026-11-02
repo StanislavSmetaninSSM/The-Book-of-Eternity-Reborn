@@ -1,3 +1,16 @@
+# Current independent result: Mortal known-wound consequence fix accepted
+
+GREEN source/runtime81606617ea9f8d41385e82c21c7a37bf15a1d81c:4 unique Unit PASS
+(NPC/combatant2 + affected player2), original60s each, independent SOURCE/PREP/
+OUTCOME. Separate causal736e had2 intended FAIL, no aggregate-lineage ambiguity.
+Actual effect-owner mapping fixed, no privacy/source/authority relaxation; formatter
+proof only, not menu/native/browser/publication. Complete receipt in current
+physical-guided-checkpoint.md. Four-author-decision packet accepted as a question
+artifact, no rules chosen. Strain burden is technical, not a fifth author question.
+Next existing T081-D test-only exact pressure/setback baseline scaffold, through
+real signed ordinary sources before new wound insertion; no universal failure
+predicate, invented margin or general conflict system. All parent/UNKNOWN/HOLD stay.
+
 # Current functional remainder: US3 missing consumers are explicit
 
 Bounded independent8-profile map establishes unfinished control/strain/counter

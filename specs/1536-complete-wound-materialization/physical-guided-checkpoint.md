@@ -1,3 +1,85 @@
+# Mortal known-wound consequences formatter fix accepted — 2026-11-02
+
+Independent Sol/xhigh SOURCE, PREP and OUTCOME accept GREEN source/runtime
+81606617ea9f8d41385e82c21c7a37bf15a1d81c:4 exact unique Unit PASS/2 descriptors/
+3 methods, NoBuild/Parallelism1, original60s each. Categories:
+wounds-mortal-foreign-effect-projection2 NPC/combatant and
+wounds-mortal-foreign-effect-player-controls2 existing affected Self controls.
+New cases reach four hidden/wrong-source/definition/owner variants per row, both
+late stale-target controls and ASCII technical-ID privacy assertions. These are
+internal controls, NOT additional test cases. Category3.8867746s/3.6211855s,
+runner12.9158427s/wrapper14.39936915s, exit0; no skip/timeout/dup/underfill,
+both cleanup true/newTMP[], clean runtime tree/no active owners.
+
+Separate causal runtime736e4bdfad3500c77e9a57c1f7f51f9568f6d0fd:2 intended FAIL
+at typedContains line67 after real accepted wound/effect identity/catalog/History,
+current typed card, four typed negative controls per row and unchanged original
+JSON DATA. Later stale/ID assertions UNREACHED then. Summary93ee52d4516af430226065c967361e59c1e1694f9c51ed0ffc6898d8c29d208e;
+TRX46db77503a7b56c9cb582ceaca6560b7ebaaa545efd7d8151bc1504ca5df1491;
+primary integrity004d2486f0c438c2563967f5c505a043b2ad4aa4aee92d2401625140d2508fb8.
+SOURCE caught a default-encoder Cyrillic absence oracle before any build; typed
+Facts replaced it. A misplaced source-note was moved from historical S1 to its
+actual current block. Neither preparation correction is a causal production RED.
+
+A known physical NPC/combatant card now retains its exact visible owned effect:
+closed player/npc/combatant Mortal effect-owner mapping replaces the hardcoded
+player kind. Unsupported kinds remain fail-closed, every source/definition/ownerID/
+target/realm/visibility/hidden-complication condition is unchanged, and afterlife
+remains afterlife_profile. Existing contract already requires visible owned facts.
+No new GM schema/API/game rule/cache/live IO/authority or publication change.
+Scope is formatter DATA/read-schema only, NOT actual menu/consent/FS freshness,
+Engine/native/browser/packaged host or whole US5 qualification. Current real menu
+producer supplies MortalTargets from validated canonical facts; direct typed unit
+DATA does not issue that authority or prove the menu producer.
+
+Fresh Main74.028719s/Unit39.291176s exit0, exact unchanged warning multisets81/26.
+Postrun30 artifacts/412 resource copies/native4/3PEPDB351 source bindings unchanged;
+206 resource inputs pinned, no GM resource changes. Support/CrashHost ECE remain
+unchanged dependencies, not new builds. Source Projection is not in70 World pin
+map; no pins changed, old9 mismatch boundary remains. Catalog1350/13178 is actual
+new-method discovery only, not runtime coverage. Exact Plan4 has no overlap.
+Artifact0836f6a43316abbb459b04b32f20ba508249201f19a362250a4257a4d8a9226f;
+PDBbb052cccc7d1421c1e6037b23b1c6bce56b68c7577bddbdba3fe897ea9119174;
+Plan5175e4713516376278fdff75c37dcbfd48d445477a6813305209674bded2d7d6;
+summary29975e3383ebd9f5528abca5579d9ed65a5e23fc65a943c5667e686405429387;
+newTRXd459150f59e375d709fd0bb8607ce4c495ad9f20682132e3fdc447db51cf52ef;
+playerTRXc0b1093b0b39f0aca0ef5807838bd47e5bfb7db492e1619168b49f061d69441b;
+primary integritya79c56e7adb90efcacc9f97326040d3e376ad93dfb80c55c9af81b0d41fabd3e.
+Full raw remains /workspace/tboe-linux-evidence-20261102/mortal-foreign-wound-effect-projection.
+PreviousUnit5 archive4517754B/SHA92820655948cd7822af8aa419287ad0dca12bf5021c17c621a1f327219794fb8;
+causalMain/Unit10 archive16350113B/SHAf17acead5b5d1a70037542cb364d4c6f8d4ed2d03e8a4ed2ce41f4f8136a7a70;
+member/hash/gzip EOF/CRC verified; no unique evidence, raw or saves deleted.
+Optimization: existing prepared-catalog argument reuses stable wound/identity/
+History DATA within each independent case; effect variants get real independent
+snapshots. Owner mapping computed once per card, no new cache/lifetime/IO or speedup
+claim. No artifact/raw/diagnostic JSON uploaded to Git.
+
+One compact author packet (Astra/high consistency accepted) is
+[author-decisions-20261102.md](author-decisions-20261102.md): four pending decisions,
+not approved amendments. Parent relays in main conversation; no task-local question
+resubmission. HarmfulMargin0 is proposed only. Strain is NOT a fifth author decision:
+failed declared non-safety operation adds1 to owner, capped at broken, per spec.
+Control/counter/restrictIII and dice-free margin stay unresolved; protected safety,
+position/B2–B5/source caps are not reopened. General combat/QTE/ACTIVE/F1/T088 stay
+outside scope, all broader parent/UNKNOWN/HOLD remain.
+
+Next independent existing T081-D technical step: test-only exact pressure/setback
+baseline proof through the real signed ordinary owners before a new III strain
+burden is chosen. Existing ReadOriginalBindingComparisonAsync/PreparedContinuation
+is the pattern, but its last-control-only binding method must NOT accept pressure
+under a false name. First prove a lawful ordinary baseline with headroom, actual
+opposed dice/incoming standard pressure and all other old effects preserved. Then
+prepare source-reviewed adjacent pressure comparison and bounded C2 correction:
+only actual after.playerSideStrain=min(broken,ordinaryAfter+1), unchanged outcome,
+other side, dice/cost/before/control/position; matching final echo only after actual
+exchange proof. Cold comparison must reprove full baseline/selection/current source,
+not subtract1 from a caller result or trust a fingerprint. Exact-once, saturation,
+success/unrelated operation and altered-baseline controls required. Initial player
+pressure/setback subset does not close all operations, opposition or whole profile.
+This is an independently assessed design outline, not production implementation or
+runtime admission. General Engine/DFR/HOLDs are not prerequisites for cheap scaffold.
+Earlier WIP below is superseded by actual accepted formatter receipt.
+
 # Mortal foreign consequence mapping correction WIP
 
 Independent Sol SOURCE/PREP/causal OUTCOME accepted runtime736e4bdfad3500c77e9a57c1f7f51f9568f6d0fd:
