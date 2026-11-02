@@ -245,28 +245,26 @@ public partial class ValidationService
         var noProgressRationaleText = await ReadAcceptedTurnNoProgressRationaleTextAsync();
 
         var knownSkillNames = await ReadCurrentKnownPlayerSkillNamesAsync();
-        foreach (var skillName in knownSkillNames.OrderBy(name => name, StringComparer.OrdinalIgnoreCase))
+        var claimedSkillNames = CollectClaimedSkillNames(playerFacingText, knownSkillNames);
+        if (claimedSkillNames.Count > 0)
         {
-            if (!ContainsSkillUseClaim(playerFacingText, skillName))
-                continue;
+            var skillDeltaContext = await ReadAcceptedTurnSkillDeltaContextAsync(filesModified, knownSkillNames);
+            foreach (var skillName in claimedSkillNames)
+            {
+                if (skillDeltaContext.SatisfiesSkillClaim(skillName) ||
+                    HasNoProgressRationale(noProgressRationaleText, "skill", skillName))
+                    continue;
 
-            var hasDelta = await HasAcceptedTurnStateDeltaAsync(
-                filesModified,
-                "game_state/player/skill_mastery.json",
-                "game_state/player/skills_active.json",
-                "game_state/player/skills_passive.json");
-            if (hasDelta || HasNoProgressRationale(noProgressRationaleText, "skill", skillName))
-                continue;
-
-            issues.Add(new ValidationIssue(
-                "game_state/player/skill_mastery.json",
-                IssueSeverity.Error,
-                $"Player-facing prose says known skill '{skillName}' affected the scene, but accepted state has no matching skill delta or no-progress rationale.",
-                code: "accepted_turn_skill_claim_missing_state_delta",
-                section: "ProseStateDelta",
-                expected: "skill mastery/progression delta, skill state delta, or explicit no-progress rationale in gm_thoughts_markdown",
-                actual: "skill claim found in narrative/interface text; skill state unchanged",
-                repairHint: $"Если '{skillName}' реально помог, добавь узкое изменение mastery/progression в game_state/player/skill_mastery.json или соответствующий skill state delta. Если прогресса быть не должно, добавь в output/debug_logs.json.gm_thoughts_markdown секцию 'Prose State Delta Rationale' с именем навыка и причиной отсутствия прогресса."));
+                issues.Add(new ValidationIssue(
+                    "game_state/player/skill_mastery.json",
+                    IssueSeverity.Error,
+                    $"Player-facing prose says known skill '{skillName}' affected the scene, but accepted state has no matching skill delta or no-progress rationale.",
+                    code: "accepted_turn_skill_claim_missing_state_delta",
+                    section: "ProseStateDelta",
+                    expected: "skill mastery/progression delta targeting the claimed skill by its exact canonical name (a skillMasteryChanges entry for an active skill, or masteryLevel/currentMasteryProgress progression inside its passiveSkillChanges entry for a passive skill), a new-skill delta for the claimed skill, or explicit no-progress rationale in gm_thoughts_markdown",
+                    actual: skillDeltaContext.DescribeActualForMissingClaim(skillName),
+                    repairHint: $"Если '{skillName}' реально помог, добавь узкое изменение mastery/progression именно для '{skillName}': для активного навыка — запись в game_state/player/skill_mastery.json, для пассивного — обнови masteryLevel/currentMasteryProgress в его записи passiveSkillChanges в game_state/player/skills_passive.json (не пиши пассивный навык в skillMasteryChanges). Поле skillName должно точно совпадать с каноническим именем навыка. Если прогресса быть не должно, добавь в output/debug_logs.json.gm_thoughts_markdown секцию 'Prose State Delta Rationale' с именем навыка и причиной отсутствия прогресса."));
+            }
         }
 
         var activeQuests = await ReadCurrentActiveRegularQuestIdentitiesAsync();
@@ -292,6 +290,454 @@ public partial class ValidationService
                 expected: "regular quest/log/objective delta, quest history delta, plot outline delta, or explicit no-progress rationale in gm_thoughts_markdown",
                 actual: "quest clue claim found in narrative/interface text; quest state unchanged",
                 repairHint: $"Если зацепка по квесту '{quest.Title}' действительно найдена, допиши regular_quests.json: detailsLog/newDetailsLogEntry, objective/status, lastUpdatedTurn или quest_history. Если это только атмосферная фраза без прогресса, добавь в output/debug_logs.json.gm_thoughts_markdown секцию 'Prose State Delta Rationale' с названием квеста и причиной отсутствия state delta."));
+        }
+    }
+
+    /// <summary>
+    /// Reads the accepted turn's player skill deltas once so every prose skill claim
+    /// is coupled to a delta targeting that exact canonical skill.
+    /// </summary>
+    /// <param name="filesModified">
+    /// The accepted turn's reported file modifications used as fallback change evidence.
+    /// </param>
+    /// <param name="knownSkillNames">
+    /// The player's current canonical skill names preserving exact spelling.
+    /// </param>
+    /// <returns>
+    /// The immutable per-turn skill delta context for claim coupling.
+    /// </returns>
+    private async Task<AcceptedTurnSkillDeltaContext> ReadAcceptedTurnSkillDeltaContextAsync(
+        IReadOnlyCollection<string> filesModified,
+        IReadOnlyCollection<string> knownSkillNames)
+    {
+        const string masteryPath = "game_state/player/skill_mastery.json";
+        const string passivePath = "game_state/player/skills_passive.json";
+        var masteryJson = await _fs.ReadFileAsync(masteryPath);
+        var masteryReferences = ReadMasteryIdentityReferences(masteryJson, "skillMasteryChanges");
+        var masteryFileChanged = await HasAcceptedTurnStateDeltaAsync(filesModified, masteryPath);
+        var currentMastery = ReadSkillEntriesByExactName(masteryJson, "skillMasteryChanges");
+        var preTurnMastery = ReadSkillEntriesByExactName(
+            await ReadCouplingPreTurnSnapshotAsync(masteryPath),
+            "skillMasteryChanges");
+
+        var passiveFileChanged = await HasAcceptedTurnStateDeltaAsync(filesModified, passivePath);
+        var currentPassive = ReadSkillEntriesByExactName(
+            await _fs.ReadFileAsync(passivePath),
+            "passiveSkillChanges");
+        var preTurnPassive = ReadSkillEntriesByExactName(
+            await ReadCouplingPreTurnSnapshotAsync(passivePath),
+            "passiveSkillChanges");
+
+        var newSkillNames = new HashSet<string>(StringComparer.Ordinal);
+        await CollectNewSkillNamesThisTurnAsync(
+            "game_state/player/skills_active.json", "activeSkillChanges", newSkillNames);
+        await CollectNewSkillNamesThisTurnAsync(
+            passivePath, "passiveSkillChanges", newSkillNames);
+
+        return new AcceptedTurnSkillDeltaContext(
+            masteryFileChanged,
+            masteryReferences,
+            currentMastery,
+            preTurnMastery,
+            passiveFileChanged,
+            currentPassive,
+            preTurnPassive,
+            newSkillNames,
+            MortalSkillReferenceAuthority.Build(knownSkillNames));
+    }
+
+    /// <summary>
+    /// How a skill entry payload read ended.
+    /// </summary>
+    private enum SkillEntriesReadState
+    {
+        /// <summary>No payload existed (no snapshot / file absent) — the documented weaker fallback may apply.</summary>
+        Missing,
+
+        /// <summary>
+        /// A payload existed but could not be read structurally (malformed JSON, duplicate keys,
+        /// missing array). Fail-closed: never evidence for a claim, and never the weaker fallback.
+        /// </summary>
+        Unreadable,
+
+        /// <summary>Entries were read successfully.</summary>
+        Ok
+    }
+
+    /// <summary>
+    /// The outcome of reading per-name skill entries from one payload.
+    /// </summary>
+    private sealed record SkillEntriesRead(SkillEntriesReadState State, IReadOnlyDictionary<string, JsonNode>? Entries)
+    {
+        public static readonly SkillEntriesRead MissingPayload = new(SkillEntriesReadState.Missing, null);
+        public static readonly SkillEntriesRead UnreadablePayload = new(SkillEntriesReadState.Unreadable, null);
+    }
+
+    /// <summary>
+    /// Maps exact entry names to their parsed entry payloads so later comparisons ignore
+    /// purely lexical serialization drift. A present-but-unreadable payload is reported
+    /// separately from a missing one: only the latter may fall back to weaker evidence.
+    /// </summary>
+    /// <param name="json">
+    /// The payload; <see langword="null"/> input yields <see cref="SkillEntriesReadState.Missing"/>,
+    /// while present-but-empty or whitespace-only payloads yield <see cref="SkillEntriesReadState.Unreadable"/>.
+    /// </param>
+    /// <param name="section">
+    /// The entry array to inspect.
+    /// </param>
+    /// <returns>
+    /// The first parsed entry per exact trimmed name, or a non-Ok state describing why
+    /// no entries could be read.
+    /// </returns>
+    private static SkillEntriesRead ReadSkillEntriesByExactName(string? json, string section)
+    {
+        if (json is null)
+            return SkillEntriesRead.MissingPayload;
+
+        if (string.IsNullOrWhiteSpace(json))
+        {
+            // A present-but-empty payload is corrupted evidence, not an absent one:
+            // it must not unlock the weaker fallback.
+            return SkillEntriesRead.UnreadablePayload;
+        }
+
+        try
+        {
+            if (JsonNode.Parse(json) is not JsonObject root ||
+                root[section] is not JsonArray entries)
+            {
+                return SkillEntriesRead.UnreadablePayload;
+            }
+
+            var result = new Dictionary<string, JsonNode>(StringComparer.Ordinal);
+            foreach (var entry in entries)
+            {
+                if (entry is not JsonObject entryObject ||
+                    entryObject["skillName"] is not JsonValue nameValue ||
+                    nameValue.GetValueKind() != JsonValueKind.String)
+                {
+                    continue;
+                }
+
+                var name = nameValue.GetValue<string>();
+                if (string.IsNullOrWhiteSpace(name))
+                    continue;
+
+                result.TryAdd(name.Trim(), entryObject);
+            }
+
+            return new SkillEntriesRead(SkillEntriesReadState.Ok, result);
+        }
+        catch (JsonException)
+        {
+            // Structural diagnostics are owned by the existing contract validators.
+            return SkillEntriesRead.UnreadablePayload;
+        }
+        catch (ArgumentException)
+        {
+            // Duplicate keys surface lazily as ArgumentException from JsonObject
+            // dictionary initialization; degrade to fail-closed unreadable instead of crashing.
+            return SkillEntriesRead.UnreadablePayload;
+        }
+        catch (InvalidOperationException)
+        {
+            // Other node-tree violations degrade the same way.
+            return SkillEntriesRead.UnreadablePayload;
+        }
+    }
+
+    /// <summary>
+    /// Adds skills first appearing in the accepted turn's post-turn file compared with
+    /// its validated pre-turn snapshot.
+    /// </summary>
+    /// <param name="path">
+    /// The player skill file to compare.
+    /// </param>
+    /// <param name="arrayName">
+    /// The skill changes array inside the file.
+    /// </param>
+    /// <param name="newSkillNames">
+    /// The accumulating set of exact new-skill names; unchanged without pre-turn evidence.
+    /// </param>
+    private async Task CollectNewSkillNamesThisTurnAsync(
+        string path,
+        string arrayName,
+        HashSet<string> newSkillNames)
+    {
+        var preTurnJson = await ReadCouplingPreTurnSnapshotAsync(path);
+        if (preTurnJson == null)
+            return;
+
+        var currentJson = await _fs.ReadFileAsync(path) ?? string.Empty;
+        if (string.Equals(currentJson, preTurnJson, StringComparison.Ordinal))
+            return;
+
+        // Fail closed on unreadable payloads: a corrupted snapshot or current file
+        // never fabricates "new this turn" skills from an empty parsed name set.
+        var preTurnEntries = ReadSkillEntriesByExactName(preTurnJson, arrayName);
+        var currentEntries = ReadSkillEntriesByExactName(currentJson, arrayName);
+        if (preTurnEntries.State != SkillEntriesReadState.Ok ||
+            currentEntries.State != SkillEntriesReadState.Ok)
+        {
+            return;
+        }
+
+        foreach (var name in currentEntries.Entries!.Keys)
+        {
+            if (!preTurnEntries.Entries!.ContainsKey(name))
+                newSkillNames.Add(name);
+        }
+    }
+
+    /// <summary>
+    /// Couples prose skill claims to the accepted turn's actual per-skill deltas
+    /// through the exact-name skill reference authority.
+    /// </summary>
+    /// <param name="MasteryFileChanged">
+    /// Whether the mastery file carries this turn's change evidence.
+    /// </param>
+    /// <param name="MasteryReferences">
+    /// Exact-spelling mastery entry names with their array coordinates.
+    /// </param>
+    /// <param name="CurrentMastery">
+    /// The current mastery entries read, distinguishing missing payloads from unreadable ones.
+    /// </param>
+    /// <param name="PreTurnMastery">
+    /// The validated pre-turn mastery entries read; only <see cref="SkillEntriesReadState.Missing"/>
+    /// allows the documented weaker filesModified evidence.
+    /// </param>
+    /// <param name="PassiveFileChanged">
+    /// Whether the passive skill file carries this turn's change evidence.
+    /// </param>
+    /// <param name="CurrentPassive">
+    /// The current passive skill entries read; passive progression lives inside these entries.
+    /// </param>
+    /// <param name="PreTurnPassive">
+    /// The validated pre-turn passive skill entries read.
+    /// </param>
+    /// <param name="NewSkillNames">
+    /// Skills first materialized this turn.
+    /// </param>
+    /// <param name="CanonicalSkills">
+    /// The fail-closed authority over the player's canonical skill names.
+    /// </param>
+    private sealed record AcceptedTurnSkillDeltaContext(
+        bool MasteryFileChanged,
+        IReadOnlyList<(string SkillName, string? Actor, int Index)> MasteryReferences,
+        SkillEntriesRead CurrentMastery,
+        SkillEntriesRead PreTurnMastery,
+        bool PassiveFileChanged,
+        SkillEntriesRead CurrentPassive,
+        SkillEntriesRead PreTurnPassive,
+        HashSet<string> NewSkillNames,
+        MortalSkillReferenceAuthority CanonicalSkills)
+    {
+        /// <summary>
+        /// Passive entry fields whose change counts as skill progression.
+        /// </summary>
+        private static readonly string[] PassiveProgressionFields =
+        {
+            "masteryLevel",
+            "currentMasteryLevel",
+            "currentMasteryProgress",
+            "masteryProgressNeeded"
+        };
+
+        /// <summary>
+        /// Returns true only when the turn contains a delta bound to the claimed skill itself.
+        /// A carried-over entry that is structurally identical to its validated pre-turn
+        /// snapshot never satisfies the claim, while purely lexical serialization drift
+        /// (reordered keys, whitespace) does not count as a change. An unreadable payload
+        /// (duplicate keys, malformed JSON) is fail-closed and never downgrades to the
+        /// weaker filesModified fallback; that fallback is reserved for genuinely missing
+        /// snapshots.
+        /// </summary>
+        public bool SatisfiesSkillClaim(string claimedSkillName)
+        {
+            if (NewSkillNames.Contains(claimedSkillName))
+                return true;
+
+            if (SatisfiesViaMasteryDelta(claimedSkillName))
+                return true;
+
+            return SatisfiesViaPassiveProgression(claimedSkillName);
+        }
+
+        private bool SatisfiesViaMasteryDelta(string claimedSkillName)
+        {
+            if (!MasteryFileChanged)
+                return false;
+
+            foreach (var reference in MasteryReferences)
+            {
+                if (CanonicalSkills.Classify(reference.SkillName).Kind != MortalSkillReferenceMatchKind.Exact ||
+                    !string.Equals(reference.SkillName.Trim(), claimedSkillName, StringComparison.Ordinal))
+                {
+                    continue;
+                }
+
+                if (PreTurnMastery.State == SkillEntriesReadState.Missing)
+                {
+                    // Weaker fallback without snapshot evidence: the current file must
+                    // still be readable and contain the claimed skill's entry.
+                    return CurrentMastery.State == SkillEntriesReadState.Ok &&
+                           CurrentMastery.Entries!.ContainsKey(claimedSkillName);
+                }
+
+                if (PreTurnMastery.State != SkillEntriesReadState.Ok)
+                    continue; // unreadable snapshot: fail closed, no weaker fallback
+
+                if (!PreTurnMastery.Entries!.TryGetValue(claimedSkillName, out var preTurnEntry))
+                {
+                    // Entry first appeared this turn; the current file must still be readable.
+                    if (CurrentMastery.State == SkillEntriesReadState.Ok &&
+                        CurrentMastery.Entries!.ContainsKey(claimedSkillName))
+                    {
+                        return true;
+                    }
+
+                    continue;
+                }
+
+                if (CurrentMastery.State == SkillEntriesReadState.Ok &&
+                    CurrentMastery.Entries!.TryGetValue(claimedSkillName, out var currentEntry) &&
+                    !JsonNode.DeepEquals(currentEntry, preTurnEntry))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private bool SatisfiesViaPassiveProgression(string claimedSkillName)
+        {
+            if (!PassiveFileChanged)
+                return false;
+
+            if (PreTurnPassive.State == SkillEntriesReadState.Missing)
+            {
+                // Weaker fallback without snapshot evidence: the claimed skill must exist
+                // in the current readable passive entries.
+                return CurrentPassive.State == SkillEntriesReadState.Ok &&
+                       CurrentPassive.Entries!.ContainsKey(claimedSkillName);
+            }
+
+            if (PreTurnPassive.State != SkillEntriesReadState.Ok)
+                return false; // unreadable snapshot: fail closed
+
+            if (!PreTurnPassive.Entries!.TryGetValue(claimedSkillName, out var preTurnEntry))
+            {
+                // Passive entry first appeared this turn.
+                return CurrentPassive.State == SkillEntriesReadState.Ok &&
+                       CurrentPassive.Entries!.ContainsKey(claimedSkillName);
+            }
+
+            return CurrentPassive.State == SkillEntriesReadState.Ok &&
+                   CurrentPassive.Entries!.TryGetValue(claimedSkillName, out var currentEntry) &&
+                   HasPassiveProgressionDelta(currentEntry, preTurnEntry);
+        }
+
+        /// <summary>
+        /// True when progression fields of a passive entry changed; cosmetic edits
+        /// (description, bonuses wording) do not count as progression, and neither does a
+        /// field absent from the current entry (dropped or mis-cased during the GM's rewrite).
+        /// </summary>
+        private static bool HasPassiveProgressionDelta(JsonNode currentEntry, JsonNode preTurnEntry)
+        {
+            foreach (var field in PassiveProgressionFields)
+            {
+                if (currentEntry[field] is JsonNode currentValue &&
+                    !JsonNode.DeepEquals(currentValue, preTurnEntry[field]))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Describes the delta's real targets so the repair stays narrow.
+        /// </summary>
+        public string DescribeActualForMissingClaim(string claimedSkillName)
+        {
+            if (PreTurnMastery.State == SkillEntriesReadState.Unreadable)
+            {
+                return "skill claim found in narrative/interface text; the validated pre-turn mastery snapshot is unreadable (structural violation), so change evidence cannot be established";
+            }
+
+            if (PreTurnPassive.State == SkillEntriesReadState.Unreadable)
+            {
+                return "skill claim found in narrative/interface text; the validated pre-turn passive skill snapshot is unreadable (structural violation), so change evidence cannot be established";
+            }
+
+            if (MasteryFileChanged && CurrentMastery.State == SkillEntriesReadState.Missing)
+            {
+                return "skill claim found in narrative/interface text; the current mastery file is missing after the turn, so no mastery delta can be verified";
+            }
+
+            if (MasteryFileChanged &&
+                PreTurnMastery.State == SkillEntriesReadState.Ok &&
+                CurrentMastery.State == SkillEntriesReadState.Ok)
+            {
+                var changedTargets = CurrentMastery.Entries!
+                    .Where(pair =>
+                        !PreTurnMastery.Entries!.TryGetValue(pair.Key, out var preTurnEntry) ||
+                        !JsonNode.DeepEquals(preTurnEntry, pair.Value))
+                    .Select(pair => pair.Key)
+                    .OrderBy(name => name, StringComparer.OrdinalIgnoreCase)
+                    .ToList();
+                if (PreTurnMastery.Entries!.ContainsKey(claimedSkillName) &&
+                    !changedTargets.Contains(claimedSkillName, StringComparer.Ordinal))
+                {
+                    if (!CurrentMastery.Entries!.ContainsKey(claimedSkillName))
+                    {
+                        return "skill claim found in narrative/interface text; the mastery entry for the claimed skill was removed this turn; this turn's mastery changes target only: " +
+                               (changedTargets.Count > 0 ? string.Join(", ", changedTargets) : "none");
+                    }
+
+                    return "skill claim found in narrative/interface text; the mastery entry for the claimed skill is carried over unchanged; this turn's mastery changes target only: " +
+                           (changedTargets.Count > 0 ? string.Join(", ", changedTargets) : "none");
+                }
+            }
+
+            var targets = MasteryReferences
+                .Select(reference => reference.SkillName)
+                .Distinct(StringComparer.Ordinal)
+                .OrderBy(name => name, StringComparer.OrdinalIgnoreCase)
+                .ToList();
+            if (MasteryFileChanged && targets.Count > 0)
+            {
+                return "skill claim found in narrative/interface text; this turn's mastery delta targets only: " +
+                       string.Join(", ", targets);
+            }
+
+            if (PassiveFileChanged &&
+                PreTurnPassive.State == SkillEntriesReadState.Ok &&
+                CurrentPassive.State == SkillEntriesReadState.Ok)
+            {
+                var passiveProgressionTargets = CurrentPassive.Entries!
+                    .Where(pair =>
+                        !PreTurnPassive.Entries!.TryGetValue(pair.Key, out var preTurnEntry) ||
+                        HasPassiveProgressionDelta(pair.Value, preTurnEntry))
+                    .Select(pair => pair.Key)
+                    .OrderBy(name => name, StringComparer.OrdinalIgnoreCase)
+                    .ToList();
+                if (passiveProgressionTargets.Count > 0)
+                {
+                    return "skill claim found in narrative/interface text; this turn's passive progression targets only: " +
+                           string.Join(", ", passiveProgressionTargets);
+                }
+            }
+
+            if (NewSkillNames.Count > 0)
+            {
+                return "skill claim found in narrative/interface text; this turn adds only new skills: " +
+                       string.Join(", ", NewSkillNames.OrderBy(name => name, StringComparer.OrdinalIgnoreCase));
+            }
+
+            return "skill claim found in narrative/interface text; skill state unchanged";
         }
     }
 
@@ -336,10 +782,12 @@ public partial class ValidationService
 
     private async Task<HashSet<string>> ReadCurrentKnownPlayerSkillNamesAsync()
     {
-        var names = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        names.UnionWith(ParsePlayerSkillNames(await _fs.ReadFileAsync("game_state/player/skills_active.json"), "activeSkillChanges"));
-        names.UnionWith(ParsePlayerSkillNames(await _fs.ReadFileAsync("game_state/player/skills_passive.json"), "passiveSkillChanges"));
-        return names.Where(name => !string.IsNullOrWhiteSpace(name)).ToHashSet(StringComparer.OrdinalIgnoreCase);
+        // Ordinal on purpose: canonical names that differ only by case (Fireball vs
+        // FIREBALL) are distinct skills and must both reach the reference authority.
+        var names = new HashSet<string>(StringComparer.Ordinal);
+        names.UnionWith(ParsePlayerSkillNames(await _fs.ReadFileAsync("game_state/player/skills_active.json"), "activeSkillChanges", StringComparer.Ordinal));
+        names.UnionWith(ParsePlayerSkillNames(await _fs.ReadFileAsync("game_state/player/skills_passive.json"), "passiveSkillChanges", StringComparer.Ordinal));
+        return names.Where(name => !string.IsNullOrWhiteSpace(name)).ToHashSet(StringComparer.Ordinal);
     }
 
     private async Task<List<ProseQuestIdentity>> ReadCurrentActiveRegularQuestIdentitiesAsync()
@@ -442,15 +890,61 @@ public partial class ValidationService
         return string.Empty;
     }
 
-    private static bool ContainsSkillUseClaim(string text, string skillName)
+    /// <summary>
+    /// Collects the canonical skill names the player-facing text claims were used.
+    /// Canonical names differing only by case are a collision group, and ambiguity is
+    /// resolved per mention: a sentence spelling members in their exact canonical casing
+    /// claims only those members, while a sentence matching the group only
+    /// case-insensitively claims the whole group (fail-closed on ambiguity).
+    /// </summary>
+    private static List<string> CollectClaimedSkillNames(string text, IReadOnlyCollection<string> knownSkillNames)
     {
-        if (string.IsNullOrWhiteSpace(skillName))
-            return false;
+        var sentencePairs = EnumerateProseSentencePairs(text).ToList();
+        var claimed = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var group in knownSkillNames
+                     .Where(name => !string.IsNullOrWhiteSpace(name))
+                     .GroupBy(name => name, StringComparer.OrdinalIgnoreCase))
+        {
+            foreach (var pair in sentencePairs)
+            {
+                if (!LooksLikeSkillUseClaimSentence(pair.Normalized))
+                    continue;
 
-        return EnumerateNormalizedProseSentences(text)
-            .Any(sentence =>
-                ContainsEntityNameLoose(sentence, skillName) &&
-                LooksLikeSkillUseClaimSentence(sentence));
+                var exactMentions = group
+                    .Where(name => pair.Raw.Contains(name, StringComparison.Ordinal))
+                    .ToList();
+                if (exactMentions.Count > 0)
+                {
+                    claimed.UnionWith(exactMentions);
+                    continue;
+                }
+
+                if (group.Any(name => ContainsEntityNameLoose(pair.Normalized, name)))
+                    claimed.UnionWith(group);
+            }
+        }
+
+        return claimed
+            .OrderBy(name => name, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+    }
+
+    /// <summary>
+    /// Splits prose into sentences twice: case-preserved (whitespace-normalized) for
+    /// ordinal name matching and fully normalized for marker and loose-name matching.
+    /// </summary>
+    private static IEnumerable<(string Raw, string Normalized)> EnumerateProseSentencePairs(string text)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+            yield break;
+
+        foreach (var sentence in Regex.Split(text, @"(?<=[.!?。！？])\s+|[\r\n]+"))
+        {
+            var raw = Regex.Replace(sentence, @"\s+", " ").Trim();
+            var normalized = NormalizeProseDeltaText(sentence);
+            if (!string.IsNullOrWhiteSpace(normalized))
+                yield return (raw, normalized);
+        }
     }
 
     private static bool LooksLikeSkillUseClaimSentence(string sentence)
@@ -3236,7 +3730,7 @@ public partial class ValidationService
             {
                 var skillName = GetFirstNonEmptyString(item, "skillName");
                 if (!string.IsNullOrWhiteSpace(skillName))
-                    result.Add(skillName);
+                    result.Add(skillName.Trim());
             }
         }
         catch
@@ -3263,7 +3757,7 @@ public partial class ValidationService
             {
                 var skillName = GetFirstNonEmptyString(item, "skillName");
                 if (!string.IsNullOrWhiteSpace(skillName))
-                    result.Add(skillName);
+                    result.Add(skillName.Trim());
             }
         }
         catch
@@ -3494,6 +3988,27 @@ public partial class ValidationService
             : null;
     }
 
+    /// <summary>
+    /// Reads the validated pre-turn snapshot payload for the prose-delta coupling audit
+    /// without collapsing blank content to <see langword="null"/>: an absent snapshot may
+    /// unlock the documented weaker fallback, while a present-but-blank one is corrupted
+    /// evidence and must fail closed.
+    /// </summary>
+    /// <param name="relativePath">
+    /// The tracked file whose pre-turn snapshot payload to read.
+    /// </param>
+    /// <returns>
+    /// The validated snapshot payload verbatim (including blank content), or
+    /// <see langword="null"/> when no usable validated snapshot exists for the path.
+    /// </returns>
+    private async Task<string?> ReadCouplingPreTurnSnapshotAsync(string relativePath)
+    {
+        var lookup = await LoadValidatedPendingTurnSnapshotLookupAsync();
+        return lookup.Status == ValidatedPendingTurnSnapshotStatus.Usable && lookup.Manifest != null
+            ? await ReadValidatedPendingTurnSnapshotFileAsync(lookup.Manifest, relativePath, treatBlankAsMissing: false)
+            : null;
+    }
+
     private string? ReadValidatedCurrentPreTurnTrackedFileSync(string relativePath)
     {
         var lookup = LoadValidatedPendingTurnSnapshotLookupSync();
@@ -3512,10 +4027,33 @@ public partial class ValidationService
                 ReadCurrentTrackedFileSync("game_state/meta/soul_state.json")));
     }
 
+    /// <summary>
+    /// Reads one file's payload from the validated pending-turn snapshot, verifying the
+    /// snapshot hash against the manifest before returning any content.
+    /// </summary>
+    /// <param name="manifest">
+    /// The validated pending-turn snapshot manifest.
+    /// </param>
+    /// <param name="relativePath">
+    /// The tracked file whose snapshot payload to read.
+    /// </param>
+    /// <param name="writeLease">
+    /// An optional canonical write lease for the read.
+    /// </param>
+    /// <param name="treatBlankAsMissing">
+    /// When <see langword="true"/> (default), blank/whitespace payloads collapse to
+    /// <see langword="null"/> (absent evidence); pass <see langword="false"/> where the
+    /// caller must distinguish corrupted-but-present evidence from absent evidence.
+    /// </param>
+    /// <returns>
+    /// The snapshot payload when it exists and passes hash verification; otherwise
+    /// <see langword="null"/>.
+    /// </returns>
     private async Task<string?> ReadValidatedPendingTurnSnapshotFileAsync(
         ValidationPendingTurnSnapshotManifest manifest,
         string relativePath,
-        FileSystemManager.CanonicalWriteLease? writeLease = null)
+        FileSystemManager.CanonicalWriteLease? writeLease = null,
+        bool treatBlankAsMissing = true)
     {
         if (manifest.Files == null ||
             !manifest.Files.TryGetValue(relativePath, out var snapshotPath) ||
@@ -3553,7 +4091,7 @@ public partial class ValidationService
             return null;
 
         var snapshotJson = DecodePendingSnapshotText(snapshotBytes);
-        return string.IsNullOrWhiteSpace(snapshotJson) ? null : snapshotJson;
+        return treatBlankAsMissing && string.IsNullOrWhiteSpace(snapshotJson) ? null : snapshotJson;
     }
 
     private string? ReadValidatedPendingTurnSnapshotFileSync(
