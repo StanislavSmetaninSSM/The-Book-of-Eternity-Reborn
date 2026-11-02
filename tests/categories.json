@@ -3,11 +3,12 @@
     "categories": [
 {
   "id": "wounds-spiritual-strain-history-data",
-  "responsibility": "#1536 T081-D eight typed DATA cases: exact full first-create fingerprint, five missing/foreign/changed-definition refusals, later terminal History preserving original parent, and exact versus explicit prior-summary policy with mechanics/turn/realm/conflict refusals. No authority from raw DATA.",
+  "responsibility": "#1536 T081-D nine typed DATA cases: signed soul display-realm adapter joined to its exact ledger instance, full first-create fingerprint, five missing/foreign/changed-definition refusals, later terminal History preserving original parent, and exact versus explicit prior-summary policy with mechanics/turn/realm/conflict refusals. No authority from raw DATA.",
   "excludes": "No real gameplay heal/root removal or owner/publication from a synthetic terminal row. Actual owner/C4/next-turn and actual healing acceptance remain separate. No reflection, fullworld or HOLD rerun.",
   "changeHints": [
     "BookOfEternityClient/Services/SpiritualWoundOpportunityReceiptState.StrainPreimage.cs",
-    "BookOfEternityClient.Tests/SpiritualStrainHistoryDataTests.cs"
+    "BookOfEternityClient.Tests/SpiritualStrainHistoryDataTests.cs",
+    "BookOfEternityClient/Services/Validation/ValidationService.AfterlifeSpiritualConflict.Frame.cs"
   ],
   "related": [],
   "requirements": {

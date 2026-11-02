@@ -1,3 +1,41 @@
+# T081-D signed historical realm adapter — causal FAIL preserved, fix WIP
+
+At clean remote 9b56154a661b6e66beb004ee782cde29f31e71e1, admitted G3-maneuver1
+completed one FAIL in34.5231809s TRX (43.4490182s runner,44.627675893993s wrapper),
+not a timeout/skip/incomplete capture. Real cold C2 A/B, C3 and common C4 assertions
+passed before line91: the first next-turn43 signed historical validation rejects
+maneuver strain3→4. Summary/mechanics/turn/stale checks later in the same test were
+UNREACHED. Whole scenario remains FAIL, not accepted publication/full consumer.
+Complete closing proof58063306dd0d2a09f82c07c1578d04978ac4a025d1409cf99e38c2343f2f4322;
+summaryf5eaa726df906117aaaf978fe258e76df964288a07edeab39e8cf6646754fa7f;
+TRXb4ab58e2ea921498d4c3472b420748c98c3094c0a500c1bb8fa88c4649408547.
+45artifacts/618resource copies/native6/488source bindings stayed exact, cleanup
+true, newTMP[], no active owners. Raw full and unchanged outside checkout:
+/workspace/tboe-linux-evidence-20261102/spiritual-strain-preimage-data/G3-maneuver1.
+
+Astra/high independently confirmed the cause: frame raw signed soul display realm
+Chaos Sea was passed to a ledger requiring exact canonical chaos_sea. Fix only
+that frame boundary through existing NormalizeAfterlifeRealmKey and a shared typed
+DATA helper. New cheap regression joins English/Russian signed soul display values
+to an existing parsed two-source ledger, rejects a foreign realm and malformed/
+unknown source fields. Ledger exact matching, source/history authentication,
+current ownership, exchange markers and ordinary maneuver rules are unchanged.
+Existing real G3 is the causal RED preceding this production change. New C# is
+UNCOMPILED; cheap9 and affected historical16 are UNRUN on this fix. Earlier accepted
+72 are a two-version union, not fresh on this source. Source delta review, fresh
+Main/Unit/Integration, exact discovery/PlanOnly and cheap25 precede one independently
+admitted actual maneuver repeat within unchanged180s; pressure/publication/rollback
+controls follow only after its outcome. No unrelated intrinsic/parent/witness rerun.
+
+Optimization: one existing in-memory realm conversion, no file read/parse added
+beyond the existing signed-soul parse, no cache or new stack. Existing frame-owned
+immutable receipt/history DATA and fresh readset/authority fences remain. No speedup
+claim. GM contract unchanged: private client adapter uses existing realm vocabulary;
+current worked strain guide/example/manifest are unchanged and no GM field/command
+is added. Actual gameplay healing/root removal, no-roll explicit GM-choice producer,
+full strain acceptance and old UNKNOWN/HOLD remain OPEN. Author-deferred control,
+counter and partial restrictIII remain deferred, not current blockers.
+
 # Author answers applied — 2026-11-02 20:53 UTC
 
 The four questions are resolved: explicit GM discretion for voluntary no-roll

@@ -353,9 +353,14 @@ public partial class ValidationService
         {
             HistoricalStrainReceipt = frame.HistoricalStrainReceipt,
             HistoricalStrainRealm = frame.HistoricalStrainReceipt is null ? null :
-                ReadSpiritualConflictRealm(frame.Baseline.Soul, rejectWhitespace: true)
+                ReadSpiritualStrainHistoricalRealm(frame.Baseline.Soul)
         };
     }
+
+    /// <summary>Maps the signed soul's display realm to the exact retained receipt key; grants no authority.</summary>
+    internal static string? ReadSpiritualStrainHistoricalRealm(string? signedSoulJson) =>
+        AfterlifeSpiritualConflictState.NormalizeAfterlifeRealmKey(
+            ReadSpiritualConflictRealm(signedSoulJson, rejectWhitespace: true));
 
     private static AfterlifeConflictRewardContext CreateSpiritualConflictRewardContext(
         SpiritualConflictValidationFrame frame,

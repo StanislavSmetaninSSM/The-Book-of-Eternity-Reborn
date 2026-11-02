@@ -9,6 +9,30 @@ namespace BookOfEternityClient.Tests;
 public sealed class SpiritualStrainHistoryDataTests
 {
     [Fact]
+    public void SignedSoulDisplayRealmJoinsOnlyItsOwnHistoricalInstance()
+    {
+        var root = SpiritualStrainReceiptJoinTests.CreateLedger();
+        var ledger = Ledger(root);
+        Assert.True(ledger.HasExactStrainHistory(History(CreateHistory(root))));
+        var actual = JsonNode.Parse(Convert.FromBase64String(
+            root["sources"]![1]!["witness"]!["exchangeJsonBase64"]!.GetValue<string>()))!.AsObject();
+        foreach (var displayRealm in new[] { "Chaos Sea", "Море Хаоса" })
+        {
+            var soul = new JsonObject { ["currentRealm"] = displayRealm };
+            var key = ValidationService.ReadSpiritualStrainHistoricalRealm(soul.ToJsonString());
+            Assert.Equal("chaos_sea", key);
+            Assert.NotNull(ledger.ReadRetainedStrainOrdinaryAfter(key!, "conflict-a", actual, false));
+        }
+        var foreignKey = ValidationService.ReadSpiritualStrainHistoricalRealm(
+            new JsonObject { ["currentRealm"] = "Shining Abode" }.ToJsonString());
+        Assert.Equal("shining_abode", foreignKey);
+        Assert.Null(ledger.ReadRetainedStrainOrdinaryAfter(foreignKey!, "conflict-a", actual, false));
+        foreach (var soul in new[] { null, "{", "{}", "{\"currentRealm\":7}",
+                     "{\"currentRealm\":\"Mortal World\"}", "{\"currentRealm\":\"unknown\"}" })
+            Assert.Null(ValidationService.ReadSpiritualStrainHistoricalRealm(soul));
+    }
+
+    [Fact]
     public void ExactFirstCreationMatchesFullParentEnvelope()
     {
         var root = SpiritualStrainReceiptJoinTests.CreateLedger();

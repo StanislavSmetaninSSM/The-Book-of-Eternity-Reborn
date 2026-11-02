@@ -1,3 +1,16 @@
+# T081-D signed historical adapter — current bounded follow-up
+
+- [x] Preserve complete G3 actual1FAIL (34.5231809s, no timeout), partial C2/C3/C4 milestones and independent Astra/high cause assessment; see current plan.md.
+- [x] Write minimal existing-normalizer frame adapter plus typed signed-realm/ledger regression, not yet built or qualified.
+- [ ] Independent delta SOURCE; fresh Main/Unit/Integration; exact discovery/PlanOnly; changed History9 plus historical16.
+- [ ] Independent PREP and one unchanged180s actual maneuver repeat; then affected pressure/publication/rollback3.
+- [ ] Actual gameplay healing/root removal and full strain acceptance (synthetic terminal DATA is insufficient).
+- [ ] Explicit no-roll GM-choice producer/admission and its qualification; author decision is resolved, implementation remains open.
+
+Older72 are a versioned accepted union, not fresh on this new source. General combat
+and the three author-deferred consumers are outside this block; old UNKNOWN/HOLD
+remain unchanged. Complete raw stays outside checkout/GitHub.
+
 # Author answers applied — 2026-11-02 20:53 UTC
 
 The four questions are resolved: explicit GM discretion for voluntary no-roll

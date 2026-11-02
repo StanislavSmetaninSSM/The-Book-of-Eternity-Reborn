@@ -1,3 +1,17 @@
+# Current T081-D result — real maneuver next-turn FAIL; adapter fix WIP
+
+G3-maneuver1 on9b56154a661b6e66beb004ee782cde29f31e71e1:1FAIL/34.5231809s,
+no timeout. C2/C3/C4 assertions before line91 passed; next signed turn fails because
+raw display Chaos Sea did not match retained chaos_sea. Astra/high independently
+confirmed this narrow adapter defect; whole route remains unaccepted. Complete
+closing proof58063306dd0d2a09f82c07c1578d04978ac4a025d1409cf99e38c2343f2f4322,
+full raw /workspace/tboe-linux-evidence-20261102/spiritual-strain-preimage-data/G3-maneuver1.
+Minimal existing-normalizer fix and typed display/foreign/malformed regression are
+written, UNCOMPILED/UNRUN. Next delta SOURCE, fresh affected builds, cheap9+historical16,
+then separately admitted actual180s repeat. Full details/optimization/GM no-update
+rationale in plan.md current entry. No healing/removal/full-consumer claim; all older
+UNKNOWN/HOLD and author deferrals retain their distinct status.
+
 # Author answers applied — 2026-11-02 20:53 UTC
 
 The four questions are resolved: explicit GM discretion for voluntary no-roll
