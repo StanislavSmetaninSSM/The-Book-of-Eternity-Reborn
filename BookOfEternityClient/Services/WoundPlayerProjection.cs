@@ -92,11 +92,14 @@ internal static partial class WoundPlayerProjection
             .Where(id => !privateRoots.Contains(id)).ToHashSet(StringComparer.Ordinal);
         var rootBindings = wound.Consequences.OwnedEffectSources.RootBindings
             .ToDictionary(binding => binding.EffectId, binding => binding.DefinitionKey, StringComparer.Ordinal);
+        var effectOwnerKind = wound.Owner.Realm == "mortal_world"
+            ? targetKind switch { "player" or "npc" or "combatant" => targetKind, _ => null }
+            : "afterlife_profile";
         var effects = input.Effects with
         {
             Effects = input.Effects.Effects.Where(e => ownedRoots.Contains(e.EffectId) &&
                 e.Realm == wound.Owner.Realm && e.TargetKind == targetKind && e.TargetId == wound.Owner.OwnerId &&
-                e.OwnerId == wound.Owner.OwnerId && e.OwnerKind == (wound.Owner.Realm == "mortal_world" ? "player" : "afterlife_profile") &&
+                e.OwnerId == wound.Owner.OwnerId && e.OwnerKind == effectOwnerKind &&
                 e.CanonicalEffect.TryGetProperty("source", out var source) && source.ValueKind == System.Text.Json.JsonValueKind.Object &&
                 source.TryGetProperty("kind", out var kind) && kind.ValueKind == System.Text.Json.JsonValueKind.String && kind.GetString() == "wound" &&
                 source.TryGetProperty("sourceId", out var id) && id.ValueKind == System.Text.Json.JsonValueKind.String && id.GetString() == wound.WoundId &&

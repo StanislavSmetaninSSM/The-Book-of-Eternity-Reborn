@@ -3,9 +3,16 @@
   "selections": [
     {
       "category": "wounds-mortal-foreign-effect-projection",
-      "reason": "Existing T119/T121/T151 formatter defect: exactly two real NPC/combatant source-bound display rows. Source baseline currently hardcodes player owner. Causal scaffold only; production unchanged, protective60s.",
+      "reason": "Existing T119/T121/T151 real-catalog formatter correction: exact NPC/combatant rows must show legitimate visible consequence while preserving privacy/stale bindings; original60s.",
       "contracts": [
         "#1536 FR-075/076 / wound-player-commands-and-projection visible owned consequences"
+      ]
+    },
+    {
+      "category": "wounds-mortal-foreign-effect-player-controls",
+      "reason": "Shared Mortal owner mapping must preserve player-owned visible consequence and foreign-owner exclusion. Exactly2 existing affected Self Facts, not a broad unchanged privacy replay.",
+      "contracts": [
+        "#1536 T119/T121/T151 exact owner/source visibility and Self preservation"
       ]
     }
   ]

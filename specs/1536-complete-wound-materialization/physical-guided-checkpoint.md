@@ -1,3 +1,32 @@
+# Mortal foreign consequence mapping correction WIP
+
+Independent Sol SOURCE/PREP/causal OUTCOME accepted runtime736e4bdfad3500c77e9a57c1f7f51f9568f6d0fd:
+2/2 actual NPC/combatant intended FAIL at final typedContains line67, after real
+metadata/current card,4typednegativecontrols and originalJSON preservation. No
+prep failure, skip/timeout/dup/underfill, cleanup true/newTMP[], clean. Later stale
+and technical-ID controls UNREACHED. Wrapper10.036162238s; summary
+93ee52d4516af430226065c967361e59c1e1694f9c51ed0ffc6898d8c29d208e;
+TRX46db77503a7b56c9cb582ceaca6560b7ebaaa545efd7d8151bc1504ca5df1491;
+primary integrity004d2486f0c438c2563967f5c505a043b2ad4aa4aee92d2401625140d2508fb8.
+Fresh Unit38.725437s/exit0/exact26 baseline warnings;30artifacts/412copies/native4/
+3PEPDB351bindings all unchanged afterrun. Main d0c/SupportECE were unchanged,
+not fresh builds. Catalog1350/13178 discovery-only and exact causal Plan accepted.
+
+Production now derives Mortal effect owner from the CLOSED player/npc/combatant
+mapping, unsupported target kinds fail closed. Afterlife remains afterlife_profile.
+Every ownerID/target/realm/sourceID/definition/visibility/hidden-complication filter
+is unchanged. Computed once per card; no extra IO/cache/permission exception, no
+speedup claim. No World pin changes: Projection is not in70-map, old9 stay.
+Formatter/current typed DATA only; actual menu/consent/FS freshness/publication and
+browser rendering are outside this Unit proof. Existing contract already requires
+visible owned consequences; no GM wire/API/game-rule change, current guides remain.
+New production C# UNCOMPILED/SOURCE pending. Fresh affected Main/Unit, exact Plan/
+PREP then GREEN2 + existing affected player2 under original60s each; tests unchanged.
+Full raw at /workspace/tboe-linux-evidence-20261102/mortal-foreign-wound-effect-projection.
+No raw/binary uploads/deletions. Four author decisions still pending; strain rule
+already defined and separate technical consumer plan is read-only, no code yet.
+All parents/UNKNOWN/HOLD/wounds-only scope remain unchanged.
+
 # Independent wound-only work: Mortal foreign consequence formatter scaffold
 
 Base0b4dd7e9777245ecd55bf73bbb70cc43a608703e remains remote verified, clean and
