@@ -1016,7 +1016,7 @@ public sealed class SpiritualWoundOpportunityReceiptStateTests
     /// <param name="index">
     /// Zero-based matching source and decision index.
     /// </param>
-    private static void ResealWitness(JsonObject root, int index)
+    internal static void ResealWitness(JsonObject root, int index)
     {
         var witness = root["sources"]![index]!["witness"]!.AsObject();
         var hash = SpiritualWoundStateJson.Hash(witness, "source", "sourceId", "sourceFingerprint");

@@ -43,12 +43,32 @@ public sealed class SpiritualWoundFirstOfferInstanceResolverTests
     [InlineData("conflict", "double-bom")]
     public void Resolve_RefusesMalformedSignedBytesWithoutLeakingDecoderExceptions(string location, string corruption)
     {
-        var receiptBytes = Encoding.UTF8.GetBytes(SpiritualWoundOpportunityReceiptStateTests.TwoSides().ToJsonString());
+        var root = SpiritualWoundOpportunityReceiptStateTests.TwoSides();
+        if (location == "receipt" && corruption == "invalid-utf8")
+        {
+            root["sources"]![0]!["witness"]!["coordinate"] = "retained-coordinate-\uFFFD";
+            SpiritualWoundOpportunityReceiptStateTests.ResealWitness(root, 0);
+        }
+        var receiptBytes = Encoding.UTF8.GetBytes(root.ToJsonString().Replace("\\uFFFD", "\uFFFD", StringComparison.OrdinalIgnoreCase));
         var original = location == "receipt" ? receiptBytes : Conflict.Bytes!;
-        var invalid = corruption == "double-bom"
-            ? Encoding.UTF8.GetPreamble().Concat(Encoding.UTF8.GetPreamble()).Concat(original).ToArray()
-            : Encoding.UTF8.GetBytes("{\"note\":\"").Concat(new byte[] { 0xff })
+        byte[] invalid;
+        if (corruption == "double-bom")
+            invalid = Encoding.UTF8.GetPreamble().Concat(Encoding.UTF8.GetPreamble()).Concat(original).ToArray();
+        else if (location == "receipt")
+        {
+            var offset = original.AsSpan().IndexOf(Encoding.UTF8.GetBytes("\uFFFD"));
+            Assert.True(offset >= 0);
+            invalid = original.Take(offset).Concat(new byte[] { 0xff }).Concat(original.Skip(offset + 3)).ToArray();
+        }
+        else
+            invalid = Encoding.UTF8.GetBytes("{\"note\":\"").Concat(new byte[] { 0xff })
                 .Concat(Encoding.UTF8.GetBytes("\",")).Concat(original.Skip(1)).ToArray();
+        var validEquivalent = corruption == "invalid-utf8" ? Encoding.UTF8.GetBytes(Encoding.UTF8.GetString(invalid)) : original;
+        var baseline = SpiritualWoundFirstOfferInstanceResolver.Resolve(
+            new(true, location == "receipt" ? validEquivalent : receiptBytes),
+            new(true, location == "conflict" ? validEquivalent : Conflict.Bytes),
+            "chaos_sea", "session-b", "request-b", "snapshot-b", 43);
+        Assert.Empty(baseline.Issues); // Refusal must distinguish invalid bytes from an otherwise valid decoded receipt/conflict.
         var receipt = new CanonicalBeforeImage(true, location == "receipt" ? invalid : receiptBytes);
         var conflict = new CanonicalBeforeImage(true, location == "conflict" ? invalid : Conflict.Bytes);
         var fingerprints = (receipt.Fingerprint, conflict.Fingerprint);

@@ -1,5 +1,14 @@
 # T081-D actual weakening — H2 actual1 FAIL; byte-boundary causal scaffold WIP
 
+Scaffold review found the receipt malformed-byte negative initially failed on an
+unrelated unknown field. It now reuses the typed resealing fixture for a retained
+coordinate containing U+FFFD; one literal UTF8 replacement character is replaced
+with0xFF. The replacement-decoded equivalent must first resolve successfully, then
+invalid bytes must refuse without exception leakage. Conflict negative likewise
+has a successful decoded-equivalent baseline. No reflection/new sealing algorithm,
+production change or runtime yet. Shared test resealer changes private→internal
+only; actual signed owners remain outside this DATA fixture.
+
 Astra/high accepted the minimal existing-decoder DESIGN. Cheap selection is now12:
 first-offer10 plus two existing CanonicalJsonUtf8 facts (pure shared codec, not Mortal
 compatibility runtime). Existing duplicate-request fact also refuses reuse at43,
