@@ -9,9 +9,21 @@ T143 принят. Scope/spec/plan/tasks и предварительный consi
 личную реакцию, барьер и смену максимума ДЭ. Проверены дробная арифметика
 цен/мастерства,3 исхода с/без реакции, HoT/max примеры,25 новых ссылок и
 8-doc scope/diff/check. Свидетельство D:\BoeDiagnostics\hostile-dispel-t144\verification.json.
-Independent review и публикация ещё выполняются; баланса/частоты побед эти
+Независимый GPT-6 Astra/high whole-block review8706847..36ffea7 завершён:
+PASS без P1/P2/P3 замечаний. Проверены все8 файлов и связанные source/reaction/
+barrier/HoT/initiative/max-current контракты. Баланса/частоты побед эти
 фиксированные исходы не доказывают.
 Runtime/Rules не меняются, нового кэша/дорогого вычислительного пути нет.
+
+WIP36ffea75cd8f90d8f0463111165d62212f106e2f опубликован обычным push;
+remote SHA,8 API blobs/байты source совпали с новым чистым sparse restore
+D:\BoeDiagnostics\hostile-dispel-t144\remote-restore-20261102. Все25 новых
+ссылок и5 обязательных инструкций восстановлены. Финальный SHA/readback —
+issue1573 и локальный verification.json. Source tracked clean после commit;
+посторонний recovery obj не изменён. Raw диагностики в Git нет. Один bounded
+Sol6.1/high source audit, parent проект/проверки, отдельный Astra/high review;
+существенных исправлений review не потребовал, измеренная экономия работы/
+полный баланс по этому проходу не заявляются.
 
 ## T143 — очищение
 

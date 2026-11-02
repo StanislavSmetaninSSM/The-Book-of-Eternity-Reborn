@@ -4,7 +4,7 @@
 
 - [x] T144.1 Принятие T143, source audit/parent сверка, scope/spec/plan/consistency до расчётов.
 - [x] T144.2 Кандидат hostile-dispel-proposal.md, точные цены/бонусы/3 исхода/HoT/max примеры проверены;25 новых ссылок и8-doc diff/check прошли. Actor/effect/barrier/HoT/max/reaction контракты сверены.
-- [ ] T144.3 Independent Astra/high whole-block review; публикация/remote/API/new restore/readback; показать кандидатом без production/Rules/probes.
+- [x] T144.3 Independent GPT-6 Astra/high whole-block review8706847..36ffea7 — PASS без замечаний. WIP remote/API/8blobs/source bytes/25links/new clean restore проверены; финальный checkpoint/readback — issue1573 и verification.json. Проект предъявляется кандидатом, без production/Rules/probes.
 
 ## T143 — очищение
 
