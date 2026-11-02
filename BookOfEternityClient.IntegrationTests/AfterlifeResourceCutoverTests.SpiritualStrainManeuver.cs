@@ -53,7 +53,7 @@ public sealed partial class AfterlifeResourceCutoverTests
         second["diceAudit"]!["outcomeBand"] = "decisive_player_success";
         active["conflictPosition"] = "player_advantaged";
         await context.WriteExactJsonAsync(AfterlifeSpiritualConflictState.StatePath, raw.ToJsonString());
-        const string scene = "Рана не мешает душе успешно обойти защиту Хранителя.";
+        const string scene = "Чужое давление надломило волю души. Рана не мешает душе успешно обойти защиту Хранителя.";
         await context.WriteExactJsonAsync(ProjectionNarrativePath,
             new JsonObject { ["response"] = scene, ["timestamp"] = "2026-09-30T00:00:00Z" }.ToJsonString());
         AssertNoConflictFrameErrors(await context.Validator.ValidateAcceptedTurnRawMortalLocationMaterializationAsync());

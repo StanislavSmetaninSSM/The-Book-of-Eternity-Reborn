@@ -1,5 +1,15 @@
 # T081-D exact maneuver/success causal scaffold WIP
 
+M1 on d9dc7fc1c06e004130ef5dfd75e882ead02f4bc2 is a preparation FAIL,
+NOT causal RED: ordinary two exchanges/four claims/sole III and real offer passed,
+but submission stopped on two wound_acquisition_narration_missing issues before
+the consumer. The scene omitted the existing proposal's exact acquisition sentence.
+Actual test 3.6472458s, no timeout; post hashes/cleanup/clean source verified.
+Post proof 26b8841595b8b94482d23995c17e0113a0652aead38bf2979b63c3c795e0a1cf.
+Corrected TEST-ONLY scene includes that exact sentence followed by the maneuver
+narrative. No assertion or production guard changes. Corrected C# UNCOMPILED,
+next runtime UNRUN; consumer and all late controls remain UNREACHED.
+
 Accepted pressure no-op checkpoint 7806d0a211e6b173c0d7e13f740ca08e3581109a
 (source88fd, four PASS2+1+1) is preserved. Twelve changed files fully recovered
 from immutable GitHub bytes; bounded readback proof
@@ -20,8 +30,8 @@ not executed by the player afterward). No shared mutable fixture/new authority.
 Expected causal RED only integration_required after actual selected III; direct
 completed_unpublished without second source/none, cold reopening, exact candidate
 position/strains/costs and canonical7/no-common-plan controls UNREACHED until GREEN.
-One exact new Integration Fact/60s. Production/GM resources unchanged; C# UNCOMPILED,
-runtime UNRUN. Next independent SOURCE, preserve current Integration5, fresh
+One exact new Integration Fact/60s. Production/GM resources unchanged; corrected C# UNCOMPILED,
+next runtime UNRUN. Next independent delta SOURCE, preserve current Integration5, fresh
 Integration against actual unchanged Main88fd/Support, artifact/resource/PDB proof,
 discovery/exactPlan/PREP and one causal. No fabricated baseline or copied receipt.
 
