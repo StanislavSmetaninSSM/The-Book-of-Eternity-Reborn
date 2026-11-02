@@ -2,22 +2,15 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "mortal-physical-joint-terminal-anchor-causal",
-      "reason": "Retest only the two genuine stage-only terminal/nonterminal cases after the narrowly changed anchor union. Accepted baseline is nonterminal PASS plus final-oracle terminal RED with all7 constructor refusals; require terminal allocation GREEN without weakening replay/current owner/clock/source-image checks. Preserve120s and existing full capture.",
+      "category": "core-joint-candidate-continuing-visibility",
+      "reason": "Existing three file-only typed controls qualify reuse of the same continuing sealed event transfer by the terminal peer: live blocked-body visibility with one actual source read/no authority, two-instance ordering/snapshots and existing fault/final-tail/retained-root policy. No new diagnostic API/cache/codec or actual full-terminal retry in this cheap gate. Preserve60s.",
       "contracts": [
-        "#1536 / T121-PHYSICAL-JOINT-TERMINAL-ANCHOR / FR063–064 / client-owned canonical anchors / unchanged sealed joint authority"
-      ]
-    },
-    {
-      "category": "mortal-physical-terminal-joint",
-      "reason": "Retry only the previously failed genuine terminal joint/common/output peer after its anchor defect is corrected. Require complete linked treatment/heal, exact common publication/effects/History/output and full capture within the original120s; no replay of the nine unchanged output PASS.",
-      "contracts": [
-        "#1536 / T121-PHYSICAL-JOINT-TERMINAL-ANCHOR / T152-NOTIFICATION-CONTROLS / complete sealed terminal joint"
+        "#1536 / T121-PHYSICAL-JOINT-TERMINAL-ANCHOR / full uncapped original-event capture / unchanged fresh preparation"
       ]
     },
     {
       "category": "wounds-notification-worsening-projection",
-      "reason": "Retry only the previously failed create/worsen notification peer after both obsolete empty local treatment inputs are replaced by the existing complete template. Preserve all identity/effect/History/output assertions, global helper and original60s bound.",
+      "reason": "Retry only the failed create/worsen peer after its whole local setup uses a present Mortal realm source and the existing signed occurrence/snapshot helpers for both turns, in addition to the already complete treatment templates. Preserve original identity/effect/History/notification assertions and60s; no global helper or production changes.",
       "contracts": [
         "#1536 / T152-NOTIFICATION-CONTROLS / FR076 / unchanged create-worsen publication"
       ]

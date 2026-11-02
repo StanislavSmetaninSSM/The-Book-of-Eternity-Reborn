@@ -1,3 +1,52 @@
+# A2 partial GREEN and A3 fixture failure — next test-only WIP
+
+All six owner builds are fresh at92c561f0eccfd3f8bd086850057319903168274c,
+exit0; warnings81/23/14/0/26/107 exactly match earlier same-environment multisets.
+Six PE/PDB pairs/437 current bindings and75 artifacts/1,236 resource copies/12
+native copies verify. A2 artifact proof SHA256:
+eff24312612a505a61cbd4be4429b95c2befca51dd12a0457ab305de309f3cd9;
+PDB proof289e11853476e77e26ec13575ee9a85b007375c5e14e5526699c07e7d73a6ef3.
+Catalog remains valid1,328/13,154; exact A2Plan three descriptors/four cases at
+120/120/60s. Accepted SOURCE2125755f1 differs from compiled92 only by the reviewed
+one-sentence catalog correction; six-file remote readback and changed-catalog
+remote readback match, neither is a new full-tree restore.
+
+Actual A2-green4: anchor2 PASS, full terminal TIMEOUT120.1100771s/UNKNOWN/no TRX,
+worsening UNRUN; exit124/wall188.0783897s, completed1/3descriptors2/4cases.
+Anchor durations47.3963305/12.4361659s, including all exact allocation oracles and
+seven honest constructor refusals. Full anchor captures independently verify
+EOF/CRC/strict UTF-8/hashes/counts/closing and actual roots removed. Terminal's
+134,582,144B incomplete gzip prefix (no report/footer) is retained, SHA256
+f5dc46eb16d006081caa2a6884760ee5679264d73d26229dc9d76e1d465edf28;
+actual135-entry owned test root remains, inventory preserved. No live owners or
+new private-TMP roots, but no fixture-removal/complete-capture claim for terminal.
+Astra accepts this partial OUTCOME only. Summary SHA256:
+f13aceea9b6f8bbae1d52805bb91b30f1d0cb20423468325ccf77e3cf6e6f002;
+anchor TRX83b225fb0b3f4d9875e55025dc3a5d18194e573303990687d996e3047bebcf97;
+partial-capture-verification SHA256:
+cea394dc1c26c8cf7bee065665c5b8b35b09d67c7c66dcc1837505de9cdb7d84.
+
+A3-worsening1 was separately admitted on unchanged92 and completes1/1 FAIL,
+10.3328887s wall/1.5133067s test, no timeout, owned cleanup/no new TMP roots.
+Composition succeeds; first PublishAsync fails pending_turn_snapshot_reader_coverage_missing
+for soul_state.json. Summary2dad7bad3a8caf4a871de798359842e5f9ab11d32792060cfe92de131039eed1;
+TRXfd030c400d1cfa4dbbff3119f7f5f047c90454c84cc1a053d2c5e15f304f47d0.
+Primary captures/manifests/raw stay external under notification-controls/A2-green4
+and A3-worsening1. No evidence, saves or recovery data are deleted.
+
+The local setup correction now includes the Mortal realm source before the
+existing real signed occurrence/snapshot helpers for both turns, exact public
+opportunity binding and no redundant earlier turn43 capture. Existing route
+clones/assertions/global helpers are retained. Full terminal changes only its
+constructor opt-in to existing continuingPassiveTimings; default fresh DATA,
+all events/fields/clocks/gzip/accounting/closing/guards and120s remain. These C#
+changes are UNCOMPILED/UNRUN, not accepted results. Three existing file-only
+controls plus worsening1 are the cheap gate; their intentional fault retains
+its root/incomplete report by contract. No terminal retry before OUTCOME/PREP.
+No speedup or complete timeout cause is established; last saved timestamp60.263s
+cannot identify the executing phase at kill. GM no-update: no authored/gameplay
+contract changes. T121/T152, old output9/R2 UNKNOWN and every broader HOLD remain.
+
 # Joint terminal causal2 accepted; production correction WIP
 
 Actual runtime b18e77224237e228c02d8eb16f1cc5893a95adb4, source build same SHA

@@ -12,7 +12,7 @@ public sealed partial class JointBundleComponentTests
     public async Task GenuineJointTerminalTreatmentKeepsAcquisitionAndLinkedHealStages()
     {
         await using var fixture = new Fixture(_output, nameof(GenuineJointTerminalTreatmentKeepsAcquisitionAndLinkedHealStages),
-            passiveTimingEvents: true, gzipRecords: true);
+            passiveTimingEvents: true, gzipRecords: true, continuingPassiveTimings: true);
         await fixture.InitializeAsync(terminalTreatment: true);
         var bound = await fixture.PrepareBoundJointAsync();
         var bytes = await fixture.CaptureCandidateInvocationBeforeImagesAsync();

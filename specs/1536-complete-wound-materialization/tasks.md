@@ -91,6 +91,14 @@
   after correction; assertions/global helper remain. Next coherent SOURCE/fresh
   owning builds/Plan/PREP then anchor2 + full terminal1 + worsening1 at unchanged
   120/120/60s; accepted output9/HOLDs are not replayed or closed automatically.
+  Current92 anchor2 GREEN is accepted with full captures/cleanup; full terminal
+  UNKNOWN120.1100771s/noTRX and retained test root, worsening then independently
+  FAIL before first publication on missing signed soul-state coverage. Test-only
+  WIP now uses existing signed producer/snapshot helpers and local realm source
+  for both worsening turns, plus existing continuing recorder opt-in for the full
+  terminal peer. No DATA-reuse/workload/budget/assertion/production change. First
+  SOURCE/fresh Integration/cheap controls3+worsening1; full peer remains HELD for
+  later independent OUTCOME/PREP. No overall closure or missing-result PASS.
 
 # T108 Shining patient treatment — #1536
 

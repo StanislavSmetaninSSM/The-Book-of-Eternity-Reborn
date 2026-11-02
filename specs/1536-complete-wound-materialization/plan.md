@@ -1,3 +1,48 @@
+# Terminal anchor2 GREEN; full peer UNKNOWN; whole worsening preparation correction
+
+Current compiled/runtime92c561f0eccfd3f8bd086850057319903168274c is independently
+SOURCE/PREP accepted. All six builds exit0, exact previous same-environment warning
+multisets81/23/14/0/26/107; six PE/PDB/437 bindings,75 artifacts/1,236 resource
+copies/12 native copies verify. Exact addressed4 runs only anchor2 before the
+full terminal peer times out120.1100771/120s (no TRX/report); worsening is UNRUN.
+Anchor2 both PASS, including rightful terminal allocation. Their full captures
+and actual root cleanup independently verify. The terminal134,582,144B prefix
+and135-entry test root are retained, no live owner; process cleanup does not mean
+fixture removal. Independent partial OUTCOME accepts these exact boundaries.
+
+Separate admitted A3 worsening1 completes in10.3328887s wall, exit1/no timeout:
+proposal composition succeeds, first publication fails missing signed reader
+coverage for soul_state.json. Previous local route correction was insufficient;
+its setup audit missed required realm input. Whole-path review also identifies
+old manually composed opportunities without persisted signed occurrences. Do not
+weaken production reader/source checks or claim product regression/overall GREEN.
+
+Two bounded test-only corrections are authored, UNCOMPILED/UNRUN. Worsening now
+seeds the same minimal Mortal realm source used by existing component fixtures
+before signing, uses existing CreateSignedAuthority/Batch for both42/43 turns,
+and binds each decision to its genuine public opportunity. The batch helper
+captures the current signed snapshot after its occurrence writes; the old extra
+turn43 capture is removed. All original output/identity/effect/History assertions,
+complete local treatment templates and global helpers remain unchanged.
+
+Full terminal peer opts into ONLY existing continuingPassiveTimings, preserving
+passive true/lossless gzip, all original events/ticks, assertions, fresh default
+PrepareBoundJointAsync(reuseStableData:false), workload and120s. No new recorder,
+writer, cache, source owner or timer. This improves visibility of the existing
+stream; it is not an established explanation or speedup fix for the timeout.
+Existing prefix shows common-baseline end44.625s, resource-publication begin46.458s,
+last complete event60.263s; unflushed events prevent identifying the final phase.
+
+First finite selection is existing continuing-visibility controls3 + worsening1
+at unchanged60/60s. The fault control intentionally proves incomplete diagnostic
+and retained-root policy; it must not be reported as complete successful capture.
+Full terminal retry remains HELD until this gate, independent OUTCOME and separate
+PREP. No repeat anchor2/old output9, no broader HOLDs or new diagnostic framework.
+Optimization: per-turn realm/occurrence/snapshot mutation requires fresh signing;
+reuse current helpers, not cached permissions. Continuing transport shares existing
+queue/ObserveRecorded/writer and supplies no authority. GM wire/rules unchanged.
+Next cohesive SOURCE, fresh Integration-only build/bindings/exact Plan and PREP.
+
 # Joint terminal anchors: causal proof accepted; minimal correction authored
 
 T121-PHYSICAL-JOINT-TERMINAL-ANCHOR / T152-NOTIFICATION-CONTROLS / #1536.

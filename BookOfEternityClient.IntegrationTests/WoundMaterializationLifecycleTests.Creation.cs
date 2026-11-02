@@ -476,12 +476,16 @@ public sealed partial class WoundMaterializationLifecycleTests
     public async Task ExistingWound_WorseningReusesIdentityReplacesEffectsAndAppendsHistory()
     {
         await using var context = await CreatePlayerContextAsync();
-        var creationAuthority = await CreateAuthorityAsync(
+        await context.WriteExactJsonAsync("game_state/meta/soul_state.json",
+            new JsonObject { ["currentRealm"] = "Mortal World" }.ToJsonString());
+        var creationAuthority = await CreateSignedAuthorityAsync(
             context,
             maximumSeverityRank: 2);
         var creationProposal = CreatePhysicalProposal(severity: "II", includeMechanicalRoot: true);
         creationProposal["treatment"] = WoundContractTestData.CreateActiveWound()["treatment"]!.DeepClone();
-        var creationResponse = Response(Decision("materialize", creationProposal));
+        var creationDecision = Decision("materialize", creationProposal);
+        creationDecision["opportunityRef"] = creationAuthority.Opportunity.PublicRef;
+        var creationResponse = Response(creationDecision);
         var creation = WoundResponseInputComposer.Compose(
             creationAuthority.Binding,
             new[] { creationAuthority.Opportunity },
@@ -504,20 +508,13 @@ public sealed partial class WoundMaterializationLifecycleTests
         var oldEffectId = Assert.Single(
             woundBefore.Consequences.OwnedEffectSources.RootBindings).EffectId;
 
-        await context.CaptureValidatedPendingSnapshotAsync(
-            turn: 43,
-            additionalTrackedPaths: WoundMaterializationValidationTests.SnapshotWoundPaths);
-        var worseningAuthority = await CreateAuthorityAsync(
-            context,
-            maximumSeverityRank: 3,
-            eventRef: "turn_43:accepted_effect",
-            turn: 43,
-            worseningTarget: new WoundOpportunityWorseningTargetEvidence(
-                woundBefore,
-                "retrauma"));
+        var worseningAuthority = Assert.Single(await CreateSignedAuthorityBatchAsync(
+            context, 3, null, null, 43, 1, woundBefore));
         var worseningProposal = CreatePhysicalProposal(severity: "III", includeMechanicalRoot: true);
         worseningProposal["treatment"] = WoundContractTestData.CreateActiveWound()["treatment"]!.DeepClone();
-        var worseningResponse = Response(Decision("materialize", worseningProposal));
+        var worseningDecision = Decision("materialize", worseningProposal);
+        worseningDecision["opportunityRef"] = worseningAuthority.Opportunity.PublicRef;
+        var worseningResponse = Response(worseningDecision);
 
         var worsening = WoundResponseInputComposer.Compose(
             worseningAuthority.Binding,
