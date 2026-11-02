@@ -39,6 +39,13 @@ Dependencies: T011 -> T012/T013; T014 is independently implementable; T012-T014 
 
 Dependencies: T107-A -> T107-B -> T107-C -> T107-D -> T107-E. Parent owns integration and catalog edits.
 
+### Part 2 review corrections (PR #1583, external reviewer findings on 0cb4d736)
+
+- [X] T107-F [RED] Six review-driven tests: passive progression delta satisfies claim; cosmetic-only passive entry change rejected; duplicate JSON keys in current mastery file fail closed; duplicate keys in pre-turn snapshot fail closed; case-colliding canonical names with exact-case prose claim + matching delta accepted; ambiguous lowercase claim across colliding names rejected without own delta. RED confirmed: exactly 4 failures matching the three findings, 2 characterization guards passing immediately
+- [X] T107-G [GREEN] `ReadSkillEntriesByExactName` with `Missing/Unreadable/Ok` state (catches `ArgumentException` from duplicate-key lazy initialization → fail closed, no fallback); passive progression coupling via `passiveSkillChanges[]` entry-level `DeepEquals` on progression fields; ordinal-preserving canonical name sets; fail-closed claim disambiguation across ordinal case-colliding canonical names; expected/repair text names the passive path and warns against writing passive skills into `skillMasteryChanges`
+- [X] T107-H GM-facing doc sync for the passive progression path and unreadable-snapshot semantics (`TaskGuides/CLI_Step_Main.txt`, `Launcher/CLI_Launch_Script.md`, `Launcher/Generate_CLI_Launch_Script.ps1`, `Examples/E_CLI_Step_Main.txt`); spec FR-101 and acceptance scenarios 6–8
+- [X] T107-I Bounded verification (narrative class, doc-guard, selected categories), independent review resolution — including the reviewer's residual-defect fix (no-snapshot mastery fallback now requires a readable current file) with RED-first test `RejectsSkillClaimWhenCurrentMasteryUnreadableWithoutSnapshot`; verdict RESOLVED — commit+push, reviewer reply on PR #1583
+
 ## Later parts (issue #1533 contours, not in this branch)
 
 - [ ] T101 Canonical skill schema consolidation: single active/passive profile validator shared by constructor and delta paths (player + NPC), including `activeEffectDefinitions`, `structuredBonuses`, rarity/type/group enums
