@@ -1,5 +1,11 @@
 # Задачи #1573 — полный духовный бой
 
+## T143 — очищение
+
+- [x] T143.1 Принятие T142, mortal/removal/wound audit, scope/spec/plan/consistency до арифметики.
+- [x] T143.2 Проект cleansing-proposal.md с ценами/проверкой/scope; три ценовые строки/шесть mastery-бонусов/четыре исхода и стоимость двух целей проверены;19 новых ссылок и7-doc diff/check прошли, бесплатный разрыв/границы ран сохранены.
+- [ ] T143.3 Independent Astra/high whole-block review, corrections/remote/readback/new clean restore; представить без production/Rules/probes.
+
 ## T142 — сопротивления контролю и другим эффектам
 
 - [x] T142.1 Принятие T141 записано; mortal source audit и parent сверка, scope/spec/plan/consistency до арифметики.

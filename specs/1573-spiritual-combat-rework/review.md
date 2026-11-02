@@ -1,5 +1,20 @@
 # Проверка проекта #1573
 
+## T143 — очищение
+
+Baseline/origin8a60bb0e4cb53f4013544af2378dd29ce1595cf0 совпали; issue1573 прочитана.
+Принятие T142 зафиксировано. Один Sol6.1/high read-only аудит подтвердил
+точные removal routes/source/target, отсутствие универсальной mortal цены/
+проверки, разницу T127 family против T130 single-link и границу wound/effect.
+Parent сверил общий materialization contract и T141/T142. Scope/spec/plan/tasks
+и предварительный consistency записаны до численных проверок; новый проект
+не меняет production/Rules/старые probes. Parent проверил точными дробями3 ценовые строки,6
+mastery-бонусов,4 исхода и цену двух снятий;19 новых локальных ссылок
+и7-doc diff/check прошли. Свидетельство D:\BoeDiagnostics\cleansing-t143\verification.json.
+Это арифметика примеров, не измерение частоты успеха/полного баланса.
+Independent review и публикация ещё выполняются.
+Новый кэш не нужен: никакого runtime вычислительного пути не добавлено.
+
 ## T142 — сопротивление состояниям
 
 Baseline/origin ad260de82e5b61a3354f4c9c33faf9e729e23049 совпали; issue1573 прочитана.

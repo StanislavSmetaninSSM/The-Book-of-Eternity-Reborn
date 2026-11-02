@@ -1,5 +1,29 @@
 # План перехода к личной модели духовного боя — #1573
 
+## T143 — очищение, исследование и численный проект
+
+Baseline/origin8a60bb0e4cb53f4013544af2378dd29ce1595cf0 совпали; issue1573 прочитана.
+[Spec](spec.md), [tasks](tasks.md), [предложение](cleansing-proposal.md).
+Brainstorming + Spec Kit bridge + writing-plans, текущая feature/7 Markdown.
+Предварительный consistency: T143spec→T143.1–3, только документальный результат.
+
+1. Записать принятие T142. Один Sol6.1/high read-only аудит mortal/removal/wounds;
+   parent сверяет T141/T142 и отмечает различие старых неутверждённых T127
+   family cleanse и T130 single-link cleanse. Не переносить их как принятые.
+2. Предложить scope, contested/automatic случаи, Main/ДЭ/mastery и цены режимов;
+   проверить D0/50/210, G(1/10/25), пример разрыва/очищения, число целей/эффектов.
+   Scope/diff/links; новые цифры не выдаются за фактический mortal тариф.
+3. WIP/push, отдельный Astra/high review целого блока, исправить подтверждённое;
+   remote/API/source bytes/new restore и issue readback. Предъявить кандидатом.
+
+Review focus: смысл платного очищения рядом с бесплатным разрывом; один
+экземпляр против всей семьи; stacks/linked wounds/aura source; сопротивление
+не бросается повторно; нельзя очиститься запрещённым действием; snapshot
+силы источника без старого d20/повторного D, multicheck без ретаргетинга.
+Новый runtime путь отсутствует, кэш не нужен. При внедрении reuse стабильных
+определений существующим сервисом, актуальные effectId/source authority,
+ресурсы и допустимость после мутаций проверяются свежими.
+
 ## T142 — сопротивление эффектам, документальное исследование
 
 Baseline/origin ad260de82e5b61a3354f4c9c33faf9e729e23049; issue1573 прочитана.
