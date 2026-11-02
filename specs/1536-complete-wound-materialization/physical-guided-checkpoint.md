@@ -1,3 +1,36 @@
+# T149 correction built and exactly planned — GREEN pending
+
+Independent Astra/high SOURCE accepts implementation
+01b1a01f4f4a9c166f6aa8e385f291fa80c73114 plus doc-only correction
+9dc61ba9f9e323b87064aecb41e8553a800aca84. All seven changed files at 9dc61ba9f
+were freshly downloaded from GitHub into a new empty directory and checked by
+both writer and root against exact bytes, SHA256 and Git blob identities. Remote
+SHA before/after matches; this proves those seven files only, not a full clone.
+External readback proof SHA256:
+60e3728ed2e07379b057f5c8347c3440c4fc8c9a44e6e07b626a89be585a530b.
+
+Fresh source 9dc61ba9f builds all six owners successfully: Main 63.770642s,
+Support 8.057978s, Bridge 3.498230s, CrashHost 2.423188s, Unit 36.489286s,
+Integration 72.113917s. Warning counts remain 81/23/14/0/26/107; no warning names
+the changed validator, inventory guard or new typed fixture. All six PE/PDB pairs
+match and 433 current source bindings pass (the newly changed Main validator adds
+one binding to the prior 432-source set). All 75 managed artifacts/transitive
+copies, 206 operational inputs / 1,236 copies and 12 native copies are checked.
+R4-artifact-resource-proof.json SHA256:
+7801883c1bb4dab5a0fd1630802765b2f74e7c0d3fde0ef2563ffd08ece27e61.
+
+Current exact PlanOnly exits 0: one category / two project descriptors / five
+methods / eleven cases, unchanged category 60s, zero runtime and complete owned
+cleanup. Plan SHA256:
+f073a223be808092538719e33f1b21a153998f35436b330ef847a5b9e75026b3.
+Full catalog inventory retains valid R3 lineage (1,323 categories / 13,151 methods):
+no method, attribute, source membership or class changed; two existing methods
+were added to this finite selector and are freshly discovered by current PlanOnly.
+No whole discovery/test aggregate is repeated. Primary R4-build-*, R4-pdb-proof
+and R4-plan evidence is external under browser-read-recovery. Next independent
+PREP and one GREEN11, with explicit fixture absence checks. Source acceptance and
+successful compilation alone do not close runtime, parent T149 or broader HOLDs.
+
 # T149 canonical-first correction WIP — SOURCE and GREEN pending
 
 Independent Astra/high accepts the exact causal RED9 on runtime

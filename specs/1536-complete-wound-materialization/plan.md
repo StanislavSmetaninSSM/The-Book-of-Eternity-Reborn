@@ -1,3 +1,15 @@
+# T149 correction built/planned — PREP and GREEN pending
+
+Independent SOURCE is accepted at 9dc61ba9f9e323b87064aecb41e8553a800aca84;
+seven-file exact remote readback also passes. All six owning builds at that source
+exit 0, warning counts unchanged (81/23/14/0/26/107). Current six PE/PDB pairs,
+433 source bindings, 75 managed artifacts, 1,236 operational resource copies and
+12 native copies match. Current PlanOnly: two descriptors / five methods / eleven
+cases in the unchanged 60s category, no execution. Full catalog remains on valid
+R3 inventory lineage because method/class/membership did not change. Primary
+identities and scope are in physical-guided-checkpoint.md. Next independent PREP
+and exact GREEN11 with explicit fixture absence; no broader replay or browser retry.
+
 # T149 canonical-first correction WIP — SOURCE pending
 
 Independent causal RED9 OUTCOME is accepted. The minimal correction moves the
