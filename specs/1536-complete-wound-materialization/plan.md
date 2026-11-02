@@ -1,3 +1,46 @@
+# T081-D strain burden: ordinary signed baseline accepted — 2026-11-02
+
+Source/runtime58a5c0904f96bb17d7838df906bc62c7efacb1e9: exactly1 Integration
+Fact/case PASS, original60s, NoBuild/Parallelism1. Actual ordinary session validated
+both pressure/setback exchanges and claimed four unique signed dice5/15/4/12.
+First player source: true margin10, tiers0/0, pressure20, maxIII. Second ordinary
+setback preserves overwhelmed while losing position to opposition_advantaged.
+The four checked profile/conflict/resource/History images are unchanged and no
+accepted mechanics plan is minted. This is preparation/source-cap headroom only:
+NOT causal RED, admitted III offer/selection, strain consumer, C2/cold/publication,
+Engine or general US3 qualification. No game-rule or production change.
+
+Fresh Integration81.440729769s/exit0/exact107 previous warnings; actual Main816/
+SupportECE dependencies are unchanged, not new builds. Actual25 artifacts,
+206 resource inputs/412 copies/native4,3PEPDB/368 current source bindings matched
+before/after runtime. Catalog1351/13179 is discovery-only. Plan1 descriptor/1case/
+60s; category5.0536712s, test1.5146876s, runner10.4566679s, wrapper11.793649411s.
+No skip/timeout/duplicate/underfill; both cleanup true/newTMP[], no active owners,
+clean runtime tree/verified remote. Independent Sol SOURCE/PREP/OUTCOME accepted.
+
+Raw remains /workspace/tboe-linux-evidence-20261102/spiritual-strain-burden.
+Artifact05c835670a394bf13cc06d8ed8b24672fde8f2b7dc88de5d6077d3149b948959;
+PDB3c3533ffc3dcd1a7185641d5c2b1eadee47aece09dbbf76263b404fc4be1c448;
+Plan35bd44b131f3a617e60c69c044145abde7bc1e1a7284a4e18fcc56c1961ff2e5;
+summaryb21b46bb9feedf70e2395bf161aa7174e0e15319854a6c4fa77e4fd0a8ee5437;
+TRXc8a38a07a1d6957323d69ce34aea4fde3dc9f25beffa5b1c0868c7c017d680d6;
+postintegrity47679a71243177814d5b1991ca8adf1ff2e402a083893b7ec74bb2de6c547e27.
+Previous Integration own5 preserved losslessly in11,261,984B archive,
+SHA1ff4b4c14c0434fcf0b9b4f989ea35abd0f91ca85dd7bbb94754602fde19ed51,
+with exact member hashes/gzip EOF/CRC. No raw or saves deleted/uploaded.
+
+Optimization: existing full-key immutable prepared fixture with independent roots
+and existing typed source/lease owners; no new cache, reflection or caller-supplied
+authority. Actual runtime above is cost evidence for this fixture, not a speedup.
+SOURCE corrected a guessed closed position token before build/runtime; not a RED.
+GM no-update rationale: test-only ordinary preparation, no authored contract/rule.
+Next bounded technical step is actual III C2 insertion and an owner-rederived
+ordinary-result comparison before exactly +1 strain can be accepted. Binding-only
+comparison stays binding-only. No universal failure predicate or correctedAfter−1.
+Four questions in author-decisions-20261102.md remain PENDING, including proposed0;
+strain +1/capbroken itself needs no author decision. All parent tasks and previous
+UNKNOWN/HOLD, source-pin/cross-platform boundaries and wounds-only scope stay open.
+
 # T081-D strain burden: ordinary baseline/source-cap preparation WIP
 
 Base905002e40f0f73cdbe53a89acf55372972ed1d9d is remote verified and9 changed

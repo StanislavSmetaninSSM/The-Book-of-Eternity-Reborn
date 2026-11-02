@@ -1,3 +1,14 @@
+# Current independent T081-D preparation: accepted ordinary signed baseline1
+
+Source/runtime58a5c0904f96bb17d7838df906bc62c7efacb1e9 has1 fresh Integration PASS
+under original60s, independent SOURCE/PREP/OUTCOME. Real signed first source
+pressure20/maxIII and second ordinary pressure/setback overwhelmed headroom proved;
+no admitted III selection/new consumer/C2/cold/publication qualification. Build,
+exact selection, postintegrity and raw references in physical-guided-checkpoint.md.
+T081-D and all parent tasks remain open. Next actual III C2 insertion/owner-rederived
+ordinary comparison, not a guessed baseline. Four author rules remain pending,
+no0 accepted; all existing UNKNOWN/HOLD and wounds-only boundary preserved.
+
 # Current independent result: Mortal known-wound consequence fix accepted
 
 GREEN source/runtime81606617ea9f8d41385e82c21c7a37bf15a1d81c:4 unique Unit PASS
