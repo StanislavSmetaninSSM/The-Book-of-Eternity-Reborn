@@ -6,7 +6,30 @@
 Объём — принятие T134 и обязательный mortal retention в плане; production
 не меняется. Незавершённый T135.M не подменён выполненной документацией.
 Spec Kit bridge/writing-plans: scope/plan/tasks и consistency записаны до
-обновления подробного договора. Независимый review и проверки пока не выполнены.
+обновления подробного договора. Sol6.1/high source audit подтвердил reset в
+Block7, сохранение ниже порога в local practice, pending skillStateBefore/gain
+и принятие GM evolution по одному достигнутому уровню. Parent прочитал эти
+участки и проверил границы; runtime-исправление ещё предстоит.
+
+Проверен WIP bcf00e7fb221ccdaa0fe5a03100a355bf16af7b1. Независимый
+GPT-6.1 Sol/xhigh review полного пятифайлового diff: pass, замечаний нет.
+Parent: 13 добавленных локальных ссылок/anchors, пять арифметических примеров
+(включая нестандартные mortal пороги и два повышения), scope и git diff --check
+прошли. Reviewer независимо сверил арифметику и исходники. Это проверка
+документов, не production-тесты или баланс: C#/Rules/probes/примеры неизменны.
+
+WIP опубликован, remote SHA совпал; пять GitHub blob SHA совпали с source и
+новым чистым sparse clone D:\BoeDiagnostics\mastery-retention-t135\remote-restore-20261102.
+Пять обязательных инструкций восстановлены. Финальный SHA/readback фиксируются
+в issue1573; малое свидетельство — D:\BoeDiagnostics\mastery-retention-t135\verification.json.
+Работа временно велась в прежнем clean restore T134 (он теперь рабочая копия),
+пока создавался отдельный управляемый worktree: исходный D:\Code\The-Book-of-Eternity-Reborn-crash5-windows-20261019
+занят другой веткой и не менялся этим блоком. Для продолжения используется
+worktree D:\Code\DW10-worktrees\boe-mastery-planning\The-Book-of-Eternity-Reborn-crash5-windows-20261019;
+перед продолжением обязательно сверить его HEAD с финальным remote checkpoint.
+Оптимизация: только документация и малая арифметика, новой runtime-нагрузки нет.
+Маршрутизация audit Sol6.1/high + независимый Sol6.1/xhigh review подошла этому
+ограниченному блоку; существенных переделок нет, экономия не измерялась.
 
 ## T134 — принятие основы и численный кандидат мастерства
 
