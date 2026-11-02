@@ -3,9 +3,23 @@
   "selections": [
     {
       "category": "wounds-spiritual-strain-parent-receipt",
-      "reason": "Causal parent-receipt join5 on already accepted intrinsic DATA core; baseline ledger must parse before each semantically missing parent denial. This run cannot prove History or live/C4 permission. Old intrinsic34 retained, no unchanged PASS rerun.",
+      "reason": "GREEN5 for independently accepted real parent-receipt causal; baseline and all existing negative guards must pass. Full History/owner route remains separate.",
       "contracts": [
         "#1536 T081-D earlier materializeIII parent identity/source/transition/rank agreement"
+      ]
+    },
+    {
+      "category": "wounds-spiritual-strain-preimage-data",
+      "reason": "Affected13 intrinsic controls: shared witness now returns parsed comparison facts for parent join, same exact actual/dice/cost/math and clone rules must remain. Prior34 retained separately.",
+      "contracts": [
+        "#1536 intrinsic DATA actual/ordinary/fullparent parsing and copy isolation"
+      ]
+    },
+    {
+      "category": "spiritual-combat-guarantee-witness-consumers",
+      "reason": "Affected21 ordinary/guaranteed witness and receipt controls: shared witness/receipt parser now checks optional parent relation. Preserve current legacy-free supported semantics, budgets and closed fields.",
+      "contracts": [
+        "#1536 retained witness / guarantee and receipt source-decision agreement"
       ]
     }
   ]

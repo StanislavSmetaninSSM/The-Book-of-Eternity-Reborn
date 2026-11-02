@@ -86,8 +86,16 @@ internal static class SpiritualWoundSourceWitness
     /// <returns>
     /// Recomputed comparison result, never source admission or a wound command.
     /// </returns>
-    internal static SpiritualWoundCalculation Validate(JsonObject source)
+    internal static SpiritualWoundCalculation Validate(JsonObject source) => ValidateAndReadStrainData(source, out _);
+
+    /// <summary>Validates once and returns already parsed comparison DATA for a containing receipt join.</summary>
+    /// <param name="source">Detached source witness; no current permission is supplied.</param>
+    /// <param name="strain">Intrinsic comparison DATA, absent for ordinary sources and never publication authority.</param>
+    /// <returns>The same recomputed source calculation used by ordinary witness validation.</returns>
+    internal static SpiritualWoundCalculation ValidateAndReadStrainData(JsonObject source,
+        out SpiritualStrainPreimageData? strain)
     {
+        strain = null;
         ArgumentNullException.ThrowIfNull(source);
         Closed(source, (source["guaranteedSeverityRank"] is null ? Fields : Fields + " guaranteePreimage") +
             (source.ContainsKey("strainPreimage") ? " strainPreimage" : ""));
@@ -125,7 +133,7 @@ internal static class SpiritualWoundSourceWitness
         ValidationService.ValidateRetainedSpiritualExchangeShape(exchange, "retainedSource.exchange", issues);
         ValidationService.ValidateSpiritualWoundSourceActionShape(exchange, "retainedSource.exchange", issues);
         ValidationService.ValidateRetainedSpiritualDiceAudit(exchange, evidence, issues);
-        var strain = source.ContainsKey("strainPreimage") ? SpiritualStrainPreimageData.ReadIntrinsic(source, exchange) : null;
+        strain = source.ContainsKey("strainPreimage") ? SpiritualStrainPreimageData.ReadIntrinsic(source, exchange) : null;
         ValidationService.ValidateRetainedSpiritualExchangeRules(exchange, issues, strain?.ReadOrdinaryAfter(exchange));
         Require(!issues.Any(issue => issue.Severity == IssueSeverity.Error), "Invalid retained exchange payload.");
         var sourceOperation = side == "opposition" ? exchange["operationType"] :

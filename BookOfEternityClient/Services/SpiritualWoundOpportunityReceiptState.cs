@@ -16,6 +16,7 @@ internal sealed partial class SpiritualWoundOpportunityReceiptState
 
     private const int MaximumRows = 20_000;
     private readonly JsonObject _root;
+    private readonly IReadOnlyList<RetainedStrainParent> _strainParents;
 
     /// <summary>
     /// Retains a detached private copy of a validated complete ledger.
@@ -23,7 +24,13 @@ internal sealed partial class SpiritualWoundOpportunityReceiptState
     /// <param name="root">
     /// Validated receipt root.
     /// </param>
-    private SpiritualWoundOpportunityReceiptState(JsonObject root) => _root = root.DeepClone().AsObject();
+    /// <param name="strainParents">Already validated immutable parent comparisons belonging to this exact root.</param>
+    private SpiritualWoundOpportunityReceiptState(JsonObject root,
+        IReadOnlyList<RetainedStrainParent>? strainParents = null)
+    {
+        _root = root.DeepClone().AsObject();
+        _strainParents = strainParents?.ToArray() ?? [];
+    }
 
     /// <summary>
     /// Checks closed shapes, lifecycle references and the source-to-decision bijection.
@@ -59,6 +66,7 @@ internal sealed partial class SpiritualWoundOpportunityReceiptState
             var closures = root["closures"]!.AsArray().ToDictionary(
                 row => Text(row!["instanceId"]), row => Integer(row!["terminalTurn"]), StringComparer.Ordinal);
             var sourceById = new Dictionary<string, JsonObject>(StringComparer.Ordinal);
+            var strainRows = new List<(JsonObject Row, SpiritualStrainPreimageData Data)>();
             var coordinates = new HashSet<(string Instance, string Exchange, string Side)>();
             var exchanges = new Dictionary<(string Instance, string Exchange), (string Session, string Request, long Ordinal)>();
             var instanceCounts = new Dictionary<string, int>(StringComparer.Ordinal);
@@ -68,9 +76,10 @@ internal sealed partial class SpiritualWoundOpportunityReceiptState
                 var instanceId = Text(row["instanceId"]);
                 Require(instances.TryGetValue(instanceId, out var instance), "Unknown source instance.");
                 var witness = Object(row["witness"]);
-                Require(SpiritualWoundSourceWitness.Validate(witness).MaximumSeverityRank > 0 ||
+                Require(SpiritualWoundSourceWitness.ValidateAndReadStrainData(witness, out var strain).MaximumSeverityRank > 0 ||
                     witness["guaranteedSeverityRank"] is not null,
                     "Only positive or guaranteed sources have accepted decisions.");
+                if (strain is not null) strainRows.Add((row, strain));
                 var evidence = Object(witness["turnEvidence"]);
                 Require(Text(witness["conflictId"]) == Text(instance!["displayConflictId"]) &&
                     Text(evidence["realm"]) == Text(instance["realm"]), "Source belongs to another conflict.");
@@ -99,8 +108,9 @@ internal sealed partial class SpiritualWoundOpportunityReceiptState
             foreach (var row in decisions)
                 ValidateDecision(row, sourceById, decided, decisionIds, opportunityIds, transitionIds);
             ValidateDecisionWaves(decisions);
+            var strainParents = ValidateStrainParentRelations(strainRows, sourceById, decisions);
             ValidateHealingLedger(root, version, instances, closures, sources, decisions);
-            return new(true, new(root), Array.Empty<ValidationIssue>());
+            return new(true, new(root, strainParents), Array.Empty<ValidationIssue>());
         }
         catch (Exception error) when (error is JsonException or FormatException or InvalidOperationException or OverflowException or InvalidDataException or ArgumentException or NullReferenceException or KeyNotFoundException)
         {
@@ -269,7 +279,7 @@ internal sealed partial class SpiritualWoundOpportunityReceiptState
                 acceptedTurns.Contains(OriginalRequest(Object(row["witness"])))))
             return new("conflict", null);
         return new(JsonNode.DeepEquals(before._root, candidate._root) ? "exact_replay" : "appended",
-            new(candidate._root));
+            new(candidate._root, candidate._strainParents));
     }
 
     /// <summary>

@@ -13,18 +13,33 @@ The single authorized [GitHub #1536 follow-up comment](https://github.com/Stanis
 No issues are closed. Historical pending wording below is superseded by this
 current decision, not a new permission to implement the three deferred consumers.
 
-# T081-D genuine strain owner/History connection — parent join tests WIP
+# T081-D parent receipt relation — implementation WIP after causal5
 
-Next connected route starts with5typed parent-receipt causal cases. Independent
-full two-source ledger must parse before each changed parent (foreign valid-shaped
-sourceId, declined decision, different wound/transition/rank). Only test DATA and
-catalog/selection changed; production parent join is not implemented. New C# is
-UNCOMPILED/UNRUN. Current intrinsic34 remains accepted at70322, not rerun without
-relevant change. Source owner/C2 issuance, parent first-create History, sealedC4,
-signed next-turn/healed-history checks remain OPEN. No new game/diagnostic system.
-Factory output is fresh per case and uses existing typed DATA factory; one small
-in-memory ledger needs no cache and grants no permission. Parent IDs/fingerprints
-must not substitute for source ownership or History.AfterFingerprint proof.
+E1 on fc6ccaf2d0368cec4f37f81b2d0ce07f7dc08be2 independently accepted as genuine
+causal RED:5cases passed full two-source baseline then Assert.False at line43
+(ExpectedFalse/ActualTrue). Later null-state/nonmutation assertions UNREACHED.
+Fresh Unit exit0/26baseline/37.973767s; unchanged Main/Integration70322. Verified
+45artifacts/618resources/native6/4PDB478bindings, exact5/60s Plan, discovery-only
+catalog. Runtime wrapper10.824058426s/category4.3118196s, complete5FAIL without
+skip/timeout/duplicate/underfill; owned/runtimecleanup/newTMP[]/noowners/clean frozen
+source/posthashes checked. Post48be9b85fa9830a1fe459ead9384fc5675b7c49e9f3f27b41e2546cc24c52bec;
+summary79dfcf85ba6595b70c4f0a84bf1ea7f85775320d22f317bfef9a4bae10160422.
+Raw /workspace/tboe-linux-evidence-20261102/spiritual-strain-preimage-data/E1-causal5.
+This proves the missing parent relation, not an actual current-owner bypass.
+
+Current uncompiled implementation reuses the already parsed intrinsic comparison
+from witness validation and checks an exact earlier materializeIII creation in the
+same instance/original context: parent source/order/affected actor, wound/transition/
+rank and origin source/event/opportunity. Its parsed facts survive detached ledger
+copy/append; a temporary index over the existing decision bijection is DATA, not a
+cache/authority registry. One parse owns the facts, no extra parent-envelope parse
+or cross-operation reuse. Fresh owner/History permissions are still absent.
+
+Next SOURCE/build/catalog/Plan/PREP and cheap39 (newparent5+affectedintrinsic13+
+existingwitness21, budgets unchanged1/1/2minutes). Repeated13/21 are now justified
+by changed shared witness/receipt validation. History.AfterFingerprint and actual
+C2/C3/C4/signed-history adapter work remains OPEN; no fullroute or new game rule
+claimed. Author answers, published comment and prior runtime UNKNOWN/HOLD unchanged.
 
 # T081-D intrinsic retained comparison DATA — accepted bounded gate
 
