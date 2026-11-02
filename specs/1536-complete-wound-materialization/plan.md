@@ -1,3 +1,18 @@
+# Current wounds-only plan after accepted source cutover — 2026-11-02
+
+Source/runtime b1e30030edb27e670c566a544a3b2a20f72d6e89 has independent
+SOURCE/PREP/OUTCOME acceptance: fresh6 exact Unit Facts, original60s, no skip/timeout;
+fresh Main/Unit exit0 and post-run bindings unchanged. Complete receipt and finite
+wounds-only remaining map are at the top of physical-guided-checkpoint.md.
+T149/T071 parents and all recorded UNKNOWN/HOLD remain open. General aggression,
+defeat, QTE orchestration, ACTIVE/F1/T197 and withdrawn T088 are outside scope.
+Next existing T150 result: preserve cosmetic terminal example and add a complete
+contracted mechanical_effect heal legacy draft, manifest ownership and real typed
+guard. Production mechanism exists; this is a confirmed authored-example gap,
+not a new gameplay rule or full terminal/browser repeat. Independent Saref survival
+stays #1571. No new task IDs, blanket suite, merge or issue closure.
+Prior WIP below is superseded by the accepted receipt, not fresh qualification.
+
 # Existing T149: final generic wound-source fallback cleanup WIP
 
 Base54e4c108bd6b6933e348f13246185d89fb720af6 is remote-verified and receipt consistency

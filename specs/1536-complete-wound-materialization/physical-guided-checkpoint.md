@@ -1,3 +1,61 @@
+# Existing T149 source cutover accepted; wounds-only remaining map — 2026-11-02
+
+Independent Sol/xhigh SOURCE, PREP and OUTCOME accept source/runtime
+b1e30030edb27e670c566a544a3b2a20f72d6e89: one actual fresh group of6 exact unique
+Unit Facts, category wounds-canonical-source-cutover,1/1 descriptor complete,
+original60s. Category3.8528599s, runner9.7760736s, wrapper11.384411582s, exit0;
+no skip/timeout/duplicate/underfill, both cleanup true, newTMP[], clean runtime tree.
+The unreachable generic isHealed fallback is retired; supported typed wound export,
+ValidateWoundBindings and independent terminal History-backed wound_legacy remain.
+This is dead-path cleanup/characterization, not a new causal gameplay or cold proof.
+The four obsolete aliases now have explicit resurrection bans; honest source
+inventory no longer requires a phantom LegacyLoose category. No World pin changed.
+
+Fresh Main65.713625s and Unit37.430118s exit0; unchanged warning multisets81/26.
+Post-run30 copied artifacts/206 inputs412 resource copies/native4/3PEPDB349 source
+bindings unchanged. Source-equivalent Support/CrashHost dependencies are not new
+builds; Integration is unchanged/unselected. Catalog1348/13177 is discovery only.
+Artifact proof9ccbbfcf4259424c0d8f7e48026507f16bf613a53aac02241b7b380f9fa89fff;
+PDB5501ca1f7d44e3e5f9b090aa5c9de1382a77f18ee2c757c03a0d7b7e54840015;
+Plan842009c7ace8367c3778d7fee87819671b89bca09adb9cab634a2fe138e35aae;
+summary91573501e13205c287fa9c3c0114cb9cc6e25af2c5c7201cf94571df207c3012;
+TRXd57faca482047d34de28c580d25dd0f74982ba028dafb296482c5b22ddc4323f;
+primary integrityeae308fc41624f0131c92d8a1b1aa373f177925594b7aa058eb00a9369a255fd.
+Full raw remains /workspace/tboe-linux-evidence-20261102/canonical-wound-source-cutover.
+Previous10 owned outputs are losslessly archived/CRC verified, SHA
+60fc310a35c6a60f27054273126d7ae56160787b45f95e806828348fd94462e5;
+no raw/saves/recovery deleted. Optimization: no new live IO/cache/lifetime or authority
+exception; guards reuse the same source images. No performance improvement claimed.
+GM no-update is justified for this non-live fallback; existing typed contract stays.
+
+Author scope remains ONLY wounds, acquisition/state/treatment/diagnosis/direct
+recovery/display and necessary persistence/verification. Withdrawn T088 question
+needs no answer and grants no rule. General aggression/defeat/QTE/ACTIVE/F1/T197
+are outside this execution, not completed. Existing QTE/NPC cuts admit/refuse wound
+data only. Current bounded Astra/high audit does NOT prove a new missing gameplay
+system or whole #1536 completion. Empty parent checkboxes are not missing code.
+
+| Existing task / boundary | Actual remaining state and next finite action |
+| --- | --- |
+| T149/T071 | Current source/raw cuts accepted on their separate recorded lineages; reconcile whole ownership matrix before parent closure. No retired fallback recreation. |
+| US3 T081-C2/C3/D/E/C5 | Live wound witness/completion/validation implemented; match wound-specific source/ceiling, side, create/worsen, guarantee, lifecycle/replay/cold and eight-profile cells to existing receipts. Do not redo accepted B2–B5/source-ceiling children. |
+| T081-C3-R2B/T107 | Healing/natural producers and live insertion exist. Same signed safe-cycle+combat bundle is unlawful. Sequential actual safe publication then actual separate conflict start needs an established existing publisher seam; bootstrap rewrites are not proof. No general conflict system authorized. |
+| US2/T121 browser course R2 | UNKNOWN180.1041994s/180, no TRX. Retained root proves milestone2/turn45 and second ordinary wait46 with response, not milestone3/heal. Prefix lags actual execution; exact internal timeout cause unproved. No retry admission. |
+| T121 joint terminal A5 | UNKNOWN120.0346224s/120, no TRX. Accepted anchor2/output10/controls3 do not replace full peer; needs cause and separate unchanged-budget PREP. |
+| US1/US4–US8, T093–147/T167–177/T159 | Major acquisition/healing/recovery/diagnosis/provider/navigation/scope paths exist. Reconcile realm/actor/progression/catch-up, compensation, stale/confirm/error, lifecycle and UI scenarios against actual receipts; do not infer missing shared runtime from a parent checkbox. |
+| T150 | Actual examples/manifest/typed guards cover constructors, repair, diagnosis, treatment, recovery, providers, commands/History and cosmetic healed legacy. Narrow confirmed gap: full GM-authored mechanical_effect legacy draft plus typed example guard. Implement that existing contracted branch next; not a new mechanic. Independent Saref survival example/runtime remains separate #1571. |
+| T151/T152 | Russian label, privacy/recursive projection, escaped text, controls/display bounds and actual App desktop/mobile leaves exist. Reconcile remaining current bidi/confusable/size/hidden-field requirements without inventing Unicode policy. Controlled HTTP DOM does not prove backend/provider/packaged/fresh-process saves. |
+| T153/T154 | Index/bounds/rollback code and tests exist. Reconcile exact scale cases and surface×cut×byte/existence matrix before closure; no measured new complexity defect established. |
+| T155–165/T177 | Applicable FR/quickstart/scenario reconciliation, final independent review/finding closure and source/docs/remote acceptance remain. Current category policy supersedes historical aggregate Lane/npm verify commands; no merge/issue closure authorized. |
+
+Separate unchanged boundaries: DFR300.1806894s UNKNOWN with69 component PASS on
+their own lineage; Mortal compatibility/ordinary-envelope UNKNOWN; Windows deferred,
+first Guardian intermittent/cross-OS DATA; T609 parked; old9 World pin mismatches.
+Historical20261025 raw unavailable; current R2/A5 preserved. None is closed or
+automatically retried, and unrelated general systems are not wound prerequisites.
+Thus neither 'all code finished' nor 'only two tests remain' is established.
+Earlier WIP below is historical and superseded by this actual accepted receipt.
+
 # Existing T149: final generic wound-source fallback cleanup WIP
 
 Base54e4c108bd6b6933e348f13246185d89fb720af6 is remote-verified and receipt consistency

@@ -1,3 +1,16 @@
+# Current wounds-only execution: source cutover accepted; T150 next
+
+Existing T149/T071 generic isHealed fallback retirement and truthful typed source
+inventory accepted on b1e30030edb27e670c566a544a3b2a20f72d6e89: independent
+SOURCE/PREP/OUTCOME, fresh6 exact Unit Facts/60s, fresh Main/Unit, no wider closure.
+Full actual receipt and bounded remaining map are at physical-guided-checkpoint.md.
+Next confirmed missing artifact is existing T150's full mechanical_effect healed
+legacy authored example plus manifest/typed guard; cosmetic example remains.
+US3/US1/US4–US8 and cross-cutting parent acceptance still need exact scenario
+reconciliation; R2/A5 UNKNOWN and DFR/Mortal/Windows/other HOLD stay. General
+aggression/defeat/QTE orchestration/ACTIVE/F1/T197 are outside wounds-only scope,
+not completed. Withdrawn T088 rule question is not accepted or awaiting an answer.
+
 # Current wounds-only cutover: nested combat wound input accepted
 
 Existing T071/T149 legacy wound-effect refusal now has independent SOURCE/PREP/
