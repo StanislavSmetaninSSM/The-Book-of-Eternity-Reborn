@@ -43,8 +43,9 @@ No raw, generated proofs, archives or binaries are in Git.
 The pure DATA reader retains the exact private actual/ordinary snapshots and full
 parent envelope; it reuses the existing exact capped+1 comparator. Only retained
 maneuver validation sees detached ordinary-after. Actual dice/cost/control/strain
-math remain actual. Rehashed changed/foreign/malformed preimages and copy mutation
-are rejected. A valid-looking foreign parent ID is NOT proved by intrinsic parsing:
+math remain actual. Rehashed changed/foreign/malformed preimages and changed
+actual-exchange inputs are rejected; mutating a returned copy leaves retained DATA
+unchanged. A valid-looking foreign parent ID is NOT proved by intrinsic parsing:
 parent receipt/first-create History, source ownership and current availability are
 still required. No live/C3/C4/historical owner adapters or joins are implemented;
 real failed maneuver full route remains OPEN, not qualified by34PASS.
