@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "wounds-canonical-player-carrier-root",
-      "reason": "Only the failed Unit semantic-inventory method after actual typed Integration9 and legacy-confinement1 PASS at f21ec22c. Correct one stale declaration anchor to the actual partial snapshot-presence class after complete67-entry source audit; production and all passed test bodies are unchanged. Preserve their runtime lineage; no broad replay.",
+      "category": "wounds-canonical-player-carrier-inventory",
+      "reason": "Only the failed Unit semantic-inventory method after actual typed Integration9 and legacy-confinement1 PASS at f21ec22c. Correct one stale declaration anchor to the actual partial snapshot-presence class after complete67-entry source audit; production and all passed test bodies are unchanged. Preserve their runtime lineage; no broad replay. The full root category remains in the catalog unselected, preserving ownership of all nine typed rows and both existing semantic guards.",
       "contracts": [
         "#1536 / T149-CANONICAL-PLAYER-CARRIER / parent T149 remains open / FR001–002 / FR013 / current strict schema-v1 cutover"
       ]

@@ -1,3 +1,20 @@
+# T149 partial OUTCOME accepted; catalog ownership correction WIP
+
+Independent Astra/high accepts R4 Integration9 + Unit confinement1 PASS and the
+sole stale inventory-anchor failure, and accepts the one-line partial modifier
+repair. It blocks the first catalog narrowing: replacing the root category's
+selectors would leave all three new Integration methods unmapped. This was a
+metadata error, not a failure of the ten passing runtime cases.
+
+The full wounds-canonical-player-carrier-root category is now restored unchanged
+from the reviewed R4 plan and remains unselected. A separate finite
+wounds-canonical-player-carrier-inventory category owns only the failed Unit
+method at 60s and is the sole current selection. All nine typed rows retain
+their catalog owner; no passing case needs replay for this correction. Current
+catalog has one additional category and unchanged methods; fresh full catalog
+ownership validation is required after the Unit build, before exact singleton
+Plan/PREP. No production or fixture behavior changes. Delta SOURCE remains open.
+
 # T149 behavioral GREEN9; one stale inventory anchor correction pending
 
 Actual runtime f21ec22c2e4e83398384c160c8cadd9e04d3fafb completes both descriptors

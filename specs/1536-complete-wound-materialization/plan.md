@@ -1,3 +1,13 @@
+# T149 partial acceptance; restore catalog ownership before singleton
+
+Independent review accepts Integration9 + Unit confinement1 and the partial-class
+anchor correction. It found the initial narrowed root category left three new
+Integration methods unmapped. Preserve the full root category unselected; select
+the new exact wounds-canonical-player-carrier-inventory leaf for the remaining
+Unit method only. This metadata correction requires delta review and fresh catalog
+validation, not replay of ten passing cases. Unit-only build and singleton
+Plan/PREP/runtime remain next; production and all broader HOLDs are unchanged.
+
 # T149 behavioral GREEN9; one inventory literal pending
 
 R4 runtime f21ec22c2e4e83398384c160c8cadd9e04d3fafb completes 11/11 rows:

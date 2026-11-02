@@ -3,13 +3,49 @@
     "categories": [
 {
   "id": "wounds-canonical-player-carrier-root",
-  "responsibility": "T149-CANONICAL-PLAYER-CARRIER / #1536: final remaining Unit inventory guard after actual typed Integration9 and legacy-confinement1 PASS on f21ec22c runtime. All67 inventory entries were statically audited; one stale nonpartial declaration anchor is corrected to the actual partial snapshot-presence owner without changing any production/source closure. Rerun only the failed inventory method; preserved10 PASS remain versioned separately.",
+  "responsibility": "T149-CANONICAL-PLAYER-CARRIER / #1536: actual selected PlayerStateFiles must reject bare arrays and scalar/null roots while preserving independently catalog-valid empty/populated canonical carriers and exact source bytes. Nine typed Integration rows plus the two existing Unit semantic inventory/legacy-confinement guards cover the canonical-first correction and still-live noncanonical allowances.",
   "excludes": "No NPC/effect/raw response alias retirement, accepted-turn publication bypass claim, whole T149 closure, prior accepted-set replay, browser/DFR/Mortal/Windows/performance/native run or new diagnostic framework. Existing strict catalog object parsing is unchanged; pure catalog malformed-object controls remain separately owned.",
   "changeHints": [
     "BookOfEternityClient/Services/Validation/ValidationService.PlayerAndInventory.cs",
     "BookOfEternityClient.IntegrationTests/WoundCanonicalPlayerCarrierValidationTests.cs"
   ],
   "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.WoundCanonicalPlayerCarrierValidationTests.PlayerStateFiles_RejectsBareArrayAtCanonicalPlayerPath",
+        "BookOfEternityClient.Tests.WoundCanonicalPlayerCarrierValidationTests.PlayerStateFiles_PreservesScalarAndNullRootRefusal",
+        "BookOfEternityClient.Tests.WoundCanonicalPlayerCarrierValidationTests.PlayerStateFiles_AcceptsCanonicalEmptyAndPopulatedCarrier"
+      ]
+    },
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.WoundMaterializationSourceGuardTests.WoundOwnershipInventory_ResolvesEveryDeclaredFileAndSemanticAnchor",
+        "BookOfEternityClient.Tests.WoundMaterializationSourceGuardTests.ProductionLegacyWoundOccurrences_AreConfinedToInventoriedSemanticScopes"
+      ]
+    }
+  ]
+},
+{
+  "id": "wounds-canonical-player-carrier-inventory",
+  "responsibility": "T149-CANONICAL-PLAYER-CARRIER / #1536: final remaining Unit inventory guard after actual typed Integration9 and legacy-confinement1 PASS on f21ec22c runtime. All67 inventory entries were statically audited; one stale nonpartial declaration anchor is corrected to the actual partial snapshot-presence owner without changing any production/source closure. Rerun only the failed inventory method; preserved10 PASS remain versioned separately.",
+  "excludes": "No NPC/effect/raw response alias retirement, accepted-turn publication bypass claim, whole T149 closure, prior accepted-set replay, browser/DFR/Mortal/Windows/performance/native run or new diagnostic framework. Existing strict catalog object parsing is unchanged; pure catalog malformed-object controls remain separately owned.",
+  "changeHints": [
+    "BookOfEternityClient.Tests/WoundMaterializationSourceGuardTests.cs",
+    "BookOfEternityClient/Services/PendingTurnSnapshotReader.cs"
+  ],
+  "related": [
+    "wounds-canonical-player-carrier-root"
+  ],
   "requirements": {
     "frontendBuild": false,
     "exclusive": false,
