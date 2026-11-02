@@ -97,7 +97,8 @@ public partial class ValidationService
                 original.Ordinal != _nextResourceOrdinal || original.Ordinal != _closedExchangeEvidence.Count ||
                 conflict["conflictId"]?.GetValue<string>() != original.ConflictId ||
                 exchange["exchangeId"]?.GetValue<string>() != original.ExchangeId ||
-                ActorKey(conflict["playerSide"]?["leadContestant"] as JsonObject) != "player:" + original.ActorId)
+                SpiritualWoundSourceSession.ActorKey(conflict["playerSide"]?["leadContestant"] as JsonObject) !=
+                    "player_soul:" + original.ActorId)
                 return null;
             var applicable = mechanics.Contributions.Where(row => row.ResolvedSide == "player" &&
                 row.Actor.Kind == "player" && row.Actor.TargetId == original.ActorId &&

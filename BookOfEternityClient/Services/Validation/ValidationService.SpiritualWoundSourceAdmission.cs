@@ -1062,7 +1062,8 @@ public partial class ValidationService
             return ActorKey(conflict["oppositionSide"]?["leadContestant"] as JsonObject);
         }
 
-        private static string? ActorKey(JsonObject? actor)
+        /// <summary>Normalizes exact source actor aliases for the ordinary validator and owner-bound wound consumers.</summary>
+        internal static string? ActorKey(JsonObject? actor)
         {
             if (actor is null)
                 return null;

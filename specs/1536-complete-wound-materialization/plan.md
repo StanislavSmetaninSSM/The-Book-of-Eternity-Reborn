@@ -1,3 +1,16 @@
+# Strain build correction WIP — no runtime claim
+
+First Main build at1bb12f7b22f94a3cc34ae2dc43b33aeca5b54a64 failed CS0103
+at new StrainDependency:ActorKey was private to the source-session type. Unit/
+Integration builds and GREEN runtime never started. Existing exact ActorKey is
+now internal for this real consumer, called through SpiritualWoundSourceSession;
+its canonical player key is player_soul:player_soul, not player:player_soul.
+Normalization/body/alias/confusable rules unchanged. Only its previously matching
+World70 source pin updated after exact delta inspection; baseline9 mismatches stay.
+This is new-code compilation/preflight correction, not another causal RED.
+Narrow independent delta review then three fresh affected builds/proofs/Plan/PREP.
+All author decisions and parent/UNKNOWN/HOLD boundaries unchanged.
+
 # T081-D strain consumer bounded implementation WIP — causal RED accepted
 
 Independent Sol accepted source/runtime9a7bd7441439431257c11e0ab5e516b91e8e2689:
