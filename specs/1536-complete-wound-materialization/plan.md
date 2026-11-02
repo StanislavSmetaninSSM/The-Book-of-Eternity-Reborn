@@ -1,3 +1,65 @@
+# Current owner scope: wounds only — supersedes broad remainder audit, 2026-11-02
+
+Owner narrowed this task at11:00UTC to wounds: acquisition/state, treatment,
+diagnosis, directly related recovery, display and necessary validation/persistence.
+General aggression/defeat rules, general ordinary/QTE orchestration and standalone
+systems are outside current implementation. T088's author question is withdrawn;
+its proposed consent rule is NOT accepted and must NOT be implemented. No answer
+is required. Historical T088/ACTIVE/F1/T197 tasks stay open outside this scope,
+not falsely complete. A broad ACTIVE/F1 route is not a mandatory wound dependency
+without an actual direct source/consumer requirement being established first.
+Saref memory1571 remains separate. The prior60-line whole-project audit is retained
+as history, superseded for current scope and execution order by this entry.
+
+Revised wound remainder: finish this narrow legacy NPC wound-input refusal;
+reconcile direct spiritual-wound source/cap/per-side create/worsen/guarantee and
+initial-healing-plus-insertion cells already tracked under T081/T107; close the
+full physical browser course and joint wound terminal UNKNOWN only after their
+cause-backed admissions; map wound diagnosis/healing/recovery/UI/History/replay/
+compensation scenarios to current evidence. Finish wound-only examples, privacy/
+terminology/untrusted text, ownership/index/bounds and byte/existence rollback
+coverage plus final focused review. Do not reimplement accepted journeys from
+empty parent boxes. General DFR/T609/Mortal compatibility/Windows HOLDs are not
+silently released or converted into new required non-wound implementation work.
+Any direct dependency must be justified narrowly; existing UNKNOWN remains UNKNOWN.
+
+C1 raw5 causal OUTCOME is independently accepted at source/runtime
+b7c68a8b58d122be5f9d9e899f01ef3bf27b413e:5/5 complete,4 FAIL/1 PASS,
+11.591793 s wrapper /10.436654 s runner, no timeout/duplicate/underfill, both
+cleanup flags true/no new TMP roots/no active owner. Arrays2 fail only missing
+Error with actualissues=[] after genuine controls/byte checks; null/scalar2
+pass Error/path/severity and fail classification expected_array. RepairHint
+assertions are UNREACHED there. This is not publication-bypass evidence.
+Summary87004dc8a9b3f57d9e4340ddcc288c2fd8437e437d207a2175d3cbdf1c3246cf;
+TRX79b9f329b04e74d72bb37cb70045e414d3991fde2269ababb7f1073c40687c94.
+Full raw remains /workspace/tboe-linux-evidence-20261102/npc-legacy-response/C1-red5.
+Fresh Integration exits0/71.322146s/baseline107 warnings; current25 managed outputs,
+206 resource inputs/412 copies/native4 and3PE/PDB/365source bindings verified.
+This is one fresh build; dependencies retain their explicit current lineages.
+
+Only wound-input production WIP is authored: dedicated exact NPCWoundChanges
+refusal instead of identity-only acceptance; remove its obsolete structured/state
+allowances. On exactly canonical NPC effects with that property, reuse the existing
+carrier validator on the already-read root before generic missing-key early exit,
+preserving duplicate/root priority without changing other files/nonlegacy ordering.
+QTE mechanics are unchanged; its public offer peer checks only this wound field.
+Semantic inventory retains one intentionally forbidden-field constant under an
+explicit refusal owner, not a migration allowance. New negative source checks
+reuse existing operation-local read strings. No cache/source key/lifetime, fresh
+authority check, file IO, allocation, scheduler, general gameplay or GM field changes.
+Current guides already use woundDecisions/direct cutover; exact legacy names have
+zero matches in active Rules/TaskGuides/OtherGuides/Examples and known daemon entry.
+No new GM example is necessary for refusing an already unsupported wound route;
+independent final SOURCE still assesses this rationale.
+
+SOURCE and fresh Main/Unit/Integration are pending before GREEN11: raw5 + genuine
+QTE1 + canonical state3 + changed semantic guards2. Existing budgets60/180/60/60s;
+previous T14920/B1/App are not repeated wholesale. All new production/guard C#
+is UNCOMPILED/UNRUN. A read-only70-row World source-pin baseline found9 mismatches
+already atb7 before this patch. Current changes touch two entries; their narrow
+impact requires review, not mechanical rebaseline of unrelated World code or a new
+general qualification loop. No whole World source-closure PASS is claimed.
+
 # T149 raw NPC response refusal — test-only WIP, 2026-11-02
 
 Existing T149 / FR-013 / FR-099 continues from e927e1d6. No new task or author

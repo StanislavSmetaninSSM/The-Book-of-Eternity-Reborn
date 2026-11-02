@@ -266,19 +266,22 @@ public sealed class WoundMaterializationSourceGuardTests
             "effect.TryGetProperty(\"sourceWoundId\"",
             "duration != 999"),
         new(
-            "npc-wound-identity-validation",
-            InventoryCategory.LegacyLooseWoundSurface,
+            "npc-legacy-wound-response-refusal",
+            InventoryCategory.AcceptedMechanicsIntegrationSeam,
             "BookOfEternityClient/Services/Validation/ValidationService.NpcWorldAndMeta.cs",
-            "private static readonly HashSet<string> NpcStructuredSingleActorSections",
-            "private void ValidateNpcContract(",
-            "ValidateNpcIdentityOnlyArray(root, contextPrefix, issues, \"NPCWoundChanges\")"),
+            "private const string LegacyNpcWoundResponseProperty = \"NPCWoundChanges\";",
+            "private static void RejectLegacyNpcWoundResponseIfPresent(",
+            "RejectLegacyNpcWoundResponseIfPresent(root, contextPrefix, issues);",
+            "doc.RootElement.TryGetProperty(LegacyNpcWoundResponseProperty, out _)",
+            "\"wound_materialization_legacy_response_unsupported\"",
+            "woundDecisions[] bound to current accepted wound opportunities"),
         new(
-            "npc-wound-state-file-validation",
-            InventoryCategory.LegacyLooseWoundSurface,
+            "npc-canonical-effect-state-validation",
+            InventoryCategory.AcceptedMechanicsIntegrationSeam,
             "BookOfEternityClient/Services/Validation/ValidationService.LifecycleControlAndStateFiles.cs",
             "private async Task ValidateNpcStateFiles(List<ValidationIssue> issues)",
             "await ValidateNpcFile(\"game_state/npcs/npc_effects.json\"",
-            "\"NPCWoundChanges\", \"schemaVersion\", \"entries\""),
+            "\"schemaVersion\", \"entries\""),
         new(
             "combatant-wound-reference-type-authority",
             InventoryCategory.LegacyLooseWoundSurface,
@@ -565,10 +568,8 @@ public sealed class WoundMaterializationSourceGuardTests
         Scope("combatant-wound-reference", "combatant-wound-reference-validation", "WoundReference", "private void ValidateCombatantActiveEffectObject(", "private void ValidateWoundObject("),
         Scope("combatant-source-wound-id", "combatant-wound-reference-validation", "sourceWoundId", "private void ValidateCombatantActiveEffectObject(", "private void ValidateWoundObject("),
 
-        Scope("npc-structured-wound-section", "npc-wound-identity-validation", "NPCWoundChanges", "private static readonly HashSet<string> NpcStructuredSingleActorSections", "private static readonly HashSet<string> NpcStructuredSpecialSections"),
-        Scope("npc-contract-wound-section", "npc-wound-identity-validation", "NPCWoundChanges", "private void ValidateNpcContract(", "private void ValidateNpcSceneArray("),
-        Scope("npc-state-file-command", "npc-wound-state-file-validation", "NPCWoundChanges", "private async Task ValidateNpcStateFiles(", "private async Task ValidateWorldQuestCombatFactionStateFiles("),
-        Scope("npc-state-file-path", "npc-wound-state-file-validation", "game_state/npcs/npc_effects.json", "private async Task ValidateNpcStateFiles(", "private async Task ValidateWorldQuestCombatFactionStateFiles("),
+        Scope("npc-legacy-wound-refusal-property", "npc-legacy-wound-response-refusal", "NPCWoundChanges", "private const string LegacyNpcWoundResponseProperty", "private static readonly HashSet<string> NpcStructuredSingleActorSections"),
+        Scope("npc-state-file-path", "npc-canonical-effect-state-validation", "game_state/npcs/npc_effects.json", "private async Task ValidateNpcStateFiles(", "private async Task ValidateWorldQuestCombatFactionStateFiles("),
         Scope("combatant-wound-type-enum", "combatant-wound-reference-type-authority", "WoundReference", "private static readonly HashSet<string> AllowedCombatantActiveEffectTypes", "private static readonly HashSet<string> AllowedVehicleTypes"),
 
         Scope("composer-player-wound-path", "canonical-wound-effect-source-composition", "game_state/player/wounds.json", "internal const string PlayerWoundsPath", "internal static readonly string[] SameTurnOwnerAuthorityPaths"),
@@ -597,6 +598,8 @@ public sealed class WoundMaterializationSourceGuardTests
         var entriesById = Inventory.ToDictionary(static entry => entry.Id, StringComparer.Ordinal);
         var npcContractSource = string.Empty;
         var npcPlannerSource = string.Empty;
+        var npcLifecycleSource = string.Empty;
+        var npcResponseSource = string.Empty;
         foreach (var entry in Inventory.OrderBy(static item => item.Id, StringComparer.Ordinal))
         {
             Assert.Equal(entry.RelativePath, NormalizeRelativePath(entry.RelativePath));
@@ -608,6 +611,8 @@ public sealed class WoundMaterializationSourceGuardTests
             var source = File.ReadAllText(absolutePath);
             if (entry.Id == "npc-effect-contract-canonical-shape") npcContractSource = source;
             if (entry.Id == "npc-effect-planner-canonical-carrier-only") npcPlannerSource = source;
+            if (entry.Id == "npc-canonical-effect-state-validation") npcLifecycleSource = source;
+            if (entry.Id == "npc-legacy-wound-response-refusal") npcResponseSource = source;
             foreach (var anchor in entry.RequiredAnchors)
             {
                 Assert.True(
@@ -643,6 +648,14 @@ public sealed class WoundMaterializationSourceGuardTests
         Assert.NotEmpty(npcPlannerSource);
         Assert.DoesNotContain("NPCWoundChanges", npcContractSource, StringComparison.Ordinal);
         Assert.DoesNotContain("NPCWoundChanges", npcPlannerSource, StringComparison.Ordinal);
+        Assert.NotEmpty(npcLifecycleSource);
+        Assert.NotEmpty(npcResponseSource);
+        Assert.DoesNotContain("NPCWoundChanges", npcLifecycleSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("LegacyNpcWoundResponseProperty", npcLifecycleSource, StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "ValidateNpcIdentityOnlyArray(root, contextPrefix, issues, LegacyNpcWoundResponseProperty)",
+            npcResponseSource,
+            StringComparison.Ordinal);
     }
 
     [Fact]

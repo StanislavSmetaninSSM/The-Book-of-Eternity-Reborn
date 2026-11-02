@@ -64,6 +64,8 @@ public partial class ValidationService
         public HashSet<string> MirrorGuardianAliases { get; } = new(StringComparer.OrdinalIgnoreCase);
     }
 
+    private const string LegacyNpcWoundResponseProperty = "NPCWoundChanges";
+
     private static readonly HashSet<string> NpcStructuredSingleActorSections = new(StringComparer.OrdinalIgnoreCase)
     {
         GuardianPolicyContracts.NpcCoreUpdateSectionName,
@@ -74,7 +76,6 @@ public partial class ValidationService
         "NPCQuestUpdates",
         "NPCRelationshipChanges",
         "NPCRelationshipLockUpdates",
-        "NPCWoundChanges",
         "NPCPersonalityTraitChanges",
         "NPCActivityUpdates",
         "completeNPCActivities",
@@ -4545,6 +4546,15 @@ public partial class ValidationService
                 return;
             }
 
+            if (filePath.Equals(EffectCarrierCatalog.NpcPath, StringComparison.OrdinalIgnoreCase) &&
+                doc.RootElement.TryGetProperty(LegacyNpcWoundResponseProperty, out _))
+            {
+                // Preserve canonical duplicate/root-error priority before generic allowed-key exits.
+                issues.AddRange(EffectMaterializationContract.ValidateCarrier(
+                    doc.RootElement, filePath, EffectCarrierKind.Npc));
+                return;
+            }
+
             RejectLegacyEffectRouteIfPresent(
                 doc.RootElement,
                 filePath,
@@ -4981,6 +4991,25 @@ public partial class ValidationService
                normalizedPath.Equals("lore/current_world/world_directives.json", StringComparison.OrdinalIgnoreCase);
     }
 
+    private static void RejectLegacyNpcWoundResponseIfPresent(
+        JsonElement root,
+        string contextPrefix,
+        List<ValidationIssue> issues)
+    {
+        if (!root.TryGetProperty(LegacyNpcWoundResponseProperty, out _))
+            return;
+
+        issues.Add(new ValidationIssue(
+            contextPrefix + "." + LegacyNpcWoundResponseProperty,
+            IssueSeverity.Error,
+            "Устаревшая команда ран NPC не поддерживается",
+            code: "wound_materialization_legacy_response_unsupported",
+            section: "WoundMaterialization",
+            expected: "woundDecisions[] bound to current accepted wound opportunities",
+            actual: "legacy NPC wound route present",
+            repairHint: "Удали устаревшую команду. Для ран используй woundDecisions[] с текущей возможностью и общую принятую публикацию; не записывай канонические носители напрямую."));
+    }
+
     private void ValidateNpcContract(
         JsonElement root,
         string contextPrefix,
@@ -5022,7 +5051,7 @@ public partial class ValidationService
             contextPrefix,
             issues,
             "NPCEffectChanges");
-        ValidateNpcIdentityOnlyArray(root, contextPrefix, issues, "NPCWoundChanges");
+        RejectLegacyNpcWoundResponseIfPresent(root, contextPrefix, issues);
         ValidateNpcIdentityOnlyArray(root, contextPrefix, issues, "NPCPersonalityTraitChanges");
         ValidateNpcActivityUpdates(root, contextPrefix, issues);
         ValidateCompleteNpcActivities(root, contextPrefix, issues);

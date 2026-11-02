@@ -40,7 +40,7 @@ public partial class ValidationService
         await ValidateNpcFile("game_state/npcs/npc_effects.json",
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
-                "NPCWoundChanges", "schemaVersion", "entries"
+                "schemaVersion", "entries"
             }, issues);
 
         await ValidateNpcFile("game_state/npcs/npc_personality.json",

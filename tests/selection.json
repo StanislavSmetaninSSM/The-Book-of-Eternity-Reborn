@@ -3,9 +3,30 @@
   "selections": [
     {
       "category": "wounds-npc-legacy-raw-response",
-      "reason": "Initial test-only T149 evidence: execute exactly two missing-admission array rows, two separate legacy classification rows and one lawful absence/current-NPC control. QTE/state peers are prepared but intentionally unselected until reviewed later GREEN impact. No previous accepted set replay.",
+      "reason": "Regress all five accepted causal/classification/preserving rows after dedicated wound-only refusal; previous60s.",
       "contracts": [
-        "#1536 / existing T149 / FR-013 / FR-099 / exact raw NPCWoundChanges retirement before typed projection"
+        "#1536 / existing T149 / FR-013 / FR-099 / wound-only raw NPC input and canonical carrier refusal"
+      ]
+    },
+    {
+      "category": "wounds-npc-legacy-qte-offer",
+      "reason": "Genuine signed ordinary QTE offer must refuse this legacy wound field at raw admission before typed projection; no change to general QTE machinery; previous180s.",
+      "contracts": [
+        "#1536 / existing T149 / FR-013 / FR-099 / wound-only raw NPC input and canonical carrier refusal"
+      ]
+    },
+    {
+      "category": "wounds-npc-legacy-state-priority",
+      "reason": "Preserve canonical legacy-only/mixed error priority and legal metadata with exact existing bytes; previous60s.",
+      "contracts": [
+        "#1536 / existing T149 / FR-013 / FR-099 / wound-only raw NPC input and canonical carrier refusal"
+      ]
+    },
+    {
+      "category": "wounds-npc-canonical-retirement-source-guards",
+      "reason": "Meaningfully changed inventory/refusal/discovery assertions for the two validation owners; no mechanical broad source-pin baseline or whole old set replay; previous60s.",
+      "contracts": [
+        "#1536 / existing T149 / FR-013 / FR-099 / wound-only raw NPC input and canonical carrier refusal"
       ]
     }
   ]

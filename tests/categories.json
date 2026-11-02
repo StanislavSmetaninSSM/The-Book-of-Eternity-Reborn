@@ -4,7 +4,7 @@
 {
   "id": "wounds-npc-legacy-raw-response",
   "responsibility": "Five independent real-FS public ValidateResponse rows / existing T149 FR-013 FR-099: exact NPCWoundChanges empty and identity-valid array admission refusals (two causal cases), null/scalar dedicated legacy classification (two existing shape refusals, not admission causality), and one lawful absence/current NPC rename control. Every target has genuine controls first, exact raw JSON and seeded NPC core/effect/wound byte preservation. Tiny fresh parsing has no worthwhile cache; per-test mutable ResourceMaterializationTestContext.",
-  "excludes": "No Engine, publication-bypass, full canonical nonmutation, live GM/provider/user save or HOLD qualification; no production/sourceguard change, accepted T14920/B1/App replay, unknown-field/casefold ban or author-rule change.",
+  "excludes": "No Engine, publication-bypass, full canonical nonmutation, live GM/provider/user save or HOLD qualification; no accepted T14920/B1/App wholesale replay, unknown-field/casefold ban or author-rule change.",
   "changeHints": [
     "BookOfEternityClient.IntegrationTests/NpcLegacyWoundResponseValidationTests.cs",
     "BookOfEternityClient/Services/Validation/ValidationService.NpcWorldAndMeta.cs"
@@ -30,8 +30,8 @@
 },
 {
   "id": "wounds-npc-legacy-qte-offer",
-  "responsibility": "One public ValidateAcceptedTurnQteOfferAsync consumer peer / existing T149 FR-013 FR-099. Genuine fresh LiveTurnPreparationService snapshot plus the existing ordinary signed-source binder and typed unscored offer; full accepted baseline before exact terminal responseFragment legacy mutation. Preserve offer JSON and actual request/manifest/authority/current source bytes. Fresh preparation once per independent fixture, no cache or forged/prevalidated authority. Prepared UNCOMPILED/UNRUN and unselected during initial raw causal5. Protective 180 seconds fixed before first execution, actual cost unmeasured.",
-  "excludes": "No Engine, publication-bypass, full canonical nonmutation, live GM/provider/user save or HOLD qualification; no production/sourceguard change, accepted T14920/B1/App replay, unknown-field/casefold ban or author-rule change.",
+  "responsibility": "One public ValidateAcceptedTurnQteOfferAsync consumer peer / existing T149 FR-013 FR-099. Genuine fresh LiveTurnPreparationService snapshot plus the existing ordinary signed-source binder and typed unscored offer; full accepted baseline before exact terminal responseFragment legacy mutation. Preserve offer JSON and actual request/manifest/authority/current source bytes. Fresh preparation once per independent fixture, no cache or forged/prevalidated authority. Compiled for accepted initial raw causal5, consumer itself UNRUN; selected only for post-correction GREEN. Protective 180 seconds fixed before first execution, actual cost unmeasured.",
+  "excludes": "No Engine, publication-bypass, full canonical nonmutation, live GM/provider/user save or HOLD qualification; no accepted T14920/B1/App wholesale replay, unknown-field/casefold ban or author-rule change.",
   "changeHints": [
     "BookOfEternityClient.IntegrationTests/QteSceneServiceTests.LegacyNpcWoundResponse.cs",
     "BookOfEternityClient/Services/Validation/ValidationService.PlayerAndInventory.cs"
@@ -55,8 +55,8 @@
 },
 {
   "id": "wounds-npc-legacy-state-priority",
-  "responsibility": "Three canonical NPC state rows / existing T149 FR-013 FR-099: legacy-only and mixed roots retain exact sole strict-carrier Error, plus genuine legal adjacent metadata acceptance; original file bytes preserved. Existing typed NpcStateFiles selection narrows to npc_effects.json and each test owns its copied BaseSession context. Existing unsupported-root/personality methods unchanged. Prepared UNCOMPILED/UNRUN and unselected during initial raw causal5. Protective 60 seconds fixed before first execution, actual cost unmeasured; fresh bounded validation, no cache.",
-  "excludes": "No Engine, publication-bypass, full canonical nonmutation, live GM/provider/user save or HOLD qualification; no production/sourceguard change, accepted T14920/B1/App replay, unknown-field/casefold ban or author-rule change.",
+  "responsibility": "Three canonical NPC state rows / existing T149 FR-013 FR-099: legacy-only and mixed roots retain exact sole strict-carrier Error, plus genuine legal adjacent metadata acceptance; original file bytes preserved. Existing typed NpcStateFiles selection narrows to npc_effects.json and each test owns its copied BaseSession context. Existing unsupported-root/personality methods unchanged. Compiled for accepted initial raw causal5, consumer itself UNRUN; selected only for post-correction GREEN. Protective 60 seconds fixed before first execution, actual cost unmeasured; fresh bounded validation, no cache.",
+  "excludes": "No Engine, publication-bypass, full canonical nonmutation, live GM/provider/user save or HOLD qualification; no accepted T14920/B1/App wholesale replay, unknown-field/casefold ban or author-rule change.",
   "changeHints": [
     "BookOfEternityClient.IntegrationTests/NpcStateFileValidationTests.cs",
     "BookOfEternityClient/Services/Validation/ValidationService.LifecycleControlAndStateFiles.cs",
@@ -107,12 +107,14 @@
 },
 {
   "id": "wounds-npc-canonical-retirement-source-guards",
-  "responsibility": "Two current source guards: semantic ownership anchors and confinement after removing the two retired legacy allowances. Require canonical NPC shape/pristine-null path, exact nested refusal and no NPCWoundChanges in these two retired owners. Reuse operation-local source strings, no extra source reads or arbitrary fingerprint refresh.",
+  "responsibility": "Two changed semantic ownership/discovery guards for canonical NPC wound retirement and exact raw NPC wound refusal. Replace obsolete migration allowances with the real refusal constant/call and existing canonical validation dispatch; preserve old closed carrier checks. Reuse already-read operation-local strings, no extra IO or arbitrary fingerprints. Wound-only scope, not general QTE/defeat rules.",
   "excludes": "No broad effects/full suite, unchanged App/T150/runtime replay, new gameplay/schema/cache/limits, publication-bypass assertion or closure of other T149 aliases/UNKNOWN/HOLD.",
   "changeHints": [
     "BookOfEternityClient.Tests/WoundMaterializationSourceGuardTests.cs",
     "BookOfEternityClient/Services/EffectMaterializationContract.cs",
-    "BookOfEternityClient/Services/EffectAcceptedTurnPlanner.cs"
+    "BookOfEternityClient/Services/EffectAcceptedTurnPlanner.cs",
+    "BookOfEternityClient/Services/Validation/ValidationService.NpcWorldAndMeta.cs",
+    "BookOfEternityClient/Services/Validation/ValidationService.LifecycleControlAndStateFiles.cs"
   ],
   "related": [],
   "requirements": {
