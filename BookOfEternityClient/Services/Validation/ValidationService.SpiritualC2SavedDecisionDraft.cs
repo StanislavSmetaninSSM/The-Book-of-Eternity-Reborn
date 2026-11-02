@@ -444,11 +444,14 @@ public partial class ValidationService
                 {
                     bindingOriginal = await ReadOriginalBindingComparisonAsync(lease, priorCheckpoint);
                     // This is only a cheap request filter; actual materialization and owned projection prove applicability.
-                    if (decisionRoot["proposal"]?["consequenceDefinitions"] is JsonArray definitions &&
+                    if (decisionRoot["proposal"] is JsonObject proposal &&
+                        proposal["consequenceDefinitions"] is JsonArray definitions &&
                         definitions.OfType<JsonObject>().Any(definition =>
-                            definition["definition"]?["components"] is JsonArray components &&
+                            definition["definition"] is JsonObject declared &&
+                            declared["components"] is JsonArray components &&
                             components.OfType<JsonObject>().Any(component =>
-                                component["profile"]?.GetValue<string>() == "spiritual_strain_burden")))
+                                component["profile"] is JsonValue profile && profile.TryGetValue<string>(out var name) &&
+                                name == "spiritual_strain_burden")))
                         strainOriginal = await ReadOriginalStrainComparisonAsync(lease, priorCheckpoint);
                 }
                 // All old allocations were replayed before a new decision can append.

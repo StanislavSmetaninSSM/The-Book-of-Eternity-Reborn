@@ -24,7 +24,8 @@ no generic error bypass. New C# UNCOMPILED, SOURCE/runtime pending, not accepted
 
 New Unit comparison5+GMexample1; changed-policy cost/force7 and binding DATA4;
 new real III C2 A/B/cold/new-source/none1 (60s) and affected actual mixed-binding
-A/B control1 (existing300s). Proposed19 distinct cases, exact catalog/Plan required.
+A/B control1 (existing300s). Affected exact complete GM manifest inventory1 also selected (existing60s).
+Proposed20 distinct cases, exact catalog/Plan required.
 Baseline1 not separately replayed; its writer extraction is source-equivalent.
 Three fresh affected builds Main/Unit/Integration after whole SOURCE; unchanged
 Support/Bridge/CrashHost inputs will be verified, not rebuilt without cause.

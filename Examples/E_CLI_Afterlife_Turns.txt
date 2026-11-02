@@ -14528,10 +14528,10 @@ end_spiritual_diagnosis_canonical_requirements_v1
 spiritual_wound_strain_result_v1 — worked comparison fragment
 
 Preconditions are real signed ordinary exchanges, not values supplied by this
-fragment: hostile original first pressure/setback has margin10 and clear→overwhelmed,
+fragment: hostile original first pressure/setback has harmful margin10 (signed player audit margin-10) and clear→overwhelmed,
 pressure20/maxIII. A genuine III C2 choice installs one strain/pressure slot; its
 other two slots target different operations. The next signed pressure/setback has
-margin-8, ordinary unchanged overwhelmed and a position loss. Its source dice,
+signed player audit margin-8, ordinary unchanged overwhelmed and a position loss. Its source dice,
 audit, costs3→0 and all other data remain those already validated by the client.
 These JSON objects are comparison illustrations, not new GameResponse fields or
 a substitute for the full current request/command and legal three-slot proposal.
