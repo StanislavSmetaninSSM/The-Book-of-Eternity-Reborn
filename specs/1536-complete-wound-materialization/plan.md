@@ -1,3 +1,36 @@
+# T081-D exact player pressure/success causal scaffold WIP
+
+Basef36c370765002a34255987bfc1137fb6d8f2e17f accepted C4publication+rollback
+(two newPASS sourcec32/Mainbc7); seven changedGitHubfiles fully matched immutable
+ref, boundedreadback e4bdf8df9fdd42b908c1a68bf8e39f74143aa83a4bca7bceed9db36c85b243b7.
+Prior private20 and both C4 cases are not selected again. Root/current processes
+closed, four author decisions/HOLD unchanged.
+
+Astra DESIGN accepts exact PLAYER pressure/success no-op under the already stated
+failed-operation-only strain rule. Only the current authenticated player contribution
+may be skipped; other effects, signed dice/costs/chronology/source/echo remain normal.
+No universal !failure, opposition/partial_success/countered or new game rule.
+
+Current TEST-ONLY scaffold: freshsigned5/15/12/4, first true playerIII harm, second
+ordinary pressure/success unchangedplayeroverwhelmed and opposition clear→strained.
+Ordinary session must validate2 exchanges/4uniqueclaims/sourcecapsIII+I BEFORE real
+III selection. The same legal3slot proposal builder is extracted without semantic
+change for independent fresh DATA; no returned owner or shared mutable fixture.
+Expected causal RED is only unsupportedconsumer after III; later guardianI offer/
+none/completedcandidate and seven canonical nonmutation assertions UNREACHED then.
+One exact IntegrationFact/60s; no production changes yet, C#UNCOMPILED/runtimeUNRUN.
+
+Next whole SOURCE, preserve previous Integration5, fresh Integration with actual
+unchanged Mainbc7/SupportECE/resources/native/PDB, actualdiscovery/Plan/PREP and
+one causal. Only after proven RED: minimal current player/pressure/success branch,
+GM guide/example sync, freshaffectedbuilds and newpositive+affectedsetback peer.
+Optimization: existing immutable preparedtemplate with fullsigned input key and
+independent roots; existing typed source/C2 services, no newcache or authority.
+No extra ordinary comparison for no-op success. No speedup claim. GMno-update for
+this test-only scaffold; implementation must update existing guidance. Full raw at
+/workspace/tboe-linux-evidence-20261102/spiritual-strain-success, neverGit.
+All wholeprofile/parents/#1536/Engine/UI/freshOS/oldUNKNOWN/HOLD remain OPEN; wounds only.
+
 # Current accepted wound result: strain C2→common C4 publication/rollback
 
 Two new exact PASS on test-sourcec32d8c4c5df5b762fbb487fce75b9b740d88be99,

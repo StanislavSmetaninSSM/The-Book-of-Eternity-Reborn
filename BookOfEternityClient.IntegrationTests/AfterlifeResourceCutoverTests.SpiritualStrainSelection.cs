@@ -46,21 +46,7 @@ public sealed partial class AfterlifeResourceCutoverTests
         Assert.Equal("offer", opened.Disposition);
         using var offerSession = Assert.IsType<ValidationService.SpiritualC2PrivateSession>(opened.Session);
         Assert.Equal(3, offerSession.Offer!.MaximumSeverityRank);
-        var decision = JsonNode.Parse(OriginalSpiritualWoundDecision(offerSession.Offer.OpportunityRef,
-            "spiritual_strain_burden", "pressure", "player").GetRawText())!.AsObject();
-        decision["proposal"]!["severity"] = "III";
-        var consequence = decision["proposal"]!["consequenceDefinitions"]![0]!;
-        var definition = consequence["definition"]!;
-        definition["components"]!.AsArray().Add(EffectMaterializationTestFixture.CreateSpiritualWoundComponent(
-            "spiritual_roll_hindrance", "component_002", "maneuver"));
-        definition["components"]!.AsArray().Add(EffectMaterializationTestFixture.CreateSpiritualWoundComponent(
-            "spiritual_action_cost_burden", "component_003", "guard", JsonValue.Create(2)));
-        definition["triggers"]![0]!["componentIds"]!.AsArray().Add("component_002");
-        definition["triggers"]![0]!["componentIds"]!.AsArray().Add("component_003");
-        consequence["root"]!["slots"]!.AsArray().Add(new JsonObject
-            { ["profileKey"] = "spiritual_roll_hindrance", ["readableSummary"] = "Маневрировать душе труднее." });
-        consequence["root"]!["slots"]!.AsArray().Add(new JsonObject
-            { ["profileKey"] = "spiritual_action_cost_burden", ["readableSummary"] = "Защита требует больше духовных сил." });
+        var decision = CreateSpiritualStrainThirdDegreeDecision(offerSession.Offer.OpportunityRef);
 
         var selected = await offerSession.SubmitDecisionAsync(lease, JsonSerializer.SerializeToElement(decision), scene);
         using var selectedSession = selected.Session;
@@ -162,4 +148,26 @@ public sealed partial class AfterlifeResourceCutoverTests
             Assert.Equal(bytes, await context.FileSystem.ReadFileBytesAsync(lease, path));
         Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(context.FileSystem, lease));
     }
+    /// <summary>Creates independent legal III proposal DATA; actual source/selection owns admission.</summary>
+    private static JsonObject CreateSpiritualStrainThirdDegreeDecision(string opportunityRef)
+    {
+        var decision = JsonNode.Parse(OriginalSpiritualWoundDecision(opportunityRef,
+            "spiritual_strain_burden", "pressure", "player").GetRawText())!.AsObject();
+        decision["proposal"]!["severity"] = "III";
+        var consequence = decision["proposal"]!["consequenceDefinitions"]![0]!;
+        var definition = consequence["definition"]!;
+        definition["components"]!.AsArray().Add(EffectMaterializationTestFixture.CreateSpiritualWoundComponent(
+            "spiritual_roll_hindrance", "component_002", "maneuver"));
+        definition["components"]!.AsArray().Add(EffectMaterializationTestFixture.CreateSpiritualWoundComponent(
+            "spiritual_action_cost_burden", "component_003", "guard", JsonValue.Create(2)));
+        definition["triggers"]![0]!["componentIds"]!.AsArray().Add("component_002");
+        definition["triggers"]![0]!["componentIds"]!.AsArray().Add("component_003");
+        consequence["root"]!["slots"]!.AsArray().Add(new JsonObject
+            { ["profileKey"] = "spiritual_roll_hindrance", ["readableSummary"] = "Маневрировать душе труднее." });
+        consequence["root"]!["slots"]!.AsArray().Add(new JsonObject
+            { ["profileKey"] = "spiritual_action_cost_burden", ["readableSummary"] = "Защита требует больше духовных сил." });
+
+        return decision;
+    }
+
 }

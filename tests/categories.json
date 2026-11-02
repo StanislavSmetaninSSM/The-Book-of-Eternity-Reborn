@@ -2,6 +2,32 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "wounds-spiritual-strain-pressure-success",
+  "responsibility": "#1536 T081-D exact player pressure/success is not a failed operation: real ordinary two-exchange signed sourceIII/player then sourceI/opposition, actual III wound choice must advance unchanged ordinary player strain without dependent strain correction; guardian offerI/none and candidate/canonical no-mutation predicates. Expected causal RED only integration_required after lawful III submission.",
+  "excludes": "No partial_success/countered/universal failure predicate, other actor/operation/carrier semantics or pending author rules. No previous private20/C4two rerun, Engine/UI/freshOS/wholeprofile or HOLD qualification.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualStrainSuccess.cs",
+    "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualStrainSelection.cs",
+    "BookOfEternityClient/Services/Validation/ValidationService.SpiritualWoundMechanics.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualStrainBurden_PlayerPressureSuccessKeepsOrdinaryResultAndNextSource"
+      ]
+    }
+  ]
+},
+{
   "id": "wounds-spiritual-strain-publication",
   "responsibility": "#1536 T081-D Actual III C2 result through existing common C4: exact retained authority/plan, foreign-owner refusal, canonical wound/effect/resource/History/receipt after-images and independent strain/severity/source semantics, consumed private controls, single-use refusal without writes. One independently signed fixture and real C2 completion; old private Fact not selected.",
   "excludes": "No new production owner/cache/writer or game rules, no general combat/QTE/ACTIVE/F1, Engine/UI/live provider/fresh OS process, whole strain family or HOLD retry. Existing accepted private20 is preparation lineage, not a new rerun selection.",
