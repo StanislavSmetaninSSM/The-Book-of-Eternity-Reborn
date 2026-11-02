@@ -1,3 +1,22 @@
+# T149 NPC carrier causal preparation — warning-only correction WIP
+
+First fresh Unit build at5cc6dcd5 exits0 in36.066402s; baseline26 warnings plus
+two new CS8620 annotations in the new ordered-error expected tuple arrays. Source
+correction explicitly types both expected arrays as (string,string?), preserving
+all values/order/null refusal semantics; no suppression or assertion weakening.
+New source is not yet compiled. The first five Unit artifacts are archived with
+full member/hash/gzip proof outside checkout; no runtime has executed.
+
+Initial selected PDB verifier failed at ownership accounting: linked
+BookOfEternityClient.Tests/WoundContractTestData.cs belongs to TestSupport, not
+Unit. Existing T2 actual Compile inventory confirms that sole cross-directory
+binding. Include unchanged Support in current PE/PDB proof and explicitly guard
+its linked input before rebuild. No product source defect or fresh Integration
+qualification is inferred. Integration source remains UNCOMPILED/UNQUALIFIED.
+Root SOURCE delta, fresh Unit build, selected bindings/Plan/PREP remain pending.
+Full preparation data is outside checkout in npc-canonical-retirement/N1-build-unit
+beneath /workspace/tboe-linux-evidence-20261102. All other HOLDs unchanged.
+
 # T149 NPC canonical wound retirement: coherent test-only scaffold WIP
 
 2026-11-02 UTC, base ea9c44ee1e5f5694e4240d134bbc0b909503f6f6, #1536 /

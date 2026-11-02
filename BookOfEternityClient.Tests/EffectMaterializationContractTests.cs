@@ -18,7 +18,7 @@ public sealed class EffectMaterializationContractTests
         var issues = EffectMaterializationContract.ValidateCarrier(
             document.RootElement, EffectCarrierCatalog.NpcPath, EffectCarrierKind.Npc);
 
-        Assert.Equal(new[]
+        Assert.Equal(new (string FilePath, string? Code)[]
         {
             (EffectCarrierCatalog.NpcPath + ".schemaVersion", "effect_materialization_duplicate_property"),
             (EffectCarrierCatalog.NpcPath + ".entries[0]", "effect_materialization_legacy_carrier_unsupported"),
@@ -35,7 +35,7 @@ public sealed class EffectMaterializationContractTests
             legacyDocument.RootElement, EffectCarrierCatalog.NpcPath, EffectCarrierKind.Npc);
         Assert.Equal(legacyBefore, legacyDocument.RootElement.GetRawText());
         // Classification/order control: unlike the eleven acceptance rows, baseline already rejects this malformed input.
-        Assert.Equal(new[]
+        Assert.Equal(new (string FilePath, string? Code)[]
         {
             (EffectCarrierCatalog.NpcPath + ".schemaVersion", "effect_materialization_duplicate_property"),
             (EffectCarrierCatalog.NpcPath + ".entries[0]", "effect_materialization_legacy_carrier_unsupported"),
