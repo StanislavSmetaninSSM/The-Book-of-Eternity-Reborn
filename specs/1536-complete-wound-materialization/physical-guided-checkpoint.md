@@ -1,3 +1,34 @@
+# T152 N2 partial outcome — diagnosis2 PASS, terminal anchor FAIL, remaining8 UNRUN
+
+Actual runtime 8b5dd57f9ef483a76b778788ebeb148aad6d8845 executes two descriptors /
+three cases before fail-fast: diagnosis2 PASS, terminal-joint1 FAIL, eight cases
+UNRUN. Exit 1, wall 66.5957310s, no timeout; process cleanup succeeds. The terminal
+failure precedes every changed Project call: genuine fixture preparation reaches
+MortalWoundCanonicalAnchorPlan.CreateJointRepair, then reports
+accepted_mechanics_joint_anchor_contribution_invalid / changed union. Current
+production requires an old-wound update, whereas the sealed terminal joint final
+uses delete after complete treatment/heal. This is an unresolved terminal anchor
+closure, not a C0 projection failure or established missing fixture field.
+
+Full terminal diagnostics are complete and verified independently: 43,349,326
+stored gzip bytes, 414,599,748 decoded bytes / 821,081 rows, full EOF/CRC and
+stored/decoded SHA256 match the report. DiagnosticComplete, TimingComplete and
+closing flags are true, no diagnostic/closing failures. Actual registered owned
+fixture root is removed. Private-temp before/after sets retain only the old R2
+root; no new fixture remains. Primary N2-green11 summary SHA256:
+dde904a4d98be3e5d84b20f4dd374b437085553491e33dc3fea7679e045765d5;
+terminal TRX SHA256:
+d27a7c502ba2d80d70e94b413eb15574bb1a9cfd3cac475f5b077fe846146262.
+All capture/proof files remain external under notification-controls/N2-green11.
+
+Next: independent partial OUTCOME/PREP for the exact eight unrun cases on the
+unchanged compiled source; do not repeat diagnosis2. Separately review the narrow
+T121-PHYSICAL-JOINT-TERMINAL-ANCHOR contract before modifying its production guard.
+Require the complete genuine sealed terminal delete/final History union while
+retaining nonterminal update, fresh clock/owner/current-source and new-create
+allocation rules. No generic delete allowance, guard weakening or new diagnostics.
+T152 acceptance stays open; all R1/T149 and R2/HOLD boundaries remain.
+
 # T152 safe projection built and exactly planned — GREEN pending
 
 Independent Astra/high SOURCE accepts 894c9fb719e393a914ccbb601fbcbdc8d433325f.

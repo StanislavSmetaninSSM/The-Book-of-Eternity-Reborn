@@ -1,3 +1,15 @@
+# T152 partial runtime; independent remaining8 and terminal anchor closure
+
+N2 runtime 8b5dd57f9ef483a76b778788ebeb148aad6d8845 completes diagnosis2 PASS,
+then terminal-joint1 FAIL in preparation, no timeout; eight cases remain UNRUN.
+Complete terminal capture/EOF/CRC/report/fixture removal are proven. The failure
+is the existing CreateJointRepair anchor union's update-only condition versus
+the sealed terminal delete, before changed projection code. Primary identities
+are in physical-guided-checkpoint.md. Preserve diagnosis2 without replay; admit
+only the exact independent remaining8 after PREP. Separately establish/review the
+narrow terminal anchor delete contract with all genuine owner/clock/fingerprint
+guards before fixing that route. C0 fix is not accepted by partial execution.
+
 # T152 safe projection built/planned — PREP/GREEN pending
 
 Independent SOURCE accepts 894c9fb719e393a914ccbb601fbcbdc8d433325f. Six fresh

@@ -53,6 +53,19 @@
   shared Project/Text production change is authored, UNCOMPILED/UNRUN. Finite
   intended GREEN is new5 + actual shared output peers6, not a broad aggregate;
   independent SOURCE, fresh affected builds and addressed acceptance remain.
+  N2 partial: diagnosis2 PASS, terminal1 FAIL before Project at update-only joint
+  anchor union, remaining8 UNRUN; complete capture and fixture removal verified.
+  Continue independent8 without diagnosis replay; dependent terminal closure below.
+
+- [ ] T121-PHYSICAL-JOINT-TERMINAL-ANCHOR [US2/US7] Complete existing genuine
+  joint acquisition + terminal treatment canonical anchor allocation. Reuse the
+  current sealed joint/terminal final and History authorities to accept exactly
+  the rightful old-wound delete, preserving nonterminal update and new physical
+  CREATE allocation, fresh owner/current clock, exact mutation and full final
+  fingerprints. Existing terminal peer supplies a genuine current failure before
+  output. Independent bounded DESIGN, cheap typed terminal/foreign-union refusal
+  proof and SOURCE precede fresh builds/addressed qualification; no generic delete
+  fallback, fabricated authority, increased budget or unrelated perf/HOLD work.
   Source-only scaffold authored: existing pure Unit Parse/Claim/Compose, four
   field{name,narration} x code{27,8} causal rows plus one LF/tab/Unicode positive.
   Raw admission/binding/nonmutation premises precede safe-label final output oracle;
