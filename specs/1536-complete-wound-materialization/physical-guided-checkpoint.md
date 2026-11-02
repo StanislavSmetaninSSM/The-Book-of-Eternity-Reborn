@@ -1,3 +1,37 @@
+# T149 scaffold built and exactly planned — RED runtime pending
+
+Independent Astra/high accepts bounded DESIGN and scaffold SOURCE
+75f8a92c425f48b161c67b3ffaeb3ffec161b04f; receipt-only checkpoint
+0235df8fceadc875b03fb86d1a923c3b00bac796 preserves that source. Fresh Integration
+build at 0235df8f exits 0 in 68.67 seconds, 107 warnings / 0 errors, no warning
+from the new fixture. All five other owner inputs/outputs remain unchanged.
+Current six PE/PDB pairs and 432 changed-source bindings match source; all 75
+managed artifacts, 206 operational inputs / 1,236 copies and 12 native copies
+are checked. No native runtime or gameplay qualification follows from these checks.
+
+Fresh ValidateCatalog exits 0: 1,323 categories, 13,151 methods, no unmapped or
+stale selector. Exact PlanOnly exits 0 with one Integration descriptor / three
+methods / nine cases / 60 seconds, zero executions and complete owned cleanup.
+Arrays 2 are intended causal failures; scalar/null 5 and canonical 2 preserve
+already working behavior. A different failure requires investigation. Production
+and the existing loose-caller inventory guard remain unchanged.
+
+Current managed outputs are preserved before the next production build: external
+R3-current-managed-outputs.tar.gz, 89,961,516 bytes / 75 members / 288,489,817
+logical bytes. Complete gzip EOF/CRC and every member length/hash match; archive
+SHA256 fc6c5df3e926d9ef70e23dc6c286c0b36453c3698e8335c6738fb9d732402d81.
+No current output or other evidence was deleted.
+
+Primary evidence: /workspace/tboe-linux-evidence-20261102/browser-read-recovery,
+R3-build-integration, R3-pdb-proof.json, R3-catalog and R3-plan. Artifact proof SHA256:
+03b992a40209577f049262804d9ca4ebb2d0499c476bdd5ccbe8fafccd0c46d3.
+Exact plan SHA256:
+94a9d8afbb594b5f9beb3c5874dcba73699e2ae8d491fe928a3e6b4b2d553fde.
+New private temp namespace baseline is recorded externally; because existing
+fixture disposal is best-effort, OUTCOME must also verify that no new resource
+fixture root remains. Next independent PREP and one exact causal RED9, before any
+production fix. R1 acceptance, R2 UNKNOWN and all other HOLDs remain unchanged.
+
 # T149 canonical player-carrier causal scaffold — source-only WIP
 
 Frozen scaffold source75f8a92c425f48b161c67b3ffaeb3ffec161b04f was pushed and
@@ -3113,31 +3147,3 @@ exhaustive epic remainder: US3 lifecycle/conflict and US7/recovery/cross-cutting
 acceptance still need actual-code/evidence reconciliation, not blind checkbox
 completion. Existing DFR/Mortal/Windows HOLDs, guardian intermittency and cross-OS
 DATA limitations remain open; none is relabelled PASS or automatically retried.
-# T149 scaffold built and exactly planned — RED runtime pending
-
-Independent Astra/high accepts bounded DESIGN and scaffold SOURCE
-75f8a92c425f48b161c67b3ffaeb3ffec161b04f; receipt-only checkpoint
-0235df8fceadc875b03fb86d1a923c3b00bac796 preserves that source. Fresh Integration
-build at 0235df8f exits 0 in 68.67 seconds, 107 warnings / 0 errors, no warning
-from the new fixture. All five other owner inputs/outputs remain unchanged.
-Current six PE/PDB pairs and 432 changed-source bindings match source; all 75
-managed artifacts, 206 operational inputs / 1,236 copies and 12 native copies
-are checked. No native runtime or gameplay qualification follows from these checks.
-
-Fresh ValidateCatalog exits 0: 1,323 categories, 13,151 methods, no unmapped or
-stale selector. Exact PlanOnly exits 0 with one Integration descriptor / three
-methods / nine cases / 60 seconds, zero executions and complete owned cleanup.
-Arrays 2 are intended causal failures; scalar/null 5 and canonical 2 preserve
-already working behavior. A different failure requires investigation. Production
-and the existing loose-caller inventory guard remain unchanged.
-
-Primary evidence: /workspace/tboe-linux-evidence-20261102/browser-read-recovery,
-R3-build-integration, R3-pdb-proof.json, R3-catalog and R3-plan. Artifact proof SHA256:
-03b992a40209577f049262804d9ca4ebb2d0499c476bdd5ccbe8fafccd0c46d3.
-Exact plan SHA256:
-94a9d8afbb594b5f9beb3c5874dcba73699e2ae8d491fe928a3e6b4b2d553fde.
-New private temp namespace baseline is recorded externally; because existing
-fixture disposal is best-effort, OUTCOME must also verify that no new resource
-fixture root remains. Next independent PREP and one exact causal RED9, before any
-production fix. R1 acceptance, R2 UNKNOWN and all other HOLDs remain unchanged.
-
