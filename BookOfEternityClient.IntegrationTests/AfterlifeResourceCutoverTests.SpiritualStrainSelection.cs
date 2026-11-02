@@ -19,10 +19,27 @@ public sealed partial class AfterlifeResourceCutoverTests
     }
 
     /// <summary>Completes the real private strain journey in this fixture; no owner or lease escapes this helper.</summary>
-    private static async Task CompleteSpiritualStrainC2Async(ResourceMaterializationTestContext context, bool maneuver = false)
+    private static async Task CompleteSpiritualStrainC2Async(ResourceMaterializationTestContext context, bool maneuver = false,
+        decimal? initialActionPoints = null)
     {
         await WriteSpiritualStrainBaselineDraftAsync(context);
         if (maneuver) await ConfigureFailedManeuverStrainDraftAsync(context);
+        if (initialActionPoints is { } initial)
+        {
+            var raw = await ReadProjectedSourceContinuationCandidateAsync(context);
+            foreach (var side in new[] { "player", "opposition" })
+            {
+                var balance = initial;
+                foreach (var row in raw["activeConflict"]!["exchangeLog"]!.AsArray())
+                {
+                    var audit = row!["actionCostAudit"]![side]!;
+                    audit["before"] = balance;
+                    balance -= audit["effectiveCost"]!.GetValue<decimal>();
+                    audit["after"] = balance;
+                }
+            }
+            await context.WriteExactJsonAsync(AfterlifeSpiritualConflictState.StatePath, raw.ToJsonString());
+        }
         var scene = maneuver ? "Чужое давление надломило волю души. Душа не смогла улучшить позицию." : "Чужое давление надломило волю души.";
         await context.WriteExactJsonAsync(ProjectionNarrativePath,
             new JsonObject { ["response"] = scene, ["timestamp"] = "2026-09-30T00:00:00Z" }.ToJsonString());

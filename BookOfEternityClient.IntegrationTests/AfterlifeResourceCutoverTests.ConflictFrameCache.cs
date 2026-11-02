@@ -64,6 +64,8 @@ public sealed partial class AfterlifeResourceCutoverTests
     /// <param name="captureOriginalSnapshot">
     /// <see langword="null"/> for the fixed fixture signer; any signing callback excludes the frame.
     /// </param>
+    /// <param name="spiritFocusTier">Only the existing zero-tier capacity is eligible for trusted templates.</param>
+    /// <param name="oppositionMaximum">Only the existing six-point capacity is eligible for trusted templates.</param>
     /// <returns>
     /// The complete trusted input key, or <see langword="null"/> when any preparation input is custom.
     /// </returns>
@@ -71,9 +73,11 @@ public sealed partial class AfterlifeResourceCutoverTests
         Func<ResourceMaterializationTestContext, Task>? seedOriginalInputs, int[]? signedDice,
         decimal playerCurrent, decimal oppositionCurrent,
         Func<ResourceMaterializationTestContext, Task>? initializeContext,
-        Func<ResourceMaterializationTestContext, Task>? captureOriginalSnapshot)
+        Func<ResourceMaterializationTestContext, Task>? captureOriginalSnapshot,
+        int spiritFocusTier = 0, decimal oppositionMaximum = 6m)
     {
-        if (hooks is not null || initializeContext is not null || captureOriginalSnapshot is not null)
+        if (hooks is not null || initializeContext is not null || captureOriginalSnapshot is not null ||
+            spiritFocusTier != 0 || oppositionMaximum != 6m)
             return null;
         var seedVersion = seedOriginalInputs is null ? "default_v1" :
             seedOriginalInputs == (Func<ResourceMaterializationTestContext, Task>)SeedOriginalIntakeBaselinesAsync

@@ -1,11 +1,19 @@
-# T081-D current connected route — runtime29 PASS, independent remaining3 OUTCOME pending
+# T081-D actual healing follow-up — current WIP
+
+- [x] Independent Astra/high DESIGN of lawful initial8AP/healingIII and existing owner route.
+- [x] Write bounded Integration-only setup and actual III→I/retired-root/signed-history test; UNCOMPILED, all new runtime UNRUN.
+- [ ] Delta independent SOURCE, fresh Integration, catalog discovery and exact PlanOnly.
+- [ ] Cheap fixture3, independent OUTCOME/PREP, then one real weakening/root-retirement case within180s.
+- [ ] Accepted result/checkpoint; no terminal-heal/Engine/UI/full-family claim.
+
+# T081-D current connected route — runtime29 PASS, independently accepted
 
 - [x] Fix the genuine G3 display/key historical adapter defect using the existing normalizer; preserve full failed capture.
 - [x] Independent delta SOURCE, fresh Main/Unit/Integration, valid discovery1365/13197, exact plans, cheap25PASS and accepted OUTCOME.
 - [x] Actual cold failed-maneuver C2→C3→History→C4→signed next-turn1PASS, later refusals executed; Astra/high OUTCOME accepted.
 - [x] Affected pressure/publication/rollback3 each1PASS within unchanged60/180/180s, full cleanup/hashclose.
-- [ ] Independent remaining3 OUTCOME and final bounded checkpoint acceptance; runtime29 on one source is not fullfamily72.
-- [ ] Actual III→I healing through existing owners and retirement of original strain roots, with signed later history: separate legal pre-initial-snapshot capacity/tier fixture, DESIGN/code/runtime pending (see plan.md).
+- [x] Independent remaining3 OUTCOME and bounded checkpoint acceptance; runtime29 on one source is not fullfamily72.
+- [ ] Actual III→I healing through existing owners and retirement of original strain roots, with signed later history: separate legal pre-initial-snapshot capacity/tier fixture, DESIGN accepted/code WIP/runtime UNRUN (see plan.md).
 - [ ] Explicit no-roll harmfulMargin GM-choice producer/admission and qualification; author decision resolved, implementation open.
 
 General combat and author-deferred control/counter/partialIII restrict excluded,

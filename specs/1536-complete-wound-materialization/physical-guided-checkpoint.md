@@ -1,9 +1,44 @@
-# Current T081-D — connected route29 PASS, remaining3 OUTCOME pending
+# T081-D actual weakening fixture — source WIP / UNCOMPILED / UNRUN
+
+Base accepted checkpoint6d465cec55a770fa68c0b5bbbe639bdc1635d459, runtime2bf6f7b.
+Astra/high accepted all remaining3 OUTCOME and bounded next DESIGN. New code changes
+only Integration fixture inputs/coverage, catalog and checkpoint: optional capacity
+inputs default to old0/6, nondefaults explicitly excluded from existing prepared
+cache, true formula/initial History8 before first snapshot, custom original seeder
+sets healingIII and settled clock/scheduler. Existing strain helper optionally
+authors corresponding ordinary cost balances before first C2; defaults unchanged.
+New actual test uses actual owners for real III parent creation and common C4,
+then separate staged signed combat healing43, appends at actual next ordinal,
+authors the actual requested I graph with consistent component/trigger references,
+executes automatic C2/common C4 and checks expired original effect identities,
+replacement graph without strain, retained first-create fingerprint/original source
+rows, actual persisted healing result/spend, no safe cycle and signed turn44 read.
+It is III→I weakening, NOT terminal healing, Engine/UI or fresh process evidence.
+
+New cheap3 prove ordinary6 and lawful8 resource formula/state/History plus template
+exclusion with nondefault focus or opposition maximum; no filesystem/world setup.
+No production C# or GM contract change. Existing Main/Unit/Support/hosts stay on
+checked unchanged code; only Integration needs fresh build. New C# uncompiled;
+all new tests UNRUN. Delta SOURCE must assess complete two-turn setup, signed
+ownership, effect-root lifecycle, graph shape, old-history retention and selection
+before fresh Integration/discovery/PlanOnly, cheap3 and separately admitted one
+actual180s. A fixture failure is not causal RED for production; preserve any failure
+and explain it before retry. Do not repeat accepted G4/old72 without a relevant cause.
+
+Optimization: existing immutable prepared tree remains owner/key/lifetime unchanged
+for default capacities; custom capacity is deliberately fresh because no established
+key/template includes its source inputs, and this single cold native path is the
+subject. No new cache or speedup claim. No production source read removed; all live
+C2/C4/snapshot/integrity fences remain. Full diagnostics outside checkout; no raw
+or binaries in Git. No-roll GM-choice producer and all other existing UNKNOWN/HOLD
+remain open; three author-deferred consumers stay deferred, not blockers.
+
+# Current T081-D — connected route29 PASS, independently accepted
 
 Linux source2bf6f7ba144a296cfb162943075dbd463bc1a4aa: fresh Main/Unit/Integration
 exit0 with exact81/26/107warnings,45/618/6/488 verified. G4-cheap25 and maneuver1
 independently accepted; pressure/publication/rollback each1PASS with complete
-capture/cleanup/hashclose, their independent OUTCOME pending.29distinct same-source
+capture/cleanup/hashclose, their independent Astra/high OUTCOME accepted.29distinct same-source
 cases across5runs, not fresh72/fullfamily. Signed next-turn, top-summary allowance,
 mechanics/turn refusal and staleC4 actually executed. G3 causal FAIL retained.
 See current plan.md table/proof hashes; raw /workspace/tboe-linux-evidence-20261102/spiritual-strain-preimage-data.
