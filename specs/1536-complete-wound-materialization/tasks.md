@@ -1,15 +1,21 @@
 - [ ] T150-GM-TERMINAL-GUIDANCE [US2/US7] Reconcile stale terminal heal/legacy
   capability claims with the existing sealed terminal worked example and current
-  typed contract (parent T150, FR-086/087, #1536). First extend only the existing
-  PhysicalGuidedDocumentationTests worked-selection Fact: preserve all manifest,
-  typed terminal route, three mode, roundtrip and nonmutation premises, then reject
-  the two exact obsolete example claims. One Fact/one causal result; its second
-  refusal can be UNREACHED on baseline. Select only the new exact 60s leaf; no
-  production, Examples or example manifest correction before accepted actual RED.
-  Reuse the already loaded example string; no extra read, Engine or cache. Source
-  WIP is UNCOMPILED/UNRUN. Actual catalog/selection metadata reader exits 0
-  (1,329 categories/one exact Unit Fact/60s); inverse source/category checks and
-  git diff --check pass. Independent SOURCE/build/Plan/PREP/RED belong to root.
+  typed contract (parent T150, FR-086/087, #1536). Independent Astra accepts actual
+  T1 RED at 7d44af679: one Fact FAIL only at its first new stale-claim refusal
+  after all typed terminal/manifest/mode/roundtrip premises; second UNREACHED.
+  Coherent correction is admitted for both guide/example claims, both manifest
+  RequiredText entries and the family-local coverage limit, plus both affected
+  Prompt guards. Existing sealed heal/independent legacy is distinct from T069's
+  typed death_contour handoff and the later direct death-outcome consumer outside
+  this executor. Preserve JSON examples, all mechanics and prior negative checks.
+  Physical causal assertions remain unchanged. Exact GREEN selection is four
+  existing Facts: Physical1 + Prompt2 + manifest1, three 60s leaves; old owners
+  unchanged/unselected. Reuse local document DATA; no Engine, new cache or schema.
+  Source correction is UNCOMPILED/UNRUN. Actual metadata reader exits 0: 1,331
+  categories, three exact leaves/four source Facts/60s each. Static inverse checks
+  preserve worked JSON, Physical Fact, all prior Prompt negatives/old owners;
+  git diff --check passes. Root's coherent SOURCE, six fresh owning builds and
+  guidance resource-copy proof, then exact Plan/PREP/GREEN remain.
   Parent T150 stays open. A5 independently accepted TIMEOUT/UNKNOWN at runtime
   c9c9103b6c06cbe806cbab8eb4d7faeb5a31aa57 (compiled Integration 9383e6e7),
   120.0346224/120s, no TRX; incomplete prefix and 135-entry root retained. This

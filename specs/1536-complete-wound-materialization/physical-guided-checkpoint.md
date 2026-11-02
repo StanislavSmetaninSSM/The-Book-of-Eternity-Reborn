@@ -1,4 +1,39 @@
-# T150 GM terminal guidance: causal scaffold WIP, no content correction yet
+# T150 coherent guidance correction WIP: accepted T1 RED, GREEN unrun
+
+2026-11-02 UTC, base 7d44af679c6eacab1d41774ce3884a4b7192b560, #1536 /
+T150-GM-TERMINAL-GUIDANCE / FR-086/087. Independent Astra accepts actual T1:
+one Fact FAIL, wall 7.6884812s / test 0.1966239s, first new DoesNotContain at
+PhysicalGuidedDocumentationTests line 77 / position 40555 after all genuine typed
+terminal/current manifest/mode/roundtrip premises. Second refusal UNREACHED.
+Summary SHA256 89e010839c3521be5301a888c95d870ed6e8a302846ef48d839843158adce9d6;
+TRX SHA256 af124bdd2377599ec1b25688778e86db3fb0c032da9693428acc2c9ce95a84d9.
+
+Coherent correction now covers both guide/example claims, both manifest RequiredText
+entries and the stale family-local coverage limit, plus both affected Prompt guards.
+Existing selected sealed terminal heal/independent legacy are distinct from T069's
+implemented typed death_contour handoff without direct life/death mutation and
+the later direct death-outcome consumer outside this executor. Pure family controls
+do not execute or qualify runtime terminal heal/legacy; existing worked example only.
+All JSON worked routes/mechanics/schema/return slots and previous negative checks
+remain; original Physical causal assertions are unchanged. No production change.
+
+Selection is exact GREEN4: Physical1 + Prompt2 Unit + existing manifest1 Integration,
+three 60s leaves, old owners unchanged/unselected. Local document DATA and existing
+typed setup are reused; no extra expensive fixture, cache or diagnostic mechanism.
+C# UNCOMPILED; discovery/Plan/PREP/GREEN UNRUN, cost UNMEASURED. Actual catalog and
+selection metadata reader exit 0: 1,331 categories, three exact leaves/four source
+Facts/60s each/related0. Static inverse proof preserves all worked JSON, original
+Physical Fact, every prior Prompt negative check and old category owners; manifest
+changes exactly two RequiredText fields and one coverageLimit. git diff --check
+passes. External primary metadata/static logs are under
+/workspace/tboe-linux-evidence-20261102/gm-terminal-guidance/T2-correction/.
+Root owns persistence/SOURCE/six fresh owning builds and actual copy proof for
+the three changed runtime guidance resources. Old binaries are archived
+externally before rebuilding; no deletion. Parent T150 remains open. Accepted A5
+TIMEOUT/UNKNOWN admits no further full-terminal retry; output10/anchor2/controls3,
+T121/T152/R2 and all broader HOLDs retain their exact prior lineages and boundaries.
+
+# Historical T150 causal scaffold, before accepted T1 RED
 
 2026-11-02 UTC, base c9c9103b6c06cbe806cbab8eb4d7faeb5a31aa57, #1536 /
 T150-GM-TERMINAL-GUIDANCE / parent T150 / FR-086/087. Only the existing pure

@@ -58,10 +58,14 @@ public sealed partial class PromptDocumentationCoverageTests
                 "The client reobtains the original accepted wound policy; the GM supplies policyRef, never private preparation or permanent identities.",
                 "Only a change between original and final severity rematerializes retained roots; an unchanged final rank also preserves the original slot budget.",
                 "Policy root and child-only selector diagnostics name recovery.deteriorationPolicy.result.complicationDraft at the canonical wound source.",
-                "Direct treatment death, heal and legacy publication remain unfinished.",
+                "Selected sealed terminal heal and independent legacy publication are implemented; see mortal_guided_terminal_heal_v1.",
+                "`death_contour` remains the existing typed lifecycle handoff without direct life/death mutation.",
+                "The later direct death-outcome consumer remains outside this executor.",
                 "mortal_wound_treatment_selected_policy_v1"
             }) Assert.Contains(required, text, StringComparison.Ordinal);
             Assert.DoesNotContain("the failed complication band is preview-only here", text, StringComparison.Ordinal);
+            Assert.DoesNotContain("Direct treatment death, heal and legacy publication remain unfinished.", text, StringComparison.Ordinal);
+            Assert.DoesNotContain("The direct treatment `heal`, explicit death and legacy producers remain pending implementation", text, StringComparison.Ordinal);
         }
     }
     [Fact]
@@ -720,14 +724,18 @@ public sealed partial class PromptDocumentationCoverageTests
             }) Assert.Contains(invariant, document, StringComparison.OrdinalIgnoreCase);
             var pending = Regex.Match(
                 document,
-                @"The direct treatment `heal`, explicit death and legacy producers remain pending implementation",
+                @"The later direct death-outcome consumer remains outside this executor\.",
                 RegexOptions.CultureInvariant);
-            Assert.True(pending.Success, "The exact heal/death/legacy pending boundary must remain synchronized.");
+            Assert.True(pending.Success, "The separate direct death-outcome consumer boundary must remain synchronized.");
+            Assert.Contains("Selected sealed terminal heal and independent legacy publication are implemented; see mortal_guided_terminal_heal_v1.", document, StringComparison.Ordinal);
+            Assert.Contains("`death_contour` remains the existing typed lifecycle handoff without direct life/death mutation.", document, StringComparison.Ordinal);
             Assert.Contains("Selected non-death treatment `apply_deterioration` now uses the atomic graph publisher.", document, StringComparison.Ordinal);
             Assert.DoesNotContain("apply_deterioration", pending.Value, StringComparison.Ordinal);
             Assert.DoesNotContain("add_complication", pending.Value, StringComparison.Ordinal);
             Assert.DoesNotContain("add_recovery", pending.Value, StringComparison.Ordinal);
             Assert.DoesNotContain("remove_complication", pending.Value, StringComparison.Ordinal);
+            Assert.DoesNotContain("Direct treatment death, heal and legacy publication remain unfinished.", document, StringComparison.Ordinal);
+            Assert.DoesNotContain("The direct treatment `heal`, explicit death and legacy producers remain pending implementation", document, StringComparison.Ordinal);
         }
         foreach (var field in new[] { "courseId", "activeCourseId", "sourceId", "woundId", "effectId",
             "fingerprint", "authorityFingerprint", "attemptId", "operationKey", "resolvedAtGameTimeMinutes" })

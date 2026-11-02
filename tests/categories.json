@@ -3,8 +3,8 @@
     "categories": [
 {
   "id": "mortal-terminal-guidance-causal",
-  "responsibility": "T150-GM-TERMINAL-GUIDANCE / FR-086/087 / #1536: one existing pure Unit Fact preserves current manifest text, actual typed worked terminal route, three selection modes, roundtrip and nonmutation premises, then refuses the two exact obsolete example claims that terminal heal/legacy publication is unfinished. One causal result; the second refusal may be UNREACHED on baseline. Reuse the already loaded example string; runtime cost UNMEASURED.",
-  "excludes": "No production, Examples or example manifest correction before accepted causal RED. No Engine/native/browser/provider/fresh-process execution, new policy/cache/diagnostics, full documentation category, accepted-set replay or terminal retry. Existing category owners remain unchanged and unselected; parent T150 and all broader HOLDs remain open.",
+  "responsibility": "T150-GM-TERMINAL-GUIDANCE / FR-086/087 / #1536: one existing pure Unit Fact preserves current manifest text, actual typed worked terminal route, three selection modes, roundtrip and nonmutation premises, then refuses both obsolete example claims that terminal heal/legacy publication is unfinished. Actual T1 RED is accepted only at the first new refusal; second was UNREACHED. Retain both unchanged refusals as regression after coherent guidance correction. Reuse the loaded example; GREEN cost UNMEASURED.",
+  "excludes": "No Engine/native/browser/provider/fresh-process execution, new gameplay/death consumer/policy/cache/diagnostics, full documentation category, accepted-set replay or terminal retry. Existing broad category owners remain unchanged and unselected; parent T150 and all broader HOLDs remain open.",
   "changeHints": [
     "BookOfEternityClient.Tests/PhysicalGuidedDocumentationTests.cs",
     "Examples/E_CLI_Wound_Materialization.txt",
@@ -23,6 +23,58 @@
       "project": "unit",
       "tests": [
         "BookOfEternityClient.Tests.PhysicalGuidedDocumentationTests.WorkedSelectionsAndGmSurfacesKeepAllThreeModeOwnersAndSeparateCourseAttempts"
+      ]
+    }
+  ]
+},
+{
+  "id": "mortal-terminal-guidance-prompt-regressions",
+  "responsibility": "T150-GM-TERMINAL-GUIDANCE / FR-086/087 / #1536: exactly two existing pure Prompt Facts cover both guide/example corrections. Preserve selected batch/history and actual typed scalar-course/working-wound premises, all negative checks and JSON examples; require existing sealed terminal heal/independent legacy, typed death_contour handoff and separate later direct death consumer, and refuse both obsolete capability claims. No runtime heal qualification is claimed by these documentation controls.",
+  "excludes": "No broad Prompt wildcard, changed mechanics/schema/return slots or death executor, Engine/native/provider/browser/fresh-process run, new cache/diagnostics or accepted-set replay. Old category owners are unchanged and unselected.",
+  "changeHints": [
+    "BookOfEternityClient.Tests/PromptDocumentationCoverageTests.Wounds.cs",
+    "OtherGuides/Wound_Materialization_Contract.md",
+    "Examples/E_CLI_Wound_Materialization.txt"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.WoundTreatmentAdditionPublicationDocumentation_PinsSelectedBatchAndRetainedHistory",
+        "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.WoundTreatmentScalarCourseDocumentation_UsesCompleteMortalRoute"
+      ]
+    }
+  ]
+},
+{
+  "id": "mortal-terminal-guidance-manifest-regression",
+  "responsibility": "T150-GM-TERMINAL-GUIDANCE / FR-086/087 / #1536: one existing Integration manifest Fact checks every required worked family and production/focused metadata after both affected RequiredText entries and the family-local coverage limit are synchronized. Family-local pure controls do not execute or qualify runtime terminal heal/legacy; refer only to the existing mortal_guided_terminal_heal_v1 worked route.",
+  "excludes": "No broad documentation wildcard or new family/qualification, production/schema/JSON example changes, Engine/native/provider/DOM/fresh-process run, new cache/diagnostics, terminal retry or accepted-set replay. Existing category owners remain unchanged and unselected.",
+  "changeHints": [
+    "Examples/example_validation_manifest.json",
+    "BookOfEternityClient.IntegrationTests/ExampleDocumentationValidationTests.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.ExampleDocumentationValidationTests.CompleteEffectMaterializationManifest_CoversEveryRequiredWorkedFamily"
       ]
     }
   ]

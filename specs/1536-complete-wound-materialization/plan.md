@@ -1,4 +1,39 @@
-# T150 GM terminal guidance: causal test-only WIP
+# T150 coherent guidance correction WIP, after accepted causal RED
+
+2026-11-02 UTC, base 7d44af679c6eacab1d41774ce3884a4b7192b560, #1536 /
+T150-GM-TERMINAL-GUIDANCE / FR-086/087. Independent Astra accepts actual T1:
+one Fact FAIL in 7.6884812s wall / 0.1966239s test, only at the first new
+DoesNotContain, PhysicalGuidedDocumentationTests line 77 / position 40555.
+All typed terminal/current manifest/mode/roundtrip premises passed; second new
+refusal was UNREACHED. This is one genuine documentation RED, not two failures.
+
+Admitted correction replaces both obsolete claims in guide/example, both manifest
+RequiredText occurrences and the stale family-local coverage limit. Existing
+selected sealed terminal heal/independent legacy are separate from the implemented
+T069 typed death_contour handoff without direct life/death mutation; the later
+direct death-outcome consumer remains outside this executor. Existing JSON worked
+routes, mechanics, prices, schema and return slots are unchanged. Family-local
+pure graph controls explicitly do not execute or qualify terminal heal/legacy;
+refer only to the existing mortal_guided_terminal_heal_v1 example. Both affected
+Prompt Facts require this truthful boundary and refuse both old claims in both
+guide/example; all prior negative checks remain. Physical causal Fact unchanged.
+
+Exact GREEN is four existing Facts: Physical1 + Prompt2 Unit, manifest1 Integration,
+under three finite 60s leaves. Old owners unchanged/unselected. No Engine/native,
+browser/provider/DOM/fresh-process execution or terminal retry. Optimization:
+reuse each existing local document string/typed preparation; no extra expensive
+fixture, reread, cache or diagnostic stack. Cost UNMEASURED. Source correction is
+UNCOMPILED/UNRUN. Actual catalog/selection metadata reader exits 0: 1,331 categories,
+three exact leaves/four source Facts/60s each. Static inverse proof preserves worked
+JSON, Physical Fact, all previous Prompt negative checks and old category owners;
+manifest changes only the two RequiredText fields and one coverageLimit.
+git diff --check passes. Root SOURCE then six fresh owning builds/resource-copy
+proofs and exact Plan/PREP/GREEN remain. Guide/example/manifest are real
+runtime resource inputs; old copies do not qualify new source. T150 parent remains
+open; no whole family/runtime heal acceptance. A5 accepted TIMEOUT/UNKNOWN, output10,
+anchor2 and controls3 keep their explicit lineages; T121/T152/R2 and HOLDs unchanged.
+
+# Historical T150 causal scaffold, before accepted T1 RED
 
 2026-11-02 UTC, base c9c9103b6c06cbe806cbab8eb4d7faeb5a31aa57, #1536 /
 T150-GM-TERMINAL-GUIDANCE / parent T150 / FR-086/087. The existing example at

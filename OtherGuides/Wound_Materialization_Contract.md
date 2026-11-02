@@ -96,8 +96,10 @@ Stale history is invalid authority, not a missed-dose outcome; other treatment d
 A different pending attempt for the same course milestone conflicts even without resource claims; exact retry is inert.
 Source IDs, course IDs, time evidence, attempt/operation coordinates and fingerprints remain client-owned.
 Selected non-death treatment `apply_deterioration` now uses the atomic graph publisher.
-The direct treatment `heal`, explicit death and legacy producers remain pending implementation; their approved authored
-contracts remain in the complete route model. Scheduled natural recovery uses a separate client-owned continuation.
+Selected sealed terminal heal and independent legacy publication are implemented; see mortal_guided_terminal_heal_v1.
+`death_contour` remains the existing typed lifecycle handoff without direct life/death mutation.
+The later direct death-outcome consumer remains outside this executor.
+Scheduled natural recovery uses a separate client-owned continuation.
 Mortal recovery admission example (`mortal_wound_recovery_history_guard_v1`): the
 client has accepted a wound and sealed the current pending snapshot. If its current
 history is missing or malformed, the planner returns `InvalidHistory` with the
@@ -1070,7 +1072,9 @@ Selected non-death apply_deterioration outcomes publish through the same authent
 The client reobtains the original accepted wound policy; the GM supplies policyRef, never private preparation or permanent identities.
 Only a change between original and final severity rematerializes retained roots; an unchanged final rank also preserves the original slot budget.
 Policy root and child-only selector diagnostics name recovery.deteriorationPolicy.result.complicationDraft at the canonical wound source.
-Direct treatment death, heal and legacy publication remain unfinished.
+Selected sealed terminal heal and independent legacy publication are implemented; see mortal_guided_terminal_heal_v1.
+`death_contour` remains the existing typed lifecycle handoff without direct life/death mutation.
+The later direct death-outcome consumer remains outside this executor.
 
 Selected policy outcomes are legal only in procedure partial/failed results and actual interrupted courses.
 An interrupted course clears only its course pointer and does not consume the current or future dose.
