@@ -3720,9 +3720,12 @@ strain/dice/cost/chronology/harm/source math/final echo remain actual.
 
 The existing owner-issued live/C3 path, sealed completed-mechanics C4 path and
 validated signed-baseline historical path MUST all bind that same proof. History
-requires the exact matching accepted receipt and actual exchange, independently
-joined with History; mutable current receipt JSON and generic historical exemptions
-are forbidden. Healing/removal of the active effect MUST NOT invalidate genuine
+requires the matching accepted receipt and actual exchange, independently joined
+with History. Same-turn/live/C4 comparisons remain exact. Historical matching
+preserves only the existing prior-turn, optional top-level readable `summary`
+comparison; every other field remains exact. The retained receipt/witness and its
+fingerprints remain immutable. Mutable current receipt JSON and generic historical
+exemptions are forbidden. Healing/removal of the active effect MUST NOT invalidate genuine
 past evidence or let the current catalog replace retained evidence.
 
 Acceptance requires actual C2 to C4, a subsequent signed turn, and historical

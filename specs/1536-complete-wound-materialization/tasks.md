@@ -1,5 +1,12 @@
 # T081-D failed maneuver durable comparison — design and causal scaffold WIP
 
+Final Astra DESIGN review requires preserving the existing historical comparator:
+same-turn/live/C4 exact; only an already permitted prior-turn optional top-level
+summary may drift, every other field exact, durable witness/fingerprints immutable.
+The spec now states that exact boundary; no new summary/mechanics exception.
+Test-only Sol SOURCE accepted on e39; C# still UNCOMPILED/runtime UNRUN. The new
+commit changes only the four canonical documents relative to e39, not test code.
+
 Test-only causal entry is now written, C# UNCOMPILED/runtime UNRUN. It uses
 existing independent signed5/15/4/12 fixture DATA, maneuver/setback vs guard with
 costs3/2 and unchanged ordinary strain/control/lost position. Full ordinary
