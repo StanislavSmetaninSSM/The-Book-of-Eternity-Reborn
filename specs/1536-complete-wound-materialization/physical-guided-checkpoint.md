@@ -1,3 +1,16 @@
+# T118 actual-App — whole animation readiness reassessment, no new runtime
+
+F7 automated protocol PASS on a5b0a628749fcd7115922c1318fdea2efe79f422 takes
+14.328742s, process/driver0,30GET/3POST,154-member valid trace and full cleanup.
+Root inspected all six PNGs: active-back has readable page header but invisible
+wound dossier, whose independent finite CSS entrance is not covered by the parent
+motion check. Rendered qualification is withheld. This second visual-readiness
+finding stops per-widget trial fixes; a bounded whole-content finite-animation
+DESIGN review is pending, not another admitted attempt. No permanent product
+failure is inferred. F7 raw/PNGs/trace stay in actual-shell-readonly/F7-desktop-*
+under /workspace/tboe-linux-evidence-20261102. Mobile remains UNRUN; F3 types/F2
+build retain their lineages. Production, budgets and all UNKNOWN/HOLD unchanged.
+
 # T118 actual-App — automated protocol PASS, visual acceptance withheld
 
 F6 atc1d57551648274231324661fb8b6a5cdd4ca2efe reports automated PASS in11.662682s:
