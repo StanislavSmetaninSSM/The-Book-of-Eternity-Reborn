@@ -1,3 +1,16 @@
+# Current accepted wound result: strain C2→common C4 publication/rollback
+
+Two new exact PASS on test-sourcec32d8c4c5df5b762fbb487fce75b9b740d88be99,
+productionMainbc7 unchanged, separate publication/rollback180s leaves. Actual
+canonical III wound/effect/resource/History/receipt publication, consumed private
+controls and single-use ownership proved. Actual post-commit readback rollback
+restores83 signed file images/absence and pre-publication generation/journal,
+not OS crash. Independent DESIGN/SOURCE/PREP/OUTCOME accepted; full receipt in
+physical-guided-checkpoint.md. Prior private20 remains separate and unrerun.
+Next independent slice exact player pressure/success no-op under existing failed-
+operation condition; DESIGN accepted, code/causal proof stillpending. No newauthor
+rule. Wholeprofile/parents and all oldUNKNOWN/HOLD/wounds-only boundaries remain.
+
 # T081-D strain C4 common-publication qualification WIP
 
 Accepted private20 remains onbc7/source checkpointbd54; do not repeat that selection.

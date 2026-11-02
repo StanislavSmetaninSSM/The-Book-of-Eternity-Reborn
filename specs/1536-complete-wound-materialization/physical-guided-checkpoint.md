@@ -1,3 +1,61 @@
+# T081-D strain actual C4 publication and rollback accepted — 2026-11-02
+
+Test/build/runtime c32d8c4c5df5b762fbb487fce75b9b740d88be99, productionMainbc7
+unchanged: TWO new unique PASS in separate180s leaf runs. Prior private20 remains
+onbc7, not repeated or retagged. Astra/high DESIGN and actual positive OUTCOME;
+Sol/xhigh whole SOURCE (one definitions-image coverage finding fixed before build),
+PREPs, actual rollback OUTCOME and receipt consistency. No new production mechanism.
+
+Positive actual fresh signed III C2/A/B/sourceII/none -> retained current C4 owner
+and same plan -> common NormalizeAndValidateWithPlanAsync. Canonical definitions/
+resource state/history, wound/effect identities/carriers/history, source receipts
+and owner companions match actual plan after-images. Independent one player-soul
+III wound, broken root/secondexchange and2 source/decision(materializeIII,none)
+predicates pass. Current published notification checked; private checkpoint/pending/
+command consumed. Foreign authority take and second take of consumed authority fail;
+bytes unchanged after refusal. This is actual common C4 publication, not Engine/UI.
+
+Rollback: actual committed resource/receipt in two transactions then exactly one
+receipt readback cut; original injected exception preserved. Full witness verified
+83 signed FILE images(17present/66absent) restored, plus witness PRE-PUBLICATION
+generation restored and active journal absent; no validated/publication authority.
+This is controlled in-process compensation, not an OS-crash/fresh-process test.
+
+Exact selection: wounds-spiritual-strain-publication1:37.9903598s/180s, wrapper
+44.620017207s; wounds-spiritual-strain-publication-rollback1:34.2184793s/180s,
+wrapper41.149468874s. Two Facts/methods/descriptors, NoBuild/Parallelism1. No skip/
+timeout/dup/underfill; both cleanuptrue/newTMP[], no active owners, clean runtime.
+Budget is the new broader C4 leaf's existing3min rollback analogue, not a change
+to the accepted private60s. Shared real C2 setup is necessary fresh authority,
+not a reused completed checkpoint; oldFactbody preserved through typed helper.
+
+Fresh Integration74.971855086s/exit0/exact107 warnings. Mainbc7/SupportECE actual
+used dependencies unchanged, not fresh builds.25artifacts/206inputs412copies/
+native4/3PEPDB382 sourcebindings unchanged before/after; resource changes0.
+Catalog1356/13184 discovery-only; exact two PlanOnly1case180s leaves accepted.
+GM no-update: test-only qualification of existing C4 contract, no new wire/rule.
+Optimization: existing immutable full-key template, independent roots, scoped
+C2/source/resource/journal/publication owners. Deliberate rollback read hook keeps
+fresh fallback; no new cache/passive observer or speedup claim.
+
+Full raw /workspace/tboe-linux-evidence-20261102/spiritual-strain-publication:
+P1-artifact-resource-proof02763180c25744f69f825dfaea9be52fd555c51424691aa095325653da87570a;
+P1-pdb-proof84921f7028989c5fb40983df1f3414028b170e1bb6614e5660d86d5e37d35bbe;
+positive post281e7abfad2f70cacb84e778d6e5bcd41fef8e8de4478b809789cfe15e0fe534;
+rollback postee134c8a2c99e5d820983ad0c32abdae63e60542cddad63d45e08393013fab4e;
+disjoint2 integrity9c9848d47f699bd7e03ee47354a87f47e86f84715e891a7f53e559b832725fa2.
+PriorIntegration5 archive74c2d65bbab38f636ea784d0ef34cd3f82bf369c56b18b5050fbcdd7bbf0defe
+verified members/hash/gzip EOF/CRC. No raw/saves deleted or uploaded.
+
+Next independent canonical case: exact player pressure/success is not a failed
+operation and gets no new strain step. Astra DESIGN accepted a narrow no-op after
+current authenticated contribution/actor/op checks, leaving all ordinary checks and
+other contributions intact; causal/genuine-source proof and setback peer needed.
+No success implementation yet. Partial_success/countered/other sides/failure
+families remain outside that next slice. Four author decisions including proposed0
+stillpending; whole strain/US3/#1536/Engine/UI/freshOS and all old UNKNOWN/HOLD open.
+General combat/QTE/ACTIVE/F1/T088 remain outside the wounds-only task.
+
 # T081-D strain C4 common-publication qualification WIP
 
 Accepted private20 remains onbc7/source checkpointbd54; do not repeat that selection.
