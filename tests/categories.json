@@ -3,7 +3,7 @@
     "categories": [
 {
   "id": "wounds-legacy-effect-documentation",
-  "responsibility": "Existing T071/T149: current wound-effect refusal guidance, sole explicitly negative legacy worked example, required manifest family/text consistency, and absence of legacy routes in positive rules/examples. Two existing narrowly selected guards, one Unit and one Integration, no new gameplay assertions. Full invalid JSON example is syntax/teaching scope, not production-valid execution. Protective60s per descriptor.",
+  "responsibility": "Existing T071/T149: current wound-effect refusal guidance, sole explicitly negative legacy worked example, required manifest family/text consistency, and absence of legacy routes in positive rules/examples. Two existing narrowly selected guards, one Unit and one Integration, no new gameplay assertions. Full invalid JSON example is syntax/teaching scope, not production-valid execution. Qualified W2 on0f9e47de: two PASS across distinct Unit/Integration descriptors, combined category7.2369801s; protective60s per descriptor unchanged.",
   "excludes": "No general documentation aggregate, positive legacy syntax, full example runtime, Engine/native/provider/gameplay or parent/HOLD qualification.",
   "changeHints": [
     "OtherGuides/Effect_Materialization_Contract.md",
@@ -35,7 +35,7 @@
 },
 {
   "id": "wounds-combatant-legacy-raw-response",
-  "responsibility": "Existing T071/T149: raw7. Four exact wire enemiesData/alliesData x activeBuffs/activeDebuffs legacy wound-reference type admission cases (including existing case-insensitive behavior); two old sourceWoundId property cases on neighboring non-wound raw forms (string/null); one complete absence/neighbor control. Genuine raw controls, both exact side/collection dispatch prerequisites via old required-field/scalar errors, and typed empty combat-carrier checks before actual Error oracle, exact submitted JSON/source bytes. Existing minimal per-test real-FS generation context; no cache/world setup. Test-only scaffold, runtime UNRUN; protective60s.",
+  "responsibility": "Existing T071/T149: raw7. Four exact wire enemiesData/alliesData x activeBuffs/activeDebuffs legacy wound-reference type admission cases (including existing case-insensitive behavior); two old sourceWoundId property cases on neighboring non-wound raw forms (string/null); one complete absence/neighbor control. Genuine raw controls, both exact side/collection dispatch prerequisites via old required-field/scalar errors, and typed empty combat-carrier checks before actual Error oracle, exact submitted JSON/source bytes. Existing minimal per-test real-FS generation context; no cache/world setup. Qualified W2 on0f9e47de4bc2305561bb93ebea233915aa70253e: seven unique PASS/category5.8214372s; protective60s unchanged. W1 actual causal had six missing-Error FAIL plus one controlPASS, retained separately.",
   "excludes": "No general combat/QTE rules, owner creation, publication-bypass proof, canonical carrier migration, Engine/provider/save or HOLD closure. Neighbor raw syntax acceptance does not authorize canonical publication.",
   "changeHints": [
     "BookOfEternityClient.IntegrationTests/CombatantLegacyWoundResponseValidationTests.cs",
@@ -64,7 +64,7 @@
 },
 {
   "id": "wounds-combatant-legacy-qte-offer",
-  "responsibility": "Existing T071/T149: one nested legacy wound-effect raw admission peer on the existing genuine signed ordinary-offer helper. Full accepted offer baseline and original/current request/manifest/authority/JSON/player/combat carrier bytes; exact nested issue path. Same production serializer and signed-source binder, no new authority. Compiled/discovered first, runtime UNRUN; protective180s inherited from this same helper.",
+  "responsibility": "Existing T071/T149: one nested legacy wound-effect raw admission peer on the existing genuine signed ordinary-offer helper. Full accepted offer baseline and original/current request/manifest/authority/JSON/player/combat carrier bytes; exact nested issue path. Same production serializer and signed-source binder, no new authority. Qualified W2 on0f9e47de4bc2305561bb93ebea233915aa70253e: one PASS/category5.0528712s; protective180s unchanged. Only nested wound-effect raw admission, no general QTE/publication proof.",
   "excludes": "No general combat/QTE rules, owner creation, publication-bypass proof, canonical carrier migration, Engine/provider/save or HOLD closure. Neighbor raw syntax acceptance does not authorize canonical publication.",
   "changeHints": [
     "BookOfEternityClient.IntegrationTests/CombatantLegacyWoundResponseValidationTests.cs",

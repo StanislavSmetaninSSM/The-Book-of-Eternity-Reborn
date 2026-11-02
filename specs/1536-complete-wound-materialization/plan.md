@@ -1,3 +1,73 @@
+# Existing T071/T149: legacy combat wound-effect refusal accepted — 2026-11-02
+
+Independent Sol/xhigh SOURCE, PREP and primary OUTCOME accept runtime/source
+0f9e47de4bc2305561bb93ebea233915aa70253e. One actual fresh addressed group14/14 unique
+PASS,7/7descriptors/10methods, exit0. Exact categories: wounds-combatant-legacy-raw-response7,
+wounds-combatant-legacy-qte-offer1, wounds-npc-legacy-qte-offer1,
+wounds-player-legacy-qte-offer1, wounds-npc-canonical-retirement-source-guards2,
+wounds-legacy-effect-documentation2 (separate Unit/Integration). NoBuild/Parallelism1,
+original60/180s. Wrapper41.592873s/runner40.1553743s, no skip/timeout/duplicates/
+underfill. Both cleanup true/newTMP[], no active owners, clean runtime tree;
+post-run45copied artifacts/618resourcecopies/native6/450sourcebindings unchanged.
+
+Legacy wound type and exact source property (including null) now produce precise
+private dedicated raw refusal, rather than a fake ID/duration repair route. All6
+causal target rows and current adjacent/control/bytes pass. Three genuine signed
+QTE peers reach exact refusal code/path while preserving JSON/request/manifest/
+authority/current source bytes. Current canonical active-effect branch, late
+canonical validation, every non-wound rule and all source/permission checks stay.
+Only obsolete wound type/field/hints and one enum item were retired; no new game
+rule, general conflict/QTE work, direct writer or publication-bypass claim.
+
+The original W1 source557da697 causal6FAIL/1PASS is retained, all7 complete with
+actualissues=[] at first Error oracle AFTER controls/real wire dispatch/typedcarrier/
+byte premises. Pascal-wire SOURCE finding was corrected before that first build;
+no ignored-field fakeRED. No gameplay assertion or timeout was relaxed for GREEN.
+GM effect guide, sole negative effect_legacy_rejection_v1 worked example and
+manifest teach current client-derived wound effects; negative syntax is not a
+production-valid example or application command. Positive legacy scanner passes.
+No new authored capability or afterlife matrix/entrypoint change. Meaningful source
+ownership/enum exclusion guards pass; one semantically reviewed previously matching
+PrivateImplementation pin changed, all old9 World mismatch paths remain unchanged.
+
+Fresh Main64.811942s/Unit37.844120s/Integration80.024699s exit0, exact unchanged
+warning multisets81/26/107.45 current copied artifacts/206inputs618copies/native6,
+4PEPDB450bindings incl newly changed PrivateImplementation source. Support/CrashHost
+ECE are unchanged source-equivalent dependencies, not new builds/host qualification.
+Exactly3 approved GM resource inputs changed and9 selected-owner copies match;
+all other resource pins unchanged. Catalog1347/13177 is discovery-only.
+W2artifact9b9287c17ad76ff2e8021a39812edb7b8da689f1fccb785fb57971a6629b3c4c;
+PDB2319a4b75992984f69b7ce94d8ec5380cec63bb387b88f9c93d6c0b68684ab18;
+summary30872be6554070d8151e013678f0e175dc05770d202e917d9e9bd5c872b29755;
+rawTRX8a94c90b46e191a74d9afd0d713c207eb5f50f3294889286ba45c5f131d7658b;
+newQTETRX8de8709febea4923afc2c2c6b331e28ec90e5db6fda6ad50e81813924c0dbe5f;
+root14TRXintegrity453cc559bb42cd0b1e206987168a03f7107aacf5ae1b938c5e0d54e526134b94.
+Full seven TRX/summary/build/source/resource/raw and previous verified own15 archive
+(27,612,495B/SHA905a37c8ff40ffabeac66938f862ee070685f0243efc27d9d1e6eb21895f417d)
+remain external under /workspace/tboe-linux-evidence-20261102/combatant-legacy-wound-response.
+No unique evidence, saves/recovery/raw deleted; no raw/binaries uploaded to Git.
+Optimization: existing parsed element/required type and already-read source DATA,
+no new production IO/cache/lifetime/authority exception, no speedup claim.
+
+Remaining T149 source labels were independently reconciled read-only: generic
+isHealed fallback is unreachable from the actual closed source descriptors/hazard
+callers; current1536 wound export uses typed catalog/active lifecycle/non-public
+source. Small dead-code cleanup can remove that last marker. Conversely,
+EffectSourceAuthority.ValidateWoundBindings is actual typed source-bound protection,
+not a missing implementation or removable fallback; its LegacyLoose label is stale.
+Independent wound_legacy comes separately from terminal History and is unchanged.
+Next minimal source step may retire only dead branch and reclassify current binding,
+with explicit isHealed resurrection ban and no requirement for a phantom remaining
+legacy inventory category. No fresh gameplay gap is inferred from those labels.
+
+Wounds-only task boundary remains: no aggression/defeat/ACTIVE/F1 implementation;
+withdrawn T088 question needs no answer. R2 browser-course/A5 joint terminal stay
+UNKNOWN with no automatic retry admission, historical DFR/Mortal/Windows HOLDs
+remain. Safe->new conflict wound journey still needs an established actual separate
+start publisher, no fabricated same-turn safe bundle/fixture canonical patch. Parent
+T071/T149/#1536 remain open; receipt SHA/ref/bounded source readback checked separately
+from runtime0f9e47de. No merge/force-push/branch deletion/issue closure.
+
 # Existing T071/T149: legacy combat wound-effect correction SOURCE WIP
 
 Actual W1 causal is independently accepted on557da6971d60d5b842a8ab3f9c071a6af4f2d046:

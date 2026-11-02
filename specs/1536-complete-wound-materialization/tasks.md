@@ -1,3 +1,16 @@
+# Current wounds-only cutover: nested combat wound input accepted
+
+Existing T071/T149 legacy wound-effect refusal now has independent SOURCE/PREP/
+OUTCOME acceptance:14 unique PASS in one addressed group on0f9e47de4bc2305561bb93ebea233915aa70253e,
+raw7/QTE3/semanticguards2/GMdocs2, original60/180s, no broader qualification. Current
+canonical/independent-legacy protections preserved. Earlier raw player/NPC16 and
+parser-retirement10+1 lineages remain separate. Full receipts in plan/checkpoint.
+Remaining source-inventory labels do not mean missing gameplay: isHealed branch is
+unreachable and may be removed; ValidateWoundBindings is current typed protection
+and needs honest reclassification, not deletion. Parent tasks remain open pending
+that narrow source cutover/final reconciliation and other exact wound coverage.
+General conflict/defeat/aggression/ACTIVE/F1 outside scope, existing UNKNOWN/HOLD stay.
+
 # Current wound-only cutover and dependency clarification — 2026-11-02
 
 Existing T071/T149 dead loose player parser retirement and explicit retired-token
