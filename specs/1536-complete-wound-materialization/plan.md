@@ -1,3 +1,14 @@
+# Combat wound-effect scaffold SOURCE wire-key correction, runtime UNRUN
+
+Independent Sol review caught Pascal DTO property names instead of exact lowercase
+JSON enemiesData/alliesData. Corrected new raw/QTE input and expected paths before
+any build/test. Add existing-error prerequisites for both side dispatches (required
+image_prompt missing) and all4 side/collection paths (scalar effect row) so ignored
+or misspelled fields cannot fake the intended raw admission RED. These controlled
+invalid copies grant no new validation result; original sources stay unchanged.
+No production correction or diagnostic-code-only RED, no weakened oracle/cache.
+New C# remains UNCOMPILED; delta SOURCE and fresh Integration still pending.
+
 # Existing T071/T149: legacy combat wound-effect raw causal scaffold WIP
 
 Base45638298ac220de18edee424643873871fa53c7f remote checked; prior parser retirement

@@ -30,7 +30,7 @@ public sealed partial class QteSceneServiceTests
     {
         var actor = CombatantLegacyWoundResponseValidationTests.CreateNamedNpcCombatant("npc_enemy_guard");
         actor["activeBuffs"] = new JsonArray(CombatantLegacyWoundResponseValidationTests.CreateLegacyReferenceEffect());
-        await AssertLegacyWoundOfferRefusedAsync("EnemiesData", new JsonArray(actor),
+        await AssertLegacyWoundOfferRefusedAsync("enemiesData", new JsonArray(actor),
             "[0].activeBuffs[0].effectType", "wound_materialization_legacy_effect_unsupported");
     }
 

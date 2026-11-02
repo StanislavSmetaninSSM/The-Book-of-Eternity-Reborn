@@ -13,10 +13,10 @@ public sealed class CombatantLegacyWoundResponseValidationTests
 
     /// <summary>Both sides and both collection names must reject the formerly accepted wound-reference effect type.</summary>
     [Theory]
-    [InlineData("EnemiesData", "activeBuffs", "WoundReference")]
-    [InlineData("EnemiesData", "activeDebuffs", "woundreference")]
-    [InlineData("AlliesData", "activeBuffs", "WoundReference")]
-    [InlineData("AlliesData", "activeDebuffs", "WoundReference")]
+    [InlineData("enemiesData", "activeBuffs", "WoundReference")]
+    [InlineData("enemiesData", "activeDebuffs", "woundreference")]
+    [InlineData("alliesData", "activeBuffs", "WoundReference")]
+    [InlineData("alliesData", "activeDebuffs", "WoundReference")]
     public async Task ValidateResponse_RejectsLegacyWoundReferenceBeforeAdmission(string side, string collection, string effectType)
     {
         await AssertRefusedWithoutMutationAsync(side, collection, CreateLegacyReferenceEffect(effectType), "effectType");
@@ -24,8 +24,8 @@ public sealed class CombatantLegacyWoundResponseValidationTests
 
     /// <summary>The retired source property cannot be smuggled into a neighboring ordinary effect, even as explicit null.</summary>
     [Theory]
-    [InlineData("EnemiesData", "activeBuffs", false)]
-    [InlineData("AlliesData", "activeDebuffs", true)]
+    [InlineData("enemiesData", "activeBuffs", false)]
+    [InlineData("alliesData", "activeDebuffs", true)]
     public async Task ValidateResponse_RejectsLegacyWoundSourcePropertyBeforeAdmission(string side, string collection, bool explicitNull)
     {
         var effect = CurrentAdjacentEffect();
@@ -112,7 +112,7 @@ public sealed class CombatantLegacyWoundResponseValidationTests
     private static JsonObject CurrentResponse(bool adjacentEffects)
     {
         var result = new JsonObject { ["response"] = "Стражи остаются у ворот." };
-        foreach (var (side, id) in new[] { ("EnemiesData", "npc_enemy_guard"), ("AlliesData", "npc_ally_guard") })
+        foreach (var (side, id) in new[] { ("enemiesData", "npc_enemy_guard"), ("alliesData", "npc_ally_guard") })
         {
             var actor = CreateNamedNpcCombatant(id);
             if (adjacentEffects)
@@ -137,6 +137,23 @@ public sealed class CombatantLegacyWoundResponseValidationTests
         {
             using var document = JsonDocument.Parse(CurrentResponse(adjacent).ToJsonString());
             Assert.Empty(validator.ValidateResponse(document.RootElement));
+        }
+        // Prove real wire dispatch independently of the new legacy diagnostic.
+        foreach (var side in new[] { "enemiesData", "alliesData" })
+        {
+            var invalidActor = CurrentResponse(adjacentEffects: false);
+            invalidActor[side]![0]!.AsObject().Remove("image_prompt");
+            using var actorDocument = JsonDocument.Parse(invalidActor.ToJsonString());
+            Assert.Contains(validator.ValidateResponse(actorDocument.RootElement), issue =>
+                issue.FilePath == "response." + side + "[0].image_prompt" && issue.Severity == IssueSeverity.Error);
+            foreach (var collection in new[] { "activeBuffs", "activeDebuffs" })
+            {
+                var invalidEffect = CurrentResponse(adjacentEffects: false);
+                invalidEffect[side]![0]![collection] = new JsonArray(JsonValue.Create(7));
+                using var effectDocument = JsonDocument.Parse(invalidEffect.ToJsonString());
+                Assert.Contains(validator.ValidateResponse(effectDocument.RootElement), issue =>
+                    issue.FilePath == "response." + side + "[0]." + collection + "[0]" && issue.Severity == IssueSeverity.Error);
+            }
         }
     }
 
