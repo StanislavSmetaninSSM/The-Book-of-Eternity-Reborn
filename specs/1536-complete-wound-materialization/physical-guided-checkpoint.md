@@ -1,3 +1,43 @@
+# R1 fresh build/discovery frontier — runtime pending
+
+2026-11-02 UTC. Remote task branch and clean local HEAD were checked at
+afe5f4374a41b6d0962771121c2170fbfdeb6254. Independent Astra/high delta SOURCE
+accepts the fixture-only bool mapping; all 36 source rows and existing budgets
+remain unchanged. Integration-only C1 now exits 0: 107 warnings, 0 errors,
+69.12 seconds. No warning names the new BrowserGameStateReadReservationTests.
+The first five successful owning outputs remain at
+87339cf53eb0fa4722b4216afdfc42abea7f5701; their project inputs are unchanged.
+The failed initial Integration log remains available and is not a functional RED.
+
+Fresh build warnings by owner: Main 81, TestSupport 23, GMBridge 14,
+PortableStorageCrashHost 0, Unit 26, Integration 107. XML documentation was enabled
+with only the documented missing-member 1591 suppression. Main's 69 XML warnings
+are pre-existing source; no unavailable old warning multiset is claimed rechecked.
+GMBridge is a real build-only Unit dependency (ReferenceOutputAssembly=false),
+so its standalone output is checked without requiring its DLL in Unit's folder.
+
+The six actual Compile inventories and PE/PDB identities match; 431 changed-source
+bindings since b43e1bca match current source bytes, including linked helper owners.
+All 75 required managed DLL/PDB/XML/deps/runtimeconfig artifacts and transitive
+copies match their fresh owner. All 206 declared operational resource inputs
+match 1,236 output copies; 12 supervisor/manifest copies match the fresh package.
+External proof R1-artifact-resource-proof.json SHA256:
+4e9a0f7eae2684b18425e54b97f8879d4db8090a28b0dd2b43c5acb66a1639ca.
+PDB proof: R1-pdb-proof.json; helper SHA256
+9fbc5b41e90ca3ba7ac50e8add2e8327e0515619f65b84669b2eceb8e1d04993.
+These proofs are build/source integrity, not native or gameplay qualification.
+
+Fresh ValidateCatalog -NoBuild exits 0: 1,322 categories, 13,148 methods, no
+unmapped methods or stale selectors. Exact SelectionFile PlanOnly exits 0:
+11 descriptors / 16 methods / 36 cases, no runtime executed. Ten category
+budgets remain 60 seconds and legacy-exception remains 180 seconds; full browser
+remains 180 seconds. Both discovery operations report complete owned cleanup.
+All new raw is under /workspace/tboe-linux-evidence-20261102/browser-read-recovery,
+with R1-build-*, R1-catalog and R1-plan preserving full output. Old raw/binaries
+are still unavailable. Next: independent PREP, then exactly the selected 36 GREEN
+cases. Full browser admission/outcome is separate and still pending; older
+UNKNOWN/HOLD and historical acceptance boundaries are unchanged.
+
 # R1 owning builds — Integration fixture accessibility correction WIP
 
 2026-11-02 UTC, base87339cf53eb0fa4722b4216afdfc42abea7f5701 was confirmed

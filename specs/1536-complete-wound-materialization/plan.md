@@ -1,3 +1,22 @@
+# Browser source read reservation — fresh build/discovery frontier
+
+Current recovery source is afe5f4374a41b6d0962771121c2170fbfdeb6254.
+Independent SOURCE and fixture-only delta SOURCE are accepted. All six required
+managed owners built successfully; five unchanged outputs at 87339cf53 and fresh
+Integration C1 at afe5f4374. Six PE/PDB pairs, 431 current source bindings, 75
+managed artifacts, 206 operational resource inputs across 1,236 copies, and 12
+native package copies are verified. Fresh catalog: 1,322 categories / 13,148
+methods, no stale/unmapped entry. Exact PlanOnly: 11 descriptors / 16 methods /
+36 cases, all still runtime UNRUN. See physical-guided-checkpoint.md for primary
+external evidence, warning scope and the initial compile defect/correction.
+
+Next finite action: independent PREP followed by those 36 GREEN cases under the
+unchanged category budgets. Only after accepted causal benefit/safety/legacy
+results, assess one original full browser course at 180 seconds with complete
+capture. No repetition of unchanged historical peers or deferred broader gates.
+This build/discovery frontier supersedes earlier UNCOMPILED wording below;
+no gameplay speedup, fresh native qualification or browser PASS is claimed.
+
 # Browser source read reservation — recovered implementation frontier, WIP
 
 2026-11-02 UTC, tracked T121-PHYSICAL-GUIDED-BROWSER-READ-RESERVATION / #1536.
