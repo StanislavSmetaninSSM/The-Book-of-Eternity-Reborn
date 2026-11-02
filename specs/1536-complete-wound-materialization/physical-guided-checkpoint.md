@@ -1,3 +1,20 @@
+# T149 canonical player-carrier correction accepted
+
+Independent Astra/high final OUTCOME accepts T149-CANONICAL-PLAYER-CARRIER:
+11 distinct PASS on the explicit R4/R5 runtimes below, complete primary results
+and cleanup, no fresh-aggregate claim. Root checked the primary evidence and
+marks only this bounded task complete. Parent T149, noncanonical loose aliases,
+R2 browser UNKNOWN and all other HOLDs remain open. The obsolete scaffold paragraph
+misplaced beneath T152 has been removed; its historical source/RED provenance
+already remains in this checkpoint. No production change accompanies acceptance.
+
+Next T152 scope: typed Parse/Claim/Compose tests must prove interior C0 controls
+are removed only from player notification/narration projections, after exact raw
+binding. Reuse existing WoundPlayerProjection.Text: retain its newline/tab/Unicode
+policy, then escape once for console/browser. No terminal control payload is
+executed, no canonical claim/wound data is rewritten, and no new policy or cache
+is introduced. The source finding is not yet a runtime RED or implementation.
+
 # T149 remaining inventory PASS — final bounded OUTCOME pending
 
 Independent schema delta/PREP accepts exact singleton runtime

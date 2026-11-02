@@ -26,31 +26,17 @@
   Broader141/DFR/Mortal/Windows/native work is not
   repeated automatically; browser180s admission and parent/HOLD closure stay open.
 
-- [ ] T149-CANONICAL-PLAYER-CARRIER [US1/US7] Close the concrete PlayerStateFiles
-  bare legacy-array bypass before strict player carrier dispatch. Obtain typed
-  current-source causal RED for empty/nonempty bare arrays; preserve generic
-  scalar/null refusal without requiring a new diagnostic code,
-  preserve valid canonical empty/populated carriers and immutable source bytes,
-  retire only the substantiated loose route/allowance, and retain fresh read and
-  common publication authority. Inspect all callers and meaningful source guards;
-  independent design/source review, fresh affected builds and addressed GREEN
-  precede acceptance. No new save compatibility, accepted-turn bypass claim,
-  whole T149 closure, full browser retry or deferred HOLD release is implied.
-  Exact causal RED9 is independently accepted (arrays 2 FAIL / controls 7 PASS,
-  no timeout/underfill and fixture cleanup proven). Canonical-first production
-  dispatch and explicit source-inventory seam are now authored, UNCOMPILED/UNRUN.
-  Current GREEN selection: Integration 9 + existing Unit semantic guards 2,
-  11 cases / 5 methods / two descriptors, unchanged category 60s. Independent
-  SOURCE, fresh affected builds and GREEN acceptance remain required.
-  Production SOURCE and six-owner builds are accepted; runtime f21ec22c gives
-  typed Integration 9 + Unit confinement 1 PASS and one stale inventory anchor
-  FAIL, complete/no timeout/cleanup proven. One-line partial-class anchor repair
-  is authored; only that failed Unit method is selected for confirmation after
-  independent review and fresh Unit build. Parent and bounded acceptance remain
-  open until that result is reviewed; no overall fresh 11 PASS is claimed.
-  Remaining inventory runtime ef2c7623a7cd556c49e0780f23c25fd7100cb1d7 passes
-  1/1 with full result/cleanup proof. Bounded evidence is 11 distinct PASS across
-  R4/R5 versions, not one fresh aggregate; final OUTCOME remains pending.
+- [x] T149-CANONICAL-PLAYER-CARRIER [US1/US7] Reject bare legacy-array roots at
+  the canonical player path before generic validation, preserving strict catalog
+  objects, noncanonical callers, immutable bytes and all fresh authority checks.
+  Independent DESIGN/SOURCE/PREP/OUTCOME accepted the real arrays2 RED with
+  controls7 PASS, minimal production correction and final addressed evidence.
+  Final evidence is 11 distinct PASS on two runtimes: Integration9 + confinement1
+  at f21ec22c2e4e83398384c160c8cadd9e04d3fafb; corrected inventory1 at
+  ef2c7623a7cd556c49e0780f23c25fd7100cb1d7. This is not a fresh aggregate.
+  Six-owner source/build is 9dc61ba9f; later Unit anchor-only build is eaec6901f.
+  Exact results/cleanup/source/resource/readback are in physical-guided-checkpoint.
+  Parent T149 and other loose aliases, R2 browser UNKNOWN and all HOLDs stay open.
 
 - [ ] T152-NOTIFICATION-CONTROLS [US1/US5] Apply the already existing wound
   projection text policy to accepted acquisition notification and narration:
@@ -62,12 +48,6 @@
   policy/framework, then independent review, fresh affected builds and addressed
   GREEN. Preserve the existing newline/tab/Unicode policy; no blanket bidi rule,
   GameEngine/performance stack or broad completed-set replay is introduced.
-  Authored scaffold WIP: actual typed PlayerStateFiles with exact canonical-path
-  selection, three methods/nine source rows (arrays2 causal, scalar/null5 preserving,
-  genuine catalog-valid canonical2), one exact60s category. Existing minimal
-  filesystem/validator/generation fixture and TestSupport-owned wound data are reused;
-  file bytes are checked before/after. Production and legacy guard are unchanged.
-  Design/SOURCE/build/discovery/PlanOnly/PREP/RED remain pending; C# UNCOMPILED/UNRUN.
 
 # T108 Shining patient treatment — #1536
 

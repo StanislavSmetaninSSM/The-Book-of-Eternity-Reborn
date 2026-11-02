@@ -1,3 +1,12 @@
+# T149 bounded correction accepted — proceed to safe notifications
+
+Independent final OUTCOME accepts only T149-CANONICAL-PLAYER-CARRIER, with eleven
+distinct PASS on the two recorded runtimes, actual source/build/resource proofs
+and cleanup. Root inspected primary results and marks that bounded task complete;
+parent T149 and all unrelated HOLDs remain open. Stale scaffold wording under
+T152 is removed without erasing its checkpoint provenance. Next is the already
+tracked T152 notification C0 projection contract described below; no browser retry.
+
 # T149 addressed evidence complete — final OUTCOME pending
 
 Remaining inventory runtime ef2c7623a7cd556c49e0780f23c25fd7100cb1d7 passes 1/1
