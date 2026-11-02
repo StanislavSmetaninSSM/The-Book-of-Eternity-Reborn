@@ -1,3 +1,66 @@
+# T081-D connected failed maneuver — current runtime29 PASS, final OUTCOME pending
+
+Source2bf6f7ba144a296cfb162943075dbd463bc1a4aa on Linux; Astra/high delta SOURCE,
+Sol/xhigh cheap PREP/OUTCOME and Astra/high actual PREP accepted. G3 true next-turn
+FAIL remains preserved below; only signed display→canonical realm adapter changed.
+Fresh Main63.923839s/Unit33.260467s/Integration62.735040s all exit0, exact previous
+warning multisets81/26/107.45artifacts/618resource copies/native6/4PE/PDB488bindings
+verified, resource inputs unchanged. Artifact proof5c61c9dda40bf8a6361b11e07a66e76dc6783c9808e1f6e50a2aa29a50b38077;
+PDB61657f1148331433dcde174dcce0a5977226fd6ba23c9b23abbf7d339b28c735.
+Seven changed source/checkpoint files clean-exported and matched to immutable GitHub
+blob IDs; proof724ab076f17bd0999d46ad6ae32be11205789a40f7cba71943dfa7979cefc356.
+This bounded readback is not a full clone/raw restore.
+
+Official NoBuild/parallel1 exact plans: catalog1365categories/13197methods valid,
+no tests in discovery. Actual results, each complete with no skip/timeout/duplicate:
+
+| Run | Cases | TRX seconds | Category seconds | Budget seconds |
+| --- | --- | --- | --- | --- |
+| G4-cheap25: History9 + historical16 |25PASS|individual TRX retained|3.2135781 +7.2635786|60 +120|
+| G4-maneuver1: cold C2→C3→History→C4→signed next-turn |1PASS|35.1315544|38.5908112|180|
+| G4-pressure1: affected existing C2 pressure |1PASS|34.6335533|38.2025707|60|
+| G4-publication1: affected existing C4 pressure |1PASS|35.0052582|38.8137982|180|
+| G4-rollback1: committed readback failure restores originals |1PASS|28.2486526|31.5653066|180|
+
+29distinct cases across five runs on the same source, NOT a fresh72/full family.
+Astra/high independently accepted maneuver OUTCOME (including later summary,
+mechanics/marker refusals and stale C4); independent remaining3 OUTCOME pending.
+All posthashes stable45/618/6/488, owned/runtimecleanup true,newTMP[], no active
+owners; full raw/TRX/failed G3 and passing G4 retained outside checkout/GitHub at
+/workspace/tboe-linux-evidence-20261102/spiritual-strain-preimage-data.
+Post-proof SHA256 (cheap25/maneuver/pressure/publication/rollback):
+775661c889ccff4851b68be5015b815ad296355167b1ecca1dd3e5c0b79ad097;
+118d7ff0ee7a38af0952ec360693793172a8a62fa24717cc9105462f5aeb3885;
+841b05fef6c9e15c504202ba490571c52c3307bfbbe56c3227206c2c9560aa4b;
+bce2008093c03ba401da5b143f0d86eaea5253176c952b901558116688b260f8;
+a23078cc072dd56e1a61f289e6034cfb46ffe8d8ccb12c00999291c07d595520.
+Optimization/GM rationale from preceding adapter entry still applies: existing
+normalizer, immutable frame-owned receipt/history DATA, no extra I/O/cache and no
+removed fresh fence or GM field/rule. No speedup is claimed from these timings.
+
+## Next bounded wound-only result: actual weakening and retired strain roots
+
+Real gameplay healing/root removal is still UNRUN, not proved by synthetic terminal
+DATA. Independent Astra lookup found a legal existing-owner route: a separate
+uncached fixture variant seeded BEFORE first snapshot with healing tierIII,
+player spirit-focusII/max8/current8 and opposition max8/current8. Original pressure3
+then maneuver3 leave player2; opposition pressure3+guard2 leaves3, enough for existing
+healing2/guard2. All soul/formula/resource History/composer inputs must agree; no
+manual refill, cleared conflict, after-turn fixture repair or root deletion.
+Append healing at actual log.Count+1 through StagePlayerCombatTurnAsync, signed
+next-turn request/projection, current automatic C2 and common C4. Author requested
+weaker graphs from actual stageRefs for actual parent (tierIII/die19:25vs16, reduce2,
+III→I), including valid component/trigger references. Assert real persisted healing
+result, exact current root retirement/replacement, preserved first-create parent
+fingerprint and old receipt, then following signed historical read. This is not a
+terminal heal or Engine/UI/fresh-process claim. Keep accepted G4 fact unchanged.
+DESIGN acceptance, code and all new runtime remain pending. Existing default6
+prepared-fixture key must not mask new8 inputs: use the current nontrusted custom
+seeder fallback or include complete new capacity dependencies in its existing key.
+No new cache. Continue explicit no-roll GM-choice producer afterward; it remains
+unimplemented, while three author-deferred consumers are not blockers. General
+combat/QTE/ACTIVE/F1 and all older UNKNOWN/HOLD remain outside this slice.
+
 # T081-D signed historical realm adapter — causal FAIL preserved, fix WIP
 
 At clean remote 9b56154a661b6e66beb004ee782cde29f31e71e1, admitted G3-maneuver1

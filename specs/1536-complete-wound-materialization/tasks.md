@@ -1,3 +1,16 @@
+# T081-D current connected route — runtime29 PASS, independent remaining3 OUTCOME pending
+
+- [x] Fix the genuine G3 display/key historical adapter defect using the existing normalizer; preserve full failed capture.
+- [x] Independent delta SOURCE, fresh Main/Unit/Integration, valid discovery1365/13197, exact plans, cheap25PASS and accepted OUTCOME.
+- [x] Actual cold failed-maneuver C2→C3→History→C4→signed next-turn1PASS, later refusals executed; Astra/high OUTCOME accepted.
+- [x] Affected pressure/publication/rollback3 each1PASS within unchanged60/180/180s, full cleanup/hashclose.
+- [ ] Independent remaining3 OUTCOME and final bounded checkpoint acceptance; runtime29 on one source is not fullfamily72.
+- [ ] Actual III→I healing through existing owners and retirement of original strain roots, with signed later history: separate legal pre-initial-snapshot capacity/tier fixture, DESIGN/code/runtime pending (see plan.md).
+- [ ] Explicit no-roll harmfulMargin GM-choice producer/admission and qualification; author decision resolved, implementation open.
+
+General combat and author-deferred control/counter/partialIII restrict excluded,
+not completed. All older UNKNOWN/HOLD remain distinct. Whole #1536 stays open.
+
 # T081-D signed historical adapter — current bounded follow-up
 
 - [x] Preserve complete G3 actual1FAIL (34.5231809s, no timeout), partial C2/C3/C4 milestones and independent Astra/high cause assessment; see current plan.md.

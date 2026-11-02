@@ -1,3 +1,19 @@
+# Current T081-D — connected route29 PASS, remaining3 OUTCOME pending
+
+Linux source2bf6f7ba144a296cfb162943075dbd463bc1a4aa: fresh Main/Unit/Integration
+exit0 with exact81/26/107warnings,45/618/6/488 verified. G4-cheap25 and maneuver1
+independently accepted; pressure/publication/rollback each1PASS with complete
+capture/cleanup/hashclose, their independent OUTCOME pending.29distinct same-source
+cases across5runs, not fresh72/fullfamily. Signed next-turn, top-summary allowance,
+mechanics/turn refusal and staleC4 actually executed. G3 causal FAIL retained.
+See current plan.md table/proof hashes; raw /workspace/tboe-linux-evidence-20261102/spiritual-strain-preimage-data.
+
+Next separate existing-owner healing fixture: legal initial8AP/tierIII BEFORE
+snapshot, genuine C2/C4 III→I and retired original strain roots, then signed old
+history. Code/runtime pending; no manual refill/clear/rootdelete, no actualterminal
+claim from DATA. No-roll GM-choice implementation and whole strain/#1536 remain
+open; author deferrals and older UNKNOWN/HOLD unchanged. See plan.md bounded design.
+
 # Current T081-D result — real maneuver next-turn FAIL; adapter fix WIP
 
 G3-maneuver1 on9b56154a661b6e66beb004ee782cde29f31e71e1:1FAIL/34.5231809s,
