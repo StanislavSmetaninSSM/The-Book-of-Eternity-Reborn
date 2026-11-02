@@ -31,7 +31,7 @@
 },
 {
   "id": "wound-help-menu-causal",
-  "responsibility": "T118-ACTUAL-SHELL-READONLY / FR-075 / #1536: exactly one new SSR HelpView case with fresh typed public coverage, actual handlerKind Wounds and default mode. Require the single command row/label and /раны before final Russian category heading Раны and no raw Wounds. Accepted F1 causal RED reached only the heading oracle after all premises; retain the same singleton as regression for the one-entry Russian GROUP_LABELS correction. This is component SSR only, not actual App/DOM/keyboard/HTTP qualification; GREEN cost UNMEASURED.",
+  "responsibility": "T118-ACTUAL-SHELL-READONLY / FR-075 / #1536: exactly one new SSR HelpView case with fresh typed public coverage, actual handlerKind Wounds and default mode. Require the single command row/label and /раны before final Russian category heading Раны and no raw Wounds. Accepted F1 causal RED reached only the heading oracle after all premises; retain the same singleton as regression for the one-entry Russian GROUP_LABELS correction. This is component SSR only; accepted F2 GREEN takes15.806159ms in2.711535s wrapper onf096, not a speedup measurement or actual App/DOM/keyboard/HTTP qualification.",
   "excludes": "No icon/other production change, App/driver execution, backend/GM/provider/canonical authority proof, new cache/diagnostic stack, accepted SSR28/DOM13 replay, broad frontend category or A5/R2/heavy HOLD retry. Existing category owners remain unchanged and unselected.",
   "changeHints": [
     "BookOfEternityClient.WebFrontend/test/woundHelpMenuCausal.test.tsx",

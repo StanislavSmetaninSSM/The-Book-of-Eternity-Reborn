@@ -10,7 +10,7 @@
     },
     {
       "category": "wound-actual-shell-types",
-      "reason": "Compile only the new actual-App pure typed packet factory and JSON import chain using the existing adapter/config (resolveJsonModule only). One compile-contract record, not runtime Fact or DOM PASS. Existing accepted production build/SSR1/28/controlled DOM13 remain unselected. Whole SOURCE and separate resource/PREP must precede each owned actual-shell desktop/mobile60s attempt; no backend/provider or heavy HOLD retry.",
+      "reason": "Own the actual-App typed packet factory and JSON import chain through the existing compile-only adapter/config. Accepted F3 produces one compile-contract record, not a runtime Fact; identical compiler inputs need no repeated local run. SSR1 is selected separately for the completed leaf; old SSR28 and controlled DOM13 remain unselected. Desktop/mobile DOM2 have separate accepted manual evidence and are not executed by this selection; no backend/provider or heavy HOLD retry.",
       "contracts": [
         "#1536 / T118-ACTUAL-SHELL-READONLY / T118/T158 / typed actual-App controlled read-only transport packets"
       ]
