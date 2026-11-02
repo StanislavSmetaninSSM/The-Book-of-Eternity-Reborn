@@ -1,5 +1,11 @@
 # Задачи #1573 — полный духовный бой
 
+## T147 — периодический урон
+
+- [x] T147.1 Принятие T146, mortal source audit/parent сверка, spec/plan/consistency до арифметики.
+- [x] T147.2 periodic-damage-budgets.md подготовлен: total/tick/цена/исходы/срок/snapshot/защита/снятие/recast. Точная арифметика трёх профилей/partial/crit/Flat/порог/барьер/сменаR/mastery/цен,25 ссылок и7-doc diff/check прошли.
+- [ ] T147.3 Independent Astra/high review, corrections; remote/API/new restore/issue readback; предъявить кандидат без production.
+
 ## T146 — отрицательные эффекты
 
 - [x] T146.1 Зафиксировать T145, source audit/parent сверку, spec/plan/consistency до арифметики.

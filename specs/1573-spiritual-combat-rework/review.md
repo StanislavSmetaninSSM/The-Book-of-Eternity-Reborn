@@ -1,5 +1,22 @@
 # Проверка проекта #1573
 
+## T147 — периодический урон
+
+Baseline/origin7eb59e0fc8117266acd32844f11794fbed02b0d4 совпали; issue1573 прочитана.
+T146 принят, T147 — кандидат. Scope/spec/plan/tasks/предварительный consistency
+записаны до арифметики. Sol6.1/high read-only source audit подтвердил mortal
+DoT tick/3turn примеры без универсального тарифа, modern source definitions,
+исходы/crit, source-owned lifetime/stacking. Parent сверил T138 candidate,
+HP0/фазы, outgoing snapshot/актуальные target defenses и cleanseS.
+Точная Fraction-арифметика трёх профилей, partial/crit, Flat/Percent один раз,
+порога/барьера/сменыR, G1/10/25 и ценD0/50/210 проверена;25 новых ссылок
+и7-doc scope/diff/check прошли. Свидетельство D:\BoeDiagnostics\periodic-damage-t147\verification.json.
+Это расчёт примеров, не запуск будущего scheduler или симуляция полного боя.
+Independent review ещё не выполнен; сначала сохраняется WIP.
+Runtime/Rules/боевых probes нет; новых кэшей не нужно. Будущие тики используют
+сохранённую силу/definition через существующий сервис и актуальные ресурсы/
+authority цели с idempotent event key. Диагностика только D:.
+
 ## T146 — ослабления
 
 Baseline/origin1df688c6da7135853162457867d9e9bfb35211c7 совпали; issue1573 прочитана.

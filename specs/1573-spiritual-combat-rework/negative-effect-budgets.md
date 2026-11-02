@@ -1,8 +1,8 @@
 # Ослабления: характеристики, урон и сопротивления
 
 2026-11-02, T146, [#1573](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1573).
-**Новый кандидат, не принят и не реализован.** T145 положительные усиления
-приняты автором. [Spec](spec.md), [plan](plan.md), [tasks](tasks.md), [review](review.md).
+**Значения и цены приняты автором в T147 (2026-11-02), не реализованы.**
+Внебоевые часы/полный баланс/production остаются открытыми. [Spec](spec.md), [plan](plan.md), [tasks](tasks.md), [review](review.md).
 
 ## 1. Mortal основание и подход
 

@@ -1,5 +1,27 @@
 # План перехода к личной модели духовного боя — #1573
 
+## T147 — численная калибровка и lifecycle DoT
+
+Baseline/origin7eb59e0fc8117266acd32844f11794fbed02b0d4 совпали; issue1573 прочитана.
+[Spec](spec.md), [tasks](tasks.md). Brainstorming + Spec Kit bridge + writing-plans
+в существующей feature. Предварительный consistency: T147scope→T147.1–3,
+документальное исследование/арифметика, не production.
+
+1. Записать принятие T146. Один Sol6.1/high read-only mortal/source audit;
+   parent сверяет damage/currenttargetdefense, T138 candidate, clocks/HP0,
+   cleansingS и одноразовые Flat/Percent/crit/mastery.
+2. Новый профиль total/ticks/ДЭ, delay/partial/crit, snapshot, removal/recast;
+   определить отличие от старого T138 примера. Проверить D0/50/210/G,
+   защиту/пороги/барьер, отсутствие первого лишнего тика/повторного flat,
+   конец3-й возможности, source/target scopes и ссылки/diff.
+3. WIP/push до Astra/high whole-block review; исправления, remote/API/source
+   bytes/new clean sparse restore, issue readback; предъявить кандидат.
+
+Оптимизация: документов достаточно, нового runtime/кэша нет. В будущих тиках
+переиспользовать сохранённую силу/definitions через existing service;
+каждый damage-event использует актуальную цель/ресурсы/authority и точный
+идемпотентный ключ, с инвалидацией по source/target revision/expiry.
+
 ## T146 — численный проект ослаблений
 
 Baseline/origin1df688c6da7135853162457867d9e9bfb35211c7 совпали; issue1573 прочитана.
