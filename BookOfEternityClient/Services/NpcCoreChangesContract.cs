@@ -117,10 +117,8 @@ internal static class NpcCoreChangesContract
         "Main", "Fast", "Free"
     };
 
-    private static readonly HashSet<string> AllowedPassiveSkillTypes = new(StringComparer.OrdinalIgnoreCase)
-    {
-        "KnowledgeBased", "CharacteristicBonus", "BodyModification", "CombatEnhancement", "Utility"
-    };
+    private static readonly HashSet<string> AllowedPassiveSkillTypes =
+        MortalSkillProfileContract.AllowedPassiveSkillTypes;
 
     private static readonly HashSet<string> ActorFieldsWithDedicatedContinuityValidation =
         new(StringComparer.Ordinal)

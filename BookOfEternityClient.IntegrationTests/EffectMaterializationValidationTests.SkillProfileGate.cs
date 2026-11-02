@@ -15,6 +15,14 @@ public sealed partial class EffectMaterializationValidationTests
     {
         await using var context = await EffectMaterializationTestContext.CreateAsync();
         const string path = "game_state/player/skills_active.json";
+        await context.WriteJsonAsync(
+            path,
+            new JsonObject
+            {
+                ["activeSkillChanges"] = new JsonArray(),
+                ["removeActiveSkills"] = new JsonArray()
+            });
+        await context.CaptureValidatedPendingSnapshotAsync();
         var invalid = CreateValidActiveSkill("skill_no_combat_effect", "Безликий выпад");
         invalid.Remove("combatEffect");
         await context.WriteJsonAsync(
@@ -41,6 +49,14 @@ public sealed partial class EffectMaterializationValidationTests
     {
         await using var context = await EffectMaterializationTestContext.CreateAsync();
         const string path = "game_state/player/skills_active.json";
+        await context.WriteJsonAsync(
+            path,
+            new JsonObject
+            {
+                ["activeSkillChanges"] = new JsonArray(),
+                ["removeActiveSkills"] = new JsonArray()
+            });
+        await context.CaptureValidatedPendingSnapshotAsync();
         var invalid = CreateValidActiveSkill("skill_mythic_rarity", "Мифический выпад");
         invalid["rarity"] = "Mythic";
         await context.WriteJsonAsync(

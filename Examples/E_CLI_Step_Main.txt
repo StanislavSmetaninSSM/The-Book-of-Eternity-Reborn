@@ -676,7 +676,7 @@ Equivalent reordering of fields or bonus entries is acceptable as long as the ca
 4.5B MORTAL WORLD TRAINING MUST MATERIALIZE SKILLS
 ==================================================
 
-If a Mortal World scene says the player learned, trained, practiced, unlocked, or repeatedly applied a concrete skill, the result must not remain prose-only. Attribute-only checks are allowed when the character has not learned a durable skill yet, but the narrative should make that clear.
+If a Mortal World scene says the player learned, trained, practiced, unlocked, or repeatedly applied a concrete skill, the result must not remain prose-only. Attribute-only checks are allowed when the character has not learned a durable skill yet, but the narrative should make that clear. Skill `rarity` must be one of the canonical values `Common`, `Uncommon`, `Rare`, `Epic`, `Legendary` (case-insensitive); passive `type` must be one of `KnowledgeBased`, `CharacteristicBonus`, `BodyModification`, `CombatEnhancement`, `Utility`, while passive `group` stays a free-form narrative label.
 
 Example: a child in an archive spends repeated turns learning the difference between house seals and witness marks. Once the lesson crosses from early practice into a learned technique, the GM should add a passive skill:
 
