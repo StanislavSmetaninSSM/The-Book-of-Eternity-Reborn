@@ -1,5 +1,24 @@
 # Проверка проекта #1573
 
+## T145 — положительные усиления
+
+Baseline/origin f472dc32d99cf9a8ad61344328b25c669ac4dcae совпали; issue1573 прочитана.
+T144 принят, T145 — кандидат. Scope/spec/plan/tasks и предварительный
+consistency записаны до арифметики. Один Sol6.1/high read-only source audit
+нашёл mortal +2Dex/3turn, +5%damage-R/3turn и +10%damage; универсального
+mortal тарифа нет. Parent сверил current/permanent, HP/DE/Favor, cap и S.
+Ссылка аудита на старую current Integrity исправлена по позднему принятому
+контракту damage-and-innate-resistance: используется permanent I.
+
+Точные дробные вычисления примеров/цен D0/50/210, G1/10/25 и четырёх Main,
+25 добавленных локальных ссылок и7-doc scope/diff/check прошли. Свидетельство:
+D:\BoeDiagnostics\positive-buffs-t145\verification.json. Independent Astra/high
+review ещё не выполнен; сначала сохраняется WIP. Никакой runtime/Rules/production
+или боевой симуляции; арифметика не доказывает баланс/частоту побед.
+Оптимизация: новых runtime путей/кэшей нет; будущий выбор вкладов использует
+устойчивые определения/снимки через existing service, инвалидацию по смене
+источника/срока/версии; ресурсы и authority свежие. Диагностика только D:.
+
 ## T144 — враждебное рассеивание
 
 Baseline/origin870684745960046cd4588f3e6a5d254ba8d290ca совпали; issue1573 прочитана.

@@ -1,5 +1,11 @@
 # Задачи #1573 — полный духовный бой
 
+## T145 — положительные усиления
+
+- [x] T145.1 Зафиксировать принятие T144, source audit/parent сверку, spec/plan/consistency до арифметики.
+- [x] T145.2 positive-buff-budgets.md подготовлен: сила/срок/ДЭ/mastery/сложение, current/permanent и снятие. Точная арифметика примеров/цен/мастерства/четырёх Main,25 добавленных ссылок и7-doc diff/check прошли.
+- [ ] T145.3 Независимый Astra/high review, исправления; WIP/final remote/API/new clean restore, issue readback; предъявить кандидатом без production.
+
 ## T144 — рассеивание положительных эффектов противника
 
 - [x] T144.1 Принятие T143, source audit/parent сверка, scope/spec/plan/consistency до расчётов.
