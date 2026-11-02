@@ -1,3 +1,44 @@
+# A4 accepted4; doc-only checkpoint before separately admitted terminal singleton
+
+Compiled Integration/runtime9383e6e7b2eb999144b88f4d48f055bca97bdc72,
+fresh build74.805064s/exit0/107 warnings; exact previous warning multiset retained.
+Other five owners remain92c561f0eccfd3f8bd086850057319903168274c, C# unchanged.
+Six PE/PDB/437 current bindings and75 artifacts/1,236 resource copies/12 native
+copies verified. Artifact SHA256:
+bdd826e9eb1c864b6a541764fca0b2261ca36544c2940c2f39033cbe05c957dd;
+PDB6530c3578f0e3b18faaf20450df94e67b907c6a97b76167d6155d9dd360146cc.
+Current catalog is unchanged from validA2 (1,328/13,154); no owner/attribute/method
+change. Exact A4Plan2descriptors/4Facts/60+60s passes, runtime0. Six938 source/docs
+files were independently downloaded at the immutable remote and match source;
+bounded readback proof2f2f58228cc6e5518a3434931aafcb0f4aef8ce509503f9ce68125c2e7915aa4,
+not a new full-tree restore.
+
+Independent Astra SOURCE/PREP/OUTCOME accepts A4-cheap4:4/4 PASS in21.6046858s,
+exit0/no timeout/underfill/duplicates. Controls3 take0.0969298/0.3248915/0.1221830s;
+worsening1 takes8.2203739s and reaches all original identity/effect replacement /
+History/output assertions. Summary SHA256:
+dc9b1f005af77ed67c05865b143caf845d970a5dd486c3e375860eaf65535ab1;
+controls TRXdfb1705e4036fe61d2eafad718bdd1821805354adb4dc95fb55fc223bf7becef;
+worsening TRX83943010db30fffc20e6501459528540ec5a35ba03f67e02b93277d97ccde928.
+Four gzip streams have full EOF/CRC/strict UTF-8/stored+decoded bytes/hash/rows
+proof; three are complete with roots removed. Fault Fact intentionally has lost
+batch/incomplete accounting, closed gzip and retainedrootbb2d933ea9644c179ec2d7e929ecc530.
+That is an expected refusal-policy proof, not complete successful diagnostics.
+The only other component root is old A2 terminal89067951..., all135 frozen entries
+unchanged. No live owners/new private TMP roots. Primary raw remains external in
+notification-controls/A4-cheap4; verification SHA256:
+2d05b3051c2da5eb3d4f5f8d9252f13ba7e4581f4ff07e2a7d8a270bd595290d.
+
+Original notification selection now has10 distinct output PASS on retained explicit
+versions; no fresh10 or full T152 claim. Anchor2 pass remains separate. A2 full
+terminal TIMEOUT/UNKNOWN and its incomplete capture/root are preserved. A5 exact
+singleton Plan on9383e6e7 is1case/120s, runtimeUNRUN; no retry is admitted yet.
+This checkpoint changes only canonical plan/tasks/findings. Preflight must prove
+that doc-only delta versus9383e6e7, retain current compiled/artifact/source pins
+and avoid unnecessary rebuilding. After separate PREP, at most one unchanged120s
+full terminal attempt with the existing continuing recorder; no cache/workload /
+assertion/budget change or speedup claim. T121/T152 and all broader HOLD stay open.
+
 # A2 partial GREEN and A3 fixture failure — next test-only WIP
 
 All six owner builds are fresh at92c561f0eccfd3f8bd086850057319903168274c,

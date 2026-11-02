@@ -99,6 +99,11 @@
   terminal peer. No DATA-reuse/workload/budget/assertion/production change. First
   SOURCE/fresh Integration/cheap controls3+worsening1; full peer remains HELD for
   later independent OUTCOME/PREP. No overall closure or missing-result PASS.
+  A4SOURCE/PREP/OUTCOME accepted at9383e6e7: continuingcontrols3+worsening1
+  PASS4/4 with full source/byte/closing proof; the fault Fact's retained root and
+  incomplete ledger are intentional. Original output set is now10distinctPASS,
+  not a fresh aggregate. A2fullterminal UNKNOWN remains; A5Plan1/120s exists but
+  runtimeUNRUN, separate PREP required. No repeat unchanged anchor2/output10/HOLD.
 
 # T108 Shining patient treatment — #1536
 

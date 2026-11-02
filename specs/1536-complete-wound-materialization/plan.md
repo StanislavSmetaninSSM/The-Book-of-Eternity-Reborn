@@ -1,3 +1,35 @@
+# Worsening and continuing-capture gate accepted; full terminal PREP next
+
+Independent Astra SOURCE/PREP/OUTCOME accepts A4 on compiled/runtime
+9383e6e7b2eb999144b88f4d48f055bca97bdc72: controls3 + worsening1 =4/4 PASS,
+2/2descriptors,21.6046858s wall, unchanged60/60s, no timeout/underfill/duplicates.
+Worsening8.2203739s reaches unchanged identity/effect replacement/History and
+before/after-publication notification oracles using genuine signed42→43 sources.
+The incomplete local setup and preceding A3 FAIL are preserved, not relabelled.
+
+Three continuing-transfer controls preserve actual blocked-body visibility,
+one source read/no authority, original ticks/order, independent instances and
+closed final-tail policy. Three captures are complete and roots removed; the
+fault Fact intentionally has incomplete accounting and its identified retained
+root. All four gzip byte streams independently verify EOF/CRC/strict UTF-8/hash /
+row counts. The old A2 terminal root is unchanged against its frozen135-entry
+manifest; no active owners/new private TMP roots. No evidence deletion.
+
+Current Integration build is fresh at9383e6e7,74.805064s/exit0/107 unchanged
+warnings; other five owners remain unchanged92c561f0. Current six PE/PDB/437
+bindings,75 artifacts/1,236 resource copies/12 native copies pass. Catalog bytes
+and method ownership are unchanged; exact discovery/Plan passes without repeating
+the already valid catalog audit. No new cache, source privilege, game rule or GM
+wire; fresh default terminal workload and120s remain. No speedup is established.
+
+Only the full terminal peer remains from the original eleven output cases:
+10 distinct output PASS across the explicit retained lineages, not fresh10.
+Anchor2 GREEN is separate; its full peer remains A2 UNKNOWN. Exact A5 singleton
+Plan exists on9383e6e7 (1 case/120s), but runtime UNRUN. Preserve this result in a
+doc-only checkpoint; verify its delta against compiled9383e6e7 and adapt preflight
+without rebuilding unchanged C#. Separate PREP is required before any full run.
+T121/T152 parents, R2 UNKNOWN and every other HOLD remain open.
+
 # Terminal anchor2 GREEN; full peer UNKNOWN; whole worsening preparation correction
 
 Current compiled/runtime92c561f0eccfd3f8bd086850057319903168274c is independently
