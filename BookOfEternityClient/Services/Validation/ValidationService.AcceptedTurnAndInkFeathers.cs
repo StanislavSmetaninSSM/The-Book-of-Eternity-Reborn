@@ -317,7 +317,7 @@ public partial class ValidationService
         var masteryFileChanged = await HasAcceptedTurnStateDeltaAsync(filesModified, masteryPath);
         var currentMastery = ReadSkillEntriesByExactName(masteryJson, "skillMasteryChanges");
         var preTurnMastery = ReadSkillEntriesByExactName(
-            await ReadValidatedCurrentPreTurnTrackedFileAsync(masteryPath),
+            await ReadCouplingPreTurnSnapshotAsync(masteryPath),
             "skillMasteryChanges");
 
         var passiveFileChanged = await HasAcceptedTurnStateDeltaAsync(filesModified, passivePath);
@@ -325,7 +325,7 @@ public partial class ValidationService
             await _fs.ReadFileAsync(passivePath),
             "passiveSkillChanges");
         var preTurnPassive = ReadSkillEntriesByExactName(
-            await ReadValidatedCurrentPreTurnTrackedFileAsync(passivePath),
+            await ReadCouplingPreTurnSnapshotAsync(passivePath),
             "passiveSkillChanges");
 
         var newSkillNames = new HashSet<string>(StringComparer.Ordinal);
@@ -379,7 +379,8 @@ public partial class ValidationService
     /// separately from a missing one: only the latter may fall back to weaker evidence.
     /// </summary>
     /// <param name="json">
-    /// The payload; <see langword="null"/> or empty input yields <see cref="SkillEntriesReadState.Missing"/>.
+    /// The payload; <see langword="null"/> input yields <see cref="SkillEntriesReadState.Missing"/>,
+    /// while present-but-empty or whitespace-only payloads yield <see cref="SkillEntriesReadState.Unreadable"/>.
     /// </param>
     /// <param name="section">
     /// The entry array to inspect.
@@ -390,8 +391,15 @@ public partial class ValidationService
     /// </returns>
     private static SkillEntriesRead ReadSkillEntriesByExactName(string? json, string section)
     {
-        if (string.IsNullOrWhiteSpace(json))
+        if (json is null)
             return SkillEntriesRead.MissingPayload;
+
+        if (string.IsNullOrWhiteSpace(json))
+        {
+            // A present-but-empty payload is corrupted evidence, not an absent one:
+            // it must not unlock the weaker fallback.
+            return SkillEntriesRead.UnreadablePayload;
+        }
 
         try
         {
@@ -456,7 +464,7 @@ public partial class ValidationService
         string arrayName,
         HashSet<string> newSkillNames)
     {
-        var preTurnJson = await ReadValidatedCurrentPreTurnTrackedFileAsync(path);
+        var preTurnJson = await ReadCouplingPreTurnSnapshotAsync(path);
         if (preTurnJson == null)
             return;
 
@@ -464,10 +472,19 @@ public partial class ValidationService
         if (string.Equals(currentJson, preTurnJson, StringComparison.Ordinal))
             return;
 
-        var preTurnNames = ParsePlayerSkillNames(preTurnJson, arrayName, StringComparer.Ordinal);
-        foreach (var name in ParsePlayerSkillNames(currentJson, arrayName, StringComparer.Ordinal))
+        // Fail closed on unreadable payloads: a corrupted snapshot or current file
+        // never fabricates "new this turn" skills from an empty parsed name set.
+        var preTurnEntries = ReadSkillEntriesByExactName(preTurnJson, arrayName);
+        var currentEntries = ReadSkillEntriesByExactName(currentJson, arrayName);
+        if (preTurnEntries.State != SkillEntriesReadState.Ok ||
+            currentEntries.State != SkillEntriesReadState.Ok)
         {
-            if (!preTurnNames.Contains(name))
+            return;
+        }
+
+        foreach (var name in currentEntries.Entries!.Keys)
+        {
+            if (!preTurnEntries.Entries!.ContainsKey(name))
                 newSkillNames.Add(name);
         }
     }
@@ -644,6 +661,11 @@ public partial class ValidationService
             if (PreTurnMastery.State == SkillEntriesReadState.Unreadable)
             {
                 return "skill claim found in narrative/interface text; the validated pre-turn mastery snapshot is unreadable (structural violation), so change evidence cannot be established";
+            }
+
+            if (PreTurnPassive.State == SkillEntriesReadState.Unreadable)
+            {
+                return "skill claim found in narrative/interface text; the validated pre-turn passive skill snapshot is unreadable (structural violation), so change evidence cannot be established";
             }
 
             if (MasteryFileChanged &&
@@ -855,32 +877,36 @@ public partial class ValidationService
 
     /// <summary>
     /// Collects the canonical skill names the player-facing text claims were used.
-    /// Canonical names differing only by case are a collision group: when prose spells one
-    /// member in its exact canonical casing, only that member is claimed; purely
-    /// case-insensitive matches claim the whole group (fail-closed on ambiguity).
+    /// Canonical names differing only by case are a collision group, and ambiguity is
+    /// resolved per mention: a sentence spelling members in their exact canonical casing
+    /// claims only those members, while a sentence matching the group only
+    /// case-insensitively claims the whole group (fail-closed on ambiguity).
     /// </summary>
     private static List<string> CollectClaimedSkillNames(string text, IReadOnlyCollection<string> knownSkillNames)
     {
         var sentencePairs = EnumerateProseSentencePairs(text).ToList();
-        var claimed = new List<string>();
+        var claimed = new HashSet<string>(StringComparer.Ordinal);
         foreach (var group in knownSkillNames
                      .Where(name => !string.IsNullOrWhiteSpace(name))
                      .GroupBy(name => name, StringComparer.OrdinalIgnoreCase))
         {
-            var strongClaims = group
-                .Where(name => sentencePairs.Any(pair =>
-                    pair.Raw.Contains(name, StringComparison.Ordinal) &&
-                    LooksLikeSkillUseClaimSentence(pair.Normalized)))
-                .ToList();
-            if (strongClaims.Count > 0)
+            foreach (var pair in sentencePairs)
             {
-                claimed.AddRange(strongClaims);
-                continue;
-            }
+                if (!LooksLikeSkillUseClaimSentence(pair.Normalized))
+                    continue;
 
-            claimed.AddRange(group.Where(name => sentencePairs.Any(pair =>
-                ContainsEntityNameLoose(pair.Normalized, name) &&
-                LooksLikeSkillUseClaimSentence(pair.Normalized))));
+                var exactMentions = group
+                    .Where(name => pair.Raw.Contains(name, StringComparison.Ordinal))
+                    .ToList();
+                if (exactMentions.Count > 0)
+                {
+                    claimed.UnionWith(exactMentions);
+                    continue;
+                }
+
+                if (group.Any(name => ContainsEntityNameLoose(pair.Normalized, name)))
+                    claimed.UnionWith(group);
+            }
         }
 
         return claimed
@@ -3947,6 +3973,20 @@ public partial class ValidationService
             : null;
     }
 
+    /// <summary>
+    /// Reads the validated pre-turn snapshot payload for the prose-delta coupling audit
+    /// without collapsing blank content to <see langword="null"/>: an absent snapshot may
+    /// unlock the documented weaker fallback, while a present-but-blank one is corrupted
+    /// evidence and must fail closed.
+    /// </summary>
+    private async Task<string?> ReadCouplingPreTurnSnapshotAsync(string relativePath)
+    {
+        var lookup = await LoadValidatedPendingTurnSnapshotLookupAsync();
+        return lookup.Status == ValidatedPendingTurnSnapshotStatus.Usable && lookup.Manifest != null
+            ? await ReadValidatedPendingTurnSnapshotFileAsync(lookup.Manifest, relativePath, treatBlankAsMissing: false)
+            : null;
+    }
+
     private string? ReadValidatedCurrentPreTurnTrackedFileSync(string relativePath)
     {
         var lookup = LoadValidatedPendingTurnSnapshotLookupSync();
@@ -3968,7 +4008,8 @@ public partial class ValidationService
     private async Task<string?> ReadValidatedPendingTurnSnapshotFileAsync(
         ValidationPendingTurnSnapshotManifest manifest,
         string relativePath,
-        FileSystemManager.CanonicalWriteLease? writeLease = null)
+        FileSystemManager.CanonicalWriteLease? writeLease = null,
+        bool treatBlankAsMissing = true)
     {
         if (manifest.Files == null ||
             !manifest.Files.TryGetValue(relativePath, out var snapshotPath) ||
@@ -4006,7 +4047,7 @@ public partial class ValidationService
             return null;
 
         var snapshotJson = DecodePendingSnapshotText(snapshotBytes);
-        return string.IsNullOrWhiteSpace(snapshotJson) ? null : snapshotJson;
+        return treatBlankAsMissing && string.IsNullOrWhiteSpace(snapshotJson) ? null : snapshotJson;
     }
 
     private string? ReadValidatedPendingTurnSnapshotFileSync(

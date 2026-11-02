@@ -46,6 +46,13 @@ Dependencies: T107-A -> T107-B -> T107-C -> T107-D -> T107-E. Parent owns integr
 - [X] T107-H GM-facing doc sync for the passive progression path and unreadable-snapshot semantics (`TaskGuides/CLI_Step_Main.txt`, `Launcher/CLI_Launch_Script.md`, `Launcher/Generate_CLI_Launch_Script.ps1`, `Examples/E_CLI_Step_Main.txt`); spec FR-101 and acceptance scenarios 6–8
 - [X] T107-I Bounded verification (narrative class, doc-guard, selected categories), independent review resolution — including the reviewer's residual-defect fix (no-snapshot mastery fallback now requires a readable current file) with RED-first test `RejectsSkillClaimWhenCurrentMasteryUnreadableWithoutSnapshot`; verdict RESOLVED — commit+push, reviewer reply on PR #1583
 
+### Part 2 review corrections, round 2 (PR #1583, external findings on 0ce848787)
+
+- [X] T107-J [RED] Four review-driven tests: malformed pre-turn passive snapshot (`{`) must not fabricate new-skill credit; blank (whitespace-only) mastery snapshot must not unlock the weak fallback; ambiguous lowercase sentence alongside an exact-case mention still claims the whole case-colliding group; positive guard for both members mentioned in exact case with own deltas. RED confirmed: exactly 3 failures matching the findings, guard passing immediately
+- [X] T107-K [GREEN] Snapshot blank-collapse fixed at the source with an opt-out (`treatBlankAsMissing`, default preserves all existing consumers); the coupling audit reads pre-turn payloads through `ReadCouplingPreTurnSnapshotAsync` so blank = Unreadable, fail closed; new-skill detection uses tri-state entry reads and never diffs against an empty set from an unparseable payload; claim detection resolves case-colliding ambiguity per sentence/mention; unreadable pre-turn passive snapshot gets its own repair diagnostic
+- [X] T107-L GM-facing doc sync (exact-canonical-casing discipline sentence on all four surfaces); spec FR-101 + acceptance scenarios 9–10
+- [X] T107-M Bounded verification, independent review resolution (verdict RESOLVED, no new defects), commit+push, reviewer reply on PR #1583
+
 ## Later parts (issue #1533 contours, not in this branch)
 
 - [ ] T101 Canonical skill schema consolidation: single active/passive profile validator shared by constructor and delta paths (player + NPC), including `activeEffectDefinitions`, `structuredBonuses`, rarity/type/group enums
