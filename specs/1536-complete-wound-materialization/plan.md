@@ -1,3 +1,17 @@
+# Current wounds-only plan after T150 authored-example acceptance
+
+Independent SOURCE/PREP and both OUTCOMEs accepted these separate lineages:
+M1 causal f6313d7b15da32cd7cec1107338d63e16f9935d6, exactly1 intended FAIL;
+M2 GREEN d0c49bff26c9ddcfa61dcc938e751245540cfca3, exactly1 Unit PASS/60s,
+three refusal controls inside that one Fact, no wider runtime qualification. Complete receipt is at physical-guided-checkpoint.md:1. Existing
+terminal family now has full cosmetic plus mechanical_effect draft and manifest;
+actual parser/three refusal controls pass, no production/game rule change.
+Next finite step is existing US3 child/receipt reconciliation (T081-C2/C3/D/E/C5,
+R2B/T107), direct wound behavior only, before selecting any actual missing cell.
+Whole parents and every UNKNOWN/HOLD remain. Do not infer code gaps from empty
+checkboxes, implement general conflict orchestration or repeat accepted test groups.
+Previous WIP below describes historical steps superseded by the accepted receipt.
+
 # Existing T150: complete mechanical legacy example correction WIP
 
 Primary M1 causal onf6313d7b15da32cd7cec1107338d63e16f9935d6 completed exactly1 FAIL

@@ -1,3 +1,16 @@
+# Current wounds-only execution: mechanical legacy example accepted
+
+Existing T150 authored mechanical legacy artifact gap accepted by independent
+SOURCE/PREP and separate OUTCOMEs: M1 causal f6313d7b15da32cd7cec1107338d63e16f9935d6
+has1 intended FAIL; M2 GREEN d0c49bff26c9ddcfa61dcc938e751245540cfca3 has1 unique
+Unit PASS, original60s, with3 refusal controls inside that same Fact. Full closed draft+manifest
+and actual parser/refusal controls, cosmetic example preserved; no production rule
+or Engine/native/browser qualification. Full evidence and remaining map in current
+physical-guided-checkpoint.md. Next existing US3 child/receipt reconciliation only;
+T150/T149/T071 parents/#1536, all UNKNOWN/HOLD and external boundaries stay open.
+General aggression/defeat/QTE orchestration/ACTIVE/F1/T197 remain outside scope;
+T088 question withdrawn. Earlier 'missing mechanical example' notes are superseded.
+
 # Current wounds-only execution: source cutover accepted; T150 next
 
 Existing T149/T071 generic isHealed fallback retirement and truthful typed source

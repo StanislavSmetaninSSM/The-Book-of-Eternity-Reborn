@@ -1,3 +1,101 @@
+# Existing T150 mechanical legacy authored example accepted — 2026-11-02
+
+Independent Sol/xhigh SOURCE, PREP, causal OUTCOME and GREEN OUTCOME accepted.
+Runtime/source d0c49bff26c9ddcfa61dcc938e751245540cfca3: exactly1 unique Unit Fact
+PASS,1/1 descriptor/case, category mortal-terminal-guidance-causal, NoBuild/
+Parallelism1 and original60s. Category3.4408048s, runner8.5336381s, wrapper9.931795813s.
+No skip/timeout/dup/underfill, both cleanup true, newTMP[], clean runtime tree and
+no active owners. All three cloned refusal controls execute inside this ONE Fact,
+not three extra test cases. Production parser accepts full mechanical draft and
+rejects copied legacyId, missing effectDraft and external definitionRef; all old
+route/cosmetic/mode/selection roundtrip/nonmutation/guidance checks remain.
+
+Actual causal sourcef6313d7b15da32cd7cec1107338d63e16f9935d6: exactly1 intended FAIL
+at line87 (missing mechanical typed collection) after old valid-route/mode/cosmetic
+premises; future3 refusal controls UNREACHED there. Summary7b10de363758306bc5a56110edef7830b0017dc46632d4143636d104e0c9f6d2,
+TRX68b37669a5942c361733e44f4a3700b05554681506063ff63637e3c3993a24a5,
+primary integrityb6db5518bc15cc5bd34520292d10ead9096deccc3fc87ca2cb1a0c91747bc48e.
+This was a missing GM-authored example branch, not a healing production defect.
+Earlier SOURCE caught selection version/schemaVersion preparation typo before
+build; actual metadata reader/matrix check passed after correction, not a fake RED.
+SOURCE also corrected retained-request prose to normative actual-confirmed-request
+language, so no exact new Engine/native/browser result is implied by this example.
+
+The SAME existing terminal family now includes cosmetic pale_scar and one complete
+contracted mechanical_effect legacy with1 definition/1 application, closed empty
+parameters, links=[] and local refs only. Complete provider capability for both
+branches, separate confirmation and client ID/source allocation remain required.
+These are illustrative consequences of that authored program, not default healing
+rules. Manifest changes only3 fields in its existing row. No production, API,
+entrypoint, prices/duration, scope/authority or general QTE/conflict changes.
+Existing GM entrypoints already reference this precise terminal family; worked
+example/manifest synchronization completes this bounded artifact gap.
+
+Fresh resource-owning Main72.590825s/Unit38.052373s exit0; exact unchanged warning
+multisets81/26.30 copied artifacts/206 source inputs412 resource copies/native4,
+3PEPDB349 bindings all verified and unchanged after GREEN. Exactly the two intended
+Example/manifest resource inputs and4 copies changed; all other pins remain.
+Support/CrashHost ECE are unchanged dependencies, not new builds/host qualification.
+Artifact0d0a8848913a8a1c7d4b8aee7c84aa497fc53adcbe8012f16bf51d73b379e3cd;
+PDBfa1996f679540631e433989a8f1f152249ccf349d14d3c29f5b6a4de77a3b4d0;
+Plan28de8dd4ce53dffb61c79841949faf6e8fc049423a6ca9d88e7d685bba070a5a;
+summary4bffbd5e6d990be92d5ccbea0cb90729031fc13c2f3c5c73aa96e3ca9e77a9e5;
+TRX0d26b8b57b5dbae58ce7052a28cf10c91ce57608f918d77a75bbaf613890e9b9;
+primary integritye98f871147e8742aa5474499bd04c8362b2d328036ccd3b721c6fcaa74d52bfb.
+Retained catalog1348/13177 has unchanged membership; actual current metadata and
+exact Plan resolve this one existing Fact, no redundant broad discovery/runtime.
+
+Full builds/logs/TRX/plans/proofs and previous binary archives remain outside Git at
+/workspace/tboe-linux-evidence-20261102/terminal-mechanical-legacy-documentation.
+S1 prior own10 archive16346297B/SHA6e7fb465b88b44f49fa5b29977cb8c1de78e4f7b9a5683ef50f58622e7305683;
+M1 causal ownUnit5 archive4517726B/SHA98aa3d5ea9b9e4694ce578f254551e91b1c70d561c6d79c4fd19688d57f7fc2a;
+all members/hash/gzip EOF/CRC verified, no deletions. Optimization: reuse existing
+loaded example/manifest and parsed route; independent clones protect original DATA.
+No extra production reads/cache/lifetime/authority exceptions or speedup claim.
+
+Finite T150 read-only family mapping found actual constructor/scope, repair,
+Mortal/spiritual diagnosis, procedure/course/guaranteed, eight spiritual effect
+profiles, active/natural/entity recovery, Elyara/public/negotiated/faction service,
+target/detail/History and cosmetic-legacy examples/manifest/typed guards. Some
+owners are outside ExampleDocumentationValidationTests.Wounds.cs; planned filename
+absence is not missing implementation. This new authored mechanical branch fills
+one confirmed gap, not fresh combined execution of every family. Independent Saref
+survival example/runtime stays separate #1571, outside new wound implementation.
+
+Finite direct US3 reconciliation by independent Astra/high (read-only, historical
+receipts not rerun; older broad 'no production gap established' is now narrowed):
+- C2 checkpoint/pending/original/journal/saved decisions/private transport and cold
+  replay are implemented; reconcile parent before/staged/absent/fresh-owner/zero-side-
+  effect predicates with accepted R1/C4 children. No OS-process-kill claim.
+- C3 reducer/common assembly and terminal/reused-display-ID R3 are accepted. R1/R2A/
+  R3 parent reconciliation remains with R2B, not a new terminal reducer.
+- D create/worsen, signed origin/seals, guaranteed worsening/satisfaction, terminal
+  comparison, preview and position B2–B5 accepted; full eight-profile consumer and
+  operation/result/dependent/cold matrix still needs exact receipt mapping.
+- E ordinary/unrestricted/capped-special ceilings IV/IV/II have an accepted lifecycle
+  child, but lawful dice-free incoming harm currently yields AppliedSourceBinding
+  pending and no PreparedSpiritualSource. Nonstandard/passive/champion similarly
+  needs actual binding. Exact existing code ValidationService.SpiritualWoundSourceAdmission
+  at731–739 and ordinary-valid SourceOwner_DiceFreeVoluntaryIncomingHarmRemainsPendingActualSource
+  test127–185 establish this unfinished source-binding route, not a publication bypass.
+  Next inspect exact canonical authority/ceiling inputs and existing owners; never
+  invent opposed margin, guarantee or general conflict rules to close it.
+- C5 cold recovery docs child is accepted (historical docs140/examples5); final current
+  matrix/control reconciliation waits for D/E/R2B, no absent documentation system.
+- R2B/T107 initial safe healing/recovery then live insertion remains unaccepted:
+  existing producers are real, same signed safe+combat is unlawful, sequential route
+  needs a genuine existing separate-start publisher seam, not bootstrap overwrites.
+Next finite code investigation is only E's wound-source binding; whole general
+start/escalation/defeat/aggression/QTE/ACTIVE/F1 systems remain outside scope.
+No broader audit, new rule, diagnostics stack, full DFR or accepted PASS replay.
+
+Whole T150/T149/T071/#1536 are NOT closed. The wounds-only remaining map below still
+applies, except this mechanical example leaf is now accepted. R2 browser-course and
+A5 joint terminal remain UNKNOWN without retry admission; DFR/Mortal/Windows,
+first Guardian/cross-OS DATA, World9 and other prior HOLDs remain explicit. General
+aggression/defeat/QTE orchestration/ACTIVE/F1/T197 are outside scope, not completed;
+withdrawn T088 question needs no answer. Earlier WIP below is superseded.
+
 # Existing T150: complete mechanical legacy example correction WIP
 
 Primary M1 causal onf6313d7b15da32cd7cec1107338d63e16f9935d6 completed exactly1 FAIL
