@@ -83,6 +83,31 @@ C#, frontend and test-infrastructure verification.
   Preserve result artifacts, actual planned/completed counts and owned cleanup.
   Repeat passing selections only after relevant changes or unresolved failures.
 
+## Agent skill invocation guardrail
+
+At the start of every work session in this repository — and again after any
+context reset/compaction — the agent MUST load its methodology skills through
+the platform's skill mechanism before any implementation action, rather than
+working from memory of them:
+
+- Load `superpowers:using-superpowers` first; it governs when each process
+  skill fires. Then follow the process skills for the task type:
+  `superpowers:brainstorming` for new work, `superpowers:test-driven-development`
+  for implementation, `superpowers:systematic-debugging` for bugs,
+  `superpowers:writing-plans` / `executing-plans` for multi-step plans,
+  `superpowers:verification-before-completion` before claiming done.
+- Code review uses `superpowers:requesting-code-review` with its official
+  reviewer template (severity calibration, strengths, ready-to-merge verdict),
+  performed by a separate fresh-context subagent — never self-review.
+- Spec Kit work uses the `speckit-*` skills; delegation to another agent loads
+  `spec-kit-superpowers-bridge` first.
+- Serena is the default code-navigation and symbol-editing surface in this
+  codebase; activate the project before large refactors.
+
+Skills evolve between sessions: loading the current version each session is
+part of the contract, not overhead. "I remember how the methodology goes" is
+not compliance.
+
 ## Spec Kit and Hermes/Codex orchestration guardrail
 
 GitHub Issues remain the task tracker for lifecycle, comments, triage, and closure.
