@@ -20,8 +20,8 @@ C# UNCOMPILED; build/discovery/catalog audit/PlanOnly/causal RED/runtime UNRUN b
 explicit scaffold instruction. Static diff/JSON/source checks only; these do not
 prove compilation or intended RED. Next: independent coherent SOURCE, then root's
 fresh affected owning builds, full inventory discovery and exact2+2+1/60s PREP.
-Nine later safety controls, production wrapper/debt and browser180s retry remain
-unwritten/unadmitted. No accepted141/9e590 replay or other HOLD release.
+Remaining later safety controls, production wrapper/debt and browser180s retry
+remain unwritten/unadmitted. No accepted141/9e590 replay or other HOLD release.
 Optimization assessment: no new cache/source snapshot; fresh bytes and physical
 opening/full-end/current-owner fences remain. Existing Meta readset lifetime stays
 inside one actual phase; an inner borrow acquires/disposes no physical owner.

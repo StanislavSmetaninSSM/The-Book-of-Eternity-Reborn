@@ -237,10 +237,16 @@ public sealed class BrowserGameStateReadReservationTests(ITestOutputHelper outpu
             }
             finally
             {
-                try { if (physical != null) await physical.DisposeAsync(); }
+                try
+                {
+                    if (physical != null)
+                    {
+                        await physical.DisposeAsync();
+                        physical.RequireOwnerAfterClose();
+                    }
+                }
                 finally { Disarm(); }
             }
-            if (physical != null) physical.RequireOwnerAfterClose();
             Assert.Equal(before, Tree());
             return new Observation(JsonSerializer.Serialize(issues), _reads.OrderBy(p => p, StringComparer.Ordinal).ToArray(),
                 MetaAttempts, _physicalVerifications);

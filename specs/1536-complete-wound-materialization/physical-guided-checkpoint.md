@@ -28,6 +28,23 @@ Ruling: use the explicitly selected clean task checkout as sole writer; no new
 worktree or duplicate plan/ledger. Existing plan/checkpoint are the durable ledger.
 The direct no-build/no-runtime instruction defers the TDD execution gate to root;
 the new causal tests were authored before component/borrow implementation.
+WIP bf33ec64c9b565c3ab08f7db7ad1423ecf8f9f8a was pushed and exact remote ref
+confirmed. Its10 changed files were independently downloaded via GitHub blob API
+into /tmp/boe-browser-source-restore-bf33ec64c and compared byte-for-byte/blob-SHA.
+This confirms only those source files, not a full restored checkout/build/runtime.
+Final source-only correction keeps observation armed through RequireOwnerAfterClose
+as well as physical Dispose; no physical closing work is excluded from the oracle.
+Root's separately verified operational findings: P3GREENC14BROWSERRESERVE2 replaced
+16 ended plaintext logs (28918030B) losslessly with3223522gzipB; full EOF/CRC and
+decoded SHA/archive hashes/original absence checked. External manifest SHA
+6de8c75b971018c6c61df08777882c337e8ad0ed8593a82f83996194e86229ee;
+free712658944B remains above687865856B start reserve. The full current managed
+archive is28445063B, SHA7422665f7c7ca9d88e70d5d1c02b2886bd89d72732faf4ec4650d0284b781a5a.
+These are root's operational proofs, not builds/runtime by the scaffold writer.
+Review focus: existing broad WorldReadPhase/MetaControlShapes hash-pin fixtures
+also pin the changed Meta source and already had3/20 historical pin mismatches at
+base. They are outside the finite5 scaffold selection; no blanket repin or PASS
+is claimed. Root/Astra must judge affected later guard qualification separately.
 
 # Canonical spiritual diagnosis adapters — independently accepted bounded result
 
