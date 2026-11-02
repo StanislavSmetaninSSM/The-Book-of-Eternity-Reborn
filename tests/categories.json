@@ -3,7 +3,7 @@
     "categories": [
 {
   "id": "wounds-legacy-discovery-retirement",
-  "responsibility": "Existing T071/T149: the one production discovery guard after deliberate dead-player-parser retirement. Three fully retired aliases descriptionOfEffects/generatedEffects/healingState are explicitly absent; remaining live legacy tokens stay confined to exact inventoried scopes. Uses the same already-read source map, no extra IO/cache or mechanical fingerprints. Initial D1 failure is inventory fixture, not product behavior. Exact corrective runtime UNRUN, protective60s.",
+  "responsibility": "Existing T071/T149: the one production discovery guard after deliberate dead-player-parser retirement. Three fully retired aliases descriptionOfEffects/generatedEffects/healingState are explicitly absent; remaining live legacy tokens stay confined to exact inventoried scopes. Uses the same already-read source map, no extra IO/cache or mechanical fingerprints. Initial D1 failure is inventory fixture, not product behavior. Qualified D2 on654c3b14f705e6bb1813be3ac72cf07ae29736e6: one PASS, category3.8479218s; protective60s unchanged. D1 canonical9/ownership1 on a7b2 remain separate, not fresh11.",
   "excludes": "No C# gameplay, canonical9/ownership1 rerun, raw/QTE/admission, rendering, native host, source-pin baseline or UNKNOWN/HOLD closure. Does not weaken retired-token resurrection coverage.",
   "changeHints": [
     "BookOfEternityClient.Tests/WoundMaterializationSourceGuardTests.cs"

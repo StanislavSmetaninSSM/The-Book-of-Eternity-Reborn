@@ -1,3 +1,19 @@
+# Current wound-only cutover and dependency clarification — 2026-11-02
+
+Existing T071/T149 dead loose player parser retirement and explicit retired-token
+ban accepted:11 distinct PASS, D1 canonical9/ownership1 on a7b2a6e4 plus D2 discovery1
+on654c3b14, not fresh11. Prior raw player/NPC16 on9d4b03cf stays separate. Whole
+T071/T149 open: reachable WoundReference/sourceWoundId raw admission and stale999
+repair hints are the next exact code correction; late canonical refusal already exists.
+T081-C3-R2B/T107 historical no-afterlife-producer explanation is superseded by current
+healing/natural producers, but same-signed safe-cycle+combat bundle is not lawful.
+Sequential safe publication then a genuinely accepted conflict start/new signed
+harmful source needs an existing start publisher seam not yet established. Do not
+invent a bundle, patch canonical fixture state after publication, or implement general
+conflict orchestration under this wound task. Qualification remains pending there.
+Full accepted evidence/scope in plan.md and physical-guided-checkpoint.md; all parent
+checkboxes, unrelated project tasks and UNKNOWN/HOLD retain their actual status.
+
 # Current wound-only execution update — 2026-11-02
 
 Existing T149/T071 exact retired player/NPC raw wound-input refusal now has

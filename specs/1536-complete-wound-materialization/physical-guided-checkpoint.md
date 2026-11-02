@@ -1,3 +1,68 @@
+# Existing T071/T149: dead player parser and retired-alias ban accepted
+
+Independent Sol/xhigh SOURCE, PREP and primary OUTCOME accept this bounded
+wounds-only refactor. Supported caller inventory is fixed:10 literal player paths,
+only the exact canonical wounds path enters this helper. Strict object/root Error,
+message/code/path and WoundCarrierCatalog/error order stay. Unreachable loose
+array/object branches and their sole wound object parser are removed; no current
+canonical/GM/game rule changes. Retired generatedEffects/healingState/descriptionOfEffects
+now have an explicit no-resurrection guard, not missing discovery coverage.
+Combat/WoundReference scopes are retained for the separate reachable legacy debt.
+
+Actual evidence is11 distinct PASS in TWO groups, not fresh11:
+- D1 source/runtimea7b2a6e493c60939eb072064ad12a2fc0c423543: canonical Integration9
+  plus ownership guard1 PASS; discovery1 FAIL on stale positive-token fixture.
+  All11 completed, no timeout/dup/underfill, cleanup true. Failure kept verbatim.
+- D2 source/runtime654c3b14f705e6bb1813be3ac72cf07ae29736e6: only corrected discovery1
+  PASS,1/1 complete, exit0, category3.8479218s/60s, wrapper10.840231s /
+  runner9.2655585s. No skip/timeout/duplicate/underfill. Both cleanup true, newTMP[],
+  no active managed owners; post-run artifact/resource/source hashes unchanged.
+No raw/QTE16, canonical9 or ownership1 repeat was needed for D2's test-only delta.
+The independent reviewer confirmed the missed positive-token requirement; all3
+zero-hit aliases were examined together and remain explicitly forbidden using the
+SAME already-read source images. No new IO/cache/allowance/fingerprint framework.
+The new category metadata related-link schema was corrected and actual reader
+passed before fresh Unit; this was not a game runtime failure.
+
+D1 fresh Main66.600565s/Unit34.659216s/Integration74.364620s exit0, warning81/26/107
+exact prior multisets;45verified copied artifacts/206inputs618copies/native6,
+4PEPDB448bindings. D2 fresh Unit36.810026s exit0/26 unchanged warnings,30verified
+copied artifacts/206inputs412copies/native4,3PEPDB348bindings. Maina7 and Support/
+CrashHostECE remain source-equivalent previous builds, not new builds; no packaged
+host claim. Complete catalog1344/13173 is discovery-only. D2 exactPlanone Unit
+method/case/60s; NoBuild/Parallelism1, original budgets unchanged.
+D2artifact088f205c509d657ce56427372ff426a003c645243857a3a763b6b190f060952f;
+D2PDB382b4edf37078ca5e8a1e639c7e6da55ca5dc536cba00d3f203e5fefa137d4af;
+D2summaryb9de7a42abe5cdb96144bf9cd08ac32b977f5986dd38f40a934980ca58f3e724;
+D2TRX8e9edd85d80ecdfd69302c9190c724d02501134db312cd6cb3bbf00fde74b055.
+Full raw/build/source/primary evidence:
+/workspace/tboe-linux-evidence-20261102/player-loose-parser-retirement.
+Previous own15 and D1 Unit own5 are losslessly archived/member+gzip CRC verified;
+no raw, user save, recovery or unique evidence deleted. No raw/binaries in Git.
+Optimization: no new production work, retained strict fresh parsing/catalog and
+permission boundaries; dead source code/inventory entries removed, no speedup claim.
+GM no-update: current direct-cutover contract unchanged; no new authored field or
+capability, alias syntax already forbidden. Source/receipt consistency and remote
+SHA/bounded immutable source readback are checked separately from runtime versions.
+
+Next independent wound-only code step remains existing T071/T149: causal raw
+WoundReference/sourceWoundId retirement and stale999 repair hints. Current public
+raw validator accepts them, whereas later strict canonical effects refuse them;
+no publication bypass is claimed. Use current minimal real-FS fixture and existing
+explicitly negative effect example, not new general combat/QTE mechanics.
+
+Technical R2B/T107 reconciliation accepted by bounded Astra/high DESIGN: afterlife
+healing/natural producers exist. Literal same-signed safe bundle plus combat violates
+current safe-cycle/no-cycle guards; adding naturalOwner to capture is not justified.
+Existing combat healing already uses chronological live composition. A sequential
+safe publication -> actual accepted conflict start -> new signed harmful source
+needs a real existing start publisher seam, not reducer+fixture canonical writes.
+That seam is not established; no journey runtime admitted or broad start system
+implemented. This is a precise pending qualification dependency, not a new author
+rule or missing-healing claim. Parent tasks remain open.
+Wound-only scope, withdrawn T088 question, World9 and all R2/A5 UNKNOWN/DFR/Mortal/
+Windows HOLDs remain. No merge/force-push/branch deletion/issue closure.
+
 # Discovery correction category metadata reviewed and read successfully
 
 Independent Sol SOURCE found the new related link used a string instead of the
