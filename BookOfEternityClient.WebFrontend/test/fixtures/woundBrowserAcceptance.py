@@ -170,6 +170,10 @@ async def actual_shell():
   await locator.focus();await expect(locator).to_be_focused();await page.keyboard.press('Enter')
  async def screen(label):
   await page.wait_for_load_state('networkidle')
+  content=page.locator('.content-area > div')
+  await expect(content).to_have_count(1)
+  await expect(content).to_have_css('opacity','1')
+  await expect(content).to_have_css('filter','blur(0px)')
   body=await page.locator('body').inner_text()
   assert not any(value in body for value in ['ACTUAL_SHELL_PRIVATE_SENTINEL','hidden_route','opaque-'])
   assert await page.evaluate('document.documentElement.scrollWidth <= innerWidth')

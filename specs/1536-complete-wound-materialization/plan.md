@@ -1,3 +1,28 @@
+# T118 actual-App — automated protocol PASS, visual acceptance withheld
+
+F6 atc1d57551648274231324661fb8b6a5cdd4ca2efe reports automated PASS in11.662682s:
+process0/driver.exit0/report true, all30 GET/3 exact read-only POST requests
+complete,6 screenshots,136-member CRC-valid trace,5,683 unchanged input pins and
+full owned cleanup. Root visual inspection finds active.png blank; its retained
+DOM snapshot has the content motion owner at opacity0/blur8px. Later History is
+readable. This establishes insufficient render readiness in the test, not a
+permanent product blank-screen defect. Whole rendered acceptance is WITHHELD;
+no fresh desktop/mobile qualification is inferred from the protocol PASS.
+
+Minimal test-only correction waits for the actual single content motion owner
+to reach opacity1/blur0 before each existing text/layout/screenshot check. Existing
+60s runtime/default assertion bounds, animation settings and production stay
+unchanged; no arbitrary sleep, new stack/cache or reduced-motion substitution.
+All six existing screen boundaries share this owner; the complete remaining path
+was reviewed instead of adding one special-case wait. Mutable DOM readiness is
+fresh per screen; caching it would be incorrect and adds no useful benefit.
+SOURCE/new desktop PREP pending; F3 compile/F2 build retained without reruns.
+Full F6 raw stays in actual-shell-readonly/F6-desktop-case plus envelope beneath
+/workspace/tboe-linux-evidence-20261102; report SHA
+bde0d4f0146633ac74e9f831b3ce4100c4ddf814c454c750e65c76b3287f7516;
+trace90951940b8b2a599659d20597af927fc1309f65b1ff0bcc15cf16967b346db48.
+Prior failures, mobile UNRUN and all wider UNKNOWN/HOLD remain unchanged.
+
 # T118 actual-App desktop — retained locator failure, correction WIP
 
 F5 on402596fc6007801a56fecf0f99e572e4320e97d0 reaches the real App History
