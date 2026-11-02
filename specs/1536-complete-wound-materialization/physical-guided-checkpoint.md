@@ -1,3 +1,37 @@
+# Reconciliation accepted; T088 author semantics pending; continue existing T149
+
+2026-11-02: independent Astra/high and Sol/xhigh accept consistency of the whole
+remaining-work audit at 811060956af6cb6bd7fe4748c22b9ed20512d575. This is an audit,
+not a SOURCE acceptance of all ACTIVE code, whole-feature completion or HOLD release.
+B1 receipt at2aa36647 and source/runtime eb879e2d remain independently accepted.
+Full six-file immutable remote readback matches exact bytes/git blobs, proof
+1be7a5febc656b5bb9df048f0711c09bbd863bf1aebc77a548016edd4163a756 outside Git.
+
+T088 has a concrete missing game rule, not an implementation-permission problem.
+Existing combatConditions/controlState are transient: resolution clears activeConflict,
+recentConflicts is bounded history, and afterlife_combat_condition targets only a
+spiritual_conflict_side for exchange/uses/scene lifetime. They cannot enforce the
+required post-conflict bound. FR-037 does not define the same-aggression key, exact
+forbidden actions, or a lawful removal predicate. Metadata-only scope/end strings
+would not implement it. A single author question is pending through the task UI:
+proposed first strict option is no new conflict by the defeated side against the
+winner until explicit confirmed winner consent, without an automatic duration.
+This is a proposal, NOT accepted rules; no silence or elapsed time approves it.
+A different exact restriction/removal event may be supplied. No cooldown/cycle,
+permanent actor effect, Saref memory rule or new authority is invented meanwhile.
+
+Independent permitted continuation uses existing parent T149 / FR-013 and FR-099;
+no new task IDs. First only a coherent test scaffold for raw public ValidateResponse
+presence and its genuine QTE offer consumer, plus current canonical NPC state refusal
+order/metadata. Real missing-admission array cases must be distinguished from existing
+null/scalar shape refusals with a different classification. Genuine baselines and
+actual input/byte invariance precede final oracles; no claimed publication bypass.
+Use current typed helpers/public APIs and real pending source where needed, no new
+reflection or fabricated authority. Separate cheap raw causal cases from genuine
+QTE/state peers, document exact owning categories and pre-runtime budgets. Production,
+semantic sourceguard retirement and previous accepted GREEN20 remain unchanged until
+actual causal evidence and independent review. No live GM/save or HOLD runtime.
+
 # Whole #1536 remainder reconciliation — 2026-11-02
 
 Read-only audit of canonical spec/contracts/tasks, current production and accepted
