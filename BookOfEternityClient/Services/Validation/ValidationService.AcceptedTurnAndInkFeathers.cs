@@ -3994,6 +3994,13 @@ public partial class ValidationService
     /// unlock the documented weaker fallback, while a present-but-blank one is corrupted
     /// evidence and must fail closed.
     /// </summary>
+    /// <param name="relativePath">
+    /// The tracked file whose pre-turn snapshot payload to read.
+    /// </param>
+    /// <returns>
+    /// The validated snapshot payload verbatim (including blank content), or
+    /// <see langword="null"/> when no usable validated snapshot exists for the path.
+    /// </returns>
     private async Task<string?> ReadCouplingPreTurnSnapshotAsync(string relativePath)
     {
         var lookup = await LoadValidatedPendingTurnSnapshotLookupAsync();
@@ -4020,6 +4027,22 @@ public partial class ValidationService
                 ReadCurrentTrackedFileSync("game_state/meta/soul_state.json")));
     }
 
+    /// <summary>
+    /// Reads one file's payload from the validated pending-turn snapshot, verifying the
+    /// snapshot hash against the manifest before returning any content.
+    /// </summary>
+    /// <param name="manifest">The validated pending-turn snapshot manifest.</param>
+    /// <param name="relativePath">The tracked file whose snapshot payload to read.</param>
+    /// <param name="writeLease">An optional canonical write lease for the read.</param>
+    /// <param name="treatBlankAsMissing">
+    /// When <see langword="true"/> (default), blank/whitespace payloads collapse to
+    /// <see langword="null"/> (absent evidence); pass <see langword="false"/> where the
+    /// caller must distinguish corrupted-but-present evidence from absent evidence.
+    /// </param>
+    /// <returns>
+    /// The snapshot payload when it exists and passes hash verification; otherwise
+    /// <see langword="null"/>.
+    /// </returns>
     private async Task<string?> ReadValidatedPendingTurnSnapshotFileAsync(
         ValidationPendingTurnSnapshotManifest manifest,
         string relativePath,
