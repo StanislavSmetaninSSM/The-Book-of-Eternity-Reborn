@@ -12,7 +12,21 @@ HP0/фазы, outgoing snapshot/актуальные target defenses и cleanseS
 порога/барьера/сменыR, G1/10/25 и ценD0/50/210 проверена;25 новых ссылок
 и7-doc scope/diff/check прошли. Свидетельство D:\BoeDiagnostics\periodic-damage-t147\verification.json.
 Это расчёт примеров, не запуск будущего scheduler или симуляция полного боя.
-Independent review ещё не выполнен; сначала сохраняется WIP.
+Независимый GPT-6 Astra/high review полного семифайлового diff7eb59e0f..fc0e191f
+завершён. Один P3: mortal VenomousSpit содержит5%/3%, а не голые5/3;
+единицы исправлены и сверены с source. Focused closure — PASS, открытых
+замечаний нет. Ревьюер независимо подтвердил Fraction-примеры.
+
+WIPfc0e191f849d92660a9d5f9e3f60b6ba3dff8158 опубликован обычным push;
+remote SHA,7 API blobs/raw Git hashes/checkout bytes сверены с новым clean
+sparse restore D:\BoeDiagnostics\periodic-damage-t147\remote-restore-20261102.
+25 ссылок/5 обязательных инструкций восстановлены. Финальный checkpoint/
+SHA/readback — issue1573 и verification.json. Raw диагностики в Git нет;
+посторонний recovery obj не менялся. Source audit Sol6.1/high, parent
+проект/арифметика, отдельный Astra/high review и focused closure. Повторная
+ошибка единиц mortal-примера показывает необходимость передавать в source
+audit число вместе с единицей; оснований менять модели по этому блоку нет.
+Измеренная экономия работы/полный баланс не заявляются.
 Runtime/Rules/боевых probes нет; новых кэшей не нужно. Будущие тики используют
 сохранённую силу/definition через существующий сервис и актуальные ресурсы/
 authority цели с idempotent event key. Диагностика только D:.

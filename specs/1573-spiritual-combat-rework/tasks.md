@@ -4,7 +4,7 @@
 
 - [x] T147.1 Принятие T146, mortal source audit/parent сверка, spec/plan/consistency до арифметики.
 - [x] T147.2 periodic-damage-budgets.md подготовлен: total/tick/цена/исходы/срок/snapshot/защита/снятие/recast. Точная арифметика трёх профилей/partial/crit/Flat/порог/барьер/сменаR/mastery/цен,25 ссылок и7-doc diff/check прошли.
-- [ ] T147.3 Independent Astra/high review, corrections; remote/API/new restore/issue readback; предъявить кандидат без production.
+- [x] T147.3 Independent GPT-6 Astra/high review7eb59e0f..fc0e191f: P3 единиц mortal-примера исправлен, focused closure PASS. WIP remote/API/7blobs/source bytes/new clean restore проверены; финальный checkpoint/readback — issue1573 и verification.json. Кандидат без production/Rules/боевых probes.
 
 ## T146 — отрицательные эффекты
 
