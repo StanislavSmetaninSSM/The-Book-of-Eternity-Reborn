@@ -2,7 +2,7 @@
 
 ## T139 — тип воздействия и соответствующее сопротивление
 
-- [ ] T139.R По уточнению автора явно разрешить обоснованный самостоятельный тип «Алое пламя»/scarlet_flame; тип берётся из профиля, огненная защита не наследуется автоматически. Проверить diff/ссылки, отдельным Sol6.1/xhigh review и publication/readback/new restore. Scope остаётся документационным.
+- [x] T139.R По уточнению автора явно разрешён обоснованный scarlet_flame отдельно от fire, без неявного наследования защиты. Независимый GPT-6.1 Sol/xhigh review a23f3a0..0fb5904 — pass;diff/check и5mdonly проверены, новых ссылок нет. WIP remote/API/5blobs/байты/new restore совпали; финальный checkpoint — issue1573/verification-refinement.json. Runtime не менялся.
 
 - [x] T139.1 Первичные mortal Rules и принятые духовные договоры сверены; scope/plan/consistency записаны. Уточнены обязательные типы искусства/компонентов, matching и смешанный пример; личные защиты и статусы принятия сохранены.
 - [x] T139.2 Пример65/10 новых ссылок/diff проверены; независимый GPT-6.1 Sol/xhigh review b67b2ee..b82a51a — pass без замечаний. WIP remote SHA/5 API blobs/байты совпали с новым clean restore; финальный checkpoint/readback — issue1573. Production не входит; цены T138 остаются кандидатами.

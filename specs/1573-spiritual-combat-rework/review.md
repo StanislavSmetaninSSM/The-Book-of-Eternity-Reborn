@@ -7,7 +7,12 @@
 природой. Добавлены fire/scarlet_flame и магия крови как основание различия,
 соответствующая защита без неявного наследования и без потери all/innate.
 Новых формул/производственного пути нет; кэш и повторение прежней арифметики
-не требуются. Проверка ограниченного блока и независимое ревью впереди.
+не требуются. Независимый GPT-6.1 Sol/xhigh review a23f3a0..0fb5904 — pass
+без замечаний; parent проверил5mdonly/diff, новых ссылок нет. WIP remote SHA
+0fb59047e36185125b71dbe067543732d1fe9410,5 API blobs и байты совпали с новым
+чистым restore D:\BoeDiagnostics\impact-types-t139\remote-restore-refinement-20261102;
+пять обязательных инструкций на месте. Финальный checkpoint/readback — issue1573
+и verification-refinement.json. Повторный боевой замер не проводился.
 
 2026-11-02. Baseline b67b2ee0779b547c5533d169aae8bfb88dd6ae25 совпал с origin.
 Mortal Block5:408–419 разрешает custom element types со стабильным ID;
