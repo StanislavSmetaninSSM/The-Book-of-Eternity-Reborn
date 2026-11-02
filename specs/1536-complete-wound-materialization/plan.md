@@ -32,6 +32,12 @@ Optimization: existing loaded example/manifest and parsed typed route reused wit
 this independent test; three detached mutation copies are required to preserve the
 original. No production IO/cache/lifetime changes or new speedup claim. Raw remains
 /workspace/tboe-linux-evidence-20261102/terminal-mechanical-legacy-documentation.
+SOURCE found and root verified selection metadata typo before any build/runtime:
+version was used instead of existing schemaVersion. Corrected exact key; actual
+Read-TestCategoryCatalog/Get-TestCategoryCiMatrix metadata-only check exit0,
+1348 categories and one Linux selection, no frontend or tests. This is preparation,
+NOT the expected mechanical-example RED. Full log stays outside checkout.
+
 Current change: Unit guard/category/selection only; example and manifest unchanged,
 new C# UNCOMPILED, causal runtime UNRUN, SOURCE pending. Parent T150/#1536 and all
 R2/A5/DFR/Mortal/Windows/World9/other UNKNOWN/HOLD remain. Independent memory #1571
