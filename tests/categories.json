@@ -3,14 +3,18 @@
     "categories": [
 {
   "id": "wounds-spiritual-signed-json-boundary",
-  "responsibility": "#1536 T081-D ten cheap first-offer signed DATA cases: three published-BOM receipt/conflict/both inputs, four strict invalid-UTF8/double-BOM refusals without decoder exception leakage, and existing signed-absence/already-accepted/confusable identity controls. No mutable filesystem or live authority.",
+  "responsibility": "#1536 T081-D twelve cheap byte-boundary cases: ten first-offer signed DATA controls (three published-BOM positives, four malformed-byte refusals, three identity guards including request reuse across turns) plus two existing shared canonical UTF8 codec facts. No mutable filesystem or live authority.",
   "excludes": "No permissive string parser, byte/hash rewrite, live owner or full spiritual-wounds-state suite. Real multi-turn healing remains a separately admitted native case.",
   "changeHints": ["BookOfEternityClient/Services/SpiritualWoundFirstOfferInstanceResolver.cs", "BookOfEternityClient.Tests/SpiritualWoundFirstOfferInstanceResolverTests.cs"],
   "related": [],
   "requirements": { "frontendBuild": false, "exclusive": false, "ciRunner": "ubuntu-24.04" },
   "timeoutMinutes": 1,
   "expectedSeconds": null,
-  "selectors": [{ "project": "unit", "tests": ["BookOfEternityClient.Tests.SpiritualWoundFirstOfferInstanceResolverTests.*"] }]
+  "selectors": [{ "project": "unit", "tests": [
+    "BookOfEternityClient.Tests.SpiritualWoundFirstOfferInstanceResolverTests.*",
+    "BookOfEternityClient.Tests.MortalWoundRecoveryAnchorContractTests.CanonicalJsonUtf8_AcceptsExactlyOneOptionalLeadingBom",
+    "BookOfEternityClient.Tests.MortalWoundRecoveryAnchorContractTests.CanonicalJsonUtf8_RejectsDoubleMidstreamAndInvalidUtf8BomEdges"
+  ] }]
 },
 {
   "id": "wounds-spiritual-strain-healing-fixture",

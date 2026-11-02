@@ -106,14 +106,16 @@ public sealed class SpiritualWoundFirstOfferInstanceResolverTests
     {
         var receipt = SpiritualWoundOpportunityReceiptStateTests.TwoSides();
 
-        var result = SpiritualWoundFirstOfferInstanceResolver.Resolve(
-            new CanonicalBeforeImage(true, Encoding.UTF8.GetBytes(receipt.ToJsonString())),
-            Conflict, "chaos_sea", "session-a", "request-42", "snapshot-42", 42);
-
-        Assert.Null(result.InstanceId);
-        Assert.Null(result.ProposedRow);
-        Assert.Contains(result.Issues,
-            issue => issue.Code == "spiritual_first_offer_already_accepted");
+        foreach (var turn in new[] { 42, 43 })
+        {
+            var result = SpiritualWoundFirstOfferInstanceResolver.Resolve(
+                new CanonicalBeforeImage(true, Encoding.UTF8.GetBytes(receipt.ToJsonString())),
+                Conflict, "chaos_sea", "session-a", "request-42", "snapshot-" + turn, turn);
+            Assert.Null(result.InstanceId);
+            Assert.Null(result.ProposedRow);
+            Assert.Contains(result.Issues,
+                issue => issue.Code == "spiritual_first_offer_already_accepted");
+        }
     }
 
     /// <summary>

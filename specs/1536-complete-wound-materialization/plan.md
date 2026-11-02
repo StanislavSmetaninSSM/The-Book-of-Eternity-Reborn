@@ -1,5 +1,12 @@
 # T081-D actual weakening — H2 actual1 FAIL; byte-boundary causal scaffold WIP
 
+Astra/high accepted the minimal existing-decoder DESIGN. Cheap selection is now12:
+first-offer10 plus two existing CanonicalJsonUtf8 facts (pure shared codec, not Mortal
+compatibility runtime). Existing duplicate-request fact also refuses reuse at43,
+without adding a case. Production still unchanged; no cheap or native replay has
+run. Same immutable signed-byte boundaries/raw hashes and fail-closed diagnostics;
+no parsed-result/cache framework or ledger coherence relaxation is required.
+
 H2 sourcec377cd8c2abf3f2e43d3f6ba8e3763f4dca2b35e fresh Integration0/107baseline,
 4PE/PDB492bindings; cheap3 accepted PASS. ActualH2-healing1 completed1FAIL in
 37.4027720s TRX/40.8061659s category/46.906321182s wrapper, no timeout/skip/underfill.

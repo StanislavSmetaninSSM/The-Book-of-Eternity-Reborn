@@ -3,7 +3,7 @@
   "selections": [
     {
       "category": "wounds-spiritual-signed-json-boundary",
-      "reason": "Cheap causal byte-boundary RED/GREEN before correcting signed receipt readers used by actual next-turn healing; preserves strict malformed-byte and identity refusals.",
+      "reason": "Cheap causal byte-boundary RED/GREEN12 before signed reader correction: first-offer10 plus two shared codec facts, strict malformed bytes and duplicate requests across turns. No Mortal compatibility runtime.",
       "contracts": ["#1536 T081-D published UTF8 BOM at signed wound receipt/conflict boundaries, immutable raw identity"]
     },
     {
