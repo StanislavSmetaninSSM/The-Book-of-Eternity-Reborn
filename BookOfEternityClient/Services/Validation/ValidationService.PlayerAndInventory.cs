@@ -4185,7 +4185,21 @@ public partial class ValidationService
         }
     }
 
-    private static void ValidateActiveSkillObject(JsonElement item, string itemContext, List<ValidationIssue> issues)
+    /// <summary>
+    /// Validates one canonical active skill profile object. Shared by the
+    /// player delta path, the NPC delta path and the accepted-turn effect
+    /// composition gate (T101 / FR-105).
+    /// </summary>
+    /// <param name="item">
+    /// The active skill object being validated.
+    /// </param>
+    /// <param name="itemContext">
+    /// Diagnostic path prefix of the skill object.
+    /// </param>
+    /// <param name="issues">
+    /// The issue collection that receives diagnostics.
+    /// </param>
+    internal static void ValidateActiveSkillObject(JsonElement item, string itemContext, List<ValidationIssue> issues)
     {
         MortalWoundTreatmentCapabilityContract.ValidateSkillExtension(item, itemContext, issues);
         ValidateActiveEffectDefinitionsIfPresent(
@@ -4196,6 +4210,7 @@ public partial class ValidationService
         RequireString(item, itemContext, issues, "skillName");
         RequireString(item, itemContext, issues, "skillDescription");
         RequireString(item, itemContext, issues, "rarity");
+        MortalSkillProfileContract.ValidateSkillRarity(item, itemContext, "Skills.Active", issues);
         ValidateSkillActionCostField(item, itemContext, issues, "actionCost", "Skills.Active");
 
         if (!item.TryGetProperty("combatEffect", out var combatEffect))
@@ -4289,7 +4304,21 @@ public partial class ValidationService
         ValidateOptionalNumberOrString(item, itemContext, issues, "timeCost");
     }
 
-    private static void ValidatePassiveSkillObject(JsonElement item, string itemContext, List<ValidationIssue> issues)
+    /// <summary>
+    /// Validates one canonical passive skill profile object. Shared by the
+    /// player delta path, the NPC delta path and the accepted-turn effect
+    /// composition gate (T101 / FR-105).
+    /// </summary>
+    /// <param name="item">
+    /// The passive skill object being validated.
+    /// </param>
+    /// <param name="itemContext">
+    /// Diagnostic path prefix of the skill object.
+    /// </param>
+    /// <param name="issues">
+    /// The issue collection that receives diagnostics.
+    /// </param>
+    internal static void ValidatePassiveSkillObject(JsonElement item, string itemContext, List<ValidationIssue> issues)
     {
         MortalWoundTreatmentCapabilityContract.ValidateSkillExtension(item, itemContext, issues);
         ValidateActiveEffectDefinitionsIfPresent(
@@ -4300,6 +4329,7 @@ public partial class ValidationService
         RequireString(item, itemContext, issues, "skillName");
         RequireString(item, itemContext, issues, "skillDescription");
         RequireString(item, itemContext, issues, "rarity");
+        MortalSkillProfileContract.ValidateSkillRarity(item, itemContext, "Skills.Passive", issues);
         var passiveType = RequireString(item, itemContext, issues, "type");
         RequireString(item, itemContext, issues, "group");
         if (!item.TryGetProperty("masteryLevel", out _))
@@ -4327,7 +4357,7 @@ public partial class ValidationService
         else
             ValidateIntegerField(item, itemContext, issues, "maxMasteryLevel");
 
-        if (!string.IsNullOrWhiteSpace(passiveType) && !AllowedPassiveSkillTypes.Contains(passiveType))
+        if (!string.IsNullOrWhiteSpace(passiveType) && !MortalSkillProfileContract.AllowedPassiveSkillTypes.Contains(passiveType))
         {
             issues.Add(new ValidationIssue(
                 $"{itemContext}.type",
@@ -4335,7 +4365,7 @@ public partial class ValidationService
                 "Passive skill type должен быть одним из canonical enum значений",
                 code: "passive_skill_invalid_type",
                 section: "Skills.Passive",
-                expected: string.Join(" | ", AllowedPassiveSkillTypes),
+                expected: string.Join(" | ", MortalSkillProfileContract.AllowedPassiveSkillTypes),
                 actual: passiveType,
                 repairHint: "Используй passive skill type только из contract enum: KnowledgeBased, CharacteristicBonus, BodyModification, CombatEnhancement, Utility."));
         }

@@ -2,29 +2,53 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "console-explorer",
-      "reason": "T107 per-skill prose-claim coupling reworked inside ValidateAcceptedTurnProseStateDeltasAsync; the AcceptedTurnNarrativePayloadValidationTests wildcard in this category owns the new RED/GREEN coupling cases and the existing narrative-audit regressions.",
+      "category": "mortal-skill-reference-identity",
+      "reason": "T101 adds the shared rarity ladder check (skill_invalid_rarity) to the player and NPC skill delta validators; the MortalSkillReferenceAuthorityTests wildcard owns the new RED/GREEN profile-schema cases and the part-1 identity regressions.",
       "contracts": [
-        "#1533 part 2 (T107)",
-        "#1479",
-        "accepted_turn_skill_claim_missing_state_delta"
+        "#1533 part 3 (T101)",
+        "MortalSkillProfileContract",
+        "ValidationService.ValidateActiveSkillObject/ValidatePassiveSkillObject"
       ]
     },
     {
-      "category": "mortal-skill-reference-identity",
-      "reason": "The coupling audit now binds deltas through MortalSkillReferenceAuthority and reuses ReadMasteryIdentityReferences; confirm the part-1 identity behavior is unchanged by the new consumer.",
+      "category": "effects-materialization",
+      "reason": "T101 gates every this-turn skill write inside ValidateAcceptedSkillComposition through the shared profile validators (effect_skill_composition_invalid_profile); the EffectMaterializationValidationTests.RawValidation_SkillComposition* cases own the new gate, and the rest of the category covers the unchanged throwing composition path.",
       "contracts": [
-        "#1533",
-        "MortalSkillReferenceAuthority",
-        "ValidationService.SkillReferenceIdentity"
+        "#1533 part 3 (T101)",
+        "EffectAcceptedTurnInputComposer.ValidateAcceptedSkillComposition",
+        "effect_skill_composition_invalid_profile"
+      ]
+    },
+    {
+      "category": "canonical-normalization-mortal",
+      "reason": "ComposeSkillAcceptedRootCore is shared with CanonicalStateNormalizer.Skills; confirm stored-state normalization stays byte-compatible now that the profile gate is scoped to the validation entry point only.",
+      "contracts": [
+        "#1533 part 3 (T101)",
+        "CanonicalStateNormalizer.NormalizePlayerSkillStateAsync"
+      ]
+    },
+    {
+      "category": "console-explorer",
+      "reason": "Skill rendering and validator-driven explorer surfaces consume the touched ValidationService partials; confirm no projection regression from the shared profile contract extraction.",
+      "contracts": [
+        "#1533 part 3 (T101)",
+        "ValidationService.PlayerAndInventory"
       ]
     },
     {
       "category": "documentation-examples",
-      "reason": "Launcher GM-facing prose/state-delta rule lines updated for per-skill targeting; prompt/documentation coverage guards must confirm the synchronized wording.",
+      "reason": "GM-facing skill authoring surfaces (daemon template, step guide, launcher script and generator, main example) now document the canonical rarity ladder, passive type enum and free-form group; PromptDocumentationCoverageTests.SkillProfileSchemaEnums_AreDocumentedForGm pins the synchronized wording.",
       "contracts": [
-        "#1533 part 2 (T107)",
-        "CLI_Launch_Script prose state delta rule"
+        "#1533 part 3 (T101)",
+        "skill_invalid_rarity GM documentation"
+      ]
+    },
+    {
+      "category": "npc-social-trade",
+      "reason": "NpcCoreChangesContract.AllowedPassiveSkillTypes now aliases the shared MortalSkillProfileContract set; NpcCoreChangesTests.* must confirm byte-identical NPC core changes behavior.",
+      "contracts": [
+        "#1533 part 3 (T101)",
+        "NpcCoreChangesContract"
       ]
     }
   ]

@@ -286,14 +286,6 @@ public partial class ValidationService
         "Stability",
         "Environment"
     };
-    private static readonly HashSet<string> AllowedPassiveSkillTypes = new(StringComparer.OrdinalIgnoreCase)
-    {
-        "KnowledgeBased",
-        "CharacteristicBonus",
-        "BodyModification",
-        "CombatEnhancement",
-        "Utility"
-    };
     private static readonly HashSet<string> AllowedEquipmentSlots = new(StringComparer.OrdinalIgnoreCase)
     {
         "Head",
