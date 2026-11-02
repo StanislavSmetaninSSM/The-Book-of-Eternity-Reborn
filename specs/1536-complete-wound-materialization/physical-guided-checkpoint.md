@@ -1,3 +1,38 @@
+# Independent wound-only work: Mortal foreign consequence formatter scaffold
+
+Base0b4dd7e9777245ecd55bf73bbb70cc43a608703e remains remote verified, clean and
+with no active owned runtime at resumption. Full author decision packet is now
+[author-decisions-20261102.md](author-decisions-20261102.md): four real choices,
+not five. Strain +1/cap broken on declared failed non-safety action already has a
+rule; ordinary-result reconstruction/failure/exactly-once are technical work.
+No question is sent from this task again; parent will relay in the main chat.
+No proposed0 or other new rule is accepted. Existing E/other HOLD remain.
+
+Separate real source-level display defect (T119/T121/T151): Mortal known target
+passes npc/combatant targetKind to shared Project, while effect ownership filter
+hardcodes player. Actual EffectMechanicsSnapshot stores NPC/combatant carrier kind,
+so valid known visible consequences are omitted, contrary to projection contract106.
+Sol independently confirmed reachability and formatter-only test sufficiency.
+
+Finite plan: first add two independent real-catalog/snapshot rows for NPC/combatant;
+all valid wound/identity/history/effect owner/target/source and visible card premises
+precede the final missing-consequence oracle. Hidden/wrong source/definition/owner
+controls stay; original JSON DATA (not disk bytes) unchanged. Typed current targets
+are trusted formatter DATA, never consent/menu/FS freshness/publication authority.
+Existing test helper now fills exact top-level combatant carriers; no shared mutable
+state/cache/IO or production hooks. Source review then fresh selected Unit build,
+actual catalog/Plan/PREP and one causal2/60s. After accepted RED only, minimal closed
+Mortal target-kind→effect-owner mapping, preserving every other filter, source/owner/
+definition binding and hidden-complication exclusion. Fresh affected Main/Unit,
+exact GREEN2 plus player-preservation2, independent review/receipt/remote checkpoint.
+No new authored GM/API/game rule; new C# UNCOMPILED, causal runtime UNRUN,
+production unchanged. Full raw external at
+/workspace/tboe-linux-evidence-20261102/mortal-foreign-wound-effect-projection.
+Optimization: current parsed catalog/typed images reused per independent fixture;
+actual effect snapshots rebuilt only for isolated changed inputs, no new live reads
+or cache/lifetime/publication exception, no speedup claim. Broad privacy tests not
+repeated where unchanged afterlife branch remains literal-equivalent.
+
 # Current US3 wound-consumer remainder: four incomplete profile branches
 
 Independent Sol/xhigh bounded read-only mapping and primary source inspection

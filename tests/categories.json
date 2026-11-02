@@ -2,6 +2,61 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "wounds-mortal-foreign-effect-projection",
+  "responsibility": "T119/T121/T151 / FR-075/076 / #1536: two independent NPC/combatant rows use real wound history/identity/catalog and accepted effect snapshot, preserve hidden/foreign owner/source/definition controls and original JSON DATA, then require the lawful visible consequence. Target matching is formatter input, not permission. Expected causal RED is missing consequence after all premises; later stale-binding/privacy controls UNREACHED until GREEN.",
+  "excludes": "Pure formatter Unit DATA only; no menu/consent/current-filesystem/publication authority or Engine/native/browser proof. No new game rules, source-math choices, general combat/QTE/ACTIVE/F1, performance or HOLD retry.",
+  "changeHints": [
+    "BookOfEternityClient/Services/WoundPlayerProjection.cs",
+    "BookOfEternityClient/Services/WoundPlayerProjection.Target.cs",
+    "BookOfEternityClient.Tests/MortalForeignWoundEffectProjectionTests.cs",
+    "BookOfEternityClient.Tests/WoundPlayerProjectionTestData.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.MortalForeignWoundEffectProjectionTests.KnownMortalCardPreservesOwnerAndSourcePrivacyBeforeShowingConsequence"
+      ]
+    }
+  ]
+},
+{
+  "id": "wounds-mortal-foreign-effect-player-controls",
+  "responsibility": "T119/T121/T151 / #1536: exactly two existing Self projection Facts preserve lawful visible owned effect and wrong-owner exclusion while shared Mortal owner mapping changes. No unrelated accepted privacy sets repeated.",
+  "excludes": "Pure formatter Unit DATA only; no menu/consent/current-filesystem/publication authority or Engine/native/browser proof. No new game rules, source-math choices, general combat/QTE/ACTIVE/F1, performance or HOLD retry.",
+  "changeHints": [
+    "BookOfEternityClient/Services/WoundPlayerProjection.cs",
+    "BookOfEternityClient/Services/WoundPlayerProjection.Target.cs",
+    "BookOfEternityClient.Tests/MortalForeignWoundEffectProjectionTests.cs",
+    "BookOfEternityClient.Tests/WoundPlayerProjectionTestData.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.WoundProjectionPrivacyTests.Build_OnlyVisibleExactWoundOwnedEffectsBecomeReadableConsequences",
+        "BookOfEternityClient.Tests.WoundProjectionPrivacyTests.Build_ForeignEffectTargetCannotLeakThroughKnownOwnedId"
+      ]
+    }
+  ]
+},
+{
   "id": "wounds-canonical-source-cutover",
   "responsibility": "Existing T149 final source-inventory cleanup: generic wound activation explicitly refuses; actual current typed export remains active/non-public, empty-group fingerprinted, loose-source scanning and external generic export refused. Two current semantic/discovery guards preserve four fully retired aliases absence, no phantom live legacy category; typed ValidateWoundBindings stays protected. Six existing pure Unit methods, no new gameplay/causal RED or cache. Protective60s.",
   "excludes": "No history/cold/native/Engine, general effect mechanics, broader spiritual source category, raw/QTE replay, source-pin baseline closure or UNKNOWN/HOLD qualification. Current independent wound_legacy path and binding implementation remain unchanged.",

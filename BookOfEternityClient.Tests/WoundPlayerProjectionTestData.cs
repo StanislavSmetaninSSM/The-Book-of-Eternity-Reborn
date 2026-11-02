@@ -47,8 +47,8 @@ internal static class WoundPlayerProjectionTestData
                 .Where(w => w["owner"]!["ownerKind"]!.GetValue<string>() == "npc")
                 .GroupBy(w => w["owner"]!["ownerId"]!.GetValue<string>()).Select(g => (JsonNode)new JsonObject
                 { ["npcId"] = g.Key, ["activeWounds"] = new JsonArray(g.Select(w => w.DeepClone()).ToArray()) }).ToArray()) },
-            new JsonObject { ["enemiesData"] = new JsonArray() },
-            new JsonObject { ["alliesData"] = new JsonArray() },
+            Combatants(WoundCarrierCatalog.EnemiesPath, "enemiesData"),
+            Combatants(WoundCarrierCatalog.AlliesPath, "alliesData"),
             new JsonObject { ["profiles"] = new JsonArray(wounds
                 .Where(w => w["owner"]!["ownerKind"]!.GetValue<string>() == "player_soul")
                 .GroupBy(w => w["owner"]!["ownerId"]!.GetValue<string>()).Select(g => (JsonNode)new JsonObject
@@ -62,5 +62,15 @@ internal static class WoundPlayerProjectionTestData
         Assert.Empty(history.State!.ValidateAgreement(identity.State!, catalog));
         return new(carriers, identity.State!, history.State!, new(true, [], [], []), realm,
             ResourceDefinitionCatalog.CreateBuiltIn(), new Dictionary<string, string>());
+
+        JsonObject Combatants(string path, string collection) => new()
+        {
+            [collection] = new JsonArray(wounds
+                .Where(w => w["owner"]!["ownerKind"]!.GetValue<string>() == "combatant" &&
+                    w["owner"]!["carrierPath"]!.GetValue<string>() == path)
+                .GroupBy(w => w["owner"]!["ownerId"]!.GetValue<string>())
+                .Select(g => (JsonNode)new JsonObject { ["combatantId"] = g.Key,
+                    ["activeWounds"] = new JsonArray(g.Select(w => w.DeepClone()).ToArray()) }).ToArray())
+        };
     }
 }
