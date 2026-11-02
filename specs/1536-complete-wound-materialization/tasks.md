@@ -1,5 +1,15 @@
 # T081-D retained strain preimage DATA — causal tests WIP
 
+D1 on 8c127c3b7e463f48d42d828df6bb66579b6d01dc is a fixture FAIL, NOT causal
+RED: parent-source prerequisite rejected noncanonical semantic exchange bytes
+before the new-field subject (TRX0.0463672s, no timeout). Production.Payload already
+requires canonical semantic JSON. The two exchangeJsonBase64 fixture encodings
+now use the existing Canonical serializer; retained ordinary/parent preimage
+strings remain unchanged. No parser/assertion relaxation. Post proof
+05cddfbab2acffc4a1f516fb13b2717947697a31e7555e61fd5e4b35b3c60d20 verifies complete
+failure/45artifacts/618copies/native6/473bindings/cleanup/clean frozen source.
+Corrected C# UNCOMPILED, next attempt UNRUN; field/core/history controls UNREACHED.
+
 Current preserved source5a027b8fc325e176451d28a926d80d4de98065fc has accepted
 DESIGN (Astra closure) and a genuine real failed-maneuver first-A causal. Actual
 F1 Integration build exit0/107 unchanged warnings/73.625272646s; unchanged Main79d/

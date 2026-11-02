@@ -43,7 +43,7 @@ public sealed class SpiritualStrainPreimageDataTests
         parent["destinationStrainRank"] = 3;
         parent["extraStrainJumps"] = 2;
         parent["maximumSeverityRank"] = 3;
-        parent["exchangeJsonBase64"] = Encode(first.ToJsonString());
+        parent["exchangeJsonBase64"] = Encode(SpiritualWoundStateJson.Canonical(first));
         parent["turnEvidence"]!["acceptedD20Values"] = new JsonArray(5, 15, 4, 12);
         parent["turnEvidence"]!["diceClaims"] = Claims(0, 0, 5, 15);
         Seal(parent);
@@ -121,7 +121,7 @@ public sealed class SpiritualStrainPreimageDataTests
         source["extraStrainJumps"] = 0;
         source["harmfulMargin"] = 8;
         source["maximumSeverityRank"] = 2;
-        source["exchangeJsonBase64"] = Encode(actual.ToJsonString());
+        source["exchangeJsonBase64"] = Encode(SpiritualWoundStateJson.Canonical(actual));
         source["selectedDiceIndices"] = new JsonArray(2, 3);
         source["turnEvidence"]!["diceClaims"] = Claims(1, 2, 4, 12);
         source["strainPreimage"] = new JsonObject { ["version"] = 1,
