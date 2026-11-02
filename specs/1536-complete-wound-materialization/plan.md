@@ -17,7 +17,9 @@ One complete current #1535 action_control definition, one local application,
 closed empty parameters and empty source links; independent client allocation/source
 and complete provider capability remain explicit. No default heal consequence,
 price/duration rule, new mechanic/API/entrypoint or source/permission exception.
-Manifest points to the full authored branch. Current guides already link this exact
+Manifest points to the full authored branch. Independent SOURCE found only
+one precision issue: retained-request wording implied an exact new runtime result.
+Changed it to normative actual-confirmed-request wording; no new runtime is claimed. Current guides already link this exact
 terminal family; no parallel format or new prompt command. Test assertions unchanged.
 Optimization: existing complete definition language reused, one stable example read/
 parse and independent mutation copies; no production IO/cache or speedup claim.

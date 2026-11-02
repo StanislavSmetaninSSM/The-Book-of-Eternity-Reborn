@@ -3243,8 +3243,8 @@ keep their own exact declared costs. This is not a default price or duration.
   "interruption": null
 }
 ```
-The retained real request resolves the ordered reductions to workingI, then the
-same owner executes the separate final heal. GM narrative: «Лекарь завершает
+An actual confirmed request must resolve the ordered reductions to workingI, then
+the same owner executes the separate final heal. GM narrative: «Лекарь завершает
 лечение. Края раны сомкнулись; на коже остаётся тонкий светлый рубец. Дрожь руки
 пока ограничивает использование предметов.» Use the ordinary required
 Scope/Brain/journal/ready outputs for the actual medic. Client writes treat→heal,
