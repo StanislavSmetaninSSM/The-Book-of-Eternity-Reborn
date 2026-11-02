@@ -2,6 +2,34 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "wound-actual-shell-types",
+  "responsibility": "T118-ACTUAL-SHELL-READONLY / #1536: one compile-only exact contract for the new pure typed actual-App packet factory, existing six public DTO templates, raw active/History replies and real Wounds coverage helper. Existing player-facing test config gains only resolveJsonModule for this newly imported JSON chain. This adapter record is not a runtime Fact or DOM proof; separate SOURCE/PREP precedes either 60s manual actual-shell viewport attempt.",
+  "excludes": "No SSR1/28/old DOM13 or unrelated standalone rerun, production build/source change, alternate host/ShellContext or diagnostic framework, backend/canonical/provider/GM/save/fresh-process/packaged-host qualification, A5/R2 or broader HOLD retry.",
+  "changeHints": [
+    "BookOfEternityClient.WebFrontend/test/woundActualShell.types.test.ts",
+    "BookOfEternityClient.WebFrontend/test/helpers/woundActualShellFixtures.ts",
+    "BookOfEternityClient.WebFrontend/tsconfig.player-facing-tests.json",
+    "BookOfEternityClient.WebFrontend/test/fixtures/woundBrowserAcceptance.py"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "frontend",
+      "runner": "typecheck",
+      "tests": [
+        "BookOfEternityClient.WebFrontend/test/woundActualShell.types.test.ts"
+      ]
+    }
+  ]
+},
+{
   "id": "wound-help-menu-causal",
   "responsibility": "T118-ACTUAL-SHELL-READONLY / FR-075 / #1536: exactly one new SSR HelpView case with fresh typed public coverage, actual handlerKind Wounds and default mode. Require the single command row/label and /раны before final Russian category heading Раны and no raw Wounds. Accepted F1 causal RED reached only the heading oracle after all premises; retain the same singleton as regression for the one-entry Russian GROUP_LABELS correction. This is component SSR only, not actual App/DOM/keyboard/HTTP qualification; GREEN cost UNMEASURED.",
   "excludes": "No icon/other production change, App/driver execution, backend/GM/provider/canonical authority proof, new cache/diagnostic stack, accepted SSR28/DOM13 replay, broad frontend category or A5/R2/heavy HOLD retry. Existing category owners remain unchanged and unselected.",

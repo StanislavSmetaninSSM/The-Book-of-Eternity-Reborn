@@ -1,4 +1,38 @@
-# T118 actual-shell read-only — Russian Help label accepted, App pending
+# T118 actual-App test-only scaffold WIP, DOM not run
+
+2026-11-02 UTC, base 76ed2b7d91367409c8cb1740ad18d3b1708bc088, #1536 /
+T118-ACTUAL-SHELL-READONLY. Independent Astra DESIGN admits the coherent test-only
+packet factory/compile contract and existing-driver actual-shell desktop|mobile
+mode. The bounded label RED/GREEN remains accepted at f0965ecb; no SSR1/28 or old
+controlled DOM13 rerun. Production keeps only the already accepted Russian label.
+
+New mode uses ordinary index/main/StrictMode/App/ShellProvider, fresh typed public
+DTOs and raw wounds replies, never fixture ShellContext or state switching. Each
+separate 60s attempt owns Vite loopback5177, Chromium/context, route state, trace,
+screenshots and external output. Register strict routing before navigation:
+only same-origin Vite inputs/public assets, exact six bootstrap/refresh GETs and
+three exact read-only command POSTs; no /assets proxy, unexpected API or external
+traffic. Await completed six-GET refresh after each command and tolerate only the
+initial StrictMode duplicate bootstrap. Continue/final Back are local. Reuse the
+existing diagnostic/report/pin lifecycle, original timestamps and uncapped output;
+reserve 687,865,856 bytes plus 2,908,000,000 bytes headroom before the attempt.
+
+Pure factory reuses contract fixtures/woundCase/createWoundHelpCoverage; only quiet
+nonessential image prompts/gallery, with optional hidden rawJson sentinel. No new
+cache is useful for this one journey; existing asset cache is reused, DTOs are
+fresh per attempt. This is controlled DOM/browser-emission proof, not backend,
+canonical nonmutation, provider/GM/save/fresh-process or packaged-host acceptance.
+No GM-authored wire changes; GM documentation needs no update. Source is WIP,
+UNRUN/UNTYPECHECKED, cost UNMEASURED. Static AST/JSON checks pass: original driver
+main/record ASTs and accepted SSR/host/production files unchanged, one exact new
+compile-only owner, old owners unchanged. Existing test tsconfig adds only
+resolveJsonModule for the new JSON import chain; this is source preparation, not
+an observed compiler failure. git diff --check passes. Writer runs no npm/build /
+typecheck/browser/process; root owns persistence, SOURCE, exact compile contract
+and separate PREP before either
+DOM attempt. Parent T118/T158, A5/R2 UNKNOWN and every broader HOLD remain open.
+
+# Accepted Russian Help label receipt, before actual-App scaffold
 
 2026-11-02 UTC, #1536 / T118-ACTUAL-SHELL-READONLY / FR-075. Independent Astra
 DESIGN/SOURCE/PREP/OUTCOME accepts the bounded HelpView label correction on

@@ -1,3 +1,35 @@
+# T118 actual-App scaffold WIP, compile and DOM unrun
+
+2026-11-02 UTC, base 76ed2b7d91367409c8cb1740ad18d3b1708bc088, #1536 /
+T118-ACTUAL-SHELL-READONLY. Accepted label F1 RED/F2 GREEN remains at f0965ecb;
+no SSR1/28, old controlled DOM13 or production build repeat. New pure typed packet
+factory reuses existing public contract templates/woundCase/Wounds helper with
+fresh DTO copies, quiet scene image prompts/gallery and hidden rawJson sentinel.
+One new exact compile-only contract/60s is selected, not a runtime Fact. Existing
+test config gains only resolveJsonModule for its newly imported JSON chain; no
+actual compile failure is asserted. All production and old SSR/host source stays.
+
+Existing driver gains --actual-shell desktop|mobile, ordinary index/main/StrictMode /
+App/ShellProvider only, not the fixture host. Each separate60s attempt owns strict
+loopback Vite5177, Chromium/context, route state and external complete HTTP ledger /
+trace/screenshots. Routing precedes navigation: six exact GETs, three exact read-only
+POST bodies/order with completed requestfinished refresh barriers, initial StrictMode
+bootstrap resampled after menu networkidle; no /assets proxy, unknown API or external
+traffic. Continue/final Back local; actual Russian menu, active/History focus and
+real Tab-to-History transition, literal text/privacy/overflow. Vite group and browser
+closing are explicit; no sandbox/auth changes. Preflight requires687,865,856 reserve
+plus2,908,000,000 headroom bytes; final reserve retained, diagnostics uncapped.
+
+Static Python AST/JSON/source checks pass, original driver main/record ASTs and old
+owners unchanged. git diff --check passes. Primary static log is external:
+/workspace/tboe-linux-evidence-20261102/actual-shell-readonly/F3-scaffold/static.log.
+No npm/install/build/typecheck/driver/browser execution by writer. Code remains
+UNRUN/UNTYPECHECKED, cost UNMEASURED; root persistence/SOURCE/compile-contract and
+separate PREP precede either DOM attempt. No cache is useful for fresh controlled
+DTOs; existing installed assets are reused. No GM-authored wire changes, so no GM
+update. This proves no backend/canonical nonmutation/provider/GM/save/fresh-process
+or packaged hosting. Parent T118/T158, A5/R2 UNKNOWN and all broader HOLDs remain.
+
 # T118 actual-shell read-only — Russian Help label accepted, App pending
 
 2026-11-02 UTC, #1536 / T118-ACTUAL-SHELL-READONLY / FR-075. Independent Astra

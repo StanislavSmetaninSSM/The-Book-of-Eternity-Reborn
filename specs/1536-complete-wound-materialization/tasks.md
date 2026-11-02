@@ -5,7 +5,17 @@
   f0965ecb8e31abc16a765d0a9eb5b29205a20148, 2.711535s wrapper/15.806159ms test,
   complete selection/no timeout/source unchanged/cleanup true. Production changes
   only GROUP_LABELS.Wounds = Раны; no icon/routing/gameplay change. Actual-App
-  scaffold/typed contract/SOURCE/PREP/desktop+mobile DOM remain pending. Existing
+  scaffold now proceeds only under accepted Astra DESIGN: fresh pure typed packet
+  factory, exact compile-only entry and existing-driver --actual-shell desktop|mobile.
+  Each separate60s actual index/App/ShellProvider attempt owns Vite5177/browser /
+  context/HTTP state/external full diagnostics. Exact GET6 and read-only POST3 with
+  completed-refresh barriers, strict static/HTTP allowlist and current reserve plus
+  headroom; no backend/proxy/provider side effects are claimed. Current test-only
+  source is UNRUN/UNTYPECHECKED. Exact wound-actual-shell-types selects one compile
+  record, not a runtime Fact. Static driver AST/JSON/source checks and diff --check
+  pass; old main/record/SSR/host files stay unchanged. Test tsconfig changes only
+  resolveJsonModule for new fixture JSON imports; no observed compile failure.
+  Root SOURCE/compile/PREP precede all DOM. Existing
   SSR1/28 and controlled DOM13 retain separate accepted lineages without rerun.
   Full current receipt and external evidence paths are at the start of plan and
   physical-guided-checkpoint. No GM contract or useful cache change. Parents,
