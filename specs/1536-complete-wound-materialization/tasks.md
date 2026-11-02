@@ -1,3 +1,20 @@
+# Current accepted wound result: bounded III strain C2 consumer
+
+Code/build/runtime bc7c5217bc49fc1afc38655d609dc1a55116fc28:20 unique PASS,
+three disjoint runs18+1+1 on one source, exact6categories/9methods/6descriptors.
+Real III selection now enforces one owned ordinary-based strain step cappedbroken,
+separate A/B, new real sourceII/none, same-process cold reconstruction and repeated
+private completion without another application. Actual affected mixed binding peer
+also accepted. Full receipt, hashes, build/selection/review and limits in current
+physical-guided-checkpoint.md. Source/GM docs/example/manifest synchronized.
+
+Scope is direct-root lastplayer pressure/setback with one newly selected applicable
+contribution. Whole strain profile/US3, accepted publication/Engine/UI/fresh OS process
+remain unqualified here. Four author decisions (including proposed0), previous
+UNKNOWN/HOLD and wounds-only exclusions unchanged. Next broader strain failure/
+operation/carrier/lifetime qualification under existing canon, not an invented
+control/counter/restrict or dice-free margin rule. ParentT081-D/#1536 remain OPEN.
+
 # Strain warning-clean correction — owning builds still pending
 
 Main52467532a5532051807290f0aeed3e3a43054f4d compiled exit0/64.827821297s,

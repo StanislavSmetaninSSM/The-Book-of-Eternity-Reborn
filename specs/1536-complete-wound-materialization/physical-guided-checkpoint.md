@@ -1,3 +1,76 @@
+# T081-D STRAIN-PRESSURE-C2 accepted bounded result — 2026-11-02
+
+Code/build/runtime bc7c5217bc49fc1afc38655d609dc1a55116fc28:20 unique PASS
+in THREE disjoint bounded runs18+1+1, not one aggregate invocation. Independent
+Astra/high production design/SOURCE and actual strain OUTCOME; Sol/xhigh test/GM/
+selection SOURCE, delta SOURCEs, PREPs, cheap18/binding OUTCOMEs and receipts.
+No parent/whole-profile closure follows from these bounded accepted children.
+
+A genuine III wound now supplies one owned extra strain step for a direct-root
+last player pressure/setback with unchanged ordinary player strain and one newly
+selected applicable contribution. The ordinary source/resource result is proved
+BEFORE selection and rederived during saved-choice replay; no caller baseline or
+correctedAfter−1. Current actor/ordinal/epoch, wound/root/definition provenance,
+stack/magnitude and exact frozen siblings are checked. The consumer requires
+min(broken,ordinary+1). A exchange correction and B final echo are separate;
+full actual source/resource admission precedes B permission. Unsupported operation,
+side/carrier/combination remains fail-closed; generic integration guard retained.
+
+Actual positive1: genuineIII → overwhelmed→broken A → committed A progress →
+new-validator cold B reconstruction/changed-A refusal → B resolved → real sourceII
+(pressure14 from harmful margin8) → explicit none → repeated completed_unpublished.
+Exactly2 source/decision rows (materializeIII,none), seven canonical images unchanged,
+no common-plan authority. This is SAME-PROCESS new-validator reconstruction and
+private completion, NOT fresh OS process, accepted publication, Engine/provider/DOM,
+whole strain profile or all US3. Binding peer actual mixed A/B/cold control passes;
+its final B remains uncommitted, separate from the new strain case's private completion.
+
+Exact selection (NoBuild/Parallelism1):
+- wounds-spiritual-strain-comparison6 + wounds-spiritual-strain-policy-regressions7
+  + spiritual-binding-control-boundaries4 + mortal-terminal-guidance-manifest-regression1
+  = cheap18; category4.4487086/3.6172625/3.6470283/3.6216945s, original60/120s.
+- wounds-spiritual-strain-c2-selection1:42.4165657s/original60s, wrapper50.614344865s.
+- spiritual-binding-final-control1:39.0079288s/original300s, wrapper46.536808962s.
+Six categories/nine methods/six descriptors. No skip/timeout/dup/underfill; cleanup
+true/newTMP[], no active owners, clean runtime tree. Baseline58a1PASS and actual
+causal9a7 one integration_required FAIL are separate lineages, not added to20.
+One mistaken Plan-path invocation stopped before output/child creation; no extra run.
+
+Fresh Main70.896169639s/Unit36.733297177s/Integration76.716063764s exit0, exact
+unchanged warning multisets81/26/107. Earlier CS0103 and then CS8604 are preserved
+preparation corrections, not causal RED or GREEN. Existing typed source ActorKey
+now internal with unchanged normalizer body; actual player_soul key reused. Only
+its previously matching World70 pin updated; all old9 mismatch paths unchanged.
+45 artifacts/206 inputs618 copies/native6/4PEPDB468 source bindings match before/
+after all runs. Only3 GM inputs/9 copies changed: guide, worked example, manifest.
+Manifest61/61 exact inventory and parsed example are tested; no new wire fields.
+
+Full raw /workspace/tboe-linux-evidence-20261102/spiritual-strain-burden:
+B5-artifact-resource-proof e4bad8afd13c747b6b05eb25cdb6d74b462b7a28a91c1ebe7e2aa1e993213b79;
+B5-pdb-proof e7223f00d06fdbff89e5dbacf878bcd4e51ee9254d1c4aad8acd735163c71bbc;
+cheap18 post b958923989d46d12c8fa82a43446e09029c1d647d48349243ff33d6035447268;
+positive1 post4f31bb42773a43c0aca74154e0caa6a80effad35660d827be94e0d74b12f9e65;
+binding1 post26b1d35328292e6755c0fbf6a3ff383f860c885e45a6b9c6c048b4ba386cf971;
+20-case disjoint integrity a85e31eac305d303569d26f21a19527cb5b1f77b2ef3f726ee7e73b7c227da19.
+Prior own15 archive8449592b289c472457b8bcc818ca95367a1f292bbadbc19780ee1016b3b06ba4
+and B4Main5 archive5343482a8be8407dcd903a064f398cddc164ee09e714369540503d71fd82e918
+verified exact members/hash/gzip EOF/CRC; no raw/saves deleted or uploaded.
+
+Optimization: existing immutable full-key prepared template with separate working
+roots and existing source/resource/service/journal owners; scoped private comparison
+DATA only. Cheap request-shape filter avoids new ordinary probes on unrelated
+selections. Fresh ordinary/replay checks remain necessary authority, not cached
+permission. No new cache/diagnostic stack or speedup claim; equal-work comparison
+is not inferred from RED8s versus the larger GREEN42s. No limits increased.
+
+Next remaining T081-D work is broader strain failure/operation/carrier/lifetime
+coverage and final eight-profile reconciliation; this child does not invent those
+rules or close the profile. Four author decisions in author-decisions-20261102.md
+remain pending, including proposed harmfulMargin0. Existing source-family gaps,
+R2 browser/A5 terminal/DFR/Mortal compatibility UNKNOWN, Windows/cross-OS DATA and
+all recorded HOLD remain separate. General combat/QTE/ACTIVE/F1/T088 stay outside
+this wounds-only task. #1536/US3 and parent tasks remain OPEN.
+
 # Strain warning-clean correction — owning builds still pending
 
 Main52467532a5532051807290f0aeed3e3a43054f4d compiled exit0/64.827821297s,
