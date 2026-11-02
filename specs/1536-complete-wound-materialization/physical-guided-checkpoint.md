@@ -1,3 +1,63 @@
+# Whole #1536 remainder reconciliation — 2026-11-02
+
+Read-only audit of canonical spec/contracts/tasks, current production and accepted
+leaf receipts at 2aa366476a5a102e07f311baa92ecf370713fd3a. Root owns this summary;
+independent Astra/high examined US3/DFR and Sol/xhigh examined US4–8/cross-cutting.
+No new task, test, production edit, author decision or HOLD release follows from
+this audit. Parent boxes and old September notes are not current code inventories.
+There is more remaining than a pair of tests; no percentage or completion date is known.
+
+## Concrete implementation and connected-route remainder
+
+| Existing IDs | Actual remainder and source | Next completion criterion |
+|---|---|---|
+| T079/T083/T088, FR-037, T081-E | Confirmed missing mandatory bounded non-training defeat outcome. AfterlifeSpiritualConflictState.HasCompleteResolveResolution accepts result/opponent evidence without the required scope/end condition. Existing soul-dissipation authority is separate. | Complete T088 against the approved conflict rules: a lawful bounded outcome prevents immediate same-aggression retry, is retained/applied, and absent/invalid scope or end refuses. Preserve training and explicit optional dissipation; no invented restriction/tariff. |
+| T149/T071 | Canonical player and NPC carrier retirement is accepted, but reachable ValidateResponse -> ValidateNpcContract still identity-validates NPCWoundChanges. QTE terminal responseFragment calls that raw validator. This is source-confirmed raw-admission debt, not a proven publication bypass. Generic structured/state allowances also remain. | Genuine public raw-response and QTE causal evidence, then explicit legacy refusal before typed projection plus semantic source guards. Preserve canonical legacy-only error priority, metadata and other NPC sections; no effectChanges repair hint for wounds. |
+| T179/T192, T178–T198 lawful ACTIVE / FR063 | Real N/I observations, existing v3 basis/consumer pieces, retained common calculations and pure action/time prerequisites exist. Full S/common/M3/F1 live+cold owner chain and complete active continuation remain unfinished. MortalJointActionBoundary explicitly remains detached T192a; current MortalJointInactiveTail refuses new QTE and unprocessed stats/levels. | Complete the existing staged genuine-source -> common/M3 -> fresh/cold proof route without activating a partial route. Reconcile newer N/I/DFR components before implementing any old planned primitive again. |
+| T180–T183; T184–T189; T193–T196 | Connected ACTIVE automatic/projection/story/no-offer completion, QTE capture/accept/decline/ordinary F1 result, selected terminal/post-QTE/cleanup and complete ordinary family/action-time composition are not established by their accepted pure prerequisites. See design/lawful-active-joint-tail-b-implementation-plan.md and lawful-active-joint-tail-b-ordinary-outcomes.md. | Finish actual owning consumers and atomic/replay/cold joins in the dependency order already specified; complete lawful ordinary outcomes, not a guessed whitelist. T190/T191/T198 then own connected UI/platform acceptance. |
+| T197 | Separate MortalDeath -> LifeEvaluation continuation/design remains incomplete/conditional in design/lawful-active-joint-tail-b-death-handoff.md. | Resolve its existing target/source/restore contract dependencies and required design/implementation gates. T069's typed death_contour handoff is already implemented and must not be reimplemented or called missing. |
+
+## Implemented substantial behavior, incomplete overall acceptance
+
+| Existing IDs | Current status | Next criterion |
+|---|---|---|
+| T076–T092 / T081-C/C2/C3/D/E/C5 | Spiritual runtime is present: SourceWitness calls opportunity math; admission, per-side decisions, guarantee_satisfied, pending/checkpoint/replay, live insertion and common publication have bounded accepted receipts. The base T084 note saying math has no runtime caller is historical. | Reconcile remaining exact operation/result/eight-profile/start/terminal/preview/docs cells, including result-closure/position dependencies; implement only proven missing cells. |
+| T081-C3-R2B / T107 | Initial healing/recovery together with live spiritual insertion remains an unaccepted combination. Current combat-healing reducer exists, so the old September claim that no producer can exist is not a current proof. | Trace today's lawful producer through this exact combination and qualify it without fabricated stages or relaxed realm/source checks. |
+| T063/T070/T071–T075, T121-PHYSICAL-GUIDED | Mortal diagnosis and all three guided treatment modes have production paths and bounded native/handler/console/rollback evidence. Full browser course and linked terminal/native frontiers remain unaccepted. | Map actual mode/cut evidence and finish only missing connected acceptance under its gates; do not reimplement the shared physical handler. |
+| T093–T112 / US4 | Arts/resolver, safe self-healing, natural recovery, combat self-healing, Guardian/resident/Shining aid, world-cycle/progression/History/replay exist with accepted bounded journeys. T112-SOURCE-PINS is closed. | Reconcile all eight US4 scenarios, actor/realm/progression/catch-up and differing-current counterharm compensation. Whole US4 is not yet accepted; missing receipt is not proof of missing code. |
+| T113–T130 / US5 | Target choice, foreign detail, History, aliases/shared handlers, spiritual and Mortal diagnosis, cards and actual App read-only route exist. Eight spiritual requirement adapters are implemented: item_quantity/resource_quantity/consent/facility/location/quest_state/effect_state/environment. Their141 PASS span seven lineages, not all-eight native/UI. | Reconcile navigation bound and complete target/method/confirmation/result/stale/error parity. Actual-App desktop/mobile controlled HTTP proves frontend DOM/emissions, not backend/packaged/live-provider/save authority. |
+| T131–T147 / US6 | Quotes/payment, Elyara current locality/life, Shining healer role/access, public and negotiated aid are implemented and accepted in bounded scopes. T142 historical-faction exception is resolved. | Close whole scenario/evidence mapping and any genuinely missing consumer; no new economics or repeat of accepted journeys solely for parent boxes. |
+| T167–T177 / US8 | Scope union, offered/current authority, RollSkillId, common reducer, dormancy/lifecycle/replay/rollback/catalog/GM cutover T167–T176 are implemented. | Reconcile whole T177 verification/review against eight US8 scenarios and exact existing receipts; do not invent a missing scope runtime from that parent checkbox. |
+
+## Cross-cutting acceptance and separate holds
+
+| Existing IDs / gate | Remaining obligation or limit | Next criterion / admission |
+|---|---|---|
+| T148 / #1571 | M01 proves historical metadata survival only; E01 real independent memory-suppression survival is unqualified. GitHub issue1571 is verified open on2026-11-02. | Keep separate follow-up scope; its existence satisfies tracking only. Do not implement the independent memory runtime or make all #1571 an automatic blocker of wound development. |
+| T150, T151, T152 | Guidance4, Russian Help label, markup/privacy/C0 output controls and display boundary4 are accepted leaves. Full examples/manifest, whole Russian/privacy surface and adversarial bidi/confusable/oversized/recursive matrix are NOT_RECONCILED. No new concrete leak is asserted by this audit. | Requirement -> real consumer/example/parser -> existing exact case/receipt map; fix only proved omissions. Preserve current Unicode rules; four parser cases are not renderer or full-T152 acceptance. |
+| T153, T154 | Indexes/bounds and real rollback machinery exist. Whole scale/complexity and wound/effect/resource/item/profile/scheduler/journal/quest/output failure-cut union are NOT_RECONCILED. | Map indexes/cases and surface x cut x byte/existence oracle to receipts; no assumed performance defect or blanket repeated suite. |
+| T121 browser R2 | Full browser physical course TIMEOUT180.1041994/180s, no completed TRX/case; prefix retained in current browser-read-recovery/R2-browser-course. Accepted cheap36 and unrelated App reads do not replace it. | No blind retry. A cause-backed bounded correction/admission, fresh bindings/resource checks and independent PREP must precede another original-budget full course. |
+| T121 joint terminal / T152 A5 | Full joint terminal TIMEOUT120.0346224/120s on c9c9103b6, compiled9383e6e7; no TRX. Anchor2/output10/controls3 are separate accepted evidence, not full terminal PASS. Current prefix/root retained in notification-controls/A5-terminal1. C9/C10 native UNKNOWN remains distinct. | Preserve UNKNOWN and exact captures; no new retry is admitted. Establish a concrete cause/correction and separate unchanged-budget PREP before the full peer. |
+| T597/T598/T601/T602, DFR | Last historical full positive TIMEOUT300.1806894/300s, no completed case/TRX/report.69 distinct component PASS are accepted separately. | Full positive remains HOLD; only after separate justified admission, fresh complete preparation and original300s/full capture, then dependent invalid-prefix/source-drift/v1/Prepared0/Published2 cold gates. |
+| T609-WIRE/RED/GREEN; T603/T607/T608 copy-cost | Parked source/cost/optimization qualification, not missing gameplay. Helper/component evidence does not prove full cause or overall budget fit. | Do not resume automatically. If separately reprioritized: genuine two-Compose causal source reduction with fresh/error semantics before activation; no inclusive-time speedup claim. |
+| Mortal compatibility / broader ordinary envelope | Historical three-case180s timeout and broader ordinary60s/no-TRX UNKNOWN are not replaced by later bounded Mortal diagnosis/healing PASS. Old20261025 raw is unavailable in this recovered machine. | Preserve historical status/indices, identify recoverable evidence and only then cause-backed original-budget PREP if this HOLD is released; no fresh PASS inferred. |
+| Windows / first Guardian / cross-OS DATA | Windows deferred until materialization completes; new shared-code Windows PASS is absent. First Guardian intermittency and historical Windows DATA newline compatibility remain open. | Platform-specific final qualification and targeted issue resolution, not substitution by Linux/generated fixtures. No Windows job/artifact/CI retry automatically. |
+| T155–T158/T163/T177 inherited commands | Old Fast/FullValidation/RegressionIntegration/PreMerge and npm verify prescriptions are superseded by current category policy. | Use justified exact categories/frontend scenarios, never execute retired aggregate commands as supposed mandatory work. |
+| T159–T165; T166 | Whole FR/acceptance/quickstart matrix, coherent final independent review, resolved findings and final source/example/artifact/PR checks are unfinished. Current work is checkpointed, not feature-PR accepted. | Complete existing functional/gated obligations, reconcile current evidence and final review/diff/checks. Merge/force-push/issue closure remain outside current authorization. |
+
+Evidence availability: /workspace/tboe-linux-evidence-20261025 is absent; historical
+raw/binaries are not claimed recovered. Current full raw stays outside Git at
+/workspace/tboe-linux-evidence-20261102. Latest completed blocks: T14920 PASS on
+5950b74a and T1524 PASS on eb879e2d, distinct runtimes. New task creation, HOLD
+execution, broad tests and speculative production edits were not used for this audit.
+
+Execution order after this reconciliation: address real functional contracts
+(T088 bounded defeat and the independently confirmed raw NPC legacy refusal), then
+remaining connected US3/ACTIVE dependencies in their existing plans; reconcile
+implemented story matrices without replaying unchanged accepted sets. Keep explicit
+R2/A5/DFR/Mortal/Windows admissions separate. No claim that these two short fixes
+alone complete #1536. This audit creates no new game rule or author approval.
+
 # T152 display text boundary — accepted bounded qualification, 2026-11-02
 
 Source/runtime eb879e2deb6eadeda91eb61a463a28ebbb4d8aa3. Independent Sol/xhigh
