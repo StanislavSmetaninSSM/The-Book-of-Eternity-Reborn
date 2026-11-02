@@ -473,7 +473,7 @@ public sealed class WoundMaterializationSourceGuardTests
             "accepted-wound-snapshot-original-path-presence",
             InventoryCategory.AcceptedMechanicsIntegrationSeam,
             "BookOfEternityClient/Services/PendingTurnSnapshotReader.cs",
-            "internal static class PendingTurnSnapshotPathPresenceV1",
+            "internal static partial class PendingTurnSnapshotPathPresenceV1",
             "private static readonly ReadOnlyCollection<string> LegacyClosedLogicalPaths =",
             "internal static IReadOnlyList<string> LogicalPaths => ClosedLogicalPaths;"),
         new(

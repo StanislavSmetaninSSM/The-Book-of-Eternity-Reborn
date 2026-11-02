@@ -1,3 +1,15 @@
+# T149 behavioral GREEN9; one inventory literal pending
+
+R4 runtime f21ec22c2e4e83398384c160c8cadd9e04d3fafb completes 11/11 rows:
+Integration 9 and Unit legacy-confinement 1 PASS; one Unit inventory method fails
+the stale nonpartial declaration anchor. Overall 10 PASS / 1 FAIL, 15.7671557s,
+no timeout/underfill and cleanup/fixture absence pass. All 67 inventory entries
+were statically checked; only that anchor is stale. Its one-line correction
+retains exact owner name, file and all semantic/scoped authority anchors.
+No production or typed fixture change follows R4. Next independent partial
+OUTCOME/delta SOURCE, Unit-only fresh build and exact remaining singleton. Keep
+the ten PASS on their actual lineage; do not repeat them for this literal repair.
+
 # T149 correction built/planned — PREP and GREEN pending
 
 Independent SOURCE is accepted at 9dc61ba9f9e323b87064aecb41e8553a800aca84;

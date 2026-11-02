@@ -1,3 +1,40 @@
+# T149 behavioral GREEN9; one stale inventory anchor correction pending
+
+Actual runtime f21ec22c2e4e83398384c160c8cadd9e04d3fafb completes both descriptors
+and all 11 rows in 15.7671557s: 10 PASS / 1 FAIL, exit 1, no timeout, duplicate,
+skip or underfill. All typed Integration 9 PASS, including both formerly accepted
+bare arrays, scalar/null 5 and genuine canonical 2. Exact source bytes remain
+unchanged. The Unit legacy-confinement method also PASS. Process cleanup and
+explicit new-fixture absence are proven. Overall GREEN11 is not claimed.
+
+The remaining Unit inventory method fails one textual declaration anchor:
+PendingTurnSnapshotPathPresenceV1 is now internal static partial class, while the
+inventory requires internal static class. The class remains in the same source
+file; its companion DiagnosisObservation partial extends the existing closed
+presence owner. Current LegacyClosedLogicalPaths, ClosedLogicalPaths and original
+reader APIs remain present. A complete static audit of all 67 inventory entries
+finds only this one missing anchor, not a sequence of undiscovered failures.
+The correction adds only the actual partial modifier to that exact class anchor;
+no production, scope allowance, fingerprint or authority check is changed.
+
+Current finite selection is only the failed Unit inventory method, one row at
+the same 60s category budget. The ten passing rows retain the R4 runtime lineage
+and are not repeated for this test-only literal change. Five R4 Unit-owned current
+artifacts were preserved before its future rebuild: verified gzip EOF/CRC and all
+exact member bytes, archive 4,508,054B SHA256
+bab82457f821c7dc4f38d540007489a757b13d5ec7bc786fb23e8195ee2f2a75.
+
+Primary external R4-green11 summary SHA256:
+e6d8d43907b7fdd019f2ae5d26a5a1712a37484a654d1cbd59990f2d2d9e9431.
+Integration TRX SHA256:
+59ca91ddff4b3e7500f75937b8a4a87489c7a1b716467e3129ba9ac38f797466;
+Unit TRX SHA256:
+9f5dbf036eec2083fa9fa92f0cd1c6451e325712b923d82587e0fa3471d31dd2.
+All raw and archives remain outside checkout. Independent partial OUTCOME and
+delta SOURCE are next, followed by fresh Unit-only build/exact PREP and one-row
+confirmation. Optimization/GM: literal inventory repair adds no production work,
+cache or authored contract. T149 acceptance stays pending; R2 and other HOLDs stay.
+
 # T149 correction built and exactly planned — GREEN pending
 
 Independent Astra/high SOURCE accepts implementation

@@ -42,6 +42,12 @@
   Current GREEN selection: Integration 9 + existing Unit semantic guards 2,
   11 cases / 5 methods / two descriptors, unchanged category 60s. Independent
   SOURCE, fresh affected builds and GREEN acceptance remain required.
+  Production SOURCE and six-owner builds are accepted; runtime f21ec22c gives
+  typed Integration 9 + Unit confinement 1 PASS and one stale inventory anchor
+  FAIL, complete/no timeout/cleanup proven. One-line partial-class anchor repair
+  is authored; only that failed Unit method is selected for confirmation after
+  independent review and fresh Unit build. Parent and bounded acceptance remain
+  open until that result is reviewed; no overall fresh 11 PASS is claimed.
   Authored scaffold WIP: actual typed PlayerStateFiles with exact canonical-path
   selection, three methods/nine source rows (arrays2 causal, scalar/null5 preserving,
   genuine catalog-valid canonical2), one exact60s category. Existing minimal
