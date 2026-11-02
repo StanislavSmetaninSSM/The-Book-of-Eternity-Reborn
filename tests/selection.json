@@ -2,17 +2,10 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "core-joint-candidate-continuing-visibility",
-      "reason": "Existing three file-only typed controls qualify reuse of the same continuing sealed event transfer by the terminal peer: live blocked-body visibility with one actual source read/no authority, two-instance ordering/snapshots and existing fault/final-tail/retained-root policy. No new diagnostic API/cache/codec or actual full-terminal retry in this cheap gate. Preserve60s.",
+      "category": "mortal-terminal-guidance-causal",
+      "reason": "Only the changed existing pure worked-selection Fact: current manifest and real typed terminal/mode/roundtrip premises precede refusal of two stale example capability claims. Establish one genuine documentation RED before changing Examples or manifest; the second assertion may be unreached. Reuse its loaded example, preserve all previous assertions and the 60s protective bound. All old category owners and accepted output/anchor/transfer sets remain unselected; no terminal retry.",
       "contracts": [
-        "#1536 / T121-PHYSICAL-JOINT-TERMINAL-ANCHOR / full uncapped original-event capture / unchanged fresh preparation"
-      ]
-    },
-    {
-      "category": "wounds-notification-worsening-projection",
-      "reason": "Retry only the failed create/worsen peer after its whole local setup uses a present Mortal realm source and the existing signed occurrence/snapshot helpers for both turns, in addition to the already complete treatment templates. Preserve original identity/effect/History/notification assertions and60s; no global helper or production changes.",
-      "contracts": [
-        "#1536 / T152-NOTIFICATION-CONTROLS / FR076 / unchanged create-worsen publication"
+        "#1536 / T150-GM-TERMINAL-GUIDANCE / parent T150 / FR-086/087 / truthful sealed terminal heal and independent legacy guidance"
       ]
     }
   ]

@@ -1,4 +1,44 @@
-# A4 accepted4; doc-only checkpoint before separately admitted terminal singleton
+# T150 GM terminal guidance: causal scaffold WIP, no content correction yet
+
+2026-11-02 UTC, base c9c9103b6c06cbe806cbab8eb4d7faeb5a31aa57, #1536 /
+T150-GM-TERMINAL-GUIDANCE / parent T150 / FR-086/087. Only the existing pure
+PhysicalGuidedDocumentationTests worked-selection Fact gains two exact stale
+terminal heal/legacy claim refusals after all existing typed route, current
+manifest, three mode, roundtrip and selection nonmutation premises. One Fact is
+expected RED at its first new refusal; the second can be UNREACHED, not another
+observed failure. No production, Examples or example manifest correction yet.
+After accepted real RED, guidance must distinguish existing sealed heal and
+independent legacy publication from the later direct death-outcome consumer.
+T069's typed death_contour handoff remains implemented; no new gameplay rule.
+
+New exact mortal-terminal-guidance-causal leaf selects only this Unit Fact/one
+source case/60s protective bound. All old owners remain unchanged and unselected.
+Both assertions reuse the already loaded example; no extra read, expensive setup,
+Engine, cache or diagnostic framework. Cost UNMEASURED. C# UNCOMPILED; discovery,
+Plan/PREP/runtime UNRUN. Actual Read-TestCategoryCatalog/Get-TestCategoryCiMatrix
+exit 0: 1,329 categories, one exact Unit Fact/60s/related0. External primary log:
+/workspace/tboe-linux-evidence-20261102/gm-terminal-guidance/T1-scaffold/metadata.log.
+Static inverse proof preserves all old test bytes/assertions and category objects;
+Examples/manifest unchanged, both target claims present once. git diff --check
+passes. Root owns SOURCE, persistence, fresh Unit build and causal qualification.
+
+Independent Astra A5 OUTCOME is accepted as TIMEOUT/UNKNOWN, not feature closure.
+Actual runtime c9c9103b6c06cbe806cbab8eb4d7faeb5a31aa57, compiled Integration
+9383e6e7b2eb999144b88f4d48f055bca97bdc72; wall 124.9174643s, terminal timeout
+120.0346224/120s, zero TRX. Incomplete gzip EOF-false prefix is 347,869,833 stored /
+3,357,791,117 decoded bytes / 6,582,614 rows. New 135-entry root matches its manifest;
+old A2 frozen135, fault and R2 evidence are preserved, no active owners.
+Resource end 66.2547s, Bind begin 66.3822s, CalculateArtifacts end 105.6404s,
+last saved record 116.5975s; no observed Bind/Prepare end. Buffering prevents a
+phase-at-kill or whole-timeout cause claim; no speedup or further retry admitted.
+Primary raw remains external under notification-controls/A5-terminal1.
+Summary SHA256 f71238d12d7294eb51b558ab85ac0834853f5589a4d0ad6cc6887f7abd07ca7e;
+stored prefix SHA256 327f0124f01745ef7b7b883b7797307258335c54563d8681bcbe3dc677b5b81c.
+Accepted output10 are retained across N2 diagnosis2/remaining7/A4 worsening1;
+anchor2 at 92c561f0 and continuing controls3 at 9383e6e7 remain separate lineages.
+Parent T150, T121/T152, R2 UNKNOWN and every broader HOLD stay open.
+
+# Earlier A4 accepted gate, before the A5 TIMEOUT/UNKNOWN
 
 Compiled Integration/runtime9383e6e7b2eb999144b88f4d48f055bca97bdc72,
 fresh build74.805064s/exit0/107 warnings; exact previous warning multiset retained.

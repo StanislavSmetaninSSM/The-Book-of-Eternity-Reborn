@@ -1,4 +1,45 @@
-# Worsening and continuing-capture gate accepted; full terminal PREP next
+# T150 GM terminal guidance: causal test-only WIP
+
+2026-11-02 UTC, base c9c9103b6c06cbe806cbab8eb4d7faeb5a31aa57, #1536 /
+T150-GM-TERMINAL-GUIDANCE / parent T150 / FR-086/087. The existing example at
+lines 1067 and 1883 calls terminal heal and legacy publication unfinished, while
+its worked mortal_guided_terminal_heal_v1 already declares a typed heal with a
+cosmetic legacy. Another manifest entry requires the first obsolete claim.
+Accepted bounded design first adds two exact claim refusals at the end of the
+existing worked-selection Fact, after all current manifest, real typed terminal
+route, three modes, roundtrip and immutable selection premises. Existing assertions
+remain unchanged. Baseline is one expected failing Fact; its second refusal may
+be UNREACHED. Actual RED must reach the first new refusal, not setup or parsing.
+
+One new exact Unit leaf, mortal-terminal-guidance-causal, selects only that Fact
+with an unchanged 60s protective bound and unmeasured cost. Old owners are intact
+and unselected. Optimization: both assertions reuse the existing local example
+string; no additional source read, expensive fixture, Engine, cache or diagnostic
+mechanism. This scaffold changes no production, Examples or example manifest.
+After accepted RED, the bounded GM correction must describe existing sealed heal
+and independent legacy publication separately from the later direct death-outcome
+consumer. Preserve T069's existing typed death_contour handoff; no direct life/death
+mutation or new rule is implied (spec.md lines 4892-4915). Parent T150 stays open;
+completeness of all worked families is not claimed. C# is UNCOMPILED/UNRUN.
+Actual Read-TestCategoryCatalog and Get-TestCategoryCiMatrix exit 0: 1,329
+categories, one exact Unit Fact/60s/related0. Static inverse proof preserves all
+old test bytes/assertions and category objects; Examples/manifest are unchanged,
+both stale claims still present. git diff --check passes. Root owns SOURCE,
+fresh Unit build, exact Plan/PREP and one causal runtime.
+
+Independent Astra A5 OUTCOME accepts TIMEOUT/UNKNOWN only: runtime c9c9103b6c,
+unchanged compiled Integration 9383e6e7, wall 124.9174643s, full terminal timeout
+120.0346224/120s and zero TRX. The incomplete available prefix is 347,869,833
+stored / 3,357,791,117 decoded bytes / 6,582,614 rows, gzip EOF false; its new
+135-entry root and old A2/fault/R2 evidence remain retained, no active owner.
+Resource end 66.2547s, Bind begin 66.3822s, CalculateArtifacts end 105.6404s and
+last saved record 116.5975s do not establish Bind/Prepare completion, phase at kill,
+whole cause or speedup. No further full-peer retry is admitted. Accepted output10
+retain N2 diagnosis2 + remaining7 + A4 worsening1 lineages; anchor2 at 92c561f0
+and controls3 at 9383e6e7 are separate. T121/T152, R2 UNKNOWN and broader HOLDs
+remain open. Exact A5 hashes and external location are in the current checkpoint.
+
+# Earlier A4 gate receipt, before the A5 TIMEOUT/UNKNOWN
 
 Independent Astra SOURCE/PREP/OUTCOME accepts A4 on compiled/runtime
 9383e6e7b2eb999144b88f4d48f055bca97bdc72: controls3 + worsening1 =4/4 PASS,

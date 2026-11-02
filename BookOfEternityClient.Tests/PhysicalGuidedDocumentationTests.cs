@@ -73,5 +73,10 @@ public sealed class PhysicalGuidedDocumentationTests
             Assert.Throws<InvalidDataException>(() => SpiritualSelfTreatmentSelection.Parse(changed));
         }
         Assert.Equal(frozen, selections.ToJsonString());
+
+        Assert.DoesNotContain("Direct treatment death, heal and legacy publication remain unfinished.",
+            example, StringComparison.Ordinal);
+        Assert.DoesNotContain("The direct treatment `heal`, explicit death and legacy producers remain pending implementation",
+            example, StringComparison.Ordinal);
     }
 }
