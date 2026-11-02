@@ -1,8 +1,8 @@
 # Положительные усиления: сила, срок и Духовная энергия
 
 2026-11-02, T145, [#1573](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1573).
-**Новый кандидат для обсуждения, не принят и не реализован.** T144 рассеивание
-принято автором. [Spec](spec.md), [plan](plan.md), [tasks](tasks.md), [review](review.md).
+**Значения и цены приняты автором в T146 (2026-11-02), не реализованы.**
+Принятие сохраняет открытые вопросы внебоевых часов/калибровки и production gate. [Spec](spec.md), [plan](plan.md), [tasks](tasks.md), [review](review.md).
 
 ## 1. Основание и выбранный подход
 

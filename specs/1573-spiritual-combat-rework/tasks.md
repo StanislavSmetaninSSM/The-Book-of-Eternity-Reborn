@@ -1,5 +1,11 @@
 # Задачи #1573 — полный духовный бой
 
+## T146 — отрицательные эффекты
+
+- [x] T146.1 Зафиксировать T145, source audit/parent сверку, spec/plan/consistency до арифметики.
+- [x] T146.2 negative-effect-budgets.md подготовлен: сила/цена/срок/исходы/сопротивление/очищение/сложение. Точная арифметика цен/штрафов/mastery/C/R/нулевого урона и29 новых ссылок/7-doc diff/check прошли.
+- [ ] T146.3 Независимый Astra/high review и исправления; remote/API/new restore/issue readback; предъявить кандидатом без production.
+
 ## T145 — положительные усиления
 
 - [x] T145.1 Зафиксировать принятие T144, source audit/parent сверку, spec/plan/consistency до арифметики.

@@ -1,5 +1,22 @@
 # Проверка проекта #1573
 
+## T146 — ослабления
+
+Baseline/origin1df688c6da7135853162457867d9e9bfb35211c7 совпали; issue1573 прочитана.
+T145 принят, T146 — кандидат. Scope/spec/plan/tasks и предварительный
+consistency записаны до арифметики. Один Sol6.1/high read-only audit нашёл
+mortal stat−1/3turn, damage−20%/2turn, resistance−10/2turn и уязвимость−50%;
+универсального тарифа нет. Parent сверил exact определения, NPC-пример,
+прежний R при наложении, cleanseS/current-permanent и strongest groups.
+Точные дробные вычисления цен D0/50/210, G1/10/25, частичного исхода,
+C buffer, signed/clamped damage/status R, damage zero приm27 и strongest
+вкладов прошли;29 новых ссылок/7-doc scope/diff/check проверены.
+Свидетельство D:\BoeDiagnostics\negative-effects-t146\verification.json.
+Независимый review ещё не выполнен; сначала сохраняется WIP.
+Никакого runtime/Rules/C# тестов или боевого probe. Оптимизация: новых путей/
+кэша нет; будущие определения/снимки через existing service, invalidation
+по source/revision/expiry, текущие расходы/право свежие. Диагностика только D:.
+
 ## T145 — положительные усиления
 
 Baseline/origin f472dc32d99cf9a8ad61344328b25c669ac4dcae совпали; issue1573 прочитана.

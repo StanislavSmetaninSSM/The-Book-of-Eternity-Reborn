@@ -1,5 +1,30 @@
 # План перехода к личной модели духовного боя — #1573
 
+## T146 — численный проект ослаблений
+
+Baseline/origin1df688c6da7135853162457867d9e9bfb35211c7 совпали; issue1573 прочитана.
+[Spec](spec.md), [tasks](tasks.md). Brainstorming + Spec Kit bridge + writing-plans
+в существующей feature; пользователь уже разрешил автономное проектирование.
+Предварительный consistency: T146 scope→T146.1–3; документальный результат.
+
+1. Зафиксировать T145. Один Sol6.1/high read-only mortal source audit;
+   parent сверяет accepted current/permanent, penalty/formula, application/R,
+   cleanseS, strongest groups, снапшоты и индивидуальные сроки.
+2. Кандидат симметричных сил/цен с враждебным наложением, полным/частичным
+   исходом; примеры C buffer, signed damage, damage/status R, overcap,
+   применения до собственного штрафа, сложения и mastery. Проверить
+   точную арифметику/новые ссылки/ограниченный diff перед публикацией.
+3. WIP/push до отдельного Astra/high whole-block review; исправления,
+   remote/API/байты/new clean restore и issue readback; предъявить кандидат.
+
+Review focus: штраф не обходится прямым вычетом после C, не вычитает innate
+или HP через временную Цельность; damage-percent не выдаёт отрицательный
+урон/лечение. Debuff к защите сам встречает прежнюю защиту. Эффекты/группы
+и S не меняются задним числом, очищение одного не удаляет противоположный.
+Оптимизация: только документы, нового runtime-кэша нет. Будущие определения/
+снимки через существующий сервис, source/revision/expiry invalidation;
+текущие ресурсы/authority и фактическое наложение проверяются свежими.
+
 ## T145 — численный проект положительных эффектов
 
 Baseline/origin f472dc32d99cf9a8ad61344328b25c669ac4dcae совпали; issue1573 прочитана.
