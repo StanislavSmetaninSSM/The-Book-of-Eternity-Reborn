@@ -44,8 +44,10 @@ missing runtime meanings. Record their follow-up in GitHub issue #1536.
 
 ## Follow-up comment in #1536
 
-Status: draft, publication not yet confirmed. One authorized comment will list all
-three deferred questions; no issue closure, merge or extra game rule is authorized.
+Published once and read back: [issue comment6588440901](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536#issuecomment-6588440901).
+The authorized comment lists all three deferred questions. No issue was closed,
+merged or given an additional game rule. Independent Sol/xhigh document/comment
+review found no blocking consistency issue before publication.
 
 ## Strain consumer and other boundaries
 

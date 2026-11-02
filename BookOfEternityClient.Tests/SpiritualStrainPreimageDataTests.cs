@@ -26,6 +26,69 @@ public sealed class SpiritualStrainPreimageDataTests
         Assert.Equal(before, source.ToJsonString());
     }
 
+    [Theory]
+    [InlineData("extra-field")]
+    [InlineData("version")]
+    [InlineData("parent-id")]
+    [InlineData("parent-owner")]
+    [InlineData("parent-rank")]
+    [InlineData("effect")]
+    [InlineData("component")]
+    [InlineData("ordinary-position")]
+    [InlineData("ordinary-strain")]
+    [InlineData("ordinary-dice")]
+    [InlineData("duplicate-json")]
+    public void IntrinsicWitnessRefusesChangedPreimageEvenAfterSourceRehash(string change)
+    {
+        var (source, _, parentWound, ordinary) = CreateData();
+        var proof = source["strainPreimage"]!.AsObject();
+        switch (change)
+        {
+            case "extra-field": proof["unowned"] = true; break;
+            case "version": proof["version"] = 2; break;
+            case "parent-id": proof["parentSourceId"] = "foreign"; break;
+            case "parent-owner":
+                parentWound["owner"]!["ownerId"] = "another-soul";
+                proof["parentWoundJsonBase64"] = Encode(parentWound.ToJsonString());
+                break;
+            case "parent-rank":
+                parentWound["severity"]!["rank"] = 2;
+                proof["parentWoundJsonBase64"] = Encode(parentWound.ToJsonString());
+                break;
+            case "effect": proof["effectId"] = "effect_parent_roll"; break;
+            case "component": proof["componentId"] = "foreign-component"; break;
+            case "ordinary-position": ordinary["after"]!["conflictPosition"] = "balanced"; break;
+            case "ordinary-strain": ordinary["after"]!["playerSideStrain"] = "strained"; break;
+            case "ordinary-dice": ordinary["diceAudit"]!["margin"] = 99; break;
+            case "duplicate-json":
+                proof["ordinaryExchangeJsonBase64"] = Encode("{\"after\":{},\"after\":{}}");
+                break;
+            default: throw new ArgumentOutOfRangeException(nameof(change));
+        }
+        if (change.StartsWith("ordinary-", StringComparison.Ordinal))
+            proof["ordinaryExchangeJsonBase64"] = Encode(ordinary.ToJsonString());
+        Seal(source);
+        var before = source.ToJsonString();
+        Assert.Throws<FormatException>(() => SpiritualWoundSourceWitness.Validate(source));
+        Assert.Equal(before, source.ToJsonString());
+    }
+
+    [Fact]
+    public void IntrinsicDataCopiesOrdinaryAfterAndRefusesAnotherActualExchange()
+    {
+        var (source, _, _, ordinary) = CreateData();
+        var actual = JsonNode.Parse(Decode(source["exchangeJsonBase64"]!))!.AsObject();
+        var retained = SpiritualStrainPreimageData.ReadIntrinsic(source, actual);
+        var first = retained.ReadOrdinaryAfter(actual);
+        Assert.True(JsonNode.DeepEquals(ordinary["after"], first));
+        first["playerSideStrain"] = "clear";
+        Assert.Equal("overwhelmed", retained.ReadOrdinaryAfter(actual)["playerSideStrain"]!.GetValue<string>());
+        var changed = actual.DeepClone().AsObject();
+        changed["after"]!["oppositionSideStrain"] = "broken";
+        Assert.Throws<FormatException>(() => retained.ReadOrdinaryAfter(changed));
+        Assert.True(JsonNode.DeepEquals(ordinary["after"], retained.ReadOrdinaryAfter(actual)));
+    }
+
     private static (JsonObject Source, JsonObject ParentSource, JsonObject ParentWound, JsonObject Ordinary) CreateData()
     {
         var parent = SpiritualWoundSourceWitnessTests.Source();

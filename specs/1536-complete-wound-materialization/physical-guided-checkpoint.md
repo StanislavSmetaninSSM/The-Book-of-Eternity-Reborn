@@ -9,7 +9,7 @@ strain consumer continue. All existing runtime UNKNOWN/HOLD remain unchanged.
 See resolved author-decisions-20261102.md and formula contract; no-roll admission
 implementation/qualification remains OPEN, not an unanswered author question.
 
-A single authorized GitHub #1536 follow-up comment is prepared, publication pending.
+The single authorized [GitHub #1536 follow-up comment](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536#issuecomment-6588440901) was posted and independently read back (id6588440901).
 No issues are closed. Historical pending wording below is superseded by this
 current decision, not a new permission to implement the three deferred consumers.
 
@@ -24,6 +24,14 @@ subject (0.1578666s); independent OUTCOME accepted. Prior D1 canonicalization fi
 FAIL stays separate. Next add negative DATA controls, SOURCE review and fresh
 affected builds before any core GREEN claim; complete the whole connected route.
 Raw /workspace/tboe-linux-evidence-20261102/spiritual-strain-preimage-data.
+
+D2 core/test WIP: added intrinsic DATA negative cases and detached-copy/exact-actual
+binding (13cases/3methods), selected existing affected witness21 (total34), all
+UNCOMPILED/UNRUN pending SOURCE/build/discovery/PREP. Pure parsed object owns the
+full exact private actual+ordinary bytes and parent graph only for one witness
+validation; copies are detached. No service/cache or cross-operation reuse is
+introduced: this is cheap once-per-witness parsing, not a measured speedup. Fresh
+source/history/owner/current effect checks remain required in unfinished adapters.
 
 # T081-D retained strain preimage DATA — causal tests WIP
 
