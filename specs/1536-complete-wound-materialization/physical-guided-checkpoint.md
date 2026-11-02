@@ -24,6 +24,15 @@ SOURCE before root's fresh owning builds/PREP/GREEN. No full browser or deep sui
 
 # Reconstructed wrapper/debt source — coherent WIP, UNCOMPILED/UNRUN
 
+Source-only handoff commit1a581b206bb928cbab34802d274551edd5cc8121 was pushed
+and full remote ref confirmed. Its10 changed files were independently downloaded
+from GitHub by exact commit into new /tmp/boe-browser-source-restore-1a581b206;
+every file matches its Git blob SHA and bytes. This proves recovery of those10
+files only, not a fresh full checkout, compilation, tests or old raw/artifacts.
+Initial recovery frontier WIPc3a3eee2a9eed60089c0b5333bdd3d0e6201698c is also
+remote-preserved. Parent receives the frozen implementation for independent
+Astra/high SOURCE; no implementation edits followed this source freeze.
+
 The current delta implements only the accepted closed phase/World reservation
 lifetime. It isolates/restores faction and Guardian context caches, retains the
 nested Meta full readset, performs full original end proof then fresh both-root
