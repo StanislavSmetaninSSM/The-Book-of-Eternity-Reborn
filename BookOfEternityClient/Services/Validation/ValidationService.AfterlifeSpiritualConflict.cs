@@ -3985,6 +3985,9 @@ public partial class ValidationService
     /// <param name="effectivePosition">
     /// Causal starting rank, or <see langword="null"/> when retained data supplies no position evidence.
     /// </param>
+    /// <param name="ordinaryManeuverAfter">
+    /// Detached intrinsic comparison for the maneuver lane only; it grants no source or publication authority.
+    /// </param>
     private static void ValidateSpiritualArtOperationRules(
         JsonObject exchange,
         JsonObject before,

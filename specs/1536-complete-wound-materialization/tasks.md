@@ -33,6 +33,12 @@ validation; copies are detached. No service/cache or cross-operation reuse is
 introduced: this is cheap once-per-witness parsing, not a measured speedup. Fresh
 source/history/owner/current effect checks remain required in unfinished adapters.
 
+D2 preliminary Main and Unit builds on7f08 exit0 (71.162856/35.887781s),
+not qualification. Main had one new CS1573: missing XML parameter documentation
+for ordinaryManeuverAfter. Added the exact documentation; no behavior/assertion
+change. Unit baseline26. Fresh final affected builds/catalog/Plan/PREP remain
+pending; no runtime was executed on these preliminary binaries.
+
 # T081-D retained strain preimage DATA — causal tests WIP
 
 D1 on 8c127c3b7e463f48d42d828df6bb66579b6d01dc is a fixture FAIL, NOT causal
