@@ -13,31 +13,58 @@ The single authorized [GitHub #1536 follow-up comment](https://github.com/Stanis
 No issues are closed. Historical pending wording below is superseded by this
 current decision, not a new permission to implement the three deferred consumers.
 
-Current intrinsic-core WIP (UNCOMPILED/UNRUN): closed comparison DATA reader and
-existing witness parser accept the six planned fields, using the existing exact
-strain comparator/full parent parser; only the retained intrinsic maneuver lane
-receives detached ordinary after. No live/C3/C4/historical owner adapters or parent
-History joins exist yet, and raw comparison DATA grants no capability. Original
-live maneuver validation still receives actual after and rejects unsupported harm.
-D1B true DATA RED on d174 passed all premises then refused the closed field at the
-subject (0.1578666s); independent OUTCOME accepted. Prior D1 canonicalization fixture
-FAIL stays separate. Next add negative DATA controls, SOURCE review and fresh
-affected builds before any core GREEN claim; complete the whole connected route.
-Raw /workspace/tboe-linux-evidence-20261102/spiritual-strain-preimage-data.
+# T081-D intrinsic retained comparison DATA — accepted bounded gate
 
-D2 core/test WIP: added intrinsic DATA negative cases and detached-copy/exact-actual
-binding (13cases/3methods), selected existing affected witness21 (total34), all
-UNCOMPILED/UNRUN pending SOURCE/build/discovery/PREP. Pure parsed object owns the
-full exact private actual+ordinary bytes and parent graph only for one witness
-validation; copies are detached. No service/cache or cross-operation reuse is
-introduced: this is cheap once-per-witness parsing, not a measured speedup. Fresh
-source/history/owner/current effect checks remain required in unfinished adapters.
+Built/runtime source: 70322ab17e4a3e8224b161de2556b1cc0abee06d. Independent
+Sol6.1/xhigh SOURCE, exact PREP and OUTCOME accepted. D3 official selection:
+`wounds-spiritual-strain-preimage-data`13PASS (3methods,60s budget,3.0130158s)
+plus `spiritual-combat-guarantee-witness-consumers`21PASS (7methods,unchanged120s
+budget,3.0605945s). Total34/34, no timeout/skip/duplicate/underfill; both descriptors
+and owned/runtime cleanup complete. New TMP roots[], no active runtime owners,
+clean frozen source and all post hashes unchanged. Genuine d174 closed-field DATA
+RED remains separate from the earlier D1 fixture canonicalization FAIL and from
+real first-A failed-maneuver RED on5a. No already accepted old5/20/C4 set was rerun.
 
-D2 preliminary Main and Unit builds on7f08 exit0 (71.162856/35.887781s),
-not qualification. Main had one new CS1573: missing XML parameter documentation
-for ordinaryManeuverAfter. Added the exact documentation; no behavior/assertion
-change. Unit baseline26. Fresh final affected builds/catalog/Plan/PREP remain
-pending; no runtime was executed on these preliminary binaries.
+Fresh Main/Unit/Integration XML builds exit0, exact previous warning multisets
+81/26/107 (76.872828/37.867460/76.426538s). Preliminary7f08 Main82/Unit26 had one
+new CS1573; the XML-only parameter fix is verified and final warning count returns
+to baseline.45managed artifacts/618resource copies/native6 and4PE/PDB477source
+bindings verified. Only expected changed operational resource is the GM wound
+contract. Catalog discovery1361categories/13190methods, no tests executed by audit.
+Exact Plan SHA d6dc300ffbd05f6db9014f9b443acefc88cac76286be30ff471b30a25a74fc7d.
+Artifact proof25c7f92c4298f7b3997aaf3a57f7c754737ad676d8ed15270c64c07604d51c5b;
+PDB proofc8aaa7c06f271940ac5e4acde20fee64fe5fc8264e630304d8ab9da90f161fbf.
+Summaryec8c1ea723c8dfa8da3c6be75e104f48d0e8279e22d9879d180c11e24999a303;
+post proof3b49d7aab89667663dd435b23491542eb50d2e89710c661ce687a38f3246faa2.
+Raw: /workspace/tboe-linux-evidence-20261102/spiritual-strain-preimage-data;
+D3-green34 contains both full TRX/capture, prior RED/FAIL/build evidence retained.
+No raw, generated proofs, archives or binaries are in Git.
+
+The pure DATA reader retains the exact private actual/ordinary snapshots and full
+parent envelope; it reuses the existing exact capped+1 comparator. Only retained
+maneuver validation sees detached ordinary-after. Actual dice/cost/control/strain
+math remain actual. Rehashed changed/foreign/malformed preimages and copy mutation
+are rejected. A valid-looking foreign parent ID is NOT proved by intrinsic parsing:
+parent receipt/first-create History, source ownership and current availability are
+still required. No live/C3/C4/historical owner adapters or joins are implemented;
+real failed maneuver full route remains OPEN, not qualified by34PASS.
+
+Optimization: one bounded object owns already parsed immutable comparison DATA
+for one witness validation, with detached output and no cross-operation reuse.
+No new cache/static registry, hook or authority is retained. This cheap parse is
+not a claimed speedup; current owner/source/history/effect fences stay required.
+Independent immutable-ref GitHub readback verified all14 changed files byte-exact
+in a new external directory; proof581a8a2672d0ca27362e00eaceca5df7590f87189682fc64a1f675bc6db8cc8d.
+This is bounded changed-source recovery, not full clone/clean-checkout/raw recovery.
+
+Next: connect the genuine pre-selection ordinary proof/full parent snapshot to
+current C2 owner, persist exact source witness and prove earlier parent receipt
+plus first-create History, then sealed C4 and signed-history adapters. Reuse the
+existing capture/receipt/History owners; no new game rule or diagnostic framework.
+Do not rerun real first-A until its consumer changes. Full next-turn/healed-history
+route needs its own guards/qualification. Author no-roll GM-choice producer remains
+OPEN; control/counter/IIIrestrict are deferred, not current blockers. Old UNKNOWN/
+HOLD including browser-course/terminal/DFR/Mortal/Windows remain unchanged.
 
 # T081-D retained strain preimage DATA — causal tests WIP
 
