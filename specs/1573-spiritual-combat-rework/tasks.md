@@ -4,7 +4,7 @@
 
 - [x] T146.1 Зафиксировать T145, source audit/parent сверку, spec/plan/consistency до арифметики.
 - [x] T146.2 negative-effect-budgets.md подготовлен: сила/цена/срок/исходы/сопротивление/очищение/сложение. Точная арифметика цен/штрафов/mastery/C/R/нулевого урона и29 новых ссылок/7-doc diff/check прошли.
-- [ ] T146.3 Независимый Astra/high review и исправления; remote/API/new restore/issue readback; предъявить кандидатом без production.
+- [x] T146.3 Independent GPT-6 Astra/high review1df688c6..0197f8d8 — PASS без замечаний. WIP remote/API/7blobs/source bytes/new clean restore проверены; финальный checkpoint/readback — issue1573 и verification.json. Проект предъявляется кандидатом; production/Rules/probes не выполнялись.
 
 ## T145 — положительные усиления
 

@@ -12,7 +12,19 @@ mortal stat−1/3turn, damage−20%/2turn, resistance−10/2turn и уязвим
 C buffer, signed/clamped damage/status R, damage zero приm27 и strongest
 вкладов прошли;29 новых ссылок/7-doc scope/diff/check проверены.
 Свидетельство D:\BoeDiagnostics\negative-effects-t146\verification.json.
-Независимый review ещё не выполнен; сначала сохраняется WIP.
+Независимый GPT-6 Astra/high review полного семифайлового diff1df688c6..0197f8d8
+завершён: PASS без замечаний. Проверены исходники примеров и принятые
+T141–145, current/permanent, первоначальное R, S/очищение, signed stacking,
+partial/recast/replay, DoT и граница нулевого урона. Баланс не доказан.
+
+WIP0197f8d8bc2ea596514d9491812cfa01faad07a2 опубликован обычным push;
+remote SHA/7 API blobs/raw Git hashes/checkout bytes проверены в новом
+clean sparse restore D:\BoeDiagnostics\negative-effects-t146\remote-restore-20261102.
+29 ссылок/5 обязательных инструкций восстановлены. Финальный checkpoint/
+SHA/readback — issue1573 и verification.json. Raw диагностики в Git нет,
+посторонний recovery obj не менялся. Один Sol6.1/high bounded source audit,
+parent проект/арифметика, отдельный Astra/high review; существенного rework
+review не потребовал. Измеренная экономия работы не заявляется.
 Никакого runtime/Rules/C# тестов или боевого probe. Оптимизация: новых путей/
 кэша нет; будущие определения/снимки через existing service, invalidation
 по source/revision/expiry, текущие расходы/право свежие. Диагностика только D:.
