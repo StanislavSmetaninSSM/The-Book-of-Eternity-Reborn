@@ -28,26 +28,62 @@ or cleanup failure. TRX SHA cross4ea7896c5ea74f44fd6125cba51363bd17a4d8fcdfae40d
 metaacf6d23733bb1f58b4679670ab1a9ab7675682014ff50b69cc8f2fcd2558f734.
 These are accepted HISTORICAL counters, not fresh evidence in the new environment.
 
-Current block: reconstruct minimal closed CrossReferences/Meta dispatcher, actual
-World selector/reservation, complete cache isolation and full-end→both-root debt
-refusal→close→owner-after-close→append flow; preserve nested Meta full readset.
-Author typed finite safety controls before production changes, update manual
-causal debt closure and separate exact legacy4 from unchanged historical8 peers.
-No arbitrary callback framework, new cache, DATA guard removal, recovery/deletion,
-reflection, budget increase or GM contract change. Owner/input/lifetime/freshness
-are exactly those in the accepted design below; all actual source bytes stay fresh.
-GM no-update remains justified only for this internal reading scope.
+Current coherent source-only WIP reconstructs the minimal fix: private closed
+CrossReferences/MetaMisc dispatch; BeginGameStateSourceReadReservation selects the
+existing World scope only with unchanged CanReuseCurrentSourceData eligibility.
+Existing validation-instance reservation now covers both actual browser phases;
+phase-local faction IDs/names and Guardian policy/project caches are isolated and
+restored. Actual work fills local ordered issues; full original end proof precedes
+fresh readonly probes of BOTH existing publication roots under the lease. Any debt
+refuses while retaining evidence. Successful close/owner-after-close precedes append;
+primary failures survive cleanup. Nested Meta borrow/full readset is unchanged.
+Manual causal control receives the same debt closure. Exact legacy stack assertion
+alone changes to nameof(FileSystemManager.ReadWorldValidationTextAsync).
+
+Finite source selection (not fresh discovery):11 categories /16 methods /36 rows.
+Causal4 + typed borrow4 + existing exact Meta drift1 + new safety23 + legacy4.
+Safety is23 real variants across the accepted nine risk families, not nine rows:
+manual late trusted/legacy debt2, original snapshot/staged History2, retired owner
+before-end/after-close2, canonical write/acquire refusal2; automatic per-phase
+reentry/overlap4 and withdrawal invalidation2, actual next-source freshness2,
+opening IOException/cancellation4; primitive physical-close failure1 and source-hook /
+fresh-only selector fallback2. Manual tests exercise the actual World primitive;
+automatic tests invoke real phases using only the existing admission scheduling
+hook. Passive observers never mutate and arbitrary source hooks disable selection.
+The existing Meta drift singleton is retained without duplicate implementation.
+Legacy4 has its own finite180s category; unchanged8 old opening peers remain in an
+unselected explicit owner, on their historical lineage. They execute only the fixed
+Meta component or World-only route: existing reserve=true and no source wrapper,
+selector or new debt call. No owning/source/borrow implementation on those routes
+changed. No blanket hash-pin repair or automatic neighbor rerun is included.
+All other selected categories keep60s; full browser180s stays unchanged.
+
+Optimization assessment: reuse only physical admission owned by the existing Main
+access/World scope, identified by manager/root, genuine browser original+pending /
+request/manifest/authority/History, generation/bytes and exact active reservation.
+One phase owns its scope; errors/reentry/overlap/close retire it. All current source
+reads/absence, full original proof, owner and both-root debt are fresh. No new DATA
+cache, collector, dictionary or authority reuse; ordinary MainRunFence and
+SourceDataOperation browser exclusions stay intact. Actual new counts/costs are
+UNMEASURED; historical RED counters show a bounded hypothesis, not elapsed speedup.
+GM no-update: this changes internal read lifetime and test preparation only; rules,
+state/schema, pending/control, authored output, receipts, costs and UX are unchanged
+for Mortal World and afterlife. No prompt/example/manifest update is applicable.
 
 Current reconstruction C# UNCOMPILED; builds/restore/discovery/PlanOnly/catalog /
 all runtime UNRUN by explicit delegation. Root owns fresh toolchain/native bootstrap,
-GREEN/PREP and subsequent admission. No deep141 replay or blind browser retry.
-Next: source-only implementation/tests/catalog consistency and independent coherent
-Astra/high SOURCE; then root's fresh affected builds/discovery/exact PREP and GREEN.
-All accepted141/9e590 and broader DFR/Mortal/Windows/browser/native HOLDs retain scope.
+GREEN/PREP and subsequent admission. New tests were authored before the production
+fix; accepted historical causal RED supplies the defect evidence. Test execution
+of this reconstruction is deferred by the direct no-build/no-run instruction.
+Source-only diff/JSON/exact-selector/source-row audit does not establish compilation
+or GREEN. Independent coherent Astra/high SOURCE remains pending.
+Next: root independently reviews this source delta, then fresh affected builds /
+discovery/exact PREP and GREEN. No deep141 replay, native/DFR/Mortal/Windows run or
+blind browser retry. All accepted141/9e590 and broader HOLDs retain their scope.
 
 # Historical scaffold design and preparation
 
-Recovered disk reserve: lossless closed-log substitution preserves14405493B in
+Historical previous-environment disk reserve (unavailable now): lossless closed-log substitution preserves14405493B in
 1615482gzipB for36 files from18 ended runs; full decode/EOF/CRC/hash and closing
 proofs verified. Free space became721432576B. Manifest SHA
 20ada2173d95d4fcb046e9ea79529e8a667e82b2078417d89761cae1bd837abe;
@@ -56,7 +92,7 @@ all outputs/manifests remain external, no raw measurement/save/recovery/bin dele
 Tracked T121-PHYSICAL-GUIDED-BROWSER-READ-RESERVATION / issue#1536.
 Goal: finish the actual three-milestone browser course after normal accepted waits,
 separate confirmations and cleanup, in the existing180s/full-capture contract.
-DESIGN is accepted; the scaffold above remains WIP pending independent SOURCE and fresh verification.
+DESIGN and scaffold SOURCE9d021ae82 plus causal4 RED OUTCOME are accepted historical evidence; the reconstruction above requires independent SOURCE and fresh verification.
 The accepted canonical-adapter baseline is9e590fb6c11c33880019dfde69054f7994f4db0b.
 Stack: existing .NET8/C#/PowerShell category runner and current native package.
 Spec: spec.md physical treatment/FR060–064/067–074 and existing spiritual-aid-design.md.
@@ -98,7 +134,7 @@ proof. A fresh debt check must refuse/retain new journal evidence before phase
 results escape; recovery is never run inside the read reservation. Opening debt
 uses the existing actual acquisition/recovery protocol. No new baseline is inferred.
 
-## Proposed bounded interfaces and flow
+## Accepted bounded interfaces and flow
 
 - GameEngine.StageBrowserOriginalForValidationAsync(Binding, TurnRequest, bool
   withRollback), internal component preparation only: call actual
@@ -136,9 +172,9 @@ uses the existing actual acquisition/recovery protocol. No new baseline is infer
 
 ## Finite proof and acceptance
 
-First scaffold includes only typed preparation, the Meta borrow/closure preservation
-needed by the independent control, and tests; the outer production optimization is
-still absent at causal RED. Use real queued binding/genuine staging,
+The historical scaffold included only typed preparation, Meta borrow/closure preservation
+and the independent controls; the outer production optimization was absent at the
+accepted causal RED. The current source reconstruction is described above. Use real queued binding/genuine staging,
 RunParticipatingExpectedSessionAsync, BeginBrowserOriginalOperation/BeginProcessing,
 actual produced-manifest DATA in the existing validator override and direct World
 scope/full-proof APIs. A parsed manifest never becomes authority; real scope/frame
@@ -154,7 +190,7 @@ orders isolate/restore the same service cache fields. Keep fresh source acquisit
 not only a stopwatch. Baseline must fail only its final missing-reservation/work
 oracle after every correctness/readset premise, before outer wrapper changes.
 
-Then nine addressed safety cases: late trusted/legacy journal, original bytes,
+Then the nine addressed safety families (expanded to the independent variants above): late trusted/legacy journal, original bytes,
 staged History/owner drift, canonical mutation, reentry/overlap, current-source
 change still freshly observed, exception-close/next-phase freshness, and an exact
 MetaControlShapeCurrentPaths drift under the outer reservation. That Meta drift
@@ -164,9 +200,10 @@ Exact selectors/counts/budgets follow discovery/PlanOnly and independent selecti
 No new collector; existing BrowserOriginalAdmissionTimingObserver and source-read
 observation count real work, all output stays external and uncapped.
 
-Independent DESIGN → scaffold SOURCE/fresh affected builds/exact PREP/causal RED →
-minimal wrapper/debt correction and safety tests → coherent SOURCE/fresh owning
-builds/cheap GREEN/cost proof → decision on one unchanged full browser-course run.
+Historical DESIGN → scaffold SOURCE/builds/PREP/causal RED are accepted only on their
+recorded lineage. Current minimal wrapper/debt correction+safety tests → coherent
+SOURCE/fresh owning builds/exact PREP/cheap GREEN/cost proof → decision on one
+unchanged full browser-course run.
 No original browser retry before that actual admission; no time-limit increase.
 If no meaningful benefit is measured, stop this implementation hypothesis rather
 than claim a speedup or weaken the functional acceptance. Existing C9/C10 native,

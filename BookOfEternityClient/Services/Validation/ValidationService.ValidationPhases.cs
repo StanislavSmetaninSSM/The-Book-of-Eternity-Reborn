@@ -1,3 +1,5 @@
+using System.Runtime.ExceptionServices;
+using BookOfEternityClient.Core;
 using BookOfEternityClient.Models;
 using Microsoft.Extensions.Logging;
 
@@ -73,25 +75,113 @@ public partial class ValidationService
         }
     }
 
-    /// <summary>
-    /// Reuses selected read-only source DATA while preserving the actual phase and its ordered issues.
-    /// </summary>
-    /// <param name="validate">
-    /// Original CrossReferences or MetaMisc phase; no verdict is retained between invocations.
-    /// </param>
-    /// <returns>
-    /// Completion after the selected phase's fresh source proof, or its original unsupported route.
-    /// </returns>
-    private async Task RunReusableGameStateSourcePhaseAsync(Func<Task> validate)
+    private bool _gameStateSourceReadActive, _gameStateSourceReadInvalidated;
+
+    /// <summary>Runs only the two existing read-only source phases under their actual browser reservation.</summary>
+    /// <param name="phase">Exact CrossReferences or MetaMisc phase; arbitrary validators are never admitted.</param>
+    /// <param name="issues">Destination receiving ordered findings only after successful physical closing.</param>
+    private async Task RunReusableGameStateSourcePhaseAsync(GameStateValidationPhase phase, List<ValidationIssue> issues)
     {
-        // Completed guardian comparison owns a nested lease and keeps its original route.
-        if (_guardianMusingsPublication.Value is { Enabled: true, Completion: not null })
+        var invocation = _worldValidationInvocation.Value;
+        // Ordinary/held/draft routes and Guardian completion retain their existing reader owners.
+        if (invocation is not { GameStateSourceReserved: true } ||
+            _guardianMusingsPublication.Value is { Enabled: true, Completion: not null })
         {
-            await validate();
+            await RunOriginalGameStateSourcePhaseAsync(phase, issues);
             return;
         }
-        await _fs.ReadGameStateDataAsync(async () => { await validate(); return true; });
+        lock (_worldReadGate)
+        {
+            if (!ReferenceEquals(_worldReservation, invocation) || invocation.Closed ||
+                _gameStateSourceReadActive || _worldReadPhase != null || _metaControlShapeReadPhase != null || _worldOverrideMutations != 0)
+                throw new InvalidOperationException("Game-state source validation cannot enter its read phase.");
+            _gameStateSourceReadActive = true;
+            _gameStateSourceReadInvalidated = false;
+        }
+        var manifest = _prevalidatedPendingTurnSnapshotOverride;
+        FileSystemManager.WorldValidationReadScope? physical = null;
+        HashSet<string>? previousIds = null, previousNames = null;
+        var previousPolicy = _gameStateValidationGuardianPolicyContextCache.Value;
+        var previousProjects = _gameStateValidationGuardianProjectTrackerPolicyContextCache.Value;
+        var isolated = false;
+        var localIssues = new List<ValidationIssue>();
+        Exception? primary = null;
+        try
+        {
+            physical = _fs.BeginGameStateSourceReadReservation();
+            if (physical == null)
+            {
+                await RunOriginalGameStateSourcePhaseAsync(phase, issues);
+                return;
+            }
+            await physical.OpenAsync();
+            physical.RequireCurrent();
+            lock (_worldReadGate)
+            {
+                previousIds = _knownCanonicalFactionIdsCache;
+                previousNames = _knownCanonicalFactionNamesCache;
+                _knownCanonicalFactionIdsCache = null;
+                _knownCanonicalFactionNamesCache = null;
+                _gameStateValidationGuardianPolicyContextCache.Value = null;
+                _gameStateValidationGuardianProjectTrackerPolicyContextCache.Value = null;
+                isolated = true;
+            }
+            await DispatchGameStateSourcePhaseAsync(phase, localIssues);
+            RequireWorldCacheAccess();
+            if (_gameStateSourceReadInvalidated || !ReferenceEquals(manifest, _prevalidatedPendingTurnSnapshotOverride))
+                throw new IOException("Original game-state source snapshot changed before issue publication.");
+            physical.RequireFullEndProof();
+            physical.RequireNoPublicationDebt();
+        }
+        catch (Exception error) { primary = error; }
+        finally
+        {
+            if (isolated)
+            {
+                lock (_worldReadGate)
+                {
+                    _knownCanonicalFactionIdsCache = previousIds;
+                    _knownCanonicalFactionNamesCache = previousNames;
+                    _gameStateValidationGuardianPolicyContextCache.Value = previousPolicy;
+                    _gameStateValidationGuardianProjectTrackerPolicyContextCache.Value = previousProjects;
+                }
+            }
+            try { if (physical != null) await physical.DisposeAsync(); }
+            catch (Exception close)
+            {
+                if (primary == null) primary = close;
+                else try { primary.Data["GameStateSourcePhase.CloseFailure"] = close; } catch { }
+            }
+            finally { lock (_worldReadGate) _gameStateSourceReadActive = false; }
+        }
+        if (primary != null) ExceptionDispatchInfo.Capture(primary).Throw();
+        physical!.RequireOwnerAfterClose();
+        RequireWorldCacheAccess();
+        if (_gameStateSourceReadInvalidated || !ReferenceEquals(manifest, _prevalidatedPendingTurnSnapshotOverride))
+            throw new IOException("Original game-state source snapshot changed before issue publication.");
+        issues.AddRange(localIssues);
     }
+
+    /// <summary>Preserves the previous completed-Guardian or ordinary DATA adapter route.</summary>
+    /// <param name="phase">The same exact closed phase.</param>
+    /// <param name="issues">Original ordered destination for unsupported reservation contexts.</param>
+    private async Task RunOriginalGameStateSourcePhaseAsync(GameStateValidationPhase phase, List<ValidationIssue> issues)
+    {
+        if (_guardianMusingsPublication.Value is { Enabled: true, Completion: not null })
+            await DispatchGameStateSourcePhaseAsync(phase, issues);
+        else await _fs.ReadGameStateDataAsync(async () => { await DispatchGameStateSourcePhaseAsync(phase, issues); return true; });
+    }
+
+    /// <summary>Dispatches exactly the existing CrossReferences and MetaMisc validators.</summary>
+    /// <param name="phase">A single supported source phase.</param>
+    /// <param name="issues">Ordered findings owned by this invocation.</param>
+    /// <returns>The actual original validation work.</returns>
+    private Task DispatchGameStateSourcePhaseAsync(GameStateValidationPhase phase, List<ValidationIssue> issues) => phase switch
+    {
+        GameStateValidationPhase.CrossReferences => ValidateCrossReferences(issues),
+        GameStateValidationPhase.MetaMiscStateFiles => ValidateMetaMiscStateFiles(issues),
+        _ => throw new ArgumentOutOfRangeException(nameof(phase), phase, "Unsupported game-state source phase.")
+    };
 
     private bool IsGameStateValidationInProgress
         => _activeGameStateValidationSelection.Value != null;
@@ -157,7 +247,7 @@ public partial class ValidationService
             using var diagnosticPhase = _fs.BrowserDiagnosticLogical("CrossReferences", null);
 #endif
             using var innerTiming8 = _fs.MeasureOperation("GameState.CrossReferences");
-            await RunReusableGameStateSourcePhaseAsync(() => ValidateCrossReferences(issues));
+            await RunReusableGameStateSourcePhaseAsync(GameStateValidationPhase.CrossReferences, issues);
         }
         if (phases.Includes(GameStateValidationPhase.RivalAndResidentCrossReferences) &&
             !phases.Includes(GameStateValidationPhase.CrossReferences))
@@ -228,7 +318,7 @@ public partial class ValidationService
             using var diagnosticPhase = _fs.BrowserDiagnosticLogical("MetaMiscStateFiles", null);
 #endif
             using var innerTiming16 = _fs.MeasureOperation("GameState.MetaMiscStateFiles");
-            await RunReusableGameStateSourcePhaseAsync(() => ValidateMetaMiscStateFiles(issues));
+            await RunReusableGameStateSourcePhaseAsync(GameStateValidationPhase.MetaMiscStateFiles, issues);
         }
         else if (phases.Includes(GameStateValidationPhase.GuardianProjectStateFiles))
         {

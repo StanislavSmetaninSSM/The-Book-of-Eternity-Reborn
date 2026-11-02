@@ -136,7 +136,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             {
                 Assert.Equal(1, reached);
                 Assert.Same(primary, failure);
-                Assert.Contains("ReadOrdinaryFileSnapshotCoreAsync", failure!.StackTrace);
+                Assert.Contains(nameof(FileSystemManager.ReadWorldValidationTextAsync), failure!.StackTrace);
             }
             if (kind is "close" or "read-and-close") Assert.Equal(1, closeProbe.Calls);
             if (kind == "read-and-close") Assert.Same(close, failure!.Data["MetaControlShapes.CloseFailure"]);

@@ -2,9 +2,202 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "browser-source-read-reservation-late-debt",
+  "responsibility": "Two manual actual-scope controls: trusted and legacy publication evidence appears after actual complete CrossReferences work/full original end proof. Fresh debt refuses and retains exact evidence through physical close; no recovery/delete. These primitive tests do not claim automatic mid-phase injection.",
+  "excludes": "No whole suite, native/browser-course retry, accepted141 replay, elapsed speedup, Windows or parent/HOLD acceptance; authored source only, UNCOMPILED/UNRUN until fresh owning verification.",
+  "changeHints": [
+    "BookOfEternityClient/Core/FileSystemManager.WorldValidationRead.cs",
+    "BookOfEternityClient/Services/Validation/ValidationService.ValidationPhases.cs",
+    "BookOfEternityClient/Services/Validation/ValidationService.WorldReadPhase.cs",
+    "BookOfEternityClient.IntegrationTests/BrowserGameStateReadReservationTests.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.BrowserGameStateReadReservationTests.WorldScopeRefusesAndRetainsLatePublicationDebt"
+      ]
+    }
+  ]
+},
+{
+  "id": "browser-source-read-reservation-original-owner",
+  "responsibility": "Four manual actual-scope controls: original snapshot bytes and correctly rehashed staged History drift refuse full end proof; retired owner refuses before end and separately after successful close. Restore only owned fixture bytes; preserve canonical images and release physical scope.",
+  "excludes": "No whole suite, native/browser-course retry, accepted141 replay, elapsed speedup, Windows or parent/HOLD acceptance; authored source only, UNCOMPILED/UNRUN until fresh owning verification.",
+  "changeHints": [
+    "BookOfEternityClient/Core/FileSystemManager.WorldValidationRead.cs",
+    "BookOfEternityClient/Services/Validation/ValidationService.ValidationPhases.cs",
+    "BookOfEternityClient/Services/Validation/ValidationService.WorldReadPhase.cs",
+    "BookOfEternityClient.IntegrationTests/BrowserGameStateReadReservationTests.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.BrowserGameStateReadReservationTests.WorldScopeFullEndRefusesChangedOriginalOrStagedHistory",
+        "BookOfEternityClient.Tests.BrowserGameStateReadReservationTests.WorldScopeRefusesRetiredOwnerBeforeEndOrAfterClose"
+      ]
+    }
+  ]
+},
+{
+  "id": "browser-source-read-reservation-mutation-fallback",
+  "responsibility": "Four typed controls: actual manual World scope refuses explicit canonical write and nested canonical acquisition; selector remains null for arbitrary source hook and for existing fresh-only suppression. Fallback still performs genuine CrossReferences; no eligibility relaxation.",
+  "excludes": "No whole suite, native/browser-course retry, accepted141 replay, elapsed speedup, Windows or parent/HOLD acceptance; authored source only, UNCOMPILED/UNRUN until fresh owning verification.",
+  "changeHints": [
+    "BookOfEternityClient/Core/FileSystemManager.WorldValidationRead.cs",
+    "BookOfEternityClient/Services/Validation/ValidationService.ValidationPhases.cs",
+    "BookOfEternityClient/Services/Validation/ValidationService.WorldReadPhase.cs",
+    "BookOfEternityClient.IntegrationTests/BrowserGameStateReadReservationTests.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.BrowserGameStateReadReservationTests.WorldScopeRefusesCanonicalMutation",
+        "BookOfEternityClient.Tests.BrowserGameStateReadReservationTests.SelectorKeepsMutableSourceHookAndFreshOnlyFallback"
+      ]
+    }
+  ]
+},
+{
+  "id": "browser-source-read-reservation-instance",
+  "responsibility": "Six automatic phase controls: CrossReferences and MetaMisc x same-flow reentry, async overlap or refused snapshot withdrawal at existing BeforeMainBorrowRetainAsync scheduling barrier. Conflicting call and override installation refuse before shared reset; withdrawal invalidates and publishes no result. All paths release and a fresh next call succeeds. No mutable source hook or passive mutation.",
+  "excludes": "No whole suite, native/browser-course retry, accepted141 replay, elapsed speedup, Windows or parent/HOLD acceptance; authored source only, UNCOMPILED/UNRUN until fresh owning verification.",
+  "changeHints": [
+    "BookOfEternityClient/Core/FileSystemManager.WorldValidationRead.cs",
+    "BookOfEternityClient/Services/Validation/ValidationService.ValidationPhases.cs",
+    "BookOfEternityClient/Services/Validation/ValidationService.WorldReadPhase.cs",
+    "BookOfEternityClient.IntegrationTests/BrowserGameStateReadReservationTests.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.BrowserGameStateReadReservationTests.AutomaticPhaseRefusesInstanceReentryAndOverlap",
+        "BookOfEternityClient.Tests.BrowserGameStateReadReservationTests.AutomaticSnapshotWithdrawalInvalidatesSourceReservation"
+      ]
+    }
+  ]
+},
+{
+  "id": "browser-source-read-reservation-freshness",
+  "responsibility": "Two automatic phase controls: same validator observes actual changed current faction/Meta bytes on the next call with fresh source reads and exact changed findings; original bytes are separately restored. Meta retains final readset.",
+  "excludes": "No whole suite, native/browser-course retry, accepted141 replay, elapsed speedup, Windows or parent/HOLD acceptance; authored source only, UNCOMPILED/UNRUN until fresh owning verification.",
+  "changeHints": [
+    "BookOfEternityClient/Core/FileSystemManager.WorldValidationRead.cs",
+    "BookOfEternityClient/Services/Validation/ValidationService.ValidationPhases.cs",
+    "BookOfEternityClient/Services/Validation/ValidationService.WorldReadPhase.cs",
+    "BookOfEternityClient.IntegrationTests/BrowserGameStateReadReservationTests.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.BrowserGameStateReadReservationTests.AutomaticPhaseObservesChangedCurrentSourcesOnNextCall"
+      ]
+    }
+  ]
+},
+{
+  "id": "browser-source-read-reservation-failure-close",
+  "responsibility": "Five typed controls: automatic CrossReferences/Meta x IOException/cancellation from actual opening scheduling hook preserves original exception, publishes no result, releases and observes changed source on next call. Separate primitive actual physical-close failure releases the World reservation. Existing legacy4 owns combined read/close preservation; primitive close is not automatic failure injection.",
+  "excludes": "No whole suite, native/browser-course retry, accepted141 replay, elapsed speedup, Windows or parent/HOLD acceptance; authored source only, UNCOMPILED/UNRUN until fresh owning verification.",
+  "changeHints": [
+    "BookOfEternityClient/Core/FileSystemManager.WorldValidationRead.cs",
+    "BookOfEternityClient/Services/Validation/ValidationService.ValidationPhases.cs",
+    "BookOfEternityClient/Services/Validation/ValidationService.WorldReadPhase.cs",
+    "BookOfEternityClient.IntegrationTests/BrowserGameStateReadReservationTests.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.BrowserGameStateReadReservationTests.AutomaticOpeningFailureKeepsPrimaryClosesAndNextPhaseReadsFresh",
+        "BookOfEternityClient.Tests.BrowserGameStateReadReservationTests.WorldScopeCloseFailureStillReleasesItsActualReservation"
+      ]
+    }
+  ]
+},
+{
+  "id": "browser-source-read-reservation-legacy-exception",
+  "responsibility": "Exactly four existing Meta rows (read/cancel/close/read-and-close), with only reviewed async stack oracle changed to ReadWorldValidationTextAsync. Preserve primary identity, reached count, no published list, original close call/secondary, faction caches and lease cleanup assertions. All4 must rerun; unchanged historical8 neighbors are not selected.",
+  "excludes": "No whole suite, native/browser-course retry, accepted141 replay, elapsed speedup, Windows or parent/HOLD acceptance; authored source only, UNCOMPILED/UNRUN until fresh owning verification.",
+  "changeHints": [
+    "BookOfEternityClient/Core/FileSystemManager.WorldValidationRead.cs",
+    "BookOfEternityClient/Services/Validation/ValidationService.ValidationPhases.cs",
+    "BookOfEternityClient/Services/Validation/ValidationService.WorldReadPhase.cs",
+    "BookOfEternityClient.IntegrationTests/BrowserGameStateReadReservationTests.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 3,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.MetaControlShapes_AsyncFailureIsImmediateOriginalAndDoesNotPublish"
+      ]
+    }
+  ]
+},
+{
   "id": "browser-source-read-reservation-borrow-api",
   "responsibility": "T121-PHYSICAL-GUIDED-BROWSER-READ-RESERVATION: four independently owned typed API cases (one lifecycle Fact plus three foreign/retired original rows). Actual normal Meta-owned scope and outer-borrowed Meta issues agree; second borrow and outer close during borrow refuse, followed by actual release, full proof and successful close. Same-root foreign manager, different actual processing original and disposed original cannot borrow. Existing drift singleton proves inner failure release. C# UNCOMPILED/runtime UNRUN.",
-  "excludes": "No new owner/framework, production outer wrapper/debt, other later safety matrix, broad source-pin repin, accepted141 replay or browser/native/Windows/parent acceptance.",
+  "excludes": "No DATA cache, reflection, full browser-course retry, accepted141 replay, broad source-pin repin, DOM/provider/Windows or parent/HOLD acceptance. Other finite categories own the wrapper safety boundaries.",
   "changeHints": [
     "BookOfEternityClient/Core/FileSystemManager.WorldValidationRead.cs",
     "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
@@ -30,8 +223,8 @@
 },
 {
   "id": "browser-source-read-reservation-owned-peers",
-  "responsibility": "T121-PHYSICAL-GUIDED-BROWSER-READ-RESERVATION: exactly three existing owned-scope peer methods, four source rows each (12 cases). Meta immediate original read/cancel/close failure and combined-primary preservation; Meta and World retained physical sibling/prior borrow/failed opening/already-running response release only their own state. Required impact controls for changed borrow/dispose plumbing; source selectors fixed, discovery/runtime UNRUN.",
-  "excludes": "No entire World/Meta classes, broad historical hash tables or blanket repin, new reflection preparation, general compatibility suite, accepted141 or full browser-course retry.",
+  "responsibility": "Exactly eight unchanged historical owned-opening peer rows (two methods x four). World-only and fixed Meta-component dispatch retain their previous execution path; this category is not selected again for the closed CrossReferences/MetaMisc wrapper delta. The separate legacy-exception category owns the reviewed four-row assertion correction.",
+  "excludes": "Exact Meta exception4 moved to its own category; no wrapper safety, full source-pin tables, whole classes, accepted141 or browser-course qualification.",
   "changeHints": [
     "BookOfEternityClient/Core/FileSystemManager.WorldValidationRead.cs",
     "BookOfEternityClient/Services/Validation/ValidationService.MetaControlShapeReadPhase.cs"
@@ -48,7 +241,6 @@
     {
       "project": "integration",
       "tests": [
-        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.MetaControlShapes_AsyncFailureIsImmediateOriginalAndDoesNotPublish",
         "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.MetaControlShapes_OriginalAdmissionOpeningAndResponseBranchesReleaseOnlyOwnState",
         "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.WorldReadPhase_ExistingAdmissionAndOpeningBranchesReleaseOnlyOwnState"
       ]
@@ -57,8 +249,8 @@
 },
 {
   "id": "browser-source-read-reservation-causal-crossrefs",
-  "responsibility": "T121-PHYSICAL-GUIDED-BROWSER-READ-RESERVATION / #1536 / FR060–064 / FR067–074: 2 source cases for complete CrossReferences. Actual PrepareQueued/writer, typed engine staging producers, participating expected-session/browser original and processing, produced-manifest DATA only, real World physical authority. Compare control-first/subject-first same full phase with manual reservation against unoptimized production; exact ordered issues/DATA/absence/canonical-original bytes and fresh source work precede only final physical-admission-work causal oracle, including opening/end/close. C# UNCOMPILED/runtime UNRUN; no causal RED claimed.",
-  "excludes": "No outer automatic source-phase reservation/debt optimization, new DATA cache, old reflection staging/full-proof helpers, native/browser-course retry, accepted141 replay, other late-journal/owner/overlap safety cases, DOM/provider/fresh-process/Windows or parent/HOLD acceptance.",
+  "responsibility": "T121-PHYSICAL-GUIDED-BROWSER-READ-RESERVATION / #1536 / FR060–064 / FR067–074: 2 source cases for complete CrossReferences. Actual PrepareQueued/writer, typed engine staging producers, participating expected-session/browser original and processing, produced-manifest DATA only, real World physical authority. Compare control-first/subject-first same full phase with manual reservation against the automatic closed production reservation; exact ordered issues/DATA/absence/canonical-original bytes and fresh source work precede only final physical-admission-work causal oracle, including opening/end/close. Historical accepted causal RED is recorded in plan.md; reconstructed GREEN is UNCOMPILED/UNRUN. Manual control now includes the same fresh both-root debt closure before close/owner-after-close.",
+  "excludes": "No DATA cache, reflection, full browser-course retry, accepted141 replay, elapsed speedup claim, DOM/provider/Windows or parent/HOLD acceptance. Separate finite safety categories own mutation, owner and failure boundaries.",
   "changeHints": [
     "BookOfEternityClient.IntegrationTests/BrowserGameStateReadReservationTests.cs",
     "BookOfEternityClient/Core/GameEngine/GameEngine.BrowserValidationOriginal.cs",
@@ -84,8 +276,8 @@
 },
 {
   "id": "browser-source-read-reservation-causal-meta",
-  "responsibility": "T121-PHYSICAL-GUIDED-BROWSER-READ-RESERVATION / #1536 / FR060–064 / FR067–074: 2 source cases for complete MetaMisc including preserved nested MetaControlShapeCurrentPaths full readset. Actual PrepareQueued/writer, typed engine staging producers, participating expected-session/browser original and processing, produced-manifest DATA only, real World physical authority. Compare control-first/subject-first same full phase with manual reservation against unoptimized production; exact ordered issues/DATA/absence/canonical-original bytes and fresh source work precede only final physical-admission-work causal oracle, including opening/end/close. C# UNCOMPILED/runtime UNRUN; no causal RED claimed.",
-  "excludes": "No outer automatic source-phase reservation/debt optimization, new DATA cache, old reflection staging/full-proof helpers, native/browser-course retry, accepted141 replay, other late-journal/owner/overlap safety cases, DOM/provider/fresh-process/Windows or parent/HOLD acceptance.",
+  "responsibility": "T121-PHYSICAL-GUIDED-BROWSER-READ-RESERVATION / #1536 / FR060–064 / FR067–074: 2 source cases for complete MetaMisc including preserved nested MetaControlShapeCurrentPaths full readset. Actual PrepareQueued/writer, typed engine staging producers, participating expected-session/browser original and processing, produced-manifest DATA only, real World physical authority. Compare control-first/subject-first same full phase with manual reservation against the automatic closed production reservation; exact ordered issues/DATA/absence/canonical-original bytes and fresh source work precede only final physical-admission-work causal oracle, including opening/end/close. Historical accepted causal RED is recorded in plan.md; reconstructed GREEN is UNCOMPILED/UNRUN. Manual control now includes the same fresh both-root debt closure before close/owner-after-close.",
+  "excludes": "No DATA cache, reflection, full browser-course retry, accepted141 replay, elapsed speedup claim, DOM/provider/Windows or parent/HOLD acceptance. Separate finite safety categories own mutation, owner and failure boundaries.",
   "changeHints": [
     "BookOfEternityClient.IntegrationTests/BrowserGameStateReadReservationTests.cs",
     "BookOfEternityClient/Core/GameEngine/GameEngine.BrowserValidationOriginal.cs",
@@ -112,7 +304,7 @@
 {
   "id": "browser-source-read-reservation-meta-readset-drift",
   "responsibility": "T121-PHYSICAL-GUIDED-BROWSER-READ-RESERVATION / #1536 / FR060–064 / FR067–074: 1 source cases for one actual current-path drift under the real outer reservation; exact inner RequireUnchangedReadsAsync refusal. Actual PrepareQueued/writer, typed engine staging producers, participating expected-session/browser original and processing, produced-manifest DATA only, real World physical authority. Mutation follows both original flexible/strict captures; no issue list may escape, exact final readset failure, outer lease remains owned/current, original bytes restored before full end proof and closure. C# UNCOMPILED/runtime UNRUN; no causal RED claimed.",
-  "excludes": "No outer automatic source-phase reservation/debt optimization, new DATA cache, old reflection staging/full-proof helpers, native/browser-course retry, accepted141 replay, other late-journal/owner/overlap safety cases, DOM/provider/fresh-process/Windows or parent/HOLD acceptance.",
+  "excludes": "No DATA cache, reflection, full browser-course retry, accepted141 replay, broad source-pin repin, DOM/provider/Windows or parent/HOLD acceptance. Other finite categories own the wrapper safety boundaries.",
   "changeHints": [
     "BookOfEternityClient.IntegrationTests/BrowserGameStateReadReservationTests.cs",
     "BookOfEternityClient/Core/GameEngine/GameEngine.BrowserValidationOriginal.cs",

@@ -6,6 +6,11 @@ namespace BookOfEternityClient.Core;
 
 public partial class FileSystemManager
 {
+    /// <summary>Selects the existing World reservation for closed current-source GameState phases.</summary>
+    /// <returns>The original unopened scope, or null for mutable-source hooks, fresh-only or unsupported contexts.</returns>
+    internal WorldValidationReadScope? BeginGameStateSourceReadReservation() =>
+        CanReuseCurrentSourceData ? BeginWorldValidationRead() : null;
+
     // Only the selected World validator can request this private read lifetime.
     // The reservation narrows an existing actual access; it grants no new owner.
     internal WorldValidationReadScope? BeginWorldValidationRead()
@@ -226,6 +231,19 @@ public partial class FileSystemManager
             _ = files.PreflightBrowserOriginalAdmission(Lease!.MainAdmission!, Lease, "world-validation-final");
             RequireCurrent();
         }
+        /// <summary>Freshly refuses either publication journal while retaining the actual read lease and all evidence.</summary>
+        internal void RequireNoPublicationDebt()
+        {
+            RequireCurrent();
+            files.EnsurePhysicalCanonicalWriteLease(Lease ?? throw BrowserOriginalMainCondition.Invalid());
+            // Probe both existing roots freshly. No recovery, deletion or cached absence is authorized here.
+            var trustedDebt = files.HasStorageEvidence(files.LocalPublicationRoot);
+            var legacyDebt = files.HasStorageEvidence(files.PhysicalPublicationTransactionsRootPath);
+            RequireCurrent();
+            if (trustedDebt || legacyDebt)
+                throw new IOException("Publication debt appeared during game-state source validation.");
+        }
+
         /// <inheritdoc />
         public async ValueTask DisposeAsync()
         {

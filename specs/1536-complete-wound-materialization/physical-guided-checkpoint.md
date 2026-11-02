@@ -22,6 +22,34 @@ runtime UNRUN by explicit instruction. This bounded WIP first reconciles recover
 next source-only implementation/tests/catalog delta goes to independent Astra/high
 SOURCE before root's fresh owning builds/PREP/GREEN. No full browser or deep suite.
 
+# Reconstructed wrapper/debt source — coherent WIP, UNCOMPILED/UNRUN
+
+The current delta implements only the accepted closed phase/World reservation
+lifetime. It isolates/restores faction and Guardian context caches, retains the
+nested Meta full readset, performs full original end proof then fresh both-root
+publication-debt refusal under the real lease, closes and checks original owner
+before appending local ordered findings. Cleanup preserves primary exceptions;
+no evidence recovery/delete or ordinary DATA/browser guard relaxation is added.
+Manual causal control has the same debt closure. The reviewed legacy4 async-frame
+assertion changes alone; all other original assertions remain.
+
+Current source selection is11 categories/16 methods/36 rows: causal4, borrow4,
+existing drift1, new safety23, legacy4. Exact family variants/manual-vs-automatic
+limits, unchanged historical8 peer impact rationale and optimization/GM assessment
+are in plan.md and tests/categories.json. All protective60/180s limits are unchanged.
+Raw output remains outside Git at /workspace/tboe-linux-evidence-20261102; previous
+raw/artifacts are unavailable. No builds/restore/discovery/catalog/PlanOnly/tests,
+cleanup/native compilation or fullbrowser/DFR/Mortal/Windows work was run by writer.
+Static source/diff/JSON/selector counts are the only current verification; no new
+physical/source counts, elapsed savings or GREEN are claimed. Independent coherent
+Astra/high SOURCE and root's fresh owning builds/discovery/PREP/GREEN remain open.
+Static writer self-audit: git diff --check exit0; both catalog/selection parse;
+unique category IDs, exact selected method names, source InlineData/Fact row counts
+(11/16/36) and unchanged60/180s budgets checked by Python. Legacy fixture diff is
+exactly one assertion line. Existing Meta borrow/readset body, MainRunFence and
+SourceDataOperation are unchanged. No diagnostic/generated file is staged. This
+is source inspection, not C# compilation, discovery, runtime or independent review.
+
 # B1RED causal4 — intended final-oracle RED; independent OUTCOME pending
 
 Both exact causal leaf runs completed on runtime

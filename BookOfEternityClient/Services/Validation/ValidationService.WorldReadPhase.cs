@@ -21,17 +21,19 @@ public partial class ValidationService
     /// <param name="metaReserved">
     /// Whether the browser Meta read phase is reserved.
     /// </param>
+    /// <param name="gameStateSourceReserved">Whether the two closed browser source phases reserve this instance.</param>
     /// <param name="pendingReserved">
     /// Whether one console pending-snapshot invocation is reserved; defaults to false.
     /// </param>
-    private sealed class WorldValidationInvocation(bool worldReserved, bool metaReserved, bool pendingReserved = false)
+    private sealed class WorldValidationInvocation(bool worldReserved, bool metaReserved, bool pendingReserved = false, bool gameStateSourceReserved = false)
     {
         internal readonly bool WorldReserved = worldReserved, MetaReserved = metaReserved;
         internal readonly bool PendingReserved = pendingReserved;
+        internal readonly bool GameStateSourceReserved = gameStateSourceReserved;
         /// <summary>
         /// Whether this invocation exclusively reserves any validation state.
         /// </summary>
-        internal bool Reserved => WorldReserved || MetaReserved || PendingReserved;
+        internal bool Reserved => WorldReserved || MetaReserved || PendingReserved || GameStateSourceReserved;
         internal bool Closed;
     }
 
@@ -59,10 +61,13 @@ public partial class ValidationService
             var meta = browser && _prevalidatedPendingTurnSnapshotOverride != null &&
                 selection!.Phases.Includes(GameStateValidationPhase.MetaMiscStateFiles) &&
                 MetaControlShapeCurrentPaths.Any(selection.IncludesStateFile);
-            var reserve = world || meta;
+            var source = browser && _prevalidatedPendingTurnSnapshotOverride != null &&
+                (selection!.Phases.Includes(GameStateValidationPhase.CrossReferences) ||
+                 selection.Phases.Includes(GameStateValidationPhase.MetaMiscStateFiles));
+            var reserve = world || meta || source;
             if (reserve && (_worldValidationCalls != 0 || _worldOverrideMutations != 0))
                 throw new InvalidOperationException("World validation conflicts with an already admitted instance consumer.");
-            var invocation = new WorldValidationInvocation(world, meta);
+            var invocation = new WorldValidationInvocation(world, meta, gameStateSourceReserved: source);
             _worldValidationCalls++;
             if (reserve) _worldReservation = invocation;
             return invocation;
@@ -128,12 +133,13 @@ public partial class ValidationService
     {
         lock (_worldReadGate)
         {
-            if (_worldReservation != null && (_worldReservation.PendingReserved || _worldReadPhase != null || _metaControlShapeReadPhase != null ||
+            if (_worldReservation != null && (_worldReservation.PendingReserved || _gameStateSourceReadActive || _worldReadPhase != null || _metaControlShapeReadPhase != null ||
                 !ReferenceEquals(_worldReservation, _worldValidationInvocation.Value) || _worldReservation.Closed))
             {
                 if (withdrawal)
                 {
                     if (_pendingSnapshotReservation != null) _pendingSnapshotReservation.Invalidated = true;
+                    if (_gameStateSourceReadActive) _gameStateSourceReadInvalidated = true;
                     if (_worldReadPhase != null) _worldReadPhase.Invalidated = true;
                     if (_metaControlShapeReadPhase != null) _metaControlShapeReadPhase.Invalidated = true;
                 }

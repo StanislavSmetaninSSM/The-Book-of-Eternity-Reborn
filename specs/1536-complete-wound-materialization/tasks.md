@@ -9,6 +9,10 @@
   validation-instance reservation/cache isolation, both-root fresh publication-debt
   refusal and exception-preserving close before issue publication. Add finite typed
   safety variants and the reviewed exact legacy stack-oracle correction (all4 rows).
+  Coherent wrapper/debt+typed safety source is authored WIP: causal4+borrow4+drift1
+  +new safety23+legacy4 =36 source rows/16 methods/11 finite categories. Explicit
+  legacy4 owner selects the reviewed assertion repair; unchanged8 peers retain
+  historical lineage without rerun. Independent coherent Astra/high SOURCE pending.
   Current source is UNCOMPILED/UNRUN; owning builds/discovery/PREP/GREEN belong to
   root in the new environment. Broader141/DFR/Mortal/Windows/native work is not
   repeated automatically; browser180s admission and parent/HOLD closure stay open.
