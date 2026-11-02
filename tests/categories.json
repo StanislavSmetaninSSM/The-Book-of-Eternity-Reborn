@@ -2,6 +2,86 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "wounds-spiritual-strain-history-data",
+  "responsibility": "#1536 T081-D eight typed DATA cases: exact full first-create fingerprint, five missing/foreign/changed-definition refusals, later terminal History preserving original parent, and exact versus explicit prior-summary policy with mechanics/turn/realm/conflict refusals. No authority from raw DATA.",
+  "excludes": "No real gameplay heal/root removal or owner/publication from a synthetic terminal row. Actual owner/C4/next-turn and actual healing acceptance remain separate. No reflection, fullworld or HOLD rerun.",
+  "changeHints": [
+    "BookOfEternityClient/Services/SpiritualWoundOpportunityReceiptState.StrainPreimage.cs",
+    "BookOfEternityClient.Tests/SpiritualStrainHistoryDataTests.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.SpiritualStrainHistoryDataTests.*"
+      ]
+    }
+  ]
+},
+{
+  "id": "wounds-spiritual-strain-maneuver-publication",
+  "responsibility": "#1536 T081-D one actual in-process native fixture: source-free signed maneuver, real III choice, cold owned A then separate B, refused sibling/early echo/stale A, actual guard sourceII/none, common C3/C4 publication/full parent receipt/History, signed next-turn historical summary allowance and mechanics/turn refusals. Uses existing C2 helper, current canonical owners and C4 path.",
+  "excludes": "No fresh OS process/Engine/UI, general combat changes, actual later healing/removal, full strain family or HOLD retry. Entry60s stays unchanged; this broader actual publication uses the same180s protective budget as existing C4 controls.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualStrainManeuverPublication.cs",
+    "BookOfEternityClient/Services/Validation/ValidationService.SpiritualStrainDependency.cs",
+    "BookOfEternityClient/Services/Validation/ValidationService.AfterlifeSpiritualConflict.Frame.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 3,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualStrainBurden_ColdManeuverPublishesAndKeepsSignedHistoricalValidation"
+      ]
+    }
+  ]
+},
+{
+  "id": "wounds-spiritual-strain-historical-baseline-regression",
+  "responsibility": "#1536 T081-D affected existing historical exchange16cases/5methods: original membership, backdated/current changed evidence including nested summary and markers, allowed top readable summary, foreign conflict and duplicate occurrence. Protect existing tracker/frame semantics when adding signed strain comparisons.",
+  "excludes": "No broad spiritual-wounds-state inventory execution, light-incarnate independent family, shared-worldFixture changes, new game rules or HOLD retry.",
+  "changeHints": [
+    "BookOfEternityClient/Services/Validation/ValidationService.AfterlifeSpiritualConflict.Frame.cs",
+    "BookOfEternityClient/Services/Validation/ValidationService.AfterlifeSpiritualConflict.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.AfterlifeSpiritualConflictValidationTests.T085_HistoricalExchange_BackdatedAppendRequiresAllCurrentAudits",
+        "BookOfEternityClient.Tests.AfterlifeSpiritualConflictValidationTests.T085_HistoricalExchange_ChangedEvidenceRequiresAllCurrentAudits",
+        "BookOfEternityClient.Tests.AfterlifeSpiritualConflictValidationTests.T085_HistoricalExchange_ExactOrReadableSummaryOnlyKeepsAuditCompatibility",
+        "BookOfEternityClient.Tests.AfterlifeSpiritualConflictValidationTests.T085_HistoricalExchange_ForeignConflictCannotBorrowAcceptedOccurrence",
+        "BookOfEternityClient.Tests.AfterlifeSpiritualConflictValidationTests.T085_HistoricalExchange_OneOccurrenceCannotExemptSecondCopy"
+      ]
+    }
+  ]
+},
+{
   "id": "wounds-spiritual-strain-parent-receipt",
   "responsibility": "#1536 T081-D parent receipt join: seven cheap independent DATA cases first require a valid two-source ledger/intrinsic comparison, then reject rehashed foreign source or declined/different wound/transition/rank/original request/origin source parent. This precedes ownership/History adapters and does not grant authority.",
   "excludes": "No reflection, live owners, caller preimage issuance, fake original snapshots, C2/C3/C4 or full historical qualification, generalcombat, broad oldPASS/HOLD reruns. History AfterFingerprint/firstcreation and actual source owners remain required.",

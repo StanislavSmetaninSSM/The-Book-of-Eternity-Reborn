@@ -19,10 +19,11 @@ public sealed partial class AfterlifeResourceCutoverTests
     }
 
     /// <summary>Completes the real private strain journey in this fixture; no owner or lease escapes this helper.</summary>
-    private static async Task CompleteSpiritualStrainC2Async(ResourceMaterializationTestContext context)
+    private static async Task CompleteSpiritualStrainC2Async(ResourceMaterializationTestContext context, bool maneuver = false)
     {
         await WriteSpiritualStrainBaselineDraftAsync(context);
-        const string scene = "Чужое давление надломило волю души.";
+        if (maneuver) await ConfigureFailedManeuverStrainDraftAsync(context);
+        var scene = maneuver ? "Чужое давление надломило волю души. Душа не смогла улучшить позицию." : "Чужое давление надломило волю души.";
         await context.WriteExactJsonAsync(ProjectionNarrativePath,
             new JsonObject { ["response"] = scene, ["timestamp"] = "2026-09-30T00:00:00Z" }.ToJsonString());
         AssertNoConflictFrameErrors(await context.Validator.ValidateAcceptedTurnRawMortalLocationMaterializationAsync());
@@ -34,6 +35,8 @@ public sealed partial class AfterlifeResourceCutoverTests
         Assert.Equal(2, sourceSession.CheckedExchanges.Count);
         Assert.Equal(new[] { 0, 1, 2, 3 }, sourceSession.ClaimedDice);
         Assert.Equal(3, Assert.Single(sourceSession.Sources).Calculation.MaximumSeverityRank);
+        Assert.Equal(maneuver ? "maneuver" : "pressure",
+            JsonNode.Parse(sourceSession.CheckedExchanges[1])!["operationType"]!.GetValue<string>());
 
         var preserved = new Dictionary<string, byte[]?>(StringComparer.Ordinal);
         foreach (var path in new[] { ResourceMaterializationContract.StatePath, ResourceMaterializationContract.HistoryPath,
@@ -47,6 +50,14 @@ public sealed partial class AfterlifeResourceCutoverTests
         using var offerSession = Assert.IsType<ValidationService.SpiritualC2PrivateSession>(opened.Session);
         Assert.Equal(3, offerSession.Offer!.MaximumSeverityRank);
         var decision = CreateSpiritualStrainThirdDegreeDecision(offerSession.Offer.OpportunityRef);
+        if (maneuver)
+        {
+            var consequence = decision["proposal"]!["consequenceDefinitions"]![0]!;
+            consequence["definition"]!["components"]![0]!["payload"]!["operation"] = "maneuver";
+            consequence["definition"]!["components"]![1]!["payload"]!["operation"] = "counter";
+            consequence["root"]!["slots"]![0]!["readableSummary"] = "Неудачный манёвр сильнее напрягает душу.";
+            consequence["root"]!["slots"]![1]!["readableSummary"] = "Контрприём душе даётся труднее.";
+        }
 
         var selected = await offerSession.SubmitDecisionAsync(lease, JsonSerializer.SerializeToElement(decision), scene);
         using var selectedSession = selected.Session;

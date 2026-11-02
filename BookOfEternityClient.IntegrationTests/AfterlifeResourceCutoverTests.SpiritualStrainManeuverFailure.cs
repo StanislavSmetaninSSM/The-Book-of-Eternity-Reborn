@@ -14,34 +14,7 @@ public sealed partial class AfterlifeResourceCutoverTests
         await using var context = await CreateCompleteConflictFrameContextAsync(
             seedOriginalInputs: SeedOriginalIntakeBaselinesAsync, signedDice: [5, 15, 4, 12]);
         await WriteSpiritualStrainBaselineDraftAsync(context);
-        var raw = await ReadProjectedSourceContinuationCandidateAsync(context);
-        var active = raw["activeConflict"]!;
-        var second = active["exchangeLog"]![1]!;
-        second["operationType"] = "maneuver";
-        second["incomingAction"]!["operationType"] = "guard";
-        second["incomingAction"]!["summary"] = "Хранитель сохраняет защиту, пока душа неудачно меняет позицию.";
-        second["matchupAudit"]!["playerOperation"] = "maneuver";
-        second["matchupAudit"]!["primaryResolutionLane"] = "maneuver";
-        second["matchupAudit"]!["riskProfile"] = "position_play";
-        second["matchupAudit"]!["oppositionOperation"] = "guard";
-        second["matchupAudit"]!["matchupRationale"] = "Неудачный манёвр уступает позицию без обычного изменения напряжения.";
-        var playerCost = second["actionCostAudit"]!["player"]!;
-        playerCost["operationType"] = "maneuver";
-        playerCost["baseCost"] = 3;
-        playerCost["minCost"] = 1;
-        playerCost["artTier"] = 0;
-        playerCost["effectiveCost"] = 3;
-        playerCost["before"] = 3;
-        playerCost["after"] = 0;
-        var guardCost = second["actionCostAudit"]!["opposition"]!;
-        guardCost["operationType"] = "guard";
-        guardCost["baseCost"] = 2;
-        guardCost["minCost"] = 1;
-        guardCost["artTier"] = 0;
-        guardCost["effectiveCost"] = 2;
-        guardCost["before"] = 3;
-        guardCost["after"] = 1;
-        await context.WriteExactJsonAsync(AfterlifeSpiritualConflictState.StatePath, raw.ToJsonString());
+        await ConfigureFailedManeuverStrainDraftAsync(context);
         const string scene = "Чужое давление надломило волю души. Душа не смогла улучшить позицию.";
         await context.WriteExactJsonAsync(ProjectionNarrativePath,
             new JsonObject { ["response"] = scene, ["timestamp"] = "2026-09-30T00:00:00Z" }.ToJsonString());

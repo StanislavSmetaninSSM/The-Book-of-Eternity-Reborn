@@ -2,24 +2,87 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "wounds-spiritual-strain-parent-receipt",
-      "reason": "Five independently accepted causal parent relation cases plus two original/origin linkage controls (7 total), now GREEN. Baseline parsing, null state and nonmutation assertions complete. Full History/owner route remains separate.",
+      "category": "wounds-spiritual-strain-history-data",
+      "reason": "New immutable first-create/history/definition/signed-summary DATA8; terminal-DATA is not actual healing.",
       "contracts": [
-        "#1536 T081-D earlier materializeIII parent identity/source/transition/rank agreement"
+        "#1536 T081-D connected strain comparison / owner-source / receipt-History / C4 / historical validation"
+      ]
+    },
+    {
+      "category": "wounds-spiritual-strain-parent-receipt",
+      "reason": "Affected parent7 relation after actual owner History integration; preserve earlier causal5 separately.",
+      "contracts": [
+        "#1536 T081-D connected strain comparison / owner-source / receipt-History / C4 / historical validation"
       ]
     },
     {
       "category": "wounds-spiritual-strain-preimage-data",
-      "reason": "Affected13 intrinsic controls: shared witness now returns parsed comparison facts for parent join, same exact actual/dice/cost/math and clone rules must remain. Prior34 retained separately.",
+      "reason": "Affected intrinsic13 witness actual-vs-ordinary parsing and detached copies after adding immutable parent fingerprint.",
       "contracts": [
-        "#1536 intrinsic DATA actual/ordinary/fullparent parsing and copy isolation"
+        "#1536 T081-D connected strain comparison / owner-source / receipt-History / C4 / historical validation"
       ]
     },
     {
       "category": "spiritual-combat-guarantee-witness-consumers",
-      "reason": "Affected21 ordinary/guaranteed witness and receipt controls: shared witness/receipt parser now checks optional parent relation. Preserve current legacy-free supported semantics, budgets and closed fields.",
+      "reason": "Affected existing witness21 after source adds owned strain preimage; ordinary/guaranteed sources and receipt shape remain strict.",
       "contracts": [
-        "#1536 retained witness / guarantee and receipt source-decision agreement"
+        "#1536 T081-D connected strain comparison / owner-source / receipt-History / C4 / historical validation"
+      ]
+    },
+    {
+      "category": "wounds-spiritual-strain-comparison",
+      "reason": "Affected exact capped+1 comparator5 after retaining one immutable comparator and optional owned parent DATA.",
+      "contracts": [
+        "#1536 T081-D connected strain comparison / owner-source / receipt-History / C4 / historical validation"
+      ]
+    },
+    {
+      "category": "wounds-spiritual-strain-guidance",
+      "reason": "Changed GM strain guide/worked fragment; pressure and success invariants remain.",
+      "contracts": [
+        "#1536 T081-D connected strain comparison / owner-source / receipt-History / C4 / historical validation"
+      ]
+    },
+    {
+      "category": "mortal-terminal-guidance-manifest-regression",
+      "reason": "Changed worked manifest entry; exact existing completeness consumer1 only, no full example matrix.",
+      "contracts": [
+        "#1536 T081-D connected strain comparison / owner-source / receipt-History / C4 / historical validation"
+      ]
+    },
+    {
+      "category": "wounds-spiritual-strain-historical-baseline-regression",
+      "reason": "Affected existing historical16 cases protect original membership and top-summary-only drift under the frame extension.",
+      "contracts": [
+        "#1536 T081-D connected strain comparison / owner-source / receipt-History / C4 / historical validation"
+      ]
+    },
+    {
+      "category": "wounds-spiritual-strain-maneuver-publication",
+      "reason": "New actual cold C2/C3/C4/next-turn1 after cheap prerequisites; not actual later heal/root removal.",
+      "contracts": [
+        "#1536 T081-D connected strain comparison / owner-source / receipt-History / C4 / historical validation"
+      ]
+    },
+    {
+      "category": "wounds-spiritual-strain-c2-selection",
+      "reason": "Affected pressure C2 singleton because comparison retention and selection helper changed; preserve old behavior.",
+      "contracts": [
+        "#1536 T081-D connected strain comparison / owner-source / receipt-History / C4 / historical validation"
+      ]
+    },
+    {
+      "category": "wounds-spiritual-strain-publication",
+      "reason": "Affected existing actual pressure C4 singleton because sealed comparisons/receipt insertion checks changed.",
+      "contracts": [
+        "#1536 T081-D connected strain comparison / owner-source / receipt-History / C4 / historical validation"
+      ]
+    },
+    {
+      "category": "wounds-spiritual-strain-publication-rollback",
+      "reason": "Affected existing atomic rollback singleton because publication now validates full strain parent History.",
+      "contracts": [
+        "#1536 T081-D connected strain comparison / owner-source / receipt-History / C4 / historical validation"
       ]
     }
   ]

@@ -14568,6 +14568,19 @@ slot applies: the player's cost/guard slot does not increase the opponent's cost
 One original III source/choice finishes directly; do not invent another source or
 none. Keep the ordinary result on cold reopening, with no A/B or canonical writes.
 These successful examples do not authorize partial_success/countered or other sides.
+Failed maneuver uses the proved ordinary result: the earlier real III choice has
+strain/maneuver, roll/counter and cost/guard slots. Signed player4/opposition12
+against guard gives margin-8; ordinary maneuver loses position but leaves player
+overwhelmed/opposition clear. Keep player maneuver cost3 (3->0), opposition guard
+cost2 (3->1), actors, before, dice and all other fields. A changes only the issued
+exchange playerSideStrain overwhelmed->broken; B separately changes the final echo.
+The actual opposing guard source has harmful margin8 and pressure14/maxII; finish
+its optional offer explicitly. The client owns the full earlier parent snapshot,
+creation receipt and first-create History. Do not fabricate a strainPreimage or
+edit receipt/History to make an unsupported correction legal. Cold A/B replay and
+common publication must retain the same one-step result. Later historical summary
+text cannot change mechanics or turn markers, and healing does not rewrite the
+original creation evidence. This fragment does not itself prove runtime or healing.
 Private completion is not accepted-turn publication. Other consumer combinations
-and missing dice-free harmfulMargin rules are not authorized by this fragment.
+and the still-unimplemented no-roll GM-choice producer are not authorized by this fragment.
 end_spiritual_wound_strain_result_v1

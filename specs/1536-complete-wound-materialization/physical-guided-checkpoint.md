@@ -13,6 +13,37 @@ The single authorized [GitHub #1536 follow-up comment](https://github.com/Stanis
 No issues are closed. Historical pending wording below is superseded by this
 current decision, not a new permission to implement the three deferred consumers.
 
+# T081-D connected route tests/docs — frozen WIP, runtime UNRUN
+
+Cohesive test delta now includes reused real C2 helper with maneuver option and
+ordinary turn42 marker before first selection, full cold A/B + common C4 + signed
+next-turn scenario, typed History8 and GM guide/worked example/manifest/guard sync.
+Pressure helper default behavior and old first-A assertions are preserved; the
+ordinary maneuver preparation is one shared helper, with no post-acceptance setup.
+Standalone terminal-History DATA is explicitly not real healing/root removal.
+Actual healing/removal and broader family coverage remain OPEN.
+
+Proposed exact selection76 on this source: Unit55 (parent7/intrinsic13/witness21/
+History8/comparator5/guidance1), Integration cheap17 (manifest1/historical16), then
+new actual maneuver1 and affected old pressure C2/publication/rollback3. Discovery
+must establish actual counts. Budgets unchanged for existing categories; new
+actual publication180s matches existing C4 controls (entry60s untouched). New pure
+History60s and selected historical16/120s are bounded independent guards. No all
+suite, old HOLD or general combat/Engine/UI run. Cheap prerequisites precede the
+actual scenario; no runtime yet. Current C# UNCOMPILED, final complex SOURCE/PREP
+pending; partial Astra/high production review ofd601 found no actionable defect.
+
+Cache/optimization identity: immutable ordinary comparator lives in one selected
+C2 capture and is returned only after fresh owner/epoch/ordinal/actor/component/
+stack checks. Full parent fingerprint is immutable parsed DATA, not a permission;
+new ledger/image/context invalidates by constructing new DATA. Signed history
+roots use the existing authenticated snapshot service and must remain covered by
+its full manifest/dependency fences including cached frame consumers. There is no
+new cache/static registry or diagnostic stack, no measured speedup claim. Effects,
+current availability, physical/source integrity and publication gates stay fresh.
+No raw/binaries in Git; full evidence remains external. Prior41 and all historical
+RED/FAIL/UNKNOWN/HOLD/author deferrals remain exactly limited to their own versions.
+
 # T081-D connected failed-maneuver route — uncompiled WIP
 
 Continued after accepted parent41, not a completed gameplay claim. Current WIP

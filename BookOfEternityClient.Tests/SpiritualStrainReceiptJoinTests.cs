@@ -117,7 +117,7 @@ public sealed class SpiritualStrainReceiptJoinTests
         return root;
     }
 
-    private static void SealSourceAndDecision(JsonObject root, int index)
+    internal static void SealSourceAndDecision(JsonObject root, int index)
     {
         var witness = root["sources"]![index]!["witness"]!.AsObject();
         var hash = SpiritualWoundStateJson.Hash(witness, "source", "sourceId", "sourceFingerprint");

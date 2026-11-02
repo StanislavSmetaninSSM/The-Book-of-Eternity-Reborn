@@ -33,6 +33,9 @@ public sealed class SpiritualStrainComparisonTests
         Assert.Contains("Successful pressure needs no strain correction", example[start..end]);
         Assert.Contains("ordinary signed 12/4, margin8", example[start..end]);
         Assert.Contains("do not send A or B", example[start..end]);
+        Assert.Contains("Failed maneuver uses the proved ordinary result", example[start..end]);
+        Assert.Contains("Do not fabricate a strainPreimage", example[start..end]);
+        Assert.Contains("first-create History", guide);
     }
 
     [Theory]

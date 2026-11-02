@@ -717,9 +717,20 @@ The separate strain consumer and IV art prohibition are not canceled.
 declared failed non-safety operation at III-IV, capped at `broken`. The ordinary
 result must be independently proved; do not infer it by subtracting from a proposed
 corrected result or inventing a dice-free margin. The current bounded C2 route is
-one newly selected applicable burden on the last player `pressure/setback` exchange
+one newly selected applicable burden on the last player `pressure/setback` exchange,
+or a newly created III parent's `maneuver/setback` against lawful opposing `guard`,
 with genuine opposed dice and unchanged ordinary player strain. Other failure
 families, replacement carriers and unproved combinations remain unavailable.
+
+For that failed maneuver, author its ordinary position loss, signed dice and costs;
+the ordinary maneuver itself still cannot change strain. Only the exact currently
+owned wound contribution adds the extra step. The client retains its independently
+proved ordinary result and full actual parent graph, joins the earlier creation
+decision and first-create History, and seals the actual admitted comparison for
+publication. Its private `strainPreimage` witness and receipts are client-owned;
+do not author, copy or repair those fields as a way to obtain permission. The
+resulting harmful source still uses the actual opposing guard art/resilience and
+signed harmful margin, not an automatic zero or a fabricated opposed roll.
 
 The exact current player `pressure/success` route preserves the ordinary result:
 this failed-operation-only burden adds no strain, so no dependent A/B correction
