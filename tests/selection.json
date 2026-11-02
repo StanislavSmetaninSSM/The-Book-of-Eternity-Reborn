@@ -2,45 +2,10 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "wounds-combatant-legacy-raw-response",
-      "reason": "Regress the exact six causal missing-Error cases and preserving control after wound-only refusal; original60s.",
+      "category": "wounds-canonical-source-cutover",
+      "reason": "Existing T149 pure dead fallback/refusal plus honest source classification; exact current typed export/loose rejection4 and changed ownership/discovery2. No fake causal RED or unchanged broad runtime replay; original60s.",
       "contracts": [
-        "#1536 existing T071/T149 FR-013 FR-099 direct legacy wound-effect refusal / no new combat rule"
-      ]
-    },
-    {
-      "category": "wounds-combatant-legacy-qte-offer",
-      "reason": "New actual signed ordinary-offer nested wound-effect peer; original180s.",
-      "contracts": [
-        "#1536 existing T071/T149 FR-013 FR-099 direct legacy wound-effect refusal / no new combat rule"
-      ]
-    },
-    {
-      "category": "wounds-npc-legacy-qte-offer",
-      "reason": "Existing NPC peer changed by shared fixture suffix/code parameters and extra protected battle baselines; original180s.",
-      "contracts": [
-        "#1536 existing T071/T149 FR-013 FR-099 direct legacy wound-effect refusal / no new combat rule"
-      ]
-    },
-    {
-      "category": "wounds-player-legacy-qte-offer",
-      "reason": "Existing player peer changed by the same shared fixture preparation; original180s.",
-      "contracts": [
-        "#1536 existing T071/T149 FR-013 FR-099 direct legacy wound-effect refusal / no new combat rule"
-      ]
-    },
-    {
-      "category": "wounds-npc-canonical-retirement-source-guards",
-      "reason": "Two semantic ownership/closed projection/discovery guards updated for direct combat wound refusal and enum retirement; original60s.",
-      "contracts": [
-        "#1536 existing T071/T149 FR-013 FR-099 direct legacy wound-effect refusal / no new combat rule"
-      ]
-    },
-    {
-      "category": "wounds-legacy-effect-documentation",
-      "reason": "Two existing exact Unit/Integration documentation guards for negative example/required manifest/positive-only routes; original60s each.",
-      "contracts": [
-        "#1536 existing T071/T149 FR-013 FR-099 direct legacy wound-effect refusal / no new combat rule"
+        "#1536 T149 canonical wound sources only / typed bound protection / no legacy activation fallback"
       ]
     }
   ]

@@ -44,7 +44,6 @@ public sealed class WoundMaterializationSourceGuardTests
 
     private enum InventoryCategory
     {
-        LegacyLooseWoundSurface,
         AcceptedMechanicsIntegrationSeam,
         PlayerReadOnlyProjection
     }
@@ -293,16 +292,15 @@ public sealed class WoundMaterializationSourceGuardTests
             "private static CanonicalWoundSourceComposition ComposePreparedWoundSources(",
             "effect_source_wound_external_export_forbidden"),
         new(
-            "generic-source-wound-healed-fallback",
-            InventoryCategory.LegacyLooseWoundSurface,
+            "canonical-wound-generic-activation-refusal",
+            InventoryCategory.AcceptedMechanicsIntegrationSeam,
             "BookOfEternityClient/Services/EffectAcceptedTurnInputComposer.cs",
             "private static bool IsSourceCurrentlyActive(",
             "case \"wound\":",
-            "owner[\"isHealed\"]",
-            "case \"fate_card\":"),
+            "return false;"),
         new(
             "effect-source-wound-binding-validation",
-            InventoryCategory.LegacyLooseWoundSurface,
+            InventoryCategory.AcceptedMechanicsIntegrationSeam,
             "BookOfEternityClient/Services/EffectSourceAuthority.cs",
             "builder.ValidateWoundBindings();",
             "internal void ValidateWoundBindings()",
@@ -535,7 +533,6 @@ public sealed class WoundMaterializationSourceGuardTests
         "game_state/player/wounds.json",
         "game_state/npcs/npc_effects.json",
         "woundName",
-        "isHealed",
         "PlayerWoundsPath"
     };
 
@@ -561,7 +558,6 @@ public sealed class WoundMaterializationSourceGuardTests
         Scope("composer-player-wound-path", "canonical-wound-effect-source-composition", "game_state/player/wounds.json", "internal const string PlayerWoundsPath", "internal static readonly string[] SameTurnOwnerAuthorityPaths"),
         Scope("composer-player-wound-path-symbol", "canonical-wound-effect-source-composition", "PlayerWoundsPath", "internal const string PlayerWoundsPath", "internal static readonly string[] SameTurnOwnerAuthorityPaths"),
         Scope("composer-source-wound-authority", "canonical-wound-effect-source-composition", "PlayerWoundsPath", "internal static readonly string[] SourceAuthorityPaths", "private static readonly SourceDescriptor[] SkillSourceDescriptors"),
-        Scope("composer-healed-fallback", "generic-source-wound-healed-fallback", "isHealed", "case \"wound\":", "case \"fate_card\":"),
 
 
         Scope("accepted-npc-effect-carrier-path", "accepted-effect-carrier-catalog", "game_state/npcs/npc_effects.json", "internal const string NpcPath", "internal const string EnemiesPath"),
@@ -577,7 +573,6 @@ public sealed class WoundMaterializationSourceGuardTests
     public void WoundOwnershipInventory_ResolvesEveryDeclaredFileAndSemanticAnchor()
     {
         Assert.Equal(Inventory.Length, Inventory.Select(static entry => entry.Id).Distinct(StringComparer.Ordinal).Count());
-        Assert.Contains(Inventory, static entry => entry.Category == InventoryCategory.LegacyLooseWoundSurface);
         Assert.Contains(Inventory, static entry => entry.Category == InventoryCategory.AcceptedMechanicsIntegrationSeam);
         Assert.Contains(Inventory, static entry => entry.Category == InventoryCategory.PlayerReadOnlyProjection);
 
@@ -588,6 +583,7 @@ public sealed class WoundMaterializationSourceGuardTests
         var npcResponseSource = string.Empty;
         var playerResponseSource = string.Empty;
         var combatantTypeSource = string.Empty;
+        var genericComposerSource = string.Empty;
         foreach (var entry in Inventory.OrderBy(static item => item.Id, StringComparer.Ordinal))
         {
             Assert.Equal(entry.RelativePath, NormalizeRelativePath(entry.RelativePath));
@@ -603,6 +599,7 @@ public sealed class WoundMaterializationSourceGuardTests
             if (entry.Id == "npc-legacy-wound-response-refusal") npcResponseSource = source;
             if (entry.Id == "player-legacy-wound-response-refusal") playerResponseSource = source;
             if (entry.Id == "combatant-wound-type-retirement") combatantTypeSource = source;
+            if (entry.Id == "canonical-wound-generic-activation-refusal") genericComposerSource = source;
             foreach (var anchor in entry.RequiredAnchors)
             {
                 Assert.True(
@@ -642,6 +639,9 @@ public sealed class WoundMaterializationSourceGuardTests
         Assert.NotEmpty(npcResponseSource);
         Assert.NotEmpty(playerResponseSource);
         Assert.NotEmpty(combatantTypeSource);
+        Assert.NotEmpty(genericComposerSource);
+        Assert.Matches(@"case\s+""wound""\s*:\s*return\s+false\s*;", genericComposerSource);
+
         Assert.DoesNotContain("\"WoundReference\"", combatantTypeSource, StringComparison.Ordinal);
         Assert.DoesNotContain("duration != 999", playerResponseSource, StringComparison.Ordinal);
 
@@ -707,7 +707,7 @@ public sealed class WoundMaterializationSourceGuardTests
 
         // Retired aliases have no remaining semantic owner. Keep resurrection
         // forbidden using this same current source image, without a second read.
-        foreach (var token in new[] { "descriptionOfEffects", "generatedEffects", "healingState" })
+        foreach (var token in new[] { "descriptionOfEffects", "generatedEffects", "healingState", "isHealed" })
         {
             foreach (var (relativePath, source) in sources)
                 Assert.True(!source.Contains(token, StringComparison.Ordinal),

@@ -1,3 +1,49 @@
+# Existing T149: final generic wound-source fallback cleanup WIP
+
+Base54e4c108bd6b6933e348f13246185d89fb720af6 is remote-verified and receipt consistency
+accepted;14 immutable changed-file GitHub blobs matched, external proof
+5d22f2c446ab6b228200aa29f9aa6c895cf4074433b75fcc31008775519b9d48 (bounded readback,
+not full restore). Previous fresh14 accepted onruntime0f9 remains separate.
+Independent Sol source assessment: IsSourceCurrentlyActive has exactly two callers,
+one literal hazard and one from closed descriptors, none wound. Canonical wounds
+use separate typed catalog/active lifecycle/non-public export. Generic isHealed
+branch is unreachable; replace it with explicit false for unsupported generic
+wound activation, remove the last obsolete boolean syntax. No supported behavior
+change or fake causal RED. Current ValidateWoundBindings remains byte-identical,
+reclassified as accepted typed protection; independent wound_legacy remains solely
+terminal History-backed, unchanged. Do not delete these actual authority checks.
+
+Inventory removes the phantom LegacyLoose category requirement instead of requiring
+an obsolete surface forever; current binding/generic refusal have meaningful owners.
+The fourth retired token isHealed joins explicit no-resurrection checks using the
+same source images, no new reads/cache/allowances. Generic denial assertion handles
+LF/CRLF whitespace. Composer is NOT in the retained70 World pin map; no pin was
+changed or invented. Old9 mismatches stay, no World qualification. A local edit
+script's incorrect pin-presence assumption stopped after the two source edits;
+actual state checked before continuing; no build/runtime had started.
+GM no-update: no live wire/game capability change and no isHealed in active guides/
+rules/examples; current typed-export contract already governs. No new task IDs.
+
+New C# UNCOMPILED/SOURCE pending. Exact existing-method Unit6 selection: persisted
+canonical export, empty group fingerprint, loose scan refusal, caller generic-export
+refusal, semantic ownership and discovery.60s protective bound, no broad classes/
+legacy cold/source-binding/raw/QTE/HOLD repeats. All fixtures are existing pure
+independent DATA; no test-only source verdict or permission substitution. Optimization:
+no live extra work, IO/cache/lifetime or authority exception; no speedup claim.
+Next SOURCE, preserve owned binaries, fresh affected Main/Unit only (Integration
+unchanged/unselected), current proofs/catalog/Plan/PREP6 then runtime. Full raw at
+/workspace/tboe-linux-evidence-20261102/canonical-wound-source-cutover outside checkout.
+
+R2 read-only reconciliation (no retry): frozen retained root confirms milestone1
+turn43 and milestone2 turn45 publication on same active course, then second ordinary
+wait turn46 with GM response. Third treat/heal absent, wound active. Timer prefix
+lags actual execution and cannot locate the final internal call; outer second
+Engine.ProcessPlayerTurn not proven complete. Existing180.1041994s timeout remains
+UNKNOWN, no causal retry/limit change admitted. Full raw untouched, no new diagnostics
+stack. General conflict start publisher seam for separate safe->combat journey is
+still not established; no general orchestration implemented under this wound scope.
+Parents, World9 and every prior A5/DFR/Mortal/Windows/other HOLD remain open.
+
 # Existing T071/T149: legacy combat wound-effect refusal accepted — 2026-11-02
 
 Independent Sol/xhigh SOURCE, PREP and primary OUTCOME accept runtime/source

@@ -2099,9 +2099,9 @@ internal static partial class EffectAcceptedTurnInputComposer
                             MortalLocationMaterializationContract.WorldMapPath,
                             StringComparison.Ordinal)) &&
                        !IsTerminalSourceStatus(status);
+            // Canonical wounds use the typed non-public exporter; generic descriptors cannot authorize them.
             case "wound":
-                return (!TryReadBoolean(owner["isHealed"], out var healed) || !healed) &&
-                       !IsTerminalSourceStatus(status);
+                return false;
             case "fate_card":
                 if (string.Equals(
                         path,

@@ -2,6 +2,36 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "wounds-canonical-source-cutover",
+  "responsibility": "Existing T149 final source-inventory cleanup: generic wound activation explicitly refuses; actual current typed export remains active/non-public, empty-group fingerprinted, loose-source scanning and external generic export refused. Two current semantic/discovery guards preserve four fully retired aliases absence, no phantom live legacy category; typed ValidateWoundBindings stays protected. Six existing pure Unit methods, no new gameplay/causal RED or cache. Protective60s.",
+  "excludes": "No history/cold/native/Engine, general effect mechanics, broader spiritual source category, raw/QTE replay, source-pin baseline closure or UNKNOWN/HOLD qualification. Current independent wound_legacy path and binding implementation remain unchanged.",
+  "changeHints": [
+    "BookOfEternityClient/Services/EffectAcceptedTurnInputComposer.cs",
+    "BookOfEternityClient.Tests/WoundMaterializationSourceGuardTests.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.EffectAcceptedTurnInputComposerWoundTests.BuildCanonicalSourceAuthority_ExportsPersistedCanonicalWoundGraphAsNonMaterializable",
+        "BookOfEternityClient.Tests.EffectAcceptedTurnInputComposerWoundTests.BuildCanonicalSourceAuthority_FingerprintsPersistedEmptyWoundSourceGroup",
+        "BookOfEternityClient.Tests.EffectAcceptedTurnInputComposerWoundTests.BuildCanonicalSourceAuthority_DoesNotScanLegacyLooseWoundDefinitions",
+        "BookOfEternityClient.Tests.EffectAcceptedTurnInputComposerWoundTests.Compose_RejectsCallerSuppliedGenericWoundExport",
+        "BookOfEternityClient.Tests.WoundMaterializationSourceGuardTests.WoundOwnershipInventory_ResolvesEveryDeclaredFileAndSemanticAnchor",
+        "BookOfEternityClient.Tests.WoundMaterializationSourceGuardTests.ProductionLegacyWoundOccurrences_AreConfinedToInventoriedSemanticScopes"
+      ]
+    }
+  ]
+},
+{
   "id": "wounds-legacy-effect-documentation",
   "responsibility": "Existing T071/T149: current wound-effect refusal guidance, sole explicitly negative legacy worked example, required manifest family/text consistency, and absence of legacy routes in positive rules/examples. Two existing narrowly selected guards, one Unit and one Integration, no new gameplay assertions. Full invalid JSON example is syntax/teaching scope, not production-valid execution. Qualified W2 on0f9e47de: two PASS across distinct Unit/Integration descriptors, combined category7.2369801s; protective60s per descriptor unchanged.",
   "excludes": "No general documentation aggregate, positive legacy syntax, full example runtime, Engine/native/provider/gameplay or parent/HOLD qualification.",
