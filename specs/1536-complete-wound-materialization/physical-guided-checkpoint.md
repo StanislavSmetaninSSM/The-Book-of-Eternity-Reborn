@@ -1,3 +1,42 @@
+# Current US3 wound-consumer remainder: four incomplete profile branches
+
+Independent Sol/xhigh bounded read-only mapping and primary source inspection
+confirm all8 registry/projector/UI descriptors exist, but these are not equivalent
+to executable next-exchange mechanics. Actual SourceAdmission calls
+ValidateCurrentWoundContributions; SpiritualWoundMechanics.cs:71 emits
+spiritual_wound_profile_integration_required for the unsupported matching branches.
+No publication bypass or fresh runtime failure is claimed by this inspection.
+
+| Exact profile | Existing consumer / real remaining state |
+| --- | --- |
+| spiritual_roll_hindrance | Actual next-exchange disadvantage, lawful no-roll preserved; existing GEN accepted child. |
+| spiritual_action_cost_burden | Existing owned ordinary/special/completed/dependent/recovery/force cost consumers; accepted children, not fresh aggregate. |
+| spiritual_position_burden | Actual effective-position/live/retained/terminal/dependent consumers; accepted position/B2–B5 children, no repeat needed. |
+| spiritual_control_burden | Registry/projector/UI only; live contribution still integration_required. Consumer unfinished. |
+| spiritual_strain_burden | Registry/projector/UI only; extra wound-induced strain consumer unfinished. |
+| spiritual_tempo_burden | Actual current-player tempo denial against retained frontier; accepted child. |
+| spiritual_counter_burden | Registry/projector/UI only; payoff-step consumer unfinished. |
+| spiritual_art_restriction | forbid branch implemented; restrict branch still integration_required. Existing rank-IV8rows present, exact accepted receipt not reconciled here. |
+
+Existing normative spec table defines control one adverse step at II–IV, extra
+strain on a declared failed non-safety operation at III–IV capped at broken,
+counter one payoff step per slot, restrictIII/forbidIV. But the existing approved
+2026-09-20 Remaining profile integration findings in plan explicitly leaves exact
+control incoming/escape/same-rank transition, ordinary no-wound strain baseline and
+failure predicate, typed counter axis/step/zero outcome and restrict admission
+condition unresolved. Do not silently supply those rules or treat registered
+payload/magnitude as their execution. No new rule or code implemented by this map.
+This narrows earlier incomplete audits: US3 has actual unfinished consumers in
+addition to pending source binding and unaccepted combinations; it is not 'only
+final tests'. Wider operation/result/dependent/cold matrices remain unreconciled.
+
+E dice-free harmfulMargin question is already submitted and ANSWER PENDING,0 not
+accepted/implemented; nonstandard/passive/champion binding remains separate.
+Only direct wound semantics are at issue, never general aggression/defeat/T088/
+QTE orchestration/ACTIVE/F1/T197. S1 source cleanup6 and T150 authored example1
+remain accepted on their explicitly separate runtime lineages below; no test rerun.
+Current R2/A5 UNKNOWN and DFR/Mortal/Windows/World9/other HOLD remain unchanged.
+
 # US3 T081-E: dice-free wound math decision pending — 2026-11-02
 
 Accepted source/artifact checkpoint33a6ed48e53234bd846d818f7d7057ea4b249413 is

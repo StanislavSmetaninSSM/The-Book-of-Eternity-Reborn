@@ -1,3 +1,14 @@
+# Current functional remainder: US3 missing consumers are explicit
+
+Bounded independent8-profile map establishes unfinished control/strain/counter
+consumers and rank-III art restrict (rank-IV forbid exists). Registered schema,
+projector and UI do not prove mechanics. Existing normative transition/admission
+ambiguities are recorded in the current checkpoint; no rule chosen silently.
+Four other consumers have existing accepted children; whole D matrix not reconciled.
+E harmfulMargin question remains pending;0 not accepted. Current S1/T150 accepted
+lineages and all UNKNOWN/HOLD remain separate. Continue only wound-specific work;
+general aggression/defeat/QTE orchestration/ACTIVE/F1/T197 remain outside this task.
+
 # Current direct-wound dependency: E math answer pending
 
 Independent design found no approved harmfulMargin for accepted voluntary harmful
