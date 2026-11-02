@@ -1,4 +1,32 @@
-# B1RED scaffold preparation — built; runtime UNRUN
+# B1RED guards — 14 PASS / 3 FAIL; causal4 UNRUN
+
+Actual runtime65ac18d1cadbddedb5d44b8c1b41042083f0af3b, compiled source9d021ae82:
+all17 planned guards executed,14 PASS/3 FAIL, no timeout,43.6025559s wall;
+both runtime/owned-tree cleanup succeed. Borrow API4 and exact Meta readset drift1
+PASS. Existing owned peers12 yield9 PASS/3 FAIL. Actual post-run27 artifacts /
+44 resource copies/four daemons remain stable, no live managed owners,
+free707645440B. This is not17 PASS or acceptance of the whole scaffold.
+
+All three failures are the read/cancel/read-and-close rows of the existing
+MetaControlShapes_AsyncFailureIsImmediateOriginalAndDoesNotPublish at line139:
+the stack assertion expects ReadOrdinaryFileSnapshotCoreAsync. Full stored
+WorldReadComponent evidence shows the same original exception (reached1,
+SamePrimary=true, ResultPublished=false), through the actual async leaf
+ReadOrdinaryFileSnapshotUncachedAsyncT607Original and ReadWorldValidationTextAsync.
+The combined read/close row also records Calls1/SameSecondary=true. The expected
+CoreAsync method is a non-async Task-forwarder in unchanged OrdinaryReads.cs;
+its missing frame is a stale fixture oracle, not evidence of a replaced exception.
+Assertions after the failed stack assertion are unexecuted in those rows and
+still need verification after the reviewed fixture correction.
+
+Primary TRX hashes: borrow4 ab4ff8a1927180060f5119eedfe290c34d3ce50d9f983e896e5b6ad726bc2c85;
+drift1 b0cdbc615fd8dd1b1b5bc4e5d28da2f428f4f2be86d7361c92c09bd38471d4ac;
+owned12 43cc293fcf1ed7f5e407922204e8e7d1aa035177cf3a8ce650bcb171f48a2f81.
+Full primary raw remains external in B1RED-guards17. Independent OUTCOME and the
+minimal stack-oracle repair/admission decision are pending. No retry, outer
+production optimization, causal RED or full browser result is claimed.
+
+# B1RED scaffold preparation — earlier built frontier
 
 2026-11-02 UTC, same Linux checkout/branch. Independent Astra/high delta SOURCE
 accepts9d021ae82930099a1a77bf6ae9ad6ff18ade322d after the mutable-hook fixture,
