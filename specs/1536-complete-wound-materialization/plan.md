@@ -1,3 +1,15 @@
+# T149 scaffold built and exactly planned — RED pending
+
+Independent Astra/high DESIGN/SOURCE accepts the bounded nine-row scaffold.
+Fresh Integration-only build at 0235df8fceadc875b03fb86d1a923c3b00bac796 exits 0,
+107 warnings / 0 errors; five unchanged owners are retained. Six PE/PDB pairs,
+432 source bindings and current artifact/resource/native-copy proofs pass.
+Catalog is valid (1,323 categories / 13,151 methods); exact PlanOnly is one
+descriptor / three methods / nine cases at 60 seconds, no runtime executed.
+See physical-guided-checkpoint.md for primary evidence. Next independent PREP
+and genuine causal RED9; production remains unchanged. Preserve arrays 2 versus
+scalar/null 5 and valid canonical 2 roles, and verify fixture absence after run.
+
 # T149 canonical player carrier — causal scaffold WIP, no production fix
 
 2026-11-02 UTC; tracked T149-CANONICAL-PLAYER-CARRIER / parent T149 / #1536.
