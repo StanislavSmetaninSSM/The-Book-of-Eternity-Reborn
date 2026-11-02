@@ -10,7 +10,7 @@ All four fresh managed owning builds on that exact source exit0: Main123.580s,
 Support16.413s, Unit63.603s, Integration123.683s. Commands use the existing
 dotnet build --no-restore -m:1 -p:UseSharedCompilation=false -nr:false
 -p:BuildProjectReferences=false path. Warning code/message multisets exactly match
-their baseline:12/23/26/102 unique (24/46/52/204 logged), no additions.
+their baseline:12/23/26/102 compiler warnings (24/46/52/204 logged), no additions.
 All4 PE/PDB pairs and430 changed-source bindings verify;27 artifacts,11 resource
 files/44 copies and4 daemon copies are current. External preflight SHA
 10710d5d54570b756133b5d121fdcf53be4503133d5b0445811075fe107b998f;
@@ -32,7 +32,11 @@ No TRX/JSON/capture/save/recovery/current-bin evidence was removed. Only proven
 reproducible ended obj duplicates/reference outputs were retired; Main/Support
 reference inputs remain. The full pre-build managed archive remains preserved.
 
-Next gate: independent PREP for the exact21 cases. Execute the17 non-causal
+Independent Astra/high PREP21 accepts cf89f9b04f5ddbb5a46dfc050306714a7ba4d50c
+with immediate source/artifact/resource/owner/reserve fences before each run.
+Its factual correction distinguishes compiler warning counts from unique
+code/message counts; the complete warning multiset comparison remains exact.
+Next: execute the17 non-causal
 preservation/owned controls separately from the two2-case causal categories;
 expected RED is only each final missing-reservation work oracle, never compilation,
 setup, data/readset/ordered-issue drift or timeout. Causal/runtime are UNRUN.
