@@ -1,3 +1,16 @@
+# US8/T177 original six-scenario receipt map
+
+The current checkpoint maps all six canonical US8 scenarios to the recorded
+September5-6 scope/reducer/lifecycle/treatment/projection receipts. Existing source
+and exact source-continuity deltas were inspected; no missing scope implementation
+or new test mandate established. These are historical accepted results, not a fresh
+Linuxrun; original raw not restored. T177 staysopen for current final/shared-boundary
+review, with the changed lifecycle publication-fault probe explicitly owned byT154.
+No build/test/discovery performed and no closed case rerun. Next finite independent
+item: T149 ownership/retired-alias evidence map using accepted cutovers/current code.
+All old UNKNOWN/HOLD, pending semantics and partialC2-only limits remain unchanged.
+Document-only review/publication/remote/source closing next.
+
 # Partial-success wound correction accepted — source/runtime32ed759
 
 Independent Sol SOURCE/PREP/OUTCOME accepted7/7 actualPASS in one bounded run:

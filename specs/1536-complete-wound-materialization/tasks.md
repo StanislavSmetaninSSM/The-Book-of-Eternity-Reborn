@@ -1,3 +1,13 @@
+# T177-US8-RECEIPT-MAP — six original scenarios, documentation only
+
+- [ ] Independent final map review and publication: existing receipts matched to exact binding, atomic refusal, shared cancellation, dormancy/restoration, exact/null procedure skill and safe semantic projection; historicalSeptember5-6 evidence, no freshLinuxaggregate/raw restoration.
+- [ ] T177 coherent final/shared-boundary review remains open. Existing changed lifecycle fault-probe runtime belongs toT154; no new scope implementation/test automatically required.
+
+No runtime/discovery/build or closed-case rerun for this map. Current checkpoint
+contains exact run IDs, current source/test references and limits. Next independent
+finite item is existingT149 ownership/retired-alias reconciliation; UNKNOWN/HOLD and
+both authorquestions staypending, partial_success acceptance stays C2/cold only.
+
 # T081-D-PARTIAL-SUCCESS [US3] — original failure-only consequence
 
 - [x] Bounded original-scope remainder and independent requirement reconciliation saved in physical-guided-checkpoint.md; parent boxes are not evidence of missing code.

@@ -1,3 +1,52 @@
+# US8/T177 six-scenario receipt map — historical acceptance reconciled
+
+Base/remote bfcc7a2aaa4f2f7317fd7b1744b83381e17df070 verified clean, no live
+build/test owners. This is the next independent item of the finite wounds-only
+remainder, not new scope implementation or a fresh test run. The normative six
+scenarios are [US8](spec.md#user-story-8---apply-roll-consequences-to-an-exact-skill-priority-p1).
+The existing implementation/receipts are in
+[scope plan](../../docs/superpowers/plans/2026-09-05-roll-modifier-skill-scope.md)
+and [T167-177](tasks.md). Root inspected current typed tests and consumers; an
+independent Sol read-only assessment confirms the mapping below.
+
+| Original scenario | Recorded acceptance / actual existing assertion | Status and exact boundary |
+| --- | --- | --- |
+| 1. Bind the exact offered/current usable permanent skill | Plan Task9 pure674 (20260905-163006-052-14080-38da855683794e5591e3d3e592f72538-focused); T175 lifecycle16 (20260905-185327-418-29756-57f34ed39be740db8aad93040c34acc2-focused). Current FocusedApply_OrdinarySkillPublishesExactScopeAndCarrierIndexAgreement and wound lifecycle assert exact selector/source/index. | Existing binding acceptance matched; no absent binding implementation established. |
+| 2. Reject malformed/new/final-disabled/wrong-owner/duplicate/confusable/idless/unknown scope without allocation or partial publication | Same pure674/lifecycle16 plus repair31 (20260905-185751-161-26656-ed7e0a39f84b4fac98f2311381441c5c-focused). Current authority/structural negatives, FocusedApply and WoundFocusedApply final-authority/changed-selector refusals retain exact before-images. | Existing structural, authority and atomic-refusal receipts matched; no new coverage or relaxed checks. |
+| 3. Filter broad/focused/nonmatching/identity-less before cancellation | T177 pure resolver44 (20260906-084733-313-8724-b53c9cb7d9ac4d358adf02652b427210-focused), with earlier normalized-source closure through c1f455ee. Current exact/missing/mismatched/context filtering and repeated/opposing contribution tests use the same resolver core. | Existing reducer acceptance matched; no new cancellation rule or reducer. |
+| 4. Derive dormancy on missing/unusable skill; restore only the same identity, preserving wound/effect/history bytes | T175 lifecycle16 and resolver44. WoundFocusedEffect_RestartAndAvailabilityDeriveActiveDormantDormantActive checks actual publication, restart, missing skill, different-case identity, exact restoration and five unchanged wound/effect/identity/History images. Pure resolver separately checks inactive/missing availability. | Existing lifecycle/restore acceptance matched, not a new fresh-process run in this environment. |
+| 5. Mortal procedure uses exact sealed RollSkillId for resolved_skill_tier and null for fixed_zero | T175 SkillScopedRoll14 (20260905-185635-191-21872-60a477632d4d4f1fb44d50e7a70130f7-focused); prior Task6 pure46/SkillScoped13/Detached35/ColdClaim20/clone1 closure through887de325/ba633ab1/c1f455ee. Current six SkillScopedRollRows and actual persisted/publication/restart replay test retain exact/null source semantics. | Existing selected-skill and detached/live treatment acceptance matched; not an admission to repeat Mortal compatibility. |
+| 6. Russian broad/focused/dormant/missing-skill projection without technical IDs or hidden effects | Plan Task7 RollScope10 and complete projection46, commits2bed5c4c/e33d8a32; T176 parsed examples4 (20260906-075339-943-2656-8c0f567a35154780ba815b419d014bcc-focused) and docs127. Current tests include inactive/missing/invalid/confusable/name-ID/hidden cases. | Semantic projection/wording/privacy accepted. ExplorerEffectPlayerCardBuilder passes Facts into UiKeyValueGrid; browser/console status previews use Name/Summary. This is not a new DOM/provider runtime or proof that every preview renders all scope facts. No concrete defect/new coverage mandate established by that distinction. |
+
+These are recorded accepted results from September5-6, not one aggregate, not a new
+Linux6/6 run and not a raw re-verification. Original raw was not restored here;
+precise run IDs and accepted review findings remain in the original plan/tasks.
+Do not run obsolete Fast/FullValidation/PreMerge commands from that history; current
+category policy supersedes them. No test/build/discovery/runtime was executed for
+this evidence map and no old PASS was rerun.
+
+Bounded continuity read: EffectRollSkillScopeAuthority is unchanged since35a2c8070;
+resolver c1f455ee-to-current differs only in MaximumCapturedRows visibility, not
+algorithm; projection e33d8a32-to-current adds periodic_spend/gain branches only,
+with scope projection unchanged. Lifecycle ffca1f6b9-to-current has20changed lines:
+owned cleanup, newer publication-fault observer/assertions and narrower catalog
+preflight. Its historical16 does not establish the current replacement fault-probe
+runtime. That exact cut belongs to the existing T154/final shared-boundary receipt
+reconciliation, not a new skill-scope gameplay branch or an automatic rerun.
+
+Concrete conclusion: all six original US8 behavior families have matched existing
+acceptance; no missing scope production branch is established. T177 parent remains
+OPEN for coherent current final review/scans and exact shared-boundary evidence,
+not because its unchecked historical aggregate command authorizes another suite.
+Next independent required item is T149 ownership/retired-alias receipt reconciliation
+from the same finite row5; use existing current source guards/accepted cutovers and
+fix only a demonstrated residual path. The T154 probe-version boundary remains
+explicit; R2/A5 stay UNKNOWN with no retry admission. DFR/Mortal/Windows HOLD and
+both author ambiguities unchanged. Partial_success remains only accepted C2/cold
+reopen at32ed759, not C4/Engine/UI. No code/cache/IO/authority or GM contract change;
+no build needed for this documentation-only map. Independent document SOURCE and
+normal publication/remote/clean-source closing follow.
+
 # Accepted original partial-success wound correction — runtime32ed759
 
 Independent Sol SOURCE/PREP/OUTCOME accepted the bounded original FR-022/025 case.
