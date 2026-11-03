@@ -55,8 +55,8 @@ Existing NullLogger output retains no unique inner rejection issue, so the cause
 cannot yet be classified as production or fixture failure. No speculative fix or rerun.
 
 SOURCE/PREP and final OUTCOME accepted by independent Sol 6.1 / xhigh as a
-complete failing run (5 PASS / 2 FAIL), not acceptance of retry7. Compact documentation
-review remains pending. Owned/runtime cleanup succeeded; no new boe temp
+complete failing run (5 PASS / 2 FAIL), not acceptance of retry7. Final compact
+documentation review also accepted at e8b526e2b. Owned/runtime cleanup succeeded; no new boe temp
 roots or managed owners remain, all artifact hashes are unchanged. Full raw is outside
 checkout, without quotas/truncation:
 `/workspace/tboe-linux-evidence-20261103/t154-mixed-consumption7`.

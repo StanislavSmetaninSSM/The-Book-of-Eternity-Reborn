@@ -7,7 +7,7 @@ All seven pass preceding exact byte/existence rollback and original authority re
 five pass final once-only item/resource/capacity transitions. Inner rejection reason
 is not retained by the unchanged NullLogger fixture; no fix or rerun was attempted.
 Independent Sol 6.1 / xhigh SOURCE/PREP and OUTCOME accepted this complete failing
-run; compact documentation review remains pending.
+run and its compact final documentation at e8b526e2b.
 No production/test source changed, no broad lifecycle category or accepted rollback24
 repeated. Full raw/proof hashes and precise limits are in physical-guided-checkpoint.
 Whole T154/#1536 and unrelated UNKNOWN/HOLD remain open.
