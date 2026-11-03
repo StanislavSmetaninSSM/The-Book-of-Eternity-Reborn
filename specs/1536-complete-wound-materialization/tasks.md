@@ -2,12 +2,23 @@
 
 - [x] Independent Astra/high bounded DESIGN accepted: establish the existing-parent proof for the original FR-025 failure-only strain: one exact current III/IV wound, player maneuver/setback, ordinary maneuver leaves strain unchanged, add one step at most broken. Do not infer ambiguous outcomes or aggregate multiple wounds.
 - [x] Native source1137: baseline1PASS/60s and genuine actual1FAIL/180s accepted by independent Sol, fullcapture/cleanup/hashes. Real priorC4birth/signed43/resourceowner proven; later cold/none/C3/C4/signed44 unreached. No forged parent/resources.
-- [ ] Minimal existing-owner implementation only after independent DESIGN; preserve v1, current/source/history/authority checks and exact siblings. No new general combat/probe/cache framework or GM-authored rule.
+- [x] Bounded positive-maxII existing-owner implementation and whole Astra/high SOURCE/OUTCOME accepted: versionedcheap75 + nativeIII1. Exact evidence/lineages in currentcheckpoint; v1/current/source/History/C3-none/commonC4/signed44 retained. This does not cover maximum0 or close the full parent. No new general combat/probe/cache framework or GM-authored rule.
 
-This is a known missing cell of existingT081-D/finite row1, not a new mandatory
-profile or battle system. Design only; no new code/test/runtime yet. Existing
+This is an original cell of existingT081-D/finite row1, not a new mandatory
+profile or battle system. Positive lane is qualified in the explicit bounds above;
+maximum0 remains the next concrete functional cell. Existing
 US8 receipt map and T149 source-guard task are accepted below. T177/T154 and R2/A5
 remain open; partial_success stays C2/cold only, both pending semantics unchanged.
+
+# T081-D-EXISTING-STRAIN-ZERO — original FR025, same finite row1
+
+- [x] Confirm exact increasing-strain/non-guaranteedmax0 gap and independent Astra/high minimal DESIGN: schema-v3 comparison-only rows in existing receipt/source-only/mixed C3 owners. No fabricated opportunity/none or weakened common receipt identity; closed preimagev2 and positive-source decision bijection unchanged.
+- [ ] Cheap independent causal/typed v1-v2→v3 append/replay, zero-only/mixed, source/coordinate/request/dice refusal and latestHistory-after-heal controls. No live authority from DATA.
+- [ ] Minimal existing-owner implementation plus GM guidance/example/manifest synchronization; preserve v2 nonempty healing behavior and coherent empty healing family only in v3, exact prefix/owner/current/signed checks. Reuse existing parsed DATA/indexes; no parallel framework.
+- [ ] Whole SOURCE, fresh affected builds/exactPlan/PREP, typedGREEN then one lawful real zero source-only C3/commonC4/signed-next-turn route, completecapture/cleanup, final independent OUTCOME and verified remotecheckpoint. No budget increase, oldPASS/UNKNOWN/HOLD replay or Engine/UI extension.
+
+Capped broken→broken is ordinary and produces no increasing harm source; it is not
+this gap. Pending aggregation/ambiguous actor questions are not resolved by this work.
 
 # T149 original ownership/retirement receipt reconciliation
 

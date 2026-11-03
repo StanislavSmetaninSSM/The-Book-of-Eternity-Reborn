@@ -1,3 +1,45 @@
+# Accepted existing-parent positive maneuver lane — 2026-11-03 UTC
+
+Independent Astra/high final OUTCOME accepts nativeIII1PASS with original180s:
+TRX13.7093839s/category17.5304893s/runner22.6174924s/wrapper23.860353s. Actual
+realIII birth→fresh43 maneuver/setback/guard→coldC2 explicitnone→ownerC3/commonC4
+→signed44 passed. Exact3/2 spending/playerdepletion, parent fingerprint and
+Identity/History bytes, root availability, retainedv2/no fabricatedparentSourceId,
+no private controls remaining all checked. Repeated queries shared one actual
+signed-parent computation; no isolated speedup claim. Metadataa956e2479; native
+Main/Integration compiled e73a288c2; Unit compiled a956 after the fixture-only fix.
+Postc55a7d1f45496f294779da1d0a5b126c4cf89c62e23ce301cd7e8fff60c9ad45;
+summary9f71407a0eef99db9298d7e6f75f861a281d36d6d7d1ce76bd2f398a68f23d1a.
+OneTRX/ninecompletecapturehashes/45artifacts/621resources/native6/4PDB516bindings,
+exactcount/no timeout/skip/dup/underfill/cleanup/noTMP/noowners/hashcontinuity verified.
+
+Sol accepts versioned cheap75 = oldunchanged19 at e73/metadata020 + corrected56
+at a956, exactdisjoint semanticcases. Oldphysical33/32PASS1HistoryfixtureFAIL
+remains preserved; its joins13PASS1FAIL replaced by correctedjoins14 within56.
+This is not one fresh75/76 run. Remaining56 postdd79b537c991066c5e5b8f977877f5c464c06c100a745c5b586f2ad5e9d2d2c0;
+summary1d2e438f353b7349b21242d1351081add6b9922c355ed24b5ad6c959ae4364d6;
+combined75fc7aaba890687b2e6c9221a49b2f024b2279a223d39c42a87627cd8c8483f420.
+Total bounded qualification76distinct across explicit versions. Source19 and later
+metadata/fixture2 clean exports/GitHubwholeblob proofs preserved; not raw restoration.
+Fullraw/builds/TRX/review/findings remain outside checkout:
+/workspace/tboe-linux-evidence-20261102/spiritual-strain-preimage-data/M3-*,M4-*,M4a-*,M5-*,M5a-*,M5b-*,M5c-*.
+
+Qualified scope: one existing III player wound, one stack/magnitude1, maneuver/
+setback versus guard and positive-maxII result. IV is typed DATA only. No Engine/UI/
+fresh-process or whole US3/#1536 claim; partial_success remains its earlier C2/cold
+scope. Generalcombat/QTE/ACTIVE-F1 excluded; pendingactor/aggregation semantics and
+R2/A5/DFR/Mortal/Windows UNKNOWN/HOLD unchanged.
+
+Next original FR025 cell: increasing strain with non-guaranteed maximum0. Existing
+source-only C3 cannot retain its comparison in the positive-source/decision ledger;
+no fakeopportunity/none or weakenedownerjoin. Independent Astra/high accepts bounded
+schema-v3 comparison-only rows in the SAME receipt/source-only owners, closedv2
+witness, latestHistory/currentoriginal/replay/prefix and cross-family dice/request
+joins. Preserve v1/v2 positive bijections and healing rows; v3 emptyhealing family
+must be handled explicitly. No implementation of v3 yet. Cheap typed causal controls
+and one lawfulzero source-only C3/C4/signedread representative before acceptance.
+This remains finite row1 implementation work, not a new author rule or battle system.
+
 # Cheap gate partial outcome; exact fixture correction
 
 At metadata02072a5ee/compiledsourcee73a288c2: actual M5a-cheap-green stopped after

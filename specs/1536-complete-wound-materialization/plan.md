@@ -1,3 +1,21 @@
+# Existing-parent positive lane accepted; zero-ceiling cell next
+
+See physical-guided-checkpoint for exact76distinct versioned receipts, SHA/build
+lineages and complete external raw. Independent Astra/high final OUTCOME accepts
+one nativeIII positive-maxII cold/C3/C4/signed44 route; Sol accepts cheap75=19+56.
+No wholeUS3/#1536 or Engine/UI/IVnative/UNKNOWN-HOLD expansion. Both pending
+semantics remain pending; earlier partial_success stays C2/cold.
+
+Next tracked original FR025/T081-D cell uses accepted Astra v3 DESIGN: comparison-
+only durable rows for non-guaranteed increasing-strain maximum0, through existing
+source-only/mixed C3 and commonreceipt owners, no dummydecision. Closedv2 witnesses,
+shared immutable parent/History DATA, exact owner/epoch/original and duplicate/dice/
+request/prefix guards remain. No separate repository/cache/authority framework.
+The new ledger parse reuses the existing witness/parent readers and transient
+indexes once per whole input; no cached permission or measured speedup claimed.
+Before implementation: cheap causal/typed preparation; grouped independent SOURCE,
+fresh affected builds/exactselection and a single lawful nativezero representative.
+
 # Signed-existing parent implementation WIP — 2026-11-03
 
 See current physical-guided-checkpoint for exact implementation/optimization and
