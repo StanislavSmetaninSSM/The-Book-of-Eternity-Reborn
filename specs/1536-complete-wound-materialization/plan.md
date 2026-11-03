@@ -1,3 +1,20 @@
+# Merge observation causal result — f54481d85 / Linux
+
+Fresh native package and Main/Support/Unit/Integration all exit0, warnings81/23/26/107.
+Complete provenance:50managed files,208inputs624copies,native6,4PE/PDB565sourcebindings.
+Catalog1402/13303 valid, no unmapped/stale selectors; exact singleton PlanOnly1.
+The intended observation RED completed1FAIL in0.8375983s (category4.2616493/60s),
+expected2 actual4. No timeout, duplicate, skip, underfill, new temp root or owned
+cleanup failure. All artifacts remained unchanged. Postproof45dd2edf03720f1617363b0994865c5eb79199d7d2d4f392f9324daf390c4034;
+summaryeb064db0ef75baa46f5a0b394372d499a39d8e935f97d024b0abf658774faadd.
+
+The correction asserts exactly four real returned passive-file observations and
+exact bytes, retaining original-snapshot/order/fresh-revalidation checks. No
+production change or hidden duplicate suppression. Current Unit artifacts are
+preserved with verified gzip member hashes/CRC before Unit-only rebuilding;
+Main/Support/Integration remain source-identical f54481d85. GREEN, source/runtime
+blocks and T107 are still UNRUN. Whole merge is WIP, not accepted or integrated.
+
 # Merge qualification delta — SOURCE corrections, runtime pending
 
 Independent Astra/high SOURCE on d70ce667 found a missing source parameter in the

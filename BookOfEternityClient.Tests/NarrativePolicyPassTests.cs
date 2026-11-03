@@ -327,7 +327,12 @@ public sealed class NarrativePolicyPassTests(ITestOutputHelper output) : IDispos
         using var pass = await _fixture.Validator.ValidateAcceptedTurnNarrativePolicyPassAsync();
         var capture = pass.CaptureDiagnostic();
         Assert.Null(capture.Fault);
-        Assert.Equal(2, capture.Occurrences.Count(value => value.Path == passive && value.State == "Present"));
+        // Exact canonical discovery, delta check, current entries and new-skill comparison
+        // each retain their actual physical return; diagnostic duplicates remain visible.
+        var passiveReads = capture.Occurrences.Where(value => value.Path == passive && value.State == "Present").ToArray();
+        Assert.Equal(4, passiveReads.Length);
+        var expectedPassiveBytes = File.ReadAllBytes(_fixture.Physical(passive));
+        Assert.All(passiveReads, value => Assert.Equal(expectedPassiveBytes, value.Bytes));
         Assert.Contains(capture.Occurrences, value => value.Path == manifest.Files[passive] && value.State == "Present");
         Assert.Contains(pass.Issues, issue => issue.Code == "accepted_turn_skill_claim_missing_state_delta");
         Assert.Equal(capture.Occurrences.Select(value => value.Ordinal), capture.Occurrences.Select(value => value.Ordinal).Order());
