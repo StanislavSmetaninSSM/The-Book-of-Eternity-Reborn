@@ -156,7 +156,7 @@
 },
 {
   "id": "wounds-spiritual-no-roll-source-data",
-  "responsibility": "#1536 T081-D-NO-ROLL twenty-nine cheap typed DATA cases: five explicit signed GM margins including zero and Int64 edges, nineteen missing/malformed/contradictory choice, supplied-matchup or invented-claim refusals, five map-placement/rolled/non-harm guards before source filtering.",
+  "responsibility": "#1536 T081-D-NO-ROLL thirty-one cheap typed DATA cases: five explicit signed GM margins including zero and Int64 edges, nineteen missing/malformed/contradictory choice, supplied-matchup or invented-claim refusals, seven map-placement/rolled/non-harm/snapshot-shape guards before source filtering.",
   "excludes": "No original GM-choice authority from resealed DATA, real owner, C2/C4 publication, combat changes, new dice or old HOLD replay. Coherent replacement belongs to owned/cold source controls.",
   "changeHints": [
     "BookOfEternityClient/Services/SpiritualWoundSourceWitness.cs",
@@ -1203,8 +1203,8 @@
 },
 {
   "id": "mortal-terminal-guidance-manifest-regression",
-  "responsibility": "T150-GM-TERMINAL-GUIDANCE / FR-086/087 / #1536: one existing Integration manifest Fact checks every required worked family and production/focused metadata after both affected RequiredText entries and the family-local coverage limit are synchronized. Family-local pure controls do not execute or qualify runtime terminal heal/legacy; refer only to the existing mortal_guided_terminal_heal_v1 worked route.",
-  "excludes": "No broad documentation wildcard or new family/qualification, production/schema/JSON example changes, Engine/native/provider/DOM/fresh-process run, new cache/diagnostics, terminal retry or accepted-set replay. Existing category owners remain unchanged and unselected.",
+  "responsibility": "One existing Integration manifest Fact checks exact required worked-family membership and truthful production/focused validation metadata, including current spiritual_wound_no_roll_source_v1 and existing Mortal terminal guidance. It grants no gameplay qualification.",
+  "excludes": "No broad documentation wildcard, gameplay runtime, Engine/native/provider/DOM/fresh-process, terminal retry, accepted-set replay or old HOLD. Selected manifest completeness does not replace each family-specific executable parser and lifecycle owner.",
   "changeHints": [
     "Examples/example_validation_manifest.json",
     "BookOfEternityClient.IntegrationTests/ExampleDocumentationValidationTests.cs"

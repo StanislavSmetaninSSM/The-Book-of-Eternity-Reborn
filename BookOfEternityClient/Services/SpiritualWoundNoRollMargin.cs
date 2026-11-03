@@ -22,11 +22,13 @@ internal static class SpiritualWoundNoRollMargin
             "A supplied matchup audit must be an object.");
         var margins = exchange[Property] as JsonObject ?? throw new FormatException("GM wound margins must be an object.");
         Require(margins.Count > 0, "At least one explicit GM wound margin is required.");
+        var beforeSnapshot = exchange["before"] as JsonObject ?? throw new FormatException("Before snapshot object required.");
+        var afterSnapshot = exchange["after"] as JsonObject ?? throw new FormatException("After snapshot object required.");
         foreach (var pair in margins)
         {
             Require(pair.Key is "player" or "opposition", "Exact affected margin side required.");
-            var before = SpiritualWoundOpportunityMath.StrainRank(Text(exchange["before"]?[pair.Key + "SideStrain"]));
-            var after = SpiritualWoundOpportunityMath.StrainRank(Text(exchange["after"]?[pair.Key + "SideStrain"]));
+            var before = SpiritualWoundOpportunityMath.StrainRank(Text(beforeSnapshot[pair.Key + "SideStrain"]));
+            var after = SpiritualWoundOpportunityMath.StrainRank(Text(afterSnapshot[pair.Key + "SideStrain"]));
             Require(before >= 0 && after > before, "A supplied GM margin must belong to an increasing-strain side.");
             Integer(pair.Value, long.MinValue, long.MaxValue);
         }

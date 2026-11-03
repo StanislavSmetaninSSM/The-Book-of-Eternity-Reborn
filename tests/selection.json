@@ -3,7 +3,7 @@
   "selections": [
     {
       "category": "wounds-spiritual-no-roll-source-data",
-      "reason": "Causal27 already17PASS/10FAIL; current GREEN29 adds supplied-null/scalar-matchup refusals to existing exact cases.",
+      "reason": "Causal27 already17PASS/10FAIL; current GREEN31 adds supplied-null/scalar-matchup and scalar before/after-shape refusals to existing exact cases.",
       "contracts": [
         "#1536 T081-D-NO-ROLL explicit GM harmfulMargin under existing exchange/witness ownership"
       ]

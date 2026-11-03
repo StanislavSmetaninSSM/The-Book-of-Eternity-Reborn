@@ -93,6 +93,8 @@ public sealed class SpiritualWoundNoRollSourceTests
     [InlineData("extra-side")]
     [InlineData("alias")]
     [InlineData("nested")]
+    [InlineData("scalar-before")]
+    [InlineData("scalar-after")]
     public void ActionShape_RejectsMapMisuseBeforeSourceFiltering(string change)
     {
         var exchange = Exchange(Source());
@@ -103,6 +105,8 @@ public sealed class SpiritualWoundNoRollSourceTests
         }
         else if (change == "no-increase") exchange["after"]!["playerSideStrain"] = "clear";
         else if (change == "extra-side") exchange["spiritualWoundHarmfulMargins"]!["opposition"] = 10;
+        else if (change == "scalar-before") exchange["before"] = 1;
+        else if (change == "scalar-after") exchange["after"] = 1;
         else if (change == "alias")
         {
             exchange.Remove("spiritualWoundHarmfulMargins");

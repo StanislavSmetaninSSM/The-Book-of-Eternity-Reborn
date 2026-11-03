@@ -1,3 +1,21 @@
+# No-roll final typed-shape correction before remaining builds
+
+Main36a build completed exit0/58.973012s, before any source mutation. Root source
+inspection then found new-map reader could index scalar before/after after shape
+validation merely recorded an issue, causing uncaught InvalidOperationException in
+the direct action-shape API. Exact snapshot-object casts now produce the intended
+FormatException/diagnostic; two cheap early-shape controls added. No rule, key,
+owner or I/O change. This narrow correction still needs independent delta review
+and a fresh Main; Unit/Integration36a were NOT built or run. Original Main build/log
+and prechange artifacts retained, no failed or passing runtime claimed.
+
+GM/docs/cheap SOURCE36a accepted independently by Sol; manifest category description
+now truthfully includes new no-roll completeness with unchanged selector/budget.
+Current expected74 across9categories: data31 (original causal27 unchanged+4newtyped
+refusals), rolled21+rules11+guidance3+manifest1=67cheap, then5source+2C4 native.
+Exact discovery/PREP/runtime remain UNRUN. Source code and assertions outside this
+finite snapshot-shape delta remain frozen and previously reviewed.
+
 # No-roll final SOURCE delta corrections WIP
 
 Sol GM review found two stale unconditional statements in the detailed source-action
