@@ -1,3 +1,11 @@
+# Guard-cap causal scaffold WIP
+
+Two actual Integration Facts and exact categories written, production unchanged.
+Baseline proves two genuine sources before the capped C2/C4 expectation; current
+scaffold is UNCOMPILED/UNRUN. Independent SOURCE, fresh Integration/selected resource
+proof, exact discovery/PlanOnly/PREP precede baseline60s then causal180s. No current
+PASS or cap exemption. Runtime470e/no-roll119 versioned lineage remains accepted.
+
 # Next wound-only slice: capped failed guard / design only
 
 No-roll source/materialization accepted on6d847910(code470e), final2file readback
