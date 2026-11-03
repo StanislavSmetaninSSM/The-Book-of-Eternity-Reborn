@@ -63,6 +63,20 @@
       "contracts": [
         "#1536 T081-D-NO-ROLL existing authoritative exchange/witness and common publication"
       ]
+    },
+    {
+      "category": "wounds-spiritual-no-roll-free-side-data",
+      "reason": "New narrow no-roll free-side DATA classification/current-owner wrapper; prove45cheap controls before wiring existing resource producer. Actual2FAIL is causalRED, no compile failure substituted.",
+      "contracts": [
+        "#1536 T081-D-NO-ROLL existing owned source-resource frontier"
+      ]
+    },
+    {
+      "category": "wounds-spiritual-no-roll-free-side-regression",
+      "reason": "Changed resource side classification must preserve genuine missing-audit versus evaluated-zero, exact-once zero intervals and current final-operation precedence.",
+      "contracts": [
+        "#1536 T081-D-NO-ROLL existing resource execution and force/paid guard separation"
+      ]
     }
   ]
 }

@@ -1,3 +1,33 @@
+# No-roll free-side DATA proof WIP — producer still UNWIRED
+
+Astra independently confirmed the actual2FAIL chain and accepted the narrow design:
+current source/capture/resource mechanics; explicit valid no-roll margin map;
+genuinely absent side audit; existing exact free operations negotiate/withdraw/
+surrender; zero actual burden; preserve force/paid/missing/null and freshness.
+Reuse IsTerminalNoCostOperation and existing incoming final/default resolvers; any
+supplied side matchup must agree. No new combat or pricing rule.
+
+New pure HasExplicitNoRollFreeSideData and current-owner/zero-burden wrapper written
+beside existing cost helpers. They are not yet called by the resource producer, so
+the observed interval mismatch is NOT fixed/qualified. Typed DATA36 and existing
+resource/precedence9 exact cases added (45cheap); uncompiled/unrun. Actual2FAIL is
+the genuine causalRED; these cheap controls prove the proposed classifier and
+preserved pending-vs-zero behavior before wiring, not an invented cheapRED or a
+live owner from synthetic data. No stub/compile failure counts as RED.
+
+Next independent SOURCE, fresh affected Main/Unit and exact cheap45. Only after
+that proof wire the existing producer eligibility to the owned wrapper (preserve
+outer side-key absence), review/fresh affected builds and separately re-admit the
+actualpair180s. Don't repeat accepted old67/missing2/owners3 without a changed
+contract. Full CI adds two coherent categories; exact inventory still to discover.
+
+Optimization: reader uses existing already-parsed exchange and current projected
+burden; at most two scalar maps/operation tokens, no new filesystem read, JSON
+reconstruction or cache. Owner/current ordinal/routing/wound epoch, actual source
+validation and final byte/readset fences remain. Current GM example already has
+only paid opposition audit; no new GM field/command/prompt or Mortal rule needed.
+Raw and all failed captures retained outside checkout/GitHub, whole wounds open.
+
 # No-roll source accepted; actual publication exposed free-side boundary mismatch
 
 J3 Integrationfd93 fresh67.530828s/0errors/exact107baseline; Main/Unit a179 bytes

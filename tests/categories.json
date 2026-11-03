@@ -2,6 +2,59 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "wounds-spiritual-no-roll-free-side-data",
+  "responsibility": "Thirty-six cheap typed classification cases: explicit0/10 and three existing free operations, twenty malformed/paid/force/null refusals, ten incoming final/matchup precedence controls, two null-owner refusals. Pure DATA does not authorize a free live side.",
+  "excludes": "No world or live source/capture/resource permission from DATA. No fabricated audit, paid/unknown/force exemption, broad combat/QTE/ACTIVE changes or old HOLD replay. Actual owned C2/C4 remains separately gated.",
+  "changeHints": [
+    "BookOfEternityClient/Services/Validation/ValidationService.SpiritualNoRollFreeSide.cs",
+    "BookOfEternityClient/Services/AfterlifeSpiritualConflictResourceOutcome.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.SpiritualNoRollFreeSideTests.*"
+      ]
+    }
+  ]
+},
+{
+  "id": "wounds-spiritual-no-roll-free-side-regression",
+  "responsibility": "Nine exact existing typed consumers: resource missing audit stays pending, exact evaluated-zero closes empty interval without allocation and duplicate zero identity refuses, plus six current effective opposition cost-operation precedence cases.",
+  "excludes": "No world or live source/capture/resource permission from DATA. No fabricated audit, paid/unknown/force exemption, broad combat/QTE/ACTIVE changes or old HOLD replay. Actual owned C2/C4 remains separately gated.",
+  "changeHints": [
+    "BookOfEternityClient/Services/Validation/ValidationService.SpiritualNoRollFreeSide.cs",
+    "BookOfEternityClient/Services/AfterlifeSpiritualConflictResourceOutcome.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.AcceptedMechanicsPlannerTests.ResourceSession_LiveMissingSideRemainsPendingNotEvaluatedEmpty",
+        "BookOfEternityClient.Tests.AcceptedMechanicsPlannerTests.ResourceSession_LiveZeroBatchHasExactEmptyRangesWithoutAllocation",
+        "BookOfEternityClient.Tests.AcceptedMechanicsPlannerTests.ResourceSession_LiveRejectsAcceptedZeroExchangeIdentityAtTheNextOrdinal",
+        "BookOfEternityClient.Tests.SpiritualWoundSpecialActionCostTests.OppositionCostOperation_PreservesFinalOperationPrecedence"
+      ]
+    }
+  ]
+},
+{
   "id": "wounds-spiritual-no-roll-guidance",
   "responsibility": "Three cheap GM guidance cases: new worked fragment through production retained shape/rules/map/witness, exact zero/missing and CLI entrypoint; two affected existing action/terminal-routing documentation guards.",
   "excludes": "No complete GameResponse, original authority, live GM or publication claim.",

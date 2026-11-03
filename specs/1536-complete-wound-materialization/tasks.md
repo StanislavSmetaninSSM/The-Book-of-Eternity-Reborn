@@ -1,3 +1,10 @@
+# T081-D-NO-ROLL free-side proof substep
+
+- [x] Independent actual2FAIL cause and bounded free-side DESIGN, no author rule change.
+- [ ] New unused pure DATA/current-owner classifier plus typed36/existing9 SOURCE/fresh Main+Unit/exact cheap45.
+- [ ] Wire existing producer after proof, keep MissingAudit guards/force path; SOURCE/fresh affected builds.
+- [ ] Separately admitted actualpair2/C4/History/signed replay in original180s, OUTCOME and checkpoint.
+
 # T081-D-NO-ROLL actual remaining boundary
 
 - [x] Correct fixture's held-lease write; SOURCE/fresh Integration and remaining source3PASS/AstraOUTCOME.
