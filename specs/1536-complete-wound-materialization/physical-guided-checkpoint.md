@@ -1,3 +1,40 @@
+# Finite row2/row5 reconciliation — no new workload
+
+Independent Sol source trace establishes an exact reachability dependency for
+T081-C3-R2B/T107 initial SAFE stage plus same-plan live insertion. Natural recovery
+and self-treatment now construct real bundles, but both require signed-original
+activeConflict absent. Live source admission requires that same conflict already
+active in the signed original; a new one is PriorStartDeclaration pending. Current
+owners recheck original images and lease, so staging first cannot bypass this.
+Generic overlay support is not a lawful producer. No safety, cycle, realm, conflict
+start or general combat rule is changed; the literal composition remains open.
+Successful combat healing followed by guard and blocked healing plus same-exchange
+counterharm are accepted separately. Later-injury data is explicitly detached,
+so it is not an accepted successful-healing -> later-insertion runtime receipt.
+
+Astra's T150 family map found existing constructor, repair, treatment, recovery,
+provider, command, History and independent-legacy examples and real consumers.
+No missing family was established. One manifest coverageLimit still called natural
+runtime acceptance pending despite accepted versioned slices; only that stale status
+is corrected. All markers, requiredText and focused-fragment/provider/fresh-process/
+combat limits remain intact. JSON structure/membership is checked; no new runtime
+or whole T150 closure is claimed from historical aggregate counts.
+
+Sol's T153/T154 map found real catalog/identity/History indexes, guarded bounds,
+lineage visit counters and effect/resource routing population counters. No missing
+scale subsystem or quadratic defect was established. The old 24-case rollback
+matrix is 12 surfaces x before/after with exact present/absent, generation/journal
+oracles; its primary historical receipt remains unmatched here. N2 source-only
+rollback2 and P1 committed-readback1 are separate accepted complementary cuts.
+Whole owner-specific item/quest/journal/resource-History and lifecycle-cut receipt
+union remains pending. Missing old prescribed filenames do not establish missing
+code. T151/T152 full surface reconciliation also remains open; existing privacy,
+markup and text-boundary leaves are not promoted to a complete adversarial matrix.
+
+This documentary block preserves accepted zero85, both author-pending semantics,
+all UNKNOWN/HOLD and the original finite scope. No test/budget/cache/production
+change or general-project audit is authorized by these findings.
+
 # FR-025 zero-comparison route accepted — exact bounded result
 
 Astra/high independently accepted the full 85-case OUTCOME and checkpoint on
