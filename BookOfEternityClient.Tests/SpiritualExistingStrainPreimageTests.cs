@@ -113,7 +113,7 @@ public sealed class SpiritualExistingStrainPreimageTests
             parent["consequences"]!["slotBudget"] = 4; parent["consequences"]!["slotsUsed"] = 4;
             var graph = parent["consequences"]!["ownedEffectSources"]!;
             var cost = graph["definitions"]!.AsArray().Single(row => row!["definitionKey"]!.GetValue<string>() == "definition_parent_cost")!;
-            cost["definition"]!["components"]![0]!["payload"]!["magnitude"] = 3;
+            cost["components"]![0]!["payload"]!["magnitude"] = 3;
             graph["definitions"]!.AsArray().Add(EffectMaterializationTestFixture.CreateSpiritualWoundDefinition(
                 "spiritual_roll_hindrance", woundId: parent["woundId"]!.GetValue<string>(), realm: "chaos_sea",
                 definitionKey: "definition_parent_extra", targetKind: "player", operation: "pressure"));

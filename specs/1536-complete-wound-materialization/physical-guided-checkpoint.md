@@ -1,3 +1,11 @@
+# Typed scaffold review correction — 2026-11-03 07:00 UTC
+
+Independent Sol found one fixture-only preparation error: the reused cost definition
+is already the definition, not a nested definition wrapper. Corrected its IV
+component magnitude access before compilation. No other static blocker reported;
+positive2 only remains the intended parser RED. All17 still uncompiled/unrun;
+production unchanged, M3 evidence and both pending semantics preserved.
+
 # Existing-parent typed DATA scaffold — no production change
 
 NewUnit17 closed-v2 DATA cases authored (III/IV2, after-valid refusal14, detached1),
