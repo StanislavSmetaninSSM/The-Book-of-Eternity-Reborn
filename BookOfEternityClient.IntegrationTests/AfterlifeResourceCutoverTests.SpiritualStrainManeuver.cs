@@ -81,7 +81,6 @@ public sealed partial class AfterlifeResourceCutoverTests
         var ordinary = await context.Validator.BeginSpiritualWoundSourceSessionAsync(lease);
         if (invalidOrdinaryImpact)
         {
-            using var rejectedOwner = ordinary.Session;
             Assert.Contains(ordinary.Issues, issue => issue.Code == "afterlife_conflict_maneuver_changes_strain");
             Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(context.FileSystem, lease));
             return;

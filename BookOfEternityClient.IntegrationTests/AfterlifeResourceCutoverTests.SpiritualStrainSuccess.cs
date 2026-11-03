@@ -57,7 +57,6 @@ public sealed partial class AfterlifeResourceCutoverTests
         var ordinary = await context.Validator.BeginSpiritualWoundSourceSessionAsync(lease);
         if (invalidOrdinaryImpact)
         {
-            using var rejectedOwner = ordinary.Session;
             Assert.Contains(ordinary.Issues, issue => issue.Code == "afterlife_conflict_pressure_missing_opposition_strain_delta");
             Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(context.FileSystem, lease));
             return;
@@ -69,7 +68,7 @@ public sealed partial class AfterlifeResourceCutoverTests
         Assert.Equal(2, source.Sources.Count);
         Assert.Equal(3, source.Sources[0].Calculation.MaximumSeverityRank);
         Assert.Equal("player", source.Sources[0].AffectedSide);
-        Assert.Equal(1, source.Sources[1].Calculation.MaximumSeverityRank);
+        Assert.Equal(outcome == "partial_success" ? 0 : 1, source.Sources[1].Calculation.MaximumSeverityRank);
         Assert.Equal("opposition", source.Sources[1].AffectedSide);
         var preserved = new Dictionary<string, byte[]?>(StringComparer.Ordinal);
         foreach (var path in new[] { ResourceMaterializationContract.StatePath, ResourceMaterializationContract.HistoryPath,
@@ -89,24 +88,36 @@ public sealed partial class AfterlifeResourceCutoverTests
             Assert.Equal(bytes, await context.FileSystem.ReadFileBytesAsync(lease, path));
         Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(context.FileSystem, lease));
         Assert.All(selected.Issues, issue => Assert.Equal("spiritual_wound_profile_integration_required", issue.Code));
-        Assert.True(selected.Disposition == "offer", FormatC2SubmissionIssues(selected));
+        Assert.True(selected.Disposition == (outcome == "partial_success" ? "completed_unpublished" : "offer"),
+            FormatC2SubmissionIssues(selected));
         AssertNoConflictFrameErrors(selected.Issues);
         var next = Assert.IsType<ValidationService.SpiritualC2PrivateSession>(selectedOwner);
-        Assert.NotEqual(first.Offer.OpportunityRef, next.Offer!.OpportunityRef);
-        Assert.Equal(1, next.Offer.MaximumSeverityRank);
-        var completed = await next.SubmitDecisionAsync(lease, JsonSerializer.SerializeToElement(new
-            { opportunityRef = next.Offer.OpportunityRef, decision = "none" }), null);
-        using var completedOwner = completed.Session;
-        AssertNoConflictFrameErrors(completed.Issues);
-        Assert.Equal("completed_unpublished", completed.Disposition);
+        if (outcome == "partial_success")
+        {
+            // Signed margin4 gives an ordinary maximum0: preserve the source, never invent an offer/none.
+            Assert.Null(next.Offer);
+        }
+        else
+        {
+            Assert.NotEqual(first.Offer.OpportunityRef, next.Offer!.OpportunityRef);
+            Assert.Equal(1, next.Offer.MaximumSeverityRank);
+            var completed = await next.SubmitDecisionAsync(lease, JsonSerializer.SerializeToElement(new
+                { opportunityRef = next.Offer.OpportunityRef, decision = "none" }), null);
+            using var completedOwner = completed.Session;
+            AssertNoConflictFrameErrors(completed.Issues);
+            Assert.Equal("completed_unpublished", completed.Disposition);
+        }
         var packet = JsonNode.Parse((await context.FileSystem.ReadFileBytesAsync(lease,
             SpiritualWoundDecisionPendingState.StatePath))!)!["pending"]!;
         Assert.Equal(2, packet["sources"]!.AsArray().Count);
         var choices = packet["stagedDecisions"]!.AsArray();
-        Assert.Equal(2, choices.Count);
+        Assert.Equal(outcome == "partial_success" ? 1 : 2, choices.Count);
         Assert.Equal("materialize", choices[0]!["decision"]!.GetValue<string>());
         Assert.Equal(3, choices[0]!["selectedSeverityRank"]!.GetValue<int>());
-        Assert.Equal("none", choices[1]!["decision"]!.GetValue<string>());
+        if (outcome == "success")
+            Assert.Equal("none", choices[1]!["decision"]!.GetValue<string>());
+        else
+            Assert.Equal(0, packet["sources"]![1]!["maximumSeverityRank"]!.GetValue<int>());
         var image = Assert.Single(packet["candidateAfterImages"]!.AsArray(),
             row => row!["path"]!.GetValue<string>() == AfterlifeSpiritualConflictState.StatePath);
         var conflict = JsonNode.Parse(Convert.FromBase64String(image!["contentBase64"]!.GetValue<string>()))!["activeConflict"]!;
