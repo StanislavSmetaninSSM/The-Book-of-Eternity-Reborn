@@ -3657,7 +3657,9 @@ They are not completed and are excluded from the current wound acceptance blocke
 This does not defer the separate strain consumer or IV `forbid`. For voluntary
 non-contested no-roll harm, `harmfulMargin` is an explicit GM choice retained in the
 existing authoritative result/source contract, with normal validation, no automatic
-zero and no new formula. That admission implementation remains open. See
+zero and no new formula. The bounded native source/C2/C4 admission is now implemented
+and accepted on production470e (see current plan receipts); broader source families
+are not closed by that result. See
 [resolved author decisions](author-decisions-20261102.md).
 
 These exact eight identifiers are first-class registered #1535 component profiles,

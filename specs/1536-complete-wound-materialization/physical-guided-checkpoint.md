@@ -1,3 +1,15 @@
+# Guard-cap checkpoint closed; shared current-actor strain DESIGN next
+
+Acceptedcheckpointa78c02e3, independentfinaldocreview, remoteSHA/cleanfourfile source
+export/GitHubblobs verified; e2be032d2bdbaf9b4f1a6a64f9dac10832f81aa2ff43a0d23a72a2027c1fbb92.
+Source/runtime e399MainUnit/23dcdIntegration unchanged, no activeowners. Exact47+2
+versionedresults and separatebaseline1 accepted; whole #1536 notdone. Newtracked
+T081-D-STRAIN-ACTOR-LIFETIME groups remaining side-aware consumer and ordinary-source/
+current-parent provenance, DESIGN/read-only only. Solassessment found operation-aware
+failure/side evidence needs precisecontractreconciliation; no rule chosen. Mainplan
+has finitegoals, independentparentData canproceed without inventing combat semantics.
+No runtime admitted. Threeauthordeferrals/generalcombatoutside/alloldUNKNOWN-HOLDstay.
+
 # Accepted guard-cap wound route — runtime23dcd / productione399
 
 Actualguard1PASS and affectedmaneuver1PASS independently accepted by Astra/high.

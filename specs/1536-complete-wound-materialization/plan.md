@@ -1,3 +1,65 @@
+# Next existing T081-D group — current-actor strain / lifetime DESIGN WIP
+
+Guardcap checkpointa78c02e3b2d0a88f79514f219b2f140be0b4c956 finaldelta independently
+accepted by Astra/high; fourfile cleanexport/GitHubwholeblob proof
+ e2be032d2bdbaf9b4f1a6a64f9dac10832f81aa2ff43a0d23a72a2027c1fbb92
+verified outsidecheckout. No activeowners. Tested productionMain/Unit e399 and
+Integration23dcd remain unchanged. Priorpending-final markers below are superseded.
+
+Independent Sol/xhigh bounded assessment identifies ONE shared consumer and ONE
+ordinary-provenance/lifetime extension, not11 op-specific frameworks:
+1. Applicability already resolves all11 canonical operations and actor/side through
+   SpiritualWoundConflictContributionProjector; magnitude1 III/IV is established.
+   Current runtime hardcodes player pressure/maneuver success or selected-player
+   comparison, last exchange, rankIII/create/same-request/one contribution. Replace
+   only wound-specific restrictions where original owner/current graph can prove
+   the required facts; do not redesign ordinary combat or its operation validators.
+2. Retain completely validated ordinary exchange and ALL ordinary source DATA using
+   existing discarded owner-gated probe/resource batches. Then apply only the
+   sanctioned strain delta once; new harmful source/math remains derived from
+   actual corrected exchange. Cap route preserves ordinary source unchanged.
+   Parameterize actor/strainfield/echo. Source-free and already admitted paths stay
+   strict; no blanket source-count allowance or ordinary-result invention.
+3. Existing/new/worsened III/IV parents need their actual current graph, root/source
+   epoch, first-create and applicable later History/identity, signed original input,
+   current mechanics epoch/ordinal and actor membership. Do not pretend an existing
+   or weakened/worsened graph is a newly created III in this request. Reuse existing
+   WoundCarrier/Identity/History and original source owners. Preserve immutable v1
+   retained past evidence and legal pruning/root retirement; choose minimal closed
+   representation only after independent DESIGN. No parallel cache/ledger/authority.
+4. Failure means failure of THAT acting participant. Existing setback is failure,
+   success/partial_success successful; control blocked/countered can be failure,
+   but a counter's countered is a successful payoff. No_effect is not automatically
+   failure. Existing player setback can accompany successful incoming pressure.
+   Never invert player outcome or margin blindly to invent an opposition outcome.
+   DESIGN must establish operation-aware per-actor evidence from current canonical
+   contracts, distinguish representation from a new rule, and expose any exact
+   unresolved author semantic instead of silently deciding it. Independent parent
+   graph/History/provenance work does not depend on choosing such a rule.
+5. Multi-root/stack handling must follow the existing profile_specific reducer and
+   current contribution semantics, not an invented aggregation/limit. Establish
+   that rule before widening current exactly-one prerequisite. Safety operations,
+   actor ambiguity, side/realm mismatch, foreign/stale roots and invalid-history
+   refusals remain. No generalcombat/QTE/ACTIVE or deferredcontrol/counter/restrictIII.
+6. Finite implementation acceptance: cheap typed actual current-parent/History/
+   identity/ordinary-source and invalidation controls, causal fixture(s), then
+   grouped current/new/worsened actor consumers and signed/cold common publication
+   with existing legal fixtures. Representative cases cover genuinely different
+   owners/source lifetimes, not eleven redundant expensive setups. Full preparation
+   must account resource secondary events and normal cleanup before actual runs.
+   Exact categories/counts/budgets follow authored fixtures/discovery and independent
+   SOURCE/PREP; no new run admitted now and no accepted unchanged set replayed.
+
+Optimization: operation-owned immutable source/graph DATA keyed by signed original
+snapshot/capture, resource/route epoch/ordinal, actor/side, actual source IDs,
+component/root/definition, parent lifecycle/semantic fingerprint and History.
+Mutation, retirement, generation/actor/byte/history change invalidates reuse; owner,
+permission and publication fresh. Reuse existing repositories/parsed snapshots;
+small pure classification needs no cache. Measure real repeated sourcework if any
+reuse is introduced; no speculative speedup or diagnostic framework. Scope currently
+DESIGN/read-only, no new code/schema/rule/test/runtime implemented or qualified.
+Old R2/A5 UNKNOWN and DFR/Mortal/Windows HOLD unchanged; wounds-only #1536 open.
+
 # T081-D-STRAIN-GUARD-CAP — bounded native acceptance
 
 Guard runtime23dcd7f4ae3ba16d0ae0b7afe117ee5afa94eb1b, Main/Unit compiled unchanged
