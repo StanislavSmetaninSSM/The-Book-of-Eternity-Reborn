@@ -30,15 +30,6 @@
       ]
     },
     {
-      "category": "console-explorer",
-      "reason": "T107 per-skill prose-claim coupling reworked inside ValidateAcceptedTurnProseStateDeltasAsync; the AcceptedTurnNarrativePayloadValidationTests wildcard in this category owns the new RED/GREEN coupling cases and the existing narrative-audit regressions.",
-      "contracts": [
-        "#1533 part 2 (T107)",
-        "#1479",
-        "accepted_turn_skill_claim_missing_state_delta"
-      ]
-    },
-    {
       "category": "mortal-skill-reference-identity",
       "reason": "The coupling audit now binds deltas through MortalSkillReferenceAuthority and reuses ReadMasteryIdentityReferences; confirm the part-1 identity behavior is unchanged by the new consumer.",
       "contracts": [
@@ -48,11 +39,45 @@
       ]
     },
     {
-      "category": "documentation-examples",
-      "reason": "Launcher GM-facing prose/state-delta rule lines updated for per-skill targeting; prompt/documentation coverage guards must confirm the synchronized wording.",
+      "category": "fr063-ordinary-output-existing",
+      "reason": "Bounded main/wounds merge: per-skill exact canonical authority, original blank evidence, complete source observations/revalidation, unchanged historical inverses, split repair consumers and synchronized GM wording as applicable.",
       "contracts": [
-        "#1533 part 2 (T107)",
-        "CLI_Launch_Script prose state delta rule"
+        "#1536 main compatibility integration; #1533 accepted-turn per-skill coupling; current source integrity"
+      ]
+    },
+    {
+      "category": "fr063-narrative-policy-pass-sources",
+      "reason": "Bounded main/wounds merge: per-skill exact canonical authority, original blank evidence, complete source observations/revalidation, unchanged historical inverses, split repair consumers and synchronized GM wording as applicable.",
+      "contracts": [
+        "#1536 main compatibility integration; #1533 accepted-turn per-skill coupling; current source integrity"
+      ]
+    },
+    {
+      "category": "fr063-ordinary-output-policy-source",
+      "reason": "Bounded main/wounds merge: per-skill exact canonical authority, original blank evidence, complete source observations/revalidation, unchanged historical inverses, split repair consumers and synchronized GM wording as applicable.",
+      "contracts": [
+        "#1536 main compatibility integration; #1533 accepted-turn per-skill coupling; current source integrity"
+      ]
+    },
+    {
+      "category": "fr063-reasoning-prefix-source",
+      "reason": "Bounded main/wounds merge: per-skill exact canonical authority, original blank evidence, complete source observations/revalidation, unchanged historical inverses, split repair consumers and synchronized GM wording as applicable.",
+      "contracts": [
+        "#1536 main compatibility integration; #1533 accepted-turn per-skill coupling; current source integrity"
+      ]
+    },
+    {
+      "category": "validation-repair-partial-source-guards",
+      "reason": "Bounded main/wounds merge: per-skill exact canonical authority, original blank evidence, complete source observations/revalidation, unchanged historical inverses, split repair consumers and synchronized GM wording as applicable.",
+      "contracts": [
+        "#1536 main compatibility integration; #1533 accepted-turn per-skill coupling; current source integrity"
+      ]
+    },
+    {
+      "category": "main-merge-prose-guidance",
+      "reason": "Bounded main/wounds merge: per-skill exact canonical authority, original blank evidence, complete source observations/revalidation, unchanged historical inverses, split repair consumers and synchronized GM wording as applicable.",
+      "contracts": [
+        "#1536 main compatibility integration; #1533 accepted-turn per-skill coupling; current source integrity"
       ]
     }
   ]

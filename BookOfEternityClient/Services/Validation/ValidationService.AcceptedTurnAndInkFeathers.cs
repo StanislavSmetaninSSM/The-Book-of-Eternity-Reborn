@@ -734,7 +734,7 @@ public partial class ValidationService
         }
     }
 
-    private async Task<string> BuildAcceptedTurnPlayerFacingTextForDeltaAuditAsync(string narrativeText)
+    private async Task<string> BuildAcceptedTurnPlayerFacingTextForDeltaAuditAsync(string narrativeText, NarrativeInterfaceSourceSession? source = null)
     {
         var builder = new StringBuilder(narrativeText ?? string.Empty);
         var interfaceJson = await ReadNarrativeSourceTextAsync("output/interface_updates.json", source);

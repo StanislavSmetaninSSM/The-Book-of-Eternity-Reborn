@@ -1,3 +1,25 @@
+# Merge qualification delta — SOURCE corrections, runtime pending
+
+Independent Astra/high SOURCE on d70ce667 found a missing source parameter in the
+player-facing audit helper; restored before compilation. Strict test-only inverse
+of nine unique reviewed fragments reconstructs exact daea source bytes before all
+unchanged historical source guards; no baseline hash is overwritten. Three existing
+ordinary cases gain source-aware variants for exact-case collisions, blank original
+and absent-original fallback, retaining fresh pass revalidation. The old observation
+case still expects two reads; SOURCE predicts four after main's per-skill context.
+An exact cheap runtime RED is required before changing that assertion.
+
+Default selection now has eleven bounded categories: four original T107 leaves,
+ordinary-output-existing, narrative-policy-pass-sources, both narrative/reasoning
+historical source inverses, main's partial-source guards, mortal-skill-reference-
+identity, and one narrow GM prose guidance case. Broad console-explorer and whole
+documentation-examples are excluded. Two new coherent leaves document the exact
+observation correction and single guidance assertion; catalog has1402 categories.
+Native package must be freshly rebuilt because main changed host-guardian.c.
+All merged managed/native runtime remains UNRUN. No source reuse/fence weakening;
+per-skill parsed DATA is shared within its invocation, physical observations remain
+complete. Source observations may increase read counts; no speedup is claimed.
+
 # WIP main integration — 2026-11-03 / #1536 compatibility only
 
 User explicitly requested main -> wounds integration. Isolated remote WIP branch:
