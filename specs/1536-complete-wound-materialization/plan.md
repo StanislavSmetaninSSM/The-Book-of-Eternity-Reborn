@@ -1,3 +1,62 @@
+# Main -> wounds integration — 157 distinct PASS, final OUTCOME pending
+
+Task #1536 compatibility integration, Linux, 2026-11-03. Isolated WIP branch
+`1536-merge-main-wip-20261103`; the original wounds ref is still
+`daea0ea094c41426b6c4663af713ab9ada0be49d`, main still
+`a62cfd90a5300a21524066b3b457eb467ed9c677`. Actual reconstructed merge is
+`d70ce667f6308268c8c69723636b6461b5dfcd23`, exactly those two parents;
+merge-base `d0241e71e349fbe2020e4a41b6be7c627c81cbb4`. Unavailable bundle commit8543e8df
+was not imported or claimed byte-identical. The 18 physical engine bodies reverse
+exactly to the conflict-free synthetic merge (SHA256b0b58f25ea2e967554b0befcbee4166406ede9a0c13ec19656729aa5062428aa),
+which adds only main's two skill-repair insertions to wounds. Feature remains1536.
+
+All required bounded impact selections now have157distinctPASS, composed across
+explicit versions, not one fresh157 run: source38=4@10e18e6a8 +9@a1510d701
++24@fea795999 +1@06dc53214; runtime112@c496e903b; native chronology1@18c2f7965;
+chronology controls6@b2d909ba8. New native case TRX21.8566290s/category26.4229944s;
+controls category60.6876988s; both original120s budgets retained. Native case
+proves actual II->I healing, later I->II explicit re-trauma, local/cumulative
+claims, one C3/C4 publication, exact roots/History/payments/replay and three
+embedded refusal oracles. Controls cover healed/no-improvement/blocked-worsen,
+guaranteed-counterharm original, cost correction and publication rollback.
+
+Build lineages: fresh native package/Main/Support f54481d85; final Unit a1510d701;
+final Integration06dc53214. All managed builds exit0, warnings81/23/26/107 unchanged;
+50managed artifacts,208inputs624copies,native6,4PE/PDB567bindings verified.
+Catalog1404/13303 valid, no unmapped/stale selectors. Eleven default CI categories
+are the four T107 leaves, ordinary-output-existing, narrative-policy-pass-sources,
+ordinary-output-policy-source, reasoning-prefix-source, partial-source-guards,
+mortal-skill-reference-identity and narrow main-merge-prose-guidance. Actual staged
+execution additionally uses the documented existing-method leaves for remaining
+unit and final settlement source cases, avoiding unrelated/passing replays.
+No frontend change/build, live GM, DOM/provider or fresh-process claim.
+
+Independent Astra/high SOURCE, causal RED, source/runtime OUTCOME and native PREP
+accepted their bounded stages. Final OUTCOME pending. Merge corrections preserve
+source observations/revalidation, exact canonical names and blank-vs-missing.
+Inherited source guards were ported to the existing Core owner with exact outer
+forwarding; strict historical inverses preserve all frozen hashes, and Roslyn
+checks exact typed settlement without new private reflection invocation. Current
+immutable compilation is reused within one test analysis; no new cache, authority
+reuse or measured speedup. No production change followed f54481d85.
+
+Full raw, build logs/TRX/native capture and original failures remain outside Git:
+`/workspace/tboe-linux-evidence-20261103/merge-main`. Combined final proof
+cdb9831723a8801657763ec55c3c9b746c94d3b55aef70f039b28b7356da4fd1;
+native postproof0cc549a197c7dc74803f77bf33b1a10c3f1359a1499a7347d7e30dcc7a7941ca;
+controls postproof1ae662642b6e613fcf23839629d494ead736402eee95c2c7601e0741caf04b50.
+Passing-result composition verifies unique test names/IDs, complete TRX, no timeout/
+skip/duplicate/underfill, artifact continuity, no new temp roots/managed owners and
+owned cleanup. Earlier read-count RED and inherited guard failures remain recorded.
+Previous offline N4 Unit remains UNKNOWN; these fresh builds do not reconstruct it.
+
+This does not close US3/US4/#1536, initial SAFE composition, browser physical-course,
+joint terminal, DFR/Mortal compatibility/Windows HOLD, first guardian intermittent
+or cross-OS DATA limitations. Source recovery so far verifies84listed files from
+an empty Git store, not a full checkout. Final source readback and fast-forward
+of wounds require final OUTCOME and unchanged remote parents. Never update main,
+force-push, rewrite history, delete branches or close issues.
+
 # T107 native chronology1 PASS — six dependent controls next
 
 On metadata18c2f7965207262f1f767abb63a45a857b4ed0e9 (Mainf544/Int06dc), the real
