@@ -1,3 +1,19 @@
+# Partial-success wound correction accepted — source/runtime32ed759
+
+Independent Sol SOURCE/PREP/OUTCOME accepted7/7 actualPASS in one bounded run:
+partial4 (two C2 successes/two ordinary refusals), affected exactsuccess2 and GMguard1.
+FreshMain/Unit/Integration exit0/81,26,107 exactwarnings;45/621/native6/4PEPDB510
+before/after and12capturehashes/cleanup/noTMP/noowners verified. Code uses existing
+IsSuccessfulArtOutcome only in the same player pressure/maneuver branch. No new
+failure map/aggregation/v2/probe/cache, no C4/UI/fresh-process or wholefamily claim.
+Fullreceipt, artifact/plan/post hashes and external M2 paths are in the checkpoint.
+The finite six-row original remainder was fixed before this change; selectedpartial
+is nowdone within its first row. Other original consequence/evidence cells remain,
+not eleven new combat frameworks. Two author questions are cell-scoped/unapproved;
+R2/A5 UNKNOWN, three author deferrals and other HOLDs unchanged. No reliable whole
+completion duration is supported by the unexplained connected timeouts. Finaldocs
+review/push/readback next; no new runtime required for the three receipt documents.
+
 # Partial-success minimal correction WIP — causal4 retained
 
 M1 actual4 on a476:2ordinary-negativePASS,2genuine integration_requiredFAIL after

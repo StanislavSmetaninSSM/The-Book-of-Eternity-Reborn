@@ -1,3 +1,52 @@
+# Accepted original partial-success wound correction — runtime32ed759
+
+Independent Sol SOURCE/PREP/OUTCOME accepted the bounded original FR-022/025 case.
+Source/runtime 32ed7595040ce811a3e949ae804ff48fd304fb2c. One existing predicate call
+now recognizes partial_success for the same player pressure/maneuver operations;
+profile/actor/current generation and all ordinary checks remain unchanged. No new
+battle rule, failure inference, aggregation, parent witness/probe/schema or cache.
+GM guide/worked example/manifest and typed guidance guard synchronized. No new
+Mortal fields, shared protocol or daemon path; existing mandatory guide loading is
+unchanged. No I/O/repeated computation introduced and no performance gain claimed.
+
+Fresh Main64.705345/Unit35.070647/Integration68.826687s exit0, exact81/26/107 warning
+multisets. Support/CrashHost unchanged; native package unchanged, not a new C++ build.
+45artifacts/207inputs621copies/native6/4PEPDB510sourcebindings verified before/after.
+Artifact5a99f0e0a4b27c74659662060438c52eb5a2a3107a7e5c601cc12055cb3da068,
+PDB79c5caad3936a6b051932a3acec4941f28e849411e09206454f0ed3fb7a74b03.
+M1 discovery1383categories/13225methods/noexecute retained; M2 changed no membership.
+Exact current PlanOnly selected4descriptors/7methods/7cases, every original60s leaf.
+Plan e335cca4635f17d10cf6090eac355a6645681abd65e3c0becc36be47b1432854.
+
+M2-green7:7/7PASS in ONE selected run, fourTRXs/sevenunique cases:
+- partial-success pressure/maneuver plus invalid ordinary-impact controls:4PASS,
+  category13.2480542/60s. Pressure preserves source maximum0, no invented offer/none;
+  maneuver preserves both strains, actual position/costs and cold C2 reopening.
+- Existing exact pressure-success/source/none and maneuver-success/cold guards:
+  1PASS each,11.4606368 and10.0443962/60s respectively.
+- GM worked-example/manifest guidance guard:1PASS,3.2390281/60s.
+Wrapper48.002032s. No skip/timeout/duplicate/underfill;12capture file hashes and exact
+membership verified; both cleanups true, no newTMP or live managedowners. Unchanged
+45/621/6/510 closing checks passed. Independent OUTCOME accepted the actual results.
+Post50d8385c115080d83d178e78f0a5297a76b07b10a92dc898f5d1b61f165707b8,
+summary05f5b482fc1cda09dd0cae4d612f3027cc4c60595ab93a7be33dabfb15b1643a.
+Complete raw/builds/TRX/proofs and verified old15binary archive remain outsideGit:
+/workspace/tboe-linux-evidence-20261102/spiritual-strain-preimage-data/M2-*.
+Source-only clean12file export/GitHubwholeblob readback18d4ebd54888426e6dc6f9b7345d816ea498358a37c1db3db8edecfeab987a84;
+this is not fullenvironment/raw restoration. No raw/binary upload or data deletion.
+M1 genuine2PASS/2FAIL remains separate causal evidence, not part of fresh7PASS.
+One mistyped build SHA was rejected before output/archive/Popen; after checking
+nonexecution only the exact current SHA was used. No duplicate actual build/test.
+
+This closes only T081-D-PARTIAL-SUCCESS/C2, not C4/Engine/UI/fresh-process or whole
+strain/#1536. The six-row finite original remainder below remains authoritative.
+Both author ambiguities stay pending and cell-scoped; the three explicit deferrals
+and general combat/QTE/defeat/ACTIVE stay outside this work. R2/A5 UNKNOWN and all
+DFR/Mortal/Windows HOLD remain. US8 has six canonical scenarios (not the older
+summary's eight); T167-176 are implemented, T177 is evidence/final review, not a new
+scope subsystem. Final3doc receipt review/push/remote/clean readback is next; tested
+code/resources remain32ed759 and no passing suite will be repeated for these docs.
+
 # Original partial-success consequence correction — causal RED retained, GREEN UNRUN
 
 M1 source a476a245440247337d8f725a376da66e4a6eb81d retains unchanged production.
@@ -37,7 +86,7 @@ Current normative FRs, original dated tasks and accepted receipts are the basis.
 
 | Required result / original basis | Actual gap and finite closure criterion |
 | --- | --- |
-| US3 wound consequences, [FR-022/025](spec.md), [T080/T087/T081-D](tasks.md) | Concrete code gap: an unequivocal player pressure/maneuver partial_success reaches integration_required although ordinary validators classify it as successful. Correct this zero-extra-strain case through the existing C2 owner. Other demonstrated existing-parent/III-IV failed-action cells remain within the original consequence contract, but do not require eleven new frameworks or a combat redesign. Close only after each applicable nondeferred cell has existing or targeted accepted evidence. |
+| US3 wound consequences, [FR-022/025](spec.md), [T080/T087/T081-D](tasks.md) | The selected player pressure/maneuver partial_success defect is now accepted at32ed759 (GREEN7 below); no extra failure-only strain is added. Remaining demonstrated existing-parent/III-IV failed-action cells belong to the original consequence contract, but do not require eleven new frameworks or a combat redesign. Close only after each applicable nondeferred cell has existing or targeted accepted evidence. |
 | US3 lifecycle/source combinations, [FR-027/034-036](spec.md), [T081-C2/C3/D/E/C5 and T081-C3-R2B/T107](tasks.md) | Implementation and substantial receipts exist. Reconcile declared ceilings/guarantees, both sides, create/worsen, healing/root retirement, replay and cold cases against those receipts. Initial recovery plus insertion remains an unaccepted composition; use an existing lawful publisher seam if present, never invent general conflict orchestration. A checked parent requires exact matched evidence, not rerunning all accepted children. |
 | [US2/T121](tasks.md) complete browser physical course, [FR-060/062/063](spec.md) | Code exists; R2 remains UNKNOWN180.1041994/180s without TRX. Close through cause-backed correction/admission and one complete original-budget result, with milestones, final wound/effects/resources/history and cleanup. Existing prefix/cheap36 is not final healing. |
 | US2/US7 joint terminal treatment, [FR-012/063/064](spec.md), [T121/T152](tasks.md) | Code exists; A5 remains UNKNOWN120.0346224/120s without TRX. Close through cause-backed admission and exact joint acquisition+treatment/terminal/publication/rollback evidence. Anchor2/output10/controls3 and later accepted worsening remain separate accepted receipts. |
@@ -54,14 +103,14 @@ unambiguous single-wound cases. General defeat/T088, combat/QTE/ACTIVE/F1 and th
 three explicitly deferred control/counter/art-III effects are outside this execution,
 not marked completed. DFR/Mortal compatibility/Windows keep their separate HOLDs.
 
-Next bounded code result: T081-D successful pressure/maneuver partial_success,
-using existing IsSuccessfulArtOutcome and unchanged source/owner/current-generation
-checks. Causal RED before production; exact ordinary-impact negatives; no new parent
-proof/schema/cache/aggregation or failure map. This qualifies C2 owner/cold paths,
-not C4/Engine/UI/fresh-process unless actually exercised. No speedup claimed: the
-change is a constant-time predicate, no new reads or repeated computation. No honest
-whole-task duration is yet supported by the unexplained R2/A5 timeouts; the main
-remaining uncertainty is connected qualification, not another newly invented feature.
+Selected independent correction T081-D pressure/maneuver partial_success is now
+accepted above through existing IsSuccessfulArtOutcome and unchanged fresh checks.
+It qualifies C2 owner/cold paths only, with no new parent/schema/cache/failure map or
+aggregation. Next independent mandatory item is the six-scenario US8/T177 receipt
+map using implemented T167-176 and existing versioned evidence, not rebuilding that
+subsystem or rerunning unchanged PASS. R2/A5 still need cause-backed admission.
+No honest whole-task duration is yet supported by those unexplained timeouts; the
+main uncertainty is connected qualification, not a newly invented game feature.
 
 # Accepted current-parent DATA query / runtime d5bc
 
