@@ -1,25 +1,39 @@
-# T154 mixed rollback diagnosis — WIP, 2026-11-03
+# T154 mixed rollback diagnosis — SOURCE/build ready, runtime pending
 
-Base `86ab7db20753b6b70453c7afd9c5570c56e30707`; prior exact7 receipt remains
-5 PASS / 2 FAIL. Apply only the requested existing per-test SpiritualLifecycleTestLogger
-and retain the exact Accepted predicate with its Describe() in the assertion message.
-No production code, InlineData, gameplay, guards or remaining assertions change.
-This is evidence collection, not a fix or a new PASS. Independent SOURCE and fresh
-Integration build pending. Unchanged production/Support builds remain reusable;
-Integration must be rebuilt. Existing per-instance logger/cache/owners are retained;
-no new diagnostic framework, cache, data reuse permission or speedup claim.
+Diagnostic source `3a5dbd5bb7f67ce4adae13f3e9f0bd2a0cebb9b6`, base
+`86ab7db20753b6b70453c7afd9c5570c56e30707`. Only the two author-requested edits:
+existing per-test SpiritualLifecycleTestLogger is passed to the Engine helper, and
+its Describe() is added while retaining exactly retryDisposition == Accepted.
+All InlineData, remaining assertions, production code and budgets are unchanged.
+Independent Sol 6.1 / xhigh SOURCE accepted this exact delta.
 
-The official category runner cannot select individual Theory rows: Filter is retired,
-C# selectors identify methods, and descriptor generation includes every method case.
-Minimum supported runtime is the existing exact-method leaf of seven cases / original
-600 seconds. Only two failed rows were requested, so runtime is pending scope decision;
-no broad category or prior passing cases have been rerun. Do not trim InlineData,
-override expected counts, or use an alternate runner to hide this limitation.
-Raw/build output remains outside checkout at
+Fresh Integration build exit 0 in 80.286068738 s, 107 existing warnings / 0 errors.
+Only Integration DLL/PDB changed; all other 678 artifact/resource/native records
+remain exact. New selected PE/PDB/source binding matches; original compiled outputs
+are preserved in a fully decoded/CRC/member-hash verified archive (464 files).
+Unchanged Main/Support builds are reused, each fixture retains separate owners and
+fresh checks, no cache/diagnostic framework or speedup claim. No GM contract changed.
+
+Fresh official NoBuild PlanOnly exit 0: exact method, seven cases, exclusive,
+600-second category budget, zero tests executed. The official runner does not expose
+individual Theory row selection: Filter is retired (test-csharp.ps1:20/32), catalog
+selectors match methods (TestCategoryCatalog.psm1:60/128/192), execution counts every
+method case and emits FullyQualifiedName=method (TestCategoryExecution.ps1:90-96).
+Therefore the requested two-case runtime is UNRUN/pending; minimum supported runtime
+is the existing narrow seven-case leaf in 600 seconds, requiring a scope decision.
+No broad category, old passing cases or accepted rollback24 were rerun. Do not trim
+InlineData, override expected counts or change runners to disguise this limitation.
+
+Existing detailed report path is game_state/control/validation_diagnostic_failure_report.json;
+Part07 writes full errors[].code/filePath/message/expected/actual for protected
+wound/location/effect paths. Part06 may reject item/resource-only failures without
+writing it, so logger alone may still be generic. No new error codes or unique cause
+have been obtained; no speculative fix. Only this minimal logger is currently wired.
+Independent build/PlanOnly outcome and final documentation review pending.
+Full raw/backup/manifests remain outside checkout:
 `/workspace/tboe-linux-evidence-20261103/t154-mixed-consumption-diagnostics`.
-No GM/game contract changes; no GM wording update required. T154 and all prior
-UNKNOWN/HOLD remain open. Protected rejection may still log only a generic error;
-inspect existing diagnostics/hooks before any further instrumentation.
+Artifact proof: `313aba417fd0a5d3235238210852473a5465db665e4e051089d8e28ccca360e8`.
+The prior 5 PASS / 2 FAIL receipt and all T154/#1536 UNKNOWN/HOLD remain unchanged.
 
 # T154 mixed item/resource rollback7 — 5 PASS / 2 FAIL
 
