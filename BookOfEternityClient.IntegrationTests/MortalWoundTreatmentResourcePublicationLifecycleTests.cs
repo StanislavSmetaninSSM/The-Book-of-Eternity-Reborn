@@ -545,6 +545,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         await AssertConfirmedHeldLiveRegistryProbeAsync(context);
         await context.ReleaseLeaseAsync();
 
+        fault.CompleteVerifiedFailureAttempt();
+
         var retryDisposition = await InvokePrivateAsync<AcceptedTurnValidationDisposition>(
             engine,
             "ValidateAcceptedTurnOutcomeWithRepairLoopAsync",
@@ -5520,6 +5522,16 @@ public sealed partial class GameEngineTurnLifecycleTests
                 _originalPending = ReadOptionalTreatmentMember(context.FileSystem.ResolvePath(WoundAcceptedTurnSnapshotContract.PendingResolutionPath));
             }
             _armed = true;
+        }
+
+        /// <summary>
+        /// Retires this one-shot probe after the caller has verified rollback and rearmed
+        /// authority, before a retry legitimately obtains its own publication receipt.
+        /// </summary>
+        internal void CompleteVerifiedFailureAttempt()
+        {
+            Assert.True(Fired);
+            _armed = false;
         }
 
         private Task OnCanonicalReadAsync(string path)

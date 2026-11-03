@@ -1,40 +1,30 @@
-# T154 mixed rollback diagnosis — SOURCE/build ready, runtime pending
+# T154 mixed rollback — diagnostic cause established; fixture fix WIP
 
-Diagnostic source `3a5dbd5bb7f67ce4adae13f3e9f0bd2a0cebb9b6`, base
-`86ab7db20753b6b70453c7afd9c5570c56e30707`. Only the two author-requested edits:
-existing per-test SpiritualLifecycleTestLogger is passed to the Engine helper, and
-its Describe() is added while retaining exactly retryDisposition == Accepted.
-All InlineData, remaining assertions, production code and budgets are unchanged.
-Independent Sol 6.1 / xhigh SOURCE accepted this exact delta.
+Diagnostic runtime `c74ac9d9641f5ba9fb613d2513182adeacb41960`: exact7 completed
+5 PASS / 2 FAIL, 115.6593501 s / unchanged 600 s, no timeout. Existing logger shows
+both retries fail because the still-armed test OnPublished callback calls Assert.Same
+on first-attempt OriginalReceipt versus the legitimate new retry receipt. This throws
+while writing npc_core.json and again while restoring wound_commands.json, producing
+mortal_wound_treatment_publication_terminal_release_failed. No production defect or
+new gameplay rule is established; full causal exceptions are retained externally.
 
-Fresh Integration build exit 0 in 80.286068738 s, 107 existing warnings / 0 errors.
-Only Integration DLL/PDB changed; all other 678 artifact/resource/native records
-remain exact. New selected PE/PDB/source binding matches; original compiled outputs
-are preserved in a fully decoded/CRC/member-hash verified archive (464 files).
-Unchanged Main/Support builds are reused, each fixture retains separate owners and
-fresh checks, no cache/diagnostic framework or speedup claim. No GM contract changed.
+Minimal test-only correction retires that one-shot probe explicitly in the target
+method only, after all existing exact byte/existence/count/plan/binding/ConfirmedHeld
+rollback/rearm checks and lease release, immediately before retry. Retirement asserts
+Fired and clears _armed. Shared OnPublished/ObserveOriginalReceipt and first-attempt
+compensation checks remain unchanged; no other consumer calls retirement. All seven
+InlineData and Accepted/once-only spend predicates are retained. Independent Sol
+6.1 / xhigh causal/design accepted; applied SOURCE, fresh Integration build and one
+exact7 confirmation remain pending. No new PASS or fix acceptance yet.
 
-Fresh official NoBuild PlanOnly exit 0: exact method, seven cases, exclusive,
-600-second category budget, zero tests executed. The official runner does not expose
-individual Theory row selection: Filter is retired (test-csharp.ps1:20/32), catalog
-selectors match methods (TestCategoryCatalog.psm1:60/128/192), execution counts every
-method case and emits FullyQualifiedName=method (TestCategoryExecution.ps1:90-96).
-Therefore the requested two-case runtime is UNRUN/pending; minimum supported runtime
-is the existing narrow seven-case leaf in 600 seconds, requiring a scope decision.
-No broad category, old passing cases or accepted rollback24 were rerun. Do not trim
-InlineData, override expected counts or change runners to disguise this limitation.
-
-Existing detailed report path is game_state/control/validation_diagnostic_failure_report.json;
-Part07 writes full errors[].code/filePath/message/expected/actual for protected
-wound/location/effect paths. Part06 may reject item/resource-only failures without
-writing it, so logger alone may still be generic. No new error codes or unique cause
-have been obtained; no speculative fix. Only this minimal logger is currently wired.
-Independent Sol 6.1 / xhigh build/PlanOnly outcome and final documentation review
-accepted at 0f416f1cd as build-ready / runtime UNRUN, not a new gameplay PASS.
-Full raw/backup/manifests remain outside checkout:
+Main/Support and immutable inputs remain unchanged; reuse their verified builds.
+Integration alone must rebuild; preserve its old compiled delta before overwrite.
+Per-case mutable roots and fresh authority checks remain; no cache/speedup claim or
+parallel diagnostic mechanism. No game/GM contract changed; no GM update required.
+Full output, prior failures, artifacts and backup manifests remain outside checkout:
 `/workspace/tboe-linux-evidence-20261103/t154-mixed-consumption-diagnostics`.
-Artifact proof: `313aba417fd0a5d3235238210852473a5465db665e4e051089d8e28ccca360e8`.
-The prior 5 PASS / 2 FAIL receipt and all T154/#1536 UNKNOWN/HOLD remain unchanged.
+Previous rollback24 and free-diagnosis receipts stay separate. T154/#1536 and prior
+UNKNOWN/HOLD remain open. Do not run broad turn-lifecycle-repair.
 
 # T154 mixed item/resource rollback7 — 5 PASS / 2 FAIL
 
