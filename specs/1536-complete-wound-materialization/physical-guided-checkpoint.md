@@ -1,3 +1,20 @@
+# Current accepted wound route — 2026-11-03
+
+Linux runtime25ea8b0b5b8ba5339e1b1ab4d0602c7530293ca5: decoder fix cheap12GREEN and
+actual III→I/root-retirement/signed44 case1PASS independently accepted. Real combat
+healing preserves the original source/create History after old strain roots expire;
+no terminal/UI/fullfamily claim.13distinct across2runs on this source, not a combined
+fresh run with earlierG4/H2. All3builds0/baseline81/26/107,45/618/6/497 verified,
+fullcapture/cleanup/noowners. Exact timings/proof hashes and inherited proof-field
+clarification in current plan.md; raw /workspace/tboe-linux-evidence-20261102/spiritual-strain-preimage-data.
+H2nativeFAIL/H3causalRED and compilation failures retained; no evidence erased.
+
+Next functional source gap: explicit GM-chosen no-roll harmfulMargin in authoritative
+source/retention/admission, no default0 or invented formula/dice. Author decision
+resolved; implementation remains open. Existing source/services/guards and targeted
+causal checks must be reused. Author deferrals and all old UNKNOWN/HOLD remain;
+whole #1536 is open. Continue wounds only, no general combat/QTE/ACTIVE/F1 expansion.
+
 # T081-D signed-byte correction — genuine cheap RED accepted; production fix WIP
 
 At70253ea1cd0ae021025dade2b77df40d613fc95c, fresh Unit37.716811s/exit0/26baseline,

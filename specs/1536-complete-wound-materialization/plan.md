@@ -1,3 +1,52 @@
+# T081-D actual III→I and signed-history route accepted — 2026-11-03
+
+Runtime source25ea8b0b5b8ba5339e1b1ab4d0602c7530293ca5, Linux. Independent
+Astra/high SOURCE/PREP/OUTCOME and Sol/xhigh causal/cheap gates accepted. Fresh
+Main61.391857s/Unit36.545392s/Integration70.705455s all exit0, exact81/26/107baseline
+warnings.45artifacts/618resource copies/native6/4PE/PDB497bindings verified; three
+new Main bindings are FirstOffer/SourceOnly/PriorLookup, none removed. Artifact
+1509a96c406674d02cbd86df765b6354c5c04051bfd56f22ceb3f0bb8a7ef4b2 current build
+list and compiledSource rows prove all3 fresh25ea. Its inherited
+unchangedDependencyBuilds field is historical ancestor metadata, NOT current-build
+provenance; the immutable proof is retained. PDB e95058944557fda8f4811835b5f5edc29ff2bf7bc638b4b78e29a4dfd59ad574.
+Nine changed source/checkpoint files bounded clean-export/remote-blob readback:
+1dd83b87a1e2ac365cff7fd757fd0a513192d7ea2e71a79b75a16309c922d564, not a fullclone/rawrestore.
+
+Official NoBuild/parallel1 exact selections, unchanged60/180s:
+- H4-green12:12PASS, category3.0720089s/wrapper9.054074471s. Same12semantic cases
+  as H3RED (7PASS/5FAIL); all5former failures pass with identical test/assertion/
+  fixture sources. BOM accepted; malformedUTF8/doubleBOM/request reuse remain refused.
+- H4-healing1:1PASS, TRX43.5007897s/category46.8421636s/wrapper53.392673711s.
+  Real III parent coldC2/C3/commonC4, separate confirmed signed43 combat healing,
+  actual automaticC2/commonC4 III→I, exact physical afterimages/spend2/AP0and1,
+  expired old root identities/absent active old effects/no strain in replacement,
+  preserved first-create fingerprint and original source/decision rows, real
+  persisted combat result, no world/scheduler cycle, published-core proof, consumed
+  controls and following signed44 validation all executed. This is partial healing
+  with active I wound, NOT terminal heal or Engine/UI/fresh-process qualification.
+
+GREEN post1cc2a7354e0e441631522a88192878544f102d6ac5c2e206a271c5373db48042;
+summaryf60425635e7af1ac7abca7473a3bf067c792cd71e606aea6ac43ddd1cef89652.
+Actual post57a956f8a2c5467a432da4ec50d9923c6f7f2005e3fb1f676c8d570353829e80;
+summary437fe697deead6c00910709a44098270a8aeae9039e1b2768a82006d74ea7dc0.
+Both full/complete, no skip/timeout/duplicate/underfill, current45/618/6/497 unchanged,
+cleanuptrue/no newTMP/no owners/clean source. Full failed H2, H3causal and current
+passing captures/archives remain outside checkout/GitHub at
+/workspace/tboe-linux-evidence-20261102/spiritual-strain-preimage-data.
+H4 is13distinct same-source cases across2runs, not a fresh union with earlier
+G4accepted29 or H2cheap3. Those retain original provenance. Prior failed/compile
+attempts remain accurately recorded below. No raw/binary added to Git or deleted.
+
+Optimization/GM: same existing decoder and immutable source/owner/readset DATA,
+no new cache/I/O/JSON parse, no fresh fence removed or speedup claimed. Client-owned
+writer/reader format alignment and test request IDs add no GM field/command/rule;
+existing prompts/guide/example/manifest stay valid. Whole strain/#1536 remains open:
+next product gap is explicit authoritative GM-selected no-roll harmfulMargin source
+admission and qualification (author rule resolved, no automatic0/formula/fake dice).
+Other failed-operation strain families and terminal/fullfamily acceptance retain
+limits; three author-deferred consumers are not blockers. Old DFR/Mortal/Windows,
+A5/browser-course and other UNKNOWN/HOLD are not resumed or closed by this result.
+
 # T081-D signed-byte correction — genuine cheap RED accepted; production fix WIP
 
 At70253ea1cd0ae021025dade2b77df40d613fc95c, fresh Unit37.716811s/exit0/26baseline,

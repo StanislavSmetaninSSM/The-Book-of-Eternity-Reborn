@@ -1,3 +1,15 @@
+# T081-D current accepted slice — real weakening and signed history
+
+- [x] Genuine signed-byte12 RED:7PASS/5FAIL, then same12 GREEN; independent causal OUTCOME.
+- [x] Existing decoder/fail-closed closure and unique request fixture IDs; SOURCE/fresh affected builds accepted.
+- [x] Actual III→I through real C2/C4, expired previous roots/persisted result/resource spend and signed44; independent OUTCOME accepted on25ea8b0.
+- [x] Full capture/hashclose/cleanup and compact verified remote checkpoint (source25ea, final documentation revision separate).
+- [ ] Explicit authoritative no-roll GM harmfulMargin source producer/admission and qualification; author decision resolved.
+- [ ] Remaining strain-family/terminal/full acceptance according to canonical scope; no synthetic DATA or isolated case closes whole #1536.
+
+Old UNKNOWN/HOLD and three author-deferred consumers remain distinct. Continue
+functional wounds work; no general combat or diagnostics expansion.
+
 # T081-D signed-byte fix — current WIP
 
 - [x] Cheap causal12 at70253ea:7PASS/5 genuineFAIL, independent OUTCOME accepted; failed native H2 remains separately recorded.
