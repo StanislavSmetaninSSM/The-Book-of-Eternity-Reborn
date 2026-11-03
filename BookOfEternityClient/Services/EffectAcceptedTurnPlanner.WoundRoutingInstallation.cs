@@ -101,6 +101,10 @@ internal static partial class EffectAcceptedTurnPlanner
             return true;
         }
 
+        /// <summary>Reads detached wound-group DATA from the same installed routing epoch as mechanics.</summary>
+        internal bool TryReadSpiritualWoundGroup(EffectIdentitySourceGroup key, out WoundSourceGroupAuthority group) =>
+            (_currentWoundRouting?.Sources ?? _plan.SourceAuthority).TryResolveWoundGroup(key, out group);
+
         /// <summary>
         /// Projects spiritual mechanics from one consistent installed epoch against signed conflict membership.
         /// </summary>

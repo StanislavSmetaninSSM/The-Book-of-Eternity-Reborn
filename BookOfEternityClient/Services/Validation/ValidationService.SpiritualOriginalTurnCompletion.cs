@@ -243,7 +243,7 @@ public partial class ValidationService
                 var reduced = resources.SealOriginalSpiritualReduction(
                     effects.Plan,
                     sourceProjection,
-                    satisfactionReceiptIdentity: _combatHealingOrigin != null || _terminal != null || _woundOpportunities.Values.Any(
+                    satisfactionReceiptIdentity: _combatHealingOrigin != null || _terminal != null || _source.HasExistingStrainSources || _woundOpportunities.Values.Any(
                         static value => value.Satisfaction is not null)
                         ? _satisfactionReceiptIdentity : null);
                 if (!reduced.Success)

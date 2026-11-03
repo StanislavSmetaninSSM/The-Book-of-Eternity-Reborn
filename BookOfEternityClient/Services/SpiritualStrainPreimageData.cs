@@ -12,9 +12,10 @@ internal sealed class SpiritualStrainPreimageData
     private readonly JsonObject _ordinary;
     private readonly JsonObject _actual;
 
-    private SpiritualStrainPreimageData(string parentSourceId, WoundMaterializationEnvelope parent,
+    private SpiritualStrainPreimageData(int version, string? parentSourceId, WoundMaterializationEnvelope parent,
         string effectId, string componentId, JsonObject ordinary, JsonObject actual)
     {
+        Version = version;
         ParentSourceId = parentSourceId;
         ParentWound = parent;
         ParentSemanticFingerprint = WoundIdentityState.ComputeSemanticFingerprint(parent);
@@ -24,7 +25,8 @@ internal sealed class SpiritualStrainPreimageData
         _actual = actual.DeepClone().AsObject();
     }
 
-    internal string ParentSourceId { get; }
+    internal int Version { get; }
+    internal string? ParentSourceId { get; }
     internal WoundMaterializationEnvelope ParentWound { get; }
     internal string ParentSemanticFingerprint { get; }
     internal string EffectId { get; }
@@ -34,21 +36,27 @@ internal sealed class SpiritualStrainPreimageData
     internal static SpiritualStrainPreimageData ReadIntrinsic(JsonObject source, JsonObject actual)
     {
         var proof = source["strainPreimage"] as JsonObject ?? throw new FormatException("Strain preimage object required.");
-        Closed(proof, "version ordinaryExchangeJsonBase64 parentSourceId parentWoundJsonBase64 effectId componentId");
-        Integer(proof["version"], 1, 1);
-        var parentSourceId = Text(proof["parentSourceId"]);
-        Require(parentSourceId.StartsWith("spiritual_source_", StringComparison.Ordinal) &&
-            parentSourceId != Text(source["sourceId"]), "Distinct parent source required.");
+        var version = (int)Integer(proof["version"], 1, 2);
+        var fields = "version ordinaryExchangeJsonBase64 parentWoundJsonBase64 effectId componentId";
+        Closed(proof, version == 1 ? fields + " parentSourceId" : fields);
+        string? parentSourceId = null;
+        if (version == 1)
+        {
+            parentSourceId = Text(proof["parentSourceId"]);
+            Require(parentSourceId.StartsWith("spiritual_source_", StringComparison.Ordinal) &&
+                parentSourceId != Text(source["sourceId"]), "Distinct parent source required.");
+            Require(Integer(source["sourceOrdinal"]) > 0 && Integer(source["exchangeOrdinal"]) > 0,
+                "Same-request strain requires an earlier source and exchange.");
+        }
         Require(Text(source["affectedSide"]) == "player" &&
-            Integer(source["sourceOrdinal"]) > 0 && Integer(source["exchangeOrdinal"]) > 0 &&
             Integer(source["exchangeOrdinal"]) + 1 == Integer(source["turnEvidence"]!["bounds"]!["exchangeCount"]),
-            "Strain comparison requires the last player-side exchange after an earlier source.");
+            "Strain comparison requires the last player-side exchange.");
         var cappedGuard = IsToken(actual["operationType"], "guard") &&
             actual["incomingAction"] is JsonObject incoming &&
             IsToken(incoming["finalOperationType"] ?? incoming["operationType"], "pressure") &&
             actual["before"] is JsonObject guardBefore && actual["after"] is JsonObject guardAfter &&
             IsToken(guardBefore["playerSideStrain"], "overwhelmed") && IsToken(guardAfter["playerSideStrain"], "broken");
-        Require((IsToken(actual["operationType"], "maneuver") || cappedGuard) && IsToken(actual["outcome"], "setback"),
+        Require((IsToken(actual["operationType"], "maneuver") || version == 1 && cappedGuard) && IsToken(actual["outcome"], "setback"),
             "Only the bounded failed maneuver or independently proved capped guard comparison is supported.");
 
         var ordinary = ReadObject(proof["ordinaryExchangeJsonBase64"]);
@@ -60,6 +68,18 @@ internal sealed class SpiritualStrainPreimageData
         var comparison = new ValidationService.SpiritualStrainDraftCorrection("/retainedSource/exchange", ordinary);
         Require(comparison.IsCorrected(actual), "Actual exchange must contain only the proved one-step strain correction.");
         Require(!cappedGuard || JsonNode.DeepEquals(ordinary, actual), "Capped guard must preserve its complete ordinary exchange.");
+        if (version == 2)
+        {
+            Require(JsonNode.DeepEquals(ordinary["before"]!["playerSideStrain"], ordinary["after"]!["playerSideStrain"]) &&
+                JsonNode.DeepEquals(ordinary["before"]!["oppositionSideStrain"], ordinary["after"]!["oppositionSideStrain"]),
+                "Existing-parent maneuver must retain both ordinary side strains.");
+            var issues = new List<ValidationIssue>();
+            ValidationService.ValidateRetainedSpiritualExchangeShape(ordinary, "retainedSource.ordinary", issues);
+            ValidationService.ValidateSpiritualWoundSourceActionShape(ordinary, "retainedSource.ordinary", issues);
+            ValidationService.ValidateRetainedSpiritualDiceAudit(ordinary, source["turnEvidence"]!.AsObject(), issues);
+            ValidationService.ValidateRetainedSpiritualExchangeRules(ordinary, issues);
+            Require(!issues.Any(issue => issue.Severity == IssueSeverity.Error), "Valid complete ordinary maneuver required.");
+        }
         var operation = cappedGuard ? "guard" : "maneuver";
 
         var parentObject = ReadObject(proof["parentWoundJsonBase64"]);
@@ -70,11 +90,18 @@ internal sealed class SpiritualStrainPreimageData
         Require(Text(affected["actorKind"]) == "player_soul" &&
             parent.Owner == new WoundOwnerCoordinate(Text(source["turnEvidence"]!["realm"]), "player_soul",
                 Text(affected["actorId"]), WoundCarrierCatalog.AfterlifeProfilesPath) &&
-            parent.Lifecycle == "active" && parent.Classification.Domain == "spiritual" && parent.Severity.Rank == 3 &&
-            parent.LastTransition.Kind == "create" && parent.LastTransition.Ordinal == 1 &&
-            parent.LastTransition.Turn == Integer(source["turnEvidence"]!["turn"]) &&
-            parent.Origin.CreatedAtTurn == parent.LastTransition.Turn,
-            "Matching newly created rank-III parent snapshot required.");
+            parent.Lifecycle == "active" && parent.Classification.Domain == "spiritual",
+            "Matching active spiritual parent snapshot required.");
+        if (version == 1)
+            Require(parent.Severity.Rank == 3 && parent.LastTransition.Kind == "create" &&
+                parent.LastTransition.Ordinal == 1 &&
+                parent.LastTransition.Turn == Integer(source["turnEvidence"]!["turn"]) &&
+                parent.Origin.CreatedAtTurn == parent.LastTransition.Turn,
+                "Matching newly created rank-III parent snapshot required.");
+        else
+            Require(parent.Severity.Rank is 3 or 4 &&
+                parent.LastTransition.Turn <= Integer(source["turnEvidence"]!["turn"]),
+                "Existing III/IV parent cannot follow its compared source.");
 
         var effectId = Text(proof["effectId"]);
         var componentId = Text(proof["componentId"]);
@@ -86,7 +113,8 @@ internal sealed class SpiritualStrainPreimageData
             Require(fact is not null, "Parent root definition required.");
             var definition = Parse(fact!.CanonicalJson);
             foreach (var component in definition["components"]!.AsArray().OfType<JsonObject>())
-                if (component["payload"] is JsonObject payload && IsToken(payload["operation"], operation))
+                if (component["payload"] is JsonObject payload && IsToken(payload["operation"], operation) &&
+                    (version == 1 || IsToken(component["profile"], "spiritual_strain_burden")))
                     applicable.Add((root.EffectId, component));
         }
         Require(applicable.Count == 1, "Exactly one parent component may target the compared operation in this route.");
@@ -98,7 +126,7 @@ internal sealed class SpiritualStrainPreimageData
             parent.Consequences.Entries.Count(entry => entry.EffectId == effectId &&
                 entry.ProfileKey == "spiritual_strain_burden") == 1,
             "Selected parent root/component/profile agreement required.");
-        return new(parentSourceId, parent, effectId, componentId, ordinary, actual);
+        return new(version, parentSourceId, parent, effectId, componentId, ordinary, actual);
     }
 
     /// <summary>Copies ordinary after DATA only for the exact intrinsic actual exchange, never a current permission.</summary>

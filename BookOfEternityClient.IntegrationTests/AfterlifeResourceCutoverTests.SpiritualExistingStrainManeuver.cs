@@ -53,6 +53,10 @@ public sealed partial class AfterlifeResourceCutoverTests
                 Assert.Equal(bytes, await context.FileSystem.ReadFileBytesAsync(lease, path));
             Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(context.FileSystem, lease));
             AssertNoConflictFrameErrors(advanced.Issues); // Genuine causal boundary before implementation.
+            var reuse = capture.ReadExistingStrainReuseCounts();
+            Assert.True(reuse.Queries > reuse.SignedParentReads);
+            Assert.Equal(1, reuse.SignedParentReads); // Repeated source/ordinary checks share one parsed signed-parent DATA.
+
             var interval = Assert.IsType<AcceptedMechanicsPlanner.SpiritualExchangeInterval>(advanced.Step?.Interval);
             var committed = await capture.CommitC2FirstTransportAsync(lease, interval);
             AssertNoConflictFrameErrors(committed.Issues);

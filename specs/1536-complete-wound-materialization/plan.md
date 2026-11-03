@@ -1,3 +1,12 @@
+# Signed-existing parent implementation WIP — 2026-11-03
+
+See current physical-guided-checkpoint for exact implementation/optimization and
+M4/M4a causal results. Root implemented one matching III/IV player maneuver lane
+through existing mechanics/source/C3/common receipt owners, not general combat.
+Full SOURCE plus cheap DATA/joins/affected v1 gates precede nativeIII cold/C4/signed44.
+No new rules, same-turn parent worsening, inferred actor failure or aggregation.
+All new code uncompiled/unrun at this WIP; no native rerun admitted yet.
+
 # Closed-v2 intrinsic DATA scaffold — production unchanged
 
 New17 typed cases authored using existing witness/parser APIs: III/IV positive2,

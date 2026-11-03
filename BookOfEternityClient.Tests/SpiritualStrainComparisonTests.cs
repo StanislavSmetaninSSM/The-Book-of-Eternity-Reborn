@@ -35,6 +35,9 @@ public sealed class SpiritualStrainComparisonTests
         Assert.Contains("do not send A or B", example[start..end]);
         Assert.Contains("Failed maneuver uses the proved ordinary result", example[start..end]);
         Assert.Contains("Do not fabricate a strainPreimage", example[start..end]);
+        Assert.Contains("Signed-existing parent maneuver", example[start..end]);
+        Assert.Contains("Even none needs owner-reconstructed C3", example[start..end]);
+        Assert.Contains("signed pre-turn parent", guide);
         Assert.Contains("first-create History", guide);
         Assert.Contains("Capped failed guard keeps its ordinary source", example[start..end]);
         Assert.Contains("no editable A/B or terminal-echo repair", example[start..end]);

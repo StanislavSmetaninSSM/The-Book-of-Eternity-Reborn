@@ -24,6 +24,10 @@ public partial class ValidationService
             ReferenceEquals(_resources, resources) && ReferenceEquals(_source, source) &&
             _originalPrefix != null && OwnsOriginalPrefix(source, _originalPrefix);
 
+        /// <summary>Reads computation counts only, never a retained permission or mutable source.</summary>
+        internal (int Queries, int SignedParentReads) ReadExistingStrainReuseCounts() =>
+            (_source.ExistingStrainComparisonQueries, _source.ExistingStrainSignedParentReads);
+
         /// <summary>
         /// Reads the installed routing identity for source ticket freshness checks.
         /// </summary>
@@ -58,6 +62,38 @@ public partial class ValidationService
         private AcceptedMechanicsPlanner.ResourceExecutionSession.SpiritualMechanicsContext? _mechanicsContext;
         private readonly Dictionary<string, AcceptedMechanicsPlanner.ResourceExecutionSession.SpiritualMechanicsContext>
             _exchangeMechanics = new(StringComparer.Ordinal);
+
+        private int _existingStrainSignedParentReads;
+        private int _existingStrainComparisonQueries;
+
+        /// <summary>Counts actual shared signed-parent computations, not estimated or physical IO.</summary>
+        internal int ExistingStrainSignedParentReads => _existingStrainSignedParentReads;
+        /// <summary>Counts current-owner comparison queries so reuse can be checked independently.</summary>
+        internal int ExistingStrainComparisonQueries => _existingStrainComparisonQueries;
+        /// <summary>Records a query only after the existing current source/capture/actor checks succeeded.</summary>
+        internal void RecordExistingStrainComparisonQuery() => _existingStrainComparisonQueries++;
+
+        /// <summary>Reads an existing signed parent only for the actual current capture and original player actor.</summary>
+        internal WoundMaterializationEnvelope ReadSignedStrainParent(SpiritualOriginalTurnCapture capture,
+            JsonObject conflict, string woundId, string actor)
+        {
+            if (!OwnsSignedStrainActor(capture, conflict, actor))
+                throw new InvalidOperationException("Exact signed parent owner and conflict required.");
+            _existingStrainSignedParentReads++;
+            return ReadRetraumaWound(woundId, actor, null);
+        }
+
+        /// <summary>Checks fresh source/capture identity and signed conflict/actor without reparsing parent DATA.</summary>
+        internal bool OwnsSignedStrainActor(SpiritualOriginalTurnCapture capture, JsonObject conflict, string actor) =>
+            IsCurrentOwner && ReferenceEquals(capture, _prefixCapture) &&
+            _originalConflict["activeConflict"] is JsonObject signed &&
+            signed["conflictId"]?.GetValue<string>() == conflict["conflictId"]?.GetValue<string>() &&
+            ActorKey(signed["playerSide"]?["leadContestant"] as JsonObject) == actor &&
+            ActorKey(conflict["playerSide"]?["leadContestant"] as JsonObject) == actor;
+
+        /// <summary>Reports retained existing-parent DATA that must join the completed owner receipt.</summary>
+        internal bool HasExistingStrainSources => _sources.Any(source => source.StrainPreimageJson is { } json &&
+            SpiritualWoundStateJson.Integer(SpiritualWoundStateJson.Parse(json)["version"]) == 2);
 
         /// <summary>
         /// Reads detached signed conflict membership for the exact owning capture.

@@ -7,9 +7,9 @@ internal sealed partial class SpiritualWoundOpportunityReceiptState
 {
     /// <summary>Retains immutable parsed comparison DATA and the exact parent transition identity for later History proof.</summary>
     private sealed record RetainedStrainParent(int GlobalOrdinal, string ConflictId, string ExchangeId, string InstanceId,
-        int Turn, string CreationTransitionId, SpiritualStrainPreimageData Data);
+        int Turn, string ParentTransitionId, SpiritualStrainPreimageData Data);
 
-    /// <summary>Joins already parsed DATA to one earlier materialize-III parent, without granting original or History authority.</summary>
+    /// <summary>Joins already parsed DATA to one earlier materialize-III parent or a signed-existing comparison, without granting original or History authority.</summary>
     /// <param name="strains">Already validated comparisons paired with their containing source rows.</param>
     /// <param name="sources">Existing exact source index from this ledger parse.</param>
     /// <param name="decisions">Already validated one-to-one decisions from the same immutable ledger input.</param>
@@ -24,7 +24,15 @@ internal sealed partial class SpiritualWoundOpportunityReceiptState
         var result = new List<RetainedStrainParent>(strains.Count);
         foreach (var (row, data) in strains)
         {
-            if (!sources.TryGetValue(data.ParentSourceId, out var parentRow) || parentRow is null)
+            if (data.Version == 2)
+            {
+                var current = Object(row["witness"]);
+                result.Add(new((int)Integer(row["ordinal"]), Text(current["conflictId"]), Text(current["exchangeId"]),
+                    Text(row["instanceId"]), data.ParentWound.LastTransition.Turn,
+                    data.ParentWound.LastTransition.TransitionId, data));
+                continue;
+            }
+            if (!sources.TryGetValue(data.ParentSourceId!, out var parentRow) || parentRow is null)
                 throw new FormatException("Retained strain parent source is missing.");
             var witness = Object(row["witness"]);
             var parent = Object(parentRow["witness"]);
@@ -41,7 +49,7 @@ internal sealed partial class SpiritualWoundOpportunityReceiptState
             foreach (var field in new[] { "sessionId", "requestId", "snapshotToken", "turn", "realm",
                          "originalSnapshotFingerprint", "bounds", "acceptedD20Values" })
                 Require(JsonNode.DeepEquals(parentEvidence[field], evidence[field]), "Strain parent original context differs.");
-            if (!decisionsBySource.TryGetValue(data.ParentSourceId, out var selected) || selected is null)
+            if (!decisionsBySource.TryGetValue(data.ParentSourceId!, out var selected) || selected is null)
                 throw new FormatException("Retained strain parent decision is missing.");
             Require(Text(selected["decision"]) == "materialize" &&
                 Integer(selected["selectedSeverityRank"], 3, 3) == 3 && parent["retraumaWoundId"] is null &&
@@ -64,17 +72,18 @@ internal sealed partial class SpiritualWoundOpportunityReceiptState
         return result.ToArray();
     }
 
-    /// <summary>Checks each immutable full parent envelope against its exact first-create History after-image.</summary>
+    /// <summary>Checks each immutable full parent envelope against its exact retained latest-transition History after-image.</summary>
     internal bool HasExactStrainHistory(WoundHistoryState history)
     {
         ArgumentNullException.ThrowIfNull(history);
         foreach (var parent in _strainParents)
         {
             var wound = parent.Data.ParentWound;
-            if (!history.TryResolveExactTransition(parent.CreationTransitionId, out var creation) || creation is null ||
-                creation.Kind != "create" || creation.WoundTransitionOrdinal != 1 || creation.Terminal ||
+            if (!history.TryResolveExactTransition(parent.ParentTransitionId, out var creation) || creation is null ||
+                creation.Kind != wound.LastTransition.Kind ||
+                creation.WoundTransitionOrdinal != wound.LastTransition.Ordinal || creation.Terminal ||
                 creation.WoundId != wound.WoundId || creation.Turn != parent.Turn ||
-                creation.EventRef != wound.Origin.EventRef ||
+                parent.Data.Version == 1 && creation.EventRef != wound.Origin.EventRef ||
                 creation.AfterFingerprint != parent.Data.ParentSemanticFingerprint)
                 return false;
         }
@@ -84,7 +93,7 @@ internal sealed partial class SpiritualWoundOpportunityReceiptState
     /// <summary>Requires each newly appended parent to equal the actual owner-sealed insertion and its completed History.</summary>
     internal bool HasCurrentStrainInsertions(int firstNewSourceOrdinal, SpiritualLiveWoundCompletion? live)
     {
-        var current = _strainParents.Where(row => row.GlobalOrdinal >= firstNewSourceOrdinal).ToArray();
+        var current = _strainParents.Where(row => row.GlobalOrdinal >= firstNewSourceOrdinal && row.Data.Version == 1).ToArray();
         if (current.Length == 0) return true;
         if (live is null) return false;
         var history = WoundHistoryState.Parse(live.FinalState.History.ToJsonString(), WoundHistoryState.HistoryPath);
@@ -94,7 +103,7 @@ internal sealed partial class SpiritualWoundOpportunityReceiptState
             .Where(wound => wound.LastTransition.Kind == "create" && wound.LastTransition.Ordinal == 1)
             .Select(wound => (Wound: wound, Fingerprint: WoundIdentityState.ComputeSemanticFingerprint(wound))).ToArray();
         return current.All(parent => creations.Count(row => row.Wound.WoundId == parent.Data.ParentWound.WoundId &&
-            row.Wound.LastTransition.TransitionId == parent.CreationTransitionId &&
+            row.Wound.LastTransition.TransitionId == parent.ParentTransitionId &&
             row.Fingerprint == parent.Data.ParentSemanticFingerprint) == 1);
     }
 

@@ -29,7 +29,7 @@ internal static partial class AcceptedMechanicsPlanner
         /// <summary>
         /// Retains source-validation contributions from an exact resource routing epoch and exchange ordinal.
         /// </summary>
-        internal sealed class SpiritualMechanicsContext
+        internal sealed partial class SpiritualMechanicsContext
         {
             private readonly ResourceExecutionSession _owner;
             private readonly ValidationService.SpiritualOriginalTurnCapture _capture;
@@ -88,7 +88,8 @@ internal static partial class AcceptedMechanicsPlanner
             /// <summary>Reads only a rederived comparison owned by this exact current source/resource epoch.</summary>
             internal ValidationService.SpiritualStrainDraftCorrection? ReadOwnedStrainCorrection(
                 JsonObject conflict, JsonObject exchange) => IsCurrent
-                ? _capture.ReadOwnedStrainCorrection(this, conflict, exchange) : null;
+                ? _capture.ReadOwnedStrainCorrection(this, conflict, exchange) ??
+                    ReadSignedExistingStrainCorrection(conflict, exchange) : null;
             /// <summary>
             /// Gets whether the original owners, exchange ordinal and routing epoch remain current.
             /// </summary>

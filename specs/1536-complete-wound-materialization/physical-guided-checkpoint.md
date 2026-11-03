@@ -1,3 +1,22 @@
+# WIP signed-existing parent implementation — uncompiled/unrun
+
+Original FR025/T081-D accepted bounded design now implemented in existing owners:
+strict v1 retained; closed v2 III/IV intrinsic comparison plus complete ordinary
+validation; current mechanics context authenticates signed/current parent and exact
+source-group/roots, retains immutable comparison DATA within existing epoch/ordinal/
+draft/dependency-cut only, with fresh IsCurrent/signed actor and whole candidate
+checks each query. No separate cache or permission reuse. Actual query/read counters
+are read-only; native representative checks repeated queries share one parent read.
+Latest History anchors retained after lawful healing; v1 insertion joins remain.
+Decline-only v2 now requires owner-issued C3 pair and common completed receipt identity.
+New typed joins14 complement DATA17, existing affected v1/guard/history/guide controls.
+Worked guide/example/manifest/matrix synchronized; private v2 remains client-owned.
+All new production/typed14/native count assertions UNCOMPILED/UNRUN. Whole independent
+SOURCE/FIXTURE/SELECTION, fresh Main/Unit/Integration, exact discovery/Plan/PREP and
+cheap GREEN before native representative. No cache speedup, full-family or publication
+claim. M4a causal RED accepted by independent Sol; raw preserved, pending semantics
+and old UNKNOWN/HOLD unchanged. Code is WIP, not an accepted gameplay result.
+
 # Corrected existing-parent DATA causal RED — 2026-11-03 07:09 UTC
 
 Frozen05a4df2897cbd45c5c32d393a359921ee5300cae: freshUnit36.431996s exit0/exact26,

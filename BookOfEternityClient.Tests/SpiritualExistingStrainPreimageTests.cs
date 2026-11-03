@@ -99,6 +99,179 @@ public sealed class SpiritualExistingStrainPreimageTests
         Assert.Throws<FormatException>(() => retained.ReadOrdinaryAfter(changed));
     }
 
+    /// <summary>Joins the exact latest III/IV parent anchor and preserves it after later lawful healing.</summary>
+    [Theory]
+    [InlineData(3)]
+    [InlineData(4)]
+    public void ExistingParentHistoryRetainsLatestAnchorAfterLaterHealing(int rank)
+    {
+        var (root, parent) = CreateLedger(rank);
+        var ledger = ReadLedger(root);
+        var history = CreateHistory(parent, rank);
+        Assert.True(ledger.HasExactStrainHistory(ReadHistory(history)));
+        var last = history["transitions"]!.AsArray().Last()!.AsObject();
+        var heal = last.DeepClone().AsObject();
+        heal["transitionId"] = "transition_later_heal"; heal["operationKey"] = "operation_later_heal";
+        heal["ordinal"] = rank == 3 ? 2 : 3; heal["woundTransitionOrdinal"] = rank == 3 ? 2 : 3;
+        heal["kind"] = "heal"; heal["turn"] = 44; heal["eventRef"] = "event_later_heal";
+        heal["beforeFingerprint"] = last["afterFingerprint"]!.DeepClone();
+        heal["afterFingerprint"] = "sha256:" + new string('c', 64); heal["terminal"] = true;
+        history["transitions"]!.AsArray().Add(heal); history["nextOrdinal"] = rank == 3 ? 3 : 4;
+        Assert.True(ledger.HasExactStrainHistory(ReadHistory(history)));
+        var actual = ReadActual(root["sources"]![1]!["witness"]!.AsObject());
+        Assert.NotNull(ledger.ReadRetainedStrainOrdinaryAfter("chaos_sea", "conflict-a", actual, false));
+        actual["after"]!["oppositionSideStrain"] = "broken";
+        Assert.Null(ledger.ReadRetainedStrainOrdinaryAfter("chaos_sea", "conflict-a", actual, true));
+    }
+
+    /// <summary>Rejects a missing or changed exact latest transition, even with an otherwise valid parsed ledger.</summary>
+    [Theory]
+    [InlineData("missing")]
+    [InlineData("identity")]
+    [InlineData("kind")]
+    [InlineData("turn")]
+    [InlineData("fingerprint")]
+    public void ExistingParentHistoryRefusesChangedLatestAnchor(string change)
+    {
+        var (root, parent) = CreateLedger(4);
+        var ledger = ReadLedger(root);
+        var history = CreateHistory(parent, 4);
+        Assert.True(ledger.HasExactStrainHistory(ReadHistory(history)));
+        var latest = history["transitions"]![1]!.AsObject();
+        switch (change)
+        {
+            case "missing": history["transitions"]!.AsArray().RemoveAt(1); history["nextOrdinal"] = 2; break;
+            case "identity": latest["transitionId"] = "foreign_transition"; break;
+            case "kind": latest["kind"] = "diagnose"; break;
+            case "turn": latest["turn"] = 43; break;
+            case "fingerprint": latest["afterFingerprint"] = "sha256:" + new string('d', 64); break;
+        }
+        Assert.False(ledger.HasExactStrainHistory(ReadHistory(history)));
+    }
+
+    /// <summary>Decline-only v2 still requires the actual owner-reconstructed C3 pair, never an arbitrary internal instance.</summary>
+    [Fact]
+    public void ExistingParentDeclineRefusesMissingOrForgedOwnerPair()
+    {
+        var (root, _) = CreateLedger(3);
+        _ = ReadLedger(root);
+        var source = root["sources"]![1]!["witness"]!.DeepClone();
+        Assert.Equal(2, SpiritualWoundSourceWitness.Validate(source.AsObject()).MaximumSeverityRank);
+        var staged = new JsonObject { ["opportunityRef"] = "opportunity_existing", ["sourceId"] = source["sourceId"]!.DeepClone(),
+            ["decisionFingerprint"] = "", ["sourceOrdinal"] = 0, ["waveOrdinal"] = 0, ["decision"] = "none",
+            ["selectedSeverityRank"] = null, ["woundDraftBase64"] = null, ["woundDraftFingerprint"] = null };
+        staged["decisionFingerprint"] = SpiritualWoundStateJson.Hash(staged, "staged_decision", "decisionFingerprint");
+        var packet = new JsonObject { ["sources"] = new JsonArray(source), ["stagedDecisions"] = new JsonArray(staged),
+            ["cursor"] = new JsonObject { ["nextSourceOrdinal"] = 1 }, ["realm"] = "chaos_sea", ["sessionId"] = "session-a",
+            ["requestId"] = "request-existing43", ["snapshotToken"] = "snapshot-existing43", ["turn"] = 43,
+            ["originalSnapshotFingerprint"] = source["turnEvidence"]!["originalSnapshotFingerprint"]!.DeepClone(),
+            ["conflictInstanceRef"] = root["instances"]![0]!["instanceId"]!.DeepClone() };
+        var signed = new ValidationService.SpiritualSignedC1Origin(new CanonicalBeforeImage(false, null),
+            new CanonicalBeforeImage(true, Encoding.UTF8.GetBytes("{\"schemaVersion\":1,\"activeConflict\":{\"conflictId\":\"conflict-a\"}}")),
+            source["turnEvidence"]!["originalSnapshotFingerprint"]!.GetValue<string>());
+        foreach (var pair in new ValidationService.SpiritualOriginalTurnCapture.AuthenticatedC3Pair?[]
+                 { null, new(new object(), signed, packet, null, new object()) })
+        {
+            var result = SpiritualWoundDeclineReceiptReducer.Reduce(signed, packet, authenticatedPair: pair);
+            Assert.Null(result.AfterImage);
+            Assert.Contains(result.Issues, issue => issue.Code == "spiritual_c3_materialization_owner_pair_missing");
+        }
+    }
+
+    /// <summary>Checks exact group DATA, never a captured owner; mismatched source facts cannot share a parent.</summary>
+    [Theory]
+    [InlineData("valid")]
+    [InlineData("owner")]
+    [InlineData("target")]
+    [InlineData("definition")]
+    [InlineData("root")]
+    [InlineData("component")]
+    public void ExistingParentSourceGroupRequiresExactGraphData(string change)
+    {
+        var (_, body, _) = CreateData(3);
+        var wound = WoundMaterializationContract.Parse(body.ToJsonString(), "unit.parent").Wound!;
+        var owner = wound.Owner;
+        var target = new EffectTargetKey(owner.Realm, "player", owner.OwnerId);
+        var definitions = wound.Consequences.OwnedEffectSources.DefinitionFacts.Select(fact =>
+            new WoundEffectSourceDefinition(fact.DefinitionKey, SpiritualWoundStateJson.Parse(fact.CanonicalJson))).ToArray();
+        var roots = wound.Consequences.OwnedEffectSources.RootBindings.Select(root =>
+            new WoundRootLineageAuthorityRow(null, root.EffectId, root.DefinitionKey, WoundRootOwnershipDomain.BaseWound)).ToArray();
+        var group = new WoundSourceGroupAuthority(new(owner.Realm, "wound", wound.WoundId), owner, target, false,
+            null, null, definitions, [], roots);
+        using var payload = System.Text.Json.JsonDocument.Parse("{\"operation\":\"maneuver\",\"axis\":\"sideStrain\",\"magnitude\":1}");
+        using var magnitude = System.Text.Json.JsonDocument.Parse("1");
+        var contribution = new SpiritualWoundConflictContribution("effect_parent_strain", "component_001",
+            new(owner.Realm, "wound", wound.WoundId, "definition_parent_strain"), target, "player",
+            SpiritualWoundProjectionKind.StrainBurden, "spiritual_strain_burden", "maneuver", "sideStrain", "sideStrain",
+            magnitude.RootElement.Clone(), 0, 1, payload.RootElement.Clone());
+        Assert.True(AcceptedMechanicsPlanner.ResourceExecutionSession.SpiritualMechanicsContext.MatchesSignedParentSourceGroup(wound, contribution, group));
+        if (change == "owner") owner = owner with { OwnerId = "foreign_soul" };
+        if (change == "target") target = target with { TargetId = "foreign_soul" };
+        if (change == "definition")
+        {
+            var changed = definitions[0].Definition; changed["display"]!["description"] = "Иное определение.";
+            definitions[0] = new(definitions[0].DefinitionKey, changed);
+        }
+        if (change == "root") roots[0] = roots[0] with { EffectId = "foreign_effect" };
+        if (change == "component") contribution = contribution with { ComponentId = "foreign_component" };
+        group = new(new(wound.Owner.Realm, "wound", wound.WoundId), owner, target, false, null, null, definitions, [], roots);
+        Assert.Equal(change == "valid", AcceptedMechanicsPlanner.ResourceExecutionSession.SpiritualMechanicsContext
+            .MatchesSignedParentSourceGroup(wound, contribution, group));
+    }
+
+    private static (JsonObject Root, JsonObject Parent) CreateLedger(int rank)
+    {
+        var root = SpiritualStrainReceiptJoinTests.CreateLedger();
+        var (source, parent, _) = CreateData(rank);
+        root["sources"]![1]!["witness"] = source;
+        var decision = root["decisions"]![1]!;
+        decision["binding"] = new JsonObject { ["sessionId"] = "session-a", ["requestId"] = "request-existing43",
+            ["snapshotToken"] = "snapshot-existing43", ["turn"] = 43, ["continuationGeneration"] = 1,
+            ["waveOrdinal"] = 0, ["sourceOrdinal"] = 0 };
+        SpiritualStrainReceiptJoinTests.SealSourceAndDecision(root, 1);
+        return (root, parent);
+    }
+
+    private static SpiritualWoundOpportunityReceiptState ReadLedger(JsonObject root)
+    {
+        var result = SpiritualWoundOpportunityReceiptState.Parse(root.ToJsonString(), "unit.existingLedger");
+        Assert.True(result.IsValid, string.Join("\n", result.Issues));
+        return result.State!;
+    }
+
+    private static WoundHistoryState ReadHistory(JsonObject root)
+    {
+        var result = WoundHistoryState.Parse(root.ToJsonString(), WoundHistoryState.HistoryPath);
+        Assert.True(result.IsValid, string.Join("\n", result.Issues));
+        return result.State!;
+    }
+
+    private static JsonObject CreateHistory(JsonObject parent, int rank)
+    {
+        var (_, creation, _) = CreateData(3);
+        var initial = WoundMaterializationContract.Parse(creation.ToJsonString(), "unit.existingCreation").Wound!;
+        var latest = WoundMaterializationContract.Parse(parent.ToJsonString(), "unit.existingLatest").Wound!;
+        var create = WoundContractTestData.CreateTransition();
+        create["transitionId"] = initial.LastTransition.TransitionId; create["woundId"] = initial.WoundId;
+        create["turn"] = initial.LastTransition.Turn; create["eventRef"] = initial.Origin.EventRef;
+        create["attemptId"] = null;
+        create["beforeFingerprint"] = WoundHistoryState.ComputeNonexistentBeforeFingerprint(initial.WoundId);
+        create["afterFingerprint"] = WoundIdentityState.ComputeSemanticFingerprint(initial);
+        create["sourceFingerprint"] = "sha256:" + new string('a', 64);
+        var history = WoundContractTestData.CreateHistory(create);
+        if (rank == 4)
+        {
+            var worsen = create.DeepClone().AsObject();
+            worsen["transitionId"] = latest.LastTransition.TransitionId; worsen["operationKey"] = "operation_existing_worsen";
+            worsen["ordinal"] = 2; worsen["woundTransitionOrdinal"] = 2; worsen["kind"] = "worsen";
+            worsen["eventRef"] = latest.Severity.LastChangeEventRef;
+            worsen["beforeFingerprint"] = create["afterFingerprint"]!.DeepClone();
+            worsen["afterFingerprint"] = WoundIdentityState.ComputeSemanticFingerprint(latest);
+            history["transitions"]!.AsArray().Add(worsen); history["nextOrdinal"] = 3;
+        }
+        return history;
+    }
+
     internal static (JsonObject Source, JsonObject Parent, JsonObject Ordinary) CreateData(int rank)
     {
         var (source, _, parent, ordinary) = SpiritualStrainPreimageDataTests.CreateData();

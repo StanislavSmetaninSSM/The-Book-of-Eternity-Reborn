@@ -1858,3 +1858,16 @@ One new matching III strain slot adds no rank above broken and grants no editabl
 A/B or final echo. The original source/dice/costs must remain exact, with one
 privately retained parent/first-create History comparison and ordinary C2/C4.
 Being broken alone is not proof; all other guards and source-free probes stay strict.
+
+### Signed-existing wound strain maneuver
+
+One current III/IV spiritual strain/maneuver root, one stack and magnitude1 may
+add exactly one player step at most broken after a proved maneuver/setback versus
+guard. Both ordinary strains remain unchanged; dice, costs, position and every
+sibling remain independently valid. The full parent must equal its signed pre-turn
+image and latest History anchor, with current owner/epoch/source availability.
+Closed v2 comparison DATA is client-owned, never GM-authored. Even a none decision
+requires the actual C3 pair and common receipt join. Later healing preserves the
+historical comparison without authorizing another use of a retired root.
+Read the worked signed-existing maneuver in E_CLI_Afterlife_Turns.txt. No new
+aggregation, ambiguous outcome rule or general combat behavior is authorized.

@@ -793,6 +793,21 @@ may issue a separate optional wound offer. Do not silently discard that offer or
 publish a private C2 draft. Worked comparison: `Examples/E_CLI_Afterlife_Turns.txt`,
 `spiritual_wound_strain_result_v1`.
 
+The signed-existing parent maneuver lane uses the same ordinary result and one
+matching III/IV strain component, one stack, magnitude1. The client must verify
+that its complete current parent is identical to the signed pre-turn parent,
+including its exact latest History transition and current effect source graph.
+For a failed player maneuver against guard, restore the ordinary unchanged side
+strains to validate position/dice/costs, then add exactly one player strain step,
+capped at broken. All ordinary siblings and other burdens remain checked.
+The client retains closed version2 comparison DATA without inventing a current
+parentSourceId; the GM never authors this private proof. An explicit none decision
+still requires owner-reconstructed C3 and the common publication join. The latest
+retained History anchor remains valid after later lawful healing; it is not a
+permission to reuse an inactive root for another action. Version1 same-request
+creation/first-create History stays strict. This lane does not cover same-request
+parent worsening, ambiguous participant failure or multiple wound aggregation.
+
 ## spiritual_wound_position_v1
 
 `spiritual_position_burden` changes the effective starting position of the matching

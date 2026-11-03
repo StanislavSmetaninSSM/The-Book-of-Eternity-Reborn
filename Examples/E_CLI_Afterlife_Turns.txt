@@ -14592,6 +14592,19 @@ text cannot change mechanics or turn markers, and healing does not rewrite the
 original creation evidence. This fragment does not itself prove runtime or healing.
 Private completion is not accepted-turn publication. Other consumer combinations
 and the separate no-roll GM-choice source contract are not authorized by this fragment.
+Signed-existing parent maneuver: the earlier III parent is already published, or
+its IV latest transition is signed and unchanged before this request. One available
+strain/maneuver slot, one stack, magnitude1 applies. In fresh turn43, signed4/12
+versus guard gives setback: ordinary player overwhelmed/opposition clear remain
+unchanged while position becomes opposition_advantaged. Keep player maneuver
+cost3 (3->0), opposition guard cost2 (3->1) and all other fields. Apply only the
+player overwhelmed->broken step and the final broken echo; keep ordinary guard
+pressure14/maxII, then explicitly materialize or decline that separate offer.
+There is no preceding new III choice or A/B correction in this request. The client
+owns closed v2 comparison DATA, matching full signed/current parent, latest History
+anchor and current roots. Even none needs owner-reconstructed C3 and common C4.
+Later lawful healing does not rewrite this retained comparison. This worked
+fragment is not a runtime claim; do not author a parentSourceId or private proof.
 Capped failed guard keeps its ordinary source: after the real earlier III source,
 select strain/guard, roll/maneuver and cost/pressure slots, so only strain/guard
 applies to the player's next guard. Signed player4/opposition12 against incoming

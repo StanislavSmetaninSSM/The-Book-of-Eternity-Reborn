@@ -55,10 +55,12 @@ internal static partial class SpiritualWoundDeclineReceiptReducer
                     source["guaranteedSeverityRank"] is not null))
                 return Fail("spiritual_c3_decline_packet_incomplete");
             var materializedCount = staged.Count(row => (string?)row?["decision"] == "materialize");
+            var hasExistingStrain = sources.OfType<JsonObject>().Any(source =>
+                source["strainPreimage"] is JsonObject proof && SpiritualWoundStateJson.Integer(proof["version"]) == 2);
             var satisfiedCount = staged.Count(row => (string?)row?["decision"] == "guarantee_satisfied");
             if (materializedCount != (liveWounds?.Insertions.Count(i => !i.IsCombatHealing) ?? 0))
                 return Fail("spiritual_c3_decline_materialization_deferred");
-            if ((materializedCount != 0 || satisfiedCount != 0) &&
+            if ((materializedCount != 0 || satisfiedCount != 0 || hasExistingStrain) &&
                 authenticatedPair?.Matches(signed, packet) != true)
                 return Fail("spiritual_c3_materialization_owner_pair_missing");
             if (authenticatedPair is not null && satisfiedCount != authenticatedPair.SatisfactionCount)
@@ -228,7 +230,7 @@ internal static partial class SpiritualWoundDeclineReceiptReducer
             var append = SpiritualWoundOpportunityReceiptState.PlanAppend(before, candidate.State);
             return append.Disposition == "appended" && append.After is not null
                 ? Complete(signed, liveWounds,
-                    hasHealing || satisfiedCount != 0 || terminal != null ? authenticatedPair!.SatisfactionReceiptIdentity : null,
+                    hasHealing || satisfiedCount != 0 || terminal != null || hasExistingStrain ? authenticatedPair!.SatisfactionReceiptIdentity : null,
                     append.After)
                 : Fail("spiritual_c3_decline_receipt_conflict");
         }

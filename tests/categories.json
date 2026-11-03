@@ -2,6 +2,39 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "wounds-spiritual-existing-parent-joins",
+  "responsibility": "Original FR025/T081-D v2 DATA joins: III/IV latest History anchors2, changed latest refusal5, decline-only absent/forged C3 owner pair1, exact current source-group DATA6. No owner permission issued by typed DATA.",
+  "excludes": "No actual live epoch/source admission, signed source birth, real C3/C4/Engine/UI or fresh-process claim; native owns those boundaries. Both pending outcome/aggregation questions and old UNKNOWN/HOLD excluded.",
+  "changeHints": [
+    "BookOfEternityClient.Tests/SpiritualExistingStrainPreimageTests.cs",
+    "BookOfEternityClient/Services/SpiritualWoundOpportunityReceiptState.StrainPreimage.cs",
+    "BookOfEternityClient/Services/SpiritualWoundDeclineReceiptReducer.cs"
+  ],
+  "related": [
+    "wounds-spiritual-existing-parent-data-positive",
+    "wounds-spiritual-existing-parent-data-refusal",
+    "wounds-spiritual-existing-maneuver"
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.SpiritualExistingStrainPreimageTests.ExistingParentHistoryRetainsLatestAnchorAfterLaterHealing",
+        "BookOfEternityClient.Tests.SpiritualExistingStrainPreimageTests.ExistingParentHistoryRefusesChangedLatestAnchor",
+        "BookOfEternityClient.Tests.SpiritualExistingStrainPreimageTests.ExistingParentDeclineRefusesMissingOrForgedOwnerPair",
+        "BookOfEternityClient.Tests.SpiritualExistingStrainPreimageTests.ExistingParentSourceGroupRequiresExactGraphData"
+      ]
+    }
+  ]
+},
+{
   "id": "wounds-spiritual-existing-parent-data-positive",
   "responsibility": "Original FR025/T081-D signed-existing maneuver proof: Two typed III/IV existing-parent DATA positives at first source, complete parent/ordinary controls before v2 witness validation. No live authority.",
   "excludes": "No real creation/history/origin authority, epoch or C3 permission, generic outcome/aggregation rule, native/Engine/UI/fresh process or UNKNOWN/HOLD retry. Positive prerequisites must run before negative assertions; current parser unsupported-version failures do not qualify negatives.",
