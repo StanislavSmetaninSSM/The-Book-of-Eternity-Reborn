@@ -9,6 +9,11 @@ create/treat/worsen History, fresh roots and replay/signed43. Existing replay co
 is unchanged; actual failure is not attributed until these premises reach a guard.
 The original two-minute native-pair budget is retained in one exact category.
 
+Sol's whole SOURCE found two preparation errors before any build: a nonexistent
+staging call and copying client-owned classification.domain into the GM proposal.
+Both now use the accepted fixture's exact existing API and two authored fields.
+No production check was changed to accommodate the fixture.
+
 All new C# and assertions are UNCOMPILED/UNRUN. Whole fixture SOURCE and complete
 preparation precede affected Integration build, exact discovery/Plan/PREP and one
 causal attempt. No production fix, private-authority shortcut, new cache, combat

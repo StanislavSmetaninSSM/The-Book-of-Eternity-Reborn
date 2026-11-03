@@ -41,7 +41,8 @@ public sealed partial class AfterlifeResourceCutoverTests
                 JsonObject projection;
                 await using (var lease = await original.FileSystem.AcquireCanonicalWriteLeaseAsync())
                 {
-                    var staged = await scheduler.StageSpiritualCombatHealingRequestAsync(selection, lease);
+                    var staged = await AfterlifeWoundTreatmentAuthority.StagePlayerCombatTurnAsync(original.FileSystem, lease,
+                        scheduler, "session_resource_materialization", "request_resource_materialization", 42, selection);
                     Assert.True(staged.Stage.IsStaged, staged.Stage.IssueCode);
                     control = Assert.IsType<ProgressionControl>(staged.Control);
                     projection = Assert.IsType<JsonObject>(staged.Stage.GmContext);
@@ -111,7 +112,11 @@ public sealed partial class AfterlifeResourceCutoverTests
             var proposal = JsonNode.Parse(CreateSpiritualWorseningLifecycleDecision(offered.Offer!.OpportunityRef,
                 worsening: true, targetKind: "player").GetRawText())!;
             var retainedRoot = JsonNode.Parse(WoundMaterializationContract.SerializeCanonical(healed))!;
-            proposal["proposal"]!["classification"] = retainedRoot["classification"]!.DeepClone();
+            proposal["proposal"]!["classification"] = new JsonObject
+            {
+                ["woundType"] = retainedRoot["classification"]!["woundType"]!.DeepClone(),
+                ["locationProfile"] = retainedRoot["classification"]!["locationProfile"]!.DeepClone()
+            };
             var recovery = retainedRoot["recovery"]!.DeepClone(); recovery["currentStepProgress"] = 0; recovery["currentStepThreshold"] = 4;
             recovery["blockers"] = JsonSerializer.SerializeToNode(WoundTransitionReducer.DeriveWorseningBlockers(healed));
             proposal["proposal"]!["recovery"] = recovery;
