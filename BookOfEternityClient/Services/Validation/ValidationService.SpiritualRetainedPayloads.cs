@@ -32,16 +32,22 @@ public partial class ValidationService
             SpiritualWoundStateJson.Require(before.ContainsKey("controlState") && after.ContainsKey("controlState"),
                 "Active retained control requires both snapshots.");
         var effectivePosition = ReadIntrinsicSpiritualPosition(exchange, context, issues);
+        var dice = exchange["diceAudit"] as JsonObject;
+        SpiritualWoundStateJson.Require(dice is not null ||
+            (!exchange.ContainsKey("diceAudit") && IsExplicitVoluntaryNonContest(exchange)),
+            "Dice audit or explicit voluntary no-roll exchange required.");
         ValidateSpiritualArtOperationRules(exchange, before, after,
             AfterlifeSpiritualConflictState.GetNodeString(exchange["operationType"]),
             AfterlifeSpiritualConflictState.GetNodeString(exchange["outcome"]), context, issues,
-            isCurrentExchange: true, requiresCurrentMatchupAudit: true, effectivePosition: effectivePosition,
+            isCurrentExchange: true, requiresCurrentMatchupAudit: dice is not null, effectivePosition: effectivePosition,
             ordinaryManeuverAfter: ordinaryManeuverAfter);
-        var dice = exchange["diceAudit"] as JsonObject ?? throw new FormatException("Dice audit required.");
-        var lightModifier = SourceOfLightCapstoneState.SumLightIncarnatePlayerModifiers(dice);
-        if (lightModifier != 0)
-            SpiritualWoundStateJson.Require(ResolveLightIncarnateAuditTurn(exchange, dice) is > 0 &&
-                lightModifier == ResolveLightIncarnateExpectedDiceBonus(exchange), "Retained Light Incarnate declaration differs.");
+        if (dice is not null)
+        {
+            var lightModifier = SourceOfLightCapstoneState.SumLightIncarnatePlayerModifiers(dice);
+            if (lightModifier != 0)
+                SpiritualWoundStateJson.Require(ResolveLightIncarnateAuditTurn(exchange, dice) is > 0 &&
+                    lightModifier == ResolveLightIncarnateExpectedDiceBonus(exchange), "Retained Light Incarnate declaration differs.");
+        }
         ValidateRetainedSpiritualCosts(exchange, issues);
     }
 

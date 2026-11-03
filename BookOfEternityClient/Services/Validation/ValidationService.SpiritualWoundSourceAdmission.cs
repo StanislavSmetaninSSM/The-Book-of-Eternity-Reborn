@@ -728,22 +728,30 @@ public partial class ValidationService
                     throw new InvalidOperationException(error);
                 envelope = parsed!;
             }
+            long margin;
             if (exchange["diceAudit"] is not JsonObject dice)
             {
-                // The real checker has already accepted this explicit voluntary non-contest.
-                // Do not manufacture an opposed margin or exclude its lawful incoming harm.
-                if (prepareSource)
-                    _pending.Add(new(SpiritualSourceRequirement.AppliedSourceBinding,
-                        coordinate + "." + affectedSide, exchange.ToJsonString()));
-                return;
+                var choice = SpiritualWoundNoRollMargin.Read(exchange, affectedSide);
+                if (!choice.IsVoluntaryNoRoll || !choice.ChosenMargin.HasValue)
+                {
+                    // Missing is unresolved authority; explicit zero is a real GM choice.
+                    if (prepareSource)
+                        _pending.Add(new(SpiritualSourceRequirement.AppliedSourceBinding,
+                            coordinate + "." + affectedSide, exchange.ToJsonString()));
+                    return;
+                }
+                margin = choice.ChosenMargin.Value;
             }
-            if (!ExactInt(dice["playerTotal"], out var player) ||
-                !ExactInt(dice["oppositionTotal"], out var opposition))
-                throw new InvalidOperationException("validated opposed audit requires exact side totals");
-            if (!ExactInt(dice["margin"], out var auditedMargin) ||
-                (long)player - opposition != auditedMargin)
-                throw new InvalidOperationException("wide source margin must equal actual side totals");
-            var margin = actingSide == "player" ? (long)player - opposition : (long)opposition - player;
+            else
+            {
+                if (!ExactInt(dice["playerTotal"], out var player) ||
+                    !ExactInt(dice["oppositionTotal"], out var opposition))
+                    throw new InvalidOperationException("validated opposed audit requires exact side totals");
+                if (!ExactInt(dice["margin"], out var auditedMargin) ||
+                    (long)player - opposition != auditedMargin)
+                    throw new InvalidOperationException("wide source margin must equal actual side totals");
+                margin = actingSide == "player" ? (long)player - opposition : (long)opposition - player;
+            }
             var beforeStrain = ExactString(exchange["before"]![affectedSide + "SideStrain"])!;
             var afterStrain = ExactString(exchange["after"]![affectedSide + "SideStrain"])!;
             var mode = SpiritualConflictDangerPolicy.ReadDeclaration(conflict)!;
@@ -1180,6 +1188,24 @@ public partial class ValidationService
         {
             if (action is null)
                 continue;
+            var marginKeys = action.Select(pair => pair.Key).Where(key =>
+                MortalLocationIdentityState.BuildConfusableKey(key) ==
+                MortalLocationIdentityState.BuildConfusableKey(SpiritualWoundNoRollMargin.Property)).ToArray();
+            if (marginKeys.Length > 0)
+            {
+                try
+                {
+                    if (!ReferenceEquals(action, exchange) || marginKeys.Length != 1 ||
+                        marginKeys[0] != SpiritualWoundNoRollMargin.Property)
+                        throw new FormatException("One exact exchange-level GM margin map required.");
+                    SpiritualWoundNoRollMargin.Read(exchange, "player");
+                }
+                catch (FormatException error)
+                {
+                    issues.Add(SourceIssue(path + "." + SpiritualWoundNoRollMargin.Property,
+                        "spiritual_source_no_roll_margin_invalid", error.Message));
+                }
+            }
             foreach (var field in new[]
             {
                 "traumaPressure", "sourceSeverityCap", "maximumSeverityRank",

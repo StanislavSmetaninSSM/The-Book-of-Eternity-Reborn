@@ -1,3 +1,25 @@
+# No-roll causal RED accepted; minimal source implementation WIP
+
+J1 at91ade1d3acabbdfbba96e7a31e6e0f153d00d4ce: fresh Unit36.879199s,
+exit0/26exact baseline; unchanged Main/Integration25ea checked. Official27cases
+completed17PASS/10genuineFAIL: five explicit margins fail missing retained dice,
+five early map guards lack expected diagnostic. No fixture/compile failure,
+timeout/skip/duplicate/underfill. Sol/xhigh accepted causal OUTCOME; the17refusals
+remain provisional until GREEN because old dice rejection can mask them.
+Category3.0910092s/wrapper9.7721064s. Post9297d3e7d277e2186638d6030aaaeb3c284a6766b3054cd8e429f73dc53da201;
+summaryd7cc553f6a69645f14883514661394e24f39975b8fc6ad433671a26ceeb606b3.
+45artifacts/618resources/native6/4PE-PDB498sourcebindings stable; cleanuptrue,
+no newTMP/active owners. Six-file clean-export/GitHub-blob readback proof
+a645b26d568c6b6adb49d71d99c1edacb61715dcfe637bddf683ae66f2885355.
+Full capture and prior five Unit artifacts retained outside checkout/GitHub.
+
+Minimal production draft now written, UNCOMPILED/UNRUN: pure scalar map reader,
+shared existing voluntary predicate, early action-shape placement/type/side guard,
+no-roll source calculation and witness, conditional retained dice/matchup checks.
+Existing rolled math, costs, art/guarantees and fresh source/owner/readsets remain.
+Repeated scalar inspection is trivial; no new cache/filesystem reads or speedup
+claim. GM contract/examples and whole SOURCE review are next before GREEN/admission.
+
 # No-roll DESIGN accepted; causal scaffold WIP
 
 Astra/high accepted bounded DESIGN with corrections: map validation at the existing

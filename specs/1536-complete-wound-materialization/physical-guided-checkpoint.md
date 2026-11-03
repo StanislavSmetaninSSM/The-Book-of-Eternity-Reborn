@@ -1,3 +1,11 @@
+# T081-D-NO-ROLL source WIP after genuine RED
+
+J1 causal27 on91ade:17PASS/10FAIL, independent Sol OUTCOME accepted; exact facts
+and proof hashes in plan. Pure source-choice reader and existing producer/witness/
+retained validators changed, still uncompiled/unrun. GM sync and whole SOURCE next.
+No runtime qualification of new source/owner/C2/C4 yet; accepted H4 separate.
+Raw outside checkout, old UNKNOWN/HOLD and author deferrals unchanged.
+
 # T081-D-NO-ROLL scaffold WIP
 
 Astra DESIGN accepted with boundary/RetainedPayloads/authority corrections in plan.

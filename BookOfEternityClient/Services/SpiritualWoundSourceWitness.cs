@@ -132,7 +132,9 @@ internal static class SpiritualWoundSourceWitness
         var issues = new List<ValidationIssue>();
         ValidationService.ValidateRetainedSpiritualExchangeShape(exchange, "retainedSource.exchange", issues);
         ValidationService.ValidateSpiritualWoundSourceActionShape(exchange, "retainedSource.exchange", issues);
-        ValidationService.ValidateRetainedSpiritualDiceAudit(exchange, evidence, issues);
+        var noRoll = SpiritualWoundNoRollMargin.Read(exchange, side);
+        if (!noRoll.IsVoluntaryNoRoll)
+            ValidationService.ValidateRetainedSpiritualDiceAudit(exchange, evidence, issues);
         strain = source.ContainsKey("strainPreimage") ? SpiritualStrainPreimageData.ReadIntrinsic(source, exchange) : null;
         ValidationService.ValidateRetainedSpiritualExchangeRules(exchange, issues, strain?.ReadOrdinaryAfter(exchange));
         Require(!issues.Any(issue => issue.Severity == IssueSeverity.Error), "Invalid retained exchange payload.");
@@ -166,13 +168,24 @@ internal static class SpiritualWoundSourceWitness
             Integer(source["destinationStrainRank"], 0, 4) == nextRank, "Retained strain differs.");
         Require(Integer(source["extraStrainJumps"], 0, 3) == Math.Max(0, nextRank - priorRank - 1),
             "Extra strain jumps differ.");
-        var audit = Object(exchange["diceAudit"]);
-        var player = Integer(audit["playerTotal"], int.MinValue, int.MaxValue);
-        var opposition = Integer(audit["oppositionTotal"], int.MinValue, int.MaxValue);
-        Require(Integer(audit["margin"], long.MinValue, long.MaxValue) == player - opposition, "Exchange margin differs.");
-        var margin = side == "opposition" ? player - opposition : opposition - player;
+        long margin;
+        if (noRoll.IsVoluntaryNoRoll)
+        {
+            Require(noRoll.ChosenMargin.HasValue, "Explicit GM harmful margin required.");
+            margin = noRoll.ChosenMargin!.Value;
+            Require(source["selectedDiceIndices"] is JsonArray { Count: 0 } &&
+                evidence["diceClaims"] is JsonArray { Count: 0 }, "No-roll source cannot claim dice.");
+        }
+        else
+        {
+            var audit = Object(exchange["diceAudit"]);
+            var player = Integer(audit["playerTotal"], int.MinValue, int.MaxValue);
+            var opposition = Integer(audit["oppositionTotal"], int.MinValue, int.MaxValue);
+            Require(Integer(audit["margin"], long.MinValue, long.MaxValue) == player - opposition, "Exchange margin differs.");
+            margin = side == "opposition" ? player - opposition : opposition - player;
+            ValidateDiceSelection(source, evidence, audit);
+        }
         Require(Integer(source["harmfulMargin"], long.MinValue, long.MaxValue) == margin, "Affected-side margin differs.");
-        ValidateDiceSelection(source, evidence, audit);
 
         var kind = Text(source["appliedArtKind"]);
         Require(kind is "standard" or "special", "Invalid applied art kind.");

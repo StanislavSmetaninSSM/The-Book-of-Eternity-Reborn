@@ -5855,7 +5855,10 @@ public partial class ValidationService
         return ConflictNodeStringEquals(proof, "force_incarnation", "operationType", "finalOperationType");
     }
 
-    private static bool IsExplicitVoluntaryNonContest(JsonObject root)
+    /// <summary>Shares the existing explicit voluntary classification without supplying admission authority.</summary>
+    /// <param name="root">Exchange or proof already subject to its normal owning validation.</param>
+    /// <returns>Whether the existing operation and explicit choice markers describe a non-contest.</returns>
+    internal static bool IsExplicitVoluntaryNonContest(JsonObject root)
     {
         var operationType = AfterlifeSpiritualConflictState.GetNodeString(root["operationType"]) ??
                             AfterlifeSpiritualConflictState.GetNodeString(root["finalOperationType"]);
