@@ -24,7 +24,7 @@
     },
     {
       "category": "wound-chronology-ownership-source-guards",
-      "reason": "Original T149/T107 changed wound reader/producer files retain actual ownership inventory anchors and confine legacy aliases to approved scopes.",
+      "reason": "Original T149/T107 ownership source scans and the modified typed ledger detachment/roundtrip/replay Fact protect the new parsed-row accessor.",
       "contracts": [
         "#1536 FR027/036 / T107 exact chronological wound composition, preserving source/owner/History/GM contracts"
       ]

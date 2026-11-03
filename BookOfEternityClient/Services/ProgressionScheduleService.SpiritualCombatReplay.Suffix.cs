@@ -18,19 +18,19 @@ public partial class ProgressionScheduleService
             throw new InvalidDataException("Later combat re-trauma requires the same active healed wound.");
         var suffix = history.Transitions.Where(row => row.WoundId == healed.WoundId &&
             row.WoundTransitionOrdinal > healed.LastTransition.Ordinal).ToArray();
-        var root = ledger.ReadRoot();
+        var (sourceRows, decisionRows) = ledger.ReadDetachedInjuryRows();
         var instanceId = entry["instanceId"]!.GetValue<string>();
         var snapshotToken = entry["witness"]!["snapshotToken"]!.GetValue<string>();
         bool SameOriginal(JsonNode binding) => binding["sessionId"]!.GetValue<string>() == sessionId &&
             binding["requestId"]!.GetValue<string>() == requestId &&
             binding["snapshotToken"]!.GetValue<string>() == snapshotToken && binding["turn"]!.GetValue<int>() == turn;
-        var decisions = root["decisions"]!.AsArray().OfType<JsonObject>().Where(row =>
+        var decisions = decisionRows.Where(row =>
             row["instanceId"]!.GetValue<string>() == instanceId && row["decision"]!.GetValue<string>() == "materialize" &&
             row["woundId"]?.GetValue<string>() == healed.WoundId && SameOriginal(row["binding"]!))
             .ToDictionary(row => row["transitionId"]!.GetValue<string>(), StringComparer.Ordinal);
         if (suffix.Length == 0 || suffix.Length > 4 - healed.Severity.Rank || decisions.Count != suffix.Length)
             throw new InvalidDataException("Later combat History lacks its exact receipted transition set.");
-        var sources = root["sources"]!.AsArray().OfType<JsonObject>().ToDictionary(
+        var sources = sourceRows.ToDictionary(
             row => row["witness"]!["sourceId"]!.GetValue<string>(), StringComparer.Ordinal);
         var rows = new List<(JsonObject Decision, JsonObject Harm, WoundMaterializationEnvelope Before)>(suffix.Length);
         var lastExchange = entry["witness"]!["turnExchangeOrdinal"]!.GetValue<int>();

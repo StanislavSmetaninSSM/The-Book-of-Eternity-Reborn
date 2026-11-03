@@ -108,6 +108,11 @@ internal sealed partial class SpiritualWoundOpportunityReceiptState
 {
     internal bool HasCombatHealing => _root["healingSources"] is JsonArray { Count: > 0 };
 
+    /// <summary>Returns detached validated injury rows for History comparison, never mutation or publication permission.</summary>
+    internal (JsonObject[] Sources, JsonObject[] Decisions) ReadDetachedInjuryRows() =>
+        (_root["sources"]!.AsArray().Select(row => row!.DeepClone().AsObject()).ToArray(),
+         _root["decisions"]!.AsArray().Select(row => row!.DeepClone().AsObject()).ToArray());
+
     // The enclosing parser already checked source/outcome bijection and every
     // closed calculation. These queries return only detached comparison DATA.
     internal JsonObject? ReadCombatOutcome(string sessionId, string requestId, int turn)

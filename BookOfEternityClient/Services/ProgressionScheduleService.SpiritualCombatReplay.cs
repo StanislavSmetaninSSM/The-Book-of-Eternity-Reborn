@@ -130,8 +130,8 @@ public partial class ProgressionScheduleService
         {
             if (!catalog.TryResolveOne(source.Before.WoundId, out var current) || current.Wound.Recovery.LastTickKey != source.Before.Recovery.LastTickKey)
                 throw new InvalidDataException("Blocked combat changed natural tick or lost its original wound.");
-            var receipt = StrictJsonAuthority.Deserialize<JsonObject>(receiptJson!, JsonOpts, "combat receipt")!;
-            var incoming = receipt["sources"]!.AsArray().OfType<JsonObject>().Where(row =>
+            var (injurySources, injuryDecisions) = ledger.ReadDetachedInjuryRows();
+            var incoming = injurySources.Where(row =>
                 row["instanceId"]!.GetValue<string>() == entry["instanceId"]!.GetValue<string>() &&
                 row["witness"]!["conflictId"]!.GetValue<string>() == intent.ConflictId &&
                 row["witness"]!["exchangeId"]!.GetValue<string>() == source.ExchangeId &&
@@ -142,7 +142,7 @@ public partial class ProgressionScheduleService
                 row["witness"]!["turnEvidence"]!["turn"]!.GetValue<int>() == turn).ToArray();
             var changes = history.State.Transitions.Where(t => t.WoundId == source.Before.WoundId &&
                 t.WoundTransitionOrdinal > source.Before.LastTransition.Ordinal).ToArray();
-            var materialized = receipt["decisions"]!.AsArray().OfType<JsonObject>().Where(d =>
+            var materialized = injuryDecisions.Where(d =>
                 d["decision"]?.GetValue<string>() == "materialize" && d["woundId"]?.GetValue<string>() == source.Before.WoundId &&
                 incoming.Any(row => row["witness"]!["sourceId"]!.GetValue<string>() == d["sourceId"]?.GetValue<string>())).ToArray();
             if (changes.Length != materialized.Length || changes.Length > 1)

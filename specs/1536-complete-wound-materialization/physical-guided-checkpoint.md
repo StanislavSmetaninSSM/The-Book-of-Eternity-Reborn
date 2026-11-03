@@ -27,7 +27,7 @@ its checks and exact preimage-string guarantee hashing remain intact.
 
 Optimization: C1 reuses its existing per-exchange claims instead of rescanning or
 reconstructing them, lifetime one synchronous owner-bound Compose. Replay reuses
-parsed canonical catalog/History/resources, one detached receipt and transient
+parsed canonical catalog/History/resources, one detached injury-row projection and transient
 indexes, with selected preimages and state fingerprints computed once. The maximum
 four severity ranks imply at most three strictly worsening suffix steps; impossible
 longer suffixes refuse before retained-wound work. No persistent cache, repeated
@@ -36,12 +36,19 @@ resource/scheduler/world/source guards remain outside and before this DATA join.
 
 Existing GM guide/matrix/worked example/manifest/one guidance Fact now explain
 client-owned exchange-local claims and the exact later suffix without new authored
-fields, second healing or world cycle. Default affected selection is 10 cases in
-four leaves: cheap guidance1+ownership guards2, new real chronology1 with three
+fields, second healing or world cycle. Default affected selection is 11 cases in
+four leaves: cheap guidance1+ownership guards2+typed detachment1, new real chronology1 with three
 after-valid detached refusals inside it, and six existing directly affected native
 healing/correction/guarantee/rollback cases. Those clones are not extra test cases.
-Original60s/120s budgets remain. No old zero85, unrelated accepted cases or HOLD
-is repeated. All new grouped code/tests are UNCOMPILED/UNRUN pending whole SOURCE,
+Original60s/120s budgets remain. Only the newly modified ledger Fact overlaps the old selection; unchanged zero85,
+unrelated accepted cases and HOLD are not repeated. Astra SOURCE caught a nonexistent ReadRoot call before builds. The correction
+uses a narrow existing-owner accessor returning only detached deep-cloned injury
+rows. Both resolved and blocked reads reuse those parsed rows; blocked no longer
+reparses the whole receipt JSON. The modified existing roundtrip Fact now calls
+typed APIs throughout and proves nested row mutations cannot change ledger state.
+No mutable private root is exposed. This adds one meaningful selected Unit case.
+
+All new grouped code/tests are UNCOMPILED/UNRUN pending whole SOURCE,
 fresh affected Main/Unit/Integration, exact discovery/Plan/PREP and qualification.
 Initial SAFE-stage criterion, author-pending semantics and all UNKNOWN/HOLD remain
 open. No general combat/QTE/turn rule or global #1536 closure.

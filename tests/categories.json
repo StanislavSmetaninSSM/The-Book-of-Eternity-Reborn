@@ -58,7 +58,7 @@
 },
 {
   "id": "wound-chronology-ownership-source-guards",
-  "responsibility": "Original T149/T107 changed wound reader/producer files retain actual ownership inventory anchors and confine legacy aliases to approved scopes.",
+  "responsibility": "Original T149/T107 changed wound reader/producer files retain actual ownership inventory anchors, confine legacy aliases, and keep detached validated injury DATA immutable with typed roundtrip/replay checks.",
   "excludes": "No broad suite, general combat/QTE/turn system, new gameplay/aggregation, initial SAFE-stage or old UNKNOWN/HOLD qualification.",
   "changeHints": [
   "BookOfEternityClient.Tests/WoundMaterializationSourceGuardTests.cs",
@@ -77,7 +77,8 @@
       "project": "unit",
       "tests": [
         "BookOfEternityClient.Tests.WoundMaterializationSourceGuardTests.WoundOwnershipInventory_ResolvesEveryDeclaredFileAndSemanticAnchor",
-        "BookOfEternityClient.Tests.WoundMaterializationSourceGuardTests.ProductionLegacyWoundOccurrences_AreConfinedToInventoriedSemanticScopes"
+        "BookOfEternityClient.Tests.WoundMaterializationSourceGuardTests.ProductionLegacyWoundOccurrences_AreConfinedToInventoriedSemanticScopes",
+        "BookOfEternityClient.Tests.SpiritualWoundOpportunityReceiptStateTests.Parse_RoundTripsDetachedHistoryAndExactReplay"
       ]
     }
   ]
