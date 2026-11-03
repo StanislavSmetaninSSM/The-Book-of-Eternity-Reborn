@@ -15,8 +15,11 @@ must be the GM's explicit decision. Rolled harm still derives its sealed margin
 from validated original dice before normalized critical display. All owner, actor,
 realm, consent, source, strain, envelope and severity-cap checks remain required.
 
-This rule is decided; its no-roll producer/admission implementation and qualification
-remain pending. Do not manufacture an opposed audit or declare this path qualified.
+This rule is decided. Its technical wire, chosen by implementation and independently
+design-reviewed, is exchange.spiritualWoundHarmfulMargins keyed by exact affected
+side with explicit signed64 value. Production/GM synchronization is WIP and runtime
+qualification remains pending. Do not manufacture an opposed audit or declare this
+path qualified from this rule or from pure DATA.
 See [formula contract](contracts/afterlife-spiritual-wounds-and-healing.md#wound-opportunity-formula).
 
 ## 2. Control burden — deferred by author

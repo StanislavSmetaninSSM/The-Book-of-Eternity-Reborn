@@ -54,7 +54,13 @@ of 2026-11-02 is explicit GM discretion for `harmfulMargin`: retain the GM's cho
 value in the authoritative source/result contract and validate its typed data and
 original context. Never infer zero, fabricate opposed dice or introduce a new
 formula. Other formula terms, eligibility, consent and all caps remain unchanged.
-This no-roll admission path still requires implementation and qualification.
+The technical source wire is exchange.spiritualWoundHarmfulMargins: exact affected
+increasing-strain side (player/opposition) to signed64 integer, only an existing
+explicit voluntary non-contest with absent diceAudit. Missing remains pending;
+explicit0 is a choice. Reject rolled overrides, malformed/extra/nested/alias maps
+and malformed supplied matchupAudit. Retain the map in authoritative exchange and
+scalar in existing witness; no fake dice, new formula or receipt version. Production
+implementation is WIP and still requires qualification.
 
 The user-approved source rule (2026-09-08) is no additional ordinary-action cap:
 the source term is neutral IV unless an exact pre-materialized canonical source

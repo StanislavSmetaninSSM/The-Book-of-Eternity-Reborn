@@ -619,6 +619,7 @@ public sealed partial class ExampleDocumentationValidationTests
         var manifest = ExampleValidationManifest.Load();
         var expected = new Dictionary<string, string>(StringComparer.Ordinal)
         {
+            ["spiritual_wound_no_roll_source_v1"] = "E_CLI_Spiritual_NoRoll_Wound.txt",
             ["spiritual_wound_strain_result_v1"] = "E_CLI_Afterlife_Turns.txt",
             ["mortal_guided_treatment_execution_v1"] = "E_CLI_Wound_Materialization.txt",
             ["mortal_diagnosis_execution_v1"] = "E_CLI_Wound_Materialization.txt",

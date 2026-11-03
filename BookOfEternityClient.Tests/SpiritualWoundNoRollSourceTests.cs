@@ -46,6 +46,8 @@ public sealed class SpiritualWoundNoRollSourceTests
     [InlineData("not-voluntary")]
     [InlineData("null-audit")]
     [InlineData("scalar-audit")]
+    [InlineData("null-matchup")]
+    [InlineData("scalar-matchup")]
     [InlineData("scalar-mismatch")]
     [InlineData("map-mismatch")]
     [InlineData("claimed-die")]
@@ -71,6 +73,8 @@ public sealed class SpiritualWoundNoRollSourceTests
             case "not-voluntary": exchange["voluntary"] = false; break;
             case "null-audit": exchange["diceAudit"] = null; break;
             case "scalar-audit": exchange["diceAudit"] = 1; break;
+            case "null-matchup": exchange["matchupAudit"] = null; break;
+            case "scalar-matchup": exchange["matchupAudit"] = 1; break;
             case "scalar-mismatch": source["harmfulMargin"] = 11; break;
             case "map-mismatch": exchange["spiritualWoundHarmfulMargins"]!["player"] = 11; break;
             case "claimed-die": source["turnEvidence"]!["diceClaims"] = SpiritualWoundSourceWitnessTests.Source()["turnEvidence"]!["diceClaims"]!.DeepClone(); break;

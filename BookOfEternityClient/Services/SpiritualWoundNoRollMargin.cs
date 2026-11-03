@@ -18,7 +18,9 @@ internal static class SpiritualWoundNoRollMargin
         var noRoll = !exchange.ContainsKey("diceAudit") && ValidationService.IsExplicitVoluntaryNonContest(exchange);
         if (!exchange.ContainsKey(Property)) return (noRoll, null);
         Require(noRoll, "GM wound margins require an explicit voluntary exchange without a dice audit.");
-        var margins = Object(exchange[Property]);
+        Require(!exchange.ContainsKey("matchupAudit") || exchange["matchupAudit"] is JsonObject,
+            "A supplied matchup audit must be an object.");
+        var margins = exchange[Property] as JsonObject ?? throw new FormatException("GM wound margins must be an object.");
         Require(margins.Count > 0, "At least one explicit GM wound margin is required.");
         foreach (var pair in margins)
         {

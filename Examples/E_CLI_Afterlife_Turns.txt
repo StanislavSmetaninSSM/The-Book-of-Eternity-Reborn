@@ -14584,3 +14584,7 @@ original creation evidence. This fragment does not itself prove runtime or heali
 Private completion is not accepted-turn publication. Other consumer combinations
 and the still-unimplemented no-roll GM-choice producer are not authorized by this fragment.
 end_spiritual_wound_strain_result_v1
+
+For the separate spiritual_wound_no_roll_source_v1 voluntary incoming-harm fragment,
+read Examples/E_CLI_Spiritual_NoRoll_Wound.txt and the Wound_Materialization_Contract.
+It adds no extra JSON block to this existing full-turn example.

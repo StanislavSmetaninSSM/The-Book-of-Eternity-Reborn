@@ -703,8 +703,30 @@ in `Examples/E_CLI_Afterlife_Turns.txt`. Other unresolved profiles are unchanged
 For voluntary non-contested spiritual harm without an opposed roll, the GM explicitly
 chooses harmfulMargin. The client must retain that choice under the authoritative
 source/result contract and validate it normally; do not invent opposed dice or use
-automatic zero. This producer/admission route is not yet connected: do not treat
-these rules as permission to edit client-owned receipts or fabricate authority.
+automatic zero. Use `spiritual_wound_no_roll_source_v1` below; the new source path
+is in implementation/qualification, not accepted merely by this documentation.
+Never edit client-owned receipts or fabricate authority.
+
+## spiritual_wound_no_roll_source_v1
+
+Only for an already lawful explicit voluntary non-contest with **absent**
+`diceAudit`, put `spiritualWoundHarmfulMargins` on the exchange itself. It is an
+object keyed by the exact AFFECTED side `player` or `opposition`; each supplied
+value is the GM's explicit signed64 integer for that side's increasing strain.
+Example: `"spiritualWoundHarmfulMargins": {"player": 10}` describes incoming harm
+to the player, not the acting side. Choose each affected side independently; never
+negate one choice to invent the other. Strings, fractions, null, unknown/extra sides,
+non-increasing sides, nested maps and alias names are invalid. A supplied
+`matchupAudit` must be a valid object; it may be omitted for the genuine no-roll lane.
+
+Missing choice remains unresolved; explicit0 is a real choice, not a default. All
+existing tier/resilience/strain/danger/source-cap and guaranteed-art rules still
+apply, so zero does not universally mean zero severity. Rolled exchanges retain
+actual validated dice margins and reject this override. Do not invent a dice audit,
+indices, claims, computed pressure or maximum severity. The client retains the
+exact choice in the authoritative exchange and existing source comparison witness;
+only original owner/cold replay proves its authority. Read the worked fragment in
+`Examples/E_CLI_Spiritual_NoRoll_Wound.txt`; it is not a complete turn or a receipt.
 
 Control burden, counter burden and partial art restriction at III are deferred by
 the author until spiritual combat is revised. They are not implemented, not marked

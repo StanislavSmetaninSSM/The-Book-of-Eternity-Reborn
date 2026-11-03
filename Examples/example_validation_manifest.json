@@ -2,6 +2,28 @@
   "version": 1,
   "effectMaterializationCoverage": [
 {
+  "contractId": "spiritual_wound_no_roll_source_v1",
+  "file": "E_CLI_Spiritual_NoRoll_Wound.txt",
+  "statePath": "existing authoritative spiritual exchange plus retained source comparison witness",
+  "responseSurface": "exchange.spiritualWoundHarmfulMargins keyed by exact affected side",
+  "realms": [
+    "Chaos Sea",
+    "Shining Abode"
+  ],
+  "description": "Explicit signed GM harmfulMargin for an already lawful absent-dice voluntary source; no automatic zero, fake dice or rolled override. Existing caps/costs/guarantees and original owner remain.",
+  "validationKind": "focused-fragment",
+  "focusedFragmentReason": "SpiritualWoundNoRollGuidanceTests parses the full worked exchange with production retained shape/rules/map/witness validators; native source/C2/C4 owns actual authority and publication.",
+  "coverageLimit": "Typed fragment and GM guidance only; no original-owner, complete-turn, Engine/UI or accepted runtime claim.",
+  "requiredText": [
+    "spiritual_wound_no_roll_source_v1 — worked",
+    "spiritualWoundHarmfulMargins",
+    "Missing remains unresolved; explicit0 is not a default",
+    "Rolled exchanges reject this override",
+    "No direct receipt/History writes",
+    "end_spiritual_wound_no_roll_source_v1"
+  ]
+},
+{
     "contractId": "spiritual_wound_strain_result_v1",
     "file": "E_CLI_Afterlife_Turns.txt",
     "statePath": "existing original signed pressure/setback or maneuver/setback against guard and private C2 dependent draft",

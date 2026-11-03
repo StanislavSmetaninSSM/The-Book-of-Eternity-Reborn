@@ -371,15 +371,20 @@ example. Author optional exact `spiritualWoundTarget {actorType, actorId, option
 retraumaWoundRef}` only on the player exchange or opposition `incomingAction`.
 Absence uses the original affected-side lead; an explicit actor is an original member
 of that affected side, and re-trauma uses canonical prior wound/history authority.
-Never invent or choose mechanical tier, source cap, harmful margin, guarantee, dice
-values, or outcome. Preserve required cost/dice reports copied from original client
+Never invent mechanical tier, source cap, guarantee, dice values or rolled harmful
+margin. The sole no-roll exception is the author-approved explicit GM choice in
+`spiritual_wound_no_roll_source_v1`: exchange-level `spiritualWoundHarmfulMargins`,
+exact AFFECTED increasing-strain side and signed64 value, absent diceAudit, existing
+voluntary non-contest checks. Missing remains unresolved; explicit0 is not a default.
+The detailed guide and `Examples/E_CLI_Spiritual_NoRoll_Wound.txt` define placement,
+typed refusals and unchanged caps/guarantees. Never replace a rolled margin. Preserve required cost/dice reports copied from original client
 data and report only checked outcomes. The exact five computed action/audit fields are
 `traumaPressure`, `sourceSeverityCap`, `maximumSeverityRank`,
 `guaranteedSeverityRank`, and `spiritualWoundEnvelope`; never author them. A terminal
 resolution carries the complete existing `terminalExchange` and matching contested
 `diceAudit`, not a totals summary. Source-local preparation is not wound admission or
-a receipt: start/escalation/prefix/terminal, passive, champion, and dice-free voluntary
-contours remain pending for client-owned C/D/E proof. Dissipation stays optional.
+a receipt: start/escalation/prefix/terminal, passive and champion contours remain pending for client-owned C/D/E proof.
+A dice-free voluntary source with missing explicit margin also remains pending. Dissipation stays optional.
 
 The spiritual conflict danger declaration is mandatory: put `dangerMode` in the selected `conflictState`/`activeConflict`/`conflictSeed` of `mode=start`, canonical `activeConflict`, and every `recentConflicts[]` proof. Use exactly `training`, `controlled`, `hostile`, or `annihilation`: lowercase JSON strings without surrounding whitespace. There is no implicit mode or old-save fallback. Ordinary exchanges and partial `activeConflictAfter`/`conflictStateAfter` replacements may omit the field and preserve the accepted declaration; explicit echoes must match exactly, including in the update root and exchange `before`/`after`. `resolve` and `repair_cancel` copy that declaration into the terminal proof and cannot replace it. During a validated turn, every retained same-ID active/recent occurrence is compared with the signed pre-turn declarations; a missing, invalid or conflicting baseline fails closed, and a later duplicate cannot hide a change. Legal removal from the bounded recent-history window is unchanged. Do not infer escalation after a roll or submit a boolean as escalation authority. This declaration/persistence stage does not implement accepted escalation, wound production or healing. The declared wound ceilings remain training 0, controlled II, hostile/annihilation IV; wounds are optional GM choices within validated limits, and soul dissipation remains separately authorized and always optional.
 

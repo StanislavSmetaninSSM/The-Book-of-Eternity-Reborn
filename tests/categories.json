@@ -2,8 +2,159 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "wounds-spiritual-no-roll-guidance",
+  "responsibility": "One cheap worked GM example: parse actual new fragment through production retained shape/rules/map/witness; pin manifest and detailed/matrix entrypoint guidance, explicit zero versus missing.",
+  "excludes": "No complete GameResponse, original authority, live GM or publication claim.",
+  "changeHints": [
+    "BookOfEternityClient/Services/SpiritualWoundNoRollMargin.cs",
+    "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualNoRoll.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.SpiritualWoundNoRollGuidanceTests.*"
+      ]
+    }
+  ]
+},
+{
+  "id": "wounds-spiritual-rolled-retained-rule-regression",
+  "responsibility": "Eleven existing intrinsic rolled controls directly affected by conditional retained dice/matchup handling: ten malformed operation/control/cost/matchup refusals and forged totals refusal.",
+  "excludes": "No full witness suite, native admission or old HOLD.",
+  "changeHints": [
+    "BookOfEternityClient/Services/SpiritualWoundNoRollMargin.cs",
+    "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualNoRoll.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.SpiritualWoundSourceWitnessTests.Validate_RejectsMalformedIntrinsicExchange",
+        "BookOfEternityClient.Tests.SpiritualWoundSourceWitnessTests.Validate_RejectsSelfConsistentForgedTotals"
+      ]
+    }
+  ]
+},
+{
+  "id": "wounds-spiritual-no-roll-owner-standard",
+  "responsibility": "Two actual native source-owner cases: standard GM choices0 and10, empty claims, immutable owned source, coherent prospective margin replacement refuses and repaired same owner retains original.",
+  "excludes": "No C2/C4/wound publication; same60s bound as existing source contour.",
+  "changeHints": [
+    "BookOfEternityClient/Services/SpiritualWoundNoRollMargin.cs",
+    "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualNoRoll.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.NoRollSource_StandardChoiceKeepsOwnedOriginal"
+      ]
+    }
+  ]
+},
+{
+  "id": "wounds-spiritual-no-roll-owner-special",
+  "responsibility": "One actual native no-roll source bound to its original acquired Guardian art and real six-point cost, empty claims and coherent changed-choice refusal.",
+  "excludes": "No new guarantee rule, C2/C4 publication or source-cap bypass; source60s.",
+  "changeHints": [
+    "BookOfEternityClient/Services/SpiritualWoundNoRollMargin.cs",
+    "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualNoRoll.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.NoRollSource_SpecialChoiceKeepsOriginalArtAndCosts"
+      ]
+    }
+  ]
+},
+{
+  "id": "wounds-spiritual-no-roll-missing-choice",
+  "responsibility": "Two affected existing lawful no-roll missing-choice cases, standard and special, remain pending actual source after fixture extraction and new explicit-choice path.",
+  "excludes": "No fabricated zero/dice, admission or publication; source60s.",
+  "changeHints": [
+    "BookOfEternityClient/Services/SpiritualWoundNoRollMargin.cs",
+    "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualNoRoll.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SourceOwner_DiceFreeVoluntaryIncomingHarmRemainsPendingActualSource"
+      ]
+    }
+  ]
+},
+{
+  "id": "wounds-spiritual-no-roll-publication",
+  "responsibility": "Two actual in-process native routes: explicit10 cold C2 real player I wound/History/effects and explicit0 source-only common C4/no injury; one actual opponent spend, consumed authority, retained GM map and signed next-turn read.",
+  "excludes": "No terminal healing, Engine/UI/fresh OS process, general combat changes or old HOLD. Existing common C4 protective180s for this bounded pair.",
+  "changeHints": [
+    "BookOfEternityClient/Services/SpiritualWoundNoRollMargin.cs",
+    "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualNoRoll.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 3,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.NoRollSource_ColdChoiceUsesCommonPublicationAndSignedHistory"
+      ]
+    }
+  ]
+},
+{
   "id": "wounds-spiritual-no-roll-source-data",
-  "responsibility": "#1536 T081-D-NO-ROLL twenty-seven cheap typed DATA cases: five explicit signed GM margins including zero and Int64 edges, seventeen missing/malformed/contradictory choice or invented-claim refusals, five map-placement/rolled/non-harm guards before source filtering.",
+  "responsibility": "#1536 T081-D-NO-ROLL twenty-nine cheap typed DATA cases: five explicit signed GM margins including zero and Int64 edges, nineteen missing/malformed/contradictory choice, supplied-matchup or invented-claim refusals, five map-placement/rolled/non-harm guards before source filtering.",
   "excludes": "No original GM-choice authority from resealed DATA, real owner, C2/C4 publication, combat changes, new dice or old HOLD replay. Coherent replacement belongs to owned/cold source controls.",
   "changeHints": [
     "BookOfEternityClient/Services/SpiritualWoundSourceWitness.cs",

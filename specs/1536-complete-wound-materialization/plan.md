@@ -1,3 +1,31 @@
+# No-roll GM/source/fixture whole delta WIP — UNCOMPILED/UNRUN
+
+Production SOURCE on3386589 found two concrete defects before build: nonexistent
+shared Object helper and present-null/scalar matchup omission. Fixed by exact
+JsonObject cast and new-map-only supplied-matchup guard; no legacy no-choice change.
+Two new refusal inputs extend original27 to29, preserving all causal27 source bodies.
+Other reviewed producer/witness/retained paths had no actionable finding; frozen
+corrected whole delta still requires final SOURCE. No test outcome is implied.
+
+GM sync: detailed Wound contract, Afterlife matrix and existing afterlife example
+pointer, new complete exchange fragment E_CLI_Spiritual_NoRoll_Wound.txt, focused
+manifest entry and exact completeness consumer. Existing single-JSON full example
+shape remains intact. Typed Unit guidance parses actual fragment. Existing daemon/
+CLI entrypoints already load matrix/detailed contract; no command/protocol change
+or Mortal rule changes, so no separate Mortal/launcher prompt field is added.
+
+Reused/extracted the existing lawful no-dice incoming fixture; special art remains
+configured before signed snapshot. New actual owner standard2 (0/10)/special1 and
+existing missing-choice2, each own source60s category. Actual C4 pair2 uses existing
+180s common-publication bound: positive cold C2 selects real I player wound, zero
+source-only reduction, one opponent spend, exact map/receipt/History, consumed
+publication authority and signed43. No fake claims or post-acceptance preparation.
+These are written, not yet runtime-proved. Exact discovery and PREP remain required.
+CI selects9categories/expected70cases: Unit29+21+11+guidance1, manifest1,
+source2+1+missing2, actual C4pair2; no broad suite or old HOLD. Counts provisional
+until official discovery. Existing immutable templates/services reused; scalar map
+work has no new cache/I/O and no measured speedup claim. Full raw outside checkout.
+
 # No-roll causal RED accepted; minimal source implementation WIP
 
 J1 at91ade1d3acabbdfbba96e7a31e6e0f153d00d4ce: fresh Unit36.879199s,

@@ -1,3 +1,12 @@
+# T081-D-NO-ROLL whole implementation WIP
+
+Code/GM docs/worked example/manifest and real owner/C2/C4 fixtures now written,
+UNCOMPILED/UNRUN. Two initial SOURCE findings corrected (cast, malformed supplied
+matchup); cheap current29 preserves original27 causal17PASS/10FAIL plus2new guards.
+Final SOURCE, fresh Main/Unit/Integration, exact discovery/cheap GREEN and separate
+real PREP remain. Existing H4 III→I acceptance and old UNKNOWN/HOLD unchanged.
+Full proposed selection/provenance and optimization assessment in plan.md.
+
 # T081-D-NO-ROLL source WIP after genuine RED
 
 J1 causal27 on91ade:17PASS/10FAIL, independent Sol OUTCOME accepted; exact facts
