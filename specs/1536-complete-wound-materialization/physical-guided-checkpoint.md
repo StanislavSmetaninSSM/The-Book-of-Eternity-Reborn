@@ -54,8 +54,9 @@ test asserts private images in-process; it does not separately emit all path ima
 Existing NullLogger output retains no unique inner rejection issue, so the cause
 cannot yet be classified as production or fixture failure. No speculative fix or rerun.
 
-SOURCE/PREP accepted by independent Sol 6.1 / xhigh. Independent final OUTCOME and
-documentation review are pending. Owned/runtime cleanup succeeded; no new boe temp
+SOURCE/PREP and final OUTCOME accepted by independent Sol 6.1 / xhigh as a
+complete failing run (5 PASS / 2 FAIL), not acceptance of retry7. Compact documentation
+review remains pending. Owned/runtime cleanup succeeded; no new boe temp
 roots or managed owners remain, all artifact hashes are unchanged. Full raw is outside
 checkout, without quotas/truncation:
 `/workspace/tboe-linux-evidence-20261103/t154-mixed-consumption7`.

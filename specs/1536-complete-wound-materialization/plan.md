@@ -6,7 +6,8 @@ and `cleanup,1` fail only at retry: expected Accepted, actual TerminalRejected.
 All seven pass preceding exact byte/existence rollback and original authority rearm;
 five pass final once-only item/resource/capacity transitions. Inner rejection reason
 is not retained by the unchanged NullLogger fixture; no fix or rerun was attempted.
-SOURCE/PREP accepted; independent final OUTCOME/documentation review pending.
+Independent Sol 6.1 / xhigh SOURCE/PREP and OUTCOME accepted this complete failing
+run; compact documentation review remains pending.
 No production/test source changed, no broad lifecycle category or accepted rollback24
 repeated. Full raw/proof hashes and precise limits are in physical-guided-checkpoint.
 Whole T154/#1536 and unrelated UNKNOWN/HOLD remain open.
