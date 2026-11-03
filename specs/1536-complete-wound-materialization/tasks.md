@@ -1,3 +1,11 @@
+# T081-D-NO-ROLL — next functional source, DESIGN WIP
+
+- [x] Reconcile author rule with existing math, retained witness, source owner and lawful negotiate/voluntary incoming-harm fixture.
+- [ ] Independent DESIGN of per-affected-side explicit GM choice in existing exchange/source path; technical proposal in plan.md.
+- [ ] Cheap causal source tests, source/GM-contract implementation and SOURCE review.
+- [ ] Fresh affected builds/exact cheap GREEN and rolled-source guards, bounded real owner/C2/C4/cold replay acceptance.
+- [ ] OUTCOME and verified checkpoint; no default0/fake dice, no broad combat/HOLD expansion.
+
 # T081-D current accepted slice — real weakening and signed history
 
 - [x] Genuine signed-byte12 RED:7PASS/5FAIL, then same12 GREEN; independent causal OUTCOME.

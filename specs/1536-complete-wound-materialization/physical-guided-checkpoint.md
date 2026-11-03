@@ -1,3 +1,13 @@
+# Next functional step — no-roll GM margin, DESIGN WIP
+
+Accepted prior checkpoint72a300fdc (runtime25ea) remains clean/accepted. Current work
+is only the bounded plan for the approved GM-selected harmfulMargin producer:
+explicit per-affected-side values in existing exchange/witness/receipts, empty
+no-roll claims, existing calculation/caps/owners and cold replay. Existing lawful
+negotiate/voluntary incoming-harm fixture is available. Independent DESIGN before
+code; all new no-roll tests/runtime UNRUN. Technical schema is a proposal in plan.md,
+not an additional author game rule. Old UNKNOWN/HOLD and author deferrals unchanged.
+
 # Current accepted wound route — 2026-11-03
 
 Linux runtime25ea8b0b5b8ba5339e1b1ab4d0602c7530293ca5: decoder fix cheap12GREEN and

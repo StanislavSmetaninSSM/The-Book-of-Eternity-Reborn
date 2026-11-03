@@ -1,3 +1,90 @@
+# Explicit GM no-roll wound margin — implementation plan / DESIGN WIP
+
+Goal: finish the author-approved voluntary spiritual harm source without an opposed
+roll, retaining the GM's actual harmfulMargin through existing owned C1/C2/C3/C4 and
+cold replay. Architecture: extend the existing exchange/source witness path, reuse
+SpiritualWoundOpportunityMath and the existing no-contest predicate; no new combat,
+roll, cache or independent decision journal. Tech: current C#/.NET8, native Linux
+package and official bounded category runner. Spec: contracts/afterlife-spiritual-wounds-and-healing.md
+lines49–57 and author-decisions-20261102.md; source issue#1536. Technical wire shape
+below is the implementer's proposal, not a new rule attributed to the author.
+
+Global constraints: wounds only; explicit GM discretion, no default0/new formula/
+fabricated dice; actual tiers/resilience/danger/source caps/guarantees and consent
+checks remain; fresh ownership/byte/History/source fences; full raw outside checkout;
+independent DESIGN/SOURCE/OUTCOME and exact categories; no old HOLD replay/merge/force.
+
+Review focus: missing versus explicit0; rolled override; wrong/extra side or malformed
+integer; changed retained choice with re-sealed witness; empty dice claims/cold
+replay/exactly-once. Pin each with independent typed controls below.
+
+Proposed wire: optional exchange.spiritualWoundHarmfulMargins object, keyed by exact
+AFFECTED side player/opposition, integral signed64 values for actual increasing
+strain sides. Both sides need independent choices; never negate/derive one from
+the other. Only an exchange already accepted by the current explicit voluntary
+non-contest rule, with no diceAudit, may use it. Missing required choice stays
+unresolved (existing AppliedSourceBinding pending path); explicit0 is an actual
+choice, may calculate no positive wound and stays in the canonical exchange.
+Malformed/unknown/wrong-side/extra or rolled-choice override refuses. Existing
+arithmetic overflow handling, caps and special-art binding/guarantees remain exact.
+Retain the map in exchangeJsonBase64 and the chosen scalar in existing witness
+harmfulMargin. No new witness/receipt version or fake dice object. No-roll source
+selectedDiceIndices and exchange evidence diceClaims must be empty; original pool
+and other exchanges' claims remain unchanged.
+
+Task1 — cheap causal source/choice proof, tracked T081-D-NO-ROLL:
+- Files: new Unit SpiritualWoundNoRollSourceTests.cs; reuse internal Source() from
+  SpiritualWoundSourceWitnessTests, existing typed hash/math helpers; catalog/selection.
+- Construct the already lawful no-roll negotiate/voluntary incoming-pressure shape
+  from the existing SourceOwner_DiceFreeVoluntaryIncomingHarmRemainsPendingActualSource
+  fixture. Independently validate normal retained shape/rules before source assertion.
+- Positive chosen10→maximumI and explicit0→maximum0, no dice/claims; missing choice,
+  wrong side/type/out-of-range/unknown key, forged source scalar/retained map and
+  rolled override controls. Preserve actual current rolled witness21 contracts.
+- Fresh affected Unit/PlanOnly and genuine cheap RED before producer implementation;
+  failed compile or baseline preparation is not RED.
+
+Task2 — one existing source pipeline, no parallel subsystem:
+- Create Services/SpiritualWoundNoRollMargin.cs: internal pure Read(JsonObject exchange,
+  string affectedSide) returns typed (IsVoluntaryNoRoll, long? ChosenMargin), never
+  authority. Reuse the exact existing IsExplicitVoluntaryNonContest predicate via
+  internal shared access; validate map/type/side/absence without implicit numeric0.
+- Modify ValidationService.SpiritualWoundSourceAdmission.PrepareHarm to use explicit
+  choice only in the validated no-roll lane; missing remains pending, rolled margin
+  remains widened signed actual totals. Reuse existing calculation/source/envelope.
+- Modify SpiritualWoundSourceWitness.ValidateAndReadStrainData only for the same
+  no-roll lane: exact retained map/scalar, empty selected/claims; normal rolled
+  ValidateRetainedSpiritualDiceAudit/ValidateDiceSelection untouched. Strict shape,
+  art/target/realm/chronology/guarantee and source fingerprint checks still apply.
+- Full key/lifetime: existing C1 source/retained exchange owns immutable input,
+  raw exchange map is already in source/packet hashes; fresh owner/readset checks
+  stay. Two scalar choices are cheap; no new cache or extra filesystem reads.
+
+Task3 — complete GM contract and bounded real delivery:
+- Update canonical contract/spec/plan/tasks/author implementation status and
+  OtherGuides/Wound_Materialization_Contract.md, Afterlife_Contract_Matrix.md,
+  worked example and example_validation_manifest/source guard as needed. Use a
+  separate valid no-roll worked fragment if the existing single-JSON example
+  parser cannot accept another block; don't silently break existing example shape.
+- Reuse existing lawful incoming-harm fixture for source-owner chosen10/0 controls
+  (standard/special bindings as applicable), not a new world generator. All original
+  profile/resource setup before snapshot; no source/dice/resource shortcuts.
+- One owned positive C2 choice/cold reopen/common C4: chosen10 retained unchanged,
+  source maximumI, no dice indices/claims, correct paid action/source tiers, real
+  wound/History/receipt and canonical map. Changed input refuses; accepted replay
+  pays/materializes once. Explicit0 control proves no invented wound/default.
+- Whole independent DESIGN first; then cheap RED, implementation+GM sync, SOURCE,
+  fresh affected builds, official discovery/exact PlanOnly, cheap GREEN/rolled
+  guards, separate real PREP and bounded actuals, OUTCOME and verified remote
+  checkpoint. Actual selectors/budgets follow existing60/180s source/C4 contours;
+  do not claim a fixed case count before discovery or raise limits for GREEN.
+
+Status: previous real III→I/old-root retirement/signed44 accepted72a300fdc on runtime25ea.
+This next plan is READ/DESIGN only; no no-roll source code or tests written/run yet.
+No new author decision is required for this technical proposal. If independent
+review finds a real gameplay contradiction, isolate it and continue independent
+wounds work rather than invent a rule. Whole #1536 and existing UNKNOWN/HOLD remain.
+
 # T081-D actual III→I and signed-history route accepted — 2026-11-03
 
 Runtime source25ea8b0b5b8ba5339e1b1ab4d0602c7530293ca5, Linux. Independent
