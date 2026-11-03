@@ -2,17 +2,31 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "wounds-spiritual-current-snapshot-data",
-      "reason": "#1536 T081-D-STRAIN-ACTOR-LIFETIME 13 cheap intrinsic current graph/identity/History cases: III/IV and worsened snapshot, player/guardian/resident, seven after-valid refusal controls and detached-envelope invariance. Existing active-wound query extraction, no live authority.",
+      "category": "wounds-spiritual-strain-partial-success",
+      "reason": "Four causal owner-path partial-success/ordinary-invalid controls; no new failure mapping.",
       "contracts": [
-        "#1536 T081-D-STRAIN-ACTOR-LIFETIME shared active wound carrier/identity/History query"
+        "#1536 T081-D FR022/025 failure-only spiritual wound strain; ordinary IsSuccessfulArtOutcome"
       ]
     },
     {
-      "category": "wounds-spiritual-current-snapshot-source-regression",
-      "reason": "#1536 T081-D-STRAIN-ACTOR-LIFETIME Four existing signed source-owner re-trauma cases moved intact from spiritual-cutover-c1: exact, absent target, History mismatch and signed-original versus current removal. Same assertions/fixtures, source-only authority not admission/publication.",
+      "category": "wounds-spiritual-strain-pressure-success",
+      "reason": "Affected existing exact-success pressure/source guard after reusing ordinary successful-outcome predicate.",
       "contracts": [
-        "#1536 T081-D-STRAIN-ACTOR-LIFETIME shared active wound carrier/identity/History query"
+        "#1536 T081-D FR022/025 failure-only spiritual wound strain; ordinary IsSuccessfulArtOutcome"
+      ]
+    },
+    {
+      "category": "wounds-spiritual-strain-maneuver-success",
+      "reason": "Affected existing maneuver success/no-source/cold guard after shared predicate change.",
+      "contracts": [
+        "#1536 T081-D FR022/025 failure-only spiritual wound strain; ordinary IsSuccessfulArtOutcome"
+      ]
+    },
+    {
+      "category": "wounds-spiritual-strain-guidance",
+      "reason": "Affected GM no-extra-strain guidance/example guard.",
+      "contracts": [
+        "#1536 T081-D FR022/025 failure-only spiritual wound strain; ordinary IsSuccessfulArtOutcome"
       ]
     }
   ]

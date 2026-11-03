@@ -1,3 +1,14 @@
+# T081-D-PARTIAL-SUCCESS [US3] — original failure-only consequence
+
+- [x] Bounded original-scope remainder and independent requirement reconciliation saved in physical-guided-checkpoint.md; parent boxes are not evidence of missing code.
+- [ ] Causal actual C2 partial_success pressure/maneuver controls and ordinary-impact refusal controls, reusing existing signed fixtures; production unchanged for RED.
+- [ ] Minimal existing-success-helper correction, GM no-extra-strain wording/example and SOURCE review, no new rule/schema/parent proof/cache.
+- [ ] Fresh affected builds, exact selected category/discovery/PREP, GREEN and affected success guards; independent OUTCOME and remote checkpoint.
+
+Only this unambiguous player pressure/maneuver case is selected. Both new author
+questions remain pending in strain-open-semantics-20261103.md; no proposal applied.
+The finite original remainder/UNKNOWN/HOLD boundaries are in the checkpoint above.
+
 # T081-D-STRAIN-ACTOR-LIFETIME [US3] — grouped remaining consumer/provenance
 
 - [x] Independent shared active-query extraction substep:17distinctPASS atd5bc (DATA13 then existing source4, not oneaggregate), fresh3builds/bindings/capture/cleanup and Astra/Sol SOURCE/PREP/OUTCOME. No new parentstrain/v2/rule/authority; first step only.

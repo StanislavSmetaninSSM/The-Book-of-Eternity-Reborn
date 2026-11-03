@@ -1,3 +1,15 @@
+# Finite original remainder fixed before further strain work
+
+See the six-row "Finite wounds-only remainder — 2026-11-03 04:50 UTC" in
+physical-guided-checkpoint.md for original requirements, actual code/evidence gaps
+and closure criteria. No new generalized combat/strain framework is mandated.
+Next independent correction: player pressure/maneuver partial_success already counts
+as successful under ordinary validators, so the wound must add no failure-only strain.
+Reuse those validators and fixtures; retain all actor/current-epoch/source checks.
+Causal scaffold and ordinary-result negative controls first; fresh affected builds,
+exact PlanOnly/PREP and independent SOURCE/OUTCOME. Pending author ambiguities and
+all previous UNKNOWN/HOLD remain unchanged. No new IO/cache or speedup claim.
+
 # Current-parent DATA checkpoint review complete
 
 Final3docdelta b1c2d6d999063b055b08e2c970511abdbbeb876b reviewed byAstra/high;

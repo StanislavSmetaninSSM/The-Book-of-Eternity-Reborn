@@ -10,16 +10,30 @@ public sealed partial class AfterlifeResourceCutoverTests
 {
     /// <summary>A real III maneuver burden preserves successful maneuver against guard, without creating another wound source.</summary>
     [Fact]
-    public async Task SpiritualStrainBurden_PlayerManeuverSuccessKeepsPositionAndCompletesWithoutNewSource()
+    public Task SpiritualStrainBurden_PlayerManeuverSuccessKeepsPositionAndCompletesWithoutNewSource() =>
+        VerifyManeuverStrainSuccessAsync("success", invalidOrdinaryImpact: false);
+
+    /// <summary>A partially successful maneuver is successful and must not receive failure-only wound strain.</summary>
+    [Fact]
+    public Task SpiritualStrainBurden_PlayerManeuverPartialSuccessKeepsOrdinaryResult() =>
+        VerifyManeuverStrainSuccessAsync("partial_success", invalidOrdinaryImpact: false);
+
+    /// <summary>The failure-only wound exemption cannot conceal an invalid ordinary maneuver result.</summary>
+    [Fact]
+    public Task SpiritualStrainBurden_PlayerManeuverPartialSuccessRejectsInvalidOrdinaryImpact() =>
+        VerifyManeuverStrainSuccessAsync("partial_success", invalidOrdinaryImpact: true);
+
+    private static async Task VerifyManeuverStrainSuccessAsync(string outcome, bool invalidOrdinaryImpact)
     {
+        var playerDie = outcome == "partial_success" ? 8 : 12;
         await using var context = await CreateCompleteConflictFrameContextAsync(
-            seedOriginalInputs: SeedOriginalIntakeBaselinesAsync, signedDice: [5, 15, 12, 4]);
+            seedOriginalInputs: SeedOriginalIntakeBaselinesAsync, signedDice: [5, 15, playerDie, 4]);
         await WriteSpiritualStrainBaselineDraftAsync(context);
         var raw = await ReadProjectedSourceContinuationCandidateAsync(context);
         var active = raw["activeConflict"]!;
         var second = active["exchangeLog"]![1]!;
         second["operationType"] = "maneuver";
-        second["outcome"] = "success";
+        second["outcome"] = outcome;
         second["after"] = second["before"]!.DeepClone();
         second["after"]!["conflictPosition"] = "player_advantaged";
         second["incomingAction"]!["operationType"] = "guard";
@@ -45,13 +59,18 @@ public sealed partial class AfterlifeResourceCutoverTests
         guardCost["effectiveCost"] = 2;
         guardCost["before"] = 3;
         guardCost["after"] = 1;
-        second["diceAudit"]!["diceUsed"]![0]!["value"] = 12;
+        second["diceAudit"]!["diceUsed"]![0]!["value"] = playerDie;
         second["diceAudit"]!["diceUsed"]![1]!["value"] = 4;
-        second["diceAudit"]!["playerTotal"] = 12;
+        second["diceAudit"]!["playerTotal"] = playerDie;
         second["diceAudit"]!["oppositionTotal"] = 4;
-        second["diceAudit"]!["margin"] = 8;
-        second["diceAudit"]!["outcomeBand"] = "decisive_player_success";
+        second["diceAudit"]!["margin"] = playerDie - 4;
+        second["diceAudit"]!["outcomeBand"] = outcome == "partial_success" ? "player_success" : "decisive_player_success";
         active["conflictPosition"] = "player_advantaged";
+        if (invalidOrdinaryImpact)
+        {
+            second["after"]!["oppositionSideStrain"] = "strained";
+            active["oppositionSideStrain"] = "strained";
+        }
         await context.WriteExactJsonAsync(AfterlifeSpiritualConflictState.StatePath, raw.ToJsonString());
         const string scene = "Чужое давление надломило волю души. Рана не мешает душе успешно обойти защиту Хранителя.";
         await context.WriteExactJsonAsync(ProjectionNarrativePath,
@@ -60,6 +79,13 @@ public sealed partial class AfterlifeResourceCutoverTests
         AssertNoConflictFrameErrors(await context.Validator.ValidateAcceptedTurnRawMortalItemMaterializationAsync());
         await using var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
         var ordinary = await context.Validator.BeginSpiritualWoundSourceSessionAsync(lease);
+        if (invalidOrdinaryImpact)
+        {
+            using var rejectedOwner = ordinary.Session;
+            Assert.Contains(ordinary.Issues, issue => issue.Code == "afterlife_conflict_maneuver_changes_strain");
+            Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(context.FileSystem, lease));
+            return;
+        }
         AssertNoConflictFrameErrors(ordinary.Issues);
         var source = Assert.IsType<ValidationService.SpiritualWoundSourceSession>(ordinary.Session);
         Assert.Equal(2, source.CheckedExchanges.Count);
@@ -109,7 +135,7 @@ public sealed partial class AfterlifeResourceCutoverTests
         var conflict = JsonNode.Parse(Convert.FromBase64String(image!["contentBase64"]!.GetValue<string>()))!["activeConflict"]!;
         var actual = conflict["exchangeLog"]![1]!;
         Assert.Equal("maneuver", actual["operationType"]!.GetValue<string>());
-        Assert.Equal("success", actual["outcome"]!.GetValue<string>());
+        Assert.Equal(outcome, actual["outcome"]!.GetValue<string>());
         Assert.Equal("overwhelmed", conflict["playerSideStrain"]!.GetValue<string>());
         Assert.Equal("clear", conflict["oppositionSideStrain"]!.GetValue<string>());
         Assert.Equal("overwhelmed", actual["before"]!["playerSideStrain"]!.GetValue<string>());

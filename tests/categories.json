@@ -2,6 +2,35 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "wounds-spiritual-strain-partial-success",
+  "responsibility": "#1536 T081-D FR022/025 failure-only strain: real signed ordinary player pressure/maneuver partial_success must remain valid after selecting a III wound. Preserve ordinary sources, exact candidate/canonical strain, maneuver position/costs and cold reopen; invalid ordinary impact remains refused before selection. Four cases, existing per-test independent fixtures.",
+  "excludes": "No ambiguous outcomes/opposition inference, multiple-wound aggregation, new parent/receipt/schema/cache, general combat/QTE/defeat, C4/Engine/UI/fresh process or UNKNOWN/HOLD retry. Existing success leaves selected separately as affected guards.",
+  "changeHints": [
+    "BookOfEternityClient/Services/Validation/ValidationService.SpiritualWoundMechanics.cs",
+    "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualStrainSuccess.cs",
+    "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualStrainManeuver.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualStrainBurden_PlayerPressurePartialSuccessKeepsOrdinaryResult",
+        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualStrainBurden_PlayerPressurePartialSuccessRejectsInvalidOrdinaryImpact",
+        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualStrainBurden_PlayerManeuverPartialSuccessKeepsOrdinaryResult",
+        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualStrainBurden_PlayerManeuverPartialSuccessRejectsInvalidOrdinaryImpact"
+      ]
+    }
+  ]
+},
+{
   "id": "wounds-spiritual-current-snapshot-data",
   "responsibility": "#1536 T081-D-STRAIN-ACTOR-LIFETIME 13 cheap intrinsic current graph/identity/History cases: III/IV and worsened snapshot, player/guardian/resident, seven after-valid refusal controls and detached-envelope invariance. Existing active-wound query extraction, no live authority.",
   "excludes": "No current-parent strain application, v2 receipt/witness, proposed actor failure or multi-wound aggregation, Engine/UI, source-birth proof from synthetic DATA, generalcombat or oldHOLD. Intrinsic DATA does not replace current owner/effect availability checks.",

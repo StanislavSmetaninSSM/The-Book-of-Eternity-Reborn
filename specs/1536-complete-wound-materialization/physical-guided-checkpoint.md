@@ -1,3 +1,41 @@
+# Finite wounds-only remainder — 2026-11-03 04:50 UTC
+
+This bounded source/receipt reconciliation supersedes the broader next-strain
+engineering proposal below; it does not create new gameplay scope. Base and remote
+36ec72e7e024385f1ee39b9f3cb998c84f26c3eb were clean, with no live build/test owners.
+Sol/xhigh reviewed the non-US3 map; Astra/high reviewed original US3 obligations.
+The historical b377 commit/tree exists locally but its spec blobs do not; no lazy
+fetch was performed and no claim of byte-comparing that unavailable text is made.
+Current normative FRs, original dated tasks and accepted receipts are the basis.
+
+| Required result / original basis | Actual gap and finite closure criterion |
+| --- | --- |
+| US3 wound consequences, FR-022/025, T080/T087/T081-D | Concrete code gap: an unequivocal player pressure/maneuver partial_success reaches integration_required although ordinary validators classify it as successful. Correct this zero-extra-strain case through the existing C2 owner. Other demonstrated existing-parent/III-IV failed-action cells remain within the original consequence contract, but do not require eleven new frameworks or a combat redesign. Close only after each applicable nondeferred cell has existing or targeted accepted evidence. |
+| US3 lifecycle/source combinations, FR-027/034-036, T081-C2/C3/D/E/C5 and T081-C3-R2B/T107 | Implementation and substantial receipts exist. Reconcile declared ceilings/guarantees, both sides, create/worsen, healing/root retirement, replay and cold cases against those receipts. Initial recovery plus insertion remains an unaccepted composition; use an existing lawful publisher seam if present, never invent general conflict orchestration. A checked parent requires exact matched evidence, not rerunning all accepted children. |
+| US2/T121 complete browser physical course, FR-060/062/063 | Code exists; R2 remains UNKNOWN180.1041994/180s without TRX. Close through cause-backed correction/admission and one complete original-budget result, with milestones, final wound/effects/resources/history and cleanup. Existing prefix/cheap36 is not final healing. |
+| US2/US7 joint terminal treatment, FR-012/063/064, T121/T152 | Code exists; A5 remains UNKNOWN120.0346224/120s without TRX. Close through cause-backed admission and exact joint acquisition+treatment/terminal/publication/rollback evidence. Anchor2/output10/controls3 and later accepted worsening remain separate accepted receipts. |
+| Existing story and cross-cutting acceptance, US1/4-8, T149-154/T177 | No additional absent non-US3 production branch established. Finish the finite scenario/receipt maps: ownership/retired aliases; healing actors/realm/catch-up; navigation/provider/confirm/stale/privacy; exact skill scope; GM examples/text surfaces; indexed bounds; surface-by-cut byte/existence rollback. Fix only substantiated uncovered defects. T150 mechanical legacy example already exists; eight requirement adapters are already connected; neither is a new implementation backlog. |
+| Final coherent acceptance, T159-165/T177 | Reconcile actual canonical FR IDs and quickstart scenarios, independently review findings and current diff, align GM/docs/checkpoint, then preserve reviewed sources remotely. Current category policy supersedes old Fast/Full/PreMerge aggregates. Merge/issue closure remain unauthorized. |
+
+Two pending questions are cell-scoped, not global materialization blockers.
+Ambiguous per-actor failure concerns evidence from the combat producer: the proposed
+new GM field is not an original requirement and is not implemented. Multi-wound
+sum-versus-maximum is directly a wound aggregation ambiguity, but only matching
+multi-wound cases depend on it. Neither was explicitly included in the author's
+three deferrals; do not silently deem either answered or deferred. Continue only
+unambiguous single-wound cases. General defeat/T088, combat/QTE/ACTIVE/F1 and the
+three explicitly deferred control/counter/art-III effects are outside this execution,
+not marked completed. DFR/Mortal compatibility/Windows keep their separate HOLDs.
+
+Next bounded code result: T081-D successful pressure/maneuver partial_success,
+using existing IsSuccessfulArtOutcome and unchanged source/owner/current-generation
+checks. Causal RED before production; exact ordinary-impact negatives; no new parent
+proof/schema/cache/aggregation or failure map. This qualifies C2 owner/cold paths,
+not C4/Engine/UI/fresh-process unless actually exercised. No speedup claimed: the
+change is a constant-time predicate, no new reads or repeated computation. No honest
+whole-task duration is yet supported by the unexplained R2/A5 timeouts; the main
+remaining uncertainty is connected qualification, not another newly invented feature.
+
 # Accepted current-parent DATA query / runtime d5bc
 
 IndependentSOURCE/PREP/OUTCOME accepted13typedDATA+4unchanged signedsource regressions
