@@ -39,6 +39,9 @@ public sealed class SpiritualStrainComparisonTests
         Assert.Contains("Capped failed guard keeps its ordinary source", example[start..end]);
         Assert.Contains("no editable A/B or terminal-echo repair", example[start..end]);
         Assert.Contains("exactly one real new player harm source", guide);
+        Assert.Contains("For `partial_success`, the same two player operations are successful", guide);
+        Assert.Contains("Partially successful player pressure or maneuver needs no strain correction", example[start..end]);
+        Assert.Contains("ordinary maximum0 source", example[start..end]);
     }
 
     [Theory]

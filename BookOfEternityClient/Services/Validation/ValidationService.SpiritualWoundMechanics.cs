@@ -70,7 +70,7 @@ public partial class ValidationService
                     continue; // The position consumer validates the exact current actor and operation.
                 if (contribution.Profile == "spiritual_strain_burden" && side == "player" &&
                     contribution.Actor.Kind == "player" && ConflictTokenEquals(operation, "pressure", "maneuver") &&
-                    ConflictTokenEquals(AfterlifeSpiritualConflictState.GetNodeString(exchange["outcome"]), "success"))
+                    IsSuccessfulArtOutcome(AfterlifeSpiritualConflictState.GetNodeString(exchange["outcome"])))
                     continue; // This burden changes failed operations only; ordinary source validation still follows.
                 if (contribution.Profile == "spiritual_strain_burden" && side == "player" &&
                     _mechanicsContext.ReadOwnedStrainCorrection(conflict, exchange) is { } strain)

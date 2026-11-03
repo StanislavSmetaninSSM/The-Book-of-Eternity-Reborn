@@ -599,7 +599,7 @@
 {
   "id": "wounds-spiritual-strain-maneuver-success",
   "responsibility": "#1536 T081-D one real III strain/maneuver choice followed by exact player maneuver/success against lawful guard: ordinary two exchanges/signed dice/one sourceIII, direct private completion with one decision/no artificial none, cold validator reopening, exact strains/position/costs and canonical nonmutation. Actual c954 causal proved integration_required after lawful selection; earlier d9 narration preparation FAIL is separate. GREEN must directly complete and cold-reopen the unchanged ordinary maneuver.",
-  "excludes": "No tactical matrix changes: opposing pressure is invalid for successful maneuver. No general QTE/combat/ACTIVE, new author rules, partial_success/opposition/failure-family extension, old accepted sets rerun, canonical publication/Engine/UI/fresh OS or HOLD retry.",
+  "excludes": "No tactical matrix changes: opposing pressure is invalid for successful maneuver. No general QTE/combat/ACTIVE, new author rules, opposition/failure-family extension, old accepted sets rerun, canonical publication/Engine/UI/fresh OS or HOLD retry.",
   "changeHints": [
     "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualStrainManeuver.cs",
     "BookOfEternityClient/Services/Validation/ValidationService.SpiritualWoundMechanics.cs"
@@ -651,7 +651,7 @@
 {
   "id": "wounds-spiritual-strain-pressure-success",
   "responsibility": "#1536 T081-D exact player pressure/success is not a failed operation: real ordinary two-exchange signed sourceIII/player then sourceI/opposition, actual III wound choice must advance unchanged ordinary player strain without dependent strain correction; guardian offerI/none and candidate/canonical no-mutation predicates. Causal3ec proved integration_required after lawful III submission; GREEN must keep the ordinary result without dependent A/B.",
-  "excludes": "No partial_success/countered/universal failure predicate, other actor/operation/carrier semantics or pending author rules. No previous private20/C4two rerun, Engine/UI/freshOS/wholeprofile or HOLD qualification.",
+  "excludes": "No countered/universal failure predicate, other actor/operation/carrier semantics or pending author rules; partial_success lives in its dedicated leaf. No previous private20/C4two rerun, Engine/UI/freshOS/wholeprofile or HOLD qualification.",
   "changeHints": [
     "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualStrainSuccess.cs",
     "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualStrainSelection.cs",

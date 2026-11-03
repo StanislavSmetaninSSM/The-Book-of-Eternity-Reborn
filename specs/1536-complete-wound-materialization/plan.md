@@ -1,3 +1,13 @@
+# Partial-success minimal correction WIP — causal4 retained
+
+M1 actual4 on a476:2ordinary-negativePASS,2genuine integration_requiredFAIL after
+legal source/IIIselection,11.1265244/60s, completecapture/cleanup and hashes closed.
+Minimal production change reuses IsSuccessfulArtOutcome for the same player
+pressure/maneuver no-extra-strain branch. GMguide/example/manifest/typedguard sync;
+no other failure mapping, aggregation, parent proof/schema/cache or generalcombat.
+SOURCE/three affected builds/exactGREEN7 and OUTCOME next. Prior six-row finite
+remainder remains authoritative; no existing UNKNOWN/HOLD has been rerun or closed.
+
 # Finite original remainder fixed before further strain work
 
 See the six-row "Finite wounds-only remainder — 2026-11-03 04:50 UTC" in

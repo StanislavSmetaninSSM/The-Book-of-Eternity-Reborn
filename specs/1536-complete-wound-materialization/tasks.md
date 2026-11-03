@@ -1,7 +1,7 @@
 # T081-D-PARTIAL-SUCCESS [US3] — original failure-only consequence
 
 - [x] Bounded original-scope remainder and independent requirement reconciliation saved in physical-guided-checkpoint.md; parent boxes are not evidence of missing code.
-- [ ] Causal actual C2 partial_success pressure/maneuver controls and ordinary-impact refusal controls, reusing existing signed fixtures; production unchanged for RED.
+- [x] Causal actual C2 partial_success pressure/maneuver controls and ordinary-impact refusal controls: M1 actual2PASS/2exactintegration_requiredFAIL on a476,60s budget/fullcapture/cleanup. Source unchanged; independent Sol OUTCOME accepted.
 - [ ] Minimal existing-success-helper correction, GM no-extra-strain wording/example and SOURCE review, no new rule/schema/parent proof/cache.
 - [ ] Fresh affected builds, exact selected category/discovery/PREP, GREEN and affected success guards; independent OUTCOME and remote checkpoint.
 

@@ -14567,7 +14567,16 @@ pressure would be an illegal direct counter here. Only the player strain/maneuve
 slot applies: the player's cost/guard slot does not increase the opponent's cost.
 One original III source/choice finishes directly; do not invent another source or
 none. Keep the ordinary result on cold reopening, with no A/B or canonical writes.
-These successful examples do not authorize partial_success/countered or other sides.
+Partially successful player pressure or maneuver needs no strain correction:
+use ordinary signed 8/4, margin4, outcomeBand player_success and partial_success.
+Pressure leaves player overwhelmed, changes opposition clear->strained and retains
+its ordinary maximum0 source: no second offer or none is invented after the III choice.
+Maneuver against guard keeps player overwhelmed/opposition clear, changes position
+contested->player_advantaged and keeps costs3/2 exactly as in the full success above;
+the one III choice completes and cold reopening preserves the result. Neither route
+uses A/B. The client still rejects pressure without its ordinary strain payoff or
+maneuver that illegally changes either side's strain. These examples do not authorize
+countered, ambiguous actor outcomes, aggregation or other sides.
 Failed maneuver uses the proved ordinary result: the earlier real III choice has
 strain/maneuver, roll/counter and cost/guard slots. Signed player4/opposition12
 against guard gives margin-8; ordinary maneuver loses position but leaves player

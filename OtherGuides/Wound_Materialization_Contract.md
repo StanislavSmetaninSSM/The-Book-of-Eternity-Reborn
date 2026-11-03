@@ -773,8 +773,14 @@ ordinary player maneuver cost 3 and opposition guard cost 2 at tier 0. Do not tu
 an opposing `pressure` into a legal successful maneuver; it remains a direct matrix
 counter. With no new harmful source, finish the one original III choice directly,
 without inventing an extra offer or `none`. Cold reopening preserves that result.
-These two exact routes do not authorize other sides, operations, `partial_success`
-or `countered`.
+For `partial_success`, the same two player operations are successful under the
+ordinary validator and receive no failure-only strain correction. With signed 8/4,
+margin4, pressure still changes opposition clear to strained but its ordinary harm
+maximum is 0: preserve that source without inventing a wound offer or `none`.
+Maneuver against guard preserves both strains, changes position and completes with
+its one original III choice; cold reopening keeps that unchanged result. The
+ordinary impact/dice/cost checks still apply. This does not authorize other sides,
+operations, `countered`, ambiguous failure inference or multi-wound aggregation.
 
 The saved choice first requests only the exact exchange `after.playerSideStrain`
 correction A. Preserve outcome, before, dice, actor, position loss, costs, other
