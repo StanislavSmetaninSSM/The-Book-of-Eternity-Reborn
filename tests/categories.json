@@ -61,7 +61,7 @@
 },
 {
   "id": "wounds-spiritual-existing-parent-data-refusal",
-  "responsibility": "Original FR025/T081-D signed-existing maneuver proof: Fourteen after-valid closed-v2 parent/shape/sibling/increment refusals plus detached DATA1. No live owner/C3/publication authority from parser DATA.",
+  "responsibility": "Original FR025/T081-D signed-existing maneuver proof: Fourteen after-valid closed-v2 parent/shape/sibling/increment refusals, effective incoming-guard2 and detached DATA1. No live owner/C3/publication authority from parser DATA.",
   "excludes": "No real creation/history/origin authority, epoch or C3 permission, generic outcome/aggregation rule, native/Engine/UI/fresh process or UNKNOWN/HOLD retry. Positive prerequisites must run before negative assertions; current parser unsupported-version failures do not qualify negatives.",
   "changeHints": [
     "BookOfEternityClient.Tests/SpiritualExistingStrainPreimageTests.cs",
@@ -80,6 +80,7 @@
       "project": "unit",
       "tests": [
         "BookOfEternityClient.Tests.SpiritualExistingStrainPreimageTests.ExistingParentDataRejectsRehashedContradiction",
+        "BookOfEternityClient.Tests.SpiritualExistingStrainPreimageTests.ExistingParentDataRequiresEffectiveIncomingGuard",
         "BookOfEternityClient.Tests.SpiritualExistingStrainPreimageTests.ExistingParentDataReturnsDetachedOrdinaryWithoutPermission"
       ]
     }

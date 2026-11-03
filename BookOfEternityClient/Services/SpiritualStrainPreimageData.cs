@@ -70,6 +70,9 @@ internal sealed class SpiritualStrainPreimageData
         Require(!cappedGuard || JsonNode.DeepEquals(ordinary, actual), "Capped guard must preserve its complete ordinary exchange.");
         if (version == 2)
         {
+            Require(actual["incomingAction"] is JsonObject incomingGuard &&
+                IsToken(incomingGuard["finalOperationType"] ?? incomingGuard["operationType"], "guard"),
+                "Existing-parent maneuver requires incoming guard.");
             Require(JsonNode.DeepEquals(ordinary["before"]!["playerSideStrain"], ordinary["after"]!["playerSideStrain"]) &&
                 JsonNode.DeepEquals(ordinary["before"]!["oppositionSideStrain"], ordinary["after"]!["oppositionSideStrain"]),
                 "Existing-parent maneuver must retain both ordinary side strains.");

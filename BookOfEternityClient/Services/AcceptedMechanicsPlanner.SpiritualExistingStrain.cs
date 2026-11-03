@@ -24,6 +24,9 @@ internal static partial class AcceptedMechanicsPlanner
                     return null;
                 try
                 {
+                    if (exchange["incomingAction"] is not JsonObject incoming ||
+                        !string.Equals((incoming["finalOperationType"] ?? incoming["operationType"])?.GetValue<string>(),
+                            "guard", StringComparison.OrdinalIgnoreCase)) return null;
                     var actor = ValidationService.SpiritualWoundSourceSession.ActorKey(
                         conflict["playerSide"]?["leadContestant"] as JsonObject);
                     if (actor is null || !actor.StartsWith("player_soul:", StringComparison.Ordinal)) return null;
@@ -57,12 +60,14 @@ internal static partial class AcceptedMechanicsPlanner
                     ValidationService.ValidateSpiritualWoundSourceActionShape(ordinary, "currentStrain.ordinary", issues);
                     ValidationService.ValidateRetainedSpiritualExchangeRules(ordinary, issues);
                     if (issues.Any(issue => issue.Severity == IssueSeverity.Error)) return null;
+                    var pointer = _source.ReadSignedStrainExchangePointer(_capture, conflict, exchange, Ordinal);
+                    if (pointer is null) return null;
                     var proof = new JsonObject { ["version"] = 2,
                         ["ordinaryExchangeJsonBase64"] = Encode(SpiritualWoundStateJson.Canonical(ordinary)),
                         ["parentWoundJsonBase64"] = Encode(parentJson),
                         ["effectId"] = contribution.EffectId, ["componentId"] = contribution.ComponentId };
                     var comparison = new ValidationService.SpiritualStrainDraftCorrection(
-                        "/activeConflict/exchangeLog/" + Ordinal, ordinary, proof.ToJsonString(),
+                        pointer, ordinary, proof.ToJsonString(),
                         contribution.EffectId, contribution.ComponentId);
                     if (!IsCurrent || !comparison.Allows(exchange)) return null;
                     return _existingStrainComparison = comparison;

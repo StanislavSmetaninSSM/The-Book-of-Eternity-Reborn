@@ -1,3 +1,18 @@
+# Signed-existing parent SOURCE accepted — corrected WIP, runtime pending
+
+Independent Astra/high whole SOURCE accepted c5da plus two verified corrections:
+effective incoming guard is mandatory in v2/live; raw correction Pointer now comes
+from the source-owned initial inventory and existing ResolveRawExchange, including
+signed historical rows. Two targeted after-valid guard negatives update both actual
+and retained ordinary bytes, so they reach the intended guard. No further concrete
+production blocker; v1/current ownership/History/C3-none/common receipt joins retained.
+Independent Sol fixture review found no blocker in initial31; guard delta adds2,
+so current new33/cheap75/native1=76 are planned, not executed. Fresh discovery and
+PlanOnly determine exact counts. First c5daMain build69.345415s exit0/exact81 only;
+that binary predates the review corrections, so all three affected projects require
+a fresh corrected build. Preserve its outputs/raw separately, no runtime from it.
+No final acceptance yet; cheap GREEN and separately reviewed native PREP pending.
+
 # WIP signed-existing parent implementation — uncompiled/unrun
 
 Original FR025/T081-D accepted bounded design now implemented in existing owners:

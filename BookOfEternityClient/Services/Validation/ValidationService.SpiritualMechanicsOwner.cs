@@ -91,6 +91,23 @@ public partial class ValidationService
             ActorKey(signed["playerSide"]?["leadContestant"] as JsonObject) == actor &&
             ActorKey(conflict["playerSide"]?["leadContestant"] as JsonObject) == actor;
 
+        /// <summary>Resolves the retained raw candidate path through the actual source inventory, not a local ordinal guess.</summary>
+        internal string? ReadSignedStrainExchangePointer(SpiritualOriginalTurnCapture capture, JsonObject conflict,
+            JsonObject exchange, int ordinal)
+        {
+            var actor = ActorKey(conflict["playerSide"]?["leadContestant"] as JsonObject);
+            if (actor is null || !OwnsSignedStrainActor(capture, conflict, actor) ||
+                !TryReadInitialActiveExchangeInventory(out var conflictId, out var ids) ||
+                conflictId != conflict["conflictId"]?.GetValue<string>() || ordinal < 0 || ordinal >= ids.Length ||
+                ids[ordinal] != exchange["exchangeId"]?.GetValue<string>() ||
+                _originalConflict["activeConflict"]?["exchangeLog"] is not JsonArray prior ||
+                _candidate[AfterlifeSpiritualConflictState.StatePath] is not { } json) return null;
+            var raw = SpiritualWoundDependentDraftPolicy.ReadStrictRoot(json);
+            var resolved = AfterlifeSpiritualConflictState.ResolveRawExchange(_originalConflict, raw, prior.Count + ordinal);
+            return resolved is { } row && row.Exchange["exchangeId"]?.GetValue<string>() == ids[ordinal]
+                ? row.Pointer : null;
+        }
+
         /// <summary>Reports retained existing-parent DATA that must join the completed owner receipt.</summary>
         internal bool HasExistingStrainSources => _sources.Any(source => source.StrainPreimageJson is { } json &&
             SpiritualWoundStateJson.Integer(SpiritualWoundStateJson.Parse(json)["version"]) == 2);

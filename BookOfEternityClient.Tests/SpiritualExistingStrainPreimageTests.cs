@@ -84,6 +84,24 @@ public sealed class SpiritualExistingStrainPreimageTests
         Assert.Equal(before, source.ToJsonString());
     }
 
+    /// <summary>The bounded existing-parent lane must not authorize another incoming operation.</summary>
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void ExistingParentDataRequiresEffectiveIncomingGuard(bool finalOverride)
+    {
+        var (source, _, _) = CreateData(3);
+        Assert.Equal(2, SpiritualWoundSourceWitness.Validate(source).MaximumSeverityRank);
+        var actual = ReadActual(source);
+        actual["incomingAction"]![finalOverride ? "finalOperationType" : "operationType"] = "pressure";
+        var ordinary = JsonNode.Parse(Convert.FromBase64String(
+            source["strainPreimage"]!["ordinaryExchangeJsonBase64"]!.GetValue<string>()))!.AsObject();
+        ordinary["incomingAction"]![finalOverride ? "finalOperationType" : "operationType"] = "pressure";
+        source["strainPreimage"]!["ordinaryExchangeJsonBase64"] = Encode(ordinary);
+        var error = Assert.Throws<FormatException>(() => SpiritualStrainPreimageData.ReadIntrinsic(source, actual));
+        Assert.Contains("incoming guard", error.Message);
+    }
+
     /// <summary>Exposes independent DATA copies and refuses another actual exchange after a valid read.</summary>
     [Fact]
     public void ExistingParentDataReturnsDetachedOrdinaryWithoutPermission()
