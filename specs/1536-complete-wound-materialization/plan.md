@@ -1,3 +1,14 @@
+# No-roll fresh builds completed; one test-analyzer correction WIP
+
+At a179b0fd Main66.961014s/Unit34.551068s/Integration72.417553s all exit0;
+Main81/Unit26 exact baseline warnings, Integration108 versus107. Artifact gate
+correctly stopped before runtime: only added xUnit2031 on new Assert.Single(Where).
+Replace with Assert.Single(collection,predicate), identical filter/cardinality and
+assertions. No suppression or production changes. Fresh Integration and independent
+delta review still required; unchanged Main/Unit do not require recompilation.
+No runtime has run on this source. Original build logs and J1/H4 captures retained.
+Current native/GM SOURCE accepted, exact discovery/PREP/GREEN still pending.
+
 # No-roll final typed-shape correction before remaining builds
 
 Main36a build completed exit0/58.973012s, before any source mutation. Root source

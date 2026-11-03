@@ -118,8 +118,8 @@ public sealed partial class AfterlifeResourceCutoverTests
         }
         AssertNoConflictFrameErrors(await context.Validator.ValidateAcceptedTurnRawResourceMaterializationAsync());
         var expected = await PeekPlanAsync(context);
-        var spend = Assert.Single(expected.ResourceEvents.Where(row =>
-            row.Coordinate.OwnerKind == ResourceOwnerKind.AfterlifeConflictSide));
+        var spend = Assert.Single(expected.ResourceEvents, row =>
+            row.Coordinate.OwnerKind == ResourceOwnerKind.AfterlifeConflictSide);
         Assert.Equal(6m, spend.Before);
         Assert.Equal(3m, spend.After);
         Assert.Equal(3m, spend.AppliedAmount);
