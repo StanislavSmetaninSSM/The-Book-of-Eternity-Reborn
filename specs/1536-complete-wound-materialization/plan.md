@@ -1,3 +1,23 @@
+# Static port outcome — a1510d701 / 9PASS1FAIL24UNRUN
+
+The changed ten-case integration descriptor completed9PASS/1FAIL without timeout;
+24unit cases are still UNRUN. The sole final failure is the inherited blanket
+no-catch assertion in pre-canonical settlement: current code has exactly one
+filtered post-terminal-release projection catch returning HeldBlocked. Independent
+Astra DESIGN approves replacing that blanket assertion with strict checks: actual
+wound release/settlement outside all try blocks; no catchall; only zero-argument
+post-release runtime projection is protected; exact three-type filter, log and
+blocked return, no finally or extra operation. Core unsafe rethrow/order remains.
+No production change or general joint/terminal qualification is authorized here.
+
+Run independent24Unit first, then only the corrected static Fact after a fresh
+Integration-only build; do not rerun9passing unchanged cases. Two coherent category
+leaves expose those existing methods without changing their original8min/static
+and1min/ownership budgets; catalog1404. Default CI11 selections remain intact and
+still own the original test families. Nine static PASS/four earlier sourcePASS/
+112runtime PASS retain exact source/binary lineages and complete external evidence.
+Native T107 is still held until this finite source block closes.
+
 # Static port preparation reuse — independent review correction
 
 Astra accepted grouped port correctness and found one unnecessary second complete

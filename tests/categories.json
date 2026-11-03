@@ -44478,6 +44478,74 @@
       ]
     }
   ]
+},
+{
+  "id": "validation-repair-partial-unit-source-guards",
+  "responsibility": "Unit source/GM/ownership consumers of the split accepted-turn family; bounded independent execution when static integration guards need separate correction.",
+  "excludes": "Other game/native/Mortal compatibility/terminal runtime and unrelated lifecycle controls.",
+  "changeHints": [
+    "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair*.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false
+  },
+  "timeoutMinutes": 8,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.AgentConsoleObservationTests.AcceptedTurnWaitingAndCancellationCopyDoesNotExposeHarnessVocabulary",
+        "BookOfEternityClient.Tests.EffectMaterializationSourceGuardTests.FullTurnEffectResourceRepairGuidance_UsesOnlyGmAuthoredReplayPaths",
+        "BookOfEternityClient.Tests.EffectMaterializationSourceGuardTests.PendingEffectResourceWaveGuidance_IsCompleteInEveryActiveGmEntrypoint",
+        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.TerminalResolution_MustUseOneBoundSnapshotInsteadOfRereadingReadyFiles",
+        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.RealmSensitiveStartupCleanup_MustRefreshPersistedStateBeforeHygiene",
+        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.AcceptedTurnValidation_MustUsePreWaitPendingSnapshotContextForCanonicalBaseline",
+        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.AcceptedTurnValidation_MustExposePreWaitPendingSnapshotContextToValidators",
+        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.ValidationRepairFlow_MustUseValidatedPendingSnapshotContext_ForRepairCorrelationAndMetadata",
+        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.DiagnosticOnlyValidationRepair_MustFailClosedWithoutWaitingForGmReady",
+        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.DiagnosticOnlyValidationRepair_MustLeaveRollbackToAcceptedTurnCaller",
+        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.ContractValidationErrorScreen_MustExposeAgentConsoleKeyContinuation",
+        "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DocumentReservedAuthorityAndSessionReplacementAbort",
+        "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairLoop_AbortsEveryDispatchThatBelongsToReplacedSession",
+        "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.MortalInventoryRepairGuidance_DistinguishesLifecycleCasesWithoutPromotionRemoval",
+        "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.WoundAlternativeTreatmentRepairDocumentation_PinsKindSpecificLocalOnlyRecipes",
+        "BookOfEternityClient.Tests.ValidationRepairRequestTests.MortalLocationRepairDispatch_FailsClosedBeforeWritingRequestAndHasNoLegacyPacketPath",
+        "BookOfEternityClient.Tests.ValidationRepairRequestTests.MortalLocationRepairFailure_PlayerConsoleUsesSafeRussianWithoutOperatorVocabulary",
+        "BookOfEternityClient.Tests.ValidationRepairRequestTests.MortalLocationRepairWait_PlayerStatusUsesOnlyInWorldLanguage",
+        "BookOfEternityClient.Tests.ValidationRepairRequestTests.DiagnosticOnlyRepairFailure_PlayerConsoleUsesSafeRussianWithoutOperatorVocabulary",
+        "BookOfEternityClient.Tests.ValidationSourceGuardTests.MortalBootstrapAuthorityGuidance_MustRequireCanonicalPathAndExactValues",
+        "BookOfEternityClient.Tests.WoundMaterializationSourceGuardTests.AcceptedTransitionCommands_ColdReplayAndRepairReaderFailClosed",
+        "BookOfEternityClient.Tests.WoundMaterializationSourceGuardTests.WoundOwnershipInventory_ResolvesEveryDeclaredFileAndSemanticAnchor",
+        "BookOfEternityClient.Tests.WoundMaterializationSourceGuardTests.ProductionLegacyWoundOccurrences_AreConfinedToInventoriedSemanticScopes"
+      ]
+    }
+  ]
+},
+{
+  "id": "mortal-wound-precanonical-settlement-source",
+  "responsibility": "Static unsafe settlement propagation and narrowly scoped post-release projection refusal in the current wound publisher; no game execution.",
+  "excludes": "Other game/native/Mortal compatibility/terminal runtime and unrelated lifecycle controls.",
+  "changeHints": [
+    "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair*.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false
+  },
+  "timeoutMinutes": 8,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_UnsafeSettlementCannotFallThroughTerminalCatchAndPreCanonicalSettlementHasNoCatchAll"
+      ]
+    }
+  ]
 }
 ]
 }
