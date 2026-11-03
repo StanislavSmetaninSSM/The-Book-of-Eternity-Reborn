@@ -1,50 +1,13 @@
-# T154 original rollback24 — current Linux PASS, OUTCOME pending
+# T154: current original rollback24 accepted
 
-Verification only, no production/test/helper/catalog implementation changes.
-Runtime source4739060a8e48a91adb0a5104c9f4d3892efe2cdc, Linux, 2026-11-03.
-Current SDK10.0.402/PowerShell7.6.8, selected Integration06dc53214 with production/
-Supportf54481d85. Whole selected project sources still match those fresh successful
-builds. Current PE/PDB and both exact test/probe source bindings were verified;
-50managed/624resource/native6 post-hashes unchanged. No rebuild was necessary.
-
-The previously unmatched receipt was found: #1553/F18 source0d16af64926ded3a1492aff1a3648a2d895ff764,
-run135416, wound24PASS plus a separate offscreen1, accepted in8c49f44fc against
-reviewed evidencebd496ce6. Both current test/probe blobs and manifest SHA256 match
-that post-replacement receipt; independent Sol6.1/xhigh validated its96wound rows,
-12before/12after, raw6present6absent restoration, generation/journal and48wound
-cleanup roots. It is not a pre-probe result. Historical rawTRX/log archives were
-removed under retention; pinned summaries and oracle rows remain. This closes the
-historical receipt lookup gap, not fresh production qualification by itself.
-
-A current run was necessary because exercised capture/restore dependencies changed:
-RequireExactEngineSnapshotInventory now guards backup, and restoration checks
-RequireNoMortalJointInterfaceRestoreAsync(blockSelectedMissing:true). No HOLD
-applies to this independent storage-only slice. Sol/xhigh PREP approved exactly
-one unchanged categoryportable-wound-original-rollback-publication, one method,
-24cases/exclusive/original120s, no timeout override or offscreen replay.
-
-Actual command: pwsh -NoProfile -File scripts/test-csharp.ps1 -SelectionFile
-/workspace/tboe-linux-evidence-20261103/t154-rollback-current/selection.json
--NoBuild -Parallelism1. PlanOnly24/1/2min; runtime24/24PASS, category16.9696732s,
-runner23.2337024s, no timeout/skip/duplicate/underfill. All12surfaces each reach
-before and after.96retained oracle records verify24original engine rollbacks:
-12rawpaths each,6present/6absent exact bytes, unchanged generation, absent journal;
-12after-cuts prove actual changed MemberPublished bytes, journal/transaction/index/
-image hashes and original outward cause. All48unique owned roots removed and
-physically absent; no managed owners/new temp roots. Full stdout/TRX/raw remains
-outside checkout at /workspace/tboe-linux-evidence-20261103/t154-rollback-current.
-
-Postproof6ae7cad0921f83b4f396490964d3851924630642454ce5143341f4ab93330045;
-summary15e0b3cfec9f6ffe08048e8ab7c2c15b414f027c3d71f4b49b0c39f6f5952161;
-oracleproofd4f3f20c2bef6d01f86222a59de570a4a9566b27b88552d347286c9932554d9e;
-TRXac6191f0d41dee2911eba2855f58584c5c94eeda414314170a586b7c9bc67b11.
-Independent OUTCOME pending. This verifies only the existing original opaque-byte
-12surface storage route, not wound gameplay or the full owner-specific T154
-item/quest/game-journal/resource-History/lifecycle-cut union. T154 parent, #1536,
-other UNKNOWN/HOLD/Windows remain OPEN. No live GM/DOM/provider/fresh-process claim.
-Optimization: existing proven build/PDB DATA is reused with exact source equality;
-each mutable fixture/owner remains independent. No new cache or speedup claim,
-no game/GM contract change and no GM wording update required. No raw is staged.
+On Linux source `4739060a8e48a91adb0a5104c9f4d3892efe2cdc`, the existing
+`portable-wound-original-rollback-publication` selection completed **24/24 PASS**
+in **16.9696732 s / 120 s**. Independent Sol 6.1 / xhigh PREP and OUTCOME accepted
+all 96 oracle records, exact bytes/absence, generation/journal and 48-root cleanup.
+No implementation or budget changed. The post-probe historical receipt was also
+matched, but changed snapshot capture/restore dependencies justified this one run.
+See the current physical-guided-checkpoint for exact command, source/build lineages,
+proof hashes and external raw path. Whole T154 and unrelated UNKNOWN/HOLD remain open.
 
 # Main -> wounds integration — 157 distinct PASS, final OUTCOME accepted
 

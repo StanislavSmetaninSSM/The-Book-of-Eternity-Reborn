@@ -1,50 +1,56 @@
-# T154 original rollback24 — current Linux PASS, OUTCOME pending
+# T154: original rollback24 accepted on Linux — 2026-11-03
 
-Verification only, no production/test/helper/catalog implementation changes.
-Runtime source4739060a8e48a91adb0a5104c9f4d3892efe2cdc, Linux, 2026-11-03.
-Current SDK10.0.402/PowerShell7.6.8, selected Integration06dc53214 with production/
-Supportf54481d85. Whole selected project sources still match those fresh successful
-builds. Current PE/PDB and both exact test/probe source bindings were verified;
-50managed/624resource/native6 post-hashes unchanged. No rebuild was necessary.
+This was verification only: no production code, tests, probes or catalog changed.
+Runtime source: `4739060a8e48a91adb0a5104c9f4d3892efe2cdc`.
 
-The previously unmatched receipt was found: #1553/F18 source0d16af64926ded3a1492aff1a3648a2d895ff764,
-run135416, wound24PASS plus a separate offscreen1, accepted in8c49f44fc against
-reviewed evidencebd496ce6. Both current test/probe blobs and manifest SHA256 match
-that post-replacement receipt; independent Sol6.1/xhigh validated its96wound rows,
-12before/12after, raw6present6absent restoration, generation/journal and48wound
-cleanup roots. It is not a pre-probe result. Historical rawTRX/log archives were
-removed under retention; pinned summaries and oracle rows remain. This closes the
-historical receipt lookup gap, not fresh production qualification by itself.
+Historical receipt reconciliation found the accepted post-probe F18 run at
+`0d16af64926ded3a1492aff1a3648a2d895ff764`: 24 wound cases plus one separate
+offscreen case. Acceptance is recorded at `8c49f44fc`, reviewing evidence
+`bd496ce6`. Both test and KnownRollbackPublicationCut blobs match the current
+versions. Independent Sol 6.1 / xhigh verified the retained 96 wound records;
+old raw TRX/log archives were removed under retention. The current run was still
+needed: exercised snapshot capture/restore now includes
+RequireExactEngineSnapshotInventory and
+RequireNoMortalJointInterfaceRestoreAsync(blockSelectedMissing: true).
 
-A current run was necessary because exercised capture/restore dependencies changed:
-RequireExactEngineSnapshotInventory now guards backup, and restoration checks
-RequireNoMortalJointInterfaceRestoreAsync(blockSelectedMissing:true). No HOLD
-applies to this independent storage-only slice. Sol/xhigh PREP approved exactly
-one unchanged categoryportable-wound-original-rollback-publication, one method,
-24cases/exclusive/original120s, no timeout override or offscreen replay.
+Current environment: SDK 10.0.402, PowerShell 7.6.8. Selected sources match fresh
+successful builds: Main/Support at `f54481d85`, Integration at `06dc53214`.
+PE/PDB identity and both exact test/probe source bindings were checked. No rebuild
+was needed. All 50 managed files, 624 resource copies and 6 native copies remained
+unchanged before/after the run. Each case retained its own mutable fixture/owners;
+no new cache, source reuse permission or measured speedup is claimed.
 
-Actual command: pwsh -NoProfile -File scripts/test-csharp.ps1 -SelectionFile
-/workspace/tboe-linux-evidence-20261103/t154-rollback-current/selection.json
--NoBuild -Parallelism1. PlanOnly24/1/2min; runtime24/24PASS, category16.9696732s,
-runner23.2337024s, no timeout/skip/duplicate/underfill. All12surfaces each reach
-before and after.96retained oracle records verify24original engine rollbacks:
-12rawpaths each,6present/6absent exact bytes, unchanged generation, absent journal;
-12after-cuts prove actual changed MemberPublished bytes, journal/transaction/index/
-image hashes and original outward cause. All48unique owned roots removed and
-physically absent; no managed owners/new temp roots. Full stdout/TRX/raw remains
-outside checkout at /workspace/tboe-linux-evidence-20261103/t154-rollback-current.
+Exact selection: `portable-wound-original-rollback-publication` only.
+PlanOnly: one method, 24 cases, exclusive, original 120-second category budget.
+Executed once through:
 
-Postproof6ae7cad0921f83b4f396490964d3851924630642454ce5143341f4ab93330045;
-summary15e0b3cfec9f6ffe08048e8ab7c2c15b414f027c3d71f4b49b0c39f6f5952161;
-oracleproofd4f3f20c2bef6d01f86222a59de570a4a9566b27b88552d347286c9932554d9e;
-TRXac6191f0d41dee2911eba2855f58584c5c94eeda414314170a586b7c9bc67b11.
-Independent OUTCOME pending. This verifies only the existing original opaque-byte
-12surface storage route, not wound gameplay or the full owner-specific T154
-item/quest/game-journal/resource-History/lifecycle-cut union. T154 parent, #1536,
-other UNKNOWN/HOLD/Windows remain OPEN. No live GM/DOM/provider/fresh-process claim.
-Optimization: existing proven build/PDB DATA is reused with exact source equality;
-each mutable fixture/owner remains independent. No new cache or speedup claim,
-no game/GM contract change and no GM wording update required. No raw is staged.
+```text
+pwsh -NoProfile -File scripts/test-csharp.ps1 -SelectionFile /workspace/tboe-linux-evidence-20261103/t154-rollback-current/selection.json -NoBuild -Parallelism 1
+```
+
+Result: **24/24 PASS**, category **16.9696732 s / 120 s**, runner 23.2337024 s.
+No timeout, skip, duplicate or underfilled descriptor. All 12 surfaces reached
+both before and after boundaries. The 96 complete records independently confirm
+24 original engine rollbacks over 12 raw paths each: six present byte images and
+six absences, unchanged generation and no remaining journal. All 12 after-cuts
+prove changed MemberPublished bytes, matching journal/transaction/index/image
+hashes and original outward cause. All 48 unique owned roots were removed and are
+physically absent; no managed owners or new temporary roots remain.
+
+Independent Sol 6.1 / xhigh PREP and current OUTCOME accepted. This closes only
+the existing original opaque-byte 12-surface storage route. The broader T154
+owner-specific item/quest/game-journal/resource-History/lifecycle-cut union remains
+open, as do #1536 and all unrelated UNKNOWN/HOLD statuses. No wound gameplay,
+live GM, DOM/provider, fresh-process or Windows qualification is inferred. No game
+or GM contract changed, so no GM wording update was required.
+
+Full raw remains outside checkout:
+`/workspace/tboe-linux-evidence-20261103/t154-rollback-current`.
+
+- Post-proof: `6ae7cad0921f83b4f396490964d3851924630642454ce5143341f4ab93330045`.
+- Summary: `15e0b3cfec9f6ffe08048e8ab7c2c15b414f027c3d71f4b49b0c39f6f5952161`.
+- Oracle proof: `d4f3f20c2bef6d01f86222a59de570a4a9566b27b88552d347286c9932554d9e`.
+- TRX: `ac6191f0d41dee2911eba2855f58584c5c94eeda414314170a586b7c9bc67b11`.
 
 # Main -> wounds integration — 157 distinct PASS, final OUTCOME accepted
 
