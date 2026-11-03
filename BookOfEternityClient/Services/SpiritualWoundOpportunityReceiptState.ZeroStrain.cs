@@ -63,6 +63,7 @@ internal sealed partial class SpiritualWoundOpportunityReceiptState
     {
         if (comparisons.Length == 0) return injuries;
         ValidateRequestTableOrder(injuries); ValidateRequestTableOrder(comparisons);
+        ValidateOriginalSourceOrder(injuries); ValidateOriginalSourceOrder(comparisons);
         var groups = injuries.Concat(comparisons).GroupBy(row => OriginalRequest(Object(row["witness"])))
             .ToDictionary(group => group.Key, group => group.OrderBy(row => Integer(row["witness"]!["sourceOrdinal"])).ToArray());
         var preceding = groups.Keys.ToDictionary(key => key, _ => new HashSet<(string Session, string Request)>());
@@ -76,17 +77,47 @@ internal sealed partial class SpiritualWoundOpportunityReceiptState
                 previous = key;
             }
         }
-        var remaining = groups.Keys.ToHashSet();
-        var merged = new List<JsonObject>(injuries.Length + comparisons.Length);
-        while (remaining.Count != 0)
+        var followers = groups.Keys.ToDictionary(key => key, _ => new List<(string Session, string Request)>());
+        foreach (var (key, prior) in preceding)
+            foreach (var parent in prior) followers[parent].Add(key);
+        var indegree = preceding.ToDictionary(pair => pair.Key, pair => pair.Value.Count);
+        var comparer = Comparer<(long Turn, string Session, string Request)>.Create((left, right) =>
         {
-            var ready = remaining.Where(key => !preceding[key].Any(remaining.Contains))
-                .OrderBy(key => Integer(groups[key][0]["witness"]!["turnEvidence"]!["turn"]))
-                .ThenBy(key => key.Session, StringComparer.Ordinal).ThenBy(key => key.Request, StringComparer.Ordinal).ToArray();
-            Require(ready.Length != 0, "Injury/comparison request histories contradict each other.");
-            var key = ready[0]; remaining.Remove(key); merged.AddRange(groups[key]);
+            var order = left.Turn.CompareTo(right.Turn);
+            if (order == 0) order = StringComparer.Ordinal.Compare(left.Session, right.Session);
+            return order != 0 ? order : StringComparer.Ordinal.Compare(left.Request, right.Request);
+        });
+        var ready = new PriorityQueue<(string Session, string Request), (long Turn, string Session, string Request)>(comparer);
+        void Enqueue((string Session, string Request) key) => ready.Enqueue(key,
+            (Integer(groups[key][0]["witness"]!["turnEvidence"]!["turn"]), key.Session, key.Request));
+        foreach (var (key, count) in indegree) if (count == 0) Enqueue(key);
+        var merged = new List<JsonObject>(injuries.Length + comparisons.Length);
+        var emitted = 0;
+        while (ready.TryDequeue(out var key, out _))
+        {
+            emitted++; merged.AddRange(groups[key]);
+            foreach (var follower in followers[key]) if (--indegree[follower] == 0) Enqueue(follower);
         }
+        Require(emitted == groups.Count, "Injury/comparison request histories contradict each other.");
         return merged;
+    }
+
+    /// <summary>Checks each input table's original scalar causal order before a shared request can be merged.</summary>
+    private static void ValidateOriginalSourceOrder(IEnumerable<JsonObject> rows)
+    {
+        foreach (var request in rows.GroupBy(row => OriginalRequest(Object(row["witness"]))))
+        {
+            var previousSource = -1L; var previousSlot = -1L; var previousExchange = -1L;
+            foreach (var row in request)
+            {
+                var witness = Object(row["witness"]);
+                var source = Integer(witness["sourceOrdinal"]); var exchange = Integer(witness["exchangeOrdinal"]);
+                var slot = checked(2 * exchange + (Text(witness["affectedSide"]) == "opposition" ? 1 : 0));
+                Require(source > previousSource && slot > previousSlot && exchange >= previousExchange &&
+                    source - previousSource <= slot - previousSlot, "An original table cannot reorder its causal source slots.");
+                previousSource = source; previousSlot = slot; previousExchange = exchange;
+            }
+        }
     }
 
     /// <summary>Preserves the comparison prefix and prohibits appending to any already accepted cross-family request.</summary>

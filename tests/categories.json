@@ -146,7 +146,7 @@
 },
 {
   "id": "wounds-spiritual-zero-comparison-refusal",
-  "responsibility": "Original FR025/T081-D zero-ceiling comparison-only receipt: After-valid v3 DATA refusals plus immutable append/request order, empty-v3/nonempty-v2 healing, latest History, owner/detachment and genuine v2-to-v3 DATA migration: closed row, zero ceiling, global/instance ordinal, instance ownership, duplicate row, cross-family coordinate and original/claimed pool context. Does not qualify live source-only/C3 authority.",
+  "responsibility": "Original FR025/T081-D zero-ceiling comparison-only receipt: After-valid v3 DATA refusals plus immutable append/request and original injury-side order, empty-v3/nonempty-v2 healing, latest History, owner/detachment and genuine v2-to-v3 DATA migration: closed row, zero ceiling, global/instance ordinal, instance ownership, duplicate row, cross-family coordinate and original/claimed pool context. Does not qualify live source-only/C3 authority.",
   "excludes": "No forged opportunity/none, current owner/History/origin authority, C3/common publication, Engine/UI/fresh-process or unresolved semantic/UNKNOWN/HOLD closure. Parser RED is positive-only; failed baseline never qualifies negatives.",
   "changeHints": [
     "BookOfEternityClient.Tests/SpiritualZeroStrainReceiptTests.cs",
@@ -170,6 +170,7 @@
         "BookOfEternityClient.Tests.SpiritualZeroStrainReceiptTests.ZeroComparisonHistorySurvivesLaterHealingWithoutLivePermission",
         "BookOfEternityClient.Tests.SpiritualZeroStrainReceiptTests.ZeroComparisonDataCannotForgeSourceOnlyOwner",
         "BookOfEternityClient.Tests.SpiritualZeroStrainReceiptTests.ZeroComparisonCannotSortAwayContradictoryRequestOrder",
+        "BookOfEternityClient.Tests.SpiritualZeroStrainReceiptTests.ZeroComparisonCannotSortAwayOriginalInjurySideOrder",
         "BookOfEternityClient.Tests.SpiritualZeroStrainReceiptTests.ZeroComparisonPreservesExistingV2HealingFamily"
       ]
     }

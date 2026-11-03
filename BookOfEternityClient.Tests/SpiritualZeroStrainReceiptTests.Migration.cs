@@ -20,7 +20,7 @@ public sealed partial class SpiritualZeroStrainReceiptTests
         const string request = "request-healing42", snapshot = "snapshot-healing42", exchangeId = "exchange_healing42";
         var fingerprint = "sha256:" + new string('a', 64);
         var selection = new SpiritualSelfTreatmentSelection(wound.WoundId, WoundIdentityState.ComputeSemanticFingerprint(wound))
-            { Combat = new("conflict-a", fingerprint, 0) };
+            { Combat = new("conflict-a", fingerprint, 1) };
         var files = AfterlifeWoundTreatmentAuthority.CombatSourcePaths.Select(path =>
             new AfterlifeWoundTreatmentAuthority.SourceFile(path, new(false, null), null)).ToArray();
         var intent = SpiritualCombatHealingIntent.Create("session-a", request, 42, selection, 3,
@@ -42,7 +42,7 @@ public sealed partial class SpiritualZeroStrainReceiptTests
         var witness = new JsonObject { ["schemaVersion"] = 1, ["kind"] = "spiritual_combat_healing_source",
             ["sourceId"] = "spiritual_combat_healing_source_" + coordinate, ["eventRef"] = accepted.Events.Single().EventRef,
             ["sessionId"] = "session-a", ["requestId"] = request, ["snapshotToken"] = snapshot, ["turn"] = 42,
-            ["realm"] = "chaos_sea", ["conflictId"] = "conflict-a", ["exchangeId"] = exchangeId, ["exchangeOrdinal"] = 0,
+            ["realm"] = "chaos_sea", ["conflictId"] = "conflict-a", ["exchangeId"] = exchangeId, ["exchangeOrdinal"] = 1,
             ["turnExchangeOrdinal"] = 0, ["intent"] = intent.Root, ["beforeWound"] = JsonNode.Parse(WoundMaterializationContract.SerializeCanonical(wound)),
             ["healingSource"] = JsonSerializer.SerializeToNode(source), ["rollMode"] = "normal",
             ["diceClaim"] = new JsonArray(new JsonObject { ["sourceIndex"] = 0, ["value"] = 8, ["selection"] = null }),

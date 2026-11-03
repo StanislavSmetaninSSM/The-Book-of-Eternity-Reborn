@@ -1,3 +1,22 @@
+# Zero-comparison grouped SOURCE corrections — WIP, uncompiled/unrun
+
+Independent Astra SOURCE found four issues: missing JsonObject import, invalid
+absolute healing exchange zero in the migration fixture, sorting that could hide
+original injury-side order, and a quadratic request merge. Sol separately found
+that die claims must retain local exchange zero while intent/witness use absolute
+exchange one. Corrections preserve those distinct coordinates and all assertions.
+The parser now checks each original table's scalar source/slot order before merging;
+a new after-valid two-sided fixture reverses only that order and requires the
+specific refusal. The merge uses transient indegrees/followers and a ready queue:
+each request is queued once, each precedence edge visited once, no proof reparse,
+additional I/O, persistent cache, authority reuse or measured speedup claim.
+
+Grouped delta awaits independent review at a frozen SHA. Typed DATA selection is
+now 19 cases; total affected selection is 85 cases in nine leaves, pending fresh
+discovery. Main/Unit/Integration v3 code remains uncompiled and all new GREEN/native
+assertions unrun. Accepted historical 76, partial C2/cold bounds, both pending
+semantics and old UNKNOWN/HOLD remain unchanged. No new game rule or combat scope.
+
 # Complete zero-comparison WIP ready for whole SOURCE — uncompiled/unrun
 
 Existing v3/C3 implementation now has nativezero1 scaffold reusing realIII birth

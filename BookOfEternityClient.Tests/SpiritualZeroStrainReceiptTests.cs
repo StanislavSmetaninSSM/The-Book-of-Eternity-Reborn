@@ -174,6 +174,45 @@ public sealed partial class SpiritualZeroStrainReceiptTests
         Assert.False(SpiritualWoundOpportunityReceiptState.Parse(root.ToJsonString(), "unit.requestCycle").IsValid);
     }
 
+    /// <summary>Adding a zero table must not let the merge repair reversed injury sides from one original exchange.</summary>
+    [Fact]
+    public void ZeroComparisonCannotSortAwayOriginalInjurySideOrder()
+    {
+        var (_, root) = CreateLedger("prior-injury");
+        var twoSides = SpiritualWoundOpportunityReceiptStateTests.TwoSides();
+        _ = ParseLedger(twoSides);
+        for (var index = 0; index < 2; index++)
+        {
+            var source = twoSides["sources"]![index]!.DeepClone().AsObject();
+            source["ordinal"] = index + 2; source["instanceSourceOrdinal"] = index + 2;
+            source["instanceId"] = root["instances"]![0]!["instanceId"]!.DeepClone();
+            var decision = twoSides["decisions"]![index]!.DeepClone().AsObject();
+            decision["ordinal"] = index + 2; decision["instanceId"] = source["instanceId"]!.DeepClone();
+            root["sources"]!.AsArray().Add(source); root["decisions"]!.AsArray().Add(decision);
+            SpiritualStrainReceiptJoinTests.SealSourceAndDecision(root, index + 1);
+        }
+        root["nextSourceOrdinal"] = 4; root["nextDecisionOrdinal"] = 4;
+        _ = ParseLedger(root);
+        foreach (var table in new[] { "sources", "decisions" })
+        {
+            var rows = root[table]!.AsArray();
+            var player = rows[1]!.DeepClone(); var opposition = rows[2]!.DeepClone();
+            rows[1] = opposition; rows[2] = player;
+            for (var index = 1; index < 3; index++)
+            {
+                rows[index]!["ordinal"] = index + 1;
+                if (table == "sources") rows[index]!["instanceSourceOrdinal"] = index + 1;
+            }
+        }
+        SpiritualStrainReceiptJoinTests.SealSourceAndDecision(root, 1);
+        SpiritualStrainReceiptJoinTests.SealSourceAndDecision(root, 2);
+        var bytes = root.ToJsonString();
+        var refused = SpiritualWoundOpportunityReceiptState.Parse(bytes, "unit.reversedOriginalSides");
+        Assert.False(refused.IsValid);
+        Assert.Contains(refused.Issues, issue => issue.Message.Contains("original table cannot reorder", StringComparison.Ordinal));
+        Assert.Equal(bytes, root.ToJsonString());
+    }
+
     private static void RetupleWitness(JsonObject witness, string suffix)
     {
         witness["turnEvidence"]!["requestId"] = "request-existing43_" + suffix;

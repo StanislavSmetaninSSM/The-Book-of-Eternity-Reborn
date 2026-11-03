@@ -1,6 +1,6 @@
 # Zero-comparison full WIP — whole SOURCE before fresh builds
 
-Minimal v3 private-ledger/source-only/mixed-C3 implementation, DATA18 and nativezero1
+Minimal v3 private-ledger/source-only/mixed-C3 implementation, DATA19 and nativezero1
 scaffold are now written with existing services/helpers and unchanged original game
 rules. Exact currentcheckpoint records ownership, replay/History/dice/prefix and
 optimization boundaries. Build/runtime UNRUN. Grouped whole independent reviews
