@@ -1,3 +1,21 @@
+# No-roll DESIGN accepted; causal scaffold WIP
+
+Astra/high accepted bounded DESIGN with corrections: map validation at the existing
+exchange/action-shape boundary before strain filtering; new map requires absent
+(not null/scalar) diceAudit. Existing no-choice legacy voluntary behavior stays.
+RetainedPayloads also derives matchup necessity from actual dice presence and
+skips only dice-specific Light Incarnate arithmetic in validated no-roll lane;
+operation/control/cost and supplied audit checks remain. Pure DATA proves scalar/
+map disagreement and invented claims, not authenticity of a coherently resealed
+GM choice; coherent replacement belongs to exact original owner/packet/cold replay.
+Zero remains a prepared source with zero ceiling, no injury row unless guaranteed.
+
+New Unit scaffold27 across3methods and exact category added; production unchanged,
+UNCOMPILED/UNRUN. Five signed-choice positives (10/0/-1/Int64 min/max), seventeen
+refusals, five early shape guards. Existing rolled/guarantee21 selected for GREEN,
+not necessary to repeat for causal RED. Existing single world/source fixture will
+be reused for actual ownership after cheap proof. No cache/I/O or speedup claim.
+
 # Explicit GM no-roll wound margin — implementation plan / DESIGN WIP
 
 Goal: finish the author-approved voluntary spiritual harm source without an opposed

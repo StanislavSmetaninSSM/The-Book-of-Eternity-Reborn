@@ -1,3 +1,11 @@
+# T081-D-NO-ROLL scaffold WIP
+
+Astra DESIGN accepted with boundary/RetainedPayloads/authority corrections in plan.
+New typed Unit27 and exact category written; production unchanged, uncompiled/unrun.
+Next scaffold SOURCE/fresh Unit/discovery/exact PlanOnly/causal RED, then minimal
+producer+witness/GM contract and original-owner qualification. Existing H4 accepted
+72a/runtime25ea unchanged. No new cache/I/O; raw outside Git; all old HOLD retained.
+
 # Next functional step — no-roll GM margin, DESIGN WIP
 
 Accepted prior checkpoint72a300fdc (runtime25ea) remains clean/accepted. Current work

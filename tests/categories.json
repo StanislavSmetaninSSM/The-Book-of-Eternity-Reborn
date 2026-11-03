@@ -2,6 +2,37 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "wounds-spiritual-no-roll-source-data",
+  "responsibility": "#1536 T081-D-NO-ROLL twenty-seven cheap typed DATA cases: five explicit signed GM margins including zero and Int64 edges, seventeen missing/malformed/contradictory choice or invented-claim refusals, five map-placement/rolled/non-harm guards before source filtering.",
+  "excludes": "No original GM-choice authority from resealed DATA, real owner, C2/C4 publication, combat changes, new dice or old HOLD replay. Coherent replacement belongs to owned/cold source controls.",
+  "changeHints": [
+    "BookOfEternityClient/Services/SpiritualWoundSourceWitness.cs",
+    "BookOfEternityClient/Services/Validation/ValidationService.SpiritualWoundSourceAdmission.cs",
+    "BookOfEternityClient.Tests/SpiritualWoundNoRollSourceTests.cs"
+  ],
+  "related": [
+    {
+      "id": "spiritual-combat-guarantee-witness-consumers",
+      "when": "Preserve real rolled source, art and guarantee rules while adding an actual no-roll lane."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.SpiritualWoundNoRollSourceTests.*"
+      ]
+    }
+  ]
+},
+{
   "id": "wounds-spiritual-signed-json-boundary",
   "responsibility": "#1536 T081-D twelve cheap byte-boundary cases: ten first-offer signed DATA controls (three published-BOM positives, four malformed-byte refusals, three identity guards including request reuse across turns) plus two existing shared canonical UTF8 codec facts. No mutable filesystem or live authority.",
   "excludes": "No permissive string parser, byte/hash rewrite, live owner or full spiritual-wounds-state suite. Real multi-turn healing remains a separately admitted native case.",
