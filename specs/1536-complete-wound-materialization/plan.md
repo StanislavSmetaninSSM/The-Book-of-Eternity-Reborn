@@ -1,3 +1,21 @@
+# Remaining Unit24 PASS; last static settlement correction WIP
+
+Exact remaining24Unit completed24PASS on metadatafea795999 / compiledUnit a1510d701,
+no timeout/skip/dup/underfill/newtemp/cleanup failure; postproofb18cd158e7163e1262fac56fc06c85750a993470b54aeeafa8d56d022a31f5e1,
+summary70006a2f305d570ebf438922f359f085219606cf278fc9c114034b2a512dfe87.
+Final catalog1404/13303 valid with no unmapped/stale selectors. The only remaining
+source case is the exact pre-canonical settlement Fact, now corrected per Astra
+DESIGN: two wound settlements outside all try, one strictly post-release zero-arg
+projection try, no finally, exact3-type filtered catch with only log+HeldBlocked.
+Unsafe Core catch order and bare rethrow remain unchanged. This is a static guard
+of existing code, no new joint behavior or joint terminal runtime acceptance.
+
+Only Integration rebuild/one static Fact is needed; archived current Int outputs
+are member/hash/CRC verified before overwrite. Prior9static/4source/112runtime and
+24Unit remain versioned, not a fresh single batch. No further source changes or
+production corrections are planned. T107native1+controls6 still UNRUN pending
+source OUTCOME and their exact fresh Plan/PREP on the final test assembly.
+
 # Static port outcome — a1510d701 / 9PASS1FAIL24UNRUN
 
 The changed ten-case integration descriptor completed9PASS/1FAIL without timeout;

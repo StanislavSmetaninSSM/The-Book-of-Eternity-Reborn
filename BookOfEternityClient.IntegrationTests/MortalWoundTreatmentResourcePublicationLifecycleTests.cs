@@ -1836,9 +1836,60 @@ public sealed partial class GameEngineTurnLifecycleTests
         var preCanonicalSettlement = ReadMethodAnalysis(
             relativePath,
             "SettlePreCanonicalTreatmentPublicationBeforeTerminalRollbackAsync");
-        Assert.Empty(
-            preCanonicalSettlement.Method.DescendantNodes()
-                .OfType<CatchClauseSyntax>());
+        var settlementInvocations = preCanonicalSettlement.Method.DescendantNodes()
+            .OfType<InvocationExpressionSyntax>().ToArray();
+        foreach (var name in new[] { "ReleaseValidatedTreatmentPublicationBeforeCanonicalRefreshAsync",
+                     "EnsureExactTreatmentResourcePublicationSettlement" })
+        {
+            var settlement = RequireInvocation(settlementInvocations, name);
+            Assert.Empty(settlement.Ancestors().OfType<TryStatementSyntax>());
+        }
+        var projectionTry = Assert.Single(preCanonicalSettlement.Method.DescendantNodes()
+            .OfType<TryStatementSyntax>());
+        Assert.Null(projectionTry.Finally);
+        var projection = Assert.IsType<ExpressionStatementSyntax>(Assert.Single(projectionTry.Block.Statements));
+        var projectionAwait = Assert.IsType<AwaitExpressionSyntax>(projection.Expression);
+        var projectionCall = Assert.IsType<InvocationExpressionSyntax>(projectionAwait.Expression);
+        Assert.Equal("RefreshRuntimeStateAfterExactRollbackAsync",
+            Assert.IsType<IdentifierNameSyntax>(projectionCall.Expression).Identifier.ValueText);
+        Assert.Empty(projectionCall.ArgumentList.Arguments);
+
+        var jointBranch = Assert.Single(preCanonicalSettlement.Method.DescendantNodes()
+            .OfType<IfStatementSyntax>(), statement =>
+                statement.Condition.ToString() == "_mortalJointRepairCheckpoint is { } jointCheckpoint");
+        var jointBlock = Assert.IsType<BlockSyntax>(jointBranch.Statement);
+        Assert.Same(jointBlock, projectionTry.Parent);
+        var releasedGuard = Assert.Single(jointBlock.Statements.OfType<IfStatementSyntax>(), statement =>
+            statement.Condition.ToString() == "joint.Disposition != MortalJointRepairPublicationDisposition.TerminalReleased");
+        Assert.Equal("AcceptedTurnValidationDisposition.MortalJointRepairPublicationHeldBlocked",
+            Assert.IsType<ReturnStatementSyntax>(releasedGuard.Statement).Expression!.ToString());
+        Assert.Equal(jointBlock.Statements.IndexOf(releasedGuard) + 1,
+            jointBlock.Statements.IndexOf(projectionTry));
+        var release = RequireInvocation(settlementInvocations, "TerminateMortalJointRepairAsync");
+        Assert.Empty(release.Ancestors().OfType<TryStatementSyntax>());
+        Assert.True(release.SpanStart < releasedGuard.SpanStart);
+
+        var projectionCatch = Assert.Single(preCanonicalSettlement.Method.DescendantNodes()
+            .OfType<CatchClauseSyntax>());
+        Assert.Same(projectionCatch, Assert.Single(projectionTry.Catches));
+        Assert.False(IsUnfilteredCatchAll(preCanonicalSettlement, projectionCatch));
+        Assert.Equal("Exception", projectionCatch.Declaration!.Type.ToString());
+        Assert.Equal("error", projectionCatch.Declaration.Identifier.ValueText);
+        Assert.Equal("error is InvalidDataException or IOException or InvalidOperationException",
+            projectionCatch.Filter!.FilterExpression.ToString());
+        Assert.Collection(projectionCatch.Block.Statements,
+            statement =>
+            {
+                var log = Assert.IsType<InvocationExpressionSyntax>(
+                    Assert.IsType<ExpressionStatementSyntax>(statement).Expression);
+                Assert.Equal("_logger.LogError", log.Expression.ToString());
+                Assert.Equal(2, log.ArgumentList.Arguments.Count);
+                Assert.Equal("error", log.ArgumentList.Arguments[0].Expression.ToString());
+                Assert.True(Assert.IsType<LiteralExpressionSyntax>(
+                    log.ArgumentList.Arguments[1].Expression).IsKind(SyntaxKind.StringLiteralExpression));
+            },
+            statement => Assert.Equal("AcceptedTurnValidationDisposition.MortalJointRepairPublicationHeldBlocked",
+                Assert.IsType<ReturnStatementSyntax>(statement).Expression!.ToString()));
     }
 
     [Fact]
