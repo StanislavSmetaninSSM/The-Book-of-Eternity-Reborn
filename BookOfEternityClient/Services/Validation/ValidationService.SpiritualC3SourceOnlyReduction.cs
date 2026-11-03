@@ -54,7 +54,7 @@ public partial class ValidationService
             }
 
             /// <summary>
-            /// Gets whether this capability was issued by the verifying capture and its terminal is complete.
+            /// Gets whether the actual capture issued this completion, including its exact comparison/terminal receipt identity.
             /// </summary>
             internal bool IsAuthentic => ReferenceEquals(_issuanceKey, C3SourceOnlyIssuanceKey) &&
                 (Terminal is null || Terminal.IsComplete) &&

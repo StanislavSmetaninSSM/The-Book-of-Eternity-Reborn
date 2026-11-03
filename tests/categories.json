@@ -2,6 +2,124 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "expectedSeconds": null,
+  "id": "wounds-spiritual-zero-native-publication",
+  "responsibility": "#1536 FR025/T081-D zero-comparison: One real existingIII wound from signed5/15 birth, fresh4/5 mixed-band maneuver/setback and increasing strain with pressure7/max0. Nooffer, exactcompletedidentity/source-onlyC3/v3comparison/commonC4, exactresourcepayments, no new wound/decision, unchanged parent/History, signed44 read. Not Engine/UI/fresh-process.",
+  "excludes": "No general combat/QTE, pending actor inference/aggregation, fake opportunity/none, live GM, Engine/UI or oldUNKNOWN/HOLD retry. Original assertions retained.",
+  "changeHints": [
+    "BookOfEternityClient/Services/Validation/ValidationService.SpiritualC3SourceOnlyReduction.cs",
+    "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualZeroStrain.cs"
+  ],
+  "timeoutMinutes": 3,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualExistingStrain_ZeroCeilingPublishesComparisonOnlyAndKeepsSignedHistory"
+      ]
+    }
+  ]
+},
+{
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "expectedSeconds": null,
+  "id": "wounds-spiritual-zero-source-only-publication-controls",
+  "responsibility": "#1536 FR025/T081-D zero-comparison: Affected existing source-only continuing/terminal publication and all-or-nothing failure/rollback with no comparisons; new optional comparison ownership must preserve these contracts.",
+  "excludes": "No general combat/QTE, pending actor inference/aggregation, fake opportunity/none, live GM, Engine/UI or oldUNKNOWN/HOLD retry. Original assertions retained.",
+  "changeHints": [
+    "BookOfEternityClient/Services/Validation/ValidationService.SpiritualC3SourceOnlyReduction.cs",
+    "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualZeroStrain.cs"
+  ],
+  "timeoutMinutes": 3,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualC4SourceOnly_PublishesZeroCeilingWithoutDecision",
+        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualC4SourceOnly_PublicationFailureRestoresOriginal"
+      ]
+    }
+  ]
+},
+{
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "expectedSeconds": null,
+  "id": "wounds-spiritual-zero-source-only-refusal-controls",
+  "responsibility": "#1536 FR025/T081-D zero-comparison: Affected existing source-only current-input and incomplete-capture rejection; no comparison DATA or receipt identity can bypass them.",
+  "excludes": "No general combat/QTE, pending actor inference/aggregation, fake opportunity/none, live GM, Engine/UI or oldUNKNOWN/HOLD retry. Original assertions retained.",
+  "changeHints": [
+    "BookOfEternityClient/Services/Validation/ValidationService.SpiritualC3SourceOnlyReduction.cs",
+    "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualZeroStrain.cs"
+  ],
+  "timeoutMinutes": 1,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualC4SourceOnly_RejectsChangedInput",
+        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualC4SourceOnly_RejectsUncompletedCapture"
+      ]
+    }
+  ]
+},
+{
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "expectedSeconds": null,
+  "id": "wounds-spiritual-zero-existing-ledger-controls",
+  "responsibility": "#1536 FR025/T081-D affected existing injury receipt closed-shape, zero accepted-source refusal, source/coordinate/dice/order/bounds, append and replay guards. Explicit existing method subset; no native suite.",
+  "excludes": "No generic suite or unrelated materialization family; no new authority from comparison DATA.",
+  "changeHints": [
+    "BookOfEternityClient/Services/SpiritualWoundOpportunityReceiptState.cs"
+  ],
+  "timeoutMinutes": 1,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.SpiritualWoundOpportunityReceiptStateTests.Parse_RoundTripsDetachedHistoryAndExactReplay",
+        "BookOfEternityClient.Tests.SpiritualWoundOpportunityReceiptStateTests.DeclineReducer_PreservesSignedExistingHistoryAndRejectsAcceptedRequestReplay",
+        "BookOfEternityClient.Tests.SpiritualWoundOpportunityReceiptStateTests.Parse_RejectsMalformedRoots",
+        "BookOfEternityClient.Tests.SpiritualWoundOpportunityReceiptStateTests.Parse_AcceptsPacketLocalGapsAndLifetimeProgression",
+        "BookOfEternityClient.Tests.SpiritualWoundOpportunityReceiptStateTests.Parse_RejectsZeroCeilingAcceptedSource",
+        "BookOfEternityClient.Tests.SpiritualWoundOpportunityReceiptStateTests.Parse_RejectsRepeatedCoordinates",
+        "BookOfEternityClient.Tests.SpiritualWoundOpportunityReceiptStateTests.PlanAppend_PreservesHistoryAndClosedInstances",
+        "BookOfEternityClient.Tests.SpiritualWoundOpportunityReceiptStateTests.Parse_RejectsCrossSourceContradictions",
+        "BookOfEternityClient.Tests.SpiritualWoundOpportunityReceiptStateTests.Parse_AcceptsTwoSidesSharingOneExchange",
+        "BookOfEternityClient.Tests.SpiritualWoundOpportunityReceiptStateTests.Parse_RejectsExchangeReusedByOppositeSideInAnotherTurn",
+        "BookOfEternityClient.Tests.SpiritualWoundOpportunityReceiptStateTests.Parse_RejectsSharedExchangeOrderChanges",
+        "BookOfEternityClient.Tests.SpiritualWoundOpportunityReceiptStateTests.Parse_RejectsUnavailableSourcePositions",
+        "BookOfEternityClient.Tests.SpiritualWoundOpportunityReceiptStateTests.Parse_RejectsLifetimeChronologyChanges",
+        "BookOfEternityClient.Tests.SpiritualWoundOpportunityReceiptStateTests.Parse_RejectsOriginalTurnSplitAcrossInstances",
+        "BookOfEternityClient.Tests.SpiritualWoundOpportunityReceiptStateTests.Parse_RejectsSourcePositionAheadOfExchangeCapacity",
+        "BookOfEternityClient.Tests.SpiritualWoundOpportunityReceiptStateTests.PlanAppend_RejectsExtensionOfAnAlreadyAcceptedOriginalTurn",
+        "BookOfEternityClient.Tests.SpiritualWoundOpportunityReceiptStateTests.Parse_RejectsSourceOutsideItsInstance",
+        "BookOfEternityClient.Tests.SpiritualWoundOpportunityReceiptStateTests.Parse_RejectsOversizedCollections"
+      ]
+    }
+  ]
+},
+{
   "id": "wounds-spiritual-zero-comparison-positive",
   "responsibility": "Original FR025/T081-D zero-ceiling comparison-only receipt: Three intrinsic zero-ceiling v3 DATA modes: no injury rows, prior injury, and same-request positive plus comparison. Existing schema baseline and genuine max0/increasing source prerequisites before v3 assertion.",
   "excludes": "No forged opportunity/none, current owner/History/origin authority, C3/common publication, Engine/UI/fresh-process or unresolved semantic/UNKNOWN/HOLD closure. Parser RED is positive-only; failed baseline never qualifies negatives.",
@@ -28,7 +146,7 @@
 },
 {
   "id": "wounds-spiritual-zero-comparison-refusal",
-  "responsibility": "Original FR025/T081-D zero-ceiling comparison-only receipt: Nine after-valid v3 DATA refusals: closed row, zero ceiling, global/instance ordinal, instance ownership, duplicate row, cross-family coordinate and original/claimed pool context. Does not qualify live source-only/C3 authority.",
+  "responsibility": "Original FR025/T081-D zero-ceiling comparison-only receipt: After-valid v3 DATA refusals plus immutable append/request order, empty-v3/nonempty-v2 healing, latest History, owner/detachment and genuine v2-to-v3 DATA migration: closed row, zero ceiling, global/instance ordinal, instance ownership, duplicate row, cross-family coordinate and original/claimed pool context. Does not qualify live source-only/C3 authority.",
   "excludes": "No forged opportunity/none, current owner/History/origin authority, C3/common publication, Engine/UI/fresh-process or unresolved semantic/UNKNOWN/HOLD closure. Parser RED is positive-only; failed baseline never qualifies negatives.",
   "changeHints": [
     "BookOfEternityClient.Tests/SpiritualZeroStrainReceiptTests.cs",
@@ -46,7 +164,13 @@
     {
       "project": "unit",
       "tests": [
-        "BookOfEternityClient.Tests.SpiritualZeroStrainReceiptTests.ZeroComparisonRefusesCrossFamilyContradiction"
+        "BookOfEternityClient.Tests.SpiritualZeroStrainReceiptTests.ZeroComparisonRefusesCrossFamilyContradiction",
+        "BookOfEternityClient.Tests.SpiritualZeroStrainReceiptTests.ZeroComparisonAppendCannotReopenAcceptedRequest",
+        "BookOfEternityClient.Tests.SpiritualZeroStrainReceiptTests.ZeroComparisonEmptyHealingDoesNotBecomeCombatHealing",
+        "BookOfEternityClient.Tests.SpiritualZeroStrainReceiptTests.ZeroComparisonHistorySurvivesLaterHealingWithoutLivePermission",
+        "BookOfEternityClient.Tests.SpiritualZeroStrainReceiptTests.ZeroComparisonDataCannotForgeSourceOnlyOwner",
+        "BookOfEternityClient.Tests.SpiritualZeroStrainReceiptTests.ZeroComparisonCannotSortAwayContradictoryRequestOrder",
+        "BookOfEternityClient.Tests.SpiritualZeroStrainReceiptTests.ZeroComparisonPreservesExistingV2HealingFamily"
       ]
     }
   ]

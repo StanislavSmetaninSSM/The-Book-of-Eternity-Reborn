@@ -6,7 +6,7 @@ using Xunit;
 namespace BookOfEternityClient.Tests;
 
 /// <summary>Checks comparison-only receipt DATA; signed originals, current owners and publication remain independent.</summary>
-public sealed class SpiritualZeroStrainReceiptTests
+public sealed partial class SpiritualZeroStrainReceiptTests
 {
     /// <summary>Retains a real intrinsic zero ceiling without inventing a wound decision, with empty or existing injury history.</summary>
     [Theory]
@@ -83,6 +83,117 @@ public sealed class SpiritualZeroStrainReceiptTests
         var bytes = root.ToJsonString();
         Assert.False(SpiritualWoundOpportunityReceiptState.Parse(bytes, "unit.zeroChanged").IsValid);
         Assert.Equal(bytes, root.ToJsonString());
+    }
+
+    /// <summary>A request accepted through comparison-only DATA cannot later acquire an injury decision.</summary>
+    [Fact]
+    public void ZeroComparisonAppendCannotReopenAcceptedRequest()
+    {
+        var (_, complete) = CreateLedger("mixed-request");
+        var comparisonOnly = complete.DeepClone().AsObject();
+        comparisonOnly["sources"]!.AsArray().RemoveAt(1); comparisonOnly["decisions"]!.AsArray().RemoveAt(1);
+        comparisonOnly["nextSourceOrdinal"] = 2; comparisonOnly["nextDecisionOrdinal"] = 2;
+        var before = ParseLedger(comparisonOnly); var next = ParseLedger(complete);
+        Assert.Equal("conflict", SpiritualWoundOpportunityReceiptState.PlanAppend(before, next).Disposition);
+    }
+
+    /// <summary>Empty v3 healing is semantically absent; v2's nonempty family rule is retained.</summary>
+    [Fact]
+    public void ZeroComparisonEmptyHealingDoesNotBecomeCombatHealing()
+    {
+        var (_, root) = CreateLedger("prior-injury");
+        Assert.False(ParseLedger(root).HasCombatHealing);
+        var v2 = root.DeepClone().AsObject(); v2["schemaVersion"] = 2;
+        v2.Remove("strainComparisons"); v2.Remove("nextStrainComparisonOrdinal");
+        Assert.False(SpiritualWoundOpportunityReceiptState.Parse(v2.ToJsonString(), "unit.emptyV2").IsValid);
+        root["nextHealingSourceOrdinal"] = 2;
+        Assert.False(SpiritualWoundOpportunityReceiptState.Parse(root.ToJsonString(), "unit.badEmptyV3").IsValid);
+    }
+
+    /// <summary>Retained zero comparison joins its exact creation anchor even after later lawful terminal History DATA.</summary>
+    [Fact]
+    public void ZeroComparisonHistorySurvivesLaterHealingWithoutLivePermission()
+    {
+        var (_, root) = CreateLedger("prior-injury"); var ledger = ParseLedger(root);
+        var history = SpiritualStrainHistoryDataTests.CreateHistory(SpiritualStrainReceiptJoinTests.CreateLedger());
+        Assert.True(ledger.HasExactStrainHistory(ParseHistory(history)));
+        var first = history["transitions"]![0]!.AsObject(); var heal = first.DeepClone().AsObject();
+        heal["transitionId"] = "zero_later_heal"; heal["operationKey"] = "zero_later_heal_operation";
+        heal["ordinal"] = 2; heal["woundTransitionOrdinal"] = 2; heal["kind"] = "heal"; heal["turn"] = 44;
+        heal["eventRef"] = "zero_later_heal_event"; heal["beforeFingerprint"] = first["afterFingerprint"]!.DeepClone();
+        heal["afterFingerprint"] = "sha256:" + new string('d', 64); heal["terminal"] = true;
+        history["transitions"]!.AsArray().Add(heal); history["nextOrdinal"] = 3;
+        Assert.True(ledger.HasExactStrainHistory(ParseHistory(history)));
+        var actual = Decode(root["strainComparisons"]![0]!["witness"]!["exchangeJsonBase64"]!);
+        Assert.NotNull(ledger.ReadRetainedStrainOrdinaryAfter("chaos_sea", "conflict-a", actual, false));
+        first["afterFingerprint"] = "sha256:" + new string('c', 64); heal["beforeFingerprint"] = first["afterFingerprint"]!.DeepClone();
+        Assert.False(ledger.HasExactStrainHistory(ParseHistory(history)));
+    }
+
+    /// <summary>Valid DATA and a receipt identity cannot construct the private exhausted source owner.</summary>
+    [Fact]
+    public void ZeroComparisonDataCannotForgeSourceOnlyOwner()
+    {
+        var witness = CreateZeroWitness(); Assert.Equal(0, SpiritualWoundSourceWitness.Validate(witness).MaximumSeverityRank);
+        var signed = new ValidationService.SpiritualSignedC1Origin(new CanonicalBeforeImage(false, null),
+            new CanonicalBeforeImage(true, Encoding.UTF8.GetBytes("{\"schemaVersion\":1,\"activeConflict\":{\"conflictId\":\"conflict-a\"}}")),
+            "sha256:" + new string('a', 64));
+        var owner = new ValidationService.SpiritualOriginalTurnCapture.AuthenticatedC3SourceOnly(new object(), signed,
+            null!, "chaos_sea", null, new object(), [witness]);
+        witness["maximumSeverityRank"] = 4;
+        Assert.Equal(0, owner.ReadStrainComparisons()[0]["maximumSeverityRank"]!.GetValue<int>());
+        var escaped = owner.ReadStrainComparisons()[0]; escaped["maximumSeverityRank"] = 3;
+        Assert.Equal(0, owner.ReadStrainComparisons()[0]["maximumSeverityRank"]!.GetValue<int>());
+        Assert.False(owner.IsAuthentic);
+        Assert.Contains(SpiritualWoundDeclineReceiptReducer.ReduceSourceOnly(owner).Issues,
+            issue => issue.Code == "spiritual_c3_source_only_owner_missing");
+    }
+
+    /// <summary>Request histories must preserve both tables' order; a numeric sort must not hide a cross-family cycle.</summary>
+    [Fact]
+    public void ZeroComparisonCannotSortAwayContradictoryRequestOrder()
+    {
+        var (_, root) = CreateLedger("mixed-request");
+        var sourceRow = root["sources"]![1]!.DeepClone().AsObject();
+        sourceRow["ordinal"] = 3; sourceRow["instanceSourceOrdinal"] = 3;
+        RetupleWitness(sourceRow["witness"]!.AsObject(), "b"); root["sources"]!.AsArray().Add(sourceRow);
+        var decision = root["decisions"]![1]!.DeepClone().AsObject(); decision["ordinal"] = 3;
+        decision["decisionId"] = "decision_current_positive_b"; decision["opportunityRef"] = "opportunity_current_positive_b";
+        decision["binding"]!["requestId"] = "request-existing43_b"; decision["binding"]!["snapshotToken"] = "snapshot-existing43_b";
+        root["decisions"]!.AsArray().Add(decision); SpiritualStrainReceiptJoinTests.SealSourceAndDecision(root, 2);
+        root["nextSourceOrdinal"] = 4; root["nextDecisionOrdinal"] = 4;
+        var comparison = root["strainComparisons"]![0]!.DeepClone().AsObject();
+        comparison["ordinal"] = 2; comparison["instanceComparisonOrdinal"] = 2;
+        RetupleWitness(comparison["witness"]!.AsObject(), "b"); root["strainComparisons"]!.AsArray().Add(comparison);
+        root["nextStrainComparisonOrdinal"] = 3;
+        _ = ParseLedger(root);
+        var rows = root["strainComparisons"]!.AsArray();
+        var first = rows[0]!.DeepClone(); var second = rows[1]!.DeepClone(); rows.Clear();
+        second["ordinal"] = 1; second["instanceComparisonOrdinal"] = 1;
+        first["ordinal"] = 2; first["instanceComparisonOrdinal"] = 2; rows.Add(second); rows.Add(first);
+        Assert.False(SpiritualWoundOpportunityReceiptState.Parse(root.ToJsonString(), "unit.requestCycle").IsValid);
+    }
+
+    private static void RetupleWitness(JsonObject witness, string suffix)
+    {
+        witness["turnEvidence"]!["requestId"] = "request-existing43_" + suffix;
+        witness["turnEvidence"]!["snapshotToken"] = "snapshot-existing43_" + suffix;
+        var id = witness["exchangeId"]!.GetValue<string>() + "_" + suffix; witness["exchangeId"] = id;
+        var actual = Decode(witness["exchangeJsonBase64"]!); actual["exchangeId"] = id;
+        witness["exchangeJsonBase64"] = Encode(actual);
+        if (witness["strainPreimage"] is JsonObject proof)
+        { var ordinary = Decode(proof["ordinaryExchangeJsonBase64"]!); ordinary["exchangeId"] = id; proof["ordinaryExchangeJsonBase64"] = Encode(ordinary); }
+        Seal(witness); _ = SpiritualWoundSourceWitness.Validate(witness);
+    }
+    private static SpiritualWoundOpportunityReceiptState ParseLedger(JsonObject root)
+    {
+        var result = SpiritualWoundOpportunityReceiptState.Parse(root.ToJsonString(), "unit.zeroLedger");
+        Assert.True(result.IsValid, string.Join("\n", result.Issues)); return result.State!;
+    }
+    private static WoundHistoryState ParseHistory(JsonObject root)
+    {
+        var result = WoundHistoryState.Parse(root.ToJsonString(), WoundHistoryState.HistoryPath);
+        Assert.True(result.IsValid, string.Join("\n", result.Issues)); return result.State!;
     }
 
     internal static (JsonObject Before, JsonObject Next) CreateLedger(string mode)

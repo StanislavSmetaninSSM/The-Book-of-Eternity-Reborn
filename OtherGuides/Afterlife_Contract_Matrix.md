@@ -1871,3 +1871,13 @@ requires the actual C3 pair and common receipt join. Later healing preserves the
 historical comparison without authorizing another use of a retired root.
 Read the worked signed-existing maneuver in E_CLI_Afterlife_Turns.txt. No new
 aggregation, ambiguous outcome rule or general combat behavior is authorized.
+
+### Zero-ceiling comparison-only strain
+
+If the existing wound raises player strain but the non-guaranteed wound ceiling is
+0, finish with no wound offer. Client-owned schema-v3 comparison-only receipt rows
+retain exact v2 ordinary/parent DATA through source-only or mixed C3 and common C4.
+The GM must not invent an opportunity, `none`, private receipt or additional charge.
+Existing source/decision and healing histories, signed original, current authority,
+History anchors, actual dice and immutable request/prefix checks remain mandatory.
+Worked 4/5 example: E_CLI_Afterlife_Turns.txt, zero-ceiling comparison-only.

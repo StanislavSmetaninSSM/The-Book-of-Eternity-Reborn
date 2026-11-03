@@ -1,3 +1,24 @@
+# Complete zero-comparison WIP ready for whole SOURCE — uncompiled/unrun
+
+Existing v3/C3 implementation now has nativezero1 scaffold reusing realIII birth
+and existing fullframe helpers; only oppositionDie parameter added, default12 keeps
+the earlier positive case unchanged, new5 gives canonical mixed band/margin-1 and
+pressure7/max0. It checks original source calculation/nooffer/no private C2 state,
+required completed receipt proof, source-only C3/commonC4, exactresource3/2,
+unchanged parent/History, v3zero-onlyrow and nextsigned44. All native assertions UNRUN.
+TypedzeroDATA now18 cases: original3positive/9refusal plus immutable request/prefix,
+request-order cycle, latestHistory afterheal, fake owner/detachment, empty-v3 versus
+nonempty-v2 and a real blocked/paid nonemptyv2 DATA→v3 migration. Migration uses
+existing intent/check/codecs and typed6→4 OD, no nativecombat or owner fabrication.
+Old SourceOnly6publication/rollback and5refusal cases are selected as directly
+changed owner-identity guards; exact old containing-ledger subset/parent7/history9/
+GMguide1 cover changed parse/coherence/prefix behavior. No broad suite or oldHOLD.
+GMguide/example/manifest/matrix/spec synchronized: no newGM authoredfield, fake
+opportunity/none, worldtime/cost rule, actor inference, aggregation or newframework.
+Whole independent SOURCE/FIXTURE/SELECTION then freshaffectedbuilds/exact discovery/
+Plan/PREP/cheapGREEN precede nativezero. No new acceptance/speedup claim at this WIP.
+Previous76 bounds/sourceSHA/unknowns unchanged. Code and current task kept remotely.
+
 # WIP zero-comparison existing-owner implementation — uncompiled/unrun
 
 N1b schema RED3 independently accepted by Sol: valid oldledger and intrinsic

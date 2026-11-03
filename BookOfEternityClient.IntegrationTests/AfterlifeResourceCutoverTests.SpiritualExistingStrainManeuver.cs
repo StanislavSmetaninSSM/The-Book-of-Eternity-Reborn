@@ -199,10 +199,11 @@ public sealed partial class AfterlifeResourceCutoverTests
         Assert.Equal(3, (await ReadCombatHealingWoundAsync(context)).Severity.Rank);
     }
 
-    private static async Task AppendExistingStrainManeuverAsync(ResourceMaterializationTestContext context, bool corrected)
+    private static async Task AppendExistingStrainManeuverAsync(ResourceMaterializationTestContext context, bool corrected, int oppositionDie = 12)
     {
+        Assert.Contains(oppositionDie, new[] { 5, 12 });
         await context.CaptureValidatedPendingSnapshotAsync(turn: 43, currentRealm: "Chaos Sea",
-            preGeneratedDices1d20: [4, 12], requestId: "request_existing_strain_maneuver_43");
+            preGeneratedDices1d20: [4, oppositionDie], requestId: "request_existing_strain_maneuver_43");
         var root = (await context.ReadJsonAsync(AfterlifeSpiritualConflictState.StatePath))!;
         var active = root["activeConflict"]!;
         var log = active["exchangeLog"]!.AsArray();
@@ -234,11 +235,11 @@ public sealed partial class AfterlifeResourceCutoverTests
         dice["diceUsed"]![0]!["sourceIndex"] = 0;
         dice["diceUsed"]![0]!["value"] = 4;
         dice["diceUsed"]![1]!["sourceIndex"] = 1;
-        dice["diceUsed"]![1]!["value"] = 12;
+        dice["diceUsed"]![1]!["value"] = oppositionDie;
         dice["playerTotal"] = 4;
-        dice["oppositionTotal"] = 12;
-        dice["margin"] = -8;
-        dice["outcomeBand"] = "decisive_opposition_success";
+        dice["oppositionTotal"] = oppositionDie;
+        dice["margin"] = 4 - oppositionDie;
+        dice["outcomeBand"] = oppositionDie == 5 ? "mixed_or_no_effect" : "decisive_opposition_success";
         log.Add(exchange);
         active["playerSideStrain"] = corrected ? "broken" : "overwhelmed";
         active["conflictPosition"] = "opposition_advantaged";

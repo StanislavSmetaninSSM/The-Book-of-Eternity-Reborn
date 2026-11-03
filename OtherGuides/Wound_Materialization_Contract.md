@@ -808,6 +808,16 @@ permission to reuse an inactive root for another action. Version1 same-request
 creation/first-create History stays strict. This lane does not cover same-request
 parent worsening, ambiguous participant failure or multiple wound aggregation.
 
+For an increasing result with non-guaranteed maximum0, there is no wound offer and
+no `none` to author. The client retains a comparison-only v3 row in the same private
+receipt through its exhausted source-only owner (or the same authenticated mixed
+C2 packet) and exact common-publication receipt identity. It preserves the old
+positive source/decision bijection and all previous healing evidence. Original
+requests, coordinates and dice cannot be reopened or reused across these families.
+The comparison is historical DATA after later lawful healing, never permission to
+apply a retired root. The GM supplies the legal actual exchange and ordinary costs;
+do not fabricate a private comparison, wound opportunity or extra decision.
+
 ## spiritual_wound_position_v1
 
 `spiritual_position_burden` changes the effective starting position of the matching

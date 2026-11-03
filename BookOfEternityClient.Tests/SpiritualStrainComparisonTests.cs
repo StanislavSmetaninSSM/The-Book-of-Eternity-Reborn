@@ -36,6 +36,10 @@ public sealed class SpiritualStrainComparisonTests
         Assert.Contains("Failed maneuver uses the proved ordinary result", example[start..end]);
         Assert.Contains("Do not fabricate a strainPreimage", example[start..end]);
         Assert.Contains("Signed-existing parent maneuver", example[start..end]);
+        Assert.Contains("Zero-ceiling comparison-only", example[start..end]);
+        Assert.Contains("pressure7/max0", example[start..end]);
+        Assert.Contains("There is no wound offer and no none decision", example[start..end]);
+        Assert.Contains("comparison-only v3 row", guide);
         Assert.Contains("Even none needs owner-reconstructed C3", example[start..end]);
         Assert.Contains("signed pre-turn parent", guide);
         Assert.Contains("first-create History", guide);

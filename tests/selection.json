@@ -3,16 +3,65 @@
   "selections": [
     {
       "category": "wounds-spiritual-zero-comparison-positive",
-      "reason": "Original FR025/T081-D zero-ceiling comparison-only receipt: Three intrinsic zero-ceiling v3 DATA modes: no injury rows, prior injury, and same-request positive plus comparison. Existing schema baseline and genuine max0/increasing source prerequisites before v3 assertion.",
+      "reason": "Full original zero-comparison v3 DATA positives after implementation: zero-only, prior injury and atomic mixed request.",
       "contracts": [
         "#1536 FR025/T081-D closed v3 comparison-only intrinsic DATA; no permission from DATA"
       ]
     },
     {
       "category": "wounds-spiritual-zero-comparison-refusal",
-      "reason": "Original FR025/T081-D zero-ceiling comparison-only receipt: Nine after-valid v3 DATA refusals: closed row, zero ceiling, global/instance ordinal, instance ownership, duplicate row, cross-family coordinate and original/claimed pool context. Does not qualify live source-only/C3 authority.",
+      "reason": "New after-valid refusals, immutable prefix/request order, latest History, owner/detachment and nonempty-v2 migration DATA.",
       "contracts": [
         "#1536 FR025/T081-D closed v3 comparison-only intrinsic DATA; no permission from DATA"
+      ]
+    },
+    {
+      "category": "wounds-spiritual-zero-native-publication",
+      "reason": "#1536 FR025/T081-D zero-comparison: One real existingIII wound from signed5/15 birth, fresh4/5 mixed-band maneuver/setback and increasing strain with pressure7/max0. Nooffer, exactcompletedidentity/source-onlyC3/v3comparison/commonC4, exactresourcepayments, no new wound/decision, unchanged parent/History, signed44 read. Not Engine/UI/fresh-process.",
+      "contracts": [
+        "#1536 FR025/T081-D zero comparison through existing receipt/source-only owners"
+      ]
+    },
+    {
+      "category": "wounds-spiritual-zero-source-only-publication-controls",
+      "reason": "#1536 FR025/T081-D zero-comparison: Affected existing source-only continuing/terminal publication and all-or-nothing failure/rollback with no comparisons; new optional comparison ownership must preserve these contracts.",
+      "contracts": [
+        "#1536 FR025/T081-D zero comparison through existing receipt/source-only owners"
+      ]
+    },
+    {
+      "category": "wounds-spiritual-zero-source-only-refusal-controls",
+      "reason": "#1536 FR025/T081-D zero-comparison: Affected existing source-only current-input and incomplete-capture rejection; no comparison DATA or receipt identity can bypass them.",
+      "contracts": [
+        "#1536 FR025/T081-D zero comparison through existing receipt/source-only owners"
+      ]
+    },
+    {
+      "category": "wounds-spiritual-zero-existing-ledger-controls",
+      "reason": "#1536 FR025/T081-D affected existing injury receipt closed-shape, zero accepted-source refusal, source/coordinate/dice/order/bounds, append and replay guards. Explicit existing method subset; no native suite.",
+      "contracts": [
+        "#1536 FR025/T081-D zero comparison through existing receipt/source-only owners"
+      ]
+    },
+    {
+      "category": "wounds-spiritual-strain-parent-receipt",
+      "reason": "Changed containing-ledger dispatch must retain strict existing v1 parent decision relations.",
+      "contracts": [
+        "#1536 FR025/T081-D same existing owner/History/GM contract"
+      ]
+    },
+    {
+      "category": "wounds-spiritual-strain-history-data",
+      "reason": "Comparison lookup now includes zero rows; existing v1 exact History/summary policy remains.",
+      "contracts": [
+        "#1536 FR025/T081-D same existing owner/History/GM contract"
+      ]
+    },
+    {
+      "category": "wounds-spiritual-strain-guidance",
+      "reason": "Updated worked zero/nooffer/client-owned-v3 fragment and unchanged existing strain guidance.",
+      "contracts": [
+        "#1536 FR025/T081-D same existing owner/History/GM contract"
       ]
     }
   ]

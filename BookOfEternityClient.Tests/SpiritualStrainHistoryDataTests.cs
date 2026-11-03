@@ -133,7 +133,7 @@ public sealed class SpiritualStrainHistoryDataTests
     private static JsonObject Parent(JsonObject root) => JsonNode.Parse(Convert.FromBase64String(
         root["sources"]![1]!["witness"]!["strainPreimage"]!["parentWoundJsonBase64"]!.GetValue<string>()))!.AsObject();
 
-    private static JsonObject CreateHistory(JsonObject root)
+    internal static JsonObject CreateHistory(JsonObject root)
     {
         var parsed = WoundMaterializationContract.Parse(Parent(root).ToJsonString(), "unit.parent");
         Assert.True(parsed.IsValid, string.Join("\n", parsed.Issues));

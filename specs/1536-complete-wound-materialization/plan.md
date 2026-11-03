@@ -1,3 +1,12 @@
+# Zero-comparison full WIP — whole SOURCE before fresh builds
+
+Minimal v3 private-ledger/source-only/mixed-C3 implementation, DATA18 and nativezero1
+scaffold are now written with existing services/helpers and unchanged original game
+rules. Exact currentcheckpoint records ownership, replay/History/dice/prefix and
+optimization boundaries. Build/runtime UNRUN. Grouped whole independent reviews
+precede fresh Main/Unit/Integration and cheap controls; no passing-scope reruns outside
+changed contracts, no Nativezero or HOLD release before PREP.
+
 # Existing-parent positive lane accepted; zero-ceiling cell next
 
 See physical-guided-checkpoint for exact76distinct versioned receipts, SHA/build
