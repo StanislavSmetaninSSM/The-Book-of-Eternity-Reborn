@@ -1,3 +1,35 @@
+# Guard-cap cheap47 accepted; actual guard reaches cold C2 then fixture event-count FAIL
+
+Runtimee399e8e21588e794c88ce211bc949743cf5ba22b. Independent Astra whole SOURCE and
+Sol tool/DATA SOURCE accepted. Fresh Main58.946179/Unit37.533726/Integration70.671035s
+all exit0/exact81/26/107 warningmultisets;45artifacts/207inputs621copies/native6/
+4PEPDB508bindings verified. Artifact94d7a70d5824074f67c83d65c20320ffda82263c8016fccfe4e8718f777f7061;
+PDB1388573865ec90f9a4a6e1edd6acd65fcb59400be2038be96fbf08e674075c8c.
+Discovery1380categories/13218methods, noexecute. Sol PREP/OUTCOME accepts47PASS,
+6leaves14methods each3.41–3.66s/60s, wrapper26.905047s. All14capturefiles, cleanup,
+noowners/noTMP/cleanremote. Post61eee59ba08aba841c1e5e6b2686deab961d0e2ceb93a44921821bc8af716ad4;
+summary78cd9c9ebdf0c1b9a0483cdb9392db65337fa9efc2d480af39cdb63eecbd49e9.
+
+Separately admitted guard1 ends1FAIL/no timeout, TRX10.1486477/category13.742547s/
+180s, wrapper20.014272. New consumer and coldC2/ordinarysecondoffer/none completed;
+line98 beforeC4 expects totalResourceEvents4, actual5. Fullavailablecapture and
+closing45/621/6/508/cleanup verified, actualpublication and signed43UNREACHED.
+Postb884177d2ed7755d4e58ae6ad2fb34435874075b6a001a00dfeaa783f169bdd7;
+summary817c19b970590c15e1e47ccae60aa97b211030133212caee2fcb5308b33ccf65.
+Cause is test expectation: existing ResourceMutationReducer.CreateEvents appends
+resource_depleted to resource_spent on opposition3→0, both share full operation/
+event/coordinate/sequence/source metadata. Test-only correction now requires ALL5,
+exact4spent and unique matchingdepletion, unchanged balances/images/History/source/
+stale assertions. No productionrelaxation or expensive diagnosticstack. Fixture
+correction UNCOMPILED/UNRUN; deltaSOURCE/freshIntegrationonly/proofs/Plan/PREP then
+oneguard180s, affectedmaneuver180s onlyafterguardPASS. Retaincheap47 withoutrepeat:
+Main/Unit C#/usedartifacts/resources mustbeprovedunchanged, neverremintprovenance.
+Baseline1 retainsd16, originalgenuineK1integrationRED retained. Bounded17file source
+recoveryproof ca31e1753d04c1ab61f66b57c3e81e8f4f9d890043f7db6c60d0741a79d21dc2.
+Guard signed43 is ordinary historicalguardvalidation; C3/C4+explicitfirstcreate
+History enforce parentproof. No newguard historicalframe override/reader is claimed.
+All oldUNKNOWN/HOLD and originalwounds-only scope/author3deferrals unchanged.
+
 # Guard-cap implementation WIP after genuine ordinary baseline/consumer RED
 
 Source/runtime d16aff5c496e6bb663d06ca3e12212a355291cb3, unchanged production470e.

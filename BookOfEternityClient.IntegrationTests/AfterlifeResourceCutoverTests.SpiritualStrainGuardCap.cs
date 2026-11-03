@@ -95,10 +95,16 @@ public sealed partial class AfterlifeResourceCutoverTests
         }
         AssertNoConflictFrameErrors(await context.Validator.ValidateAcceptedTurnRawResourceMaterializationAsync());
         var expected = await PeekPlanAsync(context);
-        Assert.Equal(4, expected.ResourceEvents.Count);
+        Assert.Equal(5, expected.ResourceEvents.Count);
+        var spent = expected.ResourceEvents.Where(row => row.EventKind == "resource_spent").ToArray();
+        Assert.Equal(4, spent.Length);
+        var depleted = Assert.Single(expected.ResourceEvents, row => row.EventKind == "resource_depleted");
+        var lastOppositionSpend = Assert.Single(spent, row =>
+            row.Coordinate.OwnerKind == ResourceOwnerKind.AfterlifeConflictSide && row.After == 0m);
+        Assert.Equal(lastOppositionSpend with { EventKind = "resource_depleted" }, depleted);
         foreach (var (kind, end) in new[] { (ResourceOwnerKind.AfterlifeActor, 1m), (ResourceOwnerKind.AfterlifeConflictSide, 0m) })
         {
-            var payments = expected.ResourceEvents.Where(row => row.Coordinate.OwnerKind == kind).ToArray();
+            var payments = spent.Where(row => row.Coordinate.OwnerKind == kind).ToArray();
             Assert.Equal(2, payments.Length);
             Assert.Equal(6m, payments[0].Before);
             Assert.Equal(3m, payments[0].After);

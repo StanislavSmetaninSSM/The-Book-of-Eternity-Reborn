@@ -1,3 +1,13 @@
+# Guard-cap current: cheap47PASS, actual1 fixtureFAIL before C4
+
+Newcode/runtimee399 has independentSOURCE and cheap47PREP/OUTCOME accepted. Actual
+consumer+coldC2 pass their prefixes, then total4 event oracle fails(actual5): normal
+opposition3→0 addsresource_depleted afterresource_spent. FullclosedFAIL retained,
+no timeout/C4/nextturnPASS. Test-only strict5/4spent/unique exactdepletion correction
+written, UNCOMPILED/UNRUN; review/freshIntegrationonly and re-admittedguard next.
+Affectedmaneuver stillUNRUN untilguardPASS. Main/Unitcheap47lineage retained with
+unchangedusedinput proof, no rerun. Fullreceipts/optimization inplan; rawK2external.
+
 # Guard-cap code WIP — ordinary1PASS / genuine consumer1FAIL retained
 
 Independent Sol/Astra OUTCOME accepted baseline/causal on d16 (5.46/60s and8.10/180s).

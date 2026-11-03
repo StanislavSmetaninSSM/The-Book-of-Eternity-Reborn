@@ -2,8 +2,8 @@
 
 - [x] Confirm codegap and independent bounded DESIGN: source-bearing ordinary guard3→4, no general combat rule or cap shortcut.
 - [x] Independent ordinary baseline1PASS then genuine cappedguard1FAIL on d16, Astra/Sol OUTCOME; category5.4622/60 and8.1012/180, full capture/cleanup. Cold/C4 assertions unreached in RED.
-- [ ] Cheap typed guard preimage/source/parent/History controls and strict unchanged existing source-free/maneuver paths.
-- [ ] Owned source-bearing proof/DATA equality and private capped no-op preimage, SOURCE/fresh builds/exact gates; no editable correction field.
+- [x] Cheap guard12+affected35 =47PASS at e399, independent Sol OUTCOME; exactsource/parent/History/maneuver/guidance DATA, not actualpublication.
+- [x] Owned source-bearing proof/DATA equality and private capped no-op preimage: independent Astra SOURCE/freshMain+Unit+Integration/exactcheap47 on e399. No editable correction field; actualacceptance separate.
 - [ ] Actual common publication/signed43/History/unique sources/realpayments and independent OUTCOME, GM sync and verified remote checkpoint.
 
 Accepted no-roll6d847910/code470e remains separate. All old UNKNOWN/HOLD and three
