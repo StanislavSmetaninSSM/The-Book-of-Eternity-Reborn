@@ -449,7 +449,7 @@ public sealed class AgentConsoleObservationTests
         {
             var candidate = Path.Combine(new[] { dir.FullName }.Concat(relativePathParts).ToArray());
             if (File.Exists(candidate))
-                return File.ReadAllText(candidate);
+                return ValidationAndRepairSource.Read(candidate);
 
             dir = dir.Parent;
         }

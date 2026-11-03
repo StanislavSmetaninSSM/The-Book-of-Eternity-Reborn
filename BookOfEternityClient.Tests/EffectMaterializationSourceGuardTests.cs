@@ -468,7 +468,7 @@ public sealed class EffectMaterializationSourceGuardTests
     }
 
     private static string ReadRepoFile(string relativePath) =>
-        File.ReadAllText(Path.Combine(
+        ValidationAndRepairSource.Read(Path.Combine(
             TestRepoPaths.RepoRoot,
             relativePath.Replace('/', Path.DirectorySeparatorChar)));
 }

@@ -1,0 +1,32 @@
+Mortal skill reference identity repair (#1533)
+
+This worked example describes a validation repair request, not a complete turn fixture.
+Read Rules/Block_7.txt and the current validation_repair_request.json first.
+
+Player example
+Canonical active skill: Fireball. A mastery entry writes Firеball (its е is Cyrillic).
+The client reports skill_mastery_confusable_reference for:
+  game_state/player/skill_mastery.json.skillMasteryChanges[0].skillName
+The mortal_skill_reference_identity_repair packet names expected Fireball and actual Firеball.
+Rewrite only that skillName to Fireball. Keep newMasteryLevel, newCurrentMasteryProgress,
+newMasteryProgressNeeded, masteryLeveledUp and all unrelated fields unchanged.
+This typo does not require a training purchase or a pending_training_showcase_requests entry.
+
+Several NPCs example
+Trainer A owns Whirlwind and Trainer B owns Fireball. The current payload contains:
+  NPCSkillMasteryChanges[0]: NPCName = Trainer A, skillName = whirlwind
+  NPCSkillMasteryChanges[1]: NPCName = Trainer B, skillName = fireball
+Both initialization diagnostics remain separate corrections in the same packet:
+  game_state/npcs/npc_skills.json.NPCSkillMasteryChanges[0].skillName -> Whirlwind
+  game_state/npcs/npc_skills.json.NPCSkillMasteryChanges[1].skillName -> Fireball
+Fix each indexed entry for its existing actor. Do not move mastery between actors,
+delete entries, rename canonical skills or change progression values.
+
+Ambiguity example
+If both Fireball and FIREBALL are canonical names and the reference is fireball,
+several distinct names share its normalized form. Stop; do not guess a target.
+The expected text describing the ambiguity is not a literal skillName to write.
+Do not mark the repair complete while the ambiguity remains unresolved.
+
+After every unambiguous correction is complete and all errors are resolved,
+call Complete-BoeValidationRepair with the current request's exact metadata.

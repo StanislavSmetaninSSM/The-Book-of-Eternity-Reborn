@@ -39,7 +39,8 @@ try:
     until(lambda:b'NEUTRAL READY' in capture,'observed ready')
     os.write(master,b'\x1b[200~'+prompt+b'\x1b[201~');until(lambda:prompt in capture,'fresh exact draft');assert not list(queue.glob('request-*'))
     os.write(master,b'\r');until(lambda:bool(list(queue.glob('request-*/request.json'))),'actual submit')
-    q=next(queue.glob('request-*'));req=json.loads((q/'request.json').read_text());source=control/'validation_repair_request.json'
+    q=next(queue.glob('request-*'));until(lambda:(q/'request.json').is_file() and (q/'prompt.txt').is_file() and (q/'game-request.json').is_file(),'complete request publication')
+    req=json.loads((q/'request.json').read_text());source=control/'validation_repair_request.json'
     assert req['Kind']=='repair',('Actual daemon repair misclassified',req)
     assert req['RequestPath']=='game_state/control/validation_repair_request.json'
     assert (q/'game-request.json').read_bytes()==source.read_bytes() and req['RequestSHA256']==sha(source.read_bytes())

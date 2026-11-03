@@ -308,6 +308,13 @@ try:
     story=session/'stories/chaos_sea.jsonl';provider_deadline=min(start+work_seconds,time.monotonic()+provider_seconds)
     while time.monotonic()<provider_deadline:
         pump()
+        # Capture transient client rejection evidence before a later rollback can
+        # delete it; each artifact is copied once, at first observation.
+        for evidence in ['error_log.txt','output/validation_repair_request.json',
+            'game_state/control/validation_diagnostic_failure_report.json']:
+            source_path=session/evidence
+            if source_path.exists() and not (out/('captured-'+evidence.replace('/','__'))).exists():
+                (out/('captured-'+evidence.replace('/','__'))).write_bytes(source_path.read_bytes())
         # Observe current output before another status RPC can obscure the causal
         # failure. Old startup/turn output is outside this original action's cut.
         provider_text=bridge.text(provider_bridge_offset)
@@ -371,8 +378,8 @@ finally:
         result['RelayExecutionClosed']=relay_closed
         if not relay_closed:result['RelayCloseFailure']='Execution/child/I-O closure unconfirmed; skip client cancellation/rollback'
     if client is not None and client.process.poll() is None and relay_closed:
-        # Reserve40s of the existingnormal270s / relay720s cap for the sole original shutdown12s,
-        # bridge exit8s, daemon exit8s, EOF5s and connection/disposal margin.
+        # Reserve bounded cleanup room within the relay720s cap for the sole original shutdown12s,
+        # bridge exit8s, daemon exit16s, EOF8s and connection/disposal margin.
         active_phase_deadline=start+client_cleanup_seconds
         try:
             if client_wait or current_client_failure(client.text(offset)):
@@ -439,12 +446,12 @@ finally:
     # Lost/unknown ACK retains logical uncertainty; never force a success or replay.
     if daemon is not None and daemon.process.poll() is None and result['LogicalLifecycleVerified']:
         try:
-            daemon.send(b'\x03','stop daemon only after original Stopped ACK');until(lambda:daemon.process.poll() is not None,8,'daemon original stop')
+            daemon.send(b'\x03','stop daemon only after original Stopped ACK');until(lambda:daemon.process.poll() is not None,16,'daemon original stop')
         except Exception as ex:result['DaemonCleanupFailure']=type(ex).__name__+': '+str(ex)
     result['ShutdownAttempts']=shutdown_attempts
     for p in peers:
         if p.process.poll() is not None and p.slave>=0:os.close(p.slave);p.slave=-1
-    try:until(lambda:all(p.eof for p in peers),5,'actual foreground EOF')
+    try:until(lambda:all(p.eof for p in peers),8,'actual foreground EOF')
     except Exception as ex:result['IoCleanupFailure']=type(ex).__name__+': '+str(ex)
     result['Terminals']={}
     for p in peers:

@@ -28,6 +28,32 @@
       "contracts": [
         "#1536 FR027/036 / T107 exact chronological wound composition, preserving source/owner/History/GM contracts"
       ]
+    },
+    {
+      "category": "console-explorer",
+      "reason": "T107 per-skill prose-claim coupling reworked inside ValidateAcceptedTurnProseStateDeltasAsync; the AcceptedTurnNarrativePayloadValidationTests wildcard in this category owns the new RED/GREEN coupling cases and the existing narrative-audit regressions.",
+      "contracts": [
+        "#1533 part 2 (T107)",
+        "#1479",
+        "accepted_turn_skill_claim_missing_state_delta"
+      ]
+    },
+    {
+      "category": "mortal-skill-reference-identity",
+      "reason": "The coupling audit now binds deltas through MortalSkillReferenceAuthority and reuses ReadMasteryIdentityReferences; confirm the part-1 identity behavior is unchanged by the new consumer.",
+      "contracts": [
+        "#1533",
+        "MortalSkillReferenceAuthority",
+        "ValidationService.SkillReferenceIdentity"
+      ]
+    },
+    {
+      "category": "documentation-examples",
+      "reason": "Launcher GM-facing prose/state-delta rule lines updated for per-skill targeting; prompt/documentation coverage guards must confirm the synchronized wording.",
+      "contracts": [
+        "#1533 part 2 (T107)",
+        "CLI_Launch_Script prose state delta rule"
+      ]
     }
   ]
 }

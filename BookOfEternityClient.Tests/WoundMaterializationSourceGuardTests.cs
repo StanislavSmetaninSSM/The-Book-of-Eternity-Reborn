@@ -11,7 +11,7 @@ public sealed class WoundMaterializationSourceGuardTests
     [Fact]
     public void AcceptedTransitionCommands_ColdReplayAndRepairReaderFailClosed()
     {
-        var source = File.ReadAllText(ToAbsolutePath(
+        var source = ValidationAndRepairSource.Read(ToAbsolutePath(
             "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs"));
         Assert.Contains("parsedCommand.AcceptedTransitionCommands.Count != 0", source, StringComparison.Ordinal);
         Assert.Contains("parsed.Success && parsed.AcceptedTransitionCommands.Count == 0", source, StringComparison.Ordinal);
@@ -592,7 +592,7 @@ public sealed class WoundMaterializationSourceGuardTests
                 File.Exists(absolutePath),
                 $"{entry.Category} '{entry.Id}' must remain owned by '{entry.RelativePath}'.");
 
-            var source = File.ReadAllText(absolutePath);
+            var source = ValidationAndRepairSource.Read(absolutePath);
             if (entry.Id == "npc-effect-contract-canonical-shape") npcContractSource = source;
             if (entry.Id == "npc-effect-planner-canonical-carrier-only") npcPlannerSource = source;
             if (entry.Id == "npc-canonical-effect-state-validation") npcLifecycleSource = source;
@@ -617,7 +617,7 @@ public sealed class WoundMaterializationSourceGuardTests
                 entriesById.TryGetValue(allowance.InventoryId, out var owner),
                 $"Discovery allowance '{allowance.Id}' has no inventory owner '{allowance.InventoryId}'.");
 
-            var source = File.ReadAllText(ToAbsolutePath(owner!.RelativePath));
+            var source = ValidationAndRepairSource.Read(ToAbsolutePath(owner!.RelativePath));
             var start = source.IndexOf(allowance.StartAnchor, StringComparison.Ordinal);
             var end = start < 0
                 ? -1
@@ -700,7 +700,7 @@ public sealed class WoundMaterializationSourceGuardTests
         var sources = EnumerateProductionSources()
             .ToDictionary(
                 static relativePath => relativePath,
-                static relativePath => File.ReadAllText(ToAbsolutePath(relativePath)),
+                static relativePath => ValidationAndRepairSource.Read(ToAbsolutePath(relativePath)),
                 StringComparer.Ordinal);
         var matchedAllowances = new HashSet<string>(StringComparer.Ordinal);
         var violations = new List<string>();
@@ -803,7 +803,9 @@ public sealed class WoundMaterializationSourceGuardTests
 
         return Directory
             .EnumerateFiles(productionRoot, "*.cs", SearchOption.AllDirectories)
+            .Select(ValidationAndRepairSource.GetLogicalPath)
             .Select(path => NormalizeRelativePath(Path.GetRelativePath(TestRepoPaths.RepoRoot, path)))
+            .Distinct(StringComparer.Ordinal)
             .Where(static path => !HasExcludedSegment(path))
             .Where(static path =>
                 !path.EndsWith(".g.cs", StringComparison.OrdinalIgnoreCase) &&

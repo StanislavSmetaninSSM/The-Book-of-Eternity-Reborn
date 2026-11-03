@@ -176,7 +176,7 @@ public sealed class ValidationRepairRequestTests
     [Fact]
     public void MortalLocationRepairDispatch_FailsClosedBeforeWritingRequestAndHasNoLegacyPacketPath()
     {
-        var source = File.ReadAllText(Path.Combine(
+        var source = ValidationAndRepairSource.Read(Path.Combine(
             TestRepoPaths.RepoRoot,
             "BookOfEternityClient",
             "Core",
@@ -206,7 +206,7 @@ public sealed class ValidationRepairRequestTests
     [Fact]
     public void MortalLocationRepairFailure_PlayerConsoleUsesSafeRussianWithoutOperatorVocabulary()
     {
-        var source = File.ReadAllText(Path.Combine(
+        var source = ValidationAndRepairSource.Read(Path.Combine(
             TestRepoPaths.RepoRoot,
             "BookOfEternityClient",
             "Core",
@@ -257,7 +257,7 @@ public sealed class ValidationRepairRequestTests
     [Fact]
     public void MortalLocationRepairWait_PlayerStatusUsesOnlyInWorldLanguage()
     {
-        var source = File.ReadAllText(Path.Combine(
+        var source = ValidationAndRepairSource.Read(Path.Combine(
             TestRepoPaths.RepoRoot,
             "BookOfEternityClient",
             "Core",
@@ -285,7 +285,7 @@ public sealed class ValidationRepairRequestTests
     [Fact]
     public void DiagnosticOnlyRepairFailure_PlayerConsoleUsesSafeRussianWithoutOperatorVocabulary()
     {
-        var source = File.ReadAllText(Path.Combine(
+        var source = ValidationAndRepairSource.Read(Path.Combine(
             TestRepoPaths.RepoRoot,
             "BookOfEternityClient",
             "Core",

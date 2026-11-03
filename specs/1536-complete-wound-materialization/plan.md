@@ -1,3 +1,34 @@
+# WIP main integration — 2026-11-03 / #1536 compatibility only
+
+User explicitly requested main -> wounds integration. Isolated remote WIP branch:
+`1536-merge-main-wip-20261103`, initially published at wounds
+`daea0ea094c41426b6c4663af713ab9ada0be49d`. Main parent is
+`a62cfd90a5300a21524066b3b457eb467ed9c677`; independently verified merge-base
+`d0241e71e349fbe2020e4a41b6be7c627c81cbb4`. The parent's bundle
+8543e8df was unavailable through both supported Library transfer routes; this is
+an independent reconstruction, not a claim of matching its unavailable Git tree.
+
+Seven expected text conflicts are resolved without selecting an entire side:
+1536 feature identity, wound source-variable assignments plus main partial reader,
+separate adjacent skill phases, three-way category/selection union (1400/7),
+18-part GameEngine reconstruction and accepted-turn skill DATA/source plumbing.
+A conflict-free synthetic GameEngine merge adds only main's two skill-reference
+repair insertions to the wounds monolith; reverse reconstruction of the physical
+parts is checked externally. Existing death handoff and wounds/T107 code remain.
+Per-skill exact canonical names, blank-vs-missing snapshot behavior and original
+source observations must all survive. Fresh source/integrity/authority fences
+remain; no new cache, game rule or performance claim. New reads reuse the existing
+narrative source session; lifetime and revalidation ownership are unchanged.
+
+This is uncompiled/unaccepted WIP. Independent whole merge SOURCE, affected fresh
+builds, exact discovery/PlanOnly and bounded runtime (source observation/revalidation,
+exact-case/blank and T107) precede integration. Original budgets apply. Prior N4
+Unit attempt remains UNKNOWN (no process, zero-byte log, no exit); no old build
+is represented as merged-source qualification. Raw is outside checkout under
+`/workspace/tboe-linux-evidence-20261103/merge-main`. Original remote wounds and
+main refs are unchanged; only the WIP branch may advance until final checks and
+fresh ref equality. DFR/Mortal/Windows and prior UNKNOWN/HOLD remain separate.
+
 # T107 composition correction — grouped SOURCE next
 
 See current checkpoint for N3a's genuine C1 healing-row-prefix failure and exact

@@ -14,6 +14,7 @@ public sealed class GmRelayReusableTests
     [InlineData("closed")]
     [InlineData("duplicate")]
     [InlineData("packet-bound")]
+    [InlineData("large-packet")]
     [InlineData("missing-adapter")]
     [InlineData("atomic-no-replace")]
     [InlineData("partial-publication")]

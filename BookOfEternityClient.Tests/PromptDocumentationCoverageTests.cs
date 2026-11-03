@@ -1954,5 +1954,5 @@ public sealed partial class PromptDocumentationCoverageTests
     }
 
     private static string ReadRepoFile(params string[] parts) =>
-        File.ReadAllText(Path.Combine(new[] { TestRepoPaths.RepoRoot }.Concat(parts).ToArray()));
+        ValidationAndRepairSource.Read(Path.Combine(new[] { TestRepoPaths.RepoRoot }.Concat(parts).ToArray()));
 }

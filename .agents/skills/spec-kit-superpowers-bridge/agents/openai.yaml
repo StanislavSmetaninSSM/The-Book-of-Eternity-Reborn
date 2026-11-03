@@ -1,0 +1,4 @@
+interface:
+  display_name: "Spec Kit Superpowers Bridge"
+  short_description: "Connect Spec Kit artifacts with Superpowers methods"
+  default_prompt: "Use $spec-kit-superpowers-bridge to coordinate Spec Kit artifacts and Superpowers methods for this task."

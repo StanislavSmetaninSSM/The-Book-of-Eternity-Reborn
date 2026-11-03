@@ -296,6 +296,11 @@ public partial class ValidationService
             using var innerTiming13 = _fs.MeasureOperation("GameState.SkillContractConsistency");
             await ValidateSkillContractConsistencyAsync(issues);
         }
+        if (phases.Includes(GameStateValidationPhase.SkillContractConsistency) ||
+            phases.Includes(GameStateValidationPhase.PlayerStateFiles))
+        {
+            await ValidateSkillReferenceIdentityAsync(phases, issues);
+        }
         if (phases.Includes(GameStateValidationPhase.TrainingShowcases))
         {
 #if DEBUG
