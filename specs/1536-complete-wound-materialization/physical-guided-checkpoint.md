@@ -1,3 +1,16 @@
+# Accepted no-roll GM margin, native C1–C4 — runtime470e
+
+Real voluntary incoming harm with explicit GM10 creates I wound/effect/History via
+cold C2/common C4; explicit0 completes without injury. Both pay opponent3 once,
+retain original map/no dice claims, reject duplicate authority and validate signed43.
+Actual2PASS and affectedcheap45PASS at470e, independent Astra/Sol OUTCOME accepted.
+Full evidence/build/proof details and exact119distinct versioned union in plan.md;
+not a singlefresh119 or whole #1536/Engine/UI/terminal/fresh-process qualification.
+Original failures/raw preserved outside checkout, no raw/binary upload/deletion.
+Next reconcile remaining wound-only functional/acceptance scope; do not reopen
+old HOLD or author-deferred combat consumers automatically. Real III→I root
+retirement accepted separately at25ea/72a; all remaining limits preserved.
+
 # Current no-roll fix — DATA45 passed, producer wiring WIP
 
 Cheap proposed classifier36+preservedresource/precedence9 passed on31371; actualpair

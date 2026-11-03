@@ -705,9 +705,9 @@ in `Examples/E_CLI_Afterlife_Turns.txt`. Other unresolved profiles are unchanged
 For voluntary non-contested spiritual harm without an opposed roll, the GM explicitly
 chooses harmfulMargin. The client must retain that choice under the authoritative
 source/result contract and validate it normally; do not invent opposed dice or use
-automatic zero. Use `spiritual_wound_no_roll_source_v1` below; the new source path
-is in implementation/qualification, not accepted merely by this documentation.
-Never edit client-owned receipts or fabricate authority.
+automatic zero. Use `spiritual_wound_no_roll_source_v1` below and preserve the
+actual choice in the exchange. Never edit client-owned receipts or fabricate
+authority; only the client's owned source and publication path applies it.
 
 ## spiritual_wound_no_roll_source_v1
 

@@ -1,3 +1,77 @@
+# T081-D-NO-ROLL accepted bounded native route — 2026-11-03
+
+Source/runtime470e660063958e5b84b8b5d98aaf61c6574670fd, Linux. Explicit GM
+harmfulMargin now flows from lawful voluntary no-dice exchange through owned source,
+cold C2, real wound or zero completion, common C4 and signed next-turn read. No
+implicit0/new formula/fabricated dice. Existing known free-side semantics are joined
+to the current source/capture/resource owner; paid/missing/null/unknown/force paths
+remain guarded. Independent Astra DESIGN/SOURCE/PREP/actual OUTCOME and Sol
+SOURCE/tools/cheap OUTCOME accepted. This is not all #1536 or Engine/UI acceptance.
+
+Fresh affected Main61.520507s/Unit36.773241s/Integration68.565856s all exit0 at470e,
+exact baseline81/26/107 warnings.45managed artifacts/207operational inputs621copies/
+native6/4PE-PDB505sourcebindings verified; all three current runtime dependency sets
+match, unchanged Support/CrashHost retained. Artifact4ba33740ec7673db574154b083e9ee995ce6ac8680aa7ee755dae7c13c92ff60;
+PDB9d30f17867f8c65ef3fbff748211daf0e9fbfaa17546c0bce512e9edcbec7646.
+Eight-file current helper/consumer/test/spec GitHub-blob and clean-export proof
+10d71a81ac913395d42aaa37d64764ae0d5bf22ab7bdea0e718386f586434806 links earlier
+source proofs; bounded restore only, not fullclone/rawrestore.
+
+J5-cheap45:45PASS, same45semantic cases/assertions as unwired J4, not additional
+unique coverage. DATA36cat3.442598s and resource/precedence9cat2.811227s, each60s;
+wrapper12.358681s. Postcf9953133ed6f64eb0b15f3a5c2ed8eb0e2a2487895236fdf7822f57310f69c3;
+summary5f0679f5033bf78934918646ccb70817e1a74d4f9604e4fd5289d891b583c6dd.
+
+J5-publication2:2PASS, category14.5213136s within original180s, wrapper20.752050s.
+Positive10 TRX6.2248080s: real cold C2 offer/real I player wound/common C4, actual
+wound/effect/companion afterimages, create History, retained map/scalar10 and empty
+selectedDiceIndices/claims, one opponent Spend3 (6→3), repeated submission refused,
+publication authority consumed and stale take refused, signed43 validation.
+Zero0 TRX4.9224557s: source-only common C4, exact retained0, no injury/source-decision
+rows, unchanged wound History/empty player wounds, same single real payment and
+consumed authority/signed43 checks. Both unchanged actual cases from J3failures now
+pass; all assertions executed, not a synthetic terminal DATA proof or actual healing.
+Postaa81bf20d49a56e2beed6fec43db83bc06aaebb790aa05f17757d02cbf1d6446;
+summary89399d575cb6f6c4648139f9d7c4de5a293108604f57a424bdd00ee76baa7341.
+Both stages full capture/no skip/timeout/duplicate/underfill, hashclose45/621/6/505,
+cleanuptrue/no newTMP/no activeowners/clean source. Astra actual OUTCOME accepted.
+
+Accepted119DISTINCT across explicit passing versions, not one fresh119run:
+- J2cheap67 +missing-choice2 at0174 (Main/Unit a179, Integration0174).
+- Remaining actual source3 atfd93 (Main/Unit a179, Integrationfd93): source0/10,
+  special-art/cost6, coherent changed-choice refusal and repaired owner. Together
+  source5 is a versioned union; special art was source-only, not special C4.
+- Current J5cheap45 +actual2 at470e. J1causal27/J4duplicate45 are not added again.
+CI has11 explicit coherent categories/119cases; no full suite or old HOLD executed.
+Prior pure/source guards retain unchanged bodies/consumers outside the narrow
+resource eligibility addition; current actuals prove that addition's real ownership.
+
+All failed/partial captures and archived original managed outputs remain at
+/workspace/tboe-linux-evidence-20261102/spiritual-strain-preimage-data. Original
+J1genuineRED27, fixture nested-lease1FAIL/2UNRUN, and J3actual2FAIL were retained with
+exact outcomes; no blind retry, budget increase, source-data rewrite or raw deletion.
+No raw/log/TRX/diagnostic JSON/archive/binary uploaded to GitHub.
+
+GM: exchange.spiritualWoundHarmfulMargins exact affected-side signed64 map; actual
+entrypoint/detailed guide/matrix/worked exchange/manifest/typed source guards synced.
+The last producer correction is client-owned: the same existing example already
+omits the free side audit, no extra GM field/command/Mortal rule is introduced.
+Optimization: existing parsed exchange/current projected burden and immutable
+fixture/service DATA, no new cache or filesystem read. Fresh current ownership,
+ordinal/routing/wound epochs, source/History and byte/readset fences remain. Costs
+above are functional completion evidence, NOT a speedup comparison with failed or
+partial work.
+
+Limits: native in-process standard incoming harm to player via negotiate; other
+free-operation/final-precedence/signed64 edges have typed DATA coverage, not an
+expanded native family claim. No Engine/console/browser handler/DOM/provider/fresh
+OS process, terminal heal or full strain-family qualification. Earlier real III→I
+and old-root retirement remain separately accepted at25ea/72a. Other strain-family,
+privacy/scale/rollback and final acceptance parents remain open per canonical scope.
+Three author-deferred control/counter/restrictIII consumers are not blockers; their
+GitHub follow-up is already published. Old DFR/Mortal/Windows, A5/browser-course,
+firstGuardian/crossOSDATA UNKNOWN/HOLD are not resumed or closed here.
+
 # No-roll DATA45 PASS; minimal owned producer wiring WIP
 
 At31371abe7890fe4a4e0480d260ee0544ab4ac5b2, fresh Main66.606563s and

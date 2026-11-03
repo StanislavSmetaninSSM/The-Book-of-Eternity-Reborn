@@ -60,7 +60,10 @@ explicit voluntary non-contest with absent diceAudit. Missing remains pending;
 explicit0 is a choice. Reject rolled overrides, malformed/extra/nested/alias maps
 and malformed supplied matchupAudit. Retain the map in authoritative exchange and
 scalar in existing witness; no fake dice, new formula or receipt version. Production
-implementation is WIP and still requires qualification.
+implementation's bounded native incoming-harm route is accepted at470e6600:
+explicit10 real I wound through cold C2/common C4/History/signed-next-turn; explicit0
+no injury in its tested inputs. Broader typed/source coverage, exact versions and
+remaining Engine/UI/family limits are in the current plan/checkpoint.
 
 The user-approved source rule (2026-09-08) is no additional ordinary-action cap:
 the source term is neutral IV unless an exact pre-materialized canonical source

@@ -1,3 +1,12 @@
+# T081-D-NO-ROLL accepted native slice — runtime470e
+
+- [x] Explicit GM choice retained in existing source/witness; no implicit0/fake dice/new formula, GM contracts/examples/manifest synchronized.
+- [x] Independent design/source/cheap causal and actual outcome; typed/missing/null/paid/force/owner/final-precedence guards.
+- [x] Native source5 versioned union and actual standard no-roll C4pair2PASS with cold positive/I wound, zero/no injury, one payment/History/stale refusal/signed43.
+- [x] Current fresh affected builds and exactcheap45PASS, full capture/hashclose/owned cleanup; old67/source5 retain explicit prior versions.
+- [ ] Final documentation checkpoint review/push/remote/clean-source readback.
+- [ ] Other strain-family/terminal/cross-cutting acceptance and remaining wounds per canonical scope; whole #1536 open, three author-deferred consumers excluded, old HOLD unchanged.
+
 # T081-D-NO-ROLL current resource wiring
 
 - [x] New DATA36+existing resource/precedence9 pass45 on31371; complete capture, independent OUTCOME pending.

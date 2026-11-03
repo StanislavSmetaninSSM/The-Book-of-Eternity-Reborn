@@ -17,9 +17,12 @@ realm, consent, source, strain, envelope and severity-cap checks remain required
 
 This rule is decided. Its technical wire, chosen by implementation and independently
 design-reviewed, is exchange.spiritualWoundHarmfulMargins keyed by exact affected
-side with explicit signed64 value. Production/GM synchronization is WIP and runtime
-qualification remains pending. Do not manufacture an opposed audit or declare this
-path qualified from this rule or from pure DATA.
+side with explicit signed64 value. The bounded native incoming-harm source/cold
+C2/common C4/signed-next-turn route is accepted at runtime470e6600; positive10 creates
+a real I wound and explicit0 creates no injury in its tested inputs. Source special
+art and broader typed guards have their separately recorded coverage. This is not
+whole-family/Engine/UI/fresh-process qualification; see current plan/checkpoint.
+Do not manufacture an opposed audit or grant authority from pure DATA.
 See [formula contract](contracts/afterlife-spiritual-wounds-and-healing.md#wound-opportunity-formula).
 
 ## 2. Control burden — deferred by author
