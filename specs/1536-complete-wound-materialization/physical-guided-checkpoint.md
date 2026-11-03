@@ -1,3 +1,12 @@
+# Current-parent DATA SOURCE correction before compilation
+
+Astra found two fixture mistakes beforebuild: LastTransition has noEventRef member,
+and its closedJSON cannotcarryeventRef. RemovedextraJSONfield, History row nowuses
+Origin.EventRef forcreate andSeverity.LastChangeEventRef forworsen. Production
+extraction otherwiseSOURCE accepted, Sol13+4selectionreviewaccepted; deltaSOURCE,
+freshbuilds/exactdiscovery/Plan/PREP/runtime stillpending. No testhadbeenrun, no
+fabricatedRED/PASS or activation ofunapprovedrules. PriorGuardacceptanceunchanged.
+
 # Current-parent DATA extraction WIP / no new runtime
 
 Existing active-wound query now shared with original re-trauma consumer; complete

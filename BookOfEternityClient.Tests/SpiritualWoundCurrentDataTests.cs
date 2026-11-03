@@ -124,7 +124,6 @@ public sealed class SpiritualWoundCurrentDataTests
             current["lastTransition"]!["ordinal"] = 2;
             current["lastTransition"]!["kind"] = "worsen";
             current["lastTransition"]!["turn"] = 43;
-            current["lastTransition"]!["eventRef"] = "turn_43:wound_worsened";
             current["severity"]!["lastChangeEventRef"] = "turn_43:wound_worsened";
         }
         var first = Parse(worsened ? initial : current);
@@ -157,7 +156,7 @@ public sealed class SpiritualWoundCurrentDataTests
         row["woundId"] = wound.WoundId;
         row["transitionId"] = wound.LastTransition.TransitionId;
         row["turn"] = wound.LastTransition.Turn;
-        row["eventRef"] = wound.LastTransition.EventRef;
+        row["eventRef"] = kind == "create" ? wound.Origin.EventRef : wound.Severity.LastChangeEventRef;
         row["operationKey"] = "operation_parent_" + ordinal;
         row["attemptId"] = null;
         row["beforeFingerprint"] = before;
