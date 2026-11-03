@@ -1,3 +1,18 @@
+# Fresh corrected builds complete; catalog metadata correction
+
+Runtime source e73a288c233e78a951c8aa3309cc87412e63ccf3: Main63.607536s/81,
+Unit37.372065s/26, Integration71.943732s/107, all exit0/exact prior warning multisets.
+45managedartifacts/207inputs621resourcecopies/native6 verified. FourPE/PDB516source
+bindings exact: four additional changed paths (one new file and three newly touched
+owners), not the preliminary513 estimate. Artifactcaf41dfe88ce2d496c176c2bf6edc004b72f94ed1944442fb63ff0effffc3b8c;
+PDB6fbc1ffaf2ee8d806a64b72719380ee52d8f2d8f5ea6d8786d0390931f9dfbce.
+Source19 clean export/GitHubwholeblob proof2ff4e80be5898e653066d02378c1c964234270c78f9d12ec58f2a7224aa4d829.
+First catalog M5a-catalog exited1 before discovery or tests: new joins category
+related links were strings, whereas strict loader requires {id,when}. Correct
+only these three metadata links. No C#/project/embedded input change; reuse fresh
+e73 builds with explicit catalog/checkpoint-only delta, no rebuild or runtime repeat.
+New33/cheap75/native1 still UNRUN. Sourceaccepted; exact discovery/Plan/PREP pending.
+
 # Signed-existing parent SOURCE accepted — corrected WIP, runtime pending
 
 Independent Astra/high whole SOURCE accepted c5da plus two verified corrections:

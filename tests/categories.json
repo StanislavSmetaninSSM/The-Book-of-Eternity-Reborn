@@ -11,9 +11,9 @@
     "BookOfEternityClient/Services/SpiritualWoundDeclineReceiptReducer.cs"
   ],
   "related": [
-    "wounds-spiritual-existing-parent-data-positive",
-    "wounds-spiritual-existing-parent-data-refusal",
-    "wounds-spiritual-existing-maneuver"
+    { "id": "wounds-spiritual-existing-parent-data-positive", "when": "Intrinsic III/IV positive prerequisites establish valid DATA before join refusals." },
+    { "id": "wounds-spiritual-existing-parent-data-refusal", "when": "Closed shape and sibling/increment refusals complement the exact History/source-group joins." },
+    { "id": "wounds-spiritual-existing-maneuver", "when": "Separately admitted real III native owner/cold/C3/C4/signed read establishes runtime authority." }
   ],
   "requirements": {
     "frontendBuild": false,
