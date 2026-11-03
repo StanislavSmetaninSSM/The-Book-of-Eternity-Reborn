@@ -1,3 +1,73 @@
+# T154: mixed item/resource rollback7 — 5 PASS / 2 FAIL, 2026-11-03
+
+Verification-only runtime source: `6d926c971281d30376f0d9869eb65162be5a29b0`.
+Production and test sources are unchanged from requested base
+`67f8e046443cd7996ac05037ba071693a5bb9fdc`. Only the narrow catalog/selection
+and checkpoint changed; no gameplay, test, probe or timeout was modified.
+
+No exact current receipt was found in the retained 198 TRX, 286 summaries and
+230 plans under the 20261102/20261103 evidence roots. Historical B.4 aggregate
+acceptance does not prove these current seven cases. The separate free-diagnosis
+receipt at e70510c4 proves no real item/resource spend rollback.
+
+Added `mortal-wound-mixed-consumption-rollback` as a duplicate narrow catalog owner
+of the existing GuaranteedMixedItemAndResourceConsumption_EveryPipelineFailureRestoresExpandedRootsAndExactRetryCommitsOnce method.
+Catalog validation: 1405 categories / 13303 methods, no unmapped/stale selectors.
+PlanOnly: one method, seven cases, exclusive, no frontend, original 600-second
+category budget; default overall preparation allowance 900 seconds, no override.
+The broad `turn-lifecycle-repair` category and accepted original rollback24 did not run.
+
+Fresh successful compiled sources remain Main/Support `f54481d85` and Integration
+`06dc53214`; their source deltas are empty. Selected Integration PE/PDB identity
+and source SHA256 `cbabcf4868adaa735471a2f3e26823f7d31d2b8a2a6035ee61bd36c9c9d03915`
+match current source. All 50 managed files, 624 resource copies and six native copies
+match before/after. No rebuild was needed. Each unchanged case retains an independent
+mutable fixture and fresh authority checks; no cache or speedup claim. No GM contract
+changed, so no GM wording update was required.
+
+One exact execution:
+
+```text
+pwsh -NoProfile -File scripts/test-csharp.ps1 -SelectionFile /workspace/tboe-linux-evidence-20261103/t154-mixed-consumption7/selection.json -NoBuild -Parallelism 1
+```
+
+Result: **7 executed, 5 PASS / 2 FAIL**, category **124.3477501 s / 600 s**,
+wrapper 131.504762874 s, exit 1. No timeout, skip, duplicate or underfill.
+
+| Existing fault cut | Outcome |
+| --- | --- |
+| runtime_refresh, occurrence 1 | PASS |
+| wound_post_seal, occurrence 1 | PASS |
+| wound_output, occurrence 1 | PASS |
+| critical_validation, occurrence 1 | PASS |
+| full_state_validation, occurrence 1 | FAIL at retry |
+| cleanup, occurrence 1 | FAIL at retry |
+| runtime_refresh, occurrence 2 | PASS |
+
+Both failures reach line 556: retry expected `Accepted`, actual `TerminalRejected`.
+All seven passed the preceding fault-fired/first-error checks, exact expanded-root
+byte/existence restoration, unchanged item-consume/energy/durability-capacity counts,
+and original plan/binding/live ConfirmedHeld rearm. The five passing cases then
+prove one Accepted retry, each count +1, remaining selected item count 1 and durability
+4/4. The two failed cases do not prove those final retry assertions. The unchanged
+test asserts private images in-process; it does not separately emit all path images.
+Existing NullLogger output retains no unique inner rejection issue, so the cause
+cannot yet be classified as production or fixture failure. No speculative fix or rerun.
+
+SOURCE/PREP accepted by independent Sol 6.1 / xhigh. Independent final OUTCOME and
+documentation review are pending. Owned/runtime cleanup succeeded; no new boe temp
+roots or managed owners remain, all artifact hashes are unchanged. Full raw is outside
+checkout, without quotas/truncation:
+`/workspace/tboe-linux-evidence-20261103/t154-mixed-consumption7`.
+
+- Post-proof: `5285f75200e1c12b242656d5ade7c50b4c48349e9c292a9234ce1c036693fe6a`.
+- Summary: `fa10249663e891c30a68efb10d4c94d40f29148e64818710030795deb81b253d`.
+- TRX: `a189f999fbb79cc5fe066a280bc5778d204f6aea1ffca3975d2c2e87e3d2a838`.
+
+This is a verified failing seven-case result, not accepted rollback/retry7. Whole
+T154/#1536 remains open; prior rollback24 and all unrelated UNKNOWN/HOLD retain their
+separate status. No UI/DOM/provider, fresh-process, Windows or broad lifecycle claim.
+
 # T154: original rollback24 accepted on Linux — 2026-11-03
 
 This was verification only: no production code, tests, probes or catalog changed.
