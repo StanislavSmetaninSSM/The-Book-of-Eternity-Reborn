@@ -1,3 +1,16 @@
+# Zero-ceiling v3 DATA scaffold — no new production change
+
+New typed12 authored: three positive modes (zero-only, prior injury, mixed current
+request) and nine after-valid row/context refusals. Reuse existing independent
+witness/factories, actual4/5 margin1/pressure7/max0 and full parent/ordinary data.
+Existing schema baseline and intrinsic max0/increase are prerequisites. Only
+positive3 may run for schema causal RED after independentSOURCE, freshUnit and
+exactPlan/PREP. All12 UNCOMPILED/UNRUN; negatives do not qualify before validv3.
+No live authority or source-only publication from these DATA tests. Main/Integration
+remain accepted e73; previous76 accepted bounds/closing proofc75dd68b4521acbf198be9b09c1104e060f70129efa72e51d7367de8bab2d130
+preserved; bothpendingquestions/oldUNKNOWN-HOLD unchanged. Schema-v3 production
+and nativezero fixture not yet implemented. Current acceptance target/task inplan.
+
 # Accepted existing-parent positive maneuver lane — 2026-11-03 UTC
 
 Independent Astra/high final OUTCOME accepts nativeIII1PASS with original180s:

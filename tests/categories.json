@@ -2,6 +2,56 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "wounds-spiritual-zero-comparison-positive",
+  "responsibility": "Original FR025/T081-D zero-ceiling comparison-only receipt: Three intrinsic zero-ceiling v3 DATA modes: no injury rows, prior injury, and same-request positive plus comparison. Existing schema baseline and genuine max0/increasing source prerequisites before v3 assertion.",
+  "excludes": "No forged opportunity/none, current owner/History/origin authority, C3/common publication, Engine/UI/fresh-process or unresolved semantic/UNKNOWN/HOLD closure. Parser RED is positive-only; failed baseline never qualifies negatives.",
+  "changeHints": [
+    "BookOfEternityClient.Tests/SpiritualZeroStrainReceiptTests.cs",
+    "BookOfEternityClient/Services/SpiritualWoundOpportunityReceiptState.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.SpiritualZeroStrainReceiptTests.ZeroComparisonExtendsExistingLedgerWithoutDecision"
+      ]
+    }
+  ]
+},
+{
+  "id": "wounds-spiritual-zero-comparison-refusal",
+  "responsibility": "Original FR025/T081-D zero-ceiling comparison-only receipt: Nine after-valid v3 DATA refusals: closed row, zero ceiling, global/instance ordinal, instance ownership, duplicate row, cross-family coordinate and original/claimed pool context. Does not qualify live source-only/C3 authority.",
+  "excludes": "No forged opportunity/none, current owner/History/origin authority, C3/common publication, Engine/UI/fresh-process or unresolved semantic/UNKNOWN/HOLD closure. Parser RED is positive-only; failed baseline never qualifies negatives.",
+  "changeHints": [
+    "BookOfEternityClient.Tests/SpiritualZeroStrainReceiptTests.cs",
+    "BookOfEternityClient/Services/SpiritualWoundOpportunityReceiptState.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.SpiritualZeroStrainReceiptTests.ZeroComparisonRefusesCrossFamilyContradiction"
+      ]
+    }
+  ]
+},
+{
   "id": "wounds-spiritual-existing-parent-joins",
   "responsibility": "Original FR025/T081-D v2 DATA joins: III/IV latest History anchors2, changed latest refusal5, decline-only absent/forged C3 owner pair1, exact current source-group DATA6. No owner permission issued by typed DATA.",
   "excludes": "No actual live epoch/source admission, signed source birth, real C3/C4/Engine/UI or fresh-process claim; native owns those boundaries. Both pending outcome/aggregation questions and old UNKNOWN/HOLD excluded.",
