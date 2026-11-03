@@ -1,3 +1,27 @@
+# No-roll DATA45 PASS; minimal owned producer wiring WIP
+
+At31371abe7890fe4a4e0480d260ee0544ab4ac5b2, fresh Main66.606563s and
+Unit35.560016s exit0/exact81/26baseline; selected30artifacts/207inputs414copies/
+native4/3PE-PDB389sourcebindings verified. Unselected Integration15 retained their
+prior hashes/versions and were not qualified against currentMain. Artifactc589a0f68e3cf0ca3aee92f25cfbbe1ed9223f4b1f92a65270ec003a2ab3ccdb;
+PDB3c0eb98caf24bda6dad73c03021b90f265e590fe70b2bb73fb0b5a5d92f86a67.
+Exact official J4-cheap45 completed45PASS (DATA36+existingresource/precedence9),
+category3.242158s/3.418559s within60s each, wrapper12.850704s. No skip/timeout/
+duplicate/underfill, full capture/hashclose/cleanuptrue/noTMP/noowners/clean source.
+Postd3f47a24c6d707cec49a4fba3a0a8e572df4c6247687ae1ef7c29bfbb22cf847;
+summary1c8a18b85cc9f8e4846d016afad19e4f9c0ceb79a888d2e8dd8525dd74db648d.
+Independent OUTCOME pending. Producer was unchanged during proof; actual2FAIL is
+still causalRED, no positive owned/publication claim from these DATA cases.
+
+Now only the existing two absent-side eligibility arguments are wired to the
+reviewed owned no-roll wrapper, alongside unchanged unburdened-force route. Keep
+outer audit.ContainsKey(side) absence guard, preserve every mutation/payment and
+MissingAudit for all other cases; bool parameter renamed ownedFreeSide for truth.
+No fake audit, new source, cache/I/O or general battle rule. This wiring is WIP,
+UNCOMPILED/UNRUN; independent deltaSOURCE/fresh affected Main/Unit/Integration,
+exact affected cheap45 and separate actualpair PREP/OUTCOME remain before acceptance.
+Old67/source5 retain exact earlier lineages, not rerun without a changed consumer.
+
 # No-roll free-side DATA proof WIP — producer still UNWIRED
 
 Astra independently confirmed the actual2FAIL chain and accepted the narrow design:

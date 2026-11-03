@@ -1,3 +1,12 @@
+# Current no-roll fix — DATA45 passed, producer wiring WIP
+
+Cheap proposed classifier36+preservedresource/precedence9 passed on31371; actualpair
+still2FAIL before publication onfd93. Existing two producer eligibility calls now
+use current owned no-roll-free wrapper, preserving force and genuine-missing guards.
+Wiring uncompiled/unrun, independent deltaSOURCE and fresh affected builds next,
+then affectedcheap45 and actualpair180s admission. No no-roll wound PASS yet.
+Raw outside checkout; prior67/source5 and oldUNKNOWN/HOLD retain their versions.
+
 # Current no-roll boundary — source complete, publication pair FAIL
 
 J3remaining3PASS/AstraOUTCOME accepted plus oldmissing2 source union; cheap67 retained.

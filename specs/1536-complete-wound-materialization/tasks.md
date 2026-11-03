@@ -1,3 +1,10 @@
+# T081-D-NO-ROLL current resource wiring
+
+- [x] New DATA36+existing resource/precedence9 pass45 on31371; complete capture, independent OUTCOME pending.
+- [ ] Minimal two-call owned resource eligibility wiring SOURCE/fresh Main+Unit+Integration/affectedcheap45.
+- [ ] Separately re-admitted actual no-roll C4pair2 in180s, real wound/zero/History/signed read and OUTCOME.
+- [ ] Final accepted checkpoint and next wound-only task; no old UNKNOWN/HOLD closure.
+
 # T081-D-NO-ROLL free-side proof substep
 
 - [x] Independent actual2FAIL cause and bounded free-side DESIGN, no author rule change.
