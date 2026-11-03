@@ -2,6 +2,58 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "wounds-spiritual-existing-maneuver-baseline",
+  "responsibility": "One real single-exchange III C2/C4 birth, then fresh signed turn43 ordinary maneuver with the wound targeting pressure. Proves actual source/parent/resource headroom and inert source admission through existing owners; no target strain adjustment.",
+  "excludes": "No ambiguous outcome/opposition inference or multi-wound aggregation; no same-request parent replacement, other operation/actor/general combat/QTE, new GM rule/cache/diagnostic stack, Engine/UI/fresh OS or old UNKNOWN/HOLD retry. Native IV not claimed. Production stays unchanged for causal qualification.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualExistingStrainManeuver.cs",
+    "BookOfEternityClient/Services/Validation/ValidationService.SpiritualStrainDependency.cs",
+    "BookOfEternityClient/Services/SpiritualStrainPreimageData.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualExistingStrain_UnmatchedParentKeepsOrdinaryNextSignedManeuver"
+      ]
+    }
+  ]
+},
+{
+  "id": "wounds-spiritual-existing-maneuver",
+  "responsibility": "Original FR025/T081-D one actual already-published III strain/maneuver parent, fresh signed maneuver/setback and unique ordinary unchanged-strain result. Before implementation, fail at existing-parent admission after real birth/current signed prerequisites. Intended GREEN covers cold C2, explicit none, C3, common C4, exact3/2 resource spends/depletion, unchanged parent/history/roots, v2 retained comparison and signed44 read.",
+  "excludes": "No ambiguous outcome/opposition inference or multi-wound aggregation; no same-request parent replacement, other operation/actor/general combat/QTE, new GM rule/cache/diagnostic stack, Engine/UI/fresh OS or old UNKNOWN/HOLD retry. Native IV not claimed. Production stays unchanged for causal qualification.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualExistingStrainManeuver.cs",
+    "BookOfEternityClient/Services/Validation/ValidationService.SpiritualStrainDependency.cs",
+    "BookOfEternityClient/Services/SpiritualStrainPreimageData.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 3,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualExistingStrain_RealParentManeuverPublishesOnceAndKeepsSignedHistory"
+      ]
+    }
+  ]
+},
+{
   "id": "wounds-spiritual-strain-partial-success",
   "responsibility": "#1536 T081-D FR022/025 failure-only strain: real signed ordinary player pressure/maneuver partial_success must remain valid after selecting a III wound. Preserve ordinary sources, exact candidate/canonical strain, maneuver position/costs and cold reopen; invalid ordinary impact remains refused before selection. Four cases, existing per-test independent fixtures.",
   "excludes": "No ambiguous outcomes/opposition inference, multiple-wound aggregation, new parent/receipt/schema/cache, general combat/QTE/defeat, C4/Engine/UI/fresh process or UNKNOWN/HOLD retry. Existing success leaves selected separately as affected guards.",

@@ -1,3 +1,17 @@
+# Existing-parent maneuver: independent DESIGN, native scaffold only
+
+Astra/high accepts the original single signed-existing III/IV strain/maneuver lane;
+contract and v2/current-owner/C3-none/historical requirements are in currentplan.
+No author ambiguity is resolved, v1 remains strict and no production changed.
+New native scaffold2 Facts uses real one-exchange5/15 birth C2/C4 (3OD each), fresh43
+maneuver4/12 versus guard, a pressure-parent ordinary control and corrected current
+maneuver target. Future assertions include cold/decline-only common publication,
+exact3/2 spending/depletion, parent/History/root preservation and signed44. These
+are UNCOMPILED/UNRUN, no source/admission/PASS claimed. New exact category owners
+baseline60s/actual180s; selected only these2 for the causal phase. Independent whole
+fixture/selection SOURCE, freshIntegration/discovery/Plan/PREP remain before runtime.
+No full suite, closed-case rerun, R2/A5/HOLD execution or limit/capture change.
+
 # US8 map and T149 accepted; continue original deterministic wound consequence
 
 Independent Sol SOURCE accepts the six-scenario historical US8 map and original

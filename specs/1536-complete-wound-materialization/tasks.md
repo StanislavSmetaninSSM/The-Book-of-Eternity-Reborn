@@ -1,7 +1,7 @@
 # T081-D current single-wound maneuver/setback — independent DESIGN next
 
-- [ ] Establish the minimal existing-parent proof for the original FR-025 failure-only strain: one exact current III/IV wound, player maneuver/setback, ordinary maneuver leaves strain unchanged, add one step at most broken. Do not infer ambiguous outcomes or aggregate multiple wounds.
-- [ ] Causal existing-owner proof before production changes; reuse actual creation/publication and next signed input, not forged current parents/resources.
+- [x] Independent Astra/high bounded DESIGN accepted: establish the existing-parent proof for the original FR-025 failure-only strain: one exact current III/IV wound, player maneuver/setback, ordinary maneuver leaves strain unchanged, add one step at most broken. Do not infer ambiguous outcomes or aggregate multiple wounds.
+- [ ] Native causal scaffold authored (two Facts), uncompiled/unrun: one genuine C4 birth leaves3OD, signed43 ordinary unmatched control and corrected matching maneuver admission; future assertions cover cold C2/none/C3/C4/signed44. Independent SOURCE/fresh Integration/exact discovery/Plan/PREP first; no forged parent/resources.
 - [ ] Minimal existing-owner implementation only after independent DESIGN; preserve v1, current/source/history/authority checks and exact siblings. No new general combat/probe/cache framework or GM-authored rule.
 
 This is a known missing cell of existingT081-D/finite row1, not a new mandatory

@@ -1,3 +1,34 @@
+# Existing signed-parent maneuver DESIGN accepted; causal scaffold UNRUN
+
+Independent Astra/high approves the bounded original FR025/T081-D lane: one exact
+current III/IV strain/maneuver parent unchanged from signed pre-turn data, player
+maneuver/setback versus guard, exactly one component/stack/magnitude1. Authenticate
+through existing mechanics owner/current view/source authority and latestHistory;
+DATA alone grants nothing. Derive ordinary by restoring only ownstrain from before,
+validate complete shape/rules/other burdens/siblings, then add1 cappedbroken. Do not
+invent a strict numeric earlier-turn rule: signed-pre-turn equality is the boundary.
+Keep v1 unchanged; closed v2 needs ordinary/fullparent/effect/component (no invented
+current parentSourceId), first-source support, live/C3/historical joins. Existing
+AuthenticatedC3Pair must authenticate this proof even on decline-only/no-insertion;
+later healing cannot invalidate its exact historical anchor. No general probe/cache,
+new GM rule, outcome inference, aggregation or same-request parent replacement.
+
+Native scaffold now written, no production changed: one real5/15 pressure birth
+C2/C4 leaves3OD each, then fresh43 maneuver4/12 spending3/2. Unmatched pressure-parent
+control should admit the ordinary unchanged strain; actual matching parent should
+reach the known missing-proof boundary before future cold C2/none/C3/C4/signed44
+assertions. Two independent fixtures, existing helpers/owners, no manual resource
+refill. Baseline60s/actual180s protective bounds chosen before runtime, consistent
+with existing C4/cold proofs (H4actual43.5s/180), not a raised failed-test budget.
+SOURCE/freshIntegration-only/exactdiscovery/Plan/PREP precede causal execution;
+no new tests have run. Main/Unit/native stay source32ed equivalents for this scaffold.
+Optimization: reuse immutable fixture helpers with per-case state, no shared mutable
+fixture or new source IO in production. Future current-parent parsedDATA stays in
+existing mechanics context with exact ordinal/epoch/draft/dependency version and
+fresh checks, not a dictionary or retained permission. Details/counters beforecode.
+Both authorquestions/three deferrals/generalcombatexclusion and all UNKNOWN/HOLD
+remain; US8 map/T149 acceptance and partial7C2-only are not repeated or widened.
+
 # Next original wound cell — existing-parent maneuver, DESIGN only
 
 US8 six-scenario receipt map and original T149 source-guard scope are independently
