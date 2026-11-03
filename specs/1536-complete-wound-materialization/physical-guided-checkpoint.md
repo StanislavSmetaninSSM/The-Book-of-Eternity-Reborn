@@ -1,3 +1,18 @@
+# M4 fixture encoding failure — not parser RED
+
+Source5a39a58d2 Unit37.622277s exit0/exact26; artifact45/resources621/native6,
+4PDB/512sourcebindings verified. Catalog1387/13230 and exactpositive2/60s Plan,
+independent Sol PREP accepted. Actual completed2FAIL in3.4542302s (wrapper9.851882),
+no timeout/skip/duplicate/underfill, cleanup and all hashes unchanged. Both parent
+and ordinary prerequisite checks passed, but SourceWitness.Payload rejected the
+noncanonical actual JSON before v2 parsing. This is a fixture preparation failure,
+not genuine parserRED or any GREEN. Post64a9ebdac10f3d69a2b636d1945e927471ef3f92be41d0df3abafc034ab667bd,
+summarye9eaebd4d200eab032b3200d2a5a50c8e48a9cfbdf1a1e84b34877e1b5b207c3;
+full evidence M4-positive-red outside checkout in the established raw root.
+Correct only fixture Encode to existing canonical serialization. Production remains
+32ed, negatives15/native unadmitted. Fresh corrected Unit/Plan/PREP before the
+same positive2 retry; retained failure is not overwritten.
+
 # Typed scaffold review correction — 2026-11-03 07:00 UTC
 
 Independent Sol found one fixture-only preparation error: the reused cost definition

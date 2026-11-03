@@ -151,7 +151,7 @@ public sealed class SpiritualExistingStrainPreimageTests
 
     private static JsonObject ReadActual(JsonObject source) => JsonNode.Parse(Convert.FromBase64String(
         source["exchangeJsonBase64"]!.GetValue<string>()))!.AsObject();
-    private static string Encode(JsonNode value) => Convert.ToBase64String(Encoding.UTF8.GetBytes(value.ToJsonString()));
+    private static string Encode(JsonNode value) => Convert.ToBase64String(Encoding.UTF8.GetBytes(SpiritualWoundStateJson.Canonical(value)));
     private static void Seal(JsonObject source)
     {
         var hash = SpiritualWoundStateJson.Hash(source, "source", "sourceId", "sourceFingerprint");
