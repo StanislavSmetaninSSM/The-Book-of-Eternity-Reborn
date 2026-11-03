@@ -1,3 +1,38 @@
+# Current-actor parent DATA first step WIP — uncompiled/unrun
+
+Independent Astra/high grouped DESIGN recommends existing current-parent DATA
+first, reusing ReadRetraumaWound carrier/identity/History and owner/version-bound
+ReadCurrentWoundView plus source-authority root/component binding. Ordinaryprobe
+cannot simply be reused for existing strain: PrepareCore reinstalls that burden.
+Later comparison mode must be owner-private/exact contribution/actor/ordinal and
+preserve every other burden/check. v1 immutable same-request/createIII stays strict;
+new closedv2 current-snapshot proof will be required for other legitimate origins.
+No new mode/v2 parser/authority/schema or actual existing-parent strain consumer
+has been implemented in this first step.
+
+Firstcode extracts the existing active wound DATA query into
+Services/SpiritualWoundCurrentData.cs, immediately reused by ReadRetraumaWound;
+wrapper retains original/current selection, completeview and all outerowner checks.
+Catalog/actor/identity/History order and existing exception messages remain; malformed
+internal actor keys get controlled owner mismatch. No duplicate parser path, cache,
+IO or permission. Same query once per old call; later owner can retain the returned
+immutable result within its exact scope. No new repeated expensive work or speedup
+claim. This is characterization/refactoring of already working lookup, not a new
+player feature or fabricated missing-implementation RED. Typed13 tests exercise
+III/IV/latest-worsened snapshot and actors/negative agreement/detached DATA; synthetic
+birth/History consistency grants no source authority. Existing actualsource4 moves
+unchanged from the broadC1 catalog leaf to a coherent60s leaf (same fixtures/tests),
+not copied/duplicated or a broadC1 rerun. ProposedCI2categories17cases; actual exact
+discovery/PlanOnly/PREP after SOURCE and fresh affected builds. No runtime admitted.
+
+Two real semantics remain pending, documented for main-chat author handoff in
+strain-open-semantics-20261103.md: per-participant failure when existing evidence
+is ambiguous, and aggregation across multiple matching wounds. Independent Sol and
+Astra found no normative universal map or strain-specific reducer. Recommendations
+are NOT approvals, no GitHubcomment sent, singlecontribution restrictions preserved.
+Continue independent sharedparent/provenance and existing unequivocal cases; do not
+reopen deferredcontrol/counter/restrictIII/generalcombat or oldUNKNOWN/HOLD.
+
 # Next existing T081-D group — current-actor strain / lifetime DESIGN WIP
 
 Guardcap checkpointa78c02e3b2d0a88f79514f219b2f140be0b4c956 finaldelta independently

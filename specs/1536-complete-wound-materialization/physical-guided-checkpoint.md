@@ -1,3 +1,14 @@
+# Current-parent DATA extraction WIP / no new runtime
+
+Existing active-wound query now shared with original re-trauma consumer; complete
+catalog/owner/identity/latestHistory checks unchanged, no source/capability issued.
+Newtyped13 and exactexisting source4 categories authored; C# UNCOMPILED/UNRUN.
+Independent coherent SOURCE/freshaffectedbuilds/exactselection/PREP remain. No
+existing-parent strain/v2/probemode/aggregation/outcome rule has been activated.
+Two narrow author proposals saved in strain-open-semantics-20261103.md, unapproved;
+parent/provenance work proceeds independently. Guardcap acceptancea78/runtime23dcd
+remains, allrawexternal and oldUNKNOWN/HOLD intact. Mainplan holds exactfirststep.
+
 # Guard-cap checkpoint closed; shared current-actor strain DESIGN next
 
 Acceptedcheckpointa78c02e3, independentfinaldocreview, remoteSHA/cleanfourfile source

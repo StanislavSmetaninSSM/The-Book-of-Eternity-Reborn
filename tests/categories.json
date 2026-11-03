@@ -2,6 +2,58 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "wounds-spiritual-current-snapshot-data",
+  "responsibility": "#1536 T081-D-STRAIN-ACTOR-LIFETIME 13 cheap intrinsic current graph/identity/History cases: III/IV and worsened snapshot, player/guardian/resident, seven after-valid refusal controls and detached-envelope invariance. Existing active-wound query extraction, no live authority.",
+  "excludes": "No current-parent strain application, v2 receipt/witness, proposed actor failure or multi-wound aggregation, Engine/UI, source-birth proof from synthetic DATA, generalcombat or oldHOLD. Intrinsic DATA does not replace current owner/effect availability checks.",
+  "changeHints": [
+    "BookOfEternityClient/Services/SpiritualWoundCurrentData.cs",
+    "BookOfEternityClient/Services/Validation/ValidationService.SpiritualWoundSourceAdmission.cs",
+    "BookOfEternityClient.Tests/SpiritualWoundCurrentDataTests.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.SpiritualWoundCurrentDataTests.*"
+      ]
+    }
+  ]
+},
+{
+  "id": "wounds-spiritual-current-snapshot-source-regression",
+  "responsibility": "#1536 T081-D-STRAIN-ACTOR-LIFETIME Four existing signed source-owner re-trauma cases moved intact from spiritual-cutover-c1: exact, absent target, History mismatch and signed-original versus current removal. Same assertions/fixtures, source-only authority not admission/publication.",
+  "excludes": "No current-parent strain application, v2 receipt/witness, proposed actor failure or multi-wound aggregation, Engine/UI, source-birth proof from synthetic DATA, generalcombat or oldHOLD. Intrinsic DATA does not replace current owner/effect availability checks.",
+  "changeHints": [
+    "BookOfEternityClient/Services/SpiritualWoundCurrentData.cs",
+    "BookOfEternityClient/Services/Validation/ValidationService.SpiritualWoundSourceAdmission.cs",
+    "BookOfEternityClient.Tests/SpiritualWoundCurrentDataTests.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SourceOwner_RetraumaResolvesExactOriginalCarrierIdentityAndHistory"
+      ]
+    }
+  ]
+},
+{
   "id": "wounds-spiritual-strain-guard-cap-data",
   "responsibility": "#1536 T081-D 12 cheap cappedguard DATA cases: ordinary real-rule/witness calculation2, immutable copies, ten rehashed ordinary/parent refusals, empty editable field set and preserved source facts. No DATA authority.",
   "excludes": "No original-owner or publication authority from JSON/fingerprint; actual coldC2/C4 guard and affected existing maneuver remain separately gated. No generalcombat/new rules/oldHOLD.",
@@ -30748,7 +30800,6 @@
                         "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SourceOwner_PendingContoursAreRetainedNotAdmission",
                         "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SourceOwner_RealOriginalReaderProducesOwnedSourceWithoutAdmissionOrWrites",
                         "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SourceOwner_RedRawRejectsOriginalOutOfRangeResilience",
-                        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SourceOwner_RetraumaResolvesExactOriginalCarrierIdentityAndHistory",
                         "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SourceOwner_ShiningAbodeUsesSignedRealmAndRecomposedOriginalOwners",
                         "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SourceOwner_SignedAbsentConflictRetainsStartRequirementWithoutUsingStaleSnapshotBytes",
                         "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SourceOwner_SignedAbsentSettingsUseOnlyExistingNoSettingsContour",

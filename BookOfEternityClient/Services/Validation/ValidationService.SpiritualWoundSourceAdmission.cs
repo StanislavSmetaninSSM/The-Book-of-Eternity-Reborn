@@ -910,45 +910,13 @@ public partial class ValidationService
         {
             if (current != null && (current.WoundCarriers == null || current.WoundIdentity == null || current.WoundHistory == null))
                 throw new InvalidOperationException("complete current wound carrier, identity and history snapshots required");
-            var catalog = WoundCarrierCatalog.Build(current != null ? current.WoundCarriers! : new(
-                OptionalRoot(WoundCarrierCatalog.PlayerPath),
-                OptionalRoot(WoundCarrierCatalog.NpcPath),
-                OptionalRoot(WoundCarrierCatalog.EnemiesPath),
-                OptionalRoot(WoundCarrierCatalog.AlliesPath),
-                OptionalRoot(WoundCarrierCatalog.AfterlifeProfilesPath)));
-            if (catalog.Issues.Count != 0 || !catalog.TryResolveOne(woundId, out var occurrence) ||
-                occurrence.Wound.Lifecycle != "active" ||
-                occurrence.Coordinate.Realm != Realm)
-                throw new InvalidOperationException("exact active re-trauma wound in the authoritative view");
-            var ownerId = actor[(actor.IndexOf(':') + 1)..];
-            var kind = actor[..actor.IndexOf(':')] switch
-            {
-                "player_soul" => "player_soul",
-                "guardian" => "guardian",
-                "resident" or "shining_resident" => "resident",
-                "radiant_actor" => "radiant_actor",
-                "shining_faction_head" or "saref_agent" or "system_actor" or
-                    "custom_afterlife_actor" => "afterlife_actor",
-                _ => null
-            };
-            if (occurrence.Coordinate.OwnerId != ownerId ||
-                occurrence.Coordinate.OwnerKind != kind ||
-                occurrence.Coordinate.CarrierPath != WoundCarrierCatalog.AfterlifeProfilesPath)
-                throw new InvalidOperationException("re-trauma target owner mismatch");
-            var identity = WoundIdentityState.Parse(current != null ? current.WoundIdentity!.ToJsonString() : _before[WoundIdentityState.StatePath],
-                WoundIdentityState.StatePath);
-            if (!identity.IsValid || !identity.State!.TryGetEntry(woundId, out var entry) ||
-                entry.Status != "active" || entry.OwnerId != occurrence.Coordinate.OwnerId ||
-                entry.OwnerKind != occurrence.Coordinate.OwnerKind ||
-                entry.CarrierPath != occurrence.Coordinate.CarrierPath || entry.Realm != Realm ||
-                entry.SemanticFingerprint != WoundIdentityState.ComputeSemanticFingerprint(occurrence.Wound))
-                throw new InvalidOperationException("original re-trauma identity/carrier agreement");
-            var history = WoundHistoryState.Parse(current != null ? current.WoundHistory!.ToJsonString() : _before[WoundHistoryState.HistoryPath],
-                WoundHistoryState.HistoryPath);
-            if (!history.IsValid ||
-                history.State!.ValidateAgreement(identity.State!, catalog).Count != 0)
-                throw new InvalidOperationException("original re-trauma history/identity/carrier agreement");
-            return occurrence.Wound;
+            return SpiritualWoundCurrentData.ReadActive(current != null ? current.WoundCarriers! : new(
+                    OptionalRoot(WoundCarrierCatalog.PlayerPath), OptionalRoot(WoundCarrierCatalog.NpcPath),
+                    OptionalRoot(WoundCarrierCatalog.EnemiesPath), OptionalRoot(WoundCarrierCatalog.AlliesPath),
+                    OptionalRoot(WoundCarrierCatalog.AfterlifeProfilesPath)),
+                current != null ? current.WoundIdentity!.ToJsonString() : _before[WoundIdentityState.StatePath],
+                current != null ? current.WoundHistory!.ToJsonString() : _before[WoundHistoryState.HistoryPath],
+                Realm, woundId, actor);
         }
 
         /// <summary>
