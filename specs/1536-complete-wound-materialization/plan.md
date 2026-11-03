@@ -29,7 +29,8 @@ Part07 writes full errors[].code/filePath/message/expected/actual for protected
 wound/location/effect paths. Part06 may reject item/resource-only failures without
 writing it, so logger alone may still be generic. No new error codes or unique cause
 have been obtained; no speculative fix. Only this minimal logger is currently wired.
-Independent build/PlanOnly outcome and final documentation review pending.
+Independent Sol 6.1 / xhigh build/PlanOnly outcome and final documentation review
+accepted at 0f416f1cd as build-ready / runtime UNRUN, not a new gameplay PASS.
 Full raw/backup/manifests remain outside checkout:
 `/workspace/tboe-linux-evidence-20261103/t154-mixed-consumption-diagnostics`.
 Artifact proof: `313aba417fd0a5d3235238210852473a5465db665e4e051089d8e28ccca360e8`.
