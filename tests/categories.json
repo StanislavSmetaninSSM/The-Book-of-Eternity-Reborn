@@ -30,7 +30,7 @@
 {
   "id": "wounds-spiritual-strain-guard-cap-publication",
   "responsibility": "#1536 T081-D-STRAIN-GUARD-CAP One actual III strain-guard selection at existing broken cap, no editable correction, cold C2 next ordinary sourceII/none, common C4/History and signed43; exact unchanged guard exchange, one authority use and canonical nonmutation before publication.",
-  "excludes": "No new guard/combat rules, cap shortcut, caller proof, general QTE/ACTIVE, Engine/UI/fresh OS process, full strain family or old HOLD retry. Baseline is preparation; publication is UNRUN, not feature acceptance.",
+  "excludes": "No new guard/combat rules, cap shortcut, caller proof, general QTE/ACTIVE, Engine/UI/fresh OS process, full strain family or old HOLD retry. Baseline is preparation; publication requires separate real OUTCOME acceptance.",
   "changeHints": [
     "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualStrainGuardCap.cs",
     "BookOfEternityClient/Services/Validation/ValidationService.SpiritualStrainDependency.cs"
@@ -55,7 +55,7 @@
 {
   "id": "wounds-spiritual-strain-guard-cap-baseline",
   "responsibility": "#1536 T081-D-STRAIN-GUARD-CAP One independent signed ordinary failed guard: real two player sources III/II, four unique dice claims, guard2/pressure3 payments and unchanged canonical bytes. No burden selected.",
-  "excludes": "No new guard/combat rules, cap shortcut, caller proof, general QTE/ACTIVE, Engine/UI/fresh OS process, full strain family or old HOLD retry. Baseline is preparation; publication is UNRUN, not feature acceptance.",
+  "excludes": "No new guard/combat rules, cap shortcut, caller proof, general QTE/ACTIVE, Engine/UI/fresh OS process, full strain family or old HOLD retry. Baseline is preparation; publication requires separate real OUTCOME acceptance.",
   "changeHints": [
     "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualStrainGuardCap.cs",
     "BookOfEternityClient/Services/Validation/ValidationService.SpiritualStrainDependency.cs"

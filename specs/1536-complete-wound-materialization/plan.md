@@ -1,3 +1,68 @@
+# T081-D-STRAIN-GUARD-CAP — bounded native acceptance
+
+Guard runtime23dcd7f4ae3ba16d0ae0b7afe117ee5afa94eb1b, Main/Unit compiled unchanged
+e399e8e21588e794c88ce211bc949743cf5ba22b. A newly created III strain/guard parent
+now preserves an independently proved failedguard overwhelmed→broken and its
+ordinary pressure source through coldC2, real commonC4 and subsequent signed43
+ordinary guard validation. No afterbroken shortcut, invented combat rule, extra
+source, editable A/B or terminalecho. Existing sixfieldv1 parent/History and strict
+source-free path preserved; sourcefields equal apart from privateproof. No cache,
+new authority, writer or walltime speedup. Keep original full source DATA once in
+same owned comparison, fresh checks/cold rederivation; current DI/design scopes
+and earlier resource/effect owners reused. This is not full strain/US3/#1536.
+
+Independent Astra/high DESIGN/SOURCE/causalPREP/OUTCOME/actualPREP/OUTCOME accepted;
+Sol/xhigh DATA/toolSOURCE/cheapPREP/OUTCOME accepted. Reached actualguard1 oracles:
+realIII+secondII source/none, retainedfullordinary/preimage/earlierparent, coldreopen,
+exact4spends/player6→3→1 andopposition6→3→0 +unique same-record depletion, physical
+wound/effect/resource/identity/History images, singleuseauthority refusal/no writes,
+consumed privatefiles, signed43 ordinaryguard. ParentHistory enforced through
+C3/C4 and explicitfirstcreate join; no newguard-specific historicalframereader claim.
+Actualmaneuver1 unchangedbody passes relevant sharedproof regression: realcoldA/B,
+commonC4/parentHistory/signed43, permittedsummary and mechanics/turn/stale refusals.
+Both180s protective budgets unchanged; no passing baseline/cheap repeat.
+
+Evidence is50distinct across explicitgroups, NOT a fresh50:
+- baseline1 on d16aff5c:1PASS, category5.4621916/60s, preparation/sources only.
+- cheap47 on e399:47PASS,6leaves14methods,3.41–3.66s/60s each, wrapper26.905047s.
+- actualguard1 on23dcd:1PASS, TRX10.9267348/category14.5421472/180, wrapper21.221419s.
+- affectedmaneuver1 on23dcd:1PASS, TRX37.2964780/category42.229116/180, wrapper49.746355s.
+Each group complete/no skip/timeout/dup/underfill; allcapturefiles/ownedcleanup/
+noTMP/noowners/cleantree verified. K1genuineintegrationRED and K2depletion-oracleFAIL
+retained fully; neither becamePASS retrospectively. One failed wrappercall used an
+incorrect planpath and stopped preflight before creating runtime/output; actualK2
+run was unique. No unknown process or repeated unknown execution.
+
+FreshMain58.946179s/Unit37.533726s on e399, then Int68.756802s on23dcd, all0/exact
+81/26/107warningmultisets. Prior Int70.671035s/e399 archived before fixturecorrection.
+Current45managed/207inputs621copies/native6/4PDB508bindings verified; only IntDLL/PDB
+changed after stricttestfix, other40artifacthashes/provenance and allresources exact.
+K2cheap47 consumedMain/Unit/Support source+binary+resources explicitly unchanged;
+current heads not reminted onto prior compiled outputs. No freshnativepackage claim
+for this managed-only change; pinned Linuxpackage remains9f9679b77a4480ad842d4cece21d84f8f1d63c9d0fb9b57bea59b5c4a9aed457.
+Current artifact42f033ead1f2c936cc4d82804637ef5cb4610d744a75db07bf6b2fe0fb220e8d;
+PDB1116e0eccfffa219fdaba8ed917f42b38efea4c0effacd4982137a92f818e77d.
+Guardposte0d60f19b461e86cae025da5a0338e0226d1185299973779e57c97cc37e4425c,
+summary8402888e7bd34fe909bd948e0392d3337ab4e51fc124612685361fc981046091;
+maneuverpostc4bd28cb464e3be62c8957adce339c8763f522982eed56bf3f0776be92d7f8ae,
+summary4a8f381af1d6bd6d0f461d2a86e0f8783aac0b128db83da910aa24c8455b632f.
+Full raw/builds/TRX/plans/proofs/retainedbinaries outsidecheckout:
+/workspace/tboe-linux-evidence-20261102/spiritual-strain-preimage-data/K1-*,K2-*,K3-*.
+No raw/binaryupload or deletion, saves untouched. Source23dcd bounded4file clean
+export/GitHubblobproof a255c1d3ed10e659a8953783e33c925ac34ac9825665c5d39ab1b6b0f8755619,
+plus earlier17filee399 ca31e1753d04c1ab61f66b57c3e81e8f4f9d890043f7db6c60d0741a79d21dc2;
+this is source restoration only, not full checkout/raw/environment restoration.
+
+GM main entry/contract/matrix/workedfragment/manifest/spec synced before runtime;
+final delta only compactcheckpoints and2catalogexclusion statusstrings, same9category
+membership/selectors/budgets/CI. No C#/operationalresource delta after tested23dcd.
+Next existing T081-D strain remainder grouped by side-aware currentIII/IV consumer
+and ordinaryprovenance/source-preservation/lifetime (pre-existing/new/worsened
+parents), not eleven parallel op frameworks. Read-only bounded assessment pending;
+no new gameplay choices or broad implementation yet. Authorcontrol/counter/restrictIII
+deferrals unchanged; generalcombat/QTE/ACTIVE outside. R2browser/A5terminal UNKNOWN,
+DFR/Mortal/Windows and all prior HOLD retain exact separate admissionconditions.
+
 # Guard-cap cheap47 accepted; actual guard reaches cold C2 then fixture event-count FAIL
 
 Runtimee399e8e21588e794c88ce211bc949743cf5ba22b. Independent Astra whole SOURCE and

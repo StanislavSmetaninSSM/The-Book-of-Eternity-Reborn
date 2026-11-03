@@ -4,7 +4,7 @@
 - [x] Independent ordinary baseline1PASS then genuine cappedguard1FAIL on d16, Astra/Sol OUTCOME; category5.4622/60 and8.1012/180, full capture/cleanup. Cold/C4 assertions unreached in RED.
 - [x] Cheap guard12+affected35 =47PASS at e399, independent Sol OUTCOME; exactsource/parent/History/maneuver/guidance DATA, not actualpublication.
 - [x] Owned source-bearing proof/DATA equality and private capped no-op preimage: independent Astra SOURCE/freshMain+Unit+Integration/exactcheap47 on e399. No editable correction field; actualacceptance separate.
-- [ ] Actual common publication/signed43/History/unique sources/realpayments and independent OUTCOME, GM sync and verified remote checkpoint.
+- [x] Actualguard1 and affectedmaneuver1 PASS at23dcd, independent Astra OUTCOME; coldC2/commonC4/physicalimages/History/source/payment/stale/signedread, fullcapture/cleanup. Source/MainUnit e399 cheap47 remains separate; baseline1 d16 retained. Testedcode23 remote/readback verified; finalacceptance docs publication/review pending, no whole-strain/#1536 closure.
 
 Accepted no-roll6d847910/code470e remains separate. All old UNKNOWN/HOLD and three
 author-deferred consumers remain unchanged; no broader combat/defeat/QTE/ACTIVE work.

@@ -1,3 +1,15 @@
+# Accepted guard-cap wound route — runtime23dcd / productione399
+
+Actualguard1PASS and affectedmaneuver1PASS independently accepted by Astra/high.
+ColdC2/commonC4 realIII wound/effects/History/payments/stale +signedordinaryguard43
+now qualify the bounded cap path; no A/B/extra source or guardrule change. Cheap47
+on e399 and baseline1 on d16 remain separately accepted, not fresh50 or whole #1536.
+Currentbuild/proof/timing/raw/failedattempt/optimization/readerlimits in plan.md.
+Finaldocs/catalogstatus review and normalpush/remote/readback next; no runtimeleft
+in this slice. Nextgroup is remaining actualstrainactor/III–IV/currentparent and
+ordinary-source/lifetime integration under existing T081-D, boundedreadassessment
+pending. Threeauthordeferrals/generalcombatoutside/oldUNKNOWN-HOLD remain unchanged.
+
 # Guard-cap current: cheap47PASS, actual1 fixtureFAIL before C4
 
 Newcode/runtimee399 has independentSOURCE and cheap47PREP/OUTCOME accepted. Actual
