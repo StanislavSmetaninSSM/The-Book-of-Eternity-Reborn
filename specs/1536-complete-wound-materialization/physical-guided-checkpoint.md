@@ -1,3 +1,13 @@
+# Next wound-only slice: capped failed guard / design only
+
+No-roll source/materialization accepted on6d847910(code470e), final2file readback
+complete35ed82b5e5abb0c83d88760d7b8148d51e7c821728cc907ac7825d6361d0a112.
+Next tracked T081-D-STRAIN-GUARD-CAP: independently proved ordinary guard3→broken
+with new III burden should stay capped and preserve its real second source through
+coldC2/C4/History. Concrete integration gap and bounded design accepted by Astra;
+full finite plan in plan.md. No guard fixture/code written or run yet. Existing
+source-free guard stays strict, no cap shortcut/new combat rule/old HOLD retry.
+
 # Accepted no-roll GM margin, native C1–C4 — runtime470e
 
 Real voluntary incoming harm with explicit GM10 creates I wound/effect/History via

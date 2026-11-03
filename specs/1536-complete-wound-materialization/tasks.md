@@ -1,3 +1,14 @@
+# T081-D-STRAIN-GUARD-CAP [US3] — new capped guard integration
+
+- [x] Confirm codegap and independent bounded DESIGN: source-bearing ordinary guard3→4, no general combat rule or cap shortcut.
+- [ ] Independent ordinary baseline two realIII/II sources/costs/claims, then genuine cold C2/C4 guard-cap RED in existing protective budgets.
+- [ ] Cheap typed guard preimage/source/parent/History controls and strict unchanged existing source-free/maneuver paths.
+- [ ] Owned source-bearing proof/DATA equality and private capped no-op preimage, SOURCE/fresh builds/exact gates; no editable correction field.
+- [ ] Actual common publication/signed43/History/unique sources/realpayments and independent OUTCOME, GM sync and verified remote checkpoint.
+
+Accepted no-roll6d847910/code470e remains separate. All old UNKNOWN/HOLD and three
+author-deferred consumers remain unchanged; no broader combat/defeat/QTE/ACTIVE work.
+
 # T081-D-NO-ROLL accepted native slice — runtime470e
 
 - [x] Explicit GM choice retained in existing source/witness; no implicit0/fake dice/new formula, GM contracts/examples/manifest synchronized.

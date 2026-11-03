@@ -1,3 +1,65 @@
+# T081-D-STRAIN-GUARD-CAP — next wound-only slice / DESIGN accepted
+
+No-roll qualification remains accepted at code470e/final6d847910 with final source
+readback35ed82b5e5abb0c83d88760d7b8148d51e7c821728cc907ac7825d6361d0a112;
+no accepted case is reopened. Next concrete gap: newly selected III strain burden
+for failed guard remains profile_integration_required even when the independently
+proved ordinary guard already reaches broken. The +1 cap must permit the same
+ordinary result/source through C2/C4, not invent a battle rule or ignore the burden.
+
+Astra bounded read confirmed codegap and DESIGN: current reader accepts only last
+source-free pressure/maneuver with equal before/after; guard3→4 produces a genuine
+second pressure source and is excluded. Keep that source-free helper strict.
+
+Acceptance and finite execution:
+1. Test-only ordinary baseline: reuse the signed two-exchange strain fixture,
+   first real sourceIII, then guard/setback against incoming pressure, actual
+   dice4/12, ordinaryplayer overwhelmed→broken, opposition unchanged, guardcost2
+   and pressurecost3 from remaining3AP. Assert two real sources (III/II), original
+   claims/costs and unchanged canonical/authority roots. No new guard result rule.
+2. Select existing legal III graph with component001strain operationguard;
+   component002roll-hindrance remainsmaneuver; move unrelated component003cost to
+   pressure, not futureguard, to isolate this one dependency. Assert cold C2 can
+   retain the ordinary second source/offer and decline it without editable A/B,
+   then common C4/III parent/effects/History/exactpayments/signed43/stale refusal.
+   Current implementation should give genuine integration RED after the independently
+   valid baseline. Native baseline60s and complete route180s; exact counts/selection
+   only after discovery. Failed preparation/compile does not count as RED.
+3. Cheap intrinsic/ownership controls before production: valid capped guard ordinary
+   equals actual, strict before3/after4, full exchange/parent/component/magnitude,
+   changed fields/foreign source/History refuse; preserve affected maneuver DATA,
+   parent-receipt and History controls. Reuse typed APIs/fixtures, no reflection.
+4. Add separately named source-bearing capped-guard preselection proof beside the
+   existing strict source-free helper. Reuse one existing scoped validation probe;
+   require same lease/capture/source/ordinal/frozen input/full validation/resource
+   batch and exact unchanged prior source prefix plus ONE ordinary player harm
+   source from that final guard exchange. Return its immutable PreparedSpiritualSource
+   DATA with the ordinary comparison, not source admission or arbitrary countgrowth.
+5. Bind actual newly created III parent/effect/component and existing creation/first-
+   create History. Retain exact ordinary source fields/event identity and full
+   exchange; actual reconstruction must match apart from the attached private
+   StrainPreimageJson. Durable witness sourceId itself may differ because it hashes
+   execution/proof fields; don't equate it with preselection DATA identity.
+6. Extend existing six-field preimage/version1 narrowly for failedguard, before3→4,
+   actual==ordinary FULL exchange. Parameterize exact parent component lookup by
+   admitted operation; keep maneuver branch and current parent/receipt/History joins.
+   Capped guard authorizes no changed strain or final-echo field and no additional
+   source. Ordinary guard validator/historical rules stay unchanged. No after==broken
+   shortcut, caller preimage, new receipt family or parallel authority/cache system.
+7. Independent SOURCE/fresh affected builds/exact cheap gates and separate actual
+   PREP/OUTCOME, GM guide/matrix/worked fragment/manifest/source guard sync, then
+   compact verified remote checkpoint. No old HOLD or generalcombat/QTE/ACTIVE scope.
+
+Optimization/identity: existing probe/repository/immutable selected-decision DATA;
+retain already computed source/calculation/ordinary exchange once within the owned
+C2 comparison and rederive on cold replay. Full key includes original snapshot,
+source/capture/resource routing ordinal/epoch, actual parent/definition/component
+and first-create History. Fresh owner/readsets/byte/History checks remain. Source
+DATA grants no permission; detached exports only. No new dictionary/cache or repeated
+fullworld preparation beyond the actual source/C2/C4 subject. Benefit/cost unmeasured,
+no speedup claim. Actual baseline/scaffold and all code changes are still UNWRITTEN/
+UNRUN; this accepted design does not qualify the new guard route.
+
 # No-roll qualification checkpoint closed
 
 Astra accepted the six-file documentation delta at29328d14e4f72bc5fd84103ea8b935f64e009191.
