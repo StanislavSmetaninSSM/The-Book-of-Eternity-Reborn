@@ -1,4 +1,4 @@
-# Main -> wounds integration — 157 distinct PASS, final OUTCOME pending
+# Main -> wounds integration — 157 distinct PASS, final OUTCOME accepted
 
 Task #1536 compatibility integration, Linux, 2026-11-03. Isolated WIP branch
 `1536-merge-main-wip-20261103`; the original wounds ref is still
@@ -32,7 +32,8 @@ unit and final settlement source cases, avoiding unrelated/passing replays.
 No frontend change/build, live GM, DOM/provider or fresh-process claim.
 
 Independent Astra/high SOURCE, causal RED, source/runtime OUTCOME and native PREP
-accepted their bounded stages. Final OUTCOME pending. Merge corrections preserve
+accepted their bounded stages. Final Astra/high OUTCOME accepted at
+`d143d68dd22d34738a431aebe3df257aa9bf3f1f`; all157PASS and scope verified. Merge corrections preserve
 source observations/revalidation, exact canonical names and blank-vs-missing.
 Inherited source guards were ported to the existing Core owner with exact outer
 forwarding; strict historical inverses preserve all frozen hashes, and Roslyn
@@ -54,8 +55,11 @@ This does not close US3/US4/#1536, initial SAFE composition, browser physical-co
 joint terminal, DFR/Mortal compatibility/Windows HOLD, first guardian intermittent
 or cross-OS DATA limitations. Source recovery so far verifies84listed files from
 an empty Git store, not a full checkout. Final source readback and fast-forward
-of wounds require final OUTCOME and unchanged remote parents. Never update main,
+of wounds remain operational gates after accepted OUTCOME and fresh parent checks. Never update main,
 force-push, rewrite history, delete branches or close issues.
+
+Final whole selection PlanOnly exactly reconciles all planned methods/case counts
+against the157adoptedPASS, without runtime repetition. Reconciliation is external.
 
 # T107 native chronology1 PASS — six dependent controls next
 
