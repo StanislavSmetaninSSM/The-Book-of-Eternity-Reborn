@@ -1,3 +1,24 @@
+# Main merge runtime112 accepted evidence; inherited source guard correction
+
+On c496e903b, bounded runtime completed112/112PASS, no timeout/duplicate/skip/
+underfill or owned cleanup failures. Includes exact-case and blank/missing source-
+aware crosses, narrative observations/fresh revalidation and skill identity/repair.
+Postproof2b99901756f8c71c4c56a7d33c056139036983892158149812bc6d7259b36027;
+summary75def72dd09a85df9ec4137a3949f6eafd4d53294dfa22e68a66d6d1d6319fb7.
+
+Source38 stopped at first descriptor:1FAIL/37UNRUN, not full qualification. The
+new inverse first restored exact daea bytes; older Debug guard then expected4a6318
+but got55710d83. Independent Astra traced df88a6bd28402ca674e1eb16a7a9f91aad782a81:
+one Elyara validation call lacked a historical inverse. Removing only its unique
+line from daea reproduces exact df88 parent/b5e source408441e7; all unchanged older
+spiritual+Debug inverses then reproduce original frozen4a6318. A test-only strict
+before/after inverse now represents that already accepted production change.
+No frozen hash or production behavior changes. Current Unit is archived/CRC/hash
+verified before Unit-only rebuild. Preserve runtime112 against its actual source;
+it is not rerun for this source-helper-only correction. Source38 and native T107
+remain pending. No new cache: distinct before/after source hashes are required
+integrity assertions, not repeated game computation. Raw external as above.
+
 # Merge observation causal result — f54481d85 / Linux
 
 Fresh native package and Main/Support/Unit/Integration all exit0, warnings81/23/26/107.
