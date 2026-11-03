@@ -1138,7 +1138,12 @@ public sealed class GameEngineSourceGuardTests
         var validationSource = ReadGameEnginePartialSource("GameEngine.ValidationAndRepair.cs");
         var acceptedTurnValidation = ExtractMethodSource(
             validationSource,
-            "private async Task<AcceptedTurnValidationDisposition>");
+            "private async Task<AcceptedTurnValidationDisposition> ValidateAcceptedTurnOutcomeWithRepairLoopCoreAsync(");
+        var outer = ExtractMethodSource(validationSource,
+            "private async Task<AcceptedTurnValidationDisposition>\n        ValidateAcceptedTurnOutcomeWithRepairLoopAsync(");
+        Assert.Contains("await ValidateAcceptedTurnOutcomeWithRepairLoopCoreAsync(source, activeSnapshotContext, rollbackSnapshot,",
+            outer, StringComparison.Ordinal);
+        Assert.Contains("expectedTurn, progressionControl, BeforeDestructiveRefusalAsync);", outer, StringComparison.Ordinal);
 
         Assert.Contains("ValidateAcceptedTurnOutcomeWithRepairLoopAsync(", turnSource, StringComparison.Ordinal);
         Assert.Contains("activeSnapshotContext,", turnSource, StringComparison.Ordinal);

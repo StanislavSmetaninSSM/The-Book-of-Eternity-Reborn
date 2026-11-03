@@ -1182,22 +1182,19 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.Empty(carrierType.GetConstructors(BindingFlags.Public | BindingFlags.Instance));
         Assert.Contains(typeof(IAsyncDisposable), carrierType.GetInterfaces());
 
-        var completion = carrierType
-            .GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
-            .Where(method => method.DeclaringType == carrierType)
-            .Where(static method => IsCompletionMethodName(method.Name))
-            .ToArray();
+        var analysis = ReadMethodAnalysis(
+            "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+            "ValidateAcceptedTurnOutcomeWithRepairLoopCoreAsync");
+        var scope = RequireCanonicalRefreshTransactionScope(analysis);
+        _ = RequireDirectAwaitedTypedCompletion(analysis, scope);
         var compensation = carrierType
             .GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
             .Where(method => method.DeclaringType == carrierType)
             .Where(static method => IsCompensationMethodName(method.Name))
             .ToArray();
 
-        var complete = Assert.Single(completion);
         var compensate = Assert.Single(compensation);
-        Assert.False(complete.IsPublic);
         Assert.False(compensate.IsPublic);
-        Assert.True(IsAwaitableReturn(complete.ReturnType));
         Assert.True(IsAwaitableReturn(compensate.ReturnType));
         Assert.Equal(carrierType, gameEngineProperty.PropertyType);
     }
@@ -1207,9 +1204,17 @@ public sealed partial class GameEngineTurnLifecycleTests
     {
         var analysis = ReadMethodAnalysis(
             "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
-            "ValidateAcceptedTurnOutcomeWithRepairLoopAsync");
+            "ValidateAcceptedTurnOutcomeWithRepairLoopCoreAsync");
         _ = RequireControlFlowGraph(analysis);
         _ = RequireOpenTreatmentTransactionCarrier();
+        var outer = ReadMethodAnalysis(
+            "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+            "ValidateAcceptedTurnOutcomeWithRepairLoopAsync");
+        var forward = RequireInvocation(outer.Method.DescendantNodes().OfType<InvocationExpressionSyntax>(),
+            "ValidateAcceptedTurnOutcomeWithRepairLoopCoreAsync");
+        Assert.Equal(new[] { "source", "activeSnapshotContext", "rollbackSnapshot", "expectedTurn",
+                "progressionControl", "BeforeDestructiveRefusalAsync" },
+            forward.ArgumentList.Arguments.Select(argument => argument.Expression.ToString()));
         var method = analysis.Method;
         var invocations = method.DescendantNodes()
             .OfType<InvocationExpressionSyntax>()
@@ -1348,22 +1353,22 @@ public sealed partial class GameEngineTurnLifecycleTests
         false)]
     [InlineData(
         "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
-        "ValidateAcceptedTurnOutcomeWithRepairLoopAsync",
+        "ValidateAcceptedTurnOutcomeWithRepairLoopCoreAsync",
         "ValidateCriticalCanonicalStateAsync",
         false)]
     [InlineData(
         "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
-        "ValidateAcceptedTurnOutcomeWithRepairLoopAsync",
+        "ValidateAcceptedTurnOutcomeWithRepairLoopCoreAsync",
         "ValidateCurrentGameStateOrShowErrorsAsync",
         false)]
     [InlineData(
         "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
-        "ValidateAcceptedTurnOutcomeWithRepairLoopAsync",
+        "ValidateAcceptedTurnOutcomeWithRepairLoopCoreAsync",
         "CleanupAcceptedTurnCommandSurfacesAsync",
         true)]
     [InlineData(
         "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
-        "ValidateAcceptedTurnOutcomeWithRepairLoopAsync",
+        "ValidateAcceptedTurnOutcomeWithRepairLoopCoreAsync",
         "RefreshRuntimeStateAsync",
         true)]
     public void GuaranteedResourceQuantity_PostHelperFailureBoundaryRemainsInsideCompensationFence(
@@ -1386,7 +1391,7 @@ public sealed partial class GameEngineTurnLifecycleTests
 
         if (!string.Equals(
                 methodName,
-                "ValidateAcceptedTurnOutcomeWithRepairLoopAsync",
+                "ValidateAcceptedTurnOutcomeWithRepairLoopCoreAsync",
                 StringComparison.Ordinal))
         {
             var upstreamInvocationName = string.Equals(
@@ -1802,7 +1807,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs";
         var validation = ReadMethodAnalysis(
             relativePath,
-            "ValidateAcceptedTurnOutcomeWithRepairLoopAsync");
+            "ValidateAcceptedTurnOutcomeWithRepairLoopCoreAsync");
         var refreshTry = Assert.Single(
             validation.Method.DescendantNodes().OfType<TryStatementSyntax>(),
             statement => statement.Block.DescendantNodes()
@@ -6171,16 +6176,23 @@ public sealed partial class GameEngineTurnLifecycleTests
             analysis.Model.GetSymbolInfo(assignment!.Left).Symbol);
     }
 
+    /// <summary>Resolves the actual one-argument settlement on the owned carrier through Roslyn.</summary>
+    /// <param name="analysis">The existing coordinator source and semantic model.</param>
+    /// <param name="scope">The exact await-using carrier ownership scope.</param>
+    /// <returns>The directly awaited typed settlement invocation whose identity and result are verified.</returns>
     private static InvocationExpressionSyntax RequireDirectAwaitedTypedCompletion(
         SourceMethodAnalysis analysis,
         CarrierOwnershipScope scope)
     {
-        var carrierType = RequireOpenTreatmentTransactionCarrier().PropertyType;
+        var carrierType = Assert.IsAssignableFrom<INamedTypeSymbol>(scope.CarrierSymbol.Type);
+        var fileSystemType = analysis.Model.Compilation.GetTypeByMetadataName(typeof(FileSystemManager).FullName!);
+        Assert.NotNull(fileSystemType);
         var complete = Assert.Single(
-            carrierType.GetMethods(
-                BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic),
-            method => method.DeclaringType == carrierType &&
-                      IsCompletionMethodName(method.Name));
+            carrierType.GetMembers(nameof(MortalWoundTreatmentResourcePublicationTransaction.CompleteAsync))
+                .OfType<IMethodSymbol>(),
+            method => !method.IsStatic && method.Parameters.Length == 1 &&
+                SymbolEqualityComparer.Default.Equals(method.Parameters[0].Type, fileSystemType));
+        Assert.Equal(Accessibility.Internal, complete.DeclaredAccessibility);
         var aliases = BuildImmutableLocalAliases(
             analysis,
             scope.Lifetime,
@@ -6208,39 +6220,29 @@ public sealed partial class GameEngineTurnLifecycleTests
             "a fire-and-forget or unrelated wrapper invocation.");
         _ = RequireAssignedLocalSymbol(analysis, completion);
 
-        var resultType = RequireAwaitedResultType(complete.ReturnType);
-        Assert.Equal(typeof(bool), RequireResultProperty(resultType, "IsValid").PropertyType);
-        Assert.True(typeof(IEnumerable<ValidationIssue>).IsAssignableFrom(
-            RequireResultProperty(resultType, "Issues").PropertyType));
-        Assert.Equal(typeof(int), RequireResultProperty(
-            resultType,
-            "ChangedCount").PropertyType);
-        var outcomeType = RequireResultProperty(resultType, "Outcome").PropertyType;
+        var resolvedCompletion = Assert.IsAssignableFrom<IMethodSymbol>(analysis.Model.GetSymbolInfo(completion).Symbol);
+        Assert.True(SymbolEqualityComparer.Default.Equals(complete, resolvedCompletion));
+        Assert.True(SymbolEqualityComparer.Default.Equals(carrierType, resolvedCompletion.ContainingType));
+        var awaitable = Assert.IsAssignableFrom<INamedTypeSymbol>(resolvedCompletion.ReturnType);
+        Assert.True(awaitable.Name is "Task" or "ValueTask");
+        Assert.Equal("System.Threading.Tasks", awaitable.ContainingNamespace.ToDisplayString());
+        var resultType = Assert.IsAssignableFrom<INamedTypeSymbol>(Assert.Single(awaitable.TypeArguments));
+        Assert.Equal(typeof(MortalWoundTreatmentPublicationOperationResult).FullName, resultType.ToDisplayString());
+        IPropertySymbol Property(string name) => Assert.Single(resultType.GetMembers(name).OfType<IPropertySymbol>());
+        Assert.Equal(SpecialType.System_Boolean, Property("IsValid").Type.SpecialType);
+        Assert.Equal(SpecialType.System_Int32, Property("ChangedCount").Type.SpecialType);
+        var issuesType = analysis.Model.Compilation.GetTypeByMetadataName(typeof(ValidationIssue).FullName!);
+        var enumerable = analysis.Model.Compilation.GetTypeByMetadataName(typeof(IEnumerable<>).FullName!);
+        Assert.NotNull(issuesType);
+        Assert.NotNull(enumerable);
+        Assert.True(analysis.Model.Compilation.ClassifyConversion(
+            Property("Issues").Type, enumerable!.Construct(issuesType!)).IsImplicit);
+        var outcomeType = Property("Outcome").Type;
         Assert.True(
-            outcomeType == typeof(string) || outcomeType.IsEnum,
+            outcomeType.SpecialType == SpecialType.System_String || outcomeType.TypeKind == TypeKind.Enum,
             "Typed completion Outcome may be a string or closed enum, but it must " +
             "represent Finalized explicitly.");
         return completion;
-    }
-
-    private static Type RequireAwaitedResultType(Type awaitableType)
-    {
-        Assert.True(
-            awaitableType.IsGenericType &&
-            (awaitableType.GetGenericTypeDefinition() == typeof(Task<>) ||
-             awaitableType.GetGenericTypeDefinition() == typeof(ValueTask<>)),
-            "Transaction completion must return an awaited typed result; Task/ValueTask " +
-            "without IsValid/Issues/ChangedCount/Outcome cannot gate accepted success.");
-        return awaitableType.GetGenericArguments()[0];
-    }
-
-    private static PropertyInfo RequireResultProperty(Type resultType, string name)
-    {
-        var property = resultType.GetProperty(
-            name,
-            BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-        Assert.NotNull(property);
-        return property!;
     }
 
     private static void RequireTypedCompletionSuccessDominatesAcceptedExit(

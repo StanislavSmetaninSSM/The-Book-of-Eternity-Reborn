@@ -1,3 +1,33 @@
+# Main merge static lifecycle guard port — production unchanged
+
+After historical inverse correction, four source/GM cases PASS. The inherited
+partial-lifecycle integration descriptor completed3PASS/7FAIL (10cases); remaining
+24unit cases UNRUN, not source38PASS. Independent Astra confirms exact Engine
+outer/core/refresh/settlement method bodies and both transaction files equal daea:
+these are inherited test assumptions, not merge-introduced publisher changes.
+
+Minimal test-only port analyzes existing CoreAsync and separately proves exact
+outer forwarding of source/original/rollback/turn/control/refusal-owner arguments.
+Four post-helper rows and their owner branch now name Core; all compensation,
+identity, awaiting, typed result, success dominance and ordering assertions remain.
+Completion proof uses existing Roslyn symbols for exact CompleteAsync(FileSystemManager)
+instead of substring/Single reflection that matched data getters and two overloads.
+No new reflective private invocation; unused reflected result helpers are removed.
+One unit baseline guard selects Core explicitly and proves outer forwarding. Other
+23unit assertions were reviewed together; no other known stale assumption. No
+production, general C4/combat or gameplay change and no GM update is required.
+
+The accepted112runtime cases remain reusable; four source/GM PASS are not repeated.
+Run only partial-source-guards plus ownership guards:34cases after dedup. Three
+previously passing rows in the changed post-helper theory are relevant reruns
+because its owner routing and shared completion assertion changed. Fresh Unit/
+Integration (not Main/Support) and exact Plan/PREP precede that run. Original
+budgets remain. Distinct before/after source checks reuse their immutable DATA;
+no new cache or speedup claim. Native T107 and final integration are still held.
+Remote source recovery of84listed files/13,691,834bytes independently fetched into
+an empty Git store at10e18e6a8 verified exact hashes (proofc979dd7320923c33934090f3aea0c5faae4a2974fb1d78fe9998ef35dadf4b73).
+This is limited source recovery, not a full checkout/build/functional restore.
+
 # Main merge runtime112 accepted evidence; inherited source guard correction
 
 On c496e903b, bounded runtime completed112/112PASS, no timeout/duplicate/skip/
