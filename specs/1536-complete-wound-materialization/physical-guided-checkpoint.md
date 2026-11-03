@@ -1,3 +1,29 @@
+# Local physical course: terminal healing verified — 2026-11-03
+
+On source base `470cab31e9b6c2e9487775490a0ba567d2ee5e4c`, the existing
+three-milestone browser queue/handler and Engine journey passed twice locally
+under a five-minute diagnostic bound. The second run adds an explicit
+fixture-specific assertion that the completed course prepares terminal healing;
+the existing assertions then verify terminal History and removal of the active
+wound. Its category passed 1/1 in 261.6183978 seconds, with complete runner and
+fixture cleanup. The first category run passed in 263.2112315 seconds without
+the new assertion. The shared helper also applies the assertion to console
+courses; that branch was not rerun here.
+
+Both runs retain the original gameplay actions, confirmations, waits and oracles.
+Detailed filesystem timing hooks were disabled for this course; journey-level
+timings and logs remain. The five-minute category bound reflects the observed
+cost of this indivisible scenario, not a production optimization. Earlier
+180-second timeouts remain UNKNOWN, and the old three-minute bound was not met.
+This is not a real Firefox/DOM, external provider, fresh-process or whole-task
+acceptance. No gameplay production code changed.
+
+The second run's TRX SHA-256 is
+`5a0301aaa87a8ddc338bb7c999978c34efaf6ca34b8ce9a40350b82b71d6a2bf`;
+summary SHA-256 is
+`8676edc82dd8aaf6ca99f9bf4c41110fecc5671d4c681f47a8b78bb77b46947a`.
+Raw evidence remains in `/tmp/boe-local-r2-terminal` outside the checkout.
+
 # T154 mixed item/resource rollback7 — accepted, 2026-11-03
 
 Runtime/source: `25c5ae58f6411214cea03408aa5e1f6b079fe63f`.

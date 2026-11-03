@@ -64,7 +64,9 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
             Dictionary<string, byte[]?>? heldBefore = null, compensation = null, atCut = null;
             var hooks = new FileSystemManagerHooks
             {
-                PassiveOperationTimings = browser ? timings : null,
+                // The course retains its journey-level timings without recording
+                // millions of filesystem boundaries during each accepted turn.
+                PassiveOperationTimings = browser && mode != "course" ? timings : null,
                 LocalPublicationObserver = !failPublication ? null : (phase, _) =>
                 {
                     if (!armed || phase != TrustedLocalPublicationPhase.MemberPublished ||
@@ -172,6 +174,8 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                     Assert.Equal(mode, result.Receipt.Mode);
                     await AssertPhysicalDeclaredItemsExactlyOnceAsync(files, beforeItems, result, current.Finalization);
                     AssertPhysicalCleanup(files);
+                    if (mode == "course" && result.Receipt.CourseDisposition == "completed")
+                        Assert.True(current.Preparation.PreparesTerminalHeal, "The completed test course must heal the wound.");
                     if (current.Preparation.PreparesTerminalHeal)
                     {
                         var healed = Assert.Single(history.Transitions, entry => entry.Kind == "heal" && entry.Turn == actualTurn.TurnNumber);
