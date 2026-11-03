@@ -44,8 +44,9 @@ Both author ambiguities stay pending and cell-scoped; the three explicit deferra
 and general combat/QTE/defeat/ACTIVE stay outside this work. R2/A5 UNKNOWN and all
 DFR/Mortal/Windows HOLD remain. US8 has six canonical scenarios (not the older
 summary's eight); T167-176 are implemented, T177 is evidence/final review, not a new
-scope subsystem. Final3doc receipt review/push/remote/clean readback is next; tested
-code/resources remain32ed759 and no passing suite will be repeated for these docs.
+scope subsystem. Independent Sol final3doc receipt review accepted. Publication,
+remote and bounded clean source readback close externally after publication; tested
+code/resources remain32ed759 and no passing suite is repeated for these docs.
 
 # Original partial-success consequence correction — causal RED retained, GREEN UNRUN
 
@@ -86,7 +87,7 @@ Current normative FRs, original dated tasks and accepted receipts are the basis.
 
 | Required result / original basis | Actual gap and finite closure criterion |
 | --- | --- |
-| US3 wound consequences, [FR-022/025](spec.md), [T080/T087/T081-D](tasks.md) | The selected player pressure/maneuver partial_success defect is now accepted at32ed759 (GREEN7 below); no extra failure-only strain is added. Remaining demonstrated existing-parent/III-IV failed-action cells belong to the original consequence contract, but do not require eleven new frameworks or a combat redesign. Close only after each applicable nondeferred cell has existing or targeted accepted evidence. |
+| US3 wound consequences, [FR-022/025](spec.md), [T080/T087/T081-D](tasks.md) | The selected player pressure/maneuver partial_success defect is now accepted at32ed759 (GREEN7 above); no extra failure-only strain is added. Remaining demonstrated existing-parent/III-IV failed-action cells belong to the original consequence contract, but do not require eleven new frameworks or a combat redesign. Close only after each applicable nondeferred cell has existing or targeted accepted evidence. |
 | US3 lifecycle/source combinations, [FR-027/034-036](spec.md), [T081-C2/C3/D/E/C5 and T081-C3-R2B/T107](tasks.md) | Implementation and substantial receipts exist. Reconcile declared ceilings/guarantees, both sides, create/worsen, healing/root retirement, replay and cold cases against those receipts. Initial recovery plus insertion remains an unaccepted composition; use an existing lawful publisher seam if present, never invent general conflict orchestration. A checked parent requires exact matched evidence, not rerunning all accepted children. |
 | [US2/T121](tasks.md) complete browser physical course, [FR-060/062/063](spec.md) | Code exists; R2 remains UNKNOWN180.1041994/180s without TRX. Close through cause-backed correction/admission and one complete original-budget result, with milestones, final wound/effects/resources/history and cleanup. Existing prefix/cheap36 is not final healing. |
 | US2/US7 joint terminal treatment, [FR-012/063/064](spec.md), [T121/T152](tasks.md) | Code exists; A5 remains UNKNOWN120.0346224/120s without TRX. Close through cause-backed admission and exact joint acquisition+treatment/terminal/publication/rollback evidence. Anchor2/output10/controls3 and later accepted worsening remain separate accepted receipts. |

@@ -12,7 +12,8 @@ is nowdone within its first row. Other original consequence/evidence cells remai
 not eleven new combat frameworks. Two author questions are cell-scoped/unapproved;
 R2/A5 UNKNOWN, three author deferrals and other HOLDs unchanged. No reliable whole
 completion duration is supported by the unexplained connected timeouts. Finaldocs
-review/push/readback next; no new runtime required for the three receipt documents.
+independent review accepted; publication/readback closes externally, with no new
+runtime required for the three receipt documents.
 
 # Partial-success minimal correction WIP — causal4 retained
 
