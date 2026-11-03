@@ -94,12 +94,39 @@ public sealed partial class AfterlifeResourceCutoverTests
                 Assert.Equal(bytes, await context.FileSystem.ReadFileBytesAsync(lease, path));
         }
         AssertNoConflictFrameErrors(await context.Validator.ValidateAcceptedTurnRawResourceMaterializationAsync());
+        var expected = await PeekPlanAsync(context);
+        Assert.Equal(4, expected.ResourceEvents.Count);
+        foreach (var (kind, end) in new[] { (ResourceOwnerKind.AfterlifeActor, 1m), (ResourceOwnerKind.AfterlifeConflictSide, 0m) })
+        {
+            var payments = expected.ResourceEvents.Where(row => row.Coordinate.OwnerKind == kind).ToArray();
+            Assert.Equal(2, payments.Length);
+            Assert.Equal(6m, payments[0].Before);
+            Assert.Equal(3m, payments[0].After);
+            Assert.Equal(3m, payments[0].AppliedAmount);
+            Assert.Equal(3m, payments[1].Before);
+            Assert.Equal(end, payments[1].After);
+            Assert.Equal(3m - end, payments[1].AppliedAmount);
+            Assert.Equal(end, ResolvePlannedActionPoints(expected, kind).Current);
+        }
         ValidationService.SpiritualOriginalTurnCapture.SpiritualC4PublicationAuthority authority;
         await using (var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync())
             Assert.True(AcceptedMechanicsPlanAuthority.TryPeekSpiritualPublication(context.FileSystem, lease, out authority));
         var published = await AcceptedTurnCanonicalStateRefresh.NormalizeAndValidateWithPlanAsync(
             context.FileSystem, context.Normalizer, context.Validator, await ReadSpiritualC4BackupsAsync(context));
         AssertNoConflictFrameErrors(published.Issues);
+        Assert.Same(expected, published.MechanicsPlan);
+        foreach (var pair in expected.WoundCarrierAfterImages.Concat(expected.EffectCarrierAfterImages)
+                     .Concat(expected.OwnerCompanionAfterImages))
+            Assert.True(JsonNode.DeepEquals(pair.Value, await context.ReadJsonAsync(pair.Key)), pair.Key);
+        foreach (var (path, value) in new[]
+        {
+            (ResourceMaterializationContract.StatePath, expected.StateAfterImage),
+            (ResourceMaterializationContract.HistoryPath, expected.HistoryAfterImage),
+            (WoundIdentityState.StatePath, expected.WoundIdentityAfterImage),
+            (WoundHistoryState.HistoryPath, expected.WoundHistoryAfterImage),
+            (EffectAcceptedTurnPlan.IdentityIndexPath, expected.EffectIdentityAfterImage)
+        }) Assert.True(JsonNode.DeepEquals(value, await context.ReadJsonAsync(path)), path);
+        Assert.Equal(3, (await ReadCombatHealingWoundAsync(context)).Severity.Rank);
         var output = Assert.IsType<SpiritualWoundPublishedOutput>(published.SpiritualWoundOutput);
         Assert.Single(output.Notifications);
         await output.RequireCurrentAsync(context.FileSystem);
@@ -114,6 +141,12 @@ public sealed partial class AfterlifeResourceCutoverTests
         Assert.Equal("materialize", receiptRoot["decisions"]![0]!["decision"]!.GetValue<string>());
         Assert.Equal(3, receiptRoot["decisions"]![0]!["selectedSeverityRank"]!.GetValue<int>());
         Assert.Equal("none", receiptRoot["decisions"]![1]!["decision"]!.GetValue<string>());
+        var proof = Assert.IsType<JsonObject>(receiptRoot["sources"]![1]!["witness"]!["strainPreimage"]);
+        Assert.Equal(receiptRoot["sources"]![0]!["witness"]!["sourceId"]!.GetValue<string>(),
+            proof["parentSourceId"]!.GetValue<string>());
+        var provedOrdinary = JsonNode.Parse(System.Text.Encoding.UTF8.GetString(
+            Convert.FromBase64String(proof["ordinaryExchangeJsonBase64"]!.GetValue<string>())));
+        Assert.True(JsonNode.DeepEquals(ordinary, provedOrdinary));
         var receipts = SpiritualWoundOpportunityReceiptState.Parse(receiptRoot.ToJsonString(), SpiritualWoundOpportunityReceiptState.StatePath);
         var history = WoundHistoryState.Parse((await context.ReadJsonAsync(WoundHistoryState.HistoryPath))!.ToJsonString(), WoundHistoryState.HistoryPath);
         Assert.True(receipts.IsValid, string.Join("\n", receipts.Issues));

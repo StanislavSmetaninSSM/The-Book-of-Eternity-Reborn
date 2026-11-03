@@ -1,3 +1,20 @@
+# Wounds-only completion boundary — 2026-11-03 02:17 author status request
+
+No-roll GM choice is accepted native source→coldC2→realC4→signedread on470e/final6d;
+actualIII→I/root retirement accepted separately on25ea. No new implicit rules.
+Finite remaining workstreams: (1) authorized US3 strain/source/lifetime cells,
+currently concrete failedguard cap implementation; (2) full physical browsercourse
+R2 UNKNOWN180.1041994/noTRX and jointterminalA5 UNKNOWN120.0346224/noTRX, code
+exists but no acceptance or retryadmission; (3) existing woundstory/ownership,
+privacy/text/index/bounds/byte-existence rollback evidence reconciliation and
+substantiated defects only; (4) coherent final independent review/docs/FR acceptance.
+No claim that every unclosed parent is unwritten code, or that only2 tests remain.
+Three author-deferred consumers are excluded, generalcombat/QTE/ACTIVE outside
+scope. DFR/Mortal/Windows retain separateHOLD, not automatically new implementation.
+Main delay is unresolved connected qualification and repeated small fix cycles.
+A trustworthy whole-task time range is not yet supported by causes for R2/A5;
+no invented percentage/deadline. Continue finiteguard scaffold then existing plan.
+
 # Guard-cap causal scaffold WIP
 
 Two actual Integration Facts and exact categories written, production unchanged.
