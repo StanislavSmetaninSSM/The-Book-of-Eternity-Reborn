@@ -1,10 +1,10 @@
-# T107 healing then later re-trauma — causal scaffold WIP, uncompiled/unrun
+# T107 causal attempt: preparation FAIL, replay untested
 
 Astra/high accepted the bounded DESIGN. One new native partial Fact reuses existing
 seed/staging/graph/C2/common helpers without changing accepted modes. Signed pool
 15/5 then5/15 gives active II->I healing before explicit later pressure targeting
 the same older wound. The fixture requires actual typed margin7/ReduceOne, staged-I
-preimage, later generation/wave, canonical inertness, four spends/final OD1/3,
+preimage, later generation/wave, canonical inertness, four spends/final OD3/3,
 create/treat/worsen History, fresh roots and replay/signed43. Existing replay code
 is unchanged; actual failure is not attributed until these premises reach a guard.
 The original two-minute native-pair budget is retained in one exact category.
@@ -14,9 +14,22 @@ staging call and copying client-owned classification.domain into the GM proposal
 Both now use the accepted fixture's exact existing API and two authored fields.
 No production check was changed to accommodate the fixture.
 
-All new C# and assertions are UNCOMPILED/UNRUN. Whole fixture SOURCE and complete
-preparation precede affected Integration build, exact discovery/Plan/PREP and one
-causal attempt. No production fix, private-authority shortcut, new cache, combat
+At source 0a8bb0bc1bc9185617af011fa0da52d1b68fe4b7, Integration built exit0 /
+107 baseline warnings in74.2398646s; 45 managed /207 selected content /native6 /
+4 PDB /525 bindings verified. Catalog1395/13246 and oneFact/120s Plan/PREP accepted.
+N3-causal completed one FAIL, no timeout: TRX5.3494877s/category8.9242255s. Healing
+margin7/ReduceOne premises passed, but OpenC2 refused second pressure tier0/cost3:
+the real signed seed is tierII/cost1. Later offer/staged-I/replay assertions were
+unreached. This is a fixture failure, not production RED. Both author and SOURCE
+review missed that signed seed premise. Preserve original profiles/rules; corrected
+fixture asserts both actual pressure tiersII, costs1/1 and final OD3/3. Correction
+is UNCOMPILED/UNRUN; whole remaining preparation is being independently rechecked.
+All9 capture files, exact planned/completed count, cleanup/noTMP/noowners and
+45/207/6/525 post-hashes were verified before the fixture edit. Postproof SHA256
+5cc7ab2e0e806749fe06c5f132130e00eef3f5c7cecb8c428b5cbd5ed6700b33;
+summary fdbdd11210d183a5853d4f9903a437d894668697cb011753c66d4c40b2db0f14.
+Full raw remains N3-* under the established external spiritual-strain-preimage-data.
+Fresh affected build and exact Plan/PREP precede a single corrected attempt. No production fix, private-authority shortcut, new cache, combat
 rule, failure/aggregation default or old PASS/HOLD repeat. Source/API-shape checks
 and after-valid negatives will use existing typed readers, no parallel test stack.
 Current manifest status text is documentary; future runtime pins must refresh its

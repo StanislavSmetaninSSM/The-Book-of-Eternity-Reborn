@@ -54,6 +54,9 @@ public sealed partial class AfterlifeResourceCutoverTests
             });
         var before = await ReadCombatHealingWoundAsync(context);
         Assert.Equal(2, before.Severity.Rank);
+        var profiles = (await context.ReadJsonAsync(AfterlifeEntityProfileState.StatePath))!["profiles"]!.AsArray();
+        foreach (var actorId in new[] { "player_soul", "guardian_frame" })
+            Assert.Equal(2, profiles.Single(profile => profile!["actorId"]!.GetValue<string>() == actorId)!["standardArts"]!["pressure"]!.GetValue<int>());
         await WriteCombatHealingExchangeAsync(context, "next_boundary", playerDie: 15, oppositionDie: 5, tier: 3);
         await WriteLaterRetraumaExchangeAsync(context);
         var graphs = AuthorCombatHealingGraphs(before, new JsonArray(new JsonObject
@@ -133,9 +136,9 @@ public sealed partial class AfterlifeResourceCutoverTests
         Assert.Equal(4, spends.Length);
         var playerSpends = spends.Where(row => row.Coordinate.OwnerKind == ResourceOwnerKind.AfterlifeActor).ToArray();
         var oppositionSpends = spends.Where(row => row.Coordinate.OwnerKind == ResourceOwnerKind.AfterlifeConflictSide).ToArray();
-        Assert.Equal(new[] { 2m, 3m }, playerSpends.Select(row => row.AppliedAmount));
+        Assert.Equal(new[] { 2m, 1m }, playerSpends.Select(row => row.AppliedAmount));
         Assert.Equal(new[] { 2m, 1m }, oppositionSpends.Select(row => row.AppliedAmount));
-        Assert.Equal(1m, playerSpends[^1].After); Assert.Equal(3m, oppositionSpends[^1].After);
+        Assert.Equal(3m, playerSpends[^1].After); Assert.Equal(3m, oppositionSpends[^1].After);
         var final = await ReadCombatHealingWoundAsync(context);
         Assert.Equal(before.WoundId, final.WoundId); Assert.Equal(2, final.Severity.Rank);
         Assert.Equal(before.Recovery.LastTickKey, final.Recovery.LastTickKey);
@@ -177,7 +180,7 @@ public sealed partial class AfterlifeResourceCutoverTests
         matchup["primaryResolutionLane"] = "pressure"; matchup["riskProfile"] = "offensive_pressure";
         matchup["matchupRationale"] = "После исцеления натиск души уступает встречному натиску Хранителя, который вновь травмирует старую трещину.";
         exchange["actionCostAudit"]!["player"] = new JsonObject { ["operationType"] = "pressure", ["baseCost"] = 3,
-            ["minCost"] = 1, ["artTier"] = 0, ["effectiveCost"] = 3, ["before"] = 4, ["after"] = 1 };
+            ["minCost"] = 1, ["artTier"] = 2, ["effectiveCost"] = 1, ["before"] = 4, ["after"] = 3 };
         exchange["actionCostAudit"]!["opposition"] = new JsonObject { ["operationType"] = "pressure", ["baseCost"] = 3,
             ["minCost"] = 1, ["artTier"] = 2, ["effectiveCost"] = 1, ["before"] = 4, ["after"] = 3 };
         var first = active["exchangeLog"]![0]!["diceAudit"]!.DeepClone();
