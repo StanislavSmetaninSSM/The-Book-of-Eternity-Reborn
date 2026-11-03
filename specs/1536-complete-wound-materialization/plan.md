@@ -61,6 +61,18 @@ force-push, rewrite history, delete branches or close issues.
 Final whole selection PlanOnly exactly reconciles all planned methods/case counts
 against the157adoptedPASS, without runtime repetition. Reconciliation is external.
 
+Final recovery receipt: 85listed files /13,719,403bytes independently restored
+from GitHub commit02f6f697cf6930bc89c051ea3f349e30856ead80 into a new empty Git
+object store without old checkout/object/source caches; every byte/blob SHA matches.
+Proof26226f3526d186bf67625ca729ac77acb97ed161a86c997aa1100af802b5bfc2,
+under the external merge-main evidence root. Complete tree metadata was fetched;
+this is limited-file recovery, not a full checkout or runtime restore. Only these
+two human-written notes follow that recovery; source/runtime code is unchanged.
+Exact current selection reconciliation:130methods/157cases, proof
+c3856fcf5c66f6f9e6e8e0e9c54f5422d94350dadfb623fe8ab61a23c170a23a.
+The final receipt commit is read back before the authorised non-force wounds
+fast-forward; main must remain a62cfd90a5300a21524066b3b457eb467ed9c677.
+
 # T107 native chronology1 PASS — six dependent controls next
 
 On metadata18c2f7965207262f1f767abb63a45a857b4ed0e9 (Mainf544/Int06dc), the real
