@@ -1,3 +1,14 @@
+# Static port preparation reuse — independent review correction
+
+Astra accepted grouped port correctness and found one unnecessary second complete
+GameEngine parse/compilation for outer forwarding syntax. The test now selects
+that unique method from the already built immutable Compilation.SyntaxTrees.
+Owner/lifetime: the same single synchronous source-analysis invocation; source
+identity and compiled tree set are already fixed, no mutable game DATA or retained
+permission. No cache/framework or shared test state; one existing compilation is
+used instead of constructing a second. All exact forwarding and settlement guards
+remain. No measured speedup claim. Fresh affected test builds and34cases pending.
+
 # Main merge static lifecycle guard port — production unchanged
 
 After historical inverse correction, four source/GM cases PASS. The inherited

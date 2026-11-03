@@ -1207,10 +1207,10 @@ public sealed partial class GameEngineTurnLifecycleTests
             "ValidateAcceptedTurnOutcomeWithRepairLoopCoreAsync");
         _ = RequireControlFlowGraph(analysis);
         _ = RequireOpenTreatmentTransactionCarrier();
-        var outer = ReadMethodAnalysis(
-            "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
-            "ValidateAcceptedTurnOutcomeWithRepairLoopAsync");
-        var forward = RequireInvocation(outer.Method.DescendantNodes().OfType<InvocationExpressionSyntax>(),
+        var outer = Assert.Single(analysis.Model.Compilation.SyntaxTrees
+            .SelectMany(tree => tree.GetRoot().DescendantNodes().OfType<MethodDeclarationSyntax>()),
+            method => method.Identifier.ValueText == "ValidateAcceptedTurnOutcomeWithRepairLoopAsync");
+        var forward = RequireInvocation(outer.DescendantNodes().OfType<InvocationExpressionSyntax>(),
             "ValidateAcceptedTurnOutcomeWithRepairLoopCoreAsync");
         Assert.Equal(new[] { "source", "activeSnapshotContext", "rollbackSnapshot", "expectedTurn",
                 "progressionControl", "BeforeDestructiveRefusalAsync" },
