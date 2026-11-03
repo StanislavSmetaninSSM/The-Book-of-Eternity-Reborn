@@ -1,3 +1,17 @@
+# Corrected existing-parent DATA causal RED — 2026-11-03 07:09 UTC
+
+Frozen05a4df2897cbd45c5c32d393a359921ee5300cae: freshUnit36.431996s exit0/exact26,
+45artifacts/621resourcecopies/native6/4PDB512bindings. Correctedpositive2 completed
+2FAIL at3.8543082/60s (wrapper10.380527), exactly ReadIntrinsic:37 rejecting closed
+v2fivefields against v1sixfields, after valid parent/ordinary/canonical prerequisites.
+No timeout/skip/dup/underfill; cleanup/noTMP/noowners and all hashes unchanged.
+Posta757cf4440b257c47be33826dcf24f66317225300efd78c4b6f5bcb715fc8f2e;
+summary623a5d240bf912d702a935d821e2d59f1a238f6494e12c2b8c97ce99dc18cf45.
+RawM4a-positive-red remains external. This supplies parser causal RED, not GREEN,
+currentowner/History/C3 or publication acceptance; negative15/native still unadmitted.
+M4 preparation failure preserved separately. Minimal implementation follows the
+accepted Astra design; unchanged v1, no author inference/aggregation or combat rule.
+
 # M4 fixture encoding failure — not parser RED
 
 Source5a39a58d2 Unit37.622277s exit0/exact26; artifact45/resources621/native6,
