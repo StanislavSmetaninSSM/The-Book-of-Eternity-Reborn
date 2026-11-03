@@ -1,3 +1,12 @@
+# Current no-roll boundary — source complete, publication pair FAIL
+
+J3remaining3PASS/AstraOUTCOME accepted plus oldmissing2 source union; cheap67 retained.
+Actual C4pair2 bothFAIL before publication (positive no closed interval, zero open
+sourcefrontier). No timeout or no-roll wound PASS. Exact immutable evidence and
+free-side resource-classification causal hypothesis are in plan.md. Independent
+bounded design review pending; no new production correction yet. Do not rerun PASS
+or actuals blindly; preserve all old UNKNOWN/HOLD and completed III→I acceptance.
+
 # Current no-roll source boundary — cheap67 accepted, actual source incomplete
 
 Code is saved; accepted J2cheap67 at0174, plus missing-choice native2PASS. Native

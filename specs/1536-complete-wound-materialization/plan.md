@@ -1,3 +1,39 @@
+# No-roll source accepted; actual publication exposed free-side boundary mismatch
+
+J3 Integrationfd93 fresh67.530828s/0errors/exact107baseline; Main/Unit a179 bytes
+unchanged and required to match prior immutable J2 proof.45/621/native6/4PE-PDB502
+current bindings closed. Artifactd0f215e1a06614c7b2e940da8146d7e5834f435d49464e38fe37e6a72286652f;
+PDBf55bc46c3cb963b334e9a09c6a3a41b3ca9bb363f8c26cfed4c212bad4a6b779.
+Four-file source restore/GitHub-blob delta621dfc19fa7e96134af073aaff3ba975bd0a1eee276b1703f99a3703548ed258.
+
+J3-owners3 completed3PASS: special5.256980s, standard2category4.622422s,
+wrapper15.988121s, unchanged60s each. Explicit0/10, art/cost binding, empty claims,
+coherent prospective GM-choice replacement refusal and repaired same owner all
+executed. Astra OUTCOME accepted. Post22e91c690b885c58ee0239808ed62efa24f389dc30e600eebdb66a8eec5b6bf9;
+summary52a681b28438f90baf64d6e69fc552e7276d8c7becdb73635555b6cf3645a828.
+Together with earlier missing2 this is a five-case versioned source union, not a
+fresh5run. Accepted cheap67 remains separately0174; none repeated.
+
+J3-publication2 actual planned/executed2 bothFAIL, no timeout, category6.6715342s
+within180s/wrapper12.820286s. Positive10 lacks a closed SpiritualExchangeInterval
+at first C2 transport; zero0 CompleteOrdinaryReduction rejects fresh source stream
+versus capture-owned closed frontier. Neither actual wound publication nor signed43
+checks executed; no C4 acceptance or real no-roll wound is claimed. Full result,
+hashclose/cleanuptrue/noTMP/noowners/45-621-6-502stable preserved. Post50335a73e278b1c897b7f5a151d80c16c02bff65a4e348abd365598821eef387;
+summarya4e777e6f0032a48df87561b1054380a4978831f63d45c8d710e4414916b9b4e.
+
+Bounded source investigation: lawful negotiate has absent player cost audit, paid
+opposition pressure3. AfterlifeSpiritualConflictResourceOutcome.ComposeSide returns
+MissingAudit for every absent audit except owned unburdened force, so this lawful
+free side enters PendingSides; LiveTurn1333 yields WaitingForExchange before an
+Interval and frontier remains0. CompletionFrontier then rejects fresh1. This static
+chain explains both observed failures; independent causal/DESIGN review is pending
+before code. Next fix must stay on this new wound no-roll source's existing owned
+resource/capture frontier, preserve actual paid-side mutations/fresh checks and all
+unowned/missing-paid/force controls. No fakezeroaudit or general combat rule, no
+new cache/diagnostic stack; cheap typed causal proof before actual retry. Production
+has NOT changed for this finding; all captures and unique outputs remain external.
+
 # No-roll cheap GREEN accepted; owned-source fixture lease correction WIP
 
 At0174f70c829473a1fe20dcbaf66d09fa12eec8ef, runtime Main/Unit compileda179,

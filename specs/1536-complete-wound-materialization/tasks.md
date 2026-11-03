@@ -1,3 +1,12 @@
+# T081-D-NO-ROLL actual remaining boundary
+
+- [x] Correct fixture's held-lease write; SOURCE/fresh Integration and remaining source3PASS/AstraOUTCOME.
+- [x] Source5 versioned union and cheap67 retained, not a fresh74run.
+- [ ] Independent causal/DESIGN and cheap proof for lawful no-roll free-side MissingAudit mismatch in existing resource owner.
+- [ ] Minimal wound-only owned classification fix, SOURCE/fresh affected builds/target guards; no fake audit or broad combat changes.
+- [ ] Separately re-admitted actual C4pair2 within180s and signed/replay/History outcome; current pair2FAIL retained.
+- [ ] Final no-roll checkpoint and remaining wounds; whole #1536/old HOLD stay open.
+
 # T081-D-NO-ROLL current admission boundary
 
 - [x] Independent design/source/GM sync, genuine causal27 and GREEN67 with strict typed/rolled/guarantee/docs guards.
