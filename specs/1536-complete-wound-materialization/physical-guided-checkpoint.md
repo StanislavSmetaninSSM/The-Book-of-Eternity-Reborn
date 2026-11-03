@@ -1,3 +1,19 @@
+# Zero-comparison structural RED3 — 2026-11-03 UTC
+
+Finalscaffold54306f59e840028c2ed6b25681f17e3f99208af1 Unit36.927997s0/exact26;
+45artifacts/621resourcecopies/native6/4PDB517bindings. SOURCE/PREP independently
+accepted, retaineddiscovery1390/13237 and freshoneMethod3case/60s Plan.
+N1bpositive3 actual3FAIL in3.2527151s (runner7.8275457/wrapper9.056513), exactly
+v3Parse assertion28 after each validv1baseline and intrinsic increasing/pressure7/
+max0source. Currentrootversion1..2 cannot readv3. Downstreamappend or negative9
+notqualified. OneTRX/ninecapturefiles/exactplannedcompleted/no timeout/skip/dup/
+underfill/cleanup/noTMP/noowners/allhashesunchanged.
+Postd3bca4121c9ca059a1bdc1688ba5860b3d403bb56bfed834e1dfd1ddd42f58cd;
+summaryd083606bda1317821512bf8289ac7cdc8189f67577c9ec9faad67d17c6ca0851.
+Raw N1b-positive-red remains in established externalroot; no runtime retry planned.
+Next minimal v3 implementation follows accepted AstraDESIGN in currentplan/task;
+priorpositive76/partialC2cold/typedIV and all UNKNOWN/HOLD unchanged.
+
 # Zero DATA atomic append oracle correction — no runtime attempted
 
 Independent Sol correctly found the future mixed-request append oracle must add
