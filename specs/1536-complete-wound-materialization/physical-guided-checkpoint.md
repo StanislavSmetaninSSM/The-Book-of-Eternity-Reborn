@@ -1,3 +1,22 @@
+# FR-025 zero-comparison route accepted — exact bounded result
+
+Astra/high independently accepted the full 85-case OUTCOME and checkpoint on
+ac24675fc6ac9eee3aae1e3c16d037fb68462018. Native TRX duration is 12.4653742s;
+category 16.531074s / 180s. All 33 capture files and 45/621/6/524 current hashes
+were checked independently. Sol accepted SOURCE, staged PREP and cheap73/controls11
+OUTCOME. The following detailed runtime record retains exact compilation lineages,
+proof pins, original failed compile and qualification limits. This closes only the
+tracked T081-D-EXISTING-STRAIN-ZERO slice, not parent US3 or #1536. No additional
+runtime is needed for documentary closure; current remote/export closing evidence
+will be recorded externally without putting raw in Git.
+
+Continue finite original row2: lawful produced initial healing/recovery stage plus
+same-plan insertion. Current natural/self-treatment producers now exist, so the old
+Sep26 Mortal-only explanation needs tracing against current owners. The accepted
+reset test still does not prove that composition. No safety/cycle/realm rule is
+changed by this investigation. Pending actor/multiwound semantics, R2/A5 UNKNOWN,
+DFR/Mortal/Windows HOLD and all previously stated scope limits remain unchanged.
+
 # Original FR-025 zero-comparison route — observed 85 PASS, final OUTCOME pending
 
 Runtime metadata/source boundary: c80b496c632205b8b194a62d3554ac66e7594217.

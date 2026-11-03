@@ -15,7 +15,7 @@ remain open; partial_success stays C2/cold only, both pending semantics unchange
 - [x] Confirm exact increasing-strain/non-guaranteedmax0 gap and independent Astra/high minimal DESIGN: schema-v3 comparison-only rows in existing receipt/source-only/mixed C3 owners. No fabricated opportunity/none or weakened common receipt identity; closed preimagev2 and positive-source decision bijection unchanged.
 - [x] Cheap independent causal/typed v1-v2→v3 append/replay, zero-only/mixed, source/coordinate/request/dice refusal and latestHistory-after-heal controls. No live authority from DATA.
 - [x] Minimal existing-owner implementation plus GM guidance/example/manifest synchronization; preserve v2 nonempty healing behavior and coherent empty healing family only in v3, exact prefix/owner/current/signed checks. Reuse existing parsed DATA/indexes; no parallel framework.
-- [ ] Whole SOURCE, fresh affected builds/exactPlan/PREP, typedGREEN then one lawful real zero source-only C3/commonC4/signed-next-turn route, completecapture/cleanup, final independent OUTCOME and verified remotecheckpoint. No budget increase, oldPASS/UNKNOWN/HOLD replay or Engine/UI extension.
+- [x] Whole SOURCE, fresh affected builds/exactPlan/PREP, typedGREEN then one lawful real zero source-only C3/commonC4/signed-next-turn route, completecapture/cleanup, final independent OUTCOME and verified remotecheckpoint. No budget increase, oldPASS/UNKNOWN/HOLD replay or Engine/UI extension.
 
 Capped broken→broken is ordinary and produces no increasing harm source; it is not
 this gap. Pending aggregation/ambiguous actor questions are not resolved by this work.
