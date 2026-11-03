@@ -27,7 +27,8 @@ public sealed class SpiritualZeroStrainReceiptTests
         var parsed = SpiritualWoundOpportunityReceiptState.Parse(input, "unit.zeroAfter");
         Assert.True(parsed.IsValid, string.Join("\n", parsed.Issues));
         Assert.Equal(input, next.ToJsonString());
-        Assert.Equal(before["decisions"]!.AsArray().Count, next["decisions"]!.AsArray().Count);
+        Assert.Equal(before["decisions"]!.AsArray().Count + (mode == "mixed-request" ? 1 : 0),
+            next["decisions"]!.AsArray().Count);
         var append = SpiritualWoundOpportunityReceiptState.PlanAppend(baseline.State!, parsed.State!);
         Assert.Equal("appended", append.Disposition);
         Assert.Equal("exact_replay", SpiritualWoundOpportunityReceiptState.PlanAppend(parsed.State!, parsed.State!).Disposition);
@@ -46,14 +47,17 @@ public sealed class SpiritualZeroStrainReceiptTests
     [InlineData("claimed-pool")]
     public void ZeroComparisonRefusesCrossFamilyContradiction(string change)
     {
-        var (_, root) = CreateLedger("mixed-request");
+        var (_, root) = CreateLedger(change == "positive-ceiling" ? "prior-injury" : "mixed-request");
         Assert.True(SpiritualWoundOpportunityReceiptState.Parse(root.ToJsonString(), "unit.zeroBaseline").IsValid);
         var row = root["strainComparisons"]![0]!.AsObject();
         var witness = row["witness"]!.AsObject();
         switch (change)
         {
             case "extra-row-field": row["unowned"] = true; break;
-            case "positive-ceiling": witness["maximumSeverityRank"] = 1; Seal(witness); break;
+            case "positive-ceiling":
+                var (positive, _, _) = SpiritualExistingStrainPreimageTests.CreateData(3);
+                Assert.Equal(2, SpiritualWoundSourceWitness.Validate(positive).MaximumSeverityRank);
+                row["witness"] = positive; break;
             case "comparison-ordinal": row["ordinal"] = 2; break;
             case "instance-ordinal": row["instanceComparisonOrdinal"] = 2; break;
             case "foreign-instance": row["instanceId"] = "foreign_instance"; break;
@@ -91,6 +95,7 @@ public sealed class SpiritualZeroStrainReceiptTests
             before["sources"]!.AsArray().Clear(); before["decisions"]!.AsArray().Clear();
             before["nextSourceOrdinal"] = 1; before["nextDecisionOrdinal"] = 1;
         }
+        var originalBefore = before.DeepClone().AsObject();
         var zero = CreateZeroWitness();
         if (mode == "mixed-request")
         {
@@ -134,7 +139,7 @@ public sealed class SpiritualZeroStrainReceiptTests
         next["strainComparisons"] = new JsonArray(new JsonObject { ["ordinal"] = 1,
             ["instanceId"] = next["instances"]![0]!["instanceId"]!.DeepClone(), ["instanceComparisonOrdinal"] = 1,
             ["witness"] = zero });
-        return (before, next);
+        return (mode == "mixed-request" ? originalBefore : before, next);
     }
 
     internal static JsonObject CreateZeroWitness()

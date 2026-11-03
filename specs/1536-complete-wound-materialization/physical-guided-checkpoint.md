@@ -1,3 +1,16 @@
+# Zero DATA atomic append oracle correction — no runtime attempted
+
+Independent Sol correctly found the future mixed-request append oracle must add
+positive43/its legitimate none AND zero comparison atomically to prior42. It must
+not append a comparison to an already accepted43 request. Keep immutable request/
+prefix guards unchanged; preserve the original before-ledger and add the whole
+current batch only to next. Decision count grows only for the real positive source,
+never for zero. Also strengthen positive-ceiling refusal with a fully valid positive
+witness under a separate prior-injury baseline, avoiding a mere declared-math mismatch.
+These are fixture-only corrections under accepted v3 DESIGN, not gameplay changes.
+N1/N1a builds remain saved/unrun; fresh finalUnit follows SOURCE delta review.
+No positive3/negative9 runtime attempted, no v3 production implementation yet.
+
 # Zero DATA preparation review correction — no runtime attempted
 
 Independent Sol found one positive prerequisite defect before N1runtime: margin-1
