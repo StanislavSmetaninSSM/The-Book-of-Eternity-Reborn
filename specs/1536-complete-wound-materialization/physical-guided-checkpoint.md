@@ -1,3 +1,15 @@
+# Accepted current-parent DATA query / runtime d5bc
+
+IndependentSOURCE/PREP/OUTCOME accepted13typedDATA+4unchanged signedsource regressions
+on d5bc3ced3d5b3c8ba843f34f90d6cb2aafbe5b4a, separate60s runs; fresh3builds0/exact
+81/26/107warnings,45/621/6/510proof/completecapture/cleanup. Fullreceipt/optimization
+and rawL1paths inplan. No existing-parent strain/v2/ordinaryprobemode or newrule
+activated. Two precise author proposals remainunanswered in
+strain-open-semantics-20261103.md; no recommendation accepted by elapsedtime.
+Dependentconsumer widening needs those definitions; independent DATAstepcomplete.
+Guardcap/no-roll/healing acceptedlineages and oldUNKNOWN/HOLD preserved; #1536open.
+Finaldocreview/push/readback remains, code andresourcesunchanged fromtested d5bc.
+
 # Current-parent DATA SOURCE correction before compilation
 
 Astra found two fixture mistakes beforebuild: LastTransition has noEventRef member,

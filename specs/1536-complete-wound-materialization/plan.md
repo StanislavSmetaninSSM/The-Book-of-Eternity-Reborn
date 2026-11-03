@@ -1,3 +1,59 @@
+# Current-parent DATA query extraction — independently accepted17 / d5bc
+
+Source/runtime d5bc3ced3d5b3c8ba843f34f90d6cb2aafbe5b4a. Shared active-wound query
+now preserves the original/current carrier/actor/identity/latestHistory checks for
+existing re-trauma and supplies immutable intrinsic DATA for future parent proofs.
+No current-parent strain consumer, v2 witness/receipt, ordinary comparison mode,
+per-actor failure map, aggregation, new cache or publication capability is activated.
+
+Independent Astra/high wholeSOURCE accepted after two fixture defects corrected
+BEFORE compilation; Sol fixture/catalog/toolSOURCE and bothPREP/OUTCOMEs accepted.
+Fresh Main64.234588/Unit31.808550/Integration65.871501s exit0/exact81/26/107warning
+multisets.45managed/207inputs621copies/native6/4PEPDB510bindings verified; unchanged
+Support/CrashHost, same pinnednative package, no new operationalresource changes.
+Artifact1c3284a2756c7734294468c9dbc727bb3ea94986bc99301e740aa2fa478dcbd1;
+PDB56f0ba8525df7d85c64cfa35f81dfa438fec5665cd10a674620c0d3e8be3b10f.
+Discovery1382categories/13221methods, noexecute; exactCI2categories17cases/4methods.
+Only existing re-trauma method4 moved out broadC1 into its own60s leaf; no copied
+case or broadC1 execution. Characterization/refactor, not a fabricatedcausalRED.
+
+17distinct PASS on this source acrossTWO separate runs, not one freshaggregate:
+- L1-data13:13PASS,3methods, category3.057627/60s, wrapper8.308377s. ExistingIII/IV,
+  validlatestworsened snapshot, player/guardian/resident,7aftervalid refusals and
+  detached envelope. Synthetic snapshot consistency only, not realbirth/authority.
+- L1-source4:4PASS,1unchangedmethod, category7.2781579/60s, wrapper13.295467s.
+  Exact signedoriginaltarget, missingreference, Historymismatch and currentremoval
+  behavior retained; source-onlyDATA not current candidate/admission/publication.
+Both complete/no skip/timeout/dup/underfill,9capturefiles each/fullhash close,
+ownedcleanup/noTMP/noowners/cleantree verified. All45/621/6/510 unchangedafterruns.
+Datapost0456e56c85f1b9001c9f44a64abe8293ed85fe11007b47972cafe741c13d0476,
+summary35348daf02cbb0136afae1ad620e686ef9d0d5216c6ca75df0478fb4470084a9;
+sourceposta2a77f0ff26d9942c1b5fcbc37387fd4b7c0ac285c5caabc842ed41ede2bd7dc,
+summary1d19ba472790436d9d8c6d3c74ee11098ce787942057c5700020738969d1b493.
+Fullraw/builds/TRX/proofs/previous15binaryarchive verified withoutdeletion outsideGit:
+/workspace/tboe-linux-evidence-20261102/spiritual-strain-preimage-data/L1-*.
+Eightfilesourcecleanexport/GitHubblobproof7b89c05be26862fb2b562e22e8e7261daa8ddf3150c386f5e697db1455d03e95,
+source-only not fullenvironment/raw restoration. No raw/binaryupload, savesuntouched.
+
+Optimization: factor existing query instead of duplicating carrier/identity/History
+parsing logic; outer currentview remains owner/version/generation checked by the
+existing ReadCurrentWoundView service. Reader itself pure/uncached, grantsnoauthority.
+No new IO, iteration over exchanges or repeatedsourcework introduced, no speedclaim.
+Current explicit lookup runs once asbefore. Future multipleparent reuse belongs to
+existing operation/context/repository with fresh permission checks, not parallelcache.
+GMno-update justified: no wire/rule/playerflow change; questionsfile is proposalonly.
+
+Existing T081-D group remainsOPEN. Two author decisions truly absent in current
+canon: per-participant failure evidence where existing outcomes are ambiguous;
+sum/maximum across multiple matching wounds. Exactquotes/options/recommendations
+are in strain-open-semantics-20261103.md; no response/approval, no newGitHubcomment.
+Do not widen dependentconsumer/ordinaryprobe/v2 schema around an assumed answer.
+Independent active-parent DATA extraction is nowqualified; full sharedconsumer and
+source/lifetime proof are NOT completed. Guardcap acceptancea78/runtime23 retains
+its versioned50, no-roll6d/runtime470e and realhealing72a/runtime25ea remain separate.
+R2browser/A5terminal UNKNOWN and DFR/Mortal/Windows HOLD unchanged. Generalcombat/
+QTE/ACTIVE and authordeferredcontrol/counter/restrictIII remainoutsidecurrentwork.
+
 # Current-actor parent DATA first step WIP — uncompiled/unrun
 
 Independent Astra/high grouped DESIGN recommends existing current-parent DATA

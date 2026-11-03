@@ -1,5 +1,8 @@
 # T081-D-STRAIN-ACTOR-LIFETIME [US3] — grouped remaining consumer/provenance
 
+- [x] Independent shared active-query extraction substep:17distinctPASS atd5bc (DATA13 then existing source4, not oneaggregate), fresh3builds/bindings/capture/cleanup and Astra/Sol SOURCE/PREP/OUTCOME. No new parentstrain/v2/rule/authority; first step only.
+- [ ] Author definitions for ambiguous per-participant failure and multi-wound strain aggregation; exact packet in strain-open-semantics-20261103.md. Recommendations unapproved; deferredother3profiles remainexcluded.
+
 - [ ] Independent DESIGN of side-aware ordinary failure evidence, actual active III/IV parent graph/History and source-preserving once-only strain. No new battle rules or per-op framework.
 - [ ] Cheap typed/causal current-parent/source/lifetime tests and minimal shared implementation using existing owners; keep prior v1 route strict, no stale permission or graph substitution.
 - [ ] Fresh affected builds/exact categories and representative real cold/publication/History cases under existing budgets, GM sync, independent OUTCOME and remotecheckpoint.
