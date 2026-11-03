@@ -1,3 +1,16 @@
+# Zero DATA preparation review correction — no runtime attempted
+
+Independent Sol found one positive prerequisite defect before N1runtime: margin-1
+requires existing mixed_or_no_effect band, not opposition_success. Correct that
+single loop literal in both actual and ordinary while preserving4/5, setback,
+harm1/pressure7/max0. Existing operation rules allow setback/position loss with
+this valid mixed dice band; no new gameplay inference. No other positive3 blocker.
+N1Unitfeec36.343244s exit0/exact26, discovery1390/13237 and PlanOnly executed no
+cases. That uncorrected scaffold is not used for runtime. Fresh correctedUnit and
+exactPlan/PREP before positive3 schemaRED. Negative9 remainsunqualified; strengthen
+positive-ceiling refusal with valid positive witness in the later GREENblock.
+No production or accepted76 change, no UNKNOWN/HOLD release or new author rule.
+
 # Zero-ceiling v3 DATA scaffold — no new production change
 
 New typed12 authored: three positive modes (zero-only, prior injury, mixed current

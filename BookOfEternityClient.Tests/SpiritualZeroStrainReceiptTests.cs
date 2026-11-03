@@ -145,7 +145,7 @@ public sealed class SpiritualZeroStrainReceiptTests
         {
             exchange["diceAudit"]!["diceUsed"]![1]!["value"] = 5;
             exchange["diceAudit"]!["oppositionTotal"] = 5; exchange["diceAudit"]!["margin"] = -1;
-            exchange["diceAudit"]!["outcomeBand"] = "opposition_success";
+            exchange["diceAudit"]!["outcomeBand"] = "mixed_or_no_effect";
         }
         source["harmfulMargin"] = 1; source["maximumSeverityRank"] = 0;
         source["exchangeJsonBase64"] = Encode(actual);
