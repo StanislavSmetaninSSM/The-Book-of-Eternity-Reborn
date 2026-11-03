@@ -1,3 +1,21 @@
+# Closed-v2 intrinsic DATA scaffold — production unchanged
+
+New17 typed cases authored using existing witness/parser APIs: III/IV positive2,
+after-valid contradiction14 and detached1. Parent envelope and ordinary shape/dice/
+rules are checked before the positive v2 assertion. Only positive2 is planned for
+the next causal parser run; negatives remainUNRUN until a valid v2 control exists.
+Nativebaseline1PASS/actual1genuineFAIL on1137 remains separate, no rerun requested.
+Whole fixture/catalog SOURCE, freshUnit-only build, exactdiscovery/Plan/PREP before
+this cheapRED. No parser/owner/C3 implementation yet; all17 uncompiled/unrun.
+
+The accepted existing-parent design/counterparts and full M3 evidence are in the
+checkpoint. Existing mechanics-context retained DATA may reuse the same parsed
+current/signed parent within exact owner/ordinal/routing-epoch/wound-version/
+dependency-cut lifetime; IsCurrent and full candidate/sibling/source equality stay
+fresh on every use. No separate dictionary/cache or permission retention. Cheap
+actual parse/source counters and invalidation proof accompany implementation; no
+performance claim now. Both authorquestions/oldUNKNOWN/HOLD remain unchanged.
+
 # Existing-parent maneuver causal boundary accepted — source1137d273
 
 Independent Sol accepts baseline1PASS and actual1 genuineFAIL on separate runs,

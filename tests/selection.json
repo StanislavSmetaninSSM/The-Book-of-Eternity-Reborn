@@ -2,17 +2,24 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "wounds-spiritual-existing-maneuver-baseline",
-      "reason": "One real single-exchange III C2/C4 birth, then fresh signed turn43 ordinary maneuver with the wound targeting pressure. Proves actual source/parent/resource headroom and inert source admission through existing owners; no target strain adjustment.",
+      "category": "wounds-spiritual-existing-parent-data-positive",
+      "reason": "Original FR025/T081-D signed-existing maneuver proof: Two typed III/IV existing-parent DATA positives at first source, complete parent/ordinary controls before v2 witness validation. No live authority.",
       "contracts": [
-        "#1536 FR025/T081-D existing single-wound failed maneuver; real prior creation and current source ownership"
+        "#1536 FR025/T081-D closed existing-parent v2 intrinsic DATA, not publication authority"
+      ]
+    },
+    {
+      "category": "wounds-spiritual-existing-parent-data-refusal",
+      "reason": "Original FR025/T081-D signed-existing maneuver proof: Fourteen after-valid closed-v2 parent/shape/sibling/increment refusals plus detached DATA1. No live owner/C3/publication authority from parser DATA.",
+      "contracts": [
+        "#1536 FR025/T081-D closed existing-parent v2 intrinsic DATA, not publication authority"
       ]
     },
     {
       "category": "wounds-spiritual-existing-maneuver",
-      "reason": "Original FR025/T081-D one actual already-published III strain/maneuver parent, fresh signed maneuver/setback and unique ordinary unchanged-strain result. Before implementation, fail at existing-parent admission after real birth/current signed prerequisites. Intended GREEN covers cold C2, explicit none, C3, common C4, exact3/2 resource spends/depletion, unchanged parent/history/roots, v2 retained comparison and signed44 read.",
+      "reason": "Real existing-parent consumer remains genuine RED on1137; future cold/C3/C4/signed44 assertions unqualified until reached. No native rerun admitted in typed scaffold phase.",
       "contracts": [
-        "#1536 FR025/T081-D existing single-wound failed maneuver; real prior creation and current source ownership"
+        "#1536 FR025/T081-D single signed-existing maneuver"
       ]
     }
   ]

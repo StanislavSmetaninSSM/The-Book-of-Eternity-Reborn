@@ -2,6 +2,57 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "wounds-spiritual-existing-parent-data-positive",
+  "responsibility": "Original FR025/T081-D signed-existing maneuver proof: Two typed III/IV existing-parent DATA positives at first source, complete parent/ordinary controls before v2 witness validation. No live authority.",
+  "excludes": "No real creation/history/origin authority, epoch or C3 permission, generic outcome/aggregation rule, native/Engine/UI/fresh process or UNKNOWN/HOLD retry. Positive prerequisites must run before negative assertions; current parser unsupported-version failures do not qualify negatives.",
+  "changeHints": [
+    "BookOfEternityClient.Tests/SpiritualExistingStrainPreimageTests.cs",
+    "BookOfEternityClient/Services/SpiritualStrainPreimageData.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.SpiritualExistingStrainPreimageTests.ExistingParentDataAcceptsClosedComparisonAtFirstSource"
+      ]
+    }
+  ]
+},
+{
+  "id": "wounds-spiritual-existing-parent-data-refusal",
+  "responsibility": "Original FR025/T081-D signed-existing maneuver proof: Fourteen after-valid closed-v2 parent/shape/sibling/increment refusals plus detached DATA1. No live owner/C3/publication authority from parser DATA.",
+  "excludes": "No real creation/history/origin authority, epoch or C3 permission, generic outcome/aggregation rule, native/Engine/UI/fresh process or UNKNOWN/HOLD retry. Positive prerequisites must run before negative assertions; current parser unsupported-version failures do not qualify negatives.",
+  "changeHints": [
+    "BookOfEternityClient.Tests/SpiritualExistingStrainPreimageTests.cs",
+    "BookOfEternityClient/Services/SpiritualStrainPreimageData.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.SpiritualExistingStrainPreimageTests.ExistingParentDataRejectsRehashedContradiction",
+        "BookOfEternityClient.Tests.SpiritualExistingStrainPreimageTests.ExistingParentDataReturnsDetachedOrdinaryWithoutPermission"
+      ]
+    }
+  ]
+},
+{
   "id": "wounds-spiritual-existing-maneuver-baseline",
   "responsibility": "One real single-exchange III C2/C4 birth, then fresh signed turn43 ordinary maneuver with the wound targeting pressure. Proves actual source/parent/resource headroom and inert source admission through existing owners; no target strain adjustment.",
   "excludes": "No ambiguous outcome/opposition inference or multi-wound aggregation; no same-request parent replacement, other operation/actor/general combat/QTE, new GM rule/cache/diagnostic stack, Engine/UI/fresh OS or old UNKNOWN/HOLD retry. Native IV not claimed. Production stays unchanged for causal qualification.",

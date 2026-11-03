@@ -1,3 +1,12 @@
+# Existing-parent typed DATA scaffold — no production change
+
+NewUnit17 closed-v2 DATA cases authored (III/IV2, after-valid refusal14, detached1),
+uncompiled/unrun. Onlypositive2 may be used for the cheap parser causal phase after
+SOURCE/freshUnit/exactdiscovery/Plan/PREP; failed valid controls do not qualify the
+negative assertions. M3native1PASS/1genuineFAIL retain1137 provenance, no rerun.
+No live owner, C3 or native IV claim from DATA. Currentplan holds optimization/key/
+lifetime/fresh-check contract; actual parser/consumer/C3 code not started.
+
 # Existing-parent maneuver causal boundary accepted — source1137d273
 
 Independent Sol accepts baseline1PASS and actual1 genuineFAIL on separate runs,
