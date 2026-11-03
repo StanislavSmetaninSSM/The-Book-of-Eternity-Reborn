@@ -92,6 +92,7 @@ public sealed partial class AfterlifeResourceCutoverTests
             FormatC2SubmissionIssues(selected));
         AssertNoConflictFrameErrors(selected.Issues);
         var next = Assert.IsType<ValidationService.SpiritualC2PrivateSession>(selectedOwner);
+        var completed = selected;
         if (outcome == "partial_success")
         {
             // Signed margin4 gives an ordinary maximum0: preserve the source, never invent an offer/none.
@@ -101,12 +102,12 @@ public sealed partial class AfterlifeResourceCutoverTests
         {
             Assert.NotEqual(first.Offer.OpportunityRef, next.Offer!.OpportunityRef);
             Assert.Equal(1, next.Offer.MaximumSeverityRank);
-            var completed = await next.SubmitDecisionAsync(lease, JsonSerializer.SerializeToElement(new
+            completed = await next.SubmitDecisionAsync(lease, JsonSerializer.SerializeToElement(new
                 { opportunityRef = next.Offer.OpportunityRef, decision = "none" }), null);
-            using var completedOwner = completed.Session;
-            AssertNoConflictFrameErrors(completed.Issues);
-            Assert.Equal("completed_unpublished", completed.Disposition);
         }
+        using var completedOwner = outcome == "success" ? completed.Session : null;
+        AssertNoConflictFrameErrors(completed.Issues);
+        Assert.Equal("completed_unpublished", completed.Disposition);
         var packet = JsonNode.Parse((await context.FileSystem.ReadFileBytesAsync(lease,
             SpiritualWoundDecisionPendingState.StatePath))!)!["pending"]!;
         Assert.Equal(2, packet["sources"]!.AsArray().Count);
