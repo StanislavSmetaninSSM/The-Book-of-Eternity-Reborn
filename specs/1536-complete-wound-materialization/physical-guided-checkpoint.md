@@ -1,3 +1,15 @@
+# Zero-comparison build boundary — fixture type correction, runtime unrun
+
+Whole SOURCE accepted independently by Astra and Sol at eace2b5aa6889fa787975fae514e1ab6fa9bc571.
+Fresh Main completed exit 0 / 81 baseline warnings in 65.95 seconds; Unit exit 0 /
+26 baseline warnings in 37.33 seconds. Integration failed compilation in 63.60
+seconds: the new native fixture passed a JsonNode where WithOwnerCompanionAfterImage
+requires JsonObject. Its already-object receipt is now explicitly read with AsObject;
+no assertion, production contract or gameplay behavior changes. Narrow independent
+delta review precedes an Integration-only rebuild. Main/Unit source and artifacts
+remain reusable with explicit eace2 lineages; all runtime assertions remain unrun.
+Full failed build evidence is retained externally as N2-build-integration.
+
 # Zero-comparison grouped SOURCE corrections — WIP, uncompiled/unrun
 
 Independent Astra SOURCE found four issues: missing JsonObject import, invalid

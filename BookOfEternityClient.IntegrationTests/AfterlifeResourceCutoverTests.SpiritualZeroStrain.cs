@@ -18,7 +18,7 @@ public sealed partial class AfterlifeResourceCutoverTests
         var fingerprint = WoundIdentityState.ComputeSemanticFingerprint(parent);
         await AppendExistingStrainManeuverAsync(context, corrected: true, oppositionDie: 5);
         var preserved = await CaptureExistingStrainCanonicalAsync(context);
-        var receiptBefore = (await context.ReadJsonAsync(SpiritualWoundOpportunityReceiptState.StatePath))!;
+        var receiptBefore = (await context.ReadJsonAsync(SpiritualWoundOpportunityReceiptState.StatePath))!.AsObject();
         AcceptedMechanicsPlan expected;
         await using (var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync())
         {
