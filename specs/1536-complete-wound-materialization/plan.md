@@ -1,3 +1,15 @@
+# FR-025 zero-comparison observed result — final OUTCOME pending
+
+Current checkpoint records exact 85 distinct PASS on metadata c80b496, with Main/Unit
+eace2 and Integration c80b496 build lineages. Cheap73 + affected source-only11 +
+one real III/no-offer/zero-ceiling/source-only C3/common C4/signed44 route completed
+within original budgets, complete capture and cleanup. No actual mixed-C3, IVnative,
+Engine/UI/fresh-process or global acceptance claim. Whole SOURCE and staged Sol
+PREP/OUTCOME accepted; final Astra OUTCOME and remote closing checks follow.
+Optimization uses existing parsed DATA/transient indexes, no new cache or retained
+permission; no measured speedup claim. Original initial recovery + insertion remains
+a separate unaccepted producer composition. Pending semantics/UNKNOWN/HOLD unchanged.
+
 # Zero-comparison full WIP — whole SOURCE before fresh builds
 
 Minimal v3 private-ledger/source-only/mixed-C3 implementation, DATA19 and nativezero1

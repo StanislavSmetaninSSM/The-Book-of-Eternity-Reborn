@@ -1,3 +1,60 @@
+# Original FR-025 zero-comparison route — observed 85 PASS, final OUTCOME pending
+
+Runtime metadata/source boundary: c80b496c632205b8b194a62d3554ac66e7594217.
+Main and Unit compiled eace2b5aa6889fa787975fae514e1ab6fa9bc571; Integration
+compiled c80b496c. The only intervening code change is the reviewed native-fixture
+JsonObject cast. No Main/Unit code or operational input changed. Builds exited 0
+with exact baseline warning multisets 81/26/107; four PE/PDB identities and 524
+changed-source bindings, 45 managed artifacts, 621 resource copies and six native
+copies were verified. Failed first Integration compilation is retained separately.
+
+Whole SOURCE accepted by Astra/high and Sol/xhigh; exact discovery found 1394
+categories / 13245 methods, no stale or unmapped selector. Sol independently
+accepted PREP and OUTCOME for cheap73 and source-only controls11, then PREP native1.
+All 85 semantic cases and test IDs are distinct across these three exact stages:
+
+| Stage | Actual result | Protective category budgets |
+| --- | --- | --- |
+| Six typed/affected Unit leaves | 73/73 PASS; runner 24.0768531s | 60s each |
+| Existing source-only publication/rollback and refusal | 11/11 PASS; runner 40.2197563s | 180s / 60s |
+| Existing III wound, real zero-ceiling comparison | 1/1 PASS; category 16.531074s | 180s |
+
+The real route produces increasing strain, pressure7/maximum0, no opportunity or
+wound decision, authenticated source-only C3, common C4, exact player/opposition
+payments3/2 and depletion, unchanged parent/Identity/History and a later signed44
+read. New v3 comparison survives without inventing an injury source. All 19 new
+typed cases pass, including v1/v2 migration, atomic mixed-request DATA, after-valid
+order/cross-family refusals, prefix/replay, detached fake-owner refusal and exact
+History after later healing. This is not an actual mixed-C3, native IV, Engine/UI
+or fresh-process qualification. Earlier partial_success remains C2/cold only.
+
+All selected descriptors/TRX/capture files are complete and hash-checked; no timeout,
+skip, duplicate, underfill, new temp root or active managed owner. Cleanup and all
+45/621/6/524 post-hashes agree. Full raw remains outside checkout at
+/workspace/tboe-linux-evidence-20261102/spiritual-strain-preimage-data/N2-*.
+Compact external proof pins (SHA256):
+- Combined85: 0c9e503c84984b1e893ab4afdd5ec196e747601bdcebf53be212d2959d08755e.
+- Cheap73: d36280f57d4f2ee3b93af0f93d01478588cefe19a5aa8e7722f4b547e0e4e35d.
+- Controls11: 42107308276fd77f7491ab932a7462809dace0f5462f15b3da9090631ed024b1.
+- Native1: 0bd598aa8de4a85444c11fabf3f48663bc9c2216953244fab6651b3dec010c6d.
+- Native summary: 19022a76edfae9c0a52fa3a7644680f4b9664ffbd104c8b9edf30bdb5707f615.
+- Artifact/resource: 1463995f95b010807b600133761d6e194e6e4df44b2f2b85b2befbfdc5259402.
+- PDB: 75b2025314277ece9177cdde32c0ab89dca9dd5c1198e7e7efb4c84afc0c9522.
+
+Optimization assessment: existing witness/parent parsed DATA is consumed once per
+whole ledger; shared transient indexes and a ready queue preserve request order
+without repeated remaining-set scans, proof reconstruction, new I/O or persistent
+cache. Current owner, receipt identity, signed/current integrity, History and
+publication checks stay fresh. Whole-route timing is evidence of this bounded run,
+not an isolated speedup measurement. No aggregation/failure rule was invented.
+
+Final independent OUTCOME and remote closing checks remain pending at this WIP.
+The next finite row2 reconciliation found that accepted recovery-reset11 proves
+seeded progress -> live worsening -> separate safe recovery, not produced initial
+stage -> same-plan insertion. T081-C3-R2B/T107 coexistence stays open; it needs a
+lawful producer/owner route, not a cosmetic assertion. Both pending semantics,
+R2/A5 UNKNOWN and DFR/Mortal/Windows HOLD remain open. No whole US3/#1536 closure.
+
 # Zero-comparison build boundary — fixture type correction, runtime unrun
 
 Whole SOURCE accepted independently by Astra and Sol at eace2b5aa6889fa787975fae514e1ab6fa9bc571.
