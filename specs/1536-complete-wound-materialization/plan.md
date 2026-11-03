@@ -1,3 +1,24 @@
+# Merge base qualification150 distinct PASS — native PREP next
+
+Final static settlement Fact passes1/1 on06dc53214 (TRX/category7.7268202s within
+original8min); postproofbca96e2ba93a627dd544daaadd89d9491a0fb78c58168c05caaf6bb983d937e9,
+summary26a43c3a54bf36666ba610fdb937b07c13d032029c2a555fc6af28290f693107.
+Complete composited base:150distinctPASS = source38 (4on10e18e6a8 +9ona1510d701
++24onfea795999 +1on06dc53214) and runtime112onc496e903b. Unique names/IDs,
+original failures retained, no timeout/skip/duplicate in adopted passing cases;
+whole-run cleanup and per-case complete TRX verified. This is not one fresh150 run.
+Combined proofd930c3cb10fcef9b5c98aa9725468b54d40ce858a326f4382b8f1eb445e005eb.
+
+Fresh compiled lineages: Main/Support f54481d85, Unit a1510d701, Integration06dc53214;
+all source-identical in their applicable consumers, warnings81/23/26/107, errors0.
+Latest provenance50managed/208inputs624copies/native6/PDB4bindings567 verified.
+Metadata-only checkpoints need no rebuilding. Native package f544 source assets
+unchanged. Source OUTCOME and native PREP require independent acceptance now.
+Exact fresh PlanOnly on latest Integration precedes the one original120s T107
+healing->later-retrauma case, then six120s existing chronology controls. No old
+zero85/component69/DFR/Mortal compatibility/Windows or unrelated accepted reruns.
+Original wounds/main remote refs still daea0ea/a62cfd9; only WIP ref has advanced.
+
 # Remaining Unit24 PASS; last static settlement correction WIP
 
 Exact remaining24Unit completed24PASS on metadatafea795999 / compiledUnit a1510d701,
