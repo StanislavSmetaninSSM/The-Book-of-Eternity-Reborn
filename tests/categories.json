@@ -2,6 +2,31 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "spiritual-combat-healing-then-retrauma",
+  "responsibility": "Original T107 / FR027/036: one real active-conflict II->I healing followed by explicit later I->II same-wound pressure re-trauma, actual staged-I source, next-wave C2, common C3/C4, exact costs/effect replacement/History and signed replay. Causal positive fixture; do not label a failure as replay unless actual prerequisites reach that guard.",
+  "excludes": "No initial SAFE-stage composition, general conflict/QTE/turn rules, aggregation, new provider, Engine/UI/fresh-process or pending semantics/UNKNOWN/HOLD closure. No unchanged accepted cases rerun.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualHealingRetrauma.cs",
+    "BookOfEternityClient/Services/ProgressionScheduleService.SpiritualCombatReplay.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.CombatHealingThenLaterRetraumaPublishesOneExactHistoryAndReplays"
+      ]
+    }
+  ]
+},
+{
   "related": [],
   "requirements": {
     "frontendBuild": false,

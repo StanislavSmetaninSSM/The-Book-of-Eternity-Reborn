@@ -1,3 +1,22 @@
+# T107 healing then later re-trauma — causal scaffold WIP, uncompiled/unrun
+
+Astra/high accepted the bounded DESIGN. One new native partial Fact reuses existing
+seed/staging/graph/C2/common helpers without changing accepted modes. Signed pool
+15/5 then5/15 gives active II->I healing before explicit later pressure targeting
+the same older wound. The fixture requires actual typed margin7/ReduceOne, staged-I
+preimage, later generation/wave, canonical inertness, four spends/final OD1/3,
+create/treat/worsen History, fresh roots and replay/signed43. Existing replay code
+is unchanged; actual failure is not attributed until these premises reach a guard.
+The original two-minute native-pair budget is retained in one exact category.
+
+All new C# and assertions are UNCOMPILED/UNRUN. Whole fixture SOURCE and complete
+preparation precede affected Integration build, exact discovery/Plan/PREP and one
+causal attempt. No production fix, private-authority shortcut, new cache, combat
+rule, failure/aggregation default or old PASS/HOLD repeat. Source/API-shape checks
+and after-valid negatives will use existing typed readers, no parallel test stack.
+Current manifest status text is documentary; future runtime pins must refresh its
+selected content copy rather than claiming unchanged N2 resource hashes.
+
 # Finite row2/row5 reconciliation — no new workload
 
 Independent Sol source trace establishes an exact reachability dependency for
