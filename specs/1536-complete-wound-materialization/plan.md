@@ -1,3 +1,35 @@
+# Existing-parent maneuver causal boundary accepted — source1137d273
+
+Independent Sol accepts baseline1PASS and actual1 genuineFAIL on separate runs,
+not one aggregate. Runtime1137d273ad08240bd9ebd41b26a8dfefcbee9181; productionMain/
+Unit unchanged32ed759. FreshIntegration73.071129s exit0/exact107warnings;45artifacts/
+621resourcecopies/native6/4PEPDB511bindings verified. Artifact6307f1fa22784bfe12d02bfe26d91d37a3c882cee34ae9563147bd1568d5a252;
+PDB e7c16eb5ca34f94d09383b090e4b7efc1527e7b8572f5018d069508a05eaeae8.
+Discovery1385categories/13227methods noexecute, exactsingleton Plans/independentPREP.
+Baseline1:12.9320849/60s, wrapper19.720110; realIII birthC4 leaves3OD each, signed43
+ordinary live-resource maneuver with nonmatching parent passes/inert/noauthority.
+Postd93146758d8ca2b70c45d549a0dcc027b7e6bf3fc302222d077032e67b42306f,
+summary1833ac70b2c721c7af35a473fb2e8d5ebc108cbc22cb81938b7c8fa6df33f441.
+Actual1:12.9225417/180s, wrapper19.130253, fails atAdvance line55 after realbirth,
+signed43/resourcebegin and canonicalinert assertions. Exactly integration_required
+and maneuver_changes_strain3->4; no fixture/compile/timeout failure. Later coldC2/
+none/C3/C4/signed44 assertions remainUNREACHED, no new publication PASS claimed.
+Post25fb0130ebdba632c3897a834d2514ca3884d7b7fcf0df30a282d6690353aea0,
+summary6e1cae1350adc439cde1965d7ebc6734c60187b130bb416eac22d5c1afc7253c.
+EachoneTRX/ninecapturehashes/exactcomplete/no skip/dup/underfill/cleanup/noTMP/noowners
+and unchanged45/621/6/511 independently confirmed. Fullraw/builds/proofs remain:
+/workspace/tboe-linux-evidence-20261102/spiritual-strain-preimage-data/M3-*.
+Clean6file source export/GitHubwholeblob proofaa9622b93aa3e87c0ec80e00f3bdfc5b9f28cbdff624c800d9514347e35d86fe;
+source-only, not environment/raw restoration. Oldoutputs5 CRC/hash archived, none deleted.
+
+Next: cheap closed-v2/current-parent/History/decline-proof controls and minimal owner
+implementation per acceptedAstraDESIGN; keepv1 strict, full ordinaryshape/rules and
+all otherburdens. Reuse current parsed DATA only in existing context, fresh epoch/
+ordinal/draft/dependency checks eachuse; no newcache/probe/diagnosticframework,
+ambiguous actor inference/aggregation, GMfield or generalbattle rule. No production
+implementation yet, typedv2 controls UNWRITTEN/UNRUN. US8/T149/partial7 acceptance
+and R2/A5/otherUNKNOWN-HOLD remain separate and unchanged.
+
 # Existing signed-parent maneuver DESIGN accepted; causal scaffold UNRUN
 
 Independent Astra/high approves the bounded original FR025/T081-D lane: one exact
