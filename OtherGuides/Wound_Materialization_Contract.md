@@ -352,8 +352,10 @@ conflict wound, that side follows its same-conflict worsen, `none`, or
 
 The GM never authors `traumaPressure`, `sourceSeverityCap`, `maximumSeverityRank`,
 `guaranteedSeverityRank`, or `spiritualWoundEnvelope` on an exchange, incoming action,
-or audit. The client derives the harmful margin, destination strain, danger cap, source
-cap, guarantee, tier, dice, and source binding from signed originals. Do not invent
+or audit. For rolled harm the client derives the harmful margin from signed dice;
+the explicit voluntary no-roll GM choice follows spiritual_wound_no_roll_source_v1
+below. Destination strain, danger cap, source cap, guarantee, tier, dice and source
+binding still require their normal original evidence. Do not invent
 dice, operation evidence, damage, or a successful outcome for a passive source,
 champion coordination, or a dice-free voluntary action.
 
@@ -366,9 +368,9 @@ second terminal result.
 
 A source-local preparation is not an admitted wound, opportunity, decision, receipt,
 successful resource/effect publication, or accepted turn. Start, escalation, missing
-same-turn prefix, terminal closure, passive source, champion coordination, and
-dice-free voluntary contours remain pending until the client-owned C/D/E stages prove
-their actual authority. Never remove one of those lawful contours merely to avoid the
+same-turn prefix, terminal closure, passive source and champion coordination remain
+pending until the client-owned C/D/E stages prove their actual authority. Dice-free
+voluntary harm with a missing explicit GM margin also remains pending. Never remove one of those lawful contours merely to avoid the
 pending requirement. Soul dissipation remains a separate optional dissipation choice
 in both real realms; it is never implied by this source field or terminal witness.
 

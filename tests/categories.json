@@ -3,7 +3,7 @@
     "categories": [
 {
   "id": "wounds-spiritual-no-roll-guidance",
-  "responsibility": "One cheap worked GM example: parse actual new fragment through production retained shape/rules/map/witness; pin manifest and detailed/matrix entrypoint guidance, explicit zero versus missing.",
+  "responsibility": "Three cheap GM guidance cases: new worked fragment through production retained shape/rules/map/witness, exact zero/missing and CLI entrypoint; two affected existing action/terminal-routing documentation guards.",
   "excludes": "No complete GameResponse, original authority, live GM or publication claim.",
   "changeHints": [
     "BookOfEternityClient/Services/SpiritualWoundNoRollMargin.cs",
@@ -21,7 +21,9 @@
     {
       "project": "unit",
       "tests": [
-        "BookOfEternityClient.Tests.SpiritualWoundNoRollGuidanceTests.*"
+        "BookOfEternityClient.Tests.SpiritualWoundNoRollGuidanceTests.*",
+        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.SpiritualSourceActionDocumentation_DeclaresExactTargetAndTerminalWitness",
+        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.SpiritualSourceActionDocumentation_RoutesBothRealmsAndPendingContours"
       ]
     }
   ]

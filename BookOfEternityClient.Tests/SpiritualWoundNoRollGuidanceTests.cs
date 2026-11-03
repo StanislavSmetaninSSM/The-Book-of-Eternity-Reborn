@@ -40,7 +40,7 @@ public sealed class SpiritualWoundNoRollGuidanceTests
         exchange.Remove(SpiritualWoundNoRollMargin.Property);
         Assert.Equal((true, (long?)null), SpiritualWoundNoRollMargin.Read(exchange, "player"));
         foreach (var path in new[] { "OtherGuides/Wound_Materialization_Contract.md",
-            "OtherGuides/Afterlife_Contract_Matrix.md", "Examples/E_CLI_Afterlife_Turns.txt" })
+            "OtherGuides/Afterlife_Contract_Matrix.md", "TaskGuides/CLI_Step_Main.txt", "Examples/E_CLI_Afterlife_Turns.txt" })
             Assert.Contains(marker, File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, path)));
     }
 }

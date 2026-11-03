@@ -371,13 +371,14 @@ example. Author optional exact `spiritualWoundTarget {actorType, actorId, option
 retraumaWoundRef}` only on the player exchange or opposition `incomingAction`.
 Absence uses the original affected-side lead; an explicit actor is an original member
 of that affected side, and re-trauma uses canonical prior wound/history authority.
-Never invent mechanical tier, source cap, guarantee, dice values or rolled harmful
-margin. The sole no-roll exception is the author-approved explicit GM choice in
+Never invent mechanical tier, source cap, guarantee, dice values, outcome or rolled
+harmful margin. The sole no-roll exception is the author-approved explicit GM choice in
 `spiritual_wound_no_roll_source_v1`: exchange-level `spiritualWoundHarmfulMargins`,
 exact AFFECTED increasing-strain side and signed64 value, absent diceAudit, existing
 voluntary non-contest checks. Missing remains unresolved; explicit0 is not a default.
 The detailed guide and `Examples/E_CLI_Spiritual_NoRoll_Wound.txt` define placement,
-typed refusals and unchanged caps/guarantees. Never replace a rolled margin. Preserve required cost/dice reports copied from original client
+typed refusals and unchanged caps/guarantees. Never replace a rolled margin.
+Preserve required cost/dice reports copied from original client
 data and report only checked outcomes. The exact five computed action/audit fields are
 `traumaPressure`, `sourceSeverityCap`, `maximumSeverityRank`,
 `guaranteedSeverityRank`, and `spiritualWoundEnvelope`; never author them. A terminal

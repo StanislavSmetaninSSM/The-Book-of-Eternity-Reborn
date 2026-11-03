@@ -1,3 +1,14 @@
+# No-roll final SOURCE delta corrections WIP
+
+Sol GM review found two stale unconditional statements in the detailed source-action
+section and actual CLI_Step_Main entrypoint. Both now specify the same limited GM
+no-roll exception; rolled authority, operation/outcome and pending other contours
+are preserved. Guidance pins CLI plus two affected existing source-action guards.
+New expected selection72 (Unit29+21+11+guidance3, manifest1, native5+C4pair2),
+9categories, still UNRUN pending exact discovery. New example adds one resource
+input:207inputs/621copies; TaskGuide is an existing changed input. Earlier70/1guide
+figures describe the previous WIP, superseded here. No new launcher command/protocol.
+
 # No-roll GM/source/fixture whole delta WIP — UNCOMPILED/UNRUN
 
 Production SOURCE on3386589 found two concrete defects before build: nonexistent
@@ -10,9 +21,8 @@ corrected whole delta still requires final SOURCE. No test outcome is implied.
 GM sync: detailed Wound contract, Afterlife matrix and existing afterlife example
 pointer, new complete exchange fragment E_CLI_Spiritual_NoRoll_Wound.txt, focused
 manifest entry and exact completeness consumer. Existing single-JSON full example
-shape remains intact. Typed Unit guidance parses actual fragment. Existing daemon/
-CLI entrypoints already load matrix/detailed contract; no command/protocol change
-or Mortal rule changes, so no separate Mortal/launcher prompt field is added.
+shape remains intact. Typed Unit guidance parses actual fragment. The actual CLI_Step_Main entrypoint is also synchronized; no command/protocol or
+Mortal rule changes, so no separate Mortal/launcher prompt field is added.
 
 Reused/extracted the existing lawful no-dice incoming fixture; special art remains
 configured before signed snapshot. New actual owner standard2 (0/10)/special1 and
