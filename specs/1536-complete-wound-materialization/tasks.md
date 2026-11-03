@@ -16028,6 +16028,11 @@ rows retain their own lineages; no combat gameplay PASS or full task closure.
   signed H0/progress1 and player client mirrors remain authoritative. This closes
   that automatic-strategy producer boundary, not all training/progression sources.
 - [ ] T107 [US4] Compose healing/recovery wound/effect/resource/profile/scheduler/history/output after-images and exact replay results in `BookOfEternityClient/Services/WoundAcceptedTurnPlanner.cs` and `BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs`
+  Next finite chronological composition: successful combat II->I healing followed
+  by explicit later same-wound I->II re-trauma in one owner/common plan. Existing
+  guarded replay currently requires healing to remain latest. DESIGN and causal
+  proof precede a strict receipt/History extension; initial SAFE-stage dependency
+  and all other parent limits remain distinct and open.
 - [ ] T108 [US4] Add player-to-entity and entity-to-player treatment authority using exact profile, visibility, reachability, consent/conflict, and current wound bindings in `BookOfEternityClient/Services/AfterlifeWoundTreatmentAuthority.cs`
   Bounded player→current Guardian technical design is now written in
   spiritual-aid-design.md: actual ordinary GM grant, existing guided caller,

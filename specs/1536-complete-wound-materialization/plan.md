@@ -1,3 +1,25 @@
+# Next bounded T107 chronology — DESIGN pending, no new C# or runtime
+
+Original FR-027/036 and T107 require lawful healing and subsequent wound changes
+to compose with exact roots/History/replay. Existing receipts prove successful heal
+then guard, or blocked heal plus same-exchange counterharm; later-injury DATA alone
+is not a published successful-heal -> later-retrauma result. This active-conflict
+case is separate from the unreachable initial SAFE-stage criterion.
+
+Sol identified the exact replay guard: ProgressionScheduleService.SpiritualCombatReplay
+requires the final healing transition to remain the selected wound's latest entry.
+Proposed minimal real fixture uses existing rank-II/H3 seed and [15,5,5,15]: first
+heals II->I (margin7), then explicit same-wound pressure re-trauma I->II through next
+C2 wave and one common C3/C4 publication. Require exact fresh roots, four costs,
+canonical inertness, contiguous History and signed replay. 19 is unsuitable here
+because it fully heals II. No accepted helper mode or general combat rule changes.
+
+Astra DESIGN evaluates a strict later owner-receipted History join; never delete
+the latest-transition guard wholesale. Missing/forged/unreceipted later changes,
+current source/catalog/identity/resource authority and consumed-input checks must
+still refuse. Causal proof/SOURCE/fresh affected builds/exact Plan/PREP precede any
+production correction or real run; no retry/budget expansion or HOLD release.
+
 # FR-025 zero-comparison accepted bounded result
 
 Current checkpoint records exact 85 distinct PASS on metadata c80b496, with Main/Unit
