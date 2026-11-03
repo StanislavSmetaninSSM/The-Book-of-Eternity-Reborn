@@ -123,7 +123,8 @@ public partial class ProgressionScheduleService
             if (result is null) throw new InvalidDataException("Combat result lost its wound stages.");
             var final = result.Stages[^1];
             if (history.State.Transitions.Last(t => t.WoundId == source.Before.WoundId).TransitionId != final.TransitionId)
-                throw new InvalidDataException("Combat result no longer describes the current selected wound.");
+                RequireLaterCombatRetraumaHistory(ledger, history.State, catalog, entry, source, final.After,
+                    sessionId, requestId, turn);
         }
         else
         {
@@ -162,43 +163,8 @@ public partial class ProgressionScheduleService
                     original.Owner != source.Before.Owner || WoundIdentityState.ComputeSemanticFingerprint(original) !=
                         WoundIdentityState.ComputeSemanticFingerprint(source.Before))
                     throw new InvalidDataException("Blocked counterharm lost its exact retained original wound.");
-                var key = SpiritualWoundSourceWitness.HarmEventKey(sessionId, requestId,
-                    witness["snapshotToken"]!.GetValue<string>(), intent.ConflictId, source.ExchangeId, "player");
-                var eventRef = "spiritual_wound_event_" + key;
-                var maximum = harm["maximumSeverityRank"]!.GetValue<int>();
-                var evidence = SpiritualWoundSourceWitness.HarmEventEvidence(key, maximum);
-                var events = WoundAcceptedEventAuthorityComposer.Compose(new(sessionId, requestId,
-                    witness["snapshotToken"]!.GetValue<string>(), turn,
-                    new[] { new WoundAcceptedResponseEventCoordinate(eventRef, evidence.AuthorityKind, evidence.AuthorityId) }),
-                    new[] { new WoundSelectedEventEvidence(0, evidence) });
-                if (!events.Success) throw new InvalidDataException("Blocked counterharm lost its formal harm event binding.");
-                var binding = new WoundAcceptedTurnBinding(sessionId, requestId, witness["snapshotToken"]!.GetValue<string>(),
-                    source.Before.Owner.Realm, turn, events.Events, events.EventsFingerprint);
-                var artJson = harm["specialArtJsonBase64"] is null ? null :
-                    Encoding.UTF8.GetString(Convert.FromBase64String(harm["specialArtJsonBase64"]!.GetValue<string>()));
-                var art = artJson is null ? null : JsonNode.Parse(artJson);
-                var actorCoordinate = harm["actingActor"]!.AsObject();
-                var actor = actorCoordinate["actorKind"]!.GetValue<string>() + ":" + actorCoordinate["actorId"]!.GetValue<string>();
-                var operation = harm["operation"]!.GetValue<string>();
-                var composed = SpiritualWoundSourceWitness.ComposeOpportunityData(binding, original.Owner,
-                    art is null ? "spiritual_standard_art" : "spiritual_art", art?["artId"]?.GetValue<string>() ?? actor + ":" + operation,
-                    evidence, maximum, new(original, "retrauma"));
-                if (!composed.Success || composed.Opportunity is not { } opportunity ||
-                    decision["opportunityRef"]?.GetValue<string>() != opportunity.PublicRef)
-                    throw new InvalidDataException("Blocked counterharm lost its exact composed opportunity.");
-                var authorityFingerprint = opportunity.AuthorityFingerprint;
-                if (harm["guaranteedSeverityRank"] is { } guaranteed)
-                {
-                    // The receipt parser already joins these exact strings to the
-                    // canonical source; never reserialize them for the old hash.
-                    var preimage = SpiritualWoundSourceWitness.ReadGuaranteePreimage(harm.AsObject());
-                    var claims = opportunity with { MinimumSeverityRank = guaranteed.GetValue<int>() };
-                    var claimsFingerprint = WoundOpportunityAuthority.RecomputeAuthorityFingerprint(claims);
-                    var guarantee = SpiritualWoundSourceWitness.GuaranteeAuthorityFingerprint(claimsFingerprint,
-                        SpiritualWoundSourceWitness.GuaranteeSourceFingerprint(actor, operation, preimage.SpecialArtJson),
-                        harm["coordinate"]!.GetValue<string>(), preimage.ExchangeJson, turn, claims.OpportunityId + "_original_guarantee");
-                    authorityFingerprint = WoundOpportunityAuthority.OriginalGuaranteeFingerprint(claimsFingerprint, guarantee);
-                }
+                var (eventRef, authorityFingerprint) = ReadCombatRetraumaAuthority(harm.AsObject(), decision,
+                    original, sessionId, requestId, witness["snapshotToken"]!.GetValue<string>(), intent.ConflictId, turn);
                 if (change.Kind != "worsen" || change.Turn != turn || change.EventRef != eventRef ||
                     decision["sourceFingerprint"]!.GetValue<string>() != harm["sourceFingerprint"]!.GetValue<string>() ||
                     change.SourceFingerprint != authorityFingerprint ||
@@ -209,5 +175,50 @@ public partial class ProgressionScheduleService
             }
         }
         return new(source, result, entry["outcome"]!.DeepClone().AsObject());
+    }
+
+    /// <summary>Reconstructs comparison DATA in the existing opportunity domain, never publication permission.</summary>
+    private static (string EventRef, string AuthorityFingerprint) ReadCombatRetraumaAuthority(
+        JsonObject harm, JsonObject decision, WoundMaterializationEnvelope original,
+        string sessionId, string requestId, string snapshotToken, string conflictId, int turn)
+    {
+        var key = SpiritualWoundSourceWitness.HarmEventKey(sessionId, requestId,
+            snapshotToken, conflictId, harm["exchangeId"]!.GetValue<string>(), "player");
+        var eventRef = "spiritual_wound_event_" + key;
+        var maximum = harm["maximumSeverityRank"]!.GetValue<int>();
+        var evidence = SpiritualWoundSourceWitness.HarmEventEvidence(key, maximum);
+        var events = WoundAcceptedEventAuthorityComposer.Compose(new(sessionId, requestId,
+            snapshotToken, turn,
+            new[] { new WoundAcceptedResponseEventCoordinate(eventRef, evidence.AuthorityKind, evidence.AuthorityId) }),
+            new[] { new WoundSelectedEventEvidence(0, evidence) });
+        if (!events.Success) throw new InvalidDataException("Blocked counterharm lost its formal harm event binding.");
+        var binding = new WoundAcceptedTurnBinding(sessionId, requestId, snapshotToken,
+            original.Owner.Realm, turn, events.Events, events.EventsFingerprint);
+        var artJson = harm["specialArtJsonBase64"] is null ? null :
+            Encoding.UTF8.GetString(Convert.FromBase64String(harm["specialArtJsonBase64"]!.GetValue<string>()));
+        var art = artJson is null ? null : JsonNode.Parse(artJson);
+        var actorCoordinate = harm["actingActor"]!.AsObject();
+        var actor = actorCoordinate["actorKind"]!.GetValue<string>() + ":" + actorCoordinate["actorId"]!.GetValue<string>();
+        var operation = harm["operation"]!.GetValue<string>();
+        var composed = SpiritualWoundSourceWitness.ComposeOpportunityData(binding, original.Owner,
+            art is null ? "spiritual_standard_art" : "spiritual_art", art?["artId"]?.GetValue<string>() ?? actor + ":" + operation,
+            evidence, maximum, new(original, "retrauma"));
+        if (!composed.Success || composed.Opportunity is not { } opportunity ||
+            decision["opportunityRef"]?.GetValue<string>() != opportunity.PublicRef)
+            throw new InvalidDataException("Blocked counterharm lost its exact composed opportunity.");
+        var authorityFingerprint = opportunity.AuthorityFingerprint;
+        if (harm["guaranteedSeverityRank"] is { } guaranteed)
+        {
+            // The receipt parser already joins these exact strings to the
+            // canonical source; never reserialize them for the old hash.
+            var preimage = SpiritualWoundSourceWitness.ReadGuaranteePreimage(harm.AsObject());
+            var claims = opportunity with { MinimumSeverityRank = guaranteed.GetValue<int>() };
+            var claimsFingerprint = WoundOpportunityAuthority.RecomputeAuthorityFingerprint(claims);
+            var guarantee = SpiritualWoundSourceWitness.GuaranteeAuthorityFingerprint(claimsFingerprint,
+                SpiritualWoundSourceWitness.GuaranteeSourceFingerprint(actor, operation, preimage.SpecialArtJson),
+                harm["coordinate"]!.GetValue<string>(), preimage.ExchangeJson, turn, claims.OpportunityId + "_original_guarantee");
+            authorityFingerprint = WoundOpportunityAuthority.OriginalGuaranteeFingerprint(claimsFingerprint, guarantee);
+        }
+        return (eventRef, authorityFingerprint);
     }
 }

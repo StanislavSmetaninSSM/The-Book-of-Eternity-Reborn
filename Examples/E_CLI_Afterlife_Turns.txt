@@ -13720,6 +13720,16 @@ stay exact, no progression_report. UI/History display uses normal escaping and
 never reveals internal references or hidden wounds. Cancel before stage changes
 no mechanics, and stale wound/conflict refuses before consuming a new action.
 
+A later exchange may explicitly re-traumatize the SAME still-active wound after
+successful combat healing. Use its staged weaker wound, not the pre-healing rank.
+The client preserves exchange-local healing claims while packet claims remain
+cumulative. Replay preserves the accepted healing result only through an exact
+receipted re-trauma suffix in the same original request/instance, with later
+exchange/wave/generation and contiguous predecessor fingerprints. A missing or
+forged source, another request or terminal resurrection refuses. This grants no
+second healing action, natural tick or GM-authored receipt.
+
+
 Alternative blocked overlap: the same standard H3 action is countered by incoming
 pressure, player selected d5/opposition d15 from the actual original. Spend2 is
 still paid; healing has ZERO stages and leaves the exact original wound before

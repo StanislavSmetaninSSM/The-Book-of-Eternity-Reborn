@@ -2010,6 +2010,16 @@ A later ordinary exchange uses the same saved dependent correction flow; it does
 not permit a second healing action. Healing-only still requires pending schema2
 and a durable outcome; no_offer/source-only cannot skip the action.
 
+A later exchange may explicitly re-traumatize the SAME still-active wound after
+successful combat healing. Use its staged weaker wound, not the pre-healing rank.
+The client preserves exchange-local healing claims while packet claims remain
+cumulative. Replay preserves the accepted healing result only through an exact
+receipted re-trauma suffix in the same original request/instance, with later
+exchange/wave/generation and contiguous predecessor fingerprints. A missing or
+forged source, another request or terminal resurrection refuses. This grants no
+second healing action, natural tick or GM-authored receipt.
+
+
 There is NO safe cycle: do not write progression_report.json. Scheduler-owned
 zero-cycle control is backed by the actual signed combat basis; pending/catchup
 backlog refuses rather than being cleared. LastTickKey and schedule/world bytes remain unchanged; no natural progress is

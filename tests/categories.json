@@ -2,6 +2,87 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "spiritual-combat-healing-chronology-controls",
+  "responsibility": "T107 directly affected existing six native healing/replay/blocked guarantee/cost-correction/publication rollback cases after C1 claim ownership and shared opportunity-domain extraction.",
+  "excludes": "No broad suite, general combat/QTE/turn system, new gameplay/aggregation, initial SAFE-stage or old UNKNOWN/HOLD qualification.",
+  "changeHints": [
+  "BookOfEternityClient/Services/ProgressionScheduleService.SpiritualCombatReplay.cs",
+  "BookOfEternityClient/Services/Validation/ValidationService.SpiritualOriginalC1FirstOffer.cs",
+  "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualCombatHealing.cs"
+],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.CombatHealingUsesAnActualPairAndDurableOutcomeWithoutASafeCycle",
+        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.CombatHealingSavedChoiceCompletesAfterDependentCostCorrection",
+        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.CombatHealingBlockedGuaranteedCounterharmUsesItsOriginalPreimage",
+        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.CombatHealingPublicationFailureRestoresItsActualSignedOriginal"
+      ]
+    }
+  ]
+},
+{
+  "id": "spiritual-combat-healing-chronology-guidance",
+  "responsibility": "T107 changed existing GM contract/example/manifest guard: own-exchange claims and exact same-original later re-trauma replay; preserves old selection/private fields.",
+  "excludes": "No broad suite, general combat/QTE/turn system, new gameplay/aggregation, initial SAFE-stage or old UNKNOWN/HOLD qualification.",
+  "changeHints": [
+  "BookOfEternityClient.Tests/SpiritualHealingGuidedContractTests.cs",
+  "OtherGuides/Wound_Materialization_Contract.md",
+  "Examples/E_CLI_Afterlife_Turns.txt"
+],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.SpiritualHealingGuidedContractTests.CombatHealingHasAClosedWorkedExampleAndNoSafeAttemptOrCycle"
+      ]
+    }
+  ]
+},
+{
+  "id": "wound-chronology-ownership-source-guards",
+  "responsibility": "Original T149/T107 changed wound reader/producer files retain actual ownership inventory anchors and confine legacy aliases to approved scopes.",
+  "excludes": "No broad suite, general combat/QTE/turn system, new gameplay/aggregation, initial SAFE-stage or old UNKNOWN/HOLD qualification.",
+  "changeHints": [
+  "BookOfEternityClient.Tests/WoundMaterializationSourceGuardTests.cs",
+  "BookOfEternityClient/Services/ProgressionScheduleService.SpiritualCombatReplay.Suffix.cs"
+],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.WoundMaterializationSourceGuardTests.WoundOwnershipInventory_ResolvesEveryDeclaredFileAndSemanticAnchor",
+        "BookOfEternityClient.Tests.WoundMaterializationSourceGuardTests.ProductionLegacyWoundOccurrences_AreConfinedToInventoriedSemanticScopes"
+      ]
+    }
+  ]
+},
+{
   "id": "spiritual-combat-healing-then-retrauma",
   "responsibility": "Original T107 / FR027/036: one real active-conflict II->I healing followed by explicit later I->II same-wound pressure re-trauma, actual staged-I source, next-wave C2, common C3/C4, exact costs/effect replacement/History and signed replay. Causal positive fixture; do not label a failure as replay unless actual prerequisites reach that guard.",
   "excludes": "No initial SAFE-stage composition, general conflict/QTE/turn rules, aggregation, new provider, Engine/UI/fresh-process or pending semantics/UNKNOWN/HOLD closure. No unchanged accepted cases rerun.",

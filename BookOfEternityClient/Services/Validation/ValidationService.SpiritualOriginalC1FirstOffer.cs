@@ -192,6 +192,7 @@ public partial class ValidationService
             };
             var claims = new JsonArray();
             var sources = new JsonArray();
+            JsonArray? healingClaims = null;
             var seenDice = new HashSet<int>();
             foreach (var entry in _closedExchangeEvidence)
             {
@@ -212,6 +213,7 @@ public partial class ValidationService
                     claims.Add(claim.DeepClone());
                     exchangeClaims.Add(claim);
                 }
+                if (entry.Healing is not null) healingClaims = exchangeClaims;
                 foreach (var source in entry.Sources)
                     sources.Add(ComposeFirstOfferSource(source, entry, sources.Count,
                         bounds, originalDice, exchangeClaims, originalFingerprint));
@@ -227,7 +229,7 @@ public partial class ValidationService
                     ["turn"] = _source.TurnNumber, ["realm"] = _source.Realm, ["originalSnapshotFingerprint"] = originalFingerprint,
                     ["bounds"] = bounds.DeepClone(),
                     ["acceptedD20Values"] = new JsonArray(originalDice.Select(v => (JsonNode?)JsonValue.Create(v)).ToArray()),
-                    ["diceClaims"] = claims.DeepClone()
+                    ["diceClaims"] = (healingClaims ?? throw new InvalidOperationException("Retained healing claims required.")).DeepClone()
                 };
                 healingSources.Add(new JsonObject { ["sourceOrdinal"] = 0, ["turnEvidence"] = evidence,
                     ["witness"] = SpiritualWoundStateJson.Parse(healing.WitnessJson) });

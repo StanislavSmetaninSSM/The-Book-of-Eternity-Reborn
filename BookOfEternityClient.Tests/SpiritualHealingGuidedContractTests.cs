@@ -107,6 +107,12 @@ public sealed class SpiritualHealingGuidedContractTests : IDisposable
     public void CombatHealingHasAClosedWorkedExampleAndNoSafeAttemptOrCycle()
     {
         const string marker = "spiritual_combat_healing_v1";
+        foreach (var guide in new[] { "OtherGuides/Wound_Materialization_Contract.md", "OtherGuides/Afterlife_Contract_Matrix.md" })
+        {
+            var text = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, guide));
+            Assert.Contains("exchange-local healing claims", text, StringComparison.Ordinal);
+            Assert.Contains("receipted re-trauma suffix", text, StringComparison.Ordinal);
+        }
         foreach (var file in new[] { "OtherGuides/Wound_Materialization_Contract.md", "OtherGuides/Afterlife_Contract_Matrix.md",
             "CLI_API_Specification.md", "Rules/Block_CLI_Operations.txt", "TaskGuides/CLI_Step_Main.txt", "BookOfEternityClient/game_master_daemon.ps1" })
             Assert.Contains(marker, File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, file)));

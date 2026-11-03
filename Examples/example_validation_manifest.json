@@ -368,17 +368,19 @@
   "focusedFragmentReason": "SpiritualHealingGuidedContractTests parses the selection and synchronizes GM surfaces; actual paired backend and console/browser consumers separately qualify authority and publication.",
   "coverageLimit": "No standalone JSON authority, other actors/targets/realms/special arts, paid US6, full Engine conflict/DFR/Windows or fresh-process recovery proof.",
   "requiredText": [
-    "spiritual_combat_healing_v1",
-    "heal_spiritual_wound",
-    "healing_timing",
-    "baseCost5/minCost2",
-    "SAME intent/original dice",
-    "ZERO stages",
-    "LastTickKey",
-    "healingSources/healingDecisions",
-    "continuationGeneration>1",
-    "no progression_report"
-  ]
+  "spiritual_combat_healing_v1",
+  "heal_spiritual_wound",
+  "healing_timing",
+  "baseCost5/minCost2",
+  "SAME intent/original dice",
+  "ZERO stages",
+  "LastTickKey",
+  "healingSources/healingDecisions",
+  "continuationGeneration>1",
+  "no progression_report",
+  "exchange-local healing claims",
+  "receipted re-trauma suffix"
+]
 },
 {
   "contractId": "spiritual_guardian_help_v4",

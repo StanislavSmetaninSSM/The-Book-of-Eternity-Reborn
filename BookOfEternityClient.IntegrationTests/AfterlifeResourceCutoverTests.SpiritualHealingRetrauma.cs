@@ -96,9 +96,14 @@ public sealed partial class AfterlifeResourceCutoverTests
             AssertNoConflictFrameErrors(opened.Issues); Assert.Equal("offer", opened.Disposition);
             using var offered = opened.Session!;
             var packet = JsonNode.Parse((await context.FileSystem.ReadFileAsync(lease, SpiritualWoundDecisionPendingState.StatePath))!)!["pending"]!;
+            Assert.True(JsonNode.DeepEquals(firstPacket["pending"]!["healingSources"]![0], packet["healingSources"]![0]));
+            Assert.Equal(new[] { 0, 1, 2, 3 }, packet["diceClaims"]!.AsArray().Select(claim => claim!["sourceIndex"]!.GetValue<int>()));
+            Assert.Equal(new[] { 0, 1 }, packet["healingSources"]![0]!["turnEvidence"]!["diceClaims"]!.AsArray()
+                .Select(claim => claim!["sourceIndex"]!.GetValue<int>()));
             Assert.Equal(2, packet["continuationGeneration"]!.GetValue<int>());
             Assert.Equal(1, packet["cursor"]!["waveOrdinal"]!.GetValue<int>());
             var source = Assert.Single(packet["sources"]!.AsArray())!.AsObject();
+            Assert.Equal(new[] { 2, 3 }, source["turnEvidence"]!["diceClaims"]!.AsArray().Select(claim => claim!["sourceIndex"]!.GetValue<int>()));
             Assert.Equal(1, source["exchangeOrdinal"]!.GetValue<int>());
             Assert.Equal(before.WoundId, source["retraumaWoundId"]!.GetValue<string>());
             var resultIssues = new List<ValidationIssue>();
@@ -159,10 +164,61 @@ public sealed partial class AfterlifeResourceCutoverTests
             Assert.NotNull(await ProgressionScheduleService.ReadPublishedSpiritualCombatCoreAsync(control,
                 "session_resource_materialization", "request_resource_materialization", 42,
                 path => context.FileSystem.ReadFileBytesAsync(lease, path), snapshotToken, intent));
+            await AssertHealingRetraumaReplayRefusalsAsync(context, lease, control, intent, snapshotToken, history.State!, receipt.AsObject());
         }
         await context.CaptureValidatedPendingSnapshotAsync(turn: 43, currentRealm: "Chaos Sea",
             preGeneratedDices1d20: [15, 5], requestId: "request_healing_retrauma_history43");
         AssertNoConflictFrameErrors(await ValidatePublishedConflictPhaseAsync(context));
+    }
+
+    /// <summary>After-valid detached changes cannot substitute witness hashes, omit receipts or move the accepted original.</summary>
+    private static async Task AssertHealingRetraumaReplayRefusalsAsync(ResourceMaterializationTestContext context,
+        FileSystemManager.CanonicalWriteLease lease, ProgressionControl control, JsonObject intent,
+        string snapshotToken, WoundHistoryState history, JsonObject receipt)
+    {
+        var later = Assert.Single(history.Transitions, row => row.Kind == "worsen");
+        var digest = receipt["decisions"]![0]!["sourceFingerprint"]!.GetValue<string>();
+        Assert.NotEqual(later.SourceFingerprint, digest);
+        var forged = WoundHistoryState.CreateValidated(history.NextOrdinal, history.Transitions.Select(row =>
+            row.TransitionId == later.TransitionId ? row with { SourceFingerprint = digest } : row));
+        Assert.True(forged.IsValid);
+        var forgedBytes = Encoding.UTF8.GetBytes(WoundHistoryState.SerializeCanonical(forged.State!));
+        var error = await Assert.ThrowsAsync<InvalidDataException>(async () =>
+            await ProgressionScheduleService.ReadPublishedSpiritualCombatCoreAsync(control,
+                "session_resource_materialization", "request_resource_materialization", 42,
+                path => path == WoundHistoryState.HistoryPath ? Task.FromResult<byte[]?>(forgedBytes)
+                    : context.FileSystem.ReadFileBytesAsync(lease, path), snapshotToken, intent));
+        Assert.Contains("receipted re-trauma chain", error.Message, StringComparison.Ordinal);
+        foreach (var change in new[] { "missing_decision", "foreign_original" })
+        {
+            var detached = receipt.DeepClone().AsObject();
+            if (change == "missing_decision")
+            {
+                detached["sources"]!.AsArray().Clear(); detached["decisions"]!.AsArray().Clear();
+                detached["nextSourceOrdinal"] = 1; detached["nextDecisionOrdinal"] = 1;
+            }
+            else
+            {
+                var source = detached["sources"]![0]!["witness"]!.AsObject();
+                source["turnEvidence"]!["requestId"] = "request_foreign_retrauma";
+                var hash = SpiritualWoundStateJson.Hash(source, "source", "sourceId", "sourceFingerprint");
+                source["sourceId"] = "spiritual_source_" + hash[7..]; source["sourceFingerprint"] = hash;
+                var decision = detached["decisions"]![0]!.AsObject();
+                decision["binding"]!["requestId"] = "request_foreign_retrauma";
+                decision["sourceId"] = source["sourceId"]!.DeepClone(); decision["sourceFingerprint"] = hash;
+                decision["sourceWitness"] = source.DeepClone();
+                decision["decisionFingerprint"] = SpiritualWoundStateJson.Hash(decision, "decision", "decisionFingerprint");
+            }
+            var parsed = SpiritualWoundOpportunityReceiptState.Parse(detached.ToJsonString(), "test." + change);
+            Assert.True(parsed.IsValid, string.Join("\n", parsed.Issues));
+            var bytes = Encoding.UTF8.GetBytes(detached.ToJsonString());
+            error = await Assert.ThrowsAsync<InvalidDataException>(async () =>
+                await ProgressionScheduleService.ReadPublishedSpiritualCombatCoreAsync(control,
+                    "session_resource_materialization", "request_resource_materialization", 42,
+                    path => path == SpiritualWoundOpportunityReceiptState.StatePath ? Task.FromResult<byte[]?>(bytes)
+                        : context.FileSystem.ReadFileBytesAsync(lease, path), snapshotToken, intent));
+            Assert.Contains("exact receipted transition set", error.Message, StringComparison.Ordinal);
+        }
     }
 
     /// <summary>Uses the existing decisive pressure rules and the next signed pair; no safe cycle or new combat rule.</summary>

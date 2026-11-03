@@ -1,3 +1,14 @@
+# T107 composition correction — grouped SOURCE next
+
+See current checkpoint for N3a's genuine C1 healing-row-prefix failure and exact
+external receipts. Grouped fix reuses per-exchange claims and preserves strict
+append checks, then extends historical healing replay only through exact later
+owner-receipted re-trauma. The second guard is source-proven, not a separate runtime
+RED. Native post-stageI/claims/publication and detached refusal oracles plus six
+affected existing combat cases and three cheap source/guidance cases await fresh
+builds/exact PREP after whole independent SOURCE. All new code uncompiled/unrun;
+no extra game rule, budget change, new framework or initialSAFE closure.
+
 # Next bounded T107 chronology — DESIGN pending, no new C# or runtime
 
 Original FR-027/036 and T107 require lawful healing and subsequent wound changes

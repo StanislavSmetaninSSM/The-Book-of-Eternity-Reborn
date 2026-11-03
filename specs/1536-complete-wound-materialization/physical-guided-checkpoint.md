@@ -1,3 +1,51 @@
+# T107 grouped composition correction — WIP, uncompiled/unrun
+
+N3a source d747e4518554fb78cb0edf54365d56f2b0afa739 completed one FAIL (TRX
+7.1127267s/category10.7139987s/120s), no timeout/skip/underfill or cleanup issue.
+Actual stop: OpenC2 / spiritual_c2_conflict_evidence_mismatch, before offer or
+replay. Astra source diagnosis confirms a production prefix defect: C1 rebuilt
+healingSources[0].turnEvidence.diceClaims with every closed exchange's claims,
+changing its first two rows into four after the next roll. Exact-prefix rejection
+in AppendC2NextExchangeEvidence is correct and remains unchanged. N3a postproof
+5e7117c4158f6fe29345655dbb58b7a0da2a3c303cba157313e97440bf72d2a3;
+summary a30e7daa771692f7a32f1e064d6de4bfe88aaaf9ecc6791d4afdaa628cbbc8eb.
+All9 captures and45/207/6/525 post-hashes were verified before new edits.
+
+Grouped code now retains the already validated exchange-local healing claim array
+inside that single Compose call. The packet still retains every cumulative claim;
+no prefix, digest, source, owner or signed-input check is relaxed. Native fixture
+requires whole healing row equality, local indices0/1, later source2/3 and packet4.
+The separate latest-healing replay restriction is SOURCE-proven, not runtime RED.
+Its scoped correction retains the existing latest shortcut; otherwise only an
+active exact healing result plus a complete same-original/instance later-worsen
+receipt/History chain can reach the current wound. Unique decision/source joins,
+explicit target, later exchange/wave/generation, predecessor/current fingerprints,
+selected severity, exact opportunity-authority domain, reset progress and unchanged
+natural tick are mandatory. Terminal resurrection or foreign/unreceipted suffixes
+refuse. Existing blocked counterharm uses the same extracted opportunity composer;
+its checks and exact preimage-string guarantee hashing remain intact.
+
+Optimization: C1 reuses its existing per-exchange claims instead of rescanning or
+reconstructing them, lifetime one synchronous owner-bound Compose. Replay reuses
+parsed canonical catalog/History/resources, one detached receipt and transient
+indexes, with selected preimages and state fingerprints computed once. The maximum
+four severity ranks imply at most three strictly worsening suffix steps; impossible
+longer suffixes refuse before retained-wound work. No persistent cache, repeated
+source I/O, new authority or measured speedup claim. Fresh canonical/consumed-input,
+resource/scheduler/world/source guards remain outside and before this DATA join.
+
+Existing GM guide/matrix/worked example/manifest/one guidance Fact now explain
+client-owned exchange-local claims and the exact later suffix without new authored
+fields, second healing or world cycle. Default affected selection is 10 cases in
+four leaves: cheap guidance1+ownership guards2, new real chronology1 with three
+after-valid detached refusals inside it, and six existing directly affected native
+healing/correction/guarantee/rollback cases. Those clones are not extra test cases.
+Original60s/120s budgets remain. No old zero85, unrelated accepted cases or HOLD
+is repeated. All new grouped code/tests are UNCOMPILED/UNRUN pending whole SOURCE,
+fresh affected Main/Unit/Integration, exact discovery/Plan/PREP and qualification.
+Initial SAFE-stage criterion, author-pending semantics and all UNKNOWN/HOLD remain
+open. No general combat/QTE/turn rule or global #1536 closure.
+
 # T107 causal attempt: preparation FAIL, replay untested
 
 Astra/high accepted the bounded DESIGN. One new native partial Fact reuses existing
