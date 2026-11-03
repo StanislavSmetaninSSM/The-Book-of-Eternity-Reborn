@@ -26841,6 +26841,35 @@
             ]
         },
         {
+            "id": "mortal-wound-mixed-consumption-rollback",
+            "responsibility": "Existing seven-cut guaranteed Mortal wound treatment with real selected item and resource consumption: exact expanded-root rollback, authority rearm and exact retry committing each transition once.",
+            "excludes": "Other turn lifecycle repair cases, the accepted original 24 storage-publication cuts, procedures/courses, UI, cold-process and Windows qualification.",
+            "changeHints": [
+                "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.cs"
+            ],
+            "related": [
+                {
+                    "id": "turn-lifecycle-repair",
+                    "when": "Only when independent changes affect other repair-loop contracts; never required merely to execute this seven-case leaf."
+                }
+            ],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": true,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 10,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedMixedItemAndResourceConsumption_EveryPipelineFailureRestoresExpandedRootsAndExactRetryCommitsOnce"
+                    ]
+                }
+            ]
+        },
+        {
             "id": "turn-lifecycle-repair",
             "responsibility": "Game turn validation repair requests, retries, and rollback guards.",
             "excludes": "Standalone rule calculations outside turn preparation and publication.",

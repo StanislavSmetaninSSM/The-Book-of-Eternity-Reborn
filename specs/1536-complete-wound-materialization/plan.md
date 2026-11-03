@@ -1,3 +1,25 @@
+# T154 mixed item/resource rollback7 — WIP verification preparation, 2026-11-03
+
+Base source/remote: `67f8e046443cd7996ac05037ba071693a5bb9fdc`.
+No exact method receipt was found in retained 20261102/20261103 TRX, summary or
+PlanOnly files. Historical B.4 aggregate acceptance is not current seven-case proof.
+A narrow existing-method category `mortal-wound-mixed-consumption-rollback` now
+selects only GuaranteedMixedItemAndResourceConsumption_EveryPipelineFailureRestoresExpandedRootsAndExactRetryCommitsOnce.
+It retains the original owning category's 600-second budget and exclusive execution;
+`turn-lifecycle-repair` will not run. The accepted rollback24 will not repeat.
+No production/test source or gameplay changes. SOURCE/PREP, catalog, exact PlanOnly
+and runtime remain pending; no new PASS is claimed.
+
+Fresh successful build lineage is unchanged (Main/Support f54481d85, Integration
+06dc53214). Existing artifact/source proofs will be rechecked before NoBuild use.
+Reuse is limited to unchanged compiled inputs; each existing test retains independent
+mutable roots/owners and fresh authority checks. No cache or speedup claim. No GM
+contract changed, so GM documentation requires no update.
+Full capture will remain outside checkout at
+`/workspace/tboe-linux-evidence-20261103/t154-mixed-consumption7`.
+The free diagnosis proof e70510c4 is separate and proves no real-spend rollback.
+Whole T154/#1536 and unrelated UNKNOWN/HOLD remain open.
+
 # T154: current original rollback24 accepted
 
 On Linux source `4739060a8e48a91adb0a5104c9f4d3892efe2cdc`, the existing
