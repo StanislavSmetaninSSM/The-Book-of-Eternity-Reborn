@@ -1,3 +1,11 @@
+# T081-D-NO-ROLL current admission boundary
+
+- [x] Independent design/source/GM sync, genuine causal27 and GREEN67 with strict typed/rolled/guarantee/docs guards.
+- [x] Original missing-choice native standard/special2 remain pending, accepted actual assertions at0174 (OUTCOME still to review).
+- [ ] Correct explicit lease in new source-owner test, delta review/fresh Integration and exact remaining3; preserve original1FAIL/2UNRUN.
+- [ ] Separately admitted actual no-roll C4pair2, retained GM choice/wound or zero/resource/History/cold/replay and OUTCOME.
+- [ ] Final accepted checkpoint; other #1536/UNKNOWN/HOLD and deferred consumers not closed by this slice.
+
 # T081-D-NO-ROLL — next functional source, DESIGN WIP
 
 - [x] Reconcile author rule with existing math, retained witness, source owner and lawful negotiate/voluntary incoming-harm fixture.

@@ -1,3 +1,43 @@
+# No-roll cheap GREEN accepted; owned-source fixture lease correction WIP
+
+At0174f70c829473a1fe20dcbaf66d09fa12eec8ef, runtime Main/Unit compileda179,
+Integration0174 (only warning-equivalent assertion delta): all builds0/errors,
+exact81/26/107baseline warnings.45artifacts/207inputs621copies/native6 and4PE/PDB
+502sourcebindings verified (+4sinceJ1, none removed). Source/GM/typed-shape/tools
+independently accepted by Astra/Sol; whole J2C# still not publication-qualified.
+
+J2-green67 completed67PASS, wrapper27.159345s; every category3.0–3.65s, within
+unchanged60/120s. All27J1semantic cases and assertions unchanged, ten priorFAIL now
+PASS; four newtyped refusals and rolled/guarantee/GM/manifest controls pass. Sol
+OUTCOME accepted, no skip/timeout/duplicate/underfill, hashclose/cleanup/clean/noTMP/
+no owners. Post070e6ad3728e8adae4778e5b92ea6b5d40eed93b744292ff4546460a178074a1;
+summary06d853379ada9dec1b10b8c1c2265ebf628752cb1991c022eb2711de70f1d216.
+Artifact1c4474b6a385fdc19b34a187fa640e8718bdadaa7b7f235b412e26251f8d8dff;
+PDBf010a8966d9f694cbb69b937bfc8044f5cb09253106cb5e7f81c25a62373c13a.
+23files clean-export/GitHub-blob proof530417b460591bf6e48258352966dc2560a39c4070d4dc11c2880db96de6c9f8,
+then two-file warning/plan delta6cb6175fc520778105c4d4e14f36d6883b3f4cd7208f978930cf5d296131fbc5;
+these are bounded source restore checks, not fullclone/rawrestore.
+
+J2-owners5 planned5/executed3: missing-choice standard/special2PASS, special-choice
+1FAIL, standard-choice2UNRUN; C4pair2UNRUN. No timeout. Missing category6.273071s,
+special16.102275s; wrapper28.676158s. The special source assertions already proved
+chosen10/maximumI, exact Guardian art/paid6 and no pending/dice claims; failure then
+occurred in test setup at line54: context.WriteExactJsonAsync requested another
+canonical-write lock while the test retained its explicit lease. This is a fixture
+ownership error, not a denied operation or proved production defect. Changed-choice
+refusal/repair assertions did NOT execute. Posta40194404965e26b1769c08c3a743545a434765f9919a02308cb2fcddfae51e8;
+summary7477dcf21b1615a43cf83be82e0936e51366b933d11a3ae7909498091ce7372a.
+Complete available capture/hashclose/cleanup/noTMP/noowners retained, selection
+incomplete explicitly. All raw/archives outside checkout, no deletion.
+
+Minimal test-only fix uses existing WriteFileAtomicBytesAsync(lease,...) with same
+UTF8/no-BOM bytes instead of acquiring a second lease. Original guards/assertions,
+production and all other tests/resources unchanged. Needs independent delta SOURCE,
+fresh Integration only, adapted exact remaining source3 (not repeat missing2 or
+cheap67), separate OUTCOME/PREP and C4pair2 within180s. Preserve original failure.
+No new cache/source I/O or speedup claim; existing immutable fixtures/owners reused.
+Whole #1536, other strain families and old UNKNOWN/HOLD remain open.
+
 # No-roll fresh builds completed; one test-analyzer correction WIP
 
 At a179b0fd Main66.961014s/Unit34.551068s/Integration72.417553s all exit0;

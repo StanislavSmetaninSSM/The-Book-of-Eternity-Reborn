@@ -1,3 +1,12 @@
+# Current no-roll source boundary — cheap67 accepted, actual source incomplete
+
+Code is saved; accepted J2cheap67 at0174, plus missing-choice native2PASS. Native
+special test failed at its own nested-lease draft write; standard2 and C4pair2UNRUN.
+Explicit held-lease byte-write correction is WIP/uncompiled/unrun, no production
+change. Complete actual evidence, hashes and finite next steps in plan.md. Do not
+count a source assertion prefix or terminal DATA as real wound publication.
+Full raw outside checkout under spiritual-strain-preimage-data; old HOLD unchanged.
+
 # T081-D-NO-ROLL whole implementation WIP
 
 Code/GM docs/worked example/manifest and real owner/C2/C4 fixtures now written,

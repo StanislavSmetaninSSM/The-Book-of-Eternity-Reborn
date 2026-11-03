@@ -1,3 +1,4 @@
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
@@ -51,7 +52,8 @@ public sealed partial class AfterlifeResourceCutoverTests
         var update = changed[AfterlifeSpiritualConflictState.ResponseField]!;
         update["exchange"]![SpiritualWoundNoRollMargin.Property]!["player"] = margin + 1;
         update["activeConflictAfter"]!["exchangeLog"]![0] = update["exchange"]!.DeepClone();
-        await context.WriteExactJsonAsync(AfterlifeSpiritualConflictState.StatePath, changed.ToJsonString());
+        await context.FileSystem.WriteFileAtomicBytesAsync(lease, AfterlifeSpiritualConflictState.StatePath,
+            Encoding.UTF8.GetBytes(changed.ToJsonString()));
         var rejected = await owner.ContinueAsync(lease);
         Assert.Null(rejected.Session);
         Assert.Contains(rejected.Issues, issue => issue.Severity == IssueSeverity.Error);
