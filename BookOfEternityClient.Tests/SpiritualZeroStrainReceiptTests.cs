@@ -207,9 +207,12 @@ public sealed partial class SpiritualZeroStrainReceiptTests
         SpiritualStrainReceiptJoinTests.SealSourceAndDecision(root, 1);
         SpiritualStrainReceiptJoinTests.SealSourceAndDecision(root, 2);
         var bytes = root.ToJsonString();
+        var causal = Assert.Throws<FormatException>(() => SpiritualWoundOpportunityReceiptState.ValidateTurnCoherence(
+            root["sources"]!.AsArray().Select(row => row!.AsObject())));
+        Assert.Contains("Source positions exceed available causal side slots.", causal.Message, StringComparison.Ordinal);
         var refused = SpiritualWoundOpportunityReceiptState.Parse(bytes, "unit.reversedOriginalSides");
         Assert.False(refused.IsValid);
-        Assert.Contains(refused.Issues, issue => issue.Message.Contains("original table cannot reorder", StringComparison.Ordinal));
+        Assert.Contains(refused.Issues, issue => issue.Code == "spiritual_wound_receipt_invalid_state");
         Assert.Equal(bytes, root.ToJsonString());
     }
 

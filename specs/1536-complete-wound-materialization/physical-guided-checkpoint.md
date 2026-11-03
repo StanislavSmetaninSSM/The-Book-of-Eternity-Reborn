@@ -6,8 +6,11 @@ original injury-side order, and a quadratic request merge. Sol separately found
 that die claims must retain local exchange zero while intent/witness use absolute
 exchange one. Corrections preserve those distinct coordinates and all assertions.
 The parser now checks each original table's scalar source/slot order before merging;
-a new after-valid two-sided fixture reverses only that order and requires the
-specific refusal. The merge uses transient indegrees/followers and a ready queue:
+a new after-valid two-sided fixture reverses only that order. Existing typed turn
+coherence proves the exact order fault; root Parse preserves its generic public
+refusal code. Both reviewers caught an impossible inner-message assertion before
+builds; it was corrected without exposing private diagnostics or changing Parse.
+The merge uses transient indegrees/followers and a ready queue:
 each request is queued once, each precedence edge visited once, no proof reparse,
 additional I/O, persistent cache, authority reuse or measured speedup claim.
 
