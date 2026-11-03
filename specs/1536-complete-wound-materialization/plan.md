@@ -1,3 +1,26 @@
+# T154 mixed rollback diagnosis — WIP, 2026-11-03
+
+Base `86ab7db20753b6b70453c7afd9c5570c56e30707`; prior exact7 receipt remains
+5 PASS / 2 FAIL. Apply only the requested existing per-test SpiritualLifecycleTestLogger
+and retain the exact Accepted predicate with its Describe() in the assertion message.
+No production code, InlineData, gameplay, guards or remaining assertions change.
+This is evidence collection, not a fix or a new PASS. Independent SOURCE and fresh
+Integration build pending. Unchanged production/Support builds remain reusable;
+Integration must be rebuilt. Existing per-instance logger/cache/owners are retained;
+no new diagnostic framework, cache, data reuse permission or speedup claim.
+
+The official category runner cannot select individual Theory rows: Filter is retired,
+C# selectors identify methods, and descriptor generation includes every method case.
+Minimum supported runtime is the existing exact-method leaf of seven cases / original
+600 seconds. Only two failed rows were requested, so runtime is pending scope decision;
+no broad category or prior passing cases have been rerun. Do not trim InlineData,
+override expected counts, or use an alternate runner to hide this limitation.
+Raw/build output remains outside checkout at
+`/workspace/tboe-linux-evidence-20261103/t154-mixed-consumption-diagnostics`.
+No GM/game contract changes; no GM wording update required. T154 and all prior
+UNKNOWN/HOLD remain open. Protected rejection may still log only a generic error;
+inspect existing diagnostics/hooks before any further instrumentation.
+
 # T154 mixed item/resource rollback7 — 5 PASS / 2 FAIL
 
 One exact Linux run at `6d926c971281d30376f0d9869eb65162be5a29b0` completed all

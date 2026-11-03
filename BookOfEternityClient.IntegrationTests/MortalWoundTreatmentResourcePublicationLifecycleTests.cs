@@ -480,7 +480,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         var originalBindingFingerprint =
             AcceptedMechanicsPlanFingerprints.ComputeInput(context.OriginalBinding);
         await context.ReleaseLeaseAsync();
-        var (engine, snapshotContext) = await CreateHeldTreatmentValidationEngineAsync(context);
+        var logger = new SpiritualLifecycleTestLogger();
+        var (engine, snapshotContext) = await CreateHeldTreatmentValidationEngineAsync(context, logger);
 
         fault.Arm(context);
         AcceptedTurnValidationDisposition? firstDisposition = null;
@@ -553,7 +554,9 @@ public sealed partial class GameEngineTurnLifecycleTests
             HeldTreatmentPipelineContext.Turn,
             null);
 
-        Assert.Equal(AcceptedTurnValidationDisposition.Accepted, retryDisposition);
+        Assert.True(
+            retryDisposition == AcceptedTurnValidationDisposition.Accepted,
+            $"Retry disposition: {retryDisposition}\n{logger.Describe()}");
         Assert.Equal(1, await ReadSelectedNpcItemCountAsync(context));
         Assert.Equal(itemTransitionsBefore + 1,
             await CountSelectedItemConsumeTransitionsAsync(context));
