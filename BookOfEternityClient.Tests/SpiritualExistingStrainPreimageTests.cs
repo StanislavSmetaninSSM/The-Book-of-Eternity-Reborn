@@ -160,7 +160,7 @@ public sealed class SpiritualExistingStrainPreimageTests
         {
             case "missing": history["transitions"]!.AsArray().RemoveAt(1); history["nextOrdinal"] = 2; break;
             case "identity": latest["transitionId"] = "foreign_transition"; break;
-            case "kind": latest["kind"] = "diagnose"; break;
+            case "kind": latest["kind"] = "complicate"; break;
             case "turn": latest["turn"] = 43; break;
             case "fingerprint": latest["afterFingerprint"] = "sha256:" + new string('d', 64); break;
         }

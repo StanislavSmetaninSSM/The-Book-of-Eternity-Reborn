@@ -1,3 +1,26 @@
+# Cheap gate partial outcome; exact fixture correction
+
+At metadata02072a5ee/compiledsourcee73a288c2: actual M5a-cheap-green stopped after
+3of8descriptors: new33 executed32PASS/1fixtureFAIL, no timeout. Positive2 and
+refusal17 passed exactly; joins14 had13PASS/1FAIL for change=kind. That row changed
+worsen to diagnose without the required diagnosis result, so History parsing failed
+before the intended exact-anchor refusal. Change only kind to valid complicate,
+preserving a parse-valid chronology with a mismatching latest-kind anchor.
+Remaining42 were UNRUN. Keep unchanged positive/refusal19; repeat changed joins14
+plus remaining42 (56) after freshUnit/Plan/PREP, not full75. Native1 remainsUNRUN.
+Full oldM5a-cheap-green raw/TRX retained; no failed assertion relabeled PASS.
+
+Additional bounded SOURCE audit confirms an original functional gap: increasing
+strain with non-guaranteed maximum0 needs comparison-only durable receipt DATA.
+Current sources+decisions ledger cannot represent it without inventing a none.
+Source-only C3 currently fails its common owner join; passing only identity would
+lose historical comparison. Do not weaken that guard. Positive/guaranteed native
+representative stays separate and does not qualify max0. Capped broken->broken
+is different: no increasing harm source, ordinary history needs no substitution.
+This is an implementation remainder in original FR025, not an author semantic
+question or new general-combat task. Existing owner/receipt extension is next after
+the scoped positive lane; no approval of aggregation or actor inference follows.
+
 # Fresh corrected builds complete; catalog metadata correction
 
 Runtime source e73a288c233e78a951c8aa3309cc87412e63ccf3: Main63.607536s/81,
