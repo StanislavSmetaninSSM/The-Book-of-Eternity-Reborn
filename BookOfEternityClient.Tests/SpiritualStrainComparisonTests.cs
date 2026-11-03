@@ -36,6 +36,9 @@ public sealed class SpiritualStrainComparisonTests
         Assert.Contains("Failed maneuver uses the proved ordinary result", example[start..end]);
         Assert.Contains("Do not fabricate a strainPreimage", example[start..end]);
         Assert.Contains("first-create History", guide);
+        Assert.Contains("Capped failed guard keeps its ordinary source", example[start..end]);
+        Assert.Contains("no editable A/B or terminal-echo repair", example[start..end]);
+        Assert.Contains("exactly one real new player harm source", guide);
     }
 
     [Theory]

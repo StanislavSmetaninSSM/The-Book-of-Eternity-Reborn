@@ -3698,6 +3698,22 @@ standard noncombat/healing art.
 Duplicate profile/operation coordinates within one wound are invalid. These
 are consequence primitives, not a catalog of complete spiritual wounds.
 
+#### Bounded capped failed-guard strain proof (T081-D)
+
+For the last player guard/setback against incoming pressure, a newly created III
+strain/guard parent MAY preserve the independently proved ordinary overwhelmed→broken
+result. This is the existing +1 cap, not a guard-rule exception. Before selection,
+the original owner MUST completely validate the frozen ordinary exchange, every
+source/resource/dice dependency and unchanged prior source prefix plus exactly ONE
+ordinary player harm source. Retain immutable PreparedSpiritualSource DATA. After
+selection, rederived source fields MUST all match except private StrainPreimageJson;
+preserve actual harm event identity, not preselection witness hash identity.
+The existing six-field version1 preimage MUST carry full ordinary==actual guard,
+unique matching strain/guard magnitude1 parent/root/component and original first-create
+History. No editable A/B or final-echo field, extra source, after==broken shortcut,
+caller proof, source-free relaxation, new receipt family or combat rule is allowed.
+Existing maneuver branch and fresh owner/authority/History checks remain unchanged.
+
 #### Planned bounded failed-maneuver strain proof (T081-D)
 
 This technical extension implements the existing failed-operation +1 rule; it adds

@@ -43,8 +43,13 @@ internal sealed class SpiritualStrainPreimageData
             Integer(source["sourceOrdinal"]) > 0 && Integer(source["exchangeOrdinal"]) > 0 &&
             Integer(source["exchangeOrdinal"]) + 1 == Integer(source["turnEvidence"]!["bounds"]!["exchangeCount"]),
             "Strain comparison requires the last player-side exchange after an earlier source.");
-        Require(IsToken(actual["operationType"], "maneuver") && IsToken(actual["outcome"], "setback"),
-            "Only the bounded failed maneuver comparison is supported.");
+        var cappedGuard = IsToken(actual["operationType"], "guard") &&
+            actual["incomingAction"] is JsonObject incoming &&
+            IsToken(incoming["finalOperationType"] ?? incoming["operationType"], "pressure") &&
+            actual["before"] is JsonObject guardBefore && actual["after"] is JsonObject guardAfter &&
+            IsToken(guardBefore["playerSideStrain"], "overwhelmed") && IsToken(guardAfter["playerSideStrain"], "broken");
+        Require((IsToken(actual["operationType"], "maneuver") || cappedGuard) && IsToken(actual["outcome"], "setback"),
+            "Only the bounded failed maneuver or independently proved capped guard comparison is supported.");
 
         var ordinary = ReadObject(proof["ordinaryExchangeJsonBase64"]);
         Require(ordinary["before"] is JsonObject && ordinary["after"] is JsonObject,
@@ -54,6 +59,8 @@ internal sealed class SpiritualStrainPreimageData
             "Ordinary strain required.");
         var comparison = new ValidationService.SpiritualStrainDraftCorrection("/retainedSource/exchange", ordinary);
         Require(comparison.IsCorrected(actual), "Actual exchange must contain only the proved one-step strain correction.");
+        Require(!cappedGuard || JsonNode.DeepEquals(ordinary, actual), "Capped guard must preserve its complete ordinary exchange.");
+        var operation = cappedGuard ? "guard" : "maneuver";
 
         var parentObject = ReadObject(proof["parentWoundJsonBase64"]);
         var parsed = WoundMaterializationContract.Parse(parentObject.ToJsonString(), "retainedSource.strainParent");
@@ -79,10 +86,10 @@ internal sealed class SpiritualStrainPreimageData
             Require(fact is not null, "Parent root definition required.");
             var definition = Parse(fact!.CanonicalJson);
             foreach (var component in definition["components"]!.AsArray().OfType<JsonObject>())
-                if (component["payload"] is JsonObject payload && IsToken(payload["operation"], "maneuver"))
+                if (component["payload"] is JsonObject payload && IsToken(payload["operation"], operation))
                     applicable.Add((root.EffectId, component));
         }
-        Require(applicable.Count == 1, "Exactly one parent component may target maneuver in this route.");
+        Require(applicable.Count == 1, "Exactly one parent component may target the compared operation in this route.");
         var selected = applicable[0];
         Require(selected.EffectId == effectId && Text(selected.Component["componentId"]) == componentId &&
             Text(selected.Component["profile"]) == "spiritual_strain_burden" &&

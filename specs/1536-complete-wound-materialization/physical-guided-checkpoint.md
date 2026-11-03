@@ -1,3 +1,13 @@
+# Guard-cap code WIP — ordinary1PASS / genuine consumer1FAIL retained
+
+Independent Sol/Astra OUTCOME accepted baseline/causal on d16 (5.46/60s and8.10/180s).
+No timeout/preparation failure; actualcold/C4assertions not reached. Minimal owned
+source-bearing guard proof, complete source equality, cap no-fields and privatev1
+parent branch now authored with cheap12/GM sync, UNCOMPILED/UNRUN. Whole SOURCE,
+freshMain/Unit/Integration, exactcheap47 and separateactualguard/maneuverPREP next.
+No ordinaryguard-rule change, source-free relaxation, afterbroken shortcut or HOLD.
+Complete evidence/optimization/lineages in currentplan, rawK1outsidecheckout.
+
 # Wounds-only completion boundary — 2026-11-03 02:17 author status request
 
 No-roll GM choice is accepted native source→coldC2→realC4→signedread on470e/final6d;

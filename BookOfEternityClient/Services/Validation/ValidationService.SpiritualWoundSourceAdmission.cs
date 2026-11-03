@@ -763,11 +763,18 @@ public partial class ValidationService
                 return;
             var strain = affectedSide == "player" ? _mechanicsContext?.ReadOwnedStrainCorrection(conflict, exchange) : null;
             var strainPreimage = strain is not null && strain.IsCorrected(exchange) ? strain.RetainedPreimageJson : null;
-            _sources.Add(new PreparedSpiritualSource(
+            var preparedSource = new PreparedSpiritualSource(
                 coordinate, ExactString(conflict["conflictId"])!, ExactString(exchange["exchangeId"])!,
                 affectedSide, actorKey, targetKey, operation,
                 source?.ToJsonString(), exchange.ToJsonString(), calculation,
-                envelope.GuaranteedSeverityRank, retrauma, retraumaWoundJson, strainPreimage));
+                envelope.GuaranteedSeverityRank, retrauma, retraumaWoundJson, strainPreimage);
+            if (strain is not null && !strain.PreservesOrdinarySource(preparedSource))
+            {
+                issues.Add(SourceIssue(coordinate, "spiritual_wound_strain_source_mismatch",
+                    "the independently proved ordinary capped source without changed or additional harm"));
+                return;
+            }
+            _sources.Add(preparedSource);
         }
 
         private void IndexProfiles(List<ValidationIssue> issues)

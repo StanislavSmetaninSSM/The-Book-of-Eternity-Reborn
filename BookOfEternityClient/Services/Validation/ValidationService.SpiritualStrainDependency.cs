@@ -44,9 +44,11 @@ public partial class ValidationService
     {
         private readonly JsonObject _original;
         private readonly string _ordinary;
+        private readonly PreparedSpiritualSource? _ordinarySource;
 
         internal SpiritualStrainDraftCorrection(string pointer, JsonObject original,
-            string? retainedPreimageJson = null, string? parentEffectId = null, string? parentComponentId = null)
+            string? retainedPreimageJson = null, string? parentEffectId = null, string? parentComponentId = null,
+            PreparedSpiritualSource? ordinarySource = null)
         {
             Pointer = pointer;
             _original = original.DeepClone().AsObject();
@@ -54,7 +56,8 @@ public partial class ValidationService
             var rank = SpiritualWoundOpportunityMath.StrainRank(_ordinary);
             if (rank is < 0 or > 4) throw new InvalidOperationException("A proved ordinary strain is required.");
             ExpectedStrain = new[] { "clear", "strained", "fractured", "overwhelmed", "broken" }[Math.Min(4, rank + 1)];
-            Fields = [pointer + "/after/playerSideStrain"];
+            _ordinarySource = ordinarySource;
+            Fields = ordinarySource is null ? [pointer + "/after/playerSideStrain"] : [];
             RetainedPreimageJson = retainedPreimageJson;
             ParentEffectId = parentEffectId;
             ParentComponentId = parentComponentId;
@@ -72,7 +75,11 @@ public partial class ValidationService
 
         /// <summary>Creates immutable comparison facts at materialization without retaining a live permission.</summary>
         internal SpiritualStrainDraftCorrection WithParent(string json, string effectId, string componentId) =>
-            new(Pointer, _original, json, effectId, componentId);
+            new(Pointer, _original, json, effectId, componentId, _ordinarySource);
+
+        /// <summary>The capped path must reproduce all ordinary source facts apart from its privately attached comparison.</summary>
+        internal bool PreservesOrdinarySource(PreparedSpiritualSource source) =>
+            _ordinarySource is null || _ordinarySource == (source with { StrainPreimageJson = null });
 
         internal bool Allows(JsonNode? candidate)
         {
@@ -95,7 +102,7 @@ public partial class ValidationService
             IReadOnlyList<WoundRootEffectBinding> RootEffects, string Operation,
             SpiritualStrainDraftCorrection Comparison);
 
-        /// <summary>Reproves the ordinary last pressure or maneuver before selection; caller data never supplies this comparison.</summary>
+        /// <summary>Reproves the bounded ordinary last pressure, maneuver or capped guard before selection; callers supply no comparison.</summary>
         private async Task<OriginalStrainComparison?> ReadOriginalStrainComparisonAsync(
             FileSystemManager.CanonicalWriteLease lease, SpiritualWoundCaptureCheckpointState checkpoint)
         {
@@ -113,25 +120,39 @@ public partial class ValidationService
                 AfterlifeSpiritualConflictState.ResolveRawExchange(original, baseline,
                     prior.Count + _closedExchangeEvidence.Count) is not { } raw ||
                 raw.Exchange["exchangeId"]?.GetValue<string>() != ids[^1] ||
-                !ConflictTokenEquals(AfterlifeSpiritualConflictState.GetNodeString(raw.Exchange["operationType"]), "pressure", "maneuver") ||
+                !ConflictTokenEquals(AfterlifeSpiritualConflictState.GetNodeString(raw.Exchange["operationType"]), "pressure", "maneuver", "guard") ||
                 !ConflictTokenEquals(AfterlifeSpiritualConflictState.GetNodeString(raw.Exchange["outcome"]), "setback") ||
                 !ExchangeDiceAuditRequired(raw.Exchange, "setback") || raw.Exchange["diceAudit"] is not JsonObject ||
-                raw.Exchange["before"] is not JsonObject before || raw.Exchange["after"] is not JsonObject after ||
-                !JsonNode.DeepEquals(before["playerSideStrain"], after["playerSideStrain"])) return null;
-            var lawful = await SpiritualWoundSourceSession.PreparedContinuation.CheckOriginalLastSourceFreeExchangeAsync(
-                _source, lease, this, baseline, _nextResourceOrdinal,
-                _terminal?.ExecutionOwners ?? _input.PlanningContext!.Owners, SourceResourceBaseline);
+                raw.Exchange["before"] is not JsonObject before || raw.Exchange["after"] is not JsonObject after) return null;
+            var operation = AfterlifeSpiritualConflictState.GetNodeString(raw.Exchange["operationType"])!.ToLowerInvariant();
+            PreparedSpiritualSource? ordinarySource = null;
+            bool lawful;
+            if (operation == "guard")
+            {
+                if (AfterlifeSpiritualConflictState.GetNodeString(before["playerSideStrain"]) != "overwhelmed" ||
+                    AfterlifeSpiritualConflictState.GetNodeString(after["playerSideStrain"]) != "broken") return null;
+                ordinarySource = await SpiritualWoundSourceSession.PreparedContinuation.CheckOriginalCappedGuardExchangeAsync(
+                    _source, lease, this, baseline, _nextResourceOrdinal,
+                    _terminal?.ExecutionOwners ?? _input.PlanningContext!.Owners, SourceResourceBaseline);
+                lawful = ordinarySource is not null;
+            }
+            else
+            {
+                if (!JsonNode.DeepEquals(before["playerSideStrain"], after["playerSideStrain"])) return null;
+                lawful = await SpiritualWoundSourceSession.PreparedContinuation.CheckOriginalLastSourceFreeExchangeAsync(
+                    _source, lease, this, baseline, _nextResourceOrdinal,
+                    _terminal?.ExecutionOwners ?? _input.PlanningContext!.Owners, SourceResourceBaseline);
+            }
             return lawful ? new(_nextResourceOrdinal, conflictId, ids[^1], raw.Pointer,
-                raw.Exchange.ToJsonString(), "", "", "", [],
-                AfterlifeSpiritualConflictState.GetNodeString(raw.Exchange["operationType"])!.ToLowerInvariant(),
-                new SpiritualStrainDraftCorrection(raw.Pointer, raw.Exchange)) : null;
+                raw.Exchange.ToJsonString(), "", "", "", [], operation,
+                new SpiritualStrainDraftCorrection(raw.Pointer, raw.Exchange, ordinarySource: ordinarySource)) : null;
         }
 
         /// <summary>Retains the actual created parent graph once at selection, before any corrected source can be issued.</summary>
         private static OriginalStrainComparison? BindStrainParentComparison(OriginalStrainComparison original,
             WoundMaterializationEnvelope parent, string parentSourceId)
         {
-            if (original.Operation != "maneuver") return original;
+            if (original.Operation is not ("maneuver" or "guard")) return original;
             if (parent.Severity.Rank != 3 || parent.LastTransition.Kind != "create" || parent.LastTransition.Ordinal != 1)
                 return null;
             var matching = new List<(string EffectId, JsonObject Component)>();
@@ -142,7 +163,7 @@ public partial class ValidationService
                 var definition = SpiritualWoundStateJson.Parse(fact.CanonicalJson);
                 foreach (var component in definition["components"]!.AsArray().OfType<JsonObject>())
                     if (component["payload"] is JsonObject payload &&
-                        ConflictTokenEquals(AfterlifeSpiritualConflictState.GetNodeString(payload["operation"]), "maneuver"))
+                        ConflictTokenEquals(AfterlifeSpiritualConflictState.GetNodeString(payload["operation"]), original.Operation))
                         matching.Add((root.EffectId, component));
             }
             if (matching.Count != 1 || matching[0].Component["profile"]?.GetValue<string>() != "spiritual_strain_burden")
@@ -186,14 +207,14 @@ public partial class ValidationService
                 !original.RootEffects.Any(root => root.EffectId == contribution.EffectId &&
                     root.DefinitionKey == contribution.WoundSource.DefinitionKey)) return null;
             var correction = original.Comparison;
-            if (original.Operation == "maneuver" && (correction.RetainedPreimageJson is null ||
+            if ((original.Operation is "maneuver" or "guard") && (correction.RetainedPreimageJson is null ||
                 correction.ParentEffectId != contribution.EffectId || correction.ParentComponentId != contribution.ComponentId))
                 return null;
             return correction.Allows(exchange) ? correction : null;
         }
 
         internal bool CanInspectStrainTerminalEcho(IReadOnlyList<ValidationIssue> issues) =>
-            _c2SelectedDecision?.StrainOriginal is not null && issues.Count != 0 && issues.All(issue =>
+            _c2SelectedDecision?.StrainOriginal is { Comparison.Fields.Count: > 0 } && issues.Count != 0 && issues.All(issue =>
                 issue.Code == "spiritual_source_final_strain_mismatch" && issue.FilePath == "activeConflict.playerSideStrain");
     }
 }

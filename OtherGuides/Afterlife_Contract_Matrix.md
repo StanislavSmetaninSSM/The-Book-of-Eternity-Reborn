@@ -1849,3 +1849,12 @@ legacy IDs, effects, History, a new result/witness or a replacement request. Cur
 comparison DATA is not live authority and does not replay deleted components.
 
 Read Examples/E_CLI_Wound_Materialization.txt worked mortal_guided_treatment_execution_v1.
+
+### Bounded wound strain cap
+
+The spiritual_wound_strain_result_v1 capped guard path preserves a completely
+proved last player guard/setback against pressure, ordinary overwhelmed→broken.
+One new matching III strain slot adds no rank above broken and grants no editable
+A/B or final echo. The original source/dice/costs must remain exact, with one
+privately retained parent/first-create History comparison and ordinary C2/C4.
+Being broken alone is not proof; all other guards and source-free probes stay strict.

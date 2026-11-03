@@ -14582,7 +14582,18 @@ common publication must retain the same one-step result. Later historical summar
 text cannot change mechanics or turn markers, and healing does not rewrite the
 original creation evidence. This fragment does not itself prove runtime or healing.
 Private completion is not accepted-turn publication. Other consumer combinations
-and the still-unimplemented no-roll GM-choice producer are not authorized by this fragment.
+and the separate no-roll GM-choice source contract are not authorized by this fragment.
+Capped failed guard keeps its ordinary source: after the real earlier III source,
+select strain/guard, roll/maneuver and cost/pressure slots, so only strain/guard
+applies to the player's next guard. Signed player4/opposition12 against incoming
+pressure has harmful margin8 and ordinary overwhelmed->broken. Preserve the full
+ordinary guard and contested position; player guard cost2 (3->1), opposition
+pressure cost3 (3->0), original dice and final broken echo stay unchanged. The +1
+is already capped at broken: no editable A/B or terminal-echo repair. The real
+ordinary pressure14/maxII source remains a separate optional offer, which can be
+declined; it is not another source created by the burden. The client proves the
+complete ordinary source plus parent and first-create History. Broken alone is
+not permission; never author the private proof. This fragment is guidance only.
 end_spiritual_wound_strain_result_v1
 
 For the separate spiritual_wound_no_roll_source_v1 voluntary incoming-harm fragment,

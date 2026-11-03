@@ -2,6 +2,32 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "wounds-spiritual-strain-guard-cap-data",
+  "responsibility": "#1536 T081-D 12 cheap cappedguard DATA cases: ordinary real-rule/witness calculation2, immutable copies, ten rehashed ordinary/parent refusals, empty editable field set and preserved source facts. No DATA authority.",
+  "excludes": "No original-owner or publication authority from JSON/fingerprint; actual coldC2/C4 guard and affected existing maneuver remain separately gated. No generalcombat/new rules/oldHOLD.",
+  "changeHints": [
+    "BookOfEternityClient.Tests/SpiritualStrainGuardCapDataTests.cs",
+    "BookOfEternityClient/Services/SpiritualStrainPreimageData.cs",
+    "BookOfEternityClient/Services/Validation/ValidationService.SpiritualStrainDependency.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.SpiritualStrainGuardCapDataTests.*"
+      ]
+    }
+  ]
+},
+{
   "id": "wounds-spiritual-strain-guard-cap-publication",
   "responsibility": "#1536 T081-D-STRAIN-GUARD-CAP One actual III strain-guard selection at existing broken cap, no editable correction, cold C2 next ordinary sourceII/none, common C4/History and signed43; exact unchanged guard exchange, one authority use and canonical nonmutation before publication.",
   "excludes": "No new guard/combat rules, cap shortcut, caller proof, general QTE/ACTIVE, Engine/UI/fresh OS process, full strain family or old HOLD retry. Baseline is preparation; publication is UNRUN, not feature acceptance.",

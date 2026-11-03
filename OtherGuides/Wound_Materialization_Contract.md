@@ -743,8 +743,14 @@ result must be independently proved; do not infer it by subtracting from a propo
 corrected result or inventing a dice-free margin. The current bounded C2 route is
 one newly selected applicable burden on the last player `pressure/setback` exchange,
 or a newly created III parent's `maneuver/setback` against lawful opposing `guard`,
-with genuine opposed dice and unchanged ordinary player strain. Other failure
-families, replacement carriers and unproved combinations remain unavailable.
+with genuine opposed dice and unchanged ordinary player strain. A separate capped
+route admits last player `guard/setback` against incoming `pressure` only when the
+client independently proves ordinary `overwhelmed -> broken`, complete ordinary
+exchange and exactly one real new player harm source. That capped guard keeps the
+same ordinary result/source; no editable A/B field or terminal-echo repair is issued.
+The private version1 comparison still binds the actual new III parent and first-create
+History, and preserves every ordinary source fact. Other failure families,
+replacement carriers and unproved combinations remain unavailable.
 
 For that failed maneuver, author its ordinary position loss, signed dice and costs;
 the ordinary maneuver itself still cannot change strain. Only the exact currently

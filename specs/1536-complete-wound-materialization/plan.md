@@ -1,3 +1,34 @@
+# Guard-cap implementation WIP after genuine ordinary baseline/consumer RED
+
+Source/runtime d16aff5c496e6bb663d06ca3e12212a355291cb3, unchanged production470e.
+Fresh Integration81.038542s exit0/baseline107,45artifacts/207selected currentresources/
+native6/3PDB411bindings; Main/Unit code470e unchanged, their resource bundles not
+claimed current. Discovery1379categories/13215methods, exact baseline1/60s then
+separately admitted causalpublication1/180s. Sol acceptedbaseline OUTCOME:1PASS,
+category5.4621916s/wrapper12.832463s, realIII/II sources/4diceclaims/cost audits and
+canonical nonmutation, NOT executed payments. Astra accepted genuine causal1FAIL:
+spiritual_wound_profile_integration_required atguard exchange1 afterIII selection,
+line79; TRX4.1338946/category8.1011736/wrapper14.879140s, no timeout. Later cold/C4
+assertions unreached, no cap-feature PASS. Full captures/45/207/6/411close/cleanup
+verified, no owners/newTMP/dirtytree. RawK1-* outside checkout under existing root.
+Baseline post5ff9183f2180f03c95d17bf248f7692a1d55010b673fb97d3d7914c8e4c48938,
+summaryde4936f4a4f4985df30ef4afaa8539abd0cade6c04d14e7574e4fdd9d932660a;
+causalpost686b8bcd3ee73228740f19c01ff4e898a12177c075f3350f2ccbc250f9a31ac0,
+summary9d41706e68ce004ab294711b19402eace42a70157e30eb609b22d9e7773e242f.
+Bounded4file cleanexport/remote wholeblob recovery proof3e01bcbe2a8d9125ee35972896cdee09666d58ee0b0f6609643e7e63322f3658.
+
+Accepted DESIGN now authored: separate exactsource-bearing originalguard probe,
+strict oldsource-free helper unchanged, immutable expectedsource/full equality,
+privatecap no editablefield/echo, existing6fieldv1/preimage/parent/History branch.
+Cheapnew12 and affectedold13+7+9+5+guidance1=47 proposed; actualguard1 and affected
+maneuver1 separately180s after cheapGREEN. Existingbaseline retained d16 without
+automatic rerun. GMcontract/spec/entrypoints/workedfragment/manifest synchronized.
+All new production/tests UNCOMPILED/UNRUN, independent wholeSOURCE next. No cache,
+newauthority or cost claim: retain one alreadycomputed source under same comparison,
+recompute cold/currentguards, tiny DATA does not justify service cache. Exactly
+one existing validation probe for this newly admitted source-bearing subject; old
+source-free path remains literalunchanged. CurrentNoRoll/H4/oldUNKNOWN unchanged.
+
 # T081-D-STRAIN-GUARD-CAP — next wound-only slice / DESIGN accepted
 
 No-roll qualification remains accepted at code470e/final6d847910 with final source

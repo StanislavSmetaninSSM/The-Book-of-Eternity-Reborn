@@ -1,7 +1,7 @@
 # T081-D-STRAIN-GUARD-CAP [US3] — new capped guard integration
 
 - [x] Confirm codegap and independent bounded DESIGN: source-bearing ordinary guard3→4, no general combat rule or cap shortcut.
-- [ ] Independent ordinary baseline two realIII/II sources/costs/claims, then genuine cold C2/C4 guard-cap RED in existing protective budgets.
+- [x] Independent ordinary baseline1PASS then genuine cappedguard1FAIL on d16, Astra/Sol OUTCOME; category5.4622/60 and8.1012/180, full capture/cleanup. Cold/C4 assertions unreached in RED.
 - [ ] Cheap typed guard preimage/source/parent/History controls and strict unchanged existing source-free/maneuver paths.
 - [ ] Owned source-bearing proof/DATA equality and private capped no-op preimage, SOURCE/fresh builds/exact gates; no editable correction field.
 - [ ] Actual common publication/signed43/History/unique sources/realpayments and independent OUTCOME, GM sync and verified remote checkpoint.
