@@ -81,7 +81,10 @@ internal static class SpiritualWoundFirstOfferInstanceResolver
                 return new(null, null, parsed.Issues);
             var history = SpiritualWoundStateJson.Parse(
                 SpiritualWoundOpportunityReceiptState.SerializeCanonical(parsed.State));
-            if (history["sources"]!.AsArray().Any(row =>
+            if (history["strainComparisons"] is JsonArray comparisons && comparisons.Any(row =>
+                    (string?)row?["witness"]?["turnEvidence"]?["sessionId"] == sessionId &&
+                    (string?)row?["witness"]?["turnEvidence"]?["requestId"] == requestId) ||
+                history["sources"]!.AsArray().Any(row =>
                     (string?)row?["witness"]?["turnEvidence"]?["sessionId"] == sessionId &&
                     (string?)row?["witness"]?["turnEvidence"]?["requestId"] == requestId) ||
                 history["healingSources"] is JsonArray healing && healing.Any(row =>

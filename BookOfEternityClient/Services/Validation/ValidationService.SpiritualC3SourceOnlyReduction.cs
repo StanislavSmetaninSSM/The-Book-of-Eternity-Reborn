@@ -15,6 +15,7 @@ public partial class ValidationService
         internal sealed class AuthenticatedC3SourceOnly
         {
             private readonly object _issuanceKey;
+            private readonly JsonObject[] _strainComparisons;
 
             /// <summary>
             /// Binds the immutable original input and signed origin after source-only completion checks.
@@ -37,10 +38,14 @@ public partial class ValidationService
             /// <param name="receiptIdentity">
             /// Exact terminal receipt identity, or <see langword="null"/> when no terminal join is required.
             /// </param>
+            /// <param name="strainComparisons">
+            /// Detached comparison-only witnesses reconstructed from this exhausted source owner, or no such records.
+            /// </param>
             internal AuthenticatedC3SourceOnly(object issuanceKey, SpiritualSignedC1Origin signed,
-                AcceptedMechanicsInput input, string realm, PreparedTerminal? terminal, object? receiptIdentity)
+                AcceptedMechanicsInput input, string realm, PreparedTerminal? terminal, object? receiptIdentity, IReadOnlyList<JsonObject>? strainComparisons = null)
             {
                 _issuanceKey = issuanceKey;
+                _strainComparisons = strainComparisons?.Select(row => row.DeepClone().AsObject()).ToArray() ?? [];
                 Signed = signed;
                 Input = input;
                 Realm = realm;
@@ -52,7 +57,12 @@ public partial class ValidationService
             /// Gets whether this capability was issued by the verifying capture and its terminal is complete.
             /// </summary>
             internal bool IsAuthentic => ReferenceEquals(_issuanceKey, C3SourceOnlyIssuanceKey) &&
-                (Terminal is null ? ReceiptIdentity is null : Terminal.IsComplete && ReceiptIdentity is not null);
+                (Terminal is null || Terminal.IsComplete) &&
+                (ReceiptIdentity is not null) == (Terminal is not null || _strainComparisons.Length != 0);
+
+            /// <summary>Detaches comparison DATA built by the exhausted source owner, never publication permission.</summary>
+            internal IReadOnlyList<JsonObject> ReadStrainComparisons() =>
+                Array.AsReadOnly(_strainComparisons.Select(row => row.DeepClone().AsObject()).ToArray());
 
             /// <summary>
             /// Gets the reauthenticated signed original images.
@@ -130,8 +140,10 @@ public partial class ValidationService
                     SpiritualWoundOpportunityReceiptState.StatePath);
                 if (!SameExactImage(signed.Receipt, new CanonicalBeforeImage(physicalReceipt is not null, physicalReceipt)))
                     return DeclineFailure("spiritual_c3_decline_receipt_changed");
+                var comparisons = ComposeCompletedZeroStrainWitnesses(signed.SnapshotFingerprint);
                 var owner = new AuthenticatedC3SourceOnly(C3SourceOnlyIssuanceKey, signed, completed.Input,
-                    _source.Realm, _terminal, _terminal is null ? null : _satisfactionReceiptIdentity);
+                    _source.Realm, _terminal, _terminal is null && comparisons.Count == 0 ? null : _satisfactionReceiptIdentity,
+                    comparisons);
                 var receipt = SpiritualWoundDeclineReceiptReducer.ReduceSourceOnly(owner);
                 if (receipt.AfterImage is null) return new(null, null, receipt.Issues);
                 foreach (var path in new[] { SpiritualWoundCaptureCheckpointState.StatePath,

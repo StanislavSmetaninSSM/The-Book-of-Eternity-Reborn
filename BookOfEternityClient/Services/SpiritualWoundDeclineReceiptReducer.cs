@@ -114,7 +114,10 @@ internal static partial class SpiritualWoundDeclineReceiptReducer
                 var witness = source!.AsObject();
                 if (SpiritualWoundStateJson.Integer(witness["maximumSeverityRank"]) == 0 &&
                     witness["guaranteedSeverityRank"] is null)
+                {
+                    if (IsZeroStrainComparison(witness)) AppendZeroStrainComparison(root, resolved.InstanceId, witness);
                     continue;
+                }
                 var stagedDecision = staged[stagedIndex++]!.AsObject();
                 if (!JsonNode.DeepEquals(stagedDecision["sourceId"], witness["sourceId"]) ||
                     !JsonNode.DeepEquals(stagedDecision["sourceOrdinal"], witness["sourceOrdinal"]))

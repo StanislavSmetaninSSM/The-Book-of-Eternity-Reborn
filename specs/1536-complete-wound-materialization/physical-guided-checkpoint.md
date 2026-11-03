@@ -1,3 +1,26 @@
+# WIP zero-comparison existing-owner implementation — uncompiled/unrun
+
+N1b schema RED3 independently accepted by Sol: valid oldledger and intrinsic
+max0/pressure7/increase prerequisites, then unsupportedv3 Parse. Fullraw retained.
+Root now implements v3 comparison rows with unchanged positive decision bijection,
+existing witness/parent readers, source/coordinate/context/dice uniqueness, original
+request ordering/prefix/replay including both injury and comparison families.
+Per-table order is checked before a transient request-precedence merge; merged
+source ordinals use the existing turn/dice checks. No parsed witness is reconstructed
+for this merge and no index/cache/permission survives the whole parse.
+V3 may carry coherent empty healing arrays; v2 still requires nonempty healing,
+semantic healing predicate uses actual rows. Existing parsed comparison DATA is
+reused for any healing same-exchange comparison; fresh owner/History checks remain.
+Source-only C3 reconstructs witnesses through the existing ComposeFirstOfferSource,
+retains detachedDATA + exact completedreceiptidentity; mixed C3 uses the same
+owner-authenticated packet sources. Common receipt proof still binds the exact
+completion; no fakeopportunity/none or relaxed guard. Source-only witness work is
+once per exhausted owner; no new cache/diagnostic framework or speedup claimed.
+All new production UNCOMPILED/UNRUN, whole SOURCE not yet requested. Nativezero/
+additional cross-family/History/owner fixtures and GMdoc/example synchronization
+remain before completeSOURCE/freshbuilds/cheapGREEN/nativePREP. Previousaccepted76
+belongs to its explicit sourceversions, not this WIP. UNKNOWN/HOLD unchanged.
+
 # Zero-comparison structural RED3 — 2026-11-03 UTC
 
 Finalscaffold54306f59e840028c2ed6b25681f17e3f99208af1 Unit36.927997s0/exact26;

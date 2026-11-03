@@ -22,7 +22,7 @@ internal sealed partial class SpiritualWoundOpportunityReceiptState
             if (rows.Count < old.Count || old.Where((row, i) => !JsonNode.DeepEquals(row, rows[i])).Any()) return false;
         }
         var accepted = before["sources"]!.AsArray().Select(row => OriginalRequest(Object(row!["witness"])))
-            .Concat(HealingRequests(before)).ToHashSet();
+            .Concat(HealingRequests(before)).Concat(ComparisonRequests(before)).ToHashSet();
         var closed = before["closures"]!.AsArray().Select(row => Text(row!["instanceId"])).ToHashSet(StringComparer.Ordinal);
         return !nextSources.Skip(priorSources?.Count ?? 0).Any(row => closed.Contains(Text(row!["instanceId"])) ||
             accepted.Contains((Text(row["witness"]!["sessionId"]), Text(row["witness"]!["requestId"]))));
@@ -30,12 +30,14 @@ internal sealed partial class SpiritualWoundOpportunityReceiptState
 
     private static void ValidateHealingLedger(JsonObject root, int version,
         IReadOnlyDictionary<string, JsonObject> instances, IReadOnlyDictionary<string, long> closures,
-        JsonObject[] injurySources, JsonObject[] injuryDecisions)
+        JsonObject[] injurySources, JsonObject[] injuryDecisions,
+        IReadOnlyDictionary<string, SpiritualStrainPreimageData>? comparisonData)
     {
         if (version == 1) return;
         var sources = Rows(root, "healingSources", "nextHealingSourceOrdinal");
         var decisions = Rows(root, "healingDecisions", "nextHealingDecisionOrdinal");
-        Require(sources.Length > 0 && sources.Length == decisions.Length, "Healing sources/outcomes must form a nonempty bijection.");
+        Require(sources.Length == decisions.Length && (sources.Length > 0 || version == 3),
+            "Healing sources/outcomes must form a bijection, nonempty before v3.");
         var ids = new HashSet<string>(StringComparer.Ordinal);
         var requests = new HashSet<(string Session, string Request)>();
         var exchanges = new HashSet<(string Instance, string Exchange)>();
@@ -80,6 +82,9 @@ internal sealed partial class SpiritualWoundOpportunityReceiptState
                 {
                     Require(Integer(other["exchangeOrdinal"]) == ordinal && JsonNode.DeepEquals(context["diceClaims"], evidence["diceClaims"]),
                         "One exchange must retain the same original claims.");
+                    if (comparisonData is not null && comparisonData.TryGetValue(Text(other["sourceId"]), out var comparison))
+                        Require(JsonNode.DeepEquals(comparison.ReadActualExchange(), witness["exchange"]),
+                            "A comparison and healing cannot borrow the same exchange with different actual DATA.");
                     foreach (var bound in injuryDecisions.Where(d => Text(d["sourceId"]) == Text(other["sourceId"])))
                         Require(Integer(bound["binding"]!["continuationGeneration"]) == 1 && Integer(bound["binding"]!["waveOrdinal"]) == 0,
                             "Counterharm and healing are one eligible wave.");
@@ -101,7 +106,7 @@ internal sealed partial class SpiritualWoundOpportunityReceiptState
 
 internal sealed partial class SpiritualWoundOpportunityReceiptState
 {
-    internal bool HasCombatHealing => _root["healingSources"] is JsonArray;
+    internal bool HasCombatHealing => _root["healingSources"] is JsonArray { Count: > 0 };
 
     // The enclosing parser already checked source/outcome bijection and every
     // closed calculation. These queries return only detached comparison DATA.

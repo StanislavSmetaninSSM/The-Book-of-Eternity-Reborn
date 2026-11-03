@@ -40,6 +40,8 @@ internal static partial class SpiritualWoundDeclineReceiptReducer
                 root["nextInstanceOrdinal"] = checked(
                     (int)SpiritualWoundStateJson.Integer(root["nextInstanceOrdinal"]) + 1);
             }
+            foreach (var witness in owner.ReadStrainComparisons())
+                AppendZeroStrainComparison(root, resolved.InstanceId, witness);
             if (owner.Terminal is { } terminal)
             {
                 var ordinal = (int)SpiritualWoundStateJson.Integer(root["nextClosureOrdinal"]);
