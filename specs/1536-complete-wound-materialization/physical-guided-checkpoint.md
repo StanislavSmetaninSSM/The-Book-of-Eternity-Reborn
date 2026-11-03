@@ -1,3 +1,64 @@
+# US8 map and T149 accepted; continue original deterministic wound consequence
+
+Independent Sol SOURCE accepts the six-scenario historical US8 map and original
+T149 source-guard completion. No new tests/builds/coverage were added. No T177 or
+whole1536 closure; original full browser R2/terminalA5 and prior HOLD remain open.
+Current sources/runtime partial7 remain32ed759; acceptance is C2/cold, not C4/UI.
+
+Next independent finite row1 cell is pre-existing single III/IV strain wound with
+player maneuver/setback: current consumer requires selected same-request/newIII
+parent and otherwise raises integration_required. Ordinary maneuver has a unique
+unchanged-strain invariant; this avoids selecting either pending per-actor failure
+or multi-wound rule. Bounded DESIGN must establish current root/graph/latestHistory/
+source authority and exact ordinary-result provenance through existing owners,
+keeping oldv1 strict. No new broad framework, borrowed permission, fabricated parent,
+resource priming or GM field. Design only; code/causal tests remain UNWRITTEN/UNRUN.
+
+# T149 ownership and retirement receipt map — existing evidence only
+
+This continues the finite row5 after the independently accepted US8 map. The
+original [T149](tasks.md) requires source guards for loose wound fields, mappings,
+wrappers/aliases, NPC-effect wounds, raw UI parsing and standalone writers. No
+new tests, builds, discovery, parser/cache or gameplay changes were made here.
+
+| Original T149 surface | Existing accepted result and current owning guard/path |
+| --- | --- |
+| Loose PlayerWoundChanges/NPCWoundChanges and raw dispatch | P2 runtime9d4b03cf87c88939ca5708547dc21ca00a86df9e:16PASS (player raw7/offer1, NPC raw5/offer1, sourceguards2). Dedicated exact-presence refusals preserve lawful absence/adjacent data and bytes. NPC state-only legacy priority3 is separately accepted onb36547e. Not a general QTE flow proof. |
+| NPC effect carrier cannot contain wound commands or entries.wounds | N3 runtime5950b74a95eeee1252247dbf20f6265df9f25a5d:20PASS (causal16/sourceguards2/real publication1/early refusal1). Current NPC wounds use npc_wounds.json; legal effect metadata/publication and strict refusal retain exact source bytes. |
+| Canonical player carrier instead of loose arrays and dead parser | Accepted R4/R5 versioned11 (canonical9+confinement1 atf21ec22c, inventory1 atef2c7623), then later D1 canonical9/ownership1 and D2 discovery1 at654c3b14f705e6bb1813be3ac72cf07ae29736e6. These overlapping receipts are not one fresh or additive aggregate. Old loose parser is absent; canonical root/error precedence stays. |
+| Combatant WoundReference/sourceWoundId, generated effects/hints | W2 runtime0f9e47de4bc2305561bb93ebea233915aa70253e:14PASS, including raw7/offer1, three signed wound-field offer peers in total and documentation2/sourceguards2. Exact legacy type/property refuses; ordinary current effects remain valid. Negative-only example is teaching syntax, not a valid runtime command. |
+| Retired wrapper/progress aliases and generic wound activation | S1 runtimeb1e30030edb27e670c566a544a3b2a20f72d6e89:6PASS. Inventory/discovery guards forbid descriptionOfEffects/generatedEffects/healingState/isHealed everywhere in production and bound remaining intentional refusal tokens to exact scopes. Generic wound activation refuses; typed active wound export remains non-public/nonmaterializable, including empty-group fingerprint and caller-generic-export refusal. Independent typed wound_legacy remains supported. |
+| Raw UI parsing and direct file mapping/distribution | Current source inventory owns WoundPlayerStatusReadService -> WoundPlayerReadService -> WoundPlayerStatusBlocks for both status consumers; no repair/write from those readers. DirectLooseWoundDistribution guard checks GameResponse/FileMapping field/path retirement and StateDistributor typed command consumption. Inventory/discovery assertions are included in S1's actual6; this map does not claim a separately rerun DirectLoose Fact or full DOM/provider execution. |
+| Standalone writer/source bypass | Current inventory owns accepted authority registry/common planner, typed carrier/source authority and exact materialization binding. GameResponse/FileMapping/StateDistributor, EffectAcceptedTurnInputComposer and sourceguard file have NO delta since S1. The generic exporter cannot grant wound materialization; accepted typed command/plan owners remain the write path. No new standalone writer or raw UI path was found in the scoped read; not a claim of full C4/terminal failure-matrix acceptance. |
+
+Root rehashed/parsed primary summaries and TRXs for S1green6/P2green16/N3green20/
+W2green14/D2green1: exact original source/counts, allPASS, no timeout/dup/underfill,
+complete selections and both cleanup flags. No binary provenance was reassigned and
+no workload repeated. Cases overlap across those groups; no summed distinct total.
+External read-only proof7b85755618c5c03d7365b452039893875e9f93481398c59c2d40d5943185aa75:
+/workspace/tboe-linux-evidence-20261102/us8-t149-receipt-map/T149-existing-primary-receipts.json.
+Older R4/R5 and US8 raw were not restored; their accepted documentary receipts stay
+explicitly historical. The later L1 current-query extraction reuses typed catalog/
+identity/History DATA and adds no UI parser, write path or generic source authority;
+its accepted13+4 and partial7 retain their separate versions and C2-only limits.
+
+No residual source-retirement defect or new coverage requirement is established.
+Independent Sol verified the primary proof/unchanged sources and accepts original
+T149 source-guard completion. Root checked sources and primary receipts; only T149
+is marked complete. Broader final review/terminal/rollback/UI remain separate.
+Optimization: documentation/static receipt reads only; no production cost/cache or
+GM contract change, so no new build or repeated passing selection is warranted.
+
+R2 cause assessment also continued independently, read-only by Astra/high: the exact
+three-treatment/two-wait browser fixture is unchanged; retained files prove two
+milestones and turn46 response, not final healing. Existing prefix ends after a
+152.10s validation scope but lags actual execution; its unclosed treatment scope
+is not proof of a stuck treatment. Unresolved boundary is ordinary wait46 returning
+and treatment3 opening/confirmation. No specific functional/preparation defect or
+admission is established. Preserve UNKNOWN180.1041994/noTRX and retained root;
+no retry, limit/capture change, cache or new diagnostic stack. A5 and all other HOLD
+and pending semantics remain unchanged. Other independent original work continues.
+
 # US8/T177 six-scenario receipt map — historical acceptance reconciled
 
 Base/remote bfcc7a2aaa4f2f7317fd7b1744b83381e17df070 verified clean, no live
@@ -45,7 +106,7 @@ explicit; R2/A5 stay UNKNOWN with no retry admission. DFR/Mortal/Windows HOLD an
 both author ambiguities unchanged. Partial_success remains only accepted C2/cold
 reopen at32ed759, not C4/Engine/UI. No code/cache/IO/authority or GM contract change;
 no build needed for this documentation-only map. Independent document SOURCE and
-normal publication/remote/clean-source closing follow.
+normal publication/remote/clean-source closing follows externally.
 
 # Accepted original partial-success wound correction — runtime32ed759
 

@@ -1,3 +1,30 @@
+# Next original wound cell — existing-parent maneuver, DESIGN only
+
+US8 six-scenario receipt map and original T149 source-guard scope are independently
+accepted, with no new workload. R2 read-only assessment still gives no retry admission.
+Continue original FR-025/T081-D for one current single strain wound on an unequivocal
+player maneuver/setback. Ordinary maneuver's strain is uniquely unchanged; compare
+through existing owners, then apply exactly one capped step, with actual current
+parent/graph/History/source provenance. Preserve strict v1 new-parent route and every
+other burden/ordinary field. Reader DATA alone grants no capability. No implicit
+outcome inference, multi-wound reducer, new GM field or general battle rule. Ask
+independent bounded DESIGN before causal scaffold/code; existing services/recorder/
+ledger only, no parallel cache/diagnostic stack. No new code/runtime has begun.
+
+# Existing T149 source-ownership receipts reconciled
+
+The checkpoint now maps all original T149 source-retirement families to their
+accepted versioned guard/raw/carrier/offer/publication receipts. Five available
+primary summary/TRX groups rehashed without rerunning; no summed overlap count.
+Five owning source files are unchanged since accepted S1source6. Independent Sol
+review accepts original T149 source-guard completion; no residual retirement defect
+or new test requirement established. No terminal/C4/UI/full-feature closure.
+US8's six-scenario documentation map is independently accepted, historical only;
+T177 final/shared-boundary review remains open. R2 read-only Astra assessment finds
+no defect/retry admission: wait46 completion -> treatment3 remains unresolved;
+no timeout/capture/cache change. Continue original independent wound consequence
+work or existing final-evidence items, preserving both author questions and HOLDs.
+
 # US8/T177 original six-scenario receipt map
 
 The current checkpoint maps all six canonical US8 scenarios to the recorded

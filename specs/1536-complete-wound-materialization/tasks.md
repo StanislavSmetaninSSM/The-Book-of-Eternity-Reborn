@@ -1,6 +1,26 @@
+# T081-D current single-wound maneuver/setback — independent DESIGN next
+
+- [ ] Establish the minimal existing-parent proof for the original FR-025 failure-only strain: one exact current III/IV wound, player maneuver/setback, ordinary maneuver leaves strain unchanged, add one step at most broken. Do not infer ambiguous outcomes or aggregate multiple wounds.
+- [ ] Causal existing-owner proof before production changes; reuse actual creation/publication and next signed input, not forged current parents/resources.
+- [ ] Minimal existing-owner implementation only after independent DESIGN; preserve v1, current/source/history/authority checks and exact siblings. No new general combat/probe/cache framework or GM-authored rule.
+
+This is a known missing cell of existingT081-D/finite row1, not a new mandatory
+profile or battle system. Design only; no new code/test/runtime yet. Existing
+US8 receipt map and T149 source-guard task are accepted below. T177/T154 and R2/A5
+remain open; partial_success stays C2/cold only, both pending semantics unchanged.
+
+# T149 original ownership/retirement receipt reconciliation
+
+- [x] Independent Sol review accepts original T149 source-guard completion from the seven-row map, primary receipts and unchanged owning sources; no extension to terminal/UI/rollback acceptance.
+- [x] Read-only primary rehash/parse of existing S1green6/P2green16/N3green20/W2green14/D2green1; no workload repeat or summed distinct count. Older player-carrier receipts remain versioned separately.
+- [x] Independent bounded R2 cause assessment: no demonstrated defect/admission, unresolved wait46 return/treatment3 boundary; UNKNOWN/HOLD retained.
+
+No code/build/test/discovery/cache/GM change. Complete map, limits and external
+proof are in the checkpoint. Continue remaining independent original wound work.
+
 # T177-US8-RECEIPT-MAP — six original scenarios, documentation only
 
-- [ ] Independent final map review and publication: existing receipts matched to exact binding, atomic refusal, shared cancellation, dormancy/restoration, exact/null procedure skill and safe semantic projection; historicalSeptember5-6 evidence, no freshLinuxaggregate/raw restoration.
+- [x] Independent Sol final map review accepted; publication checkpoint5ff10010534826cab20b26d61eb16b51628a3962: existing receipts matched to exact binding, atomic refusal, shared cancellation, dormancy/restoration, exact/null procedure skill and safe semantic projection; historicalSeptember5-6 evidence, no freshLinuxaggregate/raw restoration.
 - [ ] T177 coherent final/shared-boundary review remains open. Existing changed lifecycle fault-probe runtime belongs toT154; no new scope implementation/test automatically required.
 
 No runtime/discovery/build or closed-case rerun for this map. Current checkpoint
@@ -16230,7 +16250,7 @@ lineages stay distinct. User authorized autonomous continuation in the same chec
 **Purpose**: Remove obsolete authority, prove complete cross-story behavior, synchronize all GM surfaces, and merge only from fresh evidence.
 
 - [ ] T148 [P] Audit `memory_suppression` runtime source/identity/carrier/lifecycle in `BookOfEternityClient/Services/EffectSourceAuthority.cs` and Saref tests; add an independent-survival test in `BookOfEternityClient.IntegrationTests/SarefMemorySuppressionWoundIsolationTests.cs`, and create a separate linked GitHub issue before #1536 closes if the audit proves metadata-only behavior
-- [ ] T149 [P] Harden source guards so no loose `PlayerWoundChanges`/`NPCWoundChanges`, direct wound file mapping/distribution, legacy wrappers/aliases/generated effects/healing progress, NPC effect-carrier wounds, raw UI parsing, or standalone wound writer remains in `BookOfEternityClient.Tests/WoundMaterializationSourceGuardTests.cs`
+- [X] T149 [P] Harden source guards so no loose `PlayerWoundChanges`/`NPCWoundChanges`, direct wound file mapping/distribution, legacy wrappers/aliases/generated effects/healing progress, NPC effect-carrier wounds, raw UI parsing, or standalone wound writer remains in `BookOfEternityClient.Tests/WoundMaterializationSourceGuardTests.cs`
 - [ ] T150 [P] Add complete strict example manifest coverage for every Mortal/afterlife constructor, repair, treatment, recovery, provider, command, History, and independent-legacy scenario in `Examples/example_validation_manifest.json` and `BookOfEternityClient.IntegrationTests/ExampleDocumentationValidationTests.Wounds.cs`
 - [ ] T151 [P] Add Russian terminology and no-debug/API/ID leakage scans for all wound/provider/player surfaces in `BookOfEternityClient.Tests/AfterlifeRussianTerminologyScannerTests.Wounds.cs` and `BookOfEternityClient.Tests/WoundPlayerFacingSourceGuardTests.cs`
 - [ ] T152 [P] Add adversarial Spectre markup, browser HTML/script, bidi/control/confusable, oversized payload, and recursive hidden-field cases in `BookOfEternityClient.Tests/WoundUntrustedTextTests.cs`
