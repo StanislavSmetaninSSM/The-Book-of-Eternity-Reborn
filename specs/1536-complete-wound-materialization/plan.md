@@ -1,3 +1,20 @@
+# T107 native chronology1 PASS — six dependent controls next
+
+On metadata18c2f7965207262f1f767abb63a45a857b4ed0e9 (Mainf544/Int06dc), the real
+CombatHealingThenLaterRetraumaPublishesOneExactHistoryAndReplays case completed
+1PASS, TRX21.8566290s, within original120s. It exercises actual II->I healing,
+exchange-local two claims/cumulative four claims, later I->II re-trauma, one
+common publication, exact History/roots/resource payments/signed replay, plus
+three embedded after-valid refusal oracles (not three extra tests).
+No timeout/skip/duplicate/underfill; complete TRX/full external capture index,
+post-artifact hashes, owned cleanup/no new temp roots/no managed owners verified.
+
+This closes the scoped new native case; six existing chronology controls remain
+UNRUN until the already approved conditional PREP is satisfied by this result.
+No new code/budget changes, no initial SAFE-stage/Engine/UI/fresh-process or
+wholeUS3/#1536 completion. Prior UNKNOWN/HOLD are unchanged. Source150 and this
+native1 remain separate versioned receipts; final independent OUTCOME pending.
+
 # Merge base qualification150 distinct PASS — native PREP next
 
 Final static settlement Fact passes1/1 on06dc53214 (TRX/category7.7268202s within
