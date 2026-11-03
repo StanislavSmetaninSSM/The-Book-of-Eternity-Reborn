@@ -2,7 +2,7 @@
 
 - [x] Bounded original-scope remainder and independent requirement reconciliation saved in physical-guided-checkpoint.md; parent boxes are not evidence of missing code.
 - [x] Causal actual C2 partial_success pressure/maneuver controls and ordinary-impact refusal controls: M1 actual2PASS/2exactintegration_requiredFAIL on a476,60s budget/fullcapture/cleanup. Source unchanged; independent Sol OUTCOME accepted.
-- [ ] Minimal existing-success-helper correction, GM no-extra-strain wording/example and SOURCE review, no new rule/schema/parent proof/cache.
+- [x] Minimal existing-success-helper correction and GMguide/example/manifest/typedguard SOURCE accepted by independent Sol; no new rule/schema/parent proof/cache. Still uncompiled/unrun.
 - [ ] Fresh affected builds, exact selected category/discovery/PREP, GREEN and affected success guards; independent OUTCOME and remote checkpoint.
 
 Only this unambiguous player pressure/maneuver case is selected. Both new author

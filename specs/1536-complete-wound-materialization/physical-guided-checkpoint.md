@@ -9,7 +9,7 @@ Fresh Integration exit0/71.93s/exact107warnings; Main/Unit retain d5bc lineage. 
 1383categories/13225methods, noexecute. M1 causal4 completed: ordinary negatives2PASS,
 valid pressure/maneuver partial2FAIL specifically integration_required after ordinary
 admission/actualIII selection/nonmutation. Category11.1265244/60s, wrapper18.136213s;
-all4TRX/exactselection/fullcapture/cleanup/noTMP/currenthashes verified. No timeout.
+oneTRX/fourunique cases/exactselection/fullcapture/cleanup/noTMP/currenthashes verified. No timeout.
 Post ebf35644d580343e22592eabcc1b5741aebf6704de104f4514dbd7d94ca78c56,
 summary e04bb62308556461eb9a27a16b307494fdda9b9692b0d3ded13567e025f975fa.
 Raw/build/proof paths remain outsidecheckout under spiritual-strain-preimage-data/M1-*.
@@ -20,8 +20,9 @@ ordinary/source/cost/dice checks remain. No new rule/schema/probe/v2/cache/autho
 GM guide/worked example/manifest/typed guidance guard synchronized for partial8/4,
 pressure maximum0/no fabricated offer, maneuver position-only/cold, no A/B.
 Optimization: constant-time existing predicate, no IO or repeated work introduced;
-no cache/speedup claim. Whole SOURCE, affected3builds, exact GREEN7 (new4 + oldsuccess2
-+ guidance1) and independent OUTCOME stillpending. No C4/Engine/UI/freshprocess or
+no cache/speedup claim. Independent Sol whole SOURCE/tool selection accepted;
+affected3builds, exact GREEN7 (new4 + oldsuccess2
++ guidance1) and independent GREEN OUTCOME stillpending. No C4/Engine/UI/freshprocess or
 whole strain/#1536 closure. Six-row original remainder and all UNKNOWN/HOLD stay.
 
 # Finite wounds-only remainder — 2026-11-03 04:50 UTC

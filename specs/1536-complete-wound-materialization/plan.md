@@ -5,7 +5,8 @@ legal source/IIIselection,11.1265244/60s, completecapture/cleanup and hashes clo
 Minimal production change reuses IsSuccessfulArtOutcome for the same player
 pressure/maneuver no-extra-strain branch. GMguide/example/manifest/typedguard sync;
 no other failure mapping, aggregation, parent proof/schema/cache or generalcombat.
-SOURCE/three affected builds/exactGREEN7 and OUTCOME next. Prior six-row finite
+Independent Sol coherent SOURCE accepted; three affected builds/exactGREEN7 and
+OUTCOME next. Prior six-row finite
 remainder remains authoritative; no existing UNKNOWN/HOLD has been rerun or closed.
 
 # Finite original remainder fixed before further strain work
