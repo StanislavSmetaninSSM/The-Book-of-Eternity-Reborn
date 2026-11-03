@@ -1,3 +1,64 @@
+# T154 mixed item/resource rollback7 — accepted, 2026-11-03
+
+Runtime/source: `25c5ae58f6411214cea03408aa5e1f6b079fe63f`.
+Exact existing method GuaranteedMixedItemAndResourceConsumption_EveryPipelineFailureRestoresExpandedRootsAndExactRetryCommitsOnce:
+**7/7 PASS**, category **141.3249038 s / original 600 s**, wrapper 147.84649864 s.
+All seven original cuts passed: runtime_refresh1/2, wound_post_seal1, wound_output1,
+critical_validation1, full_state_validation1 and cleanup1. No timeout, skip, duplicate
+or underfill; complete capture and owned/runtime cleanup verified, no new boe roots
+or managed owners. All 680 artifact/resource/native records remain unchanged.
+
+Cause was established by one diagnostic exact7 run at
+`c74ac9d9641f5ba9fb613d2513182adeacb41960`: 5 PASS / 2 FAIL in115.6593501 s.
+The existing per-test logger exposed Xunit.Sdk.SameException in the fixture's
+OnPublished -> ObserveOriginalReceipt callback: after verified rollback/rearm,
+retry legitimately obtained a new take receipt, while the old one-shot observer
+still asserted the first receipt's identity. It aborted npc_core.json publication
+and then wound_commands.json compensation, yielding the secondary
+mortal_wound_treatment_publication_terminal_release_failed. No production defect
+or gameplay-rule change was needed. Both original failure captures remain intact.
+
+The minimal test-only fix calls CompleteVerifiedFailureAttempt only after every
+existing byte/existence/count/same-plan/binding/ConfirmedHeld check and lease release,
+immediately before retry. It asserts Fired, then clears _armed. Shared callbacks,
+first-attempt compensation observation, all other consumers, seven InlineData rows
+and original Accepted/once-only expense predicates are unchanged. The existing
+logger/Describe assertion message is retained for future failures.
+
+Fresh Integration build at25c5ae58f: exit0, 71.757021533 s, 107 existing warnings /
+0 errors; exact selected source and PE/PDB binding verified. Unchanged Main/Support
+builds f54481d85 reused. Original compiled outputs and the diagnostic DLL/PDB delta
+were preserved with full decode/CRC/member-hash proof before overwrite. Per-case
+mutable roots and fresh authority checks remain; no cache, new diagnostic framework,
+or speedup claim. No GM/game contract changed, so no GM wording update was required.
+Independent Sol 6.1 / xhigh causal, applied SOURCE and final OUTCOME accepted.
+
+Official runner cannot select individual Theory rows; the author authorized one
+minimal supported diagnostic7 and the causal fix/confirmation. PlanOnly confirmed
+one method/seven cases/exclusive/no frontend/original600s. Confirmation command:
+
+```text
+pwsh -NoProfile -File scripts/test-csharp.ps1 -SelectionFile /workspace/tboe-linux-evidence-20261103/t154-mixed-consumption-diagnostics/selection-fixed7.json -NoBuild -Parallelism 1
+```
+
+Full raw, causal exceptions, prior FAILs and verified backups remain outside checkout:
+`/workspace/tboe-linux-evidence-20261103/t154-mixed-consumption-diagnostics`.
+
+- Fixed post-proof: `071ea20fee86db5c9c3bc421cf124afb27c84cebcd7f54b5f80e7bf55d2e9b17`.
+- Summary: `dfad88e419f7055ea6152d3483053c40f85752a0846ee0b580de8e27dfd164ce`.
+- TRX: `483fdff9d1266d95d89e64b51981549782cf1d7b79add3ecbeaf19d92fd178d9`.
+- Fixed artifact proof: `5ecdd0e3afa59d681286c353552acff2e663c9d6334725a0efe37e14d1867a61`.
+- Diagnostic FAIL post-proof: `25fa3539fb5e7f7b0544b0f9664a9b1b45741863bc25e2ee96706d4ccd4c280d`.
+
+This accepts the existing held guaranteed-treatment repair-loop route: exact expanded
+raw-root bytes/absence on failure, unchanged expense counts and original authority
+rearm, then one Accepted retry with item/energy/capacity transitions each +1, selected
+item count1 and durability4/4. Private images are asserted in-process, not emitted as
+a separate complete path-image dump. This is not UI/DOM/provider, fresh-process or
+Windows qualification. Original rollback24 and free diagnosis e70510c4 remain separate;
+no broad turn-lifecycle-repair or accepted rollback24 was repeated. Whole T154/#1536
+and unrelated UNKNOWN/HOLD remain open.
+
 # T154: mixed item/resource rollback7 — 5 PASS / 2 FAIL, 2026-11-03
 
 Verification-only runtime source: `6d926c971281d30376f0d9869eb65162be5a29b0`.

@@ -1,30 +1,17 @@
-# T154 mixed rollback — diagnostic cause established; fixture fix WIP
+# T154 mixed item/resource rollback7 — accepted
 
-Diagnostic runtime `c74ac9d9641f5ba9fb613d2513182adeacb41960`: exact7 completed
-5 PASS / 2 FAIL, 115.6593501 s / unchanged 600 s, no timeout. Existing logger shows
-both retries fail because the still-armed test OnPublished callback calls Assert.Same
-on first-attempt OriginalReceipt versus the legitimate new retry receipt. This throws
-while writing npc_core.json and again while restoring wound_commands.json, producing
-mortal_wound_treatment_publication_terminal_release_failed. No production defect or
-new gameplay rule is established; full causal exceptions are retained externally.
-
-Minimal test-only correction retires that one-shot probe explicitly in the target
-method only, after all existing exact byte/existence/count/plan/binding/ConfirmedHeld
-rollback/rearm checks and lease release, immediately before retry. Retirement asserts
-Fired and clears _armed. Shared OnPublished/ObserveOriginalReceipt and first-attempt
-compensation checks remain unchanged; no other consumer calls retirement. All seven
-InlineData and Accepted/once-only spend predicates are retained. Independent Sol
-6.1 / xhigh causal/design accepted; applied SOURCE, fresh Integration build and one
-exact7 confirmation remain pending. No new PASS or fix acceptance yet.
-
-Main/Support and immutable inputs remain unchanged; reuse their verified builds.
-Integration alone must rebuild; preserve its old compiled delta before overwrite.
-Per-case mutable roots and fresh authority checks remain; no cache/speedup claim or
-parallel diagnostic mechanism. No game/GM contract changed; no GM update required.
-Full output, prior failures, artifacts and backup manifests remain outside checkout:
-`/workspace/tboe-linux-evidence-20261103/t154-mixed-consumption-diagnostics`.
-Previous rollback24 and free-diagnosis receipts stay separate. T154/#1536 and prior
-UNKNOWN/HOLD remain open. Do not run broad turn-lifecycle-repair.
+Source/runtime `25c5ae58f6411214cea03408aa5e1f6b079fe63f`: **7/7 PASS**,
+141.3249038 s / unchanged600s. Existing logger proved both previous retry failures
+were fixture OnPublished/ObserveOriginalReceipt comparing a legitimate new retry
+receipt with the first attempt. Minimal fix retires only that completed probe after
+all original exact rollback/count/plan/binding/ConfirmedHeld checks and lease release.
+Shared callbacks, compound compensation, all other consumers and predicates remain
+unchanged; no production/gameplay fix. Fresh Integration exit0/107baselinewarnings,
+PE/PDB/source binding and all680 post-run artifact hashes verified. Source/causal/final
+OUTCOME accepted by independent Sol6.1/xhigh. Full capture/cleanup verified, no owners
+or new boe roots. See physical-guided-checkpoint for command, exact scope, hashes and
+external raw path. Prior failures remain preserved; original rollback24/free diagnosis
+are separate, no broad category rerun. Whole T154/#1536 and other UNKNOWN/HOLD stay open.
 
 # T154 mixed item/resource rollback7 — 5 PASS / 2 FAIL
 
