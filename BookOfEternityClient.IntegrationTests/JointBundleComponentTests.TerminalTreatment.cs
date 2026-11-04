@@ -14,7 +14,8 @@ public sealed partial class JointBundleComponentTests
         await using var fixture = new Fixture(_output, nameof(GenuineJointTerminalTreatmentKeepsAcquisitionAndLinkedHealStages),
             passiveTimingEvents: true, gzipRecords: true, continuingPassiveTimings: true);
         await fixture.InitializeAsync(terminalTreatment: true);
-        var bound = await fixture.PrepareBoundJointAsync();
+        // Reuse only stable source DATA after all fixture writes, with existing fresh authority fences.
+        var bound = await fixture.PrepareBoundJointAsync(reuseStableData: true);
         var bytes = await fixture.CaptureCandidateInvocationBeforeImagesAsync();
         AcceptedMechanicsPlanningResult common;
         using (var source = fixture.Files.BeginSourceDataOperationIfNeeded())

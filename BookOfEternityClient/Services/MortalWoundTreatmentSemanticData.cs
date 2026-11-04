@@ -34,6 +34,7 @@ internal sealed partial class MortalWoundTreatmentSemanticData
         _outcome = outcome;
         _resolution = resolution;
         _capture = CaptureCurrent;
+        _terminalOutcomeCapture = CaptureTerminalOutcomeCurrent;
     }
 
     /// <summary>
@@ -45,8 +46,16 @@ internal sealed partial class MortalWoundTreatmentSemanticData
     /// <returns>
     /// <see langword="true"/> when the original retained-outcome agreement succeeds; otherwise <see langword="false"/>.
     /// </returns>
-    internal bool ReadOutcomeAgreement(ValidationOperation? operation) =>
-        Read(operation, OutcomeAgreement, () => _outcome.AgreesWith(_resolution));
+    internal bool ReadOutcomeAgreement(ValidationOperation? operation)
+    {
+        if (operation is not null && IsTerminalOutcomeShape(_resolution))
+        {
+            var dependency = operation.GetStructuralDependency(_terminalOutcomeIdentity, _terminalOutcomeCapture);
+            return operation.GetOrCompute(OutcomeAgreement, _terminalOutcomeIdentity, [dependency],
+                () => _outcome.AgreesWith(_resolution));
+        }
+        return Read(operation, OutcomeAgreement, () => _outcome.AgreesWith(_resolution));
+    }
 
     /// <summary>
     /// Reuses the checked resource finalization fingerprint as DATA without retaining a live permission.
@@ -57,9 +66,18 @@ internal sealed partial class MortalWoundTreatmentSemanticData
     /// <returns>
     /// The original checked finalization fingerprint, or <see langword="null"/> for the original refusal.
     /// </returns>
-    internal string? ReadFinalizationFingerprint(ValidationOperation? operation) =>
-        Read(operation, FinalizationFingerprint, () =>
-            MortalWoundTreatmentResourceComposer.Finalize(_resolution).Finalization?.FinalizationFingerprint);
+    internal string? ReadFinalizationFingerprint(ValidationOperation? operation)
+    {
+        string? Source() => MortalWoundTreatmentResourceComposer.Finalize(_resolution).Finalization?.FinalizationFingerprint;
+        if (operation is not null && IsTerminalOutcomeShape(_resolution) &&
+            HasEmptyTerminalResources(_resolution.ResourceAuthority) &&
+            HasEmptyTerminalResources(_resolution.RequestAuthority.ResourceAuthority))
+        {
+            var dependency = operation.GetStructuralDependency(_terminalOutcomeIdentity, _terminalOutcomeCapture);
+            return operation.GetOrCompute(FinalizationFingerprint, _terminalOutcomeIdentity, [dependency], Source);
+        }
+        return Read(operation, FinalizationFingerprint, Source);
+    }
 
     /// <summary>
     /// Applies the existing operation protocol to one immutable semantic result and its complete structural dependency.

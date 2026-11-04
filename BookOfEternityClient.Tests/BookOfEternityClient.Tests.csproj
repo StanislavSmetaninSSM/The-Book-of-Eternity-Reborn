@@ -36,6 +36,7 @@
   <ItemGroup>
     <Compile Remove="WoundContractTestData.cs" />
     <None Update="Fixtures\treatment-semantic-guaranteed-v1.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="Fixtures\treatment-semantic-terminal-v1.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
 </Project>

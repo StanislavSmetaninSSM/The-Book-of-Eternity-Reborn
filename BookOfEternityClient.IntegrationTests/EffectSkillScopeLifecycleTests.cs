@@ -792,11 +792,18 @@ public sealed partial class WoundMaterializationLifecycleTests
         }
     }
 
+    /// <summary>Prepares an isolated focused wound command through the signed Mortal occurrence producer.</summary>
+    /// <param name="focusedSkillId">Exact permanent skill selected by the wound consequence.</param>
+    /// <param name="hooks">Optional fixture filesystem publication observers.</param>
+    /// <param name="includeWrongOwnerSkill">Places the skill on a different owner for refusal scenarios.</param>
+    /// <param name="seedCanonicalMortalSoul">Seeds the current Mortal realm before signing for the exact rollback consumer.</param>
+    /// <returns>The owned fixture context and composed wound command.</returns>
     internal static async Task<FocusedWoundScopeScenario>
         PrepareFocusedSkillScopedWoundAsync(
             string focusedSkillId,
             FileSystemManagerHooks? hooks = null,
-            bool includeWrongOwnerSkill = false)
+            bool includeWrongOwnerSkill = false,
+            bool seedCanonicalMortalSoul = false)
     {
         var context = await CreatePlayerContextAsync(hooks);
         try
@@ -833,6 +840,11 @@ public sealed partial class WoundMaterializationLifecycleTests
                     NpcCoreChangesContract.NpcCorePath,
                     npcRoot.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
                 await RefreshResourceOwnerAuthorityAsync(context);
+            }
+            if (seedCanonicalMortalSoul)
+            {
+                await context.WriteExactJsonAsync("game_state/meta/soul_state.json",
+                    new JsonObject { ["currentRealm"] = "Mortal World" }.ToJsonString());
             }
             var authority = await CreateSignedAuthorityAsync(
                 context,
@@ -952,7 +964,8 @@ public sealed partial class GameEngineTurnLifecycleTests
                 new FileSystemManagerHooks
                 {
                     LocalPublicationObserver = probe.Observe
-                });
+                },
+                seedCanonicalMortalSoul: true);
         await using var context = prepared.Context;
         using var ownedContext = new CleanupOwnedFixture(context.RootPath, WriteEffectCutEvidence);
         var engine = CreateGameEngine(fileSystem: context.FileSystem);

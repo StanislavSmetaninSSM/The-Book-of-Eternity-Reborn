@@ -159,6 +159,27 @@ internal sealed class MortalWoundTreatmentOutcomePreparation
         _selectedGraphFingerprint = source._selectedGraphFingerprint;
     }
 
+    /// <summary>
+    /// Proves that a closed terminal selection retains the same externally reachable DATA aliases.
+    /// Private wound copies, scalar seals and selection fingerprints are fixed for this preparation.
+    /// This is cache eligibility only, never an agreement verdict or permission to publish.
+    /// </summary>
+    /// <param name="resolution">The supplied resolution whose complete DATA will be captured.</param>
+    /// <returns>True only for the audited terminal shape and identical retained source companions.</returns>
+    internal bool HasSameTerminalAgreementSources(MortalWoundTreatmentResolution resolution)
+    {
+        if (_selectedResolution is not { } retained ||
+            !MortalWoundTreatmentSemanticData.IsTerminalOutcomeShape(resolution) ||
+            !MortalWoundTreatmentSemanticData.IsTerminalOutcomeShape(retained) ||
+            !ReferenceEquals(retained.RequestAuthority, resolution.RequestAuthority) ||
+            !ReferenceEquals(retained.Coordinates, resolution.Coordinates) ||
+            !ReferenceEquals(retained.ModeEvidence, resolution.ModeEvidence)) return false;
+        for (var index = 0; index < 3; index++)
+            if (!ReferenceEquals(retained.DeclaredResult[index], resolution.DeclaredResult[index]) ||
+                !ReferenceEquals(retained.OutcomeIntents[index], resolution.OutcomeIntents[index])) return false;
+        return true;
+    }
+
     internal MortalWoundTreatmentOutcomePreparation DetachedCopy() => new(this);
 
     internal string GetTreatmentEventRef() => _treatmentEventRef;

@@ -40838,6 +40838,58 @@
             ]
         },
         {
+            "id": "wound-snapshot-required-inventory-current",
+            "responsibility": "T154/T177 exact existing wound RequiredPaths inventory: real Mortal-world backup and signed baseline include each required path in Files, SnapshotFileHashes, RollbackBackups and RollbackBaselineFiles; explicit restore returns original opaque bytes after mutation.",
+            "excludes": "No wound gameplay publisher or owner-specific item/quest/journal outcomes, no battle actions, no absent-path matrix, terminal treatment, full T154/T177 or Windows qualification; other lifecycle cases remain unselected.",
+            "changeHints": [
+                "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.Wounds.cs",
+                "BookOfEternityClient/Services/WoundAcceptedTurnSnapshotContract.cs",
+                "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs"
+            ],
+            "related": [],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": true,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 3,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.WoundSnapshotAndRollback_TracksEveryFoundationalAuthorityPath"
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "wound-focused-skill-rollback-current",
+            "responsibility": "T154/T177 exact existing focused-skill wound publication failure followed by explicit GameEngine rollback on current shared snapshot/normalizer dependencies; exact tracked bytes and absence, wound/effect identity/History, diagnostic/generation and owned cleanup.",
+            "excludes": "No replay of the other accepted F18 effect cuts, general skill-scope/combat behavior, terminal treatment, full T154/T177 acceptance or Windows qualification.",
+            "changeHints": [
+                "BookOfEternityClient.IntegrationTests/EffectSkillScopeLifecycleTests.cs",
+                "BookOfEternityClient.IntegrationTests/EffectPublicationFailureProbe.cs",
+                "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs"
+            ],
+            "related": [],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": true,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 3,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.EffectSkillScopeLifecycleTests_FocusedPublicationFailureRollsBackEveryTrackedSurface"
+                    ]
+                }
+            ]
+        },
+        {
             "id": "portable-effect-original-rollback-publication",
             "responsibility": "F18 original effect/focused-wound rollback14:13 authentic changed MemberPublished known-rollback cuts plus1 genuine Committed post-check corruption with committed command consumption. Preserve direct normalizer versus explicit engine rollback distinction, exact tracked before-images/absence, diagnostic/generation and strict two-root cleanup.",
             "excludes": "No automatic whole-normalizer compensation, one-journal whole turn, uncertainty injection, first-mechanical-write ordering, broad effect/skill scenarios, live GM or native Windows. Original snapshot/core category owners retained.",
@@ -44572,6 +44624,31 @@
       "project": "integration",
       "tests": [
         "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_UnsafeSettlementCannotFallThroughTerminalCatchAndPreCanonicalSettlementHasNoCatchAll"
+      ]
+    }
+  ]
+},
+{
+  "id": "wound-procedure-postwrite-rollback-current",
+  "responsibility": "T154/T177 existing procedural wound treatment post-write failure: restore exact transaction roots and rearm the same plan, binding, item/resource/procedure claims and unchanged Fate Shield after wound_output fault.",
+  "excludes": "No spiritual combat or Fate behavior changes, no successful procedural retry, terminal quarantine, other failure cuts, full T154/T177 or Windows qualification.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.Procedure.cs",
+    "BookOfEternityClient/Services/MortalWoundTreatmentOutcomePublicationPlanner.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 3,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ProcedurePostWriteFailure_RestoresEveryRootAndRearmsSameClaimsAndPlan"
       ]
     }
   ]

@@ -3319,6 +3319,115 @@ There is more remaining than a pair of tests; no percentage or completion date i
 | T131–T147 / US6 | Quotes/payment, Elyara current locality/life, Shining healer role/access, public and negotiated aid are implemented and accepted in bounded scopes. T142 historical-faction exception is resolved. | Close whole scenario/evidence mapping and any genuinely missing consumer; no new economics or repeat of accepted journeys solely for parent boxes. |
 | T167–T177 / US8 | Scope union, offered/current authority, RollSkillId, common reducer, dormancy/lifecycle/replay/rollback/catalog/GM cutover T167–T176 are implemented. | Reconcile whole T177 verification/review against eight US8 scenarios and exact existing receipts; do not invent a missing scope runtime from that parent checkbox. |
 
+### T154/T177 focused-skill rollback: current exact boundary accepted — 2026-11-04
+
+Historical F18 focused-skill acceptance is recorded in
+[the storage evidence map](../1553-portable-local-storage/plan.md#f18-effects--composed14-bounded-linux-obligations-green-2026-10-09).
+Its initial-run test/probe pins matched, but shared snapshot/normalizer/filesystem dependencies
+changed and the historical exact TRX is unavailable locally. It is not current proof.
+The new exact-method leaf `wound-focused-skill-rollback-current` retains the original
+180-second ceiling, exclusive Integration/no frontend, and no unrelated F18 cuts.
+
+One current invocation completed **1 FAIL / 0 PASS**, category 5.6709346s,
+wrapper 11.2690013s, on base `b43726ec7494e4c7600733ca31330212201a4a41`
+plus the pinned working tree. Raw admission at `EffectSkillScopeLifecycleTests.cs:994`
+refused `game_state/meta/soul_state.json`: the current pending-turn snapshot cannot
+provide immutable reader authority. This occurs before probe arming, normalization
+and explicit Engine rollback; their oracles are unexercised, not failed rollback proof.
+That initial result precedes the test-only correction below. T154/T177 remain open.
+
+Fresh SDK8 Integration/Main/Support build succeeded (108 warnings, 0 errors, 51.47s);
+this is not SDK10/analyzer-clean qualification. Official PlanOnly selected exactly
+one case/descriptor; discovery-only catalog validation passed 1406 categories /
+13319 methods-files. All 2206 source and 347 output pins remained unchanged; actual
+selection and runner/runtime cleanup were complete, with no timeout or duplicate.
+Independent Sol 6.1/xhigh SOURCE/PREP and actual OUTCOME classification accepted.
+Evidence remains outside Git at `/tmp/boe-focused-rollback-current/after-proof.json`:
+summary SHA256 `a761eda408e379fe71c25ecccfbafd93ca6152f6c42ba63f0b6dc924e669190d`,
+TRX SHA256 `c4a5b06330bdfd89368443b2d9ceb67463ad958a427bb72ee660949446cb5725`.
+Earlier environment/SDK10 preparation failures executed no tests and remain retained.
+Optimization assessment: one genuine current interaction was required because shared
+runtime identity changed; no cache, fixture shortcut, replayed accepted current cut,
+GM contract change or speedup claim. Initial verification changed only catalog and separate selection; terminal optimization
+files remain untouched by this slice.
+
+Read-only diagnosis found current canonical admission requires signed soul bytes at
+`ValidationService.WoundMaterialization.cs:220–224`, while this fixture never seeded
+them and its snapshot producer skips missing files. The existing Creation.cs Mortal
+peer supplies the precedent. A test-only opt-in now seeds the same Mortal realm before
+`CreateSignedAuthorityAsync`, only for this exact rollback Fact. Other callers, original
+oracles and production remain unchanged. Independent Sol 6.1/xhigh SOURCE/PREP
+accepted; fresh SDK8 build succeeded (108 warnings, 0 errors, 49.33s), and official
+PlanOnly again selected one case. The separately authorized corrected invocation
+completed **1/1 PASS**, category 9.0781722s / 180s, wrapper 14.2899148s. Actual fault
+publication and explicit Engine rollback oracles passed, including exact byte/absence,
+diagnostic/generation and no-journal checks. Both owned roots and runner cleanup
+completed; all 2206 source and 347 output pins remained unchanged. Final independent
+Sol 6.1/xhigh OUTCOME accepted. This closes only this current focused rollback boundary,
+not full T154/T177, spiritual combat, terminal treatment, UI or Windows acceptance.
+Corrected evidence: `/tmp/boe-focused-rollback-current/fixed/after-proof.json`, summary
+SHA256 `236c0a092af4bfb805dd0c625e4974c4e596bf819e5c1bcedbf49cf4fe165307`, TRX
+SHA256 `b321d24d7c3f7bc9f4b0ed170d984d6e8217d63a71e17ac102c79d7426255931`.
+The first failed run remains separate. One pre-sign fixture write uses the existing
+capture/signing path; no new cache, production rule or performance claim was added.
+
+### T154/T177 required wound inventory: current singleton PASS — 2026-11-04
+
+The unchanged `WoundSnapshotAndRollback_TracksEveryFoundationalAuthorityPath` Fact
+now covers 40 required paths: historical 14 plus 7 journals, 3 quests, 9 inventory /
+characteristic roots, 6 wound checkpoint/receipt roots and 1 decision output.
+The real Mortal-world backup and signed baseline include each path in Files,
+SnapshotFileHashes, RollbackBackups and RollbackBaselineFiles; explicit restoration
+then returns every mutated path to its original opaque bytes. This is inventory /
+byte transport evidence, not gameplay validity or owner-specific publication coverage.
+
+Exact leaf `wound-snapshot-required-inventory-current`: **1/1 PASS**, category
+5.0546372s / 180s, wrapper 10.3354595s; no other lifecycle/spiritual tests ran.
+The preceding successful SDK8 build remains applicable: all C#/project inputs and
+347 outputs were unchanged; only catalog/selection metadata changed. Official
+PlanOnly1 and catalog1407/13319 passed; all2207 source/347 output pins remained
+unchanged through execution. Selection complete, no skip/duplicate/timeout, runner /
+runtime cleanup true. A separate post-check found zero matching fixture roots in
+`/tmp`; no before-root inventory was captured. Independent SOURCE/PREP accepted;
+final independent Sol 6.1/xhigh OUTCOME accepted. Full T154/T177 and
+owner-specific gameplay remain open.
+Raw stays outside Git: `/tmp/boe-wound-snapshot-current/after-proof.json`; summary
+SHA256 `19c0197ea886d62f553d2f67f5b0515f746c7742c2db0560a272c2d3e53d0c89`, TRX
+SHA256 `48e2e66e4dfc71aec30fa0790ba27c16d85713fc48e34a0c47bdb706fe5c4b1b`.
+No production/test-body/GM change, new cache or speedup claim; fresh current-inventory
+qualification reuses the matching build and does not repeat other accepted cuts.
+
+### T154/T177 procedural wound rollback: current singleton PASS — 2026-11-04
+
+The unchanged existing `ProcedurePostWriteFailure_RestoresEveryRootAndRearmsSameClaimsAndPlan`
+Fact qualifies the T070b5 Step4 procedural treatment boundary separately from the
+accepted guaranteed mixed rollback7. A real treatment with selected item, energy
+and Fate Shield faults at `wound_output`1 after normalization/post-seal validation.
+It proves exact transaction before-images, no extra item/resource/wound/Fate
+transitions, unchanged active shield, the same plan/binding, live procedure
+reservation and ConfirmedHeld registry after `RetryablePublicationRearmed`.
+This does not prove successful procedural retry, other failure cuts, terminal
+quarantine, spiritual combat, full T154/T177 or Windows acceptance.
+
+Exact leaf `wound-procedure-postwrite-rollback-current`: **1/1 PASS**, category
+20.5059736s / 180s, wrapper25.6213528s, complete, no skip/duplicate/timeout;
+owned-tree/runtime cleanup true. Both treatment/lifecycle fixture root inventories
+were empty before and after. Fresh serial `dotnet build` with `-t:Rebuild -m:1
+-nr:false -p:UseSharedCompilation=false --no-restore` completed100.23s,
+154 warnings/0 errors. SDK8.0.427/runtime8.0.33/Pwsh7.6.8: compatibility execution,
+not required SDK10/analyzer-clean qualification. All2208 source and347 output pins
+remained unchanged through execution. Official PlanOnly1 and catalog1408/13319
+passed. Earlier premature-build discovery and invalid catalog-parameter attempts
+were preparation failures with zero tests, retained separately, not gameplay REDs.
+Independent Sol 6.1/xhigh SOURCE/PREP and final OUTCOME accepted.
+
+Raw stays outside Git at `/tmp/boe-procedure-rollback-current/after-proof.json`;
+summary SHA256 `9cd89635008a111b95cf536cc52a7264048a8dc5b76d477883373dc7ebc4301f`,
+TRX SHA256 `e807f77a271d00e83457c91db8efb458d2578bc259a595815df756b5b76f6481`.
+Only catalog/selection/evidence documentation changed. No production, test-body,
+Fate or spiritual rule changes, new cache or speedup claim. One independent fresh
+interaction checks evolved shared dependencies; no repeated accepted cut is claimed.
+
 ## Cross-cutting acceptance and separate holds
 
 | Existing IDs / gate | Remaining obligation or limit | Next criterion / admission |

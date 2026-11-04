@@ -2,10 +2,48 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "mortal-wound-mixed-consumption-rollback",
-      "reason": "#1536 T154 verification-only: no exact retained current receipt for this existing seven-case real item/resource spend rollback and exact retry method; do not execute the broad lifecycle owner or repeat accepted rollback24.",
+      "category": "core-treatment-semantic-data",
+      "reason": "#1536 bounded terminal agreement and empty-resource finalization scalar DATA reuse: actual source counts, structural invalidation, fallback/error parity, observers and lifetimes. Preparation scalar experiment removed after inconclusive aggregate benefit; original preparation replay retained.",
       "contracts": [
-        "#1536 T070 B.4 / T154 actual item-resource publication rollback, exact authority rearm and one-use retry"
+        "Terminal guaranteed reduce(1), reduce(2), heal scalar DATA in existing ValidationOperation; no cached authority or broader stage replay"
+      ]
+    },
+    {
+      "category": "core-operation-structural-data",
+      "reason": "#1536 related structural dependency protocol coverage after adding complete terminal semantic input capture and fresh fallback.",
+      "contracts": [
+        "Existing operation structural capture mutation, failure, lifetime and callback rules"
+      ]
+    },
+    {
+      "category": "mortal-physical-terminal-joint",
+      "reason": "#1536 actual terminal joint consumer with existing bounded source-DATA scope; preserve all original assertions and 120-second category limit. Aggregate-only diagnostic is separate and not acceptance.",
+      "contracts": [
+        "Physical terminal acquisition/treat/heal stage linkage and fresh joint authority checks"
+      ]
+    },
+    {
+      "category": "wound-focused-skill-rollback-current",
+      "reason": "#1536 accumulated change includes the exact rollback fixture correction: required canonical Mortal soul seed before snapshot signing. Retain this accepted singleton in CI to cover current focused wound rollback and explicit Engine restoration; original 180-second ceiling.",
+      "contracts": [
+        "#1536 T154/T177 focused wound exact rollback bytes/existence and explicit Engine restoration",
+        "Historical F18 acceptance stays historical; current exact case only, no full feature closure"
+      ]
+    },
+    {
+      "category": "wound-snapshot-required-inventory-current",
+      "reason": "#1536 accumulated verification includes the accepted exact inventory leaf for all 40 current RequiredPaths in signed snapshot/backup and byte restoration. Keep its explicit CI membership without broad lifecycle or gameplay claims; 180-second ceiling.",
+      "contracts": [
+        "#1536 T013/T027/T054/T154/T177 wound signed inventory and exact opaque-byte restoration",
+        "Current RequiredPaths snapshot files/hashes/backups/baseline membership, not gameplay publication acceptance"
+      ]
+    },
+    {
+      "category": "wound-procedure-postwrite-rollback-current",
+      "reason": "#1536 accumulated verification includes the accepted procedural wound_output fault singleton proving exact compensation and same-plan/claim rearm. Keep its explicit CI membership without successful-retry or spiritual-combat claims; 180-second ceiling.",
+      "contracts": [
+        "#1536 T154/T177 procedural wound treatment atomic rollback and same-claim rearm",
+        "T070b5 procedure publication Step 4 compound failure boundary"
       ]
     }
   ]

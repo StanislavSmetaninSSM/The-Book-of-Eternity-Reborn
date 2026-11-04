@@ -62,6 +62,9 @@ public partial class FileSystemManager
         _operationTimingContext?.Observer is { } observer ? new OperationTimer(observer, name) :
         _operationTimingContext?.Recorder?.Measure(name);
 
+    /// <summary>Reports an arbitrary synchronous callback whose original calls cannot be skipped by DATA reuse.</summary>
+    internal static bool HasCurrentOperationTimingObserver => _operationTimingContext?.Observer is not null;
+
     /// <summary>Measures only through the existing passive recorder, never invoking an arbitrary observer.</summary>
     /// <param name="name">The literal passive operation name.</param>
     /// <returns>The existing passive scope, or null when an observer takes precedence or no recorder is active.</returns>
