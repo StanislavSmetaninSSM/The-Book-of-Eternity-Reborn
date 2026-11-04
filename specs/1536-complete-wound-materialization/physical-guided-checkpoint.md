@@ -7734,3 +7734,20 @@ exhaustive epic remainder: US3 lifecycle/conflict and US7/recovery/cross-cutting
 acceptance still need actual-code/evidence reconciliation, not blind checkbox
 completion. Existing DFR/Mortal/Windows HOLDs, guardian intermittency and cross-OS
 DATA limitations remain open; none is relabelled PASS or automatically retried.
+
+## Display text boundary qualification (T152)
+
+On source based on b43726ec7494e4c7600733ca31330212201a4a41, six
+independent parser rows were added for description, prognosis and the first
+visibleSymptoms element at the existing 2000/2001-character boundary. The
+existing name and acquisitionNarration rows were retained. The exact ten-row
+selection passed 10/10 in 3.0396306 seconds (60-second category limit); no
+skips, duplicate identities or underfill, and owned/runtime cleanup completed.
+The fresh serial Unit build passed with 155 warnings and zero errors; no warning
+baseline equivalence is claimed. Independent review found no source defects.
+The old four-row receipt remains historical and does not qualify the new rows.
+These are isolated small in-memory fixtures; caching is not warranted and no
+production rule, UI behavior, Unicode policy or spiritual-combat rule changed.
+This is not full T152, UI, engine, or whole-feature qualification. The A5 joint
+terminal treatment remains unqualified under its original timeout; aggregate-only
+diagnostic work is separate from acceptance.

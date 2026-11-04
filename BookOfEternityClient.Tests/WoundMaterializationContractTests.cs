@@ -14,6 +14,12 @@ public sealed class WoundMaterializationContractTests
     [InlineData("name", 2001, false)]
     [InlineData("acquisitionNarration", 2000, true)]
     [InlineData("acquisitionNarration", 2001, false)]
+    [InlineData("description", 2000, true)]
+    [InlineData("description", 2001, false)]
+    [InlineData("prognosis", 2000, true)]
+    [InlineData("prognosis", 2001, false)]
+    [InlineData("visibleSymptoms[0]", 2000, true)]
+    [InlineData("visibleSymptoms[0]", 2001, false)]
     public void Parse_DisplayTextPreservesBoundaryAndRejectsOversizedField(
         string field,
         int length,
@@ -24,7 +30,10 @@ public sealed class WoundMaterializationContractTests
         Assert.True(baseline.IsValid, DescribeIssues(baseline));
 
         var text = new string('я', length);
-        wound["display"]![field] = text;
+        if (field == "visibleSymptoms[0]")
+            wound["display"]!["visibleSymptoms"]![0] = text;
+        else
+            wound["display"]![field] = text;
         var original = wound.ToJsonString();
 
         var result = Parse(wound);
@@ -35,9 +44,15 @@ public sealed class WoundMaterializationContractTests
             Assert.True(result.IsValid, DescribeIssues(result));
             Assert.Empty(result.Issues);
             var envelope = Assert.IsType<WoundMaterializationEnvelope>(result.Wound);
-            Assert.Equal(text, field == "name"
-                ? envelope.Display.Name
-                : envelope.Display.AcquisitionNarration);
+            Assert.Equal(text, field switch
+            {
+                "name" => envelope.Display.Name,
+                "acquisitionNarration" => envelope.Display.AcquisitionNarration,
+                "description" => envelope.Display.Description,
+                "prognosis" => envelope.Display.Prognosis,
+                "visibleSymptoms[0]" => envelope.Display.VisibleSymptoms[0],
+                _ => throw new ArgumentOutOfRangeException(nameof(field), field, null)
+            });
         }
         else
         {
