@@ -6,8 +6,8 @@
 Зависимости: T147.A → T148.1 → T148.2 → T148.3. Scope только документы.
 
 - [x] T148.1 [US148] Source audit, feature pin и реальные Spec Kit setup; требования в spec.md, план в plan.md, источники в research.md; read-only analyze до арифметики.
-- [x] T148.2 [US148] Создан effect-clocks-and-transitions.md, обновить data-model.md/quickstart.md/spiritual-arts-concept.md; FR148.1–4 сопоставлены,7 точных timelines/HP/барьер/повтор события и22 новые ссылки прошли; это арифметика, не runtime.
-- [ ] T148.3 [US148] Whole-block Astra/high review, scope/links/remote/API/new restore/issue; свидетельство SC148.2 в review.md. Новые механики не объявлять принятыми.
+- [x] T148.2 [US148] Создан effect-clocks-and-transitions.md, обновлены data-model.md/quickstart.md/spiritual-arts-concept.md; FR148.1–4 сопоставлены,7 точных timelines/HP/барьер/повтор события и22 новые ссылки прошли; это арифметика, не runtime.
+- [x] T148.3 [US148] Whole-block Astra/high review3d5be861..1ae45e05 — PASS без блокирующих замечаний; необязательное уточнение общей границы внесено. Scope/links/WIP remote/new restore проверены. Финальная публикация/API/issue readback — verification.json и issue1573, свидетельство SC148.2 в review.md. Новые механики остаются кандидатом.
 
 ## T147.A — принято автором 2026-11-06
 

@@ -15,7 +15,16 @@ reuse active feature — прямое указание пользователя,
 Свидетельства в D:\BoeDiagnostics\effect-clocks-t148\20261106;
 сырые результаты/clone не включаются в Git. Блок проверяет арифметику/договоры,
 а не готовый scheduler/общий баланс. 7 Fraction-timelines/HP/барьер/повтор-event,22 новые ссылки,11-file scope
-и diff/check прошли. Whole-block review ещё не завершено.
+и diff/check прошли. Independent GPT-6 Astra/high whole-block review
+3d5be861..1ae45e05 — PASS без блокирующих замечаний. Необязательная ясность:
+новый выбор игрока только после всех событий текущей границы и expiry;
+parent проверил/внёс, существующий phase order сохранён. Числа не менялись.
+WIP1ae45e05f2af36271a4e0a8f7c33ba278c338d8a опубликован обычным push;
+SHA совпал. Новый clean sparse restore восстановил11 файлов и5 инструкций,
+Git blobs и checkout bytes совпали. Финальный checkpoint/API/readback —
+verification.json и issue1573; runtime/Rules/боевых тестов нет.
+Маршрутизация: один source audit и одно whole-block review; существенного
+rework нет, экономия без измерений не заявляется. Кэш/runtime не изменены.
 
 ## T147.A — фиксация принятия
 
