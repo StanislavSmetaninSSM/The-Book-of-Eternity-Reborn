@@ -2,7 +2,7 @@
 
 ## T147.A — принято автором 2026-11-06
 
-- [ ] T147.A1 Записать принятие показанного T147 без новых правил/цен, сверить6-doc diff, независимый review и remote/new restore/issue readback. Арифметика не меняется; повтор боевых/C# проверок не требуется.
+- [x] T147.A1 Принятие показанного T147 записано без новых правил/цен; exact-content/6-doc diff/5links проверены. Independent Sol6.1/xhigh review92a189154..e100773e — PASS. WIP remote SHA проверен; финальный checkpoint/API/new restore/readback — issue1573 и acceptance-20261106/verification.json. Арифметика не менялась; повтор боевых/C# проверок не требовался.
 
 ## T147 — периодический урон
 
