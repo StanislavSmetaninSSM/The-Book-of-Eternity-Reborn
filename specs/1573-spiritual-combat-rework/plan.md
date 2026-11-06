@@ -1,5 +1,28 @@
 # План перехода к личной модели духовного боя — #1573
 
+## T150.A — принятие и актуализация статусов
+
+2026-11-06. Baseline/origin bc638cb91d99f858a645130543d4179ace5a4add сверены;
+ветка story/golden-mask-backstory-20261025 и feature1573 переиспользуются.
+Issue1573 прочитан. [Spec](spec.md), [tasks](tasks.md). Новый дизайн не вводится;
+действующие фазы T150 не регенерируются ради фиксации принятия.
+Прочитаны bridge, executing-plans, speckit-implement, requesting-code-review,
+verification-before-completion. Prerequisite с SPECIFY_FEATURE1573 и флагами
+-Json -RequireTasks -IncludeTasks выполнен; checklist15/15. Optional commit hooks
+заменены обычным checkpoint; обязательных implement hooks нет.
+
+1. Записать принятие в spec и healing-профиле, актуализировать §7/8/11 концепции.
+   Read-only аудит оставшихся вопросов ведёт отдельный Sol6.1/xhigh.
+2. Проверить неизменность механического тела T150, шесть Markdown-файлов,
+   добавленные ссылки и git diff --check; сохранить WIP обычным push.
+3. Независимое ревью всего блока тем же read-only агентом; проверить замечания,
+   сохранить checkpoint, сверить remote и чистое восстановление, обновить issue.
+
+Согласованность до правок профиля: один acceptance-task покрывает оба критерия
+spec; новых игровых контрактов/проб/общих интерфейсов нет. Оптимизация: runtime
+и кэш не затронуты. C#/Rules/промпты/примеры не меняются, сборки и боевые проверки
+для этой фиксации статуса не нужны. Evidence хранится вне Git на D:.
+
 ## T150 — прямое лечение и независимые HoT-источники
 
 2026-11-06. Baselinea045c2c4e9a7f1469a4a0ab3d5680a2899ba29a9; issue1573

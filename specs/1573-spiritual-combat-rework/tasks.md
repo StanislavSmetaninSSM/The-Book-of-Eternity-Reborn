@@ -1,5 +1,9 @@
 # Задачи #1573 — полный духовный бой
 
+## T150.A — принятие лечения и оставшиеся вопросы
+
+- [ ] T150.A1 Зафиксировать явное принятие T150 без изменения механического тела; обновить оставшиеся вопросы §11 spiritual-arts-concept.md по действующим источникам. Проверить scope/ссылки/diff и неизменность профиля; независимое Sol6.1/xhigh ревью, remote/restore/issue readback. [#1573](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1573). Только документация, без новых чисел и production.
+
 ## T150 — direct/HoT и несколько целителей (US150)
 
 [#1573](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1573).
