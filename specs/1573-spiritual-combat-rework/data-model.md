@@ -1,5 +1,15 @@
 # Предлагаемая модель данных #1573
 
+## T150 — кандидат периодического лечебного состояния
+
+[Healing-профиль](healing-and-regeneration-budgets.md): одна HoT-серия на
+creator+target+canonicalHealingGroup; разные creators независимы. Budget/Power/
+mastery/Flat/OutgoingPercent/dispel S фиксируются при создании;
+каждый тик имеет ordinal и гибридный age T148. Incoming/suppression/deficit
+берутся свежими. HP0-form-recovery authority явно входит в профиль, без права
+начать self-cast в распаде. Source loss не удаляет автономный snapshot.
+Имена описательные, production-схема в этом блоке не вводится.
+
 ## T149 — кандидат состава применения
 
 [Пакеты/охват](composite-and-multi-target-budgets.md): definition содержит

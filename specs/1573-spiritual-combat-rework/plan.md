@@ -1,5 +1,30 @@
 # План перехода к личной модели духовного боя — #1573
 
+## T150 — прямое лечение и независимые HoT-источники
+
+2026-11-06. Baselinea045c2c4e9a7f1469a4a0ab3d5680a2899ba29a9; issue1573
+прочитана. Активны feature1573, [spec](spec.md), [tasks](tasks.md). Brainstorming/
+bridge + actual specify/plan/tasks/analyze по загруженным инструкциям; новый
+scope остаётся исследованием. setup-plan -Json выполнен без перезаписи.
+Reuse feature/ветки разрешён пользователем; git.feature only-once не повторяется;
+optional hooks обычным checkpoint. Конституция/#1573/T001 соблюдены.
+
+Phase0: read-only Sol6.1/high audit mortal+T127/T133–134/T148/HP0. Parent сверяет
+Power/no-roll/no damagecrit, не переносит старымtiers mastery1. Принятие T149
+записывается отдельно от нового healing-кандидата.
+Phase1: spec/checklist/tasks и pre-arithmetic read-only analyze. Новый
+healing-and-regeneration-budgets.md; source/history pointers, краткие
+research/data-model/quickstart. Новых runtime-схем/зависимостей нет.
+Phase2: Fraction-арифметика direct/HoT, D/m/другие целители/overheal/HP0,
+живое suppression и фиксированный source; сравнение с атакой без гигантской
+симуляции. WIP/push, independent Astra/high review; corrections/remote/API/
+new restore/issue readback. Полный баланс не заявляется.
+
+Оптимизация: HoT хранит один рассчитанный outgoing snapshot, definitions
+переиспользуются существующим service/cache; каждый тик свежие target modifiers,
+HP/дефицит/допуск и event authority. No new dictionary/cache. Документальный
+блок не требует C#/боевых тестов, TDD для production не подменяется арифметикой.
+
 ## T149 — оценка пакетов и охвата
 
 2026-11-06. Baseline804d09f6573e0fd6c51e474e0ceb2ab383e69b55, issue1573

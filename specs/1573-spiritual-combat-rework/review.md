@@ -1,5 +1,21 @@
 # Проверка проекта #1573
 
+## T150 — проверка нового healing-кандидата
+
+Baselinea045c2c4e9a7f1469a4a0ab3d5680a2899ba29a9. T149 принят автором,
+новые direct/HoT пока кандидат. Sol6.1/high read-only source audit и parent
+сверка: Power/source scaling, no-roll/no damagecrit, T127 без mref, HP0/10%,
+HoT-policy не была принята в T128, cleansing/dispel новые договоры.
+Spec/plan/tasks/checklist и actual setup-plan/tasks/analyze до арифметики;
+local prerequisite flags+SPECIFY_FEATURE, spec отдельно. Coverage FR150.1–4/
+SC150.1–2→T150.1–3, критических конфликтов0. Branch reuse по указанию пользователя,
+optional hooks обычным checkpoint. Fraction direct/HoT/m10/ценыD0/50/210,
+suppression/incoming/Flat, recast/two-healer/overheal/HP0 и scaling identity
+равных A/I приD0/50/130/210 прошли.21links/13-file scope/diff clean, T149
+mechanical body identical. Это арифметика, не runtime/боевой баланс.
+Whole-block review ещё в работе.
+Evidence D:\BoeDiagnostics\healing-profiles-t150\20261106, raw не в Git.
+
 ## T149 — проверка составных и массовых профилей
 
 Baseline804d09f6573e0fd6c51e474e0ceb2ab383e69b55. Source audit Sol6.1/high:

@@ -1,5 +1,15 @@
 # Проверочные сценарии #1573
 
+## T150 — будущие дешёвые healing fixtures
+
+[Кандидат](healing-and-regeneration-budgets.md). Direct/HoT в ordinary no-roll,
+flat один раз/3 ticks/overheal; одинаковый creator replace без instant tick,
+разные creators складываются по реальным событиям; main/mastery одна активация.
+Current incoming/suppression меняется между тиками, source gear/m остаётся
+snapshot; expiry/dispel/source loss/HP0/закрытый бой; threshold10% без нового
+хода/ДЭ. Интеграция составного/массового режима по T149. Сейчас проверяются
+только документальные/арифметические сценарии, не runtime.
+
 ## T149 — будущие дешёвые проверки композиции
 
 [Кандидат](composite-and-multi-target-budgets.md). Full/partial/crit/failure

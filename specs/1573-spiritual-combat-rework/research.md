@@ -1,5 +1,19 @@
 # Исследование текущего кода для #1573
 
+## T150 — лечение: подтверждённые ограничения
+
+Read-only Sol6.1/high audit/parent сверка: T127tiers/цены — кандидат без mref;
+T134 запрещает присвоить старым пробам mastery1 задним числом. Новая таблица
+будет отдельной. Прежняя spiritual heal-формула от Мощи/P; ordinary self/
+consenting no-roll и без damage CritFactor. Mortal источник full/crit heal×1,
+partial×.5, fail0; конкретная Wisdom aura не задаёт универсальный healing stat.
+HoT stacked/replace/multiple healers/source-exit/HP0 были открыты; T128
+strongest-family — допущение пробы, не утверждённый договор. Истинные units
+mortal effect.value8% —8п.п.; соседние5% — resistance, energyCost aura отсутствует.
+Подробные ссылки/кандидат: [T150](healing-and-regeneration-budgets.md).
+Принятый cleanse T143 снимает один экземпляр через проверку, не старое всё
+семейство за8P. DispelS — M явно заданного creationstat, не автоматическая Воля.
+
 ## T149 — mortal составные и массовые искусства
 
 Sol6.1/high audit: Rules7 задаёт полную цену навыка; Rules17 energyCost заменяет
