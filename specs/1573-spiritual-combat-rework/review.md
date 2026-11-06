@@ -12,7 +12,14 @@ Sol6.1/high независим от последующего acceptance review S
 Exact-content механического тела T148 и исторических хвостов4 артефактов,
 6-doc scope,5 новых локальных ссылок и diff/check прошли. Обзор открытых
 вопросов сверён с T127/T137/T138; новый summoning scope не добавлялся.
-Независимое acceptance review ещё не завершено. Свидетельства:
+Independent GPT-6.1 Sol/xhigh review5b92a675..4127aa3c — PASS без замечаний;
+проверены реальные источники T127/T137/T138, HoT-specific contracts и весь diff.
+WIP4127aa3c3af55b5a12c935e0bd52c502ef039605 опубликован, remote совпал;
+новый clean sparse restore проверил6 blobs/checkout bytes и5 инструкций.
+Финальный remote/API/issue readback — verification.json и issue1573.
+Маршрутизация: bounded source audit + отдельное routine review; rework нет,
+измеренной экономии не заявляем. Повтор старых боевых проверок не требовался.
+Свидетельства:
 D:\BoeDiagnostics\effect-clocks-t148\acceptance-20261106; raw файлы не в Git.
 
 ## T148 — сроки и переходы (проверка в работе)

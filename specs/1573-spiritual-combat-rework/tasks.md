@@ -2,7 +2,7 @@
 
 ## T148.A — принятие и оставшиеся вопросы
 
-- [ ] T148.A1 Записать принятое T148 без изменения механик в effect-clocks-and-transitions.md/spec.md; актуализировать §11 spiritual-arts-concept.md по источникам. Проверить exact-content/scope/links, independent review и удалённое сохранение; свидетельства в review.md. [#1573](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1573).
+- [x] T148.A1 Принятие T148 записано без изменения механик; §11 spiritual-arts-concept.md актуализирован по источникам. Exact-content/scope/5links/diff прошли; независимый Sol6.1/xhigh review5b92a675..4127aa3c — PASS без замечаний. WIP/new restore проверены; final remote/API/issue readback — verification.json и issue1573; свидетельства в review.md. [#1573](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1573).
 
 ## T148 — сроки и переходы; US148 (исследование)
 
