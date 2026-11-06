@@ -11,9 +11,18 @@ local prerequisite flags+SPECIFY_FEATURE, spec отдельно. Coverage FR150.
 SC150.1–2→T150.1–3, критических конфликтов0. Branch reuse по указанию пользователя,
 optional hooks обычным checkpoint. Fraction direct/HoT/m10/ценыD0/50/210,
 suppression/incoming/Flat, recast/two-healer/overheal/HP0 и scaling identity
-равных A/I приD0/50/130/210 прошли.21links/13-file scope/diff clean, T149
+равных A/I приD0/50/130/210 прошли.22links/13-file scope/diff clean, T149
 mechanical body identical. Это арифметика, не runtime/боевой баланс.
-Whole-block review ещё в работе.
+Independent GPT-6 Astra/high reviewa045c2c4..68b704c4 и focused outside-boundary
+amendment — PASS без открытых замечаний. Дополнительно явно сохранены процентные
+безопасные сеансы/тариф20Перьев/единственный зачёт периода; цифры активного Heal
+не менялись. Замечание воспроизводимости evidence устранено: scaling identities
+теперь входят в verify.py и повторная проверка прошла, не только отдельный запуск.
+WIP68b704c4bdc94c2b4a2ae092047ebf023f5b4cef опубликован обычным push;
+remoteSHA совпал. Финальный checkpoint/API/clean restore/readback — verification.json
+и issue1573. Новых C#/боевых прогонов нет. Маршрутизация: source audit + complex
+review с одной узкой поправкой; существенного redesign нет, экономия не измерялась.
+Оптимизация: сохранён источник/живые цели; новый runtime/кэш не внедряется.
 Evidence D:\BoeDiagnostics\healing-profiles-t150\20261106, raw не в Git.
 
 ## T149 — проверка составных и массовых профилей

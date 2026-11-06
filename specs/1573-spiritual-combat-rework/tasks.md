@@ -6,8 +6,8 @@
 Зависимости T149→T150.1→T150.2→T150.3; acceptance T149 не означает production.
 
 - [x] T150.1 [US150] Source audit, spec.md/plan.md/checklist, actual setup и analyze до арифметики; findings research.md.
-- [x] T150.2 [US150] T149 acceptance записано (mechanical body identical); healing-and-regeneration-budgets.md и указатели/data-model/quickstart подготовлены. Fraction D/m/cost/suppression/Flat/recast/two-healer/overheal/HP0 примеры, scaling identityD0/50/130/210,21links/13-file scope/diff прошли. Не runtime.
-- [ ] T150.3 [US150] Independent Astra/high review, corrections; final remote/API/new restore/issue, evidence review.md. Healing остаётся кандидатом.
+- [x] T150.2 [US150] T149 acceptance записано (mechanical body identical); healing-and-regeneration-budgets.md и указатели/data-model/quickstart подготовлены. Fraction D/m/cost/suppression/Flat/recast/two-healer/overheal/HP0 примеры, scaling identityD0/50/130/210,22links/13-file scope/diff прошли. Не runtime.
+- [x] T150.3 [US150] Independent Astra/high reviewa045c2c4..68b704c4 + outside-boundary amendment — PASS. Проверки/воспроизводимость исправлены; WIP remoteSHA совпал. Final remote/API/new restore/readback — verification.json и issue1573, evidence review.md. Healing остаётся кандидатом.
 
 ## T149 — композиция и несколько целей (US149)
 
